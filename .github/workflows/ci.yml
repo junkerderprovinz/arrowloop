@@ -1,0 +1,48 @@
+name: CI
+
+# The convergence suite is the gate. A change that makes the engine lose or
+# invent a file must never reach main, and that is not something a reviewer can
+# see by reading a diff.
+on:
+  push:
+    branches: [main]
+    paths-ignore: ["**.md", "LICENSE"]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Vet and test
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      # Path handling, modification-time resolution and case sensitivity all
+      # differ between these three, and every one of those differences is a way
+      # for a sync engine to be wrong. Testing on Linux alone would prove the
+      # least interesting third of it.
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7
+        with: { go-version: '1.26' }
+      - run: go vet ./...
+      - run: go test -count=1 ./...
+      - name: Check gofmt
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          unformatted=$(gofmt -l .)
+          if [ -n "$unformatted" ]; then
+            echo "not gofmt-clean:"
+            echo "$unformatted"
+            exit 1
+          fi

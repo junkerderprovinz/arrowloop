@@ -1,0 +1,8 @@
+# Build output
+/reeveroll
+/reeveroll.exe
+
+# Job state databases, never in the repo: they describe someone's real files
+*.db
+*.db-wal
+*.db-shm

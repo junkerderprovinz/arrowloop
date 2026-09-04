@@ -1,0 +1,143 @@
+// Package state holds the last agreed state of a sync job.
+//
+// This is the piece rclone's own bisync does not have, and the reason this
+// project exists at all. Without a per-file record of what BOTH sides looked
+// like the last time they agreed, "the file is on the left but not on the
+// right" is ambiguous: it means either "created on the left" or "deleted on
+// the right", and those two readings call for opposite actions. Every two-way
+// sync that loses data loses it here.
+package state
+
+import (
+	"context"
+	"database/sql"
+	"errors"
+	"fmt"
+	"time"
+
+	_ "modernc.org/sqlite" // pure-Go driver, no cgo, so cross-compiling stays trivial
+)
+
+// Entry is one file as it stood on both sides the last time they agreed.
+//
+// Hash is best effort. Some backends cannot produce one (plain SFTP without a
+// remote shell, for example), so an empty Hash means "unknown", never "empty
+// file". Comparisons must treat it that way or a hashless backend turns every
+// run into a full re-copy.
+type Entry struct {
+	Path      string
+	LeftSize  int64
+	LeftMod   time.Time
+	LeftHash  string
+	RightSize int64
+	RightMod  time.Time
+	RightHash string
+	AgreedAt  time.Time
+}
+
+// DB is the state store for a single sync job.
+type DB struct {
+	sql *sql.DB
+}
+
+const schema = `
+CREATE TABLE IF NOT EXISTS meta (
+	key   TEXT PRIMARY KEY,
+	value TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS entries (
+	path        TEXT PRIMARY KEY,
+	left_size   INTEGER NOT NULL,
+	left_mod    INTEGER NOT NULL,
+	left_hash   TEXT NOT NULL,
+	right_size  INTEGER NOT NULL,
+	right_mod   INTEGER NOT NULL,
+	right_hash  TEXT NOT NULL,
+	agreed_at   INTEGER NOT NULL
+);
+`
+
+// Open opens or creates the state database at path.
+func Open(ctx context.Context, path string) (*DB, error) {
+	// _txlock=immediate makes a write transaction take the write lock up front
+	// instead of upgrading mid-transaction, which is where SQLITE_BUSY comes
+	// from when two runs of the same job overlap.
+	handle, err := sql.Open("sqlite", path+"?_pragma=busy_timeout(5000)&_pragma=journal_mode(WAL)&_txlock=immediate")
+	if err != nil {
+		return nil, fmt.Errorf("open state db: %w", err)
+	}
+	if _, err := handle.ExecContext(ctx, schema); err != nil {
+		handle.Close()
+		return nil, fmt.Errorf("create schema: %w", err)
+	}
+	return &DB{sql: handle}, nil
+}
+
+// Close releases the database handle.
+func (d *DB) Close() error { return d.sql.Close() }
+
+// All returns the complete last-agreed state, keyed by relative path.
+func (d *DB) All(ctx context.Context) (map[string]Entry, error) {
+	rows, err := d.sql.QueryContext(ctx, `SELECT path, left_size, left_mod, left_hash, right_size, right_mod, right_hash, agreed_at FROM entries`)
+	if err != nil {
+		return nil, fmt.Errorf("read state: %w", err)
+	}
+	defer rows.Close()
+
+	out := make(map[string]Entry)
+	for rows.Next() {
+		var e Entry
+		var leftMod, rightMod, agreed int64
+		if err := rows.Scan(&e.Path, &e.LeftSize, &leftMod, &e.LeftHash, &e.RightSize, &rightMod, &e.RightHash, &agreed); err != nil {
+			return nil, fmt.Errorf("scan state row: %w", err)
+		}
+		e.LeftMod = time.Unix(0, leftMod)
+		e.RightMod = time.Unix(0, rightMod)
+		e.AgreedAt = time.Unix(0, agreed)
+		out[e.Path] = e
+	}
+	return out, rows.Err()
+}
+
+// Put records that both sides now agree on this file.
+//
+// Called per file as the plan is applied, not once at the end. A run that dies
+// halfway then leaves a state that is smaller than reality but never wrong,
+// and the next run picks up from there. The opposite order, writing everything
+// at the end, turns every crash into a full resync.
+func (d *DB) Put(ctx context.Context, e Entry) error {
+	_, err := d.sql.ExecContext(ctx,
+		`INSERT INTO entries (path, left_size, left_mod, left_hash, right_size, right_mod, right_hash, agreed_at)
+		 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+		 ON CONFLICT(path) DO UPDATE SET
+		   left_size=excluded.left_size, left_mod=excluded.left_mod, left_hash=excluded.left_hash,
+		   right_size=excluded.right_size, right_mod=excluded.right_mod, right_hash=excluded.right_hash,
+		   agreed_at=excluded.agreed_at`,
+		e.Path, e.LeftSize, e.LeftMod.UnixNano(), e.LeftHash,
+		e.RightSize, e.RightMod.UnixNano(), e.RightHash, e.AgreedAt.UnixNano())
+	if err != nil {
+		return fmt.Errorf("put state %q: %w", e.Path, err)
+	}
+	return nil
+}
+
+// Forget drops a path, meaning both sides agree it is gone.
+func (d *DB) Forget(ctx context.Context, path string) error {
+	if _, err := d.sql.ExecContext(ctx, `DELETE FROM entries WHERE path = ?`, path); err != nil {
+		return fmt.Errorf("forget state %q: %w", path, err)
+	}
+	return nil
+}
+
+// Count returns how many files the last agreed state covers. The mass-delete
+// brake measures against this, so it has to come from the state and not from a
+// live listing: a side that failed to mount lists zero files, and measuring a
+// proposed deletion against zero would make any deletion look proportionate.
+func (d *DB) Count(ctx context.Context) (int, error) {
+	var n int
+	err := d.sql.QueryRowContext(ctx, `SELECT COUNT(*) FROM entries`).Scan(&n)
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+		return 0, fmt.Errorf("count state: %w", err)
+	}
+	return n, nil
+}
