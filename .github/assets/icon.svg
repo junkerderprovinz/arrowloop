@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <!--
+    A split tally: one notched stick cleft down its length, each party holding a
+    half, and the two only tally when the notches line up again. That is the
+    whole product in one object, and it is why the halves here are drawn apart
+    with their notches still meeting across the gap.
+
+    Only rectangles on a solid ground, on purpose. The Community Applications
+    grid renders this small and over an unknown backdrop, so it needs a solid
+    background (never transparent) and no shape that turns to mush at 32px.
+  -->
+  <rect width="256" height="256" rx="40" fill="#161616"/>
+
+  <g fill="#FCC419">
+    <!-- The left half of the stick. -->
+    <rect x="72" y="40" width="42" height="176" rx="8"/>
+    <!-- The right half, parted from it. -->
+    <rect x="142" y="40" width="42" height="176" rx="8"/>
+  </g>
+
+  <!-- The notches, cut across the whole stick before it was split, which is
+       why each one appears at the same height in both halves. -->
+  <g fill="#161616">
+    <rect x="98" y="72" width="60" height="14"/>
+    <rect x="98" y="118" width="60" height="14"/>
+    <rect x="98" y="164" width="60" height="14"/>
+  </g>
+</svg>

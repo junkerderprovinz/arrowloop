@@ -12,9 +12,10 @@
 6. [Running it once](#6-running-it-once)
 7. [Running it unattended](#7-running-it-unattended)
 8. [The interface](#8-the-interface)
-9. [Tests](#9-tests)
-10. [What it will not carry, and what it says about it](#10-what-it-will-not-carry-and-what-it-says-about-it)
-11. [Why not just use something that exists](#11-why-not-just-use-something-that-exists)
+9. [Installing it](#9-installing-it)
+10. [Tests](#10-tests)
+11. [What it will not carry, and what it says about it](#11-what-it-will-not-carry-and-what-it-says-about-it)
+12. [Why not just use something that exists](#12-why-not-just-use-something-that-exists)
 
 <br>
 
@@ -166,7 +167,27 @@ Ticking is not decoration. The run re-plans and then keeps only the paths that w
 
 <br>
 
-## 9. Tests
+## 9. Installing it
+
+**As a container**, which is what an Unraid box wants:
+
+```
+docker run -d --name reeveroll -p 8422:8422   -v /mnt/user/appdata/reeveroll:/config   -v /mnt/user:/data   ghcr.io/junkerderprovinz/reeveroll:latest
+```
+
+`/config` holds `reeveroll.json`, one state database per job and the run log, and it is the directory that must survive the container: without those databases every job forgets what the two sides agreed on and treats every file as new. A first start on an empty `/config` writes a starter configuration with one disabled example job, so the interface comes up and can be edited rather than crash-looping on a missing file. The Unraid template is [templates/my-ReeveRoll.xml](templates/my-ReeveRoll.xml).
+
+The image carries no second executable. rclone is compiled in as a library, so there is no version skew between the tool and the thing it drives, and nothing to keep separately up to date.
+
+**As a desktop application** on Windows, Linux or macOS, from the release page. It is not a client talking to a server: the scheduler, the run log and the API all live in the same process, and the window is a webview pointed at them. Nothing listens on the network at all, which is the difference between a desktop app and a server somebody did not ask to run. The schedules run for as long as the window is open; for a machine that should sync while nobody is looking, `reeveroll daemon` and `reeveroll service` are the right pair.
+
+The desktop builds are **not signed**. Windows shows its blue warning on first start (More info, Run anyway), and macOS needs a right-click and Open the first time. That is a deliberate trade for now rather than an oversight: a certificate is a recurring cost, and it is worth paying once there are users to pay it for.
+
+**A tray icon is deliberately absent**, and for a real reason rather than as an omission. Wails v2 has no cross-platform tray, and the usual library wants the main thread on macOS, which is the same thread Wails wants. Half a tray on two of three platforms is worse than none, so this waits for Wails v3.
+
+<br>
+
+## 10. Tests
 
 The suite that matters is not a list of cases, it is a property. `TestConvergence` seeds two trees, applies random creates, edits, deletes and renames to both sides for eight rounds, syncs after each, and demands the same thing every time: both sides hold exactly the same files with the same contents.
 
@@ -184,7 +205,7 @@ CI runs the whole suite on Linux, Windows and macOS, because path handling, modi
 
 <br>
 
-## 10. What it will not carry, and what it says about it
+## 11. What it will not carry, and what it says about it
 
 **Symbolic links, sockets, pipes, devices and Windows junctions are not synced, and are named in the report.** They have to be found separately: rclone's local backend drops them from its listing after one log line, so a library caller cannot tell one apart from a file that is not there. Following a link would copy the target and turn one shortcut into a full second copy on the other side; storing it as rclone's `.rclonelink` text file would produce something no other program can read. Neither is obviously right, so the engine names them and leaves them alone. Only local sides can be inspected this way, because only a local side has a filesystem underneath to ask.
 
@@ -198,7 +219,7 @@ Still untouched: file watching. The interface has no job editor yet, so a new jo
 
 <br>
 
-## 11. Why not just use something that exists
+## 12. Why not just use something that exists
 
 Nothing wrong with the alternatives, and it is worth being honest about them. [Syncthing](https://syncthing.net) is a proven real-time mesh, but it is a mesh of equal devices rather than a directed job, and it does not speak to cloud targets at all. [rclone bisync](https://rclone.org/bisync/) reaches every target but keeps only a listing per side rather than a per-file state, and re-scans both ends on every run.
 

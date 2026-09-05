@@ -1,0 +1,16 @@
+{
+  "$schema": "https://wails.io/schemas/config.v2.json",
+  "name": "ReeveRoll",
+  "outputfilename": "ReeveRoll",
+  "frontend:dir": "frontend",
+  "frontend:build": "",
+  "frontend:install": "",
+  "wailsjsdir": "./frontend",
+  "author": {
+    "name": "junkerderprovinz"
+  },
+  "info": {
+    "productName": "ReeveRoll",
+    "comments": "Two-way file synchronisation that shows you the plan before it moves anything."
+  }
+}

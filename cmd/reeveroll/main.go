@@ -67,6 +67,8 @@ func main() {
 		err = cmdHistory(ctx, args)
 	case "service":
 		err = cmdService(args)
+	case "healthcheck":
+		err = cmdHealth(ctx, args)
 	case "-h", "--help", "help":
 		fmt.Print(usage)
 		return

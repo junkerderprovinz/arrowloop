@@ -1,0 +1,154 @@
+name: Desktop build
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            platform: windows/amd64
+            slug: windows-amd64
+            # -nsis produces a real installer alongside the portable exe in the
+            # same build/bin output, so somebody who wants a Start Menu entry
+            # and somebody who wants a single file both get what they want.
+            extra: "-nsis"
+          - os: macos-latest
+            platform: darwin/universal
+            slug: macos-universal
+            extra: ""
+          - os: ubuntu-latest
+            platform: linux/amd64
+            slug: linux-amd64
+            extra: "-tags webkit2_41"
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7
+        with:
+          go-version-file: go.mod
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install Linux system deps
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev
+
+      # -nsis shells out to makensis. windows-latest has historically carried
+      # NSIS preinstalled, but that is an implicit runner-image detail rather
+      # than a promise, and wails degrades to a warning rather than an error
+      # when it is missing, so the installer would quietly stop being built.
+      - name: Install NSIS
+        if: runner.os == 'Windows'
+        run: |
+          choco install nsis -y
+          # choco updates the machine PATH, and that change does not reach this
+          # already-running job process.
+          echo "C:\Program Files (x86)\NSIS" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
+      # Pinned to the same version desktop/go.mod requires. Renovate bumps the
+      # library but has no way to catch a version pinned inside a shell string
+      # in a workflow, so these two have to be moved together by hand.
+      - name: Install the Wails CLI
+        run: go install github.com/wailsapp/wails/v2/cmd/wails@v2.15.0
+
+      # Windows runners default to pwsh, where rm -rf is a parse error. Git Bash
+      # ships on the image precisely so a cross-platform step like this one can
+      # stay one script.
+      - name: Build the interface into the shell
+        shell: bash
+        run: |
+          set -eu
+          npm --prefix web ci --no-audit --no-fund
+          npm --prefix web run build
+          rm -rf desktop/frontend/dist
+          cp -r web/dist desktop/frontend/dist
+
+      - name: Build
+        working-directory: desktop
+        run: wails build -platform ${{ matrix.platform }} -clean ${{ matrix.extra }}
+
+      # macOS gets no installer step from wails, so the .app is wrapped into the
+      # .dmg that is Apple's own convention. hdiutil is on every runner. The bare
+      # .app goes afterwards so the artifact holds the one file somebody should
+      # actually download.
+      - name: Package the macOS app into a dmg
+        if: runner.os == 'macOS'
+        working-directory: desktop
+        run: |
+          set -eu
+          hdiutil create -volname "ReeveRoll" -srcfolder build/bin/ReeveRoll.app -ov -format UDZO build/bin/ReeveRoll.dmg
+          rm -rf build/bin/ReeveRoll.app
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: reeveroll-${{ matrix.slug }}
+          path: desktop/build/bin/*
+          if-no-files-found: error
+
+  # Without this the bundles are built on every tag and then thrown away when
+  # the artifact expires: green CI, and nobody outside Actions can download the
+  # desktop app at all.
+  attach:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          path: bundles
+
+      - name: Package
+        run: |
+          set -eu
+          mkdir -p dist
+          cp bundles/reeveroll-windows-amd64/ReeveRoll.exe \
+            "dist/reeveroll-${GITHUB_REF_NAME}-windows-amd64-portable.exe"
+          cp bundles/reeveroll-windows-amd64/*-installer.exe \
+            "dist/reeveroll-${GITHUB_REF_NAME}-windows-amd64-installer.exe"
+          cp bundles/reeveroll-macos-universal/ReeveRoll.dmg \
+            "dist/reeveroll-${GITHUB_REF_NAME}-macos-universal.dmg"
+          cp bundles/reeveroll-linux-amd64/ReeveRoll \
+            "dist/reeveroll-${GITHUB_REF_NAME}-linux-amd64"
+          chmod +x "dist/reeveroll-${GITHUB_REF_NAME}-linux-amd64"
+          ls -lh dist
+
+      # The release is expected to exist by the time these are ready, but a
+      # desktop build can easily outlast release creation and a runner queue can
+      # invert the order further. Waiting beats racing.
+      - name: Wait for the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -eu
+          for i in $(seq 1 30); do
+            if gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "no release for $GITHUB_REF_NAME after five minutes" >&2
+          exit 1
+
+      - name: Attach the bundles
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "$GITHUB_REF_NAME" dist/* --repo "$GITHUB_REPOSITORY" --clobber

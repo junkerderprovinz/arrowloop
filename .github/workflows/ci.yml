@@ -38,6 +38,24 @@ jobs:
       - run: npm run build
         working-directory: web
 
+  # The desktop shell is a separate module with its own go.mod, so nothing in
+  # the main test matrix compiles it. Without this a change to the engine's API
+  # would break the shell and only be found on a release tag, when the desktop
+  # workflow finally runs.
+  desktop:
+    name: Vet the desktop shell
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7
+        with: { go-version: '1.26' }
+      - run: sudo apt-get update && sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev
+      - run: go vet ./...
+        working-directory: desktop
+      - run: go build ./...
+        working-directory: desktop
+
   test:
     name: Vet and test
     runs-on: ${{ matrix.os }}

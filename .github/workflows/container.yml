@@ -1,0 +1,115 @@
+name: Container
+
+# Builds the image and, on main and on a release tag, pushes it to GHCR. A pull
+# request builds only.
+on:
+  push:
+    branches: [main]
+    tags: ["v[0-9]+.[0-9]+.[0-9]+"]
+    paths-ignore: ["**.md", "LICENSE"]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  IMAGE: ghcr.io/${{ github.repository }}
+
+jobs:
+  # A green build is not a booting container. This builds the amd64 image, runs
+  # it, and demands that it answers before anything is pushed, so an image that
+  # compiles and then dies on startup can never reach the registry.
+  smoke:
+    name: Boot smoke test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4
+      - name: Build amd64 and load it locally
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7
+        with:
+          context: .
+          platforms: linux/amd64
+          load: true
+          tags: reeveroll:smoke
+          build-args: VERSION=${{ github.ref_name }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Run it and ask it a real question
+        run: |
+          set -eu
+          docker run -d --name smoke -p 8422:8422 \
+            --cpus 1 --memory 512m \
+            -v "$PWD/smoke-config:/config" \
+            reeveroll:smoke
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8422/api/jobs > /tmp/jobs.json; then
+              echo "answered after ${i}s:"; cat /tmp/jobs.json; break
+            fi
+            sleep 1
+          done
+          test -s /tmp/jobs.json
+
+          # The container writes a starter configuration on an empty /config,
+          # and that path is exactly what a first Unraid install hits. An image
+          # that instead dies on the missing file would restart-loop with an
+          # error nobody can act on from the log.
+          test -f smoke-config/reeveroll.json
+
+          # The startup banner and the READY line are what somebody reading the
+          # Unraid log actually looks for, so their absence is a defect.
+          docker logs smoke | grep -q "IS READY"
+
+          # And the healthcheck the image declares has to pass on its own terms.
+          docker exec smoke /usr/local/bin/reeveroll healthcheck
+
+      - name: Show the log and clean up
+        if: always()
+        run: |
+          docker logs smoke || true
+          docker rm -f smoke || true
+
+  push:
+    name: Build and push
+    needs: smoke
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: docker/setup-qemu-action@96fe6ef7f33517b61c61be40b68a1882f3264fb8 # v4
+      - uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4
+      - uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - id: meta
+        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6
+        with:
+          images: ${{ env.IMAGE }}
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=semver,pattern={{version}}
+            type=sha
+      - uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: VERSION=${{ github.ref_name }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          provenance: true
+          sbom: true

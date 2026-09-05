@@ -15,3 +15,15 @@ web/node_modules/
 !web/dist/
 web/dist/*
 !web/dist/index.html
+
+# The Wails shell embeds its own copy of the interface, built into place by CI.
+# The placeholder keeps `//go:embed all:frontend/dist` compiling before that.
+!desktop/frontend/dist/
+desktop/frontend/dist/*
+!desktop/frontend/dist/index.html
+
+# Wails build output, and the stray binary a plain `go build ./...` drops in
+# the module directory.
+desktop/build/bin/
+desktop/desktop
+desktop/desktop.exe
