@@ -496,15 +496,26 @@ func detectRenames(ctx context.Context, p *Plan) {
 		if a.Kind != Delete || a.Prev == nil || (a.LeftNow == nil && a.RightNow == nil) {
 			continue
 		}
-		// The file about to disappear is the one on the destination side, so
-		// that is the recorded hash to match against.
-		h, size := a.Prev.LeftHash, a.Prev.LeftSize
+		// The recorded hash is taken from the side where the rename HAPPENED,
+		// which is the side opposite the one being told to delete. That side
+		// holds both halves of the evidence: the record of what the file used
+		// to be, and the live file it has become.
+		//
+		// Reading the destination's hash instead looks equivalent, because a
+		// recorded agreement means both sides held the same content. It is not
+		// equivalent when the destination cannot produce a hash at all: an SFTP
+		// host with no remote shell records an empty one, and every rename then
+		// degrades into a full re-upload plus a delete. Found by running a job
+		// against a real SFTP server for the first time, where renaming one
+		// file reported "0 moved, 1 copied".
+		h, size := a.Prev.RightHash, a.Prev.RightSize
 		if a.Dst == Right {
-			h, size = a.Prev.RightHash, a.Prev.RightSize
+			h, size = a.Prev.LeftHash, a.Prev.LeftSize
 		}
 		// Matching on size alone would happily "rename" two unrelated files
-		// that happen to be the same length, so a hashless backend simply gets
-		// no rename detection: a copy and a delete are slower but correct.
+		// that happen to be the same length, so a job where NEITHER side can
+		// hash simply gets no rename detection: a copy and a delete are slower
+		// but correct.
 		if h == "" {
 			continue
 		}
