@@ -2,6 +2,7 @@ package scan
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io/fs"
 	"os"
@@ -49,7 +50,12 @@ func FindUnsupported(ctx context.Context, f rclonefs.Fs, opt Options) ([]Unsuppo
 			// A directory that cannot be read is a real problem, but it is not
 			// this function's problem: the listing will fail on it too, and
 			// with a better message.
-			if p == root {
+			//
+			// The root not being there at all is not a problem either. The
+			// destination of a brand new job is a folder nobody has made yet,
+			// and refusing to start because there are no symlinks in a folder
+			// that does not exist would stop every first run.
+			if p == root && !errors.Is(err, fs.ErrNotExist) {
 				return err
 			}
 			return nil

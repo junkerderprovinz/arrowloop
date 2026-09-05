@@ -26,6 +26,7 @@ import (
 	_ "github.com/rclone/rclone/backend/local"
 	_ "github.com/rclone/rclone/backend/s3"
 	_ "github.com/rclone/rclone/backend/sftp"
+	_ "github.com/rclone/rclone/backend/smb"
 
 	"github.com/rclone/rclone/fs/config/configfile"
 

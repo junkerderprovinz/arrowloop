@@ -7,7 +7,9 @@ package engine
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/rclone/rclone/fs"
 	"github.com/rclone/rclone/fs/accounting"
@@ -117,6 +119,10 @@ func Prepare(ctx context.Context, ends apply.Ends, db *state.DB, opt Options) (*
 		return nil, compare, err
 	}
 
+	if err := somethingToWorkWith(ctx, ends, left, right, visible); err != nil {
+		return nil, compare, err
+	}
+
 	p, err := plan.Build(ctx, left, right, visible, compare)
 	if err != nil {
 		return nil, compare, err
@@ -204,12 +210,75 @@ func Execute(ctx context.Context, ends apply.Ends, db *state.DB, p *plan.Plan, c
 	return apply.Run(ctx, ends, db, p, compare)
 }
 
+// ExecuteWatched is Execute with somebody watching the work go by.
+func ExecuteWatched(ctx context.Context, ends apply.Ends, db *state.DB, p *plan.Plan, compare plan.Options, watcher apply.Progress) (apply.Result, error) {
+	return apply.RunWatched(ctx, ends, db, p, compare, watcher)
+}
+
 // Once prepares and executes in a single call.
 func Once(ctx context.Context, ends apply.Ends, db *state.DB, opt Options) (*plan.Plan, apply.Result, error) {
+	return OnceWatched(ctx, ends, db, opt, nil)
+}
+
+// OnceWatched prepares and executes with somebody watching.
+func OnceWatched(ctx context.Context, ends apply.Ends, db *state.DB, opt Options, watcher apply.Progress) (*plan.Plan, apply.Result, error) {
 	p, compare, err := Prepare(ctx, ends, db, opt)
 	if err != nil {
 		return nil, apply.Result{}, err
 	}
-	res, err := Execute(ctx, ends, db, p, compare)
+	res, err := ExecuteWatched(ctx, ends, db, p, compare, watcher)
 	return p, res, err
 }
+
+// NothingToSyncError says a job's sides do not exist.
+//
+// This is almost always a typo, a share that is not mounted, or a removable
+// drive that is not attached. The alternative to saying so is reporting a
+// successful run of zero files, which is how somebody comes to believe in a
+// backup that has never happened.
+type NothingToSyncError struct {
+	Missing []string
+}
+
+func (e *NothingToSyncError) Error() string {
+	return fmt.Sprintf(
+		"this job has nothing to work with: %s does not exist; check the path, and that any removable drive is attached or share mounted",
+		strings.Join(e.Missing, " and "))
+}
+
+// somethingToWorkWith refuses a job whose sides are not there.
+//
+// The cheap conditions are checked first and the question is only actually
+// asked in the one case that warrants it. A job with anything in its record is
+// left alone: that is the ordinary empty-side case and plan.Build refuses it
+// with a better message, because a side that used to hold files and now holds
+// none is a different and more alarming thing than a side that never existed.
+//
+// When both sides do look empty, each is asked outright whether it is there,
+// rather than the reason being guessed from what the listing did not contain. A
+// folder holding nothing but symbolic links, or nothing but files the job
+// excludes, lists no files and exists perfectly well, and telling its owner to
+// go and check whether their path exists would send them looking in the wrong
+// place entirely.
+func somethingToWorkWith(ctx context.Context, ends apply.Ends, left, right *scan.Listing, visible map[string]state.Entry) error {
+	if len(visible) > 0 {
+		return nil
+	}
+	if len(left.Files)+len(left.Dirs)+len(right.Files)+len(right.Dirs) > 0 {
+		return nil
+	}
+
+	var missing []string
+	for _, f := range []fs.Fs{ends.Left, ends.Right} {
+		if _, err := f.List(ctx, ""); errors.Is(err, fs.ErrorDirNotFound) {
+			missing = append(missing, describe(f))
+		}
+	}
+	if len(missing) == 0 {
+		return nil
+	}
+	return &NothingToSyncError{Missing: missing}
+}
+
+// describe names a side the way a person would recognise it.
+func describe(f fs.Fs) string { return f.Name() + ":" + f.Root() }

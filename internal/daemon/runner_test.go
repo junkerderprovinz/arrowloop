@@ -16,6 +16,7 @@ import (
 	"github.com/junkerderprovinz/reeveroll/internal/daemon"
 	"github.com/junkerderprovinz/reeveroll/internal/history"
 	"github.com/junkerderprovinz/reeveroll/internal/job"
+	"github.com/junkerderprovinz/reeveroll/internal/volume"
 )
 
 // fixture builds a working configuration over two real temporary folders.
@@ -213,5 +214,117 @@ func TestPruneDropsOldRuns(t *testing.T) {
 	// And a keep of zero must mean "forever", not "delete everything".
 	if n, err := hist.Prune(ctx, 0, now); err != nil || n != 0 {
 		t.Fatalf("a zero retention deleted %d runs (err %v); it must mean keep forever", n, err)
+	}
+}
+
+// TestAnUnpluggedVolumeIsNotARun covers the whole reason internal/volume
+// exists. A job that lives on a removable drive has three possible outcomes
+// when the drive is not there, and only one of them is acceptable:
+//
+//   - it syncs against whatever now holds that path, which destroys data;
+//   - it fails, which trains its owner to ignore the notifications;
+//   - it does not run, which is the truth.
+func TestAnUnpluggedVolumeIsNotARun(t *testing.T) {
+	drive := t.TempDir()
+	marker, err := volume.Mark(drive, "Backup drive")
+	if err != nil {
+		t.Fatalf("mark the drive: %v", err)
+	}
+
+	cfg, hist, left, _ := fixture(t, func(dir, left, right string) string {
+		return fmt.Sprintf(`{"jobs":[{"name":"onstick","left":"%s","right":"volume:%s/photos","state":"%s","quietPeriod":"0s"}]}`,
+			jsonPath(left), marker.ID, jsonPath(filepath.Join(dir, "onstick.db")))
+	})
+	if err := os.WriteFile(filepath.Join(left, "holiday.jpg"), []byte("a photo"), 0o644); err != nil {
+		t.Fatalf("write: %v", err)
+	}
+
+	attached := func(dirs ...string) {
+		t.Helper()
+		volume.Candidates = func() []string { return dirs }
+	}
+	realCandidates := volume.Candidates
+	t.Cleanup(func() { volume.Candidates = realCandidates })
+
+	// Plugged in: an ordinary run, and the destination is created on the drive
+	// under the folder the job names.
+	attached(drive)
+	r := daemon.New(cfg, hist, nil, nil)
+	if _, err := r.Run(t.Context(), "onstick"); err != nil {
+		t.Fatalf("the run failed with the drive attached: %v", err)
+	}
+	if _, err := os.Stat(filepath.Join(drive, "photos", "holiday.jpg")); err != nil {
+		t.Fatalf("the file did not reach the drive: %v", err)
+	}
+
+	before, err := hist.Recent(t.Context(), "", 100)
+	if err != nil {
+		t.Fatalf("history: %v", err)
+	}
+
+	// The drive is now in somebody's bag.
+	attached()
+	if err := os.WriteFile(filepath.Join(left, "second.jpg"), []byte("another"), 0o644); err != nil {
+		t.Fatalf("write: %v", err)
+	}
+
+	_, err = r.Run(t.Context(), "onstick")
+	if !errors.Is(err, daemon.ErrVolumeMissing) {
+		t.Fatalf("an unplugged drive reported %v, which the runner cannot tell apart from a real failure", err)
+	}
+	if !strings.Contains(err.Error(), "Backup drive") {
+		t.Errorf("the message names no drive anybody could recognise: %v", err)
+	}
+
+	// Nothing was written down, because nothing happened.
+	after, err := hist.Recent(t.Context(), "", 100)
+	if err != nil {
+		t.Fatalf("history: %v", err)
+	}
+	if len(after) != len(before) {
+		t.Fatalf("an unplugged drive left %d extra rows in the history", len(after)-len(before))
+	}
+
+	// And the local side is untouched: neither file was treated as deleted on
+	// the far side, which is what a naive "the destination is empty" reading
+	// would have done.
+	for _, name := range []string{"holiday.jpg", "second.jpg"} {
+		if _, err := os.Stat(filepath.Join(left, name)); err != nil {
+			t.Errorf("%s was removed while the drive was unplugged: %v", name, err)
+		}
+	}
+
+	// Back in the machine, at a different mount point, which is the case a
+	// drive letter cannot survive.
+	moved := t.TempDir()
+	if err := os.MkdirAll(filepath.Join(moved, ".reeveroll"), 0o755); err != nil {
+		t.Fatalf("mkdir: %v", err)
+	}
+	body, err := os.ReadFile(filepath.Join(drive, ".reeveroll", "volume.json"))
+	if err != nil {
+		t.Fatalf("read the marker: %v", err)
+	}
+	if err := os.Rename(filepath.Join(drive, "photos"), filepath.Join(moved, "photos")); err != nil {
+		t.Fatalf("move the contents: %v", err)
+	}
+	if err := os.WriteFile(filepath.Join(moved, ".reeveroll", "volume.json"), body, 0o644); err != nil {
+		t.Fatalf("write the marker: %v", err)
+	}
+	attached(moved)
+
+	rec, err := r.Run(t.Context(), "onstick")
+	if err != nil {
+		t.Fatalf("the run failed after the drive came back elsewhere: %v", err)
+	}
+	if rec.Copied != 1 {
+		t.Fatalf("expected the one new file to cross, %d did", rec.Copied)
+	}
+	if _, err := os.Stat(filepath.Join(moved, "photos", "second.jpg")); err != nil {
+		t.Errorf("the new file did not reach the drive at its new mount point: %v", err)
+	}
+	// The first file is still there and was not copied a second time, which
+	// proves the record survived the drive moving.
+	if rec.Trashed != 0 {
+		t.Errorf("%d files were deleted after the drive moved", rec.Trashed)
 	}
 }

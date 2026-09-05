@@ -27,6 +27,20 @@ import (
 	"github.com/junkerderprovinz/reeveroll/internal/state"
 )
 
+// Progress is told what a run is doing while it does it.
+//
+// A long run that shows nothing is indistinguishable from one that has hung,
+// and the person watching has no way to tell which. The engine already knows
+// the total before it starts, because the plan is built first, so there is no
+// excuse for a spinner.
+//
+// Implementations are called from several workers at once and must be safe for
+// that. A nil Progress means nobody is watching.
+type Progress interface {
+	Starting(total int)
+	Did(kind, path string, done, total int)
+}
+
 // Ends holds the two filesystems a job runs against.
 type Ends struct {
 	Left  fs.Fs
@@ -70,6 +84,35 @@ type tally struct {
 	mu    sync.Mutex
 	res   Result
 	fatal error
+
+	progress Progress
+	total    int
+	done     int
+}
+
+// step reports one finished piece of work. The count is taken under the same
+// lock as everything else, so the numbers a watcher sees always add up even
+// when several workers finish at the same instant.
+func (t *tally) step(kind, path string) {
+	t.mu.Lock()
+	t.done++
+	done, total, watcher := t.done, t.total, t.progress
+	t.mu.Unlock()
+	if watcher != nil {
+		watcher.Did(kind, path, done, total)
+	}
+}
+
+// countWork is what the plan is going to touch, worked out before anything
+// moves. A progress bar whose total grows while it runs is not a progress bar.
+func countWork(p *plan.Plan) int {
+	n := len(p.Actions) + len(p.Agreed)
+	for _, d := range p.Dirs {
+		if d.Kind != plan.RecordDir && d.DstPath != "" {
+			n++
+		}
+	}
+	return n
 }
 
 func (t *tally) count(f func(*Result)) {
@@ -111,7 +154,16 @@ func (t *tally) fatalErr() error {
 // renames run before copies so a freed name is available, and deletions come
 // last so a file is never removed before its replacement has landed.
 func Run(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt plan.Options) (Result, error) {
-	t := &tally{res: Result{Skipped: append([]plan.Skip(nil), p.Skipped...)}}
+	return RunWatched(ctx, ends, db, p, opt, nil)
+}
+
+// RunWatched is Run with somebody looking over its shoulder.
+func RunWatched(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt plan.Options, watcher Progress) (Result, error) {
+	t := &tally{res: Result{Skipped: append([]plan.Skip(nil), p.Skipped...)}, progress: watcher}
+	t.total = countWork(p)
+	if watcher != nil {
+		watcher.Starting(t.total)
+	}
 	runID := time.Now().UTC().Format("20060102-150405")
 	rec := recorder{ends: ends, db: db, window: opt.ModWindow}
 
@@ -125,6 +177,7 @@ func Run(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt plan.Op
 		}
 		if d.Kind == plan.MakeDir {
 			t.count(func(r *Result) { r.DirsMade++ })
+			t.step("mkdir", d.DstPath)
 		}
 	}
 
@@ -160,6 +213,7 @@ func Run(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt plan.Op
 	// Files both sides created identically need no transfer, only a record.
 	for _, act := range p.Agreed {
 		left, right := act.Names()
+		t.step("record", act.Path)
 		if err := rec.settle(ctx, act.Path, left, right); err != nil {
 			var dis *DisagreementError
 			if errors.As(err, &dis) {
@@ -180,6 +234,7 @@ func Run(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt plan.Op
 			continue
 		}
 		t.count(func(r *Result) { r.DirsRemoved++ })
+		t.step("rmdir", d.DstPath)
 	}
 
 	return t.res, t.fatalErr()
@@ -311,6 +366,7 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 			return err
 		}
 		t.count(func(r *Result) { r.Copied++ })
+		t.step("copy", act.DstPath)
 		left, right := act.Names()
 		return rec.settle(ctx, act.Path, left, right)
 
@@ -320,6 +376,7 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 			return err
 		}
 		t.count(func(r *Result) { r.Moved++ })
+		t.step("move", act.DstPath)
 		if err := rec.db.Forget(ctx, pathid.Key(act.OldDstPath, opt.FoldCase)); err != nil {
 			return err
 		}
@@ -342,10 +399,12 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 			return err
 		}
 		t.count(func(r *Result) { r.Trashed++ })
+		t.step("trash", act.Path)
 		return rec.db.Forget(ctx, act.Path)
 
 	case plan.Conflict:
 		t.count(func(r *Result) { r.Conflicts++ })
+		t.step("conflict", act.Path)
 		return resolveConflict(ctx, ends, rec, act, runID, opt)
 	}
 	return fmt.Errorf("unknown action kind %v", act.Kind)

@@ -48,6 +48,16 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /api/config", s.readConfig)
 	mux.HandleFunc("PUT /api/config", s.writeConfig)
 
+	mux.HandleFunc("GET /api/volumes", s.listVolumes)
+	mux.HandleFunc("GET /api/volumes/candidates", s.volumeCandidates)
+	mux.HandleFunc("POST /api/volumes", s.markVolume)
+	mux.HandleFunc("DELETE /api/volumes/{id}", s.forgetVolume)
+
+	mux.HandleFunc("GET /api/remotes", s.listRemotes)
+	mux.HandleFunc("PUT /api/remotes/{name}", s.saveRemote)
+	mux.HandleFunc("DELETE /api/remotes/{name}", s.deleteRemote)
+	mux.HandleFunc("POST /api/remotes/{name}/check", s.checkRemote)
+
 	if s.UI != nil {
 		mux.Handle("/", spa{fs: s.UI})
 	}

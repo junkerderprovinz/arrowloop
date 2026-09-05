@@ -17,12 +17,15 @@ import (
 	"github.com/rclone/rclone/fs"
 	"github.com/rclone/rclone/fs/config/configfile"
 
-	// Only the backends this stage needs. Importing backend/all would pull in
-	// every cloud SDK rclone supports and inflate the binary by an order of
+	// The four kinds of target this product promises: a local disk or mounted
+	// share, anything speaking the S3 API (MinIO, Garage, Backblaze), SSH, and
+	// SMB, which is what an Unraid share is. Importing backend/all would pull
+	// in every cloud SDK rclone supports and inflate the binary by an order of
 	// magnitude for targets nobody has asked for yet.
 	_ "github.com/rclone/rclone/backend/local"
 	_ "github.com/rclone/rclone/backend/s3"
 	_ "github.com/rclone/rclone/backend/sftp"
+	_ "github.com/rclone/rclone/backend/smb"
 )
 
 const usage = `reeveroll synchronises two folders in both directions.

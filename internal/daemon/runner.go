@@ -27,6 +27,7 @@ import (
 	"github.com/junkerderprovinz/reeveroll/internal/notify"
 	"github.com/junkerderprovinz/reeveroll/internal/plan"
 	"github.com/junkerderprovinz/reeveroll/internal/state"
+	"github.com/junkerderprovinz/reeveroll/internal/volume"
 	"github.com/junkerderprovinz/reeveroll/internal/watch"
 )
 
@@ -38,6 +39,16 @@ import (
 // pair of folders would race each other through the same files and the state
 // database, and the answer is simply to let this tick go by.
 var ErrAlreadyRunning = errors.New("this job is still running from last time")
+
+// ErrVolumeMissing is returned when a job points at a removable drive or a
+// share that is not attached right now.
+//
+// This is not a failure and is deliberately not recorded as one. A disk in
+// somebody's bag has not gone wrong, and a job that reported a failure every
+// quarter of an hour for the days between two backups would train its owner to
+// ignore the very notification that matters when something really breaks. One
+// line in the log, no history row, no message.
+var ErrVolumeMissing = errors.New("the volume this job points at is not attached")
 
 // Runner executes jobs, one at a time by default.
 type Runner struct {
@@ -64,6 +75,13 @@ func New(cfg *job.Config, hist *history.DB, note notify.Notifier, log func(strin
 	if log == nil {
 		log = func(string, ...any) {}
 	}
+
+	// Volumes are remembered beside the configuration, so that a drive which
+	// is not plugged in can still be named by the label its owner gave it. The
+	// register belongs to the process rather than to this runner, and there is
+	// one runner per process, so here is where it is set.
+	volume.SetRegistry(filepath.Join(filepath.Dir(cfg.Path()), "volumes.json"))
+
 	return &Runner{
 		cfg:      cfg,
 		hist:     hist,
@@ -145,6 +163,14 @@ func (r *Runner) RunOnly(ctx context.Context, name string, only []string) (histo
 	r.publish(Event{Job: name, Phase: "started"})
 	rec := history.Run{Job: name, Started: time.Now()}
 	res, p, err := r.execute(ctx, j, only)
+
+	// A drive that is not plugged in is not a run. Nothing is written down and
+	// nobody is told, because there is nothing to tell.
+	if errors.Is(err, ErrVolumeMissing) {
+		r.publish(Event{Job: name, Phase: "finished", Error: err.Error()})
+		return history.Run{}, err
+	}
+
 	rec.Finished = time.Now()
 	if err != nil {
 		rec.Err = err.Error()
@@ -171,14 +197,29 @@ func (r *Runner) RunOnly(ctx context.Context, name string, only []string) (histo
 }
 
 // open builds the two ends and the record for one job.
+//
+// Both sides are resolved before either is opened. A job on a removable drive
+// has to be stopped BEFORE anything is listed: if the drive is gone and the
+// engine went ahead, the empty-side guard would catch it, but a drive letter
+// that has since been handed to a different disk would not be empty at all, and
+// the engine would happily reconcile against the wrong volume.
 func (r *Runner) open(ctx context.Context, j job.Job) (apply.Ends, *state.DB, error) {
-	left, err := rclonefs.NewFs(ctx, j.Left)
+	leftPath, err := volume.Resolve(j.Left)
 	if err != nil {
-		return apply.Ends{}, nil, fmt.Errorf("left side %q: %w", j.Left, err)
+		return apply.Ends{}, nil, fmt.Errorf("%w: left side %s", ErrVolumeMissing, volume.Describe(j.Left))
 	}
-	right, err := rclonefs.NewFs(ctx, j.Right)
+	rightPath, err := volume.Resolve(j.Right)
 	if err != nil {
-		return apply.Ends{}, nil, fmt.Errorf("right side %q: %w", j.Right, err)
+		return apply.Ends{}, nil, fmt.Errorf("%w: right side %s", ErrVolumeMissing, volume.Describe(j.Right))
+	}
+
+	left, err := rclonefs.NewFs(ctx, leftPath)
+	if err != nil {
+		return apply.Ends{}, nil, fmt.Errorf("left side %q: %w", leftPath, err)
+	}
+	right, err := rclonefs.NewFs(ctx, rightPath)
+	if err != nil {
+		return apply.Ends{}, nil, fmt.Errorf("right side %q: %w", rightPath, err)
 	}
 	db, err := state.Open(ctx, j.State)
 	if err != nil {
@@ -203,8 +244,9 @@ func (r *Runner) execute(ctx context.Context, j job.Job, only []string) (apply.R
 	}
 	defer db.Close()
 
+	watcher := progressFor{runner: r, job: j.Name}
 	if only == nil {
-		p, res, err := engine.Once(ctx, ends, db, opt)
+		p, res, err := engine.OnceWatched(ctx, ends, db, opt, watcher)
 		return res, p, err
 	}
 
@@ -216,7 +258,7 @@ func (r *Runner) execute(ctx context.Context, j job.Job, only []string) (apply.R
 	keep(p, only)
 	r.log("%s: running %d of %d proposed changes, as chosen", j.Name, len(p.Actions), full)
 
-	res, err := engine.Execute(ctx, ends, db, p, compare)
+	res, err := engine.ExecuteWatched(ctx, ends, db, p, compare, watcher)
 	return res, p, err
 }
 
@@ -363,6 +405,8 @@ func (r *Runner) schedule(ctx context.Context) *cron.Cron {
 		c.Schedule(parsed, cron.FuncJob(func() {
 			rec, err := r.Run(ctx, name)
 			switch {
+			case errors.Is(err, ErrVolumeMissing):
+				r.log("%s: %v", name, err)
 			case errors.Is(err, ErrAlreadyRunning):
 				r.log("%s is still running from last time, skipping this turn", name)
 			case err != nil:
@@ -431,9 +475,35 @@ func (r *Runner) config() *job.Config {
 // Event is something worth telling a watching screen about.
 type Event struct {
 	Job   string       `json:"job"`
-	Phase string       `json:"phase"` // "started" or "finished"
+	Phase string       `json:"phase"` // "started", "progress" or "finished"
 	Run   *history.Run `json:"run,omitempty"`
 	Error string       `json:"error,omitempty"`
+
+	// Filled on a progress event. Total is known before the first byte moves,
+	// because the plan is built first: a bar whose total grows while it runs is
+	// not a bar.
+	Done  int    `json:"done,omitempty"`
+	Total int    `json:"total,omitempty"`
+	Kind  string `json:"kind,omitempty"`
+	Path  string `json:"path,omitempty"`
+}
+
+// progressFor turns the apply stage's reports into events on the stream.
+//
+// Every step is published rather than sampled. The stream already drops a send
+// that would block, so a screen that cannot keep up loses frames instead of
+// holding up a transfer, which is the right way round.
+type progressFor struct {
+	runner *Runner
+	job    string
+}
+
+func (p progressFor) Starting(total int) {
+	p.runner.publish(Event{Job: p.job, Phase: "progress", Done: 0, Total: total})
+}
+
+func (p progressFor) Did(kind, path string, done, total int) {
+	p.runner.publish(Event{Job: p.job, Phase: "progress", Done: done, Total: total, Kind: kind, Path: path})
 }
 
 // Subscribe returns a channel of events and the function that stops it.
@@ -491,7 +561,14 @@ func (r *Runner) Running() map[string]bool {
 func localRoots(j job.Job) []string {
 	var out []string
 	for _, side := range []string{j.Left, j.Right} {
-		parsed, err := fspath.Parse(side)
+		// A volume path is local by definition, so it is worth watching as soon
+		// as the drive is attached and not worth complaining about when it is
+		// not.
+		resolved, err := volume.Resolve(side)
+		if err != nil {
+			continue
+		}
+		parsed, err := fspath.Parse(resolved)
 		if err != nil || parsed.ConfigString != "" {
 			continue
 		}
