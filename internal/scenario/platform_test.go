@@ -192,7 +192,13 @@ func TestManyFilesConvergeInParallel(t *testing.T) {
 	}
 	_, res := j.sync(t)
 	if res.Copied != 200 {
-		t.Fatalf("expected 200 files across, got %d (skips: %d)", res.Copied, len(res.Skipped))
+		t.Fatalf("expected 200 files across, got %d (skips: %+v)", res.Copied, res.Skipped)
+	}
+	// Nothing may be postponed. A skip here would mean a file was copied and
+	// then failed to be recorded, which the next assertion sees only as a
+	// missing record with no explanation attached to it.
+	if len(res.Skipped) != 0 {
+		t.Fatalf("a parallel run postponed %d things it should not have: %+v", len(res.Skipped), res.Skipped)
 	}
 	requireConverged(t, j, "after a parallel run")
 
@@ -204,7 +210,11 @@ func TestManyFilesConvergeInParallel(t *testing.T) {
 		t.Fatalf("the parallel run did not settle: %d actions, %d copied again", len(p.Actions), res.Copied)
 	}
 	if p.Unchanged != 200 {
-		t.Errorf("only %d of 200 files were recorded as agreed", p.Unchanged)
+		// A file with no record is treated as new on both sides, which lands in
+		// Agreed rather than Unchanged. Naming the count separates "the record
+		// was never written" from "the record was written and is wrong".
+		t.Errorf("only %d of 200 files were recorded as agreed; %d had no record at all and were re-derived",
+			p.Unchanged, len(p.Agreed))
 	}
 }
 

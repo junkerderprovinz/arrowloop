@@ -487,11 +487,24 @@ type recorder struct {
 // changed, and the divergence becomes permanent and invisible. Better to fail
 // the run loudly here than to let the engine lie to itself.
 func (r recorder) settle(ctx context.Context, key, leftPath, rightPath string) error {
-	left, lErr := r.ends.Left.NewObject(ctx, leftPath)
-	right, rErr := r.ends.Right.NewObject(ctx, rightPath)
-	if lErr != nil || rErr != nil {
-		// One side is missing, so there is nothing the two sides agree on.
+	left, lErr := reread(ctx, r.ends.Left, leftPath)
+	right, rErr := reread(ctx, r.ends.Right, rightPath)
+
+	// A file that is genuinely not there means the two sides agree on nothing,
+	// so the record goes. Any OTHER failure to look is a different thing
+	// entirely and must not be treated the same way: dropping the record
+	// because a stat happened to fail would make the next run treat a file it
+	// had just copied as brand new, and nothing anywhere would say why. Found
+	// on a Windows runner, where two of two hundred files came out of a
+	// parallel run with no record at all.
+	if errors.Is(lErr, fs.ErrorObjectNotFound) || errors.Is(rErr, fs.ErrorObjectNotFound) {
 		return r.db.Forget(ctx, key)
+	}
+	if lErr != nil {
+		return fmt.Errorf("re-read %q on the left: %w", leftPath, lErr)
+	}
+	if rErr != nil {
+		return fmt.Errorf("re-read %q on the right: %w", rightPath, rErr)
 	}
 
 	leftFacts := plan.Facts{Size: left.Size(), Mod: left.ModTime(ctx), Hash: hashOf(ctx, left)}
@@ -534,4 +547,35 @@ func contains(kinds []plan.Kind, k plan.Kind) bool {
 		}
 	}
 	return false
+}
+
+// reread looks a path up again after it has been written.
+//
+// The retry is for Windows. A file that has just been closed can still be
+// briefly unavailable there, because an indexer or a virus scanner is holding
+// it, and a caller that gives up on the first attempt turns that into a run
+// that reports a failure for a file which is in fact perfectly fine. Three
+// attempts over a few milliseconds costs nothing on the path where everything
+// works, which is nearly always.
+//
+// A file that is genuinely absent is not retried: that answer will not change,
+// and the caller has a correct meaning for it.
+func reread(ctx context.Context, f fs.Fs, path string) (fs.Object, error) {
+	var err error
+	for attempt := range 3 {
+		var obj fs.Object
+		obj, err = f.NewObject(ctx, path)
+		if err == nil {
+			return obj, nil
+		}
+		if errors.Is(err, fs.ErrorObjectNotFound) || errors.Is(err, fs.ErrorIsDir) {
+			return nil, err
+		}
+		select {
+		case <-ctx.Done():
+			return nil, ctx.Err()
+		case <-time.After(time.Duration(attempt+1) * 20 * time.Millisecond):
+		}
+	}
+	return nil, err
 }

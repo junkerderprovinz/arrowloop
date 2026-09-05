@@ -49,10 +49,16 @@ jobs:
         with:
           path: site
 
+  # The build above runs on every change and is the part that matters day to
+  # day: --strict turns a broken internal link into a failed build. Publishing
+  # is separate and waits for the repository to be public, because GitHub Pages
+  # is not available for a private one on this plan. Guarding the job rather
+  # than letting it fail keeps a red tick from meaning "somebody has to look at
+  # this" when nobody does.
   deploy:
     name: Deploy
     needs: build
-    if: github.event_name != 'pull_request'
+    if: github.event_name != 'pull_request' && !github.event.repository.private
     runs-on: ubuntu-latest
     timeout-minutes: 10
     environment:
