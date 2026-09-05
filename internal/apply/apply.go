@@ -13,6 +13,7 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/rclone/rclone/fs"
@@ -41,11 +42,13 @@ func (e Ends) side(s plan.Side) fs.Fs {
 
 // Result counts what a run actually did.
 type Result struct {
-	Copied    int
-	Moved     int
-	Trashed   int
-	Conflicts int
-	Skipped   []plan.Skip
+	Copied      int
+	Moved       int
+	Trashed     int
+	Conflicts   int
+	DirsMade    int
+	DirsRemoved int
+	Skipped     []plan.Skip
 }
 
 // DisagreementError means an operation reported success and the two sides still
@@ -61,6 +64,38 @@ func (e *DisagreementError) Error() string {
 	return fmt.Sprintf("refusing to record %q as agreed: %s", e.Path, e.Details)
 }
 
+// tally collects what a run did. Several workers report into it at once, so
+// every field goes through the mutex.
+type tally struct {
+	mu    sync.Mutex
+	res   Result
+	fatal error
+}
+
+func (t *tally) count(f func(*Result)) {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+	f(&t.res)
+}
+
+func (t *tally) skip(path, reason string) {
+	t.count(func(r *Result) { r.Skipped = append(r.Skipped, plan.Skip{Path: path, Reason: reason}) })
+}
+
+func (t *tally) setFatal(err error) {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+	if t.fatal == nil {
+		t.fatal = err
+	}
+}
+
+func (t *tally) fatalErr() error {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+	return t.fatal
+}
+
 // Run executes every action in the plan.
 //
 // A single action that fails is recorded as a skip and the run carries on. That
@@ -70,31 +105,55 @@ func (e *DisagreementError) Error() string {
 // one thing that does stop the run is a disagreement, because that means the
 // engine no longer understands the tree it is working on, and every further
 // action would be taken on a false picture.
+//
+// The order is not decoration. Directories are created before anything is
+// copied into them and removed after everything has been taken out of them,
+// renames run before copies so a freed name is available, and deletions come
+// last so a file is never removed before its replacement has landed.
 func Run(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt plan.Options) (Result, error) {
-	res := Result{Skipped: append([]plan.Skip(nil), p.Skipped...)}
+	t := &tally{res: Result{Skipped: append([]plan.Skip(nil), p.Skipped...)}}
 	runID := time.Now().UTC().Format("20060102-150405")
 	rec := recorder{ends: ends, db: db, window: opt.ModWindow}
 
-	// Moves first: a rename frees a path that a later copy may want to fill.
-	for _, group := range [][]plan.Kind{{plan.Move}, {plan.Copy, plan.Conflict}, {plan.Delete}} {
-		for _, act := range p.Actions {
-			if !contains(group, act.Kind) {
-				continue
+	for _, d := range p.Dirs {
+		if d.Kind == plan.RemoveDir {
+			continue
+		}
+		if err := applyDir(ctx, ends, db, d); err != nil {
+			t.skip(d.Path, fmt.Sprintf("%s failed, leaving it for the next run: %v", d.Kind, err))
+			continue
+		}
+		if d.Kind == plan.MakeDir {
+			t.count(func(r *Result) { r.DirsMade++ })
+		}
+	}
+
+	// Renames stay sequential. Two of them in flight can chase each other
+	// through the same name, and folding a rename into a single move is cheap
+	// anyway, so there is nothing to gain by racing them.
+	for _, act := range p.Actions {
+		if act.Kind != plan.Move {
+			continue
+		}
+		if err := one(ctx, ends, rec, act, runID, opt, t); err != nil {
+			var dis *DisagreementError
+			if errors.As(err, &dis) {
+				return t.res, err
 			}
+			t.skip(act.Path, fmt.Sprintf("move failed, leaving it for the next run: %v", err))
+		}
+	}
+
+	for _, group := range [][]plan.Kind{{plan.Copy, plan.Conflict}, {plan.Delete}} {
+		acts := ofKind(p.Actions, group...)
+		if err := t.forEach(ctx, acts, opt.Transfers, func(ctx context.Context, act plan.Action) error {
 			if why, busy := heldOpen(ends, act); busy {
-				res.Skipped = append(res.Skipped, plan.Skip{Path: act.Path, Reason: why})
-				continue
+				t.skip(act.Path, why)
+				return nil
 			}
-			if err := one(ctx, ends, rec, act, runID, opt, &res); err != nil {
-				var dis *DisagreementError
-				if errors.As(err, &dis) {
-					return res, err
-				}
-				res.Skipped = append(res.Skipped, plan.Skip{
-					Path:   act.Path,
-					Reason: fmt.Sprintf("%s failed, leaving it for the next run: %v", act.Kind, err),
-				})
-			}
+			return one(ctx, ends, rec, act, runID, opt, t)
+		}); err != nil {
+			return t.res, err
 		}
 	}
 
@@ -104,12 +163,112 @@ func Run(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt plan.Op
 		if err := rec.settle(ctx, act.Path, left, right); err != nil {
 			var dis *DisagreementError
 			if errors.As(err, &dis) {
-				return res, err
+				return t.res, err
 			}
-			res.Skipped = append(res.Skipped, plan.Skip{Path: act.Path, Reason: err.Error()})
+			t.skip(act.Path, err.Error())
 		}
 	}
-	return res, nil
+
+	// Removals last, deepest first, so a parent is only tried once its children
+	// are gone.
+	for _, d := range p.Dirs {
+		if d.Kind != plan.RemoveDir {
+			continue
+		}
+		if err := applyDir(ctx, ends, db, d); err != nil {
+			t.skip(d.Path, fmt.Sprintf("could not remove the folder, leaving it: %v", err))
+			continue
+		}
+		t.count(func(r *Result) { r.DirsRemoved++ })
+	}
+
+	return t.res, t.fatalErr()
+}
+
+// forEach runs the actions concurrently, up to workers at a time.
+//
+// A failure on one file becomes a skip and the others carry on. A disagreement
+// is different: it says the engine's picture of the tree is wrong, so the
+// context is cancelled and the whole run stops rather than taking further
+// decisions on a false basis.
+func (t *tally) forEach(ctx context.Context, acts []plan.Action, workers int, fn func(context.Context, plan.Action) error) error {
+	if len(acts) == 0 {
+		return nil
+	}
+	if workers < 1 {
+		workers = 1
+	}
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	ch := make(chan plan.Action)
+	var wg sync.WaitGroup
+	for range workers {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			for act := range ch {
+				if err := fn(ctx, act); err != nil {
+					var dis *DisagreementError
+					if errors.As(err, &dis) {
+						t.setFatal(err)
+						cancel()
+						return
+					}
+					t.skip(act.Path, fmt.Sprintf("%s failed, leaving it for the next run: %v", act.Kind, err))
+				}
+			}
+		}()
+	}
+
+feed:
+	for _, act := range acts {
+		select {
+		case ch <- act:
+		case <-ctx.Done():
+			break feed
+		}
+	}
+	close(ch)
+	wg.Wait()
+	return t.fatalErr()
+}
+
+func ofKind(acts []plan.Action, kinds ...plan.Kind) []plan.Action {
+	var out []plan.Action
+	for _, a := range acts {
+		if contains(kinds, a.Kind) {
+			out = append(out, a)
+		}
+	}
+	return out
+}
+
+// applyDir creates, removes or merely records one directory.
+//
+// Removal goes through Rmdir, which refuses a directory that still holds
+// anything. That refusal is the safety property: a recursive delete here would
+// take out files the engine had decided to keep, for instance ones it had just
+// postponed because they were still being written.
+func applyDir(ctx context.Context, ends Ends, db *state.DB, d plan.DirAction) error {
+	switch d.Kind {
+	case plan.MakeDir:
+		if err := ends.side(d.Dst).Mkdir(ctx, d.DstPath); err != nil {
+			return err
+		}
+		return db.PutDir(ctx, state.Dir{Path: d.Path, LeftPath: d.LeftPath, RightPath: d.RightPath, AgreedAt: time.Now().UTC()})
+	case plan.RecordDir:
+		return db.PutDir(ctx, state.Dir{Path: d.Path, LeftPath: d.LeftPath, RightPath: d.RightPath, AgreedAt: time.Now().UTC()})
+	case plan.RemoveDir:
+		if d.DstPath == "" {
+			return db.ForgetDir(ctx, d.Path)
+		}
+		if err := ends.side(d.Dst).Rmdir(ctx, d.DstPath); err != nil {
+			return err
+		}
+		return db.ForgetDir(ctx, d.Path)
+	}
+	return fmt.Errorf("unknown directory action %v", d.Kind)
 }
 
 // heldOpen asks whether the file an action wants to read is locked by another
@@ -137,14 +296,14 @@ func localPath(f fs.Fs, remote string) (string, bool) {
 	return filepath.Join(f.Root(), filepath.FromSlash(remote)), true
 }
 
-func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID string, opt plan.Options, res *Result) error {
+func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID string, opt plan.Options, t *tally) error {
 	switch act.Kind {
 	case plan.Copy:
 		src, dst := ends.side(act.Src), ends.side(act.Dst)
 		if err := operations.CopyFile(ctx, dst, src, act.DstPath, act.SrcPath); err != nil {
 			return err
 		}
-		res.Copied++
+		t.count(func(r *Result) { r.Copied++ })
 		left, right := act.Names()
 		return rec.settle(ctx, act.Path, left, right)
 
@@ -153,7 +312,7 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 		if err := operations.MoveFile(ctx, dst, dst, act.DstPath, act.OldDstPath); err != nil {
 			return err
 		}
-		res.Moved++
+		t.count(func(r *Result) { r.Moved++ })
 		if err := rec.db.Forget(ctx, pathid.Key(act.OldDstPath, opt.FoldCase)); err != nil {
 			return err
 		}
@@ -175,11 +334,11 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 		if err := toTrash(ctx, ends.side(act.Dst), live.Object(), runID); err != nil {
 			return err
 		}
-		res.Trashed++
+		t.count(func(r *Result) { r.Trashed++ })
 		return rec.db.Forget(ctx, act.Path)
 
 	case plan.Conflict:
-		res.Conflicts++
+		t.count(func(r *Result) { r.Conflicts++ })
 		return resolveConflict(ctx, ends, rec, act, runID, opt)
 	}
 	return fmt.Errorf("unknown action kind %v", act.Kind)
@@ -206,8 +365,54 @@ func toTrash(ctx context.Context, f fs.Fs, obj fs.Object, runID string) error {
 // about. Refusing to resolve at all would look safer and would in fact leave
 // the job permanently stuck, re-reporting the same conflict forever.
 func resolveConflict(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID string, opt plan.Options) error {
+	steps, err := conflictSteps(ends, act, runID)
+	if err != nil {
+		return err
+	}
+	for _, s := range steps {
+		if err := s.do(ctx); err != nil {
+			return fmt.Errorf("%s: %w", s.what, err)
+		}
+	}
+
+	last := steps[len(steps)-1]
+	if err := rec.settle(ctx, act.Path, last.plainName, last.plainName); err != nil {
+		return err
+	}
+	return rec.settle(ctx, pathid.Key(last.losingName, opt.FoldCase), last.losingName, last.losingName)
+}
+
+// conflictStep is one filesystem operation of a conflict resolution, named so
+// that a failure can say which half of the manoeuvre it died in.
+type conflictStep struct {
+	what string
+	do   func(context.Context) error
+
+	plainName  string
+	losingName string
+}
+
+// conflictSteps builds the resolution as an ordered list, because a run can die
+// between any two of them and every prefix has to leave a tree the next run can
+// recover from unaided.
+//
+// It does, and NOT because of anything clever here: the recovery comes from the
+// decision table. A crash after the first step leaves the losing side without
+// the plain name while the winning side still holds its edited copy, which is
+// exactly the "deleted on one side, edited on the other" row, and that row
+// restores the file rather than propagating the deletion. The manoeuvre is safe
+// because that rule exists, which is worth writing down, since it means
+// reordering these steps to make them "safer" is solving a problem the engine
+// already solved.
+//
+// That was tried. Copying the losing version across BEFORE setting it aside
+// looks stronger, since its content then exists in two places from the first
+// step onwards. The crash test passes either way, and the earlier-copy order is
+// measurably worse: it leaves the plain name contested, so recovery costs an
+// extra round and an extra conflict copy. The order below converges in one.
+func conflictSteps(ends Ends, act plan.Action, runID string) ([]conflictStep, error) {
 	if act.LeftNow == nil || act.RightNow == nil {
-		return fmt.Errorf("conflict without both sides present")
+		return nil, fmt.Errorf("conflict without both sides present")
 	}
 
 	winner, loser := plan.Left, plan.Right
@@ -219,23 +424,27 @@ func resolveConflict(ctx context.Context, ends Ends, rec recorder, act plan.Acti
 	winnerFs, loserFs := ends.side(winner), ends.side(loser)
 	losing := conflictName(loserPath, loser, runID)
 
-	// 1. Get the losing version out of the way, on its own side.
-	if err := operations.MoveFile(ctx, loserFs, loserFs, losing, loserPath); err != nil {
-		return fmt.Errorf("set aside the %s version: %w", loser, err)
-	}
-	// 2. Give the other side a copy of it, so nothing exists on one side only.
-	if err := operations.CopyFile(ctx, winnerFs, loserFs, losing, losing); err != nil {
-		return fmt.Errorf("copy the %s version across: %w", loser, err)
-	}
-	// 3. The surviving version fills the plain name on both sides.
-	if err := operations.CopyFile(ctx, loserFs, winnerFs, winnerPath, winnerPath); err != nil {
-		return fmt.Errorf("copy the %s version across: %w", winner, err)
+	step := func(what string, fn func(context.Context) error) conflictStep {
+		return conflictStep{what: what, do: fn, plainName: winnerPath, losingName: losing}
 	}
 
-	if err := rec.settle(ctx, act.Path, winnerPath, winnerPath); err != nil {
-		return err
-	}
-	return rec.settle(ctx, pathid.Key(losing, opt.FoldCase), losing, losing)
+	return []conflictStep{
+		// 1. Set the losing version aside on its own side. This frees the plain
+		//    name, which matters when the two sides spell it differently:
+		//    leaving both spellings behind would manufacture a name collision.
+		step(fmt.Sprintf("set the %s version aside", loser), func(ctx context.Context) error {
+			return operations.MoveFile(ctx, loserFs, loserFs, losing, loserPath)
+		}),
+		// 2. Give the other side a copy of it, so neither version lives on one
+		//    side only.
+		step(fmt.Sprintf("copy the %s version to the %s side", loser, winner), func(ctx context.Context) error {
+			return operations.CopyFile(ctx, winnerFs, loserFs, losing, losing)
+		}),
+		// 3. The surviving version fills the plain name on both sides.
+		step(fmt.Sprintf("copy the %s version to the %s side", winner, loser), func(ctx context.Context) error {
+			return operations.CopyFile(ctx, loserFs, winnerFs, winnerPath, winnerPath)
+		}),
+	}, nil
 }
 
 // conflictName builds the name the losing version is kept under. The timestamp

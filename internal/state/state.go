@@ -65,6 +65,12 @@ CREATE TABLE IF NOT EXISTS entries (
 	right_hash  TEXT NOT NULL,
 	agreed_at   INTEGER NOT NULL
 );
+CREATE TABLE IF NOT EXISTS dirs (
+	path        TEXT PRIMARY KEY,
+	left_path   TEXT NOT NULL,
+	right_path  TEXT NOT NULL,
+	agreed_at   INTEGER NOT NULL
+);
 `
 
 // Open opens or creates the state database at path.
@@ -151,4 +157,59 @@ func (d *DB) Count(ctx context.Context) (int, error) {
 		return 0, fmt.Errorf("count state: %w", err)
 	}
 	return n, nil
+}
+
+// Dir is one directory both sides were known to hold.
+//
+// Directories are recorded separately from files, and only when the job syncs
+// empty ones at all. Without a record there is no way to tell "the user deleted
+// this folder over there" from "this folder has simply never existed over
+// there", and those call for opposite actions, exactly as they do for files.
+type Dir struct {
+	Path      string
+	LeftPath  string
+	RightPath string
+	AgreedAt  time.Time
+}
+
+// AllDirs returns every directory both sides were known to hold.
+func (d *DB) AllDirs(ctx context.Context) (map[string]Dir, error) {
+	rows, err := d.sql.QueryContext(ctx, `SELECT path, left_path, right_path, agreed_at FROM dirs`)
+	if err != nil {
+		return nil, fmt.Errorf("read dirs: %w", err)
+	}
+	defer rows.Close()
+
+	out := make(map[string]Dir)
+	for rows.Next() {
+		var e Dir
+		var agreed int64
+		if err := rows.Scan(&e.Path, &e.LeftPath, &e.RightPath, &agreed); err != nil {
+			return nil, fmt.Errorf("scan dir row: %w", err)
+		}
+		e.AgreedAt = time.Unix(0, agreed)
+		out[e.Path] = e
+	}
+	return out, rows.Err()
+}
+
+// PutDir records that both sides hold this directory.
+func (d *DB) PutDir(ctx context.Context, e Dir) error {
+	_, err := d.sql.ExecContext(ctx,
+		`INSERT INTO dirs (path, left_path, right_path, agreed_at) VALUES (?, ?, ?, ?)
+		 ON CONFLICT(path) DO UPDATE SET
+		   left_path=excluded.left_path, right_path=excluded.right_path, agreed_at=excluded.agreed_at`,
+		e.Path, e.LeftPath, e.RightPath, e.AgreedAt.UnixNano())
+	if err != nil {
+		return fmt.Errorf("put dir %q: %w", e.Path, err)
+	}
+	return nil
+}
+
+// ForgetDir drops a directory, meaning both sides agree it is gone.
+func (d *DB) ForgetDir(ctx context.Context, path string) error {
+	if _, err := d.sql.ExecContext(ctx, `DELETE FROM dirs WHERE path = ?`, path); err != nil {
+		return fmt.Errorf("forget dir %q: %w", path, err)
+	}
+	return nil
 }

@@ -11,7 +11,7 @@
 5. [Filters and half-written files](#5-filters-and-half-written-files)
 6. [Running it](#6-running-it)
 7. [Tests](#7-tests)
-8. [What it deliberately does not do yet](#8-what-it-deliberately-does-not-do-yet)
+8. [What it will not carry, and what it says about it](#8-what-it-will-not-carry-and-what-it-says-about-it)
 9. [Why not just use something that exists](#9-why-not-just-use-something-that-exists)
 
 <br>
@@ -73,6 +73,8 @@ The two brakes cover different ground and both are needed. The percentage brake 
 
 **One file failing does not stop the run.** A transfer that fails is reported as postponed and the next file is attempted. That is safe precisely because the record is only written after success: a file that could not be copied keeps its old row, or none, so the next run tries again. Postponing is not agreeing.
 
+**A crash is survivable at every step.** Records are written per file as it settles, never in one batch at the end, so an interrupted run leaves a state that is smaller than reality but never wrong. Resolving a conflict takes three filesystem operations, and there is a test that kills the run after each of them and demands that a single following run recovers without losing either version. What makes that work is the decision table rather than anything clever in the manoeuvre: a crash leaves the losing side without the plain name while the winner still holds its edited copy, which is the "deleted on one side, edited on the other" row, and that row restores the file instead of propagating the deletion.
+
 <br>
 
 ## 5. Filters and half-written files
@@ -103,6 +105,10 @@ reeveroll -left <path or remote> -right <path or remote> -state <db file> [-dry-
 | `-quiet-period` | 5s | how long a file must sit unchanged before it is touched, 0 disables |
 | `-exclude` | - | glob of paths to leave alone entirely, repeatable |
 | `-no-default-excludes` | off | also sync half-written files such as `*.part` and Office owner files |
+| `-transfers` | 4 | how many files may be copied at the same time |
+| `-bwlimit` | - | bandwidth limit in rclone syntax, `1M` or a timetable like `08:00,512k 19:00,off` |
+| `-empty-dirs` | off | also carry folders that hold no files |
+| `-metadata` | off | carry permissions, ownership and extended attributes where both sides can |
 | `-brake-percent` | 50 | refuse a run deleting more than this share of known files, 0 disables |
 | `-brake-floor` | 10 | never trip the brake below this many deletions |
 | `-mod-window` | 2s | how far modification times may differ and still count as equal |
@@ -128,11 +134,17 @@ CI runs the whole suite on Linux, Windows and macOS, because path handling, modi
 
 <br>
 
-## 8. What it deliberately does not do yet
+## 8. What it will not carry, and what it says about it
 
-No scheduler, no web interface, no job configuration, no file watching, no service. Empty directories are not synced, because rclone lists objects and an empty directory is not one. Rename detection matches on content, so two unrelated files with identical bytes can in principle be paired.
+**Symbolic links, sockets, pipes, devices and Windows junctions are not synced, and are named in the report.** They have to be found separately: rclone's local backend drops them from its listing after one log line, so a library caller cannot tell one apart from a file that is not there. Following a link would copy the target and turn one shortcut into a full second copy on the other side; storing it as rclone's `.rclonelink` text file would produce something no other program can read. Neither is obviously right, so the engine names them and leaves them alone. Only local sides can be inspected this way, because only a local side has a filesystem underneath to ask.
 
-Windows paths over 260 characters, symbolic links, permissions and extended attributes are all untouched territory.
+**Hard links sync as ordinary files.** Two names for the same data arrive as two independent copies. Nothing is lost, but the sharing is.
+
+**Empty directories need `-empty-dirs`.** A directory holding files is implied by the files; an empty one has nothing to imply it, so it gets a record of its own. That record is what makes removal safe, since "not over there" would otherwise be as ambiguous as it is for a file. Removal goes through `Rmdir`, which refuses a directory that still holds anything, so a folder that still has a postponed file in it survives and the refusal is reported. The whole feature switches itself off when either side is a bucket backend such as S3, where a folder is only a shared key prefix and vanishes on its own.
+
+**Rename detection matches on content**, so two unrelated files with identical bytes can in principle be paired.
+
+Still untouched: file watching, a scheduler, a job configuration, a service, and a web interface.
 
 <br>
 

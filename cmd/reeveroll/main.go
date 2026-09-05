@@ -57,6 +57,10 @@ func run() error {
 		modWindow  = flag.Duration("mod-window", defaults.ModWindow, "how far modification times may differ and still count as equal")
 		quiet      = flag.Duration("quiet-period", defaults.QuietPeriod, "how long a file must sit unchanged before it is touched, 0 disables")
 		noDefaults = flag.Bool("no-default-excludes", false, "also sync half-written files such as *.part and Office owner files")
+		transfers  = flag.Int("transfers", defaults.Transfers, "how many files may be copied at the same time")
+		bwLimit    = flag.String("bwlimit", "", "bandwidth limit in rclone syntax, for example 1M or a timetable")
+		emptyDirs  = flag.Bool("empty-dirs", false, "also carry folders that hold no files")
+		metadata   = flag.Bool("metadata", false, "carry permissions, ownership and extended attributes where both sides can")
 		verbose    = flag.Bool("v", false, "let rclone report what it is doing underneath")
 	)
 	flag.Var(&excludes, "exclude", "glob of paths to leave alone entirely, repeatable")
@@ -112,8 +116,14 @@ func run() error {
 			QuietPeriod:  *quiet,
 			BrakePercent: *brakePct,
 			BrakeFloor:   *brakeMin,
+			Transfers:    *transfers,
 		},
-		Exclude: exclude,
+		Exclude:   exclude,
+		EmptyDirs: *emptyDirs,
+		Metadata:  *metadata,
+	}
+	if err := engine.Configure(ctx, opt, *bwLimit); err != nil {
+		return err
 	}
 
 	p, compare, err := engine.Prepare(ctx, ends, db, opt)
@@ -122,7 +132,7 @@ func run() error {
 	}
 
 	report(p)
-	if len(p.Actions) == 0 && len(p.Agreed) == 0 {
+	if len(p.Actions) == 0 && len(p.Agreed) == 0 && !hasDirWork(p) {
 		return nil
 	}
 	if *dryRun {
@@ -134,8 +144,8 @@ func run() error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("done: %d copied, %d moved, %d trashed, %d conflicts, %d unchanged, %d left for later\n",
-		res.Copied, res.Moved, res.Trashed, res.Conflicts, p.Unchanged, len(res.Skipped))
+	fmt.Printf("done: %d copied, %d moved, %d trashed, %d conflicts, %d folders made, %d folders removed, %d unchanged, %d left for later\n",
+		res.Copied, res.Moved, res.Trashed, res.Conflicts, res.DirsMade, res.DirsRemoved, p.Unchanged, len(res.Skipped))
 	for _, s := range res.Skipped {
 		fmt.Printf("  later    %s (%s)\n", s.Path, s.Reason)
 	}
@@ -155,10 +165,31 @@ func report(p *plan.Plan) {
 			fmt.Printf("  conflict %s (%s), keeping both\n", act.Path, act.Reason)
 		}
 	}
+	for _, d := range p.Dirs {
+		switch d.Kind {
+		case plan.MakeDir:
+			fmt.Printf("  mkdir    %s: %s (%s)\n", d.Dst, d.DstPath, d.Reason)
+		case plan.RemoveDir:
+			if d.DstPath != "" {
+				fmt.Printf("  rmdir    %s: %s (%s)\n", d.Dst, d.DstPath, d.Reason)
+			}
+		}
+	}
 	for _, s := range p.Skipped {
 		fmt.Printf("  later    %s (%s)\n", s.Path, s.Reason)
 	}
-	if len(p.Actions) == 0 && len(p.Agreed) == 0 && len(p.Skipped) == 0 {
+	if len(p.Actions) == 0 && len(p.Agreed) == 0 && len(p.Skipped) == 0 && !hasDirWork(p) {
 		fmt.Println("nothing to do")
 	}
+}
+
+// hasDirWork reports whether any directory action would actually touch a side.
+// A plan full of record refreshes is not work the user needs to be told about.
+func hasDirWork(p *plan.Plan) bool {
+	for _, d := range p.Dirs {
+		if d.Kind != plan.RecordDir && d.DstPath != "" {
+			return true
+		}
+	}
+	return false
 }

@@ -11,6 +11,7 @@ import (
 	"context"
 	"fmt"
 	"sort"
+	"strings"
 	"time"
 
 	"github.com/junkerderprovinz/reeveroll/internal/scan"
@@ -113,10 +114,20 @@ type Plan struct {
 	// written, because both sides produced the same file independently.
 	Agreed  []Action
 	Skipped []Skip
+	// Dirs is empty unless the job syncs empty directories, which needs both
+	// sides to be able to hold one.
+	Dirs []DirAction
 }
 
-// Options tunes comparison and the safety brakes.
+// Options is the per-job settings bag shared by the comparison and the apply
+// stage: how files are judged equal, what the safety brakes allow, and how many
+// transfers may be in flight at once.
 type Options struct {
+	// Transfers is how many files may be copied at the same time. One is
+	// correct but slow over a network, where most of the wall-clock time of a
+	// small file is round trips rather than bytes.
+	Transfers int
+
 	// ModWindow is how far two modification times may differ and still count
 	// as the same instant. Filesystems disagree wildly here: exFAT stores two
 	// second resolution, S3 keeps whatever was put in the metadata. Two
@@ -158,6 +169,7 @@ type Options struct {
 // DefaultOptions is what the command line uses when nothing is given.
 func DefaultOptions() Options {
 	return Options{
+		Transfers:    4,
 		ModWindow:    2 * time.Second,
 		QuietPeriod:  5 * time.Second,
 		BrakePercent: 50,
@@ -587,3 +599,117 @@ func max(a, b int) int {
 	}
 	return b
 }
+
+// DirKind is what a directory action does.
+type DirKind int
+
+// Directories only ever appear or disappear; they have no content to compare.
+const (
+	MakeDir DirKind = iota
+	RemoveDir
+	RecordDir // already on both sides, only the record needs writing
+)
+
+func (k DirKind) String() string {
+	switch k {
+	case MakeDir:
+		return "mkdir"
+	case RemoveDir:
+		return "rmdir"
+	default:
+		return "record"
+	}
+}
+
+// DirAction is one directory to create, remove or merely record.
+type DirAction struct {
+	Kind    DirKind
+	Path    string // matching key
+	DstPath string // the name to operate on, on the destination side
+	Dst     Side
+	Reason  string
+
+	// LeftPath and RightPath are the names each side ends up holding, which can
+	// differ in spelling for the same reason file names can.
+	LeftPath  string
+	RightPath string
+}
+
+// BuildDirs compares the directory listings the same way files are compared.
+//
+// This exists only for EMPTY directories. A directory holding files is implied
+// by the files and needs no help. An empty one has nothing to imply it, so
+// without a record of its own it can never be created on the far side, and a
+// project skeleton or a photo folder waiting to be filled quietly fails to
+// travel.
+//
+// The record is what makes removal safe. Without it, "this folder is not over
+// there" is ambiguous in exactly the way a missing file is: it could be a
+// deletion to propagate or a folder that has simply never existed on that side.
+// Removal also goes through Rmdir rather than a recursive delete, so a
+// directory that still holds anything refuses to go, and that refusal is
+// reported instead of being forced.
+func BuildDirs(left, right *scan.Listing, prev map[string]state.Dir) []DirAction {
+	if left.Dirs == nil || right.Dirs == nil {
+		return nil
+	}
+
+	keys := make(map[string]struct{}, len(left.Dirs)+len(right.Dirs)+len(prev))
+	for k := range left.Dirs {
+		keys[k] = struct{}{}
+	}
+	for k := range right.Dirs {
+		keys[k] = struct{}{}
+	}
+	for k := range prev {
+		keys[k] = struct{}{}
+	}
+
+	ordered := make([]string, 0, len(keys))
+	for k := range keys {
+		ordered = append(ordered, k)
+	}
+	sort.Strings(ordered)
+
+	var out []DirAction
+	for _, k := range ordered {
+		lName, onLeft := left.Dirs[k]
+		rName, onRight := right.Dirs[k]
+		_, known := prev[k]
+
+		switch {
+		case onLeft && onRight:
+			out = append(out, DirAction{Kind: RecordDir, Path: k, LeftPath: lName, RightPath: rName, Reason: "on both sides"})
+		case onLeft && !known:
+			out = append(out, DirAction{Kind: MakeDir, Path: k, DstPath: lName, Dst: Right,
+				LeftPath: lName, RightPath: lName, Reason: "new folder on the left"})
+		case onRight && !known:
+			out = append(out, DirAction{Kind: MakeDir, Path: k, DstPath: rName, Dst: Left,
+				LeftPath: rName, RightPath: rName, Reason: "new folder on the right"})
+		case onLeft && known:
+			out = append(out, DirAction{Kind: RemoveDir, Path: k, DstPath: lName, Dst: Left, Reason: "folder removed on the right"})
+		case onRight && known:
+			out = append(out, DirAction{Kind: RemoveDir, Path: k, DstPath: rName, Dst: Right, Reason: "folder removed on the left"})
+		default:
+			// Known before, gone from both sides. Only the record is left.
+			out = append(out, DirAction{Kind: RemoveDir, Path: k, Reason: "folder gone on both sides, dropping the record"})
+		}
+	}
+
+	// Create shallow directories before deep ones, and remove deep ones before
+	// their parents. Rmdir refuses a directory that still has a child in it, so
+	// the wrong order would turn every nested removal into a reported failure.
+	sort.SliceStable(out, func(i, j int) bool {
+		ri, rj := out[i].Kind == RemoveDir, out[j].Kind == RemoveDir
+		if ri != rj {
+			return !ri
+		}
+		if ri {
+			return depth(out[i].Path) > depth(out[j].Path)
+		}
+		return depth(out[i].Path) < depth(out[j].Path)
+	})
+	return out
+}
+
+func depth(p string) int { return strings.Count(p, "/") }

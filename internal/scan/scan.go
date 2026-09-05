@@ -60,7 +60,13 @@ type Collision struct {
 
 // Listing is what one side looks like plus anything wrong with it.
 type Listing struct {
-	Files      Side
+	Files Side
+	// Dirs maps a matching key to the directory's real name on this side. It
+	// is only filled when Options.Dirs is set, because most jobs do not need
+	// it: a directory holding files is implied by the files, and listing
+	// directories costs a second pass on backends that cannot return both at
+	// once. Empty directories are the reason it exists at all.
+	Dirs       map[string]string
 	Collisions []Collision
 	Excluded   int
 }
@@ -76,6 +82,12 @@ type Options struct {
 	// Exclude hides paths from the job entirely. The same set has to be applied
 	// to the stored record as well, or newly excluded files read as deletions.
 	Exclude *filter.Set
+
+	// Dirs asks for directories as well as files. Only worth setting when both
+	// sides can actually hold an empty directory: a bucket backend such as S3
+	// has no directories at all, only key prefixes, so there is nothing there
+	// to create or remove.
+	Dirs bool
 }
 
 // reserved names this tool keeps for itself inside a synced tree. They are
@@ -101,9 +113,25 @@ func IsReserved(rel string) bool {
 func List(ctx context.Context, f fs.Fs, opt Options) (*Listing, error) {
 	out := &Listing{Files: make(Side)}
 	clashes := map[string][]string{}
+	listType := walk.ListObjects
+	if opt.Dirs {
+		out.Dirs = map[string]string{}
+		listType = walk.ListAll
+	}
 
-	err := walk.ListR(ctx, f, "", true, -1, walk.ListObjects, func(entries fs.DirEntries) error {
+	err := walk.ListR(ctx, f, "", true, -1, listType, func(entries fs.DirEntries) error {
 		for _, entry := range entries {
+			if dir, isDir := entry.(fs.Directory); isDir {
+				if !opt.Dirs {
+					continue
+				}
+				rel := path.Clean(dir.Remote())
+				if IsReserved(rel) || opt.Exclude.Excluded(rel) {
+					continue
+				}
+				out.Dirs[pathid.Key(rel, opt.FoldCase)] = rel
+				continue
+			}
 			obj, ok := entry.(fs.Object)
 			if !ok {
 				continue
