@@ -2,6 +2,8 @@
 
 <p align="center">A two-way file sync engine with a state database, a trash and a brake, plus the scheduler that keeps it running. Working title.</p>
 
+<p align="center"><a href="https://junkerderprovinz.github.io/reeveroll/">Documentation</a></p>
+
 ## Table of Contents
 
 1. [What this is](#1-what-this-is)

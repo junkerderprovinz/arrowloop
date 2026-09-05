@@ -1,0 +1,63 @@
+site_name: ReeveRoll
+site_description: Two-way file synchronisation with a per-file state database, a trash, and brakes that refuse an implausible deletion.
+site_url: https://junkerderprovinz.github.io/reeveroll/
+site_author: Junker der Provinz
+
+repo_url: https://github.com/junkerderprovinz/reeveroll
+repo_name: junkerderprovinz/reeveroll
+edit_uri: edit/main/docs/
+
+copyright: Copyright (C) 2026 Junker der Provinz. Licensed AGPL-3.0.
+
+theme:
+  name: material
+  language: en
+  font:
+    text: IBM Plex Sans
+    code: IBM Plex Mono
+  palette:
+    # The dark scheme is listed first and carries no media query, so it is the
+    # unconditional default: with plain palettes Material takes the first as the
+    # default rather than following the operating system. The same choice the
+    # other sites in this stable make.
+    - scheme: slate
+      primary: black
+      accent: yellow
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+    - scheme: default
+      primary: black
+      accent: yellow
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+  features:
+    - navigation.instant
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+    - toc.follow
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+
+nav:
+  - Start here: index.md
+  - Installing: installing.md
+  - Configuring a job: configuration.md
+  - How it decides: decisions.md
+  - Safety: safety.md
+  - Command line: cli.md
+  - When something goes wrong: troubleshooting.md

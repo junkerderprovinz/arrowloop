@@ -27,3 +27,6 @@ desktop/frontend/dist/*
 desktop/build/bin/
 desktop/desktop
 desktop/desktop.exe
+
+# MkDocs build output; the Docs workflow builds it fresh.
+/site/
