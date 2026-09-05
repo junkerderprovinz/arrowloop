@@ -1,6 +1,6 @@
 <h1 align="center">ReeveRoll</h1>
 
-<p align="center">A two-way file sync engine with a state database, a trash and a brake. Working title, walking skeleton.</p>
+<p align="center">A two-way file sync engine with a state database, a trash and a brake, plus the scheduler that keeps it running. Working title.</p>
 
 ## Table of Contents
 
@@ -9,16 +9,17 @@
 3. [When two names are one file](#3-when-two-names-are-one-file)
 4. [Safety](#4-safety)
 5. [Filters and half-written files](#5-filters-and-half-written-files)
-6. [Running it](#6-running-it)
-7. [Tests](#7-tests)
-8. [What it will not carry, and what it says about it](#8-what-it-will-not-carry-and-what-it-says-about-it)
-9. [Why not just use something that exists](#9-why-not-just-use-something-that-exists)
+6. [Running it once](#6-running-it-once)
+7. [Running it unattended](#7-running-it-unattended)
+8. [Tests](#8-tests)
+9. [What it will not carry, and what it says about it](#9-what-it-will-not-carry-and-what-it-says-about-it)
+10. [Why not just use something that exists](#10-why-not-just-use-something-that-exists)
 
 <br>
 
 ## 1. What this is
 
-The engine of a self-hosted GoodSync replacement, cut down to the part that can lose data, so that part can be proved before anything is built on top of it.
+A self-hosted GoodSync replacement. The engine came first, cut down to the part that can lose data so that part could be proved before anything was built on top of it; the scheduler, the job file and the run log sit on top of it now.
 
 A reeve was the manorial officer who moved goods between two holdings, kept his own notched record of what he had moved, and answered for it at the annual view of account. He also had standing to refuse a reckoning that did not add up. The roll is the parchment he was judged against. Those are the three pieces below: the two ends, the state database, and the refusal.
 
@@ -91,11 +92,11 @@ Patterns follow gitignore's instinct: without a slash they match the file name a
 
 <br>
 
-## 6. Running it
+## 6. Running it once
 
 ```
 go build ./cmd/reeveroll
-reeveroll -left <path or remote> -right <path or remote> -state <db file> [-dry-run]
+reeveroll sync -left <path or remote> -right <path or remote> -state <db file> [-dry-run]
 ```
 
 `-dry-run` prints the plan and changes nothing. Both sides accept anything rclone accepts, so `sftp:backup/photos` and `s3:bucket/photos` work alongside plain paths.
@@ -118,7 +119,35 @@ The modification window only ever applies when a side cannot produce a hash. Whe
 
 <br>
 
-## 7. Tests
+## 7. Running it unattended
+
+A shell history is not a place to keep jobs. Somebody with a photo folder, a documents folder and a server backup has three of them, with different schedules, different filters and different ideas about what may be deleted, so everything past `sync` works from a configuration file. There is a complete one in [reeveroll.example.json](reeveroll.example.json).
+
+```
+reeveroll run      -config reeveroll.json <job>    run one job now, whatever its schedule says
+reeveroll daemon   -config reeveroll.json          run every scheduled job until stopped
+reeveroll jobs     -config reeveroll.json          what is configured, and when each last WORKED
+reeveroll history  -config reeveroll.json          what the runs actually did
+reeveroll service  -config reeveroll.json          the file this system needs to keep the daemon alive
+```
+
+**Everything is validated at load time**, including cron expressions, durations and misspelled field names. A typo that only surfaces at three in the morning, on the one job that mattered, is the failure a daemon must not have. JSON normally ignores a field it does not recognise, so `"excludes"` instead of `"exclude"` would leave the filter empty and sync the very files somebody thought they had excluded; unknown fields are refused instead.
+
+**Paths in the file resolve against the file**, not against whatever directory the service manager happened to start in.
+
+**A job never overlaps itself.** One set to run every fifteen minutes that takes twenty simply lets the next turn go by, with a line in the log. Queueing instead would let a job that is merely too slow build an unbounded backlog of itself. Jobs run one at a time by default, because two of them share one uplink and one disk.
+
+**The bandwidth limit lives at the top of the file, not on a job**, because rclone's token bucket is process-wide. A per-job limit would be a promise the mechanism underneath cannot keep. Everything else is per job, and each one gets its own copy of rclone's settings, so a job asking for eight transfers does not quietly change what another job is doing.
+
+**Every run is written down, successes and failures alike.** The failure worth guarding against is not a crash, which is loud, but a job that has been failing quietly since Tuesday because a path changed. That is also why `jobs` shows when each job last *succeeded* rather than when it last *ran*: a job failing every quarter of an hour looks busy in a log while being of no use at all.
+
+**Notifications default to failures only.** A tool that announces every successful sync teaches its user to ignore it, and then the one message that mattered gets ignored with the rest. Matrix and a plain webhook are supported, and a failure at one destination does not stop the other from firing.
+
+**`service` prints, it does not install.** Registering a service means writing outside the user's own files and, on two of the three systems, asking for administrative rights. What it can do honestly is produce exactly the right unit file, plist or `sc.exe` line, with the things that otherwise get found out the hard way: that a Windows service runs as LocalSystem and therefore cannot see a mapped drive letter, that a Linux user service needs `loginctl enable-linger` to survive a logout, and that macOS will ask for permission the first time the agent touches Documents.
+
+<br>
+
+## 8. Tests
 
 The suite that matters is not a list of cases, it is a property. `TestConvergence` seeds two trees, applies random creates, edits, deletes and renames to both sides for eight rounds, syncs after each, and demands the same thing every time: both sides hold exactly the same files with the same contents.
 
@@ -130,25 +159,27 @@ The suite is checked against deliberate sabotage rather than only against itself
 go test ./...
 ```
 
+There is one more habit worth naming: every guard here has been checked by breaking it. Removing the empty-side refusal, dropping half of the conflict resolution, switching off rename detection, removing Unicode normalisation, filtering the sides without filtering the record, and letting a naming collision through each produce a failing test. A test that stays green when the thing it protects is removed is testing something else.
+
 CI runs the whole suite on Linux, Windows and macOS, because path handling, modification-time resolution and case sensitivity all differ between them, and every one of those differences is a way for a sync engine to be wrong. The case-collision test can only run where the filesystem can hold both names, so it reports itself as skipped on Windows and macOS.
 
 <br>
 
-## 8. What it will not carry, and what it says about it
+## 9. What it will not carry, and what it says about it
 
 **Symbolic links, sockets, pipes, devices and Windows junctions are not synced, and are named in the report.** They have to be found separately: rclone's local backend drops them from its listing after one log line, so a library caller cannot tell one apart from a file that is not there. Following a link would copy the target and turn one shortcut into a full second copy on the other side; storing it as rclone's `.rclonelink` text file would produce something no other program can read. Neither is obviously right, so the engine names them and leaves them alone. Only local sides can be inspected this way, because only a local side has a filesystem underneath to ask.
 
 **Hard links sync as ordinary files.** Two names for the same data arrive as two independent copies. Nothing is lost, but the sharing is.
 
-**Empty directories need `-empty-dirs`.** A directory holding files is implied by the files; an empty one has nothing to imply it, so it gets a record of its own. That record is what makes removal safe, since "not over there" would otherwise be as ambiguous as it is for a file. Removal goes through `Rmdir`, which refuses a directory that still holds anything, so a folder that still has a postponed file in it survives and the refusal is reported. The whole feature switches itself off when either side is a bucket backend such as S3, where a folder is only a shared key prefix and vanishes on its own.
+**Empty directories need `-empty-dirs`, or `"emptyDirs": true`.** A directory holding files is implied by the files; an empty one has nothing to imply it, so it gets a record of its own. That record is what makes removal safe, since "not over there" would otherwise be as ambiguous as it is for a file. Removal goes through `Rmdir`, which refuses a directory that still holds anything, so a folder that still has a postponed file in it survives and the refusal is reported. The whole feature switches itself off when either side is a bucket backend such as S3, where a folder is only a shared key prefix and vanishes on its own. S3 can be persuaded to keep real folder markers by adding `directory_markers=true` to the remote, which is a backend option and needs no flag parsing.
 
 **Rename detection matches on content**, so two unrelated files with identical bytes can in principle be paired.
 
-Still untouched: file watching, a scheduler, a job configuration, a service, and a web interface.
+Still untouched: file watching, and a web interface.
 
 <br>
 
-## 9. Why not just use something that exists
+## 10. Why not just use something that exists
 
 Nothing wrong with the alternatives, and it is worth being honest about them. [Syncthing](https://syncthing.net) is a proven real-time mesh, but it is a mesh of equal devices rather than a directed job, and it does not speak to cloud targets at all. [rclone bisync](https://rclone.org/bisync/) reaches every target but keeps only a listing per side rather than a per-file state, and re-scans both ends on every run.
 

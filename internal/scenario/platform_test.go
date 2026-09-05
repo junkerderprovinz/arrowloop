@@ -258,29 +258,41 @@ func configureMetadata(t *testing.T, on bool) {
 // for something that happens by itself. It does not, and a bandwidth limit that
 // is accepted and then ignored is worse than one that is refused.
 func TestConfigureSetsTheGlobalsItClaims(t *testing.T) {
-	ctx := context.Background()
-	ci := rclonefs.GetConfig(ctx)
-	prevTransfers, prevMeta := ci.Transfers, ci.Metadata
-	t.Cleanup(func() { ci.Transfers, ci.Metadata = prevTransfers, prevMeta })
+	base := context.Background()
+	global := rclonefs.GetConfig(base)
+	prevTransfers, prevMeta := global.Transfers, global.Metadata
 
 	opt := quick()
 	opt.Compare.Transfers = 6
 	opt.Metadata = true
-	if err := engine.Configure(ctx, opt, "1M"); err != nil {
-		t.Fatalf("configure: %v", err)
-	}
+	jobCtx := engine.Configure(base, opt)
+
+	ci := rclonefs.GetConfig(jobCtx)
 	if ci.Transfers != 6 {
 		t.Errorf("rclone still thinks transfers is %d", ci.Transfers)
 	}
 	if !ci.Metadata {
 		t.Error("the metadata switch did not reach rclone, so permissions would be dropped silently")
 	}
-	if ci.BwLimit.LimitAt(time.Now()).Bandwidth.Tx <= 0 {
-		t.Errorf("the bandwidth limit did not take: %v", ci.BwLimit)
+
+	// The settings must live in the context, not in the process. Two jobs run
+	// at once otherwise change each other's behaviour, and the symptom would be
+	// a job that behaves differently depending on what else is scheduled.
+	if global.Transfers != prevTransfers || global.Metadata != prevMeta {
+		t.Errorf("one job's settings leaked into the process-wide config: transfers %d, metadata %v",
+			global.Transfers, global.Metadata)
 	}
 
+	prevBw := global.BwLimit
+	t.Cleanup(func() { global.BwLimit = prevBw })
+	if err := engine.StartAccounting(base, "1M"); err != nil {
+		t.Fatalf("start accounting: %v", err)
+	}
+	if global.BwLimit.LimitAt(time.Now()).Bandwidth.Tx <= 0 {
+		t.Errorf("the bandwidth limit did not take: %v", global.BwLimit)
+	}
 	// A limit rclone cannot parse must be refused rather than ignored.
-	if err := engine.Configure(ctx, opt, "not-a-limit"); err == nil {
+	if err := engine.StartAccounting(base, "not-a-limit"); err == nil {
 		t.Error("an unparseable bandwidth limit was accepted")
 	}
 }

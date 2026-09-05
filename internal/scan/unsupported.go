@@ -110,9 +110,16 @@ func unsupportedKind(mode os.FileMode) string {
 }
 
 // localRoot maps a filesystem back to a real directory, when there is one.
+//
+// The Clean is not cosmetic. On Windows rclone's local backend makes every root
+// an extended-length path so that names over 260 characters work at all, and
+// then Root() hands it back with forward slashes, as "//?/C:/...". Win32 does
+// not accept that spelling, and filepath.Rel would compare it against the
+// backslash form that WalkDir produces and get the wrong answer. Clean turns it
+// back into the form both of them want.
 func localRoot(f rclonefs.Fs) (string, bool) {
 	if f == nil || f.Name() != "local" {
 		return "", false
 	}
-	return f.Root(), true
+	return filepath.Clean(f.Root()), true
 }

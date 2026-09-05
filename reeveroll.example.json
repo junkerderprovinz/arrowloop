@@ -1,0 +1,40 @@
+{
+  "bwlimit": "",
+  "parallelJobs": 1,
+  "notify": {
+    "matrix": {
+      "homeserver": "https://matrix.example.org",
+      "room": "!abcdefghijklmnop:example.org",
+      "token": "syt_put_an_access_token_here"
+    },
+    "onSuccess": false
+  },
+  "jobs": [
+    {
+      "name": "photos",
+      "left": "D:/Photos",
+      "right": "sftp:backup/photos",
+      "state": "state/photos.db",
+      "schedule": "*/15 * * * *",
+      "exclude": ["*.xmp", "**/.thumbnails/**"],
+      "emptyDirs": true,
+      "transfers": 4
+    },
+    {
+      "name": "documents",
+      "left": "D:/Documents",
+      "right": "s3:my-bucket/documents",
+      "state": "state/documents.db",
+      "schedule": "0 * * * *",
+      "quietPeriod": "30s",
+      "metadata": true
+    },
+    {
+      "name": "scratch",
+      "left": "D:/Scratch",
+      "right": "E:/ScratchMirror",
+      "state": "state/scratch.db",
+      "brakePercent": 0
+    }
+  ]
+}

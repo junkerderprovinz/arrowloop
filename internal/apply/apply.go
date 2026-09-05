@@ -289,6 +289,13 @@ func heldOpen(ends Ends, act plan.Action) (string, bool) {
 // localPath maps an rclone object back to a real filesystem path, when there is
 // one. Anything that is not the local backend has no such path, and the probe
 // simply does not apply.
+//
+// filepath.Join is doing more work here than it looks. On Windows rclone makes
+// every local root an extended-length path so that names over 260 characters
+// work, and Root() returns that prefix with forward slashes, as "//?/C:/...".
+// Join cleans it back into the backslash form Win32 accepts. Concatenating the
+// two strings by hand instead would produce a path the operating system
+// refuses, and only for the deeply nested files this exists to support.
 func localPath(f fs.Fs, remote string) (string, bool) {
 	if f == nil || f.Name() != "local" {
 		return "", false

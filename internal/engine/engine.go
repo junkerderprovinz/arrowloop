@@ -41,22 +41,21 @@ type Options struct {
 	ForceEmptyDirs *bool
 }
 
-// Configure sets the rclone-wide knobs a library caller has to set for itself.
+// StartAccounting turns on rclone's bandwidth limiting, once per process.
 //
 // rclone's own binary does this from its flag parser, which is easy to mistake
-// for something that happens automatically. It does not: without the call to
-// accounting.Start there is no token bucket, so a bandwidth limit is accepted
-// and then silently ignored.
+// for something that happens automatically. It does not: without this call
+// there is no token bucket, so a bandwidth limit is accepted and then silently
+// ignored, which is the worst of both answers.
+//
+// The limit is process-wide and not per job, because the token bucket is. Two
+// jobs sharing a machine share one uplink, so a per-job limit would be a
+// promise the underlying mechanism cannot keep.
 //
 // bwLimit takes rclone's own syntax, so "1M" or a timetable like
 // "08:00,512k 19:00,off". An empty string leaves it unlimited.
-func Configure(ctx context.Context, opt Options, bwLimit string) error {
+func StartAccounting(ctx context.Context, bwLimit string) error {
 	ci := fs.GetConfig(ctx)
-	if opt.Compare.Transfers > 0 {
-		ci.Transfers = opt.Compare.Transfers
-		ci.Checkers = opt.Compare.Transfers
-	}
-	ci.Metadata = opt.Metadata
 	if bwLimit != "" {
 		if err := ci.BwLimit.Set(bwLimit); err != nil {
 			return fmt.Errorf("bandwidth limit %q: %w", bwLimit, err)
@@ -64,6 +63,22 @@ func Configure(ctx context.Context, opt Options, bwLimit string) error {
 	}
 	accounting.Start(ctx)
 	return nil
+}
+
+// Configure returns a context carrying this job's rclone settings.
+//
+// It uses fs.AddConfig, which copies the config into the context rather than
+// changing the process-wide one. That matters as soon as two jobs run at the
+// same time: one job asking for metadata, or for eight transfers, must not
+// quietly change what the other job is doing.
+func Configure(ctx context.Context, opt Options) context.Context {
+	ctx, ci := fs.AddConfig(ctx)
+	if opt.Compare.Transfers > 0 {
+		ci.Transfers = opt.Compare.Transfers
+		ci.Checkers = opt.Compare.Transfers
+	}
+	ci.Metadata = opt.Metadata
+	return ctx
 }
 
 // Prepare lists both sides and works out what needs to happen. It changes
