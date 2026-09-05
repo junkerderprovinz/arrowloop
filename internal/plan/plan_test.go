@@ -11,13 +11,27 @@ import (
 
 var base = time.Unix(1700000000, 0).UTC()
 
+// noQuiet is DefaultOptions with the settling delay switched off. These cases
+// use fixed timestamps from 2023, which a quiet period measured against the
+// real clock would never hold up, but leaving it on would make the tests pass
+// for the wrong reason: everything would simply be skipped.
+func noQuiet() Options {
+	o := DefaultOptions()
+	o.QuietPeriod = 0
+	return o
+}
+
 // live builds an entry as a side would report it now. The hash stays empty on
 // purpose: these cases exercise the size-and-time fallback, which is the path
 // a hashless backend such as plain SFTP takes, and therefore the path most
 // likely to be wrong.
 func live(path string, size int64, offset time.Duration) *scan.Entry {
-	return &scan.Entry{Path: path, Size: size, Mod: base.Add(offset)}
+	return &scan.Entry{Path: path, Key: path, Size: size, Mod: base.Add(offset)}
 }
+
+// listing wraps a bare side, since Build works on what a scan produced rather
+// than on a plain map: it needs the collision report as well as the files.
+func listing(files scan.Side) *scan.Listing { return &scan.Listing{Files: files} }
 
 func agreed(path string, leftSize, rightSize int64, leftOff, rightOff time.Duration) state.Entry {
 	return state.Entry{
@@ -33,7 +47,7 @@ func agreed(path string, leftSize, rightSize int64, leftOff, rightOff time.Durat
 // left" against "what happened on the right". These eleven rows are the whole
 // engine; everything else is plumbing around them.
 func TestDecisionTable(t *testing.T) {
-	opt := Options{ModWindow: 2 * time.Second} // brake off, tested separately
+	opt := Options{ModWindow: 2 * time.Second} // brake and quiet period off, both tested separately
 
 	cases := []struct {
 		name    string
@@ -152,7 +166,7 @@ func TestDecisionTable(t *testing.T) {
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			got, err := Build(context.Background(), tc.left, tc.right, tc.prev, opt)
+			got, err := Build(context.Background(), listing(tc.left), listing(tc.right), tc.prev, opt)
 			if err != nil {
 				t.Fatalf("build: %v", err)
 			}
@@ -194,7 +208,7 @@ func TestEmptySideRefused(t *testing.T) {
 		left[p] = live(p, 10, 0)
 	}
 
-	_, err := Build(context.Background(), left, right, prev, DefaultOptions())
+	_, err := Build(context.Background(), listing(left), listing(right), prev, noQuiet())
 	var empty *EmptySideError
 	if err == nil {
 		t.Fatal("an empty right side was accepted; that is the data-loss case")
@@ -222,7 +236,7 @@ func TestBrakeTrips(t *testing.T) {
 				left[p] = live(p, 10, 0)
 			}
 		}
-		_, err := Build(context.Background(), left, right, prev, DefaultOptions())
+		_, err := Build(context.Background(), listing(left), listing(right), prev, noQuiet())
 		return err
 	}
 

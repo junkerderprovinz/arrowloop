@@ -67,17 +67,42 @@ func (k Kind) String() string {
 }
 
 // Action is one change to make.
+//
+// Path is the matching key and is never handed to a backend. SrcPath, DstPath
+// and OldDstPath are real names as each side spells them, which is not the same
+// thing: a file stored decomposed on macOS and composed on Windows shares one
+// key and has two spellings, and handing the wrong one to a backend produces a
+// second file rather than an error.
 type Action struct {
-	Kind    Kind
-	Path    string // the path the action results in
-	OldPath string // Move only: where the file is now on Dst
-	Src     Side   // Copy: where the content comes from
-	Dst     Side   // where the change lands. Conflict touches both sides.
-	Reason  string
+	Kind   Kind
+	Path   string
+	Src    Side
+	Dst    Side
+	Reason string
+
+	SrcPath    string // Copy and Conflict: what the source side calls it
+	DstPath    string // what the destination side should call it afterwards
+	OldDstPath string // Move: where the destination side currently keeps it
 
 	LeftNow  *scan.Entry
 	RightNow *scan.Entry
 	Prev     *state.Entry
+}
+
+// Names returns the path each side ends up holding once this action has run.
+func (a Action) Names() (left, right string) {
+	if a.Src == Left {
+		return a.SrcPath, a.DstPath
+	}
+	return a.DstPath, a.SrcPath
+}
+
+// Skip is a path the run deliberately left alone, with the reason. Skips are
+// not failures and not successes; they are work postponed, and the state row
+// is left untouched so the next run reconsiders from scratch.
+type Skip struct {
+	Path   string
+	Reason string
 }
 
 // Plan is the full set of changes for one run.
@@ -86,7 +111,8 @@ type Plan struct {
 	Unchanged int
 	// Agreed lists paths that need no work but whose state row should be
 	// written, because both sides produced the same file independently.
-	Agreed []Action
+	Agreed  []Action
+	Skipped []Skip
 }
 
 // Options tunes comparison and the safety brakes.
@@ -98,6 +124,26 @@ type Options struct {
 	// least one side cannot produce a hash, because a hash comparison is
 	// exact and needs no window.
 	ModWindow time.Duration
+
+	// QuietPeriod is how long a file has to sit unchanged before the engine
+	// will touch it.
+	//
+	// This is not about latency, it is about half-written files. A run started
+	// while somebody is saving a large document copies whatever is on disk at
+	// that instant, and the copy is garbage. A schedule does not help: a run
+	// every two minutes lands mid-write just as readily as a filesystem watch
+	// does. Waiting for the file to stop changing is the only portable defence,
+	// and it is worth more than any amount of cleverness afterwards.
+	QuietPeriod time.Duration
+
+	// Now is the reference point for QuietPeriod. Zero means time.Now, which
+	// is what everything but the tests wants.
+	Now time.Time
+
+	// FoldCase records whether this job matches names case-insensitively. It is
+	// derived from the two backends rather than configured: if either side
+	// cannot tell "Bild.jpg" from "bild.jpg", the matching must fold for both.
+	FoldCase bool
 
 	// BrakePercent trips the mass-delete brake when a single run would delete
 	// more than this share of the known files. Zero disables the brake.
@@ -111,7 +157,19 @@ type Options struct {
 
 // DefaultOptions is what the command line uses when nothing is given.
 func DefaultOptions() Options {
-	return Options{ModWindow: 2 * time.Second, BrakePercent: 50, BrakeFloor: 10}
+	return Options{
+		ModWindow:    2 * time.Second,
+		QuietPeriod:  5 * time.Second,
+		BrakePercent: 50,
+		BrakeFloor:   10,
+	}
+}
+
+func (o Options) now() time.Time {
+	if o.Now.IsZero() {
+		return time.Now()
+	}
+	return o.Now
 }
 
 // BrakeError is returned when a run would delete an implausible share of the
@@ -188,26 +246,35 @@ func Same(a, b Facts, window time.Duration) bool {
 	return diff <= window
 }
 
-type facts = Facts
-
-func same(a, b Facts, window time.Duration) bool { return Same(a, b, window) }
-
 // Build compares both sides against the last agreed state.
-func Build(ctx context.Context, left, right scan.Side, prev map[string]state.Entry, opt Options) (*Plan, error) {
+func Build(ctx context.Context, left, right *scan.Listing, prev map[string]state.Entry, opt Options) (*Plan, error) {
 	if len(prev) > 0 {
-		if len(left) == 0 {
+		if len(left.Files) == 0 {
 			return nil, &EmptySideError{Side: Left, Known: len(prev)}
 		}
-		if len(right) == 0 {
+		if len(right.Files) == 0 {
 			return nil, &EmptySideError{Side: Right, Known: len(prev)}
 		}
 	}
 
-	paths := make(map[string]struct{}, len(left)+len(right)+len(prev))
-	for p := range left {
+	out := &Plan{}
+	blocked := map[string]bool{}
+	for side, listing := range map[Side]*scan.Listing{Left: left, Right: right} {
+		for _, c := range listing.Collisions {
+			blocked[c.Key] = true
+			out.Skipped = append(out.Skipped, Skip{
+				Path: c.Key,
+				Reason: fmt.Sprintf("the %s side holds %v, which the other side may not be able to tell apart; rename one of them",
+					side, c.Paths),
+			})
+		}
+	}
+
+	paths := make(map[string]struct{}, len(left.Files)+len(right.Files)+len(prev))
+	for p := range left.Files {
 		paths[p] = struct{}{}
 	}
-	for p := range right {
+	for p := range right.Files {
 		paths[p] = struct{}{}
 	}
 	for p := range prev {
@@ -216,18 +283,20 @@ func Build(ctx context.Context, left, right scan.Side, prev map[string]state.Ent
 
 	ordered := make([]string, 0, len(paths))
 	for p := range paths {
+		if blocked[p] {
+			continue
+		}
 		ordered = append(ordered, p)
 	}
 	sort.Strings(ordered)
 
-	out := &Plan{}
 	for _, p := range ordered {
-		l, hasL := left[p]
-		r, hasR := right[p]
+		l, hasL := left.Files[p]
+		r, hasR := right.Files[p]
 		s, hasPrev := prev[p]
 
-		lState := classify(ctx, l, hasL, hasPrev, facts{s.LeftSize, s.LeftMod, s.LeftHash}, opt)
-		rState := classify(ctx, r, hasR, hasPrev, facts{s.RightSize, s.RightMod, s.RightHash}, opt)
+		lState := classify(ctx, l, hasL, hasPrev, Facts{s.LeftSize, s.LeftMod, s.LeftHash}, opt)
+		rState := classify(ctx, r, hasR, hasPrev, Facts{s.RightSize, s.RightMod, s.RightHash}, opt)
 
 		var prevPtr *state.Entry
 		if hasPrev {
@@ -236,11 +305,16 @@ func Build(ctx context.Context, left, right scan.Side, prev map[string]state.Ent
 		}
 		base := Action{Path: p, LeftNow: l, RightNow: r, Prev: prevPtr}
 
-		switch {
-		// Nothing to do.
-		case lState == unchanged && rState == unchanged:
+		if lState == unchanged && rState == unchanged {
 			out.Unchanged++
+			continue
+		}
+		if why, tooSoon := settling(l, r, opt); tooSoon {
+			out.Skipped = append(out.Skipped, Skip{Path: p, Reason: why})
+			continue
+		}
 
+		switch {
 		// Both sides forgot about it. Drop the row.
 		case lState == deleted && rState == deleted:
 			act := base
@@ -262,6 +336,7 @@ func Build(ctx context.Context, left, right scan.Side, prev map[string]state.Ent
 				act := base
 				act.Kind = Copy
 				act.Src, act.Dst = Left, Right
+				act.SrcPath, act.DstPath = l.Path, r.Path
 				act.Reason = "appeared on both sides with identical content"
 				out.Agreed = append(out.Agreed, act)
 			} else {
@@ -280,6 +355,7 @@ func Build(ctx context.Context, left, right scan.Side, prev map[string]state.Ent
 				act := base
 				act.Kind = Copy
 				act.Src, act.Dst = Left, Right
+				act.SrcPath, act.DstPath = l.Path, r.Path
 				act.Reason = "changed on both sides to the same content"
 				out.Agreed = append(out.Agreed, act)
 			} else {
@@ -306,7 +382,7 @@ func Build(ctx context.Context, left, right scan.Side, prev map[string]state.Ent
 		}
 	}
 
-	detectRenames(ctx, out, opt)
+	detectRenames(ctx, out)
 
 	if err := checkBrake(out, len(prev), opt); err != nil {
 		return nil, err
@@ -314,7 +390,23 @@ func Build(ctx context.Context, left, right scan.Side, prev map[string]state.Ent
 	return out, nil
 }
 
-func classify(ctx context.Context, cur *scan.Entry, present, hasPrev bool, prev facts, opt Options) status {
+// settling reports whether a file is still being written to, and should
+// therefore be left where it is until the next run.
+func settling(l, r *scan.Entry, opt Options) (string, bool) {
+	if opt.QuietPeriod <= 0 {
+		return "", false
+	}
+	cutoff := opt.now().Add(-opt.QuietPeriod)
+	for side, e := range map[Side]*scan.Entry{Left: l, Right: r} {
+		if e == nil || !e.Mod.After(cutoff) {
+			continue
+		}
+		return fmt.Sprintf("changed on the %s side less than %s ago, waiting for it to settle", side, opt.QuietPeriod), true
+	}
+	return "", false
+}
+
+func classify(ctx context.Context, cur *scan.Entry, present, hasPrev bool, prev Facts, opt Options) status {
 	switch {
 	case !present && !hasPrev:
 		return absent
@@ -323,14 +415,14 @@ func classify(ctx context.Context, cur *scan.Entry, present, hasPrev bool, prev 
 	case !hasPrev:
 		return created
 	}
-	if same(facts{cur.Size, cur.Mod, cur.Hash(ctx)}, prev, opt.ModWindow) {
+	if Same(Facts{cur.Size, cur.Mod, cur.Hash(ctx)}, prev, opt.ModWindow) {
 		return unchanged
 	}
 	return modified
 }
 
 func sameLive(ctx context.Context, l, r *scan.Entry, opt Options) bool {
-	return same(facts{l.Size, l.Mod, l.Hash(ctx)}, facts{r.Size, r.Mod, r.Hash(ctx)}, opt.ModWindow)
+	return Same(Facts{l.Size, l.Mod, l.Hash(ctx)}, Facts{r.Size, r.Mod, r.Hash(ctx)}, opt.ModWindow)
 }
 
 func copyAction(base Action, from Side, reason string) Action {
@@ -338,6 +430,15 @@ func copyAction(base Action, from Side, reason string) Action {
 	base.Src = from
 	base.Dst = from.Other()
 	base.Reason = reason
+	src := base.LeftNow
+	if from == Right {
+		src = base.RightNow
+	}
+	// The destination gets the source's own spelling. That is what makes a
+	// composed and a decomposed tree converge on one form instead of trading
+	// copies back and forth forever.
+	base.SrcPath = src.Path
+	base.DstPath = src.Path
 	return base
 }
 
@@ -345,6 +446,13 @@ func deleteAction(base Action, on Side, reason string) Action {
 	base.Kind = Delete
 	base.Dst = on
 	base.Reason = reason
+	victim := base.LeftNow
+	if on == Right {
+		victim = base.RightNow
+	}
+	if victim != nil {
+		base.DstPath = victim.Path
+	}
 	return base
 }
 
@@ -363,12 +471,11 @@ func conflictAction(base Action, reason string) Action {
 // when a real hash is available on both the record and the new file, because
 // matching by size alone would happily "rename" two unrelated files that happen
 // to be the same length.
-func detectRenames(ctx context.Context, p *Plan, opt Options) {
+func detectRenames(ctx context.Context, p *Plan) {
 	type key struct {
 		size int64
 		hash string
 	}
-	// Deletions on side D that came from a disappearance on the other side.
 	deletions := map[key]int{}
 	for i, a := range p.Actions {
 		// Only a real deletion on one side can be the other half of a rename.
@@ -419,15 +526,17 @@ func detectRenames(ctx context.Context, p *Plan, opt Options) {
 		// The far side must move the file from where it used to be to where
 		// it now is on the source side.
 		p.Actions[i] = Action{
-			Kind:     Move,
-			Path:     a.Path,
-			OldPath:  p.Actions[j].Path,
-			Src:      a.Src,
-			Dst:      a.Dst,
-			Reason:   fmt.Sprintf("renamed on the %s side", a.Src),
-			LeftNow:  a.LeftNow,
-			RightNow: a.RightNow,
-			Prev:     p.Actions[j].Prev,
+			Kind:       Move,
+			Path:       a.Path,
+			Src:        a.Src,
+			Dst:        a.Dst,
+			SrcPath:    src.Path,
+			DstPath:    src.Path,
+			OldDstPath: p.Actions[j].DstPath,
+			Reason:     fmt.Sprintf("renamed on the %s side", a.Src),
+			LeftNow:    a.LeftNow,
+			RightNow:   a.RightNow,
+			Prev:       p.Actions[j].Prev,
 		}
 		removed[j] = true
 		delete(deletions, key{src.Size, h})

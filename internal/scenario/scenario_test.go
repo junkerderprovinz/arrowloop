@@ -40,10 +40,10 @@ type job struct {
 	right string
 	ends  apply.Ends
 	db    *state.DB
-	opt   plan.Options
+	opt   engine.Options
 }
 
-func newJob(t *testing.T, opt plan.Options) *job {
+func newJob(t *testing.T, opt engine.Options) *job {
 	t.Helper()
 	ctx := context.Background()
 	root := t.TempDir()
@@ -69,6 +69,20 @@ func newJob(t *testing.T, opt plan.Options) *job {
 	t.Cleanup(func() { db.Close() })
 
 	return &job{left: left, right: right, ends: apply.Ends{Left: leftFs, Right: rightFs}, db: db, opt: opt}
+}
+
+// quick is the comparison used by most tests: brakes off, and no settling
+// delay, because a test writes a file and syncs it in the same millisecond. The
+// quiet period gets its own test with a controlled clock instead.
+func quick() engine.Options {
+	return engine.Options{Compare: plan.Options{ModWindow: 2 * time.Second}}
+}
+
+// guarded is the real default, brakes and all.
+func guarded() engine.Options {
+	c := plan.DefaultOptions()
+	c.QuietPeriod = 0
+	return engine.Options{Compare: c}
 }
 
 func (j *job) sync(t *testing.T) (*plan.Plan, apply.Result) {
@@ -163,7 +177,7 @@ func TestConvergence(t *testing.T) {
 			// The brake is off here on purpose. Random editing regularly
 			// deletes a large share of a small tree, which is exactly what the
 			// brake is meant to stop; it gets its own test.
-			j := newJob(t, plan.Options{ModWindow: 2 * time.Second})
+			j := newJob(t, quick())
 			rnd := rand.New(rand.NewSource(seed))
 
 			for i := range 12 {
@@ -224,7 +238,7 @@ func mutate(t *testing.T, rnd *rand.Rand, root string) {
 // wrong folder on one machine has minutes to notice before the other machine
 // syncs; without a trash they have nothing at all.
 func TestDeleteGoesToTrash(t *testing.T) {
-	j := newJob(t, plan.Options{ModWindow: 2 * time.Second})
+	j := newJob(t, quick())
 	write(t, j.left, "keep.txt", "keep me")
 	write(t, j.left, "doomed.txt", "delete me")
 	j.sync(t)
@@ -262,7 +276,7 @@ func TestDeleteGoesToTrash(t *testing.T) {
 // On a folder of photos over a slow link this is the difference between a
 // second and an afternoon.
 func TestRenameBecomesAMove(t *testing.T) {
-	j := newJob(t, plan.Options{ModWindow: 2 * time.Second})
+	j := newJob(t, quick())
 	write(t, j.left, "holiday/IMG_1.jpg", "pretend this is a large photo")
 	j.sync(t)
 
@@ -280,7 +294,7 @@ func TestRenameBecomesAMove(t *testing.T) {
 // neither edit is thrown away, and that the job still converges afterwards
 // rather than reporting the same conflict forever.
 func TestConflictKeepsBothVersions(t *testing.T) {
-	j := newJob(t, plan.Options{ModWindow: 2 * time.Second})
+	j := newJob(t, quick())
 	write(t, j.left, "notes.txt", "original")
 	j.sync(t)
 
@@ -334,7 +348,7 @@ func TestConflictKeepsBothVersions(t *testing.T) {
 // TestBrakeStopsAnUnmountedSide is the scenario that destroys real data: a disk
 // that did not mount looks exactly like a folder whose contents were deleted.
 func TestBrakeStopsAnUnmountedSide(t *testing.T) {
-	j := newJob(t, plan.DefaultOptions())
+	j := newJob(t, guarded())
 	for i := range 30 {
 		write(t, j.left, fmt.Sprintf("f%02d.txt", i), fmt.Sprintf("content %d", i))
 	}
@@ -370,7 +384,7 @@ func TestBrakeStopsAnUnmountedSide(t *testing.T) {
 // empty side stops this one, which is worth knowing, because "it is just a
 // small folder" is precisely the situation where a user has no other backup.
 func TestSmallSideVanishing(t *testing.T) {
-	opt := plan.DefaultOptions()
+	opt := guarded()
 	j := newJob(t, opt)
 	for i := range 5 {
 		write(t, j.left, fmt.Sprintf("small%d.txt", i), fmt.Sprintf("content %d", i))
@@ -391,8 +405,8 @@ func TestSmallSideVanishing(t *testing.T) {
 	// Proof that the brake genuinely cannot help here: five deletions is below
 	// its floor, so if the empty-side guard is the thing being tested, it has
 	// to be the thing doing the work.
-	if 5 > opt.BrakeFloor {
-		t.Fatalf("this test only proves anything while the brake floor (%d) is above the file count", opt.BrakeFloor)
+	if 5 > opt.Compare.BrakeFloor {
+		t.Fatalf("this test only proves anything while the brake floor (%d) is above the file count", opt.Compare.BrakeFloor)
 	}
 
 	_, _, err = engine.Once(context.Background(), j.ends, j.db, j.opt)

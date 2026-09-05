@@ -24,8 +24,16 @@ import (
 // remote shell, for example), so an empty Hash means "unknown", never "empty
 // file". Comparisons must treat it that way or a hashless backend turns every
 // run into a full re-copy.
+//
+// Path is the matching key, not a name any backend would recognise. LeftPath
+// and RightPath are what each side actually calls the file, which can differ
+// from the key and from each other when one side stores names decomposed and
+// the other composed. Keeping all three is what lets the engine hand every
+// backend a name it will accept while still knowing the two are one file.
 type Entry struct {
 	Path      string
+	LeftPath  string
+	RightPath string
 	LeftSize  int64
 	LeftMod   time.Time
 	LeftHash  string
@@ -47,6 +55,8 @@ CREATE TABLE IF NOT EXISTS meta (
 );
 CREATE TABLE IF NOT EXISTS entries (
 	path        TEXT PRIMARY KEY,
+	left_path   TEXT NOT NULL DEFAULT '',
+	right_path  TEXT NOT NULL DEFAULT '',
 	left_size   INTEGER NOT NULL,
 	left_mod    INTEGER NOT NULL,
 	left_hash   TEXT NOT NULL,
@@ -78,7 +88,7 @@ func (d *DB) Close() error { return d.sql.Close() }
 
 // All returns the complete last-agreed state, keyed by relative path.
 func (d *DB) All(ctx context.Context) (map[string]Entry, error) {
-	rows, err := d.sql.QueryContext(ctx, `SELECT path, left_size, left_mod, left_hash, right_size, right_mod, right_hash, agreed_at FROM entries`)
+	rows, err := d.sql.QueryContext(ctx, `SELECT path, left_path, right_path, left_size, left_mod, left_hash, right_size, right_mod, right_hash, agreed_at FROM entries`)
 	if err != nil {
 		return nil, fmt.Errorf("read state: %w", err)
 	}
@@ -88,7 +98,7 @@ func (d *DB) All(ctx context.Context) (map[string]Entry, error) {
 	for rows.Next() {
 		var e Entry
 		var leftMod, rightMod, agreed int64
-		if err := rows.Scan(&e.Path, &e.LeftSize, &leftMod, &e.LeftHash, &e.RightSize, &rightMod, &e.RightHash, &agreed); err != nil {
+		if err := rows.Scan(&e.Path, &e.LeftPath, &e.RightPath, &e.LeftSize, &leftMod, &e.LeftHash, &e.RightSize, &rightMod, &e.RightHash, &agreed); err != nil {
 			return nil, fmt.Errorf("scan state row: %w", err)
 		}
 		e.LeftMod = time.Unix(0, leftMod)
@@ -107,13 +117,14 @@ func (d *DB) All(ctx context.Context) (map[string]Entry, error) {
 // at the end, turns every crash into a full resync.
 func (d *DB) Put(ctx context.Context, e Entry) error {
 	_, err := d.sql.ExecContext(ctx,
-		`INSERT INTO entries (path, left_size, left_mod, left_hash, right_size, right_mod, right_hash, agreed_at)
-		 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+		`INSERT INTO entries (path, left_path, right_path, left_size, left_mod, left_hash, right_size, right_mod, right_hash, agreed_at)
+		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 		 ON CONFLICT(path) DO UPDATE SET
+		   left_path=excluded.left_path, right_path=excluded.right_path,
 		   left_size=excluded.left_size, left_mod=excluded.left_mod, left_hash=excluded.left_hash,
 		   right_size=excluded.right_size, right_mod=excluded.right_mod, right_hash=excluded.right_hash,
 		   agreed_at=excluded.agreed_at`,
-		e.Path, e.LeftSize, e.LeftMod.UnixNano(), e.LeftHash,
+		e.Path, e.LeftPath, e.RightPath, e.LeftSize, e.LeftMod.UnixNano(), e.LeftHash,
 		e.RightSize, e.RightMod.UnixNano(), e.RightHash, e.AgreedAt.UnixNano())
 	if err != nil {
 		return fmt.Errorf("put state %q: %w", e.Path, err)

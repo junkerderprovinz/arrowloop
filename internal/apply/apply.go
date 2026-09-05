@@ -8,8 +8,10 @@ package apply
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"path"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -17,6 +19,8 @@ import (
 	"github.com/rclone/rclone/fs/hash"
 	"github.com/rclone/rclone/fs/operations"
 
+	"github.com/junkerderprovinz/reeveroll/internal/lockprobe"
+	"github.com/junkerderprovinz/reeveroll/internal/pathid"
 	"github.com/junkerderprovinz/reeveroll/internal/plan"
 	"github.com/junkerderprovinz/reeveroll/internal/scan"
 	"github.com/junkerderprovinz/reeveroll/internal/state"
@@ -41,15 +45,33 @@ type Result struct {
 	Moved     int
 	Trashed   int
 	Conflicts int
+	Skipped   []plan.Skip
+}
+
+// DisagreementError means an operation reported success and the two sides still
+// do not hold the same file. It is fatal for the run, unlike an ordinary
+// transfer failure, because it says the engine's picture of the world is wrong
+// rather than that one file was busy.
+type DisagreementError struct {
+	Path    string
+	Details string
+}
+
+func (e *DisagreementError) Error() string {
+	return fmt.Sprintf("refusing to record %q as agreed: %s", e.Path, e.Details)
 }
 
 // Run executes every action in the plan.
 //
-// It stops at the first failure rather than pressing on. A sync engine that
-// keeps going after an error finishes with a state database describing a tree
-// that does not exist, and the next run then acts on that fiction.
+// A single action that fails is recorded as a skip and the run carries on. That
+// is safe precisely because a state row is only written after the operation
+// succeeded AND both sides were re-read and found to match: a file that could
+// not be copied keeps its old record, or none, so the next run tries again. The
+// one thing that does stop the run is a disagreement, because that means the
+// engine no longer understands the tree it is working on, and every further
+// action would be taken on a false picture.
 func Run(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt plan.Options) (Result, error) {
-	var res Result
+	res := Result{Skipped: append([]plan.Skip(nil), p.Skipped...)}
 	runID := time.Now().UTC().Format("20060102-150405")
 	rec := recorder{ends: ends, db: db, window: opt.ModWindow}
 
@@ -59,41 +81,84 @@ func Run(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt plan.Op
 			if !contains(group, act.Kind) {
 				continue
 			}
-			if err := one(ctx, ends, rec, act, runID, &res); err != nil {
-				return res, fmt.Errorf("%s %q: %w", act.Kind, act.Path, err)
+			if why, busy := heldOpen(ends, act); busy {
+				res.Skipped = append(res.Skipped, plan.Skip{Path: act.Path, Reason: why})
+				continue
+			}
+			if err := one(ctx, ends, rec, act, runID, opt, &res); err != nil {
+				var dis *DisagreementError
+				if errors.As(err, &dis) {
+					return res, err
+				}
+				res.Skipped = append(res.Skipped, plan.Skip{
+					Path:   act.Path,
+					Reason: fmt.Sprintf("%s failed, leaving it for the next run: %v", act.Kind, err),
+				})
 			}
 		}
 	}
 
 	// Files both sides created identically need no transfer, only a record.
 	for _, act := range p.Agreed {
-		if err := rec.settle(ctx, act.Path); err != nil {
-			return res, fmt.Errorf("record %q: %w", act.Path, err)
+		left, right := act.Names()
+		if err := rec.settle(ctx, act.Path, left, right); err != nil {
+			var dis *DisagreementError
+			if errors.As(err, &dis) {
+				return res, err
+			}
+			res.Skipped = append(res.Skipped, plan.Skip{Path: act.Path, Reason: err.Error()})
 		}
 	}
 	return res, nil
 }
 
-func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID string, res *Result) error {
+// heldOpen asks whether the file an action wants to read is locked by another
+// program. Only the source of a transfer is probed: a destination that is
+// locked fails loudly on its own, while a locked source is the everyday case of
+// a document somebody left open.
+func heldOpen(ends Ends, act plan.Action) (string, bool) {
+	if act.Kind != plan.Copy || act.SrcPath == "" {
+		return "", false
+	}
+	full, ok := localPath(ends.side(act.Src), act.SrcPath)
+	if !ok || !lockprobe.Busy(full) {
+		return "", false
+	}
+	return fmt.Sprintf("held open by another program on the %s side, waiting for it to be closed", act.Src), true
+}
+
+// localPath maps an rclone object back to a real filesystem path, when there is
+// one. Anything that is not the local backend has no such path, and the probe
+// simply does not apply.
+func localPath(f fs.Fs, remote string) (string, bool) {
+	if f == nil || f.Name() != "local" {
+		return "", false
+	}
+	return filepath.Join(f.Root(), filepath.FromSlash(remote)), true
+}
+
+func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID string, opt plan.Options, res *Result) error {
 	switch act.Kind {
 	case plan.Copy:
 		src, dst := ends.side(act.Src), ends.side(act.Dst)
-		if err := operations.CopyFile(ctx, dst, src, act.Path, act.Path); err != nil {
+		if err := operations.CopyFile(ctx, dst, src, act.DstPath, act.SrcPath); err != nil {
 			return err
 		}
 		res.Copied++
-		return rec.settle(ctx, act.Path)
+		left, right := act.Names()
+		return rec.settle(ctx, act.Path, left, right)
 
 	case plan.Move:
 		dst := ends.side(act.Dst)
-		if err := operations.MoveFile(ctx, dst, dst, act.Path, act.OldPath); err != nil {
+		if err := operations.MoveFile(ctx, dst, dst, act.DstPath, act.OldDstPath); err != nil {
 			return err
 		}
 		res.Moved++
-		if err := rec.db.Forget(ctx, act.OldPath); err != nil {
+		if err := rec.db.Forget(ctx, pathid.Key(act.OldDstPath, opt.FoldCase)); err != nil {
 			return err
 		}
-		return rec.settle(ctx, act.Path)
+		left, right := act.Names()
+		return rec.settle(ctx, act.Path, left, right)
 
 	case plan.Delete:
 		// A path gone from both sides destroys nothing; only the record goes.
@@ -115,7 +180,7 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 
 	case plan.Conflict:
 		res.Conflicts++
-		return resolveConflict(ctx, ends, rec, act, runID)
+		return resolveConflict(ctx, ends, rec, act, runID, opt)
 	}
 	return fmt.Errorf("unknown action kind %v", act.Kind)
 }
@@ -140,20 +205,22 @@ func toTrash(ctx context.Context, f fs.Fs, obj fs.Object, runID string) error {
 // hold exactly the same two files, so the next run has nothing left to argue
 // about. Refusing to resolve at all would look safer and would in fact leave
 // the job permanently stuck, re-reporting the same conflict forever.
-func resolveConflict(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID string) error {
+func resolveConflict(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID string, opt plan.Options) error {
 	if act.LeftNow == nil || act.RightNow == nil {
 		return fmt.Errorf("conflict without both sides present")
 	}
 
 	winner, loser := plan.Left, plan.Right
+	winnerPath, loserPath := act.LeftNow.Path, act.RightNow.Path
 	if act.RightNow.Mod.After(act.LeftNow.Mod) {
 		winner, loser = plan.Right, plan.Left
+		winnerPath, loserPath = act.RightNow.Path, act.LeftNow.Path
 	}
 	winnerFs, loserFs := ends.side(winner), ends.side(loser)
-	losing := conflictName(act.Path, loser, runID)
+	losing := conflictName(loserPath, loser, runID)
 
 	// 1. Get the losing version out of the way, on its own side.
-	if err := operations.MoveFile(ctx, loserFs, loserFs, losing, act.Path); err != nil {
+	if err := operations.MoveFile(ctx, loserFs, loserFs, losing, loserPath); err != nil {
 		return fmt.Errorf("set aside the %s version: %w", loser, err)
 	}
 	// 2. Give the other side a copy of it, so nothing exists on one side only.
@@ -161,14 +228,14 @@ func resolveConflict(ctx context.Context, ends Ends, rec recorder, act plan.Acti
 		return fmt.Errorf("copy the %s version across: %w", loser, err)
 	}
 	// 3. The surviving version fills the plain name on both sides.
-	if err := operations.CopyFile(ctx, loserFs, winnerFs, act.Path, act.Path); err != nil {
+	if err := operations.CopyFile(ctx, loserFs, winnerFs, winnerPath, winnerPath); err != nil {
 		return fmt.Errorf("copy the %s version across: %w", winner, err)
 	}
 
-	if err := rec.settle(ctx, act.Path); err != nil {
+	if err := rec.settle(ctx, act.Path, winnerPath, winnerPath); err != nil {
 		return err
 	}
-	return rec.settle(ctx, losing)
+	return rec.settle(ctx, pathid.Key(losing, opt.FoldCase), losing, losing)
 }
 
 // conflictName builds the name the losing version is kept under. The timestamp
@@ -203,24 +270,29 @@ type recorder struct {
 // both sides against a record that already matches them both, concludes nothing
 // changed, and the divergence becomes permanent and invisible. Better to fail
 // the run loudly here than to let the engine lie to itself.
-func (r recorder) settle(ctx context.Context, rel string) error {
-	left, lErr := r.ends.Left.NewObject(ctx, rel)
-	right, rErr := r.ends.Right.NewObject(ctx, rel)
+func (r recorder) settle(ctx context.Context, key, leftPath, rightPath string) error {
+	left, lErr := r.ends.Left.NewObject(ctx, leftPath)
+	right, rErr := r.ends.Right.NewObject(ctx, rightPath)
 	if lErr != nil || rErr != nil {
 		// One side is missing, so there is nothing the two sides agree on.
-		return r.db.Forget(ctx, rel)
+		return r.db.Forget(ctx, key)
 	}
 
 	leftFacts := plan.Facts{Size: left.Size(), Mod: left.ModTime(ctx), Hash: hashOf(ctx, left)}
 	rightFacts := plan.Facts{Size: right.Size(), Mod: right.ModTime(ctx), Hash: hashOf(ctx, right)}
 	if !plan.Same(leftFacts, rightFacts, r.window) {
-		return fmt.Errorf("refusing to record %q as agreed: left is %d bytes at %s, right is %d bytes at %s",
-			rel, leftFacts.Size, leftFacts.Mod.UTC().Format(time.RFC3339Nano),
-			rightFacts.Size, rightFacts.Mod.UTC().Format(time.RFC3339Nano))
+		return &DisagreementError{
+			Path: key,
+			Details: fmt.Sprintf("left %q is %d bytes at %s, right %q is %d bytes at %s",
+				leftPath, leftFacts.Size, leftFacts.Mod.UTC().Format(time.RFC3339Nano),
+				rightPath, rightFacts.Size, rightFacts.Mod.UTC().Format(time.RFC3339Nano)),
+		}
 	}
 
 	return r.db.Put(ctx, state.Entry{
-		Path:      rel,
+		Path:      key,
+		LeftPath:  leftPath,
+		RightPath: rightPath,
 		LeftSize:  leftFacts.Size,
 		LeftMod:   leftFacts.Mod,
 		LeftHash:  leftFacts.Hash,

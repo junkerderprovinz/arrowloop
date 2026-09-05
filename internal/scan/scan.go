@@ -11,17 +11,27 @@ import (
 	"errors"
 	"fmt"
 	"path"
+	"sort"
 	"strings"
 	"time"
 
 	"github.com/rclone/rclone/fs"
 	"github.com/rclone/rclone/fs/hash"
 	"github.com/rclone/rclone/fs/walk"
+
+	"github.com/junkerderprovinz/reeveroll/internal/filter"
+	"github.com/junkerderprovinz/reeveroll/internal/pathid"
 )
 
 // Entry is one file as it exists right now on one side.
+//
+// Path is what the backend actually calls it, byte for byte, and it is what
+// gets handed back to the backend for any operation. Key is what the file is
+// matched by, which can differ: a name stored decomposed on macOS and composed
+// on Windows is one file with two spellings.
 type Entry struct {
 	Path string
+	Key  string
 	Size int64
 	Mod  time.Time
 
@@ -34,8 +44,39 @@ type Entry struct {
 // move or delete it without listing the side a second time.
 func (e *Entry) Object() fs.Object { return e.obj }
 
-// Side is a listing of one side, keyed by relative path with forward slashes.
+// Side is a listing of one side, keyed by matching key.
 type Side map[string]*Entry
+
+// Collision is two files on ONE side whose names differ only in ways the other
+// side cannot represent, almost always just letter case.
+//
+// This has to be reported rather than resolved. Copying both onto a
+// case-insensitive destination means the second silently overwrites the first,
+// and the engine would then record that overwrite as a successful sync.
+type Collision struct {
+	Key   string
+	Paths []string
+}
+
+// Listing is what one side looks like plus anything wrong with it.
+type Listing struct {
+	Files      Side
+	Collisions []Collision
+	Excluded   int
+}
+
+// Options controls how a side is read.
+type Options struct {
+	// FoldCase must be true when EITHER side is case-insensitive. It is a
+	// property of the job, not of one side: folding on one end only makes two
+	// files over there map onto one file over here, and the engine then
+	// oscillates between them.
+	FoldCase bool
+
+	// Exclude hides paths from the job entirely. The same set has to be applied
+	// to the stored record as well, or newly excluded files read as deletions.
+	Exclude *filter.Set
+}
 
 // reserved names this tool keeps for itself inside a synced tree. They are
 // skipped on both sides, otherwise the trash would be synced into the other
@@ -57,8 +98,10 @@ func IsReserved(rel string) bool {
 // file on every run costs more than the sync itself, and most files are
 // settled by size and modification time alone. The hash is fetched lazily by
 // Hash below, only for the files where it actually decides something.
-func List(ctx context.Context, f fs.Fs) (Side, error) {
-	out := make(Side)
+func List(ctx context.Context, f fs.Fs, opt Options) (*Listing, error) {
+	out := &Listing{Files: make(Side)}
+	clashes := map[string][]string{}
+
 	err := walk.ListR(ctx, f, "", true, -1, walk.ListObjects, func(entries fs.DirEntries) error {
 		for _, entry := range entries {
 			obj, ok := entry.(fs.Object)
@@ -69,18 +112,41 @@ func List(ctx context.Context, f fs.Fs) (Side, error) {
 			if IsReserved(rel) {
 				continue
 			}
-			out[rel] = &Entry{
-				Path: rel,
-				Size: obj.Size(),
-				Mod:  obj.ModTime(ctx),
-				obj:  obj,
+			if opt.Exclude.Excluded(rel) {
+				out.Excluded++
+				continue
 			}
+			key := pathid.Key(rel, opt.FoldCase)
+			if first, seen := out.Files[key]; seen {
+				clashes[key] = append(clashes[key], first.Path, rel)
+				continue
+			}
+			out.Files[key] = &Entry{Path: rel, Key: key, Size: obj.Size(), Mod: obj.ModTime(ctx), obj: obj}
 		}
 		return nil
 	})
 	if err != nil {
 		return nil, fmt.Errorf("list %s: %w", f.Name(), err)
 	}
+
+	for key, paths := range clashes {
+		// The first path was already in the map, so it appears twice in the
+		// slice the first time a clash is seen. Collapse it.
+		seen := map[string]bool{}
+		var uniq []string
+		for _, p := range paths {
+			if !seen[p] {
+				seen[p] = true
+				uniq = append(uniq, p)
+			}
+		}
+		sort.Strings(uniq)
+		out.Collisions = append(out.Collisions, Collision{Key: key, Paths: uniq})
+		// A colliding key is removed from the listing entirely. Leaving one of
+		// the two in would sync an arbitrary winner and quietly drop the other.
+		delete(out.Files, key)
+	}
+	sort.Slice(out.Collisions, func(i, j int) bool { return out.Collisions[i].Key < out.Collisions[j].Key })
 	return out, nil
 }
 
