@@ -12,10 +12,10 @@ import (
 
 	_ "github.com/rclone/rclone/backend/local"
 
-	"github.com/junkerderprovinz/reeveroll/internal/apply"
-	"github.com/junkerderprovinz/reeveroll/internal/engine"
-	"github.com/junkerderprovinz/reeveroll/internal/plan"
-	"github.com/junkerderprovinz/reeveroll/internal/state"
+	"github.com/junkerderprovinz/arrowloop/internal/apply"
+	"github.com/junkerderprovinz/arrowloop/internal/engine"
+	"github.com/junkerderprovinz/arrowloop/internal/plan"
+	"github.com/junkerderprovinz/arrowloop/internal/state"
 )
 
 // TestConflictSurvivesACrashAtEveryStep pins the crash behaviour of the conflict

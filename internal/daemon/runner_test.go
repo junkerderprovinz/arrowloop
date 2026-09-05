@@ -13,10 +13,10 @@ import (
 
 	_ "github.com/rclone/rclone/backend/local"
 
-	"github.com/junkerderprovinz/reeveroll/internal/daemon"
-	"github.com/junkerderprovinz/reeveroll/internal/history"
-	"github.com/junkerderprovinz/reeveroll/internal/job"
-	"github.com/junkerderprovinz/reeveroll/internal/volume"
+	"github.com/junkerderprovinz/arrowloop/internal/daemon"
+	"github.com/junkerderprovinz/arrowloop/internal/history"
+	"github.com/junkerderprovinz/arrowloop/internal/job"
+	"github.com/junkerderprovinz/arrowloop/internal/volume"
 )
 
 // fixture builds a working configuration over two real temporary folders.
@@ -30,7 +30,7 @@ func fixture(t *testing.T, body func(dir, left, right string) string) (*job.Conf
 			t.Fatalf("mkdir: %v", err)
 		}
 	}
-	path := filepath.Join(dir, "reeveroll.json")
+	path := filepath.Join(dir, "arrowloop.json")
 	if err := os.WriteFile(path, []byte(body(dir, left, right)), 0o644); err != nil {
 		t.Fatalf("write config: %v", err)
 	}
@@ -297,17 +297,17 @@ func TestAnUnpluggedVolumeIsNotARun(t *testing.T) {
 	// Back in the machine, at a different mount point, which is the case a
 	// drive letter cannot survive.
 	moved := t.TempDir()
-	if err := os.MkdirAll(filepath.Join(moved, ".reeveroll"), 0o755); err != nil {
+	if err := os.MkdirAll(filepath.Join(moved, ".arrowloop"), 0o755); err != nil {
 		t.Fatalf("mkdir: %v", err)
 	}
-	body, err := os.ReadFile(filepath.Join(drive, ".reeveroll", "volume.json"))
+	body, err := os.ReadFile(filepath.Join(drive, ".arrowloop", "volume.json"))
 	if err != nil {
 		t.Fatalf("read the marker: %v", err)
 	}
 	if err := os.Rename(filepath.Join(drive, "photos"), filepath.Join(moved, "photos")); err != nil {
 		t.Fatalf("move the contents: %v", err)
 	}
-	if err := os.WriteFile(filepath.Join(moved, ".reeveroll", "volume.json"), body, 0o644); err != nil {
+	if err := os.WriteFile(filepath.Join(moved, ".arrowloop", "volume.json"), body, 0o644); err != nil {
 		t.Fatalf("write the marker: %v", err)
 	}
 	attached(moved)

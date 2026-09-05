@@ -13,11 +13,11 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/junkerderprovinz/reeveroll/internal/boot"
-	"github.com/junkerderprovinz/reeveroll/internal/daemon"
-	"github.com/junkerderprovinz/reeveroll/internal/history"
-	"github.com/junkerderprovinz/reeveroll/internal/web"
-	webui "github.com/junkerderprovinz/reeveroll/web"
+	"github.com/junkerderprovinz/arrowloop/internal/boot"
+	"github.com/junkerderprovinz/arrowloop/internal/daemon"
+	"github.com/junkerderprovinz/arrowloop/internal/history"
+	"github.com/junkerderprovinz/arrowloop/internal/web"
+	webui "github.com/junkerderprovinz/arrowloop/web"
 )
 
 // cmdWeb serves the interface and, unless told otherwise, runs the schedules

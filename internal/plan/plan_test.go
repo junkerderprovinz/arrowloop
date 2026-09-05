@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/junkerderprovinz/reeveroll/internal/scan"
-	"github.com/junkerderprovinz/reeveroll/internal/state"
+	"github.com/junkerderprovinz/arrowloop/internal/scan"
+	"github.com/junkerderprovinz/arrowloop/internal/state"
 )
 
 var base = time.Unix(1700000000, 0).UTC()

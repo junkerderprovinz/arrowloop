@@ -1,4 +1,4 @@
-module github.com/junkerderprovinz/reeveroll
+module github.com/junkerderprovinz/arrowloop
 
 go 1.26.4
 

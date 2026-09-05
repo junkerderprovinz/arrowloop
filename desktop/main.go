@@ -1,4 +1,4 @@
-// Command reeveroll-desktop is the same engine in a window.
+// Command arrowloop-desktop is the same engine in a window.
 //
 // It is not a client talking to a server: the scheduler, the run log and the
 // API all live in this process, and the window is a webview pointed at them.
@@ -30,12 +30,12 @@ import (
 
 	"github.com/rclone/rclone/fs/config/configfile"
 
-	"github.com/junkerderprovinz/reeveroll/internal/daemon"
-	"github.com/junkerderprovinz/reeveroll/internal/engine"
-	"github.com/junkerderprovinz/reeveroll/internal/history"
-	"github.com/junkerderprovinz/reeveroll/internal/job"
-	"github.com/junkerderprovinz/reeveroll/internal/notify"
-	"github.com/junkerderprovinz/reeveroll/internal/web"
+	"github.com/junkerderprovinz/arrowloop/internal/daemon"
+	"github.com/junkerderprovinz/arrowloop/internal/engine"
+	"github.com/junkerderprovinz/arrowloop/internal/history"
+	"github.com/junkerderprovinz/arrowloop/internal/job"
+	"github.com/junkerderprovinz/arrowloop/internal/notify"
+	"github.com/junkerderprovinz/arrowloop/internal/web"
 )
 
 // The interface is embedded here as well as in the command line binary. Wails
@@ -99,7 +99,7 @@ func run() error {
 	}()
 
 	return wails.Run(&options.App{
-		Title:  "ReeveRoll",
+		Title:  "ArrowLoop",
 		Width:  1100,
 		Height: 760,
 		// The API is handed to the asset server as the fallback handler, so
@@ -120,7 +120,7 @@ func configLocation() (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("find the configuration directory: %w", err)
 	}
-	return filepath.Join(base, "ReeveRoll", "reeveroll.json"), nil
+	return filepath.Join(base, "ArrowLoop", "arrowloop.json"), nil
 }
 
 const starterConfig = `{

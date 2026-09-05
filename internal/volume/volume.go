@@ -37,7 +37,7 @@ const Prefix = "volume:"
 // markerPath is where the identity lives, relative to the volume root. It sits
 // under the same reserved directory the engine already skips when listing, so
 // a marker never travels to the other side of a sync.
-const markerPath = ".reeveroll/volume.json"
+const markerPath = ".arrowloop/volume.json"
 
 // Marker is what is written on the volume.
 type Marker struct {

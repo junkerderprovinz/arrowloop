@@ -11,7 +11,7 @@ import (
 func writeConfig(t *testing.T, body string) string {
 	t.Helper()
 	dir := t.TempDir()
-	path := filepath.Join(dir, "reeveroll.json")
+	path := filepath.Join(dir, "arrowloop.json")
 	if err := os.WriteFile(path, []byte(body), 0o644); err != nil {
 		t.Fatalf("write config: %v", err)
 	}

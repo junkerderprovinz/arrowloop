@@ -12,15 +12,15 @@ import (
 	"text/tabwriter"
 	"time"
 
-	"github.com/junkerderprovinz/reeveroll/internal/daemon"
-	"github.com/junkerderprovinz/reeveroll/internal/engine"
-	"github.com/junkerderprovinz/reeveroll/internal/history"
-	"github.com/junkerderprovinz/reeveroll/internal/job"
-	"github.com/junkerderprovinz/reeveroll/internal/notify"
-	"github.com/junkerderprovinz/reeveroll/internal/service"
+	"github.com/junkerderprovinz/arrowloop/internal/daemon"
+	"github.com/junkerderprovinz/arrowloop/internal/engine"
+	"github.com/junkerderprovinz/arrowloop/internal/history"
+	"github.com/junkerderprovinz/arrowloop/internal/job"
+	"github.com/junkerderprovinz/arrowloop/internal/notify"
+	"github.com/junkerderprovinz/arrowloop/internal/service"
 )
 
-const defaultConfig = "reeveroll.json"
+const defaultConfig = "arrowloop.json"
 
 // load reads the configuration and starts the process-wide accounting, which is
 // what makes a bandwidth limit real rather than decorative.

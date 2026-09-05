@@ -19,8 +19,8 @@ import (
 	"github.com/rclone/rclone/fs/hash"
 	"github.com/rclone/rclone/fs/walk"
 
-	"github.com/junkerderprovinz/reeveroll/internal/filter"
-	"github.com/junkerderprovinz/reeveroll/internal/pathid"
+	"github.com/junkerderprovinz/arrowloop/internal/filter"
+	"github.com/junkerderprovinz/arrowloop/internal/pathid"
 )
 
 // Entry is one file as it exists right now on one side.
@@ -94,7 +94,7 @@ type Options struct {
 // skipped on both sides, otherwise the trash would be synced into the other
 // side's trash, forever.
 const (
-	MetaDir  = ".reeveroll"
+	MetaDir  = ".arrowloop"
 	TrashDir = MetaDir + "/trash"
 )
 

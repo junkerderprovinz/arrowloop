@@ -8,9 +8,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/junkerderprovinz/reeveroll/internal/filter"
-	"github.com/junkerderprovinz/reeveroll/internal/scan"
-	"github.com/junkerderprovinz/reeveroll/internal/watch"
+	"github.com/junkerderprovinz/arrowloop/internal/filter"
+	"github.com/junkerderprovinz/arrowloop/internal/scan"
+	"github.com/junkerderprovinz/arrowloop/internal/watch"
 )
 
 // harness starts a watcher over a temporary tree and counts what it reports.

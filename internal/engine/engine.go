@@ -14,11 +14,11 @@ import (
 	"github.com/rclone/rclone/fs"
 	"github.com/rclone/rclone/fs/accounting"
 
-	"github.com/junkerderprovinz/reeveroll/internal/apply"
-	"github.com/junkerderprovinz/reeveroll/internal/filter"
-	"github.com/junkerderprovinz/reeveroll/internal/plan"
-	"github.com/junkerderprovinz/reeveroll/internal/scan"
-	"github.com/junkerderprovinz/reeveroll/internal/state"
+	"github.com/junkerderprovinz/arrowloop/internal/apply"
+	"github.com/junkerderprovinz/arrowloop/internal/filter"
+	"github.com/junkerderprovinz/arrowloop/internal/plan"
+	"github.com/junkerderprovinz/arrowloop/internal/scan"
+	"github.com/junkerderprovinz/arrowloop/internal/state"
 )
 
 // Options is everything a run needs beyond the two ends and the record.

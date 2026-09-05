@@ -1,4 +1,4 @@
-// Command reeveroll synchronises two folders in both directions.
+// Command arrowloop synchronises two folders in both directions.
 //
 // It has two ways in. `sync` takes a pair of paths on the command line and runs
 // once, which is what a person wants while setting a job up or checking a
@@ -28,15 +28,15 @@ import (
 	_ "github.com/rclone/rclone/backend/smb"
 )
 
-const usage = `reeveroll synchronises two folders in both directions.
+const usage = `arrowloop synchronises two folders in both directions.
 
-  reeveroll sync     -left <path> -right <path> -state <db>   run one pair once
-  reeveroll run      -config <file> <job>                     run one named job now
-  reeveroll web      -config <file>                           serve the interface, schedules included
-  reeveroll daemon   -config <file>                           run every scheduled job, no interface
-  reeveroll jobs     -config <file>                           list the configured jobs
-  reeveroll history  -config <file> [-job <name>]             what the runs did
-  reeveroll service  [-config <file>] [-os <goos>]            the service file for this system
+  arrowloop sync     -left <path> -right <path> -state <db>   run one pair once
+  arrowloop run      -config <file> <job>                     run one named job now
+  arrowloop web      -config <file>                           serve the interface, schedules included
+  arrowloop daemon   -config <file>                           run every scheduled job, no interface
+  arrowloop jobs     -config <file>                           list the configured jobs
+  arrowloop history  -config <file> [-job <name>]             what the runs did
+  arrowloop service  [-config <file>] [-os <goos>]            the service file for this system
 
 Every command takes -h for its own flags.
 `

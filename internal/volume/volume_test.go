@@ -39,7 +39,7 @@ func TestAVolumeIsFoundAfterItMoves(t *testing.T) {
 	// letter and on Linux a different mount point. Everything about the path
 	// changes except the disk.
 	second := t.TempDir()
-	if err := os.MkdirAll(filepath.Join(second, ".reeveroll"), 0o755); err != nil {
+	if err := os.MkdirAll(filepath.Join(second, ".arrowloop"), 0o755); err != nil {
 		t.Fatalf("mkdir: %v", err)
 	}
 	body, err := os.ReadFile(filepath.Join(first, filepath.FromSlash(markerPath)))
@@ -124,7 +124,7 @@ func TestMarkingTwiceKeepsOneIdentity(t *testing.T) {
 // engine syncs, so it has to be under the reserved prefix or it would travel to
 // the other side and one disk's identity would end up on another.
 func TestTheMarkerLivesWhereTheScannerSkips(t *testing.T) {
-	if !strings.HasPrefix(markerPath, ".reeveroll/") {
+	if !strings.HasPrefix(markerPath, ".arrowloop/") {
 		t.Fatalf("the marker at %q is not under the reserved prefix and would be synced", markerPath)
 	}
 }

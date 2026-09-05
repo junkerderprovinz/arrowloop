@@ -1,13 +1,13 @@
 # Command line
 
 ```
-reeveroll sync     -left <path> -right <path> -state <db>   run one pair once
-reeveroll run      -config <file> <job>                     run one named job now
-reeveroll web      -config <file>                           serve the interface, schedules included
-reeveroll daemon   -config <file>                           run every scheduled job, no interface
-reeveroll jobs     -config <file>                           what is configured, and when each last worked
-reeveroll history  -config <file> [-job <name>]             what the runs did
-reeveroll service  [-config <file>] [-os <goos>]            the service file for this system
+arrowloop sync     -left <path> -right <path> -state <db>   run one pair once
+arrowloop run      -config <file> <job>                     run one named job now
+arrowloop web      -config <file>                           serve the interface, schedules included
+arrowloop daemon   -config <file>                           run every scheduled job, no interface
+arrowloop jobs     -config <file>                           what is configured, and when each last worked
+arrowloop history  -config <file> [-job <name>]             what the runs did
+arrowloop service  [-config <file>] [-os <goos>]            the service file for this system
 ```
 
 Every command takes `-h` for its own flags.
@@ -18,7 +18,7 @@ The shape for setting a job up: nothing to write to disk first, and `-dry-run`
 to see what would happen before anything does.
 
 ```bash
-reeveroll sync -left /data/Photos -right sftp:backup/photos -state photos.db -dry-run
+arrowloop sync -left /data/Photos -right sftp:backup/photos -state photos.db -dry-run
 ```
 
 Both sides accept anything rclone accepts.
@@ -67,8 +67,8 @@ registering a service means writing outside your own files and, on two of the
 three systems, asking for administrative rights.
 
 ```bash
-reeveroll service -config /etc/reeveroll/reeveroll.json
-reeveroll service -os windows
+arrowloop service -config /etc/arrowloop/arrowloop.json
+arrowloop service -os windows
 ```
 
 Three things it tells you that are otherwise found out the hard way:

@@ -92,12 +92,12 @@ jobs:
         working-directory: desktop
         run: |
           set -eu
-          hdiutil create -volname "ReeveRoll" -srcfolder build/bin/ReeveRoll.app -ov -format UDZO build/bin/ReeveRoll.dmg
-          rm -rf build/bin/ReeveRoll.app
+          hdiutil create -volname "ArrowLoop" -srcfolder build/bin/ArrowLoop.app -ov -format UDZO build/bin/ArrowLoop.dmg
+          rm -rf build/bin/ArrowLoop.app
 
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
-          name: reeveroll-${{ matrix.slug }}
+          name: arrowloop-${{ matrix.slug }}
           path: desktop/build/bin/*
           if-no-files-found: error
 
@@ -120,15 +120,15 @@ jobs:
         run: |
           set -eu
           mkdir -p dist
-          cp bundles/reeveroll-windows-amd64/ReeveRoll.exe \
-            "dist/reeveroll-${GITHUB_REF_NAME}-windows-amd64-portable.exe"
-          cp bundles/reeveroll-windows-amd64/*-installer.exe \
-            "dist/reeveroll-${GITHUB_REF_NAME}-windows-amd64-installer.exe"
-          cp bundles/reeveroll-macos-universal/ReeveRoll.dmg \
-            "dist/reeveroll-${GITHUB_REF_NAME}-macos-universal.dmg"
-          cp bundles/reeveroll-linux-amd64/ReeveRoll \
-            "dist/reeveroll-${GITHUB_REF_NAME}-linux-amd64"
-          chmod +x "dist/reeveroll-${GITHUB_REF_NAME}-linux-amd64"
+          cp bundles/arrowloop-windows-amd64/ArrowLoop.exe \
+            "dist/arrowloop-${GITHUB_REF_NAME}-windows-amd64-portable.exe"
+          cp bundles/arrowloop-windows-amd64/*-installer.exe \
+            "dist/arrowloop-${GITHUB_REF_NAME}-windows-amd64-installer.exe"
+          cp bundles/arrowloop-macos-universal/ArrowLoop.dmg \
+            "dist/arrowloop-${GITHUB_REF_NAME}-macos-universal.dmg"
+          cp bundles/arrowloop-linux-amd64/ArrowLoop \
+            "dist/arrowloop-${GITHUB_REF_NAME}-linux-amd64"
+          chmod +x "dist/arrowloop-${GITHUB_REF_NAME}-linux-amd64"
           ls -lh dist
 
       # The release is expected to exist by the time these are ready, but a

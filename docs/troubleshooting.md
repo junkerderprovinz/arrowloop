@@ -49,8 +49,8 @@ Look at the postponed list; every run prints one. The usual reasons:
 
 ## The job has not run for days
 
-`reeveroll jobs` shows when each one last **succeeded**. If that is old while
-`reeveroll history` shows recent runs, the job is failing rather than idle, and
+`arrowloop jobs` shows when each one last **succeeded**. If that is old while
+`arrowloop history` shows recent runs, the job is failing rather than idle, and
 the history carries the error.
 
 If neither shows anything, the schedule may simply never fire: a cron expression

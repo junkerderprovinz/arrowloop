@@ -20,15 +20,15 @@ import (
 	"github.com/rclone/rclone/fs/fspath"
 	"github.com/robfig/cron/v3"
 
-	"github.com/junkerderprovinz/reeveroll/internal/apply"
-	"github.com/junkerderprovinz/reeveroll/internal/engine"
-	"github.com/junkerderprovinz/reeveroll/internal/history"
-	"github.com/junkerderprovinz/reeveroll/internal/job"
-	"github.com/junkerderprovinz/reeveroll/internal/notify"
-	"github.com/junkerderprovinz/reeveroll/internal/plan"
-	"github.com/junkerderprovinz/reeveroll/internal/state"
-	"github.com/junkerderprovinz/reeveroll/internal/volume"
-	"github.com/junkerderprovinz/reeveroll/internal/watch"
+	"github.com/junkerderprovinz/arrowloop/internal/apply"
+	"github.com/junkerderprovinz/arrowloop/internal/engine"
+	"github.com/junkerderprovinz/arrowloop/internal/history"
+	"github.com/junkerderprovinz/arrowloop/internal/job"
+	"github.com/junkerderprovinz/arrowloop/internal/notify"
+	"github.com/junkerderprovinz/arrowloop/internal/plan"
+	"github.com/junkerderprovinz/arrowloop/internal/state"
+	"github.com/junkerderprovinz/arrowloop/internal/volume"
+	"github.com/junkerderprovinz/arrowloop/internal/watch"
 )
 
 // ErrAlreadyRunning is returned when a job is asked for while the same job is
@@ -356,9 +356,9 @@ func (r *Runner) announce(ctx context.Context, rec history.Run, res apply.Result
 		return
 	}
 
-	subject := fmt.Sprintf("ReeveRoll: %s finished", rec.Job)
+	subject := fmt.Sprintf("ArrowLoop: %s finished", rec.Job)
 	if rec.Failed() {
-		subject = fmt.Sprintf("ReeveRoll: %s FAILED", rec.Job)
+		subject = fmt.Sprintf("ArrowLoop: %s FAILED", rec.Job)
 	}
 
 	var b strings.Builder

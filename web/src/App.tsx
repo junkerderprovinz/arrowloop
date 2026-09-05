@@ -24,7 +24,7 @@ import { wireTooltips } from './lib/tooltip'
 type Tab = 'jobs' | 'edit' | 'targets' | 'history' | 'look'
 type Theme = 'dark' | 'light'
 
-const THEME_KEY = 'reeveroll.theme'
+const THEME_KEY = 'arrowloop.theme'
 
 /**
  * The theme in use.
@@ -146,7 +146,7 @@ export function App() {
         {/* One hero per page, and this is it: the wordmark. Everything else on
             the page is supporting detail at small type. */}
         <h1 className="text-[20px] font-semibold tracking-tight">
-          Reeve<span className="text-accentInk">Roll</span>
+          Arrow<span className="text-accentInk">Loop</span>
         </h1>
         <Selector<Tab>
           scale="small"

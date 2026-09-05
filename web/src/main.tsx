@@ -18,7 +18,7 @@ applyStoredLanguage()
 // not set to, so there is one path here rather than two.
 const stored = (() => {
   try {
-    return localStorage.getItem('reeveroll.theme')
+    return localStorage.getItem('arrowloop.theme')
   } catch {
     return null
   }

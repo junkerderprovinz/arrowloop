@@ -5,7 +5,7 @@ code. It is a correctly executed deletion that nobody wanted.
 
 ## Nothing is deleted outright
 
-A deletion is a move into `.reeveroll/trash/<run>/` on the side that loses the
+A deletion is a move into `.arrowloop/trash/<run>/` on the side that loses the
 file. The trash sits inside the tree but under a prefix the scanner skips, so it
 never travels to the other side.
 

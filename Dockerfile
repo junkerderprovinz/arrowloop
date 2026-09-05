@@ -1,8 +1,8 @@
 # =============================================================================
-# reeveroll — two-way file synchronisation with a state database and a brake
+# arrowloop — two-way file synchronisation with a state database and a brake
 #
-# GitHub:  https://github.com/junkerderprovinz/reeveroll
-# Image:   ghcr.io/junkerderprovinz/reeveroll
+# GitHub:  https://github.com/junkerderprovinz/arrowloop
+# Image:   ghcr.io/junkerderprovinz/arrowloop
 # License: AGPL-3.0-only
 #
 # One static Go binary. rclone is compiled IN as a library rather than shelled
@@ -47,15 +47,15 @@ ARG TARGETARCH
 # unstamped local build, which is worth being able to see.
 ARG VERSION=dev
 RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} \
-    go build -ldflags "-s -w -X github.com/junkerderprovinz/reeveroll/internal/boot.Version=${VERSION}" \
-    -o /out/reeveroll ./cmd/reeveroll
+    go build -ldflags "-s -w -X github.com/junkerderprovinz/arrowloop/internal/boot.Version=${VERSION}" \
+    -o /out/arrowloop ./cmd/arrowloop
 
 # ---- Stage 3: runtime -------------------------------------------------------
 FROM debian:stable-slim AS runtime
 
-LABEL org.opencontainers.image.title="reeveroll" \
+LABEL org.opencontainers.image.title="arrowloop" \
       org.opencontainers.image.description="Two-way file synchronisation with a per-file state database, a trash, and brakes that refuse an implausible deletion." \
-      org.opencontainers.image.source="https://github.com/junkerderprovinz/reeveroll" \
+      org.opencontainers.image.source="https://github.com/junkerderprovinz/arrowloop" \
       org.opencontainers.image.licenses="AGPL-3.0-only"
 
 # ca-certificates for TLS to S3 and WebDAV, tini so a stop signal reaches the
@@ -66,9 +66,9 @@ RUN set -eux; \
     apt-get install -y --no-install-recommends ca-certificates tini tzdata; \
     rm -rf /var/lib/apt/lists/*
 
-COPY --from=build /out/reeveroll /usr/local/bin/reeveroll
+COPY --from=build /out/arrowloop /usr/local/bin/arrowloop
 
-# /config holds reeveroll.json, the per-job state databases and the run log.
+# /config holds arrowloop.json, the per-job state databases and the run log.
 # It is the one directory that must survive the container, and the template
 # says so.
 VOLUME ["/config"]
@@ -78,11 +78,11 @@ EXPOSE 8422
 # loopback would mean nobody can reach it at all. The exposure decision belongs
 # to whoever publishes the port, and the template documents that this interface
 # has no login of its own.
-ENV REEVEROLL_ADDR=0.0.0.0:8422 \
+ENV ARROWLOOP_ADDR=0.0.0.0:8422 \
     TZ=Europe/Berlin
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/usr/local/bin/reeveroll", "healthcheck"]
+    CMD ["/usr/local/bin/arrowloop", "healthcheck"]
 
-ENTRYPOINT ["/usr/bin/tini", "--", "/usr/local/bin/reeveroll"]
-CMD ["web", "-config", "/config/reeveroll.json"]
+ENTRYPOINT ["/usr/bin/tini", "--", "/usr/local/bin/arrowloop"]
+CMD ["web", "-config", "/config/arrowloop.json"]

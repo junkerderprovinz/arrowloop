@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/junkerderprovinz/reeveroll/internal/remotes"
-	"github.com/junkerderprovinz/reeveroll/internal/volume"
+	"github.com/junkerderprovinz/arrowloop/internal/remotes"
+	"github.com/junkerderprovinz/arrowloop/internal/volume"
 )
 
 // The two things a job needs before it can point anywhere: a place to reach,

@@ -22,7 +22,7 @@ var art string
 var Version = "dev"
 
 const (
-	name     = "ReeveRoll"
+	name     = "ArrowLoop"
 	subtitle = "two-way file synchronisation"
 )
 
@@ -45,6 +45,6 @@ func Banner() {
 // Ready prints the one line a log reader is looking for, and is always the last
 // thing printed before the process blocks.
 func Ready(url string) {
-	fmt.Printf("  \033[0;32m✓ REEVEROLL%s IS READY\033[0m - Open the WebUI now (%s)\n", versionTag(), url)
+	fmt.Printf("  \033[0;32m✓ ARROWLOOP%s IS READY\033[0m - Open the WebUI now (%s)\n", versionTag(), url)
 	fmt.Println()
 }

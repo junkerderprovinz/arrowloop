@@ -39,7 +39,7 @@ jobs:
           context: .
           platforms: linux/amd64
           load: true
-          tags: reeveroll:smoke
+          tags: arrowloop:smoke
           build-args: VERSION=${{ github.ref_name }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -50,7 +50,7 @@ jobs:
           docker run -d --name smoke -p 8422:8422 \
             --cpus 1 --memory 512m \
             -v "$PWD/smoke-config:/config" \
-            reeveroll:smoke
+            arrowloop:smoke
           for i in $(seq 1 30); do
             if curl -fsS http://127.0.0.1:8422/api/jobs > /tmp/jobs.json; then
               echo "answered after ${i}s:"; cat /tmp/jobs.json; break
@@ -63,14 +63,14 @@ jobs:
           # and that path is exactly what a first Unraid install hits. An image
           # that instead dies on the missing file would restart-loop with an
           # error nobody can act on from the log.
-          test -f smoke-config/reeveroll.json
+          test -f smoke-config/arrowloop.json
 
           # The startup banner and the READY line are what somebody reading the
           # Unraid log actually looks for, so their absence is a defect.
           docker logs smoke | grep -q "IS READY"
 
           # And the healthcheck the image declares has to pass on its own terms.
-          docker exec smoke /usr/local/bin/reeveroll healthcheck
+          docker exec smoke /usr/local/bin/arrowloop healthcheck
 
       - name: Show the log and clean up
         if: always()

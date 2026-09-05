@@ -13,12 +13,12 @@ import (
 
 	rclonefs "github.com/rclone/rclone/fs"
 
-	"github.com/junkerderprovinz/reeveroll/internal/apply"
-	"github.com/junkerderprovinz/reeveroll/internal/engine"
-	"github.com/junkerderprovinz/reeveroll/internal/filter"
-	"github.com/junkerderprovinz/reeveroll/internal/plan"
-	"github.com/junkerderprovinz/reeveroll/internal/scan"
-	"github.com/junkerderprovinz/reeveroll/internal/state"
+	"github.com/junkerderprovinz/arrowloop/internal/apply"
+	"github.com/junkerderprovinz/arrowloop/internal/engine"
+	"github.com/junkerderprovinz/arrowloop/internal/filter"
+	"github.com/junkerderprovinz/arrowloop/internal/plan"
+	"github.com/junkerderprovinz/arrowloop/internal/scan"
+	"github.com/junkerderprovinz/arrowloop/internal/state"
 )
 
 // The same name, spelled the two ways real filesystems spell it. macOS stores
@@ -513,7 +513,7 @@ func TestAChosenConflictKeepsOneVersionAndBinsTheOther(t *testing.T) {
 		if err != nil || d.IsDir() {
 			return err
 		}
-		if !strings.Contains(filepath.ToSlash(p), ".reeveroll/trash") {
+		if !strings.Contains(filepath.ToSlash(p), ".arrowloop/trash") {
 			return nil
 		}
 		body, readErr := os.ReadFile(p)

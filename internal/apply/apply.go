@@ -20,11 +20,11 @@ import (
 	"github.com/rclone/rclone/fs/hash"
 	"github.com/rclone/rclone/fs/operations"
 
-	"github.com/junkerderprovinz/reeveroll/internal/lockprobe"
-	"github.com/junkerderprovinz/reeveroll/internal/pathid"
-	"github.com/junkerderprovinz/reeveroll/internal/plan"
-	"github.com/junkerderprovinz/reeveroll/internal/scan"
-	"github.com/junkerderprovinz/reeveroll/internal/state"
+	"github.com/junkerderprovinz/arrowloop/internal/lockprobe"
+	"github.com/junkerderprovinz/arrowloop/internal/pathid"
+	"github.com/junkerderprovinz/arrowloop/internal/plan"
+	"github.com/junkerderprovinz/arrowloop/internal/scan"
+	"github.com/junkerderprovinz/arrowloop/internal/state"
 )
 
 // Progress is told what a run is doing while it does it.

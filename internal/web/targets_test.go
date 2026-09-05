@@ -14,8 +14,8 @@ import (
 	"github.com/rclone/rclone/fs/config"
 	"github.com/rclone/rclone/fs/config/configfile"
 
-	"github.com/junkerderprovinz/reeveroll/internal/remotes"
-	"github.com/junkerderprovinz/reeveroll/internal/volume"
+	"github.com/junkerderprovinz/arrowloop/internal/remotes"
+	"github.com/junkerderprovinz/arrowloop/internal/volume"
 )
 
 type volumeList struct {
@@ -89,7 +89,7 @@ func TestMarkingADriveThroughTheScreen(t *testing.T) {
 	}
 	// The marker itself is left on the disk, so plugging it back in brings it
 	// back rather than asking for a new name.
-	if _, err := os.Stat(filepath.Join(drive, ".reeveroll", "volume.json")); err != nil {
+	if _, err := os.Stat(filepath.Join(drive, ".arrowloop", "volume.json")); err != nil {
 		t.Errorf("forgetting a drive deleted the marker on it: %v", err)
 	}
 }

@@ -14,8 +14,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/junkerderprovinz/reeveroll/internal/scan"
-	"github.com/junkerderprovinz/reeveroll/internal/state"
+	"github.com/junkerderprovinz/arrowloop/internal/scan"
+	"github.com/junkerderprovinz/arrowloop/internal/state"
 )
 
 // Side names one end of a sync job.

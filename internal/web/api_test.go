@@ -15,10 +15,10 @@ import (
 
 	_ "github.com/rclone/rclone/backend/local"
 
-	"github.com/junkerderprovinz/reeveroll/internal/daemon"
-	"github.com/junkerderprovinz/reeveroll/internal/history"
-	"github.com/junkerderprovinz/reeveroll/internal/job"
-	"github.com/junkerderprovinz/reeveroll/internal/web"
+	"github.com/junkerderprovinz/arrowloop/internal/daemon"
+	"github.com/junkerderprovinz/arrowloop/internal/history"
+	"github.com/junkerderprovinz/arrowloop/internal/job"
+	"github.com/junkerderprovinz/arrowloop/internal/web"
 )
 
 type harness struct {
@@ -40,7 +40,7 @@ func newHarness(t *testing.T) *harness {
 	}
 	body := fmt.Sprintf(`{"jobs":[{"name":"photos","left":%q,"right":%q,"state":%q,"quietPeriod":"0s"}]}`,
 		filepath.ToSlash(left), filepath.ToSlash(right), filepath.ToSlash(filepath.Join(dir, "photos.db")))
-	cfgPath := filepath.Join(dir, "reeveroll.json")
+	cfgPath := filepath.Join(dir, "arrowloop.json")
 	if err := os.WriteFile(cfgPath, []byte(body), 0o644); err != nil {
 		t.Fatalf("write config: %v", err)
 	}

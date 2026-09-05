@@ -513,7 +513,7 @@ export function languageFlag(code: string): string {
 export const isRtl = (code: string): boolean => LANGUAGES.find((l) => l.code === code)?.rtl ?? false
 
 const DEFAULT_CODE = 'en'
-const STORAGE_KEY = 'reeveroll.lang'
+const STORAGE_KEY = 'arrowloop.lang'
 
 /**
  * The language in use, resolved from the browser when nobody has chosen one.

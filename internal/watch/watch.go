@@ -25,8 +25,8 @@ import (
 
 	"github.com/fsnotify/fsnotify"
 
-	"github.com/junkerderprovinz/reeveroll/internal/filter"
-	"github.com/junkerderprovinz/reeveroll/internal/scan"
+	"github.com/junkerderprovinz/arrowloop/internal/filter"
+	"github.com/junkerderprovinz/arrowloop/internal/scan"
 )
 
 // Options configures one watcher.

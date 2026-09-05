@@ -24,7 +24,7 @@ import (
 	_ "github.com/rclone/rclone/backend/s3"
 	_ "github.com/rclone/rclone/backend/sftp"
 
-	"github.com/junkerderprovinz/reeveroll/internal/scan"
+	"github.com/junkerderprovinz/arrowloop/internal/scan"
 )
 
 // The two backends this product is sold on had never once been run. Every test
@@ -42,7 +42,7 @@ import (
 // for a bucket that exists only in this process.
 func startS3(t *testing.T, bucket string) string {
 	t.Helper()
-	const key, secret = "reeveroll-test", "reeveroll-secret"
+	const key, secret = "arrowloop-test", "arrowloop-secret"
 
 	backend := s3mem.New()
 	faker := gofakes3.New(backend, gofakes3.WithV4Auth(map[string]string{key: secret}))
@@ -222,7 +222,7 @@ func throughBackend(t *testing.T, remote string) {
 
 // TestThroughRealS3 runs a job against a genuine S3 API.
 func TestThroughRealS3(t *testing.T) {
-	throughBackend(t, startS3(t, "reeveroll"))
+	throughBackend(t, startS3(t, "arrowloop"))
 }
 
 // TestThroughRealSFTP runs a job against a genuine SFTP server over SSH.

@@ -78,7 +78,7 @@ func (m *Matrix) Send(ctx context.Context, subject, body string) error {
 	if m.Homeserver == "" || m.Room == "" || m.Token == "" {
 		return fmt.Errorf("matrix needs a homeserver, a room and a token")
 	}
-	txn := fmt.Sprintf("reeveroll-%d-%d", time.Now().UnixNano(), m.txn.Add(1))
+	txn := fmt.Sprintf("arrowloop-%d-%d", time.Now().UnixNano(), m.txn.Add(1))
 	endpoint := fmt.Sprintf("%s/_matrix/client/v3/rooms/%s/send/m.room.message/%s",
 		strings.TrimRight(m.Homeserver, "/"), url.PathEscape(m.Room), url.PathEscape(txn))
 

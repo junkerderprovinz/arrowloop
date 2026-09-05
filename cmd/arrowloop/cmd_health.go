@@ -15,10 +15,10 @@ import (
 // Loopback on purpose: this interface can start a job that deletes files and
 // has no login of its own, so reaching it from elsewhere has to be somebody's
 // explicit decision. Inside a container that decision is already made by
-// whoever publishes the port, which is why the image sets REEVEROLL_ADDR to
+// whoever publishes the port, which is why the image sets ARROWLOOP_ADDR to
 // 0.0.0.0 instead of carrying a second default in the code.
 func defaultAddr() string {
-	if fromEnv := strings.TrimSpace(os.Getenv("REEVEROLL_ADDR")); fromEnv != "" {
+	if fromEnv := strings.TrimSpace(os.Getenv("ARROWLOOP_ADDR")); fromEnv != "" {
 		return fromEnv
 	}
 	return "127.0.0.1:8422"

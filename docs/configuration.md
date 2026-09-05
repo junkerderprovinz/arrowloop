@@ -1,6 +1,6 @@
 # Configuring a job
 
-Jobs live in `reeveroll.json`. The Edit tab in the interface writes the same
+Jobs live in `arrowloop.json`. The Edit tab in the interface writes the same
 file, through the same validator, so neither way can produce something the other
 refuses.
 

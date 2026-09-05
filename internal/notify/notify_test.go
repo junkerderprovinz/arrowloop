@@ -30,7 +30,7 @@ func TestMatrixPostsWhereItSaysItWill(t *testing.T) {
 	defer srv.Close()
 
 	m := &Matrix{Homeserver: srv.URL, Room: "!room:example.org", Token: "secret", Client: srv.Client()}
-	if err := m.Send(context.Background(), "ReeveRoll: photos FAILED", "the left side did not mount"); err != nil {
+	if err := m.Send(context.Background(), "ArrowLoop: photos FAILED", "the left side did not mount"); err != nil {
 		t.Fatalf("send: %v", err)
 	}
 	if err := m.Send(context.Background(), "second", ""); err != nil {

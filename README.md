@@ -1,6 +1,6 @@
-<h1 align="center">ReeveRoll</h1>
+<h1 align="center">ArrowLoop</h1>
 
-<p align="center">A two-way file sync engine with a state database, a trash and a brake, plus the scheduler that keeps it running. Working title.</p>
+<p align="center">A two-way file sync engine with a state database, a trash and a brake, plus the scheduler that keeps it running.</p>
 
 <p align="center">Documentation lives in <a href="docs/">docs/</a> and is published once the repository is public.</p>
 
@@ -66,7 +66,7 @@ Case sensitivity is read from the backend, not configured. Plain lowercasing is 
 
 ## 4. Safety
 
-**Nothing is deleted outright.** A deletion is a move into `.reeveroll/trash/<run>/` on the side that loses the file. The trash sits inside the tree but under a prefix the scanner skips, so it never travels to the other side.
+**Nothing is deleted outright.** A deletion is a move into `.arrowloop/trash/<run>/` on the side that loses the file. The trash sits inside the tree but under a prefix the scanner skips, so it never travels to the other side.
 
 **The mass-delete brake.** A run that would delete more than half the known files stops and says so, with the first paths it would have touched. Below ten deletions it never fires, because deleting three of four files is proportionate and almost certainly meant.
 
@@ -99,8 +99,8 @@ Patterns follow gitignore's instinct: without a slash they match the file name a
 ## 6. Running it once
 
 ```
-go build ./cmd/reeveroll
-reeveroll sync -left <path or remote> -right <path or remote> -state <db file> [-dry-run]
+go build ./cmd/arrowloop
+arrowloop sync -left <path or remote> -right <path or remote> -state <db file> [-dry-run]
 ```
 
 `-dry-run` prints the plan and changes nothing. Both sides accept anything rclone accepts, so `sftp:backup/photos` and `s3:bucket/photos` work alongside plain paths.
@@ -125,14 +125,14 @@ The modification window only ever applies when a side cannot produce a hash. Whe
 
 ## 7. Running it unattended
 
-A shell history is not a place to keep jobs. Somebody with a photo folder, a documents folder and a server backup has three of them, with different schedules, different filters and different ideas about what may be deleted, so everything past `sync` works from a configuration file. There is a complete one in [reeveroll.example.json](reeveroll.example.json).
+A shell history is not a place to keep jobs. Somebody with a photo folder, a documents folder and a server backup has three of them, with different schedules, different filters and different ideas about what may be deleted, so everything past `sync` works from a configuration file. There is a complete one in [arrowloop.example.json](arrowloop.example.json).
 
 ```
-reeveroll run      -config reeveroll.json <job>    run one job now, whatever its schedule says
-reeveroll daemon   -config reeveroll.json          run every scheduled job until stopped
-reeveroll jobs     -config reeveroll.json          what is configured, and when each last WORKED
-reeveroll history  -config reeveroll.json          what the runs actually did
-reeveroll service  -config reeveroll.json          the file this system needs to keep the daemon alive
+arrowloop run      -config arrowloop.json <job>    run one job now, whatever its schedule says
+arrowloop daemon   -config arrowloop.json          run every scheduled job until stopped
+arrowloop jobs     -config arrowloop.json          what is configured, and when each last WORKED
+arrowloop history  -config arrowloop.json          what the runs actually did
+arrowloop service  -config arrowloop.json          the file this system needs to keep the daemon alive
 ```
 
 **Everything is validated at load time**, including cron expressions, durations and misspelled field names. A typo that only surfaces at three in the morning, on the one job that mattered, is the failure a daemon must not have. JSON normally ignores a field it does not recognise, so `"excludes"` instead of `"exclude"` would leave the filter empty and sync the very files somebody thought they had excluded; unknown fields are refused instead.
@@ -158,7 +158,7 @@ It never replaces the schedule, and the configuration refuses a watching job tha
 ## 8. The interface
 
 ```
-reeveroll web -config reeveroll.json          # http://127.0.0.1:8422, schedules included
+arrowloop web -config arrowloop.json          # http://127.0.0.1:8422, schedules included
 ```
 
 **The preview is the screen the product exists for.** Every other sync tool's main view is a progress bar, which is a report on a decision somebody already made for you. Here every proposed change is listed with its direction and the reason the engine gives for it, each row can be unticked, and nothing moves until the button is pressed.
@@ -171,7 +171,7 @@ Ticking is not decoration. The run re-plans and then keeps only the paths that w
 
 **It listens on loopback by default.** This interface can start a job that deletes files and it has no login of its own; anyone who wants it reachable has to say so, and should put something in front of it that asks who they are.
 
-`reeveroll daemon` is the same scheduler without the interface, for a machine where nobody is looking.
+`arrowloop daemon` is the same scheduler without the interface, for a machine where nobody is looking.
 
 <br>
 
@@ -180,14 +180,14 @@ Ticking is not decoration. The run re-plans and then keeps only the paths that w
 **As a container**, which is what an Unraid box wants:
 
 ```
-docker run -d --name reeveroll -p 8422:8422   -v /mnt/user/appdata/reeveroll:/config   -v /mnt/user:/data   ghcr.io/junkerderprovinz/reeveroll:latest
+docker run -d --name arrowloop -p 8422:8422   -v /mnt/user/appdata/arrowloop:/config   -v /mnt/user:/data   ghcr.io/junkerderprovinz/arrowloop:latest
 ```
 
-`/config` holds `reeveroll.json`, one state database per job and the run log, and it is the directory that must survive the container: without those databases every job forgets what the two sides agreed on and treats every file as new. A first start on an empty `/config` writes a starter configuration with one disabled example job, so the interface comes up and can be edited rather than crash-looping on a missing file. The Unraid template is [templates/my-ReeveRoll.xml](templates/my-ReeveRoll.xml).
+`/config` holds `arrowloop.json`, one state database per job and the run log, and it is the directory that must survive the container: without those databases every job forgets what the two sides agreed on and treats every file as new. A first start on an empty `/config` writes a starter configuration with one disabled example job, so the interface comes up and can be edited rather than crash-looping on a missing file. The Unraid template is [templates/my-ArrowLoop.xml](templates/my-ArrowLoop.xml).
 
 The image carries no second executable. rclone is compiled in as a library, so there is no version skew between the tool and the thing it drives, and nothing to keep separately up to date.
 
-**As a desktop application** on Windows, Linux or macOS, from the release page. It is not a client talking to a server: the scheduler, the run log and the API all live in the same process, and the window is a webview pointed at them. Nothing listens on the network at all, which is the difference between a desktop app and a server somebody did not ask to run. The schedules run for as long as the window is open; for a machine that should sync while nobody is looking, `reeveroll daemon` and `reeveroll service` are the right pair.
+**As a desktop application** on Windows, Linux or macOS, from the release page. It is not a client talking to a server: the scheduler, the run log and the API all live in the same process, and the window is a webview pointed at them. Nothing listens on the network at all, which is the difference between a desktop app and a server somebody did not ask to run. The schedules run for as long as the window is open; for a machine that should sync while nobody is looking, `arrowloop daemon` and `arrowloop service` are the right pair.
 
 The desktop builds are **not signed**. Windows shows its blue warning on first start (More info, Run anyway), and macOS needs a right-click and Open the first time. That is a deliberate trade for now rather than an oversight: a certificate is a recurring cost, and it is worth paying once there are users to pay it for.
 

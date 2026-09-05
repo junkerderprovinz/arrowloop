@@ -1,10 +1,10 @@
-site_name: ReeveRoll
+site_name: ArrowLoop
 site_description: Two-way file synchronisation with a per-file state database, a trash, and brakes that refuse an implausible deletion.
-site_url: https://junkerderprovinz.github.io/reeveroll/
+site_url: https://junkerderprovinz.github.io/arrowloop/
 site_author: Junker der Provinz
 
-repo_url: https://github.com/junkerderprovinz/reeveroll
-repo_name: junkerderprovinz/reeveroll
+repo_url: https://github.com/junkerderprovinz/arrowloop
+repo_name: junkerderprovinz/arrowloop
 edit_uri: edit/main/docs/
 
 copyright: Copyright (C) 2026 Junker der Provinz. Licensed AGPL-3.0.

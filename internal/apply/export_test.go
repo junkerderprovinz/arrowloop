@@ -3,7 +3,7 @@ package apply
 import (
 	"context"
 
-	"github.com/junkerderprovinz/reeveroll/internal/plan"
+	"github.com/junkerderprovinz/arrowloop/internal/plan"
 )
 
 // RunConflictPrefix executes only the first n steps of a conflict resolution.

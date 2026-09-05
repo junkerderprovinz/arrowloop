@@ -48,8 +48,8 @@ func Current(exe, config string) (Definition, error) { return For(runtime.GOOS, 
 
 func linux(exe, config string) Definition {
 	unit := fmt.Sprintf(`[Unit]
-Description=ReeveRoll file synchronisation
-Documentation=https://github.com/junkerderprovinz/reeveroll
+Description=ArrowLoop file synchronisation
+Documentation=https://github.com/junkerderprovinz/arrowloop
 After=network-online.target
 Wants=network-online.target
 
@@ -73,13 +73,13 @@ WantedBy=default.target
 `, exe, config)
 
 	return Definition{
-		Path:    "~/.config/systemd/user/reeveroll.service",
+		Path:    "~/.config/systemd/user/arrowloop.service",
 		Content: unit,
-		Install: "systemctl --user daemon-reload && systemctl --user enable --now reeveroll",
+		Install: "systemctl --user daemon-reload && systemctl --user enable --now arrowloop",
 		Notes: []string{
 			"This is a USER service, so it needs no root and stops when the user logs out.",
 			"To keep it running while nobody is logged in: sudo loginctl enable-linger $USER",
-			"Follow it with: journalctl --user -u reeveroll -f",
+			"Follow it with: journalctl --user -u arrowloop -f",
 		},
 	}
 }
@@ -90,7 +90,7 @@ func darwin(exe, config string) Definition {
 <plist version="1.0">
 <dict>
 	<key>Label</key>
-	<string>com.junkerderprovinz.reeveroll</string>
+	<string>com.junkerderprovinz.arrowloop</string>
 	<key>ProgramArguments</key>
 	<array>
 		<string>%s</string>
@@ -106,20 +106,20 @@ func darwin(exe, config string) Definition {
 		<false/>
 	</dict>
 	<key>StandardOutPath</key>
-	<string>/tmp/reeveroll.log</string>
+	<string>/tmp/arrowloop.log</string>
 	<key>StandardErrorPath</key>
-	<string>/tmp/reeveroll.log</string>
+	<string>/tmp/arrowloop.log</string>
 </dict>
 </plist>
 `, exe, config)
 
 	return Definition{
-		Path:    "~/Library/LaunchAgents/com.junkerderprovinz.reeveroll.plist",
+		Path:    "~/Library/LaunchAgents/com.junkerderprovinz.arrowloop.plist",
 		Content: plist,
-		Install: "launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.junkerderprovinz.reeveroll.plist",
+		Install: "launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.junkerderprovinz.arrowloop.plist",
 		Notes: []string{
 			"macOS asks for permission the first time the agent touches Desktop, Documents or Downloads. Until that is granted the job fails with an ordinary permission error, which looks like a bug and is not one.",
-			"To stop it: launchctl bootout gui/$(id -u)/com.junkerderprovinz.reeveroll",
+			"To stop it: launchctl bootout gui/$(id -u)/com.junkerderprovinz.arrowloop",
 		},
 	}
 }
@@ -128,14 +128,14 @@ func windows(exe, config string) Definition {
 	// sc.exe is fussy in two ways that cost people an afternoon: the space
 	// after binPath= is part of the syntax, and the whole command has to be one
 	// quoted string when the paths contain spaces.
-	install := fmt.Sprintf(`sc.exe create ReeveRoll binPath= "\"%s\" daemon -config \"%s\"" start= auto DisplayName= "ReeveRoll file synchronisation"`, exe, config)
+	install := fmt.Sprintf(`sc.exe create ArrowLoop binPath= "\"%s\" daemon -config \"%s\"" start= auto DisplayName= "ArrowLoop file synchronisation"`, exe, config)
 
 	return Definition{
 		Install: install,
 		Notes: []string{
 			"Run this in an elevated prompt; sc.exe cannot create a service without administrative rights.",
 			"A Windows service runs as LocalSystem by default, which has no mapped network drives and no user profile. A job pointing at a UNC path such as \\\\server\\share works; one pointing at Z:\\ does not.",
-			"Start it with: sc.exe start ReeveRoll, and remove it with: sc.exe delete ReeveRoll",
+			"Start it with: sc.exe start ArrowLoop, and remove it with: sc.exe delete ArrowLoop",
 			"This binary is not a native Windows service yet: it runs as an ordinary program under the service manager, so the Services panel will show it as running but stopping it is a kill rather than a clean shutdown.",
 		},
 	}

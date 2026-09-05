@@ -1,15 +1,15 @@
 <?xml version="1.0"?>
 <Container version="2">
-  <Name>ReeveRoll</Name>
-  <Repository>junkerderprovinz/reeveroll:latest</Repository>
-  <Registry>https://hub.docker.com/r/junkerderprovinz/reeveroll</Registry>
+  <Name>ArrowLoop</Name>
+  <Repository>junkerderprovinz/arrowloop:latest</Repository>
+  <Registry>https://hub.docker.com/r/junkerderprovinz/arrowloop</Registry>
   <Network>bridge</Network>
   <MyIP/>
   <Shell>bash</Shell>
   <Privileged>false</Privileged>
-  <Support>https://github.com/junkerderprovinz/reeveroll/issues</Support>
-  <Project>https://github.com/junkerderprovinz/reeveroll</Project>
-  <ReadMe>https://github.com/junkerderprovinz/reeveroll/blob/main/README.md</ReadMe>
+  <Support>https://github.com/junkerderprovinz/arrowloop/issues</Support>
+  <Project>https://github.com/junkerderprovinz/arrowloop</Project>
+  <ReadMe>https://github.com/junkerderprovinz/arrowloop/blob/main/README.md</ReadMe>
   <Overview>Two-way file synchronisation that shows you the plan before it moves anything.
 
 Every other sync tool's main screen is a progress bar, which is a report on a decision somebody already made for you. Here you get the decision: every proposed change listed with its direction and the reason for it, each row unticked if you disagree, and nothing touched until you press the button.
@@ -21,9 +21,9 @@ Local folders, Unraid shares, SMB, SFTP and S3-compatible storage, with rclone c
 Note: the WebUI has no login of its own. Keep it on your LAN or put it behind a reverse proxy that asks who you are.</Overview>
   <Category>Backup: Tools:Utilities</Category>
   <WebUI>http://[IP]:[PORT:8422]/</WebUI>
-  <TemplateURL>https://raw.githubusercontent.com/junkerderprovinz/reeveroll/main/templates/my-ReeveRoll.xml</TemplateURL>
-  <Icon>https://raw.githubusercontent.com/junkerderprovinz/reeveroll/main/.github/assets/icon.png</Icon>
-  <ExtraParams>--restart unless-stopped --hostname=reeveroll</ExtraParams>
+  <TemplateURL>https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/templates/my-ArrowLoop.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/icon.png</Icon>
+  <ExtraParams>--restart unless-stopped --hostname=arrowloop</ExtraParams>
   <DateInstalled/>
   <DonateText>If this template helps you, consider buying me a coffee.</DonateText>
   <DonateLink>https://buymeacoffee.com/junkerderprovinz</DonateLink>
@@ -40,13 +40,13 @@ Note: the WebUI has no login of its own. Keep it on your LAN or put it behind a 
   <Config
     Name="Config"
     Target="/config"
-    Default="/mnt/user/appdata/reeveroll"
+    Default="/mnt/user/appdata/arrowloop"
     Mode="rw"
-    Description="Holds reeveroll.json, one state database per job and the run log. This is the directory that must survive the container: without the state databases every job forgets what the two sides agreed on and treats every file as new."
+    Description="Holds arrowloop.json, one state database per job and the run log. This is the directory that must survive the container: without the state databases every job forgets what the two sides agreed on and treats every file as new."
     Type="Path"
     Display="always"
     Required="true"
-    Mask="false">/mnt/user/appdata/reeveroll</Config>
+    Mask="false">/mnt/user/appdata/arrowloop</Config>
   <Config
     Name="Data"
     Target="/data"
@@ -69,7 +69,7 @@ Note: the WebUI has no login of its own. Keep it on your LAN or put it behind a 
     Mask="false">Europe/Berlin</Config>
   <Config
     Name="Listen address"
-    Target="REEVEROLL_ADDR"
+    Target="ARROWLOOP_ADDR"
     Default="0.0.0.0:8422"
     Mode=""
     Description="Where the interface binds inside the container. Leave this alone unless you know why you are changing it: outside a container the program deliberately defaults to loopback, and the container overrides that because loopback inside a container means nobody can reach it."

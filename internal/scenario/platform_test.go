@@ -12,7 +12,7 @@ import (
 
 	rclonefs "github.com/rclone/rclone/fs"
 
-	"github.com/junkerderprovinz/reeveroll/internal/engine"
+	"github.com/junkerderprovinz/arrowloop/internal/engine"
 )
 
 // TestEmptyDirectoriesTravel covers the folders that hold nothing.
@@ -261,7 +261,7 @@ func configureMetadata(t *testing.T, on bool) {
 	t.Cleanup(func() { ci.Metadata = prev })
 }
 
-// TestConfigureSetsTheGlobalsItClaims guards the seam between ReeveRoll's
+// TestConfigureSetsTheGlobalsItClaims guards the seam between ArrowLoop's
 // options and rclone's process-wide config.
 //
 // rclone's own binary sets these from its flag parser, which is easy to mistake

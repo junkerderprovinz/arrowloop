@@ -1,14 +1,14 @@
-module github.com/junkerderprovinz/reeveroll/desktop
+module github.com/junkerderprovinz/arrowloop/desktop
 
 go 1.26.4
 
 // The engine is the module next door rather than a published dependency: the
 // desktop shell and the command line binary must never be able to drift onto
 // two different versions of the thing that decides what happens to a file.
-replace github.com/junkerderprovinz/reeveroll => ../
+replace github.com/junkerderprovinz/arrowloop => ../
 
 require (
-	github.com/junkerderprovinz/reeveroll v0.0.0
+	github.com/junkerderprovinz/arrowloop v0.0.0
 	github.com/rclone/rclone v1.75.1
 	github.com/wailsapp/wails/v2 v2.15.0
 )
