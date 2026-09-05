@@ -21,6 +21,7 @@ import (
 	"github.com/junkerderprovinz/reeveroll/internal/daemon"
 	"github.com/junkerderprovinz/reeveroll/internal/history"
 	"github.com/junkerderprovinz/reeveroll/internal/plan"
+	"github.com/junkerderprovinz/reeveroll/internal/scan"
 )
 
 // Server answers the browser.
@@ -100,6 +101,12 @@ type actionView struct {
 	From   string `json:"from,omitempty"`
 	To     string `json:"to,omitempty"`
 	Reason string `json:"reason"`
+
+	// What each side holds right now. Present for a conflict, where the whole
+	// question is which of two versions to keep, and for a copy, where it says
+	// what is about to be replaced.
+	Left  *sideView `json:"left,omitempty"`
+	Right *sideView `json:"right,omitempty"`
 }
 
 type planView struct {
@@ -108,6 +115,15 @@ type planView struct {
 	Skipped   []skipView   `json:"skipped"`
 	Unchanged int          `json:"unchanged"`
 	Agreed    int          `json:"agreed"`
+}
+
+// sideView is one side's version of a file: what it is called there, how big
+// it is and when it changed. A conflict screen that cannot show those three
+// things is asking somebody to choose between two names.
+type sideView struct {
+	Path string `json:"path"`
+	Size int64  `json:"size"`
+	Mod  string `json:"mod"`
 }
 
 type skipView struct {
@@ -124,6 +140,14 @@ func (s *Server) previewJob(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, viewOf(p))
 }
 
+// sideOf renders what a side currently holds, or nothing when it holds nothing.
+func sideOf(e *scan.Entry) *sideView {
+	if e == nil {
+		return nil
+	}
+	return &sideView{Path: e.Path, Size: e.Size, Mod: e.Mod.UTC().Format(time.RFC3339)}
+}
+
 func viewOf(p *plan.Plan) planView {
 	out := planView{
 		Actions:   make([]actionView, 0, len(p.Actions)),
@@ -134,6 +158,7 @@ func viewOf(p *plan.Plan) planView {
 	}
 	for _, a := range p.Actions {
 		v := actionView{Path: a.Path, Kind: a.Kind.String(), Reason: a.Reason}
+		v.Left, v.Right = sideOf(a.LeftNow), sideOf(a.RightNow)
 		switch a.Kind {
 		case plan.Copy:
 			v.From, v.To = a.Src.String(), a.Dst.String()
@@ -166,6 +191,10 @@ func viewOf(p *plan.Plan) planView {
 // plan, which is the opposite of what the person just asked for.
 type runRequest struct {
 	Only *[]string `json:"only"`
+
+	// Resolve carries the decisions somebody made on the conflict rows, keyed
+	// by path. An absent entry means the default, which keeps both versions.
+	Resolve map[string]string `json:"resolve"`
 }
 
 func (s *Server) runJob(w http.ResponseWriter, r *http.Request) {
@@ -185,12 +214,20 @@ func (s *Server) runJob(w http.ResponseWriter, r *http.Request) {
 		only = *req.Only
 	}
 
+	var resolve map[string]plan.Resolution
+	if len(req.Resolve) > 0 {
+		resolve = make(map[string]plan.Resolution, len(req.Resolve))
+		for path, choice := range req.Resolve {
+			resolve[path] = plan.ParseResolution(choice)
+		}
+	}
+
 	// The browser tab is not the run's owner. Somebody navigating away, or a
 	// laptop closing its lid, must not cancel a transfer that is already moving
 	// files, so the work gets a context of its own.
 	name := r.PathValue("name")
 	go func() {
-		if _, err := s.Runner.RunOnly(context.Background(), name, only); err != nil && !errors.Is(err, daemon.ErrAlreadyRunning) {
+		if _, err := s.Runner.RunChosen(context.Background(), name, only, resolve); err != nil && !errors.Is(err, daemon.ErrAlreadyRunning) {
 			// The failure is already in the run log and on its way to whatever
 			// notifier is configured; nothing further to do here.
 			_ = err

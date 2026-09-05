@@ -19,3 +19,26 @@ body {
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   font-size: 14px;
 }
+
+/* The design language already defines the @keyframes glim-indeterminate that
+   travels a bar with no known length. It does not define a class that uses it,
+   because a bar's own geometry belongs to the app that draws it, so this is the
+   one line that binds the two together.
+
+   The animation moves `left`, so the element has to be positioned for it to
+   have any effect at all. */
+.glim-indeterminate {
+  position: relative;
+  animation: glim-indeterminate 1.4s ease-in-out infinite;
+}
+
+/* Somebody who has asked for less movement gets a still bar rather than none:
+   it still says "this is running", it just stops travelling. */
+@media (prefers-reduced-motion: reduce) {
+  .glim-indeterminate {
+    animation: none;
+    left: 0;
+    width: 100%;
+    opacity: 0.5;
+  }
+}

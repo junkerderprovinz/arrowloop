@@ -445,6 +445,13 @@ func resolveConflict(ctx context.Context, ends Ends, rec recorder, act plan.Acti
 	if err := rec.settle(ctx, act.Path, last.plainName, last.plainName); err != nil {
 		return err
 	}
+	if last.losingName == "" {
+		// A chosen resolution leaves one file, so there is one row to write.
+		// Forgetting the second is not an omission here: writing a row for a
+		// file that is not there would have the next run read it as a deletion
+		// and go looking for something to remove.
+		return nil
+	}
 	return rec.settle(ctx, pathid.Key(last.losingName, opt.FoldCase), last.losingName, last.losingName)
 }
 
@@ -481,6 +488,10 @@ func conflictSteps(ends Ends, act plan.Action, runID string) ([]conflictStep, er
 		return nil, fmt.Errorf("conflict without both sides present")
 	}
 
+	if act.Resolve != plan.KeepBoth {
+		return chosenSteps(ends, act, runID)
+	}
+
 	winner, loser := plan.Left, plan.Right
 	winnerPath, loserPath := act.LeftNow.Path, act.RightNow.Path
 	if act.RightNow.Mod.After(act.LeftNow.Mod) {
@@ -509,6 +520,45 @@ func conflictSteps(ends Ends, act plan.Action, runID string) ([]conflictStep, er
 		// 3. The surviving version fills the plain name on both sides.
 		step(fmt.Sprintf("copy the %s version to the %s side", winner, loser), func(ctx context.Context) error {
 			return operations.CopyFile(ctx, loserFs, winnerFs, winnerPath, winnerPath)
+		}),
+	}, nil
+}
+
+// chosenSteps resolves a conflict the way a person looking at both versions
+// asked for, rather than by modification time.
+//
+// The losing version goes to the trash rather than being overwritten. Somebody
+// choosing between two files is saying which one they want next to them, not
+// that the other should stop existing: a click made in a hurry on the wrong row
+// has to be recoverable, and the trash is already where every other deletion in
+// this program goes.
+//
+// The two steps are in this order for the same reason the three above are: a
+// crash between them leaves "deleted on one side, edited on the other", which
+// the decision table restores rather than propagates.
+func chosenSteps(ends Ends, act plan.Action, runID string) ([]conflictStep, error) {
+	winner, loser := plan.Left, plan.Right
+	if act.Resolve == plan.KeepRight {
+		winner, loser = plan.Right, plan.Left
+	}
+	winnerNow, loserNow := act.LeftNow, act.RightNow
+	if winner == plan.Right {
+		winnerNow, loserNow = act.RightNow, act.LeftNow
+	}
+	winnerFs, loserFs := ends.side(winner), ends.side(loser)
+
+	step := func(what string, fn func(context.Context) error) conflictStep {
+		// No losing name: nothing is left beside the file, so there is no
+		// second record to write.
+		return conflictStep{what: what, do: fn, plainName: winnerNow.Path}
+	}
+
+	return []conflictStep{
+		step(fmt.Sprintf("send the %s version to the trash", loser), func(ctx context.Context) error {
+			return toTrash(ctx, loserFs, loserNow.Object(), runID)
+		}),
+		step(fmt.Sprintf("copy the %s version over", winner), func(ctx context.Context) error {
+			return operations.CopyFile(ctx, loserFs, winnerFs, winnerNow.Path, winnerNow.Path)
 		}),
 	}, nil
 }

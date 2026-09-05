@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 
 import { Badge, Button, Card, Empty, Rule, Stack } from '../components/Shell'
-import { Field, Lines, Switch, Text } from '../components/Field'
+import { Choice, Field, Lines, Switch, Text } from '../components/Field'
 import { api, type RawJob } from '../lib/api'
+import { useT } from '../lib/i18n'
 
 /**
  * The job editor.
@@ -13,11 +14,13 @@ import { api, type RawJob } from '../lib/api'
  * written beside it and only moved into place once it has passed.
  */
 export function Editor({ onSaved }: { onSaved: () => void }) {
+  const { t } = useT()
   const [jobs, setJobs] = useState<RawJob[] | null>(null)
   const [chosen, setChosen] = useState(0)
   const [error, setError] = useState<string | null>(null)
   const [saved, setSaved] = useState(false)
   const [busy, setBusy] = useState(false)
+  const [known, setKnown] = useState<{ value: string; label: string }[]>([])
 
   useEffect(() => {
     api
@@ -25,6 +28,26 @@ export function Editor({ onSaved }: { onSaved: () => void }) {
       .then((c) => setJobs(c.jobs))
       .catch((e: Error) => setError(e.message))
   }, [])
+
+  // What a side can point at without anybody typing it: a registered drive or a
+  // configured target. Both are set up on the Targets tab, and a job that has to
+  // repeat their exact spelling by hand is a job with a typo in it.
+  useEffect(() => {
+    const offers: { value: string; label: string }[] = []
+    void Promise.allSettled([api.volumes(), api.remotes()]).then(([v, r]) => {
+      if (v.status === 'fulfilled') {
+        for (const drive of v.value.volumes) {
+          offers.push({ value: `${drive.path}/`, label: `${t('edit.pickDrive')}: ${drive.label}` })
+        }
+      }
+      if (r.status === 'fulfilled') {
+        for (const remote of r.value.remotes) {
+          offers.push({ value: `${remote.name}:`, label: `${t('edit.pickRemote')}: ${remote.name}` })
+        }
+      }
+      setKnown(offers)
+    })
+  }, [t])
 
   function patch(next: Partial<RawJob>) {
     setSaved(false)
@@ -52,7 +75,8 @@ export function Editor({ onSaved }: { onSaved: () => void }) {
   function addJob() {
     setSaved(false)
     setJobs((prev) => {
-      const next: RawJob = { name: 'new-job', left: '', right: '', state: 'state/new-job.db', disabled: true }
+      const name = t('edit.newJob')
+      const next: RawJob = { name, left: '', right: '', state: `state/${name}.db`, disabled: true }
       const all = [...(prev ?? []), next]
       setChosen(all.length - 1)
       return all
@@ -71,15 +95,15 @@ export function Editor({ onSaved }: { onSaved: () => void }) {
 
   if (error && !jobs) {
     return (
-      <Card title="Jobs">
+      <Card title={t('edit.title')} hue={0}>
         <p className="text-[12px] text-statusFail">{error}</p>
       </Card>
     )
   }
   if (!jobs) {
     return (
-      <Card title="Jobs">
-        <Empty>Reading the configuration.</Empty>
+      <Card title={t('edit.title')} hue={0}>
+        <Empty>{t('edit.reading')}</Empty>
       </Card>
     )
   }
@@ -89,23 +113,22 @@ export function Editor({ onSaved }: { onSaved: () => void }) {
   return (
     <Stack>
       <Card
-        title="Jobs"
+        title={t('edit.title')}
+        hue={0}
         actions={
           <>
-            <Button onClick={addJob}>Add</Button>
+            <Button onClick={addJob}>{t('edit.add')}</Button>
             <Button primary onClick={save} disabled={busy}>
-              {busy ? 'Checking' : 'Save'}
+              {busy ? t('edit.checking') : t('edit.save')}
             </Button>
           </>
         }
       >
         {error && <p className="mb-3 text-[12px] text-statusFail">{error}</p>}
-        {saved && !error && (
-          <p className="mb-3 text-[12px] text-statusOk">Saved. The schedules and watchers were rebuilt.</p>
-        )}
+        {saved && !error && <p className="mb-3 text-[12px] text-statusOk">{t('edit.savedNote')}</p>}
 
         {jobs.length === 0 ? (
-          <Empty>No jobs yet. Add one.</Empty>
+          <Empty>{t('edit.noJobs')}</Empty>
         ) : (
           <ul className="flex flex-col">
             {jobs.map((j, i) => (
@@ -119,10 +142,14 @@ export function Editor({ onSaved }: { onSaved: () => void }) {
                   }`}
                   style={{ borderRadius: 'var(--radius-control)' }}
                 >
-                  <span className="min-w-0 flex-1 truncate text-[13px] font-medium">{j.name || 'unnamed'}</span>
-                  {j.disabled && <Badge tone="neutral">disabled</Badge>}
-                  {j.watch && <Badge tone="neutral">watching</Badge>}
-                  <span className="shrink-0 text-[11px] text-carbon-textMuted">{j.schedule || 'on request'}</span>
+                  <span className="min-w-0 flex-1 truncate text-[13px] font-medium">
+                    {j.name || t('edit.unnamed')}
+                  </span>
+                  {j.disabled && <Badge tone="neutral">{t('jobs.state.disabled')}</Badge>}
+                  {j.watch && <Badge tone="neutral">{t('edit.watching')}</Badge>}
+                  <span className="shrink-0 text-[11px] text-carbon-textMuted">
+                    {j.schedule || t('jobs.schedule.onRequest')}
+                  </span>
                 </button>
               </li>
             ))}
@@ -132,35 +159,51 @@ export function Editor({ onSaved }: { onSaved: () => void }) {
 
       {job && (
         <Card
-          title={job.name || 'unnamed'}
-          actions={<Button onClick={removeJob}>Remove</Button>}
+          title={job.name || t('edit.unnamed')}
+          hue={1}
+          actions={<Button onClick={removeJob}>{t('edit.remove')}</Button>}
         >
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <Field label="Name" hint="How the job is asked for by name and how its history is kept apart from the others. Two jobs cannot share one.">
+            <Field label={t('edit.name')} hint={t('edit.nameHint')}>
               <Text value={job.name ?? ''} onChange={(v) => patch({ name: v })} />
             </Field>
-            <Field label="State" hint="Where this job remembers what the two sides agreed on last time. Without it every file on both sides looks new, so this file has to survive.">
+            <Field label={t('edit.state')} hint={t('edit.stateHint')}>
               <Text value={job.state ?? ''} onChange={(v) => patch({ state: v })} mono />
             </Field>
-            <Field label="Left" hint="A local path or any rclone remote, for example sftp:backup/photos or s3:bucket/photos.">
-              <Text value={job.left ?? ''} onChange={(v) => patch({ left: v })} mono />
-            </Field>
-            <Field label="Right" hint="The other end. Which side is left and which is right makes no difference to the engine.">
-              <Text value={job.right ?? ''} onChange={(v) => patch({ right: v })} mono />
-            </Field>
-            <Field label="Schedule" hint="A cron expression, for example */15 * * * * for every quarter hour. Leave it empty and the job only runs when somebody asks for it.">
+            <Side
+              label={t('edit.left')}
+              hint={t('edit.sideHint')}
+              value={job.left ?? ''}
+              known={known}
+              onChange={(v) => patch({ left: v })}
+            />
+            <Side
+              label={t('edit.right')}
+              hint={t('edit.sideHint')}
+              value={job.right ?? ''}
+              known={known}
+              onChange={(v) => patch({ right: v })}
+            />
+            <Field label={t('edit.schedule')} hint={t('edit.scheduleHint')}>
               <Text value={job.schedule ?? ''} onChange={(v) => patch({ schedule: v })} mono />
             </Field>
-            <Field label="Quiet period" hint="How long a file has to sit unchanged before it is touched, for example 5s. This is what stops a half-written document being copied.">
+            <Field label={t('edit.quietPeriod')} hint={t('edit.quietHint')}>
               <Text value={job.quietPeriod ?? ''} onChange={(v) => patch({ quietPeriod: v })} mono />
             </Field>
           </div>
 
           <div className="mt-5">
-            <Field label="Exclude" hint="One glob per line. Without a slash it matches the file name at any depth; with one it matches the whole path. Excluding a file that was already synced never deletes it.">
+            <Field label={t('edit.exclude')} hint={t('edit.excludeHint')}>
               <Lines
                 value={(job.exclude ?? []).join('\n')}
-                onChange={(v) => patch({ exclude: v.split('\n').map((l) => l.trim()).filter(Boolean) })}
+                onChange={(v) =>
+                  patch({
+                    exclude: v
+                      .split('\n')
+                      .map((l) => l.trim())
+                      .filter(Boolean),
+                  })
+                }
                 placeholder={'*.tmp\n**/node_modules/**'}
               />
             </Field>
@@ -168,32 +211,71 @@ export function Editor({ onSaved }: { onSaved: () => void }) {
 
           <div className="mt-5 flex flex-col gap-3">
             <Switch
-              label="Disabled"
+              label={t('edit.disabled')}
               on={!!job.disabled}
               onChange={(v) => patch({ disabled: v })}
-              hint="Keeps the job in the file without running it. A job you are still setting up should stay here until you have read its preview once."
+              hint={t('edit.disabledHint')}
             />
             <Switch
-              label="Watch a local side"
+              label={t('edit.watch')}
               on={!!job.watch}
               onChange={(v) => patch({ watch: v })}
-              hint="Runs when a local folder changes instead of waiting for the next tick. It needs a schedule as well: only a local side can be watched, and a watcher that missed something has no way to know it did."
+              hint={t('edit.watchHint')}
             />
             <Switch
-              label="Carry empty folders"
+              label={t('edit.emptyDirs')}
               on={!!job.emptyDirs}
               onChange={(v) => patch({ emptyDirs: v })}
-              hint="A folder with files in it travels anyway. An empty one has nothing to imply it, so it needs a record of its own. Off for a bucket target, which has no real folders."
+              hint={t('edit.emptyDirsHint')}
             />
             <Switch
-              label="Carry permissions"
+              label={t('edit.metadata')}
               on={!!job.metadata}
               onChange={(v) => patch({ metadata: v })}
-              hint="Permissions, ownership and extended attributes travel with the bytes, where both sides can store them."
+              hint={t('edit.metadataHint')}
             />
           </div>
         </Card>
       )}
     </Stack>
+  )
+}
+
+/**
+ * One side of a job: a text field, plus a list of the things already registered.
+ *
+ * The list writes the prefix and leaves the rest of the path to be typed, rather
+ * than replacing whatever was there. A picker that overwrote the field would
+ * lose the subfolder somebody had just entered, which is the only part they
+ * could not have picked from a list.
+ */
+function Side({
+  label,
+  hint,
+  value,
+  known,
+  onChange,
+}: {
+  label: string
+  hint: string
+  value: string
+  known: { value: string; label: string }[]
+  onChange: (next: string) => void
+}) {
+  const { t } = useT()
+  return (
+    <div className="flex flex-col gap-1.5">
+      <Field label={label} hint={hint}>
+        <Text value={value} onChange={onChange} mono />
+      </Field>
+      {known.length > 0 && (
+        <Choice
+          value=""
+          label={t('edit.pick')}
+          onChange={(prefix) => prefix && onChange(prefix)}
+          options={[{ value: '', label: t('edit.pick') }, ...known]}
+        />
+      )}
+    </div>
   )
 }

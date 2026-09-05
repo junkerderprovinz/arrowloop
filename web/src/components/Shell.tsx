@@ -1,4 +1,22 @@
+import { useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
+
+import { hueVars, rainbowColor, subscribeRainbow } from '../lib/appearance'
+
+/**
+ * Re-render when the rainbow changes.
+ *
+ * The palette, the rotation and whether the mode is on at all are held outside
+ * React, because they are set on the document root and read by CSS. Anything
+ * that asks for a colour has to be woken when they change, or turning the mode
+ * on paints the cards and leaves every badge inside them on the old accent
+ * until something else happens to re-render.
+ */
+export function useRainbow(): number {
+  const [version, setVersion] = useState(0)
+  useEffect(() => subscribeRainbow(() => setVersion((v) => v + 1)), [])
+  return version
+}
 
 /**
  * A card is the only raised surface in the whole interface (design language,
@@ -9,9 +27,33 @@ import type { ReactNode } from 'react'
  * (rule 11), and a section badge is always coloured because it is a heading
  * rather than a control.
  */
-export function Card({ title, actions, children }: { title?: string; actions?: ReactNode; children: ReactNode }) {
+export function Card({
+  title,
+  actions,
+  hue,
+  children,
+}: {
+  title?: string
+  actions?: ReactNode
+  /**
+   * This card's position in the palette.
+   *
+   * The position belongs on the CONTAINER and never on the one coloured thing
+   * inside it. Give a card its position and its title badge, its switches, its
+   * buttons and its focus ring all follow, because the rule under `.glim-hue`
+   * rebinds the accent for the whole subtree. Putting it on the badge instead
+   * leaves every control in the card on the single accent, which is the mode
+   * looking broken while being technically on.
+   */
+  hue?: number
+  children: ReactNode
+}) {
+  useRainbow()
   return (
-    <section className="glim-card relative px-5 pb-5 pt-7">
+    <section
+      className={`glim-card relative px-5 pb-5 pt-7 ${hue === undefined ? "" : "glim-hue"}`}
+      style={hue === undefined ? undefined : hueVars(rainbowColor(hue))}
+    >
       {title && (
         <div className="absolute -top-3 left-5 flex items-center gap-2">
           <SectionTitle>{title}</SectionTitle>

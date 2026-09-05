@@ -411,3 +411,131 @@ func TestAVanishedSideIsNamedByItsRecord(t *testing.T) {
 		t.Fatalf("both sides vanishing was not refused by the record: %v", err)
 	}
 }
+
+// TestAChosenConflictKeepsOneVersionAndBinsTheOther covers the resolution a
+// person makes while looking at both files, as opposed to the one a scheduled
+// run makes with nobody watching.
+//
+// Two properties matter and they pull against each other. The chosen version
+// has to end up on both sides under the plain name, with no second copy left
+// beside it: somebody who picked a winner does not want to be handed two files
+// and a tidying job. And the version they did not pick has to be recoverable,
+// because a click on the wrong row is a thing that happens.
+func TestAChosenConflictKeepsOneVersionAndBinsTheOther(t *testing.T) {
+	ctx := context.Background()
+	root := t.TempDir()
+	left := filepath.Join(root, "left")
+	right := filepath.Join(root, "right")
+	for _, d := range []string{left, right} {
+		if err := os.MkdirAll(d, 0o755); err != nil {
+			t.Fatalf("mkdir: %v", err)
+		}
+	}
+
+	leftFs, err := rclonefs.NewFs(ctx, left)
+	if err != nil {
+		t.Fatalf("left: %v", err)
+	}
+	rightFs, err := rclonefs.NewFs(ctx, right)
+	if err != nil {
+		t.Fatalf("right: %v", err)
+	}
+	db, err := state.Open(ctx, filepath.Join(root, "state.db"))
+	if err != nil {
+		t.Fatalf("state: %v", err)
+	}
+	defer db.Close()
+
+	ends := apply.Ends{Left: leftFs, Right: rightFs}
+	opt := engine.Options{Compare: plan.Options{ModWindow: 2 * time.Second, Transfers: 4}}
+
+	if err := os.WriteFile(filepath.Join(left, "notes.txt"), []byte("the original"), 0o644); err != nil {
+		t.Fatalf("write: %v", err)
+	}
+	if _, _, err := engine.Once(ctx, ends, db, opt); err != nil {
+		t.Fatalf("first run: %v", err)
+	}
+
+	// Both sides edited between runs, which is the only thing a conflict is.
+	// The left version is deliberately the OLDER of the two, so that choosing
+	// it is a choice and not the same answer the automatic rule would give.
+	if err := os.WriteFile(filepath.Join(left, "notes.txt"), []byte("the version I want"), 0o644); err != nil {
+		t.Fatalf("write: %v", err)
+	}
+	time.Sleep(1100 * time.Millisecond)
+	if err := os.WriteFile(filepath.Join(right, "notes.txt"), []byte("the newer version"), 0o644); err != nil {
+		t.Fatalf("write: %v", err)
+	}
+
+	p, compare, err := engine.Prepare(ctx, ends, db, opt)
+	if err != nil {
+		t.Fatalf("prepare: %v", err)
+	}
+	var conflicts int
+	for i := range p.Actions {
+		if p.Actions[i].Kind == plan.Conflict {
+			p.Actions[i].Resolve = plan.KeepLeft
+			conflicts++
+		}
+	}
+	if conflicts != 1 {
+		t.Fatalf("expected one conflict to decide, found %d", conflicts)
+	}
+	if _, err := engine.Execute(ctx, ends, db, p, compare); err != nil {
+		t.Fatalf("execute: %v", err)
+	}
+
+	// The chosen version is on both sides under the plain name.
+	for _, dir := range []string{left, right} {
+		body, err := os.ReadFile(filepath.Join(dir, "notes.txt"))
+		if err != nil {
+			t.Fatalf("read %s: %v", dir, err)
+		}
+		if string(body) != "the version I want" {
+			t.Errorf("%s holds %q, not the version that was chosen", dir, body)
+		}
+	}
+
+	// And nothing was left beside it to tidy up.
+	entries, err := os.ReadDir(right)
+	if err != nil {
+		t.Fatalf("read the right side: %v", err)
+	}
+	for _, e := range entries {
+		if strings.Contains(e.Name(), "conflict") {
+			t.Errorf("a chosen resolution still left %s behind", e.Name())
+		}
+	}
+
+	// The version that lost is in the trash, not gone.
+	var rescued bool
+	err = filepath.WalkDir(right, func(p string, d os.DirEntry, err error) error {
+		if err != nil || d.IsDir() {
+			return err
+		}
+		if !strings.Contains(filepath.ToSlash(p), ".reeveroll/trash") {
+			return nil
+		}
+		body, readErr := os.ReadFile(p)
+		if readErr == nil && string(body) == "the newer version" {
+			rescued = true
+		}
+		return nil
+	})
+	if err != nil {
+		t.Fatalf("walk: %v", err)
+	}
+	if !rescued {
+		t.Error("the version that was not chosen is gone rather than in the trash")
+	}
+
+	// And the job settles: a resolution that leaves work behind would report
+	// the same conflict on every run for ever.
+	after, _, err := engine.Prepare(ctx, ends, db, opt)
+	if err != nil {
+		t.Fatalf("second prepare: %v", err)
+	}
+	if len(after.Actions) != 0 {
+		t.Fatalf("the chosen resolution did not settle: %d actions left", len(after.Actions))
+	}
+}

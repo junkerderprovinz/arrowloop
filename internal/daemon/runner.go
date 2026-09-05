@@ -140,6 +140,18 @@ func (r *Runner) Run(ctx context.Context, name string) (history.Run, error) {
 //
 // A nil list means everything, which is what Run passes.
 func (r *Runner) RunOnly(ctx context.Context, name string, only []string) (history.Run, error) {
+	return r.RunChosen(ctx, name, only, nil)
+}
+
+// RunChosen executes a job with the paths somebody ticked and the conflicts
+// they decided.
+//
+// A resolution is keyed by path and only ever reaches a conflict. Everything
+// else in the plan is untouched by it, so a stale entry from a preview taken a
+// minute ago costs nothing: the path either still disagrees, in which case the
+// decision still applies, or it does not, in which case there is no conflict to
+// resolve and the entry is ignored.
+func (r *Runner) RunChosen(ctx context.Context, name string, only []string, resolve map[string]plan.Resolution) (history.Run, error) {
 	j, ok := r.config().Find(name)
 	if !ok {
 		return history.Run{}, fmt.Errorf("no job called %q", name)
@@ -162,7 +174,7 @@ func (r *Runner) RunOnly(ctx context.Context, name string, only []string) (histo
 
 	r.publish(Event{Job: name, Phase: "started"})
 	rec := history.Run{Job: name, Started: time.Now()}
-	res, p, err := r.execute(ctx, j, only)
+	res, p, err := r.execute(ctx, j, only, resolve)
 
 	// A drive that is not plugged in is not a run. Nothing is written down and
 	// nobody is told, because there is nothing to tell.
@@ -229,7 +241,7 @@ func (r *Runner) open(ctx context.Context, j job.Job) (apply.Ends, *state.DB, er
 }
 
 // execute does the actual sync for one job, optionally limited to some paths.
-func (r *Runner) execute(ctx context.Context, j job.Job, only []string) (apply.Result, *plan.Plan, error) {
+func (r *Runner) execute(ctx context.Context, j job.Job, only []string, resolve map[string]plan.Resolution) (apply.Result, *plan.Plan, error) {
 	opt, err := j.Options()
 	if err != nil {
 		return apply.Result{}, nil, err
@@ -245,7 +257,7 @@ func (r *Runner) execute(ctx context.Context, j job.Job, only []string) (apply.R
 	defer db.Close()
 
 	watcher := progressFor{runner: r, job: j.Name}
-	if only == nil {
+	if only == nil && len(resolve) == 0 {
 		p, res, err := engine.OnceWatched(ctx, ends, db, opt, watcher)
 		return res, p, err
 	}
@@ -254,9 +266,12 @@ func (r *Runner) execute(ctx context.Context, j job.Job, only []string) (apply.R
 	if err != nil {
 		return apply.Result{}, nil, err
 	}
-	full := len(p.Actions)
-	keep(p, only)
-	r.log("%s: running %d of %d proposed changes, as chosen", j.Name, len(p.Actions), full)
+	if only != nil {
+		full := len(p.Actions)
+		keep(p, only)
+		r.log("%s: running %d of %d proposed changes, as chosen", j.Name, len(p.Actions), full)
+	}
+	applyResolutions(p, resolve, r.log, j.Name)
 
 	res, err := engine.ExecuteWatched(ctx, ends, db, p, compare, watcher)
 	return res, p, err
@@ -290,6 +305,30 @@ func keep(p *plan.Plan, only []string) {
 		}
 	}
 	p.Dirs = dirs
+}
+
+// applyResolutions marks the conflicts a person decided.
+//
+// Only conflicts are touched. A resolution naming a path that turned out to be
+// an ordinary copy is not an error and not a warning: between the preview and
+// the run the file may simply have stopped disagreeing, which is the good case.
+func applyResolutions(p *plan.Plan, resolve map[string]plan.Resolution, log func(string, ...any), name string) {
+	if len(resolve) == 0 {
+		return
+	}
+	var decided int
+	for i := range p.Actions {
+		if p.Actions[i].Kind != plan.Conflict {
+			continue
+		}
+		if choice, ok := resolve[p.Actions[i].Path]; ok && choice != plan.KeepBoth {
+			p.Actions[i].Resolve = choice
+			decided++
+		}
+	}
+	if decided > 0 {
+		log("%s: resolving %d conflicts as chosen", name, decided)
+	}
 }
 
 func (r *Runner) claim(name string) bool {

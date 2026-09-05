@@ -88,6 +88,54 @@ type Action struct {
 	LeftNow  *scan.Entry
 	RightNow *scan.Entry
 	Prev     *state.Entry
+
+	// Resolve applies to a conflict and to nothing else. Its zero value is
+	// KeepBoth, which is what an unattended run always does: a scheduled job
+	// has nobody to ask, and picking a winner unasked would delete somebody's
+	// work while they were not looking.
+	Resolve Resolution
+}
+
+// Resolution is what to do with the two versions of a file that disagree.
+type Resolution int
+
+const (
+	// KeepBoth is the default and the only outcome a run reaches on its own.
+	// The newer version keeps the plain name on both sides and the older is
+	// preserved beside it. Nothing is lost and the job converges.
+	KeepBoth Resolution = iota
+	// KeepLeft and KeepRight are only ever set by a person looking at the two
+	// versions. The losing version still goes to the trash rather than being
+	// overwritten, because "I chose this one" and "I meant to destroy the
+	// other one for good" are different statements.
+	KeepLeft
+	KeepRight
+)
+
+func (r Resolution) String() string {
+	switch r {
+	case KeepLeft:
+		return "keep left"
+	case KeepRight:
+		return "keep right"
+	default:
+		return "keep both"
+	}
+}
+
+// ParseResolution reads what a person picked. Anything unrecognised is the safe
+// default rather than an error: a newer interface asking an older engine for a
+// resolution it has never heard of must keep both versions, not fail the run
+// and not guess.
+func ParseResolution(text string) Resolution {
+	switch text {
+	case "left", "keep left":
+		return KeepLeft
+	case "right", "keep right":
+		return KeepRight
+	default:
+		return KeepBoth
+	}
 }
 
 // Names returns the path each side ends up holding once this action has run.

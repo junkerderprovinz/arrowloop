@@ -11,12 +11,54 @@ export type Job = {
   lastSuccess: string | null
 }
 
+/** What one side holds right now: its name there, its size and when it changed. */
+export type SideVersion = { path: string; size: number; mod: string }
+
+export type ActionKind = 'copy' | 'move' | 'delete' | 'conflict' | 'mkdir' | 'rmdir'
+
 export type Action = {
   path: string
-  kind: 'copy' | 'move' | 'delete' | 'conflict' | 'mkdir' | 'rmdir'
+  kind: ActionKind
   from?: string
   to?: string
   reason: string
+  left?: SideVersion
+  right?: SideVersion
+}
+
+/** What to do with two versions of a file that disagree. */
+export type Resolution = 'both' | 'left' | 'right'
+
+/** One configured storage target. */
+export type Remote = {
+  name: string
+  type: string
+  settings: { key: string; value: string; secret: boolean }[]
+}
+
+/** One kind of storage this build can reach, described by the backend itself. */
+export type Backend = {
+  name: string
+  description: string
+  options: {
+    name: string
+    help: string
+    required: boolean
+    secret: boolean
+    advanced: boolean
+    default: string
+    examples?: { value: string; help: string }[]
+  }[]
+}
+
+/** One registered drive, attached or not. */
+export type Volume = {
+  id: string
+  label: string
+  mount: string
+  attached: boolean
+  lastSeen: string | null
+  path: string
 }
 
 export type Skip = { path: string; reason: string }
@@ -65,7 +107,15 @@ export type RawJob = {
   [key: string]: unknown
 }
 
-export type RunEvent = { job: string; phase: 'started' | 'finished'; error?: string }
+export type RunEvent = {
+  job: string
+  phase: 'started' | 'progress' | 'finished'
+  error?: string
+  done?: number
+  total?: number
+  kind?: string
+  path?: string
+}
 
 /**
  * Every response is checked before it is parsed.
@@ -100,12 +150,54 @@ export const api = {
    * an empty array means an empty selection rather than "everything" — those
    * two have to stay apart, or unticking every row would run the whole plan.
    */
-  run: (name: string, only?: string[]) =>
+  run: (name: string, only?: string[], resolve?: Record<string, Resolution>) =>
     request<{ job: string; status: string }>(`/api/jobs/${encodeURIComponent(name)}/run`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(only === undefined ? {} : { only }),
+      body: JSON.stringify({
+        ...(only === undefined ? {} : { only }),
+        ...(resolve && Object.keys(resolve).length > 0 ? { resolve } : {}),
+      }),
     }),
+
+  remotes: () => request<{ remotes: Remote[]; backends: Backend[] }>('/api/remotes'),
+
+  saveRemote: (name: string, type: string, settings: Record<string, string>) =>
+    request<{ saved: string }>(`/api/remotes/${encodeURIComponent(name)}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type, settings }),
+    }),
+
+  deleteRemote: (name: string) =>
+    request<{ deleted: string }>(`/api/remotes/${encodeURIComponent(name)}`, { method: 'DELETE' }),
+
+  /**
+   * Open a target and list it.
+   *
+   * A refusal comes back as ok:false with the server's own words rather than as
+   * an error status, because settings that do not work are an answer to the
+   * question that was asked and not a failure of the request.
+   */
+  checkRemote: (name: string) =>
+    request<{ ok: boolean; reason?: string }>(`/api/remotes/${encodeURIComponent(name)}/check`, {
+      method: 'POST',
+    }),
+
+  volumes: () => request<{ volumes: Volume[] }>('/api/volumes'),
+
+  volumeCandidates: () =>
+    request<{ candidates: { mount: string; marked: boolean }[] }>('/api/volumes/candidates'),
+
+  markVolume: (mount: string, label: string) =>
+    request<Volume>('/api/volumes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mount, label }),
+    }),
+
+  forgetVolume: (id: string) =>
+    request<{ forgotten: string }>(`/api/volumes/${encodeURIComponent(id)}`, { method: 'DELETE' }),
 
   config: () => request<{ jobs: RawJob[] }>('/api/config'),
 
