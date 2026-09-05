@@ -79,6 +79,18 @@ type Job struct {
 	// somebody asks for it by name.
 	Schedule string `json:"schedule,omitempty"`
 
+	// Watch runs the job when a local side changes, instead of waiting for the
+	// next tick. It does NOT replace the schedule and is not meant to: only a
+	// local side can be watched at all, and a watcher that missed an event has
+	// no way to know it did. The schedule stays as the thing that eventually
+	// notices what the watcher did not.
+	Watch bool `json:"watch,omitempty"`
+
+	// WatchSettle is how long the tree must go quiet before a change counts.
+	// Copying a folder in produces one event per file, and a run per event
+	// would be a thousand runs for one action.
+	WatchSettle string `json:"watchSettle,omitempty"`
+
 	Disabled bool `json:"disabled,omitempty"`
 
 	Exclude           []string `json:"exclude,omitempty"`
@@ -155,6 +167,18 @@ func Load(path string) (*Config, error) {
 			if _, err := ParseSchedule(j.Schedule); err != nil {
 				return nil, fmt.Errorf("job %q schedule %q: %w", j.Name, j.Schedule, err)
 			}
+		}
+		if j.WatchSettle != "" {
+			if _, err := time.ParseDuration(j.WatchSettle); err != nil {
+				return nil, fmt.Errorf("job %q watchSettle %q: %w", j.Name, j.WatchSettle, err)
+			}
+		}
+		if j.Watch && j.Schedule == "" {
+			// Not fatal, but worth refusing: a watch-only job on a tree the
+			// watcher cannot fully cover would look like it was running and
+			// quietly not be. The schedule is the backstop that makes watching
+			// an optimisation rather than the only mechanism.
+			return nil, fmt.Errorf("job %q watches but has no schedule; watching can miss an event and never know it did, so it needs a schedule behind it", j.Name)
 		}
 	}
 	sort.SliceStable(cfg.Jobs, func(a, b int) bool { return cfg.Jobs[a].Name < cfg.Jobs[b].Name })
@@ -237,4 +261,16 @@ func (j Job) Options() (engine.Options, error) {
 		EmptyDirs: j.EmptyDirs,
 		Metadata:  j.Metadata,
 	}, nil
+}
+
+// SettleFor returns how long this job's watcher waits for quiet.
+func (j Job) SettleFor() time.Duration {
+	if j.WatchSettle == "" {
+		return 2 * time.Second
+	}
+	d, err := time.ParseDuration(j.WatchSettle)
+	if err != nil {
+		return 2 * time.Second
+	}
+	return d
 }

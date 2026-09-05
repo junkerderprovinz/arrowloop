@@ -141,6 +141,10 @@ reeveroll service  -config reeveroll.json          the file this system needs to
 
 **The bandwidth limit lives at the top of the file, not on a job**, because rclone's token bucket is process-wide. A per-job limit would be a promise the mechanism underneath cannot keep. Everything else is per job, and each one gets its own copy of rclone's settings, so a job asking for eight transfers does not quietly change what another job is doing.
 
+**A job can watch instead of waiting for the clock.** Setting `"watch": true` makes a run start when a local side changes. The reason is not latency: a schedule has to list both sides in full on every tick, which on a large tree or over a network is most of what a run costs, and watching lets the engine sit still until there is a reason not to.
+
+It never replaces the schedule, and the configuration refuses a watching job that has none. Only a local side can be watched, most remote backends have no way to tell anyone anything, and a watcher that missed an event has no way to know it did; the schedule is what eventually notices what the watcher did not. Events are collected over a settle window, because copying a folder in produces one event per file and the interesting fact is that something changed. A new folder is watched as it appears, since the kernel reports on a directory's own entries rather than its whole subtree. The tool's own trash and every excluded path are ignored, and a job's watcher is muted around its own runs, or the engine would spend its life answering its own writes.
+
 **Every run is written down, successes and failures alike.** The failure worth guarding against is not a crash, which is loud, but a job that has been failing quietly since Tuesday because a path changed. That is also why `jobs` shows when each job last *succeeded* rather than when it last *ran*: a job failing every quarter of an hour looks busy in a log while being of no use at all.
 
 **Notifications default to failures only.** A tool that announces every successful sync teaches its user to ignore it, and then the one message that mattered gets ignored with the rest. Matrix and a plain webhook are supported, and a failure at one destination does not stop the other from firing.
@@ -215,7 +219,7 @@ CI runs the whole suite on Linux, Windows and macOS, because path handling, modi
 
 **Rename detection matches on content**, so two unrelated files with identical bytes can in principle be paired.
 
-Still untouched: file watching. The interface has no job editor yet, so a new job is still a few lines in the configuration file.
+The interface has no job editor yet, so a new job is still a few lines in the configuration file.
 
 <br>
 

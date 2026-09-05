@@ -10,12 +10,14 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"path/filepath"
 	"sort"
 	"strings"
 	"sync"
 	"time"
 
 	rclonefs "github.com/rclone/rclone/fs"
+	"github.com/rclone/rclone/fs/fspath"
 	"github.com/robfig/cron/v3"
 
 	"github.com/junkerderprovinz/reeveroll/internal/apply"
@@ -25,6 +27,7 @@ import (
 	"github.com/junkerderprovinz/reeveroll/internal/notify"
 	"github.com/junkerderprovinz/reeveroll/internal/plan"
 	"github.com/junkerderprovinz/reeveroll/internal/state"
+	"github.com/junkerderprovinz/reeveroll/internal/watch"
 )
 
 // ErrAlreadyRunning is returned when a job is asked for while the same job is
@@ -47,7 +50,8 @@ type Runner struct {
 
 	mu       sync.Mutex
 	inflight map[string]bool
-	watchers map[chan Event]struct{}
+	subs     map[chan Event]struct{}
+	watchers map[string]*watch.Watcher
 }
 
 // New builds a runner. hist and note may be nil, which turns off the run log
@@ -128,6 +132,10 @@ func (r *Runner) RunOnly(ctx context.Context, name string, only []string) (histo
 	case <-ctx.Done():
 		return history.Run{}, ctx.Err()
 	}
+
+	// The engine's own writes must not come back as a change.
+	r.muteWatcher(name)
+	defer r.muteWatcher(name)
 
 	r.publish(Event{Job: name, Phase: "started"})
 	rec := history.Run{Job: name, Started: time.Now()}
@@ -331,6 +339,13 @@ func (r *Runner) Serve(ctx context.Context) error {
 		scheduled = append(scheduled, fmt.Sprintf("%s (%s)", name, j.Schedule))
 	}
 
+	for _, j := range r.cfg.Jobs {
+		if j.Disabled || !j.Watch {
+			continue
+		}
+		r.startWatcher(ctx, j)
+	}
+
 	sort.Strings(scheduled)
 	if len(scheduled) == 0 {
 		r.log("no job has a schedule, so nothing will run on its own")
@@ -368,17 +383,17 @@ type Event struct {
 func (r *Runner) Subscribe() (<-chan Event, func()) {
 	ch := make(chan Event, 32)
 	r.mu.Lock()
-	if r.watchers == nil {
-		r.watchers = map[chan Event]struct{}{}
+	if r.subs == nil {
+		r.subs = map[chan Event]struct{}{}
 	}
-	r.watchers[ch] = struct{}{}
+	r.subs[ch] = struct{}{}
 	r.mu.Unlock()
 
 	return ch, func() {
 		r.mu.Lock()
 		defer r.mu.Unlock()
-		if _, live := r.watchers[ch]; live {
-			delete(r.watchers, ch)
+		if _, live := r.subs[ch]; live {
+			delete(r.subs, ch)
 			close(ch)
 		}
 	}
@@ -387,7 +402,7 @@ func (r *Runner) Subscribe() (<-chan Event, func()) {
 func (r *Runner) publish(ev Event) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
-	for ch := range r.watchers {
+	for ch := range r.subs {
 		select {
 		case ch <- ev:
 		default:
@@ -404,4 +419,98 @@ func (r *Runner) Running() map[string]bool {
 		out[name] = true
 	}
 	return out
+}
+
+// localRoots returns the sides of a job that live on a real filesystem.
+//
+// Parsed rather than connected: fspath.Parse tells a local path from a remote
+// without opening anything, so starting the daemon does not have to reach an
+// S3 bucket just to find out that it is not a folder.
+func localRoots(j job.Job) []string {
+	var out []string
+	for _, side := range []string{j.Left, j.Right} {
+		parsed, err := fspath.Parse(side)
+		if err != nil || parsed.ConfigString != "" {
+			continue
+		}
+		abs, err := filepath.Abs(parsed.Path)
+		if err != nil {
+			continue
+		}
+		out = append(out, filepath.Clean(abs))
+	}
+	return out
+}
+
+// startWatcher makes one job react to changes instead of only to the clock.
+//
+// A watcher is an optimisation on top of the schedule and never a replacement
+// for it: only a local side can be watched, and a watcher that missed an event
+// has no way to know it did. The configuration refuses a watching job with no
+// schedule for exactly that reason.
+func (r *Runner) startWatcher(ctx context.Context, j job.Job) {
+	roots := localRoots(j)
+	if len(roots) == 0 {
+		r.log("%s asks to be watched but has no local side; the schedule alone will have to do", j.Name)
+		return
+	}
+	opt, err := j.Options()
+	if err != nil {
+		r.log("%s: %v", j.Name, err)
+		return
+	}
+
+	name := j.Name
+	w, err := watch.New(watch.Options{
+		Roots:    roots,
+		Exclude:  opt.Exclude,
+		Settle:   j.SettleFor(),
+		Cooldown: 5 * time.Second,
+		Log:      func(format string, args ...any) { r.log(name+": "+format, args...) },
+	}, func() {
+		rec, err := r.Run(ctx, name)
+		switch {
+		case errors.Is(err, ErrAlreadyRunning):
+			// The change arrived while the job was already working on it.
+		case err != nil:
+			r.log("%s failed after a change: %v", name, err)
+		case rec.Changed():
+			r.log("%s: %d copied, %d moved, %d trashed after a change", name, rec.Copied, rec.Moved, rec.Trashed)
+		}
+	})
+	if err != nil {
+		r.log("%s: %v", name, err)
+		return
+	}
+
+	r.mu.Lock()
+	if r.watchers == nil {
+		r.watchers = map[string]*watch.Watcher{}
+	}
+	r.watchers[name] = w
+	r.mu.Unlock()
+
+	r.log("%s: watching %d folder(s) across %d local side(s)", name, w.Watching(), len(roots))
+	go func() {
+		defer w.Close()
+		if err := w.Run(ctx); err != nil {
+			r.log("%s: watching stopped: %v", name, err)
+		}
+	}()
+}
+
+// muteWatcher stops a job's own writes coming back as a change.
+//
+// Without this the engine answers itself: a run writes files, the watcher sees
+// them, the job runs again. The second run finds nothing to do so it does
+// terminate, but a job that reacts to every one of its own writes never sits
+// still, and on a schedule of one change per second that is a lot of listing
+// for no result.
+func (r *Runner) muteWatcher(name string) {
+	r.mu.Lock()
+	w := r.watchers[name]
+	r.mu.Unlock()
+	if w != nil {
+		w.Mute()
+	}
 }

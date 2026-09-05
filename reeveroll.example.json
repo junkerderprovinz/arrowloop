@@ -16,9 +16,14 @@
       "right": "sftp:backup/photos",
       "state": "state/photos.db",
       "schedule": "*/15 * * * *",
-      "exclude": ["*.xmp", "**/.thumbnails/**"],
+      "exclude": [
+        "*.xmp",
+        "**/.thumbnails/**"
+      ],
       "emptyDirs": true,
-      "transfers": 4
+      "transfers": 4,
+      "watch": true,
+      "watchSettle": "2s"
     },
     {
       "name": "documents",
