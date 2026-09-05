@@ -1,0 +1,21 @@
+@import "tailwindcss";
+@import "./tokens.css";
+@import "./tailwind-theme.css";
+
+/* The page's own ground. Everything above this line is GlimStone; everything
+   below is this app, and there should be very little of it: a rule that lives
+   here rather than in a component is a rule the design language does not
+   know about. */
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--carbon-bg);
+  color: var(--carbon-text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 14px;
+}

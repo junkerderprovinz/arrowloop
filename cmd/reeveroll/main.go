@@ -29,7 +29,8 @@ const usage = `reeveroll synchronises two folders in both directions.
 
   reeveroll sync     -left <path> -right <path> -state <db>   run one pair once
   reeveroll run      -config <file> <job>                     run one named job now
-  reeveroll daemon   -config <file>                           run every scheduled job
+  reeveroll web      -config <file>                           serve the interface, schedules included
+  reeveroll daemon   -config <file>                           run every scheduled job, no interface
   reeveroll jobs     -config <file>                           list the configured jobs
   reeveroll history  -config <file> [-job <name>]             what the runs did
   reeveroll service  [-config <file>] [-os <goos>]            the service file for this system
@@ -56,6 +57,8 @@ func main() {
 		err = cmdSync(ctx, args)
 	case "run":
 		err = cmdRun(ctx, args)
+	case "web":
+		err = cmdWeb(ctx, args)
 	case "daemon":
 		err = cmdDaemon(ctx, args)
 	case "jobs":

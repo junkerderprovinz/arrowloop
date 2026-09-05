@@ -1,0 +1,99 @@
+/* Copied verbatim from GlimStone 1.6.0, reference/tailwind-theme.css.
+   Do not edit here: change it in the design language repo and copy again.
+   https://github.com/junkerderprovinz/glimstone */
+/* ===========================================================================
+   GlimStone — optional Tailwind v4 theme layer
+   ---------------------------------------------------------------------------
+   Maps the custom properties in tokens.css onto Tailwind utility classes
+   (bg-carbon-surface, text-accent, bg-statusOk, …). Skip this file entirely
+   if the app isn't on Tailwind — every rule in tokens.css works with plain
+   CSS custom properties alone.
+
+   Import order matters: this file only maps names, it defines nothing itself.
+   Load tokens.css first (or alongside), then this.
+   =========================================================================== */
+
+@import 'tailwindcss';
+
+@custom-variant dark (&:is([data-theme="dark"] *));
+
+@theme {
+  --color-carbon-background: var(--carbon-bg);
+  --color-carbon-sidebar: var(--carbon-sidebar);
+  --color-carbon-surface: var(--carbon-surface);
+  --color-carbon-surface2: var(--carbon-surface2);
+  --color-carbon-surface3: var(--carbon-surface3);
+  --color-carbon-text: var(--carbon-text);
+  --color-carbon-textSub: var(--carbon-text-sub);
+  --color-carbon-textMuted: var(--carbon-text-muted);
+  --color-carbon-border: var(--carbon-border);
+  --color-carbon-hover: var(--carbon-hover);
+
+  --color-accent: var(--accent);
+  --color-accentContrast: var(--accent-contrast);
+  --color-accentSoft: var(--accent-soft);
+  /* text-accentInk: the accent where the colour is READ rather than filled.
+     See tokens.css's own --accent-ink for why the two are separate tokens.
+     A rule of thumb that decides it without thinking: if the utility is
+     text-* or the colour lands on an SVG stroke sitting on the page's own
+     ground, it is ink; if it is bg-*, it is a fill and keeps text-accent's
+     partner --accent-contrast on top. */
+  --color-accentInk: var(--accent-ink);
+
+  --color-statusOk: var(--status-ok-text);
+  --color-statusOkBg: var(--status-ok-bg);
+  --color-statusOkSolid: var(--status-ok-solid);
+
+  --color-statusFail: var(--status-fail-text);
+  --color-statusFailBg: var(--status-fail-bg);
+  --color-statusFailSolid: var(--status-fail-solid);
+
+  --color-statusWarn: var(--status-warn-text);
+  --color-statusWarnBg: var(--status-warn-bg);
+  --color-statusWarnSolid: var(--status-warn-solid);
+
+  --color-statusInfo: var(--status-info-text);
+  --color-statusInfoBg: var(--status-info-bg);
+  --color-statusInfoSolid: var(--status-info-solid);
+
+  --color-statusNeutral: var(--status-neutral-text);
+  --color-statusNeutralBg: var(--status-neutral-bg);
+  --color-statusNeutralSolid: var(--status-neutral-solid);
+
+  --radius-card: var(--radius-card);
+  --radius-control: var(--radius-control);
+  --radius-pill: var(--radius-pill);
+}
+
+/* ---------------------------------------------------------------------------
+   Rainbow under Tailwind needs one extra step tokens.css alone can't cover:
+   `--color-accent: var(--accent)` above gets evaluated once at :root by
+   Tailwind's @theme resolver and frozen there. Every utility generated from
+   it (bg-accent, text-accent) then points at the global accent forever, and
+   a .glim-hue subtree redefining --accent for itself is never reached by
+   those utilities — only components reading var(--accent) directly pick up
+   the rainbow colour. Anything added to the @theme block above that a
+   rainbow position should own has to be repeated here under the same
+   selectors tokens.css uses for --accent itself.
+   --------------------------------------------------------------------------- */
+[data-rainbow] .glim-hue {
+  --color-accent: var(--item-hue);
+  --color-accentContrast: var(--item-hue-ink);
+  --color-accentSoft: var(--item-hue-soft);
+  --color-accentInk: var(--accent-ink);
+}
+[data-rainbow='reactive'] .glim-hue {
+  --color-accent: var(--carbon-text-muted);
+  --color-accentContrast: var(--carbon-bg);
+  --color-accentSoft: transparent;
+  --color-accentInk: var(--carbon-text-muted);
+}
+[data-rainbow='reactive'] .glim-hue:hover,
+[data-rainbow='reactive'] .glim-hue:focus-within,
+[data-rainbow='reactive'] .glim-hue.glim-active {
+  --color-accent: var(--item-hue);
+  --color-accentContrast: var(--item-hue-ink);
+  --color-accentSoft: var(--item-hue-soft);
+  --color-accentInk: var(--accent-ink);
+}
+

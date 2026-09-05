@@ -6,3 +6,12 @@
 *.db
 *.db-wal
 *.db-shm
+
+# The frontend's own dependencies and build output.
+web/node_modules/
+
+# Keep the embedded placeholder so `//go:embed all:dist` compiles before the
+# Vite build exists; real build artefacts stay out of the repo.
+!web/dist/
+web/dist/*
+!web/dist/index.html

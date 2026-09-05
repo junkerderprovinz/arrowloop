@@ -11,9 +11,10 @@
 5. [Filters and half-written files](#5-filters-and-half-written-files)
 6. [Running it once](#6-running-it-once)
 7. [Running it unattended](#7-running-it-unattended)
-8. [Tests](#8-tests)
-9. [What it will not carry, and what it says about it](#9-what-it-will-not-carry-and-what-it-says-about-it)
-10. [Why not just use something that exists](#10-why-not-just-use-something-that-exists)
+8. [The interface](#8-the-interface)
+9. [Tests](#9-tests)
+10. [What it will not carry, and what it says about it](#10-what-it-will-not-carry-and-what-it-says-about-it)
+11. [Why not just use something that exists](#11-why-not-just-use-something-that-exists)
 
 <br>
 
@@ -147,7 +148,25 @@ reeveroll service  -config reeveroll.json          the file this system needs to
 
 <br>
 
-## 8. Tests
+## 8. The interface
+
+```
+reeveroll web -config reeveroll.json          # http://127.0.0.1:8422, schedules included
+```
+
+**The preview is the screen the product exists for.** Every other sync tool's main view is a progress bar, which is a report on a decision somebody already made for you. Here every proposed change is listed with its direction and the reason the engine gives for it, each row can be unticked, and nothing moves until the button is pressed.
+
+Ticking is not decoration. The run re-plans and then keeps only the paths that were ticked, rather than replaying the plan that was on screen: between reading a preview and pressing the button a file can change, and acting on the older plan would mean acting on a description of a tree that no longer exists. An empty selection stays distinguishable from no selection at all, so unticking every row does nothing rather than running everything.
+
+**The look is [GlimStone](https://github.com/junkerderprovinz/glimstone) 1.6.0**, and its reference tokens and appearance engine are copied in verbatim rather than reimplemented. Theme, corner shape and accent are the viewer's to set. The accent marks activity and nothing else, which is why the switches down the preview are deliberately colourless: every row arrives ticked, and a control that is on in all of them is not activity.
+
+**It listens on loopback by default.** This interface can start a job that deletes files and it has no login of its own; anyone who wants it reachable has to say so, and should put something in front of it that asks who they are.
+
+`reeveroll daemon` is the same scheduler without the interface, for a machine where nobody is looking.
+
+<br>
+
+## 9. Tests
 
 The suite that matters is not a list of cases, it is a property. `TestConvergence` seeds two trees, applies random creates, edits, deletes and renames to both sides for eight rounds, syncs after each, and demands the same thing every time: both sides hold exactly the same files with the same contents.
 
@@ -165,7 +184,7 @@ CI runs the whole suite on Linux, Windows and macOS, because path handling, modi
 
 <br>
 
-## 9. What it will not carry, and what it says about it
+## 10. What it will not carry, and what it says about it
 
 **Symbolic links, sockets, pipes, devices and Windows junctions are not synced, and are named in the report.** They have to be found separately: rclone's local backend drops them from its listing after one log line, so a library caller cannot tell one apart from a file that is not there. Following a link would copy the target and turn one shortcut into a full second copy on the other side; storing it as rclone's `.rclonelink` text file would produce something no other program can read. Neither is obviously right, so the engine names them and leaves them alone. Only local sides can be inspected this way, because only a local side has a filesystem underneath to ask.
 
@@ -175,11 +194,11 @@ CI runs the whole suite on Linux, Windows and macOS, because path handling, modi
 
 **Rename detection matches on content**, so two unrelated files with identical bytes can in principle be paired.
 
-Still untouched: file watching, and a web interface.
+Still untouched: file watching. The interface has no job editor yet, so a new job is still a few lines in the configuration file.
 
 <br>
 
-## 10. Why not just use something that exists
+## 11. Why not just use something that exists
 
 Nothing wrong with the alternatives, and it is worth being honest about them. [Syncthing](https://syncthing.net) is a proven real-time mesh, but it is a mesh of equal devices rather than a directed job, and it does not speak to cloud targets at all. [rclone bisync](https://rclone.org/bisync/) reaches every target but keeps only a listing per side rather than a per-file state, and re-scans both ends on every run.
 
