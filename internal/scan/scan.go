@@ -154,7 +154,20 @@ func List(ctx context.Context, f fs.Fs, opt Options) (*Listing, error) {
 		return nil
 	})
 	if err != nil {
-		return nil, fmt.Errorf("list %s: %w", f.Name(), err)
+		// A side that does not exist yet is empty, not broken. On a bucket
+		// backend the destination of a brand new job is a bucket nobody has
+		// created, and on SFTP it is a directory nobody has made; both answer a
+		// listing with "not found". Treating that as a failure would mean no
+		// job could ever run for the first time against a fresh target, which
+		// is precisely the moment somebody is setting one up.
+		//
+		// This does not weaken the refusal to believe an empty side. That guard
+		// compares against the RECORD: a side that used to hold files and now
+		// reports nothing is still refused, whether it reported nothing by
+		// listing zero objects or by not being there at all.
+		if !errors.Is(err, fs.ErrorDirNotFound) {
+			return nil, fmt.Errorf("list %s: %w", f.Name(), err)
+		}
 	}
 
 	for key, paths := range clashes {

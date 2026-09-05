@@ -207,6 +207,8 @@ The suite is checked against deliberate sabotage rather than only against itself
 go test ./...
 ```
 
+One side of every test above is a local folder, and for a long time so was the other. The engine is also exercised against a **bucket-shaped backend** now: no real directories, no filesystem underneath, a rename that has to become a copy and a delete. That is not a substitute for running against a real S3 bucket or SFTP host and is not claimed as one, but it is the part of that gap which can be closed without asking anybody for a server, and closing it immediately found a defect: a job could not start at all against a destination that did not exist yet.
+
 There is one more habit worth naming: every guard here has been checked by breaking it. Removing the empty-side refusal, dropping half of the conflict resolution, switching off rename detection, removing Unicode normalisation, filtering the sides without filtering the record, and letting a naming collision through each produce a failing test. A test that stays green when the thing it protects is removed is testing something else.
 
 CI runs the whole suite on Linux, Windows and macOS, because path handling, modification-time resolution and case sensitivity all differ between them, and every one of those differences is a way for a sync engine to be wrong. The case-collision test can only run where the filesystem can hold both names, so it reports itself as skipped on Windows and macOS.

@@ -15,6 +15,16 @@ it knows about. If that is genuinely what you wanted, run it once with
 **A naming collision** means one side holds two files whose names differ only in
 case, and the other side cannot tell them apart. Rename one of them.
 
+## The destination does not exist yet
+
+That is fine. A bucket nobody has created, or a directory nobody has made, is
+treated as an empty side and the first run creates what it needs.
+
+This does not weaken the refusal to believe an empty side. That check compares
+against the record: a side that used to hold files and now reports nothing is
+still refused, whether it reports nothing by listing zero objects or by not
+being there at all.
+
 ## Files keep copying back and forth
 
 Two sides that never settle usually means the two are spelling one name
