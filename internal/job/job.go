@@ -47,6 +47,10 @@ type Config struct {
 	// dir is where the file was read from, so relative paths inside it mean
 	// what the person writing it expected.
 	dir string
+	// path is the file itself, and raw is its exact content, both kept so the
+	// editor can write the file back without losing anything it did not touch.
+	path string
+	raw  []byte
 }
 
 // Notify says where a run reports to.
@@ -131,6 +135,8 @@ func Load(path string) (*Config, error) {
 		return nil, err
 	}
 	cfg.dir = filepath.Dir(abs)
+	cfg.path = abs
+	cfg.raw = data
 	if cfg.History == "" {
 		cfg.History = filepath.Join(cfg.dir, "history.db")
 	} else {
@@ -273,4 +279,68 @@ func (j Job) SettleFor() time.Duration {
 		return 2 * time.Second
 	}
 	return d
+}
+
+// Raw returns the configuration file exactly as it was read.
+//
+// The editor works on these bytes rather than on the parsed struct, so a field
+// this version does not know about survives being edited by it, and a relative
+// path stays relative instead of being rewritten as the absolute one Load
+// resolved it to.
+func (c *Config) Raw() []byte { return append([]byte(nil), c.raw...) }
+
+// Path is where the configuration was read from.
+func (c *Config) Path() string { return c.path }
+
+// SaveJobs writes a new set of jobs back over the configuration file.
+//
+// Validation is not reimplemented here. The new content is written to a
+// neighbouring temporary file and put through Load, which is the same function
+// that guards a hand-written file, and only a file that survives that is moved
+// into place. A second validator would eventually disagree with the first, and
+// the disagreement would show up as an editor that accepts something the daemon
+// then refuses to start with.
+func (c *Config) SaveJobs(jobs []map[string]any) (*Config, error) {
+	var doc map[string]any
+	if err := json.Unmarshal(c.raw, &doc); err != nil {
+		return nil, fmt.Errorf("re-read the configuration: %w", err)
+	}
+	doc["jobs"] = jobs
+
+	next, err := json.MarshalIndent(doc, "", "  ")
+	if err != nil {
+		return nil, fmt.Errorf("write the configuration: %w", err)
+	}
+	next = append(next, '\n')
+
+	tmp := c.path + ".checking"
+	if err := os.WriteFile(tmp, next, 0o644); err != nil {
+		return nil, fmt.Errorf("write %s: %w", tmp, err)
+	}
+	defer os.Remove(tmp)
+
+	if _, err := Load(tmp); err != nil {
+		// The message is the validator's own, so an editor and a hand-written
+		// file fail in the same words.
+		return nil, err
+	}
+
+	// A crash between these two lines leaves the old file intact, which is the
+	// point of writing beside it first: a half-written configuration is a
+	// daemon that will not start.
+	if err := os.Rename(tmp, c.path); err != nil {
+		return nil, fmt.Errorf("replace %s: %w", c.path, err)
+	}
+	return Load(c.path)
+}
+
+// JobsAsMaps returns the jobs as they stand in the file, for editing.
+func (c *Config) JobsAsMaps() ([]map[string]any, error) {
+	var doc struct {
+		Jobs []map[string]any `json:"jobs"`
+	}
+	if err := json.Unmarshal(c.raw, &doc); err != nil {
+		return nil, fmt.Errorf("re-read the configuration: %w", err)
+	}
+	return doc.Jobs, nil
 }

@@ -20,13 +20,15 @@ import (
 
 	"github.com/junkerderprovinz/reeveroll/internal/daemon"
 	"github.com/junkerderprovinz/reeveroll/internal/history"
-	"github.com/junkerderprovinz/reeveroll/internal/job"
 	"github.com/junkerderprovinz/reeveroll/internal/plan"
 )
 
 // Server answers the browser.
+//
+// It deliberately holds no configuration of its own. The runner owns the one
+// copy, and an editor that could change one of two pointers would be an editor
+// whose result depends on which half of the program somebody asks.
 type Server struct {
-	Config  *job.Config
 	History *history.DB
 	Runner  *daemon.Runner
 
@@ -43,6 +45,8 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("POST /api/jobs/{name}/run", s.runJob)
 	mux.HandleFunc("GET /api/history", s.listHistory)
 	mux.HandleFunc("GET /api/events", s.events)
+	mux.HandleFunc("GET /api/config", s.readConfig)
+	mux.HandleFunc("PUT /api/config", s.writeConfig)
 
 	if s.UI != nil {
 		mux.Handle("/", spa{fs: s.UI})
@@ -63,8 +67,9 @@ type jobView struct {
 
 func (s *Server) listJobs(w http.ResponseWriter, r *http.Request) {
 	running := s.Runner.Running()
-	out := make([]jobView, 0, len(s.Config.Jobs))
-	for _, j := range s.Config.Jobs {
+	cfg := s.Runner.Config()
+	out := make([]jobView, 0, len(cfg.Jobs))
+	for _, j := range cfg.Jobs {
 		v := jobView{
 			Name: j.Name, Left: j.Left, Right: j.Right,
 			Schedule: j.Schedule, Disabled: j.Disabled, Running: running[j.Name],
@@ -284,4 +289,50 @@ func (s spa) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 type readSeeker interface {
 	Read([]byte) (int, error)
 	Seek(int64, int) (int64, error)
+}
+
+// readConfig hands the editor the jobs exactly as they stand in the file, not
+// as the parsed struct sees them. A field this version does not understand
+// survives being edited, and a relative path stays relative.
+func (s *Server) readConfig(w http.ResponseWriter, r *http.Request) {
+	jobs, err := s.Runner.Config().JobsAsMaps()
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, err)
+		return
+	}
+	if jobs == nil {
+		jobs = []map[string]any{}
+	}
+	writeJSON(w, http.StatusOK, map[string]any{"jobs": jobs})
+}
+
+// writeConfig replaces the job list and reloads the schedules.
+//
+// The whole list arrives at once rather than one job at a time, because a
+// configuration is validated as a whole: two jobs sharing a name is a defect
+// neither of them can see on its own.
+func (s *Server) writeConfig(w http.ResponseWriter, r *http.Request) {
+	var body struct {
+		Jobs []map[string]any `json:"jobs"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		writeError(w, http.StatusBadRequest, fmt.Errorf("read the request: %w", err))
+		return
+	}
+
+	next, err := s.Runner.Config().SaveJobs(body.Jobs)
+	if err != nil {
+		// The validator's own words, so an edit here and a hand-written file
+		// fail in exactly the same way.
+		writeError(w, http.StatusBadRequest, err)
+		return
+	}
+	s.Runner.Reload(next)
+
+	jobs, err := next.JobsAsMaps()
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]any{"jobs": jobs})
 }

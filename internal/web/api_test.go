@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -53,7 +54,7 @@ func newHarness(t *testing.T) *harness {
 	}
 	t.Cleanup(func() { hist.Close() })
 
-	s := &web.Server{Config: cfg, History: hist, Runner: daemon.New(cfg, hist, nil, nil)}
+	s := &web.Server{History: hist, Runner: daemon.New(cfg, hist, nil, nil)}
 	srv := httptest.NewServer(s.Handler())
 	t.Cleanup(srv.Close)
 	return &harness{srv: srv, left: left, right: right}
@@ -240,4 +241,132 @@ func waitForRun(t *testing.T, h *harness, want int) {
 		time.Sleep(20 * time.Millisecond)
 	}
 	t.Fatalf("no run was recorded within ten seconds")
+}
+
+func (h *harness) put(t *testing.T, path, body string) (*http.Response, string) {
+	t.Helper()
+	req, err := http.NewRequest(http.MethodPut, h.srv.URL+path, strings.NewReader(body))
+	if err != nil {
+		t.Fatalf("build request: %v", err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+	resp, err := h.srv.Client().Do(req)
+	if err != nil {
+		t.Fatalf("PUT %s: %v", path, err)
+	}
+	defer resp.Body.Close()
+	var buf strings.Builder
+	io.Copy(&buf, resp.Body)
+	return resp, buf.String()
+}
+
+// TestEditingAJobSurvivesAReload is the point of the editor: a change made in a
+// browser has to be the change the daemon is running, not a file somebody has
+// to restart something to pick up.
+func TestEditingAJobSurvivesAReload(t *testing.T) {
+	h := newHarness(t)
+
+	var before struct{ Jobs []map[string]any }
+	h.get(t, "/api/config", &before)
+	if len(before.Jobs) != 1 {
+		t.Fatalf("expected the one configured job, got %+v", before.Jobs)
+	}
+
+	edited := before.Jobs[0]
+	edited["schedule"] = "0 4 * * *"
+	body, _ := json.Marshal(map[string]any{"jobs": []map[string]any{edited}})
+
+	resp, _ := h.put(t, "/api/config", string(body))
+	if resp.StatusCode != http.StatusOK {
+		t.Fatalf("the edit was refused: %s", resp.Status)
+	}
+
+	var after []struct {
+		Name     string
+		Schedule string
+	}
+	h.get(t, "/api/jobs", &after)
+	if len(after) != 1 || after[0].Schedule != "0 4 * * *" {
+		t.Fatalf("the running configuration did not pick up the edit: %+v", after)
+	}
+}
+
+// TestARefusedEditLeavesTheFileAlone is why the new content is written beside
+// the real file and only moved into place once it has been through the same
+// validator a hand-written file goes through.
+//
+// The failure this prevents is the worst kind: an editor that half-writes a
+// configuration leaves a daemon that will not start, and the person who has to
+// fix it is looking at a file they did not type.
+func TestARefusedEditLeavesTheFileAlone(t *testing.T) {
+	h := newHarness(t)
+
+	var before struct{ Jobs []map[string]any }
+	h.get(t, "/api/config", &before)
+
+	broken := map[string]any{
+		"name": "broken", "left": "/a", "right": "/b", "state": "b.db",
+		"schedule": "every second tuesday",
+	}
+	body, _ := json.Marshal(map[string]any{"jobs": []map[string]any{broken}})
+
+	resp, text := h.put(t, "/api/config", string(body))
+	if resp.StatusCode != http.StatusBadRequest {
+		t.Fatalf("an unparseable schedule was accepted: %s", resp.Status)
+	}
+	if !strings.Contains(text, "schedule") {
+		t.Errorf("the refusal does not say what was wrong: %s", text)
+	}
+
+	var after struct{ Jobs []map[string]any }
+	h.get(t, "/api/config", &after)
+	if len(after.Jobs) != len(before.Jobs) || after.Jobs[0]["name"] != before.Jobs[0]["name"] {
+		t.Fatalf("a refused edit changed the file anyway: %+v", after.Jobs)
+	}
+
+	var jobs []struct{ Name string }
+	h.get(t, "/api/jobs", &jobs)
+	if len(jobs) != 1 || jobs[0].Name != "photos" {
+		t.Fatalf("a refused edit reached the running configuration: %+v", jobs)
+	}
+}
+
+// TestTheEditorUsesTheSameValidator checks that a rule the file already has is
+// enforced through the editor too, in the same words. Two validators eventually
+// disagree, and the disagreement shows up as an editor accepting something the
+// daemon then refuses to start with.
+func TestTheEditorUsesTheSameValidator(t *testing.T) {
+	h := newHarness(t)
+	twins := []map[string]any{
+		{"name": "same", "left": "/a", "right": "/b", "state": "one.db"},
+		{"name": "same", "left": "/c", "right": "/d", "state": "two.db"},
+	}
+	body, _ := json.Marshal(map[string]any{"jobs": twins})
+
+	resp, text := h.put(t, "/api/config", string(body))
+	if resp.StatusCode != http.StatusBadRequest {
+		t.Fatalf("two jobs with one name were accepted: %s", resp.Status)
+	}
+	if !strings.Contains(text, "both called") {
+		t.Errorf("the message is not the validator's own: %s", text)
+	}
+}
+
+// TestAnUnknownFieldIsRefusedThroughTheEditor keeps the editor from being a way
+// around the check that catches a misspelled setting. JSON ignores a field it
+// does not recognise, so "excludes" instead of "exclude" would leave the filter
+// empty and sync exactly the files somebody thought they had excluded.
+func TestAnUnknownFieldIsRefusedThroughTheEditor(t *testing.T) {
+	h := newHarness(t)
+	body, _ := json.Marshal(map[string]any{"jobs": []map[string]any{
+		{"name": "typo", "left": "/a", "right": "/b", "state": "t.db", "excludes": []string{"*.tmp"}},
+	}})
+
+	resp, text := h.put(t, "/api/config", string(body))
+	if resp.StatusCode != http.StatusBadRequest {
+		t.Fatalf("a misspelled field was accepted: %s", resp.Status)
+	}
+	if !strings.Contains(text, "excludes") {
+		t.Errorf("the message does not name the field: %s", text)
+	}
 }

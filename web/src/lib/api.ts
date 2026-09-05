@@ -44,6 +44,27 @@ export type Run = {
   Err: string
 }
 
+/**
+ * A job exactly as it stands in the configuration file, rather than as the
+ * parsed struct sees it. Unknown keys are carried through untouched, so a field
+ * this build does not understand survives being edited by it.
+ */
+export type RawJob = {
+  name?: string
+  left?: string
+  right?: string
+  state?: string
+  schedule?: string
+  disabled?: boolean
+  watch?: boolean
+  watchSettle?: string
+  quietPeriod?: string
+  emptyDirs?: boolean
+  metadata?: boolean
+  exclude?: string[]
+  [key: string]: unknown
+}
+
 export type RunEvent = { job: string; phase: 'started' | 'finished'; error?: string }
 
 /**
@@ -84,6 +105,22 @@ export const api = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(only === undefined ? {} : { only }),
+    }),
+
+  config: () => request<{ jobs: RawJob[] }>('/api/config'),
+
+  /**
+   * Write the whole job list back.
+   *
+   * All of it at once rather than one job at a time, because a configuration is
+   * validated as a whole: two jobs sharing a name is a defect neither of them
+   * can see on its own. A refusal leaves the file exactly as it was.
+   */
+  saveConfig: (jobs: RawJob[]) =>
+    request<{ jobs: RawJob[] }>('/api/config', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ jobs }),
     }),
 
   /** Live run events. Returns the function that closes the stream. */

@@ -163,6 +163,8 @@ reeveroll web -config reeveroll.json          # http://127.0.0.1:8422, schedules
 
 Ticking is not decoration. The run re-plans and then keeps only the paths that were ticked, rather than replaying the plan that was on screen: between reading a preview and pressing the button a file can change, and acting on the older plan would mean acting on a description of a tree that no longer exists. An empty selection stays distinguishable from no selection at all, so unticking every row does nothing rather than running everything.
 
+**Jobs can be edited in the browser**, on the Edit tab. It writes the same configuration file a person can still open in an editor, and it validates through the same function that guards it there: a refused edit fails in the validator's own words and leaves the file exactly as it was, because the new content is written beside it and only moved into place once it has passed. A saved edit rebuilds the schedules and the watchers without a restart.
+
 **The look is [GlimStone](https://github.com/junkerderprovinz/glimstone) 1.6.0**, and its reference tokens and appearance engine are copied in verbatim rather than reimplemented. Theme, corner shape and accent are the viewer's to set. The accent marks activity and nothing else, which is why the switches down the preview are deliberately colourless: every row arrives ticked, and a control that is on in all of them is not activity.
 
 **It listens on loopback by default.** This interface can start a job that deletes files and it has no login of its own; anyone who wants it reachable has to say so, and should put something in front of it that asks who they are.
@@ -219,7 +221,7 @@ CI runs the whole suite on Linux, Windows and macOS, because path handling, modi
 
 **Rename detection matches on content**, so two unrelated files with identical bytes can in principle be paired.
 
-The interface has no job editor yet, so a new job is still a few lines in the configuration file.
+
 
 <br>
 

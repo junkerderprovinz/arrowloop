@@ -48,6 +48,10 @@ type Runner struct {
 
 	slots chan struct{}
 
+	// reload carries one pending rebuild. Buffered by one and dropped when
+	// full: two edits in quick succession need one rebuild, not two.
+	reload chan struct{}
+
 	mu       sync.Mutex
 	inflight map[string]bool
 	subs     map[chan Event]struct{}
@@ -67,6 +71,7 @@ func New(cfg *job.Config, hist *history.DB, note notify.Notifier, log func(strin
 		log:      log,
 		slots:    make(chan struct{}, cfg.ParallelJobs),
 		inflight: map[string]bool{},
+		reload:   make(chan struct{}, 1),
 	}
 }
 
@@ -77,7 +82,7 @@ func New(cfg *job.Config, hist *history.DB, note notify.Notifier, log func(strin
 // handing back something cached, because a preview is only worth looking at if
 // it describes the tree as it is now.
 func (r *Runner) Preview(ctx context.Context, name string) (*plan.Plan, error) {
-	j, ok := r.cfg.Find(name)
+	j, ok := r.config().Find(name)
 	if !ok {
 		return nil, fmt.Errorf("no job called %q", name)
 	}
@@ -117,7 +122,7 @@ func (r *Runner) Run(ctx context.Context, name string) (history.Run, error) {
 //
 // A nil list means everything, which is what Run passes.
 func (r *Runner) RunOnly(ctx context.Context, name string, only []string) (history.Run, error) {
-	j, ok := r.cfg.Find(name)
+	j, ok := r.config().Find(name)
 	if !ok {
 		return history.Run{}, fmt.Errorf("no job called %q", name)
 	}
@@ -266,7 +271,7 @@ func (r *Runner) announce(ctx context.Context, rec history.Run, res apply.Result
 	if r.note == nil {
 		return
 	}
-	if !rec.Failed() && !r.cfg.Notify.OnSuccess {
+	if !rec.Failed() && !r.config().Notify.OnSuccess {
 		return
 	}
 
@@ -302,26 +307,60 @@ func (r *Runner) announce(ctx context.Context, rec history.Run, res apply.Result
 	}
 }
 
-// Serve runs every scheduled job until the context is cancelled.
+// Serve runs every scheduled job until the context is cancelled, rebuilding
+// itself whenever the configuration changes.
 //
 // A job with no schedule is not started here at all; it exists to be asked for
 // by name. A job that is still running when its next turn comes round is
 // skipped with a line in the log rather than queued, because queueing would let
 // a job that is simply too slow build an unbounded backlog of itself.
 func (r *Runner) Serve(ctx context.Context) error {
+	for {
+		round, endRound := context.WithCancel(ctx)
+		c := r.schedule(round)
+		c.Start()
+
+		select {
+		case <-ctx.Done():
+			endRound()
+			r.stopCron(c)
+			return nil
+		case <-r.reload:
+			// The watchers belong to this round's context, so cancelling it is
+			// what closes them. Rebuilding from scratch rather than working out
+			// what changed keeps one code path for "start" and "restart": two
+			// paths would eventually disagree about what a reload leaves behind.
+			endRound()
+			r.stopCron(c)
+			r.mu.Lock()
+			r.watchers = map[string]*watch.Watcher{}
+			r.mu.Unlock()
+			r.log("configuration reloaded")
+		}
+	}
+}
+
+// schedule builds the cron entries and the watchers for the current
+// configuration.
+func (r *Runner) schedule(ctx context.Context) *cron.Cron {
+	cfg := r.config()
 	c := cron.New()
 	var scheduled []string
 
-	for _, j := range r.cfg.Jobs {
+	for _, j := range cfg.Jobs {
 		if j.Disabled || j.Schedule == "" {
 			continue
 		}
 		name := j.Name
-		schedule, err := job.ParseSchedule(j.Schedule)
+		parsed, err := job.ParseSchedule(j.Schedule)
 		if err != nil {
-			return fmt.Errorf("job %q: %w", name, err)
+			// Load already refused anything unparseable, so reaching here means
+			// the file changed underneath us in a way validation should have
+			// caught. Say so and carry on with the jobs that are fine.
+			r.log("%s: unusable schedule %q: %v", name, j.Schedule, err)
+			continue
 		}
-		c.Schedule(schedule, cron.FuncJob(func() {
+		c.Schedule(parsed, cron.FuncJob(func() {
 			rec, err := r.Run(ctx, name)
 			switch {
 			case errors.Is(err, ErrAlreadyRunning):
@@ -339,7 +378,7 @@ func (r *Runner) Serve(ctx context.Context) error {
 		scheduled = append(scheduled, fmt.Sprintf("%s (%s)", name, j.Schedule))
 	}
 
-	for _, j := range r.cfg.Jobs {
+	for _, j := range cfg.Jobs {
 		if j.Disabled || !j.Watch {
 			continue
 		}
@@ -352,18 +391,41 @@ func (r *Runner) Serve(ctx context.Context) error {
 	} else {
 		r.log("scheduled: %s", strings.Join(scheduled, ", "))
 	}
+	return c
+}
 
-	c.Start()
-	<-ctx.Done()
-	// Stop returns a context that closes once the running jobs are done, so a
-	// stop signal does not cut a transfer in half if it can be helped.
+// stopCron waits for whatever is running to finish rather than cutting it off.
+func (r *Runner) stopCron(c *cron.Cron) {
 	stopped := c.Stop()
 	select {
 	case <-stopped.Done():
 	case <-time.After(2 * time.Minute):
 		r.log("a job was still running after two minutes, stopping anyway")
 	}
-	return nil
+}
+
+// Reload swaps in a new configuration and rebuilds the schedules and watchers.
+//
+// The signal is dropped rather than queued when a rebuild is already pending:
+// two edits in quick succession need one rebuild, not two, and the second one
+// would rebuild from the same file anyway.
+func (r *Runner) Reload(cfg *job.Config) {
+	r.mu.Lock()
+	r.cfg = cfg
+	r.mu.Unlock()
+	select {
+	case r.reload <- struct{}{}:
+	default:
+	}
+}
+
+// Config returns the configuration currently in force.
+func (r *Runner) Config() *job.Config { return r.config() }
+
+func (r *Runner) config() *job.Config {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	return r.cfg
 }
 
 // Event is something worth telling a watching screen about.

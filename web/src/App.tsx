@@ -4,11 +4,12 @@ import { Card, Stack } from './components/Shell'
 import { Selector } from './components/Selector'
 import { History, Jobs } from './pages/Jobs'
 import { Preview } from './pages/Preview'
+import { Editor } from './pages/Editor'
 import { api, type Job, type Run } from './lib/api'
 import { ACCENTS, applyAccent, applyShape, cacheAppearance, type Shape } from './lib/appearance'
 import { wireTooltips } from './lib/tooltip'
 
-type Tab = 'jobs' | 'history' | 'look'
+type Tab = 'jobs' | 'edit' | 'history' | 'look'
 type Theme = 'system' | 'dark' | 'light'
 
 const THEME_KEY = 'reeveroll.theme'
@@ -89,6 +90,7 @@ export function App() {
           }}
           options={[
             { value: 'jobs', label: 'Jobs', icon: '⇄' },
+            { value: 'edit', label: 'Edit', icon: '✎' },
             { value: 'history', label: 'History', icon: '☰' },
             { value: 'look', label: 'Look', icon: '◐' },
           ]}
@@ -111,6 +113,8 @@ export function App() {
         />
       ) : tab === 'jobs' ? (
         <Jobs jobs={jobs} onPreview={setPreviewing} />
+      ) : tab === 'edit' ? (
+        <Editor onSaved={refresh} />
       ) : tab === 'history' ? (
         <History runs={runs} />
       ) : (
