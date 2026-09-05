@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 	"path/filepath"
+	"runtime"
 	"testing"
 	"time"
 
@@ -159,6 +160,14 @@ func TestCaseCollisionIsRefused(t *testing.T) {
 	write(t, j.left, "safe.txt", "no trouble here")
 
 	if len(tree(t, j.left)) != 3 {
+		// On Windows and macOS the filesystem folded the two names together
+		// before the engine ever saw them, so there is genuinely nothing to
+		// collide. On Linux there is, and a skip there would mean this test has
+		// quietly stopped exercising anything on every platform at once, which
+		// is how a suite ends up green and worthless.
+		if runtime.GOOS == "linux" {
+			t.Fatal("the two names did not survive on a case-sensitive filesystem, so this test is no longer testing the collision path")
+		}
 		t.Skip("this filesystem cannot hold two names differing only in case, so there is nothing to collide")
 	}
 

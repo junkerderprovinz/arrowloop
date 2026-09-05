@@ -2,6 +2,7 @@ package plan
 
 import (
 	"context"
+	"strings"
 	"testing"
 	"time"
 
@@ -270,4 +271,66 @@ func asBrake(err error, target **BrakeError) bool {
 		*target = e
 	}
 	return ok
+}
+
+// TestCollisionsAreSkippedNotSynced tests the collision path without needing a
+// case-sensitive filesystem underneath.
+//
+// The scenario test for this can only run where two names differing in case can
+// both exist, which is neither Windows nor macOS. Leaving it at that would mean
+// the behaviour is exercised on exactly one of the three systems CI runs, and a
+// change that broke it elsewhere would go unnoticed. Here the listing is handed
+// in directly, so the decision is tested everywhere.
+//
+// The case that matters is a collision on a file that was ALREADY being synced.
+// A colliding key is dropped from its side's listing, so without the block the
+// engine sees a path that is in the record and on the right but not on the
+// left, reads that as a deletion, and trashes a perfectly good file on the
+// other side because of a naming problem over here. Reporting the collision is
+// the easy half; refusing to act on the gap it leaves is the half that saves
+// somebody's data.
+func TestCollisionsAreSkippedNotSynced(t *testing.T) {
+	// bild.jpg was synced last run. Since then the left side has grown a
+	// second file whose name differs only in case, so the scan reported a
+	// collision and dropped the key from the left listing entirely.
+	left := &scan.Listing{
+		Files: scan.Side{"safe.txt": live("safe.txt", 10, 0)},
+		Collisions: []scan.Collision{
+			{Key: "bild.jpg", Paths: []string{"Bild.jpg", "bild.jpg"}},
+		},
+	}
+	right := listing(scan.Side{
+		"bild.jpg": live("bild.jpg", 40, 0),
+		"safe.txt": live("safe.txt", 10, 0),
+	})
+	prev := map[string]state.Entry{
+		"bild.jpg": agreed("bild.jpg", 40, 40, 0, 0),
+		"safe.txt": agreed("safe.txt", 10, 10, 0, 0),
+	}
+
+	got, err := Build(context.Background(), left, right, prev, noQuiet())
+	if err != nil {
+		t.Fatalf("build: %v", err)
+	}
+
+	for _, act := range got.Actions {
+		if act.Path == "bild.jpg" {
+			t.Fatalf("a naming collision on the left produced a %v of the right side's file", act.Kind)
+		}
+	}
+	if len(got.Skipped) != 1 {
+		t.Fatalf("expected one collision report, got %d: %+v", len(got.Skipped), got.Skipped)
+	}
+	if got.Skipped[0].Path != "bild.jpg" {
+		t.Errorf("the report names %q, want the colliding key", got.Skipped[0].Path)
+	}
+	for _, want := range []string{"Bild.jpg", "bild.jpg"} {
+		if !strings.Contains(got.Skipped[0].Reason, want) {
+			t.Errorf("the reason does not name %q, so the user cannot act on it: %q", want, got.Skipped[0].Reason)
+		}
+	}
+	// The rest of the tree must still move. A collision is one file's problem.
+	if got.Unchanged != 1 {
+		t.Errorf("the unaffected file was disturbed: %d unchanged, actions %+v", got.Unchanged, got.Actions)
+	}
 }
