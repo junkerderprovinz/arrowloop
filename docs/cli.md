@@ -8,6 +8,7 @@ arrowloop daemon   -config <file>                           run every scheduled 
 arrowloop jobs     -config <file>                           what is configured, and when each last worked
 arrowloop history  -config <file> [-job <name>]             what the runs did
 arrowloop service  [-config <file>] [-os <goos>]            the service file for this system
+arrowloop version                                           which build this is
 ```
 
 Every command takes `-h` for its own flags.
@@ -79,3 +80,21 @@ Three things it tells you that are otherwise found out the hard way:
 - macOS asks for permission the first time the agent touches Documents, and
   until that is granted the job fails with an ordinary permission error that
   looks like a bug and is not one.
+
+## version
+
+Prints which build this binary is, and nothing else, so it can be read from a
+script.
+
+```bash
+arrowloop version
+```
+
+A release build prints its tag, a build from a commit prints the commit, and a
+build from an edited tree adds `-dirty`, because a binary from uncommitted
+changes is not the commit it names. An unstamped local `go build` prints `dev`.
+
+The desktop application answers the same question through the Windows file
+properties dialog and on its About card. This command exists because a Go binary
+carries no version resource, so the properties dialog has nothing to show for
+this one.

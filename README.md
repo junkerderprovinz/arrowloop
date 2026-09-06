@@ -138,6 +138,7 @@ arrowloop daemon   -config arrowloop.json          run every scheduled job until
 arrowloop jobs     -config arrowloop.json          what is configured, and when each last WORKED
 arrowloop history  -config arrowloop.json          what the runs actually did
 arrowloop service  -config arrowloop.json          the file this system needs to keep the daemon alive
+arrowloop version                                  which build this is
 ```
 
 **Everything is validated at load time**, including cron expressions, durations and misspelled field names. A typo that only surfaces at three in the morning, on the one job that mattered, is the failure a daemon must not have. JSON normally ignores a field it does not recognise, so `"excludes"` instead of `"exclude"` would leave the filter empty and sync the very files somebody thought they had excluded; unknown fields are refused instead.
