@@ -17,6 +17,8 @@ import (
 	"github.com/rclone/rclone/fs"
 	"github.com/rclone/rclone/fs/config/configfile"
 
+	"github.com/junkerderprovinz/arrowloop/internal/boot"
+
 	// The four kinds of target this product promises: a local disk or mounted
 	// share, anything speaking the S3 API (MinIO, Garage, Backblaze), SSH, and
 	// SMB, which is what an Unraid share is. Importing backend/all would pull
@@ -37,6 +39,7 @@ const usage = `arrowloop synchronises two folders in both directions.
   arrowloop jobs     -config <file>                           list the configured jobs
   arrowloop history  -config <file> [-job <name>]             what the runs did
   arrowloop service  [-config <file>] [-os <goos>]            the service file for this system
+  arrowloop version                                           which build this is
 
 Every command takes -h for its own flags.
 `
@@ -72,6 +75,13 @@ func main() {
 		err = cmdService(args)
 	case "healthcheck":
 		err = cmdHealth(ctx, args)
+	case "version", "-version", "--version":
+		// A Go binary carries no Windows version resource, so its file
+		// properties cannot answer "which build is this". The desktop shell has
+		// one; this is the same answer for the command line, and it has to be a
+		// command of its own because the banner only prints on `web`, which
+		// means the one way to read the version was to start a server.
+		fmt.Println(boot.Version)
 	case "-h", "--help", "help":
 		fmt.Print(usage)
 		return
