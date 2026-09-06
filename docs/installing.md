@@ -36,7 +36,10 @@ reason that reads like a bug.
 ## As a desktop application
 
 Windows, Linux and macOS builds are on the
-[releases page](https://github.com/junkerderprovinz/arrowloop/releases).
+[releases page](https://github.com/junkerderprovinz/arrowloop/releases). Windows
+gets two files and they are the same program: an **installer** that puts it in
+the Start menu and gives it an entry under Apps, and a **portable** exe that runs
+from wherever you leave it. Take the installer unless you have a reason not to.
 
 It is not a client talking to a server. The scheduler, the run log and the API
 all live in the same process, and the window is a webview pointed at them.
@@ -46,6 +49,23 @@ application and a server nobody asked to run.
 The schedules run for as long as the window is open. For a machine that should
 sync while nobody is looking, use `arrowloop daemon` and `arrowloop service`
 instead; see [the command line](cli.md).
+
+### Starting with the system
+
+Settings, General, Starting has a switch that registers ArrowLoop to start when
+you sign in. It is a **per-user** entry (a value under `HKCU` on Windows, a
+`.desktop` file under `~/.config/autostart` on Linux, a LaunchAgent in your own
+Library on macOS), so it needs no administrator rights and affects nobody else on
+the machine.
+
+The switch reads its state back from the system rather than from a settings file,
+so removing the entry with the Task Manager's own Startup tab turns the switch
+off too, instead of leaving it claiming something that is no longer true.
+
+Autostart on its own only gets the program running. A job that should sync
+*because* the machine just came on wants `runAtStart` as well, or it will sit
+there until its schedule is next due; see
+[the configuration reference](configuration.md#running-at-start).
 
 It puts an icon in the notification area, and Settings, General decides what
 the window buttons do: whether closing quits or hides, and whether minimising goes

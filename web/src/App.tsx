@@ -369,6 +369,26 @@ function General({ lang, onLang, languages, window: windowSettings, onWindow }: 
           </div>
         </Card>
       )}
+
+      {/* A card of its own rather than a fourth switch in the one above, because
+          this is not about the window. The three up there decide what a button
+          on the frame does; this one decides whether the program is running at
+          all before anybody has touched it, which is a different question and
+          the one that makes a schedule worth setting.
+
+          Gated on the system having a mechanism, not just on there being a
+          window: a build on a platform with no autostart would otherwise draw a
+          switch that reports false however it is pressed. */}
+      {windowSettings?.canStartWithSystem && (
+        <Card title={t('start.title')} hue={2}>
+          <Switch
+            label={t('start.withSystem')}
+            hint={t('start.withSystemHint')}
+            on={windowSettings.startWithSystem}
+            onChange={(startWithSystem) => onWindow({ ...windowSettings, startWithSystem })}
+          />
+        </Card>
+      )}
     </Stack>
   )
 }

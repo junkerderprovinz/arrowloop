@@ -58,11 +58,24 @@ export type Backend = {
   }[]
 }
 
-/** What a desktop window's own buttons do. */
+/** What a desktop window's own buttons do, and whether the program starts on its own. */
 export type WindowSettings = {
   tray: boolean
   closeToTray: boolean
   minimiseToTray: boolean
+
+  /**
+   * Whether the program is registered to start with the session.
+   *
+   * Read back from the operating system on every request rather than stored
+   * beside the others, so the switch cannot go on claiming autostart is on
+   * after somebody removed the entry with the Task Manager's own startup tab.
+   */
+  startWithSystem: boolean
+
+  /** Whether this system has an autostart mechanism at all. False means the
+   *  switch is left out rather than drawn and inert. */
+  canStartWithSystem: boolean
 }
 
 /** One registered drive, attached or not. */
@@ -115,6 +128,7 @@ export type RawJob = {
   disabled?: boolean
   watch?: boolean
   watchSettle?: string
+  runAtStart?: boolean
   quietPeriod?: string
   emptyDirs?: boolean
   metadata?: boolean
