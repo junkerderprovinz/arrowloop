@@ -87,6 +87,18 @@ jobs:
       - name: Work out the version
         run: node scripts/stamp.mjs --github-env
 
+      # The NSIS installer takes its version from wails.json and nowhere else,
+      # so the file is stamped before the build and put back after it. Left
+      # alone it ships Wails' own default of "1.0.0" and shows that in Apps and
+      # features: a number that never belonged to any build.
+      #
+      # ARROWLOOP_VERSION was worked out above while the tree was still clean,
+      # and every later reader takes it from there, so the edit below cannot
+      # make a clean commit call itself "-dirty".
+      - name: Stamp the installer version
+        if: runner.os == 'Windows'
+        run: node scripts/stamp.mjs --stamp-installer
+
       # The ldflags are not optional here, and leaving them off is the specific
       # failure this whole stamp exists to prevent. Without them boot.Version
       # stays "dev", so a released bundle would show "dev" on its About card
@@ -97,6 +109,12 @@ jobs:
         run: >
           wails build -platform ${{ matrix.platform }} -clean ${{ matrix.extra }}
           -ldflags "-X github.com/junkerderprovinz/arrowloop/internal/boot.Version=${{ env.ARROWLOOP_VERSION }}"
+
+      # The runner is thrown away either way, but a restored tree means the next
+      # step in this job sees the commit it was given rather than an edited one.
+      - name: Put wails.json back
+        if: always() && runner.os == 'Windows'
+        run: git checkout -- desktop/wails.json
 
       # macOS gets no installer step from wails, so the .app is wrapped into the
       # .dmg that is Apple's own convention. hdiutil is on every runner. The bare

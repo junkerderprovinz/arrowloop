@@ -15,7 +15,7 @@
 // somebody might commit.
 
 import { execFileSync } from 'node:child_process'
-import { appendFileSync, mkdirSync, writeFileSync } from 'node:fs'
+import { appendFileSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -49,6 +49,13 @@ function git(...args) {
  * where somebody is trying to work out why a fix is not in the file.
  */
 export function version() {
+  // Decided ONCE per build and carried in the environment from there on.
+  //
+  // Without this the answer is recomputed at every step, and one step in the
+  // Windows build writes a tracked file on its way past: `git describe --dirty`
+  // then starts saying "-dirty" halfway through a build of a perfectly clean
+  // commit, so the release bundle would name a state that never existed.
+  if (process.env.ARROWLOOP_VERSION) return process.env.ARROWLOOP_VERSION
   return git('describe', '--tags', '--always', '--dirty') || 'dev'
 }
 
@@ -118,6 +125,53 @@ export function writeWindowsVersion() {
   return info
 }
 
+/**
+ * The installer's own version, which does NOT come from the file above.
+ *
+ * Wails writes the executable's version resource from build/windows/info.json,
+ * and the NSIS installer's from wails.json's `info.productVersion`, and there
+ * is no setting that covers both. Left alone, the installer ships Wails' own
+ * default of "1.0.0" and shows it in Apps and features: a number that has never
+ * belonged to any build, presented as this one's. That is precisely the lie
+ * that cost jdp an afternoon of looking at a stale window, so it is not a
+ * cosmetic gap.
+ *
+ * NSIS wants three numbers and refuses a commit hash, so an untagged build gets
+ * 0.0.0 rather than something invented. The executable inside still carries the
+ * exact commit; this field is the coarse label on the box.
+ *
+ * Returns a function that puts the file back, because wails.json is TRACKED.
+ * The caller must run it, and must run it even when the build fails, or the
+ * next `git status` shows a change nobody made on purpose.
+ */
+export function stampWailsInfo({ restoreOnExit = true } = {}) {
+  const path = join(root, 'desktop', 'wails.json')
+  const before = readFileSync(path, 'utf8')
+  const config = JSON.parse(before)
+  const tag = (git('describe', '--tags', '--abbrev=0') || '').replace(/^v/, '')
+  config.info = { ...config.info, productVersion: /^\d+\.\d+\.\d+$/.test(tag) ? tag : '0.0.0' }
+  writeFileSync(path, JSON.stringify(config, null, 2) + '\n')
+
+  let done = false
+  const restore = () => {
+    if (done) return
+    done = true
+    writeFileSync(path, before)
+  }
+  // Also on the way out, and that is not belt and braces. The caller's own
+  // failure path calls process.exit, which does NOT run a finally block, so a
+  // build that failed would leave the edited file behind for somebody to find
+  // in their next `git status` and wonder about.
+  //
+  // Switched off when the stamp has to OUTLIVE this process, which is the
+  // workflow's case: it stamps in one step, builds in the next and restores in
+  // a third, so a handler here would undo the edit the instant this script
+  // finished and the installer would carry 1.0.0 again with nothing to show
+  // for the step.
+  if (restoreOnExit) process.on('exit', restore)
+  return restore
+}
+
 // Run directly, this hands the same answer to a build that is not a Node
 // script: `node scripts/stamp.mjs` prints it, and `--github-env` appends it to
 // the workflow environment.
@@ -127,6 +181,11 @@ export function writeWindowsVersion() {
 // would have to be written twice, once for pwsh and once for sh. Two spellings
 // of one line is where one of them rots.
 if (process.argv[1] && import.meta.url.endsWith(process.argv[1].replace(/\\/g, '/'))) {
+  // Deliberately without the exit handler: this stamp has to survive until a
+  // later step in the same job puts the file back.
+  if (process.argv.includes('--stamp-installer')) {
+    stampWailsInfo({ restoreOnExit: false })
+  }
   const stamp = version()
   if (process.argv.includes('--github-env') && process.env.GITHUB_ENV) {
     appendFileSync(process.env.GITHUB_ENV, `ARROWLOOP_VERSION=${stamp}\n`)

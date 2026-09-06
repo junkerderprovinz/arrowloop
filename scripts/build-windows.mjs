@@ -17,10 +17,15 @@ import { copyFileSync, mkdirSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { version } from './stamp.mjs'
+import { stampWailsInfo, version } from './stamp.mjs'
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)))
 const stamp = version()
+
+// Pinned before anything else runs. The installer stamp below edits a TRACKED
+// file, and without this every later `git describe` in this build would see a
+// dirty tree and start appending "-dirty" to a clean commit's name.
+process.env.ARROWLOOP_VERSION = stamp
 const ldflags = `-X github.com/junkerderprovinz/arrowloop/internal/boot.Version=${stamp}`
 
 function run(command, cwd) {
@@ -40,7 +45,16 @@ run(`go build -ldflags "-s -w ${ldflags}" -o "${cli}" ./cmd/arrowloop`, root)
 
 // The desktop shell. Its own frontend:build step copies the interface in and
 // writes the version resource, so both happen here without being asked for.
-run(`wails build -ldflags "${ldflags}" -o ArrowLoop.exe`, join(root, 'desktop'))
+//
+// The installer's version is the one thing that step cannot reach, so it is
+// written into wails.json first and put back in a finally: a build that throws
+// must not leave a tracked file edited behind it.
+const restore = stampWailsInfo()
+try {
+  run(`wails build -ldflags "${ldflags}" -o ArrowLoop.exe`, join(root, 'desktop'))
+} finally {
+  restore()
+}
 const app = join(root, 'desktop', 'build', 'bin', 'ArrowLoop.exe')
 
 const out = process.argv[2]
