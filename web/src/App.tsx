@@ -143,11 +143,18 @@ export function App() {
   return (
     <div className="mx-auto flex max-w-5xl flex-col gap-10 px-6 py-8">
       <header className="flex flex-wrap items-center justify-between gap-4">
-        {/* One hero per page, and this is it: the wordmark. Everything else on
-            the page is supporting detail at small type. */}
-        <h1 className="text-[20px] font-semibold tracking-tight">
-          Arrow<span className="text-accentInk">Loop</span>
-        </h1>
+        {/* One hero per page, and this is it: the mark and the wordmark, read as
+            one thing. Everything else on the page is supporting detail at small
+            type. The mark is sized against the wordmark beside it rather than by
+            some ratio of the header, so neither one outshouts the other, and it
+            carries no alt text on purpose: the name is already right next to it,
+            and a screen reader should not announce it twice. */}
+        <div className="flex items-center gap-2.5">
+          <img src="/favicon.svg" alt="" width={26} height={26} className="shrink-0" />
+          <h1 className="text-[20px] font-semibold tracking-tight">
+            Arrow<span className="text-accentInk">Loop</span>
+          </h1>
+        </div>
         <Selector<Tab>
           scale="small"
           label={t('nav.section')}
