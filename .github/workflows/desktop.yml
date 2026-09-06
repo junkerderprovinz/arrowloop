@@ -94,7 +94,13 @@ jobs:
         run: |
           set -eu
           df -h /
+          cache=$(go env GOCACHE)
+          modcache=$(go env GOMODCACHE)
           go clean -cache -modcache || true
+          # Recreated empty, because setup-go saves both of these in a post
+          # step and refuses a path that is not there. An empty cache costs a
+          # slower next run; a missing one fails the job after it passed.
+          mkdir -p "$cache" "$modcache"
           rm -rf ../web/node_modules
           df -h /
           hdiutil create -volname "ArrowLoop" -srcfolder build/bin/ArrowLoop.app -ov -format UDZO build/bin/ArrowLoop.dmg
