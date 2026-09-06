@@ -8,6 +8,34 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## v0.3.0
+
+The interface's controls now come from GlimStone itself rather than being
+rebuilt from its description, and the last control that still came from the
+operating system is gone. The engine is unchanged.
+
+### 🎨 Design
+
+- The controls are the design language's own files, copied and edited nowhere,
+  rather than this app's reading of its prose.
+- The stylesheet block borrowed from BombVault is gone: GlimStone 1.7.1 defines
+  those classes and measurements itself.
+- Every picker in the app is one control, a portalled and edge-aware listbox,
+  where there used to be four native selects.
+
+### 🐛 Fixed
+
+- The languages have real flags. Windows draws the flag emoji as a two-letter
+  tag, which could not be fixed while the list was a native one. Catalan,
+  Galician and Basque get a flag for the first time.
+- The autostart switch is checked on the wire. The test decoded the answer into
+  a shape without those two fields and walked past them.
+
+### ⚡ Improved
+
+- The About card names the design language release it is actually built from.
+- A picker no longer grows with the name inside it.
+
 ## v0.2.0
 
 The appearance settings and the jobs page rebuilt against BombVault's own
