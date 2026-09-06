@@ -17,6 +17,8 @@ import { cpSync, mkdirSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+import { version, writeWindowsVersion } from './stamp.mjs'
+
 const root = dirname(dirname(fileURLToPath(import.meta.url)))
 const source = join(root, 'web', 'dist')
 const target = join(root, 'desktop', 'frontend', 'dist')
@@ -47,4 +49,9 @@ cpSync(source, target, { recursive: true })
 // resolve at all, and git does not track empty directories.
 writeFileSync(join(target, '.gitkeep'), '')
 
-console.log(`interface copied into the shell: ${readdirSync(target).length} entries`)
+// The version resource, written here for the same reason the copy above is:
+// this runs on every build, so the stamp can never be the step somebody
+// forgot. Wails reads the file after frontend:build and before it compiles.
+writeWindowsVersion()
+
+console.log(`interface copied into the shell: ${readdirSync(target).length} entries, stamped ${version()}`)
