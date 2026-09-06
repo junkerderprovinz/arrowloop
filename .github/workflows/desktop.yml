@@ -121,11 +121,24 @@ jobs:
       # .app goes afterwards so the artifact holds the one file somebody should
       # actually download.
       #
-      # The caches go first, and that is not tidiness. A universal build compiles
-      # this tree twice, rclone's dependency graph and all, and the module cache
-      # plus two build caches fill the runner's disk: hdiutil then fails with
-      # "No space left on device" AFTER a four minute build that succeeded. The
-      # app is already linked at this point, so nothing here needs them again.
+      # THE SIZE IS EXPLICIT, and that is the whole fix. Left to itself,
+      # `hdiutil create -srcfolder` estimates how big a scratch image it needs
+      # and then copies the app into it; when the estimate falls short the copy
+      # fails INSIDE that image with "No space left on device", which names the
+      # wrong disk and sends anybody reading it to look at the runner's own free
+      # space. That is exactly what happened here: an earlier round read the
+      # message at face value, cleared the Go caches, saw two green runs and
+      # called it fixed. It came back on v0.2.0 with `df` reporting 95 GiB free
+      # on the line directly above the failure, which is the proof the disk was
+      # never the problem and the two green runs were luck.
+      #
+      # `du` plus a fixed 200 MB of slack, rather than a guessed total: the app
+      # is a universal binary and its size moves with the product, so a hard
+      # number would be a fresh estimate to get wrong later.
+      #
+      # The cache clean stays. It was not the fix, but a universal build does
+      # compile this tree twice and there is no reason to carry the caches into
+      # the packaging step now that nothing needs them.
       - name: Package the macOS app into a dmg
         if: runner.os == 'macOS'
         working-directory: desktop
@@ -141,7 +154,10 @@ jobs:
           mkdir -p "$cache" "$modcache"
           rm -rf ../web/node_modules
           df -h /
-          hdiutil create -volname "ArrowLoop" -srcfolder build/bin/ArrowLoop.app -ov -format UDZO build/bin/ArrowLoop.dmg
+          need=$(du -sm build/bin/ArrowLoop.app | cut -f1)
+          echo "app is ${need} MB, asking hdiutil for $((need + 200)) MB"
+          hdiutil create -volname "ArrowLoop" -srcfolder build/bin/ArrowLoop.app \
+            -ov -format UDZO -size "$((need + 200))m" build/bin/ArrowLoop.dmg
           rm -rf build/bin/ArrowLoop.app
 
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
