@@ -164,8 +164,18 @@ func throughBackend(t *testing.T, remote string) {
 	for i := range 10 {
 		write(t, m.local, fmt.Sprintf("dir%d/file%02d.txt", i%3, i), fmt.Sprintf("initial %d", i))
 	}
-	if _, res := m.sync(t); res.Copied != 10 {
+	_, res := m.sync(t)
+	if res.Copied != 10 {
 		t.Fatalf("expected ten files across, got %d", res.Copied)
+	}
+	// Nothing may be postponed here, and the reason to say so at this point is
+	// that the alternative reads as something else entirely. A file that copies
+	// and then fails to be recorded turns up two assertions later as a file
+	// that is not "unchanged", which sounds like a modification time that did
+	// not survive the round trip and sent the last search in the wrong
+	// direction for an afternoon.
+	if len(res.Skipped) != 0 {
+		t.Fatalf("the first run postponed %d things: %+v", len(res.Skipped), res.Skipped)
 	}
 	requireSame(t, m, "after the first run")
 
@@ -176,7 +186,11 @@ func throughBackend(t *testing.T, remote string) {
 		t.Fatalf("the job did not settle: %d actions, %d copied again", len(p.Actions), res.Copied)
 	}
 	if p.Unchanged != 10 {
-		t.Fatalf("only %d of 10 were recognised as unchanged", p.Unchanged)
+		// Agreed is the tell. A file both sides hold identically with no record
+		// of it lands there rather than in Unchanged, which means the record
+		// was lost rather than the modification time being wrong.
+		t.Fatalf("only %d of 10 were recognised as unchanged, and %d were treated as newly identical, "+
+			"which is what a lost record looks like", p.Unchanged, len(p.Agreed))
 	}
 
 	// An edit travels.

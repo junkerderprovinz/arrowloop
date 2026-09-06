@@ -82,6 +82,26 @@ func Open(ctx context.Context, path string) (*DB, error) {
 	if err != nil {
 		return nil, fmt.Errorf("open state db: %w", err)
 	}
+	// One connection, and therefore one writer.
+	//
+	// Records are written from every transfer worker at once, so without this
+	// the pool hands each of them a connection of its own and they contend for
+	// SQLite's single write lock. The busy handler waits, and on a slow disk it
+	// waits longer than its timeout: the write fails with SQLITE_BUSY, the file
+	// is reported as postponed, and its record is simply not there.
+	//
+	// That is not a lost transfer, which would be obvious, but a lost RECORD,
+	// which is quieter and worse. The file is on both sides and the job has no
+	// note of it, so the next run finds it new on both sides with identical
+	// content and files it under "appeared on both sides" instead of
+	// "unchanged". Nothing is broken and nothing converges.
+	//
+	// Serialising here rather than leaning on the busy handler costs nothing
+	// worth measuring: these writes are a few dozen bytes each and the run is
+	// waiting on a network or a disk, not on them. It also means the timeout
+	// can never be reached, rather than being reached less often.
+	handle.SetMaxOpenConns(1)
+
 	if _, err := handle.ExecContext(ctx, schema); err != nil {
 		handle.Close()
 		return nil, fmt.Errorf("create schema: %w", err)
