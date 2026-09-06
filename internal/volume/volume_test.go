@@ -197,3 +197,47 @@ func TestWithoutARegisterNothingBreaks(t *testing.T) {
 		t.Error("describing without a register produced nothing at all")
 	}
 }
+
+// TestAVolumeMarkedBeforeTheRenameIsStillFound is the other half of the rename.
+//
+// A drive registered by an older build carries its identity under the old
+// directory name. Losing sight of it does not fail in a way anybody can act on:
+// the drive drops out of Attached, Find answers ErrNotAttached, and every job
+// pointed at that volume is postponed with "not attached" while the disk sits
+// plugged in and spinning.
+func TestAVolumeMarkedBeforeTheRenameIsStillFound(t *testing.T) {
+	mount := t.TempDir()
+	const id = "0f1e2d3c4b5a69788796a5b4"
+	if err := os.MkdirAll(filepath.Join(mount, filepath.Dir(filepath.FromSlash(legacyMarkerPath))), 0o755); err != nil {
+		t.Fatalf("prepare the old marker directory: %v", err)
+	}
+	body := []byte(`{"id":"` + id + `","label":"Photo backup","since":"2026-09-01T00:00:00Z"}`)
+	if err := os.WriteFile(filepath.Join(mount, filepath.FromSlash(legacyMarkerPath)), body, 0o644); err != nil {
+		t.Fatalf("write the old marker: %v", err)
+	}
+	withCandidates(t, mount)
+
+	v, err := Find(id)
+	if err != nil {
+		t.Fatalf("a drive that is plugged in came back as not attached: %v", err)
+	}
+	if v.Mount != mount || v.Label != "Photo backup" {
+		t.Fatalf("found %+v, wanted the drive at %s labelled Photo backup", v, mount)
+	}
+
+	// Marking it again moves the identity up to the current path, and leaves
+	// the old file alone so an older build on another machine still works.
+	m, err := Mark(mount, "")
+	if err != nil {
+		t.Fatalf("mark: %v", err)
+	}
+	if m.ID != id {
+		t.Fatalf("marking gave the drive a second identity %q, the first was %q", m.ID, id)
+	}
+	if _, err := os.Stat(filepath.Join(mount, filepath.FromSlash(markerPath))); err != nil {
+		t.Fatalf("the identity was not adopted into the current path: %v", err)
+	}
+	if _, err := os.Stat(filepath.Join(mount, filepath.FromSlash(legacyMarkerPath))); err != nil {
+		t.Fatalf("the old marker was removed, which strands an older build: %v", err)
+	}
+}

@@ -39,6 +39,14 @@ const Prefix = "volume:"
 // a marker never travels to the other side of a sync.
 const markerPath = ".arrowloop/volume.json"
 
+// legacyMarkerPath is where a drive marked before the rename carries its
+// identity. It is still read, because a marker that cannot be found does not
+// fail loudly: the drive drops out of Attached, Find answers ErrNotAttached,
+// and every job pointed at that volume is postponed with "not attached" while
+// the disk sits plugged in. That is the worst shape a rename can take, a
+// correct-looking answer that is wrong, so the old path stays readable.
+const legacyMarkerPath = ".reeveroll/volume.json"
+
 // Marker is what is written on the volume.
 type Marker struct {
 	ID    string    `json:"id"`
@@ -67,9 +75,17 @@ var ErrNotAttached = errors.New("that volume is not attached")
 // person who clicks the button again on a disk they already registered should
 // get the same answer, not a new drive that shadows the old one.
 func Mark(mount, label string) (Marker, error) {
-	if existing, err := readMarker(mount); err == nil {
-		if label != "" && label != existing.Label {
+	if existing, from, err := readMarkerFrom(mount); err == nil {
+		relabel := label != "" && label != existing.Label
+		if relabel {
 			existing.Label = label
+		}
+		// A marker that answered from the old path is copied to the current one,
+		// so the identity does not depend on a fallback for ever. The old file is
+		// deliberately left where it is: removing it would strand an older build
+		// somebody still has on another machine, and it costs nothing sitting
+		// inside a directory the engine skips anyway.
+		if relabel || from != markerPath {
 			if err := writeMarker(mount, existing); err != nil {
 				return Marker{}, err
 			}
@@ -109,18 +125,35 @@ func writeMarker(mount string, m Marker) error {
 }
 
 func readMarker(mount string) (Marker, error) {
-	body, err := os.ReadFile(filepath.Join(mount, filepath.FromSlash(markerPath)))
-	if err != nil {
-		return Marker{}, err
+	m, _, err := readMarkerFrom(mount)
+	return m, err
+}
+
+// readMarkerFrom also reports which of the two paths answered, so Mark can move
+// an old marker up to the current one. The current path is asked first, so a
+// volume that has already been adopted never pays for the fallback, and a
+// missing marker still comes back as os.ErrNotExist for the current path, which
+// is what Mark tests to decide that this drive has no identity yet.
+func readMarkerFrom(mount string) (Marker, string, error) {
+	var first error
+	for _, rel := range [...]string{markerPath, legacyMarkerPath} {
+		body, err := os.ReadFile(filepath.Join(mount, filepath.FromSlash(rel)))
+		if err != nil {
+			if first == nil {
+				first = err
+			}
+			continue
+		}
+		var m Marker
+		if err := json.Unmarshal(body, &m); err != nil {
+			return Marker{}, rel, fmt.Errorf("read the marker on %s: %w", mount, err)
+		}
+		if m.ID == "" {
+			return Marker{}, rel, fmt.Errorf("the marker on %s carries no identity", mount)
+		}
+		return m, rel, nil
 	}
-	var m Marker
-	if err := json.Unmarshal(body, &m); err != nil {
-		return Marker{}, fmt.Errorf("read the marker on %s: %w", mount, err)
-	}
-	if m.ID == "" {
-		return Marker{}, fmt.Errorf("the marker on %s carries no identity", mount)
-	}
-	return m, nil
+	return Marker{}, "", first
 }
 
 // Candidates lists the mount points a marked volume could be sitting on, and is

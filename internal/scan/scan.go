@@ -96,12 +96,28 @@ type Options struct {
 const (
 	MetaDir  = ".arrowloop"
 	TrashDir = MetaDir + "/trash"
+
+	// legacyMetaDir is what this directory was called before the tool was
+	// renamed. It stays reserved for good, and the reason is not tidiness: a
+	// tree that an older build already synced still holds one, it has no row in
+	// the state database because it was skipped back then, so the moment it
+	// counts as ordinary data it looks like a folder somebody just created. The
+	// engine would then copy a trash folder full of deleted files onto the other
+	// side, where it lands inside that side's own reserved directory rules and
+	// stays for ever. Two string comparisons are a cheap price for never doing
+	// that to anybody.
+	legacyMetaDir = ".reeveroll"
 )
 
 // IsReserved reports whether a relative path belongs to the tool rather than
 // to the user's data.
 func IsReserved(rel string) bool {
-	return rel == MetaDir || strings.HasPrefix(rel, MetaDir+"/")
+	for _, dir := range [...]string{MetaDir, legacyMetaDir} {
+		if rel == dir || strings.HasPrefix(rel, dir+"/") {
+			return true
+		}
+	}
+	return false
 }
 
 // List walks one side and returns every file in it.
