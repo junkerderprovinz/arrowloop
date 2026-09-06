@@ -8,6 +8,7 @@ go 1.26.4
 replace github.com/junkerderprovinz/arrowloop => ../
 
 require (
+	github.com/energye/systray v1.0.3
 	github.com/junkerderprovinz/arrowloop v0.0.0
 	github.com/rclone/rclone v1.75.1
 	github.com/wailsapp/wails/v2 v2.15.0

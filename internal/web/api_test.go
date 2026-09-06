@@ -459,3 +459,44 @@ func TestTheShippedPlaceholderNeedsNothingElse(t *testing.T) {
 		}
 	}
 }
+
+// newServer stands a second engine-sharing server up, for the tests that need
+// a Server built differently from the harness's own.
+func newServer(t *testing.T, s *web.Server) *httptest.Server {
+	t.Helper()
+	srv := httptest.NewServer(s.Handler())
+	t.Cleanup(srv.Close)
+	return srv
+}
+
+func getJSON(t *testing.T, srv *httptest.Server, path string, into any) {
+	t.Helper()
+	resp, err := srv.Client().Get(srv.URL + path)
+	if err != nil {
+		t.Fatalf("GET %s: %v", path, err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		t.Fatalf("GET %s: %s", path, resp.Status)
+	}
+	if err := json.NewDecoder(resp.Body).Decode(into); err != nil {
+		t.Fatalf("decode %s: %v", path, err)
+	}
+}
+
+func putJSON(t *testing.T, srv *httptest.Server, path, body string) (*http.Response, string) {
+	t.Helper()
+	req, err := http.NewRequest(http.MethodPut, srv.URL+path, strings.NewReader(body))
+	if err != nil {
+		t.Fatalf("build the request: %v", err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+	resp, err := srv.Client().Do(req)
+	if err != nil {
+		t.Fatalf("PUT %s: %v", path, err)
+	}
+	defer resp.Body.Close()
+	var buf strings.Builder
+	io.Copy(&buf, resp.Body)
+	return resp, buf.String()
+}
