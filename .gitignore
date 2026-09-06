@@ -1,6 +1,8 @@
-# Build output
+# Build output. The last one is where scripts/build-windows.mjs puts the command
+# line binary, so it lands in the working tree on every Windows build.
 /arrowloop
 /arrowloop.exe
+/arrowloop-cli.exe
 
 # Job state databases, never in the repo: they describe someone's real files
 *.db
