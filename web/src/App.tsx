@@ -17,6 +17,7 @@ import {
   applyRainbow,
   applyShape,
   cacheAppearance,
+  RAINBOW,
   rainbowState,
   type RainbowState,
   type Shape,
@@ -485,6 +486,18 @@ function Look({
             <p className="mb-2 flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wider text-carbon-textMuted">
               {t('look.palette')}
               <Info text={t('look.paletteHint')} />
+              {/* Eight colours somebody mixed themselves have eight ways to be
+                  wrong and no way back, because there is no swatch to click to
+                  undo one. The way back belongs next to the thing it undoes. */}
+              {rainbow.palette.join() !== RAINBOW.join() && (
+                <button
+                  type="button"
+                  onClick={() => onRainbow({ ...rainbow, palette: [...RAINBOW] })}
+                  className="ms-1 text-[11px] font-medium normal-case tracking-normal text-carbon-textMuted underline underline-offset-2 transition hover:text-carbon-text"
+                >
+                  {t('look.paletteReset')}
+                </button>
+              )}
             </p>
             {/* Every colour here is in force at once, so there is no selected
                 one to click twice and a click can only mean edit. */}

@@ -254,6 +254,7 @@ const ar: Translations = {
   'pick.empty': 'لا مجلدات هنا.',
   'look.accentReset': 'العودة إلى الافتراضي',
   'pick.cancel': 'إلغاء',
+  'look.paletteReset': 'العودة إلى الألوان الافتراضية',
 }
 
 export default ar

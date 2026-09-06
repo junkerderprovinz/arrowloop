@@ -254,6 +254,7 @@ const is: Translations = {
   'pick.empty': 'Engar möppur hér.',
   'look.accentReset': 'Aftur í sjálfgefið',
   'pick.cancel': 'Hætta við',
+  'look.paletteReset': 'Aftur í sjálfgefnu litina',
 }
 
 export default is

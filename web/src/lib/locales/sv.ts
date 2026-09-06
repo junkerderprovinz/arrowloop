@@ -254,6 +254,7 @@ const sv: Translations = {
   'pick.empty': 'Inga mappar här.',
   'look.accentReset': 'Tillbaka till standard',
   'pick.cancel': 'Avbryt',
+  'look.paletteReset': 'Tillbaka till standardfärgerna',
 }
 
 export default sv

@@ -254,6 +254,7 @@ const pt: Translations = {
   'pick.empty': 'Aqui não há pastas.',
   'look.accentReset': 'Voltar ao valor padrão',
   'pick.cancel': 'Cancelar',
+  'look.paletteReset': 'Voltar às cores padrão',
 }
 
 export default pt

@@ -254,6 +254,7 @@ const ca: Translations = {
   'pick.empty': 'Aquí no hi ha carpetes.',
   'look.accentReset': 'Torna al valor per defecte',
   'pick.cancel': 'Cancel·la',
+  'look.paletteReset': 'Torna als colors per defecte',
 }
 
 export default ca

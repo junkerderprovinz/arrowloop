@@ -254,6 +254,7 @@ const hr: Translations = {
   'pick.empty': 'Ovdje nema mapa.',
   'look.accentReset': 'Natrag na zadano',
   'pick.cancel': 'Odustani',
+  'look.paletteReset': 'Natrag na zadane boje',
 }
 
 export default hr

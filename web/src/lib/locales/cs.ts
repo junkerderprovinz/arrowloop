@@ -254,6 +254,7 @@ const cs: Translations = {
   'pick.empty': 'Tady nejsou složky.',
   'look.accentReset': 'Zpět na výchozí',
   'pick.cancel': 'Zrušit',
+  'look.paletteReset': 'Zpět na výchozí barvy',
 }
 
 export default cs

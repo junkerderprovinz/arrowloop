@@ -254,6 +254,7 @@ const eu: Translations = {
   'pick.empty': 'Hemen ez dago karpetarik.',
   'look.accentReset': 'Lehenetsira itzuli',
   'pick.cancel': 'Utzi',
+  'look.paletteReset': 'Lehenetsitako koloreetara itzuli',
 }
 
 export default eu

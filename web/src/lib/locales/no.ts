@@ -254,6 +254,7 @@ const no: Translations = {
   'pick.empty': 'Ingen mapper her.',
   'look.accentReset': 'Tilbake til standard',
   'pick.cancel': 'Avbryt',
+  'look.paletteReset': 'Tilbake til standardfargene',
 }
 
 export default no

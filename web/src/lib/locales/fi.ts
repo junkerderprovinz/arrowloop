@@ -254,6 +254,7 @@ const fi: Translations = {
   'pick.empty': 'Täällä ei ole kansioita.',
   'look.accentReset': 'Takaisin oletukseen',
   'pick.cancel': 'Peruuta',
+  'look.paletteReset': 'Takaisin oletusväreihin',
 }
 
 export default fi

@@ -254,6 +254,7 @@ const hi: Translations = {
   'pick.empty': 'यहाँ कोई फ़ोल्डर नहीं।',
   'look.accentReset': 'डिफ़ॉल्ट पर लौटें',
   'pick.cancel': 'रद्द करें',
+  'look.paletteReset': 'डिफ़ॉल्ट रंगों पर लौटें',
 }
 
 export default hi

@@ -254,6 +254,7 @@ const it: Translations = {
   'pick.empty': 'Qui non ci sono cartelle.',
   'look.accentReset': 'Torna al valore predefinito',
   'pick.cancel': 'Annulla',
+  'look.paletteReset': 'Torna ai colori predefiniti',
 }
 
 export default it

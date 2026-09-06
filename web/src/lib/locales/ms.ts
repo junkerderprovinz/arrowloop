@@ -254,6 +254,7 @@ const ms: Translations = {
   'pick.empty': 'Tiada folder di sini.',
   'look.accentReset': 'Kembali ke lalai',
   'pick.cancel': 'Batal',
+  'look.paletteReset': 'Kembali ke warna lalai',
 }
 
 export default ms

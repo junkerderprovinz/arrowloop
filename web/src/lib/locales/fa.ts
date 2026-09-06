@@ -254,6 +254,7 @@ const fa: Translations = {
   'pick.empty': 'اینجا پوشه‌ای نیست.',
   'look.accentReset': 'بازگشت به پیش‌فرض',
   'pick.cancel': 'انصراف',
+  'look.paletteReset': 'بازگشت به رنگ‌های پیش‌فرض',
 }
 
 export default fa

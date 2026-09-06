@@ -254,6 +254,7 @@ const gl: Translations = {
   'pick.empty': 'Aquí non hai cartafoles.',
   'look.accentReset': 'Volver ao valor predeterminado',
   'pick.cancel': 'Cancelar',
+  'look.paletteReset': 'Volver ás cores predeterminadas',
 }
 
 export default gl

@@ -254,6 +254,7 @@ const vi: Translations = {
   'pick.empty': 'Ở đây không có thư mục.',
   'look.accentReset': 'Về mặc định',
   'pick.cancel': 'Hủy',
+  'look.paletteReset': 'Về màu mặc định',
 }
 
 export default vi

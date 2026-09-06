@@ -254,6 +254,7 @@ const da: Translations = {
   'pick.empty': 'Ingen mapper her.',
   'look.accentReset': 'Tilbage til standard',
   'pick.cancel': 'Annuller',
+  'look.paletteReset': 'Tilbage til standardfarverne',
 }
 
 export default da

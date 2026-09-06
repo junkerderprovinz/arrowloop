@@ -254,6 +254,7 @@ const es: Translations = {
   'pick.empty': 'Aquí no hay carpetas.',
   'look.accentReset': 'Volver al valor por defecto',
   'pick.cancel': 'Cancelar',
+  'look.paletteReset': 'Volver a los colores por defecto',
 }
 
 export default es

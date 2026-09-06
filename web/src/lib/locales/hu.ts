@@ -254,6 +254,7 @@ const hu: Translations = {
   'pick.empty': 'Itt nincsenek mappák.',
   'look.accentReset': 'Vissza az alapértelmezettre',
   'pick.cancel': 'Mégse',
+  'look.paletteReset': 'Vissza az alapszínekhez',
 }
 
 export default hu

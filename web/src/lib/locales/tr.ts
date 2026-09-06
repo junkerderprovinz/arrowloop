@@ -254,6 +254,7 @@ const tr: Translations = {
   'pick.empty': 'Burada klasör yok.',
   'look.accentReset': 'Varsayılana dön',
   'pick.cancel': 'İptal',
+  'look.paletteReset': 'Varsayılan renklere dön',
 }
 
 export default tr

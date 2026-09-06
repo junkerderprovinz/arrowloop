@@ -254,6 +254,7 @@ const zh: Translations = {
   'pick.empty': '这里没有文件夹。',
   'look.accentReset': '恢复默认',
   'pick.cancel': '取消',
+  'look.paletteReset': '恢复默认配色',
 }
 
 export default zh

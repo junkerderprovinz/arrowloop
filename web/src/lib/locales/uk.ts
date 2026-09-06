@@ -254,6 +254,7 @@ const uk: Translations = {
   'pick.empty': 'Тут немає тек.',
   'look.accentReset': 'Повернути типове',
   'pick.cancel': 'Скасувати',
+  'look.paletteReset': 'Повернути типові кольори',
 }
 
 export default uk

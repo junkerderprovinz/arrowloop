@@ -254,6 +254,7 @@ const ja: Translations = {
   'pick.empty': 'ここにフォルダーはありません。',
   'look.accentReset': '既定に戻す',
   'pick.cancel': 'キャンセル',
+  'look.paletteReset': '既定の色に戻す',
 }
 
 export default ja

@@ -254,6 +254,7 @@ const sk: Translations = {
   'pick.empty': 'Tu nie sú priečinky.',
   'look.accentReset': 'Späť na predvolené',
   'pick.cancel': 'Zrušiť',
+  'look.paletteReset': 'Späť na predvolené farby',
 }
 
 export default sk

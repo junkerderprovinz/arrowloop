@@ -254,6 +254,7 @@ const ru: Translations = {
   'pick.empty': 'Здесь нет папок.',
   'look.accentReset': 'Вернуть по умолчанию',
   'pick.cancel': 'Отмена',
+  'look.paletteReset': 'Вернуть цвета по умолчанию',
 }
 
 export default ru

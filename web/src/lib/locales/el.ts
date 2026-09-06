@@ -254,6 +254,7 @@ const el: Translations = {
   'pick.empty': 'Δεν υπάρχουν φάκελοι εδώ.',
   'look.accentReset': 'Πίσω στο προεπιλεγμένο',
   'pick.cancel': 'Άκυρο',
+  'look.paletteReset': 'Πίσω στα προεπιλεγμένα χρώματα',
 }
 
 export default el

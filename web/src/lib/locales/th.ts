@@ -254,6 +254,7 @@ const th: Translations = {
   'pick.empty': 'ที่นี่ไม่มีโฟลเดอร์',
   'look.accentReset': 'กลับเป็นค่าเริ่มต้น',
   'pick.cancel': 'ยกเลิก',
+  'look.paletteReset': 'กลับเป็นสีเริ่มต้น',
 }
 
 export default th

@@ -254,6 +254,7 @@ const bg: Translations = {
   'pick.empty': 'Тук няма папки.',
   'look.accentReset': 'Обратно към стандартното',
   'pick.cancel': 'Отказ',
+  'look.paletteReset': 'Обратно към стандартните цветове',
 }
 
 export default bg

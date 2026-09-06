@@ -254,6 +254,7 @@ const he: Translations = {
   'pick.empty': 'אין כאן תיקיות.',
   'look.accentReset': 'חזרה לברירת המחדל',
   'pick.cancel': 'ביטול',
+  'look.paletteReset': 'חזרה לצבעי ברירת המחדל',
 }
 
 export default he

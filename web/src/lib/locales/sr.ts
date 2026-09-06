@@ -254,6 +254,7 @@ const sr: Translations = {
   'pick.empty': 'Овде нема фасцикли.',
   'look.accentReset': 'Назад на подразумевано',
   'pick.cancel': 'Одустани',
+  'look.paletteReset': 'Назад на подразумеване боје',
 }
 
 export default sr

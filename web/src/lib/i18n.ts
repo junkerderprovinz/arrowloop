@@ -85,6 +85,7 @@ export const en = {
   'pick.up': 'One level up',
   'pick.roots': 'Drives and roots',
   'pick.empty': 'No folders in here.',
+  'look.paletteReset': 'Back to the house colours',
   'look.accentReset': 'Back to the default',
   'nav.section': 'Section',
 
@@ -395,6 +396,7 @@ export const de: Translations = {
   'pick.up': 'Eine Ebene höher',
   'pick.roots': 'Laufwerke und Wurzeln',
   'pick.empty': 'Hier liegen keine Ordner.',
+  'look.paletteReset': 'Zurück auf die Hausfarben',
   'look.accentReset': 'Zurück auf die Vorgabe',
   'nav.section': 'Bereich',
 

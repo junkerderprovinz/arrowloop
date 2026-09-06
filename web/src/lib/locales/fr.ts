@@ -254,6 +254,7 @@ const fr: Translations = {
   'pick.empty': 'Aucun dossier ici.',
   'look.accentReset': 'Revenir au défaut',
   'pick.cancel': 'Annuler',
+  'look.paletteReset': 'Revenir aux couleurs par défaut',
 }
 
 export default fr

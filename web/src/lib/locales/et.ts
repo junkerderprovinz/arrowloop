@@ -254,6 +254,7 @@ const et: Translations = {
   'pick.empty': 'Siin pole kaustu.',
   'look.accentReset': 'Tagasi vaikeväärtusele',
   'pick.cancel': 'Loobu',
+  'look.paletteReset': 'Tagasi vaikevärvidele',
 }
 
 export default et

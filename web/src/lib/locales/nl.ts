@@ -254,6 +254,7 @@ const nl: Translations = {
   'pick.empty': 'Hier staan geen mappen.',
   'look.accentReset': 'Terug naar de standaard',
   'pick.cancel': 'Annuleren',
+  'look.paletteReset': 'Terug naar de standaardkleuren',
 }
 
 export default nl

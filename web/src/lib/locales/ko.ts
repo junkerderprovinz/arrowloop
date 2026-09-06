@@ -254,6 +254,7 @@ const ko: Translations = {
   'pick.empty': '여기에는 폴더가 없습니다.',
   'look.accentReset': '기본값으로 되돌리기',
   'pick.cancel': '취소',
+  'look.paletteReset': '기본 색으로 되돌리기',
 }
 
 export default ko

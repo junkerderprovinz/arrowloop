@@ -254,6 +254,7 @@ const lv: Translations = {
   'pick.empty': 'Šeit nav mapju.',
   'look.accentReset': 'Atpakaļ uz noklusējumu',
   'pick.cancel': 'Atcelt',
+  'look.paletteReset': 'Atpakaļ uz noklusējuma krāsām',
 }
 
 export default lv

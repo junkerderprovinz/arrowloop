@@ -254,6 +254,7 @@ const ro: Translations = {
   'pick.empty': 'Aici nu sunt dosare.',
   'look.accentReset': 'Înapoi la implicit',
   'pick.cancel': 'Anulează',
+  'look.paletteReset': 'Înapoi la culorile implicite',
 }
 
 export default ro

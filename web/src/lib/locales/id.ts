@@ -254,6 +254,7 @@ const id: Translations = {
   'pick.empty': 'Tidak ada folder di sini.',
   'look.accentReset': 'Kembali ke bawaan',
   'pick.cancel': 'Batal',
+  'look.paletteReset': 'Kembali ke warna bawaan',
 }
 
 export default id

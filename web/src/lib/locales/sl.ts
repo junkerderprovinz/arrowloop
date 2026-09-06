@@ -254,6 +254,7 @@ const sl: Translations = {
   'pick.empty': 'Tukaj ni map.',
   'look.accentReset': 'Nazaj na privzeto',
   'pick.cancel': 'Prekliči',
+  'look.paletteReset': 'Nazaj na privzete barve',
 }
 
 export default sl

@@ -254,6 +254,7 @@ const pl: Translations = {
   'pick.empty': 'Tu nie ma folderów.',
   'look.accentReset': 'Wróć do domyślnego',
   'pick.cancel': 'Anuluj',
+  'look.paletteReset': 'Wróć do domyślnych kolorów',
 }
 
 export default pl

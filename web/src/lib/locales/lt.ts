@@ -254,6 +254,7 @@ const lt: Translations = {
   'pick.empty': 'Čia nėra aplankų.',
   'look.accentReset': 'Grįžti į numatytąjį',
   'pick.cancel': 'Atšaukti',
+  'look.paletteReset': 'Grįžti į numatytąsias spalvas',
 }
 
 export default lt
