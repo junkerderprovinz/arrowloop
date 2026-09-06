@@ -72,6 +72,14 @@ var reasonText = map[string]string{
 	"recordFailed":    "the record could not be written, leaving it for the next run: {error}",
 }
 
+// String is the English sentence, so that anything printing a reason with %s or
+// %v gets the sentence rather than the struct.
+//
+// Without it the command line printed "{newOnSide map[side:left] new on the
+// left}" the moment a reason stopped being a plain string, in eight places at
+// once, and every one of them looked correct in the diff that caused it.
+func (r Reason) String() string { return r.Text }
+
 // Because builds a reason from a code and its values, for the stages that
 // discover one while running rather than while deciding.
 func Because(code string, pairs ...string) Reason { return because(code, pairs...) }

@@ -2,6 +2,7 @@ package plan
 
 import (
 	"context"
+	"fmt"
 	"strings"
 	"testing"
 	"time"
@@ -332,5 +333,27 @@ func TestCollisionsAreSkippedNotSynced(t *testing.T) {
 	// The rest of the tree must still move. A collision is one file's problem.
 	if got.Unchanged != 1 {
 		t.Errorf("the unaffected file was disturbed: %d unchanged, actions %+v", got.Unchanged, got.Actions)
+	}
+}
+
+// TestAReasonPrintsItsSentence. Everything that shows a reason to a person on
+// the command line does it with %s, and there are eight such places.
+//
+// The moment a reason stopped being a plain string they all began printing the
+// struct: "{newOnSide map[side:left] new on the left}". Every one of them still
+// looked correct in the diff, because the format verb had not changed and
+// neither had the field name.
+func TestAReasonPrintsItsSentence(t *testing.T) {
+	r := because("newOnSide", "side", "left")
+	if got := fmt.Sprintf("%s", r); got != "new on the left" {
+		t.Errorf("printed as %q", got)
+	}
+	if got := fmt.Sprintf("%v", r); got != "new on the left" {
+		t.Errorf("printed with %%v as %q", got)
+	}
+	// And inside a Skip, which is how the postponed list is printed.
+	s := Skip{Path: "a.txt", Reason: because("changedBoth")}
+	if got := fmt.Sprintf("%s", s.Reason); got != "changed on both sides" {
+		t.Errorf("a skip's reason printed as %q", got)
 	}
 }
