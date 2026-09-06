@@ -474,7 +474,7 @@ export const de: Translations = {
   'targets.required': 'erforderlich',
   'confirm.deleteRemote': 'Dieses Speicherziel löschen',
   'confirm.deleteRemoteStakes':
-    'Die Einstellungen für {name} werden aus rclones Konfiguration entfernt, samt allem Kennwort und Schlüssel, der dort liegt. Vorher wird nichts irgendwohin kopiert, und es gibt kein Zurück: neu einrichten heißt, die Zugangsdaten neu zu tippen. Aufträge, die darauf zeigen, scheitern beim nächsten Lauf, bis sie woandershin zeigen.',
+    'Die Einstellungen für {name} werden aus rclones Konfiguration entfernt, samt jedem Kennwort und jedem Schlüssel, der dort liegt. Vorher wird nichts irgendwohin kopiert, und es gibt kein Zurück: neu einrichten heißt, die Zugangsdaten neu zu tippen. Aufträge, die darauf zeigen, scheitern beim nächsten Lauf, bis sie woandershin zeigen.',
   'confirm.delete': 'Löschen',
   'confirm.cancel': 'Stehen lassen',
   'about.title': 'Über diese App',
