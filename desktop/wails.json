@@ -3,7 +3,7 @@
   "name": "ArrowLoop",
   "outputfilename": "ArrowLoop",
   "frontend:dir": "frontend",
-  "frontend:build": "",
+  "frontend:build": "node ../../scripts/desktop-ui.mjs",
   "frontend:install": "",
   "wailsjsdir": "./frontend",
   "author": {

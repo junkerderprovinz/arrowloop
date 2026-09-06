@@ -67,17 +67,12 @@ jobs:
       - name: Install the Wails CLI
         run: go install github.com/wailsapp/wails/v2/cmd/wails@v2.15.0
 
-      # Windows runners default to pwsh, where rm -rf is a parse error. Git Bash
-      # ships on the image precisely so a cross-platform step like this one can
-      # stay one script.
-      - name: Build the interface into the shell
-        shell: bash
-        run: |
-          set -eu
-          npm --prefix web ci --no-audit --no-fund
-          npm --prefix web run build
-          rm -rf desktop/frontend/dist
-          cp -r web/dist desktop/frontend/dist
+      # Only the install. Building the interface and copying it into the shell
+      # is wails.json's frontend:build, so it happens on a laptop as well as
+      # here; doing it a second time in this file would be the copy that gets
+      # forgotten when the other one moves.
+      - name: Install the interface dependencies
+        run: npm --prefix web ci --no-audit --no-fund
 
       - name: Build
         working-directory: desktop
