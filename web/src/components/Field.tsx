@@ -1,9 +1,23 @@
 import { useEffect, useRef, useState } from 'react'
-import type { ReactNode } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 
+import { hueVars, rainbowColor, subscribeRainbow } from '../lib/appearance'
 import { enableSelectScroll } from '../lib/selectScroll'
 import { useT } from '../lib/i18n'
 import { IconHidden, IconVisible } from './glyphs'
+
+/**
+ * Re-render when the rainbow changes.
+ *
+ * A local copy rather than an import from Shell, because Shell imports this
+ * module: taking it the other way round would close the cycle. It is four
+ * lines, and a cycle is a build that works until the day the bundler decides
+ * which half to evaluate first.
+ */
+function useRainbow(): void {
+  const [, bump] = useState(0)
+  useEffect(() => subscribeRainbow(() => bump((v) => v + 1)), [])
+}
 
 /**
  * An explanation lives in a bubble, never on the page.
@@ -130,15 +144,40 @@ export function Switch({
   onChange,
   label,
   hint,
+  disabled,
+  hue,
 }: {
   on: boolean
   onChange: (next: boolean) => void
   label: string
   hint?: string
+  /**
+   * Dimmed and inert, for a switch whose effect depends on another one being
+   * on. Left live it would take a click, store a value and change nothing,
+   * which reads as a broken control rather than an unavailable one.
+   */
+  disabled?: boolean
+  /**
+   * This row's own position in the palette.
+   *
+   * A group of switches sharing one accent reads as one setting with several
+   * parts. Giving each its own position makes them read as what they are, and
+   * it is the same call BombVault makes on every ToggleRow in a group. The
+   * position goes on the ROW, not on the track, because `.glim-hue` rebinds
+   * the accent for its whole subtree and the fill and the focus ring have to
+   * move together.
+   */
+  hue?: number
 }) {
+  useRainbow()
   return (
-    <div className="flex w-full items-center justify-between gap-3">
-      <span className="flex items-center gap-1.5 text-[12px]">
+    <div
+      className={`flex w-full items-center justify-between gap-3 ${
+        hue === undefined ? '' : 'glim-hue'
+      } ${disabled ? 'opacity-50' : ''}`}
+      style={hue === undefined ? undefined : (hueVars(rainbowColor(hue)) as CSSProperties)}
+    >
+      <span className="flex items-center gap-1.5 text-[13px]">
         {label}
         {hint && <Info text={hint} />}
       </span>
@@ -147,8 +186,9 @@ export function Switch({
         role="switch"
         aria-checked={on}
         aria-label={label}
+        disabled={disabled}
         onClick={() => onChange(!on)}
-        className={`inline-flex h-5 w-9 shrink-0 items-center p-[3px] transition-colors ${
+        className={`inline-flex h-5 w-9 shrink-0 items-center p-[3px] transition-colors disabled:cursor-not-allowed ${
           on ? 'bg-accent' : 'bg-carbon-surface3'
         }`}
         style={{ borderRadius: 'var(--radius-pill)' }}

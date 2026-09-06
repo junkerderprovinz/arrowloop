@@ -1,7 +1,9 @@
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
-import type { ReactNode } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 
+import { hueVars, rainbowAt } from '../lib/appearance'
 import { groupStage } from '../lib/controls'
+import { useRainbow } from './Shell'
 
 /**
  * The one horizontal selector: tabs, filter bars and segmented controls are the
@@ -100,8 +102,29 @@ export function Selector<T extends string>({
       widest = Math.max(widest, el.getBoundingClientRect().width)
     }
     if (widest === 0) return
-    setWidth(Math.max(widest, MIN_SEGMENT))
+
+    // The floor is a floor and not a promise the row can always keep. A
+    // four-option strip at 200px each needs 800px, and inside a card in a
+    // reading-width column there is not that much, so the last segment wrapped
+    // onto a line of its own and the control read as broken. What the eye wants
+    // here is one row, not a uniform width bought with a fold.
+    //
+    // So the pin is capped at the share of the space this strip actually HAS.
+    // With room, every strip in the app still lands on the same width and the
+    // floor does its job; without room, the segments shrink together and the
+    // row stays a row. Measured off the parent, because the track itself is
+    // fit-content and would report the sum it is trying to avoid.
+    const parent = track.current.parentElement
+    const room = parent ? parent.getBoundingClientRect().width : 0
+    const gaps = 0.2 * 16 * (options.length + 1)
+    const share = room > 0 ? (room - gaps) / options.length : Number.POSITIVE_INFINITY
+    setWidth(Math.min(Math.max(widest, MIN_SEGMENT), Math.max(widest, share)))
   }, [scale, width, labelKey, options.length])
+
+  // Subscribed, because every segment below reads a rainbow position. Without
+  // it, turning the mode on repaints the cards and leaves every strip on the
+  // old accent until something else happens to re-render.
+  useRainbow()
 
   return (
     <div
@@ -111,7 +134,7 @@ export function Selector<T extends string>({
       className="glim-well inline-flex flex-wrap gap-[0.2rem] p-[0.2rem]"
       style={{ borderRadius: 'var(--radius-control)', width: 'fit-content' }}
     >
-      {options.map((o) => {
+      {options.map((o, i) => {
         const active = o.value === value
         return (
           <button
@@ -121,19 +144,35 @@ export function Selector<T extends string>({
             aria-selected={active}
             onClick={() => onChange(o.value)}
             style={{
+              // Every segment takes its OWN position in the palette, so a
+              // three-way picker reads as three colours rather than one accent
+              // and two greys. This was missing, and it is the difference jdp
+              // named in BombVault in the strongest terms available: a control
+              // left out of the colour engine is a control that looks like a
+              // different app the moment the mode goes on. The position sits on
+              // the segment rather than the track, because `.glim-hue` rebinds
+              // the accent for its whole subtree and the fill, the ink and the
+              // focus ring all have to move together.
+              ...(hueVars(rainbowAt(i)) as CSSProperties),
               borderRadius: 'calc(var(--radius-control) - 0.2rem)',
               width: scale === 'big' && width ? width : undefined,
               minWidth: scale === 'big' ? undefined : `calc(var(--btn-w-${stage}) / ${options.length})`,
               flex: 'none',
             }}
             className={[
-              'glim-tab inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-[12px] font-medium transition-colors',
+              'glim-hue glim-hue-icon glim-tab inline-flex items-center justify-center gap-1.5 px-3',
+              // The badge height token, not padding. Two strips whose segments
+              // are a pixel apart in height read as two different controls, and
+              // padding plus a font size is two ways to arrive at a height that
+              // only agree by accident.
+              'h-[var(--badge-md)] text-[12px] font-medium',
+              '[transition:background-color_120ms_ease]',
               // Inside a selector only the chosen segment is a badge. An idle
               // segment with a fill of its own is the per-segment badge an
               // unselected option must not be: the groove already does that job.
               active
-                ? 'bg-accent text-accentContrast'
-                : 'bg-transparent text-carbon-textMuted hover:bg-carbon-hover hover:text-carbon-text',
+                ? 'glim-active bg-accent text-accentContrast'
+                : 'bg-transparent text-carbon-textSub hover:bg-carbon-hover hover:text-carbon-text',
             ].join(' ')}
           >
             {o.icon && (
