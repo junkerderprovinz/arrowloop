@@ -196,6 +196,9 @@ export const en = {
     'A file changed more recently than this is left for the next run, because it is probably still being written.',
   'edit.watchHint':
     'React to changes as they happen rather than only on the schedule. Only a local side can be watched.',
+  'edit.runAtStart': 'Sync as soon as the program starts',
+  'edit.runAtStartHint':
+    'Runs this job once at every start, before its schedule is next due. A machine that was off overnight missed its turn, and without this the two sides stay apart until tomorrow.',
   'edit.pick': 'Pick',
   'edit.disabledHint':
     'Keeps the job in the file without running it. A job you are still setting up belongs here until you have read its preview once.',
@@ -351,6 +354,11 @@ export const en = {
   'window.minimise': 'Minimising goes to the notification area',
   'window.minimiseHint': 'Instead of the taskbar. The window comes back from the icon either way.',
 
+  'start.title': 'Starting',
+  'start.withSystem': 'Start with the system',
+  'start.withSystemHint':
+    'ArrowLoop starts when you sign in, so a scheduled job runs without anybody opening the window first. The entry is yours alone and asks for no administrator rights.',
+
   'progress.of': '{done} of {total}',
   'progress.starting': 'Starting',
   'progress.finishing': 'Finishing',
@@ -501,6 +509,9 @@ export const de: Translations = {
     'Eine Datei, die kürzlich als hier angegeben geändert wurde, bleibt für den nächsten Lauf liegen, weil sie vermutlich noch geschrieben wird.',
   'edit.watchHint':
     'Auf Änderungen reagieren, sobald sie geschehen, statt nur nach Zeitplan. Beobachten lässt sich nur eine lokale Seite.',
+  'edit.runAtStart': 'Beim Programmstart sofort abgleichen',
+  'edit.runAtStartHint':
+    'Führt diesen Auftrag bei jedem Start einmal aus, bevor sein Zeitplan das nächste Mal dran ist. Ein Rechner, der über Nacht aus war, hat seinen Termin verpasst, und ohne das bleiben die beiden Seiten bis morgen auseinander.',
   'edit.pick': 'Auswählen',
   'edit.disabledHint':
     'Behält den Auftrag in der Datei, ohne ihn laufen zu lassen. Ein Auftrag, den du noch einrichtest, gehört hierher, bis du seine Vorschau einmal gelesen hast.',
@@ -650,6 +661,11 @@ export const de: Translations = {
     'Standardmäßig aus, denn ein Schließen-Knopf, der nicht schließt, ist eine Überraschung, und einer, der ein laufendes Programm versteckt, ist die Sorte, die man eine Woche später findet und sich fragt, warum ein Auftrag immer noch läuft.',
   'window.minimise': 'Minimieren geht in den Infobereich',
   'window.minimiseHint': 'Statt in die Taskleiste. Zurück kommt das Fenster so oder so über das Symbol.',
+
+  'start.title': 'Programmstart',
+  'start.withSystem': 'Mit dem System starten',
+  'start.withSystemHint':
+    'ArrowLoop startet bei der Anmeldung, damit ein geplanter Auftrag läuft, ohne dass jemand vorher das Fenster öffnet. Der Eintrag gilt nur für dich und braucht keine Administratorrechte.',
 
   'progress.of': '{done} von {total}',
   'progress.starting': 'Startet',

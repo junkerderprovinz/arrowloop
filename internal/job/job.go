@@ -95,6 +95,20 @@ type Job struct {
 	// would be a thousand runs for one action.
 	WatchSettle string `json:"watchSettle,omitempty"`
 
+	// RunAtStart runs the job once as soon as the program starts, before
+	// waiting for the first tick of its schedule.
+	//
+	// It exists because of what a schedule cannot say. A machine that was off
+	// overnight missed every turn a daily job had, and the job's next run is
+	// tomorrow: the sides stay apart for a whole day for no reason other than
+	// the clock. This is also the setting that makes autostart worth switching
+	// on, since a program that starts with the session and then sits there
+	// until 03:00 has not helped anybody who just turned their computer on.
+	//
+	// It fires ONCE per program start, never on a configuration reload, so
+	// editing a job in the interface does not set every job in the file running.
+	RunAtStart bool `json:"runAtStart,omitempty"`
+
 	Disabled bool `json:"disabled,omitempty"`
 
 	Exclude           []string `json:"exclude,omitempty"`

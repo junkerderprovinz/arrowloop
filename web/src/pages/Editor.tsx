@@ -215,6 +215,15 @@ export function JobForm({
           onChange={(v) => patch({ watch: v })}
           hint={t('edit.watchHint')}
         />
+        {/* Next to the watcher rather than beside the schedule field, because
+            all three are answers to the same question - when does this run -
+            and the schedule field above is where you type WHEN, not whether. */}
+        <Switch
+          label={t('edit.runAtStart')}
+          on={!!job.runAtStart}
+          onChange={(v) => patch({ runAtStart: v })}
+          hint={t('edit.runAtStartHint')}
+        />
         <Switch
           label={t('edit.emptyDirs')}
           on={!!job.emptyDirs}

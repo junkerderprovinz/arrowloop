@@ -46,6 +46,7 @@ manager happened to start the process in.
 | `schedule` | none | A cron expression. Empty means the job only runs when somebody asks. |
 | `watch` | `false` | Run when a local side changes. Needs a schedule as well; see below. |
 | `watchSettle` | `2s` | How long the tree must go quiet before a change counts. |
+| `runAtStart` | `false` | Run once as soon as the program starts, before waiting for the schedule. Fires once per start and never on a configuration reload. |
 | `disabled` | `false` | Keeps the job in the file without running it. |
 | `exclude` | none | Globs. Without a slash they match the file name at any depth; with one, the whole path. `**` crosses directories. |
 | `noDefaultExcludes` | `false` | Also sync half-written files such as `*.part` and Office owner files. |
@@ -82,6 +83,26 @@ It never replaces the schedule, and a watching job without one is refused. Only
 a local side can be watched, most remote backends have no way to tell anyone
 anything, and a watcher that missed an event has no way to know it did. The
 schedule is what eventually notices what the watcher did not.
+
+## Running at start
+
+`"runAtStart": true` runs the job once as soon as the program starts, before its
+schedule is next due.
+
+It exists because of what a schedule cannot say. A machine that was off
+overnight missed every turn a daily job had, and the job's next run is tomorrow:
+the two sides stay apart for a whole day for no reason other than the clock.
+This is also the setting that makes autostart worth switching on, since a
+program that starts with the session and then sits there until 03:00 has not
+helped anybody who has just turned their computer on.
+
+Three things it deliberately does not do. It fires **once per program start**
+and never on a configuration reload, so saving one job in the interface does not
+set every job in the file running. A `disabled` job does not run, because
+disabled has to mean disabled everywhere. And the runs go one after another in
+file order rather than all at once, for the same reason ordinary runs are
+serialised: they share one uplink and one disk, and a start-up burst is where
+that matters most.
 
 ## Whole file
 

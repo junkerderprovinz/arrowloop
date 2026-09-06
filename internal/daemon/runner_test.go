@@ -357,3 +357,112 @@ func TestAHalfWrittenJobIsRefusedByName(t *testing.T) {
 		t.Errorf("a job that was refused before it started left %d rows in the history", len(runs))
 	}
 }
+
+// TestRunAtStartFiresOnceAndNotOnReload is the guard on the setting that runs a
+// job as soon as the program does.
+//
+// Two halves, and the second is the one that would have been shipped broken.
+// Firing at start is easy to get right. Not firing AGAIN on a reload is not:
+// Serve rebuilds its whole round on every configuration change, which happens
+// every time somebody saves a job in the interface, so the obvious placement
+// (inside the round, beside the cron build) turns one edit into a sync of every
+// job in the file. This test edits the configuration the way the interface does
+// and insists nothing new runs.
+func TestRunAtStartFiresOnceAndNotOnReload(t *testing.T) {
+	cfg, hist, left, right := fixture(t, func(dir, left, right string) string {
+		return fmt.Sprintf(
+			`{"jobs":[{"name":"photos","left":"%s","right":"%s","state":"%s","quietPeriod":"0s","runAtStart":true}]}`,
+			jsonPath(left), jsonPath(right), jsonPath(filepath.Join(dir, "photos.db")))
+	})
+	if err := os.WriteFile(filepath.Join(left, "a.txt"), []byte("hello"), 0o644); err != nil {
+		t.Fatalf("write: %v", err)
+	}
+
+	r := daemon.New(cfg, hist, nil, nil)
+	ctx, stop := context.WithCancel(context.Background())
+	defer stop()
+
+	served := make(chan error, 1)
+	go func() { served <- r.Serve(ctx) }()
+
+	// The run happens on its own goroutine, so this waits for the effect rather
+	// than for a duration: the file arriving on the other side IS the proof.
+	waitFor(t, func() bool {
+		_, err := os.Stat(filepath.Join(right, "a.txt"))
+		return err == nil
+	}, "the start-up run never copied the file")
+
+	runs, err := hist.Recent(context.Background(), "photos", 10)
+	if err != nil {
+		t.Fatalf("history: %v", err)
+	}
+	if len(runs) != 1 {
+		t.Fatalf("expected exactly one run at start, got %d", len(runs))
+	}
+
+	// Now a reload, exactly as saving a job in the interface produces one.
+	r.Reload(cfg)
+
+	// Long enough that a second start-up run would have finished: the first one
+	// copied a real file over a real filesystem in a fraction of this.
+	time.Sleep(300 * time.Millisecond)
+
+	runs, err = hist.Recent(context.Background(), "photos", 10)
+	if err != nil {
+		t.Fatalf("history: %v", err)
+	}
+	if len(runs) != 1 {
+		t.Fatalf("a reload started the job again: %d runs, expected 1", len(runs))
+	}
+
+	stop()
+	if err := <-served; err != nil {
+		t.Fatalf("serve: %v", err)
+	}
+}
+
+// TestADisabledJobDoesNotRunAtStart, because "disabled" has to mean disabled
+// everywhere. A switched-off job that still syncs at every program start is the
+// worst kind of wrong: it looks off in the list and moves files anyway.
+func TestADisabledJobDoesNotRunAtStart(t *testing.T) {
+	cfg, hist, left, right := fixture(t, func(dir, left, right string) string {
+		return fmt.Sprintf(
+			`{"jobs":[{"name":"photos","left":"%s","right":"%s","state":"%s","quietPeriod":"0s","runAtStart":true,"disabled":true}]}`,
+			jsonPath(left), jsonPath(right), jsonPath(filepath.Join(dir, "photos.db")))
+	})
+	if err := os.WriteFile(filepath.Join(left, "a.txt"), []byte("hello"), 0o644); err != nil {
+		t.Fatalf("write: %v", err)
+	}
+
+	r := daemon.New(cfg, hist, nil, nil)
+	ctx, stop := context.WithCancel(context.Background())
+	defer stop()
+
+	served := make(chan error, 1)
+	go func() { served <- r.Serve(ctx) }()
+
+	time.Sleep(300 * time.Millisecond)
+
+	if _, err := os.Stat(filepath.Join(right, "a.txt")); err == nil {
+		t.Fatal("a disabled job synced at start")
+	}
+
+	stop()
+	if err := <-served; err != nil {
+		t.Fatalf("serve: %v", err)
+	}
+}
+
+// waitFor polls for a condition, so a test proves an effect happened rather
+// than sleeping for a duration somebody guessed and hoping.
+func waitFor(t *testing.T, ok func() bool, complaint string) {
+	t.Helper()
+	deadline := time.Now().Add(10 * time.Second)
+	for time.Now().Before(deadline) {
+		if ok() {
+			return
+		}
+		time.Sleep(10 * time.Millisecond)
+	}
+	t.Fatal(complaint)
+}

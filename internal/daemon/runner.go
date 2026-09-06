@@ -410,10 +410,20 @@ func (r *Runner) announce(ctx context.Context, rec history.Run, res apply.Result
 // skipped with a line in the log rather than queued, because queueing would let
 // a job that is simply too slow build an unbounded backlog of itself.
 func (r *Runner) Serve(ctx context.Context) error {
+	first := true
 	for {
 		round, endRound := context.WithCancel(ctx)
 		c := r.schedule(round)
 		c.Start()
+
+		// Only on the way in, never on a reload. A reload happens every time
+		// somebody saves a job in the interface, and firing the start-up runs
+		// again there would turn one edit into a sync of every job in the file
+		// - including the twelve the person was not touching.
+		if first {
+			r.runAtStart(round)
+			first = false
+		}
 
 		select {
 		case <-ctx.Done():
@@ -455,23 +465,7 @@ func (r *Runner) schedule(ctx context.Context) *cron.Cron {
 			r.log("%s: unusable schedule %q: %v", name, j.Schedule, err)
 			continue
 		}
-		c.Schedule(parsed, cron.FuncJob(func() {
-			rec, err := r.Run(ctx, name)
-			switch {
-			case errors.Is(err, ErrVolumeMissing):
-				r.log("%s: %v", name, err)
-			case errors.Is(err, ErrAlreadyRunning):
-				r.log("%s is still running from last time, skipping this turn", name)
-			case err != nil:
-				r.log("%s failed: %v", name, err)
-			case rec.Changed():
-				r.log("%s: %d copied, %d moved, %d trashed, %d conflicts in %s",
-					name, rec.Copied, rec.Moved, rec.Trashed, rec.Conflicts,
-					rec.Finished.Sub(rec.Started).Round(time.Millisecond))
-			default:
-				r.log("%s: nothing to do", name)
-			}
-		}))
+		c.Schedule(parsed, cron.FuncJob(func() { r.runAndLog(ctx, name) }))
 		scheduled = append(scheduled, fmt.Sprintf("%s (%s)", name, j.Schedule))
 	}
 
@@ -489,6 +483,63 @@ func (r *Runner) schedule(ctx context.Context) *cron.Cron {
 		r.log("scheduled: %s", strings.Join(scheduled, ", "))
 	}
 	return c
+}
+
+// runAndLog runs one job by name and writes the one line a log reader wants.
+//
+// One function rather than a copy at each caller: the schedule tick and the
+// start-up run report the same outcomes, and two copies of this switch would
+// eventually disagree about which outcomes are worth a line. A missing volume
+// and a job still running from last time are both NORMAL here and neither is a
+// failure, which is exactly the distinction a second copy tends to lose.
+func (r *Runner) runAndLog(ctx context.Context, name string) {
+	rec, err := r.Run(ctx, name)
+	switch {
+	case errors.Is(err, ErrVolumeMissing):
+		r.log("%s: %v", name, err)
+	case errors.Is(err, ErrAlreadyRunning):
+		r.log("%s is still running from last time, skipping this turn", name)
+	case err != nil:
+		r.log("%s failed: %v", name, err)
+	case rec.Changed():
+		r.log("%s: %d copied, %d moved, %d trashed, %d conflicts in %s",
+			name, rec.Copied, rec.Moved, rec.Trashed, rec.Conflicts,
+			rec.Finished.Sub(rec.Started).Round(time.Millisecond))
+	default:
+		r.log("%s: nothing to do", name)
+	}
+}
+
+// runAtStart runs the jobs asking to go as soon as the program does.
+//
+// In its own goroutine, and that is the load-bearing part: Serve has to reach
+// its select and start answering reloads immediately. Running these inline
+// would leave the interface unable to save a job for as long as the first sync
+// takes, which on a large folder over SFTP is minutes, and would look exactly
+// like a program that hung on startup.
+//
+// One at a time in file order, because the alternative is every job in the file
+// starting at once on one uplink and one disk. That is the same reason ordinary
+// runs are serialised, and a start-up burst is the moment it matters most.
+func (r *Runner) runAtStart(ctx context.Context) {
+	var due []string
+	for _, j := range r.config().Jobs {
+		if !j.Disabled && j.RunAtStart {
+			due = append(due, j.Name)
+		}
+	}
+	if len(due) == 0 {
+		return
+	}
+	r.log("running at start: %s", strings.Join(due, ", "))
+	go func() {
+		for _, name := range due {
+			if ctx.Err() != nil {
+				return
+			}
+			r.runAndLog(ctx, name)
+		}
+	}()
 }
 
 // stopCron waits for whatever is running to finish rather than cutting it off.
