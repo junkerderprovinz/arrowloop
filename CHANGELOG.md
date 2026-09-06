@@ -8,6 +8,35 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## v0.2.0
+
+The appearance settings and the jobs page rebuilt against BombVault's own
+source rather than against the design language. The engine is unchanged.
+
+### 🎨 Design
+
+- Every selector segment and every switch row takes its own position in the
+  palette. They all took the single accent, so with rainbow mode on a three-way
+  picker read as one accent and two greys.
+- Accent and rainbow are one card, and it comes last.
+- Every colour swatch opens the picker, and there are eight presets rather than
+  five. A swatch keeps its size when picked.
+- Both reset controls are always present, disabled when there is nothing to
+  undo, at the end of the row they reset.
+- The settings cards are capped at a reading width, and the settings tabs have
+  glyphs.
+- One card per job, each with its own palette position.
+
+### ⚡ Improved
+
+- A selector no longer wraps onto a second line to keep its segments the same
+  width; they shrink together where there is no room.
+
+### 🗑️ Removed
+
+- The "Right now" card at the top of the jobs page. The file being moved and the
+  side it lands on now sit on the job making them.
+
 ## v0.1.1
 
 A same-day fix to the one thing v0.1.0 was cut for.
