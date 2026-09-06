@@ -112,7 +112,9 @@ func browseRoots() ([]browseEntry, error) {
 	if runtime.GOOS != "windows" {
 		return []browseEntry{{Name: "/", Path: "/"}}, nil
 	}
-	var out []browseEntry
+	// Empty rather than nil, so a machine that somehow opens no drive answers
+	// with an empty list rather than with null.
+	out := []browseEntry{}
 	for c := 'A'; c <= 'Z'; c++ {
 		path := string(c) + `:\`
 		if f, err := os.Open(path); err == nil {

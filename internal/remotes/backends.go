@@ -73,7 +73,10 @@ func Backends() []Backend {
 			// somebody to name a remote for the folder they are looking at.
 			continue
 		}
-		b := Backend{Name: info.Name, Description: info.Description}
+		// Options starts as an empty slice for the same reason a target's
+		// settings do: a nil slice marshals to null, and a browser handed null
+		// where it was promised a list falls over on the first map.
+		b := Backend{Name: info.Name, Description: info.Description, Options: []Option{}}
 		for _, o := range info.Options {
 			b.Options = append(b.Options, Option{
 				Name:     o.Name,

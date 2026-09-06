@@ -542,7 +542,7 @@ type Event struct {
 	// Which side the work lands on, so a watching screen can say WHERE a file
 	// is going rather than only that one is moving. Empty for a step that
 	// touches neither side, such as writing a record.
-	Side  string `json:"side,omitempty"`
+	Side string `json:"side,omitempty"`
 }
 
 // progressFor turns the apply stage's reports into events on the stream.

@@ -76,7 +76,13 @@ func List() []Remote {
 
 	out := make([]Remote, 0, len(names))
 	for _, name := range names {
-		r := Remote{Name: name}
+		// Started as an empty slice rather than left nil, because a nil slice
+		// marshals to `null` and not to `[]`. A target saved with nothing but a
+		// type, which is exactly what the "create" form produces before anybody
+		// fills a field in, therefore arrived in the browser as a settings list
+		// that was not a list, and the first thing the row did with it took the
+		// whole page down. Found by making one.
+		r := Remote{Name: name, Settings: []Setting{}}
 		r.Type, _ = data.GetValue(name, "type")
 		for _, key := range data.GetKeyList(name) {
 			if key == "type" {
