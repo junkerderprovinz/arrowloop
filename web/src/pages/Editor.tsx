@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import { Choice, Field, Info, Lines, Switch, Text } from '../components/Field'
+import { Choice, Field, Lines, Switch, Text } from '../components/Field'
 import { api, type RawJob } from '../lib/api'
 import { DirectionSwitch } from '../components/Direction'
 import { FolderPicker, PickButton } from '../components/FolderPicker'
@@ -149,17 +149,18 @@ export function JobForm({
               onChange={(v) => patch({ left: v })}
             />
           </div>
-          {/* The caption goes above the arrow exactly as it does above the two
-              fields beside it, so the three read as one row of labelled things
-              rather than a control that wandered in. The bubble rides on the
-              caption, which is where every other field in this form puts it. */}
-          <div className="flex shrink-0 flex-col gap-1.5">
-            <span className="flex items-center justify-center gap-1.5 text-[11px] font-medium uppercase tracking-wider text-carbon-textMuted">
-              <Info text={t('direction.hint')} />
-            </span>
+          {/* A caption row with nothing in it but an (i) was a bubble hanging
+              off no label, which is the one shape rule 8 rules out: the (i)
+              belongs BESIDE a label, and there was none. The explanation moved
+              onto the arrow itself, which already carries a tip because it is
+              an icon-only control, and the empty caption row went with it. The
+              spacer keeps the arrow level with the two boxes rather than with
+              the words above them. */}
+          <div className="flex shrink-0 flex-col gap-1.5 pt-[1.55rem]">
             <DirectionSwitch
               direction={job.direction ?? 'both'}
               onChange={(v) => patch({ direction: v })}
+              hint={t('direction.hint')}
             />
           </div>
           <div className="min-w-0 flex-1">

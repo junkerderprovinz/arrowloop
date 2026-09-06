@@ -68,12 +68,24 @@ export function nextDirection(current: Direction): Direction {
 export function DirectionSwitch({
   direction,
   onChange,
+  hint,
 }: {
   direction: Direction
   onChange: (next: Direction) => void
+  /**
+   * What the three answers mean, carried in the same bubble as the current one.
+   *
+   * It rides here rather than beside the control as its own (i) because there
+   * is no label for an (i) to sit beside: this button IS the label, drawn. A
+   * lone (i) above it hung an explanation off nothing.
+   */
+  hint?: string
 }) {
   const { t } = useT()
   const name = t(directionKey[direction])
+  // Two sentences rather than a joined phrase, so neither half is written to
+  // fit beside the other in forty-two languages.
+  const tip = hint ? `${name}. ${hint}` : name
 
   return (
     <button
@@ -92,8 +104,8 @@ export function DirectionSwitch({
           onChange(nextDirection(nextDirection(direction)))
         }
       }}
-      title={name}
-      data-tip={name}
+      title={tip}
+      data-tip={tip}
       aria-label={`${t('direction.label')}: ${name}`}
       className="inline-flex h-9 w-9 shrink-0 items-center justify-center bg-carbon-surface2 text-carbon-text transition-colors hover:bg-carbon-hover"
       style={{ borderRadius: 'var(--radius-control)' }}

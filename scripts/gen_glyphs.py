@@ -48,6 +48,8 @@ GLYPHS = [
     # Row actions. Small, secondary, icon-only: the design language's rule 13.
     ("IconAdd", "interface-essential/add-1.svg", "Add a job, from the list it appears in"),
     ("IconLive", "interface-essential/dashboard-3.svg", "What is happening right now"),
+    ("IconReset", "interface-essential/arrow-round-left.svg",
+     "Put a colour back to the house default. A small reset badge carries a glyph, never a word"),
     ("IconCheck", "interface-essential/magnifying-glass.svg", "Open a target and look at it"),
     ("IconDelete", "interface-essential/recycle-bin-2.svg", "Delete"),
     ("IconCopy", "interface-essential/copy-paste.svg", "Copy to the clipboard"),

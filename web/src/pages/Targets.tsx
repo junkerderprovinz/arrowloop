@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Badge, Button, Card, Confirm, Empty, IconButton, Rule, RowActions, Stack } from '../components/Shell'
 import { IconCheck, IconCopy, IconDelete, IconEdit, IconForget } from '../components/glyphs'
-import { Choice, Field, Info, Secret, Switch, Text } from '../components/Field'
+import { Choice, Field, Secret, Switch, Text } from '../components/Field'
 import { api, type Backend, type Remote, type Volume } from '../lib/api'
 import { useT } from '../lib/i18n'
 import { Since } from './Jobs'
@@ -188,9 +188,20 @@ function RemoteRow({
       </div>
       <div className="flex shrink-0 items-center gap-1.5">
         {/* The one thing somebody came to this row to do stays visible; the
-            rest arrive when the pointer does. */}
-        <Info text={t('targets.checkHint')} />
-        <IconButton onClick={check} disabled={checking} title={checking ? t('targets.checking') : t('targets.check')}>
+            rest arrive when the pointer does.
+
+            The explanation rides ON the button rather than beside it as its own
+            (i). A bubble belongs next to a control's LABEL, and a row of
+            icon-only buttons has no labels, so a lone (i) among them reads as a
+            fourth button with a mystery behind it. An icon-only button already
+            has to carry a tip to be nameable at all, so the sentence goes
+            there, where a pointer heading for the button finds it. */}
+        <IconButton
+          onClick={check}
+          disabled={checking}
+          title={checking ? t('targets.checking') : t('targets.check')}
+          hint={t('targets.checkHint')}
+        >
           <IconCheck />
         </IconButton>
         <RowActions>
@@ -344,9 +355,9 @@ function Drives({ volumes, onChanged }: { volumes: Volume[]; onChanged: () => vo
   return (
     <Card
       title={t('targets.drives')}
+      hint={t('targets.driveExplain')}
       actions={
         <div className="flex items-center gap-2">
-          <Info text={t('targets.driveExplain')} />
           {!adding && <Button onClick={() => setAdding(true)}>{t('targets.registerDrive')}</Button>}
         </div>
       }
@@ -416,9 +427,11 @@ function DriveRow({ volume, onChanged }: { volume: Volume; onChanged: () => void
           <IconCopy />
         </IconButton>
         <RowActions>
-          <Info text={t('targets.forgetHint')} />
+          {/* Same as the check button above: the sentence rides on the button
+              rather than standing beside it as a lone (i) among icons. */}
           <IconButton
             title={t('targets.forget')}
+            hint={t('targets.forgetHint')}
             onClick={() => {
               void api.forgetVolume(volume.id).then(onChanged)
             }}

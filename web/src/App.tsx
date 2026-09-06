@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import { Button, Card, Stack } from './components/Shell'
+import { Card, IconButton, Stack } from './components/Shell'
 import { Choice, Field, Info, Switch } from './components/Field'
 import { Selector } from './components/Selector'
 import { Sidebar } from './components/Sidebar'
-import { IconHistory, IconJobs, IconSettings, IconTargets } from './components/glyphs'
+import { IconHistory, IconJobs, IconReset, IconSettings, IconTargets } from './components/glyphs'
 import { AccentSwatches, PaletteSwatches } from './components/Swatches'
 import { About } from './components/About'
 import { History, Jobs } from './pages/Jobs'
@@ -449,18 +449,19 @@ function Look({
         hue={3}
         actions={
           accent !== DEFAULT_ACCENT ? (
-            <Button onClick={() => onAccent(DEFAULT_ACCENT)}>{t('look.accentReset')}</Button>
+            // A glyph, not the word. A small single-purpose reset badge with a
+            // text label reads as a stray caption beside the icon-only controls
+            // around it, and spends row width on a word the tip already says.
+            <IconButton title={t('look.accentReset')} onClick={() => onAccent(DEFAULT_ACCENT)}>
+              <IconReset />
+            </IconButton>
           ) : undefined
         }
       >
         <AccentSwatches presets={ACCENTS} value={accent} onChange={onAccent} />
       </Card>
 
-      <Card
-        title={t('look.rainbow')}
-        hue={4}
-        actions={<Info text={t('look.rainbowHint')} />}
-      >
+      <Card title={t('look.rainbow')} hue={4} hint={t('look.rainbowHint')}>
         <div className="flex flex-col gap-3">
           <Switch
             on={rainbow.on}
@@ -490,13 +491,15 @@ function Look({
                   wrong and no way back, because there is no swatch to click to
                   undo one. The way back belongs next to the thing it undoes. */}
               {rainbow.palette.join() !== RAINBOW.join() && (
-                <button
-                  type="button"
+                // Was an underlined text link, which is the one thing rule 13
+                // names outright: a plain link between badges is a foreign
+                // object. Same badge as every other small action here.
+                <IconButton
+                  title={t('look.paletteReset')}
                   onClick={() => onRainbow({ ...rainbow, palette: [...RAINBOW] })}
-                  className="ms-1 text-[11px] font-medium normal-case tracking-normal text-carbon-textMuted underline underline-offset-2 transition hover:text-carbon-text"
                 >
-                  {t('look.paletteReset')}
-                </button>
+                  <IconReset />
+                </IconButton>
               )}
             </p>
             {/* Every colour here is in force at once, so there is no selected
@@ -509,7 +512,7 @@ function Look({
         </div>
       </Card>
 
-      <Card title={t('look.motion')} hue={5} actions={<Info text={t('look.motionHint')} />}>
+      <Card title={t('look.motion')} hue={5} hint={t('look.motionHint')}>
         <Selector<MotionIntensity>
           label={t('look.motion')}
           value={motion}
@@ -521,7 +524,7 @@ function Look({
       {/* The window switches moved to General with the language: what the close
           button does is not a matter of appearance. */}
 
-      <Card title={t('look.labels')} hue={6} actions={<Info text={t('look.labelsHint')} />}>
+      <Card title={t('look.labels')} hue={6} hint={t('look.labelsHint')}>
         <div className="flex flex-col gap-4">
           {/* All three surfaces now. The rail axis used to be filtered out
               because this app had no rail; it has one, so hiding the control

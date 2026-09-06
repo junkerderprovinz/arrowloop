@@ -1,7 +1,6 @@
 import { useState } from 'react'
 
 import { Badge, Button, Card, Confirm, Empty, IconButton, Num, Rule, Stack } from '../components/Shell'
-import { Info } from '../components/Field'
 import { IconAdd, IconDelete, IconEdit, IconPreview, IconToLeft, IconToRight } from '../components/glyphs'
 import { DirectionMark } from '../components/Direction'
 import { JobForm, useJobConfig } from './Editor'
@@ -251,7 +250,7 @@ function Live({ jobs, progress }: { jobs: Job[]; progress: Record<string, RunEve
   const running = jobs.filter((j) => j.running)
 
   return (
-    <Card title={t('live.title')} hue={6} actions={<Info text={t('live.hint')} />}>
+    <Card title={t('live.title')} hue={6} hint={t('live.hint')}>
       {running.length === 0 ? (
         <p className="text-[12px] text-carbon-textMuted">{t('live.idle')}</p>
       ) : (

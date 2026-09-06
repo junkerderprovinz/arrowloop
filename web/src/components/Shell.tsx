@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
 
 import { hueVars, rainbowColor, subscribeRainbow } from '../lib/appearance'
+import { Info } from './Field'
 
 /**
  * Re-render when the rainbow changes.
@@ -29,11 +30,24 @@ export function useRainbow(): number {
  */
 export function Card({
   title,
+  hint,
   actions,
   hue,
   children,
 }: {
   title?: string
+  /**
+   * What this card is for, in the bubble that belongs to its title.
+   *
+   * It renders BESIDE the title badge, and that is the whole reason this prop
+   * exists rather than the (i) being passed through `actions`. An explanation
+   * belongs next to the thing it explains; sent through the action slot it
+   * landed at the far right edge of the card, a thousand pixels from the
+   * heading it described, reading as one more control in a row of controls.
+   * Reported by jdp looking at the settings page, where four cards did it at
+   * once.
+   */
+  hint?: string
   actions?: ReactNode
   /**
    * This card's position in the palette.
@@ -55,8 +69,9 @@ export function Card({
       style={hue === undefined ? undefined : hueVars(rainbowColor(hue))}
     >
       {title && (
-        <div className="absolute -top-3 left-5 flex items-center gap-2">
+        <div className="absolute -top-3 left-5 flex items-center gap-1.5">
           <SectionTitle>{title}</SectionTitle>
+          {hint && <Info text={hint} />}
         </div>
       )}
       {actions && <div className="absolute -top-3 right-5 flex items-center gap-2">{actions}</div>}
@@ -180,29 +195,65 @@ export function IconButton({
   children,
   onClick,
   title,
+  hint,
   disabled,
   tone = 'neutral',
 }: {
   children: ReactNode
   onClick?: () => void
   title: string
+  /**
+   * A sentence explaining what pressing this does, carried in the same bubble
+   * as the name.
+   *
+   * This exists so a row of icon-only buttons never needs a lone (i) standing
+   * among them. An explanation belongs beside a control's LABEL, and these have
+   * none, so an (i) in that row reads as one more button with a mystery behind
+   * it. The button already has to carry a tip to be nameable at all; the
+   * sentence rides in it, where the pointer heading for the button will find it.
+   */
+  hint?: string
   disabled?: boolean
   tone?: Tone
 }) {
+  // Two sentences rather than a joined phrase, so neither half has to be
+  // written to fit beside the other in forty-two languages.
+  const tip = hint ? `${title}. ${hint}` : title
   return (
     <button
       type="button"
       onClick={onClick}
       disabled={disabled}
-      title={title}
-      data-tip={title}
+      title={tip}
+      data-tip={tip}
       aria-label={title}
-      className={`inline-flex h-7 w-7 items-center justify-center transition disabled:cursor-not-allowed disabled:opacity-50 ${toneClass[tone]} hover:brightness-110`}
+      className={`inline-flex h-7 w-7 items-center justify-center transition disabled:cursor-not-allowed disabled:opacity-50 ${iconTone[tone]} hover:brightness-110`}
       style={{ borderRadius: 'var(--radius-pill)' }}
     >
       {children}
     </button>
   )
+}
+
+/**
+ * What an icon button is filled with, which is NOT what a badge is filled with.
+ *
+ * A badge carries a state, so the four state hues are exactly right on it. A
+ * button carries an action, and an action is not a state: an ordinary icon
+ * button wearing the neutral STATUS colour reads as a thing reporting on
+ * itself rather than a thing to press, and it sits at a different lightness
+ * from every other button on the page. Ordinary ones take a surface, the same
+ * as the ordinary text button beside them.
+ *
+ * The destructive one keeps its status hue on purpose. That is the one place a
+ * button really is saying something about consequence rather than about
+ * itself, and it is the only red allowed on a control.
+ */
+const iconTone: Record<Tone, string> = {
+  accent: 'bg-accent text-accentContrast',
+  ok: 'bg-statusOkBg text-statusOk',
+  fail: 'bg-statusFailBg text-statusFail',
+  neutral: 'bg-carbon-surface2 text-carbon-text hover:bg-carbon-hover',
 }
 
 /**
