@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { Badge, Button, Card, Empty, Rule, Stack } from '../components/Shell'
+import { Badge, Button, Card, Empty, IconButton, Rule, RowActions, Stack } from '../components/Shell'
+import { IconCheck, IconCopy, IconDelete, IconEdit, IconForget } from '../components/glyphs'
 import { Choice, Field, Info, Switch, Text } from '../components/Field'
 import { api, type Backend, type Remote, type Volume } from '../lib/api'
 import { useT } from '../lib/i18n'
@@ -163,7 +164,7 @@ function RemoteRow({
     .join('  ')
 
   return (
-    <div className="flex flex-wrap items-center gap-x-3 gap-y-2 py-3">
+    <div className="group flex flex-wrap items-center gap-x-3 gap-y-2 py-3">
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
           <span className="truncate text-[13px] font-medium">{remote.name}:</span>
@@ -181,19 +182,27 @@ function RemoteRow({
           <p className="mt-1 text-[11px] text-statusFail">{result.reason}</p>
         )}
       </div>
-      <div className="flex shrink-0 items-center gap-2">
+      <div className="flex shrink-0 items-center gap-1.5">
+        {/* The one thing somebody came to this row to do stays visible; the
+            rest arrive when the pointer does. */}
         <Info text={t('targets.checkHint')} />
-        <Button onClick={check} disabled={checking}>
-          {checking ? t('targets.checking') : t('targets.check')}
-        </Button>
-        <Button onClick={onEdit}>{t('targets.edit')}</Button>
-        <Button
-          onClick={() => {
-            void api.deleteRemote(remote.name).then(onChanged)
-          }}
-        >
-          {t('targets.delete')}
-        </Button>
+        <IconButton onClick={check} disabled={checking} title={checking ? t('targets.checking') : t('targets.check')}>
+          <IconCheck />
+        </IconButton>
+        <RowActions>
+          <IconButton onClick={onEdit} title={t('targets.edit')}>
+            <IconEdit />
+          </IconButton>
+          <IconButton
+            tone="fail"
+            title={t('targets.delete')}
+            onClick={() => {
+              void api.deleteRemote(remote.name).then(onChanged)
+            }}
+          >
+            <IconDelete />
+          </IconButton>
+        </RowActions>
       </div>
     </div>
   )
@@ -350,7 +359,7 @@ function DriveRow({ volume, onChanged }: { volume: Volume; onChanged: () => void
   const [copied, setCopied] = useState(false)
 
   return (
-    <div className="flex flex-wrap items-center gap-x-3 gap-y-2 py-3">
+    <div className="group flex flex-wrap items-center gap-x-3 gap-y-2 py-3">
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
           <span className="truncate text-[13px] font-medium">{volume.label}</span>
@@ -371,9 +380,10 @@ function DriveRow({ volume, onChanged }: { volume: Volume; onChanged: () => void
         </span>
       )}
 
-      <div className="flex shrink-0 items-center gap-2">
-        <Button
-          title={t('targets.copyPath')}
+      <div className="flex shrink-0 items-center gap-1.5">
+        <IconButton
+          tone={copied ? 'ok' : 'neutral'}
+          title={copied ? t('targets.copied') : t('targets.copyPath')}
           onClick={() => {
             void navigator.clipboard?.writeText(volume.path).then(() => {
               setCopied(true)
@@ -381,16 +391,19 @@ function DriveRow({ volume, onChanged }: { volume: Volume; onChanged: () => void
             })
           }}
         >
-          {copied ? t('targets.copied') : t('targets.copyPath')}
-        </Button>
-        <Info text={t('targets.forgetHint')} />
-        <Button
-          onClick={() => {
-            void api.forgetVolume(volume.id).then(onChanged)
-          }}
-        >
-          {t('targets.forget')}
-        </Button>
+          <IconCopy />
+        </IconButton>
+        <RowActions>
+          <Info text={t('targets.forgetHint')} />
+          <IconButton
+            title={t('targets.forget')}
+            onClick={() => {
+              void api.forgetVolume(volume.id).then(onChanged)
+            }}
+          >
+            <IconForget />
+          </IconButton>
+        </RowActions>
       </div>
     </div>
   )

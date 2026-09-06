@@ -1,10 +1,14 @@
 // The one place that talks to the engine. Everything here mirrors a type the
 // Go side already defines; nothing is invented on this side.
 
+/** Which way a job is allowed to write. */
+export type Direction = 'both' | 'leftToRight' | 'rightToLeft'
+
 export type Job = {
   name: string
   left: string
   right: string
+  direction: Direction
   schedule: string
   disabled: boolean
   running: boolean
@@ -54,6 +58,13 @@ export type Backend = {
   }[]
 }
 
+/** What a desktop window's own buttons do. */
+export type WindowSettings = {
+  tray: boolean
+  closeToTray: boolean
+  minimiseToTray: boolean
+}
+
 /** One registered drive, attached or not. */
 export type Volume = {
   id: string
@@ -100,6 +111,7 @@ export type RawJob = {
   right?: string
   state?: string
   schedule?: string
+  direction?: Direction
   disabled?: boolean
   watch?: boolean
   watchSettle?: string
@@ -185,6 +197,33 @@ export const api = {
   checkRemote: (name: string) =>
     request<{ ok: boolean; reason?: string }>(`/api/remotes/${encodeURIComponent(name)}/check`, {
       method: 'POST',
+    }),
+
+  /**
+   * What this build can do. Every build answers, including the ones that can do
+   * the least, so asking costs one request and never a failed one.
+   */
+  capabilities: () => request<{ window: boolean }>('/api/capabilities'),
+
+  /**
+   * The window settings, which only a desktop build has.
+   *
+   * A container has no title bar and no notification area, so it says so in its
+   * capabilities and this is never called there. Asking anyway would answer 404
+   * and put a red line in the browser's console on every load, and a console
+   * full of expected errors is a console nobody reads when a real one appears.
+   */
+  window: async (): Promise<WindowSettings | null> => {
+    const can = await api.capabilities().catch(() => ({ window: false }))
+    if (!can.window) return null
+    return request<WindowSettings>('/api/window')
+  },
+
+  saveWindow: (settings: WindowSettings) =>
+    request<WindowSettings>('/api/window', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(settings),
     }),
 
   volumes: () => request<{ volumes: Volume[] }>('/api/volumes'),

@@ -100,6 +100,12 @@ export const en = {
   'kind.mkdir': 'new folder',
   'kind.rmdir': 'remove folder',
 
+  'direction.label': 'Direction',
+  'direction.both': 'Both ways',
+  'direction.toRight': 'Only to the right',
+  'direction.toLeft': 'Only to the left',
+  'direction.hint':
+    'Both sides are always compared, because comparing is how a change is found. The direction decides what may be done about it: one way makes one side the source, never writes to it, and puts its version back over anything the other side changed. A file the source has never had is left where it is, so this copies rather than mirrors.',
   'side.left': 'left',
   'side.right': 'right',
 
@@ -237,6 +243,22 @@ export const en = {
     'Gives each card its own colour from one palette instead of one accent everywhere.',
   'look.reactiveHint': 'Builds the palette around the accent you picked, rather than a fixed one.',
   'look.rotateHint': 'Moves the palette along by one on every visit.',
+  'look.palette': 'Palette',
+  'look.paletteHint': 'Each colour can be changed. A click opens the picker on it.',
+  'look.motion': 'Motion',
+  'look.motionHint': 'How much the interface moves. It never overrides what your system asks for, it only dials down from there.',
+  'look.motionOff': 'Off',
+  'look.motionSubtle': 'Subtle',
+  'look.motionFull': 'Full',
+  'look.labels': 'Labels',
+  'look.labelsHint': 'Whether controls show their words, their glyph, or both. The width does not change, so switching never moves the page.',
+  'look.labelsButtons': 'Buttons',
+  'look.labelsSidebar': 'Navigation rail',
+  'look.labelsTabs': 'Tabs',
+  'look.labelText': 'Words',
+  'look.labelTextGlyph': 'Both',
+  'look.labelGlyph': 'Glyph',
+  'look.labelReactive': 'Words on hover',
   'look.language': 'Language',
 
   // Progress
@@ -266,6 +288,16 @@ export const en = {
   'reason.heldOpen': 'another program is holding it open on the {side}, waiting for it to be closed',
   'reason.unsupported': '{kind} on the {side}, which this engine does not carry',
   'reason.recordFailed': 'the record could not be written, leaving it for the next run: {error}',
+
+  'window.title': 'Window',
+  'window.tray': 'Icon in the notification area',
+  'window.trayHint':
+    'Keeps ArrowLoop reachable while the window is away. Without it there is nowhere for the two settings below to send the window, so they turn off with it.',
+  'window.close': 'The close button hides the window',
+  'window.closeHint':
+    'Off by default, because a close button that does not close is a surprise, and one that hides a running program is the kind somebody finds a week later wondering why a job keeps running.',
+  'window.minimise': 'Minimising goes to the notification area',
+  'window.minimiseHint': 'Instead of the taskbar. The window comes back from the icon either way.',
 
   'progress.of': '{done} of {total}',
   'progress.starting': 'Starting',
@@ -323,6 +355,12 @@ export const de: Translations = {
   'kind.mkdir': 'neuer Ordner',
   'kind.rmdir': 'Ordner entfernen',
 
+  'direction.label': 'Richtung',
+  'direction.both': 'Beide Wege',
+  'direction.toRight': 'Nur nach rechts',
+  'direction.toLeft': 'Nur nach links',
+  'direction.hint':
+    'Verglichen werden immer beide Seiten, denn nur so findet sich eine Änderung. Die Richtung entscheidet, was damit geschehen darf: einseitig wird eine Seite zur Quelle, wird nie beschrieben, und ihre Fassung ersetzt alles, was die andere Seite geändert hat. Eine Datei, die die Quelle nie hatte, bleibt liegen, das hier kopiert also, es spiegelt nicht.',
   'side.left': 'links',
   'side.right': 'rechts',
 
@@ -458,6 +496,22 @@ export const de: Translations = {
     'Gibt jeder Karte eine eigene Farbe aus einer Palette, statt überall denselben Akzent zu setzen.',
   'look.reactiveHint': 'Baut die Palette um den gewählten Akzent herum statt um eine feste Farbe.',
   'look.rotateHint': 'Rückt die Palette bei jedem Besuch um eins weiter.',
+  'look.palette': 'Palette',
+  'look.paletteHint': 'Jede Farbe lässt sich ändern. Ein Klick öffnet den Wähler darauf.',
+  'look.motion': 'Bewegung',
+  'look.motionHint': 'Wie stark sich die Oberfläche bewegt. Was dein System verlangt, wird nie überschrieben, sondern nur von dort nach unten geregelt.',
+  'look.motionOff': 'Aus',
+  'look.motionSubtle': 'Dezent',
+  'look.motionFull': 'Voll',
+  'look.labels': 'Beschriftung',
+  'look.labelsHint': 'Ob Bedienelemente ihre Worte zeigen, ihr Zeichen oder beides. Die Breite bleibt gleich, ein Wechsel verschiebt also nichts.',
+  'look.labelsButtons': 'Knöpfe',
+  'look.labelsSidebar': 'Navigationsleiste',
+  'look.labelsTabs': 'Reiter',
+  'look.labelText': 'Worte',
+  'look.labelTextGlyph': 'Beides',
+  'look.labelGlyph': 'Zeichen',
+  'look.labelReactive': 'Worte beim Zeigen',
   'look.language': 'Sprache',
 
 
@@ -482,6 +536,16 @@ export const de: Translations = {
   'reason.heldOpen': 'wird {side} von einem anderen Programm offen gehalten, wartet auf das Schließen',
   'reason.unsupported': '{kind} {side}, was dieser Dienst nicht mitnimmt',
   'reason.recordFailed': 'Der Vermerk ließ sich nicht schreiben, bleibt für den nächsten Lauf liegen: {error}',
+
+  'window.title': 'Fenster',
+  'window.tray': 'Symbol im Infobereich',
+  'window.trayHint':
+    'Hält ArrowLoop erreichbar, während das Fenster weg ist. Ohne das Symbol hätten die beiden Einstellungen darunter kein Ziel, deshalb gehen sie mit aus.',
+  'window.close': 'Der Schließen-Knopf versteckt das Fenster',
+  'window.closeHint':
+    'Standardmäßig aus, denn ein Schließen-Knopf, der nicht schließt, ist eine Überraschung, und einer, der ein laufendes Programm versteckt, ist die Sorte, die man eine Woche später findet und sich fragt, warum ein Auftrag immer noch läuft.',
+  'window.minimise': 'Minimieren geht in den Infobereich',
+  'window.minimiseHint': 'Statt in die Taskleiste. Zurück kommt das Fenster so oder so über das Symbol.',
 
   'progress.of': '{done} von {total}',
   'progress.starting': 'Startet',

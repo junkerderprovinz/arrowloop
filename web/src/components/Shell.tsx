@@ -138,7 +138,7 @@ export function Button({
       disabled={disabled}
       title={title}
       data-tip={title}
-      className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ${look}`}
+      className={`glim-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ${look}`}
       style={{ borderRadius: 'var(--radius-pill)' }}
     >
       {children}
@@ -166,4 +166,61 @@ export function Rule() {
  */
 export function Empty({ children }: { children: ReactNode }) {
   return <p className="py-6 text-center text-[12px] text-carbon-textMuted">{children}</p>
+}
+
+/**
+ * A small, single-purpose action: an icon, never a text label.
+ *
+ * "Copy" or "Delete" sitting in its own pill beside three icon-only controls
+ * reads as a stray caption and costs the row width a label does not need to
+ * spend. The name survives as the hover bubble and as the accessible name, so
+ * nothing is lost but the ink.
+ */
+export function IconButton({
+  children,
+  onClick,
+  title,
+  disabled,
+  tone = 'neutral',
+}: {
+  children: ReactNode
+  onClick?: () => void
+  title: string
+  disabled?: boolean
+  tone?: Tone
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      title={title}
+      data-tip={title}
+      aria-label={title}
+      className={`inline-flex h-7 w-7 items-center justify-center transition disabled:cursor-not-allowed disabled:opacity-50 ${toneClass[tone]} hover:brightness-110`}
+      style={{ borderRadius: 'var(--radius-pill)' }}
+    >
+      {children}
+    </button>
+  )
+}
+
+/**
+ * The secondary actions of one row, revealed on hover.
+ *
+ * A long list reads as content, not as a wall of buttons. The row's primary
+ * action stays outside this and is always visible.
+ *
+ * The group survives being hovered, because it is the pointer entering the ROW
+ * that reveals it, not the pointer entering the buttons: a control that
+ * disappears the moment somebody reaches for it is worse than one that was
+ * never hidden. Keyboard focus reveals it too, or the buttons would be
+ * reachable by tab and invisible while focused.
+ */
+export function RowActions({ children }: { children: ReactNode }) {
+  return (
+    <div className="flex shrink-0 items-center gap-1.5 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100 motion-reduce:transition-none">
+      {children}
+    </div>
+  )
 }

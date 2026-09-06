@@ -1,4 +1,7 @@
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useLayoutEffect, useMemo, useRef, useState } from 'react'
+import type { ReactNode } from 'react'
+
+import { groupStage } from '../lib/controls'
 
 /**
  * The one horizontal selector: tabs, filter bars and segmented controls are the
@@ -12,7 +15,7 @@ import { useLayoutEffect, useRef, useState } from 'react'
  * page or sits inside a narrow panel. They differ in exactly the thing the
  * prop is named after, which is what stops the two from diverging again.
  */
-export type Option<T extends string> = { value: T; label: string; icon?: string }
+export type Option<T extends string> = { value: T; label: string; icon?: ReactNode }
 
 /**
  * The app-wide floor for a big selector's segments. One constant, picked once,
@@ -43,6 +46,12 @@ export function Selector<T extends string>({
   // job, because a flex item whose basis resolves to zero contributes zero to
   // a shrink-to-fit parent, which truncates the widest label the moment nothing
   // stretches the track.
+  // The stage comes from the LABELS, not from what is rendered, which is what
+  // lets the strip keep its width when the label engine hides the words. A
+  // measurement of the drawn content would shrink the moment they went away,
+  // and switching a display mode would reflow the page.
+  const stage = useMemo(() => groupStage(options.map((o) => o.label)), [options])
+
   useLayoutEffect(() => {
     if (scale !== 'big' || !track.current) return
     let widest = 0
@@ -72,10 +81,11 @@ export function Selector<T extends string>({
             style={{
               borderRadius: 'calc(var(--radius-control) - 0.2rem)',
               width: scale === 'big' && width ? width : undefined,
+              minWidth: scale === 'big' ? undefined : `calc(var(--btn-w-${stage}) / ${options.length})`,
               flex: 'none',
             }}
             className={[
-              'inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-[12px] font-medium transition-colors',
+              'glim-tab inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-[12px] font-medium transition-colors',
               // Inside a selector only the chosen segment is a badge. An idle
               // segment with a fill of its own is the per-segment badge an
               // unselected option must not be: the groove already does that job.
@@ -84,8 +94,12 @@ export function Selector<T extends string>({
                 : 'bg-transparent text-carbon-textMuted hover:bg-carbon-hover hover:text-carbon-text',
             ].join(' ')}
           >
-            {o.icon && <span aria-hidden>{o.icon}</span>}
-            <span>{o.label}</span>
+            {o.icon && (
+              <span className="glim-tab-glyph" aria-hidden>
+                {o.icon}
+              </span>
+            )}
+            <span className="glim-tab-label">{o.label}</span>
           </button>
         )
       })}

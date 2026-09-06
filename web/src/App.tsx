@@ -3,11 +3,13 @@ import { useCallback, useEffect, useState } from 'react'
 import { Card, Stack } from './components/Shell'
 import { Choice, Field, Info, Switch } from './components/Field'
 import { Selector } from './components/Selector'
+import { IconEdit, IconHistory, IconJobs, IconLook, IconTargets } from './components/glyphs'
+import { AccentSwatches, PaletteSwatches } from './components/Swatches'
 import { History, Jobs } from './pages/Jobs'
 import { Preview } from './pages/Preview'
 import { Editor } from './pages/Editor'
 import { Targets } from './pages/Targets'
-import { api, type Job, type Run, type RunEvent } from './lib/api'
+import { api, type Job, type Run, type RunEvent, type WindowSettings } from './lib/api'
 import {
   ACCENTS,
   applyAccent,
@@ -18,7 +20,9 @@ import {
   type RainbowState,
   type Shape,
 } from './lib/appearance'
+import { CONTROL_AXES, getLabelMode, LABEL_MODES, setLabelMode, type ControlAxis, type LabelMode } from './lib/controls'
 import { languageFlag, useT } from './lib/i18n'
+import { getMotion, MOTION_INTENSITIES, setMotion, type MotionIntensity } from './lib/motion'
 import { wireTooltips } from './lib/tooltip'
 
 type Tab = 'jobs' | 'edit' | 'targets' | 'history' | 'look'
@@ -69,6 +73,15 @@ export function App() {
   const [shape, setShape] = useState<Shape>('round')
   const [accent, setAccent] = useState<string>(ACCENTS[0]?.hex ?? '#FCC419')
   const [rainbow, setRainbow] = useState<RainbowState>(rainbowState)
+  const [motion, setMotionState] = useState<MotionIntensity>(getMotion)
+  // Null until asked, and null for ever on a build with no window. The card is
+  // left out entirely rather than shown inert.
+  const [window_, setWindow] = useState<WindowSettings | null>(null)
+  const [labels, setLabels] = useState<Record<ControlAxis, LabelMode>>(() => ({
+    buttons: getLabelMode('buttons'),
+    sidebar: getLabelMode('sidebar'),
+    tabs: getLabelMode('tabs'),
+  }))
 
   const refresh = useCallback(() => {
     api
@@ -82,6 +95,10 @@ export function App() {
         // A missing history is not worth an error banner over the whole page:
         // the job list is still useful without it.
       })
+  }, [])
+
+  useEffect(() => {
+    void api.window().then(setWindow)
   }, [])
 
   useEffect(() => {
@@ -164,11 +181,11 @@ export function App() {
             setTab(next)
           }}
           options={[
-            { value: 'jobs', label: t('nav.jobs'), icon: '⇄' },
-            { value: 'edit', label: t('nav.edit'), icon: '✎' },
-            { value: 'targets', label: t('nav.targets'), icon: '⌂' },
-            { value: 'history', label: t('nav.history'), icon: '☰' },
-            { value: 'look', label: t('nav.look'), icon: '◐' },
+            { value: 'jobs', label: t('nav.jobs'), icon: <IconJobs /> },
+            { value: 'edit', label: t('nav.edit'), icon: <IconEdit /> },
+            { value: 'targets', label: t('nav.targets'), icon: <IconTargets /> },
+            { value: 'history', label: t('nav.history'), icon: <IconHistory /> },
+            { value: 'look', label: t('nav.look'), icon: <IconLook /> },
           ]}
         />
       </header>
@@ -208,6 +225,21 @@ export function App() {
           onAccent={setAccent}
           rainbow={rainbow}
           onRainbow={setRainbow}
+          motion={motion}
+          onMotion={(next) => {
+            setMotion(next)
+            setMotionState(next)
+          }}
+          labels={labels}
+          onLabels={(axis, next) => {
+            setLabelMode(axis, next)
+            setLabels((prev) => ({ ...prev, [axis]: next }))
+          }}
+          window={window_}
+          onWindow={(next) => {
+            setWindow(next)
+            void api.saveWindow(next).then(setWindow)
+          }}
           lang={lang}
           onLang={setLanguage}
           languages={languages}
@@ -234,6 +266,12 @@ function Look({
   onAccent,
   rainbow,
   onRainbow,
+  motion,
+  onMotion,
+  labels,
+  onLabels,
+  window: windowSettings,
+  onWindow,
   lang,
   onLang,
   languages,
@@ -246,6 +284,12 @@ function Look({
   onAccent: (next: string) => void
   rainbow: RainbowState
   onRainbow: (next: RainbowState) => void
+  motion: MotionIntensity
+  onMotion: (next: MotionIntensity) => void
+  labels: Record<ControlAxis, LabelMode>
+  onLabels: (axis: ControlAxis, next: LabelMode) => void
+  window: WindowSettings | null
+  onWindow: (next: WindowSettings) => void
   lang: string
   onLang: (next: string) => void
   languages: { code: string; label: string }[]
@@ -297,25 +341,7 @@ function Look({
       </Card>
 
       <Card title={t('look.accent')} hue={3}>
-        <div className="flex flex-wrap gap-2">
-          {ACCENTS.map((p) => (
-            <button
-              key={p.hex}
-              onClick={() => onAccent(p.hex)}
-              title={p.name}
-              data-tip={p.name}
-              aria-label={p.name}
-              aria-pressed={accent === p.hex}
-              className="h-8 w-8 transition"
-              style={{
-                background: p.hex,
-                borderRadius: 'var(--radius-pill)',
-                outline: accent === p.hex ? '2px solid var(--carbon-text)' : 'none',
-                outlineOffset: '2px',
-              }}
-            />
-          ))}
-        </div>
+        <AccentSwatches presets={ACCENTS} value={accent} onChange={onAccent} />
       </Card>
 
       <Card
@@ -344,8 +370,94 @@ function Look({
             label={t('look.rainbowRotate')}
             hint={t('look.rotateHint')}
           />
+          <div className="mt-1">
+            <p className="mb-2 flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wider text-carbon-textMuted">
+              {t('look.palette')}
+              <Info text={t('look.paletteHint')} />
+            </p>
+            {/* Every colour here is in force at once, so there is no selected
+                one to click twice and a click can only mean edit. */}
+            <PaletteSwatches
+              palette={rainbow.palette}
+              onChange={(palette) => onRainbow({ ...rainbow, palette })}
+            />
+          </div>
+        </div>
+      </Card>
+
+      <Card title={t('look.motion')} hue={5} actions={<Info text={t('look.motionHint')} />}>
+        <Selector<MotionIntensity>
+          label={t('look.motion')}
+          value={motion}
+          onChange={onMotion}
+          options={MOTION_INTENSITIES.map((m) => ({ value: m, label: t(motionKey[m]) }))}
+        />
+      </Card>
+
+      {windowSettings && (
+        <Card title={t('window.title')} hue={6}>
+          <div className="flex flex-col gap-3">
+            <Switch
+              on={windowSettings.tray}
+              onChange={(tray) => onWindow({ ...windowSettings, tray })}
+              label={t('window.tray')}
+              hint={t('window.trayHint')}
+            />
+            {/* The two below have nowhere to send the window without the icon,
+                so they go with it rather than staying on as a promise the
+                program cannot keep. */}
+            <Switch
+              on={windowSettings.closeToTray}
+              onChange={(closeToTray) => onWindow({ ...windowSettings, closeToTray })}
+              label={t('window.close')}
+              hint={t('window.closeHint')}
+            />
+            <Switch
+              on={windowSettings.minimiseToTray}
+              onChange={(minimiseToTray) => onWindow({ ...windowSettings, minimiseToTray })}
+              label={t('window.minimise')}
+              hint={t('window.minimiseHint')}
+            />
+          </div>
+        </Card>
+      )}
+
+      <Card title={t('look.labels')} hue={7} actions={<Info text={t('look.labelsHint')} />}>
+        <div className="flex flex-col gap-4">
+          {/* Two surfaces, not three. The engine carries a rail axis as well and
+              this app has no rail, so offering a third control would be offering
+              one that does nothing. */}
+          {CONTROL_AXES.filter((axis) => axis !== 'sidebar').map((axis) => (
+            <Field key={axis} label={t(axisKey[axis])}>
+              <Selector<LabelMode>
+                label={t(axisKey[axis])}
+                value={labels[axis]}
+                onChange={(next) => onLabels(axis, next)}
+                options={LABEL_MODES.map((m) => ({ value: m, label: t(labelModeKey[m]) }))}
+              />
+            </Field>
+          ))}
         </div>
       </Card>
     </Stack>
   )
 }
+
+const motionKey = {
+  off: 'look.motionOff',
+  subtle: 'look.motionSubtle',
+  full: 'look.motionFull',
+} as const
+
+const axisKey = {
+  buttons: 'look.labelsButtons',
+  sidebar: 'look.labelsSidebar',
+  tabs: 'look.labelsTabs',
+} as const
+
+const labelModeKey = {
+  text: 'look.labelText',
+  textGlyph: 'look.labelTextGlyph',
+  glyph: 'look.labelGlyph',
+  reactive: 'look.labelReactive',
+} as const

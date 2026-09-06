@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react'
 
 import { Badge, Button, Card, Empty, Rule, Stack } from '../components/Shell'
 import { Choice, Field, Lines, Switch, Text } from '../components/Field'
-import { api, type RawJob } from '../lib/api'
+import { api, type Direction, type RawJob } from '../lib/api'
+import { DIRECTIONS, DirectionGlyph, directionKey } from '../components/Direction'
+import { Selector } from '../components/Selector'
 import { useT } from '../lib/i18n'
 
 /**
@@ -184,6 +186,21 @@ export function Editor({ onSaved }: { onSaved: () => void }) {
               known={known}
               onChange={(v) => patch({ right: v })}
             />
+            <Field label={t('direction.label')} hint={t('direction.hint')}>
+              {/* Arrows rather than three words: the choice reads at a glance
+                  and takes the same room in every language. */}
+              <Selector<Direction>
+                scale="small"
+                label={t('direction.label')}
+                value={job.direction ?? 'both'}
+                onChange={(v) => patch({ direction: v })}
+                options={DIRECTIONS.map((d) => ({
+                  value: d,
+                  label: t(directionKey[d]),
+                  icon: <DirectionGlyph direction={d} />,
+                }))}
+              />
+            </Field>
             <Field label={t('edit.schedule')} hint={t('edit.scheduleHint')}>
               <Text value={job.schedule ?? ''} onChange={(v) => patch({ schedule: v })} mono />
             </Field>

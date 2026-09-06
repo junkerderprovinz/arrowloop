@@ -1,4 +1,6 @@
 import { Badge, Button, Card, Empty, Num, Rule } from '../components/Shell'
+import { IconPreview } from '../components/glyphs'
+import { DirectionMark } from '../components/Direction'
 import type { Job, Run, RunEvent } from '../lib/api'
 import { useT, type TranslationKey } from '../lib/i18n'
 
@@ -36,8 +38,16 @@ export function Jobs({
                   <span className="truncate text-[14px] font-medium">{j.name}</span>
                   <State job={j} />
                 </div>
-                <p className="mt-0.5 truncate text-[11px] text-carbon-textMuted" title={`${j.left} ${j.right}`}>
-                  {j.left} <span aria-hidden>&harr;</span> {j.right}
+                {/* The arrow sits between the two sides because that is where
+                    the question is: which way does this go. */}
+                <p className="mt-0.5 flex items-center gap-1.5 text-[11px] text-carbon-textMuted">
+                  <span className="min-w-0 flex-1 truncate text-right" title={j.left}>
+                    {j.left}
+                  </span>
+                  <DirectionMark direction={j.direction} />
+                  <span className="min-w-0 flex-1 truncate" title={j.right}>
+                    {j.right}
+                  </span>
                 </p>
                 {j.running && <Progress event={progress[j.name]} />}
               </div>
@@ -52,7 +62,12 @@ export function Jobs({
 
               {/* The primary action for a row stays visible; it is the one
                   thing somebody came to this row to do. */}
-              <Button onClick={() => onPreview(j.name)}>{t('jobs.preview')}</Button>
+              <Button onClick={() => onPreview(j.name)}>
+                <span className="glim-btn-glyph" aria-hidden>
+                  <IconPreview />
+                </span>
+                <span className="glim-btn-label">{t('jobs.preview')}</span>
+              </Button>
             </div>
           </li>
         ))}
