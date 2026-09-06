@@ -245,6 +245,7 @@ const zh: Translations = {
   'edit.close': '关闭',
   'edit.removeJob': '移除这个任务',
   'edit.removeStakes': '任务 {name} 从配置里移除。已经复制的内容原地保留，它的状态文件也留在磁盘上，所以同一对可以重新配置，而不会把每个文件都当成新的。',
+  'edit.unsaved': '尚未保存',
 }
 
 export default zh

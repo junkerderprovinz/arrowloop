@@ -245,6 +245,7 @@ const ca: Translations = {
   'edit.close': 'Tanca',
   'edit.removeJob': 'Treu aquesta tasca',
   'edit.removeStakes': 'La tasca {name} surt de la configuració. El que ja ha copiat es queda on és, i el seu fitxer d\'estat es queda al disc, així que el mateix parell es pot tornar a muntar sense tractar cada fitxer com a nou.',
+  'edit.unsaved': 'encara no desat',
 }
 
 export default ca

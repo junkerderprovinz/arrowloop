@@ -245,6 +245,7 @@ const lv: Translations = {
   'edit.close': 'Aizvērt',
   'edit.removeJob': 'Noņemt šo darbu',
   'edit.removeStakes': 'Darbs {name} tiek izņemts no konfigurācijas. Tas, ko tas jau nokopējis, paliek savā vietā, un tā stāvokļa fails paliek diskā, tāpēc to pašu pāri var iestatīt no jauna, neuzskatot katru failu par jaunu.',
+  'edit.unsaved': 'vēl nav saglabāts',
 }
 
 export default lv

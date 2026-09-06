@@ -245,6 +245,7 @@ const gl: Translations = {
   'edit.close': 'Pechar',
   'edit.removeJob': 'Quitar esta tarefa',
   'edit.removeStakes': 'A tarefa {name} sae da configuración. O que xa copiou queda onde está, e o seu ficheiro de estado queda no disco, así que o mesmo par pódese montar de novo sen tratar cada ficheiro como novo.',
+  'edit.unsaved': 'aínda non gardado',
 }
 
 export default gl

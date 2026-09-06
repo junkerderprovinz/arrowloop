@@ -245,6 +245,7 @@ const tr: Translations = {
   'edit.close': 'Kapat',
   'edit.removeJob': 'Bu işi kaldır',
   'edit.removeStakes': '{name} işi yapılandırmadan çıkar. Kopyaladığı şeyler yerinde kalır ve durum dosyası diskte kalır, böylece aynı çift her dosya yeniymiş gibi ele alınmadan yeniden kurulabilir.',
+  'edit.unsaved': 'henüz kaydedilmedi',
 }
 
 export default tr

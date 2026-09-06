@@ -245,6 +245,7 @@ const nl: Translations = {
   'edit.close': 'Sluiten',
   'edit.removeJob': 'Deze taak verwijderen',
   'edit.removeStakes': 'De taak {name} gaat uit de configuratie. Wat hij al gekopieerd heeft blijft liggen, en zijn statusbestand blijft op de schijf staan, dus hetzelfde paar kan opnieuw worden ingericht zonder elk bestand als nieuw te behandelen.',
+  'edit.unsaved': 'nog niet opgeslagen',
 }
 
 export default nl

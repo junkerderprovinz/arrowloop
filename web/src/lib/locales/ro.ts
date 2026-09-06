@@ -245,6 +245,7 @@ const ro: Translations = {
   'edit.close': 'Închide',
   'edit.removeJob': 'Elimină această sarcină',
   'edit.removeStakes': 'Sarcina {name} iese din configurație. Ce a copiat deja rămâne pe loc, iar fișierul ei de stare rămâne pe disc, așa că aceeași pereche poate fi montată din nou fără ca fiecare fișier să fie tratat ca nou.',
+  'edit.unsaved': 'nesalvat încă',
 }
 
 export default ro

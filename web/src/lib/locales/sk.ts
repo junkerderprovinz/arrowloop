@@ -245,6 +245,7 @@ const sk: Translations = {
   'edit.close': 'Zavrieť',
   'edit.removeJob': 'Odobrať túto úlohu',
   'edit.removeStakes': 'Úloha {name} zmizne z konfigurácie. To, čo už skopírovala, zostane na mieste, a jej stavový súbor zostane na disku, takže tú istú dvojicu možno nastaviť znova bez toho, aby sa každý súbor bral ako nový.',
+  'edit.unsaved': 'zatiaľ neuložené',
 }
 
 export default sk

@@ -245,6 +245,7 @@ const ko: Translations = {
   'edit.close': '닫기',
   'edit.removeJob': '이 작업 제거',
   'edit.removeStakes': '작업 {name}이 설정에서 빠집니다. 이미 복사한 것은 그대로 남고 상태 파일도 디스크에 남으므로, 같은 쌍을 다시 만들어도 모든 파일을 새것으로 취급하지 않습니다.',
+  'edit.unsaved': '저장 안 됨',
 }
 
 export default ko

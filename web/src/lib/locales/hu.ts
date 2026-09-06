@@ -245,6 +245,7 @@ const hu: Translations = {
   'edit.close': 'Bezárás',
   'edit.removeJob': 'Feladat eltávolítása',
   'edit.removeStakes': 'A(z) {name} feladat kikerül a beállításokból. Amit már átmásolt, a helyén marad, és az állapotfájlja a lemezen marad, így ugyanaz a pár újra felvehető anélkül, hogy minden fájl újnak számítana.',
+  'edit.unsaved': 'még nincs mentve',
 }
 
 export default hu

@@ -78,22 +78,30 @@ export function useJobConfig(onSaved: () => void) {
   /**
    * Adds a job and hands back where it landed, so the caller can open it.
    *
+   * The index is worked out from the CURRENT jobs, not from inside the updater.
+   * React runs an updater when it gets round to it, so a value assigned in
+   * there and returned from here is the value from before the click: the first
+   * version of this opened the job above the new one, every time. There is one
+   * writer to this state, so the length now is where the new job lands.
+   *
+   * The name carries a number as soon as one is taken, because two jobs called
+   * the same thing are one job as far as every list, log and record is
+   * concerned, and the second plus press is exactly when that happens.
+   *
    * It starts disabled on purpose: a job with no sides yet is not one anybody
    * wants a scheduler to reach, and switching it on is the deliberate act that
    * says it is ready.
    */
   const add = useCallback((): number => {
     setSaved(false)
-    let at = 0
-    setJobs((prev) => {
-      const name = t('edit.newJob')
-      const next: RawJob = { name, left: '', right: '', state: `state/${name}.db`, disabled: true }
-      const all = [...(prev ?? []), next]
-      at = all.length - 1
-      return all
-    })
-    return at
-  }, [t])
+    const current = jobs ?? []
+    const base = t('edit.newJob')
+    let name = base
+    for (let n = 2; current.some((j) => j.name === name); n++) name = `${base}-${n}`
+    const next: RawJob = { name, left: '', right: '', state: `state/${name}.db`, disabled: true }
+    setJobs([...current, next])
+    return current.length
+  }, [jobs, t])
 
   const remove = useCallback((at: number) => {
     setSaved(false)

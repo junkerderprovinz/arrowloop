@@ -245,6 +245,7 @@ const ar: Translations = {
   'edit.close': 'إغلاق',
   'edit.removeJob': 'إزالة هذه المهمة',
   'edit.removeStakes': 'تخرج المهمة {name} من الإعداد. ما نسخته يبقى في مكانه، وملف حالتها يبقى على القرص، فيمكن إعداد الزوج نفسه من جديد دون معاملة كل ملف على أنه جديد.',
+  'edit.unsaved': 'لم يُحفظ بعد',
 }
 
 export default ar

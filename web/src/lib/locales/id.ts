@@ -245,6 +245,7 @@ const id: Translations = {
   'edit.close': 'Tutup',
   'edit.removeJob': 'Hapus tugas ini',
   'edit.removeStakes': 'Tugas {name} keluar dari konfigurasi. Apa yang sudah disalinnya tetap di tempatnya, dan berkas keadaannya tetap di cakram, jadi pasangan yang sama bisa disiapkan lagi tanpa memperlakukan setiap berkas sebagai baru.',
+  'edit.unsaved': 'belum disimpan',
 }
 
 export default id

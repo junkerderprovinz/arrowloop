@@ -245,6 +245,7 @@ const he: Translations = {
   'edit.close': 'סגור',
   'edit.removeJob': 'הסר משימה זו',
   'edit.removeStakes': 'המשימה {name} יוצאת מהתצורה. מה שכבר הועתק נשאר במקומו, וקובץ המצב שלה נשאר על הדיסק, כך שאפשר להקים את אותו הצמד מחדש בלי להתייחס לכל קובץ כחדש.',
+  'edit.unsaved': 'עדיין לא נשמר',
 }
 
 export default he

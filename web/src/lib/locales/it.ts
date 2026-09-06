@@ -245,6 +245,7 @@ const it: Translations = {
   'edit.close': 'Chiudi',
   'edit.removeJob': 'Rimuovi questo lavoro',
   'edit.removeStakes': 'Il lavoro {name} viene tolto dalla configurazione. Quello che ha già copiato resta dov\'è, e il suo file di stato resta sul disco, quindi la stessa coppia si può rimettere in piedi senza trattare ogni file come nuovo.',
+  'edit.unsaved': 'non ancora salvato',
 }
 
 export default it

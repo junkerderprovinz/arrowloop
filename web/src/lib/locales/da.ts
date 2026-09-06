@@ -245,6 +245,7 @@ const da: Translations = {
   'edit.close': 'Luk',
   'edit.removeJob': 'Fjern dette job',
   'edit.removeStakes': 'Jobbet {name} tages ud af konfigurationen. Det, der allerede er kopieret, bliver liggende, og dets tilstandsfil bliver på disken, så det samme par kan sættes op igen uden at behandle hver fil som ny.',
+  'edit.unsaved': 'ikke gemt endnu',
 }
 
 export default da

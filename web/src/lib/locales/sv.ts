@@ -245,6 +245,7 @@ const sv: Translations = {
   'edit.close': 'Stäng',
   'edit.removeJob': 'Ta bort det här jobbet',
   'edit.removeStakes': 'Jobbet {name} tas ur konfigurationen. Det som redan kopierats ligger kvar, och dess tillståndsfil blir kvar på disken, så samma par kan sättas upp igen utan att varje fil behandlas som ny.',
+  'edit.unsaved': 'inte sparat än',
 }
 
 export default sv

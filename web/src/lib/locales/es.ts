@@ -245,6 +245,7 @@ const es: Translations = {
   'edit.close': 'Cerrar',
   'edit.removeJob': 'Quitar este trabajo',
   'edit.removeStakes': 'El trabajo {name} sale de la configuración. Lo que ya copió se queda donde está, y su archivo de estado permanece en el disco, así que el mismo par se puede montar de nuevo sin tratar cada archivo como nuevo.',
+  'edit.unsaved': 'sin guardar',
 }
 
 export default es

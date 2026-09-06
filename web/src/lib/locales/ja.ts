@@ -245,6 +245,7 @@ const ja: Translations = {
   'edit.close': '閉じる',
   'edit.removeJob': 'このジョブを削除',
   'edit.removeStakes': 'ジョブ {name} を設定から外します。すでに複製したものはそのまま残り、状態ファイルもディスクに残るので、同じ組み合わせをもう一度用意しても、すべてのファイルが新規として扱われることはありません。',
+  'edit.unsaved': '未保存',
 }
 
 export default ja

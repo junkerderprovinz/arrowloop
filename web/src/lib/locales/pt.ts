@@ -245,6 +245,7 @@ const pt: Translations = {
   'edit.close': 'Fechar',
   'edit.removeJob': 'Remover esta tarefa',
   'edit.removeStakes': 'A tarefa {name} sai da configuração. O que já copiou fica onde está, e o seu ficheiro de estado fica no disco, por isso o mesmo par pode ser montado de novo sem tratar cada ficheiro como novo.',
+  'edit.unsaved': 'ainda não guardado',
 }
 
 export default pt

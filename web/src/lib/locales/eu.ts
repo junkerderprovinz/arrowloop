@@ -245,6 +245,7 @@ const eu: Translations = {
   'edit.close': 'Itxi',
   'edit.removeJob': 'Lan hau kendu',
   'edit.removeStakes': '{name} lana konfiguraziotik ateratzen da. Dagoeneko kopiatu duena bere lekuan geratzen da, eta bere egoera fitxategia diskoan geratzen da, beraz bikote bera berriz presta daiteke fitxategi bakoitza berritzat hartu gabe.',
+  'edit.unsaved': 'oraindik gorde gabe',
 }
 
 export default eu

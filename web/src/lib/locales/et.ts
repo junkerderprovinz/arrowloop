@@ -245,6 +245,7 @@ const et: Translations = {
   'edit.close': 'Sulge',
   'edit.removeJob': 'Eemalda see töö',
   'edit.removeStakes': 'Töö {name} võetakse seadistusest välja. See, mis on juba kopeeritud, jääb paigale, ja tema olekufail jääb kettale, nii et sama paari saab uuesti üles seada ilma iga faili uueks pidamata.',
+  'edit.unsaved': 'veel salvestamata',
 }
 
 export default et

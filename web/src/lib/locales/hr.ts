@@ -245,6 +245,7 @@ const hr: Translations = {
   'edit.close': 'Zatvori',
   'edit.removeJob': 'Ukloni ovaj zadatak',
   'edit.removeStakes': 'Zadatak {name} izlazi iz konfiguracije. Ono što je već kopirao ostaje gdje jest, a njegova datoteka stanja ostaje na disku, pa se isti par može ponovno postaviti bez da se svaka datoteka smatra novom.',
+  'edit.unsaved': 'još nije spremljeno',
 }
 
 export default hr

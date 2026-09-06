@@ -245,6 +245,7 @@ const vi: Translations = {
   'edit.close': 'Đóng',
   'edit.removeJob': 'Bỏ công việc này',
   'edit.removeStakes': 'Công việc {name} được lấy khỏi cấu hình. Những gì nó đã sao chép vẫn nằm nguyên, và tệp trạng thái của nó vẫn ở trên đĩa, nên cùng cặp đó có thể dựng lại mà không coi mọi tệp là mới.',
+  'edit.unsaved': 'chưa lưu',
 }
 
 export default vi

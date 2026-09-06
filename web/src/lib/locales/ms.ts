@@ -245,6 +245,7 @@ const ms: Translations = {
   'edit.close': 'Tutup',
   'edit.removeJob': 'Buang tugasan ini',
   'edit.removeStakes': 'Tugasan {name} keluar daripada konfigurasi. Apa yang sudah disalinnya kekal di tempatnya, dan fail keadaannya kekal pada cakera, jadi pasangan yang sama boleh disediakan semula tanpa menganggap setiap fail sebagai baharu.',
+  'edit.unsaved': 'belum disimpan',
 }
 
 export default ms

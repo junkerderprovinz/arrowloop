@@ -44,14 +44,21 @@ export function Jobs({
   const job = editing !== null && raw ? raw[editing] : undefined
 
   // The live list comes from the engine and the editable one from the
-  // configuration file, so a row is matched to its record by name. A job the
-  // engine has not seen yet, because it was added a moment ago and not saved,
-  // has no live row and is reached through the form that is already open.
+  // configuration file, so a row is matched to its record by name.
   function indexOf(name: string): number | null {
     if (!raw) return null
     const at = raw.findIndex((j) => j.name === name)
     return at === -1 ? null : at
   }
+
+  // A job added a moment ago is in the configuration and not yet in the engine,
+  // because the engine only learns about it on save. It still gets a row: a
+  // plus button whose result appears nowhere reads as a button that did
+  // nothing, and the fix for that is not a message but the row itself. The row
+  // says it is unsaved rather than pretending to be a real one.
+  const pending = (raw ?? [])
+    .map((j, at) => ({ job: j, at }))
+    .filter(({ job }) => !jobs.some((live) => live.name === job.name))
 
   return (
     <Stack>
@@ -160,6 +167,40 @@ export function Jobs({
                 </li>
               )
             })}
+
+            {pending.map(({ job: p, at }) => (
+              <li key={`pending-${at}`}>
+                {(jobs.length > 0 || at > 0) && <Rule />}
+                <div className="group flex items-center gap-3 py-3">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2">
+                      <span className="truncate text-[14px] font-medium">
+                        {p.name || t('edit.unnamed')}
+                      </span>
+                      <Badge tone="neutral">{t('edit.unsaved')}</Badge>
+                    </div>
+                    <p className="mt-0.5 flex items-center gap-1.5 text-[11px] text-carbon-textMuted">
+                      <span className="max-w-[45%] shrink truncate">{p.left}</span>
+                      <DirectionMark direction={p.direction ?? 'both'} />
+                      <span className="max-w-[45%] shrink truncate">{p.right}</span>
+                    </p>
+                  </div>
+                  {/* No preview button: there is nothing for the engine to plan
+                      against until this has been saved. */}
+                  <div className="flex shrink-0 items-center gap-1">
+                    <IconButton
+                      title={t('edit.editJob')}
+                      onClick={() => setEditing(at === editing ? null : at)}
+                    >
+                      <IconEdit />
+                    </IconButton>
+                    <IconButton tone="fail" title={t('edit.remove')} onClick={() => setRemoving(at)}>
+                      <IconDelete />
+                    </IconButton>
+                  </div>
+                </div>
+              </li>
+            ))}
           </ul>
         )}
       </Card>

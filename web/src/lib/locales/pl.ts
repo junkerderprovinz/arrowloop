@@ -245,6 +245,7 @@ const pl: Translations = {
   'edit.close': 'Zamknij',
   'edit.removeJob': 'Usuń to zadanie',
   'edit.removeStakes': 'Zadanie {name} znika z konfiguracji. To, co już skopiowało, zostaje na miejscu, a jego plik stanu zostaje na dysku, więc tę samą parę można ustawić ponownie bez traktowania każdego pliku jako nowego.',
+  'edit.unsaved': 'jeszcze nie zapisane',
 }
 
 export default pl

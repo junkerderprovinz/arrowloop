@@ -245,6 +245,7 @@ const is: Translations = {
   'edit.close': 'Loka',
   'edit.removeJob': 'Fjarlægja þetta verk',
   'edit.removeStakes': 'Verkið {name} er tekið út úr uppsetningunni. Það sem það hefur þegar afritað liggur áfram, og stöðuskráin verður eftir á disknum, svo hægt er að setja sama parið upp aftur án þess að fara með hverja skrá sem nýja.',
+  'edit.unsaved': 'ekki vistað enn',
 }
 
 export default is

@@ -245,6 +245,7 @@ const sl: Translations = {
   'edit.close': 'Zapri',
   'edit.removeJob': 'Odstrani to opravilo',
   'edit.removeStakes': 'Opravilo {name} gre iz nastavitev. Kar je že prekopiralo, ostane na mestu, in njegova datoteka stanja ostane na disku, tako da je isti par mogoče znova nastaviti, ne da bi vsako datoteko šteli za novo.',
+  'edit.unsaved': 'še ni shranjeno',
 }
 
 export default sl
