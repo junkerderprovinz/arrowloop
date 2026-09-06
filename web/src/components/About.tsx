@@ -21,7 +21,10 @@ import { useT } from '../lib/i18n'
  * are the content.
  */
 const REPO = 'https://github.com/junkerderprovinz/arrowloop'
-const MAIL = 'jdp@braethoria.com'
+/** The workshop's own mailbox, shared by every tool in it: the subject carries
+ *  the product name, so one inbox can tell them apart. Not a private address,
+ *  which is the point of having it. */
+const MAIL = 'hello@halleluja.design'
 /** The handle from .github/FUNDING.yml, so one place in the product knows it. */
 const COFFEE = 'https://buymeacoffee.com/junkerderprovinz'
 
