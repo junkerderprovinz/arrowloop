@@ -40,7 +40,8 @@ anything, with the scheduler, the interface and the packaging around it.
 - A notification area icon that turns while a sync runs, settles green on
   success and red on failure, and opens a small activity list on a click.
 - Starting with the system, as a per-user entry needing no administrative
-  rights, with the switch reading its state back from the operating system.
+  rights, with the switch reading its state back from the operating system and
+  the entry re-pointing itself when the program moves.
 - `runAtStart` per job, for the machine that was off overnight and would
   otherwise wait until tomorrow.
 - A version in the Windows file properties, in `arrowloop version` and on the
