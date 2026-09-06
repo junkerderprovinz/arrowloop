@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 
+import { DropdownListbox } from '../lib/glimstone/DropdownListbox'
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
-import { enableSelectScroll } from '../lib/selectScroll'
 import { useT } from '../lib/i18n'
+import { Flag } from './Flag'
 import { IconHidden, IconVisible } from './glyphs'
 
 /**
@@ -80,6 +81,25 @@ export function Lines({
   )
 }
 
+/**
+ * A picker: a button that opens GlimStone's own listbox.
+ *
+ * It was a native `<select>` until 2026-09-07, which the design language calls
+ * the default rather than the rule, and names the ceiling it runs into: a native
+ * select's closed height and its open list's row padding are both drawn by the
+ * operating system, so neither can be styled, and its open list is not page DOM
+ * at all. Reported as exactly that ("das drop down war auch nicht im GSS") and
+ * it was right: everything else on the settings page came from the language, and
+ * this one control came from the platform.
+ *
+ * Two things follow from the change rather than one. The panel is now the same
+ * portalled, edge-aware listbox every other picker in the house uses, and its
+ * rows are ordinary elements, so an option can hold a real flag rather than the
+ * two-letter tag Windows draws for the emoji a native option was limited to.
+ *
+ * All four pickers in this app go through here, so none of them is left behind
+ * as a second, differently-drawn version of the same control.
+ */
 export function Choice<T extends string>({
   value,
   onChange,
@@ -88,39 +108,36 @@ export function Choice<T extends string>({
 }: {
   value: T
   onChange: (next: T) => void
-  options: { value: T; label: string }[]
+  /** `flag` is an ISO 3166-1 alpha-2 code, and only the language list has one. */
+  options: { value: T; label: string; flag?: string }[]
   label?: string
 }) {
-  const box = useRef<HTMLSelectElement>(null)
-  useEffect(() => {
-    if (box.current) enableSelectScroll(box.current)
-  }, [])
+  const trigger = useRef<HTMLButtonElement>(null)
+  const [open, setOpen] = useState(false)
+  const current = options.find((o) => o.value === value)
 
   return (
     <div className="relative">
-      <select
-        ref={box}
-        value={value}
+      <button
+        ref={trigger}
+        type="button"
         aria-label={label}
-        onChange={(e) => onChange(e.target.value as T)}
-        className="w-full appearance-none bg-carbon-surface2 py-2 pl-3 pr-8 text-[12px] text-carbon-text outline-none transition focus:brightness-125"
-        style={{ borderRadius: 'var(--radius-control)', colorScheme: 'inherit' }}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        onClick={() => setOpen((v) => !v)}
+        className="flex w-full items-center gap-2 bg-carbon-surface2 py-2 pl-3 pr-8 text-start text-[12px] text-carbon-text outline-none transition hover:bg-carbon-hover focus-visible:brightness-125"
+        style={{ borderRadius: 'var(--radius-control)' }}
       >
-        {options.map((o) => (
-          // The option list is drawn by the platform, and several of them read
-          // these two properties rather than the ones on the select. Setting
-          // them here is what stops the open list arriving white.
-          <option
-            key={o.value}
-            value={o.value}
-            style={{ background: 'var(--carbon-surface2)', color: 'var(--carbon-text)' }}
-          >
-            {o.label}
-          </option>
-        ))}
-      </select>
-      {/* The arrow the appearance reset removed. Drawn rather than a glyph, so
-          it follows the text colour in every theme. */}
+        {current?.flag && <Flag code={current.flag} />}
+        {/* The row must not grow with its content: forty-two locale names go
+            through here, and the longest of them would otherwise decide how wide
+            the field is. */}
+        <span className="min-w-0 flex-1 truncate">{current?.label ?? ''}</span>
+      </button>
+
+      {/* Drawn rather than a glyph, so it follows the text colour in every
+          theme. It sits on the button rather than inside it so the button's own
+          flex row never has to reserve space for it. */}
       <svg
         aria-hidden
         width="10"
@@ -133,6 +150,29 @@ export function Choice<T extends string>({
       >
         <path d="M2 4l3 3 3-3" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
+
+      <DropdownListbox open={open} onClose={() => setOpen(false)} triggerRef={trigger} label={label ?? ''}>
+        {options.map((o) => (
+          <button
+            key={o.value}
+            type="button"
+            role="option"
+            aria-selected={o.value === value}
+            onClick={() => {
+              onChange(o.value)
+              setOpen(false)
+            }}
+            className={`flex w-full items-center gap-2 px-3 py-2 text-start text-[12px] transition-colors ${
+              o.value === value
+                ? 'bg-carbon-surface3 text-carbon-text'
+                : 'text-carbon-textSub hover:bg-carbon-hover hover:text-carbon-text'
+            }`}
+          >
+            {o.flag && <Flag code={o.flag} />}
+            <span className="min-w-0 truncate">{o.label}</span>
+          </button>
+        ))}
+      </DropdownListbox>
     </div>
   )
 }

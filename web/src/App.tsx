@@ -16,7 +16,7 @@ import { Targets } from './pages/Targets'
 import { api, type Job, type Run, type RunEvent, type WindowSettings } from './lib/api'
 import { ACCENTS, applyAccent, applyRainbow, applyShape, cacheAppearance, RAINBOW, rainbowState, type RainbowState, type Shape } from './lib/appearance'
 import { CONTROL_AXES, getLabelMode, LABEL_MODES, setLabelMode, type ControlAxis, type LabelMode } from './lib/controls'
-import { languageFlag, useT } from './lib/i18n'
+import { useT } from './lib/i18n'
 import { getMotion, MOTION_INTENSITIES, setMotion, type MotionIntensity } from './lib/motion'
 import { wireTooltips } from './lib/tooltip'
 
@@ -346,7 +346,12 @@ function General({ lang, onLang, languages, window: windowSettings, onWindow }: 
             label={t('look.language')}
             options={languages.map((l) => ({
               value: l.code,
-              label: `${languageFlag(l.code)} ${l.label}`,
+              label: l.label,
+              // The flag is its own element now rather than two codepoints
+              // glued to the front of the name. It has to be: an option in a
+              // native list could hold nothing but text, and Windows draws that
+              // text as a two-letter tag instead of a flag.
+              flag: l.flag,
             }))}
           />
         </Field>
@@ -423,7 +428,7 @@ interface LookProps {
   onWindow: (next: WindowSettings) => void
   lang: string
   onLang: (next: string) => void
-  languages: { code: string; label: string }[]
+  languages: { code: string; label: string; flag: string }[]
 }
 
 /** The looks a person owns. */

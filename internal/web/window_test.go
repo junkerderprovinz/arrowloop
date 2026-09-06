@@ -3,9 +3,11 @@ package web_test
 import (
 	"net/http"
 	"path/filepath"
+	"strconv"
 	"testing"
 	"testing/fstest"
 
+	"github.com/junkerderprovinz/arrowloop/internal/autostart"
 	"github.com/junkerderprovinz/arrowloop/internal/deskset"
 	"github.com/junkerderprovinz/arrowloop/internal/web"
 )
@@ -58,6 +60,74 @@ func TestADesktopBuildAnswersAndRemembers(t *testing.T) {
 	getJSON(t, srv, "/api/window", &got)
 	if got != deskset.Default() {
 		t.Errorf("a fresh desktop build did not answer with the default: %+v", got)
+	}
+
+	// The autostart pair, which this test used to decode straight past.
+	//
+	// It read the answer into deskset.Settings, and those two fields are not on
+	// deskset.Settings: they are added by the handler's own view, because one of
+	// them lives in the operating system rather than in the file. So the switch
+	// could have been renamed, dropped from the JSON, or served as a constant
+	// false, and every test here would still have passed while the card quietly
+	// stopped being drawn. Decoding into the shape the interface actually reads
+	// is the whole point.
+	// Both keys have to BE there, checked before their values are looked at.
+	//
+	// Comparing values alone does not do it: a machine whose autostart is off
+	// answers false, a field that has been renamed or dropped decodes to false as
+	// well, and the two are indistinguishable. The rename really did slip past an
+	// earlier version of this test for exactly that reason. So the raw object is
+	// read first and asked which keys it carries.
+	var raw map[string]any
+	getJSON(t, srv, "/api/window", &raw)
+	for _, key := range []string{"startWithSystem", "canStartWithSystem"} {
+		if _, ok := raw[key]; !ok {
+			t.Errorf("the answer carries no %q, so the interface can never draw the switch", key)
+		}
+	}
+
+	var view struct {
+		StartWithSystem    bool `json:"startWithSystem"`
+		CanStartWithSystem bool `json:"canStartWithSystem"`
+	}
+	getJSON(t, srv, "/api/window", &view)
+	if view.CanStartWithSystem != autostart.Supported() {
+		t.Errorf("the wire says autostart is %v here, the system says %v",
+			view.CanStartWithSystem, autostart.Supported())
+	}
+	on, err := autostart.Enabled()
+	if err != nil {
+		t.Fatalf("read the autostart entry: %v", err)
+	}
+	if view.StartWithSystem != on {
+		t.Errorf("the wire says autostart is %v, the system itself says %v", view.StartWithSystem, on)
+	}
+
+	// Saving without touching the switch must leave it exactly where it was, and
+	// must still answer with it. Nothing here ever flips it on purpose: Set
+	// registers whatever binary is running, so a test that turned it on would
+	// point the machine's real ArrowLoop entry at a temporary test executable and
+	// would overwrite the setting of whoever ran the tests. Worse, it could not
+	// put it back: Set registers the running binary, so restoring would re-point
+	// a real entry at the test's temporary path.
+	//
+	// What that leaves uncovered, said plainly rather than left to be assumed:
+	// the `was != next` compare in writeWindow is NOT reached by this test.
+	// Inverting it still passes here, because the write it then performs asks the
+	// system for the state it is already in, and removing an entry that does not
+	// exist succeeds silently. The compare saves a needless registry write; it is
+	// not what keeps the setting correct. What this test does cover is that the
+	// two fields reach the wire under the names the interface reads, that they
+	// report the system rather than a stored copy, and that saving the window
+	// settings never moves the switch as a side effect.
+	putJSON(t, srv, "/api/window", `{"tray":true,"closeToTray":true,"minimiseToTray":false,`+
+		`"startWithSystem":`+strconv.FormatBool(on)+`}`)
+	getJSON(t, srv, "/api/window", &view)
+	if view.StartWithSystem != on {
+		t.Errorf("saving the other settings moved the autostart switch from %v to %v", on, view.StartWithSystem)
+	}
+	if after, err := autostart.Enabled(); err != nil || after != on {
+		t.Errorf("the system's own entry changed to %v (err %v) with nobody asking", after, err)
 	}
 
 	body := `{"tray":true,"closeToTray":true,"minimiseToTray":false}`

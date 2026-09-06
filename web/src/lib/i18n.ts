@@ -10,7 +10,6 @@
 import { createContext, createElement, useCallback, useContext, useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
 
-import { flagEmoji } from './flagEmoji'
 
 // import.meta.glob rather than forty hand-written arrow functions: Vite
 // resolves the pattern at build time, so adding a language is adding a file,
@@ -735,14 +734,6 @@ export const LANGUAGES: Language[] = [
 ]
 
 export const SUPPORTED = LANGUAGES.map((l) => l.code)
-
-/** The flag for a language, or nothing for the three regional ones, whose
- *  codes are not countries and have no emoji. */
-export function languageFlag(code: string): string {
-  const lang = LANGUAGES.find((l) => l.code === code)
-  if (!lang || lang.flag.includes('-')) return ''
-  return flagEmoji(lang.flag)
-}
 
 export const isRtl = (code: string): boolean => LANGUAGES.find((l) => l.code === code)?.rtl ?? false
 

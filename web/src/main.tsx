@@ -18,6 +18,10 @@ import { setGlyphResolver } from './lib/glimstone/glyphs'
 import { applyStoredLanguage, I18nProvider } from './lib/i18n'
 import { applyStoredMotion } from './lib/motion'
 import './index.css'
+// The flag sprites the language list draws from. MIT, and bundled rather than
+// fetched: this interface runs on machines with no route to the internet, which
+// is half the point of syncing files on your own hardware.
+import 'flag-icons/css/flag-icons.min.css'
 
 // The look and the language are applied before React renders anything, so the
 // page never paints once in the default colours and then again in the chosen
