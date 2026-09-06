@@ -82,11 +82,21 @@ jobs:
       # .dmg that is Apple's own convention. hdiutil is on every runner. The bare
       # .app goes afterwards so the artifact holds the one file somebody should
       # actually download.
+      #
+      # The caches go first, and that is not tidiness. A universal build compiles
+      # this tree twice, rclone's dependency graph and all, and the module cache
+      # plus two build caches fill the runner's disk: hdiutil then fails with
+      # "No space left on device" AFTER a four minute build that succeeded. The
+      # app is already linked at this point, so nothing here needs them again.
       - name: Package the macOS app into a dmg
         if: runner.os == 'macOS'
         working-directory: desktop
         run: |
           set -eu
+          df -h /
+          go clean -cache -modcache || true
+          rm -rf ../web/node_modules
+          df -h /
           hdiutil create -volname "ArrowLoop" -srcfolder build/bin/ArrowLoop.app -ov -format UDZO build/bin/ArrowLoop.dmg
           rm -rf build/bin/ArrowLoop.app
 
