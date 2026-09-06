@@ -35,9 +35,12 @@ RUN go mod download
 
 COPY cmd ./cmd
 COPY internal ./internal
-# web/embed.go plus the built interface, so the //go:embed all:dist inside it
-# resolves against something real rather than against the placeholder page.
-COPY web/*.go ./web/
+# web/embed.go, the page it serves when there is no interface, and the built
+# interface itself. All three are named because this stage copies what it needs
+# rather than the whole tree: a file added beside embed.go and not added here
+# fails the build with "pattern ...: no matching files found", and only in the
+# container, because every other build has the whole checkout.
+COPY web/*.go web/placeholder.html ./web/
 COPY --from=web /src/web/dist ./web/dist
 
 ARG TARGETOS
