@@ -108,9 +108,22 @@ export function Lines({
 /**
  * A switch, never a checkbox.
  *
- * The accent marks activity, and a row of settings switches is not activity, so
- * an on switch is filled with the text colour rather than the accent. That
- * keeps the one accent on a page for the thing that is actually happening.
+ * The label comes FIRST and the track sits at the end of the row. Every other
+ * program in this house reads that way, and a switch strip that leads with the
+ * track is the one thing on the page whose reading order is reversed: the eye
+ * lands on a shape that means nothing yet, then travels to the word that
+ * explains it, for every row. Reported on the running interface rather than
+ * spotted in review, which is where an ordering like this is actually visible.
+ *
+ * `justify-between` rather than a gap, so a column of switches has every track
+ * on the same vertical line no matter how long the individual captions are.
+ * A ragged right edge is what makes a settings card read as a list of unrelated
+ * rows instead of one control group.
+ *
+ * The fill is the accent, the same as everywhere else in the house. An earlier
+ * version filled it with the text colour, reasoning that the accent marks
+ * activity and a settings row is not activity; that argument is coherent and it
+ * still left this app's switches looking like nobody else's.
  */
 export function Switch({
   on,
@@ -124,27 +137,29 @@ export function Switch({
   hint?: string
 }) {
   return (
-    <div className="flex items-center gap-2.5">
+    <div className="flex w-full items-center justify-between gap-3">
+      <span className="flex items-center gap-1.5 text-[12px]">
+        {label}
+        {hint && <Info text={hint} />}
+      </span>
       <button
         type="button"
         role="switch"
         aria-checked={on}
         aria-label={label}
         onClick={() => onChange(!on)}
-        className={`inline-flex h-4 w-7 shrink-0 items-center p-0.5 transition-colors ${
-          on ? 'bg-carbon-text' : 'bg-carbon-surface3'
+        className={`inline-flex h-5 w-9 shrink-0 items-center p-[3px] transition-colors ${
+          on ? 'bg-accent' : 'bg-carbon-surface3'
         }`}
         style={{ borderRadius: 'var(--radius-pill)' }}
       >
+        {/* The knob wears the shape engine's own radius rather than a hardcoded
+            circle, so it reshapes with every other surface in the app. */}
         <span
-          className={`h-3 w-3 bg-carbon-background transition-transform ${on ? 'translate-x-3' : ''}`}
+          className={`h-3.5 w-3.5 bg-carbon-background transition-transform ${on ? 'translate-x-4' : ''}`}
           style={{ borderRadius: 'var(--radius-pill)' }}
         />
       </button>
-      <span className="flex items-center gap-1.5 text-[12px]">
-        {label}
-        {hint && <Info text={hint} />}
-      </span>
     </div>
   )
 }

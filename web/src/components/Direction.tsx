@@ -42,3 +42,63 @@ export function DirectionMark({ direction }: { direction: Direction }) {
     </span>
   )
 }
+
+/** The next direction in the cycle, wrapping back to both ways. */
+export function nextDirection(current: Direction): Direction {
+  const at = DIRECTIONS.indexOf(current)
+  return DIRECTIONS[(at + 1) % DIRECTIONS.length]
+}
+
+/**
+ * The direction, editable, sitting BETWEEN the two sides it describes.
+ *
+ * A three-segment picker in a field of its own says the same thing, and says it
+ * in the wrong place: the direction is a fact about the relationship between
+ * the left box and the right box, so anywhere other than between them the
+ * reader has to hold two things in their head and join them up. Put it in the
+ * gap and the row reads as one sentence, left to right.
+ *
+ * Clicking cycles rather than opening a menu. There are exactly three answers
+ * and each is one glyph, so a menu would be two interactions and a floating
+ * layer to choose between three things already on screen. The arrow keys do the
+ * same thing for anybody not using a pointer, and the accessible name says
+ * which of the three is current, because a cycling button whose name never
+ * changes is a button that lies to a screen reader.
+ */
+export function DirectionSwitch({
+  direction,
+  onChange,
+}: {
+  direction: Direction
+  onChange: (next: Direction) => void
+}) {
+  const { t } = useT()
+  const name = t(directionKey[direction])
+
+  return (
+    <button
+      type="button"
+      onClick={() => onChange(nextDirection(direction))}
+      onKeyDown={(e) => {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+          e.preventDefault()
+          onChange(nextDirection(direction))
+        }
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+          e.preventDefault()
+          // Two steps forward in a three-cycle is one step back, so the
+          // backwards key needs no arithmetic of its own to keep in step with
+          // the order the forwards one uses.
+          onChange(nextDirection(nextDirection(direction)))
+        }
+      }}
+      title={name}
+      data-tip={name}
+      aria-label={`${t('direction.label')}: ${name}`}
+      className="inline-flex h-9 w-9 shrink-0 items-center justify-center bg-carbon-surface2 text-carbon-text transition-colors hover:bg-carbon-hover"
+      style={{ borderRadius: 'var(--radius-control)' }}
+    >
+      <DirectionGlyph direction={direction} />
+    </button>
+  )
+}

@@ -1,24 +1,25 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
-import { Badge, Button, Card, Empty, Rule, Stack } from '../components/Shell'
-import { Choice, Field, Lines, Switch, Text } from '../components/Field'
-import { api, type Direction, type RawJob } from '../lib/api'
-import { DIRECTIONS, DirectionGlyph, directionKey } from '../components/Direction'
-import { Selector } from '../components/Selector'
+import { Choice, Field, Info, Lines, Switch, Text } from '../components/Field'
+import { api, type RawJob } from '../lib/api'
+import { DirectionSwitch } from '../components/Direction'
+import { ScheduleField } from '../components/Schedule'
 import { useT } from '../lib/i18n'
 
 /**
- * The job editor.
+ * The configuration a job list edits, and everything that can be done to it.
  *
- * It writes the configuration file and nothing else: the same file a person can
- * still open in an editor, validated by the same function that guards it there.
- * A refused edit leaves the file exactly as it was, because the new content is
- * written beside it and only moved into place once it has passed.
+ * This is a hook rather than a page because the list and the form are now on
+ * the same tab: a job is added, picked and edited without going anywhere, so
+ * the state they share has to live above both of them. It writes the same
+ * configuration file a person can still open in an editor, validated by the
+ * same function that guards it there, and a refused edit leaves the file
+ * exactly as it was because the new content is written beside it and only moved
+ * into place once it has passed.
  */
-export function Editor({ onSaved }: { onSaved: () => void }) {
+export function useJobConfig(onSaved: () => void) {
   const { t } = useT()
   const [jobs, setJobs] = useState<RawJob[] | null>(null)
-  const [chosen, setChosen] = useState(0)
   const [error, setError] = useState<string | null>(null)
   const [saved, setSaved] = useState(false)
   const [busy, setBusy] = useState(false)
@@ -51,12 +52,12 @@ export function Editor({ onSaved }: { onSaved: () => void }) {
     })
   }, [t])
 
-  function patch(next: Partial<RawJob>) {
+  const patch = useCallback((at: number, next: Partial<RawJob>) => {
     setSaved(false)
-    setJobs((prev) => prev && prev.map((j, i) => (i === chosen ? { ...j, ...next } : j)))
-  }
+    setJobs((prev) => prev && prev.map((j, i) => (i === at ? { ...j, ...next } : j)))
+  }, [])
 
-  async function save() {
+  const save = useCallback(async () => {
     if (!jobs) return
     setBusy(true)
     setError(null)
@@ -72,106 +73,65 @@ export function Editor({ onSaved }: { onSaved: () => void }) {
     } finally {
       setBusy(false)
     }
-  }
+  }, [jobs, onSaved])
 
-  function addJob() {
+  /**
+   * Adds a job and hands back where it landed, so the caller can open it.
+   *
+   * It starts disabled on purpose: a job with no sides yet is not one anybody
+   * wants a scheduler to reach, and switching it on is the deliberate act that
+   * says it is ready.
+   */
+  const add = useCallback((): number => {
     setSaved(false)
+    let at = 0
     setJobs((prev) => {
       const name = t('edit.newJob')
       const next: RawJob = { name, left: '', right: '', state: `state/${name}.db`, disabled: true }
       const all = [...(prev ?? []), next]
-      setChosen(all.length - 1)
+      at = all.length - 1
       return all
     })
-  }
+    return at
+  }, [t])
 
-  function removeJob() {
+  const remove = useCallback((at: number) => {
     setSaved(false)
-    setJobs((prev) => {
-      if (!prev) return prev
-      const all = prev.filter((_, i) => i !== chosen)
-      setChosen(Math.max(0, Math.min(chosen, all.length - 1)))
-      return all
-    })
-  }
+    setJobs((prev) => prev && prev.filter((_, i) => i !== at))
+  }, [])
 
-  if (error && !jobs) {
-    return (
-      <Card title={t('edit.title')} hue={0}>
-        <p className="text-[12px] text-statusFail">{error}</p>
-      </Card>
-    )
-  }
-  if (!jobs) {
-    return (
-      <Card title={t('edit.title')} hue={0}>
-        <Empty>{t('edit.reading')}</Empty>
-      </Card>
-    )
-  }
+  return { jobs, known, error, saved, busy, patch, save, add, remove }
+}
 
-  const job = jobs[chosen]
-
+/**
+ * One job's fields.
+ *
+ * The two sides and the arrow between them are one row, because the direction
+ * is a fact about the pair: anywhere else on the form and the reader has to
+ * hold both boxes in their head to make sense of it.
+ */
+export function JobForm({
+  job,
+  known,
+  patch,
+}: {
+  job: RawJob
+  known: { value: string; label: string }[]
+  patch: (next: Partial<RawJob>) => void
+}) {
+  const { t } = useT()
   return (
-    <Stack>
-      <Card
-        title={t('edit.title')}
-        hue={0}
-        actions={
-          <>
-            <Button onClick={addJob}>{t('edit.add')}</Button>
-            <Button primary onClick={save} disabled={busy}>
-              {busy ? t('edit.checking') : t('edit.save')}
-            </Button>
-          </>
-        }
-      >
-        {error && <p className="mb-3 text-[12px] text-statusFail">{error}</p>}
-        {saved && !error && <p className="mb-3 text-[12px] text-statusOk">{t('edit.savedNote')}</p>}
+    <>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <Field label={t('edit.name')} hint={t('edit.nameHint')}>
+          <Text value={job.name ?? ''} onChange={(v) => patch({ name: v })} />
+        </Field>
+        <Field label={t('edit.state')} hint={t('edit.stateHint')}>
+          <Text value={job.state ?? ''} onChange={(v) => patch({ state: v })} mono />
+        </Field>
 
-        {jobs.length === 0 ? (
-          <Empty>{t('edit.noJobs')}</Empty>
-        ) : (
-          <ul className="flex flex-col">
-            {jobs.map((j, i) => (
-              <li key={i}>
-                {i > 0 && <Rule />}
-                <button
-                  type="button"
-                  onClick={() => setChosen(i)}
-                  className={`flex w-full items-center gap-3 px-2 py-2 text-left transition ${
-                    i === chosen ? 'bg-carbon-surface2' : 'hover:bg-carbon-hover'
-                  }`}
-                  style={{ borderRadius: 'var(--radius-control)' }}
-                >
-                  <span className="min-w-0 flex-1 truncate text-[13px] font-medium">
-                    {j.name || t('edit.unnamed')}
-                  </span>
-                  {j.disabled && <Badge tone="neutral">{t('jobs.state.disabled')}</Badge>}
-                  {j.watch && <Badge tone="neutral">{t('edit.watching')}</Badge>}
-                  <span className="shrink-0 text-[11px] text-carbon-textMuted">
-                    {j.schedule || t('jobs.schedule.onRequest')}
-                  </span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </Card>
-
-      {job && (
-        <Card
-          title={job.name || t('edit.unnamed')}
-          hue={1}
-          actions={<Button onClick={removeJob}>{t('edit.remove')}</Button>}
-        >
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <Field label={t('edit.name')} hint={t('edit.nameHint')}>
-              <Text value={job.name ?? ''} onChange={(v) => patch({ name: v })} />
-            </Field>
-            <Field label={t('edit.state')} hint={t('edit.stateHint')}>
-              <Text value={job.state ?? ''} onChange={(v) => patch({ state: v })} mono />
-            </Field>
+        <div className="flex items-start gap-3 sm:col-span-2">
+          <div className="min-w-0 flex-1">
             <Side
               label={t('edit.left')}
               hint={t('edit.sideHint')}
@@ -179,6 +139,21 @@ export function Editor({ onSaved }: { onSaved: () => void }) {
               known={known}
               onChange={(v) => patch({ left: v })}
             />
+          </div>
+          {/* The caption goes above the arrow exactly as it does above the two
+              fields beside it, so the three read as one row of labelled things
+              rather than a control that wandered in. The bubble rides on the
+              caption, which is where every other field in this form puts it. */}
+          <div className="flex shrink-0 flex-col gap-1.5">
+            <span className="flex items-center justify-center gap-1.5 text-[11px] font-medium uppercase tracking-wider text-carbon-textMuted">
+              <Info text={t('direction.hint')} />
+            </span>
+            <DirectionSwitch
+              direction={job.direction ?? 'both'}
+              onChange={(v) => patch({ direction: v })}
+            />
+          </div>
+          <div className="min-w-0 flex-1">
             <Side
               label={t('edit.right')}
               hint={t('edit.sideHint')}
@@ -186,75 +161,64 @@ export function Editor({ onSaved }: { onSaved: () => void }) {
               known={known}
               onChange={(v) => patch({ right: v })}
             />
-            <Field label={t('direction.label')} hint={t('direction.hint')}>
-              {/* Arrows rather than three words: the choice reads at a glance
-                  and takes the same room in every language. */}
-              <Selector<Direction>
-                scale="small"
-                label={t('direction.label')}
-                value={job.direction ?? 'both'}
-                onChange={(v) => patch({ direction: v })}
-                options={DIRECTIONS.map((d) => ({
-                  value: d,
-                  label: t(directionKey[d]),
-                  icon: <DirectionGlyph direction={d} />,
-                }))}
-              />
-            </Field>
-            <Field label={t('edit.schedule')} hint={t('edit.scheduleHint')}>
-              <Text value={job.schedule ?? ''} onChange={(v) => patch({ schedule: v })} mono />
-            </Field>
-            <Field label={t('edit.quietPeriod')} hint={t('edit.quietHint')}>
-              <Text value={job.quietPeriod ?? ''} onChange={(v) => patch({ quietPeriod: v })} mono />
-            </Field>
           </div>
+        </div>
 
-          <div className="mt-5">
-            <Field label={t('edit.exclude')} hint={t('edit.excludeHint')}>
-              <Lines
-                value={(job.exclude ?? []).join('\n')}
-                onChange={(v) =>
-                  patch({
-                    exclude: v
-                      .split('\n')
-                      .map((l) => l.trim())
-                      .filter(Boolean),
-                  })
-                }
-                placeholder={'*.tmp\n**/node_modules/**'}
-              />
-            </Field>
-          </div>
+        <div className="sm:col-span-2">
+          <Field label={t('edit.schedule')} hint={t('edit.scheduleHint')}>
+            <ScheduleField value={job.schedule ?? ''} onChange={(v) => patch({ schedule: v })} />
+          </Field>
+        </div>
 
-          <div className="mt-5 flex flex-col gap-3">
-            <Switch
-              label={t('edit.disabled')}
-              on={!!job.disabled}
-              onChange={(v) => patch({ disabled: v })}
-              hint={t('edit.disabledHint')}
-            />
-            <Switch
-              label={t('edit.watch')}
-              on={!!job.watch}
-              onChange={(v) => patch({ watch: v })}
-              hint={t('edit.watchHint')}
-            />
-            <Switch
-              label={t('edit.emptyDirs')}
-              on={!!job.emptyDirs}
-              onChange={(v) => patch({ emptyDirs: v })}
-              hint={t('edit.emptyDirsHint')}
-            />
-            <Switch
-              label={t('edit.metadata')}
-              on={!!job.metadata}
-              onChange={(v) => patch({ metadata: v })}
-              hint={t('edit.metadataHint')}
-            />
-          </div>
-        </Card>
-      )}
-    </Stack>
+        <Field label={t('edit.quietPeriod')} hint={t('edit.quietHint')}>
+          <Text value={job.quietPeriod ?? ''} onChange={(v) => patch({ quietPeriod: v })} mono />
+        </Field>
+      </div>
+
+      <div className="mt-5">
+        <Field label={t('edit.exclude')} hint={t('edit.excludeHint')}>
+          <Lines
+            value={(job.exclude ?? []).join('\n')}
+            onChange={(v) =>
+              patch({
+                exclude: v
+                  .split('\n')
+                  .map((l) => l.trim())
+                  .filter(Boolean),
+              })
+            }
+            placeholder={'*.tmp\n**/node_modules/**'}
+          />
+        </Field>
+      </div>
+
+      <div className="mt-5 flex flex-col gap-3">
+        <Switch
+          label={t('edit.disabled')}
+          on={!!job.disabled}
+          onChange={(v) => patch({ disabled: v })}
+          hint={t('edit.disabledHint')}
+        />
+        <Switch
+          label={t('edit.watch')}
+          on={!!job.watch}
+          onChange={(v) => patch({ watch: v })}
+          hint={t('edit.watchHint')}
+        />
+        <Switch
+          label={t('edit.emptyDirs')}
+          on={!!job.emptyDirs}
+          onChange={(v) => patch({ emptyDirs: v })}
+          hint={t('edit.emptyDirsHint')}
+        />
+        <Switch
+          label={t('edit.metadata')}
+          on={!!job.metadata}
+          onChange={(v) => patch({ metadata: v })}
+          hint={t('edit.metadataHint')}
+        />
+      </div>
+    </>
   )
 }
 

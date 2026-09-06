@@ -18,12 +18,20 @@ import { groupStage } from '../lib/controls'
 export type Option<T extends string> = { value: T; label: string; icon?: ReactNode }
 
 /**
- * The app-wide floor for a big selector's segments. One constant, picked once,
- * comfortably above the longest label anywhere in an equal-width selector — a
- * strip whose own content needs more still measures larger and is never clamped
- * down to this.
+ * The app-wide floor for a big selector's segments.
+ *
+ * One constant, so that three page-level strips with three different longest
+ * labels still render as one recurring control rather than three unrelated
+ * ones. `Math.max` keeps it a FLOOR and never a cap: a locale whose longest
+ * label genuinely needs more gets exactly that, because clamping a segment
+ * below its own content is how a label ends up truncated.
+ *
+ * The number matches BombVault's `MIN_PINNED_WIDTH`, which is where this
+ * measurement was worked out first. Two apps in the same house whose strips
+ * are pinned to two different floors is the drift a shared constant exists to
+ * prevent, and there is no reason for this one to be its own value.
  */
-const MIN_SEGMENT = 160
+const MIN_SEGMENT = 200
 
 export function Selector<T extends string>({
   options,
@@ -39,27 +47,61 @@ export function Selector<T extends string>({
   label?: string
 }) {
   const track = useRef<HTMLDivElement>(null)
-  const [width, setWidth] = useState<number | null>(null)
 
-  // The width is a real measurement, never a guessed pixel value: it has to
-  // follow the label set, the font and the locale. A flex share cannot do this
-  // job, because a flex item whose basis resolves to zero contributes zero to
-  // a shrink-to-fit parent, which truncates the widest label the moment nothing
-  // stretches the track.
   // The stage comes from the LABELS, not from what is rendered, which is what
   // lets the strip keep its width when the label engine hides the words. A
   // measurement of the drawn content would shrink the moment they went away,
   // and switching a display mode would reflow the page.
   const stage = useMemo(() => groupStage(options.map((o) => o.label)), [options])
 
+  // A primitive, not the options array itself. Every caller builds that array
+  // inline, so a new identity on each render says nothing about whether the
+  // LABELS changed; using it as a dependency re-runs the measurement on every
+  // unrelated render of the page around it. Two strings with the same
+  // characters compare equal even when freshly built, so this stays stable
+  // across renders unless a label really changed, such as on a language switch.
+  //
+  // The separator is a newline rather than nothing, so that two label sets that
+  // concatenate to the same characters are still told apart.
+  const labelKey = options.map((o) => o.label).join('\n')
+
+  // The width is a real measurement, never a guessed pixel value: it has to
+  // follow the label set, the font and the locale. A flex share cannot do this
+  // job, because a flex item whose basis resolves to zero contributes zero to
+  // a shrink-to-fit parent, which truncates the widest label the moment nothing
+  // stretches the track.
+  const [width, setWidth] = useState<number | null>(null)
+
+  // Pass 1: drop any width already applied, whenever the label set changes.
+  //
+  // This half is not tidiness, it is the whole correctness of the measurement.
+  // A segment currently carrying an explicit width has no overflow, so
+  // measuring it reports that applied width straight back rather than the
+  // content's natural size. A single-pass version therefore measured its own
+  // previous answer and added the padding allowance to it again on every pass,
+  // and the strip grew by that allowance on every click, for as long as
+  // somebody kept clicking. Found by jdp on the running interface, not by a
+  // test: nothing here is wrong until the second render, and a test that
+  // renders once sees a perfectly correct strip.
   useLayoutEffect(() => {
-    if (scale !== 'big' || !track.current) return
+    if (scale === 'big') setWidth(null)
+  }, [scale, labelKey])
+
+  // Pass 2: with the segments back at their natural width, measure the widest
+  // and pin them all to it. Skipped once a width is set, because there is
+  // nothing to measure again until pass 1 clears it.
+  //
+  // Both passes are layout effects, so the unpinned render and the pinned one
+  // both commit before the browser paints and nothing flickers between them.
+  useLayoutEffect(() => {
+    if (scale !== 'big' || width !== null || !track.current) return
     let widest = 0
     for (const el of track.current.querySelectorAll<HTMLElement>('[data-segment]')) {
-      widest = Math.max(widest, el.scrollWidth)
+      widest = Math.max(widest, el.getBoundingClientRect().width)
     }
-    setWidth(Math.max(widest + 24, MIN_SEGMENT))
-  }, [scale, options])
+    if (widest === 0) return
+    setWidth(Math.max(widest, MIN_SEGMENT))
+  }, [scale, width, labelKey, options.length])
 
   return (
     <div

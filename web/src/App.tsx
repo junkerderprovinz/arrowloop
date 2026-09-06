@@ -3,12 +3,11 @@ import { useCallback, useEffect, useState } from 'react'
 import { Card, Stack } from './components/Shell'
 import { Choice, Field, Info, Switch } from './components/Field'
 import { Selector } from './components/Selector'
-import { IconEdit, IconHistory, IconJobs, IconLook, IconTargets } from './components/glyphs'
+import { IconHistory, IconJobs, IconSettings, IconTargets } from './components/glyphs'
 import { AccentSwatches, PaletteSwatches } from './components/Swatches'
 import { About } from './components/About'
 import { History, Jobs } from './pages/Jobs'
 import { Preview } from './pages/Preview'
-import { Editor } from './pages/Editor'
 import { Targets } from './pages/Targets'
 import { api, type Job, type Run, type RunEvent, type WindowSettings } from './lib/api'
 import {
@@ -26,7 +25,20 @@ import { languageFlag, useT } from './lib/i18n'
 import { getMotion, MOTION_INTENSITIES, setMotion, type MotionIntensity } from './lib/motion'
 import { wireTooltips } from './lib/tooltip'
 
-type Tab = 'jobs' | 'edit' | 'targets' | 'history' | 'look'
+/**
+ * The four places this app has, in the order every other program in this house
+ * puts them: the thing you came for, the things it points at, what it did, and
+ * settings last.
+ *
+ * There is no separate editing tab any more. A job was created on one tab and
+ * watched on another, which meant the plus button and the list it added to were
+ * never on screen together, and every edit began by finding the same job twice.
+ */
+type Tab = 'jobs' | 'targets' | 'history' | 'settings'
+
+/** Settings is one tab with sections, the same shape BombVault uses. */
+type SettingsSection = 'general' | 'look' | 'about'
+
 type Theme = 'dark' | 'light'
 
 const THEME_KEY = 'arrowloop.theme'
@@ -187,10 +199,9 @@ export function App() {
           }}
           options={[
             { value: 'jobs', label: t('nav.jobs'), icon: <IconJobs /> },
-            { value: 'edit', label: t('nav.edit'), icon: <IconEdit /> },
             { value: 'targets', label: t('nav.targets'), icon: <IconTargets /> },
             { value: 'history', label: t('nav.history'), icon: <IconHistory /> },
-            { value: 'look', label: t('nav.look'), icon: <IconLook /> },
+            { value: 'settings', label: t('nav.settings'), icon: <IconSettings /> },
           ]}
         />
       </header>
@@ -210,15 +221,13 @@ export function App() {
           }}
         />
       ) : tab === 'jobs' ? (
-        <Jobs jobs={jobs} progress={progress} onPreview={setPreviewing} />
-      ) : tab === 'edit' ? (
-        <Editor onSaved={refresh} />
+        <Jobs jobs={jobs} progress={progress} onPreview={setPreviewing} onSaved={refresh} />
       ) : tab === 'targets' ? (
         <Targets />
       ) : tab === 'history' ? (
         <History runs={runs} />
       ) : (
-        <Look
+        <Settings
           theme={theme}
           onTheme={(next) => {
             setTheme(next)
@@ -256,33 +265,109 @@ export function App() {
 }
 
 /**
- * The looks a person owns.
+ * Settings: one tab, three sections behind a strip of its own.
  *
- * Every card here carries its own palette position, so turning the rainbow on
+ * The sections exist because a single column holding language, theme, corner
+ * shape, accent, palette, motion, four label axes, the window buttons and the
+ * versions is a page somebody scrolls rather than reads. Splitting it the way
+ * every other program here splits it, general first and appearance second, puts
+ * each answer where somebody would go looking for it.
+ *
+ * Every card carries its own palette position, so turning the rainbow on
  * colours this page as it colours every other one. A settings page that edits a
  * mode without showing it is asking somebody to change a value and then go
  * elsewhere to find out what they did.
  */
-function Look({
-  theme,
-  onTheme,
-  shape,
-  onShape,
-  accent,
-  onAccent,
-  rainbow,
-  onRainbow,
-  motion,
-  onMotion,
-  labels,
-  onLabels,
-  version,
-  window: windowSettings,
-  onWindow,
-  lang,
-  onLang,
-  languages,
-}: {
+function Settings(props: LookProps) {
+  const { t } = useT()
+  const [section, setSection] = useState<SettingsSection>('general')
+
+  return (
+    <Stack>
+      <Selector<SettingsSection>
+        scale="small"
+        label={t('settings.section')}
+        value={section}
+        onChange={setSection}
+        // No glyphs on this strip. Two of the three sections have an obvious
+        // mark and the third does not, and a strip where one segment wears a
+        // borrowed icon reads worse than one that wears none.
+        options={[
+          { value: 'general', label: t('settings.general') },
+          { value: 'look', label: t('settings.look') },
+          { value: 'about', label: t('settings.about') },
+        ]}
+      />
+      {section === 'general' ? (
+        <General {...props} />
+      ) : section === 'look' ? (
+        <Look {...props} />
+      ) : (
+        <About version={props.version} />
+      )}
+    </Stack>
+  )
+}
+
+/**
+ * The settings that are not about how the app looks: what language it speaks,
+ * and what its own window does when a button on it is pressed.
+ */
+function General({ lang, onLang, languages, window: windowSettings, onWindow }: LookProps) {
+  const { t } = useT()
+  return (
+    <Stack>
+      {/* The card is named for the section, the field for the setting. Naming
+          both after the same thing prints the word twice, forty pixels apart,
+          which is the shape BombVault had to unpick three separate times. */}
+      <Card title={t('settings.general')} hue={0}>
+        <Field label={t('look.language')}>
+          <Choice
+            value={lang}
+            onChange={onLang}
+            label={t('look.language')}
+            options={languages.map((l) => ({
+              value: l.code,
+              label: `${languageFlag(l.code)} ${l.label}`,
+            }))}
+          />
+        </Field>
+      </Card>
+
+      {/* Left out entirely on a build with no window of its own, rather than
+          shown inert. A switch that cannot do anything is worse than a missing
+          one: it invites somebody to press it and then says nothing. */}
+      {windowSettings && (
+        <Card title={t('window.title')} hue={1}>
+          <div className="flex flex-col gap-3">
+            <Switch
+              label={t('window.tray')}
+              hint={t('window.trayHint')}
+              on={windowSettings.tray}
+              onChange={(tray) => onWindow({ ...windowSettings, tray })}
+            />
+            {/* Both of these hang off the tray icon: without it, a window that
+                hides has nothing left to bring it back. */}
+            <Switch
+              label={t('window.close')}
+              hint={t('window.closeHint')}
+              on={windowSettings.closeToTray}
+              onChange={(closeToTray) => onWindow({ ...windowSettings, closeToTray })}
+            />
+            <Switch
+              label={t('window.minimise')}
+              hint={t('window.minimiseHint')}
+              on={windowSettings.minimiseToTray}
+              onChange={(minimiseToTray) => onWindow({ ...windowSettings, minimiseToTray })}
+            />
+          </div>
+        </Card>
+      )}
+    </Stack>
+  )
+}
+
+interface LookProps {
   theme: Theme
   onTheme: (next: Theme) => void
   shape: Shape
@@ -301,29 +386,30 @@ function Look({
   lang: string
   onLang: (next: string) => void
   languages: { code: string; label: string }[]
-}) {
+}
+
+/** The looks a person owns. */
+function Look({
+  theme,
+  onTheme,
+  shape,
+  onShape,
+  accent,
+  onAccent,
+  rainbow,
+  onRainbow,
+  motion,
+  onMotion,
+  labels,
+  onLabels,
+}: LookProps) {
   const { t } = useT()
   return (
     <Stack>
-      <Card title={t('look.language')} hue={0}>
-        <Field label={t('look.language')}>
-          <Choice
-            value={lang}
-            onChange={onLang}
-            label={t('look.language')}
-            options={languages.map((l) => ({
-              value: l.code,
-              // The flag is part of the label rather than a separate column,
-              // because a native list can only ever hold text. Windows renders
-              // the same codepoints as a two-letter tag instead of a flag,
-              // which is its own font policy and still readable.
-              label: `${languageFlag(l.code)} ${l.label}`.trim(),
-            }))}
-          />
-        </Field>
-      </Card>
-
-      <Card title={t('look.theme')} hue={1}>
+      {/* The language lives under General now, not here. It decides what the
+          app SAYS, not how it looks, and it sat at the top of this page only
+          because this page used to be the only settings page there was. */}
+      <Card title={t('look.theme')} hue={0}>
         <Selector<Theme>
           label={t('look.theme')}
           value={theme}
@@ -402,35 +488,10 @@ function Look({
         />
       </Card>
 
-      {windowSettings && (
-        <Card title={t('window.title')} hue={6}>
-          <div className="flex flex-col gap-3">
-            <Switch
-              on={windowSettings.tray}
-              onChange={(tray) => onWindow({ ...windowSettings, tray })}
-              label={t('window.tray')}
-              hint={t('window.trayHint')}
-            />
-            {/* The two below have nowhere to send the window without the icon,
-                so they go with it rather than staying on as a promise the
-                program cannot keep. */}
-            <Switch
-              on={windowSettings.closeToTray}
-              onChange={(closeToTray) => onWindow({ ...windowSettings, closeToTray })}
-              label={t('window.close')}
-              hint={t('window.closeHint')}
-            />
-            <Switch
-              on={windowSettings.minimiseToTray}
-              onChange={(minimiseToTray) => onWindow({ ...windowSettings, minimiseToTray })}
-              label={t('window.minimise')}
-              hint={t('window.minimiseHint')}
-            />
-          </div>
-        </Card>
-      )}
+      {/* The window switches moved to General with the language: what the close
+          button does is not a matter of appearance. */}
 
-      <Card title={t('look.labels')} hue={7} actions={<Info text={t('look.labelsHint')} />}>
+      <Card title={t('look.labels')} hue={6} actions={<Info text={t('look.labelsHint')} />}>
         <div className="flex flex-col gap-4">
           {/* Two surfaces, not three. The engine carries a rail axis as well and
               this app has no rail, so offering a third control would be offering
@@ -448,7 +509,8 @@ function Look({
         </div>
       </Card>
 
-      <About version={version} />
+      {/* About has its own section in the strip above, so it is not repeated at
+          the bottom of this one. */}
     </Stack>
   )
 }

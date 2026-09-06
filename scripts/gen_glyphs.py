@@ -43,8 +43,11 @@ GLYPHS = [
     ("IconTargets", "computer-devices/database-server-1.svg", "Storage targets and drives"),
     ("IconHistory", "interface-essential/bullet-list.svg", "What the runs did"),
     ("IconLook", "interface-essential/color-palette.svg", "Theme, shape, accent, language"),
+    ("IconSettings", "interface-essential/cog.svg", "Settings, the last tab as in every other app here"),
 
     # Row actions. Small, secondary, icon-only: the design language's rule 13.
+    ("IconAdd", "interface-essential/add-1.svg", "Add a job, from the list it appears in"),
+    ("IconLive", "interface-essential/dashboard-3.svg", "What is happening right now"),
     ("IconCheck", "interface-essential/magnifying-glass.svg", "Open a target and look at it"),
     ("IconDelete", "interface-essential/recycle-bin-2.svg", "Delete"),
     ("IconCopy", "interface-essential/copy-paste.svg", "Copy to the clipboard"),
