@@ -61,148 +61,181 @@ export function Jobs({
 
   return (
     <Stack>
-      <Live jobs={jobs} progress={progress} />
-
-      <Card
-        title={t('jobs.title')}
-        hue={0}
-        actions={
-          <>
-            {/* The plus sits on the list it adds to. A creation button on a
-                different tab is a button somebody has to remember exists. */}
-            <IconButton
-              title={t('edit.add')}
-              onClick={() => {
-                const at = config.add()
-                setEditing(at)
-              }}
-            >
-              <IconAdd />
-            </IconButton>
-            {config.jobs && (
-              <Button primary onClick={() => void config.save()} disabled={config.busy}>
-                {config.busy ? t('edit.checking') : t('edit.save')}
-              </Button>
-            )}
-          </>
-        }
-      >
-        {config.error && <p className="mb-3 text-[12px] text-statusFail">{config.error}</p>}
-        {config.saved && !config.error && (
-          <p className="mb-3 text-[12px] text-statusOk">{t('edit.savedNote')}</p>
+      {/* The page's own actions, above the cards rather than inside one.
+          A card exists to group a subject, and "add a job" is not a subject; a
+          card holding two buttons and nothing else is a box drawn around a
+          toolbar. Same arrangement BombVault's own list pages use. */}
+      <div className="flex flex-wrap items-center gap-2">
+        <IconButton
+          title={t('edit.add')}
+          onClick={() => {
+            const at = config.add()
+            setEditing(at)
+          }}
+        >
+          <IconAdd />
+        </IconButton>
+        {config.jobs && (
+          <Button primary onClick={() => void config.save()} disabled={config.busy}>
+            {config.busy ? t('edit.checking') : t('edit.save')}
+          </Button>
         )}
+        {config.error && <p className="text-[12px] text-statusFail">{config.error}</p>}
+        {config.saved && !config.error && (
+          <p className="text-[12px] text-statusOk">{t('edit.savedNote')}</p>
+        )}
+      </div>
 
-        {jobs.length === 0 && (!raw || raw.length === 0) ? (
+      {/* ONE CARD PER JOB (jdp: "jeder auftrag soll eine eigene card sein").
+          It was one card holding a list of rules-separated rows, and the rows
+          were the problem: a job is a subject in its own right, with a name, a
+          state, two sides and its own actions, and a hairline between two of
+          them says less than a surface around each. Each card also takes its
+          own position in the palette, so a page of jobs reads as a set rather
+          than as one long striped block.
+
+          The live progress moved in here with them. It had a card of its own at
+          the top of the page ("Gerade jetzt"), which meant a running job was
+          described in two places at once and the top one repeated a name the
+          list below was already showing. Progress belongs on the job that is
+          making it. */}
+      {jobs.length === 0 && (!raw || raw.length === 0) ? (
+        <Card title={t('jobs.title')} hue={0}>
           <Empty>{t('jobs.empty')}</Empty>
-        ) : (
-          <ul className="flex flex-col">
-            {jobs.map((j, i) => {
-              const at = indexOf(j.name)
-              return (
-                <li key={j.name}>
-                  {i > 0 && <Rule />}
-                  <div className="group flex items-center gap-3 py-3">
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <span className="truncate text-[14px] font-medium">{j.name}</span>
-                        <State job={j} />
-                      </div>
-                      {/* The arrow sits between the two sides because that is
-                          where the question is: which way does this go.
-                          Both sides hug the arrow rather than stretching to
-                          fill the row: a pair of short paths pushed to opposite
-                          ends reads as two unrelated facts with a gap in the
-                          middle, which is the opposite of what the arrow is
-                          there to say. */}
-                      <p className="mt-0.5 flex items-center gap-1.5 text-[11px] text-carbon-textMuted">
-                        <span className="max-w-[45%] shrink truncate" title={j.left}>
-                          {j.left}
-                        </span>
-                        <DirectionMark direction={j.direction} />
-                        <span className="max-w-[45%] shrink truncate" title={j.right}>
-                          {j.right}
-                        </span>
-                      </p>
-                      {j.running && <Progress event={progress[j.name]} />}
-                    </div>
-
-                    {/* Fixed columns, so the same fact sits at the same x on
-                        every row. Ragged columns turn a list into a pile. */}
-                    <span className="hidden w-36 shrink-0 truncate text-right text-[11px] text-carbon-textMuted md:inline">
-                      {j.disabled
-                        ? t('jobs.state.disabled')
-                        : j.schedule || t('jobs.schedule.onRequest')}
-                    </span>
-
-                    <span className="w-32 shrink-0 text-right text-[11px] text-carbon-textMuted">
-                      {j.lastSuccess ? <Since when={j.lastSuccess} /> : t('jobs.neverWorked')}
-                    </span>
-
-                    {/* Secondary actions appear on hover, so a list of twenty
-                        jobs is twenty names rather than sixty buttons. */}
+        </Card>
+      ) : (
+        <>
+          {jobs.map((j, i) => {
+            const at = indexOf(j.name)
+            return (
+              <Card
+                key={j.name}
+                title={j.name}
+                hue={i}
+                actions={
+                  <>
                     {at !== null && (
-                      <div className="flex shrink-0 items-center gap-1 opacity-0 transition-opacity focus-within:opacity-100 group-hover:opacity-100">
+                      <>
                         <IconButton
                           title={t('edit.editJob')}
                           onClick={() => setEditing(at === editing ? null : at)}
                         >
                           <IconEdit />
                         </IconButton>
-                        <IconButton tone="fail" title={t('edit.remove')} onClick={() => setRemoving(at)}>
+                        <IconButton
+                          tone="fail"
+                          title={t('edit.remove')}
+                          onClick={() => setRemoving(at)}
+                        >
                           <IconDelete />
                         </IconButton>
-                      </div>
+                      </>
                     )}
-
-                    {/* The primary action for a row stays visible; it is the one
-                        thing somebody came to this row to do. */}
                     <Button onClick={() => onPreview(j.name)}>
                       <span className="glim-btn-glyph" aria-hidden>
                         <IconPreview />
                       </span>
                       <span className="glim-btn-label">{t('jobs.preview')}</span>
                     </Button>
-                  </div>
-                </li>
-              )
-            })}
+                  </>
+                }
+              >
+                <div className="flex flex-col gap-2">
+                  {/* The arrow sits between the two sides because that is where
+                      the question is: which way does this go. Both sides hug
+                      the arrow rather than stretching to the edges, where a
+                      pair of short paths reads as two unrelated facts with a
+                      gap in the middle. */}
+                  <p className="flex flex-wrap items-center gap-1.5 text-[12px] text-carbon-textMuted">
+                    <span className="max-w-[45%] shrink truncate" title={j.left}>
+                      {j.left}
+                    </span>
+                    <DirectionMark direction={j.direction} />
+                    <span className="max-w-[45%] shrink truncate" title={j.right}>
+                      {j.right}
+                    </span>
+                  </p>
 
-            {pending.map(({ job: p, at }) => (
-              <li key={`pending-${at}`}>
-                {(jobs.length > 0 || at > 0) && <Rule />}
-                <div className="group flex items-center gap-3 py-3">
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="truncate text-[14px] font-medium">
-                        {p.name || t('edit.unnamed')}
-                      </span>
-                      <Badge tone="neutral">{t('edit.unsaved')}</Badge>
-                    </div>
-                    <p className="mt-0.5 flex items-center gap-1.5 text-[11px] text-carbon-textMuted">
-                      <span className="max-w-[45%] shrink truncate">{p.left}</span>
-                      <DirectionMark direction={p.direction ?? 'both'} />
-                      <span className="max-w-[45%] shrink truncate">{p.right}</span>
-                    </p>
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-carbon-textMuted">
+                    <State job={j} />
+                    <span>
+                      {j.disabled
+                        ? t('jobs.state.disabled')
+                        : j.schedule || t('jobs.schedule.onRequest')}
+                    </span>
+                    <span>
+                      {j.lastSuccess ? <Since when={j.lastSuccess} /> : t('jobs.neverWorked')}
+                    </span>
                   </div>
-                  {/* No preview button: there is nothing for the engine to plan
-                      against until this has been saved. */}
-                  <div className="flex shrink-0 items-center gap-1">
-                    <IconButton
-                      title={t('edit.editJob')}
-                      onClick={() => setEditing(at === editing ? null : at)}
-                    >
-                      <IconEdit />
-                    </IconButton>
-                    <IconButton tone="fail" title={t('edit.remove')} onClick={() => setRemoving(at)}>
-                      <IconDelete />
-                    </IconButton>
-                  </div>
+
+                  {/* The live detail moved here from the card that used to sit
+                      at the top of the page. It is the same two facts it always
+                      carried, and they belong on the job making them: the path
+                      is what changes second by second and is the whole reason
+                      to watch, and the side is what says which way, which is
+                      the question a two-way sync raises every time it acts. */}
+                  {j.running && (
+                    <>
+                      {progress[j.name]?.path && (
+                        <p className="flex min-w-0 items-center gap-1.5 text-[11px] text-carbon-textMuted">
+                          {progress[j.name].side && (
+                            <span className="shrink-0" aria-hidden>
+                              {progress[j.name].side === 'right' ? <IconToRight /> : <IconToLeft />}
+                            </span>
+                          )}
+                          <span className="truncate font-mono" title={progress[j.name].path}>
+                            {progress[j.name].path}
+                          </span>
+                          {progress[j.name].side && (
+                            <span className="shrink-0">
+                              {translateSide(t, progress[j.name].side as 'left' | 'right')}
+                            </span>
+                          )}
+                        </p>
+                      )}
+                      <Progress event={progress[j.name]} />
+                    </>
+                  )}
                 </div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </Card>
+              </Card>
+            )
+          })}
+
+          {pending.map(({ job: p, at }) => (
+            <Card
+              key={`pending-${at}`}
+              title={p.name || t('edit.unnamed')}
+              hue={jobs.length + at}
+              actions={
+                // No preview: there is nothing for the engine to plan against
+                // until this has been saved.
+                <>
+                  <IconButton
+                    title={t('edit.editJob')}
+                    onClick={() => setEditing(at === editing ? null : at)}
+                  >
+                    <IconEdit />
+                  </IconButton>
+                  <IconButton tone="fail" title={t('edit.remove')} onClick={() => setRemoving(at)}>
+                    <IconDelete />
+                  </IconButton>
+                </>
+              }
+            >
+              <div className="flex flex-col gap-2">
+                <p className="flex flex-wrap items-center gap-1.5 text-[12px] text-carbon-textMuted">
+                  <span className="max-w-[45%] shrink truncate">{p.left}</span>
+                  <DirectionMark direction={p.direction ?? 'both'} />
+                  <span className="max-w-[45%] shrink truncate">{p.right}</span>
+                </p>
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px]">
+                  <Badge tone="neutral">{t('edit.unsaved')}</Badge>
+                </div>
+              </div>
+            </Card>
+          ))}
+        </>
+      )}
 
       {job && editing !== null && (
         <Card
@@ -236,62 +269,6 @@ export function Jobs({
   )
 }
 
-/**
- * What the engine is doing right now.
- *
- * The card is here rather than tucked into a running row because "is anything
- * happening" is a question about the whole program, and answering it inside one
- * row means finding that row first. When nothing is running it says so in one
- * line rather than disappearing: a panel that vanishes when idle leaves somebody
- * wondering whether it is idle or broken.
- */
-function Live({ jobs, progress }: { jobs: Job[]; progress: Record<string, RunEvent> }) {
-  const { t } = useT()
-  const running = jobs.filter((j) => j.running)
-
-  return (
-    <Card title={t('live.title')} hue={6} hint={t('live.hint')}>
-      {running.length === 0 ? (
-        <p className="text-[12px] text-carbon-textMuted">{t('live.idle')}</p>
-      ) : (
-        <ul className="flex flex-col gap-3">
-          {running.map((j) => {
-            const event = progress[j.name]
-            return (
-              <li key={j.name} className="flex flex-col gap-1">
-                <div className="flex items-center gap-2">
-                  <Badge tone="accent">{t('jobs.state.running')}</Badge>
-                  <span className="truncate text-[13px] font-medium">{j.name}</span>
-                </div>
-                {/* The file and the side it lands on. The path is what changes
-                    second by second and is the whole reason to watch, but on
-                    its own it only says something is moving; the side is what
-                    says which way, which is the question a two-way sync raises
-                    every time it does anything. */}
-                {event?.path && (
-                  <p className="flex min-w-0 items-center gap-1.5 text-[11px] text-carbon-textMuted">
-                    {event.side && (
-                      <span className="shrink-0" aria-hidden>
-                        {event.side === 'right' ? <IconToRight /> : <IconToLeft />}
-                      </span>
-                    )}
-                    <span className="truncate font-mono" title={event.path}>
-                      {event.path}
-                    </span>
-                    {event.side && (
-                      <span className="shrink-0">{translateSide(t, event.side)}</span>
-                    )}
-                  </p>
-                )}
-                <Progress event={event} />
-              </li>
-            )
-          })}
-        </ul>
-      )}
-    </Card>
-  )
-}
 
 
 /**
