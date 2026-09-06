@@ -50,6 +50,14 @@ var ErrAlreadyRunning = errors.New("this job is still running from last time")
 // line in the log, no history row, no message.
 var ErrVolumeMissing = errors.New("the volume this job points at is not attached")
 
+// ErrHalfWritten says a job has not been finished being set up.
+//
+// A switched-off job is allowed to be missing a side, because that is the state
+// of every job between being created and being filled in. Asking for it to run
+// anyway has to say so plainly, rather than handing an empty string to a
+// backend and reporting whatever that backend makes of it.
+var ErrHalfWritten = errors.New("this job has not been given both sides yet")
+
 // Runner executes jobs, one at a time by default.
 type Runner struct {
 	cfg  *job.Config
@@ -104,6 +112,9 @@ func (r *Runner) Preview(ctx context.Context, name string) (*plan.Plan, error) {
 	if !ok {
 		return nil, fmt.Errorf("no job called %q", name)
 	}
+	if j.Left == "" || j.Right == "" {
+		return nil, fmt.Errorf("%w: %s", ErrHalfWritten, name)
+	}
 	opt, err := j.Options()
 	if err != nil {
 		return nil, err
@@ -155,6 +166,9 @@ func (r *Runner) RunChosen(ctx context.Context, name string, only []string, reso
 	j, ok := r.config().Find(name)
 	if !ok {
 		return history.Run{}, fmt.Errorf("no job called %q", name)
+	}
+	if j.Left == "" || j.Right == "" {
+		return history.Run{}, fmt.Errorf("%w: %s", ErrHalfWritten, name)
 	}
 	if !r.claim(name) {
 		return history.Run{}, ErrAlreadyRunning

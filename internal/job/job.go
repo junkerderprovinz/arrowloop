@@ -159,7 +159,16 @@ func Load(path string) (*Config, error) {
 			return nil, fmt.Errorf("two jobs are both called %q; names are how a job is asked for by hand and how its history is kept apart", j.Name)
 		}
 		seen[j.Name] = true
-		if j.Left == "" || j.Right == "" {
+		// A job that is switched off is allowed to be half written.
+		//
+		// That is the state of every job between being created and being filled
+		// in, and it is the state the editor's own "add a job" button produces.
+		// Refusing it means the button cannot save what it just made, and the
+		// desktop application, whose starter configuration holds exactly such a
+		// job, refuses to start at all. A job that is switched ON still needs
+		// both sides, which is where the check belongs: the validator exists to
+		// stop bad RUNS, and a job nobody runs cannot make one.
+		if !j.Disabled && (j.Left == "" || j.Right == "") {
 			return nil, fmt.Errorf("job %q needs both a left and a right side", j.Name)
 		}
 		if j.State == "" {

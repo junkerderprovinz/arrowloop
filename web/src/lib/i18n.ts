@@ -240,6 +240,33 @@ export const en = {
   'look.language': 'Language',
 
   // Progress
+
+  // The engine's own reasons, keyed by the code it sends. The engine words them
+  // in English as well and the interface falls back to that sentence for a code
+  // it has never heard of: an explanation in the wrong language is worth more
+  // than a dotted identifier.
+  'reason.newOnSide': 'new on the {side}',
+  'reason.changedOnSide': 'changed on the {side}',
+  'reason.changedBothSame': 'changed on both sides to the same content',
+  'reason.changedBoth': 'changed on both sides',
+  'reason.deletedOnSide': 'deleted on the {side}',
+  'reason.restoredOnSide': 'edited on the {side} after being deleted on the {other}, restoring it',
+  'reason.renamedOnSide': 'renamed on the {side}',
+  'reason.collision': 'the {side} side holds {names}, which the other side may not be able to tell apart; rename one of them',
+  'reason.settling': 'changed on the {side} less than {period} ago, waiting for it to settle',
+  'reason.goneBoth': 'gone on both sides, dropping the record',
+  'reason.appearedSame': 'appeared on both sides with identical content',
+  'reason.appearedDiffer': 'appeared on both sides with different content',
+  'reason.dirBoth': 'on both sides',
+  'reason.dirNewOnSide': 'new folder on the {side}',
+  'reason.dirRemovedOnSide': 'folder removed on the {side}',
+  'reason.dirGoneBoth': 'folder gone on both sides, dropping the record',
+  'reason.stepFailed': '{what} failed, leaving it for the next run: {error}',
+  'reason.removeDirFailed': 'the folder could not be removed, leaving it: {error}',
+  'reason.heldOpen': 'another program is holding it open on the {side}, waiting for it to be closed',
+  'reason.unsupported': '{kind} on the {side}, which this engine does not carry',
+  'reason.recordFailed': 'the record could not be written, leaving it for the next run: {error}',
+
   'progress.of': '{done} of {total}',
   'progress.starting': 'Starting',
   'progress.finishing': 'Finishing',
@@ -433,6 +460,29 @@ export const de: Translations = {
   'look.rotateHint': 'Rückt die Palette bei jedem Besuch um eins weiter.',
   'look.language': 'Sprache',
 
+
+  'reason.newOnSide': 'neu {side}',
+  'reason.changedOnSide': 'geändert {side}',
+  'reason.changedBothSame': 'auf beiden Seiten zum selben Inhalt geändert',
+  'reason.changedBoth': 'auf beiden Seiten geändert',
+  'reason.deletedOnSide': 'gelöscht {side}',
+  'reason.restoredOnSide': 'nach dem Löschen {other} {side} bearbeitet und dadurch wiederhergestellt',
+  'reason.renamedOnSide': 'umbenannt {side}',
+  'reason.collision': 'Die Seite {side} enthält {names}, was die andere Seite womöglich nicht auseinanderhalten kann. Benenne eines davon um.',
+  'reason.settling': 'vor weniger als {period} {side} geändert, wartet auf Ruhe',
+  'reason.goneBoth': 'auf beiden Seiten verschwunden, der Vermerk entfällt',
+  'reason.appearedSame': 'auf beiden Seiten mit gleichem Inhalt aufgetaucht',
+  'reason.appearedDiffer': 'auf beiden Seiten mit verschiedenem Inhalt aufgetaucht',
+  'reason.dirBoth': 'auf beiden Seiten',
+  'reason.dirNewOnSide': 'neuer Ordner {side}',
+  'reason.dirRemovedOnSide': 'Ordner entfernt {side}',
+  'reason.dirGoneBoth': 'Ordner auf beiden Seiten verschwunden, der Vermerk entfällt',
+  'reason.stepFailed': '{what} fehlgeschlagen, bleibt für den nächsten Lauf liegen: {error}',
+  'reason.removeDirFailed': 'Der Ordner ließ sich nicht entfernen und bleibt stehen: {error}',
+  'reason.heldOpen': 'wird {side} von einem anderen Programm offen gehalten, wartet auf das Schließen',
+  'reason.unsupported': '{kind} {side}, was dieser Dienst nicht mitnimmt',
+  'reason.recordFailed': 'Der Vermerk ließ sich nicht schreiben, bleibt für den nächsten Lauf liegen: {error}',
+
   'progress.of': '{done} von {total}',
   'progress.starting': 'Startet',
   'progress.finishing': 'Schließt ab',
@@ -619,4 +669,50 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 
 export function useT(): I18nContextValue {
   return useContext(I18nContext)
+}
+
+/** One reason from the engine: a code with its values, and the English sentence. */
+export interface Reason {
+  code: string
+  vars?: Record<string, string>
+  text: string
+}
+
+/**
+ * Render a reason in the reader's language.
+ *
+ * The engine sends both halves on purpose. Translating on its side would mean
+ * knowing the reader's language on every run, and would leave the log written
+ * in whichever language somebody last asked a question in. So the code is
+ * translated here, and a code this build has never heard of falls back to the
+ * engine's own sentence rather than to the code itself: an explanation in the
+ * wrong language is worth more than a dotted identifier.
+ *
+ * The values are translated too. A sentence that reads "geändert on the left"
+ * is not translated, it is half translated, which is the more annoying half.
+ */
+export function useReason(): (reason?: Reason | null) => string {
+  const { t } = useT()
+  return (reason) => {
+    if (!reason) return ''
+    const key = `reason.${reason.code}` as TranslationKey
+    const vars: Record<string, string> = {}
+    for (const [name, value] of Object.entries(reason.vars ?? {})) {
+      vars[name] = name === 'side' || name === 'other' ? translateSide(t, value) : value
+    }
+    // en carries every code this build knows. Anything else is a newer engine
+    // talking to an older interface, and its own sentence is the better answer.
+    if (!(key in en)) return reason.text
+    return t(key, vars)
+  }
+}
+
+/** A side named by the engine, in the reader's language. */
+export function translateSide(
+  t: (key: TranslationKey, vars?: Record<string, string | number>) => string,
+  side: string,
+): string {
+  if (side === 'left') return t('side.left')
+  if (side === 'right') return t('side.right')
+  return side
 }

@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"testing/fstest"
 	"time"
 
 	_ "github.com/rclone/rclone/backend/local"
@@ -19,12 +20,18 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/job"
 	"github.com/junkerderprovinz/arrowloop/internal/web"
+	webui "github.com/junkerderprovinz/arrowloop/web"
 )
 
 type harness struct {
 	srv   *httptest.Server
 	left  string
 	right string
+
+	// Kept so a test can stand a second server on the same engine, which is how
+	// the interface-was-not-built case is reached without a second sandbox.
+	history *history.DB
+	runner  *daemon.Runner
 }
 
 func newHarness(t *testing.T) *harness {
@@ -54,10 +61,11 @@ func newHarness(t *testing.T) *harness {
 	}
 	t.Cleanup(func() { hist.Close() })
 
-	s := &web.Server{History: hist, Runner: daemon.New(cfg, hist, nil, nil)}
+	runner := daemon.New(cfg, hist, nil, nil)
+	s := &web.Server{History: hist, Runner: runner}
 	srv := httptest.NewServer(s.Handler())
 	t.Cleanup(srv.Close)
-	return &harness{srv: srv, left: left, right: right}
+	return &harness{srv: srv, left: left, right: right, history: hist, runner: runner}
 }
 
 func (h *harness) get(t *testing.T, path string, into any) {
@@ -104,7 +112,8 @@ func TestPreviewChangesNothing(t *testing.T) {
 
 	var view struct {
 		Actions []struct {
-			Path, Kind, From, To, Reason string
+			Path, Kind, From, To string
+			Reason               struct{ Code, Text string }
 		}
 	}
 	h.get(t, "/api/jobs/photos/plan", &view)
@@ -116,8 +125,14 @@ func TestPreviewChangesNothing(t *testing.T) {
 	if got.Path != "a.txt" || got.Kind != "copy" || got.From != "left" || got.To != "right" {
 		t.Errorf("the preview does not say what would happen: %+v", got)
 	}
-	if got.Reason == "" {
+	if got.Reason.Text == "" {
 		t.Error("a proposed change with no reason is not something anybody can decide on")
+	}
+	// The code is the half an interface in another language reads. A reason
+	// that arrives as an English sentence alone is a sentence that will still be
+	// English on a page that is otherwise German.
+	if got.Reason.Code == "" {
+		t.Error("the reason carries no code, so nothing can translate it")
 	}
 	if _, err := os.Stat(filepath.Join(h.right, "a.txt")); !os.IsNotExist(err) {
 		t.Fatal("asking for a preview moved a file")
@@ -368,5 +383,79 @@ func TestAnUnknownFieldIsRefusedThroughTheEditor(t *testing.T) {
 	}
 	if !strings.Contains(text, "excludes") {
 		t.Errorf("the message does not name the field: %s", text)
+	}
+}
+
+// TestABinaryWithoutTheInterfaceSaysSo covers the state a plain `go build`
+// produces: the engine runs, the API answers, and there is no interface to
+// draw.
+//
+// This used to be a blank page. A built index.html was committed as the
+// "placeholder", which looks like the same thing and is not: it names two
+// hashed asset files by their content, and neither of those is committed. The
+// browser asked for them, got nothing, and rendered an empty document, which is
+// indistinguishable from a broken one and sends its owner looking at the wrong
+// thing entirely.
+func TestABinaryWithoutTheInterfaceSaysSo(t *testing.T) {
+	h := newHarness(t)
+
+	// An interface filesystem that exists and holds no index.html, which is
+	// exactly what //go:embed produces from a dist directory nobody has built
+	// into.
+	empty := fstest.MapFS{".gitkeep": &fstest.MapFile{}}
+	s := &web.Server{
+		History:     h.history,
+		Runner:      h.runner,
+		UI:          empty,
+		Placeholder: []byte("<html><body>built without the interface</body></html>"),
+	}
+	srv := httptest.NewServer(s.Handler())
+	defer srv.Close()
+
+	resp, err := srv.Client().Get(srv.URL + "/")
+	if err != nil {
+		t.Fatalf("GET /: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Deliberately not a 404. The engine is running and the API is answering;
+	// what is missing is a build step, and "there is nothing at this address"
+	// would be the wrong thing to tell somebody.
+	if resp.StatusCode != http.StatusOK {
+		t.Errorf("a binary without the interface answered %s", resp.Status)
+	}
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		t.Fatalf("read: %v", err)
+	}
+	if !strings.Contains(string(body), "built without the interface") {
+		t.Errorf("the page does not explain itself: %q", string(body))
+	}
+	if len(body) == 0 {
+		t.Error("a blank page is indistinguishable from a broken one")
+	}
+
+	// And the API still works, which is the fact the page claims.
+	jobs, err := srv.Client().Get(srv.URL + "/api/jobs")
+	if err != nil {
+		t.Fatalf("GET /api/jobs: %v", err)
+	}
+	defer jobs.Body.Close()
+	if jobs.StatusCode != http.StatusOK {
+		t.Errorf("the API answered %s while the page said it was working", jobs.Status)
+	}
+}
+
+// TestTheShippedPlaceholderNeedsNothingElse. The page is served when the build
+// that would have produced its stylesheet was skipped, so it cannot ask for one.
+func TestTheShippedPlaceholderNeedsNothingElse(t *testing.T) {
+	page := string(webui.Placeholder)
+	if page == "" {
+		t.Fatal("no placeholder is shipped at all")
+	}
+	for _, forbidden := range []string{"<script src", "<link rel=\"stylesheet\"", "/assets/"} {
+		if strings.Contains(page, forbidden) {
+			t.Errorf("the placeholder asks for %s, which is exactly what is not there", forbidden)
+		}
 	}
 }

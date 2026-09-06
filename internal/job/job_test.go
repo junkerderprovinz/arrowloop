@@ -155,3 +155,38 @@ func TestOptionsFillInTheDefaults(t *testing.T) {
 		t.Error("the default excludes were dropped")
 	}
 }
+
+// TestAHalfWrittenJobCanBeSavedButNotRun covers the state every job passes
+// through between being created and being filled in.
+//
+// The editor's own "add a job" button makes exactly this: a name, a state file,
+// no sides, switched off. A validator that refuses it is a validator that stops
+// the button from saving what it just made, and it stopped the desktop
+// application from starting at all, because its starter configuration holds one
+// of these and it reads that file before it opens a window.
+func TestAHalfWrittenJobCanBeSavedButNotRun(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "arrowloop.json")
+	body := `{"jobs":[{"name":"not-finished-yet","left":"","right":"","state":"state/x.db","disabled":true}]}`
+	if err := os.WriteFile(path, []byte(body), 0o644); err != nil {
+		t.Fatalf("write: %v", err)
+	}
+
+	cfg, err := Load(path)
+	if err != nil {
+		t.Fatalf("a switched-off job with no sides was refused, so nothing can create one: %v", err)
+	}
+	if len(cfg.Jobs) != 1 {
+		t.Fatalf("expected the job to survive loading, got %d", len(cfg.Jobs))
+	}
+
+	// Switched on, the same job is refused. The validator exists to stop bad
+	// runs, and this is the point at which one becomes possible.
+	body = `{"jobs":[{"name":"not-finished-yet","left":"","right":"","state":"state/x.db"}]}`
+	if err := os.WriteFile(path, []byte(body), 0o644); err != nil {
+		t.Fatalf("write: %v", err)
+	}
+	if _, err := Load(path); err == nil {
+		t.Fatal("a job that is switched on with no sides was accepted")
+	}
+}

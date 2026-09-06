@@ -130,6 +130,17 @@ func TestTheBackendsOfferedAreTheOnesBuiltIn(t *testing.T) {
 		t.Error("a backend this build cannot reach is offered")
 	}
 
+	// And the promised ones come first. The registry is alphabetical, which
+	// puts crypt at the top: a wrapper around another remote, offered ahead of
+	// the four things anybody came here for, and the one the form opens on.
+	if len(got.Backends) == 0 || got.Backends[0].Name != "s3" {
+		var leading string
+		if len(got.Backends) > 0 {
+			leading = got.Backends[0].Name
+		}
+		t.Errorf("the list opens on %q rather than on a backend this product promises", leading)
+	}
+
 	// And every password field must be marked, or the screen will show one.
 	for _, b := range got.Backends {
 		if b.Name != "sftp" {

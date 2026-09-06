@@ -328,3 +328,32 @@ func TestAnUnpluggedVolumeIsNotARun(t *testing.T) {
 		t.Errorf("%d files were deleted after the drive moved", rec.Trashed)
 	}
 }
+
+// TestAHalfWrittenJobIsRefusedByName is the other half of the rule that lets a
+// switched-off job be saved without both its sides.
+//
+// Allowing it to be stored and then handing an empty string to a backend would
+// trade one clear refusal for whatever error that backend happens to produce
+// about a path that is not a path.
+func TestAHalfWrittenJobIsRefusedByName(t *testing.T) {
+	cfg, hist, _, _ := fixture(t, func(dir, left, right string) string {
+		return fmt.Sprintf(`{"jobs":[{"name":"unfinished","left":"","right":"","state":"%s","disabled":true}]}`,
+			jsonPath(filepath.Join(dir, "unfinished.db")))
+	})
+
+	r := daemon.New(cfg, hist, nil, nil)
+	if _, err := r.Run(t.Context(), "unfinished"); !errors.Is(err, daemon.ErrHalfWritten) {
+		t.Fatalf("running a job with no sides reported %v", err)
+	}
+	if _, err := r.Preview(t.Context(), "unfinished"); !errors.Is(err, daemon.ErrHalfWritten) {
+		t.Fatalf("previewing a job with no sides reported %v", err)
+	}
+
+	runs, err := hist.Recent(t.Context(), "unfinished", 10)
+	if err != nil {
+		t.Fatalf("history: %v", err)
+	}
+	if len(runs) != 0 {
+		t.Errorf("a job that was refused before it started left %d rows in the history", len(runs))
+	}
+}

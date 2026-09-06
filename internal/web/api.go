@@ -36,6 +36,10 @@ type Server struct {
 	// UI is the built interface. A nil filesystem serves the API only, which is
 	// what the tests use and what a headless deployment can live with.
 	UI fs.FS
+
+	// Placeholder is the page served when UI carries no index.html, which is
+	// what a binary built without the frontend looks like.
+	Placeholder []byte
 }
 
 // Handler builds the routes.
@@ -60,7 +64,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("POST /api/remotes/{name}/check", s.checkRemote)
 
 	if s.UI != nil {
-		mux.Handle("/", spa{fs: s.UI})
+		mux.Handle("/", spa{fs: s.UI, placeholder: s.Placeholder})
 	}
 	return mux
 }
@@ -96,11 +100,16 @@ func (s *Server) listJobs(w http.ResponseWriter, r *http.Request) {
 
 // actionView is one proposed change, in the words the screen shows.
 type actionView struct {
-	Path   string `json:"path"`
-	Kind   string `json:"kind"`
-	From   string `json:"from,omitempty"`
-	To     string `json:"to,omitempty"`
-	Reason string `json:"reason"`
+	Path string `json:"path"`
+	Kind string `json:"kind"`
+	From string `json:"from,omitempty"`
+	To   string `json:"to,omitempty"`
+
+	// The reason twice over: the code and its values, which the interface
+	// translates, and the English sentence, which it falls back to for a code
+	// it has never heard of. An untranslated explanation is worth more than a
+	// dotted identifier.
+	Reason plan.Reason `json:"reason"`
 
 	// What each side holds right now. Present for a conflict, where the whole
 	// question is which of two versions to keep, and for a copy, where it says
@@ -127,8 +136,8 @@ type sideView struct {
 }
 
 type skipView struct {
-	Path   string `json:"path"`
-	Reason string `json:"reason"`
+	Path   string      `json:"path"`
+	Reason plan.Reason `json:"reason"`
 }
 
 func (s *Server) previewJob(w http.ResponseWriter, r *http.Request) {
@@ -310,7 +319,18 @@ func writeError(w http.ResponseWriter, code int, err error) {
 
 // spa serves the built interface, falling back to index.html for any path the
 // bundle does not contain, so a reload on a sub-page does not 404.
-type spa struct{ fs fs.FS }
+// spa serves the built interface, and falls back twice.
+//
+// A path that is not a file is answered with index.html, because the interface
+// routes in the browser and a reload of any page has to reach it. And an
+// index.html that is not there at all is answered with the page that explains
+// why: that is a binary built without the frontend, which is a thing a plain
+// `go build` produces, and a blank screen is indistinguishable from a broken
+// one.
+type spa struct {
+	fs          fs.FS
+	placeholder []byte
+}
 
 func (s spa) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
@@ -321,7 +341,7 @@ func (s spa) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		index, iErr := s.fs.Open("index.html")
 		if iErr != nil {
-			http.NotFound(w, r)
+			s.explain(w)
 			return
 		}
 		defer index.Close()
@@ -331,6 +351,19 @@ func (s spa) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	defer f.Close()
 	http.ServeContent(w, r, path, time.Time{}, f.(readSeeker))
+}
+
+func (s spa) explain(w http.ResponseWriter) {
+	if len(s.placeholder) == 0 {
+		http.Error(w, "this binary was built without the interface", http.StatusNotFound)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	// Not 404. The engine is running and the API is answering; what is missing
+	// is a build step, and a status that says "there is nothing at this address"
+	// would send somebody looking in the wrong place.
+	w.WriteHeader(http.StatusOK)
+	w.Write(s.placeholder)
 }
 
 type readSeeker interface {

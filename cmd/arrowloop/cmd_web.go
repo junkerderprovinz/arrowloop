@@ -66,7 +66,7 @@ func cmdWeb(ctx context.Context, args []string) error {
 	if err != nil {
 		return fmt.Errorf("read the built interface: %w", err)
 	}
-	server := &web.Server{History: hist, Runner: runner, UI: ui}
+	server := &web.Server{History: hist, Runner: runner, UI: ui, Placeholder: webui.Placeholder}
 
 	// The default address is loopback on purpose. This interface can start a
 	// job that deletes files, and it has no login of its own; putting it on

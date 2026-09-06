@@ -139,7 +139,7 @@ func TestUnsupportedEntriesAreReported(t *testing.T) {
 	p, _ := j.sync(t)
 	var reported bool
 	for _, s := range p.Skipped {
-		if s.Path == "shortcut.txt" && strings.Contains(s.Reason, "symbolic link") {
+		if s.Path == "shortcut.txt" && strings.Contains(s.Reason.Text, "symbolic link") {
 			reported = true
 		}
 	}

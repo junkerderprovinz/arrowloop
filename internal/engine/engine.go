@@ -155,7 +155,7 @@ func Prepare(ctx context.Context, ends apply.Ends, db *state.DB, opt Options) (*
 		for _, u := range odd {
 			p.Skipped = append(p.Skipped, plan.Skip{
 				Path:   u.Path,
-				Reason: fmt.Sprintf("%s on the %s side, which this engine does not carry", u.Kind, side),
+				Reason: plan.Because("unsupported", "kind", u.Kind, "side", side.String()),
 			})
 		}
 	}

@@ -11,6 +11,9 @@ export type Job = {
   lastSuccess: string | null
 }
 
+export type { Reason } from './i18n'
+import type { Reason } from './i18n'
+
 /** What one side holds right now: its name there, its size and when it changed. */
 export type SideVersion = { path: string; size: number; mod: string }
 
@@ -21,7 +24,7 @@ export type Action = {
   kind: ActionKind
   from?: string
   to?: string
-  reason: string
+  reason: Reason
   left?: SideVersion
   right?: SideVersion
 }
@@ -61,7 +64,7 @@ export type Volume = {
   path: string
 }
 
-export type Skip = { path: string; reason: string }
+export type Skip = { path: string; reason: Reason }
 
 export type Plan = {
   actions: Action[]

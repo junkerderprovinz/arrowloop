@@ -121,7 +121,7 @@ func (t *tally) count(f func(*Result)) {
 	f(&t.res)
 }
 
-func (t *tally) skip(path, reason string) {
+func (t *tally) skip(path string, reason plan.Reason) {
 	t.count(func(r *Result) { r.Skipped = append(r.Skipped, plan.Skip{Path: path, Reason: reason}) })
 }
 
@@ -172,7 +172,7 @@ func RunWatched(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt 
 			continue
 		}
 		if err := applyDir(ctx, ends, db, d); err != nil {
-			t.skip(d.Path, fmt.Sprintf("%s failed, leaving it for the next run: %v", d.Kind, err))
+			t.skip(d.Path, plan.Because("stepFailed", "what", d.Kind.String(), "error", err.Error()))
 			continue
 		}
 		if d.Kind == plan.MakeDir {
@@ -193,7 +193,7 @@ func RunWatched(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt 
 			if errors.As(err, &dis) {
 				return t.res, err
 			}
-			t.skip(act.Path, fmt.Sprintf("move failed, leaving it for the next run: %v", err))
+			t.skip(act.Path, plan.Because("stepFailed", "what", "move", "error", err.Error()))
 		}
 	}
 
@@ -219,7 +219,7 @@ func RunWatched(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt 
 			if errors.As(err, &dis) {
 				return t.res, err
 			}
-			t.skip(act.Path, err.Error())
+			t.skip(act.Path, plan.Because("recordFailed", "error", err.Error()))
 		}
 	}
 
@@ -230,7 +230,7 @@ func RunWatched(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt 
 			continue
 		}
 		if err := applyDir(ctx, ends, db, d); err != nil {
-			t.skip(d.Path, fmt.Sprintf("could not remove the folder, leaving it: %v", err))
+			t.skip(d.Path, plan.Because("removeDirFailed", "error", err.Error()))
 			continue
 		}
 		t.count(func(r *Result) { r.DirsRemoved++ })
@@ -270,7 +270,7 @@ func (t *tally) forEach(ctx context.Context, acts []plan.Action, workers int, fn
 						cancel()
 						return
 					}
-					t.skip(act.Path, fmt.Sprintf("%s failed, leaving it for the next run: %v", act.Kind, err))
+					t.skip(act.Path, plan.Because("stepFailed", "what", act.Kind.String(), "error", err.Error()))
 				}
 			}
 		}()
@@ -330,15 +330,15 @@ func applyDir(ctx context.Context, ends Ends, db *state.DB, d plan.DirAction) er
 // program. Only the source of a transfer is probed: a destination that is
 // locked fails loudly on its own, while a locked source is the everyday case of
 // a document somebody left open.
-func heldOpen(ends Ends, act plan.Action) (string, bool) {
+func heldOpen(ends Ends, act plan.Action) (plan.Reason, bool) {
 	if act.Kind != plan.Copy || act.SrcPath == "" {
-		return "", false
+		return plan.Reason{}, false
 	}
 	full, ok := localPath(ends.side(act.Src), act.SrcPath)
 	if !ok || !lockprobe.Busy(full) {
-		return "", false
+		return plan.Reason{}, false
 	}
-	return fmt.Sprintf("held open by another program on the %s side, waiting for it to be closed", act.Src), true
+	return plan.Because("heldOpen", "side", act.Src.String()), true
 }
 
 // localPath maps an rclone object back to a real filesystem path, when there is

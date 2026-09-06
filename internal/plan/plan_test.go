@@ -325,8 +325,8 @@ func TestCollisionsAreSkippedNotSynced(t *testing.T) {
 		t.Errorf("the report names %q, want the colliding key", got.Skipped[0].Path)
 	}
 	for _, want := range []string{"Bild.jpg", "bild.jpg"} {
-		if !strings.Contains(got.Skipped[0].Reason, want) {
-			t.Errorf("the reason does not name %q, so the user cannot act on it: %q", want, got.Skipped[0].Reason)
+		if !strings.Contains(got.Skipped[0].Reason.Text, want) {
+			t.Errorf("the reason does not name %q, so the user cannot act on it: %q", want, got.Skipped[0].Reason.Text)
 		}
 	}
 	// The rest of the tree must still move. A collision is one file's problem.

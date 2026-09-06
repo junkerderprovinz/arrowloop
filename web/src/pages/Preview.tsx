@@ -4,7 +4,7 @@ import { Badge, Button, Card, Empty, Num, Rule, Stack } from '../components/Shel
 import { Info } from '../components/Field'
 import { Selector } from '../components/Selector'
 import { api, type Action, type ActionKind, type Plan, type Resolution, type SideVersion } from '../lib/api'
-import { useT, type TranslationKey } from '../lib/i18n'
+import { translateSide, useReason, useT, type TranslationKey } from '../lib/i18n'
 
 /**
  * The preview is the screen this whole product exists for.
@@ -18,6 +18,7 @@ import { useT, type TranslationKey } from '../lib/i18n'
  */
 export function Preview({ job, onDone }: { job: string; onDone: () => void }) {
   const { t } = useT()
+  const reason = useReason()
   const [plan, setPlan] = useState<Plan | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [unticked, setUnticked] = useState<Set<string>>(new Set())
@@ -133,7 +134,7 @@ export function Preview({ job, onDone }: { job: string; onDone: () => void }) {
             {plan.skipped.map((s) => (
               <li key={s.path} className="text-[12px]">
                 <span className="font-medium">{s.path}</span>
-                <span className="text-carbon-textMuted">, {s.reason}</span>
+                <span className="text-carbon-textMuted">, {reason(s.reason)}</span>
               </li>
             ))}
           </ul>
@@ -182,10 +183,15 @@ function Row({
   onResolve: (next: Resolution) => void
 }) {
   const { t } = useT()
+  const reason = useReason()
+  // A copy names two sides and a move names two paths, so only the first pair
+  // goes through the side translation. A path is a path in every language.
   const label =
-    action.kind === 'copy' || action.kind === 'move'
-      ? `${action.from} ${'→'} ${action.to}`
-      : (action.to ?? '')
+    action.kind === 'copy'
+      ? `${translateSide(t, action.from ?? '')} → ${translateSide(t, action.to ?? '')}`
+      : action.kind === 'move'
+        ? `${action.from} → ${action.to}`
+        : translateSide(t, action.to ?? '')
 
   return (
     <div className="py-2.5">
@@ -225,7 +231,7 @@ function Row({
         </span>
 
         <span className="hidden shrink-0 text-[11px] text-carbon-textMuted sm:inline">{label}</span>
-        <span className="shrink-0 text-[11px] text-carbon-textMuted">{action.reason}</span>
+        <span className="shrink-0 text-[11px] text-carbon-textMuted">{reason(action.reason)}</span>
       </label>
 
       {action.kind === 'conflict' && ticked && (

@@ -46,6 +46,25 @@ type Backend struct {
 // screen offering a backend the binary does not carry would produce a job that
 // fails the first time it runs, with an error about a missing section rather
 // than about the thing that is really wrong.
+// promised are the kinds of storage this product is sold on, in the order a
+// person is most likely to want them.
+//
+// rclone's registry is alphabetical, which puts crypt first: a wrapper around
+// another remote, offered before the four things anybody came here for. A form
+// that opens on a backend nobody asked for is a form whose first act is to be
+// wrong. The rest of the registry still follows, because a build that carries a
+// backend and hides it would be lying about what it can reach.
+var promised = []string{"s3", "sftp", "smb"}
+
+func rank(name string) int {
+	for i, p := range promised {
+		if name == p {
+			return i
+		}
+	}
+	return len(promised)
+}
+
 func Backends() []Backend {
 	out := make([]Backend, 0, len(rclonefs.Registry))
 	for _, info := range rclonefs.Registry {
@@ -73,15 +92,20 @@ func Backends() []Backend {
 			// Required first, then the ordinary ones, then the long tail. A
 			// form that opens on forty advanced options is a form nobody fills
 			// in.
-			return rank(b.Options[i]) < rank(b.Options[j])
+			return optionRank(b.Options[i]) < optionRank(b.Options[j])
 		})
 		out = append(out, b)
 	}
-	sort.Slice(out, func(i, j int) bool { return out[i].Name < out[j].Name })
+	sort.Slice(out, func(i, j int) bool {
+		if a, b := rank(out[i].Name), rank(out[j].Name); a != b {
+			return a < b
+		}
+		return out[i].Name < out[j].Name
+	})
 	return out
 }
 
-func rank(o Option) int {
+func optionRank(o Option) int {
 	switch {
 	case o.Required:
 		return 0

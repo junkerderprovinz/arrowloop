@@ -36,6 +36,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/job"
 	"github.com/junkerderprovinz/arrowloop/internal/notify"
 	"github.com/junkerderprovinz/arrowloop/internal/web"
+	webui "github.com/junkerderprovinz/arrowloop/web"
 )
 
 // The interface is embedded here as well as in the command line binary. Wails
@@ -85,7 +86,7 @@ func run() error {
 	if err != nil {
 		return err
 	}
-	server := &web.Server{History: hist, Runner: runner, UI: ui}
+	server := &web.Server{History: hist, Runner: runner, UI: ui, Placeholder: webui.Placeholder}
 
 	// The schedules run for as long as the window is open. A desktop app that
 	// only syncs while somebody is watching it would be a worse version of the

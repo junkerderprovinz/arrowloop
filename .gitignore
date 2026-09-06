@@ -10,17 +10,25 @@
 # The frontend's own dependencies and build output.
 web/node_modules/
 
-# Keep the embedded placeholder so `//go:embed all:dist` compiles before the
+# Keep the directory so `//go:embed all:dist` compiles before the
 # Vite build exists; real build artefacts stay out of the repo.
 !web/dist/
 web/dist/*
-!web/dist/index.html
+!web/dist/.gitkeep
 
 # The Wails shell embeds its own copy of the interface, built into place by CI.
-# The placeholder keeps `//go:embed all:frontend/dist` compiling before that.
+# The keep-file is what makes `//go:embed all:frontend/dist` compile before that.
 !desktop/frontend/dist/
 desktop/frontend/dist/*
-!desktop/frontend/dist/index.html
+!desktop/frontend/dist/.gitkeep
+
+# Everything `wails build` generates for itself: its own default application
+# icon, the Windows manifest it writes from wails.json, and the JavaScript
+# bindings. All of it is regenerated on every build, and the default icon in
+# particular must not be committed, because shipping Wails' own logo as this
+# product's would be worse than shipping none.
+desktop/build/
+desktop/frontend/wailsjs/
 
 # Wails build output, and the stray binary a plain `go build ./...` drops in
 # the module directory.

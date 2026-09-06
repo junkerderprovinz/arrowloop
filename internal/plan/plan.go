@@ -28,6 +28,79 @@ const (
 	Right
 )
 
+// A reason travels twice: as the English sentence the command line and the log
+// print, and as a code with its values, so that an interface reading in another
+// language can say the same thing in that language.
+//
+// Translating on this side would be the worse trade. The engine would need to
+// know the reader's language on every run, and the log would then be written in
+// whichever language somebody last asked a question in.
+//
+// The sentence is built from the same template the interface translates, so the
+// two cannot drift: there is one place where a reason is worded and one place
+// where its values are named.
+type Reason struct {
+	Code string            `json:"code"`
+	Vars map[string]string `json:"vars,omitempty"`
+	Text string            `json:"text"`
+}
+
+// reasonText is the English wording of every reason the engine gives. An
+// interface carries the same set keyed by the same codes.
+var reasonText = map[string]string{
+	"newOnSide":        "new on the {side}",
+	"changedOnSide":    "changed on the {side}",
+	"changedBothSame":  "changed on both sides to the same content",
+	"changedBoth":      "changed on both sides",
+	"deletedOnSide":    "deleted on the {side}",
+	"restoredOnSide":   "edited on the {side} after being deleted on the {other}, restoring it",
+	"renamedOnSide":    "renamed on the {side} side",
+	"collision":        "the {side} side holds {names}, which the other side may not be able to tell apart; rename one of them",
+	"settling":         "changed on the {side} side less than {period} ago, waiting for it to settle",
+	"dirBoth":          "on both sides",
+	"dirNewOnSide":     "new folder on the {side}",
+	"dirRemovedOnSide": "folder removed on the {side}",
+	"dirGoneBoth":      "folder gone on both sides, dropping the record",
+
+	// Reasons a run gives while it is running rather than while it is deciding.
+	// Each carries the underlying error as a value, because a backend's own
+	// words about what went wrong are worth more than any sentence written here.
+	"stepFailed":      "{what} failed, leaving it for the next run: {error}",
+	"removeDirFailed": "could not remove the folder, leaving it: {error}",
+	"heldOpen":        "held open by another program on the {side} side, waiting for it to be closed",
+	"unsupported":     "{kind} on the {side} side, which this engine does not carry",
+	"recordFailed":    "the record could not be written, leaving it for the next run: {error}",
+}
+
+// Because builds a reason from a code and its values, for the stages that
+// discover one while running rather than while deciding.
+func Because(code string, pairs ...string) Reason { return because(code, pairs...) }
+
+// because builds a reason. The variadic values are key and value in turn, which
+// keeps a call site to one line and reads in the order the sentence does.
+func because(code string, pairs ...string) Reason {
+	vars := make(map[string]string, len(pairs)/2)
+	for i := 0; i+1 < len(pairs); i += 2 {
+		vars[pairs[i]] = pairs[i+1]
+	}
+	return Reason{Code: code, Vars: vars, Text: fill(reasonText[code], vars)}
+}
+
+// fill substitutes {name} for the value of name. A code nobody has worded yet
+// answers with the code itself rather than with an empty string: an interface
+// that does not recognise it then shows something, which is worth more than a
+// blank where an explanation should be.
+func fill(template string, vars map[string]string) string {
+	if template == "" {
+		return ""
+	}
+	out := template
+	for name, value := range vars {
+		out = strings.ReplaceAll(out, "{"+name+"}", value)
+	}
+	return out
+}
+
 func (s Side) String() string {
 	if s == Left {
 		return "left"
@@ -79,7 +152,7 @@ type Action struct {
 	Path   string
 	Src    Side
 	Dst    Side
-	Reason string
+	Reason Reason
 
 	SrcPath    string // Copy and Conflict: what the source side calls it
 	DstPath    string // what the destination side should call it afterwards
@@ -151,7 +224,7 @@ func (a Action) Names() (left, right string) {
 // is left untouched so the next run reconsiders from scratch.
 type Skip struct {
 	Path   string
-	Reason string
+	Reason Reason
 }
 
 // Plan is the full set of changes for one run.
@@ -323,9 +396,8 @@ func Build(ctx context.Context, left, right *scan.Listing, prev map[string]state
 		for _, c := range listing.Collisions {
 			blocked[c.Key] = true
 			out.Skipped = append(out.Skipped, Skip{
-				Path: c.Key,
-				Reason: fmt.Sprintf("the %s side holds %v, which the other side may not be able to tell apart; rename one of them",
-					side, c.Paths),
+				Path:   c.Key,
+				Reason: because("collision", "side", side.String(), "names", fmt.Sprint(c.Paths)),
 			})
 		}
 	}
@@ -380,15 +452,15 @@ func Build(ctx context.Context, left, right *scan.Listing, prev map[string]state
 			act := base
 			act.Kind = Delete
 			act.Dst = Left // no side is touched; apply only clears the state row
-			act.Reason = "gone on both sides, dropping the record"
+			act.Reason = because("goneBoth")
 			act.LeftNow, act.RightNow = nil, nil
 			out.Actions = append(out.Actions, act)
 
 		// One side has it and nothing was ever agreed: a plain new file.
 		case lState == created && rState == absent:
-			out.Actions = append(out.Actions, copyAction(base, Left, "new on the left"))
+			out.Actions = append(out.Actions, copyAction(base, Left, because("newOnSide", "side", "left")))
 		case rState == created && lState == absent:
-			out.Actions = append(out.Actions, copyAction(base, Right, "new on the right"))
+			out.Actions = append(out.Actions, copyAction(base, Right, because("newOnSide", "side", "right")))
 
 		// Both sides produced the file independently.
 		case lState == created && rState == created:
@@ -397,17 +469,17 @@ func Build(ctx context.Context, left, right *scan.Listing, prev map[string]state
 				act.Kind = Copy
 				act.Src, act.Dst = Left, Right
 				act.SrcPath, act.DstPath = l.Path, r.Path
-				act.Reason = "appeared on both sides with identical content"
+				act.Reason = because("appearedSame")
 				out.Agreed = append(out.Agreed, act)
 			} else {
-				out.Actions = append(out.Actions, conflictAction(base, "appeared on both sides with different content"))
+				out.Actions = append(out.Actions, conflictAction(base, because("appearedDiffer")))
 			}
 
 		// One side edited, the other did not.
 		case lState == modified && rState == unchanged:
-			out.Actions = append(out.Actions, copyAction(base, Left, "changed on the left"))
+			out.Actions = append(out.Actions, copyAction(base, Left, because("changedOnSide", "side", "left")))
 		case rState == modified && lState == unchanged:
-			out.Actions = append(out.Actions, copyAction(base, Right, "changed on the right"))
+			out.Actions = append(out.Actions, copyAction(base, Right, because("changedOnSide", "side", "right")))
 
 		// Both edited.
 		case lState == modified && rState == modified:
@@ -416,26 +488,26 @@ func Build(ctx context.Context, left, right *scan.Listing, prev map[string]state
 				act.Kind = Copy
 				act.Src, act.Dst = Left, Right
 				act.SrcPath, act.DstPath = l.Path, r.Path
-				act.Reason = "changed on both sides to the same content"
+				act.Reason = because("changedBothSame")
 				out.Agreed = append(out.Agreed, act)
 			} else {
-				out.Actions = append(out.Actions, conflictAction(base, "changed on both sides"))
+				out.Actions = append(out.Actions, conflictAction(base, because("changedBoth")))
 			}
 
 		// One side deleted, the other left it alone.
 		case lState == deleted && rState == unchanged:
-			out.Actions = append(out.Actions, deleteAction(base, Right, "deleted on the left"))
+			out.Actions = append(out.Actions, deleteAction(base, Right, because("deletedOnSide", "side", "left")))
 		case rState == deleted && lState == unchanged:
-			out.Actions = append(out.Actions, deleteAction(base, Left, "deleted on the right"))
+			out.Actions = append(out.Actions, deleteAction(base, Left, because("deletedOnSide", "side", "right")))
 
 		// One side deleted while the other edited. An edit is evidence that
 		// somebody wanted the file; a deletion is evidence that somebody did
 		// not. Only one of those can be undone by hand later, so the edit wins
 		// and the file comes back.
 		case lState == deleted && rState == modified:
-			out.Actions = append(out.Actions, copyAction(base, Right, "edited on the right after being deleted on the left, restoring it"))
+			out.Actions = append(out.Actions, copyAction(base, Right, because("restoredOnSide", "side", "right", "other", "left")))
 		case rState == deleted && lState == modified:
-			out.Actions = append(out.Actions, copyAction(base, Left, "edited on the left after being deleted on the right, restoring it"))
+			out.Actions = append(out.Actions, copyAction(base, Left, because("restoredOnSide", "side", "left", "other", "right")))
 
 		default:
 			return nil, fmt.Errorf("unreachable comparison for %q: left=%v right=%v", p, lState, rState)
@@ -452,18 +524,18 @@ func Build(ctx context.Context, left, right *scan.Listing, prev map[string]state
 
 // settling reports whether a file is still being written to, and should
 // therefore be left where it is until the next run.
-func settling(l, r *scan.Entry, opt Options) (string, bool) {
+func settling(l, r *scan.Entry, opt Options) (Reason, bool) {
 	if opt.QuietPeriod <= 0 {
-		return "", false
+		return Reason{}, false
 	}
 	cutoff := opt.now().Add(-opt.QuietPeriod)
 	for side, e := range map[Side]*scan.Entry{Left: l, Right: r} {
 		if e == nil || !e.Mod.After(cutoff) {
 			continue
 		}
-		return fmt.Sprintf("changed on the %s side less than %s ago, waiting for it to settle", side, opt.QuietPeriod), true
+		return because("settling", "side", side.String(), "period", opt.QuietPeriod.String()), true
 	}
-	return "", false
+	return Reason{}, false
 }
 
 func classify(ctx context.Context, cur *scan.Entry, present, hasPrev bool, prev Facts, opt Options) status {
@@ -485,7 +557,7 @@ func sameLive(ctx context.Context, l, r *scan.Entry, opt Options) bool {
 	return Same(Facts{l.Size, l.Mod, l.Hash(ctx)}, Facts{r.Size, r.Mod, r.Hash(ctx)}, opt.ModWindow)
 }
 
-func copyAction(base Action, from Side, reason string) Action {
+func copyAction(base Action, from Side, reason Reason) Action {
 	base.Kind = Copy
 	base.Src = from
 	base.Dst = from.Other()
@@ -502,7 +574,7 @@ func copyAction(base Action, from Side, reason string) Action {
 	return base
 }
 
-func deleteAction(base Action, on Side, reason string) Action {
+func deleteAction(base Action, on Side, reason Reason) Action {
 	base.Kind = Delete
 	base.Dst = on
 	base.Reason = reason
@@ -516,7 +588,7 @@ func deleteAction(base Action, on Side, reason string) Action {
 	return base
 }
 
-func conflictAction(base Action, reason string) Action {
+func conflictAction(base Action, reason Reason) Action {
 	base.Kind = Conflict
 	base.Reason = reason
 	return base
@@ -604,7 +676,7 @@ func detectRenames(ctx context.Context, p *Plan) {
 			SrcPath:    src.Path,
 			DstPath:    src.Path,
 			OldDstPath: p.Actions[j].DstPath,
-			Reason:     fmt.Sprintf("renamed on the %s side", a.Src),
+			Reason:     because("renamedOnSide", "side", a.Src.String()),
 			LeftNow:    a.LeftNow,
 			RightNow:   a.RightNow,
 			Prev:       p.Actions[j].Prev,
@@ -686,7 +758,7 @@ type DirAction struct {
 	Path    string // matching key
 	DstPath string // the name to operate on, on the destination side
 	Dst     Side
-	Reason  string
+	Reason  Reason
 
 	// LeftPath and RightPath are the names each side ends up holding, which can
 	// differ in spelling for the same reason file names can.
@@ -738,20 +810,20 @@ func BuildDirs(left, right *scan.Listing, prev map[string]state.Dir) []DirAction
 
 		switch {
 		case onLeft && onRight:
-			out = append(out, DirAction{Kind: RecordDir, Path: k, LeftPath: lName, RightPath: rName, Reason: "on both sides"})
+			out = append(out, DirAction{Kind: RecordDir, Path: k, LeftPath: lName, RightPath: rName, Reason: because("dirBoth")})
 		case onLeft && !known:
 			out = append(out, DirAction{Kind: MakeDir, Path: k, DstPath: lName, Dst: Right,
-				LeftPath: lName, RightPath: lName, Reason: "new folder on the left"})
+				LeftPath: lName, RightPath: lName, Reason: because("dirNewOnSide", "side", "left")})
 		case onRight && !known:
 			out = append(out, DirAction{Kind: MakeDir, Path: k, DstPath: rName, Dst: Left,
-				LeftPath: rName, RightPath: rName, Reason: "new folder on the right"})
+				LeftPath: rName, RightPath: rName, Reason: because("dirNewOnSide", "side", "right")})
 		case onLeft && known:
-			out = append(out, DirAction{Kind: RemoveDir, Path: k, DstPath: lName, Dst: Left, Reason: "folder removed on the right"})
+			out = append(out, DirAction{Kind: RemoveDir, Path: k, DstPath: lName, Dst: Left, Reason: because("dirRemovedOnSide", "side", "right")})
 		case onRight && known:
-			out = append(out, DirAction{Kind: RemoveDir, Path: k, DstPath: rName, Dst: Right, Reason: "folder removed on the left"})
+			out = append(out, DirAction{Kind: RemoveDir, Path: k, DstPath: rName, Dst: Right, Reason: because("dirRemovedOnSide", "side", "left")})
 		default:
 			// Known before, gone from both sides. Only the record is left.
-			out = append(out, DirAction{Kind: RemoveDir, Path: k, Reason: "folder gone on both sides, dropping the record"})
+			out = append(out, DirAction{Kind: RemoveDir, Path: k, Reason: because("dirGoneBoth")})
 		}
 	}
 
