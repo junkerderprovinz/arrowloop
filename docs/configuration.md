@@ -42,6 +42,7 @@ manager happened to start the process in.
 | `name` | required | How the job is asked for and how its history is kept apart. Two jobs cannot share one. |
 | `left`, `right` | required | A local path or any rclone remote. Which is which makes no difference to the engine. |
 | `state` | required | Where this job remembers what the two sides agreed on. |
+| `direction` | both ways | `leftToRight` or `rightToLeft` makes one side the source and never writes to it. Anything else, including an empty field, is both ways. |
 | `schedule` | none | A cron expression. Empty means the job only runs when somebody asks. |
 | `watch` | `false` | Run when a local side changes. Needs a schedule as well; see below. |
 | `watchSettle` | `2s` | How long the tree must go quiet before a change counts. |
@@ -60,6 +61,15 @@ manager happened to start the process in.
     `brakePercent` and `brakeFloor` distinguish an explicit `0` from an absent
     field on purpose. Switching off the mass-delete brake has to be something
     you typed, never something you got by forgetting a line.
+
+!!! note "A one-way job restores, it does not skip"
+    Both sides are still compared, because comparing is how the engine knows
+    what changed. What the direction decides is what may be done with the
+    answer. A file edited on the destination is restored from the source and a
+    file deleted there is copied back, so the destination is made to agree.
+    Skipping those changes instead would report them again on every run and the
+    two sides would drift further apart for ever. What the source never had is
+    left alone: nothing there says it should exist.
 
 ## Watching
 

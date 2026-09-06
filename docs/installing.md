@@ -47,6 +47,17 @@ The schedules run for as long as the window is open. For a machine that should
 sync while nobody is looking, use `arrowloop daemon` and `arrowloop service`
 instead; see [the command line](cli.md).
 
+It puts an icon in the notification area, and the Look tab decides what the
+window buttons do: whether closing quits or hides, and whether minimising goes
+to the taskbar or to the notification area. Closing quits by default, because a
+close button that quietly leaves a program running is the kind of surprise
+somebody finds a week later. Both choices switch off together with the icon,
+since a window that hides with nothing left to bring it back is gone.
+
+Starting it a second time does not start a second copy. It brings the running
+window back, which is what a second double-click means when the first one is
+sitting in the notification area.
+
 !!! note "The builds are not signed"
     Windows shows its blue warning on first start (More info, then Run anyway),
     and macOS needs a right-click and Open the first time. That is a deliberate

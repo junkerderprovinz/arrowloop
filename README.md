@@ -172,6 +172,8 @@ Ticking is not decoration. The run re-plans and then keeps only the paths that w
 
 **Jobs can be edited in the browser**, on the Edit tab. It writes the same configuration file a person can still open in an editor, and it validates through the same function that guards it there: a refused edit fails in the validator's own words and leaves the file exactly as it was, because the new content is written beside it and only moved into place once it has passed. A saved edit rebuilds the schedules and the watchers without a restart.
 
+**A job's direction is an arrow**, in the list and in the editor: both ways, left to right, or right to left. A one-way job does not simply drop the changes that point the wrong way, because dropping them would leave the two sides further apart with every run. It **rebuilds** them: a file edited on the destination is restored from the source, and a file deleted there is copied back, so a one-way job converges on the source rather than drifting. What the source never had is left alone, since nothing there says it should exist.
+
 **The look is [GlimStone](https://github.com/junkerderprovinz/glimstone) 1.6.0**, and its reference tokens and appearance engine are copied in verbatim rather than reimplemented. Theme, corner shape and accent are the viewer's to set. The accent marks activity and nothing else, which is why the switches down the preview are deliberately colourless: every row arrives ticked, and a control that is on in all of them is not activity.
 
 **It listens on loopback by default.** This interface can start a job that deletes files and it has no login of its own; anyone who wants it reachable has to say so, and should put something in front of it that asks who they are.
@@ -196,7 +198,9 @@ The image carries no second executable. rclone is compiled in as a library, so t
 
 The desktop builds are **not signed**. Windows shows its blue warning on first start (More info, Run anyway), and macOS needs a right-click and Open the first time. That is a deliberate trade for now rather than an oversight: a certificate is a recurring cost, and it is worth paying once there are users to pay it for.
 
-**A tray icon is deliberately absent**, and for a real reason rather than as an omission. Wails v2 has no cross-platform tray, and the usual library wants the main thread on macOS, which is the same thread Wails wants. Half a tray on two of three platforms is worse than none, so this waits for Wails v3.
+**It sits in the notification area**, and the Look tab decides what the window buttons do: whether closing quits or hides, and whether minimising goes to the taskbar or to the icon. Closing quits by default, because a close button that quietly leaves a program running is the kind of surprise somebody finds a week later while wondering why a job keeps firing. Both choices switch off together with the icon, since a window that hides with nothing left to bring it back is gone. Starting the program a second time brings the running window back rather than opening a second copy.
+
+Wails v2 has no tray of its own, so this is `energye/systray`, which is the fork that does not demand the main thread on macOS. The icon is built around the same PNG the window wears, at startup, rather than committed as a second file: two icon files are two things to remember when the logo changes, and the day one is forgotten is the day the window and the notification area wear different marks. **Verified by hand on Windows only**; the other two builds are compiled but untested.
 
 <br>
 
