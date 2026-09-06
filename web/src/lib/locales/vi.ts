@@ -206,6 +206,19 @@ const vi: Translations = {
   'window.closeHint': 'Mặc định tắt, vì một nút đóng mà không đóng là điều bất ngờ, còn nút ẩn đi một chương trình đang chạy thuộc loại mà cả tuần sau mới phát hiện, trong lúc thắc mắc sao một công việc vẫn còn chạy.',
   'window.minimise': 'Thu nhỏ thì vào khu thông báo',
   'window.minimiseHint': 'Thay vì thanh tác vụ. Cả hai cách đều gọi cửa sổ về từ biểu tượng.',
+  'confirm.deleteRemote': 'Xóa đích lưu trữ này',
+  'confirm.deleteRemoteStakes': 'Thiết lập của {name} bị gỡ khỏi cấu hình rclone, kèm theo mọi mật khẩu và khóa nằm ở đó. Trước đó không có gì được sao đi đâu cả, và không có đường lui: dựng lại nghĩa là gõ lại thông tin đăng nhập. Những công việc trỏ tới đó sẽ hỏng từ lần chạy kế tiếp cho tới khi trỏ sang chỗ khác.',
+  'confirm.delete': 'Xóa',
+  'confirm.cancel': 'Để nguyên',
+  'about.title': 'Về ứng dụng này',
+  'about.body': 'Có gì sai, hay thiếu gì không? Cứ nói. Một phiếu trong kho mã là nơi tốt nhất, vì câu trả lời nằm lại đúng chỗ người sau tìm thấy, mà gửi thư cũng được.',
+  'about.version': 'ArrowLoop',
+  'about.glimstone': 'GlimStone',
+  'about.unreleased': '{version}, bản dựng chưa phát hành',
+  'about.repo': 'Mở một phiếu',
+  'about.mail': 'Gửi thư',
+  'secret.show': 'Hiện',
+  'secret.hide': 'Ẩn',
 }
 
 export default vi

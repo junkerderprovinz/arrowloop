@@ -56,6 +56,10 @@ GLYPHS = [
     ("IconBothWays", "interface-essential/arrow-reload-horizontal-1.svg", "Both ways"),
     ("IconToRight", "interface-essential/move-right.svg", "Left to right only"),
     ("IconToLeft", "interface-essential/move-left.svg", "Right to left only"),
+
+    # The reveal eye on a field holding a secret, and its slashed twin.
+    ("IconVisible", "interface-essential/visible.svg", "Show a stored secret"),
+    ("IconHidden", "interface-essential/invisible-1.svg", "Hide it again"),
 ]
 
 HEADER = '''// ArrowLoop's icon set.

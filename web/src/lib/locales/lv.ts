@@ -206,6 +206,19 @@ const lv: Translations = {
   'window.closeHint': 'Pēc noklusējuma izslēgts, jo aizvēršanas poga, kas neaizver, ir pārsteigums, bet tā, kas paslēpj strādājošu programmu, ir tāda, ko atklāj nedēļu vēlāk, brīnoties, kāpēc darbs vēl joprojām iet.',
   'window.minimise': 'Minimizēšana aiziet uz paziņojumu apgabalu',
   'window.minimiseHint': 'Nevis uz uzdevumjoslu. Logs abos gadījumos atgriežas no ikonas.',
+  'confirm.deleteRemote': 'Dzēst šo krātuvi',
+  'confirm.deleteRemoteStakes': '{name} iestatījumi tiek noņemti no rclone konfigurācijas kopā ar katru tur esošo paroli un atslēgu. Iepriekš nekas nekur netiek kopēts, un ceļa atpakaļ nav: iestatīt to no jauna nozīmē no jauna ievadīt pieteikšanās datus. Darbi, kas norāda turp, nākamajā reizē neizdosies, līdz tie norādīs citur.',
+  'confirm.delete': 'Dzēst',
+  'confirm.cancel': 'Atstāt',
+  'about.title': 'Par šo lietotni',
+  'about.body': 'Kaut kas nav kārtībā vai kaut kā trūkst? Sakiet. Ziņojums krātuvē ir labākā vieta, jo atbilde paliek tur, kur to atradīs nākamais, un e-pasts arī der.',
+  'about.version': 'ArrowLoop',
+  'about.glimstone': 'GlimStone',
+  'about.unreleased': '{version}, nepublicēts būvējums',
+  'about.repo': 'Izveidot ziņojumu',
+  'about.mail': 'Sūtīt e-pastu',
+  'secret.show': 'Rādīt',
+  'secret.hide': 'Slēpt',
 }
 
 export default lv

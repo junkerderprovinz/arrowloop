@@ -206,6 +206,19 @@ const eu: Translations = {
   'window.closeHint': 'Lehenespenez itzalita, ixten ez duen ixteko botoi bat ustekabea baita, eta martxan dagoen programa bat ezkutatzen duena astebete geroago aurkitzen den horietakoa da, lan bat zergatik dabilen oraindik galdetuz.',
   'window.minimise': 'Minimizatzeak jakinarazpen-eremura darama',
   'window.minimiseHint': 'Ataza-barraren ordez. Leihoa ikonotik itzultzen da bi kasuetan.',
+  'confirm.deleteRemote': 'Biltegi-helburu hau ezabatu',
+  'confirm.deleteRemoteStakes': '{name} helburuaren ezarpenak rclone-ren konfiguraziotik kentzen dira, han gordetako pasahitz edo gako oro barne. Aurretik ez da ezer inora kopiatzen eta ez dago atzera bueltarik: berriz konfiguratzeak kredentzialak berriz idaztea esan nahi du. Hara begiratzen duten lanek huts egingo dute hurrengo aldian, beste nonbaitera begiratu arte.',
+  'confirm.delete': 'Ezabatu',
+  'confirm.cancel': 'Utzi horrela',
+  'about.title': 'Aplikazio honi buruz',
+  'about.body': 'Zerbait gaizki dago, edo falta da? Esan. Biltegiko arazo-txartel bat da lekurik onena, erantzuna hurrengoak aurkituko duen tokian gelditzen delako, eta posta elektronikoa ere ondo dago.',
+  'about.version': 'ArrowLoop',
+  'about.glimstone': 'GlimStone',
+  'about.unreleased': '{version}, argitaratu gabeko eraikuntza',
+  'about.repo': 'Arazo-txartela ireki',
+  'about.mail': 'Posta bidali',
+  'secret.show': 'Erakutsi',
+  'secret.hide': 'Ezkutatu',
 }
 
 export default eu

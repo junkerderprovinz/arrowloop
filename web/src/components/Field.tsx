@@ -1,7 +1,9 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 
 import { enableSelectScroll } from '../lib/selectScroll'
+import { useT } from '../lib/i18n'
+import { IconHidden, IconVisible } from './glyphs'
 
 /**
  * An explanation lives in a bubble, never on the page.
@@ -211,6 +213,53 @@ export function Choice<T extends string>({
       >
         <path d="M2 4l3 3 3-3" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
+    </div>
+  )
+}
+
+/**
+ * A field holding a secret, with its show and hide control inside it.
+ *
+ * The eye is furniture rather than a control: a bare glyph the field's own
+ * trailing padding reserves room for, neutral rather than accented, because it
+ * means "look" and not "activity". It does not change the field's width either,
+ * or secret fields would read as narrower than every other field, which is the
+ * one thing the eye should not draw attention to.
+ */
+export function Secret({
+  value,
+  onChange,
+  placeholder,
+}: {
+  value: string
+  onChange: (next: string) => void
+  placeholder?: string
+}) {
+  const [shown, setShown] = useState(false)
+  const { t } = useT()
+  const label = shown ? t('secret.hide') : t('secret.show')
+
+  return (
+    <div className="relative w-full">
+      <input
+        type={shown ? 'text' : 'password'}
+        value={value}
+        placeholder={placeholder}
+        onChange={(e) => onChange(e.target.value)}
+        className="w-full bg-carbon-surface2 py-2 pl-3 pr-9 font-mono text-[12px] text-carbon-text outline-none transition placeholder:font-sans placeholder:text-carbon-textMuted focus:brightness-125"
+        style={{ borderRadius: 'var(--radius-control)' }}
+      />
+      <button
+        type="button"
+        onClick={() => setShown((was) => !was)}
+        title={label}
+        data-tip={label}
+        aria-label={label}
+        aria-pressed={shown}
+        className="absolute right-2 top-1/2 -translate-y-1/2 text-carbon-textMuted transition hover:text-carbon-text"
+      >
+        {shown ? <IconHidden /> : <IconVisible />}
+      </button>
     </div>
   )
 }

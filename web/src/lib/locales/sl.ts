@@ -206,6 +206,19 @@ const sl: Translations = {
   'window.closeHint': 'Privzeto izklopljeno, ker je gumb za zapiranje, ki ne zapre, presenečenje, tisti pa, ki skrije delujoč program, je tiste vrste, ki jo odkriješ teden pozneje in se sprašuješ, zakaj opravilo še teče.',
   'window.minimise': 'Pomanjšanje gre v obvestilno območje',
   'window.minimiseHint': 'Namesto v opravilno vrstico. Okno se v obeh primerih vrne z ikone.',
+  'confirm.deleteRemote': 'Izbrisati to shrambo',
+  'confirm.deleteRemoteStakes': 'Nastavitve za {name} se odstranijo iz nastavitev rclone, skupaj z vsakim geslom in ključem, ki leži tam. Prej se nič nikamor ne prekopira in poti nazaj ni: znova nastaviti pomeni znova vtipkati poverilnice. Opravila, ki kažejo tja, bodo ob naslednjem teku spodletela, dokler ne bodo kazala drugam.',
+  'confirm.delete': 'Izbriši',
+  'confirm.cancel': 'Pusti',
+  'about.title': 'O tej aplikaciji',
+  'about.body': 'Nekaj ne deluje ali manjka? Povejte. Prijava v repozitoriju je najboljše mesto, ker odgovor ostane tam, kjer ga najde naslednji, in e-pošta je tudi v redu.',
+  'about.version': 'ArrowLoop',
+  'about.glimstone': 'GlimStone',
+  'about.unreleased': '{version}, neobjavljena gradnja',
+  'about.repo': 'Odpri prijavo',
+  'about.mail': 'Pošlji e-pošto',
+  'secret.show': 'Pokaži',
+  'secret.hide': 'Skrij',
 }
 
 export default sl

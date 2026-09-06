@@ -206,6 +206,19 @@ const ms: Translations = {
   'window.closeHint': 'Dimatikan secara lalai, kerana butang tutup yang tidak menutup itu mengejutkan, dan yang menyembunyikan program yang sedang berjalan adalah jenis yang baru ditemui seminggu kemudian sambil tertanya-tanya mengapa satu tugasan masih berjalan.',
   'window.minimise': 'Meminimumkan pergi ke kawasan pemberitahuan',
   'window.minimiseHint': 'Bukannya bar tugas. Tetingkap kembali daripada ikon dalam kedua-dua keadaan.',
+  'confirm.deleteRemote': 'Padam destinasi simpanan ini',
+  'confirm.deleteRemoteStakes': 'Tetapan {name} dikeluarkan daripada konfigurasi rclone, termasuk setiap kata laluan dan kunci yang tersimpan di situ. Sebelum itu tiada apa disalin ke mana-mana dan tiada jalan balik: menyediakannya semula bermakna menaip semula butiran log masuk. Tugasan yang menunjuk ke situ akan gagal pada larian seterusnya sehingga ia menunjuk ke tempat lain.',
+  'confirm.delete': 'Padam',
+  'confirm.cancel': 'Biarkan',
+  'about.title': 'Mengenai aplikasi ini',
+  'about.body': 'Ada yang tak kena, atau ada yang kurang? Beritahu sahaja. Satu isu dalam repositori ialah tempat terbaik, kerana jawapannya kekal di tempat orang seterusnya menemuinya, dan e-mel pun boleh.',
+  'about.version': 'ArrowLoop',
+  'about.glimstone': 'GlimStone',
+  'about.unreleased': '{version}, binaan tidak diterbitkan',
+  'about.repo': 'Buka isu',
+  'about.mail': 'Hantar e-mel',
+  'secret.show': 'Tunjuk',
+  'secret.hide': 'Sembunyi',
 }
 
 export default ms

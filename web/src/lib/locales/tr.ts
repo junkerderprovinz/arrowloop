@@ -206,6 +206,19 @@ const tr: Translations = {
   'window.closeHint': 'Varsayılan olarak kapalı, çünkü kapatmayan bir kapatma düğmesi sürprizdir; çalışan bir programı gizleyen ise bir hafta sonra, bir işin neden hâlâ döndüğünü merak ederken keşfedilen türdendir.',
   'window.minimise': 'Küçültmek bildirim alanına gider',
   'window.minimiseHint': 'Görev çubuğu yerine. Pencere her iki durumda da simgeden geri gelir.',
+  'confirm.deleteRemote': 'Bu depolama hedefini sil',
+  'confirm.deleteRemoteStakes': '{name} ayarları rclone yapılandırmasından, orada duran her parola ve anahtarla birlikte kaldırılır. Öncesinde hiçbir şey hiçbir yere kopyalanmaz ve geri dönüş yoktur: yeniden kurmak, kimlik bilgilerini yeniden yazmak demektir. Oraya işaret eden işler, başka bir yeri gösterene kadar bir sonraki çalışmada başarısız olur.',
+  'confirm.delete': 'Sil',
+  'confirm.cancel': 'Kalsın',
+  'about.title': 'Bu uygulama hakkında',
+  'about.body': 'Bir sorun mu var, bir şey mi eksik? Söyle. Depodaki bir kayıt en iyi yerdir, çünkü cevap bir sonrakinin bulacağı yerde kalır; e-posta da olur.',
+  'about.version': 'ArrowLoop',
+  'about.glimstone': 'GlimStone',
+  'about.unreleased': '{version}, yayımlanmamış yapı',
+  'about.repo': 'Kayıt aç',
+  'about.mail': 'E-posta gönder',
+  'secret.show': 'Göster',
+  'secret.hide': 'Gizle',
 }
 
 export default tr

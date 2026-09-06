@@ -206,6 +206,19 @@ const nl: Translations = {
   'window.closeHint': 'Standaard uit, want een sluitknop die niet sluit is een verrassing, en eentje die een draaiend programma verbergt is het soort dat je een week later ontdekt terwijl je je afvraagt waarom een taak nog loopt.',
   'window.minimise': 'Minimaliseren gaat naar het systeemvak',
   'window.minimiseHint': 'In plaats van de taakbalk. Het venster komt hoe dan ook terug via het pictogram.',
+  'confirm.deleteRemote': 'Dit opslagdoel verwijderen',
+  'confirm.deleteRemoteStakes': 'De instellingen van {name} worden uit de rclone-configuratie gehaald, inclusief elk wachtwoord en elke sleutel die daar ligt. Er wordt vooraf niets ergens heen gekopieerd en er is geen weg terug: opnieuw instellen betekent de gegevens opnieuw intypen. Taken die ernaar wijzen falen bij hun volgende run totdat ze ergens anders heen wijzen.',
+  'confirm.delete': 'Verwijderen',
+  'confirm.cancel': 'Laten staan',
+  'about.title': 'Over deze app',
+  'about.body': 'Iets mis, of iets dat ontbreekt? Zeg het. Een issue in het repository is de beste plek, want daar blijft het antwoord staan waar de volgende het vindt, en een e-mail kan ook.',
+  'about.version': 'ArrowLoop',
+  'about.glimstone': 'GlimStone',
+  'about.unreleased': '{version}, geen uitgebrachte build',
+  'about.repo': 'Een issue openen',
+  'about.mail': 'Een e-mail sturen',
+  'secret.show': 'Tonen',
+  'secret.hide': 'Verbergen',
 }
 
 export default nl

@@ -206,6 +206,19 @@ const cs: Translations = {
   'window.closeHint': 'Ve výchozím stavu vypnuto, protože tlačítko zavření, které nezavírá, je překvapení, a to, které skryje běžící program, je ten druh, jenž se objeví o týden později s otázkou, proč úloha pořád běží.',
   'window.minimise': 'Minimalizace jde do oznamovací oblasti',
   'window.minimiseHint': 'Místo na hlavní panel. Okno se v obou případech vrací z ikony.',
+  'confirm.deleteRemote': 'Smazat toto úložiště',
+  'confirm.deleteRemoteStakes': 'Nastavení {name} zmizí z konfigurace rclone, včetně každého hesla a klíče, který tam leží. Předtím se nic nikam nekopíruje a cesta zpět není: nastavit to znovu znamená znovu napsat přihlašovací údaje. Úlohy, které tam míří, při dalším běhu selžou, dokud nezamíří jinam.',
+  'confirm.delete': 'Smazat',
+  'confirm.cancel': 'Nechat být',
+  'about.title': 'O této aplikaci',
+  'about.body': 'Něco nefunguje nebo něco chybí? Řekněte to. Hlášení v repozitáři je nejlepší místo, protože odpověď zůstane tam, kde ji najde další, a e-mail je taky v pořádku.',
+  'about.version': 'ArrowLoop',
+  'about.glimstone': 'GlimStone',
+  'about.unreleased': '{version}, nevydané sestavení',
+  'about.repo': 'Založit hlášení',
+  'about.mail': 'Napsat e-mail',
+  'secret.show': 'Zobrazit',
+  'secret.hide': 'Skrýt',
 }
 
 export default cs

@@ -206,6 +206,19 @@ const hu: Translations = {
   'window.closeHint': 'Alapból ki, mert a bezárás gomb, ami nem zár be, meglepetés, az pedig, amelyik egy futó programot rejt el, az a fajta, amit egy héttel később fedez fel az ember, azon tűnődve, miért fut még mindig egy feladat.',
   'window.minimise': 'A kis méret az értesítési területre visz',
   'window.minimiseHint': 'A tálca helyett. Az ablak mindkét esetben az ikonról jön vissza.',
+  'confirm.deleteRemote': 'Ennek a tárolócélnak a törlése',
+  'confirm.deleteRemoteStakes': 'A(z) {name} beállításai kikerülnek az rclone konfigurációjából, benne minden ott tárolt jelszóval és kulccsal. Előtte semmit nem másol sehová, és nincs visszaút: újra beállítani annyit tesz, mint újra begépelni az adatokat. Az arra mutató feladatok a következő futásnál elbuknak, amíg máshová nem mutatnak.',
+  'confirm.delete': 'Törlés',
+  'confirm.cancel': 'Maradjon',
+  'about.title': 'Erről az alkalmazásról',
+  'about.body': 'Valami hibás, vagy hiányzik? Mondd el. A tárolóban nyitott hibajegy a legjobb hely, mert a válasz ott marad, ahol a következő megtalálja, és egy e-mail is jó.',
+  'about.version': 'ArrowLoop',
+  'about.glimstone': 'GlimStone',
+  'about.unreleased': '{version}, nem kiadott változat',
+  'about.repo': 'Hibajegy nyitása',
+  'about.mail': 'E-mail írása',
+  'secret.show': 'Mutasd',
+  'secret.hide': 'Rejtsd el',
 }
 
 export default hu

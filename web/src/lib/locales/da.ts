@@ -206,6 +206,19 @@ const da: Translations = {
   'window.closeHint': 'Slået fra fra start, for en luk-knap, der ikke lukker, er en overraskelse, og en, der skjuler et kørende program, er den slags, man opdager en uge senere og undrer sig over, hvorfor et job stadig kører.',
   'window.minimise': 'Minimering går til meddelelsesområdet',
   'window.minimiseHint': 'I stedet for proceslinjen. Vinduet kommer tilbage via ikonet i begge tilfælde.',
+  'confirm.deleteRemote': 'Slet dette lagermål',
+  'confirm.deleteRemoteStakes': 'Indstillingerne for {name} fjernes fra rclones opsætning, inklusive enhver adgangskode og nøgle, der ligger der. Der kopieres ikke noget nogen steder først, og der er ingen vej tilbage: at sætte det op igen betyder at taste oplysningerne ind på ny. Job, der peger derhen, fejler ved næste kørsel, indtil de peger et andet sted hen.',
+  'confirm.delete': 'Slet',
+  'confirm.cancel': 'Lad stå',
+  'about.title': 'Om denne app',
+  'about.body': 'Noget galt, eller noget der mangler? Sig til. En sag i arkivet er det bedste sted, for svaret bliver, hvor den næste finder det, og en mail er også fin.',
+  'about.version': 'ArrowLoop',
+  'about.glimstone': 'GlimStone',
+  'about.unreleased': '{version}, ikke et udgivet build',
+  'about.repo': 'Opret en sag',
+  'about.mail': 'Skriv en mail',
+  'secret.show': 'Vis',
+  'secret.hide': 'Skjul',
 }
 
 export default da

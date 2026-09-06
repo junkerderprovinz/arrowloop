@@ -5,6 +5,7 @@ import { Choice, Field, Info, Switch } from './components/Field'
 import { Selector } from './components/Selector'
 import { IconEdit, IconHistory, IconJobs, IconLook, IconTargets } from './components/glyphs'
 import { AccentSwatches, PaletteSwatches } from './components/Swatches'
+import { About } from './components/About'
 import { History, Jobs } from './pages/Jobs'
 import { Preview } from './pages/Preview'
 import { Editor } from './pages/Editor'
@@ -77,6 +78,7 @@ export function App() {
   // Null until asked, and null for ever on a build with no window. The card is
   // left out entirely rather than shown inert.
   const [window_, setWindow] = useState<WindowSettings | null>(null)
+  const [version, setVersion] = useState('dev')
   const [labels, setLabels] = useState<Record<ControlAxis, LabelMode>>(() => ({
     buttons: getLabelMode('buttons'),
     sidebar: getLabelMode('sidebar'),
@@ -98,7 +100,10 @@ export function App() {
   }, [])
 
   useEffect(() => {
-    void api.window().then(setWindow)
+    void api.capabilities().then((can) => {
+      setVersion(can.version || 'dev')
+      if (can.window) void api.window().then(setWindow)
+    })
   }, [])
 
   useEffect(() => {
@@ -235,6 +240,7 @@ export function App() {
             setLabelMode(axis, next)
             setLabels((prev) => ({ ...prev, [axis]: next }))
           }}
+          version={version}
           window={window_}
           onWindow={(next) => {
             setWindow(next)
@@ -270,6 +276,7 @@ function Look({
   onMotion,
   labels,
   onLabels,
+  version,
   window: windowSettings,
   onWindow,
   lang,
@@ -288,6 +295,7 @@ function Look({
   onMotion: (next: MotionIntensity) => void
   labels: Record<ControlAxis, LabelMode>
   onLabels: (axis: ControlAxis, next: LabelMode) => void
+  version: string
   window: WindowSettings | null
   onWindow: (next: WindowSettings) => void
   lang: string
@@ -439,6 +447,8 @@ function Look({
           ))}
         </div>
       </Card>
+
+      <About version={version} />
     </Stack>
   )
 }

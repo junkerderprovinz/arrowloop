@@ -206,6 +206,19 @@ const ja: Translations = {
   'window.closeHint': '既定では切ってあります。閉じないのに閉じるボタンというのは驚きですし、動いているプログラムを隠すものは、一週間後に「なぜまだジョブが動いているのか」と気づく類のものだからです。',
   'window.minimise': '最小化で通知領域へ',
   'window.minimiseHint': 'タスクバーではなく。どちらの場合もアイコンから戻せます。',
+  'confirm.deleteRemote': 'この保存先を削除',
+  'confirm.deleteRemoteStakes': '{name} の設定は rclone の構成から消えます。そこに置かれたパスワードや鍵も一緒です。事前にどこへも複製せず、元には戻せません。もう一度使うには資格情報を打ち直すことになります。ここを指しているジョブは、別の場所を指すまで次回から失敗します。',
+  'confirm.delete': '削除する',
+  'confirm.cancel': '残す',
+  'about.title': 'このアプリについて',
+  'about.body': 'おかしいところ、足りないところがありますか。教えてください。リポジトリの課題が一番よい場所です。答えが次の人の見つかるところに残るからです。メールでもかまいません。',
+  'about.version': 'ArrowLoop',
+  'about.glimstone': 'GlimStone',
+  'about.unreleased': '{version}、公開されていないビルド',
+  'about.repo': '課題を作る',
+  'about.mail': 'メールを送る',
+  'secret.show': '表示',
+  'secret.hide': '隠す',
 }
 
 export default ja

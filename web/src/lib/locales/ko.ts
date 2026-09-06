@@ -206,6 +206,19 @@ const ko: Translations = {
   'window.closeHint': '기본은 꺼짐입니다. 닫지 않는 닫기 단추는 뜻밖의 일이고, 돌아가는 프로그램을 숨기는 쪽은 일주일 뒤에 왜 작업이 아직 도는지 궁금해하며 발견하는 종류이기 때문입니다.',
   'window.minimise': '최소화하면 알림 영역으로',
   'window.minimiseHint': '작업 표시줄 대신에. 어느 쪽이든 아이콘에서 다시 불러옵니다.',
+  'confirm.deleteRemote': '이 저장 대상 삭제',
+  'confirm.deleteRemoteStakes': '{name}의 설정이 rclone 구성에서 사라집니다. 거기에 담긴 암호와 키도 함께입니다. 미리 어디에도 복사하지 않으며 되돌릴 수 없습니다. 다시 쓰려면 자격 증명을 다시 입력해야 합니다. 이곳을 가리키는 작업은 다른 곳을 가리킬 때까지 다음 실행부터 실패합니다.',
+  'confirm.delete': '삭제',
+  'confirm.cancel': '그대로 두기',
+  'about.title': '이 앱에 대하여',
+  'about.body': '잘못된 곳이나 빠진 곳이 있나요. 말씀해 주세요. 저장소의 이슈가 가장 좋은 곳입니다. 답이 다음 사람이 찾을 자리에 남기 때문입니다. 메일도 괜찮습니다.',
+  'about.version': 'ArrowLoop',
+  'about.glimstone': 'GlimStone',
+  'about.unreleased': '{version}, 공개되지 않은 빌드',
+  'about.repo': '이슈 열기',
+  'about.mail': '메일 보내기',
+  'secret.show': '보이기',
+  'secret.hide': '감추기',
 }
 
 export default ko

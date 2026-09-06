@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/junkerderprovinz/arrowloop/internal/boot"
 	"github.com/junkerderprovinz/arrowloop/internal/deskset"
 )
 
@@ -26,6 +27,10 @@ import (
 func (s *Server) capabilities(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, map[string]any{
 		"window": s.Window != nil,
+		// Read from the build rather than typed anywhere on the page: a number
+		// written down twice is a number that disagrees with itself the day one
+		// of them is bumped.
+		"version": boot.Version,
 	})
 }
 

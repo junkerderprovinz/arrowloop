@@ -206,6 +206,19 @@ const et: Translations = {
   'window.closeHint': 'Vaikimisi väljas, sest sulgemisnupp, mis ei sulge, on üllatus, ja see, mis peidab töötava programmi, on seda sorti, mille avastab nädal hiljem, imestades, miks üks töö ikka käib.',
   'window.minimise': 'Minimeerimine läheb teavitusalale',
   'window.minimiseHint': 'Tegumiriba asemel. Aken tuleb mõlemal juhul ikoonilt tagasi.',
+  'confirm.deleteRemote': 'Kustuta see salvestuse sihtkoht',
+  'confirm.deleteRemoteStakes': 'Sihtkoha {name} seaded eemaldatakse rclone\'i seadistusest koos iga seal oleva parooli ja võtmega. Enne seda ei kopeerita midagi kuhugi ja tagasiteed ei ole: uuesti seadistamine tähendab tunnuste uuesti sisestamist. Sinna osutavad tööd kukuvad järgmisel käivitusel läbi, kuni nad kuhugi mujale osutavad.',
+  'confirm.delete': 'Kustuta',
+  'confirm.cancel': 'Jäta alles',
+  'about.title': 'Sellest rakendusest',
+  'about.body': 'Midagi on valesti või puudu? Ütle. Hoidlas olev teade on parim koht, sest vastus jääb sinna, kust järgmine selle leiab, ja e-kiri sobib samuti.',
+  'about.version': 'ArrowLoop',
+  'about.glimstone': 'GlimStone',
+  'about.unreleased': '{version}, avaldamata ehitus',
+  'about.repo': 'Ava teade',
+  'about.mail': 'Saada e-kiri',
+  'secret.show': 'Näita',
+  'secret.hide': 'Peida',
 }
 
 export default et

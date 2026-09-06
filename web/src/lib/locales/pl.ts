@@ -206,6 +206,19 @@ const pl: Translations = {
   'window.closeHint': 'Domyślnie wyłączone, bo przycisk zamykania, który nie zamyka, to niespodzianka, a taki, który ukrywa działający program, to ta odmiana, którą odkrywa się tydzień później, zastanawiając się, czemu zadanie wciąż chodzi.',
   'window.minimise': 'Minimalizacja trafia do obszaru powiadomień',
   'window.minimiseHint': 'Zamiast na pasek zadań. Okno w obu przypadkach wraca z ikony.',
+  'confirm.deleteRemote': 'Usunąć ten cel magazynowy',
+  'confirm.deleteRemoteStakes': 'Ustawienia {name} znikają z konfiguracji rclone, razem z każdym hasłem i kluczem, który tam leży. Wcześniej nic nigdzie nie jest kopiowane i nie ma odwrotu: skonfigurowanie tego od nowa znaczy ponowne wpisanie danych. Zadania wskazujące tam zawiodą przy następnym uruchomieniu, dopóki nie wskażą gdzie indziej.',
+  'confirm.delete': 'Usuń',
+  'confirm.cancel': 'Zostaw',
+  'about.title': 'O tej aplikacji',
+  'about.body': 'Coś nie tak albo czegoś brakuje? Powiedz. Zgłoszenie w repozytorium to najlepsze miejsce, bo odpowiedź zostaje tam, gdzie znajdzie ją następny, a e-mail też jest w porządku.',
+  'about.version': 'ArrowLoop',
+  'about.glimstone': 'GlimStone',
+  'about.unreleased': '{version}, wydanie nieopublikowane',
+  'about.repo': 'Załóż zgłoszenie',
+  'about.mail': 'Napisz e-mail',
+  'secret.show': 'Pokaż',
+  'secret.hide': 'Ukryj',
 }
 
 export default pl

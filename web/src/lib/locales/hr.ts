@@ -206,6 +206,19 @@ const hr: Translations = {
   'window.closeHint': 'Zadano isključeno, jer gumb za zatvaranje koji ne zatvara jest iznenađenje, a onaj koji skriva program u radu one je vrste koju otkriješ tjedan dana poslije pitajući se zašto zadatak još radi.',
   'window.minimise': 'Smanjivanje ide u područje obavijesti',
   'window.minimiseHint': 'Umjesto na traku sa zadacima. Prozor se u oba slučaja vraća s ikone.',
+  'confirm.deleteRemote': 'Izbrisati ovu pohranu',
+  'confirm.deleteRemoteStakes': 'Postavke za {name} uklanjaju se iz rcloneove konfiguracije, zajedno sa svakom lozinkom i ključem koji ondje leže. Prije toga ništa se nikamo ne kopira i povratka nema: ponovno postaviti znači ponovno utipkati podatke. Zadaci koji pokazuju onamo pri sljedećem pokretanju neće uspjeti dok ne pokažu drugamo.',
+  'confirm.delete': 'Izbriši',
+  'confirm.cancel': 'Ostavi',
+  'about.title': 'O ovoj aplikaciji',
+  'about.body': 'Nešto ne valja ili nešto nedostaje? Recite. Prijava u repozitoriju najbolje je mjesto jer odgovor ostaje ondje gdje će ga sljedeći naći, a e-pošta je isto u redu.',
+  'about.version': 'ArrowLoop',
+  'about.glimstone': 'GlimStone',
+  'about.unreleased': '{version}, neobjavljena gradnja',
+  'about.repo': 'Otvori prijavu',
+  'about.mail': 'Pošalji e-poštu',
+  'secret.show': 'Prikaži',
+  'secret.hide': 'Sakrij',
 }
 
 export default hr

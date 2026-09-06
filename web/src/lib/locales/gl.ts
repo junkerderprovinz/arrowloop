@@ -206,6 +206,19 @@ const gl: Translations = {
   'window.closeHint': 'Desactivado por defecto, porque un botón de pechar que non pecha é unha sorpresa, e un que agocha un programa en marcha é dos que se descobren unha semana despois preguntándose por que segue a correr unha tarefa.',
   'window.minimise': 'Minimizar vai á área de notificación',
   'window.minimiseHint': 'En vez da barra de tarefas. A xanela volve desde a icona en calquera caso.',
+  'confirm.deleteRemote': 'Borrar este destino de almacenamento',
+  'confirm.deleteRemoteStakes': 'Os axustes de {name} retíranse da configuración do rclone, incluído calquera contrasinal ou chave que estea aí. Antes non se copia nada a ningures e non hai volta atrás: configuralo de novo significa tecleares as credenciais outra vez. As tarefas que apunten aí fallarán na seguinte execución ata que apunten a outro sitio.',
+  'confirm.delete': 'Borrar',
+  'confirm.cancel': 'Deixalo',
+  'about.title': 'Sobre esta aplicación',
+  'about.body': 'Algo vai mal, ou falta algo? Dío. Unha incidencia no repositorio é o mellor sitio, porque a resposta queda onde a atopará o seguinte, e un correo tamén vale.',
+  'about.version': 'ArrowLoop',
+  'about.glimstone': 'GlimStone',
+  'about.unreleased': '{version}, compilación non publicada',
+  'about.repo': 'Abrir unha incidencia',
+  'about.mail': 'Escribir un correo',
+  'secret.show': 'Amosar',
+  'secret.hide': 'Agochar',
 }
 
 export default gl

@@ -206,6 +206,19 @@ const is: Translations = {
   'window.closeHint': 'Sjálfgefið af, því lokunarhnappur sem lokar ekki er óvænt, og sá sem felur forrit í gangi er af þeirri gerð sem finnst viku síðar þegar spurt er af hverju verk sé enn í gangi.',
   'window.minimise': 'Minnkun fer á tilkynningasvæðið',
   'window.minimiseHint': 'Í stað verkefnastikunnar. Glugginn kemur aftur af tákninu hvort sem er.',
+  'confirm.deleteRemote': 'Eyða þessum geymsluáfangastað',
+  'confirm.deleteRemoteStakes': 'Stillingar fyrir {name} eru fjarlægðar úr uppsetningu rclone, þar með talið hvert lykilorð og lykill sem þar liggur. Ekkert er afritað neitt fyrst og engin leið er til baka: að setja það upp aftur þýðir að slá aðgangsupplýsingarnar inn á ný. Verk sem benda þangað bregðast í næstu keyrslu þar til þau benda annað.',
+  'confirm.delete': 'Eyða',
+  'confirm.cancel': 'Láta vera',
+  'about.title': 'Um þetta forrit',
+  'about.body': 'Eitthvað að, eða eitthvað sem vantar? Segðu frá. Mál í geymslunni er besti staðurinn, því svarið verður kyrrt þar sem næsti finnur það, og tölvupóstur er líka fínn.',
+  'about.version': 'ArrowLoop',
+  'about.glimstone': 'GlimStone',
+  'about.unreleased': '{version}, ekki útgefin smíð',
+  'about.repo': 'Stofna mál',
+  'about.mail': 'Senda tölvupóst',
+  'secret.show': 'Sýna',
+  'secret.hide': 'Fela',
 }
 
 export default is

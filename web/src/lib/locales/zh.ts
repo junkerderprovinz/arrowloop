@@ -206,6 +206,19 @@ const zh: Translations = {
   'window.closeHint': '默认关闭。一个不关闭的关闭按钮本身就出人意料，而把正在运行的程序藏起来的那种，往往一周后才被发现，还纳闷任务怎么还在跑。',
   'window.minimise': '最小化进通知区域',
   'window.minimiseHint': '而不是任务栏。两种情况下都从图标唤回窗口。',
+  'confirm.deleteRemote': '删除这个存储目标',
+  'confirm.deleteRemoteStakes': '{name} 的设置会从 rclone 的配置里移除，连同存在那里的任何口令和密钥。事先不会往任何地方复制，也没有回头路：再次配置意味着重新输入凭据。指向它的任务从下次运行起会失败，直到改指别处。',
+  'confirm.delete': '删除',
+  'confirm.cancel': '先留着',
+  'about.title': '关于这个程序',
+  'about.body': '哪里不对，或者少了什么？说出来。仓库里的 issue 是最好的地方，因为答案会留在下一个人能找到的位置，写邮件也行。',
+  'about.version': 'ArrowLoop',
+  'about.glimstone': 'GlimStone',
+  'about.unreleased': '{version}，未发布的构建',
+  'about.repo': '提一个 issue',
+  'about.mail': '写封邮件',
+  'secret.show': '显示',
+  'secret.hide': '隐藏',
 }
 
 export default zh

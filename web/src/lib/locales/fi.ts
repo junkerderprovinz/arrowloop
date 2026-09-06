@@ -206,6 +206,19 @@ const fi: Translations = {
   'window.closeHint': 'Oletuksena pois, sillä sulkupainike joka ei sulje on yllätys, ja sellainen joka piilottaa käynnissä olevan ohjelman on sitä lajia, jonka huomaa viikkoa myöhemmin ihmetellessään, miksi työ yhä pyörii.',
   'window.minimise': 'Pienennys menee ilmoitusalueelle',
   'window.minimiseHint': 'Tehtäväpalkin sijaan. Ikkuna palaa kuvakkeesta kummassakin tapauksessa.',
+  'confirm.deleteRemote': 'Poista tämä tallennuskohde',
+  'confirm.deleteRemoteStakes': 'Kohteen {name} asetukset poistetaan rclonen määrityksistä, mukaan lukien siellä oleva salasana tai avain. Mitään ei kopioida ensin minnekään eikä paluuta ole: uudelleen määrittäminen tarkoittaa tunnusten kirjoittamista uudestaan. Sinne osoittavat työt epäonnistuvat seuraavalla ajolla, kunnes ne osoittavat muualle.',
+  'confirm.delete': 'Poista',
+  'confirm.cancel': 'Jätä paikalleen',
+  'about.title': 'Tietoja tästä sovelluksesta',
+  'about.body': 'Onko jokin vialla tai puuttuu? Sano. Ilmoitus tietovarastossa on paras paikka, koska vastaus jää sinne mistä seuraava sen löytää, ja sähköposti käy myös.',
+  'about.version': 'ArrowLoop',
+  'about.glimstone': 'GlimStone',
+  'about.unreleased': '{version}, ei julkaistu käännös',
+  'about.repo': 'Tee ilmoitus',
+  'about.mail': 'Lähetä sähköpostia',
+  'secret.show': 'Näytä',
+  'secret.hide': 'Piilota',
 }
 
 export default fi

@@ -203,7 +203,7 @@ export const api = {
    * What this build can do. Every build answers, including the ones that can do
    * the least, so asking costs one request and never a failed one.
    */
-  capabilities: () => request<{ window: boolean }>('/api/capabilities'),
+  capabilities: () => request<{ window: boolean; version: string }>('/api/capabilities'),
 
   /**
    * The window settings, which only a desktop build has.

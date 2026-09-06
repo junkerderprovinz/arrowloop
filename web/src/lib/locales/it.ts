@@ -206,6 +206,19 @@ const it: Translations = {
   'window.closeHint': 'Disattivato di base, perché un pulsante di chiusura che non chiude è una sorpresa, e uno che nasconde un programma in funzione è di quelli che si scoprono una settimana dopo chiedendosi perché un lavoro giri ancora.',
   'window.minimise': 'Ridurre a icona porta nell\'area di notifica',
   'window.minimiseHint': 'Invece che nella barra delle applicazioni. La finestra torna dall\'icona in entrambi i casi.',
+  'confirm.deleteRemote': 'Eliminare questa destinazione di archiviazione',
+  'confirm.deleteRemoteStakes': 'Le impostazioni di {name} vengono tolte dalla configurazione di rclone, compresa ogni password o chiave conservata lì. Prima non viene copiato nulla da nessuna parte e non si torna indietro: riconfigurarla significa ridigitare le credenziali. I lavori che puntano lì falliranno alla prossima esecuzione finché non puntano altrove.',
+  'confirm.delete': 'Elimina',
+  'confirm.cancel': 'Lascia stare',
+  'about.title': 'Informazioni su questa applicazione',
+  'about.body': 'Qualcosa non va, o manca? Dillo. Una segnalazione sul repository è il posto migliore, perché la risposta resta dove la troverà il prossimo, e va bene anche una email.',
+  'about.version': 'ArrowLoop',
+  'about.glimstone': 'GlimStone',
+  'about.unreleased': '{version}, build non pubblicata',
+  'about.repo': 'Apri una segnalazione',
+  'about.mail': 'Scrivi una email',
+  'secret.show': 'Mostra',
+  'secret.hide': 'Nascondi',
 }
 
 export default it

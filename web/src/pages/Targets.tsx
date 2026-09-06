@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { Badge, Button, Card, Empty, IconButton, Rule, RowActions, Stack } from '../components/Shell'
+import { Badge, Button, Card, Confirm, Empty, IconButton, Rule, RowActions, Stack } from '../components/Shell'
 import { IconCheck, IconCopy, IconDelete, IconEdit, IconForget } from '../components/glyphs'
-import { Choice, Field, Info, Switch, Text } from '../components/Field'
+import { Choice, Field, Info, Secret, Switch, Text } from '../components/Field'
 import { api, type Backend, type Remote, type Volume } from '../lib/api'
 import { useT } from '../lib/i18n'
 import { Since } from './Jobs'
@@ -141,6 +141,10 @@ function RemoteRow({
   const { t } = useT()
   const [checking, setChecking] = useState(false)
   const [result, setResult] = useState<{ ok: boolean; reason?: string } | null>(null)
+  // Deleting a target takes its credentials with it, and nothing here can put
+  // them back, so this one asks. Forgetting a drive does not: the marker stays
+  // on the disk and plugging it in brings it straight back.
+  const [confirming, setConfirming] = useState(false)
 
   async function check() {
     setChecking(true)
@@ -193,17 +197,25 @@ function RemoteRow({
           <IconButton onClick={onEdit} title={t('targets.edit')}>
             <IconEdit />
           </IconButton>
-          <IconButton
-            tone="fail"
-            title={t('targets.delete')}
-            onClick={() => {
-              void api.deleteRemote(remote.name).then(onChanged)
-            }}
-          >
+          <IconButton tone="fail" title={t('targets.delete')} onClick={() => setConfirming(true)}>
             <IconDelete />
           </IconButton>
         </RowActions>
       </div>
+
+      {confirming && (
+        <Confirm
+          title={t('confirm.deleteRemote')}
+          stakes={t('confirm.deleteRemoteStakes', { name: remote.name })}
+          confirmLabel={t('confirm.delete')}
+          cancelLabel={t('confirm.cancel')}
+          onCancel={() => setConfirming(false)}
+          onConfirm={() => {
+            setConfirming(false)
+            void api.deleteRemote(remote.name).then(onChanged)
+          }}
+        />
+      )}
     </div>
   )
 }
@@ -287,12 +299,22 @@ function RemoteForm({
             label={o.required ? `${o.name} (${t('targets.required')})` : o.name}
             hint={o.help || undefined}
           >
-            <Text
-              value={values[o.name] ?? ''}
-              onChange={(next) => setValues((prev) => ({ ...prev, [o.name]: next }))}
-              placeholder={o.secret && values[o.name] ? t('targets.secretSet') : o.default || o.examples?.[0]?.value}
-              mono
-            />
+            {/* A field the backend calls a secret is drawn as one, with its
+                own show and hide control inside it. */}
+            {o.secret ? (
+              <Secret
+                value={values[o.name] ?? ''}
+                onChange={(next) => setValues((prev) => ({ ...prev, [o.name]: next }))}
+                placeholder={values[o.name] ? t('targets.secretSet') : o.default}
+              />
+            ) : (
+              <Text
+                value={values[o.name] ?? ''}
+                onChange={(next) => setValues((prev) => ({ ...prev, [o.name]: next }))}
+                placeholder={o.default || o.examples?.[0]?.value}
+                mono
+              />
+            )}
           </Field>
         ))}
       </div>

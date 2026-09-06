@@ -206,6 +206,19 @@ const no: Translations = {
   'window.closeHint': 'Av fra start, for en lukkeknapp som ikke lukker er en overraskelse, og en som skjuler et program som kjører er den typen man oppdager en uke senere og lurer på hvorfor en jobb fortsatt går.',
   'window.minimise': 'Minimering går til varslingsområdet',
   'window.minimiseHint': 'I stedet for oppgavelinjen. Vinduet kommer tilbake fra ikonet uansett.',
+  'confirm.deleteRemote': 'Slett dette lagringsmålet',
+  'confirm.deleteRemoteStakes': 'Innstillingene for {name} fjernes fra rclones oppsett, inkludert alle passord og nøkler som ligger der. Ingenting kopieres noe sted først, og det finnes ingen vei tilbake: å sette det opp igjen betyr å taste inn opplysningene på nytt. Jobber som peker dit, feiler ved neste kjøring til de peker et annet sted.',
+  'confirm.delete': 'Slett',
+  'confirm.cancel': 'La stå',
+  'about.title': 'Om denne appen',
+  'about.body': 'Noe galt, eller noe som mangler? Si fra. En sak i arkivet er det beste stedet, for svaret blir liggende der neste finner det, og en e-post er like greit.',
+  'about.version': 'ArrowLoop',
+  'about.glimstone': 'GlimStone',
+  'about.unreleased': '{version}, ingen utgitt bygging',
+  'about.repo': 'Opprett en sak',
+  'about.mail': 'Send en e-post',
+  'secret.show': 'Vis',
+  'secret.hide': 'Skjul',
 }
 
 export default no

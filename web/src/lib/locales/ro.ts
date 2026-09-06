@@ -206,6 +206,19 @@ const ro: Translations = {
   'window.closeHint': 'Dezactivat implicit, fiindcă un buton de închidere care nu închide este o surpriză, iar unul care ascunde un program pornit este genul pe care îl descoperi o săptămână mai târziu întrebându-te de ce mai rulează o sarcină.',
   'window.minimise': 'Minimizarea merge în zona de notificare',
   'window.minimiseHint': 'În loc de bara de activități. Fereastra revine de pe pictogramă în ambele cazuri.',
+  'confirm.deleteRemote': 'Ștergerea acestei destinații de stocare',
+  'confirm.deleteRemoteStakes': 'Setările pentru {name} sunt scoase din configurația rclone, împreună cu orice parolă și cheie care stau acolo. Înainte nu se copiază nimic nicăieri și nu există cale de întoarcere: a o configura din nou înseamnă a retasta datele. Sarcinile care arată acolo vor eșua la următoarea rulare până când vor arăta în altă parte.',
+  'confirm.delete': 'Șterge',
+  'confirm.cancel': 'Las-o',
+  'about.title': 'Despre această aplicație',
+  'about.body': 'Ceva nu merge sau lipsește ceva? Spuneți. O sesizare în depozit este cel mai bun loc, fiindcă răspunsul rămâne acolo unde îl va găsi următorul, iar un email merge la fel de bine.',
+  'about.version': 'ArrowLoop',
+  'about.glimstone': 'GlimStone',
+  'about.unreleased': '{version}, versiune nepublicată',
+  'about.repo': 'Deschide o sesizare',
+  'about.mail': 'Trimite un email',
+  'secret.show': 'Arată',
+  'secret.hide': 'Ascunde',
 }
 
 export default ro

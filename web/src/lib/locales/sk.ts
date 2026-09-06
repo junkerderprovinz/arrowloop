@@ -206,6 +206,19 @@ const sk: Translations = {
   'window.closeHint': 'Predvolene vypnuté, lebo tlačidlo zatvorenia, ktoré nezatvára, je prekvapenie, a to, ktoré skryje bežiaci program, je ten druh, čo sa objaví o týždeň neskôr s otázkou, prečo úloha stále beží.',
   'window.minimise': 'Minimalizácia ide do oblasti oznámení',
   'window.minimiseHint': 'Namiesto panela úloh. Okno sa v oboch prípadoch vracia z ikony.',
+  'confirm.deleteRemote': 'Zmazať toto úložisko',
+  'confirm.deleteRemoteStakes': 'Nastavenia {name} zmiznú z konfigurácie rclone, vrátane každého hesla a kľúča, ktorý tam leží. Predtým sa nič nikam nekopíruje a cesta späť nie je: nastaviť to znova znamená znova napísať prihlasovacie údaje. Úlohy, ktoré tam mieria, pri ďalšom behu zlyhajú, kým nezamieria inam.',
+  'confirm.delete': 'Zmazať',
+  'confirm.cancel': 'Nechať tak',
+  'about.title': 'O tejto aplikácii',
+  'about.body': 'Niečo nefunguje alebo niečo chýba? Povedzte to. Hlásenie v repozitári je najlepšie miesto, lebo odpoveď zostane tam, kde ju nájde ďalší, a e-mail je tiež v poriadku.',
+  'about.version': 'ArrowLoop',
+  'about.glimstone': 'GlimStone',
+  'about.unreleased': '{version}, nevydané zostavenie',
+  'about.repo': 'Založiť hlásenie',
+  'about.mail': 'Napísať e-mail',
+  'secret.show': 'Zobraziť',
+  'secret.hide': 'Skryť',
 }
 
 export default sk

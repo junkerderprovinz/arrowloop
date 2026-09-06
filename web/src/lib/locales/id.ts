@@ -206,6 +206,19 @@ const id: Translations = {
   'window.closeHint': 'Mati secara bawaan, sebab tombol tutup yang tidak menutup itu mengejutkan, dan yang menyembunyikan program yang sedang berjalan adalah jenis yang baru ditemukan seminggu kemudian sambil bertanya-tanya kenapa sebuah tugas masih berjalan.',
   'window.minimise': 'Meminimalkan menuju area notifikasi',
   'window.minimiseHint': 'Alih-alih bilah tugas. Jendela kembali lewat ikon dalam kedua hal.',
+  'confirm.deleteRemote': 'Hapus tujuan penyimpanan ini',
+  'confirm.deleteRemoteStakes': 'Pengaturan {name} dikeluarkan dari konfigurasi rclone, termasuk setiap kata sandi dan kunci yang tersimpan di sana. Sebelumnya tidak ada yang disalin ke mana pun dan tidak ada jalan kembali: menyiapkannya lagi berarti mengetik ulang kredensialnya. Tugas yang menunjuk ke sana akan gagal pada jalan berikutnya sampai menunjuk ke tempat lain.',
+  'confirm.delete': 'Hapus',
+  'confirm.cancel': 'Biarkan',
+  'about.title': 'Tentang aplikasi ini',
+  'about.body': 'Ada yang salah, atau ada yang kurang? Katakan saja. Sebuah isu di repositori adalah tempat terbaik, karena jawabannya tetap di tempat orang berikutnya menemukannya, dan surel juga boleh.',
+  'about.version': 'ArrowLoop',
+  'about.glimstone': 'GlimStone',
+  'about.unreleased': '{version}, bukan rilis yang diterbitkan',
+  'about.repo': 'Buka isu',
+  'about.mail': 'Kirim surel',
+  'secret.show': 'Tampilkan',
+  'secret.hide': 'Sembunyikan',
 }
 
 export default id

@@ -204,6 +204,21 @@ export const en = {
   'targets.secretSet': 'A value is stored. Leave this alone to keep it.',
   'targets.advanced': 'Show every setting',
   'targets.required': 'required',
+  'confirm.deleteRemote': 'Delete this storage target',
+  'confirm.deleteRemoteStakes':
+    'The settings for {name} are removed from the rclone configuration, including any password or key stored with them. Nothing is copied anywhere first, and there is no undo: setting it up again means typing the credentials again. Jobs pointing at it will fail on their next run until they are pointed somewhere else.',
+  'confirm.delete': 'Delete it',
+  'confirm.cancel': 'Leave it',
+  'about.title': 'About this app',
+  'about.body':
+    'Something wrong, or something missing? Say so. An issue on the repository is the best place, because the answer stays where the next person can find it, and an email is fine too.',
+  'about.version': 'ArrowLoop',
+  'about.glimstone': 'GlimStone',
+  'about.unreleased': '{version}, not a released build',
+  'about.repo': 'Open an issue',
+  'about.mail': 'Send an email',
+  'secret.show': 'Show',
+  'secret.hide': 'Hide',
 
   // Targets: drives
   'targets.drives': 'Drives',
@@ -457,6 +472,21 @@ export const de: Translations = {
   'targets.secretSet': 'Ein Wert ist hinterlegt. Lass ihn stehen, dann bleibt er erhalten.',
   'targets.advanced': 'Alle Einstellungen zeigen',
   'targets.required': 'erforderlich',
+  'confirm.deleteRemote': 'Dieses Speicherziel löschen',
+  'confirm.deleteRemoteStakes':
+    'Die Einstellungen für {name} werden aus rclones Konfiguration entfernt, samt allem Kennwort und Schlüssel, der dort liegt. Vorher wird nichts irgendwohin kopiert, und es gibt kein Zurück: neu einrichten heißt, die Zugangsdaten neu zu tippen. Aufträge, die darauf zeigen, scheitern beim nächsten Lauf, bis sie woandershin zeigen.',
+  'confirm.delete': 'Löschen',
+  'confirm.cancel': 'Stehen lassen',
+  'about.title': 'Über diese App',
+  'about.body':
+    'Etwas falsch, oder etwas fehlt? Sag es. Ein Issue im Repository ist der beste Ort, weil die Antwort dort steht, wo der Nächste sie findet, und eine E-Mail geht auch.',
+  'about.version': 'ArrowLoop',
+  'about.glimstone': 'GlimStone',
+  'about.unreleased': '{version}, kein veröffentlichter Stand',
+  'about.repo': 'Issue anlegen',
+  'about.mail': 'E-Mail schreiben',
+  'secret.show': 'Zeigen',
+  'secret.hide': 'Verbergen',
 
   'targets.drives': 'Datenträger',
   'targets.drivesEmpty':

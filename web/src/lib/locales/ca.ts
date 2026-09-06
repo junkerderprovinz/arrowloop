@@ -206,6 +206,19 @@ const ca: Translations = {
   'window.closeHint': 'Desactivat per defecte, perquè un botó de tancar que no tanca és una sorpresa, i un que amaga un programa en marxa és dels que es descobreixen una setmana després preguntant-se per què encara corre una tasca.',
   'window.minimise': 'Minimitzar va a l\'àrea de notificació',
   'window.minimiseHint': 'En comptes de la barra de tasques. La finestra torna des de la icona en tots dos casos.',
+  'confirm.deleteRemote': 'Esborrar aquesta destinació d\'emmagatzematge',
+  'confirm.deleteRemoteStakes': 'Els paràmetres de {name} es treuen de la configuració del rclone, inclosa qualsevol contrasenya o clau que hi hagi. Abans no es copia res enlloc i no hi ha marxa enrere: tornar-lo a configurar vol dir reescriure les credencials. Les tasques que hi apuntin fallaran a la següent execució fins que apuntin a un altre lloc.',
+  'confirm.delete': 'Esborra',
+  'confirm.cancel': 'Deixa-ho',
+  'about.title': 'Quant a aquesta aplicació',
+  'about.body': 'Alguna cosa no rutlla, o en falta? Digueu-ho. Una incidència al repositori és el millor lloc, perquè la resposta es queda on la trobarà el següent, i un correu també va bé.',
+  'about.version': 'ArrowLoop',
+  'about.glimstone': 'GlimStone',
+  'about.unreleased': '{version}, compilació no publicada',
+  'about.repo': 'Obre una incidència',
+  'about.mail': 'Escriu un correu',
+  'secret.show': 'Mostra',
+  'secret.hide': 'Amaga',
 }
 
 export default ca

@@ -224,3 +224,74 @@ export function RowActions({ children }: { children: ReactNode }) {
     </div>
   )
 }
+
+/**
+ * A confirmation, for the removals that cannot be taken back.
+ *
+ * Not every removal deserves the same friction, and treating them alike is
+ * itself the bug: a dialog in front of something undoable only teaches people to
+ * click through dialogs without reading them. So this is used where the thing
+ * genuinely goes, and the text says what goes rather than asking whether
+ * somebody is sure.
+ *
+ * A card rather than the browser's own confirm(): a native dialog cannot be
+ * styled, cannot be translated with the rest of the interface, and blocks the
+ * whole tab while it is open. The destructive control wears the fault colour,
+ * which is the one place on a screen that red belongs on a button.
+ */
+export function Confirm({
+  title,
+  stakes,
+  confirmLabel,
+  cancelLabel,
+  onConfirm,
+  onCancel,
+}: {
+  title: string
+  stakes: string
+  confirmLabel: string
+  cancelLabel: string
+  onConfirm: () => void
+  onCancel: () => void
+}) {
+  useEffect(() => {
+    const escape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onCancel()
+    }
+    document.addEventListener('keydown', escape)
+    return () => document.removeEventListener('keydown', escape)
+  }, [onCancel])
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(0,0,0,0.45)] p-6"
+      role="dialog"
+      aria-modal="true"
+      aria-label={title}
+      onClick={onCancel}
+    >
+      {/* The same surface, radius and elevation as any other card: a window is
+          a window, whoever draws it. */}
+      <section
+        className="glim-card relative w-full max-w-md px-5 pb-5 pt-7"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="absolute -top-3 left-5">
+          <SectionTitle>{title}</SectionTitle>
+        </div>
+        <p className="text-[12px] text-carbon-textMuted">{stakes}</p>
+        <div className="mt-5 flex items-center justify-end gap-2">
+          <Button onClick={onCancel}>{cancelLabel}</Button>
+          <button
+            type="button"
+            onClick={onConfirm}
+            className="inline-flex items-center gap-1.5 bg-statusFailBg px-3 py-1.5 text-[12px] font-medium text-statusFail transition hover:brightness-110"
+            style={{ borderRadius: 'var(--radius-pill)' }}
+          >
+            {confirmLabel}
+          </button>
+        </div>
+      </section>
+    </div>
+  )
+}

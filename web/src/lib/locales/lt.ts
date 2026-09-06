@@ -206,6 +206,19 @@ const lt: Translations = {
   'window.closeHint': 'Numatytai išjungta, nes uždarymo mygtukas, kuris neuždaro, yra netikėtumas, o tas, kuris paslepia veikiančią programą, yra tos rūšies, kurią aptinki po savaitės klausdamas, kodėl darbas vis dar sukasi.',
   'window.minimise': 'Sumažinimas keliauja į pranešimų sritį',
   'window.minimiseHint': 'Vietoj užduočių juostos. Langas abiem atvejais grįžta nuo piktogramos.',
+  'confirm.deleteRemote': 'Ištrinti šią saugyklą',
+  'confirm.deleteRemoteStakes': '{name} nuostatos pašalinamos iš rclone konfigūracijos kartu su kiekvienu ten gulinčiu slaptažodžiu ir raktu. Prieš tai niekas niekur nekopijuojama ir kelio atgal nėra: nustatyti iš naujo reiškia iš naujo suvesti prisijungimo duomenis. Ten rodantys darbai kitą kartą nepavyks, kol nerodys kitur.',
+  'confirm.delete': 'Ištrinti',
+  'confirm.cancel': 'Palikti',
+  'about.title': 'Apie šią programą',
+  'about.body': 'Kažkas negerai ar ko nors trūksta? Pasakykite. Pranešimas saugykloje yra geriausia vieta, nes atsakymas lieka ten, kur jį ras kitas, o el. laiškas taip pat tinka.',
+  'about.version': 'ArrowLoop',
+  'about.glimstone': 'GlimStone',
+  'about.unreleased': '{version}, nepaskelbta laida',
+  'about.repo': 'Sukurti pranešimą',
+  'about.mail': 'Rašyti el. laišką',
+  'secret.show': 'Rodyti',
+  'secret.hide': 'Slėpti',
 }
 
 export default lt

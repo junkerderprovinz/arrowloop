@@ -206,6 +206,19 @@ const sv: Translations = {
   'window.closeHint': 'Av från början, eftersom en stängknapp som inte stänger är en överraskning, och en som döljer ett program som körs är den sorten man upptäcker en vecka senare och undrar varför ett jobb fortfarande går.',
   'window.minimise': 'Minimera går till meddelandefältet',
   'window.minimiseHint': 'I stället för aktivitetsfältet. Fönstret kommer tillbaka via ikonen i båda fallen.',
+  'confirm.deleteRemote': 'Ta bort det här lagringsmålet',
+  'confirm.deleteRemoteStakes': 'Inställningarna för {name} tas bort ur rclones konfiguration, inklusive varje lösenord och nyckel som ligger där. Ingenting kopieras någonstans först och det finns ingen väg tillbaka: att sätta upp det igen betyder att skriva in uppgifterna på nytt. Jobb som pekar dit misslyckas vid nästa körning tills de pekar någon annanstans.',
+  'confirm.delete': 'Ta bort',
+  'confirm.cancel': 'Låt stå',
+  'about.title': 'Om den här appen',
+  'about.body': 'Något fel, eller något som saknas? Säg till. Ett ärende i förrådet är bästa stället, för svaret stannar där nästa person hittar det, och ett mejl går lika bra.',
+  'about.version': 'ArrowLoop',
+  'about.glimstone': 'GlimStone',
+  'about.unreleased': '{version}, inget släppt bygge',
+  'about.repo': 'Skapa ett ärende',
+  'about.mail': 'Skicka ett mejl',
+  'secret.show': 'Visa',
+  'secret.hide': 'Dölj',
 }
 
 export default sv

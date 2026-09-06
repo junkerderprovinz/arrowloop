@@ -206,6 +206,19 @@ const fr: Translations = {
   'window.closeHint': 'Désactivé par défaut, car un bouton de fermeture qui ne ferme pas est une surprise, et celui qui masque un programme en marche est le genre qu\'on découvre une semaine plus tard en se demandant pourquoi une tâche tourne encore.',
   'window.minimise': 'Réduire envoie dans la zone de notification',
   'window.minimiseHint': 'Au lieu de la barre des tâches. La fenêtre revient par l\'icône dans les deux cas.',
+  'confirm.deleteRemote': 'Supprimer cette cible de stockage',
+  'confirm.deleteRemoteStakes': 'Les réglages de {name} sont retirés de la configuration rclone, y compris tout mot de passe ou clé qui s\'y trouve. Rien n\'est copié ailleurs au préalable et il n\'y a pas de retour en arrière : le reconfigurer veut dire retaper les identifiants. Les tâches qui pointent dessus échoueront à leur prochaine exécution jusqu\'à ce qu\'elles pointent ailleurs.',
+  'confirm.delete': 'Supprimer',
+  'confirm.cancel': 'Laisser',
+  'about.title': 'À propos de cette application',
+  'about.body': 'Quelque chose ne va pas, ou manque ? Dites-le. Un ticket sur le dépôt est le meilleur endroit, parce que la réponse y reste là où la personne suivante la trouvera, et un courriel convient aussi.',
+  'about.version': 'ArrowLoop',
+  'about.glimstone': 'GlimStone',
+  'about.unreleased': '{version}, build non publié',
+  'about.repo': 'Ouvrir un ticket',
+  'about.mail': 'Écrire un courriel',
+  'secret.show': 'Afficher',
+  'secret.hide': 'Masquer',
 }
 
 export default fr
