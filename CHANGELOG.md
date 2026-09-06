@@ -8,6 +8,18 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## v0.1.1
+
+A same-day fix to the one thing v0.1.0 was cut for.
+
+### 🐛 Fixed
+
+- The Windows installer claimed to be version 1.0.0, the build tool's own
+  placeholder, while the portable exe beside it was already correct. Both now
+  carry the same build identity. Found by reading the version out of the
+  published bundles rather than assuming they carried what the build was told
+  to put in them.
+
 ## v0.1.0
 
 The first cut. A two-way sync engine that shows you the plan before it moves
