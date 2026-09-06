@@ -21,8 +21,13 @@ const root = dirname(dirname(fileURLToPath(import.meta.url)))
 const source = join(root, 'web', 'dist')
 const target = join(root, 'desktop', 'frontend', 'dist')
 
-// shell: true so this finds npm.cmd on Windows as well as npm elsewhere.
-const built = spawnSync('npm', ['run', 'build'], {
+// One string through a shell, rather than a command plus an argument array.
+// On Windows npm is a .cmd, and since the 2024 argument-injection fix Node
+// refuses to spawn one without a shell at all; passing an argument array WITH a
+// shell is what Node deprecated in DEP0190, because those arguments are
+// concatenated rather than escaped. A fixed string with nothing interpolated
+// into it sidesteps both, and prints no warning on every build.
+const built = spawnSync('npm run build', {
   cwd: join(root, 'web'),
   stdio: 'inherit',
   shell: true,
