@@ -81,11 +81,20 @@ func timeOneCopy(t *testing.T, bwLimit string) time.Duration {
 		t.Fatalf("start accounting: %v", err)
 	}
 
-	leftFs, err := rclonefs.NewFs(ctx, left)
+	// no_clone, and only for this measurement.
+	//
+	// macOS copies one local file to another by asking APFS to clone it, which
+	// moves no bytes at all: the copy is a second reference to the same blocks.
+	// That is faster than any limit and entirely correct, and it made this test
+	// fail there while passing on Windows and Linux, which was the right
+	// failure for the wrong reason. Turning cloning off is what makes the two
+	// measurements comparable on every platform, and the thing being measured
+	// is the token bucket rather than the filesystem.
+	leftFs, err := rclonefs.NewFs(ctx, ":local,no_clone=true:"+left)
 	if err != nil {
 		t.Fatalf("left: %v", err)
 	}
-	rightFs, err := rclonefs.NewFs(ctx, right)
+	rightFs, err := rclonefs.NewFs(ctx, ":local,no_clone=true:"+right)
 	if err != nil {
 		t.Fatalf("right: %v", err)
 	}
