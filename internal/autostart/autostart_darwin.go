@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 const supported = true
@@ -34,6 +35,22 @@ func enabled() (bool, error) {
 		return false, fmt.Errorf("read %s: %w", path, err)
 	}
 	return true, nil
+}
+
+// pointsAt reports whether the existing agent already names this executable.
+func pointsAt(exe string) (bool, error) {
+	path, err := entryPath()
+	if err != nil {
+		return false, err
+	}
+	body, err := os.ReadFile(path)
+	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			return false, nil
+		}
+		return false, fmt.Errorf("read %s: %w", path, err)
+	}
+	return strings.Contains(string(body), "<string>"+exe+"</string>"), nil
 }
 
 func enable(exe string) error {

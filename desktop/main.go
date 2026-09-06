@@ -35,6 +35,7 @@ import (
 
 	wruntime "github.com/wailsapp/wails/v2/pkg/runtime"
 
+	"github.com/junkerderprovinz/arrowloop/internal/autostart"
 	"github.com/junkerderprovinz/arrowloop/internal/daemon"
 	"github.com/junkerderprovinz/arrowloop/internal/deskset"
 	"github.com/junkerderprovinz/arrowloop/internal/engine"
@@ -104,6 +105,19 @@ func run() error {
 		History: hist, Runner: runner, UI: ui,
 		Placeholder: webui.Placeholder,
 		Window:      window,
+	}
+
+	// An autostart entry records a path, and a path is a promise about where
+	// this file will still be in six months. Somebody who switched it on for a
+	// portable copy and later installed the program properly has an entry
+	// pointing at nothing, and it fails at a reboot without saying so. This
+	// makes the entry follow the program instead.
+	//
+	// A warning rather than a refusal: the window opening matters more than the
+	// entry being current, and the settings switch still reports the truth
+	// either way.
+	if err := autostart.Refresh(); err != nil {
+		log.Printf("could not re-point the autostart entry: %v", err)
 	}
 
 	// The schedules run for as long as the window is open. A desktop app that

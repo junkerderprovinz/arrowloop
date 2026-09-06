@@ -46,6 +46,27 @@ func enabled() (bool, error) {
 	return !strings.Contains(string(body), "X-GNOME-Autostart-enabled=false"), nil
 }
 
+// pointsAt reports whether the existing entry already names this executable.
+func pointsAt(exe string) (bool, error) {
+	path, err := entryPath()
+	if err != nil {
+		return false, err
+	}
+	body, err := os.ReadFile(path)
+	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			return false, nil
+		}
+		return false, fmt.Errorf("read %s: %w", path, err)
+	}
+	for line := range strings.SplitSeq(string(body), "\n") {
+		if after, ok := strings.CutPrefix(strings.TrimRight(line, "\r"), "Exec="); ok {
+			return after == `"`+exe+`"`, nil
+		}
+	}
+	return false, nil
+}
+
 func enable(exe string) error {
 	path, err := entryPath()
 	if err != nil {

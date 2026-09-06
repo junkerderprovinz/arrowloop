@@ -57,3 +57,37 @@ func Set(on bool) error {
 	}
 	return enable(exe)
 }
+
+// Refresh re-points an existing entry at the running executable.
+//
+// An entry records a PATH, and a path is a promise about where a file will be
+// months from now. Somebody who switched autostart on for a portable copy on
+// their desktop and later installed the program properly, or simply moved the
+// file, has an entry pointing at nothing: it fails at a reboot, silently, which
+// is the worst place and the worst way.
+//
+// Called at startup, so the entry follows the program rather than the other way
+// round. It does nothing when autostart is off, because rewriting an entry
+// somebody removed would be switching a setting back on for them.
+//
+// It compares before writing. An unchanged entry is left completely alone, so a
+// machine where nothing moved sees no file touched and no registry value
+// rewritten on every single sign-in.
+func Refresh() error {
+	if !supported {
+		return nil
+	}
+	on, err := enabled()
+	if err != nil || !on {
+		return err
+	}
+	exe, err := os.Executable()
+	if err != nil {
+		return err
+	}
+	same, err := pointsAt(exe)
+	if err != nil || same {
+		return err
+	}
+	return enable(exe)
+}

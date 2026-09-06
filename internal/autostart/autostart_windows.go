@@ -3,6 +3,7 @@ package autostart
 import (
 	"errors"
 	"fmt"
+	"strings"
 
 	"golang.org/x/sys/windows/registry"
 )
@@ -35,6 +36,30 @@ func enabled() (bool, error) {
 		return false, fmt.Errorf("read %s: %w", name, err)
 	}
 	return true, nil
+}
+
+// pointsAt reports whether the registered value already names this executable.
+func pointsAt(exe string) (bool, error) {
+	k, err := registry.OpenKey(registry.CURRENT_USER, runKey, registry.QUERY_VALUE)
+	if err != nil {
+		if errors.Is(err, registry.ErrNotExist) {
+			return false, nil
+		}
+		return false, fmt.Errorf("open %s: %w", runKey, err)
+	}
+	defer k.Close()
+
+	got, _, err := k.GetStringValue(name)
+	if err != nil {
+		if errors.Is(err, registry.ErrNotExist) {
+			return false, nil
+		}
+		return false, fmt.Errorf("read %s: %w", name, err)
+	}
+	// Compared case-insensitively, because Windows paths are, and a drive
+	// letter that comes back lower case would otherwise rewrite the value on
+	// every single sign-in.
+	return strings.EqualFold(got, command(exe)), nil
 }
 
 func enable(exe string) error {
