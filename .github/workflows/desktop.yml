@@ -33,7 +33,14 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 40
     steps:
+      # Full history and tags, because the version stamp is `git describe`. A
+      # shallow checkout has no tags to describe against and a commit count of
+      # 1, so the release bundles would carry a bare hash in the properties
+      # dialog and 0.0.0.1 in the numeric field, on the one build where the
+      # number matters most.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7
         with:
@@ -74,9 +81,22 @@ jobs:
       - name: Install the interface dependencies
         run: npm --prefix web ci --no-audit --no-fund
 
+      # One source of truth for what this build is called, shared with
+      # scripts/build-windows.mjs and read by wails.json's own frontend:build
+      # step when it writes the Windows version resource.
+      - name: Work out the version
+        run: node scripts/stamp.mjs --github-env
+
+      # The ldflags are not optional here, and leaving them off is the specific
+      # failure this whole stamp exists to prevent. Without them boot.Version
+      # stays "dev", so a released bundle would show "dev" on its About card
+      # while the properties dialog of the very same file showed the tag: two
+      # answers to one question, from one build.
       - name: Build
         working-directory: desktop
-        run: wails build -platform ${{ matrix.platform }} -clean ${{ matrix.extra }}
+        run: >
+          wails build -platform ${{ matrix.platform }} -clean ${{ matrix.extra }}
+          -ldflags "-X github.com/junkerderprovinz/arrowloop/internal/boot.Version=${{ env.ARROWLOOP_VERSION }}"
 
       # macOS gets no installer step from wails, so the .app is wrapped into the
       # .dmg that is Apple's own convention. hdiutil is on every runner. The bare

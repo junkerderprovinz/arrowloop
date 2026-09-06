@@ -15,7 +15,7 @@
 // somebody might commit.
 
 import { execFileSync } from 'node:child_process'
-import { mkdirSync, writeFileSync } from 'node:fs'
+import { appendFileSync, mkdirSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -116,4 +116,20 @@ export function writeWindowsVersion() {
   }
   writeFileSync(join(dir, 'info.json'), JSON.stringify(info, null, '\t') + '\n')
   return info
+}
+
+// Run directly, this hands the same answer to a build that is not a Node
+// script: `node scripts/stamp.mjs` prints it, and `--github-env` appends it to
+// the workflow environment.
+//
+// It writes that file itself rather than printing for a shell to redirect,
+// because the desktop matrix runs on three operating systems and the redirect
+// would have to be written twice, once for pwsh and once for sh. Two spellings
+// of one line is where one of them rots.
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1].replace(/\\/g, '/'))) {
+  const stamp = version()
+  if (process.argv.includes('--github-env') && process.env.GITHUB_ENV) {
+    appendFileSync(process.env.GITHUB_ENV, `ARROWLOOP_VERSION=${stamp}\n`)
+  }
+  console.log(stamp)
 }
