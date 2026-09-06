@@ -12,6 +12,10 @@ copyright: Copyright (C) 2026 Junker der Provinz. Licensed AGPL-3.0.
 theme:
   name: material
   language: en
+  # The mark carries its own colour and reads on both palettes, so one file
+  # serves the header on the dark scheme and the light one alike.
+  logo: assets/logo.svg
+  favicon: assets/favicon.png
   font:
     text: IBM Plex Sans
     code: IBM Plex Mono

@@ -1,4 +1,9 @@
-<h1 align="center">ArrowLoop</h1>
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset=".github/assets/banner-dark.png">
+    <img src=".github/assets/banner.png" alt="ArrowLoop" width="100%">
+  </picture>
+</p>
 
 <p align="center">A two-way file sync engine with a state database, a trash and a brake, plus the scheduler that keeps it running.</p>
 

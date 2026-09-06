@@ -22,12 +22,13 @@ web/dist/*
 desktop/frontend/dist/*
 !desktop/frontend/dist/.gitkeep
 
-# Everything `wails build` generates for itself: its own default application
-# icon, the Windows manifest it writes from wails.json, and the JavaScript
-# bindings. All of it is regenerated on every build, and the default icon in
-# particular must not be committed, because shipping Wails' own logo as this
-# product's would be worse than shipping none.
-desktop/build/
+# Everything `wails build` generates for itself: the Windows manifest it writes
+# from wails.json and the JavaScript bindings, all regenerated on every build.
+# The application icon is the one exception and has to be committed: wails only
+# draws its own default when `build/appicon.png` is missing, so leaving the
+# whole folder out would ship the Wails logo as this product's.
+desktop/build/*
+!desktop/build/appicon.png
 desktop/frontend/wailsjs/
 
 # Wails build output, and the stray binary a plain `go build ./...` drops in
