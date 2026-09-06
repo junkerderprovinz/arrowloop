@@ -47,8 +47,8 @@ The schedules run for as long as the window is open. For a machine that should
 sync while nobody is looking, use `arrowloop daemon` and `arrowloop service`
 instead; see [the command line](cli.md).
 
-It puts an icon in the notification area, and the Look tab decides what the
-window buttons do: whether closing quits or hides, and whether minimising goes
+It puts an icon in the notification area, and Settings, General decides what
+the window buttons do: whether closing quits or hides, and whether minimising goes
 to the taskbar or to the notification area. Closing quits by default, because a
 close button that quietly leaves a program running is the kind of surprise
 somebody finds a week later. Both choices switch off together with the icon,
