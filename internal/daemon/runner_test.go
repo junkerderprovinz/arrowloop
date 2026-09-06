@@ -385,13 +385,23 @@ func TestRunAtStartFiresOnceAndNotOnReload(t *testing.T) {
 	served := make(chan error, 1)
 	go func() { served <- r.Serve(ctx) }()
 
-	// The run happens on its own goroutine, so this waits for the effect rather
-	// than for a duration: the file arriving on the other side IS the proof.
+	// Wait for the RECORD, not for the file.
+	//
+	// The first version of this waited for the copied file to appear, which is
+	// the wrong effect to wait on and went red on the Windows runner while
+	// passing here every time: the bytes land before the run finishes, and the
+	// history row is written after it does. So the file existing proves the
+	// transfer happened, not that the thing being counted below has been
+	// counted yet. Waiting for the row makes the wait and the assertion the
+	// same event.
 	waitFor(t, func() bool {
-		_, err := os.Stat(filepath.Join(right, "a.txt"))
-		return err == nil
-	}, "the start-up run never copied the file")
+		runs, err := hist.Recent(context.Background(), "photos", 10)
+		return err == nil && len(runs) >= 1
+	}, "the start-up run never recorded anything")
 
+	if _, err := os.Stat(filepath.Join(right, "a.txt")); err != nil {
+		t.Fatalf("the start-up run recorded a run but did not copy the file: %v", err)
+	}
 	runs, err := hist.Recent(context.Background(), "photos", 10)
 	if err != nil {
 		t.Fatalf("history: %v", err)
@@ -403,9 +413,10 @@ func TestRunAtStartFiresOnceAndNotOnReload(t *testing.T) {
 	// Now a reload, exactly as saving a job in the interface produces one.
 	r.Reload(cfg)
 
-	// Long enough that a second start-up run would have finished: the first one
-	// copied a real file over a real filesystem in a fraction of this.
-	time.Sleep(300 * time.Millisecond)
+	// A second start-up run would have to get through the whole cycle to be
+	// counted, and the first one did it in a fraction of this on the slowest
+	// machine either of us runs it on.
+	time.Sleep(2 * time.Second)
 
 	runs, err = hist.Recent(context.Background(), "photos", 10)
 	if err != nil {
@@ -441,10 +452,20 @@ func TestADisabledJobDoesNotRunAtStart(t *testing.T) {
 	served := make(chan error, 1)
 	go func() { served <- r.Serve(ctx) }()
 
-	time.Sleep(300 * time.Millisecond)
+	// A negative assertion needs long enough that the thing it denies would
+	// have happened. Too short and it passes because nothing has got round to
+	// running yet, which is a test that reports on nothing.
+	time.Sleep(2 * time.Second)
 
 	if _, err := os.Stat(filepath.Join(right, "a.txt")); err == nil {
 		t.Fatal("a disabled job synced at start")
+	}
+	runs, err := hist.Recent(context.Background(), "photos", 10)
+	if err != nil {
+		t.Fatalf("history: %v", err)
+	}
+	if len(runs) != 0 {
+		t.Fatalf("a disabled job recorded %d runs at start", len(runs))
 	}
 
 	stop()
