@@ -117,6 +117,21 @@ func run() error {
 		}
 	}()
 
+	// Every icon the notification area will show, derived once from the one
+	// embedded PNG. A failure here costs the spin and the colours, not the
+	// program: the plain mark is still a working tray icon.
+	icons, err := BuildTraySet(trayIcon)
+	if err != nil {
+		log.Printf("the tray icon has no states: %v", err)
+		plain, wrapErr := icoFromPNG(trayIcon)
+		if wrapErr != nil {
+			plain = trayIcon
+		}
+		icons = &TraySet{Idle: plain, Settled: plain, Failed: plain, Working: [][]byte{plain}}
+	}
+	live := newTrayLive(icons)
+	live.Watch(ctx, runner)
+
 	// Held so the second-instance handler can reach the window. Wails passes
 	// the context to OnStartup and nowhere else, and that handler runs long
 	// after this function has returned.
@@ -149,7 +164,7 @@ func run() error {
 		// helpers below are handed it rather than looking it up later.
 		OnStartup: func(c context.Context) {
 			uiCtx = c
-			startTray(c, window)
+			startTray(c, window, live)
 			watchMinimise(c, window)
 		},
 		// What the close button does is a setting, and its default is that it
@@ -222,38 +237,81 @@ func notifier(cfg *job.Config) notify.Notifier {
 	return out
 }
 
+// activityLines is how many running jobs the little panel names before it stops
+// naming them.
+//
+// Six is more than anybody runs at once and few enough that the panel stays a
+// panel. A tray menu that scrolls is a window, and a window is what the second
+// entry opens.
+const activityLines = 6
+
 // startTray puts the program in the notification area, if it is wanted.
 //
-// The menu is deliberately two items. A tray menu that grows into a second
-// interface is a second interface to keep in step with the first, and every
-// job, every target and every setting already lives one click away in the
-// window this opens.
-func startTray(ctx context.Context, window *deskset.Store) {
+// The icon says what the program is doing without being asked: it turns while
+// files move, goes green when a run settles and red when one fails. That is the
+// entire reason a tray icon is worth having over a taskbar button, which can
+// only ever say that the program exists.
+//
+// A left click opens a small panel with the current activity rather than the
+// whole window, because "what is it doing right now" is a question somebody
+// asks in the middle of something else. The window is one entry down for when
+// the answer is worth acting on.
+func startTray(ctx context.Context, window *deskset.Store, live *TrayLive) {
 	if !window.Get().Tray {
 		return
 	}
-	// Windows draws an ICO here and the one master this program has is a PNG,
-	// so the container is built around it at startup rather than committed as a
-	// second file that could fall behind the logo.
-	icon, err := icoFromPNG(trayIcon)
-	if err != nil {
-		log.Printf("no icon for the notification area: %v", err)
-		icon = trayIcon
-	}
 
 	systray.Run(func() {
-		systray.SetIcon(icon)
 		systray.SetTitle("ArrowLoop")
 		systray.SetTooltip("ArrowLoop")
+		systray.SetIcon(live.set.Idle)
+
+		// The activity rows are built once and re-titled, because a systray menu
+		// cannot grow or shrink after it has been shown: adding a row per event
+		// would work on the first run and quietly stop working on the second.
+		// Rows with nothing to say are hidden rather than blank.
+		rows := make([]*systray.MenuItem, activityLines)
+		for i := range rows {
+			rows[i] = systray.AddMenuItem("", "")
+			rows[i].Disable()
+			rows[i].Hide()
+		}
+		systray.AddSeparator()
 
 		open := systray.AddMenuItem("Open ArrowLoop", "Bring the window back")
 		systray.AddSeparator()
 		quit := systray.AddMenuItem("Quit", "Stop ArrowLoop and its schedules")
 
-		// A left click on the icon does what the first menu item does, because
-		// that is what every other program in the notification area does and a
-		// tray icon that only answers a right click reads as broken.
-		systray.SetOnClick(func(menu systray.IMenu) { show(ctx) })
+		fill := func() {
+			lines := live.Activity()
+			if len(lines) == 0 {
+				lines = []string{"Nothing is running"}
+			}
+			for i, row := range rows {
+				if i < len(lines) {
+					row.SetTitle(lines[i])
+					row.Show()
+					continue
+				}
+				row.Hide()
+			}
+			if len(lines) > len(rows) {
+				rows[len(rows)-1].SetTitle(fmt.Sprintf("and %d more", len(lines)-len(rows)+1))
+			}
+		}
+
+		// Both buttons open the panel, filled a moment before it is drawn: a
+		// panel showing the state from whenever it was last opened is a panel
+		// that lies, and this is the one thing it exists to be right about.
+		systray.SetOnClick(func(menu systray.IMenu) {
+			fill()
+			_ = menu.ShowMenu()
+		})
+		systray.SetOnRClick(func(menu systray.IMenu) {
+			fill()
+			_ = menu.ShowMenu()
+		})
+
 		open.Click(func() { show(ctx) })
 		quit.Click(func() {
 			systray.Quit()
