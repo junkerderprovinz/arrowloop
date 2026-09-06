@@ -19,6 +19,7 @@ import (
 	"time"
 
 	"github.com/junkerderprovinz/arrowloop/internal/daemon"
+	"github.com/junkerderprovinz/arrowloop/internal/deskset"
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/plan"
 	"github.com/junkerderprovinz/arrowloop/internal/scan"
@@ -40,6 +41,11 @@ type Server struct {
 	// Placeholder is the page served when UI carries no index.html, which is
 	// what a binary built without the frontend looks like.
 	Placeholder []byte
+
+	// Window is set only by the desktop shell. A nil store leaves the two
+	// window routes unregistered, which is how the interface knows there is no
+	// window to have preferences about.
+	Window *deskset.Store
 }
 
 // Handler builds the routes.
@@ -58,10 +64,30 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("POST /api/volumes", s.markVolume)
 	mux.HandleFunc("DELETE /api/volumes/{id}", s.forgetVolume)
 
+	mux.HandleFunc("GET /api/capabilities", s.capabilities)
+
+	if s.Window != nil {
+		mux.HandleFunc("GET /api/window", s.readWindow)
+		mux.HandleFunc("PUT /api/window", s.writeWindow)
+	}
+
 	mux.HandleFunc("GET /api/remotes", s.listRemotes)
 	mux.HandleFunc("PUT /api/remotes/{name}", s.saveRemote)
 	mux.HandleFunc("DELETE /api/remotes/{name}", s.deleteRemote)
 	mux.HandleFunc("POST /api/remotes/{name}/check", s.checkRemote)
+
+	// An address under /api that nothing has claimed is a mistake, and it has
+	// to look like one.
+	//
+	// Without this the interface's own fallback answers it: every unknown API
+	// path would come back as the application's HTML with a 200, so a client
+	// asking whether a feature exists would be told yes and handed a web page.
+	// That is exactly how the window settings were reached on a build that has
+	// no window, and the only reason nothing broke is that the client happened
+	// to fail on the parse instead of on the status.
+	mux.HandleFunc("/api/", func(w http.ResponseWriter, r *http.Request) {
+		writeError(w, http.StatusNotFound, fmt.Errorf("no such address: %s", r.URL.Path))
+	})
 
 	if s.UI != nil {
 		mux.Handle("/", spa{fs: s.UI, placeholder: s.Placeholder})
@@ -74,10 +100,24 @@ type jobView struct {
 	Name        string  `json:"name"`
 	Left        string  `json:"left"`
 	Right       string  `json:"right"`
+	Direction   string  `json:"direction"`
 	Schedule    string  `json:"schedule"`
 	Disabled    bool    `json:"disabled"`
 	Running     bool    `json:"running"`
 	LastSuccess *string `json:"lastSuccess"`
+}
+
+// directionName is the name the interface keys off, which is the same spelling
+// the configuration file accepts.
+func directionName(d plan.Direction) string {
+	switch d {
+	case plan.LeftToRight:
+		return "leftToRight"
+	case plan.RightToLeft:
+		return "rightToLeft"
+	default:
+		return "both"
+	}
 }
 
 func (s *Server) listJobs(w http.ResponseWriter, r *http.Request) {
@@ -87,7 +127,11 @@ func (s *Server) listJobs(w http.ResponseWriter, r *http.Request) {
 	for _, j := range cfg.Jobs {
 		v := jobView{
 			Name: j.Name, Left: j.Left, Right: j.Right,
-			Schedule: j.Schedule, Disabled: j.Disabled, Running: running[j.Name],
+			// Sent resolved rather than as it stands in the file, so an
+			// unset field and an explicit "both" reach the screen as the
+			// same thing and the arrows never have to guess.
+			Direction: directionName(plan.ParseDirection(j.Direction)),
+			Schedule:  j.Schedule, Disabled: j.Disabled, Running: running[j.Name],
 		}
 		if when, ok, err := s.History.LastSuccess(r.Context(), j.Name); err == nil && ok {
 			stamp := when.UTC().Format(time.RFC3339)

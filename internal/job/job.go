@@ -100,6 +100,14 @@ type Job struct {
 	Exclude           []string `json:"exclude,omitempty"`
 	NoDefaultExcludes bool     `json:"noDefaultExcludes,omitempty"`
 
+	// Direction says which way this job is allowed to write: "both" (the
+	// default and what this program is for), "leftToRight" or "rightToLeft".
+	//
+	// A one-way job still compares both sides, because comparing is how it
+	// knows what changed. What the direction changes is what it may DO with
+	// the answer.
+	Direction string `json:"direction,omitempty"`
+
 	QuietPeriod string `json:"quietPeriod,omitempty"`
 	ModWindow   string `json:"modWindow,omitempty"`
 	Transfers   int    `json:"transfers,omitempty"`
@@ -236,6 +244,7 @@ func ParseSchedule(spec string) (cron.Schedule, error) {
 // defaults for everything left out.
 func (j Job) Options() (engine.Options, error) {
 	compare := plan.DefaultOptions()
+	compare.Direction = plan.ParseDirection(j.Direction)
 
 	if j.QuietPeriod != "" {
 		d, err := time.ParseDuration(j.QuietPeriod)

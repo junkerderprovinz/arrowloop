@@ -70,6 +70,7 @@ var reasonText = map[string]string{
 	"heldOpen":        "held open by another program on the {side} side, waiting for it to be closed",
 	"unsupported":     "{kind} on the {side} side, which this engine does not carry",
 	"recordFailed":    "the record could not be written, leaving it for the next run: {error}",
+	"oneWay":          "this job only writes away from the {side}, so the {side} version is the one that stands",
 }
 
 // String is the English sentence, so that anything printing a reason with %s or
@@ -252,6 +253,11 @@ type Plan struct {
 // stage: how files are judged equal, what the safety brakes allow, and how many
 // transfers may be in flight at once.
 type Options struct {
+	// Direction is which way this job may write. The zero value is both ways,
+	// which is the safe default: a direction nobody set must never silently
+	// make one side authoritative over the other.
+	Direction Direction
+
 	// Transfers is how many files may be copied at the same time. One is
 	// correct but slow over a network, where most of the wall-clock time of a
 	// small file is round trips rather than bytes.
