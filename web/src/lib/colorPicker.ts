@@ -1,4 +1,4 @@
-// Copied verbatim from GlimStone 1.6.0, reference/colorPicker.ts.
+// Copied verbatim from GlimStone 1.7.2, reference/colorPicker.ts.
 // Do not edit here: change it in the design language repo and copy again.
 // https://github.com/junkerderprovinz/glimstone
 // The colour picker engine (design-language.md, "The colour engine" →

@@ -1,4 +1,4 @@
-// Copied verbatim from GlimStone 1.6.0, reference/selectScroll.ts.
+// Copied verbatim from GlimStone 1.7.2, reference/selectScroll.ts.
 // Do not edit here: change it in the design language repo and copy again.
 // https://github.com/junkerderprovinz/glimstone
 // Rule 14's mouse-wheel addendum: a closed <select> answers the wheel too,

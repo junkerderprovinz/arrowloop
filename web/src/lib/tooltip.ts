@@ -1,4 +1,4 @@
-// Copied verbatim from GlimStone 1.6.0, reference/tooltip.ts.
+// Copied verbatim from GlimStone 1.7.2, reference/tooltip.ts.
 // Do not edit here: change it in the design language repo and copy again.
 // https://github.com/junkerderprovinz/glimstone
 // The tooltip/info-bubble engine (design-language.md, "The tooltip and info

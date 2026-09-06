@@ -1,3 +1,6 @@
+// Copied verbatim from GlimStone 1.7.2, reference/flagEmoji.ts.
+// Do not edit here: change it in the design language repo and copy again.
+// https://github.com/junkerderprovinz/glimstone
 // design-language.md, "The user-owned axes" > Language: a native <option>
 // can only ever hold plain text - no image, no CSS background - so a "real"
 // flag icon library forces a custom-built dropdown just to render it, which
