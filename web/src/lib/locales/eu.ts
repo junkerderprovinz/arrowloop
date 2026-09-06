@@ -246,6 +246,14 @@ const eu: Translations = {
   'edit.removeJob': 'Lan hau kendu',
   'edit.removeStakes': '{name} lana konfiguraziotik ateratzen da. Dagoeneko kopiatu duena bere lekuan geratzen da, eta bere egoera fitxategia diskoan geratzen da, beraz bikote bera berriz presta daiteke fitxategi bakoitza berritzat hartu gabe.',
   'edit.unsaved': 'oraindik gorde gabe',
+  'pick.title': 'Karpeta bat aukeratu',
+  'pick.open': 'Karpeta bat bilatu',
+  'pick.choose': 'Karpeta hau erabili',
+  'pick.up': 'Maila bat gorago',
+  'pick.roots': 'Diskoak eta erroak',
+  'pick.empty': 'Hemen ez dago karpetarik.',
+  'look.accentReset': 'Lehenetsira itzuli',
+  'pick.cancel': 'Utzi',
 }
 
 export default eu

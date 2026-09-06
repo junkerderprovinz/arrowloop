@@ -246,6 +246,14 @@ const ca: Translations = {
   'edit.removeJob': 'Treu aquesta tasca',
   'edit.removeStakes': 'La tasca {name} surt de la configuració. El que ja ha copiat es queda on és, i el seu fitxer d\'estat es queda al disc, així que el mateix parell es pot tornar a muntar sense tractar cada fitxer com a nou.',
   'edit.unsaved': 'encara no desat',
+  'pick.title': 'Tria una carpeta',
+  'pick.open': 'Cerca una carpeta',
+  'pick.choose': 'Fes servir aquesta carpeta',
+  'pick.up': 'Un nivell amunt',
+  'pick.roots': 'Discs i arrels',
+  'pick.empty': 'Aquí no hi ha carpetes.',
+  'look.accentReset': 'Torna al valor per defecte',
+  'pick.cancel': 'Cancel·la',
 }
 
 export default ca

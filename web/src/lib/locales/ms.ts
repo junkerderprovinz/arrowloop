@@ -246,6 +246,14 @@ const ms: Translations = {
   'edit.removeJob': 'Buang tugasan ini',
   'edit.removeStakes': 'Tugasan {name} keluar daripada konfigurasi. Apa yang sudah disalinnya kekal di tempatnya, dan fail keadaannya kekal pada cakera, jadi pasangan yang sama boleh disediakan semula tanpa menganggap setiap fail sebagai baharu.',
   'edit.unsaved': 'belum disimpan',
+  'pick.title': 'Pilih folder',
+  'pick.open': 'Layari folder',
+  'pick.choose': 'Guna folder ini',
+  'pick.up': 'Satu tingkat ke atas',
+  'pick.roots': 'Cakera dan akar',
+  'pick.empty': 'Tiada folder di sini.',
+  'look.accentReset': 'Kembali ke lalai',
+  'pick.cancel': 'Batal',
 }
 
 export default ms

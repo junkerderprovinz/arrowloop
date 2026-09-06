@@ -246,6 +246,14 @@ const hu: Translations = {
   'edit.removeJob': 'Feladat eltávolítása',
   'edit.removeStakes': 'A(z) {name} feladat kikerül a beállításokból. Amit már átmásolt, a helyén marad, és az állapotfájlja a lemezen marad, így ugyanaz a pár újra felvehető anélkül, hogy minden fájl újnak számítana.',
   'edit.unsaved': 'még nincs mentve',
+  'pick.title': 'Válassz mappát',
+  'pick.open': 'Mappa tallózása',
+  'pick.choose': 'Ezt a mappát használom',
+  'pick.up': 'Egy szinttel feljebb',
+  'pick.roots': 'Lemezek és gyökerek',
+  'pick.empty': 'Itt nincsenek mappák.',
+  'look.accentReset': 'Vissza az alapértelmezettre',
+  'pick.cancel': 'Mégse',
 }
 
 export default hu

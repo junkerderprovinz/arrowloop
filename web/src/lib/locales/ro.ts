@@ -246,6 +246,14 @@ const ro: Translations = {
   'edit.removeJob': 'Elimină această sarcină',
   'edit.removeStakes': 'Sarcina {name} iese din configurație. Ce a copiat deja rămâne pe loc, iar fișierul ei de stare rămâne pe disc, așa că aceeași pereche poate fi montată din nou fără ca fiecare fișier să fie tratat ca nou.',
   'edit.unsaved': 'nesalvat încă',
+  'pick.title': 'Alege un dosar',
+  'pick.open': 'Răsfoiește dosarele',
+  'pick.choose': 'Folosește acest dosar',
+  'pick.up': 'Un nivel mai sus',
+  'pick.roots': 'Discuri și rădăcini',
+  'pick.empty': 'Aici nu sunt dosare.',
+  'look.accentReset': 'Înapoi la implicit',
+  'pick.cancel': 'Anulează',
 }
 
 export default ro

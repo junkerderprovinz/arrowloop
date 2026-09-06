@@ -130,6 +130,8 @@ export type RunEvent = {
   total?: number
   kind?: string
   path?: string
+  /** Which side the work lands on, so a screen can say where a file is going. */
+  side?: string
 }
 
 /**
@@ -204,6 +206,16 @@ export const api = {
    * the least, so asking costs one request and never a failed one.
    */
   capabilities: () => request<{ window: boolean; version: string }>('/api/capabilities'),
+
+  /**
+   * The folders inside one folder, for picking a job's side rather than typing
+   * it. An empty path asks for the top of the tree, which is one entry on a
+   * system with a single root and one per drive on Windows.
+   */
+  browse: (path?: string) =>
+    request<{ path: string; parent: string; entries: { name: string; path: string }[] }>(
+      `/api/browse${path ? `?path=${encodeURIComponent(path)}` : ''}`,
+    ),
 
   /**
    * The window settings, which only a desktop build has.

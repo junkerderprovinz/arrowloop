@@ -246,6 +246,14 @@ const fr: Translations = {
   'edit.removeJob': 'Retirer cette tâche',
   'edit.removeStakes': 'La tâche {name} est retirée de la configuration. Ce qu\'elle a déjà copié reste en place, et son fichier d\'état reste sur le disque, donc la même paire peut être reconfigurée sans traiter chaque fichier comme neuf.',
   'edit.unsaved': 'pas encore enregistré',
+  'pick.title': 'Choisir un dossier',
+  'pick.open': 'Parcourir les dossiers',
+  'pick.choose': 'Prendre ce dossier',
+  'pick.up': 'Un niveau au-dessus',
+  'pick.roots': 'Disques et racines',
+  'pick.empty': 'Aucun dossier ici.',
+  'look.accentReset': 'Revenir au défaut',
+  'pick.cancel': 'Annuler',
 }
 
 export default fr

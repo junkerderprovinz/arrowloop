@@ -246,6 +246,14 @@ const hr: Translations = {
   'edit.removeJob': 'Ukloni ovaj zadatak',
   'edit.removeStakes': 'Zadatak {name} izlazi iz konfiguracije. Ono što je već kopirao ostaje gdje jest, a njegova datoteka stanja ostaje na disku, pa se isti par može ponovno postaviti bez da se svaka datoteka smatra novom.',
   'edit.unsaved': 'još nije spremljeno',
+  'pick.title': 'Odaberi mapu',
+  'pick.open': 'Pregledaj mape',
+  'pick.choose': 'Koristi ovu mapu',
+  'pick.up': 'Jednu razinu više',
+  'pick.roots': 'Diskovi i korijeni',
+  'pick.empty': 'Ovdje nema mapa.',
+  'look.accentReset': 'Natrag na zadano',
+  'pick.cancel': 'Odustani',
 }
 
 export default hr

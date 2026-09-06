@@ -246,6 +246,14 @@ const et: Translations = {
   'edit.removeJob': 'Eemalda see töö',
   'edit.removeStakes': 'Töö {name} võetakse seadistusest välja. See, mis on juba kopeeritud, jääb paigale, ja tema olekufail jääb kettale, nii et sama paari saab uuesti üles seada ilma iga faili uueks pidamata.',
   'edit.unsaved': 'veel salvestamata',
+  'pick.title': 'Vali kaust',
+  'pick.open': 'Sirvi kaustu',
+  'pick.choose': 'Kasuta seda kausta',
+  'pick.up': 'Üks tase üles',
+  'pick.roots': 'Kettad ja juured',
+  'pick.empty': 'Siin pole kaustu.',
+  'look.accentReset': 'Tagasi vaikeväärtusele',
+  'pick.cancel': 'Loobu',
 }
 
 export default et

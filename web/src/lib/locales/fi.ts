@@ -246,6 +246,14 @@ const fi: Translations = {
   'edit.removeJob': 'Poista tämä työ',
   'edit.removeStakes': 'Työ {name} otetaan pois määrityksistä. Se mitä se on jo kopioinut jää paikalleen, ja sen tilatiedosto jää levylle, joten sama pari voidaan pystyttää uudelleen ilman että jokaista tiedostoa kohdellaan uutena.',
   'edit.unsaved': 'ei vielä tallennettu',
+  'pick.title': 'Valitse kansio',
+  'pick.open': 'Selaa kansioita',
+  'pick.choose': 'Käytä tätä kansiota',
+  'pick.up': 'Yksi taso ylös',
+  'pick.roots': 'Levyt ja juuret',
+  'pick.empty': 'Täällä ei ole kansioita.',
+  'look.accentReset': 'Takaisin oletukseen',
+  'pick.cancel': 'Peruuta',
 }
 
 export default fi

@@ -246,6 +246,14 @@ const he: Translations = {
   'edit.removeJob': 'הסר משימה זו',
   'edit.removeStakes': 'המשימה {name} יוצאת מהתצורה. מה שכבר הועתק נשאר במקומו, וקובץ המצב שלה נשאר על הדיסק, כך שאפשר להקים את אותו הצמד מחדש בלי להתייחס לכל קובץ כחדש.',
   'edit.unsaved': 'עדיין לא נשמר',
+  'pick.title': 'בחר תיקייה',
+  'pick.open': 'עיין בתיקיות',
+  'pick.choose': 'השתמש בתיקייה זו',
+  'pick.up': 'רמה אחת למעלה',
+  'pick.roots': 'כוננים ושורשים',
+  'pick.empty': 'אין כאן תיקיות.',
+  'look.accentReset': 'חזרה לברירת המחדל',
+  'pick.cancel': 'ביטול',
 }
 
 export default he

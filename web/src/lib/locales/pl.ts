@@ -246,6 +246,14 @@ const pl: Translations = {
   'edit.removeJob': 'Usuń to zadanie',
   'edit.removeStakes': 'Zadanie {name} znika z konfiguracji. To, co już skopiowało, zostaje na miejscu, a jego plik stanu zostaje na dysku, więc tę samą parę można ustawić ponownie bez traktowania każdego pliku jako nowego.',
   'edit.unsaved': 'jeszcze nie zapisane',
+  'pick.title': 'Wybierz folder',
+  'pick.open': 'Przeglądaj foldery',
+  'pick.choose': 'Użyj tego folderu',
+  'pick.up': 'Poziom wyżej',
+  'pick.roots': 'Dyski i korzenie',
+  'pick.empty': 'Tu nie ma folderów.',
+  'look.accentReset': 'Wróć do domyślnego',
+  'pick.cancel': 'Anuluj',
 }
 
 export default pl

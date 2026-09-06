@@ -539,6 +539,10 @@ type Event struct {
 	Total int    `json:"total,omitempty"`
 	Kind  string `json:"kind,omitempty"`
 	Path  string `json:"path,omitempty"`
+	// Which side the work lands on, so a watching screen can say WHERE a file
+	// is going rather than only that one is moving. Empty for a step that
+	// touches neither side, such as writing a record.
+	Side  string `json:"side,omitempty"`
 }
 
 // progressFor turns the apply stage's reports into events on the stream.
@@ -555,8 +559,8 @@ func (p progressFor) Starting(total int) {
 	p.runner.publish(Event{Job: p.job, Phase: "progress", Done: 0, Total: total})
 }
 
-func (p progressFor) Did(kind, path string, done, total int) {
-	p.runner.publish(Event{Job: p.job, Phase: "progress", Done: done, Total: total, Kind: kind, Path: path})
+func (p progressFor) Did(kind, path, side string, done, total int) {
+	p.runner.publish(Event{Job: p.job, Phase: "progress", Done: done, Total: total, Kind: kind, Path: path, Side: side})
 }
 
 // Subscribe returns a channel of events and the function that stops it.

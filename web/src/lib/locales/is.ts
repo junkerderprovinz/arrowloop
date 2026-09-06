@@ -246,6 +246,14 @@ const is: Translations = {
   'edit.removeJob': 'Fjarlægja þetta verk',
   'edit.removeStakes': 'Verkið {name} er tekið út úr uppsetningunni. Það sem það hefur þegar afritað liggur áfram, og stöðuskráin verður eftir á disknum, svo hægt er að setja sama parið upp aftur án þess að fara með hverja skrá sem nýja.',
   'edit.unsaved': 'ekki vistað enn',
+  'pick.title': 'Veldu möppu',
+  'pick.open': 'Fletta að möppu',
+  'pick.choose': 'Nota þessa möppu',
+  'pick.up': 'Eitt þrep upp',
+  'pick.roots': 'Diskar og rætur',
+  'pick.empty': 'Engar möppur hér.',
+  'look.accentReset': 'Aftur í sjálfgefið',
+  'pick.cancel': 'Hætta við',
 }
 
 export default is

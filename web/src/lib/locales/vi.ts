@@ -246,6 +246,14 @@ const vi: Translations = {
   'edit.removeJob': 'Bỏ công việc này',
   'edit.removeStakes': 'Công việc {name} được lấy khỏi cấu hình. Những gì nó đã sao chép vẫn nằm nguyên, và tệp trạng thái của nó vẫn ở trên đĩa, nên cùng cặp đó có thể dựng lại mà không coi mọi tệp là mới.',
   'edit.unsaved': 'chưa lưu',
+  'pick.title': 'Chọn thư mục',
+  'pick.open': 'Duyệt thư mục',
+  'pick.choose': 'Dùng thư mục này',
+  'pick.up': 'Lên một cấp',
+  'pick.roots': 'Ổ đĩa và gốc',
+  'pick.empty': 'Ở đây không có thư mục.',
+  'look.accentReset': 'Về mặc định',
+  'pick.cancel': 'Hủy',
 }
 
 export default vi

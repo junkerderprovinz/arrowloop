@@ -246,6 +246,14 @@ const cs: Translations = {
   'edit.removeJob': 'Odebrat tuto úlohu',
   'edit.removeStakes': 'Úloha {name} zmizí z konfigurace. To, co už zkopírovala, zůstane na místě, a její stavový soubor zůstane na disku, takže tutéž dvojici lze nastavit znovu, aniž by se každý soubor bral jako nový.',
   'edit.unsaved': 'zatím neuloženo',
+  'pick.title': 'Vyber složku',
+  'pick.open': 'Procházet složky',
+  'pick.choose': 'Použít tuto složku',
+  'pick.up': 'O úroveň výš',
+  'pick.roots': 'Disky a kořeny',
+  'pick.empty': 'Tady nejsou složky.',
+  'look.accentReset': 'Zpět na výchozí',
+  'pick.cancel': 'Zrušit',
 }
 
 export default cs

@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import { Card, Stack } from './components/Shell'
+import { Button, Card, Stack } from './components/Shell'
 import { Choice, Field, Info, Switch } from './components/Field'
 import { Selector } from './components/Selector'
+import { Sidebar } from './components/Sidebar'
 import { IconHistory, IconJobs, IconSettings, IconTargets } from './components/glyphs'
 import { AccentSwatches, PaletteSwatches } from './components/Swatches'
 import { About } from './components/About'
@@ -40,6 +41,14 @@ type Tab = 'jobs' | 'targets' | 'history' | 'settings'
 type SettingsSection = 'general' | 'look' | 'about'
 
 type Theme = 'dark' | 'light'
+
+/**
+ * The house accent, and the one a reset returns to.
+ *
+ * Read from the preset list rather than written out again, so the swatch that
+ * is offered first and the colour the button restores can never disagree.
+ */
+const DEFAULT_ACCENT = ACCENTS[0]?.hex ?? '#FCC419'
 
 const THEME_KEY = 'arrowloop.theme'
 
@@ -174,60 +183,54 @@ export function App() {
     applyRainbow(rainbow)
   }, [rainbow])
 
+  // The rail carries the number of jobs working right now, because that is the
+  // one fact somebody watches for without going and looking.
+  const running = jobs.filter((j) => j.running).length
+
   return (
-    <div className="mx-auto flex max-w-5xl flex-col gap-10 px-6 py-8">
-      <header className="flex flex-wrap items-center justify-between gap-4">
-        {/* One hero per page, and this is it: the mark and the wordmark, read as
-            one thing. Everything else on the page is supporting detail at small
-            type. The mark is sized against the wordmark beside it rather than by
-            some ratio of the header, so neither one outshouts the other, and it
-            carries no alt text on purpose: the name is already right next to it,
-            and a screen reader should not announce it twice. */}
-        <div className="flex items-center gap-2.5">
-          <img src="/favicon.svg" alt="" width={26} height={26} className="shrink-0" />
-          <h1 className="text-[20px] font-semibold tracking-tight">
-            Arrow<span className="text-accentInk">Loop</span>
-          </h1>
-        </div>
-        <Selector<Tab>
-          scale="small"
-          label={t('nav.section')}
-          value={previewing ? 'jobs' : tab}
-          onChange={(next) => {
-            setPreviewing(null)
-            setTab(next)
-          }}
-          options={[
-            { value: 'jobs', label: t('nav.jobs'), icon: <IconJobs /> },
-            { value: 'targets', label: t('nav.targets'), icon: <IconTargets /> },
-            { value: 'history', label: t('nav.history'), icon: <IconHistory /> },
-            { value: 'settings', label: t('nav.settings'), icon: <IconSettings /> },
-          ]}
-        />
-      </header>
+    // The house frame: a fixed rail, and a page that scrolls beside it. The
+    // window is the height, not the content, so the rail never scrolls away
+    // from under the pointer.
+    <div className="flex h-screen overflow-hidden bg-carbon-background">
+      <Sidebar<Tab>
+        value={previewing ? 'jobs' : tab}
+        mode={labels.sidebar}
+        onChange={(next) => {
+          setPreviewing(null)
+          setTab(next)
+        }}
+        items={[
+          { value: 'jobs', label: t('nav.jobs'), icon: <IconJobs />, badge: running },
+          { value: 'targets', label: t('nav.targets'), icon: <IconTargets /> },
+          { value: 'history', label: t('nav.history'), icon: <IconHistory /> },
+        ]}
+        settings={{ value: 'settings', label: t('nav.settings'), icon: <IconSettings /> }}
+      />
 
-      {error && (
-        <Card title={t('error.unreachable')} hue={0}>
-          <p className="text-[12px] text-statusFail">{error}</p>
-        </Card>
-      )}
+      <main className="min-w-0 flex-1 overflow-y-auto">
+        <div className="flex min-h-full w-full flex-col gap-8 p-6 md:p-8">
+          {error && (
+            <Card title={t('error.unreachable')} hue={0}>
+              <p className="text-[12px] text-statusFail">{error}</p>
+            </Card>
+          )}
 
-      {previewing ? (
-        <Preview
-          job={previewing}
-          onDone={() => {
-            setPreviewing(null)
-            refresh()
-          }}
-        />
-      ) : tab === 'jobs' ? (
-        <Jobs jobs={jobs} progress={progress} onPreview={setPreviewing} onSaved={refresh} />
-      ) : tab === 'targets' ? (
-        <Targets />
-      ) : tab === 'history' ? (
-        <History runs={runs} />
-      ) : (
-        <Settings
+          {previewing ? (
+            <Preview
+              job={previewing}
+              onDone={() => {
+                setPreviewing(null)
+                refresh()
+              }}
+            />
+          ) : tab === 'jobs' ? (
+            <Jobs jobs={jobs} progress={progress} onPreview={setPreviewing} onSaved={refresh} />
+          ) : tab === 'targets' ? (
+            <Targets />
+          ) : tab === 'history' ? (
+            <History runs={runs} />
+          ) : (
+            <Settings
           theme={theme}
           onTheme={(next) => {
             setTheme(next)
@@ -255,11 +258,13 @@ export function App() {
             setWindow(next)
             void api.saveWindow(next).then(setWindow)
           }}
-          lang={lang}
-          onLang={setLanguage}
-          languages={languages}
-        />
-      )}
+              lang={lang}
+              onLang={setLanguage}
+              languages={languages}
+            />
+          )}
+        </div>
+      </main>
     </div>
   )
 }
@@ -434,7 +439,19 @@ function Look({
         />
       </Card>
 
-      <Card title={t('look.accent')} hue={3}>
+      {/* The way back is part of the control, not a thing to look up. A colour
+          somebody mixed themselves has no swatch to click to undo it, so
+          without this the only route back to the house colour is knowing its
+          hex, which nobody does. */}
+      <Card
+        title={t('look.accent')}
+        hue={3}
+        actions={
+          accent !== DEFAULT_ACCENT ? (
+            <Button onClick={() => onAccent(DEFAULT_ACCENT)}>{t('look.accentReset')}</Button>
+          ) : undefined
+        }
+      >
         <AccentSwatches presets={ACCENTS} value={accent} onChange={onAccent} />
       </Card>
 
@@ -493,10 +510,10 @@ function Look({
 
       <Card title={t('look.labels')} hue={6} actions={<Info text={t('look.labelsHint')} />}>
         <div className="flex flex-col gap-4">
-          {/* Two surfaces, not three. The engine carries a rail axis as well and
-              this app has no rail, so offering a third control would be offering
-              one that does nothing. */}
-          {CONTROL_AXES.filter((axis) => axis !== 'sidebar').map((axis) => (
+          {/* All three surfaces now. The rail axis used to be filtered out
+              because this app had no rail; it has one, so hiding the control
+              would be hiding a setting that works. */}
+          {CONTROL_AXES.map((axis) => (
             <Field key={axis} label={t(axisKey[axis])}>
               <Selector<LabelMode>
                 label={t(axisKey[axis])}

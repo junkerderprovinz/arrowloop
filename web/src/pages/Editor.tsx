@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { Choice, Field, Info, Lines, Switch, Text } from '../components/Field'
 import { api, type RawJob } from '../lib/api'
 import { DirectionSwitch } from '../components/Direction'
+import { FolderPicker, PickButton } from '../components/FolderPicker'
 import { ScheduleField } from '../components/Schedule'
 import { useT } from '../lib/i18n'
 
@@ -231,12 +232,20 @@ export function JobForm({
 }
 
 /**
- * One side of a job: a text field, plus a list of the things already registered.
+ * One side of a job: a field, a button that walks the folders, and a list of
+ * the things already registered.
+ *
+ * The browse button is always there, and that is the fix for what it replaced:
+ * the registered list only appeared once a target or a drive existed, so on a
+ * fresh installation there was no way to choose a side at all, only a box to
+ * type into. The first job somebody ever makes is exactly the one where they
+ * have registered nothing.
  *
  * The list writes the prefix and leaves the rest of the path to be typed, rather
  * than replacing whatever was there. A picker that overwrote the field would
  * lose the subfolder somebody had just entered, which is the only part they
- * could not have picked from a list.
+ * could not have picked from a list. The folder browser DOES replace the value,
+ * because what it returns is a whole real path rather than a prefix.
  */
 function Side({
   label,
@@ -252,11 +261,29 @@ function Side({
   onChange: (next: string) => void
 }) {
   const { t } = useT()
+  const [picking, setPicking] = useState(false)
   return (
     <div className="flex flex-col gap-1.5">
       <Field label={label} hint={hint}>
-        <Text value={value} onChange={onChange} mono />
+        <div className="flex items-center gap-2">
+          <div className="min-w-0 flex-1">
+            <Text value={value} onChange={onChange} mono />
+          </div>
+          <PickButton onClick={() => setPicking(true)} />
+        </div>
       </Field>
+      <FolderPicker
+        open={picking}
+        // A value with a colon in it is a target's name, not a folder on this
+        // machine, so the browser starts at the top rather than failing to read
+        // something that was never a path.
+        start={value.includes(':') && !/^[A-Za-z]:[\\/]/.test(value) ? undefined : value}
+        onClose={() => setPicking(false)}
+        onPick={(path) => {
+          onChange(path)
+          setPicking(false)
+        }}
+      />
       {known.length > 0 && (
         <Choice
           value=""

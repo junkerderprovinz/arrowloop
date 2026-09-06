@@ -246,6 +246,14 @@ const sk: Translations = {
   'edit.removeJob': 'Odobrať túto úlohu',
   'edit.removeStakes': 'Úloha {name} zmizne z konfigurácie. To, čo už skopírovala, zostane na mieste, a jej stavový súbor zostane na disku, takže tú istú dvojicu možno nastaviť znova bez toho, aby sa každý súbor bral ako nový.',
   'edit.unsaved': 'zatiaľ neuložené',
+  'pick.title': 'Vyber priečinok',
+  'pick.open': 'Prehľadávať priečinky',
+  'pick.choose': 'Použiť tento priečinok',
+  'pick.up': 'O úroveň vyššie',
+  'pick.roots': 'Disky a korene',
+  'pick.empty': 'Tu nie sú priečinky.',
+  'look.accentReset': 'Späť na predvolené',
+  'pick.cancel': 'Zrušiť',
 }
 
 export default sk

@@ -246,6 +246,14 @@ const ar: Translations = {
   'edit.removeJob': 'إزالة هذه المهمة',
   'edit.removeStakes': 'تخرج المهمة {name} من الإعداد. ما نسخته يبقى في مكانه، وملف حالتها يبقى على القرص، فيمكن إعداد الزوج نفسه من جديد دون معاملة كل ملف على أنه جديد.',
   'edit.unsaved': 'لم يُحفظ بعد',
+  'pick.title': 'اختر مجلداً',
+  'pick.open': 'تصفح المجلدات',
+  'pick.choose': 'استخدم هذا المجلد',
+  'pick.up': 'مستوى للأعلى',
+  'pick.roots': 'الأقراص والجذور',
+  'pick.empty': 'لا مجلدات هنا.',
+  'look.accentReset': 'العودة إلى الافتراضي',
+  'pick.cancel': 'إلغاء',
 }
 
 export default ar

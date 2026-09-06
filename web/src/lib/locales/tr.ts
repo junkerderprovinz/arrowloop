@@ -246,6 +246,14 @@ const tr: Translations = {
   'edit.removeJob': 'Bu işi kaldır',
   'edit.removeStakes': '{name} işi yapılandırmadan çıkar. Kopyaladığı şeyler yerinde kalır ve durum dosyası diskte kalır, böylece aynı çift her dosya yeniymiş gibi ele alınmadan yeniden kurulabilir.',
   'edit.unsaved': 'henüz kaydedilmedi',
+  'pick.title': 'Klasör seç',
+  'pick.open': 'Klasörlere göz at',
+  'pick.choose': 'Bu klasörü kullan',
+  'pick.up': 'Bir üst seviye',
+  'pick.roots': 'Diskler ve kökler',
+  'pick.empty': 'Burada klasör yok.',
+  'look.accentReset': 'Varsayılana dön',
+  'pick.cancel': 'İptal',
 }
 
 export default tr

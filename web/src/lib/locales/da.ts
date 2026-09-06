@@ -246,6 +246,14 @@ const da: Translations = {
   'edit.removeJob': 'Fjern dette job',
   'edit.removeStakes': 'Jobbet {name} tages ud af konfigurationen. Det, der allerede er kopieret, bliver liggende, og dets tilstandsfil bliver på disken, så det samme par kan sættes op igen uden at behandle hver fil som ny.',
   'edit.unsaved': 'ikke gemt endnu',
+  'pick.title': 'Vælg en mappe',
+  'pick.open': 'Find en mappe',
+  'pick.choose': 'Brug denne mappe',
+  'pick.up': 'Et niveau op',
+  'pick.roots': 'Diske og rødder',
+  'pick.empty': 'Ingen mapper her.',
+  'look.accentReset': 'Tilbage til standard',
+  'pick.cancel': 'Annuller',
 }
 
 export default da

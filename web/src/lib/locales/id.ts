@@ -246,6 +246,14 @@ const id: Translations = {
   'edit.removeJob': 'Hapus tugas ini',
   'edit.removeStakes': 'Tugas {name} keluar dari konfigurasi. Apa yang sudah disalinnya tetap di tempatnya, dan berkas keadaannya tetap di cakram, jadi pasangan yang sama bisa disiapkan lagi tanpa memperlakukan setiap berkas sebagai baru.',
   'edit.unsaved': 'belum disimpan',
+  'pick.title': 'Pilih folder',
+  'pick.open': 'Telusuri folder',
+  'pick.choose': 'Pakai folder ini',
+  'pick.up': 'Satu tingkat ke atas',
+  'pick.roots': 'Cakram dan akar',
+  'pick.empty': 'Tidak ada folder di sini.',
+  'look.accentReset': 'Kembali ke bawaan',
+  'pick.cancel': 'Batal',
 }
 
 export default id

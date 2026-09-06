@@ -246,6 +246,14 @@ const gl: Translations = {
   'edit.removeJob': 'Quitar esta tarefa',
   'edit.removeStakes': 'A tarefa {name} sae da configuración. O que xa copiou queda onde está, e o seu ficheiro de estado queda no disco, así que o mesmo par pódese montar de novo sen tratar cada ficheiro como novo.',
   'edit.unsaved': 'aínda non gardado',
+  'pick.title': 'Escoller un cartafol',
+  'pick.open': 'Buscar un cartafol',
+  'pick.choose': 'Usar este cartafol',
+  'pick.up': 'Un nivel arriba',
+  'pick.roots': 'Discos e raíces',
+  'pick.empty': 'Aquí non hai cartafoles.',
+  'look.accentReset': 'Volver ao valor predeterminado',
+  'pick.cancel': 'Cancelar',
 }
 
 export default gl

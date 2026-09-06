@@ -246,6 +246,14 @@ const sl: Translations = {
   'edit.removeJob': 'Odstrani to opravilo',
   'edit.removeStakes': 'Opravilo {name} gre iz nastavitev. Kar je že prekopiralo, ostane na mestu, in njegova datoteka stanja ostane na disku, tako da je isti par mogoče znova nastaviti, ne da bi vsako datoteko šteli za novo.',
   'edit.unsaved': 'še ni shranjeno',
+  'pick.title': 'Izberi mapo',
+  'pick.open': 'Brskaj po mapah',
+  'pick.choose': 'Uporabi to mapo',
+  'pick.up': 'Eno raven višje',
+  'pick.roots': 'Diski in koreni',
+  'pick.empty': 'Tukaj ni map.',
+  'look.accentReset': 'Nazaj na privzeto',
+  'pick.cancel': 'Prekliči',
 }
 
 export default sl

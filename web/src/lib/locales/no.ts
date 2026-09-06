@@ -246,6 +246,14 @@ const no: Translations = {
   'edit.removeJob': 'Fjern denne jobben',
   'edit.removeStakes': 'Jobben {name} tas ut av oppsettet. Det som allerede er kopiert blir liggende, og tilstandsfilen blir værende på disken, så det samme paret kan settes opp igjen uten å behandle hver fil som ny.',
   'edit.unsaved': 'ikke lagret ennå',
+  'pick.title': 'Velg en mappe',
+  'pick.open': 'Bla etter en mappe',
+  'pick.choose': 'Bruk denne mappen',
+  'pick.up': 'Ett nivå opp',
+  'pick.roots': 'Disker og røtter',
+  'pick.empty': 'Ingen mapper her.',
+  'look.accentReset': 'Tilbake til standard',
+  'pick.cancel': 'Avbryt',
 }
 
 export default no

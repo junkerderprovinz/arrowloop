@@ -2,11 +2,11 @@ import { useState } from 'react'
 
 import { Badge, Button, Card, Confirm, Empty, IconButton, Num, Rule, Stack } from '../components/Shell'
 import { Info } from '../components/Field'
-import { IconAdd, IconDelete, IconEdit, IconPreview } from '../components/glyphs'
+import { IconAdd, IconDelete, IconEdit, IconPreview, IconToLeft, IconToRight } from '../components/glyphs'
 import { DirectionMark } from '../components/Direction'
 import { JobForm, useJobConfig } from './Editor'
 import type { Job, Run, RunEvent } from '../lib/api'
-import { useT, type TranslationKey } from '../lib/i18n'
+import { translateSide, useT, type TranslationKey } from '../lib/i18n'
 
 /**
  * The jobs tab: what exists, what is happening, and the form to change it.
@@ -264,12 +264,24 @@ function Live({ jobs, progress }: { jobs: Job[]; progress: Record<string, RunEve
                   <Badge tone="accent">{t('jobs.state.running')}</Badge>
                   <span className="truncate text-[13px] font-medium">{j.name}</span>
                 </div>
-                {/* The path is the part that changes second by second, and it is
-                    the whole reason to watch: it is how somebody knows the run
-                    is moving rather than stuck. */}
+                {/* The file and the side it lands on. The path is what changes
+                    second by second and is the whole reason to watch, but on
+                    its own it only says something is moving; the side is what
+                    says which way, which is the question a two-way sync raises
+                    every time it does anything. */}
                 {event?.path && (
-                  <p className="truncate font-mono text-[11px] text-carbon-textMuted" title={event.path}>
-                    {event.path}
+                  <p className="flex min-w-0 items-center gap-1.5 text-[11px] text-carbon-textMuted">
+                    {event.side && (
+                      <span className="shrink-0" aria-hidden>
+                        {event.side === 'right' ? <IconToRight /> : <IconToLeft />}
+                      </span>
+                    )}
+                    <span className="truncate font-mono" title={event.path}>
+                      {event.path}
+                    </span>
+                    {event.side && (
+                      <span className="shrink-0">{translateSide(t, event.side)}</span>
+                    )}
                   </p>
                 )}
                 <Progress event={event} />

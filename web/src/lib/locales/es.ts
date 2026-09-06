@@ -246,6 +246,14 @@ const es: Translations = {
   'edit.removeJob': 'Quitar este trabajo',
   'edit.removeStakes': 'El trabajo {name} sale de la configuración. Lo que ya copió se queda donde está, y su archivo de estado permanece en el disco, así que el mismo par se puede montar de nuevo sin tratar cada archivo como nuevo.',
   'edit.unsaved': 'sin guardar',
+  'pick.title': 'Elegir una carpeta',
+  'pick.open': 'Buscar una carpeta',
+  'pick.choose': 'Usar esta carpeta',
+  'pick.up': 'Un nivel arriba',
+  'pick.roots': 'Discos y raíces',
+  'pick.empty': 'Aquí no hay carpetas.',
+  'look.accentReset': 'Volver al valor por defecto',
+  'pick.cancel': 'Cancelar',
 }
 
 export default es

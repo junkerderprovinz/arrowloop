@@ -246,6 +246,14 @@ const zh: Translations = {
   'edit.removeJob': '移除这个任务',
   'edit.removeStakes': '任务 {name} 从配置里移除。已经复制的内容原地保留，它的状态文件也留在磁盘上，所以同一对可以重新配置，而不会把每个文件都当成新的。',
   'edit.unsaved': '尚未保存',
+  'pick.title': '选择文件夹',
+  'pick.open': '浏览文件夹',
+  'pick.choose': '用这个文件夹',
+  'pick.up': '上一级',
+  'pick.roots': '驱动器和根目录',
+  'pick.empty': '这里没有文件夹。',
+  'look.accentReset': '恢复默认',
+  'pick.cancel': '取消',
 }
 
 export default zh

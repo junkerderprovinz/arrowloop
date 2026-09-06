@@ -246,6 +246,14 @@ const pt: Translations = {
   'edit.removeJob': 'Remover esta tarefa',
   'edit.removeStakes': 'A tarefa {name} sai da configuração. O que já copiou fica onde está, e o seu ficheiro de estado fica no disco, por isso o mesmo par pode ser montado de novo sem tratar cada ficheiro como novo.',
   'edit.unsaved': 'ainda não guardado',
+  'pick.title': 'Escolher uma pasta',
+  'pick.open': 'Procurar uma pasta',
+  'pick.choose': 'Usar esta pasta',
+  'pick.up': 'Um nível acima',
+  'pick.roots': 'Discos e raízes',
+  'pick.empty': 'Aqui não há pastas.',
+  'look.accentReset': 'Voltar ao valor padrão',
+  'pick.cancel': 'Cancelar',
 }
 
 export default pt

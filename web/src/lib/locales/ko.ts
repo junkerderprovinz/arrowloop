@@ -246,6 +246,14 @@ const ko: Translations = {
   'edit.removeJob': '이 작업 제거',
   'edit.removeStakes': '작업 {name}이 설정에서 빠집니다. 이미 복사한 것은 그대로 남고 상태 파일도 디스크에 남으므로, 같은 쌍을 다시 만들어도 모든 파일을 새것으로 취급하지 않습니다.',
   'edit.unsaved': '저장 안 됨',
+  'pick.title': '폴더 선택',
+  'pick.open': '폴더 찾아보기',
+  'pick.choose': '이 폴더 사용',
+  'pick.up': '한 단계 위로',
+  'pick.roots': '드라이브와 루트',
+  'pick.empty': '여기에는 폴더가 없습니다.',
+  'look.accentReset': '기본값으로 되돌리기',
+  'pick.cancel': '취소',
 }
 
 export default ko

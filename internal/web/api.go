@@ -64,6 +64,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("POST /api/volumes", s.markVolume)
 	mux.HandleFunc("DELETE /api/volumes/{id}", s.forgetVolume)
 
+	mux.HandleFunc("GET /api/browse", s.browse)
 	mux.HandleFunc("GET /api/capabilities", s.capabilities)
 
 	if s.Window != nil {

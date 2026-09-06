@@ -38,7 +38,7 @@ import (
 // that. A nil Progress means nobody is watching.
 type Progress interface {
 	Starting(total int)
-	Did(kind, path string, done, total int)
+	Did(kind, path, side string, done, total int)
 }
 
 // Ends holds the two filesystems a job runs against.
@@ -93,13 +93,13 @@ type tally struct {
 // step reports one finished piece of work. The count is taken under the same
 // lock as everything else, so the numbers a watcher sees always add up even
 // when several workers finish at the same instant.
-func (t *tally) step(kind, path string) {
+func (t *tally) step(kind, path, side string) {
 	t.mu.Lock()
 	t.done++
 	done, total, watcher := t.done, t.total, t.progress
 	t.mu.Unlock()
 	if watcher != nil {
-		watcher.Did(kind, path, done, total)
+		watcher.Did(kind, path, side, done, total)
 	}
 }
 
@@ -177,7 +177,7 @@ func RunWatched(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt 
 		}
 		if d.Kind == plan.MakeDir {
 			t.count(func(r *Result) { r.DirsMade++ })
-			t.step("mkdir", d.DstPath)
+			t.step("mkdir", d.DstPath, d.Dst.String())
 		}
 	}
 
@@ -213,7 +213,7 @@ func RunWatched(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt 
 	// Files both sides created identically need no transfer, only a record.
 	for _, act := range p.Agreed {
 		left, right := act.Names()
-		t.step("record", act.Path)
+		t.step("record", act.Path, "")
 		if err := rec.settle(ctx, act.Path, left, right); err != nil {
 			var dis *DisagreementError
 			if errors.As(err, &dis) {
@@ -234,7 +234,7 @@ func RunWatched(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt 
 			continue
 		}
 		t.count(func(r *Result) { r.DirsRemoved++ })
-		t.step("rmdir", d.DstPath)
+		t.step("rmdir", d.DstPath, d.Dst.String())
 	}
 
 	return t.res, t.fatalErr()
@@ -366,7 +366,7 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 			return err
 		}
 		t.count(func(r *Result) { r.Copied++ })
-		t.step("copy", act.DstPath)
+		t.step("copy", act.DstPath, act.Dst.String())
 		left, right := act.Names()
 		return rec.settle(ctx, act.Path, left, right)
 
@@ -376,7 +376,7 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 			return err
 		}
 		t.count(func(r *Result) { r.Moved++ })
-		t.step("move", act.DstPath)
+		t.step("move", act.DstPath, act.Dst.String())
 		if err := rec.db.Forget(ctx, pathid.Key(act.OldDstPath, opt.FoldCase)); err != nil {
 			return err
 		}
@@ -399,12 +399,12 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 			return err
 		}
 		t.count(func(r *Result) { r.Trashed++ })
-		t.step("trash", act.Path)
+		t.step("trash", act.Path, act.Dst.String())
 		return rec.db.Forget(ctx, act.Path)
 
 	case plan.Conflict:
 		t.count(func(r *Result) { r.Conflicts++ })
-		t.step("conflict", act.Path)
+		t.step("conflict", act.Path, "")
 		return resolveConflict(ctx, ends, rec, act, runID, opt)
 	}
 	return fmt.Errorf("unknown action kind %v", act.Kind)

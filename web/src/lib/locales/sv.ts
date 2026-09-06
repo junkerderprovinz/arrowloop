@@ -246,6 +246,14 @@ const sv: Translations = {
   'edit.removeJob': 'Ta bort det här jobbet',
   'edit.removeStakes': 'Jobbet {name} tas ur konfigurationen. Det som redan kopierats ligger kvar, och dess tillståndsfil blir kvar på disken, så samma par kan sättas upp igen utan att varje fil behandlas som ny.',
   'edit.unsaved': 'inte sparat än',
+  'pick.title': 'Välj en mapp',
+  'pick.open': 'Bläddra efter en mapp',
+  'pick.choose': 'Använd den här mappen',
+  'pick.up': 'En nivå upp',
+  'pick.roots': 'Diskar och rötter',
+  'pick.empty': 'Inga mappar här.',
+  'look.accentReset': 'Tillbaka till standard',
+  'pick.cancel': 'Avbryt',
 }
 
 export default sv

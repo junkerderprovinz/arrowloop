@@ -246,6 +246,14 @@ const lt: Translations = {
   'edit.removeJob': 'Pašalinti šį darbą',
   'edit.removeStakes': 'Darbas {name} išimamas iš konfigūracijos. Tai, ką jis jau nukopijavo, lieka vietoje, o jo būsenos failas lieka diske, tad tą pačią porą galima nustatyti iš naujo nelaikant kiekvieno failo nauju.',
   'edit.unsaved': 'dar neįrašyta',
+  'pick.title': 'Pasirink aplanką',
+  'pick.open': 'Naršyti aplankus',
+  'pick.choose': 'Naudoti šį aplanką',
+  'pick.up': 'Vienu lygiu aukščiau',
+  'pick.roots': 'Diskai ir šaknys',
+  'pick.empty': 'Čia nėra aplankų.',
+  'look.accentReset': 'Grįžti į numatytąjį',
+  'pick.cancel': 'Atšaukti',
 }
 
 export default lt
