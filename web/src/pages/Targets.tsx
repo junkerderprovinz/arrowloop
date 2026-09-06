@@ -1,8 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { Badge, Button, Card, Confirm, Empty, IconButton, Rule, RowActions, Stack } from '../components/Shell'
+import { Empty, Rule, RowActions, Stack } from '../components/Shell'
+import { IconAction } from '../components/IconAction'
+import { Card } from '../lib/glimstone/Card'
+import { Badge } from '../lib/glimstone/Badge'
+import { Button } from '../lib/glimstone/Button'
+import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
 import { IconCheck, IconCopy, IconDelete, IconEdit, IconForget } from '../components/glyphs'
-import { Choice, Field, Secret, Switch, Text } from '../components/Field'
+import { Choice, Field, Secret, Text } from '../components/Field'
+import { ToggleRow } from '../components/ToggleRow'
 import { api, type Backend, type Remote, type Volume } from '../lib/api'
 import { useT } from '../lib/i18n'
 import { Since } from './Jobs'
@@ -71,20 +77,21 @@ function Storage({
   return (
     <Card
       title={t('targets.storage')}
-      actions={
-        !adding &&
-        editing === null && (
+    >
+      {/* The card's own control, at the top of its body. GlimStone's Card draws
+          a heading and nothing else, so a card's controls live in the body. */}
+      {!adding && editing === null && (
+        <div className="flex justify-end">
           <Button
+            label={t('targets.addStorage')}
+            labelKey={null}
             onClick={() => {
               setAdding(true)
               setEditing(null)
             }}
-          >
-            {t('targets.addStorage')}
-          </Button>
-        )
-      }
-    >
+          />
+        </div>
+      )}
       {adding && (
         <RemoteForm
           backends={backends}
@@ -196,30 +203,31 @@ function RemoteRow({
             fourth button with a mystery behind it. An icon-only button already
             has to carry a tip to be nameable at all, so the sentence goes
             there, where a pointer heading for the button finds it. */}
-        <IconButton
+        <IconAction
           onClick={check}
           disabled={checking}
           title={checking ? t('targets.checking') : t('targets.check')}
           hint={t('targets.checkHint')}
         >
           <IconCheck />
-        </IconButton>
+        </IconAction>
         <RowActions>
-          <IconButton onClick={onEdit} title={t('targets.edit')}>
+          <IconAction onClick={onEdit} title={t('targets.edit')}>
             <IconEdit />
-          </IconButton>
-          <IconButton tone="fail" title={t('targets.delete')} onClick={() => setConfirming(true)}>
+          </IconAction>
+          <IconAction title={t('targets.delete')} onClick={() => setConfirming(true)}>
             <IconDelete />
-          </IconButton>
+          </IconAction>
         </RowActions>
       </div>
 
       {confirming && (
-        <Confirm
+        <ConfirmDialog
           title={t('confirm.deleteRemote')}
-          stakes={t('confirm.deleteRemoteStakes', { name: remote.name })}
+          message={t('confirm.deleteRemoteStakes', { name: remote.name })}
           confirmLabel={t('confirm.delete')}
           cancelLabel={t('confirm.cancel')}
+          closeLabel={t('confirm.cancel')}
           onCancel={() => setConfirming(false)}
           onConfirm={() => {
             setConfirming(false)
@@ -330,15 +338,13 @@ function RemoteForm({
         ))}
       </div>
 
-      <Switch on={advanced} onChange={setAdvanced} label={t('targets.advanced')} />
+      <ToggleRow checked={advanced} onChange={setAdvanced} label={t('targets.advanced')} />
 
       {error && <p className="text-[11px] text-statusFail">{error}</p>}
 
       <div className="flex items-center gap-2">
-        <Button primary onClick={save} disabled={busy || !name.trim() || !kind}>
-          {t('targets.save')}
-        </Button>
-        <Button onClick={() => onDone(false)}>{t('targets.cancel')}</Button>
+        <Button label={t('targets.save')} labelKey={null} tone="accent" onClick={() => void save()} disabled={busy || !name.trim() || !kind} />
+        <Button label={t('targets.cancel')} labelKey={null} onClick={() => onDone(false)} />
       </div>
     </div>
   )
@@ -356,12 +362,16 @@ function Drives({ volumes, onChanged }: { volumes: Volume[]; onChanged: () => vo
     <Card
       title={t('targets.drives')}
       hint={t('targets.driveExplain')}
-      actions={
-        <div className="flex items-center gap-2">
-          {!adding && <Button onClick={() => setAdding(true)}>{t('targets.registerDrive')}</Button>}
-        </div>
-      }
     >
+      {!adding && (
+        <div className="flex justify-end">
+          <Button
+            label={t('targets.registerDrive')}
+            labelKey={null}
+            onClick={() => setAdding(true)}
+          />
+        </div>
+      )}
       {adding && (
         <DriveForm
           onDone={(saved) => {
@@ -414,8 +424,8 @@ function DriveRow({ volume, onChanged }: { volume: Volume; onChanged: () => void
       )}
 
       <div className="flex shrink-0 items-center gap-1.5">
-        <IconButton
-          tone={copied ? 'ok' : 'neutral'}
+        <IconAction
+          tone={copied ? 'active' : 'neutral'}
           title={copied ? t('targets.copied') : t('targets.copyPath')}
           onClick={() => {
             void navigator.clipboard?.writeText(volume.path).then(() => {
@@ -425,11 +435,11 @@ function DriveRow({ volume, onChanged }: { volume: Volume; onChanged: () => void
           }}
         >
           <IconCopy />
-        </IconButton>
+        </IconAction>
         <RowActions>
           {/* Same as the check button above: the sentence rides on the button
               rather than standing beside it as a lone (i) among icons. */}
-          <IconButton
+          <IconAction
             title={t('targets.forget')}
             hint={t('targets.forgetHint')}
             onClick={() => {
@@ -437,7 +447,7 @@ function DriveRow({ volume, onChanged }: { volume: Volume; onChanged: () => void
             }}
           >
             <IconForget />
-          </IconButton>
+          </IconAction>
         </RowActions>
       </div>
     </div>
@@ -484,7 +494,7 @@ function DriveForm({ onDone }: { onDone: (saved: boolean) => void }) {
       <div className="py-4">
         <Empty>{t('targets.noCandidates')}</Empty>
         <div className="flex justify-center">
-          <Button onClick={() => onDone(false)}>{t('targets.cancel')}</Button>
+          <Button label={t('targets.cancel')} labelKey={null} onClick={() => onDone(false)} />
         </div>
       </div>
     )
@@ -509,10 +519,8 @@ function DriveForm({ onDone }: { onDone: (saved: boolean) => void }) {
       {error && <p className="text-[11px] text-statusFail">{error}</p>}
 
       <div className="flex items-center gap-2">
-        <Button primary onClick={save} disabled={busy || !mount}>
-          {t('targets.save')}
-        </Button>
-        <Button onClick={() => onDone(false)}>{t('targets.cancel')}</Button>
+        <Button label={t('targets.save')} labelKey={null} tone="accent" onClick={() => void save()} disabled={busy || !mount} />
+        <Button label={t('targets.cancel')} labelKey={null} onClick={() => onDone(false)} />
       </div>
     </div>
   )

@@ -1,7 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 
-import { Badge, Button, Card, Empty, Num, Rule, Stack } from '../components/Shell'
-import { Info } from '../components/Field'
+import { Empty, Num, Rule, Stack } from '../components/Shell'
+import { Card } from '../lib/glimstone/Card'
+import { Badge } from '../lib/glimstone/Badge'
+import { Button } from '../lib/glimstone/Button'
+import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { Selector } from '../components/Selector'
 import { api, type Action, type ActionKind, type Plan, type Resolution, type SideVersion } from '../lib/api'
 import { translateSide, useReason, useT, type TranslationKey } from '../lib/i18n'
@@ -73,14 +76,14 @@ export function Preview({ job, onDone }: { job: string; onDone: () => void }) {
 
   if (error) {
     return (
-      <Card title={t('preview.title')} hue={0}>
+      <Card title={t('preview.title')} hueIndex={0}>
         <p className="text-[12px] text-statusFail">{error}</p>
       </Card>
     )
   }
   if (!plan) {
     return (
-      <Card title={t('preview.title')} hue={0}>
+      <Card title={t('preview.title')} hueIndex={0}>
         <Empty>{t('preview.working')}</Empty>
       </Card>
     )
@@ -92,13 +95,25 @@ export function Preview({ job, onDone }: { job: string; onDone: () => void }) {
     <Stack>
       <Card
         title={t('preview.for', { job })}
-        hue={0}
-        actions={
-          <Button primary onClick={start} disabled={busy || nothingToDo || chosen.length === 0}>
-            {busy ? t('preview.starting') : t('preview.run', { chosen: chosen.length, total: everything.length })}
-          </Button>
-        }
+        hueIndex={0}
       >
+        {/* The one thing somebody came to this card to do, at the top of its
+            body. GlimStone's Card draws a heading and nothing else, so a card's
+            own controls live in the body, the same as in BombVault. */}
+        <div className="flex justify-end">
+          <Button
+            label={
+              busy
+                ? t('preview.starting')
+                : t('preview.run', { chosen: chosen.length, total: everything.length })
+            }
+            labelKey={null}
+            tone="accent"
+            busy={busy}
+            onClick={() => void start()}
+            disabled={busy || nothingToDo || chosen.length === 0}
+          />
+        </div>
         {nothingToDo ? (
           <Empty>{t('preview.nothing')}</Empty>
         ) : (
@@ -129,7 +144,7 @@ export function Preview({ job, onDone }: { job: string; onDone: () => void }) {
       </Card>
 
       {plan.skipped.length > 0 && (
-        <Card title={t('preview.skipped')} hue={1}>
+        <Card title={t('preview.skipped')} hueIndex={1}>
           <ul className="flex flex-col gap-2">
             {plan.skipped.map((s) => (
               <li key={s.path} className="text-[12px]">
@@ -280,7 +295,7 @@ function Conflict({
             { value: 'right', label: t('conflict.keepRight') },
           ]}
         />
-        <Info text={resolution === 'both' ? t('conflict.keepBothHint') : t('conflict.chosenHint')} />
+        <InfoBubble tip={resolution === 'both' ? t('conflict.keepBothHint') : t('conflict.chosenHint')} />
       </div>
     </div>
   )

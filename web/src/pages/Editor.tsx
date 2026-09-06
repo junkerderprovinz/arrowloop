@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import { Choice, Field, Lines, Switch, Text } from '../components/Field'
+import { Choice, Field, Lines, Text } from '../components/Field'
+import { ToggleRow } from '../components/ToggleRow'
 import { api, type RawJob } from '../lib/api'
 import { DirectionSwitch } from '../components/Direction'
 import { FolderPicker, PickButton } from '../components/FolderPicker'
@@ -203,36 +204,36 @@ export function JobForm({
       </div>
 
       <div className="mt-5 flex flex-col gap-3">
-        <Switch
+        <ToggleRow
           label={t('edit.disabled')}
-          on={!!job.disabled}
+          checked={!!job.disabled}
           onChange={(v) => patch({ disabled: v })}
           hint={t('edit.disabledHint')}
         />
-        <Switch
+        <ToggleRow
           label={t('edit.watch')}
-          on={!!job.watch}
+          checked={!!job.watch}
           onChange={(v) => patch({ watch: v })}
           hint={t('edit.watchHint')}
         />
         {/* Next to the watcher rather than beside the schedule field, because
             all three are answers to the same question - when does this run -
             and the schedule field above is where you type WHEN, not whether. */}
-        <Switch
+        <ToggleRow
           label={t('edit.runAtStart')}
-          on={!!job.runAtStart}
+          checked={!!job.runAtStart}
           onChange={(v) => patch({ runAtStart: v })}
           hint={t('edit.runAtStartHint')}
         />
-        <Switch
+        <ToggleRow
           label={t('edit.emptyDirs')}
-          on={!!job.emptyDirs}
+          checked={!!job.emptyDirs}
           onChange={(v) => patch({ emptyDirs: v })}
           hint={t('edit.emptyDirsHint')}
         />
-        <Switch
+        <ToggleRow
           label={t('edit.metadata')}
-          on={!!job.metadata}
+          checked={!!job.metadata}
           onChange={(v) => patch({ metadata: v })}
           hint={t('edit.metadataHint')}
         />

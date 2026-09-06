@@ -1,35 +1,20 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import { Card, Stack } from './components/Shell'
-import { Choice, Field, Info, Switch } from './components/Field'
+import { Stack } from './components/Shell'
+import { Card } from './lib/glimstone/Card'
+import { Choice, Field } from './components/Field'
+import { InfoBubble } from './lib/glimstone/InfoBubble'
+import { ToggleRow } from './components/ToggleRow'
 import { Selector } from './components/Selector'
 import { Sidebar } from './components/Sidebar'
-import {
-  IconAbout,
-  IconHistory,
-  IconJobs,
-  IconLook,
-  IconReset,
-  IconSettings,
-  IconTargets,
-} from './components/glyphs'
+import { IconAbout, IconHistory, IconJobs, IconLook, IconReset, IconSettings, IconTargets } from './components/glyphs'
 import { AccentSwatches, PaletteSwatches } from './components/Swatches'
 import { About } from './components/About'
 import { History, Jobs } from './pages/Jobs'
 import { Preview } from './pages/Preview'
 import { Targets } from './pages/Targets'
 import { api, type Job, type Run, type RunEvent, type WindowSettings } from './lib/api'
-import {
-  ACCENTS,
-  applyAccent,
-  applyRainbow,
-  applyShape,
-  cacheAppearance,
-  RAINBOW,
-  rainbowState,
-  type RainbowState,
-  type Shape,
-} from './lib/appearance'
+import { ACCENTS, applyAccent, applyRainbow, applyShape, cacheAppearance, RAINBOW, rainbowState, type RainbowState, type Shape } from './lib/appearance'
 import { CONTROL_AXES, getLabelMode, LABEL_MODES, setLabelMode, type ControlAxis, type LabelMode } from './lib/controls'
 import { languageFlag, useT } from './lib/i18n'
 import { getMotion, MOTION_INTENSITIES, setMotion, type MotionIntensity } from './lib/motion'
@@ -219,7 +204,7 @@ export function App() {
       <main className="min-w-0 flex-1 overflow-y-auto">
         <div className="flex min-h-full w-full flex-col gap-8 p-6 md:p-8">
           {error && (
-            <Card title={t('error.unreachable')} hue={0}>
+            <Card title={t('error.unreachable')} hueIndex={0}>
               <p className="text-[12px] text-statusFail">{error}</p>
             </Card>
           )}
@@ -353,7 +338,7 @@ function General({ lang, onLang, languages, window: windowSettings, onWindow }: 
       {/* The card is named for the section, the field for the setting. Naming
           both after the same thing prints the word twice, forty pixels apart,
           which is the shape BombVault had to unpick three separate times. */}
-      <Card title={t('settings.general')} hue={0}>
+      <Card title={t('settings.general')} hueIndex={0}>
         <Field label={t('look.language')}>
           <Choice
             value={lang}
@@ -371,26 +356,26 @@ function General({ lang, onLang, languages, window: windowSettings, onWindow }: 
           shown inert. A switch that cannot do anything is worse than a missing
           one: it invites somebody to press it and then says nothing. */}
       {windowSettings && (
-        <Card title={t('window.title')} hue={1}>
+        <Card title={t('window.title')} hueIndex={1}>
           <div className="flex flex-col gap-3">
-            <Switch
+            <ToggleRow
               label={t('window.tray')}
               hint={t('window.trayHint')}
-              on={windowSettings.tray}
+              checked={windowSettings.tray}
               onChange={(tray) => onWindow({ ...windowSettings, tray })}
             />
             {/* Both of these hang off the tray icon: without it, a window that
                 hides has nothing left to bring it back. */}
-            <Switch
+            <ToggleRow
               label={t('window.close')}
               hint={t('window.closeHint')}
-              on={windowSettings.closeToTray}
+              checked={windowSettings.closeToTray}
               onChange={(closeToTray) => onWindow({ ...windowSettings, closeToTray })}
             />
-            <Switch
+            <ToggleRow
               label={t('window.minimise')}
               hint={t('window.minimiseHint')}
-              on={windowSettings.minimiseToTray}
+              checked={windowSettings.minimiseToTray}
               onChange={(minimiseToTray) => onWindow({ ...windowSettings, minimiseToTray })}
             />
           </div>
@@ -407,11 +392,11 @@ function General({ lang, onLang, languages, window: windowSettings, onWindow }: 
           window: a build on a platform with no autostart would otherwise draw a
           switch that reports false however it is pressed. */}
       {windowSettings?.canStartWithSystem && (
-        <Card title={t('start.title')} hue={2}>
-          <Switch
+        <Card title={t('start.title')} hueIndex={2}>
+          <ToggleRow
             label={t('start.withSystem')}
             hint={t('start.withSystemHint')}
-            on={windowSettings.startWithSystem}
+            checked={windowSettings.startWithSystem}
             onChange={(startWithSystem) => onWindow({ ...windowSettings, startWithSystem })}
           />
         </Card>
@@ -462,7 +447,7 @@ function Look({
       {/* The language lives under General now, not here. It decides what the
           app SAYS, not how it looks, and it sat at the top of this page only
           because this page used to be the only settings page there was. */}
-      <Card title={t('look.theme')} hue={0}>
+      <Card title={t('look.theme')} hueIndex={0}>
         <Selector<Theme>
           label={t('look.theme')}
           value={theme}
@@ -474,7 +459,7 @@ function Look({
         />
       </Card>
 
-      <Card title={t('look.corners')} hue={1} hint={t('look.cornersHint')}>
+      <Card title={t('look.corners')} hueIndex={1} hint={t('look.cornersHint')}>
         <Selector<Shape>
           label={t('look.corners')}
           value={shape}
@@ -487,7 +472,7 @@ function Look({
         />
       </Card>
 
-      <Card title={t('look.motion')} hue={2} hint={t('look.motionHint')}>
+      <Card title={t('look.motion')} hueIndex={2} hint={t('look.motionHint')}>
         <Selector<MotionIntensity>
           label={t('look.motion')}
           value={motion}
@@ -496,7 +481,7 @@ function Look({
         />
       </Card>
 
-      <Card title={t('look.labels')} hue={3} hint={t('look.labelsHint')}>
+      <Card title={t('look.labels')} hueIndex={3} hint={t('look.labelsHint')}>
         <div className="flex flex-col gap-4">
           {/* All three surfaces now. The rail axis used to be filtered out
               because this app had no rail; it has one, so hiding the control
@@ -524,7 +509,7 @@ function Look({
           one is looking at the other. Two cards made that one setting look like
           two unrelated ones, and put the palette a card away from the colour it
           starts with. */}
-      <Card title={t('look.colors')} hue={4}>
+      <Card title={t('look.colors')} hueIndex={4}>
         <div className="flex flex-col gap-4">
           {/* Label left, controls hard right, the way every row in this house
               is built. The reset sits at the END of the row it resets, not in
@@ -544,39 +529,39 @@ function Look({
           {/* Each row takes its OWN position in the palette. Three switches
               sharing one accent read as one setting with three parts; three
               colours read as three settings, which is what they are. */}
-          <Switch
-            on={rainbow.on}
+          <ToggleRow
+            checked={rainbow.on}
             onChange={(on) => onRainbow({ ...rainbow, on })}
             label={t('look.rainbowOn')}
             hint={t('look.rainbowHint')}
-            hue={0}
+            hueIndex={0}
           />
           {/* Both of these hang off the mode itself: reactive and rotate are
               instructions to a rainbow that is not running, so they are dimmed
               rather than left live and inert. */}
-          <Switch
-            on={rainbow.reactive}
+          <ToggleRow
+            checked={rainbow.reactive}
             onChange={(reactive) => onRainbow({ ...rainbow, reactive })}
             label={t('look.rainbowReactive')}
             hint={t('look.reactiveHint')}
             disabled={!rainbow.on}
-            hue={1}
+            hueIndex={1}
           />
-          <Switch
-            on={rainbow.rotate}
+          <ToggleRow
+            checked={rainbow.rotate}
             onChange={(rotate) =>
               onRainbow({ ...rainbow, rotate, seed: rotate ? (rainbow.seed + 1) % 8 : 0 })
             }
             label={t('look.rainbowRotate')}
             hint={t('look.rotateHint')}
             disabled={!rainbow.on}
-            hue={2}
+            hueIndex={2}
           />
 
           <div className="flex flex-wrap items-center gap-3">
             <span className="flex items-center gap-1.5 text-[13px] text-carbon-text">
               {t('look.palette')}
-              <Info text={t('look.paletteHint')} />
+              <InfoBubble tip={t('look.paletteHint')} />
             </span>
             <div className="ms-auto flex flex-wrap items-center gap-2">
               {/* Every colour here is in force at once, so there is no selected

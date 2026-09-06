@@ -1,6 +1,11 @@
 import { useState } from 'react'
 
-import { Badge, Button, Card, Confirm, Empty, IconButton, Num, Rule, Stack } from '../components/Shell'
+import { Empty, Num, Rule, Stack } from '../components/Shell'
+import { IconAction } from '../components/IconAction'
+import { Card } from '../lib/glimstone/Card'
+import { Badge } from '../lib/glimstone/Badge'
+import { Button } from '../lib/glimstone/Button'
+import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
 import { IconAdd, IconDelete, IconEdit, IconPreview, IconToLeft, IconToRight } from '../components/glyphs'
 import { DirectionMark } from '../components/Direction'
 import { JobForm, useJobConfig } from './Editor'
@@ -66,7 +71,7 @@ export function Jobs({
           card holding two buttons and nothing else is a box drawn around a
           toolbar. Same arrangement BombVault's own list pages use. */}
       <div className="flex flex-wrap items-center gap-2">
-        <IconButton
+        <IconAction
           title={t('edit.add')}
           onClick={() => {
             const at = config.add()
@@ -74,11 +79,16 @@ export function Jobs({
           }}
         >
           <IconAdd />
-        </IconButton>
+        </IconAction>
         {config.jobs && (
-          <Button primary onClick={() => void config.save()} disabled={config.busy}>
-            {config.busy ? t('edit.checking') : t('edit.save')}
-          </Button>
+          <Button
+            label={config.busy ? t('edit.checking') : t('edit.save')}
+            labelKey={null}
+            tone="accent"
+            busy={config.busy}
+            onClick={() => void config.save()}
+            disabled={config.busy}
+          />
         )}
         {config.error && <p className="text-[12px] text-statusFail">{config.error}</p>}
         {config.saved && !config.error && (
@@ -100,7 +110,7 @@ export function Jobs({
           list below was already showing. Progress belongs on the job that is
           making it. */}
       {jobs.length === 0 && (!raw || raw.length === 0) ? (
-        <Card title={t('jobs.title')} hue={0}>
+        <Card title={t('jobs.title')} hueIndex={0}>
           <Empty>{t('jobs.empty')}</Empty>
         </Card>
       ) : (
@@ -111,34 +121,7 @@ export function Jobs({
               <Card
                 key={j.name}
                 title={j.name}
-                hue={i}
-                actions={
-                  <>
-                    {at !== null && (
-                      <>
-                        <IconButton
-                          title={t('edit.editJob')}
-                          onClick={() => setEditing(at === editing ? null : at)}
-                        >
-                          <IconEdit />
-                        </IconButton>
-                        <IconButton
-                          tone="fail"
-                          title={t('edit.remove')}
-                          onClick={() => setRemoving(at)}
-                        >
-                          <IconDelete />
-                        </IconButton>
-                      </>
-                    )}
-                    <Button onClick={() => onPreview(j.name)}>
-                      <span className="glim-btn-glyph" aria-hidden>
-                        <IconPreview />
-                      </span>
-                      <span className="glim-btn-label">{t('jobs.preview')}</span>
-                    </Button>
-                  </>
-                }
+                hueIndex={i}
               >
                 <div className="flex flex-col gap-2">
                   {/* The arrow sits between the two sides because that is where
@@ -174,6 +157,36 @@ export function Jobs({
                       is what changes second by second and is the whole reason
                       to watch, and the side is what says which way, which is
                       the question a two-way sync raises every time it acts. */}
+                  {/* The card's own controls, at the foot of its body. The
+                      card has no action slot of its own: GlimStone's Card
+                      draws a heading and nothing else, and a row of buttons
+                      inside the body is where BombVault keeps a card's
+                      controls too. The delete badge is NOT red, because the
+                      language is explicit that a destructive TRIGGER takes the
+                      same treatment as the badges beside it and carries its
+                      meaning in its glyph, its tip and the window it opens. */}
+                  <div className="flex flex-wrap items-center justify-end gap-2">
+                    {at !== null && (
+                      <>
+                        <IconAction
+                          title={t('edit.editJob')}
+                          onClick={() => setEditing(at === editing ? null : at)}
+                        >
+                          <IconEdit />
+                        </IconAction>
+                        <IconAction title={t('edit.remove')} onClick={() => setRemoving(at)}>
+                          <IconDelete />
+                        </IconAction>
+                      </>
+                    )}
+                    <Button
+                      label={t('jobs.preview')}
+                      labelKey={null}
+                      glyph={<IconPreview />}
+                      onClick={() => onPreview(j.name)}
+                    />
+                  </div>
+
                   {j.running && (
                     <>
                       {progress[j.name]?.path && (
@@ -205,22 +218,7 @@ export function Jobs({
             <Card
               key={`pending-${at}`}
               title={p.name || t('edit.unnamed')}
-              hue={jobs.length + at}
-              actions={
-                // No preview: there is nothing for the engine to plan against
-                // until this has been saved.
-                <>
-                  <IconButton
-                    title={t('edit.editJob')}
-                    onClick={() => setEditing(at === editing ? null : at)}
-                  >
-                    <IconEdit />
-                  </IconButton>
-                  <IconButton tone="fail" title={t('edit.remove')} onClick={() => setRemoving(at)}>
-                    <IconDelete />
-                  </IconButton>
-                </>
-              }
+              hueIndex={jobs.length + at}
             >
               <div className="flex flex-col gap-2">
                 <p className="flex flex-wrap items-center gap-1.5 text-[12px] text-carbon-textMuted">
@@ -231,6 +229,19 @@ export function Jobs({
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px]">
                   <Badge tone="neutral">{t('edit.unsaved')}</Badge>
                 </div>
+                {/* No preview here: there is nothing for the engine to plan
+                    against until this has been saved. */}
+                <div className="flex flex-wrap items-center justify-end gap-2">
+                  <IconAction
+                    title={t('edit.editJob')}
+                    onClick={() => setEditing(at === editing ? null : at)}
+                  >
+                    <IconEdit />
+                  </IconAction>
+                  <IconAction title={t('edit.remove')} onClick={() => setRemoving(at)}>
+                    <IconDelete />
+                  </IconAction>
+                </div>
               </div>
             </Card>
           ))}
@@ -240,23 +251,26 @@ export function Jobs({
       {job && editing !== null && (
         <Card
           title={job.name || t('edit.unnamed')}
-          hue={1}
-          actions={<Button onClick={() => setEditing(null)}>{t('edit.close')}</Button>}
+          hueIndex={1}
         >
           <JobForm
             job={job}
             known={config.known}
             patch={(next) => config.patch(editing, next)}
           />
+          <div className="flex justify-end">
+            <Button label={t('edit.close')} labelKey={null} onClick={() => setEditing(null)} />
+          </div>
         </Card>
       )}
 
       {removing !== null && raw && raw[removing] && (
-        <Confirm
+        <ConfirmDialog
           title={t('edit.removeJob')}
-          stakes={t('edit.removeStakes', { name: raw[removing].name || t('edit.unnamed') })}
+          message={t('edit.removeStakes', { name: raw[removing].name || t('edit.unnamed') })}
           confirmLabel={t('confirm.delete')}
           cancelLabel={t('confirm.cancel')}
+          closeLabel={t('confirm.cancel')}
           onCancel={() => setRemoving(null)}
           onConfirm={() => {
             config.remove(removing)
@@ -348,7 +362,7 @@ export function Since({ when }: { when: string }) {
 
 function State({ job }: { job: Job }) {
   const { t } = useT()
-  if (job.running) return <Badge tone="accent">{t('jobs.state.running')}</Badge>
+  if (job.running) return <Badge tone="active">{t('jobs.state.running')}</Badge>
   if (job.disabled) return <Badge tone="neutral">{t('jobs.state.disabled')}</Badge>
   if (!job.lastSuccess) return <Badge tone="neutral">{t('jobs.state.waiting')}</Badge>
   return <Badge tone="ok">{t('jobs.state.settled')}</Badge>
@@ -359,13 +373,13 @@ export function History({ runs }: { runs: Run[] }) {
   const { t } = useT()
   if (runs.length === 0) {
     return (
-      <Card title={t('history.title')} hue={0}>
+      <Card title={t('history.title')} hueIndex={0}>
         <Empty>{t('history.empty')}</Empty>
       </Card>
     )
   }
   return (
-    <Card title={t('history.title')} hue={0}>
+    <Card title={t('history.title')} hueIndex={0}>
       <ul className="flex flex-col">
         {runs.map((r, i) => (
           <li key={`${r.Job}-${r.Started}-${i}`}>

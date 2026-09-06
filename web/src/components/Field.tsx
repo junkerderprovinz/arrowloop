@@ -1,64 +1,25 @@
 import { useEffect, useRef, useState } from 'react'
-import type { CSSProperties, ReactNode } from 'react'
+import type { ReactNode } from 'react'
 
-import { hueVars, rainbowColor, subscribeRainbow } from '../lib/appearance'
+import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { enableSelectScroll } from '../lib/selectScroll'
 import { useT } from '../lib/i18n'
 import { IconHidden, IconVisible } from './glyphs'
 
 /**
- * Re-render when the rainbow changes.
+ * A labelled field: the eyebrow above, the control below.
  *
- * A local copy rather than an import from Shell, because Shell imports this
- * module: taking it the other way round would close the cycle. It is four
- * lines, and a cycle is a build that works until the day the bundler decides
- * which half to evaluate first.
- */
-function useRainbow(): void {
-  const [, bump] = useState(0)
-  useEffect(() => subscribeRainbow(() => bump((v) => v + 1)), [])
-}
-
-/**
- * An explanation lives in a bubble, never on the page.
- *
- * Grey prose under a control is read once, by one person, on the day it was
- * written, and then costs that vertical space for the rest of the product's
- * life. A page of those hides the controls anybody actually came for.
- *
- * The icon is a bare stroke-only glyph and never a filled badge: a fill would
- * read as a control, and it is furniture.
- */
-export function Info({ text }: { text: string }) {
-  return (
-    <button
-      type="button"
-      data-tip={text}
-      aria-label={text}
-      className="glim-info-icon inline-flex shrink-0 items-center justify-center align-middle"
-    >
-      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden>
-        <circle cx="8" cy="8" r="6.4" />
-        <path d="M8 7.2v4" strokeLinecap="round" />
-        <circle cx="8" cy="4.9" r="0.85" fill="currentColor" stroke="none" />
-      </svg>
-    </button>
-  )
-}
-
-/**
- * One labelled control.
- *
- * A `<label>` around several controls hands its click to the first one, so this
- * is deliberately for exactly one; a set of them needs a plain container with a
- * caption instead.
+ * The explanation rides in GlimStone's own info bubble rather than in a grey
+ * paragraph, and the bubble is imported rather than drawn here. This file used
+ * to carry its own copy, which is precisely the dialect the language's React
+ * folder exists to end.
  */
 export function Field({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
   return (
     <label className="flex flex-col gap-1.5">
       <span className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wider text-carbon-textMuted">
         {label}
-        {hint && <Info text={hint} />}
+        {hint && <InfoBubble tip={hint} />}
       </span>
       {children}
     </label>
@@ -119,102 +80,6 @@ export function Lines({
   )
 }
 
-/**
- * A switch, never a checkbox.
- *
- * The label comes FIRST and the track sits at the end of the row. Every other
- * program in this house reads that way, and a switch strip that leads with the
- * track is the one thing on the page whose reading order is reversed: the eye
- * lands on a shape that means nothing yet, then travels to the word that
- * explains it, for every row. Reported on the running interface rather than
- * spotted in review, which is where an ordering like this is actually visible.
- *
- * `justify-between` rather than a gap, so a column of switches has every track
- * on the same vertical line no matter how long the individual captions are.
- * A ragged right edge is what makes a settings card read as a list of unrelated
- * rows instead of one control group.
- *
- * The fill is the accent, the same as everywhere else in the house. An earlier
- * version filled it with the text colour, reasoning that the accent marks
- * activity and a settings row is not activity; that argument is coherent and it
- * still left this app's switches looking like nobody else's.
- */
-export function Switch({
-  on,
-  onChange,
-  label,
-  hint,
-  disabled,
-  hue,
-}: {
-  on: boolean
-  onChange: (next: boolean) => void
-  label: string
-  hint?: string
-  /**
-   * Dimmed and inert, for a switch whose effect depends on another one being
-   * on. Left live it would take a click, store a value and change nothing,
-   * which reads as a broken control rather than an unavailable one.
-   */
-  disabled?: boolean
-  /**
-   * This row's own position in the palette.
-   *
-   * A group of switches sharing one accent reads as one setting with several
-   * parts. Giving each its own position makes them read as what they are, and
-   * it is the same call BombVault makes on every ToggleRow in a group. The
-   * position goes on the ROW, not on the track, because `.glim-hue` rebinds
-   * the accent for its whole subtree and the fill and the focus ring have to
-   * move together.
-   */
-  hue?: number
-}) {
-  useRainbow()
-  return (
-    <div
-      className={`flex w-full items-center justify-between gap-3 ${
-        hue === undefined ? '' : 'glim-hue'
-      } ${disabled ? 'opacity-50' : ''}`}
-      style={hue === undefined ? undefined : (hueVars(rainbowColor(hue)) as CSSProperties)}
-    >
-      <span className="flex items-center gap-1.5 text-[13px]">
-        {label}
-        {hint && <Info text={hint} />}
-      </span>
-      <button
-        type="button"
-        role="switch"
-        aria-checked={on}
-        aria-label={label}
-        disabled={disabled}
-        onClick={() => onChange(!on)}
-        className={`inline-flex h-5 w-9 shrink-0 items-center p-[3px] transition-colors disabled:cursor-not-allowed ${
-          on ? 'bg-accent' : 'bg-carbon-surface3'
-        }`}
-        style={{ borderRadius: 'var(--radius-pill)' }}
-      >
-        {/* The knob wears the shape engine's own radius rather than a hardcoded
-            circle, so it reshapes with every other surface in the app. */}
-        <span
-          className={`h-3.5 w-3.5 bg-carbon-background transition-transform ${on ? 'translate-x-4' : ''}`}
-          style={{ borderRadius: 'var(--radius-pill)' }}
-        />
-      </button>
-    </div>
-  )
-}
-
-/**
- * A list with more entries than a segmented control can carry.
- *
- * This is a native select on purpose: the design language keeps one for lists
- * of dozens, because a hand-built listbox has to reimplement keyboard
- * behaviour, type-ahead and the platform's own scrolling, and gets all three
- * slightly wrong. What is NOT native is the way it looks. A control that still
- * renders in the operating system's own light chrome inside a dark page is as
- * unfinished as one with no colours at all, so the field, the arrow and the
- * options are all painted from the tokens.
- */
 export function Choice<T extends string>({
   value,
   onChange,

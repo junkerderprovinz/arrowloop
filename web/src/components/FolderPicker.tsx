@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 
-import { Button, Card, IconButton } from './Shell'
+import { IconAction } from './IconAction'
+import { Button } from '../lib/glimstone/Button'
+import { Card } from '../lib/glimstone/Card'
 import { IconAdd, IconTargets } from './glyphs'
 import { api } from '../lib/api'
 import { useT } from '../lib/i18n'
@@ -104,18 +106,6 @@ export function FolderPicker({
       <div className="w-full max-w-lg" onClick={(e) => e.stopPropagation()}>
         <Card
           title={t('pick.title')}
-          actions={
-            <>
-              <Button onClick={onClose}>{t('pick.cancel')}</Button>
-              {/* Choosing is the folder currently OPEN, not one highlighted in
-                  the list. Walking into a folder and pressing the button is one
-                  gesture; selecting a row and then confirming is two, and the
-                  second one is the one people forget. */}
-              <Button primary disabled={!at} onClick={() => at && onPick(at)}>
-                {t('pick.choose')}
-              </Button>
-            </>
-          }
         >
           {/* Where we are, in full, because the whole point is to end up with a
               path somebody can read back. */}
@@ -161,6 +151,24 @@ export function FolderPicker({
               ))
             )}
           </ul>
+
+          {/* At the foot, which is where a window's own controls go. Choosing
+              takes the folder currently OPEN rather than one highlighted in the
+              list: walking into a folder and pressing the button is one
+              gesture, selecting a row and then confirming is two, and the
+              second is the one people forget. */}
+          <div className="flex flex-wrap items-center justify-end gap-2">
+            <Button label={t('pick.cancel')} labelKey={null} onClick={onClose} />
+            <Button
+              label={t('pick.choose')}
+              labelKey={null}
+              tone="accent"
+              disabled={!at}
+              onClick={() => {
+                if (at) onPick(at)
+              }}
+            />
+          </div>
         </Card>
       </div>
     </div>
@@ -171,8 +179,8 @@ export function FolderPicker({
 export function PickButton({ onClick }: { onClick: () => void }) {
   const { t } = useT()
   return (
-    <IconButton title={t('pick.open')} onClick={onClick}>
+    <IconAction title={t('pick.open')} onClick={onClick}>
       <IconTargets />
-    </IconButton>
+    </IconAction>
   )
 }
