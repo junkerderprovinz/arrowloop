@@ -7,6 +7,13 @@
 *.db-wal
 *.db-shm
 
+# The job file the tool writes for itself on a first start in an empty working
+# directory. Running the interface once from the clone is enough to create it,
+# and it is the file that ends up holding real paths and a Matrix access token,
+# so it must never be committable by accident. The committed example next to it
+# is arrowloop.example.json.
+/arrowloop.json
+
 # The frontend's own dependencies and build output.
 web/node_modules/
 
