@@ -50,8 +50,8 @@ import { usePortalHue } from "./portalHue";
 //
 // The panel is sized to its TRIGGER's measured width, and centred on the
 // trigger via `translateX(-50%)`, because computeBubblePosition's contract is
-// "here is where the CENTRE goes" (see .glim-time-popover's own CSS comment
-// for why that pairing has to be honoured exactly). Equal widths make centred
+// "here is where the CENTRE goes", and a caller that positions by its left
+// edge instead lands the panel half its own width off. Equal widths make centred
 // and start-aligned identical, so this keeps the pre-portal look — while also
 // making RTL correct for free (no `start-0`/`end-0` branch at all) and
 // keeping a `w-64 max-w-full` trigger that got squeezed by a narrow card from
@@ -132,7 +132,7 @@ export function DropdownListbox({
   //   Copied off the trigger's own *resolved* computed style rather than
   // taken as a prop, so it needs nothing from the call sites and keeps
   // working for any future one: whatever hue the trigger stands in, the panel
-  // it opens stands in too. `.glim-hue` is added alongside so index.css's own
+  // it opens stands in too. `.glim-hue` is added alongside so reference/tokens.css's own
   // `[data-rainbow] .glim-hue` / `[data-rainbow="reactive"] .glim-hue:hover`
   // rules do the actual --accent derivation, in every rainbow mode, instead
   // of this component hard-coding one mode's answer. With rainbow off there

@@ -14,7 +14,7 @@
 //     precisely a new dependency, and the single point through which a later
 //     hue change would reach every switch in the app at once. Phase 2 Task 7
 //     has since resolved it: `--status-info-solid` no longer exists at all
-//     (see index.css's TASK 7 comment for what every real call site became) —
+//     (see reference/tokens.css's TASK 7 comment for what every real call site became) —
 //     this comment stays as the historical reason THIS component never took
 //     the dependency in the first place, not a forward-looking warning anymore.
 //   - `--focus-ring` is already what the other shared controls this branch added
@@ -23,7 +23,7 @@
 //     reads as two unrelated systems rather than one.
 // `outline-offset-2` keeps the ring on the surrounding card surface rather than
 // on the track's own fill — that surface is the background `--focus-ring`'s
-// contrast was actually measured against (see index.css; ≥3:1 on both
+// contrast was actually measured against (see reference/tokens.css; ≥3:1 on both
 // --carbon-surface and --carbon-surface2, in both themes).
 //
 // `hideLabel` is the GlimStone "Switches" contract verbatim: the text always
@@ -131,7 +131,7 @@ export function Toggle({ checked, onChange, label, hideLabel = false, disabled, 
           // the exact same `--radius-pill` custom property the OUTER track
           // above already keys its own `rounded-pill` off, not a separate,
           // size-tuned token. Two reasons this is the right token rather than
-          // `--radius-control` (index.css's other candidate, used by cards/
+          // `--radius-control` (reference/tokens.css's other candidate, used by cards/
           // buttons/fields): (1) consistency — the track and its own thumb
           // reading the same variable is what makes them read as one control
           // reshaping together, not two independently-tuned pieces that

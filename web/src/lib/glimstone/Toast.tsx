@@ -18,7 +18,7 @@ import type { ToastSeverity } from "./toastEngine";
 // dialog: a toast must NEVER intercept a click meant for the page behind or
 // around it. The viewport wrapper is `pointer-events: none`; only each
 // individual card re-enables `pointer-events: auto` (via .glim-toast in
-// index.css), so the empty space in the corner — which is most of it — lets
+// reference/tokens.css), so the empty space in the corner — which is most of it — lets
 // every click straight through to whatever is actually underneath.
 // ---------------------------------------------------------------------------
 
@@ -197,7 +197,7 @@ export interface ToastViewportProps {
 // everything that paints outside the cards: each card's `--elevation` drop
 // shadow, and — visibly — the first ~100ms of the `glim-toast-in` entrance,
 // which starts offset by `translateX(±12px)` (sign follows direction, see
-// index.css's `--glim-toast-slide`) and so got its outer edge sliced square
+// reference/tokens.css's `--glim-toast-slide`) and so got its outer edge sliced square
 // against the boundary on every single toast. max-h-screen minus that 2rem
 // of padding leaves exactly the same content height as before.
 export function ToastViewport({ toasts, dismissLabel, onDismiss, onMouseEnter, onMouseLeave, onFocus, onBlur }: ToastViewportProps) {

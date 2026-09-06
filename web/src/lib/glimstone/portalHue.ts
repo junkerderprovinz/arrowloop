@@ -1,6 +1,6 @@
 // Carrying a rainbow position across a portal boundary ([543]).
 // ---------------------------------------------------------------------------
-// The rainbow engine works by inheritance: `[data-rainbow] .glim-hue` (index.css)
+// The rainbow engine works by inheritance: `[data-rainbow] .glim-hue` (reference/tokens.css)
 // redefines `--color-accent` and friends for its whole SUBTREE, so anything
 // painted with `var(--accent)` inside a card takes THAT card's palette position
 // with no per-call-site wiring. That is the mechanism half this codebase relies
@@ -24,7 +24,7 @@
 //
 // The property list is DERIVED from `hueVars()` rather than typed out. The
 // original list carried the note "kept in step with it by hand, the same way
-// index.css's rules that consume these names are" — an honest description of a
+// reference/tokens.css's rules that consume these names are" — an honest description of a
 // list that goes stale the first time a token is added, and one token was in
 // fact removed from hueVars() since. Reading the keys off the function that
 // writes them cannot drift.
@@ -50,7 +50,7 @@ export interface PortalHue {
  * so it needs nothing from the call sites and keeps working for any future one:
  * whatever hue the trigger stands in, the panel it opens stands in too.
  *
- * `.glim-hue` travels with the properties because index.css's own
+ * `.glim-hue` travels with the properties because reference/tokens.css's own
  * `[data-rainbow] .glim-hue` and `[data-rainbow="reactive"] .glim-hue:hover`
  * rules do the actual `--accent` derivation. Applying the class here rather
  * than deriving colours means every rainbow MODE keeps working, instead of this

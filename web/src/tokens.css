@@ -1,5 +1,6 @@
-/* Copied verbatim from GlimStone 1.6.0, reference/tokens.css.
-   Do not edit here: change it in the design language repo and copy again.
+/* Copied verbatim from GlimStone 1.7.2, reference/tokens.css, with ONE local
+   addition marked below. Do not edit anything else here: change it in the
+   design language repo and copy again.
    https://github.com/junkerderprovinz/glimstone */
 /* ===========================================================================
    GlimStone — reference tokens and utility classes
@@ -54,23 +55,6 @@
   --text-body: 0.875rem;    /* 14px */
   --text-dense: 0.75rem;    /* 12px */
   --text-caption: 0.6875rem; /* 11px */
-
-  /* The height of a segment in the grooved selector, carried as a token for
-     the same reason the radii are: two strips a pixel apart in height read as
-     two different controls, and padding plus a font size is two ways of
-     arriving at a height that only agree by accident.
-
-     The value is BombVault's, verbatim, which is where it was measured (its
-     index.css calls it the canonical badge height, itself carried over from
-     TrickWork's segmented row). Two apps in the same house whose selectors are
-     a hair apart in height is exactly the drift jdp keeps reporting as "sieht
-     nicht aus wie in BV", and there is no reason for this one to be its own
-     number.
-
-     Shape- and theme-invariant like --radius-control: a control's own height
-     is not a per-shape corner value, so it lives here once rather than in each
-     [data-shape] block. */
-  --badge-md: 2.35rem;
 }
 
 :root[data-shape="soft"] {
@@ -143,6 +127,11 @@
 
   --status-warn-text:    #f1c21b;
   --status-warn-bg:      rgba(241, 194, 27, 0.12);
+  /* An opaque, emphasised warn wash for a chip that has to hold its own
+     against whatever it sits on. The translucent --status-warn-bg above takes
+     the colour underneath it, which is right on a card and wrong on a row that
+     already carries a hover fill. */
+  --status-warn-bg-strong: #3a2f1c;
   --status-warn-solid:   #f1c21b;
 
   --status-neutral-text: #a8a8a8;
@@ -199,6 +188,7 @@
 
     --status-warn-text:    #8E6A00;
     --status-warn-bg:      rgba(142, 106, 0, 0.10);
+    --status-warn-bg-strong: #fcf4d6;
     --status-warn-solid:   #b28600;
 
     --status-neutral-text: #6f6f6f;
@@ -267,6 +257,7 @@
 
   --status-warn-text:    #8E6A00;
   --status-warn-bg:      rgba(142, 106, 0, 0.10);
+  --status-warn-bg-strong: #fcf4d6;
   --status-warn-solid:   #b28600;
 
   --status-neutral-text: #6f6f6f;
@@ -755,8 +746,16 @@ body {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
+/* The distance a toast travels in, as a token rather than a literal, because
+   the direction has to flip with the writing direction: a toast that slides in
+   from the right on an Arabic or Hebrew page enters from the wrong edge of the
+   screen. A keyframe cannot be mirrored by a class sweep, which is exactly why
+   this one is easy to miss. */
+:root { --glim-toast-slide: 12px; }
+[dir="rtl"] { --glim-toast-slide: -12px; }
+
 @keyframes glim-toast-in {
-  from { opacity: 0; transform: translateX(12px); }
+  from { opacity: 0; transform: translateX(var(--glim-toast-slide, 12px)); }
   to   { opacity: 1; transform: none; }
 }
 @keyframes glim-pulse {
@@ -892,4 +891,240 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .glim-num-step { transition: none; }
+}
+
+/* ---------------------------------------------------------------------------
+   The button box, and the reactive label
+   ---------------------------------------------------------------------------
+   The components in reference/react/ carry no dimensions of their own: a
+   button reads its height, padding and width stage from here, so an app that
+   changes the box changes every button at once instead of hunting call sites.
+
+   The four width stages are a FLOOR (`min-width`), never a fixed width: a
+   stage keeps a row of buttons tidy without clipping a label that a
+   translation made longer. Height and radius are shared by all four, so only
+   the horizontal axis stages.
+
+   The height is not a taste pick. It is what an ordinary text field measures
+   (`px-3 py-1.5 text-sm`: a 20px line box plus 12px of padding), so a button
+   standing next to a field matches it instead of standing proud of it. --- */
+:root {
+  --btn-h: 2rem;
+  --btn-pad-x: 0.875rem;
+  --btn-gap: 0.5rem;
+
+  --btn-w-xs: 5.5rem;
+  --btn-w-sm: 8rem;
+  --btn-w-md: 11.5rem;
+  --btn-w-lg: 15rem;
+}
+
+.glim-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--btn-gap);
+  height: var(--btn-h);
+  padding-inline: var(--btn-pad-x);
+  border-radius: var(--radius-control);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1;
+  box-sizing: border-box;
+  transition: opacity 120ms, background-color 120ms;
+}
+
+.glim-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.glim-btn-xs { min-width: var(--btn-w-xs); }
+.glim-btn-sm { min-width: var(--btn-w-sm); }
+.glim-btn-md { min-width: var(--btn-w-md); }
+.glim-btn-lg { min-width: var(--btn-w-lg); }
+
+/* The dismiss control inside a chip takes none of the width stages and none of
+   the button height: it has to fit INSIDE its chip, which is a 0.75rem-text
+   pill. It inherits the pill's ink rather than painting a surface of its own,
+   so it reads as part of the chip and stays correct on an accent background as
+   well as a neutral one. */
+.glim-btn-chip {
+  height: 1.125rem;
+  width: 1.125rem;
+  min-width: 0;
+  padding-inline: 0;
+  border-radius: 999px;
+  opacity: 0.7;
+  transition: opacity 120ms, background-color 120ms;
+}
+.glim-btn-chip:hover:not(:disabled) {
+  opacity: 1;
+  background-color: color-mix(in srgb, currentColor 18%, transparent);
+}
+.glim-btn-chip svg {
+  width: 0.625rem;
+  height: 0.625rem;
+}
+
+/* A glyph is 20px wherever it appears, so the same symbol never arrives in two
+   sizes on one row. */
+.glim-btn-glyph {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+}
+.glim-btn-glyph > svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex: none;
+}
+
+/* Long text ellipsises rather than breaking the row. */
+.glim-btn-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* In reactive mode the collapsed label is still a flex item, so the container's
+   own gap would reserve space beside a zero-width box, push the glyph off
+   centre and make a reactive button wider than the same button in glyph mode.
+   The gap comes back as the LABEL's own margin when it opens, so the spacing is
+   unchanged once the words are out. */
+.glim-btn.glim-reactive {
+  gap: 0;
+}
+
+/* ---------------------------------------------------------------------------
+   Reactive labels: the fourth label mode
+   ---------------------------------------------------------------------------
+   The words are collapsed to nothing and handed back on hover, focus, or for
+   the one item that is active — because "which tab am I on" is the question a
+   tab strip exists to answer, and answering it only while the pointer rests on
+   the right tab answers it for nobody. `.glim-active` is already what the
+   selector puts on the chosen segment and the sidebar on the current
+   destination, so this needs no second marker.
+
+   The label text never leaves the DOM in any mode, which is what keeps the
+   accessible name intact while the width is zero. --- */
+.glim-label-reactive {
+  display: inline-block;
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 0;
+  margin-inline-start: 0;
+  transform-origin: left center;
+}
+
+/* ANY STATE ADDED HERE MUST ALSO BE ADDED to the `full` motion block below:
+   this rule hands back width, opacity and margin, that one hands back the
+   resting transform. A state in one list and not the other leaves the label
+   revealed but still displaced. */
+.glim-reactive.glim-active .glim-label-reactive,
+.glim-reactive:hover .glim-label-reactive,
+.glim-reactive:focus-visible .glim-label-reactive,
+.glim-reactive:focus-within .glim-label-reactive {
+  /* The ceiling is sized to the text, not to a fixed number. A fixed ceiling
+     clips anything longer AND makes short labels snap open while long ones
+     crawl, since `max-width` animates toward the ceiling while the element
+     stops growing at its content width. `--reactive-chars` is the label's
+     visual length, set inline by whoever renders it. The factor is in `em`
+     rather than `ch`, because `ch` is the advance of "0", far narrower than
+     the average letter in this face. */
+  max-width: calc(var(--reactive-chars, 24) * 0.62em + 0.75rem);
+  opacity: 1;
+  margin-inline-start: var(--btn-gap);
+}
+
+/* Motion resolves the same way everything else does: with
+   `prefers-reduced-motion: reduce` none of this is evaluated and the words
+   simply appear, which is the correct behaviour for this mode rather than a
+   degradation. The information arrives either way. */
+@media (prefers-reduced-motion: no-preference) {
+  /* Subtle is the setting for somebody who wants the feature without the
+     theatre: one duration, no overshoot. */
+  :root[data-motion="subtle"] .glim-label-reactive {
+    transition:
+      max-width 160ms cubic-bezier(0.22, 0.61, 0.36, 1),
+      opacity 120ms ease-out,
+      margin-inline-start 160ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+
+  /* Full lets the label's own width do the bouncing, with the overshoot in the
+     easing curve so nothing else has to move, while the text slides in from
+     the left and unsquashes back to 1. */
+  :root[data-motion="full"] .glim-label-reactive {
+    transition:
+      max-width 320ms cubic-bezier(0.34, 1.56, 0.64, 1),
+      opacity 180ms ease-out,
+      margin-inline-start 320ms cubic-bezier(0.34, 1.56, 0.64, 1),
+      transform 320ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform: translateX(-0.4rem) scaleX(0.82);
+  }
+
+  :root[data-motion="full"] .glim-reactive.glim-active .glim-label-reactive,
+  :root[data-motion="full"] .glim-reactive:hover .glim-label-reactive,
+  :root[data-motion="full"] .glim-reactive:focus-visible .glim-label-reactive,
+  :root[data-motion="full"] .glim-reactive:focus-within .glim-label-reactive {
+    transform: translateX(0) scaleX(1);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   The confirm surface
+   ---------------------------------------------------------------------------
+   A modal arrives rather than appearing: the backdrop fades, the card rises a
+   short distance and settles. Both resolve through the motion engine, and both
+   collapse to the same short fade when motion is turned down, so a user who
+   asked for less movement still sees that something new is on screen. --- */
+@keyframes glim-modal-in {
+  from { opacity: 0; transform: translateY(10px) scale(.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :root[data-motion="full"] .glim-modal-backdrop { animation: glim-fade-in 200ms ease both; }
+  :root[data-motion="full"] .glim-modal-card { animation: glim-modal-in 260ms cubic-bezier(.2, .6, .2, 1) both; }
+
+  :root[data-motion="subtle"] .glim-modal-backdrop { animation: glim-fade-in 150ms ease both; }
+  :root[data-motion="subtle"] .glim-modal-card { animation: glim-fade-in 150ms ease both; }
+}
+
+/* ---------------------------------------------------------------------------
+   The card-wide reveal in reactive rainbow mode
+   ---------------------------------------------------------------------------
+   In reactive mode a hue appears on hover. Keying that off the coloured element
+   itself means a heading notch lights up only while the pointer rests on its
+   own ~22px glyph, which nobody finds. `.glim-notch-card` marks the whole card
+   as the hover zone and `.glim-notch-hue` marks the one element that takes the
+   colour, so the reveal covers the card and paints only the heading.
+
+   Two classes rather than one, because the card is also the element that
+   redefines `--accent` for its subtree: without the second, more specific mark
+   the same hover would repaint every accent-coloured control inside the card,
+   not the heading the rule is about. --- */
+[data-rainbow="reactive"] .glim-notch-card:hover .glim-notch-hue,
+[data-rainbow="reactive"] .glim-notch-card:focus-within .glim-notch-hue {
+  --accent: var(--item-hue);
+  --accent-contrast: var(--item-hue-ink);
+  --accent-soft: var(--item-hue-soft);
+  --color-accent: var(--item-hue);
+  --color-accentContrast: var(--item-hue-ink);
+  --color-accentSoft: var(--item-hue-soft);
+}
+
+/* ---------------------------------------------------------------------------
+   The one thing this file carries that GlimStone does not.
+   ---------------------------------------------------------------------------
+   The height of a segment in the grooved selector. Two strips a pixel apart in
+   height read as two different controls, and padding plus a font size is two
+   ways of arriving at a height that only agree by accident. The value is
+   BombVault's, where it was measured. It belongs in the language rather than
+   here and is not there yet; when it arrives, this block goes.
+   --------------------------------------------------------------------------- */
+:root {
+  --badge-md: 2.35rem;
 }

@@ -185,24 +185,15 @@
 // `inFlow` — the notch's LOOK without the notch's own POSITIONING, so a
 // CALLER can position a whole GROUP of heading badges as one unit.
 //
-// History, because this replaced a much larger piece of machinery and the
-// reasoning matters more than the diff: an earlier round built a SPLIT
-// heading badge for the Recovery tab's step numbers — one pill, two cells,
-// the leading one shaded and cut off from the label by a hard seam, driven by
-// a `prefix` prop here, a `split` layout branch in badgeClassName, a
-// `.glim-badge-prefix` rule in index.css and a whole
-// --accent-contrast-inv/--item-hue-ink-inv token pair in accent.ts/
-// appearance.ts whose only job was giving that shaded cell an ink to flip to.
-// jdp reviewed it live and reversed it: "Die Cardtitelbadges mit Nummer
-// sollen zwei getrennte Badges sein. Der Badge der Nummer nicht abgedunkelt."
-// Two visually separate badges side by side, the number one taking the SAME
-// plain fill as the name one — no seam, no shaded cell, no second colour.
-// All of that machinery is therefore gone, not left dormant: `prefix`,
-// `split`, `.glim-badge-prefix`, `--accent-contrast-inv` and
-// `--item-hue-ink-inv` had exactly one consumer between them and it no longer
-// exists. (Nothing else referenced the inv tokens — checked across src/ and
-// index.css before deleting; the only reads were `.glim-badge-prefix`'s own
-// `color:` and the four rainbow rebind blocks that fed it.)
+// A NUMBERED heading is two separate badges, never one split pill. An earlier
+// round built the split version — one pill, two cells, the leading one shaded
+// and cut off from the label by a hard seam — and it was reversed on sight:
+// two badges side by side, the number taking the same plain fill as the name.
+// No seam, no shaded cell, no second colour. The reason it is worth stating
+// rather than just doing: the split pill needed a prop, a layout branch, its
+// own CSS rule and a whole inverted-ink token pair, all of which existed to
+// serve one shaded cell nobody had asked for. There is no `prefix` prop here,
+// and that absence is the decision.
 //
 // What the two-badge shape actually needs from this component is one thing:
 // permission to NOT position itself. A heading notch normally carries its own
@@ -256,7 +247,7 @@
 //     saturated accent colour, unmixed with anything — so this tone now
 //     renders `bg-accent text-accentContrast` (see TONE_CLASSES below), and
 //     `--accent-soft-solid` (the interim opaque-wash token from the prior
-//     round) is gone from index.css entirely — nothing references it anymore.
+//     round) is gone from reference/tokens.css entirely — nothing references it anymore.
 //   - NOT any of the four state hues (ok/fail/warn/neutral): rule 4's hues
 //     are load-bearing semantic signals elsewhere on the same pages these
 //     headings live on (a container's running/settled/fault state, a
@@ -316,7 +307,7 @@
 //     page's one real primary-action button the way several solid-accent
 //     BUTTONS would.
 //   - Text is `text-accentContrast` (the computed black/white ink for
-//     legibility ON TOP of a solid accent fill — see index.css's
+//     legibility ON TOP of a solid accent fill — see reference/tokens.css's
 //     `--accent-contrast` comment), not the previous quiet
 //     `text-carbon-textSub`: that muted ink was chosen specifically for a
 //     translucent wash where the card surface still dominated the contrast
@@ -385,7 +376,7 @@
 // fill to register against; a status callout has already spent that budget
 // on its own background. Measured live at that site, at the time, against
 // tone="heading"'s THEN-current accent-soft wash fill: accent-soft 1.06:1
-// light / 1.39:1 dark, and warn-strong 1.00:1 light (index.css gives
+// light / 1.39:1 dark, and warn-strong 1.00:1 light (reference/tokens.css gives
 // --status-warn-bg and --status-warn-bg-strong the same value in light mode)
 // / 1.11:1 dark (numbers now superseded — a later live-review round replaced
 // tone="heading"'s wash with a solid `bg-accent` fill, see this file's own
@@ -536,7 +527,7 @@ const INSET_START_CLASSES: Record<NotchInset, string> = {
 };
 
 // warn uses --status-warn-bg-STRONG, not the plain --status-warn-bg: the
-// token file (index.css) labels -strong verbatim "emphasised warn chip
+// token file (reference/tokens.css) labels -strong verbatim "emphasised warn chip
 // (Files)" — it exists FOR small high-contrast chips like this one, while
 // plain --status-warn-bg is the softer tone used by full-width warning
 // panels/callouts (Settings.tsx, OffsiteWizard.tsx) that hold paragraph
@@ -565,22 +556,22 @@ const INSET_START_CLASSES: Record<NotchInset, string> = {
 // semantics, which is specifically what the file header's tone="heading"
 // reasoning above declines to borrow for a structural element that isn't a
 // status at all. Same word, two pre-existing and non-conflicting jobs; see
-// index.css's TASK 7 comment for exactly which "→ neutral" sites landed here
+// reference/tokens.css's TASK 7 comment for exactly which "→ neutral" sites landed here
 // and why.
 //
-// text-accentText, not the flat text-accent: a spec-compliance review
+// text-accentInk, not the flat text-accent: a spec-compliance review
 // measured the flat accent gold at only 1.50:1 against this exact
 // accent-soft-tinted background in light theme (WCAG needs 4.5:1 for text;
 // dark theme measured fine). This is the identical failure mode
 // --field-focus-ring already solved once for this same accent hue (flat
 // accent gold has no contrast on a light surface, so light theme needs a
-// separate, darker value) — text-accentText (--accent-text, see index.css)
+// separate, darker value) — text-accentInk (--accent-ink, see reference/tokens.css)
 // applies that same fix here rather than inventing a new mechanism.
 const TONE_CLASSES: Record<BadgeTone, string> = {
   ok: "bg-statusOkBg text-statusOk",
   fail: "bg-statusFailBg text-statusFail",
   warn: "bg-statusWarnBgStrong text-statusWarn",
-  active: "bg-accentSoft text-accentText",
+  active: "bg-accentSoft text-accentInk",
   neutral: "bg-carbon-surface2 text-carbon-textSub",
   // See the file header's long-form reasoning (REVISED, live-review round —
   // "the notch reads as darkened/dimmed, not the real accent colour"): the
@@ -879,7 +870,7 @@ function badgeClassName({
   //
   // shadow: var(--elevation) only, not this app's usual elevation+hairline
   // pairing (`.rounded-card`'s own box-shadow: var(--elevation),
-  // var(--hairline) — see index.css): CC's own reference snippet specifies
+  // var(--hairline) — see reference/tokens.css): CC's own reference snippet specifies
   // a single box-shadow (the elevation lift that reads as "this sits above
   // the surface, not flush with it"), and --hairline is this app's
   // border-emulating inset highlight for a surface's OWN edge — a different
@@ -924,7 +915,7 @@ function badgeClassName({
   // ROUND 1 (GlimStone follow-up round, jdp's live review of the converted
   // off-site buttons, emphatic and specific: "Die Buttons ... haben farbige
   // Schrift" — the coloured TEXT itself, not the tinted background wash, was
-  // the complaint). A text badge's `text-accentText` ink is only legible
+  // the complaint). A text badge's `text-accentInk` ink is only legible
   // BECAUSE it carries the hue — there is no text left to read once the
   // content is a bare glyph, so that reasoning no longer applies, and
   // design-language's own established "icons carry no colour of their own,
@@ -938,7 +929,7 @@ function badgeClassName({
   // ROUND 2, THIS FIX (jdp's next live-review round, on those same four
   // badges: "die sind falsch eingefärbt, so halb abgedunkelt, das soll nicht
   // so sein"): `bg-accentSoft` IS a 14%-alpha wash (`--accent-soft: rgba(...,
-  // 0.14)`/`--item-hue-soft` — see index.css/appearance.ts) — the EXACT same
+  // 0.14)`/`--item-hue-soft` — see reference/tokens.css/appearance.ts) — the EXACT same
   // "half-darkened" failure mode this file's own tone="heading" section
   // documents fixing once already (a translucent accent-into-surface wash
   // reads as pale/dimmed no matter its alpha, full stop). Round 1 only ever
@@ -1170,15 +1161,15 @@ export function Badge({
   // a genuine hueIndex on tone="active" buttons and was verified live with
   // getComputedStyle: each domain's own background-color matches that
   // domain's own RAINBOW[i], not a flat accent.
-  //   KNOWN LIMITATION carried over from index.css's own --accent-text
-  // comment, not newly introduced here: LIGHT theme's --accent-text is a
+  //   KNOWN LIMITATION carried over from reference/tokens.css's own --accent-ink
+  // comment, not newly introduced here: LIGHT theme's --accent-ink is a
   // STATIC #7a5c00 (not `var(--accent)`, unlike dark theme), and the
-  // [data-rainbow] .glim-hue rebind block never redeclares --accent-text —
+  // [data-rainbow] .glim-hue rebind block never redeclares --accent-ink —
   // only --accent/--accent-soft/--color-accent* — so a hued tone="active"
   // badge's BACKGROUND (bg-accentSoft -> --item-hue-soft) shifts per position
   // in both themes, but its TEXT stays the flat, gold-calibrated
-  // --accent-text colour in light theme specifically. Real, but the same
-  // already-accepted class of gap index.css's own "warn/active read as the
+  // --accent-ink colour in light theme specifically. Real, but the same
+  // already-accepted class of gap reference/tokens.css's own "warn/active read as the
   // same amber" comment documents for this exact token — not a new hole this
   // change opens, and background-colour alone is enough for the position to
   // read as genuinely different per domain (verified live).
@@ -1188,7 +1179,7 @@ export function Badge({
   // pair — every real call site already pairs them, see that comment) — but
   // this is computed again here, explicitly, rather than trusted as an
   // established invariant: `.glim-notch-hue` below is a load-bearing selector
-  // hook (index.css's card-wide reactive-hover rule keys off it specifically,
+  // hook (reference/tokens.css's card-wide reactive-hover rule keys off it specifically,
   // not the general `.glim-hue` every rainbow-hued element carries), and a
   // future call site that ever passed `hueIndex` without `size="heading"`
   // must NOT silently pick up that card-wide reveal too.

@@ -1,4 +1,4 @@
-// Copied verbatim from GlimStone 1.6.0, reference/controls.ts.
+// Copied verbatim from GlimStone 1.7.2, reference/controls.ts.
 // Do not edit here: change it in the design language repo and copy again.
 // https://github.com/junkerderprovinz/glimstone
 // How much of a control's identity is shown: its text, its glyph, or both.

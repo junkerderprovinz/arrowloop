@@ -1,4 +1,4 @@
-// Copied verbatim from GlimStone 1.6.0, reference/appearance.ts.
+// Copied verbatim from GlimStone 1.7.2, reference/appearance.ts.
 // Do not edit here: change it in the design language repo and copy again.
 // https://github.com/junkerderprovinz/glimstone
 // Appearance is the set of looks the user owns: how rounded the interface is,
@@ -31,12 +31,12 @@ export const DEFAULT_ACCENT = '#FCC419';
  * the same blue in the next. Every one of them opens the picker, so the list is
  * a shortcut rather than a restriction.
  *
- * It was five here and eight in BombVault, which is the kind of drift a shared
- * list exists to prevent: the two rows sat at visibly different lengths, and
- * three colours somebody could pick in one app were simply absent in the other.
- * The last three are taken from the rainbow palette by position, which is where
- * BombVault took them from, so the accent row and the palette row below it draw
- * from one family rather than two.
+ * It was five here for as long as one adopting app had been shipping eight,
+ * which is the drift a shared list exists to prevent: two accent rows sat at
+ * visibly different lengths, and three colours somebody could pick in one app
+ * were simply absent in the next. The last three are taken from the rainbow
+ * palette by position, so the accent row and the palette row draw on one family
+ * rather than two.
  */
 export const ACCENTS: { name: string; hex: string }[] = [
   { name: 'Sunflower', hex: '#FCC419' },
