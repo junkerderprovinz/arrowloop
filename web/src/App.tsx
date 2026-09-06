@@ -1,10 +1,18 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import { Card, IconButton, Stack } from './components/Shell'
+import { Card, Stack } from './components/Shell'
 import { Choice, Field, Info, Switch } from './components/Field'
 import { Selector } from './components/Selector'
 import { Sidebar } from './components/Sidebar'
-import { IconHistory, IconJobs, IconReset, IconSettings, IconTargets } from './components/glyphs'
+import {
+  IconAbout,
+  IconHistory,
+  IconJobs,
+  IconLook,
+  IconReset,
+  IconSettings,
+  IconTargets,
+} from './components/glyphs'
 import { AccentSwatches, PaletteSwatches } from './components/Swatches'
 import { About } from './components/About'
 import { History, Jobs } from './pages/Jobs'
@@ -295,22 +303,41 @@ function Settings(props: LookProps) {
         label={t('settings.section')}
         value={section}
         onChange={setSection}
-        // No glyphs on this strip. Two of the three sections have an obvious
-        // mark and the third does not, and a strip where one segment wears a
-        // borrowed icon reads worse than one that wears none.
+        // Glyphs on every segment (jdp: "Glyphen fehlen"). This strip carried
+        // none, on my own reasoning that two of the three sections had an
+        // obvious mark and the third did not. That was the wrong way round:
+        // BombVault's own settings strip gives every tab an icon, and "I could
+        // not find a third glyph I liked" is a reason to go and find one, not a
+        // reason to leave a whole strip out of the house pattern. The third one
+        // exists, it is the information mark, and it is now in the generated
+        // set beside the other nineteen.
         options={[
-          { value: 'general', label: t('settings.general') },
-          { value: 'look', label: t('settings.look') },
-          { value: 'about', label: t('settings.about') },
+          { value: 'general', label: t('settings.general'), icon: <IconSettings /> },
+          { value: 'look', label: t('settings.look'), icon: <IconLook /> },
+          { value: 'about', label: t('settings.about'), icon: <IconAbout /> },
         ]}
       />
-      {section === 'general' ? (
-        <General {...props} />
-      ) : section === 'look' ? (
-        <Look {...props} />
-      ) : (
-        <About version={props.version} />
-      )}
+      {/* A reading width, not the window's width. Without it a label sat at the
+          far left of the card and its control a thousand pixels away at the
+          right, which is a large part of why this page did not read like the
+          rest of the house.
+
+          BombVault caps its own settings cards at the width of its tab strip,
+          and copying that literally is the trap: its strip has seven tabs and
+          this one has three, so the same rule produces a 230px column here and
+          stacks every selector vertically. Measured that, saw it, and took the
+          fixed width BombVault's own Settings.tsx uses elsewhere instead. Same
+          number, and it does not depend on how many tabs a page happens to
+          have. */}
+      <div className="flex max-w-3xl flex-col gap-10">
+        {section === 'general' ? (
+          <General {...props} />
+        ) : section === 'look' ? (
+          <Look {...props} />
+        ) : (
+          <About version={props.version} />
+        )}
+      </div>
     </Stack>
   )
 }
@@ -447,7 +474,7 @@ function Look({
         />
       </Card>
 
-      <Card title={t('look.corners')} hue={2}>
+      <Card title={t('look.corners')} hue={1} hint={t('look.cornersHint')}>
         <Selector<Shape>
           label={t('look.corners')}
           value={shape}
@@ -460,79 +487,7 @@ function Look({
         />
       </Card>
 
-      {/* The way back is part of the control, not a thing to look up. A colour
-          somebody mixed themselves has no swatch to click to undo it, so
-          without this the only route back to the house colour is knowing its
-          hex, which nobody does. */}
-      <Card
-        title={t('look.accent')}
-        hue={3}
-        actions={
-          accent !== DEFAULT_ACCENT ? (
-            // A glyph, not the word. A small single-purpose reset badge with a
-            // text label reads as a stray caption beside the icon-only controls
-            // around it, and spends row width on a word the tip already says.
-            <IconButton title={t('look.accentReset')} onClick={() => onAccent(DEFAULT_ACCENT)}>
-              <IconReset />
-            </IconButton>
-          ) : undefined
-        }
-      >
-        <AccentSwatches presets={ACCENTS} value={accent} onChange={onAccent} />
-      </Card>
-
-      <Card title={t('look.rainbow')} hue={4} hint={t('look.rainbowHint')}>
-        <div className="flex flex-col gap-3">
-          <Switch
-            on={rainbow.on}
-            onChange={(on) => onRainbow({ ...rainbow, on })}
-            label={t('look.rainbowOn')}
-            hint={t('look.rainbowHint')}
-          />
-          <Switch
-            on={rainbow.reactive}
-            onChange={(reactive) => onRainbow({ ...rainbow, reactive })}
-            label={t('look.rainbowReactive')}
-            hint={t('look.reactiveHint')}
-          />
-          <Switch
-            on={rainbow.rotate}
-            onChange={(rotate) =>
-              onRainbow({ ...rainbow, rotate, seed: rotate ? (rainbow.seed + 1) % 8 : 0 })
-            }
-            label={t('look.rainbowRotate')}
-            hint={t('look.rotateHint')}
-          />
-          <div className="mt-1">
-            <p className="mb-2 flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wider text-carbon-textMuted">
-              {t('look.palette')}
-              <Info text={t('look.paletteHint')} />
-              {/* Eight colours somebody mixed themselves have eight ways to be
-                  wrong and no way back, because there is no swatch to click to
-                  undo one. The way back belongs next to the thing it undoes. */}
-              {rainbow.palette.join() !== RAINBOW.join() && (
-                // Was an underlined text link, which is the one thing rule 13
-                // names outright: a plain link between badges is a foreign
-                // object. Same badge as every other small action here.
-                <IconButton
-                  title={t('look.paletteReset')}
-                  onClick={() => onRainbow({ ...rainbow, palette: [...RAINBOW] })}
-                >
-                  <IconReset />
-                </IconButton>
-              )}
-            </p>
-            {/* Every colour here is in force at once, so there is no selected
-                one to click twice and a click can only mean edit. */}
-            <PaletteSwatches
-              palette={rainbow.palette}
-              onChange={(palette) => onRainbow({ ...rainbow, palette })}
-            />
-          </div>
-        </div>
-      </Card>
-
-      <Card title={t('look.motion')} hue={5} hint={t('look.motionHint')}>
+      <Card title={t('look.motion')} hue={2} hint={t('look.motionHint')}>
         <Selector<MotionIntensity>
           label={t('look.motion')}
           value={motion}
@@ -541,30 +496,155 @@ function Look({
         />
       </Card>
 
-      {/* The window switches moved to General with the language: what the close
-          button does is not a matter of appearance. */}
-
-      <Card title={t('look.labels')} hue={6} hint={t('look.labelsHint')}>
+      <Card title={t('look.labels')} hue={3} hint={t('look.labelsHint')}>
         <div className="flex flex-col gap-4">
           {/* All three surfaces now. The rail axis used to be filtered out
               because this app had no rail; it has one, so hiding the control
               would be hiding a setting that works. */}
           {CONTROL_AXES.map((axis) => (
-            <Field key={axis} label={t(axisKey[axis])}>
+            <div key={axis} className="flex flex-col gap-1">
+              <span className="text-[11px] text-carbon-textSub">{t(axisKey[axis])}</span>
               <Selector<LabelMode>
                 label={t(axisKey[axis])}
                 value={labels[axis]}
                 onChange={(next) => onLabels(axis, next)}
                 options={LABEL_MODES.map((m) => ({ value: m, label: t(labelModeKey[m]) }))}
               />
-            </Field>
+            </div>
           ))}
+        </div>
+      </Card>
+
+      {/* ONE card for both, and it comes LAST, which is where BombVault puts it
+          (jdp, about its own settings page: "Die card von Akzentfarbe und
+          Regenbogenmodus in eine mergen. Gehört ja zusammen").
+
+          They were two cards here, and that is the split BombVault already
+          undid: the accent IS the rainbow's position zero, so a person changing
+          one is looking at the other. Two cards made that one setting look like
+          two unrelated ones, and put the palette a card away from the colour it
+          starts with. */}
+      <Card title={t('look.colors')} hue={4}>
+        <div className="flex flex-col gap-4">
+          {/* Label left, controls hard right, the way every row in this house
+              is built. The reset sits at the END of the row it resets, not in
+              the card's action slot: it undoes THIS row, not the card. */}
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="text-[13px] text-carbon-text">{t('look.accent')}</span>
+            <div className="ms-auto flex flex-wrap items-center gap-2">
+              <AccentSwatches presets={ACCENTS} value={accent} onChange={onAccent} />
+              <ResetBadge
+                tip={t('look.accentReset')}
+                disabled={accent === DEFAULT_ACCENT}
+                onClick={() => onAccent(DEFAULT_ACCENT)}
+              />
+            </div>
+          </div>
+
+          {/* Each row takes its OWN position in the palette. Three switches
+              sharing one accent read as one setting with three parts; three
+              colours read as three settings, which is what they are. */}
+          <Switch
+            on={rainbow.on}
+            onChange={(on) => onRainbow({ ...rainbow, on })}
+            label={t('look.rainbowOn')}
+            hint={t('look.rainbowHint')}
+            hue={0}
+          />
+          {/* Both of these hang off the mode itself: reactive and rotate are
+              instructions to a rainbow that is not running, so they are dimmed
+              rather than left live and inert. */}
+          <Switch
+            on={rainbow.reactive}
+            onChange={(reactive) => onRainbow({ ...rainbow, reactive })}
+            label={t('look.rainbowReactive')}
+            hint={t('look.reactiveHint')}
+            disabled={!rainbow.on}
+            hue={1}
+          />
+          <Switch
+            on={rainbow.rotate}
+            onChange={(rotate) =>
+              onRainbow({ ...rainbow, rotate, seed: rotate ? (rainbow.seed + 1) % 8 : 0 })
+            }
+            label={t('look.rainbowRotate')}
+            hint={t('look.rotateHint')}
+            disabled={!rainbow.on}
+            hue={2}
+          />
+
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="flex items-center gap-1.5 text-[13px] text-carbon-text">
+              {t('look.palette')}
+              <Info text={t('look.paletteHint')} />
+            </span>
+            <div className="ms-auto flex flex-wrap items-center gap-2">
+              {/* Every colour here is in force at once, so there is no selected
+                  one and a click can only mean edit. */}
+              <PaletteSwatches
+                palette={rainbow.palette}
+                disabled={!rainbow.on}
+                onChange={(palette) => onRainbow({ ...rainbow, palette })}
+              />
+              <ResetBadge
+                tip={t('look.paletteReset')}
+                disabled={!rainbow.on || rainbow.palette.join() === RAINBOW.join()}
+                onClick={() => onRainbow({ ...rainbow, palette: [...RAINBOW] })}
+              />
+            </div>
+          </div>
         </div>
       </Card>
 
       {/* About has its own section in the strip above, so it is not repeated at
           the bottom of this one. */}
     </Stack>
+  )
+}
+
+/**
+ * The reset at the end of a row of colour swatches.
+ *
+ * Always rendered, disabled when there is nothing to undo, never conditionally
+ * unmounted. A control that appears only once it has work to do is a control
+ * nobody knows about until the moment they have already made the mess, and a
+ * row whose length changes as you use it is a row that moves under the pointer.
+ *
+ * Deliberately NOT in the colour engine, and this is the one exception in the
+ * app. It sits inside the very row of colours it throws away, chrome-identical
+ * to them: same box, same border, same radius. An accent or rainbow fill would
+ * make it read as one more colour to pick, when clicking it discards the picked
+ * colour instead. Same call and the same reasoning as BombVault's own two.
+ */
+function ResetBadge({
+  tip,
+  onClick,
+  disabled,
+}: {
+  tip: string
+  onClick: () => void
+  disabled?: boolean
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      title={tip}
+      data-tip={tip}
+      aria-label={tip}
+      // The same 32px outer box as a swatch, reached the same way: a 2px border
+      // around a 28px content area. Without the border the fill would reach the
+      // full box edge to edge while every neighbouring disc is inset by its own
+      // ring, so at an identical measured size it would still read as bigger.
+      className="inline-flex h-7 w-7 items-center justify-center bg-carbon-surface2 text-carbon-textSub transition disabled:cursor-not-allowed disabled:opacity-50"
+      style={{
+        borderRadius: 'var(--radius-control)',
+        border: '2px solid var(--carbon-border)',
+      }}
+    >
+      <IconReset />
+    </button>
   )
 }
 

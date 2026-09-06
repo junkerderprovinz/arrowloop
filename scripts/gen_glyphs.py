@@ -44,6 +44,8 @@ GLYPHS = [
     ("IconHistory", "interface-essential/bullet-list.svg", "What the runs did"),
     ("IconLook", "interface-essential/color-palette.svg", "Theme, shape, accent, language"),
     ("IconSettings", "interface-essential/cog.svg", "Settings, the last tab as in every other app here"),
+    ("IconAbout", "interface-essential/information-circle.svg",
+     "The About section, on the settings tab strip"),
 
     # Row actions. Small, secondary, icon-only: the design language's rule 13.
     ("IconAdd", "interface-essential/add-1.svg", "Add a job, from the list it appears in"),
