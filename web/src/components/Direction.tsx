@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react'
 
 import { hueVars, rainbowAt } from '../lib/appearance'
+import { CONTROL_H } from './Field'
 import { IconBothWays, IconToLeft, IconToRight } from './glyphs'
 import { useT, type TranslationKey } from '../lib/i18n'
 import type { Direction } from '../lib/api'
@@ -110,7 +111,7 @@ export function DirectionSwitch({
       title={tip}
       data-tip={tip}
       aria-label={`${t('direction.label')}: ${name}`}
-      className="glim-btn glim-hue inline-flex h-9 w-9 shrink-0 items-center justify-center bg-carbon-surface2 text-carbon-text transition-colors hover:bg-carbon-hover"
+      className={`glim-btn glim-hue inline-flex ${CONTROL_H} w-8 shrink-0 items-center justify-center bg-carbon-surface2 text-carbon-text transition-colors hover:bg-carbon-hover`}
       style={{ borderRadius: 'var(--radius-control)', ...(hueVars(rainbowAt(0)) as CSSProperties) }}
     >
       {/* The glyph carries the class the label engine keys off, so a control

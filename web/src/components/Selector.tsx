@@ -40,12 +40,34 @@ export function Selector<T extends string>({
   value,
   onChange,
   scale = 'big',
+  variant = 'well',
   label,
 }: {
   options: Option<T>[]
   value: T
   onChange: (next: T) => void
   scale?: 'big' | 'small'
+  /**
+   * Which of the two shapes this control has, and they are NOT interchangeable.
+   *
+   * `well` is a groove holding keys: one track with its own fill, idle segments
+   * transparent against it, only the chosen one filled. That is a selector, and
+   * it is what everything in this app was.
+   *
+   * `chip` has no track at all. Every segment carries its own fill and the
+   * chosen one carries the accent, so the row reads as a bar of tabs sitting on
+   * the page rather than as one control with a slot in it.
+   *
+   * The distinction is BombVault's, arrived at there the hard way and copied
+   * from its file rather than from the rule: its small selectors were once
+   * given per-segment fills and jdp rejected that ("die nicht ausgewaehlten
+   * Optionen sollen kein Badge sein"), while its settings tab strip was once
+   * given the groove look and he rejected THAT too. Both are right, because
+   * they are two different controls that happen to share an implementation.
+   * jdp on this app: "die tabs sollen tabs sein, kein horizontaler selektor",
+   * and then again after the first attempt only made the groove version bigger.
+   */
+  variant?: 'well' | 'chip'
   label?: string
 }) {
   const track = useRef<HTMLDivElement>(null)
@@ -131,8 +153,18 @@ export function Selector<T extends string>({
       ref={track}
       role="tablist"
       aria-label={label}
-      className="glim-well inline-flex flex-wrap gap-[0.2rem] p-[0.2rem]"
-      style={{ borderRadius: 'var(--radius-control)', width: 'fit-content' }}
+      className={
+        variant === 'well'
+          ? 'glim-well inline-flex flex-wrap gap-[0.2rem] p-[0.2rem]'
+          : // No track, so no padding and no fill of its own. The gap is wider
+            // than the well's 0.2rem ring because it is a gap BETWEEN chips
+            // rather than the groove showing around them.
+            'inline-flex flex-wrap gap-1'
+      }
+      style={{
+        borderRadius: variant === 'well' ? 'var(--radius-control)' : undefined,
+        width: 'fit-content',
+      }}
     >
       {options.map((o, i) => {
         const active = o.value === value
@@ -181,7 +213,14 @@ export function Selector<T extends string>({
               // unselected option must not be: the groove already does that job.
               active
                 ? 'glim-active bg-accent text-accentContrast'
-                : 'bg-transparent text-carbon-textSub hover:bg-carbon-hover hover:text-carbon-text',
+                : variant === 'well'
+                  ? 'bg-transparent text-carbon-textSub hover:bg-carbon-hover hover:text-carbon-text'
+                  : // A chip carries its own fill even when it is not chosen,
+                    // because there is no groove behind it to say it is a
+                    // control. This is the one place the "an unselected option
+                    // is never a badge" rule does not apply, and it does not
+                    // apply because the rule is about a segment inside a track.
+                    'bg-carbon-surface2 text-carbon-textSub hover:bg-carbon-hover hover:text-carbon-text',
             ].join(' ')}
           >
             {o.icon && (

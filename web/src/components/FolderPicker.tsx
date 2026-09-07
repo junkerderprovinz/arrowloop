@@ -127,7 +127,14 @@ export function FolderPicker({
       aria-label={t('pick.title')}
       onClick={onClose}
     >
-      <div className="w-full max-w-lg" onClick={(e) => e.stopPropagation()}>
+      {/* Wider than the max-w-lg it was. Two things share this width and both
+          wanted more of it: a path printed in full, which is the whole point of
+          the window, and the three buttons at the foot, which at 512px could
+          not stand in one row in German and wrapped ("Diesen Ordner nehmen"
+          alone on a second line). jdp: "die buttons sollen alle in eine Zeile."
+          The row below no longer wraps at all, so this width is what keeps that
+          promise rather than a hope. */}
+      <div className="w-full max-w-2xl" onClick={(e) => e.stopPropagation()}>
         <Card
           title={t('pick.title')}
         >
@@ -202,7 +209,7 @@ export function FolderPicker({
               list: walking into a folder and pressing the button is one
               gesture, selecting a row and then confirming is two, and the
               second is the one people forget. */}
-          <div className="flex flex-wrap items-center justify-end gap-2">
+          <div className="flex items-center justify-end gap-2">
             {/* Making a folder belongs HERE, at the moment somebody discovers
                 the one they wanted does not exist yet. The alternative is
                 leaving the picker, making it elsewhere, and coming back. It

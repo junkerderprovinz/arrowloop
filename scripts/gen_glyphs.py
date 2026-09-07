@@ -60,16 +60,26 @@ GLYPHS = [
 
     # The direction of a job, drawn rather than described. Three glyphs, so the
     # setting reads at a glance from the list without opening anything.
-    ("IconToRight", "interface-essential/move-right.svg", "Left to right only"),
-    ("IconToLeft", "interface-essential/move-left.svg", "Right to left only"),
+    #
+    # ONE source arrow, turned. move-right.svg and move-left.svg draw a bar
+    # behind the arrowhead, which is the "move to the end" keyboard idea and not
+    # the direction of a job; jdp: "der richtungsbutton soll pfeile ohne balken
+    # haben". arrow-up-1.svg is the same set's bare arrow, and turning the one
+    # drawing beats picking two, because a matched pair cannot drift apart if
+    # there is only one of them.
+    ("IconToRight", "interface-essential/arrow-up-1.svg", "Left to right only",
+     "rotate(90 7 7)"),
+    ("IconToLeft", "interface-essential/arrow-up-1.svg", "Right to left only",
+     "rotate(-90 7 7)"),
 
     # Folders, the picker, and saving.
     ("IconFolder", "interface-essential/new-folder.svg", "Pick a folder. The plain shape: the local-storage one carries a drive motif and reads as a monitor at fourteen pixels"),
     ("IconNewFolder", "interface-essential/folder-add.svg", "Make a folder here"),
-    ("IconUp", "interface-essential/move-left.svg", "One level up, in the folder picker"),
+    # Same bare arrow as the direction glyphs, for the same reason: the bar in
+    # move-left.svg reads as "jump to the start", not as "up one folder".
+    ("IconUp", "interface-essential/arrow-up-1.svg", "One level up, in the folder picker",
+     "rotate(-90 7 7)"),
     ("IconSave", "computer-devices/floppy-disk.svg", "Save"),
-    ("IconCancel", "interface-essential/delete-1.svg", "Cancel, on a dialog's own footer"),
-    ("IconConfirm", "interface-essential/check.svg", "Confirm. NOT IconCheck, which is the magnifying glass this app uses for \"open a target and look at it\""),
 
     # The reveal eye on a field holding a secret, and its slashed twin.
     ("IconVisible", "interface-essential/visible.svg", "Show a stored secret"),
@@ -90,9 +100,66 @@ COMPOSED = [
      "Both ways: the same two arrows the one-way settings use, one above the "
      "other. It used to be the reload loop, which draws hooks instead of "
      "arrowheads and reads as retry rather than as two directions",
-     [("interface-essential/move-right.svg", "translate(0 -2.4) scale(1 0.6)"),
-      ("interface-essential/move-left.svg", "translate(0 8.2) scale(1 0.6)")]),
+     [("interface-essential/arrow-up-1.svg", "rotate(90 7 7) translate(0 -2.4) scale(1 0.6)"),
+      ("interface-essential/arrow-up-1.svg", "rotate(-90 7 7) translate(0 -2.4) scale(1 0.6)")]),
 
+]
+
+# Glyphs DRAWN here rather than taken from the set, and the one reason that is
+# allowed.
+#
+# jdp: "der x und haken glyph passt wieder nicht zu den anderen glyphen. das
+# problem hatten wir schon in BV. dort wurde es gefixt." He is right on both
+# counts, and the fix is not a smaller box.
+#
+# REACH is the distance from the centre to the furthest ink, and it is what the
+# eye calls "size" for marks of different shape. A CROSS PUTS ITS FOUR TIPS ON
+# THE CORNERS OF ITS BOUNDING BOX; a round glyph puts its ink on the edge
+# midpoints. Fill the same box with both and the cross reaches sqrt(2) further.
+# Measured on this set: delete-1.svg spans 0.29 to 13.71 on both axes, so its
+# reach is 9.49 against the 7.0 of a frame-filling round glyph. check.svg puts
+# its long tip at (13.64, 1.20), reach 8.82. Both are diagonal marks aimed at a
+# corner, and both are the complaint.
+#
+# BombVault paid three rounds to learn this on ONE glyph, each round measuring
+# something true that was not the complaint: extent, then area, then reach. The
+# lesson written down there: A MEASUREMENT THAT AGREES WITH ITSELF IS NOT A
+# FINDING. So the cross below is BombVault's settled geometry, carried over
+# unchanged rather than re-derived, and the check is drawn to the same rule.
+#
+# Doing that means these two marks are NOT from Streamline, which the module
+# docstring otherwise forbids. The exception is narrow and it is the point: the
+# ink-measuring step exists for glyphs that must be made to agree with the set,
+# and these are exactly two such glyphs. Everything else still comes from the
+# one set untouched.
+#
+# name -> (note, box, markup)
+DRAWN = [
+    ("IconCancel",
+     "Cancel, on a dialog's own footer. A plus turned 45 degrees, which is one "
+     "drawing rather than two that could drift apart",
+     # Tip radius 5 in a 10-unit box is half the box, which lands the four tips
+     # exactly where a frame-filling round glyph puts its outermost ink. The
+     # bars are 2.2 rather than the upright plus's 2.8 because the mark shrank
+     # by 1/sqrt(2) and painted area goes with the square of that.
+     "2 2 10 10",
+     '<g transform="rotate(45 7 7)">'
+     '<rect x="2" y="5.9" width="10" height="2.2" rx="1.1" />'
+     '<rect x="5.9" y="2" width="2.2" height="10" rx="1.1" />'
+     '</g>'),
+
+    ("IconConfirm",
+     "Confirm. NOT IconCheck, which is the magnifying glass this app uses for "
+     "\"open a target and look at it\"",
+     # Same rule, applied to a two-armed mark: the long tip sits at (11.6, 3.4),
+     # which is 5.84 from the centre, plus the 1.1 cap radius makes 6.94 against
+     # the round glyphs' 7.0. Stroked rather than filled, because a bar mark
+     # whose thickness has to match the cross's is far easier to hold at 2.2
+     # than a filled outline is, and round caps and joins give it the same ends
+     # the cross's rounded rectangles have.
+     "0 0 14 14",
+     '<path d="M2.4 7.4L5.6 10.9L11.6 3.4" fill="none" stroke="currentColor"'
+     ' stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />'),
 ]
 
 HEADER = '''// ArrowLoop's icon set.
@@ -109,7 +176,7 @@ HEADER = '''// ArrowLoop's icon set.
 // convention, which is why none of them needs the measured ink-crop the design
 // language describes for apps that mix sets.
 
-import type { SVGProps } from 'react'
+import type { ReactNode, SVGProps } from 'react'
 
 /** Two or more glyphs from the same set, stacked into one drawing. Each group
  *  carries its own transform, so a composed glyph needs no second source set
@@ -155,12 +222,54 @@ function Glyph({ box, paths, ...rest }: { box: string; paths: string[] } & SVGPr
     </svg>
   )
 }
+
+/** A mark drawn here rather than taken from the set, because it had to be made
+ *  to agree with the set. See the DRAWN table in scripts/gen_glyphs.py for why
+ *  exactly two glyphs are allowed to be here and what "agree" measures. */
+function Drawn({ box, children, ...rest }: { box: string; children: ReactNode } & SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox={box}
+      fill="currentColor"
+      className="shrink-0"
+      aria-hidden="true"
+      {...rest}
+    >
+      {children}
+    </svg>
+  )
+}
 '''
 
 
 def paths_of(svg: str):
     """Every path's d attribute, in document order."""
     return re.findall(r'<path[^>]*\sd="([^"]+)"', svg)
+
+
+def jsx(markup: str) -> str:
+    """SVG markup as JSX: hyphenated attributes become camelCase.
+
+    Only the attributes the DRAWN table actually uses are translated, and an
+    untranslated hyphenated attribute is an error rather than a silent pass:
+    React drops an unknown camelCase-shaped prop without a word, so a typo here
+    would ship a glyph missing its stroke and nothing would say so.
+    """
+    known = {
+        "stroke-width": "strokeWidth",
+        "stroke-linecap": "strokeLinecap",
+        "stroke-linejoin": "strokeLinejoin",
+        "fill-rule": "fillRule",
+        "clip-rule": "clipRule",
+    }
+    for was, now in known.items():
+        markup = markup.replace(was + "=", now + "=")
+    left = re.findall(r'\s([a-z]+-[a-z-]+)=', markup)
+    if left:
+        raise SystemExit("untranslated SVG attribute(s) in a DRAWN glyph: %s" % ", ".join(left))
+    return markup
 
 
 def box_of(svg: str) -> str:
@@ -172,7 +281,11 @@ def box_of(svg: str) -> str:
 
 def main() -> None:
     out = [HEADER]
-    for name, rel, note in GLYPHS:
+    for entry in GLYPHS:
+        # A fourth field is an optional transform: the same drawing turned, so
+        # a pair of opposite arrows stays one drawing rather than two.
+        name, rel, note = entry[0], entry[1], entry[2]
+        transform = entry[3] if len(entry) > 3 else None
         full = os.path.join(SRC, rel)
         if not os.path.exists(full):
             raise SystemExit("missing source glyph: %s" % full)
@@ -181,6 +294,14 @@ def main() -> None:
         if not paths:
             raise SystemExit("no paths in %s" % rel)
         joined = ", ".join("'%s'" % p.replace("\\", "\\\\").replace("'", "\\'") for p in paths)
+        if transform:
+            out.append(
+                "\n/** %s. Streamline: %s, turned */\n"
+                "export function %s(props: SVGProps<SVGSVGElement>) {\n"
+                "  return <Stack box=\"%s\" groups={[{ transform: '%s', paths: [%s] }]} {...props} />\n"
+                "}\n" % (note, rel, name, box_of(svg), transform, joined)
+            )
+            continue
         out.append(
             "\n/** %s. Streamline: %s */\n"
             "export function %s(props: SVGProps<SVGSVGElement>) {\n"
@@ -209,9 +330,20 @@ def main() -> None:
             "  return <Stack box=\"0 0 14 14\" groups={[%s]} {...props} />\n"
             "}\n" % (note, " + ".join(sources), name, ", ".join(groups))
         )
+    for name, note, box, markup in DRAWN:
+        out.append(
+            "\n/** %s. Drawn here, see gen_glyphs.py's DRAWN table for why */\n"
+            "export function %s(props: SVGProps<SVGSVGElement>) {\n"
+            "  return (\n"
+            "    <Drawn box=\"%s\" {...props}>\n"
+            "      %s\n"
+            "    </Drawn>\n"
+            "  )\n"
+            "}\n" % (note, name, box, jsx(markup))
+        )
     with open(OUT, "w", encoding="utf-8", newline="") as f:
         f.write("".join(out))
-    print("wrote %s with %d glyphs" % (OUT, len(GLYPHS) + len(COMPOSED)))
+    print("wrote %s with %d glyphs" % (OUT, len(GLYPHS) + len(COMPOSED) + len(DRAWN)))
 
 
 if __name__ == "__main__":

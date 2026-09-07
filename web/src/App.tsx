@@ -296,23 +296,24 @@ function Settings(props: LookProps) {
 
   return (
     <Stack>
-      {/* The settings strip takes the PINNED scale, which is what makes it read
-          as a tab bar rather than as a small segmented toggle. Reported as
-          "die tabs sollen tabs sein, kein horizontaler selektor", and the
-          design language's answer is that those are one component (rule: tabs,
-          filter bars and segmented controls are the same thing, built once) -
-          so the difference between them is the scale, not the markup.
+      {/* The settings strip is CHIPS, not a groove.
+          "die tabs sollen tabs sein, kein horizontaler selektor", reported
+          twice. The first answer was that tabs and segmented controls are one
+          component differing only in scale, so this strip was made bigger and
+          left in the groove. That was wrong, and BombVault's own file says why:
+          it has both shapes, arrived at through two separate rejections. Its
+          small selectors were once given per-segment fills ("die nicht
+          ausgewaehlten Optionen sollen kein Badge sein") and its settings tab
+          strip was once given the groove. Two different controls, one
+          implementation, and the difference is the TRACK, not the size.
 
-          On `small` the segments sized themselves to their own labels: 98, 95
-          and 70 pixels, measured, in a row with 2241 pixels of room. The
-          language's own rule is a shared 200px FLOOR across every equal-width
-          selector in the app, so that a tab bar, a two-option theme picker and
-          a three-option shape picker read as one recurring control. This strip
-          was the one place opting out of it. */}
+          Which is also why "make the groove bigger" could never land: a strip
+          in a groove reads as one control with a slot, whatever size it is. */}
       <Selector<SettingsSection>
         label={t('settings.section')}
         value={section}
         onChange={setSection}
+        variant="chip"
         // Glyphs on every segment (jdp: "Glyphen fehlen"). This strip carried
         // none, on my own reasoning that two of the three sections had an
         // obvious mark and the third did not. That was the wrong way round:
@@ -369,6 +370,11 @@ function General({ lang, onLang, languages, window: windowSettings, onWindow }: 
             value={lang}
             onChange={onLang}
             label={t('look.language')}
+            // The one picker on this page that is the point of its own card,
+            // and the one carrying artwork rather than words alone. Sized to
+            // match BombVault's language card, which is where the flags have
+            // read correctly the longest.
+            roomy
             options={languages.map((l) => ({
               value: l.code,
               label: l.label,

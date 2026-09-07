@@ -29,6 +29,23 @@ export function Field({ label, hint, children }: { label: string; hint?: string;
 }
 
 /**
+ * The height every control in a row shares.
+ *
+ * It is a constant rather than a repeated class because it was NOT one, and
+ * that cost a report: an input's height came out of its padding (py-2 on
+ * text-xs is 32px) while the direction button between two of them was written
+ * as h-9, which is 36. Nothing was wrong with either number on its own, and
+ * side by side the button was visibly taller (jdp: "der button ist groesser als
+ * die felder daneben").
+ *
+ * Naming it here does more than fix the four pixels: two controls that must
+ * match can no longer be given two numbers by two people on two days. Anything
+ * that sits in a row with a field takes THIS, and the guard in
+ * Field.height.test.ts fails if a call site writes its own instead.
+ */
+export const CONTROL_H = 'h-8'
+
+/**
  * Form fields are borderless and filled, and focus is a brightness step rather
  * than a ring. A box drawn around every input is hierarchy from borders, which
  * is the thing this design language spends most of its rules avoiding.
@@ -50,7 +67,7 @@ export function Text({
       value={value}
       placeholder={placeholder}
       onChange={(e) => onChange(e.target.value)}
-      className={`w-full bg-carbon-surface2 px-3 py-2 text-xs text-carbon-text outline-none transition placeholder:text-carbon-textMuted focus:brightness-125 ${
+      className={`w-full ${CONTROL_H} bg-carbon-surface2 px-3 text-xs text-carbon-text outline-none transition placeholder:text-carbon-textMuted focus:brightness-125 ${
         mono ? 'font-mono' : ''
       }`}
       style={{ borderRadius: 'var(--radius-control)' }}
@@ -101,7 +118,7 @@ export function NumberField({
         // selects the digits to replace them.
         if (Number.isFinite(next)) onChange(next)
       }}
-      className="w-24 bg-carbon-surface2 px-3 py-2 text-xs text-carbon-text outline-none transition focus:brightness-125"
+      className={`w-24 ${CONTROL_H} bg-carbon-surface2 px-3 text-xs text-carbon-text outline-none transition focus:brightness-125`}
       style={{ borderRadius: 'var(--radius-control)' }}
     />
   )
@@ -155,12 +172,30 @@ export function Choice<T extends string>({
   onChange,
   options,
   label,
+  roomy,
 }: {
   value: T
   onChange: (next: T) => void
   /** `flag` is an ISO 3166-1 alpha-2 code, and only the language list has one. */
   options: { value: T; label: string; flag?: string }[]
   label?: string
+  /**
+   * One step up in text size, for a picker that is the whole point of its card
+   * rather than one field among several in a form row.
+   *
+   * The language list is the case it was added for. jdp: "das sprach dropdown
+   * ist zu klein bzw. die texte und flaggen" - and the flags were never sized
+   * here at all: the sprite is 1.25em by 1em, so it is exactly as big as the
+   * text beside it and shrinks with it. One size decides both, which is why
+   * there is one switch and not two.
+   *
+   * BombVault's own language card is the reference, opened rather than guessed
+   * at: text-sm with gap-2.5, and its trigger stays the same 32px tall, because
+   * py-1.5 on a 20px line box comes to the same height as the form rows do at
+   * py-2 on a 16px one. So this changes the reading size and nothing about how
+   * the control lines up.
+   */
+  roomy?: boolean
 }) {
   const trigger = useRef<HTMLButtonElement>(null)
   const [open, setOpen] = useState(false)
@@ -175,7 +210,7 @@ export function Choice<T extends string>({
         aria-haspopup="listbox"
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center gap-2 bg-carbon-surface2 py-2 pl-3 pr-8 text-start text-xs text-carbon-text outline-none transition hover:bg-carbon-hover focus-visible:brightness-125"
+        className={`flex w-full ${CONTROL_H} items-center ${roomy ? 'gap-2.5' : 'gap-2'} bg-carbon-surface2 pl-3 pr-8 text-start ${roomy ? 'text-sm' : 'text-xs'} text-carbon-text outline-none transition hover:bg-carbon-hover focus-visible:brightness-125`}
         style={{ borderRadius: 'var(--radius-control)' }}
       >
         {current?.flag && <Flag code={current.flag} />}
@@ -212,7 +247,7 @@ export function Choice<T extends string>({
               onChange(o.value)
               setOpen(false)
             }}
-            className={`flex w-full items-center gap-2 px-3 py-2 text-start text-xs transition-colors ${
+            className={`flex w-full items-center ${roomy ? 'gap-2.5' : 'gap-2'} px-3 py-2 text-start ${roomy ? 'text-sm' : 'text-xs'} transition-colors ${
               o.value === value
                 ? 'bg-carbon-surface3 text-carbon-text'
                 : 'text-carbon-textSub hover:bg-carbon-hover hover:text-carbon-text'
@@ -256,7 +291,7 @@ export function Secret({
         value={value}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full bg-carbon-surface2 py-2 pl-3 pr-9 font-mono text-xs text-carbon-text outline-none transition placeholder:font-sans placeholder:text-carbon-textMuted focus:brightness-125"
+        className={`w-full ${CONTROL_H} bg-carbon-surface2 pl-3 pr-9 font-mono text-xs text-carbon-text outline-none transition placeholder:font-sans placeholder:text-carbon-textMuted focus:brightness-125`}
         style={{ borderRadius: 'var(--radius-control)' }}
       />
       <button
