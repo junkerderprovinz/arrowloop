@@ -8,6 +8,16 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## v0.4.1
+
+### 🐛 Fixed
+
+- The folder picker's "make a folder" refused a name containing a slash and,
+  on Linux and macOS, let a backslash through: `filepath.Separator` is "/"
+  there, so the check asked twice for the same character. A folder literally
+  named `sub\deeper` could be created inside the parent. It never escaped the
+  parent. Caught by the CI on the two platforms this machine is not.
+
 ## v0.4.0
 
 Thirty-eight reported points in one pass. The largest was not a look: a job
