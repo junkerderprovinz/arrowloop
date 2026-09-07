@@ -165,6 +165,23 @@ export type Settings = {
   bwlimit?: string
   parallelJobs?: number
   history?: string
+  /**
+   * Per-job settings that fill in what a job does not say for itself.
+   *
+   * Two asks pointed the same way. These had to become visible, and the job
+   * form was already the thing that was too long. The answer that is usually
+   * the same for every job belongs in one place, and the job keeps only what
+   * makes IT different.
+   */
+  defaults?: {
+    modWindow?: string
+    transfers?: number
+    quietPeriod?: string
+    emptyDirs?: boolean
+    metadata?: boolean
+    brakePercent?: number
+    brakeFloor?: number
+  }
   notify?: {
     matrix?: { homeserver: string; room: string; token: string }
     webhook?: string

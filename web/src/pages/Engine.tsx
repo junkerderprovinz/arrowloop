@@ -4,6 +4,7 @@ import { Card } from '../lib/glimstone/Card'
 import { Field, NumberField, Secret, Text } from '../components/Field'
 import { Stack } from '../components/Shell'
 import { ToggleRow } from '../components/ToggleRow'
+import { QuietPeriod } from '../components/QuietPeriod'
 import { Button } from '../lib/glimstone/Button'
 import { IconSave } from '../components/glyphs'
 import { api, type Settings } from '../lib/api'
@@ -78,6 +79,10 @@ export function Engine() {
     )
   }
 
+  const defaults = draft.defaults ?? {}
+  const setDefault = (next: Partial<NonNullable<Settings['defaults']>>) =>
+    patch({ defaults: { ...defaults, ...next } })
+
   const matrix = draft.notify?.matrix ?? { homeserver: '', room: '', token: '' }
   const setMatrix = (next: Partial<typeof matrix>) =>
     patch({ notify: { ...draft.notify, matrix: { ...matrix, ...next } } })
@@ -149,6 +154,69 @@ export function Engine() {
             checked={!!draft.notify?.onSuccess}
             onChange={(v) => patch({ notify: { ...draft.notify, onSuccess: v } })}
             hint={t('engine.onSuccessHint')}
+          />
+        </div>
+      </Card>
+
+      <Card title={t('engine.defaults')} hueIndex={3}>
+        <div className="flex flex-col gap-4">
+          {/* The brakes first, and they are the reason this card exists rather
+              than a convenience on it. They are the net that stops a run
+              removing more than half of everything it knows about, and until
+              now they could not be seen at all, let alone set once for every
+              job. */}
+          <Field label={t('engine.brakePercent')} hint={t('engine.brakePercentHint')}>
+            <NumberField
+              value={defaults.brakePercent ?? 50}
+              min={0}
+              max={100}
+              label={t('engine.brakePercent')}
+              onChange={(v) => setDefault({ brakePercent: v })}
+            />
+          </Field>
+          <Field label={t('engine.brakeFloor')} hint={t('engine.brakeFloorHint')}>
+            <NumberField
+              value={defaults.brakeFloor ?? 10}
+              min={0}
+              max={100000}
+              label={t('engine.brakeFloor')}
+              onChange={(v) => setDefault({ brakeFloor: v })}
+            />
+          </Field>
+          <Field label={t('engine.transfers')} hint={t('engine.transfersHint')}>
+            <NumberField
+              value={defaults.transfers ?? 4}
+              min={1}
+              max={64}
+              label={t('engine.transfers')}
+              onChange={(v) => setDefault({ transfers: v })}
+            />
+          </Field>
+          <Field label={t('engine.modWindow')} hint={t('engine.modWindowHint')}>
+            <Text
+              value={defaults.modWindow ?? ''}
+              onChange={(v) => setDefault({ modWindow: v })}
+              placeholder="1s"
+              mono
+            />
+          </Field>
+          <Field label={t('edit.quietPeriod')} hint={t('edit.quietHint')}>
+            <QuietPeriod
+              value={defaults.quietPeriod ?? ''}
+              onChange={(v) => setDefault({ quietPeriod: v })}
+            />
+          </Field>
+          <ToggleRow
+            label={t('edit.emptyDirs')}
+            checked={!!defaults.emptyDirs}
+            onChange={(v) => setDefault({ emptyDirs: v })}
+            hint={t('edit.emptyDirsHint')}
+          />
+          <ToggleRow
+            label={t('edit.metadata')}
+            checked={!!defaults.metadata}
+            onChange={(v) => setDefault({ metadata: v })}
+            hint={t('edit.metadataHint')}
           />
         </div>
       </Card>

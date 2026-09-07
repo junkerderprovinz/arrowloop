@@ -44,6 +44,11 @@ type Config struct {
 
 	Notify Notify `json:"notify,omitempty"`
 
+	// Defaults fill in per-job settings that a job does not set for itself.
+	// Applied once at load, so everything downstream sees a job whose fields
+	// are already resolved and no code has to remember to ask twice.
+	Defaults Defaults `json:"defaults,omitempty"`
+
 	// dir is where the file was read from, so relative paths inside it mean
 	// what the person writing it expected.
 	dir string
@@ -125,8 +130,14 @@ type Job struct {
 	QuietPeriod string `json:"quietPeriod,omitempty"`
 	ModWindow   string `json:"modWindow,omitempty"`
 	Transfers   int    `json:"transfers,omitempty"`
-	EmptyDirs   bool   `json:"emptyDirs,omitempty"`
-	Metadata    bool   `json:"metadata,omitempty"`
+
+	// EmptyDirs and Metadata are pointers for the same reason the two brakes
+	// below are: a plain bool cannot tell "off" from "not mentioned", and the
+	// file now carries defaults that fill in what a job does not say. Left as
+	// plain bools, a job that deliberately switched one OFF would have it
+	// switched back on by the default, and nothing would say so.
+	EmptyDirs *bool `json:"emptyDirs,omitempty"`
+	Metadata  *bool `json:"metadata,omitempty"`
 
 	// BrakePercent and BrakeFloor are pointers so that "0" can be told apart
 	// from "not set". Zero switches the mass-delete brake off entirely, and
@@ -134,6 +145,60 @@ type Job struct {
 	// they got by leaving a field out.
 	BrakePercent *int `json:"brakePercent,omitempty"`
 	BrakeFloor   *int `json:"brakeFloor,omitempty"`
+}
+
+// Defaults fill in the per-job settings a job does not set for itself.
+//
+// They exist because these settings had to become visible and the job form was
+// already the thing jdp asked to simplify ("fuer was muessen hier so wahnsinnig
+// viele eingabefelder sein"). Both asks are right and they point the same way:
+// the answer that is usually the same for every job belongs in one place, and
+// the job keeps only what makes IT different.
+//
+// The brakes are the reason this matters rather than a convenience. They are
+// the safety net that stops a run removing more than half of everything it
+// knows about, and until now they could not be seen at all, let alone set once
+// for every job.
+//
+// Every field is a pointer or a zero-means-unset type, so "the default says on
+// and this job says off" is a sentence the file can express.
+type Defaults struct {
+	ModWindow    string `json:"modWindow,omitempty"`
+	Transfers    int    `json:"transfers,omitempty"`
+	EmptyDirs    *bool  `json:"emptyDirs,omitempty"`
+	Metadata     *bool  `json:"metadata,omitempty"`
+	BrakePercent *int   `json:"brakePercent,omitempty"`
+	BrakeFloor   *int   `json:"brakeFloor,omitempty"`
+
+	// QuietPeriod is here too, because "wait for a file to stop changing" is
+	// almost always one answer for a whole machine rather than per job.
+	QuietPeriod string `json:"quietPeriod,omitempty"`
+}
+
+// applyTo fills in what a job left unset. A job that states a value keeps it,
+// including when what it states is the zero one.
+func (d Defaults) applyTo(j *Job) {
+	if j.ModWindow == "" {
+		j.ModWindow = d.ModWindow
+	}
+	if j.Transfers == 0 {
+		j.Transfers = d.Transfers
+	}
+	if j.QuietPeriod == "" {
+		j.QuietPeriod = d.QuietPeriod
+	}
+	if j.EmptyDirs == nil {
+		j.EmptyDirs = d.EmptyDirs
+	}
+	if j.Metadata == nil {
+		j.Metadata = d.Metadata
+	}
+	if j.BrakePercent == nil {
+		j.BrakePercent = d.BrakePercent
+	}
+	if j.BrakeFloor == nil {
+		j.BrakeFloor = d.BrakeFloor
+	}
 }
 
 // Load reads and validates a configuration file.
@@ -185,6 +250,11 @@ func Load(path string) (*Config, error) {
 	seen := map[string]bool{}
 	for i := range cfg.Jobs {
 		j := &cfg.Jobs[i]
+		// Defaults are applied BEFORE validation, so a value that arrives from
+		// the defaults is checked by exactly the same rules a value written on
+		// the job is. A default that produces an invalid job must fail here and
+		// not at three in the morning on the one job that mattered.
+		cfg.Defaults.applyTo(j)
 		if j.Name == "" {
 			return nil, fmt.Errorf("job %d has no name", i+1)
 		}
@@ -307,8 +377,8 @@ func (j Job) Options() (engine.Options, error) {
 	return engine.Options{
 		Compare:   compare,
 		Exclude:   excl,
-		EmptyDirs: j.EmptyDirs,
-		Metadata:  j.Metadata,
+		EmptyDirs: j.EmptyDirs != nil && *j.EmptyDirs,
+		Metadata:  j.Metadata != nil && *j.Metadata,
 	}, nil
 }
 
