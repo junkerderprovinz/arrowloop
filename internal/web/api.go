@@ -55,6 +55,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /api/jobs/{name}/plan", s.previewJob)
 	mux.HandleFunc("POST /api/jobs/{name}/run", s.runJob)
 	mux.HandleFunc("GET /api/history", s.listHistory)
+	mux.HandleFunc("GET /api/history/{id}/entries", s.runEntries)
 	mux.HandleFunc("GET /api/events", s.events)
 	mux.HandleFunc("GET /api/config", s.readConfig)
 	mux.HandleFunc("PUT /api/config", s.writeConfig)
@@ -308,6 +309,32 @@ func (s *Server) listHistory(w http.ResponseWriter, r *http.Request) {
 		runs = []history.Run{}
 	}
 	writeJSON(w, http.StatusOK, runs)
+}
+
+// runEntries lists what ONE run did, path by path.
+//
+// A separate request rather than a field on every run in the list, and that is
+// the whole design of it: a page showing fifty runs wants fifty summaries, and
+// fetching every path each of them touched to draw a row that says "12 copied"
+// would be thousands of strings nobody reads. The detail is fetched when a run
+// is opened, which is the moment somebody has asked for it.
+func (s *Server) runEntries(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
+	if err != nil {
+		writeError(w, http.StatusBadRequest, fmt.Errorf("not a run id: %s", r.PathValue("id")))
+		return
+	}
+	entries, err := s.History.Entries(r.Context(), id)
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, err)
+		return
+	}
+	if entries == nil {
+		// A nil slice encodes as null, and a page that expects a list would then
+		// have to guard every use of it. An empty run is an empty list.
+		entries = []history.Entry{}
+	}
+	writeJSON(w, http.StatusOK, entries)
 }
 
 // events streams what the runner is doing, so a screen can show a job going

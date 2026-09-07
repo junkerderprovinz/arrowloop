@@ -235,7 +235,7 @@ export function App() {
           ) : tab === 'targets' ? (
             <Targets />
           ) : tab === 'history' ? (
-            <History runs={runs} />
+            <History runs={runs} onChanged={refresh} />
           ) : (
             <Settings
           theme={theme}

@@ -10,6 +10,7 @@ import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
 import { IconAdd, IconDelete, IconEdit, IconPause, IconPreview, IconRun, IconSave, IconToLeft, IconToRight } from '../components/glyphs'
 import { DirectionMark } from '../components/Direction'
 import { JobMark, statusOf } from '../components/JobMark'
+import { RunDetail } from '../components/RunDetail'
 import { JobForm, useJobConfig } from './Editor'
 import { api } from '../lib/api'
 import type { Job, Run, RunEvent } from '../lib/api'
@@ -504,8 +505,16 @@ function State({ job }: { job: Job }) {
 }
 
 /** The run log, newest first. */
-export function History({ runs }: { runs: Run[] }) {
+export function History({ runs, onChanged }: { runs: Run[]; onChanged?: () => void }) {
   const { t } = useT()
+  /**
+   * Which run is open, by its id. One at a time.
+   *
+   * Several open at once would turn the page into a wall of paths, and the
+   * question somebody arrives with is about ONE run: the one that failed, or
+   * the one that touched something they did not expect.
+   */
+  const [open, setOpen] = useState<number | null>(null)
   if (runs.length === 0) {
     return (
       <Card title={t('history.title')} hueIndex={0}>
@@ -519,7 +528,15 @@ export function History({ runs }: { runs: Run[] }) {
         {runs.map((r, i) => (
           <li key={`${r.Job}-${r.Started}-${i}`}>
             {i > 0 && <Rule />}
-            <div className="flex items-center gap-3 py-2.5 text-xs">
+            {/* The whole row opens it, not a chevron at one end. The row is
+                already the thing being asked about, and a target the width of
+                the card is a target nobody has to aim at. */}
+            <button
+              type="button"
+              aria-expanded={open === r.ID}
+              onClick={() => setOpen(open === r.ID ? null : r.ID)}
+              className="flex w-full items-center gap-3 py-2.5 text-start text-xs transition-colors hover:bg-carbon-hover"
+            >
               <Badge tone={r.Err ? 'fail' : 'ok'}>{r.Err ? t('history.failed') : t('history.ok')}</Badge>
               <span className="w-32 shrink-0 truncate font-medium">{r.Job}</span>
               <span className="shrink-0 text-xs text-carbon-textMuted">
@@ -541,7 +558,14 @@ export function History({ runs }: { runs: Run[] }) {
                   </>
                 )}
               </span>
-            </div>
+              {/* A count of the things somebody would want to look at, on the
+                  closed row. Without it, opening every run one by one is the
+                  only way to find the one that had a conflict. */}
+              {r.Conflicts > 0 && <Badge tone="warn">{r.Conflicts}</Badge>}
+            </button>
+            {open === r.ID && (
+              <RunDetail run={r.ID} job={r.Job} onResolved={() => onChanged?.()} />
+            )}
           </li>
         ))}
       </ul>

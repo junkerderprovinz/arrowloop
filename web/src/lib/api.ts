@@ -99,6 +99,8 @@ export type Plan = {
 }
 
 export type Run = {
+  /** The row's own id, which is how its per-file entries are asked for. */
+  ID: number
   Job: string
   Started: string
   Finished: string
@@ -134,6 +136,21 @@ export type RawJob = {
   metadata?: boolean
   exclude?: string[]
   [key: string]: unknown
+}
+
+/**
+ * One thing a run did to one path.
+ *
+ * The counts on a Run say how much; this says which file and, for a conflict,
+ * what was decided. A conflict resolved by a scheduled run was resolved on
+ * somebody's behalf, and this is the only place that ever says so.
+ */
+export type RunEntry = {
+  Kind: string
+  Side: string
+  Path: string
+  /** An error's own words, or which way a conflict went. Often empty. */
+  Note: string
 }
 
 export type RunEvent = {
@@ -190,6 +207,15 @@ export const api = {
         ...(resolve && Object.keys(resolve).length > 0 ? { resolve } : {}),
       }),
     }),
+
+  /**
+   * What one run did, path by path.
+   *
+   * Asked for when a run is opened rather than fetched with the list: fifty
+   * runs' worth of paths, to draw fifty rows that each say "12 copied", is
+   * thousands of strings nobody reads.
+   */
+  runEntries: (id: number) => request<RunEntry[]>(`/api/history/${id}/entries`),
 
   remotes: () => request<{ remotes: Remote[]; backends: Backend[] }>('/api/remotes'),
 
