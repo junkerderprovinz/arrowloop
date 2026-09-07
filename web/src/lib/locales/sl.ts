@@ -263,6 +263,8 @@ const sl: Translations = {
   'pick.open': 'Brskaj po mapah',
   'pick.choose': 'Uporabi to mapo',
   'pick.up': 'Eno raven višje',
+  'pick.newFolder': 'Nova mapa',
+  'pick.create': 'Ustvari',
   'pick.roots': 'Diski in koreni',
   'pick.empty': 'Tukaj ni map.',
   'look.accentReset': 'Nazaj na privzeto',

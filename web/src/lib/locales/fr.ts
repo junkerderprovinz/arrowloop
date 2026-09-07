@@ -263,6 +263,8 @@ const fr: Translations = {
   'pick.open': 'Parcourir les dossiers',
   'pick.choose': 'Prendre ce dossier',
   'pick.up': 'Un niveau au-dessus',
+  'pick.newFolder': 'Nouveau dossier',
+  'pick.create': 'Créer',
   'pick.roots': 'Disques et racines',
   'pick.empty': 'Aucun dossier ici.',
   'look.accentReset': 'Revenir au défaut',

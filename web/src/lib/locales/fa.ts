@@ -263,6 +263,8 @@ const fa: Translations = {
   'pick.open': 'مرور پوشه‌ها',
   'pick.choose': 'همین پوشه را بردار',
   'pick.up': 'یک سطح بالاتر',
+  'pick.newFolder': 'پوشهٔ جدید',
+  'pick.create': 'ایجاد',
   'pick.roots': 'درایوها و ریشه‌ها',
   'pick.empty': 'اینجا پوشه‌ای نیست.',
   'look.accentReset': 'بازگشت به پیش‌فرض',

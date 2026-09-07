@@ -263,6 +263,8 @@ const et: Translations = {
   'pick.open': 'Sirvi kaustu',
   'pick.choose': 'Kasuta seda kausta',
   'pick.up': 'Üks tase üles',
+  'pick.newFolder': 'Uus kaust',
+  'pick.create': 'Loo',
   'pick.roots': 'Kettad ja juured',
   'pick.empty': 'Siin pole kaustu.',
   'look.accentReset': 'Tagasi vaikeväärtusele',

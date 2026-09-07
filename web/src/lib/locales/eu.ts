@@ -263,6 +263,8 @@ const eu: Translations = {
   'pick.open': 'Karpeta bat bilatu',
   'pick.choose': 'Karpeta hau erabili',
   'pick.up': 'Maila bat gorago',
+  'pick.newFolder': 'Karpeta berria',
+  'pick.create': 'Sortu',
   'pick.roots': 'Diskoak eta erroak',
   'pick.empty': 'Hemen ez dago karpetarik.',
   'look.accentReset': 'Lehenetsira itzuli',

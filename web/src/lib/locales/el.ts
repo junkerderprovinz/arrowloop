@@ -263,6 +263,8 @@ const el: Translations = {
   'pick.open': 'Αναζήτηση φακέλου',
   'pick.choose': 'Χρήση αυτού του φακέλου',
   'pick.up': 'Ένα επίπεδο πάνω',
+  'pick.newFolder': 'Νέος φάκελος',
+  'pick.create': 'Δημιουργία',
   'pick.roots': 'Δίσκοι και ρίζες',
   'pick.empty': 'Δεν υπάρχουν φάκελοι εδώ.',
   'look.accentReset': 'Πίσω στο προεπιλεγμένο',

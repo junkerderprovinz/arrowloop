@@ -263,6 +263,8 @@ const ru: Translations = {
   'pick.open': 'Обзор папок',
   'pick.choose': 'Взять эту папку',
   'pick.up': 'На уровень выше',
+  'pick.newFolder': 'Новая папка',
+  'pick.create': 'Создать',
   'pick.roots': 'Диски и корни',
   'pick.empty': 'Здесь нет папок.',
   'look.accentReset': 'Вернуть по умолчанию',

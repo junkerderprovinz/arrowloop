@@ -263,6 +263,8 @@ const sv: Translations = {
   'pick.open': 'Bläddra efter en mapp',
   'pick.choose': 'Använd den här mappen',
   'pick.up': 'En nivå upp',
+  'pick.newFolder': 'Ny mapp',
+  'pick.create': 'Skapa',
   'pick.roots': 'Diskar och rötter',
   'pick.empty': 'Inga mappar här.',
   'look.accentReset': 'Tillbaka till standard',

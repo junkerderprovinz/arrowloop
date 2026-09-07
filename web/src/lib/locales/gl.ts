@@ -263,6 +263,8 @@ const gl: Translations = {
   'pick.open': 'Buscar un cartafol',
   'pick.choose': 'Usar este cartafol',
   'pick.up': 'Un nivel arriba',
+  'pick.newFolder': 'Novo cartafol',
+  'pick.create': 'Crear',
   'pick.roots': 'Discos e raíces',
   'pick.empty': 'Aquí non hai cartafoles.',
   'look.accentReset': 'Volver ao valor predeterminado',

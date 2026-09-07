@@ -263,6 +263,8 @@ const ar: Translations = {
   'pick.open': 'تصفح المجلدات',
   'pick.choose': 'استخدم هذا المجلد',
   'pick.up': 'مستوى للأعلى',
+  'pick.newFolder': 'مجلد جديد',
+  'pick.create': 'إنشاء',
   'pick.roots': 'الأقراص والجذور',
   'pick.empty': 'لا مجلدات هنا.',
   'look.accentReset': 'العودة إلى الافتراضي',

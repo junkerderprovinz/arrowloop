@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 
 import { IconAction } from './IconAction'
+import { Text } from './Field'
 import { Button } from '../lib/glimstone/Button'
 import { Card } from '../lib/glimstone/Card'
-import { IconAdd, IconTargets } from './glyphs'
+import { IconCancel, IconCheck, IconFolder, IconNewFolder, IconUp } from './glyphs'
 import { api } from '../lib/api'
 import { useT } from '../lib/i18n'
 
@@ -38,6 +39,9 @@ export function FolderPicker({
   const [entries, setEntries] = useState<{ name: string; path: string }[]>([])
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
+  // null while the name box is closed, a string while it is open. An empty
+  // string is a box waiting to be typed in, which is not the same as no box.
+  const [naming, setNaming] = useState<string | null>(null)
 
   // Reset to the starting folder every time it opens, rather than resuming
   // wherever the last visit ended: this is opened from a specific field, and
@@ -93,6 +97,22 @@ export function FolderPicker({
     }
   }
 
+  async function create() {
+    const name = (naming ?? '').trim()
+    if (!at || name === '') return
+    setBusy(true)
+    setError(null)
+    try {
+      const made = await api.makeDir(at, name)
+      setNaming(null)
+      await go(made.path, false)
+    } catch (e) {
+      setError((e as Error).message)
+    } finally {
+      setBusy(false)
+    }
+  }
+
   if (!open) return null
 
   return (
@@ -124,9 +144,10 @@ export function FolderPicker({
                   className="flex w-full items-center gap-2 px-2 py-1.5 text-start text-xs text-carbon-textMuted transition hover:bg-carbon-hover hover:text-carbon-text"
                   style={{ borderRadius: 'var(--radius-control)' }}
                 >
-                  <span className="rotate-180" aria-hidden>
-                    <IconAdd />
-                  </span>
+                  {/* An arrow, not a rotated plus. A plus turned upside down is
+                      still a plus, and it read as "add" in the one place that
+                      means "back". */}
+                  <IconUp />
                   {t('pick.up')}
                 </button>
               </li>
@@ -143,7 +164,7 @@ export function FolderPicker({
                     style={{ borderRadius: 'var(--radius-control)' }}
                   >
                     <span className="shrink-0 text-carbon-textMuted" aria-hidden>
-                      <IconTargets />
+                      <IconFolder />
                     </span>
                     <span className="truncate">{e.name}</span>
                   </button>
@@ -157,11 +178,31 @@ export function FolderPicker({
               list: walking into a folder and pressing the button is one
               gesture, selecting a row and then confirming is two, and the
               second is the one people forget. */}
-          <div className="flex flex-wrap items-center justify-end gap-2">
-            <Button label={t('pick.cancel')} labelKey={null} onClick={onClose} />
+          <div className="flex flex-wrap items-center gap-2">
+            {/* Making a folder belongs HERE, at the moment somebody discovers
+                the one they wanted does not exist yet. The alternative is
+                leaving the picker, making it elsewhere, and coming back. It
+                acts on the folder currently open, and refuses a name with a
+                separator in it: this makes ONE folder, it does not take a
+                path. */}
+            <Button
+              label={t('pick.newFolder')}
+              labelKey={null}
+              glyph={<IconNewFolder />}
+              disabled={!at || busy}
+              onClick={() => setNaming('')}
+              className="me-auto"
+            />
+            <Button
+              label={t('pick.cancel')}
+              labelKey={null}
+              glyph={<IconCancel />}
+              onClick={onClose}
+            />
             <Button
               label={t('pick.choose')}
               labelKey={null}
+              glyph={<IconCheck />}
               tone="accent"
               disabled={!at}
               onClick={() => {
@@ -169,6 +210,28 @@ export function FolderPicker({
               }}
             />
           </div>
+
+          {naming !== null && (
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <div className="min-w-0 flex-1">
+                <Text value={naming} onChange={setNaming} placeholder={t('pick.newFolder')} mono />
+              </div>
+              <Button
+                label={t('pick.create')}
+                labelKey={null}
+                glyph={<IconCheck />}
+                tone="accent"
+                disabled={naming.trim() === '' || busy}
+                onClick={() => void create()}
+              />
+              <Button
+                label={t('pick.cancel')}
+                labelKey={null}
+                glyph={<IconCancel />}
+                onClick={() => setNaming(null)}
+              />
+            </div>
+          )}
         </Card>
       </div>
     </div>
@@ -180,7 +243,7 @@ export function PickButton({ onClick }: { onClick: () => void }) {
   const { t } = useT()
   return (
     <IconAction title={t('pick.open')} onClick={onClick}>
-      <IconTargets />
+      <IconFolder />
     </IconAction>
   )
 }

@@ -263,6 +263,8 @@ const cs: Translations = {
   'pick.open': 'Procházet složky',
   'pick.choose': 'Použít tuto složku',
   'pick.up': 'O úroveň výš',
+  'pick.newFolder': 'Nová složka',
+  'pick.create': 'Vytvořit',
   'pick.roots': 'Disky a kořeny',
   'pick.empty': 'Tady nejsou složky.',
   'look.accentReset': 'Zpět na výchozí',

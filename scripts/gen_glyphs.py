@@ -68,6 +68,7 @@ GLYPHS = [
     ("IconNewFolder", "interface-essential/new-folder.svg", "Make a folder here"),
     ("IconUp", "interface-essential/move-left.svg", "One level up, in the folder picker"),
     ("IconSave", "computer-devices/floppy-disk.svg", "Save"),
+    ("IconCancel", "interface-essential/delete-1.svg", "Cancel, on a dialog's own footer"),
 
     # The reveal eye on a field holding a secret, and its slashed twin.
     ("IconVisible", "interface-essential/visible.svg", "Show a stored secret"),

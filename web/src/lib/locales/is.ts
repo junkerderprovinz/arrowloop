@@ -263,6 +263,8 @@ const is: Translations = {
   'pick.open': 'Fletta að möppu',
   'pick.choose': 'Nota þessa möppu',
   'pick.up': 'Eitt þrep upp',
+  'pick.newFolder': 'Ný mappa',
+  'pick.create': 'Búa til',
   'pick.roots': 'Diskar og rætur',
   'pick.empty': 'Engar möppur hér.',
   'look.accentReset': 'Aftur í sjálfgefið',

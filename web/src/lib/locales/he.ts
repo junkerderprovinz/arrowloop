@@ -263,6 +263,8 @@ const he: Translations = {
   'pick.open': 'עיין בתיקיות',
   'pick.choose': 'השתמש בתיקייה זו',
   'pick.up': 'רמה אחת למעלה',
+  'pick.newFolder': 'תיקייה חדשה',
+  'pick.create': 'צור',
   'pick.roots': 'כוננים ושורשים',
   'pick.empty': 'אין כאן תיקיות.',
   'look.accentReset': 'חזרה לברירת המחדל',

@@ -263,6 +263,8 @@ const th: Translations = {
   'pick.open': 'เรียกดูโฟลเดอร์',
   'pick.choose': 'ใช้โฟลเดอร์นี้',
   'pick.up': 'ขึ้นหนึ่งระดับ',
+  'pick.newFolder': 'โฟลเดอร์ใหม่',
+  'pick.create': 'สร้าง',
   'pick.roots': 'ไดรฟ์และราก',
   'pick.empty': 'ที่นี่ไม่มีโฟลเดอร์',
   'look.accentReset': 'กลับเป็นค่าเริ่มต้น',

@@ -263,6 +263,8 @@ const es: Translations = {
   'pick.open': 'Buscar una carpeta',
   'pick.choose': 'Usar esta carpeta',
   'pick.up': 'Un nivel arriba',
+  'pick.newFolder': 'Nueva carpeta',
+  'pick.create': 'Crear',
   'pick.roots': 'Discos y raíces',
   'pick.empty': 'Aquí no hay carpetas.',
   'look.accentReset': 'Volver al valor por defecto',

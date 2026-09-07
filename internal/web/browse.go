@@ -1,6 +1,9 @@
 package web
 
 import (
+	"encoding/json"
+	"errors"
+	"fmt"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -123,4 +126,45 @@ func browseRoots() ([]browseEntry, error) {
 		}
 	}
 	return out, nil
+}
+
+// makeDir creates ONE folder inside the folder the picker currently has open.
+//
+// Two arguments, never one path: the parent is a folder the caller has already
+// walked to and can list, and the name is a single segment. A separator or a
+// "." or ".." in the name is refused rather than cleaned, because cleaning a
+// name that was not meant to be a path is how a control that says "make a
+// folder here" quietly makes one somewhere else. The parent is cleaned the same
+// way browse cleans it, and creation is not recursive, so a parent that does
+// not exist is an error rather than a tree appearing out of nowhere.
+func (s *Server) makeDir(w http.ResponseWriter, r *http.Request) {
+	var body struct {
+		Parent string `json:"parent"`
+		Name   string `json:"name"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		writeError(w, http.StatusBadRequest, fmt.Errorf("read the request: %w", err))
+		return
+	}
+	name := strings.TrimSpace(body.Name)
+	if name == "" {
+		writeError(w, http.StatusBadRequest, errors.New("a folder needs a name"))
+		return
+	}
+	if name == "." || name == ".." || strings.ContainsAny(name, "/"+string(filepath.Separator)) {
+		writeError(w, http.StatusBadRequest, fmt.Errorf("%q is a path, not a folder name", name))
+		return
+	}
+	parent := filepath.Clean(body.Parent)
+	if body.Parent == "" {
+		writeError(w, http.StatusBadRequest, errors.New("there is no folder open to create one in"))
+		return
+	}
+
+	made := filepath.Join(parent, name)
+	if err := os.Mkdir(made, 0o755); err != nil {
+		writeError(w, http.StatusBadRequest, fmt.Errorf("create %s: %w", made, err))
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]any{"path": made})
 }

@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { openColorPickerPopover } from '../lib/colorPicker'
 
@@ -77,18 +77,49 @@ export function AccentSwatches({
   presets,
   value,
   onChange,
+  disabled,
 }: {
   presets: { name: string; hex: string }[]
   value: string
   onChange: (hex: string) => void
+  /** Dimmed and inert while the rainbow is on: the palette decides the colours
+   *  then, so an accent picked here would change nothing anybody can see. */
+  disabled?: boolean
 }) {
-  const owner = nearest(
-    presets.map((p) => p.hex),
-    value,
-  )
+  /**
+   * Which slot holds the live colour, remembered rather than recomputed.
+   *
+   * It used to be worked out from the colour itself, by nearest preset, on
+   * every render. That is fine until the picker nudges a colour far enough to
+   * be nearer a DIFFERENT preset, and then the live value silently moves to
+   * another swatch while somebody is still dragging in the picker that opened
+   * on the first one: "wenn ich im farbpicker eine farbe wähle springt es in
+   * ein anderes farbfeld". Nearest is still how an unknown colour finds its
+   * home, but only when the value arrives from OUTSIDE (a reset, a reload).
+   * A slot somebody is editing keeps its colour however far they take it.
+   */
+  const hexes = presets.map((p) => p.hex)
+  const [owner, setOwner] = useState(() => nearest(hexes, value))
+  const seen = useRef(value)
+  useEffect(() => {
+    if (seen.current !== value) {
+      seen.current = value
+      setOwner(nearest(hexes, value))
+    }
+    // hexes is rebuilt every render; the value is what this watches.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value])
+
+  function take(i: number, hex: string) {
+    setOwner(i)
+    seen.current = hex
+    onChange(hex)
+  }
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div
+      className={`flex flex-wrap items-center gap-2 ${disabled ? 'pointer-events-none opacity-50' : ''}`}
+    >
       {presets.map((p, i) => {
         const mine = i === owner
         const hex = mine ? value : p.hex
@@ -102,8 +133,10 @@ export function AccentSwatches({
             hex={hex}
             label={label}
             active={mine}
-            onSelect={() => onChange(hex)}
-            onEdit={(anchor, current) => openColorPickerPopover(anchor, current, onChange)}
+            onSelect={() => take(i, hex)}
+            onEdit={(anchor, current) =>
+              openColorPickerPopover(anchor, current, (next) => take(i, next))
+            }
           />
         )
       })}

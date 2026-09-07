@@ -263,6 +263,8 @@ const uk: Translations = {
   'pick.open': 'Огляд тек',
   'pick.choose': 'Узяти цю теку',
   'pick.up': 'На рівень вище',
+  'pick.newFolder': 'Нова тека',
+  'pick.create': 'Створити',
   'pick.roots': 'Диски й корені',
   'pick.empty': 'Тут немає тек.',
   'look.accentReset': 'Повернути типове',

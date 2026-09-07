@@ -263,6 +263,8 @@ const ro: Translations = {
   'pick.open': 'Răsfoiește dosarele',
   'pick.choose': 'Folosește acest dosar',
   'pick.up': 'Un nivel mai sus',
+  'pick.newFolder': 'Folder nou',
+  'pick.create': 'Creează',
   'pick.roots': 'Discuri și rădăcini',
   'pick.empty': 'Aici nu sunt dosare.',
   'look.accentReset': 'Înapoi la implicit',

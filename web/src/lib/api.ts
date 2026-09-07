@@ -231,6 +231,15 @@ export const api = {
       `/api/browse${path ? `?path=${encodeURIComponent(path)}` : ''}`,
     ),
 
+  /** Makes ONE folder inside the folder the picker has open. The name is a
+   *  single segment and the server refuses anything that looks like a path. */
+  makeDir: (parent: string, name: string) =>
+    request<{ path: string }>('/api/browse/mkdir', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ parent, name }),
+    }),
+
   /**
    * The window settings, which only a desktop build has.
    *

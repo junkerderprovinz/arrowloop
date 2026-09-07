@@ -19,6 +19,42 @@ import { useT } from '../lib/i18n'
  * exactly as it was because the new content is written beside it and only moved
  * into place once it has passed.
  */
+/**
+ * What a new job starts out ignoring.
+ *
+ * These used to be a placeholder in the box, which is grey text that vanishes
+ * the moment anybody types and was never actually part of the job: every new
+ * job shipped with an empty exclude list and copied its way through somebody's
+ * caches. They are real values now.
+ *
+ * Chosen for one reason only: each is a file the operating system or a tool
+ * rewrites on its own, so syncing it means copying noise back and forth for
+ * ever and generating conflicts out of nothing. Nothing here is about taste,
+ * and anything a person might actually want is left alone.
+ */
+export const DEFAULT_EXCLUDES = [
+  // Half-written by definition.
+  '*.tmp',
+  '*.temp',
+  '*.part',
+  '*.crdownload',
+  '~$*',
+  // The file managers, written on merely LOOKING at a folder.
+  'Thumbs.db',
+  'desktop.ini',
+  '.DS_Store',
+  '._*',
+  // Whole trees the system owns and rewrites without being asked.
+  '**/$RECYCLE.BIN/**',
+  '**/System Volume Information/**',
+  '**/.Trash-*/**',
+  '**/@eaDir/**',
+  '**/lost+found/**',
+  // Caches that regenerate. Copying them is slower than rebuilding them.
+  '**/node_modules/**',
+  '**/.git/**',
+]
+
 export function useJobConfig(onSaved: () => void) {
   const { t } = useT()
   const [jobs, setJobs] = useState<RawJob[] | null>(null)
@@ -117,7 +153,14 @@ export function useJobConfig(onSaved: () => void) {
     const base = t('edit.newJob')
     let name = base
     for (let n = 2; current.some((j) => j.name === name); n++) name = `${base}-${n}`
-    const next: RawJob = { name, left: '', right: '', state: `state/${name}.db`, disabled: true }
+    const next: RawJob = {
+      name,
+      left: '',
+      right: '',
+      state: `state/${name}.db`,
+      disabled: true,
+      exclude: [...DEFAULT_EXCLUDES],
+    }
     setJobs([...current, next])
     return current.length
   }, [jobs, t])
@@ -180,17 +223,51 @@ export function JobForm({
   patch: (next: Partial<RawJob>) => void
 }) {
   const { t } = useT()
+
+  /**
+   * Renaming a job carries its state database along, unless somebody has moved
+   * it themselves.
+   *
+   * The two are written together when a job is created, as `state/<name>.db`,
+   * and then the name changes and the path does not: a job called "photos"
+   * with a database called `state/neuer-auftrag.db`. Nobody notices until they
+   * go looking for the file. So the path follows the name for as long as it
+   * still LOOKS like the generated one, and stops the moment it does not,
+   * because a path somebody typed on purpose is not this function's to rewrite.
+   */
+  function rename(next: string): Partial<RawJob> {
+    const generated = (n: string) => `state/${n}.db`
+    const current = job.state ?? ''
+    if (current !== '' && current !== generated(job.name ?? '')) return { name: next }
+    return { name: next, state: generated(next) }
+  }
+
   return (
     <>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <Field label={t('edit.name')} hint={t('edit.nameHint')}>
-          <Text value={job.name ?? ''} onChange={(v) => patch({ name: v })} />
-        </Field>
-        <Field label={t('edit.state')} hint={t('edit.stateHint')}>
-          <Text value={job.state ?? ''} onChange={(v) => patch({ state: v })} mono />
-        </Field>
+      {/* Name and state database sit in the SAME three-part row the two sides
+          below use: field, spacer the width of a pick button, field. They used
+          to be an ordinary two-column grid, so each ended one button's width
+          short of the box under it and no column in the form lined up with any
+          other. Reported as exactly that measurement. The spacer is inert and
+          hidden from assistive technology: it exists to hold a column open. */}
+      <div className="flex flex-col gap-4">
+        <div className="flex items-start gap-3">
+          <div className="min-w-0 flex-1">
+            <Field label={t('edit.name')} hint={t('edit.nameHint')}>
+              <Text value={job.name ?? ''} onChange={(v) => patch(rename(v))} />
+            </Field>
+          </div>
+          <div className="shrink-0 pt-[1.55rem]" aria-hidden>
+            <div className="h-[var(--btn-h)] w-[var(--btn-h)]" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <Field label={t('edit.state')} hint={t('edit.stateHint')}>
+              <Text value={job.state ?? ''} onChange={(v) => patch({ state: v })} mono />
+            </Field>
+          </div>
+        </div>
 
-        <div className="flex items-start gap-3 sm:col-span-2">
+        <div className="flex items-start gap-3">
           <div className="min-w-0 flex-1">
             <Side
               label={t('edit.left')}
@@ -225,15 +302,27 @@ export function JobForm({
           </div>
         </div>
 
-        <div className="sm:col-span-2">
-          <Field label={t('edit.schedule')} hint={t('edit.scheduleHint')}>
-            <ScheduleField value={job.schedule ?? ''} onChange={(v) => patch({ schedule: v })} />
-          </Field>
+        {/* The quiet period sits BESIDE the schedule, not under it. Both answer
+            "when does this run", and a field alone on a row below reads as its
+            own subject; there it was a bare duration box with no idea what to
+            put in it. */}
+        <div className="flex flex-col items-start gap-4 sm:flex-row">
+          <div className="min-w-0 flex-1">
+            <Field label={t('edit.schedule')} hint={t('edit.scheduleHint')}>
+              <ScheduleField value={job.schedule ?? ''} onChange={(v) => patch({ schedule: v })} />
+            </Field>
+          </div>
+          <div className="w-full sm:w-56">
+            <Field label={t('edit.quietPeriod')} hint={t('edit.quietHint')}>
+              <Text
+                value={job.quietPeriod ?? ''}
+                onChange={(v) => patch({ quietPeriod: v })}
+                placeholder="5s"
+                mono
+              />
+            </Field>
+          </div>
         </div>
-
-        <Field label={t('edit.quietPeriod')} hint={t('edit.quietHint')}>
-          <Text value={job.quietPeriod ?? ''} onChange={(v) => patch({ quietPeriod: v })} mono />
-        </Field>
       </div>
 
       <div className="mt-5">

@@ -263,6 +263,8 @@ const sr: Translations = {
   'pick.open': 'Прегледај фасцикле',
   'pick.choose': 'Користи ову фасциклу',
   'pick.up': 'Један ниво више',
+  'pick.newFolder': 'Нова фасцикла',
+  'pick.create': 'Направи',
   'pick.roots': 'Дискови и корени',
   'pick.empty': 'Овде нема фасцикли.',
   'look.accentReset': 'Назад на подразумевано',

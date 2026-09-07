@@ -263,6 +263,8 @@ const no: Translations = {
   'pick.open': 'Bla etter en mappe',
   'pick.choose': 'Bruk denne mappen',
   'pick.up': 'Ett nivå opp',
+  'pick.newFolder': 'Ny mappe',
+  'pick.create': 'Opprett',
   'pick.roots': 'Disker og røtter',
   'pick.empty': 'Ingen mapper her.',
   'look.accentReset': 'Tilbake til standard',

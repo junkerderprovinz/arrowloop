@@ -263,6 +263,8 @@ const sk: Translations = {
   'pick.open': 'Prehľadávať priečinky',
   'pick.choose': 'Použiť tento priečinok',
   'pick.up': 'O úroveň vyššie',
+  'pick.newFolder': 'Nový priečinok',
+  'pick.create': 'Vytvoriť',
   'pick.roots': 'Disky a korene',
   'pick.empty': 'Tu nie sú priečinky.',
   'look.accentReset': 'Späť na predvolené',

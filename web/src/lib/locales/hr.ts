@@ -263,6 +263,8 @@ const hr: Translations = {
   'pick.open': 'Pregledaj mape',
   'pick.choose': 'Koristi ovu mapu',
   'pick.up': 'Jednu razinu više',
+  'pick.newFolder': 'Nova mapa',
+  'pick.create': 'Stvori',
   'pick.roots': 'Diskovi i korijeni',
   'pick.empty': 'Ovdje nema mapa.',
   'look.accentReset': 'Natrag na zadano',

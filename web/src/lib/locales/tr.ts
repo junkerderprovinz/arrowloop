@@ -263,6 +263,8 @@ const tr: Translations = {
   'pick.open': 'Klasörlere göz at',
   'pick.choose': 'Bu klasörü kullan',
   'pick.up': 'Bir üst seviye',
+  'pick.newFolder': 'Yeni klasör',
+  'pick.create': 'Oluştur',
   'pick.roots': 'Diskler ve kökler',
   'pick.empty': 'Burada klasör yok.',
   'look.accentReset': 'Varsayılana dön',

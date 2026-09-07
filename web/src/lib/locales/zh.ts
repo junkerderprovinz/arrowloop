@@ -263,6 +263,8 @@ const zh: Translations = {
   'pick.open': '浏览文件夹',
   'pick.choose': '用这个文件夹',
   'pick.up': '上一级',
+  'pick.newFolder': '新建文件夹',
+  'pick.create': '创建',
   'pick.roots': '驱动器和根目录',
   'pick.empty': '这里没有文件夹。',
   'look.accentReset': '恢复默认',

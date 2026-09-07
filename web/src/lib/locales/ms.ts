@@ -263,6 +263,8 @@ const ms: Translations = {
   'pick.open': 'Layari folder',
   'pick.choose': 'Guna folder ini',
   'pick.up': 'Satu tingkat ke atas',
+  'pick.newFolder': 'Folder baharu',
+  'pick.create': 'Cipta',
   'pick.roots': 'Cakera dan akar',
   'pick.empty': 'Tiada folder di sini.',
   'look.accentReset': 'Kembali ke lalai',

@@ -263,6 +263,8 @@ const hi: Translations = {
   'pick.open': 'फ़ोल्डर ढूँढें',
   'pick.choose': 'यही फ़ोल्डर लें',
   'pick.up': 'एक स्तर ऊपर',
+  'pick.newFolder': 'नया फ़ोल्डर',
+  'pick.create': 'बनाएँ',
   'pick.roots': 'ड्राइव और मूल',
   'pick.empty': 'यहाँ कोई फ़ोल्डर नहीं।',
   'look.accentReset': 'डिफ़ॉल्ट पर लौटें',

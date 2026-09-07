@@ -263,6 +263,8 @@ const hu: Translations = {
   'pick.open': 'Mappa tallózása',
   'pick.choose': 'Ezt a mappát használom',
   'pick.up': 'Egy szinttel feljebb',
+  'pick.newFolder': 'Új mappa',
+  'pick.create': 'Létrehozás',
   'pick.roots': 'Lemezek és gyökerek',
   'pick.empty': 'Itt nincsenek mappák.',
   'look.accentReset': 'Vissza az alapértelmezettre',

@@ -283,8 +283,20 @@ function Settings(props: LookProps) {
 
   return (
     <Stack>
+      {/* The settings strip takes the PINNED scale, which is what makes it read
+          as a tab bar rather than as a small segmented toggle. Reported as
+          "die tabs sollen tabs sein, kein horizontaler selektor", and the
+          design language's answer is that those are one component (rule: tabs,
+          filter bars and segmented controls are the same thing, built once) -
+          so the difference between them is the scale, not the markup.
+
+          On `small` the segments sized themselves to their own labels: 98, 95
+          and 70 pixels, measured, in a row with 2241 pixels of room. The
+          language's own rule is a shared 200px FLOOR across every equal-width
+          selector in the app, so that a tab bar, a two-option theme picker and
+          a three-option shape picker read as one recurring control. This strip
+          was the one place opting out of it. */}
       <Selector<SettingsSection>
-        scale="small"
         label={t('settings.section')}
         value={section}
         onChange={setSection}
@@ -520,12 +532,26 @@ function Look({
               is built. The reset sits at the END of the row it resets, not in
               the card's action slot: it undoes THIS row, not the card. */}
           <div className="flex flex-wrap items-center gap-3">
-            <span className="text-sm text-carbon-text">{t('look.accent')}</span>
+            <span className={`text-sm text-carbon-text${rainbow.on ? ' opacity-50' : ''}`}>
+              {t('look.accent')}
+            </span>
             <div className="ms-auto flex flex-wrap items-center gap-2">
-              <AccentSwatches presets={ACCENTS} value={accent} onChange={onAccent} />
+              {/* Dimmed and inert while the rainbow is on. With the rainbow
+                  running, the palette below hands out the colours by list
+                  position and the accent is only its position zero, so picking
+                  one here changes almost nothing anybody can see: a live
+                  control whose effect has been taken away by another switch.
+                  The palette row already had this treatment for the mirror
+                  case, and now both say the same thing. */}
+              <AccentSwatches
+                presets={ACCENTS}
+                value={accent}
+                onChange={onAccent}
+                disabled={rainbow.on}
+              />
               <ResetBadge
                 tip={t('look.accentReset')}
-                disabled={accent === DEFAULT_ACCENT}
+                disabled={rainbow.on || accent === DEFAULT_ACCENT}
                 onClick={() => onAccent(DEFAULT_ACCENT)}
               />
             </div>

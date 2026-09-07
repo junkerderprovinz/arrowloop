@@ -263,6 +263,8 @@ const nl: Translations = {
   'pick.open': 'Blader naar een map',
   'pick.choose': 'Deze map gebruiken',
   'pick.up': 'Eén niveau omhoog',
+  'pick.newFolder': 'Nieuwe map',
+  'pick.create': 'Aanmaken',
   'pick.roots': 'Schijven en wortels',
   'pick.empty': 'Hier staan geen mappen.',
   'look.accentReset': 'Terug naar de standaard',

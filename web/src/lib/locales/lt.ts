@@ -263,6 +263,8 @@ const lt: Translations = {
   'pick.open': 'Naršyti aplankus',
   'pick.choose': 'Naudoti šį aplanką',
   'pick.up': 'Vienu lygiu aukščiau',
+  'pick.newFolder': 'Naujas aplankas',
+  'pick.create': 'Sukurti',
   'pick.roots': 'Diskai ir šaknys',
   'pick.empty': 'Čia nėra aplankų.',
   'look.accentReset': 'Grįžti į numatytąjį',

@@ -263,6 +263,8 @@ const ca: Translations = {
   'pick.open': 'Cerca una carpeta',
   'pick.choose': 'Fes servir aquesta carpeta',
   'pick.up': 'Un nivell amunt',
+  'pick.newFolder': 'Carpeta nova',
+  'pick.create': 'Crea',
   'pick.roots': 'Discs i arrels',
   'pick.empty': 'Aquí no hi ha carpetes.',
   'look.accentReset': 'Torna al valor per defecte',

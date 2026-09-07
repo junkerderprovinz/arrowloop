@@ -263,6 +263,8 @@ const bg: Translations = {
   'pick.open': 'Прегледай папки',
   'pick.choose': 'Използвай тази папка',
   'pick.up': 'Едно ниво нагоре',
+  'pick.newFolder': 'Нова папка',
+  'pick.create': 'Създай',
   'pick.roots': 'Дискове и корени',
   'pick.empty': 'Тук няма папки.',
   'look.accentReset': 'Обратно към стандартното',

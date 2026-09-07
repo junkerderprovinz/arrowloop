@@ -263,6 +263,8 @@ const pt: Translations = {
   'pick.open': 'Procurar uma pasta',
   'pick.choose': 'Usar esta pasta',
   'pick.up': 'Um nível acima',
+  'pick.newFolder': 'Nova pasta',
+  'pick.create': 'Criar',
   'pick.roots': 'Discos e raízes',
   'pick.empty': 'Aqui não há pastas.',
   'look.accentReset': 'Voltar ao valor padrão',

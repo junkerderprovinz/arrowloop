@@ -263,6 +263,8 @@ const pl: Translations = {
   'pick.open': 'Przeglądaj foldery',
   'pick.choose': 'Użyj tego folderu',
   'pick.up': 'Poziom wyżej',
+  'pick.newFolder': 'Nowy folder',
+  'pick.create': 'Utwórz',
   'pick.roots': 'Dyski i korzenie',
   'pick.empty': 'Tu nie ma folderów.',
   'look.accentReset': 'Wróć do domyślnego',

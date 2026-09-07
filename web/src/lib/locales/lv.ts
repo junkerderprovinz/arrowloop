@@ -263,6 +263,8 @@ const lv: Translations = {
   'pick.open': 'Pārlūkot mapes',
   'pick.choose': 'Lietot šo mapi',
   'pick.up': 'Vienu līmeni augšup',
+  'pick.newFolder': 'Jauna mape',
+  'pick.create': 'Izveidot',
   'pick.roots': 'Diski un saknes',
   'pick.empty': 'Šeit nav mapju.',
   'look.accentReset': 'Atpakaļ uz noklusējumu',

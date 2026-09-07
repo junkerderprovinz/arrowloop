@@ -263,6 +263,8 @@ const vi: Translations = {
   'pick.open': 'Duyệt thư mục',
   'pick.choose': 'Dùng thư mục này',
   'pick.up': 'Lên một cấp',
+  'pick.newFolder': 'Thư mục mới',
+  'pick.create': 'Tạo',
   'pick.roots': 'Ổ đĩa và gốc',
   'pick.empty': 'Ở đây không có thư mục.',
   'look.accentReset': 'Về mặc định',

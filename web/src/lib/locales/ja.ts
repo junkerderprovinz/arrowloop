@@ -263,6 +263,8 @@ const ja: Translations = {
   'pick.open': 'フォルダーを探す',
   'pick.choose': 'このフォルダーを使う',
   'pick.up': '一つ上へ',
+  'pick.newFolder': '新しいフォルダー',
+  'pick.create': '作成',
   'pick.roots': 'ドライブとルート',
   'pick.empty': 'ここにフォルダーはありません。',
   'look.accentReset': '既定に戻す',

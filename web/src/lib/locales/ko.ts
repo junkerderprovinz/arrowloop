@@ -263,6 +263,8 @@ const ko: Translations = {
   'pick.open': '폴더 찾아보기',
   'pick.choose': '이 폴더 사용',
   'pick.up': '한 단계 위로',
+  'pick.newFolder': '새 폴더',
+  'pick.create': '만들기',
   'pick.roots': '드라이브와 루트',
   'pick.empty': '여기에는 폴더가 없습니다.',
   'look.accentReset': '기본값으로 되돌리기',

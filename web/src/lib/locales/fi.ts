@@ -263,6 +263,8 @@ const fi: Translations = {
   'pick.open': 'Selaa kansioita',
   'pick.choose': 'Käytä tätä kansiota',
   'pick.up': 'Yksi taso ylös',
+  'pick.newFolder': 'Uusi kansio',
+  'pick.create': 'Luo',
   'pick.roots': 'Levyt ja juuret',
   'pick.empty': 'Täällä ei ole kansioita.',
   'look.accentReset': 'Takaisin oletukseen',
