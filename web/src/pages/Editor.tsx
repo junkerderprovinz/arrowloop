@@ -5,6 +5,7 @@ import { ToggleRow } from '../components/ToggleRow'
 import { api, type RawJob } from '../lib/api'
 import { DirectionSwitch } from '../components/Direction'
 import { QuietPeriod } from '../components/QuietPeriod'
+import { ExcludeSetPicker } from '../components/ExcludeSets'
 import { FolderPicker, PickButton } from '../components/FolderPicker'
 import { ScheduleField } from '../components/Schedule'
 import { useT } from '../lib/i18n'
@@ -386,6 +387,8 @@ export function JobForm({
                 onLive={(v) => patch({ watch: v })}
                 settle={job.watchSettle ?? ''}
                 onSettle={(v) => patch({ watchSettle: v })}
+                reportOnly={!!job.reportOnly}
+                onReportOnly={(v) => patch({ reportOnly: v })}
               />
             </Field>
           </div>
@@ -401,6 +404,15 @@ export function JobForm({
             </Field>
           </div>
         </div>
+      </div>
+
+      <div className="mt-5">
+        <Field label={t('edit.excludeSets')} hint={t('edit.excludeSetsHint')}>
+          <ExcludeSetPicker
+            chosen={job.excludeSets ?? []}
+            onChange={(v) => patch({ excludeSets: v })}
+          />
+        </Field>
       </div>
 
       <div className="mt-5">

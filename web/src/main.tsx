@@ -1,7 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 
-import { App } from './App'
+import { Gate } from './App'
 import {
   IconAdd,
   IconCheck,
@@ -93,7 +93,7 @@ if (root) {
   createRoot(root).render(
     <StrictMode>
       <I18nProvider>
-        <App />
+        <Gate />
       </I18nProvider>
     </StrictMode>,
   )

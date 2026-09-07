@@ -10,7 +10,9 @@ import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
 import { IconAdd, IconCopy, IconDelete, IconEdit, IconPause, IconPreview, IconRun, IconSave, IconToLeft, IconToRight } from '../components/glyphs'
 import { DirectionMark } from '../components/Direction'
 import { JobMark, statusOf } from '../components/JobMark'
+import { Pace } from '../components/Pace'
 import { RunDetail } from '../components/RunDetail'
+import { Stats } from '../components/Stats'
 import { JobForm, useJobConfig } from './Editor'
 import { api } from '../lib/api'
 import type { Job, Run, RunEvent } from '../lib/api'
@@ -320,6 +322,11 @@ export function Jobs({
                         </p>
                       )}
                       <Progress event={progress[j.name]} />
+                      {/* The bar says how far along; this says how fast and how
+                          much longer. A bar alone answers the wrong question:
+                          "half done" is useless without "and the other half is
+                          four minutes". */}
+                      <Pace event={progress[j.name]} />
                     </>
                   )}
                 </div>
@@ -530,6 +537,13 @@ export function History({ runs, onChanged }: { runs: Run[]; onChanged?: () => vo
   }
   return (
     <Card title={t('history.title')} hueIndex={0}>
+      {/* The shape of the last month, above the list of what happened on each
+          day. The list answers "what happened on Tuesday"; it cannot answer
+          "is this thing doing anything at all", which is the question somebody
+          has after leaving a sync tool alone for three weeks. */}
+      <div className="mb-4">
+        <Stats />
+      </div>
       <ul className="flex flex-col">
         {runs.map((r, i) => (
           <li key={`${r.Job}-${r.Started}-${i}`}>

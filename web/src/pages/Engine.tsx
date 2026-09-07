@@ -5,6 +5,7 @@ import { Field, NumberField, Secret, Text } from '../components/Field'
 import { Stack } from '../components/Shell'
 import { ToggleRow } from '../components/ToggleRow'
 import { QuietPeriod } from '../components/QuietPeriod'
+import { ExcludeSetEditor, type Sets } from '../components/ExcludeSets'
 import { Selector } from '../components/Selector'
 import { Button } from '../lib/glimstone/Button'
 import { IconFolder, IconSave } from '../components/glyphs'
@@ -244,7 +245,17 @@ export function Engine() {
         </div>
       </Card>
 
-      <Card title={t('engine.backup')} hueIndex={4}>
+      <Card title={t('engine.sets')} hueIndex={4}>
+        <div className="flex flex-col gap-3">
+          <p className="text-xs text-carbon-textMuted">{t('engine.setsHint')}</p>
+          <ExcludeSetEditor
+            sets={(draft.excludeSets as Sets | undefined) ?? {}}
+            onChange={(next) => patch({ excludeSets: next })}
+          />
+        </div>
+      </Card>
+
+      <Card title={t('engine.backup')} hueIndex={5}>
         <div className="flex flex-col gap-3">
           <p className="text-xs text-carbon-textMuted">{t('engine.backupHint')}</p>
           <div className="flex flex-wrap items-center gap-2">

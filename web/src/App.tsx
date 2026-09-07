@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 
 import { Stack } from './components/Shell'
 import { Card } from './lib/glimstone/Card'
+import { Button } from './lib/glimstone/Button'
 import { Choice, Field } from './components/Field'
 import { InfoBubble } from './lib/glimstone/InfoBubble'
 import { ToggleRow } from './components/ToggleRow'
@@ -10,6 +11,7 @@ import { Sidebar } from './components/Sidebar'
 import { IconAbout, IconHistory, IconJobs, IconLive, IconLook, IconReset, IconSettings, IconTargets } from './components/glyphs'
 import { AccentSwatches, PaletteSwatches } from './components/Swatches'
 import { About } from './components/About'
+import { Login } from './pages/Login'
 import { Engine } from './pages/Engine'
 import { History, Jobs } from './pages/Jobs'
 import { Preview } from './pages/Preview'
@@ -75,6 +77,38 @@ function applyTheme(theme: Theme, remember: boolean) {
   } catch {
     // A browser with storage disabled forgets the choice on reload.
   }
+}
+
+/**
+ * The gate in front of the app.
+ *
+ * A separate component from App on purpose. App's own effects fetch jobs, open
+ * the event stream and read the capabilities, and every one of those would
+ * answer 401 on a protected install: the screen would be a login box with a row
+ * of error banners behind it, and the event stream would reconnect for ever.
+ * Nothing of App exists until there is a session to run it with.
+ */
+export function Gate() {
+  const [state, setState] = useState<'asking' | 'in' | 'out'>('asking')
+
+  const ask = useCallback(() => {
+    api
+      .session()
+      .then((s) => setState(s.required && !s.authenticated ? 'out' : 'in'))
+      .catch(() => {
+        // The probe itself failed, which is not a password problem: the engine
+        // is unreachable. Going in lets App show its own "the engine is
+        // unreachable" banner, which says something true, rather than a login
+        // box that would accept nothing.
+        setState('in')
+      })
+  }, [])
+
+  useEffect(ask, [ask])
+
+  if (state === 'asking') return null
+  if (state === 'out') return <Login onIn={ask} />
+  return <App />
 }
 
 export function App() {
@@ -364,6 +398,43 @@ function Settings(props: LookProps) {
  * The settings that are not about how the app looks: what language it speaks,
  * and what its own window does when a button on it is pressed.
  */
+/**
+ * The log-out row, drawn only on an install that has a password.
+ *
+ * Asked rather than assumed: on the ordinary install there is nothing to log
+ * out of, and a button that answers "you were not logged in anyway" is a button
+ * that teaches people the app is confused about its own state.
+ */
+function LogOut() {
+  const { t } = useT()
+  const [required, setRequired] = useState(false)
+
+  useEffect(() => {
+    api
+      .session()
+      .then((s) => setRequired(s.required))
+      .catch(() => setRequired(false))
+  }, [])
+
+  if (!required) return null
+  return (
+    <div className="flex justify-end">
+      <Button
+        label={t('login.logout')}
+        labelKey={null}
+        glyph={<IconReset />}
+        onClick={() => {
+          // Reloaded rather than routed back to the login box in place. Every
+          // piece of state on the page was fetched with a session that is now
+          // gone, and a reload is the one way to be sure none of it is still on
+          // screen behind the password.
+          void api.logout().finally(() => window.location.reload())
+        }}
+      />
+    </div>
+  )
+}
+
 function General({ lang, onLang, languages, window: windowSettings, onWindow }: LookProps) {
   const { t } = useT()
   return (
@@ -394,6 +465,8 @@ function General({ lang, onLang, languages, window: windowSettings, onWindow }: 
           />
         </Field>
       </Card>
+
+      <LogOut />
 
       {/* Left out entirely on a build with no window of its own, rather than
           shown inert. A switch that cannot do anything is worse than a missing

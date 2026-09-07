@@ -70,6 +70,8 @@ export const en = {
   'engine.telling': 'Who gets told',
   'engine.defaults': 'What every job starts from',
   'engine.backup': 'Keep a copy of the setup',
+  'engine.sets': 'Shared exclude lists',
+  'engine.setsHint': 'A list written once and asked for by name, instead of the same twenty lines pasted into every job and then drifting apart. A job that asks for a list that does not exist is refused when the file is read, because a filter that silently matches nothing does not break anything: it just quietly syncs the thing you asked it to leave alone.',
   'engine.backupHint': 'One file holds every job and every setting. Keep it somewhere else and a new machine is one restore away rather than an evening of retyping.',
   'engine.backupSave': 'Save a copy',
   'engine.backupLoad': 'Put a copy back',
@@ -77,6 +79,12 @@ export const en = {
   'edit.duplicate': 'Duplicate this job',
   'edit.copySuffix': 'copy',
   'history.download': 'Save this list',
+  'stats.runs': '{count} runs',
+  'stats.copied': '{count} copied',
+  'stats.trashed': '{count} to the bin',
+  'stats.conflicts': '{count} conflicts',
+  'stats.failed': '{count} failed',
+  'stats.window': 'the last {days} days',
   'engine.brakePercent': 'Mass-delete brake',
   'engine.brakePercentHint': 'A run that would remove more than this share of everything it knows about stops and says so, instead of doing it. Fifty by default. Zero switches it off entirely, which is a thing to type on purpose and not to arrive at by leaving a field empty.',
   'engine.brakeFloor': 'Below this many files, no brake',
@@ -112,6 +120,8 @@ export const en = {
   'schedule.live': 'Real time',
   'schedule.liveHint': 'Also run when a folder changes, without waiting for the next turn. This adds to the schedule rather than replacing it: only a local side can be watched, and a watcher that misses an event has no way to know it did, so the schedule stays as the thing that eventually notices.',
   'schedule.settle': 'Settle time',
+  'schedule.reportOnly': 'Only report, never write',
+  'schedule.reportOnlyHint': 'Run the whole comparison on the schedule and change nothing. The log then says what a run would have done, per file. Pressing the button by hand still writes: this holds back the clock, not you.',
   'schedule.at': 'At',
   'schedule.days': 'Days',
   'schedule.day.mon': 'Mon',
@@ -141,6 +151,12 @@ export const en = {
   'nav.section': 'Section',
 
   'error.unreachable': 'Cannot reach the engine',
+  'login.title': 'This interface is protected',
+  'login.password': 'Password',
+  'login.submit': 'Log in',
+  'login.wrong': 'That password is not right.',
+  'login.locked': 'Too many attempts. Wait a minute and try again.',
+  'login.logout': 'Log out',
 
   // Jobs
   'jobs.title': 'Jobs',
@@ -248,6 +264,11 @@ export const en = {
   'edit.state': 'State file',
   'edit.schedule': 'Schedule',
   'edit.exclude': 'Exclusions',
+  'sets.none': 'No shared lists yet.',
+  'sets.noneYet': 'No shared lists are defined yet. They are set up in Settings, under Engine.',
+  'sets.add': 'Add this list',
+  'sets.remove': 'Remove this list',
+  'sets.newName': 'Name for a new list',
   'edit.disabled': 'Disabled',
   'edit.watch': 'Watch for changes',
   'edit.emptyDirs': 'Carry empty folders',
@@ -265,6 +286,8 @@ export const en = {
   'edit.scheduleHint': 'A cron expression, read in this machine timezone. Empty means on request only.',
   'edit.excludeHint':
     'One pattern per line. Names of half-written files are always excluded, whatever is here.',
+  'edit.excludeSets': 'Shared lists',
+  'edit.excludeSetsHint': 'Lists defined once in the settings. What you pick here is added to this job\'s own patterns below rather than replacing them.',
   'edit.quietHint':
     'How long a file must sit unchanged before a run will touch it. It stops a half-written file from being copied mid-write. Written as a duration: 30s, 5m, 1h. Empty means the default of five seconds.',
   'edit.watchHint':
@@ -438,6 +461,8 @@ export const en = {
   'progress.of': '{done} of {total}',
   'progress.starting': 'Starting',
   'progress.finishing': 'Finishing',
+  'progress.rate': '{rate} files/s',
+  'progress.left': '{time} left',
 } as const
 
 export type TranslationKey = keyof typeof en
@@ -466,6 +491,8 @@ export const de: Translations = {
   'engine.telling': 'Wer Bescheid bekommt',
   'engine.defaults': 'Wovon jeder Auftrag ausgeht',
   'engine.backup': 'Eine Kopie der Einrichtung behalten',
+  'engine.sets': 'Gemeinsame Ausschlusslisten',
+  'engine.setsHint': 'Eine Liste, die du einmal schreibst und danach beim Namen aufrufst, statt dieselben zwanzig Zeilen in jeden Auftrag zu kopieren, wo sie dann auseinanderlaufen. Ein Auftrag, der eine Liste verlangt, die es nicht gibt, wird schon beim Lesen der Datei abgelehnt, denn ein Filter, der stillschweigend auf nichts passt, geht nicht kaputt: Er gleicht in aller Ruhe genau das ab, was du in Ruhe lassen wolltest.',
   'engine.backupHint': 'Eine Datei enthält alle Aufträge und alle Einstellungen. Leg sie woanders ab, dann ist ein neuer Rechner ein Einspielen entfernt statt ein Abend Abtippen.',
   'engine.backupSave': 'Kopie sichern',
   'engine.backupLoad': 'Kopie einspielen',
@@ -473,6 +500,12 @@ export const de: Translations = {
   'edit.duplicate': 'Auftrag duplizieren',
   'edit.copySuffix': 'Kopie',
   'history.download': 'Diese Liste sichern',
+  'stats.runs': 'Läufe: {count}',
+  'stats.copied': 'kopiert: {count}',
+  'stats.trashed': 'in den Papierkorb: {count}',
+  'stats.conflicts': 'Konflikte: {count}',
+  'stats.failed': 'fehlgeschlagen: {count}',
+  'stats.window': 'die letzten {days} Tage',
   'engine.brakePercent': 'Massenlösch-Bremse',
   'engine.brakePercentHint': 'Ein Lauf, der mehr als diesen Anteil aller bekannten Dateien entfernen würde, bricht ab und sagt es, statt es zu tun. Standard ist fünfzig. Null schaltet sie ganz ab, und das soll man absichtlich tippen und nicht durch ein leeres Feld erreichen.',
   'engine.brakeFloor': 'Unter so vielen Dateien keine Bremse',
@@ -508,6 +541,8 @@ export const de: Translations = {
   'schedule.live': 'Echtzeit',
   'schedule.liveHint': 'Zusätzlich laufen, sobald sich ein Ordner ändert, ohne auf den nächsten Termin zu warten. Das kommt zum Zeitplan dazu und ersetzt ihn nicht: beobachten lässt sich nur eine lokale Seite, und ein Beobachter, der ein Ereignis verpasst, merkt das nicht. Der Zeitplan bleibt das, was es irgendwann trotzdem bemerkt.',
   'schedule.settle': 'Beruhigungszeit',
+  'schedule.reportOnly': 'Nur berichten, nie schreiben',
+  'schedule.reportOnlyHint': 'Führt nach Zeitplan den ganzen Vergleich aus und ändert nichts. Im Laufprotokoll steht danach für jede Datei, was ein Lauf getan hätte. Drückst du den Knopf selbst, wird trotzdem geschrieben: Das hier hält die Uhr zurück, nicht dich.',
   'schedule.at': 'Um',
   'schedule.days': 'Tage',
   'schedule.day.mon': 'Mo',
@@ -537,6 +572,12 @@ export const de: Translations = {
   'nav.section': 'Bereich',
 
   'error.unreachable': 'Der Dienst ist nicht erreichbar',
+  'login.title': 'Diese Oberfläche ist geschützt',
+  'login.password': 'Passwort',
+  'login.submit': 'Anmelden',
+  'login.wrong': 'Das Passwort stimmt nicht.',
+  'login.locked': 'Zu viele Versuche. Warte eine Minute und probier es noch einmal.',
+  'login.logout': 'Abmelden',
 
   'jobs.title': 'Aufträge',
   'jobs.empty': 'Es ist noch kein Auftrag eingerichtet. Lege einen unter Bearbeiten an.',
@@ -637,6 +678,11 @@ export const de: Translations = {
   'edit.state': 'Zustandsdatei',
   'edit.schedule': 'Zeitplan',
   'edit.exclude': 'Ausschlüsse',
+  'sets.none': 'Noch keine gemeinsamen Listen.',
+  'sets.noneYet': 'Es sind noch keine gemeinsamen Listen festgelegt. Angelegt werden sie in den Einstellungen unter Motor.',
+  'sets.add': 'Diese Liste hinzufügen',
+  'sets.remove': 'Diese Liste entfernen',
+  'sets.newName': 'Name für eine neue Liste',
   'edit.disabled': 'Abgeschaltet',
   'edit.watch': 'Auf Änderungen achten',
   'edit.emptyDirs': 'Leere Ordner mitnehmen',
@@ -655,6 +701,8 @@ export const de: Translations = {
     'Ein Cron-Ausdruck, gelesen in der Zeitzone dieses Rechners. Leer heißt: nur auf Zuruf.',
   'edit.excludeHint':
     'Ein Muster je Zeile. Namen halbfertig geschriebener Dateien werden immer ausgeschlossen, unabhängig davon, was hier steht.',
+  'edit.excludeSets': 'Gemeinsame Listen',
+  'edit.excludeSetsHint': 'Listen, die du einmal in den Einstellungen festlegst. Was du hier auswählst, kommt zu den eigenen Mustern dieses Auftrags weiter unten dazu und ersetzt sie nicht.',
   'edit.quietHint':
     'Wie lange eine Datei unverändert liegen muss, bevor ein Lauf sie anfasst. Das verhindert, dass eine halb geschriebene Datei mitten im Schreiben kopiert wird. Als Dauer geschrieben: 30s, 5m, 1h. Leer heißt die Vorgabe von fünf Sekunden.',
   'edit.watchHint':
@@ -823,6 +871,8 @@ export const de: Translations = {
   'progress.of': '{done} von {total}',
   'progress.starting': 'Startet',
   'progress.finishing': 'Schließt ab',
+  'progress.rate': '{rate} Dateien/s',
+  'progress.left': 'noch {time}',
 }
 
 // ---------------------------------------------------------------------------

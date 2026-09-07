@@ -134,6 +134,10 @@ export type RawJob = {
   quietPeriod?: string
   emptyDirs?: boolean
   metadata?: boolean
+  /** Names of shared pattern lists this job asks for. */
+  excludeSets?: string[]
+  /** Runs the whole comparison on the schedule and applies nothing. */
+  reportOnly?: boolean
   exclude?: string[]
   [key: string]: unknown
 }
@@ -191,6 +195,8 @@ export type Settings = {
      */
     foldCase?: boolean
   }
+  /** Reusable pattern lists, by name. A job asks for them by name. */
+  excludeSets?: Record<string, string[]>
   notify?: {
     matrix?: { homeserver: string; room: string; token: string }
     webhook?: string
@@ -198,6 +204,41 @@ export type Settings = {
   }
   [key: string]: unknown
 }
+
+/**
+ * What the runs added up to, day by day.
+ *
+ * Every day in the window is present, including the ones with nothing in them.
+ * A series that closes its gaps turns "nothing happened" into "nothing to
+ * show", and those are opposite meanings: a machine at rest and a machine that
+ * stopped.
+ */
+export type HistoryStats = {
+  from: string
+  to: string
+  /** The window actually used, so a request that was cut down says so. */
+  days: number
+  zone: string
+  job: string
+  byJob: boolean
+  rows: DailyStat[]
+  totals: StatCounts
+}
+
+export type StatCounts = {
+  runs: number
+  failed: number
+  copied: number
+  moved: number
+  trashed: number
+  conflicts: number
+  dirsMade: number
+  dirsRemoved: number
+  unchanged: number
+  skipped: number
+}
+
+export type DailyStat = StatCounts & { day: string; job: string }
 
 export type RunEvent = {
   job: string
@@ -262,6 +303,32 @@ export const api = {
    * thousands of strings nobody reads.
    */
   runEntries: (id: number) => request<RunEntry[]>(`/api/history/${id}/entries`),
+
+  /** The last month of runs, one row per day. An empty job name means all of them. */
+  historyStats: (job?: string, days = 30) =>
+    request<HistoryStats>(
+      `/api/history/stats?days=${days}${job ? `&job=${encodeURIComponent(job)}` : ''}`,
+    ),
+
+  /**
+   * Whether this install wants a password, and whether this browser has given
+   * one.
+   *
+   * Asked BEFORE anything else is drawn. Working it out from a 401 instead
+   * would mean every page load starting with a failed request, and the
+   * interface guessing at the difference between "you are logged out" and
+   * "there is no login here".
+   */
+  session: () => request<{ required: boolean; authenticated: boolean }>('/api/session'),
+
+  login: (password: string) =>
+    request<{ ok: boolean }>('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password }),
+    }),
+
+  logout: () => request<{ ok: boolean }>('/api/logout', { method: 'POST' }),
 
   settings: () => request<Settings>('/api/settings'),
 

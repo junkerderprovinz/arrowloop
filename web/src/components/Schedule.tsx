@@ -158,6 +158,8 @@ export function ScheduleField({
   onChange,
   live,
   onLive,
+  reportOnly,
+  onReportOnly,
   settle,
   onSettle,
 }: {
@@ -183,6 +185,16 @@ export function ScheduleField({
   /** How long the tree must go quiet before a change counts as finished. */
   settle?: string
   onSettle?: (next: string) => void
+  /**
+   * Whether the schedule only REPORTS.
+   *
+   * It belongs beside the schedule because it changes what the schedule does,
+   * and nowhere else: pressing the button still writes, which is the whole
+   * distinction. A person who is not yet ready to let a job write can put it on
+   * a schedule like any other and read the log.
+   */
+  reportOnly?: boolean
+  onReportOnly?: (next: boolean) => void
 }) {
   const { t } = useT()
   const derived = parseSchedule(value)
@@ -257,6 +269,15 @@ export function ScheduleField({
 
       {/* Real time, as an addition to the strip above rather than one of its
           positions. See the `live` prop for why it cannot be a mode. */}
+      {onReportOnly && (
+        <ToggleRow
+          label={t('schedule.reportOnly')}
+          checked={!!reportOnly}
+          onChange={onReportOnly}
+          hint={t('schedule.reportOnlyHint')}
+        />
+      )}
+
       {onLive && (
         <div className="flex flex-col gap-3">
           <ToggleRow
