@@ -57,6 +57,9 @@ var reasonText = map[string]string{
 	"renamedOnSide":    "renamed on the {side} side",
 	"collision":        "the {side} side holds {names}, which the other side may not be able to tell apart; rename one of them",
 	"settling":         "changed on the {side} side less than {period} ago, waiting for it to settle",
+	"goneBoth":         "gone on both sides, dropping the record",
+	"appearedSame":     "appeared on both sides with identical content",
+	"appearedDiffer":   "appeared on both sides with different content",
 	"dirBoth":          "on both sides",
 	"dirNewOnSide":     "new folder on the {side}",
 	"dirRemovedOnSide": "folder removed on the {side}",
@@ -68,6 +71,8 @@ var reasonText = map[string]string{
 	"stepFailed":      "{what} failed, leaving it for the next run: {error}",
 	"removeDirFailed": "could not remove the folder, leaving it: {error}",
 	"heldOpen":        "held open by another program on the {side} side, waiting for it to be closed",
+	"heldOpenDuring":  "held open by another program while {what} was running, leaving it for the next run: {error}",
+	"unverified":      "{what} finished, but the {side} side could not produce a checksum and this job insists on one; leaving it for the next run",
 	"unsupported":     "{kind} on the {side} side, which this engine does not carry",
 	"recordFailed":    "the record could not be written, leaving it for the next run: {error}",
 	"oneWay":          "this job only writes away from the {side}, so the {side} version is the one that stands",
@@ -87,18 +92,28 @@ func Because(code string, pairs ...string) Reason { return because(code, pairs..
 
 // because builds a reason. The variadic values are key and value in turn, which
 // keeps a call site to one line and reads in the order the sentence does.
+//
+// A code nobody has worded here answers with the code itself rather than with
+// an empty string. That fallback was described one function down and never
+// actually written, and the map was short of three codes the engine really
+// produces: goneBoth, appearedSame and appearedDiffer. The result was a run that
+// printed a path, a colon and then nothing at all, on the two cases anybody
+// looking at a fresh pair of folders meets first. A missing sentence must be
+// loud, because a blank one is indistinguishable from a reason that genuinely
+// had nothing to add.
 func because(code string, pairs ...string) Reason {
 	vars := make(map[string]string, len(pairs)/2)
 	for i := 0; i+1 < len(pairs); i += 2 {
 		vars[pairs[i]] = pairs[i+1]
 	}
-	return Reason{Code: code, Vars: vars, Text: fill(reasonText[code], vars)}
+	template, worded := reasonText[code]
+	if !worded || template == "" {
+		template = code
+	}
+	return Reason{Code: code, Vars: vars, Text: fill(template, vars)}
 }
 
-// fill substitutes {name} for the value of name. A code nobody has worded yet
-// answers with the code itself rather than with an empty string: an interface
-// that does not recognise it then shows something, which is worth more than a
-// blank where an explanation should be.
+// fill substitutes {name} for the value of name.
 func fill(template string, vars map[string]string) string {
 	if template == "" {
 		return ""

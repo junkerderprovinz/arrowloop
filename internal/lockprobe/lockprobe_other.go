@@ -11,3 +11,14 @@ package lockprobe
 // is no state here that would justify skipping a file. Pretending otherwise
 // would make Linux and macOS runs skip files for no reason.
 func Busy(path string) bool { return false }
+
+// WasBusy always reports false away from Windows, for the same reason Busy
+// does: nothing here fails an operation on the grounds that another process has
+// the file open, so there is no such failure to recognise.
+//
+// It exists so that the caller has one shape on every platform. The alternative
+// is a build tag at every call site in the apply stage, and a build tag around
+// a decision is where a rule quietly stops applying to one platform without
+// anybody noticing, because the code that would have said so does not compile
+// there.
+func WasBusy(err error) bool { return false }
