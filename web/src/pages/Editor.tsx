@@ -59,23 +59,40 @@ export function useJobConfig(onSaved: () => void) {
     setJobs((prev) => prev && prev.map((j, i) => (i === at ? { ...j, ...next } : j)))
   }, [])
 
+  /**
+   * Writes a list to the file and takes back what the server made of it.
+   *
+   * Takes the list rather than reading `jobs`, because the two callers below
+   * need different ones: saving means "this list", removing means "this list
+   * minus one", and a remove that went through `jobs` would write the list
+   * from before the removal.
+   */
+  const persist = useCallback(
+    async (list: RawJob[]) => {
+      setBusy(true)
+      setError(null)
+      try {
+        const result = await api.saveConfig(list)
+        setJobs(result.jobs)
+        setSaved(true)
+        onSaved()
+        return true
+      } catch (e) {
+        // The message comes from the validator, so it says the same thing it
+        // would say about a hand-written file.
+        setError((e as Error).message)
+        return false
+      } finally {
+        setBusy(false)
+      }
+    },
+    [onSaved],
+  )
+
   const save = useCallback(async () => {
     if (!jobs) return
-    setBusy(true)
-    setError(null)
-    try {
-      const result = await api.saveConfig(jobs)
-      setJobs(result.jobs)
-      setSaved(true)
-      onSaved()
-    } catch (e) {
-      // The message comes from the validator, so it says the same thing it
-      // would say about a hand-written file.
-      setError((e as Error).message)
-    } finally {
-      setBusy(false)
-    }
-  }, [jobs, onSaved])
+    await persist(jobs)
+  }, [jobs, persist])
 
   /**
    * Adds a job and hands back where it landed, so the caller can open it.
@@ -105,10 +122,43 @@ export function useJobConfig(onSaved: () => void) {
     return current.length
   }, [jobs, t])
 
-  const remove = useCallback((at: number) => {
-    setSaved(false)
-    setJobs((prev) => prev && prev.filter((_, i) => i !== at))
-  }, [])
+  /**
+   * Removes a job, and writes the file straight away.
+   *
+   * It used to change the list in the browser and stop there, so a job was
+   * gone from the page and still in the file: reload and it was back. Reported
+   * as "den example auftrag kann ich nicht löschen", which is exactly what it
+   * looks like from the outside. A removal is a confirmed, deliberate act, so
+   * it does not wait for a second press somewhere else.
+   *
+   * `alsoState` deletes the job's own state database first, while the job is
+   * still IN the configuration: the server resolves the path from the job's
+   * own entry rather than being handed one, so nothing here can name a file
+   * outside the configuration. Doing it second would leave the server with no
+   * way to look the path up. A failure there does not stop the removal, and it
+   * is not silent either: the file is a cache of what the two sides agreed on,
+   * not the user's data, and refusing to remove a job because a leftover
+   * database could not be deleted would be the worse answer.
+   */
+  const remove = useCallback(
+    async (at: number, alsoState: boolean) => {
+      const current = jobs ?? []
+      const job = current[at]
+      if (!job) return
+      setSaved(false)
+      // A job with no name has never been saved, so there is no state database
+      // on disk under it and nothing to ask the server about.
+      if (alsoState && job.name) {
+        try {
+          await api.forgetJobState(job.name)
+        } catch (e) {
+          setError((e as Error).message)
+        }
+      }
+      await persist(current.filter((_, i) => i !== at))
+    },
+    [jobs, persist],
+  )
 
   return { jobs, known, error, saved, busy, patch, save, add, remove }
 }

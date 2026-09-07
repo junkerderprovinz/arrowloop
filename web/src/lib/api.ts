@@ -283,6 +283,18 @@ export const api = {
       body: JSON.stringify({ jobs }),
     }),
 
+  /**
+   * Deletes a job's state database.
+   *
+   * The name goes over the wire, never the path: the server resolves it from
+   * the job's own entry, so this has to be called while the job is still in the
+   * configuration. Nothing here can name a file.
+   */
+  forgetJobState: (name: string) =>
+    request<{ removed: number }>(`/api/jobs/${encodeURIComponent(name)}/state`, {
+      method: 'DELETE',
+    }),
+
   /** Live run events. Returns the function that closes the stream. */
   watch: (onEvent: (ev: RunEvent) => void): (() => void) => {
     const source = new EventSource('/api/events')

@@ -1,3 +1,6 @@
+// Copied verbatim from GlimStone 1.7.3, reference/react/ConfirmDialog.tsx.
+// Do not edit here: change it in the design language repo and copy again.
+// https://github.com/junkerderprovinz/glimstone
 // ---------------------------------------------------------------------------
 // ConfirmDialog — the GlimStone styled confirmation dialog (form-engine
 // Task 7), replacing every window.confirm() call site in the app.
@@ -34,7 +37,7 @@
 // `ref` specially on a JSX-created host element, not on the props object a
 // hand-written test builds, and no test here exercises it.
 // ---------------------------------------------------------------------------
-import type { Ref } from "react";
+import type { ReactNode, Ref } from "react";
 import { Badge } from "./Badge";
 import { Button } from "./Button";
 import { IconCancel, IconClose } from "./glyphs";
@@ -54,12 +57,34 @@ export interface ConfirmDialogProps {
    *  a glyph. Optional: a caller passing a composed or data label has none. */
   confirmLabelKey?: string;
   cancelLabel: string;
+  /** A control the confirming action needs an answer to, shown under the
+   *  message. Optional, and most confirmations have none.
+   *
+   *  It exists because the alternative is worse: an app that needs to ask
+   *  "and shall I also remove X?" either builds a second dialog of its own,
+   *  which is how a house ends up with two confirmation windows that look
+   *  almost alike, or asks afterwards, which is a second question about an
+   *  action already taken. The answer belongs in the window that asks. Keep
+   *  it to a switch or two - a dialog with a form in it is a page. */
+  extra?: ReactNode;
+  /** Glyph for the confirm button. Optional, because the action it confirms
+   *  changes per call site and no fixed key can name it. Without one the
+   *  button is words alone, which reads as unfinished beside a cancel button
+   *  that has a glyph — reported exactly that way on an adopting app
+   *  ("löschen hat kein Glyph"). */
+  confirmGlyph?: ReactNode;
   /** Accessible name for the header close (X) button — DELIBERATELY separate
    *  from cancelLabel: they are two distinct controls that both cancel, and
    *  sharing one label gave them the same accessible name (a screen-reader
    *  user would hear two identically-named controls; it also broke
-   *  Playwright's own strict-mode selector matching in review). */
-  closeLabel: string;
+   *  Playwright's own strict-mode selector matching in review).
+   *
+   *  OPTIONAL since 1.7.3, and leaving it out leaves the X out. Two controls
+   *  that do the same thing, one of them in the corner where a window's close
+   *  button lives, read as a choice rather than as one answer offered twice:
+   *  "der obere stehen lassen button weg". An app that wants the corner X
+   *  keeps passing this and nothing changes for it. */
+  closeLabel?: string;
   /** Fault-red for a genuinely irreversible action (the default — every
    *  migrated call site but one is exactly this), warn-amber for
    *  RestoreCancelButton's "light" (non-destructive, restore-to-folder)
@@ -76,6 +101,8 @@ export function ConfirmDialog({
   message,
   confirmLabel,
   confirmLabelKey,
+  confirmGlyph,
+  extra,
   cancelLabel,
   closeLabel,
   tone = "fail",
@@ -99,7 +126,7 @@ export function ConfirmDialog({
         className="glim-modal-card relative flex max-h-[85vh] w-full max-w-md flex-col rounded-card bg-carbon-surface shadow-2xl"
       >
         {/* Header */}
-        <div className="flex items-start justify-between gap-4 border-b border-carbon-border px-5 py-4">
+        <div className="flex items-start justify-between gap-4 px-5 py-4">
           {/* Task 5 follow-up (rule 15 — "a window is a window... title as a
               badge"): a dialog's <h2> names the WINDOW CHROME itself, so it
               gets the same tone="heading" Badge treatment as a page's section
@@ -121,14 +148,16 @@ export function ConfirmDialog({
           {/* #178, [201]: the dialog's close control is a Button like every
               other clickable thing, so it follows the label mode instead of
               being a permanently glyph-only square of its own. */}
-          <Button
-            label={closeLabel}
-            labelKey="common.close"
-            glyph={<IconClose />}
-            tone="neutral"
-            onClick={onCancel}
-            className="shrink-0"
-          />
+          {closeLabel !== undefined && (
+            <Button
+              label={closeLabel}
+              labelKey="common.close"
+              glyph={<IconClose />}
+              tone="neutral"
+              onClick={onCancel}
+              className="shrink-0"
+            />
+          )}
         </div>
 
         {/* Body (scrolls) — the real per-call-site question/explanation. Also
@@ -138,10 +167,11 @@ export function ConfirmDialog({
           <p id="confirmdialog-message" className="text-sm leading-relaxed text-carbon-textSub wrap-break-word">
             {message}
           </p>
+          {extra !== undefined && <div className="mt-4 flex flex-col gap-3">{extra}</div>}
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-end gap-3 border-t border-carbon-border px-5 py-4">
+        <div className="flex items-center justify-end gap-3 px-5 py-4">
           <Button
             label={cancelLabel}
             labelKey="common.cancel"
@@ -169,6 +199,7 @@ export function ConfirmDialog({
             // key the way close and cancel above do. `null` where the caller
             // gave none is the deliberate 'no key' answer, not an oversight.
             labelKey={confirmLabelKey ?? null}
+            glyph={confirmGlyph}
             tone={tone === "fail" ? "danger" : "warn"}
             onClick={onConfirm}
           />

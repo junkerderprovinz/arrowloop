@@ -14,6 +14,31 @@
 
 import type { SVGProps } from 'react'
 
+/** Two or more glyphs from the same set, stacked into one drawing. Each group
+ *  carries its own transform, so a composed glyph needs no second source set
+ *  and no ink measuring: every part was drawn on this grid already. */
+function Stack({ box, groups, ...rest }: { box: string; groups: { transform: string; paths: string[] }[] } & SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox={box}
+      fill="currentColor"
+      className="shrink-0"
+      aria-hidden="true"
+      {...rest}
+    >
+      {groups.map((g) => (
+        <g key={g.transform} transform={g.transform}>
+          {g.paths.map((one) => (
+            <path key={one} fillRule="evenodd" clipRule="evenodd" d={one} />
+          ))}
+        </g>
+      ))}
+    </svg>
+  )
+}
+
 /** One glyph. Sized by the caller through width and height, coloured by
  *  currentColor so it follows whatever the surrounding text is doing. */
 function Glyph({ box, paths, ...rest }: { box: string; paths: string[] } & SVGProps<SVGSVGElement>) {
@@ -109,11 +134,6 @@ export function IconPreview(props: SVGProps<SVGSVGElement>) {
   return <Glyph box="0 0 14 14" paths={['M2.9327 3.49099C4.0559 2.68177 5.4556 2 7 2c1.54441 0 2.9441 0.68177 4.0673 1.49099 1.1273 0.81215 2.0197 1.78397 2.5599 2.4369l0.0045 0.00553c0.2413 0.3002 0.3683 0.68062 0.3683 1.06664 0 0.38601 -0.127 0.76644 -0.3683 1.06664l-0.0045 0.00553c-0.5402 0.65292 -1.4326 1.62475 -2.5599 2.43687 -1.1232 0.8092 -2.52289 1.491 -4.0673 1.491 -1.5444 0 -2.9441 -0.6818 -4.0673 -1.491C1.80544 9.69698 0.913028 8.72515 0.37279 8.07223L0.36828 8.0667C0.127025 7.7665 0 7.38607 0 7.00006c0 -0.38602 0.127025 -0.76644 0.36828 -1.06664l0.00451 -0.00553c0.540238 -0.65293 1.43265 -1.62475 2.55991 -2.4369ZM7 9.25c1.24264 0 2.25 -1.00736 2.25 -2.25S8.24264 4.75 7 4.75 4.75 5.75736 4.75 7 5.75736 9.25 7 9.25Z']} {...props} />
 }
 
-/** Both ways. Streamline: interface-essential/arrow-reload-horizontal-1.svg */
-export function IconBothWays(props: SVGProps<SVGSVGElement>) {
-  return <Glyph box="0 0 14 14" paths={['M9.35355 0.146447c-0.143 -0.14299938 -0.35805 -0.1857772 -0.54489 -0.1083868C8.62182 0.115451 8.5 0.297769 8.5 0.5V2h-6C1.11929 2 0 3.11929 0 4.5V6c0 0.55228 0.447715 1 1 1 0.55228 0 1 -0.44772 1 -1V4.5c0 -0.27614 0.22386 -0.5 0.5 -0.5h6v1.5c0 0.20223 0.12182 0.38455 0.30866 0.46194 0.18684 0.07739 0.40189 0.03461 0.54489 -0.10839l2.50005 -2.5c0.1952 -0.19526 0.1952 -0.51184 0 -0.7071L9.35355 0.146447ZM5.19134 8.03806C5.37818 8.11545 5.5 8.29777 5.5 8.5V10h6c0.2761 0 0.5 -0.22386 0.5 -0.5V8c0 -0.55228 0.4477 -1 1 -1s1 0.44772 1 1v1.5c0 1.3807 -1.1193 2.5 -2.5 2.5h-6v1.5c0 0.2022 -0.12182 0.3845 -0.30866 0.4619 -0.18684 0.0774 -0.40189 0.0347 -0.54489 -0.1083l-2.5 -2.5c-0.19527 -0.1953 -0.19527 -0.5119 0 -0.7072l2.5 -2.49995c0.143 -0.143 0.35805 -0.18578 0.54489 -0.10839Z']} {...props} />
-}
-
 /** Left to right only. Streamline: interface-essential/move-right.svg */
 export function IconToRight(props: SVGProps<SVGSVGElement>) {
   return <Glyph box="0 0 14 14" paths={['M1.5 0A1.5 1.5 0 0 0 0 1.5v11A1.5 1.5 0 0 0 1.5 14H4a1.5 1.5 0 0 0 1.5 -1.5v-11A1.5 1.5 0 0 0 4 0H1.5Zm6 6a1 1 0 0 0 0 2h3v1.5a0.5 0.5 0 0 0 0.854 0.354l2.5 -2.5a0.5 0.5 0 0 0 0 -0.708l-2.5 -2.5a0.5 0.5 0 0 0 -0.854 0.354V6h-3Z']} {...props} />
@@ -124,6 +144,26 @@ export function IconToLeft(props: SVGProps<SVGSVGElement>) {
   return <Glyph box="0 0 14 14" paths={['M10 0a1.5 1.5 0 0 0 -1.5 1.5v11A1.5 1.5 0 0 0 10 14h2.5a1.5 1.5 0 0 0 1.5 -1.5v-11A1.5 1.5 0 0 0 12.5 0H10ZM3.5 4.5a0.5 0.5 0 0 0 -0.854 -0.354l-2.5 2.5a0.5 0.5 0 0 0 0 0.708l2.5 2.5A0.5 0.5 0 0 0 3.5 9.5V8h3a1 1 0 0 0 0 -2h-3V4.5Z']} {...props} />
 }
 
+/** Pick a folder. Streamline: computer-devices/local-storage-folder.svg */
+export function IconFolder(props: SVGProps<SVGSVGElement>) {
+  return <Glyph box="0 0 14 14" paths={['M8.796 5h4.77c0.24 0 0.434 -0.195 0.434 -0.435v-3.26a0.435 0.435 0 0 0 -0.434 -0.435h-2.61l-0.12 -0.54A0.435 0.435 0 0 0 10.4 0H8.796a0.435 0.435 0 0 0 -0.435 0.435v4.13A0.435 0.435 0 0 0 8.796 5ZM2 3h4.25a1 1 0 0 0 0 -2H1.457C0.652 1 0 1.652 0 2.457v7.086C0 10.348 0.652 11 1.457 11h4.028l-0.537 1.5H4A0.75 0.75 0 0 0 4 14h6a0.75 0.75 0 1 0 0 -1.5h-0.948L8.515 11h4.028C13.348 11 14 10.348 14 9.543V7.25a1 1 0 1 0 -2 0V9H2V3Z']} {...props} />
+}
+
+/** Make a folder here. Streamline: interface-essential/new-folder.svg */
+export function IconNewFolder(props: SVGProps<SVGSVGElement>) {
+  return <Glyph box="0 0 14 14" paths={['M6.12675 0.805269c-0.2708 -0.205804 -0.60343 -0.313418 -0.9433 -0.305333H1.5c-0.39782 0 -0.779356 0.158035 -1.06066 0.43934C0.158035 1.22058 0 1.60211 0 1.99994v9.99996c0 0.3979 0.158035 0.7794 0.43934 1.0607 0.281304 0.2813 0.66283 0.4393 1.06066 0.4393h11c0.3978 0 0.7794 -0.158 1.0607 -0.4393S14 12.3978 14 11.9999V3.99994c0 -0.39783 -0.158 -0.77936 -0.4393 -1.06066 -0.2813 -0.28131 -0.6629 -0.43934 -1.0607 -0.43934H6.89039l-0.21495 -0.85979c-0.08224 -0.33249 -0.27599 -0.62762 -0.54869 -0.834881Z']} {...props} />
+}
+
+/** One level up, in the folder picker. Streamline: interface-essential/move-left.svg */
+export function IconUp(props: SVGProps<SVGSVGElement>) {
+  return <Glyph box="0 0 14 14" paths={['M10 0a1.5 1.5 0 0 0 -1.5 1.5v11A1.5 1.5 0 0 0 10 14h2.5a1.5 1.5 0 0 0 1.5 -1.5v-11A1.5 1.5 0 0 0 12.5 0H10ZM3.5 4.5a0.5 0.5 0 0 0 -0.854 -0.354l-2.5 2.5a0.5 0.5 0 0 0 0 0.708l2.5 2.5A0.5 0.5 0 0 0 3.5 9.5V8h3a1 1 0 0 0 0 -2h-3V4.5Z']} {...props} />
+}
+
+/** Save. Streamline: computer-devices/floppy-disk.svg */
+export function IconSave(props: SVGProps<SVGSVGElement>) {
+  return <Glyph box="0 0 14 14" paths={['M4.875 0.000507706C4.49342 0.0104768 4.12949 0.165624 3.85789 0.435009l-0.00144 0.001442L0.436447 3.85645l-0.000003 0 -0.00144 0.00145c-0.277116 0.27939 -0.43334264 0.65649 -0.4349995595 1.05H0V12.5c0 0.3978 0.158035 0.7794 0.43934 1.0607C0.720644 13.842 1.10217 14 1.5 14l0.63361 0V9.5c0 -0.34137 0.16522 -0.63802 0.40467 -0.83561 0.23602 -0.19478 0.53448 -0.28939 0.82624 -0.28939h7.27088c0.2918 0 0.5903 0.09461 0.8263 0.28939 0.2394 0.19759 0.4047 0.49424 0.4047 0.83561V14l0.6336 0c0.3978 0 0.7794 -0.158 1.0607 -0.4393S14 12.8978 14 12.5v-11c0 -0.39782 -0.158 -0.779351 -0.4393 -1.060656C13.2794 0.15804 12.8978 0.0000044107 12.5 0.0000044107L11.8664 0v3.5c0 0.32845 -0.1506 0.6227 -0.3827 0.82488 -0.2294 0.19978 -0.5242 0.30012 -0.8165 0.30012H6.07414c-0.29227 0 -0.58703 -0.10034 -0.81644 -0.30012C5.02555 4.1227 4.875 3.82845 4.875 3.5V0.000507706ZM10.6164 0H6.125v3.375h4.4914V0Zm0 14H3.38361V9.625h7.23279V14Z']} {...props} />
+}
+
 /** Show a stored secret. Streamline: interface-essential/visible.svg */
 export function IconVisible(props: SVGProps<SVGSVGElement>) {
   return <Glyph box="0 0 14 14" paths={['M2.9327 3.49099C4.0559 2.68177 5.4556 2 7 2c1.54441 0 2.9441 0.68177 4.0673 1.49099 1.1273 0.81215 2.0197 1.78397 2.5599 2.4369l0.0045 0.00553c0.2413 0.3002 0.3683 0.68062 0.3683 1.06664 0 0.38601 -0.127 0.76644 -0.3683 1.06664l-0.0045 0.00553c-0.5402 0.65292 -1.4326 1.62475 -2.5599 2.43687 -1.1232 0.8092 -2.52289 1.491 -4.0673 1.491 -1.5444 0 -2.9441 -0.6818 -4.0673 -1.491C1.80544 9.69698 0.913028 8.72515 0.37279 8.07223L0.36828 8.0667C0.127025 7.7665 0 7.38607 0 7.00006c0 -0.38602 0.127025 -0.76644 0.36828 -1.06664l0.00451 -0.00553c0.540238 -0.65293 1.43265 -1.62475 2.55991 -2.4369ZM7 9.25c1.24264 0 2.25 -1.00736 2.25 -2.25S8.24264 4.75 7 4.75 4.75 5.75736 4.75 7 5.75736 9.25 7 9.25Z']} {...props} />
@@ -132,4 +172,9 @@ export function IconVisible(props: SVGProps<SVGSVGElement>) {
 /** Hide it again. Streamline: interface-essential/invisible-1.svg */
 export function IconHidden(props: SVGProps<SVGSVGElement>) {
   return <Glyph box="0 0 14 14" paths={['M0.263638 1.32434c-0.2928929 -0.2929 -0.2928929 -0.767771 0 -1.060664 0.292894 -0.2928929 0.767772 -0.2928929 1.060662 0L3.95291 2.89228c0.90784 -0.49884 1.93998 -0.85203 3.04708 -0.85203 1.53199 0 2.92043 0.67629 4.03461 1.479 1.1182 0.80562 2.0034 1.76963 2.5393 2.41731l0.0045 0.00548c0.2393 0.29779 0.3653 0.67515 0.3653 1.05806s-0.126 0.76028 -0.3653 1.05806l-0.0045 0.00549c-0.4886 0.59054 -1.2677 1.44407 -2.2489 2.20075l2.4114 2.4113c0.2929 0.2929 0.2929 0.7678 0 1.0607 -0.2929 0.2929 -0.7678 0.2929 -1.0607 0L0.263638 1.32434ZM9.01713 7.95651c0.13771 -0.2899 0.21477 -0.61419 0.21477 -0.95649 0 -1.23264 -0.99926 -2.2319 -2.23191 -2.2319 -0.34229 0 -0.66659 0.07705 -0.95649 0.21476l2.97363 2.97363ZM0.426074 5.93656c0.319448 -0.38609 0.763036 -0.88458 1.306096 -1.39491l7.10402 7.10405c-0.58062 0.1961 -1.19587 0.3143 -1.8362 0.3143 -1.53198 0 -2.92042 -0.6763 -4.03459 -1.479C1.8472 9.67534 0.961967 8.71133 0.426074 8.06365L0.4216 8.05816C0.182285 7.76038 0.0562814 7.38301 0.0562814 7.0001S0.182285 6.23983 0.4216 5.94204l0.004474 -0.00548Z']} {...props} />
+}
+
+/** Both ways: the same two arrows the one-way settings use, one above the other. It used to be the reload loop, which draws hooks instead of arrowheads and reads as retry rather than as two directions. Streamline: interface-essential/move-right.svg + interface-essential/move-left.svg */
+export function IconBothWays(props: SVGProps<SVGSVGElement>) {
+  return <Stack box="0 0 14 14" groups={[{ transform: 'translate(0 -2.4) scale(1 0.6)', paths: ['M1.5 0A1.5 1.5 0 0 0 0 1.5v11A1.5 1.5 0 0 0 1.5 14H4a1.5 1.5 0 0 0 1.5 -1.5v-11A1.5 1.5 0 0 0 4 0H1.5Zm6 6a1 1 0 0 0 0 2h3v1.5a0.5 0.5 0 0 0 0.854 0.354l2.5 -2.5a0.5 0.5 0 0 0 0 -0.708l-2.5 -2.5a0.5 0.5 0 0 0 -0.854 0.354V6h-3Z'] }, { transform: 'translate(0 8.2) scale(1 0.6)', paths: ['M10 0a1.5 1.5 0 0 0 -1.5 1.5v11A1.5 1.5 0 0 0 10 14h2.5a1.5 1.5 0 0 0 1.5 -1.5v-11A1.5 1.5 0 0 0 12.5 0H10ZM3.5 4.5a0.5 0.5 0 0 0 -0.854 -0.354l-2.5 2.5a0.5 0.5 0 0 0 0 0.708l2.5 2.5A0.5 0.5 0 0 0 3.5 9.5V8h3a1 1 0 0 0 0 -2h-3V4.5Z'] }]} {...props} />
 }

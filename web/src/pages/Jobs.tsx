@@ -2,11 +2,12 @@ import { useState } from 'react'
 
 import { Empty, Num, Rule, Stack } from '../components/Shell'
 import { IconAction } from '../components/IconAction'
+import { ToggleRow } from '../components/ToggleRow'
 import { Card } from '../lib/glimstone/Card'
 import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
 import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
-import { IconAdd, IconDelete, IconEdit, IconPreview, IconToLeft, IconToRight } from '../components/glyphs'
+import { IconAdd, IconDelete, IconEdit, IconPreview, IconSave, IconToLeft, IconToRight } from '../components/glyphs'
 import { DirectionMark } from '../components/Direction'
 import { JobForm, useJobConfig } from './Editor'
 import type { Job, Run, RunEvent } from '../lib/api'
@@ -43,9 +44,13 @@ export function Jobs({
   // arriving here is far more often looking than editing.
   const [editing, setEditing] = useState<number | null>(null)
   const [removing, setRemoving] = useState<number | null>(null)
+  // Deleting the state database along with the job is the DEFAULT, because a
+  // job somebody is removing on purpose leaves a database nothing will ever
+  // open again. Keeping it is the deliberate answer, for the case the same
+  // pair is coming back and every file should not count as new.
+  const [dropState, setDropState] = useState(true)
 
   const raw = config.jobs
-  const job = editing !== null && raw ? raw[editing] : undefined
 
   // The live list comes from the engine and the editable one from the
   // configuration file, so a row is matched to its record by name.
@@ -66,11 +71,22 @@ export function Jobs({
 
   return (
     <Stack>
-      {/* The page's own actions, above the cards rather than inside one.
+      {/* The page's own action, above the cards rather than inside one.
           A card exists to group a subject, and "add a job" is not a subject; a
-          card holding two buttons and nothing else is a box drawn around a
-          toolbar. Same arrangement BombVault's own list pages use. */}
-      <div className="flex flex-wrap items-center gap-2">
+          card holding a button and nothing else is a box drawn around a
+          toolbar. Same arrangement BombVault's own list pages use.
+
+          Right-aligned, and there is only one of it now. The save button that
+          used to sit here is gone: it acted on the whole page, so a job edited
+          in a card at the bottom was saved by a control at the top, and the
+          most common thing anybody does here, deleting a job, did not reach the
+          file at all until that button was found and pressed. Saving belongs on
+          the thing being saved, and removing saves itself. */}
+      <div className="flex flex-wrap items-center justify-end gap-2">
+        {config.error && <p className="me-auto text-xs text-statusFail">{config.error}</p>}
+        {config.saved && !config.error && (
+          <p className="me-auto text-xs text-statusOk">{t('edit.savedNote')}</p>
+        )}
         <IconAction
           title={t('edit.add')}
           onClick={() => {
@@ -80,20 +96,6 @@ export function Jobs({
         >
           <IconAdd />
         </IconAction>
-        {config.jobs && (
-          <Button
-            label={config.busy ? t('edit.checking') : t('edit.save')}
-            labelKey={null}
-            tone="accent"
-            busy={config.busy}
-            onClick={() => void config.save()}
-            disabled={config.busy}
-          />
-        )}
-        {config.error && <p className="text-xs text-statusFail">{config.error}</p>}
-        {config.saved && !config.error && (
-          <p className="text-xs text-statusOk">{t('edit.savedNote')}</p>
-        )}
       </div>
 
       {/* ONE CARD PER JOB (jdp: "jeder auftrag soll eine eigene card sein").
@@ -123,6 +125,34 @@ export function Jobs({
                 title={j.name}
                 hueIndex={i}
               >
+                {/* ONE card, not two. Opening a job used to leave its summary
+                    card standing and add a second card underneath with the
+                    form in it, so "auftrag anlegen" produced two boxes for one
+                    job and the name appeared twice. The form REPLACES the
+                    summary inside the job's own card: same card, same colour,
+                    same place on the page. */}
+                {at !== null && at === editing ? (
+                  <div className="flex flex-col gap-4">
+                    <JobForm
+                      job={(raw ?? [])[at]}
+                      known={config.known}
+                      patch={(next) => config.patch(at, next)}
+                    />
+                    <div className="flex justify-end">
+                      <Button
+                        label={config.busy ? t('edit.checking') : t('edit.save')}
+                        labelKey={null}
+                        glyph={<IconSave />}
+                        tone="accent"
+                        busy={config.busy}
+                        disabled={config.busy}
+                        onClick={() => {
+                          void config.save().then(() => setEditing(null))
+                        }}
+                      />
+                    </div>
+                  </div>
+                ) : (
                 <div className="flex flex-col gap-2">
                   {/* The arrow sits between the two sides because that is where
                       the question is: which way does this go. Both sides hug
@@ -210,6 +240,7 @@ export function Jobs({
                     </>
                   )}
                 </div>
+                )}
               </Card>
             )
           })}
@@ -220,6 +251,28 @@ export function Jobs({
               title={p.name || t('edit.unnamed')}
               hueIndex={jobs.length + at}
             >
+              {at === editing ? (
+                <div className="flex flex-col gap-4">
+                  <JobForm
+                    job={p}
+                    known={config.known}
+                    patch={(next) => config.patch(at, next)}
+                  />
+                  <div className="flex justify-end">
+                    <Button
+                      label={config.busy ? t('edit.checking') : t('edit.save')}
+                      labelKey={null}
+                      glyph={<IconSave />}
+                      tone="accent"
+                      busy={config.busy}
+                      disabled={config.busy}
+                      onClick={() => {
+                        void config.save().then(() => setEditing(null))
+                      }}
+                    />
+                  </div>
+                </div>
+              ) : (
               <div className="flex flex-col gap-2">
                 <p className="flex flex-wrap items-center gap-1.5 text-xs text-carbon-textMuted">
                   <span className="max-w-[45%] shrink truncate">{p.left}</span>
@@ -243,25 +296,10 @@ export function Jobs({
                   </IconAction>
                 </div>
               </div>
+              )}
             </Card>
           ))}
         </>
-      )}
-
-      {job && editing !== null && (
-        <Card
-          title={job.name || t('edit.unnamed')}
-          hueIndex={1}
-        >
-          <JobForm
-            job={job}
-            known={config.known}
-            patch={(next) => config.patch(editing, next)}
-          />
-          <div className="flex justify-end">
-            <Button label={t('edit.close')} labelKey={null} onClick={() => setEditing(null)} />
-          </div>
-        </Card>
       )}
 
       {removing !== null && raw && raw[removing] && (
@@ -269,11 +307,20 @@ export function Jobs({
           title={t('edit.removeJob')}
           message={t('edit.removeStakes', { name: raw[removing].name || t('edit.unnamed') })}
           confirmLabel={t('confirm.delete')}
+          confirmGlyph={<IconDelete />}
           cancelLabel={t('confirm.cancel')}
-          closeLabel={t('confirm.cancel')}
+          extra={
+            <ToggleRow
+              label={t('edit.removeState')}
+              hint={t('edit.removeStateHint')}
+              checked={dropState}
+              onChange={setDropState}
+              hueIndex={0}
+            />
+          }
           onCancel={() => setRemoving(null)}
           onConfirm={() => {
-            config.remove(removing)
+            void config.remove(removing, dropState)
             if (editing === removing) setEditing(null)
             setRemoving(null)
           }}

@@ -1,6 +1,7 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 
+import { attachNumberSteppers } from '../lib/numberField'
 import { DropdownListbox } from '../lib/glimstone/DropdownListbox'
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { useT } from '../lib/i18n'
@@ -52,6 +53,55 @@ export function Text({
       className={`w-full bg-carbon-surface2 px-3 py-2 text-xs text-carbon-text outline-none transition placeholder:text-carbon-textMuted focus:brightness-125 ${
         mono ? 'font-mono' : ''
       }`}
+      style={{ borderRadius: 'var(--radius-control)' }}
+    />
+  )
+}
+
+/**
+ * A number, with GlimStone's own steppers inside the box.
+ *
+ * The steppers are attached by the design language's own file rather than drawn
+ * here, because that file exists precisely to stop each app inventing its own
+ * pair: the rule was written twice and got it wrong once, and the working piece
+ * is what carries the answer. The browser's native spinner is off by the same
+ * token, in tokens.css.
+ */
+export function NumberField({
+  value,
+  onChange,
+  min,
+  max,
+  label,
+}: {
+  value: number
+  onChange: (next: number) => void
+  min?: number
+  max?: number
+  label?: string
+}) {
+  const box = useRef<HTMLInputElement>(null)
+  useEffect(() => {
+    if (!box.current) return
+    return attachNumberSteppers(box.current)
+  }, [])
+
+  return (
+    <input
+      ref={box}
+      type="number"
+      value={value}
+      min={min}
+      max={max}
+      aria-label={label}
+      onChange={(e) => {
+        const next = parseInt(e.target.value, 10)
+        // An empty box is a value being typed, not a value of zero. Passing NaN
+        // up would write a schedule of "@every NaNh" the moment somebody
+        // selects the digits to replace them.
+        if (Number.isFinite(next)) onChange(next)
+      }}
+      className="w-24 bg-carbon-surface2 px-3 py-2 text-xs text-carbon-text outline-none transition focus:brightness-125"
       style={{ borderRadius: 'var(--radius-control)' }}
     />
   )

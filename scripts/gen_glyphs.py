@@ -60,13 +60,37 @@ GLYPHS = [
 
     # The direction of a job, drawn rather than described. Three glyphs, so the
     # setting reads at a glance from the list without opening anything.
-    ("IconBothWays", "interface-essential/arrow-reload-horizontal-1.svg", "Both ways"),
     ("IconToRight", "interface-essential/move-right.svg", "Left to right only"),
     ("IconToLeft", "interface-essential/move-left.svg", "Right to left only"),
+
+    # Folders, the picker, and saving.
+    ("IconFolder", "computer-devices/local-storage-folder.svg", "Pick a folder"),
+    ("IconNewFolder", "interface-essential/new-folder.svg", "Make a folder here"),
+    ("IconUp", "interface-essential/move-left.svg", "One level up, in the folder picker"),
+    ("IconSave", "computer-devices/floppy-disk.svg", "Save"),
 
     # The reveal eye on a field holding a secret, and its slashed twin.
     ("IconVisible", "interface-essential/visible.svg", "Show a stored secret"),
     ("IconHidden", "interface-essential/invisible-1.svg", "Hide it again"),
+]
+
+# Glyphs COMPOSED from this set rather than taken whole.
+#
+# Taking a drawing from a second source would mean adding the ink-measuring
+# step this generator deliberately does not have (see the module docstring).
+# Stacking two glyphs that are already here needs neither: both were drawn on
+# the same 14-unit grid to the same convention, so the problem the measuring
+# solves does not arise here either.
+#
+# name -> (note, [(source file, transform), ...])
+COMPOSED = [
+    ("IconBothWays",
+     "Both ways: the same two arrows the one-way settings use, one above the "
+     "other. It used to be the reload loop, which draws hooks instead of "
+     "arrowheads and reads as retry rather than as two directions",
+     [("interface-essential/move-right.svg", "translate(0 -2.4) scale(1 0.6)"),
+      ("interface-essential/move-left.svg", "translate(0 8.2) scale(1 0.6)")]),
+
 ]
 
 HEADER = '''// ArrowLoop's icon set.
@@ -84,6 +108,31 @@ HEADER = '''// ArrowLoop's icon set.
 // language describes for apps that mix sets.
 
 import type { SVGProps } from 'react'
+
+/** Two or more glyphs from the same set, stacked into one drawing. Each group
+ *  carries its own transform, so a composed glyph needs no second source set
+ *  and no ink measuring: every part was drawn on this grid already. */
+function Stack({ box, groups, ...rest }: { box: string; groups: { transform: string; paths: string[] }[] } & SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox={box}
+      fill="currentColor"
+      className="shrink-0"
+      aria-hidden="true"
+      {...rest}
+    >
+      {groups.map((g) => (
+        <g key={g.transform} transform={g.transform}>
+          {g.paths.map((one) => (
+            <path key={one} fillRule="evenodd" clipRule="evenodd" d={one} />
+          ))}
+        </g>
+      ))}
+    </svg>
+  )
+}
 
 /** One glyph. Sized by the caller through width and height, coloured by
  *  currentColor so it follows whatever the surrounding text is doing. */
@@ -136,9 +185,31 @@ def main() -> None:
             "  return <Glyph box=\"%s\" paths={[%s]} {...props} />\n"
             "}\n" % (note, rel, name, box_of(svg), joined)
         )
+    for name, note, parts in COMPOSED:
+        groups = []
+        sources = []
+        for rel, transform in parts:
+            full = os.path.join(SRC, rel)
+            if not os.path.exists(full):
+                raise SystemExit("missing source glyph: %s" % full)
+            svg = io.open(full, encoding="utf-8").read()
+            paths = paths_of(svg)
+            if not paths:
+                raise SystemExit("no paths in %s" % rel)
+            joined = ", ".join(
+                "'%s'" % q.replace(chr(92), chr(92) * 2).replace("'", chr(92) + "'")
+                for q in paths)
+            groups.append("{ transform: '%s', paths: [%s] }" % (transform, joined))
+            sources.append(rel)
+        out.append(
+            "\n/** %s. Streamline: %s */\n"
+            "export function %s(props: SVGProps<SVGSVGElement>) {\n"
+            "  return <Stack box=\"0 0 14 14\" groups={[%s]} {...props} />\n"
+            "}\n" % (note, " + ".join(sources), name, ", ".join(groups))
+        )
     with open(OUT, "w", encoding="utf-8", newline="") as f:
         f.write("".join(out))
-    print("wrote %s with %d glyphs" % (OUT, len(GLYPHS)))
+    print("wrote %s with %d glyphs" % (OUT, len(GLYPHS) + len(COMPOSED)))
 
 
 if __name__ == "__main__":

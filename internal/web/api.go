@@ -58,6 +58,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /api/events", s.events)
 	mux.HandleFunc("GET /api/config", s.readConfig)
 	mux.HandleFunc("PUT /api/config", s.writeConfig)
+	mux.HandleFunc("DELETE /api/jobs/{name}/state", s.forgetJobState)
 
 	mux.HandleFunc("GET /api/volumes", s.listVolumes)
 	mux.HandleFunc("GET /api/volumes/candidates", s.volumeCandidates)
