@@ -136,6 +136,26 @@ type Job struct {
 	// decision this flag exists to withhold from the clock.
 	ReportOnly bool `json:"reportOnly,omitempty"`
 
+	// FirstRun says which side is right the ONE time this job has no record yet.
+	//
+	// It exists because the first run is the one that decides everything and is
+	// the one nobody is asked about. With no record, every file on both sides is
+	// new, so the engine merges: everything on the left arrives on the right and
+	// the other way round. That is the safe default and it is often not what
+	// somebody wanted, and by the time they notice, the other side is full of
+	// files they meant to leave behind.
+	//
+	// Empty is the merge, which is what every job did before this existed.
+	// "left" or "right" seeds from that side instead, and it is deliberately the
+	// same rule a one-way job follows: the source wins every disagreement, and a
+	// file the source never had is LEFT ALONE rather than deleted. Deleting
+	// something the chosen side never knew about would not be propagating a
+	// decision, it would be making one, on the run somebody understands least.
+	//
+	// It applies once. The moment a record exists this is ignored, so a setting
+	// left in the file cannot quietly turn a two-way job into a one-way one.
+	FirstRun string `json:"firstRun,omitempty"`
+
 	Exclude           []string `json:"exclude,omitempty"`
 	NoDefaultExcludes bool     `json:"noDefaultExcludes,omitempty"`
 
@@ -316,6 +336,15 @@ func Load(path string) (*Config, error) {
 			return nil, fmt.Errorf("two jobs are both called %q; names are how a job is asked for by hand and how its history is kept apart", j.Name)
 		}
 		seen[j.Name] = true
+		// Checked here rather than trusted at the moment it is used. A value
+		// nobody recognises would otherwise fall through to the merge, which is
+		// the exact opposite of what somebody typing "links" instead of "left"
+		// meant, and they would find out by looking at the other side afterwards.
+		switch j.FirstRun {
+		case "", "merge", "left", "right":
+		default:
+			return nil, fmt.Errorf("job %q says firstRun %q; it has to be left, right or merge", j.Name, j.FirstRun)
+		}
 		// Named sets are folded into the job's own list here, once, so nothing
 		// downstream has to know sets exist. A name nobody defined is refused
 		// rather than ignored: a filter that silently matches nothing does not

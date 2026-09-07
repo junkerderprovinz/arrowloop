@@ -285,6 +285,12 @@ func (r *Runner) open(ctx context.Context, j job.Job) (apply.Ends, *state.DB, er
 
 // execute does the actual sync for one job, optionally limited to some paths.
 func (r *Runner) execute(ctx context.Context, j job.Job, only []string, resolve map[string]plan.Resolution) (apply.Result, *plan.Plan, error) {
+	// The first-run choice, applied here so it covers every way a run starts.
+	// The first run is the first run whoever presses the button, and a seed
+	// that only worked on the schedule would be a setting that behaves
+	// differently depending on how somebody happened to begin.
+	j = seed(j)
+
 	opt, err := j.Options()
 	if err != nil {
 		return apply.Result{}, nil, err
