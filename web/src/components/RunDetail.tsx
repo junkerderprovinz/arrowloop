@@ -109,7 +109,7 @@ export function RunDetail({
       <div className="flex justify-end">
         <Button
           label={t('history.download')}
-          labelKey={null}
+          labelKey="history.download"
           glyph={<IconCopy />}
           onClick={() => {
             const lines = entries.map((e) => [e.Kind, e.Side, e.Path, e.Note].join(TAB))
@@ -165,7 +165,7 @@ export function RunDetail({
           <div className="flex justify-end">
             <Button
               label={t('history.applyChoices')}
-              labelKey={null}
+              labelKey="history.applyChoices"
               glyph={<IconSave />}
               tone="accent"
               busy={busy}

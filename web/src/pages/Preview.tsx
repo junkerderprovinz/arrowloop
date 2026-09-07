@@ -107,7 +107,7 @@ export function Preview({ job, onDone }: { job: string; onDone: () => void }) {
                 ? t('preview.starting')
                 : t('preview.run', { chosen: chosen.length, total: everything.length })
             }
-            labelKey={null}
+            labelKey={busy ? 'preview.starting' : 'preview.run'}
             tone="accent"
             busy={busy}
             onClick={() => void start()}

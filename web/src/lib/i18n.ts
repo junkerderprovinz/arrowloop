@@ -48,7 +48,6 @@ export async function loadLocale(code: string): Promise<Partial<Translations>> {
 // ---------------------------------------------------------------------------
 
 export const en = {
-  'app.tagline': 'Two-way file sync',
   'nav.jobs': 'Jobs',
   'nav.targets': 'Targets',
   'nav.history': 'History',
@@ -61,7 +60,7 @@ export const en = {
   'engine.loading': 'Reading the settings…',
   'engine.work': 'How hard it may work',
   'engine.bwlimit': 'Bandwidth limit',
-  'engine.bwlimitHint': 'One limit for the whole program, because two jobs on one machine share one uplink. Written as 1M or 512k. It also takes a timetable, so it can be full speed at night and throttled by day: 08:00,512k 19:00,off. Empty means no limit.',
+  'engine.bwlimitHint': 'How fast this program is allowed to transfer, so a sync cannot take the whole line and make everything else on the network unusable while it runs. Leave it empty unless that actually happens: empty means full speed, which is what you want on a local disk or a fast network. If a run does make video calls stutter, set roughly four fifths of your upload speed, written as 1M or 512k. It also takes a timetable, so it can be throttled by day and unlimited at night: 08:00,512k 19:00,off. One limit for the whole program, because two jobs on one machine share one line.',
   'engine.parallel': 'Jobs at once',
   'engine.parallelHint': 'One at a time by default, and that is a decision rather than a limitation: two jobs running together share one line and one disk, so they mostly slow each other down while making the log harder to read.',
   'engine.memory': 'What it remembers',
@@ -120,8 +119,23 @@ export const en = {
   'schedule.live': 'Real time',
   'schedule.liveHint': 'Also run when a folder changes, without waiting for the next turn. This adds to the schedule rather than replacing it: only a local side can be watched, and a watcher that misses an event has no way to know it did, so the schedule stays as the thing that eventually notices.',
   'schedule.settle': 'Settle time',
-  'schedule.reportOnly': 'Only report, never write',
-  'schedule.reportOnlyHint': 'Run the whole comparison on the schedule and change nothing. The log then says what a run would have done, per file. Pressing the button by hand still writes: this holds back the clock, not you.',
+  'edit.active': 'Active',
+  'edit.activeHint': 'A job that is switched off keeps its schedule and never runs on it. Starting it by hand still works, which is the whole point of holding one instead of deleting it. New jobs arrive switched on; a duplicate arrives held, because it points at the same two folders as the job it was copied from.',
+  'schedule.backstop': 'Backstop',
+  'schedule.backstopHint': 'How often the job runs anyway, on top of reacting to changes. Only a local side can be watched at all, and a watcher that misses an event has no way to know it did, so this is what eventually notices. An hour is usually right: shorter makes the watching pointless, longer leaves a missed change sitting for most of a day.',
+  'jobs.runs': 'runs {cadence}',
+  'jobs.lastRun': 'last run {when}',
+  'jobs.activity': 'Activity',
+  'jobs.activityEmpty': 'Nothing yet. This job has not run.',
+  'jobs.cadence.live': 'in real time',
+  'jobs.cadence.every': 'every {n} {unit}',
+  'jobs.cadence.everyOne.minute': 'every minute',
+  'jobs.cadence.everyOne.hour': 'hourly',
+  'jobs.cadence.everyOne.day': 'daily',
+  'jobs.cadence.everyOne.week': 'weekly',
+  'jobs.cadence.daily': 'daily at {time}',
+  'jobs.cadence.weekly': '{days} at {time}',
+  'jobs.cadence.cron': 'on {expression}',
   'schedule.at': 'At',
   'schedule.days': 'Days',
   'schedule.day.mon': 'Mon',
@@ -132,7 +146,6 @@ export const en = {
   'schedule.day.sat': 'Sat',
   'schedule.day.sun': 'Sun',
   'edit.editJob': 'Edit this job',
-  'edit.close': 'Close',
   'edit.removeJob': 'Remove this job',
   'edit.removeStakes': 'The job {name} is taken out of the configuration. What it has already copied stays exactly where it is on both sides; nothing is deleted from your folders.',
   'edit.removeState': 'Delete its state database too',
@@ -148,8 +161,6 @@ export const en = {
   'pick.empty': 'No folders in here.',
   'look.paletteReset': 'Back to the house colours',
   'look.accentReset': 'Back to the default',
-  'nav.section': 'Section',
-
   'error.unreachable': 'Cannot reach the engine',
   'login.title': 'This interface is protected',
   'login.password': 'Password',
@@ -164,9 +175,6 @@ export const en = {
   'jobs.preview': 'Preview',
   'jobs.state.running': 'running',
   'jobs.state.disabled': 'disabled',
-  'jobs.state.waiting': 'waiting',
-  'jobs.state.settled': 'settled',
-  'jobs.state.detached': 'not attached',
   'jobs.state.failed': 'last run failed',
   'jobs.state.idle': 'ready',
   'jobs.pause': 'Pause this job',
@@ -177,7 +185,6 @@ export const en = {
   'check.healthy': 'Nothing to report. Both sides are reachable and the record matches what is there.',
   'check.more': '{found} findings in total, showing the first {shown}.',
   'jobs.schedule.onRequest': 'on request',
-  'jobs.neverWorked': 'never worked',
   'jobs.ago': 'ago',
 
   // Units of elapsed time, written out because an abbreviation that reads
@@ -186,9 +193,6 @@ export const en = {
   'time.minute': 'minutes',
   'time.hour': 'hours',
   'time.day': 'days',
-  'time.year': 'years',
-
-  // Preview
   'preview.title': 'Preview',
   'preview.for': 'Preview: {job}',
   'preview.working': 'Working out what would happen. Nothing has been touched.',
@@ -265,12 +269,9 @@ export const en = {
   'history.left': 'left for later: {count}',
 
   // Editor
-  'edit.title': 'Jobs',
   'edit.add': 'Add a job',
   'edit.remove': 'Remove',
   'edit.save': 'Save',
-  'edit.saving': 'Saving',
-  'edit.saved': 'Saved',
   'edit.name': 'Name',
   'edit.left': 'Left side',
   'edit.right': 'Right side',
@@ -282,8 +283,6 @@ export const en = {
   'sets.add': 'Add this list',
   'sets.remove': 'Remove this list',
   'sets.newName': 'Name for a new list',
-  'edit.disabled': 'Disabled',
-  'edit.watch': 'Watch for changes',
   'edit.emptyDirs': 'Carry empty folders',
   'edit.metadata': 'Carry permissions and ownership',
   'edit.quietPeriod': 'Quiet period',
@@ -308,32 +307,20 @@ export const en = {
   'edit.excludeSetsHint': 'Lists defined once in the settings. What you pick here is added to this job\'s own patterns below rather than replacing them.',
   'edit.quietHint':
     'How long a file must sit unchanged before a run will touch it. It stops a half-written file from being copied mid-write. Written as a duration: 30s, 5m, 1h. Empty means the default of five seconds.',
-  'edit.watchHint':
-    'React to changes as they happen rather than only on the schedule. Only a local side can be watched.',
   'edit.runAtStart': 'Sync as soon as the program starts',
   'edit.runAtStartHint':
     'Runs this job once at every start, before its schedule is next due. A machine that was off overnight missed its turn, and without this the two sides stay apart until tomorrow.',
-  'edit.pick': 'Pick',
-  'edit.disabledHint':
-    'Keeps the job in the file without running it. A job you are still setting up belongs here until you have read its preview once.',
   'edit.emptyDirsHint':
     'A folder with files in it travels anyway. An empty one has nothing to imply it, so it needs a record of its own. Off for a bucket, which has no real folders.',
   'edit.metadataHint':
     'Permissions, ownership and extended attributes travel with the bytes, wherever both sides can store them.',
-  'edit.reading': 'Reading the configuration.',
   'edit.unnamed': 'unnamed',
-  'edit.watching': 'watching',
   'edit.savedNote': 'Saved. The schedules and the watchers were rebuilt.',
   'edit.checking': 'Checking',
-  'edit.noJobs': 'No jobs yet. Add one.',
   'edit.unsaved': 'not saved yet',
   'edit.newJob': 'new-job',
   'edit.pickDrive': 'A registered drive',
   'edit.pickRemote': 'A configured target',
-  'edit.pickNothing': 'Nothing registered yet',
-
-  // Targets: remotes
-  'targets.title': 'Targets',
   'targets.storage': 'Storage',
   'targets.storageEmpty': 'No storage targets yet. Add one to reach an S3 bucket, an SSH host or a Windows share.',
   'targets.addStorage': 'Add storage',
@@ -390,7 +377,6 @@ export const en = {
   'targets.forgetHint':
     'Removes the note that this drive was ever here. The marker on the drive is left alone, so plugging it in again brings it straight back.',
   'targets.lastSeen': 'Last seen',
-  'targets.registered': 'registered',
   'targets.noCandidates': 'Nothing to register. Plug a drive in or mount a share, then look again.',
   'targets.copyPath': 'Copy the job path',
   'targets.copied': 'Copied',
@@ -407,7 +393,6 @@ export const en = {
   'look.square': 'Square',
   'look.colors': 'Colours',
   'look.accent': 'Accent color',
-  'look.rainbow': 'Rainbow',
   'look.rainbowOn': 'Rainbow Mode',
   'look.rainbowReactive': 'Reactive Mode',
   'look.rainbowRotate': 'Colour Rotation',
@@ -478,7 +463,6 @@ export const en = {
 
   'progress.of': '{done} of {total}',
   'progress.starting': 'Starting',
-  'progress.finishing': 'Finishing',
   'progress.rate': '{rate} files/s',
   'progress.left': '{time} left',
 } as const
@@ -487,7 +471,6 @@ export type TranslationKey = keyof typeof en
 export type Translations = Record<TranslationKey, string>
 
 export const de: Translations = {
-  'app.tagline': 'Dateiabgleich in beide Richtungen',
   'nav.jobs': 'Aufträge',
   'nav.targets': 'Ziele',
   'nav.history': 'Verlauf',
@@ -500,7 +483,7 @@ export const de: Translations = {
   'engine.loading': 'Lese die Einstellungen…',
   'engine.work': 'Wie hart er arbeiten darf',
   'engine.bwlimit': 'Bandbreitenlimit',
-  'engine.bwlimitHint': 'Ein Limit für das ganze Programm, denn zwei Aufträge auf einem Rechner teilen sich eine Leitung. Geschrieben als 1M oder 512k. Es nimmt auch eine Zeittabelle, also nachts voll und tagsüber gedrosselt: 08:00,512k 19:00,off. Leer heißt kein Limit.',
+  'engine.bwlimitHint': 'Wie schnell dieses Programm übertragen darf, damit ein Abgleich nicht die ganze Leitung nimmt und währenddessen alles andere im Netz unbrauchbar macht. Lass es leer, solange das nicht passiert: leer heißt volle Geschwindigkeit, und das willst du auf einer lokalen Platte oder im schnellen Netz. Wenn ein Lauf tatsächlich Videoanrufe stocken lässt, stell etwa vier Fünftel deiner Upload-Geschwindigkeit ein, geschrieben als 1M oder 512k. Es nimmt auch eine Zeittabelle, also tagsüber gedrosselt und nachts offen: 08:00,512k 19:00,off. Ein Limit für das ganze Programm, denn zwei Aufträge auf einem Rechner teilen sich eine Leitung.',
   'engine.parallel': 'Aufträge gleichzeitig',
   'engine.parallelHint': 'Standardmäßig einer nach dem anderen, und das ist eine Entscheidung und keine Beschränkung: zwei gleichzeitig laufende Aufträge teilen sich eine Leitung und eine Platte, bremsen sich also meistens gegenseitig aus und machen das Protokoll unübersichtlicher.',
   'engine.memory': 'Woran er sich erinnert',
@@ -559,8 +542,23 @@ export const de: Translations = {
   'schedule.live': 'Echtzeit',
   'schedule.liveHint': 'Zusätzlich laufen, sobald sich ein Ordner ändert, ohne auf den nächsten Termin zu warten. Das kommt zum Zeitplan dazu und ersetzt ihn nicht: beobachten lässt sich nur eine lokale Seite, und ein Beobachter, der ein Ereignis verpasst, merkt das nicht. Der Zeitplan bleibt das, was es irgendwann trotzdem bemerkt.',
   'schedule.settle': 'Beruhigungszeit',
-  'schedule.reportOnly': 'Nur berichten, nie schreiben',
-  'schedule.reportOnlyHint': 'Führt nach Zeitplan den ganzen Vergleich aus und ändert nichts. Im Laufprotokoll steht danach für jede Datei, was ein Lauf getan hätte. Drückst du den Knopf selbst, wird trotzdem geschrieben: Das hier hält die Uhr zurück, nicht dich.',
+  'edit.active': 'Aktiv',
+  'edit.activeHint': 'Ein abgeschalteter Auftrag behält seinen Zeitplan und läuft trotzdem nie danach. Von Hand starten geht weiter, genau dafür hält man einen Auftrag an, statt ihn zu löschen. Neue Aufträge kommen eingeschaltet; eine Kopie kommt angehalten, weil sie auf dieselben zwei Ordner zeigt wie der Auftrag, von dem sie stammt.',
+  'schedule.backstop': 'Rückfallplan',
+  'schedule.backstopHint': 'Wie oft der Auftrag ohnehin läuft, zusätzlich zum Reagieren auf Änderungen. Beobachten lässt sich nur eine lokale Seite, und ein Beobachter, der ein Ereignis verpasst, merkt das nicht. Der Rückfallplan ist das, was es irgendwann trotzdem bemerkt. Eine Stunde passt meistens: kürzer macht das Beobachten überflüssig, länger lässt eine verpasste Änderung fast einen Tag liegen.',
+  'jobs.runs': 'läuft {cadence}',
+  'jobs.lastRun': 'zuletzt {when}',
+  'jobs.activity': 'Aktivität',
+  'jobs.activityEmpty': 'Noch nichts. Dieser Auftrag ist nie gelaufen.',
+  'jobs.cadence.live': 'in Echtzeit',
+  'jobs.cadence.every': 'alle {n} {unit}',
+  'jobs.cadence.everyOne.minute': 'jede Minute',
+  'jobs.cadence.everyOne.hour': 'stündlich',
+  'jobs.cadence.everyOne.day': 'täglich',
+  'jobs.cadence.everyOne.week': 'wöchentlich',
+  'jobs.cadence.daily': 'täglich um {time}',
+  'jobs.cadence.weekly': '{days} um {time}',
+  'jobs.cadence.cron': 'nach {expression}',
   'schedule.at': 'Um',
   'schedule.days': 'Tage',
   'schedule.day.mon': 'Mo',
@@ -571,7 +569,6 @@ export const de: Translations = {
   'schedule.day.sat': 'Sa',
   'schedule.day.sun': 'So',
   'edit.editJob': 'Diesen Auftrag bearbeiten',
-  'edit.close': 'Schließen',
   'edit.removeJob': 'Diesen Auftrag entfernen',
   'edit.removeStakes': 'Der Auftrag {name} wird aus der Konfiguration genommen. Was er schon kopiert hat, bleibt auf beiden Seiten genau dort liegen, wo es ist; aus deinen Ordnern wird nichts gelöscht.',
   'edit.removeState': 'Zustandsdatei mitlöschen',
@@ -587,8 +584,6 @@ export const de: Translations = {
   'pick.empty': 'Hier liegen keine Ordner.',
   'look.paletteReset': 'Zurück auf die Hausfarben',
   'look.accentReset': 'Zurück auf die Vorgabe',
-  'nav.section': 'Bereich',
-
   'error.unreachable': 'Der Dienst ist nicht erreichbar',
   'login.title': 'Diese Oberfläche ist geschützt',
   'login.password': 'Passwort',
@@ -602,9 +597,6 @@ export const de: Translations = {
   'jobs.preview': 'Vorschau',
   'jobs.state.running': 'läuft',
   'jobs.state.disabled': 'abgeschaltet',
-  'jobs.state.waiting': 'wartet',
-  'jobs.state.settled': 'abgeglichen',
-  'jobs.state.detached': 'nicht angeschlossen',
   'jobs.state.failed': 'letzter Lauf fehlgeschlagen',
   'jobs.state.idle': 'bereit',
   'jobs.pause': 'Auftrag pausieren',
@@ -615,15 +607,12 @@ export const de: Translations = {
   'check.healthy': 'Nichts zu melden. Beide Seiten sind erreichbar, und der gespeicherte Zustand stimmt mit dem überein, was tatsächlich da ist.',
   'check.more': 'Insgesamt {found} Funde, angezeigt werden die ersten {shown}.',
   'jobs.schedule.onRequest': 'auf Zuruf',
-  'jobs.neverWorked': 'noch nie gelaufen',
   'jobs.ago': 'her',
 
   'time.second': 'Sekunden',
   'time.minute': 'Minuten',
   'time.hour': 'Stunden',
   'time.day': 'Tage',
-  'time.year': 'Jahre',
-
   'preview.title': 'Vorschau',
   'preview.for': 'Vorschau: {job}',
   'preview.working': 'Es wird ermittelt, was passieren würde. Nichts wurde angefasst.',
@@ -697,12 +686,9 @@ export const de: Translations = {
   'history.conflicts': 'Konflikte: {count}',
   'history.left': 'zurückgestellt: {count}',
 
-  'edit.title': 'Aufträge',
   'edit.add': 'Auftrag anlegen',
   'edit.remove': 'Entfernen',
   'edit.save': 'Speichern',
-  'edit.saving': 'Speichert',
-  'edit.saved': 'Gespeichert',
   'edit.name': 'Name',
   'edit.left': 'Linke Seite',
   'edit.right': 'Rechte Seite',
@@ -714,8 +700,6 @@ export const de: Translations = {
   'sets.add': 'Diese Liste hinzufügen',
   'sets.remove': 'Diese Liste entfernen',
   'sets.newName': 'Name für eine neue Liste',
-  'edit.disabled': 'Abgeschaltet',
-  'edit.watch': 'Auf Änderungen achten',
   'edit.emptyDirs': 'Leere Ordner mitnehmen',
   'edit.metadata': 'Rechte und Eigentümer mitnehmen',
   'edit.quietPeriod': 'Ruhezeit',
@@ -741,31 +725,20 @@ export const de: Translations = {
   'edit.excludeSetsHint': 'Listen, die du einmal in den Einstellungen festlegst. Was du hier auswählst, kommt zu den eigenen Mustern dieses Auftrags weiter unten dazu und ersetzt sie nicht.',
   'edit.quietHint':
     'Wie lange eine Datei unverändert liegen muss, bevor ein Lauf sie anfasst. Das verhindert, dass eine halb geschriebene Datei mitten im Schreiben kopiert wird. Als Dauer geschrieben: 30s, 5m, 1h. Leer heißt die Vorgabe von fünf Sekunden.',
-  'edit.watchHint':
-    'Auf Änderungen reagieren, sobald sie geschehen, statt nur nach Zeitplan. Beobachten lässt sich nur eine lokale Seite.',
   'edit.runAtStart': 'Beim Programmstart sofort abgleichen',
   'edit.runAtStartHint':
     'Führt diesen Auftrag bei jedem Start einmal aus, bevor sein Zeitplan das nächste Mal dran ist. Ein Rechner, der über Nacht aus war, hat seinen Termin verpasst, und ohne das bleiben die beiden Seiten bis morgen auseinander.',
-  'edit.pick': 'Auswählen',
-  'edit.disabledHint':
-    'Behält den Auftrag in der Datei, ohne ihn laufen zu lassen. Ein Auftrag, den du noch einrichtest, gehört hierher, bis du seine Vorschau einmal gelesen hast.',
   'edit.emptyDirsHint':
     'Ein Ordner mit Dateien darin wandert ohnehin mit. Ein leerer hat nichts, was ihn andeutet, und braucht daher einen eigenen Vermerk. Bei einem Eimer aus, der kennt keine echten Ordner.',
   'edit.metadataHint':
     'Rechte, Eigentümer und erweiterte Attribute wandern mit den Daten mit, wo beide Seiten sie speichern können.',
-  'edit.reading': 'Die Einrichtung wird gelesen.',
   'edit.unnamed': 'ohne Namen',
-  'edit.watching': 'beobachtet',
   'edit.savedNote': 'Gespeichert. Zeitpläne und Beobachter wurden neu aufgebaut.',
   'edit.checking': 'Prüft',
-  'edit.noJobs': 'Noch kein Auftrag. Lege einen an.',
   'edit.unsaved': 'noch nicht gespeichert',
   'edit.newJob': 'neuer-auftrag',
   'edit.pickDrive': 'Ein angemeldeter Datenträger',
   'edit.pickRemote': 'Ein eingerichtetes Ziel',
-  'edit.pickNothing': 'Noch nichts angemeldet',
-
-  'targets.title': 'Ziele',
   'targets.storage': 'Speicher',
   'targets.storageEmpty':
     'Noch kein Speicherziel. Lege eines an, um einen S3-Eimer, einen SSH-Rechner oder eine Windows-Freigabe zu erreichen.',
@@ -823,7 +796,6 @@ export const de: Translations = {
   'targets.forgetHint':
     'Entfernt den Vermerk, dass dieser Datenträger je hier war. Die Markierung auf dem Datenträger bleibt, ein erneutes Anstecken bringt ihn also sofort zurück.',
   'targets.lastSeen': 'Zuletzt gesehen',
-  'targets.registered': 'angemeldet',
   'targets.noCandidates':
     'Nichts zum Anmelden. Steck einen Datenträger an oder binde eine Freigabe ein, dann schau noch einmal.',
   'targets.copyPath': 'Auftragspfad kopieren',
@@ -840,7 +812,6 @@ export const de: Translations = {
   'look.square': 'Eckig',
   'look.colors': 'Farben',
   'look.accent': 'Akzentfarbe',
-  'look.rainbow': 'Regenbogen',
   'look.rainbowOn': 'Regenbogen-Modus',
   'look.rainbowReactive': 'Reaktiver Modus',
   'look.rainbowRotate': 'Farbenrotation',
@@ -906,7 +877,6 @@ export const de: Translations = {
 
   'progress.of': '{done} von {total}',
   'progress.starting': 'Startet',
-  'progress.finishing': 'Schließt ab',
   'progress.rate': '{rate} Dateien/s',
   'progress.left': 'noch {time}',
 }
@@ -1016,10 +986,18 @@ export function applyStoredLanguage(): void {
 
 export const locales: Record<string, Partial<Translations>> = { en, de }
 
+/**
+ * The translate function, named so a plain function can take one.
+ *
+ * A helper that turns data into a sentence needs `t` and nothing else from the
+ * context, and it should not have to be a component to say so.
+ */
+export type Translate = (key: TranslationKey, vars?: Record<string, string | number>) => string
+
 export interface I18nContextValue {
   lang: string
   setLanguage: (code: string) => void
-  t: (key: TranslationKey, vars?: Record<string, string | number>) => string
+  t: Translate
   languages: Language[]
 }
 

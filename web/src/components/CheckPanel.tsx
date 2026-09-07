@@ -88,7 +88,7 @@ export function CheckPanel({ job }: { job: string }) {
       <div className="flex justify-end">
         <Button
           label={t('jobs.check')}
-          labelKey={null}
+          labelKey="jobs.check"
           glyph={<IconCheck />}
           busy={busy}
           disabled={busy}

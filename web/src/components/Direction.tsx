@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react'
 
 import { hueVars, rainbowAt } from '../lib/appearance'
-import { CONTROL_H } from './Field'
+import { KEY_CONTROL_H } from './Field'
 import { IconBothWays, IconToLeft, IconToRight } from './glyphs'
 import { useT, type TranslationKey } from '../lib/i18n'
 import type { Direction } from '../lib/api'
@@ -41,7 +41,6 @@ export function DirectionMark({ direction, size }: { direction: Direction; size?
   return (
     <span
       className="inline-flex shrink-0 items-center text-carbon-textMuted"
-      title={name}
       data-tip={name}
       aria-label={name}
       role="img"
@@ -112,18 +111,26 @@ export function DirectionSwitch({
           onChange(nextDirection(nextDirection(direction)))
         }
       }}
-      title={tip}
       data-tip={tip}
       aria-label={`${t('direction.label')}: ${name}`}
-      className={`glim-btn glim-hue inline-flex ${CONTROL_H} w-[var(--btn-h)] shrink-0 items-center justify-center bg-carbon-surface2 text-carbon-text transition-colors hover:bg-carbon-hover`}
+      className={`glim-btn glim-btn-key glim-hue inline-flex ${KEY_CONTROL_H} w-[var(--btn-h-key)] shrink-0 items-center justify-center bg-carbon-surface2 text-carbon-text transition-colors hover:bg-carbon-hover`}
       style={{ borderRadius: 'var(--radius-control)', ...(hueVars(rainbowAt(0)) as CSSProperties) }}
     >
       {/* The glyph carries the class the label engine keys off, so a control
           that is only ever a glyph still answers to the same setting as every
           other button. Its words live in the tip: this is one control with
           three states, and printing the state name beside it would be a label
-          that changes meaning every third press. */}
+          that changes meaning every third press.
+
+          It is also the app's ONLY glyph-with-no-label-sibling, which made it
+          the app's only button that went completely blank in the label engine's
+          text mode. The rule and its exception are GlimStone 1.7.5; the CSS is
+          in index.css beside the rule it excepts. */}
       <span className="glim-btn-glyph" aria-hidden>
+        {/* No size prop: `.glim-btn-key` grows the mark with the box, in CSS,
+            because a width attribute on the svg loses to the stylesheet rule
+            that sizes every button glyph. The size belongs to the control's
+            stage, not to this call site. */}
         <DirectionGlyph direction={direction} />
       </span>
     </button>

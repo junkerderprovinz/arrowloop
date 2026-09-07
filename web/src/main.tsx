@@ -2,19 +2,10 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 
 import { Gate } from './App'
-import {
-  IconAdd,
-  IconCheck,
-  IconCopy,
-  IconDelete,
-  IconEdit,
-  IconForget,
-  IconPreview,
-  IconReset,
-} from './components/glyphs'
 import { applyCachedAppearance } from './lib/appearance'
 import { applyStoredLabelModes } from './lib/controls'
 import { setGlyphResolver } from './lib/glimstone/glyphs'
+import { glyphFor } from './lib/glyphFor'
 import { applyStoredLanguage, I18nProvider } from './lib/i18n'
 import { applyStoredMotion } from './lib/motion'
 import './index.css'
@@ -40,33 +31,12 @@ applyStoredLabelModes()
  * show a button in glyph-only mode at all, because a button that was never
  * handed an icon has nothing to draw when the words go away.
  *
- * The keys are the label keys the buttons already use, so nothing new has to be
- * invented and a button whose key is not listed simply keeps its text.
+ * The mapping itself moved into lib/glyphFor.tsx when it outgrew a switch. It
+ * was eight keys against roughly forty buttons, so most of the app fell back to
+ * text in a mode that is supposed to hide it - visible as a strip of half
+ * symbols and half words, and findable only by looking.
  */
-setGlyphResolver((key) => {
-  switch (key) {
-    case 'edit.add':
-      return <IconAdd />
-    case 'edit.editJob':
-      return <IconEdit />
-    case 'edit.remove':
-    case 'confirm.delete':
-      return <IconDelete />
-    case 'jobs.preview':
-      return <IconPreview />
-    case 'targets.check':
-      return <IconCheck />
-    case 'targets.copyPath':
-      return <IconCopy />
-    case 'targets.forget':
-      return <IconForget />
-    case 'look.accentReset':
-    case 'look.paletteReset':
-      return <IconReset />
-    default:
-      return undefined
-  }
-})
+setGlyphResolver(glyphFor)
 
 // The theme attribute is always written, and it is written from the device's
 // own setting when nobody has chosen. Leaving the attribute off and relying on

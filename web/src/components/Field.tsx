@@ -53,6 +53,27 @@ export function Field({ label, hint, children }: { label: string; hint?: string;
 export const CONTROL_H = 'h-[var(--btn-h)]'
 
 /**
+ * The one step up, for a control that carries a decision rather than an action.
+ *
+ * GlimStone 1.7.5 added a SECOND button height and said there will not be a
+ * third, which is the answer to a question asked here twice in one round about
+ * two different controls: "der Button fuer auftrag anlegen soll groesser sein.
+ * haben wir nicht eine groessere standardisierte groesse?" and "koennen wir den
+ * button in die naechste groesse anheben? das ist ein kritischer button." The
+ * honest answer at the time was that no such size existed, and the wrong way to
+ * supply one is to raise --btn-h: that puts every button in the app out of line
+ * with every field beside it to solve a problem two controls have.
+ *
+ * Two things in this app take it: the button that creates a job, and the
+ * direction switch. Both are the reason their surface exists. Everything else
+ * stays on CONTROL_H, and a key control standing in a field row is CENTRED
+ * against its neighbours rather than top-aligned with them, or eight pixels of
+ * deliberate difference read as the four pixels of accident that produced the
+ * original report.
+ */
+export const KEY_CONTROL_H = 'h-[var(--btn-h-key)]'
+
+/**
  * Form fields are borderless and filled, and focus is a brightness step rather
  * than a ring. A box drawn around every input is hierarchy from borders, which
  * is the thing this design language spends most of its rules avoiding.
@@ -304,7 +325,6 @@ export function Secret({
       <button
         type="button"
         onClick={() => setShown((was) => !was)}
-        title={label}
         data-tip={label}
         aria-label={label}
         aria-pressed={shown}

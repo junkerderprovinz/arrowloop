@@ -218,7 +218,7 @@ export function FolderPicker({
                 path. */}
             <Button
               label={t('pick.newFolder')}
-              labelKey={null}
+              labelKey="pick.newFolder"
               glyph={<IconNewFolder />}
               disabled={!at || busy}
               onClick={() => setNaming('')}
@@ -226,13 +226,13 @@ export function FolderPicker({
             />
             <Button
               label={t('pick.cancel')}
-              labelKey={null}
+              labelKey="pick.cancel"
               glyph={<IconCancel />}
               onClick={onClose}
             />
             <Button
               label={t('pick.choose')}
-              labelKey={null}
+              labelKey="pick.choose"
               glyph={<IconConfirm />}
               tone="accent"
               disabled={!at}
@@ -249,7 +249,7 @@ export function FolderPicker({
               </div>
               <Button
                 label={t('pick.create')}
-                labelKey={null}
+                labelKey="pick.create"
                 glyph={<IconConfirm />}
                 tone="accent"
                 disabled={naming.trim() === '' || busy}
@@ -257,7 +257,7 @@ export function FolderPicker({
               />
               <Button
                 label={t('pick.cancel')}
-                labelKey={null}
+                labelKey="pick.cancel"
                 glyph={<IconCancel />}
                 onClick={() => setNaming(null)}
               />
@@ -273,7 +273,7 @@ export function FolderPicker({
 export function PickButton({ onClick }: { onClick: () => void }) {
   const { t } = useT()
   return (
-    <IconAction title={t('pick.open')} onClick={onClick}>
+    <IconAction title={t('pick.open')} labelKey="pick.open" onClick={onClick}>
       <IconFolder />
     </IconAction>
   )

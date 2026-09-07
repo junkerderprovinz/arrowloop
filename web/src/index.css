@@ -168,6 +168,11 @@ body {
   /* The other three the button reads, which this app simply never had. Nothing
      complained, because nothing here used GlimStone's own Button until now. */
   --btn-h: 2rem;
+  /* The one step up, GlimStone 1.7.5. It has to be repeated here rather than
+     left to tokens.css because this block wins over that one, and a key
+     control reading a token this file did not define would silently fall back
+     to no height at all. */
+  --btn-h-key: 2.5rem;
   --btn-pad-x: 0.875rem;
   --btn-gap: 0.5rem;
 }
@@ -199,6 +204,18 @@ body {
 [data-labels-buttons='text'] .glim-btn-glyph,
 [data-labels-tabs='text'] .glim-tab-glyph {
   display: none;
+}
+
+/* Unless there are no words. GlimStone 1.7.5.
+   A control whose only child is its glyph - the direction switch is the one in
+   this app - has no label sibling to fall back to, so the rule above rendered
+   it as an empty box in text mode: accessible name intact, nothing at all on
+   screen, nothing red anywhere. A glyph with no label beside it is not
+   decoration to be stripped, it IS the label, drawn. A control that really
+   does have words has a `.glim-btn-label` sibling, so this never matches it. */
+[data-labels-buttons='text'] .glim-btn-glyph:only-child,
+[data-labels-tabs='text'] .glim-tab-glyph:only-child {
+  display: inline-flex;
 }
 
 /* Reactive brings the words back under the pointer and under the keyboard, and

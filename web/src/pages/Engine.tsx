@@ -261,7 +261,7 @@ export function Engine() {
           <div className="flex flex-wrap items-center gap-2">
             <Button
               label={t('engine.backupSave')}
-              labelKey={null}
+              labelKey="engine.backupSave"
               glyph={<IconSave />}
               onClick={() => {
                 void api.rawConfig().then((doc) => {
@@ -275,7 +275,7 @@ export function Engine() {
             />
             <Button
               label={t('engine.backupLoad')}
-              labelKey={null}
+              labelKey="engine.backupLoad"
               glyph={<IconFolder />}
               busy={restoring}
               disabled={restoring}
@@ -305,7 +305,7 @@ export function Engine() {
         {saved && !error && <p className="me-auto text-xs text-statusOk">{t('edit.savedNote')}</p>}
         <Button
           label={t('edit.save')}
-          labelKey={null}
+          labelKey="edit.save"
           glyph={<IconSave />}
           tone="accent"
           busy={busy}

@@ -120,22 +120,6 @@ type Job struct {
 
 	Disabled bool `json:"disabled,omitempty"`
 
-	// ReportOnly runs the job on its schedule and applies nothing.
-	//
-	// It answers a question a schedule alone cannot: "is anything drifting?"
-	// Somebody who is not yet ready to let a job write can put it on a schedule
-	// like any other and read the run log, and every safety net stays where it
-	// is because nothing is ever applied.
-	//
-	// Deliberately NOT the same as Disabled. A disabled job does nothing at all
-	// and tells you nothing; this one does the whole comparison, records what it
-	// would have done, and notifies. The difference matters most for the job
-	// somebody is nervous about, which is the one they most want a report on.
-	//
-	// A run started by hand ignores it, because pressing a button IS the
-	// decision this flag exists to withhold from the clock.
-	ReportOnly bool `json:"reportOnly,omitempty"`
-
 	// FirstRun says which side is right the ONE time this job has no record yet.
 	//
 	// It exists because the first run is the one that decides everything and is
@@ -329,6 +313,13 @@ func Load(path string) (*Config, error) {
 	} else {
 		cfg.History = cfg.resolve(cfg.History)
 	}
+	// The bandwidth limit is checked here rather than only where it is applied.
+	// It used to be neither: a bad value saved cleanly through the settings page
+	// and the program then refused to start on the next boot, with the message
+	// on a console and the interface that could have shown it gone.
+	if err := engine.ValidateBwLimit(cfg.BwLimit); err != nil {
+		return nil, err
+	}
 	if cfg.ParallelJobs <= 0 {
 		cfg.ParallelJobs = 1
 	}
@@ -383,16 +374,27 @@ func Load(path string) (*Config, error) {
 			}
 			j.Exclude = append(j.Exclude, patterns...)
 		}
-		// A job that is switched off is allowed to be half written.
+		// A job that cannot run is allowed to be half written, and there are two
+		// ways to be unable to run.
 		//
-		// That is the state of every job between being created and being filled
-		// in, and it is the state the editor's own "add a job" button produces.
-		// Refusing it means the button cannot save what it just made, and the
-		// desktop application, whose starter configuration holds exactly such a
-		// job, refuses to start at all. A job that is switched ON still needs
-		// both sides, which is where the check belongs: the validator exists to
-		// stop bad RUNS, and a job nobody runs cannot make one.
-		if !j.Disabled && (j.Left == "" || j.Right == "") {
+		// The first is being switched off. That is the state of a duplicate
+		// until it is pointed somewhere else, and of any job somebody is holding.
+		//
+		// The second is having NO sides at all, which is what the editor's own
+		// "add a job" button produces and is the reason this rule changed. A new
+		// job used to arrive switched off purely so that it could be saved,
+		// which meant every job anybody created announced itself as
+		// "abgeschaltet" until they found a switch at the bottom of the form
+		// (jdp: "das find ich total daemlich. ein auftrag soll standardmaessig
+		// aktiviert sein"). A job with neither side is a draft: it has no
+		// schedule either, so nothing reaches it, and pressing the button on it
+		// gets the same sentence this used to refuse the whole file with.
+		//
+		// ONE side and not the other is still refused, switched on. That is not
+		// a draft, it is a job somebody half filled in, and it is the shape that
+		// runs and does something surprising.
+		draft := j.Left == "" && j.Right == ""
+		if !j.Disabled && !draft && (j.Left == "" || j.Right == "") {
 			return nil, fmt.Errorf("job %q needs both a left and a right side", j.Name)
 		}
 		if j.State == "" {

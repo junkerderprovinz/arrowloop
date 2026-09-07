@@ -21,6 +21,7 @@ import (
 
 	"github.com/junkerderprovinz/arrowloop/internal/daemon"
 	"github.com/junkerderprovinz/arrowloop/internal/deskset"
+	"github.com/junkerderprovinz/arrowloop/internal/engine"
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/plan"
 	"github.com/junkerderprovinz/arrowloop/internal/scan"
@@ -47,6 +48,21 @@ type Server struct {
 	// window routes unregistered, which is how the interface knows there is no
 	// window to have preferences about.
 	Window *deskset.Store
+
+	// Log is where this layer says the things it cannot answer with a status
+	// code. There is exactly one of those: a setting that saved correctly and
+	// then could not be applied to the running process. Answering a successful
+	// save with an error would be the wrong lie in the other direction, and
+	// saying nothing at all would be the failure mode this whole round was
+	// about. Nil is allowed and means silence, which is what the tests want.
+	Log func(format string, args ...any)
+}
+
+// logf is Log with the nil check in one place.
+func (s *Server) logf(format string, args ...any) {
+	if s.Log != nil {
+		s.Log(format, args...)
+	}
 }
 
 // Handler builds the routes.
@@ -125,11 +141,17 @@ func (s *Server) Handler() http.Handler {
 
 // jobView is one row of the job list.
 type jobView struct {
-	Name        string  `json:"name"`
-	Left        string  `json:"left"`
-	Right       string  `json:"right"`
-	Direction   string  `json:"direction"`
-	Schedule    string  `json:"schedule"`
+	Name      string `json:"name"`
+	Left      string `json:"left"`
+	Right     string `json:"right"`
+	Direction string `json:"direction"`
+	Schedule  string `json:"schedule"`
+	// Watch, because the schedule alone cannot say it. A watching job and one
+	// that only keeps to the clock write the same expression: the watcher's is
+	// the backstop behind it. Without this the card describes a job that reacts
+	// in seconds as one that runs every hour, which is true and is the wrong
+	// answer to "what does this do".
+	Watch       bool    `json:"watch"`
 	Disabled    bool    `json:"disabled"`
 	Running     bool    `json:"running"`
 	LastSuccess *string `json:"lastSuccess"`
@@ -154,7 +176,7 @@ func (s *Server) listJobs(w http.ResponseWriter, r *http.Request) {
 	out := make([]jobView, 0, len(cfg.Jobs))
 	for _, j := range cfg.Jobs {
 		v := jobView{
-			Name: j.Name, Left: j.Left, Right: j.Right,
+			Name: j.Name, Left: j.Left, Right: j.Right, Watch: j.Watch,
 			// Sent resolved rather than as it stands in the file, so an
 			// unset field and an explicit "both" reach the screen as the
 			// same thing and the arrows never have to guess.
@@ -575,6 +597,16 @@ func (s *Server) writeSettings(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	s.Runner.Reload(next)
+	// The bandwidth limit lives in rclone's process-wide token bucket, not in
+	// the configuration the runner just swapped, so reloading is not enough:
+	// the value was correct in the file and in this page, and the next transfer
+	// still went at whatever speed the program booted with. A failure here is
+	// logged rather than returned - the setting IS saved, and answering a
+	// successful save with an error would be the wrong lie in the other
+	// direction.
+	if err := engine.ApplyBwLimit(r.Context(), next.BwLimit); err != nil {
+		s.logf("could not apply the new bandwidth limit: %v", err)
+	}
 	settings, err := next.SettingsAsMap()
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, err)

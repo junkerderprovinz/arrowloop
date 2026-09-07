@@ -86,7 +86,30 @@ export type ButtonTone = "accent" | "neutral" | "subtle" | "danger" | "warn";
  * carried a real one in an `aria-label`, naming the thing they remove, and it
  * survives here as the label: hidden, announced, and shown on hover.
  */
-export type ButtonVariant = "default" | "chip";
+/**
+ * "icon" - the small, single-purpose action that stands in a row of its
+ *          siblings: copy, reset, undo, edit, delete on a list row.
+ *
+ * It exists because rule 13 and the label engine's `text` mode disagree, and
+ * both are right. Rule 13 says a small action badge carries an icon and never a
+ * text label, because "Copy" sitting in its own pill beside three icon-only
+ * controls reads as a stray caption and spends row width on a word the hover
+ * already says. The label engine says every button answers one app-wide
+ * setting. Left as a badge outside the engine, a row of these ignored the
+ * setting entirely, which is what got reported ("die ganzen button sollen alle
+ * in die farb und beschriftungsengine"). Made an ordinary button, the same row
+ * would print five verbs in the default mode and turn a tidy strip into a wall
+ * of words nobody asked for.
+ *
+ * So it resolves the way a chip does: glyph in every mode, square, name in the
+ * accessible tree and in the bubble. That is not an exemption from the engine,
+ * it is the engine's own answer for a control whose identity IS its symbol -
+ * the same answer `chip` already gets, one size up and with a surface of its
+ * own. What it gains by being a Button rather than a Badge is everything else:
+ * the colour engine, the tone table, the busy spinner, the tooltip mechanism
+ * and the disabled-with-a-reason wrapper.
+ */
+export type ButtonVariant = "default" | "chip" | "icon";
 
 // `danger`/`warn` use the SOLID status tokens over `carbon-background`, the
 // pairing ConfirmDialog worked out for itself and documented at length: both
@@ -152,7 +175,7 @@ export function Button({
   glyph?: ReactNode;
   onClick?: () => void;
   tone?: ButtonTone;
-  /** "chip" for the small remove control inside a pill; see ButtonVariant. */
+  /** "chip" inside a pill, "icon" for a row action; see ButtonVariant. */
   variant?: ButtonVariant;
   disabled?: boolean;
   type?: "button" | "submit";
@@ -228,6 +251,8 @@ export function Button({
   // An explicit glyph wins; otherwise the key decides, so the same verb wears
   // the same symbol app-wide without 163 call sites each making a choice.
   const chip = variant === "chip";
+  // Square and glyph-only in every mode, for the reason ButtonVariant gives.
+  const iconOnly = variant === "icon";
   // A chip always closes, so it has a glyph even when no call site passes one.
   const resolved = glyph ?? (labelKey ? glyphFor(labelKey) : undefined) ?? (chip ? <IconClose /> : undefined);
   // No glyph to show means text, whatever the mode says — see the header note.
@@ -249,7 +274,7 @@ export function Button({
   // textGlyph when there is a glyph, and only falls back to plain text when
   // there is none — which is the same fallback the line above already makes for
   // the hiding modes, applied consistently.
-  const effective = chip
+  const effective = chip || iconOnly
     ? "glyph"
     : keepLabel
       ? hasGlyph
@@ -286,6 +311,8 @@ export function Button({
   // because neither is a Button.
   const stage = chip
     ? "glim-btn-chip"
+    : iconOnly
+      ? "glim-btn-icon"
     : effective === "glyph" || reactive
       ? ""
       : STAGE_CLASS[stageOverride ?? widthStage(label)];

@@ -179,14 +179,55 @@ func TestAHalfWrittenJobCanBeSavedButNotRun(t *testing.T) {
 		t.Fatalf("expected the job to survive loading, got %d", len(cfg.Jobs))
 	}
 
-	// Switched on, the same job is refused. The validator exists to stop bad
-	// runs, and this is the point at which one becomes possible.
+	// Switched ON with no sides at all is a draft, and it loads.
+	//
+	// This asserted the opposite until 2026-09-07, and the old assertion is why
+	// the editor had to create every job switched off: the only way to save what
+	// the button had just made was to hold it, so every new job announced itself
+	// as "abgeschaltet" until somebody found a switch at the bottom of the form.
+	// Nothing runs a job with no sides - it has no schedule, and the runner
+	// refuses it by hand with ErrHalfWritten - so refusing the whole FILE over
+	// it bought nothing and cost that.
 	body = `{"jobs":[{"name":"not-finished-yet","left":"","right":"","state":"state/x.db"}]}`
 	if err := os.WriteFile(path, []byte(body), 0o644); err != nil {
 		t.Fatalf("write: %v", err)
 	}
-	if _, err := Load(path); err == nil {
-		t.Fatal("a job that is switched on with no sides was accepted")
+	if _, err := Load(path); err != nil {
+		t.Fatalf("a switched-on job with NEITHER side is a draft and must load: %v", err)
+	}
+}
+
+// TestAJobWithOneSideIsStillRefused is the other half of the rule above, and it
+// is the half that has to keep holding.
+//
+// A job with neither side is a draft nothing can reach. A job with ONE side is
+// somebody who filled in half a form, and it is the shape that runs and does
+// something surprising - so being switched on, it is refused when the file is
+// read, exactly as it always was. Both directions are pinned here because the
+// draft rule was widened once and the widening must not swallow this case.
+func TestAJobWithOneSideIsStillRefused(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "arrowloop.json")
+
+	for _, half := range []string{
+		`{"jobs":[{"name":"half","left":"/data","right":"","state":"state/x.db"}]}`,
+		`{"jobs":[{"name":"half","left":"","right":"/backup","state":"state/x.db"}]}`,
+	} {
+		if err := os.WriteFile(path, []byte(half), 0o644); err != nil {
+			t.Fatalf("write: %v", err)
+		}
+		if _, err := Load(path); err == nil {
+			t.Fatalf("a switched-on job with one side was accepted: %s", half)
+		}
+	}
+
+	// And switched off it loads, because a held job cannot run either.
+	held := `{"jobs":[{"name":"half","left":"/data","right":"","state":"state/x.db","disabled":true}]}`
+	if err := os.WriteFile(path, []byte(held), 0o644); err != nil {
+		t.Fatalf("write: %v", err)
+	}
+	if _, err := Load(path); err != nil {
+		t.Fatalf("a held job with one side must still load: %v", err)
 	}
 }
 

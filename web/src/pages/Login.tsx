@@ -68,7 +68,7 @@ export function Login({ onIn }: { onIn: () => void }) {
             <div className="flex justify-end">
               <Button
                 label={t('login.submit')}
-                labelKey={null}
+                labelKey="login.submit"
                 glyph={<IconConfirm />}
                 tone="accent"
                 type="submit"

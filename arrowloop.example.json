@@ -69,7 +69,6 @@
       "right": "//nas/share",
       "state": "state/server-share.db",
       "schedule": "0 3 * * *",
-      "reportOnly": true,
       "foldCase": true
     }
   ]

@@ -84,7 +84,7 @@ function Storage({
         <div className="flex justify-end">
           <Button
             label={t('targets.addStorage')}
-            labelKey={null}
+            labelKey="targets.addStorage"
             onClick={() => {
               setAdding(true)
               setEditing(null)
@@ -207,15 +207,20 @@ function RemoteRow({
           onClick={check}
           disabled={checking}
           title={checking ? t('targets.checking') : t('targets.check')}
+          labelKey={checking ? 'targets.checking' : 'targets.check'}
           hint={t('targets.checkHint')}
         >
           <IconCheck />
         </IconAction>
         <RowActions>
-          <IconAction onClick={onEdit} title={t('targets.edit')}>
+          <IconAction onClick={onEdit} title={t('targets.edit')} labelKey="targets.edit">
             <IconEdit />
           </IconAction>
-          <IconAction title={t('targets.delete')} onClick={() => setConfirming(true)}>
+          <IconAction
+            title={t('targets.delete')}
+            labelKey="targets.delete"
+            onClick={() => setConfirming(true)}
+          >
             <IconDelete />
           </IconAction>
         </RowActions>
@@ -359,8 +364,8 @@ function RemoteForm({
       {error && <p className="text-xs text-statusFail">{error}</p>}
 
       <div className="flex items-center gap-2">
-        <Button label={t('targets.save')} labelKey={null} tone="accent" onClick={() => void save()} disabled={busy || !name.trim() || !kind} />
-        <Button label={t('targets.cancel')} labelKey={null} onClick={() => onDone(false)} />
+        <Button label={t('targets.save')} labelKey="targets.save" tone="accent" onClick={() => void save()} disabled={busy || !name.trim() || !kind} />
+        <Button label={t('targets.cancel')} labelKey="targets.cancel" onClick={() => onDone(false)} />
       </div>
     </div>
   )
@@ -383,7 +388,7 @@ function Drives({ volumes, onChanged }: { volumes: Volume[]; onChanged: () => vo
         <div className="flex justify-end">
           <Button
             label={t('targets.registerDrive')}
-            labelKey={null}
+            labelKey="targets.registerDrive"
             onClick={() => setAdding(true)}
           />
         </div>
@@ -441,8 +446,9 @@ function DriveRow({ volume, onChanged }: { volume: Volume; onChanged: () => void
 
       <div className="flex shrink-0 items-center gap-1.5">
         <IconAction
-          tone={copied ? 'active' : 'neutral'}
+          tone={copied ? 'accent' : 'subtle'}
           title={copied ? t('targets.copied') : t('targets.copyPath')}
+          labelKey={copied ? 'targets.copied' : 'targets.copyPath'}
           onClick={() => {
             void navigator.clipboard?.writeText(volume.path).then(() => {
               setCopied(true)
@@ -457,6 +463,7 @@ function DriveRow({ volume, onChanged }: { volume: Volume; onChanged: () => void
               rather than standing beside it as a lone (i) among icons. */}
           <IconAction
             title={t('targets.forget')}
+            labelKey="targets.forget"
             hint={t('targets.forgetHint')}
             onClick={() => {
               void api.forgetVolume(volume.id).then(onChanged)
@@ -510,7 +517,7 @@ function DriveForm({ onDone }: { onDone: (saved: boolean) => void }) {
       <div className="py-4">
         <Empty>{t('targets.noCandidates')}</Empty>
         <div className="flex justify-center">
-          <Button label={t('targets.cancel')} labelKey={null} onClick={() => onDone(false)} />
+          <Button label={t('targets.cancel')} labelKey="targets.cancel" onClick={() => onDone(false)} />
         </div>
       </div>
     )
@@ -535,8 +542,8 @@ function DriveForm({ onDone }: { onDone: (saved: boolean) => void }) {
       {error && <p className="text-xs text-statusFail">{error}</p>}
 
       <div className="flex items-center gap-2">
-        <Button label={t('targets.save')} labelKey={null} tone="accent" onClick={() => void save()} disabled={busy || !mount} />
-        <Button label={t('targets.cancel')} labelKey={null} onClick={() => onDone(false)} />
+        <Button label={t('targets.save')} labelKey="targets.save" tone="accent" onClick={() => void save()} disabled={busy || !mount} />
+        <Button label={t('targets.cancel')} labelKey="targets.cancel" onClick={() => onDone(false)} />
       </div>
     </div>
   )

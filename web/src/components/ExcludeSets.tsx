@@ -45,6 +45,7 @@ export function ExcludeSetEditor({
             <span className="min-w-0 flex-1 truncate font-mono text-xs font-medium">{name}</span>
             <IconAction
               title={t('sets.remove')}
+              labelKey="sets.remove"
               onClick={() => {
                 // Removing a set does NOT go looking for the jobs that use it.
                 // The loader refuses a job asking for a set that is gone, which
@@ -81,6 +82,7 @@ export function ExcludeSetEditor({
         </div>
         <IconAction
           title={t('sets.add')}
+          labelKey="sets.add"
           onClick={() => {
             const name = adding.trim()
             // An empty name, or one that is already taken. Overwriting a set

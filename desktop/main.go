@@ -93,9 +93,10 @@ func run() error {
 	}
 	defer hist.Close()
 
-	runner := daemon.New(cfg, hist, notifier(cfg), func(format string, args ...any) {
+	desktopLog := func(format string, args ...any) {
 		log.Printf(format, args...)
-	})
+	}
+	runner := daemon.New(cfg, hist, notifier(cfg), desktopLog)
 
 	ui, err := fs.Sub(assets, "frontend/dist")
 	if err != nil {
@@ -106,6 +107,7 @@ func run() error {
 		History: hist, Runner: runner, UI: ui,
 		Placeholder: webui.Placeholder,
 		Window:      window,
+		Log:         desktopLog,
 	}
 
 	// An autostart entry records a path, and a path is a promise about where

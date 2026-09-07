@@ -10,6 +10,8 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"sync"
+	"time"
 
 	"github.com/rclone/rclone/fs"
 	"github.com/rclone/rclone/fs/accounting"
@@ -64,6 +66,92 @@ func StartAccounting(ctx context.Context, bwLimit string) error {
 		}
 	}
 	accounting.Start(ctx)
+	bwState.Lock()
+	// A timetable needs a ticker to follow it, and accounting.Start only starts
+	// one when the timetable it sees at BOOT has more than one entry. Remember
+	// which happened, so a limit set later can start the ticker that was never
+	// started rather than quietly having no way to change slot.
+	bwState.ticking = len(ci.BwLimit) > 1
+	bwState.started = true
+	bwState.Unlock()
+	return nil
+}
+
+// bwState remembers what StartAccounting did, because rclone does not.
+//
+// accounting.Start is not safe to call twice: it would start a second ticker
+// goroutine every time, and after a few settings saves the process would have a
+// small crowd of them all writing the same limit.
+var bwState struct {
+	sync.Mutex
+	started bool
+	ticking bool
+}
+
+// ValidateBwLimit says whether rclone would accept a limit, applying nothing.
+//
+// It exists so the configuration file can be checked the same way every other
+// setting in it is. Without it, a typed-in limit saved cleanly and the program
+// then refused to START on the next boot, which is the worst place to find out:
+// the setting that broke it is in a file, the message appears on a console
+// nobody is looking at, and the interface that could have said so is the one
+// thing that is no longer running.
+func ValidateBwLimit(bwLimit string) error {
+	if bwLimit == "" {
+		return nil
+	}
+	var t fs.BwTimetable
+	if err := t.Set(bwLimit); err != nil {
+		return fmt.Errorf("bandwidth limit %q: %w", bwLimit, err)
+	}
+	return nil
+}
+
+// ApplyBwLimit changes the limit on a process that is already running.
+//
+// Saving a bandwidth limit used to write it to the file and nothing else, so
+// the setting was correct, the interface showed it, and the next transfer went
+// at full speed until somebody restarted the program. A setting that takes
+// effect at an unannounced later time is worse than one that says it needs a
+// restart.
+//
+// What it can promise, exactly:
+//
+//   - A plain limit ("1M", "off") applies to the next transferred block. The
+//     token bucket is replaced outright rather than waiting for a tick.
+//   - A timetable applies its CURRENT slot the same way, and its later slots
+//     are followed by the minute ticker. If the process booted without a
+//     timetable there was no ticker, so one is started here - once, which is
+//     what bwState is for.
+//
+// Transfers already in flight keep the bucket they started with for whatever is
+// left of the current block, which is a fraction of a second and not worth
+// tearing a transfer down over.
+func ApplyBwLimit(ctx context.Context, bwLimit string) error {
+	if err := ValidateBwLimit(bwLimit); err != nil {
+		return err
+	}
+	ci := fs.GetConfig(ctx)
+	var t fs.BwTimetable
+	if bwLimit != "" {
+		if err := t.Set(bwLimit); err != nil {
+			return fmt.Errorf("bandwidth limit %q: %w", bwLimit, err)
+		}
+	}
+	ci.BwLimit = t
+
+	bwState.Lock()
+	defer bwState.Unlock()
+	if !bwState.started {
+		// Nothing has started accounting yet, so there is no bucket to change.
+		// Whoever starts it will read the value that was just written.
+		return nil
+	}
+	accounting.TokenBucket.SetBwLimit(t.LimitAt(time.Now()).Bandwidth)
+	if len(t) > 1 && !bwState.ticking {
+		accounting.TokenBucket.StartTokenTicker(ctx)
+		bwState.ticking = true
+	}
 	return nil
 }
 

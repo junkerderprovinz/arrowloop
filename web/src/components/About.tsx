@@ -35,7 +35,7 @@ const COFFEE = 'https://buymeacoffee.com/junkerderprovinz'
  * is not built from is worse than no number, because it sends somebody to the
  * wrong changelog.
  */
-const GLIMSTONE = '1.7.3'
+const GLIMSTONE = '1.7.6'
 
 export function About({ version }: { version: string | null }) {
   const { t } = useT()

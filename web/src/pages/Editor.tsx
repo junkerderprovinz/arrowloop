@@ -4,7 +4,7 @@ import { Field, Lines, Text } from '../components/Field'
 import { ToggleRow } from '../components/ToggleRow'
 import { api, type RawJob } from '../lib/api'
 import { DirectionSwitch } from '../components/Direction'
-import { QuietPeriod } from '../components/QuietPeriod'
+import { DEFAULT_QUIET, QuietPeriod } from '../components/QuietPeriod'
 import { Selector } from '../components/Selector'
 import { ExcludeSetPicker } from '../components/ExcludeSets'
 import { FolderPicker, PickButton } from '../components/FolderPicker'
@@ -146,9 +146,24 @@ export function useJobConfig(onSaved: () => void) {
    * the same thing are one job as far as every list, log and record is
    * concerned, and the second plus press is exactly when that happens.
    *
-   * It starts disabled on purpose: a job with no sides yet is not one anybody
-   * wants a scheduler to reach, and switching it on is the deliberate act that
-   * says it is ready.
+   * It arrives SWITCHED ON, and it used to arrive switched off.
+   *
+   * The old reasoning was that a job with no sides yet is not one a scheduler
+   * should reach, which is true and is not this flag's job: a new job also has
+   * no schedule, so there is nothing for a scheduler to reach it with. What the
+   * flag actually did was make every job somebody created say "abgeschaltet" on
+   * its own card until they noticed a switch at the bottom of the form and
+   * turned it off again. jdp: "Abgeschaltet: das find ich total daemlich. ein
+   * auftrag soll standardmaessig aktiviert sein."
+   *
+   * The validator moved with it rather than being weakened: an enabled job with
+   * ONE side and not the other is still refused, because that is a job somebody
+   * half filled in. An enabled job with NEITHER side is a draft, and a draft is
+   * what this button makes.
+   *
+   * The quiet period is seeded for the same reason the sides are not: an empty
+   * duration is a real setting that means "act on the first event", which is the
+   * one answer nobody wants when a folder of a thousand files arrives at once.
    */
   const add = useCallback((): number => {
     setSaved(false)
@@ -161,7 +176,7 @@ export function useJobConfig(onSaved: () => void) {
       left: '',
       right: '',
       state: `state/${name}.db`,
-      disabled: true,
+      quietPeriod: DEFAULT_QUIET,
       exclude: [...DEFAULT_EXCLUDES],
     }
     setJobs([...current, next])
@@ -244,6 +259,15 @@ export function useJobConfig(onSaved: () => void) {
    * end of one - nobody wants two identical jobs, they want the second one
    * pointing somewhere else - so it behaves like the plus button: a draft in
    * the form, saved when it says what it is for.
+   *
+   * And it is the one job that still arrives HELD, which is a deliberate
+   * exception to "a new job is switched on" rather than a leftover. A fresh job
+   * has no sides, so switching it on can start nothing. A copy has both sides
+   * already, pointing at the same two trees as its original, with a state
+   * database of its own: let go on the same schedule, the pair would compare the
+   * same files against two different records and undo each other's work. It is
+   * released by the same switch every other job uses, once it points somewhere
+   * else.
    */
   const duplicate = useCallback(
     (at: number): number => {
@@ -321,7 +345,7 @@ export function JobForm({
             </Field>
           </div>
           <div className="shrink-0 pt-[1.55rem]" aria-hidden>
-            <div className="h-[var(--btn-h)] w-[var(--btn-h)]" />
+            <div className="h-[var(--btn-h-key)] w-[var(--btn-h-key)]" />
           </div>
           <div className="min-w-0 flex-1">
             <Field label={t('edit.state')} hint={t('edit.stateHint')}>
@@ -347,7 +371,16 @@ export function JobForm({
               an icon-only control, and the empty caption row went with it. The
               spacer keeps the arrow level with the two boxes rather than with
               the words above them. */}
-          <div className="flex shrink-0 flex-col gap-1.5 pt-[1.55rem]">
+          {/* 1.3rem rather than the 1.55rem the two spacer rows use, and the
+              quarter rem of difference is the whole point. The direction switch
+              is a key control now (GlimStone 1.7.5), so it is half a rem taller
+              than the boxes on either side of it; padded to the same top edge
+              it would hang a quarter rem below them, which is the four-pixel
+              kind of difference that gets reported as a bug. Centred against
+              its neighbours, eight pixels of extra height read as deliberate,
+              which is what the language's own rule for a key control in a field
+              row asks for. */}
+          <div className="flex shrink-0 flex-col gap-1.5 pt-[1.3rem]">
             <DirectionSwitch
               direction={job.direction ?? 'both'}
               onChange={(v) => patch({ direction: v })}
@@ -388,13 +421,11 @@ export function JobForm({
                 onLive={(v) => patch({ watch: v })}
                 settle={job.watchSettle ?? ''}
                 onSettle={(v) => patch({ watchSettle: v })}
-                reportOnly={!!job.reportOnly}
-                onReportOnly={(v) => patch({ reportOnly: v })}
               />
             </Field>
           </div>
           <div className="shrink-0 pt-[1.55rem]" aria-hidden>
-            <div className="h-[var(--btn-h)] w-[var(--btn-h)]" />
+            <div className="h-[var(--btn-h-key)] w-[var(--btn-h-key)]" />
           </div>
           <div className="min-w-0 flex-1">
             <Field label={t('edit.quietPeriod')} hint={t('edit.quietHint')}>
@@ -455,11 +486,15 @@ export function JobForm({
       </div>
 
       <div className="mt-5 flex flex-col gap-3">
+        {/* Positive, not negative. It was "Abgeschaltet", so the row read as
+            off when the job was on and the only way to run a job was to switch
+            something off - which is also why every new job announced itself as
+            disabled. A switch is named for the state it turns ON. */}
         <ToggleRow
-          label={t('edit.disabled')}
-          checked={!!job.disabled}
-          onChange={(v) => patch({ disabled: v })}
-          hint={t('edit.disabledHint')}
+          label={t('edit.active')}
+          checked={!job.disabled}
+          onChange={(v) => patch({ disabled: !v })}
+          hint={t('edit.activeHint')}
         />
         {/* The watcher used to be here, and it moved INTO the schedule field
             above: jdp went looking for it there ("zeitplan: echtzeit option

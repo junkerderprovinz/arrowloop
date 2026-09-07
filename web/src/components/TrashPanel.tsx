@@ -78,6 +78,7 @@ export function TrashPanel({ job }: { job: string }) {
             <li key={e.remote} className="flex items-start gap-2 text-xs">
               <IconAction
                 title={t('trash.restore')}
+                labelKey="trash.restore"
                 onClick={() => {
                   setBusy(true)
                   setError(null)
@@ -118,7 +119,7 @@ export function TrashPanel({ job }: { job: string }) {
         <NumberField value={days} min={1} max={3650} label={t('trash.days')} onChange={setDays} />
         <Button
           label={t('trash.prune')}
-          labelKey={null}
+          labelKey="trash.prune"
           glyph={<IconDelete />}
           busy={busy}
           disabled={busy}

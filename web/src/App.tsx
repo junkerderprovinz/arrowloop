@@ -419,10 +419,13 @@ function LogOut() {
   if (!required) return null
   return (
     <div className="flex justify-end">
+      {/* No explicit glyph any more: the resolver maps this key, and the one
+          written here was a reset arrow, which means "put this back" rather
+          than "leave". A glyph passed at a call site always wins over the
+          resolver, so a wrong one written once stays wrong everywhere. */}
       <Button
         label={t('login.logout')}
-        labelKey={null}
-        glyph={<IconReset />}
+        labelKey="login.logout"
         onClick={() => {
           // Reloaded rather than routed back to the login box in place. Every
           // piece of state on the page was fetched with a session that is now
@@ -745,7 +748,6 @@ function ResetBadge({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      title={tip}
       data-tip={tip}
       aria-label={tip}
       // The same 32px outer box as a swatch, reached the same way: a 2px border

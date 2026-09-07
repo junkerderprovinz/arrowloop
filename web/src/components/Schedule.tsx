@@ -6,7 +6,7 @@ import { hueVars, rainbowAt } from '../lib/appearance'
 import { Selector } from './Selector'
 import { NumberField, Text } from './Field'
 import { QuietPeriod } from './QuietPeriod'
-import { ToggleRow } from './ToggleRow'
+import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { TimePicker, formatTime, parseTime } from './TimePicker'
 import { useT } from '../lib/i18n'
 
@@ -25,9 +25,38 @@ import { useT } from '../lib/i18n'
  * verbatim. An editor that silently simplified a schedule it did not understand
  * would destroy the one thing it was opened to look at.
  */
-export type ScheduleMode = 'off' | 'every' | 'daily' | 'weekly' | 'cron'
+export type ScheduleMode = 'off' | 'live' | 'every' | 'daily' | 'weekly' | 'cron'
 
-export const SCHEDULE_MODES: ScheduleMode[] = ['off', 'every', 'daily', 'weekly', 'cron']
+/**
+ * Real time is a POSITION in this list, not a switch beside it.
+ *
+ * It shipped as a switch, with a comment explaining why it could not be a mode:
+ * a watcher only covers a local side, it can miss an event and never know it
+ * did, and the schedule is what eventually notices. All of that is still true.
+ * What was wrong was the conclusion. jdp: "Echtzeit soll ein eigener Punkt im
+ * zeitplan selektor sein. also ein eigener zeitplan. kein toggle." A person
+ * choosing how a job runs is choosing one answer, and offering four answers in
+ * a strip plus a fifth as a switch underneath makes the fifth read as an extra
+ * rather than as an option - which is exactly how it was found missing in the
+ * first place ("zeitplan: echtzeit option fehlt").
+ *
+ * The engine's requirement survives as the BACKSTOP: picking real time still
+ * writes a schedule, shown right there and editable, and the engine refuses a
+ * watching job that has none. So the safety net is visible instead of implied,
+ * which is better than where it was. The one thing that goes is watching
+ * combined with a daily or weekly schedule; a backstop is a cadence, and
+ * "every N" says that.
+ */
+export const SCHEDULE_MODES: ScheduleMode[] = ['off', 'live', 'every', 'daily', 'weekly', 'cron']
+
+/**
+ * What the backstop is when real time is picked and nothing else says.
+ *
+ * An hour, because the backstop is not the mechanism: it is what catches the
+ * event the watcher slept through, and a shorter one would make the watcher
+ * pointless while a longer one leaves a miss unnoticed for most of a day.
+ */
+export const BACKSTOP: { count: number; unit: EveryUnit } = { count: 1, unit: 'hour' }
 
 /**
  * The weekdays, stored as cron's own numbers so nothing has to be mapped at the
@@ -80,6 +109,11 @@ export function buildSchedule(s: ScheduleState): string {
   switch (s.mode) {
     case 'off':
       return ''
+    // Real time writes the same expression the "every N" mode does, because
+    // that IS what it writes: the backstop behind the watcher. The two differ
+    // in whether the job also watches, which is stored on the job rather than
+    // in the expression.
+    case 'live':
     case 'every': {
       // `@every` rather than a step expression, because the two are not the
       // same promise: `*/6` in the hours column fires at 0, 6, 12 and 18
@@ -158,8 +192,6 @@ export function ScheduleField({
   onChange,
   live,
   onLive,
-  reportOnly,
-  onReportOnly,
   settle,
   onSettle,
 }: {
@@ -168,33 +200,16 @@ export function ScheduleField({
   /**
    * Whether this job also reacts to changes as they happen.
    *
-   * It lives HERE rather than three rows further down among the toggles,
-   * because it answers the same question the strip above answers and jdp went
-   * looking for it here: "zeitplan: echtzeit option fehlt."
-   *
-   * It is NOT a fifth mode, and that is deliberate rather than a shortcut. The
-   * engine's own note says a watcher does not replace a schedule and is not
-   * meant to: only a local side can be watched at all, and a watcher that
-   * missed an event has no way to know it did. Made mutually exclusive with the
-   * schedule, "real time" would quietly remove the thing that eventually
-   * notices what the watcher slept through. So it sits beside the schedule as
-   * an addition to it, which is also what it actually is.
+   * It is not a switch any more, it is the `live` position in the strip above,
+   * and this prop is what stores that position: the expression alone cannot
+   * say it, because real time and "every N" write the same backstop. See
+   * SCHEDULE_MODES for why the mode moved and what the backstop is for.
    */
   live?: boolean
   onLive?: (next: boolean) => void
   /** How long the tree must go quiet before a change counts as finished. */
   settle?: string
   onSettle?: (next: string) => void
-  /**
-   * Whether the schedule only REPORTS.
-   *
-   * It belongs beside the schedule because it changes what the schedule does,
-   * and nowhere else: pressing the button still writes, which is the whole
-   * distinction. A person who is not yet ready to let a job write can put it on
-   * a schedule like any other and read the log.
-   */
-  reportOnly?: boolean
-  onReportOnly?: (next: boolean) => void
 }) {
   const { t } = useT()
   const derived = parseSchedule(value)
@@ -211,19 +226,24 @@ export function ScheduleField({
    * The same trap catches "every 24h" and "daily", which describe the same
    * cadence and cannot be told apart from the expression alone.
    *
+   * Real time is the third thing the expression cannot say, and it is stored
+   * separately for that reason rather than as a convenience: `@every 1h` on a
+   * watching job and `@every 1h` on one that only keeps to the clock are the
+   * same string. So the opening mode reads the watch flag first.
+   *
    * The stored value is still the single source of truth for the SETTINGS. Only
    * the choice of which picker is open lives here, and it is re-seeded whenever
    * the value changes from outside, so opening another job never shows the last
    * one's mode.
    */
-  const [mode, setMode] = useState<ScheduleMode>(derived.mode)
+  const [mode, setMode] = useState<ScheduleMode>(live ? 'live' : derived.mode)
   const seen = useRef(value)
   useEffect(() => {
     if (seen.current !== value) {
       seen.current = value
-      setMode(parseSchedule(value).mode)
+      setMode(live ? 'live' : parseSchedule(value).mode)
     }
-  }, [value])
+  }, [value, live])
 
   const state: ScheduleState = { ...derived, mode }
 
@@ -233,6 +253,41 @@ export function ScheduleField({
     const built = buildSchedule(next)
     seen.current = built
     onChange(built)
+  }
+
+  /**
+   * Picking a mode, including the one that is not only a mode.
+   *
+   * Real time is stored in two places at once, the watch flag and the backstop
+   * expression, so every OTHER position has to switch the flag back off. A
+   * strip whose fifth position turns something on and whose other five leave it
+   * alone is a strip that quietly keeps watching a job somebody moved to a
+   * nightly schedule.
+   */
+  function pick(next: ScheduleMode) {
+    if (next === 'live') {
+      onLive?.(true)
+      // A backstop of "no schedule" is what the engine refuses outright, so
+      // picking real time from "off" seeds one rather than writing a job that
+      // cannot be saved. An existing cadence is kept: somebody moving a job
+      // from six-hourly to real time did not ask to lose the six hours.
+      const seeded =
+        state.mode === 'off' || value.trim() === ''
+          ? { everyCount: BACKSTOP.count, everyUnit: BACKSTOP.unit }
+          : {}
+      update({ mode: next, ...seeded })
+      return
+    }
+    onLive?.(false)
+    // Entering the cron mode with nothing in the field starts from the
+    // schedule that was already set, so the expression is editable rather than
+    // empty and invalid.
+    if (next === 'cron' && state.cron.trim() === '') {
+      const from = state.mode === 'off' || state.mode === 'live' ? 'daily' : state.mode
+      update({ mode: next, cron: buildSchedule({ ...state, mode: from }) })
+      return
+    }
+    update({ mode: next })
   }
 
   function toggleDay(day: number) {
@@ -251,53 +306,34 @@ export function ScheduleField({
         scale="small"
         label={t('edit.schedule')}
         value={state.mode}
-        onChange={(next) => {
-          // Entering the cron mode with nothing in the field starts from the
-          // schedule that was already set, so the expression is editable rather
-          // than empty and invalid.
-          if (next === 'cron' && state.cron.trim() === '') {
-            update({
-              mode: next,
-              cron: buildSchedule({ ...state, mode: state.mode === 'off' ? 'daily' : state.mode }),
-            })
-            return
-          }
-          update({ mode: next })
-        }}
+        onChange={pick}
         options={SCHEDULE_MODES.map((m) => ({ value: m, label: t(`schedule.${m}` as const) }))}
       />
 
-      {/* Real time, as an addition to the strip above rather than one of its
-          positions. See the `live` prop for why it cannot be a mode. */}
-      {onReportOnly && (
-        <ToggleRow
-          label={t('schedule.reportOnly')}
-          checked={!!reportOnly}
-          onChange={onReportOnly}
-          hint={t('schedule.reportOnlyHint')}
-        />
-      )}
-
-      {onLive && (
+      {/* Real time's own two settings, and both of them are here rather than
+          three rows further down among the toggles because both answer the
+          question the strip above just asked. The settle time is what stops a
+          folder of a thousand files becoming a thousand runs; the backstop is
+          what notices the event the watcher missed, and the engine refuses a
+          watching job without one, so it is shown rather than implied. */}
+      {state.mode === 'live' && (
         <div className="flex flex-col gap-3">
-          <ToggleRow
-            label={t('schedule.live')}
-            checked={!!live}
-            onChange={onLive}
-            hint={t('schedule.liveHint')}
-          />
-          {live && (
+          {onSettle && (
             <div className="flex flex-wrap items-center gap-3">
-              <span className="text-xs uppercase tracking-wider text-carbon-textMuted">
+              <span className="flex items-center gap-1.5 text-xs uppercase tracking-wider text-carbon-textMuted">
                 {t('schedule.settle')}
+                <InfoBubble tip={t('schedule.liveHint')} />
               </span>
-              {/* The same control the quiet period uses, because it is the same
-                  kind of value: a small duration somebody dials rather than
-                  types. Copying a folder in produces one event per file, so
-                  this is what stops a thousand files becoming a thousand runs. */}
-              {onSettle && <QuietPeriod value={settle ?? ''} onChange={onSettle} />}
+              <QuietPeriod value={settle ?? ''} onChange={onSettle} />
             </div>
           )}
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="flex items-center gap-1.5 text-xs uppercase tracking-wider text-carbon-textMuted">
+              {t('schedule.backstop')}
+              <InfoBubble tip={t('schedule.backstopHint')} />
+            </span>
+            <EveryPicker state={state} update={update} />
+          </div>
         </div>
       )}
 
@@ -306,19 +342,7 @@ export function ScheduleField({
           <span className="text-xs uppercase tracking-wider text-carbon-textMuted">
             {t('schedule.everyLabel')}
           </span>
-          <NumberField
-            value={state.everyCount}
-            min={1}
-            max={999}
-            label={t('schedule.everyLabel')}
-            onChange={(everyCount) => update({ everyCount })}
-          />
-          <Selector<EveryUnit>
-            scale="small"
-            value={state.everyUnit}
-            onChange={(everyUnit) => update({ everyUnit })}
-            options={EVERY_UNITS.map((u) => ({ value: u, label: t(`schedule.unit.${u}` as const) }))}
-          />
+          <EveryPicker state={state} update={update} />
         </div>
       )}
 
@@ -380,5 +404,39 @@ export function ScheduleField({
         />
       )}
     </div>
+  )
+}
+
+/**
+ * How many, and of what. One component, two places.
+ *
+ * The cadence panel and the backstop panel ask the identical question, and
+ * written out twice they would answer it with two number boxes that drift apart
+ * at the first change to either.
+ */
+function EveryPicker({
+  state,
+  update,
+}: {
+  state: ScheduleState
+  update: (patch: Partial<ScheduleState>) => void
+}) {
+  const { t } = useT()
+  return (
+    <>
+      <NumberField
+        value={state.everyCount}
+        min={1}
+        max={999}
+        label={t('schedule.everyLabel')}
+        onChange={(everyCount) => update({ everyCount })}
+      />
+      <Selector<EveryUnit>
+        scale="small"
+        value={state.everyUnit}
+        onChange={(everyUnit) => update({ everyUnit })}
+        options={EVERY_UNITS.map((u) => ({ value: u, label: t(`schedule.unit.${u}` as const) }))}
+      />
+    </>
   )
 }

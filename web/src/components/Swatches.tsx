@@ -44,7 +44,6 @@ function Disc({
       <button
         ref={button}
         type="button"
-        title={label}
         data-tip={label}
         aria-label={label}
         aria-pressed={active}

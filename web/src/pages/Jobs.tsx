@@ -19,6 +19,7 @@ import { JobForm, useJobConfig } from './Editor'
 import { api } from '../lib/api'
 import type { Job, Run, RunEvent } from '../lib/api'
 import { translateSide, useT, type TranslationKey } from '../lib/i18n'
+import { describeCadence, readCadence } from '../lib/cadence'
 
 /**
  * The jobs tab: what exists, what is happening, and the form to change it.
@@ -133,8 +134,23 @@ export function Jobs({
         {config.saved && !config.error && (
           <p className="me-auto text-xs text-statusOk">{t('edit.savedNote')}</p>
         )}
+        {/* One step up, and the only control in this app that takes it. The
+            page exists to hold jobs and this is the button that makes one, so
+            it is the thing somebody arriving at an empty list has to find.
+            GlimStone 1.7.5's second height, which is what "haben wir nicht eine
+            groessere standardisierte groesse?" turned out to need: there was no
+            such size, and the answer was to give the language one rather than
+            to raise every button in the house.
+
+            hueIndex, because it stands outside every card: a Card rebinds
+            --accent for its whole subtree, so a row action inside one is
+            already painting in that card's colour, and this one has no card to
+            inherit from. Position zero, the same the first job card takes. */}
         <IconAction
           title={t('edit.add')}
+          labelKey="edit.add"
+          size="key"
+          hueIndex={0}
           onClick={() => {
             const at = config.add()
             setEditing(at)
@@ -187,7 +203,7 @@ export function Jobs({
                     <div className="flex justify-end">
                       <Button
                         label={config.busy ? t('edit.checking') : t('edit.save')}
-                        labelKey={null}
+                        labelKey={config.busy ? 'edit.checking' : 'edit.save'}
                         glyph={<IconSave />}
                         tone="accent"
                         busy={config.busy}
@@ -203,41 +219,54 @@ export function Jobs({
                   </div>
                 ) : (
                 <div className="flex flex-col gap-2">
-                  {/* The arrow sits between the two sides because that is where
-                      the question is: which way does this go. Both sides hug
-                      the arrow rather than stretching to the edges, where a
-                      pair of short paths reads as two unrelated facts with a
-                      gap in the middle. */}
-                  {/* The two sides and the arrow between them, one step up in
-                      size from the facts below. This row is what the card is
-                      ABOUT and it was set in the same 12px as the schedule and
-                      the timestamp under it, so nothing on the card led. jdp:
-                      "der text der ordner und das pfeil symbol soll groesser
-                      sein." The arrow grows with the text rather than by its
-                      own number, because it is punctuation in that sentence. */}
-                  <div className="flex items-center gap-2.5">
-                    <JobMark status={statusOf(j, lastFailed(j.name))} />
-                    <p className="flex min-w-0 flex-1 flex-wrap items-center gap-2 text-sm text-carbon-text">
+                  {/* The card's one sentence: the mark, the left side, the
+                      arrow, the right side. The arrow sits between the two
+                      because that is where the question is, and both sides hug
+                      it rather than stretching to the edges, where a pair of
+                      short paths reads as two unrelated facts with a gap in the
+                      middle.
+
+                      Set one step up from everything under it, because this row
+                      is what the card is ABOUT and it used to be the same 12px
+                      as the schedule and the timestamp, so nothing on the card
+                      led. jdp: "der PFad der linke seite soll in grosser
+                      schrift da stehen, dann das pfeilsymbol, dann der pfad der
+                      rechtenseite ebenfalls gross." The arrow grows with the
+                      text rather than by a number of its own, because it is
+                      punctuation in that sentence.
+
+                      The mark stands at the far left and IS the status display
+                      ("ganz links soll das AL Logo in grau stehen und als
+                      statusanzeige fungieren"). It is the two-arrow loop the
+                      logo is drawn from rather than the logo, for the reason
+                      JobMark gives at length: a multi-colour drawing recoloured
+                      to a status hue is not a logo any more. Grey is one of the
+                      four states it wears and the one a held job gets. */}
+                  <div className="flex flex-wrap items-start gap-3">
+                    <JobMark status={statusOf(j, lastFailed(j.name))} size={28} />
+                    <p className="flex min-w-0 flex-1 flex-wrap items-center gap-2.5 text-base text-carbon-text">
                       <span className="max-w-[45%] shrink truncate" title={j.left}>
                         {j.left}
                       </span>
-                      <DirectionMark direction={j.direction} size={16} />
+                      <DirectionMark direction={j.direction} size={20} />
                       <span className="max-w-[45%] shrink truncate" title={j.right}>
                         {j.right}
                       </span>
                     </p>
-                  </div>
+                    {/* What it does and when it last did it, at the top right,
+                        in words. It used to be a row of three under the paths:
+                        a badge saying "abgeschaltet", the word "abgeschaltet"
+                        again beside it, and "noch nie gelaufen". jdp: "kann
+                        weg: abgeschaltet abgeschaltet noch nie gelaufen."
 
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-carbon-textMuted">
-                    <State job={j} />
-                    <span>
-                      {j.disabled
-                        ? t('jobs.state.disabled')
-                        : j.schedule || t('jobs.schedule.onRequest')}
-                    </span>
-                    <span>
-                      {j.lastSuccess ? <Since when={j.lastSuccess} /> : t('jobs.neverWorked')}
-                    </span>
+                        So the state is carried by the mark on the left, which
+                        already had it, and this says the two things nothing
+                        else on the card could: the cadence in a sentence rather
+                        than as a cron expression, and the last run with a real
+                        date under it. A job that has never run gets no second
+                        line at all, because "never" is exactly what an empty
+                        space says. */}
+                    <Cadence job={j} />
                   </div>
 
                   {/* The live detail moved here from the card that used to sit
@@ -255,21 +284,38 @@ export function Jobs({
                       same treatment as the badges beside it and carries its
                       meaning in its glyph, its tip and the window it opens. */}
                   <div className="flex flex-wrap items-center justify-end gap-2">
+                    {/* The activity fold shares this row rather than taking one
+                        of its own under it. Two rows of controls under a
+                        two-line card is a card that is mostly furniture, and
+                        the fold belongs with the other things you can do to
+                        this job. `me-auto` puts it at the far left, so the row
+                        reads as "look at it" on one side and "act on it" on the
+                        other. */}
+                    <JobActivity
+                      runs={runs.filter((r) => r.Job === j.name)}
+                      onChanged={onSaved}
+                    />
                     {at !== null && (
                       <>
                         <IconAction
                           title={t('edit.editJob')}
+                          labelKey="edit.editJob"
                           onClick={() => setEditing(at === editing ? null : at)}
                         >
                           <IconEdit />
                         </IconAction>
                         <IconAction
                           title={t('edit.duplicate')}
+                          labelKey="edit.duplicate"
                           onClick={() => setEditing(config.duplicate(at))}
                         >
                           <IconCopy />
                         </IconAction>
-                        <IconAction title={t('edit.remove')} onClick={() => setRemoving(at)}>
+                        <IconAction
+                          title={t('edit.remove')}
+                          labelKey="edit.remove"
+                          onClick={() => setRemoving(at)}
+                        >
                           <IconDelete />
                         </IconAction>
                       </>
@@ -283,6 +329,7 @@ export function Jobs({
                     {at !== null && (
                       <IconAction
                         title={j.disabled ? t('jobs.resume') : t('jobs.pause')}
+                        labelKey={j.disabled ? 'jobs.resume' : 'jobs.pause'}
                         onClick={() => void config.setDisabled(at, !j.disabled)}
                       >
                         {j.disabled ? <IconRun /> : <IconPause />}
@@ -290,7 +337,7 @@ export function Jobs({
                     )}
                     <Button
                       label={t('jobs.runNow')}
-                      labelKey={null}
+                      labelKey="jobs.runNow"
                       glyph={<IconRun />}
                       title={t('jobs.runNowHint')}
                       disabled={j.running}
@@ -298,7 +345,7 @@ export function Jobs({
                     />
                     <Button
                       label={t('jobs.preview')}
-                      labelKey={null}
+                      labelKey="jobs.preview"
                       glyph={<IconPreview />}
                       onClick={() => onPreview(j.name)}
                     />
@@ -364,7 +411,7 @@ export function Jobs({
                   <div className="flex justify-end">
                     <Button
                       label={config.busy ? t('edit.checking') : t('edit.save')}
-                      labelKey={null}
+                      labelKey={config.busy ? 'edit.checking' : 'edit.save'}
                       glyph={<IconSave />}
                       tone="accent"
                       busy={config.busy}
@@ -380,9 +427,14 @@ export function Jobs({
                 </div>
               ) : (
               <div className="flex flex-col gap-2">
-                <p className="flex flex-wrap items-center gap-1.5 text-xs text-carbon-textMuted">
+                {/* The SAME sentence the saved cards draw, at the same size.
+                    It was 12px with a 14px arrow while the card above it was
+                    16px with a 20px one, so one page showed two different job
+                    rows and the unsaved one read as a footnote. A draft is a
+                    job that has not been saved, not a smaller kind of job. */}
+                <p className="flex min-w-0 flex-wrap items-center gap-2.5 text-base text-carbon-text">
                   <span className="max-w-[45%] shrink truncate">{p.left}</span>
-                  <DirectionMark direction={p.direction ?? 'both'} />
+                  <DirectionMark direction={p.direction ?? 'both'} size={20} />
                   <span className="max-w-[45%] shrink truncate">{p.right}</span>
                 </p>
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
@@ -393,11 +445,16 @@ export function Jobs({
                 <div className="flex flex-wrap items-center justify-end gap-2">
                   <IconAction
                     title={t('edit.editJob')}
+                    labelKey="edit.editJob"
                     onClick={() => setEditing(at === editing ? null : at)}
                   >
                     <IconEdit />
                   </IconAction>
-                  <IconAction title={t('edit.remove')} onClick={() => setRemoving(at)}>
+                  <IconAction
+                    title={t('edit.remove')}
+                    labelKey="edit.remove"
+                    onClick={() => setRemoving(at)}
+                  >
                     <IconDelete />
                   </IconAction>
                 </div>
@@ -513,21 +570,129 @@ export function Since({ when }: { when: string }) {
   )
 }
 
-function State({ job }: { job: Job }) {
+/**
+ * What this job does, and when it last did it.
+ *
+ * It replaces a badge and two words that said the same thing three times: the
+ * badge read "abgeschaltet", the field beside it read "abgeschaltet", and the
+ * field beside THAT read "noch nie gelaufen" on the same held job. The state is
+ * the mark at the other end of the row, which was already carrying it in colour
+ * and in its own tip.
+ *
+ * A running job still gets the one badge that means "right now", and it keeps
+ * the pulse the design language's `.glim-live` exists for. That one is not a
+ * repeat: the mark says running by turning, and a person who has switched motion
+ * off would otherwise have nothing.
+ */
+function Cadence({ job }: { job: Job }) {
   const { t } = useT()
-  // The one badge that means "right now" carries the pulse, which is what the
-  // design language's own .glim-live class is for. Every other state here is a
-  // fact that will still be true in a minute and holds still.
-  if (job.running) {
-    return (
-      <Badge tone="active" className="glim-live">
-        {t('jobs.state.running')}
-      </Badge>
-    )
-  }
-  if (job.disabled) return <Badge tone="neutral">{t('jobs.state.disabled')}</Badge>
-  if (!job.lastSuccess) return <Badge tone="neutral">{t('jobs.state.waiting')}</Badge>
-  return <Badge tone="ok">{t('jobs.state.settled')}</Badge>
+  const words = describeCadence(readCadence(job.schedule ?? '', !!job.watch), t)
+
+  return (
+    <div className="flex shrink-0 flex-col items-end gap-0.5 text-xs text-carbon-textMuted">
+      {job.running ? (
+        <Badge tone="active" className="glim-live">
+          {t('jobs.state.running')}
+        </Badge>
+      ) : (
+        <span className="text-end">
+          {job.disabled ? t('jobs.state.disabled') : t('jobs.runs', { cadence: words })}
+        </span>
+      )}
+      {/* The date AND the time, spelled out, rather than only "two days ago".
+          jdp: "darunter zuletzt gelaufen mit zeit und datum." The relative form
+          answers "is this thing still alive" at a glance and cannot answer "was
+          that before or after I changed the folder", so both are here: the
+          reading is relative, the fact is absolute, and neither needs a hover. */}
+      {job.lastSuccess && (
+        <span className="text-end">
+          {t('jobs.lastRun', { when: new Date(job.lastSuccess).toLocaleString() })}
+        </span>
+      )}
+    </div>
+  )
+}
+
+/**
+ * This job's own runs, folded away under the card.
+ *
+ * It draws the same rows the history tab draws and opens the same detail panel,
+ * deliberately: two lists of the same thing that look different are two things
+ * to learn. What it does NOT do is repeat the history's chart or its whole-app
+ * list, because the question here is about one job.
+ *
+ * Five, and a line saying so. A card is a summary and an unbounded list inside
+ * one turns the jobs page into the history tab with extra steps; the History tab
+ * is where the rest lives and it is one click away.
+ */
+function JobActivity({ runs, onChanged }: { runs: Run[]; onChanged: () => void }) {
+  const { t } = useT()
+  const [open, setOpen] = useState(false)
+  const [shown, setShown] = useState<number | null>(null)
+  const recent = runs.slice(0, 5)
+
+  return (
+    <div className="me-auto flex min-w-0 flex-1 basis-full flex-col md:basis-auto">
+      <Button
+        label={t('jobs.activity')}
+        labelKey="jobs.activity"
+        tone="subtle"
+        className="self-start"
+        onClick={() => setOpen((was) => !was)}
+      />
+      {/* The panel is `basis-full` on a narrow card so it takes the whole width
+          rather than the sliver the button left over. On a wide one the button
+          sits in the row and the list opens under it, which is the same shape
+          the history tab uses. */}
+      {open && (
+        <div className="mt-2 w-full">
+          {recent.length === 0 ? (
+            <Empty>{t('jobs.activityEmpty')}</Empty>
+          ) : (
+            <ul className="flex flex-col">
+              {recent.map((r, i) => (
+                <li key={`${r.Started}-${i}`}>
+                  {i > 0 && <Rule />}
+                  <button
+                    type="button"
+                    aria-expanded={shown === r.ID}
+                    onClick={() => setShown(shown === r.ID ? null : r.ID)}
+                    className="flex w-full items-center gap-3 py-2 text-start text-xs transition-colors hover:bg-carbon-hover"
+                  >
+                    <Badge tone={r.Err ? 'fail' : 'ok'}>
+                      {r.Err ? t('history.failed') : t('history.ok')}
+                    </Badge>
+                    <span className="shrink-0 text-carbon-textMuted">
+                      <Since when={r.Started} />
+                    </span>
+                    <span className="min-w-0 flex-1 truncate text-carbon-textMuted">
+                      {r.Err ? (
+                        r.Err
+                      ) : (
+                        <>
+                          {t('history.copied', { count: r.Copied })}
+                          {' \u00b7 '}
+                          {t('history.moved', { count: r.Moved })}
+                          {' \u00b7 '}
+                          {t('history.trashed', { count: r.Trashed })}
+                          {' \u00b7 '}
+                          {t('history.conflicts', { count: r.Conflicts })}
+                        </>
+                      )}
+                    </span>
+                    {r.Conflicts > 0 && <Badge tone="warn">{r.Conflicts}</Badge>}
+                  </button>
+                  {shown === r.ID && (
+                    <RunDetail run={r.ID} job={r.Job} onResolved={onChanged} />
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+    </div>
+  )
 }
 
 /** The run log, newest first. */

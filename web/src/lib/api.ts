@@ -10,6 +10,9 @@ export type Job = {
   right: string
   direction: Direction
   schedule: string
+  /** Whether it also reacts to changes as they happen; see jobView on the Go
+   *  side for why this cannot be read out of the schedule. */
+  watch: boolean
   disabled: boolean
   running: boolean
   lastSuccess: string | null

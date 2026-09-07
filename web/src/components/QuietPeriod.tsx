@@ -27,6 +27,20 @@ export type QuietUnit = 's' | 'm' | 'h'
 const UNITS: QuietUnit[] = ['s', 'm', 'h']
 
 /**
+ * What a job starts with, rather than nothing.
+ *
+ * An empty box reads as "no quiet period", and that is a real setting: it means
+ * a watched job acts on the first event it sees. Copying a folder in produces
+ * one event per file, so the answer nobody wants is the one an empty field
+ * gives by default. jdp: "Ruhezeit. stell eine standrad zeit ein."
+ *
+ * Five seconds because that is long enough for a file manager to finish writing
+ * a file and short enough that nobody notices the wait. It is a starting value
+ * on a new job, not a floor: clearing the field still means zero, deliberately.
+ */
+export const DEFAULT_QUIET = '5s'
+
+/**
  * A duration string split into a number and a unit.
  *
  * Anything this cannot read comes back as the default rather than as an error,
@@ -95,7 +109,15 @@ export function QuietPeriod({
         onChange={(next) => onChange(writeQuiet(next, unit))}
         label={t('edit.quietPeriod')}
       />
-      <div className="min-w-0 flex-1">
+      {/* A fixed narrow column, not `flex-1`. The picker holds one of three
+          words and it was being handed every pixel the row had left over: half
+          an editor row in the job form, and the whole width of a card minus the
+          number box on the Engine tab, where the same component sits in a
+          `<Field>`. jdp: "das dropdown fuer stunde, min soll nicht so breit
+          sein." 8rem clears the longest of the three in every locale that has
+          been measured, and the row no longer changes shape depending on which
+          page it is on. */}
+      <div className="w-32 shrink-0">
         <Choice<QuietUnit>
           value={unit}
           label={t('edit.quietUnit')}

@@ -93,6 +93,16 @@ GLYPHS = [
     # The reveal eye on a field holding a secret, and its slashed twin.
     ("IconVisible", "interface-essential/visible.svg", "Show a stored secret"),
     ("IconHidden", "interface-essential/invisible-1.svg", "Hide it again"),
+
+    # The three buttons on the About card. They had no glyphs at all, and that
+    # was not a card that had been drawn by hand: it is GlimStone's own
+    # AboutCard, byte for byte, and its three buttons pass label keys the app's
+    # resolver had simply never been told about. jdp: "in der uebercard fehlen
+    # die glyphen." The icons were the missing half, the wiring in main.tsx the
+    # other.
+    ("IconCoffee", "food-drink/coffee-mug.svg", "Buy the author a coffee"),
+    ("IconLink", "interface-essential/link-chain.svg", "Open the repository"),
+    ("IconMail", "mail/mail-send-envelope.svg", "Write to the author"),
 ]
 
 # Glyphs COMPOSED from this set rather than taken whole.
@@ -105,12 +115,39 @@ GLYPHS = [
 #
 # name -> (note, [(source file, transform), ...])
 COMPOSED = [
+    # Two arrows, one above the other, pointing opposite ways. jdp asked for
+    # exactly that shape ("das icon fuer in beide richtungen sollen zwei pfeile
+    # untereinander in entgegengesetzte richtung sein"), and the first attempt
+    # said it in words and drew something else.
+    #
+    # THE TRANSFORM LIST READS RIGHT TO LEFT, which is what went wrong. The old
+    # pair was `rotate(90 7 7) translate(0 -2.4) scale(1 0.6)`: the scale
+    # applies FIRST, in the arrow's own upright frame, so it squashed the arrow
+    # along its LENGTH rather than across it, and the translate then pushed it
+    # 2.4 units off the top of the box before the rotation turned that overrun
+    # into an overrun off the right edge. Both groups also ended up with their
+    # shafts in the same horizontal band, so the two arrows drew one broken bar
+    # with clipped stubs instead of a stacked pair.
+    #
+    # The pair below is a UNIFORM scale, so the arrowhead is not distorted, and
+    # the translate is worked out in the pre-rotation frame on purpose:
+    #
+    #   scale(0.6)          x 3..11 -> 1.8..6.6      y 0..14 -> 0..8.4
+    #   translate(-0.7 2.8) x       -> 1.1..5.9      y       -> 2.8..11.2
+    #   rotate(90 7 7)      (x,y) -> (14-y, x)  = x' 2.8..11.2, y' 1.1..5.9
+    #   rotate(-90 7 7)     (x,y) -> (y, 14-x) = x' 2.8..11.2, y' 8.1..12.9
+    #
+    # So both arrows span the same horizontal run, one sits centred on y=3.5
+    # and the other on y=10.5, they are symmetric about the middle of the box,
+    # nothing leaves the 0..14 viewBox, and the first points right while the
+    # second points left.
     ("IconBothWays",
      "Both ways: the same two arrows the one-way settings use, one above the "
-     "other. It used to be the reload loop, which draws hooks instead of "
-     "arrowheads and reads as retry rather than as two directions",
-     [("interface-essential/arrow-up-1.svg", "rotate(90 7 7) translate(0 -2.4) scale(1 0.6)"),
-      ("interface-essential/arrow-up-1.svg", "rotate(-90 7 7) translate(0 -2.4) scale(1 0.6)")]),
+     "other and pointing opposite ways. It used to be the reload loop, which "
+     "draws hooks instead of arrowheads and reads as retry rather than as two "
+     "directions",
+     [("interface-essential/arrow-up-1.svg", "rotate(90 7 7) translate(-0.7 2.8) scale(0.6)"),
+      ("interface-essential/arrow-up-1.svg", "rotate(-90 7 7) translate(-0.7 2.8) scale(0.6)")]),
 
 ]
 

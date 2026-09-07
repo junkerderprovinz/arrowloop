@@ -66,7 +66,6 @@ export function JobMark({ status, size = 20 }: { status: JobStatus; size?: numbe
   return (
     <span
       className={`inline-flex shrink-0 items-center ${INK[status]}`}
-      title={name}
       data-tip={name}
       aria-label={name}
       role="img"
