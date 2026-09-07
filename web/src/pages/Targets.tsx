@@ -268,8 +268,24 @@ function RemoteForm({
   const [busy, setBusy] = useState(false)
 
   const backend = useMemo(() => backends.find((b) => b.name === kind), [backends, kind])
+  /**
+   * What the form shows before anybody asks for more.
+   *
+   * REQUIRED only, which is a much shorter list than it used to be. The filter
+   * was "everything rclone does not mark advanced", and for s3 that is fourteen
+   * boxes, most of them for one provider out of thirty: the form asked about
+   * IBM resource instances and object-lock before it asked for a key. Reported
+   * as exactly that ("für was müssen hier so wahnsinnig viele eingabefelder
+   * sein?").
+   *
+   * Nothing is hidden that was reachable before: the switch below still shows
+   * every option the backend has, advanced ones included. What changed is which
+   * side of it the merely-optional ones sit on. rclone's own `required` flag is
+   * the line, so it moves with the backend rather than with a list here that
+   * would go stale the first time rclone gained an option.
+   */
   const shown = useMemo(
-    () => (backend?.options ?? []).filter((o) => advanced || o.required || !o.advanced),
+    () => (backend?.options ?? []).filter((o) => advanced || o.required),
     [backend, advanced],
   )
 

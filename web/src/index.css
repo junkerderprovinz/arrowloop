@@ -52,44 +52,30 @@ body {
    one value that differed. */
 
 /* ---------------------------------------------------------------------------
-   The motion engine's own numbers.
+   The motion engine, and what is left of it here.
+   ---------------------------------------------------------------------------
+   Nothing, since GlimStone 1.7.3. This app used to carry the whole token set
+   and the three [data-motion] blocks itself, because the language shipped its
+   animations with the durations written into the rules: the switch had nothing
+   to redefine, so it reached whatever an app wired up on its own and no more.
+   Measured rather than assumed: the page entrance ran at 280ms on full, on
+   subtle and on off alike. The tokens are in the language now and every one of
+   its animations reads them, so one setting reaches all of them in every app
+   that copies the file.
 
-   One token set per intensity, consumed by the same rules at all three: the
-   difference between "full" and "subtle" is a smaller number, never a different
-   animation. The whole block sits inside no-preference on purpose, so a machine
-   whose owner has asked the operating system for less motion never evaluates a
-   data-motion selector at all and keeps the reduced-motion values below.
-
-   ArrowLoop has one animation of its own, the indeterminate progress bar, plus
-   the transitions its controls carry. That is fewer keyframes than the design
-   language describes, and it is named here rather than papered over: an app
-   that adopts more of them gives each the same three-step ladder.
+   What stays below is this app's ONE animation of its own, the indeterminate
+   progress bar, which the language defines a keyframe for and deliberately no
+   class: a bar's geometry belongs to the app that draws it.
    --------------------------------------------------------------------------- */
-@media (prefers-reduced-motion: no-preference) {
-  :root {
-    --motion-bar-dur: 1.4s;
-    --motion-control-dur: 150ms;
-  }
-  :root[data-motion='subtle'] {
-    --motion-bar-dur: 2.4s;
-    --motion-control-dur: 80ms;
-  }
-  :root[data-motion='off'] {
-    --motion-bar-dur: 0s;
-    --motion-control-dur: 0s;
-  }
 
-  /* Every control transition in the app reads the same token, so one setting
-     reaches all of them rather than a list that has to be kept in step. */
-  :root[data-motion='off'] * {
-    transition-duration: 0s !important;
-  }
-  :root[data-motion='subtle'] .transition,
-  :root[data-motion='subtle'] .transition-colors,
-  :root[data-motion='subtle'] .transition-opacity,
-  :root[data-motion='subtle'] .transition-transform {
-    transition-duration: var(--motion-control-dur);
-  }
+/* This app's own animation gets the same three-step ladder the language's five
+   have, in the same place: inside no-preference, one token redefined per
+   intensity, one rule reading it. The language's own words are that an app
+   adopting more keyframes gives each the same ladder, and this is that. */
+@media (prefers-reduced-motion: no-preference) {
+  :root { --motion-bar-dur: 1.4s; }
+  :root[data-motion='subtle'] { --motion-bar-dur: 2.4s; }
+  :root[data-motion='off'] { --motion-bar-dur: 0s; }
 }
 
 /* The design language already defines the @keyframes glim-indeterminate that

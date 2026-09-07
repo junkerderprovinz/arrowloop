@@ -1,3 +1,6 @@
+import type { CSSProperties } from 'react'
+
+import { hueVars, rainbowAt } from '../lib/appearance'
 import { IconBothWays, IconToLeft, IconToRight } from './glyphs'
 import { useT, type TranslationKey } from '../lib/i18n'
 import type { Direction } from '../lib/api'
@@ -107,10 +110,17 @@ export function DirectionSwitch({
       title={tip}
       data-tip={tip}
       aria-label={`${t('direction.label')}: ${name}`}
-      className="inline-flex h-9 w-9 shrink-0 items-center justify-center bg-carbon-surface2 text-carbon-text transition-colors hover:bg-carbon-hover"
-      style={{ borderRadius: 'var(--radius-control)' }}
+      className="glim-btn glim-hue inline-flex h-9 w-9 shrink-0 items-center justify-center bg-carbon-surface2 text-carbon-text transition-colors hover:bg-carbon-hover"
+      style={{ borderRadius: 'var(--radius-control)', ...(hueVars(rainbowAt(0)) as CSSProperties) }}
     >
-      <DirectionGlyph direction={direction} />
+      {/* The glyph carries the class the label engine keys off, so a control
+          that is only ever a glyph still answers to the same setting as every
+          other button. Its words live in the tip: this is one control with
+          three states, and printing the state name beside it would be a label
+          that changes meaning every third press. */}
+      <span className="glim-btn-glyph" aria-hidden>
+        <DirectionGlyph direction={direction} />
+      </span>
     </button>
   )
 }

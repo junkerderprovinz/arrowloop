@@ -1,6 +1,6 @@
-/* Copied verbatim from GlimStone 1.7.2, reference/tokens.css, with ONE local
-   addition marked below. Do not edit anything else here: change it in the
-   design language repo and copy again.
+/* Copied verbatim from GlimStone 1.7.3, reference/tokens.css, plus ONE marked
+   local addition at the very bottom. Do not edit the copied part here:
+   change it in the design language repo and copy again.
    https://github.com/junkerderprovinz/glimstone */
 /* ===========================================================================
    GlimStone — reference tokens and utility classes
@@ -782,13 +782,69 @@ body {
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .glim-page-enter { animation: glim-page-in 280ms cubic-bezier(.2, .6, .2, 1) both; }
-  .glim-toast { animation: glim-toast-in 220ms cubic-bezier(.2, .6, .2, 1) both; }
-  .glim-live { animation: glim-pulse 2s ease-in-out infinite; }
+  /* The motion engine's own numbers, and the reason they are numbers rather
+     than five literals below.
+     ------------------------------------------------------------------------
+     The engine's three states were described here and could not reach a single
+     animation: every duration in this block was written into the rule itself,
+     so `data-motion` had nothing to redefine and the switch changed nothing.
+     Found by measuring an adopting app rather than by reading: the page
+     entrance ran at 280ms on "full", on "subtle" and on "off" alike.
+
+     One token set per intensity, consumed by the SAME keyframes at all three:
+     the difference between full and subtle is a smaller number, never a
+     different animation. The whole thing lives inside no-preference on purpose,
+     so a machine whose owner has asked the operating system for less motion
+     never evaluates a data-motion selector at all and keeps the values in the
+     reduce block below. */
+  :root {
+    --motion-page-dur: 280ms;
+    --motion-toast-dur: 220ms;
+    --motion-pulse-dur: 2s;
+    --motion-fade-dur: 110ms;
+    --motion-shake-dur: 360ms;
+  }
+  :root[data-motion='subtle'] {
+    --motion-page-dur: 140ms;
+    --motion-toast-dur: 120ms;
+    --motion-pulse-dur: 3.2s;
+    --motion-fade-dur: 70ms;
+    --motion-shake-dur: 220ms;
+  }
+  :root[data-motion='off'] {
+    --motion-page-dur: 0s;
+    --motion-toast-dur: 0s;
+    --motion-fade-dur: 0s;
+    --motion-shake-dur: 0s;
+    /* The pulse is the one that does not get a zero. An infinite animation at
+       zero duration is a still element, which is correct, but `.glim-live`
+       carries a meaning ("this is happening now") that has to survive the
+       motion going away. It stops instead, fully opaque, exactly as the reduce
+       block below already does. */
+  }
+
+  .glim-page-enter { animation: glim-page-in var(--motion-page-dur) cubic-bezier(.2, .6, .2, 1) both; }
+  .glim-toast { animation: glim-toast-in var(--motion-toast-dur) cubic-bezier(.2, .6, .2, 1) both; }
+  .glim-live { animation: glim-pulse var(--motion-pulse-dur) ease-in-out infinite; }
   /* Short on purpose: a bubble that fades in slowly reads as lag, because the
      pointer is already there waiting for it. */
-  .glim-fade { animation: glim-fade-in 110ms ease both; }
-  .glim-shake { animation: glim-shake 360ms ease-in-out; }
+  .glim-fade { animation: glim-fade-in var(--motion-fade-dur) ease both; }
+  .glim-shake { animation: glim-shake var(--motion-shake-dur) ease-in-out; }
+
+  :root[data-motion='off'] .glim-live { animation: none; opacity: 1; }
+
+  /* Every transition in an adopting app reads one number, so one setting
+     reaches all of them rather than a list somebody has to keep in step. */
+  :root { --motion-control-dur: 150ms; }
+  :root[data-motion='subtle'] { --motion-control-dur: 80ms; }
+  :root[data-motion='off'] { --motion-control-dur: 0s; }
+  :root[data-motion='off'] * { transition-duration: 0s !important; }
+  :root[data-motion='subtle'] .transition,
+  :root[data-motion='subtle'] .transition-colors,
+  :root[data-motion='subtle'] .transition-opacity,
+  :root[data-motion='subtle'] .transition-transform {
+    transition-duration: var(--motion-control-dur);
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .glim-page-enter { animation: glim-fade-in 180ms ease both; }

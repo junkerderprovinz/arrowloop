@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react'
 
 import { IconAction } from './IconAction'
 import { Text } from './Field'
+import { Rule } from './Shell'
 import { Button } from '../lib/glimstone/Button'
 import { Card } from '../lib/glimstone/Card'
-import { IconCancel, IconCheck, IconFolder, IconNewFolder, IconUp } from './glyphs'
+import { IconCancel, IconCheck, IconFolder, IconNewFolder, IconTargets, IconUp } from './glyphs'
 import { api } from '../lib/api'
 import { useT } from '../lib/i18n'
 
@@ -24,12 +25,15 @@ import { useT } from '../lib/i18n'
 export function FolderPicker({
   open,
   start,
+  known = [],
   onPick,
   onClose,
 }: {
   open: boolean
   /** Where to begin. An unusable value simply starts at the top. */
   start?: string
+  /** Registered drives and configured targets, offered above the folders. */
+  known?: { value: string; label: string }[]
   onPick: (path: string) => void
   onClose: () => void
 }) {
@@ -136,6 +140,26 @@ export function FolderPicker({
           {error && <p className="mb-3 text-xs text-statusFail">{error}</p>}
 
           <ul className="flex max-h-72 flex-col overflow-y-auto">
+            {/* The things that are not folders on this machine, first, because
+                they are the ones nobody can reach by walking a tree. Picking
+                one closes the window: a target's name IS the answer, there is
+                nothing further in to walk. */}
+            {known.map((k) => (
+              <li key={k.value}>
+                <button
+                  type="button"
+                  onClick={() => onPick(k.value)}
+                  className="flex w-full items-center gap-2 px-2 py-1.5 text-start text-xs transition hover:bg-carbon-hover"
+                  style={{ borderRadius: 'var(--radius-control)' }}
+                >
+                  <span className="shrink-0 text-carbon-textMuted" aria-hidden>
+                    <IconTargets />
+                  </span>
+                  <span className="truncate">{k.label}</span>
+                </button>
+              </li>
+            ))}
+            {known.length > 0 && <li className="my-1"><Rule /></li>}
             {at && (
               <li>
                 <button

@@ -1,4 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
+import type { CSSProperties } from 'react'
+
+import { hueVars, rainbowAt } from '../lib/appearance'
 
 import { Selector } from './Selector'
 import { NumberField, Text } from './Field'
@@ -265,7 +268,12 @@ export function ScheduleField({
             className="glim-well inline-flex flex-wrap gap-[0.2rem] p-[0.2rem]"
             style={{ borderRadius: 'var(--radius-control)' }}
           >
-            {WEEKDAYS.map(({ day, key }) => {
+            {/* Each day takes its own position in the palette, the way every
+                other multi-part control in the app does. They all carried the
+                single accent, so with the rainbow on a row of seven read as one
+                colour where the same row in the other app reads as seven. That
+                is the same gap the selectors had. */}
+            {WEEKDAYS.map(({ day, key }, i) => {
               const on = state.days.includes(day)
               return (
                 <button
@@ -273,8 +281,11 @@ export function ScheduleField({
                   type="button"
                   aria-pressed={on}
                   onClick={() => toggleDay(day)}
-                  style={{ borderRadius: 'calc(var(--radius-control) - 0.2rem)' }}
-                  className={`px-2.5 py-1 text-xs font-medium transition-colors ${
+                  style={{
+                    borderRadius: 'calc(var(--radius-control) - 0.2rem)',
+                    ...(hueVars(rainbowAt(i)) as CSSProperties),
+                  }}
+                  className={`glim-hue px-2.5 py-1 text-xs font-medium transition-colors ${
                     on
                       ? 'bg-accent text-accentContrast'
                       : 'bg-transparent text-carbon-textMuted hover:bg-carbon-hover hover:text-carbon-text'

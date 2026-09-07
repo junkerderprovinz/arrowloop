@@ -202,7 +202,20 @@ export function App() {
       />
 
       <main className="min-w-0 flex-1 overflow-y-auto">
-        <div className="flex min-h-full w-full flex-col gap-8 p-6 md:p-8">
+        {/* Keyed on the tab, so React rebuilds this subtree when the tab
+            changes and the entrance animation runs again. Without the key it
+            plays once, on the first load, and never again: the element is the
+            same element, only its contents changed, and an animation attached
+            to an element that never re-mounts is an animation nobody sees.
+
+            The class is GlimStone's own and the motion engine already dials it
+            down or off; nothing here decides how long anything takes. This app
+            had the engine and its three-way switch and, apart from the progress
+            bar, nothing for it to act on. */}
+        <div
+          key={previewing ? `preview:${previewing}` : tab}
+          className="glim-page-enter flex min-h-full w-full flex-col gap-8 p-6 md:p-8"
+        >
           {error && (
             <Card title={t('error.unreachable')} hueIndex={0}>
               <p className="text-xs text-statusFail">{error}</p>

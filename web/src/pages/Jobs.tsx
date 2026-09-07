@@ -44,6 +44,18 @@ export function Jobs({
   // arriving here is far more often looking than editing.
   const [editing, setEditing] = useState<number | null>(null)
   const [removing, setRemoving] = useState<number | null>(null)
+  /**
+   * A counter, not a boolean, and that is the whole trick.
+   *
+   * The shake is an animation on a class, so it plays when the class ARRIVES.
+   * A boolean already true when a second save is refused adds no class and
+   * plays nothing, which is exactly the case that matters: the second time you
+   * press save the validator still refuses. A number that goes up every
+   * refusal makes the key change, React replaces the element, and the
+   * animation starts over. GlimStone's tokens.css says the same thing above
+   * its own keyframe.
+   */
+  const [refused, setRefused] = useState(0)
   // Deleting the state database along with the job is the DEFAULT, because a
   // job somebody is removing on purpose leaves a database nothing will ever
   // open again. Keeping it is the deliberate answer, for the case the same
@@ -83,7 +95,11 @@ export function Jobs({
           file at all until that button was found and pressed. Saving belongs on
           the thing being saved, and removing saves itself. */}
       <div className="flex flex-wrap items-center justify-end gap-2">
-        {config.error && <p className="me-auto text-xs text-statusFail">{config.error}</p>}
+        {config.error && (
+          <p key={refused} className="glim-shake me-auto text-xs text-statusFail">
+            {config.error}
+          </p>
+        )}
         {config.saved && !config.error && (
           <p className="me-auto text-xs text-statusOk">{t('edit.savedNote')}</p>
         )}
@@ -147,7 +163,10 @@ export function Jobs({
                         busy={config.busy}
                         disabled={config.busy}
                         onClick={() => {
-                          void config.save().then(() => setEditing(null))
+                          void config.save().then((ok) => {
+                            if (ok) setEditing(null)
+                            else setRefused((n) => n + 1)
+                          })
                         }}
                       />
                     </div>
@@ -267,7 +286,10 @@ export function Jobs({
                       busy={config.busy}
                       disabled={config.busy}
                       onClick={() => {
-                        void config.save().then(() => setEditing(null))
+                        void config.save().then((ok) => {
+                            if (ok) setEditing(null)
+                            else setRefused((n) => n + 1)
+                          })
                       }}
                     />
                   </div>
@@ -409,7 +431,16 @@ export function Since({ when }: { when: string }) {
 
 function State({ job }: { job: Job }) {
   const { t } = useT()
-  if (job.running) return <Badge tone="active">{t('jobs.state.running')}</Badge>
+  // The one badge that means "right now" carries the pulse, which is what the
+  // design language's own .glim-live class is for. Every other state here is a
+  // fact that will still be true in a minute and holds still.
+  if (job.running) {
+    return (
+      <Badge tone="active" className="glim-live">
+        {t('jobs.state.running')}
+      </Badge>
+    )
+  }
   if (job.disabled) return <Badge tone="neutral">{t('jobs.state.disabled')}</Badge>
   if (!job.lastSuccess) return <Badge tone="neutral">{t('jobs.state.waiting')}</Badge>
   return <Badge tone="ok">{t('jobs.state.settled')}</Badge>

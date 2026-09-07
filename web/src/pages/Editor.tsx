@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import { Choice, Field, Lines, Text } from '../components/Field'
+import { Field, Lines, Text } from '../components/Field'
 import { ToggleRow } from '../components/ToggleRow'
 import { api, type RawJob } from '../lib/api'
 import { DirectionSwitch } from '../components/Direction'
@@ -126,8 +126,8 @@ export function useJobConfig(onSaved: () => void) {
   )
 
   const save = useCallback(async () => {
-    if (!jobs) return
-    await persist(jobs)
+    if (!jobs) return false
+    return persist(jobs)
   }, [jobs, persist])
 
   /**
@@ -410,7 +410,6 @@ function Side({
   known: { value: string; label: string }[]
   onChange: (next: string) => void
 }) {
-  const { t } = useT()
   const [picking, setPicking] = useState(false)
   return (
     <div className="flex flex-col gap-1.5">
@@ -422,8 +421,14 @@ function Side({
           <PickButton onClick={() => setPicking(true)} />
         </div>
       </Field>
+      {/* The registered drives and configured targets are offered INSIDE the
+          picker now, at the top of its list, rather than in a second dropdown
+          under the field. They were findable only by noticing a control below
+          the box, so the one thing a target exists for, being picked without
+          retyping its exact spelling, was the hardest thing to reach. */}
       <FolderPicker
         open={picking}
+        known={known}
         // A value with a colon in it is a target's name, not a folder on this
         // machine, so the browser starts at the top rather than failing to read
         // something that was never a path.
@@ -434,14 +439,6 @@ function Side({
           setPicking(false)
         }}
       />
-      {known.length > 0 && (
-        <Choice
-          value=""
-          label={t('edit.pick')}
-          onChange={(prefix) => prefix && onChange(prefix)}
-          options={[{ value: '', label: t('edit.pick') }, ...known]}
-        />
-      )}
     </div>
   )
 }
