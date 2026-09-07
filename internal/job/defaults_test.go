@@ -3,6 +3,7 @@ package job_test
 import (
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/junkerderprovinz/arrowloop/internal/job"
@@ -174,5 +175,74 @@ func TestTheCaseOverrideReachesTheEngine(t *testing.T) {
 	}
 	if mixed.Jobs[1].FoldCase == nil || *mixed.Jobs[1].FoldCase {
 		t.Errorf("a job that said false was overridden by the default: %v", mixed.Jobs[1].FoldCase)
+	}
+}
+
+// TestANamedExcludeSetReachesTheJobThatAsksForIt.
+//
+// The whole point: "the usual junk" written once instead of pasted into every
+// job and then drifting apart.
+func TestANamedExcludeSetReachesTheJobThatAsksForIt(t *testing.T) {
+	cfg := write(t, `{
+		"excludeSets": {"junk": ["*.tmp", "Thumbs.db"], "media": ["*.iso"]},
+		"jobs": [{"name":"x","exclude":["own.txt"],"excludeSets":["junk"],`+sides+`}]
+	}`)
+
+	got := cfg.Jobs[0].Exclude
+	want := map[string]bool{"own.txt": true, "*.tmp": true, "Thumbs.db": true}
+	if len(got) != len(want) {
+		t.Fatalf("the job ended up with %v", got)
+	}
+	for _, p := range got {
+		if !want[p] {
+			t.Errorf("unexpected pattern %q; the media set was not asked for", p)
+		}
+	}
+}
+
+// TestTheJobsOwnPatternsAreKept.
+//
+// The sets are the shared part and the job's own list is what makes THIS job
+// different, so a set must add to it rather than replace it. Replacing would
+// throw away the one line somebody wrote for this job specifically, which is
+// the line they would least expect to lose.
+func TestTheJobsOwnPatternsAreKept(t *testing.T) {
+	cfg := write(t, `{
+		"excludeSets": {"junk": ["*.tmp"]},
+		"jobs": [{"name":"x","exclude":["private/**"],"excludeSets":["junk"],`+sides+`}]
+	}`)
+	var found bool
+	for _, p := range cfg.Jobs[0].Exclude {
+		if p == "private/**" {
+			found = true
+		}
+	}
+	if !found {
+		t.Errorf("the job's own pattern was lost: %v", cfg.Jobs[0].Exclude)
+	}
+}
+
+// TestASetNobodyDefinedIsRefused.
+//
+// This is the guard that matters most, and the reason is worth stating: a
+// filter that silently matches nothing does not break anything. It just quietly
+// syncs the thing somebody asked to leave alone, and nobody finds out until the
+// day they go looking for why their private folder is on the other machine.
+func TestASetNobodyDefinedIsRefused(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "arrowloop.json")
+	body := `{
+		"excludeSets": {"junk": ["*.tmp"]},
+		"jobs": [{"name":"x","excludeSets":["typo"],` + sides + `}]
+	}`
+	if err := os.WriteFile(path, []byte(body), 0o644); err != nil {
+		t.Fatalf("write: %v", err)
+	}
+	_, err := job.Load(path)
+	if err == nil {
+		t.Fatal("a job asking for a set that does not exist was accepted")
+	}
+	if !strings.Contains(err.Error(), "typo") {
+		t.Errorf("the refusal does not name the set that is missing: %v", err)
 	}
 }

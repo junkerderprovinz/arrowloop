@@ -511,7 +511,9 @@ func (r *Runner) schedule(ctx context.Context) *cron.Cron {
 // and a job still running from last time are both NORMAL here and neither is a
 // failure, which is exactly the distinction a second copy tends to lose.
 func (r *Runner) runAndLog(ctx context.Context, name string) {
-	rec, err := r.Run(ctx, name)
+	// RunAutomatically rather than Run: this is the clock talking, and a job
+	// marked report-only must not be applied by it.
+	rec, err := r.RunAutomatically(ctx, name)
 	switch {
 	case errors.Is(err, ErrVolumeMissing):
 		r.log("%s: %v", name, err)
@@ -733,7 +735,9 @@ func (r *Runner) startWatcher(ctx context.Context, j job.Job) {
 		Cooldown: 5 * time.Second,
 		Log:      func(format string, args ...any) { r.log(name+": "+format, args...) },
 	}, func() {
-		rec, err := r.Run(ctx, name)
+		// The watcher is automation too, so a report-only job reports rather
+		// than writes when a folder changes under it.
+		rec, err := r.RunAutomatically(ctx, name)
 		switch {
 		case errors.Is(err, ErrAlreadyRunning):
 			// The change arrived while the job was already working on it.

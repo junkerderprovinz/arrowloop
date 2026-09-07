@@ -49,6 +49,10 @@ type Config struct {
 	// are already resolved and no code has to remember to ask twice.
 	Defaults Defaults `json:"defaults,omitempty"`
 
+	// ExcludeSets are reusable pattern lists, by name. A job asks for them by
+	// name instead of carrying its own copy of the same twenty lines.
+	ExcludeSets map[string][]string `json:"excludeSets,omitempty"`
+
 	// dir is where the file was read from, so relative paths inside it mean
 	// what the person writing it expected.
 	dir string
@@ -116,8 +120,36 @@ type Job struct {
 
 	Disabled bool `json:"disabled,omitempty"`
 
+	// ReportOnly runs the job on its schedule and applies nothing.
+	//
+	// It answers a question a schedule alone cannot: "is anything drifting?"
+	// Somebody who is not yet ready to let a job write can put it on a schedule
+	// like any other and read the run log, and every safety net stays where it
+	// is because nothing is ever applied.
+	//
+	// Deliberately NOT the same as Disabled. A disabled job does nothing at all
+	// and tells you nothing; this one does the whole comparison, records what it
+	// would have done, and notifies. The difference matters most for the job
+	// somebody is nervous about, which is the one they most want a report on.
+	//
+	// A run started by hand ignores it, because pressing a button IS the
+	// decision this flag exists to withhold from the clock.
+	ReportOnly bool `json:"reportOnly,omitempty"`
+
 	Exclude           []string `json:"exclude,omitempty"`
 	NoDefaultExcludes bool     `json:"noDefaultExcludes,omitempty"`
+
+	// ExcludeSets names reusable pattern lists defined once at the top of the
+	// file, so "the usual junk" is written in one place instead of being pasted
+	// into every job and then drifting apart. A job's own Exclude list is added
+	// to whatever the sets bring rather than replacing it: the sets are the
+	// shared part and the list is what makes THIS job different.
+	//
+	// A name that no set defines is an error at load rather than an empty list.
+	// A filter that silently matches nothing is the worst possible failure mode
+	// here: it does not break anything, it just quietly syncs the thing somebody
+	// asked to leave alone.
+	ExcludeSets []string `json:"excludeSets,omitempty"`
 
 	// Direction says which way this job is allowed to write: "both" (the
 	// default and what this program is for), "leftToRight" or "rightToLeft".
@@ -284,6 +316,18 @@ func Load(path string) (*Config, error) {
 			return nil, fmt.Errorf("two jobs are both called %q; names are how a job is asked for by hand and how its history is kept apart", j.Name)
 		}
 		seen[j.Name] = true
+		// Named sets are folded into the job's own list here, once, so nothing
+		// downstream has to know sets exist. A name nobody defined is refused
+		// rather than ignored: a filter that silently matches nothing does not
+		// break anything, it just quietly syncs the thing somebody asked to
+		// leave alone, and that is the failure this whole feature is about.
+		for _, name := range j.ExcludeSets {
+			patterns, ok := cfg.ExcludeSets[name]
+			if !ok {
+				return nil, fmt.Errorf("job %q asks for the exclude set %q, and no set of that name is defined", j.Name, name)
+			}
+			j.Exclude = append(j.Exclude, patterns...)
+		}
 		// A job that is switched off is allowed to be half written.
 		//
 		// That is the state of every job between being created and being filled
@@ -387,6 +431,9 @@ func (j Job) Options() (engine.Options, error) {
 		compare.BrakeFloor = *j.BrakeFloor
 	}
 
+	// The job's own patterns, plus whatever its named sets bring. Resolved at
+	// load rather than here, so this function keeps working on a Job that was
+	// built by a test without a Config around it.
 	patterns := append([]string(nil), j.Exclude...)
 	if !j.NoDefaultExcludes {
 		patterns = append(patterns, filter.InProgress...)
