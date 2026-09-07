@@ -34,15 +34,8 @@ const COFFEE = 'https://buymeacoffee.com/junkerderprovinz'
  * has to match what was actually copied: a number claiming a release the code
  * is not built from is worse than no number, because it sends somebody to the
  * wrong changelog.
- *
- * 1.7.2 and not 1.7.3, deliberately, and the same reason as last time: the
- * files in `lib/glimstone/` and `tokens.css` ARE 1.7.3, but 1.7.3 is a commit
- * on the language's main branch and not a release yet. The language's own rule
- * is that a number on screen must be a published release, never a tag without
- * one, because the number is a link and the link has to lead somewhere. It
- * moves the day that release is cut.
  */
-const GLIMSTONE = '1.7.2'
+const GLIMSTONE = '1.7.3'
 
 export function About({ version }: { version: string | null }) {
   const { t } = useT()

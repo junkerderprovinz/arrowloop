@@ -8,6 +8,52 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## v0.4.0
+
+Thirty-eight reported points in one pass. The largest was not a look: a job
+could not be deleted at all.
+
+### 🐛 Fixed
+
+- A job could not be deleted. The editor never wrote the file, and underneath
+  that the validator refused a configuration with no jobs, so removing the only
+  job could never be saved.
+- The schedule lost its mode the moment you picked one, because which mode was
+  showing was read back out of the stored expression.
+- The colour picker moved the live colour to a different swatch while it was
+  still open.
+- The motion switch could not reach a single animation. Fixed in the design
+  language, so every app that copies it gains a switch that works.
+- The languages have real flags on Windows, and the picker is the house one.
+
+### 🎨 Design
+
+- The text is the same size as in the other apps here, measured on both.
+- A selector segment carries the whole control radius, so the strip is no
+  longer nearly square at the middle shape stage.
+- The settings strip reads as a tab bar.
+- The appearance wording matches the other apps, in all forty-two languages.
+- One card per job while editing it, not two.
+- The delete window lost its second cancel button and both divider lines, and
+  can take the job's state database with it.
+- The direction control is two plain arrows.
+- Every button and switch answers to the label engine and the colour engine.
+
+### ✨ Added
+
+- An "every N" schedule, in minutes, hours, days or weeks.
+- A folder can be made from inside the folder picker.
+- Drives and targets appear inside the picker rather than under the field.
+- A new job starts with sensible exclusions.
+
+### ⚡ Improved
+
+- Renaming a job carries its state database along.
+- The storage form asks for what the provider requires and nothing else.
+- The quiet period sits beside the schedule and says what to type.
+- Name and state database line up with the two sides below them.
+- The plus button sits top right, alone.
+
 ## v0.3.0
 
 The interface's controls now come from GlimStone itself rather than being
