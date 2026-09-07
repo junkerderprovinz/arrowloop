@@ -5,9 +5,40 @@
   </picture>
 </p>
 
+<p align="center">
+  <a href="https://github.com/junkerderprovinz/arrowloop/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/junkerderprovinz/arrowloop/ci.yml?branch=main&label=Build&style=for-the-badge&logo=githubactions&logoColor=white" alt="Build" height="36"></a>&nbsp;
+  <a href="https://github.com/junkerderprovinz/arrowloop/actions/workflows/container.yml"><img src="https://img.shields.io/github/actions/workflow/status/junkerderprovinz/arrowloop/container.yml?branch=main&label=Container&style=for-the-badge&logo=githubactions&logoColor=white" alt="Container" height="36"></a>&nbsp;
+  <a href="https://github.com/junkerderprovinz/arrowloop/pkgs/container/arrowloop"><img src="https://img.shields.io/badge/Image-ghcr.io-1d99f3?style=for-the-badge&logo=docker&logoColor=white" alt="Image" height="36"></a>&nbsp;
+  <a href="https://github.com/junkerderprovinz/arrowloop/pkgs/container/arrowloop"><img src="https://img.shields.io/badge/Arch-amd64%20%7C%20arm64-success?style=for-the-badge&logo=linux&logoColor=white" alt="Arch" height="36"></a>&nbsp;
+  <a href="https://rclone.org"><img src="https://img.shields.io/badge/Backends-rclone-3f79b7?style=for-the-badge&logoColor=white" alt="rclone" height="36"></a>&nbsp;
+  <a href="https://unraid.net"><img src="https://img.shields.io/badge/Unraid-Template-f15a2c?style=for-the-badge&logo=unraid&logoColor=white" alt="Unraid" height="36"></a>&nbsp;
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-AGPL--3.0-blue?style=for-the-badge&logo=gnu&logoColor=white" alt="License: AGPL-3.0" height="36"></a>&nbsp;
+  <a href="https://junkerderprovinz.github.io/arrowloop/"><img src="https://img.shields.io/badge/Docs-online-526CFE?style=for-the-badge&logo=materialformkdocs&logoColor=white" alt="Documentation" height="36"></a>
+</p>
+
+<br>
+
 <p align="center">A two-way file sync engine with a state database, a trash and a brake, plus the scheduler that keeps it running.</p>
 
-<p align="center">Documentation lives in <a href="docs/">docs/</a> and is published once the repository is public.</p>
+<p align="center">
+  <a href="https://www.buymeacoffee.com/junkerderprovinz"><img src=".github/assets/button-buy-me-a-coffee.svg" alt="Buy me a coffee" width="220"></a>
+</p>
+
+> [!WARNING]
+> **This is not finished, and it is public early on purpose.**
+>
+> The engine works and is tested hard, on Linux, Windows and macOS. What is not
+> yet true is everything a version number under 1.0 usually means: settings move
+> between releases, the interface changes shape from one week to the next, and a
+> configuration file written today may need a line changed tomorrow. Nothing here
+> deletes without a trash and two brakes in the way, and the whole plan is on
+> screen before anything moves, so the risk is inconvenience rather than loss.
+> Still: **point it at a copy first**, and keep a backup that ArrowLoop is not the
+> only guardian of.
+>
+> It is public because a sync tool nobody can read the source of is a sync tool
+> nobody should trust with both sides of their files. Issues and questions are
+> welcome; a polished first impression is not the point yet.
 
 ## Table of Contents
 
@@ -23,6 +54,7 @@
 10. [Tests](#10-tests)
 11. [What it will not carry, and what it says about it](#11-what-it-will-not-carry-and-what-it-says-about-it)
 12. [Why not just use something that exists](#12-why-not-just-use-something-that-exists)
+13. [Support this project](#13-support-this-project)
 
 <br>
 
@@ -269,3 +301,21 @@ CI runs the whole suite on Linux, Windows and macOS, because path handling, modi
 Nothing wrong with the alternatives, and it is worth being honest about them. [Syncthing](https://syncthing.net) is a proven real-time mesh, but it is a mesh of equal devices rather than a directed job, and it does not speak to cloud targets at all. [rclone bisync](https://rclone.org/bisync/) reaches every target but keeps only a listing per side rather than a per-file state, and re-scans both ends on every run.
 
 The gap this fills is the combination: a job-based tool with the reach of rclone, a state database underneath it, and safety brakes that assume the user's disk will eventually fail to mount.
+
+<br>
+
+## 13. Support this project
+
+ArrowLoop is free and stays free. It is written in evenings and at weekends, and
+a donation keeps the lights on rather than buying anything: the domain, the
+server the documentation is served from, and the evenings themselves.
+
+<p align="center">
+  <a href="https://www.buymeacoffee.com/junkerderprovinz"><img src=".github/assets/button-buy-me-a-coffee.svg" alt="Buy me a coffee" width="220"></a>
+</p>
+
+Reporting something that went wrong is worth as much. A two-way sync meets
+filesystems, network shares and timing that no test suite can reach on its own,
+and the bugs that matter here are the quiet ones. If a run did something you did
+not expect, open an [issue](https://github.com/junkerderprovinz/arrowloop/issues)
+with the run's own log line: it names the job, the file and the reason.
