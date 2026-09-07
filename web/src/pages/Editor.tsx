@@ -4,6 +4,7 @@ import { Field, Lines, Text } from '../components/Field'
 import { ToggleRow } from '../components/ToggleRow'
 import { api, type RawJob } from '../lib/api'
 import { DirectionSwitch } from '../components/Direction'
+import { QuietPeriod } from '../components/QuietPeriod'
 import { FolderPicker, PickButton } from '../components/FolderPicker'
 import { ScheduleField } from '../components/Schedule'
 import { useT } from '../lib/i18n'
@@ -305,20 +306,30 @@ export function JobForm({
         {/* The quiet period sits BESIDE the schedule, not under it. Both answer
             "when does this run", and a field alone on a row below reads as its
             own subject; there it was a bare duration box with no idea what to
-            put in it. */}
-        <div className="flex flex-col items-start gap-4 sm:flex-row">
+            put in it.
+
+            And it sits in the SAME three-part row as the two above: field,
+            spacer the width of a pick button, field. It used to be flex-1 next
+            to a fixed 14rem box, so it was the one row in the form whose two
+            columns matched nothing above them. jdp asked for it by the column
+            it should match rather than by a number ("ruhezeit feld soll so
+            breit sein wie das der zustandsdatei"), which is the right way to
+            ask: a width copied from a neighbour cannot drift, a width written
+            as 14rem can. */}
+        <div className="flex items-start gap-3">
           <div className="min-w-0 flex-1">
             <Field label={t('edit.schedule')} hint={t('edit.scheduleHint')}>
               <ScheduleField value={job.schedule ?? ''} onChange={(v) => patch({ schedule: v })} />
             </Field>
           </div>
-          <div className="w-full sm:w-56">
+          <div className="shrink-0 pt-[1.55rem]" aria-hidden>
+            <div className="h-[var(--btn-h)] w-[var(--btn-h)]" />
+          </div>
+          <div className="min-w-0 flex-1">
             <Field label={t('edit.quietPeriod')} hint={t('edit.quietHint')}>
-              <Text
+              <QuietPeriod
                 value={job.quietPeriod ?? ''}
                 onChange={(v) => patch({ quietPeriod: v })}
-                placeholder="5s"
-                mono
               />
             </Field>
           </div>

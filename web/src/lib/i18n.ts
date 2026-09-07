@@ -190,6 +190,10 @@ export const en = {
   'edit.emptyDirs': 'Carry empty folders',
   'edit.metadata': 'Carry permissions and ownership',
   'edit.quietPeriod': 'Quiet period',
+  'edit.quietUnit': 'Unit',
+  'edit.quiet.s': 'Seconds',
+  'edit.quiet.m': 'Minutes',
+  'edit.quiet.h': 'Hours',
   'edit.nameHint': 'How this job is named in the list, the log and the notifications.',
   'edit.sideHint':
     'A folder, a configured target as name:path, or a drive registered on the Targets tab.',
@@ -512,6 +516,10 @@ export const de: Translations = {
   'edit.emptyDirs': 'Leere Ordner mitnehmen',
   'edit.metadata': 'Rechte und Eigentümer mitnehmen',
   'edit.quietPeriod': 'Ruhezeit',
+  'edit.quietUnit': 'Einheit',
+  'edit.quiet.s': 'Sekunden',
+  'edit.quiet.m': 'Minuten',
+  'edit.quiet.h': 'Stunden',
   'edit.nameHint': 'Unter diesem Namen steht der Auftrag in der Liste, im Protokoll und in den Meldungen.',
   'edit.sideHint':
     'Ein Ordner, ein eingerichtetes Ziel als Name:Pfad, oder ein unter Ziele angemeldeter Datenträger.',

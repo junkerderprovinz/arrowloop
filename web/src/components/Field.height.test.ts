@@ -50,15 +50,29 @@ describe('one height, named once', () => {
       .toHaveLength(0)
   })
 
+  it('reads the same token the editor lines its rows up with', () => {
+    // Not tidiness. The editor's name row holds its middle column open with a
+    // spacer sized in --btn-h so that row lines up with the two sides below it.
+    // A plain h-8 here AGREED with that token by coincidence, and the first
+    // change to either number would have pulled two rows out of line somewhere
+    // nobody was looking.
+    const token = /CONTROL_H = '([^']+)'/.exec(read('./Field.tsx'))
+    expect(token).not.toBeNull()
+    expect((token as RegExpExecArray)[1]).toContain('--btn-h')
+    expect(read('../pages/Editor.tsx')).toContain('var(--btn-h)')
+  })
+
   it('gives the direction button a square footprint', () => {
     // A glyph-only button that is one row tall and a different number wide
-    // reads as a stretched or squashed square rather than as a control.
-    const source = read('./Direction.tsx')
-    const row = classAttributes(source).find((c) => c.includes('CONTROL_H'))
+    // reads as a stretched or squashed square rather than as a control, and
+    // it also stops lining up with the spacer that stands in for it.
+    const row = classAttributes(read('./Direction.tsx')).find((c) =>
+      c.includes('CONTROL_H'),
+    )
     expect(row).toBeDefined()
-    const width = /(?:^|\s)w-(\d+)/.exec(row as string)
+    const width = /(?:^|\s)w-\[?([^\s\]]+)\]?/.exec(row as string)
     expect(width, 'the direction button needs an explicit width').not.toBeNull()
-    const height = /CONTROL_H = '(?:h-)?(\d+)'/.exec(read('./Field.tsx'))
+    const height = /CONTROL_H = '(?:h-)?\[?([^'\]]+)\]?'/.exec(read('./Field.tsx'))
     expect(height).not.toBeNull()
     expect((width as RegExpExecArray)[1]).toBe((height as RegExpExecArray)[1])
   })

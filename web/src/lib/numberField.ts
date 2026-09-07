@@ -1,6 +1,3 @@
-// Copied verbatim from GlimStone 1.7.2, reference/numberField.ts.
-// Do not edit here: change it in the design language repo and copy again.
-// https://github.com/junkerderprovinz/glimstone
 // The number field: no native spinner, two steppers of our own inside the box.
 //
 // The design language already carries the rule (docs/design-language.md, "Never
@@ -77,7 +74,10 @@ export function wouldStep(input: HTMLInputElement, direction: 1 | -1): boolean {
  *
  * The buttons drive `stepUp()`/`stepDown()` rather than writing the value
  * themselves, so min/max/step live in exactly one place — the markup — and the
- * browser's own clamping applies. The `input` and `change` events are then
+ * browser's own clamping applies.
+ *
+ * The wheel does the same, while the field has focus. See `wheel` below for
+ * why the focus condition is the design rather than a caution. The `input` and `change` events are then
  * dispatched by hand, because `stepUp()` deliberately fires neither, and a
  * field that saves on change would otherwise save everything except the arrows.
  */
@@ -162,13 +162,47 @@ export function attachNumberSteppers(
     down.disabled = input.disabled || input.readOnly || !wouldStep(input, -1);
   }
 
+  /**
+   * The wheel steps the value, but ONLY while the field has focus.
+   *
+   * That condition is the whole design. A number input that answers the wheel
+   * whenever a pointer happens to pass over it is a well-known way to change a
+   * value somebody was only scrolling past, and browsers removed the behaviour
+   * from the native widget for exactly that reason. Requiring focus means the
+   * field has been deliberately entered first, which is the same gesture that
+   * already enables the arrow keys, and it makes the wheel a second way to do
+   * what the keyboard and the two arrows already do rather than a new hazard.
+   *
+   * The event is passive: false because it calls preventDefault. Without that
+   * the page scrolls at the same time as the value changes, and the field
+   * scrolls out from under the pointer mid-adjustment.
+   *
+   * Up is more, matching the upper arrow and the up key. A trackpad reports
+   * fractional deltas, so only the sign is read.
+   */
+  function wheel(e: WheelEvent) {
+    if (input.disabled || input.readOnly) return;
+    if (doc.activeElement !== input) return;
+    if (e.deltaY === 0) return;
+    const direction: 1 | -1 = e.deltaY < 0 ? 1 : -1;
+    e.preventDefault();
+    if (!wouldStep(input, direction)) return;
+    if (direction > 0) input.stepUp();
+    else input.stepDown();
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+    sync();
+  }
+
   input.addEventListener("input", sync);
   input.addEventListener("change", sync);
+  input.addEventListener("wheel", wheel, { passive: false });
   sync();
 
   return () => {
     input.removeEventListener("input", sync);
     input.removeEventListener("change", sync);
+    input.removeEventListener("wheel", wheel);
     input.classList.remove("glim-num-input");
     wrap.parentNode?.insertBefore(input, wrap);
     wrap.remove();

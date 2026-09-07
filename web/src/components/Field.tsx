@@ -42,8 +42,15 @@ export function Field({ label, hint, children }: { label: string; hint?: string;
  * match can no longer be given two numbers by two people on two days. Anything
  * that sits in a row with a field takes THIS, and the guard in
  * Field.height.test.ts fails if a call site writes its own instead.
+ *
+ * It reads the --btn-h token rather than restating its value, and that is not
+ * tidiness. The editor's name row holds its middle column open with a spacer
+ * sized in --btn-h, to line that row up with the two sides below it. Written as
+ * a plain h-8 this constant AGREED with the token by coincidence, and the first
+ * change to either number would have quietly pulled two rows out of line
+ * somewhere nobody was looking.
  */
-export const CONTROL_H = 'h-8'
+export const CONTROL_H = 'h-[var(--btn-h)]'
 
 /**
  * Form fields are borderless and filled, and focus is a brightness step rather
