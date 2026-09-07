@@ -48,7 +48,14 @@ func cmdHealth(ctx context.Context, args []string) error {
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, "http://"+target+"/api/jobs", nil)
+	// /api/session rather than /api/jobs, and the reason is not cosmetic. Once a
+	// password is set, every route but three needs a session, and a healthcheck
+	// carries no cookie: asking for the job list would answer 401 and the
+	// container would go unhealthy every thirty seconds on a machine where
+	// nothing at all is wrong. This route is open on every install and answers
+	// 200 whether or not a password is set, which is exactly what a liveness
+	// check should be asking.
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, "http://"+target+"/api/session", nil)
 	if err != nil {
 		return err
 	}
