@@ -298,6 +298,10 @@ func (r *Runner) execute(ctx context.Context, j job.Job, only []string, resolve 
 	// Each job gets its own copy of rclone's settings, so one job asking for
 	// eight transfers or for metadata does not quietly change another's.
 	ctx = engine.Configure(ctx, opt)
+	// How many old contents to keep, carried the same way and for the same
+	// reason: a package variable would be shared between two jobs running at
+	// once under parallelJobs, and each job's answer is its own.
+	ctx = apply.WithVersions(ctx, j.KeepVersions)
 
 	ends, db, err := r.open(ctx, j)
 	if err != nil {

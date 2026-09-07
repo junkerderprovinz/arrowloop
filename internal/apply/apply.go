@@ -625,6 +625,17 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 	switch act.Kind {
 	case plan.Copy:
 		src, dst := ends.side(act.Src), ends.side(act.Dst)
+		// Whatever this copy is about to replace is kept first, when the run was
+		// told to keep versions. A failure here stops the copy on purpose: the
+		// whole promise is that the old content is somewhere before the new
+		// content lands on it, and a keep that quietly failed would break that
+		// promise on exactly the file somebody later goes looking for.
+		//
+		// It makes no backend calls at all when versioning is off, which is
+		// every run today.
+		if err := keepVersion(ctx, dst, act.DstPath, runID); err != nil {
+			return err
+		}
 		if err := operations.CopyFile(ctx, dst, src, act.DstPath, act.SrcPath); err != nil {
 			return err
 		}

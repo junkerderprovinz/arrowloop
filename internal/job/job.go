@@ -156,6 +156,16 @@ type Job struct {
 	// left in the file cannot quietly turn a two-way job into a one-way one.
 	FirstRun string `json:"firstRun,omitempty"`
 
+	// KeepVersions keeps the last N contents of a file that gets overwritten,
+	// under the same reserved directory the trash uses.
+	//
+	// Off by default, and the default is the honest one: most jobs move files
+	// that are never edited in place, and keeping a copy of every overwrite on
+	// those would quietly double the tree. It exists for the folder somebody
+	// edits the same documents in every day, where the bin catches a deletion
+	// and catches nothing at all about the version from Tuesday.
+	KeepVersions int `json:"keepVersions,omitempty"`
+
 	Exclude           []string `json:"exclude,omitempty"`
 	NoDefaultExcludes bool     `json:"noDefaultExcludes,omitempty"`
 
@@ -231,6 +241,11 @@ type Defaults struct {
 	// almost always one answer for a whole machine rather than per job.
 	QuietPeriod string `json:"quietPeriod,omitempty"`
 
+	// KeepVersions is the same setting for every job that does not say
+	// otherwise. Zero means off, which is why a job wanting it off while the
+	// default is on has to be able to say so, and cannot: see applyTo.
+	KeepVersions int `json:"keepVersions,omitempty"`
+
 	// FoldCase overrides what the two backends say about themselves.
 	//
 	// Normally nothing needs setting: the engine asks each side whether it can
@@ -272,6 +287,17 @@ func (d Defaults) applyTo(j *Job) {
 	}
 	if j.FoldCase == nil {
 		j.FoldCase = d.FoldCase
+	}
+	// Said plainly because it is a real limitation rather than an oversight: a
+	// job CANNOT turn versioning off against a default that turns it on, since
+	// zero is both "off" and "not mentioned" for a plain int. Every other
+	// setting here that can be switched off is a pointer for exactly that
+	// reason. This one is not, because it is a count and not a switch, and a
+	// job that wants none while the default wants three can say 1 and keep the
+	// one version it is about to overwrite. Turning it into a pointer is the
+	// fix if that is ever not enough.
+	if j.KeepVersions == 0 {
+		j.KeepVersions = d.KeepVersions
 	}
 }
 
