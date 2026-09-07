@@ -204,7 +204,32 @@ export function useJobConfig(onSaved: () => void) {
     [jobs, persist],
   )
 
-  return { jobs, known, error, saved, busy, patch, save, add, remove }
+  /**
+   * Hold a job's schedule, or let it go again, and write it straight away.
+   *
+   * Separate from `patch` on purpose. `patch` edits the draft in the open form
+   * and waits for a save; this is pressed on a card that is not being edited,
+   * where there is no save button to press afterwards and no form open to say
+   * that something is pending. A switch that visibly flips and then quietly
+   * does not persist is the same defect deleting a job had, and it took a live
+   * click to find that one.
+   *
+   * It does NOT touch whether the job can be started by hand. A held job that
+   * could no longer be started would be a deleted job with extra steps; the
+   * whole point of holding one is to keep it and run it when you decide to.
+   */
+  const setDisabled = useCallback(
+    async (at: number, disabled: boolean) => {
+      const current = jobs ?? []
+      const job = current[at]
+      if (!job) return
+      setSaved(false)
+      await persist(current.map((j, i) => (i === at ? { ...j, disabled } : j)))
+    },
+    [jobs, persist],
+  )
+
+  return { jobs, known, error, saved, busy, patch, save, add, remove, setDisabled }
 }
 
 /**
@@ -319,7 +344,14 @@ export function JobForm({
         <div className="flex items-start gap-3">
           <div className="min-w-0 flex-1">
             <Field label={t('edit.schedule')} hint={t('edit.scheduleHint')}>
-              <ScheduleField value={job.schedule ?? ''} onChange={(v) => patch({ schedule: v })} />
+              <ScheduleField
+                value={job.schedule ?? ''}
+                onChange={(v) => patch({ schedule: v })}
+                live={!!job.watch}
+                onLive={(v) => patch({ watch: v })}
+                settle={job.watchSettle ?? ''}
+                onSettle={(v) => patch({ watchSettle: v })}
+              />
             </Field>
           </div>
           <div className="shrink-0 pt-[1.55rem]" aria-hidden>
@@ -360,15 +392,16 @@ export function JobForm({
           onChange={(v) => patch({ disabled: v })}
           hint={t('edit.disabledHint')}
         />
-        <ToggleRow
-          label={t('edit.watch')}
-          checked={!!job.watch}
-          onChange={(v) => patch({ watch: v })}
-          hint={t('edit.watchHint')}
-        />
-        {/* Next to the watcher rather than beside the schedule field, because
-            all three are answers to the same question - when does this run -
-            and the schedule field above is where you type WHEN, not whether. */}
+        {/* The watcher used to be here, and it moved INTO the schedule field
+            above: jdp went looking for it there ("zeitplan: echtzeit option
+            fehlt") and he was looking in the right place. Two copies of one
+            switch would have been worse than the wrong place, so this is a
+            move rather than an addition.
+
+            "Run at start" stays, because it answers a different question. The
+            schedule says when, the watcher says also-when-something-happens,
+            and this one says what to do about the turns that were missed while
+            the machine was off. */}
         <ToggleRow
           label={t('edit.runAtStart')}
           checked={!!job.runAtStart}

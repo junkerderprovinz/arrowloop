@@ -73,9 +73,37 @@ body {
    intensity, one rule reading it. The language's own words are that an app
    adopting more keyframes gives each the same ladder, and this is that. */
 @media (prefers-reduced-motion: no-preference) {
-  :root { --motion-bar-dur: 1.4s; }
-  :root[data-motion='subtle'] { --motion-bar-dur: 2.4s; }
-  :root[data-motion='off'] { --motion-bar-dur: 0s; }
+  :root { --motion-bar-dur: 1.4s; --motion-turn-dur: 2.2s; }
+  :root[data-motion='subtle'] { --motion-bar-dur: 2.4s; --motion-turn-dur: 4s; }
+  :root[data-motion='off'] { --motion-bar-dur: 0s; --motion-turn-dur: 0s; }
+}
+
+/* The job mark's turn.
+   A job card carries the same two-arrow loop the app is named for, and while
+   the job is working the loop turns. It is the one animation in the app that
+   says something no text on the card says as fast: this is moving right now.
+   Own ladder, same three steps, same reason as the bar above. */
+@keyframes al-turn {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.al-turning {
+  animation: al-turn var(--motion-turn-dur, 2.2s) linear infinite;
+}
+
+/* Off means off, and it has to mean off in BOTH directions: the token going to
+   zero would otherwise leave a zero-second animation still running, which some
+   engines treat as "as fast as possible" rather than as "not at all". */
+:root[data-motion='off'] .al-turning,
+.al-turning[data-motion='off'] {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .al-turning {
+    animation: none;
+  }
 }
 
 /* The design language already defines the @keyframes glim-indeterminate that

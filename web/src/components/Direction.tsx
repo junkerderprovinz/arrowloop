@@ -24,14 +24,18 @@ export const directionKey: Record<Direction, TranslationKey> = {
   rightToLeft: 'direction.toLeft',
 }
 
-export function DirectionGlyph({ direction }: { direction: Direction }) {
-  if (direction === 'leftToRight') return <IconToRight />
-  if (direction === 'rightToLeft') return <IconToLeft />
-  return <IconBothWays />
+export function DirectionGlyph({ direction, size }: { direction: Direction; size?: number }) {
+  // The arrow is punctuation in the sentence the two sides make, so where that
+  // sentence is set larger the arrow grows with it rather than staying at the
+  // set's own 14 and reading as a footnote between two full-size names.
+  const box = size ? { width: size, height: size } : {}
+  if (direction === 'leftToRight') return <IconToRight {...box} />
+  if (direction === 'rightToLeft') return <IconToLeft {...box} />
+  return <IconBothWays {...box} />
 }
 
 /** The direction of a job as it appears between the two sides in a list. */
-export function DirectionMark({ direction }: { direction: Direction }) {
+export function DirectionMark({ direction, size }: { direction: Direction; size?: number }) {
   const { t } = useT()
   const name = t(directionKey[direction])
   return (
@@ -42,7 +46,7 @@ export function DirectionMark({ direction }: { direction: Direction }) {
       aria-label={name}
       role="img"
     >
-      <DirectionGlyph direction={direction} />
+      <DirectionGlyph direction={direction} size={size} />
     </span>
   )
 }

@@ -5,6 +5,8 @@ import { hueVars, rainbowAt } from '../lib/appearance'
 
 import { Selector } from './Selector'
 import { NumberField, Text } from './Field'
+import { QuietPeriod } from './QuietPeriod'
+import { ToggleRow } from './ToggleRow'
 import { TimePicker, formatTime, parseTime } from './TimePicker'
 import { useT } from '../lib/i18n'
 
@@ -154,9 +156,33 @@ export function parseSchedule(raw: string): ScheduleState {
 export function ScheduleField({
   value,
   onChange,
+  live,
+  onLive,
+  settle,
+  onSettle,
 }: {
   value: string
   onChange: (next: string) => void
+  /**
+   * Whether this job also reacts to changes as they happen.
+   *
+   * It lives HERE rather than three rows further down among the toggles,
+   * because it answers the same question the strip above answers and jdp went
+   * looking for it here: "zeitplan: echtzeit option fehlt."
+   *
+   * It is NOT a fifth mode, and that is deliberate rather than a shortcut. The
+   * engine's own note says a watcher does not replace a schedule and is not
+   * meant to: only a local side can be watched at all, and a watcher that
+   * missed an event has no way to know it did. Made mutually exclusive with the
+   * schedule, "real time" would quietly remove the thing that eventually
+   * notices what the watcher slept through. So it sits beside the schedule as
+   * an addition to it, which is also what it actually is.
+   */
+  live?: boolean
+  onLive?: (next: boolean) => void
+  /** How long the tree must go quiet before a change counts as finished. */
+  settle?: string
+  onSettle?: (next: string) => void
 }) {
   const { t } = useT()
   const derived = parseSchedule(value)
@@ -228,6 +254,31 @@ export function ScheduleField({
         }}
         options={SCHEDULE_MODES.map((m) => ({ value: m, label: t(`schedule.${m}` as const) }))}
       />
+
+      {/* Real time, as an addition to the strip above rather than one of its
+          positions. See the `live` prop for why it cannot be a mode. */}
+      {onLive && (
+        <div className="flex flex-col gap-3">
+          <ToggleRow
+            label={t('schedule.live')}
+            checked={!!live}
+            onChange={onLive}
+            hint={t('schedule.liveHint')}
+          />
+          {live && (
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="text-xs uppercase tracking-wider text-carbon-textMuted">
+                {t('schedule.settle')}
+              </span>
+              {/* The same control the quiet period uses, because it is the same
+                  kind of value: a small duration somebody dials rather than
+                  types. Copying a folder in produces one event per file, so
+                  this is what stops a thousand files becoming a thousand runs. */}
+              {onSettle && <QuietPeriod value={settle ?? ''} onChange={onSettle} />}
+            </div>
+          )}
+        </div>
+      )}
 
       {state.mode === 'every' && (
         <div className="flex flex-wrap items-center gap-3">

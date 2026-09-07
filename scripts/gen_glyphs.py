@@ -58,6 +58,15 @@ GLYPHS = [
     ("IconForget", "interface-essential/subtract-circle.svg", "Forget a drive, leaving its marker"),
     ("IconPreview", "interface-essential/visible.svg", "See what a run would do"),
 
+    # Start and hold, on a job's own card. Two glyphs for two different verbs:
+    # one starts a run NOW, the other switches the job's schedule off. They sit
+    # side by side because that is where somebody looks for them, and they are
+    # never the same button: a paused job that could still be started by hand is
+    # not paused, and a running job that cannot be started again is not the
+    # same as one that is switched off.
+    ("IconRun", "entertainment/button-play.svg", "Start this job now, by hand"),
+    ("IconPause", "entertainment/button-pause-2.svg", "Hold this job's schedule"),
+
     # The direction of a job, drawn rather than described. Three glyphs, so the
     # setting reads at a glance from the list without opening anything.
     #

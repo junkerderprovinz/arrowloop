@@ -7,9 +7,11 @@ import { Card } from '../lib/glimstone/Card'
 import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
 import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
-import { IconAdd, IconDelete, IconEdit, IconPreview, IconSave, IconToLeft, IconToRight } from '../components/glyphs'
+import { IconAdd, IconDelete, IconEdit, IconPause, IconPreview, IconRun, IconSave, IconToLeft, IconToRight } from '../components/glyphs'
 import { DirectionMark } from '../components/Direction'
+import { JobMark, statusOf } from '../components/JobMark'
 import { JobForm, useJobConfig } from './Editor'
+import { api } from '../lib/api'
 import type { Job, Run, RunEvent } from '../lib/api'
 import { translateSide, useT, type TranslationKey } from '../lib/i18n'
 
@@ -28,16 +30,39 @@ import { translateSide, useT, type TranslationKey } from '../lib/i18n'
  */
 export function Jobs({
   jobs,
+  runs,
   progress,
   onPreview,
   onSaved,
 }: {
   jobs: Job[]
+  /**
+   * The recent runs, so a card can say whether the last one ended badly.
+   *
+   * The live job list carries what a job IS doing and its last SUCCESS, and
+   * neither of those answers "did the last attempt fail". A job that failed an
+   * hour ago and is now sitting idle looks identical to one that has never had
+   * a problem, which is the state somebody most needs to be told about.
+   */
+  runs: Run[]
   progress: Record<string, RunEvent>
   onPreview: (name: string) => void
   onSaved: () => void
 }) {
   const { t } = useT()
+
+  /**
+   * Whether this job's MOST RECENT run failed.
+   *
+   * Most recent, not "any of them failed": a job that failed last week and has
+   * worked every day since is not currently in trouble, and a mark that says it
+   * is would be one somebody learns to ignore. The list arrives newest first,
+   * so the first entry for a name is the one that counts.
+   */
+  function lastFailed(name: string): boolean {
+    const last = runs.find((r) => r.Job === name)
+    return !!last && last.Err !== ''
+  }
   const config = useJobConfig(onSaved)
   // Which job the form is showing, by its position in the configuration file.
   // Null is a closed form, which is the state this page opens in: somebody
@@ -178,15 +203,25 @@ export function Jobs({
                       the arrow rather than stretching to the edges, where a
                       pair of short paths reads as two unrelated facts with a
                       gap in the middle. */}
-                  <p className="flex flex-wrap items-center gap-1.5 text-xs text-carbon-textMuted">
-                    <span className="max-w-[45%] shrink truncate" title={j.left}>
-                      {j.left}
-                    </span>
-                    <DirectionMark direction={j.direction} />
-                    <span className="max-w-[45%] shrink truncate" title={j.right}>
-                      {j.right}
-                    </span>
-                  </p>
+                  {/* The two sides and the arrow between them, one step up in
+                      size from the facts below. This row is what the card is
+                      ABOUT and it was set in the same 12px as the schedule and
+                      the timestamp under it, so nothing on the card led. jdp:
+                      "der text der ordner und das pfeil symbol soll groesser
+                      sein." The arrow grows with the text rather than by its
+                      own number, because it is punctuation in that sentence. */}
+                  <div className="flex items-center gap-2.5">
+                    <JobMark status={statusOf(j, lastFailed(j.name))} />
+                    <p className="flex min-w-0 flex-1 flex-wrap items-center gap-2 text-sm text-carbon-text">
+                      <span className="max-w-[45%] shrink truncate" title={j.left}>
+                        {j.left}
+                      </span>
+                      <DirectionMark direction={j.direction} size={16} />
+                      <span className="max-w-[45%] shrink truncate" title={j.right}>
+                        {j.right}
+                      </span>
+                    </p>
+                  </div>
 
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-carbon-textMuted">
                     <State job={j} />
@@ -228,6 +263,28 @@ export function Jobs({
                         </IconAction>
                       </>
                     )}
+                    {/* Start and hold. Two verbs, never one button: a job
+                        held on its schedule can still be started by hand, and
+                        that is the point of holding it rather than deleting it.
+                        Starting is a HUMAN press and goes through the same
+                        entry point a scheduled run does not, so a held job
+                        stays held afterwards. */}
+                    {at !== null && (
+                      <IconAction
+                        title={j.disabled ? t('jobs.resume') : t('jobs.pause')}
+                        onClick={() => void config.setDisabled(at, !j.disabled)}
+                      >
+                        {j.disabled ? <IconRun /> : <IconPause />}
+                      </IconAction>
+                    )}
+                    <Button
+                      label={t('jobs.runNow')}
+                      labelKey={null}
+                      glyph={<IconRun />}
+                      title={t('jobs.runNowHint')}
+                      disabled={j.running}
+                      onClick={() => void api.run(j.name)}
+                    />
                     <Button
                       label={t('jobs.preview')}
                       labelKey={null}

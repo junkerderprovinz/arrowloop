@@ -231,7 +231,7 @@ export function App() {
               }}
             />
           ) : tab === 'jobs' ? (
-            <Jobs jobs={jobs} progress={progress} onPreview={setPreviewing} onSaved={refresh} />
+            <Jobs jobs={jobs} runs={runs} progress={progress} onPreview={setPreviewing} onSaved={refresh} />
           ) : tab === 'targets' ? (
             <Targets />
           ) : tab === 'history' ? (
