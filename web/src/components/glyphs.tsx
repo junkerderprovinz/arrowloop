@@ -144,14 +144,14 @@ export function IconToLeft(props: SVGProps<SVGSVGElement>) {
   return <Glyph box="0 0 14 14" paths={['M10 0a1.5 1.5 0 0 0 -1.5 1.5v11A1.5 1.5 0 0 0 10 14h2.5a1.5 1.5 0 0 0 1.5 -1.5v-11A1.5 1.5 0 0 0 12.5 0H10ZM3.5 4.5a0.5 0.5 0 0 0 -0.854 -0.354l-2.5 2.5a0.5 0.5 0 0 0 0 0.708l2.5 2.5A0.5 0.5 0 0 0 3.5 9.5V8h3a1 1 0 0 0 0 -2h-3V4.5Z']} {...props} />
 }
 
-/** Pick a folder. Streamline: computer-devices/local-storage-folder.svg */
+/** Pick a folder. The plain shape: the local-storage one carries a drive motif and reads as a monitor at fourteen pixels. Streamline: interface-essential/new-folder.svg */
 export function IconFolder(props: SVGProps<SVGSVGElement>) {
-  return <Glyph box="0 0 14 14" paths={['M8.796 5h4.77c0.24 0 0.434 -0.195 0.434 -0.435v-3.26a0.435 0.435 0 0 0 -0.434 -0.435h-2.61l-0.12 -0.54A0.435 0.435 0 0 0 10.4 0H8.796a0.435 0.435 0 0 0 -0.435 0.435v4.13A0.435 0.435 0 0 0 8.796 5ZM2 3h4.25a1 1 0 0 0 0 -2H1.457C0.652 1 0 1.652 0 2.457v7.086C0 10.348 0.652 11 1.457 11h4.028l-0.537 1.5H4A0.75 0.75 0 0 0 4 14h6a0.75 0.75 0 1 0 0 -1.5h-0.948L8.515 11h4.028C13.348 11 14 10.348 14 9.543V7.25a1 1 0 1 0 -2 0V9H2V3Z']} {...props} />
+  return <Glyph box="0 0 14 14" paths={['M6.12675 0.805269c-0.2708 -0.205804 -0.60343 -0.313418 -0.9433 -0.305333H1.5c-0.39782 0 -0.779356 0.158035 -1.06066 0.43934C0.158035 1.22058 0 1.60211 0 1.99994v9.99996c0 0.3979 0.158035 0.7794 0.43934 1.0607 0.281304 0.2813 0.66283 0.4393 1.06066 0.4393h11c0.3978 0 0.7794 -0.158 1.0607 -0.4393S14 12.3978 14 11.9999V3.99994c0 -0.39783 -0.158 -0.77936 -0.4393 -1.06066 -0.2813 -0.28131 -0.6629 -0.43934 -1.0607 -0.43934H6.89039l-0.21495 -0.85979c-0.08224 -0.33249 -0.27599 -0.62762 -0.54869 -0.834881Z']} {...props} />
 }
 
-/** Make a folder here. Streamline: interface-essential/new-folder.svg */
+/** Make a folder here. Streamline: interface-essential/folder-add.svg */
 export function IconNewFolder(props: SVGProps<SVGSVGElement>) {
-  return <Glyph box="0 0 14 14" paths={['M6.12675 0.805269c-0.2708 -0.205804 -0.60343 -0.313418 -0.9433 -0.305333H1.5c-0.39782 0 -0.779356 0.158035 -1.06066 0.43934C0.158035 1.22058 0 1.60211 0 1.99994v9.99996c0 0.3979 0.158035 0.7794 0.43934 1.0607 0.281304 0.2813 0.66283 0.4393 1.06066 0.4393h11c0.3978 0 0.7794 -0.158 1.0607 -0.4393S14 12.3978 14 11.9999V3.99994c0 -0.39783 -0.158 -0.77936 -0.4393 -1.06066 -0.2813 -0.28131 -0.6629 -0.43934 -1.0607 -0.43934H6.89039l-0.21495 -0.85979c-0.08224 -0.33249 -0.27599 -0.62762 -0.54869 -0.834881Z']} {...props} />
+  return <Glyph box="0 0 14 14" paths={['M5.183 0.5a1.5 1.5 0 0 1 1.492 1.14l0.215 0.86h5.61A1.5 1.5 0 0 1 14 4v8a1.5 1.5 0 0 1 -1.5 1.5h-11A1.5 1.5 0 0 1 0 12V2A1.5 1.5 0 0 1 1.5 0.5h3.683ZM7 4.75a0.75 0.75 0 0 1 0.75 0.75v1.75H9.5a0.75 0.75 0 0 1 0 1.5H7.75v1.75a0.75 0.75 0 0 1 -1.5 0V8.75H4.5a0.75 0.75 0 0 1 0 -1.5h1.75V5.5A0.75 0.75 0 0 1 7 4.75Z']} {...props} />
 }
 
 /** One level up, in the folder picker. Streamline: interface-essential/move-left.svg */
@@ -167,6 +167,11 @@ export function IconSave(props: SVGProps<SVGSVGElement>) {
 /** Cancel, on a dialog's own footer. Streamline: interface-essential/delete-1.svg */
 export function IconCancel(props: SVGProps<SVGSVGElement>) {
   return <Glyph box="0 0 14 14" paths={['M1.70711 0.292893c-0.39053 -0.3905241 -1.023693 -0.3905241 -1.414217 0 -0.3905241 0.390524 -0.3905241 1.023687 0 1.414217L5.58579 7 0.292893 12.2929c-0.3905241 0.3905 -0.3905241 1.0237 0 1.4142 0.390524 0.3905 1.023687 0.3905 1.414217 0L7 8.41421l5.2929 5.29289c0.3905 0.3905 1.0237 0.3905 1.4142 0 0.3905 -0.3905 0.3905 -1.0237 0 -1.4142L8.41421 7l5.29289 -5.29289c0.3905 -0.39053 0.3905 -1.023693 0 -1.414217 -0.3905 -0.3905241 -1.0237 -0.3905241 -1.4142 0L7 5.58579 1.70711 0.292893Z']} {...props} />
+}
+
+/** Confirm. NOT IconCheck, which is the magnifying glass this app uses for "open a target and look at it". Streamline: interface-essential/check.svg */
+export function IconConfirm(props: SVGProps<SVGSVGElement>) {
+  return <Glyph box="0 0 14 14" paths={['M13.637 1.198a1 1 0 0 1 0.134 1.408l-8.04 9.73 -0.003 0.002a1.922 1.922 0 0 1 -1.5 0.693 1.923 1.923 0 0 1 -1.499 -0.748l-0.001 -0.002L0.21 9.045a1 1 0 1 1 1.578 -1.228l2.464 3.167 7.976 -9.652a1 1 0 0 1 1.408 -0.134Z']} {...props} />
 }
 
 /** Show a stored secret. Streamline: interface-essential/visible.svg */

@@ -5,7 +5,7 @@ import { Text } from './Field'
 import { Rule } from './Shell'
 import { Button } from '../lib/glimstone/Button'
 import { Card } from '../lib/glimstone/Card'
-import { IconCancel, IconCheck, IconFolder, IconNewFolder, IconTargets, IconUp } from './glyphs'
+import { IconCancel, IconConfirm, IconFolder, IconNewFolder, IconTargets, IconUp } from './glyphs'
 import { api } from '../lib/api'
 import { useT } from '../lib/i18n'
 
@@ -202,7 +202,7 @@ export function FolderPicker({
               list: walking into a folder and pressing the button is one
               gesture, selecting a row and then confirming is two, and the
               second is the one people forget. */}
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center justify-end gap-2">
             {/* Making a folder belongs HERE, at the moment somebody discovers
                 the one they wanted does not exist yet. The alternative is
                 leaving the picker, making it elsewhere, and coming back. It
@@ -226,7 +226,7 @@ export function FolderPicker({
             <Button
               label={t('pick.choose')}
               labelKey={null}
-              glyph={<IconCheck />}
+              glyph={<IconConfirm />}
               tone="accent"
               disabled={!at}
               onClick={() => {
@@ -243,7 +243,7 @@ export function FolderPicker({
               <Button
                 label={t('pick.create')}
                 labelKey={null}
-                glyph={<IconCheck />}
+                glyph={<IconConfirm />}
                 tone="accent"
                 disabled={naming.trim() === '' || busy}
                 onClick={() => void create()}

@@ -28,6 +28,10 @@ type harness struct {
 	left  string
 	right string
 
+	// The sandbox the configuration lives in, so a test can find a job's state
+	// database when the file names it relatively.
+	dir string
+
 	// Kept so a test can stand a second server on the same engine, which is how
 	// the interface-was-not-built case is reached without a second sandbox.
 	history *history.DB
@@ -65,7 +69,7 @@ func newHarness(t *testing.T) *harness {
 	s := &web.Server{History: hist, Runner: runner}
 	srv := httptest.NewServer(s.Handler())
 	t.Cleanup(srv.Close)
-	return &harness{srv: srv, left: left, right: right, history: hist, runner: runner}
+	return &harness{srv: srv, left: left, right: right, dir: dir, history: hist, runner: runner}
 }
 
 func (h *harness) get(t *testing.T, path string, into any) {
@@ -494,6 +498,28 @@ func putJSON(t *testing.T, srv *httptest.Server, path, body string) (*http.Respo
 	resp, err := srv.Client().Do(req)
 	if err != nil {
 		t.Fatalf("PUT %s: %v", path, err)
+	}
+	defer resp.Body.Close()
+	var buf strings.Builder
+	io.Copy(&buf, resp.Body)
+	return resp, buf.String()
+}
+
+// doJSON sends any method with an optional JSON body. putJSON above predates it
+// and stays: rewriting a helper every existing test calls to save one line here
+// would be a change with more risk than value.
+func doJSON(t *testing.T, srv *httptest.Server, method, path, body string) (*http.Response, string) {
+	t.Helper()
+	req, err := http.NewRequest(method, srv.URL+path, strings.NewReader(body))
+	if err != nil {
+		t.Fatalf("build the request: %v", err)
+	}
+	if body != "" {
+		req.Header.Set("Content-Type", "application/json")
+	}
+	resp, err := srv.Client().Do(req)
+	if err != nil {
+		t.Fatalf("%s %s: %v", method, path, err)
 	}
 	defer resp.Body.Close()
 	var buf strings.Builder

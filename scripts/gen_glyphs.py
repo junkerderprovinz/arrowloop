@@ -64,11 +64,12 @@ GLYPHS = [
     ("IconToLeft", "interface-essential/move-left.svg", "Right to left only"),
 
     # Folders, the picker, and saving.
-    ("IconFolder", "computer-devices/local-storage-folder.svg", "Pick a folder"),
-    ("IconNewFolder", "interface-essential/new-folder.svg", "Make a folder here"),
+    ("IconFolder", "interface-essential/new-folder.svg", "Pick a folder. The plain shape: the local-storage one carries a drive motif and reads as a monitor at fourteen pixels"),
+    ("IconNewFolder", "interface-essential/folder-add.svg", "Make a folder here"),
     ("IconUp", "interface-essential/move-left.svg", "One level up, in the folder picker"),
     ("IconSave", "computer-devices/floppy-disk.svg", "Save"),
     ("IconCancel", "interface-essential/delete-1.svg", "Cancel, on a dialog's own footer"),
+    ("IconConfirm", "interface-essential/check.svg", "Confirm. NOT IconCheck, which is the magnifying glass this app uses for \"open a target and look at it\""),
 
     # The reveal eye on a field holding a secret, and its slashed twin.
     ("IconVisible", "interface-essential/visible.svg", "Show a stored secret"),
