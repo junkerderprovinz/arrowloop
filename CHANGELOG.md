@@ -8,6 +8,24 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## v0.4.2
+
+### 🐛 Fixed
+
+- A new build could keep showing the old interface. An embedded file has no
+  modification time, so the server sent no Last-Modified and no ETag either,
+  which leaves a browser with no validator at all. Every embedded file now
+  carries a SHA-256 of its own bytes as its ETag.
+- A bundle that no longer exists was answered with the page and a 200 instead
+  of a 404, so a browser holding an old page was handed HTML where it expected
+  a script and went on showing what it had.
+
+### ⚡ Improved
+
+- Two cache rules: the page revalidates every load, content-hashed bundles are
+  kept for a year and never asked about, because a changed file arrives under a
+  different name.
+
 ## v0.4.1
 
 ### 🐛 Fixed
