@@ -138,6 +138,14 @@ export type RawJob = {
   excludeSets?: string[]
   /** Runs the whole comparison on the schedule and applies nothing. */
   reportOnly?: boolean
+  /**
+   * Which side is right the ONE time this job has no record yet.
+   *
+   * Empty is the merge, which is what every job did before this existed. It
+   * applies once: the moment a record exists it is ignored, so a setting left
+   * in the file cannot quietly turn a two-way job into a one-way one.
+   */
+  firstRun?: string
   exclude?: string[]
   [key: string]: unknown
 }
@@ -239,6 +247,81 @@ export type StatCounts = {
 }
 
 export type DailyStat = StatCounts & { day: string; job: string }
+
+/**
+ * One thing wrong with a job, as the engine words it.
+ *
+ * The sentence travels beside the code on purpose. A screen renders `text` and
+ * a locale can take a code over later, one at a time; forty-two translations of
+ * twenty codes written before anybody has seen one on screen would age out of
+ * step with the engine that produces them.
+ */
+export type CheckFinding = {
+  code: string
+  side?: string
+  vars?: Record<string, string>
+  text: string
+  /** Fatal means a run would not get off the ground. */
+  fatal: boolean
+}
+
+export type CheckReport = {
+  job: string
+  ok: boolean
+  findings: CheckFinding[]
+}
+
+export type VerifyFinding = {
+  code: string
+  path: string
+  side?: string
+  vars?: Record<string, string>
+  text: string
+  /**
+   * No future run will notice this by itself.
+   *
+   * The one class of problem that never fixes itself and never announces
+   * itself: the record says the two sides agree, they do not, and every run
+   * from now on compares both against a record that matches both.
+   */
+  invisible: boolean
+}
+
+export type VerifyReport = {
+  job: string
+  checked: number
+  found: number
+  returned: number
+  truncated: boolean
+  findings: VerifyFinding[]
+}
+
+/**
+ * One thing in a job's bin.
+ *
+ * `filed` is null when the run id cannot be read, which is a real state rather
+ * than a bug: such an entry is listed so nothing is hidden, and it is never
+ * pruned by age because its age is unknown. `modified` is what the file says
+ * about itself and is NOT when it was deleted: a local move is a rename, so a
+ * document last edited in 2019 and binned this morning still reads as 2019.
+ */
+export type TrashEntry = {
+  path: string
+  runId: string
+  remote: string
+  size: number
+  filed: string | null
+  modified: string
+}
+
+export type TrashListing = {
+  job: string
+  side: string
+  store: string
+  /** Uncapped, so a shortened list can never read as a complete one. */
+  total: number
+  entries: TrashEntry[]
+}
 
 export type RunEvent = {
   job: string
@@ -362,6 +445,34 @@ export const api = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(settings),
     }),
+
+  /** Can this job even work: both sides there, writable, room, record readable. */
+  checkJob: (name: string) =>
+    request<CheckReport>(`/api/jobs/${encodeURIComponent(name)}/check`, { method: 'POST' }),
+
+  /** Do the two sides match what the record says about them. */
+  verifyJob: (name: string) =>
+    request<VerifyReport>(`/api/jobs/${encodeURIComponent(name)}/verify`),
+
+  trash: (job: string, side: string) =>
+    request<TrashListing>(`/api/jobs/${encodeURIComponent(job)}/trash/${side}`),
+
+  restoreTrash: (job: string, side: string, path: string, runId: string) =>
+    request<{ restored: string }>(`/api/jobs/${encodeURIComponent(job)}/trash/${side}/restore`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path, runId }),
+    }),
+
+  pruneTrash: (job: string, side: string, olderThanDays: number) =>
+    request<{ entries: number; bytes: number; unknown: number }>(
+      `/api/jobs/${encodeURIComponent(job)}/trash/${side}/prune`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ olderThanDays }),
+      },
+    ),
 
   remotes: () => request<{ remotes: Remote[]; backends: Backend[] }>('/api/remotes'),
 

@@ -13,6 +13,8 @@ import { JobMark, statusOf } from '../components/JobMark'
 import { Pace } from '../components/Pace'
 import { RunDetail } from '../components/RunDetail'
 import { Stats } from '../components/Stats'
+import { CheckPanel } from '../components/CheckPanel'
+import { TrashPanel } from '../components/TrashPanel'
 import { JobForm, useJobConfig } from './Editor'
 import { api } from '../lib/api'
 import type { Job, Run, RunEvent } from '../lib/api'
@@ -301,6 +303,17 @@ export function Jobs({
                       onClick={() => onPreview(j.name)}
                     />
                   </div>
+
+                  {/* Only while the card is open for editing, because this is
+                      a question somebody asks deliberately and a panel on every
+                      card would be a wall of buttons on a page whose subject is
+                      the jobs themselves. */}
+                  {at !== null && at === editing && (
+                    <>
+                      <CheckPanel job={j.name} />
+                      <TrashPanel job={j.name} />
+                    </>
+                  )}
 
                   {j.running && (
                     <>
