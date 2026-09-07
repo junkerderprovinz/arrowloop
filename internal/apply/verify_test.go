@@ -259,10 +259,12 @@ func newFixture(t *testing.T, hashErr error) *fixture {
 		rightSide = hashless{Fs: rightFs, err: hashErr}
 	}
 	f.rec = recorder{
-		ends:    Ends{Left: leftFs, Right: rightSide},
-		db:      db,
-		window:  2 * time.Second,
-		observe: func(kind, path, side, note string) { f.said = append(f.said, Entry{Kind: kind, Side: side, Path: path, Note: note}) },
+		ends:   Ends{Left: leftFs, Right: rightSide},
+		db:     db,
+		window: 2 * time.Second,
+		observe: func(kind, path, side, note string) {
+			f.said = append(f.said, Entry{Kind: kind, Side: side, Path: path, Note: note})
+		},
 	}
 	return f
 }
