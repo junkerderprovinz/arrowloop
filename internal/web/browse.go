@@ -151,7 +151,16 @@ func (s *Server) makeDir(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, errors.New("a folder needs a name"))
 		return
 	}
-	if name == "." || name == ".." || strings.ContainsAny(name, "/"+string(filepath.Separator)) {
+	// BOTH separators on every platform, not the host's own.
+	//
+	// filepath.Separator is "/" on Linux and macOS, so asking for that plus the
+	// host separator asked twice for the same character and let a backslash
+	// through: on those systems a folder literally named `sub\deeper` was
+	// created inside the parent. It never escaped the parent, and it was still
+	// not what "make a folder here" means. Windows treats both as separators,
+	// which is why this was green on the machine it was written on and red on
+	// the other two, and why the test that caught it had to run on all three.
+	if name == "." || name == ".." || strings.ContainsAny(name, `/`+"\\") {
 		writeError(w, http.StatusBadRequest, fmt.Errorf("%q is a path, not a folder name", name))
 		return
 	}
