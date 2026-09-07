@@ -93,7 +93,7 @@ func (s *Server) Handler() http.Handler {
 	})
 
 	if s.UI != nil {
-		mux.Handle("/", spa{fs: s.UI, placeholder: s.Placeholder})
+		mux.Handle("/", spa{fs: s.UI, placeholder: s.Placeholder, assets: &assets{}})
 	}
 	return mux
 }
@@ -377,6 +377,11 @@ func writeError(w http.ResponseWriter, code int, err error) {
 type spa struct {
 	fs          fs.FS
 	placeholder []byte
+
+	// One fingerprint per embedded file, worked out once. See assets.go for why
+	// an embedded file has no validator of its own and what goes wrong without
+	// one.
+	assets *assets
 }
 
 func (s spa) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -384,20 +389,38 @@ func (s spa) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if path == "/" {
 		path = "/index.html"
 	}
-	f, err := s.fs.Open(path[1:])
+	name := path[1:]
+
+	f, err := s.fs.Open(name)
 	if err != nil {
+		// A missing file under assets/ is a MISSING FILE, not a page.
+		//
+		// The fallback below exists so a reload of a sub-page reaches the
+		// interface's own router. Applying it to assets/ turns "this bundle is
+		// gone" into "here is some HTML, with a 200", and a browser holding a
+		// stale index.html then asks for a bundle that no longer exists and is
+		// handed a web page where it expected a script. It fails silently and
+		// keeps showing what it had. Exactly the trap already closed for /api/.
+		if isFingerprinted(name) {
+			http.NotFound(w, r)
+			return
+		}
 		index, iErr := s.fs.Open("index.html")
 		if iErr != nil {
 			s.explain(w)
 			return
 		}
 		defer index.Close()
+		info, found := s.assets.info(s.fs, "index.html")
+		setCacheHeaders(w, "index.html", info, found)
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		http.ServeContent(w, r, "index.html", time.Time{}, index.(readSeeker))
 		return
 	}
 	defer f.Close()
-	http.ServeContent(w, r, path, time.Time{}, f.(readSeeker))
+	info, found := s.assets.info(s.fs, name)
+	setCacheHeaders(w, name, info, found)
+	http.ServeContent(w, r, name, time.Time{}, f.(readSeeker))
 }
 
 func (s spa) explain(w http.ResponseWriter) {
