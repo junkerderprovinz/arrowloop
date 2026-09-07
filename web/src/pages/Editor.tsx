@@ -229,7 +229,42 @@ export function useJobConfig(onSaved: () => void) {
     [jobs, persist],
   )
 
-  return { jobs, known, error, saved, busy, patch, save, add, remove, setDisabled }
+  /**
+   * Copy a job, and open the copy for editing.
+   *
+   * The copy is switched OFF and carries no state database of its own yet: two
+   * jobs pointing at the same state file would each write what the other just
+   * wrote, and the first run of the pair would look like every file had changed
+   * on both sides. So the copy gets a fresh name and a state path derived from
+   * it, the same way a new job does.
+   *
+   * Not written to disk. Duplicating is the START of an edit rather than the
+   * end of one - nobody wants two identical jobs, they want the second one
+   * pointing somewhere else - so it behaves like the plus button: a draft in
+   * the form, saved when it says what it is for.
+   */
+  const duplicate = useCallback(
+    (at: number): number => {
+      setSaved(false)
+      const current = jobs ?? []
+      const source = current[at]
+      if (!source) return at
+      const base = `${source.name ?? t('edit.newJob')}-${t('edit.copySuffix')}`
+      let name = base
+      for (let n = 2; current.some((j) => j.name === name); n++) name = `${base}-${n}`
+      const copy: RawJob = {
+        ...source,
+        name,
+        state: `state/${name}.db`,
+        disabled: true,
+      }
+      setJobs([...current, copy])
+      return current.length
+    },
+    [jobs, t],
+  )
+
+  return { jobs, known, error, saved, busy, patch, save, add, remove, setDisabled, duplicate }
 }
 
 /**

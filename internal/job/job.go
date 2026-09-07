@@ -464,6 +464,34 @@ func isBlank(v any) bool {
 	return false
 }
 
+// Replace writes a whole configuration document over this one.
+//
+// The restore half of "save your settings somewhere". It goes through the same
+// write-beside-then-validate-then-rename path as every other write here, so a
+// file somebody edited by hand, or one saved by a different version, fails in
+// exactly the words a hand-written file would.
+//
+// It takes the document as bytes rather than as a parsed struct on purpose: a
+// backup is only worth having if it comes back byte for byte, including the
+// keys this build has never heard of.
+func (c *Config) Replace(doc []byte) (*Config, error) {
+	// Parsed once here purely to refuse something that is not JSON at all, with
+	// a sentence about THAT rather than whatever Load would say about a file
+	// full of HTML. Everything else is Load's business.
+	var probe map[string]any
+	if err := json.Unmarshal(doc, &probe); err != nil {
+		return nil, fmt.Errorf("this is not a configuration file: %w", err)
+	}
+	return c.save(func(into map[string]any) {
+		for k := range into {
+			delete(into, k)
+		}
+		for k, v := range probe {
+			into[k] = v
+		}
+	})
+}
+
 // SettingsAsMap returns the file's top-level keys apart from the jobs.
 func (c *Config) SettingsAsMap() (map[string]any, error) {
 	var doc map[string]any

@@ -5,7 +5,8 @@ import { api, type Resolution, type RunEntry } from '../lib/api'
 import { useT, type TranslationKey } from '../lib/i18n'
 import { Choice } from './Field'
 import { Button } from '../lib/glimstone/Button'
-import { IconSave } from './glyphs'
+import { IconCopy, IconSave } from './glyphs'
+import { download } from '../lib/download'
 
 /**
  * What one run actually did, path by path.
@@ -36,6 +37,18 @@ const KIND_LABEL: Record<string, TranslationKey> = {
   rmdir: 'entry.rmdir',
   skip: 'entry.skip',
 }
+
+/** The two separators the exported log is built from.
+ *
+ *  Named rather than written inline because an escape sequence in a string is
+ *  exactly the thing that gets mangled on its way through an editor or a patch,
+ *  and a tab that has quietly become a space produces a file that still looks
+ *  right and no longer opens as columns. Written as codepoints rather than as
+ *  escapes for the same reason, one turn after this comment was itself written
+ *  by a tool that ate both backslashes and left an unterminated string.
+ */
+const TAB = String.fromCharCode(9)
+const NEWLINE = String.fromCharCode(10)
 
 /** Which kinds are a problem, so a failed run's own lines stand out in it. */
 function tone(kind: string): 'ok' | 'warn' | 'fail' | 'neutral' {
@@ -88,6 +101,23 @@ export function RunDetail({
 
   return (
     <div className="flex flex-col gap-2 pb-3">
+      {/* A copy of this list as a plain file. The reason it is here rather
+          than nowhere: the most useful thing somebody can do with a run that
+          went wrong is send it to somebody else, and selecting eight hundred
+          rows out of a scrolling box is not that. Plain text, tab separated, so
+          it opens in anything. */}
+      <div className="flex justify-end">
+        <Button
+          label={t('history.download')}
+          labelKey={null}
+          glyph={<IconCopy />}
+          onClick={() => {
+            const lines = entries.map((e) => [e.Kind, e.Side, e.Path, e.Note].join(TAB))
+            download(`arrowloop-${job}-${run}.txt`, lines.join(NEWLINE) + NEWLINE)
+          }}
+        />
+      </div>
+
       <ul className="flex max-h-80 flex-col gap-1 overflow-y-auto">
         {entries.map((e, i) => (
           <li key={`${e.Path}-${i}`} className="flex items-start gap-2 text-xs">

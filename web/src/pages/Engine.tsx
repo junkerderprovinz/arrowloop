@@ -6,7 +6,8 @@ import { Stack } from '../components/Shell'
 import { ToggleRow } from '../components/ToggleRow'
 import { QuietPeriod } from '../components/QuietPeriod'
 import { Button } from '../lib/glimstone/Button'
-import { IconSave } from '../components/glyphs'
+import { IconFolder, IconSave } from '../components/glyphs'
+import { download, pickTextFile } from '../lib/download'
 import { api, type Settings } from '../lib/api'
 import { useT } from '../lib/i18n'
 
@@ -70,6 +71,8 @@ function useSettings() {
 export function Engine() {
   const { t } = useT()
   const { settings, draft, patch, save, error, busy, saved } = useSettings()
+  const [restoring, setRestoring] = useState(false)
+  const [restoreError, setRestoreError] = useState<string | null>(null)
 
   if (settings === null) {
     return (
@@ -218,6 +221,51 @@ export function Engine() {
             onChange={(v) => setDefault({ metadata: v })}
             hint={t('edit.metadataHint')}
           />
+        </div>
+      </Card>
+
+      <Card title={t('engine.backup')} hueIndex={4}>
+        <div className="flex flex-col gap-3">
+          <p className="text-xs text-carbon-textMuted">{t('engine.backupHint')}</p>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              label={t('engine.backupSave')}
+              labelKey={null}
+              glyph={<IconSave />}
+              onClick={() => {
+                void api.rawConfig().then((doc) => {
+                  // Named by the day rather than by a counter: a folder of
+                  // backups is only useful if the names say which is which, and
+                  // a counter needs somewhere to be kept.
+                  const day = new Date().toISOString().slice(0, 10)
+                  download(`arrowloop-${day}.json`, doc, 'application/json')
+                })
+              }}
+            />
+            <Button
+              label={t('engine.backupLoad')}
+              labelKey={null}
+              glyph={<IconFolder />}
+              busy={restoring}
+              disabled={restoring}
+              onClick={() => {
+                void pickTextFile('application/json,.json').then((picked) => {
+                  if (!picked) return
+                  // Asked before, and asked with the consequence in it. This
+                  // replaces every job on the machine, and the one thing a
+                  // person cannot do afterwards is get the old file back.
+                  if (!window.confirm(t('engine.backupConfirm', { file: picked.name }))) return
+                  setRestoring(true)
+                  api
+                    .replaceConfig(picked.text)
+                    .then(() => window.location.reload())
+                    .catch((e: Error) => setRestoreError(e.message))
+                    .finally(() => setRestoring(false))
+                })
+              }}
+            />
+            {restoreError && <p className="text-xs text-statusFail">{restoreError}</p>}
+          </div>
         </div>
       </Card>
 

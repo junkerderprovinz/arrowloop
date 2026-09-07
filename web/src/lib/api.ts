@@ -257,6 +257,26 @@ export const api = {
   settings: () => request<Settings>('/api/settings'),
 
   /**
+   * The configuration file exactly as it stands, for keeping a copy of.
+   *
+   * Text rather than parsed and re-serialised: a backup is only worth having if
+   * it comes back the same, including keys this build has never heard of.
+   */
+  rawConfig: async (): Promise<string> => {
+    const res = await fetch('/api/config/raw')
+    if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
+    return res.text()
+  },
+
+  /** Put a saved configuration back. Validated by the same rules a hand-written file is. */
+  replaceConfig: (doc: string) =>
+    request<{ jobs: number }>('/api/config/raw', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: doc,
+    }),
+
+  /**
    * Save the settings. The whole draft goes, and the server merges: a key this
    * build does not know about is not mentioned and therefore not touched.
    */

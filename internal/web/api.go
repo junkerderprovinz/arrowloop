@@ -13,6 +13,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"io/fs"
 	"net/http"
 	"strconv"
@@ -61,6 +62,8 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("PUT /api/config", s.writeConfig)
 	mux.HandleFunc("GET /api/settings", s.readSettings)
 	mux.HandleFunc("PUT /api/settings", s.writeSettings)
+	mux.HandleFunc("GET /api/config/raw", s.readRawConfig)
+	mux.HandleFunc("PUT /api/config/raw", s.replaceConfig)
 	mux.HandleFunc("DELETE /api/jobs/{name}/state", s.forgetJobState)
 
 	mux.HandleFunc("GET /api/volumes", s.listVolumes)
@@ -483,6 +486,39 @@ func (s *Server) readConfig(w http.ResponseWriter, r *http.Request) {
 		jobs = []map[string]any{}
 	}
 	writeJSON(w, http.StatusOK, map[string]any{"jobs": jobs})
+}
+
+// readRawConfig hands back the configuration file exactly as it stands.
+//
+// Bytes, not a re-serialised struct. A backup is only worth having if it comes
+// back the same, including the keys this build has never heard of and the
+// relative paths somebody wrote on purpose.
+func (s *Server) readRawConfig(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	// Never cached: this is a file somebody is about to keep as a backup, and a
+	// stale one is worse than none.
+	w.Header().Set("Cache-Control", "no-store")
+	w.WriteHeader(http.StatusOK)
+	_, _ = w.Write(s.Runner.Config().Raw())
+}
+
+// replaceConfig puts a whole saved configuration back.
+func (s *Server) replaceConfig(w http.ResponseWriter, r *http.Request) {
+	// A cap, because this is a file upload and an unbounded read from a request
+	// body is a way to be handed a gigabyte. Four megabytes is far more than any
+	// real configuration and small enough to refuse cheaply.
+	doc, err := io.ReadAll(io.LimitReader(r.Body, 4<<20))
+	if err != nil {
+		writeError(w, http.StatusBadRequest, fmt.Errorf("read the request: %w", err))
+		return
+	}
+	next, err := s.Runner.Config().Replace(doc)
+	if err != nil {
+		writeError(w, http.StatusBadRequest, err)
+		return
+	}
+	s.Runner.Reload(next)
+	writeJSON(w, http.StatusOK, map[string]any{"jobs": len(next.Jobs)})
 }
 
 // readSettings hands back the file's top-level keys apart from the jobs.

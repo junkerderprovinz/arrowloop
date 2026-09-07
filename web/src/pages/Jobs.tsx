@@ -7,7 +7,7 @@ import { Card } from '../lib/glimstone/Card'
 import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
 import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
-import { IconAdd, IconDelete, IconEdit, IconPause, IconPreview, IconRun, IconSave, IconToLeft, IconToRight } from '../components/glyphs'
+import { IconAdd, IconCopy, IconDelete, IconEdit, IconPause, IconPreview, IconRun, IconSave, IconToLeft, IconToRight } from '../components/glyphs'
 import { DirectionMark } from '../components/Direction'
 import { JobMark, statusOf } from '../components/JobMark'
 import { RunDetail } from '../components/RunDetail'
@@ -258,6 +258,12 @@ export function Jobs({
                           onClick={() => setEditing(at === editing ? null : at)}
                         >
                           <IconEdit />
+                        </IconAction>
+                        <IconAction
+                          title={t('edit.duplicate')}
+                          onClick={() => setEditing(config.duplicate(at))}
+                        >
+                          <IconCopy />
                         </IconAction>
                         <IconAction title={t('edit.remove')} onClick={() => setRemoving(at)}>
                           <IconDelete />
