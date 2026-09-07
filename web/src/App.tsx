@@ -205,7 +205,7 @@ export function App() {
         <div className="flex min-h-full w-full flex-col gap-8 p-6 md:p-8">
           {error && (
             <Card title={t('error.unreachable')} hueIndex={0}>
-              <p className="text-[12px] text-statusFail">{error}</p>
+              <p className="text-xs text-statusFail">{error}</p>
             </Card>
           )}
 
@@ -493,7 +493,7 @@ function Look({
               would be hiding a setting that works. */}
           {CONTROL_AXES.map((axis) => (
             <div key={axis} className="flex flex-col gap-1">
-              <span className="text-[11px] text-carbon-textSub">{t(axisKey[axis])}</span>
+              <span className="text-xs text-carbon-textSub">{t(axisKey[axis])}</span>
               <Selector<LabelMode>
                 label={t(axisKey[axis])}
                 value={labels[axis]}
@@ -520,7 +520,7 @@ function Look({
               is built. The reset sits at the END of the row it resets, not in
               the card's action slot: it undoes THIS row, not the card. */}
           <div className="flex flex-wrap items-center gap-3">
-            <span className="text-[13px] text-carbon-text">{t('look.accent')}</span>
+            <span className="text-sm text-carbon-text">{t('look.accent')}</span>
             <div className="ms-auto flex flex-wrap items-center gap-2">
               <AccentSwatches presets={ACCENTS} value={accent} onChange={onAccent} />
               <ResetBadge
@@ -564,7 +564,7 @@ function Look({
           />
 
           <div className="flex flex-wrap items-center gap-3">
-            <span className="flex items-center gap-1.5 text-[13px] text-carbon-text">
+            <span className="flex items-center gap-1.5 text-sm text-carbon-text">
               {t('look.palette')}
               <InfoBubble tip={t('look.paletteHint')} />
             </span>

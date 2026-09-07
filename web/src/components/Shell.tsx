@@ -63,7 +63,7 @@ export function Rule() {
  * why it is empty, or it reads as a page that failed to load.
  */
 export function Empty({ children }: { children: ReactNode }) {
-  return <p className="py-6 text-center text-[12px] text-carbon-textMuted">{children}</p>
+  return <p className="py-6 text-center text-xs text-carbon-textMuted">{children}</p>
 }
 
 /**

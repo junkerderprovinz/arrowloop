@@ -2,6 +2,29 @@
 @import "./tokens.css";
 @import "./tailwind-theme.css";
 
+/* ---------------------------------------------------------------------------
+   The type scale, registered so it can be written as a class.
+
+   GlimStone defines the four sizes as tokens in tokens.css and stops there:
+   its tailwind-theme.css registers the radii and the colours but not these, so
+   `text-caption` and its siblings resolve to nothing. BombVault noticed the
+   same gap and closed it in its own stylesheet, with the same self-pointing
+   trick, and this is that block. It belongs in the design language rather than
+   in two apps, and is raised there.
+
+   Why it matters here rather than being cosmetic: this app used to write its
+   sizes as `text-[11px]` and `text-[12px]`, one step below the same element in
+   BombVault, which is what "die schriftgroesse ist ueberall kleiner als in BV"
+   was. A literal pixel value cannot drift back into line on its own; a name
+   from a shared scale can.
+   --------------------------------------------------------------------------- */
+@theme inline {
+  --text-heading: var(--text-heading);
+  --text-body: var(--text-body);
+  --text-dense: var(--text-dense);
+  --text-caption: var(--text-caption);
+}
+
 /* The page's own ground. Everything above this line is GlimStone; everything
    below is this app, and there should be very little of it: a rule that lives
    here rather than in a component is a rule the design language does not
@@ -17,8 +40,16 @@ body {
   background: var(--carbon-bg);
   color: var(--carbon-text);
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  font-size: 14px;
 }
+
+/* No font-size here, deliberately, and it used to say 14px.
+   BombVault sets none either, so its body inherits the browser's 16px. Every
+   element that carries no size class of its own therefore read two pixels
+   smaller here than the same element there, which is half of what "die
+   schriftgroesse ist ueberall kleiner als in BV" meant. The other half was the
+   literal pixel sizes above. Measured on both running apps rather than
+   reasoned about: identical tokens, identical html size, and the body was the
+   one value that differed. */
 
 /* ---------------------------------------------------------------------------
    The motion engine's own numbers.

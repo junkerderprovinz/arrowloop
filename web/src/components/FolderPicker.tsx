@@ -109,11 +109,11 @@ export function FolderPicker({
         >
           {/* Where we are, in full, because the whole point is to end up with a
               path somebody can read back. */}
-          <p className="mb-3 truncate font-mono text-[12px] text-carbon-text" title={at}>
+          <p className="mb-3 truncate font-mono text-xs text-carbon-text" title={at}>
             {at || t('pick.roots')}
           </p>
 
-          {error && <p className="mb-3 text-[12px] text-statusFail">{error}</p>}
+          {error && <p className="mb-3 text-xs text-statusFail">{error}</p>}
 
           <ul className="flex max-h-72 flex-col overflow-y-auto">
             {at && (
@@ -121,7 +121,7 @@ export function FolderPicker({
                 <button
                   type="button"
                   onClick={() => void go(parent, false)}
-                  className="flex w-full items-center gap-2 px-2 py-1.5 text-start text-[12px] text-carbon-textMuted transition hover:bg-carbon-hover hover:text-carbon-text"
+                  className="flex w-full items-center gap-2 px-2 py-1.5 text-start text-xs text-carbon-textMuted transition hover:bg-carbon-hover hover:text-carbon-text"
                   style={{ borderRadius: 'var(--radius-control)' }}
                 >
                   <span className="rotate-180" aria-hidden>
@@ -132,14 +132,14 @@ export function FolderPicker({
               </li>
             )}
             {entries.length === 0 && !busy ? (
-              <li className="px-2 py-3 text-[12px] text-carbon-textMuted">{t('pick.empty')}</li>
+              <li className="px-2 py-3 text-xs text-carbon-textMuted">{t('pick.empty')}</li>
             ) : (
               entries.map((e) => (
                 <li key={e.path}>
                   <button
                     type="button"
                     onClick={() => void go(e.path, false)}
-                    className="flex w-full items-center gap-2 px-2 py-1.5 text-start text-[12px] transition hover:bg-carbon-hover"
+                    className="flex w-full items-center gap-2 px-2 py-1.5 text-start text-xs transition hover:bg-carbon-hover"
                     style={{ borderRadius: 'var(--radius-control)' }}
                   >
                     <span className="shrink-0 text-carbon-textMuted" aria-hidden>

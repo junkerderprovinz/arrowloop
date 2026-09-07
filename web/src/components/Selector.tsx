@@ -165,7 +165,7 @@ export function Selector<T extends string>({
               // are a pixel apart in height read as two different controls, and
               // padding plus a font size is two ways to arrive at a height that
               // only agree by accident.
-              'h-[var(--badge-md)] text-[12px] font-medium',
+              'h-[var(--badge-md)] text-xs font-medium',
               '[transition:background-color_120ms_ease]',
               // Inside a selector only the chosen segment is a badge. An idle
               // segment with a fill of its own is the per-segment badge an

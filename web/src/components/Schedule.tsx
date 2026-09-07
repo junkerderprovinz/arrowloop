@@ -156,7 +156,7 @@ export function ScheduleField({
 
       {(state.mode === 'daily' || state.mode === 'weekly') && (
         <div className="flex flex-wrap items-center gap-3">
-          <span className="text-[11px] uppercase tracking-wider text-carbon-textMuted">
+          <span className="text-xs uppercase tracking-wider text-carbon-textMuted">
             {t('schedule.at')}
           </span>
           <TimePicker value={state.time} label={t('schedule.at')} onChange={(time) => update({ time })} />
@@ -165,7 +165,7 @@ export function ScheduleField({
 
       {state.mode === 'weekly' && (
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-[11px] uppercase tracking-wider text-carbon-textMuted">
+          <span className="text-xs uppercase tracking-wider text-carbon-textMuted">
             {t('schedule.days')}
           </span>
           <div
@@ -181,7 +181,7 @@ export function ScheduleField({
                   aria-pressed={on}
                   onClick={() => toggleDay(day)}
                   style={{ borderRadius: 'calc(var(--radius-control) - 0.2rem)' }}
-                  className={`px-2.5 py-1 text-[12px] font-medium transition-colors ${
+                  className={`px-2.5 py-1 text-xs font-medium transition-colors ${
                     on
                       ? 'bg-accent text-accentContrast'
                       : 'bg-transparent text-carbon-textMuted hover:bg-carbon-hover hover:text-carbon-text'

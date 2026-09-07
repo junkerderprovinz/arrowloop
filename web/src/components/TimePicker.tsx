@@ -92,7 +92,7 @@ export function TimePicker({
 
   function option(active: boolean) {
     return [
-      'shrink-0 px-3 py-1 text-[12px] tabular-nums transition-colors',
+      'shrink-0 px-3 py-1 text-xs tabular-nums transition-colors',
       active
         ? 'bg-accent text-accentContrast'
         : 'text-carbon-textMuted hover:bg-carbon-hover hover:text-carbon-text',
@@ -107,7 +107,7 @@ export function TimePicker({
         aria-haspopup="dialog"
         aria-expanded={open}
         aria-label={`${label}: ${formatTime(hour, shownMinute)}`}
-        className="inline-flex items-center gap-2 bg-carbon-surface2 px-3 py-2 text-[12px] tabular-nums text-carbon-text outline-none transition hover:brightness-110 focus:brightness-125"
+        className="inline-flex items-center gap-2 bg-carbon-surface2 px-3 py-2 text-xs tabular-nums text-carbon-text outline-none transition hover:brightness-110 focus:brightness-125"
         style={{ borderRadius: 'var(--radius-control)' }}
       >
         <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden>
@@ -140,7 +140,7 @@ export function TimePicker({
               </li>
             ))}
           </ul>
-          <span className="flex items-center px-0.5 text-[12px] text-carbon-textMuted" aria-hidden>
+          <span className="flex items-center px-0.5 text-xs text-carbon-textMuted" aria-hidden>
             :
           </span>
           <ul role="listbox" aria-label={label} className={column}>

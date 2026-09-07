@@ -48,7 +48,7 @@ export function Targets() {
     <Stack>
       {error && (
         <Card title={t('error.unreachable')}>
-          <p className="text-[12px] text-statusFail">{error}</p>
+          <p className="text-xs text-statusFail">{error}</p>
         </Card>
       )}
       <Storage remotes={remotes} backends={backends} onChanged={refresh} />
@@ -178,7 +178,7 @@ function RemoteRow({
     <div className="group flex flex-wrap items-center gap-x-3 gap-y-2 py-3">
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          <span className="truncate text-[13px] font-medium">{remote.name}:</span>
+          <span className="truncate text-sm font-medium">{remote.name}:</span>
           <Badge>{remote.type}</Badge>
           {result && (
             <Badge tone={result.ok ? 'ok' : 'fail'}>
@@ -186,11 +186,11 @@ function RemoteRow({
             </Badge>
           )}
         </div>
-        <p className="mt-0.5 truncate font-mono text-[11px] text-carbon-textMuted" title={summary}>
+        <p className="mt-0.5 truncate font-mono text-xs text-carbon-textMuted" title={summary}>
           {summary}
         </p>
         {result && !result.ok && result.reason && (
-          <p className="mt-1 text-[11px] text-statusFail">{result.reason}</p>
+          <p className="mt-1 text-xs text-statusFail">{result.reason}</p>
         )}
       </div>
       <div className="flex shrink-0 items-center gap-1.5">
@@ -309,7 +309,7 @@ function RemoteForm({
         </Field>
       </div>
 
-      {backend && <p className="text-[11px] text-carbon-textMuted">{backend.description}</p>}
+      {backend && <p className="text-xs text-carbon-textMuted">{backend.description}</p>}
 
       <div className="grid gap-4 sm:grid-cols-2">
         {shown.map((o) => (
@@ -340,7 +340,7 @@ function RemoteForm({
 
       <ToggleRow checked={advanced} onChange={setAdvanced} label={t('targets.advanced')} />
 
-      {error && <p className="text-[11px] text-statusFail">{error}</p>}
+      {error && <p className="text-xs text-statusFail">{error}</p>}
 
       <div className="flex items-center gap-2">
         <Button label={t('targets.save')} labelKey={null} tone="accent" onClick={() => void save()} disabled={busy || !name.trim() || !kind} />
@@ -405,20 +405,20 @@ function DriveRow({ volume, onChanged }: { volume: Volume; onChanged: () => void
     <div className="group flex flex-wrap items-center gap-x-3 gap-y-2 py-3">
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          <span className="truncate text-[13px] font-medium">{volume.label}</span>
+          <span className="truncate text-sm font-medium">{volume.label}</span>
           {/* Attached is a state and states are badges. It is deliberately not
               the accent: a list of drives sitting there is not activity. */}
           <Badge tone={volume.attached ? 'ok' : 'neutral'}>
             {volume.attached ? t('targets.attached') : t('targets.absent')}
           </Badge>
         </div>
-        <p className="mt-0.5 truncate font-mono text-[11px] text-carbon-textMuted">
+        <p className="mt-0.5 truncate font-mono text-xs text-carbon-textMuted">
           {volume.attached ? volume.mount : volume.path}
         </p>
       </div>
 
       {!volume.attached && volume.lastSeen && (
-        <span className="shrink-0 text-[11px] text-carbon-textMuted">
+        <span className="shrink-0 text-xs text-carbon-textMuted">
           {t('targets.lastSeen')}: <Since when={volume.lastSeen} />
         </span>
       )}
@@ -516,7 +516,7 @@ function DriveForm({ onDone }: { onDone: (saved: boolean) => void }) {
         </Field>
       </div>
 
-      {error && <p className="text-[11px] text-statusFail">{error}</p>}
+      {error && <p className="text-xs text-statusFail">{error}</p>}
 
       <div className="flex items-center gap-2">
         <Button label={t('targets.save')} labelKey={null} tone="accent" onClick={() => void save()} disabled={busy || !mount} />

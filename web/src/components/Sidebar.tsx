@@ -21,7 +21,7 @@ import { useRainbow } from './Shell'
  * word it reveals would break that on the first mouseover.
  */
 const navBase =
-  'relative flex w-full items-center rounded-[var(--radius-control)] px-3 py-2.5 text-[14px] font-medium transition duration-150 select-none'
+  'relative flex w-full items-center rounded-[var(--radius-control)] px-3 py-2.5 text-[15px] font-medium transition duration-150 select-none'
 const navActive = 'glim-active bg-accent text-accentContrast'
 const navInactive = 'text-[var(--sidebar-text)] hover:bg-carbon-hover hover:text-carbon-text'
 
@@ -106,7 +106,7 @@ function Item<T extends string>({
           the one thing in this rail somebody watches without reading. */}
       {item.badge ? (
         <span
-          className={`glim-num rounded-[var(--radius-pill)] bg-carbon-surface3/60 px-1.5 py-0.5 text-[11px] font-semibold leading-none text-carbon-textSub [.glim-active_&]:bg-black/15 [.glim-active_&]:text-current ${
+          className={`glim-num rounded-[var(--radius-pill)] bg-carbon-surface3/60 px-1.5 py-0.5 text-xs font-semibold leading-none text-carbon-textSub [.glim-active_&]:bg-black/15 [.glim-active_&]:text-current ${
             centred ? 'absolute end-1 top-1' : ''
           }`}
         >

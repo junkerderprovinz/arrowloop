@@ -90,9 +90,9 @@ export function Jobs({
             disabled={config.busy}
           />
         )}
-        {config.error && <p className="text-[12px] text-statusFail">{config.error}</p>}
+        {config.error && <p className="text-xs text-statusFail">{config.error}</p>}
         {config.saved && !config.error && (
-          <p className="text-[12px] text-statusOk">{t('edit.savedNote')}</p>
+          <p className="text-xs text-statusOk">{t('edit.savedNote')}</p>
         )}
       </div>
 
@@ -129,7 +129,7 @@ export function Jobs({
                       the arrow rather than stretching to the edges, where a
                       pair of short paths reads as two unrelated facts with a
                       gap in the middle. */}
-                  <p className="flex flex-wrap items-center gap-1.5 text-[12px] text-carbon-textMuted">
+                  <p className="flex flex-wrap items-center gap-1.5 text-xs text-carbon-textMuted">
                     <span className="max-w-[45%] shrink truncate" title={j.left}>
                       {j.left}
                     </span>
@@ -139,7 +139,7 @@ export function Jobs({
                     </span>
                   </p>
 
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-carbon-textMuted">
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-carbon-textMuted">
                     <State job={j} />
                     <span>
                       {j.disabled
@@ -190,7 +190,7 @@ export function Jobs({
                   {j.running && (
                     <>
                       {progress[j.name]?.path && (
-                        <p className="flex min-w-0 items-center gap-1.5 text-[11px] text-carbon-textMuted">
+                        <p className="flex min-w-0 items-center gap-1.5 text-xs text-carbon-textMuted">
                           {progress[j.name].side && (
                             <span className="shrink-0" aria-hidden>
                               {progress[j.name].side === 'right' ? <IconToRight /> : <IconToLeft />}
@@ -221,12 +221,12 @@ export function Jobs({
               hueIndex={jobs.length + at}
             >
               <div className="flex flex-col gap-2">
-                <p className="flex flex-wrap items-center gap-1.5 text-[12px] text-carbon-textMuted">
+                <p className="flex flex-wrap items-center gap-1.5 text-xs text-carbon-textMuted">
                   <span className="max-w-[45%] shrink truncate">{p.left}</span>
                   <DirectionMark direction={p.direction ?? 'both'} />
                   <span className="max-w-[45%] shrink truncate">{p.right}</span>
                 </p>
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px]">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
                   <Badge tone="neutral">{t('edit.unsaved')}</Badge>
                 </div>
                 {/* No preview here: there is nothing for the engine to plan
@@ -315,7 +315,7 @@ function Progress({ event }: { event?: RunEvent }) {
           style={{ width: known ? `${Math.min(100, (done / total) * 100)}%` : '35%' }}
         />
       </div>
-      <span className="shrink-0 text-[11px] text-carbon-textMuted">
+      <span className="shrink-0 text-xs text-carbon-textMuted">
         {known ? t('progress.of', { done, total }) : t('progress.starting')}
       </span>
     </div>
@@ -384,13 +384,13 @@ export function History({ runs }: { runs: Run[] }) {
         {runs.map((r, i) => (
           <li key={`${r.Job}-${r.Started}-${i}`}>
             {i > 0 && <Rule />}
-            <div className="flex items-center gap-3 py-2.5 text-[12px]">
+            <div className="flex items-center gap-3 py-2.5 text-xs">
               <Badge tone={r.Err ? 'fail' : 'ok'}>{r.Err ? t('history.failed') : t('history.ok')}</Badge>
               <span className="w-32 shrink-0 truncate font-medium">{r.Job}</span>
-              <span className="shrink-0 text-[11px] text-carbon-textMuted">
+              <span className="shrink-0 text-xs text-carbon-textMuted">
                 <Since when={r.Started} />
               </span>
-              <span className="min-w-0 flex-1 truncate text-[11px] text-carbon-textMuted">
+              <span className="min-w-0 flex-1 truncate text-xs text-carbon-textMuted">
                 {r.Err ? (
                   r.Err
                 ) : (

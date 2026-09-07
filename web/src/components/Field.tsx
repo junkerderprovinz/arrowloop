@@ -18,7 +18,7 @@ import { IconHidden, IconVisible } from './glyphs'
 export function Field({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
   return (
     <label className="flex flex-col gap-1.5">
-      <span className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wider text-carbon-textMuted">
+      <span className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-carbon-textMuted">
         {label}
         {hint && <InfoBubble tip={hint} />}
       </span>
@@ -49,7 +49,7 @@ export function Text({
       value={value}
       placeholder={placeholder}
       onChange={(e) => onChange(e.target.value)}
-      className={`w-full bg-carbon-surface2 px-3 py-2 text-[12px] text-carbon-text outline-none transition placeholder:text-carbon-textMuted focus:brightness-125 ${
+      className={`w-full bg-carbon-surface2 px-3 py-2 text-xs text-carbon-text outline-none transition placeholder:text-carbon-textMuted focus:brightness-125 ${
         mono ? 'font-mono' : ''
       }`}
       style={{ borderRadius: 'var(--radius-control)' }}
@@ -75,7 +75,7 @@ export function Lines({
       rows={rows}
       placeholder={placeholder}
       onChange={(e) => onChange(e.target.value)}
-      className="w-full resize-y bg-carbon-surface2 px-3 py-2 font-mono text-[12px] text-carbon-text outline-none transition placeholder:text-carbon-textMuted focus:brightness-125"
+      className="w-full resize-y bg-carbon-surface2 px-3 py-2 font-mono text-xs text-carbon-text outline-none transition placeholder:text-carbon-textMuted focus:brightness-125"
       style={{ borderRadius: 'var(--radius-control)' }}
     />
   )
@@ -125,7 +125,7 @@ export function Choice<T extends string>({
         aria-haspopup="listbox"
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center gap-2 bg-carbon-surface2 py-2 pl-3 pr-8 text-start text-[12px] text-carbon-text outline-none transition hover:bg-carbon-hover focus-visible:brightness-125"
+        className="flex w-full items-center gap-2 bg-carbon-surface2 py-2 pl-3 pr-8 text-start text-xs text-carbon-text outline-none transition hover:bg-carbon-hover focus-visible:brightness-125"
         style={{ borderRadius: 'var(--radius-control)' }}
       >
         {current?.flag && <Flag code={current.flag} />}
@@ -162,7 +162,7 @@ export function Choice<T extends string>({
               onChange(o.value)
               setOpen(false)
             }}
-            className={`flex w-full items-center gap-2 px-3 py-2 text-start text-[12px] transition-colors ${
+            className={`flex w-full items-center gap-2 px-3 py-2 text-start text-xs transition-colors ${
               o.value === value
                 ? 'bg-carbon-surface3 text-carbon-text'
                 : 'text-carbon-textSub hover:bg-carbon-hover hover:text-carbon-text'
@@ -206,7 +206,7 @@ export function Secret({
         value={value}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full bg-carbon-surface2 py-2 pl-3 pr-9 font-mono text-[12px] text-carbon-text outline-none transition placeholder:font-sans placeholder:text-carbon-textMuted focus:brightness-125"
+        className="w-full bg-carbon-surface2 py-2 pl-3 pr-9 font-mono text-xs text-carbon-text outline-none transition placeholder:font-sans placeholder:text-carbon-textMuted focus:brightness-125"
         style={{ borderRadius: 'var(--radius-control)' }}
       />
       <button
