@@ -60,6 +60,17 @@ var ErrHalfWritten = errors.New("this job has not been given both sides yet")
 
 // Runner executes jobs, one at a time by default.
 type Runner struct {
+	// cond is asked before every automatic run and never before a hand-started
+	// one. Set by the desktop build, which is the only one that can ask whether
+	// this machine is on battery or on a connection somebody pays for.
+	condMu sync.Mutex
+	cond   Condition
+
+	// waiting remembers the jobs whose drive was not attached, so the interface
+	// can say "waiting for a drive" instead of showing a job that has never
+	// worked.
+	waiting waiting
+
 	cfg  *job.Config
 	hist *history.DB
 	note notify.Notifier
@@ -515,6 +526,11 @@ func (r *Runner) runAndLog(ctx context.Context, name string) {
 	// marked report-only must not be applied by it.
 	rec, err := r.RunAutomatically(ctx, name)
 	switch {
+	case errors.Is(err, ErrHeldBack):
+		// Not a failure and not worth alarm: the machine is doing exactly what
+		// somebody asked it to do. It still gets a line, because a job that
+		// silently never runs is the thing this whole log exists to prevent.
+		r.log("%s: %v", name, err)
 	case errors.Is(err, ErrNotEnoughSpace):
 		// Its own line, because this one is actionable and the others are not:
 		// nothing was written, nothing is half done, and somebody has to free

@@ -34,6 +34,22 @@ type Settings struct {
 	// MinimiseToTray sends the window to the notification area instead of the
 	// taskbar when somebody minimises it.
 	MinimiseToTray bool `json:"minimiseToTray"`
+
+	// NotOnBattery holds automatic runs while the machine is on its battery.
+	//
+	// Here rather than in the job configuration because it is a fact about THIS
+	// machine and not about the job: the same configuration file syncs from a
+	// laptop and from a server, and only one of them has a battery. It is also
+	// the only place the question can be asked at all, since a container has no
+	// idea what it is plugged into.
+	//
+	// It never holds a run somebody started by hand. Pressing the button on
+	// battery is a decision, and a program that refused it would be arguing.
+	NotOnBattery bool `json:"notOnBattery"`
+
+	// NotOnMetered does the same for a connection somebody pays for by the
+	// megabyte, which is what a phone hotspot is.
+	NotOnMetered bool `json:"notOnMetered"`
 }
 
 // Default is what a fresh install gets: an icon in the notification area,

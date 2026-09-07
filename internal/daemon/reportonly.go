@@ -30,6 +30,22 @@ func (r *Runner) RunAutomatically(ctx context.Context, name string) (history.Run
 	if !ok {
 		return history.Run{}, fmt.Errorf("no job called %q", name)
 	}
+	// The conditions this machine puts on automatic work, asked before anything
+	// is opened. A hand-started run never reaches here, which is the whole
+	// point: somebody pressing the button on battery has decided.
+	if cond := r.condition(); cond != nil {
+		if err := cond(ctx, j); err != nil {
+			return history.Run{}, fmt.Errorf("%w: %w", ErrHeldBack, err)
+		}
+	}
+	// A drive in a drawer is not a failure and must not be logged as one. It is
+	// remembered instead, so the interface can say what is actually true.
+	if err := attached(j); err != nil {
+		r.waiting.note(name, time.Now())
+		return history.Run{}, fmt.Errorf("%w: %w", ErrVolumeMissing, err)
+	}
+	r.waiting.clear(name)
+
 	if j.ReportOnly {
 		return r.report(ctx, name)
 	}

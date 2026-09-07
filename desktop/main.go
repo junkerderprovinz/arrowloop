@@ -15,6 +15,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"sync"
 	"time"
 
 	"github.com/wailsapp/wails/v2"
@@ -144,6 +145,10 @@ func run() error {
 		icons = &TraySet{Idle: plain, Settled: plain, Failed: plain, Working: [][]byte{plain}}
 	}
 	live := newTrayLive(icons)
+	// The machine's own conditions, which only this build can ask about. The
+	// container build hands back nil and nothing is ever held back there.
+	runner.SetCondition(powerCondition(window))
+
 	live.Watch(ctx, runner)
 
 	// Held so the second-instance handler can reach the window. Wails passes
@@ -178,7 +183,7 @@ func run() error {
 		// helpers below are handed it rather than looking it up later.
 		OnStartup: func(c context.Context) {
 			uiCtx = c
-			startTray(c, window, live)
+			startTray(c, window, live, runner)
 			watchMinimise(c, window)
 		},
 		// What the close button does is a setting, and its default is that it
@@ -259,6 +264,41 @@ func notifier(cfg *job.Config) notify.Notifier {
 // entry opens.
 const activityLines = 6
 
+// jobRow is one row of the tray's job block: what it says and what it starts.
+//
+// An empty name means the row is unused and hidden. Kept as a pair rather than
+// as two lists, because the two can only ever be wrong together: a row that
+// shows one job's name and starts another is the failure this shape rules out.
+type jobRow struct {
+	title string
+	name  string
+}
+
+// jobRowTitles decides what each of the fixed rows carries.
+//
+// A real function rather than a loop inside the menu builder, because it is the
+// only part of the tray that can be checked without a notification area, and
+// the thing that has been wrong before is exactly here: an off-by-one at the
+// boundary, which shows up as the last job never being offered and is invisible
+// until somebody has precisely that many jobs.
+func jobRowTitles(jobs []job.Job, rows int) []jobRow {
+	out := make([]jobRow, rows)
+	for i := range out {
+		if i >= len(jobs) {
+			continue
+		}
+		out[i] = jobRow{title: "Sync " + jobs[i].Name, name: jobs[i].Name}
+	}
+	return out
+}
+
+// jobLines is how many jobs the panel offers to start.
+//
+// Twelve rather than six: an activity list is bounded by what is running right
+// now, and a job list is bounded by how many somebody has. Beyond this the
+// window is the right place, and it is one entry down.
+const jobLines = 12
+
 // startTray puts the program in the notification area, if it is wanted.
 //
 // The icon says what the program is doing without being asked: it turns while
@@ -270,7 +310,7 @@ const activityLines = 6
 // whole window, because "what is it doing right now" is a question somebody
 // asks in the middle of something else. The window is one entry down for when
 // the answer is worth acting on.
-func startTray(ctx context.Context, window *deskset.Store, live *TrayLive) {
+func startTray(ctx context.Context, window *deskset.Store, live *TrayLive, runner *daemon.Runner) {
 	if !window.Get().Tray {
 		return
 	}
@@ -292,11 +332,71 @@ func startTray(ctx context.Context, window *deskset.Store, live *TrayLive) {
 		}
 		systray.AddSeparator()
 
+		// The jobs, startable from here.
+		//
+		// The activity rows above say what is happening; these say what COULD
+		// be. That is the other half of the question somebody asks in the middle
+		// of something else, and answering it here is the difference between
+		// "before I leave, sync the photos" being one click and being: find the
+		// window, wait for it, find the card, press the button.
+		//
+		// Same fixed-rows trick as above, and for the same reason: a systray
+		// menu cannot grow after it has been shown, so a row per job would work
+		// on the first run and quietly stop working once a job was added.
+		jobRows := make([]*systray.MenuItem, jobLines)
+		for i := range jobRows {
+			jobRows[i] = systray.AddMenuItem("", "")
+			jobRows[i].Hide()
+		}
+		systray.AddSeparator()
+
 		open := systray.AddMenuItem("Open ArrowLoop", "Bring the window back")
 		systray.AddSeparator()
 		quit := systray.AddMenuItem("Quit", "Stop ArrowLoop and its schedules")
 
+		// Which job each row currently stands for. Read and written only from
+		// the systray callbacks, which is one goroutine, and guarded anyway
+		// because a click can land while the menu is being refilled.
+		var namesMu sync.Mutex
+		names := make([]string, jobLines)
+
+		for i := range jobRows {
+			// The index is captured, not the name: the name changes every time
+			// the menu is refilled, and a closure that captured it would start
+			// whatever job was in that slot when the program began.
+			at := i
+			jobRows[at].Click(func() {
+				namesMu.Lock()
+				name := names[at]
+				namesMu.Unlock()
+				if name == "" {
+					return
+				}
+				// A hand start, so it goes through Run rather than through the
+				// automatic entry point: pressing this IS the decision a
+				// report-only job withholds from the clock.
+				go func() {
+					if _, err := runner.Run(ctx, name); err != nil {
+						log.Printf("tray: %s: %v", name, err)
+					}
+				}()
+			})
+		}
+
 		fill := func() {
+			titles := jobRowTitles(runner.Config().Jobs, jobLines)
+			namesMu.Lock()
+			for i, row := range jobRows {
+				names[i] = titles[i].name
+				if titles[i].name == "" {
+					row.Hide()
+					continue
+				}
+				row.SetTitle(titles[i].title)
+				row.Show()
+			}
+			namesMu.Unlock()
+
 			lines := live.Activity()
 			if len(lines) == 0 {
 				lines = []string{"Nothing is running"}
