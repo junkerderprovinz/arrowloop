@@ -8,6 +8,49 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## v0.5.0
+
+Forty-six reported points, and the largest finding was that the program could already do more than it showed.
+
+## ✨ Added
+
+- **An Engine tab, for the settings that were always read and never settable.** The bandwidth limit, how many jobs may run at once, where the run log lives, who gets told when a run finishes, and both brakes. Every one of these was being read by the engine and could only be set by editing the configuration file, which from the outside is the same as not existing. The brakes are the point: they are the net that stops a run removing more than half of everything it knows about, and they could not be seen at all.
+- **Shared defaults, so the job form can stay short.** What is usually the same for every job lives in one place and a job keeps only what makes it different. Empty folders and metadata became three-state settings in the process, because a plain switch cannot tell "off" from "not mentioned", and a default would have turned a deliberate "off" back on without a word.
+- **Named exclude lists.** Written once and asked for by name, instead of the same twenty lines pasted into every job and drifting apart. A job asking for a list that does not exist is refused when the file is read: a filter that silently matches nothing does not break anything, it just quietly syncs the thing you asked it to leave alone.
+- **The history opens.** A row said twelve copied and two conflicts; clicking it now says which files, and for a conflict what was decided. That last part is the one worth having: a scheduled run keeps both versions because it has nobody to ask, so the decision was made on your behalf while you were not watching. It can be revisited from there, which starts a fresh run for exactly those paths rather than rewriting what the first run did.
+- **A month of runs, drawn above the list.** Days with no runs are empty columns rather than missing, because a chart that closes its gaps turns "nothing happened" into "nothing to show".
+- **Room is checked before an automatic run starts.** A full destination is worse than a failed run: the transfer stops midway, the tree holds a partial file, and the record and the disk disagree in a way only a full re-scan resolves. A run started by hand is never refused, and only the space finding stops one: a side that does not exist yet is created by the very run being refused.
+- **A health check and a consistency check, on a button.** The first asks whether the job can work at all. The second compares both sides against the record and reports where they disagree, marking each finding with whether any future run would notice it by itself. That is the failure a sync tool cannot see: if a row claims the two sides agree when they do not, every later run compares both against a record that matches both.
+- **The first run can be told which side is right.** With no record yet, every file on both sides counts as new, so the default merges them and the other side fills with files you meant to leave behind. Choosing a side makes it win every disagreement while a file it never had is left exactly where it is: seeding copies, it does not mirror. It applies once.
+- **The bin can be looked in.** Nothing was ever deleted outright, and that was only half a promise while the only way to look was a file manager. It lists, one entry goes back, and old runs clear out by age. An entry whose age cannot be read says so and is never cleared by age.
+- **A file that is overwritten can keep its history.** The last few contents of an edited file, off by default, filed under the same reserved directory the bin uses.
+- **A schedule that only reports.** The whole comparison runs on time, writes down what it would have done per file, notifies, and touches nothing. Pressing the button by hand still writes.
+- **An optional password.** Off by default and unchanged for every install that does not set one. The hash comes from the environment and deliberately not from the configuration file, which is served whole as a backup and can be replaced whole by a restore.
+- **Start and hold on a job's card, and the jobs in the tray menu.** Two verbs and never one button: a held job that could no longer be started by hand would be a deleted job with extra steps.
+- **Real time in the schedule, where you look for it.** It is an addition to the schedule rather than one of its modes, because a watcher that missed an event has no way to know it did, and the schedule is what eventually notices.
+- **Not on battery and not on a metered connection.** Conditions only the desktop can ask about, so the container is unaffected. An unknown power state counts as mains: a desktop PC with no battery reports unknown on some hardware.
+- **Duplicate a job, and keep a copy of the whole setup.** The backup is the file's own bytes, so every key this build has never heard of comes back the way it went in.
+
+## 🎨 Design
+
+- **The cross and the check were reaching too far.** A cross puts its tips on the corners of its box and a round glyph puts its ink on the edge midpoints, so the same box makes the cross reach sqrt(2) further. Measured at 9.49 against 7.0.
+- **The direction arrows carried a bar** behind the arrowhead, which is the "jump to the end" keyboard idea rather than a direction. One drawing now, turned.
+- **One height for everything that stands in a row with a field.** An input took its height from its padding and the button between two of them was written as a separate number. Neither was wrong alone.
+- **The settings strip is tabs rather than a groove.** A strip in a track reads as one control with a slot, whatever size it is.
+- **The quiet period is a number and a unit** rather than a text box with a syntax to guess, and the number answers the mouse wheel while the field has focus.
+
+## 🐛 Fixed
+
+- **A file held open by another program** was only probed for copies. A rename of an open file, a conflict between two open files and a deletion that could not bin its victim all fell through to a generic failure with a raw system message attached, and renames were never probed at all. The files are now asked directly after a failure, because the transfer writes a partial file and renames it into place, and Windows refuses that rename onto a held file with plain access-denied rather than a sharing violation.
+- **A weak agreement said nothing about being weak.** Checksum verification after a transfer was already there; what was missing is that "this backend has no checksums" and "this file could not be read" arrived as the same empty answer, and the comparison quietly dropped to a length and a clock reading.
+- **Three reasons the engine really gives had no wording at all**, so a plain delete printed a path, a colon and nothing.
+- **The folder picker's buttons wrapped onto two lines** in German, and the window is wider now so the row is a promise rather than a hope.
+- **The language picker and its flags were a size too small.**
+
+## 📚 Documentation
+
+- **The example configuration shows the new settings again**, and two guards keep it that way: one loads it through the same function that guards a hand-written file, the other checks that what the README points people here for is actually shown.
+
 ## v0.4.2
 
 ### 🐛 Fixed
