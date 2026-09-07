@@ -282,7 +282,7 @@ export function ScheduleField({
                   aria-pressed={on}
                   onClick={() => toggleDay(day)}
                   style={{
-                    borderRadius: 'calc(var(--radius-control) - 0.2rem)',
+                    borderRadius: 'var(--radius-control)',
                     ...(hueVars(rainbowAt(i)) as CSSProperties),
                   }}
                   className={`glim-hue px-2.5 py-1 text-xs font-medium transition-colors ${

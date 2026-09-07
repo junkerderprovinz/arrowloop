@@ -154,7 +154,16 @@ export function Selector<T extends string>({
               // the accent for its whole subtree and the fill, the ink and the
               // focus ring all have to move together.
               ...(hueVars(rainbowAt(i)) as CSSProperties),
-              borderRadius: 'calc(var(--radius-control) - 0.2rem)',
+              // The FULL control radius, not the track's minus the padding.
+              // Subtracting the well's 0.2rem looks like the careful thing and
+              // is what made the strip read as square: at the Soft stage the
+              // control radius is 5px, so a segment kept 1.8px of it and every
+              // horizontal selector in the app looked barely rounded. Reported
+              // as exactly that. BombVault's segments carry `rounded-control`
+              // whole, and its own comment says so; the segments sit inside a
+              // track that is rounded the same amount, which is what makes the
+              // pair read as one control rather than as a box in a box.
+              borderRadius: 'var(--radius-control)',
               width: scale === 'big' && width ? width : undefined,
               minWidth: scale === 'big' ? undefined : `calc(var(--btn-w-${stage}) / ${options.length})`,
               flex: 'none',
