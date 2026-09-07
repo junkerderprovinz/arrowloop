@@ -79,7 +79,7 @@ export const en = {
   'edit.editJob': 'Edit this job',
   'edit.close': 'Close',
   'edit.removeJob': 'Remove this job',
-  'edit.removeStakes': 'The job {name} is taken out of the configuration. What it has already copied stays where it is, and its state file is left on disk, so the same pair can be set up again without treating every file as new.',
+  'edit.removeStakes': 'The job {name} is taken out of the configuration. What it has already copied stays exactly where it is on both sides; nothing is deleted from your folders.',
   'edit.removeState': 'Delete its state database too',
   'edit.removeStateHint': 'The record of what both sides last agreed on. Keep it only if the same pair is coming back, so the next run does not treat every file as new.',
   'pick.cancel': 'Cancel',
@@ -250,7 +250,7 @@ export const en = {
   'confirm.deleteRemoteStakes':
     'The settings for {name} are removed from the rclone configuration, including any password or key stored with them. Nothing is copied anywhere first, and there is no undo: setting it up again means typing the credentials again. Jobs pointing at it will fail on their next run until they are pointed somewhere else.',
   'confirm.delete': 'Delete it',
-  'confirm.cancel': 'Leave it',
+  'confirm.cancel': 'Cancel',
   'about.title': 'About ArrowLoop',
   'about.body':
     'A one-knight crusade: free, open-source tools that did not exist in this shape. No accounts, no telemetry, and nothing readable ever leaves your own walls. Forged on evenings and weekends with a lot of heart, because waiting was not an option.',
@@ -408,7 +408,7 @@ export const de: Translations = {
   'edit.editJob': 'Diesen Auftrag bearbeiten',
   'edit.close': 'Schließen',
   'edit.removeJob': 'Diesen Auftrag entfernen',
-  'edit.removeStakes': 'Der Auftrag {name} wird aus der Konfiguration genommen. Was er schon kopiert hat, bleibt liegen, und seine Zustandsdatei bleibt auf der Platte, damit dasselbe Paar wieder eingerichtet werden kann, ohne jede Datei als neu zu behandeln.',
+  'edit.removeStakes': 'Der Auftrag {name} wird aus der Konfiguration genommen. Was er schon kopiert hat, bleibt auf beiden Seiten genau dort liegen, wo es ist; aus deinen Ordnern wird nichts gelöscht.',
   'edit.removeState': 'Zustandsdatei mitlöschen',
   'edit.removeStateHint': 'Der Datensatz, worauf sich beide Seiten zuletzt geeinigt hatten. Nur behalten, wenn dasselbe Paar wiederkommt, damit der nächste Lauf nicht jede Datei als neu behandelt.',
   'pick.cancel': 'Abbrechen',
@@ -573,7 +573,7 @@ export const de: Translations = {
   'confirm.deleteRemoteStakes':
     'Die Einstellungen für {name} werden aus rclones Konfiguration entfernt, samt jedem Kennwort und jedem Schlüssel, der dort liegt. Vorher wird nichts irgendwohin kopiert, und es gibt kein Zurück: neu einrichten heißt, die Zugangsdaten neu zu tippen. Aufträge, die darauf zeigen, scheitern beim nächsten Lauf, bis sie woandershin zeigen.',
   'confirm.delete': 'Löschen',
-  'confirm.cancel': 'Stehen lassen',
+  'confirm.cancel': 'Abbrechen',
   'about.title': 'Über ArrowLoop',
   'about.body':
     'Ein einzelner Ritter, ein Feldzug: freie, quelloffene Werkzeuge, die es so nicht gab. Keine Konten, keine Telemetrie, und nichts Lesbares verlässt deine eigenen Mauern. An Abenden und Wochenenden mit viel Herzblut geschmiedet, weil Warten keine Option war.',

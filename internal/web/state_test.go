@@ -151,3 +151,42 @@ func TestMakingAFolderIsNotRecursive(t *testing.T) {
 		t.Error("the missing parent was created")
 	}
 }
+
+// TestDeletingTheLastJobReachesTheFile.
+//
+// The bug this exists for had two layers and the second was the real one. The
+// editor changed its own list and never wrote the file, so a removal survived
+// until the next read; that was fixed first. Underneath it, the validator
+// refused a configuration with no jobs at all, so removing the ONLY job could
+// never be written even once the write was attempted. A fresh install has
+// exactly one job, which is why "den example auftrag kann ich nicht löschen"
+// was reported against the only job there is.
+//
+// The test goes through the API rather than the validator, because that is the
+// path that was broken: each half passed its own tests while the two together
+// could not delete a job.
+func TestDeletingTheLastJobReachesTheFile(t *testing.T) {
+	h := newHarness(t)
+
+	var before struct {
+		Jobs []map[string]any `json:"jobs"`
+	}
+	getJSON(t, h.srv, "/api/config", &before)
+	if len(before.Jobs) != 1 {
+		t.Fatalf("this test needs exactly one job to remove, found %d", len(before.Jobs))
+	}
+
+	if resp, said := putJSON(t, h.srv, "/api/config", `{"jobs":[]}`); resp.StatusCode != http.StatusOK {
+		t.Fatalf("removing the only job: %s %s", resp.Status, said)
+	}
+
+	// Read back from the server, which re-reads the file, so this cannot pass
+	// on a list the browser is merely holding.
+	var after struct {
+		Jobs []map[string]any `json:"jobs"`
+	}
+	getJSON(t, h.srv, "/api/config", &after)
+	if len(after.Jobs) != 0 {
+		t.Errorf("the job came back: %+v", after.Jobs)
+	}
+}

@@ -168,9 +168,20 @@ func Load(path string) (*Config, error) {
 		cfg.ParallelJobs = 1
 	}
 
-	if len(cfg.Jobs) == 0 {
-		return nil, fmt.Errorf("%s defines no jobs", path)
-	}
+	// A configuration with no jobs is allowed, and refusing it was a real bug
+	// rather than strictness.
+	//
+	// It is the state you are in before creating your first job and after
+	// deleting your last one, and the second of those was impossible: the
+	// editor sent a list with the only job removed, the validator refused it,
+	// and the job came back on the next read. Reported as "den example auftrag
+	// kann ich nicht löschen", which is what a delete that cannot be saved
+	// looks like from the outside. The check was defensible when the file was
+	// only ever hand-written; it stopped being so the moment the interface
+	// could edit it.
+	//
+	// Nothing downstream needs a non-empty list: the scheduler with nothing to
+	// schedule idles, and the interface with nothing to show says so.
 	seen := map[string]bool{}
 	for i := range cfg.Jobs {
 		j := &cfg.Jobs[i]

@@ -53,7 +53,6 @@ func TestLoadRefusesBrokenConfigurations(t *testing.T) {
 		body string
 		want string
 	}{
-		{"no jobs at all", `{"jobs":[]}`, "no jobs"},
 		{"a job with no name", `{"jobs":[{"left":"/a","right":"/b","state":"s.db"}]}`, "no name"},
 		{"two jobs with one name", `{"jobs":[
 			{"name":"x","left":"/a","right":"/b","state":"s.db"},
@@ -188,5 +187,26 @@ func TestAHalfWrittenJobCanBeSavedButNotRun(t *testing.T) {
 	}
 	if _, err := Load(path); err == nil {
 		t.Fatal("a job that is switched on with no sides was accepted")
+	}
+}
+
+// TestAConfigurationWithNoJobsIsAccepted.
+//
+// This asserted the opposite until 2026-09-07, and the old assertion was the
+// bug. An empty list is the state before the first job is created and after the
+// last one is deleted, and refusing it made the second impossible: the editor
+// sent the list with the only job removed, the validator refused it, and the
+// job came back on the next read. From the outside that is "I cannot delete
+// this job".
+//
+// Kept as a test of its own rather than a row in the table above, because the
+// table is about REFUSALS and this is the case that must not be refused.
+func TestAConfigurationWithNoJobsIsAccepted(t *testing.T) {
+	cfg, err := Load(writeConfig(t, `{"jobs":[]}`))
+	if err != nil {
+		t.Fatalf("an empty job list was refused: %v", err)
+	}
+	if len(cfg.Jobs) != 0 {
+		t.Errorf("expected no jobs, got %d", len(cfg.Jobs))
 	}
 }

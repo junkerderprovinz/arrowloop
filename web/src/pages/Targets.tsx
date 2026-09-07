@@ -226,8 +226,8 @@ function RemoteRow({
           title={t('confirm.deleteRemote')}
           message={t('confirm.deleteRemoteStakes', { name: remote.name })}
           confirmLabel={t('confirm.delete')}
+          confirmGlyph={<IconDelete />}
           cancelLabel={t('confirm.cancel')}
-          closeLabel={t('confirm.cancel')}
           onCancel={() => setConfirming(false)}
           onConfirm={() => {
             setConfirming(false)
