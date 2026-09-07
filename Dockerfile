@@ -18,7 +18,7 @@ ARG BUILDPLATFORM
 
 # ---- Stage 1: web (build the interface into web/dist) -----------------------
 # Arch-independent output, so it is built once on the native runner platform.
-FROM --platform=$BUILDPLATFORM node:24-slim AS web
+FROM --platform=$BUILDPLATFORM node:24-slim@sha256:ba849c60be29959425b8734d57b8b4b7d56f98edd9504c9af091d5281095a71e AS web
 WORKDIR /src
 COPY web/package.json web/package-lock.json ./web/
 RUN npm --prefix web ci --no-audit --no-fund
@@ -26,7 +26,7 @@ COPY web/ ./web/
 RUN npm --prefix web run build
 
 # ---- Stage 2: build (cross-compile the static binary) -----------------------
-FROM --platform=$BUILDPLATFORM golang:1.26-bookworm AS build
+FROM --platform=$BUILDPLATFORM golang:1.26-bookworm@sha256:9fdc884aacc3bec89b20ffc69f4bb369c78210e3e4f600387b5128b12c199f81 AS build
 WORKDIR /src
 
 # The module graph first, so `go mod download` is cached across source changes.
@@ -54,7 +54,7 @@ RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} \
     -o /out/arrowloop ./cmd/arrowloop
 
 # ---- Stage 3: runtime -------------------------------------------------------
-FROM debian:stable-slim AS runtime
+FROM debian:stable-slim@sha256:04634311a8d5fc442b6eb06d792293c4f3e2268652ca7634e00ce8ef5cc0a28a AS runtime
 
 LABEL org.opencontainers.image.title="arrowloop" \
       org.opencontainers.image.description="Two-way file synchronisation with a per-file state database, a trash, and brakes that refuse an implausible deletion." \
