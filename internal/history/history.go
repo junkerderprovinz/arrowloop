@@ -42,6 +42,24 @@ func (r Run) Changed() bool {
 	return r.Copied+r.Moved+r.Trashed+r.Conflicts+r.DirsMade+r.DirsRemoved > 0
 }
 
+// Entry is one thing a run did to one path.
+//
+// The counts on a Run answer "how much", and that turned out not to be the
+// question. A run that reports one error says nothing about WHICH file, and a
+// run that reports two conflicts says nothing about what it decided, which
+// matters most for a scheduled run nobody watched: the default keeps both
+// versions, so the decision was made on somebody's behalf and they were never
+// told. jdp: "was passiert bei fehlern und konflikten? Wo werden die angezeigt
+// und wo kann man konflikte loesen?"
+type Entry struct {
+	Kind string // copy, move, trash, conflict, mkdir, rmdir, skip, error
+	Side string // left, right, or empty where the action has no side
+	Path string
+	// Note carries what a number cannot: the error's own words, or which way a
+	// conflict was resolved. Empty for the ordinary case.
+	Note string
+}
+
 // DB is the run log.
 type DB struct{ sql *sql.DB }
 
@@ -62,6 +80,16 @@ CREATE TABLE IF NOT EXISTS runs (
 	err          TEXT    NOT NULL
 );
 CREATE INDEX IF NOT EXISTS runs_job_started ON runs (job, started DESC);
+
+CREATE TABLE IF NOT EXISTS entries (
+	run  INTEGER NOT NULL,
+	seq  INTEGER NOT NULL,
+	kind TEXT    NOT NULL,
+	side TEXT    NOT NULL,
+	path TEXT    NOT NULL,
+	note TEXT    NOT NULL,
+	PRIMARY KEY (run, seq)
+);
 `
 
 // Open opens or creates the history database.
@@ -80,9 +108,31 @@ func Open(ctx context.Context, path string) (*DB, error) {
 // Close releases the handle.
 func (d *DB) Close() error { return d.sql.Close() }
 
-// Record stores one finished run.
-func (d *DB) Record(ctx context.Context, r Run) error {
-	_, err := d.sql.ExecContext(ctx,
+// Record stores one finished run and everything it did, together.
+//
+// One transaction, and that is the point rather than a performance note. A run
+// row without its entries reads as a run that touched nothing, which is exactly
+// the picture somebody would be given about the run they most want to look
+// into. Written apart, a crash between the two writes produces that picture
+// permanently.
+//
+// Said plainly because it would otherwise be assumed: THE ATOMICITY ITSELF IS
+// NOT COVERED BY A TEST. Reaching the failure it guards against means dying
+// between two writes, and the only ways to stage that from a test are a hook
+// that exists for the test alone or a data value crafted to break the second
+// insert - and a test that builds a state the program cannot reach is a test
+// that proves something about the test. What the tests beside this DO cover is
+// everything observable: the entries arrive, in order, tied to their own run,
+// and they are pruned with it. The transaction is here because it is right,
+// not because something checks it.
+func (d *DB) Record(ctx context.Context, r Run, entries []Entry) error {
+	tx, err := d.sql.BeginTx(ctx, nil)
+	if err != nil {
+		return fmt.Errorf("record run for %q: %w", r.Job, err)
+	}
+	defer tx.Rollback() //nolint:errcheck // a committed transaction rolls back to nothing
+
+	res, err := tx.ExecContext(ctx,
 		`INSERT INTO runs (job, started, finished, copied, moved, trashed, conflicts, dirs_made, dirs_removed, unchanged, skipped, err)
 		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 		r.Job, r.Started.UnixNano(), r.Finished.UnixNano(),
@@ -90,7 +140,43 @@ func (d *DB) Record(ctx context.Context, r Run) error {
 	if err != nil {
 		return fmt.Errorf("record run for %q: %w", r.Job, err)
 	}
-	return nil
+	id, err := res.LastInsertId()
+	if err != nil {
+		return fmt.Errorf("record run for %q: %w", r.Job, err)
+	}
+
+	for i, e := range entries {
+		if _, err := tx.ExecContext(ctx,
+			`INSERT INTO entries (run, seq, kind, side, path, note) VALUES (?, ?, ?, ?, ?, ?)`,
+			id, i, e.Kind, e.Side, e.Path, e.Note); err != nil {
+			return fmt.Errorf("record entry %d for %q: %w", i, r.Job, err)
+		}
+	}
+	return tx.Commit()
+}
+
+// Entries returns what one run did, in the order it did it.
+//
+// Order matters here in a way it does not for the counts: reading down the list
+// of a failed run is how somebody works out what it got through before it
+// stopped.
+func (d *DB) Entries(ctx context.Context, run int64) ([]Entry, error) {
+	rows, err := d.sql.QueryContext(ctx,
+		`SELECT kind, side, path, note FROM entries WHERE run = ? ORDER BY seq`, run)
+	if err != nil {
+		return nil, fmt.Errorf("read entries for run %d: %w", run, err)
+	}
+	defer rows.Close()
+
+	var out []Entry
+	for rows.Next() {
+		var e Entry
+		if err := rows.Scan(&e.Kind, &e.Side, &e.Path, &e.Note); err != nil {
+			return nil, fmt.Errorf("scan entry: %w", err)
+		}
+		out = append(out, e)
+	}
+	return out, rows.Err()
 }
 
 // Recent returns the newest runs first. An empty job name means every job.
@@ -155,7 +241,17 @@ func (d *DB) Prune(ctx context.Context, keep time.Duration, now time.Time) (int6
 	if keep <= 0 {
 		return 0, nil
 	}
-	res, err := d.sql.ExecContext(ctx, `DELETE FROM runs WHERE started < ?`, now.Add(-keep).UnixNano())
+	cut := now.Add(-keep).UnixNano()
+	// The entries go with their run, and they go FIRST. SQLite does not enforce
+	// a foreign key unless asked to, so nothing here would have complained
+	// about entries whose run no longer exists - they would simply have sat in
+	// the file for ever, invisible and growing, which is the exact failure
+	// pruning exists to prevent.
+	if _, err := d.sql.ExecContext(ctx,
+		`DELETE FROM entries WHERE run IN (SELECT id FROM runs WHERE started < ?)`, cut); err != nil {
+		return 0, fmt.Errorf("prune history entries: %w", err)
+	}
+	res, err := d.sql.ExecContext(ctx, `DELETE FROM runs WHERE started < ?`, cut)
 	if err != nil {
 		return 0, fmt.Errorf("prune history: %w", err)
 	}

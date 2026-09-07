@@ -63,6 +63,26 @@ type Result struct {
 	DirsMade    int
 	DirsRemoved int
 	Skipped     []plan.Skip
+
+	// Entries is what the run did, path by path, in the order it finished each
+	// piece of work.
+	//
+	// The counts above answer "how much" and that turned out not to be the
+	// question anybody has afterwards. A run reporting one error says nothing
+	// about which file; a run reporting two conflicts says nothing about what it
+	// decided, and for a scheduled run that decision was made on somebody's
+	// behalf while they were not watching.
+	Entries []Entry
+}
+
+// Entry is one finished piece of work, recorded rather than only counted.
+type Entry struct {
+	Kind string
+	Side string
+	Path string
+	// Note carries what a number cannot: an error's own words, or which way a
+	// conflict went. Empty for the ordinary case.
+	Note string
 }
 
 // DisagreementError means an operation reported success and the two sides still
@@ -94,8 +114,20 @@ type tally struct {
 // lock as everything else, so the numbers a watcher sees always add up even
 // when several workers finish at the same instant.
 func (t *tally) step(kind, path, side string) {
+	t.note(kind, path, side, "")
+}
+
+// note is step with something to say about this particular piece of work: the
+// words of an error, or which way a conflict went.
+//
+// Recorded under the same lock as the count, so the list and the numbers can
+// never describe two different runs. Several workers finish at once, and a
+// slice appended to from more than one of them without the lock is a data race
+// that shows up as a corrupted history rather than as a crash.
+func (t *tally) note(kind, path, side, note string) {
 	t.mu.Lock()
 	t.done++
+	t.res.Entries = append(t.res.Entries, Entry{Kind: kind, Side: side, Path: path, Note: note})
 	done, total, watcher := t.done, t.total, t.progress
 	t.mu.Unlock()
 	if watcher != nil {
@@ -122,7 +154,17 @@ func (t *tally) count(f func(*Result)) {
 }
 
 func (t *tally) skip(path string, reason plan.Reason) {
-	t.count(func(r *Result) { r.Skipped = append(r.Skipped, plan.Skip{Path: path, Reason: reason}) })
+	t.mu.Lock()
+	defer t.mu.Unlock()
+	t.res.Skipped = append(t.res.Skipped, plan.Skip{Path: path, Reason: reason})
+	// A skip is a thing that happened to a named file, and until now the only
+	// place it went was a count. "One file was skipped" is not something anybody
+	// can act on; the name and the reason are.
+	//
+	// Deliberately NOT through note(): a skip is not a finished piece of work
+	// and must not move the progress bar, which is the one thing note() does
+	// besides recording.
+	t.res.Entries = append(t.res.Entries, Entry{Kind: "skip", Path: path, Note: reason.String()})
 }
 
 func (t *tally) setFatal(err error) {
@@ -404,7 +446,10 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 
 	case plan.Conflict:
 		t.count(func(r *Result) { r.Conflicts++ })
-		t.step("conflict", act.Path, "")
+		// What was DECIDED, not only that there was a conflict. On a scheduled
+		// run nobody chose, so the default was taken on somebody's behalf and
+		// this line is the only place that ever says so.
+		t.note("conflict", act.Path, "", act.Resolve.String())
 		return resolveConflict(ctx, ends, rec, act, runID, opt)
 	}
 	return fmt.Errorf("unknown action kind %v", act.Kind)

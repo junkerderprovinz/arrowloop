@@ -192,7 +192,7 @@ func TestPruneDropsOldRuns(t *testing.T) {
 	for i, age := range []time.Duration{time.Hour, 48 * time.Hour, 200 * 24 * time.Hour} {
 		if err := hist.Record(ctx, history.Run{
 			Job: "x", Started: now.Add(-age), Finished: now.Add(-age).Add(time.Second), Copied: i,
-		}); err != nil {
+		}, nil); err != nil {
 			t.Fatalf("record: %v", err)
 		}
 	}

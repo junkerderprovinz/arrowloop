@@ -209,7 +209,7 @@ func (r *Runner) RunChosen(ctx context.Context, name string, only []string, reso
 	rec.Skipped = len(res.Skipped)
 
 	if r.hist != nil {
-		if hErr := r.hist.Record(ctx, rec); hErr != nil {
+		if hErr := r.hist.Record(ctx, rec, entriesOf(res)); hErr != nil {
 			r.log("could not write the run record for %s: %v", name, hErr)
 		}
 	}
@@ -220,6 +220,24 @@ func (r *Runner) RunChosen(ctx context.Context, name string, only []string, reso
 	}
 	r.publish(finished)
 	return rec, err
+}
+
+// entriesOf carries what a run did across the one package boundary that stands
+// between the engine and the log.
+//
+// A conversion rather than a shared type, because apply and history have no
+// business importing each other: one of them applies a plan and the other keeps
+// a database, and the day a column is added to one of them is not a day the
+// other should have to rebuild.
+func entriesOf(res apply.Result) []history.Entry {
+	if len(res.Entries) == 0 {
+		return nil
+	}
+	out := make([]history.Entry, 0, len(res.Entries))
+	for _, e := range res.Entries {
+		out = append(out, history.Entry{Kind: e.Kind, Side: e.Side, Path: e.Path, Note: e.Note})
+	}
+	return out
 }
 
 // open builds the two ends and the record for one job.
