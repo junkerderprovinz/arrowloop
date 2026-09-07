@@ -55,8 +55,10 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /api/jobs", s.listJobs)
 	mux.HandleFunc("GET /api/jobs/{name}/plan", s.previewJob)
 	mux.HandleFunc("POST /api/jobs/{name}/run", s.runJob)
+	mux.HandleFunc("POST /api/jobs/{name}/check", s.checkJob)
 	mux.HandleFunc("GET /api/history", s.listHistory)
 	mux.HandleFunc("GET /api/history/{id}/entries", s.runEntries)
+	mux.HandleFunc("GET /api/history/stats", s.historyStats)
 	mux.HandleFunc("GET /api/events", s.events)
 	mux.HandleFunc("GET /api/config", s.readConfig)
 	mux.HandleFunc("PUT /api/config", s.writeConfig)
@@ -74,6 +76,13 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /api/browse", s.browse)
 	mux.HandleFunc("POST /api/browse/mkdir", s.makeDir)
 	mux.HandleFunc("GET /api/capabilities", s.capabilities)
+
+	// The three routes an unauthenticated caller may reach. Everything else
+	// under /api/ needs a session once a password hash is set, and nothing at
+	// all changes when one is not: see Protect in auth.go.
+	mux.HandleFunc("POST /api/login", s.login)
+	mux.HandleFunc("POST /api/logout", s.logout)
+	mux.HandleFunc("GET /api/session", s.session)
 
 	if s.Window != nil {
 		mux.HandleFunc("GET /api/window", s.readWindow)
@@ -101,7 +110,11 @@ func (s *Server) Handler() http.Handler {
 	if s.UI != nil {
 		mux.Handle("/", spa{fs: s.UI, placeholder: s.Placeholder, assets: &assets{}})
 	}
-	return mux
+	// The whole tree goes through the gate, and the gate is a straight passthrough
+	// when no password hash is set. That is the important half: an install that
+	// never asked for a password must behave exactly as it did before this
+	// existed, and the check for that is the first thing Protect does.
+	return s.Protect(mux)
 }
 
 // jobView is one row of the job list.

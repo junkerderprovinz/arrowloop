@@ -30,10 +30,18 @@ func (r *Runner) RunAutomatically(ctx context.Context, name string) (history.Run
 	if !ok {
 		return history.Run{}, fmt.Errorf("no job called %q", name)
 	}
-	if !j.ReportOnly {
-		return r.Run(ctx, name)
+	if j.ReportOnly {
+		return r.report(ctx, name)
 	}
-	return r.report(ctx, name)
+	// Room is checked only on the automatic path. A person pressing the button
+	// with a full disk will read the error; the run that fills a disk is the one
+	// nobody was watching. See roomFor for why the estimate belongs on the clock
+	// side rather than in front of a person.
+	if err := r.roomFor(ctx, j); err != nil {
+		r.publish(Event{Job: name, Phase: "finished", Error: err.Error()})
+		return history.Run{}, err
+	}
+	return r.Run(ctx, name)
 }
 
 // report compares both sides, writes down what a run WOULD have done, and

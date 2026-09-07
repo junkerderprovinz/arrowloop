@@ -515,6 +515,11 @@ func (r *Runner) runAndLog(ctx context.Context, name string) {
 	// marked report-only must not be applied by it.
 	rec, err := r.RunAutomatically(ctx, name)
 	switch {
+	case errors.Is(err, ErrNotEnoughSpace):
+		// Its own line, because this one is actionable and the others are not:
+		// nothing was written, nothing is half done, and somebody has to free
+		// space or the job will keep refusing every turn.
+		r.log("%s did not start: %v", name, err)
 	case errors.Is(err, ErrVolumeMissing):
 		r.log("%s: %v", name, err)
 	case errors.Is(err, ErrAlreadyRunning):
