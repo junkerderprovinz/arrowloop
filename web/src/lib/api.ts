@@ -181,6 +181,15 @@ export type Settings = {
     metadata?: boolean
     brakePercent?: number
     brakeFloor?: number
+    /**
+     * Three states, and undefined is one of them: ask the two sides.
+     *
+     * A plain boolean could not say that, and "ask" is what almost every job
+     * wants. The override exists because backends lie about themselves: a share
+     * exported from Windows and mounted on Linux reports itself case-sensitive
+     * and is not.
+     */
+    foldCase?: boolean
   }
   notify?: {
     matrix?: { homeserver: string; room: string; token: string }

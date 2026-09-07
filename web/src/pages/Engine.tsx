@@ -5,6 +5,7 @@ import { Field, NumberField, Secret, Text } from '../components/Field'
 import { Stack } from '../components/Shell'
 import { ToggleRow } from '../components/ToggleRow'
 import { QuietPeriod } from '../components/QuietPeriod'
+import { Selector } from '../components/Selector'
 import { Button } from '../lib/glimstone/Button'
 import { IconFolder, IconSave } from '../components/glyphs'
 import { download, pickTextFile } from '../lib/download'
@@ -221,6 +222,25 @@ export function Engine() {
             onChange={(v) => setDefault({ metadata: v })}
             hint={t('edit.metadataHint')}
           />
+          {/* Three answers, not two, and the third one is the default. "Ask the
+              two sides" is right for almost every job, and it is a genuinely
+              different instruction from "never fold": a toggle could only offer
+              two of the three and would have to pick which truth to hide. */}
+          <Field label={t('engine.foldCase')} hint={t('engine.foldCaseHint')}>
+            <Selector<'auto' | 'on' | 'off'>
+              scale="small"
+              label={t('engine.foldCase')}
+              value={defaults.foldCase === undefined ? 'auto' : defaults.foldCase ? 'on' : 'off'}
+              onChange={(next) =>
+                setDefault({ foldCase: next === 'auto' ? undefined : next === 'on' })
+              }
+              options={[
+                { value: 'auto', label: t('engine.foldAuto') },
+                { value: 'on', label: t('engine.foldOn') },
+                { value: 'off', label: t('engine.foldOff') },
+              ]}
+            />
+          </Field>
         </div>
       </Card>
 

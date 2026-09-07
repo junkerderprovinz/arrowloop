@@ -145,6 +145,11 @@ type Job struct {
 	// they got by leaving a field out.
 	BrakePercent *int `json:"brakePercent,omitempty"`
 	BrakeFloor   *int `json:"brakeFloor,omitempty"`
+
+	// FoldCase overrides the backends' own answer about case sensitivity for
+	// this one job. See Defaults.FoldCase for why a backend's answer is not
+	// always to be believed.
+	FoldCase *bool `json:"foldCase,omitempty"`
 }
 
 // Defaults fill in the per-job settings a job does not set for itself.
@@ -173,6 +178,20 @@ type Defaults struct {
 	// QuietPeriod is here too, because "wait for a file to stop changing" is
 	// almost always one answer for a whole machine rather than per job.
 	QuietPeriod string `json:"quietPeriod,omitempty"`
+
+	// FoldCase overrides what the two backends say about themselves.
+	//
+	// Normally nothing needs setting: the engine asks each side whether it can
+	// tell "Bild.jpg" from "bild.jpg" and folds when EITHER cannot. The override
+	// exists for the case where a backend lies, and they do: a network share
+	// exported from Windows and mounted on Linux reports itself
+	// case-sensitive and is not. Left wrong, the two sides each keep their own
+	// copy of one file and the pair grows by one file per run, for ever.
+	//
+	// It has to be decided per PAIR rather than per side. If one side folds and
+	// the matching does not, that side's two files both map onto the one file
+	// over there and the engine oscillates between them.
+	FoldCase *bool `json:"foldCase,omitempty"`
 }
 
 // applyTo fills in what a job left unset. A job that states a value keeps it,
@@ -198,6 +217,9 @@ func (d Defaults) applyTo(j *Job) {
 	}
 	if j.BrakeFloor == nil {
 		j.BrakeFloor = d.BrakeFloor
+	}
+	if j.FoldCase == nil {
+		j.FoldCase = d.FoldCase
 	}
 }
 
@@ -379,6 +401,9 @@ func (j Job) Options() (engine.Options, error) {
 		Exclude:   excl,
 		EmptyDirs: j.EmptyDirs != nil && *j.EmptyDirs,
 		Metadata:  j.Metadata != nil && *j.Metadata,
+		// Nil is "ask the backends", which is what almost every job wants. The
+		// override only reaches the engine when somebody set it.
+		ForceFoldCase: j.FoldCase,
 	}, nil
 }
 

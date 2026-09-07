@@ -127,3 +127,52 @@ func TestADefaultIsCheckedLikeAnythingElse(t *testing.T) {
 		t.Error("a default that makes every job invalid was accepted")
 	}
 }
+
+// TestTheCaseOverrideReachesTheEngine.
+//
+// The engine normally asks each backend whether it can tell "Bild.jpg" from
+// "bild.jpg". The override exists because backends lie: a share exported from
+// Windows and mounted on Linux reports itself case-sensitive and is not, and
+// left wrong the two sides each keep their own copy of one file, growing the
+// tree by one file per run for ever.
+//
+// It is a pointer the whole way down, so "not set" stays distinguishable from
+// "set to false" - the second of which is a deliberate instruction to match
+// case exactly, and would be lost as a plain bool.
+func TestTheCaseOverrideReachesTheEngine(t *testing.T) {
+	yes := write(t, `{
+		"jobs": [{"name":"x","foldCase":true,`+sides+`}]
+	}`)
+	if yes.Jobs[0].FoldCase == nil || !*yes.Jobs[0].FoldCase {
+		t.Fatalf("foldCase true did not survive loading: %v", yes.Jobs[0].FoldCase)
+	}
+	opt, err := yes.Jobs[0].Options()
+	if err != nil {
+		t.Fatalf("options: %v", err)
+	}
+	if opt.ForceFoldCase == nil || !*opt.ForceFoldCase {
+		t.Errorf("the override did not reach the engine: %v", opt.ForceFoldCase)
+	}
+
+	// And the ordinary job asks the backends rather than being told.
+	plain := write(t, `{"jobs": [{"name":"x",`+sides+`}]}`)
+	plainOpt, err := plain.Jobs[0].Options()
+	if err != nil {
+		t.Fatalf("options: %v", err)
+	}
+	if plainOpt.ForceFoldCase != nil {
+		t.Errorf("a job that said nothing arrived with an override: %v", plainOpt.ForceFoldCase)
+	}
+
+	// A default reaches a job that says nothing, and loses to one that does.
+	mixed := write(t, `{
+		"defaults": {"foldCase": true},
+		"jobs": [{"name":"a",`+sides+`},{"name":"b","foldCase":false,`+sides+`}]
+	}`)
+	if mixed.Jobs[0].FoldCase == nil || !*mixed.Jobs[0].FoldCase {
+		t.Errorf("the default did not reach the quiet job: %v", mixed.Jobs[0].FoldCase)
+	}
+	if mixed.Jobs[1].FoldCase == nil || *mixed.Jobs[1].FoldCase {
+		t.Errorf("a job that said false was overridden by the default: %v", mixed.Jobs[1].FoldCase)
+	}
+}
