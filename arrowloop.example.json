@@ -1,5 +1,5 @@
 {
-  "bwlimit": "",
+  "bwlimit": "08:00,512k 19:00,off",
   "parallelJobs": 1,
   "notify": {
     "matrix": {
@@ -9,6 +9,24 @@
     },
     "onSuccess": false
   },
+  "defaults": {
+    "quietPeriod": "5s",
+    "transfers": 4,
+    "brakePercent": 50,
+    "brakeFloor": 10
+  },
+  "excludeSets": {
+    "junk": [
+      "Thumbs.db",
+      ".DS_Store",
+      "**/.thumbnails/**"
+    ],
+    "buildOutput": [
+      "node_modules/**",
+      "target/**",
+      "dist/**"
+    ]
+  },
   "jobs": [
     {
       "name": "photos",
@@ -17,8 +35,10 @@
       "state": "state/photos.db",
       "schedule": "*/15 * * * *",
       "exclude": [
-        "*.xmp",
-        "**/.thumbnails/**"
+        "*.xmp"
+      ],
+      "excludeSets": [
+        "junk"
       ],
       "emptyDirs": true,
       "transfers": 4,
@@ -32,7 +52,9 @@
       "state": "state/documents.db",
       "schedule": "0 * * * *",
       "quietPeriod": "30s",
-      "metadata": true
+      "metadata": true,
+      "firstRun": "left",
+      "keepVersions": 5
     },
     {
       "name": "scratch",
@@ -40,6 +62,15 @@
       "right": "E:/ScratchMirror",
       "state": "state/scratch.db",
       "brakePercent": 0
+    },
+    {
+      "name": "server-share",
+      "left": "D:/Share",
+      "right": "//nas/share",
+      "state": "state/server-share.db",
+      "schedule": "0 3 * * *",
+      "reportOnly": true,
+      "foldCase": true
     }
   ]
 }
