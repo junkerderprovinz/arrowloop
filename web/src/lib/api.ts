@@ -153,6 +153,26 @@ export type RunEntry = {
   Note: string
 }
 
+/**
+ * The configuration's top-level keys, apart from the job list.
+ *
+ * Deliberately open: a key this build has never heard of still has to survive
+ * being read and written back, the same way a job's unknown fields do. A closed
+ * type here would mean an older interface silently deleting a newer setting on
+ * every save.
+ */
+export type Settings = {
+  bwlimit?: string
+  parallelJobs?: number
+  history?: string
+  notify?: {
+    matrix?: { homeserver: string; room: string; token: string }
+    webhook?: string
+    onSuccess?: boolean
+  }
+  [key: string]: unknown
+}
+
 export type RunEvent = {
   job: string
   phase: 'started' | 'progress' | 'finished'
@@ -216,6 +236,19 @@ export const api = {
    * thousands of strings nobody reads.
    */
   runEntries: (id: number) => request<RunEntry[]>(`/api/history/${id}/entries`),
+
+  settings: () => request<Settings>('/api/settings'),
+
+  /**
+   * Save the settings. The whole draft goes, and the server merges: a key this
+   * build does not know about is not mentioned and therefore not touched.
+   */
+  saveSettings: (settings: Settings) =>
+    request<Settings>('/api/settings', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(settings),
+    }),
 
   remotes: () => request<{ remotes: Remote[]; backends: Backend[] }>('/api/remotes'),
 

@@ -344,11 +344,86 @@ func (c *Config) Path() string { return c.path }
 // the disagreement would show up as an editor that accepts something the daemon
 // then refuses to start with.
 func (c *Config) SaveJobs(jobs []map[string]any) (*Config, error) {
+	return c.save(func(doc map[string]any) { doc["jobs"] = jobs })
+}
+
+// SaveSettings writes the keys that are NOT the job list: the bandwidth limit,
+// how many jobs may run at once, where the history lives, who gets told.
+//
+// Every one of these was already read by the engine and had nowhere to be set
+// except the file itself, which is the reason it needs saying: the program
+// could do these things and did not appear to. jdp: "Das programm sieht so
+// klein und unfertig aus und wirkt als haette es keine funktionen."
+//
+// A key whose value arrives empty is DELETED rather than written as "". The
+// difference is not cosmetic: an empty bandwidth limit means "no limit" and a
+// missing one means the same thing, but an empty string written into the file
+// is a value somebody hand-editing it has to wonder about, and the day one of
+// these settings grows a non-empty default it would also override it.
+func (c *Config) SaveSettings(settings map[string]any) (*Config, error) {
+	return c.save(func(doc map[string]any) {
+		for k, v := range settings {
+			if k == "jobs" {
+				// The one key this call may not touch. Sent by a caller that
+				// read the whole document and handed it back, it would replace
+				// the job list with whatever that caller last saw, which is a
+				// way to lose a job added in another window.
+				continue
+			}
+			if isBlank(v) {
+				delete(doc, k)
+				continue
+			}
+			doc[k] = v
+		}
+	})
+}
+
+// isBlank reports whether a value carries no setting at all.
+func isBlank(v any) bool {
+	switch t := v.(type) {
+	case nil:
+		return true
+	case string:
+		return t == ""
+	case float64:
+		return t == 0
+	case map[string]any:
+		return len(t) == 0
+	}
+	return false
+}
+
+// SettingsAsMap returns the file's top-level keys apart from the jobs.
+func (c *Config) SettingsAsMap() (map[string]any, error) {
 	var doc map[string]any
 	if err := json.Unmarshal(c.raw, &doc); err != nil {
 		return nil, fmt.Errorf("re-read the configuration: %w", err)
 	}
-	doc["jobs"] = jobs
+	delete(doc, "jobs")
+	if doc == nil {
+		doc = map[string]any{}
+	}
+	return doc, nil
+}
+
+// save applies one edit to the document and puts the result through Load before
+// it replaces anything.
+//
+// Shared by both callers so that a settings write gets the identical treatment
+// a job write already had: written beside the real file, validated by the same
+// function that guards a hand-written one, and only then renamed into place. A
+// second, simpler path for "just a few small values" is how a configuration
+// ends up invalid in a way only the daemon's next start reveals.
+func (c *Config) save(edit func(map[string]any)) (*Config, error) {
+	var doc map[string]any
+	if err := json.Unmarshal(c.raw, &doc); err != nil {
+		return nil, fmt.Errorf("re-read the configuration: %w", err)
+	}
+	if doc == nil {
+		doc = map[string]any{}
+	}
+	edit(doc)
 
 	next, err := json.MarshalIndent(doc, "", "  ")
 	if err != nil {

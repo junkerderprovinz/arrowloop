@@ -7,9 +7,10 @@ import { InfoBubble } from './lib/glimstone/InfoBubble'
 import { ToggleRow } from './components/ToggleRow'
 import { Selector } from './components/Selector'
 import { Sidebar } from './components/Sidebar'
-import { IconAbout, IconHistory, IconJobs, IconLook, IconReset, IconSettings, IconTargets } from './components/glyphs'
+import { IconAbout, IconHistory, IconJobs, IconLive, IconLook, IconReset, IconSettings, IconTargets } from './components/glyphs'
 import { AccentSwatches, PaletteSwatches } from './components/Swatches'
 import { About } from './components/About'
+import { Engine } from './pages/Engine'
 import { History, Jobs } from './pages/Jobs'
 import { Preview } from './pages/Preview'
 import { Targets } from './pages/Targets'
@@ -32,7 +33,7 @@ import { wireTooltips } from './lib/tooltip'
 type Tab = 'jobs' | 'targets' | 'history' | 'settings'
 
 /** Settings is one tab with sections, the same shape BombVault uses. */
-type SettingsSection = 'general' | 'look' | 'about'
+type SettingsSection = 'general' | 'engine' | 'look' | 'about'
 
 type Theme = 'dark' | 'light'
 
@@ -324,6 +325,10 @@ function Settings(props: LookProps) {
         // set beside the other nineteen.
         options={[
           { value: 'general', label: t('settings.general'), icon: <IconSettings /> },
+          // The engine's own settings: how hard it may work, how long it
+          // remembers, who it tells. Every one of them was already read by the
+          // engine and had nowhere to be set except the file.
+          { value: 'engine', label: t('settings.engine'), icon: <IconLive /> },
           { value: 'look', label: t('settings.look'), icon: <IconLook /> },
           { value: 'about', label: t('settings.about'), icon: <IconAbout /> },
         ]}
@@ -343,6 +348,8 @@ function Settings(props: LookProps) {
       <div className="flex max-w-3xl flex-col gap-10">
         {section === 'general' ? (
           <General {...props} />
+        ) : section === 'engine' ? (
+          <Engine />
         ) : section === 'look' ? (
           <Look {...props} />
         ) : (

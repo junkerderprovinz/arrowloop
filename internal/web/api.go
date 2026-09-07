@@ -59,6 +59,8 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /api/events", s.events)
 	mux.HandleFunc("GET /api/config", s.readConfig)
 	mux.HandleFunc("PUT /api/config", s.writeConfig)
+	mux.HandleFunc("GET /api/settings", s.readSettings)
+	mux.HandleFunc("PUT /api/settings", s.writeSettings)
 	mux.HandleFunc("DELETE /api/jobs/{name}/state", s.forgetJobState)
 
 	mux.HandleFunc("GET /api/volumes", s.listVolumes)
@@ -481,6 +483,49 @@ func (s *Server) readConfig(w http.ResponseWriter, r *http.Request) {
 		jobs = []map[string]any{}
 	}
 	writeJSON(w, http.StatusOK, map[string]any{"jobs": jobs})
+}
+
+// readSettings hands back the file's top-level keys apart from the jobs.
+//
+// The whole map rather than a named struct, for the same reason the job editor
+// works in maps: a key this build does not understand still has to survive
+// being read and written by it. A struct would drop it silently on the way out.
+func (s *Server) readSettings(w http.ResponseWriter, r *http.Request) {
+	settings, err := s.Runner.Config().SettingsAsMap()
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, settings)
+}
+
+// writeSettings merges the keys it is given and reloads.
+//
+// Merges rather than replaces: a caller sends the settings it edits, and a
+// caller that has never heard of a key must not be able to remove it by not
+// mentioning it. Deleting a setting is done by sending it empty, which is a
+// deliberate act rather than an omission.
+func (s *Server) writeSettings(w http.ResponseWriter, r *http.Request) {
+	var body map[string]any
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		writeError(w, http.StatusBadRequest, fmt.Errorf("read the request: %w", err))
+		return
+	}
+
+	next, err := s.Runner.Config().SaveSettings(body)
+	if err != nil {
+		// The validator's own words, so an edit here and a hand-written file
+		// fail in exactly the same way.
+		writeError(w, http.StatusBadRequest, err)
+		return
+	}
+	s.Runner.Reload(next)
+	settings, err := next.SettingsAsMap()
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, settings)
 }
 
 // writeConfig replaces the job list and reloads the schedules.

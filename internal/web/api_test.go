@@ -32,6 +32,11 @@ type harness struct {
 	// database when the file names it relatively.
 	dir string
 
+	// The configuration file itself, so a test that saves a setting can read
+	// the file back rather than trusting the response about it. A write that
+	// answers 200 and changes nothing on disk is the failure worth catching.
+	configPath string
+
 	// Kept so a test can stand a second server on the same engine, which is how
 	// the interface-was-not-built case is reached without a second sandbox.
 	history *history.DB
@@ -69,7 +74,7 @@ func newHarness(t *testing.T) *harness {
 	s := &web.Server{History: hist, Runner: runner}
 	srv := httptest.NewServer(s.Handler())
 	t.Cleanup(srv.Close)
-	return &harness{srv: srv, left: left, right: right, dir: dir, history: hist, runner: runner}
+	return &harness{srv: srv, left: left, right: right, dir: dir, configPath: cfgPath, history: hist, runner: runner}
 }
 
 func (h *harness) get(t *testing.T, path string, into any) {
