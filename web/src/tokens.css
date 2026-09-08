@@ -1087,8 +1087,22 @@ body {
    It takes no width stage, for the same reason a chip does not: it is sized by
    its glyph rather than by a label it never prints. It DOES take the button
    height and the tone table, because unlike a chip it stands on the page rather
-   than inside a pill. See `ButtonVariant` in reference/react/Button.tsx for why
-   a control like this is inside the label engine rather than exempt from it. */
+   than inside a pill.
+
+   IT IS APPLIED ONLY WHILE THE MODE PAINTS NO WORDS, which is the correction
+   1.7.7 makes to 1.7.6. This class used to ride on every row action in every
+   mode, on the reasoning that such a control's identity IS its symbol. Reported
+   twice, the second time after the change that was meant to answer it: "alle
+   buttons sind nach wie vor nicht in der farb und beschriftungs engine." He is
+   right, and the measurement says why. In text-plus-glyph mode, five controls in
+   one card row printed no word while three beside them did, so the row visibly
+   disagreed with the one setting that governs it. A named exemption is still an
+   exemption once you are looking at the row.
+
+   So the variant's contribution is the SHAPE, not an answer to the mode: in a
+   mode that shows words it is an ordinary button carrying its label, and in one
+   that hides them it is this square. See `ButtonVariant` in
+   reference/react/Button.tsx. */
 .glim-btn-icon {
   width: var(--btn-h);
   min-width: 0;
@@ -1100,6 +1114,30 @@ body {
    numbers are the two named heights, and a square control has to name both. */
 .glim-btn-icon.glim-btn-key {
   width: var(--btn-h-key);
+}
+
+/* A glyph ALONE IN A SQUARE is half its box, and that is a different question
+   from the 20px below.
+   ---------------------------------------------------------------------------
+   20px is the answer to "how big beside 14px text", and it is right there: a
+   mark and the words next to it have to read as one control. A square glyph-only
+   button asks something else, because there are no words to match - the box is
+   the frame, and the only proportion available is how much of it the ink fills.
+   At 20px in a 32px box that is 62%, and it was reported in exactly those terms:
+   "die glyphen sind zu gross und wirken klobig."
+
+   Half, because that is the proportion the house already had and nobody had
+   written down: an icon badge in the sibling app is a 32px tile carrying a 16px
+   drawing, and those have never been reported. So this is a measurement carried
+   over rather than a number picked to look right, and it scales with the box
+   rather than being restated per size. */
+.glim-btn-icon .glim-btn-glyph > svg {
+  width: 1rem;
+  height: 1rem;
+}
+.glim-btn-icon.glim-btn-key .glim-btn-glyph > svg {
+  width: 1.25rem;
+  height: 1.25rem;
 }
 
 /* The dismiss control inside a chip takes none of the width stages and none of

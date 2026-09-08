@@ -486,16 +486,19 @@ export function JobForm({
       </div>
 
       <div className="mt-5 flex flex-col gap-3">
-        {/* Positive, not negative. It was "Abgeschaltet", so the row read as
-            off when the job was on and the only way to run a job was to switch
-            something off - which is also why every new job announced itself as
-            disabled. A switch is named for the state it turns ON. */}
-        <ToggleRow
-          label={t('edit.active')}
-          checked={!job.disabled}
-          onChange={(v) => patch({ disabled: !v })}
-          hint={t('edit.activeHint')}
-        />
+        {/* The "Active" switch used to stand here and it is gone (jdp: "Der
+            Aktiv toggle soll weg. ein auftrag soll atuomatisch aktiv sein wenn
+            man ihn anlegt"). A new job has arrived switched on for a while now,
+            so the switch spent its life showing the answer it was created with,
+            and holding a job is not something anybody does while filling in a
+            form: it is something you decide later, about a job that exists,
+            looking at the list. That control is on the card, next to the one
+            that starts a run by hand, and it saves itself.
+
+            The one job that still arrives held is a DUPLICATE, for the reason
+            `duplicate` gives at length: it points at the same two folders as its
+            original and would fight it. It is released by the same card control
+            as any other held job, once it points somewhere else. */}
         {/* The watcher used to be here, and it moved INTO the schedule field
             above: jdp went looking for it there ("zeitplan: echtzeit option
             fehlt") and he was looking in the right place. Two copies of one

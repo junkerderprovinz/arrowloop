@@ -11,14 +11,17 @@ import { Button } from '../lib/glimstone/Button'
  * button shows while every other control on the page answered it. jdp: "die
  * ganzen button sollen alle in die farb und beschriftungsengine!"
  *
- * The obvious fix is the wrong one. Made an ordinary Button, a job card's five
- * row actions print five verbs in the default mode, and a tidy strip becomes a
- * wall of words to satisfy a setting. GlimStone 1.7.6 added the variant this
- * needs instead: `icon` resolves the way a chip does, glyph in every mode,
- * square at the button height, with the name in the accessible tree and in the
- * bubble. That is the engine's own answer for a control whose identity IS its
- * symbol, not an exemption from it, and it is also what the language's rule 13
- * has always said about a small action badge.
+ * GlimStone 1.7.6 answered that with a variant that stayed glyph-only in every
+ * mode, on the reasoning that a wall of words is not what anybody asked for.
+ * jdp rejected it in the same words as the original report, and the measurement
+ * says why: with the setting on text-plus-glyph, five controls in this card's
+ * row printed no word while three beside them did. From outside, a documented
+ * exemption and a control that ignores the setting look identical.
+ *
+ * So in 1.7.7 the variant decides the SHAPE and the mode decides the words: an
+ * ordinary labelled button where the setting paints text, a square at the button
+ * height where it does not. If the row should be a tidy strip of tiles, that is
+ * what the glyph mode is for, and it is one setting away.
  *
  * What the change buys beyond the setting: the colour engine, the tone table,
  * the busy spinner, one tooltip mechanism rather than two, and the wrapper that
@@ -40,7 +43,7 @@ export function IconAction({
   disabled,
   busy,
   size = 'default',
-  tone = 'subtle',
+  tone = 'accent',
   hueIndex,
 }: {
   /**
@@ -79,14 +82,26 @@ export function IconAction({
    */
   size?: 'default' | 'key'
   /**
-   * The surface, for the one action that reports back by changing colour.
+   * The surface, and the DEFAULT is the accent because grey is not a colour the
+   * engine can reach.
    *
-   * "subtle" is the row action's own quiet fill and covers every case but one:
-   * a copy control that has just copied says so by lighting up for a moment,
-   * and there is nothing else on the row for it to say it with. Anything
-   * DESTRUCTIVE deliberately has no entry here: the design language is explicit
-   * that a delete trigger takes the same treatment as the controls beside it
-   * and carries its meaning in its glyph, its tip and the window it opens.
+   * It was "subtle", which resolves to a flat `bg-carbon-surface2` and therefore
+   * paints exactly the same in every rainbow position, in reactive mode, and
+   * with the engine off. That is what got reported, twice, in the strongest
+   * terms available: "alle buttons sind nach wie vor nicht in der farb und
+   * beschriftungs engine." Measured on the running app before touching anything:
+   * every one of the eight buttons on a job card was `surface2` or `surface3`,
+   * so the card's own hue reached none of them.
+   *
+   * The accent inherits from the card, which already rebinds it for its whole
+   * subtree, so a row of these paints in its card's colour with no prop at all.
+   * That is the sibling app's settled answer for the identical control, arrived
+   * at there through the identical report about one grey tile among coloured
+   * ones. "subtle" stays available for a control that genuinely stands outside a
+   * card. Anything DESTRUCTIVE deliberately has no entry here: the design
+   * language is explicit that a delete trigger takes the same treatment as the
+   * controls beside it and carries its meaning in its glyph, its tip and the
+   * window it opens.
    */
   tone?: 'subtle' | 'accent'
   /**

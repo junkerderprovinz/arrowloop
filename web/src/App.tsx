@@ -11,6 +11,7 @@ import { Sidebar } from './components/Sidebar'
 import { IconAbout, IconHistory, IconJobs, IconLive, IconLook, IconReset, IconSettings, IconTargets } from './components/glyphs'
 import { AccentSwatches, PaletteSwatches } from './components/Swatches'
 import { About } from './components/About'
+import { SettingsBackup } from './components/SettingsBackup'
 import { Login } from './pages/Login'
 import { Engine } from './pages/Engine'
 import { History, Jobs } from './pages/Jobs'
@@ -471,11 +472,17 @@ function General({ lang, onLang, languages, window: windowSettings, onWindow }: 
 
       <LogOut />
 
+      {/* Carrying the whole setup out to a file and back in. It stood on the
+          engine tab until now, among the settings the engine itself reads, and
+          it is not one of those: it is the file that holds all of them plus
+          every job. jdp put it here by name. */}
+      <SettingsBackup hueIndex={1} />
+
       {/* Left out entirely on a build with no window of its own, rather than
           shown inert. A switch that cannot do anything is worse than a missing
           one: it invites somebody to press it and then says nothing. */}
       {windowSettings && (
-        <Card title={t('window.title')} hueIndex={1}>
+        <Card title={t('window.title')} hueIndex={2}>
           <div className="flex flex-col gap-3">
             <ToggleRow
               label={t('window.tray')}

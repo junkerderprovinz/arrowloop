@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 
 import { attachNumberSteppers } from '../lib/numberField'
+import { enableWheelStep, stepIndex } from '../lib/selectScroll'
 import { DropdownListbox } from '../lib/glimstone/DropdownListbox'
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { useT } from '../lib/i18n'
@@ -194,6 +195,14 @@ export function Lines({
  *
  * All four pickers in this app go through here, so none of them is left behind
  * as a second, differently-drawn version of the same control.
+ *
+ * It answers the MOUSE WHEEL, and that is the other half of replacing the native
+ * control rather than the price of it. A closed `<select>` has stepped its value
+ * on a wheel roll since GlimStone 1.5.0; replacing the last one in the app took
+ * the behaviour away with it, and jdp asked for it back by name:
+ * "Dropdownlisten soll man ueberall auch per scrollen umschalten koennen." Since
+ * every picker here comes through this component, wiring it once covers all of
+ * them.
  */
 export function Choice<T extends string>({
   value,
@@ -228,6 +237,30 @@ export function Choice<T extends string>({
   const trigger = useRef<HTMLButtonElement>(null)
   const [open, setOpen] = useState(false)
   const current = options.find((o) => o.value === value)
+
+  /**
+   * The wheel is attached ONCE and reads the current options through a ref.
+   *
+   * Every call site builds its option array inline, so the array and the change
+   * handler are new objects on every render; in the effect's dependency list
+   * they would detach and re-attach the listener on each keystroke elsewhere on
+   * the page. The ref keeps one listener for the life of the control and still
+   * sees the latest list, which matters for the language picker, whose labels
+   * change when the language does.
+   */
+  const latest = useRef({ options, value, onChange })
+  latest.current = { options, value, onChange }
+  useEffect(() => {
+    const el = trigger.current
+    if (!el) return
+    return enableWheelStep(el, (delta) => {
+      const now = latest.current
+      const at = now.options.findIndex((o) => o.value === now.value)
+      const next = stepIndex(now.options.length, at < 0 ? 0 : at, delta)
+      const landed = now.options[next]
+      if (landed && landed.value !== now.value) now.onChange(landed.value)
+    })
+  }, [])
 
   return (
     <div className="relative">

@@ -7,7 +7,7 @@ import { Card } from '../lib/glimstone/Card'
 import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
 import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
-import { IconAdd, IconCopy, IconDelete, IconEdit, IconPause, IconPreview, IconRun, IconSave, IconToLeft, IconToRight } from '../components/glyphs'
+import { IconAdd, IconCopy, IconDelete, IconEdit, IconPause, IconRun, IconSave, IconToLeft, IconToRight } from '../components/glyphs'
 import { DirectionMark } from '../components/Direction'
 import { JobMark, statusOf } from '../components/JobMark'
 import { Pace } from '../components/Pace'
@@ -75,6 +75,20 @@ export function Jobs({
   // arriving here is far more often looking than editing.
   const [editing, setEditing] = useState<number | null>(null)
   const [removing, setRemoving] = useState<number | null>(null)
+  /**
+   * Whose activity fold is open, by job name. One at a time.
+   *
+   * It used to live inside the fold's own component, which was fine while the
+   * button and the list were one block at the left of the row. They are not any
+   * more: the button belongs with the other actions on the right (jdp: "der
+   * aktivitaetsbutton auch nach rechts zu den anderen") and the list belongs
+   * under the whole row, full width, so the state has to sit above both.
+   *
+   * One at a time for the same reason the history tab keeps one run open: the
+   * question is about ONE job, and several open folds turn a page of cards into
+   * a page of tables.
+   */
+  const [activity, setActivity] = useState<string | null>(null)
   /**
    * A counter, not a boolean, and that is the whole trick.
    *
@@ -284,16 +298,18 @@ export function Jobs({
                       same treatment as the badges beside it and carries its
                       meaning in its glyph, its tip and the window it opens. */}
                   <div className="flex flex-wrap items-center justify-end gap-2">
-                    {/* The activity fold shares this row rather than taking one
-                        of its own under it. Two rows of controls under a
-                        two-line card is a card that is mostly furniture, and
-                        the fold belongs with the other things you can do to
-                        this job. `me-auto` puts it at the far left, so the row
-                        reads as "look at it" on one side and "act on it" on the
-                        other. */}
-                    <JobActivity
-                      runs={runs.filter((r) => r.Job === j.name)}
-                      onChanged={onSaved}
+                    {/* The activity fold's button stands WITH the other actions
+                        rather than at the far end of the row (jdp: "der
+                        aktivitaetsbutton auch nach rechts zu den anderen"). It
+                        was pushed left with `me-auto` so the row would read as
+                        "look at it" on one side and "act on it" on the other,
+                        which is a distinction the row itself never made: looking
+                        at a job's runs is one of the things you do to it. Its
+                        list opens under the whole row instead, full width. */}
+                    <IconAction
+                      title={t('jobs.activity')}
+                      labelKey="jobs.activity"
+                      onClick={() => setActivity(activity === j.name ? null : j.name)}
                     />
                     {at !== null && (
                       <>
@@ -335,21 +351,35 @@ export function Jobs({
                         {j.disabled ? <IconRun /> : <IconPause />}
                       </IconAction>
                     )}
-                    <Button
-                      label={t('jobs.runNow')}
+                    {/* The same control as the four above them, which they were
+                        not: they were ordinary buttons in the flat `neutral`
+                        grey the colour engine cannot reach, so a card whose
+                        actions all painted in its own hue would have kept
+                        exactly two that did not. And in a mode that hides words
+                        an ordinary button still hugs its glyph inside its own
+                        horizontal padding, so the row came out as five tiles
+                        with two lozenges on the end. Measured in the browser,
+                        not guessed: 48 by 32 against 32 by 32. */}
+                    <IconAction
+                      title={t('jobs.runNow')}
                       labelKey="jobs.runNow"
-                      glyph={<IconRun />}
-                      title={t('jobs.runNowHint')}
+                      hint={t('jobs.runNowHint')}
                       disabled={j.running}
                       onClick={() => void api.run(j.name)}
                     />
-                    <Button
-                      label={t('jobs.preview')}
+                    <IconAction
+                      title={t('jobs.preview')}
                       labelKey="jobs.preview"
-                      glyph={<IconPreview />}
                       onClick={() => onPreview(j.name)}
                     />
                   </div>
+
+                  {/* Under the row and across the card, which is the width this
+                      list needs: a run is a badge, a date, four counts and
+                      sometimes an error message. */}
+                  {activity === j.name && (
+                    <JobActivity runs={runs.filter((r) => r.Job === j.name)} onChanged={onSaved} />
+                  )}
 
                   {/* Only while the card is open for editing, because this is
                       a question somebody asks deliberately and a panel on every
@@ -627,69 +657,53 @@ function Cadence({ job }: { job: Job }) {
  */
 function JobActivity({ runs, onChanged }: { runs: Run[]; onChanged: () => void }) {
   const { t } = useT()
-  const [open, setOpen] = useState(false)
   const [shown, setShown] = useState<number | null>(null)
   const recent = runs.slice(0, 5)
 
   return (
-    <div className="me-auto flex min-w-0 flex-1 basis-full flex-col md:basis-auto">
-      <Button
-        label={t('jobs.activity')}
-        labelKey="jobs.activity"
-        tone="subtle"
-        className="self-start"
-        onClick={() => setOpen((was) => !was)}
-      />
-      {/* The panel is `basis-full` on a narrow card so it takes the whole width
-          rather than the sliver the button left over. On a wide one the button
-          sits in the row and the list opens under it, which is the same shape
-          the history tab uses. */}
-      {open && (
-        <div className="mt-2 w-full">
-          {recent.length === 0 ? (
-            <Empty>{t('jobs.activityEmpty')}</Empty>
-          ) : (
-            <ul className="flex flex-col">
-              {recent.map((r, i) => (
-                <li key={`${r.Started}-${i}`}>
-                  {i > 0 && <Rule />}
-                  <button
-                    type="button"
-                    aria-expanded={shown === r.ID}
-                    onClick={() => setShown(shown === r.ID ? null : r.ID)}
-                    className="flex w-full items-center gap-3 py-2 text-start text-xs transition-colors hover:bg-carbon-hover"
-                  >
-                    <Badge tone={r.Err ? 'fail' : 'ok'}>
-                      {r.Err ? t('history.failed') : t('history.ok')}
-                    </Badge>
-                    <span className="shrink-0 text-carbon-textMuted">
-                      <Since when={r.Started} />
-                    </span>
-                    <span className="min-w-0 flex-1 truncate text-carbon-textMuted">
-                      {r.Err ? (
-                        r.Err
-                      ) : (
-                        <>
-                          {t('history.copied', { count: r.Copied })}
-                          {' \u00b7 '}
-                          {t('history.moved', { count: r.Moved })}
-                          {' \u00b7 '}
-                          {t('history.trashed', { count: r.Trashed })}
-                          {' \u00b7 '}
-                          {t('history.conflicts', { count: r.Conflicts })}
-                        </>
-                      )}
-                    </span>
-                    {r.Conflicts > 0 && <Badge tone="warn">{r.Conflicts}</Badge>}
-                  </button>
-                  {shown === r.ID && (
-                    <RunDetail run={r.ID} job={r.Job} onResolved={onChanged} />
+    <div className="mt-1 w-full">
+      {recent.length === 0 ? (
+        <Empty>{t('jobs.activityEmpty')}</Empty>
+      ) : (
+        <ul className="flex flex-col">
+          {recent.map((r, i) => (
+            <li key={`${r.Started}-${i}`}>
+              {i > 0 && <Rule />}
+              <button
+                type="button"
+                aria-expanded={shown === r.ID}
+                onClick={() => setShown(shown === r.ID ? null : r.ID)}
+                className="flex w-full items-center gap-3 py-2 text-start text-xs transition-colors hover:bg-carbon-hover"
+              >
+                <Badge tone={r.Err ? 'fail' : 'ok'}>
+                  {r.Err ? t('history.failed') : t('history.ok')}
+                </Badge>
+                <span className="shrink-0 text-carbon-textMuted">
+                  <Since when={r.Started} />
+                </span>
+                <span className="min-w-0 flex-1 truncate text-carbon-textMuted">
+                  {r.Err ? (
+                    r.Err
+                  ) : (
+                    <>
+                      {t('history.copied', { count: r.Copied })}
+                      {' \u00b7 '}
+                      {t('history.moved', { count: r.Moved })}
+                      {' \u00b7 '}
+                      {t('history.trashed', { count: r.Trashed })}
+                      {' \u00b7 '}
+                      {t('history.conflicts', { count: r.Conflicts })}
+                    </>
                   )}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+                </span>
+                {r.Conflicts > 0 && <Badge tone="warn">{r.Conflicts}</Badge>}
+              </button>
+              {shown === r.ID && (
+                <RunDetail run={r.ID} job={r.Job} onResolved={onChanged} />
+              )}
+            </li>
+          ))}
+        </ul>
       )}
     </div>
   )

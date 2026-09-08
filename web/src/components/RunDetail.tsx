@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { Badge } from '../lib/glimstone/Badge'
+import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { api, type Resolution, type RunEntry } from '../lib/api'
 import { useT, type TranslationKey } from '../lib/i18n'
 import { Choice } from './Field'
@@ -142,7 +143,15 @@ export function RunDetail({
               history: it starts a fresh run for exactly these paths with the
               chosen resolutions, so the record of what the first run did stays
               exactly as it was. */}
-          <p className="text-xs text-carbon-textMuted">{t('history.conflictHint')}</p>
+          {/* The explanation is a bubble on the heading rather than a grey
+              paragraph above the rows (jdp: "Info texte sollen immer in i
+              infobubbles!"), which is rule 8: prose printed under a control is
+              read once and costs vertical space for ever. The heading it hangs
+              off is the one the rows already answer. */}
+          <span className="flex items-center gap-1.5 text-xs uppercase tracking-wider text-carbon-textMuted">
+            {t('conflict.title')}
+            <InfoBubble tip={t('history.conflictHint')} />
+          </span>
           {conflicts.map((c) => (
             <div key={c.Path} className="flex flex-wrap items-center gap-2">
               <span className="min-w-0 flex-1 break-all font-mono text-xs" title={c.Path}>

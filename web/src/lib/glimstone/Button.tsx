@@ -90,24 +90,34 @@ export type ButtonTone = "accent" | "neutral" | "subtle" | "danger" | "warn";
  * "icon" - the small, single-purpose action that stands in a row of its
  *          siblings: copy, reset, undo, edit, delete on a list row.
  *
- * It exists because rule 13 and the label engine's `text` mode disagree, and
- * both are right. Rule 13 says a small action badge carries an icon and never a
- * text label, because "Copy" sitting in its own pill beside three icon-only
- * controls reads as a stray caption and spends row width on a word the hover
- * already says. The label engine says every button answers one app-wide
- * setting. Left as a badge outside the engine, a row of these ignored the
- * setting entirely, which is what got reported ("die ganzen button sollen alle
- * in die farb und beschriftungsengine"). Made an ordinary button, the same row
- * would print five verbs in the default mode and turn a tidy strip into a wall
- * of words nobody asked for.
+ * IT IS A SHAPE, NOT AN ANSWER TO THE MODE, and that sentence is the whole of
+ * 1.7.7. The variant shipped in 1.7.6 resolving the way `chip` does - glyph in
+ * every mode - on the reasoning that such a control's identity IS its symbol,
+ * and that an ordinary button would print five verbs in a row that used to be a
+ * tidy strip. The reasoning was sound and the result was rejected, by the same
+ * person and in the same words as the defect it was meant to fix: "alle buttons
+ * sind nach wie vor nicht in der farb und beschriftungs engine."
  *
- * So it resolves the way a chip does: glyph in every mode, square, name in the
- * accessible tree and in the bubble. That is not an exemption from the engine,
- * it is the engine's own answer for a control whose identity IS its symbol -
- * the same answer `chip` already gets, one size up and with a surface of its
- * own. What it gains by being a Button rather than a Badge is everything else:
- * the colour engine, the tone table, the busy spinner, the tooltip mechanism
- * and the disabled-with-a-reason wrapper.
+ * Measured on the running app rather than argued about: the mode was
+ * `textGlyph`, and five controls in one card row printed no word while three
+ * beside them did. From outside, a documented exemption and a control that
+ * simply ignores the setting look identical - which is the lesson worth keeping,
+ * because the first fix changed the component and changed nothing anybody could
+ * see.
+ *
+ * So the variant now decides the SHAPE only. In a mode that paints words it is
+ * an ordinary button with its label and its width stage; in one that hides them
+ * it is a square at the button height, which is what an ordinary button cannot
+ * be (it hugs its glyph inside its own horizontal padding, so a row of them
+ * comes out as a row of lozenges rather than of tiles).
+ *
+ * Reactive is deliberately NOT square. Its whole idea is a box that grows as the
+ * words arrive, and a fixed width is the one thing that cannot do; there it is an
+ * ordinary reactive button.
+ *
+ * What it gains by being a Button rather than a Badge is unchanged and is still
+ * the reason the variant exists at all: the colour engine, the tone table, the
+ * busy spinner, one tooltip mechanism, and the disabled-with-a-reason wrapper.
  */
 export type ButtonVariant = "default" | "chip" | "icon";
 
@@ -251,7 +261,7 @@ export function Button({
   // An explicit glyph wins; otherwise the key decides, so the same verb wears
   // the same symbol app-wide without 163 call sites each making a choice.
   const chip = variant === "chip";
-  // Square and glyph-only in every mode, for the reason ButtonVariant gives.
+  // Square, but only while the mode paints no words - see ButtonVariant.
   const iconOnly = variant === "icon";
   // A chip always closes, so it has a glyph even when no call site passes one.
   const resolved = glyph ?? (labelKey ? glyphFor(labelKey) : undefined) ?? (chip ? <IconClose /> : undefined);
@@ -274,7 +284,11 @@ export function Button({
   // textGlyph when there is a glyph, and only falls back to plain text when
   // there is none — which is the same fallback the line above already makes for
   // the hiding modes, applied consistently.
-  const effective = chip || iconOnly
+  //
+  // `iconOnly` is NOT in this expression, and that is 1.7.7's correction: a row
+  // action answers the setting like everything else, and the variant only
+  // decides what shape it takes once the answer is in.
+  const effective = chip
     ? "glyph"
     : keepLabel
       ? hasGlyph
@@ -309,13 +323,22 @@ export function Button({
   // text-with-glyph still take the stage, so nothing reflows between those two,
   // and the sidebar rail and Settings tab strip keep their own fixed widths
   // because neither is a Button.
+  //
+  // The icon variant takes its square HERE rather than in `effective` above,
+  // which is the whole of the shape-not-mode split: it is the same class the
+  // glyph mode would have left empty, so a row action is a tile exactly when
+  // there are no words to print and an ordinary labelled button the rest of the
+  // time. Reactive is excluded on purpose - it grows on hover, and a fixed width
+  // is the one thing that cannot do.
   const stage = chip
     ? "glim-btn-chip"
-    : iconOnly
-      ? "glim-btn-icon"
-    : effective === "glyph" || reactive
-      ? ""
-      : STAGE_CLASS[stageOverride ?? widthStage(label)];
+    : effective === "glyph"
+      ? iconOnly
+        ? "glim-btn-icon"
+        : ""
+      : reactive
+        ? ""
+        : STAGE_CLASS[stageOverride ?? widthStage(label)];
 
   // In glyph mode the label IS the tooltip, so the control still explains
   // itself on hover. When both exist they are joined rather than one replacing

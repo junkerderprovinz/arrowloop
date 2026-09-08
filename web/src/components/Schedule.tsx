@@ -4,8 +4,8 @@ import type { CSSProperties } from 'react'
 import { hueVars, rainbowAt } from '../lib/appearance'
 
 import { Selector } from './Selector'
-import { NumberField, Text } from './Field'
-import { QuietPeriod } from './QuietPeriod'
+import { Choice, NumberField, Text } from './Field'
+import { DEFAULT_QUIET, QuietPeriod } from './QuietPeriod'
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { TimePicker, formatTime, parseTime } from './TimePicker'
 import { useT } from '../lib/i18n'
@@ -187,6 +187,18 @@ export function parseSchedule(raw: string): ScheduleState {
   return { ...DEFAULT_SCHEDULE, mode: 'cron', cron: s }
 }
 
+/**
+ * What the settle time is when real time is picked and nothing else says.
+ *
+ * The same five seconds a new job's own quiet period starts at, and for the same
+ * reason: empty is a real setting that means "act on the first event", and
+ * copying a folder in produces one event per file, so the answer nobody wants is
+ * the one an empty field gives by default. Seeded here rather than left to the
+ * person, because the panel appears the moment real time is chosen and a zero
+ * sitting in it reads as a considered value.
+ */
+export const DEFAULT_SETTLE = DEFAULT_QUIET
+
 export function ScheduleField({
   value,
   onChange,
@@ -267,6 +279,10 @@ export function ScheduleField({
   function pick(next: ScheduleMode) {
     if (next === 'live') {
       onLive?.(true)
+      // The panel that appears has two numbers in it and neither may open at
+      // zero: zero seconds of settling means acting on the first event of a
+      // copy, which is the one answer nobody wants.
+      if (onSettle && (settle ?? '').trim() === '') onSettle(DEFAULT_SETTLE)
       // A backstop of "no schedule" is what the engine refuses outright, so
       // picking real time from "off" seeds one rather than writing a job that
       // cannot be saved. An existing cadence is kept: somebody moving a job
@@ -322,7 +338,13 @@ export function ScheduleField({
             <div className="flex flex-wrap items-center gap-3">
               <span className="flex items-center gap-1.5 text-xs uppercase tracking-wider text-carbon-textMuted">
                 {t('schedule.settle')}
-                <InfoBubble tip={t('schedule.liveHint')} />
+                {/* Its OWN explanation. The bubble beside this label used to
+                    carry `schedule.liveHint`, which explains what real time is
+                    rather than what this number does, so the one control on the
+                    panel that needed explaining was the one whose (i) answered a
+                    different question. jdp: "Rueckfallplan und Beruhigungszeit
+                    versteh ich nicht ganz, wofuer man das braucht." */}
+                <InfoBubble tip={t('schedule.settleHint')} />
               </span>
               <QuietPeriod value={settle ?? ''} onChange={onSettle} />
             </div>
@@ -431,12 +453,20 @@ function EveryPicker({
         label={t('schedule.everyLabel')}
         onChange={(everyCount) => update({ everyCount })}
       />
-      <Selector<EveryUnit>
-        scale="small"
-        value={state.everyUnit}
-        onChange={(everyUnit) => update({ everyUnit })}
-        options={EVERY_UNITS.map((u) => ({ value: u, label: t(`schedule.unit.${u}` as const) }))}
-      />
+      {/* A dropdown, not a four-segment strip (jdp: "Selektor in ein dropdown
+          umwandeln, ebenso bei alle N"). A strip is for a choice worth showing
+          in full, and four units spelled out beside a number box took most of a
+          form column to say one word. The same fixed 8rem column the quiet
+          period's unit picker uses, so the two rows that ask the same question
+          are the same shape. */}
+      <div className="w-32 shrink-0">
+        <Choice<EveryUnit>
+          value={state.everyUnit}
+          label={t('edit.quietUnit')}
+          onChange={(everyUnit) => update({ everyUnit })}
+          options={EVERY_UNITS.map((u) => ({ value: u, label: t(`schedule.unit.${u}` as const) }))}
+        />
+      </div>
     </>
   )
 }

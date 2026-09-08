@@ -1,4 +1,4 @@
-// Copied verbatim from GlimStone 1.7.2, reference/selectScroll.ts.
+// Copied verbatim from GlimStone 1.7.7, reference/selectScroll.ts.
 // Do not edit here: change it in the design language repo and copy again.
 // https://github.com/junkerderprovinz/glimstone
 // Rule 14's mouse-wheel addendum: a closed <select> answers the wheel too,
@@ -43,4 +43,46 @@ export function enableSelectScrollForAll(root: ParentNode = document): void {
   for (const select of root.querySelectorAll('select')) {
     enableSelectScroll(select as HTMLSelectElement);
   }
+}
+
+/**
+ * The same promise, for a picker that is NOT a native <select>.
+ *
+ * Rule 18 says a native control gets replaced rather than persuaded, and an app
+ * that follows it ends up with no <select> left for the function above to reach.
+ * The behaviour must not be lost on the way: jdp, about an app that had just
+ * finished replacing its last one, "Dropdownlisten soll man ueberall auch per
+ * scrollen umschalten koennen." So the wheel belongs to the PICKER, not to the
+ * element the platform happens to draw.
+ *
+ * Attach it to the trigger - the button that opens the list - and return the
+ * detach. `step` receives 1 for a wheel roll downwards and -1 for one upwards;
+ * the caller clamps at both ends, because a picker that wraps from the last
+ * value to the first turns one notch too many into a value from the other end of
+ * the list.
+ *
+ * WHY THIS IS A LISTENER AND NOT AN onWheel PROP, which is the part worth
+ * knowing before somebody simplifies it away: React registers `onWheel` as a
+ * PASSIVE listener on its root, so `preventDefault` inside such a handler does
+ * nothing but log a warning. The page would scroll while the value changed,
+ * which is the one behaviour this feature exists to avoid. A listener attached
+ * to the node with `{ passive: false }` is the only version that works, in every
+ * framework and in none.
+ */
+export function enableWheelStep(el: HTMLElement, step: (delta: 1 | -1) => void): () => void {
+  function onWheel(event: WheelEvent) {
+    if (event.deltaY === 0) return;
+    // This handler IS the scroll while the pointer sits on the control, rather
+    // than a bystander to it.
+    event.preventDefault();
+    step(event.deltaY > 0 ? 1 : -1);
+  }
+  el.addEventListener('wheel', onWheel, { passive: false });
+  return () => el.removeEventListener('wheel', onWheel);
+}
+
+/** Where a wheel notch lands in a list of options: the next index, clamped. */
+export function stepIndex(length: number, at: number, delta: 1 | -1): number {
+  if (length < 2) return at;
+  return Math.min(length - 1, Math.max(0, at + delta));
 }

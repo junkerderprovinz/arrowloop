@@ -6,6 +6,7 @@ import {
   IconCoffee,
   IconCopy,
   IconDelete,
+  IconDownload,
   IconEdit,
   IconForget,
   IconHistory,
@@ -19,6 +20,7 @@ import {
   IconSave,
   IconSettings,
   IconUp,
+  IconUpload,
 } from '../components/glyphs'
 import { IconCancel } from '../components/glyphs'
 
@@ -73,6 +75,15 @@ const RULES: Rule[] = [
   [/\.add|addStorage|addTarget|create/i, () => <IconAdd />],
   [/duplicate|copyPath|\.copy/i, () => <IconCopy />],
   [/edit|rename/i, () => <IconEdit />],
+
+  // Carrying a whole setup out to a file and back in. ABOVE `save`, because
+  // exporting is a save in the grammatical sense and a different act entirely:
+  // one writes the file the program already owns, the other hands a copy to
+  // somebody's own disk. One box with the arrow reversed says the pair without
+  // a second silhouette to keep in step.
+  [/export|download/i, () => <IconDownload />],
+  [/import|upload/i, () => <IconUpload />],
+
   [/save|apply|choose|submit|confirm/i, () => <IconSave />],
 
   // Dialogs.
@@ -82,7 +93,7 @@ const RULES: Rule[] = [
   // Probing and inspection, below the app's own verbs so `preview` keeps the
   // eye and a consistency check gets the magnifier.
   [/check|verify|test|probe/i, () => <IconCheck />],
-  [/activity|history|log\b|download/i, () => <IconHistory />],
+  [/activity|history|log\b/i, () => <IconHistory />],
 
   // Vaguest last.
   [/settings|config|engine|backup/i, () => <IconSettings />],

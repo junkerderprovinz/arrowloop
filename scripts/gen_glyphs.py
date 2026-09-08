@@ -94,6 +94,14 @@ GLYPHS = [
     ("IconVisible", "interface-essential/visible.svg", "Show a stored secret"),
     ("IconHidden", "interface-essential/invisible-1.svg", "Hide it again"),
 
+    # Writing the setup to a file and reading one back. ONE box with the arrow
+    # reversed, which is what the set already draws: a matched pair cannot drift
+    # apart when it is the same silhouette twice. Same two files the sibling app
+    # uses for the identical pair, so the two programs say "export" with the same
+    # picture.
+    ("IconDownload", "interface-essential/download-box-1.svg", "Export the setup to a file"),
+    ("IconUpload", "interface-essential/upload-box-1.svg", "Read a setup back in from a file"),
+
     # The three buttons on the About card. They had no glyphs at all, and that
     # was not a card that had been drawn by hand: it is GlimStone's own
     # AboutCard, byte for byte, and its three buttons pass label keys the app's
