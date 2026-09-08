@@ -4,21 +4,27 @@ From a template, because four hand-drawn buttons are four chances to type one
 number differently, and the whole point of a row of them is that they look like
 one control repeated.
 
-The geometry: the height and the corner radius are the Buy Me a Coffee button's
-own (245.3 tall, rx 38.2), so a download button and the coffee button rendered
-at the same width stand the same height. The WIDTH is 720 rather than that
-button's 841.9, measured on screen rather than guessed: at 841.9 a third of the
-face sat empty to the right of the longest word and the button read as
-lopsided.
+THE GEOMETRY. Height and corner radius are the Buy Me a Coffee button's own
+(245.3 tall, rx 38.2), so a download button and the coffee button rendered at
+the same width stand the same height. The WIDTH is 720 rather than that button's
+841.9, measured on screen rather than guessed: at 841.9 a third of the face sat
+empty to the right of the longest word and the button read as lopsided.
 
-The colour: GitHub's own button grey with a lighter edge. A near-black button
-disappears against GitHub's dark theme, a yellow one would read as a second
-coffee button, and a platform logo would be somebody else's trademark in a repo
-that ships under AGPL. So the button carries a word, an arrow and an edge.
+THE COLOUR is the platform's own, and the button has no outline (jdp: "die
+butotns sollen keine rahmenliniehaben und farbig sein"). A filled shape in a
+colour somebody already associates with the platform does the work an outline
+was doing, and does it faster: the eye finds "the blue one" before it reads the
+word. macOS has no brand colour of its own, so it takes Apple's own space grey,
+which is the one value that stays visible against GitHub's light theme and its
+dark one - a black button disappears into the dark theme, and this row has no
+outline to save it.
 
-The arrow is the same one the interface uses for "export": Streamline's
-interface-essential/download-box-1, drawn on a 14-unit grid, from the free Core
-Solid subset (CC BY 4.0).
+THE LOGOS are the platforms' own marks, from Font Awesome Free (CC BY 4.0 for
+the icons; see scripts/brand-paths/). Each mark is a trademark of its owner and
+is used here the one way a trademark may be used without permission: to name the
+thing it refers to. Each button links to a download FOR that platform, the marks
+are unmodified, and nothing here claims endorsement by or affiliation with
+Microsoft, Apple or the Linux Foundation.
 
 Run from anywhere:  python scripts/gen_download_buttons.py
 Writes .github/assets/download-buttons/*.svg, which are committed.
@@ -27,24 +33,19 @@ Writes .github/assets/download-buttons/*.svg, which are committed.
 import io
 import os
 
+HERE = os.path.dirname(os.path.abspath(__file__))
 # Relative to this file, so the generator works from any working directory and
 # in any repo it is copied into.
-OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".github", "assets", "download-buttons")
+OUT = os.path.join(HERE, "..", ".github", "assets", "download-buttons")
+BRANDS = os.path.join(HERE, "brand-paths")
 
 W, H, R = 720.0, 245.3, 38.2
-BG, EDGE, INK, SUB = "#24292f", "#57606a", "#ffffff", "#adbac7"
 
-ARROW = (
-    "M6.375 0H3.383A1.5 1.5 0 0 0 2.07 0.772L0.347 3.875h6.028V0ZM0 12.5V5.125h14V12.5a1.5 "
-    "1.5 0 0 1 -1.5 1.5h-11A1.5 1.5 0 0 1 0 12.5Zm13.653 -8.625H7.625V0h2.992a1.5 1.5 0 0 1 "
-    "1.312 0.772l1.724 3.103Zm-9.3 6.479 2.293 2.293a0.5 0.5 0 0 0 0.708 0l2.292 -2.293a0.5 "
-    "0.5 0 0 0 -0.353 -0.854H8v-2a1 1 0 1 0 -2 0v2H4.707a0.5 0.5 0 0 0 -0.353 0.854Z"
-)
-
-# The glyph measures 14 units and is drawn at 112 pixels, inset from the left.
+# The mark is drawn into a square this tall, centred vertically, inset from the
+# left. Its own viewBox decides the horizontal centring, because the three marks
+# are not equally wide: Apple's is 384 units against Windows' and Tux's 448.
 GLYPH = 112.0
 GX, GY = 78.0, (H - GLYPH) / 2
-SCALE = GLYPH / 14.0
 
 # A system stack, because an SVG loaded through <img> cannot fetch a webfont:
 # whatever is named here has to already be on the reader's machine. The layout
@@ -55,29 +56,48 @@ FONT = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-se
 TEMPLATE = """<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}" role="img" aria-label="{alt}">
   <title>{alt}</title>
-  <rect x="1.5" y="1.5" width="{iw}" height="{ih}" rx="{r}" ry="{r}" fill="{bg}" stroke="{edge}" stroke-width="3"/>
+  <rect width="{w}" height="{h}" rx="{r}" ry="{r}" fill="{bg}"/>
   <g transform="translate({gx} {gy}) scale({scale})" fill="{ink}">
-    <path fill-rule="evenodd" clip-rule="evenodd" d="{arrow}"/>
+    <path d="{path}"/>
   </g>
   <text x="238" y="110" font-family="{font}" font-size="82" font-weight="700" fill="{ink}">{head}</text>
-  <text x="240" y="180" font-family="{font}" font-size="50" font-weight="400" fill="{sub}">{sub_text}</text>
+  <text x="240" y="180" font-family="{font}" font-size="50" font-weight="400" fill="{ink}" fill-opacity="0.72">{sub_text}</text>
 </svg>
 """
 
+# slug, brand file, background, ink, heading, second line, accessible name
 BUTTONS = [
-    ("windows-installer", "Windows", "Installer", "Download for Windows, installer"),
-    ("windows-portable", "Windows", "Portable", "Download for Windows, portable"),
-    ("macos", "macOS", "Universal", "Download for macOS"),
-    ("linux", "Linux", "amd64", "Download for Linux"),
+    ("windows-installer", "windows", "#0078d4", "#ffffff", "Windows", "Installer", "Download for Windows, installer"),
+    ("windows-portable", "windows", "#0078d4", "#ffffff", "Windows", "Portable", "Download for Windows, portable"),
+    # Apple's own space grey. Black is the usual answer and the wrong one here:
+    # with no outline it vanishes against GitHub's dark theme.
+    ("macos", "apple", "#6e6e73", "#ffffff", "macOS", "Universal", "Download for macOS"),
+    # The yellow Tux is drawn in, dark ink on it for the same reason road signs
+    # do that.
+    ("linux", "linux", "#fcc624", "#1b1b1b", "Linux", "amd64", "Download for Linux"),
 ]
 
+
+def brand(name):
+    """One mark: its path, and the scale and offset that centre it in GLYPH."""
+    path = io.open(os.path.join(BRANDS, name + ".txt"), encoding="utf-8").read().strip()
+    box = io.open(os.path.join(BRANDS, name + ".box.txt"), encoding="utf-8").read().strip()
+    _, _, width, height = (float(n) for n in box.split())
+    # Scaled by HEIGHT so the three marks share an optical size, then nudged
+    # right by half the width they do not use. Apple's mark is narrower than the
+    # other two, and without this it would sit left of them in the row.
+    scale = GLYPH / height
+    return path, scale, (GLYPH - width * scale) / 2
+
+
 os.makedirs(OUT, exist_ok=True)
-for slug, head, sub_text, alt in BUTTONS:
+for slug, mark, bg, ink, head, sub_text, alt in BUTTONS:
+    path, scale, inset = brand(mark)
     svg = TEMPLATE.format(
-        w=W, h=H, iw=W - 3, ih=H - 3, r=R, bg=BG, edge=EDGE, ink=INK, sub=SUB,
-        gx=GX, gy=GY, scale=round(SCALE, 4), arrow=ARROW, font=FONT,
+        w=W, h=H, r=R, bg=bg, ink=ink, gx=round(GX + inset, 2), gy=round(GY, 2),
+        scale=round(scale, 5), path=path, font=FONT,
         head=head, sub_text=sub_text, alt=alt,
     )
-    path = os.path.join(OUT, "button-" + slug + ".svg")
-    io.open(path, "w", encoding="utf-8", newline="\n").write(svg)
-    print("wrote", os.path.normpath(path), len(svg), "bytes")
+    out = os.path.join(OUT, "button-" + slug + ".svg")
+    io.open(out, "w", encoding="utf-8", newline="\n").write(svg)
+    print("wrote", os.path.normpath(out), len(svg), "bytes")
