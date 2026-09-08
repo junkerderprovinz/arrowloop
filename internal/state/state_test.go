@@ -3,6 +3,7 @@ package state
 import (
 	"context"
 	"fmt"
+	"os"
 	"path/filepath"
 	"sync"
 	"testing"
@@ -92,4 +93,53 @@ func openTemp(t *testing.T) *DB {
 	}
 	t.Cleanup(func() { db.Close() })
 	return db
+}
+
+// TestOpenMakesTheFolderItWasAskedToWriteInto.
+//
+// SQLite creates the file and refuses to create the folder, and its refusal is
+// SQLITE_CANTOPEN: "unable to open database file", which names a file and
+// means a directory. Every job the interface creates points at
+// "state/<name>.db", so without this the ordinary case was the broken one.
+func TestOpenMakesTheFolderItWasAskedToWriteInto(t *testing.T) {
+	root := t.TempDir()
+	path := filepath.Join(root, "state", "Test.db")
+
+	db, err := Open(context.Background(), path)
+	if err != nil {
+		t.Fatalf("open a database under a folder that does not exist yet: %v", err)
+	}
+	defer db.Close()
+
+	// Opened is not enough: the schema has to have been written, which is the
+	// step that actually failed.
+	if err := db.Put(context.Background(), Entry{Path: "a.txt", LeftSize: 1, RightSize: 1}); err != nil {
+		t.Fatalf("write to the new database: %v", err)
+	}
+	if _, err := os.Stat(path); err != nil {
+		t.Fatalf("the database file is not where it was asked for: %v", err)
+	}
+}
+
+// TestOpenLeavesAnExistingFolderAlone keeps the fix from becoming a habit of
+// creating folders on paths that already have one, which is where a wrong
+// mkdir would quietly change permissions on somebody's directory.
+func TestOpenLeavesAnExistingFolderAlone(t *testing.T) {
+	root := t.TempDir()
+	before, err := os.Stat(root)
+	if err != nil {
+		t.Fatalf("stat: %v", err)
+	}
+	db, err := Open(context.Background(), filepath.Join(root, "state.db"))
+	if err != nil {
+		t.Fatalf("open: %v", err)
+	}
+	defer db.Close()
+	after, err := os.Stat(root)
+	if err != nil {
+		t.Fatalf("stat: %v", err)
+	}
+	if before.Mode() != after.Mode() {
+		t.Fatalf("the folder's mode changed from %v to %v", before.Mode(), after.Mode())
+	}
 }

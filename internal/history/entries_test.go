@@ -2,6 +2,7 @@ package history_test
 
 import (
 	"context"
+	"os"
 	"path/filepath"
 	"testing"
 	"time"
@@ -206,5 +207,24 @@ func TestARunWithNothingToSayIsStillARun(t *testing.T) {
 	}
 	if len(got) != 0 {
 		t.Errorf("a run that did nothing came back with %d entries", len(got))
+	}
+}
+
+// TestOpenMakesTheFolderItWasAskedToWriteInto is the run log's half of the
+// same rule. Its path defaults to the configuration's own folder, which
+// always exists, but the path is configurable and a nested one would fail
+// exactly the way every job's state database used to.
+func TestOpenMakesTheFolderItWasAskedToWriteInto(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "logs", "runs.db")
+	db, err := history.Open(context.Background(), path)
+	if err != nil {
+		t.Fatalf("open a run log under a folder that does not exist yet: %v", err)
+	}
+	defer db.Close()
+	if err := db.Record(context.Background(), history.Run{Job: "photos"}, nil); err != nil {
+		t.Fatalf("write to the new run log: %v", err)
+	}
+	if _, err := os.Stat(path); err != nil {
+		t.Fatalf("the run log is not where it was asked for: %v", err)
 	}
 }

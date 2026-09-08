@@ -8,6 +8,14 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## v0.6.2
+
+Every job created through the interface failed on every single run. If you have set one up and it has never copied anything, this is why, and updating is the whole fix.
+
+## 🐛 Fixed
+
+- **A job created in the interface could never run, on the clock or on a change.** Every run ended with `create schema: unable to open database file (14)` and nothing was copied. The interface gives each new job a state path of `state/<name>.db`, and nothing ever created that `state` folder: SQLite creates a database file that is not there and will not create the directory it was asked to put it in, because from where SQLite stands a missing directory is indistinguishable from a typo. Its refusal is `SQLITE_CANTOPEN`, whose message names a file and means a folder, which is why this read like a permissions problem for as long as it did. Both databases this program keeps now make the folder they were asked to write into. A container that had been running for hours, reporting a failure every minute and syncing nothing, was what it took to find it.
+
 ## v0.6.1
 
 A folder this program creates on a network share can now be written to, which it could not before. If you run the container on Unraid or any other box where the share belongs to somebody other than root, this one matters.

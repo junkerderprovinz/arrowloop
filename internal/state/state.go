@@ -16,6 +16,8 @@ import (
 	"time"
 
 	_ "modernc.org/sqlite" // pure-Go driver, no cgo, so cross-compiling stays trivial
+
+	"github.com/junkerderprovinz/arrowloop/internal/dbfile"
 )
 
 // Entry is one file as it stood on both sides the last time they agreed.
@@ -75,6 +77,13 @@ CREATE TABLE IF NOT EXISTS dirs (
 
 // Open opens or creates the state database at path.
 func Open(ctx context.Context, path string) (*DB, error) {
+	// Creating the file is half a promise on its own. A job created in the
+	// interface is given a state path of "state/<name>.db", and until this line
+	// existed nobody created the folder, so every run of every such job failed
+	// with SQLITE_CANTOPEN and a message that mentions a file and not a folder.
+	if err := dbfile.EnsureDir(path); err != nil {
+		return nil, err
+	}
 	// _txlock=immediate makes a write transaction take the write lock up front
 	// instead of upgrading mid-transaction, which is where SQLITE_BUSY comes
 	// from when two runs of the same job overlap.

@@ -14,6 +14,8 @@ import (
 	"time"
 
 	_ "modernc.org/sqlite" // pure-Go driver, no cgo, so cross-compiling stays trivial
+
+	"github.com/junkerderprovinz/arrowloop/internal/dbfile"
 )
 
 // Run is one execution of one job.
@@ -94,6 +96,12 @@ CREATE TABLE IF NOT EXISTS entries (
 
 // Open opens or creates the history database.
 func Open(ctx context.Context, path string) (*DB, error) {
+	// The run log defaults to sitting beside the configuration, whose folder
+	// always exists, but the path is configurable and a nested one would fail
+	// the same way a job's state database used to.
+	if err := dbfile.EnsureDir(path); err != nil {
+		return nil, err
+	}
 	handle, err := sql.Open("sqlite", path+"?_pragma=busy_timeout(5000)&_pragma=journal_mode(WAL)&_txlock=immediate")
 	if err != nil {
 		return nil, fmt.Errorf("open history: %w", err)

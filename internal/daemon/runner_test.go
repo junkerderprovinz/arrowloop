@@ -487,3 +487,44 @@ func waitFor(t *testing.T, ok func() bool, complaint string) {
 	}
 	t.Fatal(complaint)
 }
+
+// TestAJobWhoseStateFolderDoesNotExistStillRuns is jdp's bug, at the level it
+// was actually met.
+//
+// Every job created in the interface is given a state path of
+// "state/<name>.db", and the config directory ships without a "state" folder.
+// SQLite creates a database file that is not there and will not create the
+// folder it was asked to put it in, so every run of every such job failed -
+// on the clock and on a watched change alike - with "unable to open database
+// file", a message about a file that is really about a folder. A container
+// that had been running for hours had synced nothing at all.
+func TestAJobWhoseStateFolderDoesNotExistStillRuns(t *testing.T) {
+	var stateDir string
+	cfg, hist, left, right := fixture(t, func(dir, left, right string) string {
+		stateDir = filepath.Join(dir, "state")
+		return fmt.Sprintf(`{"jobs":[{"name":"photos","left":"%s","right":"%s","state":"state/photos.db","quietPeriod":"0s"}]}`,
+			jsonPath(left), jsonPath(right))
+	})
+	if _, err := os.Stat(stateDir); !errors.Is(err, os.ErrNotExist) {
+		t.Fatalf("the test needs the state folder to be missing, but Stat said: %v", err)
+	}
+
+	if err := os.WriteFile(filepath.Join(left, "a.txt"), []byte("hello"), 0o644); err != nil {
+		t.Fatalf("write: %v", err)
+	}
+
+	r := daemon.New(cfg, hist, nil, nil)
+	rec, err := r.Run(context.Background(), "photos")
+	if err != nil {
+		t.Fatalf("a job whose state folder does not exist yet could not run: %v", err)
+	}
+	if rec.Copied != 1 {
+		t.Fatalf("expected one file copied, got %d", rec.Copied)
+	}
+	if _, err := os.Stat(filepath.Join(right, "a.txt")); err != nil {
+		t.Fatalf("the file did not arrive: %v", err)
+	}
+	if _, err := os.Stat(filepath.Join(stateDir, "photos.db")); err != nil {
+		t.Fatalf("the state database was not left where the job asked for it: %v", err)
+	}
+}
