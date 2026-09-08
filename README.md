@@ -77,7 +77,7 @@
 
 A self-hosted GoodSync replacement. The engine came first, cut down to the part that can lose data so that part could be proved before anything was built on top of it; the scheduler, the job file and the run log sit on top of it now.
 
-A reeve was the manorial officer who moved goods between two holdings, kept his own notched record of what he had moved, and answered for it at the annual view of account. He also had standing to refuse a reckoning that did not add up. The roll is the parchment he was judged against. Those are the three pieces below: the two ends, the state database, and the refusal.
+The name is the shape. Two arrows closing a loop: what happens on one side arrives on the other and comes back, and between the two ends sits the record of what they last agreed on. Those are the three pieces below, and the third one is the one that matters when something goes wrong: the two ends, the state database, and the refusal to apply a reckoning that does not add up.
 
 Targets come from [rclone](https://rclone.org), embedded as a library rather than shelled out to, so local folders, SMB shares, SFTP hosts and S3 buckets are all the same thing to the engine. Only `local`, `sftp` and `s3` are compiled in at this stage: importing every backend rclone supports would multiply the binary size for targets nobody has asked for.
 

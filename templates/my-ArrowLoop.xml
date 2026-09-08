@@ -77,4 +77,14 @@ Note: the WebUI has no login of its own. Keep it on your LAN or put it behind a 
     Display="advanced"
     Required="false"
     Mask="false">0.0.0.0:8422</Config>
+  <Config
+    Name="File permission mask"
+    Target="ARROWLOOP_UMASK"
+    Default="000"
+    Mode=""
+    Description="The umask for everything this container writes. It runs as root, so with the usual 022 every copied file would land as 0644 root:root and every folder as 0755 root:root, which you can read over SMB and not change. An Unraid share is 0777 nobody:users, and 000 makes what ArrowLoop writes match it. The field must not be left empty: a blank template field overrides the image default rather than falling back to it. Set 022 to get restrictive permissions back."
+    Type="Variable"
+    Display="advanced"
+    Required="false"
+    Mask="false">000</Config>
 </Container>
