@@ -266,6 +266,8 @@ const uk: Translations = {
   'settings.look': 'Вигляд',
   'settings.engine': 'Рушій',
   'engine.title': 'Рушій',
+  'engine.saving': 'Зберігає…',
+  'engine.savedLive': 'Збережено',
   'engine.loading': 'Читаю налаштування…',
   'engine.work': 'Наскільки сильно навантажувати',
   'engine.bwlimit': 'Обмеження смуги',

@@ -266,6 +266,8 @@ const sr: Translations = {
   'settings.look': 'Изглед',
   'settings.engine': 'Погон',
   'engine.title': 'Погон',
+  'engine.saving': 'Чува…',
+  'engine.savedLive': 'Сачувано',
   'engine.loading': 'Читам подешавања…',
   'engine.work': 'Колико сме да ради',
   'engine.bwlimit': 'Ограничење протока',

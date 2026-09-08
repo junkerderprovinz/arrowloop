@@ -266,6 +266,8 @@ const nl: Translations = {
   'settings.look': 'Uiterlijk',
   'settings.engine': 'Motor',
   'engine.title': 'Motor',
+  'engine.saving': 'Opslaan…',
+  'engine.savedLive': 'Opgeslagen',
   'engine.loading': 'Instellingen lezen…',
   'engine.work': 'Hoe hard hij mag werken',
   'engine.bwlimit': 'Bandbreedtelimiet',

@@ -266,6 +266,8 @@ const fr: Translations = {
   'settings.look': 'Apparence',
   'settings.engine': 'Moteur',
   'engine.title': 'Moteur',
+  'engine.saving': 'Enregistrement…',
+  'engine.savedLive': 'Enregistré',
   'engine.loading': 'Lecture des réglages…',
   'engine.work': 'Jusqu\'où il peut pousser',
   'engine.bwlimit': 'Limite de bande passante',

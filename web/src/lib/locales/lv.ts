@@ -266,6 +266,8 @@ const lv: Translations = {
   'settings.look': 'Izskats',
   'settings.engine': 'Dzinējs',
   'engine.title': 'Dzinējs',
+  'engine.saving': 'Saglabā…',
+  'engine.savedLive': 'Saglabāts',
   'engine.loading': 'Nolasu iestatījumus…',
   'engine.work': 'Cik cieši drīkst strādāt',
   'engine.bwlimit': 'Joslas platuma ierobežojums',

@@ -266,6 +266,8 @@ const hu: Translations = {
   'settings.look': 'Megjelenés',
   'settings.engine': 'Motor',
   'engine.title': 'Motor',
+  'engine.saving': 'Mentés…',
+  'engine.savedLive': 'Mentve',
   'engine.loading': 'Beállítások beolvasása…',
   'engine.work': 'Mennyire terhelhet',
   'engine.bwlimit': 'Sávszélesség-korlát',

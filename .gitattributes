@@ -11,3 +11,20 @@
 *.css text eol=lf
 *.json text eol=lf
 *.html text eol=lf
+
+# What the language bar counts.
+# ---------------------------------------------------------------------------
+# GitHub's Linguist measures BYTES, and this repository has 1.26 MB of them
+# that are data wearing a .ts extension: forty-two translation tables and a
+# generated glyph file holding raw SVG path strings. Counted, they made
+# TypeScript the "main language" of a program whose engine is Go - 1.88 MB of
+# TypeScript against 0.96 MB of Go, where the actual interface code is 0.62 MB.
+# The bar was not wrong about the bytes, it was answering a different question
+# than the one anybody reads it as.
+#
+# `linguist-detectable=false` keeps a file in normal diffs and out of the
+# count; `linguist-generated=true` also folds it away in a diff, which is right
+# for the one file a script writes and nobody edits by hand.
+web/src/lib/locales/*.ts linguist-detectable=false
+web/src/lib/i18n.ts linguist-detectable=false
+web/src/components/glyphs.tsx linguist-generated=true

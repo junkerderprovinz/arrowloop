@@ -266,6 +266,8 @@ const pt: Translations = {
   'settings.look': 'Aspeto',
   'settings.engine': 'Motor',
   'engine.title': 'Motor',
+  'engine.saving': 'A guardar…',
+  'engine.savedLive': 'Guardado',
   'engine.loading': 'A ler as definições…',
   'engine.work': 'Até onde pode forçar',
   'engine.bwlimit': 'Limite de largura de banda',

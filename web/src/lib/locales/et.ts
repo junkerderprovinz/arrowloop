@@ -266,6 +266,8 @@ const et: Translations = {
   'settings.look': 'Välimus',
   'settings.engine': 'Mootor',
   'engine.title': 'Mootor',
+  'engine.saving': 'Salvestab…',
+  'engine.savedLive': 'Salvestatud',
   'engine.loading': 'Loen seadeid…',
   'engine.work': 'Kui kõvasti ta töötada tohib',
   'engine.bwlimit': 'Ribalaiuse piirang',

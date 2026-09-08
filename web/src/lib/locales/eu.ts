@@ -266,6 +266,8 @@ const eu: Translations = {
   'settings.look': 'Itxura',
   'settings.engine': 'Motorra',
   'engine.title': 'Motorra',
+  'engine.saving': 'Gordetzen…',
+  'engine.savedLive': 'Gordeta',
   'engine.loading': 'Ezarpenak irakurtzen…',
   'engine.work': 'Zenbateraino bultza dezakeen',
   'engine.bwlimit': 'Banda-zabaleraren muga',

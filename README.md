@@ -40,6 +40,21 @@
 > nobody should trust with both sides of their files. Issues and questions are
 > welcome; a polished first impression is not the point yet.
 
+<br>
+
+<p align="center">
+  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-windows-amd64-installer.exe"><img src=".github/assets/download-buttons/button-windows-installer.svg" alt="Download for Windows, installer" width="195"></a>&nbsp;
+  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-windows-amd64-portable.exe"><img src=".github/assets/download-buttons/button-windows-portable.svg" alt="Download for Windows, portable" width="195"></a>&nbsp;
+  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-macos-universal.dmg"><img src=".github/assets/download-buttons/button-macos.svg" alt="Download for macOS" width="195"></a>&nbsp;
+  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-amd64"><img src=".github/assets/download-buttons/button-linux.svg" alt="Download for Linux" width="195"></a>
+</p>
+
+<p align="center">
+  <sub>Always the newest release &nbsp;·&nbsp; <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest">release notes and checksums</a> &nbsp;·&nbsp; on a server, run it <a href="#9-installing-it">as a container</a> instead</sub>
+</p>
+
+<br>
+
 ## Table of Contents
 
 1. [What this is](#1-what-this-is)

@@ -266,6 +266,8 @@ const id: Translations = {
   'settings.look': 'Tampilan',
   'settings.engine': 'Mesin',
   'engine.title': 'Mesin',
+  'engine.saving': 'Menyimpan…',
+  'engine.savedLive': 'Tersimpan',
   'engine.loading': 'Membaca pengaturan…',
   'engine.work': 'Seberapa keras boleh bekerja',
   'engine.bwlimit': 'Batas bandwidth',

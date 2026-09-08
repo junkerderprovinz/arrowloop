@@ -81,7 +81,14 @@ EXPOSE 8422
 # loopback would mean nobody can reach it at all. The exposure decision belongs
 # to whoever publishes the port, and the template documents that this interface
 # has no login of its own.
+# ARROWLOOP_UMASK exists because this image runs as root and writes into
+# somebody else's share. With the usual 022 every copied file lands as 0644
+# root:root and every folder as 0755 root:root, so the person who owns the share
+# can read what was synchronised and not change it. An Unraid share is 0777
+# nobody:users; 000 here makes what this program writes match what the share
+# already is. Set it to 022 to get the restrictive behaviour back.
 ENV ARROWLOOP_ADDR=0.0.0.0:8422 \
+    ARROWLOOP_UMASK=000 \
     TZ=Europe/Berlin
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \

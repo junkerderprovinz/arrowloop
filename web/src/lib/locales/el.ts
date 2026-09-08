@@ -266,6 +266,8 @@ const el: Translations = {
   'settings.look': 'Εμφάνιση',
   'settings.engine': 'Μηχανή',
   'engine.title': 'Μηχανή',
+  'engine.saving': 'Αποθηκεύει…',
+  'engine.savedLive': 'Αποθηκεύτηκε',
   'engine.loading': 'Ανάγνωση ρυθμίσεων…',
   'engine.work': 'Πόσο σκληρά επιτρέπεται να δουλεύει',
   'engine.bwlimit': 'Όριο εύρους ζώνης',

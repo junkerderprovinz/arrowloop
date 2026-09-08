@@ -266,6 +266,8 @@ const ro: Translations = {
   'settings.look': 'Aspect',
   'settings.engine': 'Motor',
   'engine.title': 'Motor',
+  'engine.saving': 'Se salvează…',
+  'engine.savedLive': 'Salvat',
   'engine.loading': 'Se citesc setările…',
   'engine.work': 'Cât de tare poate forța',
   'engine.bwlimit': 'Limită de bandă',

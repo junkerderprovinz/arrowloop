@@ -266,6 +266,8 @@ const th: Translations = {
   'settings.look': 'รูปลักษณ์',
   'settings.engine': 'เอนจิน',
   'engine.title': 'เอนจิน',
+  'engine.saving': 'กำลังบันทึก…',
+  'engine.savedLive': 'บันทึกแล้ว',
   'engine.loading': 'กำลังอ่านการตั้งค่า…',
   'engine.work': 'ทำงานหนักได้แค่ไหน',
   'engine.bwlimit': 'จำกัดแบนด์วิดท์',

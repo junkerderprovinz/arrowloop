@@ -266,6 +266,8 @@ const no: Translations = {
   'settings.look': 'Utseende',
   'settings.engine': 'Motor',
   'engine.title': 'Motor',
+  'engine.saving': 'Lagrer…',
+  'engine.savedLive': 'Lagret',
   'engine.loading': 'Leser innstillingene…',
   'engine.work': 'Hvor hardt den får jobbe',
   'engine.bwlimit': 'Båndbreddegrense',

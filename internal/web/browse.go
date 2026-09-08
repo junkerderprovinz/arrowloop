@@ -171,9 +171,15 @@ func (s *Server) makeDir(w http.ResponseWriter, r *http.Request) {
 	}
 
 	made := filepath.Join(parent, name)
-	if err := os.Mkdir(made, 0o755); err != nil {
+	// 0777 is a ceiling, not the answer: the process umask masks whatever mode
+	// is handed to Mkdir, and a container running as root with the usual 022
+	// turns this into 0755 no matter what stands here. The real mode and the
+	// owner come from the parent, one line down. Reported as a folder on a
+	// world-writable share that the person who created it could not write to.
+	if err := os.Mkdir(made, 0o777); err != nil {
 		writeError(w, http.StatusBadRequest, fmt.Errorf("create %s: %w", made, err))
 		return
 	}
+	inheritFrom(parent, made)
 	writeJSON(w, http.StatusOK, map[string]any{"path": made})
 }

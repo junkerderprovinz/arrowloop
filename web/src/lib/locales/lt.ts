@@ -266,6 +266,8 @@ const lt: Translations = {
   'settings.look': 'Išvaizda',
   'settings.engine': 'Variklis',
   'engine.title': 'Variklis',
+  'engine.saving': 'Įrašoma…',
+  'engine.savedLive': 'Įrašyta',
   'engine.loading': 'Skaitomi nustatymai…',
   'engine.work': 'Kiek stipriai gali dirbti',
   'engine.bwlimit': 'Pralaidumo riba',

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { Card } from '../lib/glimstone/Card'
 import { Field, NumberField, Secret, Text } from '../components/Field'
@@ -7,8 +7,6 @@ import { ToggleRow } from '../components/ToggleRow'
 import { QuietPeriod } from '../components/QuietPeriod'
 import { ExcludeSetEditor, type Sets } from '../components/ExcludeSets'
 import { Selector } from '../components/Selector'
-import { Button } from '../lib/glimstone/Button'
-import { IconSave } from '../components/glyphs'
 import { api, type Settings } from '../lib/api'
 import { useT } from '../lib/i18n'
 
@@ -25,7 +23,24 @@ import { useT } from '../lib/i18n'
  * questions: how hard may it work, how long does it remember, and who gets told.
  */
 
-/** One draft of the settings, saved as a whole rather than field by field. */
+/**
+ * The engine's settings, saved as they are changed.
+ *
+ * There was a save button at the foot of the page, and it is gone (jdp: "im
+ * motortab gibt es einen speichern button. der soll weg. es soll alles live
+ * speichern"). A page of settings is not a form somebody fills in and submits:
+ * every control on it stands alone, and a button at the bottom means a switch
+ * flipped at the top does nothing until somebody scrolls down and finds it. The
+ * jobs page learned the same thing the hard way, where a deletion did not reach
+ * the file until a button elsewhere was pressed.
+ *
+ * WRITING IS DELAYED, and that is not a detail. Half of these controls are text
+ * boxes, so saving on every change would send a request per keystroke and, for
+ * the bandwidth limit, would refuse "1" on the way to "1M" and flash an error at
+ * somebody who is typing correctly. The delay lets a value settle first.
+ */
+const SETTLE_MS = 700
+
 function useSettings() {
   const [settings, setSettings] = useState<Settings | null>(null)
   const [draft, setDraft] = useState<Settings>({})
@@ -43,35 +58,61 @@ function useSettings() {
       .catch((e: Error) => setError(e.message))
   }, [])
 
-  const patch = useCallback((next: Partial<Settings>) => {
-    setSaved(false)
-    setDraft((prev) => ({ ...prev, ...next }))
+  /**
+   * The pending write, held outside React's state on purpose.
+   *
+   * The timer's callback fires long after the render that scheduled it, so it
+   * cannot close over `draft`: it would send whatever the draft was when the
+   * FIRST character was typed. A ref is the value at the moment the timer runs.
+   */
+  const latest = useRef<Settings>({})
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  /** Cancels a pending write when the page is left mid-edit. */
+  useEffect(() => () => {
+    if (timer.current) clearTimeout(timer.current)
   }, [])
 
-  const save = useCallback(async () => {
+  const commit = useCallback(async () => {
     setBusy(true)
     setError(null)
     try {
       // The whole draft, not a diff. The endpoint merges, so sending a key back
       // unchanged costs nothing, and working out a diff is a second place for
       // "did this field change" to be decided differently from the first.
-      const got = await api.saveSettings(draft)
+      const got = await api.saveSettings(latest.current)
+      // `settings` takes the server's answer; the DRAFT deliberately does not.
+      // A reply arriving while somebody is still typing would replace the box
+      // under their cursor with the value they had a second ago.
       setSettings(got)
-      setDraft(got)
       setSaved(true)
     } catch (e) {
       setError((e as Error).message)
+      setSaved(false)
     } finally {
       setBusy(false)
     }
-  }, [draft])
+  }, [])
 
-  return { settings, draft, patch, save, error, busy, saved }
+  const patch = useCallback(
+    (next: Partial<Settings>) => {
+      setSaved(false)
+      setDraft((prev) => {
+        const merged = { ...prev, ...next }
+        latest.current = merged
+        return merged
+      })
+      if (timer.current) clearTimeout(timer.current)
+      timer.current = setTimeout(() => void commit(), SETTLE_MS)
+    },
+    [commit],
+  )
+
+  return { settings, draft, patch, error, busy, saved }
 }
 
 export function Engine() {
   const { t } = useT()
-  const { settings, draft, patch, save, error, busy, saved } = useSettings()
+  const { settings, draft, patch, error, busy, saved } = useSettings()
 
   if (settings === null) {
     return (
@@ -264,18 +305,33 @@ export function Engine() {
           about the file holding all of it plus every job. It lives in
           components/SettingsBackup.tsx now. */}
 
-      <div className="flex flex-wrap items-center justify-end gap-2">
-        {error && <p className="me-auto text-xs text-statusFail">{error}</p>}
-        {saved && !error && <p className="me-auto text-xs text-statusOk">{t('edit.savedNote')}</p>}
-        <Button
-          label={t('edit.save')}
-          labelKey="edit.save"
-          glyph={<IconSave />}
-          tone="accent"
-          busy={busy}
-          disabled={busy}
-          onClick={() => void save()}
-        />
+      {/* What is left where the save button stood: the page says what it just
+          did, and nothing here is a control. A refusal keeps its place, because
+          an invalid bandwidth limit has to be seen and corrected, and it now
+          arrives while the field is still in front of the person who typed it
+          rather than on the next boot. */}
+      {/* A REFUSAL STICKS TO THE BOTTOM OF THE WINDOW, and that is the price of
+          taking the save button away. With a button, the answer appears where
+          the finger just was; saving as you type puts the answer at the foot of
+          a long page while the eye is on a field near the top. Measured on the
+          running page: an invalid bandwidth limit is refused correctly, the
+          value never reaches the file, and the sentence saying so was three
+          cards below the fold.
+          Only a refusal sticks. A line saying "saved" is not news worth pinning
+          over the page, and a strip that is always there for a message that is
+          usually empty is furniture. */}
+      <div
+        className={`flex min-h-4 flex-wrap items-center justify-end gap-2 text-xs ${
+          error ? 'sticky bottom-0 -mx-2 rounded-card bg-carbon-surface px-2 py-1.5 shadow-lg' : ''
+        }`}
+      >
+        {error ? (
+          <p className="me-auto text-statusFail">{error}</p>
+        ) : busy ? (
+          <p className="me-auto text-carbon-textMuted">{t('engine.saving')}</p>
+        ) : saved ? (
+          <p className="me-auto text-statusOk">{t('engine.savedLive')}</p>
+        ) : null}
       </div>
     </Stack>
   )

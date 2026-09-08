@@ -266,6 +266,8 @@ const ms: Translations = {
   'settings.look': 'Rupa',
   'settings.engine': 'Enjin',
   'engine.title': 'Enjin',
+  'engine.saving': 'Menyimpan…',
+  'engine.savedLive': 'Disimpan',
   'engine.loading': 'Membaca tetapan…',
   'engine.work': 'Sekuat mana ia boleh bekerja',
   'engine.bwlimit': 'Had lebar jalur',

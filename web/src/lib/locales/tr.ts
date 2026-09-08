@@ -266,6 +266,8 @@ const tr: Translations = {
   'settings.look': 'Görünüm',
   'settings.engine': 'Motor',
   'engine.title': 'Motor',
+  'engine.saving': 'Kaydediliyor…',
+  'engine.savedLive': 'Kaydedildi',
   'engine.loading': 'Ayarlar okunuyor…',
   'engine.work': 'Ne kadar zorlayabilir',
   'engine.bwlimit': 'Bant genişliği sınırı',

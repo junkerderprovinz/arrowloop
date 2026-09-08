@@ -266,6 +266,8 @@ const is: Translations = {
   'settings.look': 'Útlit',
   'settings.engine': 'Vél',
   'engine.title': 'Vél',
+  'engine.saving': 'Vistar…',
+  'engine.savedLive': 'Vistað',
   'engine.loading': 'Les stillingarnar…',
   'engine.work': 'Hversu hart hún má vinna',
   'engine.bwlimit': 'Bandvíddartakmörk',

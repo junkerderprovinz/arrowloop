@@ -266,6 +266,8 @@ const pl: Translations = {
   'settings.look': 'Wygląd',
   'settings.engine': 'Silnik',
   'engine.title': 'Silnik',
+  'engine.saving': 'Zapisuje…',
+  'engine.savedLive': 'Zapisano',
   'engine.loading': 'Odczytywanie ustawień…',
   'engine.work': 'Jak mocno może pracować',
   'engine.bwlimit': 'Limit przepustowości',

@@ -266,6 +266,8 @@ const bg: Translations = {
   'settings.look': 'Външен вид',
   'settings.engine': 'Двигател',
   'engine.title': 'Двигател',
+  'engine.saving': 'Запазва…',
+  'engine.savedLive': 'Запазено',
   'engine.loading': 'Чета настройките…',
   'engine.work': 'Колко силно може да работи',
   'engine.bwlimit': 'Ограничение на скоростта',

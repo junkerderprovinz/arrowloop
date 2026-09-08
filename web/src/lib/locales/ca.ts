@@ -266,6 +266,8 @@ const ca: Translations = {
   'settings.look': 'Aparença',
   'settings.engine': 'Motor',
   'engine.title': 'Motor',
+  'engine.saving': 'Desant…',
+  'engine.savedLive': 'Desat',
   'engine.loading': 'S\'estan llegint els paràmetres…',
   'engine.work': 'Fins on pot forçar',
   'engine.bwlimit': 'Límit d\'amplada de banda',

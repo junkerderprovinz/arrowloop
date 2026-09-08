@@ -266,6 +266,8 @@ const vi: Translations = {
   'settings.look': 'Giao diện',
   'settings.engine': 'Bộ máy',
   'engine.title': 'Bộ máy',
+  'engine.saving': 'Đang lưu…',
+  'engine.savedLive': 'Đã lưu',
   'engine.loading': 'Đang đọc cài đặt…',
   'engine.work': 'Được chạy mạnh đến đâu',
   'engine.bwlimit': 'Giới hạn băng thông',

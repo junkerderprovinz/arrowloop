@@ -194,6 +194,23 @@ jobs:
           cp bundles/arrowloop-linux-amd64/ArrowLoop \
             "dist/arrowloop-${GITHUB_REF_NAME}-linux-amd64"
           chmod +x "dist/arrowloop-${GITHUB_REF_NAME}-linux-amd64"
+
+          # A second copy of each bundle under a name with no version in it.
+          #
+          # This is what makes a download button in the README possible at all.
+          # GitHub serves the newest release's asset from
+          # /releases/latest/download/<EXACT NAME>, and there is no pattern, no
+          # wildcard and no "whatever matches" - so a name carrying the version
+          # can only ever be linked for the one release it belongs to, and every
+          # button in the README would go stale on the next tag.
+          #
+          # A copy rather than a rename, because the versioned name is the one
+          # worth keeping: a folder holding three downloads called
+          # arrowloop-windows-installer.exe is a folder nobody can tell apart.
+          # The cost is the upload, and a public release has no storage bill.
+          for f in dist/arrowloop-"${GITHUB_REF_NAME}"-*; do
+            cp "$f" "$(echo "$f" | sed "s/-${GITHUB_REF_NAME}-/-/")"
+          done
           ls -lh dist
 
       # The release is expected to exist by the time these are ready, but a

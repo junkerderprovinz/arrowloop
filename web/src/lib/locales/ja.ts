@@ -266,6 +266,8 @@ const ja: Translations = {
   'settings.look': '外観',
   'settings.engine': 'エンジン',
   'engine.title': 'エンジン',
+  'engine.saving': '保存中…',
+  'engine.savedLive': '保存しました',
   'engine.loading': '設定を読み込み中…',
   'engine.work': 'どこまで負荷をかけてよいか',
   'engine.bwlimit': '帯域制限',

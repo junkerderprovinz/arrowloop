@@ -266,6 +266,8 @@ const zh: Translations = {
   'settings.look': '外观',
   'settings.engine': '引擎',
   'engine.title': '引擎',
+  'engine.saving': '正在保存…',
+  'engine.savedLive': '已保存',
   'engine.loading': '正在读取设置…',
   'engine.work': '可以用多大力',
   'engine.bwlimit': '带宽限制',

@@ -50,6 +50,15 @@ func main() {
 		os.Exit(2)
 	}
 
+	// Before anything can create a file. The mask governs every create this
+	// process makes, rclone's included, so it has to be in place before the
+	// first one rather than before the first SYNC: the configuration file and
+	// the state databases are written too, and they land in the same share.
+	if err := applyUmask(umaskSetting()); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(2)
+	}
+
 	// rclone reads its own config for named remotes such as "sftp:backup". A
 	// job using plain paths never needs it.
 	configfile.Install()

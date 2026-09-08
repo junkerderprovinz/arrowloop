@@ -266,6 +266,8 @@ const he: Translations = {
   'settings.look': 'מראה',
   'settings.engine': 'מנוע',
   'engine.title': 'מנוע',
+  'engine.saving': 'שומר…',
+  'engine.savedLive': 'נשמר',
   'engine.loading': 'קורא את ההגדרות…',
   'engine.work': 'כמה חזק מותר לו לעבוד',
   'engine.bwlimit': 'מגבלת רוחב פס',

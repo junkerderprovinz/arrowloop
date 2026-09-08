@@ -266,6 +266,8 @@ const sv: Translations = {
   'settings.look': 'Utseende',
   'settings.engine': 'Motor',
   'engine.title': 'Motor',
+  'engine.saving': 'Sparar…',
+  'engine.savedLive': 'Sparat',
   'engine.loading': 'Läser inställningarna…',
   'engine.work': 'Hur hårt den får arbeta',
   'engine.bwlimit': 'Bandbreddsgräns',

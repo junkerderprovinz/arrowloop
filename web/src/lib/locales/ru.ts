@@ -266,6 +266,8 @@ const ru: Translations = {
   'settings.look': 'Внешний вид',
   'settings.engine': 'Движок',
   'engine.title': 'Движок',
+  'engine.saving': 'Сохраняет…',
+  'engine.savedLive': 'Сохранено',
   'engine.loading': 'Читаю настройки…',
   'engine.work': 'Насколько сильно нагружать',
   'engine.bwlimit': 'Ограничение полосы',

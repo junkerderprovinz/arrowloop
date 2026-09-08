@@ -266,6 +266,8 @@ const ko: Translations = {
   'settings.look': '모양',
   'settings.engine': '엔진',
   'engine.title': '엔진',
+  'engine.saving': '저장 중…',
+  'engine.savedLive': '저장됨',
   'engine.loading': '설정을 읽는 중…',
   'engine.work': '얼마나 세게 돌려도 되는지',
   'engine.bwlimit': '대역폭 제한',

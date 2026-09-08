@@ -266,6 +266,8 @@ const ar: Translations = {
   'settings.look': 'المظهر',
   'settings.engine': 'المحرك',
   'engine.title': 'المحرك',
+  'engine.saving': 'يحفظ…',
+  'engine.savedLive': 'تم الحفظ',
   'engine.loading': 'قراءة الإعدادات…',
   'engine.work': 'إلى أي حد يمكنه الضغط',
   'engine.bwlimit': 'حد عرض النطاق',

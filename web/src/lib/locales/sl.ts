@@ -266,6 +266,8 @@ const sl: Translations = {
   'settings.look': 'Videz',
   'settings.engine': 'Pogon',
   'engine.title': 'Pogon',
+  'engine.saving': 'Shranjuje…',
+  'engine.savedLive': 'Shranjeno',
   'engine.loading': 'Berem nastavitve…',
   'engine.work': 'Kako močno sme delati',
   'engine.bwlimit': 'Omejitev pasovne širine',

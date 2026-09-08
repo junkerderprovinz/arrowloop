@@ -266,6 +266,8 @@ const cs: Translations = {
   'settings.look': 'Vzhled',
   'settings.engine': 'Jádro',
   'engine.title': 'Jádro',
+  'engine.saving': 'Ukládá se…',
+  'engine.savedLive': 'Uloženo',
   'engine.loading': 'Čtu nastavení…',
   'engine.work': 'Jak tvrdě smí pracovat',
   'engine.bwlimit': 'Omezení přenosu',

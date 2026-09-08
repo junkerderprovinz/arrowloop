@@ -266,6 +266,8 @@ const gl: Translations = {
   'settings.look': 'Aparencia',
   'settings.engine': 'Motor',
   'engine.title': 'Motor',
+  'engine.saving': 'Gardando…',
+  'engine.savedLive': 'Gardado',
   'engine.loading': 'Lendo os axustes…',
   'engine.work': 'Ata onde pode forzar',
   'engine.bwlimit': 'Límite de largura de banda',

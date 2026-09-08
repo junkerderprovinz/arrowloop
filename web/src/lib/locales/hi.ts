@@ -266,6 +266,8 @@ const hi: Translations = {
   'settings.look': 'रूप',
   'settings.engine': 'इंजन',
   'engine.title': 'इंजन',
+  'engine.saving': 'सहेजा जा रहा है…',
+  'engine.savedLive': 'सहेजा गया',
   'engine.loading': 'सेटिंग्स पढ़ी जा रही हैं…',
   'engine.work': 'कितना ज़ोर लगा सकता है',
   'engine.bwlimit': 'बैंडविड्थ सीमा',

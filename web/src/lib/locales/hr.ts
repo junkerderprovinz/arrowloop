@@ -266,6 +266,8 @@ const hr: Translations = {
   'settings.look': 'Izgled',
   'settings.engine': 'Pogon',
   'engine.title': 'Pogon',
+  'engine.saving': 'Sprema…',
+  'engine.savedLive': 'Spremljeno',
   'engine.loading': 'Čitam postavke…',
   'engine.work': 'Koliko smije raditi',
   'engine.bwlimit': 'Ograničenje propusnosti',

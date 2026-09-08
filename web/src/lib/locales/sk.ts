@@ -266,6 +266,8 @@ const sk: Translations = {
   'settings.look': 'Vzhľad',
   'settings.engine': 'Jadro',
   'engine.title': 'Jadro',
+  'engine.saving': 'Ukladá sa…',
+  'engine.savedLive': 'Uložené',
   'engine.loading': 'Čítam nastavenia…',
   'engine.work': 'Ako tvrdo smie pracovať',
   'engine.bwlimit': 'Obmedzenie prenosu',

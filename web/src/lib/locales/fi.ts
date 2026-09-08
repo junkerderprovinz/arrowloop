@@ -266,6 +266,8 @@ const fi: Translations = {
   'settings.look': 'Ulkoasu',
   'settings.engine': 'Moottori',
   'engine.title': 'Moottori',
+  'engine.saving': 'Tallentaa…',
+  'engine.savedLive': 'Tallennettu',
   'engine.loading': 'Luetaan asetuksia…',
   'engine.work': 'Kuinka kovaa se saa tehdä',
   'engine.bwlimit': 'Kaistarajoitus',

@@ -266,6 +266,8 @@ const fa: Translations = {
   'settings.look': 'ظاهر',
   'settings.engine': 'موتور',
   'engine.title': 'موتور',
+  'engine.saving': 'در حال ذخیره…',
+  'engine.savedLive': 'ذخیره شد',
   'engine.loading': 'در حال خواندن تنظیمات…',
   'engine.work': 'تا چه اندازه می‌تواند فشار بیاورد',
   'engine.bwlimit': 'محدودیت پهنای باند',
