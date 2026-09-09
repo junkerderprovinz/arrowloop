@@ -385,6 +385,8 @@ const is: Translations = {
   'history.noMatch': 'Engin keyrsla passar við þetta.',
   'edit.trash': 'Halda rusli hvorum megin',
   'edit.trashHint': 'Eyðing verður að færslu í falda möppu sem heitir .arrowloop inni í samstillta trénu, svo ekkert sem þetta verk gerir eyðir neinu fyrir fullt og allt, og skrá sem var eytt fyrir mistök er sótt aftur á ruslflipanum. Þá möppu sér hver sá sem notar sameignina, og einmitt þess vegna má slökkva á þessu: án rusls verður hún aldrei til, eyðing er endanleg, og svo er einnig um þá hlið sem tapar í árekstri. Skynsamlegt fyrir niðurhalsmöppu, slæm hugmynd fyrir skjalamöppu.',
+  'jobs.activityLoading': 'Les hvað þetta verk hefur gert.',
+  'history.more': 'Sýna fleiri',
 }
 
 export default is

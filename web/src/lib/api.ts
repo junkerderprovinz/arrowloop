@@ -178,6 +178,18 @@ export type RunEntry = {
 }
 
 /**
+ * One thing that happened to one file, with the run it belonged to.
+ *
+ * A RunEntry is enough while reading ONE run. Across runs it is not: the same
+ * file copied on Tuesday and again on Friday is two identical lines, and
+ * neither says when.
+ */
+export type Touch = RunEntry & {
+  Run: number
+  When: string
+}
+
+/**
  * The configuration's top-level keys, apart from the job list.
  *
  * Deliberately open: a key this build has never heard of still has to survive
@@ -418,6 +430,18 @@ export const api = {
    * thousands of strings nobody reads.
    */
   runEntries: (id: number) => request<RunEntry[]>(`/api/history/${id}/entries`),
+
+  /**
+   * What one job has done to individual files, newest first, across its runs.
+   *
+   * A different question from the run log, which is why it is a different
+   * address: "which runs happened" belongs to the history tab, and "what has
+   * this job actually done to my files" is the one somebody has while looking
+   * at the job. jdp: "Im aktivitaetslog moechte ich nicht die laeufe sehen
+   * sondern ein log ueber die einzelnen dateien."
+   */
+  jobTouches: (job: string, limit = 50) =>
+    request<Touch[]>(`/api/jobs/${encodeURIComponent(job)}/touches?limit=${limit}`),
 
   /** The last month of runs, one row per day. An empty job name means all of them. */
   historyStats: (job?: string, days = 30) =>

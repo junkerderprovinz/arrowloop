@@ -385,6 +385,8 @@ const lv: Translations = {
   'history.noMatch': 'Neviena izpilde tam neatbilst.',
   'edit.trash': 'Uzturēt atkritni katrā pusē',
   'edit.trashHint': 'Dzēšana kļūst par pārvietošanu uz slēptu mapi ar nosaukumu .arrowloop sinhronizētā koka iekšienē, tāpēc nekas, ko šis darbs dara, neiznīcina neko galīgi, un kļūdas pēc izdzēstu datni var atgūt atkritnes cilnē. Šo mapi redz ikviens, kas izmanto koplietojumu, un tieši tāpēc šo ir vērts izslēgt: bez atkritnes tā nekad netiek izveidota, dzēšana ir galīga, tāpat kā konflikta zaudētāja puse. Lejupielāžu mapei saprātīgi, dokumentu mapei slikta doma.',
+  'jobs.activityLoading': 'Tiek lasīts, ko šis darbs ir paveicis.',
+  'history.more': 'Rādīt vairāk',
 }
 
 export default lv

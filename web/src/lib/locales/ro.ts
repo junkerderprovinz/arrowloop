@@ -385,6 +385,8 @@ const ro: Translations = {
   'history.noMatch': 'Nicio execuție nu corespunde.',
   'edit.trash': 'Păstrează un coș pe fiecare parte',
   'edit.trashHint': 'O ștergere devine o mutare într-un dosar ascuns numit .arrowloop din interiorul arborelui sincronizat, așa că nimic din ce face această sarcină nu distruge ceva definitiv, iar un fișier șters din greșeală se recuperează din fila coșului. Acel dosar este vizibil pentru toți cei care folosesc partajarea, și tocmai acesta este motivul de a dezactiva opțiunea: fără coș nu se creează niciodată, o ștergere este definitivă, la fel și partea care pierde într-un conflict. Rezonabil pentru un dosar de descărcări, o idee proastă pentru unul de documente.',
+  'jobs.activityLoading': 'Se citește ce a făcut această sarcină.',
+  'history.more': 'Afișează mai multe',
 }
 
 export default ro

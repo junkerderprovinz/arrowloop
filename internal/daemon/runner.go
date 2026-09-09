@@ -519,6 +519,26 @@ func (r *Runner) schedule(ctx context.Context) *cron.Cron {
 		r.startWatcher(ctx, j)
 	}
 
+	// The run log's own housekeeping, on a turn of its own.
+	//
+	// It used to happen once at startup and nowhere else, which suits a desktop
+	// install somebody restarts and not the case this program mostly runs in: a
+	// container that stays up for months while a watching job writes a record
+	// per change. Daily rather than hourly because nothing here is urgent - the
+	// file grows slowly and the point is only that it stops growing for ever.
+	if keep, on := cfg.KeepHistoryFor(); on && r.hist != nil {
+		c.Schedule(cron.Every(24*time.Hour), cron.FuncJob(func() {
+			n, err := r.hist.Prune(ctx, keep, time.Now())
+			if err != nil {
+				r.log("could not trim the run log: %v", err)
+				return
+			}
+			if n > 0 {
+				r.log("trimmed %d run records older than %s from the log", n, keep)
+			}
+		}))
+	}
+
 	sort.Strings(scheduled)
 	if len(scheduled) == 0 {
 		r.log("no job has a schedule, so nothing will run on its own")

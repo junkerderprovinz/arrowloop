@@ -385,6 +385,8 @@ const no: Translations = {
   'history.noMatch': 'Ingen kjøring passer til dette.',
   'edit.trash': 'Ha en papirkurv på hver side',
   'edit.trashHint': 'En sletting blir en flytting til en skjult mappe som heter .arrowloop inne i det synkroniserte treet, så ingenting denne jobben gjør ødelegger noe for godt, og en fil som ble slettet ved et uhell hentes tilbake fra papirkurvfanen. Den mappen ser alle som bruker delingen, og det er nettopp derfor man slår dette av: uten papirkurv blir den aldri opprettet, en sletting er endelig, og det er den tapende siden i en konflikt også. Fornuftig for en nedlastingsmappe, en dårlig idé for en dokumentmappe.',
+  'jobs.activityLoading': 'Leser hva denne jobben har gjort.',
+  'history.more': 'Vis flere',
 }
 
 export default no

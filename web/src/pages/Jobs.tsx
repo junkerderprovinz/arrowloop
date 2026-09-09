@@ -19,7 +19,7 @@ import { JobForm, useJobConfig } from './Editor'
 import { Choice } from '../components/Field'
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { api } from '../lib/api'
-import type { HistoryShow, Job, Run, RunEvent } from '../lib/api'
+import type { HistoryShow, Job, Run, RunEvent, Touch } from '../lib/api'
 import { translateSide, useT, type TranslationKey } from '../lib/i18n'
 import { describeCadence, readCadence } from '../lib/cadence'
 
@@ -258,17 +258,34 @@ export function Jobs({
                       JobMark gives at length: a multi-colour drawing recoloured
                       to a status hue is not a logo any more. Grey is one of the
                       four states it wears and the one a held job gets. */}
-                  <div className="flex flex-wrap items-start gap-3">
-                    <JobMark status={statusOf(j, lastFailed(j.name))} size={28} />
-                    <p className="flex min-w-0 flex-1 flex-wrap items-center gap-2.5 text-base text-carbon-text">
-                      <span className="max-w-[45%] shrink truncate" title={j.left}>
-                        {j.left}
-                      </span>
-                      <DirectionMark direction={j.direction} size={20} />
-                      <span className="max-w-[45%] shrink truncate" title={j.right}>
-                        {j.right}
-                      </span>
-                    </p>
+                  {/* Two columns, and they are aligned to two different edges
+                      on purpose. What the card is ABOUT - the mark and the two
+                      paths - sits centred against the whole block, so it reads
+                      as the card's one sentence rather than as the first of
+                      several rows. Everything you DO to the job, and the line
+                      saying when it last did anything, sits at the top of the
+                      other column. jdp: "kannst du die pfade und die status
+                      anzeige in der card vertikal zentriert ausrichten? und die
+                      buttons und der zuletz gelaufen und läuft text weiter nach
+                      oben in der card?"
+
+                      `items-stretch` is what makes the centring possible: the
+                      left column has to be as tall as the right one before
+                      centring inside it means anything. */}
+                  <div className="flex flex-wrap items-stretch gap-3">
+                    <div className="flex min-w-0 flex-1 items-center gap-3">
+                      <JobMark status={statusOf(j, lastFailed(j.name))} size={28} />
+                      <p className="flex min-w-0 flex-1 flex-wrap items-center gap-2.5 text-base text-carbon-text">
+                        <span className="max-w-[45%] shrink truncate" title={j.left}>
+                          {j.left}
+                        </span>
+                        <DirectionMark direction={j.direction} size={20} />
+                        <span className="max-w-[45%] shrink truncate" title={j.right}>
+                          {j.right}
+                        </span>
+                      </p>
+                    </div>
+                    <div className="flex shrink-0 flex-col items-end gap-2">
                     {/* What it does and when it last did it, at the top right,
                         in words. It used to be a row of three under the paths:
                         a badge saying "abgeschaltet", the word "abgeschaltet"
@@ -283,6 +300,115 @@ export function Jobs({
                         line at all, because "never" is exactly what an empty
                         space says. */}
                     <Cadence job={j} />
+                    {/* Every button here owns its OWN palette position rather
+                        than inheriting the card's.
+
+                        Inheriting was the previous answer and it was reported as
+                        the same defect a third time: "Die ganzen buttons auf der
+                        auftragscard sind nicht in der farbengine. im
+                        regenbogenmodus sollen die unterschiedliche farben haben."
+                        A card rebinds --accent for its whole subtree, so seven
+                        buttons inside it painted in one colour - which IS the
+                        engine, and from a foot away is indistinguishable from
+                        seven buttons the engine never reached.
+
+                        The design language allows this: a position belongs to one
+                        member of a SET whose members are all equal, and a row of
+                        row-actions is exactly that. The offsets are FIXED per
+                        action rather than counted along the row, so a button
+                        keeps its colour when a neighbour is not rendered - four
+                        of these appear only for a job the configuration knows,
+                        and a running count would repaint the rest as they came
+                        and went.
+
+                        They start one past the card's own index, so each card
+                        opens its row on a different colour instead of every card
+                        showing the identical seven. */}
+                    <div className="flex flex-wrap items-center justify-end gap-2">
+                      {/* The activity fold's button stands WITH the other actions
+                          rather than at the far end of the row (jdp: "der
+                          aktivitaetsbutton auch nach rechts zu den anderen"). It
+                          was pushed left with `me-auto` so the row would read as
+                          "look at it" on one side and "act on it" on the other,
+                          which is a distinction the row itself never made: looking
+                          at a job's runs is one of the things you do to it. Its
+                          list opens under the whole row instead, full width. */}
+                      <IconAction
+                        title={t('jobs.activity')}
+                        labelKey="jobs.activity"
+                        hueIndex={i + 1}
+                        onClick={() => setActivity(activity === j.name ? null : j.name)}
+                      />
+                      {at !== null && (
+                        <>
+                          <IconAction
+                            title={t('edit.editJob')}
+                            labelKey="edit.editJob"
+                            hueIndex={i + 2}
+                            onClick={() => setEditing(at === editing ? null : at)}
+                          >
+                            <IconEdit />
+                          </IconAction>
+                          <IconAction
+                            title={t('edit.duplicate')}
+                            labelKey="edit.duplicate"
+                            hueIndex={i + 3}
+                            onClick={() => setEditing(config.duplicate(at))}
+                          >
+                            <IconCopy />
+                          </IconAction>
+                          <IconAction
+                            title={t('edit.remove')}
+                            labelKey="edit.remove"
+                            hueIndex={i + 4}
+                            onClick={() => setRemoving(at)}
+                          >
+                            <IconDelete />
+                          </IconAction>
+                        </>
+                      )}
+                      {/* Start and hold. Two verbs, never one button: a job
+                          held on its schedule can still be started by hand, and
+                          that is the point of holding it rather than deleting it.
+                          Starting is a HUMAN press and goes through the same
+                          entry point a scheduled run does not, so a held job
+                          stays held afterwards. */}
+                      {at !== null && (
+                        <IconAction
+                          title={j.disabled ? t('jobs.resume') : t('jobs.pause')}
+                          labelKey={j.disabled ? 'jobs.resume' : 'jobs.pause'}
+                          hueIndex={i + 5}
+                          onClick={() => void config.setDisabled(at, !j.disabled)}
+                        >
+                          {j.disabled ? <IconRun /> : <IconPause />}
+                        </IconAction>
+                      )}
+                      {/* The same control as the four above them, which they were
+                          not: they were ordinary buttons in the flat `neutral`
+                          grey the colour engine cannot reach, so a card whose
+                          actions all painted in its own hue would have kept
+                          exactly two that did not. And in a mode that hides words
+                          an ordinary button still hugs its glyph inside its own
+                          horizontal padding, so the row came out as five tiles
+                          with two lozenges on the end. Measured in the browser,
+                          not guessed: 48 by 32 against 32 by 32. */}
+                      <IconAction
+                        title={t('jobs.runNow')}
+                        labelKey="jobs.runNow"
+                        hint={t('jobs.runNowHint')}
+                        hueIndex={i + 6}
+                        disabled={j.running}
+                        onClick={() => void api.run(j.name)}
+                      />
+                      <IconAction
+                        title={t('jobs.preview')}
+                        labelKey="jobs.preview"
+                        hint={t('jobs.previewHint')}
+                        hueIndex={i + 7}
+                        onClick={() => onPreview(j.name)}
+                      />
+                    </div>
+                    </div>
                   </div>
 
                   {/* The live detail moved here from the card that used to sit
@@ -299,120 +425,12 @@ export function Jobs({
                       language is explicit that a destructive TRIGGER takes the
                       same treatment as the badges beside it and carries its
                       meaning in its glyph, its tip and the window it opens. */}
-                  {/* Every button here owns its OWN palette position rather
-                      than inheriting the card's.
-
-                      Inheriting was the previous answer and it was reported as
-                      the same defect a third time: "Die ganzen buttons auf der
-                      auftragscard sind nicht in der farbengine. im
-                      regenbogenmodus sollen die unterschiedliche farben haben."
-                      A card rebinds --accent for its whole subtree, so seven
-                      buttons inside it painted in one colour - which IS the
-                      engine, and from a foot away is indistinguishable from
-                      seven buttons the engine never reached.
-
-                      The design language allows this: a position belongs to one
-                      member of a SET whose members are all equal, and a row of
-                      row-actions is exactly that. The offsets are FIXED per
-                      action rather than counted along the row, so a button
-                      keeps its colour when a neighbour is not rendered - four
-                      of these appear only for a job the configuration knows,
-                      and a running count would repaint the rest as they came
-                      and went.
-
-                      They start one past the card's own index, so each card
-                      opens its row on a different colour instead of every card
-                      showing the identical seven. */}
-                  <div className="flex flex-wrap items-center justify-end gap-2">
-                    {/* The activity fold's button stands WITH the other actions
-                        rather than at the far end of the row (jdp: "der
-                        aktivitaetsbutton auch nach rechts zu den anderen"). It
-                        was pushed left with `me-auto` so the row would read as
-                        "look at it" on one side and "act on it" on the other,
-                        which is a distinction the row itself never made: looking
-                        at a job's runs is one of the things you do to it. Its
-                        list opens under the whole row instead, full width. */}
-                    <IconAction
-                      title={t('jobs.activity')}
-                      labelKey="jobs.activity"
-                      hueIndex={i + 1}
-                      onClick={() => setActivity(activity === j.name ? null : j.name)}
-                    />
-                    {at !== null && (
-                      <>
-                        <IconAction
-                          title={t('edit.editJob')}
-                          labelKey="edit.editJob"
-                          hueIndex={i + 2}
-                          onClick={() => setEditing(at === editing ? null : at)}
-                        >
-                          <IconEdit />
-                        </IconAction>
-                        <IconAction
-                          title={t('edit.duplicate')}
-                          labelKey="edit.duplicate"
-                          hueIndex={i + 3}
-                          onClick={() => setEditing(config.duplicate(at))}
-                        >
-                          <IconCopy />
-                        </IconAction>
-                        <IconAction
-                          title={t('edit.remove')}
-                          labelKey="edit.remove"
-                          hueIndex={i + 4}
-                          onClick={() => setRemoving(at)}
-                        >
-                          <IconDelete />
-                        </IconAction>
-                      </>
-                    )}
-                    {/* Start and hold. Two verbs, never one button: a job
-                        held on its schedule can still be started by hand, and
-                        that is the point of holding it rather than deleting it.
-                        Starting is a HUMAN press and goes through the same
-                        entry point a scheduled run does not, so a held job
-                        stays held afterwards. */}
-                    {at !== null && (
-                      <IconAction
-                        title={j.disabled ? t('jobs.resume') : t('jobs.pause')}
-                        labelKey={j.disabled ? 'jobs.resume' : 'jobs.pause'}
-                        hueIndex={i + 5}
-                        onClick={() => void config.setDisabled(at, !j.disabled)}
-                      >
-                        {j.disabled ? <IconRun /> : <IconPause />}
-                      </IconAction>
-                    )}
-                    {/* The same control as the four above them, which they were
-                        not: they were ordinary buttons in the flat `neutral`
-                        grey the colour engine cannot reach, so a card whose
-                        actions all painted in its own hue would have kept
-                        exactly two that did not. And in a mode that hides words
-                        an ordinary button still hugs its glyph inside its own
-                        horizontal padding, so the row came out as five tiles
-                        with two lozenges on the end. Measured in the browser,
-                        not guessed: 48 by 32 against 32 by 32. */}
-                    <IconAction
-                      title={t('jobs.runNow')}
-                      labelKey="jobs.runNow"
-                      hint={t('jobs.runNowHint')}
-                      hueIndex={i + 6}
-                      disabled={j.running}
-                      onClick={() => void api.run(j.name)}
-                    />
-                    <IconAction
-                      title={t('jobs.preview')}
-                      labelKey="jobs.preview"
-                      hint={t('jobs.previewHint')}
-                      hueIndex={i + 7}
-                      onClick={() => onPreview(j.name)}
-                    />
-                  </div>
 
                   {/* Under the row and across the card, which is the width this
                       list needs: a run is a badge, a date, four counts and
                       sometimes an error message. */}
                   {activity === j.name && (
-                    <JobActivity runs={runs.filter((r) => r.Job === j.name)} onChanged={onSaved} />
+                    <JobActivity job={j.name} />
                   )}
 
                   {/* Only while the card is open for editing, because this is
@@ -694,58 +712,89 @@ function Cadence({ job }: { job: Job }) {
  * one turns the jobs page into the history tab with extra steps; the History tab
  * is where the rest lives and it is one click away.
  */
-function JobActivity({ runs, onChanged }: { runs: Run[]; onChanged: () => void }) {
+/**
+ * What this job has done to individual FILES, newest first.
+ *
+ * It used to list the job's runs, which is the history tab's list in a smaller
+ * box: same rows, same counts, one screen away from each other. jdp: "Im
+ * aktivitaetslog moechte ich nicht die laeufe sehen sondern ein log ueber die
+ * einzelnen dateien, welche kopiert, welche geloescht wurden etc.: Das andere
+ * steht ja im Verlauf tab."
+ *
+ * He is right that they were the same list, and right about which one belongs
+ * here. "Which runs happened" is a question about the schedule. "What has this
+ * thing done to my files" is the question somebody has while looking at the job
+ * itself, and it was the one thing the interface could not answer at all
+ * without opening runs one by one.
+ *
+ * Fetched from its own address rather than assembled from the runs the page
+ * already holds: those carry counts, not paths, and a job that ran two hundred
+ * times to produce four interesting lines would cost two hundred requests.
+ */
+function JobActivity({ job }: { job: string }) {
   const { t } = useT()
-  const [shown, setShown] = useState<number | null>(null)
-  const recent = runs.slice(0, 5)
+  const [touches, setTouches] = useState<Touch[] | null>(null)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    let live = true
+    setTouches(null)
+    setError(null)
+    api
+      .jobTouches(job, 60)
+      .then((got) => live && setTouches(got))
+      .catch((e: Error) => live && setError(e.message))
+    return () => {
+      live = false
+    }
+  }, [job])
+
+  if (error) return <p className="mt-1 text-xs text-statusFail">{error}</p>
+  if (!touches) return <Empty>{t('jobs.activityLoading')}</Empty>
+  if (touches.length === 0) return <Empty>{t('jobs.activityEmpty')}</Empty>
 
   return (
     <div className="mt-1 w-full">
-      {recent.length === 0 ? (
-        <Empty>{t('jobs.activityEmpty')}</Empty>
-      ) : (
-        <ul className="flex flex-col">
-          {recent.map((r, i) => (
-            <li key={`${r.Started}-${i}`}>
-              {i > 0 && <Rule />}
-              <button
-                type="button"
-                aria-expanded={shown === r.ID}
-                onClick={() => setShown(shown === r.ID ? null : r.ID)}
-                className="flex w-full items-center gap-3 py-2 text-start text-xs transition-colors hover:bg-carbon-hover"
-              >
-                <Badge tone={r.Err ? 'fail' : 'ok'}>
-                  {r.Err ? t('history.failed') : t('history.ok')}
-                </Badge>
-                <span className="shrink-0 text-carbon-textMuted">
-                  <Since when={r.Started} />
-                </span>
-                <span className="min-w-0 flex-1 truncate text-carbon-textMuted">
-                  {r.Err ? (
-                    r.Err
-                  ) : (
-                    <>
-                      {t('history.copied', { count: r.Copied })}
-                      {' \u00b7 '}
-                      {t('history.moved', { count: r.Moved })}
-                      {' \u00b7 '}
-                      {t('history.trashed', { count: r.Trashed })}
-                      {' \u00b7 '}
-                      {t('history.conflicts', { count: r.Conflicts })}
-                    </>
-                  )}
-                </span>
-                {r.Conflicts > 0 && <Badge tone="warn">{r.Conflicts}</Badge>}
-              </button>
-              {shown === r.ID && (
-                <RunDetail run={r.ID} job={r.Job} onResolved={onChanged} />
-              )}
-            </li>
-          ))}
-        </ul>
-      )}
+      <ul className="flex max-h-80 flex-col gap-1 overflow-y-auto">
+        {touches.map((e, i) => (
+          <li key={`${e.Run}-${e.Path}-${i}`} className="flex items-start gap-2 text-xs">
+            <Badge tone={touchTone(e.Kind)}>{t(TOUCH_LABEL[e.Kind] ?? 'entry.other')}</Badge>
+            {/* When, and it is why this is a Touch rather than a plain entry:
+                the same file copied twice is two identical lines otherwise. */}
+            <span className="w-16 shrink-0 text-carbon-textMuted">
+              <Since when={e.When} />
+            </span>
+            <span className="min-w-0 flex-1 break-all font-mono text-carbon-text" title={e.Path}>
+              {e.Path}
+            </span>
+            {e.Note && (
+              <span className="min-w-0 max-w-[35%] shrink-0 text-carbon-textMuted" title={e.Note}>
+                {e.Note}
+              </span>
+            )}
+          </li>
+        ))}
+      </ul>
     </div>
   )
+}
+
+/** The kinds, in this app's own words. The same table RunDetail uses. */
+const TOUCH_LABEL: Record<string, TranslationKey> = {
+  copy: 'entry.copy',
+  move: 'entry.move',
+  trash: 'entry.trash',
+  conflict: 'entry.conflict',
+  mkdir: 'entry.mkdir',
+  rmdir: 'entry.rmdir',
+  skip: 'entry.skip',
+}
+
+/** Which kinds are a problem, so they stand out in a long list. */
+function touchTone(kind: string): 'ok' | 'warn' | 'fail' | 'neutral' {
+  if (kind === 'skip' || kind === 'error') return 'fail'
+  if (kind === 'conflict') return 'warn'
+  return 'neutral'
 }
 
 /**
@@ -790,6 +839,16 @@ export function History({
   const [show, setShow] = useState<HistoryShow>('all')
   const [own, setOwn] = useState<Run[] | null>(null)
   const [loading, setLoading] = useState(false)
+  /**
+   * How many runs to ask for. Doubles on request rather than paging.
+   *
+   * A cursor would be the tidier mechanism and the wrong one for this list:
+   * somebody looking for a run does not want page four, they want the list to
+   * go back further, and doubling reaches a month of a watching job's records
+   * in three presses. The filter above is the sharp instrument; this is the
+   * blunt one for when you do not know what you are looking for.
+   */
+  const [limit, setLimit] = useState(50)
 
   const filtered = job !== '' || show !== 'all'
 
@@ -797,14 +856,14 @@ export function History({
     let live = true
     setLoading(true)
     api
-      .history(job || undefined, show, 50)
+      .history(job || undefined, show, limit)
       .then((got) => live && setOwn(got))
       .catch(() => live && setOwn([]))
       .finally(() => live && setLoading(false))
     return () => {
       live = false
     }
-  }, [job, show, runs])
+  }, [job, show, limit, runs])
 
   const list = own ?? runs
 
@@ -827,7 +886,10 @@ export function History({
         <Choice
           label={t('history.filterJob')}
           value={job}
-          onChange={setJob}
+          onChange={(next) => {
+            setJob(next)
+            setLimit(50)
+          }}
           options={[
             { value: '', label: t('history.allJobs') },
             ...names.map((n) => ({ value: n, label: n })),
@@ -838,7 +900,10 @@ export function History({
         <Choice<HistoryShow>
           label={t('history.filterShow')}
           value={show}
-          onChange={setShow}
+          onChange={(next) => {
+            setShow(next)
+            setLimit(50)
+          }}
           options={[
             { value: 'all', label: t('history.showAll') },
             { value: 'changed', label: t('history.showChanged') },
@@ -918,6 +983,18 @@ export function History({
           </li>
         ))}
       </ul>
+      {/* Offered only when the answer FILLED the limit, which is the one honest
+          signal that there may be more: a shorter list is the whole list. */}
+      {list.length >= limit && (
+        <div className="mt-3 flex justify-center">
+          <Button
+            label={loading ? t('history.working') : t('history.more')}
+            labelKey={loading ? 'history.working' : 'history.more'}
+            disabled={loading}
+            onClick={() => setLimit((n) => n * 2)}
+          />
+        </div>
+      )}
     </Card>
   )
 }

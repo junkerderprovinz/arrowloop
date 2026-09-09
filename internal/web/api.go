@@ -80,6 +80,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("POST /api/jobs/{name}/versions/{side}/restore", s.restoreVersion)
 	mux.HandleFunc("GET /api/history", s.listHistory)
 	mux.HandleFunc("GET /api/history/{id}/entries", s.runEntries)
+	mux.HandleFunc("GET /api/jobs/{name}/touches", s.jobTouches)
 	mux.HandleFunc("GET /api/history/stats", s.historyStats)
 	mux.HandleFunc("GET /api/events", s.events)
 	mux.HandleFunc("GET /api/config", s.readConfig)
@@ -377,6 +378,31 @@ func (s *Server) listHistory(w http.ResponseWriter, r *http.Request) {
 // fetching every path each of them touched to draw a row that says "12 copied"
 // would be thousands of strings nobody reads. The detail is fetched when a run
 // is opened, which is the moment somebody has asked for it.
+// jobTouches lists what ONE job did to individual files, newest first, across
+// all of its runs.
+//
+// Deliberately a different endpoint from the run log rather than a parameter on
+// it: the two answer different questions. "Which runs happened" belongs to the
+// history tab; "what has this job done to my files" is what somebody asks while
+// looking at the job itself.
+func (s *Server) jobTouches(w http.ResponseWriter, r *http.Request) {
+	limit := 50
+	if raw := r.URL.Query().Get("limit"); raw != "" {
+		if n, err := strconv.Atoi(raw); err == nil {
+			limit = n
+		}
+	}
+	touches, err := s.History.Touches(r.Context(), r.PathValue("name"), limit)
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, err)
+		return
+	}
+	if touches == nil {
+		touches = []history.Touch{}
+	}
+	writeJSON(w, http.StatusOK, touches)
+}
+
 func (s *Server) runEntries(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
 	if err != nil {

@@ -192,8 +192,21 @@ export function Sidebar<T extends string>({
   }
 
   return (
+    // A card, not a wall. It carries the same radius and the same raised
+    // surface every other card on the page has, and the ground shows around it
+    // on all four sides. jdp: "koennen wir bei AL mal die sidebar testweise
+    // anders gestalten? Naemlich als card."
+    //
+    // The surface token stays `carbon-sidebar` rather than becoming the card
+    // surface: the rail is still navigation and reads better one step apart
+    // from the content it navigates. What changes is its SHAPE, which was the
+    // report - it looked welded to the window while everything else floated.
+    // No shadow either, because no card in this app has one: a raised rail
+    // beside flat cards would trade one inconsistency for another.
     <aside
-      className={`flex h-full shrink-0 flex-col bg-carbon-sidebar ${narrow ? 'w-16' : 'w-56'}`}
+      className={`flex h-full shrink-0 flex-col overflow-hidden rounded-card bg-carbon-sidebar ${
+        narrow ? 'w-16' : 'w-56'
+      }`}
     >
       {/* The mark above its name, centred. The narrow rail drops the wordmark
           and shrinks the mark to fit: a large logo in a 64px column is not a

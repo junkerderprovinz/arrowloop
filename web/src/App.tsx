@@ -221,7 +221,13 @@ export function App() {
     // The house frame: a fixed rail, and a page that scrolls beside it. The
     // window is the height, not the content, so the rail never scrolls away
     // from under the pointer.
-    <div className="flex h-screen overflow-hidden bg-carbon-background">
+    // The rail floats as a CARD rather than being welded to the window edge.
+    // jdp: "jetzt klebt sie ja an den fenster raendern und hebt sich von dem
+    // uebrigen design ab." Everything else on the page is a card on a ground,
+    // and the one element that was neither read as belonging to the window
+    // chrome instead of to the app. The padding here is what lets it float; the
+    // rail's own surface and radius do the rest.
+    <div className="flex h-screen gap-4 overflow-hidden bg-carbon-background p-4">
       <Sidebar<Tab>
         value={previewing ? 'jobs' : tab}
         mode={labels.sidebar}

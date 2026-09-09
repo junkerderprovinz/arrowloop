@@ -188,6 +188,58 @@ func (d *DB) Entries(ctx context.Context, run int64) ([]Entry, error) {
 	return out, rows.Err()
 }
 
+// Touch is one thing that happened to one file, with the run it belonged to.
+//
+// The plain Entry says what was done and to which path, which is enough while
+// you are reading ONE run. Across runs it is not: the same file copied on
+// Tuesday and again on Friday is two identical lines, and neither says when.
+type Touch struct {
+	Entry
+	Run  int64
+	When time.Time
+}
+
+// Recent touches for one job, newest first, across all of its runs.
+//
+// This is a different question from Recent(), and the difference is what a job
+// card's activity fold is for. "Which runs happened" is the run log's question
+// and the history tab answers it. "What has this job actually DONE to my files"
+// is the one somebody has while looking at the job, and until now the fold
+// answered the first one - the same list, in a smaller box. jdp: "Im
+// aktivitaetslog moechte ich nicht die laeufe sehen sondern ein log ueber die
+// einzelnen dateien, welche kopiert, welche geloescht wurden etc."
+//
+// Joined rather than fetched run by run: a job that ran two hundred times to
+// produce four interesting lines would otherwise cost two hundred queries to
+// find them.
+func (d *DB) Touches(ctx context.Context, job string, limit int) ([]Touch, error) {
+	if limit <= 0 {
+		limit = 50
+	}
+	rows, err := d.sql.QueryContext(ctx,
+		`SELECT e.run, r.started, e.kind, e.side, e.path, e.note
+		 FROM entries e JOIN runs r ON r.id = e.run
+		 WHERE r.job = ?
+		 ORDER BY r.started DESC, e.seq DESC
+		 LIMIT ?`, job, limit)
+	if err != nil {
+		return nil, fmt.Errorf("read what %q did: %w", job, err)
+	}
+	defer rows.Close()
+
+	var out []Touch
+	for rows.Next() {
+		var t Touch
+		var started int64
+		if err := rows.Scan(&t.Run, &started, &t.Kind, &t.Side, &t.Path, &t.Note); err != nil {
+			return nil, fmt.Errorf("scan touch: %w", err)
+		}
+		t.When = time.Unix(0, started)
+		out = append(out, t)
+	}
+	return out, rows.Err()
+}
+
 // Show says which runs a listing is asking for.
 //
 // It exists because the run log's honesty is also its problem. Every run is

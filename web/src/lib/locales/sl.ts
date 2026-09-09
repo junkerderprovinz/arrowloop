@@ -385,6 +385,8 @@ const sl: Translations = {
   'history.noMatch': 'Noben zagon se ne ujema.',
   'edit.trash': 'Na vsaki strani voditi koš',
   'edit.trashHint': 'Brisanje postane premik v skrito mapo z imenom .arrowloop znotraj usklajenega drevesa, tako da nič, kar to opravilo počne, ničesar dokončno ne uniči, pomotoma izbrisano datoteko pa dobiš nazaj v zavihku koša. To mapo vidi vsak, ki uporablja skupno rabo, in prav to je razlog, da to izklopiš: brez koša nikoli ne nastane, brisanje je dokončno, prav tako pa tudi poražena stran spora. Smiselno za mapo s prenosi, slaba zamisel za mapo z dokumenti.',
+  'jobs.activityLoading': 'Bere se, kaj je to opravilo naredilo.',
+  'history.more': 'Prikaži več',
 }
 
 export default sl

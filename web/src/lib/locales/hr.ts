@@ -385,6 +385,8 @@ const hr: Translations = {
   'history.noMatch': 'Nijedno izvođenje ne odgovara.',
   'edit.trash': 'Držati koš na svakoj strani',
   'edit.trashHint': 'Brisanje postaje premještanje u skrivenu mapu naziva .arrowloop unutar usklađenog stabla, pa ništa što ovaj posao radi ne uništava ništa nepovratno, a greškom obrisanu datoteku vraćaš u kartici koša. Tu mapu vidi svatko tko koristi dijeljenje, i upravo je to razlog da ovo isključiš: bez koša nikad ne nastaje, brisanje je konačno, a tako i poražena strana sukoba. Razumno za mapu s preuzimanjima, loša zamisao za mapu s dokumentima.',
+  'jobs.activityLoading': 'Čita se što je ovaj posao učinio.',
+  'history.more': 'Prikaži više',
 }
 
 export default hr

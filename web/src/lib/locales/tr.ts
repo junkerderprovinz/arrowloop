@@ -385,6 +385,8 @@ const tr: Translations = {
   'history.noMatch': 'Buna uyan çalışma yok.',
   'edit.trash': 'Her iki tarafta bir çöp kutusu tutulsun',
   'edit.trashHint': 'Silme, eşitlenen ağacın içinde .arrowloop adlı gizli bir klasöre taşımaya dönüşür; böylece bu işin yaptığı hiçbir şey kalıcı olarak bir şeyi yok etmez ve yanlışlıkla silinen bir dosya çöp kutusu sekmesinden geri alınır. O klasörü paylaşımı kullanan herkes görür ve bunu kapatmanın nedeni tam olarak budur: çöp kutusu olmadan klasör hiç oluşmaz, silme kesindir ve bir çakışmanın kaybeden tarafı da öyle. İndirme klasörü için makul, belge klasörü için kötü bir fikir.',
+  'jobs.activityLoading': 'Bu işin ne yaptığı okunuyor.',
+  'history.more': 'Daha fazla göster',
 }
 
 export default tr

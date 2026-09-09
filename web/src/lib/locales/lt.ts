@@ -385,6 +385,8 @@ const lt: Translations = {
   'history.noMatch': 'Nė vienas paleidimas neatitinka.',
   'edit.trash': 'Laikyti šiukšlinę kiekvienoje pusėje',
   'edit.trashHint': 'Ištrynimas virsta perkėlimu į paslėptą aplanką pavadinimu .arrowloop sinchronizuojamo medžio viduje, todėl niekas, ką ši užduotis daro, nieko nesunaikina galutinai, o per klaidą ištrintą failą atgausi šiukšlinės kortelėje. Tą aplanką mato kiekvienas, kuris naudojasi bendrinimu, ir būtent dėl to verta tai išjungti: be šiukšlinės jis niekada nesukuriamas, ištrynimas yra galutinis, kaip ir pralaimėjusi konflikto pusė. Atsisiuntimų aplankui protinga, dokumentų aplankui bloga mintis.',
+  'jobs.activityLoading': 'Skaitoma, ką ši užduotis padarė.',
+  'history.more': 'Rodyti daugiau',
 }
 
 export default lt

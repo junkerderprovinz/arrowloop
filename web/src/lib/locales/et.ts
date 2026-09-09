@@ -385,6 +385,8 @@ const et: Translations = {
   'history.noMatch': 'Ükski käivitus ei sobi.',
   'edit.trash': 'Hoia prügikasti mõlemal poolel',
   'edit.trashHint': 'Kustutamisest saab teisaldamine sünkroonitava puu sees asuvasse peidetud kausta nimega .arrowloop, nii et miski, mida see töö teeb, ei hävita midagi lõplikult, ja kogemata kustutatud faili saab prügikasti kaardilt tagasi. Seda kausta näeb igaüks, kes jagamist kasutab, ja just see on põhjus, miks seda välja lülitada: ilma prügikastita ei looda seda kunagi, kustutamine on lõplik, samuti konflikti kaotanud pool. Allalaadimiskausta jaoks mõistlik, dokumendikausta jaoks halb mõte.',
+  'jobs.activityLoading': 'Loetakse, mida see töö on teinud.',
+  'history.more': 'Näita rohkem',
 }
 
 export default et

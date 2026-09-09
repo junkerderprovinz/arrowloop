@@ -115,9 +115,21 @@ body {
 
    Two groups, two jobs. The arrow flies; the rings stay put and turn once, which
    is what makes the flight read as leaving something rather than as the whole
-   picture sliding. Both are inside one <svg> with `overflow: visible`, so the
-   arrow is allowed outside the box it is drawn in - without that it would be
-   clipped at the edge and simply vanish.
+   picture sliding.
+
+   THE WHOLE FLIGHT STAYS INSIDE THE DRAWING'S OWN BOX, and that is a
+   correction rather than a preference. It first travelled to 150% of the box,
+   on the reasoning that `overflow: visible` on the svg would let it out. It
+   does - and then the frame around the rail clips it anyway: measured on the
+   running app, the logo sits 80px tall with 24px of room above it, so a
+   120px climb was gone behind the top edge before anybody could see it. What
+   was left to watch was the arrow disappearing and coming back, which is not
+   the joke. Reported twice as "das easter egg geht nicht", and both times what
+   I had measured was that the animation RAN, never that it could be seen.
+
+   So it now travels 34% of its own box and fades out there, which reads as
+   distance rather than as an exit, and needs no room outside itself at all.
+   That also makes it work in the narrow rail, where there is even less.
 
    The path is diagonal because the arrow is: it runs from the lower left to the
    upper right, so it leaves the way it points. Coming back from the other side
@@ -126,16 +138,17 @@ body {
 @keyframes al-shoot {
   0% { transform: translate(0, 0) scale(1); opacity: 1; }
   /* Drawing back, the way anything shot is pulled back first. */
-  12% { transform: translate(9%, 9%) scale(0.96); opacity: 1; }
-  /* Away, up and to the right, shrinking as it goes. */
-  38% { transform: translate(-150%, -150%) scale(0.55); opacity: 0; }
-  /* Round the outside. Nothing is drawn here; this keyframe is what makes it
+  12% { transform: translate(7%, 7%) scale(0.96); opacity: 1; }
+  /* Away up and to the right, shrinking into the distance. It stops at 34% of
+     its own box rather than leaving it, and fades out there. */
+  38% { transform: translate(-34%, -34%) scale(0.3); opacity: 0; }
+  /* Round the far side. Nothing is drawn here; this keyframe is what makes it
      re-enter from the OPPOSITE corner instead of backing up its own path. */
-  50% { transform: translate(150%, 150%) scale(0.55); opacity: 0; }
-  /* Back in from the lower left. */
-  76% { transform: translate(18%, 18%) scale(1.04); opacity: 1; }
+  50% { transform: translate(34%, 34%) scale(0.3); opacity: 0; }
+  /* Back in from the lower left, growing as it comes. */
+  76% { transform: translate(14%, 14%) scale(1.04); opacity: 1; }
   /* Overshooting once, so it lands rather than stopping. */
-  88% { transform: translate(-4%, -4%) scale(0.99); opacity: 1; }
+  88% { transform: translate(-3%, -3%) scale(0.99); opacity: 1; }
   100% { transform: translate(0, 0) scale(1); opacity: 1; }
 }
 

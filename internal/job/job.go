@@ -36,6 +36,19 @@ type Config struct {
 	// "1M" or a timetable like "08:00,512k 19:00,off".
 	BwLimit string `json:"bwlimit,omitempty"`
 
+	// HistoryKeep is how long a run record is kept. Empty means ninety days,
+	// and "0" keeps them for ever.
+	//
+	// It exists because the log only used to be pruned at STARTUP, from a
+	// command-line flag. That is fine for a desktop install somebody restarts
+	// and useless for the case this program is mostly used in: a container that
+	// runs for months. A job watching a folder writes a record on every change
+	// and on every scheduled turn besides, so the file grows without limit and
+	// the one thing that would trim it never runs. Now the runner prunes on a
+	// daily turn of its own, and the setting lives in the file where the rest of
+	// the engine's settings are rather than in a flag nobody passes twice.
+	HistoryKeep string `json:"historyKeep,omitempty"`
+
 	// ParallelJobs is how many jobs may run at once. One by default, and that
 	// is a deliberate default rather than a limitation: two jobs running at the
 	// same time share one line and one disk, so they mostly slow each other
@@ -60,6 +73,29 @@ type Config struct {
 	// editor can write the file back without losing anything it did not touch.
 	path string
 	raw  []byte
+}
+
+// KeepHistoryFor is HistoryKeep as a duration, with the default applied.
+//
+// Zero means for ever, which is why this returns a second value rather than
+// using zero as "unset": those are opposite intentions and a single duration
+// cannot tell them apart.
+func (c *Config) KeepHistoryFor() (time.Duration, bool) {
+	raw := strings.TrimSpace(c.HistoryKeep)
+	if raw == "" {
+		return 90 * 24 * time.Hour, true
+	}
+	d, err := time.ParseDuration(raw)
+	if err != nil || d < 0 {
+		// Unparseable is treated as the default rather than as "for ever": a
+		// typo must not quietly switch off the thing that keeps the file from
+		// growing without limit.
+		return 90 * 24 * time.Hour, true
+	}
+	if d == 0 {
+		return 0, false
+	}
+	return d, true
 }
 
 // Notify says where a run reports to.

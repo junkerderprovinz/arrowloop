@@ -385,6 +385,8 @@ const it: Translations = {
   'history.noMatch': 'Nessuna esecuzione corrisponde.',
   'edit.trash': 'Tenere un cestino su ogni lato',
   'edit.trashHint': 'Una cancellazione diventa uno spostamento in una cartella nascosta chiamata .arrowloop dentro l\'albero sincronizzato, quindi nulla di ciò che fa questo lavoro distrugge qualcosa in modo definitivo e un file cancellato per errore si recupera dalla scheda del cestino. Quella cartella è visibile a chiunque usi la condivisione, ed è il motivo per disattivare questa opzione: senza cestino non viene mai creata, una cancellazione è definitiva, e lo è anche il lato perdente di un conflitto. Ragionevole per una cartella di download, una cattiva idea per una di documenti.',
+  'jobs.activityLoading': 'Lettura di quello che ha fatto questo lavoro.',
+  'history.more': 'Mostra altro',
 }
 
 export default it

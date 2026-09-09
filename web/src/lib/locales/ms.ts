@@ -385,6 +385,8 @@ const ms: Translations = {
   'history.noMatch': 'Tiada larian yang sepadan.',
   'edit.trash': 'Simpan tong sampah di setiap sisi',
   'edit.trashHint': 'Pemadaman menjadi pemindahan ke folder tersembunyi bernama .arrowloop di dalam pokok yang disegerakkan, jadi tiada apa yang tugas ini lakukan memusnahkan sesuatu secara kekal, dan fail yang terpadam secara tersilap boleh diambil semula dari tab tong sampah. Folder itu dilihat oleh sesiapa sahaja yang menggunakan perkongsian tersebut, dan itulah sebabnya untuk mematikan pilihan ini: tanpa tong sampah ia tidak pernah dicipta, pemadaman adalah muktamad, begitu juga pihak yang kalah dalam sesuatu percanggahan. Munasabah untuk folder muat turun, idea buruk untuk folder dokumen.',
+  'jobs.activityLoading': 'Sedang membaca apa yang telah dilakukan oleh tugas ini.',
+  'history.more': 'Tunjukkan lagi',
 }
 
 export default ms

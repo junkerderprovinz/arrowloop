@@ -385,6 +385,8 @@ const gl: Translations = {
   'history.noMatch': 'Ningunha execución coincide.',
   'edit.trash': 'Manter un lixo en cada lado',
   'edit.trashHint': 'Un borrado convértese nun traslado a un cartafol agochado chamado .arrowloop dentro da árbore sincronizada, así que nada do que fai esta tarefa destrúe nada de xeito definitivo, e un ficheiro borrado por erro recupérase na lapela do lixo. Ese cartafol véno todas as persoas que usen a compartición, e ese é xustamente o motivo para desactivalo: sen lixo non se crea nunca, un borrado é definitivo, e o lado perdedor dun conflito tamén. Razoable para un cartafol de descargas, mala idea para un de documentos.',
+  'jobs.activityLoading': 'Estase a ler o que fixo esta tarefa.',
+  'history.more': 'Amosar máis',
 }
 
 export default gl

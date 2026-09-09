@@ -385,6 +385,8 @@ const zh: Translations = {
   'history.noMatch': '没有符合的运行。',
   'edit.trash': '两侧各保留一个回收站',
   'edit.trashHint': '删除会变成移动到同步目录树内一个名为 .arrowloop 的隐藏文件夹，因此这个作业所做的一切都不会彻底毁掉任何东西，误删的文件可以在回收站标签页里取回。使用该共享的每个人都看得到这个文件夹，这正是关掉此项的理由：没有回收站就永远不会创建它，删除是最终的，冲突中落败的一方也是。对下载文件夹合理，对文档文件夹则是个坏主意。',
+  'jobs.activityLoading': '正在读取这个作业做过什么。',
+  'history.more': '显示更多',
 }
 
 export default zh

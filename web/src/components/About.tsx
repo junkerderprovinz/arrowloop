@@ -1,4 +1,5 @@
 import { AboutCard } from '../lib/glimstone/AboutCard'
+import { GLIMSTONE_VERSION } from '../lib/glimstone/version'
 import { IconGithub } from './brandGlyphs'
 import { useT } from '../lib/i18n'
 
@@ -36,7 +37,10 @@ const COFFEE = 'https://buymeacoffee.com/junkerderprovinz'
  * is not built from is worse than no number, because it sends somebody to the
  * wrong changelog.
  */
-const GLIMSTONE = '1.7.8'
+// Imported from the copied reference files rather than typed here. It used to
+// be a constant of its own and drifted exactly the way a number written down
+// twice does: the card said 1.7.6 while the files beside it were 1.7.7. The
+// version now travels with what it describes.
 
 export function About({ version }: { version: string | null }) {
   const { t } = useT()
@@ -49,7 +53,7 @@ export function About({ version }: { version: string | null }) {
        github logo haben." */
     <AboutCard
       version={version}
-      glimstoneVersion={GLIMSTONE}
+      glimstoneVersion={GLIMSTONE_VERSION}
       repoUrl={REPO}
       repoGlyph={<IconGithub />}
       glimstoneRepoUrl={GLIMSTONE_REPO}
