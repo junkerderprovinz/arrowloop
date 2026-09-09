@@ -387,6 +387,7 @@ const nl: Translations = {
   'edit.trashHint': 'Een verwijdering wordt een verplaatsing naar een verborgen map met de naam .arrowloop binnen de gesynchroniseerde boom, zodat niets wat deze taak doet iets onherroepelijk vernietigt en een per ongeluk verwijderd bestand terug te halen is via het prullenbaktabblad. Die map is zichtbaar voor iedereen die de share gebruikt, en dat is de reden om dit uit te zetten: zonder prullenbak wordt hij nooit aangemaakt, is een verwijdering definitief, en de verliezende kant van een conflict ook. Verstandig voor een downloadmap, een slecht idee voor een documentenmap.',
   'jobs.activityLoading': 'Bezig met lezen wat deze taak heeft gedaan.',
   'history.more': 'Meer tonen',
+  'trash.holding': '{count} in de prullenbak, {size}',
 }
 
 export default nl

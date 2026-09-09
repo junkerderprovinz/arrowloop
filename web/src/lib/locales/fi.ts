@@ -387,6 +387,7 @@ const fi: Translations = {
   'edit.trashHint': 'Poistosta tulee siirto piilotettuun kansioon nimeltä .arrowloop synkronoidun puun sisällä, joten mikään mitä tämä työ tekee ei tuhoa mitään lopullisesti, ja vahingossa poistettu tiedosto haetaan takaisin roskakorivälilehdeltä. Kansion näkee jokainen jakoa käyttävä, ja juuri siksi tämän voi kytkeä pois: ilman roskakoria sitä ei koskaan luoda, poisto on lopullinen, ja niin on ristiriidan hävinnyt puolikin. Latauskansiolle järkevää, asiakirjakansiolle huono ajatus.',
   'jobs.activityLoading': 'Luetaan mitä tämä työ on tehnyt.',
   'history.more': 'Näytä lisää',
+  'trash.holding': '{count} roskakorissa, {size}',
 }
 
 export default fi

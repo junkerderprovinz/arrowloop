@@ -387,6 +387,7 @@ const pl: Translations = {
   'edit.trashHint': 'Usunięcie staje się przeniesieniem do ukrytego folderu o nazwie .arrowloop wewnątrz synchronizowanego drzewa, więc nic, co robi to zadanie, nie niszczy niczego bezpowrotnie, a plik skasowany przez pomyłkę odzyskasz w zakładce kosza. Ten folder widzi każdy, kto korzysta z udziału, i właśnie dlatego warto to wyłączyć: bez kosza nigdy nie powstaje, usunięcie jest ostateczne, a przegrywająca strona konfliktu tak samo. Rozsądne dla folderu pobrań, zły pomysł dla folderu z dokumentami.',
   'jobs.activityLoading': 'Trwa odczyt tego, co zrobiło to zadanie.',
   'history.more': 'Pokaż więcej',
+  'trash.holding': '{count} w koszu, {size}',
 }
 
 export default pl

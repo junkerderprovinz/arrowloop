@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
+import { bytes } from '../lib/bytes'
 import { Button } from '../lib/glimstone/Button'
 import { Selector } from './Selector'
 import { NumberField } from './Field'
@@ -70,6 +71,18 @@ export function TrashPanel({ job }: { job: string }) {
 
       {entries !== null && entries.length === 0 && (
         <p className="text-xs text-carbon-textMuted">{t('trash.empty')}</p>
+      )}
+
+      {/* How much this trash is holding, above the list.
+          It lives inside the synced tree, so its size comes out of the same
+          disk the job writes to, and "how much space is this costing me" was a
+          question the interface could not answer at all - the list gave a count
+          of paths and nothing else. Files and bytes together, because a
+          thousand tiny files and one large one are different problems. */}
+      {entries !== null && entries.length > 0 && (
+        <p className="text-xs text-carbon-textMuted">
+          {t('trash.holding', { count: entries.length, size: bytes(entries.reduce((n, e) => n + (e.size ?? 0), 0)) })}
+        </p>
       )}
 
       {entries !== null && entries.length > 0 && (

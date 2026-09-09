@@ -387,6 +387,7 @@ const fr: Translations = {
   'edit.trashHint': 'Une suppression devient un déplacement vers un dossier caché nommé .arrowloop à l\'intérieur de l\'arborescence synchronisée : rien de ce que fait cette tâche ne détruit quoi que ce soit définitivement, et un fichier supprimé par erreur se récupère depuis l\'onglet corbeille. Ce dossier est visible par tous ceux qui utilisent le partage, et c\'est la raison de désactiver ceci : sans corbeille il n\'est jamais créé, une suppression est définitive, et le côté perdant d\'un conflit l\'est aussi. Raisonnable pour un dossier de téléchargements, une mauvaise idée pour un dossier de documents.',
   'jobs.activityLoading': 'Lecture de ce que cette tâche a fait.',
   'history.more': 'Afficher plus',
+  'trash.holding': '{count} dans la corbeille, {size}',
 }
 
 export default fr

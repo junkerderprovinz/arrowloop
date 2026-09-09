@@ -18,13 +18,31 @@ import (
 
 // Option is one setting a backend accepts.
 type Option struct {
-	Name     string    `json:"name"`
-	Help     string    `json:"help"`
-	Required bool      `json:"required"`
-	Secret   bool      `json:"secret"`
-	Advanced bool      `json:"advanced"`
-	Default  string    `json:"default"`
-	Examples []Example `json:"examples,omitempty"`
+	Name     string `json:"name"`
+	Help     string `json:"help"`
+	Required bool   `json:"required"`
+	Secret   bool   `json:"secret"`
+	Advanced bool   `json:"advanced"`
+	// Essential means: without this, the target will not work in practice.
+	//
+	// Separate from Required, and the gap between them is a real defect rather
+	// than a nicety. rclone's `required` describes its own interactive setup,
+	// where everything else is asked for by a prompt with a default. Read as
+	// "the fields a form must show", it produces nonsense: measured on this
+	// build, s3 marks NONE of its seventy-eight options required, so the form
+	// for the one backend somebody would point at a cloud provider showed no
+	// fields at all and let a target be saved with no credentials whatsoever.
+	// smb marks only `host`, so it never asked for the user or the password a
+	// private share needs.
+	//
+	// So this is a short, hand-kept list per backend of what a person actually
+	// has to fill in, and it is deliberately hand-kept: it encodes which of
+	// thirty S3 providers people here use, which rclone cannot know. It only
+	// ever ADDS to what the form shows - nothing that was reachable becomes
+	// unreachable - and the advanced switch still reveals everything.
+	Essential bool      `json:"essential"`
+	Default   string    `json:"default"`
+	Examples  []Example `json:"examples,omitempty"`
 }
 
 // Example is one suggested value, with the reason it might be the right one.
@@ -56,6 +74,47 @@ type Backend struct {
 // backend and hides it would be lying about what it can reach.
 var promised = []string{"s3", "sftp", "smb"}
 
+// essential lists, per backend, the settings without which the target will not
+// work - see Option.Essential for why rclone's own `required` cannot answer
+// this. Order does not matter; the form keeps rclone's.
+var essential = map[string]map[string]bool{
+	"s3": {
+		// Which of the thirty-odd S3 services this is. Everything else about
+		// the connection follows from it, and getting it wrong produces errors
+		// about signatures that read like a credentials problem.
+		"provider":          true,
+		"access_key_id":     true,
+		"secret_access_key": true,
+		// One of these two, depending on the provider: AWS wants a region and
+		// everybody else wants an endpoint. Both are shown rather than guessed
+		// at, because guessing would hide the one the person needs.
+		"region":   true,
+		"endpoint": true,
+	},
+	"smb": {
+		"host": true,
+		"user": true,
+		"pass": true,
+		// A Windows domain or workgroup. Blank is right on a home network and
+		// wrong in an office, and somebody in an office will not find it behind
+		// the advanced switch.
+		"domain": true,
+	},
+	"sftp": {
+		"host": true,
+		"user": true,
+		"port": true,
+		// Both ways in. A key file and a password are alternatives, so neither
+		// can be "required", and hiding either leaves half the people stuck.
+		"pass":     true,
+		"key_file": true,
+	},
+	"crypt": {
+		"remote":   true,
+		"password": true,
+	},
+}
+
 func rank(name string) int {
 	for i, p := range promised {
 		if name == p {
@@ -85,10 +144,11 @@ func Backends() []Backend {
 				// The backend's own idea of a password, plus this package's
 				// rule. Either one is enough to withhold a value: two ways of
 				// spotting a secret can only ever hide more, never less.
-				Secret:   o.IsPassword || IsSecret(o.Name),
-				Advanced: o.Advanced,
-				Default:  defaultText(o.Default),
-				Examples: examples(o),
+				Secret:    o.IsPassword || IsSecret(o.Name),
+				Advanced:  o.Advanced,
+				Essential: essential[info.Name][o.Name],
+				Default:   defaultText(o.Default),
+				Examples:  examples(o),
 			})
 		}
 		sort.SliceStable(b.Options, func(i, j int) bool {
@@ -110,7 +170,10 @@ func Backends() []Backend {
 
 func optionRank(o Option) int {
 	switch {
-	case o.Required:
+	// Essential sits with required rather than below it: the two mean the same
+	// thing to the person filling the form in, and separating them would put
+	// the secret key under a heading of merely-optional settings.
+	case o.Required, o.Essential:
 		return 0
 	case !o.Advanced:
 		return 1

@@ -735,19 +735,22 @@ function JobActivity({ job }: { job: string }) {
   const { t } = useT()
   const [touches, setTouches] = useState<Touch[] | null>(null)
   const [error, setError] = useState<string | null>(null)
+  // Doubles on request, the same as the history list and for the same reason:
+  // somebody looking for when a particular file was touched wants the list to
+  // reach further back, not to be handed page four.
+  const [limit, setLimit] = useState(60)
 
   useEffect(() => {
     let live = true
-    setTouches(null)
     setError(null)
     api
-      .jobTouches(job, 60)
+      .jobTouches(job, limit)
       .then((got) => live && setTouches(got))
       .catch((e: Error) => live && setError(e.message))
     return () => {
       live = false
     }
-  }, [job])
+  }, [job, limit])
 
   if (error) return <p className="mt-1 text-xs text-statusFail">{error}</p>
   if (!touches) return <Empty>{t('jobs.activityLoading')}</Empty>
@@ -775,6 +778,17 @@ function JobActivity({ job }: { job: string }) {
           </li>
         ))}
       </ul>
+      {/* Offered only when the answer FILLED the limit, which is the one honest
+          signal that there may be more: a shorter list is the whole list. */}
+      {touches.length >= limit && (
+        <div className="mt-2 flex justify-center">
+          <Button
+            label={t('history.more')}
+            labelKey="history.more"
+            onClick={() => setLimit((n) => n * 2)}
+          />
+        </div>
+      )}
     </div>
   )
 }

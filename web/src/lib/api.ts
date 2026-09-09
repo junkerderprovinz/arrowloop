@@ -55,6 +55,15 @@ export type Backend = {
     help: string
     required: boolean
     secret: boolean
+    /**
+     * Without this, the target will not work in practice.
+     *
+     * Separate from `required`, which describes rclone's own interactive setup
+     * rather than a form: s3 marks none of its seventy-eight options required,
+     * so this form used to open empty for the one backend somebody would point
+     * at a cloud provider.
+     */
+    essential?: boolean
     advanced: boolean
     default: string
     examples?: { value: string; help: string }[]

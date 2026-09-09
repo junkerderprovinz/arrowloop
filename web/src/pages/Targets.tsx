@@ -310,7 +310,7 @@ function RemoteForm({
    * would go stale the first time rclone gained an option.
    */
   const shown = useMemo(
-    () => (backend?.options ?? []).filter((o) => advanced || o.required),
+    () => (backend?.options ?? []).filter((o) => advanced || o.required || o.essential),
     [backend, advanced],
   )
 

@@ -387,6 +387,7 @@ const id: Translations = {
   'edit.trashHint': 'Penghapusan menjadi perpindahan ke folder tersembunyi bernama .arrowloop di dalam pohon yang disinkronkan, sehingga tidak ada yang dilakukan tugas ini yang memusnahkan sesuatu secara permanen, dan berkas yang terhapus tidak sengaja bisa diambil kembali dari tab tempat sampah. Folder itu terlihat oleh semua orang yang memakai berbagi pakai tersebut, dan justru itulah alasan mematikan pilihan ini: tanpa tempat sampah folder itu tidak pernah dibuat, penghapusan bersifat final, begitu pula sisi yang kalah dalam sebuah konflik. Masuk akal untuk folder unduhan, ide buruk untuk folder dokumen.',
   'jobs.activityLoading': 'Sedang membaca apa yang telah dilakukan tugas ini.',
   'history.more': 'Tampilkan lebih banyak',
+  'trash.holding': '{count} di tempat sampah, {size}',
 }
 
 export default id

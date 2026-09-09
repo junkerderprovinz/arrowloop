@@ -387,6 +387,7 @@ const sk: Translations = {
   'edit.trashHint': 'Z vymazania sa stane presun do skrytého priečinka s názvom .arrowloop vnútri synchronizovaného stromu, takže nič z toho, čo táto úloha robí, nezničí nič nadobro a omylom vymazaný súbor vytiahneš späť v záložke koša. Tento priečinok vidí každý, kto zdieľanie používa, a práve to je dôvod, prečo to vypnúť: bez koša nikdy nevznikne, vymazanie je konečné a porazená strana konfliktu tiež. Rozumné pre priečinok so stiahnutými súbormi, zlý nápad pre priečinok s dokumentmi.',
   'jobs.activityLoading': 'Načítava sa, čo táto úloha urobila.',
   'history.more': 'Zobraziť viac',
+  'trash.holding': '{count} v koši, {size}',
 }
 
 export default sk

@@ -387,6 +387,7 @@ const pt: Translations = {
   'edit.trashHint': 'Uma eliminação passa a ser uma mudança para uma pasta escondida chamada .arrowloop dentro da árvore sincronizada, por isso nada do que esta tarefa faz destrói o que quer que seja de forma definitiva e um ficheiro apagado por engano recupera-se no separador da reciclagem. Essa pasta é visível para todos os que usam a partilha, e é essa a razão para desligar isto: sem reciclagem ela nunca é criada, uma eliminação é definitiva, e o lado perdedor de um conflito também. Razoável para uma pasta de transferências, má ideia para uma de documentos.',
   'jobs.activityLoading': 'A ler o que esta tarefa fez.',
   'history.more': 'Mostrar mais',
+  'trash.holding': '{count} na reciclagem, {size}',
 }
 
 export default pt

@@ -387,6 +387,7 @@ const cs: Translations = {
   'edit.trashHint': 'Ze smazání se stane přesun do skryté složky s názvem .arrowloop uvnitř synchronizovaného stromu, takže nic z toho, co tato úloha dělá, nezničí nic nadobro a omylem smazaný soubor vytáhneš zpět v záložce koše. Tuto složku vidí každý, kdo sdílení používá, a přesně to je důvod, proč to vypnout: bez koše nikdy nevznikne, smazání je konečné a poražená strana konfliktu také. Rozumné pro složku se staženými soubory, špatný nápad pro složku s dokumenty.',
   'jobs.activityLoading': 'Načítá se, co tato úloha udělala.',
   'history.more': 'Zobrazit více',
+  'trash.holding': '{count} v koši, {size}',
 }
 
 export default cs

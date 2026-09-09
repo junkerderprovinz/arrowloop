@@ -387,6 +387,7 @@ const sv: Translations = {
   'edit.trashHint': 'En radering blir en flytt till en dold mapp som heter .arrowloop inne i det synkade trädet, så inget det här jobbet gör förstör något slutgiltigt, och en fil som raderats av misstag hämtas tillbaka från papperskorgsfliken. Den mappen syns för alla som använder utdelningen, och det är just därför man stänger av det här: utan papperskorg skapas den aldrig, en radering är slutgiltig, och det är den förlorande sidan i en konflikt också. Rimligt för en nedladdningsmapp, en dålig idé för en dokumentmapp.',
   'jobs.activityLoading': 'Läser vad det här jobbet har gjort.',
   'history.more': 'Visa fler',
+  'trash.holding': '{count} i papperskorgen, {size}',
 }
 
 export default sv

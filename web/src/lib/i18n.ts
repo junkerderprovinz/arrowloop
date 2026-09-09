@@ -480,6 +480,7 @@ export const en = {
   'edit.trashHint': 'A deletion becomes a move into a hidden folder called .arrowloop inside the synced tree, so nothing this job does destroys anything outright and a file removed by mistake can be fetched back from the trash tab. That folder is visible to everyone using the share, which is the reason to switch this off: with no bin it is never created, a deletion is final, and so is the losing side of a conflict. Reasonable for a folder of downloads, a bad idea for a folder of documents.',
   'jobs.activityLoading': 'Reading what this job has done.',
   'history.more': 'Show more',
+  'trash.holding': '{count} in the bin, {size}',
 } as const
 
 export type TranslationKey = keyof typeof en
@@ -908,6 +909,7 @@ export const de: Translations = {
   'edit.trashHint': 'Eine Löschung wird zu einem Verschieben in einen versteckten Ordner namens .arrowloop innerhalb des abgeglichenen Baums. Dadurch vernichtet dieser Auftrag nichts endgültig, und eine versehentlich gelöschte Datei holst du im Papierkorb-Reiter zurück. Dieser Ordner ist für alle sichtbar, die die Freigabe nutzen, und genau das ist der Grund, das hier auszuschalten: ohne Papierkorb entsteht er nie, eine Löschung ist endgültig, und die unterlegene Seite eines Konflikts ebenso. Für einen Download-Ordner vernünftig, für einen Dokumentenordner keine gute Idee.',
   'jobs.activityLoading': 'Es wird gelesen, was dieser Auftrag getan hat.',
   'history.more': 'Mehr anzeigen',
+  'trash.holding': '{count} im Papierkorb, {size}',
 }
 
 // ---------------------------------------------------------------------------

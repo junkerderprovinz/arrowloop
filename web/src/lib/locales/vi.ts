@@ -387,6 +387,7 @@ const vi: Translations = {
   'edit.trashHint': 'Việc xoá trở thành việc chuyển vào một thư mục ẩn tên .arrowloop bên trong cây đồng bộ, nên không điều gì công việc này làm huỷ hoại thứ gì vĩnh viễn, và tệp bị xoá nhầm được lấy lại ở thẻ thùng rác. Thư mục đó ai dùng chia sẻ cũng thấy, và đó chính là lý do để tắt tuỳ chọn này: không có thùng rác thì nó không bao giờ được tạo, việc xoá là dứt khoát, và bên thua trong một xung đột cũng vậy. Hợp lý cho thư mục tải về, ý tưởng tồi cho thư mục tài liệu.',
   'jobs.activityLoading': 'Đang đọc những gì công việc này đã làm.',
   'history.more': 'Hiển thị thêm',
+  'trash.holding': '{count} trong thùng rác, {size}',
 }
 
 export default vi
