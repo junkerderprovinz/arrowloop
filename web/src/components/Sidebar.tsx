@@ -3,6 +3,7 @@ import { useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { hueVars, rainbowAt } from '../lib/appearance'
 import { hidesLabel, type LabelMode } from '../lib/controls'
 import { LOGO_GOLD, LogoMark } from './LogoMark'
+import { NO_STREAK, press } from '../lib/tapStreak'
 import { useRainbow } from './Shell'
 
 /**
@@ -140,34 +141,42 @@ export function Sidebar<T extends string>({
   const narrow = mode === 'glyph'
 
   /**
-   * The easter egg: five quick presses and the arrow gets loose.
+   * The easter egg: five presses and the arrow gets loose.
    *
    * The mark is an arrow bent into a loop, so the one thing it can do that no
    * other logo could is come unbent - fly out of its own rings, round the
    * outside, and back in. Which is the product's sentence: what goes out comes
    * back.
    *
-   * Five WITHIN a couple of seconds, counted from the last press rather than
-   * from the first, so an ordinary click on the way to the jobs tab never
-   * accumulates towards it over an afternoon. The button keeps navigating on
-   * every press, including the fifth: an easter egg that swallows the control
-   * it hides behind is a bug.
+   * The counting lives in lib/tapStreak, and it was moved there because of how
+   * this shipped: the window was 600ms between presses, set on the evidence of
+   * a script clicking five times in the same millisecond. Under a real hand the
+   * streak reset every time and the whole thing did not exist. jdp: "das easter
+   * egg geht nicht." Out there, the window can be checked at human intervals
+   * with no browser and no clock.
+   *
+   * The button keeps navigating on every press, including the fifth: an easter
+   * egg that swallows the control it hides behind is a bug.
    */
-  const [loose, setLoose] = useState(0)
-  const taps = useRef({ count: 0, at: 0 })
+  const [flight, setFlight] = useState(0)
+  // Whether the arrow is in the air RIGHT NOW. Separate from the counter, and
+  // cleared when the animation ends, so the class is an honest reading of the
+  // state rather than something that goes on once and stays for the session.
+  // It also stops `overflow: visible` outliving the one moment that needs it.
+  const [flying, setFlying] = useState(false)
+  const streak = useRef(NO_STREAK)
 
   function tapped() {
-    const now = performance.now()
-    const seen = now - taps.current.at < 600 ? taps.current.count + 1 : 1
-    taps.current = { count: seen, at: now }
-    if (seen >= 5) {
-      taps.current.count = 0
-      // The key CHANGES rather than a flag going true. The flight is an
-      // animation on a class, so it plays when the class arrives; a flag
-      // already set plays nothing the second time, which is exactly the press
-      // somebody makes when they liked it. Same trick, and the same reason, as
-      // the shake on a refused save.
-      setLoose((n) => n + 1)
+    const { next, fired } = press(streak.current, performance.now())
+    streak.current = next
+    if (fired) {
+      // A COUNTER rather than a flag going true. The flight is an animation on
+      // a class, so it plays when the class arrives; a flag already true adds
+      // no class and plays nothing, which is exactly the press somebody makes
+      // when they liked it and want it again. Same trick, and the same reason,
+      // as the shake on a refused save.
+      setFlight((n) => n + 1)
+      setFlying(true)
     }
   }
 
@@ -195,10 +204,11 @@ export function Sidebar<T extends string>({
             the colour they are mixed from, and LOGO_GOLD is what the file
             itself uses. */}
         <LogoMark
-          key={loose}
+          key={flight}
           size={narrow ? 36 : 80}
           style={{ color: LOGO_GOLD }}
-          className={`shrink-0 ${loose > 0 ? 'al-logo-loose' : ''}`}
+          className={`shrink-0 ${flying ? 'al-logo-loose' : ''}`}
+          onAnimationEnd={() => setFlying(false)}
         />
         {!narrow && (
           <span className="text-[19px] font-semibold tracking-tight text-carbon-text">

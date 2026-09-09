@@ -1,4 +1,5 @@
 import { AboutCard } from '../lib/glimstone/AboutCard'
+import { IconGithub } from './brandGlyphs'
 import { useT } from '../lib/i18n'
 
 /**
@@ -35,15 +36,22 @@ const COFFEE = 'https://buymeacoffee.com/junkerderprovinz'
  * is not built from is worse than no number, because it sends somebody to the
  * wrong changelog.
  */
-const GLIMSTONE = '1.7.6'
+const GLIMSTONE = '1.7.8'
 
 export function About({ version }: { version: string | null }) {
   const { t } = useT()
   return (
+    /* The mark on the repository button is passed here rather than resolved
+       from the label key, which is the design language's rule for a BRAND: a
+       pattern keyed on "repo" would put GitHub's logo on repository settings
+       that have nothing to do with GitHub, and it would follow this project to
+       a different forge and be wrong there. jdp: "der github button soll das
+       github logo haben." */
     <AboutCard
       version={version}
       glimstoneVersion={GLIMSTONE}
       repoUrl={REPO}
+      repoGlyph={<IconGithub />}
       glimstoneRepoUrl={GLIMSTONE_REPO}
       coffeeUrl={COFFEE}
       mailAddress={MAIL}

@@ -8,6 +8,7 @@ import {
   IconDelete,
   IconDownload,
   IconEdit,
+  IconFolder,
   IconForget,
   IconHistory,
   IconLink,
@@ -79,8 +80,23 @@ const RULES: Rule[] = [
 
   // Creation and editing.
   [/newFolder|addSet|createFolder/i, () => <IconNewFolder />],
-  [/\.add|addStorage|addTarget|create/i, () => <IconAdd />],
-  [/duplicate|copyPath|\.copy/i, () => <IconCopy />],
+  // Opening a folder in the picker. Above the `\.add` rule so that a future
+  // "open and add" key cannot be claimed by the wrong half.
+  [/\.open$|openFolder/i, () => <IconFolder />],
+  // `register` belongs with `add` rather than on its own: registering a drive
+  // IS adding one to the list, and the sibling control right beside it says
+  // "add" and wears this mark. Without the word here, `targets.registerDrive`
+  // matched nothing at all and fell back to its text, so in the mode meant to
+  // show only symbols one button in that pair printed a word and the other did
+  // not. jdp: "der datentraeger anmelden button ist nicht in der
+  // beschriftungsengine."
+  [/\.add|addStorage|addTarget|create|register/i, () => <IconAdd />],
+  // `copied` is spelled out beside `copy` rather than being caught by it: the
+  // key is `targets.copied`, and `\.copy` does not match `.copied` because the
+  // fourth letter is an i. Same button, same mark, only the word changes - and
+  // without this line it changed from a symbol to a word in the mode that
+  // exists to show no words.
+  [/duplicate|copyPath|\.copy|copied/i, () => <IconCopy />],
   [/edit|rename/i, () => <IconEdit />],
 
   // Carrying a whole setup out to a file and back in. ABOVE `save`, because

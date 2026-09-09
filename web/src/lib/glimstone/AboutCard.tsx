@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 import { Button } from "./Button";
 import { Card } from "./Card";
 
@@ -35,6 +37,7 @@ export function AboutCard({
   version,
   glimstoneVersion,
   repoUrl,
+  repoGlyph,
   glimstoneRepoUrl,
   coffeeUrl,
   mailAddress,
@@ -63,6 +66,20 @@ export function AboutCard({
    *  the reference files are re-copied, because the files are copied by hand. */
   glimstoneVersion: string;
   repoUrl: string;
+  /**
+   * The mark on the repository button, when the host it points at has one.
+   *
+   * Passed rather than resolved, and that is the rule rather than a
+   * convenience. A brand mark must never be reachable BY PATTERN: a glyph rule
+   * keyed on "repo" would put GitHub's logo on repository settings that have
+   * nothing to do with GitHub, and on the day a project moves to a different
+   * forge the logo would follow it there and be wrong. So the app names its
+   * own forge at the one call site that means it, and a project hosted
+   * somewhere without a mark passes nothing and keeps the generic link glyph.
+   *
+   * jdp: "der github button soll das github logo haben."
+   */
+  repoGlyph?: ReactNode;
   glimstoneRepoUrl: string;
   coffeeUrl: string;
   /** The workshop's own mailbox. Omit it and the card offers no mail route. */
@@ -95,6 +112,7 @@ export function AboutCard({
         <Button
           label={text.repoButton}
           labelKey="about.repo"
+          glyph={repoGlyph}
           tone="neutral"
           onClick={() => open(repoUrl)}
         />
