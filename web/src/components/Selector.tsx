@@ -220,7 +220,7 @@ export function Selector<T extends string>({
                     // control. This is the one place the "an unselected option
                     // is never a badge" rule does not apply, and it does not
                     // apply because the rule is about a segment inside a track.
-                    'bg-carbon-surface2 text-carbon-textSub hover:bg-carbon-hover hover:text-carbon-text',
+                    'bg-carbon-surface2 text-carbon-textSub hover:bg-carbon-surface3 hover:text-carbon-text',
             ].join(' ')}
           >
             {o.icon && (

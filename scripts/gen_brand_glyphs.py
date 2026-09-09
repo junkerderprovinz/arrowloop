@@ -19,9 +19,11 @@ was added by hand before this script existed - so the file is regenerated whole
 and the GitHub entry is part of the table below rather than being preserved.
 """
 import io
+import json
 import os
 import re
 import sys
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 SRC = Path(sys.argv[1] if len(sys.argv) > 1 else
@@ -156,32 +158,158 @@ export function {name}(props: SVGProps<SVGSVGElement>) {{
 
 
 # Marks Simple Icons does not carry, kept as their own SVG under
-# scripts/brand-paths/. Each is the project's OWN file, fetched from its own
-# repository, with its source recorded here.
+# scripts/brand-paths/. Each is somebody else's file, reproduced unmodified,
+# with its source and its licence recorded here and in that folder's README.
 #
 # Same trademark reasoning as everything above: used to name the thing it refers
 # to, reproduced unmodified, no claim of endorsement. What differs is the
-# licence position - these are not CC0, they are the projects' own logos - and
-# naming a project with its logo is the use a trademark exists for.
+# licence position - these are not CC0 - so each entry carries the licence it
+# arrived under, and every one of those licences is satisfied by naming it.
 LOCAL = [
     ("IconOpencloud", "opencloud", "OpenCloud",
-     "opencloud-eu/opencloud, services/web/assets/themes/opencloud/assets/logo-mobile.svg"),
+     "opencloud-eu/opencloud, services/web/assets/themes/opencloud/assets/logo-mobile.svg",
+     "the project's own logo, from its own repository"),
+    # Dashboard Icons, Apache-2.0. jdp found the set: "hier gibts viele des
+    # fehlenden logos: https://dashboardicons.com/". Five of the nineteen marks
+    # Simple Icons lacks are in it; the rest are still missing.
+    ("IconOnedrive", "microsoft-onedrive", "OneDrive",
+     "homarr-labs/dashboard-icons, svg/microsoft-onedrive.svg", "Apache-2.0"),
+    # Azure's STORAGE ACCOUNT mark. Blob storage is a service inside a storage
+    # account and has no separate mark in this set, so this names the right
+    # product family rather than a different product - the same judgement made
+    # for HiDrive above, and the same one that keeps OpenCloud off ownCloud's.
+    ("IconAzureStorage", "azure-storage-accounts", "Azure Blob Storage, under Azure's storage mark",
+     "homarr-labs/dashboard-icons, svg/azure-storage-accounts.svg", "Apache-2.0"),
+    ("IconOracleCloud", "oracle-cloud", "Oracle Object Storage, part of Oracle Cloud",
+     "homarr-labs/dashboard-icons, svg/oracle-cloud.svg", "Apache-2.0"),
+    ("IconStorj", "storj", "Storj",
+     "homarr-labs/dashboard-icons, svg/storj.svg", "Apache-2.0"),
+    ("IconPremiumize", "premiumize", "premiumize.me",
+     "homarr-labs/dashboard-icons, svg/premiumize.svg", "Apache-2.0"),
 ]
 
+# Attributes that mean nothing inside a component, or that the wrapper sets.
+DROP_ROOT = {"xmlns", "version", "width", "height", "id", "class"}
 
-def local(name: str, slug: str, note: str, source: str) -> str:
-    svg = io.open(Path(__file__).parent / "brand-paths" / (slug + ".svg"), encoding="utf-8").read()
-    box = re.search(r'viewBox="([^"]+)"', svg)
-    # Keep each path's own fill: a mark drawn in several tones is several tones,
-    # and flattening it to one would be redrawing somebody's logo.
-    shapes = re.findall(r'<path d="([^"]+)"[^>]*?fill="([^"]+)"', svg)
-    if not box or not shapes:
-        raise SystemExit("cannot read brand-paths/%s.svg" % slug)
-    body = chr(10).join('      <path fill="%s" d="%s" />' % (f, d) for d, f in shapes)
-    return f'''/** {note}. Source: {source} */
+# SVG attribute -> its JSX spelling, where lowercasing the hyphen is not the
+# rule. Everything else hyphenated is camelCased below.
+SPECIAL = {"class": "className", "for": "htmlFor"}
+
+
+def _camel(name):
+    """`stop-color` -> `stopColor`, but `data-x` and `aria-x` stay put."""
+    if name.startswith("data-") or name.startswith("aria-"):
+        return name
+    if name in SPECIAL:
+        return SPECIAL[name]
+    head, _, tail = name.partition("-")
+    while tail:
+        piece, _, rest = tail.partition("-")
+        head += piece[:1].upper() + piece[1:]
+        tail = rest
+    return head
+
+
+def _style_object(value):
+    """`fill:#a00;fill-opacity:1` -> a JSX style object.
+
+    JSX takes an object here, never the CSS string an SVG file carries, and
+    several of these marks put their whole colour in a `style` attribute.
+    """
+    pairs = []
+    for chunk in value.split(";"):
+        key, sep, val = chunk.partition(":")
+        if not sep or not key.strip():
+            continue
+        pairs.append("%s: %s" % (_camel(key.strip()), json.dumps(val.strip())))
+    return "{{ %s }}" % ", ".join(pairs) if pairs else None
+
+
+def _jsx(node, ids, slug, depth):
+    """One SVG element and its children as JSX source, or None to skip it."""
+    tag = node.tag.split("}")[-1]
+    # <title> and <desc> go, whatever they hold. What they hold is the asset
+    # name from whoever drew the file ("Icon-storage-86"), which labels nothing
+    # a reader of this interface would want read out, and the wrapper is
+    # aria-hidden regardless: the provider's NAME sits next to the mark.
+    if tag in ("title", "desc"):
+        return None
+    pad = "  " * depth
+    attrs = []
+    for raw, value in node.attrib.items():
+        # `xlink:href` arrives fully qualified and is `xlinkHref` in JSX.
+        if raw.startswith("{http://www.w3.org/1999/xlink}"):
+            key = "xlinkHref"
+        elif raw.startswith("{"):
+            continue  # any other foreign namespace means nothing to the DOM here
+        else:
+            key = _camel(raw)
+        if key in ("xmlns", "xmlnsXlink", "version"):
+            continue
+        # Every id in the file is rewritten, because two marks on one page that
+        # both define `radial0` would collide: `url(#radial0)` resolves to
+        # whichever came first in the document, so one logo would wear the
+        # other's gradient. Prefixing with the slug makes each file's ids its
+        # own.
+        if key == "id":
+            value = ids[value]
+        else:
+            for old, new in ids.items():
+                value = value.replace("url(#%s)" % old, "url(#%s)" % new)
+                if value == "#" + old:
+                    value = "#" + new
+        if key == "style":
+            obj = _style_object(value)
+            if not obj:
+                continue
+            attrs.append("style=%s" % obj)
+            continue
+        attrs.append("%s=%s" % (key, '"%s"' % value if '"' not in value else "{%s}" % json.dumps(value)))
+    head = ("<%s " % tag) + " ".join(attrs) if attrs else "<%s" % tag
+    # Text would be silently swallowed otherwise, which is how an <title> full
+    # of somebody's asset name came through this generator as an empty tag.
+    # Nothing among these marks draws with <text>; if one ever does, it should
+    # stop the build rather than lose its lettering.
+    if (node.text or "").strip():
+        raise SystemExit("brand-paths/%s.svg: <%s> carries text this generator drops" % (slug, tag))
+
+    kids = [c for c in (_jsx(k, ids, slug, depth + 1) for k in node) if c]
+    if not kids:
+        return "%s%s />" % (pad, head)
+    return "%s%s>\n%s\n%s</%s>" % (pad, head, "\n".join(kids), pad, tag)
+
+
+def local(name, slug, note, source, licence):
+    path = Path(__file__).parent / "brand-paths" / (slug + ".svg")
+    root = ET.fromstring(io.open(path, encoding="utf-8").read())
+
+    # The box: its own if it has one, otherwise built from width and height.
+    # Several of these carry only a size, and a component with no viewBox does
+    # not scale to the 1em the interface asks for.
+    box = root.get("viewBox")
+    if not box:
+        w, h = root.get("width"), root.get("height")
+        if not w or not h:
+            raise SystemExit("brand-paths/%s.svg has neither viewBox nor size" % slug)
+        box = "0 0 %s %s" % (w, h)
+
+    ids = {}
+    for el in root.iter():
+        if el.get("id"):
+            ids[el.get("id")] = "%s-%s" % (slug, el.get("id"))
+
+    kids = [c for c in (_jsx(k, ids, slug, 3) for k in root) if c]
+    if not kids:
+        raise SystemExit("brand-paths/%s.svg is empty" % slug)
+    body = "\n".join(kids)
+
+    # Whatever the file paints WITH stays: `fill`, `style`, gradients, groups
+    # and all. A mark drawn in several tones is several tones, and flattening
+    # one to a single ink would be redrawing somebody's logo.
+    return f'''/** {note}. Source: {source} ({licence}) */
 export function {name}(props: SVGProps<SVGSVGElement>) {{
   return (
-    <svg viewBox="{box.group(1)}" width="1em" height="1em" aria-hidden {{...props}}>
+    <svg viewBox="{box}" width="1em" height="1em" aria-hidden {{...props}}>
 {body}
     </svg>
   )

@@ -271,7 +271,7 @@ export function Choice<T extends string>({
         aria-haspopup="listbox"
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
-        className={`flex w-full ${CONTROL_H} items-center ${roomy ? 'gap-2.5' : 'gap-2'} bg-carbon-surface2 pl-3 pr-8 text-start ${roomy ? 'text-sm' : 'text-xs'} text-carbon-text outline-none transition hover:bg-carbon-hover focus-visible:brightness-125`}
+        className={`flex w-full ${CONTROL_H} items-center ${roomy ? 'gap-2.5' : 'gap-2'} bg-carbon-surface2 pl-3 pr-8 text-start ${roomy ? 'text-sm' : 'text-xs'} text-carbon-text outline-none transition hover:bg-carbon-surface3 focus-visible:brightness-125`}
         style={{ borderRadius: 'var(--radius-control)' }}
       >
         {current?.flag && <Flag code={current.flag} />}

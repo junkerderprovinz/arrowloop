@@ -113,7 +113,7 @@ export function DirectionSwitch({
       }}
       data-tip={tip}
       aria-label={`${t('direction.label')}: ${name}`}
-      className={`glim-btn glim-btn-key glim-hue inline-flex ${KEY_CONTROL_H} w-[var(--btn-h-key)] shrink-0 items-center justify-center bg-carbon-surface2 text-carbon-text transition-colors hover:bg-carbon-hover`}
+      className={`glim-btn glim-btn-key glim-hue inline-flex ${KEY_CONTROL_H} w-[var(--btn-h-key)] shrink-0 items-center justify-center bg-carbon-surface2 text-carbon-text transition-colors hover:bg-carbon-surface3`}
       style={{ borderRadius: 'var(--radius-control)', ...(hueVars(rainbowAt(0)) as CSSProperties) }}
     >
       {/* The glyph carries the class the label engine keys off, so a control

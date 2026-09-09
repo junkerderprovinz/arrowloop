@@ -93,7 +93,7 @@ var providers = []Provider{
 	// The big consumer services.
 	{ID: "dropbox", Name: "Dropbox", Backend: "dropbox", Group: GroupCloud, Mark: "IconDropbox"},
 	{ID: "gdrive", Name: "Google Drive", Backend: "drive", Group: GroupCloud, Mark: "IconGoogleDrive"},
-	{ID: "onedrive", Name: "OneDrive", Backend: "onedrive", Group: GroupCloud},
+	{ID: "onedrive", Name: "OneDrive", Backend: "onedrive", Group: GroupCloud, Mark: "IconOnedrive"},
 	{ID: "mega", Name: "MEGA", Backend: "mega", Group: GroupCloud, Mark: "IconMega"},
 	{ID: "pcloud", Name: "pCloud", Backend: "pcloud", Group: GroupCloud},
 	{ID: "box", Name: "Box", Backend: "box", Group: GroupCloud, Mark: "IconBox"},
@@ -113,7 +113,7 @@ var providers = []Provider{
 	{ID: "sharefile", Name: "ShareFile", Backend: "sharefile", Group: GroupCloud, Mark: "IconCitrix"},
 	{ID: "sugarsync", Name: "SugarSync", Backend: "sugarsync", Group: GroupCloud},
 	{ID: "putio", Name: "put.io", Backend: "putio", Group: GroupCloud},
-	{ID: "premiumize", Name: "premiumize.me", Backend: "premiumizeme", Group: GroupCloud},
+	{ID: "premiumize", Name: "premiumize.me", Backend: "premiumizeme", Group: GroupCloud, Mark: "IconPremiumize"},
 	{ID: "pikpak", Name: "PikPak", Backend: "pikpak", Group: GroupCloud},
 	{ID: "internxt", Name: "Internxt", Backend: "internxt", Group: GroupCloud},
 	{ID: "filen", Name: "Filen", Backend: "filen", Group: GroupCloud, Mark: "IconFilen"},
@@ -130,10 +130,10 @@ var providers = []Provider{
 	// Object storage: an account with a company, so it belongs with the clouds
 	// however it is addressed underneath.
 	{ID: "b2", Name: "Backblaze B2", Backend: "b2", Group: GroupCloud, Mark: "IconBackblaze"},
-	{ID: "azureblob", Name: "Azure Blob Storage", Backend: "azureblob", Group: GroupCloud},
+	{ID: "azureblob", Name: "Azure Blob Storage", Backend: "azureblob", Group: GroupCloud, Mark: "IconAzureStorage"},
 	{ID: "gcs", Name: "Google Cloud Storage", Backend: "googlecloudstorage", Group: GroupCloud, Mark: "IconGoogleCloud"},
-	{ID: "oracle", Name: "Oracle Object Storage", Backend: "oracleobjectstorage", Group: GroupCloud},
-	{ID: "storj", Name: "Storj", Backend: "storj", Group: GroupCloud},
+	{ID: "oracle", Name: "Oracle Object Storage", Backend: "oracleobjectstorage", Group: GroupCloud, Mark: "IconOracleCloud"},
+	{ID: "storj", Name: "Storj", Backend: "storj", Group: GroupCloud, Mark: "IconStorj"},
 	{ID: "swift", Name: "OpenStack Swift", Backend: "swift", Group: GroupCloud, Mark: "IconOpenstack"},
 	{ID: "qingstor", Name: "QingStor", Backend: "qingstor", Group: GroupCloud},
 	{ID: "netstorage", Name: "Akamai NetStorage", Backend: "netstorage", Group: GroupCloud, Mark: "IconAkamai"},

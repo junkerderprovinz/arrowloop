@@ -148,7 +148,7 @@ export function ExcludeSetPicker({
             className={`inline-flex h-[var(--badge-md)] items-center px-3 font-mono text-xs transition-colors ${
               on
                 ? 'bg-accent text-accentContrast'
-                : 'bg-carbon-surface2 text-carbon-textSub hover:bg-carbon-hover hover:text-carbon-text'
+                : 'bg-carbon-surface2 text-carbon-textSub hover:bg-carbon-surface3 hover:text-carbon-text'
             }`}
           >
             {name}

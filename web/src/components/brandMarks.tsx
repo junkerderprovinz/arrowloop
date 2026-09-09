@@ -27,6 +27,11 @@ import {
   IconInternetArchive,
   IconCloudinary,
   IconOpencloud,
+  IconOnedrive,
+  IconAzureStorage,
+  IconOracleCloud,
+  IconStorj,
+  IconPremiumize,
 } from './brandGlyphs'
 import {
   IconFolder,
@@ -76,6 +81,11 @@ const MARKS: Record<string, () => ReactNode> = {
   IconInternetArchive: () => <IconInternetArchive />,
   IconCloudinary: () => <IconCloudinary />,
   IconOpencloud: () => <IconOpencloud />,
+  IconOnedrive: () => <IconOnedrive />,
+  IconAzureStorage: () => <IconAzureStorage />,
+  IconOracleCloud: () => <IconOracleCloud />,
+  IconStorj: () => <IconStorj />,
+  IconPremiumize: () => <IconPremiumize />,
   IconFolder: () => <IconFolder className="text-carbon-textSub" />,
   IconTargets: () => <IconTargets className="text-carbon-textSub" />,
   IconLink: () => <IconLink className="text-carbon-textSub" />,
