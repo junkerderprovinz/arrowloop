@@ -1,4 +1,4 @@
-import type { AnimationEventHandler, CSSProperties } from 'react'
+import type { CSSProperties } from 'react'
 
 /**
  * The gold the rings are drawn in when they are NOT carrying a status.
@@ -38,23 +38,11 @@ export function LogoMark({
   className = '',
   style,
   title,
-  onAnimationEnd,
 }: {
   size?: number
   className?: string
   style?: CSSProperties
   title?: string
-  /**
-   * Told when an animation on this drawing finishes.
-   *
-   * Here so a caller can take its own animating class off again when the
-   * movement is over, rather than leaving it on for the rest of the session.
-   * A class that goes on once and never comes off makes the element's state
-   * unreadable: "is it flying" and "has it ever flown" become the same
-   * question, which is how the easter egg's own timing bug survived being
-   * measured.
-   */
-  onAnimationEnd?: AnimationEventHandler<SVGSVGElement>
 }) {
   return (
     <svg
@@ -63,7 +51,6 @@ export function LogoMark({
       height={size}
       className={className}
       style={style}
-      onAnimationEnd={onAnimationEnd}
       role={title ? 'img' : 'presentation'}
       aria-label={title}
       aria-hidden={title ? undefined : true}

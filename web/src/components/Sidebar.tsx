@@ -158,12 +158,24 @@ export function Sidebar<T extends string>({
    * The button keeps navigating on every press, including the fifth: an easter
    * egg that swallows the control it hides behind is a bug.
    */
+  /**
+   * How many flights have been asked for. The COUNT is the whole state.
+   *
+   * It briefly also tracked "in the air right now", cleared on
+   * `onAnimationEnd`, so that the class would be an honest reading of the
+   * state. Measured in the browser, that handler did not fire: the animations
+   * run on the two GROUPS inside the drawing while the handler sat on the svg
+   * around them, and the class stayed on for good. It is gone rather than
+   * propped up with a timer, because it bought exactly one thing - a class that
+   * could be read as "is it flying" - and there is a better answer to that
+   * question anyway. Ask the browser what it is PLAYING (`getAnimations()`),
+   * never what classes an element carries: a class that goes on once and stays
+   * makes "is it flying" and "has it ever flown" the same question, which is
+   * how this feature's own timing bug survived being measured in the first
+   * place. What the class leaves behind between flights is `overflow: visible`,
+   * which changes nothing.
+   */
   const [flight, setFlight] = useState(0)
-  // Whether the arrow is in the air RIGHT NOW. Separate from the counter, and
-  // cleared when the animation ends, so the class is an honest reading of the
-  // state rather than something that goes on once and stays for the session.
-  // It also stops `overflow: visible` outliving the one moment that needs it.
-  const [flying, setFlying] = useState(false)
   const streak = useRef(NO_STREAK)
 
   function tapped() {
@@ -176,7 +188,6 @@ export function Sidebar<T extends string>({
       // when they liked it and want it again. Same trick, and the same reason,
       // as the shake on a refused save.
       setFlight((n) => n + 1)
-      setFlying(true)
     }
   }
 
@@ -207,8 +218,7 @@ export function Sidebar<T extends string>({
           key={flight}
           size={narrow ? 36 : 80}
           style={{ color: LOGO_GOLD }}
-          className={`shrink-0 ${flying ? 'al-logo-loose' : ''}`}
-          onAnimationEnd={() => setFlying(false)}
+          className={`shrink-0 ${flight > 0 ? 'al-logo-loose' : ''}`}
         />
         {!narrow && (
           <span className="text-[19px] font-semibold tracking-tight text-carbon-text">
