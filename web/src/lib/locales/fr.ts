@@ -137,7 +137,6 @@ const fr: Translations = {
   'edit.newJob': 'nouvelle-tache',
   'edit.pickDrive': 'Un disque enregistré',
   'edit.pickRemote': 'Une cible configurée',
-  'targets.storage': 'Cloud et connexions',
   'targets.storageEmpty': 'Aucune cible de stockage. Ajoutez-en une pour atteindre un compartiment S3, un hôte SSH ou un partage Windows.',
   'targets.addStorage': 'Ajouter un stockage',
   'targets.remoteName': 'Nom',
@@ -392,6 +391,12 @@ const fr: Translations = {
   'targets.deleteDriveHint': 'Retire ce disque de la liste ET enlève le fichier d\'identité du disque lui-même. Une tâche qui le vise ne le trouvera plus. Les fichiers sur le disque restent intacts.',
   'confirm.deleteDrive': 'Supprimer ce disque ?',
   'confirm.deleteDriveStakes': '{name} ne sera plus un disque enregistré. Toute tâche qui le vise le signalera comme non connecté jusqu\'à ce que vous l\'enregistriez à nouveau. Rien n\'est supprimé sur le disque.',
+  'targets.cloud': 'Stockage cloud',
+  'targets.connections': 'Serveurs et partages',
+  'targets.pickSearch': 'Rechercher',
+  'targets.pickSearchPlaceholder': 'Nextcloud, Dropbox, SFTP.',
+  'targets.pickNothing': 'Rien ne correspond.',
+  'targets.pickMore': '{count} de plus, sous leur nom rclone',
 }
 
 export default fr

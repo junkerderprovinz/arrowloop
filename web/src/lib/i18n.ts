@@ -320,7 +320,6 @@ export const en = {
   'edit.newJob': 'new-job',
   'edit.pickDrive': 'A registered drive',
   'edit.pickRemote': 'A configured target',
-  'targets.storage': 'Cloud & connections',
   'targets.storageEmpty': 'No storage targets yet. Add one to reach an S3 bucket, an SSH host or a Windows share.',
   'targets.addStorage': 'Add storage',
   'targets.remoteName': 'Name',
@@ -484,6 +483,12 @@ export const en = {
   'targets.deleteDriveHint': 'Removes this drive from the list AND takes the identity file off the drive itself. A job pointing at it stops finding it. The files on the drive are untouched.',
   'confirm.deleteDrive': 'Delete this drive?',
   'confirm.deleteDriveStakes': '{name} stops being a registered drive. Any job pointing at it will report that it is not attached until you register it again. Nothing on the drive is deleted.',
+  'targets.cloud': 'Cloud storage',
+  'targets.connections': 'Servers & shares',
+  'targets.pickSearch': 'Search',
+  'targets.pickSearchPlaceholder': 'Nextcloud, Dropbox, SFTP.',
+  'targets.pickNothing': 'Nothing matches that.',
+  'targets.pickMore': '{count} more, by their rclone name',
 } as const
 
 export type TranslationKey = keyof typeof en
@@ -756,7 +761,6 @@ export const de: Translations = {
   'edit.newJob': 'neuer-auftrag',
   'edit.pickDrive': 'Ein angemeldeter Datenträger',
   'edit.pickRemote': 'Ein eingerichtetes Ziel',
-  'targets.storage': 'Cloud & Verbindungen',
   'targets.storageEmpty':
     'Noch kein Speicherziel. Lege eines an, um einen S3-Eimer, einen SSH-Rechner oder eine Windows-Freigabe zu erreichen.',
   'targets.addStorage': 'Speicher anlegen',
@@ -916,6 +920,12 @@ export const de: Translations = {
   'targets.deleteDriveHint': 'Entfernt diesen Datenträger aus der Liste UND nimmt die Kennungsdatei vom Datenträger selbst. Ein Auftrag, der darauf zeigt, findet ihn nicht mehr. Die Dateien auf dem Datenträger bleiben unangetastet.',
   'confirm.deleteDrive': 'Diesen Datenträger löschen?',
   'confirm.deleteDriveStakes': '{name} ist danach kein angemeldeter Datenträger mehr. Jeder Auftrag, der darauf zeigt, meldet ihn als nicht angeschlossen, bis du ihn erneut anmeldest. Auf dem Datenträger selbst wird nichts gelöscht.',
+  'targets.cloud': 'Cloud-Speicher',
+  'targets.connections': 'Server & Freigaben',
+  'targets.pickSearch': 'Suchen',
+  'targets.pickSearchPlaceholder': 'Nextcloud, Dropbox, SFTP.',
+  'targets.pickNothing': 'Dazu passt nichts.',
+  'targets.pickMore': '{count} weitere, unter ihrem rclone-Namen',
 }
 
 // ---------------------------------------------------------------------------

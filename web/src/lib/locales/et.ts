@@ -137,7 +137,6 @@ const et: Translations = {
   'edit.newJob': 'uus-too',
   'edit.pickDrive': 'Registreeritud ketas',
   'edit.pickRemote': 'Seadistatud sihtkoht',
-  'targets.storage': 'Pilv ja ühendused',
   'targets.storageEmpty': 'Salvestuse sihtkohti pole veel. Lisage üks, et jõuda S3 ämbrini, SSH masinani või Windowsi jagatud kaustani.',
   'targets.addStorage': 'Lisa salvestusruum',
   'targets.remoteName': 'Nimi',
@@ -392,6 +391,12 @@ const et: Translations = {
   'targets.deleteDriveHint': 'Eemaldab selle ketta loendist JA võtab tuvastusfaili kettalt endalt. Sellele osutav töö ei leia seda enam. Ketta failid jäävad puutumata.',
   'confirm.deleteDrive': 'Kas kustutada see ketas?',
   'confirm.deleteDriveStakes': '{name} ei ole enam registreeritud ketas. Iga sellele osutav töö teatab, et see pole ühendatud, kuni registreerid selle uuesti. Kettal ei kustutata midagi.',
+  'targets.cloud': 'Pilvesalvestus',
+  'targets.connections': 'Serverid ja jagamised',
+  'targets.pickSearch': 'Otsi',
+  'targets.pickSearchPlaceholder': 'Nextcloud, Dropbox, SFTP.',
+  'targets.pickNothing': 'Miski ei sobi.',
+  'targets.pickMore': 'Veel {count}, rclone nime järgi',
 }
 
 export default et

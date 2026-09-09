@@ -137,7 +137,6 @@ const lv: Translations = {
   'edit.newJob': 'jauns-uzdevums',
   'edit.pickDrive': 'Reģistrēts disks',
   'edit.pickRemote': 'Iestatīts galamērķis',
-  'targets.storage': 'Mākonis un savienojumi',
   'targets.storageEmpty': 'Vēl nav krātuves galamērķu. Pievienojiet vienu, lai sasniegtu S3 spaini, SSH datoru vai Windows koplietojumu.',
   'targets.addStorage': 'Pievienot krātuvi',
   'targets.remoteName': 'Nosaukums',
@@ -392,6 +391,12 @@ const lv: Translations = {
   'targets.deleteDriveHint': 'Noņem šo disku no saraksta UN dzēš identitātes datni no paša diska. Darbs, kas uz to norāda, to vairs neatradīs. Datnes diskā paliek neskartas.',
   'confirm.deleteDrive': 'Dzēst šo disku?',
   'confirm.deleteDriveStakes': '{name} vairs nebūs reģistrēts disks. Jebkurš darbs, kas uz to norāda, ziņos, ka tas nav pievienots, līdz reģistrēsi to no jauna. Diskā nekas netiek dzēsts.',
+  'targets.cloud': 'Mākoņkrātuve',
+  'targets.connections': 'Serveri un koplietojumi',
+  'targets.pickSearch': 'Meklēt',
+  'targets.pickSearchPlaceholder': 'Nextcloud, Dropbox, SFTP.',
+  'targets.pickNothing': 'Nekas neatbilst.',
+  'targets.pickMore': 'Vēl {count}, pēc to rclone nosaukuma',
 }
 
 export default lv

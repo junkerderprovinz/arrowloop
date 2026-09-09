@@ -137,7 +137,6 @@ const lt: Translations = {
   'edit.newJob': 'nauja-uzduotis',
   'edit.pickDrive': 'Užregistruotas diskas',
   'edit.pickRemote': 'Sukonfigūruota paskirtis',
-  'targets.storage': 'Debesis ir ryšiai',
   'targets.storageEmpty': 'Kol kas saugyklos paskirčių nėra. Pridėkite vieną, kad pasiektumėte S3 kibirą, SSH kompiuterį ar Windows bendrinį aplanką.',
   'targets.addStorage': 'Pridėti saugyklą',
   'targets.remoteName': 'Pavadinimas',
@@ -392,6 +391,12 @@ const lt: Translations = {
   'targets.deleteDriveHint': 'Pašalina šį diską iš sąrašo IR ištrina tapatybės failą iš paties disko. Į jį rodanti užduotis jo nebeaptiks. Failai diske lieka nepaliesti.',
   'confirm.deleteDrive': 'Ištrinti šį diską?',
   'confirm.deleteDriveStakes': '{name} nebebus registruotas diskas. Kiekviena į jį rodanti užduotis praneš, kad jis neprijungtas, kol jo neužregistruosi iš naujo. Diske niekas netrinama.',
+  'targets.cloud': 'Debesų saugykla',
+  'targets.connections': 'Serveriai ir bendrinimai',
+  'targets.pickSearch': 'Ieškoti',
+  'targets.pickSearchPlaceholder': 'Nextcloud, Dropbox, SFTP.',
+  'targets.pickNothing': 'Niekas neatitinka.',
+  'targets.pickMore': 'Dar {count}, pagal rclone pavadinimą',
 }
 
 export default lt

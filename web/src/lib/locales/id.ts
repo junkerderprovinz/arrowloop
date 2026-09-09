@@ -137,7 +137,6 @@ const id: Translations = {
   'edit.newJob': 'tugas-baru',
   'edit.pickDrive': 'Cakram yang terdaftar',
   'edit.pickRemote': 'Tujuan yang sudah disiapkan',
-  'targets.storage': 'Cloud dan koneksi',
   'targets.storageEmpty': 'Belum ada tujuan penyimpanan. Tambahkan satu untuk mencapai ember S3, mesin SSH atau berbagi Windows.',
   'targets.addStorage': 'Tambah penyimpanan',
   'targets.remoteName': 'Nama',
@@ -392,6 +391,12 @@ const id: Translations = {
   'targets.deleteDriveHint': 'Mengeluarkan drive ini dari daftar DAN menghapus berkas identitas dari drive itu sendiri. Tugas yang menunjuk ke sana tidak akan menemukannya lagi. Berkas di drive tidak disentuh.',
   'confirm.deleteDrive': 'Hapus drive ini?',
   'confirm.deleteDriveStakes': '{name} tidak lagi menjadi drive terdaftar. Setiap tugas yang menunjuk ke sana akan melaporkannya sebagai tidak terpasang sampai kamu mendaftarkannya lagi. Tidak ada yang dihapus di drive.',
+  'targets.cloud': 'Penyimpanan awan',
+  'targets.connections': 'Server dan berbagi pakai',
+  'targets.pickSearch': 'Cari',
+  'targets.pickSearchPlaceholder': 'Nextcloud, Dropbox, SFTP.',
+  'targets.pickNothing': 'Tidak ada yang cocok.',
+  'targets.pickMore': '{count} lagi, dengan nama rclone-nya',
 }
 
 export default id

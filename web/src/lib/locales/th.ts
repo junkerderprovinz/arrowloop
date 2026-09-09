@@ -137,7 +137,6 @@ const th: Translations = {
   'edit.newJob': 'ngan-mai',
   'edit.pickDrive': 'ดิสก์ที่ลงทะเบียนไว้',
   'edit.pickRemote': 'ปลายทางที่ตั้งไว้',
-  'targets.storage': 'คลาวด์และการเชื่อมต่อ',
   'targets.storageEmpty': 'ยังไม่มีปลายทางที่เก็บข้อมูล เพิ่มสักแห่งเพื่อไปถึงถัง S3 เครื่อง SSH หรือแชร์ของ Windows',
   'targets.addStorage': 'เพิ่มที่เก็บข้อมูล',
   'targets.remoteName': 'ชื่อ',
@@ -392,6 +391,12 @@ const th: Translations = {
   'targets.deleteDriveHint': 'นำไดรฟ์นี้ออกจากรายการ และลบไฟล์ระบุตัวตนออกจากตัวไดรฟ์ด้วย งานที่ชี้ไปที่ไดรฟ์นี้จะหาไม่พบอีก ไฟล์บนไดรฟ์ไม่ถูกแตะต้อง',
   'confirm.deleteDrive': 'ลบไดรฟ์นี้หรือไม่',
   'confirm.deleteDriveStakes': '{name} จะไม่เป็นไดรฟ์ที่ลงทะเบียนอีกต่อไป งานใดที่ชี้ไปที่ไดรฟ์นี้จะรายงานว่าไม่ได้เชื่อมต่อ จนกว่าคุณจะลงทะเบียนใหม่ ไม่มีอะไรบนไดรฟ์ถูกลบ',
+  'targets.cloud': 'ที่เก็บบนคลาวด์',
+  'targets.connections': 'เซิร์ฟเวอร์และการแชร์',
+  'targets.pickSearch': 'ค้นหา',
+  'targets.pickSearchPlaceholder': 'Nextcloud, Dropbox, SFTP',
+  'targets.pickNothing': 'ไม่มีรายการที่ตรงกัน',
+  'targets.pickMore': 'อีก {count} รายการ ตามชื่อใน rclone',
 }
 
 export default th

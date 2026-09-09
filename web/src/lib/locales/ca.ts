@@ -137,7 +137,6 @@ const ca: Translations = {
   'edit.newJob': 'tasca-nova',
   'edit.pickDrive': 'Un disc registrat',
   'edit.pickRemote': 'Una destinació configurada',
-  'targets.storage': 'Núvol i connexions',
   'targets.storageEmpty': 'Encara no hi ha destinacions d\'emmagatzematge. Afegiu-ne una per arribar a un cubell S3, a una màquina SSH o a una compartició de Windows.',
   'targets.addStorage': 'Afegeix emmagatzematge',
   'targets.remoteName': 'Nom',
@@ -392,6 +391,12 @@ const ca: Translations = {
   'targets.deleteDriveHint': 'Treu aquest disc de la llista I elimina el fitxer d\'identitat del disc mateix. Una tasca que hi apunti deixarà de trobar-lo. Els fitxers del disc no es toquen.',
   'confirm.deleteDrive': 'Voleu suprimir aquest disc?',
   'confirm.deleteDriveStakes': '{name} deixarà de ser un disc registrat. Qualsevol tasca que hi apunti el donarà per no connectat fins que el torneu a registrar. Al disc no s\'esborra res.',
+  'targets.cloud': 'Emmagatzematge al núvol',
+  'targets.connections': 'Servidors i recursos compartits',
+  'targets.pickSearch': 'Cerca',
+  'targets.pickSearchPlaceholder': 'Nextcloud, Dropbox, SFTP.',
+  'targets.pickNothing': 'No hi coincideix res.',
+  'targets.pickMore': '{count} més, pel seu nom a rclone',
 }
 
 export default ca

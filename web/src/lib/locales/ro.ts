@@ -137,7 +137,6 @@ const ro: Translations = {
   'edit.newJob': 'sarcina-noua',
   'edit.pickDrive': 'Un disc înregistrat',
   'edit.pickRemote': 'O destinație configurată',
-  'targets.storage': 'Cloud și conexiuni',
   'targets.storageEmpty': 'Încă nicio destinație de stocare. Adăugați una pentru a ajunge la o găleată S3, la o gazdă SSH sau la o partajare Windows.',
   'targets.addStorage': 'Adaugă stocare',
   'targets.remoteName': 'Nume',
@@ -392,6 +391,12 @@ const ro: Translations = {
   'targets.deleteDriveHint': 'Scoate acest disc din listă ȘI elimină fișierul de identitate de pe discul însuși. O sarcină care îl vizează nu îl va mai găsi. Fișierele de pe disc rămân neatinse.',
   'confirm.deleteDrive': 'Ștergi acest disc?',
   'confirm.deleteDriveStakes': '{name} nu va mai fi un disc înregistrat. Orice sarcină care îl vizează îl va raporta ca neconectat până îl înregistrezi din nou. Pe disc nu se șterge nimic.',
+  'targets.cloud': 'Stocare în cloud',
+  'targets.connections': 'Servere și partajări',
+  'targets.pickSearch': 'Caută',
+  'targets.pickSearchPlaceholder': 'Nextcloud, Dropbox, SFTP.',
+  'targets.pickNothing': 'Nimic nu corespunde.',
+  'targets.pickMore': 'Încă {count}, după numele din rclone',
 }
 
 export default ro

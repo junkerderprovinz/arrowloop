@@ -137,7 +137,6 @@ const nl: Translations = {
   'edit.newJob': 'nieuwe-taak',
   'edit.pickDrive': 'Een aangemelde schijf',
   'edit.pickRemote': 'Een ingesteld doel',
-  'targets.storage': 'Cloud en verbindingen',
   'targets.storageEmpty': 'Nog geen opslagdoelen. Voeg er een toe om een S3-bucket, een SSH-machine of een Windows-share te bereiken.',
   'targets.addStorage': 'Opslag toevoegen',
   'targets.remoteName': 'Naam',
@@ -392,6 +391,12 @@ const nl: Translations = {
   'targets.deleteDriveHint': 'Haalt deze schijf uit de lijst EN verwijdert het identiteitsbestand van de schijf zelf. Een taak die ernaar wijst vindt hem niet meer. De bestanden op de schijf blijven ongemoeid.',
   'confirm.deleteDrive': 'Deze schijf verwijderen?',
   'confirm.deleteDriveStakes': '{name} is daarna geen geregistreerde schijf meer. Elke taak die ernaar wijst meldt hem als niet aangesloten totdat je hem opnieuw registreert. Op de schijf wordt niets verwijderd.',
+  'targets.cloud': 'Cloudopslag',
+  'targets.connections': 'Servers en shares',
+  'targets.pickSearch': 'Zoeken',
+  'targets.pickSearchPlaceholder': 'Nextcloud, Dropbox, SFTP.',
+  'targets.pickNothing': 'Niets komt overeen.',
+  'targets.pickMore': 'Nog {count}, onder hun rclone-naam',
 }
 
 export default nl

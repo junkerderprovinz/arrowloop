@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { Empty, Rule, RowActions, Stack } from '../components/Shell'
 import { IconAction } from '../components/IconAction'
+import { ProviderPicker } from '../components/ProviderPicker'
 import { Card } from '../lib/glimstone/Card'
 import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
@@ -10,7 +11,7 @@ import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
 import { IconCheck, IconCopy, IconDelete, IconEdit } from '../components/glyphs'
 import { Choice, Field, Secret, Text } from '../components/Field'
 import { ToggleRow } from '../components/ToggleRow'
-import { api, type Backend, type Remote, type Volume } from '../lib/api'
+import { api, type Backend, type Provider, type Remote, type Volume } from '../lib/api'
 import { useT } from '../lib/i18n'
 import { Since } from './Jobs'
 
@@ -26,6 +27,8 @@ export function Targets() {
   const { t } = useT()
   const [remotes, setRemotes] = useState<Remote[]>([])
   const [backends, setBackends] = useState<Backend[]>([])
+  const [providers, setProviders] = useState<Provider[]>([])
+  const [unlisted, setUnlisted] = useState<Backend[]>([])
   const [volumes, setVolumes] = useState<Volume[]>([])
   const [error, setError] = useState<string | null>(null)
 
@@ -35,6 +38,8 @@ export function Targets() {
       .then((r) => {
         setRemotes(r.remotes)
         setBackends(r.backends)
+        setProviders(r.providers ?? [])
+        setUnlisted(r.unlisted ?? [])
       })
       .catch((e: Error) => setError(e.message))
     api
@@ -52,7 +57,35 @@ export function Targets() {
           <p className="text-xs text-statusFail">{error}</p>
         </Card>
       )}
-      <Storage remotes={remotes} backends={backends} onChanged={refresh} />
+      {/* Two cards, and the line between them is what somebody HAS: an
+          account with a company, or a machine and an address. That puts
+          Backblaze with the clouds although it speaks S3, and plain S3 with the
+          protocols although it is Amazon's - which is right, because the
+          question being answered is "what am I connecting to", not "which
+          protocol does it use". */}
+      <Storage
+        group="cloud"
+        title={t('targets.cloud')}
+        hueIndex={0}
+        remotes={remotes}
+        backends={backends}
+        providers={providers}
+        unlisted={[]}
+        onChanged={refresh}
+      />
+      <Storage
+        group="protocol"
+        title={t('targets.connections')}
+        hueIndex={1}
+        remotes={remotes}
+        backends={backends}
+        providers={providers}
+        /* The unlisted backends belong here rather than under the clouds: an
+           rclone type nobody has named is a protocol as far as this screen is
+           concerned. */
+        unlisted={unlisted}
+        onChanged={refresh}
+      />
       <Drives volumes={volumes} onChanged={refresh} />
     </Stack>
   )
@@ -63,23 +96,55 @@ export function Targets() {
 // ---------------------------------------------------------------------------
 
 function Storage({
+  group,
+  title,
+  hueIndex,
   remotes,
   backends,
+  providers,
+  unlisted,
   onChanged,
 }: {
+  /** Which half of the providers this card offers. */
+  group: 'cloud' | 'protocol'
+  title: string
+  hueIndex: number
   remotes: Remote[]
   backends: Backend[]
+  providers: Provider[]
+  unlisted: Backend[]
   onChanged: () => void
 }) {
   const { t } = useT()
   const [editing, setEditing] = useState<string | null>(null)
-  const [adding, setAdding] = useState(false)
+  /**
+   * Adding is TWO steps now: pick what you are connecting to, then fill in
+   * that thing's own fields. Null is closed, 'pick' is the list, and a string
+   * is the chosen backend.
+   *
+   * Two steps rather than one form with a type dropdown, because the dropdown
+   * asked somebody to know that Nextcloud is "webdav" before they could set up
+   * their Nextcloud.
+   */
+  const [adding, setAdding] = useState<null | 'pick' | string>(null)
+  const [preset, setPreset] = useState<Record<string, string>>({})
+
+  const mine = useMemo(() => providers.filter((p) => p.group === group), [providers, group])
+
+  // Which existing targets belong on THIS card, by the backend their provider
+  // resolves to. A target whose backend no provider on either card claims shows
+  // on the protocol card, where the unlisted backends are.
+  const cloudBackends = useMemo(
+    () => new Set(providers.filter((p) => p.group === 'cloud').map((p) => p.backend)),
+    [providers],
+  )
+  const rows = useMemo(
+    () => remotes.filter((r) => (group === 'cloud' ? cloudBackends.has(r.type) : !cloudBackends.has(r.type))),
+    [remotes, group, cloudBackends],
+  )
 
   return (
-    <Card
-      title={t('targets.storage')}
-      hueIndex={0}
-    >
+    <Card title={title} hueIndex={hueIndex}>
       {/* The card's own control, at the top of its body. GlimStone's Card draws
           a heading and nothing else, so a card's controls live in the body.
 
@@ -94,29 +159,42 @@ function Storage({
             labelKey="targets.addStorage"
             tone="accent"
             onClick={() => {
-              setAdding(true)
+              setAdding('pick')
+              setPreset({})
               setEditing(null)
             }}
           />
         </div>
       )}
-      {adding && (
+      {adding === 'pick' && (
+        <ProviderPicker
+          providers={mine}
+          unlisted={unlisted}
+          onPick={(backend, chosen) => {
+            setPreset(chosen)
+            setAdding(backend)
+          }}
+        />
+      )}
+      {adding !== null && adding !== 'pick' && (
         <RemoteForm
           backends={backends}
+          kind={adding}
+          preset={preset}
           onDone={(saved) => {
-            setAdding(false)
+            setAdding(null)
             if (saved) onChanged()
           }}
         />
       )}
 
-      {remotes.length === 0 && !adding ? (
+      {rows.length === 0 && adding === null ? (
         <Empty>{t('targets.storageEmpty')}</Empty>
       ) : (
         <ul className="flex flex-col">
-          {remotes.map((r, i) => (
+          {rows.map((r, i) => (
             <li key={r.name}>
-              {(i > 0 || adding) && <Rule />}
+              {(i > 0 || adding !== null) && <Rule />}
               {editing === r.name ? (
                 <RemoteForm
                   backends={backends}
@@ -132,7 +210,7 @@ function Storage({
                   row={i}
                   onEdit={() => {
                     setEditing(r.name)
-                    setAdding(false)
+                    setAdding(null)
                   }}
                   onChanged={onChanged}
                 />
@@ -276,19 +354,34 @@ function RemoteRow({
  */
 function RemoteForm({
   backends,
+  kind: chosen,
+  preset,
   existing,
   onDone,
 }: {
   backends: Backend[]
+  /**
+   * The backend, decided BEFORE this form opens.
+   *
+   * It used to be a dropdown at the top, which is what made the screen ask for
+   * an implementation detail: somebody setting up their Nextcloud had to know
+   * it is "webdav" first. The picker answers that question in the language of
+   * products, and this form only ever shows one backend's fields.
+   */
+  kind?: string
+  /** What the chosen provider fills in without being asked, such as the WebDAV
+   *  vendor that makes it work against Nextcloud rather than merely connect. */
+  preset?: Record<string, string>
   existing?: Remote
   onDone: (saved: boolean) => void
 }) {
   const { t } = useT()
   const [name, setName] = useState(existing?.name ?? '')
-  const [kind, setKind] = useState(existing?.type ?? backends[0]?.name ?? '')
-  const [values, setValues] = useState<Record<string, string>>(() =>
-    Object.fromEntries((existing?.settings ?? []).map((s) => [s.key, s.value])),
-  )
+  const kind = existing?.type ?? chosen ?? backends[0]?.name ?? ''
+  const [values, setValues] = useState<Record<string, string>>(() => ({
+    ...(preset ?? {}),
+    ...Object.fromEntries((existing?.settings ?? []).map((s) => [s.key, s.value])),
+  }))
   const [advanced, setAdvanced] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
@@ -349,17 +442,17 @@ function RemoteForm({
           <span>{t('targets.tokenNeeded', { backend: backend.name })}</span>
         </p>
       )}
+      {/* No type dropdown. The picker decided it, and offering it again here
+          would let somebody change it AFTER the preset was applied - a
+          Nextcloud target silently becoming plain WebDAV, with the vendor
+          setting left behind and no sign of it. The chosen kind is stated
+          rather than editable; going back is closing this and picking again. */}
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label={t('targets.remoteName')} hint={t('targets.remoteNameHint')}>
           <Text value={name} onChange={setName} placeholder="backup" mono />
         </Field>
         <Field label={t('targets.kind')}>
-          <Choice
-            value={kind}
-            onChange={setKind}
-            label={t('targets.kind')}
-            options={backends.map((b) => ({ value: b.name, label: b.name }))}
-          />
+          <p className="flex h-[var(--btn-h)] items-center text-dense text-carbon-textSub">{kind}</p>
         </Field>
       </div>
 

@@ -137,7 +137,6 @@ const eu: Translations = {
   'edit.newJob': 'lan-berria',
   'edit.pickDrive': 'Erregistratutako disko bat',
   'edit.pickRemote': 'Konfiguratutako helburu bat',
-  'targets.storage': 'Hodeia eta konexioak',
   'targets.storageEmpty': 'Oraindik ez dago biltegi-helbururik. Gehitu bat S3 ontzi batera, SSH ostalari batera edo Windows partekatze batera iristeko.',
   'targets.addStorage': 'Gehitu biltegia',
   'targets.remoteName': 'Izena',
@@ -392,6 +391,12 @@ const eu: Translations = {
   'targets.deleteDriveHint': 'Disko hau zerrendatik kentzen du ETA identitate-fitxategia diskotik bertatik ere kentzen du. Harengana seinalatzen duen lanak ez du gehiago aurkituko. Diskoko fitxategiak ukitu gabe geratzen dira.',
   'confirm.deleteDrive': 'Disko hau ezabatu?',
   'confirm.deleteDriveStakes': '{name} ez da gehiago erregistratutako diskoa izango. Harengana seinalatzen duen lan orok konektatu gabe dagoela jakinaraziko du, berriro erregistratu arte. Diskoan ez da ezer ezabatzen.',
+  'targets.cloud': 'Hodeiko biltegia',
+  'targets.connections': 'Zerbitzariak eta partekatzeak',
+  'targets.pickSearch': 'Bilatu',
+  'targets.pickSearchPlaceholder': 'Nextcloud, Dropbox, SFTP.',
+  'targets.pickNothing': 'Ez dator bat ezer.',
+  'targets.pickMore': 'Beste {count}, beren rclone izenaz',
 }
 
 export default eu

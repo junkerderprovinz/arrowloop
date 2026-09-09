@@ -137,7 +137,6 @@ const ja: Translations = {
   'edit.newJob': 'new-job',
   'edit.pickDrive': '登録済みのドライブ',
   'edit.pickRemote': '設定済みの接続先',
-  'targets.storage': 'クラウドと接続',
   'targets.storageEmpty': 'ストレージの接続先がまだありません。S3 バケット、SSH ホスト、Windows 共有に届くように追加してください。',
   'targets.addStorage': 'ストレージを追加',
   'targets.remoteName': '名前',
@@ -392,6 +391,12 @@ const ja: Translations = {
   'targets.deleteDriveHint': 'この드라이브をリストから外し、ドライブ上の識別ファイルも取り除きます。これを指す処理は見つけられなくなります。ドライブ上のファイルはそのままです。',
   'confirm.deleteDrive': 'このドライブを削除しますか？',
   'confirm.deleteDriveStakes': '{name} は登録済みドライブではなくなります。これを指す処理は、再登録するまで未接続として報告します。ドライブ上では何も削除されません。',
+  'targets.cloud': 'クラウドストレージ',
+  'targets.connections': 'サーバーと共有',
+  'targets.pickSearch': '検索',
+  'targets.pickSearchPlaceholder': 'Nextcloud、Dropbox、SFTP。',
+  'targets.pickNothing': '該当するものはありません。',
+  'targets.pickMore': '他に {count} 件、rclone の名前で',
 }
 
 export default ja

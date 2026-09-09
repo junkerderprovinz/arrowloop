@@ -137,7 +137,6 @@ const pt: Translations = {
   'edit.newJob': 'tarefa-nova',
   'edit.pickDrive': 'Um disco registado',
   'edit.pickRemote': 'Um destino configurado',
-  'targets.storage': 'Nuvem e ligações',
   'targets.storageEmpty': 'Ainda não há destinos de armazenamento. Adicione um para alcançar um bucket S3, um servidor SSH ou uma partilha Windows.',
   'targets.addStorage': 'Adicionar armazenamento',
   'targets.remoteName': 'Nome',
@@ -392,6 +391,12 @@ const pt: Translations = {
   'targets.deleteDriveHint': 'Retira este disco da lista E remove o ficheiro de identidade do próprio disco. Uma tarefa que aponte para ele deixa de o encontrar. Os ficheiros no disco ficam intactos.',
   'confirm.deleteDrive': 'Eliminar este disco?',
   'confirm.deleteDriveStakes': '{name} deixa de ser um disco registado. Qualquer tarefa que aponte para ele vai indicá-lo como não ligado até o registares de novo. Nada é eliminado no disco.',
+  'targets.cloud': 'Armazenamento na nuvem',
+  'targets.connections': 'Servidores e partilhas',
+  'targets.pickSearch': 'Procurar',
+  'targets.pickSearchPlaceholder': 'Nextcloud, Dropbox, SFTP.',
+  'targets.pickNothing': 'Nada corresponde.',
+  'targets.pickMore': 'Mais {count}, pelo nome em rclone',
 }
 
 export default pt

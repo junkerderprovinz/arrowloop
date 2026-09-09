@@ -137,7 +137,6 @@ const is: Translations = {
   'edit.newJob': 'nytt-verk',
   'edit.pickDrive': 'Skráður diskur',
   'edit.pickRemote': 'Uppsettur áfangastaður',
-  'targets.storage': 'Ský og tengingar',
   'targets.storageEmpty': 'Engir geymsluáfangastaðir enn. Bættu einum við til að ná í S3 fötu, SSH vél eða Windows sameign.',
   'targets.addStorage': 'Bæta við geymslu',
   'targets.remoteName': 'Heiti',
@@ -392,6 +391,12 @@ const is: Translations = {
   'targets.deleteDriveHint': 'Fjarlægir þennan disk af listanum OG tekur auðkennisskrána af disknum sjálfum. Verk sem bendir á hann finnur hann ekki lengur. Skrárnar á disknum eru ósnertar.',
   'confirm.deleteDrive': 'Eyða þessum disk?',
   'confirm.deleteDriveStakes': '{name} verður ekki lengur skráður diskur. Hvert verk sem bendir á hann tilkynnir hann ótengdan þar til þú skráir hann aftur. Engu er eytt á disknum.',
+  'targets.cloud': 'Skýjageymsla',
+  'targets.connections': 'Netþjónar og sameignir',
+  'targets.pickSearch': 'Leita',
+  'targets.pickSearchPlaceholder': 'Nextcloud, Dropbox, SFTP.',
+  'targets.pickNothing': 'Ekkert passar.',
+  'targets.pickMore': '{count} til viðbótar, undir rclone-heiti',
 }
 
 export default is

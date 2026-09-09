@@ -137,7 +137,6 @@ const fa: Translations = {
   'edit.newJob': 'kar-e-taze',
   'edit.pickDrive': 'یک دیسک ثبت‌شده',
   'edit.pickRemote': 'یک مقصد تنظیم‌شده',
-  'targets.storage': 'ابر و اتصال‌ها',
   'targets.storageEmpty': 'هنوز هیچ مقصد ذخیره‌سازی نیست. یکی بیفزایید تا به سطل S3، میزبان SSH یا اشتراک ویندوز برسید.',
   'targets.addStorage': 'افزودن ذخیره‌سازی',
   'targets.remoteName': 'نام',
@@ -392,6 +391,12 @@ const fa: Translations = {
   'targets.deleteDriveHint': 'این درایو را از فهرست برمی‌دارد و پرونده شناسه را از خود درایو هم پاک می‌کند. کاری که به آن اشاره دارد دیگر آن را پیدا نمی‌کند. پرونده‌های روی درایو دست‌نخورده می‌مانند.',
   'confirm.deleteDrive': 'این درایو حذف شود؟',
   'confirm.deleteDriveStakes': '{name} دیگر درایو ثبت‌شده نخواهد بود. هر کاری که به آن اشاره دارد آن را متصل‌نشده گزارش می‌کند تا وقتی دوباره ثبتش کنی. روی خود درایو چیزی حذف نمی‌شود.',
+  'targets.cloud': 'فضای ابری',
+  'targets.connections': 'سرورها و اشتراک‌ها',
+  'targets.pickSearch': 'جستجو',
+  'targets.pickSearchPlaceholder': 'Nextcloud، Dropbox، SFTP.',
+  'targets.pickNothing': 'چیزی مطابقت ندارد.',
+  'targets.pickMore': '{count} مورد دیگر، با نامشان در rclone',
 }
 
 export default fa

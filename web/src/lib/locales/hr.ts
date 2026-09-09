@@ -137,7 +137,6 @@ const hr: Translations = {
   'edit.newJob': 'novi-zadatak',
   'edit.pickDrive': 'Prijavljen disk',
   'edit.pickRemote': 'Postavljeno odredište',
-  'targets.storage': 'Oblak i veze',
   'targets.storageEmpty': 'Još nema odredišta za pohranu. Dodajte jedno da dosegnete kantu S3, poslužitelj SSH ili dijeljenje Windows.',
   'targets.addStorage': 'Dodaj pohranu',
   'targets.remoteName': 'Naziv',
@@ -392,6 +391,12 @@ const hr: Translations = {
   'targets.deleteDriveHint': 'Uklanja ovaj disk s popisa I briše datoteku identiteta s njega samog. Posao koji na njega upućuje više ga neće nalaziti. Datoteke na disku ostaju netaknute.',
   'confirm.deleteDrive': 'Izbrisati ovaj disk?',
   'confirm.deleteDriveStakes': '{name} više neće biti registrirani disk. Svaki posao koji na njega upućuje prijavit će ga kao nepriključenog dok ga ponovno ne registriraš. Na disku se ništa ne briše.',
+  'targets.cloud': 'Pohrana u oblaku',
+  'targets.connections': 'Poslužitelji i dijeljenja',
+  'targets.pickSearch': 'Traži',
+  'targets.pickSearchPlaceholder': 'Nextcloud, Dropbox, SFTP.',
+  'targets.pickNothing': 'Ništa ne odgovara.',
+  'targets.pickMore': 'Još {count}, pod nazivom u rcloneu',
 }
 
 export default hr

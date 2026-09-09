@@ -137,7 +137,6 @@ const sk: Translations = {
   'edit.newJob': 'nova-uloha',
   'edit.pickDrive': 'Zaregistrovaný disk',
   'edit.pickRemote': 'Nastavený cieľ',
-  'targets.storage': 'Cloud a pripojenia',
   'targets.storageEmpty': 'Zatiaľ žiadne úložiská. Pridajte jedno, aby ste dosiahli na kôš S3, na server SSH alebo na zdieľanie Windows.',
   'targets.addStorage': 'Pridať úložisko',
   'targets.remoteName': 'Názov',
@@ -392,6 +391,12 @@ const sk: Translations = {
   'targets.deleteDriveHint': 'Odoberie tento disk zo zoznamu A odstráni súbor s identitou z disku samotného. Úloha, ktorá naň mieri, ho prestane nachádzať. Súbory na disku zostanú nedotknuté.',
   'confirm.deleteDrive': 'Vymazať tento disk?',
   'confirm.deleteDriveStakes': '{name} prestane byť registrovaným diskom. Každá úloha, ktorá naň mieri, ho ohlási ako nepripojený, kým ho znova nezaregistruješ. Na disku sa nič nemaže.',
+  'targets.cloud': 'Cloudové úložisko',
+  'targets.connections': 'Servery a zdieľania',
+  'targets.pickSearch': 'Hľadať',
+  'targets.pickSearchPlaceholder': 'Nextcloud, Dropbox, SFTP.',
+  'targets.pickNothing': 'Nič nezodpovedá.',
+  'targets.pickMore': 'Ďalších {count}, pod názvom v rclone',
 }
 
 export default sk

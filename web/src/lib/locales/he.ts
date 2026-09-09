@@ -137,7 +137,6 @@ const he: Translations = {
   'edit.newJob': 'mesima-hadasha',
   'edit.pickDrive': 'כונן רשום',
   'edit.pickRemote': 'יעד מוגדר',
-  'targets.storage': 'ענן וחיבורים',
   'targets.storageEmpty': 'אין עדיין יעדי אחסון. הוסף אחד כדי להגיע לדלי S3, למארח SSH או לשיתוף Windows.',
   'targets.addStorage': 'הוספת אחסון',
   'targets.remoteName': 'שם',
@@ -392,6 +391,12 @@ const he: Translations = {
   'targets.deleteDriveHint': 'מסיר את הכונן הזה מהרשימה וגם מוחק את קובץ הזהות מהכונן עצמו. משימה שמצביעה עליו לא תמצא אותו יותר. הקבצים על הכונן נשארים כמו שהם.',
   'confirm.deleteDrive': 'למחוק את הכונן הזה?',
   'confirm.deleteDriveStakes': '{name} יפסיק להיות כונן רשום. כל משימה שמצביעה עליו תדווח שהוא לא מחובר עד שתרשום אותו מחדש. על הכונן עצמו לא נמחק דבר.',
+  'targets.cloud': 'אחסון בענן',
+  'targets.connections': 'שרתים ושיתופים',
+  'targets.pickSearch': 'חיפוש',
+  'targets.pickSearchPlaceholder': 'Nextcloud, Dropbox, SFTP.',
+  'targets.pickNothing': 'שום דבר לא מתאים.',
+  'targets.pickMore': 'עוד {count}, בשם שלהם ב-rclone',
 }
 
 export default he

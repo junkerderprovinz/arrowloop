@@ -137,7 +137,6 @@ const ar: Translations = {
   'edit.newJob': 'mohemma-jadida',
   'edit.pickDrive': 'قرص مسجَّل',
   'edit.pickRemote': 'وجهة معدّة',
-  'targets.storage': 'السحابة والاتصالات',
   'targets.storageEmpty': 'لا وجهات تخزين بعد. أضف واحدة للوصول إلى سلة S3 أو مضيف SSH أو مشاركة ويندوز.',
   'targets.addStorage': 'إضافة تخزين',
   'targets.remoteName': 'الاسم',
@@ -392,6 +391,12 @@ const ar: Translations = {
   'targets.deleteDriveHint': 'يزيل هذا القرص من القائمة ويحذف ملف الهوية من القرص نفسه. المهمة التي تشير إليه لن تجده بعد ذلك. الملفات على القرص تبقى كما هي.',
   'confirm.deleteDrive': 'حذف هذا القرص؟',
   'confirm.deleteDriveStakes': 'لن يعود {name} قرصًا مسجلًا. أي مهمة تشير إليه ستبلغ أنه غير متصل حتى تسجله من جديد. لا يُحذف شيء على القرص.',
+  'targets.cloud': 'تخزين سحابي',
+  'targets.connections': 'خوادم ومشاركات',
+  'targets.pickSearch': 'بحث',
+  'targets.pickSearchPlaceholder': 'Nextcloud، Dropbox، SFTP.',
+  'targets.pickNothing': 'لا شيء يطابق ذلك.',
+  'targets.pickMore': '{count} أخرى، باسمها في rclone',
 }
 
 export default ar

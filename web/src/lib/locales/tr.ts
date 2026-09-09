@@ -137,7 +137,6 @@ const tr: Translations = {
   'edit.newJob': 'yeni-is',
   'edit.pickDrive': 'Kaydedilmiş bir disk',
   'edit.pickRemote': 'Kurulmuş bir hedef',
-  'targets.storage': 'Bulut ve bağlantılar',
   'targets.storageEmpty': 'Henüz depolama hedefi yok. Bir S3 kovasına, bir SSH makinesine ya da bir Windows paylaşımına ulaşmak için bir tane ekle.',
   'targets.addStorage': 'Depolama ekle',
   'targets.remoteName': 'Ad',
@@ -392,6 +391,12 @@ const tr: Translations = {
   'targets.deleteDriveHint': 'Bu sürücüyü listeden çıkarır VE kimlik dosyasını sürücünün kendisinden kaldırır. Onu gösteren bir iş artık bulamaz. Sürücüdeki dosyalara dokunulmaz.',
   'confirm.deleteDrive': 'Bu sürücü silinsin mi?',
   'confirm.deleteDriveStakes': '{name} artık kayıtlı bir sürücü olmayacak. Onu gösteren her iş, yeniden kaydedene kadar bağlı değil diye bildirir. Sürücüde hiçbir şey silinmez.',
+  'targets.cloud': 'Bulut depolama',
+  'targets.connections': 'Sunucular ve paylaşımlar',
+  'targets.pickSearch': 'Ara',
+  'targets.pickSearchPlaceholder': 'Nextcloud, Dropbox, SFTP.',
+  'targets.pickNothing': 'Eşleşen bir şey yok.',
+  'targets.pickMore': '{count} tane daha, rclone adlarıyla',
 }
 
 export default tr

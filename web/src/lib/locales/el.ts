@@ -137,7 +137,6 @@ const el: Translations = {
   'edit.newJob': 'nea-ergasia',
   'edit.pickDrive': 'Ένας δηλωμένος δίσκος',
   'edit.pickRemote': 'Ένας ρυθμισμένος προορισμός',
-  'targets.storage': 'Cloud και συνδέσεις',
   'targets.storageEmpty': 'Κανένας προορισμός αποθήκευσης ακόμη. Προσθέστε έναν για να φτάσετε σε έναν κάδο S3, σε έναν κόμβο SSH ή σε μια κοινή χρήση Windows.',
   'targets.addStorage': 'Προσθήκη αποθήκευσης',
   'targets.remoteName': 'Όνομα',
@@ -392,6 +391,12 @@ const el: Translations = {
   'targets.deleteDriveHint': 'Αφαιρεί αυτόν τον δίσκο από τη λίστα ΚΑΙ διαγράφει το αρχείο ταυτότητας από τον ίδιο τον δίσκο. Μια εργασία που τον χρησιμοποιεί δεν θα τον βρίσκει πια. Τα αρχεία στον δίσκο μένουν άθικτα.',
   'confirm.deleteDrive': 'Διαγραφή αυτού του δίσκου;',
   'confirm.deleteDriveStakes': 'Το {name} παύει να είναι καταχωρημένος δίσκος. Κάθε εργασία που τον χρησιμοποιεί θα τον αναφέρει ως μη συνδεδεμένο μέχρι να τον καταχωρήσεις ξανά. Στον δίσκο δεν διαγράφεται τίποτα.',
+  'targets.cloud': 'Αποθήκευση στο cloud',
+  'targets.connections': 'Διακομιστές και κοινόχρηστα',
+  'targets.pickSearch': 'Αναζήτηση',
+  'targets.pickSearchPlaceholder': 'Nextcloud, Dropbox, SFTP.',
+  'targets.pickNothing': 'Δεν ταιριάζει τίποτα.',
+  'targets.pickMore': 'Άλλα {count}, με το όνομά τους στο rclone',
 }
 
 export default el

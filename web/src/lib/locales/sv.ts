@@ -137,7 +137,6 @@ const sv: Translations = {
   'edit.newJob': 'nytt-jobb',
   'edit.pickDrive': 'En anmäld disk',
   'edit.pickRemote': 'Ett inställt mål',
-  'targets.storage': 'Moln och anslutningar',
   'targets.storageEmpty': 'Inga lagringsmål än. Lägg till ett för att nå en S3-bucket, en SSH-värd eller en Windows-utdelning.',
   'targets.addStorage': 'Lägg till lagring',
   'targets.remoteName': 'Namn',
@@ -392,6 +391,12 @@ const sv: Translations = {
   'targets.deleteDriveHint': 'Tar bort den här enheten från listan OCH tar bort identitetsfilen från enheten själv. Ett jobb som pekar på den hittar den inte längre. Filerna på enheten lämnas orörda.',
   'confirm.deleteDrive': 'Ta bort den här enheten?',
   'confirm.deleteDriveStakes': '{name} är inte längre en registrerad enhet. Alla jobb som pekar på den rapporterar den som inte ansluten tills du registrerar den igen. Inget raderas på enheten.',
+  'targets.cloud': 'Molnlagring',
+  'targets.connections': 'Servrar och utdelningar',
+  'targets.pickSearch': 'Sök',
+  'targets.pickSearchPlaceholder': 'Nextcloud, Dropbox, SFTP.',
+  'targets.pickNothing': 'Inget matchar.',
+  'targets.pickMore': '{count} till, med sina rclone-namn',
 }
 
 export default sv

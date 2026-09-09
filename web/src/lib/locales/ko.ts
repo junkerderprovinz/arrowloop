@@ -137,7 +137,6 @@ const ko: Translations = {
   'edit.newJob': 'new-job',
   'edit.pickDrive': '등록된 디스크',
   'edit.pickRemote': '설정된 대상',
-  'targets.storage': '클라우드 및 연결',
   'targets.storageEmpty': '저장소 대상이 아직 없습니다. S3 버킷이나 SSH 호스트, Windows 공유에 닿도록 하나 추가하세요.',
   'targets.addStorage': '저장소 추가',
   'targets.remoteName': '이름',
@@ -392,6 +391,12 @@ const ko: Translations = {
   'targets.deleteDriveHint': '이 드라이브를 목록에서 빼고, 드라이브에 있는 식별 파일도 제거합니다. 이를 가리키는 작업은 더 이상 찾지 못합니다. 드라이브의 파일은 그대로입니다.',
   'confirm.deleteDrive': '이 드라이브를 삭제할까요?',
   'confirm.deleteDriveStakes': '{name}은(는) 더 이상 등록된 드라이브가 아닙니다. 이를 가리키는 모든 작업은 다시 등록할 때까지 연결되지 않음으로 보고합니다. 드라이브에서는 아무것도 삭제되지 않습니다.',
+  'targets.cloud': '클라우드 저장소',
+  'targets.connections': '서버 및 공유',
+  'targets.pickSearch': '검색',
+  'targets.pickSearchPlaceholder': 'Nextcloud, Dropbox, SFTP.',
+  'targets.pickNothing': '일치하는 항목이 없습니다.',
+  'targets.pickMore': '{count}개 더, rclone 이름으로',
 }
 
 export default ko

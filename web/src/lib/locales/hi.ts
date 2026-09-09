@@ -137,7 +137,6 @@ const hi: Translations = {
   'edit.newJob': 'naya-kaam',
   'edit.pickDrive': 'दर्ज की गई डिस्क',
   'edit.pickRemote': 'तय किया गया गंतव्य',
-  'targets.storage': 'क्लाउड और कनेक्शन',
   'targets.storageEmpty': 'अभी कोई भंडारण गंतव्य नहीं। S3 बाल्टी, SSH मशीन या Windows साझा फ़ोल्डर तक पहुँचने के लिए एक जोड़ें।',
   'targets.addStorage': 'भंडारण जोड़ें',
   'targets.remoteName': 'नाम',
@@ -392,6 +391,12 @@ const hi: Translations = {
   'targets.deleteDriveHint': 'यह ड्राइव सूची से हटाता है और ड्राइव पर मौजूद पहचान फ़ाइल भी मिटाता है। इस पर इशारा करने वाला काम इसे अब नहीं ढूँढ़ेगा। ड्राइव की फ़ाइलें अछूती रहती हैं।',
   'confirm.deleteDrive': 'यह ड्राइव मिटाएँ?',
   'confirm.deleteDriveStakes': '{name} अब पंजीकृत ड्राइव नहीं रहेगा। इस पर इशारा करने वाला हर काम इसे तब तक अनसंलग्न बताएगा जब तक तुम इसे फिर से पंजीकृत न करो। ड्राइव पर कुछ नहीं मिटता।',
+  'targets.cloud': 'क्लाउड भंडारण',
+  'targets.connections': 'सर्वर और साझा फ़ोल्डर',
+  'targets.pickSearch': 'खोजें',
+  'targets.pickSearchPlaceholder': 'Nextcloud, Dropbox, SFTP.',
+  'targets.pickNothing': 'इससे कुछ मेल नहीं खाता।',
+  'targets.pickMore': '{count} और, उनके rclone नाम से',
 }
 
 export default hi

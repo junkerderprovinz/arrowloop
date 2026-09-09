@@ -137,7 +137,6 @@ const no: Translations = {
   'edit.newJob': 'ny-jobb',
   'edit.pickDrive': 'En innmeldt disk',
   'edit.pickRemote': 'Et oppsatt mål',
-  'targets.storage': 'Sky og tilkoblinger',
   'targets.storageEmpty': 'Ingen lagringsmål ennå. Legg til ett for å nå en S3-bucket, en SSH-vert eller en Windows-deling.',
   'targets.addStorage': 'Legg til lagring',
   'targets.remoteName': 'Navn',
@@ -392,6 +391,12 @@ const no: Translations = {
   'targets.deleteDriveHint': 'Fjerner denne stasjonen fra listen OG tar identitetsfilen av stasjonen selv. En jobb som peker på den finner den ikke lenger. Filene på stasjonen røres ikke.',
   'confirm.deleteDrive': 'Slette denne stasjonen?',
   'confirm.deleteDriveStakes': '{name} er ikke lenger en registrert stasjon. Alle jobber som peker på den melder den som ikke tilkoblet til du registrerer den på nytt. Ingenting slettes på stasjonen.',
+  'targets.cloud': 'Skylagring',
+  'targets.connections': 'Servere og delinger',
+  'targets.pickSearch': 'Søk',
+  'targets.pickSearchPlaceholder': 'Nextcloud, Dropbox, SFTP.',
+  'targets.pickNothing': 'Ingenting passer.',
+  'targets.pickMore': '{count} til, under rclone-navnet',
 }
 
 export default no

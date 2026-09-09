@@ -137,7 +137,6 @@ const sr: Translations = {
   'edit.newJob': 'novi-posao',
   'edit.pickDrive': 'Пријављен диск',
   'edit.pickRemote': 'Подешено одредиште',
-  'targets.storage': 'Облак и везе',
   'targets.storageEmpty': 'Још нема одредишта за складиштење. Додајте једно да бисте досегли канту S3, машину преко SSH или дељење на Windows.',
   'targets.addStorage': 'Додај складиште',
   'targets.remoteName': 'Назив',
@@ -392,6 +391,12 @@ const sr: Translations = {
   'targets.deleteDriveHint': 'Уклања овај диск са списка И брише датотеку идентитета са њега самог. Посао који на њега упућује више га неће налазити. Датотеке на диску остају нетакнуте.',
   'confirm.deleteDrive': 'Обрисати овај диск?',
   'confirm.deleteDriveStakes': '{name} више неће бити регистровани диск. Сваки посао који на њега упућује пријавиће га као неприкљученог док га поново не региструјеш. На диску се ништа не брише.',
+  'targets.cloud': 'Складиште у облаку',
+  'targets.connections': 'Сервери и дељења',
+  'targets.pickSearch': 'Претрага',
+  'targets.pickSearchPlaceholder': 'Nextcloud, Dropbox, SFTP.',
+  'targets.pickNothing': 'Ништа не одговара.',
+  'targets.pickMore': 'Још {count}, под називом у rclone',
 }
 
 export default sr

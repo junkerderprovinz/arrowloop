@@ -137,7 +137,6 @@ const gl: Translations = {
   'edit.newJob': 'tarefa-nova',
   'edit.pickDrive': 'Un disco rexistrado',
   'edit.pickRemote': 'Un destino configurado',
-  'targets.storage': 'Nube e conexións',
   'targets.storageEmpty': 'Aínda non hai destinos de almacenamento. Engade un para chegar a un balde S3, a unha máquina SSH ou a unha compartición de Windows.',
   'targets.addStorage': 'Engadir almacenamento',
   'targets.remoteName': 'Nome',
@@ -392,6 +391,12 @@ const gl: Translations = {
   'targets.deleteDriveHint': 'Quita este disco da lista E elimina o ficheiro de identidade do propio disco. Unha tarefa que apunte a el deixará de atopalo. Os ficheiros do disco non se tocan.',
   'confirm.deleteDrive': 'Eliminar este disco?',
   'confirm.deleteDriveStakes': '{name} deixará de ser un disco rexistrado. Calquera tarefa que apunte a el vaino dar por non conectado ata que o rexistres de novo. No disco non se elimina nada.',
+  'targets.cloud': 'Almacenamento na nube',
+  'targets.connections': 'Servidores e comparticións',
+  'targets.pickSearch': 'Buscar',
+  'targets.pickSearchPlaceholder': 'Nextcloud, Dropbox, SFTP.',
+  'targets.pickNothing': 'Non coincide nada.',
+  'targets.pickMore': '{count} máis, polo seu nome en rclone',
 }
 
 export default gl

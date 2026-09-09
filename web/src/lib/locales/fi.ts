@@ -137,7 +137,6 @@ const fi: Translations = {
   'edit.newJob': 'uusi-tyo',
   'edit.pickDrive': 'Ilmoitettu levy',
   'edit.pickRemote': 'Määritetty kohde',
-  'targets.storage': 'Pilvi ja yhteydet',
   'targets.storageEmpty': 'Ei vielä tallennuskohteita. Lisää yksi, jotta yllät S3-ämpäriin, SSH-koneeseen tai Windows-jakoon.',
   'targets.addStorage': 'Lisää tallennus',
   'targets.remoteName': 'Nimi',
@@ -392,6 +391,12 @@ const fi: Translations = {
   'targets.deleteDriveHint': 'Poistaa tämän aseman luettelosta JA ottaa tunnistetiedoston pois itse asemalta. Siihen osoittava työ ei löydä sitä enää. Aseman tiedostoihin ei kosketa.',
   'confirm.deleteDrive': 'Poistetaanko tämä asema?',
   'confirm.deleteDriveStakes': '{name} ei ole enää rekisteröity asema. Jokainen siihen osoittava työ ilmoittaa sen liittämättömäksi, kunnes rekisteröit sen uudelleen. Asemalta ei poisteta mitään.',
+  'targets.cloud': 'Pilvitallennus',
+  'targets.connections': 'Palvelimet ja jaot',
+  'targets.pickSearch': 'Haku',
+  'targets.pickSearchPlaceholder': 'Nextcloud, Dropbox, SFTP.',
+  'targets.pickNothing': 'Mikään ei vastaa tätä.',
+  'targets.pickMore': '{count} lisää, rclone-nimellään',
 }
 
 export default fi

@@ -137,7 +137,6 @@ const pl: Translations = {
   'edit.newJob': 'nowe-zadanie',
   'edit.pickDrive': 'Zgłoszony dysk',
   'edit.pickRemote': 'Skonfigurowany cel',
-  'targets.storage': 'Chmura i połączenia',
   'targets.storageEmpty': 'Nie ma jeszcze celów magazynowych. Dodaj jeden, aby sięgnąć po kubełek S3, serwer SSH albo udział Windows.',
   'targets.addStorage': 'Dodaj magazyn',
   'targets.remoteName': 'Nazwa',
@@ -392,6 +391,12 @@ const pl: Translations = {
   'targets.deleteDriveHint': 'Usuwa ten dysk z listy ORAZ kasuje plik tożsamości z samego dysku. Zadanie wskazujące na niego przestanie go znajdować. Pliki na dysku pozostają nietknięte.',
   'confirm.deleteDrive': 'Usunąć ten dysk?',
   'confirm.deleteDriveStakes': '{name} przestanie być zarejestrowanym dyskiem. Każde zadanie wskazujące na niego zgłosi go jako niepodłączony, dopóki nie zarejestrujesz go ponownie. Na dysku nic nie jest usuwane.',
+  'targets.cloud': 'Magazyn w chmurze',
+  'targets.connections': 'Serwery i udziały',
+  'targets.pickSearch': 'Szukaj',
+  'targets.pickSearchPlaceholder': 'Nextcloud, Dropbox, SFTP.',
+  'targets.pickNothing': 'Nic nie pasuje.',
+  'targets.pickMore': 'Jeszcze {count}, pod nazwą rclone',
 }
 
 export default pl

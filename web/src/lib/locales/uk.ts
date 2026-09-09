@@ -137,7 +137,6 @@ const uk: Translations = {
   'edit.newJob': 'нове-завдання',
   'edit.pickDrive': 'Зареєстрований диск',
   'edit.pickRemote': 'Налаштоване призначення',
-  'targets.storage': 'Хмара та підключення',
   'targets.storageEmpty': 'Сховищ ще немає. Додайте одне, щоб дістатися до кошика S3, вузла SSH або спільної теки Windows.',
   'targets.addStorage': 'Додати сховище',
   'targets.remoteName': 'Назва',
@@ -392,6 +391,12 @@ const uk: Translations = {
   'targets.deleteDriveHint': 'Прибирає цей диск зі списку І видаляє файл ідентифікації з самого диска. Завдання, що вказує на нього, перестане його знаходити. Файли на диску залишаються недоторканими.',
   'confirm.deleteDrive': 'Видалити цей диск?',
   'confirm.deleteDriveStakes': '{name} перестане бути зареєстрованим диском. Будь-яке завдання, що вказує на нього, повідомить, що він не під\'єднаний, доки ти не зареєструєш його знову. На диску нічого не видаляється.',
+  'targets.cloud': 'Хмарне сховище',
+  'targets.connections': 'Сервери та спільні теки',
+  'targets.pickSearch': 'Пошук',
+  'targets.pickSearchPlaceholder': 'Nextcloud, Dropbox, SFTP.',
+  'targets.pickNothing': 'Нічого не підходить.',
+  'targets.pickMore': 'Ще {count}, під назвою в rclone',
 }
 
 export default uk

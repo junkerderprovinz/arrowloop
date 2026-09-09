@@ -47,6 +47,26 @@ export type Remote = {
 }
 
 /** One kind of storage this build can reach, described by the backend itself. */
+/**
+ * A PROVIDER is what somebody is looking for; a BACKEND is what rclone speaks.
+ *
+ * Nextcloud, ownCloud and OpenCloud are three products and one `webdav`
+ * backend. Offering the backend and expecting somebody to know that asks them
+ * to know the implementation in order to use the product.
+ */
+export type Provider = {
+  id: string
+  /** The product's own name, deliberately untranslated: a brand is a brand. */
+  name: string
+  backend: string
+  group: 'cloud' | 'protocol'
+  /** Written into the target without anybody being asked. */
+  preset?: Record<string, string>
+  /** The component name of its logo, or absent where there is none to use. */
+  mark?: string
+  hint?: string
+}
+
 export type Backend = {
   name: string
   description: string
@@ -555,7 +575,15 @@ export const api = {
       },
     ),
 
-  remotes: () => request<{ remotes: Remote[]; backends: Backend[] }>('/api/remotes'),
+  remotes: () =>
+    request<{
+      remotes: Remote[]
+      backends: Backend[]
+      /** What somebody picks from: products, not protocols. */
+      providers: Provider[]
+      /** Compiled-in backends no provider entry covers. */
+      unlisted: Backend[] | null
+    }>('/api/remotes'),
 
   saveRemote: (name: string, type: string, settings: Record<string, string>) =>
     request<{ saved: string }>(`/api/remotes/${encodeURIComponent(name)}`, {

@@ -101,6 +101,10 @@ func (s *Server) listRemotes(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, map[string]any{
 		"remotes":  remotes.List(),
 		"backends": remotes.Backends(),
+		// The list somebody actually picks from: products, not protocols. See
+		// remotes.Provider for why the two are different questions.
+		"providers": remotes.Providers(),
+		"unlisted":  remotes.UnlistedBackends(),
 	})
 }
 

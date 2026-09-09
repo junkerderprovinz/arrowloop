@@ -137,7 +137,6 @@ const zh: Translations = {
   'edit.newJob': 'new-job',
   'edit.pickDrive': '已登记的磁盘',
   'edit.pickRemote': '已配置的目标',
-  'targets.storage': '云与连接',
   'targets.storageEmpty': '还没有存储目标。添加一个，以便连到 S3 存储桶、SSH 主机或 Windows 共享。',
   'targets.addStorage': '添加存储',
   'targets.remoteName': '名称',
@@ -392,6 +391,12 @@ const zh: Translations = {
   'targets.deleteDriveHint': '把这个驱动器从列表中移除，并且删掉驱动器上的标识文件。指向它的作业将不再找得到它。驱动器上的文件不受影响。',
   'confirm.deleteDrive': '删除这个驱动器？',
   'confirm.deleteDriveStakes': '{name} 将不再是已注册的驱动器。指向它的作业会报告未连接，直到你重新注册它。驱动器上不会删除任何内容。',
+  'targets.cloud': '云存储',
+  'targets.connections': '服务器与共享',
+  'targets.pickSearch': '搜索',
+  'targets.pickSearchPlaceholder': 'Nextcloud、Dropbox、SFTP。',
+  'targets.pickNothing': '没有匹配项。',
+  'targets.pickMore': '还有 {count} 个，按 rclone 名称',
 }
 
 export default zh

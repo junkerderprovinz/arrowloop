@@ -137,7 +137,6 @@ const ru: Translations = {
   'edit.newJob': 'новое-задание',
   'edit.pickDrive': 'Зарегистрированный диск',
   'edit.pickRemote': 'Настроенное назначение',
-  'targets.storage': 'Облако и подключения',
   'targets.storageEmpty': 'Хранилищ пока нет. Добавьте одно, чтобы достучаться до корзины S3, узла SSH или общей папки Windows.',
   'targets.addStorage': 'Добавить хранилище',
   'targets.remoteName': 'Имя',
@@ -392,6 +391,12 @@ const ru: Translations = {
   'targets.deleteDriveHint': 'Убирает этот диск из списка И удаляет файл идентификации с самого диска. Задание, указывающее на него, перестанет его находить. Файлы на диске остаются нетронутыми.',
   'confirm.deleteDrive': 'Удалить этот диск?',
   'confirm.deleteDriveStakes': '{name} перестанет быть зарегистрированным диском. Любое задание, указывающее на него, сообщит, что он не подключён, пока ты не зарегистрируешь его снова. На диске ничего не удаляется.',
+  'targets.cloud': 'Облачное хранилище',
+  'targets.connections': 'Серверы и общие папки',
+  'targets.pickSearch': 'Поиск',
+  'targets.pickSearchPlaceholder': 'Nextcloud, Dropbox, SFTP.',
+  'targets.pickNothing': 'Ничего не подходит.',
+  'targets.pickMore': 'Ещё {count}, под именем в rclone',
 }
 
 export default ru

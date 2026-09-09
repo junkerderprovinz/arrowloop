@@ -137,7 +137,6 @@ const da: Translations = {
   'edit.newJob': 'nyt-job',
   'edit.pickDrive': 'En anmeldt disk',
   'edit.pickRemote': 'Et opsat mål',
-  'targets.storage': 'Sky og forbindelser',
   'targets.storageEmpty': 'Endnu ingen lagermål. Tilføj et for at nå en S3-bucket, en SSH-vært eller en Windows-deling.',
   'targets.addStorage': 'Tilføj lager',
   'targets.remoteName': 'Navn',
@@ -392,6 +391,12 @@ const da: Translations = {
   'targets.deleteDriveHint': 'Fjerner dette drev fra listen OG tager identitetsfilen af drevet selv. Et job, der peger på det, finder det ikke længere. Filerne på drevet røres ikke.',
   'confirm.deleteDrive': 'Slet dette drev?',
   'confirm.deleteDriveStakes': '{name} er ikke længere et registreret drev. Ethvert job, der peger på det, melder det som ikke tilsluttet, indtil du registrerer det igen. Der slettes intet på drevet.',
+  'targets.cloud': 'Skylagring',
+  'targets.connections': 'Servere og delinger',
+  'targets.pickSearch': 'Søg',
+  'targets.pickSearchPlaceholder': 'Nextcloud, Dropbox, SFTP.',
+  'targets.pickNothing': 'Intet passer.',
+  'targets.pickMore': '{count} mere, under deres rclone-navn',
 }
 
 export default da

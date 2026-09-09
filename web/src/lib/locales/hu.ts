@@ -137,7 +137,6 @@ const hu: Translations = {
   'edit.newJob': 'uj-feladat',
   'edit.pickDrive': 'Egy bejelentett lemez',
   'edit.pickRemote': 'Egy beállított cél',
-  'targets.storage': 'Felhő és kapcsolatok',
   'targets.storageEmpty': 'Még nincs tárolócél. Vegyen fel egyet, hogy elérjen egy S3 vödröt, egy SSH gépet vagy egy Windows megosztást.',
   'targets.addStorage': 'Tároló felvétele',
   'targets.remoteName': 'Név',
@@ -392,6 +391,12 @@ const hu: Translations = {
   'targets.deleteDriveHint': 'Kiveszi ezt a lemezt a listából ÉS eltávolítja az azonosítófájlt magáról a lemezről. A rá mutató feladat többé nem találja meg. A lemezen lévő fájlok érintetlenek maradnak.',
   'confirm.deleteDrive': 'Törlöd ezt a lemezt?',
   'confirm.deleteDriveStakes': '{name} többé nem lesz regisztrált lemez. Minden rá mutató feladat nem csatlakoztatottként jelenti, amíg újra nem regisztrálod. A lemezen semmi sem törlődik.',
+  'targets.cloud': 'Felhőtárhely',
+  'targets.connections': 'Kiszolgálók és megosztások',
+  'targets.pickSearch': 'Keresés',
+  'targets.pickSearchPlaceholder': 'Nextcloud, Dropbox, SFTP.',
+  'targets.pickNothing': 'Semmi sem illik rá.',
+  'targets.pickMore': 'Még {count}, az rclone-neve szerint',
 }
 
 export default hu

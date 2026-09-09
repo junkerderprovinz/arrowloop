@@ -137,7 +137,6 @@ const sl: Translations = {
   'edit.newJob': 'novo-opravilo',
   'edit.pickDrive': 'Prijavljen disk',
   'edit.pickRemote': 'Nastavljen cilj',
-  'targets.storage': 'Oblak in povezave',
   'targets.storageEmpty': 'Še ni ciljev shrambe. Dodajte enega, da sežete do vedra S3, do gostitelja SSH ali do skupne rabe Windows.',
   'targets.addStorage': 'Dodaj shrambo',
   'targets.remoteName': 'Ime',
@@ -392,6 +391,12 @@ const sl: Translations = {
   'targets.deleteDriveHint': 'Odstrani ta disk s seznama IN odstrani datoteko z identiteto z diska samega. Opravilo, ki kaže nanj, ga ne bo več našlo. Datoteke na disku ostanejo nedotaknjene.',
   'confirm.deleteDrive': 'Izbrišem ta disk?',
   'confirm.deleteDriveStakes': '{name} ne bo več prijavljen disk. Vsako opravilo, ki kaže nanj, ga bo javilo kot nepriključenega, dokler ga znova ne prijaviš. Na disku se nič ne izbriše.',
+  'targets.cloud': 'Shramba v oblaku',
+  'targets.connections': 'Strežniki in mape v skupni rabi',
+  'targets.pickSearch': 'Iskanje',
+  'targets.pickSearchPlaceholder': 'Nextcloud, Dropbox, SFTP.',
+  'targets.pickNothing': 'Nič se ne ujema.',
+  'targets.pickMore': 'Še {count}, pod imenom v rclone',
 }
 
 export default sl

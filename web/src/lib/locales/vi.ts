@@ -137,7 +137,6 @@ const vi: Translations = {
   'edit.newJob': 'cong-viec-moi',
   'edit.pickDrive': 'Một ổ đĩa đã đăng ký',
   'edit.pickRemote': 'Một đích đã thiết lập',
-  'targets.storage': 'Đám mây và kết nối',
   'targets.storageEmpty': 'Chưa có đích lưu trữ nào. Hãy thêm một cái để với tới một bucket S3, một máy SSH hay một thư mục chia sẻ Windows.',
   'targets.addStorage': 'Thêm kho lưu trữ',
   'targets.remoteName': 'Tên',
@@ -392,6 +391,12 @@ const vi: Translations = {
   'targets.deleteDriveHint': 'Gỡ ổ đĩa này khỏi danh sách VÀ xoá tệp định danh khỏi chính ổ đĩa. Công việc trỏ tới nó sẽ không còn tìm thấy. Các tệp trên ổ đĩa vẫn nguyên vẹn.',
   'confirm.deleteDrive': 'Xoá ổ đĩa này?',
   'confirm.deleteDriveStakes': '{name} sẽ không còn là ổ đĩa đã đăng ký. Mọi công việc trỏ tới nó sẽ báo là chưa gắn cho tới khi bạn đăng ký lại. Không có gì trên ổ đĩa bị xoá.',
+  'targets.cloud': 'Lưu trữ đám mây',
+  'targets.connections': 'Máy chủ và chia sẻ',
+  'targets.pickSearch': 'Tìm',
+  'targets.pickSearchPlaceholder': 'Nextcloud, Dropbox, SFTP.',
+  'targets.pickNothing': 'Không có gì khớp.',
+  'targets.pickMore': '{count} mục nữa, theo tên rclone',
 }
 
 export default vi

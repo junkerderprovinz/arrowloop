@@ -137,7 +137,6 @@ const bg: Translations = {
   'edit.newJob': 'nova-zadacha',
   'edit.pickDrive': 'Регистриран диск',
   'edit.pickRemote': 'Настроена цел',
-  'targets.storage': 'Облак и връзки',
   'targets.storageEmpty': 'Още няма цели за съхранение. Добавете една, за да стигнете до кофа S3, до машина по SSH или до споделена папка на Windows.',
   'targets.addStorage': 'Добавяне на хранилище',
   'targets.remoteName': 'Име',
@@ -392,6 +391,12 @@ const bg: Translations = {
   'targets.deleteDriveHint': 'Премахва този диск от списъка И изтрива файла с идентичност от самия диск. Задача, която сочи към него, спира да го намира. Файловете на диска остават непокътнати.',
   'confirm.deleteDrive': 'Да се изтрие ли този диск?',
   'confirm.deleteDriveStakes': '{name} спира да бъде регистриран диск. Всяка задача, която сочи към него, ще го отчита като невключен, докато не го регистрираш отново. На диска не се изтрива нищо.',
+  'targets.cloud': 'Хранилище в облака',
+  'targets.connections': 'Сървъри и споделяния',
+  'targets.pickSearch': 'Търсене',
+  'targets.pickSearchPlaceholder': 'Nextcloud, Dropbox, SFTP.',
+  'targets.pickNothing': 'Нищо не съвпада.',
+  'targets.pickMore': 'Още {count}, под името им в rclone',
 }
 
 export default bg

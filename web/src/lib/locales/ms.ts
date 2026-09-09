@@ -137,7 +137,6 @@ const ms: Translations = {
   'edit.newJob': 'tugasan-baharu',
   'edit.pickDrive': 'Cakera yang didaftarkan',
   'edit.pickRemote': 'Destinasi yang disediakan',
-  'targets.storage': 'Awan dan sambungan',
   'targets.storageEmpty': 'Belum ada destinasi simpanan. Tambah satu untuk sampai ke baldi S3, mesin SSH atau perkongsian Windows.',
   'targets.addStorage': 'Tambah simpanan',
   'targets.remoteName': 'Nama',
@@ -392,6 +391,12 @@ const ms: Translations = {
   'targets.deleteDriveHint': 'Mengeluarkan pemacu ini daripada senarai DAN membuang fail identiti daripada pemacu itu sendiri. Tugas yang menunjuk kepadanya tidak akan menemuinya lagi. Fail pada pemacu tidak disentuh.',
   'confirm.deleteDrive': 'Padam pemacu ini?',
   'confirm.deleteDriveStakes': '{name} tidak lagi menjadi pemacu berdaftar. Setiap tugas yang menunjuk kepadanya akan melaporkannya sebagai tidak dipasang sehingga anda mendaftarkannya semula. Tiada apa-apa dipadam pada pemacu.',
+  'targets.cloud': 'Storan awan',
+  'targets.connections': 'Pelayan dan perkongsian',
+  'targets.pickSearch': 'Cari',
+  'targets.pickSearchPlaceholder': 'Nextcloud, Dropbox, SFTP.',
+  'targets.pickNothing': 'Tiada yang sepadan.',
+  'targets.pickMore': '{count} lagi, dengan nama rclone mereka',
 }
 
 export default ms
