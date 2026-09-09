@@ -106,17 +106,48 @@ HEAD = '''import type { SVGProps } from 'react'
 '''
 
 
+# The brands' own colours, keyed by slug, from the set's own data file.
+COLOURS = {}
+_data = SRC.parent / "data" / "simple-icons.json"
+if _data.exists():
+    import json
+
+    _raw = json.loads(io.open(_data, encoding="utf-8").read())
+    for entry in (_raw["icons"] if isinstance(_raw, dict) else _raw):
+        title = entry.get("title", "")
+        # The slug is the title lowercased with everything but letters and
+        # digits removed, which is the set's own rule; a `slug` field overrides
+        # it where the two differ.
+        s_ = entry.get("slug") or re.sub(r"[^a-z0-9]", "", title.lower())
+        COLOURS[s_] = "#" + entry["hex"]
+
+
 def one(name: str, slug: str, note: str) -> str:
     svg = io.open(SRC / (slug + ".svg"), encoding="utf-8").read()
     box = re.search(r'viewBox="([^"]+)"', svg)
     paths = re.findall(r'<path d="([^"]+)"', svg)
     if not box or not paths:
         raise SystemExit("cannot read %s.svg" % slug)
+    colour = COLOURS.get(slug)
+    if not colour:
+        raise SystemExit("no brand colour for %s: the data file did not carry it" % slug)
     body = "\n".join('      <path d="%s" />' % d for d in paths)
-    return f'''/** {note}. Simple Icons: {slug} */
+    # The brand's OWN colour rather than currentColor, because a logo drawn in
+    # the interface's ink is not the logo, it is a silhouette of it. jdp: "die
+    # logos sollen original und farbig sein."
+    #
+    # Simple Icons draws every mark as one path in one colour, and for most of
+    # these that IS the real thing: Dropbox's mark is one blue, Nextcloud's one
+    # blue, MEGA's one red. For the few whose official mark is multi-coloured -
+    # Google Drive - it is that brand's primary colour rather than its full
+    # drawing, which is as close as a CC0 set gets and much closer than grey.
+    #
+    # `fill` sits on the svg rather than on each path, so one style on the
+    # element can still override the whole mark where a surface demands it.
+    return f'''/** {note}. Simple Icons: {slug}, in its own {colour} */
 export function {name}(props: SVGProps<SVGSVGElement>) {{
   return (
-    <svg viewBox="{box.group(1)}" width="1em" height="1em" fill="currentColor" aria-hidden {{...props}}>
+    <svg viewBox="{box.group(1)}" width="1em" height="1em" fill="{colour}" aria-hidden {{...props}}>
 {body}
     </svg>
   )

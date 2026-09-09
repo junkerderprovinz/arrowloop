@@ -13,6 +13,7 @@ import { Choice, Field, Secret, Text } from '../components/Field'
 import { ToggleRow } from '../components/ToggleRow'
 import { api, type Backend, type Provider, type Remote, type Volume } from '../lib/api'
 import { useT } from '../lib/i18n'
+import { hasOptionLabel, optionLabel } from '../lib/optionNames'
 import { Since } from './Jobs'
 
 /**
@@ -462,8 +463,15 @@ function RemoteForm({
         {shown.map((o) => (
           <Field
             key={o.name}
-            label={o.required ? `${o.name} (${t('targets.required')})` : o.name}
-            hint={o.help || undefined}
+            label={optionLabel(o.name, t)}
+            /* rclone's own name under the translated one, but only where the
+               two differ: repeating "host" under "host" is noise. Somebody
+               following rclone's documentation still finds the field. */
+            hint={
+              hasOptionLabel(o.name)
+                ? [o.name, o.help].filter(Boolean).join(' - ')
+                : o.help || undefined
+            }
           >
             {/* A field the backend calls a secret is drawn as one, with its
                 own show and hide control inside it. */}
@@ -489,9 +497,9 @@ function RemoteForm({
 
       {error && <p className="text-xs text-statusFail">{error}</p>}
 
-      <div className="flex items-center gap-2">
-        <Button label={t('targets.save')} labelKey="targets.save" tone="accent" onClick={() => void save()} disabled={busy || !name.trim() || !kind} />
+      <div className="flex items-center justify-end gap-2">
         <Button label={t('targets.cancel')} labelKey="targets.cancel" onClick={() => onDone(false)} />
+        <Button label={t('targets.save')} labelKey="targets.save" tone="accent" onClick={() => void save()} disabled={busy || !name.trim() || !kind} />
       </div>
     </div>
   )

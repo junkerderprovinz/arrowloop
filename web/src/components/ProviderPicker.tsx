@@ -1,8 +1,4 @@
-import { useMemo, useState } from 'react'
-
 import { brandMark } from './brandMarks'
-import { IconTargets } from './glyphs'
-import { Field } from './Field'
 import { useT } from '../lib/i18n'
 import type { Backend, Provider } from '../lib/api'
 
@@ -11,20 +7,19 @@ import type { Backend, Provider } from '../lib/api'
  *
  * The form this replaces opened on a backend dropdown, which asked somebody to
  * know that Nextcloud is "webdav" before they could set up their Nextcloud.
- * jdp: "wenn man auf den speicher anlegen klickt soll eine sehr schöne und
- * minimalistische Liste aller Clouds und Verbindungsmöglichkeiten kommen. inkl.
- * logos. wenn man dann einen auftrag auswählt sollen die dementsprechenden
- * Anmeldefelder kommen."
  *
- * Minimal on purpose: a name, a logo where one exists, and one line only where
- * the name does not say enough. No descriptions, no counts, no chevrons. The
- * search box is the only chrome, and it earns its place at fifty-odd entries.
+ * One column, one row each, no search box. jdp: "es soll eine schöne liste sein
+ * wo alle einträge untereinander stehen ohne suchfeld." A grid was the first
+ * answer and it was the wrong one: a grid is for browsing a set you have no
+ * order for, and this list HAS an order - the ones people reach for, first.
+ * Reading down one column follows that order; reading across four columns
+ * fights it. And a search box over a list you can read is furniture.
  *
- * A tile with no logo is not a gap to be filled with something approximate. The
- * CC0 set has no mark for Microsoft's, Amazon's or Apple's own products, and
- * several providers share a parent company's mark rather than having their own.
- * A logo naming the WRONG service is worse than a generic glyph, so those show
- * the generic one.
+ * The logos are the brands' own, in the brands' own colours. A mark drawn in
+ * the interface's ink is not the logo, it is a silhouette of it. Where a brand
+ * has no mark in the CC0 set - Microsoft's, Amazon's and Apple's own products,
+ * and OpenCloud, which must not wear ownCloud's - the row simply has no logo,
+ * because a mark naming the WRONG service is worse than none.
  */
 export function ProviderPicker({
   providers,
@@ -37,86 +32,54 @@ export function ProviderPicker({
   onPick: (backend: string, preset: Record<string, string>) => void
 }) {
   const { t } = useT()
-  const [query, setQuery] = useState('')
-
-  const q = query.trim().toLowerCase()
-  const shown = useMemo(
-    () => providers.filter((p) => !q || p.name.toLowerCase().includes(q) || p.backend.includes(q)),
-    [providers, q],
-  )
-  const rest = useMemo(
-    () => unlisted.filter((b) => !q || b.name.includes(q)),
-    [unlisted, q],
-  )
 
   return (
-    <div className="flex flex-col gap-4 py-2">
-      <Field label={t('targets.pickSearch')}>
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder={t('targets.pickSearchPlaceholder')}
-          className="h-[var(--btn-h)] w-full rounded-[var(--radius-control)] bg-carbon-surface2 px-3 text-dense text-carbon-text outline-none transition focus-visible:brightness-125"
-        />
-      </Field>
+    <div className="flex flex-col gap-3 py-2">
+      <ul className="flex flex-col">
+        {providers.map((p, i) => (
+          <li key={p.id}>
+            {i > 0 && <Rule />}
+            <button
+              type="button"
+              onClick={() => onPick(p.backend, p.preset ?? {})}
+              className="flex w-full items-center gap-3 rounded-[var(--radius-control)] px-2 py-2.5 text-start transition-colors hover:bg-carbon-hover focus-visible:bg-carbon-hover focus-visible:outline-none"
+            >
+              {/* A fixed box whether or not there is a logo, so the names line
+                  up down the column instead of stepping in and out. */}
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center text-[22px]">
+                {brandMark(p.mark)}
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block truncate text-dense text-carbon-text">{p.name}</span>
+                {p.hint && (
+                  <span className="block truncate text-caption text-carbon-textMuted">{p.hint}</span>
+                )}
+              </span>
+            </button>
+          </li>
+        ))}
+      </ul>
 
-      {shown.length === 0 && rest.length === 0 && (
-        <p className="text-xs text-carbon-textMuted">{t('targets.pickNothing')}</p>
-      )}
-
-      {/* A grid rather than a list: fifty names in one column is a scroll, and
-          the same fifty in four columns is a page you read at a glance. The
-          minimum column width is what a long product name needs without
-          wrapping, so the grid loses columns on a narrow window rather than
-          breaking names across lines. */}
-      {shown.length > 0 && (
-        <ul className="grid grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] gap-2">
-          {shown.map((p) => (
-            <li key={p.id}>
-              <button
-                type="button"
-                onClick={() => onPick(p.backend, p.preset ?? {})}
-                title={p.hint || undefined}
-                className="flex w-full items-center gap-3 rounded-[var(--radius-control)] bg-carbon-surface2 px-3 py-2.5 text-start transition hover:bg-carbon-hover focus-visible:brightness-125"
-              >
-                {/* Fixed box whether or not there is a logo, so names line up
-                    down the column instead of stepping in and out. */}
-                <span className="flex h-5 w-5 shrink-0 items-center justify-center text-[20px] text-carbon-textSub">
-                  {brandMark(p.mark) ?? <IconTargets />}
-                </span>
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate text-dense text-carbon-text">{p.name}</span>
-                  {p.hint && (
-                    <span className="block truncate text-caption text-carbon-textMuted">{p.hint}</span>
-                  )}
-                </span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      {/* Everything rclone carries that nobody has written an entry for. Below
-          a rule and in the same shape, so the list is complete without the
-          named ones having to compete with fifty rclone type names. */}
-      {rest.length > 0 && (
+      {/* Everything rclone carries that nobody has written an entry for, folded
+          away. It keeps the hand-kept list above from being a wall - a backend
+          nobody has named is still reachable - without fifty rclone type names
+          competing with the products for the eye. */}
+      {unlisted.length > 0 && (
         <details className="text-xs">
-          <summary className="cursor-pointer text-carbon-textMuted">
-            {t('targets.pickMore', { count: rest.length })}
+          <summary className="cursor-pointer px-2 py-1 text-carbon-textMuted">
+            {t('targets.pickMore', { count: unlisted.length })}
           </summary>
-          <ul className="mt-2 grid grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] gap-2">
-            {rest.map((b) => (
+          <ul className="mt-1 flex flex-col">
+            {unlisted.map((b, i) => (
               <li key={b.name}>
+                {i > 0 && <Rule />}
                 <button
                   type="button"
                   onClick={() => onPick(b.name, {})}
                   title={b.description}
-                  className="flex w-full items-center gap-3 rounded-[var(--radius-control)] bg-carbon-surface2 px-3 py-2.5 text-start transition hover:bg-carbon-hover focus-visible:brightness-125"
+                  className="flex w-full items-center gap-3 rounded-[var(--radius-control)] px-2 py-2 text-start transition-colors hover:bg-carbon-hover focus-visible:bg-carbon-hover focus-visible:outline-none"
                 >
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center text-[20px] text-carbon-textSub">
-                    <IconTargets />
-                  </span>
+                  <span className="h-6 w-6 shrink-0" />
                   <span className="min-w-0 flex-1 truncate text-dense text-carbon-text">{b.name}</span>
                 </button>
               </li>
@@ -126,4 +89,9 @@ export function ProviderPicker({
       )}
     </div>
   )
+}
+
+/** The hairline between rows, the same one every list in this app uses. */
+function Rule() {
+  return <div className="h-px bg-carbon-border" />
 }
