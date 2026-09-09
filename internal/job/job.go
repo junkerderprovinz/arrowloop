@@ -150,6 +150,22 @@ type Job struct {
 	// and catches nothing at all about the version from Tuesday.
 	KeepVersions int `json:"keepVersions,omitempty"`
 
+	// ReportOnly plans on every automatic turn and applies nothing.
+	//
+	// The comparison is the expensive half of a run and the half worth watching:
+	// both sides are listed, every difference is worked out, and the result goes
+	// into the run log. Nothing moves. A job left like this says what it WOULD
+	// do, every quarter of an hour, for as long as you leave it - which is what
+	// makes it useful for watching a job at work without letting it work.
+	//
+	// Automatic turns only. A run somebody starts by hand applies normally,
+	// because a person pressing the button has decided, exactly as with the
+	// conditions in RunAutomatically. The runner already said this in a comment
+	// that pointed at a field which did not exist yet; the interface's own type
+	// has been offering `reportOnly` for as long, and the configuration refused
+	// it with "unknown field".
+	ReportOnly bool `json:"reportOnly,omitempty"`
+
 	// NoTrash deletes outright instead of moving into the side's own trash.
 	//
 	// Spelled as the NEGATIVE so that the zero value is the safe one. A field

@@ -51,5 +51,14 @@ func (r *Runner) RunAutomatically(ctx context.Context, name string) (history.Run
 		r.publish(Event{Job: name, Phase: "finished", Error: err.Error()})
 		return history.Run{}, err
 	}
+	if j.ReportOnly {
+		// An EMPTY selection rather than a nil one, which is the difference
+		// between "everything" and "nothing" on this path: nil takes the
+		// unfiltered route that plans and applies in one step, and an empty
+		// list plans in full and then filters every action away. So the sides
+		// are listed, the differences are worked out and the run is recorded,
+		// and not a byte moves.
+		return r.RunOnly(ctx, name, []string{})
+	}
 	return r.Run(ctx, name)
 }

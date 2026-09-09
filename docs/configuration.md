@@ -56,6 +56,7 @@ manager happened to start the process in.
 | `emptyDirs` | `false` | Carry folders that hold no files. |
 | `metadata` | `false` | Carry permissions, ownership and extended attributes. |
 | `noTrash` | `false` | Delete outright instead of moving into the side's own trash. See the note below before switching it on. |
+| `reportOnly` | `false` | Compare on every automatic turn and apply nothing. A run somebody starts by hand still applies. |
 | `brakePercent` | `50` | Refuse a run deleting more than this share of known files. `0` switches the brake off. |
 | `brakeFloor` | `10` | Never trip the brake below this many deletions. |
 

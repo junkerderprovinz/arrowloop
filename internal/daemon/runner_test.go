@@ -602,3 +602,62 @@ func TestATrashlessJobDeletesOutrightAndLeavesNoReservedFolder(t *testing.T) {
 		})
 	}
 }
+
+// TestAReportOnlyJobPlansOnTheClockAndMovesNothing.
+//
+// The field existed in the interface's own type and nowhere in the
+// configuration, so writing it into a file got "unknown field" and the runner
+// carried a comment about behaviour that had never been built. What it is FOR
+// is watching a job at work without letting it work: the comparison is the
+// expensive half of a run, it happens in full, and nothing moves.
+//
+// Both halves are asserted, because either alone would pass for the wrong
+// reason. That the file did not arrive could equally mean the run never
+// happened; that a run was recorded could equally mean it copied everything.
+func TestAReportOnlyJobPlansOnTheClockAndMovesNothing(t *testing.T) {
+	cfg, hist, left, right := fixture(t, func(dir, left, right string) string {
+		return fmt.Sprintf(`{"jobs":[{"name":"watchonly","left":"%s","right":"%s","state":"%s","quietPeriod":"0s","reportOnly":true}]}`,
+			jsonPath(left), jsonPath(right), jsonPath(filepath.Join(dir, "w.db")))
+	})
+	if err := os.WriteFile(filepath.Join(left, "a.txt"), []byte("hello"), 0o644); err != nil {
+		t.Fatalf("write: %v", err)
+	}
+
+	r := daemon.New(cfg, hist, nil, nil)
+	if _, err := r.RunAutomatically(context.Background(), "watchonly"); err != nil {
+		t.Fatalf("automatic run: %v", err)
+	}
+	if _, err := os.Stat(filepath.Join(right, "a.txt")); !os.IsNotExist(err) {
+		t.Fatalf("a report-only job copied the file: %v", err)
+	}
+	runs, err := hist.Recent(context.Background(), "watchonly", history.ShowAll, 10)
+	if err != nil {
+		t.Fatalf("history: %v", err)
+	}
+	if len(runs) != 1 || runs[0].Failed() {
+		t.Fatalf("expected one clean run to be recorded, got %+v", runs)
+	}
+	if runs[0].Copied != 0 {
+		t.Fatalf("a report-only run counted %d copies", runs[0].Copied)
+	}
+
+	// And it stays that way: nothing was learned, so the next turn finds the
+	// same work. That is what makes such a job useful to watch rather than a
+	// job that is busy once and idle for ever after.
+	if _, err := r.RunAutomatically(context.Background(), "watchonly"); err != nil {
+		t.Fatalf("second automatic run: %v", err)
+	}
+	if _, err := os.Stat(filepath.Join(right, "a.txt")); !os.IsNotExist(err) {
+		t.Fatal("the second automatic run copied the file")
+	}
+
+	// A HAND-started run applies, exactly as the conditions in
+	// RunAutomatically are skipped for one: somebody pressing the button has
+	// decided.
+	if _, err := r.Run(context.Background(), "watchonly"); err != nil {
+		t.Fatalf("hand-started run: %v", err)
+	}
+	if _, err := os.Stat(filepath.Join(right, "a.txt")); err != nil {
+		t.Fatalf("a hand-started run on a report-only job did not copy: %v", err)
+	}
+}
