@@ -32,6 +32,13 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          # The whole history, because git describe needs the tags to describe
+          # against. A shallow clone has none and answers with the bare commit.
+          fetch-depth: 0
+      - id: version
+        name: Work out what to stamp into the binary
+        run: echo "value=$(git describe --tags --always)" >> "$GITHUB_OUTPUT"
       - uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4
       - name: Build amd64 and load it locally
         uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7
@@ -40,7 +47,7 @@ jobs:
           platforms: linux/amd64
           load: true
           tags: arrowloop:smoke
-          build-args: VERSION=${{ github.ref_name }}
+          build-args: VERSION=${{ steps.version.outputs.value }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -72,6 +79,23 @@ jobs:
           # And the healthcheck the image declares has to pass on its own terms.
           docker exec smoke /usr/local/bin/arrowloop healthcheck
 
+          # The version stamp says what somebody is looking at, and it is the
+          # reason this project got tagged at all: "bitte versioniere, damit ich
+          # sehen kann welche version ich gerade ansehe."
+          #
+          # It used to be github.ref_name, which is the TAG on a release build
+          # and the BRANCH on every other one, so a container built from main
+          # reported its version as "main". That is not a version, it is the
+          # answer the tag existed to replace, and nothing was checking it.
+          #
+          # Exact equality with what git describe says, rather than a shape
+          # test: a pattern loose enough to accept both a tag and a commit is
+          # also loose enough to accept "main".
+          want="$(git describe --tags --always)"
+          got="$(docker exec smoke /usr/local/bin/arrowloop version)"
+          echo "stamped: ${got}, expected: ${want}"
+          test "${got}" = "${want}"
+
       - name: Show the log and clean up
         if: always()
         run: |
@@ -86,6 +110,11 @@ jobs:
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+      - id: version
+        name: Work out what to stamp into the binary
+        run: echo "value=$(git describe --tags --always)" >> "$GITHUB_OUTPUT"
       - uses: docker/setup-qemu-action@1f40c72289eff860ee54a304f1438e3cff362e0a # v4
       - uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4
       - uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4
@@ -108,7 +137,7 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: VERSION=${{ github.ref_name }}
+          build-args: VERSION=${{ steps.version.outputs.value }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           provenance: true
