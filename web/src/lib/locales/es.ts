@@ -371,6 +371,20 @@ const es: Translations = {
   'look.accentReset': 'Volver al valor por defecto',
   'pick.cancel': 'Cancelar',
   'look.paletteReset': 'Volver a los colores por defecto',
+  'jobs.previewHint': 'Calcula lo que haría esta tarea sin cambiar nada y luego marca o desmarca cada cambio antes de ejecutarlo.',
+  'preview.back': 'Volver',
+  'preview.backHint': 'Sale de la vista previa sin ejecutar nada. Escape hace lo mismo.',
+  'history.filterJob': 'Tarea',
+  'history.allJobs': 'Todas las tareas',
+  'history.filterShow': 'Mostrar',
+  'history.showAll': 'Todas las ejecuciones',
+  'history.showChanged': 'Solo las que hicieron algo',
+  'history.showFailed': 'Solo los fallos',
+  'history.filterHint': 'Una tarea que vigila una carpeta escribe una entrada cada vez que algo cambia, así que una que se ejecuta cada minuto expulsa por completo de la página a otra que se ejecuta una vez al día. Este filtro pide al motor un conjunto distinto de ejecuciones en lugar de ocultar parte de las ya obtenidas, de modo que la tarea que buscas vuelve aunque su última ejecución fuera hace mil entradas. Una ejecución fallida siempre cuenta como una que hizo algo.',
+  'history.working': 'Buscando.',
+  'history.noMatch': 'Ninguna ejecución coincide.',
+  'edit.trash': 'Mantener una papelera en cada lado',
+  'edit.trashHint': 'Un borrado se convierte en un traslado a una carpeta oculta llamada .arrowloop dentro del árbol sincronizado, así que nada de lo que hace esta tarea destruye nada de forma definitiva y un archivo borrado por error se recupera desde la pestaña de la papelera. Esa carpeta la ve todo el que use el recurso compartido, y ese es el motivo para desactivar esto: sin papelera nunca se crea, un borrado es definitivo, y el lado perdedor de un conflicto también. Razonable para una carpeta de descargas, mala idea para una de documentos.',
 }
 
 export default es

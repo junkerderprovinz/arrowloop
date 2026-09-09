@@ -3,11 +3,19 @@
 A two-way sync can destroy data, and the most common way is not a bug in the
 code. It is a correctly executed deletion that nobody wanted.
 
-## Nothing is deleted outright
+## Nothing is deleted outright unless you said so
 
 A deletion is a move into `.arrowloop/trash/<run>/` on the side that loses the
 file. The trash sits inside the tree but under a prefix the scanner skips, so it
 never travels to the other side.
+
+Inside the tree rather than beside it, because on an S3 bucket or an SFTP export
+there is often no "beside it". The visible cost is that the folder appears in
+the synced tree, where everyone using that share can see it.
+
+A job can be configured with `noTrash` to delete outright, and then the folder
+is never created. That is a decision about one job's files, not a default: with
+it on, a deletion is final and so is the losing side of a conflict.
 
 ## The mass-delete brake
 

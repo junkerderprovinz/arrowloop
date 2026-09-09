@@ -371,6 +371,20 @@ const ca: Translations = {
   'look.accentReset': 'Torna al valor per defecte',
   'pick.cancel': 'Cancel·la',
   'look.paletteReset': 'Torna als colors per defecte',
+  'jobs.previewHint': 'Calcula què faria aquesta tasca sense canviar res, i després pots marcar o desmarcar cada canvi abans d\'executar-lo.',
+  'preview.back': 'Enrere',
+  'preview.backHint': 'Surt de la previsualització sense executar res. Escape fa el mateix.',
+  'history.filterJob': 'Tasca',
+  'history.allJobs': 'Totes les tasques',
+  'history.filterShow': 'Mostra',
+  'history.showAll': 'Totes les execucions',
+  'history.showChanged': 'Només les que han fet alguna cosa',
+  'history.showFailed': 'Només els errors',
+  'history.filterHint': 'Una tasca que vigila una carpeta escriu una entrada cada cop que alguna cosa canvia, de manera que una que s\'executa cada minut expulsa completament de la pàgina una que s\'executa un cop al dia. Aquesta tria demana al motor un conjunt diferent d\'execucions en lloc d\'amagar part de les ja obtingudes, així que la tasca que busques torna encara que la seva darrera execució fos fa mil entrades. Una execució fallida sempre compta com una que ha fet alguna cosa.',
+  'history.working': 'S\'està cercant.',
+  'history.noMatch': 'Cap execució hi coincideix.',
+  'edit.trash': 'Mantenir una paperera a cada costat',
+  'edit.trashHint': 'Una supressió esdevé un trasllat a una carpeta amagada anomenada .arrowloop dins de l\'arbre sincronitzat, de manera que res del que fa aquesta tasca no destrueix res de manera definitiva, i un fitxer esborrat per error es recupera des de la pestanya de la paperera. Aquesta carpeta la veu tothom qui faci servir la compartició, i és justament el motiu per desactivar-ho: sense paperera no es crea mai, una supressió és definitiva, i el costat perdedor d\'un conflicte també. Raonable per a una carpeta de baixades, mala idea per a una de documents.',
 }
 
 export default ca

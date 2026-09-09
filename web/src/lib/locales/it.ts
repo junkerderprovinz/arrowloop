@@ -371,6 +371,20 @@ const it: Translations = {
   'look.accentReset': 'Torna al valore predefinito',
   'pick.cancel': 'Annulla',
   'look.paletteReset': 'Torna ai colori predefiniti',
+  'jobs.previewHint': 'Calcola cosa farebbe questo lavoro senza modificare nulla, poi spunta o togli la spunta a ogni modifica prima di eseguirla.',
+  'preview.back': 'Indietro',
+  'preview.backHint': 'Esce dall\'anteprima senza eseguire nulla. Esc fa lo stesso.',
+  'history.filterJob': 'Lavoro',
+  'history.allJobs': 'Tutti i lavori',
+  'history.filterShow': 'Mostra',
+  'history.showAll': 'Tutte le esecuzioni',
+  'history.showChanged': 'Solo quelle che hanno fatto qualcosa',
+  'history.showFailed': 'Solo gli errori',
+  'history.filterHint': 'Un lavoro che sorveglia una cartella scrive una voce a ogni cambiamento, quindi uno che parte ogni minuto scaccia del tutto dalla pagina un lavoro che parte una volta al giorno. Questo filtro chiede al motore un altro insieme di esecuzioni invece di nascondere una parte di quelle già scaricate, così il lavoro che cerchi torna anche se la sua ultima esecuzione risale a mille voci fa. Un\'esecuzione fallita conta sempre come una che ha fatto qualcosa.',
+  'history.working': 'Ricerca in corso.',
+  'history.noMatch': 'Nessuna esecuzione corrisponde.',
+  'edit.trash': 'Tenere un cestino su ogni lato',
+  'edit.trashHint': 'Una cancellazione diventa uno spostamento in una cartella nascosta chiamata .arrowloop dentro l\'albero sincronizzato, quindi nulla di ciò che fa questo lavoro distrugge qualcosa in modo definitivo e un file cancellato per errore si recupera dalla scheda del cestino. Quella cartella è visibile a chiunque usi la condivisione, ed è il motivo per disattivare questa opzione: senza cestino non viene mai creata, una cancellazione è definitiva, e lo è anche il lato perdente di un conflitto. Ragionevole per una cartella di download, una cattiva idea per una di documenti.',
 }
 
 export default it

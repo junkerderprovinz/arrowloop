@@ -149,6 +149,15 @@ export type RawJob = {
    * in the file cannot quietly turn a two-way job into a one-way one.
    */
   firstRun?: string
+  /**
+   * Delete outright instead of moving into the side's own trash.
+   *
+   * Spelled as the NEGATIVE, the same way the Go field is, so the value a
+   * missing field takes is the safe one: `false` has to mean "keep a trash",
+   * because every configuration written before this existed has no field here
+   * at all.
+   */
+  noTrash?: boolean
   exclude?: string[]
   [key: string]: unknown
 }
@@ -360,11 +369,31 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   return (await res.json()) as T
 }
 
+/**
+ * Which runs a history listing asks for. Mirrors internal/history's Show, and
+ * 'all' is spelled out here rather than being the empty string the server uses:
+ * a selector needs a value for every option it offers.
+ */
+export type HistoryShow = 'all' | 'changed' | 'failed'
+
 export const api = {
   jobs: () => request<Job[]>('/api/jobs'),
   plan: (name: string) => request<Plan>(`/api/jobs/${encodeURIComponent(name)}/plan`),
-  history: (job?: string, limit = 50) =>
-    request<Run[]>(`/api/history?limit=${limit}${job ? `&job=${encodeURIComponent(job)}` : ''}`),
+  /**
+   * The run log, newest first.
+   *
+   * `show` narrows it AT THE SERVER, which is the whole point of it being a
+   * parameter rather than something the page does to what it received. A job
+   * watching a folder writes a run a minute, so fifty runs is fifty minutes and
+   * a job that runs once a day is not on the page at all; filtering afterwards
+   * filters the fifty already fetched and leaves it just as missing.
+   */
+  history: (job?: string, show: HistoryShow = 'all', limit = 50) =>
+    request<Run[]>(
+      `/api/history?limit=${limit}` +
+        (job ? `&job=${encodeURIComponent(job)}` : '') +
+        (show !== 'all' ? `&show=${show}` : ''),
+    ),
 
   /**
    * Start a run. Passing `only` sends exactly the paths that were ticked, and

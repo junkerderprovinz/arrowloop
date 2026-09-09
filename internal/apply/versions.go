@@ -82,3 +82,36 @@ func versionsKept(ctx context.Context) int {
 func keepVersion(ctx context.Context, f fs.Fs, remote, runID string) error {
 	return trash.KeepVersion(ctx, f, remote, runID, versionsKept(ctx))
 }
+
+// trashKey carries whether this job keeps a trash, the same way versionsKey
+// carries how many versions it keeps and for the same reasons: a package-level
+// variable would be shared by every job running at once, and a field on
+// plan.Options would put it in front of every caller that plans without ever
+// applying.
+type trashKey struct{}
+
+// WithTrash says whether deletions on this run go to the side's own trash.
+//
+// The reserved folder the trash lives in is the one part of this mechanism
+// anybody ever sees, and seeing it on a shared download folder is what prompted
+// the switch: jdp, "braucht es den .arrowloop ordner im Zielordner? Kann man
+// den nicht weglassen?"
+func WithTrash(ctx context.Context, keep bool) context.Context {
+	return context.WithValue(ctx, trashKey{}, keep)
+}
+
+// trashKept reads the setting back, and answers TRUE when nobody set it.
+//
+// The default is deliberately the opposite way round from versionsKept's. An
+// unset version count means "keep none", which costs nothing and loses nothing
+// that was not already being overwritten. An unset trash setting has to mean
+// "keep one", because the alternative is that a caller who forgot to say
+// deletes somebody's files outright - and the whole promise at the top of this
+// package is that nothing it does destroys anything on its own.
+func trashKept(ctx context.Context) bool {
+	keep, ok := ctx.Value(trashKey{}).(bool)
+	if !ok {
+		return true
+	}
+	return keep
+}

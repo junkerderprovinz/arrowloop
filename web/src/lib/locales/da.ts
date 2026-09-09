@@ -371,6 +371,20 @@ const da: Translations = {
   'look.accentReset': 'Tilbage til standard',
   'pick.cancel': 'Annuller',
   'look.paletteReset': 'Tilbage til standardfarverne',
+  'jobs.previewHint': 'Regner ud, hvad dette job ville gøre uden at ændre noget, og derefter kan du sætte eller fjerne flueben ved hver ændring, før den køres.',
+  'preview.back': 'Tilbage',
+  'preview.backHint': 'Forlader forhåndsvisningen uden at køre noget. Escape gør det samme.',
+  'history.filterJob': 'Job',
+  'history.allJobs': 'Alle job',
+  'history.filterShow': 'Vis',
+  'history.showAll': 'Alle kørsler',
+  'history.showChanged': 'Kun dem der gjorde noget',
+  'history.showFailed': 'Kun fejl',
+  'history.filterHint': 'Et job, der holder øje med en mappe, skriver en linje, hver gang noget ændrer sig, så et job, der kører hvert minut, skubber et job, der kører en gang om dagen, helt væk fra siden. Dette valg beder motoren om et andet sæt kørsler i stedet for at skjule en del af dem, der allerede er hentet, så det job, du leder efter, kommer tilbage, selv når dets seneste kørsel var tusind linjer siden. En mislykket kørsel tæller altid som en, der gjorde noget.',
+  'history.working': 'Søger.',
+  'history.noMatch': 'Ingen kørsel passer til dette.',
+  'edit.trash': 'Hold en papirkurv på hver side',
+  'edit.trashHint': 'En sletning bliver til en flytning til en skjult mappe ved navn .arrowloop inde i det synkroniserede træ, så intet af det, dette job gør, ødelægger noget endeligt, og en fil, der er slettet ved en fejl, hentes tilbage fra papirkurvsfanen. Den mappe kan alle, der bruger delingen, se, og det er netop derfor man slår dette fra: uden papirkurv bliver den aldrig oprettet, en sletning er endelig, og det er den tabende side i en konflikt også. Fornuftigt for en downloadmappe, en dårlig idé for en dokumentmappe.',
 }
 
 export default da

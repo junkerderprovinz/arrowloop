@@ -188,7 +188,7 @@ func cmdHistory(ctx context.Context, args []string) error {
 	}
 	defer hist.Close()
 
-	runs, err := hist.Recent(ctx, *which, *limit)
+	runs, err := hist.Recent(ctx, *which, history.ShowAll, *limit)
 	if err != nil {
 		return err
 	}

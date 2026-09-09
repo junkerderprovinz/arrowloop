@@ -371,6 +371,20 @@ const zh: Translations = {
   'look.accentReset': '恢复默认',
   'pick.cancel': '取消',
   'look.paletteReset': '恢复默认配色',
+  'jobs.previewHint': '在不改动任何东西的前提下算出这个作业会做什么，然后你可以在执行前逐项勾选或取消。',
+  'preview.back': '返回',
+  'preview.backHint': '离开预览而不执行任何内容。Escape 键也一样。',
+  'history.filterJob': '作业',
+  'history.allJobs': '全部作业',
+  'history.filterShow': '显示',
+  'history.showAll': '所有运行',
+  'history.showChanged': '只看做过事的运行',
+  'history.showFailed': '只看失败',
+  'history.filterHint': '监视文件夹的作业每次有变动就写一条记录，因此每分钟运行一次的作业会把每天只运行一次的作业彻底挤出页面。这个选择是向引擎要另一批运行记录，而不是把已经取回的那批藏起来一部分，所以即使你要找的作业上一次运行是在一千条之前，它也会重新出现。失败的运行始终算作做过事的运行。',
+  'history.working': '正在查找。',
+  'history.noMatch': '没有符合的运行。',
+  'edit.trash': '两侧各保留一个回收站',
+  'edit.trashHint': '删除会变成移动到同步目录树内一个名为 .arrowloop 的隐藏文件夹，因此这个作业所做的一切都不会彻底毁掉任何东西，误删的文件可以在回收站标签页里取回。使用该共享的每个人都看得到这个文件夹，这正是关掉此项的理由：没有回收站就永远不会创建它，删除是最终的，冲突中落败的一方也是。对下载文件夹合理，对文档文件夹则是个坏主意。',
 }
 
 export default zh

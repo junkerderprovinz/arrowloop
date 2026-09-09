@@ -371,6 +371,20 @@ const sk: Translations = {
   'look.accentReset': 'Späť na predvolené',
   'pick.cancel': 'Zrušiť',
   'look.paletteReset': 'Späť na predvolené farby',
+  'jobs.previewHint': 'Zistí, čo by táto úloha urobila, bez toho, aby čokoľvek zmenila, a potom môžeš každú zmenu zaškrtnúť alebo odškrtnúť, kým sa vykoná.',
+  'preview.back': 'Späť',
+  'preview.backHint': 'Opustí náhľad bez toho, aby čokoľvek spustil. Escape urobí to isté.',
+  'history.filterJob': 'Úloha',
+  'history.allJobs': 'Všetky úlohy',
+  'history.filterShow': 'Zobraziť',
+  'history.showAll': 'Všetky behy',
+  'history.showChanged': 'Len tie, ktoré niečo urobili',
+  'history.showFailed': 'Len zlyhania',
+  'history.filterHint': 'Úloha, ktorá stráži priečinok, zapíše záznam pri každej zmene, takže úloha bežiaca každú minútu úplne vytlačí zo stránky tú, ktorá beží raz denne. Tento výber si od motora vyžiada inú množinu behov, namiesto toho, aby skryl časť tých už načítaných, takže hľadaná úloha sa vráti, aj keď jej posledný beh bol tisíc záznamov dozadu. Neúspešný beh sa vždy počíta ako ten, ktorý niečo urobil.',
+  'history.working': 'Hľadá sa.',
+  'history.noMatch': 'Žiadny beh tomu nezodpovedá.',
+  'edit.trash': 'Viesť kôš na každej strane',
+  'edit.trashHint': 'Z vymazania sa stane presun do skrytého priečinka s názvom .arrowloop vnútri synchronizovaného stromu, takže nič z toho, čo táto úloha robí, nezničí nič nadobro a omylom vymazaný súbor vytiahneš späť v záložke koša. Tento priečinok vidí každý, kto zdieľanie používa, a práve to je dôvod, prečo to vypnúť: bez koša nikdy nevznikne, vymazanie je konečné a porazená strana konfliktu tiež. Rozumné pre priečinok so stiahnutými súbormi, zlý nápad pre priečinok s dokumentmi.',
 }
 
 export default sk

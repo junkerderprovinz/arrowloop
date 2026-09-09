@@ -106,6 +106,77 @@ body {
   }
 }
 
+/* The easter egg: the arrow gets loose.
+
+   The logo is an arrow bent into a loop, so the one thing it can do that no
+   other mark could is come UNBENT - fly out of its own rings, round the outside,
+   and back in. It says the product's sentence in a second and a half: what goes
+   out comes back.
+
+   Two groups, two jobs. The arrow flies; the rings stay put and turn once, which
+   is what makes the flight read as leaving something rather than as the whole
+   picture sliding. Both are inside one <svg> with `overflow: visible`, so the
+   arrow is allowed outside the box it is drawn in - without that it would be
+   clipped at the edge and simply vanish.
+
+   The path is diagonal because the arrow is: it runs from the lower left to the
+   upper right, so it leaves the way it points. Coming back from the other side
+   is the loop closing rather than a rewind, which a straight there-and-back
+   would have looked like. */
+@keyframes al-shoot {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  /* Drawing back, the way anything shot is pulled back first. */
+  12% { transform: translate(9%, 9%) scale(0.96); opacity: 1; }
+  /* Away, up and to the right, shrinking as it goes. */
+  38% { transform: translate(-150%, -150%) scale(0.55); opacity: 0; }
+  /* Round the outside. Nothing is drawn here; this keyframe is what makes it
+     re-enter from the OPPOSITE corner instead of backing up its own path. */
+  50% { transform: translate(150%, 150%) scale(0.55); opacity: 0; }
+  /* Back in from the lower left. */
+  76% { transform: translate(18%, 18%) scale(1.04); opacity: 1; }
+  /* Overshooting once, so it lands rather than stopping. */
+  88% { transform: translate(-4%, -4%) scale(0.99); opacity: 1; }
+  100% { transform: translate(0, 0) scale(1); opacity: 1; }
+}
+
+@keyframes al-rings-settle {
+  0% { transform: rotate(0deg) scale(1); }
+  38% { transform: rotate(-14deg) scale(1.03); }
+  76% { transform: rotate(348deg) scale(1); }
+  88% { transform: rotate(364deg) scale(0.97); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+/* The whole flight, timed off the same motion token as everything else here.
+   Applied to the SVG rather than to a wrapper, so the two groups animate about
+   the drawing's own centre. */
+.al-logo-loose {
+  overflow: visible;
+}
+.al-logo-loose .al-logo-arrow {
+  transform-origin: 50% 50%;
+  animation: al-shoot calc(var(--motion-turn-dur, 2.2s) * 0.64) cubic-bezier(0.4, 0, 0.2, 1) 1;
+}
+.al-logo-loose .al-logo-rings {
+  transform-origin: 50% 50%;
+  animation: al-rings-settle calc(var(--motion-turn-dur, 2.2s) * 0.64) cubic-bezier(0.4, 0, 0.2, 1) 1;
+}
+
+/* Off means off in both directions, exactly as for the turn above: a
+   zero-second animation is treated by some engines as "instantly" rather than
+   as "not at all", and an arrow that teleports is not the joke. */
+:root[data-motion='off'] .al-logo-loose .al-logo-arrow,
+:root[data-motion='off'] .al-logo-loose .al-logo-rings {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .al-logo-loose .al-logo-arrow,
+  .al-logo-loose .al-logo-rings {
+    animation: none;
+  }
+}
+
 /* The design language already defines the @keyframes glim-indeterminate that
    travels a bar with no known length. It does not define a class that uses it,
    because a bar's own geometry belongs to the app that draws it, so this is the

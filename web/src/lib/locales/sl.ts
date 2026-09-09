@@ -371,6 +371,20 @@ const sl: Translations = {
   'look.accentReset': 'Nazaj na privzeto',
   'pick.cancel': 'Prekliči',
   'look.paletteReset': 'Nazaj na privzete barve',
+  'jobs.previewHint': 'Ugotovi, kaj bi to opravilo naredilo, ne da bi karkoli spremenilo, nato pa lahko vsako spremembo označiš ali odznačiš, preden se izvede.',
+  'preview.back': 'Nazaj',
+  'preview.backHint': 'Zapusti predogled, ne da bi karkoli izvedel. Escape naredi isto.',
+  'history.filterJob': 'Opravilo',
+  'history.allJobs': 'Vsa opravila',
+  'history.filterShow': 'Prikaži',
+  'history.showAll': 'Vsi zagoni',
+  'history.showChanged': 'Samo tiste, ki so kaj naredili',
+  'history.showFailed': 'Samo neuspehi',
+  'history.filterHint': 'Opravilo, ki opazuje mapo, zapiše vnos ob vsaki spremembi, zato opravilo, ki teče vsako minuto, s strani povsem izrine tisto, ki teče enkrat na dan. Ta izbira od motorja zahteva drugačen nabor zagonov, namesto da bi skrila del že prenesenih, tako da se iskano opravilo vrne tudi, če je bil njegov zadnji zagon tisoč vnosov nazaj. Neuspel zagon vedno šteje kot tak, ki je nekaj naredil.',
+  'history.working': 'Iskanje poteka.',
+  'history.noMatch': 'Noben zagon se ne ujema.',
+  'edit.trash': 'Na vsaki strani voditi koš',
+  'edit.trashHint': 'Brisanje postane premik v skrito mapo z imenom .arrowloop znotraj usklajenega drevesa, tako da nič, kar to opravilo počne, ničesar dokončno ne uniči, pomotoma izbrisano datoteko pa dobiš nazaj v zavihku koša. To mapo vidi vsak, ki uporablja skupno rabo, in prav to je razlog, da to izklopiš: brez koša nikoli ne nastane, brisanje je dokončno, prav tako pa tudi poražena stran spora. Smiselno za mapo s prenosi, slaba zamisel za mapo z dokumenti.',
 }
 
 export default sl

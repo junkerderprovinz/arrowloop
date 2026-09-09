@@ -371,6 +371,20 @@ const hu: Translations = {
   'look.accentReset': 'Vissza az alapértelmezettre',
   'pick.cancel': 'Mégse',
   'look.paletteReset': 'Vissza az alapszínekhez',
+  'jobs.previewHint': 'Kiszámolja, mit tenne ez a feladat anélkül, hogy bármit módosítana, majd minden változtatást ki- vagy bejelölhetsz a végrehajtás előtt.',
+  'preview.back': 'Vissza',
+  'preview.backHint': 'Elhagyja az előnézetet anélkül, hogy bármit végrehajtana. Az Escape ugyanezt teszi.',
+  'history.filterJob': 'Feladat',
+  'history.allJobs': 'Minden feladat',
+  'history.filterShow': 'Megjelenítés',
+  'history.showAll': 'Minden futás',
+  'history.showChanged': 'Csak amelyek csináltak valamit',
+  'history.showFailed': 'Csak a hibák',
+  'history.filterHint': 'Egy mappát figyelő feladat minden változásnál bejegyzést ír, így egy percenként futó feladat teljesen leszorítja az oldalról azt, amelyik naponta egyszer fut. Ez a választás más futáshalmazt kér a motortól ahelyett, hogy a már lekért futások egy részét rejtené el, ezért a keresett feladat akkor is visszatér, ha az utolsó futása ezer bejegyzéssel ezelőtt volt. A sikertelen futás mindig olyannak számít, amely csinált valamit.',
+  'history.working': 'Keresés folyik.',
+  'history.noMatch': 'Egyetlen futás sem illik ehhez.',
+  'edit.trash': 'Mindkét oldalon kukát vezetni',
+  'edit.trashHint': 'A törlés áthelyezéssé válik egy .arrowloop nevű rejtett mappába a szinkronizált fán belül, így semmi, amit ez a feladat tesz, nem semmisít meg véglegesen semmit, a tévedésből törölt fájlt pedig a kuka fülön hozhatod vissza. Ezt a mappát mindenki látja, aki a megosztást használja, és éppen ez az oka a kikapcsolásnak: kuka nélkül soha nem jön létre, a törlés végleges, és az ütközés vesztes oldala is az. Letöltési mappához észszerű, dokumentumokhoz rossz ötlet.',
 }
 
 export default hu

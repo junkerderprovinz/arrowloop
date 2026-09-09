@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { Empty, Num, Rule, Stack } from '../components/Shell'
 import { IconAction } from '../components/IconAction'
@@ -16,8 +16,10 @@ import { Stats } from '../components/Stats'
 import { CheckPanel } from '../components/CheckPanel'
 import { TrashPanel } from '../components/TrashPanel'
 import { JobForm, useJobConfig } from './Editor'
+import { Choice } from '../components/Field'
+import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { api } from '../lib/api'
-import type { Job, Run, RunEvent } from '../lib/api'
+import type { HistoryShow, Job, Run, RunEvent } from '../lib/api'
 import { translateSide, useT, type TranslationKey } from '../lib/i18n'
 import { describeCadence, readCadence } from '../lib/cadence'
 
@@ -297,6 +299,30 @@ export function Jobs({
                       language is explicit that a destructive TRIGGER takes the
                       same treatment as the badges beside it and carries its
                       meaning in its glyph, its tip and the window it opens. */}
+                  {/* Every button here owns its OWN palette position rather
+                      than inheriting the card's.
+
+                      Inheriting was the previous answer and it was reported as
+                      the same defect a third time: "Die ganzen buttons auf der
+                      auftragscard sind nicht in der farbengine. im
+                      regenbogenmodus sollen die unterschiedliche farben haben."
+                      A card rebinds --accent for its whole subtree, so seven
+                      buttons inside it painted in one colour - which IS the
+                      engine, and from a foot away is indistinguishable from
+                      seven buttons the engine never reached.
+
+                      The design language allows this: a position belongs to one
+                      member of a SET whose members are all equal, and a row of
+                      row-actions is exactly that. The offsets are FIXED per
+                      action rather than counted along the row, so a button
+                      keeps its colour when a neighbour is not rendered - four
+                      of these appear only for a job the configuration knows,
+                      and a running count would repaint the rest as they came
+                      and went.
+
+                      They start one past the card's own index, so each card
+                      opens its row on a different colour instead of every card
+                      showing the identical seven. */}
                   <div className="flex flex-wrap items-center justify-end gap-2">
                     {/* The activity fold's button stands WITH the other actions
                         rather than at the far end of the row (jdp: "der
@@ -309,6 +335,7 @@ export function Jobs({
                     <IconAction
                       title={t('jobs.activity')}
                       labelKey="jobs.activity"
+                      hueIndex={i + 1}
                       onClick={() => setActivity(activity === j.name ? null : j.name)}
                     />
                     {at !== null && (
@@ -316,6 +343,7 @@ export function Jobs({
                         <IconAction
                           title={t('edit.editJob')}
                           labelKey="edit.editJob"
+                          hueIndex={i + 2}
                           onClick={() => setEditing(at === editing ? null : at)}
                         >
                           <IconEdit />
@@ -323,6 +351,7 @@ export function Jobs({
                         <IconAction
                           title={t('edit.duplicate')}
                           labelKey="edit.duplicate"
+                          hueIndex={i + 3}
                           onClick={() => setEditing(config.duplicate(at))}
                         >
                           <IconCopy />
@@ -330,6 +359,7 @@ export function Jobs({
                         <IconAction
                           title={t('edit.remove')}
                           labelKey="edit.remove"
+                          hueIndex={i + 4}
                           onClick={() => setRemoving(at)}
                         >
                           <IconDelete />
@@ -346,6 +376,7 @@ export function Jobs({
                       <IconAction
                         title={j.disabled ? t('jobs.resume') : t('jobs.pause')}
                         labelKey={j.disabled ? 'jobs.resume' : 'jobs.pause'}
+                        hueIndex={i + 5}
                         onClick={() => void config.setDisabled(at, !j.disabled)}
                       >
                         {j.disabled ? <IconRun /> : <IconPause />}
@@ -364,12 +395,15 @@ export function Jobs({
                       title={t('jobs.runNow')}
                       labelKey="jobs.runNow"
                       hint={t('jobs.runNowHint')}
+                      hueIndex={i + 6}
                       disabled={j.running}
                       onClick={() => void api.run(j.name)}
                     />
                     <IconAction
                       title={t('jobs.preview')}
                       labelKey="jobs.preview"
+                      hint={t('jobs.previewHint')}
+                      hueIndex={i + 7}
                       onClick={() => onPreview(j.name)}
                     />
                   </div>
@@ -472,10 +506,14 @@ export function Jobs({
                 </div>
                 {/* No preview here: there is nothing for the engine to plan
                     against until this has been saved. */}
+                {/* Its own positions, and deliberately the SAME offsets the
+                    saved card gives these two actions: the pencil is the
+                    pencil whether or not the job has been written yet. */}
                 <div className="flex flex-wrap items-center justify-end gap-2">
                   <IconAction
                     title={t('edit.editJob')}
                     labelKey="edit.editJob"
+                    hueIndex={jobs.length + at + 2}
                     onClick={() => setEditing(at === editing ? null : at)}
                   >
                     <IconEdit />
@@ -483,6 +521,7 @@ export function Jobs({
                   <IconAction
                     title={t('edit.remove')}
                     labelKey="edit.remove"
+                    hueIndex={jobs.length + at + 4}
                     onClick={() => setRemoving(at)}
                   >
                     <IconDelete />
@@ -709,8 +748,35 @@ function JobActivity({ runs, onChanged }: { runs: Run[]; onChanged: () => void }
   )
 }
 
-/** The run log, newest first. */
-export function History({ runs, onChanged }: { runs: Run[]; onChanged?: () => void }) {
+/**
+ * The run log, newest first, with the two questions that make it readable.
+ *
+ * It fetches for ITSELF rather than sharing the page's copy, and that is the
+ * load-bearing part. The page fetches the last fifty runs of everything so a
+ * job card can say whether its own last attempt failed, and that list must stay
+ * unfiltered or the cards start lying. This tab is asking a different question
+ * and gets its own answer.
+ *
+ * Both narrowings go to the server. A job watching a folder writes a run a
+ * minute, so fifty runs is fifty minutes and a job that runs once a day is not
+ * further down the page, it is not on the page at all. jdp: "im verlauftab,
+ * sollte man filtern koennen. zb. echtzeit auftraege ausblenden weil die
+ * andauernd laufen und ein eintrag machen. wenn ein auftrag zb nur einemal am
+ * tag laeuft geht der unter." Filtering what was already fetched would filter
+ * those same fifty and leave the daily job exactly as missing.
+ */
+export function History({
+  runs,
+  jobs,
+  onChanged,
+}: {
+  /** The page's own unfiltered copy, used until this tab's first answer lands. */
+  runs: Run[]
+  /** The names to offer, which the run log itself cannot supply: a job with no
+   *  runs yet has nothing in it to be listed by. */
+  jobs: Job[]
+  onChanged?: () => void
+}) {
   const { t } = useT()
   /**
    * Which run is open, by its id. One at a time.
@@ -720,15 +786,86 @@ export function History({ runs, onChanged }: { runs: Run[]; onChanged?: () => vo
    * the one that touched something they did not expect.
    */
   const [open, setOpen] = useState<number | null>(null)
-  if (runs.length === 0) {
+  const [job, setJob] = useState('')
+  const [show, setShow] = useState<HistoryShow>('all')
+  const [own, setOwn] = useState<Run[] | null>(null)
+  const [loading, setLoading] = useState(false)
+
+  const filtered = job !== '' || show !== 'all'
+
+  useEffect(() => {
+    let live = true
+    setLoading(true)
+    api
+      .history(job || undefined, show, 50)
+      .then((got) => live && setOwn(got))
+      .catch(() => live && setOwn([]))
+      .finally(() => live && setLoading(false))
+    return () => {
+      live = false
+    }
+  }, [job, show, runs])
+
+  const list = own ?? runs
+
+  // The names come from the configuration AND from the log, joined. A job that
+  // has been renamed or deleted still has its runs in here, and leaving it out
+  // of the list would make them unreachable; a job that has never run is in the
+  // configuration and not in the log, and leaving THAT out means the one job
+  // somebody suspects of doing nothing cannot be asked about.
+  const names = useMemo(() => {
+    const seen = new Set<string>()
+    for (const j of jobs) seen.add(j.name)
+    for (const r of runs) seen.add(r.Job)
+    for (const r of own ?? []) seen.add(r.Job)
+    return [...seen].sort((a, b) => a.localeCompare(b))
+  }, [jobs, runs, own])
+
+  const controls = (
+    <div className="mb-4 flex flex-wrap items-end gap-3">
+      <div className="w-56 shrink-0">
+        <Choice
+          label={t('history.filterJob')}
+          value={job}
+          onChange={setJob}
+          options={[
+            { value: '', label: t('history.allJobs') },
+            ...names.map((n) => ({ value: n, label: n })),
+          ]}
+        />
+      </div>
+      <div className="w-56 shrink-0">
+        <Choice<HistoryShow>
+          label={t('history.filterShow')}
+          value={show}
+          onChange={setShow}
+          options={[
+            { value: 'all', label: t('history.showAll') },
+            { value: 'changed', label: t('history.showChanged') },
+            { value: 'failed', label: t('history.showFailed') },
+          ]}
+        />
+      </div>
+      <InfoBubble tip={t('history.filterHint')} />
+    </div>
+  )
+
+  if (list.length === 0) {
     return (
       <Card title={t('history.title')} hueIndex={0}>
-        <Empty>{t('history.empty')}</Empty>
+        {controls}
+        {/* An empty list means two different things and they must not read the
+            same. With no filter on, this log has nothing in it. With one on,
+            there is a log and nothing in it matches - and saying "no history"
+            there would be a lie about the program rather than about the
+            filter. */}
+        <Empty>{loading ? t('history.working') : filtered ? t('history.noMatch') : t('history.empty')}</Empty>
       </Card>
     )
   }
   return (
     <Card title={t('history.title')} hueIndex={0}>
+      {controls}
       {/* The shape of the last month, above the list of what happened on each
           day. The list answers "what happened on Tuesday"; it cannot answer
           "is this thing doing anything at all", which is the question somebody
@@ -737,7 +874,7 @@ export function History({ runs, onChanged }: { runs: Run[]; onChanged?: () => vo
         <Stats />
       </div>
       <ul className="flex flex-col">
-        {runs.map((r, i) => (
+        {list.map((r, i) => (
           <li key={`${r.Job}-${r.Started}-${i}`}>
             {i > 0 && <Rule />}
             {/* The whole row opens it, not a chevron at one end. The row is

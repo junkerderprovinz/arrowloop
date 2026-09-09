@@ -371,6 +371,20 @@ const hr: Translations = {
   'look.accentReset': 'Natrag na zadano',
   'pick.cancel': 'Odustani',
   'look.paletteReset': 'Natrag na zadane boje',
+  'jobs.previewHint': 'Utvrđuje što bi ovaj posao učinio, ne mijenjajući ništa, a zatim možeš svaku promjenu označiti ili odznačiti prije izvršenja.',
+  'preview.back': 'Natrag',
+  'preview.backHint': 'Napušta pretpregled bez izvršavanja ičega. Escape čini isto.',
+  'history.filterJob': 'Posao',
+  'history.allJobs': 'Svi poslovi',
+  'history.filterShow': 'Prikaži',
+  'history.showAll': 'Sva izvođenja',
+  'history.showChanged': 'Samo ona koja su nešto učinila',
+  'history.showFailed': 'Samo neuspjesi',
+  'history.filterHint': 'Posao koji nadzire mapu zapisuje unos pri svakoj promjeni, pa posao koji se izvodi svake minute posve istiskuje sa stranice onaj koji se izvodi jednom dnevno. Ovaj izbor traži od motora drugačiji skup izvođenja umjesto da sakrije dio već dohvaćenih, pa se traženi posao vraća čak i kad mu je posljednje izvođenje bilo tisuću unosa ranije. Neuspjelo izvođenje uvijek se broji kao ono koje je nešto učinilo.',
+  'history.working': 'Traži se.',
+  'history.noMatch': 'Nijedno izvođenje ne odgovara.',
+  'edit.trash': 'Držati koš na svakoj strani',
+  'edit.trashHint': 'Brisanje postaje premještanje u skrivenu mapu naziva .arrowloop unutar usklađenog stabla, pa ništa što ovaj posao radi ne uništava ništa nepovratno, a greškom obrisanu datoteku vraćaš u kartici koša. Tu mapu vidi svatko tko koristi dijeljenje, i upravo je to razlog da ovo isključiš: bez koša nikad ne nastaje, brisanje je konačno, a tako i poražena strana sukoba. Razumno za mapu s preuzimanjima, loša zamisao za mapu s dokumentima.',
 }
 
 export default hr

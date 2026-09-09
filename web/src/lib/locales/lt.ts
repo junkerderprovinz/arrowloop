@@ -371,6 +371,20 @@ const lt: Translations = {
   'look.accentReset': 'Grįžti į numatytąjį',
   'pick.cancel': 'Atšaukti',
   'look.paletteReset': 'Grįžti į numatytąsias spalvas',
+  'jobs.previewHint': 'Apskaičiuoja, ką ši užduotis padarytų, nieko nekeisdama, o tada kiekvieną pakeitimą prieš vykdymą gali pažymėti arba žymėjimą panaikinti.',
+  'preview.back': 'Atgal',
+  'preview.backHint': 'Palieka peržiūrą nieko nevykdant. Escape daro tą patį.',
+  'history.filterJob': 'Užduotis',
+  'history.allJobs': 'Visos užduotys',
+  'history.filterShow': 'Rodyti',
+  'history.showAll': 'Visi paleidimai',
+  'history.showChanged': 'Tik tie, kurie ką nors padarė',
+  'history.showFailed': 'Tik nesėkmės',
+  'history.filterHint': 'Aplanką stebinti užduotis įrašo eilutę kaskart, kai kas nors pasikeičia, todėl kas minutę paleidžiama užduotis visiškai išstumia iš puslapio tą, kuri paleidžiama kartą per dieną. Šis pasirinkimas prašo variklio kito paleidimų rinkinio, o ne slepia dalį jau gautų, todėl ieškoma užduotis grįžta net tada, kai paskutinis jos paleidimas buvo prieš tūkstantį eilučių. Nepavykęs paleidimas visada skaičiuojamas kaip toks, kuris ką nors padarė.',
+  'history.working': 'Ieškoma.',
+  'history.noMatch': 'Nė vienas paleidimas neatitinka.',
+  'edit.trash': 'Laikyti šiukšlinę kiekvienoje pusėje',
+  'edit.trashHint': 'Ištrynimas virsta perkėlimu į paslėptą aplanką pavadinimu .arrowloop sinchronizuojamo medžio viduje, todėl niekas, ką ši užduotis daro, nieko nesunaikina galutinai, o per klaidą ištrintą failą atgausi šiukšlinės kortelėje. Tą aplanką mato kiekvienas, kuris naudojasi bendrinimu, ir būtent dėl to verta tai išjungti: be šiukšlinės jis niekada nesukuriamas, ištrynimas yra galutinis, kaip ir pralaimėjusi konflikto pusė. Atsisiuntimų aplankui protinga, dokumentų aplankui bloga mintis.',
 }
 
 export default lt

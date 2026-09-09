@@ -346,7 +346,20 @@ func (s *Server) listHistory(w http.ResponseWriter, r *http.Request) {
 			limit = n
 		}
 	}
-	runs, err := s.History.Recent(r.Context(), r.URL.Query().Get("job"), limit)
+	// An unknown value is ALL rather than an error. This parameter narrows a
+	// listing, so getting it wrong should show too much and never too little:
+	// a typo that returned nothing would read as "there is no history", which
+	// is the one answer this log must never give falsely.
+	var show history.Show
+	switch history.Show(r.URL.Query().Get("show")) {
+	case history.ShowChanged:
+		show = history.ShowChanged
+	case history.ShowFailed:
+		show = history.ShowFailed
+	default:
+		show = history.ShowAll
+	}
+	runs, err := s.History.Recent(r.Context(), r.URL.Query().Get("job"), show, limit)
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, err)
 		return

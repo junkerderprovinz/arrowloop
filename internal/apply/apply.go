@@ -1,9 +1,11 @@
 // Package apply executes a plan and records the result.
 //
-// Two rules govern everything here. Nothing is ever destroyed outright: a
-// deletion is a move into the side's own trash. And the state row for a path is
-// written the moment that path is settled, not once at the end, so a run that
-// dies halfway leaves a state that is incomplete but never wrong.
+// Two rules govern everything here. Nothing is destroyed outright unless
+// somebody said so: a deletion is a move into the side's own trash, and the one
+// way past that is a job explicitly configured without one, which is a decision
+// made about those particular files rather than a default. And the state row
+// for a path is written the moment that path is settled, not once at the end,
+// so a run that dies halfway leaves a state that is incomplete but never wrong.
 package apply
 
 import (
@@ -669,7 +671,7 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 		if live == nil {
 			return rec.db.Forget(ctx, act.Path)
 		}
-		if err := toTrash(ctx, ends.side(act.Dst), live.Object(), runID); err != nil {
+		if err := discard(ctx, ends.side(act.Dst), live.Object(), runID); err != nil {
 			return err
 		}
 		t.count(func(r *Result) { r.Trashed++ })
@@ -687,13 +689,29 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 	return fmt.Errorf("unknown action kind %v", act.Kind)
 }
 
-// toTrash moves an object into the side's own trash instead of removing it.
+// discard gets rid of an object: into the side's own trash, or outright when
+// this job has been told not to keep one.
 //
 // The trash lives inside the synced tree but under a reserved prefix that the
 // scanner skips, so it never travels to the other side. Putting it outside the
 // tree instead would be cleaner in principle and unusable in practice: on an
 // S3 bucket or an SFTP export there is often no "outside".
-func toTrash(ctx context.Context, f fs.Fs, obj fs.Object, runID string) error {
+//
+// That reserved folder is also the whole of what somebody sees of this
+// mechanism, and it is what gets asked about: jdp, looking at a synced download
+// share, "braucht es den .arrowloop ordner im Zielordner? Kann man den nicht
+// weglassen?" It can, and this is where: with the trash off nothing is ever
+// moved under the prefix, so the folder is never created. The decision lives on
+// the job because it is a decision about what THOSE files are worth.
+//
+// The choice is made here rather than at the two call sites, so that both a
+// deletion and a conflict's losing version answer it the same way. Two copies
+// of this `if` would eventually disagree, and the one that kept a trash nobody
+// asked for would be the quiet one.
+func discard(ctx context.Context, f fs.Fs, obj fs.Object, runID string) error {
+	if !trashKept(ctx) {
+		return operations.DeleteFile(ctx, obj)
+	}
 	dst := path.Join(scan.TrashDir, runID, obj.Remote())
 	return operations.MoveFile(ctx, f, f, dst, obj.Remote())
 }
@@ -831,8 +849,8 @@ func chosenSteps(ends Ends, act plan.Action, runID string) ([]conflictStep, erro
 	}
 
 	return []conflictStep{
-		step(fmt.Sprintf("send the %s version to the trash", loser), func(ctx context.Context) error {
-			return toTrash(ctx, loserFs, loserNow.Object(), runID)
+		step(fmt.Sprintf("get rid of the %s version", loser), func(ctx context.Context) error {
+			return discard(ctx, loserFs, loserNow.Object(), runID)
 		}),
 		step(fmt.Sprintf("copy the %s version over", winner), func(ctx context.Context) error {
 			return operations.CopyFile(ctx, loserFs, winnerFs, winnerNow.Path, winnerNow.Path)

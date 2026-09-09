@@ -371,6 +371,20 @@ const ro: Translations = {
   'look.accentReset': 'Înapoi la implicit',
   'pick.cancel': 'Anulează',
   'look.paletteReset': 'Înapoi la culorile implicite',
+  'jobs.previewHint': 'Stabilește ce ar face această sarcină fără să schimbe nimic, apoi poți bifa sau debifa fiecare modificare înainte de execuție.',
+  'preview.back': 'Înapoi',
+  'preview.backHint': 'Părăsește previzualizarea fără a executa nimic. Escape face același lucru.',
+  'history.filterJob': 'Sarcină',
+  'history.allJobs': 'Toate sarcinile',
+  'history.filterShow': 'Afișează',
+  'history.showAll': 'Toate execuțiile',
+  'history.showChanged': 'Doar cele care au făcut ceva',
+  'history.showFailed': 'Doar eșecurile',
+  'history.filterHint': 'O sarcină care supraveghează un dosar scrie o intrare la fiecare schimbare, așa că una care rulează în fiecare minut împinge complet de pe pagină una care rulează o dată pe zi. Această alegere cere motorului un alt set de execuții în loc să ascundă o parte din cele deja aduse, așa că sarcina căutată revine chiar dacă ultima ei execuție a fost cu o mie de intrări în urmă. O execuție eșuată contează întotdeauna ca una care a făcut ceva.',
+  'history.working': 'Se caută.',
+  'history.noMatch': 'Nicio execuție nu corespunde.',
+  'edit.trash': 'Păstrează un coș pe fiecare parte',
+  'edit.trashHint': 'O ștergere devine o mutare într-un dosar ascuns numit .arrowloop din interiorul arborelui sincronizat, așa că nimic din ce face această sarcină nu distruge ceva definitiv, iar un fișier șters din greșeală se recuperează din fila coșului. Acel dosar este vizibil pentru toți cei care folosesc partajarea, și tocmai acesta este motivul de a dezactiva opțiunea: fără coș nu se creează niciodată, o ștergere este definitivă, la fel și partea care pierde într-un conflict. Rezonabil pentru un dosar de descărcări, o idee proastă pentru unul de documente.',
 }
 
 export default ro

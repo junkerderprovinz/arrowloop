@@ -371,6 +371,20 @@ const is: Translations = {
   'look.accentReset': 'Aftur í sjálfgefið',
   'pick.cancel': 'Hætta við',
   'look.paletteReset': 'Aftur í sjálfgefnu litina',
+  'jobs.previewHint': 'Reiknar út hvað þetta verk myndi gera án þess að breyta neinu, og svo má haka við eða af hverja breytingu áður en hún er keyrð.',
+  'preview.back': 'Til baka',
+  'preview.backHint': 'Fer út úr forskoðuninni án þess að keyra neitt. Escape gerir það sama.',
+  'history.filterJob': 'Verk',
+  'history.allJobs': 'Öll verk',
+  'history.filterShow': 'Sýna',
+  'history.showAll': 'Allar keyrslur',
+  'history.showChanged': 'Aðeins þær sem gerðu eitthvað',
+  'history.showFailed': 'Aðeins bilanir',
+  'history.filterHint': 'Verk sem fylgist með möppu skrifar línu í hvert sinn sem eitthvað breytist, svo verk sem keyrir á hverri mínútu ýtir verki sem keyrir einu sinni á dag alveg af síðunni. Þetta val biður vélina um annað safn keyrslna í stað þess að fela hluta þeirra sem þegar voru sóttar, svo verkið sem þú leitar að kemur aftur jafnvel þótt síðasta keyrsla þess hafi verið þúsund línum fyrr. Misheppnuð keyrsla telst alltaf sem keyrsla sem gerði eitthvað.',
+  'history.working': 'Leitað er.',
+  'history.noMatch': 'Engin keyrsla passar við þetta.',
+  'edit.trash': 'Halda rusli hvorum megin',
+  'edit.trashHint': 'Eyðing verður að færslu í falda möppu sem heitir .arrowloop inni í samstillta trénu, svo ekkert sem þetta verk gerir eyðir neinu fyrir fullt og allt, og skrá sem var eytt fyrir mistök er sótt aftur á ruslflipanum. Þá möppu sér hver sá sem notar sameignina, og einmitt þess vegna má slökkva á þessu: án rusls verður hún aldrei til, eyðing er endanleg, og svo er einnig um þá hlið sem tapar í árekstri. Skynsamlegt fyrir niðurhalsmöppu, slæm hugmynd fyrir skjalamöppu.',
 }
 
 export default is

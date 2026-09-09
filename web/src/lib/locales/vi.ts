@@ -371,6 +371,20 @@ const vi: Translations = {
   'look.accentReset': 'Về mặc định',
   'pick.cancel': 'Hủy',
   'look.paletteReset': 'Về màu mặc định',
+  'jobs.previewHint': 'Tính ra công việc này sẽ làm gì mà không thay đổi thứ gì, sau đó bạn có thể đánh dấu hoặc bỏ đánh dấu từng thay đổi trước khi chạy.',
+  'preview.back': 'Quay lại',
+  'preview.backHint': 'Rời bản xem trước mà không chạy gì cả. Phím Escape làm điều tương tự.',
+  'history.filterJob': 'Công việc',
+  'history.allJobs': 'Mọi công việc',
+  'history.filterShow': 'Hiển thị',
+  'history.showAll': 'Mọi lần chạy',
+  'history.showChanged': 'Chỉ những lần đã làm gì đó',
+  'history.showFailed': 'Chỉ các lần thất bại',
+  'history.filterHint': 'Công việc theo dõi một thư mục ghi một dòng mỗi khi có thay đổi, nên công việc chạy mỗi phút đẩy hẳn khỏi trang một công việc chạy mỗi ngày một lần. Lựa chọn này yêu cầu động cơ một tập hợp lần chạy khác thay vì giấu bớt phần đã lấy về, nên công việc bạn đang tìm sẽ quay lại ngay cả khi lần chạy cuối của nó cách đây một nghìn dòng. Một lần chạy thất bại luôn được tính là lần đã làm gì đó.',
+  'history.working': 'Đang tìm.',
+  'history.noMatch': 'Không có lần chạy nào khớp.',
+  'edit.trash': 'Giữ một thùng rác ở mỗi bên',
+  'edit.trashHint': 'Việc xoá trở thành việc chuyển vào một thư mục ẩn tên .arrowloop bên trong cây đồng bộ, nên không điều gì công việc này làm huỷ hoại thứ gì vĩnh viễn, và tệp bị xoá nhầm được lấy lại ở thẻ thùng rác. Thư mục đó ai dùng chia sẻ cũng thấy, và đó chính là lý do để tắt tuỳ chọn này: không có thùng rác thì nó không bao giờ được tạo, việc xoá là dứt khoát, và bên thua trong một xung đột cũng vậy. Hợp lý cho thư mục tải về, ý tưởng tồi cho thư mục tài liệu.',
 }
 
 export default vi

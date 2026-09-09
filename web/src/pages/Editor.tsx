@@ -527,6 +527,22 @@ export function JobForm({
           onChange={(v) => patch({ metadata: v })}
           hint={t('edit.metadataHint')}
         />
+        {/* Shown the RIGHT way round: the switch says "keep a bin", and the
+            stored field says "do not". A switch labelled with a negative is a
+            switch people get backwards, and getting this one backwards deletes
+            files.
+
+            It is here because the bin is visible. It lives inside the synced
+            tree, so a shared download folder grows an `.arrowloop` directory
+            that everyone on that share can see, which is what prompted the
+            question: "braucht es den .arrowloop ordner im Zielordner? Kann man
+            den nicht weglassen?" */}
+        <ToggleRow
+          label={t('edit.trash')}
+          checked={!job.noTrash}
+          onChange={(v) => patch({ noTrash: !v })}
+          hint={t('edit.trashHint')}
+        />
       </div>
     </>
   )

@@ -371,6 +371,20 @@ const eu: Translations = {
   'look.accentReset': 'Lehenetsira itzuli',
   'pick.cancel': 'Utzi',
   'look.paletteReset': 'Lehenetsitako koloreetara itzuli',
+  'jobs.previewHint': 'Lan honek zer egingo lukeen kalkulatzen du ezer aldatu gabe, eta gero aldaketa bakoitza markatu edo desmarkatu dezakezu exekutatu aurretik.',
+  'preview.back': 'Atzera',
+  'preview.backHint': 'Aurrebista uzten du ezer exekutatu gabe. Escape teklak gauza bera egiten du.',
+  'history.filterJob': 'Lana',
+  'history.allJobs': 'Lan guztiak',
+  'history.filterShow': 'Erakutsi',
+  'history.showAll': 'Exekuzio guztiak',
+  'history.showChanged': 'Zerbait egin dutenak bakarrik',
+  'history.showFailed': 'Hutsegiteak bakarrik',
+  'history.filterHint': 'Karpeta bat zaintzen duen lan batek lerro bat idazten du zerbait aldatzen den bakoitzean, beraz minuturo abiatzen den batek egunean behin abiatzen dena orritik guztiz kanporatzen du. Aukera honek exekuzio multzo desberdin bat eskatzen dio motorrari, jada ekarritakoen zati bat ezkutatu beharrean, eta horrela bilatzen ari zaren lana itzultzen da, bere azken exekuzioa mila lerro lehenago izan bazen ere. Huts egin duen exekuzioa beti zenbatzen da zerbait egin duen gisa.',
+  'history.working': 'Bilatzen ari da.',
+  'history.noMatch': 'Ez dago bat datorren exekuziorik.',
+  'edit.trash': 'Zakarrontzi bat gorde alde bakoitzean',
+  'edit.trashHint': 'Ezabatzea sinkronizatutako zuhaitzaren barruko .arrowloop izeneko karpeta ezkutu batera eramatea bihurtzen da, beraz lan honek egiten duen ezerk ez du ezer betiko suntsitzen, eta nahi gabe ezabatutako fitxategia zakarrontziaren fitxatik berreskuratzen da. Karpeta hori partekatzea erabiltzen duen orok ikusten du, eta hori da hain zuzen hau itzaltzeko arrazoia: zakarrontzirik gabe ez da inoiz sortzen, ezabatzea behin betikoa da, eta gatazka batean galtzen duen aldea ere bai. Zentzuzkoa deskargen karpeta baterako, ideia txarra dokumentuen karpeta baterako.',
 }
 
 export default eu

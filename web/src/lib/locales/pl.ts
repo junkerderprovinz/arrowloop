@@ -371,6 +371,20 @@ const pl: Translations = {
   'look.accentReset': 'Wróć do domyślnego',
   'pick.cancel': 'Anuluj',
   'look.paletteReset': 'Wróć do domyślnych kolorów',
+  'jobs.previewHint': 'Ustala, co zrobiłoby to zadanie, niczego nie zmieniając, po czym możesz zaznaczyć lub odznaczyć każdą zmianę przed jej wykonaniem.',
+  'preview.back': 'Wstecz',
+  'preview.backHint': 'Opuszcza podgląd bez uruchamiania czegokolwiek. Escape robi to samo.',
+  'history.filterJob': 'Zadanie',
+  'history.allJobs': 'Wszystkie zadania',
+  'history.filterShow': 'Pokaż',
+  'history.showAll': 'Wszystkie przebiegi',
+  'history.showChanged': 'Tylko te, które coś zrobiły',
+  'history.showFailed': 'Tylko niepowodzenia',
+  'history.filterHint': 'Zadanie obserwujące folder zapisuje wpis przy każdej zmianie, więc zadanie uruchamiane co minutę całkowicie wypycha ze strony takie, które działa raz dziennie. Ten wybór prosi silnik o inny zestaw przebiegów, zamiast ukrywać część już pobranych, dzięki czemu szukane zadanie wraca nawet wtedy, gdy jego ostatni przebieg był tysiąc wpisów temu. Przebieg zakończony niepowodzeniem zawsze liczy się jako taki, który coś zrobił.',
+  'history.working': 'Trwa szukanie.',
+  'history.noMatch': 'Żaden przebieg nie pasuje.',
+  'edit.trash': 'Prowadzić kosz po każdej stronie',
+  'edit.trashHint': 'Usunięcie staje się przeniesieniem do ukrytego folderu o nazwie .arrowloop wewnątrz synchronizowanego drzewa, więc nic, co robi to zadanie, nie niszczy niczego bezpowrotnie, a plik skasowany przez pomyłkę odzyskasz w zakładce kosza. Ten folder widzi każdy, kto korzysta z udziału, i właśnie dlatego warto to wyłączyć: bez kosza nigdy nie powstaje, usunięcie jest ostateczne, a przegrywająca strona konfliktu tak samo. Rozsądne dla folderu pobrań, zły pomysł dla folderu z dokumentami.',
 }
 
 export default pl

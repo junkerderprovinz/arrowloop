@@ -25,7 +25,7 @@ func TestARunsOwnWorkIsReachable(t *testing.T) {
 		}); err != nil {
 		t.Fatalf("record: %v", err)
 	}
-	runs, err := h.history.Recent(t.Context(), "photos", 10)
+	runs, err := h.history.Recent(t.Context(), "photos", history.ShowAll, 10)
 	if err != nil || len(runs) != 1 {
 		t.Fatalf("recent: %v, %d runs", err, len(runs))
 	}
@@ -65,7 +65,7 @@ func TestAnEmptyRunIsAListAndNotNull(t *testing.T) {
 	if err := h.history.Record(t.Context(), history.Run{Job: "photos", Started: now, Finished: now}, nil); err != nil {
 		t.Fatalf("record: %v", err)
 	}
-	runs, _ := h.history.Recent(t.Context(), "photos", 1)
+	runs, _ := h.history.Recent(t.Context(), "photos", history.ShowAll, 1)
 
 	srv := newServer(t, &web.Server{History: h.history, Runner: h.runner})
 	resp, err := srv.Client().Get(srv.URL + "/api/history/" + itoa(runs[0].ID) + "/entries")

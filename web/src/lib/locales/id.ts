@@ -371,6 +371,20 @@ const id: Translations = {
   'look.accentReset': 'Kembali ke bawaan',
   'pick.cancel': 'Batal',
   'look.paletteReset': 'Kembali ke warna bawaan',
+  'jobs.previewHint': 'Menghitung apa yang akan dilakukan tugas ini tanpa mengubah apa pun, lalu kamu bisa mencentang atau membatalkan setiap perubahan sebelum dijalankan.',
+  'preview.back': 'Kembali',
+  'preview.backHint': 'Meninggalkan pratinjau tanpa menjalankan apa pun. Escape melakukan hal yang sama.',
+  'history.filterJob': 'Tugas',
+  'history.allJobs': 'Semua tugas',
+  'history.filterShow': 'Tampilkan',
+  'history.showAll': 'Semua jalannya',
+  'history.showChanged': 'Hanya yang melakukan sesuatu',
+  'history.showFailed': 'Hanya kegagalan',
+  'history.filterHint': 'Tugas yang mengawasi folder menulis satu baris setiap kali ada perubahan, sehingga tugas yang berjalan tiap menit mendesak keluar halaman sepenuhnya tugas yang berjalan sekali sehari. Pilihan ini meminta mesin sekumpulan jalannya yang lain alih-alih menyembunyikan sebagian dari yang sudah diambil, jadi tugas yang kamu cari kembali muncul meski jalannya yang terakhir seribu baris lalu. Jalannya yang gagal selalu dihitung sebagai yang melakukan sesuatu.',
+  'history.working': 'Sedang mencari.',
+  'history.noMatch': 'Tidak ada jalannya yang cocok.',
+  'edit.trash': 'Menyimpan tempat sampah di tiap sisi',
+  'edit.trashHint': 'Penghapusan menjadi perpindahan ke folder tersembunyi bernama .arrowloop di dalam pohon yang disinkronkan, sehingga tidak ada yang dilakukan tugas ini yang memusnahkan sesuatu secara permanen, dan berkas yang terhapus tidak sengaja bisa diambil kembali dari tab tempat sampah. Folder itu terlihat oleh semua orang yang memakai berbagi pakai tersebut, dan justru itulah alasan mematikan pilihan ini: tanpa tempat sampah folder itu tidak pernah dibuat, penghapusan bersifat final, begitu pula sisi yang kalah dalam sebuah konflik. Masuk akal untuk folder unduhan, ide buruk untuk folder dokumen.',
 }
 
 export default id

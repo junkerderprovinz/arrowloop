@@ -371,6 +371,20 @@ const nl: Translations = {
   'look.accentReset': 'Terug naar de standaard',
   'pick.cancel': 'Annuleren',
   'look.paletteReset': 'Terug naar de standaardkleuren',
+  'jobs.previewHint': 'Berekent wat deze taak zou doen zonder iets te wijzigen, waarna je elke wijziging kunt aan- of uitvinken voordat ze wordt uitgevoerd.',
+  'preview.back': 'Terug',
+  'preview.backHint': 'Verlaat het voorbeeld zonder iets uit te voeren. Escape doet hetzelfde.',
+  'history.filterJob': 'Taak',
+  'history.allJobs': 'Alle taken',
+  'history.filterShow': 'Tonen',
+  'history.showAll': 'Alle uitvoeringen',
+  'history.showChanged': 'Alleen uitvoeringen die iets deden',
+  'history.showFailed': 'Alleen mislukkingen',
+  'history.filterHint': 'Een taak die een map bewaakt schrijft bij elke wijziging een regel, dus een taak die elke minuut loopt verdringt een taak die eens per dag loopt volledig van de pagina. Deze keuze vraagt de motor om een andere verzameling uitvoeringen in plaats van een deel van de al opgehaalde te verbergen, zodat de taak die je zoekt terugkomt ook als haar laatste uitvoering duizend regels geleden was. Een mislukte uitvoering telt altijd als een die iets deed.',
+  'history.working': 'Bezig met zoeken.',
+  'history.noMatch': 'Geen uitvoering komt hiermee overeen.',
+  'edit.trash': 'Aan beide kanten een prullenbak bijhouden',
+  'edit.trashHint': 'Een verwijdering wordt een verplaatsing naar een verborgen map met de naam .arrowloop binnen de gesynchroniseerde boom, zodat niets wat deze taak doet iets onherroepelijk vernietigt en een per ongeluk verwijderd bestand terug te halen is via het prullenbaktabblad. Die map is zichtbaar voor iedereen die de share gebruikt, en dat is de reden om dit uit te zetten: zonder prullenbak wordt hij nooit aangemaakt, is een verwijdering definitief, en de verliezende kant van een conflict ook. Verstandig voor een downloadmap, een slecht idee voor een documentenmap.',
 }
 
 export default nl

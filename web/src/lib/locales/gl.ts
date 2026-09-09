@@ -371,6 +371,20 @@ const gl: Translations = {
   'look.accentReset': 'Volver ao valor predeterminado',
   'pick.cancel': 'Cancelar',
   'look.paletteReset': 'Volver ás cores predeterminadas',
+  'jobs.previewHint': 'Calcula o que faría esta tarefa sen cambiar nada, e despois podes marcar ou desmarcar cada cambio antes de executalo.',
+  'preview.back': 'Atrás',
+  'preview.backHint': 'Sae da vista previa sen executar nada. Escape fai o mesmo.',
+  'history.filterJob': 'Tarefa',
+  'history.allJobs': 'Todas as tarefas',
+  'history.filterShow': 'Amosar',
+  'history.showAll': 'Todas as execucións',
+  'history.showChanged': 'Só as que fixeron algo',
+  'history.showFailed': 'Só os fallos',
+  'history.filterHint': 'Unha tarefa que vixía un cartafol escribe unha entrada cada vez que algo cambia, así que unha que se executa cada minuto expulsa por completo da páxina outra que se executa unha vez ao día. Esta escolla pídelle ao motor un conxunto distinto de execucións en vez de agochar parte das xa obtidas, polo que a tarefa que buscas volve aínda que a súa última execución fose hai mil entradas. Unha execución fallida conta sempre como unha que fixo algo.',
+  'history.working': 'Estase a buscar.',
+  'history.noMatch': 'Ningunha execución coincide.',
+  'edit.trash': 'Manter un lixo en cada lado',
+  'edit.trashHint': 'Un borrado convértese nun traslado a un cartafol agochado chamado .arrowloop dentro da árbore sincronizada, así que nada do que fai esta tarefa destrúe nada de xeito definitivo, e un ficheiro borrado por erro recupérase na lapela do lixo. Ese cartafol véno todas as persoas que usen a compartición, e ese é xustamente o motivo para desactivalo: sen lixo non se crea nunca, un borrado é definitivo, e o lado perdedor dun conflito tamén. Razoable para un cartafol de descargas, mala idea para un de documentos.',
 }
 
 export default gl

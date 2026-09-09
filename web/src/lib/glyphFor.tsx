@@ -58,6 +58,13 @@ const RULES: Rule[] = [
   [/^about\.repo$/i, () => <IconLink />],
   [/^about\.mail$/i, () => <IconMail />],
 
+  // Going back, and it has to sit ABOVE the preview rule rather than beside it:
+  // the key that needs this is `preview.back`, which contains the word the rule
+  // below matches on, so ordered the other way round the button leaving the
+  // preview would wear the preview's own symbol. The same left-pointing arrow
+  // the folder picker climbs with, because it is the same movement.
+  [/\.back$|goBack|\.return$/i, () => <IconUp />],
+
   // This app's own verbs, above anything generic. A preview is what this
   // program is FOR - reading a plan before anything moves - so it takes the eye
   // before "check" or "show" can.

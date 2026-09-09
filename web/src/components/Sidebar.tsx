@@ -1,7 +1,8 @@
-import type { CSSProperties, ReactNode } from 'react'
+import { useRef, useState, type CSSProperties, type ReactNode } from 'react'
 
 import { hueVars, rainbowAt } from '../lib/appearance'
 import { hidesLabel, type LabelMode } from '../lib/controls'
+import { LOGO_GOLD, LogoMark } from './LogoMark'
 import { useRainbow } from './Shell'
 
 /**
@@ -138,6 +139,38 @@ export function Sidebar<T extends string>({
 
   const narrow = mode === 'glyph'
 
+  /**
+   * The easter egg: five quick presses and the arrow gets loose.
+   *
+   * The mark is an arrow bent into a loop, so the one thing it can do that no
+   * other logo could is come unbent - fly out of its own rings, round the
+   * outside, and back in. Which is the product's sentence: what goes out comes
+   * back.
+   *
+   * Five WITHIN a couple of seconds, counted from the last press rather than
+   * from the first, so an ordinary click on the way to the jobs tab never
+   * accumulates towards it over an afternoon. The button keeps navigating on
+   * every press, including the fifth: an easter egg that swallows the control
+   * it hides behind is a bug.
+   */
+  const [loose, setLoose] = useState(0)
+  const taps = useRef({ count: 0, at: 0 })
+
+  function tapped() {
+    const now = performance.now()
+    const seen = now - taps.current.at < 600 ? taps.current.count + 1 : 1
+    taps.current = { count: seen, at: now }
+    if (seen >= 5) {
+      taps.current.count = 0
+      // The key CHANGES rather than a flag going true. The flight is an
+      // animation on a class, so it plays when the class arrives; a flag
+      // already set plays nothing the second time, which is exactly the press
+      // somebody makes when they liked it. Same trick, and the same reason, as
+      // the shake on a refused save.
+      setLoose((n) => n + 1)
+    }
+  }
+
   return (
     <aside
       className={`flex h-full shrink-0 flex-col bg-carbon-sidebar ${narrow ? 'w-16' : 'w-56'}`}
@@ -148,16 +181,24 @@ export function Sidebar<T extends string>({
           nowhere to go. */}
       <button
         type="button"
-        onClick={() => onChange(items[0]?.value ?? value)}
+        onClick={() => {
+          tapped()
+          onChange(items[0]?.value ?? value)
+        }}
         className={`flex flex-col items-center gap-2 transition-opacity hover:opacity-90 ${
           narrow ? 'px-2 py-4' : 'px-4 py-6'
         }`}
       >
-        <img
-          src="/favicon.svg"
-          alt=""
-          aria-hidden
-          className={`w-auto shrink-0 ${narrow ? 'h-9' : 'h-20'}`}
+        {/* Drawn inline rather than loaded as an image, which is what lets its
+            two halves move independently. As the logo rather than as a status
+            mark, so the rings take the drawing's own gold: `currentColor` is
+            the colour they are mixed from, and LOGO_GOLD is what the file
+            itself uses. */}
+        <LogoMark
+          key={loose}
+          size={narrow ? 36 : 80}
+          style={{ color: LOGO_GOLD }}
+          className={`shrink-0 ${loose > 0 ? 'al-logo-loose' : ''}`}
         />
         {!narrow && (
           <span className="text-[19px] font-semibold tracking-tight text-carbon-text">

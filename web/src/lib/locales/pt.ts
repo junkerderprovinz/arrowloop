@@ -371,6 +371,20 @@ const pt: Translations = {
   'look.accentReset': 'Voltar ao valor padrão',
   'pick.cancel': 'Cancelar',
   'look.paletteReset': 'Voltar às cores padrão',
+  'jobs.previewHint': 'Calcula o que esta tarefa faria sem alterar nada e depois marca ou desmarca cada alteração antes de a executar.',
+  'preview.back': 'Voltar',
+  'preview.backHint': 'Sai da pré-visualização sem executar nada. Escape faz o mesmo.',
+  'history.filterJob': 'Tarefa',
+  'history.allJobs': 'Todas as tarefas',
+  'history.filterShow': 'Mostrar',
+  'history.showAll': 'Todas as execuções',
+  'history.showChanged': 'Apenas as que fizeram algo',
+  'history.showFailed': 'Apenas as falhas',
+  'history.filterHint': 'Uma tarefa que vigia uma pasta escreve uma entrada sempre que algo muda, por isso uma que corre a cada minuto expulsa por completo da página outra que corre uma vez por dia. Este filtro pede ao motor um conjunto diferente de execuções em vez de esconder parte das já obtidas, portanto a tarefa que procuras volta mesmo que a última execução dela tenha sido há mil entradas. Uma execução falhada conta sempre como uma que fez algo.',
+  'history.working': 'A procurar.',
+  'history.noMatch': 'Nenhuma execução corresponde.',
+  'edit.trash': 'Manter uma reciclagem de cada lado',
+  'edit.trashHint': 'Uma eliminação passa a ser uma mudança para uma pasta escondida chamada .arrowloop dentro da árvore sincronizada, por isso nada do que esta tarefa faz destrói o que quer que seja de forma definitiva e um ficheiro apagado por engano recupera-se no separador da reciclagem. Essa pasta é visível para todos os que usam a partilha, e é essa a razão para desligar isto: sem reciclagem ela nunca é criada, uma eliminação é definitiva, e o lado perdedor de um conflito também. Razoável para uma pasta de transferências, má ideia para uma de documentos.',
 }
 
 export default pt

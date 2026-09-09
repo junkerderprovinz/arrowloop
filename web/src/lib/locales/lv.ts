@@ -371,6 +371,20 @@ const lv: Translations = {
   'look.accentReset': 'Atpakaļ uz noklusējumu',
   'pick.cancel': 'Atcelt',
   'look.paletteReset': 'Atpakaļ uz noklusējuma krāsām',
+  'jobs.previewHint': 'Aprēķina, ko šis darbs izdarītu, neko nemainot, un pēc tam katru izmaiņu var atzīmēt vai atzīmi noņemt pirms izpildes.',
+  'preview.back': 'Atpakaļ',
+  'preview.backHint': 'Pamet priekšskatījumu, neko neizpildot. Escape dara to pašu.',
+  'history.filterJob': 'Darbs',
+  'history.allJobs': 'Visi darbi',
+  'history.filterShow': 'Rādīt',
+  'history.showAll': 'Visas izpildes',
+  'history.showChanged': 'Tikai tās, kas kaut ko izdarīja',
+  'history.showFailed': 'Tikai neizdošanās',
+  'history.filterHint': 'Darbs, kas uzrauga mapi, ieraksta rindu ik reizi, kad kaut kas mainās, tāpēc darbs, kas izpildās ik minūti, pilnībā izstumj no lapas tādu, kas izpildās reizi dienā. Šī izvēle prasa dzinējam citu izpilžu kopu, nevis paslēpj daļu no jau saņemtajām, tāpēc meklētais darbs atgriežas arī tad, ja tā pēdējā izpilde bija tūkstoš rindas atpakaļ. Neizdevusies izpilde vienmēr tiek skaitīta kā tāda, kas kaut ko izdarīja.',
+  'history.working': 'Notiek meklēšana.',
+  'history.noMatch': 'Neviena izpilde tam neatbilst.',
+  'edit.trash': 'Uzturēt atkritni katrā pusē',
+  'edit.trashHint': 'Dzēšana kļūst par pārvietošanu uz slēptu mapi ar nosaukumu .arrowloop sinhronizētā koka iekšienē, tāpēc nekas, ko šis darbs dara, neiznīcina neko galīgi, un kļūdas pēc izdzēstu datni var atgūt atkritnes cilnē. Šo mapi redz ikviens, kas izmanto koplietojumu, un tieši tāpēc šo ir vērts izslēgt: bez atkritnes tā nekad netiek izveidota, dzēšana ir galīga, tāpat kā konflikta zaudētāja puse. Lejupielāžu mapei saprātīgi, dokumentu mapei slikta doma.',
 }
 
 export default lv

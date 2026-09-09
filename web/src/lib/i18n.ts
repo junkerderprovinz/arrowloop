@@ -464,6 +464,20 @@ export const en = {
   'progress.starting': 'Starting',
   'progress.rate': '{rate} files/s',
   'progress.left': '{time} left',
+  'jobs.previewHint': 'Work out what this job would do without changing anything, then tick or untick each change before it runs.',
+  'preview.back': 'Back',
+  'preview.backHint': 'Leave the preview without running anything. Escape does the same.',
+  'history.filterJob': 'Job',
+  'history.allJobs': 'All jobs',
+  'history.filterShow': 'Show',
+  'history.showAll': 'Every run',
+  'history.showChanged': 'Only runs that did something',
+  'history.showFailed': 'Only failures',
+  'history.filterHint': 'A job watching a folder writes an entry every time something changes, so one running every minute pushes a job that runs once a day off the page entirely. Narrowing here asks the engine for a different set of runs rather than hiding part of the ones already fetched, so the job you are looking for comes back even when its last run was a thousand entries ago. A failed run always counts as one that did something.',
+  'history.working': 'Looking.',
+  'history.noMatch': 'No run matches this.',
+  'edit.trash': 'Keep a bin on each side',
+  'edit.trashHint': 'A deletion becomes a move into a hidden folder called .arrowloop inside the synced tree, so nothing this job does destroys anything outright and a file removed by mistake can be fetched back from the trash tab. That folder is visible to everyone using the share, which is the reason to switch this off: with no bin it is never created, a deletion is final, and so is the losing side of a conflict. Reasonable for a folder of downloads, a bad idea for a folder of documents.',
 } as const
 
 export type TranslationKey = keyof typeof en
@@ -876,6 +890,20 @@ export const de: Translations = {
   'progress.starting': 'Startet',
   'progress.rate': '{rate} Dateien/s',
   'progress.left': 'noch {time}',
+  'jobs.previewHint': 'Ermittelt, was dieser Auftrag tun würde, ohne etwas zu ändern. Danach kannst du jede Änderung einzeln an- oder abwählen, bevor sie ausgeführt wird.',
+  'preview.back': 'Zurück',
+  'preview.backHint': 'Verlässt die Vorschau, ohne etwas auszuführen. Escape tut dasselbe.',
+  'history.filterJob': 'Auftrag',
+  'history.allJobs': 'Alle Aufträge',
+  'history.filterShow': 'Anzeigen',
+  'history.showAll': 'Alle Läufe',
+  'history.showChanged': 'Nur Läufe, die etwas getan haben',
+  'history.showFailed': 'Nur Fehlschläge',
+  'history.filterHint': 'Ein Auftrag, der einen Ordner beobachtet, schreibt bei jeder Änderung einen Eintrag. Einer, der jede Minute läuft, verdrängt damit einen, der einmal am Tag läuft, vollständig von der Seite. Diese Auswahl fragt den Motor nach anderen Läufen, statt einen Teil der schon geholten auszublenden. Deshalb kommt der gesuchte Auftrag auch dann zurück, wenn sein letzter Lauf tausend Einträge her ist. Ein fehlgeschlagener Lauf zählt immer als einer, der etwas getan hat.',
+  'history.working': 'Wird gesucht.',
+  'history.noMatch': 'Dazu passt kein Lauf.',
+  'edit.trash': 'Auf jeder Seite einen Papierkorb führen',
+  'edit.trashHint': 'Eine Löschung wird zu einem Verschieben in einen versteckten Ordner namens .arrowloop innerhalb des abgeglichenen Baums. Dadurch vernichtet dieser Auftrag nichts endgültig, und eine versehentlich gelöschte Datei holst du im Papierkorb-Reiter zurück. Dieser Ordner ist für alle sichtbar, die die Freigabe nutzen, und genau das ist der Grund, das hier auszuschalten: ohne Papierkorb entsteht er nie, eine Löschung ist endgültig, und die unterlegene Seite eines Konflikts ebenso. Für einen Download-Ordner vernünftig, für einen Dokumentenordner keine gute Idee.',
 }
 
 // ---------------------------------------------------------------------------

@@ -371,6 +371,20 @@ const ms: Translations = {
   'look.accentReset': 'Kembali ke lalai',
   'pick.cancel': 'Batal',
   'look.paletteReset': 'Kembali ke warna lalai',
+  'jobs.previewHint': 'Mengira apa yang akan dilakukan tugas ini tanpa mengubah apa-apa, kemudian anda boleh menanda atau menyahtanda setiap perubahan sebelum ia dijalankan.',
+  'preview.back': 'Kembali',
+  'preview.backHint': 'Meninggalkan pratonton tanpa menjalankan apa-apa. Escape melakukan perkara yang sama.',
+  'history.filterJob': 'Tugas',
+  'history.allJobs': 'Semua tugas',
+  'history.filterShow': 'Tunjukkan',
+  'history.showAll': 'Semua larian',
+  'history.showChanged': 'Hanya yang melakukan sesuatu',
+  'history.showFailed': 'Hanya kegagalan',
+  'history.filterHint': 'Tugas yang mengawasi folder menulis satu baris setiap kali ada perubahan, jadi tugas yang berjalan setiap minit menolak keluar halaman sepenuhnya tugas yang berjalan sekali sehari. Pilihan ini meminta enjin satu set larian yang lain dan bukannya menyembunyikan sebahagian daripada yang sudah diambil, jadi tugas yang anda cari kembali walaupun larian terakhirnya seribu baris yang lalu. Larian yang gagal sentiasa dikira sebagai yang melakukan sesuatu.',
+  'history.working': 'Sedang mencari.',
+  'history.noMatch': 'Tiada larian yang sepadan.',
+  'edit.trash': 'Simpan tong sampah di setiap sisi',
+  'edit.trashHint': 'Pemadaman menjadi pemindahan ke folder tersembunyi bernama .arrowloop di dalam pokok yang disegerakkan, jadi tiada apa yang tugas ini lakukan memusnahkan sesuatu secara kekal, dan fail yang terpadam secara tersilap boleh diambil semula dari tab tong sampah. Folder itu dilihat oleh sesiapa sahaja yang menggunakan perkongsian tersebut, dan itulah sebabnya untuk mematikan pilihan ini: tanpa tong sampah ia tidak pernah dicipta, pemadaman adalah muktamad, begitu juga pihak yang kalah dalam sesuatu percanggahan. Munasabah untuk folder muat turun, idea buruk untuk folder dokumen.',
 }
 
 export default ms

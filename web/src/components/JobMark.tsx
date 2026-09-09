@@ -1,17 +1,21 @@
-import { IconJobs } from './glyphs'
+import { LogoMark } from './LogoMark'
 import { useT } from '../lib/i18n'
 import type { Job } from '../lib/api'
 
 /**
- * A job's state, drawn as the mark the app is named for.
+ * A job's state, drawn as the app's own logo.
  *
  * jdp asked for "das logo wie in der taskleiste das sich bewegt wenn es laeuft
- * und sich nach zustand faerbt". The literal logo cannot do the second half:
- * `favicon.svg` is a multi-colour drawing, and a multi-colour drawing recoloured
- * to a status hue is not the logo any more, it is a smear. So this is the mark
- * the logo is BUILT from rather than the logo itself: the same two arrows going
- * opposite ways that the rail already carries as the Jobs glyph, in one colour,
- * which is exactly what a status mark needs to be.
+ * und sich nach zustand faerbt", and this was the two-arrow GLYPH rather than
+ * the logo, because the logo is a two-material drawing and painting the whole of
+ * it one status colour leaves a smear rather than a mark. jdp answered the
+ * objection instead of accepting it: "du kannst die ringe nach status einfaerbig
+ * einfaerben."
+ *
+ * That is the better answer, and it works because the two materials say
+ * different things. The arrow is the identity, so it keeps its own greys in
+ * every state. The rings are decoration around it, so they can carry a colour
+ * without the mark stopping being this mark. See LogoMark for the mechanism.
  *
  * Four states, and each is a different question answered:
  *
@@ -70,12 +74,11 @@ export function JobMark({ status, size = 20 }: { status: JobStatus; size?: numbe
       aria-label={name}
       role="img"
     >
-      {/* The turn is on the glyph rather than on this wrapper, so the tip's own
-          box does not spin with it: a tooltip anchor that rotates is a tooltip
-          that walks around the screen. */}
-      <IconJobs
-        width={size}
-        height={size}
+      {/* The turn is on the drawing rather than on this wrapper, so the tip's
+          own box does not spin with it: a tooltip anchor that rotates is a
+          tooltip that walks around the screen. */}
+      <LogoMark
+        size={size}
         className={status === 'running' ? 'al-turning shrink-0' : 'shrink-0'}
       />
     </span>

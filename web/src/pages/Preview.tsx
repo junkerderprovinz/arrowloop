@@ -4,6 +4,7 @@ import { Empty, Num, Rule, Stack } from '../components/Shell'
 import { Card } from '../lib/glimstone/Card'
 import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
+import { IconAction } from '../components/IconAction'
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { Selector } from '../components/Selector'
 import { api, type Action, type ActionKind, type Plan, type Resolution, type SideVersion } from '../lib/api'
@@ -27,6 +28,24 @@ export function Preview({ job, onDone }: { job: string; onDone: () => void }) {
   const [unticked, setUnticked] = useState<Set<string>>(new Set())
   const [resolutions, setResolutions] = useState<Record<string, Resolution>>({})
   const [busy, setBusy] = useState(false)
+
+  /**
+   * Escape leaves, the same as it does in every dialog in the app.
+   *
+   * This page had no way out at all: `onDone` fired only after a run finished,
+   * so somebody who pressed preview to LOOK - which is the entire point of the
+   * page - could only get back by way of another tab in the rail. jdp: "Wenn
+   * man auf vorschau klickt, kommt man nicht wieder zurueck." It is skipped
+   * while a run is starting, because leaving then would hide the one thing
+   * worth watching and the run would carry on regardless.
+   */
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape' && !busy) onDone()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [busy, onDone])
 
   useEffect(() => {
     let live = true
@@ -74,9 +93,26 @@ export function Preview({ job, onDone }: { job: string; onDone: () => void }) {
     }
   }
 
+  // The way out is on EVERY state of this page, including the two that are not
+  // the plan. A preview that fails to plan is exactly the moment somebody most
+  // wants to leave, and it used to be the moment with nothing on screen but the
+  // error.
+  const back = (
+    <div className="flex justify-start">
+      <IconAction
+        title={t('preview.back')}
+        labelKey="preview.back"
+        hint={t('preview.backHint')}
+        hueIndex={1}
+        onClick={onDone}
+      />
+    </div>
+  )
+
   if (error) {
     return (
       <Card title={t('preview.title')} hueIndex={0}>
+        {back}
         <p className="text-xs text-statusFail">{error}</p>
       </Card>
     )
@@ -84,6 +120,7 @@ export function Preview({ job, onDone }: { job: string; onDone: () => void }) {
   if (!plan) {
     return (
       <Card title={t('preview.title')} hueIndex={0}>
+        {back}
         <Empty>{t('preview.working')}</Empty>
       </Card>
     )
@@ -100,7 +137,8 @@ export function Preview({ job, onDone }: { job: string; onDone: () => void }) {
         {/* The one thing somebody came to this card to do, at the top of its
             body. GlimStone's Card draws a heading and nothing else, so a card's
             own controls live in the body, the same as in BombVault. */}
-        <div className="flex justify-end">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          {back}
           <Button
             label={
               busy

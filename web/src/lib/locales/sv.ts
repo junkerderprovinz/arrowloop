@@ -371,6 +371,20 @@ const sv: Translations = {
   'look.accentReset': 'Tillbaka till standard',
   'pick.cancel': 'Avbryt',
   'look.paletteReset': 'Tillbaka till standardfärgerna',
+  'jobs.previewHint': 'Räknar ut vad det här jobbet skulle göra utan att ändra något, och sedan kan du kryssa i eller ur varje ändring innan den körs.',
+  'preview.back': 'Tillbaka',
+  'preview.backHint': 'Lämnar förhandsvisningen utan att köra något. Escape gör samma sak.',
+  'history.filterJob': 'Jobb',
+  'history.allJobs': 'Alla jobb',
+  'history.filterShow': 'Visa',
+  'history.showAll': 'Alla körningar',
+  'history.showChanged': 'Bara de som gjorde något',
+  'history.showFailed': 'Bara misslyckanden',
+  'history.filterHint': 'Ett jobb som bevakar en mapp skriver en rad varje gång något ändras, så ett som körs varje minut trycker helt bort ett jobb som körs en gång om dagen från sidan. Det här valet ber motorn om en annan uppsättning körningar i stället för att dölja en del av dem som redan hämtats, så jobbet du letar efter kommer tillbaka även när dess senaste körning var tusen rader sedan. En misslyckad körning räknas alltid som en som gjorde något.',
+  'history.working': 'Söker.',
+  'history.noMatch': 'Ingen körning stämmer med det här.',
+  'edit.trash': 'Behåll en papperskorg på varje sida',
+  'edit.trashHint': 'En radering blir en flytt till en dold mapp som heter .arrowloop inne i det synkade trädet, så inget det här jobbet gör förstör något slutgiltigt, och en fil som raderats av misstag hämtas tillbaka från papperskorgsfliken. Den mappen syns för alla som använder utdelningen, och det är just därför man stänger av det här: utan papperskorg skapas den aldrig, en radering är slutgiltig, och det är den förlorande sidan i en konflikt också. Rimligt för en nedladdningsmapp, en dålig idé för en dokumentmapp.',
 }
 
 export default sv

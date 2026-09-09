@@ -11,6 +11,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"strings"
 	"time"
 
 	_ "modernc.org/sqlite" // pure-Go driver, no cgo, so cross-compiling stays trivial
@@ -187,17 +188,69 @@ func (d *DB) Entries(ctx context.Context, run int64) ([]Entry, error) {
 	return out, rows.Err()
 }
 
-// Recent returns the newest runs first. An empty job name means every job.
-func (d *DB) Recent(ctx context.Context, job string, limit int) ([]Run, error) {
+// Show says which runs a listing is asking for.
+//
+// It exists because the run log's honesty is also its problem. Every run is
+// written down, including the ones that found nothing to do, and that is what
+// makes "has this been working" answerable at all. But a job watching a folder
+// runs on every change and on its schedule besides, so it writes an entry a
+// minute, and fifty entries is then fifty minutes: a job that runs once a day is
+// not further down the page, it is not on the page. jdp: "echtzeit auftraege
+// ausblenden weil die andauernd laufen und ein eintrag machen. wenn ein auftrag
+// zb nur einemal am tag laeuft geht der unter."
+//
+// Which is why this is a QUERY and not a filter the browser applies to what it
+// was sent. Hiding the quiet runs after the fact hides them out of the fifty
+// already fetched and leaves the daily job just as missing.
+type Show string
+
+const (
+	// ShowAll is every run, which is what the log is for.
+	ShowAll Show = ""
+	// ShowChanged is the runs that did something: copied, moved, trashed,
+	// resolved a conflict, or made or removed a folder. A run that failed did
+	// not do those things and is included anyway, because a failure is the
+	// most interesting thing a run can report.
+	ShowChanged Show = "changed"
+	// ShowFailed is the runs that ended badly, and nothing else.
+	ShowFailed Show = "failed"
+)
+
+// where is the SQL this filter means, or the empty string for all of them.
+//
+// Written next to the constants rather than at the call site so the two cannot
+// drift: `changed` here has to keep meaning what Run.Changed() means, and a
+// copy of this condition somewhere else is how those two stop agreeing.
+func (s Show) where() string {
+	switch s {
+	case ShowChanged:
+		return `(copied + moved + trashed + conflicts + dirs_made + dirs_removed > 0 OR err <> '')`
+	case ShowFailed:
+		return `err <> ''`
+	default:
+		return ``
+	}
+}
+
+// Recent returns the newest runs first. An empty job name means every job, and
+// ShowAll means every run.
+func (d *DB) Recent(ctx context.Context, job string, show Show, limit int) ([]Run, error) {
 	if limit <= 0 {
 		limit = 20
 	}
 	query := `SELECT id, job, started, finished, copied, moved, trashed, conflicts, dirs_made, dirs_removed, unchanged, skipped, err
 	          FROM runs`
 	args := []any{}
+	var conds []string
 	if job != "" {
-		query += ` WHERE job = ?`
+		conds = append(conds, `job = ?`)
 		args = append(args, job)
+	}
+	if w := show.where(); w != "" {
+		conds = append(conds, w)
+	}
+	if len(conds) > 0 {
+		query += ` WHERE ` + strings.Join(conds, ` AND `)
 	}
 	query += ` ORDER BY started DESC LIMIT ?`
 	args = append(args, limit)

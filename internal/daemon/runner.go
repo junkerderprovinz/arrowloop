@@ -302,6 +302,10 @@ func (r *Runner) execute(ctx context.Context, j job.Job, only []string, resolve 
 	// reason: a package variable would be shared between two jobs running at
 	// once under parallelJobs, and each job's answer is its own.
 	ctx = apply.WithVersions(ctx, j.KeepVersions)
+	// And whether this job keeps a trash at all, carried the same way for the
+	// same reason. Note the inversion: the field says what NOT to do, so that a
+	// configuration written before it existed reads as "keep one".
+	ctx = apply.WithTrash(ctx, !j.NoTrash)
 
 	ends, db, err := r.open(ctx, j)
 	if err != nil {

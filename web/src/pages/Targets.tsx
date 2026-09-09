@@ -77,14 +77,21 @@ function Storage({
   return (
     <Card
       title={t('targets.storage')}
+      hueIndex={0}
     >
       {/* The card's own control, at the top of its body. GlimStone's Card draws
-          a heading and nothing else, so a card's controls live in the body. */}
+          a heading and nothing else, so a card's controls live in the body.
+
+          `accent`, and the card carries a position: without both, this button
+          painted the flat neutral grey the colour engine cannot reach while
+          every card on the settings page beside it answered the setting. jdp:
+          "Speichercard: der button ist auch nicht mehr in den enigens." */}
       {!adding && editing === null && (
         <div className="flex justify-end">
           <Button
             label={t('targets.addStorage')}
             labelKey="targets.addStorage"
+            tone="accent"
             onClick={() => {
               setAdding(true)
               setEditing(null)
@@ -121,6 +128,7 @@ function Storage({
               ) : (
                 <RemoteRow
                   remote={r}
+                  row={i}
                   onEdit={() => {
                     setEditing(r.name)
                     setAdding(false)
@@ -138,10 +146,20 @@ function Storage({
 
 function RemoteRow({
   remote,
+  row,
   onEdit,
   onChanged,
 }: {
   remote: Remote
+  /**
+   * This row's place in the list, which is what its actions colour themselves
+   * from.
+   *
+   * The buttons take FIXED offsets off it rather than a running count, the same
+   * way the job card's row does and for the same reason: a button keeps its
+   * colour when a neighbour is not rendered.
+   */
+  row: number
   onEdit: () => void
   onChanged: () => void
 }) {
@@ -209,16 +227,18 @@ function RemoteRow({
           title={checking ? t('targets.checking') : t('targets.check')}
           labelKey={checking ? 'targets.checking' : 'targets.check'}
           hint={t('targets.checkHint')}
+          hueIndex={row + 1}
         >
           <IconCheck />
         </IconAction>
         <RowActions>
-          <IconAction onClick={onEdit} title={t('targets.edit')} labelKey="targets.edit">
+          <IconAction onClick={onEdit} title={t('targets.edit')} labelKey="targets.edit" hueIndex={row + 2}>
             <IconEdit />
           </IconAction>
           <IconAction
             title={t('targets.delete')}
             labelKey="targets.delete"
+            hueIndex={row + 3}
             onClick={() => setConfirming(true)}
           >
             <IconDelete />
@@ -383,12 +403,16 @@ function Drives({ volumes, onChanged }: { volumes: Volume[]; onChanged: () => vo
     <Card
       title={t('targets.drives')}
       hint={t('targets.driveExplain')}
+      hueIndex={1}
     >
+      {/* Same as the storage card above it, reported in the same breath:
+          "Datentraeger-card: der button ist nicht in den enigens." */}
       {!adding && (
         <div className="flex justify-end">
           <Button
             label={t('targets.registerDrive')}
             labelKey="targets.registerDrive"
+            tone="accent"
             onClick={() => setAdding(true)}
           />
         </div>
@@ -409,7 +433,7 @@ function Drives({ volumes, onChanged }: { volumes: Volume[]; onChanged: () => vo
           {volumes.map((v, i) => (
             <li key={v.id}>
               {(i > 0 || adding) && <Rule />}
-              <DriveRow volume={v} onChanged={onChanged} />
+              <DriveRow volume={v} row={i} onChanged={onChanged} />
             </li>
           ))}
         </ul>
@@ -418,7 +442,16 @@ function Drives({ volumes, onChanged }: { volumes: Volume[]; onChanged: () => vo
   )
 }
 
-function DriveRow({ volume, onChanged }: { volume: Volume; onChanged: () => void }) {
+function DriveRow({
+  volume,
+  row,
+  onChanged,
+}: {
+  volume: Volume
+  /** This row's place in the list. Same rule as RemoteRow's. */
+  row: number
+  onChanged: () => void
+}) {
   const { t } = useT()
   const [copied, setCopied] = useState(false)
 
@@ -447,6 +480,7 @@ function DriveRow({ volume, onChanged }: { volume: Volume; onChanged: () => void
       <div className="flex shrink-0 items-center gap-1.5">
         <IconAction
           tone={copied ? 'accent' : 'subtle'}
+          hueIndex={row + 1}
           title={copied ? t('targets.copied') : t('targets.copyPath')}
           labelKey={copied ? 'targets.copied' : 'targets.copyPath'}
           onClick={() => {
@@ -465,6 +499,7 @@ function DriveRow({ volume, onChanged }: { volume: Volume; onChanged: () => void
             title={t('targets.forget')}
             labelKey="targets.forget"
             hint={t('targets.forgetHint')}
+            hueIndex={row + 2}
             onClick={() => {
               void api.forgetVolume(volume.id).then(onChanged)
             }}

@@ -55,8 +55,23 @@ manager happened to start the process in.
 | `transfers` | `4` | How many files may be copied at once. |
 | `emptyDirs` | `false` | Carry folders that hold no files. |
 | `metadata` | `false` | Carry permissions, ownership and extended attributes. |
+| `noTrash` | `false` | Delete outright instead of moving into the side's own trash. See the note below before switching it on. |
 | `brakePercent` | `50` | Refuse a run deleting more than this share of known files. `0` switches the brake off. |
 | `brakeFloor` | `10` | Never trip the brake below this many deletions. |
+
+!!! warning "`noTrash` makes a deletion final"
+    The trash is what makes the promise at the top of [Safety](safety.md) hold:
+    nothing this program does destroys anything by itself. Switching it off
+    withdraws that promise for this job, and it also applies to the losing side
+    of a conflict, which is the case people forget. What you get back is the
+    `.arrowloop` folder never being created, which matters on a share other
+    people can see. Reasonable for a folder of downloads. A bad idea for
+    documents.
+
+    The field is spelled as the negative so that a configuration written before
+    it existed, or one where somebody forgot the line, keeps its trash. In the
+    interface the switch reads the other way round and says "keep a bin", since
+    a switch labelled with a negative is one people set backwards.
 
 !!! tip "Zero is not the same as leaving it out"
     `brakePercent` and `brakeFloor` distinguish an explicit `0` from an absent

@@ -371,6 +371,20 @@ const cs: Translations = {
   'look.accentReset': 'Zpět na výchozí',
   'pick.cancel': 'Zrušit',
   'look.paletteReset': 'Zpět na výchozí barvy',
+  'jobs.previewHint': 'Zjistí, co by tato úloha udělala, aniž by cokoli změnila, a pak můžeš každou změnu zaškrtnout nebo odškrtnout, než se provede.',
+  'preview.back': 'Zpět',
+  'preview.backHint': 'Opustí náhled, aniž by cokoli spustil. Escape udělá totéž.',
+  'history.filterJob': 'Úloha',
+  'history.allJobs': 'Všechny úlohy',
+  'history.filterShow': 'Zobrazit',
+  'history.showAll': 'Všechny běhy',
+  'history.showChanged': 'Jen ty, které něco udělaly',
+  'history.showFailed': 'Jen selhání',
+  'history.filterHint': 'Úloha, která hlídá složku, zapíše záznam při každé změně, takže úloha běžící každou minutu úplně vytlačí ze stránky tu, která běží jednou denně. Tento výběr si od motoru vyžádá jinou sadu běhů, místo aby skryl část těch už načtených, takže hledaná úloha se vrátí, i když její poslední běh byl tisíc záznamů zpátky. Neúspěšný běh se vždy počítá jako ten, který něco udělal.',
+  'history.working': 'Hledá se.',
+  'history.noMatch': 'Žádný běh tomu neodpovídá.',
+  'edit.trash': 'Vést koš na každé straně',
+  'edit.trashHint': 'Ze smazání se stane přesun do skryté složky s názvem .arrowloop uvnitř synchronizovaného stromu, takže nic z toho, co tato úloha dělá, nezničí nic nadobro a omylem smazaný soubor vytáhneš zpět v záložce koše. Tuto složku vidí každý, kdo sdílení používá, a přesně to je důvod, proč to vypnout: bez koše nikdy nevznikne, smazání je konečné a poražená strana konfliktu také. Rozumné pro složku se staženými soubory, špatný nápad pro složku s dokumenty.',
 }
 
 export default cs

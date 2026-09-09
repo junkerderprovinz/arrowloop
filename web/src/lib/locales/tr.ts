@@ -371,6 +371,20 @@ const tr: Translations = {
   'look.accentReset': 'Varsayılana dön',
   'pick.cancel': 'İptal',
   'look.paletteReset': 'Varsayılan renklere dön',
+  'jobs.previewHint': 'Bu işin ne yapacağını hiçbir şeyi değiştirmeden hesaplar, ardından her değişikliği çalıştırmadan önce işaretleyebilir veya işaretini kaldırabilirsin.',
+  'preview.back': 'Geri',
+  'preview.backHint': 'Hiçbir şey çalıştırmadan önizlemeden çıkar. Escape de aynısını yapar.',
+  'history.filterJob': 'İş',
+  'history.allJobs': 'Tüm işler',
+  'history.filterShow': 'Göster',
+  'history.showAll': 'Tüm çalışmalar',
+  'history.showChanged': 'Yalnızca bir şey yapanlar',
+  'history.showFailed': 'Yalnızca başarısızlıklar',
+  'history.filterHint': 'Bir klasörü izleyen iş her değişiklikte bir kayıt yazar, bu yüzden her dakika çalışan bir iş, günde bir kez çalışanı sayfadan tamamen iter. Bu seçim, halihazırda alınanların bir kısmını gizlemek yerine motordan farklı bir çalışma kümesi ister; böylece aradığın iş, son çalışması bin kayıt önce olsa bile geri gelir. Başarısız bir çalışma her zaman bir şey yapmış sayılır.',
+  'history.working': 'Aranıyor.',
+  'history.noMatch': 'Buna uyan çalışma yok.',
+  'edit.trash': 'Her iki tarafta bir çöp kutusu tutulsun',
+  'edit.trashHint': 'Silme, eşitlenen ağacın içinde .arrowloop adlı gizli bir klasöre taşımaya dönüşür; böylece bu işin yaptığı hiçbir şey kalıcı olarak bir şeyi yok etmez ve yanlışlıkla silinen bir dosya çöp kutusu sekmesinden geri alınır. O klasörü paylaşımı kullanan herkes görür ve bunu kapatmanın nedeni tam olarak budur: çöp kutusu olmadan klasör hiç oluşmaz, silme kesindir ve bir çakışmanın kaybeden tarafı da öyle. İndirme klasörü için makul, belge klasörü için kötü bir fikir.',
 }
 
 export default tr

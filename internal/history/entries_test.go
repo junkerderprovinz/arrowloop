@@ -41,7 +41,7 @@ func TestARunAndWhatItDidArriveTogether(t *testing.T) {
 		t.Fatalf("record: %v", err)
 	}
 
-	runs, err := db.Recent(ctx, "x", 10)
+	runs, err := db.Recent(ctx, "x", history.ShowAll, 10)
 	if err != nil || len(runs) != 1 {
 		t.Fatalf("recent: %v, %d runs", err, len(runs))
 	}
@@ -79,7 +79,7 @@ func TestTheOrderIsTheOrderItHappenedIn(t *testing.T) {
 		t.Fatalf("record: %v", err)
 	}
 
-	runs, _ := db.Recent(ctx, "x", 1)
+	runs, _ := db.Recent(ctx, "x", history.ShowAll, 1)
 	got, err := db.Entries(ctx, runs[0].ID)
 	if err != nil {
 		t.Fatalf("entries: %v", err)
@@ -110,7 +110,7 @@ func TestEntriesBelongToTheirOwnRun(t *testing.T) {
 		t.Fatalf("record: %v", err)
 	}
 
-	runs, _ := db.Recent(ctx, "x", 10)
+	runs, _ := db.Recent(ctx, "x", history.ShowAll, 10)
 	if len(runs) != 2 {
 		t.Fatalf("expected two runs, got %d", len(runs))
 	}
@@ -152,7 +152,7 @@ func TestPruningTakesTheEntriesWithIt(t *testing.T) {
 		t.Fatalf("record: %v", err)
 	}
 
-	runs, _ := db.Recent(ctx, "x", 10)
+	runs, _ := db.Recent(ctx, "x", history.ShowAll, 10)
 	var oldID int64
 	for _, r := range runs {
 		if r.Started.Equal(old) {
@@ -175,7 +175,7 @@ func TestPruningTakesTheEntriesWithIt(t *testing.T) {
 		t.Errorf("%d entries survived the run they belonged to", len(left))
 	}
 	// The recent run keeps its own, or pruning is deleting too much.
-	runs, _ = db.Recent(ctx, "x", 10)
+	runs, _ = db.Recent(ctx, "x", history.ShowAll, 10)
 	if len(runs) != 1 {
 		t.Fatalf("expected one run left, got %d", len(runs))
 	}
@@ -197,7 +197,7 @@ func TestARunWithNothingToSayIsStillARun(t *testing.T) {
 	if err := db.Record(ctx, history.Run{Job: "x", Started: now, Finished: now}, nil); err != nil {
 		t.Fatalf("record: %v", err)
 	}
-	runs, err := db.Recent(ctx, "x", 10)
+	runs, err := db.Recent(ctx, "x", history.ShowAll, 10)
 	if err != nil || len(runs) != 1 {
 		t.Fatalf("recent: %v, %d runs", err, len(runs))
 	}
@@ -226,5 +226,105 @@ func TestOpenMakesTheFolderItWasAskedToWriteInto(t *testing.T) {
 	}
 	if _, err := os.Stat(path); err != nil {
 		t.Fatalf("the run log is not where it was asked for: %v", err)
+	}
+}
+
+// TestTheQuietRunsCanBeLeftOutOfTheListing is jdp's report, staged as the
+// numbers that produce it.
+//
+// A job watching a folder writes a run a minute, almost all of them finding
+// nothing to do. A job that runs once a day writes one. Ask for the newest
+// fifty and every one of them belongs to the watcher: the daily job is not
+// further down the page, it is not on the page. jdp: "wenn ein auftrag zb nur
+// einemal am tag laeuft geht der unter."
+//
+// This is what makes the filter a QUERY rather than something the browser does
+// to what it was sent. Hiding the quiet runs after the fact hides them out of
+// the fifty already fetched, and the daily job stays exactly as missing.
+func TestTheQuietRunsCanBeLeftOutOfTheListing(t *testing.T) {
+	db := openTemp(t)
+	ctx := context.Background()
+	base := time.Date(2026, 9, 9, 8, 0, 0, 0, time.UTC)
+
+	// The daily job, oldest of the lot and the one that did something.
+	if err := db.Record(ctx, history.Run{
+		Job: "daily", Started: base, Finished: base.Add(time.Second), Copied: 3,
+	}, nil); err != nil {
+		t.Fatalf("record: %v", err)
+	}
+	// Sixty minutes of a watcher finding nothing.
+	for i := 1; i <= 60; i++ {
+		at := base.Add(time.Duration(i) * time.Minute)
+		if err := db.Record(ctx, history.Run{Job: "watcher", Started: at, Finished: at}, nil); err != nil {
+			t.Fatalf("record: %v", err)
+		}
+	}
+
+	all, err := db.Recent(ctx, "", history.ShowAll, 50)
+	if err != nil {
+		t.Fatalf("recent: %v", err)
+	}
+	if len(all) != 50 {
+		t.Fatalf("expected the newest fifty, got %d", len(all))
+	}
+	for _, r := range all {
+		if r.Job == "daily" {
+			t.Fatal("the test needs the daily job to be pushed off the unfiltered page, and it was not")
+		}
+	}
+
+	changed, err := db.Recent(ctx, "", history.ShowChanged, 50)
+	if err != nil {
+		t.Fatalf("recent: %v", err)
+	}
+	if len(changed) != 1 || changed[0].Job != "daily" {
+		t.Fatalf("expected only the daily job's one run, got %d: %+v", len(changed), changed)
+	}
+}
+
+// TestAFailedRunIsNeverFilteredAway.
+//
+// "Changed" means "did something", and a run that failed did NOT copy, move or
+// trash anything - so the plain reading of the filter hides exactly the runs
+// somebody turned it on to find. A failure is the most interesting thing a run
+// can report and is never quiet, whatever its counts say.
+func TestAFailedRunIsNeverFilteredAway(t *testing.T) {
+	db := openTemp(t)
+	ctx := context.Background()
+	at := time.Date(2026, 9, 9, 8, 0, 0, 0, time.UTC)
+
+	for _, r := range []history.Run{
+		{Job: "x", Started: at, Finished: at},
+		{Job: "x", Started: at.Add(time.Minute), Finished: at.Add(time.Minute), Err: "the right side is not there"},
+		{Job: "x", Started: at.Add(2 * time.Minute), Finished: at.Add(2 * time.Minute), Moved: 2},
+	} {
+		if err := db.Record(ctx, r, nil); err != nil {
+			t.Fatalf("record: %v", err)
+		}
+	}
+
+	changed, err := db.Recent(ctx, "", history.ShowChanged, 50)
+	if err != nil {
+		t.Fatalf("recent: %v", err)
+	}
+	if len(changed) != 2 {
+		t.Fatalf("expected the failure and the move, got %d: %+v", len(changed), changed)
+	}
+	var sawFail bool
+	for _, r := range changed {
+		if r.Failed() {
+			sawFail = true
+		}
+	}
+	if !sawFail {
+		t.Fatal("the failed run was filtered away by the filter that exists to surface it")
+	}
+
+	failed, err := db.Recent(ctx, "", history.ShowFailed, 50)
+	if err != nil {
+		t.Fatalf("recent: %v", err)
+	}
+	if len(failed) != 1 || !failed[0].Failed() {
+		t.Fatalf("expected the one failure, got %+v", failed)
 	}
 }

@@ -371,6 +371,20 @@ const no: Translations = {
   'look.accentReset': 'Tilbake til standard',
   'pick.cancel': 'Avbryt',
   'look.paletteReset': 'Tilbake til standardfargene',
+  'jobs.previewHint': 'Regner ut hva denne jobben ville gjort uten å endre noe, og så kan du hake av eller fjerne haken på hver endring før den kjøres.',
+  'preview.back': 'Tilbake',
+  'preview.backHint': 'Forlater forhåndsvisningen uten å kjøre noe. Escape gjør det samme.',
+  'history.filterJob': 'Jobb',
+  'history.allJobs': 'Alle jobber',
+  'history.filterShow': 'Vis',
+  'history.showAll': 'Alle kjøringer',
+  'history.showChanged': 'Bare de som gjorde noe',
+  'history.showFailed': 'Bare feil',
+  'history.filterHint': 'En jobb som overvåker en mappe skriver en linje hver gang noe endres, så en som kjører hvert minutt skyver en jobb som kjører én gang om dagen helt bort fra siden. Dette valget ber motoren om et annet sett kjøringer i stedet for å skjule en del av dem som allerede er hentet, så jobben du leter etter kommer tilbake selv når siste kjøring var tusen linjer siden. En mislykket kjøring teller alltid som en som gjorde noe.',
+  'history.working': 'Leter.',
+  'history.noMatch': 'Ingen kjøring passer til dette.',
+  'edit.trash': 'Ha en papirkurv på hver side',
+  'edit.trashHint': 'En sletting blir en flytting til en skjult mappe som heter .arrowloop inne i det synkroniserte treet, så ingenting denne jobben gjør ødelegger noe for godt, og en fil som ble slettet ved et uhell hentes tilbake fra papirkurvfanen. Den mappen ser alle som bruker delingen, og det er nettopp derfor man slår dette av: uten papirkurv blir den aldri opprettet, en sletting er endelig, og det er den tapende siden i en konflikt også. Fornuftig for en nedlastingsmappe, en dårlig idé for en dokumentmappe.',
 }
 
 export default no

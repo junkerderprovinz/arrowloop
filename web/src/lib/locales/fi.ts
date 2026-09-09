@@ -371,6 +371,20 @@ const fi: Translations = {
   'look.accentReset': 'Takaisin oletukseen',
   'pick.cancel': 'Peruuta',
   'look.paletteReset': 'Takaisin oletusväreihin',
+  'jobs.previewHint': 'Laskee, mitä tämä työ tekisi muuttamatta mitään, minkä jälkeen voit valita tai poistaa valinnan jokaisesta muutoksesta ennen suoritusta.',
+  'preview.back': 'Takaisin',
+  'preview.backHint': 'Poistuu esikatselusta suorittamatta mitään. Escape tekee saman.',
+  'history.filterJob': 'Työ',
+  'history.allJobs': 'Kaikki työt',
+  'history.filterShow': 'Näytä',
+  'history.showAll': 'Kaikki ajot',
+  'history.showChanged': 'Vain ne jotka tekivät jotain',
+  'history.showFailed': 'Vain epäonnistumiset',
+  'history.filterHint': 'Kansiota valvova työ kirjoittaa rivin jokaisesta muutoksesta, joten joka minuutti käynnistyvä työ työntää kerran päivässä käynnistyvän kokonaan pois sivulta. Tämä valinta pyytää moottorilta toisen joukon ajoja sen sijaan, että piilottaisi osan jo haetuista, joten etsimäsi työ palaa näkyviin silloinkin, kun sen viimeisin ajo oli tuhat riviä sitten. Epäonnistunut ajo lasketaan aina sellaiseksi, joka teki jotain.',
+  'history.working': 'Etsitään.',
+  'history.noMatch': 'Yksikään ajo ei vastaa tätä.',
+  'edit.trash': 'Pidä roskakori kummallakin puolella',
+  'edit.trashHint': 'Poistosta tulee siirto piilotettuun kansioon nimeltä .arrowloop synkronoidun puun sisällä, joten mikään mitä tämä työ tekee ei tuhoa mitään lopullisesti, ja vahingossa poistettu tiedosto haetaan takaisin roskakorivälilehdeltä. Kansion näkee jokainen jakoa käyttävä, ja juuri siksi tämän voi kytkeä pois: ilman roskakoria sitä ei koskaan luoda, poisto on lopullinen, ja niin on ristiriidan hävinnyt puolikin. Latauskansiolle järkevää, asiakirjakansiolle huono ajatus.',
 }
 
 export default fi

@@ -142,7 +142,7 @@ export function App() {
       .then(setJobs)
       .catch((e: Error) => setError(e.message))
     api
-      .history(undefined, 50)
+      .history(undefined, 'all', 50)
       .then(setRuns)
       .catch(() => {
         // A missing history is not worth an error banner over the whole page:
@@ -271,7 +271,7 @@ export function App() {
           ) : tab === 'targets' ? (
             <Targets />
           ) : tab === 'history' ? (
-            <History runs={runs} onChanged={refresh} />
+            <History runs={runs} jobs={jobs} onChanged={refresh} />
           ) : (
             <Settings
           theme={theme}

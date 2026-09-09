@@ -371,6 +371,20 @@ const et: Translations = {
   'look.accentReset': 'Tagasi vaikeväärtusele',
   'pick.cancel': 'Loobu',
   'look.paletteReset': 'Tagasi vaikevärvidele',
+  'jobs.previewHint': 'Arvutab, mida see töö teeks, ilma midagi muutmata, ja seejärel saad iga muudatuse enne käivitamist märkida või märke eemaldada.',
+  'preview.back': 'Tagasi',
+  'preview.backHint': 'Lahkub eelvaatest ilma midagi käivitamata. Escape teeb sama.',
+  'history.filterJob': 'Töö',
+  'history.allJobs': 'Kõik tööd',
+  'history.filterShow': 'Näita',
+  'history.showAll': 'Kõik käivitused',
+  'history.showChanged': 'Ainult need, mis midagi tegid',
+  'history.showFailed': 'Ainult ebaõnnestumised',
+  'history.filterHint': 'Kausta jälgiv töö kirjutab iga muudatuse kohta rea, nii et iga minut käivituv töö surub kord päevas käivituva lehelt täielikult välja. See valik küsib mootorilt teistsugust käivituste kogumit, selle asemel et peita osa juba toodud käivitustest, nii et otsitav töö tuleb tagasi ka siis, kui selle viimane käivitus oli tuhat rida tagasi. Ebaõnnestunud käivitus loetakse alati selliseks, mis midagi tegi.',
+  'history.working': 'Otsitakse.',
+  'history.noMatch': 'Ükski käivitus ei sobi.',
+  'edit.trash': 'Hoia prügikasti mõlemal poolel',
+  'edit.trashHint': 'Kustutamisest saab teisaldamine sünkroonitava puu sees asuvasse peidetud kausta nimega .arrowloop, nii et miski, mida see töö teeb, ei hävita midagi lõplikult, ja kogemata kustutatud faili saab prügikasti kaardilt tagasi. Seda kausta näeb igaüks, kes jagamist kasutab, ja just see on põhjus, miks seda välja lülitada: ilma prügikastita ei looda seda kunagi, kustutamine on lõplik, samuti konflikti kaotanud pool. Allalaadimiskausta jaoks mõistlik, dokumendikausta jaoks halb mõte.',
 }
 
 export default et

@@ -150,6 +150,27 @@ type Job struct {
 	// and catches nothing at all about the version from Tuesday.
 	KeepVersions int `json:"keepVersions,omitempty"`
 
+	// NoTrash deletes outright instead of moving into the side's own trash.
+	//
+	// Spelled as the NEGATIVE so that the zero value is the safe one. A field
+	// called `trash` would be false in every configuration written before it
+	// existed and in every one where somebody forgot it, and false would then
+	// mean "destroy things" - which is the failure mode a two-way sync can least
+	// afford to have as a default.
+	//
+	// It exists because the trash is visible. It lives inside the synced tree
+	// under a reserved prefix, so a shared download folder grows an `.arrowloop`
+	// directory that everybody using that share can see, and jdp asked the
+	// obvious question about it: "braucht es den .arrowloop ordner im
+	// Zielordner? Kann man den nicht weglassen?" With this on, nothing is ever
+	// moved under the prefix and the folder is never created.
+	//
+	// What it costs is stated plainly in the interface rather than softened:
+	// with no trash a deletion is final, and so is the losing side of a
+	// conflict. That is a reasonable trade for a folder of downloads and a bad
+	// one for a folder of documents, which is exactly why it is per job.
+	NoTrash bool `json:"noTrash,omitempty"`
+
 	Exclude           []string `json:"exclude,omitempty"`
 	NoDefaultExcludes bool     `json:"noDefaultExcludes,omitempty"`
 

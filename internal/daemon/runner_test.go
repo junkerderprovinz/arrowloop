@@ -72,7 +72,7 @@ func TestRunSyncsAndRecords(t *testing.T) {
 		t.Fatalf("the file did not arrive: %v", err)
 	}
 
-	runs, err := hist.Recent(context.Background(), "photos", 10)
+	runs, err := hist.Recent(context.Background(), "photos", history.ShowAll, 10)
 	if err != nil {
 		t.Fatalf("history: %v", err)
 	}
@@ -99,7 +99,7 @@ func TestAFailedRunIsStillRecorded(t *testing.T) {
 		t.Log("the run did not fail, which is fine as long as it was recorded")
 	}
 
-	runs, err := hist.Recent(context.Background(), "broken", 10)
+	runs, err := hist.Recent(context.Background(), "broken", history.ShowAll, 10)
 	if err != nil {
 		t.Fatalf("history: %v", err)
 	}
@@ -204,7 +204,7 @@ func TestPruneDropsOldRuns(t *testing.T) {
 	if n != 1 {
 		t.Fatalf("pruned %d runs, want the single one older than 90 days", n)
 	}
-	runs, err := hist.Recent(ctx, "x", 10)
+	runs, err := hist.Recent(ctx, "x", history.ShowAll, 10)
 	if err != nil {
 		t.Fatalf("recent: %v", err)
 	}
@@ -257,7 +257,7 @@ func TestAnUnpluggedVolumeIsNotARun(t *testing.T) {
 		t.Fatalf("the file did not reach the drive: %v", err)
 	}
 
-	before, err := hist.Recent(t.Context(), "", 100)
+	before, err := hist.Recent(t.Context(), "", history.ShowAll, 100)
 	if err != nil {
 		t.Fatalf("history: %v", err)
 	}
@@ -277,7 +277,7 @@ func TestAnUnpluggedVolumeIsNotARun(t *testing.T) {
 	}
 
 	// Nothing was written down, because nothing happened.
-	after, err := hist.Recent(t.Context(), "", 100)
+	after, err := hist.Recent(t.Context(), "", history.ShowAll, 100)
 	if err != nil {
 		t.Fatalf("history: %v", err)
 	}
@@ -349,7 +349,7 @@ func TestAHalfWrittenJobIsRefusedByName(t *testing.T) {
 		t.Fatalf("previewing a job with no sides reported %v", err)
 	}
 
-	runs, err := hist.Recent(t.Context(), "unfinished", 10)
+	runs, err := hist.Recent(t.Context(), "unfinished", history.ShowAll, 10)
 	if err != nil {
 		t.Fatalf("history: %v", err)
 	}
@@ -395,14 +395,14 @@ func TestRunAtStartFiresOnceAndNotOnReload(t *testing.T) {
 	// counted yet. Waiting for the row makes the wait and the assertion the
 	// same event.
 	waitFor(t, func() bool {
-		runs, err := hist.Recent(context.Background(), "photos", 10)
+		runs, err := hist.Recent(context.Background(), "photos", history.ShowAll, 10)
 		return err == nil && len(runs) >= 1
 	}, "the start-up run never recorded anything")
 
 	if _, err := os.Stat(filepath.Join(right, "a.txt")); err != nil {
 		t.Fatalf("the start-up run recorded a run but did not copy the file: %v", err)
 	}
-	runs, err := hist.Recent(context.Background(), "photos", 10)
+	runs, err := hist.Recent(context.Background(), "photos", history.ShowAll, 10)
 	if err != nil {
 		t.Fatalf("history: %v", err)
 	}
@@ -418,7 +418,7 @@ func TestRunAtStartFiresOnceAndNotOnReload(t *testing.T) {
 	// machine either of us runs it on.
 	time.Sleep(2 * time.Second)
 
-	runs, err = hist.Recent(context.Background(), "photos", 10)
+	runs, err = hist.Recent(context.Background(), "photos", history.ShowAll, 10)
 	if err != nil {
 		t.Fatalf("history: %v", err)
 	}
@@ -460,7 +460,7 @@ func TestADisabledJobDoesNotRunAtStart(t *testing.T) {
 	if _, err := os.Stat(filepath.Join(right, "a.txt")); err == nil {
 		t.Fatal("a disabled job synced at start")
 	}
-	runs, err := hist.Recent(context.Background(), "photos", 10)
+	runs, err := hist.Recent(context.Background(), "photos", history.ShowAll, 10)
 	if err != nil {
 		t.Fatalf("history: %v", err)
 	}
@@ -526,5 +526,79 @@ func TestAJobWhoseStateFolderDoesNotExistStillRuns(t *testing.T) {
 	}
 	if _, err := os.Stat(filepath.Join(stateDir, "photos.db")); err != nil {
 		t.Fatalf("the state database was not left where the job asked for it: %v", err)
+	}
+}
+
+// TestATrashlessJobDeletesOutrightAndLeavesNoReservedFolder is the wiring the
+// apply package's own tests deliberately cannot see.
+//
+// Those drive `discard` directly and say so: what they check is that the
+// function behaves, not that anything calls it with the job's answer. A setting
+// that is read from the file, validated, and then never reaches the code it
+// names is the failure mode this whole switch would fail at silently - the
+// folder would keep appearing and the box would keep saying it was off.
+//
+// jdp: "braucht es den .arrowloop ordner im Zielordner? Kann man den nicht
+// weglassen?"
+func TestATrashlessJobDeletesOutrightAndLeavesNoReservedFolder(t *testing.T) {
+	for _, tc := range []struct {
+		name      string
+		noTrash   string
+		wantMeta  bool
+		complaint string
+	}{
+		{"with a trash", "", true, "a job that kept its trash left no reserved folder, so the deletion did not go through the trash at all"},
+		{"without one", `,"noTrash":true`, false, "a job configured for no trash created the reserved folder anyway"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			cfg, hist, left, right := fixture(t, func(dir, left, right string) string {
+				return fmt.Sprintf(`{"jobs":[{"name":"photos","left":"%s","right":"%s","state":"%s","quietPeriod":"0s"%s}]}`,
+					jsonPath(left), jsonPath(right), jsonPath(filepath.Join(dir, "photos.db")), tc.noTrash)
+			})
+
+			// TWO files, and only one of them is removed later. A side that
+			// lists nothing at all trips the brake that exists for an unmounted
+			// volume - "the left side lists no files at all, but 1 were known
+			// there last time" - which is the guard working, and would make this
+			// test about that instead of about the trash.
+			for _, name := range []string{"a.txt", "stays.txt"} {
+				if err := os.WriteFile(filepath.Join(left, name), []byte("hello"), 0o644); err != nil {
+					t.Fatalf("write: %v", err)
+				}
+			}
+
+			r := daemon.New(cfg, hist, nil, nil)
+			// The first run is what makes the second one a DELETION rather than
+			// a creation: without a record, a file missing on the left is a file
+			// the right side just made.
+			if _, err := r.Run(context.Background(), "photos"); err != nil {
+				t.Fatalf("first run: %v", err)
+			}
+			if _, err := os.Stat(filepath.Join(right, "a.txt")); err != nil {
+				t.Fatalf("the file did not arrive: %v", err)
+			}
+
+			if err := os.Remove(filepath.Join(left, "a.txt")); err != nil {
+				t.Fatalf("remove: %v", err)
+			}
+			rec, err := r.Run(context.Background(), "photos")
+			if err != nil {
+				t.Fatalf("second run: %v", err)
+			}
+			if rec.Trashed != 1 {
+				t.Fatalf("expected the deletion to be counted once, got %d", rec.Trashed)
+			}
+			if _, err := os.Stat(filepath.Join(right, "a.txt")); !os.IsNotExist(err) {
+				t.Fatalf("the file is still on the right: %v", err)
+			}
+
+			_, err = os.Stat(filepath.Join(right, ".arrowloop"))
+			if tc.wantMeta && os.IsNotExist(err) {
+				t.Fatal(tc.complaint)
+			}
+			if !tc.wantMeta && err == nil {
+				t.Fatal(tc.complaint)
+			}
+		})
 	}
 }

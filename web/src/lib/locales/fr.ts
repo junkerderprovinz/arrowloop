@@ -371,6 +371,20 @@ const fr: Translations = {
   'look.accentReset': 'Revenir au défaut',
   'pick.cancel': 'Annuler',
   'look.paletteReset': 'Revenir aux couleurs par défaut',
+  'jobs.previewHint': 'Détermine ce que ferait cette tâche sans rien modifier, puis coche ou décoche chaque changement avant son exécution.',
+  'preview.back': 'Retour',
+  'preview.backHint': 'Quitte l\'aperçu sans rien exécuter. Échap fait la même chose.',
+  'history.filterJob': 'Tâche',
+  'history.allJobs': 'Toutes les tâches',
+  'history.filterShow': 'Afficher',
+  'history.showAll': 'Toutes les exécutions',
+  'history.showChanged': 'Seulement celles qui ont agi',
+  'history.showFailed': 'Seulement les échecs',
+  'history.filterHint': 'Une tâche qui surveille un dossier écrit une entrée à chaque changement, donc une tâche exécutée chaque minute chasse complètement de la page une tâche exécutée une fois par jour. Ce filtre demande au moteur un autre ensemble d\'exécutions au lieu de masquer une partie de celles déjà récupérées : la tâche recherchée revient donc même si sa dernière exécution remonte à mille entrées. Une exécution en échec compte toujours comme une exécution qui a agi.',
+  'history.working': 'Recherche en cours.',
+  'history.noMatch': 'Aucune exécution ne correspond.',
+  'edit.trash': 'Garder une corbeille de chaque côté',
+  'edit.trashHint': 'Une suppression devient un déplacement vers un dossier caché nommé .arrowloop à l\'intérieur de l\'arborescence synchronisée : rien de ce que fait cette tâche ne détruit quoi que ce soit définitivement, et un fichier supprimé par erreur se récupère depuis l\'onglet corbeille. Ce dossier est visible par tous ceux qui utilisent le partage, et c\'est la raison de désactiver ceci : sans corbeille il n\'est jamais créé, une suppression est définitive, et le côté perdant d\'un conflit l\'est aussi. Raisonnable pour un dossier de téléchargements, une mauvaise idée pour un dossier de documents.',
 }
 
 export default fr
