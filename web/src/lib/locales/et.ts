@@ -388,6 +388,8 @@ const et: Translations = {
   'jobs.activityLoading': 'Loetakse, mida see töö on teinud.',
   'history.more': 'Näita rohkem',
   'trash.holding': '{count} prügikastis, {size}',
+  'targets.tokenNeeded': '{backend} kasutab sisselogimisluba, mis tuleb hankida mujalt.',
+  'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
 }
 
 export default et

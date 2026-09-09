@@ -388,6 +388,8 @@ const lv: Translations = {
   'jobs.activityLoading': 'Tiek lasīts, ko šis darbs ir paveicis.',
   'history.more': 'Rādīt vairāk',
   'trash.holding': '{count} atkritnē, {size}',
+  'targets.tokenNeeded': '{backend} izmanto pieteikšanās pilnvaru, kas jāiegūst citur.',
+  'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
 }
 
 export default lv

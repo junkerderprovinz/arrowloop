@@ -388,6 +388,8 @@ const ca: Translations = {
   'jobs.activityLoading': 'S\'està llegint què ha fet aquesta tasca.',
   'history.more': 'Mostra\'n més',
   'trash.holding': '{count} a la paperera, {size}',
+  'targets.tokenNeeded': '{backend} s\'utilitza amb un testimoni d\'accés, que cal obtenir en un altre lloc.',
+  'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
 }
 
 export default ca

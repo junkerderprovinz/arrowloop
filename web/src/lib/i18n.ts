@@ -481,6 +481,8 @@ export const en = {
   'jobs.activityLoading': 'Reading what this job has done.',
   'history.more': 'Show more',
   'trash.holding': '{count} in the bin, {size}',
+  'targets.tokenNeeded': '{backend} is reached with a sign-in token, which has to be fetched elsewhere.',
+  'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field. The token is what authorises the connection: the client id and secret below it are optional and only matter if you registered your own application with the provider.',
 } as const
 
 export type TranslationKey = keyof typeof en
@@ -910,6 +912,8 @@ export const de: Translations = {
   'jobs.activityLoading': 'Es wird gelesen, was dieser Auftrag getan hat.',
   'history.more': 'Mehr anzeigen',
   'trash.holding': '{count} im Papierkorb, {size}',
+  'targets.tokenNeeded': '{backend} wird über ein Anmelde-Token erreicht, das anderswo geholt werden muss.',
+  'targets.tokenHowTo': 'Führe `rclone authorize "{backend}"` auf einem Rechner mit Browser aus. Es öffnet die Anmeldeseite des Anbieters und gibt am Ende ein Token aus. Diese ganze Zeile kommt in das Token-Feld. Das Token ist es, was die Verbindung berechtigt: die Client-ID und das Geheimnis darunter sind freiwillig und zählen nur, wenn du beim Anbieter eine eigene Anwendung registriert hast.',
 }
 
 // ---------------------------------------------------------------------------

@@ -388,6 +388,8 @@ const is: Translations = {
   'jobs.activityLoading': 'Les hvað þetta verk hefur gert.',
   'history.more': 'Sýna fleiri',
   'trash.holding': '{count} í ruslinu, {size}',
+  'targets.tokenNeeded': '{backend} er notað með innskráningartákni sem þarf að sækja annars staðar.',
+  'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
 }
 
 export default is

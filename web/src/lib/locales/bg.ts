@@ -388,6 +388,8 @@ const bg: Translations = {
   'jobs.activityLoading': 'Чете се какво е направила тази задача.',
   'history.more': 'Показване на още',
   'trash.holding': '{count} в кошчето, {size}',
+  'targets.tokenNeeded': '{backend} работи с токен за вход, който трябва да се вземе другаде.',
+  'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
 }
 
 export default bg

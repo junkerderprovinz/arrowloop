@@ -388,6 +388,8 @@ const gl: Translations = {
   'jobs.activityLoading': 'Estase a ler o que fixo esta tarefa.',
   'history.more': 'Amosar máis',
   'trash.holding': '{count} no lixo, {size}',
+  'targets.tokenNeeded': '{backend} úsase cun testemuño de acceso, que hai que obter noutro sitio.',
+  'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
 }
 
 export default gl

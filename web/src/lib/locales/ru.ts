@@ -388,6 +388,8 @@ const ru: Translations = {
   'jobs.activityLoading': 'Читается, что сделало это задание.',
   'history.more': 'Показать ещё',
   'trash.holding': '{count} в корзине, {size}',
+  'targets.tokenNeeded': '{backend} работает с токеном входа, который нужно получить в другом месте.',
+  'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
 }
 
 export default ru

@@ -388,6 +388,8 @@ const id: Translations = {
   'jobs.activityLoading': 'Sedang membaca apa yang telah dilakukan tugas ini.',
   'history.more': 'Tampilkan lebih banyak',
   'trash.holding': '{count} di tempat sampah, {size}',
+  'targets.tokenNeeded': '{backend} dipakai dengan token masuk, yang harus diambil di tempat lain.',
+  'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
 }
 
 export default id

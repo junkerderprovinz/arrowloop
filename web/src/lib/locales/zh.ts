@@ -388,6 +388,8 @@ const zh: Translations = {
   'jobs.activityLoading': '正在读取这个作业做过什么。',
   'history.more': '显示更多',
   'trash.holding': '回收站中 {count}，{size}',
+  'targets.tokenNeeded': '{backend} 通过登录令牌连接，令牌需要在别处获取。',
+  'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
 }
 
 export default zh

@@ -388,6 +388,8 @@ const hr: Translations = {
   'jobs.activityLoading': 'Čita se što je ovaj posao učinio.',
   'history.more': 'Prikaži više',
   'trash.holding': '{count} u košu, {size}',
+  'targets.tokenNeeded': '{backend} radi s tokenom za prijavu koji se mora nabaviti drugdje.',
+  'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
 }
 
 export default hr

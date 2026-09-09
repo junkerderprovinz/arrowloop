@@ -388,6 +388,8 @@ const he: Translations = {
   'jobs.activityLoading': 'קורא מה המשימה הזאת עשתה.',
   'history.more': 'הצג עוד',
   'trash.holding': '{count} בסל, {size}',
+  'targets.tokenNeeded': '{backend} עובד עם אסימון התחברות שיש להשיג במקום אחר.',
+  'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
 }
 
 export default he

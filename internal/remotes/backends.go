@@ -56,6 +56,17 @@ type Backend struct {
 	Name        string   `json:"name"`
 	Description string   `json:"description"`
 	Options     []Option `json:"options"`
+
+	// NeedsToken says this backend can only be reached with an OAuth token,
+	// and that the token has to be obtained outside this program.
+	//
+	// It is a flag rather than a paragraph of help text because the sentence
+	// belongs in the interface, in the reader's own language. What it does here
+	// is make the situation VISIBLE: without it, somebody opens the Dropbox
+	// form, sees two boxes for a client id and a secret, fills them in, and
+	// gets a target that cannot connect - with nothing anywhere saying that the
+	// one field that matters was never asked for.
+	NeedsToken bool `json:"needsToken,omitempty"`
 }
 
 // Backends lists what this build can actually talk to.
@@ -72,7 +83,16 @@ type Backend struct {
 // that opens on a backend nobody asked for is a form whose first act is to be
 // wrong. The rest of the registry still follows, because a build that carries a
 // backend and hides it would be lying about what it can reach.
-var promised = []string{"s3", "sftp", "smb"}
+var promised = []string{
+	// The ones asked for by name, in the order they were asked for: three
+	// self-hosted clouds that are all WebDAV underneath, then the big consumer
+	// services, then the two protocols this started with.
+	"webdav", "mega", "dropbox", "drive", "onedrive", "pcloud",
+	"s3", "sftp", "smb",
+	// The next tier by how often anybody actually reaches for them.
+	"b2", "box", "azureblob", "ftp", "jottacloud", "koofr", "protondrive",
+	"seafile", "opendrive", "yandex", "storj",
+}
 
 // essential lists, per backend, the settings without which the target will not
 // work - see Option.Essential for why rclone's own `required` cannot answer
@@ -113,6 +133,48 @@ var essential = map[string]map[string]bool{
 		"remote":   true,
 		"password": true,
 	},
+
+	// The self-hosted three are all this one underneath. `vendor` is what makes
+	// it work against Nextcloud and ownCloud rather than merely connect.
+	"webdav": {"url": true, "vendor": true, "user": true, "pass": true},
+
+	// Username and password, and nothing else to know.
+	"mega":        {"user": true, "pass": true},
+	"opendrive":   {"username": true, "password": true},
+	"protondrive": {"username": true, "password": true, "2fa": true},
+	"seafile":     {"url": true, "user": true, "pass": true, "library": true},
+	"koofr":       {"provider": true, "user": true, "password": true},
+	"ftp":         {"host": true, "user": true, "pass": true, "port": true},
+
+	// Key pairs.
+	"b2":        {"account": true, "key": true},
+	"azureblob": {"account": true, "key": true},
+	"storj":     {"provider": true, "access_grant": true},
+
+	// The OAuth ones. `token` is what actually authorises the connection and
+	// rclone marks it ADVANCED, because its own setup obtains it through a
+	// browser and writes it for you. This interface has no such flow, so
+	// hiding the field means the backend cannot be set up here at all - which
+	// is worse than asking for a value that has to be fetched elsewhere. See
+	// NeedsToken for what the form says about getting one.
+	"dropbox":    {"token": true},
+	"drive":      {"token": true, "scope": true},
+	"onedrive":   {"token": true, "drive_id": true, "drive_type": true},
+	"pcloud":     {"token": true, "hostname": true},
+	"box":        {"token": true},
+	"jottacloud": {"token": true},
+	"yandex":     {"token": true},
+}
+
+// tokenBackends are the ones whose only way in is an OAuth token, obtained
+// outside this program.
+//
+// Named rather than detected, because "has an option called token" is true of
+// backends that also accept a password and would put a confusing instruction on
+// a form that does not need it.
+var tokenBackends = map[string]bool{
+	"dropbox": true, "drive": true, "onedrive": true, "pcloud": true,
+	"box": true, "jottacloud": true, "yandex": true,
 }
 
 func rank(name string) int {
@@ -135,7 +197,10 @@ func Backends() []Backend {
 		// Options starts as an empty slice for the same reason a target's
 		// settings do: a nil slice marshals to null, and a browser handed null
 		// where it was promised a list falls over on the first map.
-		b := Backend{Name: info.Name, Description: info.Description, Options: []Option{}}
+		b := Backend{
+			Name: info.Name, Description: info.Description, Options: []Option{},
+			NeedsToken: tokenBackends[info.Name],
+		}
 		for _, o := range info.Options {
 			b.Options = append(b.Options, Option{
 				Name:     o.Name,

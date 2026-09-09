@@ -388,6 +388,8 @@ const ja: Translations = {
   'jobs.activityLoading': 'この処理が何をしたかを読み込んでいます。',
   'history.more': 'さらに表示',
   'trash.holding': 'ごみ箱に {count}、{size}',
+  'targets.tokenNeeded': '{backend} はサインイン用のトークンで接続します。トークンは別の場所で取得します。',
+  'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
 }
 
 export default ja

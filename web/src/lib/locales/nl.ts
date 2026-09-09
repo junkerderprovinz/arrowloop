@@ -388,6 +388,8 @@ const nl: Translations = {
   'jobs.activityLoading': 'Bezig met lezen wat deze taak heeft gedaan.',
   'history.more': 'Meer tonen',
   'trash.holding': '{count} in de prullenbak, {size}',
+  'targets.tokenNeeded': '{backend} werkt met een aanmeldtoken, dat elders opgehaald moet worden.',
+  'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
 }
 
 export default nl

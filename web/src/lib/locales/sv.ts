@@ -388,6 +388,8 @@ const sv: Translations = {
   'jobs.activityLoading': 'Läser vad det här jobbet har gjort.',
   'history.more': 'Visa fler',
   'trash.holding': '{count} i papperskorgen, {size}',
+  'targets.tokenNeeded': '{backend} används med en inloggningstoken som måste hämtas någon annanstans.',
+  'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
 }
 
 export default sv

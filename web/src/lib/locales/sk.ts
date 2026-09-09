@@ -388,6 +388,8 @@ const sk: Translations = {
   'jobs.activityLoading': 'Načítava sa, čo táto úloha urobila.',
   'history.more': 'Zobraziť viac',
   'trash.holding': '{count} v koši, {size}',
+  'targets.tokenNeeded': '{backend} sa používa s prihlasovacím tokenom, ktorý treba získať inde.',
+  'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
 }
 
 export default sk

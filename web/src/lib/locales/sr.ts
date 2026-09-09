@@ -388,6 +388,8 @@ const sr: Translations = {
   'jobs.activityLoading': 'Чита се шта је овај посао урадио.',
   'history.more': 'Прикажи више',
   'trash.holding': '{count} у корпи, {size}',
+  'targets.tokenNeeded': '{backend} ради са токеном за пријаву који се мора набавити другде.',
+  'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
 }
 
 export default sr

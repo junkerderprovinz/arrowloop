@@ -388,6 +388,8 @@ const th: Translations = {
   'jobs.activityLoading': 'กำลังอ่านว่างานนี้ทำอะไรไปบ้าง',
   'history.more': 'แสดงเพิ่ม',
   'trash.holding': '{count} ในถังขยะ {size}',
+  'targets.tokenNeeded': '{backend} ใช้โทเคนสำหรับเข้าสู่ระบบ ซึ่งต้องไปขอจากที่อื่น',
+  'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
 }
 
 export default th

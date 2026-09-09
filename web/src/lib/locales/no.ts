@@ -388,6 +388,8 @@ const no: Translations = {
   'jobs.activityLoading': 'Leser hva denne jobben har gjort.',
   'history.more': 'Vis flere',
   'trash.holding': '{count} i papirkurven, {size}',
+  'targets.tokenNeeded': '{backend} brukes med en innloggingstoken som må hentes et annet sted.',
+  'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
 }
 
 export default no

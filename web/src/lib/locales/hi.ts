@@ -388,6 +388,8 @@ const hi: Translations = {
   'jobs.activityLoading': 'पढ़ा जा रहा है कि इस काम ने क्या किया।',
   'history.more': 'और दिखाएँ',
   'trash.holding': 'रद्दी में {count}, {size}',
+  'targets.tokenNeeded': '{backend} एक साइन-इन टोकन से चलता है, जो कहीं और से लाना पड़ता है।',
+  'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
 }
 
 export default hi

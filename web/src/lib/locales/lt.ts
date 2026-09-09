@@ -388,6 +388,8 @@ const lt: Translations = {
   'jobs.activityLoading': 'Skaitoma, ką ši užduotis padarė.',
   'history.more': 'Rodyti daugiau',
   'trash.holding': '{count} šiukšlinėje, {size}',
+  'targets.tokenNeeded': '{backend} naudoja prisijungimo raktą, kurį reikia gauti kitur.',
+  'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
 }
 
 export default lt

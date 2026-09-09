@@ -3,7 +3,7 @@ import { useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { hueVars, rainbowAt } from '../lib/appearance'
 import { hidesLabel, type LabelMode } from '../lib/controls'
 import { LOGO_GOLD, LogoMark } from './LogoMark'
-import { NO_STREAK, press } from '../lib/tapStreak'
+import { HOLD, NO_STREAK, press } from '../lib/tapStreak'
 import { useRainbow } from './Shell'
 
 /**
@@ -178,17 +178,48 @@ export function Sidebar<T extends string>({
   const [flight, setFlight] = useState(0)
   const streak = useRef(NO_STREAK)
 
-  function tapped() {
-    const { next, fired } = press(streak.current, performance.now())
-    streak.current = next
-    if (fired) {
+  /**
+   * The other way in: press and hold.
+   *
+   * Added because the first one was reported as broken by somebody trying it:
+   * "das easter egg funktioniert nicht, ein langer klick macht nichts". Five
+   * presses is a convention you have to be told about, and an easter egg
+   * nobody can find is not one. Holding is what people actually try.
+   *
+   * The timer is cleared on release and on the pointer leaving, so a press that
+   * turns into a drag does not fire it, and the click still navigates either
+   * way.
+   */
+  const held = useRef<number | null>(null)
+
+  function holdStart() {
+    if (held.current !== null) window.clearTimeout(held.current)
+    held.current = window.setTimeout(() => {
+      held.current = null
+      fly()
+    }, HOLD)
+  }
+
+  function holdEnd() {
+    if (held.current !== null) {
+      window.clearTimeout(held.current)
+      held.current = null
+    }
+  }
+
+  function fly() {
       // A COUNTER rather than a flag going true. The flight is an animation on
       // a class, so it plays when the class arrives; a flag already true adds
       // no class and plays nothing, which is exactly the press somebody makes
       // when they liked it and want it again. Same trick, and the same reason,
       // as the shake on a refused save.
-      setFlight((n) => n + 1)
-    }
+    setFlight((n) => n + 1)
+  }
+
+  function tapped() {
+    const { next, fired } = press(streak.current, performance.now())
+    streak.current = next
+    if (fired) fly()
   }
 
   return (
@@ -218,6 +249,10 @@ export function Sidebar<T extends string>({
           tapped()
           onChange(items[0]?.value ?? value)
         }}
+        onPointerDown={holdStart}
+        onPointerUp={holdEnd}
+        onPointerLeave={holdEnd}
+        onPointerCancel={holdEnd}
         className={`flex flex-col items-center gap-2 transition-opacity hover:opacity-90 ${
           narrow ? 'px-2 py-4' : 'px-4 py-6'
         }`}
@@ -229,7 +264,7 @@ export function Sidebar<T extends string>({
             itself uses. */}
         <LogoMark
           key={flight}
-          size={narrow ? 36 : 80}
+          size={narrow ? 44 : 104}
           style={{ color: LOGO_GOLD }}
           className={`shrink-0 ${flight > 0 ? 'al-logo-loose' : ''}`}
         />

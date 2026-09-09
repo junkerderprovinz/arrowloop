@@ -388,6 +388,8 @@ const ms: Translations = {
   'jobs.activityLoading': 'Sedang membaca apa yang telah dilakukan oleh tugas ini.',
   'history.more': 'Tunjukkan lagi',
   'trash.holding': '{count} dalam tong sampah, {size}',
+  'targets.tokenNeeded': '{backend} digunakan dengan token log masuk, yang perlu diperoleh di tempat lain.',
+  'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
 }
 
 export default ms

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
+import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { Empty, Rule, RowActions, Stack } from '../components/Shell'
 import { IconAction } from '../components/IconAction'
 import { Card } from '../lib/glimstone/Card'
@@ -336,6 +337,18 @@ function RemoteForm({
 
   return (
     <div className="flex flex-col gap-4 py-4">
+      {/* Said before the form rather than after it fails. These backends are
+          reached with an OAuth token and nothing else, and obtaining one needs
+          a browser sitting at the provider's own sign-in page - which this
+          interface has no way to open on the machine the engine runs on. So
+          the honest thing is to name the one command that produces it, at the
+          moment somebody picks the backend. */}
+      {backend?.needsToken && (
+        <p className="flex items-start gap-2 text-xs text-carbon-textMuted">
+          <InfoBubble tip={t('targets.tokenHowTo')} />
+          <span>{t('targets.tokenNeeded', { backend: backend.name })}</span>
+        </p>
+      )}
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label={t('targets.remoteName')} hint={t('targets.remoteNameHint')}>
           <Text value={name} onChange={setName} placeholder="backup" mono />

@@ -388,6 +388,8 @@ const tr: Translations = {
   'jobs.activityLoading': 'Bu işin ne yaptığı okunuyor.',
   'history.more': 'Daha fazla göster',
   'trash.holding': '{count} çöp kutusunda, {size}',
+  'targets.tokenNeeded': '{backend} bir oturum belirteciyle kullanılır; belirteç başka yerde alınmalıdır.',
+  'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
 }
 
 export default tr

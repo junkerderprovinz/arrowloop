@@ -388,6 +388,8 @@ const cs: Translations = {
   'jobs.activityLoading': 'Načítá se, co tato úloha udělala.',
   'history.more': 'Zobrazit více',
   'trash.holding': '{count} v koši, {size}',
+  'targets.tokenNeeded': '{backend} se používá s přihlašovacím tokenem, který je nutné získat jinde.',
+  'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
 }
 
 export default cs

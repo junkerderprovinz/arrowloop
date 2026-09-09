@@ -388,6 +388,8 @@ const ar: Translations = {
   'jobs.activityLoading': 'تجري قراءة ما فعلته هذه المهمة.',
   'history.more': 'عرض المزيد',
   'trash.holding': '{count} في السلة، {size}',
+  'targets.tokenNeeded': 'يُستخدم {backend} برمز دخول يجب الحصول عليه من مكان آخر.',
+  'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
 }
 
 export default ar

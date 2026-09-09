@@ -388,6 +388,8 @@ const ko: Translations = {
   'jobs.activityLoading': '이 작업이 무엇을 했는지 읽는 중입니다.',
   'history.more': '더 보기',
   'trash.holding': '휴지통에 {count}, {size}',
+  'targets.tokenNeeded': '{backend}은(는) 로그인 토큰으로 연결합니다. 토큰은 다른 곳에서 받아야 합니다.',
+  'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
 }
 
 export default ko

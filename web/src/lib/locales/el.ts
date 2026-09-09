@@ -388,6 +388,8 @@ const el: Translations = {
   'jobs.activityLoading': 'Γίνεται ανάγνωση του τι έκανε αυτή η εργασία.',
   'history.more': 'Εμφάνιση περισσότερων',
   'trash.holding': '{count} στον κάδο, {size}',
+  'targets.tokenNeeded': 'Το {backend} χρησιμοποιείται με διακριτικό σύνδεσης, που πρέπει να ληφθεί αλλού.',
+  'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
 }
 
 export default el

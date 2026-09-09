@@ -388,6 +388,8 @@ const vi: Translations = {
   'jobs.activityLoading': 'Đang đọc những gì công việc này đã làm.',
   'history.more': 'Hiển thị thêm',
   'trash.holding': '{count} trong thùng rác, {size}',
+  'targets.tokenNeeded': '{backend} dùng một token đăng nhập, phải lấy ở nơi khác.',
+  'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
 }
 
 export default vi

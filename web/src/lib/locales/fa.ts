@@ -388,6 +388,8 @@ const fa: Translations = {
   'jobs.activityLoading': 'در حال خواندن آنچه این کار انجام داده است.',
   'history.more': 'نمایش بیشتر',
   'trash.holding': '{count} در سطل، {size}',
+  'targets.tokenNeeded': '{backend} با یک توکن ورود کار می‌کند که باید جای دیگری گرفته شود.',
+  'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
 }
 
 export default fa

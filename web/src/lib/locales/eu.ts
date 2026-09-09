@@ -388,6 +388,8 @@ const eu: Translations = {
   'jobs.activityLoading': 'Lan honek zer egin duen irakurtzen ari da.',
   'history.more': 'Erakutsi gehiago',
   'trash.holding': '{count} zakarrontzian, {size}',
+  'targets.tokenNeeded': '{backend} saioa hasteko token batekin erabiltzen da, beste nonbait lortu behar dena.',
+  'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
 }
 
 export default eu

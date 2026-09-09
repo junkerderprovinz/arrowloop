@@ -388,6 +388,8 @@ const fi: Translations = {
   'jobs.activityLoading': 'Luetaan mitä tämä työ on tehnyt.',
   'history.more': 'Näytä lisää',
   'trash.holding': '{count} roskakorissa, {size}',
+  'targets.tokenNeeded': '{backend} toimii kirjautumistunnisteella, joka on haettava muualta.',
+  'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
 }
 
 export default fi

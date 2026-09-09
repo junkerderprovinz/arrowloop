@@ -31,6 +31,21 @@ export const WINDOW = 1200
 /** How many presses in a row the run needs. */
 export const NEEDED = 5
 
+/**
+ * How long a single press has to be held to count on its own.
+ *
+ * A second trigger for the same thing, and it is here because of how the first
+ * one was reported: "ein langer klick macht nichts". A run of five presses is a
+ * convention somebody has to be TOLD about, and an easter egg nobody can find
+ * is not an easter egg. Pressing and holding is what people actually try, so it
+ * works too.
+ *
+ * 600ms, which is comfortably past a normal click and comfortably short of a
+ * wait. The button still navigates on release either way: a hold that swallowed
+ * the control it hides behind would be a bug.
+ */
+export const HOLD = 600
+
 export interface Streak {
   /** How many presses the current run holds. */
   count: number

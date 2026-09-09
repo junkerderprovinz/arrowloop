@@ -388,6 +388,8 @@ const pt: Translations = {
   'jobs.activityLoading': 'A ler o que esta tarefa fez.',
   'history.more': 'Mostrar mais',
   'trash.holding': '{count} na reciclagem, {size}',
+  'targets.tokenNeeded': '{backend} usa-se com um token de acesso, que tem de ser obtido noutro lado.',
+  'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
 }
 
 export default pt

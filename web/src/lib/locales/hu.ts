@@ -388,6 +388,8 @@ const hu: Translations = {
   'jobs.activityLoading': 'Beolvasás, mit tett ez a feladat.',
   'history.more': 'Több megjelenítése',
   'trash.holding': '{count} a kukában, {size}',
+  'targets.tokenNeeded': 'A(z) {backend} bejelentkezési tokennel érhető el, amelyet máshol kell beszerezni.',
+  'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
 }
 
 export default hu

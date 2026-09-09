@@ -388,6 +388,8 @@ const ro: Translations = {
   'jobs.activityLoading': 'Se citește ce a făcut această sarcină.',
   'history.more': 'Afișează mai multe',
   'trash.holding': '{count} în coș, {size}',
+  'targets.tokenNeeded': '{backend} se folosește cu un token de autentificare, care trebuie obținut în altă parte.',
+  'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
 }
 
 export default ro

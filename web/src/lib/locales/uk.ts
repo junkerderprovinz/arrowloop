@@ -388,6 +388,8 @@ const uk: Translations = {
   'jobs.activityLoading': 'Читається, що зробило це завдання.',
   'history.more': 'Показати ще',
   'trash.holding': '{count} у кошику, {size}',
+  'targets.tokenNeeded': '{backend} працює з токеном входу, який потрібно отримати в іншому місці.',
+  'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
 }
 
 export default uk

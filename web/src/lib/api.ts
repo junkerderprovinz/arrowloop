@@ -50,6 +50,15 @@ export type Remote = {
 export type Backend = {
   name: string
   description: string
+  /**
+   * This backend can only be reached with an OAuth token, and the token has to
+   * be obtained outside this program.
+   *
+   * Without saying so, somebody opens the Dropbox form, fills in the two boxes
+   * it shows, and gets a target that cannot connect - with nothing anywhere
+   * explaining that the one field that matters is fetched elsewhere.
+   */
+  needsToken?: boolean
   options: {
     name: string
     help: string

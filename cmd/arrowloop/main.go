@@ -25,9 +25,18 @@ import (
 	// in every cloud SDK rclone supports and inflate the binary by an order of
 	// magnitude for targets nobody has asked for yet.
 	_ "github.com/rclone/rclone/backend/local"
-	_ "github.com/rclone/rclone/backend/s3"
-	_ "github.com/rclone/rclone/backend/sftp"
-	_ "github.com/rclone/rclone/backend/smb"
+	// Every backend rclone carries, rather than the four this started with.
+	//
+	// jdp asked for the cloud providers by name and then for "sämtliche", and
+	// the honest way to answer that is not a longer hand-picked list: it is the
+	// whole registry, so that the answer to "can I point it at X" stops being a
+	// question about which four somebody guessed at in advance. What is
+	// compiled in is what the interface offers, so the two can never disagree.
+	//
+	// It costs size, measured rather than estimated: 39 MB before, 82 MB after.
+	// That is the price of the feature and it is stated in the release notes
+	// rather than discovered on a download page.
+	_ "github.com/rclone/rclone/backend/all"
 )
 
 const usage = `arrowloop synchronises two folders in both directions.
