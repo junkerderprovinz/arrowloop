@@ -141,7 +141,6 @@ const eu: Translations = {
   'targets.addStorage': 'Gehitu biltegia',
   'targets.remoteName': 'Izena',
   'targets.remoteNameHint': 'Lan batean helburu honi izena:bidea moduan deitzeko erabiliko duzun izena. Zuriunerik eta bi punturik gabe.',
-  'targets.kind': 'Mota',
   'targets.check': 'Egiaztatu',
   'targets.checking': 'Egiaztatzen',
   'targets.checkOk': 'Iritsi da',

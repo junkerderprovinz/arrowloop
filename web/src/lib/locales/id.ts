@@ -141,7 +141,6 @@ const id: Translations = {
   'targets.addStorage': 'Tambah penyimpanan',
   'targets.remoteName': 'Nama',
   'targets.remoteNameHint': 'Nama yang Anda pakai untuk menunjuk tujuan ini di dalam tugas, ditulis nama:jalur. Tanpa spasi dan tanpa titik dua.',
-  'targets.kind': 'Jenis',
   'targets.check': 'Periksa',
   'targets.checking': 'Memeriksa',
   'targets.checkOk': 'Tercapai',

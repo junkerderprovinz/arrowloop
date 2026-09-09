@@ -141,7 +141,6 @@ const is: Translations = {
   'targets.addStorage': 'Bæta við geymslu',
   'targets.remoteName': 'Heiti',
   'targets.remoteNameHint': 'Heitið sem þú vísar í þennan áfangastað með í verki, skrifað heiti:slóð. Engin bil og engin tvípunktur.',
-  'targets.kind': 'Tegund',
   'targets.check': 'Athuga',
   'targets.checking': 'Athuga',
   'targets.checkOk': 'Náðist',

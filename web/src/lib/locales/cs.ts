@@ -141,7 +141,6 @@ const cs: Translations = {
   'targets.addStorage': 'Přidat úložiště',
   'targets.remoteName': 'Název',
   'targets.remoteNameHint': 'Název, kterým budete tento cíl v úloze uvádět, zapsaný jako název:cesta. Bez mezer a bez dvojteček.',
-  'targets.kind': 'Druh',
   'targets.check': 'Ověřit',
   'targets.checking': 'Ověřování',
   'targets.checkOk': 'Dosaženo',

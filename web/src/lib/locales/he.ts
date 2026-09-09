@@ -141,7 +141,6 @@ const he: Translations = {
   'targets.addStorage': 'הוספת אחסון',
   'targets.remoteName': 'שם',
   'targets.remoteNameHint': 'השם שבו תפנה ליעד הזה בתוך משימה, בצורת שם:נתיב. בלי רווחים ובלי נקודתיים.',
-  'targets.kind': 'סוג',
   'targets.check': 'בדיקה',
   'targets.checking': 'בודק',
   'targets.checkOk': 'הושג',

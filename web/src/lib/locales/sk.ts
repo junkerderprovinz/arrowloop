@@ -141,7 +141,6 @@ const sk: Translations = {
   'targets.addStorage': 'Pridať úložisko',
   'targets.remoteName': 'Názov',
   'targets.remoteNameHint': 'Názov, ktorým budete tento cieľ v úlohe uvádzať, zapísaný ako názov:cesta. Bez medzier a bez dvojbodiek.',
-  'targets.kind': 'Druh',
   'targets.check': 'Overiť',
   'targets.checking': 'Overuje sa',
   'targets.checkOk': 'Dosiahnuté',

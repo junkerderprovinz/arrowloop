@@ -141,7 +141,6 @@ const zh: Translations = {
   'targets.addStorage': '添加存储',
   'targets.remoteName': '名称',
   'targets.remoteNameHint': '你将在任务中以 名称:路径 的形式引用这个目标。不能有空格和冒号。',
-  'targets.kind': '类型',
   'targets.check': '检查',
   'targets.checking': '正在检查',
   'targets.checkOk': '已连上',

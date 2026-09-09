@@ -141,7 +141,6 @@ const ca: Translations = {
   'targets.addStorage': 'Afegeix emmagatzematge',
   'targets.remoteName': 'Nom',
   'targets.remoteNameHint': 'El nom amb què us referireu a aquesta destinació dins d\'una tasca, escrit nom:camí. Sense espais ni dos punts.',
-  'targets.kind': 'Tipus',
   'targets.check': 'Comprova',
   'targets.checking': 'S\'està comprovant',
   'targets.checkOk': 'S\'hi ha arribat',

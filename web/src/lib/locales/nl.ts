@@ -141,7 +141,6 @@ const nl: Translations = {
   'targets.addStorage': 'Opslag toevoegen',
   'targets.remoteName': 'Naam',
   'targets.remoteNameHint': 'De naam waarmee je dit doel in een taak aanspreekt, geschreven als naam:pad. Geen spaties, geen dubbele punten.',
-  'targets.kind': 'Soort',
   'targets.check': 'Nakijken',
   'targets.checking': 'Nakijken',
   'targets.checkOk': 'Bereikt',

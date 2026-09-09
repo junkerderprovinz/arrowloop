@@ -175,6 +175,7 @@ function Storage({
             setPreset(chosen)
             setAdding(backend)
           }}
+          onCancel={() => setAdding(null)}
         />
       )}
       {adding !== null && adding !== 'pick' && (
@@ -443,23 +444,22 @@ function RemoteForm({
           <span>{t('targets.tokenNeeded', { backend: backend.name })}</span>
         </p>
       )}
-      {/* No type dropdown. The picker decided it, and offering it again here
-          would let somebody change it AFTER the preset was applied - a
-          Nextcloud target silently becoming plain WebDAV, with the vendor
-          setting left behind and no sign of it. The chosen kind is stated
-          rather than editable; going back is closing this and picking again. */}
-      <div className="grid gap-4 sm:grid-cols-2">
+      {/* No type field at all, neither a dropdown nor a read-only line.
+          It showed `webdav` under a heading called Type, on a form somebody
+          reached by pressing Nextcloud - naming the implementation of the thing
+          they had just chosen, which is the exact knowledge the picker exists
+          to stop asking for. jdp: "Für was brauchen wir die Art bei den
+          Clouds?" The chosen backend is still what gets saved; it simply has
+          nothing left to say on screen.
+
+          One column, centred, because that is what the fields are: a short
+          stack of questions, not a form to be filled in two directions at
+          once. */}
+      <div className="mx-auto flex w-full max-w-md flex-col gap-4">
         <Field label={t('targets.remoteName')} hint={t('targets.remoteNameHint')}>
           <Text value={name} onChange={setName} placeholder="backup" mono />
         </Field>
-        <Field label={t('targets.kind')}>
-          <p className="flex h-[var(--btn-h)] items-center text-dense text-carbon-textSub">{kind}</p>
-        </Field>
-      </div>
 
-      {backend && <p className="text-xs text-carbon-textMuted">{backend.description}</p>}
-
-      <div className="grid gap-4 sm:grid-cols-2">
         {shown.map((o) => (
           <Field
             key={o.name}
@@ -491,11 +491,11 @@ function RemoteForm({
             )}
           </Field>
         ))}
+
+        <ToggleRow checked={advanced} onChange={setAdvanced} label={t('targets.advanced')} />
+
+        {error && <p className="text-xs text-statusFail">{error}</p>}
       </div>
-
-      <ToggleRow checked={advanced} onChange={setAdvanced} label={t('targets.advanced')} />
-
-      {error && <p className="text-xs text-statusFail">{error}</p>}
 
       <div className="flex items-center justify-end gap-2">
         <Button label={t('targets.cancel')} labelKey="targets.cancel" onClick={() => onDone(false)} />

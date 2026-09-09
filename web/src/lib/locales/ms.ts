@@ -141,7 +141,6 @@ const ms: Translations = {
   'targets.addStorage': 'Tambah simpanan',
   'targets.remoteName': 'Nama',
   'targets.remoteNameHint': 'Nama yang anda gunakan untuk merujuk destinasi ini dalam tugasan, ditulis nama:laluan. Tanpa ruang dan tanpa titik bertindih.',
-  'targets.kind': 'Jenis',
   'targets.check': 'Semak',
   'targets.checking': 'Menyemak',
   'targets.checkOk': 'Sampai',

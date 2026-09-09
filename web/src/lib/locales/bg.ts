@@ -141,7 +141,6 @@ const bg: Translations = {
   'targets.addStorage': 'Добавяне на хранилище',
   'targets.remoteName': 'Име',
   'targets.remoteNameHint': 'Името, с което ще сочите тази цел в задача, изписано име:път. Без интервали и без двоеточия.',
-  'targets.kind': 'Вид',
   'targets.check': 'Проверка',
   'targets.checking': 'Проверява се',
   'targets.checkOk': 'Достигната',

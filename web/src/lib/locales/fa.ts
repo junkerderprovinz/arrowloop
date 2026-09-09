@@ -141,7 +141,6 @@ const fa: Translations = {
   'targets.addStorage': 'افزودن ذخیره‌سازی',
   'targets.remoteName': 'نام',
   'targets.remoteNameHint': 'نامی که با آن در یک کار به این مقصد اشاره می‌کنید، به شکل نام:مسیر. بدون فاصله و بدون دونقطه.',
-  'targets.kind': 'گونه',
   'targets.check': 'بررسی',
   'targets.checking': 'در حال بررسی',
   'targets.checkOk': 'در دسترس',

@@ -141,7 +141,6 @@ const es: Translations = {
   'targets.addStorage': 'Añadir almacenamiento',
   'targets.remoteName': 'Nombre',
   'targets.remoteNameHint': 'El nombre con el que te referirás a este destino en un trabajo, escrito nombre:ruta. Sin espacios ni dos puntos.',
-  'targets.kind': 'Tipo',
   'targets.check': 'Comprobar',
   'targets.checking': 'Comprobando',
   'targets.checkOk': 'Alcanzado',

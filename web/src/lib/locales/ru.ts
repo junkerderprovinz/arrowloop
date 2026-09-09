@@ -141,7 +141,6 @@ const ru: Translations = {
   'targets.addStorage': 'Добавить хранилище',
   'targets.remoteName': 'Имя',
   'targets.remoteNameHint': 'Имя, которым вы будете указывать это назначение в задании, в виде имя:путь. Без пробелов и без двоеточий.',
-  'targets.kind': 'Тип',
   'targets.check': 'Проверить',
   'targets.checking': 'Проверка',
   'targets.checkOk': 'Доступно',

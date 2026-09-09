@@ -141,7 +141,6 @@ const vi: Translations = {
   'targets.addStorage': 'Thêm kho lưu trữ',
   'targets.remoteName': 'Tên',
   'targets.remoteNameHint': 'Tên bạn sẽ dùng để trỏ tới đích này trong một công việc, viết là tên:đường_dẫn. Không dấu cách, không dấu hai chấm.',
-  'targets.kind': 'Loại',
   'targets.check': 'Kiểm tra',
   'targets.checking': 'Đang kiểm tra',
   'targets.checkOk': 'Đã với tới',

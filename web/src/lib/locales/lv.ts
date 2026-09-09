@@ -141,7 +141,6 @@ const lv: Translations = {
   'targets.addStorage': 'Pievienot krātuvi',
   'targets.remoteName': 'Nosaukums',
   'targets.remoteNameHint': 'Nosaukums, ar kuru uzdevumā norādīsiet šo galamērķi, rakstīts nosaukums:ceļš. Bez atstarpēm un bez koliem.',
-  'targets.kind': 'Veids',
   'targets.check': 'Pārbaudīt',
   'targets.checking': 'Pārbauda',
   'targets.checkOk': 'Sasniegts',

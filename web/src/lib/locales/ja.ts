@@ -141,7 +141,6 @@ const ja: Translations = {
   'targets.addStorage': 'ストレージを追加',
   'targets.remoteName': '名前',
   'targets.remoteNameHint': 'ジョブの中で 名前:パス として、この接続先を指すのに使う名前です。空白とコロンは使えません。',
-  'targets.kind': '種類',
   'targets.check': '確認',
   'targets.checking': '確認中',
   'targets.checkOk': '到達しました',

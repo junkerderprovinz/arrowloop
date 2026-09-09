@@ -141,7 +141,6 @@ const fi: Translations = {
   'targets.addStorage': 'Lisää tallennus',
   'targets.remoteName': 'Nimi',
   'targets.remoteNameHint': 'Nimi, jolla viittaat tähän kohteeseen työssä, muodossa nimi:polku. Ei välilyöntejä eikä kaksoispisteitä.',
-  'targets.kind': 'Tyyppi',
   'targets.check': 'Tarkista',
   'targets.checking': 'Tarkistetaan',
   'targets.checkOk': 'Tavoitettiin',

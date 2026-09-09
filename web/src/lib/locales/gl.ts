@@ -141,7 +141,6 @@ const gl: Translations = {
   'targets.addStorage': 'Engadir almacenamento',
   'targets.remoteName': 'Nome',
   'targets.remoteNameHint': 'O nome co que te referirás a este destino dentro dunha tarefa, escrito nome:ruta. Sen espazos nin dous puntos.',
-  'targets.kind': 'Tipo',
   'targets.check': 'Comprobar',
   'targets.checking': 'Comprobando',
   'targets.checkOk': 'Acadouse',

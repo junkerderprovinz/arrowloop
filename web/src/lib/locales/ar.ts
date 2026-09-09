@@ -141,7 +141,6 @@ const ar: Translations = {
   'targets.addStorage': 'إضافة تخزين',
   'targets.remoteName': 'الاسم',
   'targets.remoteNameHint': 'الاسم الذي ستشير به إلى هذه الوجهة داخل مهمة، بصيغة اسم:مسار. بلا مسافات وبلا نقطتين.',
-  'targets.kind': 'النوع',
   'targets.check': 'تحقق',
   'targets.checking': 'جارٍ التحقق',
   'targets.checkOk': 'تم الوصول',

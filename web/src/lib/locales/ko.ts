@@ -141,7 +141,6 @@ const ko: Translations = {
   'targets.addStorage': '저장소 추가',
   'targets.remoteName': '이름',
   'targets.remoteNameHint': '작업에서 이름:경로 형태로 이 대상을 가리킬 때 쓰는 이름입니다. 공백과 콜론은 쓸 수 없습니다.',
-  'targets.kind': '종류',
   'targets.check': '확인',
   'targets.checking': '확인 중',
   'targets.checkOk': '연결됨',

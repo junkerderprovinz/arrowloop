@@ -155,9 +155,43 @@ export function {name}(props: SVGProps<SVGSVGElement>) {{
 '''
 
 
+# Marks Simple Icons does not carry, kept as their own SVG under
+# scripts/brand-paths/. Each is the project's OWN file, fetched from its own
+# repository, with its source recorded here.
+#
+# Same trademark reasoning as everything above: used to name the thing it refers
+# to, reproduced unmodified, no claim of endorsement. What differs is the
+# licence position - these are not CC0, they are the projects' own logos - and
+# naming a project with its logo is the use a trademark exists for.
+LOCAL = [
+    ("IconOpencloud", "opencloud", "OpenCloud",
+     "opencloud-eu/opencloud, services/web/assets/themes/opencloud/assets/logo-mobile.svg"),
+]
+
+
+def local(name: str, slug: str, note: str, source: str) -> str:
+    svg = io.open(Path(__file__).parent / "brand-paths" / (slug + ".svg"), encoding="utf-8").read()
+    box = re.search(r'viewBox="([^"]+)"', svg)
+    # Keep each path's own fill: a mark drawn in several tones is several tones,
+    # and flattening it to one would be redrawing somebody's logo.
+    shapes = re.findall(r'<path d="([^"]+)"[^>]*?fill="([^"]+)"', svg)
+    if not box or not shapes:
+        raise SystemExit("cannot read brand-paths/%s.svg" % slug)
+    body = chr(10).join('      <path fill="%s" d="%s" />' % (f, d) for d, f in shapes)
+    return f'''/** {note}. Source: {source} */
+export function {name}(props: SVGProps<SVGSVGElement>) {{
+  return (
+    <svg viewBox="{box.group(1)}" width="1em" height="1em" aria-hidden {{...props}}>
+{body}
+    </svg>
+  )
+}}
+'''
+
+
 if not SRC.is_dir():
     raise SystemExit("no such directory: %s\nInstall simple-icons and pass its icons path." % SRC)
 
-parts = [HEAD] + [one(*m) for m in MARKS]
+parts = [HEAD] + [one(*m) for m in MARKS] + [local(*m) for m in LOCAL]
 io.open(OUT, "w", encoding="utf-8", newline="\n").write("\n".join(parts))
-print("%s: %d marks" % (OUT.name, len(MARKS)))
+print("%s: %d marks (%d from Simple Icons, %d local)" % (OUT.name, len(MARKS) + len(LOCAL), len(MARKS), len(LOCAL)))

@@ -141,7 +141,6 @@ const lt: Translations = {
   'targets.addStorage': 'Pridėti saugyklą',
   'targets.remoteName': 'Pavadinimas',
   'targets.remoteNameHint': 'Pavadinimas, kuriuo užduotyje nurodysite šią paskirtį, rašomas pavadinimas:kelias. Be tarpų ir be dvitaškių.',
-  'targets.kind': 'Rūšis',
   'targets.check': 'Patikrinti',
   'targets.checking': 'Tikrinama',
   'targets.checkOk': 'Pasiekta',

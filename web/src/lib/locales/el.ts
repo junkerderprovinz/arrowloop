@@ -141,7 +141,6 @@ const el: Translations = {
   'targets.addStorage': 'Προσθήκη αποθήκευσης',
   'targets.remoteName': 'Όνομα',
   'targets.remoteNameHint': 'Το όνομα με το οποίο θα αναφέρεστε σε αυτόν τον προορισμό μέσα σε μια εργασία, γραμμένο όνομα:διαδρομή. Χωρίς κενά και χωρίς άνω κάτω τελείες.',
-  'targets.kind': 'Είδος',
   'targets.check': 'Έλεγχος',
   'targets.checking': 'Γίνεται έλεγχος',
   'targets.checkOk': 'Επιτεύχθηκε',

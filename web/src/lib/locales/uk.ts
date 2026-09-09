@@ -141,7 +141,6 @@ const uk: Translations = {
   'targets.addStorage': 'Додати сховище',
   'targets.remoteName': 'Назва',
   'targets.remoteNameHint': 'Назва, якою ви вказуватимете це призначення в завданні, у вигляді назва:шлях. Без пробілів і без двокрапок.',
-  'targets.kind': 'Тип',
   'targets.check': 'Перевірити',
   'targets.checking': 'Перевірка',
   'targets.checkOk': 'Доступно',

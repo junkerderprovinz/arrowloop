@@ -141,7 +141,6 @@ const ro: Translations = {
   'targets.addStorage': 'Adaugă stocare',
   'targets.remoteName': 'Nume',
   'targets.remoteNameHint': 'Numele cu care veți indica această destinație într-o sarcină, scris nume:cale. Fără spații și fără două puncte.',
-  'targets.kind': 'Tip',
   'targets.check': 'Verifică',
   'targets.checking': 'Se verifică',
   'targets.checkOk': 'Atinsă',

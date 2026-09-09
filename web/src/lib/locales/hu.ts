@@ -141,7 +141,6 @@ const hu: Translations = {
   'targets.addStorage': 'Tároló felvétele',
   'targets.remoteName': 'Név',
   'targets.remoteNameHint': 'Ezen a néven hivatkozik majd erre a célra egy feladatban, név:útvonal alakban. Szóköz és kettőspont nélkül.',
-  'targets.kind': 'Fajta',
   'targets.check': 'Ellenőrzés',
   'targets.checking': 'Ellenőrzés folyamatban',
   'targets.checkOk': 'Elérve',

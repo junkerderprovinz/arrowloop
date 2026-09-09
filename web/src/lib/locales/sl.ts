@@ -141,7 +141,6 @@ const sl: Translations = {
   'targets.addStorage': 'Dodaj shrambo',
   'targets.remoteName': 'Ime',
   'targets.remoteNameHint': 'Ime, s katerim boste ta cilj navajali v opravilu, zapisano ime:pot. Brez presledkov in brez dvopičij.',
-  'targets.kind': 'Vrsta',
   'targets.check': 'Preveri',
   'targets.checking': 'Preverjam',
   'targets.checkOk': 'Doseženo',

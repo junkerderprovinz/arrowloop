@@ -26,19 +26,28 @@ import {
   IconHadoop,
   IconInternetArchive,
   IconCloudinary,
+  IconOpencloud,
 } from './brandGlyphs'
+import {
+  IconFolder,
+  IconTargets,
+  IconLink,
+  IconHidden,
+} from './glyphs'
 
 /**
- * A provider's logo by the name the server sends, or undefined.
+ * A provider's mark by the name the server sends, or undefined.
+ *
+ * TWO sources on purpose. The brand marks are somebody else's drawings in
+ * somebody else's colours, and must not be redrawn to fit. The protocol marks
+ * are this app's own glyphs, because there is no company behind "SFTP" to have
+ * a logo - and a tile with an empty square beside its neighbours reads as a
+ * missing image rather than as "this one has no logo".
  *
  * A lookup rather than a switch, and the KEY is what the Go table wrote down:
- * `remotes.Provider.Mark`. So a provider gains a logo by one line in one Go
- * file, and a provider whose mark this build does not carry falls back to a
- * generic glyph instead of failing.
- *
- * Undefined is a real answer and a common one: several providers deliberately
- * have no mark, because the CC0 set carries none for them and a logo naming the
- * WRONG service is worse than none at all.
+ * `remotes.Provider.Mark`. So a provider gains a mark by one line in one Go
+ * file, and one whose mark this build does not carry falls back rather than
+ * failing.
  */
 const MARKS: Record<string, () => ReactNode> = {
   IconNextcloud: () => <IconNextcloud />,
@@ -66,6 +75,11 @@ const MARKS: Record<string, () => ReactNode> = {
   IconHadoop: () => <IconHadoop />,
   IconInternetArchive: () => <IconInternetArchive />,
   IconCloudinary: () => <IconCloudinary />,
+  IconOpencloud: () => <IconOpencloud />,
+  IconFolder: () => <IconFolder className="text-carbon-textSub" />,
+  IconTargets: () => <IconTargets className="text-carbon-textSub" />,
+  IconLink: () => <IconLink className="text-carbon-textSub" />,
+  IconHidden: () => <IconHidden className="text-carbon-textSub" />,
 }
 
 export function brandMark(name: string | undefined): ReactNode | undefined {

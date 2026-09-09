@@ -141,7 +141,6 @@ const pl: Translations = {
   'targets.addStorage': 'Dodaj magazyn',
   'targets.remoteName': 'Nazwa',
   'targets.remoteNameHint': 'Nazwa, którą będziesz wskazywać ten cel w zadaniu, zapisana jako nazwa:ścieżka. Bez spacji i bez dwukropków.',
-  'targets.kind': 'Rodzaj',
   'targets.check': 'Sprawdź',
   'targets.checking': 'Sprawdzanie',
   'targets.checkOk': 'Osiągnięto',

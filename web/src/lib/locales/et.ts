@@ -141,7 +141,6 @@ const et: Translations = {
   'targets.addStorage': 'Lisa salvestusruum',
   'targets.remoteName': 'Nimi',
   'targets.remoteNameHint': 'Nimi, millega sellele sihtkohale töös viitate, kujul nimi:tee. Ilma tühikute ja kooloniteta.',
-  'targets.kind': 'Liik',
   'targets.check': 'Kontrolli',
   'targets.checking': 'Kontrollin',
   'targets.checkOk': 'Jõudsin kohale',

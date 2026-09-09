@@ -1,6 +1,9 @@
 package remotes
 
-import "sort"
+import (
+	"sort"
+	"strings"
+)
 
 // A PROVIDER is what somebody is looking for; a BACKEND is what rclone speaks.
 //
@@ -81,10 +84,11 @@ var providers = []Provider{
 		Preset: map[string]string{"vendor": "owncloud"}, Mark: "IconOwncloud"},
 	{ID: "opencloud", Name: "OpenCloud", Backend: "webdav", Group: GroupCloud,
 		// The ownCloud vendor setting, because OpenCloud is its fork and speaks
-		// the same dialect. No mark: it is a different project, and wearing
-		// ownCloud's logo would say it is not.
+		// the same dialect. Its OWN mark, taken from its own repository - the
+		// CC0 set carries none, and it must never wear ownCloud's, which would
+		// name the wrong project.
 		Preset: map[string]string{"vendor": "owncloud"},
-		Hint:   "The ownCloud fork. Uses the same WebDAV dialect."},
+		Mark:   "IconOpencloud"},
 
 	// The big consumer services.
 	{ID: "dropbox", Name: "Dropbox", Backend: "dropbox", Group: GroupCloud, Mark: "IconDropbox"},
@@ -139,19 +143,19 @@ var providers = []Provider{
 
 	// Machines, shares and addresses.
 	{ID: "smb", Name: "SMB / Windows share", Backend: "smb", Group: GroupProtocol,
-		Hint: "A shared folder on a NAS or a Windows machine."},
+		Mark: "IconFolder", Hint: "A shared folder on a NAS or a Windows machine."},
 	{ID: "sftp", Name: "SFTP", Backend: "sftp", Group: GroupProtocol,
-		Hint: "A server reached over SSH."},
+		Mark: "IconTargets", Hint: "A server reached over SSH."},
 	{ID: "webdav", Name: "WebDAV", Backend: "webdav", Group: GroupProtocol,
-		Hint: "Any WebDAV server. Pick the product above if it has an entry."},
-	{ID: "ftp", Name: "FTP", Backend: "ftp", Group: GroupProtocol},
+		Mark: "IconLink", Hint: "Any WebDAV server. Pick the product above if it has an entry."},
+	{ID: "ftp", Name: "FTP", Backend: "ftp", Group: GroupProtocol, Mark: "IconTargets"},
 	{ID: "s3", Name: "S3 compatible", Backend: "s3", Group: GroupProtocol,
-		Hint: "Amazon S3 and the thirty-odd services that speak its protocol."},
+		Mark: "IconTargets", Hint: "Amazon S3 and the thirty-odd services that speak its protocol."},
 	{ID: "http", Name: "HTTP", Backend: "http", Group: GroupProtocol,
-		Hint: "Read-only, over a plain web server."},
+		Mark: "IconLink", Hint: "Read-only, over a plain web server."},
 	{ID: "hdfs", Name: "HDFS", Backend: "hdfs", Group: GroupProtocol, Mark: "IconHadoop"},
 	{ID: "crypt", Name: "Encrypted", Backend: "crypt", Group: GroupProtocol,
-		Hint: "Wraps another target and encrypts what goes into it."},
+		Mark: "IconHidden", Hint: "Wraps another target and encrypts what goes into it."},
 }
 
 // Providers lists what can be offered on this build, which is the ones whose
@@ -172,6 +176,20 @@ func Providers() []Provider {
 			out = append(out, p)
 		}
 	}
+	// Alphabetical, within each group. The table above is written in rough
+	// order of how often anybody reaches for one, and that order only helps
+	// somebody who already agrees with it: anybody looking for a particular
+	// name has to read the whole list to find out it is not near the top.
+	// A name is what somebody arrives with, so a name is what the order uses.
+	//
+	// Case-insensitive, because "ownCloud" and "OpenDrive" would otherwise sort
+	// by their capitals rather than by how they read.
+	sort.SliceStable(out, func(i, j int) bool {
+		if out[i].Group != out[j].Group {
+			return out[i].Group == GroupCloud
+		}
+		return strings.ToLower(out[i].Name) < strings.ToLower(out[j].Name)
+	})
 	return out
 }
 

@@ -141,7 +141,6 @@ const tr: Translations = {
   'targets.addStorage': 'Depolama ekle',
   'targets.remoteName': 'Ad',
   'targets.remoteNameHint': 'Bu hedefi bir işte ad:yol biçiminde çağıracağın ad. Boşluk ve iki nokta üst üste olmasın.',
-  'targets.kind': 'Tür',
   'targets.check': 'Denetle',
   'targets.checking': 'Denetleniyor',
   'targets.checkOk': 'Ulaşıldı',

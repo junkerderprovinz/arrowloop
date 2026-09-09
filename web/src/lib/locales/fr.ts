@@ -141,7 +141,6 @@ const fr: Translations = {
   'targets.addStorage': 'Ajouter un stockage',
   'targets.remoteName': 'Nom',
   'targets.remoteNameHint': 'Le nom sous lequel vous désignerez cette cible dans une tâche, écrit nom:chemin. Pas d\'espaces, pas de deux-points.',
-  'targets.kind': 'Type',
   'targets.check': 'Vérifier',
   'targets.checking': 'Vérification',
   'targets.checkOk': 'Atteinte',

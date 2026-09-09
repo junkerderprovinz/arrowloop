@@ -141,7 +141,6 @@ const sr: Translations = {
   'targets.addStorage': 'Додај складиште',
   'targets.remoteName': 'Назив',
   'targets.remoteNameHint': 'Назив којим ћете ово одредиште наводити у послу, записан назив:путања. Без размака и без двотачака.',
-  'targets.kind': 'Врста',
   'targets.check': 'Провери',
   'targets.checking': 'Проверава се',
   'targets.checkOk': 'Досегнуто',

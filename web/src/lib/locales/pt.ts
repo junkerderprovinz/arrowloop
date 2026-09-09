@@ -141,7 +141,6 @@ const pt: Translations = {
   'targets.addStorage': 'Adicionar armazenamento',
   'targets.remoteName': 'Nome',
   'targets.remoteNameHint': 'O nome pelo qual vai referir este destino numa tarefa, escrito nome:caminho. Sem espaços e sem dois pontos.',
-  'targets.kind': 'Tipo',
   'targets.check': 'Verificar',
   'targets.checking': 'A verificar',
   'targets.checkOk': 'Alcançado',

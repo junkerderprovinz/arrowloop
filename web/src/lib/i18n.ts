@@ -325,7 +325,6 @@ export const en = {
   'targets.remoteName': 'Name',
   'targets.remoteNameHint':
     'How you will refer to this target in a job, written as name:path. No spaces, no colons.',
-  'targets.kind': 'Kind',
   'targets.check': 'Check',
   'targets.checking': 'Checking',
   'targets.checkOk': 'Reached it',
@@ -789,7 +788,6 @@ export const de: Translations = {
   'targets.remoteName': 'Name',
   'targets.remoteNameHint':
     'Unter diesem Namen sprichst du das Ziel in einem Auftrag an, geschrieben als Name:Pfad. Keine Leerzeichen, keine Doppelpunkte.',
-  'targets.kind': 'Art',
   'targets.check': 'Prüfen',
   'targets.checking': 'Prüft',
   'targets.checkOk': 'Erreicht',

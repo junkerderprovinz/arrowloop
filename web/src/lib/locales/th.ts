@@ -141,7 +141,6 @@ const th: Translations = {
   'targets.addStorage': 'เพิ่มที่เก็บข้อมูล',
   'targets.remoteName': 'ชื่อ',
   'targets.remoteNameHint': 'ชื่อที่คุณจะใช้อ้างถึงปลายทางนี้ในงาน เขียนเป็น ชื่อ:เส้นทาง ห้ามมีช่องว่างและทวิภาค',
-  'targets.kind': 'ชนิด',
   'targets.check': 'ตรวจ',
   'targets.checking': 'กำลังตรวจ',
   'targets.checkOk': 'ถึงแล้ว',

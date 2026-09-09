@@ -141,7 +141,6 @@ const sv: Translations = {
   'targets.addStorage': 'Lägg till lagring',
   'targets.remoteName': 'Namn',
   'targets.remoteNameHint': 'Namnet du kommer att peka ut det här målet med i ett jobb, skrivet namn:sökväg. Inga mellanslag, inga kolon.',
-  'targets.kind': 'Typ',
   'targets.check': 'Kontrollera',
   'targets.checking': 'Kontrollerar',
   'targets.checkOk': 'Nåddes',

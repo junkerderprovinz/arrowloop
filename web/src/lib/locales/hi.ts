@@ -141,7 +141,6 @@ const hi: Translations = {
   'targets.addStorage': 'भंडारण जोड़ें',
   'targets.remoteName': 'नाम',
   'targets.remoteNameHint': 'किसी काम में इस गंतव्य को जिस नाम से बताएँगे, नाम:पथ के रूप में। बिना रिक्त स्थान और बिना कोलन।',
-  'targets.kind': 'प्रकार',
   'targets.check': 'जाँचें',
   'targets.checking': 'जाँचा जा रहा है',
   'targets.checkOk': 'पहुँच गए',

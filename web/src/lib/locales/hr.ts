@@ -141,7 +141,6 @@ const hr: Translations = {
   'targets.addStorage': 'Dodaj pohranu',
   'targets.remoteName': 'Naziv',
   'targets.remoteNameHint': 'Naziv kojim ćete ovo odredište navoditi u zadatku, zapisan naziv:putanja. Bez razmaka i bez dvotočaka.',
-  'targets.kind': 'Vrsta',
   'targets.check': 'Provjeri',
   'targets.checking': 'Provjerava se',
   'targets.checkOk': 'Dosegnuto',

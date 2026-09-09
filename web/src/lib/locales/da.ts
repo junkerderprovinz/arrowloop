@@ -141,7 +141,6 @@ const da: Translations = {
   'targets.addStorage': 'Tilføj lager',
   'targets.remoteName': 'Navn',
   'targets.remoteNameHint': 'Navnet du vil pege på dette mål med i et job, skrevet navn:sti. Ingen mellemrum, ingen koloner.',
-  'targets.kind': 'Type',
   'targets.check': 'Tjek',
   'targets.checking': 'Tjekker',
   'targets.checkOk': 'Nået',

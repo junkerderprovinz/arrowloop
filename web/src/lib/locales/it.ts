@@ -141,7 +141,6 @@ const it: Translations = {
   'targets.addStorage': 'Aggiungi archiviazione',
   'targets.remoteName': 'Nome',
   'targets.remoteNameHint': 'Il nome con cui indicherai questa destinazione in un lavoro, scritto nome:percorso. Niente spazi, niente due punti.',
-  'targets.kind': 'Tipo',
   'targets.check': 'Verifica',
   'targets.checking': 'Verifica in corso',
   'targets.checkOk': 'Raggiunta',
