@@ -137,7 +137,7 @@ const lv: Translations = {
   'edit.newJob': 'jauns-uzdevums',
   'edit.pickDrive': 'Reģistrēts disks',
   'edit.pickRemote': 'Iestatīts galamērķis',
-  'targets.storage': 'Krātuve',
+  'targets.storage': 'Mākonis un savienojumi',
   'targets.storageEmpty': 'Vēl nav krātuves galamērķu. Pievienojiet vienu, lai sasniegtu S3 spaini, SSH datoru vai Windows koplietojumu.',
   'targets.addStorage': 'Pievienot krātuvi',
   'targets.remoteName': 'Nosaukums',
@@ -164,8 +164,6 @@ const lv: Translations = {
   'targets.driveMount': 'Kur tas ir tagad',
   'targets.attached': 'pievienots',
   'targets.absent': 'nav pievienots',
-  'targets.forget': 'Aizmirst',
-  'targets.forgetHint': 'Noņem piezīmi, ka šis disks jebkad bijis šeit. Atzīme uz diska paliek, tāpēc atkārtota pievienošana to uzreiz atgriež.',
   'targets.lastSeen': 'Pēdējoreiz redzēts',
   'targets.noCandidates': 'Nav ko reģistrēt. Pievienojiet disku vai piemontējiet koplietojumu un paskatieties vēlreiz.',
   'targets.copyPath': 'Kopēt ceļu uzdevumam',
@@ -390,6 +388,10 @@ const lv: Translations = {
   'trash.holding': '{count} atkritnē, {size}',
   'targets.tokenNeeded': '{backend} izmanto pieteikšanās pilnvaru, kas jāiegūst citur.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
+  'targets.deleteDrive': 'Dzēst',
+  'targets.deleteDriveHint': 'Noņem šo disku no saraksta UN dzēš identitātes datni no paša diska. Darbs, kas uz to norāda, to vairs neatradīs. Datnes diskā paliek neskartas.',
+  'confirm.deleteDrive': 'Dzēst šo disku?',
+  'confirm.deleteDriveStakes': '{name} vairs nebūs reģistrēts disks. Jebkurš darbs, kas uz to norāda, ziņos, ka tas nav pievienots, līdz reģistrēsi to no jauna. Diskā nekas netiek dzēsts.',
 }
 
 export default lv

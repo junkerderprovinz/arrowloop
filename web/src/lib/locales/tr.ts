@@ -137,7 +137,7 @@ const tr: Translations = {
   'edit.newJob': 'yeni-is',
   'edit.pickDrive': 'Kaydedilmiş bir disk',
   'edit.pickRemote': 'Kurulmuş bir hedef',
-  'targets.storage': 'Depolama',
+  'targets.storage': 'Bulut ve bağlantılar',
   'targets.storageEmpty': 'Henüz depolama hedefi yok. Bir S3 kovasına, bir SSH makinesine ya da bir Windows paylaşımına ulaşmak için bir tane ekle.',
   'targets.addStorage': 'Depolama ekle',
   'targets.remoteName': 'Ad',
@@ -164,8 +164,6 @@ const tr: Translations = {
   'targets.driveMount': 'Şu anda nerede',
   'targets.attached': 'bağlı',
   'targets.absent': 'bağlı değil',
-  'targets.forget': 'Unut',
-  'targets.forgetHint': 'Bu diskin buradan geçtiğine dair notu kaldırır. Diskin üzerindeki işaret olduğu gibi kalır, yani yeniden takmak onu hemen geri getirir.',
   'targets.lastSeen': 'En son görülme',
   'targets.noCandidates': 'Kaydedilecek bir şey yok. Bir disk tak ya da bir paylaşım bağla, sonra yeniden bak.',
   'targets.copyPath': 'İş yolunu kopyala',
@@ -390,6 +388,10 @@ const tr: Translations = {
   'trash.holding': '{count} çöp kutusunda, {size}',
   'targets.tokenNeeded': '{backend} bir oturum belirteciyle kullanılır; belirteç başka yerde alınmalıdır.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
+  'targets.deleteDrive': 'Sil',
+  'targets.deleteDriveHint': 'Bu sürücüyü listeden çıkarır VE kimlik dosyasını sürücünün kendisinden kaldırır. Onu gösteren bir iş artık bulamaz. Sürücüdeki dosyalara dokunulmaz.',
+  'confirm.deleteDrive': 'Bu sürücü silinsin mi?',
+  'confirm.deleteDriveStakes': '{name} artık kayıtlı bir sürücü olmayacak. Onu gösteren her iş, yeniden kaydedene kadar bağlı değil diye bildirir. Sürücüde hiçbir şey silinmez.',
 }
 
 export default tr

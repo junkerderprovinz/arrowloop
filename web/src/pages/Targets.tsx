@@ -7,7 +7,7 @@ import { Card } from '../lib/glimstone/Card'
 import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
 import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
-import { IconCheck, IconCopy, IconDelete, IconEdit, IconForget } from '../components/glyphs'
+import { IconCheck, IconCopy, IconDelete, IconEdit } from '../components/glyphs'
 import { Choice, Field, Secret, Text } from '../components/Field'
 import { ToggleRow } from '../components/ToggleRow'
 import { api, type Backend, type Remote, type Volume } from '../lib/api'
@@ -467,6 +467,9 @@ function DriveRow({
 }) {
   const { t } = useT()
   const [copied, setCopied] = useState(false)
+  // Asked before, because this reaches onto the disk: the identity file is
+  // removed from the volume itself, not merely from a list here.
+  const [confirming, setConfirming] = useState(false)
 
   return (
     <div className="group flex flex-wrap items-center gap-x-3 gap-y-2 py-3">
@@ -505,22 +508,40 @@ function DriveRow({
         >
           <IconCopy />
         </IconAction>
-        <RowActions>
-          {/* Same as the check button above: the sentence rides on the button
-              rather than standing beside it as a lone (i) among icons. */}
-          <IconAction
-            title={t('targets.forget')}
-            labelKey="targets.forget"
-            hint={t('targets.forgetHint')}
-            hueIndex={row + 2}
-            onClick={() => {
-              void api.forgetVolume(volume.id).then(onChanged)
-            }}
-          >
-            <IconForget />
-          </IconAction>
-        </RowActions>
+        {/* NOT inside RowActions, which reveals on hover. A drive's one
+            destructive action was reachable only by finding it with the
+            pointer, and it is the thing somebody comes to this row to do.
+            jdp: "der vergessen button wird nur bei mouseover angezeigt."
+
+            And it says DELETE now. It used to say "forget", which described
+            the old behaviour honestly - the register entry went and the marker
+            stayed - and that behaviour was the bug: the drive came straight
+            back. Now it removes both, so the word that fits is the plain one. */}
+        <IconAction
+          title={t('targets.deleteDrive')}
+          labelKey="targets.deleteDrive"
+          hint={t('targets.deleteDriveHint')}
+          hueIndex={row + 2}
+          onClick={() => setConfirming(true)}
+        >
+          <IconDelete />
+        </IconAction>
       </div>
+
+      {confirming && (
+        <ConfirmDialog
+          title={t('confirm.deleteDrive')}
+          message={t('confirm.deleteDriveStakes', { name: volume.label })}
+          confirmLabel={t('confirm.delete')}
+          confirmGlyph={<IconDelete />}
+          cancelLabel={t('confirm.cancel')}
+          onCancel={() => setConfirming(false)}
+          onConfirm={() => {
+            setConfirming(false)
+            void api.forgetVolume(volume.id).then(onChanged)
+          }}
+        />
+      )}
     </div>
   )
 }
@@ -589,9 +610,9 @@ function DriveForm({ onDone }: { onDone: (saved: boolean) => void }) {
 
       {error && <p className="text-xs text-statusFail">{error}</p>}
 
-      <div className="flex items-center gap-2">
-        <Button label={t('targets.save')} labelKey="targets.save" tone="accent" onClick={() => void save()} disabled={busy || !mount} />
+      <div className="flex items-center justify-end gap-2">
         <Button label={t('targets.cancel')} labelKey="targets.cancel" onClick={() => onDone(false)} />
+        <Button label={t('targets.save')} labelKey="targets.save" tone="accent" onClick={() => void save()} disabled={busy || !mount} />
       </div>
     </div>
   )

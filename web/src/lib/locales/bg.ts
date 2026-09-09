@@ -137,7 +137,7 @@ const bg: Translations = {
   'edit.newJob': 'nova-zadacha',
   'edit.pickDrive': 'Регистриран диск',
   'edit.pickRemote': 'Настроена цел',
-  'targets.storage': 'Хранилище',
+  'targets.storage': 'Облак и връзки',
   'targets.storageEmpty': 'Още няма цели за съхранение. Добавете една, за да стигнете до кофа S3, до машина по SSH или до споделена папка на Windows.',
   'targets.addStorage': 'Добавяне на хранилище',
   'targets.remoteName': 'Име',
@@ -164,8 +164,6 @@ const bg: Translations = {
   'targets.driveMount': 'Къде е сега',
   'targets.attached': 'свързан',
   'targets.absent': 'не е свързан',
-  'targets.forget': 'Забрави',
-  'targets.forgetHint': 'Премахва бележката, че този диск изобщо е бил тук. Белегът върху диска остава, така че повторното свързване веднага го връща.',
   'targets.lastSeen': 'Последно видян',
   'targets.noCandidates': 'Няма какво да се регистрира. Свържете диск или монтирайте споделена папка и погледнете отново.',
   'targets.copyPath': 'Копиране на пътя за задачата',
@@ -390,6 +388,10 @@ const bg: Translations = {
   'trash.holding': '{count} в кошчето, {size}',
   'targets.tokenNeeded': '{backend} работи с токен за вход, който трябва да се вземе другаде.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
+  'targets.deleteDrive': 'Изтриване',
+  'targets.deleteDriveHint': 'Премахва този диск от списъка И изтрива файла с идентичност от самия диск. Задача, която сочи към него, спира да го намира. Файловете на диска остават непокътнати.',
+  'confirm.deleteDrive': 'Да се изтрие ли този диск?',
+  'confirm.deleteDriveStakes': '{name} спира да бъде регистриран диск. Всяка задача, която сочи към него, ще го отчита като невключен, докато не го регистрираш отново. На диска не се изтрива нищо.',
 }
 
 export default bg

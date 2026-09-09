@@ -137,7 +137,7 @@ const sv: Translations = {
   'edit.newJob': 'nytt-jobb',
   'edit.pickDrive': 'En anmäld disk',
   'edit.pickRemote': 'Ett inställt mål',
-  'targets.storage': 'Lagring',
+  'targets.storage': 'Moln och anslutningar',
   'targets.storageEmpty': 'Inga lagringsmål än. Lägg till ett för att nå en S3-bucket, en SSH-värd eller en Windows-utdelning.',
   'targets.addStorage': 'Lägg till lagring',
   'targets.remoteName': 'Namn',
@@ -164,8 +164,6 @@ const sv: Translations = {
   'targets.driveMount': 'Var den är nu',
   'targets.attached': 'ansluten',
   'targets.absent': 'inte ansluten',
-  'targets.forget': 'Glöm',
-  'targets.forgetHint': 'Tar bort noteringen om att den här disken någonsin var här. Markeringen på disken lämnas kvar, så att ansluta den igen tar tillbaka den direkt.',
   'targets.lastSeen': 'Senast sedd',
   'targets.noCandidates': 'Ingenting att anmäla. Anslut en disk eller montera en utdelning och titta igen.',
   'targets.copyPath': 'Kopiera jobbsökvägen',
@@ -390,6 +388,10 @@ const sv: Translations = {
   'trash.holding': '{count} i papperskorgen, {size}',
   'targets.tokenNeeded': '{backend} används med en inloggningstoken som måste hämtas någon annanstans.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
+  'targets.deleteDrive': 'Ta bort',
+  'targets.deleteDriveHint': 'Tar bort den här enheten från listan OCH tar bort identitetsfilen från enheten själv. Ett jobb som pekar på den hittar den inte längre. Filerna på enheten lämnas orörda.',
+  'confirm.deleteDrive': 'Ta bort den här enheten?',
+  'confirm.deleteDriveStakes': '{name} är inte längre en registrerad enhet. Alla jobb som pekar på den rapporterar den som inte ansluten tills du registrerar den igen. Inget raderas på enheten.',
 }
 
 export default sv

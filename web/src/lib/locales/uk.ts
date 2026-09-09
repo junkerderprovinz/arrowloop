@@ -137,7 +137,7 @@ const uk: Translations = {
   'edit.newJob': 'нове-завдання',
   'edit.pickDrive': 'Зареєстрований диск',
   'edit.pickRemote': 'Налаштоване призначення',
-  'targets.storage': 'Сховище',
+  'targets.storage': 'Хмара та підключення',
   'targets.storageEmpty': 'Сховищ ще немає. Додайте одне, щоб дістатися до кошика S3, вузла SSH або спільної теки Windows.',
   'targets.addStorage': 'Додати сховище',
   'targets.remoteName': 'Назва',
@@ -164,8 +164,6 @@ const uk: Translations = {
   'targets.driveMount': 'Де він зараз',
   'targets.attached': 'під\'єднано',
   'targets.absent': 'не під\'єднано',
-  'targets.forget': 'Забути',
-  'targets.forgetHint': 'Прибирає позначку про те, що цей диск тут колись був. Позначка на самому диску лишається, тож повторне під\'єднання одразу його повертає.',
   'targets.lastSeen': 'Востаннє бачено',
   'targets.noCandidates': 'Реєструвати нічого. Під\'єднайте диск або змонтуйте спільну теку і подивіться знову.',
   'targets.copyPath': 'Скопіювати шлях для завдання',
@@ -390,6 +388,10 @@ const uk: Translations = {
   'trash.holding': '{count} у кошику, {size}',
   'targets.tokenNeeded': '{backend} працює з токеном входу, який потрібно отримати в іншому місці.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
+  'targets.deleteDrive': 'Видалити',
+  'targets.deleteDriveHint': 'Прибирає цей диск зі списку І видаляє файл ідентифікації з самого диска. Завдання, що вказує на нього, перестане його знаходити. Файли на диску залишаються недоторканими.',
+  'confirm.deleteDrive': 'Видалити цей диск?',
+  'confirm.deleteDriveStakes': '{name} перестане бути зареєстрованим диском. Будь-яке завдання, що вказує на нього, повідомить, що він не під\'єднаний, доки ти не зареєструєш його знову. На диску нічого не видаляється.',
 }
 
 export default uk

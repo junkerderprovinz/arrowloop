@@ -137,7 +137,7 @@ const he: Translations = {
   'edit.newJob': 'mesima-hadasha',
   'edit.pickDrive': 'כונן רשום',
   'edit.pickRemote': 'יעד מוגדר',
-  'targets.storage': 'אחסון',
+  'targets.storage': 'ענן וחיבורים',
   'targets.storageEmpty': 'אין עדיין יעדי אחסון. הוסף אחד כדי להגיע לדלי S3, למארח SSH או לשיתוף Windows.',
   'targets.addStorage': 'הוספת אחסון',
   'targets.remoteName': 'שם',
@@ -164,8 +164,6 @@ const he: Translations = {
   'targets.driveMount': 'היכן הוא עכשיו',
   'targets.attached': 'מחובר',
   'targets.absent': 'לא מחובר',
-  'targets.forget': 'שכח',
-  'targets.forgetHint': 'מסיר את הרישום שהדיסק הזה היה כאן אי פעם. הסימן על הדיסק נשאר, כך שחיבור מחדש מחזיר אותו מיד.',
   'targets.lastSeen': 'נראה לאחרונה',
   'targets.noCandidates': 'אין מה לרשום. חבר כונן או עגן שיתוף, ואז הסתכל שוב.',
   'targets.copyPath': 'העתקת הנתיב למשימה',
@@ -390,6 +388,10 @@ const he: Translations = {
   'trash.holding': '{count} בסל, {size}',
   'targets.tokenNeeded': '{backend} עובד עם אסימון התחברות שיש להשיג במקום אחר.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
+  'targets.deleteDrive': 'מחיקה',
+  'targets.deleteDriveHint': 'מסיר את הכונן הזה מהרשימה וגם מוחק את קובץ הזהות מהכונן עצמו. משימה שמצביעה עליו לא תמצא אותו יותר. הקבצים על הכונן נשארים כמו שהם.',
+  'confirm.deleteDrive': 'למחוק את הכונן הזה?',
+  'confirm.deleteDriveStakes': '{name} יפסיק להיות כונן רשום. כל משימה שמצביעה עליו תדווח שהוא לא מחובר עד שתרשום אותו מחדש. על הכונן עצמו לא נמחק דבר.',
 }
 
 export default he

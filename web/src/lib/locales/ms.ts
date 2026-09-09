@@ -137,7 +137,7 @@ const ms: Translations = {
   'edit.newJob': 'tugasan-baharu',
   'edit.pickDrive': 'Cakera yang didaftarkan',
   'edit.pickRemote': 'Destinasi yang disediakan',
-  'targets.storage': 'Simpanan',
+  'targets.storage': 'Awan dan sambungan',
   'targets.storageEmpty': 'Belum ada destinasi simpanan. Tambah satu untuk sampai ke baldi S3, mesin SSH atau perkongsian Windows.',
   'targets.addStorage': 'Tambah simpanan',
   'targets.remoteName': 'Nama',
@@ -164,8 +164,6 @@ const ms: Translations = {
   'targets.driveMount': 'Di mana ia sekarang',
   'targets.attached': 'dipasang',
   'targets.absent': 'tidak dipasang',
-  'targets.forget': 'Lupakan',
-  'targets.forgetHint': 'Membuang catatan bahawa cakera ini pernah berada di sini. Tanda pada cakera dibiarkan, jadi memasangnya semula terus mengembalikannya.',
   'targets.lastSeen': 'Kali terakhir dilihat',
   'targets.noCandidates': 'Tiada apa untuk didaftarkan. Pasang satu cakera atau lekapkan satu perkongsian, kemudian lihat semula.',
   'targets.copyPath': 'Salin laluan untuk tugasan',
@@ -390,6 +388,10 @@ const ms: Translations = {
   'trash.holding': '{count} dalam tong sampah, {size}',
   'targets.tokenNeeded': '{backend} digunakan dengan token log masuk, yang perlu diperoleh di tempat lain.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
+  'targets.deleteDrive': 'Padam',
+  'targets.deleteDriveHint': 'Mengeluarkan pemacu ini daripada senarai DAN membuang fail identiti daripada pemacu itu sendiri. Tugas yang menunjuk kepadanya tidak akan menemuinya lagi. Fail pada pemacu tidak disentuh.',
+  'confirm.deleteDrive': 'Padam pemacu ini?',
+  'confirm.deleteDriveStakes': '{name} tidak lagi menjadi pemacu berdaftar. Setiap tugas yang menunjuk kepadanya akan melaporkannya sebagai tidak dipasang sehingga anda mendaftarkannya semula. Tiada apa-apa dipadam pada pemacu.',
 }
 
 export default ms

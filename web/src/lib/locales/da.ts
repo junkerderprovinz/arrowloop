@@ -137,7 +137,7 @@ const da: Translations = {
   'edit.newJob': 'nyt-job',
   'edit.pickDrive': 'En anmeldt disk',
   'edit.pickRemote': 'Et opsat mål',
-  'targets.storage': 'Lager',
+  'targets.storage': 'Sky og forbindelser',
   'targets.storageEmpty': 'Endnu ingen lagermål. Tilføj et for at nå en S3-bucket, en SSH-vært eller en Windows-deling.',
   'targets.addStorage': 'Tilføj lager',
   'targets.remoteName': 'Navn',
@@ -164,8 +164,6 @@ const da: Translations = {
   'targets.driveMount': 'Hvor den er nu',
   'targets.attached': 'tilsluttet',
   'targets.absent': 'ikke tilsluttet',
-  'targets.forget': 'Glem',
-  'targets.forgetHint': 'Fjerner noten om, at denne disk nogensinde var her. Markeringen på disken bliver stående, så at tilslutte den igen henter den straks tilbage.',
   'targets.lastSeen': 'Sidst set',
   'targets.noCandidates': 'Intet at anmelde. Tilslut en disk eller monter en deling, og se så igen.',
   'targets.copyPath': 'Kopier jobstien',
@@ -390,6 +388,10 @@ const da: Translations = {
   'trash.holding': '{count} i papirkurven, {size}',
   'targets.tokenNeeded': '{backend} bruges med en loginnøgle, der skal hentes et andet sted.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
+  'targets.deleteDrive': 'Slet',
+  'targets.deleteDriveHint': 'Fjerner dette drev fra listen OG tager identitetsfilen af drevet selv. Et job, der peger på det, finder det ikke længere. Filerne på drevet røres ikke.',
+  'confirm.deleteDrive': 'Slet dette drev?',
+  'confirm.deleteDriveStakes': '{name} er ikke længere et registreret drev. Ethvert job, der peger på det, melder det som ikke tilsluttet, indtil du registrerer det igen. Der slettes intet på drevet.',
 }
 
 export default da

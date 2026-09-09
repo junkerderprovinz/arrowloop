@@ -137,7 +137,7 @@ const id: Translations = {
   'edit.newJob': 'tugas-baru',
   'edit.pickDrive': 'Cakram yang terdaftar',
   'edit.pickRemote': 'Tujuan yang sudah disiapkan',
-  'targets.storage': 'Penyimpanan',
+  'targets.storage': 'Cloud dan koneksi',
   'targets.storageEmpty': 'Belum ada tujuan penyimpanan. Tambahkan satu untuk mencapai ember S3, mesin SSH atau berbagi Windows.',
   'targets.addStorage': 'Tambah penyimpanan',
   'targets.remoteName': 'Nama',
@@ -164,8 +164,6 @@ const id: Translations = {
   'targets.driveMount': 'Di mana sekarang',
   'targets.attached': 'terpasang',
   'targets.absent': 'tidak terpasang',
-  'targets.forget': 'Lupakan',
-  'targets.forgetHint': 'Menghapus catatan bahwa cakram ini pernah ada di sini. Tanda pada cakramnya dibiarkan, jadi memasangnya kembali langsung mengembalikannya.',
   'targets.lastSeen': 'Terakhir terlihat',
   'targets.noCandidates': 'Tidak ada yang bisa didaftarkan. Pasang sebuah cakram atau kaitkan sebuah berbagi, lalu lihat lagi.',
   'targets.copyPath': 'Salin jalur untuk tugas',
@@ -390,6 +388,10 @@ const id: Translations = {
   'trash.holding': '{count} di tempat sampah, {size}',
   'targets.tokenNeeded': '{backend} dipakai dengan token masuk, yang harus diambil di tempat lain.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
+  'targets.deleteDrive': 'Hapus',
+  'targets.deleteDriveHint': 'Mengeluarkan drive ini dari daftar DAN menghapus berkas identitas dari drive itu sendiri. Tugas yang menunjuk ke sana tidak akan menemukannya lagi. Berkas di drive tidak disentuh.',
+  'confirm.deleteDrive': 'Hapus drive ini?',
+  'confirm.deleteDriveStakes': '{name} tidak lagi menjadi drive terdaftar. Setiap tugas yang menunjuk ke sana akan melaporkannya sebagai tidak terpasang sampai kamu mendaftarkannya lagi. Tidak ada yang dihapus di drive.',
 }
 
 export default id

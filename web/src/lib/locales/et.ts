@@ -137,7 +137,7 @@ const et: Translations = {
   'edit.newJob': 'uus-too',
   'edit.pickDrive': 'Registreeritud ketas',
   'edit.pickRemote': 'Seadistatud sihtkoht',
-  'targets.storage': 'Salvestusruum',
+  'targets.storage': 'Pilv ja ühendused',
   'targets.storageEmpty': 'Salvestuse sihtkohti pole veel. Lisage üks, et jõuda S3 ämbrini, SSH masinani või Windowsi jagatud kaustani.',
   'targets.addStorage': 'Lisa salvestusruum',
   'targets.remoteName': 'Nimi',
@@ -164,8 +164,6 @@ const et: Translations = {
   'targets.driveMount': 'Kus see praegu on',
   'targets.attached': 'ühendatud',
   'targets.absent': 'pole ühendatud',
-  'targets.forget': 'Unusta',
-  'targets.forgetHint': 'Eemaldab märkme, et see ketas siin kunagi oli. Märgis kettal jääb alles, nii et uuesti ühendamine toob selle kohe tagasi.',
   'targets.lastSeen': 'Viimati nähtud',
   'targets.noCandidates': 'Registreerida pole midagi. Ühendage ketas või haakige jagatud kaust ja vaadake uuesti.',
   'targets.copyPath': 'Kopeeri töö tee',
@@ -390,6 +388,10 @@ const et: Translations = {
   'trash.holding': '{count} prügikastis, {size}',
   'targets.tokenNeeded': '{backend} kasutab sisselogimisluba, mis tuleb hankida mujalt.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
+  'targets.deleteDrive': 'Kustuta',
+  'targets.deleteDriveHint': 'Eemaldab selle ketta loendist JA võtab tuvastusfaili kettalt endalt. Sellele osutav töö ei leia seda enam. Ketta failid jäävad puutumata.',
+  'confirm.deleteDrive': 'Kas kustutada see ketas?',
+  'confirm.deleteDriveStakes': '{name} ei ole enam registreeritud ketas. Iga sellele osutav töö teatab, et see pole ühendatud, kuni registreerid selle uuesti. Kettal ei kustutata midagi.',
 }
 
 export default et

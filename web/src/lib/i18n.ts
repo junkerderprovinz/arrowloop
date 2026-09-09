@@ -320,7 +320,7 @@ export const en = {
   'edit.newJob': 'new-job',
   'edit.pickDrive': 'A registered drive',
   'edit.pickRemote': 'A configured target',
-  'targets.storage': 'Storage',
+  'targets.storage': 'Cloud & connections',
   'targets.storageEmpty': 'No storage targets yet. Add one to reach an S3 bucket, an SSH host or a Windows share.',
   'targets.addStorage': 'Add storage',
   'targets.remoteName': 'Name',
@@ -372,9 +372,6 @@ export const en = {
   'targets.driveMount': 'Where it is now',
   'targets.attached': 'attached',
   'targets.absent': 'not attached',
-  'targets.forget': 'Forget',
-  'targets.forgetHint':
-    'Removes the note that this drive was ever here. The marker on the drive is left alone, so plugging it in again brings it straight back.',
   'targets.lastSeen': 'Last seen',
   'targets.noCandidates': 'Nothing to register. Plug a drive in or mount a share, then look again.',
   'targets.copyPath': 'Copy the job path',
@@ -483,6 +480,10 @@ export const en = {
   'trash.holding': '{count} in the bin, {size}',
   'targets.tokenNeeded': '{backend} is reached with a sign-in token, which has to be fetched elsewhere.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field. The token is what authorises the connection: the client id and secret below it are optional and only matter if you registered your own application with the provider.',
+  'targets.deleteDrive': 'Delete',
+  'targets.deleteDriveHint': 'Removes this drive from the list AND takes the identity file off the drive itself. A job pointing at it stops finding it. The files on the drive are untouched.',
+  'confirm.deleteDrive': 'Delete this drive?',
+  'confirm.deleteDriveStakes': '{name} stops being a registered drive. Any job pointing at it will report that it is not attached until you register it again. Nothing on the drive is deleted.',
 } as const
 
 export type TranslationKey = keyof typeof en
@@ -755,7 +756,7 @@ export const de: Translations = {
   'edit.newJob': 'neuer-auftrag',
   'edit.pickDrive': 'Ein angemeldeter Datenträger',
   'edit.pickRemote': 'Ein eingerichtetes Ziel',
-  'targets.storage': 'Speicher',
+  'targets.storage': 'Cloud & Verbindungen',
   'targets.storageEmpty':
     'Noch kein Speicherziel. Lege eines an, um einen S3-Eimer, einen SSH-Rechner oder eine Windows-Freigabe zu erreichen.',
   'targets.addStorage': 'Speicher anlegen',
@@ -808,9 +809,6 @@ export const de: Translations = {
   'targets.driveMount': 'Wo er gerade liegt',
   'targets.attached': 'angeschlossen',
   'targets.absent': 'nicht angeschlossen',
-  'targets.forget': 'Vergessen',
-  'targets.forgetHint':
-    'Entfernt den Vermerk, dass dieser Datenträger je hier war. Die Markierung auf dem Datenträger bleibt, ein erneutes Anstecken bringt ihn also sofort zurück.',
   'targets.lastSeen': 'Zuletzt gesehen',
   'targets.noCandidates':
     'Nichts zum Anmelden. Steck einen Datenträger an oder binde eine Freigabe ein, dann schau noch einmal.',
@@ -914,6 +912,10 @@ export const de: Translations = {
   'trash.holding': '{count} im Papierkorb, {size}',
   'targets.tokenNeeded': '{backend} wird über ein Anmelde-Token erreicht, das anderswo geholt werden muss.',
   'targets.tokenHowTo': 'Führe `rclone authorize "{backend}"` auf einem Rechner mit Browser aus. Es öffnet die Anmeldeseite des Anbieters und gibt am Ende ein Token aus. Diese ganze Zeile kommt in das Token-Feld. Das Token ist es, was die Verbindung berechtigt: die Client-ID und das Geheimnis darunter sind freiwillig und zählen nur, wenn du beim Anbieter eine eigene Anwendung registriert hast.',
+  'targets.deleteDrive': 'Löschen',
+  'targets.deleteDriveHint': 'Entfernt diesen Datenträger aus der Liste UND nimmt die Kennungsdatei vom Datenträger selbst. Ein Auftrag, der darauf zeigt, findet ihn nicht mehr. Die Dateien auf dem Datenträger bleiben unangetastet.',
+  'confirm.deleteDrive': 'Diesen Datenträger löschen?',
+  'confirm.deleteDriveStakes': '{name} ist danach kein angemeldeter Datenträger mehr. Jeder Auftrag, der darauf zeigt, meldet ihn als nicht angeschlossen, bis du ihn erneut anmeldest. Auf dem Datenträger selbst wird nichts gelöscht.',
 }
 
 // ---------------------------------------------------------------------------

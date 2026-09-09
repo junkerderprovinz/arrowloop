@@ -137,7 +137,7 @@ const el: Translations = {
   'edit.newJob': 'nea-ergasia',
   'edit.pickDrive': 'Ένας δηλωμένος δίσκος',
   'edit.pickRemote': 'Ένας ρυθμισμένος προορισμός',
-  'targets.storage': 'Αποθήκευση',
+  'targets.storage': 'Cloud και συνδέσεις',
   'targets.storageEmpty': 'Κανένας προορισμός αποθήκευσης ακόμη. Προσθέστε έναν για να φτάσετε σε έναν κάδο S3, σε έναν κόμβο SSH ή σε μια κοινή χρήση Windows.',
   'targets.addStorage': 'Προσθήκη αποθήκευσης',
   'targets.remoteName': 'Όνομα',
@@ -164,8 +164,6 @@ const el: Translations = {
   'targets.driveMount': 'Πού βρίσκεται τώρα',
   'targets.attached': 'συνδεδεμένος',
   'targets.absent': 'μη συνδεδεμένος',
-  'targets.forget': 'Ξέχασέ τον',
-  'targets.forgetHint': 'Αφαιρεί τη σημείωση ότι αυτός ο δίσκος βρέθηκε ποτέ εδώ. Το σημάδι πάνω στον δίσκο παραμένει, οπότε αν τον ξανασυνδέσετε επιστρέφει αμέσως.',
   'targets.lastSeen': 'Τελευταία φορά',
   'targets.noCandidates': 'Δεν υπάρχει τίποτα προς δήλωση. Συνδέστε έναν δίσκο ή προσαρτήστε μια κοινή χρήση και κοιτάξτε ξανά.',
   'targets.copyPath': 'Αντιγραφή της διαδρομής εργασίας',
@@ -390,6 +388,10 @@ const el: Translations = {
   'trash.holding': '{count} στον κάδο, {size}',
   'targets.tokenNeeded': 'Το {backend} χρησιμοποιείται με διακριτικό σύνδεσης, που πρέπει να ληφθεί αλλού.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
+  'targets.deleteDrive': 'Διαγραφή',
+  'targets.deleteDriveHint': 'Αφαιρεί αυτόν τον δίσκο από τη λίστα ΚΑΙ διαγράφει το αρχείο ταυτότητας από τον ίδιο τον δίσκο. Μια εργασία που τον χρησιμοποιεί δεν θα τον βρίσκει πια. Τα αρχεία στον δίσκο μένουν άθικτα.',
+  'confirm.deleteDrive': 'Διαγραφή αυτού του δίσκου;',
+  'confirm.deleteDriveStakes': 'Το {name} παύει να είναι καταχωρημένος δίσκος. Κάθε εργασία που τον χρησιμοποιεί θα τον αναφέρει ως μη συνδεδεμένο μέχρι να τον καταχωρήσεις ξανά. Στον δίσκο δεν διαγράφεται τίποτα.',
 }
 
 export default el

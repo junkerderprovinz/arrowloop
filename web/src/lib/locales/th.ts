@@ -137,7 +137,7 @@ const th: Translations = {
   'edit.newJob': 'ngan-mai',
   'edit.pickDrive': 'ดิสก์ที่ลงทะเบียนไว้',
   'edit.pickRemote': 'ปลายทางที่ตั้งไว้',
-  'targets.storage': 'ที่เก็บข้อมูล',
+  'targets.storage': 'คลาวด์และการเชื่อมต่อ',
   'targets.storageEmpty': 'ยังไม่มีปลายทางที่เก็บข้อมูล เพิ่มสักแห่งเพื่อไปถึงถัง S3 เครื่อง SSH หรือแชร์ของ Windows',
   'targets.addStorage': 'เพิ่มที่เก็บข้อมูล',
   'targets.remoteName': 'ชื่อ',
@@ -164,8 +164,6 @@ const th: Translations = {
   'targets.driveMount': 'ตอนนี้อยู่ที่ไหน',
   'targets.attached': 'ต่ออยู่',
   'targets.absent': 'ยังไม่ได้ต่อ',
-  'targets.forget': 'ลืมมัน',
-  'targets.forgetHint': 'ลบบันทึกที่ว่าดิสก์นี้เคยอยู่ที่นี่ เครื่องหมายบนตัวดิสก์ยังอยู่ ต่อกลับเข้ามาก็ได้คืนทันที',
   'targets.lastSeen': 'เห็นล่าสุด',
   'targets.noCandidates': 'ไม่มีอะไรให้ลงทะเบียน ต่อดิสก์หรือเมานต์แชร์ แล้วดูอีกครั้ง',
   'targets.copyPath': 'คัดลอกเส้นทางสำหรับงาน',
@@ -390,6 +388,10 @@ const th: Translations = {
   'trash.holding': '{count} ในถังขยะ {size}',
   'targets.tokenNeeded': '{backend} ใช้โทเคนสำหรับเข้าสู่ระบบ ซึ่งต้องไปขอจากที่อื่น',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
+  'targets.deleteDrive': 'ลบ',
+  'targets.deleteDriveHint': 'นำไดรฟ์นี้ออกจากรายการ และลบไฟล์ระบุตัวตนออกจากตัวไดรฟ์ด้วย งานที่ชี้ไปที่ไดรฟ์นี้จะหาไม่พบอีก ไฟล์บนไดรฟ์ไม่ถูกแตะต้อง',
+  'confirm.deleteDrive': 'ลบไดรฟ์นี้หรือไม่',
+  'confirm.deleteDriveStakes': '{name} จะไม่เป็นไดรฟ์ที่ลงทะเบียนอีกต่อไป งานใดที่ชี้ไปที่ไดรฟ์นี้จะรายงานว่าไม่ได้เชื่อมต่อ จนกว่าคุณจะลงทะเบียนใหม่ ไม่มีอะไรบนไดรฟ์ถูกลบ',
 }
 
 export default th

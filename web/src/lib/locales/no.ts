@@ -137,7 +137,7 @@ const no: Translations = {
   'edit.newJob': 'ny-jobb',
   'edit.pickDrive': 'En innmeldt disk',
   'edit.pickRemote': 'Et oppsatt mål',
-  'targets.storage': 'Lagring',
+  'targets.storage': 'Sky og tilkoblinger',
   'targets.storageEmpty': 'Ingen lagringsmål ennå. Legg til ett for å nå en S3-bucket, en SSH-vert eller en Windows-deling.',
   'targets.addStorage': 'Legg til lagring',
   'targets.remoteName': 'Navn',
@@ -164,8 +164,6 @@ const no: Translations = {
   'targets.driveMount': 'Hvor den er nå',
   'targets.attached': 'tilkoblet',
   'targets.absent': 'ikke tilkoblet',
-  'targets.forget': 'Glem',
-  'targets.forgetHint': 'Fjerner notatet om at denne disken noen gang var her. Markeringen på disken blir stående, så å koble den til igjen henter den rett tilbake.',
   'targets.lastSeen': 'Sist sett',
   'targets.noCandidates': 'Ingenting å melde inn. Koble til en disk eller monter en deling, og se igjen.',
   'targets.copyPath': 'Kopier jobbstien',
@@ -390,6 +388,10 @@ const no: Translations = {
   'trash.holding': '{count} i papirkurven, {size}',
   'targets.tokenNeeded': '{backend} brukes med en innloggingstoken som må hentes et annet sted.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
+  'targets.deleteDrive': 'Slett',
+  'targets.deleteDriveHint': 'Fjerner denne stasjonen fra listen OG tar identitetsfilen av stasjonen selv. En jobb som peker på den finner den ikke lenger. Filene på stasjonen røres ikke.',
+  'confirm.deleteDrive': 'Slette denne stasjonen?',
+  'confirm.deleteDriveStakes': '{name} er ikke lenger en registrert stasjon. Alle jobber som peker på den melder den som ikke tilkoblet til du registrerer den på nytt. Ingenting slettes på stasjonen.',
 }
 
 export default no

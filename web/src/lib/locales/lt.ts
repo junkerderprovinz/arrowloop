@@ -137,7 +137,7 @@ const lt: Translations = {
   'edit.newJob': 'nauja-uzduotis',
   'edit.pickDrive': 'Užregistruotas diskas',
   'edit.pickRemote': 'Sukonfigūruota paskirtis',
-  'targets.storage': 'Saugykla',
+  'targets.storage': 'Debesis ir ryšiai',
   'targets.storageEmpty': 'Kol kas saugyklos paskirčių nėra. Pridėkite vieną, kad pasiektumėte S3 kibirą, SSH kompiuterį ar Windows bendrinį aplanką.',
   'targets.addStorage': 'Pridėti saugyklą',
   'targets.remoteName': 'Pavadinimas',
@@ -164,8 +164,6 @@ const lt: Translations = {
   'targets.driveMount': 'Kur jis dabar',
   'targets.attached': 'prijungtas',
   'targets.absent': 'neprijungtas',
-  'targets.forget': 'Pamiršti',
-  'targets.forgetHint': 'Pašalina įrašą, kad šis diskas kada nors čia buvo. Ženklas ant disko lieka, tad prijungus jį iš naujo jis grįžta iškart.',
   'targets.lastSeen': 'Paskutinį kartą matytas',
   'targets.noCandidates': 'Nėra ką registruoti. Prijunkite diską arba prijunkite bendrinį aplanką ir pažiūrėkite dar kartą.',
   'targets.copyPath': 'Kopijuoti kelią užduočiai',
@@ -390,6 +388,10 @@ const lt: Translations = {
   'trash.holding': '{count} šiukšlinėje, {size}',
   'targets.tokenNeeded': '{backend} naudoja prisijungimo raktą, kurį reikia gauti kitur.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
+  'targets.deleteDrive': 'Ištrinti',
+  'targets.deleteDriveHint': 'Pašalina šį diską iš sąrašo IR ištrina tapatybės failą iš paties disko. Į jį rodanti užduotis jo nebeaptiks. Failai diske lieka nepaliesti.',
+  'confirm.deleteDrive': 'Ištrinti šį diską?',
+  'confirm.deleteDriveStakes': '{name} nebebus registruotas diskas. Kiekviena į jį rodanti užduotis praneš, kad jis neprijungtas, kol jo neužregistruosi iš naujo. Diske niekas netrinama.',
 }
 
 export default lt

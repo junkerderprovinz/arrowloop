@@ -137,7 +137,7 @@ const hr: Translations = {
   'edit.newJob': 'novi-zadatak',
   'edit.pickDrive': 'Prijavljen disk',
   'edit.pickRemote': 'Postavljeno odredište',
-  'targets.storage': 'Pohrana',
+  'targets.storage': 'Oblak i veze',
   'targets.storageEmpty': 'Još nema odredišta za pohranu. Dodajte jedno da dosegnete kantu S3, poslužitelj SSH ili dijeljenje Windows.',
   'targets.addStorage': 'Dodaj pohranu',
   'targets.remoteName': 'Naziv',
@@ -164,8 +164,6 @@ const hr: Translations = {
   'targets.driveMount': 'Gdje je sada',
   'targets.attached': 'priključen',
   'targets.absent': 'nije priključen',
-  'targets.forget': 'Zaboravi',
-  'targets.forgetHint': 'Uklanja bilješku da je ovaj disk ikad bio ovdje. Oznaka na disku ostaje pa ga ponovno priključivanje odmah vraća.',
   'targets.lastSeen': 'Zadnji put viđen',
   'targets.noCandidates': 'Nema se što prijaviti. Priključite disk ili montirajte dijeljenje pa pogledajte ponovno.',
   'targets.copyPath': 'Kopiraj putanju za zadatak',
@@ -390,6 +388,10 @@ const hr: Translations = {
   'trash.holding': '{count} u košu, {size}',
   'targets.tokenNeeded': '{backend} radi s tokenom za prijavu koji se mora nabaviti drugdje.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
+  'targets.deleteDrive': 'Izbriši',
+  'targets.deleteDriveHint': 'Uklanja ovaj disk s popisa I briše datoteku identiteta s njega samog. Posao koji na njega upućuje više ga neće nalaziti. Datoteke na disku ostaju netaknute.',
+  'confirm.deleteDrive': 'Izbrisati ovaj disk?',
+  'confirm.deleteDriveStakes': '{name} više neće biti registrirani disk. Svaki posao koji na njega upućuje prijavit će ga kao nepriključenog dok ga ponovno ne registriraš. Na disku se ništa ne briše.',
 }
 
 export default hr

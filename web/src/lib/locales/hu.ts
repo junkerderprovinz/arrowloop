@@ -137,7 +137,7 @@ const hu: Translations = {
   'edit.newJob': 'uj-feladat',
   'edit.pickDrive': 'Egy bejelentett lemez',
   'edit.pickRemote': 'Egy beállított cél',
-  'targets.storage': 'Tároló',
+  'targets.storage': 'Felhő és kapcsolatok',
   'targets.storageEmpty': 'Még nincs tárolócél. Vegyen fel egyet, hogy elérjen egy S3 vödröt, egy SSH gépet vagy egy Windows megosztást.',
   'targets.addStorage': 'Tároló felvétele',
   'targets.remoteName': 'Név',
@@ -164,8 +164,6 @@ const hu: Translations = {
   'targets.driveMount': 'Hol van most',
   'targets.attached': 'csatlakoztatva',
   'targets.absent': 'nincs csatlakoztatva',
-  'targets.forget': 'Elfelejtés',
-  'targets.forgetHint': 'Eltávolítja a feljegyzést, hogy ez a lemez valaha itt járt. A lemezen lévő jelölés megmarad, így az újracsatlakoztatás azonnal visszahozza.',
   'targets.lastSeen': 'Utoljára látva',
   'targets.noCandidates': 'Nincs mit bejelenteni. Csatlakoztasson egy lemezt vagy csatoljon egy megosztást, majd nézze meg újra.',
   'targets.copyPath': 'A feladat útvonalának másolása',
@@ -390,6 +388,10 @@ const hu: Translations = {
   'trash.holding': '{count} a kukában, {size}',
   'targets.tokenNeeded': 'A(z) {backend} bejelentkezési tokennel érhető el, amelyet máshol kell beszerezni.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
+  'targets.deleteDrive': 'Törlés',
+  'targets.deleteDriveHint': 'Kiveszi ezt a lemezt a listából ÉS eltávolítja az azonosítófájlt magáról a lemezről. A rá mutató feladat többé nem találja meg. A lemezen lévő fájlok érintetlenek maradnak.',
+  'confirm.deleteDrive': 'Törlöd ezt a lemezt?',
+  'confirm.deleteDriveStakes': '{name} többé nem lesz regisztrált lemez. Minden rá mutató feladat nem csatlakoztatottként jelenti, amíg újra nem regisztrálod. A lemezen semmi sem törlődik.',
 }
 
 export default hu

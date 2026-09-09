@@ -137,7 +137,7 @@ const pl: Translations = {
   'edit.newJob': 'nowe-zadanie',
   'edit.pickDrive': 'Zgłoszony dysk',
   'edit.pickRemote': 'Skonfigurowany cel',
-  'targets.storage': 'Magazyn',
+  'targets.storage': 'Chmura i połączenia',
   'targets.storageEmpty': 'Nie ma jeszcze celów magazynowych. Dodaj jeden, aby sięgnąć po kubełek S3, serwer SSH albo udział Windows.',
   'targets.addStorage': 'Dodaj magazyn',
   'targets.remoteName': 'Nazwa',
@@ -164,8 +164,6 @@ const pl: Translations = {
   'targets.driveMount': 'Gdzie jest teraz',
   'targets.attached': 'podłączony',
   'targets.absent': 'niepodłączony',
-  'targets.forget': 'Zapomnij',
-  'targets.forgetHint': 'Usuwa notatkę, że ten dysk kiedykolwiek tu był. Znacznik na dysku zostaje, więc ponowne podłączenie od razu go przywraca.',
   'targets.lastSeen': 'Ostatnio widziany',
   'targets.noCandidates': 'Nie ma czego zgłosić. Podłącz dysk albo zamontuj udział i spójrz ponownie.',
   'targets.copyPath': 'Skopiuj ścieżkę zadania',
@@ -390,6 +388,10 @@ const pl: Translations = {
   'trash.holding': '{count} w koszu, {size}',
   'targets.tokenNeeded': '{backend} działa z tokenem logowania, który trzeba pobrać gdzie indziej.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
+  'targets.deleteDrive': 'Usuń',
+  'targets.deleteDriveHint': 'Usuwa ten dysk z listy ORAZ kasuje plik tożsamości z samego dysku. Zadanie wskazujące na niego przestanie go znajdować. Pliki na dysku pozostają nietknięte.',
+  'confirm.deleteDrive': 'Usunąć ten dysk?',
+  'confirm.deleteDriveStakes': '{name} przestanie być zarejestrowanym dyskiem. Każde zadanie wskazujące na niego zgłosi go jako niepodłączony, dopóki nie zarejestrujesz go ponownie. Na dysku nic nie jest usuwane.',
 }
 
 export default pl

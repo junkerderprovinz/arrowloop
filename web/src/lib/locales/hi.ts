@@ -137,7 +137,7 @@ const hi: Translations = {
   'edit.newJob': 'naya-kaam',
   'edit.pickDrive': 'दर्ज की गई डिस्क',
   'edit.pickRemote': 'तय किया गया गंतव्य',
-  'targets.storage': 'भंडारण',
+  'targets.storage': 'क्लाउड और कनेक्शन',
   'targets.storageEmpty': 'अभी कोई भंडारण गंतव्य नहीं। S3 बाल्टी, SSH मशीन या Windows साझा फ़ोल्डर तक पहुँचने के लिए एक जोड़ें।',
   'targets.addStorage': 'भंडारण जोड़ें',
   'targets.remoteName': 'नाम',
@@ -164,8 +164,6 @@ const hi: Translations = {
   'targets.driveMount': 'अभी कहाँ है',
   'targets.attached': 'जुड़ी है',
   'targets.absent': 'जुड़ी नहीं है',
-  'targets.forget': 'भूल जाएँ',
-  'targets.forgetHint': 'यह टिप्पणी हटाता है कि यह डिस्क कभी यहाँ थी। डिस्क पर का निशान बना रहता है, इसलिए दोबारा जोड़ने पर वह तुरंत लौट आती है।',
   'targets.lastSeen': 'अंतिम बार देखी गई',
   'targets.noCandidates': 'दर्ज करने को कुछ नहीं। कोई डिस्क जोड़ें या कोई साझा फ़ोल्डर आरोहित करें, फिर दोबारा देखें।',
   'targets.copyPath': 'काम के लिए पथ की नकल करें',
@@ -390,6 +388,10 @@ const hi: Translations = {
   'trash.holding': 'रद्दी में {count}, {size}',
   'targets.tokenNeeded': '{backend} एक साइन-इन टोकन से चलता है, जो कहीं और से लाना पड़ता है।',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
+  'targets.deleteDrive': 'मिटाएँ',
+  'targets.deleteDriveHint': 'यह ड्राइव सूची से हटाता है और ड्राइव पर मौजूद पहचान फ़ाइल भी मिटाता है। इस पर इशारा करने वाला काम इसे अब नहीं ढूँढ़ेगा। ड्राइव की फ़ाइलें अछूती रहती हैं।',
+  'confirm.deleteDrive': 'यह ड्राइव मिटाएँ?',
+  'confirm.deleteDriveStakes': '{name} अब पंजीकृत ड्राइव नहीं रहेगा। इस पर इशारा करने वाला हर काम इसे तब तक अनसंलग्न बताएगा जब तक तुम इसे फिर से पंजीकृत न करो। ड्राइव पर कुछ नहीं मिटता।',
 }
 
 export default hi

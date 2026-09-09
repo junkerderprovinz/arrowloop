@@ -193,6 +193,13 @@ export type RunEntry = {
   Path: string
   /** An error's own words, or which way a conflict went. Often empty. */
   Note: string
+  /**
+   * How big the file was, where the action had a size.
+   *
+   * Zero for a folder, a skip and an error: "not applicable" rather than "an
+   * empty file", which is the only ambiguity worth having here.
+   */
+  Size: number
 }
 
 /**

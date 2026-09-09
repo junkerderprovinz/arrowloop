@@ -137,7 +137,7 @@ const ca: Translations = {
   'edit.newJob': 'tasca-nova',
   'edit.pickDrive': 'Un disc registrat',
   'edit.pickRemote': 'Una destinació configurada',
-  'targets.storage': 'Emmagatzematge',
+  'targets.storage': 'Núvol i connexions',
   'targets.storageEmpty': 'Encara no hi ha destinacions d\'emmagatzematge. Afegiu-ne una per arribar a un cubell S3, a una màquina SSH o a una compartició de Windows.',
   'targets.addStorage': 'Afegeix emmagatzematge',
   'targets.remoteName': 'Nom',
@@ -164,8 +164,6 @@ const ca: Translations = {
   'targets.driveMount': 'On és ara',
   'targets.attached': 'connectat',
   'targets.absent': 'no connectat',
-  'targets.forget': 'Oblida',
-  'targets.forgetHint': 'Treu la nota que aquest disc va ser aquí alguna vegada. La marca del disc es manté, així que tornar-lo a connectar el recupera de seguida.',
   'targets.lastSeen': 'Vist per última vegada',
   'targets.noCandidates': 'No hi ha res a registrar. Connecteu un disc o munteu una compartició i torneu a mirar.',
   'targets.copyPath': 'Copia el camí per a la tasca',
@@ -390,6 +388,10 @@ const ca: Translations = {
   'trash.holding': '{count} a la paperera, {size}',
   'targets.tokenNeeded': '{backend} s\'utilitza amb un testimoni d\'accés, que cal obtenir en un altre lloc.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
+  'targets.deleteDrive': 'Suprimeix',
+  'targets.deleteDriveHint': 'Treu aquest disc de la llista I elimina el fitxer d\'identitat del disc mateix. Una tasca que hi apunti deixarà de trobar-lo. Els fitxers del disc no es toquen.',
+  'confirm.deleteDrive': 'Voleu suprimir aquest disc?',
+  'confirm.deleteDriveStakes': '{name} deixarà de ser un disc registrat. Qualsevol tasca que hi apunti el donarà per no connectat fins que el torneu a registrar. Al disc no s\'esborra res.',
 }
 
 export default ca

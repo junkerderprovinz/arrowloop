@@ -18,6 +18,7 @@ import { TrashPanel } from '../components/TrashPanel'
 import { JobForm, useJobConfig } from './Editor'
 import { Choice } from '../components/Field'
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
+import { bytes } from '../lib/bytes'
 import { api } from '../lib/api'
 import type { HistoryShow, Job, Run, RunEvent, Touch } from '../lib/api'
 import { translateSide, useT, type TranslationKey } from '../lib/i18n'
@@ -216,7 +217,15 @@ export function Jobs({
                       known={config.known}
                       patch={(next) => config.patch(at, next)}
                     />
-                    <div className="flex justify-end">
+                    <div className="flex justify-end gap-2">
+                      <IconAction
+                        title={t('edit.remove')}
+                        labelKey="edit.remove"
+                        hueIndex={i + 4}
+                        onClick={() => setRemoving(at)}
+                      >
+                        <IconDelete />
+                      </IconAction>
                       <Button
                         label={config.busy ? t('edit.checking') : t('edit.save')}
                         labelKey={config.busy ? 'edit.checking' : 'edit.save'}
@@ -490,7 +499,20 @@ export function Jobs({
                     known={config.known}
                     patch={(next) => config.patch(at, next)}
                   />
-                  <div className="flex justify-end">
+                  {/* Delete beside save, and it is only here because it was
+                      missing: a job opened by the plus button and then thought
+                      better of could not be got rid of without saving it
+                      first. The same is true of an existing job whose form is
+                      open, so both get it rather than only the new one. */}
+                  <div className="flex justify-end gap-2">
+                    <IconAction
+                      title={t('edit.remove')}
+                      labelKey="edit.remove"
+                      hueIndex={jobs.length + at + 4}
+                      onClick={() => setRemoving(at)}
+                    >
+                      <IconDelete />
+                    </IconAction>
                     <Button
                       label={config.busy ? t('edit.checking') : t('edit.save')}
                       labelKey={config.busy ? 'edit.checking' : 'edit.save'}
@@ -758,37 +780,55 @@ function JobActivity({ job }: { job: string }) {
 
   return (
     <div className="mt-1 w-full">
-      <ul className="flex max-h-80 flex-col gap-1 overflow-y-auto">
+      {/* Loads more when the scroll reaches the bottom, rather than offering a
+          button to press. jdp: "wenn man an die untere grenze scrollt soll es
+          automatisch mehr laden." A button at the end of a scrolling list asks
+          somebody to stop reading, aim, and click, to carry on doing the thing
+          they were already doing.
+
+          The threshold is 40px rather than exact equality: a list that only
+          loads at the precise bottom never loads on a trackpad, which stops a
+          pixel or two short. */}
+      <ul
+        className="flex max-h-80 flex-col gap-1 overflow-y-auto"
+        onScroll={(e) => {
+          const el = e.currentTarget
+          if (el.scrollHeight - el.scrollTop - el.clientHeight > 40) return
+          // Only when the last answer FILLED the limit, which is the one honest
+          // signal that there is more: a shorter list is the whole list.
+          if (touches.length >= limit) setLimit((n) => n * 2)
+        }}
+      >
         {touches.map((e, i) => (
-          <li key={`${e.Run}-${e.Path}-${i}`} className="flex items-start gap-2 text-xs">
-            <Badge tone={touchTone(e.Kind)}>{t(TOUCH_LABEL[e.Kind] ?? 'entry.other')}</Badge>
+          <li key={`${e.Run}-${e.Path}-${i}`} className="flex items-baseline gap-3 text-xs">
+            <span className="w-20 shrink-0">
+              <Badge tone={touchTone(e.Kind)}>{t(TOUCH_LABEL[e.Kind] ?? 'entry.other')}</Badge>
+            </span>
             {/* When, and it is why this is a Touch rather than a plain entry:
-                the same file copied twice is two identical lines otherwise. */}
-            <span className="w-16 shrink-0 text-carbon-textMuted">
+                the same file copied twice is two identical lines otherwise.
+                Wide enough for the longest phrase this can produce in any of
+                the forty-two languages, so it never wraps to two lines and
+                pushes its own row out of alignment with its neighbours. */}
+            <span className="w-28 shrink-0 whitespace-nowrap text-carbon-textMuted">
               <Since when={e.When} />
+            </span>
+            <span className="w-14 shrink-0 text-end tabular-nums text-carbon-textMuted">
+              {e.Size > 0 ? bytes(e.Size) : ''}
+            </span>
+            <span className="w-12 shrink-0 text-carbon-textMuted">
+              {e.Side ? translateSide(t, e.Side as 'left' | 'right') : ''}
             </span>
             <span className="min-w-0 flex-1 break-all font-mono text-carbon-text" title={e.Path}>
               {e.Path}
             </span>
             {e.Note && (
-              <span className="min-w-0 max-w-[35%] shrink-0 text-carbon-textMuted" title={e.Note}>
+              <span className="min-w-0 max-w-[30%] shrink-0 text-carbon-textMuted" title={e.Note}>
                 {e.Note}
               </span>
             )}
           </li>
         ))}
       </ul>
-      {/* Offered only when the answer FILLED the limit, which is the one honest
-          signal that there may be more: a shorter list is the whole list. */}
-      {touches.length >= limit && (
-        <div className="mt-2 flex justify-center">
-          <Button
-            label={t('history.more')}
-            labelKey="history.more"
-            onClick={() => setLimit((n) => n * 2)}
-          />
-        </div>
-      )}
     </div>
   )
 }

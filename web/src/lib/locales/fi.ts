@@ -137,7 +137,7 @@ const fi: Translations = {
   'edit.newJob': 'uusi-tyo',
   'edit.pickDrive': 'Ilmoitettu levy',
   'edit.pickRemote': 'Määritetty kohde',
-  'targets.storage': 'Tallennus',
+  'targets.storage': 'Pilvi ja yhteydet',
   'targets.storageEmpty': 'Ei vielä tallennuskohteita. Lisää yksi, jotta yllät S3-ämpäriin, SSH-koneeseen tai Windows-jakoon.',
   'targets.addStorage': 'Lisää tallennus',
   'targets.remoteName': 'Nimi',
@@ -164,8 +164,6 @@ const fi: Translations = {
   'targets.driveMount': 'Missä se on nyt',
   'targets.attached': 'liitetty',
   'targets.absent': 'ei liitetty',
-  'targets.forget': 'Unohda',
-  'targets.forgetHint': 'Poistaa merkinnän siitä, että tämä levy oli koskaan täällä. Levyllä oleva merkintä jätetään rauhaan, joten uudelleen liittäminen tuo sen heti takaisin.',
   'targets.lastSeen': 'Viimeksi nähty',
   'targets.noCandidates': 'Ei mitään ilmoitettavaa. Liitä levy tai liitä jako ja katso uudelleen.',
   'targets.copyPath': 'Kopioi työn polku',
@@ -390,6 +388,10 @@ const fi: Translations = {
   'trash.holding': '{count} roskakorissa, {size}',
   'targets.tokenNeeded': '{backend} toimii kirjautumistunnisteella, joka on haettava muualta.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
+  'targets.deleteDrive': 'Poista',
+  'targets.deleteDriveHint': 'Poistaa tämän aseman luettelosta JA ottaa tunnistetiedoston pois itse asemalta. Siihen osoittava työ ei löydä sitä enää. Aseman tiedostoihin ei kosketa.',
+  'confirm.deleteDrive': 'Poistetaanko tämä asema?',
+  'confirm.deleteDriveStakes': '{name} ei ole enää rekisteröity asema. Jokainen siihen osoittava työ ilmoittaa sen liittämättömäksi, kunnes rekisteröit sen uudelleen. Asemalta ei poisteta mitään.',
 }
 
 export default fi

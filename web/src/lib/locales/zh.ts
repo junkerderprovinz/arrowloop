@@ -137,7 +137,7 @@ const zh: Translations = {
   'edit.newJob': 'new-job',
   'edit.pickDrive': '已登记的磁盘',
   'edit.pickRemote': '已配置的目标',
-  'targets.storage': '存储',
+  'targets.storage': '云与连接',
   'targets.storageEmpty': '还没有存储目标。添加一个，以便连到 S3 存储桶、SSH 主机或 Windows 共享。',
   'targets.addStorage': '添加存储',
   'targets.remoteName': '名称',
@@ -164,8 +164,6 @@ const zh: Translations = {
   'targets.driveMount': '现在的位置',
   'targets.attached': '已接入',
   'targets.absent': '未接入',
-  'targets.forget': '忘记',
-  'targets.forgetHint': '删掉这块磁盘曾经来过的记录。磁盘上的标记不动，所以重新接上它马上就会回来。',
   'targets.lastSeen': '最后一次见到',
   'targets.noCandidates': '没有可登记的对象。接上一块磁盘或挂载一个共享，然后再看看。',
   'targets.copyPath': '复制任务用的路径',
@@ -390,6 +388,10 @@ const zh: Translations = {
   'trash.holding': '回收站中 {count}，{size}',
   'targets.tokenNeeded': '{backend} 通过登录令牌连接，令牌需要在别处获取。',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
+  'targets.deleteDrive': '删除',
+  'targets.deleteDriveHint': '把这个驱动器从列表中移除，并且删掉驱动器上的标识文件。指向它的作业将不再找得到它。驱动器上的文件不受影响。',
+  'confirm.deleteDrive': '删除这个驱动器？',
+  'confirm.deleteDriveStakes': '{name} 将不再是已注册的驱动器。指向它的作业会报告未连接，直到你重新注册它。驱动器上不会删除任何内容。',
 }
 
 export default zh

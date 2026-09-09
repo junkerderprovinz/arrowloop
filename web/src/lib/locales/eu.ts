@@ -137,7 +137,7 @@ const eu: Translations = {
   'edit.newJob': 'lan-berria',
   'edit.pickDrive': 'Erregistratutako disko bat',
   'edit.pickRemote': 'Konfiguratutako helburu bat',
-  'targets.storage': 'Biltegia',
+  'targets.storage': 'Hodeia eta konexioak',
   'targets.storageEmpty': 'Oraindik ez dago biltegi-helbururik. Gehitu bat S3 ontzi batera, SSH ostalari batera edo Windows partekatze batera iristeko.',
   'targets.addStorage': 'Gehitu biltegia',
   'targets.remoteName': 'Izena',
@@ -164,8 +164,6 @@ const eu: Translations = {
   'targets.driveMount': 'Non dagoen orain',
   'targets.attached': 'konektatuta',
   'targets.absent': 'ez dago konektatuta',
-  'targets.forget': 'Ahaztu',
-  'targets.forgetHint': 'Disko hau inoiz hemen egon zela dioen oharra kentzen du. Diskoko marka bere horretan gelditzen da, beraz berriro konektatzeak berehala ekartzen du.',
   'targets.lastSeen': 'Azkenekoz ikusia',
   'targets.noCandidates': 'Ez dago ezer erregistratzeko. Konektatu disko bat edo muntatu partekatze bat, eta begiratu berriro.',
   'targets.copyPath': 'Kopiatu lanerako bidea',
@@ -390,6 +388,10 @@ const eu: Translations = {
   'trash.holding': '{count} zakarrontzian, {size}',
   'targets.tokenNeeded': '{backend} saioa hasteko token batekin erabiltzen da, beste nonbait lortu behar dena.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
+  'targets.deleteDrive': 'Ezabatu',
+  'targets.deleteDriveHint': 'Disko hau zerrendatik kentzen du ETA identitate-fitxategia diskotik bertatik ere kentzen du. Harengana seinalatzen duen lanak ez du gehiago aurkituko. Diskoko fitxategiak ukitu gabe geratzen dira.',
+  'confirm.deleteDrive': 'Disko hau ezabatu?',
+  'confirm.deleteDriveStakes': '{name} ez da gehiago erregistratutako diskoa izango. Harengana seinalatzen duen lan orok konektatu gabe dagoela jakinaraziko du, berriro erregistratu arte. Diskoan ez da ezer ezabatzen.',
 }
 
 export default eu

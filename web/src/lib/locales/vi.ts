@@ -137,7 +137,7 @@ const vi: Translations = {
   'edit.newJob': 'cong-viec-moi',
   'edit.pickDrive': 'Một ổ đĩa đã đăng ký',
   'edit.pickRemote': 'Một đích đã thiết lập',
-  'targets.storage': 'Kho lưu trữ',
+  'targets.storage': 'Đám mây và kết nối',
   'targets.storageEmpty': 'Chưa có đích lưu trữ nào. Hãy thêm một cái để với tới một bucket S3, một máy SSH hay một thư mục chia sẻ Windows.',
   'targets.addStorage': 'Thêm kho lưu trữ',
   'targets.remoteName': 'Tên',
@@ -164,8 +164,6 @@ const vi: Translations = {
   'targets.driveMount': 'Hiện nó nằm ở đâu',
   'targets.attached': 'đã gắn',
   'targets.absent': 'chưa gắn',
-  'targets.forget': 'Quên đi',
-  'targets.forgetHint': 'Bỏ ghi chú rằng chiếc đĩa này từng ở đây. Dấu trên đĩa vẫn còn nguyên, nên cắm lại là nó trở về ngay.',
   'targets.lastSeen': 'Thấy lần cuối',
   'targets.noCandidates': 'Không có gì để đăng ký. Hãy cắm một ổ đĩa hoặc gắn một thư mục chia sẻ rồi xem lại.',
   'targets.copyPath': 'Chép đường dẫn cho công việc',
@@ -390,6 +388,10 @@ const vi: Translations = {
   'trash.holding': '{count} trong thùng rác, {size}',
   'targets.tokenNeeded': '{backend} dùng một token đăng nhập, phải lấy ở nơi khác.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
+  'targets.deleteDrive': 'Xoá',
+  'targets.deleteDriveHint': 'Gỡ ổ đĩa này khỏi danh sách VÀ xoá tệp định danh khỏi chính ổ đĩa. Công việc trỏ tới nó sẽ không còn tìm thấy. Các tệp trên ổ đĩa vẫn nguyên vẹn.',
+  'confirm.deleteDrive': 'Xoá ổ đĩa này?',
+  'confirm.deleteDriveStakes': '{name} sẽ không còn là ổ đĩa đã đăng ký. Mọi công việc trỏ tới nó sẽ báo là chưa gắn cho tới khi bạn đăng ký lại. Không có gì trên ổ đĩa bị xoá.',
 }
 
 export default vi

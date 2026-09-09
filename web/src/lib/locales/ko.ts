@@ -137,7 +137,7 @@ const ko: Translations = {
   'edit.newJob': 'new-job',
   'edit.pickDrive': '등록된 디스크',
   'edit.pickRemote': '설정된 대상',
-  'targets.storage': '저장소',
+  'targets.storage': '클라우드 및 연결',
   'targets.storageEmpty': '저장소 대상이 아직 없습니다. S3 버킷이나 SSH 호스트, Windows 공유에 닿도록 하나 추가하세요.',
   'targets.addStorage': '저장소 추가',
   'targets.remoteName': '이름',
@@ -164,8 +164,6 @@ const ko: Translations = {
   'targets.driveMount': '지금 있는 곳',
   'targets.attached': '연결됨',
   'targets.absent': '연결되지 않음',
-  'targets.forget': '잊기',
-  'targets.forgetHint': '이 디스크가 여기 있었다는 기록을 지웁니다. 디스크의 표시는 그대로 남으므로 다시 연결하면 곧바로 돌아옵니다.',
   'targets.lastSeen': '마지막으로 본 때',
   'targets.noCandidates': '등록할 것이 없습니다. 디스크를 꽂거나 공유를 마운트한 뒤 다시 보세요.',
   'targets.copyPath': '작업용 경로 복사',
@@ -390,6 +388,10 @@ const ko: Translations = {
   'trash.holding': '휴지통에 {count}, {size}',
   'targets.tokenNeeded': '{backend}은(는) 로그인 토큰으로 연결합니다. 토큰은 다른 곳에서 받아야 합니다.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
+  'targets.deleteDrive': '삭제',
+  'targets.deleteDriveHint': '이 드라이브를 목록에서 빼고, 드라이브에 있는 식별 파일도 제거합니다. 이를 가리키는 작업은 더 이상 찾지 못합니다. 드라이브의 파일은 그대로입니다.',
+  'confirm.deleteDrive': '이 드라이브를 삭제할까요?',
+  'confirm.deleteDriveStakes': '{name}은(는) 더 이상 등록된 드라이브가 아닙니다. 이를 가리키는 모든 작업은 다시 등록할 때까지 연결되지 않음으로 보고합니다. 드라이브에서는 아무것도 삭제되지 않습니다.',
 }
 
 export default ko

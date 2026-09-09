@@ -137,7 +137,7 @@ const is: Translations = {
   'edit.newJob': 'nytt-verk',
   'edit.pickDrive': 'Skráður diskur',
   'edit.pickRemote': 'Uppsettur áfangastaður',
-  'targets.storage': 'Geymsla',
+  'targets.storage': 'Ský og tengingar',
   'targets.storageEmpty': 'Engir geymsluáfangastaðir enn. Bættu einum við til að ná í S3 fötu, SSH vél eða Windows sameign.',
   'targets.addStorage': 'Bæta við geymslu',
   'targets.remoteName': 'Heiti',
@@ -164,8 +164,6 @@ const is: Translations = {
   'targets.driveMount': 'Hvar hann er núna',
   'targets.attached': 'tengdur',
   'targets.absent': 'ekki tengdur',
-  'targets.forget': 'Gleyma',
-  'targets.forgetHint': 'Fjarlægir athugasemdina um að þessi diskur hafi nokkurn tíma verið hér. Merkið á disknum helst, svo að tengja hann aftur skilar honum strax.',
   'targets.lastSeen': 'Sást síðast',
   'targets.noCandidates': 'Ekkert til að skrá. Tengdu disk eða tengdu sameign og líttu svo aftur.',
   'targets.copyPath': 'Afrita slóðina fyrir verkið',
@@ -390,6 +388,10 @@ const is: Translations = {
   'trash.holding': '{count} í ruslinu, {size}',
   'targets.tokenNeeded': '{backend} er notað með innskráningartákni sem þarf að sækja annars staðar.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
+  'targets.deleteDrive': 'Eyða',
+  'targets.deleteDriveHint': 'Fjarlægir þennan disk af listanum OG tekur auðkennisskrána af disknum sjálfum. Verk sem bendir á hann finnur hann ekki lengur. Skrárnar á disknum eru ósnertar.',
+  'confirm.deleteDrive': 'Eyða þessum disk?',
+  'confirm.deleteDriveStakes': '{name} verður ekki lengur skráður diskur. Hvert verk sem bendir á hann tilkynnir hann ótengdan þar til þú skráir hann aftur. Engu er eytt á disknum.',
 }
 
 export default is

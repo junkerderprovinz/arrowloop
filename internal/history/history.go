@@ -61,6 +61,11 @@ type Entry struct {
 	// Note carries what a number cannot: the error's own words, or which way a
 	// conflict was resolved. Empty for the ordinary case.
 	Note string
+	// Size is how big the file was, where the action had one. Zero for a
+	// folder, a skip and an error, which is "not applicable" rather than "an
+	// empty file". A per-file log without it says what moved and not what it
+	// cost.
+	Size int64
 }
 
 // DB is the run log.
@@ -91,9 +96,22 @@ CREATE TABLE IF NOT EXISTS entries (
 	side TEXT    NOT NULL,
 	path TEXT    NOT NULL,
 	note TEXT    NOT NULL,
+	size INTEGER NOT NULL DEFAULT 0,
 	PRIMARY KEY (run, seq)
 );
 `
+
+// migrations are the ALTERs an existing database needs, which CREATE TABLE IF
+// NOT EXISTS cannot give it: that statement is a no-op on a table that already
+// exists, so a column added to the schema above reaches new installs only.
+//
+// Each has to be harmless when it has already been applied, because there is no
+// version number here to consult - the error from adding a duplicate column is
+// the check. Kept as a list rather than as one string so that one failing does
+// not stop the rest.
+var migrations = []string{
+	`ALTER TABLE entries ADD COLUMN size INTEGER NOT NULL DEFAULT 0`,
+}
 
 // Open opens or creates the history database.
 func Open(ctx context.Context, path string) (*DB, error) {
@@ -110,6 +128,13 @@ func Open(ctx context.Context, path string) (*DB, error) {
 	if _, err := handle.ExecContext(ctx, schema); err != nil {
 		handle.Close()
 		return nil, fmt.Errorf("create history schema: %w", err)
+	}
+	for _, m := range migrations {
+		// Errors ignored on purpose: the expected one is "duplicate column",
+		// which means the migration has already run. A real failure shows up on
+		// the next read, and refusing to open the log over it would take the
+		// whole program down for a column nothing has needed yet.
+		_, _ = handle.ExecContext(ctx, m)
 	}
 	return &DB{sql: handle}, nil
 }
@@ -156,8 +181,8 @@ func (d *DB) Record(ctx context.Context, r Run, entries []Entry) error {
 
 	for i, e := range entries {
 		if _, err := tx.ExecContext(ctx,
-			`INSERT INTO entries (run, seq, kind, side, path, note) VALUES (?, ?, ?, ?, ?, ?)`,
-			id, i, e.Kind, e.Side, e.Path, e.Note); err != nil {
+			`INSERT INTO entries (run, seq, kind, side, path, note, size) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+			id, i, e.Kind, e.Side, e.Path, e.Note, e.Size); err != nil {
 			return fmt.Errorf("record entry %d for %q: %w", i, r.Job, err)
 		}
 	}
@@ -171,7 +196,7 @@ func (d *DB) Record(ctx context.Context, r Run, entries []Entry) error {
 // stopped.
 func (d *DB) Entries(ctx context.Context, run int64) ([]Entry, error) {
 	rows, err := d.sql.QueryContext(ctx,
-		`SELECT kind, side, path, note FROM entries WHERE run = ? ORDER BY seq`, run)
+		`SELECT kind, side, path, note, size FROM entries WHERE run = ? ORDER BY seq`, run)
 	if err != nil {
 		return nil, fmt.Errorf("read entries for run %d: %w", run, err)
 	}
@@ -180,7 +205,7 @@ func (d *DB) Entries(ctx context.Context, run int64) ([]Entry, error) {
 	var out []Entry
 	for rows.Next() {
 		var e Entry
-		if err := rows.Scan(&e.Kind, &e.Side, &e.Path, &e.Note); err != nil {
+		if err := rows.Scan(&e.Kind, &e.Side, &e.Path, &e.Note, &e.Size); err != nil {
 			return nil, fmt.Errorf("scan entry: %w", err)
 		}
 		out = append(out, e)
@@ -217,7 +242,7 @@ func (d *DB) Touches(ctx context.Context, job string, limit int) ([]Touch, error
 		limit = 50
 	}
 	rows, err := d.sql.QueryContext(ctx,
-		`SELECT e.run, r.started, e.kind, e.side, e.path, e.note
+		`SELECT e.run, r.started, e.kind, e.side, e.path, e.note, e.size
 		 FROM entries e JOIN runs r ON r.id = e.run
 		 WHERE r.job = ?
 		 ORDER BY r.started DESC, e.seq DESC
@@ -231,7 +256,7 @@ func (d *DB) Touches(ctx context.Context, job string, limit int) ([]Touch, error
 	for rows.Next() {
 		var t Touch
 		var started int64
-		if err := rows.Scan(&t.Run, &started, &t.Kind, &t.Side, &t.Path, &t.Note); err != nil {
+		if err := rows.Scan(&t.Run, &started, &t.Kind, &t.Side, &t.Path, &t.Note, &t.Size); err != nil {
 			return nil, fmt.Errorf("scan touch: %w", err)
 		}
 		t.When = time.Unix(0, started)

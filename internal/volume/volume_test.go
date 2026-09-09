@@ -241,3 +241,44 @@ func TestAVolumeMarkedBeforeTheRenameIsStillFound(t *testing.T) {
 		t.Fatalf("the old marker was removed, which strands an older build: %v", err)
 	}
 }
+
+// TestForgettingAnAttachedVolumeActuallyForgetsIt.
+//
+// The defect this guards against answered 200 and changed nothing visible.
+// Forget removed the register entry, and Remembered() builds its list from the
+// register AND from whatever is attached right now - so a drive whose marker
+// was still on it came straight back on the next listing, having been
+// "forgotten" a moment earlier. jdp: "der button funktioniert auch noch nicht.
+// ich kann die datentraeger nicht loeschen."
+//
+// The assertion is deliberately about REMEMBERED rather than about the marker
+// file: what was broken is the thing somebody sees, and a test on the file
+// alone would have passed while the row stayed on screen.
+func TestForgettingAnAttachedVolumeActuallyForgetsIt(t *testing.T) {
+	root := t.TempDir()
+	SetRegistry(filepath.Join(root, "volumes.json"))
+	t.Cleanup(func() { SetRegistry("") })
+
+	mount := t.TempDir()
+	withCandidates(t, mount)
+
+	m, err := Mark(mount, "Testplatte")
+	if err != nil {
+		t.Fatalf("mark: %v", err)
+	}
+	if got := Remembered(); len(got) != 1 {
+		t.Fatalf("expected one volume after marking, got %+v", got)
+	}
+
+	Forget(m.ID)
+
+	if got := Remembered(); len(got) != 0 {
+		t.Fatalf("the volume came back after being forgotten, which is exactly what "+
+			"the endpoint's 200 was hiding: %+v", got)
+	}
+	// And nothing of it is left on the disk, so plugging it in later does not
+	// re-register a drive somebody deliberately removed.
+	if _, err := os.Stat(filepath.Join(mount, filepath.FromSlash(markerPath))); !os.IsNotExist(err) {
+		t.Errorf("the marker is still on the volume: %v", err)
+	}
+}

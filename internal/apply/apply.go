@@ -85,6 +85,14 @@ type Entry struct {
 	// Note carries what a number cannot: an error's own words, or which way a
 	// conflict went. Empty for the ordinary case.
 	Note string
+	// Size is how big the file was, in bytes, where the action had one.
+	//
+	// Zero for a folder, for a skip and for an error: those have no size, and
+	// zero reads as "not applicable" rather than as "an empty file", which is
+	// the only ambiguity worth having here. A per-file log without sizes can
+	// say what moved and not what it cost, and "why did this run take an hour"
+	// is a question about bytes.
+	Size int64
 }
 
 // DisagreementError means an operation reported success and the two sides still
@@ -165,6 +173,32 @@ type tally struct {
 // when several workers finish at the same instant.
 func (t *tally) step(kind, path, side string) {
 	t.note(kind, path, side, "")
+}
+
+// sized is step for a piece of work that moved a known number of bytes.
+//
+// Separate from step rather than a fifth parameter on it, because most of the
+// callers have no size to give: a folder made, a path skipped and an error
+// raised are all sizeless, and passing 0 at each of them would read as "an
+// empty file" at the call site rather than as "not applicable".
+func (t *tally) sized(kind, path, side string, size int64) {
+	t.mu.Lock()
+	t.done++
+	t.record(Entry{Kind: kind, Side: side, Path: path, Size: size})
+	done, total, watcher := t.done, t.total, t.progress
+	t.mu.Unlock()
+	if watcher != nil {
+		watcher.Did(kind, path, side, done, total)
+	}
+}
+
+// sizeOf is the size of whichever side an action is acting on, or zero when
+// there is nothing there to measure.
+func sizeOf(e *scan.Entry) int64 {
+	if e == nil {
+		return 0
+	}
+	return e.Size
 }
 
 // note is step with something to say about this particular piece of work: the
@@ -642,7 +676,13 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 			return err
 		}
 		t.count(func(r *Result) { r.Copied++ })
-		t.step("copy", act.DstPath, act.Dst.String())
+		// The SOURCE's size, which is what was just written. The destination's
+		// is the old file's where there was one, and zero where there was not.
+		from := act.RightNow
+		if act.Dst == plan.Right {
+			from = act.LeftNow
+		}
+		t.sized("copy", act.DstPath, act.Dst.String(), sizeOf(from))
 		left, right := act.Names()
 		return rec.settle(ctx, act.Path, left, right)
 
@@ -652,7 +692,11 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 			return err
 		}
 		t.count(func(r *Result) { r.Moved++ })
-		t.step("move", act.DstPath, act.Dst.String())
+		moved := act.LeftNow
+		if act.Dst == plan.Right {
+			moved = act.RightNow
+		}
+		t.sized("move", act.DstPath, act.Dst.String(), sizeOf(moved))
 		if err := rec.db.Forget(ctx, pathid.Key(act.OldDstPath, opt.FoldCase)); err != nil {
 			return err
 		}
@@ -675,7 +719,7 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 			return err
 		}
 		t.count(func(r *Result) { r.Trashed++ })
-		t.step("trash", act.Path, act.Dst.String())
+		t.sized("trash", act.Path, act.Dst.String(), live.Size)
 		return rec.db.Forget(ctx, act.Path)
 
 	case plan.Conflict:

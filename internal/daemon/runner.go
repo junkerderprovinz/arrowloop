@@ -246,7 +246,7 @@ func entriesOf(res apply.Result) []history.Entry {
 	}
 	out := make([]history.Entry, 0, len(res.Entries))
 	for _, e := range res.Entries {
-		out = append(out, history.Entry{Kind: e.Kind, Side: e.Side, Path: e.Path, Note: e.Note})
+		out = append(out, history.Entry{Kind: e.Kind, Side: e.Side, Path: e.Path, Note: e.Note, Size: e.Size})
 	}
 	return out
 }

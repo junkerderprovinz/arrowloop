@@ -84,6 +84,23 @@ func Remembered() []Known {
 // so plugging it in again brings it straight back; this only removes the note
 // that it was ever here.
 func Forget(id string) {
+	// The MARKER first, and this is the whole of the bug this used to have.
+	//
+	// Removing only the register entry does nothing visible while the drive is
+	// plugged in: Remembered() builds its list from the register AND from what
+	// is attached right now, and anything attached that the register has not
+	// caught up with is added back on the spot. So the endpoint answered 200,
+	// said "forgotten", and the row was still there on the next refresh -
+	// measured exactly that way. jdp: "der button funktioniert auch noch
+	// nicht. ich kann die datenträger nicht löschen."
+	//
+	// Best effort, deliberately: a drive that is in a drawer cannot have its
+	// marker removed, and refusing to forget it for that reason would leave
+	// somebody unable to tidy up a register entry for a disk they no longer
+	// own. The register entry goes either way; when the drive comes back with
+	// its marker still on it, it is a new registration, which is honest.
+	unmark(id)
+
 	registryMu.Lock()
 	defer registryMu.Unlock()
 	stored := readRegistry()
@@ -94,6 +111,27 @@ func Forget(id string) {
 		}
 	}
 	writeRegistry(kept)
+}
+
+// unmark removes the identity file from the volume with this id, if it is
+// attached. Silent when it is not: see Forget.
+func unmark(id string) {
+	for _, v := range Attached() {
+		if v.ID != id {
+			continue
+		}
+		for _, rel := range []string{markerPath, legacyMarkerPath} {
+			full := filepath.Join(v.Mount, filepath.FromSlash(rel))
+			if err := os.Remove(full); err == nil {
+				// The reserved directory it sat in goes too when it is empty,
+				// so forgetting a volume leaves nothing of itself behind. A
+				// non-empty one is left alone: the trash lives under the same
+				// prefix and is somebody's deleted files.
+				_ = os.Remove(filepath.Dir(full))
+			}
+		}
+		return
+	}
 }
 
 // remember notes a volume that is here right now.

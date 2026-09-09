@@ -137,7 +137,7 @@ const ja: Translations = {
   'edit.newJob': 'new-job',
   'edit.pickDrive': '登録済みのドライブ',
   'edit.pickRemote': '設定済みの接続先',
-  'targets.storage': 'ストレージ',
+  'targets.storage': 'クラウドと接続',
   'targets.storageEmpty': 'ストレージの接続先がまだありません。S3 バケット、SSH ホスト、Windows 共有に届くように追加してください。',
   'targets.addStorage': 'ストレージを追加',
   'targets.remoteName': '名前',
@@ -164,8 +164,6 @@ const ja: Translations = {
   'targets.driveMount': '現在の場所',
   'targets.attached': '接続中',
   'targets.absent': '未接続',
-  'targets.forget': '忘れる',
-  'targets.forgetHint': 'このドライブがここにあったという記録を消します。ディスク上の目印はそのまま残るので、つなぎ直せばすぐ戻ってきます。',
   'targets.lastSeen': '最後に見たとき',
   'targets.noCandidates': '登録できるものがありません。ドライブを差すか共有をマウントしてから、もう一度見てください。',
   'targets.copyPath': 'ジョブ用のパスをコピー',
@@ -390,6 +388,10 @@ const ja: Translations = {
   'trash.holding': 'ごみ箱に {count}、{size}',
   'targets.tokenNeeded': '{backend} はサインイン用のトークンで接続します。トークンは別の場所で取得します。',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
+  'targets.deleteDrive': '削除',
+  'targets.deleteDriveHint': 'この드라이브をリストから外し、ドライブ上の識別ファイルも取り除きます。これを指す処理は見つけられなくなります。ドライブ上のファイルはそのままです。',
+  'confirm.deleteDrive': 'このドライブを削除しますか？',
+  'confirm.deleteDriveStakes': '{name} は登録済みドライブではなくなります。これを指す処理は、再登録するまで未接続として報告します。ドライブ上では何も削除されません。',
 }
 
 export default ja

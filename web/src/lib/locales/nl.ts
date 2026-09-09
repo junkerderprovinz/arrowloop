@@ -137,7 +137,7 @@ const nl: Translations = {
   'edit.newJob': 'nieuwe-taak',
   'edit.pickDrive': 'Een aangemelde schijf',
   'edit.pickRemote': 'Een ingesteld doel',
-  'targets.storage': 'Opslag',
+  'targets.storage': 'Cloud en verbindingen',
   'targets.storageEmpty': 'Nog geen opslagdoelen. Voeg er een toe om een S3-bucket, een SSH-machine of een Windows-share te bereiken.',
   'targets.addStorage': 'Opslag toevoegen',
   'targets.remoteName': 'Naam',
@@ -164,8 +164,6 @@ const nl: Translations = {
   'targets.driveMount': 'Waar hij nu zit',
   'targets.attached': 'aangesloten',
   'targets.absent': 'niet aangesloten',
-  'targets.forget': 'Vergeten',
-  'targets.forgetHint': 'Haalt de aantekening weg dat deze schijf hier ooit was. Het merkteken op de schijf blijft staan, dus opnieuw aansluiten brengt hem meteen terug.',
   'targets.lastSeen': 'Laatst gezien',
   'targets.noCandidates': 'Niets om aan te melden. Sluit een schijf aan of koppel een share, en kijk dan opnieuw.',
   'targets.copyPath': 'Het taakpad kopiëren',
@@ -390,6 +388,10 @@ const nl: Translations = {
   'trash.holding': '{count} in de prullenbak, {size}',
   'targets.tokenNeeded': '{backend} werkt met een aanmeldtoken, dat elders opgehaald moet worden.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
+  'targets.deleteDrive': 'Verwijderen',
+  'targets.deleteDriveHint': 'Haalt deze schijf uit de lijst EN verwijdert het identiteitsbestand van de schijf zelf. Een taak die ernaar wijst vindt hem niet meer. De bestanden op de schijf blijven ongemoeid.',
+  'confirm.deleteDrive': 'Deze schijf verwijderen?',
+  'confirm.deleteDriveStakes': '{name} is daarna geen geregistreerde schijf meer. Elke taak die ernaar wijst meldt hem als niet aangesloten totdat je hem opnieuw registreert. Op de schijf wordt niets verwijderd.',
 }
 
 export default nl

@@ -137,7 +137,7 @@ const fa: Translations = {
   'edit.newJob': 'kar-e-taze',
   'edit.pickDrive': 'یک دیسک ثبت‌شده',
   'edit.pickRemote': 'یک مقصد تنظیم‌شده',
-  'targets.storage': 'ذخیره‌سازی',
+  'targets.storage': 'ابر و اتصال‌ها',
   'targets.storageEmpty': 'هنوز هیچ مقصد ذخیره‌سازی نیست. یکی بیفزایید تا به سطل S3، میزبان SSH یا اشتراک ویندوز برسید.',
   'targets.addStorage': 'افزودن ذخیره‌سازی',
   'targets.remoteName': 'نام',
@@ -164,8 +164,6 @@ const fa: Translations = {
   'targets.driveMount': 'اکنون کجاست',
   'targets.attached': 'وصل',
   'targets.absent': 'وصل نیست',
-  'targets.forget': 'فراموش کن',
-  'targets.forgetHint': 'یادداشت اینکه این دیسک روزی اینجا بوده را برمی‌دارد. نشانهٔ روی دیسک می‌ماند، پس وصل کردن دوباره آن را بی‌درنگ بازمی‌گرداند.',
   'targets.lastSeen': 'آخرین بار دیده شد',
   'targets.noCandidates': 'چیزی برای ثبت نیست. دیسکی وصل کنید یا اشتراکی سوار کنید و دوباره نگاه کنید.',
   'targets.copyPath': 'رونوشت مسیر برای کار',
@@ -390,6 +388,10 @@ const fa: Translations = {
   'trash.holding': '{count} در سطل، {size}',
   'targets.tokenNeeded': '{backend} با یک توکن ورود کار می‌کند که باید جای دیگری گرفته شود.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
+  'targets.deleteDrive': 'حذف',
+  'targets.deleteDriveHint': 'این درایو را از فهرست برمی‌دارد و پرونده شناسه را از خود درایو هم پاک می‌کند. کاری که به آن اشاره دارد دیگر آن را پیدا نمی‌کند. پرونده‌های روی درایو دست‌نخورده می‌مانند.',
+  'confirm.deleteDrive': 'این درایو حذف شود؟',
+  'confirm.deleteDriveStakes': '{name} دیگر درایو ثبت‌شده نخواهد بود. هر کاری که به آن اشاره دارد آن را متصل‌نشده گزارش می‌کند تا وقتی دوباره ثبتش کنی. روی خود درایو چیزی حذف نمی‌شود.',
 }
 
 export default fa

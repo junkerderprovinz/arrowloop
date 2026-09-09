@@ -137,7 +137,7 @@ const pt: Translations = {
   'edit.newJob': 'tarefa-nova',
   'edit.pickDrive': 'Um disco registado',
   'edit.pickRemote': 'Um destino configurado',
-  'targets.storage': 'Armazenamento',
+  'targets.storage': 'Nuvem e ligações',
   'targets.storageEmpty': 'Ainda não há destinos de armazenamento. Adicione um para alcançar um bucket S3, um servidor SSH ou uma partilha Windows.',
   'targets.addStorage': 'Adicionar armazenamento',
   'targets.remoteName': 'Nome',
@@ -164,8 +164,6 @@ const pt: Translations = {
   'targets.driveMount': 'Onde está agora',
   'targets.attached': 'ligado',
   'targets.absent': 'não ligado',
-  'targets.forget': 'Esquecer',
-  'targets.forgetHint': 'Remove a nota de que este disco alguma vez esteve aqui. A marca no disco fica intacta, portanto voltar a ligá-lo traz o disco de volta de imediato.',
   'targets.lastSeen': 'Visto pela última vez',
   'targets.noCandidates': 'Nada para registar. Ligue um disco ou monte uma partilha e volte a olhar.',
   'targets.copyPath': 'Copiar o caminho da tarefa',
@@ -390,6 +388,10 @@ const pt: Translations = {
   'trash.holding': '{count} na reciclagem, {size}',
   'targets.tokenNeeded': '{backend} usa-se com um token de acesso, que tem de ser obtido noutro lado.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
+  'targets.deleteDrive': 'Eliminar',
+  'targets.deleteDriveHint': 'Retira este disco da lista E remove o ficheiro de identidade do próprio disco. Uma tarefa que aponte para ele deixa de o encontrar. Os ficheiros no disco ficam intactos.',
+  'confirm.deleteDrive': 'Eliminar este disco?',
+  'confirm.deleteDriveStakes': '{name} deixa de ser um disco registado. Qualquer tarefa que aponte para ele vai indicá-lo como não ligado até o registares de novo. Nada é eliminado no disco.',
 }
 
 export default pt

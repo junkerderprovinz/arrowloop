@@ -137,7 +137,7 @@ const fr: Translations = {
   'edit.newJob': 'nouvelle-tache',
   'edit.pickDrive': 'Un disque enregistré',
   'edit.pickRemote': 'Une cible configurée',
-  'targets.storage': 'Stockage',
+  'targets.storage': 'Cloud et connexions',
   'targets.storageEmpty': 'Aucune cible de stockage. Ajoutez-en une pour atteindre un compartiment S3, un hôte SSH ou un partage Windows.',
   'targets.addStorage': 'Ajouter un stockage',
   'targets.remoteName': 'Nom',
@@ -164,8 +164,6 @@ const fr: Translations = {
   'targets.driveMount': 'Où il se trouve maintenant',
   'targets.attached': 'connecté',
   'targets.absent': 'non connecté',
-  'targets.forget': 'Oublier',
-  'targets.forgetHint': 'Retire la note indiquant que ce disque est déjà passé ici. Le marqueur sur le disque reste, le rebrancher le ramène donc aussitôt.',
   'targets.lastSeen': 'Vu pour la dernière fois',
   'targets.noCandidates': 'Rien à enregistrer. Branchez un disque ou montez un partage, puis regardez à nouveau.',
   'targets.copyPath': 'Copier le chemin de la tâche',
@@ -390,6 +388,10 @@ const fr: Translations = {
   'trash.holding': '{count} dans la corbeille, {size}',
   'targets.tokenNeeded': '{backend} s\'utilise avec un jeton de connexion, à obtenir ailleurs.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
+  'targets.deleteDrive': 'Supprimer',
+  'targets.deleteDriveHint': 'Retire ce disque de la liste ET enlève le fichier d\'identité du disque lui-même. Une tâche qui le vise ne le trouvera plus. Les fichiers sur le disque restent intacts.',
+  'confirm.deleteDrive': 'Supprimer ce disque ?',
+  'confirm.deleteDriveStakes': '{name} ne sera plus un disque enregistré. Toute tâche qui le vise le signalera comme non connecté jusqu\'à ce que vous l\'enregistriez à nouveau. Rien n\'est supprimé sur le disque.',
 }
 
 export default fr

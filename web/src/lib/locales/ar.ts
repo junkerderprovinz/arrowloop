@@ -137,7 +137,7 @@ const ar: Translations = {
   'edit.newJob': 'mohemma-jadida',
   'edit.pickDrive': 'قرص مسجَّل',
   'edit.pickRemote': 'وجهة معدّة',
-  'targets.storage': 'التخزين',
+  'targets.storage': 'السحابة والاتصالات',
   'targets.storageEmpty': 'لا وجهات تخزين بعد. أضف واحدة للوصول إلى سلة S3 أو مضيف SSH أو مشاركة ويندوز.',
   'targets.addStorage': 'إضافة تخزين',
   'targets.remoteName': 'الاسم',
@@ -164,8 +164,6 @@ const ar: Translations = {
   'targets.driveMount': 'أين هو الآن',
   'targets.attached': 'موصول',
   'targets.absent': 'غير موصول',
-  'targets.forget': 'نسيان',
-  'targets.forgetHint': 'يزيل الملاحظة بأن هذا القرص كان هنا يوماً. العلامة على القرص تبقى، فإعادة وصله تعيده فوراً.',
   'targets.lastSeen': 'آخر ظهور',
   'targets.noCandidates': 'لا شيء للتسجيل. صِل قرصاً أو ركّب مشاركة ثم انظر مرة أخرى.',
   'targets.copyPath': 'نسخ مسار المهمة',
@@ -390,6 +388,10 @@ const ar: Translations = {
   'trash.holding': '{count} في السلة، {size}',
   'targets.tokenNeeded': 'يُستخدم {backend} برمز دخول يجب الحصول عليه من مكان آخر.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
+  'targets.deleteDrive': 'حذف',
+  'targets.deleteDriveHint': 'يزيل هذا القرص من القائمة ويحذف ملف الهوية من القرص نفسه. المهمة التي تشير إليه لن تجده بعد ذلك. الملفات على القرص تبقى كما هي.',
+  'confirm.deleteDrive': 'حذف هذا القرص؟',
+  'confirm.deleteDriveStakes': 'لن يعود {name} قرصًا مسجلًا. أي مهمة تشير إليه ستبلغ أنه غير متصل حتى تسجله من جديد. لا يُحذف شيء على القرص.',
 }
 
 export default ar

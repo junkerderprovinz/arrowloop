@@ -137,7 +137,7 @@ const sk: Translations = {
   'edit.newJob': 'nova-uloha',
   'edit.pickDrive': 'Zaregistrovaný disk',
   'edit.pickRemote': 'Nastavený cieľ',
-  'targets.storage': 'Úložisko',
+  'targets.storage': 'Cloud a pripojenia',
   'targets.storageEmpty': 'Zatiaľ žiadne úložiská. Pridajte jedno, aby ste dosiahli na kôš S3, na server SSH alebo na zdieľanie Windows.',
   'targets.addStorage': 'Pridať úložisko',
   'targets.remoteName': 'Názov',
@@ -164,8 +164,6 @@ const sk: Translations = {
   'targets.driveMount': 'Kde je práve teraz',
   'targets.attached': 'pripojený',
   'targets.absent': 'nepripojený',
-  'targets.forget': 'Zabudnúť',
-  'targets.forgetHint': 'Odstráni poznámku, že tu tento disk kedy bol. Značka na disku zostane, takže opätovné pripojenie ho hneď vráti.',
   'targets.lastSeen': 'Naposledy videný',
   'targets.noCandidates': 'Nie je čo registrovať. Pripojte disk alebo pripojte zdieľanie a pozrite sa znova.',
   'targets.copyPath': 'Skopírovať cestu pre úlohu',
@@ -390,6 +388,10 @@ const sk: Translations = {
   'trash.holding': '{count} v koši, {size}',
   'targets.tokenNeeded': '{backend} sa používa s prihlasovacím tokenom, ktorý treba získať inde.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
+  'targets.deleteDrive': 'Vymazať',
+  'targets.deleteDriveHint': 'Odoberie tento disk zo zoznamu A odstráni súbor s identitou z disku samotného. Úloha, ktorá naň mieri, ho prestane nachádzať. Súbory na disku zostanú nedotknuté.',
+  'confirm.deleteDrive': 'Vymazať tento disk?',
+  'confirm.deleteDriveStakes': '{name} prestane byť registrovaným diskom. Každá úloha, ktorá naň mieri, ho ohlási ako nepripojený, kým ho znova nezaregistruješ. Na disku sa nič nemaže.',
 }
 
 export default sk
