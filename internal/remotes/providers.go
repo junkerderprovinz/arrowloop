@@ -229,6 +229,48 @@ var providers = []Provider{
 	// list is products, the backends are plumbing.
 	{ID: "huaweiobs", Name: "Huawei Cloud OBS", Backend: "s3", Group: GroupCloud,
 		Preset: map[string]string{"provider": "HuaweiOBS"}, Mark: "IconHuaweiCloud"},
+
+	// The S3-compatible field, by name. rclone knows fifty-three of these and
+	// this list offered one generic entry, so somebody looking for Wasabi or R2
+	// found nothing among fifty-one products and had to know to pick "S3" and
+	// then set a field correctly. Each is one preset away, exactly as Huawei
+	// OBS above already was, and the generic entry stays for the rest.
+	//
+	// The Preset values are rclone's OWN spelling from that list. A typo here
+	// would not announce itself: rclone accepts an unknown provider and falls
+	// back to plain S3, which works for most of them and quietly drops whatever
+	// the named one does differently.
+	{ID: "wasabi", Name: "Wasabi", Backend: "s3", Group: GroupCloud,
+		Preset: map[string]string{"provider": "Wasabi"}, Mark: "IconWasabi"},
+	{ID: "r2", Name: "Cloudflare R2", Backend: "s3", Group: GroupCloud,
+		Preset: map[string]string{"provider": "Cloudflare"}, Mark: "IconCloudflare"},
+	{ID: "spaces", Name: "DigitalOcean Spaces", Backend: "s3", Group: GroupCloud,
+		Preset: map[string]string{"provider": "DigitalOcean"}, Mark: "IconDigitalOcean"},
+	{ID: "idrivee2", Name: "IDrive e2", Backend: "s3", Group: GroupCloud,
+		Preset: map[string]string{"provider": "IDrive"}},
+	{ID: "scaleway", Name: "Scaleway Object Storage", Backend: "s3", Group: GroupCloud,
+		Preset: map[string]string{"provider": "Scaleway"}, Mark: "IconScaleway"},
+	{ID: "hetznerobj", Name: "Hetzner Object Storage", Backend: "s3", Group: GroupCloud,
+		Preset: map[string]string{"provider": "Hetzner"}, Mark: "IconHetzner"},
+	// IONOS twice, and deliberately: HiDrive above is the consumer drive, this
+	// is the object storage. Same company, two products, and somebody looking
+	// for one would not accept the other - the same arrangement as the two
+	// Huawei entries.
+	{ID: "ionosobj", Name: "IONOS Object Storage", Backend: "s3", Group: GroupCloud,
+		Preset: map[string]string{"provider": "IONOS"}, Mark: "IconIonos"},
+	{ID: "linode", Name: "Linode Object Storage", Backend: "s3", Group: GroupCloud,
+		Preset: map[string]string{"provider": "Linode"}},
+	{ID: "ovh", Name: "OVHcloud Object Storage", Backend: "s3", Group: GroupCloud,
+		Preset: map[string]string{"provider": "OVHcloud"}, Mark: "IconOvh"},
+	{ID: "synologyc2", Name: "Synology C2", Backend: "s3", Group: GroupCloud,
+		Preset: map[string]string{"provider": "Synology"}, Mark: "IconSynology"},
+	// The two somebody runs themselves, which is why they sit with the clouds
+	// rather than the protocols: what you HAVE is an account with a bucket
+	// store, even when the machine under it is your own.
+	{ID: "minio", Name: "MinIO", Backend: "s3", Group: GroupCloud,
+		Preset: map[string]string{"provider": "Minio"}, Mark: "IconMinio"},
+	{ID: "seaweedfs", Name: "SeaweedFS", Backend: "s3", Group: GroupCloud,
+		Preset: map[string]string{"provider": "SeaweedFS"}},
 	{ID: "oracle", Name: "Oracle Object Storage", Backend: "oracleobjectstorage", Group: GroupCloud, Mark: "IconOracleCloud"},
 	{ID: "storj", Name: "Storj", Backend: "storj", Group: GroupCloud, Mark: "IconStorj"},
 	{ID: "swift", Name: "OpenStack Swift", Backend: "swift", Group: GroupCloud, Mark: "IconOpenstack"},

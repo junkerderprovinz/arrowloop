@@ -61,6 +61,21 @@ MARKS = [
     ("IconOpenstack", "openstack", "OpenStack Swift"),
     ("IconAkamai", "akamai", "Akamai NetStorage"),
     ("IconHadoop", "apachehadoop", "HDFS"),
+
+    # The S3-compatible field. rclone knows fifty-three of these by name and
+    # this app offered one generic entry, so somebody looking for Wasabi or R2
+    # found nothing in a list of fifty-one and had to know to pick "S3" and set
+    # a field. Each of these is one preset away, exactly as Huawei OBS already
+    # was. Three of the twelve have no mark in this set at all - IDrive, Linode
+    # and SeaweedFS - and get none rather than a neighbour's.
+    ("IconWasabi", "wasabi", "Wasabi"),
+    ("IconCloudflare", "cloudflare", "Cloudflare R2"),
+    ("IconDigitalOcean", "digitalocean", "DigitalOcean Spaces"),
+    ("IconScaleway", "scaleway", "Scaleway Object Storage"),
+    ("IconHetzner", "hetzner", "Hetzner Object Storage"),
+    ("IconOvh", "ovh", "OVHcloud Object Storage"),
+    ("IconSynology", "synology", "Synology C2"),
+    ("IconMinio", "minio", "MinIO"),
 ]
 
 HEAD = '''import type { SVGProps } from 'react'

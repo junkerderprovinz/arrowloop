@@ -91,7 +91,17 @@ export function ProviderPicker({
    */
   const mode = useLabelMode('buttons')
   const showMark = mode !== 'text'
-  const showName = mode !== 'glyph'
+  /**
+   * A row with NO mark keeps its name even in the mode that hides names.
+   *
+   * The same rule the button component has, and it earns its place the same
+   * way: three of the S3 entries have no logo in the set at all - IDrive,
+   * Linode, SeaweedFS - and a row that hides its name and has nothing to draw
+   * is an empty box you have to click to identify. Until those three arrived
+   * every provider had a mark, so glyph mode happened to be safe; that was
+   * luck rather than design, and this is the design.
+   */
+  const showName = (p: Provider) => mode !== 'glyph' || !brandMark(p.mark)
 
   /**
    * Type to narrow the list, the way KnightLoader's host picker does.
@@ -209,7 +219,7 @@ export function ProviderPicker({
                   the NAME gave up the space instead and "S3 compatible" was
                   rendered as "S.". A name that cannot be read is not a list
                   entry. Under it, both survive. */}
-              {showName && (
+              {showName(p) && (
                 <span className="flex min-w-0 flex-1 flex-col text-start">
                   <span className="truncate text-body text-carbon-text">{p.name}</span>
                   {showHint(p) && (
