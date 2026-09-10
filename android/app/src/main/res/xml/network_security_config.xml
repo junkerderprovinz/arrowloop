@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Plain HTTP to loopback, and to nothing else.
+
+  The app talks to its own engine on 127.0.0.1, which is inside the phone and
+  never touches a network. Saying so here is what keeps `usesCleartextTraffic`
+  from meaning what it says on the tin: without this file that flag permits
+  unencrypted HTTP to ANY host, which would quietly weaken every request the
+  engine makes to a real server on somebody's behalf.
+-->
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">127.0.0.1</domain>
+        <domain includeSubdomains="false">localhost</domain>
+    </domain-config>
+    <base-config cleartextTrafficPermitted="false" />
+</network-security-config>

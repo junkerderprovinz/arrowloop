@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Three colours, and they are GlimStone's own carbon values rather than new
+  ones: the window behind the WebView has to match what the interface paints, or
+  the first frame is a flash of the wrong ground and every rotation is another.
+-->
+<resources>
+    <color name="ground">#161616</color>
+    <color name="ink">#f4f4f4</color>
+    <color name="ink_muted">#8d8d8d</color>
+</resources>

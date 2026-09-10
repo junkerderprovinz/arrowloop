@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Only what Android itself shows: the launcher name, the notification and the
+  two states before the interface is on screen. Everything else a person reads
+  in this app comes from the engine, in whichever of its forty-two languages
+  they chose, and copying any of it here would be a second place to keep in
+  step with the first.
+-->
+<resources>
+    <string name="app_name">ArrowLoop</string>
+
+    <string name="channel_engine">Sync engine</string>
+    <string name="channel_engine_why">Shown while ArrowLoop is able to sync in the background.</string>
+
+    <string name="notify_running">ArrowLoop is running</string>
+    <string name="notify_running_why">Ready to sync, and able to keep going while the screen is off.</string>
+    <string name="notify_stop">Stop</string>
+
+    <string name="engine_starting">Starting the engine…</string>
+    <string name="engine_silent">The engine did not answer within thirty seconds. Its own log ends like this:\n\n%1$s</string>
+</resources>

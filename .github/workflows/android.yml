@@ -1,0 +1,112 @@
+name: Android
+
+# Built here rather than on a machine, and the reason is the toolchain. A GitHub
+# runner arrives with the Android SDK, a JDK and the build tools already on it;
+# assembling that inside a container to build one APK is a day of work whose
+# only product is a second place for the toolchain to drift.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "android/**"
+      - "cmd/**"
+      - "internal/**"
+      - "web/**"
+      - "go.mod"
+      - "go.sum"
+      - ".github/workflows/android.yml"
+  pull_request:
+    paths:
+      - "android/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      # The interface is compiled INTO the engine with go:embed, so it has to
+      # exist before Go builds anything. Skipping this gives a binary that
+      # starts, serves a placeholder and looks like a broken app.
+      - name: Build the interface
+        run: |
+          cd web
+          npm ci
+          npm run build
+
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      # CGO_ENABLED=0 is what makes this work without the NDK at all. Everything
+      # the engine needs is pure Go - modernc.org/sqlite exists precisely so
+      # that is true - and a static binary makes its own syscalls, so it runs on
+      # Android's bionic exactly as it does on glibc.
+      #
+      # The name is not a choice. Since Android 10 an app may not execute a file
+      # out of its own data directory, so the binary has to travel in the native
+      # library directory, and only files matching lib*.so are put there.
+      - name: Build the engine for both architectures
+        env:
+          CGO_ENABLED: "0"
+        run: |
+          set -eux
+          for pair in "arm64:arm64-v8a" "amd64:x86_64"; do
+            goarch="${pair%%:*}"
+            abi="${pair##*:}"
+            mkdir -p "android/app/src/main/jniLibs/${abi}"
+            GOOS=linux GOARCH="${goarch}" go build \
+              -trimpath -ldflags="-s -w" \
+              -o "android/app/src/main/jniLibs/${abi}/libarrowloop.so" \
+              ./cmd/arrowloop
+          done
+          ls -la android/app/src/main/jniLibs/*/
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Assemble
+        working-directory: android
+        run: gradle --no-daemon assembleRelease
+
+      # Unsigned on purpose. Signing needs a keystore that only jdp has, and a
+      # workflow that quietly signs with a throwaway key produces an APK that
+      # installs once and can never be updated - every later build would be a
+      # different app as far as Android is concerned.
+      - name: Name the outputs
+        working-directory: android
+        run: |
+          set -eux
+          mkdir -p out
+          for f in app/build/outputs/apk/release/*.apk; do
+            base="$(basename "$f")"
+            cp "$f" "out/arrowloop-${base}"
+          done
+          ls -la out/
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: arrowloop-android
+          path: android/out/*.apk
+          if-no-files-found: error
+          retention-days: 14

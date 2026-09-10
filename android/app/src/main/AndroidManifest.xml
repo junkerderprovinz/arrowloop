@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- The engine reaches cloud targets over the network. Nothing else here
+         needs the internet, and the app talks to its OWN engine over loopback,
+         which needs no permission at all. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- Keeping a sync alive while the screen is off is what a foreground
+         service is FOR, and since Android 14 the type has to be declared
+         alongside a permission that matches it. dataSync is the honest one:
+         this moves files between two places on somebody's behalf. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+
+    <!-- The notification IS the foreground service on Android 13 and up:
+         without the permission the service still runs and its notification is
+         silently dropped, which leaves a sync going with nothing on screen
+         saying so. Asked for at the point it is needed rather than at launch. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- A scheduled sync that stops existing when the phone is rebooted is a
+         scheduled sync nobody can rely on. -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <application
+        android:name=".ArrowLoopApp"
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.ArrowLoop"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:usesCleartextTraffic="true">
+        <!-- usesCleartextTraffic is for 127.0.0.1 and nothing else, and the
+             network security config below says exactly that: the loopback
+             address may be plain HTTP, everything else may not. Without the
+             config this flag would also permit plain HTTP to any server on the
+             internet, which is not what is being asked for. -->
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:configChanges="orientation|screenSize|keyboardHidden|uiMode"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name=".EngineService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
+
+        <receiver
+            android:name=".BootReceiver"
+            android:exported="true"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>

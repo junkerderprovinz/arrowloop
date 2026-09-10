@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!--
+      No action bar. The interface has its own header and its own navigation,
+      and a second bar above them would be Android's idea of this app stacked on
+      top of the app's own.
+    -->
+    <style name="Theme.ArrowLoop" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@color/ground</item>
+        <item name="android:statusBarColor">@color/ground</item>
+        <item name="android:navigationBarColor">@color/ground</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+    </style>
+</resources>
