@@ -117,6 +117,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("PUT /api/remotes/{name}", s.saveRemote)
 	mux.HandleFunc("DELETE /api/remotes/{name}", s.deleteRemote)
 	mux.HandleFunc("POST /api/remotes/{name}/check", s.checkRemote)
+	mux.HandleFunc("GET /api/remotes/{name}/about", s.aboutRemote)
 
 	// An address under /api that nothing has claimed is a mistake, and it has
 	// to look like one.

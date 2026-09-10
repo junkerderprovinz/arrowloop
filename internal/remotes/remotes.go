@@ -203,6 +203,61 @@ func Check(ctx context.Context, name string) error {
 	return nil
 }
 
+// Usage is how full a target is, as far as the target is willing to say.
+//
+// Every field is a POINTER because "unknown" is the common answer and it is not
+// zero. A bucket store has no size: S3 will happily take another terabyte and
+// has no notion of a quota to report, so Total there is genuinely absent, while
+// a full disk reports Free as a real zero. Collapsing those two into the same
+// number puts "0 bytes free" on a target that has no limit at all, which reads
+// as an emergency.
+type Usage struct {
+	// Supported is false when the backend has no way to answer at all, which is
+	// the honest state for most bucket stores and for a plain SFTP login.
+	Supported bool   `json:"supported"`
+	Total     *int64 `json:"total,omitempty"`
+	Used      *int64 `json:"used,omitempty"`
+	Free      *int64 `json:"free,omitempty"`
+	Trashed   *int64 `json:"trashed,omitempty"`
+	Other     *int64 `json:"other,omitempty"`
+}
+
+// About asks a target how much room is left on it.
+//
+// jdp asked for this among the small ones, and it answers the question a person
+// has BEFORE a sync rather than after: a job that copies eighty gigabytes onto a
+// cloud drive with twelve left fails eighty gigabytes in, having spent an
+// evening on it, and the number that would have said so was one request away.
+//
+// A backend that does not implement it is not an error. rclone's own `about`
+// prints a refusal for those, and so does this: `Supported: false` travels to
+// the screen and the screen says nothing about space rather than guessing.
+func About(ctx context.Context, name string) (Usage, error) {
+	f, err := rclonefs.NewFs(ctx, name+":")
+	if err != nil {
+		return Usage{}, err
+	}
+	ask := f.Features().About
+	if ask == nil {
+		return Usage{}, nil
+	}
+	got, err := ask(ctx)
+	if err != nil {
+		return Usage{}, err
+	}
+	if got == nil {
+		return Usage{}, nil
+	}
+	return Usage{
+		Supported: true,
+		Total:     got.Total,
+		Used:      got.Used,
+		Free:      got.Free,
+		Trashed:   got.Trashed,
+		Other:     got.Other,
+	}, nil
+}
+
 // isEmptyTarget reports whether an error only means the target does not exist
 // yet, which is a perfectly good state for a remote somebody has just set up.
 func isEmptyTarget(err error) bool {

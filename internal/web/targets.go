@@ -145,3 +145,25 @@ func (s *Server) checkRemote(w http.ResponseWriter, r *http.Request) {
 	}
 	writeJSON(w, http.StatusOK, map[string]any{"ok": true})
 }
+
+// aboutRemote reports how full a target is.
+//
+// Its own address rather than a field on the target listing, and that is the
+// load-bearing decision: this asks the SERVER, over the network, once per
+// target. Folded into the listing it would make opening the targets page a
+// round of requests to every cloud account somebody has ever configured, so a
+// page that used to be instant would sit there for as long as the slowest of
+// them, and a target that is switched off would hold up the ones that are not.
+//
+// Asked for one target at a time, on request, it costs nothing until somebody
+// wants the number.
+func (s *Server) aboutRemote(w http.ResponseWriter, r *http.Request) {
+	usage, err := remotes.About(r.Context(), r.PathValue("name"))
+	if err != nil {
+		// Same shape as the check above and for the same reason: a target that
+		// cannot be reached is an answer, not a broken request.
+		writeJSON(w, http.StatusOK, map[string]any{"supported": false, "reason": err.Error()})
+		return
+	}
+	writeJSON(w, http.StatusOK, usage)
+}

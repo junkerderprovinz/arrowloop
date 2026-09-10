@@ -46,6 +46,26 @@ export type Remote = {
   settings: { key: string; value: string; secret: boolean }[]
 }
 
+/**
+ * How full a target is.
+ *
+ * Every figure is optional and its ABSENCE means "this target does not know",
+ * which is the ordinary answer for a bucket store. That is a different fact
+ * from a figure of zero, which means a genuinely full disk, and the two must
+ * not be allowed to render the same.
+ */
+export type Usage = {
+  /** False when the backend has no way to answer, which is not an error. */
+  supported: boolean
+  total?: number
+  used?: number
+  free?: number
+  trashed?: number
+  other?: number
+  /** Present only when the target was asked and refused. */
+  reason?: string
+}
+
 /** One kind of storage this build can reach, described by the backend itself. */
 /**
  * A PROVIDER is what somebody is looking for; a BACKEND is what rclone speaks.
@@ -622,6 +642,20 @@ export const api = {
     request<{ ok: boolean; reason?: string }>(`/api/remotes/${encodeURIComponent(name)}/check`, {
       method: 'POST',
     }),
+
+  /**
+   * How full a target is, as far as the target is willing to say.
+   *
+   * Every number is OPTIONAL and absent means unknown, which is the common
+   * answer: a bucket store has no size to report, and treating a missing figure
+   * as zero would put "nothing free" on a target that has no limit at all.
+   *
+   * Its own request rather than a field on the target listing, because this one
+   * goes over the network: folded into the list it would make opening the page
+   * a round trip to every cloud account ever configured.
+   */
+  aboutRemote: (name: string) =>
+    request<Usage>(`/api/remotes/${encodeURIComponent(name)}/about`),
 
   /**
    * What this build can do. Every build answers, including the ones that can do

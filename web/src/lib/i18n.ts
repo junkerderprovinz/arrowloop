@@ -331,6 +331,9 @@ export const en = {
   'targets.check': 'Check',
   'targets.checking': 'Checking',
   'targets.checkOk': 'Reached it',
+  'targets.spaceTotal': '{total} in total',
+  'targets.spaceUsed': '{used} in use',
+  'targets.spaceFree': '{free} of {total} free',
   'targets.checkFailed': 'Could not reach it',
   'targets.checkHint':
     'Saving a credential proves nothing. This opens the target and lists it, which is the only way to know the settings are right.',
@@ -804,6 +807,9 @@ export const de: Translations = {
   'targets.check': 'Prüfen',
   'targets.checking': 'Prüft',
   'targets.checkOk': 'Erreicht',
+  'targets.spaceTotal': '{total} insgesamt',
+  'targets.spaceUsed': '{used} belegt',
+  'targets.spaceFree': '{free} von {total} frei',
   'targets.checkFailed': 'Nicht erreichbar',
   'targets.checkHint':
     'Ein gespeichertes Kennwort beweist nichts. Hier wird das Ziel geöffnet und aufgelistet, und nur das zeigt, ob die Angaben stimmen.',

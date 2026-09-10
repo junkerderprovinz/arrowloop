@@ -11,7 +11,8 @@ import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
 import { IconCheck, IconCopy, IconDelete, IconEdit } from '../components/glyphs'
 import { Choice, Field, Secret, Text } from '../components/Field'
 import { ToggleRow } from '../components/ToggleRow'
-import { api, type Backend, type Provider, type Remote, type Volume } from '../lib/api'
+import { api, type Backend, type Provider, type Remote, type Usage, type Volume } from '../lib/api'
+import { bytes } from '../lib/bytes'
 import { useT } from '../lib/i18n'
 import { hasOptionLabel, optionExplain, optionLabel } from '../lib/optionNames'
 import { Since } from './Jobs'
@@ -248,6 +249,18 @@ function RemoteRow({
   const { t } = useT()
   const [checking, setChecking] = useState(false)
   const [result, setResult] = useState<{ ok: boolean; reason?: string } | null>(null)
+  /**
+   * How full this target is, fetched alongside the check.
+   *
+   * On the SAME press rather than on a button of its own: the check already
+   * opens a connection, and a second control that opens another one asks
+   * somebody to press twice for two halves of "is this target all right".
+   *
+   * Fetched only after the check SUCCEEDS. Asking a target that just refused
+   * the connection how much room it has produces a second copy of the same
+   * refusal, one line below the first.
+   */
+  const [usage, setUsage] = useState<Usage | null>(null)
   // Deleting a target takes its credentials with it, and nothing here can put
   // them back, so this one asks. Forgetting a drive does not: the marker stays
   // on the disk and plugging it in brings it straight back.
@@ -256,8 +269,20 @@ function RemoteRow({
   async function check() {
     setChecking(true)
     setResult(null)
+    setUsage(null)
     try {
-      setResult(await api.checkRemote(remote.name))
+      const answer = await api.checkRemote(remote.name)
+      setResult(answer)
+      if (answer.ok) {
+        // Its own failure is silent. Space is the extra a working target can
+        // offer, and a target that answered the check is fine whether or not
+        // it also cares to say how full it is.
+        try {
+          setUsage(await api.aboutRemote(remote.name))
+        } catch {
+          setUsage(null)
+        }
+      }
     } catch (e) {
       setResult({ ok: false, reason: (e as Error).message })
     } finally {
@@ -292,6 +317,7 @@ function RemoteRow({
         {result && !result.ok && result.reason && (
           <p className="mt-1 text-xs text-statusFail">{result.reason}</p>
         )}
+        {usage && <Space usage={usage} />}
       </div>
       <div className="flex shrink-0 items-center gap-1.5">
         {/* The one thing somebody came to this row to do stays visible; the
@@ -342,6 +368,68 @@ function RemoteRow({
           }}
         />
       )}
+    </div>
+  )
+}
+
+/**
+ * How full a target is, drawn only as far as the target actually said.
+ *
+ * jdp asked for the space per target, and the interesting part is what happens
+ * when there ISN'T one. Most cloud targets cannot answer: a bucket store has no
+ * quota to report and will take another terabyte, so `supported` comes back
+ * false and this draws nothing at all rather than a bar at zero. A bar at zero
+ * on a healthy bucket reads as a disk about to fill up, which is the opposite
+ * of the truth.
+ *
+ * The bar needs BOTH a total and a used figure, and some backends give one
+ * without the other. With only half of the pair the figure is still worth
+ * saying, so the words appear without the bar.
+ *
+ * The colour is a real warning rather than decoration: past nine tenths, a sync
+ * that would have worked last week is about to stop halfway and leave two sides
+ * in a state nobody chose.
+ */
+function Space({ usage }: { usage: Usage }) {
+  const { t } = useT()
+  if (!usage.supported) return null
+
+  const total = usage.total
+  // Used, or worked out from the pair - a target that reports free and total
+  // has said what is used without spelling it out.
+  const used =
+    usage.used ?? (total !== undefined && usage.free !== undefined ? total - usage.free : undefined)
+  const share = total && total > 0 && used !== undefined ? Math.min(1, used / total) : undefined
+
+  const words =
+    usage.free !== undefined && total !== undefined
+      ? t('targets.spaceFree', { free: bytes(usage.free), total: bytes(total) })
+      : used !== undefined
+        ? t('targets.spaceUsed', { used: bytes(used) })
+        : total !== undefined
+          ? t('targets.spaceTotal', { total: bytes(total) })
+          : null
+  if (!words) return null
+
+  return (
+    <div className="mt-1.5 flex items-center gap-2">
+      {share !== undefined && (
+        <div
+          className="h-1 w-24 shrink-0 overflow-hidden bg-carbon-surface3"
+          style={{ borderRadius: 'var(--radius-pill)' }}
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={Math.round(share * 100)}
+          aria-label={words}
+        >
+          <div
+            className={`h-full ${share >= 0.9 ? 'bg-statusFailSolid' : share >= 0.75 ? 'bg-statusWarnSolid' : 'bg-accent'}`}
+            style={{ width: `${share * 100}%` }}
+          />
+        </div>
+      )}
+      <span className="text-xs tabular-nums text-carbon-textMuted">{words}</span>
     </div>
   )
 }
