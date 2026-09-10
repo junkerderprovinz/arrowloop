@@ -765,6 +765,15 @@ function optionHint(
     if (provider?.urlHint) about.push(t('help.addressShape', { shape: provider.urlHint }))
   }
 
+  // The product's own sentence REPLACES the general one here rather than
+  // following it, and that is not tidiness. The general text for a password
+  // hedges - "use an app password where the provider offers one" - because it
+  // has to hold for every backend; the specific one knows. Both together read
+  // as the bubble saying the same thing twice with different wording, which is
+  // what got the bubbles reported in the first place ("die texte der i
+  // infobubble sind nicht richtig"). Measured on the deployed build: the
+  // OpenCloud password bubble said "App-Passwort" in two consecutive sentences.
+  let general: string | undefined = own
   if (SECRET_FIELDS.has(o.name) && provider?.auth) {
     const sentence: Partial<Record<NonNullable<Provider['auth']>, string>> = {
       apppassword: t('help.authAppPassword'),
@@ -774,11 +783,14 @@ function optionHint(
       login: t('help.authLogin'),
     }
     const said = sentence[provider.auth]
-    if (said) about.push(said)
+    if (said) {
+      about.push(said)
+      general = undefined
+    }
     if (provider.authUrl) about.push(t('help.authWhere', { url: provider.authUrl }))
   }
 
-  if (own || about.length > 0) return [own, ...about].filter(Boolean).join(' ')
+  if (general || about.length > 0) return [general, ...about].filter(Boolean).join(' ')
   // No explanation of our own: rclone's, but only when it says more than the
   // label already does. Its own option name comes along there, because
   // somebody reading rclone's documentation is the one this text is for.

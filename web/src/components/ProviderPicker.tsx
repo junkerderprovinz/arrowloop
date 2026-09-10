@@ -168,7 +168,12 @@ export function ProviderPicker({
         </p>
       )}
 
-      <ul className="mx-auto flex max-h-72 w-full max-w-sm flex-col gap-1 overflow-y-auto">
+      {/* Taller than KnightLoader's max-h-72, and for a reason its own list
+          does not have: KL's rows are 18px icons at about 34px a row and eight
+          of them fit, while a 40px brand mark makes these rows 56px and the
+          same height showed FIVE entries out of fifty-one. The number that
+          matters is rows on screen, not the pixel value copied across. */}
+      <ul className="mx-auto flex max-h-96 w-full max-w-sm flex-col gap-1 overflow-y-auto">
         {shown.map((p) => (
           <li key={p.id}>
             <button
