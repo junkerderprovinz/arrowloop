@@ -142,9 +142,25 @@ FLOOR = 2.0
 TARGET = 4.5
 
 
+# The colour KEYWORDS that turn up in these files, and the reason they are
+# handled at all.
+#
+# put.io's mark writes its light half as `fill="white"`, and every measurement
+# in this file looked for a hex or an `rgb(...)` - so that half was invisible to
+# the readability check, which then flipped the other half and left this one
+# alone. It went unnoticed for as long as the mark carried its own dark plate:
+# white on its own plate reads fine, and dropping the plate is what exposed it.
+#
+# Two keywords rather than the full CSS table on purpose. White and black are
+# exactly the two that vanish against one of the two grounds, and anything else
+# is refused loudly below rather than passed through - a `fill="navy"` that
+# nothing measures is the same defect wearing a different word.
+KEYWORDS = {"white": "#ffffff", "black": "#000000"}
+
+
 def _rgb(colour):
-    """`#a00`, `#aa0000` or `rgb(170, 0, 0)` as three 0-255 numbers."""
-    text = colour.strip()
+    """`#a00`, `#aa0000`, `rgb(170, 0, 0)` or a known keyword, as 0-255."""
+    text = KEYWORDS.get(colour.strip().lower(), colour).strip()
     if text.startswith("rgb"):
         parts = re.findall(r"[\d.]+%?", text)[:3]
         if len(parts) < 3:
@@ -300,7 +316,7 @@ def themed(colours, slug):
         if colour not in usable:
             raise SystemExit("FORCE_THEMED names %s in %s, which does not paint with it" % (colour, slug))
         name = "--brand-%s-forced%d" % (slug, len(forced))
-        VARIABLES.append((name, on_dark, on_light))
+        VARIABLES.append((name, _hex(on_dark), _hex(on_light)))
         forced[colour] = "var(%s)" % name
     if forced:
         return forced
@@ -325,10 +341,24 @@ def themed(colours, slug):
             name = "--brand-%s-%d" % (slug, len(minted))
             on_dark = shift(colour, SURFACE_DARK, upward=True) if dark_best < FLOOR else colour
             on_light = shift(colour, SURFACE_LIGHT, upward=False) if light_best < FLOOR else colour
-            VARIABLES.append((name, on_dark, on_light))
+            VARIABLES.append((name, _hex(on_dark), _hex(on_light)))
             minted[key] = name
         swap[colour] = "var(%s)" % minted[key]
     return swap
+
+
+def _hex(colour):
+    """A colour as a hex string, whatever it was written as on the way in.
+
+    Only the OUTPUT is normalised. A keyword is a perfectly good thing to find
+    in somebody else's file, and a perfectly bad thing to emit: the CSS these
+    variables land in is read back by the contrast guard on the other side of
+    the repo, which parses hex and returns nothing for a word. That guard fell
+    over on `--brand-putio-0: white` the moment the keyword became reachable -
+    a blind spot answering a blind spot.
+    """
+    text = KEYWORDS.get(str(colour).strip().lower())
+    return text or colour
 
 
 def apply_swap(source, swap):
@@ -759,7 +789,26 @@ def local(name, slug, note, source, licence):
     # black - and black is exactly what disappears on a dark ground. Saying so
     # explicitly is what lets the readability check below see it at all;
     # Pixeldrain's mark is one such file and was invisible because of it.
-    found = re.findall(r'"(#[0-9a-fA-F]{3,8}|rgb\([^"]*\))"', body + " " + " ".join(root_attrs))
+    painted_text = body + " " + " ".join(root_attrs)
+    found = re.findall(
+        r'"(#[0-9a-fA-F]{3,8}|rgb\([^"]*\)|%s)"' % "|".join(KEYWORDS),
+        painted_text,
+    )
+
+    # Any OTHER word where a colour belongs is refused rather than rendered.
+    # A value nothing here can measure is a value the readability check silently
+    # skips, and the mark then ships half-flipped - which is exactly what put.io
+    # did with `fill="white"` for as long as its own plate hid the consequence.
+    for attribute in ("fill", "stroke"):
+        for value in re.findall(r'%s="([^"]*)"' % attribute, painted_text):
+            if value in ("none", "currentColor", "transparent") or value.startswith("var(") \
+                    or value.startswith("url(") or value.startswith("#") \
+                    or value.startswith("rgb") or value.lower() in KEYWORDS:
+                continue
+            raise SystemExit(
+                "%s paints with %s=\"%s\", which nothing here can measure. Add it to "
+                "KEYWORDS with its hex, or give the file a real colour." % (slug, attribute, value)
+            )
     if not found:
         root_attrs.append('fill="#000000"')
         found = ["#000000"]

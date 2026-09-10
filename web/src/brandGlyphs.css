@@ -38,7 +38,8 @@
   --brand-pcloud-2: #1cd2e6;
   --brand-koofr-0: #71ba05;
   --brand-opendrive-forced0: #ffffff;
-  --brand-putio-0: #FDCE45;
+  --brand-putio-0: #ffffff;
+  --brand-putio-1: #FDCE45;
   --brand-ulozto-forced0: #ffffff;
   --brand-linkbox-0: #fff;
   --brand-gofile-0: #e6ae1e;
@@ -68,7 +69,8 @@
     --brand-pcloud-2: #0d6f7a;
     --brand-koofr-0: #477403;
     --brand-opendrive-forced0: #2b2b2b;
-    --brand-putio-0: #7f5f01;
+    --brand-putio-0: #666666;
+    --brand-putio-1: #7f5f01;
     --brand-ulozto-forced0: #3d3d3d;
     --brand-linkbox-0: #666666;
     --brand-gofile-0: #7c5d0e;
@@ -98,7 +100,8 @@
   --brand-pcloud-2: #0d6f7a;
   --brand-koofr-0: #477403;
   --brand-opendrive-forced0: #2b2b2b;
-  --brand-putio-0: #7f5f01;
+  --brand-putio-0: #666666;
+  --brand-putio-1: #7f5f01;
   --brand-ulozto-forced0: #3d3d3d;
   --brand-linkbox-0: #666666;
   --brand-gofile-0: #7c5d0e;

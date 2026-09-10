@@ -113,6 +113,14 @@ export function ProviderPicker({
    * It matches the HINT as well as the name, which is what makes the protocol
    * entries findable: somebody looking for their NAS types "nas" and the entry
    * is called "SMB / Windows share", whose hint says exactly that.
+   *
+   * The BACKEND is matched from the START of the word rather than anywhere in
+   * it, and that is a correction rather than a nicety. As a plain substring,
+   * searching for "idrive" returned Huawei Drive first, because its backend is
+   * spelt `huaweidrive` and the letters happen to line up. Anchoring it keeps
+   * what the backend match is for - typing "webdav" or "s3" and getting the
+   * things that speak it - without the middle of one name answering for
+   * another.
    */
   const [query, setQuery] = useState('')
   const shown = useMemo(() => {
@@ -122,7 +130,7 @@ export function ProviderPicker({
       (p) =>
         p.name.toLowerCase().includes(needle) ||
         p.hint?.toLowerCase().includes(needle) ||
-        p.backend.toLowerCase().includes(needle),
+        p.backend.toLowerCase().startsWith(needle),
     )
   }, [providers, query])
 
