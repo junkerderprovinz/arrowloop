@@ -234,13 +234,19 @@ export function Sidebar<T extends string>({
     // report - it looked welded to the window while everything else floated.
     // No shadow either, because no card in this app has one: a raised rail
     // beside flat cards would trade one inconsistency for another.
+    // The narrow width is `--rail-narrow`, the house's 85px, and no longer this
+    // app's own sum. It used to be 64px, worked out from the 44px mark plus the
+    // rows' `p-2`; the sibling worked out 96px the same way from its own mark,
+    // and the two rails then did the same job at different widths. The mark
+    // fits the rail now: 44px still sits centred at 85, with more air than it
+    // had.
     <aside
       className={`flex h-full shrink-0 flex-col overflow-hidden rounded-card bg-carbon-sidebar ${
-        narrow ? 'w-16' : 'w-56'
+        narrow ? 'w-(--rail-narrow)' : 'w-56'
       }`}
     >
       {/* The mark above its name, centred. The narrow rail drops the wordmark
-          and shrinks the mark to fit: a large logo in a 64px column is not a
+          and shrinks the mark to fit: a large logo in a narrow column is not a
           smaller logo, it is a cropped one, and the name beside it would have
           nowhere to go. */}
       <button

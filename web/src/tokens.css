@@ -44,6 +44,15 @@
   --radius-control: 0.625rem;
   --radius-pill: 9999px;
 
+  /* The navigation rail's width in glyph mode, where it prints no words. A
+     NUMBER for the whole house, not each app's own sum: derived from the brand
+     mark plus the row padding it gave 64px here and 96px in the sibling, and
+     two rails of different widths doing the same job is what a shared language
+     exists to prevent. The mark fits the rail now, not the rail the mark; the
+     44px mark sits centred at 85 with room on both sides. The wide rail needs
+     no token, being Tailwind's own w-56. */
+  --rail-narrow: 85px;
+
   /* The type scale: a fixed reference table, not an engine — nobody sets
      their own type scale. --text-caption covers three treatments of the
      same size (plain caption, .glim-eyebrow's uppercase label, the info
