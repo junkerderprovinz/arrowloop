@@ -1,5 +1,6 @@
 import { brandMark } from './brandMarks'
 import { IconAction } from './IconAction'
+import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { useLabelMode } from '../lib/glimstone/useLabelMode'
 import { useT } from '../lib/i18n'
 import type { Backend, Provider } from '../lib/api'
@@ -25,11 +26,13 @@ import type { Backend, Provider } from '../lib/api'
  * squares, and these are not icons. Several of these marks are words rather
  * than symbols, and at 18px a 5.3:1 wordmark is three pixels tall.
  *
- * No sub-text on the cloud rows. The name and the mark say it, and a line of
- * explanation under a brand somebody already knows is noise on every row in
- * order to help on none. The protocol rows keep theirs, now at the END of the
- * line rather than under the name, because "SMB" and "WebDAV" genuinely do not
- * say what they are to everybody who arrives here.
+ * No sub-text on the cloud tiles. The name and the mark say it, and a line of
+ * explanation under a brand somebody already knows is noise on every tile in
+ * order to help on none. The protocol tiles keep theirs, because "SMB" and
+ * "WebDAV" genuinely do not say what they are to everybody who arrives here -
+ * but in an (i) bubble at the corner rather than as prose in the tile, which is
+ * the house rule and also what keeps five tiles from being taller than the
+ * fifty around them.
  *
  * ALPHABETICAL, decided in the Go table. A list ordered by "what people reach
  * for first" only helps somebody who already agrees with the ordering; anybody
@@ -142,9 +145,23 @@ export function ProviderPicker({
           Linkbox 5.3:1, Gofile 3.5, Quatrix 3.1 - and a 5.3:1 drawing fitted
           into KL's 56px square is ten pixels tall. Two-across leaves each tile
           wider than it is tall anyway, so the mark gets that width. */}
-      <ul className="mx-auto grid w-full max-w-sm grid-cols-2 gap-3">
+      {/* SCROLLS rather than growing, which the comment above has claimed since
+          the list was rows and the markup never did. jdp: "es soll nur wenig
+          nach unten erweitert werden und die liste soll scrollbar sein."
+
+          Fifty-five providers at two across is twenty-eight rows of 96px, so
+          the card grew past the window and took its own controls - the back
+          button, the unlisted-backends section - somewhere off the bottom with
+          it. A height here means the list moves and the page around it holds
+          still.
+
+          24rem is four tiles deep. Enough that the scroll is obviously a
+          scroll rather than a clipped edge, short enough that the card stays a
+          card. `pe-1` leaves the scrollbar its own lane instead of letting it
+          sit on the right-hand tiles. */}
+      <ul className="mx-auto grid max-h-96 w-full max-w-sm grid-cols-2 gap-3 overflow-y-auto pe-1">
         {providers.map((p) => (
-          <li key={p.id}>
+          <li key={p.id} className="relative">
             <button
               type="button"
               onClick={() => onPick(p)}
@@ -175,14 +192,30 @@ export function ProviderPicker({
                   <span className="block break-words text-dense font-medium leading-tight">
                     {p.name}
                   </span>
-                  {showHint(p) && (
-                    <span className="mt-0.5 block break-words text-caption leading-tight text-carbon-textMuted">
-                      {p.hint}
-                    </span>
-                  )}
                 </span>
               )}
             </button>
+            {/* The protocol rows' explanation, in a bubble at the tile's own
+                top-right corner. jdp: "bei den Server und Freigaben sollen die
+                infotexte in den kacheln in eine i infobubble die rechts oben in
+                der kachel ist."
+
+                Two lines of prose under "WebDAV" made those five tiles taller
+                than the fifty around them, so a grid of one size became a grid
+                of two - and the house rule is that an explanation belongs in a
+                bubble anyway.
+
+                A SIBLING of the button rather than a child, which is the same
+                arrangement KnightLoader's download tiles use and for the same
+                reason: InfoBubble is its own focusable, hoverable element, and
+                nesting it inside the button would make a click on the (i) also
+                fire the tile underneath and open the form for a provider
+                somebody was only reading about. */}
+            {p.hint && showHint(p) && (
+              <span className="absolute end-1.5 top-1.5">
+                <InfoBubble tip={p.hint} />
+              </span>
+            )}
           </li>
         ))}
       </ul>

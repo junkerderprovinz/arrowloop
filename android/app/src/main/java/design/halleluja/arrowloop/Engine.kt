@@ -1,6 +1,7 @@
 package design.halleluja.arrowloop
 
 import android.content.Context
+import android.os.Build
 import android.util.Log
 import java.io.File
 import java.net.HttpURLConnection
@@ -91,19 +92,54 @@ object Engine {
      * second engine on the same port gives one that exits immediately and one
      * that keeps the port, with the log full of a bind error nobody caused.
      */
+    /**
+     * Everything that goes wrong goes in the LOG, not only in logcat.
+     *
+     * This is what the trouble screen reads, and it was empty on the first
+     * phone this was ever installed on - the screen said the engine had not
+     * answered and then showed nothing, because every way of failing before
+     * the process exists writes to logcat, which nobody holding a phone can
+     * see. A diagnostic only the developer can read is not a diagnostic.
+     */
+    private fun note(context: Context, line: String) {
+        try {
+            File(home(context), "engine.log").appendText(line + "\n")
+        } catch (_: Exception) {
+            // Nothing left to try: if the app cannot write its own files
+            // directory, the log is the least of it.
+        }
+        Log.i(TAG, line)
+    }
+
     @Synchronized
     fun start(context: Context) {
         if (answers()) {
             Log.i(TAG, "engine already answering on $ADDRESS")
             return
         }
+        try {
+            File(home(context), "engine.log").writeText("")
+        } catch (_: Exception) {
+        }
         val binary = binary(context)
         if (!binary.exists()) {
-            Log.e(TAG, "no engine at ${binary.absolutePath} - this build shipped without one")
+            note(context, "no engine at ${binary.absolutePath} - this build shipped without one")
             return
         }
+        // Named in the log because both have been the answer on a real device:
+        // a file that is there and not executable, and a build whose engine is
+        // for a different architecture than the phone.
+        note(
+            context,
+            "starting ${binary.name}, ${binary.length()} bytes, " +
+                "executable=${binary.canExecute()}, abi=${Build.SUPPORTED_ABIS.joinToString(",")}",
+        )
         ensureConfig(context)
 
+        // Fresh each start. Appending forever means the trouble screen shows
+        // the last twelve lines of whatever run happened to end last, which on
+        // a second attempt is the PREVIOUS failure - the most misleading thing
+        // a diagnostic can do is describe a problem that is already fixed.
         val log = File(home(context), "engine.log")
         val builder = ProcessBuilder(
             binary.absolutePath, "web", "-config", config(context).absolutePath,
@@ -120,9 +156,31 @@ object Engine {
         process = try {
             builder.start()
         } catch (e: Exception) {
-            Log.e(TAG, "the engine would not start", e)
+            note(context, "the engine would not start: ${e.javaClass.simpleName}: ${e.message}")
             null
         }
+
+        // A process that has ALREADY exited is the case the trouble screen
+        // could say nothing about: killed by a signal it could not write a
+        // traceback for, the log stays empty, and the screen reports thirty
+        // seconds of silence without a reason. Watched on its own thread so
+        // nothing here blocks the service's start.
+        val started = process ?: return
+        Thread {
+            val code = try {
+                started.waitFor()
+            } catch (_: InterruptedException) {
+                return@Thread
+            }
+            // 0 is the engine having been asked to stop, which is not a fault.
+            if (code != 0) {
+                // Above 128 the process was killed by a signal, and the number
+                // names which: 139 is SIGSEGV, 159 is SIGSYS - the one Android
+                // sends for a system call its seccomp filter forbids.
+                val why = if (code > 128) " (killed by signal ${code - 128})" else ""
+                note(context, "the engine exited with code $code$why")
+            }
+        }.apply { isDaemon = true }.start()
     }
 
     /**

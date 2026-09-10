@@ -6,6 +6,7 @@ import android.content.ActivityNotFoundException
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.os.SystemClock
 import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -127,6 +128,7 @@ class MainActivity : AppCompatActivity() {
 
         EngineService.start(this)
         waitForEngine()
+        askForStorageOnce()
     }
 
     /**
@@ -145,29 +147,55 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun wireStorage() {
-        findViewById<View>(R.id.storage_grant).setOnClickListener {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-                askLegacyStorage.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                return@setOnClickListener
-            }
-            // The targeted page first, the list of every app as a fallback:
-            // some builds refuse the per-package form, and an unhandled intent
-            // here would crash the app on the one button that is supposed to
-            // fix things.
-            try {
-                startActivity(Storage.manageIntent(this))
-            } catch (_: ActivityNotFoundException) {
-                try {
-                    startActivity(Storage.manageIntentFallback())
-                } catch (_: ActivityNotFoundException) {
-                    Toast.makeText(this, R.string.storage_no_page, Toast.LENGTH_LONG).show()
-                }
-            }
-        }
+        findViewById<View>(R.id.storage_grant).setOnClickListener { openStorageSettings() }
         findViewById<View>(R.id.storage_later).setOnClickListener {
             storageDismissed = true
             storage.visibility = View.GONE
         }
+    }
+
+    private fun openStorageSettings() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            askLegacyStorage.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            return
+        }
+        // The targeted page first, the list of every app as a fallback: some
+        // builds refuse the per-package form, and an unhandled intent here
+        // would crash the app on the one route that is supposed to fix things.
+        try {
+            startActivity(Storage.manageIntent(this))
+        } catch (_: ActivityNotFoundException) {
+            try {
+                startActivity(Storage.manageIntentFallback())
+            } catch (_: ActivityNotFoundException) {
+                Toast.makeText(this, R.string.storage_no_page, Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    /**
+     * Asked FOR you the first time, so the only thing left is the switch.
+     *
+     * jdp: "Können wir in der AL App nicht automatisch nach der berechtigung
+     * fragen lassen so das man dann nur noch Zulassen anklicken muss?" As
+     * close as Android allows, and the limit is worth writing down:
+     * MANAGE_EXTERNAL_STORAGE has no dialog. It is the one permission Google
+     * deliberately routed through a full settings page rather than a
+     * two-button prompt, precisely because it is the broadest one there is -
+     * there is no "Allow" to hand somebody, only a page with one switch on it.
+     *
+     * So the app opens that page itself on the first launch that finds the
+     * permission missing, and the panel behind it is what you come back to if
+     * you did not flip it. ONCE per install rather than every launch: a
+     * settings screen that appears unbidden every time you open an app is the
+     * behaviour people uninstall over.
+     */
+    private fun askForStorageOnce() {
+        val prefs = getSharedPreferences("arrowloop", MODE_PRIVATE)
+        if (prefs.getBoolean(ASKED_STORAGE, false)) return
+        if (!Storage.possible || Storage.granted(this)) return
+        prefs.edit().putBoolean(ASKED_STORAGE, true).apply()
+        openStorageSettings()
     }
 
     private fun showStorageIfNeeded() {
@@ -196,26 +224,50 @@ class MainActivity : AppCompatActivity() {
      */
     private fun waitForEngine() {
         CoroutineScope(Dispatchers.Main).launch {
-            repeat(60) {
+            // A DEADLINE rather than a count of attempts, because the count was
+            // not what it claimed. Sixty rounds of "poll, then wait half a
+            // second" reads like thirty seconds and is not: the poll itself
+            // could take its own timeout, so the screen said thirty and could
+            // sit there for two minutes.
+            val until = SystemClock.elapsedRealtime() + WAIT_MS
+            while (SystemClock.elapsedRealtime() < until) {
                 if (withContext(Dispatchers.IO) { Engine.answers() }) {
                     web.loadUrl(Engine.ORIGIN)
                     return@launch
                 }
-                delay(500)
+                delay(400)
             }
-            // Thirty seconds without an answer is not slowness any more. What
-            // goes on screen is the engine's own log, because the reason is in
-            // it and a person with a broken app deserves the reason rather than
-            // a shrug.
+            // Silence this long is not slowness any more. What goes on screen
+            // is the engine's own log, because the reason is in it and a person
+            // with a broken app deserves the reason rather than a shrug.
             waiting.visibility = View.GONE
             trouble.visibility = View.VISIBLE
-            trouble.text = getString(R.string.engine_silent, lastLines())
+            trouble.text = getString(R.string.engine_silent, WAIT_MS / 1000, lastLines())
         }
     }
 
     private fun lastLines(): String = try {
-        java.io.File(Engine.home(this), "engine.log").readLines().takeLast(12).joinToString("\n")
-    } catch (_: Exception) {
-        ""
+        val lines = java.io.File(Engine.home(this), "engine.log").readLines()
+        // Empty is a real answer and has to look like one. It happened on the
+        // first phone this was installed on: the screen said the engine had
+        // not answered and then showed nothing at all, which reads as the
+        // screen being broken rather than as the engine having said nothing.
+        if (lines.isEmpty()) getString(R.string.engine_no_log)
+        else lines.takeLast(20).joinToString("\n")
+    } catch (e: Exception) {
+        getString(R.string.engine_no_log_because, e.javaClass.simpleName, e.message ?: "")
+    }
+
+    companion object {
+        /** How long the engine gets before the screen stops waiting for it.
+         *
+         *  Sixty seconds rather than thirty, and that is measured rather than
+         *  generous: the engine is a 79 MB static binary carrying every rclone
+         *  backend, and a cold start has to page all of it in on a phone that
+         *  may also be installing it. */
+        private const val WAIT_MS = 60_000L
+
+        /** Whether the storage page has been opened for this install already. */
+        private const val ASKED_STORAGE = "asked.storage"
     }
 }

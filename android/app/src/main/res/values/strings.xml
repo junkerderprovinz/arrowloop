@@ -17,7 +17,9 @@
     <string name="notify_stop">Stop</string>
 
     <string name="engine_starting">Starting the engine…</string>
-    <string name="engine_silent">The engine did not answer within thirty seconds. Its own log ends like this:\n\n%1$s</string>
+    <string name="engine_silent">The engine did not answer within %1$d seconds. Its own log ends like this:\n\n%2$s</string>
+    <string name="engine_no_log">(the log is empty - the engine wrote nothing at all)</string>
+    <string name="engine_no_log_because">(the log could not be read: %1$s %2$s)</string>
 
     <string name="storage_title">ArrowLoop needs access to your files</string>
     <string name="storage_why">To sync a folder, ArrowLoop has to be able to read and write it. Android grants that on its own settings page, which the button below opens.\n\nWithout it, ArrowLoop can still run, but only inside its own private folder: your photos, your downloads and your documents stay out of reach.</string>
