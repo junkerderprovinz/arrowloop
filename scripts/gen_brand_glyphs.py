@@ -209,7 +209,60 @@ FORCE_THEMED = {
     # mark keeps its shape and its blue on both grounds. The brand's own
     # light-ground version would be better than this and is worth asking for.
     "opendrive": {"#fff": ("#ffffff", "#2b2b2b")},
+    # Uloz.to's asset is white on a #3d3d3d plate. The plate is dropped as a
+    # full-bleed rectangle now (see _drop_plate), and the whole mark is that one
+    # white - so on a light page it would be white on white, which is not a
+    # faint mark but no mark at all. It takes the plate's own tone there, the
+    # same trade OpenDrive makes above, and the brand's light-ground version
+    # would be better than either and is worth asking for.
+    "ulozto": {"#fff": ("#ffffff", "#3d3d3d")},
 }
+
+
+def _drop_plate(root, box, slug):
+    """Remove a rectangle that covers the whole canvas.
+
+    A brand's own asset is often drawn on its plate: a full-bleed rectangle in
+    the brand's dark, with the mark in white on top. That is right for a press
+    kit and wrong in a list of fifty logos, where every OTHER mark sits on the
+    page and this one arrives in its own box. jdp reported it twice, about two
+    different files - "opendrive logo ohne den dunklen hintergrund" and, of
+    Uloz.to, "hat noch ein hintergrund".
+
+    Measured rather than listed by name, because a list of names only ever
+    contains the files somebody has already complained about. A rectangle at
+    the origin with the canvas's own width and height is not part of any mark:
+    it is the ground the mark was placed on.
+
+    What it does NOT do is guess about colour. Dropping the plate can leave a
+    white mark invisible on a light page, and the answer to that is FORCE_THEMED
+    above, which says so per file and in as many words.
+    """
+    try:
+        bx, by, bw, bh = (float(v) for v in box.replace(",", " ").split())
+    except ValueError:
+        return
+
+    def near(a, b):
+        # A hair of tolerance: these come out of drawing programs, and a plate
+        # written as 1999.9 is still a plate.
+        return abs(a - b) <= max(1.0, abs(b) * 0.005)
+
+    parents = {child: parent for parent in root.iter() for child in parent}
+    for el in [e for e in root.iter() if e.tag == SVG_NS + "rect"]:
+        x = float(el.get("x", 0) or 0)
+        y = float(el.get("y", 0) or 0)
+        w = el.get("width")
+        h = el.get("height")
+        if not w or not h:
+            continue
+        try:
+            w, h = float(w), float(h)
+        except ValueError:
+            continue
+        if near(x, bx) and near(y, by) and near(w, bw) and near(h, bh):
+            parents[el].remove(el)
+            print("  %s: dropped a full-bleed plate (%gx%g)" % (slug, w, h))
 
 
 def themed(colours, slug):
@@ -360,7 +413,7 @@ LOCAL = [
     ("IconSugarsync", "sugarsync", "SugarSync", JDP, BRAND),
     ("IconPikpak", "pikpak", "PikPak", JDP, BRAND),
     ("IconInternxt", "internxt", "Internxt", JDP, BRAND),
-    ("IconUlozto", "ulozto", "Uloz.to", JDP, BRAND),
+    ("IconUlozto", "ulozto", "Ulož.to", JDP, BRAND),
     ("IconQuatrix", "quatrix", "Quatrix", JDP, BRAND),
     ("IconLinkbox", "linkbox", "Linkbox", JDP, BRAND),
     ("IconGofile", "gofile", "Gofile", JDP, BRAND),
@@ -663,6 +716,8 @@ def local(name, slug, note, source, licence):
         if not w or not h:
             raise SystemExit("brand-paths/%s.svg has neither viewBox nor size" % slug)
         box = "0 0 %s %s" % (w, h)
+
+    _drop_plate(root, box, slug)
 
     ids = {}
     for el in root.iter():

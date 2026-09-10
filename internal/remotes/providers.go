@@ -204,7 +204,11 @@ var providers = []Provider{
 	{ID: "filen", Name: "Filen", Backend: "filen", Group: GroupCloud, Mark: "IconFilen"},
 	{ID: "filescom", Name: "Files.com", Backend: "filescom", Group: GroupCloud, Mark: "IconFilesCom"},
 	{ID: "huaweidrive", Name: "Huawei Drive", Backend: "huaweidrive", Group: GroupCloud, Mark: "IconHuaweiCloud"},
-	{ID: "ulozto", Name: "Uloz.to", Backend: "ulozto", Group: GroupCloud, Mark: "IconUlozto"},
+	// "Ulož.to" with the caron, which is how the company writes it. jdp:
+	// "überm z fehlt das zeichen." The ID stays ASCII on purpose - it is what
+	// the interface sends back, and an identifier that needs a keyboard layout
+	// is an identifier waiting to be mistyped.
+	{ID: "ulozto", Name: "Ulož.to", Backend: "ulozto", Group: GroupCloud, Mark: "IconUlozto"},
 	{ID: "quatrix", Name: "Quatrix", Backend: "quatrix", Group: GroupCloud, Mark: "IconQuatrix"},
 	{ID: "linkbox", Name: "Linkbox", Backend: "linkbox", Group: GroupCloud, Mark: "IconLinkbox"},
 	{ID: "gofile", Name: "Gofile", Backend: "gofile", Group: GroupCloud, Mark: "IconGofile"},
