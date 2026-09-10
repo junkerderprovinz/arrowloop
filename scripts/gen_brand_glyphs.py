@@ -18,6 +18,7 @@ WRITES web/src/components/brandGlyphs.tsx, which also holds the GitHub mark that
 was added by hand before this script existed - so the file is regenerated whole
 and the GitHub entry is part of the table below rather than being preserved.
 """
+import colorsys
 import io
 import json
 import os
@@ -108,6 +109,148 @@ HEAD = '''import type { SVGProps } from 'react'
 '''
 
 
+# ---------------------------------------------------------------------------
+# Marks that vanish into the surface they sit on.
+#
+# "Original und farbig" has one failure mode, and it is not a matter of taste:
+# a brand whose logo is navy or black disappears on a dark ground, and one
+# whose logo is near-white disappears on a light one. Measured on the running
+# app, ShareFile reached a contrast of 1.07 against the dark row and OpenCloud
+# 1.09 - which is to say they were there and could not be seen. Making the
+# logos bigger made the invisible ones more conspicuously invisible.
+#
+# jdp: "lass sie flippen. auf dunklem hintergrund sollen sie hell sein, auf
+# hellem hintergrund sollen sie so bleiben." So a mark that cannot be read
+# against one ground gets a variant for that ground ONLY, keeping its own hue
+# and saturation and moving only its lightness. It is the same logo in the same
+# colour family, turned up or down until it can be seen, which is what a brand
+# guideline does for its own dark backgrounds.
+#
+# Decided HERE, from the colours themselves, rather than in a hand-kept list of
+# names: a list of "these six are too dark" is wrong the moment a mark is added
+# or a set changes a hex, and nothing would say so.
+SURFACE_DARK = "#393939"   # --carbon-surface2, dark theme: what a row is filled with
+SURFACE_LIGHT = "#e8e8e8"  # --carbon-surface2, light theme
+
+# Below this, the mark is not readable against that ground. The number is where
+# the measurement and the eye agree: Dropbox's blue sits at 2.28 and reads
+# perfectly well; Filen's black at 1.90 does not.
+FLOOR = 2.0
+# What a flipped colour has to reach. 4.5 is the text threshold rather than the
+# 3.0 for graphics, because a mark this small is closer to a letterform than to
+# an illustration.
+TARGET = 4.5
+
+
+def _rgb(colour):
+    """`#a00`, `#aa0000` or `rgb(170, 0, 0)` as three 0-255 numbers."""
+    text = colour.strip()
+    if text.startswith("rgb"):
+        parts = re.findall(r"[\d.]+%?", text)[:3]
+        if len(parts) < 3:
+            return None
+        # `rgb(28.2%,58%,99.6%)` is how a Cairo-exported gradient stop writes
+        # itself, and reading those three as 0-255 turns a bright blue into a
+        # navy - which is exactly the mistake this whole section exists to
+        # catch, so getting it wrong here would flip a mark that reads fine.
+        return tuple(
+            int(round(float(p[:-1]) * 255 / 100)) if p.endswith("%") else int(float(p))
+            for p in parts
+        )
+    text = text.lstrip("#")
+    if len(text) == 3:
+        text = "".join(c * 2 for c in text)
+    if len(text) != 6:
+        return None
+    return tuple(int(text[i:i + 2], 16) for i in (0, 2, 4))
+
+
+def _luminance(rgb):
+    def channel(value):
+        value /= 255.0
+        return value / 12.92 if value <= 0.03928 else ((value + 0.055) / 1.055) ** 2.4
+    r, g, b = (channel(v) for v in rgb)
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b
+
+
+def contrast(one_colour, other):
+    a, b = sorted((_luminance(_rgb(one_colour)), _luminance(_rgb(other))), reverse=True)
+    return (a + 0.05) / (b + 0.05)
+
+
+def shift(colour, surface, upward):
+    """The same colour, moved along lightness until it can be seen.
+
+    Hue and saturation are untouched: this is the brand's colour at a different
+    brightness, not a different colour. Black and white have no hue to keep, so
+    they simply become their opposite end, which is what one wants anyway.
+    """
+    rgb = _rgb(colour)
+    hue, light, sat = colorsys.rgb_to_hls(*(v / 255.0 for v in rgb))
+    step = 0.02 if upward else -0.02
+    limit = 0.94 if upward else 0.10
+    while (light < limit) if upward else (light > limit):
+        light += step
+        candidate = "#%02x%02x%02x" % tuple(
+            round(v * 255) for v in colorsys.hls_to_rgb(hue, min(max(light, 0.0), 1.0), sat)
+        )
+        if contrast(candidate, surface) >= TARGET:
+            return candidate
+    return "#%02x%02x%02x" % tuple(
+        round(v * 255) for v in colorsys.hls_to_rgb(hue, min(max(light, 0.0), 1.0), sat)
+    )
+
+
+# Every custom property the marks need, in the order they were minted, as
+# (name, value on dark, value on light).
+VARIABLES = []
+
+
+def themed(colours, slug):
+    """Which of these colours need a per-theme variant, and under what names.
+
+    Returns a map from the colour AS WRITTEN in the file to the `var(...)` that
+    replaces it, empty when the mark reads fine on both grounds.
+
+    Judged per MARK rather than per colour: a two-tone logo with one readable
+    half would come out half flipped and half not, which is no longer the logo.
+    """
+    usable = [c for c in colours if _rgb(c)]
+    if not usable:
+        return {}
+    dark_best = max(contrast(c, SURFACE_DARK) for c in usable)
+    light_best = max(contrast(c, SURFACE_LIGHT) for c in usable)
+    if dark_best >= FLOOR and light_best >= FLOOR:
+        return {}
+    if dark_best < FLOOR and light_best < FLOOR:
+        raise SystemExit(
+            "%s cannot be read on either ground (%.2f dark, %.2f light): it needs a "
+            "different source file, not a lightness shift" % (slug, dark_best, light_best)
+        )
+    swap = {}
+    minted = {}
+    for colour in usable:
+        # Keyed by what the colour IS, not by how it was spelt: one file writes
+        # the same navy as `#20434F` and `#20434f`, and two properties for one
+        # colour is two things to keep in step for no reason.
+        key = _rgb(colour)
+        if key not in minted:
+            name = "--brand-%s-%d" % (slug, len(minted))
+            on_dark = shift(colour, SURFACE_DARK, upward=True) if dark_best < FLOOR else colour
+            on_light = shift(colour, SURFACE_LIGHT, upward=False) if light_best < FLOOR else colour
+            VARIABLES.append((name, on_dark, on_light))
+            minted[key] = name
+        swap[colour] = "var(%s)" % minted[key]
+    return swap
+
+
+def apply_swap(source, swap):
+    """Put the custom properties where the literal colours were."""
+    for colour, variable in swap.items():
+        source = source.replace('"%s"' % colour, '"%s"' % variable)
+    return source
+
+
 # The brands' own colours, keyed by slug, from the set's own data file.
 COLOURS = {}
 _data = SRC.parent / "data" / "simple-icons.json"
@@ -146,10 +289,13 @@ def one(name: str, slug: str, note: str) -> str:
     #
     # `fill` sits on the svg rather than on each path, so one style on the
     # element can still override the whole mark where a surface demands it.
-    return f'''/** {note}. Simple Icons: {slug}, in its own {colour} */
+    swap = themed([colour], slug)
+    painted = swap.get(colour, colour)
+    aside = "" if not swap else ", flipped for the ground it cannot be read on"
+    return f'''/** {note}. Simple Icons: {slug}, in its own {colour}{aside} */
 export function {name}(props: SVGProps<SVGSVGElement>) {{
   return (
-    <svg viewBox="{box.group(1)}" width="1em" height="1em" fill="{colour}" aria-hidden {{...props}}>
+    <svg viewBox="{box.group(1)}" width="1em" height="1em" fill="{painted}" aria-hidden {{...props}}>
 {body}
     </svg>
   )
@@ -303,6 +449,12 @@ def local(name, slug, note, source, licence):
         raise SystemExit("brand-paths/%s.svg is empty" % slug)
     body = "\n".join(kids)
 
+    # Every colour the file actually paints with, taken from the JSX rather
+    # than from the XML, so a colour written in a `style` string is found the
+    # same way as one in a `fill` attribute.
+    found = re.findall(r'"(#[0-9a-fA-F]{3,8}|rgb\([^"]*\))"', body)
+    body = apply_swap(body, themed(found, slug))
+
     # Whatever the file paints WITH stays: `fill`, `style`, gradients, groups
     # and all. A mark drawn in several tones is several tones, and flattening
     # one to a single ink would be redrawing somebody's logo.
@@ -317,9 +469,61 @@ export function {name}(props: SVGProps<SVGSVGElement>) {{
 '''
 
 
+CSS_OUT = Path(__file__).parent.parent / "web" / "src" / "brandGlyphs.css"
+
+CSS_HEAD = """/* Brand marks that need a different lightness on one of the two grounds.
+   GENERATED by scripts/gen_brand_glyphs.py - do not hand-edit.
+
+   A logo drawn in navy or in black is invisible on a dark surface, and one
+   drawn in near-white is invisible on a light one. Measured on the running
+   app: ShareFile reached a contrast of 1.07 against the dark row, OpenCloud
+   1.09. They were there and could not be seen.
+
+   So a mark that fails on one ground carries its own colour as a custom
+   property, and that property holds a shifted LIGHTNESS on that ground only -
+   same hue, same saturation, same logo. jdp: "lass sie flippen. auf dunklem
+   hintergrund sollen sie hell sein, auf hellem hintergrund sollen sie so
+   bleiben."
+
+   Which marks appear here is decided by measurement in the generator, not by a
+   hand-kept list of names: such a list is wrong the moment a mark is added or
+   a set changes a hex, and nothing would say so.
+
+   The three blocks mirror tokens.css exactly, so the marks follow the same
+   switch as every other colour in the app: dark by default, light when the OS
+   asks and nothing overrides it, light when the app is explicitly set to it.
+*/
+"""
+
+
+def css_block(selectors, index, indent=0):
+    """One rule: its selectors, one custom property per mark, closing brace."""
+    pad = " " * indent
+    lines = ["%s%s," % (pad, s) for s in selectors[:-1]]
+    lines.append("%s%s {" % (pad, selectors[-1]))
+    for name, on_dark, on_light in VARIABLES:
+        lines.append("%s  %s: %s;" % (pad, name, on_dark if index == 1 else on_light))
+    lines.append("%s}" % pad)
+    return "\n".join(lines)
+
+
 if not SRC.is_dir():
     raise SystemExit("no such directory: %s\nInstall simple-icons and pass its icons path." % SRC)
 
 parts = [HEAD] + [one(*m) for m in MARKS] + [local(*m) for m in LOCAL]
 io.open(OUT, "w", encoding="utf-8", newline="\n").write("\n".join(parts))
+
+css = [CSS_HEAD]
+if VARIABLES:
+    css.append(css_block([":root", '[data-theme="dark"]'], 1))
+    css.append(
+        "@media (prefers-color-scheme: light) {\n"
+        + css_block([':root:not([data-theme="dark"])'], 2, indent=2)
+        + "\n}"
+    )
+    css.append(css_block(['[data-theme="light"]'], 2))
+io.open(CSS_OUT, "w", encoding="utf-8", newline="\n").write("\n\n".join(css) + "\n")
+
+flipped = sorted({name.rsplit("-", 1)[0][8:] for name, _, _ in VARIABLES})
 print("%s: %d marks (%d from Simple Icons, %d local)" % (OUT.name, len(MARKS) + len(LOCAL), len(MARKS), len(LOCAL)))
+print("%s: %d variables for %d marks (%s)" % (CSS_OUT.name, len(VARIABLES), len(flipped), ", ".join(flipped)))

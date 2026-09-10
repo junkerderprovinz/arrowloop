@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @import "./tokens.css";
 @import "./tailwind-theme.css";
+/* The per-theme lightness of the brand marks that cannot be read on one of the
+   two grounds. Generated beside brandGlyphs.tsx; after tokens.css, because it
+   is measured against the surface values that file sets. */
+@import "./brandGlyphs.css";
 
 /* ---------------------------------------------------------------------------
    The type scale, registered so it can be written as a class.
