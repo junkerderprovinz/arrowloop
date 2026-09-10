@@ -54,6 +54,10 @@ sixty-eight backends compiled in, and it is the whole of the download.
 
 Two APKs come out per architecture, and the **debug** one is the one to install.
 
+The debug build signs with `android/debug.keystore`, which is committed here on purpose. Without it Gradle signs with whatever debug keystore it finds in the builder's home directory and creates one if there is none - and a CI runner is thrown away after every job, so every build carried a different key. To Android a different signing key is a different app, so every update refused with `INSTALL_FAILED_UPDATE_INCOMPATIBLE: signatures do not match newer version`, which the phone reports as "conflicts with an existing package". The only way to update was to uninstall first, losing every setting and job in the app.
+
+Committing a keystore is safe **here** and would not be everywhere. This one holds Android's own published debug credentials - alias `androiddebugkey`, password `android` - the same pair every Android SDK ships with, granting nothing the SDK's default key does not already grant to anybody. The release build is untouched and stays unsigned until there is a real keystore, and that key must never live in this repo.
+
 The release APK is **unsigned**: signing needs a keystore, and a workflow that
 quietly signs with a throwaway key produces an app that installs once and can
 never be updated, because every later build would be a different app as far as

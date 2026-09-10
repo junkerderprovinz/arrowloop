@@ -96,6 +96,12 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v4
 
+      # The debug build signs with android/debug.keystore, which is IN the
+      # repo, and app/build.gradle.kts carries the reasoning. The short version
+      # is that a runner is thrown away after every job, so Gradle was creating
+      # a fresh debug key each time - and to Android a different signing key is
+      # a different app. Every update refused with "signatures do not match".
+      #
       # BOTH, and the debug build is the one anybody can actually use today.
       #
       # A release APK here is unsigned, because signing needs a keystore that

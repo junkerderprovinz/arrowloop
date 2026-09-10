@@ -29,6 +29,39 @@ android {
 
     }
 
+    // ONE debug key, kept in the repo, and that is what makes the app
+    // updatable at all.
+    //
+    // Without this, Gradle signs a debug build with whatever debug keystore it
+    // finds in the builder's home directory - and creates one if there is
+    // none. A CI runner is thrown away after every job, so every build carried
+    // a DIFFERENT key, and to Android a different signing key is a different
+    // app. jdp hit it head on: "ich kann die app nicht updaten weil sie mit
+    // einem bestehenden paket in konflikt ist". Reproduced on the rig, install
+    // the previous build then the current one over it:
+    //
+    //   INSTALL_FAILED_UPDATE_INCOMPATIBLE: Existing package
+    //   design.halleluja.arrowloop signatures do not match newer version
+    //
+    // So every update meant uninstalling first, which throws away the app's
+    // settings and every job in it - and the failure says "conflicts with an
+    // existing package", which sounds like something else entirely.
+    //
+    // Committing a keystore is safe HERE and would not be everywhere. This one
+    // holds Android's own published debug credentials: alias androiddebugkey,
+    // password "android", the same pair every Android SDK on earth ships with.
+    // It grants nothing that the SDK's default key does not already grant to
+    // anybody. The RELEASE build is untouched and stays unsigned until there
+    // is a real keystore to sign it with - that key must never live here.
+    signingConfigs {
+        getByName("debug") {
+            storeFile = rootProject.file("debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
+    }
+
     buildTypes {
         release {
             // No shrinking. There is nothing to shrink: the app is three Kotlin
