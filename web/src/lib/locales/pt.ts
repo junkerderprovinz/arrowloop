@@ -413,8 +413,6 @@ const pt: Translations = {
   'targets.cloud': 'Armazenamento na nuvem',
   'targets.connections': 'Servidores e partilhas',
   'targets.pickMore': 'Mais {count}, pelo nome em rclone',
-  'targets.pickNoMatch': 'Aqui não há nada que corresponda a «{q}».',
-  'targets.pickSearch': 'Procurar fornecedores',
   'opt.user': 'Utilizador',
   'opt.pass': 'Palavra-passe',
   'opt.host': 'Servidor',

@@ -413,8 +413,6 @@ const et: Translations = {
   'targets.cloud': 'Pilvesalvestus',
   'targets.connections': 'Serverid ja jagamised',
   'targets.pickMore': 'Veel {count}, rclone nime järgi',
-  'targets.pickNoMatch': 'Siin ei vasta miski otsingule „{q}”.',
-  'targets.pickSearch': 'Otsi teenusepakkujaid',
   'opt.user': 'Kasutajanimi',
   'opt.pass': 'Parool',
   'opt.host': 'Server',

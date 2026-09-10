@@ -459,6 +459,15 @@ LOCAL = [
     ("IconPikpak", "pikpak", "PikPak", JDP, BRAND),
     ("IconInternxt", "internxt", "Internxt", JDP, BRAND),
     ("IconUlozto", "ulozto", "Ulož.to", JDP, BRAND),
+
+    # The three the S3 round left without a mark. Not from Simple Icons, which
+    # carries none of them: Linode and IDrive come from the dashboard-icons set
+    # this repo already uses under Apache 2.0, and SeaweedFS from the project's
+    # own repository - an open project's own icon, which is the most honest
+    # source there is for one.
+    ("IconLinode", "linode", "Linode Object Storage", JDP, BRAND),
+    ("IconIdrive", "idrive", "IDrive e2", JDP, BRAND),
+    ("IconSeaweedfs", "seaweedfs", "SeaweedFS", JDP, BRAND),
     ("IconQuatrix", "quatrix", "Quatrix", JDP, BRAND),
     ("IconLinkbox", "linkbox", "Linkbox", JDP, BRAND),
     ("IconGofile", "gofile", "Gofile", JDP, BRAND),

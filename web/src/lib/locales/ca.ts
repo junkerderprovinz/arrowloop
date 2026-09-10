@@ -413,8 +413,6 @@ const ca: Translations = {
   'targets.cloud': 'Emmagatzematge al núvol',
   'targets.connections': 'Servidors i recursos compartits',
   'targets.pickMore': '{count} més, pel seu nom a rclone',
-  'targets.pickNoMatch': 'Aquí no hi ha res que coincideixi amb «{q}».',
-  'targets.pickSearch': 'Cerca proveïdors',
   'opt.user': 'Nom d\'usuari',
   'opt.pass': 'Contrasenya',
   'opt.host': 'Servidor',

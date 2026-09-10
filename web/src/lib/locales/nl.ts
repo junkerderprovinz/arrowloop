@@ -413,8 +413,6 @@ const nl: Translations = {
   'targets.cloud': 'Cloudopslag',
   'targets.connections': 'Servers en shares',
   'targets.pickMore': 'Nog {count}, onder hun rclone-naam',
-  'targets.pickNoMatch': 'Hier komt niets overeen met ‚{q}’.',
-  'targets.pickSearch': 'Aanbieders zoeken',
   'opt.user': 'Gebruikersnaam',
   'opt.pass': 'Wachtwoord',
   'opt.host': 'Server',

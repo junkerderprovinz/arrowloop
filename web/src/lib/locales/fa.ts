@@ -413,8 +413,6 @@ const fa: Translations = {
   'targets.cloud': 'فضای ابری',
   'targets.connections': 'سرورها و اشتراک‌ها',
   'targets.pickMore': '{count} مورد دیگر، با نامشان در rclone',
-  'targets.pickNoMatch': 'هیچ‌چیز اینجا با «{q}» هم‌خوان نیست.',
-  'targets.pickSearch': 'جستجوی ارائه‌دهنده',
   'opt.user': 'نام کاربری',
   'opt.pass': 'گذرواژه',
   'opt.host': 'سرور',

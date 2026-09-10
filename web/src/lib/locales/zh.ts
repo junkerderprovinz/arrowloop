@@ -413,8 +413,6 @@ const zh: Translations = {
   'targets.cloud': '云存储',
   'targets.connections': '服务器与共享',
   'targets.pickMore': '还有 {count} 个，按 rclone 名称',
-  'targets.pickNoMatch': '这里没有与“{q}”匹配的项。',
-  'targets.pickSearch': '搜索服务商',
   'opt.user': '用户名',
   'opt.pass': '密码',
   'opt.host': '服务器',

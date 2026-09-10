@@ -413,8 +413,6 @@ const el: Translations = {
   'targets.cloud': 'Αποθήκευση στο cloud',
   'targets.connections': 'Διακομιστές και κοινόχρηστα',
   'targets.pickMore': 'Άλλα {count}, με το όνομά τους στο rclone',
-  'targets.pickNoMatch': 'Τίποτα εδώ δεν ταιριάζει με «{q}».',
-  'targets.pickSearch': 'Αναζήτηση παρόχων',
   'opt.user': 'Όνομα χρήστη',
   'opt.pass': 'Κωδικός πρόσβασης',
   'opt.host': 'Διακομιστής',

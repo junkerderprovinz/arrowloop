@@ -413,8 +413,6 @@ const he: Translations = {
   'targets.cloud': 'אחסון בענן',
   'targets.connections': 'שרתים ושיתופים',
   'targets.pickMore': 'עוד {count}, בשם שלהם ב-rclone',
-  'targets.pickNoMatch': 'דבר כאן לא תואם ל־«{q}».',
-  'targets.pickSearch': 'חיפוש ספקים',
   'opt.user': 'שם משתמש',
   'opt.pass': 'סיסמה',
   'opt.host': 'שרת',

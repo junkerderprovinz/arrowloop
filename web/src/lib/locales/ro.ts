@@ -413,8 +413,6 @@ const ro: Translations = {
   'targets.cloud': 'Stocare în cloud',
   'targets.connections': 'Servere și partajări',
   'targets.pickMore': 'Încă {count}, după numele din rclone',
-  'targets.pickNoMatch': 'Nimic de aici nu se potrivește cu „{q}”.',
-  'targets.pickSearch': 'Cautați furnizori',
   'opt.user': 'Nume utilizator',
   'opt.pass': 'Parolă',
   'opt.host': 'Server',

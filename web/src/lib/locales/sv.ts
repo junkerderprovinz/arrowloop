@@ -413,8 +413,6 @@ const sv: Translations = {
   'targets.cloud': 'Molnlagring',
   'targets.connections': 'Servrar och utdelningar',
   'targets.pickMore': '{count} till, med sina rclone-namn',
-  'targets.pickNoMatch': 'Inget här matchar ”{q}”.',
-  'targets.pickSearch': 'Sök tjänster',
   'opt.user': 'Användarnamn',
   'opt.pass': 'Lösenord',
   'opt.host': 'Server',

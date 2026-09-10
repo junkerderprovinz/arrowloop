@@ -413,8 +413,6 @@ const is: Translations = {
   'targets.cloud': 'Skýjageymsla',
   'targets.connections': 'Netþjónar og sameignir',
   'targets.pickMore': '{count} til viðbótar, undir rclone-heiti',
-  'targets.pickNoMatch': 'Ekkert hér passar við „{q}“.',
-  'targets.pickSearch': 'Leita að þjónustum',
   'opt.user': 'Notandanafn',
   'opt.pass': 'Lykilorð',
   'opt.host': 'Netþjónn',

@@ -413,8 +413,6 @@ const lt: Translations = {
   'targets.cloud': 'Debesų saugykla',
   'targets.connections': 'Serveriai ir bendrinimai',
   'targets.pickMore': 'Dar {count}, pagal rclone pavadinimą',
-  'targets.pickNoMatch': 'Niekas čia neatitinka „{q}“.',
-  'targets.pickSearch': 'Ieškoti tiekėjų',
   'opt.user': 'Naudotojo vardas',
   'opt.pass': 'Slaptažodis',
   'opt.host': 'Serveris',

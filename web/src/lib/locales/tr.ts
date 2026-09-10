@@ -413,8 +413,6 @@ const tr: Translations = {
   'targets.cloud': 'Bulut depolama',
   'targets.connections': 'Sunucular ve paylaşımlar',
   'targets.pickMore': '{count} tane daha, rclone adlarıyla',
-  'targets.pickNoMatch': 'Burada “{q}” ile eşleşen bir şey yok.',
-  'targets.pickSearch': 'Sağlayıcı ara',
   'opt.user': 'Kullanıcı adı',
   'opt.pass': 'Parola',
   'opt.host': 'Sunucu',

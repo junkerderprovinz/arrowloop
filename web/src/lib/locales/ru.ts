@@ -413,8 +413,6 @@ const ru: Translations = {
   'targets.cloud': 'Облачное хранилище',
   'targets.connections': 'Серверы и общие папки',
   'targets.pickMore': 'Ещё {count}, под именем в rclone',
-  'targets.pickNoMatch': 'Здесь ничего не соответствует «{q}».',
-  'targets.pickSearch': 'Поиск сервисов',
   'opt.user': 'Имя пользователя',
   'opt.pass': 'Пароль',
   'opt.host': 'Сервер',

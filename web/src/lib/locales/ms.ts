@@ -413,8 +413,6 @@ const ms: Translations = {
   'targets.cloud': 'Storan awan',
   'targets.connections': 'Pelayan dan perkongsian',
   'targets.pickMore': '{count} lagi, dengan nama rclone mereka',
-  'targets.pickNoMatch': 'Tiada yang sepadan dengan “{q}” di sini.',
-  'targets.pickSearch': 'Cari penyedia',
   'opt.user': 'Nama pengguna',
   'opt.pass': 'Kata laluan',
   'opt.host': 'Pelayan',

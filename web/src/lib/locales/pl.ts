@@ -413,8 +413,6 @@ const pl: Translations = {
   'targets.cloud': 'Magazyn w chmurze',
   'targets.connections': 'Serwery i udziały',
   'targets.pickMore': 'Jeszcze {count}, pod nazwą rclone',
-  'targets.pickNoMatch': 'Nic tutaj nie pasuje do „{q}”.',
-  'targets.pickSearch': 'Szukaj dostawców',
   'opt.user': 'Nazwa użytkownika',
   'opt.pass': 'Hasło',
   'opt.host': 'Serwer',

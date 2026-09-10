@@ -413,8 +413,6 @@ const lv: Translations = {
   'targets.cloud': 'Mākoņkrātuve',
   'targets.connections': 'Serveri un koplietojumi',
   'targets.pickMore': 'Vēl {count}, pēc to rclone nosaukuma',
-  'targets.pickNoMatch': 'Nekas šeit neatbilst „{q}“.',
-  'targets.pickSearch': 'Meklēt pakalpojumus',
   'opt.user': 'Lietotājvārds',
   'opt.pass': 'Parole',
   'opt.host': 'Serveris',

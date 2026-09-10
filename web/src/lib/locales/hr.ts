@@ -413,8 +413,6 @@ const hr: Translations = {
   'targets.cloud': 'Pohrana u oblaku',
   'targets.connections': 'Poslužitelji i dijeljenja',
   'targets.pickMore': 'Još {count}, pod nazivom u rcloneu',
-  'targets.pickNoMatch': 'Ovdje ništa ne odgovara „{q}“.',
-  'targets.pickSearch': 'Pretraži pružatelje',
   'opt.user': 'Korisničko ime',
   'opt.pass': 'Lozinka',
   'opt.host': 'Poslužitelj',

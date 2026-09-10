@@ -413,8 +413,6 @@ const bg: Translations = {
   'targets.cloud': 'Хранилище в облака',
   'targets.connections': 'Сървъри и споделяния',
   'targets.pickMore': 'Още {count}, под името им в rclone',
-  'targets.pickNoMatch': 'Тук нищо не съвпада с „{q}“.',
-  'targets.pickSearch': 'Търсене на доставчик',
   'opt.user': 'Потребителско име',
   'opt.pass': 'Парола',
   'opt.host': 'Сървър',

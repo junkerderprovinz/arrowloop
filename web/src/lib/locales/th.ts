@@ -413,8 +413,6 @@ const th: Translations = {
   'targets.cloud': 'ที่เก็บบนคลาวด์',
   'targets.connections': 'เซิร์ฟเวอร์และการแชร์',
   'targets.pickMore': 'อีก {count} รายการ ตามชื่อใน rclone',
-  'targets.pickNoMatch': 'ไม่มีอะไรตรงกับ “{q}”',
-  'targets.pickSearch': 'ค้นหาผู้ให้บริการ',
   'opt.user': 'ชื่อผู้ใช้',
   'opt.pass': 'รหัสผ่าน',
   'opt.host': 'เซิร์ฟเวอร์',

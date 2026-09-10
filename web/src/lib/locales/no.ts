@@ -413,8 +413,6 @@ const no: Translations = {
   'targets.cloud': 'Skylagring',
   'targets.connections': 'Servere og delinger',
   'targets.pickMore': '{count} til, under rclone-navnet',
-  'targets.pickNoMatch': 'Ingenting her passer med «{q}».',
-  'targets.pickSearch': 'Søk etter tjenester',
   'opt.user': 'Brukernavn',
   'opt.pass': 'Passord',
   'opt.host': 'Server',

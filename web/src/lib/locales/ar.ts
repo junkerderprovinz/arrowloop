@@ -413,8 +413,6 @@ const ar: Translations = {
   'targets.cloud': 'تخزين سحابي',
   'targets.connections': 'خوادم ومشاركات',
   'targets.pickMore': '{count} أخرى، باسمها في rclone',
-  'targets.pickNoMatch': 'لا شيء هنا يطابق «{q}».',
-  'targets.pickSearch': 'البحث عن مزوّد',
   'opt.user': 'اسم المستخدم',
   'opt.pass': 'كلمة المرور',
   'opt.host': 'الخادم',

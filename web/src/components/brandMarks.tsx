@@ -52,6 +52,9 @@ import {
   IconOvh,
   IconSynology,
   IconMinio,
+  IconLinode,
+  IconIdrive,
+  IconSeaweedfs,
 } from './brandGlyphs'
 import {
   IconFolder,
@@ -108,6 +111,9 @@ const MARKS: Record<string, () => ReactNode> = {
   IconOvh: () => <IconOvh />,
   IconSynology: () => <IconSynology />,
   IconMinio: () => <IconMinio />,
+  IconLinode: () => <IconLinode />,
+  IconIdrive: () => <IconIdrive />,
+  IconSeaweedfs: () => <IconSeaweedfs />,
   IconQuatrix: () => <IconQuatrix />,
   IconLinkbox: () => <IconLinkbox />,
   IconGofile: () => <IconGofile />,

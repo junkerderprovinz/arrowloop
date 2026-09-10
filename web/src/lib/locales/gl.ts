@@ -413,8 +413,6 @@ const gl: Translations = {
   'targets.cloud': 'Almacenamento na nube',
   'targets.connections': 'Servidores e comparticións',
   'targets.pickMore': '{count} máis, polo seu nome en rclone',
-  'targets.pickNoMatch': 'Aquí non hai nada que coincida con «{q}».',
-  'targets.pickSearch': 'Buscar provedores',
   'opt.user': 'Usuario',
   'opt.pass': 'Contrasinal',
   'opt.host': 'Servidor',

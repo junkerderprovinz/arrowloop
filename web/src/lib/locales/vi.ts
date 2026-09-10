@@ -413,8 +413,6 @@ const vi: Translations = {
   'targets.cloud': 'Lưu trữ đám mây',
   'targets.connections': 'Máy chủ và chia sẻ',
   'targets.pickMore': '{count} mục nữa, theo tên rclone',
-  'targets.pickNoMatch': 'Không có gì ở đây khớp với “{q}”.',
-  'targets.pickSearch': 'Tìm nhà cung cấp',
   'opt.user': 'Tên người dùng',
   'opt.pass': 'Mật khẩu',
   'opt.host': 'Máy chủ',

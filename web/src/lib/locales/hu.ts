@@ -413,8 +413,6 @@ const hu: Translations = {
   'targets.cloud': 'Felhőtárhely',
   'targets.connections': 'Kiszolgálók és megosztások',
   'targets.pickMore': 'Még {count}, az rclone-neve szerint',
-  'targets.pickNoMatch': 'Itt semmi nem egyezik ezzel: „{q}”.',
-  'targets.pickSearch': 'Szolgáltatók keresése',
   'opt.user': 'Felhasználónév',
   'opt.pass': 'Jelszó',
   'opt.host': 'Kiszolgáló',

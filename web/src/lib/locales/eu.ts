@@ -413,8 +413,6 @@ const eu: Translations = {
   'targets.cloud': 'Hodeiko biltegia',
   'targets.connections': 'Zerbitzariak eta partekatzeak',
   'targets.pickMore': 'Beste {count}, beren rclone izenaz',
-  'targets.pickNoMatch': 'Hemen ez dago «{q}» bat datorrenik.',
-  'targets.pickSearch': 'Bilatu hornitzaileak',
   'opt.user': 'Erabiltzaile-izena',
   'opt.pass': 'Pasahitza',
   'opt.host': 'Zerbitzaria',

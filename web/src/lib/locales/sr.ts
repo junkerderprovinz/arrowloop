@@ -413,8 +413,6 @@ const sr: Translations = {
   'targets.cloud': 'Складиште у облаку',
   'targets.connections': 'Сервери и дељења',
   'targets.pickMore': 'Још {count}, под називом у rclone',
-  'targets.pickNoMatch': 'Овде ништа не одговара „{q}“.',
-  'targets.pickSearch': 'Претрага сервиса',
   'opt.user': 'Корисничко име',
   'opt.pass': 'Лозинка',
   'opt.host': 'Сервер',

@@ -413,8 +413,6 @@ const hi: Translations = {
   'targets.cloud': 'क्लाउड भंडारण',
   'targets.connections': 'सर्वर और साझा फ़ोल्डर',
   'targets.pickMore': '{count} और, उनके rclone नाम से',
-  'targets.pickNoMatch': 'यहाँ «{q}» से कुछ नहीं मिलता।',
-  'targets.pickSearch': 'प्रदाता खोजें',
   'opt.user': 'उपयोक्ता नाम',
   'opt.pass': 'पासवर्ड',
   'opt.host': 'सर्वर',

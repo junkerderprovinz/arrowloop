@@ -413,8 +413,6 @@ const sl: Translations = {
   'targets.cloud': 'Shramba v oblaku',
   'targets.connections': 'Strežniki in mape v skupni rabi',
   'targets.pickMore': 'Še {count}, pod imenom v rclone',
-  'targets.pickNoMatch': 'Tu se nič ne ujema z „{q}“.',
-  'targets.pickSearch': 'Išči ponudnike',
   'opt.user': 'Uporabniško ime',
   'opt.pass': 'Geslo',
   'opt.host': 'Strežnik',

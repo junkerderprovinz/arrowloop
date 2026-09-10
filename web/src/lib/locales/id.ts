@@ -413,8 +413,6 @@ const id: Translations = {
   'targets.cloud': 'Penyimpanan awan',
   'targets.connections': 'Server dan berbagi pakai',
   'targets.pickMore': '{count} lagi, dengan nama rclone-nya',
-  'targets.pickNoMatch': 'Tidak ada yang cocok dengan ”{q}” di sini.',
-  'targets.pickSearch': 'Cari penyedia',
   'opt.user': 'Nama pengguna',
   'opt.pass': 'Kata sandi',
   'opt.host': 'Server',

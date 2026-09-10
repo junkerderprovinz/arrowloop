@@ -413,8 +413,6 @@ const fi: Translations = {
   'targets.cloud': 'Pilvitallennus',
   'targets.connections': 'Palvelimet ja jaot',
   'targets.pickMore': '{count} lisää, rclone-nimellään',
-  'targets.pickNoMatch': 'Mikään täällä ei vastaa hakua ”{q}”.',
-  'targets.pickSearch': 'Hae palveluita',
   'opt.user': 'Käyttäjätunnus',
   'opt.pass': 'Salasana',
   'opt.host': 'Palvelin',

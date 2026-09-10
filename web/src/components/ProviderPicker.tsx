@@ -1,8 +1,5 @@
-import { useMemo, useState } from 'react'
-
 import { brandMark } from './brandMarks'
 import { IconAction } from './IconAction'
-import { IconCheck } from './glyphs'
 import { useLabelMode } from '../lib/glimstone/useLabelMode'
 import { useT } from '../lib/i18n'
 import type { Backend, Provider } from '../lib/api'
@@ -103,36 +100,6 @@ export function ProviderPicker({
    */
   const showName = (p: Provider) => mode !== 'glyph' || !brandMark(p.mark)
 
-  /**
-   * Type to narrow the list, the way KnightLoader's host picker does.
-   *
-   * Fifty-one entries is past the point where scanning beats typing, and the
-   * order is alphabetical rather than "what you probably want", so the name you
-   * are after is as likely to be at the bottom as the top.
-   *
-   * It matches the HINT as well as the name, which is what makes the protocol
-   * entries findable: somebody looking for their NAS types "nas" and the entry
-   * is called "SMB / Windows share", whose hint says exactly that.
-   *
-   * The BACKEND is matched from the START of the word rather than anywhere in
-   * it, and that is a correction rather than a nicety. As a plain substring,
-   * searching for "idrive" returned Huawei Drive first, because its backend is
-   * spelt `huaweidrive` and the letters happen to line up. Anchoring it keeps
-   * what the backend match is for - typing "webdav" or "s3" and getting the
-   * things that speak it - without the middle of one name answering for
-   * another.
-   */
-  const [query, setQuery] = useState('')
-  const shown = useMemo(() => {
-    const needle = query.trim().toLowerCase()
-    if (!needle) return providers
-    return providers.filter(
-      (p) =>
-        p.name.toLowerCase().includes(needle) ||
-        p.hint?.toLowerCase().includes(needle) ||
-        p.backend.toLowerCase().startsWith(needle),
-    )
-  }, [providers, query])
 
   return (
     <div className="flex flex-col gap-4 py-2">
@@ -160,78 +127,44 @@ export function ProviderPicker({
           the window, and then the card's own controls are somewhere off the
           bottom of the page. A fixed height means the list moves and the page
           around it does not. */}
-      {/* The search box, built the way KnightLoader's is: a filled surface2
-          strip with the magnifier inside it rather than a bordered input beside
-          a button. The glyph is this app's own IconCheck, which IS a magnifying
-          glass - it means "open a target and look at it" elsewhere, and a
-          magnifier at the head of a text field is read as search by everybody
-          before any of that matters. */}
-      <div className="mx-auto flex w-full max-w-sm items-center gap-2 rounded-[var(--radius-control)] bg-carbon-surface2 px-3 py-2">
-        <span className="flex h-4 w-4 shrink-0 items-center justify-center text-carbon-textMuted">
-          <IconCheck />
-        </span>
-        <input
-          autoFocus
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder={t('targets.pickSearch')}
-          aria-label={t('targets.pickSearch')}
-          className="min-w-0 flex-1 bg-transparent text-body text-carbon-text outline-none placeholder:text-carbon-textMuted"
-        />
-      </div>
+      {/* Two across, always, and the tile is KnightLoader's extension tile:
+          the mark above the name, both centred, the tile itself the button.
+          jdp: "mach kacheln wie bei den erwieterungen von KL. immer zwei
+          nebeneinander, keine suchfunktoin."
 
-      {shown.length === 0 && (
-        <p className="px-2 py-3 text-center text-body text-carbon-textMuted">
-          {t('targets.pickNoMatch', { q: query.trim() })}
-        </p>
-      )}
+          `grid-cols-2` rather than KL's `flex-wrap`, and that is the one
+          difference asked for: KL's tiles are a fixed 112px square and wrap at
+          whatever the width allows, so the count per row moves with the window.
+          Two is a decision, so it is written as two.
 
-      {/* Taller than KnightLoader's max-h-72, and for a reason its own list
-          does not have: KL's rows are 18px icons at about 34px a row and eight
-          of them fit, while a 40px brand mark makes these rows 56px and the
-          same height showed FIVE entries out of fifty-one. The number that
-          matters is rows on screen, not the pixel value copied across. */}
-      <ul className="mx-auto flex max-h-96 w-full max-w-sm flex-col gap-1 overflow-y-auto">
-        {shown.map((p) => (
+          The mark box is WIDE inside a tile that is not square, and that is the
+          other difference. Several of these are wordmarks rather than symbols -
+          Linkbox 5.3:1, Gofile 3.5, Quatrix 3.1 - and a 5.3:1 drawing fitted
+          into KL's 56px square is ten pixels tall. Two-across leaves each tile
+          wider than it is tall anyway, so the mark gets that width. */}
+      <ul className="mx-auto grid w-full max-w-sm grid-cols-2 gap-3">
+        {providers.map((p) => (
           <li key={p.id}>
             <button
               type="button"
               onClick={() => onPick(p)}
               title={p.hint || undefined}
-              className={ROW}
+              className={TILE}
             >
-              {/* A fixed box whether or not there is a mark, so every name in
-                  the column starts at the same x.
-
-                  WIDER than it is tall, and that is not a whim: five of these
-                  logos are wordmarks rather than symbols, and a 5.3:1 drawing
-                  fitted into a square box is 8 pixels tall. Measured across all
-                  44 marks - Linkbox 5.3:1, Gofile 3.5, Quatrix 3.1, Huawei 2.8,
-                  OpenDrive 2.3. At 64 by 40 the widest of them gains half its
-                  height again, while every square mark still renders at 40 and
-                  simply sits centred in a roomier box.
-
-                  This box is the ONE thing not copied from KnightLoader, whose
-                  host icons are 18px squares. These are not icons: they are
-                  brand marks, several of them words, and 18px would put the
-                  wordmarks back at the size that made them unreadable. */}
               {showMark && (
-                <span className="flex h-10 w-16 shrink-0 items-center justify-center [&_svg]:h-full [&_svg]:w-full">
+                <span className="flex h-12 w-24 shrink-0 items-center justify-center [&_svg]:max-h-full [&_svg]:max-w-full">
                   {brandMark(p.mark)}
                 </span>
               )}
-              {/* The name, and under it the one line of explanation the
-                  protocols get. It used to sit at the END of the row, which
-                  worked while the row was the width of the card and broke the
-                  moment the list became narrow: the hint could not shrink, so
-                  the NAME gave up the space instead and "S3 compatible" was
-                  rendered as "S.". A name that cannot be read is not a list
-                  entry. Under it, both survive. */}
               {showName(p) && (
-                <span className="flex min-w-0 flex-1 flex-col text-start">
-                  <span className="truncate text-body text-carbon-text">{p.name}</span>
+                <span className="w-full px-1 text-center">
+                  <span className="block break-words text-dense font-medium leading-tight">
+                    {p.name}
+                  </span>
                   {showHint(p) && (
-                    <span className="truncate text-caption text-carbon-textMuted">{p.hint}</span>
+                    <span className="mt-0.5 block break-words text-caption leading-tight text-carbon-textMuted">
+                      {p.hint}
+                    </span>
                   )}
                 </span>
               )}
@@ -270,36 +203,28 @@ export function ProviderPicker({
 }
 
 /**
- * One row of the list, copied from KnightLoader's host picker. jdp: "wir machen
- * die Kacheln wie in KL."
+ * One tile, copied from KnightLoader's extension tiles. jdp: "mach kacheln wie
+ * bei den erwieterungen von KL."
  *
- * NO FILL at rest, and that is the whole of it. The rows here were filled tiles
- * on `--carbon-surface2`, and the hover was reported as weaker than KL's - so
- * both were read out of the token files rather than argued about:
+ * The mark above the name, both centred, and the tile itself is the button.
  *
- *   filled tile:   #393939 -> #525252   (25 units)
- *   KnightLoader:  no fill -> #353535   (15 units)
+ * The hover is the part worth reading twice: `surface3` on light and WHITE on
+ * dark. That is KL's own, and it answers a report from earlier today that its
+ * hover felt stronger than this app's. It does, and not because of a bigger
+ * step on the same ramp - it steps OFF the ramp entirely at the top end. Going
+ * to white is a thing the surface tokens cannot express, which is why measuring
+ * the two ramps against each other never explained the difference.
  *
- * The bigger jump was already here, and it still read as less. What differs is
- * not the size of the step but what the step DOES: an unfilled row hovered
- * CREATES a shape on a page that had none, while a filled tile hovered only
- * shifts one of fifty boxes a shade. That is why the smaller number wins, and
- * why chasing it with a brighter tone on a filled tile would have missed the
- * point entirely.
+ * It does NOT go white in the light theme, and that is not a second opinion
+ * about the request: these tiles sit on a card that is already white there, so
+ * a literal white hover makes the tile vanish into the card instead of lifting
+ * off it. The same reasoning KL's own comment records, reached the same way.
  *
- * So: transparent, `--carbon-hover` under the pointer, the control radius
- * rather than the card one, and KL's tighter padding. Rule 21 names
- * `--carbon-hover` as the hover for an element with no fill of its own, which
- * is exactly what this now is - the same token that was wrong here while these
- * were tiles is right now that they are not.
- *
- * No `focus-visible:outline-none` here either, which is what it used to carry,
- * with `brightness-125` in its place. That removed the keyboard focus ring from
- * every row in the list and replaced it with something that reads as roughly
- * the same as hover - so a person tabbing through fifty providers could not see
- * where they were. The language's own `:focus-visible` rule draws a real 2px
- * ring; this row lets it.
+ * No `focus-visible:outline-none`. A keyboard ring is the only thing telling
+ * somebody tabbing through sixty tiles where they are, and a hover that reads
+ * the same as focus takes that away.
  */
-const ROW =
-  'flex w-full items-center gap-3 rounded-[var(--radius-control)] px-3 py-2 text-start ' +
-  'transition-colors hover:bg-carbon-hover'
+const TILE =
+  'flex h-full w-full flex-col items-center justify-center gap-2 rounded-[var(--radius-control)] ' +
+  'bg-carbon-surface2 px-2 py-3 text-carbon-text transition-colors duration-150 ' +
+  'hover:bg-carbon-surface3 dark:hover:bg-white dark:hover:text-[#161616]'

@@ -413,8 +413,6 @@ const ko: Translations = {
   'targets.cloud': '클라우드 저장소',
   'targets.connections': '서버 및 공유',
   'targets.pickMore': '{count}개 더, rclone 이름으로',
-  'targets.pickNoMatch': '여기에는 ‘{q}’에 맞는 항목이 없습니다.',
-  'targets.pickSearch': '제공업체 검색',
   'opt.user': '사용자 이름',
   'opt.pass': '비밀번호',
   'opt.host': '서버',

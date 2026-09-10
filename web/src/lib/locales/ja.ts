@@ -413,8 +413,6 @@ const ja: Translations = {
   'targets.cloud': 'クラウドストレージ',
   'targets.connections': 'サーバーと共有',
   'targets.pickMore': '他に {count} 件、rclone の名前で',
-  'targets.pickNoMatch': 'ここには「{q}」に一致するものはありません。',
-  'targets.pickSearch': 'サービスを検索',
   'opt.user': 'ユーザー名',
   'opt.pass': 'パスワード',
   'opt.host': 'サーバー',

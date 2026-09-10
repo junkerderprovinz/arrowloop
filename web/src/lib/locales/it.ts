@@ -413,8 +413,6 @@ const it: Translations = {
   'targets.cloud': 'Archiviazione cloud',
   'targets.connections': 'Server e condivisioni',
   'targets.pickMore': 'Altri {count}, col loro nome rclone',
-  'targets.pickNoMatch': 'Qui non c\'è nulla che corrisponda a «{q}».',
-  'targets.pickSearch': 'Cerca fornitori',
   'opt.user': 'Nome utente',
   'opt.pass': 'Password',
   'opt.host': 'Server',

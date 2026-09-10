@@ -413,8 +413,6 @@ const uk: Translations = {
   'targets.cloud': 'Хмарне сховище',
   'targets.connections': 'Сервери та спільні теки',
   'targets.pickMore': 'Ще {count}, під назвою в rclone',
-  'targets.pickNoMatch': 'Тут нічого не відповідає «{q}».',
-  'targets.pickSearch': 'Пошук служб',
   'opt.user': 'Ім\'я користувача',
   'opt.pass': 'Пароль',
   'opt.host': 'Сервер',

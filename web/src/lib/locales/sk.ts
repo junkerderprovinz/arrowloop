@@ -413,8 +413,6 @@ const sk: Translations = {
   'targets.cloud': 'Cloudové úložisko',
   'targets.connections': 'Servery a zdieľania',
   'targets.pickMore': 'Ďalších {count}, pod názvom v rclone',
-  'targets.pickNoMatch': 'Nič tu nezodpovedá „{q}“.',
-  'targets.pickSearch': 'Hľadať poskytovateľov',
   'opt.user': 'Používateľské meno',
   'opt.pass': 'Heslo',
   'opt.host': 'Server',
