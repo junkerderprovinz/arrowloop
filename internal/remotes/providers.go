@@ -179,11 +179,16 @@ var providers = []Provider{
 	{ID: "pcloud", Name: "pCloud", Backend: "pcloud", Group: GroupCloud, Mark: "IconPcloud"},
 	{ID: "box", Name: "Box", Backend: "box", Group: GroupCloud, Mark: "IconBox"},
 	{ID: "protondrive", Name: "Proton Drive", Backend: "protondrive", Group: GroupCloud, Mark: "IconProtonDrive"},
-	{ID: "icloud", Name: "iCloud Drive", Backend: "iclouddrive", Group: GroupCloud, Mark: "IconICloud"},
+	{ID: "icloud", Name: "iCloud Drive", Auth: AuthAppPassword, Backend: "iclouddrive", Group: GroupCloud, Mark: "IconICloud"},
 
 	// The rest of the consumer field.
 	{ID: "jottacloud", Name: "Jottacloud", Backend: "jottacloud", Group: GroupCloud, Mark: "IconJottacloud"},
-	{ID: "koofr", Name: "Koofr", Backend: "koofr", Group: GroupCloud, Mark: "IconKoofr"},
+	// Koofr's fields are a user and a password, so the shape says an ordinary
+	// login - and rclone's OWN help for that field says otherwise: "Your
+	// password for rclone (generate one at your service's settings page)".
+	// One of exactly two places in sixty-eight backends where the option list
+	// and the truth disagree, and the only one rclone itself flags.
+	{ID: "koofr", Name: "Koofr", Auth: AuthAppPassword, Backend: "koofr", Group: GroupCloud, Mark: "IconKoofr"},
 	{ID: "seafile", Name: "Seafile", Auth: AuthAppPassword, Backend: "seafile", Group: GroupCloud, Mark: "IconSeafile"},
 	{ID: "opendrive", Name: "OpenDrive", Backend: "opendrive", Group: GroupCloud, Mark: "IconOpendrive"},
 	{ID: "yandex", Name: "Yandex Disk", Backend: "yandex", Group: GroupCloud, Mark: "IconYandex"},
@@ -209,7 +214,7 @@ var providers = []Provider{
 
 	// Object storage: an account with a company, so it belongs with the clouds
 	// however it is addressed underneath.
-	{ID: "b2", Name: "Backblaze B2", Auth: AuthAccessKey, Backend: "b2", Group: GroupCloud, Mark: "IconBackblaze"},
+	{ID: "b2", Name: "Backblaze B2", Backend: "b2", Group: GroupCloud, Mark: "IconBackblaze"},
 	{ID: "azureblob", Name: "Azure Blob Storage", Backend: "azureblob", Group: GroupCloud, Mark: "IconAzure"},
 	{ID: "gcs", Name: "Google Cloud Storage", Backend: "google cloud storage", Group: GroupCloud, Mark: "IconGoogleCloud"},
 	// Huawei's OTHER storage, and the reason both are listed: `huaweidrive`
@@ -218,26 +223,26 @@ var providers = []Provider{
 	// it the way rclone does, as an S3 provider, which is the same arrangement
 	// that puts Nextcloud, ownCloud and OpenCloud on one webdav backend: the
 	// list is products, the backends are plumbing.
-	{ID: "huaweiobs", Name: "Huawei Cloud OBS", Auth: AuthAccessKey, Backend: "s3", Group: GroupCloud,
+	{ID: "huaweiobs", Name: "Huawei Cloud OBS", Backend: "s3", Group: GroupCloud,
 		Preset: map[string]string{"provider": "HuaweiOBS"}, Mark: "IconHuaweiCloud"},
 	{ID: "oracle", Name: "Oracle Object Storage", Backend: "oracleobjectstorage", Group: GroupCloud, Mark: "IconOracleCloud"},
-	{ID: "storj", Name: "Storj", Auth: AuthAccessKey, Backend: "storj", Group: GroupCloud, Mark: "IconStorj"},
-	{ID: "swift", Name: "OpenStack Swift", Auth: AuthAccessKey, Backend: "swift", Group: GroupCloud, Mark: "IconOpenstack"},
+	{ID: "storj", Name: "Storj", Backend: "storj", Group: GroupCloud, Mark: "IconStorj"},
+	{ID: "swift", Name: "OpenStack Swift", Backend: "swift", Group: GroupCloud, Mark: "IconOpenstack"},
 	{ID: "netstorage", Name: "Akamai NetStorage", Backend: "netstorage", Group: GroupCloud, Mark: "IconAkamai"},
 	{ID: "cloudinary", Name: "Cloudinary", Backend: "cloudinary", Group: GroupCloud, Mark: "IconCloudinary"},
 	{ID: "internetarchive", Name: "Internet Archive", Backend: "internetarchive", Group: GroupCloud,
 		Mark: "IconInternetArchive"},
 
 	// Machines, shares and addresses.
-	{ID: "smb", Name: "SMB / Windows share", Auth: AuthLogin, Backend: "smb", Group: GroupProtocol,
+	{ID: "smb", Name: "SMB / Windows share", Backend: "smb", Group: GroupProtocol,
 		Mark: "IconFolder", Hint: "A shared folder on a NAS or a Windows machine."},
-	{ID: "sftp", Name: "SFTP", Auth: AuthLogin, Backend: "sftp", Group: GroupProtocol,
+	{ID: "sftp", Name: "SFTP", Backend: "sftp", Group: GroupProtocol,
 		Mark: "IconServer", Hint: "A server reached over SSH."},
 	{ID: "webdav", Name: "WebDAV", Auth: AuthAppPassword, Backend: "webdav", Group: GroupProtocol,
 		Mark: "IconLink", Hint: "Any WebDAV server. Pick the product above if it has an entry.",
 		UrlHint: "https://server.example.com/remote.php/webdav/"},
-	{ID: "ftp", Name: "FTP", Auth: AuthLogin, Backend: "ftp", Group: GroupProtocol, Mark: "IconTransfer"},
-	{ID: "s3", Name: "S3 compatible", Auth: AuthAccessKey, Backend: "s3", Group: GroupProtocol,
+	{ID: "ftp", Name: "FTP", Backend: "ftp", Group: GroupProtocol, Mark: "IconTransfer"},
+	{ID: "s3", Name: "S3 compatible", Backend: "s3", Group: GroupProtocol,
 		Mark: "IconBuckets", Hint: "Amazon S3 and the thirty-odd services that speak its protocol."},
 	{ID: "http", Name: "HTTP", Backend: "http", Group: GroupProtocol,
 		Mark: "IconLink", Hint: "Read-only, over a plain web server."},
@@ -254,15 +259,22 @@ var providers = []Provider{
 // error about a missing section rather than about the thing that is really
 // wrong.
 func Providers() []Provider {
-	have := map[string]bool{}
+	have := map[string]Backend{}
 	for _, b := range Backends() {
-		have[b.Name] = true
+		have[b.Name] = b
 	}
 	out := make([]Provider, 0, len(providers))
 	for _, p := range providers {
-		if have[p.Backend] {
-			out = append(out, p)
+		b, ok := have[p.Backend]
+		if !ok {
+			continue
 		}
+		// The hand-written style always wins; the shape fills in the rest.
+		// See derivedAuth for why that order and not the other one.
+		if p.Auth == "" {
+			p.Auth = derivedAuth(b)
+		}
+		out = append(out, p)
 	}
 	// Alphabetical, within each group. The table above is written in rough
 	// order of how often anybody reaches for one, and that order only helps
@@ -279,6 +291,79 @@ func Providers() []Provider {
 		return strings.ToLower(out[i].Name) < strings.ToLower(out[j].Name)
 	})
 	return out
+}
+
+// derivedAuth works out how a backend wants to be signed into, from the shape
+// of the fields it asks for.
+//
+// This is the answer to filling the styles in for fifty-one products, and it
+// beats the obvious one. Looking each up by hand means a table that is right on
+// the day it is written and quietly wrong a year later, and it means asserting
+// things about services nobody here has an account with. rclone already knows
+// what each backend asks for, that knowledge arrives with every build, and the
+// shape of the question is usually enough to say what the answer is.
+//
+// It is deliberately CONSERVATIVE. Only two shapes are read, both unmistakable,
+// and everything else comes back empty - which puts the field back to what it
+// says today rather than guessing. A wrong sentence here is worse than none:
+// "nothing has to be fetched first" in front of a service that wants a
+// generated token sends somebody looking in the wrong place with confidence.
+//
+// The hand-written value WINS over this, and that is where the knowledge rclone
+// cannot have lives. Nextcloud's fields are a user and a password, so the shape
+// says an ordinary login - and with two-factor authentication switched on the
+// login password cannot work at all, which no option list anywhere says.
+func derivedAuth(b Backend) AuthStyle {
+	// A backend reached only with an OAuth token already says so through
+	// NeedsToken, and the form prints its own note above the fields. A second
+	// sentence beside a box nobody can type into would be the same news twice.
+	if b.NeedsToken {
+		return ""
+	}
+
+	var hasKeyID, hasKeySecret, hasUser, hasPass, hasToken bool
+	for _, o := range b.Options {
+		// Only the fields somebody is actually shown. The long tail of advanced
+		// options carries alternative credentials for cases nobody here is in -
+		// swift alone offers three - and reading those would label a backend by
+		// a route its own form never offers.
+		if !o.Required && !o.Essential {
+			continue
+		}
+		switch o.Name {
+		case "access_key_id", "account":
+			hasKeyID = true
+		case "secret_access_key", "key", "secret":
+			hasKeySecret = true
+		case "user", "username", "apple_id", "email":
+			hasUser = true
+		case "pass", "password":
+			hasPass = true
+		case "token", "app_token", "api_key", "access_token":
+			hasToken = true
+		}
+	}
+
+	switch {
+	// A public half and a secret half, created together in a console. Covers
+	// S3 everywhere it is spoken, plus b2's account-and-key and netstorage's
+	// account-and-secret, which are the same idea under other names.
+	case hasKeyID && hasKeySecret:
+		return AuthAccessKey
+	// A name and a password and nothing to fetch. This is the shape that most
+	// often leaves somebody hunting for a token that does not exist, so saying
+	// there is none is worth a sentence.
+	//
+	// A token shown ALONGSIDE them disqualifies it, and that exclusion is not
+	// theoretical: Linkbox, Uloz.to and Filen each ask for an email, a password
+	// AND a token, so "nothing has to be fetched first" would be exactly wrong
+	// on the three products where somebody most needs to be told there is
+	// something to fetch. Without an answer for where to fetch it, they get
+	// silence instead of a confident lie.
+	case hasUser && hasPass && !hasToken:
+		return AuthLogin
+	}
+	return ""
 }
 
 // UnlistedBackends are the compiled-in backends no provider entry covers.
