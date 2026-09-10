@@ -256,6 +256,7 @@ const ro: Translations = {
   'about.report': 'Probleme, dorințe sau sugestii? Deschide o problemă pe GitHub sau trimite un e-mail.',
   'about.coffeeButton': 'Fă-mi cinste cu o cafea',
   'about.crypto': 'Cripto',
+  'about.paypal': 'PayPal',
   'about.cryptoTitle': 'Donează în cripto',
   'about.cryptoIntro': 'Alege o monedă și o rețea, apoi scanează codul sau copiază adresa.',
   'about.cryptoNetworks': 'Rețele',

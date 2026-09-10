@@ -256,6 +256,7 @@ const is: Translations = {
   'about.report': 'Vandamál, óskir eða ábendingar? Opnaðu mál á GitHub, eða sendu tölvupóst.',
   'about.coffeeButton': 'Bjóddu mér kaffi',
   'about.crypto': 'Rafmynt',
+  'about.paypal': 'PayPal',
   'about.cryptoTitle': 'Styrkja með rafmynt',
   'about.cryptoIntro': 'Veldu mynt og netkerfi, skannaðu svo kóðann eða afritaðu vistfangið.',
   'about.cryptoNetworks': 'Netkerfi',

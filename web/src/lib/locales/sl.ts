@@ -256,6 +256,7 @@ const sl: Translations = {
   'about.report': 'Težave, želje ali predlogi? Odpri težavo na GitHubu ali pošlji e-pošto.',
   'about.coffeeButton': 'Časti kavo',
   'about.crypto': 'Kripto',
+  'about.paypal': 'PayPal',
   'about.cryptoTitle': 'Podpri s kripto',
   'about.cryptoIntro': 'Izberi kovanec in omrežje, nato skeniraj kodo ali kopiraj naslov.',
   'about.cryptoNetworks': 'Omrežja',

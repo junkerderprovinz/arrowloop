@@ -256,6 +256,7 @@ const hi: Translations = {
   'about.report': 'समस्याएँ, इच्छाएँ या सुझाव? GitHub पर issue खोलें या ईमेल भेजें।',
   'about.coffeeButton': 'मुझे कॉफ़ी पिलाएँ',
   'about.crypto': 'क्रिप्टो',
+  'about.paypal': 'PayPal',
   'about.cryptoTitle': 'क्रिप्टो से दान करें',
   'about.cryptoIntro': 'एक कॉइन और नेटवर्क चुनें, फिर कोड स्कैन करें या पता कॉपी करें।',
   'about.cryptoNetworks': 'नेटवर्क',

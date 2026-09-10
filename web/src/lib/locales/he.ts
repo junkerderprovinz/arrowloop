@@ -256,6 +256,7 @@ const he: Translations = {
   'about.report': 'בעיות, בקשות או הצעות? פתחו נושא ב-GitHub או שלחו מייל.',
   'about.coffeeButton': 'קנו לי קפה',
   'about.crypto': 'קריפטו',
+  'about.paypal': 'PayPal',
   'about.cryptoTitle': 'תרומה בקריפטו',
   'about.cryptoIntro': 'בחר מטבע ורשת, ואז סרוק את הקוד או העתק את הכתובת.',
   'about.cryptoNetworks': 'רשתות',

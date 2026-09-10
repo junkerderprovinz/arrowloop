@@ -256,6 +256,7 @@ const ms: Translations = {
   'about.report': 'Masalah, kehendak atau cadangan? Buka isu di GitHub, atau hantar e-mel.',
   'about.coffeeButton': 'Belanja saya kopi',
   'about.crypto': 'Kripto',
+  'about.paypal': 'PayPal',
   'about.cryptoTitle': 'Derma dengan kripto',
   'about.cryptoIntro': 'Pilih syiling dan rangkaian, kemudian imbas kod atau salin alamat.',
   'about.cryptoNetworks': 'Rangkaian',

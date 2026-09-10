@@ -256,6 +256,7 @@ const hr: Translations = {
   'about.report': 'Problemi, želje ili prijedlozi? Otvori problem na GitHubu ili pošalji e-poruku.',
   'about.coffeeButton': 'Počasti me kavom',
   'about.crypto': 'Kripto',
+  'about.paypal': 'PayPal',
   'about.cryptoTitle': 'Doniraj kriptom',
   'about.cryptoIntro': 'Odaberi novčić i mrežu, zatim skeniraj kod ili kopiraj adresu.',
   'about.cryptoNetworks': 'Mreže',

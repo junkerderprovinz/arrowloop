@@ -256,6 +256,7 @@ const sr: Translations = {
   'about.report': 'Проблеми, жеље или предлози? Отвори проблем на GitHub-у или пошаљи е-пошту.',
   'about.coffeeButton': 'Части ме кафом',
   'about.crypto': 'Крипто',
+  'about.paypal': 'PayPal',
   'about.cryptoTitle': 'Донирај криптом',
   'about.cryptoIntro': 'Изабери новчић и мрежу, па скенирај код или копирај адресу.',
   'about.cryptoNetworks': 'Мреже',

@@ -256,6 +256,7 @@ const et: Translations = {
   'about.report': 'Probleeme, soove või ettepanekuid? Ava GitHubis teema või saada e-kiri.',
   'about.coffeeButton': 'Osta mulle kohv',
   'about.crypto': 'Krüpto',
+  'about.paypal': 'PayPal',
   'about.cryptoTitle': 'Anneta krüptoga',
   'about.cryptoIntro': 'Vali münt ja võrk, seejärel skanni kood või kopeeri aadress.',
   'about.cryptoNetworks': 'Võrgud',

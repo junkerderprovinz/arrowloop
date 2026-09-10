@@ -256,6 +256,7 @@ const eu: Translations = {
   'about.report': 'Arazoak, nahiak edo iradokizunak? Ireki gai bat GitHuben, edo bidali mezu bat.',
   'about.coffeeButton': 'Erosi kafe bat',
   'about.crypto': 'Kripto',
+  'about.paypal': 'PayPal',
   'about.cryptoTitle': 'Eman kriptoarekin',
   'about.cryptoIntro': 'Aukeratu txanpon bat eta sare bat, gero eskaneatu kodea edo kopiatu helbidea.',
   'about.cryptoNetworks': 'Sareak',

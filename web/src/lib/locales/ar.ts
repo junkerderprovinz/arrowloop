@@ -256,6 +256,7 @@ const ar: Translations = {
   'about.report': 'مشكلات أو أمنيات أو اقتراحات؟ افتح مسألة على GitHub أو أرسل بريدًا.',
   'about.coffeeButton': 'اشترِ لي قهوة',
   'about.crypto': 'العملات المشفّرة',
+  'about.paypal': 'PayPal',
   'about.cryptoTitle': 'التبرّع بالعملات المشفّرة',
   'about.cryptoIntro': 'اختر العملة والشبكة، ثم امسح الرمز أو انسخ العنوان.',
   'about.cryptoNetworks': 'الشبكات',

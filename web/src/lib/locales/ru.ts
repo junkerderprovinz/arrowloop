@@ -256,6 +256,7 @@ const ru: Translations = {
   'about.report': 'Проблемы, пожелания или предложения? Заведите задачу на GitHub или напишите письмо.',
   'about.coffeeButton': 'Угостить кофе',
   'about.crypto': 'Крипто',
+  'about.paypal': 'PayPal',
   'about.cryptoTitle': 'Поддержать криптовалютой',
   'about.cryptoIntro': 'Выбери монету и сеть, затем отсканируй код или скопируй адрес.',
   'about.cryptoNetworks': 'Сети',

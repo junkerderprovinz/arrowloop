@@ -256,6 +256,7 @@ const sv: Translations = {
   'about.report': 'Problem, önskemål eller förslag? Öppna ett ärende på GitHub, eller skicka ett mejl.',
   'about.coffeeButton': 'Bjud på en kaffe',
   'about.crypto': 'Krypto',
+  'about.paypal': 'PayPal',
   'about.cryptoTitle': 'Donera med krypto',
   'about.cryptoIntro': 'Välj ett mynt och ett nätverk och skanna sedan koden eller kopiera adressen.',
   'about.cryptoNetworks': 'Nätverk',

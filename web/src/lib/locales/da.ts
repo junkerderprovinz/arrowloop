@@ -256,6 +256,7 @@ const da: Translations = {
   'about.report': 'Problemer, ønsker eller forslag? Opret et issue på GitHub, eller send en mail.',
   'about.coffeeButton': 'Køb mig en kaffe',
   'about.crypto': 'Krypto',
+  'about.paypal': 'PayPal',
   'about.cryptoTitle': 'Doner med krypto',
   'about.cryptoIntro': 'Vælg en mønt og et netværk, og scan så koden eller kopiér adressen.',
   'about.cryptoNetworks': 'Netværk',

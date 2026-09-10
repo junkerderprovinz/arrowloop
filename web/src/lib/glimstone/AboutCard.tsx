@@ -42,6 +42,8 @@ export function AboutCard({
   coffeeUrl,
   coffeeGlyph,
   cryptoGlyph,
+  paypalGlyph,
+  paypalUrl,
   onCrypto,
   mailAddress,
   hueIndex,
@@ -56,6 +58,8 @@ export function AboutCard({
     coffeeButton: string;
     /** The second give button. Only drawn together with `onCrypto`. */
     cryptoButton?: string;
+    /** The third. Only drawn together with `paypalUrl`. */
+    paypalButton?: string;
     report: string;
     repoButton: string;
     mailButton: string;
@@ -98,6 +102,16 @@ export function AboutCard({
    */
   coffeeGlyph?: ReactNode;
   cryptoGlyph?: ReactNode;
+  paypalGlyph?: ReactNode;
+  /**
+   * A hosted payment page (PayPal.Me and the like). Omitted where none exists.
+   *
+   * The card's own rule applied to a route rather than to a sentence: never
+   * offer a control that reaches nowhere. Such a link is usually created once
+   * and cannot be renamed afterwards, so an app hands one over only when it
+   * really has it.
+   */
+  paypalUrl?: string;
   /**
    * Open the crypto window (CryptoDonateDialog). Omit it and the card offers
    * the coffee alone.
@@ -154,6 +168,15 @@ export function AboutCard({
             glyph={cryptoGlyph}
             tone="neutral"
             onClick={onCrypto}
+          />
+        )}
+        {paypalUrl && text.paypalButton && (
+          <Button
+            label={text.paypalButton}
+            labelKey="about.paypal"
+            glyph={paypalGlyph}
+            tone="neutral"
+            onClick={() => open(paypalUrl)}
           />
         )}
       </div>

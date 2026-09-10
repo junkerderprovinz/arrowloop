@@ -57,13 +57,21 @@ const RULES: Rule[] = [
   // file exists, and each is a specific destination rather than a verb, so
   // nothing further down should be allowed to claim them.
   [/^about\.coffee/i, () => <IconCoffee />],
-  // The second way to give, and it needs a mark of its own rather than the
-  // coffee's: two buttons under one sentence wearing one symbol is the glyph
-  // collision this table exists to avoid. A WALLET and never a coin or a
-  // Bitcoin ₿ — the window behind this button offers five chains, so a brand
-  // mark would name one of them and mislead about the other four.
+  // The second way to give. A neutral wallet, and it never actually renders:
+  // the call site hands over Bitcoin's own mark, which is what jdp asked for
+  // and what GlimStone 1.8.3 settled on after arguing the opposite in 1.8.2.
+  // The rule stays so the guard over unreachable label keys has something to
+  // resolve, and so an app that passes no brand still gets a symbol rather
+  // than a word among symbols.
   [/^about\.crypto$/i, () => <IconWallet />],
   [/^about\.repo$/i, () => <IconLink />],
+  // The same generic link, and deliberately the same one: a hosted payment
+  // page and a repository are both "opens somebody else's page", and
+  // neither of these two rules ever actually renders. Both call sites hand
+  // over that company's own mark, which is the house rule for a BRAND. The
+  // rules exist so the guard over unreachable label keys stays absolute:
+  // every key resolves something, with no allow-list to rot.
+  [/^about\.paypal$/i, () => <IconLink />],
   [/^about\.mail$/i, () => <IconMail />],
 
   // Going back, and it has to sit ABOVE the preview rule rather than beside it:

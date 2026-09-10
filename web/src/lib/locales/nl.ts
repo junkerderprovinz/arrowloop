@@ -256,6 +256,7 @@ const nl: Translations = {
   'about.report': 'Problemen, wensen of suggesties? Open een issue op GitHub, of stuur een e-mail.',
   'about.coffeeButton': 'Trakteer op koffie',
   'about.crypto': 'Crypto',
+  'about.paypal': 'PayPal',
   'about.cryptoTitle': 'Doneren met crypto',
   'about.cryptoIntro': 'Kies een munt en een netwerk en scan dan de code of kopieer het adres.',
   'about.cryptoNetworks': 'Netwerken',

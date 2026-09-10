@@ -256,6 +256,7 @@ const tr: Translations = {
   'about.report': 'Sorun, istek ya da öneri mi var? GitHub üzerinde konu aç ya da e-posta gönder.',
   'about.coffeeButton': 'Bana bir kahve ısmarla',
   'about.crypto': 'Kripto',
+  'about.paypal': 'PayPal',
   'about.cryptoTitle': 'Kripto ile bağış',
   'about.cryptoIntro': 'Bir kripto para ve ağ seç, sonra kodu tara veya adresi kopyala.',
   'about.cryptoNetworks': 'Ağlar',

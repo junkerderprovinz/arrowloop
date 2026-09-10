@@ -256,6 +256,7 @@ const fr: Translations = {
   'about.report': 'Problèmes, souhaits ou suggestions ? Ouvre un ticket sur GitHub, ou envoie un e-mail.',
   'about.coffeeButton': 'Offrir un café',
   'about.crypto': 'Crypto',
+  'about.paypal': 'PayPal',
   'about.cryptoTitle': 'Faire un don en crypto',
   'about.cryptoIntro': 'Choisissez une monnaie et un réseau, puis scannez le code ou copiez l\'adresse.',
   'about.cryptoNetworks': 'Réseaux',

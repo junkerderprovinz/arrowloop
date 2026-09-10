@@ -256,6 +256,7 @@ const uk: Translations = {
   'about.report': 'Проблеми, побажання чи пропозиції? Створіть задачу на GitHub або напишіть листа.',
   'about.coffeeButton': 'Пригостити кавою',
   'about.crypto': 'Крипто',
+  'about.paypal': 'PayPal',
   'about.cryptoTitle': 'Підтримати криптовалютою',
   'about.cryptoIntro': 'Обери монету та мережу, потім скануй код або скопіюй адресу.',
   'about.cryptoNetworks': 'Мережі',

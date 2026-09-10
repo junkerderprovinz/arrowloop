@@ -256,6 +256,7 @@ const ko: Translations = {
   'about.report': '문제, 바라는 점, 개선 아이디어가 있나요? GitHub에 이슈를 남기거나 메일을 보내 주세요.',
   'about.coffeeButton': '커피 사주기',
   'about.crypto': '암호화폐',
+  'about.paypal': 'PayPal',
   'about.cryptoTitle': '암호화폐로 후원',
   'about.cryptoIntro': '코인과 네트워크를 고른 다음 코드를 스캔하거나 주소를 복사하세요.',
   'about.cryptoNetworks': '네트워크',

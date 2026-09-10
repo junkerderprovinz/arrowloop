@@ -256,6 +256,7 @@ const ja: Translations = {
   'about.report': '問題、要望、改善案はありますか。GitHub で issue を立てるか、メールを送ってください。',
   'about.coffeeButton': 'コーヒーをおごる',
   'about.crypto': '暗号資産',
+  'about.paypal': 'PayPal',
   'about.cryptoTitle': '暗号資産で寄付',
   'about.cryptoIntro': '通貨とネットワークを選び、コードを読み取るかアドレスをコピーしてください。',
   'about.cryptoNetworks': 'ネットワーク',

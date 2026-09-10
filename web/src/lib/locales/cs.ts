@@ -256,6 +256,7 @@ const cs: Translations = {
   'about.report': 'Problémy, přání nebo návrhy? Založ issue na GitHubu, nebo pošli e-mail.',
   'about.coffeeButton': 'Kup mi kávu',
   'about.crypto': 'Krypto',
+  'about.paypal': 'PayPal',
   'about.cryptoTitle': 'Přispět kryptem',
   'about.cryptoIntro': 'Vyber minci a síť, pak naskenuj kód nebo zkopíruj adresu.',
   'about.cryptoNetworks': 'Sítě',

@@ -256,6 +256,7 @@ const fa: Translations = {
   'about.report': 'مشکل، خواسته یا پیشنهادی دارید؟ در GitHub مسئله‌ای باز کنید یا ایمیل بفرستید.',
   'about.coffeeButton': 'یک قهوه مهمانم کن',
   'about.crypto': 'رمزارز',
+  'about.paypal': 'PayPal',
   'about.cryptoTitle': 'کمک با رمزارز',
   'about.cryptoIntro': 'یک ارز و یک شبکه انتخاب کن، سپس کد را اسکن کن یا نشانی را کپی کن.',
   'about.cryptoNetworks': 'شبکه‌ها',

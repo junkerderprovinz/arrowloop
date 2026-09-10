@@ -256,6 +256,7 @@ const lt: Translations = {
   'about.report': 'Problemos, pageidavimai ar pasiūlymai? Sukurk problemą GitHub arba parašyk el. laišką.',
   'about.coffeeButton': 'Pavaišinti kava',
   'about.crypto': 'Kripto',
+  'about.paypal': 'PayPal',
   'about.cryptoTitle': 'Paremti kriptovaliuta',
   'about.cryptoIntro': 'Pasirink monetą ir tinklą, tada nuskaityk kodą arba nukopijuok adresą.',
   'about.cryptoNetworks': 'Tinklai',

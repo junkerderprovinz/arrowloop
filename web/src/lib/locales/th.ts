@@ -256,6 +256,7 @@ const th: Translations = {
   'about.report': 'มีปัญหา ความต้องการ หรือข้อเสนอแนะไหม เปิด issue บน GitHub หรือส่งอีเมล',
   'about.coffeeButton': 'เลี้ยงกาแฟ',
   'about.crypto': 'คริปโท',
+  'about.paypal': 'PayPal',
   'about.cryptoTitle': 'บริจาคด้วยคริปโท',
   'about.cryptoIntro': 'เลือกเหรียญและเครือข่าย แล้วสแกนโค้ดหรือคัดลอกที่อยู่',
   'about.cryptoNetworks': 'เครือข่าย',

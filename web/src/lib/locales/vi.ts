@@ -256,6 +256,7 @@ const vi: Translations = {
   'about.report': 'Vấn đề, mong muốn hay góp ý? Mở một issue trên GitHub, hoặc gửi email.',
   'about.coffeeButton': 'Mời tôi ly cà phê',
   'about.crypto': 'Tiền mã hoá',
+  'about.paypal': 'PayPal',
   'about.cryptoTitle': 'Ủng hộ bằng tiền mã hoá',
   'about.cryptoIntro': 'Chọn một đồng tiền và một mạng, rồi quét mã hoặc sao chép địa chỉ.',
   'about.cryptoNetworks': 'Mạng',

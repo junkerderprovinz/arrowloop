@@ -256,6 +256,7 @@ const id: Translations = {
   'about.report': 'Masalah, keinginan, atau saran? Buka isu di GitHub, atau kirim surel.',
   'about.coffeeButton': 'Traktir saya kopi',
   'about.crypto': 'Kripto',
+  'about.paypal': 'PayPal',
   'about.cryptoTitle': 'Donasi dengan kripto',
   'about.cryptoIntro': 'Pilih koin dan jaringan, lalu pindai kode atau salin alamatnya.',
   'about.cryptoNetworks': 'Jaringan',

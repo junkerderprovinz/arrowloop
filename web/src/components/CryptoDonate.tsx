@@ -24,6 +24,9 @@ export function CryptoDonate({ onClose }: { onClose: () => void }) {
   const [network, setNetwork] = useState<CryptoNetwork>(CRYPTO_COINS[0]!.networks[0]!)
   const [copied, setCopied] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
+  // No palette subscription here: Shell.tsx subscribes once for the whole
+  // app and repaints on any appearance change, so a second subscriber in a
+  // dialog would only duplicate what the shell already does.
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {

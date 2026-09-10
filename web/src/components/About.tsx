@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { AboutCard } from '../lib/glimstone/AboutCard'
 import { CryptoDonate } from './CryptoDonate'
-import { IconBitcoin, IconBuyMeACoffee } from './donateMarks'
+import { IconBitcoin, IconBuyMeACoffee, IconPayPal } from './donateMarks'
 import { GLIMSTONE_VERSION } from '../lib/glimstone/version'
 import { IconGithub } from './brandGlyphs'
 import { useT } from '../lib/i18n'
@@ -29,6 +29,20 @@ const GLIMSTONE_REPO = 'https://github.com/junkerderprovinz/glimstone'
  *  the product name, so one inbox can tell them apart. Not a private address,
  *  which is the point of having it. */
 const MAIL = 'hello@halleluja.design'
+
+/**
+ * The PayPal.Me page, and it is EMPTY until that page exists.
+ *
+ * The card's own rule, applied to a route rather than to a sentence: never
+ * offer a control that reaches nowhere. A PayPal.Me link is created once and
+ * cannot be renamed afterwards without asking their support, so the name has
+ * to be chosen deliberately rather than guessed at here. Fill this in and the
+ * button appears; leave it empty and the card offers coffee and crypto alone.
+ *
+ * Typed as `string` rather than inferred, so the emptiness is a value this
+ * file expects to change and not a constant the compiler folds away.
+ */
+const PAYPAL: string = '';
 
 /** The handle from .github/FUNDING.yml, so one place in the product knows it. */
 const COFFEE = 'https://buymeacoffee.com/junkerderprovinz'
@@ -72,6 +86,8 @@ export function About({ version }: { version: string | null }) {
         coffeeGlyph={<IconBuyMeACoffee />}
         cryptoGlyph={<IconBitcoin />}
         onCrypto={() => setCryptoOpen(true)}
+        paypalUrl={PAYPAL === '' ? undefined : PAYPAL}
+        paypalGlyph={<IconPayPal />}
         mailAddress={MAIL}
         hueIndex={0}
         text={{
@@ -80,6 +96,7 @@ export function About({ version }: { version: string | null }) {
           coffee: t('about.coffee'),
           coffeeButton: t('about.coffeeButton'),
           cryptoButton: t('about.crypto'),
+          paypalButton: t('about.paypal'),
           report: t('about.report'),
           repoButton: t('about.repo'),
           mailButton: t('about.mail'),

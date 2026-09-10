@@ -256,6 +256,7 @@ const lv: Translations = {
   'about.report': 'Problēmas, vēlmes vai ieteikumi? Atver problēmu GitHub vai sūti e-pastu.',
   'about.coffeeButton': 'Uzsauc kafiju',
   'about.crypto': 'Kripto',
+  'about.paypal': 'PayPal',
   'about.cryptoTitle': 'Ziedot ar kripto',
   'about.cryptoIntro': 'Izvēlies monētu un tīklu, tad noskenē kodu vai nokopē adresi.',
   'about.cryptoNetworks': 'Tīkli',

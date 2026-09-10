@@ -256,6 +256,7 @@ const gl: Translations = {
   'about.report': 'Problemas, desexos ou suxestións? Abre unha incidencia en GitHub, ou envía un correo.',
   'about.coffeeButton': 'Convídame a un café',
   'about.crypto': 'Cripto',
+  'about.paypal': 'PayPal',
   'about.cryptoTitle': 'Doar con cripto',
   'about.cryptoIntro': 'Escolle unha moeda e unha rede, despois escanea o código ou copia o enderezo.',
   'about.cryptoNetworks': 'Redes',

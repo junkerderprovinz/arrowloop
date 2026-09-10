@@ -256,6 +256,7 @@ const hu: Translations = {
   'about.report': 'Probléma, kívánság vagy javaslat? Nyiss egy hibajegyet a GitHubon, vagy írj egy e-mailt.',
   'about.coffeeButton': 'Hívj meg egy kávéra',
   'about.crypto': 'Kripto',
+  'about.paypal': 'PayPal',
   'about.cryptoTitle': 'Támogatás kriptóval',
   'about.cryptoIntro': 'Válassz érmét és hálózatot, majd olvasd be a kódot vagy másold ki a címet.',
   'about.cryptoNetworks': 'Hálózatok',

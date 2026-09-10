@@ -256,6 +256,7 @@ const zh: Translations = {
   'about.report': '有问题、需求或改进建议？在 GitHub 上开一个 issue，或者发一封邮件。',
   'about.coffeeButton': '请我喝杯咖啡',
   'about.crypto': '加密货币',
+  'about.paypal': 'PayPal',
   'about.cryptoTitle': '用加密货币捐赠',
   'about.cryptoIntro': '先选择币种和网络，然后扫码或复制地址。',
   'about.cryptoNetworks': '网络',

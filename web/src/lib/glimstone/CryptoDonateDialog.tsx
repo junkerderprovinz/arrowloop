@@ -42,9 +42,11 @@
 // both in. Without them the window falls back to address-and-copy over plain
 // tickers, which is still a complete way to give.
 // ---------------------------------------------------------------------------
-import type { ReactNode, Ref } from "react";
+import type { CSSProperties, ReactNode, Ref } from "react";
+import { hueVars, rainbowAt } from "../appearance";
 import { Badge } from "./Badge";
 import { Button } from "./Button";
+import { useLabelMode } from "./useLabelMode";
 
 /** One address, and the chain it lives on. */
 export interface CryptoNetwork {
@@ -116,6 +118,16 @@ export function CryptoDonateDialog({
   onClose,
   ref,
 }: CryptoDonateDialogProps) {
+  // The label engine decides what a tile SHOWS. `reactive` deliberately
+  // resolves to the same thing as text-and-glyph HERE and nowhere else:
+  // reactive means the words appear under the pointer, which is right for a
+  // strip of verbs somebody already knows and wrong for a grid of coins
+  // somebody is SEARCHING - it would turn "find USDT" into hovering every tile
+  // in turn. A picker is the one surface where hiding the labels until asked
+  // defeats the surface.
+  const mode = useLabelMode("buttons");
+  const showMark = mode !== "text";
+  const showTicker = mode !== "glyph";
   return (
     <div
       className="glim-modal-backdrop fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
@@ -165,16 +177,21 @@ export function CryptoDonateDialog({
                 belongs to, and that fact may not appear and disappear
                 depending on which tile is lit. */}
             <div className="flex flex-wrap justify-center gap-2" role="listbox" aria-label={text.networks}>
-              {coin.networks.map((n) => (
+              {/* A chain name is DATA and has no symbol, so the label engine
+                  has nothing to hide here and these stay words in every mode.
+                  The colour engine still applies: each chain owns a position,
+                  so the chosen one fills in its own hue. */}
+              {coin.networks.map((n, i) => (
                 <button
                   key={n.id}
                   type="button"
                   role="option"
                   aria-selected={n.id === network.id}
                   onClick={() => onPick(coin, n)}
-                  className={`rounded-pill px-3 py-1 text-xs font-medium transition-colors ${
+                  style={hueVars(rainbowAt(i)) as CSSProperties}
+                  className={`glim-hue rounded-pill px-3 py-1 text-xs font-medium transition-colors ${
                     n.id === network.id
-                      ? "bg-accent text-accentContrast"
+                      ? "glim-active bg-accent text-accentContrast"
                       : "bg-carbon-surface3 text-carbon-textSub hover:bg-carbon-hoverRaised hover:text-carbon-text"
                   }`}
                 >
@@ -187,10 +204,17 @@ export function CryptoDonateDialog({
                 for a destination tag or a memo, so the chain that does not want
                 one has to say so where the address is. */}
             {network.note && <p className="text-center text-xs text-statusWarn">{network.note}</p>}
+            {/* The one accent surface in this box, so it takes the position of
+                the coin it belongs to: in rainbow mode the copy button is the
+                same colour as the tile the address came from. The close button
+                below has no position, and that is not an omission - it is
+                neutral-toned, and a palette colour on a control that paints no
+                accent resolves to nothing. */}
             <Button
               label={text.copyLabel}
               labelKey="common.copy"
               tone="accent"
+              hueIndex={coins.findIndex((c) => c.id === coin.id)}
               onClick={() => onCopy(coin, network)}
             />
           </div>
@@ -198,24 +222,35 @@ export function CryptoDonateDialog({
           {/* The picker, under the answer it changes. Tiles rather than a list,
               because a coin is recognised by its mark faster than its name is
               read, and a grid of marks is the one layout that says at a glance
-              what is on offer. */}
+              what is on offer.
+
+              Each tile owns a palette position, so rainbow mode makes the coins
+              scannable by colour the way it makes any other list scannable.
+              `.glim-hue-icon` tints the mark itself while the ticker sits
+              beside it, and is dropped in glyph mode: there the mark IS the
+              tile's whole content, and the house rule for an icon-only badge is
+              that only the fill ever carries colour. */}
           <div className="grid grid-cols-4 gap-2" role="listbox" aria-label={text.title}>
-            {coins.map((c) => (
+            {coins.map((c, i) => (
               <button
                 key={c.id}
                 type="button"
                 role="option"
                 aria-selected={c.id === coin.id}
                 aria-label={`${c.name} (${c.symbol})`}
+                title={c.name}
                 onClick={() => onPick(c, c.networks[0]!)}
+                style={hueVars(rainbowAt(i)) as CSSProperties}
                 className={`flex flex-col items-center gap-1 rounded-control px-2 py-3 transition-colors ${
+                  showTicker ? "glim-hue glim-hue-icon" : "glim-hue"
+                } ${
                   c.id === coin.id
-                    ? "bg-accent text-accentContrast"
+                    ? "glim-active bg-accent text-accentContrast"
                     : "bg-carbon-surface2 text-carbon-textSub hover:bg-carbon-surface3 hover:text-carbon-text"
                 }`}
               >
-                {renderMark?.(c)}
-                <span className="text-xs font-medium">{c.symbol}</span>
+                {showMark && renderMark?.(c)}
+                {showTicker && <span className="text-xs font-medium">{c.symbol}</span>}
               </button>
             ))}
           </div>

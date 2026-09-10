@@ -256,6 +256,7 @@ const ca: Translations = {
   'about.report': 'Problemes, desitjos o suggeriments? Obre una incidència a GitHub, o envia un correu.',
   'about.coffeeButton': 'Convida’m a un cafè',
   'about.crypto': 'Cripto',
+  'about.paypal': 'PayPal',
   'about.cryptoTitle': 'Donar amb cripto',
   'about.cryptoIntro': 'Tria una moneda i una xarxa, després escaneja el codi o copia l\'adreça.',
   'about.cryptoNetworks': 'Xarxes',

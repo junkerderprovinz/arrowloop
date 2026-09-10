@@ -256,6 +256,7 @@ const fi: Translations = {
   'about.report': 'Ongelmia, toiveita tai ehdotuksia? Avaa issue GitHubissa tai lähetä sähköpostia.',
   'about.coffeeButton': 'Tarjoa kahvi',
   'about.crypto': 'Krypto',
+  'about.paypal': 'PayPal',
   'about.cryptoTitle': 'Lahjoita kryptolla',
   'about.cryptoIntro': 'Valitse kolikko ja verkko, skannaa sitten koodi tai kopioi osoite.',
   'about.cryptoNetworks': 'Verkot',

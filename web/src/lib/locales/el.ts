@@ -256,6 +256,7 @@ const el: Translations = {
   'about.report': 'Προβλήματα, επιθυμίες ή προτάσεις; Άνοιξε ένα ζήτημα στο GitHub ή στείλε ένα email.',
   'about.coffeeButton': 'Κέρασέ με έναν καφέ',
   'about.crypto': 'Κρύπτο',
+  'about.paypal': 'PayPal',
   'about.cryptoTitle': 'Δωρεά με κρύπτο',
   'about.cryptoIntro': 'Διάλεξε νόμισμα και δίκτυο, μετά σάρωσε τον κωδικό ή αντίγραψε τη διεύθυνση.',
   'about.cryptoNetworks': 'Δίκτυα',
