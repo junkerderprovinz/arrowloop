@@ -28,6 +28,7 @@
   --color-carbon-textMuted: var(--carbon-text-muted);
   --color-carbon-border: var(--carbon-border);
   --color-carbon-hover: var(--carbon-hover);
+  --color-carbon-hoverRaised: var(--carbon-hover-raised);
 
   --color-accent: var(--accent);
   --color-accentContrast: var(--accent-contrast);

@@ -83,6 +83,7 @@
   --carbon-surface2:   #393939;
   --carbon-surface3:   #525252;
   --carbon-hover:      #353535;
+  --carbon-hover-raised: #6f6f6f;
   --carbon-border:     #393939;
 
   /* Text ramp — three steps, the last still legible at 11px. */
@@ -163,6 +164,7 @@
     --carbon-surface2:   #e8e8e8;
     --carbon-surface3:   #d1d1d1;
     --carbon-hover:      #e0e0e0;
+    --carbon-hover-raised: #c6c6c6;
     --carbon-border:     #d1d1d1;
 
     --carbon-text:       #161616;
@@ -216,6 +218,7 @@
   --carbon-surface2:   #e8e8e8;
   --carbon-surface3:   #d1d1d1;
   --carbon-hover:      #e0e0e0;
+  --carbon-hover-raised: #c6c6c6;
   --carbon-border:     #d1d1d1;
 
   --carbon-text:       #161616;

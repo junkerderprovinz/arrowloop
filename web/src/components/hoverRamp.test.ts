@@ -11,7 +11,10 @@ import { describe, expect, it } from 'vitest'
  * element that is already filled with surface2 makes that element four units
  * DARKER under the pointer - it dims at the one moment somebody is looking
  * straight at it, which reads as no hover at all. Anything already filled with
- * surface2 hovers to `--carbon-surface3` (#525252) instead.
+ * surface2 hovers to `--carbon-surface3` (#525252) instead, and anything
+ * filled with surface3 to `--carbon-hover-raised` (#6f6f6f), which was added
+ * for exactly this: the ramp used to stop at surface3, so the neutral button
+ * sitting ON it reached back down to `--carbon-hover` - a 29-unit drop.
  *
  * A test rather than a note, because the note existed: GlimStone's token table
  * has said "hover on surface2" beside `--carbon-surface3` since the beginning,
@@ -36,8 +39,20 @@ import { describe, expect, it } from 'vitest'
 const here = dirname(fileURLToPath(import.meta.url))
 const src = join(here, '..')
 
-const FILLED = 'bg-carbon-surface2'
-const WRONG = 'hover:bg-carbon-hover'
+/** Each resting fill, and the hover it is allowed to take (rule 21). */
+const RAMP = [
+  { filled: 'bg-carbon-surface2', hover: 'hover:bg-carbon-surface3' },
+  { filled: 'bg-carbon-surface3', hover: 'hover:bg-carbon-hoverRaised' },
+]
+/**
+ * The hover for something with NO fill of its own, wrong on anything filled.
+ *
+ * Anchored, because `hover:bg-carbon-hoverRaised` CONTAINS
+ * `hover:bg-carbon-hover`: a plain substring test reports every correctly
+ * written surface3 control as the very mistake it avoids. It did, on the first
+ * run after the third tier was added.
+ */
+const WRONG = /hover:bg-carbon-hover(?![A-Za-z-])/
 
 function sourceFiles(dir: string): string[] {
   const found: string[] = []
@@ -70,14 +85,17 @@ function classLists(text: string): [string, number][] {
   return pieces
 }
 
-/** Every `file:line` where a surface2-filled element hovers to the wrong tone. */
+/** Every `file:line` where a filled element hovers to the tone below its own. */
 function offenders(): string[] {
   const hits: string[] = []
   for (const path of sourceFiles(src)) {
     const text = readFileSync(path, 'utf8')
     for (const [piece, at] of classLists(text)) {
-      if (!piece.includes(WRONG) || !piece.includes(FILLED)) continue
-      hits.push(`${path.slice(src.length + 1)}:${text.slice(0, at).split('\n').length}`)
+      if (!WRONG.test(piece)) continue
+      const tier = RAMP.find((t) => piece.includes(t.filled))
+      if (!tier) continue
+      const line = text.slice(0, at).split('\n').length
+      hits.push(`${path.slice(src.length + 1)}:${line} (${tier.hover})`)
     }
   }
   return hits.sort()
@@ -89,10 +107,12 @@ describe('hover ramp', () => {
     // assertion below pass forever while checking nothing.
     const files = sourceFiles(src)
     expect(files.length).toBeGreaterThan(20)
-    expect(files.some((f) => readFileSync(f, 'utf8').includes(FILLED))).toBe(true)
+    expect(files.some((f) => readFileSync(f, 'utf8').includes(RAMP[0].filled))).toBe(true)
   })
 
   it('never hovers a filled element to the tone below its own', () => {
-    expect(offenders(), `use hover:bg-carbon-surface3 at: ${offenders().join(', ')}`).toEqual([])
+    // Each hit names the class it should carry instead, because that depends
+    // on which tier the element is resting on.
+    expect(offenders(), `hovers below its own tone at: ${offenders().join(', ')}`).toEqual([])
   })
 })
