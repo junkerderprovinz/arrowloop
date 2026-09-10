@@ -52,10 +52,16 @@ x86_64 is what the emulator is, so the rig this was developed against installs
 the same build. The engine is about 75 MB per architecture, which is rclone with
 sixty-eight backends compiled in, and it is the whole of the download.
 
-The APK is **unsigned**. Signing needs a keystore, and a workflow that quietly
-signs with a throwaway key produces an app that installs once and can never be
-updated: every later build would be a different app as far as Android is
-concerned.
+Two APKs come out per architecture, and the **debug** one is the one to install.
+
+The release APK is **unsigned**: signing needs a keystore, and a workflow that
+quietly signs with a throwaway key produces an app that installs once and can
+never be updated, because every later build would be a different app as far as
+Android is concerned. An unsigned APK cannot be installed at all, though, so a
+job producing only that would be a green tick over something nobody can put on a
+phone. The debug APK is signed with the standard debug key every Android SDK
+carries. It installs, it runs, and it is honestly named: for trying the thing,
+not for shipping it.
 
 ## What it can reach
 

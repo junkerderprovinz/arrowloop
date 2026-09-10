@@ -85,22 +85,31 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v4
 
+      # BOTH, and the debug build is the one anybody can actually use today.
+      #
+      # A release APK here is unsigned, because signing needs a keystore that
+      # only jdp has and a workflow that quietly signs with a throwaway key
+      # produces an app that installs once and can never be updated - every
+      # later build would be a different app as far as Android is concerned.
+      # But an unsigned APK cannot be installed at all, so a job that produced
+      # only that would be a green tick over something nobody can put on a
+      # phone.
+      #
+      # The debug build is signed with the standard debug key that every
+      # Android SDK carries. It installs, it runs, and it is honestly named:
+      # it is for trying the thing, not for shipping it.
       - name: Assemble
         working-directory: android
-        run: gradle --no-daemon assembleRelease
+        run: gradle --no-daemon assembleDebug assembleRelease
 
-      # Unsigned on purpose. Signing needs a keystore that only jdp has, and a
-      # workflow that quietly signs with a throwaway key produces an APK that
-      # installs once and can never be updated - every later build would be a
-      # different app as far as Android is concerned.
       - name: Name the outputs
         working-directory: android
         run: |
           set -eux
           mkdir -p out
-          for f in app/build/outputs/apk/release/*.apk; do
-            base="$(basename "$f")"
-            cp "$f" "out/arrowloop-${base}"
+          for f in app/build/outputs/apk/debug/*.apk app/build/outputs/apk/release/*.apk; do
+            [ -e "$f" ] || continue
+            cp "$f" "out/arrowloop-$(basename "$f")"
           done
           ls -la out/
 
