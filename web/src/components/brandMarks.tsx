@@ -50,7 +50,7 @@ import {
   IconFolder,
   IconTargets,
   IconLink,
-  IconHidden,
+  IconLock,
 } from './glyphs'
 
 /**
@@ -115,7 +115,7 @@ const MARKS: Record<string, () => ReactNode> = {
   IconFolder: () => <IconFolder className="text-carbon-textSub" />,
   IconTargets: () => <IconTargets className="text-carbon-textSub" />,
   IconLink: () => <IconLink className="text-carbon-textSub" />,
-  IconHidden: () => <IconHidden className="text-carbon-textSub" />,
+  IconLock: () => <IconLock className="text-carbon-textSub" />,
 }
 
 export function brandMark(name: string | undefined): ReactNode | undefined {

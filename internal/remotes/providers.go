@@ -161,7 +161,7 @@ var providers = []Provider{
 		Mark: "IconLink", Hint: "Read-only, over a plain web server."},
 	{ID: "hdfs", Name: "HDFS", Backend: "hdfs", Group: GroupProtocol, Mark: "IconHadoop"},
 	{ID: "crypt", Name: "Encrypted", Backend: "crypt", Group: GroupProtocol,
-		Mark: "IconHidden", Hint: "Wraps another target and encrypts what goes into it."},
+		Mark: "IconLock", Hint: "Wraps another target and encrypts what goes into it."},
 }
 
 // Providers lists what can be offered on this build, which is the ones whose

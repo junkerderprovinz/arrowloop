@@ -103,10 +103,19 @@ export function ProviderPicker({
               <span className="flex h-10 w-16 shrink-0 items-center justify-center [&_svg]:h-full [&_svg]:w-full">
                 {brandMark(p.mark)}
               </span>
-              <span className="min-w-0 flex-1 truncate text-body text-carbon-text">{p.name}</span>
-              {showHint(p) && (
-                <span className="shrink-0 ps-3 text-caption text-carbon-textMuted">{p.hint}</span>
-              )}
+              {/* The name, and under it the one line of explanation the
+                  protocols get. It used to sit at the END of the row, which
+                  worked while the row was the width of the card and broke the
+                  moment the list became narrow: the hint could not shrink, so
+                  the NAME gave up the space instead and "S3 compatible" was
+                  rendered as "S.". A name that cannot be read is not a list
+                  entry. Under it, both survive. */}
+              <span className="flex min-w-0 flex-1 flex-col">
+                <span className="truncate text-body text-carbon-text">{p.name}</span>
+                {showHint(p) && (
+                  <span className="truncate text-caption text-carbon-textMuted">{p.hint}</span>
+                )}
+              </span>
             </button>
           </li>
         ))}

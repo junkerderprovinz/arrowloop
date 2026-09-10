@@ -94,6 +94,14 @@ GLYPHS = [
     ("IconVisible", "interface-essential/visible.svg", "Show a stored secret"),
     ("IconHidden", "interface-essential/invisible-1.svg", "Hide it again"),
 
+    # The encrypted target, which used to wear the slashed eye above. That eye
+    # means "hidden from view on this screen" and says nothing about a target
+    # that encrypts everything written into it - two different ideas that
+    # happen to share a mood. jdp: "Das icon für encryptet soll ein schloss
+    # icon sein." A padlock is what everybody already reads as encrypted.
+    ("IconLock", "interface-essential/padlock-square-1.svg",
+     "A target that encrypts what is written into it"),
+
     # Writing the setup to a file and reading one back. ONE box with the arrow
     # reversed, which is what the set already draws: a matched pair cannot drift
     # apart when it is the same silhouette twice. Same two files the sibling app
