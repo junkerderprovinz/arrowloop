@@ -417,6 +417,10 @@ const ro: Translations = {
   'opt.driveType': 'Tip unitate',
   'opt.scope': 'Permisiuni',
   'opt.twoFactor': 'Cod în doi pași',
+  'opt.urlHelp': 'Adresa completă, cu https:// și calea până la folderul tău.',
+  'opt.passHelp': 'Folosește o parolă de aplicație dacă furnizorul oferă una, nu parola contului.',
+  'opt.vendorHelp': 'Ce dialect WebDAV vorbește serverul. Dacă nu știi, alege „altul”.',
+  'opt.keyFileHelp': 'Calea către cheia privată pe mașina pe care rulează ArrowLoop, nu pe aceasta.',
 }
 
 export default ro

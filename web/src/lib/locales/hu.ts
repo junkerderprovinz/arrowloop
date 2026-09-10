@@ -417,6 +417,10 @@ const hu: Translations = {
   'opt.driveType': 'Meghajtó típusa',
   'opt.scope': 'Jogosultságok',
   'opt.twoFactor': 'Kétlépcsős kód',
+  'opt.urlHelp': 'A teljes cím, https:// előtaggal és a saját mappádig vezető úttal.',
+  'opt.passHelp': 'Használj alkalmazásjelszót, ha a szolgáltató kínál ilyet, a fiók jelszava helyett.',
+  'opt.vendorHelp': 'Milyen WebDAV-nyelvjárást beszél a kiszolgáló. Ha nem tudod, válaszd az „egyéb” lehetőséget.',
+  'opt.keyFileHelp': 'A privát kulcs útvonala azon a gépen, ahol az ArrowLoop fut, nem ezen.',
 }
 
 export default hu

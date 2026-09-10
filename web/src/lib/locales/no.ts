@@ -417,6 +417,10 @@ const no: Translations = {
   'opt.driveType': 'Stasjonstype',
   'opt.scope': 'Tillatelser',
   'opt.twoFactor': 'Tofaktorkode',
+  'opt.urlHelp': 'Hele adressen, med https:// og stien fram til din egen mappe.',
+  'opt.passHelp': 'Bruk et app-passord hvis leverandøren tilbyr det, i stedet for kontopassordet.',
+  'opt.vendorHelp': 'Hvilken WebDAV-dialekt tjeneren snakker. Velg «annet» hvis du er usikker.',
+  'opt.keyFileHelp': 'Sti til den private nøkkelen på maskinen der ArrowLoop kjører, ikke på denne.',
 }
 
 export default no

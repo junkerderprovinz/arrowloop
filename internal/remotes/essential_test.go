@@ -29,11 +29,27 @@ func TestEveryOfferedBackendAsksForSomething(t *testing.T) {
 	}
 
 	for _, b := range backends {
-		visible := 0
+		visible, askable := 0, 0
 		for _, o := range b.Options {
 			if o.Required || o.Essential {
 				visible++
 			}
+			if !o.Advanced {
+				askable++
+			}
+		}
+		// A backend with NO ordinary options at all has nothing to ask for, and
+		// demanding a field from it would be demanding an invention. `memory`
+		// is the one: a scratch remote that lives in RAM and takes no address
+		// and no credential.
+		//
+		// Structural rather than a list of names on purpose. "This backend is
+		// exempt" and "this backend hides everything behind advanced" look
+		// identical from a name list, and the second is exactly the defect this
+		// test exists for: s3 has plenty of ordinary options and marks none of
+		// them required.
+		if askable == 0 {
+			continue
 		}
 		if visible == 0 {
 			t.Errorf("the %s form opens with no fields at all, so a target can be saved "+

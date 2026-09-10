@@ -417,6 +417,10 @@ const ko: Translations = {
   'opt.driveType': '드라이브 종류',
   'opt.scope': '권한',
   'opt.twoFactor': '이중 인증 코드',
+  'opt.urlHelp': 'https:// 와 내 폴더까지의 경로를 포함한 전체 주소.',
+  'opt.passHelp': '공급자가 앱 비밀번호를 제공하면 계정 비밀번호 대신 그것을 쓰세요.',
+  'opt.vendorHelp': '서버가 사용하는 WebDAV 방언. 잘 모르면 “기타”를 고르세요.',
+  'opt.keyFileHelp': 'ArrowLoop 이 실행되는 컴퓨터의 개인 키 경로입니다.',
 }
 
 export default ko

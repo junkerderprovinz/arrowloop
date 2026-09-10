@@ -417,6 +417,10 @@ const ms: Translations = {
   'opt.driveType': 'Jenis pemacu',
   'opt.scope': 'Kebenaran',
   'opt.twoFactor': 'Kod dua faktor',
+  'opt.urlHelp': 'Alamat penuh, dengan https:// dan laluan sehingga folder anda.',
+  'opt.passHelp': 'Guna kata laluan aplikasi jika penyedia menawarkannya, bukan kata laluan akaun.',
+  'opt.vendorHelp': 'Dialek WebDAV yang dituturkan pelayan. Jika ragu, pilih “lain-lain”.',
+  'opt.keyFileHelp': 'Laluan ke kunci peribadi pada mesin tempat ArrowLoop berjalan, bukan mesin ini.',
 }
 
 export default ms

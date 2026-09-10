@@ -417,6 +417,10 @@ const ca: Translations = {
   'opt.driveType': 'Tipus d\'unitat',
   'opt.scope': 'Permisos',
   'opt.twoFactor': 'Codi de dos factors',
+  'opt.urlHelp': 'L\'adreça completa, amb https:// i el camí fins a la teva carpeta.',
+  'opt.passHelp': 'Fes servir una contrasenya d\'aplicació si el proveïdor n\'ofereix, en lloc de la del compte.',
+  'opt.vendorHelp': 'Quin dialecte de WebDAV parla el servidor. Si no ho saps, tria «altres».',
+  'opt.keyFileHelp': 'Camí a la clau privada a la màquina on s\'executa ArrowLoop, no en aquesta.',
 }
 
 export default ca

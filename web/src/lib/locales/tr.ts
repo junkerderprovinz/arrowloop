@@ -417,6 +417,10 @@ const tr: Translations = {
   'opt.driveType': 'Sürücü türü',
   'opt.scope': 'İzinler',
   'opt.twoFactor': 'İki adımlı kod',
+  'opt.urlHelp': 'https:// ve kendi klasörüne kadar olan yolu içeren tam adres.',
+  'opt.passHelp': 'Sağlayıcı uygulama parolası sunuyorsa hesap parolası yerine onu kullan.',
+  'opt.vendorHelp': 'Sunucunun hangi WebDAV lehçesini konuştuğu. Emin değilsen “diğer” seç.',
+  'opt.keyFileHelp': 'Özel anahtarın ArrowLoop\'un çalıştığı makinedeki yolu, bu makinede değil.',
 }
 
 export default tr

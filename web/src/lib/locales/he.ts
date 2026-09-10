@@ -417,6 +417,10 @@ const he: Translations = {
   'opt.driveType': 'סוג כונן',
   'opt.scope': 'הרשאות',
   'opt.twoFactor': 'קוד דו-שלבי',
+  'opt.urlHelp': 'הכתובת המלאה, עם https:// והנתיב עד התיקייה שלך.',
+  'opt.passHelp': 'השתמש בסיסמת יישום אם הספק מציע אחת, במקום סיסמת החשבון.',
+  'opt.vendorHelp': 'באיזו ניב של WebDAV השרת מדבר. אם אינך בטוח, בחר »אחר«.',
+  'opt.keyFileHelp': 'נתיב למפתח הפרטי במכונה שעליה ArrowLoop רץ, לא בזו.',
 }
 
 export default he

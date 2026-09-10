@@ -417,6 +417,10 @@ const th: Translations = {
   'opt.driveType': 'ชนิดไดรฟ์',
   'opt.scope': 'สิทธิ์',
   'opt.twoFactor': 'รหัสสองขั้นตอน',
+  'opt.urlHelp': 'ที่อยู่เต็ม พร้อม https:// และเส้นทางจนถึงโฟลเดอร์ของคุณ',
+  'opt.passHelp': 'ใช้รหัสผ่านสำหรับแอปหากผู้ให้บริการมีให้ แทนรหัสผ่านบัญชี',
+  'opt.vendorHelp': 'เซิร์ฟเวอร์พูด WebDAV สำเนียงใด หากไม่แน่ใจเลือก “อื่น ๆ”',
+  'opt.keyFileHelp': 'เส้นทางไปยังคีย์ส่วนตัวบนเครื่องที่ ArrowLoop ทำงานอยู่',
 }
 
 export default th

@@ -417,6 +417,10 @@ const eu: Translations = {
   'opt.driveType': 'Unitate mota',
   'opt.scope': 'Baimenak',
   'opt.twoFactor': 'Bi faktoreko kodea',
+  'opt.urlHelp': 'Helbide osoa, https:// eta zure karpetarainoko bidearekin.',
+  'opt.passHelp': 'Erabili aplikazio-pasahitza hornitzaileak eskaintzen badu, kontuarena beharrean.',
+  'opt.vendorHelp': 'Zerbitzariak zein WebDAV dialekto darabilen. Zalantzarik baduzu, aukeratu «bestelakoa».',
+  'opt.keyFileHelp': 'Gako pribatuaren bidea ArrowLoop exekutatzen den makinan, ez honetan.',
 }
 
 export default eu

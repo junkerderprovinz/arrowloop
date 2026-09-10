@@ -417,6 +417,10 @@ const sv: Translations = {
   'opt.driveType': 'Enhetstyp',
   'opt.scope': 'Behörigheter',
   'opt.twoFactor': 'Tvåfaktorskod',
+  'opt.urlHelp': 'Hela adressen, med https:// och sökvägen fram till din egen mapp.',
+  'opt.passHelp': 'Använd ett app-lösenord om leverantören erbjuder ett, i stället för kontolösenordet.',
+  'opt.vendorHelp': 'Vilken WebDAV-dialekt servern talar. Välj ”annat” om du är osäker.',
+  'opt.keyFileHelp': 'Sökväg till den privata nyckeln på maskinen där ArrowLoop körs, inte på den här.',
 }
 
 export default sv

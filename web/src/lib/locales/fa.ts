@@ -417,6 +417,10 @@ const fa: Translations = {
   'opt.driveType': 'نوع درایو',
   'opt.scope': 'دسترسی‌ها',
   'opt.twoFactor': 'کد دومرحله‌ای',
+  'opt.urlHelp': 'نشانی کامل، با https:// و مسیر تا پوشه‌ی شما.',
+  'opt.passHelp': 'اگر ارائه‌دهنده رمز برنامه دارد، از آن استفاده کن، نه از رمز حساب.',
+  'opt.vendorHelp': 'سرور چه گویشی از WebDAV را می‌فهمد. اگر مطمئن نیستی «دیگر» را برگزین.',
+  'opt.keyFileHelp': 'مسیر کلید خصوصی روی دستگاهی که ArrowLoop روی آن اجرا می‌شود.',
 }
 
 export default fa

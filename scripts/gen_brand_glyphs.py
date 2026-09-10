@@ -61,10 +61,6 @@ MARKS = [
     ("IconOpenstack", "openstack", "OpenStack Swift"),
     ("IconAkamai", "akamai", "Akamai NetStorage"),
     ("IconHadoop", "apachehadoop", "HDFS"),
-    # Huawei's own mark rather than a product's: Huawei Drive is the consumer
-    # storage and Huawei Cloud OBS is the platform, and the wordmark supplied
-    # for the second would name the wrong one of the two here.
-    ("IconHuawei", "huawei", "Huawei Drive"),
 ]
 
 HEAD = '''import type { SVGProps } from 'react'
@@ -194,6 +190,27 @@ def shift(colour, surface, upward):
 # (name, value on dark, value on light).
 VARIABLES = []
 
+# Colours that must follow the theme even though the mark as a whole reads fine.
+#
+# The readability rule above judges a mark by its BEST colour, which is the
+# right question for "can this be seen at all" and the wrong one for a mark
+# that is partly white. Most white in a logo is a knockout sitting on the
+# brand's own coloured shape - MEGA's M on its red circle, Internxt's X on its
+# navy square - and that white must stay white or the logo breaks. White that
+# sits directly on the page is the other case, and no measurement here can tell
+# the two apart, so this names the one file where it is the second.
+#
+# Values are (on dark, on light).
+FORCE_THEMED = {
+    # OpenDrive's logo is drawn for a dark ground: two blue bars and two white
+    # ones on a near-black plate. jdp asked for the plate to go ("opendrive logo
+    # ohne den dunklen hintergrund"), and without it the two white bars vanish
+    # on the light theme. They take the plate's own tone there instead, so the
+    # mark keeps its shape and its blue on both grounds. The brand's own
+    # light-ground version would be better than this and is worth asking for.
+    "opendrive": {"#fff": ("#ffffff", "#2b2b2b")},
+}
+
 
 def themed(colours, slug):
     """Which of these colours need a per-theme variant, and under what names.
@@ -207,6 +224,19 @@ def themed(colours, slug):
     usable = [c for c in colours if _rgb(c)]
     if not usable:
         return {}
+
+    # The named exceptions first: a colour listed here follows the theme
+    # whatever the measurement says about the mark as a whole.
+    forced = {}
+    for colour, (on_dark, on_light) in FORCE_THEMED.get(slug, {}).items():
+        if colour not in usable:
+            raise SystemExit("FORCE_THEMED names %s in %s, which does not paint with it" % (colour, slug))
+        name = "--brand-%s-forced%d" % (slug, len(forced))
+        VARIABLES.append((name, on_dark, on_light))
+        forced[colour] = "var(%s)" % name
+    if forced:
+        return forced
+
     dark_best = max(contrast(c, SURFACE_DARK) for c in usable)
     light_best = max(contrast(c, SURFACE_LIGHT) for c in usable)
     if dark_best >= FLOOR and light_best >= FLOOR:
@@ -281,10 +311,11 @@ def one(name: str, slug: str, note: str) -> str:
     swap = themed([colour], slug)
     painted = swap.get(colour, colour)
     aside = "" if not swap else ", flipped for the ground it cannot be read on"
+    cropped = INK.get(name) or box.group(1)
     return f'''/** {note}. Simple Icons: {slug}, in its own {colour}{aside} */
 export function {name}(props: SVGProps<SVGSVGElement>) {{
   return (
-    <svg viewBox="{box.group(1)}" width="1em" height="1em" fill="{painted}" aria-hidden {{...props}}>
+    <svg viewBox="{cropped}" width="1em" height="1em" fill="{painted}" aria-hidden {{...props}}>
 {body}
     </svg>
   )
@@ -455,24 +486,59 @@ BRAND_DIR = Path(__file__).parent / "brand-paths"
 
 SVG_NS = "{http://www.w3.org/2000/svg}"
 
-# Files whose viewBox is far larger than anything they draw, with the box the
-# ink actually occupies.
+# Every mark's own INK, measured, for marks whose drawing does not fill the box
+# it was saved in.
 #
-# A logo exported with its wordmark as live TEXT loses the text and keeps the
-# box, so the symbol ends up in a corner of a mostly empty rectangle - and a
-# rectangle is what gets fitted into the row, not the drawing. Linkbox looked
-# like a 5.3:1 wordmark 8 pixels tall; its ink is SQUARE and fills a fifth of
-# its own box. Quatrix is the same case.
+# The eye compares a glyph's ink, not its viewBox, and imported artwork varies
+# wildly in how much of its own box it uses: measured across the running list,
+# the painted extent ran from 32px to 64px, a factor of two, on marks that are
+# all in identically sized boxes. jdp, looking at it: "die logos sind stark
+# unterschiedlich gross." Cropping the box to the drawing is what makes them
+# agree, and it is the same fix the sibling app arrived at after five rounds of
+# the same report.
+#
+# A second thing it fixes: a logo exported with its wordmark as live TEXT loses
+# the text and keeps the box, so the symbol ends up in a corner of a mostly
+# empty rectangle. Linkbox looked like a 5.3:1 wordmark 8 pixels tall and its
+# ink is square.
 #
 # Measured with getBBox() in the running app rather than guessed, because the
 # only honest source for "what does this file actually paint" is a renderer.
 # The files themselves stay untouched: an override here is visible and carries
 # its reason, an edited SVG in the folder would look like the original.
-TIGHT = {
-    "linkbox": "0 0.1 68.4 68.4",       # 19% of its box wide, and square
-    "quatrix": "0 0 59.3 58.5",         # 33% wide, also square
-    "gofile": "13 0 289.4 190",         # 43% wide
-    "huaweicloud": "0.8 0.8 36.5 27.4",  # 34% wide
+#
+# Keyed by COMPONENT, so one table covers both sources. Regenerate by opening
+# the provider list and reading getBBox() off each mark; anything that already
+# fills its box needs no entry.
+INK = {
+    "IconAkamai": "0.96 0 22.08 24",
+    "IconBackblaze": "4.74 0 14.53 24",
+    "IconBox": "0 5.52 24 12.95",
+    "IconCitrix": "3.9 0 16.19 24",
+    "IconCloudinary": "0 88.5 512 335",
+    "IconDropbox": "0 1.81 24 20.39",
+    "IconFilen": "2 2 60 60",
+    "IconGofile": "13 0 289.4 190",
+    "IconGoogleCloud": "0 2.38 24 19.25",
+    "IconGoogleDrive": "0 27.3 512.1 457.4",
+    "IconHuaweiCloud": "0.8 0.8 36.5 27.4",
+    "IconInternetArchive": "29.8 0 452.4 512",
+    "IconJottacloud": "0 0 37.6 38.1",
+    "IconKoofr": "84.19 75.2 766.81 762.82",
+    "IconLinkbox": "0 0.1 68.4 68.4",
+    "IconNextcloud": "0 6.54 24 10.93",
+    "IconOpencloud": "58.8 0 394.4 512",
+    "IconOpendrive": "116.93 31.49 197.42 132.68",
+    "IconOpenstack": "0 0.26 24 23.48",
+    "IconOracleCloud": "2 2 28 16",
+    "IconOwncloud": "0 5.51 24 12.97",
+    "IconPcloud": "16 102.5 479.9 307.1",
+    "IconPikpak": "2.8 6 46 38.7",
+    "IconQuatrix": "0 0 59.3 58.5",
+    "IconSeafile": "0 4.27 24 15.46",
+    "IconStorj": "0 93.4 512 325.3",
+    "IconSugarsync": "17.2 0 73.51 75.61",
+    "IconZoho": "0 6.9 24 10.21",
 }
 
 
@@ -557,7 +623,7 @@ def pair(name, slug, note, source, licence):
         raise SystemExit("%s: the two inks are not the same drawing" % slug)
 
     root = _inline_css(ET.fromstring(io.open(dark_file, encoding="utf-8").read()), slug)
-    box = TIGHT.get(slug) or root.get("viewBox")
+    box = INK.get(name) or root.get("viewBox")
     if not box:
         raise SystemExit("brand-paths/%s-dark.svg has no viewBox" % slug)
 
@@ -591,7 +657,7 @@ def local(name, slug, note, source, licence):
     # The box: its own if it has one, otherwise built from width and height.
     # Several of these carry only a size, and a component with no viewBox does
     # not scale to the 1em the interface asks for.
-    box = TIGHT.get(slug) or root.get("viewBox")
+    box = INK.get(name) or root.get("viewBox")
     if not box:
         w, h = root.get("width"), root.get("height")
         if not w or not h:
@@ -685,10 +751,10 @@ def css_block(selectors, index, indent=0):
     return "\n".join(lines)
 
 
-unbenutzt = [s_ for s_ in TIGHT if not (BRAND_DIR / (s_ + ".svg")).is_file()
-             and not (BRAND_DIR / (s_ + "-dark.svg")).is_file()]
+bekannt = {m[0] for m in MARKS} | {m[0] for m in LOCAL}
+unbenutzt = sorted(set(INK) - bekannt)
 if unbenutzt:
-    raise SystemExit("TIGHT names files that are not here: " + ", ".join(unbenutzt))
+    raise SystemExit("INK names marks that do not exist: " + ", ".join(unbenutzt))
 
 if not SRC.is_dir():
     raise SystemExit("no such directory: %s\nInstall simple-icons and pass its icons path." % SRC)

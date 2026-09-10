@@ -417,6 +417,10 @@ const is: Translations = {
   'opt.driveType': 'Tegund drifs',
   'opt.scope': 'Heimildir',
   'opt.twoFactor': 'Tveggja þátta kóði',
+  'opt.urlHelp': 'Fullt vistfang, með https:// og slóðinni að möppunni þinni.',
+  'opt.passHelp': 'Notaðu forritslösensorð ef veitandinn býður upp á þannig, ekki aðgangsorðið.',
+  'opt.vendorHelp': 'Hvaða WebDAV-mállýsku þjónninn talar. Veldu „annað“ ef þú ert óviss.',
+  'opt.keyFileHelp': 'Slóð að einkalyklinum á vélinni þar sem ArrowLoop keyrir, ekki á þessari.',
 }
 
 export default is

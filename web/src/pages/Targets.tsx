@@ -13,7 +13,7 @@ import { Choice, Field, Secret, Text } from '../components/Field'
 import { ToggleRow } from '../components/ToggleRow'
 import { api, type Backend, type Provider, type Remote, type Volume } from '../lib/api'
 import { useT } from '../lib/i18n'
-import { hasOptionLabel, optionLabel } from '../lib/optionNames'
+import { hasOptionLabel, optionExplain, optionLabel } from '../lib/optionNames'
 import { Since } from './Jobs'
 
 /**
@@ -128,7 +128,7 @@ function Storage({
    * their Nextcloud.
    */
   const [adding, setAdding] = useState<null | 'pick' | string>(null)
-  const [preset, setPreset] = useState<Record<string, string>>({})
+  const [provider, setProvider] = useState<Provider | null>(null)
 
   const mine = useMemo(() => providers.filter((p) => p.group === group), [providers, group])
 
@@ -161,7 +161,7 @@ function Storage({
             tone="accent"
             onClick={() => {
               setAdding('pick')
-              setPreset({})
+              setProvider(null)
               setEditing(null)
             }}
           />
@@ -171,9 +171,9 @@ function Storage({
         <ProviderPicker
           providers={mine}
           unlisted={unlisted}
-          onPick={(backend, chosen) => {
-            setPreset(chosen)
-            setAdding(backend)
+          onPick={(picked) => {
+            setProvider(typeof picked === 'string' ? null : picked)
+            setAdding(typeof picked === 'string' ? picked : picked.backend)
           }}
           onCancel={() => setAdding(null)}
         />
@@ -182,7 +182,8 @@ function Storage({
         <RemoteForm
           backends={backends}
           kind={adding}
-          preset={preset}
+          provider={provider}
+          taken={remotes.map((r) => r.name)}
           onDone={(saved) => {
             setAdding(null)
             if (saved) onChanged()
@@ -357,7 +358,8 @@ function RemoteRow({
 function RemoteForm({
   backends,
   kind: chosen,
-  preset,
+  provider,
+  taken,
   existing,
   onDone,
 }: {
@@ -371,14 +373,43 @@ function RemoteForm({
    * products, and this form only ever shows one backend's fields.
    */
   kind?: string
-  /** What the chosen provider fills in without being asked, such as the WebDAV
-   *  vendor that makes it work against Nextcloud rather than merely connect. */
-  preset?: Record<string, string>
+  /**
+   * The whole provider that was picked, where one was.
+   *
+   * It carries three things this form cannot work out for itself: what it
+   * fills in without asking (the WebDAV vendor, say), what the target should
+   * be CALLED, and what this product's address looks like. An unlisted backend
+   * has no provider entry and arrives as null.
+   */
+  provider?: Provider | null
+  /** The names already in use, so a suggested one does not collide. */
+  taken?: string[]
   existing?: Remote
   onDone: (saved: boolean) => void
 }) {
   const { t } = useT()
-  const [name, setName] = useState(existing?.name ?? '')
+  const preset = provider?.preset
+  /**
+   * The name, suggested rather than demanded.
+   *
+   * jdp: "Bitte den Namen schon vorausgefüllt eintragen." Somebody who just
+   * pressed Nextcloud has already said what this is, and asking them to type it
+   * again is asking twice. The suggestion is the product's name folded into
+   * what a target name may hold - no spaces, no colons, because the name is
+   * written as `name:path` in a job - and numbered where one is already taken,
+   * so pressing Nextcloud twice gives `nextcloud` and `nextcloud-2` rather than
+   * a collision on save.
+   */
+  const [name, setName] = useState(() => {
+    if (existing) return existing.name
+    if (!provider) return ''
+    const base = provider.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+    if (!base) return ''
+    const used = new Set(taken ?? [])
+    if (!used.has(base)) return base
+    for (let n = 2; n < 100; n++) if (!used.has(`${base}-${n}`)) return `${base}-${n}`
+    return base
+  })
   const kind = existing?.type ?? chosen ?? backends[0]?.name ?? ''
   const [values, setValues] = useState<Record<string, string>>(() => ({
     ...(preset ?? {}),
@@ -406,8 +437,17 @@ function RemoteForm({
    * would go stale the first time rclone gained an option.
    */
   const shown = useMemo(
-    () => (backend?.options ?? []).filter((o) => advanced || o.required || o.essential),
-    [backend, advanced],
+    () =>
+      (backend?.options ?? [])
+        .filter((o) => advanced || o.required || o.essential)
+        // A setting the PRODUCT already answered is not a question. jdp, about
+        // the WebDAV vendor on a form he reached by pressing Nextcloud: "für was
+        // gibt es das Feld Servertyp?" For exactly nothing there - it is the
+        // answer to "which WebDAV dialect", and choosing Nextcloud WAS that
+        // answer. It still appears on plain WebDAV, where nobody has answered it,
+        // and behind the advanced switch, where somebody is looking for it.
+        .filter((o) => advanced || !preset || preset[o.name] === undefined),
+    [backend, advanced, preset],
   )
 
   async function save() {
@@ -467,11 +507,7 @@ function RemoteForm({
             /* rclone's own name under the translated one, but only where the
                two differ: repeating "host" under "host" is noise. Somebody
                following rclone's documentation still finds the field. */
-            hint={
-              hasOptionLabel(o.name)
-                ? [o.name, o.help].filter(Boolean).join(' - ')
-                : o.help || undefined
-            }
+            hint={optionHint(o, t, provider)}
           >
             {/* A field the backend calls a secret is drawn as one, with its
                 own show and hide control inside it. */}
@@ -503,6 +539,57 @@ function RemoteForm({
       </div>
     </div>
   )
+}
+
+/**
+ * What the bubble beside one field says, and whether there is a bubble at all.
+ *
+ * Three sources, in order of how much they are worth:
+ *
+ *  1. This app's own explanation, translated, for the fields where there is
+ *     something to explain. An address needs its shape; a password is better
+ *     as an app password.
+ *  2. The chosen PRODUCT's own address shape, appended to the address field.
+ *     Three products share the WebDAV backend and each has its own path, and
+ *     rclone's "URL of http host to connect to" helps nobody looking at their
+ *     Nextcloud in a tab wondering which part to copy.
+ *  3. rclone's own help, for everything else.
+ *
+ * And nothing at all where rclone's help merely restates the label. That is
+ * what it did on almost every field - "user - User name." under a label
+ * reading Benutzername - and a bubble that repeats its own label is worse than
+ * no bubble: it promises an explanation and spends attention on nothing.
+ */
+function optionHint(
+  o: Backend['options'][number],
+  t: ReturnType<typeof useT>['t'],
+  provider?: Provider | null,
+): string | undefined {
+  const own = optionExplain(o.name, t)
+  const shape = o.name === 'url' ? provider?.urlHint : undefined
+  if (own || shape) return [own, shape].filter(Boolean).join(' ')
+  // No explanation of our own: rclone's, but only when it says more than the
+  // label already does. Its own option name comes along there, because
+  // somebody reading rclone's documentation is the one this text is for.
+  if (!o.help) return undefined
+  if (hasOptionLabel(o.name) && sameAsLabel(o.name, o.help)) return undefined
+  return hasOptionLabel(o.name) ? `${o.name} - ${o.help}` : o.help
+}
+
+/**
+ * Whether rclone's help for an option says anything its own name does not.
+ *
+ * Compared on the rclone NAME rather than on the translated label, because the
+ * help is always English and the label is not: "user" against "User name."
+ * matches in every language, "user" against "Benutzername" in none.
+ */
+function sameAsLabel(name: string, help: string): boolean {
+  const flat = (text: string) => text.toLowerCase().replace(/[^a-z0-9]+/g, '')
+  const body = flat(help)
+  const own = flat(name)
+  // "User name." for `user`, "Password." for `pass`: the help is the name with
+  // a word of padding at most.
+  return body.length <= own.length + 6 && (body.startsWith(own) || body.includes(own))
 }
 
 // ---------------------------------------------------------------------------

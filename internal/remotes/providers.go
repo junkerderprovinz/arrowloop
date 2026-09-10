@@ -52,6 +52,19 @@ type Provider struct {
 	// Hint is one line about what this is, for the ones whose name does not say
 	// it. Empty where the name is enough.
 	Hint string `json:"hint,omitempty"`
+
+	// UrlHint is what this product's address looks like, for the backends where
+	// the address is not the thing people already have in their browser.
+	//
+	// WebDAV is the case that needs it: three products share one backend and
+	// each has its own path, and "URL of http host to connect to" - rclone's
+	// own words for the field - helps nobody who is looking at their Nextcloud
+	// in a tab and wondering which part to copy. jdp: "kann man einen hinweis
+	// hinterlegen wie die URL jeweils aussehen muss?"
+	//
+	// A shape rather than a sentence: what somebody needs here is the pattern
+	// their own address has to match.
+	UrlHint string `json:"urlHint,omitempty"`
 }
 
 // Group is which of the two cards a provider belongs on.
@@ -79,16 +92,26 @@ const (
 var providers = []Provider{
 	// The self-hosted three: one backend, three products, three entries.
 	{ID: "nextcloud", Name: "Nextcloud", Backend: "webdav", Group: GroupCloud,
-		Preset: map[string]string{"vendor": "nextcloud"}, Mark: "IconNextcloud"},
+		Preset: map[string]string{"vendor": "nextcloud"}, Mark: "IconNextcloud",
+		UrlHint: "https://cloud.example.com/remote.php/webdav/"},
 	{ID: "owncloud", Name: "ownCloud", Backend: "webdav", Group: GroupCloud,
-		Preset: map[string]string{"vendor": "owncloud"}, Mark: "IconOwncloud"},
+		Preset: map[string]string{"vendor": "owncloud"}, Mark: "IconOwncloud",
+		UrlHint: "https://cloud.example.com/remote.php/webdav/"},
 	{ID: "opencloud", Name: "OpenCloud", Backend: "webdav", Group: GroupCloud,
-		// The ownCloud vendor setting, because OpenCloud is its fork and speaks
-		// the same dialect. Its OWN mark, taken from its own repository - the
-		// CC0 set carries none, and it must never wear ownCloud's, which would
-		// name the wrong project.
-		Preset: map[string]string{"vendor": "owncloud"},
+		// `infinitescale`, not `owncloud`. OpenCloud is a fork of ownCloud
+		// Infinite Scale rather than of ownCloud 10, and rclone carries a
+		// vendor for each: the 10 setting speaks the older PHP server's
+		// dialect. Its OWN mark, taken from its own repository - the CC0 set
+		// carries none, and it must never wear ownCloud's, which would name the
+		// wrong project.
+		Preset: map[string]string{"vendor": "infinitescale"},
 		Mark:   "IconOpencloud"},
+	// No UrlHint on purpose. Infinite Scale gives every space its own
+	// address - rclone's own documentation says to read it out of the
+	// space's details panel - so there is no pattern to print, and a made-up
+	// one would be worse than none. This field carries a URL SHAPE and
+	// nothing else: a sentence here would be an untranslated string in a
+	// table that has no language.
 
 	// The big consumer services.
 	{ID: "dropbox", Name: "Dropbox", Backend: "dropbox", Group: GroupCloud, Mark: "IconDropbox"},
@@ -117,20 +140,20 @@ var providers = []Provider{
 	{ID: "internxt", Name: "Internxt", Backend: "internxt", Group: GroupCloud, Mark: "IconInternxt"},
 	{ID: "filen", Name: "Filen", Backend: "filen", Group: GroupCloud, Mark: "IconFilen"},
 	{ID: "filescom", Name: "Files.com", Backend: "filescom", Group: GroupCloud, Mark: "IconFilesCom"},
-	{ID: "huaweidrive", Name: "Huawei Drive", Backend: "huaweidrive", Group: GroupCloud, Mark: "IconHuawei"},
+	{ID: "huaweidrive", Name: "Huawei Drive", Backend: "huaweidrive", Group: GroupCloud, Mark: "IconHuaweiCloud"},
 	{ID: "ulozto", Name: "Uloz.to", Backend: "ulozto", Group: GroupCloud, Mark: "IconUlozto"},
 	{ID: "quatrix", Name: "Quatrix", Backend: "quatrix", Group: GroupCloud, Mark: "IconQuatrix"},
 	{ID: "linkbox", Name: "Linkbox", Backend: "linkbox", Group: GroupCloud, Mark: "IconLinkbox"},
 	{ID: "gofile", Name: "Gofile", Backend: "gofile", Group: GroupCloud, Mark: "IconGofile"},
 	{ID: "pixeldrain", Name: "Pixeldrain", Backend: "pixeldrain", Group: GroupCloud, Mark: "IconPixeldrain"},
-	{ID: "googlephotos", Name: "Google Photos", Backend: "googlephotos", Group: GroupCloud,
+	{ID: "googlephotos", Name: "Google Photos", Backend: "google photos", Group: GroupCloud,
 		Mark: "IconGooglePhotos", Hint: "Photos only, and read-mostly."},
 
 	// Object storage: an account with a company, so it belongs with the clouds
 	// however it is addressed underneath.
 	{ID: "b2", Name: "Backblaze B2", Backend: "b2", Group: GroupCloud, Mark: "IconBackblaze"},
 	{ID: "azureblob", Name: "Azure Blob Storage", Backend: "azureblob", Group: GroupCloud, Mark: "IconAzure"},
-	{ID: "gcs", Name: "Google Cloud Storage", Backend: "googlecloudstorage", Group: GroupCloud, Mark: "IconGoogleCloud"},
+	{ID: "gcs", Name: "Google Cloud Storage", Backend: "google cloud storage", Group: GroupCloud, Mark: "IconGoogleCloud"},
 	// Huawei's OTHER storage, and the reason both are listed: `huaweidrive`
 	// above is the consumer Drive, this is the platform's object storage, and
 	// somebody looking for one of them would not accept the other. It reaches
@@ -151,12 +174,13 @@ var providers = []Provider{
 	{ID: "smb", Name: "SMB / Windows share", Backend: "smb", Group: GroupProtocol,
 		Mark: "IconFolder", Hint: "A shared folder on a NAS or a Windows machine."},
 	{ID: "sftp", Name: "SFTP", Backend: "sftp", Group: GroupProtocol,
-		Mark: "IconTargets", Hint: "A server reached over SSH."},
+		Mark: "IconServer", Hint: "A server reached over SSH."},
 	{ID: "webdav", Name: "WebDAV", Backend: "webdav", Group: GroupProtocol,
-		Mark: "IconLink", Hint: "Any WebDAV server. Pick the product above if it has an entry."},
-	{ID: "ftp", Name: "FTP", Backend: "ftp", Group: GroupProtocol, Mark: "IconTargets"},
+		Mark: "IconLink", Hint: "Any WebDAV server. Pick the product above if it has an entry.",
+		UrlHint: "https://server.example.com/remote.php/webdav/"},
+	{ID: "ftp", Name: "FTP", Backend: "ftp", Group: GroupProtocol, Mark: "IconTransfer"},
 	{ID: "s3", Name: "S3 compatible", Backend: "s3", Group: GroupProtocol,
-		Mark: "IconTargets", Hint: "Amazon S3 and the thirty-odd services that speak its protocol."},
+		Mark: "IconBuckets", Hint: "Amazon S3 and the thirty-odd services that speak its protocol."},
 	{ID: "http", Name: "HTTP", Backend: "http", Group: GroupProtocol,
 		Mark: "IconLink", Hint: "Read-only, over a plain web server."},
 	{ID: "hdfs", Name: "HDFS", Backend: "hdfs", Group: GroupProtocol, Mark: "IconHadoop"},

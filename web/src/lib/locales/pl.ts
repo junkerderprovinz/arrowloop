@@ -417,6 +417,10 @@ const pl: Translations = {
   'opt.driveType': 'Typ dysku',
   'opt.scope': 'Uprawnienia',
   'opt.twoFactor': 'Kod dwuskładnikowy',
+  'opt.urlHelp': 'Pełny adres, z https:// i ścieżką do twojego folderu.',
+  'opt.passHelp': 'Użyj hasła aplikacji, jeśli dostawca je oferuje, zamiast hasła do konta.',
+  'opt.vendorHelp': 'Jakim dialektem WebDAV mówi serwer. W razie wątpliwości wybierz „inne”.',
+  'opt.keyFileHelp': 'Ścieżka do klucza prywatnego na maszynie, na której działa ArrowLoop, nie na tej.',
 }
 
 export default pl

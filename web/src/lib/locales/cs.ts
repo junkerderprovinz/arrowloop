@@ -417,6 +417,10 @@ const cs: Translations = {
   'opt.driveType': 'Typ disku',
   'opt.scope': 'Oprávnění',
   'opt.twoFactor': 'Dvoufázový kód',
+  'opt.urlHelp': 'Úplná adresa, včetně https:// a cesty až k vaší složce.',
+  'opt.passHelp': 'Použijte heslo aplikace, pokud ho poskytovatel nabízí, místo hesla k účtu.',
+  'opt.vendorHelp': 'Jakým dialektem WebDAV server mluví. Pokud si nejste jisti, zvolte „jiný“.',
+  'opt.keyFileHelp': 'Cesta k privátnímu klíči na stroji, kde běží ArrowLoop, ne na tomto.',
 }
 
 export default cs

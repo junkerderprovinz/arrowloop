@@ -417,6 +417,10 @@ const es: Translations = {
   'opt.driveType': 'Tipo de unidad',
   'opt.scope': 'Permisos',
   'opt.twoFactor': 'Código de dos factores',
+  'opt.urlHelp': 'La dirección completa, con https:// y la ruta hasta tu carpeta.',
+  'opt.passHelp': 'Usa una contraseña de aplicación si el proveedor la ofrece, en vez de la de la cuenta.',
+  'opt.vendorHelp': 'Qué dialecto de WebDAV habla el servidor. Si dudas, elige «otro».',
+  'opt.keyFileHelp': 'Ruta a la clave privada en la máquina donde corre ArrowLoop, no en esta.',
 }
 
 export default es

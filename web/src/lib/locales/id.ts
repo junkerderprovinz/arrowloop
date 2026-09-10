@@ -417,6 +417,10 @@ const id: Translations = {
   'opt.driveType': 'Jenis drive',
   'opt.scope': 'Izin',
   'opt.twoFactor': 'Kode dua faktor',
+  'opt.urlHelp': 'Alamat lengkap, dengan https:// dan jalur sampai ke folder Anda.',
+  'opt.passHelp': 'Gunakan sandi aplikasi bila penyedia menyediakannya, bukan sandi akun.',
+  'opt.vendorHelp': 'Dialek WebDAV mana yang dipakai server. Jika ragu, pilih “lainnya”.',
+  'opt.keyFileHelp': 'Jalur ke kunci privat di mesin tempat ArrowLoop berjalan, bukan di mesin ini.',
 }
 
 export default id

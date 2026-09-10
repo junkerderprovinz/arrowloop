@@ -417,6 +417,10 @@ const vi: Translations = {
   'opt.driveType': 'Loại ổ đĩa',
   'opt.scope': 'Quyền',
   'opt.twoFactor': 'Mã hai bước',
+  'opt.urlHelp': 'Địa chỉ đầy đủ, kèm https:// và đường dẫn tới thư mục của bạn.',
+  'opt.passHelp': 'Dùng mật khẩu ứng dụng nếu nhà cung cấp có, thay vì mật khẩu tài khoản.',
+  'opt.vendorHelp': 'Máy chủ nói phương ngữ WebDAV nào. Nếu không chắc, chọn “khác”.',
+  'opt.keyFileHelp': 'Đường dẫn tới khóa riêng trên máy chạy ArrowLoop, không phải máy này.',
 }
 
 export default vi

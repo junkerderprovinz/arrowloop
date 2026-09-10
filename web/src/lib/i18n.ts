@@ -509,6 +509,10 @@ export const en = {
   'opt.driveType': 'Drive type',
   'opt.scope': 'Permissions',
   'opt.twoFactor': 'Two-factor code',
+  'opt.urlHelp': 'The full address, with https:// and the path up to your own folder.',
+  'opt.passHelp': 'Use an app password where the provider offers one, rather than your account password.',
+  'opt.vendorHelp': 'Which dialect of WebDAV the server speaks. Choose "other" if you are unsure.',
+  'opt.keyFileHelp': 'Path to the private key on the machine ArrowLoop runs on, not on this one.',
 } as const
 
 export type TranslationKey = keyof typeof en
@@ -966,6 +970,10 @@ export const de: Translations = {
   'opt.driveType': 'Laufwerkstyp',
   'opt.scope': 'Berechtigungen',
   'opt.twoFactor': 'Zwei-Faktor-Code',
+  'opt.urlHelp': 'Die vollständige Adresse, mit https:// und dem Pfad bis zu deinem Ordner.',
+  'opt.passHelp': 'Nimm ein App-Passwort, wo der Anbieter eines anbietet, statt des Kontopassworts.',
+  'opt.vendorHelp': 'Welchen WebDAV-Dialekt der Server spricht. Im Zweifel „sonstige“.',
+  'opt.keyFileHelp': 'Pfad zum privaten Schlüssel auf dem Rechner, auf dem ArrowLoop läuft, nicht auf diesem.',
 }
 
 // ---------------------------------------------------------------------------

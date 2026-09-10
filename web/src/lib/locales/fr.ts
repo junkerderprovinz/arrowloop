@@ -417,6 +417,10 @@ const fr: Translations = {
   'opt.driveType': 'Type de lecteur',
   'opt.scope': 'Autorisations',
   'opt.twoFactor': 'Code à deux facteurs',
+  'opt.urlHelp': 'L\'adresse complète, avec https:// et le chemin jusqu\'à votre dossier.',
+  'opt.passHelp': 'Utilisez un mot de passe d\'application si le fournisseur en propose un, plutôt que celui du compte.',
+  'opt.vendorHelp': 'Quel dialecte WebDAV parle le serveur. En cas de doute, choisissez « autre ».',
+  'opt.keyFileHelp': 'Chemin de la clé privée sur la machine où tourne ArrowLoop, pas sur celle-ci.',
 }
 
 export default fr

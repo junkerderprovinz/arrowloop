@@ -417,6 +417,10 @@ const nl: Translations = {
   'opt.driveType': 'Stationstype',
   'opt.scope': 'Rechten',
   'opt.twoFactor': 'Tweefactorcode',
+  'opt.urlHelp': 'Het volledige adres, met https:// en het pad tot je eigen map.',
+  'opt.passHelp': 'Gebruik een app-wachtwoord als de aanbieder er een biedt, niet je accountwachtwoord.',
+  'opt.vendorHelp': 'Welk WebDAV-dialect de server spreekt. Weet je het niet, kies „overig”.',
+  'opt.keyFileHelp': 'Pad naar de privésleutel op de machine waar ArrowLoop draait, niet op deze.',
 }
 
 export default nl

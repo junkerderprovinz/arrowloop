@@ -417,6 +417,10 @@ const sr: Translations = {
   'opt.driveType': 'Врста диска',
   'opt.scope': 'Дозволе',
   'opt.twoFactor': 'Двофакторски код',
+  'opt.urlHelp': 'Пуна адреса, са https:// и путањом до твоје фасцикле.',
+  'opt.passHelp': 'Користи лозинку апликације ако је пружалац нуди, уместо лозинке налога.',
+  'opt.vendorHelp': 'Којим дијалектом WebDAV говори сервер. Ако ниси сигуран, изабери „друго“.',
+  'opt.keyFileHelp': 'Путања до приватног кључа на машини на којој ради ArrowLoop.',
 }
 
 export default sr

@@ -65,6 +65,14 @@ export type Provider = {
   /** The component name of its logo, or absent where there is none to use. */
   mark?: string
   hint?: string
+  /**
+   * What this product's address looks like, where the address is not simply
+   * the thing already in somebody's browser.
+   *
+   * A SHAPE rather than a sentence, so it needs no translation: what somebody
+   * needs at that field is the pattern their own address has to match.
+   */
+  urlHint?: string
 }
 
 export type Backend = {

@@ -39,7 +39,16 @@ export function ProviderPicker({
   providers: Provider[]
   /** Compiled-in backends no provider entry covers, offered after the list. */
   unlisted: Backend[]
-  onPick: (backend: string, preset: Record<string, string>) => void
+  /**
+   * What was picked, as the whole provider rather than as a backend name.
+   *
+   * It used to hand over the backend and the preset, which is everything the
+   * SAVE needs and nothing the form needs to be helpful: the product's name is
+   * what a target should be called, and its address shape is what the url field
+   * has to explain. An unlisted backend has no provider entry, so it arrives as
+   * a bare backend name and the form falls back to what it had before.
+   */
+  onPick: (picked: Provider | string) => void
   /**
    * Leaving without picking anything.
    *
@@ -81,12 +90,12 @@ export function ProviderPicker({
           the window, and then the card's own controls are somewhere off the
           bottom of the page. A fixed height means the list moves and the page
           around it does not. */}
-      <ul className="mx-auto flex max-h-[26rem] w-full max-w-md flex-col gap-1 overflow-y-auto">
+      <ul className="mx-auto flex max-h-[26rem] w-full max-w-sm flex-col gap-2 overflow-y-auto">
         {providers.map((p) => (
           <li key={p.id}>
             <button
               type="button"
-              onClick={() => onPick(p.backend, p.preset ?? {})}
+              onClick={() => onPick(p)}
               title={p.hint || undefined}
               className={ROW}
             >
@@ -135,7 +144,7 @@ export function ProviderPicker({
               <li key={b.name}>
                 <button
                   type="button"
-                  onClick={() => onPick(b.name, {})}
+                  onClick={() => onPick(b.name)}
                   title={b.description}
                   className="w-full truncate rounded-[var(--radius-control)] bg-carbon-surface2 px-3 py-2 text-center text-dense text-carbon-text transition hover:bg-carbon-surface3"
                 >
@@ -171,5 +180,5 @@ export function ProviderPicker({
  * real 2px ring; this row lets it.
  */
 const ROW =
-  'flex w-full items-center gap-3 rounded-card bg-carbon-surface2 px-4 py-2 text-start ' +
+  'flex w-full items-center gap-3 rounded-card bg-carbon-surface2 px-4 py-3.5 text-start ' +
   'transition-colors hover:bg-carbon-surface3'

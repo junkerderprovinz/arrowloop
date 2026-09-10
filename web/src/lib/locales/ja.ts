@@ -417,6 +417,10 @@ const ja: Translations = {
   'opt.driveType': 'ドライブの種類',
   'opt.scope': '権限',
   'opt.twoFactor': '二要素コード',
+  'opt.urlHelp': 'https:// と自分のフォルダーまでのパスを含む完全なアドレス。',
+  'opt.passHelp': '提供元がアプリパスワードを用意している場合は、アカウントのパスワードではなくそちらを。',
+  'opt.vendorHelp': 'サーバーが話す WebDAV の方言。迷ったら「その他」を。',
+  'opt.keyFileHelp': 'ArrowLoop が動いているマシン上の秘密鍵のパス。このマシンではありません。',
 }
 
 export default ja

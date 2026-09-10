@@ -417,6 +417,10 @@ const hi: Translations = {
   'opt.driveType': 'ड्राइव का प्रकार',
   'opt.scope': 'अनुमतियाँ',
   'opt.twoFactor': 'दो-कारक कोड',
+  'opt.urlHelp': 'पूरा पता, https:// और आपके फ़ोल्डर तक के पाथ के साथ।',
+  'opt.passHelp': 'यदि प्रदाता ऐप पासवर्ड देता है तो वही लें, खाते का पासवर्ड नहीं।',
+  'opt.vendorHelp': 'सर्वर WebDAV की कौन-सी बोली बोलता है। संदेह हो तो “अन्य” चुनें।',
+  'opt.keyFileHelp': 'उस मशीन पर निजी कुंजी का पाथ जहाँ ArrowLoop चलता है।',
 }
 
 export default hi

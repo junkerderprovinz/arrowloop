@@ -417,6 +417,10 @@ const lv: Translations = {
   'opt.driveType': 'Diska veids',
   'opt.scope': 'Atļaujas',
   'opt.twoFactor': 'Divfaktoru kods',
+  'opt.urlHelp': 'Pilna adrese ar https:// un ceļu līdz tavai mapei.',
+  'opt.passHelp': 'Izmanto lietotnes paroli, ja pakalpojuma sniedzējs to piedāvā, nevis konta paroli.',
+  'opt.vendorHelp': 'Kurā WebDAV dialektā runā serveris. Ja neesi drošs, izvēlies „cits“.',
+  'opt.keyFileHelp': 'Ceļš uz privāto atslēgu datorā, kurā darbojas ArrowLoop, nevis šajā.',
 }
 
 export default lv

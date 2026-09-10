@@ -417,6 +417,10 @@ const sl: Translations = {
   'opt.driveType': 'Vrsta pogona',
   'opt.scope': 'Dovoljenja',
   'opt.twoFactor': 'Dvostopenjska koda',
+  'opt.urlHelp': 'Celoten naslov, s https:// in potjo do tvoje mape.',
+  'opt.passHelp': 'Uporabi geslo za aplikacijo, če ga ponudnik omogoča, namesto gesla računa.',
+  'opt.vendorHelp': 'Katero narečje WebDAV govori strežnik. Če nisi prepričan, izberi „drugo“.',
+  'opt.keyFileHelp': 'Pot do zasebnega ključa na računalniku, kjer teče ArrowLoop, ne na tem.',
 }
 
 export default sl

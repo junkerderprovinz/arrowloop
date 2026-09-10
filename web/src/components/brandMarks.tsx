@@ -15,7 +15,6 @@ import {
   IconOpenstack,
   IconAkamai,
   IconHadoop,
-  IconHuawei,
   IconPcloud,
   IconKoofr,
   IconJottacloud,
@@ -48,9 +47,11 @@ import {
 } from './brandGlyphs'
 import {
   IconFolder,
-  IconTargets,
   IconLink,
   IconLock,
+  IconServer,
+  IconTransfer,
+  IconBuckets,
 } from './glyphs'
 
 /**
@@ -82,7 +83,6 @@ const MARKS: Record<string, () => ReactNode> = {
   IconOpenstack: () => <IconOpenstack />,
   IconAkamai: () => <IconAkamai />,
   IconHadoop: () => <IconHadoop />,
-  IconHuawei: () => <IconHuawei />,
   IconPcloud: () => <IconPcloud />,
   IconKoofr: () => <IconKoofr />,
   IconJottacloud: () => <IconJottacloud />,
@@ -113,9 +113,11 @@ const MARKS: Record<string, () => ReactNode> = {
   IconOnedrive: () => <IconOnedrive />,
   IconOracleCloud: () => <IconOracleCloud />,
   IconFolder: () => <IconFolder className="text-carbon-textSub" />,
-  IconTargets: () => <IconTargets className="text-carbon-textSub" />,
   IconLink: () => <IconLink className="text-carbon-textSub" />,
   IconLock: () => <IconLock className="text-carbon-textSub" />,
+  IconServer: () => <IconServer className="text-carbon-textSub" />,
+  IconTransfer: () => <IconTransfer className="text-carbon-textSub" />,
+  IconBuckets: () => <IconBuckets className="text-carbon-textSub" />,
 }
 
 export function brandMark(name: string | undefined): ReactNode | undefined {

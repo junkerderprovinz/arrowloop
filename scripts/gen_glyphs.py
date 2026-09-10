@@ -102,6 +102,15 @@ GLYPHS = [
     ("IconLock", "interface-essential/padlock-square-1.svg",
      "A target that encrypts what is written into it"),
 
+    # The three protocols on the second card, which all wore the same server
+    # glyph and therefore read as one thing offered three times. jdp: "kannst du
+    # für FTP, SFTP und S3 unterschiedliche Icons verwenden". They are three
+    # different ideas and the drawings say so: a machine, a transfer, a store.
+    ("IconServer", "computer-devices/database-server-2.svg", "SFTP: a machine reached over SSH"),
+    ("IconTransfer", "interface-essential/arrow-transfer-diagonal-1.svg",
+     "FTP: the protocol whose whole name is the transfer"),
+    ("IconBuckets", "computer-devices/database.svg", "S3: object storage, which is buckets"),
+
     # Writing the setup to a file and reading one back. ONE box with the arrow
     # reversed, which is what the set already draws: a matched pair cannot drift
     # apart when it is the same silhouette twice. Same two files the sibling app

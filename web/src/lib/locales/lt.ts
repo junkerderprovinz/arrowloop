@@ -417,6 +417,10 @@ const lt: Translations = {
   'opt.driveType': 'Disko tipas',
   'opt.scope': 'Leidimai',
   'opt.twoFactor': 'Dviejų veiksnių kodas',
+  'opt.urlHelp': 'Pilnas adresas su https:// ir keliu iki tavo aplanko.',
+  'opt.passHelp': 'Naudok programos slaptažodį, jei teikėjas jį siūlo, o ne paskyros slaptažodį.',
+  'opt.vendorHelp': 'Kokia WebDAV tarme kalba serveris. Jei neaišku, rinkis „kita“.',
+  'opt.keyFileHelp': 'Kelias iki privataus rakto kompiuteryje, kuriame veikia ArrowLoop, ne šiame.',
 }
 
 export default lt

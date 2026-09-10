@@ -417,6 +417,10 @@ const et: Translations = {
   'opt.driveType': 'Ketta tüüp',
   'opt.scope': 'Õigused',
   'opt.twoFactor': 'Kaheastmeline kood',
+  'opt.urlHelp': 'Täielik aadress koos https:// ja teega sinu kaustani.',
+  'opt.passHelp': 'Kasuta rakenduse parooli, kui teenusepakkuja seda pakub, mitte konto parooli.',
+  'opt.vendorHelp': 'Millist WebDAVi murret server räägib. Kahtluse korral vali „muu“.',
+  'opt.keyFileHelp': 'Privaatvõtme tee masinas, kus ArrowLoop töötab, mitte selles.',
 }
 
 export default et

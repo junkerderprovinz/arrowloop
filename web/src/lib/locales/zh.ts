@@ -417,6 +417,10 @@ const zh: Translations = {
   'opt.driveType': '驱动器类型',
   'opt.scope': '权限',
   'opt.twoFactor': '两步验证码',
+  'opt.urlHelp': '完整地址，包含 https:// 以及到你的文件夹的路径。',
+  'opt.passHelp': '如果服务商提供应用密码，请用它而不是账户密码。',
+  'opt.vendorHelp': '服务器说哪种 WebDAV 方言。不确定时选“其他”。',
+  'opt.keyFileHelp': '私钥在运行 ArrowLoop 的机器上的路径，不是这台。',
 }
 
 export default zh

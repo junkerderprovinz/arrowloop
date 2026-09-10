@@ -417,6 +417,10 @@ const ar: Translations = {
   'opt.driveType': 'نوع محرك الأقراص',
   'opt.scope': 'الأذونات',
   'opt.twoFactor': 'رمز التحقق بخطوتين',
+  'opt.urlHelp': 'العنوان الكامل، مع https:// والمسار حتى مجلدك.',
+  'opt.passHelp': 'استخدم كلمة مرور للتطبيق إن وفّرها المزود، بدل كلمة مرور الحساب.',
+  'opt.vendorHelp': 'أي لهجة WebDAV يتحدثها الخادم. اختر «أخرى» إن لم تكن متأكدًا.',
+  'opt.keyFileHelp': 'مسار المفتاح الخاص على الجهاز الذي يعمل عليه ArrowLoop، لا على هذا.',
 }
 
 export default ar

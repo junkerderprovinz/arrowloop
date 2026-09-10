@@ -417,6 +417,10 @@ const fi: Translations = {
   'opt.driveType': 'Aseman tyyppi',
   'opt.scope': 'Oikeudet',
   'opt.twoFactor': 'Kaksivaiheinen koodi',
+  'opt.urlHelp': 'Täydellinen osoite, mukaan lukien https:// ja polku omaan kansioosi.',
+  'opt.passHelp': 'Käytä sovellussalasanaa, jos palveluntarjoaja tarjoaa sellaisen, tilin salasanan sijaan.',
+  'opt.vendorHelp': 'Mitä WebDAV-murretta palvelin puhuu. Epävarmassa tapauksessa valitse ”muu”.',
+  'opt.keyFileHelp': 'Polku yksityiseen avaimeen koneella, jolla ArrowLoop toimii, ei tällä.',
 }
 
 export default fi

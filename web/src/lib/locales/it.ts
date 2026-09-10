@@ -417,6 +417,10 @@ const it: Translations = {
   'opt.driveType': 'Tipo di unità',
   'opt.scope': 'Autorizzazioni',
   'opt.twoFactor': 'Codice a due fattori',
+  'opt.urlHelp': 'L\'indirizzo completo, con https:// e il percorso fino alla tua cartella.',
+  'opt.passHelp': 'Usa una password per app se il fornitore ne offre una, invece di quella dell\'account.',
+  'opt.vendorHelp': 'Quale dialetto WebDAV parla il server. Nel dubbio scegli «altro».',
+  'opt.keyFileHelp': 'Percorso della chiave privata sulla macchina dove gira ArrowLoop, non su questa.',
 }
 
 export default it

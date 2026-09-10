@@ -164,6 +164,52 @@ var essential = map[string]map[string]bool{
 	"box":        {"token": true},
 	"jottacloud": {"token": true},
 	"yandex":     {"token": true},
+
+	// Twenty-two backends were opening a form with NO fields at all, so a target
+	// could be saved with nothing in it and failed on first use with an error
+	// about the connection rather than about the empty form that made it. The
+	// guard for exactly this had been in place for weeks and saw four backends,
+	// because its test binary only ever imported three of them: a test that
+	// cannot reach the failure reports nothing, and reports it as a pass.
+	"filescom":        {"site": true, "username": true, "password": true},
+	"internetarchive": {"access_key_id": true, "secret_access_key": true},
+	"sugarsync":       {"app_id": true, "access_key_id": true, "private_access_key": true},
+	"ulozto":          {"username": true, "password": true, "app_token": true},
+	// One address and one password, and the address is not guessable.
+	"sia": {"api_url": true, "api_password": true},
+	// OpenStack's own: three settings out of eighteen non-advanced ones actually
+	// get somebody connected. `auth` is the endpoint URL, which no installation
+	// shares with another.
+	"swift":      {"auth": true, "user": true, "key": true},
+	"qingstor":   {"access_key_id": true, "secret_access_key": true, "zone": true},
+	"azurefiles": {"account": true, "key": true, "share_name": true},
+	// A single key, and nothing else to know.
+	"drime":   {"access_token": true},
+	"gofile":  {"access_token": true},
+	"fichier": {"api_key": true},
+	// A wrapper around another target, like crypt: the remote IS the setting.
+	"archive": {"remote": true},
+	// Storj's old name. Its own entry above uses the current one; this is here so
+	// the raw backend is not a dead end for anybody who finds it.
+	"tardigrade": {"access_grant": true, "satellite_address": true, "api_key": true, "passphrase": true},
+
+	// The OAuth ones rclone gives no plain credential at all. Their `token` is
+	// advanced like the others above, and the client pair is what a person
+	// registers with the provider in order to obtain one.
+	"hidrive":      {"token": true, "client_id": true, "client_secret": true},
+	"huaweidrive":  {"token": true, "client_id": true, "client_secret": true},
+	"putio":        {"token": true, "client_id": true, "client_secret": true},
+	"sharefile":    {"token": true, "client_id": true, "client_secret": true},
+	"zoho":         {"token": true, "client_id": true, "client_secret": true, "region": true},
+	"premiumizeme": {"token": true, "api_key": true},
+
+	// Google's other two, whose registry names carry SPACES - which is why this
+	// app offered neither of them for weeks without noticing.
+	"google cloud storage": {
+		"token": true, "project_number": true, "service_account_file": true,
+		"client_id": true, "client_secret": true,
+	},
+	"google photos": {"token": true, "client_id": true, "client_secret": true, "read_only": true},
 }
 
 // tokenBackends are the ones whose only way in is an OAuth token, obtained

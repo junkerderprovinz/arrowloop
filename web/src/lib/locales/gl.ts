@@ -417,6 +417,10 @@ const gl: Translations = {
   'opt.driveType': 'Tipo de unidade',
   'opt.scope': 'Permisos',
   'opt.twoFactor': 'Código de dous factores',
+  'opt.urlHelp': 'O enderezo completo, con https:// e a ruta ata o teu cartafol.',
+  'opt.passHelp': 'Usa un contrasinal de aplicación se o provedor o ofrece, no canto do da conta.',
+  'opt.vendorHelp': 'Que dialecto de WebDAV fala o servidor. Se dubidas, escolle «outro».',
+  'opt.keyFileHelp': 'Ruta á chave privada na máquina onde corre ArrowLoop, non nesta.',
 }
 
 export default gl
