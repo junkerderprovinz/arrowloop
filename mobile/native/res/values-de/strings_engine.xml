@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="channel_engine">Abgleichmotor</string>
+    <string name="channel_engine_why">Wird angezeigt, solange ArrowLoop im Hintergrund abgleichen kann.</string>
+
+    <string name="notify_running">ArrowLoop läuft</string>
+    <string name="notify_running_why">Bereit zum Abgleich, auch bei ausgeschaltetem Bildschirm.</string>
+    <string name="notify_stop">Anhalten</string>
+</resources>

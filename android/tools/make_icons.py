@@ -40,9 +40,21 @@ RES = r"D:\github\arrowloop\android\app\src\main\res"
 # Die Dichtestufen, die Android erwartet, mit ihrem Faktor auf 48dp.
 DICHTEN = {"mdpi": 1.0, "hdpi": 1.5, "xhdpi": 2.0, "xxhdpi": 3.0, "xxxhdpi": 4.0}
 
-# Ein adaptives Symbol ist 108dp gross, davon sind die mittleren 66dp sicher.
+# Ein adaptives Symbol ist 108dp gross. Die mittleren 66dp sind die
+# SICHERHEITSZONE - was dort liegt, wird nie abgeschnitten - aber sie ist nicht
+# die richtige Groesse fuer die Marke.
+#
+# Androids eigene Keyline dafuer: eine VOLLFLAECHIGE runde Form soll 60dp
+# messen, eine quadratische 44dp. ArrowLoops Marke ist ein Kreis und fuellt
+# ihre Vorlage randlos aus, also gilt der Kreiswert. Auf 66dp gebaut sah sie
+# entsprechend gross aus, und genau so wurde sie gemeldet ("das logo auf der
+# kachel ist zu groß").
+#
+# 58 statt 60, und das ist gemessen statt geraten: KnightLoaders Marke belegt
+# 37% der Breite ihrer Leinwand, weil sie ein hoher schmaler Schild ist. Ein
+# Kreis mit demselben optischen Gewicht sitzt unter der Keyline, nicht darauf.
 ADAPTIV_DP = 108
-SICHER_DP = 66
+MARKE_DP = 58
 
 quelle = Image.open(QUELLE).convert("RGBA")
 
@@ -58,10 +70,10 @@ for name, faktor in DICHTEN.items():
     # einfarbige Flaeche als PNG in fuenf Dichten waere fuenf Dateien fuer
     # etwas, das eine Zeile ist.
     voll = int(round(ADAPTIV_DP * faktor))
-    sicher = int(round(SICHER_DP * faktor))
+    marke = int(round(MARKE_DP * faktor))
     vordergrund = Image.new("RGBA", (voll, voll), (0, 0, 0, 0))
-    logo = quelle.resize((sicher, sicher), Image.LANCZOS)
-    versatz = (voll - sicher) // 2
+    logo = quelle.resize((marke, marke), Image.LANCZOS)
+    versatz = (voll - marke) // 2
     vordergrund.paste(logo, (versatz, versatz), logo)
     vordergrund.save(os.path.join(ordner, "ic_launcher_foreground.png"))
 

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Only what ANDROID ITSELF shows. Everything a person reads inside the app now
+  comes from React Native, which is the whole point of the rewrite - so this
+  file is down to the notification and its channel, and it will not grow.
+
+  Named strings_engine.xml rather than strings.xml because `expo prebuild`
+  generates a strings.xml of its own for the app name and the scheme, and two
+  files of the same name in the same folder is one overwriting the other.
+
+  Every placeholder must match values-de/. `getString` fills by POSITION, so a
+  translation with fewer placeholders silently drops the rest of the arguments
+  - which shipped once and put the number 60 on screen where a log should have
+  been. android/tools/check_strings.py is the guard.
+-->
+<resources>
+    <string name="channel_engine">Sync engine</string>
+    <string name="channel_engine_why">Shown while ArrowLoop is able to sync in the background.</string>
+
+    <string name="notify_running">ArrowLoop is running</string>
+    <string name="notify_running_why">Ready to sync, and able to keep going while the screen is off.</string>
+    <string name="notify_stop">Stop</string>
+</resources>

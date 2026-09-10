@@ -1,0 +1,149 @@
+name: Mobile
+
+# The React Native app. Built here for the same reason the old shell was: a
+# GitHub runner arrives with the Android SDK, a JDK and Node already on it, and
+# assembling that inside a container to produce one APK is a day of work whose
+# only product is a second place for the toolchain to drift.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "mobile/**"
+      - "cmd/**"
+      - "internal/**"
+      - "web/**"
+      - "go.mod"
+      - "go.sum"
+      - "android/debug.keystore"
+      - ".github/workflows/mobile.yml"
+  pull_request:
+    paths:
+      - "mobile/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "24"
+
+      - name: Install the app's dependencies
+        working-directory: mobile
+        run: npm ci
+
+      - name: The screens compile
+        working-directory: mobile
+        run: npx tsc --noEmit
+
+      # The translations before anything is built, because this class of bug is
+      # silent: getString fills by POSITION, so a translation with fewer
+      # placeholders drops the rest of the arguments without a word.
+      - name: The translations carry the same placeholders
+        run: python android/tools/check_strings.py
+
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      # The interface is compiled INTO the engine with go:embed, so it has to
+      # exist before Go builds anything - even though the phone never shows it.
+      # The engine serves it to a browser on a laptop pointed at the phone, and
+      # a binary built without it serves a placeholder instead.
+      - name: Build the interface the engine embeds
+        run: |
+          cd web
+          npm ci
+          npm run build
+
+      # CGO_ENABLED=0 is what makes this work without the NDK at all.
+      # modernc.org/sqlite exists precisely so that is true, and a static
+      # binary makes its own syscalls, so it runs on Android's bionic exactly
+      # as it does on glibc.
+      #
+      # The name is not a choice. Since Android 10 an app may not execute a
+      # file out of its own data directory, so the binary travels in the native
+      # library directory, and only files matching lib*.so are put there.
+      - name: Build the engine for both architectures
+        env:
+          CGO_ENABLED: "0"
+        run: |
+          set -eux
+          for pair in "arm64:arm64-v8a" "amd64:x86_64"; do
+            goarch="${pair%%:*}"
+            abi="${pair##*:}"
+            mkdir -p "mobile/native/jniLibs/${abi}"
+            GOOS=linux GOARCH="${goarch}" go build \
+              -trimpath -ldflags="-s -w" \
+              -o "mobile/native/jniLibs/${abi}/libarrowloop.so" \
+              ./cmd/arrowloop
+          done
+          ls -la mobile/native/jniLibs/*/
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      # prebuild generates android/ from app.json and the plugins. It is not
+      # committed, so this is the only place it exists - which is what keeps
+      # plugins/withEngine.js honest: an edit that is not in the plugin does
+      # not survive to here.
+      - name: Generate the Android project
+        working-directory: mobile
+        run: npx expo prebuild --platform android --clean
+
+      # After prebuild, because prebuild --clean throws android/ away and would
+      # take the engine with it.
+      - name: Put the engine in place
+        run: |
+          set -eux
+          mkdir -p mobile/android/app/src/main/jniLibs
+          cp -r mobile/native/jniLibs/* mobile/android/app/src/main/jniLibs/
+          ls -la mobile/android/app/src/main/jniLibs/*/
+
+      # RELEASE and not debug, and that is not about optimisation. A React
+      # Native DEBUG build expects Metro, the development server, to hand it
+      # the JavaScript at runtime - installed on a phone with no Metro it shows
+      # a red screen saying "Unable to load script". The release build packages
+      # the bundle into the APK, which is what makes it a program somebody can
+      # be given.
+      #
+      # It is signed with the debug key at android/debug.keystore, which the
+      # config plugin points the template at. Stable, so a build installs over
+      # the previous one; public, so it is not fit for publishing anywhere.
+      - name: Assemble
+        working-directory: mobile/android
+        run: ./gradlew assembleRelease --no-daemon
+
+      - name: Name the outputs
+        working-directory: mobile
+        run: |
+          set -eux
+          mkdir -p out
+          for f in android/app/build/outputs/apk/release/*.apk; do
+            [ -e "$f" ] || continue
+            cp "$f" "out/arrowloop-$(basename "$f")"
+          done
+          ls -la out/
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: arrowloop-mobile
+          path: mobile/out/*.apk
+          if-no-files-found: error
+          retention-days: 14

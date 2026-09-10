@@ -1,0 +1,30 @@
+{
+  "name": "arrowloop-mobile",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "dependencies": {
+    "@react-navigation/bottom-tabs": "^7.4.9",
+    "@react-navigation/native": "^7.3.17",
+    "@react-navigation/native-stack": "^7.18.9",
+    "expo": "~57.0.16",
+    "expo-build-properties": "~57.0.14",
+    "expo-constants": "~57.0.14",
+    "expo-localization": "~57.0.1",
+    "expo-status-bar": "~57.0.1",
+    "react": "19.2.3",
+    "react-native": "0.86.2",
+    "react-native-safe-area-context": "^5.9.1",
+    "react-native-screens": "^4.27.0",
+    "react-native-svg": "^15.15.0"
+  },
+  "devDependencies": {
+    "@types/react": "~19.2.2",
+    "typescript": "~6.0.3"
+  },
+  "scripts": {
+    "start": "expo start",
+    "android": "expo run:android",
+    "prebuild": "expo prebuild --platform android --clean"
+  },
+  "private": true
+}
