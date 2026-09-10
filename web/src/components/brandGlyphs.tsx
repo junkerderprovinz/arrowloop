@@ -63,15 +63,6 @@ export function IconDropbox(props: SVGProps<SVGSVGElement>) {
   )
 }
 
-/** Google Drive. Simple Icons: googledrive, in its own #4285F4 */
-export function IconGoogleDrive(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 24 24" width="1em" height="1em" fill="#4285F4" aria-hidden {...props}>
-      <path d="M12.01 1.485c-2.082 0-3.754.02-3.743.047.01.02 1.708 3.001 3.774 6.62l3.76 6.574h3.76c2.081 0 3.753-.02 3.742-.047-.005-.02-1.708-3.001-3.775-6.62l-3.76-6.574zm-4.76 1.73a789.828 789.861 0 0 0-3.63 6.319L0 15.868l1.89 3.298 1.885 3.297 3.62-6.335 3.618-6.33-1.88-3.287C8.1 4.704 7.255 3.22 7.25 3.214zm2.259 12.653-.203.348c-.114.198-.96 1.672-1.88 3.287a423.93 423.948 0 0 1-1.698 2.97c-.01.026 3.24.042 7.222.042h7.244l1.796-3.157c.992-1.734 1.85-3.23 1.906-3.323l.104-.167h-7.249z" />
-    </svg>
-  )
-}
-
 /** Google Photos. Simple Icons: googlephotos, in its own #4285F4 */
 export function IconGooglePhotos(props: SVGProps<SVGSVGElement>) {
   return (
@@ -90,15 +81,6 @@ export function IconGoogleCloud(props: SVGProps<SVGSVGElement>) {
   )
 }
 
-/** MEGA. Simple Icons: mega, in its own #D9272E */
-export function IconMega(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 24 24" width="1em" height="1em" fill="#D9272E" aria-hidden {...props}>
-      <path d="M12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zm6.23 16.244a.371.371 0 0 1-.373.372H16.29a.371.371 0 0 1-.372-.372v-4.828c0-.04-.046-.06-.08-.033l-3.32 3.32a.742.742 0 0 1-1.043 0l-3.32-3.32c-.027-.027-.08-.007-.08.033v4.828a.371.371 0 0 1-.372.372H6.136a.371.371 0 0 1-.372-.372V7.757c0-.206.166-.372.372-.372h1.076a.75.75 0 0 1 .525.22l4.13 4.13a.18.18 0 0 0 .26 0l4.13-4.13c.14-.14.325-.22.525-.22h1.075c.206 0 .372.166.372.372z" />
-    </svg>
-  )
-}
-
 /** Box. Simple Icons: box, in its own #0061D5 */
 export function IconBox(props: SVGProps<SVGSVGElement>) {
   return (
@@ -108,38 +90,11 @@ export function IconBox(props: SVGProps<SVGSVGElement>) {
   )
 }
 
-/** Proton Drive. Simple Icons: protondrive, in its own #EB508D */
-export function IconProtonDrive(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 24 24" width="1em" height="1em" fill="#EB508D" aria-hidden {...props}>
-      <path d="M24 6.595v12.79c0 1.36-1.11 2.462-2.482 2.462h-1.62V9a2.925 2.925 0 0 0-2.93-2.914l-9.42.053a.943.943 0 0 1-.55-.172L4.905 4.493a2.918 2.918 0 0 0-1.694-.536H.1A2.47 2.47 0 0 1 2.482 2.15h4.657c.47 0 .928.148 1.305.424l1.559 1.134c.38.276.837.424 1.308.424h10.207A2.471 2.471 0 0 1 24 6.595zM18.897 9v12.85H2.482A2.471 2.471 0 0 1 0 19.387V4.957h3.21c.4 0 .792.122 1.118.353l2.095 1.476a1.94 1.94 0 0 0 1.13.353l9.402-.052A1.922 1.922 0 0 1 18.897 9z" />
-    </svg>
-  )
-}
-
-/** iCloud Drive. Simple Icons: icloud, in its own #3693F3 */
-export function IconICloud(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 24 24" width="1em" height="1em" fill="#3693F3" aria-hidden {...props}>
-      <path d="M13.762 4.29a6.51 6.51 0 0 0-5.669 3.332 3.571 3.571 0 0 0-1.558-.36 3.571 3.571 0 0 0-3.516 3A4.918 4.918 0 0 0 0 14.796a4.918 4.918 0 0 0 4.92 4.914 4.93 4.93 0 0 0 .617-.045h14.42c2.305-.272 4.041-2.258 4.043-4.589v-.009a4.594 4.594 0 0 0-3.727-4.508 6.51 6.51 0 0 0-6.511-6.27z" />
-    </svg>
-  )
-}
-
 /** Mail.ru Cloud. Simple Icons: maildotru, in its own #005FF9 */
 export function IconMailru(props: SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 24 24" width="1em" height="1em" fill="#005FF9" aria-hidden {...props}>
       <path d="M15.61 12c0 1.99-1.62 3.61-3.61 3.61-1.99 0-3.61-1.62-3.61-3.61 0-1.99 1.62-3.61 3.61-3.61 1.99 0 3.61 1.62 3.61 3.61M12 0C5.383 0 0 5.383 0 12s5.383 12 12 12c2.424 0 4.761-.722 6.76-2.087l.034-.024-1.617-1.879-.027.017A9.494 9.494 0 0 1 12 21.54c-5.26 0-9.54-4.28-9.54-9.54 0-5.26 4.28-9.54 9.54-9.54 5.26 0 9.54 4.28 9.54 9.54a9.63 9.63 0 0 1-.225 2.05c-.301 1.239-1.169 1.618-1.82 1.568-.654-.053-1.42-.52-1.426-1.661V12A6.076 6.076 0 0 0 12 5.93 6.076 6.076 0 0 0 5.93 12 6.076 6.076 0 0 0 12 18.07a6.02 6.02 0 0 0 4.3-1.792 3.9 3.9 0 0 0 3.32 1.805c.874 0 1.74-.292 2.437-.821.719-.547 1.256-1.336 1.553-2.285.047-.154.135-.504.135-.507l.002-.013c.175-.76.253-1.52.253-2.457 0-6.617-5.383-12-12-12" />
-    </svg>
-  )
-}
-
-/** Yandex Disk. Simple Icons: yandexcloud, in its own #5282FF */
-export function IconYandex(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 24 24" width="1em" height="1em" fill="#5282FF" aria-hidden {...props}>
-      <path d="M12 0C5.38 0 0 5.38 0 12s5.38 12 12 12 12-5.38 12-12S18.62 0 12 0zM7.163 20.618C4.152 18.927 2.12 15.702 2.12 12c0-5.46 4.42-9.88 9.88-9.88 1.429 0 2.496.536 3.029 1.187.534.65.684 1.715.5 3.253l-3.207.631c-2.905.532-4.506 2.148-5.06 5.065-.07.406-.15.812-.226 1.196-.031.157-.062.312-.09.46-.073.396-.143.773-.208 1.124-.093.505-.177.957-.247 1.34-.324 1.884-.06 3.276.672 4.242zm7.986-11.851c-.087.434-.167.867-.247 1.302-.081.434-.16.868-.247 1.301-.396 2.05-1.364 2.996-3.42 3.391l-2.391.474c.059-.296.119-.611.178-.927.022-.12.044-.241.067-.362.078-.421.157-.855.25-1.313.395-2.05 1.344-2.996 3.399-3.391l2.411-.475zM12 21.88c-1.429 0-2.496-.536-3.029-1.187s-.684-1.715-.5-3.253l3.18-.631c2.905-.532 4.507-2.148 5.08-5.046.069-.406.149-.812.226-1.196.031-.157.062-.311.09-.46.087-.471.171-.917.247-1.327.081-.432.154-.822.215-1.156.325-1.884.061-3.275-.671-4.242C19.848 5.073 21.88 8.298 21.88 12c0 5.46-4.42 9.88-9.88 9.88z" />
     </svg>
   )
 }
@@ -158,42 +113,6 @@ export function IconSeafile(props: SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 24 24" width="1em" height="1em" fill="var(--brand-seafile-0)" aria-hidden {...props}>
       <path d="M8.2129 4.2695c-2.003 0-3.623 1.6201-3.623 3.623 0 .0648.0043.1326.0078.2012a2.3767 2.3767 0 0 0-.9727-.205c-1.3369 0-2.418 1.0815-2.418 2.418 0 .0647.0043.1266.0078.1913-.1299-.119-.2995-.1953-.4902-.1953-.4001 0-.7246.321-.7246.7207 0 .4002.3245.713.7246.7207h3.5489c.6808-1.448 2.1364-2.4062 3.8222-2.4062.8177 0 1.5803.2409 2.2285.6445a5.701 5.701 0 0 1 1.5137-2.125c-.0217-1.9847-1.6364-3.5879-3.625-3.5879ZM15.58 7.4063c-2.4965 0-4.5635 1.8477-4.9024 4.2539-.616-.8212-1.5989-1.3536-2.705-1.3536-1.8696 0-3.3829 1.5168-3.3829 3.3829 0 .544.1283 1.0542.3555 1.5117-1.1744.2376-2.045 1.1499-2.045 2.2343 0 1.2683 1.1885 2.295 2.6583 2.295.6482 0 1.2421-.2022 1.7031-.5371l5.4375-5.3457c.6018-.5514 1.4004-.8868 2.2793-.8868 1.8374 0 3.3324 1.4669 3.3828 3.293 0 0-.0004-.0039-.0039-.0039.0287.5405-.2507 1.0839-.7695 1.3828-.7243.418-1.633.196-2.0293-.4922-.3997-.6917-.1364-1.5903.5879-2.0078a1.6117 1.6117 0 0 1 .5254-.1894c-.1551-.0326-.317-.047-.4824-.047-1.333 0-2.418 1.0792-2.418 2.4161 0 1.3365 1.081 2.418 2.418 2.418.0577 0 .1203-.004.1777-.0078l-.004-.006.0685-.0077h4.744v.0176C22.6275 19.6618 24 18.3256 24 16.6973c0-1.668-1.4258-3.0293-3.0938-3.0293h-.0077c-.2703.4827-.5978.764-.9688 1.0664.3889-.7095.6113-1.5182.6113-2.3828-.0083-1.3647-.5622-2.597-1.459-3.4942-.8972-.8972-2.1333-1.4512-3.502-1.4512Z" />
-    </svg>
-  )
-}
-
-/** Filen. Simple Icons: filen, in its own #000000, flipped for the ground it cannot be read on */
-export function IconFilen(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 24 24" width="1em" height="1em" fill="var(--brand-filen-0)" aria-hidden {...props}>
-      <path d="M12 0C5.387 0 0 5.387 0 12s5.387 12 12 12 12-5.387 12-12S18.613 0 12 0zm0 1.531a10.47 10.47 0 0 1 6.384 2.196v3.92H8.052a.749.749 0 0 0-.749.748v2.373c-.425.26-.69.719-.7 1.217A1.464 1.464 0 1 0 8.83 10.74V9.172h10.332a.749.749 0 0 0 .748-.75V5.193A10.47 10.47 0 0 1 22.47 12l-.012.151h-3.324a.749.749 0 0 0-.749.749v7.372a10.47 10.47 0 0 1-1.963 1.193V14.12c.425-.26.69-.718.7-1.217a1.464 1.464 0 0 0-2.927 0c.01.499.275.957.7 1.217v7.92a10.47 10.47 0 0 1-2.894.43 10.463 10.463 0 0 1-3.19-.502v-6.024h1.83c.259.426.718.69 1.216.7a1.464 1.464 0 0 0 0-2.927 1.464 1.464 0 0 0-1.217.7H8.033a.749.749 0 0 0-.749.75v6.177A10.471 10.471 0 0 1 4.8 19.576V5.252h8.314c.26.425.718.69 1.216.7a1.464 1.464 0 0 0 0-2.928 1.464 1.464 0 0 0-1.216.701H5.619A10.47 10.47 0 0 1 12 1.532zM3.274 6.266v11.468A10.469 10.469 0 0 1 1.53 12c.01-2.04.615-4.033 1.743-5.734zm16.637 7.412h2.42a10.47 10.47 0 0 1-2.42 5.13z" />
-    </svg>
-  )
-}
-
-/** Files.com. Simple Icons: files, in its own #4285F4 */
-export function IconFilesCom(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 24 24" width="1em" height="1em" fill="#4285F4" aria-hidden {...props}>
-      <path d="M12.367 2.453a.822.822 0 0 0-.576.238L.241 14.213a.822.822 0 0 0-.241.584v.066c0-.323.209-.608.516-.709l7.275-2.318a2.437 2.437 0 0 0 1.584-1.592l2.318-7.267a.757.757 0 0 1 .719-.524zM0 14.863v5.047c0 .904.733 1.637 1.637 1.637h20.726c.904 0 1.637-.733 1.637-1.637V4.09c0-.904-.733-1.637-1.637-1.637h-9.951v.5l.088 9.861c.01 1.175-.962 2.14-2.137 2.14L0 14.862zM12 3.66l-2.148 6.735v.001a2.94 2.94 0 0 1-1.909 1.916l-6.716 2.141h9.136c.905 0 1.638-.734 1.637-1.639zm-10.363.975c-.905 0-1.638.734-1.637 1.638v7.473l9.135-9.111Z" />
-    </svg>
-  )
-}
-
-/** Huawei Drive. Simple Icons: huawei, in its own #FF0000 */
-export function IconHuawei(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 24 24" width="1em" height="1em" fill="#FF0000" aria-hidden {...props}>
-      <path d="M3.67 6.14S1.82 7.91 1.72 9.78v.35c.08 1.51 1.22 2.4 1.22 2.4 1.83 1.79 6.26 4.04 7.3 4.55 0 0 .06.03.1-.01l.02-.04v-.04C7.52 10.8 3.67 6.14 3.67 6.14zM9.65 18.6c-.02-.08-.1-.08-.1-.08l-7.38.26c.8 1.43 2.15 2.53 3.56 2.2.96-.25 3.16-1.78 3.88-2.3.06-.05.04-.09.04-.09zm.08-.78C6.49 15.63.21 12.28.21 12.28c-.15.46-.2.9-.21 1.3v.07c0 1.07.4 1.82.4 1.82.8 1.69 2.34 2.2 2.34 2.2.7.3 1.4.31 1.4.31.12.02 4.4 0 5.54 0 .05 0 .08-.05.08-.05v-.06c0-.03-.03-.05-.03-.05zM9.06 3.19a3.42 3.42 0 00-2.57 3.15v.41c.03.6.16 1.05.16 1.05.66 2.9 3.86 7.65 4.55 8.65.05.05.1.03.1.03a.1.1 0 00.06-.1c1.06-10.6-1.11-13.42-1.11-13.42-.32.02-1.19.23-1.19.23zm8.299 2.27s-.49-1.8-2.44-2.28c0 0-.57-.14-1.17-.22 0 0-2.18 2.81-1.12 13.43.01.07.06.08.06.08.07.03.1-.03.1-.03.72-1.03 3.9-5.76 4.55-8.64 0 0 .36-1.4.02-2.34zm-2.92 13.07s-.07 0-.09.05c0 0-.01.07.03.1.7.51 2.85 2 3.88 2.3 0 0 .16.05.43.06h.14c.69-.02 1.9-.37 3-2.26l-7.4-.25zm7.83-8.41c.14-2.06-1.94-3.97-1.94-3.98 0 0-3.85 4.66-6.67 10.8 0 0-.03.08.02.13l.04.01h.06c1.06-.53 5.46-2.77 7.28-4.54 0 0 1.15-.93 1.21-2.42zm1.52 2.14s-6.28 3.37-9.52 5.55c0 0-.05.04-.03.11 0 0 .03.06.07.06 1.16 0 5.56 0 5.67-.02 0 0 .57-.02 1.27-.29 0 0 1.56-.5 2.37-2.27 0 0 .73-1.45.17-3.14z" />
-    </svg>
-  )
-}
-
-/** HiDrive, which is IONOS's. Simple Icons: ionos, in its own #003D8F, flipped for the ground it cannot be read on */
-export function IconIonos(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 24 24" width="1em" height="1em" fill="var(--brand-ionos-0)" aria-hidden {...props}>
-      <path d="M22.182 15.499a1.7634 1.7634 0 0 1-.3536-.0358 1.8319 1.8319 0 0 1-1.2086-.8632l-.0066-.012c-.1308-.2616-.0448-.5693.2-.7162a.5236.5236 0 0 1 .2689-.0743.5327.5327 0 0 1 .4632.272.558.558 0 0 0 .018.0299l.0564.0766.0757.0765a.7385.7385 0 0 0 .3453.167.7596.7596 0 0 0 .5954-.136.7206.7206 0 0 0 .299-.5386.7441.7441 0 0 0-.207-.578s-1.5994-1.6612-1.6712-1.7382a1.9604 1.9604 0 0 1-.1929-.229c-.2256-.3198-.2962-.697-.2614-1.0702a1.7361 1.7361 0 0 1 .2253-.7397s.0732-.124.0948-.1554c.0847-.1236.2515-.2834.3658-.3726a1.8813 1.8813 0 0 1 .3069-.1844 1.7494 1.7494 0 0 1 2.2815.7041.5186.5186 0 0 1 .0553.402.5298.5298 0 0 1-.2528.3263.5082.5082 0 0 1-.2593.0705.5283.5283 0 0 1-.46-.2706.6953.6953 0 0 0-.4656-.329.721.721 0 0 0-.5645.1269.688.688 0 0 0-.267.498.6998.6998 0 0 0 .1905.5398l1.6351 1.6862a1.8284 1.8284 0 0 1 .5071 1.3931c-.0465.5243-.3071.9994-.7152 1.3053a1.8425 1.8425 0 0 1-1.0984.369m-5.175-.0006a1.7608 1.7608 0 0 0 1.7585-1.7589v-3.4787a1.7587 1.7587 0 0 0-3.5173 0v3.4786a1.7608 1.7608 0 0 0 1.7587 1.7589m0-5.9342c.3777 0 .6968.319.6968.6967v3.4786a.6977.6977 0 0 1-.6968.6968.6894.6894 0 0 1-.6968-.6968v-3.4786a.6976.6976 0 0 1 .697-.6967m-7.8986.3224v5.0804a.5309.5309 0 0 0 1.0618 0V12.09Zm2.8802 2.0255V9.0328a.531.531 0 0 1 1.0619 0v5.0828zm1.053 2.9406v.1134a.533.533 0 0 1-1.0067.2408L9.1153 9.154v-.1212a.5261.5261 0 0 1 .3028-.4772.5253.5253 0 0 1 .7088.2475Zm-7.9067.6457a1.761 1.761 0 0 0 1.7586-1.7589v-3.4786a1.7587 1.7587 0 0 0-3.5173 0v3.4786a1.7609 1.7609 0 0 0 1.7587 1.7589m0-5.9342a.707.707 0 0 1 .6968.6967v3.4786a.6968.6968 0 1 1-1.3936 0v-3.4786a.6976.6976 0 0 1 .6968-.6967M0 14.9111a.5791.5791 0 1 0 1.1581 0V9.0803a.5791.5791 0 0 0-1.1582 0z" />
     </svg>
   )
 }
@@ -243,31 +162,504 @@ export function IconHadoop(props: SVGProps<SVGSVGElement>) {
   )
 }
 
-/** Internet Archive. Simple Icons: internetarchive, in its own #666666 */
-export function IconInternetArchive(props: SVGProps<SVGSVGElement>) {
+/** pCloud. Source: supplied by jdp, from the brand's own material (the brand's own mark) */
+export function IconPcloud(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg viewBox="0 0 24 24" width="1em" height="1em" fill="#666666" aria-hidden {...props}>
-      <path d="M22.667 22.884V24H1.333v-1.116zm-.842-1.675v1.396H2.175v-1.396zM4.233 6.14l.234.118.118 1.882.117 3.058v2.941l-.117 3.666-.02 2.47-.332.098H3.062l-.352-.098-.136-2.47-.118-3.646v-2.941l.118-3.078.107-1.892.244-.107zm16.842 0l.235.118.117 1.882.117 3.058v2.941l-.117 3.666-.02 2.47-.332.098h-1.171l-.352-.098-.137-2.47-.117-3.646v-2.941l.117-3.078.108-1.892.244-.107zm-11.79 0l.235.118.117 1.882.117 3.058v2.941l-.117 3.666-.02 2.47-.331.098H8.114l-.352-.098-.136-2.47-.117-3.646v-2.941l.117-3.078.107-1.892.244-.107zm6.457 0l.234.118.117 1.882.118 3.058v2.941l-.118 3.666-.019 2.47-.332.098H14.57l-.351-.098-.137-2.47-.117-3.646v-2.941l.117-3.078.108-1.892.244-.107zm6.083-2.511V5.58H2.175V3.628zM11.798 0l10.307 2.347-.413.723H1.951l-.618-.587Z" />
+    <svg viewBox="0 0 512 512" width="1em" height="1em" aria-hidden {...props}>
+      <defs>
+        <linearGradient id="pcloud-Unbenannter_Verlauf" data-name="Unbenannter Verlauf" x1="178.9" y1="256" x2="362.1" y2="256" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="var(--brand-pcloud-0)" />
+          <stop offset=".5" stopColor="var(--brand-pcloud-1)" />
+          <stop offset="1" stopColor="var(--brand-pcloud-2)" />
+        </linearGradient>
+        <linearGradient id="pcloud-Unbenannter_Verlauf1" data-name="Unbenannter Verlauf" x1="84.2" y1="256" x2="492.2" y2="256" xlinkHref="#pcloud-Unbenannter_Verlauf" />
+        <linearGradient id="pcloud-Unbenannter_Verlauf2" data-name="Unbenannter Verlauf" x1="248.2" y1="236.4" x2="292" y2="236.4" xlinkHref="#pcloud-Unbenannter_Verlauf" />
+      </defs>
+      <path d="M256,148.2c-59.5,0-107.8,48.3-107.8,107.8s48.3,107.8,107.8,107.8,107.8-48.3,107.8-107.8-48.3-107.8-107.8-107.8ZM313.3,272.3c-9.4,9.6-22.2,15.2-35.6,15.5h-36.8v19.8c0,5.2-2.1,10.3-5.8,14-7.7,7.7-20.3,7.7-28,0-3.7-3.7-5.8-8.7-5.8-14v-102.8h0c0-5.3,2.1-10.3,5.8-14,3.7-3.7,8.8-5.8,14-5.8h56.6c13.4.3,26.2,5.9,35.6,15.5,19.5,20,19.5,51.9,0,71.9Z" style={{ fill: "url(#pcloud-Unbenannter_Verlauf)" }} />
+      <path d="M467.2,273.3c-6.7,13.4-19.2,25-33.6,30.7,20.2-10.6,34.6-32.6,34.6-57.6,0-35.5-28.8-64.3-64.3-64.3h-7.7c8.6,19.2,13.4,40.3,13.4,63.4v4.8c-2.9-81.6-70.1-147.8-153.6-147.8S105.3,168.6,102.4,250.2v-3.8c0-23,4.8-44.2,13.4-63.4-56.6,7.7-99.8,54.7-99.8,113.3s51.8,113.3,114.2,113.3h289.9c42.2-1,75.8-34.6,75.8-76.8s-11.5-46.1-28.8-59.5ZM256,378.9c-67.9,0-122.9-55-122.9-122.9h0c0-67.9,55-122.9,122.9-122.9s122.9,55,122.9,122.9-55,122.9-122.9,122.9Z" style={{ fill: "url(#pcloud-Unbenannter_Verlauf1)" }} />
+      <path d="M287.7,225.2c-1.5-1.5-3.2-2.6-5.1-3.4-1.9-.8-4-1.2-6.1-1.2h-35.7v31.7h35.7c2.1,0,4.1-.4,6.1-1.2h0c1.9-.8,3.7-2,5.1-3.4,1.5-1.5,2.6-3.2,3.4-5.1.8-1.9,1.2-4,1.2-6.1,0-2.1-.4-4.1-1.2-6.1-.8-1.9-2-3.7-3.4-5.1Z" style={{ fill: "url(#pcloud-Unbenannter_Verlauf2)" }} />
     </svg>
   )
 }
 
-/** Cloudinary. Simple Icons: cloudinary, in its own #3448C5, flipped for the ground it cannot be read on */
+/** Koofr. Source: supplied by jdp, from the brand's own material (the brand's own mark) */
+export function IconKoofr(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 960 960" width="1em" height="1em" aria-hidden {...props}>
+      <defs />
+      <path d="M277.3,222.6c1.8-28.5,1.2-54.4,5.6-79.5,7.2-40.9,38.8-66.9,80.4-67.3,69.8-.8,139.7-.8,209.5,0,47.7.5,82.4,36.3,83.2,84,.2,14.4.8,28.8-.1,43.1-1,14.9,4.5,20.2,19.7,19.9,51.1-.7,102.3.4,153.3-.7,17.4-.4,22.2,5.3,22,22.2-.8,81.3-.6,162.5-.1,243.7.1,15.1-3.5,22.5-20.3,22.2-59-1-118.1.5-177.1-2-79.1-3.3-155.4-74.4-162.1-153.6-5-58.6-3.6-117.6-4.5-176.5-.2-13.2.3-23.6-18.4-23.8-19.3-.3-20,9.7-20.2,24.3-.7,58.1.7,116.5-4.3,174.3-7.1,82-82.7,152.1-164.9,155.5-58.2,2.4-116.6.9-174.9,1.7-15,.2-19.9-5.5-19.8-20.4.5-82.7.5-165.3,0-248-.1-15.4,5.5-19.7,20.2-19.5,56.8.7,113.7.3,172.7.3h0Z" style={{ fill: "var(--brand-koofr-0)" }} />
+      <path d="M264.9,837.6c-52.6,0-105.1-.6-157.7.3-18.2.3-23.2-6.2-23-23.7.8-79.8.9-159.6,0-239.4-.2-18.5,4.2-25.3,23.9-24.7,48.9,1.4,97.9.4,146.9.4,110.5.2,192.1,80.8,193.5,191.4.3,23.7-1,47.5.4,71.2,1.1,18.7-4.8,25.3-24.1,24.9-53.2-1.1-106.5-.4-159.8-.4Z" style={{ fill: "var(--brand-koofr-0)" }} />
+      <path d="M667.4,837.6c-53.3,0-106.6-.4-159.8.3-15.8.2-22.2-4.9-21-21.2,3.3-43.5.4-88.3,9.6-130.4,16.9-77.7,92.4-134.3,171.9-135.5,54-.8,108,.3,162-.5,16.2-.3,21,5.2,20.9,21.1-.7,82-.7,163.9,0,245.8.2,16.7-6.3,20.9-21.6,20.7-54-.6-108-.2-162-.2h0Z" style={{ fill: "var(--brand-koofr-0)" }} />
+    </svg>
+  )
+}
+
+/** Jottacloud. Source: supplied by jdp, from the brand's own material (the brand's own mark) */
+export function IconJottacloud(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 38.8 38" width="1em" height="1em" aria-hidden {...props}>
+      <defs />
+      <g id="jottacloud-Logo">
+        <g id="jottacloud-Group">
+          <path id="jottacloud-Vector" d="M37.6,0v25.3c0,3.4-1.3,6.6-3.7,9-2.3,2.4-5.5,3.7-8.9,3.7h-5V12.7c0-3.4,1.3-6.6,3.7-9,2.4-2.4,5.5-3.7,8.9-3.7h5Z" style={{ fill: "#7d5fe6" }} />
+          <path id="jottacloud-Vector_2" d="M0,20.3h5c3.3,0,6.5,1.3,8.9,3.7,2.3,2.4,3.7,5.6,3.7,9v5.1h-5c-3.3,0-6.5-1.3-8.9-3.7-2.3-2.4-3.7-5.6-3.7-9v-5.1Z" style={{ fill: "#7d5fe6" }} />
+        </g>
+      </g>
+    </svg>
+  )
+}
+
+/** OpenDrive. Source: supplied by jdp, from the brand's own material (the brand's own mark) */
+export function IconOpendrive(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 420 180" width="1em" height="1em" aria-hidden {...props}>
+      <defs />
+      <g id="opendrive-Ebene_2">
+        <rect width="420" height="180" style={{ fill: "#2b2b2b" }} />
+      </g>
+      <g id="opendrive-Ebene_1">
+        <rect x="178.5" y="79.7" width="127.7" height="36.3" rx="18.2" ry="18.2" transform="translate(91.7 311.4) rotate(-76.8)" style={{ fill: "#6ea1e7" }} />
+        <rect x="136.5" y="87.9" width="110.9" height="36.3" rx="18.2" ry="18.2" transform="translate(44.9 268.7) rotate(-76.8)" style={{ fill: "#fff" }} />
+        <rect x="107.1" y="87.9" width="71.3" height="36.3" rx="18.2" ry="18.2" transform="translate(6.9 220.8) rotate(-76.8)" style={{ fill: "#6ea1e7" }} />
+        <rect x="252.9" y="87.9" width="71.3" height="36.3" rx="18.2" ry="18.2" transform="translate(119.4 362.7) rotate(-76.8)" style={{ fill: "#fff" }} />
+      </g>
+    </svg>
+  )
+}
+
+/** put.io. Source: supplied by jdp, from the brand's own material (the brand's own mark) */
+export function IconPutio(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 256 256" fill="none" width="1em" height="1em" aria-hidden {...props}>
+      <rect width="256" height="256" rx="20" fill="#323232" />
+      <path fillRule="evenodd" clipRule="evenodd" d="M59 94.2498H62.7597V79.2498H66.5195V71.7498H70.2792V67.9998H74.0389V64.2498H77.7987V56.7498H85.3181V52.9998H89.0779V49.2498H96.5973V45.4998H104.117V41.7498L145.474 41.7498V45.4998H152.993V49.2498H160.513V52.9998H168.032V56.7498H171.792V60.4998H175.552V64.2498H179.311V71.7498H183.071V79.2498H186.831V86.7498H190.591V124.25H186.831V135.5H183.071V143H179.311V146.75H175.552V150.5H171.792V154.25H168.032V158H164.273V161.75H156.753V165.5H149.234V169.25H134.195V173H96.5973V176.75H92.8376V195.5H89.0779V199.25H85.3181V203H66.5195V199.25H62.7597V195.5H59L59 94.2498ZM100.356 94.2501V86.7501H104.116V83.0001H111.635V79.2501H119.155V75.5001H130.434V79.2501H141.713V83.0001H145.473V86.7501H149.233V94.2501H152.993V116.75H149.233V120.5H145.473V124.25H141.713V128H137.954V131.75H111.635V128H107.876V124.25H104.116V120.5H100.356V113H96.5964V94.2501H100.356Z" fill="white" />
+      <path d="M115.396 90.5H107.877V98H104.117V109.25H107.877V116.75H111.637V109.25H115.396V101.75H119.156V98H126.675V94.25H134.195V90.5H137.955V86.75H126.675V83H122.916V86.75H115.396V90.5Z" fill="#FDCE45" />
+      <path d="M201.871 94.25H198.111V128H194.352V139.25H190.592V146.75H186.832V150.5H183.072V154.25H179.313V158H175.553V161.75H171.793V165.5H168.033V169.25H160.514V173H152.994V176.75H137.956V180.5H100.358L100.358 199.25H96.5984V203H92.8386V206.75H89.0789V210.5H77.7997V214.25H81.5594V218H100.358V214.25H104.118V210.5H107.878V191.75H111.637V188H149.235V184.25H164.274V180.5H171.793V176.75H179.313V173H183.072V169.25H186.832V165.5H190.592V161.75H194.352V158H198.111V150.5H201.871V139.25H205.631V101.75H201.871V94.25Z" fill="#FDCE45" />
+    </svg>
+  )
+}
+
+/** SugarSync. Source: supplied by jdp, from the brand's own material (the brand's own mark) */
+export function IconSugarsync(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 90.5 94.9" width="1em" height="1em" aria-hidden {...props}>
+      <defs />
+      <path d="M81.2,43.1c-5.6-4.8-14.5-7.8-21-5.7-1.2-6-8.4-8.6-14.3-8.3,1.5-3.8,4.2-5.6,7.2-5.6s5.5.3,8.5,3.5c-.4-2.9-4.5-6.6-9.5-6.6s-11,3.9-13.2,9.5c-3.7.7-17.3,7.4-21.6,12.1,5.2-3.1,15.8-9.3,22.9-9.3s9.6,4.7,10.9,8.7c3.4,10.9,13,15.1,24.2,15.3-1.8-.4-3.6-.8-5.4-1.5-5.2-1.9-9.6-5.5-6.9-7.8,1.7-1.5,7-1.2,10.6,1.2,2.9,1.7,4.3,5,3.5,8.2-4.2,14.3,2.3,20,13.3,18.6,1.5-15.8-2.6-26.9-9-32.4h0Z" style={{ fill: "#0c7834" }} />
+      <path d="M40.3,32.4c-7,0-17.8,6.2-23.1,9.3,4.4-4.7,18.2-11.4,21.9-12.1l1.2,2.8ZM53.9,26.9c0,.9-.7,1.6-1.6,1.6s-1.6-.7-1.6-1.6.7-1.6,1.6-1.6c.9,0,1.6.7,1.6,1.6h0Z" style={{ fill: "#2b2825" }} />
+      <path d="M77.2,40.3c-5.3-3.1-11.9-4.7-17.1-3l27-31c6.9,10.7-1.5,30.3-9.9,34" style={{ fill: "#16a855" }} />
+      <path d="M60.2,37.3L73.7,0c10.4,7.3,8.9,31.4,3.5,40.3-5.3-3.1-11.9-4.7-17.1-3h0Z" style={{ fill: "#0c7834" }} />
+    </svg>
+  )
+}
+
+/** PikPak. Source: supplied by jdp, from the brand's own material (the brand's own mark) */
+export function IconPikpak(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 54 54" width="1em" height="1em" aria-hidden {...props}>
+      <defs />
+      <path d="M29.8,11.9c-.5,0-1-.4-1.2-.9l-1.7-4.3c-.1-.4.2-.7.5-.7l17.4,2.2c.9.1,1.7.7,2,1.5l1.9,4.6-19-2.4Z" style={{ fill: "#307dff", fillRule: "evenodd", isolation: "isolate", opacity: "1" }} />
+      <path d="M21.9,11.9c.5,0,1-.4,1.2-.9l1.7-4.3c.1-.4-.2-.7-.5-.7l-17.4,2.2c-.9.1-1.7.7-2,1.5l-1.9,4.6,7.9-1,11.2-1.4Z" style={{ fill: "#307dff", fillRule: "evenodd", isolation: "isolate", opacity: "1" }} />
+      <path d="M2.8,14.3h46v25.9c0,2.5-2,4.5-4.5,4.5H7.4c-2.5,0-4.5-2-4.5-4.5V14.3Z" style={{ fill: "#307dff", fillRule: "evenodd" }} />
+      <path d="M25.8,39.4c-2.8,0-5.5-1.1-5.6-1.1-.7-.3-1-1-.7-1.7.3-.7,1-1,1.7-.7,0,0,2.3.9,4.6.9s4.6-.9,4.7-.9c.7-.3,1.4,0,1.7.7.3.7,0,1.4-.7,1.7-.1,0-2.8,1.1-5.6,1.1Z" style={{ fill: "#fff" }} />
+      <path d="M17.6,30.4c-1.1,0-2-.9-2-2v-4.1c0-1.1.9-2,2-2s2,.9,2,2v4.1c0,1.1-.9,2-2,2Z" style={{ fill: "#fff" }} />
+      <path d="M34,30.4c-1.1,0-2-.9-2-2v-4.1c0-1.1.9-2,2-2s2,.9,2,2v4.1c0,1.1-.9,2-2,2Z" style={{ fill: "#fff" }} />
+    </svg>
+  )
+}
+
+/** Internxt. Source: supplied by jdp, from the brand's own material (the brand's own mark) */
+export function IconInternxt(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 720 720" width="1em" height="1em" aria-hidden {...props}>
+      <defs>
+        <linearGradient id="internxt-Unbenannter_Verlauf" data-name="Unbenannter Verlauf" x1="360" y1="727.4" x2="360" y2="-6.9" gradientTransform="translate(0 722) scale(1 -1)" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#112d91" />
+          <stop offset="1" stopColor="#060c40" />
+        </linearGradient>
+      </defs>
+      <polygon points="268.3 573.2 359.8 430 452 573.2 553.1 573.2 407.4 357.8 545.3 155.5 444.7 155.5 359.8 286.2 275.5 155.5 175.6 155.5 312.9 358.4 167.8 573.2 268.3 573.2" style={{ fill: "#fff", fillRule: "evenodd" }} />
+      <path d="M0,158.2C0,70.8,70.8,0,158.2,0h403.7c87.3,0,158.2,70.8,158.2,158.2v403.7c0,87.3-70.8,158.2-158.2,158.2H158.2C70.8,720,0,649.2,0,561.8V158.2ZM553.1,573.2l-145.7-215.4,137.9-202.3h-100.5l-84.9,130.7-84.3-130.7h-99.9l137.3,202.9-145.1,214.8h100.5l91.5-143.2,92.1,143.2h101.2Z" style={{ fillRule: "evenodd", fill: "url(#internxt-Unbenannter_Verlauf)" }} />
+    </svg>
+  )
+}
+
+/** Uloz.to. Source: supplied by jdp, from the brand's own material (the brand's own mark) */
+export function IconUlozto(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 2000 2000" width="1em" height="1em" aria-hidden {...props}>
+      <defs />
+      <g id="ulozto-Ebene_2">
+        <rect width="2000" height="2000" style={{ fill: "#3d3d3d" }} />
+      </g>
+      <g id="ulozto-Ebene_1">
+        <path d="M67,41l957,531.7L1981,41v531.7l-957,531.7L67,572.7V41M67,891.6l957,531.7,957-531.7v531.7l-957,531.7L67,1423.3v-531.7" style={{ fill: "#fff" }} />
+        <path d="M67,572.7l478.5-265.8,478.5,265.8,478.5-265.8,478.5,265.8-957,531.7L67,572.7M1024,1423.3l-478.5-265.8-478.5,265.8,957,531.7v-531.7l478.5,265.8,478.5-265.8-478.5-265.8-478.5,265.8" style={{ fill: "#fff" }} />
+        <path d="M545.5,306.8v531.7l478.5-265.8v531.7l957-531.7-478.5-265.8v531.7l-478.5-265.8-478.5-265.8M1024,1423.3l-478.5,265.8v-531.7l-478.5,265.8,957,531.7v-531.7l478.5,265.8v-531.7l-478.5,265.8" style={{ fill: "#fff" }} />
+      </g>
+    </svg>
+  )
+}
+
+/** Quatrix. Source: supplied by jdp, from the brand's own material (the brand's own mark) */
+export function IconQuatrix(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 180 59" width="1em" height="1em" aria-hidden {...props}>
+      <defs>
+        <mask id="quatrix-mask" x="0" y="0" width="59.3" height="58.5" maskUnits="userSpaceOnUse">
+          <g id="quatrix-prefix__b">
+            <path id="quatrix-prefix__a" d="M0,0h59.3v58.5H0V0Z" style={{ fill: "#fff", fillRule: "evenodd" }} />
+          </g>
+        </mask>
+        <mask id="quatrix-mask-1" x="0" y="0" width="59.3" height="58.5" maskUnits="userSpaceOnUse">
+          <g id="quatrix-prefix__d">
+            <path id="quatrix-prefix__c" d="M0,0h59.3v58.5H0V0Z" style={{ fill: "#fff", fillRule: "evenodd" }} />
+          </g>
+        </mask>
+      </defs>
+      <g style={{ mask: "url(#quatrix-mask)" }}>
+        <path d="M52.3,48c4-5,6.3-11.5,6.3-18.8C58.6,12.4,46.5,0,29.3,0S15.8,2.2,10.9,6l5.4,7.4c3.4-2.9,7.9-4.6,13.1-4.6,11.4,0,19.8,8.3,19.8,20.5s-1,7.8-2.7,10.9l-6.7-9h-10.5l16.7,22.7s0,0,0,0l2.7,3.6h10.6l-7-9.4" style={{ fill: "#f70" }} />
+      </g>
+      <g style={{ mask: "url(#quatrix-mask-1)" }}>
+        <path d="M5.8,10.9C2.1,15.8,0,22,0,29.1c0,17,12.2,29.4,29.5,29.4s7-.5,10.1-1.6l-5.6-7.7c-1.4.3-2.9.4-4.4.4-11.5,0-20-8.4-20-20.6s.8-7.1,2.2-10l-6-8.2" style={{ fill: "#ffd6b3" }} />
+      </g>
+    </svg>
+  )
+}
+
+/** Linkbox. Source: supplied by jdp, from the brand's own material (the brand's own mark) */
+export function IconLinkbox(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 367.4 69.6" width="1em" height="1em" aria-hidden {...props}>
+      <defs />
+      <rect y=".1" width="68.4" height="68.4" style={{ fill: "#47b492" }} />
+      <g>
+        <path d="M49.7,50.1c-6.3,0-25.3,0-25.3-18V.1h5.6v31.9c0,8.8,5.7,12.4,19.7,12.4v5.7Z" style={{ fill: "#fff" }} />
+        <path d="M59.1,68.5h-5.6v-31.9c0-8.8-5.7-12.4-19.7-12.4v-5.6c6.3,0,25.3,0,25.3,18v31.9Z" style={{ fill: "#fff" }} />
+      </g>
+    </svg>
+  )
+}
+
+/** Gofile. Source: supplied by jdp, from the brand's own material (the brand's own mark) */
+export function IconGofile(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 672 191" width="1em" height="1em" aria-hidden {...props}>
+      <defs />
+      <path d="M154.2,61c-.3,2.2-3.6,28.9-5.2,38h23.5l20-17,109.9-.2-29.4,108.2h-144.4l-3.6-36-112-5,110.6-7.4-2.6-24.6-39-4,37.9-5.6-.9-8.4h19.4s2.6-20,2.6-20l-95-6,96.5-6,.9-5.9h10.8Z" style={{ fill: "var(--brand-gofile-0)" }} />
+      <path d="M262,0h0c-1.8,12,0,24.5-6,36,12.7-.2,25.8-.1,38,4,.3.5,2.2,2.2,2.2,2.2l-3.2,39.8s-67.1.9-100.5,0c-3.6,1-18.7,17-20,17h-23.5c1.6-9.1,5.7-41.7,5.7-41.7l3.3-26.3-32-3,32.1-3.4,1.8-11.4-82.9-6.1c27.2-1.5,84.7-4.2,84.7-4.2l.3-2.8h100Z" style={{ fill: "var(--brand-gofile-1)" }} />
+      <path d="M294,40c-12.2-4.1-25.2-4.2-38-4,6.1-11.5,4.2-24,6-36,9.2,13.3,23.4,26.6,32,40Z" style={{ fill: "var(--brand-gofile-2)" }} />
+    </svg>
+  )
+}
+
+/** Pixeldrain. Source: supplied by jdp, from the brand's own material (the brand's own mark) */
+export function IconPixeldrain(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="111 110.5 278 279" fill="var(--brand-pixeldrain-0)" width="1em" height="1em" aria-hidden {...props}>
+      <path d="M 250 110.5 C 173 110.5 111 173 111 250.5 C 111 327.5 173.5 389.5 250 389.5 C 327 389.5 389 327 389 250.5 C 389 173.5 326.5 110.5 250 110.5 Z M 250 368.5 C 184.3 368.5 131 315.3 131 249.5 C 131 183.7 184.2 130.5 250 130.5 C 315.7 130.5 369 183.7 369 249.5 C 369 315.2 315.8 368.5 250 368.5 Z M 250 149.5 C 194.9 149.5 150.2 194.2 150.2 249.3 C 150.2 304.4 194.9 349.1 250 349.1 C 305.1 349.1 349.8 304.4 349.8 249.3 C 349.8 194.2 305.1 149.5 250 149.5 Z M 299.3 185.5 C 307.99 185.5 315 192.54 315 201.2 C 315 209.89 307.96 216.9 299.3 216.9 C 290.64 216.9 283.6 209.86 283.6 201.2 C 283.6 192.51 290.64 185.5 299.3 185.5 Z M 250 165.5 C 258.69 165.5 265.7 172.54 265.7 181.2 C 265.7 189.89 258.66 196.9 250 196.9 C 241.34 196.9 234.3 189.86 234.3 181.2 C 234.3 172.51 241.34 165.5 250 165.5 Z M 201.3 185.5 C 209.99 185.5 217 192.54 217 201.2 C 217 209.89 209.96 216.9 201.3 216.9 C 192.64 216.9 185.6 209.86 185.6 201.2 C 185.6 192.51 192.64 185.5 201.3 185.5 Z M 166.3 249.3 C 166.3 240.61 173.34 233.6 182 233.6 C 190.66 233.6 197.7 240.64 197.7 249.3 C 197.7 257.99 190.66 265 182 265 C 173.31 265 166.3 257.96 166.3 249.3 Z M 201.3 314.9 C 192.61 314.9 185.6 307.86 185.6 299.2 C 185.6 290.54 192.64 283.5 201.3 283.5 C 209.96 283.5 217 290.54 217 299.2 C 217 307.86 209.96 314.9 201.3 314.9 Z M 250 335.6 C 241.31 335.6 234.3 328.56 234.3 319.9 C 234.3 311.21 241.34 304.2 250 304.2 C 258.69 304.2 265.7 311.24 265.7 319.9 C 265.7 328.58 258.66 335.6 250 335.6 Z M 250 288.6 C 228.8 288.6 211.5 271.4 211.5 250.1 C 211.5 228.9 228.7 211.6 250 211.6 C 271.2 211.6 288.5 228.8 288.5 250.1 C 288.5 271.3 271.3 288.6 250 288.6 Z M 299.3 314.9 C 290.61 314.9 283.6 307.86 283.6 299.2 C 283.6 290.54 290.64 283.5 299.3 283.5 C 307.96 283.5 315 290.54 315 299.2 C 315 307.86 307.96 314.9 299.3 314.9 Z M 317.9 265 C 309.21 265 302.2 257.96 302.2 249.3 C 302.2 240.61 309.24 233.6 317.9 233.6 C 326.56 233.6 333.6 240.64 333.6 249.3 C 333.6 257.99 326.56 265 317.9 265 Z" transform="matrix(1, 0, 0, 1, 7.105427357601002e-15, 0)" />
+    </svg>
+  )
+}
+
+/** Azure Blob Storage, under Azure's own mark. Source: supplied by jdp, from the brand's own material (the brand's own mark) */
+export function IconAzure(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 59.242 47.271" width="1em" height="1em" aria-hidden {...props}>
+      <path fill="#0072c6" d="M32.368 0 14.9 15.145 0 41.895h13.437zm2.323 3.543-7.454 21.008 14.291 17.956L13.8 47.271h45.442z" />
+    </svg>
+  )
+}
+
+/** Filen. Source: supplied by jdp, from the brand's own material (the brand's own mark) */
+export function IconFilen(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 64 64" preserveAspectRatio="xMidYMid" width="1em" height="1em" aria-hidden {...props}>
+      <circle cx="32" cy="32" r="30" fill="var(--brand-filen-0)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="7.0866" />
+      <g strokeLinecap="round" strokeLinejoin="round">
+        <path d="m32 5a27 27 0 0 0-27 27 27 27 0 0 0 27 27 27 27 0 0 0 27-27 27 27 0 0 0-27-27zm0 3a24 24 0 0 1 24 24 24 24 0 0 1-24 24 24 24 0 0 1-24-24 24 24 0 0 1 24-24z" strokeWidth="6.378" />
+        <rect x="13.333" y="13.333" width="24" height="4" strokeWidth="7.7782" />
+        <rect transform="rotate(90)" x="9.3333" y="-46.667" width="16" height="4" strokeWidth="6.3509" />
+        <rect transform="scale(-1)" x="-46.667" y="-25.333" width="28.637" height="4" strokeWidth="8.4964" />
+        <rect transform="rotate(-90)" x="-32" y="17.333" width="10.667" height="4" strokeWidth="5.1855" />
+        <path transform="rotate(-90)" d="m-53.159 17.333h14.493v4h-16z" strokeWidth="6.0443" />
+        <rect x="17.333" y="37.333" width="14.667" height="4" strokeWidth="6.0805" />
+        <rect transform="rotate(90)" x="34.667" y="-40" width="22.872" height="4" strokeWidth="7.5932" />
+        <rect transform="rotate(90)" x="32.088" y="-48" width="20.681" height="4" strokeWidth="7.2204" />
+        <rect transform="scale(-1)" x="-57.333" y="-36.088" width="13.333" height="4" strokeWidth="5.7975" />
+        <g strokeWidth="6.1235">
+          <ellipse cx="38" cy="33.833" rx="3.5" ry="3.5" />
+          <ellipse cx="29.833" cy="39.333" rx="3.5" ry="3.5" />
+          <ellipse cx="19.333" cy="31.5" rx="3.5" ry="3.5" />
+          <ellipse cx="35.5" cy="15.333" rx="3.5" ry="3.5" />
+        </g>
+        <path transform="rotate(90)" d="m16-13.333h33.333l-4 4h-26.667z" strokeWidth="8.6291" />
+      </g>
+    </svg>
+  )
+}
+
+/** Files.com. Source: supplied by jdp, from the brand's own material (the brand's own mark) */
+export function IconFilesCom(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="74.255 74.215 301.04 311.71" width="1em" height="1em" aria-hidden {...props}>
+      <path d="M264.85,265l58.76,58.76a3.85,3.85,0,0,0,6.57-2.72V262.32a3.85,3.85,0,0,0-3.85-3.85H267.58A3.85,3.85,0,0,0,264.85,265Z" fill="#f42534" />
+      <path d="M211.79,258.47H78.07A3.85,3.85,0,0,0,75.35,265l66.86,66.86a3.85,3.85,0,0,0,5.45,0L214.51,265A3.85,3.85,0,0,0,211.79,258.47Z" fill="#d82237" />
+      <path d="M230.55,359.09v-79a3.85,3.85,0,0,0-6.57-2.72l-79,79a3.85,3.85,0,0,0,2.72,6.57h79A3.85,3.85,0,0,0,230.55,359.09Z" fill="#c3002f" />
+      <path d="M306.37,328.35l-51-51a3.85,3.85,0,0,0-6.57,2.72v102a3.85,3.85,0,0,0,6.57,2.72l51-51A3.85,3.85,0,0,0,306.37,328.35Z" fill="#911a1d" />
+      <path d="M267.58,243.06H371.44a3.85,3.85,0,0,0,2.72-6.57l-51.93-51.93a3.85,3.85,0,0,0-5.45,0l-51.93,51.93A3.85,3.85,0,0,0,267.58,243.06Z" fill="#a41f35" />
+      <path d="M248.82,138.59v82.84a3.85,3.85,0,0,0,6.57,2.72l82.84-82.84a3.85,3.85,0,0,0-2.72-6.57H252.67A3.85,3.85,0,0,0,248.82,138.59Z" fill="#d6202a" />
+      <path d="M116.44,147.71v91.5a3.85,3.85,0,0,0,3.85,3.85h91.5a3.85,3.85,0,0,0,2.72-6.57L123,145A3.85,3.85,0,0,0,116.44,147.71Z" fill="#ac162c" />
+      <path d="M152.29,152.48,224,224.16a3.85,3.85,0,0,0,6.57-2.72V78.07A3.85,3.85,0,0,0,224,75.35L152.29,147A3.85,3.85,0,0,0,152.29,152.48Z" fill="#eb0029" />
+    </svg>
+  )
+}
+
+/** Google Drive. Source: supplied by jdp, from the brand's own material (the brand's own mark) */
+export function IconGoogleDrive(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 512 512" width="1em" height="1em" aria-hidden {...props}>
+      <path d="m38.7 419.3 22.6 39c4.7 8.2 11.4 14.7 19.4 19.4l80.6-139.6H0c0 9.1 2.3 18.2 7 26.4z" style={{ fill: "#0066da" }} />
+      <path d="M256 173.9 175.4 34.3c-7.9 4.7-14.7 11.1-19.4 19.4L7 311.7c-4.6 8-7 17.1-7 26.4h161.3z" style={{ fill: "#00ac47" }} />
+      <path d="M431.4 477.7c7.9-4.7 14.7-11.1 19.4-19.4l9.4-16.1 44.9-77.7c4.7-8.2 7-17.3 7-26.4H350.7l34.3 67.4z" style={{ fill: "#ea4335" }} />
+      <path d="m256 173.9 80.6-139.6c-7.9-4.7-17-7-26.4-7H201.8c-9.4 0-18.5 2.6-26.4 7z" style={{ fill: "#00832d" }} />
+      <path d="M350.7 338.1H161.3L80.6 477.7c7.9 4.7 17 7 26.4 7h298c9.4 0 18.5-2.6 26.4-7z" style={{ fill: "#2684fc" }} />
+      <path d="M430.5 182.7 356 53.7c-4.7-8.2-11.4-14.7-19.4-19.4L256 173.9l94.7 164.2h161c0-9.1-2.3-18.2-7-26.4z" style={{ fill: "#ffba00" }} />
+    </svg>
+  )
+}
+
+/** Huawei Drive, under Huawei Cloud's mark. Source: supplied by jdp, from the brand's own material (the brand's own mark) */
+export function IconHuawei(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 108 38" width="1em" height="1em" aria-hidden {...props}>
+      <defs>
+        <radialGradient id="huaweidrive-Unbenannter_Verlauf" data-name="Unbenannter Verlauf" cx="-871.4" cy="945.4" fx="-871.4" fy="945.4" r="2" gradientTransform="translate(11458.2 12409.2) scale(13.1 -13.1)" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#f7bfa4" />
+          <stop offset="0" stopColor="#f7bb9f" />
+          <stop offset=".4" stopColor="#e60012" />
+          <stop offset=".7" stopColor="#e50012" />
+          <stop offset=".8" stopColor="#e10011" />
+          <stop offset=".8" stopColor="#da0010" />
+          <stop offset=".9" stopColor="#cf000e" />
+          <stop offset=".9" stopColor="#c00009" />
+          <stop offset="1" stopColor="#ae0003" />
+          <stop offset="1" stopColor="#a00000" />
+        </radialGradient>
+        <radialGradient id="huaweidrive-Unbenannter_Verlauf_2" data-name="Unbenannter Verlauf 2" cx="-694.5" cy="767.3" fx="-694.5" fy="767.3" r="6.9" gradientTransform="translate(2661.3 2918.3) scale(3.8 -3.8)" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#f7bfa4" />
+          <stop offset="0" stopColor="#f7bb9f" />
+          <stop offset=".4" stopColor="#e60012" />
+          <stop offset=".7" stopColor="#e50012" />
+          <stop offset=".8" stopColor="#e10011" />
+          <stop offset=".8" stopColor="#da0010" />
+          <stop offset=".9" stopColor="#cf000e" />
+          <stop offset=".9" stopColor="#c00009" />
+          <stop offset="1" stopColor="#ae0003" />
+          <stop offset="1" stopColor="#a00000" />
+        </radialGradient>
+        <radialGradient id="huaweidrive-Unbenannter_Verlauf_3" data-name="Unbenannter Verlauf 3" cx="-834.1" cy="907.9" fx="-834.1" fy="907.9" r="3" gradientTransform="translate(7235.1 7853) scale(8.6 -8.6)" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#f7bfa4" />
+          <stop offset="0" stopColor="#f7bb9f" />
+          <stop offset=".4" stopColor="#e60012" />
+          <stop offset=".7" stopColor="#e50012" />
+          <stop offset=".8" stopColor="#e10011" />
+          <stop offset=".8" stopColor="#da0010" />
+          <stop offset=".9" stopColor="#cf000e" />
+          <stop offset=".9" stopColor="#c00009" />
+          <stop offset="1" stopColor="#ae0003" />
+          <stop offset="1" stopColor="#a00000" />
+        </radialGradient>
+        <radialGradient id="huaweidrive-Unbenannter_Verlauf_4" data-name="Unbenannter Verlauf 4" cx="-696.7" cy="767.9" fx="-696.7" fy="767.9" r="6.9" gradientTransform="translate(2676 2927.4) scale(3.8 -3.8)" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#f7bfa4" />
+          <stop offset="0" stopColor="#f7bb9f" />
+          <stop offset=".4" stopColor="#e60012" />
+          <stop offset=".7" stopColor="#e50012" />
+          <stop offset=".8" stopColor="#e10011" />
+          <stop offset=".8" stopColor="#da0010" />
+          <stop offset=".9" stopColor="#cf000e" />
+          <stop offset=".9" stopColor="#c00009" />
+          <stop offset="1" stopColor="#ae0003" />
+          <stop offset="1" stopColor="#a00000" />
+        </radialGradient>
+        <radialGradient id="huaweidrive-Unbenannter_Verlauf_5" data-name="Unbenannter Verlauf 5" cx="-872.7" cy="945.3" fx="-872.7" fy="945.3" r="2" gradientTransform="translate(11462.4 12394.2) scale(13.1 -13.1)" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#f7bfa4" />
+          <stop offset="0" stopColor="#f7bb9f" />
+          <stop offset=".4" stopColor="#e60012" />
+          <stop offset=".7" stopColor="#e50012" />
+          <stop offset=".8" stopColor="#e10011" />
+          <stop offset=".8" stopColor="#da0010" />
+          <stop offset=".9" stopColor="#cf000e" />
+          <stop offset=".9" stopColor="#c00009" />
+          <stop offset="1" stopColor="#ae0003" />
+          <stop offset="1" stopColor="#a00000" />
+        </radialGradient>
+        <radialGradient id="huaweidrive-Unbenannter_Verlauf_6" data-name="Unbenannter Verlauf 6" cx="-823.9" cy="894.9" fx="-823.9" fy="894.9" r="3.4" gradientTransform="translate(6484.7 7021.1) scale(7.8 -7.8)" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#f7bfa4" />
+          <stop offset="0" stopColor="#f7bb9f" />
+          <stop offset=".4" stopColor="#e60012" />
+          <stop offset=".7" stopColor="#e50012" />
+          <stop offset=".8" stopColor="#e10011" />
+          <stop offset=".8" stopColor="#da0010" />
+          <stop offset=".9" stopColor="#cf000e" />
+          <stop offset=".9" stopColor="#c00009" />
+          <stop offset="1" stopColor="#ae0003" />
+          <stop offset="1" stopColor="#a00000" />
+        </radialGradient>
+        <radialGradient id="huaweidrive-Unbenannter_Verlauf_7" data-name="Unbenannter Verlauf 7" cx="-822.8" cy="894.9" fx="-822.8" fy="894.9" r="3.4" gradientTransform="translate(6475.8 7021) scale(7.8 -7.8)" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#f7bfa4" />
+          <stop offset="0" stopColor="#f7bb9f" />
+          <stop offset=".4" stopColor="#e60012" />
+          <stop offset=".7" stopColor="#e50012" />
+          <stop offset=".8" stopColor="#e10011" />
+          <stop offset=".8" stopColor="#da0010" />
+          <stop offset=".9" stopColor="#cf000e" />
+          <stop offset=".9" stopColor="#c00009" />
+          <stop offset="1" stopColor="#ae0003" />
+          <stop offset="1" stopColor="#a00000" />
+        </radialGradient>
+        <radialGradient id="huaweidrive-Unbenannter_Verlauf_8" data-name="Unbenannter Verlauf 8" cx="-835.6" cy="907.8" fx="-835.6" fy="907.8" r="3" gradientTransform="translate(7246.5 7850.2) scale(8.6 -8.6)" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#f7bfa4" />
+          <stop offset="0" stopColor="#f7bb9f" />
+          <stop offset=".4" stopColor="#e60012" />
+          <stop offset=".7" stopColor="#e50012" />
+          <stop offset=".8" stopColor="#e10011" />
+          <stop offset=".8" stopColor="#da0010" />
+          <stop offset=".9" stopColor="#cf000e" />
+          <stop offset=".9" stopColor="#c00009" />
+          <stop offset="1" stopColor="#ae0003" />
+          <stop offset="1" stopColor="#a00000" />
+        </radialGradient>
+      </defs>
+      <g id="huaweidrive-_华为logo上下排版" data-name="华为logo上下排版">
+        <path id="huaweidrive-Path" d="M5.3,15.2c2.8,2.7,9.5,6.1,11.1,6.9,0,0,0,0,.2,0,0,0,0,0,0-.1h0C12.2,12.6,6.4,5.6,6.4,5.6c0,0-3.2,3-3,6,.1,2.3,1.8,3.6,1.8,3.6Z" style={{ fillRule: "evenodd", fill: "url(#huaweidrive-Unbenannter_Verlauf)" }} />
+        <path id="huaweidrive-Path1" data-name="Path" d="M15.5,24.4c0,0-.1,0-.1,0h0l-11.2.4c1.2,2.2,3.3,3.8,5.4,3.3,1.5-.4,4.8-2.7,5.9-3.5h0c0,0,0-.1,0-.1Z" style={{ fillRule: "evenodd", fill: "url(#huaweidrive-Unbenannter_Verlauf_2)" }} />
+        <path id="huaweidrive-Path2" data-name="Path" d="M5,23c1.1.4,2.1.5,2.1.5.2,0,6.7,0,8.4,0,0,0,.1,0,.1,0,0,0,0-.2,0-.2h0C10.7,19.9,1.1,14.8,1.1,14.8c-.9,2.7.3,4.8.3,4.8,1.2,2.6,3.5,3.3,3.5,3.3Z" style={{ fillRule: "evenodd", fill: "url(#huaweidrive-Unbenannter_Verlauf_3)" }} />
+        <path id="huaweidrive-Path3" data-name="Path" d="M33.9,24.7l-11.2-.4h0s0,0-.1,0c0,0,0,0,0,.2h0c1.1.8,4.3,3,5.9,3.5,0,0,2.9,1,5.4-3.3Z" style={{ fillRule: "evenodd", fill: "url(#huaweidrive-Unbenannter_Verlauf_4)" }} />
+        <path id="huaweidrive-Path4" data-name="Path" d="M21.6,21.9s0,.1,0,.2c0,0,0,0,.2,0h0c1.6-.8,8.3-4.2,11.1-6.9,0,0,1.7-1.4,1.8-3.6.2-3.1-3-6-3-6,0,0-5.8,7-10.1,16.3h0Z" style={{ fillRule: "evenodd", fill: "url(#huaweidrive-Unbenannter_Verlauf_5)" }} />
+        <path id="huaweidrive-Path5" data-name="Path" d="M20,21.1c0,0,0,.1,0,.1.1,0,.2,0,.2,0h0c1.1-1.6,5.9-8.7,6.9-13.1,0,0,.5-2.1,0-3.5,0,0-.7-2.7-3.7-3.4,0,0-.9-.2-1.8-.3h0s-3.3,4.2-1.7,20.3h0Z" style={{ fill: "url(#huaweidrive-Unbenannter_Verlauf_6)", fillRule: "evenodd" }} />
+        <path id="huaweidrive-Path6" data-name="Path" d="M17.8,21.2c0,0,.1,0,.1,0,.1,0,.1-.1.1-.1h0c1.6-16.1-1.7-20.3-1.7-20.3-.5,0-1.8.3-1.8.3-3,.8-3.7,3.4-3.7,3.4-.5,1.7,0,3.5,0,3.5,1,4.4,5.9,11.6,6.9,13.1Z" style={{ fillRule: "evenodd", fill: "url(#huaweidrive-Unbenannter_Verlauf_7)" }} />
+        <path id="huaweidrive-Path7" data-name="Path" d="M36.9,14.8s-9.5,5.1-14.4,8.4h0s0,0,0,.2c0,0,0,0,.1,0h0c1.8,0,8.4,0,8.6,0,0,0,.9,0,1.9-.4,0,0,2.4-.8,3.6-3.4,0,0,1.1-2.2.2-4.8Z" style={{ fillRule: "evenodd", fill: "url(#huaweidrive-Unbenannter_Verlauf_8)" }} />
+      </g>
+    </svg>
+  )
+}
+
+/** iCloud Drive. Source: supplied by jdp, from the brand's own material (the brand's own mark) */
+export function IconICloud(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0.38 0.75 79.33 50.97" width="1em" height="1em" aria-hidden {...props}>
+      <defs>
+        <linearGradient xlinkHref="#icloud-a" id="icloud-b" x1="-108.903" x2="-1137.198" y1="2124.834" y2="2110.651" gradientTransform="matrix(.0774 0 0 .0774 88.374 -128.026)" gradientUnits="userSpaceOnUse" />
+        <linearGradient id="icloud-a">
+          <stop offset="0" style={{ stopColor: "#3e82f4", stopOpacity: "1" }} />
+          <stop offset="1" style={{ stopColor: "#93dcf7", stopOpacity: "1" }} />
+        </linearGradient>
+      </defs>
+      <path d="M45.864.751a21.52 21.52 0 0 0-18.736 11.014 11.8 11.8 0 0 0-5.152-1.192 11.804 11.804 0 0 0-11.621 9.916A16.255 16.255 0 0 0 .378 35.482a16.255 16.255 0 0 0 16.263 16.24 16 16 0 0 0 2.039-.148h45.188a15.13 15.202 0 0 0 .713.035 15.13 15.202 0 0 0 .679-.035h1.082v-.08a15.13 15.202 0 0 0 13.361-15.087v-.03a15.13 15.202 0 0 0-12.317-14.9A21.52 21.52 0 0 0 45.864.751" style={{ opacity: "1", fill: "url(#icloud-b)", fillOpacity: "1", stroke: "none", strokeWidth: "0", strokeMiterlimit: "4", strokeDasharray: "none", strokeOpacity: "1" }} />
+    </svg>
+  )
+}
+
+/** IONOS HiDrive. Source: supplied by jdp, from the brand's own material (the brand's own mark) */
+export function IconIonos(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 414 297" width="1em" height="1em" aria-hidden {...props}>
+      <defs>
+        <clipPath id="hidrive-clippath">
+          <rect x="2.402" width="411.598" height="120" style={{ fill: "none" }} />
+        </clipPath>
+        <clipPath id="hidrive-clippath-1">
+          <rect x="2.402" y="0" width="411.598" height="120" style={{ fill: "none" }} />
+        </clipPath>
+      </defs>
+      <g style={{ clipPath: "url(#hidrive-clippath)" }}>
+        <g style={{ clipPath: "url(#hidrive-clippath-1)" }}>
+          <path d="M382.826,120c-2.035,0-4.075-.206-6.064-.612-8.672-1.773-16.228-7.17-20.73-14.806l-.113-.206c-2.242-4.486-.767-9.762,3.43-12.281,1.391-.835,2.985-1.277,4.614-1.277,3.28,0,6.323,1.789,7.942,4.666.094.167.199.343.311.513l.965,1.316,1.298,1.311c1.617,1.42,3.689,2.433,5.923,2.864,3.565.685,7.385-.18,10.209-2.333,3.039-2.21,4.849-5.483,5.127-9.237.285-3.699-1.043-7.401-3.549-9.911,0,0-29.855-30.762-30.493-31.607l-1.476-2.134c-3.54-5.624-5.078-11.954-4.483-18.355.299-4.4,1.635-8.799,3.863-12.687l1.3-2.271c.233-.343,4.127-5.855,9.019-8.182l1.476-1.06c6.225-3.411,13.652-4.531,20.467-3.107,8.454,1.812,15.75,7.089,20.027,14.478,1.237,2.059,1.577,4.513.949,6.892-.633,2.386-2.171,4.374-4.334,5.603-1.319.784-2.865,1.206-4.445,1.206-3.264,0-6.362-1.821-7.892-4.641-1.752-2.946-4.598-4.967-7.986-5.643-3.314-.67-6.971.144-9.678,2.177-2.636,1.975-4.306,5.088-4.583,8.54-.265,3.455.895,6.743,3.27,9.258l28.044,28.919c6.118,6.315,9.287,15.025,8.695,23.891-.796,8.99-5.268,17.137-12.266,22.387-5.438,4.081-12.129,6.328-18.837,6.328" style={{ fill: "var(--brand-hidrive-0)" }} />
+          <path d="M294.074,119.987c-16.632,0-30.163-13.531-30.163-30.163V30.165C263.911,13.535,277.442.004,294.074.004s30.16,13.531,30.16,30.161v59.659c0,16.632-13.529,30.163-30.16,30.163M294.074,18.216c-6.59,0-11.952,5.36-11.952,11.949v59.659c0,6.702,5.25,11.95,11.952,11.95,6.589,0,11.95-5.36,11.95-11.95V30.165c0-6.477-5.472-11.949-11.95-11.949" style={{ fill: "var(--brand-hidrive-0)" }} />
+          <path d="M176.939,61.535v49.34c0,5.106-3.999,9.105-9.103,9.105s-9.105-3.999-9.105-9.105V23.748l18.207,37.788ZM226.07,96.276V9.105C226.07,3.999,222.071,0,216.965,0s-9.106,3.999-9.106,9.105v49.377l18.211,37.794ZM176.079,5.166l-.084-.173c-1.616-3-4.85-4.939-8.242-4.939-.625,0-1.266.068-1.833.189-4.233.847-7.189,4.492-7.189,8.862v2.08l50.072,103.804c1.637,3.035,4.811,4.996,8.088,4.996.733,0,1.46-.096,2.08-.267,4.18-.881,7.099-4.517,7.099-8.842v-1.962S177.415,7.943,176.079,5.166" style={{ fill: "var(--brand-hidrive-0)" }} />
+          <path d="M90.469,119.987c-8.046,0-15.616-3.141-21.319-8.846-5.703-5.703-8.844-13.273-8.844-21.317V30.165c0-8.044,3.141-15.614,8.844-21.317C74.853,3.145,82.425.004,90.469.004s15.612,3.141,21.317,8.844c5.702,5.703,8.842,13.273,8.842,21.317v59.659c0,8.044-3.141,15.614-8.842,21.317-5.703,5.705-13.273,8.846-21.317,8.846M90.469,18.216c-3.188,0-6.187,1.245-8.446,3.505-2.26,2.257-3.505,5.256-3.505,8.444v59.659c0,3.247,1.227,6.265,3.456,8.493,2.229,2.231,5.247,3.458,8.494,3.458,3.186,0,6.186-1.243,8.446-3.503,2.26-2.262,3.505-5.261,3.505-8.447V30.165c0-3.126-1.261-6.108-3.552-8.399s-5.273-3.55-8.399-3.55" style={{ fill: "var(--brand-hidrive-0)" }} />
+          <path d="M12.3,119.938c-5.549,0-9.898-4.402-9.898-10.019V9.965l.018-.196C2.492,4.338,6.866,0,12.373,0,16.895,0,20.727,2.936,21.907,7.304c.055.165.12.419.17.701l.065.429c.084.541.13,1.073.13,1.585,0,0,.015,98.754-.006,99.886.002,5.632-4.376,10.034-9.964,10.034" style={{ fill: "var(--brand-hidrive-0)" }} />
+        </g>
+      </g>
+      <path d="M310.059,177.017c-5.029,0-9.105,4.077-9.105,9.105v71.689c0,.011.002.022.002.033v8.992c0,6.59-5.362,11.951-11.951,11.951-6.702,0-11.952-5.248-11.952-11.951v-80.714c0-5.029-4.077-9.105-9.105-9.105h0c-5.029,0-9.105,4.077-9.105,9.105v80.714c0,16.632,13.531,30.163,30.163,30.163s30.16-13.531,30.16-30.163v-80.714c0-5.029-4.077-9.105-9.105-9.105Z" style={{ fill: "var(--brand-hidrive-0)" }} />
+      <path d="M382.84,178.017h-21.058c-5.029,0-9.105,4.077-9.105,9.105v99.772c0,5.029,4.077,9.105,9.105,9.105h21.058c16.631,0,30.16-13.531,30.16-30.163v-57.659c0-16.631-13.529-30.161-30.16-30.161ZM394.791,265.837c0,6.59-5.362,12.163-11.951,12.163h-11.952v-81.983h11.952c6.479,0,11.951,5.684,11.951,12.161v57.659Z" style={{ fill: "var(--brand-hidrive-0)" }} />
+      <path d="M195.182,297c-8.046,0-15.616-3.141-21.319-8.846-5.703-5.703-8.844-13.273-8.844-21.317v-59.659c0-8.044,3.141-15.614,8.844-21.317,5.703-5.703,13.275-8.844,21.319-8.844s15.612,3.141,21.317,8.844c5.702,5.703,8.842,13.273,8.842,21.317v59.659c0,8.044-3.141,15.614-8.842,21.317-5.703,5.705-13.273,8.846-21.317,8.846M195.182,195.23c-3.188,0-6.187,1.245-8.446,3.505-2.26,2.257-3.505,5.256-3.505,8.444v59.659c0,3.247,1.227,6.265,3.456,8.493,2.229,2.231,5.247,3.458,8.494,3.458,3.186,0,6.186-1.243,8.446-3.503,2.26-2.262,3.505-5.261,3.505-8.447v-59.659c0-3.126-1.261-6.108-3.552-8.399s-5.273-3.55-8.399-3.55" style={{ fill: "var(--brand-hidrive-0)" }} />
+      <path d="M60.322,207.179c0-8.044-3.141-15.614-8.842-21.317-5.705-5.703-13.273-8.844-21.317-8.844s-15.616,3.141-21.319,8.844c-5.703,5.703-8.844,13.273-8.844,21.317v59.659c0,8.044,3.141,15.614,8.844,21.317,5.703,5.705,13.273,8.846,21.319,8.846s15.614-3.141,21.317-8.846c5.702-5.703,8.842-13.273,8.842-21.317,0-5.028-4.076-9.104-9.104-9.104s-9.104,4.076-9.104,9.104c0,3.186-1.245,6.186-3.505,8.447-2.26,2.26-5.26,3.503-8.446,3.503-3.248,0-6.265-1.227-8.494-3.458-2.229-2.228-3.456-5.245-3.456-8.493v-59.659c0-3.188,1.245-6.187,3.505-8.444,2.258-2.26,5.258-3.505,8.446-3.505,3.126,0,6.11,1.261,8.399,3.55,2.291,2.291,3.552,5.273,3.552,8.399v.002c0,.201.01.401.03.597.309,4.748,4.248,8.506,9.074,8.506s8.765-3.758,9.074-8.506c.02-.196.03-.395.03-.597v-.002h0Z" style={{ fill: "var(--brand-hidrive-0)" }} />
+      <path d="M131.89,278h-21.101v-91.877c0-5.029-4.077-9.105-9.105-9.105s-9.105,4.077-9.105,9.105v100.772c0,5.029,4.077,9.105,9.105,9.105h30.207c4.798,0,8.688-3.89,8.688-8.688v-.624c0-4.798-3.89-8.688-8.688-8.688Z" style={{ fill: "var(--brand-hidrive-0)" }} />
+    </svg>
+  )
+}
+
+/** MEGA. Source: supplied by jdp, from the brand's own material (the brand's own mark) */
+export function IconMega(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 512 512" width="1em" height="1em" aria-hidden {...props}>
+      <circle cx="260" cy="256" r="218" style={{ fill: "#fff" }} />
+      <path d="M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256 256-114.6 256-256S397.4 0 256 0m132.9 346.5c0 4.4-3.5 7.9-7.9 7.9h-33.4c-4.4 0-7.9-3.5-7.9-7.9v-103c0-.9-1-1.3-1.7-.7l-70.8 70.8c-6.1 6.1-16.2 6.1-22.2 0l-71-70.8c-.6-.6-1.7-.1-1.7.7v103c0 4.4-3.5 7.9-7.9 7.9H131c-4.4 0-7.9-3.5-7.9-7.9v-181c0-4.4 3.5-7.9 7.9-7.9h23c4.1 0 8.2 1.7 11.2 4.7l88.1 88.1c1.6 1.6 4 1.6 5.5 0l88.1-88.1c3-3 6.9-4.7 11.2-4.7h23c4.4 0 7.9 3.5 7.9 7.9v181z" style={{ fill: "#d9272e" }} />
+    </svg>
+  )
+}
+
+/** Proton Drive. Source: supplied by jdp, from the brand's own material (the brand's own mark) */
+export function IconProtonDrive(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 46 512 420.2" width="1em" height="1em" aria-hidden {...props}>
+      <radialGradient id="protondrive-a" cx="-50.114" cy="652.157" r=".558" gradientTransform="matrix(1713.25 0 0 -1560.3101 86411.875 1017324)" gradientUnits="userSpaceOnUse">
+        <stop offset=".556" style={{ stopColor: "#6d4aff" }} />
+        <stop offset="1" style={{ stopColor: "#ff50c3" }} />
+      </radialGradient>
+      <path d="m361.7 151.2-200.5 1.1c-8.6.1-17.1-2.6-24.1-7.5l-44.7-31.5c-7-4.9-15.3-7.5-23.9-7.5H0v307.9c0 29 23.7 52.5 52.9 52.5h350.2V192c0-22.6-18.5-41-41.4-40.8" style={{ fill: "url(#protondrive-a)" }} />
+      <linearGradient id="protondrive-b" x1="-4.483" x2="629.71" y1="687.465" y2="-15.277" gradientTransform="matrix(1 0 0 -1 0 512)" gradientUnits="userSpaceOnUse">
+        <stop offset="0" style={{ stopColor: "#7341ff" }} />
+        <stop offset=".359" style={{ stopColor: "#b487ff" }} />
+        <stop offset="1" style={{ stopColor: "#ffc8ff" }} />
+      </linearGradient>
+      <path d="M241.3 88.2h217.8c29.2 0 52.9 23.5 52.9 52.5v272.9c0 29-23.7 52.5-52.9 52.5h-55.9V192c0-22.6-18.6-41-41.4-40.8l-200.5 1.1c-8.6.1-17.1-2.6-24.1-7.5l-44.7-31.5c-7-4.9-15.3-7.5-23.9-7.5H0v-7.3C0 69.5 23.7 46 52.9 46h99.4c10 0 19.8 3.2 27.8 9l33.2 24.2c8.2 5.8 18 9 28 9" style={{ fillRule: "evenodd", clipRule: "evenodd", fill: "url(#protondrive-b)" }} />
+    </svg>
+  )
+}
+
+/** Storj. Source: supplied by jdp, from the brand's own material (the brand's own mark) */
+export function IconStorj(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 512 512" width="1em" height="1em" aria-hidden {...props}>
+      <path d="M256 93.4c141.4 0 256 114.6 256 256 0 24-3.3 47.2-9.5 69.3h-48.8c7.6-21.7 11.7-45 11.7-69.3C465.4 233.7 371.6 140 256 140S46.6 233.7 46.6 349.4c0 7.9.4 15.8 1.3 23.5h290.2c19.1 0 34.5-15.5 34.5-34.5 0-19.1-15.5-34.5-34.5-34.5h-20.6l-2.9-19.9c-4.2-29-29.2-50.7-58.8-50.7-26.6 0-49.7 17.6-57 42.7l-4.9 16.7h-22.7c-17.7 0-32.1 14.4-32.1 32.1v1.6H92.4v-1.6c0-39.6 29.2-72.3 67.2-77.9l.6-.1.4-.8c17.3-35.3 53.2-58.9 93.8-59.4h1.4c46.5 0 86.5 30.1 100.6 72.6l.1.2 1.1.3c35 8.6 61 39.9 61.6 77.4v1.3c0 40.9-30.3 74.8-69.7 80.3H9.5c-6.2-22-9.5-45.3-9.5-69.3 0-141.4 114.6-256 256-256" style={{ fill: "#0052ff" }} />
+    </svg>
+  )
+}
+
+/** Yandex Disk, under Yandex Cloud's mark. Source: supplied by jdp, from the brand's own material (the brand's own mark) */
+export function IconYandex(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="#5282FF" width="1em" height="1em" aria-hidden {...props}>
+      <path d="M12 0C5.38 0 0 5.38 0 12s5.38 12 12 12 12-5.38 12-12S18.62 0 12 0zM7.163 20.618C4.152 18.927 2.12 15.702 2.12 12c0-5.46 4.42-9.88 9.88-9.88 1.429 0 2.496.536 3.029 1.187.534.65.684 1.715.5 3.253l-3.207.631c-2.905.532-4.506 2.148-5.06 5.065-.07.406-.15.812-.226 1.196-.031.157-.062.312-.09.46-.073.396-.143.773-.208 1.124-.093.505-.177.957-.247 1.34-.324 1.884-.06 3.276.672 4.242zm7.986-11.851c-.087.434-.167.867-.247 1.302-.081.434-.16.868-.247 1.301-.396 2.05-1.364 2.996-3.42 3.391l-2.391.474c.059-.296.119-.611.178-.927.022-.12.044-.241.067-.362.078-.421.157-.855.25-1.313.395-2.05 1.344-2.996 3.399-3.391l2.411-.475zM12 21.88c-1.429 0-2.496-.536-3.029-1.187s-.684-1.715-.5-3.253l3.18-.631c2.905-.532 4.507-2.148 5.08-5.046.069-.406.149-.812.226-1.196.031-.157.062-.311.09-.46.087-.471.171-.917.247-1.327.081-.432.154-.822.215-1.156.325-1.884.061-3.275-.671-4.242C19.848 5.073 21.88 8.298 21.88 12c0 5.46-4.42 9.88-9.88 9.88z" />
+    </svg>
+  )
+}
+
+/** Cloudinary. Source: supplied by jdp, from the brand's own material (the brand's own mark), in both its inks */
 export function IconCloudinary(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg viewBox="0 0 24 24" width="1em" height="1em" fill="var(--brand-cloudinary-0)" aria-hidden {...props}>
-      <path d="M24 14.8598c0 2.1729-1.3757 3.974-3.5903 4.6996l-.0995.0318V17.989c1.3777-.5805 2.1869-1.7275 2.1869-3.1291-.0072-2-1.6087-3.6288-3.6082-3.6699h-.5964l-.1432-.5686c-.7025-2.8996-3.2886-4.9489-6.2721-4.97a6.3915 6.3915 0 0 0-5.811 3.664l-.1828.3757-.4175.0437a4.4311 4.4311 0 0 0-3.3052 2.088c-1.2803 2.0856-.6274 4.8143 1.4583 6.0947v1.6897h-.01l-.149-.0675a5.9402 5.9402 0 0 1-3.3658-4.3494c-.5787-3.2291 1.57-6.3161 4.7991-6.8948a7.8766 7.8766 0 0 1 6.9839-4.149c3.4724.025 6.535 2.28 7.5901 5.5883 2.5789.3366 4.5138 2.5245 4.5327 5.1251zm-15.3176-1.322h.5647a.0656.0656 0 0 0 .0457-.1113L7.084 11.2158l-.0007-.0007a.0656.0656 0 0 0-.0927.0007L4.78 13.4265a.0656.0656 0 0 0 .0477.1113h.5566a.0656.0656 0 0 1 .0657.0656v5.0574c0 .6588.534 1.1928 1.1928 1.1928H9.247a.0656.0656 0 0 0 .0457-.1113l-.33-.33a1.1928 1.1928 0 0 1-.348-.839v-4.97a.0676.0676 0 0 1 .0676-.0655zm9.769 2.5466h.5667a.0655.0655 0 0 0 .0457-.1133l-2.2107-2.2087-.0015-.0015a.0636.0636 0 0 0-.0899.0015L14.551 15.971a.0657.0657 0 0 0 .0457.1133h.5567a.0656.0656 0 0 1 .0656.0656v2.5108c0 .6588.534 1.1928 1.1928 1.1928h2.6063a.0655.0655 0 0 0 .0457-.1113l-.33-.33a1.1928 1.1928 0 0 1-.348-.839V16.15a.0656.0656 0 0 1 .0657-.0656zm-4.8844-1.2743h.5646a.0656.0656 0 0 0 .0477-.1114l-2.2107-2.2027-.0006-.0006a.0656.0656 0 0 0-.0928.0006l-2.2087 2.2068a.0656.0656 0 0 0 .0457.1113h.5626a.0676.0676 0 0 1 .0657.0676v3.7791c0 .6588.534 1.1928 1.1928 1.1928h2.5983a.0656.0656 0 0 0 .0477-.1113l-.332-.33a1.193 1.193 0 0 1-.346-.839v-3.6956c0-.0366.0291-.0665.0657-.0676z" />
+    <svg viewBox="0 0 512 512" width="1em" height="1em" fill="var(--brand-cloudinary-0)" aria-hidden {...props}>
+      <path d="M415.3 207.7C392.8 137.1 327.5 89 253.4 88.5c-62.2-.4-119.5 33.7-149 88.5C35.5 189.3-10.3 255.2 2 324.1c7.3 40.8 34.1 75.5 71.8 92.8l3.2 1.4h.2v-36c-44.5-27.3-58.4-85.5-31.1-130 15.3-25 41.4-41.4 70.5-44.5l8.9-.9 3.9-8c22.6-47.9 71-78.4 124-78.2 63.6.4 118.8 44.2 133.8 106l3.1 12.1H403c42.7.9 76.8 35.6 77 78.3 0 29.9-17.3 54.4-46.7 66.8v34.2l2.1-.7c47.3-15.6 76.6-54 76.6-100.4-.4-55.5-41.7-102.1-96.7-109.3M191.2 414.1l7 7c.5.6.5 1.4 0 2-.3.2-.6.4-.9.4h-55.6c-14.1 0-25.4-11.4-25.4-25.4V290.2c0-.8-.6-1.4-1.4-1.4H103c-.8 0-1.4-.6-1.4-1.4 0-.4.1-.7.4-1l47.2-47.2c.5-.6 1.4-.6 2 0l47.1 47.2c.5.6.5 1.4 0 2-.3.2-.6.4-.9.4h-12c-.8 0-1.4.6-1.4 1.4v106c-.2 6.7 2.5 13.2 7.2 17.9m104.2 0 7.1 7c.5.6.5 1.4 0 2-.3.3-.6.4-1 .4H246c-14.1 0-25.4-11.4-25.4-25.4v-80.6c0-.8-.6-1.4-1.4-1.4h-12c-.8 0-1.4-.7-1.4-1.4 0-.4.1-.7.4-.9l47.1-47.1c.5-.6 1.4-.6 2 0l47.2 47c.5.6.5 1.4 0 2-.3.3-.6.4-1 .4h-12c-.8 0-1.4.7-1.4 1.4v78.8c-.1 6.6 2.6 13.1 7.3 17.8m104.3 0 7 7c.5.6.5 1.4 0 2-.3.2-.6.4-.9.4h-55.6c-14.1 0-25.4-11.4-25.4-25.4v-53.6c0-.8-.6-1.4-1.4-1.4h-11.9c-.8 0-1.4-.6-1.4-1.4 0-.4.2-.8.4-1l47.2-47.1c.5-.5 1.4-.6 1.9 0l47.2 47.1c.6.5.6 1.4.1 2-.3.3-.6.4-1 .4h-12.1c-.8 0-1.4.6-1.4 1.4v51.7c-.2 6.7 2.5 13.2 7.3 17.9" />
     </svg>
   )
 }
 
-/** OpenCloud. Source: opencloud-eu/opencloud, services/web/assets/themes/opencloud/assets/logo-mobile.svg (the project's own logo, from its own repository) */
+/** Internet Archive. Source: supplied by jdp, from the brand's own material (the brand's own mark), in both its inks */
+export function IconInternetArchive(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 512 512" width="1em" height="1em" fill="var(--brand-internetarchive-0)" aria-hidden {...props}>
+      <path d="M482.2 488.2V512H29.8v-23.8zm-17.8-35.7v29.8H47.6v-29.8zM91.3 131l5 2.5 2.5 40.1 2.5 65.2v62.7l-2.5 78.2-.4 52.7-7 2.1h-25l-7.5-2.1-2.9-52.7-2.4-77.7v-62.7l2.5-65.7 2.3-40.4 5.2-2.3zm357.2 0 5 2.5 2.5 40.1 2.5 65.2v62.7l-2.5 78.2-.4 52.7-7 2.1h-24.8l-7.5-2.1-2.9-52.7-2.5-77.8v-62.7l2.5-65.7 2.3-40.4 5.2-2.3zm-250.1 0 5 2.5 2.5 40.1 2.5 65.2v62.7l-2.5 78.2-.4 52.7-7 2.1h-24.9l-7.5-2.1-2.9-52.7-2.5-77.8v-62.7l2.5-65.7 2.3-40.4 5.2-2.3zm137 0 5 2.5 2.5 40.1 2.5 65.2v62.7l-2.5 78.2-.4 52.7-7 2.1h-24.9l-7.5-2.1-2.9-52.7-2.5-77.8v-62.7l2.5-65.7 2.3-40.4 5.2-2.3zm129-53.6v41.7H47.6V77.4zM251.7 0l218.6 50.1-8.8 15.4H42.9L29.8 53z" style={{ fillRule: "evenodd", clipRule: "evenodd" }} />
+    </svg>
+  )
+}
+
+/** OpenCloud. Source: supplied by jdp, from the brand's own material (the brand's own mark), in both its inks */
 export function IconOpencloud(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg viewBox="0 0 27 35" width="1em" height="1em" aria-hidden {...props}>
-      <path d="M13.4814 25.5141L14.9505 24.6659V18.5276L20.234 15.4772V13.785L18.7649 12.9368L13.4462 16.0076L8.20127 12.9794L6.73242 13.8273V15.5198L12.0159 18.5703V24.668L13.4814 25.5141Z" fill="var(--brand-opencloud-0)" />
-      <path d="M26.9649 7.78377L13.4828 0L0 7.78408V11.1725L13.4824 3.38806L26.9649 11.1721V7.78377Z" fill="var(--brand-opencloud-0)" />
-      <path d="M26.9646 23.8279L13.4821 31.612L0 23.8279V27.2163L13.4821 35L26.9646 27.2163V23.8279Z" fill="var(--brand-opencloud-0)" />
+    <svg viewBox="0 0 512 512" width="1em" height="1em" fill="var(--brand-opencloud-0)" aria-hidden {...props}>
+      <path d="m256 373.2 21.5-12.4V271l77.3-44.6v-24.8l-21.5-12.4-77.8 44.9-76.7-44.3-21.5 12.4V227l77.3 44.6v89.2zm197.2-259.3L256 0 58.8 113.9v49.6L256 49.6l197.2 113.9zm0 234.7L256 462.4 58.8 348.6v49.6L256 512l197.2-113.9z" />
     </svg>
   )
 }
@@ -329,44 +721,11 @@ export function IconOnedrive(props: SVGProps<SVGSVGElement>) {
   )
 }
 
-/** Azure Blob Storage, under Azure's storage mark. Source: homarr-labs/dashboard-icons, svg/azure-storage-accounts.svg (Apache-2.0) */
-export function IconAzureStorage(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 18 18" width="1em" height="1em" aria-hidden {...props}>
-      <defs>
-        <linearGradient id="azure-storage-accounts-ad4c4f96-09aa-4f91-ba10-5cb8ad530f74" x1="9" y1="15.83" x2="9" y2="5.79" gradientUnits="userSpaceOnUse">
-          <stop offset="0" stopColor="#b3b3b3" />
-          <stop offset="0.26" stopColor="#c1c1c1" />
-          <stop offset="1" stopColor="#e6e6e6" />
-        </linearGradient>
-      </defs>
-      <path d="M.5,5.79h17a0,0,0,0,1,0,0v9.48a.57.57,0,0,1-.57.57H1.07a.57.57,0,0,1-.57-.57V5.79A0,0,0,0,1,.5,5.79Z" fill="url(#azure-storage-accounts-ad4c4f96-09aa-4f91-ba10-5cb8ad530f74)" />
-      <path d="M1.07,2.17H16.93a.57.57,0,0,1,.57.57V5.79a0,0,0,0,1,0,0H.5a0,0,0,0,1,0,0V2.73A.57.57,0,0,1,1.07,2.17Z" fill="#37c2b1" />
-      <path d="M2.81,6.89H15.18a.27.27,0,0,1,.26.27v1.4a.27.27,0,0,1-.26.27H2.81a.27.27,0,0,1-.26-.27V7.16A.27.27,0,0,1,2.81,6.89Z" fill="#fff" />
-      <path d="M2.82,9.68H15.19a.27.27,0,0,1,.26.27v1.41a.27.27,0,0,1-.26.27H2.82a.27.27,0,0,1-.26-.27V10A.27.27,0,0,1,2.82,9.68Z" fill="#37c2b1" />
-      <path d="M2.82,12.5H15.19a.27.27,0,0,1,.26.27v1.41a.27.27,0,0,1-.26.27H2.82a.27.27,0,0,1-.26-.27V12.77A.27.27,0,0,1,2.82,12.5Z" fill="#258277" />
-    </svg>
-  )
-}
-
 /** Oracle Object Storage, part of Oracle Cloud. Source: homarr-labs/dashboard-icons, svg/oracle-cloud.svg (Apache-2.0) */
 export function IconOracleCloud(props: SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 32 20" width="1em" height="1em" aria-hidden {...props}>
       <path fill="none" stroke="#C74634" strokeWidth="4" d="M10 2a8 8 0 1 0 0 16h12a8 8 0 1 0 0-16z" />
-    </svg>
-  )
-}
-
-/** Storj. Source: homarr-labs/dashboard-icons, svg/storj.svg (Apache-2.0) */
-export function IconStorj(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="-1.42 0 1783.4 2000.01" width="1em" height="1em" aria-hidden {...props}>
-      <g fill="#2683ff">
-        <path d="M175.47 1360.1a54.69 54.69 0 1 0 54.69 54.69c0-9.7-2.65-18.52-7.06-27.34a55.55 55.55 0 0 0-47.63-27.34M948.13 170.23a54.69 54.69 0 1 0-54.69 54.69 55 55 0 0 0 54.69-54.69M1615 644.77a54.69 54.69 0 1 0-54.69-54.69 53.9 53.9 0 0 0 7.06 26.46 54.55 54.55 0 0 0 47.63 28.23M201 539.8c-26.46-15-59.1-6.17-74.09 20.29s-6.17 59.1 20.29 74.09 59.1 6.17 74.09-20.29c15-25.58 6.17-59.1-20.29-74.09m1436 830.88c-7.94-5.29-17.64-7.06-27.34-7.94a54.69 54.69 0 1 0 0 109.37c19.4 0 37-10.58 47.63-27.34 15-25.58 6.17-59.1-20.29-74.09m-798.25 456c-2.65 24.7 12.35 48.51 35.28 57.33 5.29 1.76 11.47 3.53 16.76 3.53a57.57 57.57 0 0 0 56.45-46.75 54.39 54.39 0 0 0-107.61-15.88 3.08 3.08 0 0 0-.88 1.76" />
-        <path d="M1690.81 1270.13a143.5 143.5 0 0 0-20.29-9.7v-510.7c7.94-2.65 15.88-7.06 23.82-10.58 82-45.87 112-149.95 66.15-232s-149.95-112-232-66.15c-7.06 3.53-13.23 7.94-19.4 12.35l-449.84-260.2c.88-7.94 1.76-15 1.76-22.93C1061 75.85 984.3 0 890.8 0s-172 77.62-172 171.11c0 7.94.88 15 1.76 22.93L274.25 452.48A170.51 170.51 0 1 0 67 723.27c6.17 4.41 12.35 8.82 19.4 13.23a108.2 108.2 0 0 0 22.93 10.58v509.82C22 1292.18-20.35 1391 14.93 1478.29s134.07 129.66 221.4 94.38c7.94-2.65 15-7.06 22.05-10.58 7.06-4.41 14.11-8.82 21.17-14.11l441.9 254.91c-15 92.61 48.51 179.93 141.13 194.93s179.94-48.51 194.93-141.13c1.76-9.7 1.76-18.52 1.76-28.23a217 217 0 0 0-1.76-24.7l439.26-253.14c7.06 5.29 14.11 10.58 22.05 15 82 45.87 186.11 16.76 232-65.27 44.07-82.04 17.61-182.59-60.01-230.22m30.87 213.45c-36.16 61.74-116.43 82.91-178.17 46.75-49.39-29.11-74.09-86.44-60.86-142l-206.4-120.84a230.18 230.18 0 0 1-249.62 52c-30.87 9.7-97 15.88-97 15.88v363.4c72.33 22.05 112 98.79 90 171.11s-98.79 112-171.12 90c-.88 0-1.76-.88-2.65-.88-6.17-1.76-11.47-4.41-16.76-7.06-67.92-33.52-94.38-116.43-60.86-183.46 16.76-33.52 46.75-58.21 82-69.68v-370.46a610 610 0 0 1-75.86-29.11 273.82 273.82 0 0 1-225.8-55.57l-246.09 142a131 131 0 1 1-157.89-97c42.34-10.58 87.32 1.76 120 31.75l230.21-133.19c-77.62-109.37-65.27-259.32 30-354.58l-262-149.95c-52 49.39-134.07 46.75-183.46-6.17a130 130 0 0 1 6.17-184.35c52.92-49.39 134.07-46.75 183.46 6.17 30 31.75 41.46 75.85 31.75 118.19l290.19 166.7a274.14 274.14 0 0 1 123.49-32.64C755 717.09 859 682.69 859 682.69V285.78c-64.39-19.4-100.55-87.32-81.15-151.71S865.22 34.4 929.61 53.8s100.55 87.32 81.15 151.71a120.78 120.78 0 0 1-81.15 81.15v389s190.52 47.63 250.5 119.07l308.71-175.52c-15.88-70.56 27.34-141.13 97.91-157s141.13 27.34 157 97.91-27.34 141.13-97.91 157a131.4 131.4 0 0 1-119.08-32.64l-305.18 172.86c8.82 18.52 16.76 37 22.05 56.45 94.38 64.39 127.9 187.87 77.62 291.07l202 117.31a129 129 0 0 1 153.47-16.76c60.86 36.16 82 115.55 45 178.17z" />
-        <path d="M1152.77 982.59c-.88-7.06-1.76-13.23-2.65-20.29a110 110 0 0 0-3.53-14.11c0-1.76-.88-3.53-.88-5.29-1.76-5.29-3.53-11.47-5.29-16.76v-.88a233.8 233.8 0 0 0-50.28-79.38c-5.29-5.29-9.7-9.7-15.88-15l-.88-.88c-5.29-4.41-10.58-8.82-16.76-12.35l-.88-.88c-5.29-3.53-11.47-7.94-16.76-10.58l-.88-.88a165 165 0 0 0-17.64-8.82l-1.76-.88c-6.17-2.65-12.35-5.29-19.4-7.94l-.88-.88c-7.06-1.76-13.23-4.41-20.29-5.29h-.88a177 177 0 0 0-21.17-3.53h-.88a218 218 0 0 0-111.14 13.23l-4.41 3.53c-5.29 1.76-14.11 6.17-19.4 8.82a41.2 41.2 0 0 1-8.82 4.41c-2.65.88-7.06 4.41-9.7 6.17s-8.82 6.17-12.35 8.82l-2.65 1.76c-5.29 3.53-9.7 7.94-15 12.35l-4.41 4.41c-5.29 5.29-9.7 9.7-14.11 15a193 193 0 0 0-31.75-2.65c-3.53 0-6.17 0-8.82.88-40.57 1.76-79.38 18.52-109.37 45.87-15 13.23-27.34 30-37 47.63l-.94 1.8a125 125 0 0 0-7.06 15.88c-.88 1.76-.88 2.65-1.76 4.41a86.7 86.7 0 0 0-4.41 14.11c-.88 1.76-.88 4.41-1.76 6.17-.88 4.41-1.76 8.82-2.65 14.11 0 1.76-.88 3.53-.88 6.17a156 156 0 0 0-.88 20.29 107 107 0 0 0 .88 16.76c0 1.76.88 3.53.88 6.17.88 3.53.88 7.06 1.76 10.58s.88 4.41 1.76 7.06a25.8 25.8 0 0 1 1.76 7.94c0 2.65 1.76 5.29 2.65 7.94a43 43 0 0 0 2.65 6.17 92 92 0 0 1 3.53 8.82c.88 1.76 1.76 2.65 1.76 4.41a156 156 0 0 0 60 70.56c13.23 7.94 26.46 15 40.57 19.4a117.5 117.5 0 0 0 16.76 4.41l1.76.88 15.88 2.65 3.53.88c6.17.88 12.35.88 19.4.88 23.82 0 46.75-4.41 67.92-14.11 5.29 3.53 9.7 7.06 15 10.58l1.76.88c4.41 2.65 9.7 5.29 15 7.94h.86a227.42 227.42 0 0 0 163.18 16.76h.88a100.8 100.8 0 0 0 22.93-7.94l23.82-10.58a129.23 129.23 0 0 0 79.38 27.34c6.17 0 11.47-.88 17.64-.88l4.41-.88a143 143 0 0 0 16.76-3.53 118 118 0 0 0 15.88-6.17l2.65-.88c5.29-2.65 9.7-5.29 15-7.94 22.05-14.11 38.81-35.28 48.51-59.1 3.53-7.94 5.29-15.88 7.06-23.81v-2.65c.88-3.53.88-7.06 1.76-10.58 0-4.41.88-8.82.88-13.23 0-58.21-36.16-108.49-90-125.25" />
-      </g>
     </svg>
   )
 }

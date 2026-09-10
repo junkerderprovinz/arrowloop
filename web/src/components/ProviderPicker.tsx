@@ -71,11 +71,17 @@ export function ProviderPicker({
         />
       </div>
 
-      {/* Scrolls rather than growing: fifty providers push a card taller than
+      {/* Narrow and centred. jdp: "die kacheln sollen nicht so breit sien, die
+          sollen nur mittig sein." A row only needs room for a 40px mark and a
+          product name, and stretching it across a full-width card puts the
+          name and the mark at opposite ends of a long empty stretch - which is
+          the one thing a list of short labels must not do.
+
+          Scrolls rather than growing: fifty providers push a card taller than
           the window, and then the card's own controls are somewhere off the
           bottom of the page. A fixed height means the list moves and the page
           around it does not. */}
-      <ul className="flex max-h-[26rem] flex-col gap-1 overflow-y-auto">
+      <ul className="mx-auto flex max-h-[26rem] w-full max-w-md flex-col gap-1 overflow-y-auto">
         {providers.map((p) => (
           <li key={p.id}>
             <button
@@ -85,8 +91,16 @@ export function ProviderPicker({
               className={ROW}
             >
               {/* A fixed box whether or not there is a mark, so every name in
-                  the column starts at the same x. */}
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center text-[40px]">
+                  the column starts at the same x.
+
+                  WIDER than it is tall, and that is not a whim: five of these
+                  logos are wordmarks rather than symbols, and a 5.3:1 drawing
+                  fitted into a square box is 8 pixels tall. Measured across
+                  all 44 marks - Linkbox 5.3:1, Gofile 3.5, Quatrix 3.1,
+                  Huawei 2.8, OpenDrive 2.3. At 64 by 40 the widest of them
+                  gains half its height again, while every square mark still
+                  renders at 40 and simply sits centred in a roomier box. */}
+              <span className="flex h-10 w-16 shrink-0 items-center justify-center [&_svg]:h-full [&_svg]:w-full">
                 {brandMark(p.mark)}
               </span>
               <span className="min-w-0 flex-1 truncate text-body text-carbon-text">{p.name}</span>

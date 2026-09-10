@@ -25,42 +25,57 @@ Simple Icons would have been the obvious first stop and does not carry Windows
 any more, so all three come from one set instead of two - which also means they
 were drawn to one convention and sit at one weight beside each other.
 
-**OpenCloud's own repository** (`opencloud-eu/opencloud`,
-`services/web/assets/themes/opencloud/assets/logo-mobile.svg`) - `opencloud.svg`.
-The project's own logo, taken from the project itself, which is the only place
-it exists: no icon set carries it, and ownCloud's mark would name the wrong
-project.
+**Each brand's own material**, collected by hand - everything else here. These
+are the real drawings rather than a one-colour silhouette of one, and several of
+them exist in no icon set at all. The licence is each owner's; what makes their
+use here lawful is the trademark position below, not a licence grant.
+
+Some arrive as a **`-dark` / `-light` pair**: one drawing in two inks, where
+`-dark` is the dark ink for a light ground and `-light` the white one for a dark
+ground. Where a brand has drawn both, the generator uses the pair and skips its
+own lightness calculation entirely - the owner's second drawing beats anything
+computed from the first.
 
 **Dashboard Icons** (`homarr-labs/dashboard-icons`, <https://dashboardicons.com>)
-- `microsoft-onedrive.svg`, `azure-storage-accounts.svg`, `oracle-cloud.svg`,
-`storj.svg`, `premiumize.svg`. **Apache-2.0**, whose licence text is beside this
-file as `LICENSE-dashboard-icons.txt`. Copyright the Homarr Labs team and
-contributors. Unlike CC0 this one asks for attribution, which is why it is named
-here, in the generator, and in the header of every component built from it. The
-files are copied unmodified; what the generator produces from them is a
-translation into JSX and nothing else - each keeps its own paths, fills,
-gradients and viewBox.
+- `microsoft-onedrive.svg`, `oracle-cloud.svg`, `premiumize.svg`, the three
+nobody has supplied. **Apache-2.0**, whose licence text is beside this file as
+`LICENSE-dashboard-icons.txt`. Copyright the Homarr Labs team and contributors.
+Unlike CC0 this one asks for attribution, which is why it is named here, in the
+generator, and in the header of every component built from it.
 
 Apache-2.0 is one-way compatible with this project's AGPL-3.0: these files may be
 carried into it, and the combined work stays AGPL-3.0.
 
+Every file is copied unmodified; what the generator produces from one is a
+translation into JSX and nothing else. It keeps the drawing's own paths, fills,
+gradients and viewBox, prefixes every `id` with the file's name so two marks on
+one page cannot swap gradients, and dissolves an Illustrator `<style>` block
+into the elements it paints - class names are global to a document, so two marks
+both defining `.st0` would have one wearing the other's fill.
+
 ## Trademarks
 
-Every mark here is a trademark of its owner - Microsoft Corporation, Apple Inc.,
-Linus Torvalds, OpenCloud GmbH, Oracle Corporation, Storj Labs, premiumize.me.
-They are used the one way a trademark may be used without permission, which is to
-refer to the thing it names: a platform mark sits on a download button **for that
-platform**, a provider mark sits on the tile that connects to **that provider**,
-each is reproduced unmodified, and nothing here claims endorsement by or
-affiliation with any of them.
+Every mark here is a trademark of its owner. They are used the one way a
+trademark may be used without permission, which is to refer to the thing it
+names: a platform mark sits on a download button **for that platform**, a
+provider mark sits on the row that connects to **that provider**, each is
+reproduced unmodified, and nothing here claims endorsement by or affiliation
+with any of them.
 
-Two of the provider marks are a judgement call, recorded because the next person
-should not have to guess. Azure Blob Storage is a service inside an Azure storage
-account and has no separate mark, so it wears Azure's storage-account mark: the
-right product family rather than a different product. Oracle Object Storage is
-part of Oracle Cloud Infrastructure and wears the Oracle Cloud mark for the same
-reason. Where the only candidate would have named a DIFFERENT product, the
-provider gets no mark at all.
+Three provider marks are a judgement call, recorded because the next person
+should not have to guess.
+
+- **Oracle Object Storage** is part of Oracle Cloud Infrastructure and wears the
+  Oracle Cloud mark.
+- **Yandex Disk** wears Yandex Cloud's mark. Those are two different products -
+  Disk is the consumer storage this app connects to, Cloud is Yandex's
+  AWS-shaped platform - and the mark supplied was Cloud's.
+- **Huawei Drive** wears Huawei Cloud's mark, the same case exactly.
+
+In all three the mark names the right OWNER but a broader product than the row
+does. That is the line: a mark naming the right company is better than none, and
+a mark naming a **different company's** product is worse than none. Where only
+the second was available, the provider gets no mark at all.
 
 ## Adding one
 

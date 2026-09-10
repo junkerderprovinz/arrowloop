@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Ebene_1" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512">
+  <!-- Generator: Adobe Illustrator 29.5.1, SVG Export Plug-In . SVG Version: 2.1.0 Build 141)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: url(#Unbenannter_Verlauf1);
+      }
+
+      .st1 {
+        fill: url(#Unbenannter_Verlauf);
+      }
+
+      .st2 {
+        fill: url(#Unbenannter_Verlauf2);
+      }
+    </style>
+    <linearGradient id="Unbenannter_Verlauf" data-name="Unbenannter Verlauf" x1="178.9" y1="256" x2="362.1" y2="256" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#17b8ca"/>
+      <stop offset=".5" stop-color="#17bed0"/>
+      <stop offset="1" stop-color="#1cd2e6"/>
+    </linearGradient>
+    <linearGradient id="Unbenannter_Verlauf1" data-name="Unbenannter Verlauf" x1="84.2" y1="256" x2="492.2" y2="256" xlink:href="#Unbenannter_Verlauf"/>
+    <linearGradient id="Unbenannter_Verlauf2" data-name="Unbenannter Verlauf" x1="248.2" y1="236.4" x2="292" y2="236.4" xlink:href="#Unbenannter_Verlauf"/>
+  </defs>
+  <path class="st1" d="M256,148.2c-59.5,0-107.8,48.3-107.8,107.8s48.3,107.8,107.8,107.8,107.8-48.3,107.8-107.8-48.3-107.8-107.8-107.8ZM313.3,272.3c-9.4,9.6-22.2,15.2-35.6,15.5h-36.8v19.8c0,5.2-2.1,10.3-5.8,14-7.7,7.7-20.3,7.7-28,0-3.7-3.7-5.8-8.7-5.8-14v-102.8h0c0-5.3,2.1-10.3,5.8-14,3.7-3.7,8.8-5.8,14-5.8h56.6c13.4.3,26.2,5.9,35.6,15.5,19.5,20,19.5,51.9,0,71.9Z"/>
+  <path class="st0" d="M467.2,273.3c-6.7,13.4-19.2,25-33.6,30.7,20.2-10.6,34.6-32.6,34.6-57.6,0-35.5-28.8-64.3-64.3-64.3h-7.7c8.6,19.2,13.4,40.3,13.4,63.4v4.8c-2.9-81.6-70.1-147.8-153.6-147.8S105.3,168.6,102.4,250.2v-3.8c0-23,4.8-44.2,13.4-63.4-56.6,7.7-99.8,54.7-99.8,113.3s51.8,113.3,114.2,113.3h289.9c42.2-1,75.8-34.6,75.8-76.8s-11.5-46.1-28.8-59.5ZM256,378.9c-67.9,0-122.9-55-122.9-122.9h0c0-67.9,55-122.9,122.9-122.9s122.9,55,122.9,122.9-55,122.9-122.9,122.9Z"/>
+  <path class="st2" d="M287.7,225.2c-1.5-1.5-3.2-2.6-5.1-3.4-1.9-.8-4-1.2-6.1-1.2h-35.7v31.7h35.7c2.1,0,4.1-.4,6.1-1.2h0c1.9-.8,3.7-2,5.1-3.4,1.5-1.5,2.6-3.2,3.4-5.1.8-1.9,1.2-4,1.2-6.1,0-2.1-.4-4.1-1.2-6.1-.8-1.9-2-3.7-3.4-5.1Z"/>
+</svg>

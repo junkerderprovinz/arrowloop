@@ -40,30 +40,19 @@ OUT = Path(__file__).parent.parent / "web" / "src" / "components" / "brandGlyphs
 MARKS = [
     ("IconGithub", "github", "This project's own repository"),
 
-    # The self-hosted three. OpenCloud is a fork of ownCloud and has no mark of
-    # its own here; it deliberately gets none rather than wearing ownCloud's,
-    # which would name the wrong project.
+    # The two self-hosted ones this set carries. OpenCloud is not among them
+    # and never wears ownCloud's mark, which would name the wrong project; its
+    # own drawing is under LOCAL below.
     ("IconNextcloud", "nextcloud", "Nextcloud"),
     ("IconOwncloud", "owncloud", "ownCloud"),
 
-    # The consumer services.
     ("IconDropbox", "dropbox", "Dropbox"),
-    ("IconGoogleDrive", "googledrive", "Google Drive"),
     ("IconGooglePhotos", "googlephotos", "Google Photos"),
     ("IconGoogleCloud", "googlecloud", "Google Cloud Storage"),
-    ("IconMega", "mega", "MEGA"),
     ("IconBox", "box", "Box"),
-    ("IconProtonDrive", "protondrive", "Proton Drive"),
-    ("IconICloud", "icloud", "iCloud Drive"),
     ("IconMailru", "maildotru", "Mail.ru Cloud"),
-    ("IconYandex", "yandexcloud", "Yandex Disk"),
     ("IconZoho", "zoho", "Zoho WorkDrive"),
     ("IconSeafile", "seafile", "Seafile"),
-    ("IconFilen", "filen", "Filen"),
-    ("IconFilesCom", "files", "Files.com"),
-    ("IconHuawei", "huawei", "Huawei Drive"),
-    # HiDrive is IONOS's product and carries no separate mark here.
-    ("IconIonos", "ionos", "HiDrive, which is IONOS's"),
     # ShareFile was Citrix's and the mark is still filed under the parent.
     ("IconCitrix", "citrix", "ShareFile, filed under Citrix"),
 
@@ -72,10 +61,6 @@ MARKS = [
     ("IconOpenstack", "openstack", "OpenStack Swift"),
     ("IconAkamai", "akamai", "Akamai NetStorage"),
     ("IconHadoop", "apachehadoop", "HDFS"),
-
-    # Media and archives.
-    ("IconInternetArchive", "internetarchive", "Internet Archive"),
-    ("IconCloudinary", "cloudinary", "Cloudinary"),
 ]
 
 HEAD = '''import type { SVGProps } from 'react'
@@ -311,25 +296,64 @@ export function {name}(props: SVGProps<SVGSVGElement>) {{
 # to, reproduced unmodified, no claim of endorsement. What differs is the
 # licence position - these are not CC0 - so each entry carries the licence it
 # arrived under, and every one of those licences is satisfied by naming it.
+# Where jdp's files came from, and the licence position they arrive under.
+#
+# Not an icon set: each is the brand's OWN drawing, collected by hand. That
+# beats a CC0 set twice over - it is the real logo rather than a one-colour
+# silhouette of it, and several of these exist in no set at all. The licence is
+# each owner's, and the use is the one a trademark needs no permission for:
+# naming the thing it refers to, on a row that connects to exactly that thing.
+JDP = "supplied by jdp, from the brand's own material"
+BRAND = "the brand's own mark"
+
 LOCAL = [
-    ("IconOpencloud", "opencloud", "OpenCloud",
-     "opencloud-eu/opencloud, services/web/assets/themes/opencloud/assets/logo-mobile.svg",
-     "the project's own logo, from its own repository"),
-    # Dashboard Icons, Apache-2.0. jdp found the set: "hier gibts viele des
-    # fehlenden logos: https://dashboardicons.com/". Five of the nineteen marks
-    # Simple Icons lacks are in it; the rest are still missing.
+    # jdp: "alle fehlenden logos liegen auf dem Desktop. auch bestehende
+    # aktualisieren wenn eines auf dem desktop liegt."
+    #
+    # A `-dark`/`-light` PAIR is the same drawing in two inks: `-dark` is the
+    # dark ink for a light ground, `-light` the white one for a dark ground.
+    # Detected by the files themselves, and where a pair exists it is used
+    # INSTEAD of the computed lightness shift, because the brand's own second
+    # drawing beats anything this file can calculate.
+
+    # The thirteen that had no mark at all.
+    ("IconPcloud", "pcloud", "pCloud", JDP, BRAND),
+    ("IconKoofr", "koofr", "Koofr", JDP, BRAND),
+    ("IconJottacloud", "jottacloud", "Jottacloud", JDP, BRAND),
+    ("IconOpendrive", "opendrive", "OpenDrive", JDP, BRAND),
+    ("IconPutio", "putio", "put.io", JDP, BRAND),
+    ("IconSugarsync", "sugarsync", "SugarSync", JDP, BRAND),
+    ("IconPikpak", "pikpak", "PikPak", JDP, BRAND),
+    ("IconInternxt", "internxt", "Internxt", JDP, BRAND),
+    ("IconUlozto", "ulozto", "Uloz.to", JDP, BRAND),
+    ("IconQuatrix", "quatrix", "Quatrix", JDP, BRAND),
+    ("IconLinkbox", "linkbox", "Linkbox", JDP, BRAND),
+    ("IconGofile", "gofile", "Gofile", JDP, BRAND),
+    ("IconPixeldrain", "pixeldrain", "Pixeldrain", JDP, BRAND),
+
+    # Marks that used to come from an icon set and now come from the brand.
+    ("IconAzure", "azureblob", "Azure Blob Storage, under Azure's own mark", JDP, BRAND),
+    ("IconFilen", "filen", "Filen", JDP, BRAND),
+    ("IconFilesCom", "filescom", "Files.com", JDP, BRAND),
+    ("IconGoogleDrive", "gdrive", "Google Drive", JDP, BRAND),
+    ("IconHuawei", "huaweidrive", "Huawei Drive, under Huawei Cloud's mark", JDP, BRAND),
+    ("IconICloud", "icloud", "iCloud Drive", JDP, BRAND),
+    ("IconIonos", "hidrive", "IONOS HiDrive", JDP, BRAND),
+    ("IconMega", "mega", "MEGA", JDP, BRAND),
+    ("IconProtonDrive", "protondrive", "Proton Drive", JDP, BRAND),
+    ("IconStorj", "storj", "Storj", JDP, BRAND),
+    ("IconYandex", "yandex", "Yandex Disk, under Yandex Cloud's mark", JDP, BRAND),
+
+    # Pairs: one drawing, two inks, picked by theme.
+    ("IconCloudinary", "cloudinary", "Cloudinary", JDP, BRAND),
+    ("IconInternetArchive", "internetarchive", "Internet Archive", JDP, BRAND),
+    ("IconOpencloud", "opencloud", "OpenCloud", JDP, BRAND),
+
+    # Dashboard Icons, Apache-2.0, for the three nobody has supplied.
     ("IconOnedrive", "microsoft-onedrive", "OneDrive",
      "homarr-labs/dashboard-icons, svg/microsoft-onedrive.svg", "Apache-2.0"),
-    # Azure's STORAGE ACCOUNT mark. Blob storage is a service inside a storage
-    # account and has no separate mark in this set, so this names the right
-    # product family rather than a different product - the same judgement made
-    # for HiDrive above, and the same one that keeps OpenCloud off ownCloud's.
-    ("IconAzureStorage", "azure-storage-accounts", "Azure Blob Storage, under Azure's storage mark",
-     "homarr-labs/dashboard-icons, svg/azure-storage-accounts.svg", "Apache-2.0"),
     ("IconOracleCloud", "oracle-cloud", "Oracle Object Storage, part of Oracle Cloud",
      "homarr-labs/dashboard-icons, svg/oracle-cloud.svg", "Apache-2.0"),
-    ("IconStorj", "storj", "Storj",
-     "homarr-labs/dashboard-icons, svg/storj.svg", "Apache-2.0"),
     ("IconPremiumize", "premiumize", "premiumize.me",
      "homarr-labs/dashboard-icons, svg/premiumize.svg", "Apache-2.0"),
 ]
@@ -425,9 +449,122 @@ def _jsx(node, ids, slug, depth):
     return "%s%s>\n%s\n%s</%s>" % (pad, head, "\n".join(kids), pad, tag)
 
 
+BRAND_DIR = Path(__file__).parent / "brand-paths"
+
+SVG_NS = "{http://www.w3.org/2000/svg}"
+
+
+def _inline_css(root, slug):
+    """Fold an Illustrator `<style>` block into the elements it paints.
+
+    These files carry their colours as `.st0 { fill: … }` rules in a `<style>`
+    element. Keeping that would be the id-collision bug again and worse: class
+    names are GLOBAL to the document, so two marks both defining `.st0` would
+    have one wearing the other's fill, and unlike ids there is nothing local
+    about them to prefix away safely. Dissolving the rules into the elements
+    makes each component self-contained, which is what a component should be.
+
+    Runs before the JSX pass on purpose, so a `url(#…)` inside a rule is
+    renamed by the same id-prefixing as every other reference.
+    """
+    parents = {child: parent for parent in root.iter() for child in parent}
+    rules = {}
+    for style in [e for e in root.iter() if e.tag == SVG_NS + "style"]:
+        text = re.sub(r"/\*.*?\*/", "", style.text or "", flags=re.S)
+        for selector, body in re.findall(r"([^{}]+)\{([^{}]*)\}", text):
+            for one_selector in selector.split(","):
+                one_selector = one_selector.strip()
+                if not re.fullmatch(r"\.[-\w]+", one_selector):
+                    raise SystemExit(
+                        "brand-paths/%s: <style> carries the selector %r, which this "
+                        "generator only handles as a plain class" % (slug, one_selector)
+                    )
+                rules.setdefault(one_selector[1:], []).append(body.strip().strip(";"))
+        parents[style].remove(style)
+
+    for el in root.iter():
+        names = (el.get("class") or "").split()
+        if not names:
+            continue
+        del el.attrib["class"]
+        # The element's own `style` wins, so it goes last.
+        declarations = [d for n in names for d in rules.get(n, [])]
+        if el.get("style"):
+            declarations.append(el.get("style").strip().strip(";"))
+        if declarations:
+            el.set("style", "; ".join(declarations))
+    return root
+
+
+def _single_ink(path, slug):
+    """The one colour a monochrome file paints with, black when it names none.
+
+    Refuses anything with a second colour: a pair is only two INKS of one
+    drawing, and a two-colour half would come out of this as a mark repainted
+    in somebody else's idea of its colour.
+    """
+    text = io.open(path, encoding="utf-8").read()
+    colours = {c.lower() for c in re.findall(r"#[0-9a-fA-F]{3,6}", text)}
+    if len(colours) > 1:
+        raise SystemExit("%s paints in %d colours; a pair half must be one ink" % (path.name, len(colours)))
+    if not colours:
+        return "#000000"  # no fill named anywhere: SVG's own default
+    ink = colours.pop()
+    return "#" + "".join(c * 2 for c in ink[1:]) if len(ink) == 4 else ink
+
+
+def pair(name, slug, note, source, licence):
+    """One drawing supplied in two inks, picked by theme rather than computed.
+
+    `-dark` is the dark ink, for a light ground; `-light` the white one, for a
+    dark ground. Where a brand has drawn both, that beats the lightness shift
+    further up this file every time: the shift is this generator's guess at
+    what a lighter version of a colour should be, and these are what the owner
+    actually drew.
+    """
+    dark_file = BRAND_DIR / (slug + "-dark.svg")
+    light_file = BRAND_DIR / (slug + "-light.svg")
+    dark_ink = _single_ink(dark_file, slug)
+    light_ink = _single_ink(light_file, slug)
+
+    # The two files must be the same drawing. If they are not, one component
+    # cannot serve both and saying so beats shipping whichever happened to be
+    # parsed first.
+    geometry = [re.findall(r'\sd="([^"]+)"', io.open(f, encoding="utf-8").read()) for f in (dark_file, light_file)]
+    if geometry[0] != geometry[1] or not geometry[0]:
+        raise SystemExit("%s: the two inks are not the same drawing" % slug)
+
+    root = _inline_css(ET.fromstring(io.open(dark_file, encoding="utf-8").read()), slug)
+    box = root.get("viewBox")
+    if not box:
+        raise SystemExit("brand-paths/%s-dark.svg has no viewBox" % slug)
+
+    variable = "--brand-%s-0" % slug
+    VARIABLES.append((variable, light_ink, dark_ink))
+
+    # Every shape loses its own fill and takes the property from the root, which
+    # is what makes one geometry answer to both inks.
+    ids = {}
+    body = "\n".join(c for c in (_jsx(k, ids, slug, 3) for k in root) if c)
+    body = re.sub(r'\s+fill="[^"]*"', "", body)
+
+    return f'''/** {note}. Source: {source} ({licence}), in both its inks */
+export function {name}(props: SVGProps<SVGSVGElement>) {{
+  return (
+    <svg viewBox="{box}" width="1em" height="1em" fill="var({variable})" aria-hidden {{...props}}>
+{body}
+    </svg>
+  )
+}}
+'''
+
+
 def local(name, slug, note, source, licence):
-    path = Path(__file__).parent / "brand-paths" / (slug + ".svg")
-    root = ET.fromstring(io.open(path, encoding="utf-8").read())
+    # A brand that supplied both of its inks is drawn from the pair instead.
+    if not (BRAND_DIR / (slug + ".svg")).is_file():
+        return pair(name, slug, note, source, licence)
+    path = BRAND_DIR / (slug + ".svg")
+    root = _inline_css(ET.fromstring(io.open(path, encoding="utf-8").read()), slug)
 
     # The box: its own if it has one, otherwise built from width and height.
     # Several of these carry only a size, and a component with no viewBox does
@@ -449,11 +586,30 @@ def local(name, slug, note, source, licence):
         raise SystemExit("brand-paths/%s.svg is empty" % slug)
     body = "\n".join(kids)
 
-    # Every colour the file actually paints with, taken from the JSX rather
-    # than from the XML, so a colour written in a `style` string is found the
-    # same way as one in a `fill` attribute.
-    found = re.findall(r'"(#[0-9a-fA-F]{3,8}|rgb\([^"]*\))"', body)
-    body = apply_swap(body, themed(found, slug))
+    # The ROOT's own painting attributes come along. Dropping them was a real
+    # defect: Yandex's file carries its whole colour as `fill` on the `<svg>`
+    # and nowhere else, so the mark came out black - and then read as a mark
+    # that simply has no colour rather than as one this generator threw away.
+    skip = {"viewBox", "width", "height", "id", "class", "role", "style", "x", "y"}
+    root_attrs = []
+    for raw, value in root.attrib.items():
+        if raw.startswith("{") or raw in skip or _camel(raw) in ("xmlns", "xmlnsXlink", "version"):
+            continue
+        root_attrs.append('%s="%s"' % (_camel(raw), value))
+
+    # A file that names no colour ANYWHERE paints in SVG's default, which is
+    # black - and black is exactly what disappears on a dark ground. Saying so
+    # explicitly is what lets the readability check below see it at all;
+    # Pixeldrain's mark is one such file and was invisible because of it.
+    found = re.findall(r'"(#[0-9a-fA-F]{3,8}|rgb\([^"]*\))"', body + " " + " ".join(root_attrs))
+    if not found:
+        root_attrs.append('fill="#000000"')
+        found = ["#000000"]
+
+    swap = themed(found, slug)
+    body = apply_swap(body, swap)
+    root_attrs = [apply_swap(a, swap) for a in root_attrs]
+    painted = ("".join(" " + a for a in root_attrs))
 
     # Whatever the file paints WITH stays: `fill`, `style`, gradients, groups
     # and all. A mark drawn in several tones is several tones, and flattening
@@ -461,7 +617,7 @@ def local(name, slug, note, source, licence):
     return f'''/** {note}. Source: {source} ({licence}) */
 export function {name}(props: SVGProps<SVGSVGElement>) {{
   return (
-    <svg viewBox="{box}" width="1em" height="1em" aria-hidden {{...props}}>
+    <svg viewBox="{box}"{painted} width="1em" height="1em" aria-hidden {{...props}}>
 {body}
     </svg>
   )

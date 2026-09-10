@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Ebene_1" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 720 720">
+  <!-- Generator: Adobe Illustrator 29.5.1, SVG Export Plug-In . SVG Version: 2.1.0 Build 141)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: #fff;
+      }
+
+      .st0, .st1 {
+        fill-rule: evenodd;
+      }
+
+      .st1 {
+        fill: url(#Unbenannter_Verlauf);
+      }
+    </style>
+    <linearGradient id="Unbenannter_Verlauf" data-name="Unbenannter Verlauf" x1="360" y1="727.4" x2="360" y2="-6.9" gradientTransform="translate(0 722) scale(1 -1)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#112d91"/>
+      <stop offset="1" stop-color="#060c40"/>
+    </linearGradient>
+  </defs>
+  <polygon class="st0" points="268.3 573.2 359.8 430 452 573.2 553.1 573.2 407.4 357.8 545.3 155.5 444.7 155.5 359.8 286.2 275.5 155.5 175.6 155.5 312.9 358.4 167.8 573.2 268.3 573.2"/>
+  <path class="st1" d="M0,158.2C0,70.8,70.8,0,158.2,0h403.7c87.3,0,158.2,70.8,158.2,158.2v403.7c0,87.3-70.8,158.2-158.2,158.2H158.2C70.8,720,0,649.2,0,561.8V158.2ZM553.1,573.2l-145.7-215.4,137.9-202.3h-100.5l-84.9,130.7-84.3-130.7h-99.9l137.3,202.9-145.1,214.8h100.5l91.5-143.2,92.1,143.2h101.2Z"/>
+</svg>

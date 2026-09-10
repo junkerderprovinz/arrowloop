@@ -27,12 +27,21 @@
   --brand-github-0: #a8a4a4;
   --brand-owncloud-0: #6da7f6;
   --brand-seafile-0: #FF9800;
-  --brand-filen-0: #a3a3a3;
-  --brand-ionos-0: #66a7ff;
   --brand-citrix-0: #bb9ae1;
   --brand-apachehadoop-0: #66CCFF;
-  --brand-cloudinary-0: #99a4e4;
-  --brand-opencloud-0: #6daec4;
+  --brand-pcloud-0: #17b8ca;
+  --brand-pcloud-1: #17bed0;
+  --brand-pcloud-2: #1cd2e6;
+  --brand-koofr-0: #71ba05;
+  --brand-gofile-0: #e6ae1e;
+  --brand-gofile-1: #e5e6e7;
+  --brand-gofile-2: #bdbfc1;
+  --brand-pixeldrain-0: #a3a3a3;
+  --brand-filen-0: #fff;
+  --brand-hidrive-0: #66a7ff;
+  --brand-cloudinary-0: #ffffff;
+  --brand-internetarchive-0: #ffffff;
+  --brand-opencloud-0: #ffffff;
 }
 
 @media (prefers-color-scheme: light) {
@@ -40,12 +49,21 @@
     --brand-github-0: #181717;
     --brand-owncloud-0: #041E42;
     --brand-seafile-0: #8f5500;
-    --brand-filen-0: #000000;
-    --brand-ionos-0: #003D8F;
     --brand-citrix-0: #452170;
     --brand-apachehadoop-0: #006da3;
-    --brand-cloudinary-0: #3448C5;
-    --brand-opencloud-0: #20434F;
+    --brand-pcloud-0: #0e6d78;
+    --brand-pcloud-1: #0e727d;
+    --brand-pcloud-2: #0d6f7a;
+    --brand-koofr-0: #477403;
+    --brand-gofile-0: #7c5d0e;
+    --brand-gofile-1: #62666b;
+    --brand-gofile-2: #65686c;
+    --brand-pixeldrain-0: #000000;
+    --brand-filen-0: #666666;
+    --brand-hidrive-0: #003d8f;
+    --brand-cloudinary-0: #000000;
+    --brand-internetarchive-0: #000000;
+    --brand-opencloud-0: #000000;
   }
 }
 
@@ -53,10 +71,19 @@
   --brand-github-0: #181717;
   --brand-owncloud-0: #041E42;
   --brand-seafile-0: #8f5500;
-  --brand-filen-0: #000000;
-  --brand-ionos-0: #003D8F;
   --brand-citrix-0: #452170;
   --brand-apachehadoop-0: #006da3;
-  --brand-cloudinary-0: #3448C5;
-  --brand-opencloud-0: #20434F;
+  --brand-pcloud-0: #0e6d78;
+  --brand-pcloud-1: #0e727d;
+  --brand-pcloud-2: #0d6f7a;
+  --brand-koofr-0: #477403;
+  --brand-gofile-0: #7c5d0e;
+  --brand-gofile-1: #62666b;
+  --brand-gofile-2: #65686c;
+  --brand-pixeldrain-0: #000000;
+  --brand-filen-0: #666666;
+  --brand-hidrive-0: #003d8f;
+  --brand-cloudinary-0: #000000;
+  --brand-internetarchive-0: #000000;
+  --brand-opencloud-0: #000000;
 }
