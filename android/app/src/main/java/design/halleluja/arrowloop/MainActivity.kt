@@ -249,18 +249,31 @@ class MainActivity : AppCompatActivity() {
             val state = getString(
                 if (Engine.alive()) R.string.engine_still_running else R.string.engine_gone,
             )
-            trouble.text = getString(R.string.engine_silent, WAIT_MS / 1000, "$state\n\n${lastLines()}")
+            trouble.text = getString(R.string.engine_silent, WAIT_MS / 1000, "$state\n\n${whatItSaid()}")
         }
     }
 
-    private fun lastLines(): String = try {
+    private fun whatItSaid(): String = try {
         val lines = java.io.File(Engine.home(this), "engine.log").readLines()
         // Empty is a real answer and has to look like one. It happened on the
         // first phone this was installed on: the screen said the engine had
         // not answered and then showed nothing at all, which reads as the
         // screen being broken rather than as the engine having said nothing.
         if (lines.isEmpty()) getString(R.string.engine_no_log)
-        else lines.takeLast(20).joinToString("\n")
+        // The TOP of the log, not the bottom, and that is the whole point.
+        //
+        // A Go crash writes its reason on the first line - "SIGSYS: bad system
+        // call" - and then several hundred lines of goroutines and a register
+        // dump. Showing the tail therefore filled a phone screen with `rcx`,
+        // `rsp` and `r15` while the one sentence that explains it scrolled off
+        // the top. It cost a round: the photo that came back was almost
+        // entirely registers.
+        //
+        // So: the first lines, which carry what started and what went wrong,
+        // and the last line, which carries the exit code. Everything between
+        // them is for a debugger, and nobody reading this has one.
+        else if (lines.size <= HEAD_LINES + 1) lines.joinToString("\n")
+        else (lines.take(HEAD_LINES) + listOf("…", lines.last())).joinToString("\n")
     } catch (e: Exception) {
         getString(R.string.engine_no_log_because, e.javaClass.simpleName, e.message ?: "")
     }
@@ -273,6 +286,11 @@ class MainActivity : AppCompatActivity() {
          *  backend, and a cold start has to page all of it in on a phone that
          *  may also be installing it. */
         private const val WAIT_MS = 60_000L
+
+        /** How many lines from the START of the log go on screen. Eight covers
+         *  the line naming what was started, the fatal line under it, and the
+         *  first frames of whatever raised it. */
+        private const val HEAD_LINES = 8
 
         /** Whether the storage page has been opened for this install already. */
         private const val ASKED_STORAGE = "asked.storage"
