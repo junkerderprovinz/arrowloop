@@ -38,4 +38,69 @@
         android:scrollbars="vertical"
         android:visibility="gone" />
 
+    <!--
+      The one screen in this app drawn in Android views rather than by the
+      engine, and it is here because it has to be: it is about a permission the
+      engine cannot see, ask for or explain, and it has to be readable before
+      the engine has answered.
+
+      It covers the WebView, and one tap on "Not now" takes it away for the rest
+      of the launch. Not a gate: the engine runs either way and a job inside the
+      app's own folder works either way, so refusing to show the interface until
+      somebody grants the broadest file permission Android has would be asking
+      with the app held hostage. What it is instead is the first thing on screen
+      while the answer is missing, because a sync tool that can only see one
+      folder is a fact somebody should meet before they build a job, not after.
+    -->
+    <LinearLayout
+        android:id="@+id/storage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_vertical"
+        android:background="@color/ground"
+        android:padding="24dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/storage_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/ink"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:text="@string/storage_title" />
+
+        <TextView
+            android:id="@+id/storage_why"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/ink_muted"
+            android:textSize="14sp"
+            android:lineSpacingMultiplier="1.3"
+            android:text="@string/storage_why" />
+
+        <Button
+            android:id="@+id/storage_grant"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:backgroundTint="@color/accent"
+            android:textColor="@color/accent_ink"
+            android:textAllCaps="false"
+            android:text="@string/storage_grant" />
+
+        <Button
+            android:id="@+id/storage_later"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:backgroundTint="@color/surface3"
+            android:textColor="@color/ink"
+            android:textAllCaps="false"
+            android:text="@string/storage_later" />
+
+    </LinearLayout>
+
 </FrameLayout>

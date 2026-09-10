@@ -65,5 +65,34 @@ not for shipping it.
 
 ## What it can reach
 
-This is the open question, and it is worth reading before expecting the app to
-sync a photo folder. See the note in `Engine.kt` and the project's own notes.
+Everything on the phone's storage, once **All files access** is granted. The app
+asks for it on first launch with a screen explaining why, and the switch itself
+lives on a system settings page rather than in a dialog.
+
+This was going to be the Storage Access Framework, and it cannot be. Two reasons,
+both from Android's own source rather than from trying it:
+
+**SAF cannot set a modification time.** `DocumentsProvider.update()` is declared
+`public final` and throws `UnsupportedOperationException`. No client can override
+it and no client can call it usefully, and that is still true at API 36. A
+two-way sync whose comparison rests on size and mtime has nothing to stand on
+there.
+
+**SAF is not reachable from the engine at all.** The engine is the same static
+binary the container and the desktop run, started as its own POSIX process. SAF
+lives behind Binder and the JVM: a child process has no `ContentResolver`, no JNI
+environment and no way to obtain one. Syncthing hit exactly this. The way around
+it is to bind the engine into the app process with gomobile, which means a second
+build of the engine for one platform out of four, and it would still leave the
+mtime unsolved.
+
+So `MANAGE_EXTERNAL_STORAGE`. Google permits it for the category this app is in,
+"Backup and restore apps", and a Play listing has to declare and justify it;
+FolderSync ships the same way. `Storage.kt` carries the full reasoning.
+
+**Android 10 is a genuine gap.** `MANAGE_EXTERNAL_STORAGE` arrived in 11, and the
+`requestLegacyExternalStorage` escape is ignored for an app targeting above 29,
+which this one must. On Android 10 the app runs and syncs its own private folder
+and nothing else. The panel says so rather than offering a button that would do
+nothing. Below 10, `WRITE_EXTERNAL_STORAGE` grants the same reach as an ordinary
+runtime permission and is asked for the ordinary way.

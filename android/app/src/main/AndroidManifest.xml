@@ -24,6 +24,33 @@
          scheduled sync nobody can rely on. -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
+    <!-- The broadest file permission Android has, and the only one that works
+         for what this app is. Storage.kt carries the full reasoning; the short
+         version is that the engine is its own POSIX process, which cannot
+         reach the Storage Access Framework at all, and that SAF cannot set a
+         modification time even from a process that can - DocumentsProvider's
+         update() is final and throws. A two-way sync comparing on size and
+         mtime has nothing to stand on there.
+
+         Google permits this permission for the category this app is in
+         ("Backup and restore apps"), and the Play listing has to say so. jdp
+         chose this route on 2026-09-10 over binding the engine into the app
+         process with gomobile, which would be a second build of the engine for
+         one platform and would still not fix the mtime. -->
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+
+    <!-- Below Android 10 there is no MANAGE_EXTERNAL_STORAGE and this is what
+         grants the same reach, as an ordinary runtime permission. Capped at 28
+         on purpose: from 29 it grants nothing useful, and a permission that
+         asks for something it cannot deliver is worse than one that is absent.
+         Android 10 itself is a genuine gap - see Storage.possible. -->
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
+
     <application
         android:name=".ArrowLoopApp"
         android:allowBackup="false"

@@ -2,6 +2,7 @@ package design.halleluja.arrowloop
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -33,6 +35,21 @@ class MainActivity : AppCompatActivity() {
     private lateinit var web: WebView
     private lateinit var waiting: View
     private lateinit var trouble: TextView
+    private lateinit var storage: View
+
+    /**
+     * Asked once per launch while the permission is missing, and not again
+     * after "Not now".
+     *
+     * Per LAUNCH rather than once ever, and that is a deliberate re-ask: an
+     * ArrowLoop that cannot leave its own private folder cannot do the thing
+     * it was installed for, so somebody who dismissed this by accident has to
+     * be able to get back to it, and there is nowhere else to put the way back
+     * - the rest of the interface belongs to the engine, which cannot see this
+     * permission at all. One tap, on a cold start, is the smallest version of
+     * that which still works.
+     */
+    private var storageDismissed = false
 
     /**
      * Asked for at the moment it MEANS something, not at launch.
@@ -46,6 +63,14 @@ class MainActivity : AppCompatActivity() {
     private val askNotifications =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { }
 
+    /**
+     * Below Android 11 the reach comes from an ordinary runtime permission,
+     * so it is asked for the ordinary way rather than by sending somebody to a
+     * settings page that does not exist on those versions.
+     */
+    private val askLegacyStorage =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { showStorageIfNeeded() }
+
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,6 +79,8 @@ class MainActivity : AppCompatActivity() {
         web = findViewById(R.id.web)
         waiting = findViewById(R.id.waiting)
         trouble = findViewById(R.id.trouble)
+        storage = findViewById(R.id.storage)
+        wireStorage()
 
         web.settings.javaScriptEnabled = true
         web.settings.domStorageEnabled = true
@@ -76,7 +103,18 @@ class MainActivity : AppCompatActivity() {
         // wrapped this way.
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (web.canGoBack()) web.goBack() else finish()
+                // The storage panel first: while it is up it is what is on
+                // screen, and back stepping through the history of a WebView
+                // nobody can see is the kind of thing that reads as the button
+                // doing nothing.
+                if (storage.visibility == View.VISIBLE) {
+                    storageDismissed = true
+                    storage.visibility = View.GONE
+                } else if (web.canGoBack()) {
+                    web.goBack()
+                } else {
+                    finish()
+                }
             }
         })
 
@@ -89,6 +127,62 @@ class MainActivity : AppCompatActivity() {
 
         EngineService.start(this)
         waitForEngine()
+    }
+
+    /**
+     * Checked again on every return, because this is the one permission that is
+     * granted somewhere ELSE.
+     *
+     * MANAGE_EXTERNAL_STORAGE has no dialog and no result callback: the person
+     * leaves for a system settings page, flips a switch and comes back, and
+     * nothing tells the app that happened. Re-reading it here is what makes the
+     * panel disappear on its own instead of sitting there after the permission
+     * was granted.
+     */
+    override fun onResume() {
+        super.onResume()
+        showStorageIfNeeded()
+    }
+
+    private fun wireStorage() {
+        findViewById<View>(R.id.storage_grant).setOnClickListener {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+                askLegacyStorage.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                return@setOnClickListener
+            }
+            // The targeted page first, the list of every app as a fallback:
+            // some builds refuse the per-package form, and an unhandled intent
+            // here would crash the app on the one button that is supposed to
+            // fix things.
+            try {
+                startActivity(Storage.manageIntent(this))
+            } catch (_: ActivityNotFoundException) {
+                try {
+                    startActivity(Storage.manageIntentFallback())
+                } catch (_: ActivityNotFoundException) {
+                    Toast.makeText(this, R.string.storage_no_page, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+        findViewById<View>(R.id.storage_later).setOnClickListener {
+            storageDismissed = true
+            storage.visibility = View.GONE
+        }
+    }
+
+    private fun showStorageIfNeeded() {
+        if (storageDismissed || Storage.granted(this)) {
+            storage.visibility = View.GONE
+            return
+        }
+        // Android 10 has no way to grant this at all. The panel still appears,
+        // because somebody whose sync only sees one folder deserves to know
+        // why, but it says so and offers no button that would do nothing.
+        if (!Storage.possible) {
+            findViewById<TextView>(R.id.storage_why).setText(R.string.storage_why_ten)
+            findViewById<View>(R.id.storage_grant).visibility = View.GONE
+        }
+        storage.visibility = View.VISIBLE
     }
 
     /**
