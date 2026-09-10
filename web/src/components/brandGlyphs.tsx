@@ -162,6 +162,15 @@ export function IconHadoop(props: SVGProps<SVGSVGElement>) {
   )
 }
 
+/** Huawei Drive. Simple Icons: huawei, in its own #FF0000 */
+export function IconHuawei(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" width="1em" height="1em" fill="#FF0000" aria-hidden {...props}>
+      <path d="M3.67 6.14S1.82 7.91 1.72 9.78v.35c.08 1.51 1.22 2.4 1.22 2.4 1.83 1.79 6.26 4.04 7.3 4.55 0 0 .06.03.1-.01l.02-.04v-.04C7.52 10.8 3.67 6.14 3.67 6.14zM9.65 18.6c-.02-.08-.1-.08-.1-.08l-7.38.26c.8 1.43 2.15 2.53 3.56 2.2.96-.25 3.16-1.78 3.88-2.3.06-.05.04-.09.04-.09zm.08-.78C6.49 15.63.21 12.28.21 12.28c-.15.46-.2.9-.21 1.3v.07c0 1.07.4 1.82.4 1.82.8 1.69 2.34 2.2 2.34 2.2.7.3 1.4.31 1.4.31.12.02 4.4 0 5.54 0 .05 0 .08-.05.08-.05v-.06c0-.03-.03-.05-.03-.05zM9.06 3.19a3.42 3.42 0 00-2.57 3.15v.41c.03.6.16 1.05.16 1.05.66 2.9 3.86 7.65 4.55 8.65.05.05.1.03.1.03a.1.1 0 00.06-.1c1.06-10.6-1.11-13.42-1.11-13.42-.32.02-1.19.23-1.19.23zm8.299 2.27s-.49-1.8-2.44-2.28c0 0-.57-.14-1.17-.22 0 0-2.18 2.81-1.12 13.43.01.07.06.08.06.08.07.03.1-.03.1-.03.72-1.03 3.9-5.76 4.55-8.64 0 0 .36-1.4.02-2.34zm-2.92 13.07s-.07 0-.09.05c0 0-.01.07.03.1.7.51 2.85 2 3.88 2.3 0 0 .16.05.43.06h.14c.69-.02 1.9-.37 3-2.26l-7.4-.25zm7.83-8.41c.14-2.06-1.94-3.97-1.94-3.98 0 0-3.85 4.66-6.67 10.8 0 0-.03.08.02.13l.04.01h.06c1.06-.53 5.46-2.77 7.28-4.54 0 0 1.15-.93 1.21-2.42zm1.52 2.14s-6.28 3.37-9.52 5.55c0 0-.05.04-.03.11 0 0 .03.06.07.06 1.16 0 5.56 0 5.67-.02 0 0 .57-.02 1.27-.29 0 0 1.56-.5 2.37-2.27 0 0 .73-1.45.17-3.14z" />
+    </svg>
+  )
+}
+
 /** pCloud. Source: supplied by jdp, from the brand's own material (the brand's own mark) */
 export function IconPcloud(props: SVGProps<SVGSVGElement>) {
   return (
@@ -303,7 +312,7 @@ export function IconUlozto(props: SVGProps<SVGSVGElement>) {
 /** Quatrix. Source: supplied by jdp, from the brand's own material (the brand's own mark) */
 export function IconQuatrix(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg viewBox="0 0 180 59" width="1em" height="1em" aria-hidden {...props}>
+    <svg viewBox="0 0 59.3 58.5" width="1em" height="1em" aria-hidden {...props}>
       <defs>
         <mask id="quatrix-mask" x="0" y="0" width="59.3" height="58.5" maskUnits="userSpaceOnUse">
           <g id="quatrix-prefix__b">
@@ -329,7 +338,7 @@ export function IconQuatrix(props: SVGProps<SVGSVGElement>) {
 /** Linkbox. Source: supplied by jdp, from the brand's own material (the brand's own mark) */
 export function IconLinkbox(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg viewBox="0 0 367.4 69.6" width="1em" height="1em" aria-hidden {...props}>
+    <svg viewBox="0 0.1 68.4 68.4" width="1em" height="1em" aria-hidden {...props}>
       <defs />
       <rect y=".1" width="68.4" height="68.4" style={{ fill: "#47b492" }} />
       <g>
@@ -343,7 +352,7 @@ export function IconLinkbox(props: SVGProps<SVGSVGElement>) {
 /** Gofile. Source: supplied by jdp, from the brand's own material (the brand's own mark) */
 export function IconGofile(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg viewBox="0 0 672 191" width="1em" height="1em" aria-hidden {...props}>
+    <svg viewBox="13 0 289.4 190" width="1em" height="1em" aria-hidden {...props}>
       <defs />
       <path d="M154.2,61c-.3,2.2-3.6,28.9-5.2,38h23.5l20-17,109.9-.2-29.4,108.2h-144.4l-3.6-36-112-5,110.6-7.4-2.6-24.6-39-4,37.9-5.6-.9-8.4h19.4s2.6-20,2.6-20l-95-6,96.5-6,.9-5.9h10.8Z" style={{ fill: "var(--brand-gofile-0)" }} />
       <path d="M262,0h0c-1.8,12,0,24.5-6,36,12.7-.2,25.8-.1,38,4,.3.5,2.2,2.2,2.2,2.2l-3.2,39.8s-67.1.9-100.5,0c-3.6,1-18.7,17-20,17h-23.5c1.6-9.1,5.7-41.7,5.7-41.7l3.3-26.3-32-3,32.1-3.4,1.8-11.4-82.9-6.1c27.2-1.5,84.7-4.2,84.7-4.2l.3-2.8h100Z" style={{ fill: "var(--brand-gofile-1)" }} />
@@ -428,12 +437,12 @@ export function IconGoogleDrive(props: SVGProps<SVGSVGElement>) {
   )
 }
 
-/** Huawei Drive, under Huawei Cloud's mark. Source: supplied by jdp, from the brand's own material (the brand's own mark) */
-export function IconHuawei(props: SVGProps<SVGSVGElement>) {
+/** Huawei Cloud OBS. Source: supplied by jdp, from the brand's own material (the brand's own mark) */
+export function IconHuaweiCloud(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg viewBox="0 0 108 38" width="1em" height="1em" aria-hidden {...props}>
+    <svg viewBox="0.8 0.8 36.5 27.4" width="1em" height="1em" aria-hidden {...props}>
       <defs>
-        <radialGradient id="huaweidrive-Unbenannter_Verlauf" data-name="Unbenannter Verlauf" cx="-871.4" cy="945.4" fx="-871.4" fy="945.4" r="2" gradientTransform="translate(11458.2 12409.2) scale(13.1 -13.1)" gradientUnits="userSpaceOnUse">
+        <radialGradient id="huaweicloud-Unbenannter_Verlauf" data-name="Unbenannter Verlauf" cx="-871.4" cy="945.4" fx="-871.4" fy="945.4" r="2" gradientTransform="translate(11458.2 12409.2) scale(13.1 -13.1)" gradientUnits="userSpaceOnUse">
           <stop offset="0" stopColor="#f7bfa4" />
           <stop offset="0" stopColor="#f7bb9f" />
           <stop offset=".4" stopColor="#e60012" />
@@ -445,7 +454,7 @@ export function IconHuawei(props: SVGProps<SVGSVGElement>) {
           <stop offset="1" stopColor="#ae0003" />
           <stop offset="1" stopColor="#a00000" />
         </radialGradient>
-        <radialGradient id="huaweidrive-Unbenannter_Verlauf_2" data-name="Unbenannter Verlauf 2" cx="-694.5" cy="767.3" fx="-694.5" fy="767.3" r="6.9" gradientTransform="translate(2661.3 2918.3) scale(3.8 -3.8)" gradientUnits="userSpaceOnUse">
+        <radialGradient id="huaweicloud-Unbenannter_Verlauf_2" data-name="Unbenannter Verlauf 2" cx="-694.5" cy="767.3" fx="-694.5" fy="767.3" r="6.9" gradientTransform="translate(2661.3 2918.3) scale(3.8 -3.8)" gradientUnits="userSpaceOnUse">
           <stop offset="0" stopColor="#f7bfa4" />
           <stop offset="0" stopColor="#f7bb9f" />
           <stop offset=".4" stopColor="#e60012" />
@@ -457,7 +466,7 @@ export function IconHuawei(props: SVGProps<SVGSVGElement>) {
           <stop offset="1" stopColor="#ae0003" />
           <stop offset="1" stopColor="#a00000" />
         </radialGradient>
-        <radialGradient id="huaweidrive-Unbenannter_Verlauf_3" data-name="Unbenannter Verlauf 3" cx="-834.1" cy="907.9" fx="-834.1" fy="907.9" r="3" gradientTransform="translate(7235.1 7853) scale(8.6 -8.6)" gradientUnits="userSpaceOnUse">
+        <radialGradient id="huaweicloud-Unbenannter_Verlauf_3" data-name="Unbenannter Verlauf 3" cx="-834.1" cy="907.9" fx="-834.1" fy="907.9" r="3" gradientTransform="translate(7235.1 7853) scale(8.6 -8.6)" gradientUnits="userSpaceOnUse">
           <stop offset="0" stopColor="#f7bfa4" />
           <stop offset="0" stopColor="#f7bb9f" />
           <stop offset=".4" stopColor="#e60012" />
@@ -469,7 +478,7 @@ export function IconHuawei(props: SVGProps<SVGSVGElement>) {
           <stop offset="1" stopColor="#ae0003" />
           <stop offset="1" stopColor="#a00000" />
         </radialGradient>
-        <radialGradient id="huaweidrive-Unbenannter_Verlauf_4" data-name="Unbenannter Verlauf 4" cx="-696.7" cy="767.9" fx="-696.7" fy="767.9" r="6.9" gradientTransform="translate(2676 2927.4) scale(3.8 -3.8)" gradientUnits="userSpaceOnUse">
+        <radialGradient id="huaweicloud-Unbenannter_Verlauf_4" data-name="Unbenannter Verlauf 4" cx="-696.7" cy="767.9" fx="-696.7" fy="767.9" r="6.9" gradientTransform="translate(2676 2927.4) scale(3.8 -3.8)" gradientUnits="userSpaceOnUse">
           <stop offset="0" stopColor="#f7bfa4" />
           <stop offset="0" stopColor="#f7bb9f" />
           <stop offset=".4" stopColor="#e60012" />
@@ -481,7 +490,7 @@ export function IconHuawei(props: SVGProps<SVGSVGElement>) {
           <stop offset="1" stopColor="#ae0003" />
           <stop offset="1" stopColor="#a00000" />
         </radialGradient>
-        <radialGradient id="huaweidrive-Unbenannter_Verlauf_5" data-name="Unbenannter Verlauf 5" cx="-872.7" cy="945.3" fx="-872.7" fy="945.3" r="2" gradientTransform="translate(11462.4 12394.2) scale(13.1 -13.1)" gradientUnits="userSpaceOnUse">
+        <radialGradient id="huaweicloud-Unbenannter_Verlauf_5" data-name="Unbenannter Verlauf 5" cx="-872.7" cy="945.3" fx="-872.7" fy="945.3" r="2" gradientTransform="translate(11462.4 12394.2) scale(13.1 -13.1)" gradientUnits="userSpaceOnUse">
           <stop offset="0" stopColor="#f7bfa4" />
           <stop offset="0" stopColor="#f7bb9f" />
           <stop offset=".4" stopColor="#e60012" />
@@ -493,7 +502,7 @@ export function IconHuawei(props: SVGProps<SVGSVGElement>) {
           <stop offset="1" stopColor="#ae0003" />
           <stop offset="1" stopColor="#a00000" />
         </radialGradient>
-        <radialGradient id="huaweidrive-Unbenannter_Verlauf_6" data-name="Unbenannter Verlauf 6" cx="-823.9" cy="894.9" fx="-823.9" fy="894.9" r="3.4" gradientTransform="translate(6484.7 7021.1) scale(7.8 -7.8)" gradientUnits="userSpaceOnUse">
+        <radialGradient id="huaweicloud-Unbenannter_Verlauf_6" data-name="Unbenannter Verlauf 6" cx="-823.9" cy="894.9" fx="-823.9" fy="894.9" r="3.4" gradientTransform="translate(6484.7 7021.1) scale(7.8 -7.8)" gradientUnits="userSpaceOnUse">
           <stop offset="0" stopColor="#f7bfa4" />
           <stop offset="0" stopColor="#f7bb9f" />
           <stop offset=".4" stopColor="#e60012" />
@@ -505,7 +514,7 @@ export function IconHuawei(props: SVGProps<SVGSVGElement>) {
           <stop offset="1" stopColor="#ae0003" />
           <stop offset="1" stopColor="#a00000" />
         </radialGradient>
-        <radialGradient id="huaweidrive-Unbenannter_Verlauf_7" data-name="Unbenannter Verlauf 7" cx="-822.8" cy="894.9" fx="-822.8" fy="894.9" r="3.4" gradientTransform="translate(6475.8 7021) scale(7.8 -7.8)" gradientUnits="userSpaceOnUse">
+        <radialGradient id="huaweicloud-Unbenannter_Verlauf_7" data-name="Unbenannter Verlauf 7" cx="-822.8" cy="894.9" fx="-822.8" fy="894.9" r="3.4" gradientTransform="translate(6475.8 7021) scale(7.8 -7.8)" gradientUnits="userSpaceOnUse">
           <stop offset="0" stopColor="#f7bfa4" />
           <stop offset="0" stopColor="#f7bb9f" />
           <stop offset=".4" stopColor="#e60012" />
@@ -517,7 +526,7 @@ export function IconHuawei(props: SVGProps<SVGSVGElement>) {
           <stop offset="1" stopColor="#ae0003" />
           <stop offset="1" stopColor="#a00000" />
         </radialGradient>
-        <radialGradient id="huaweidrive-Unbenannter_Verlauf_8" data-name="Unbenannter Verlauf 8" cx="-835.6" cy="907.8" fx="-835.6" fy="907.8" r="3" gradientTransform="translate(7246.5 7850.2) scale(8.6 -8.6)" gradientUnits="userSpaceOnUse">
+        <radialGradient id="huaweicloud-Unbenannter_Verlauf_8" data-name="Unbenannter Verlauf 8" cx="-835.6" cy="907.8" fx="-835.6" fy="907.8" r="3" gradientTransform="translate(7246.5 7850.2) scale(8.6 -8.6)" gradientUnits="userSpaceOnUse">
           <stop offset="0" stopColor="#f7bfa4" />
           <stop offset="0" stopColor="#f7bb9f" />
           <stop offset=".4" stopColor="#e60012" />
@@ -530,15 +539,15 @@ export function IconHuawei(props: SVGProps<SVGSVGElement>) {
           <stop offset="1" stopColor="#a00000" />
         </radialGradient>
       </defs>
-      <g id="huaweidrive-_华为logo上下排版" data-name="华为logo上下排版">
-        <path id="huaweidrive-Path" d="M5.3,15.2c2.8,2.7,9.5,6.1,11.1,6.9,0,0,0,0,.2,0,0,0,0,0,0-.1h0C12.2,12.6,6.4,5.6,6.4,5.6c0,0-3.2,3-3,6,.1,2.3,1.8,3.6,1.8,3.6Z" style={{ fillRule: "evenodd", fill: "url(#huaweidrive-Unbenannter_Verlauf)" }} />
-        <path id="huaweidrive-Path1" data-name="Path" d="M15.5,24.4c0,0-.1,0-.1,0h0l-11.2.4c1.2,2.2,3.3,3.8,5.4,3.3,1.5-.4,4.8-2.7,5.9-3.5h0c0,0,0-.1,0-.1Z" style={{ fillRule: "evenodd", fill: "url(#huaweidrive-Unbenannter_Verlauf_2)" }} />
-        <path id="huaweidrive-Path2" data-name="Path" d="M5,23c1.1.4,2.1.5,2.1.5.2,0,6.7,0,8.4,0,0,0,.1,0,.1,0,0,0,0-.2,0-.2h0C10.7,19.9,1.1,14.8,1.1,14.8c-.9,2.7.3,4.8.3,4.8,1.2,2.6,3.5,3.3,3.5,3.3Z" style={{ fillRule: "evenodd", fill: "url(#huaweidrive-Unbenannter_Verlauf_3)" }} />
-        <path id="huaweidrive-Path3" data-name="Path" d="M33.9,24.7l-11.2-.4h0s0,0-.1,0c0,0,0,0,0,.2h0c1.1.8,4.3,3,5.9,3.5,0,0,2.9,1,5.4-3.3Z" style={{ fillRule: "evenodd", fill: "url(#huaweidrive-Unbenannter_Verlauf_4)" }} />
-        <path id="huaweidrive-Path4" data-name="Path" d="M21.6,21.9s0,.1,0,.2c0,0,0,0,.2,0h0c1.6-.8,8.3-4.2,11.1-6.9,0,0,1.7-1.4,1.8-3.6.2-3.1-3-6-3-6,0,0-5.8,7-10.1,16.3h0Z" style={{ fillRule: "evenodd", fill: "url(#huaweidrive-Unbenannter_Verlauf_5)" }} />
-        <path id="huaweidrive-Path5" data-name="Path" d="M20,21.1c0,0,0,.1,0,.1.1,0,.2,0,.2,0h0c1.1-1.6,5.9-8.7,6.9-13.1,0,0,.5-2.1,0-3.5,0,0-.7-2.7-3.7-3.4,0,0-.9-.2-1.8-.3h0s-3.3,4.2-1.7,20.3h0Z" style={{ fill: "url(#huaweidrive-Unbenannter_Verlauf_6)", fillRule: "evenodd" }} />
-        <path id="huaweidrive-Path6" data-name="Path" d="M17.8,21.2c0,0,.1,0,.1,0,.1,0,.1-.1.1-.1h0c1.6-16.1-1.7-20.3-1.7-20.3-.5,0-1.8.3-1.8.3-3,.8-3.7,3.4-3.7,3.4-.5,1.7,0,3.5,0,3.5,1,4.4,5.9,11.6,6.9,13.1Z" style={{ fillRule: "evenodd", fill: "url(#huaweidrive-Unbenannter_Verlauf_7)" }} />
-        <path id="huaweidrive-Path7" data-name="Path" d="M36.9,14.8s-9.5,5.1-14.4,8.4h0s0,0,0,.2c0,0,0,0,.1,0h0c1.8,0,8.4,0,8.6,0,0,0,.9,0,1.9-.4,0,0,2.4-.8,3.6-3.4,0,0,1.1-2.2.2-4.8Z" style={{ fillRule: "evenodd", fill: "url(#huaweidrive-Unbenannter_Verlauf_8)" }} />
+      <g id="huaweicloud-_华为logo上下排版" data-name="华为logo上下排版">
+        <path id="huaweicloud-Path" d="M5.3,15.2c2.8,2.7,9.5,6.1,11.1,6.9,0,0,0,0,.2,0,0,0,0,0,0-.1h0C12.2,12.6,6.4,5.6,6.4,5.6c0,0-3.2,3-3,6,.1,2.3,1.8,3.6,1.8,3.6Z" style={{ fillRule: "evenodd", fill: "url(#huaweicloud-Unbenannter_Verlauf)" }} />
+        <path id="huaweicloud-Path1" data-name="Path" d="M15.5,24.4c0,0-.1,0-.1,0h0l-11.2.4c1.2,2.2,3.3,3.8,5.4,3.3,1.5-.4,4.8-2.7,5.9-3.5h0c0,0,0-.1,0-.1Z" style={{ fillRule: "evenodd", fill: "url(#huaweicloud-Unbenannter_Verlauf_2)" }} />
+        <path id="huaweicloud-Path2" data-name="Path" d="M5,23c1.1.4,2.1.5,2.1.5.2,0,6.7,0,8.4,0,0,0,.1,0,.1,0,0,0,0-.2,0-.2h0C10.7,19.9,1.1,14.8,1.1,14.8c-.9,2.7.3,4.8.3,4.8,1.2,2.6,3.5,3.3,3.5,3.3Z" style={{ fillRule: "evenodd", fill: "url(#huaweicloud-Unbenannter_Verlauf_3)" }} />
+        <path id="huaweicloud-Path3" data-name="Path" d="M33.9,24.7l-11.2-.4h0s0,0-.1,0c0,0,0,0,0,.2h0c1.1.8,4.3,3,5.9,3.5,0,0,2.9,1,5.4-3.3Z" style={{ fillRule: "evenodd", fill: "url(#huaweicloud-Unbenannter_Verlauf_4)" }} />
+        <path id="huaweicloud-Path4" data-name="Path" d="M21.6,21.9s0,.1,0,.2c0,0,0,0,.2,0h0c1.6-.8,8.3-4.2,11.1-6.9,0,0,1.7-1.4,1.8-3.6.2-3.1-3-6-3-6,0,0-5.8,7-10.1,16.3h0Z" style={{ fillRule: "evenodd", fill: "url(#huaweicloud-Unbenannter_Verlauf_5)" }} />
+        <path id="huaweicloud-Path5" data-name="Path" d="M20,21.1c0,0,0,.1,0,.1.1,0,.2,0,.2,0h0c1.1-1.6,5.9-8.7,6.9-13.1,0,0,.5-2.1,0-3.5,0,0-.7-2.7-3.7-3.4,0,0-.9-.2-1.8-.3h0s-3.3,4.2-1.7,20.3h0Z" style={{ fill: "url(#huaweicloud-Unbenannter_Verlauf_6)", fillRule: "evenodd" }} />
+        <path id="huaweicloud-Path6" data-name="Path" d="M17.8,21.2c0,0,.1,0,.1,0,.1,0,.1-.1.1-.1h0c1.6-16.1-1.7-20.3-1.7-20.3-.5,0-1.8.3-1.8.3-3,.8-3.7,3.4-3.7,3.4-.5,1.7,0,3.5,0,3.5,1,4.4,5.9,11.6,6.9,13.1Z" style={{ fillRule: "evenodd", fill: "url(#huaweicloud-Unbenannter_Verlauf_7)" }} />
+        <path id="huaweicloud-Path7" data-name="Path" d="M36.9,14.8s-9.5,5.1-14.4,8.4h0s0,0,0,.2c0,0,0,0,.1,0h0c1.8,0,8.4,0,8.6,0,0,0,.9,0,1.9-.4,0,0,2.4-.8,3.6-3.4,0,0,1.1-2.2.2-4.8Z" style={{ fillRule: "evenodd", fill: "url(#huaweicloud-Unbenannter_Verlauf_8)" }} />
       </g>
     </svg>
   )
@@ -726,19 +735,6 @@ export function IconOracleCloud(props: SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 32 20" width="1em" height="1em" aria-hidden {...props}>
       <path fill="none" stroke="#C74634" strokeWidth="4" d="M10 2a8 8 0 1 0 0 16h12a8 8 0 1 0 0-16z" />
-    </svg>
-  )
-}
-
-/** premiumize.me. Source: homarr-labs/dashboard-icons, svg/premiumize.svg (Apache-2.0) */
-export function IconPremiumize(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 240 240" width="1em" height="1em" aria-hidden {...props}>
-      <g style={{ display: "inline" }} transform="translate(-5 47.638)">
-        <circle cx="124" cy="-.138" r="47.5" style={{ fill: "#a00", fillOpacity: "1" }} />
-        <path d="M125 64.831a65 62.532 0 0 0-65 62.531v65h130v-65a65 62.532 0 0 0-65-62.531" style={{ fill: "#a00", fillOpacity: "1", stroke: "none" }} />
-        <path d="m5 97.362 110 25 130-130c-33.227 57.786-74.464 116.997-120 185z" style={{ fill: "#fc0", fillOpacity: "1", fillRule: "evenodd", stroke: "none", strokeWidth: "1.0347985px", strokeLinecap: "butt", strokeLinejoin: "miter", strokeOpacity: "1" }} />
-      </g>
     </svg>
   )
 }

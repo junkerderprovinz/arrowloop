@@ -61,6 +61,10 @@ MARKS = [
     ("IconOpenstack", "openstack", "OpenStack Swift"),
     ("IconAkamai", "akamai", "Akamai NetStorage"),
     ("IconHadoop", "apachehadoop", "HDFS"),
+    # Huawei's own mark rather than a product's: Huawei Drive is the consumer
+    # storage and Huawei Cloud OBS is the platform, and the wordmark supplied
+    # for the second would name the wrong one of the two here.
+    ("IconHuawei", "huawei", "Huawei Drive"),
 ]
 
 HEAD = '''import type { SVGProps } from 'react'
@@ -336,7 +340,7 @@ LOCAL = [
     ("IconFilen", "filen", "Filen", JDP, BRAND),
     ("IconFilesCom", "filescom", "Files.com", JDP, BRAND),
     ("IconGoogleDrive", "gdrive", "Google Drive", JDP, BRAND),
-    ("IconHuawei", "huaweidrive", "Huawei Drive, under Huawei Cloud's mark", JDP, BRAND),
+    ("IconHuaweiCloud", "huaweicloud", "Huawei Cloud OBS", JDP, BRAND),
     ("IconICloud", "icloud", "iCloud Drive", JDP, BRAND),
     ("IconIonos", "hidrive", "IONOS HiDrive", JDP, BRAND),
     ("IconMega", "mega", "MEGA", JDP, BRAND),
@@ -354,8 +358,6 @@ LOCAL = [
      "homarr-labs/dashboard-icons, svg/microsoft-onedrive.svg", "Apache-2.0"),
     ("IconOracleCloud", "oracle-cloud", "Oracle Object Storage, part of Oracle Cloud",
      "homarr-labs/dashboard-icons, svg/oracle-cloud.svg", "Apache-2.0"),
-    ("IconPremiumize", "premiumize", "premiumize.me",
-     "homarr-labs/dashboard-icons, svg/premiumize.svg", "Apache-2.0"),
 ]
 
 # Attributes that mean nothing inside a component, or that the wrapper sets.
@@ -453,6 +455,26 @@ BRAND_DIR = Path(__file__).parent / "brand-paths"
 
 SVG_NS = "{http://www.w3.org/2000/svg}"
 
+# Files whose viewBox is far larger than anything they draw, with the box the
+# ink actually occupies.
+#
+# A logo exported with its wordmark as live TEXT loses the text and keeps the
+# box, so the symbol ends up in a corner of a mostly empty rectangle - and a
+# rectangle is what gets fitted into the row, not the drawing. Linkbox looked
+# like a 5.3:1 wordmark 8 pixels tall; its ink is SQUARE and fills a fifth of
+# its own box. Quatrix is the same case.
+#
+# Measured with getBBox() in the running app rather than guessed, because the
+# only honest source for "what does this file actually paint" is a renderer.
+# The files themselves stay untouched: an override here is visible and carries
+# its reason, an edited SVG in the folder would look like the original.
+TIGHT = {
+    "linkbox": "0 0.1 68.4 68.4",       # 19% of its box wide, and square
+    "quatrix": "0 0 59.3 58.5",         # 33% wide, also square
+    "gofile": "13 0 289.4 190",         # 43% wide
+    "huaweicloud": "0.8 0.8 36.5 27.4",  # 34% wide
+}
+
 
 def _inline_css(root, slug):
     """Fold an Illustrator `<style>` block into the elements it paints.
@@ -535,7 +557,7 @@ def pair(name, slug, note, source, licence):
         raise SystemExit("%s: the two inks are not the same drawing" % slug)
 
     root = _inline_css(ET.fromstring(io.open(dark_file, encoding="utf-8").read()), slug)
-    box = root.get("viewBox")
+    box = TIGHT.get(slug) or root.get("viewBox")
     if not box:
         raise SystemExit("brand-paths/%s-dark.svg has no viewBox" % slug)
 
@@ -569,7 +591,7 @@ def local(name, slug, note, source, licence):
     # The box: its own if it has one, otherwise built from width and height.
     # Several of these carry only a size, and a component with no viewBox does
     # not scale to the 1em the interface asks for.
-    box = root.get("viewBox")
+    box = TIGHT.get(slug) or root.get("viewBox")
     if not box:
         w, h = root.get("width"), root.get("height")
         if not w or not h:
@@ -662,6 +684,11 @@ def css_block(selectors, index, indent=0):
     lines.append("%s}" % pad)
     return "\n".join(lines)
 
+
+unbenutzt = [s_ for s_ in TIGHT if not (BRAND_DIR / (s_ + ".svg")).is_file()
+             and not (BRAND_DIR / (s_ + "-dark.svg")).is_file()]
+if unbenutzt:
+    raise SystemExit("TIGHT names files that are not here: " + ", ".join(unbenutzt))
 
 if not SRC.is_dir():
     raise SystemExit("no such directory: %s\nInstall simple-icons and pass its icons path." % SRC)

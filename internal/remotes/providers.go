@@ -113,7 +113,6 @@ var providers = []Provider{
 	{ID: "sharefile", Name: "ShareFile", Backend: "sharefile", Group: GroupCloud, Mark: "IconCitrix"},
 	{ID: "sugarsync", Name: "SugarSync", Backend: "sugarsync", Group: GroupCloud, Mark: "IconSugarsync"},
 	{ID: "putio", Name: "put.io", Backend: "putio", Group: GroupCloud, Mark: "IconPutio"},
-	{ID: "premiumize", Name: "premiumize.me", Backend: "premiumizeme", Group: GroupCloud, Mark: "IconPremiumize"},
 	{ID: "pikpak", Name: "PikPak", Backend: "pikpak", Group: GroupCloud, Mark: "IconPikpak"},
 	{ID: "internxt", Name: "Internxt", Backend: "internxt", Group: GroupCloud, Mark: "IconInternxt"},
 	{ID: "filen", Name: "Filen", Backend: "filen", Group: GroupCloud, Mark: "IconFilen"},
@@ -132,6 +131,14 @@ var providers = []Provider{
 	{ID: "b2", Name: "Backblaze B2", Backend: "b2", Group: GroupCloud, Mark: "IconBackblaze"},
 	{ID: "azureblob", Name: "Azure Blob Storage", Backend: "azureblob", Group: GroupCloud, Mark: "IconAzure"},
 	{ID: "gcs", Name: "Google Cloud Storage", Backend: "googlecloudstorage", Group: GroupCloud, Mark: "IconGoogleCloud"},
+	// Huawei's OTHER storage, and the reason both are listed: `huaweidrive`
+	// above is the consumer Drive, this is the platform's object storage, and
+	// somebody looking for one of them would not accept the other. It reaches
+	// it the way rclone does, as an S3 provider, which is the same arrangement
+	// that puts Nextcloud, ownCloud and OpenCloud on one webdav backend: the
+	// list is products, the backends are plumbing.
+	{ID: "huaweiobs", Name: "Huawei Cloud OBS", Backend: "s3", Group: GroupCloud,
+		Preset: map[string]string{"provider": "HuaweiOBS"}, Mark: "IconHuaweiCloud"},
 	{ID: "oracle", Name: "Oracle Object Storage", Backend: "oracleobjectstorage", Group: GroupCloud, Mark: "IconOracleCloud"},
 	{ID: "storj", Name: "Storj", Backend: "storj", Group: GroupCloud, Mark: "IconStorj"},
 	{ID: "swift", Name: "OpenStack Swift", Backend: "swift", Group: GroupCloud, Mark: "IconOpenstack"},
