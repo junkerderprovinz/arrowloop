@@ -57,7 +57,12 @@ export function ProviderPicker({
 
   return (
     <div className="flex flex-col gap-4 py-2">
-      <div className="flex justify-start">
+      {/* Hard right, where every other control that leaves a card sits. jdp:
+          "der zurückbutton in den cards bitte auch nach ganz rechts." The
+          save/cancel pair on the form this list leads to is already there, so
+          a back button on the left made the way out move across the card
+          between one step and the next. */}
+      <div className="flex justify-end">
         <IconAction
           title={t('preview.back')}
           labelKey="preview.back"

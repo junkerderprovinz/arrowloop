@@ -97,8 +97,10 @@ export function Preview({ job, onDone }: { job: string; onDone: () => void }) {
   // the plan. A preview that fails to plan is exactly the moment somebody most
   // wants to leave, and it used to be the moment with nothing on screen but the
   // error.
+  // Hard right, the same corner as the save/cancel pair on every other card.
+  // jdp: "der zurückbutton in den cards bitte auch nach ganz rechts."
   const back = (
-    <div className="flex justify-start">
+    <div className="flex justify-end">
       <IconAction
         title={t('preview.back')}
         labelKey="preview.back"
