@@ -105,11 +105,21 @@ uses too and the allowlist carries.
 **The emulator cannot answer this question either way**, which is worth knowing
 before spending an evening on it. Its x86_64 build dies on the syscall above.
 Its arm64 build is run through `ndk_translation`, which covers code the Android
-runtime loads and not an arm64 ELF a process `exec`s for itself - that dies
-with SIGSEGV inside the translator, an artefact of the rig rather than
-a fact about the app. A real arm64 phone is the only place this is decidable,
-and the engine log names the ABI it was built for on its first line so a
-screenshot says which one it came from.
+runtime loads and not an arm64 ELF a process `exec`s for itself.
+
+That last one is not a guess. A Go program of two lines - `fmt.Println` and
+nothing else - was built for both architectures and run on the emulator:
+
+```
+amd64 build:   hallo von arm64      rc=0
+arm64 build:   Segmentation fault   rc=139
+```
+
+Same program, same signal ArrowLoop dies with. So the arm64 failure on the
+emulator has nothing to do with this app, its 79 MB, SQLite or rclone: the rig
+cannot exec an arm64 Go binary at all. A real arm64 phone is the only place
+this is decidable, and the engine log names the ABI it was built for on its
+first line so a screenshot says which one it came from.
 
 ## What it can reach
 
