@@ -381,7 +381,6 @@ const he: Translations = {
   'edit.trash': 'לנהל סל בכל צד',
   'edit.trashHint': 'מחיקה הופכת להעברה לתיקייה מוסתרת בשם ‎.arrowloop בתוך העץ המסונכרן, כך ששום דבר שהמשימה הזאת עושה אינו משמיד דבר סופית, וקובץ שנמחק בטעות נשלף חזרה מלשונית הסל. את התיקייה הזאת רואה כל מי שמשתמש בשיתוף, וזו בדיוק הסיבה לכבות: בלי סל היא לא נוצרת אף פעם, המחיקה סופית, וכך גם הצד המפסיד בהתנגשות. סביר לתיקיית הורדות, רעיון רע לתיקיית מסמכים.',
   'jobs.activityLoading': 'קורא מה המשימה הזאת עשתה.',
-  'history.more': 'הצג עוד',
   'trash.holding': '{count} בסל, {size}',
   'targets.tokenNeeded': '{backend} עובד עם אסימון התחברות שיש להשיג במקום אחר.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',

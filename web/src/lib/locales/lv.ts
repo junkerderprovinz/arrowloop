@@ -381,7 +381,6 @@ const lv: Translations = {
   'edit.trash': 'Uzturēt atkritni katrā pusē',
   'edit.trashHint': 'Dzēšana kļūst par pārvietošanu uz slēptu mapi ar nosaukumu .arrowloop sinhronizētā koka iekšienē, tāpēc nekas, ko šis darbs dara, neiznīcina neko galīgi, un kļūdas pēc izdzēstu datni var atgūt atkritnes cilnē. Šo mapi redz ikviens, kas izmanto koplietojumu, un tieši tāpēc šo ir vērts izslēgt: bez atkritnes tā nekad netiek izveidota, dzēšana ir galīga, tāpat kā konflikta zaudētāja puse. Lejupielāžu mapei saprātīgi, dokumentu mapei slikta doma.',
   'jobs.activityLoading': 'Tiek lasīts, ko šis darbs ir paveicis.',
-  'history.more': 'Rādīt vairāk',
   'trash.holding': '{count} atkritnē, {size}',
   'targets.tokenNeeded': '{backend} izmanto pieteikšanās pilnvaru, kas jāiegūst citur.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',

@@ -381,7 +381,6 @@ const ko: Translations = {
   'edit.trash': '양쪽에 휴지통을 둔다',
   'edit.trashHint': '삭제는 동기화 대상 트리 안의 .arrowloop 이라는 숨김 폴더로 옮기는 일이 됩니다. 따라서 이 작업이 하는 어떤 일도 무언가를 완전히 없애지 않으며, 실수로 지운 파일은 휴지통 탭에서 되찾을 수 있습니다. 그 폴더는 해당 공유를 쓰는 모두에게 보이며, 바로 그것이 이 설정을 끄는 이유입니다. 휴지통이 없으면 폴더는 아예 만들어지지 않고, 삭제는 되돌릴 수 없으며, 충돌에서 진 쪽도 마찬가지입니다. 내려받기 폴더에는 합리적이지만 문서 폴더에는 나쁜 생각입니다.',
   'jobs.activityLoading': '이 작업이 무엇을 했는지 읽는 중입니다.',
-  'history.more': '더 보기',
   'trash.holding': '휴지통에 {count}, {size}',
   'targets.tokenNeeded': '{backend}은(는) 로그인 토큰으로 연결합니다. 토큰은 다른 곳에서 받아야 합니다.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',

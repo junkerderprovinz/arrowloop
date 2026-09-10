@@ -373,7 +373,17 @@ func RunVerified(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt
 	// Files both sides created identically need no transfer, only a record.
 	for _, act := range p.Agreed {
 		left, right := act.Names()
-		t.step("record", act.Path, "")
+		// WITH its size, even though nothing was transferred. The row describes
+		// a file and the file has a size, and on a settled pair of trees this
+		// is nearly every row there is: without it the activity log's size
+		// column is blank on 696 lines out of 697, which is what "die
+		// dateigröße ist nicht sichtbar" looked like from the outside. Either
+		// side will do, since agreeing is what put them in this list.
+		agreed := act.LeftNow
+		if agreed == nil {
+			agreed = act.RightNow
+		}
+		t.sized("record", act.Path, "", sizeOf(agreed))
 		if err := rec.settle(ctx, act.Path, left, right); err != nil {
 			var dis *DisagreementError
 			if errors.As(err, &dis) {

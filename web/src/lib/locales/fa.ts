@@ -381,7 +381,6 @@ const fa: Translations = {
   'edit.trash': 'نگه داشتن سطل در هر دو سمت',
   'edit.trashHint': 'حذف به جابه‌جایی به پوشه‌ای پنهان به نام ‎.arrowloop درون درخت همگام‌شده تبدیل می‌شود، پس هیچ‌یک از کارهای این وظیفه چیزی را برای همیشه نابود نمی‌کند و پرونده‌ای که اشتباهی حذف شده از زبانه سطل بازمی‌گردد. آن پوشه را هر کسی که از اشتراک استفاده می‌کند می‌بیند، و دقیقاً همین دلیل خاموش کردن این گزینه است: بدون سطل هرگز ساخته نمی‌شود، حذف قطعی است، و سمت بازنده یک تعارض هم همین‌طور. برای پوشه دانلود منطقی، برای پوشه اسناد فکر بدی است.',
   'jobs.activityLoading': 'در حال خواندن آنچه این کار انجام داده است.',
-  'history.more': 'نمایش بیشتر',
   'trash.holding': '{count} در سطل، {size}',
   'targets.tokenNeeded': '{backend} با یک توکن ورود کار می‌کند که باید جای دیگری گرفته شود.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',

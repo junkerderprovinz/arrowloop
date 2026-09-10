@@ -381,7 +381,6 @@ const id: Translations = {
   'edit.trash': 'Menyimpan tempat sampah di tiap sisi',
   'edit.trashHint': 'Penghapusan menjadi perpindahan ke folder tersembunyi bernama .arrowloop di dalam pohon yang disinkronkan, sehingga tidak ada yang dilakukan tugas ini yang memusnahkan sesuatu secara permanen, dan berkas yang terhapus tidak sengaja bisa diambil kembali dari tab tempat sampah. Folder itu terlihat oleh semua orang yang memakai berbagi pakai tersebut, dan justru itulah alasan mematikan pilihan ini: tanpa tempat sampah folder itu tidak pernah dibuat, penghapusan bersifat final, begitu pula sisi yang kalah dalam sebuah konflik. Masuk akal untuk folder unduhan, ide buruk untuk folder dokumen.',
   'jobs.activityLoading': 'Sedang membaca apa yang telah dilakukan tugas ini.',
-  'history.more': 'Tampilkan lebih banyak',
   'trash.holding': '{count} di tempat sampah, {size}',
   'targets.tokenNeeded': '{backend} dipakai dengan token masuk, yang harus diambil di tempat lain.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',

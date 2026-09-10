@@ -381,7 +381,6 @@ const da: Translations = {
   'edit.trash': 'Hold en papirkurv på hver side',
   'edit.trashHint': 'En sletning bliver til en flytning til en skjult mappe ved navn .arrowloop inde i det synkroniserede træ, så intet af det, dette job gør, ødelægger noget endeligt, og en fil, der er slettet ved en fejl, hentes tilbage fra papirkurvsfanen. Den mappe kan alle, der bruger delingen, se, og det er netop derfor man slår dette fra: uden papirkurv bliver den aldrig oprettet, en sletning er endelig, og det er den tabende side i en konflikt også. Fornuftigt for en downloadmappe, en dårlig idé for en dokumentmappe.',
   'jobs.activityLoading': 'Læser hvad dette job har gjort.',
-  'history.more': 'Vis flere',
   'trash.holding': '{count} i papirkurven, {size}',
   'targets.tokenNeeded': '{backend} bruges med en loginnøgle, der skal hentes et andet sted.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',

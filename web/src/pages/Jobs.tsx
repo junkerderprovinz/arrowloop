@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { Empty, Num, Rule, Stack } from '../components/Shell'
 import { IconAction } from '../components/IconAction'
@@ -815,8 +815,21 @@ function JobActivity({ job }: { job: string }) {
             <span className="w-14 shrink-0 text-end tabular-nums text-carbon-textMuted">
               {e.Size > 0 ? bytes(e.Size) : ''}
             </span>
-            <span className="w-12 shrink-0 text-carbon-textMuted">
-              {e.Side ? translateSide(t, e.Side as 'left' | 'right') : ''}
+            {/* Which way it went, drawn rather than spelled. jdp: "es gibt eine
+                spalte wo rechts drinnen steht? ist das die richtung der
+                syncronisation? wenn ja bitte nur als pfeil darstellen." It is
+                the side that was WRITTEN to, which is the same fact: a file
+                that landed on the right came from the left. The word stays in
+                the title and in the accessible name, so nothing is lost for a
+                screen reader or a pointer that rests here. */}
+            <span
+              className="flex w-6 shrink-0 justify-center text-carbon-textMuted"
+              title={e.Side ? translateSide(t, e.Side as 'left' | 'right') : undefined}
+            >
+              {e.Side === 'right' ? <IconToRight /> : e.Side === 'left' ? <IconToLeft /> : null}
+              {e.Side && (
+                <span className="sr-only">{translateSide(t, e.Side as 'left' | 'right')}</span>
+              )}
             </span>
             <span className="min-w-0 flex-1 break-all font-mono text-carbon-text" title={e.Path}>
               {e.Path}
@@ -903,6 +916,8 @@ export function History({
    * blunt one for when you do not know what you are looking for.
    */
   const [limit, setLimit] = useState(50)
+  /** The end of the list, watched so that reaching it asks for more. */
+  const sentinel = useRef<HTMLDivElement | null>(null)
 
   const filtered = job !== '' || show !== 'all'
 
@@ -920,6 +935,26 @@ export function History({
   }, [job, show, limit, runs])
 
   const list = own ?? runs
+
+  // Reaching the end of the list asks for the next helping.
+  //
+  // Re-armed whenever the list or the limit changes, because the sentinel is a
+  // different element each time the list is rebuilt and an observer left
+  // pointing at the old one watches something that is no longer on the page.
+  //
+  // `loading` deliberately gates the ASK rather than the observer: an answer
+  // that arrives while the sentinel is still on screen should be able to ask
+  // again straight away, which is what makes a fast scroll to the bottom keep
+  // going instead of stopping after one helping.
+  useEffect(() => {
+    const end = sentinel.current
+    if (!end) return
+    const watcher = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting) && !loading) setLimit((n) => n * 2)
+    })
+    watcher.observe(end)
+    return () => watcher.disconnect()
+  }, [list.length, limit, loading])
 
   // The names come from the configuration AND from the log, joined. A job that
   // has been renamed or deleted still has its runs in here, and leaving it out
@@ -1037,16 +1072,24 @@ export function History({
           </li>
         ))}
       </ul>
-      {/* Offered only when the answer FILLED the limit, which is the one honest
+      {/* Reaching the end of the list IS the request for more. jdp: "im
+          verlauftab soll es sein wie im aktivitätslog, wenn man ans untere ende
+          scroll soll es automatisch mehr einträge laden. der button mehr
+          anzeigen soll weg." A button at the end of a list asks somebody to
+          stop reading, aim and click, in order to carry on doing the thing they
+          were already doing.
+
+          A sentinel watched by an IntersectionObserver rather than the activity
+          log's scroll arithmetic, because this list has no box of its own: it
+          is the page, and the thing that scrolls is the window. The observer
+          answers "is the end of the list on screen" without either of them
+          having to know which element is doing the scrolling.
+
+          Armed only when the answer FILLED the limit, which is the one honest
           signal that there may be more: a shorter list is the whole list. */}
       {list.length >= limit && (
-        <div className="mt-3 flex justify-center">
-          <Button
-            label={loading ? t('history.working') : t('history.more')}
-            labelKey={loading ? 'history.working' : 'history.more'}
-            disabled={loading}
-            onClick={() => setLimit((n) => n * 2)}
-          />
+        <div ref={sentinel} className="mt-3 flex justify-center py-2 text-caption text-carbon-textMuted">
+          {loading ? t('history.working') : ''}
         </div>
       )}
     </Card>

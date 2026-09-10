@@ -381,7 +381,6 @@ const vi: Translations = {
   'edit.trash': 'Giữ một thùng rác ở mỗi bên',
   'edit.trashHint': 'Việc xoá trở thành việc chuyển vào một thư mục ẩn tên .arrowloop bên trong cây đồng bộ, nên không điều gì công việc này làm huỷ hoại thứ gì vĩnh viễn, và tệp bị xoá nhầm được lấy lại ở thẻ thùng rác. Thư mục đó ai dùng chia sẻ cũng thấy, và đó chính là lý do để tắt tuỳ chọn này: không có thùng rác thì nó không bao giờ được tạo, việc xoá là dứt khoát, và bên thua trong một xung đột cũng vậy. Hợp lý cho thư mục tải về, ý tưởng tồi cho thư mục tài liệu.',
   'jobs.activityLoading': 'Đang đọc những gì công việc này đã làm.',
-  'history.more': 'Hiển thị thêm',
   'trash.holding': '{count} trong thùng rác, {size}',
   'targets.tokenNeeded': '{backend} dùng một token đăng nhập, phải lấy ở nơi khác.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',

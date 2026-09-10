@@ -305,6 +305,28 @@ body {
   box-sizing: border-box;
 }
 
+/* A navigation row in the rail, and the ONE place the rail's glyph size lives.
+   20px, which is a step up from the 16 a glyph takes beside body text: a rail
+   row is a bigger target with more room, and in glyph-only mode the symbol is
+   the whole row. GlimStone 1.8.1.
+
+   This app had no such rule and therefore shipped whatever its generator
+   emitted, which is 14px - a third smaller than the sibling app's rail, on
+   screens somebody compares side by side.
+
+   `flex: none` because a rail row is a flex line and a glyph beside a long
+   label is the item a flex container squeezes first. */
+.glim-nav-row > svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex: none;
+}
+
+/* A closed reactive row must not reserve a gap beside a zero-width label. */
+.glim-nav-row.glim-reactive {
+  gap: 0;
+}
+
 /* The one raised surface. Never nest it (rule 1). */
 .glim-card {
   background-color: var(--carbon-surface);

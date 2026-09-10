@@ -381,7 +381,6 @@ const ca: Translations = {
   'edit.trash': 'Mantenir una paperera a cada costat',
   'edit.trashHint': 'Una supressió esdevé un trasllat a una carpeta amagada anomenada .arrowloop dins de l\'arbre sincronitzat, de manera que res del que fa aquesta tasca no destrueix res de manera definitiva, i un fitxer esborrat per error es recupera des de la pestanya de la paperera. Aquesta carpeta la veu tothom qui faci servir la compartició, i és justament el motiu per desactivar-ho: sense paperera no es crea mai, una supressió és definitiva, i el costat perdedor d\'un conflicte també. Raonable per a una carpeta de baixades, mala idea per a una de documents.',
   'jobs.activityLoading': 'S\'està llegint què ha fet aquesta tasca.',
-  'history.more': 'Mostra\'n més',
   'trash.holding': '{count} a la paperera, {size}',
   'targets.tokenNeeded': '{backend} s\'utilitza amb un testimoni d\'accés, que cal obtenir en un altre lloc.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',

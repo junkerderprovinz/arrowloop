@@ -381,7 +381,6 @@ const ro: Translations = {
   'edit.trash': 'Păstrează un coș pe fiecare parte',
   'edit.trashHint': 'O ștergere devine o mutare într-un dosar ascuns numit .arrowloop din interiorul arborelui sincronizat, așa că nimic din ce face această sarcină nu distruge ceva definitiv, iar un fișier șters din greșeală se recuperează din fila coșului. Acel dosar este vizibil pentru toți cei care folosesc partajarea, și tocmai acesta este motivul de a dezactiva opțiunea: fără coș nu se creează niciodată, o ștergere este definitivă, la fel și partea care pierde într-un conflict. Rezonabil pentru un dosar de descărcări, o idee proastă pentru unul de documente.',
   'jobs.activityLoading': 'Se citește ce a făcut această sarcină.',
-  'history.more': 'Afișează mai multe',
   'trash.holding': '{count} în coș, {size}',
   'targets.tokenNeeded': '{backend} se folosește cu un token de autentificare, care trebuie obținut în altă parte.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',

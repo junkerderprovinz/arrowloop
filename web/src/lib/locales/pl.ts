@@ -381,7 +381,6 @@ const pl: Translations = {
   'edit.trash': 'Prowadzić kosz po każdej stronie',
   'edit.trashHint': 'Usunięcie staje się przeniesieniem do ukrytego folderu o nazwie .arrowloop wewnątrz synchronizowanego drzewa, więc nic, co robi to zadanie, nie niszczy niczego bezpowrotnie, a plik skasowany przez pomyłkę odzyskasz w zakładce kosza. Ten folder widzi każdy, kto korzysta z udziału, i właśnie dlatego warto to wyłączyć: bez kosza nigdy nie powstaje, usunięcie jest ostateczne, a przegrywająca strona konfliktu tak samo. Rozsądne dla folderu pobrań, zły pomysł dla folderu z dokumentami.',
   'jobs.activityLoading': 'Trwa odczyt tego, co zrobiło to zadanie.',
-  'history.more': 'Pokaż więcej',
   'trash.holding': '{count} w koszu, {size}',
   'targets.tokenNeeded': '{backend} działa z tokenem logowania, który trzeba pobrać gdzie indziej.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',

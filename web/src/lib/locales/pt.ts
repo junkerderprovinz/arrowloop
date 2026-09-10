@@ -381,7 +381,6 @@ const pt: Translations = {
   'edit.trash': 'Manter uma reciclagem de cada lado',
   'edit.trashHint': 'Uma eliminação passa a ser uma mudança para uma pasta escondida chamada .arrowloop dentro da árvore sincronizada, por isso nada do que esta tarefa faz destrói o que quer que seja de forma definitiva e um ficheiro apagado por engano recupera-se no separador da reciclagem. Essa pasta é visível para todos os que usam a partilha, e é essa a razão para desligar isto: sem reciclagem ela nunca é criada, uma eliminação é definitiva, e o lado perdedor de um conflito também. Razoável para uma pasta de transferências, má ideia para uma de documentos.',
   'jobs.activityLoading': 'A ler o que esta tarefa fez.',
-  'history.more': 'Mostrar mais',
   'trash.holding': '{count} na reciclagem, {size}',
   'targets.tokenNeeded': '{backend} usa-se com um token de acesso, que tem de ser obtido noutro lado.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',

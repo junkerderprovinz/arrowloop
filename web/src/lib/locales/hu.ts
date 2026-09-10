@@ -381,7 +381,6 @@ const hu: Translations = {
   'edit.trash': 'Mindkét oldalon kukát vezetni',
   'edit.trashHint': 'A törlés áthelyezéssé válik egy .arrowloop nevű rejtett mappába a szinkronizált fán belül, így semmi, amit ez a feladat tesz, nem semmisít meg véglegesen semmit, a tévedésből törölt fájlt pedig a kuka fülön hozhatod vissza. Ezt a mappát mindenki látja, aki a megosztást használja, és éppen ez az oka a kikapcsolásnak: kuka nélkül soha nem jön létre, a törlés végleges, és az ütközés vesztes oldala is az. Letöltési mappához észszerű, dokumentumokhoz rossz ötlet.',
   'jobs.activityLoading': 'Beolvasás, mit tett ez a feladat.',
-  'history.more': 'Több megjelenítése',
   'trash.holding': '{count} a kukában, {size}',
   'targets.tokenNeeded': 'A(z) {backend} bejelentkezési tokennel érhető el, amelyet máshol kell beszerezni.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',

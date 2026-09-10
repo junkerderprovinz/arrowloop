@@ -381,7 +381,6 @@ const eu: Translations = {
   'edit.trash': 'Zakarrontzi bat gorde alde bakoitzean',
   'edit.trashHint': 'Ezabatzea sinkronizatutako zuhaitzaren barruko .arrowloop izeneko karpeta ezkutu batera eramatea bihurtzen da, beraz lan honek egiten duen ezerk ez du ezer betiko suntsitzen, eta nahi gabe ezabatutako fitxategia zakarrontziaren fitxatik berreskuratzen da. Karpeta hori partekatzea erabiltzen duen orok ikusten du, eta hori da hain zuzen hau itzaltzeko arrazoia: zakarrontzirik gabe ez da inoiz sortzen, ezabatzea behin betikoa da, eta gatazka batean galtzen duen aldea ere bai. Zentzuzkoa deskargen karpeta baterako, ideia txarra dokumentuen karpeta baterako.',
   'jobs.activityLoading': 'Lan honek zer egin duen irakurtzen ari da.',
-  'history.more': 'Erakutsi gehiago',
   'trash.holding': '{count} zakarrontzian, {size}',
   'targets.tokenNeeded': '{backend} saioa hasteko token batekin erabiltzen da, beste nonbait lortu behar dena.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',

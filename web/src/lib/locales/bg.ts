@@ -381,7 +381,6 @@ const bg: Translations = {
   'edit.trash': 'Да се води кошче от всяка страна',
   'edit.trashHint': 'Изтриването се превръща в преместване в скрита папка с име .arrowloop вътре в синхронизираното дърво, така че нищо, което тази задача прави, не унищожава нещо окончателно, а файл, изтрит по погрешка, се връща от раздела на кошчето. Тази папка се вижда от всеки, който ползва споделянето, и точно това е причината да го изключиш: без кошче тя никога не се създава, изтриването е окончателно, а също и губещата страна на конфликт. Разумно за папка с изтегляния, лоша идея за папка с документи.',
   'jobs.activityLoading': 'Чете се какво е направила тази задача.',
-  'history.more': 'Показване на още',
   'trash.holding': '{count} в кошчето, {size}',
   'targets.tokenNeeded': '{backend} работи с токен за вход, който трябва да се вземе другаде.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',

@@ -381,7 +381,6 @@ const hi: Translations = {
   'edit.trash': 'हर तरफ़ एक रद्दी रखें',
   'edit.trashHint': 'मिटाना समकालित पेड़ के भीतर .arrowloop नाम के छिपे फ़ोल्डर में खिसकाना बन जाता है, इसलिए यह काम जो कुछ करता है वह कुछ भी हमेशा के लिए नष्ट नहीं करता, और ग़लती से मिटी फ़ाइल रद्दी टैब से वापस मिल जाती है। वह फ़ोल्डर हर उस व्यक्ति को दिखता है जो साझा संसाधन इस्तेमाल करता है, और इसे बंद करने का यही कारण है: रद्दी के बिना वह कभी बनता ही नहीं, मिटाना अंतिम हो जाता है, और टकराव में हारने वाला पक्ष भी। डाउनलोड फ़ोल्डर के लिए समझदारी, दस्तावेज़ों के फ़ोल्डर के लिए बुरा विचार।',
   'jobs.activityLoading': 'पढ़ा जा रहा है कि इस काम ने क्या किया।',
-  'history.more': 'और दिखाएँ',
   'trash.holding': 'रद्दी में {count}, {size}',
   'targets.tokenNeeded': '{backend} एक साइन-इन टोकन से चलता है, जो कहीं और से लाना पड़ता है।',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',

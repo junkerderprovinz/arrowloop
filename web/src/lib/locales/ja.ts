@@ -381,7 +381,6 @@ const ja: Translations = {
   'edit.trash': '両側にごみ箱を持つ',
   'edit.trashHint': '削除は、同期対象のツリー内にある .arrowloop という隠しフォルダーへの移動になります。したがってこの処理が行うことで何かが完全に失われることはなく、誤って削除したファイルはごみ箱タブから取り戻せます。そのフォルダーはその共有を使う全員に見えます。それこそがこれを切る理由です。ごみ箱がなければフォルダーは作られず、削除は最終的なものになり、競合で負けた側も同じです。ダウンロード用フォルダーには妥当ですが、書類のフォルダーには向きません。',
   'jobs.activityLoading': 'この処理が何をしたかを読み込んでいます。',
-  'history.more': 'さらに表示',
   'trash.holding': 'ごみ箱に {count}、{size}',
   'targets.tokenNeeded': '{backend} はサインイン用のトークンで接続します。トークンは別の場所で取得します。',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',

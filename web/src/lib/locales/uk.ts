@@ -381,7 +381,6 @@ const uk: Translations = {
   'edit.trash': 'Тримати кошик на кожному боці',
   'edit.trashHint': 'Вилучення перетворюється на переміщення до прихованої теки з назвою .arrowloop усередині синхронізованого дерева, тож ніщо з того, що робить це завдання, не знищує дані остаточно, а файл, вилучений помилково, повертається на вкладці кошика. Цю теку бачить кожен, хто користується спільним ресурсом, і саме тому варто вимкнути налаштування: без кошика вона ніколи не створюється, вилучення стає остаточним, як і сторона, що програла в конфлікті. Розумно для теки завантажень, погана думка для теки з документами.',
   'jobs.activityLoading': 'Читається, що зробило це завдання.',
-  'history.more': 'Показати ще',
   'trash.holding': '{count} у кошику, {size}',
   'targets.tokenNeeded': '{backend} працює з токеном входу, який потрібно отримати в іншому місці.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',

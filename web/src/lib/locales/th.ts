@@ -381,7 +381,6 @@ const th: Translations = {
   'edit.trash': 'เก็บถังขยะไว้ทั้งสองฝั่ง',
   'edit.trashHint': 'การลบจะกลายเป็นการย้ายไปยังโฟลเดอร์ซ่อนชื่อ .arrowloop ภายในต้นไม้ที่ซิงก์ ดังนั้นไม่มีสิ่งใดที่งานนี้ทำจะทำลายอะไรอย่างถาวร และไฟล์ที่ลบผิดพลาดดึงกลับได้จากแท็บถังขยะ โฟลเดอร์นั้นทุกคนที่ใช้แชร์นี้มองเห็น และนั่นคือเหตุผลที่จะปิดตัวเลือกนี้ เมื่อไม่มีถังขยะโฟลเดอร์ก็ไม่ถูกสร้างเลย การลบเป็นที่สิ้นสุด และฝั่งที่แพ้ในความขัดแย้งก็เช่นกัน สมเหตุสมผลสำหรับโฟลเดอร์ดาวน์โหลด แต่เป็นความคิดที่ไม่ดีสำหรับโฟลเดอร์เอกสาร',
   'jobs.activityLoading': 'กำลังอ่านว่างานนี้ทำอะไรไปบ้าง',
-  'history.more': 'แสดงเพิ่ม',
   'trash.holding': '{count} ในถังขยะ {size}',
   'targets.tokenNeeded': '{backend} ใช้โทเคนสำหรับเข้าสู่ระบบ ซึ่งต้องไปขอจากที่อื่น',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',

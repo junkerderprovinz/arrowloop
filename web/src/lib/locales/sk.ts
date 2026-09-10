@@ -381,7 +381,6 @@ const sk: Translations = {
   'edit.trash': 'Viesť kôš na každej strane',
   'edit.trashHint': 'Z vymazania sa stane presun do skrytého priečinka s názvom .arrowloop vnútri synchronizovaného stromu, takže nič z toho, čo táto úloha robí, nezničí nič nadobro a omylom vymazaný súbor vytiahneš späť v záložke koša. Tento priečinok vidí každý, kto zdieľanie používa, a práve to je dôvod, prečo to vypnúť: bez koša nikdy nevznikne, vymazanie je konečné a porazená strana konfliktu tiež. Rozumné pre priečinok so stiahnutými súbormi, zlý nápad pre priečinok s dokumentmi.',
   'jobs.activityLoading': 'Načítava sa, čo táto úloha urobila.',
-  'history.more': 'Zobraziť viac',
   'trash.holding': '{count} v koši, {size}',
   'targets.tokenNeeded': '{backend} sa používa s prihlasovacím tokenom, ktorý treba získať inde.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',

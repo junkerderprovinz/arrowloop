@@ -381,7 +381,6 @@ const et: Translations = {
   'edit.trash': 'Hoia prügikasti mõlemal poolel',
   'edit.trashHint': 'Kustutamisest saab teisaldamine sünkroonitava puu sees asuvasse peidetud kausta nimega .arrowloop, nii et miski, mida see töö teeb, ei hävita midagi lõplikult, ja kogemata kustutatud faili saab prügikasti kaardilt tagasi. Seda kausta näeb igaüks, kes jagamist kasutab, ja just see on põhjus, miks seda välja lülitada: ilma prügikastita ei looda seda kunagi, kustutamine on lõplik, samuti konflikti kaotanud pool. Allalaadimiskausta jaoks mõistlik, dokumendikausta jaoks halb mõte.',
   'jobs.activityLoading': 'Loetakse, mida see töö on teinud.',
-  'history.more': 'Näita rohkem',
   'trash.holding': '{count} prügikastis, {size}',
   'targets.tokenNeeded': '{backend} kasutab sisselogimisluba, mis tuleb hankida mujalt.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',

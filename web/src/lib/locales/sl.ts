@@ -381,7 +381,6 @@ const sl: Translations = {
   'edit.trash': 'Na vsaki strani voditi koš',
   'edit.trashHint': 'Brisanje postane premik v skrito mapo z imenom .arrowloop znotraj usklajenega drevesa, tako da nič, kar to opravilo počne, ničesar dokončno ne uniči, pomotoma izbrisano datoteko pa dobiš nazaj v zavihku koša. To mapo vidi vsak, ki uporablja skupno rabo, in prav to je razlog, da to izklopiš: brez koša nikoli ne nastane, brisanje je dokončno, prav tako pa tudi poražena stran spora. Smiselno za mapo s prenosi, slaba zamisel za mapo z dokumenti.',
   'jobs.activityLoading': 'Bere se, kaj je to opravilo naredilo.',
-  'history.more': 'Prikaži več',
   'trash.holding': '{count} v košu, {size}',
   'targets.tokenNeeded': '{backend} deluje s prijavnim žetonom, ki ga je treba pridobiti drugje.',
   'targets.tokenHowTo': 'Run `rclone authorize "{backend}"` on a computer with a browser. It opens the provider\'s sign-in page and prints a token when you are done. Paste that whole line into the token field.',
