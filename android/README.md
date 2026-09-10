@@ -1,5 +1,16 @@
 # ArrowLoop for Android
 
+> **This shell is being replaced.** jdp decided on 2026-09-11 that the app gets
+> a real mobile interface in React Native rather than the desktop interface in
+> a WebView - see [`../mobile/PLAN.md`](../mobile/PLAN.md). The engine plumbing
+> in here carries over unchanged behind a native module; what goes is the
+> WebView and nothing else.
+>
+> **And the engine RUNS on a real phone.** That was the open risk for days.
+> jdp: *"auf dem handy läuft die app. sonst hätte ich es ja nicht sehen
+> können."* The WebView only loads once the engine answers, so seeing the
+> interface at all is the proof.
+
 The same engine, on a phone. Not a rewrite: `libarrowloop.so` in this app is
 byte for byte the binary the container runs, cross-compiled for the phone's
 architecture, and the screen is the engine's own interface in a WebView.
