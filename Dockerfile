@@ -49,8 +49,12 @@ ARG TARGETARCH
 # so the running image's version is visible in the container log. "dev" for an
 # unstamped local build, which is worth being able to see.
 ARG VERSION=dev
+# -trimpath for reproducibility rather than for size: it is worth 0.11 MB out of
+# 85, measured, and it takes the build machine's directory layout out of the
+# binary so the same commit produces the same bytes wherever it is built.
+# -s -w are the size flags and were already here; they are worth 32 MB.
 RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} \
-    go build -ldflags "-s -w -X github.com/junkerderprovinz/arrowloop/internal/boot.Version=${VERSION}" \
+    go build -trimpath -ldflags "-s -w -X github.com/junkerderprovinz/arrowloop/internal/boot.Version=${VERSION}" \
     -o /out/arrowloop ./cmd/arrowloop
 
 # ---- Stage 3: runtime -------------------------------------------------------

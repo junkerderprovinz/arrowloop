@@ -24,9 +24,22 @@ import (
 
 	"github.com/energye/systray"
 
-	// Only the backends this stage needs, exactly as the command line binary
-	// does. Importing backend/all would multiply the download for targets
-	// nobody has asked for.
+	// FOUR backends, where the engine and the container carry every one rclone
+	// has. The comment here used to say "exactly as the command line binary
+	// does", and that stopped being true the day jdp asked for "sämtliche" and
+	// cmd/arrowloop moved to backend/all - two mains in one repo, one of them
+	// left behind, with a comment asserting they agree.
+	//
+	// It is not a crash: remotes.Providers() filters the list by what is
+	// actually registered, so the desktop app offers the handful these four
+	// cover and simply never shows the rest. Which is the quieter failure -
+	// somebody who read the release notes goes looking for Backblaze or pCloud
+	// on Windows and concludes the feature is broken.
+	//
+	// Measured before changing anything: 49.5 MB as it stands, and the same
+	// four backends with -s -w come to 35.3. Going to backend/all is a size
+	// decision rather than a correctness one, so it is jdp's to make and is on
+	// the list rather than done here.
 	_ "github.com/rclone/rclone/backend/local"
 	_ "github.com/rclone/rclone/backend/s3"
 	_ "github.com/rclone/rclone/backend/sftp"

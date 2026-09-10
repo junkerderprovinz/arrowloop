@@ -104,11 +104,24 @@ jobs:
       # stays "dev", so a released bundle would show "dev" on its About card
       # while the properties dialog of the very same file showed the tag: two
       # answers to one question, from one build.
+      #
+      # `-s -w` was missing and that was 14.2 MB of nothing, measured on this
+      # tree: 49.5 MB without, 35.3 MB with, for a bundle whose whole point is
+      # that somebody downloads it. It strips the symbol table and the DWARF -
+      # a debugger's furniture. Go's own panic traces come from separate
+      # runtime tables and are unaffected, which is what makes this free rather
+      # than a trade. The container build has carried these two since it
+      # existed; the desktop simply never got them.
+      #
+      # `-trimpath` is a different kind of win and a much smaller one: 0.11 MB.
+      # It is here because it takes the build machine's directory layout out of
+      # the binary, so the same commit produces the same bytes on a runner and
+      # on somebody's laptop.
       - name: Build
         working-directory: desktop
         run: >
-          wails build -platform ${{ matrix.platform }} -clean ${{ matrix.extra }}
-          -ldflags "-X github.com/junkerderprovinz/arrowloop/internal/boot.Version=${{ env.ARROWLOOP_VERSION }}"
+          wails build -platform ${{ matrix.platform }} -clean -trimpath ${{ matrix.extra }}
+          -ldflags "-s -w -X github.com/junkerderprovinz/arrowloop/internal/boot.Version=${{ env.ARROWLOOP_VERSION }}"
 
       # The runner is thrown away either way, but a restored tree means the next
       # step in this job sees the commit it was given rather than an edited one.
