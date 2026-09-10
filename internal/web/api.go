@@ -74,6 +74,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("POST /api/jobs/{name}/stop", s.stopJob)
 	mux.HandleFunc("POST /api/jobs/{name}/check", s.checkJob)
 	mux.HandleFunc("GET /api/jobs/{name}/verify", s.verifyJob)
+	mux.HandleFunc("GET /api/jobs/{name}/duplicates/{side}", s.findDuplicates)
 	mux.HandleFunc("GET /api/jobs/{name}/trash/{side}", s.listTrash)
 	mux.HandleFunc("POST /api/jobs/{name}/trash/{side}/restore", s.restoreTrash)
 	mux.HandleFunc("POST /api/jobs/{name}/trash/{side}/prune", s.pruneTrash)
