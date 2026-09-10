@@ -257,7 +257,7 @@ const it: Translations = {
   'about.coffeeButton': 'Offrimi un caffè',
   'about.crypto': 'Cripto',
   'about.cryptoTitle': 'Donare in cripto',
-  'about.cryptoIntro': 'Scegli una catena, poi scansiona il codice o copia l\'indirizzo.',
+  'about.cryptoIntro': 'Scegli una moneta e una rete, poi scansiona il codice o copia l\'indirizzo.',
   'about.cryptoNetworks': 'Reti',
   'about.cryptoNoTag': 'Non servono destination tag né memo.',
   'common.copy': 'Copia',

@@ -257,7 +257,7 @@ const el: Translations = {
   'about.coffeeButton': 'Κέρασέ με έναν καφέ',
   'about.crypto': 'Κρύπτο',
   'about.cryptoTitle': 'Δωρεά με κρύπτο',
-  'about.cryptoIntro': 'Διάλεξε αλυσίδα και μετά σάρωσε τον κωδικό ή αντίγραψε τη διεύθυνση.',
+  'about.cryptoIntro': 'Διάλεξε νόμισμα και δίκτυο, μετά σάρωσε τον κωδικό ή αντίγραψε τη διεύθυνση.',
   'about.cryptoNetworks': 'Δίκτυα',
   'about.cryptoNoTag': 'Δεν χρειάζεται destination tag ούτε memo.',
   'common.copy': 'Αντιγραφή',

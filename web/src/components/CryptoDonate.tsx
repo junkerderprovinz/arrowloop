@@ -1,24 +1,27 @@
 import { useEffect, useRef, useState } from 'react'
 
-import { CryptoDonateDialog, type CryptoChain } from '../lib/glimstone/CryptoDonateDialog'
+import { CryptoDonateDialog } from '../lib/glimstone/CryptoDonateDialog'
+import { CoinMark } from './donateMarks'
 import { QRCode } from './QRCode'
-import { CRYPTO_CHAINS } from '../lib/donate'
+import { CRYPTO_COINS, type CryptoCoin, type CryptoNetwork } from '../lib/donate'
 import { useT } from '../lib/i18n'
 
 /**
  * The crypto window's stateful half, the same split every dialog here uses: the
  * design language owns the markup and the rules, this file owns the parts a
- * language cannot know about — which chain is picked, Escape, focus, and what
- * "copied" says in this app's words.
+ * language cannot know about — which coin and chain are picked, Escape, focus,
+ * and what "copied" says in this app's words.
  *
- * The QR encoder is handed in rather than imported by the language, which has
- * no dependencies and is not going to grow one. See lib/donate.ts for the one
- * rule that matters about the list itself: it is grouped by CHAIN, never by
- * coin, and a coin whose chain has no address is simply absent.
+ * The QR encoder and the coin marks are handed in rather than imported by the
+ * language, which has no dependencies and no right to hand out somebody else's
+ * logo. See lib/donate.ts for the one rule that matters about the list itself:
+ * every network a donor can pick carries its OWN address, so a chain we cannot
+ * receive on is unofferable rather than merely discouraged.
  */
 export function CryptoDonate({ onClose }: { onClose: () => void }) {
   const { t } = useT()
-  const [picked, setPicked] = useState(CRYPTO_CHAINS[0]!)
+  const [coin, setCoin] = useState<CryptoCoin>(CRYPTO_COINS[0]!)
+  const [network, setNetwork] = useState<CryptoNetwork>(CRYPTO_COINS[0]!.networks[0]!)
   const [copied, setCopied] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
 
@@ -41,17 +44,17 @@ export function CryptoDonate({ onClose }: { onClose: () => void }) {
     return () => clearTimeout(id)
   }, [copied])
 
-  const chain: CryptoChain = {
-    ...picked,
-    note: picked.noteKey ? t(picked.noteKey) : undefined,
-  }
-
   return (
     <CryptoDonateDialog
-      chains={CRYPTO_CHAINS.map((c) => ({ ...c, note: c.noteKey ? t(c.noteKey) : undefined }))}
-      picked={chain}
-      onPick={(next) => {
-        setPicked(CRYPTO_CHAINS.find((c) => c.id === next.id) ?? CRYPTO_CHAINS[0]!)
+      coins={CRYPTO_COINS.map((c) => ({
+        ...c,
+        networks: c.networks.map((n) => ({ ...n, note: n.noteKey ? t(n.noteKey) : undefined })),
+      }))}
+      coin={coin}
+      network={{ ...network, note: network.noteKey ? t(network.noteKey) : undefined }}
+      onPick={(nextCoin, nextNetwork) => {
+        setCoin(CRYPTO_COINS.find((c) => c.id === nextCoin.id) ?? CRYPTO_COINS[0]!)
+        setNetwork(nextNetwork)
         setCopied(false)
       }}
       text={{
@@ -62,8 +65,9 @@ export function CryptoDonate({ onClose }: { onClose: () => void }) {
         closeLabel: t('common.close'),
       }}
       renderQr={(value) => <QRCode value={value} size={168} />}
-      onCopy={(c) => {
-        void navigator.clipboard?.writeText(c.address).then(() => setCopied(true))
+      renderMark={(c) => <CoinMark coin={c.id} size={22} />}
+      onCopy={(_, n) => {
+        void navigator.clipboard?.writeText(n.address).then(() => setCopied(true))
       }}
       onClose={onClose}
       ref={cardRef}

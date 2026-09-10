@@ -257,7 +257,7 @@ const ar: Translations = {
   'about.coffeeButton': 'اشترِ لي قهوة',
   'about.crypto': 'العملات المشفّرة',
   'about.cryptoTitle': 'التبرّع بالعملات المشفّرة',
-  'about.cryptoIntro': 'اختر الشبكة، ثم امسح الرمز أو انسخ العنوان.',
+  'about.cryptoIntro': 'اختر العملة والشبكة، ثم امسح الرمز أو انسخ العنوان.',
   'about.cryptoNetworks': 'الشبكات',
   'about.cryptoNoTag': 'لا حاجة إلى Destination Tag ولا إلى Memo.',
   'common.copy': 'نسخ',

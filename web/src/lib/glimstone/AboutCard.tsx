@@ -40,6 +40,8 @@ export function AboutCard({
   repoGlyph,
   glimstoneRepoUrl,
   coffeeUrl,
+  coffeeGlyph,
+  cryptoGlyph,
   onCrypto,
   mailAddress,
   hueIndex,
@@ -86,6 +88,17 @@ export function AboutCard({
   glimstoneRepoUrl: string;
   coffeeUrl: string;
   /**
+   * The mark on the give buttons, where the route belongs to a named company.
+   *
+   * Passed rather than resolved, for the same reason as `repoGlyph`: a brand
+   * must never be reachable BY PATTERN. A glyph rule keyed on "coffee" would
+   * put one company's cup on anything that mentions coffee, and one keyed on
+   * "crypto" would put a currency's symbol on settings that have nothing to do
+   * with it. An app that passes nothing keeps whatever its own table resolves.
+   */
+  coffeeGlyph?: ReactNode;
+  cryptoGlyph?: ReactNode;
+  /**
    * Open the crypto window (CryptoDonateDialog). Omit it and the card offers
    * the coffee alone.
    *
@@ -130,6 +143,7 @@ export function AboutCard({
         <Button
           label={text.coffeeButton}
           labelKey="about.coffeeButton"
+          glyph={coffeeGlyph}
           tone="neutral"
           onClick={() => open(coffeeUrl)}
         />
@@ -137,6 +151,7 @@ export function AboutCard({
           <Button
             label={text.cryptoButton}
             labelKey="about.crypto"
+            glyph={cryptoGlyph}
             tone="neutral"
             onClick={onCrypto}
           />

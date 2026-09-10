@@ -257,7 +257,7 @@ const gl: Translations = {
   'about.coffeeButton': 'Convídame a un café',
   'about.crypto': 'Cripto',
   'about.cryptoTitle': 'Doar con cripto',
-  'about.cryptoIntro': 'Escolle unha cadea e despois escanea o código ou copia o enderezo.',
+  'about.cryptoIntro': 'Escolle unha moeda e unha rede, despois escanea o código ou copia o enderezo.',
   'about.cryptoNetworks': 'Redes',
   'about.cryptoNoTag': 'Non fan falta destination tag nin memo.',
   'common.copy': 'Copiar',

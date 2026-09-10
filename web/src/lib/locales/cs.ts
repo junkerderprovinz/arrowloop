@@ -257,7 +257,7 @@ const cs: Translations = {
   'about.coffeeButton': 'Kup mi kávu',
   'about.crypto': 'Krypto',
   'about.cryptoTitle': 'Přispět kryptem',
-  'about.cryptoIntro': 'Vyber řetězec, pak naskenuj kód nebo zkopíruj adresu.',
+  'about.cryptoIntro': 'Vyber minci a síť, pak naskenuj kód nebo zkopíruj adresu.',
   'about.cryptoNetworks': 'Sítě',
   'about.cryptoNoTag': 'Destination tag ani memo nejsou potřeba.',
   'common.copy': 'Kopírovat',

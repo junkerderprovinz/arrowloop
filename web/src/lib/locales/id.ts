@@ -257,7 +257,7 @@ const id: Translations = {
   'about.coffeeButton': 'Traktir saya kopi',
   'about.crypto': 'Kripto',
   'about.cryptoTitle': 'Donasi dengan kripto',
-  'about.cryptoIntro': 'Pilih rantai, lalu pindai kode atau salin alamatnya.',
+  'about.cryptoIntro': 'Pilih koin dan jaringan, lalu pindai kode atau salin alamatnya.',
   'about.cryptoNetworks': 'Jaringan',
   'about.cryptoNoTag': 'Tidak perlu destination tag maupun memo.',
   'common.copy': 'Salin',

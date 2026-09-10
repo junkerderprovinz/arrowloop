@@ -257,7 +257,7 @@ const bg: Translations = {
   'about.coffeeButton': 'Почерпи ме с кафе',
   'about.crypto': 'Крипто',
   'about.cryptoTitle': 'Дарение с крипто',
-  'about.cryptoIntro': 'Избери верига, после сканирай кода или копирай адреса.',
+  'about.cryptoIntro': 'Избери валута и мрежа, после сканирай кода или копирай адреса.',
   'about.cryptoNetworks': 'Мрежи',
   'about.cryptoNoTag': 'Не са нужни destination tag или memo.',
   'common.copy': 'Копирай',

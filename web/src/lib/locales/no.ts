@@ -257,7 +257,7 @@ const no: Translations = {
   'about.coffeeButton': 'Spander en kaffe',
   'about.crypto': 'Krypto',
   'about.cryptoTitle': 'Doner med krypto',
-  'about.cryptoIntro': 'Velg en kjede, og skann så koden eller kopier adressen.',
+  'about.cryptoIntro': 'Velg en mynt og et nettverk, og skann så koden eller kopier adressen.',
   'about.cryptoNetworks': 'Nettverk',
   'about.cryptoNoTag': 'Verken destination tag eller memo trengs.',
   'common.copy': 'Kopier',

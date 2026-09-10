@@ -257,7 +257,7 @@ const sr: Translations = {
   'about.coffeeButton': 'Части ме кафом',
   'about.crypto': 'Крипто',
   'about.cryptoTitle': 'Донирај криптом',
-  'about.cryptoIntro': 'Изабери ланац, па скенирај код или копирај адресу.',
+  'about.cryptoIntro': 'Изабери новчић и мрежу, па скенирај код или копирај адресу.',
   'about.cryptoNetworks': 'Мреже',
   'about.cryptoNoTag': 'Ни destination tag ни memo нису потребни.',
   'common.copy': 'Копирај',

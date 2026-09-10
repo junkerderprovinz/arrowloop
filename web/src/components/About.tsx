@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import { AboutCard } from '../lib/glimstone/AboutCard'
 import { CryptoDonate } from './CryptoDonate'
+import { IconBitcoin, IconBuyMeACoffee } from './donateMarks'
 import { GLIMSTONE_VERSION } from '../lib/glimstone/version'
 import { IconGithub } from './brandGlyphs'
 import { useT } from '../lib/i18n'
@@ -63,6 +64,13 @@ export function About({ version }: { version: string | null }) {
         repoGlyph={<IconGithub />}
         glimstoneRepoUrl={GLIMSTONE_REPO}
         coffeeUrl={COFFEE}
+        // Both marks are passed rather than resolved from the label key,
+        // which is the language's rule for a BRAND. A pattern keyed on
+        // "coffee" would put a company's cup on anything that mentions coffee,
+        // and one on "crypto" would put the Bitcoin symbol on settings that
+        // have nothing to do with it.
+        coffeeGlyph={<IconBuyMeACoffee />}
+        cryptoGlyph={<IconBitcoin />}
         onCrypto={() => setCryptoOpen(true)}
         mailAddress={MAIL}
         hueIndex={0}

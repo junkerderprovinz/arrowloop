@@ -257,7 +257,7 @@ const ru: Translations = {
   'about.coffeeButton': 'Угостить кофе',
   'about.crypto': 'Крипто',
   'about.cryptoTitle': 'Поддержать криптовалютой',
-  'about.cryptoIntro': 'Выбери сеть, затем отсканируй код или скопируй адрес.',
+  'about.cryptoIntro': 'Выбери монету и сеть, затем отсканируй код или скопируй адрес.',
   'about.cryptoNetworks': 'Сети',
   'about.cryptoNoTag': 'Ни destination tag, ни memo не нужны.',
   'common.copy': 'Копировать',

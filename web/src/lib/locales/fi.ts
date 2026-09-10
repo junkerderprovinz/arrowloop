@@ -257,7 +257,7 @@ const fi: Translations = {
   'about.coffeeButton': 'Tarjoa kahvi',
   'about.crypto': 'Krypto',
   'about.cryptoTitle': 'Lahjoita kryptolla',
-  'about.cryptoIntro': 'Valitse ketju ja skannaa sitten koodi tai kopioi osoite.',
+  'about.cryptoIntro': 'Valitse kolikko ja verkko, skannaa sitten koodi tai kopioi osoite.',
   'about.cryptoNetworks': 'Verkot',
   'about.cryptoNoTag': 'Destination tagia tai memoa ei tarvita.',
   'common.copy': 'Kopioi',

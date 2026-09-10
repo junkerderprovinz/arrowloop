@@ -257,7 +257,7 @@ const eu: Translations = {
   'about.coffeeButton': 'Erosi kafe bat',
   'about.crypto': 'Kripto',
   'about.cryptoTitle': 'Eman kriptoarekin',
-  'about.cryptoIntro': 'Aukeratu kate bat, gero eskaneatu kodea edo kopiatu helbidea.',
+  'about.cryptoIntro': 'Aukeratu txanpon bat eta sare bat, gero eskaneatu kodea edo kopiatu helbidea.',
   'about.cryptoNetworks': 'Sareak',
   'about.cryptoNoTag': 'Ez da destination tag-ik ez memorik behar.',
   'common.copy': 'Kopiatu',

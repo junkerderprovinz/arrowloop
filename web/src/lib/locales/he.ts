@@ -257,7 +257,7 @@ const he: Translations = {
   'about.coffeeButton': 'קנו לי קפה',
   'about.crypto': 'קריפטו',
   'about.cryptoTitle': 'תרומה בקריפטו',
-  'about.cryptoIntro': 'בחר רשת, ואז סרוק את הקוד או העתק את הכתובת.',
+  'about.cryptoIntro': 'בחר מטבע ורשת, ואז סרוק את הקוד או העתק את הכתובת.',
   'about.cryptoNetworks': 'רשתות',
   'about.cryptoNoTag': 'אין צורך ב-destination tag ולא ב-memo.',
   'common.copy': 'העתק',
