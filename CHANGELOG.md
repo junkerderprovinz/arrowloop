@@ -8,6 +8,10 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## v0.7.0
+
+Four questions this could not answer before, and all four are answered in the database rather than in the browser: search the activity log by path, narrow the history to a stretch of days, ask a target how full it is, and find files whose content is identical.
+
 ## v0.6.2
 
 Every job created through the interface failed on every single run. If you have set one up and it has never copied anything, this is why, and updating is the whole fix.
