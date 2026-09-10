@@ -242,7 +242,14 @@ class MainActivity : AppCompatActivity() {
             // with a broken app deserves the reason rather than a shrug.
             waiting.visibility = View.GONE
             trouble.visibility = View.VISIBLE
-            trouble.text = getString(R.string.engine_silent, WAIT_MS / 1000, lastLines())
+            // Whether the process is STILL THERE goes on the screen with the
+            // log, because an empty log means two opposite things - died
+            // before it could write anything, or running fine and simply not
+            // answering - and only the process itself can say which.
+            val state = getString(
+                if (Engine.alive()) R.string.engine_still_running else R.string.engine_gone,
+            )
+            trouble.text = getString(R.string.engine_silent, WAIT_MS / 1000, "$state\n\n${lastLines()}")
         }
     }
 

@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  Die deutsche Fassung dessen, was Android selbst zeigt. Alles andere in dieser
+  App kommt aus dem Motor, in einer seiner zweiundvierzig Sprachen.
+
+  JEDER Platzhalter muss zu dem in values/strings.xml passen, und das ist keine
+  Stilfrage: `getString` fuellt nach Position, also zeigt eine Uebersetzung mit
+  einem Platzhalter dort, wo das Original zwei hat, das erste Argument und
+  wirft das zweite weg. Genau das ist passiert - der Fehlerbildschirm zeigte
+  auf dem Telefon die Zahl 60 statt des Protokolls, das erklaeren sollte,
+  warum der Motor nicht anlief. Die Wache dafuer ist android/tools/check_strings.py.
+-->
 <resources>
     <string name="channel_engine">Abgleichmotor</string>
     <string name="channel_engine_why">Wird angezeigt, solange ArrowLoop im Hintergrund abgleichen kann.</string>
@@ -8,5 +19,16 @@
     <string name="notify_stop">Anhalten</string>
 
     <string name="engine_starting">Der Motor startet …</string>
-    <string name="engine_silent">Der Motor hat dreißig Sekunden lang nicht geantwortet. Sein eigenes Protokoll endet so:\n\n%1$s</string>
+    <string name="engine_silent">Der Motor hat %1$d Sekunden lang nicht geantwortet. Sein eigenes Protokoll endet so:\n\n%2$s</string>
+    <string name="engine_no_log">(das Protokoll ist leer - der Motor hat gar nichts geschrieben)</string>
+    <string name="engine_no_log_because">(das Protokoll war nicht lesbar: %1$s %2$s)</string>
+    <string name="engine_still_running">Der Motorprozess läuft noch. Er ist gestartet und hat nicht geantwortet.</string>
+    <string name="engine_gone">Der Motorprozess ist weg. Er hat gestartet und wieder aufgehört, oder er ist nie gestartet.</string>
+
+    <string name="storage_title">ArrowLoop braucht Zugriff auf deine Dateien</string>
+    <string name="storage_why">Um einen Ordner abzugleichen, muss ArrowLoop ihn lesen und schreiben können. Android erteilt das auf seiner eigenen Einstellungsseite, die der Knopf unten öffnet.\n\nOhne den Zugriff läuft ArrowLoop zwar, aber nur in seinem eigenen privaten Ordner: deine Fotos, Downloads und Dokumente bleiben außer Reichweite.</string>
+    <string name="storage_why_ten">Diese Android-Fassung kann einer App keinen Zugriff auf deine Dateien geben, ohne zugleich die Änderungszeiten aufzugeben, und ohne die kann ein Zwei-Wege-Abgleich nicht arbeiten. ArrowLoop läuft, aber nur in seinem eigenen privaten Ordner. Ab Android 11 lässt sich der Zugriff erteilen.</string>
+    <string name="storage_grant">Einstellungsseite öffnen</string>
+    <string name="storage_later">Jetzt nicht</string>
+    <string name="storage_no_page">Dieses Telefon hat keine Seite für diese Berechtigung.</string>
 </resources>

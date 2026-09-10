@@ -70,6 +70,17 @@ object Engine {
         Log.i(TAG, "wrote a starting configuration at ${file.absolutePath}")
     }
 
+    /**
+     * Whether the process we started is still running.
+     *
+     * The one thing a log cannot say by itself. An empty log means either
+     * "died before it could write" or "still going and simply not answering
+     * yet", and those want opposite next steps - the first is a crash to
+     * diagnose, the second is a timeout to lengthen. Asking the process is the
+     * only way to tell them apart.
+     */
+    fun alive(): Boolean = process?.isAlive == true
+
     /** Whether the engine is up and answering, rather than merely spawned. */
     fun answers(timeoutMs: Int = 1500): Boolean = try {
         val connection = URL("$ORIGIN/api/capabilities").openConnection() as HttpURLConnection

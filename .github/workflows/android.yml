@@ -34,6 +34,17 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      # Before anything is built, because this one shipped and cost a round of
+      # testing: `getString` fills by POSITION, so a translation with fewer
+      # placeholders than the original silently drops the rest of the
+      # arguments. The German engine_silent kept its one placeholder after the
+      # English gained a second, and the trouble screen on a real phone showed
+      # the number 60 where the log should have been - the one screen whose
+      # entire job is explaining why the engine did not start, explaining
+      # nothing. Nothing was red.
+      - name: The translations carry the same placeholders
+        run: python android/tools/check_strings.py
+
       - uses: actions/setup-node@v5
         with:
           node-version: "24"
