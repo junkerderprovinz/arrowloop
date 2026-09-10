@@ -331,6 +331,9 @@ const bg: Translations = {
   'jobs.lastRun': 'последно {when}',
   'jobs.activity': 'Дейност',
   'jobs.activityEmpty': 'Още нищо. Тази задача не е вървяла.',
+  'jobs.searchReset': 'Изчистване на търсенето',
+  'jobs.activityNoMatch': 'Нито един път тук не съдържа „{q}“.',
+  'jobs.activitySearch': 'Търсене в пътищата',
   'jobs.cadence.live': 'в реално време',
   'jobs.cadence.every': 'на всеки {n} {unit}',
   'jobs.cadence.everyOne.minute': 'всяка минута',
@@ -372,6 +375,9 @@ const bg: Translations = {
   'history.filterJob': 'Задача',
   'history.allJobs': 'Всички задачи',
   'history.filterShow': 'Показване',
+  'history.rangeReset': 'Изчистване на периода',
+  'history.until': 'До',
+  'history.since': 'От',
   'history.showAll': 'Всички изпълнения',
   'history.showChanged': 'Само тези, които са направили нещо',
   'history.showFailed': 'Само неуспехите',
@@ -421,6 +427,7 @@ const bg: Translations = {
   'opt.passHelp': 'Използвай парола за приложение, ако доставчикът предлага такава, а не паролата на акаунта.',
   'opt.vendorHelp': 'Какъв диалект на WebDAV говори сървърът. При съмнение избери „друг“.',
   'opt.keyFileHelp': 'Път до частния ключ на машината, на която работи ArrowLoop, не на тази.',
+  'targets.savedButUnreachable': 'Запазено, но целта не отговори: {reason}',
 }
 
 export default bg

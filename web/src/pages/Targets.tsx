@@ -418,6 +418,7 @@ function RemoteForm({
   const [advanced, setAdvanced] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
+  const [checking, setChecking] = useState(false)
 
   const backend = useMemo(() => backends.find((b) => b.name === kind), [backends, kind])
   /**
@@ -461,7 +462,32 @@ function RemoteForm({
       const filled = Object.fromEntries(
         Object.entries(values).filter(([key, value]) => value !== '' || existing?.settings.some((s) => s.key === key)),
       )
-      await api.saveRemote(name.trim(), kind, filled)
+      const saved = name.trim()
+      await api.saveRemote(saved, kind, filled)
+      // Saved, and now ASKED. Saving a target proves nothing: a typo in the
+      // address or a password with a trailing space is written to the file just
+      // as happily as a working one, and the first anybody hears of it is a
+      // failed run at three in the morning. The check exists and nothing was
+      // calling it.
+      //
+      // Its answer is shown but never blocks: the target is already saved, and
+      // a person setting up a server that is switched off right now has done
+      // nothing wrong. So this reports, and closing the form is still their
+      // decision.
+      setBusy(false)
+      setChecking(true)
+      try {
+        const answer = await api.checkRemote(saved)
+        setChecking(false)
+        if (!answer.ok) {
+          setError(t('targets.savedButUnreachable', { reason: answer.reason ?? '' }))
+          return
+        }
+      } catch {
+        // The check itself could not be run. That says nothing about the
+        // target, so it says nothing at all rather than accusing it.
+        setChecking(false)
+      }
       onDone(true)
     } catch (e) {
       setError((e as Error).message)
@@ -535,7 +561,13 @@ function RemoteForm({
 
       <div className="flex items-center justify-end gap-2">
         <Button label={t('targets.cancel')} labelKey="targets.cancel" onClick={() => onDone(false)} />
-        <Button label={t('targets.save')} labelKey="targets.save" tone="accent" onClick={() => void save()} disabled={busy || !name.trim() || !kind} />
+        <Button
+          label={checking ? t('targets.checking') : t('targets.save')}
+          labelKey={checking ? 'targets.checking' : 'targets.save'}
+          tone="accent"
+          onClick={() => void save()}
+          disabled={busy || checking || !name.trim() || !kind}
+        />
       </div>
     </div>
   )

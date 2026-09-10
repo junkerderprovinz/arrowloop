@@ -331,6 +331,9 @@ const es: Translations = {
   'jobs.lastRun': 'última ejecución {when}',
   'jobs.activity': 'Actividad',
   'jobs.activityEmpty': 'Nada todavía. Este trabajo no se ha ejecutado nunca.',
+  'jobs.searchReset': 'Borrar la búsqueda',
+  'jobs.activityNoMatch': 'Ninguna ruta de aquí contiene «{q}».',
+  'jobs.activitySearch': 'Buscar rutas',
   'jobs.cadence.live': 'en tiempo real',
   'jobs.cadence.every': 'cada {n} {unit}',
   'jobs.cadence.everyOne.minute': 'cada minuto',
@@ -372,6 +375,9 @@ const es: Translations = {
   'history.filterJob': 'Tarea',
   'history.allJobs': 'Todas las tareas',
   'history.filterShow': 'Mostrar',
+  'history.rangeReset': 'Borrar el periodo',
+  'history.until': 'Hasta',
+  'history.since': 'Desde',
   'history.showAll': 'Todas las ejecuciones',
   'history.showChanged': 'Solo las que hicieron algo',
   'history.showFailed': 'Solo los fallos',
@@ -421,6 +427,7 @@ const es: Translations = {
   'opt.passHelp': 'Usa una contraseña de aplicación si el proveedor la ofrece, en vez de la de la cuenta.',
   'opt.vendorHelp': 'Qué dialecto de WebDAV habla el servidor. Si dudas, elige «otro».',
   'opt.keyFileHelp': 'Ruta a la clave privada en la máquina donde corre ArrowLoop, no en esta.',
+  'targets.savedButUnreachable': 'Guardado, pero el destino no respondió: {reason}',
 }
 
 export default es

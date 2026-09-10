@@ -331,6 +331,9 @@ const vi: Translations = {
   'jobs.lastRun': 'lần chạy gần nhất {when}',
   'jobs.activity': 'Hoạt động',
   'jobs.activityEmpty': 'Chưa có gì. Công việc này chưa từng chạy.',
+  'jobs.searchReset': 'Xóa tìm kiếm',
+  'jobs.activityNoMatch': 'Không có đường dẫn nào ở đây chứa “{q}”.',
+  'jobs.activitySearch': 'Tìm kiếm đường dẫn',
   'jobs.cadence.live': 'theo thời gian thực',
   'jobs.cadence.every': 'mỗi {n} {unit}',
   'jobs.cadence.everyOne.minute': 'mỗi phút',
@@ -372,6 +375,9 @@ const vi: Translations = {
   'history.filterJob': 'Công việc',
   'history.allJobs': 'Mọi công việc',
   'history.filterShow': 'Hiển thị',
+  'history.rangeReset': 'Xóa khoảng thời gian',
+  'history.until': 'Đến',
+  'history.since': 'Từ',
   'history.showAll': 'Mọi lần chạy',
   'history.showChanged': 'Chỉ những lần đã làm gì đó',
   'history.showFailed': 'Chỉ các lần thất bại',
@@ -421,6 +427,7 @@ const vi: Translations = {
   'opt.passHelp': 'Dùng mật khẩu ứng dụng nếu nhà cung cấp có, thay vì mật khẩu tài khoản.',
   'opt.vendorHelp': 'Máy chủ nói phương ngữ WebDAV nào. Nếu không chắc, chọn “khác”.',
   'opt.keyFileHelp': 'Đường dẫn tới khóa riêng trên máy chạy ArrowLoop, không phải máy này.',
+  'targets.savedButUnreachable': 'Đã lưu, nhưng đích không trả lời: {reason}',
 }
 
 export default vi

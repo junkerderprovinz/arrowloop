@@ -331,6 +331,9 @@ const sk: Translations = {
   'jobs.lastRun': 'naposledy {when}',
   'jobs.activity': 'Aktivita',
   'jobs.activityEmpty': 'Zatiaľ nič. Táto úloha ešte nebežala.',
+  'jobs.searchReset': 'Vymazať hľadanie',
+  'jobs.activityNoMatch': 'Žiadna cesta tu neobsahuje „{q}“.',
+  'jobs.activitySearch': 'Hľadať v cestách',
   'jobs.cadence.live': 'v reálnom čase',
   'jobs.cadence.every': 'každých {n} {unit}',
   'jobs.cadence.everyOne.minute': 'každú minútu',
@@ -372,6 +375,9 @@ const sk: Translations = {
   'history.filterJob': 'Úloha',
   'history.allJobs': 'Všetky úlohy',
   'history.filterShow': 'Zobraziť',
+  'history.rangeReset': 'Vymazať obdobie',
+  'history.until': 'Do',
+  'history.since': 'Od',
   'history.showAll': 'Všetky behy',
   'history.showChanged': 'Len tie, ktoré niečo urobili',
   'history.showFailed': 'Len zlyhania',
@@ -421,6 +427,7 @@ const sk: Translations = {
   'opt.passHelp': 'Použi heslo aplikácie, ak ho poskytovateľ ponúke, namiesto hesla k účtu.',
   'opt.vendorHelp': 'Akým dialektom WebDAV hovorí server. Ak si nie si istý, zvoľ „iné“.',
   'opt.keyFileHelp': 'Cesta k súkromnému kľúču na stroji, kde beží ArrowLoop, nie na tomto.',
+  'targets.savedButUnreachable': 'Uložené, ale cieľ neodpovedal: {reason}',
 }
 
 export default sk

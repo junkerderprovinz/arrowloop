@@ -331,6 +331,9 @@ const fa: Translations = {
   'jobs.lastRun': 'آخرین اجرا {when}',
   'jobs.activity': 'فعالیت',
   'jobs.activityEmpty': 'هنوز چیزی نیست. این کار هرگز اجرا نشده است.',
+  'jobs.searchReset': 'پاک کردن جستجو',
+  'jobs.activityNoMatch': 'هیچ مسیری در اینجا شامل «{q}» نیست.',
+  'jobs.activitySearch': 'جستجوی مسیرها',
   'jobs.cadence.live': 'در زمان واقعی',
   'jobs.cadence.every': 'هر {n} {unit}',
   'jobs.cadence.everyOne.minute': 'هر دقیقه',
@@ -372,6 +375,9 @@ const fa: Translations = {
   'history.filterJob': 'کار',
   'history.allJobs': 'همه کارها',
   'history.filterShow': 'نمایش',
+  'history.rangeReset': 'پاک کردن بازه',
+  'history.until': 'تا',
+  'history.since': 'از',
   'history.showAll': 'همه اجراها',
   'history.showChanged': 'فقط آنهایی که کاری کردند',
   'history.showFailed': 'فقط شکست‌ها',
@@ -421,6 +427,7 @@ const fa: Translations = {
   'opt.passHelp': 'اگر ارائه‌دهنده رمز برنامه دارد، از آن استفاده کن، نه از رمز حساب.',
   'opt.vendorHelp': 'سرور چه گویشی از WebDAV را می‌فهمد. اگر مطمئن نیستی «دیگر» را برگزین.',
   'opt.keyFileHelp': 'مسیر کلید خصوصی روی دستگاهی که ArrowLoop روی آن اجرا می‌شود.',
+  'targets.savedButUnreachable': 'ذخیره شد، اما مقصد پاسخ نداد: {reason}',
 }
 
 export default fa

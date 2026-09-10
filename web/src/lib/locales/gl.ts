@@ -331,6 +331,9 @@ const gl: Translations = {
   'jobs.lastRun': 'última execución {when}',
   'jobs.activity': 'Actividade',
   'jobs.activityEmpty': 'Aínda nada. Esta tarefa nunca se executou.',
+  'jobs.searchReset': 'Limpar a busca',
+  'jobs.activityNoMatch': 'Ningunha ruta de aquí contén «{q}».',
+  'jobs.activitySearch': 'Buscar rutas',
   'jobs.cadence.live': 'en tempo real',
   'jobs.cadence.every': 'cada {n} {unit}',
   'jobs.cadence.everyOne.minute': 'cada minuto',
@@ -372,6 +375,9 @@ const gl: Translations = {
   'history.filterJob': 'Tarefa',
   'history.allJobs': 'Todas as tarefas',
   'history.filterShow': 'Amosar',
+  'history.rangeReset': 'Limpar o período',
+  'history.until': 'Ata',
+  'history.since': 'Desde',
   'history.showAll': 'Todas as execucións',
   'history.showChanged': 'Só as que fixeron algo',
   'history.showFailed': 'Só os fallos',
@@ -421,6 +427,7 @@ const gl: Translations = {
   'opt.passHelp': 'Usa un contrasinal de aplicación se o provedor o ofrece, no canto do da conta.',
   'opt.vendorHelp': 'Que dialecto de WebDAV fala o servidor. Se dubidas, escolle «outro».',
   'opt.keyFileHelp': 'Ruta á chave privada na máquina onde corre ArrowLoop, non nesta.',
+  'targets.savedButUnreachable': 'Gardado, pero o destino non respondeu: {reason}',
 }
 
 export default gl

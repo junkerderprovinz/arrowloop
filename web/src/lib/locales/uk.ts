@@ -331,6 +331,9 @@ const uk: Translations = {
   'jobs.lastRun': 'останній запуск {when}',
   'jobs.activity': 'Активність',
   'jobs.activityEmpty': 'Поки нічого. Це завдання ще не запускалося.',
+  'jobs.searchReset': 'Очистити пошук',
+  'jobs.activityNoMatch': 'Жоден шлях тут не містить «{q}».',
+  'jobs.activitySearch': 'Пошук за шляхами',
   'jobs.cadence.live': 'у реальному часі',
   'jobs.cadence.every': 'кожні {n} {unit}',
   'jobs.cadence.everyOne.minute': 'щохвилини',
@@ -372,6 +375,9 @@ const uk: Translations = {
   'history.filterJob': 'Завдання',
   'history.allJobs': 'Усі завдання',
   'history.filterShow': 'Показувати',
+  'history.rangeReset': 'Очистити період',
+  'history.until': 'До',
+  'history.since': 'Від',
   'history.showAll': 'Усі запуски',
   'history.showChanged': 'Лише ті, що щось зробили',
   'history.showFailed': 'Лише невдачі',
@@ -421,6 +427,7 @@ const uk: Translations = {
   'opt.passHelp': 'Візьми пароль додатка, якщо постачальник його надає, а не пароль облікового запису.',
   'opt.vendorHelp': 'Яким діалектом WebDAV говорить сервер. Якщо не впевнений — «інше».',
   'opt.keyFileHelp': 'Шлях до приватного ключа на машині, де працює ArrowLoop, не на цій.',
+  'targets.savedButUnreachable': 'Збережено, але ціль не відповіла: {reason}',
 }
 
 export default uk

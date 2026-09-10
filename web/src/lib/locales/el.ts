@@ -331,6 +331,9 @@ const el: Translations = {
   'jobs.lastRun': 'τελευταία εκτέλεση {when}',
   'jobs.activity': 'Δραστηριότητα',
   'jobs.activityEmpty': 'Τίποτα ακόμη. Αυτή η εργασία δεν έχει εκτελεστεί ποτέ.',
+  'jobs.searchReset': 'Καθαρισμός αναζήτησης',
+  'jobs.activityNoMatch': 'Καμία διαδρομή εδώ δεν περιέχει «{q}».',
+  'jobs.activitySearch': 'Αναζήτηση διαδρομών',
   'jobs.cadence.live': 'σε πραγματικό χρόνο',
   'jobs.cadence.every': 'κάθε {n} {unit}',
   'jobs.cadence.everyOne.minute': 'κάθε λεπτό',
@@ -372,6 +375,9 @@ const el: Translations = {
   'history.filterJob': 'Εργασία',
   'history.allJobs': 'Όλες οι εργασίες',
   'history.filterShow': 'Εμφάνιση',
+  'history.rangeReset': 'Καθαρισμός περιόδου',
+  'history.until': 'Έως',
+  'history.since': 'Από',
   'history.showAll': 'Όλες οι εκτελέσεις',
   'history.showChanged': 'Μόνο όσες έκαναν κάτι',
   'history.showFailed': 'Μόνο οι αποτυχίες',
@@ -421,6 +427,7 @@ const el: Translations = {
   'opt.passHelp': 'Χρησιμοποίησε κωδικό εφαρμογής αν υπάρχει, όχι τον κωδικό του λογαριασμού.',
   'opt.vendorHelp': 'Ποια διάλεκτο WebDAV μιλάει ο διακομιστής. Αν δεν ξέρεις, διάλεξε «άλλο».',
   'opt.keyFileHelp': 'Διαδρομή προς το ιδιωτικό κλειδί στο μηχάνημα όπου τρέχει το ArrowLoop.',
+  'targets.savedButUnreachable': 'Αποθηκεύτηκε, αλλά ο προορισμός δεν απάντησε: {reason}',
 }
 
 export default el

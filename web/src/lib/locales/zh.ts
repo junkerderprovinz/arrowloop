@@ -331,6 +331,9 @@ const zh: Translations = {
   'jobs.lastRun': '上次运行 {when}',
   'jobs.activity': '活动',
   'jobs.activityEmpty': '还没有记录。这个任务从未运行过。',
+  'jobs.searchReset': '清除搜索',
+  'jobs.activityNoMatch': '这里没有包含“{q}”的路径。',
+  'jobs.activitySearch': '搜索路径',
   'jobs.cadence.live': '实时',
   'jobs.cadence.every': '每 {n} {unit}',
   'jobs.cadence.everyOne.minute': '每分钟',
@@ -372,6 +375,9 @@ const zh: Translations = {
   'history.filterJob': '作业',
   'history.allJobs': '全部作业',
   'history.filterShow': '显示',
+  'history.rangeReset': '清除时间范围',
+  'history.until': '截止',
+  'history.since': '起始',
   'history.showAll': '所有运行',
   'history.showChanged': '只看做过事的运行',
   'history.showFailed': '只看失败',
@@ -421,6 +427,7 @@ const zh: Translations = {
   'opt.passHelp': '如果服务商提供应用密码，请用它而不是账户密码。',
   'opt.vendorHelp': '服务器说哪种 WebDAV 方言。不确定时选“其他”。',
   'opt.keyFileHelp': '私钥在运行 ArrowLoop 的机器上的路径，不是这台。',
+  'targets.savedButUnreachable': '已保存，但目标没有响应：{reason}',
 }
 
 export default zh

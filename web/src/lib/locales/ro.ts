@@ -331,6 +331,9 @@ const ro: Translations = {
   'jobs.lastRun': 'ultima rulare {when}',
   'jobs.activity': 'Activitate',
   'jobs.activityEmpty': 'Încă nimic. Această sarcină nu a rulat niciodată.',
+  'jobs.searchReset': 'Ștergeți căutarea',
+  'jobs.activityNoMatch': 'Nicio cale de aici nu conține „{q}”.',
+  'jobs.activitySearch': 'Cautați căi',
   'jobs.cadence.live': 'în timp real',
   'jobs.cadence.every': 'la fiecare {n} {unit}',
   'jobs.cadence.everyOne.minute': 'în fiecare minut',
@@ -372,6 +375,9 @@ const ro: Translations = {
   'history.filterJob': 'Sarcină',
   'history.allJobs': 'Toate sarcinile',
   'history.filterShow': 'Afișează',
+  'history.rangeReset': 'Ștergeți perioada',
+  'history.until': 'Până la',
+  'history.since': 'De la',
   'history.showAll': 'Toate execuțiile',
   'history.showChanged': 'Doar cele care au făcut ceva',
   'history.showFailed': 'Doar eșecurile',
@@ -421,6 +427,7 @@ const ro: Translations = {
   'opt.passHelp': 'Folosește o parolă de aplicație dacă furnizorul oferă una, nu parola contului.',
   'opt.vendorHelp': 'Ce dialect WebDAV vorbește serverul. Dacă nu știi, alege „altul”.',
   'opt.keyFileHelp': 'Calea către cheia privată pe mașina pe care rulează ArrowLoop, nu pe aceasta.',
+  'targets.savedButUnreachable': 'Salvat, dar destinația nu a răspuns: {reason}',
 }
 
 export default ro

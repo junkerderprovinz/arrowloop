@@ -358,6 +358,26 @@ func (s *Server) runJob(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusAccepted, map[string]string{"job": name, "status": "started"})
 }
 
+// parseDay reads a plain date, in the machine's own time zone.
+//
+// `end` decides which edge of the day it means: the start for a lower bound,
+// the last instant for an upper one. Without that, "until the 9th" would
+// exclude everything that happened ON the 9th, which is not what anybody means
+// by it and is the classic off-by-one-day in every date filter.
+func parseDay(raw string, end bool) time.Time {
+	if raw == "" {
+		return time.Time{}
+	}
+	day, err := time.ParseInLocation("2006-01-02", raw, time.Local)
+	if err != nil {
+		return time.Time{}
+	}
+	if end {
+		return day.AddDate(0, 0, 1).Add(-time.Nanosecond)
+	}
+	return day
+}
+
 func (s *Server) listHistory(w http.ResponseWriter, r *http.Request) {
 	limit := 50
 	if raw := r.URL.Query().Get("limit"); raw != "" {
@@ -378,7 +398,15 @@ func (s *Server) listHistory(w http.ResponseWriter, r *http.Request) {
 	default:
 		show = history.ShowAll
 	}
-	runs, err := s.History.Recent(r.Context(), r.URL.Query().Get("job"), show, limit)
+	// A stretch of time, either end optional. Written as a date, because that
+	// is what somebody asking "what happened at the weekend" has in mind; a
+	// value that will not parse is ignored rather than refused, for the same
+	// reason an unknown `show` is: this parameter narrows, so getting it wrong
+	// must show too much and never too little.
+	runs, err := s.History.Between(r.Context(), r.URL.Query().Get("job"), show,
+		parseDay(r.URL.Query().Get("since"), false),
+		parseDay(r.URL.Query().Get("until"), true),
+		limit)
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, err)
 		return
@@ -410,7 +438,7 @@ func (s *Server) jobTouches(w http.ResponseWriter, r *http.Request) {
 			limit = n
 		}
 	}
-	touches, err := s.History.Touches(r.Context(), r.PathValue("name"), limit)
+	touches, err := s.History.TouchesLike(r.Context(), r.PathValue("name"), r.URL.Query().Get("q"), limit)
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, err)
 		return

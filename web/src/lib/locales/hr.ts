@@ -331,6 +331,9 @@ const hr: Translations = {
   'jobs.lastRun': 'posljednje izvođenje {when}',
   'jobs.activity': 'Aktivnost',
   'jobs.activityEmpty': 'Još ništa. Ovaj se zadatak nije nikada pokrenuo.',
+  'jobs.searchReset': 'Očisti pretragu',
+  'jobs.activityNoMatch': 'Nijedna putanja ovdje ne sadrži „{q}“.',
+  'jobs.activitySearch': 'Pretraži putanje',
   'jobs.cadence.live': 'u stvarnom vremenu',
   'jobs.cadence.every': 'svakih {n} {unit}',
   'jobs.cadence.everyOne.minute': 'svake minute',
@@ -372,6 +375,9 @@ const hr: Translations = {
   'history.filterJob': 'Posao',
   'history.allJobs': 'Svi poslovi',
   'history.filterShow': 'Prikaži',
+  'history.rangeReset': 'Očisti razdoblje',
+  'history.until': 'Do',
+  'history.since': 'Od',
   'history.showAll': 'Sva izvođenja',
   'history.showChanged': 'Samo ona koja su nešto učinila',
   'history.showFailed': 'Samo neuspjesi',
@@ -421,6 +427,7 @@ const hr: Translations = {
   'opt.passHelp': 'Koristi lozinku aplikacije ako je davatelj nudi, umjesto lozinke računa.',
   'opt.vendorHelp': 'Kojim dijalektom WebDAV-a poslužitelj govori. Ako nisi siguran, odaberi „ostalo“.',
   'opt.keyFileHelp': 'Putanja do privatnog ključa na računalu na kojem radi ArrowLoop, ne na ovom.',
+  'targets.savedButUnreachable': 'Spremljeno, ali odredište nije odgovorilo: {reason}',
 }
 
 export default hr

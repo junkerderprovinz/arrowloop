@@ -127,6 +127,9 @@ export const en = {
   'jobs.lastRun': 'last run {when}',
   'jobs.activity': 'Activity',
   'jobs.activityEmpty': 'Nothing yet. This job has not run.',
+  'jobs.searchReset': 'Clear the search',
+  'jobs.activityNoMatch': 'No path here contains "{q}".',
+  'jobs.activitySearch': 'Search paths',
   'jobs.cadence.live': 'in real time',
   'jobs.cadence.every': 'every {n} {unit}',
   'jobs.cadence.everyOne.minute': 'every minute',
@@ -464,6 +467,9 @@ export const en = {
   'history.filterJob': 'Job',
   'history.allJobs': 'All jobs',
   'history.filterShow': 'Show',
+  'history.rangeReset': 'Clear the range',
+  'history.until': 'To',
+  'history.since': 'From',
   'history.showAll': 'Every run',
   'history.showChanged': 'Only runs that did something',
   'history.showFailed': 'Only failures',
@@ -513,6 +519,7 @@ export const en = {
   'opt.passHelp': 'Use an app password where the provider offers one, rather than your account password.',
   'opt.vendorHelp': 'Which dialect of WebDAV the server speaks. Choose "other" if you are unsure.',
   'opt.keyFileHelp': 'Path to the private key on the machine ArrowLoop runs on, not on this one.',
+  'targets.savedButUnreachable': 'Saved, but the target did not answer: {reason}',
 } as const
 
 export type TranslationKey = keyof typeof en
@@ -598,6 +605,9 @@ export const de: Translations = {
   'jobs.lastRun': 'zuletzt {when}',
   'jobs.activity': 'Aktivität',
   'jobs.activityEmpty': 'Noch nichts. Dieser Auftrag ist nie gelaufen.',
+  'jobs.searchReset': 'Suche zurücksetzen',
+  'jobs.activityNoMatch': 'Kein Pfad hier enthält „{q}“.',
+  'jobs.activitySearch': 'Pfade durchsuchen',
   'jobs.cadence.live': 'in Echtzeit',
   'jobs.cadence.every': 'alle {n} {unit}',
   'jobs.cadence.everyOne.minute': 'jede Minute',
@@ -925,6 +935,9 @@ export const de: Translations = {
   'history.filterJob': 'Auftrag',
   'history.allJobs': 'Alle Aufträge',
   'history.filterShow': 'Anzeigen',
+  'history.rangeReset': 'Zeitraum zurücksetzen',
+  'history.until': 'Bis',
+  'history.since': 'Von',
   'history.showAll': 'Alle Läufe',
   'history.showChanged': 'Nur Läufe, die etwas getan haben',
   'history.showFailed': 'Nur Fehlschläge',
@@ -974,6 +987,7 @@ export const de: Translations = {
   'opt.passHelp': 'Nimm ein App-Passwort, wo der Anbieter eines anbietet, statt des Kontopassworts.',
   'opt.vendorHelp': 'Welchen WebDAV-Dialekt der Server spricht. Im Zweifel „sonstige“.',
   'opt.keyFileHelp': 'Pfad zum privaten Schlüssel auf dem Rechner, auf dem ArrowLoop läuft, nicht auf diesem.',
+  'targets.savedButUnreachable': 'Gespeichert, aber das Ziel hat nicht geantwortet: {reason}',
 }
 
 // ---------------------------------------------------------------------------

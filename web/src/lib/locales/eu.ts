@@ -331,6 +331,9 @@ const eu: Translations = {
   'jobs.lastRun': 'azken exekuzioa {when}',
   'jobs.activity': 'Jarduera',
   'jobs.activityEmpty': 'Oraindik ezer ez. Lan hau ez da inoiz exekutatu.',
+  'jobs.searchReset': 'Garbitu bilaketa',
+  'jobs.activityNoMatch': 'Hemengo bide batek ere ez du «{q}».',
+  'jobs.activitySearch': 'Bilatu bideak',
   'jobs.cadence.live': 'denbora errealean',
   'jobs.cadence.every': '{n} {unit} bakoitzeko',
   'jobs.cadence.everyOne.minute': 'minuturo',
@@ -372,6 +375,9 @@ const eu: Translations = {
   'history.filterJob': 'Lana',
   'history.allJobs': 'Lan guztiak',
   'history.filterShow': 'Erakutsi',
+  'history.rangeReset': 'Garbitu epea',
+  'history.until': 'Noiz arte',
+  'history.since': 'Noiztik',
   'history.showAll': 'Exekuzio guztiak',
   'history.showChanged': 'Zerbait egin dutenak bakarrik',
   'history.showFailed': 'Hutsegiteak bakarrik',
@@ -421,6 +427,7 @@ const eu: Translations = {
   'opt.passHelp': 'Erabili aplikazio-pasahitza hornitzaileak eskaintzen badu, kontuarena beharrean.',
   'opt.vendorHelp': 'Zerbitzariak zein WebDAV dialekto darabilen. Zalantzarik baduzu, aukeratu «bestelakoa».',
   'opt.keyFileHelp': 'Gako pribatuaren bidea ArrowLoop exekutatzen den makinan, ez honetan.',
+  'targets.savedButUnreachable': 'Gordeta, baina helburuak ez du erantzun: {reason}',
 }
 
 export default eu

@@ -84,21 +84,67 @@ export function Text({
   onChange,
   placeholder,
   mono,
+  label,
 }: {
   value: string
   onChange: (next: string) => void
   placeholder?: string
   mono?: boolean
+  /**
+   * The name a screen reader announces, for the boxes that stand ALONE rather
+   * than under a Field's caption. A placeholder is not a name: it disappears
+   * the moment somebody types, and several browsers never read it out at all.
+   */
+  label?: string
 }) {
   return (
     <input
       type="text"
       value={value}
       placeholder={placeholder}
+      aria-label={label}
       onChange={(e) => onChange(e.target.value)}
       className={`w-full ${CONTROL_H} bg-carbon-surface2 px-3 text-xs text-carbon-text outline-none transition placeholder:text-carbon-textMuted focus:brightness-125 ${
         mono ? 'font-mono' : ''
       }`}
+      style={{ borderRadius: 'var(--radius-control)' }}
+    />
+  )
+}
+
+/**
+ * A calendar day, as `YYYY-MM-DD`.
+ *
+ * The browser's own date box rather than a written one, and that is a decision
+ * about locale rather than about effort: it shows the day in the reader's own
+ * order (day first here, month first elsewhere) and takes keyboard entry in
+ * that order too, in all forty-two languages, which a hand-built picker would
+ * have to be told one language at a time. The value stays ISO on the wire in
+ * every case, so what travels never depends on where it was typed.
+ *
+ * Its calendar button follows the theme because `color-scheme` is declared on
+ * the root; without that it is a dark glyph on a dark box.
+ */
+export function Day({
+  value,
+  onChange,
+  label,
+  max,
+}: {
+  value: string
+  onChange: (next: string) => void
+  label: string
+  /** An upper bound, to stop a range being drawn into next year. */
+  max?: string
+}) {
+  return (
+    <input
+      type="date"
+      value={value}
+      max={max}
+      aria-label={label}
+      onChange={(e) => onChange(e.target.value)}
+      className={`${CONTROL_H} bg-carbon-surface2 px-3 text-xs text-carbon-text outline-none transition focus:brightness-125`}
       style={{ borderRadius: 'var(--radius-control)' }}
     />
   )

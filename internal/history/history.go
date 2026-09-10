@@ -238,15 +238,38 @@ type Touch struct {
 // produce four interesting lines would otherwise cost two hundred queries to
 // find them.
 func (d *DB) Touches(ctx context.Context, job string, limit int) ([]Touch, error) {
+	return d.TouchesLike(ctx, job, "", limit)
+}
+
+// TouchesLike is Touches, narrowed to the paths that contain a piece of text.
+//
+// In the DATABASE rather than in the browser, and that is the whole point: this
+// log runs to tens of thousands of rows, the screen holds a few dozen of them,
+// and filtering what was already fetched would search the last page instead of
+// the log. "Which run touched that file" is the question this answers, and it
+// cannot be answered by looking at the newest fifty rows.
+//
+// A plain substring match, case-insensitive, because a path is not prose: what
+// somebody types here is a fragment of a name they half remember.
+func (d *DB) TouchesLike(ctx context.Context, job, contains string, limit int) ([]Touch, error) {
 	if limit <= 0 {
 		limit = 50
 	}
+	where, args := "r.job = ?", []any{job}
+	if contains != "" {
+		// LIKE's own wildcards escaped, so a path with an underscore in it -
+		// which is most of them - does not match everything.
+		esc := strings.NewReplacer(`\`, `\\`, "%", `\%`, "_", `\_`).Replace(contains)
+		where += ` AND e.path LIKE ? ESCAPE '\'`
+		args = append(args, "%"+esc+"%")
+	}
+	args = append(args, limit)
 	rows, err := d.sql.QueryContext(ctx,
 		`SELECT e.run, r.started, e.kind, e.side, e.path, e.note, e.size
 		 FROM entries e JOIN runs r ON r.id = e.run
-		 WHERE r.job = ?
+		 WHERE `+where+`
 		 ORDER BY r.started DESC, e.seq DESC
-		 LIMIT ?`, job, limit)
+		 LIMIT ?`, args...)
 	if err != nil {
 		return nil, fmt.Errorf("read what %q did: %w", job, err)
 	}
@@ -312,6 +335,19 @@ func (s Show) where() string {
 // Recent returns the newest runs first. An empty job name means every job, and
 // ShowAll means every run.
 func (d *DB) Recent(ctx context.Context, job string, show Show, limit int) ([]Run, error) {
+	return d.Between(ctx, job, show, time.Time{}, time.Time{}, limit)
+}
+
+// Between is Recent, narrowed to a stretch of time.
+//
+// Either end may be zero, which means "no bound that way": a person asking
+// "what happened at the weekend" has one end in mind, and one asking "anything
+// since Tuesday" has the other. Both zero is Recent.
+//
+// In the query rather than after it, for the same reason the activity log's
+// search is: a watching job writes a row every few minutes, and filtering the
+// newest fifty rows by date answers a question about the newest fifty rows.
+func (d *DB) Between(ctx context.Context, job string, show Show, since, until time.Time, limit int) ([]Run, error) {
 	if limit <= 0 {
 		limit = 20
 	}
@@ -325,6 +361,15 @@ func (d *DB) Recent(ctx context.Context, job string, show Show, limit int) ([]Ru
 	}
 	if w := show.where(); w != "" {
 		conds = append(conds, w)
+	}
+	// Stored as nanoseconds since the epoch, which is what `started` holds.
+	if !since.IsZero() {
+		conds = append(conds, `started >= ?`)
+		args = append(args, since.UnixNano())
+	}
+	if !until.IsZero() {
+		conds = append(conds, `started <= ?`)
+		args = append(args, until.UnixNano())
 	}
 	if len(conds) > 0 {
 		query += ` WHERE ` + strings.Join(conds, ` AND `)

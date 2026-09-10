@@ -331,6 +331,9 @@ const lv: Translations = {
   'jobs.lastRun': 'pēdējoreiz {when}',
   'jobs.activity': 'Aktivitāte',
   'jobs.activityEmpty': 'Pagaidām nekā. Šis uzdevums nekad nav palaists.',
+  'jobs.searchReset': 'Notīrīt meklēšanu',
+  'jobs.activityNoMatch': 'Neviens ceļš šeit nesatur „{q}“.',
+  'jobs.activitySearch': 'Meklēt ceļus',
   'jobs.cadence.live': 'reāllaikā',
   'jobs.cadence.every': 'ik pēc {n} {unit}',
   'jobs.cadence.everyOne.minute': 'katru minūti',
@@ -372,6 +375,9 @@ const lv: Translations = {
   'history.filterJob': 'Darbs',
   'history.allJobs': 'Visi darbi',
   'history.filterShow': 'Rādīt',
+  'history.rangeReset': 'Notīrīt periodu',
+  'history.until': 'Līdz',
+  'history.since': 'No',
   'history.showAll': 'Visas izpildes',
   'history.showChanged': 'Tikai tās, kas kaut ko izdarīja',
   'history.showFailed': 'Tikai neizdošanās',
@@ -421,6 +427,7 @@ const lv: Translations = {
   'opt.passHelp': 'Izmanto lietotnes paroli, ja pakalpojuma sniedzējs to piedāvā, nevis konta paroli.',
   'opt.vendorHelp': 'Kurā WebDAV dialektā runā serveris. Ja neesi drošs, izvēlies „cits“.',
   'opt.keyFileHelp': 'Ceļš uz privāto atslēgu datorā, kurā darbojas ArrowLoop, nevis šajā.',
+  'targets.savedButUnreachable': 'Saglabāts, bet mērķis neatbildēja: {reason}',
 }
 
 export default lv

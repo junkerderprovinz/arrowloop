@@ -331,6 +331,9 @@ const ru: Translations = {
   'jobs.lastRun': 'последний запуск {when}',
   'jobs.activity': 'Активность',
   'jobs.activityEmpty': 'Пока ничего. Это задание ещё не запускалось.',
+  'jobs.searchReset': 'Очистить поиск',
+  'jobs.activityNoMatch': 'Ни один путь здесь не содержит «{q}».',
+  'jobs.activitySearch': 'Поиск по путям',
   'jobs.cadence.live': 'в реальном времени',
   'jobs.cadence.every': 'каждые {n} {unit}',
   'jobs.cadence.everyOne.minute': 'каждую минуту',
@@ -372,6 +375,9 @@ const ru: Translations = {
   'history.filterJob': 'Задание',
   'history.allJobs': 'Все задания',
   'history.filterShow': 'Показывать',
+  'history.rangeReset': 'Очистить период',
+  'history.until': 'По',
+  'history.since': 'С',
   'history.showAll': 'Все запуски',
   'history.showChanged': 'Только те, что что-то сделали',
   'history.showFailed': 'Только неудачи',
@@ -421,6 +427,7 @@ const ru: Translations = {
   'opt.passHelp': 'Используйте пароль приложения, если провайдер его даёт, а не пароль от учётной записи.',
   'opt.vendorHelp': 'На каком диалекте WebDAV говорит сервер. Если не знаете — «другое».',
   'opt.keyFileHelp': 'Путь к закрытому ключу на машине, где работает ArrowLoop, а не на этой.',
+  'targets.savedButUnreachable': 'Сохранено, но цель не ответила: {reason}',
 }
 
 export default ru

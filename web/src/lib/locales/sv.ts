@@ -331,6 +331,9 @@ const sv: Translations = {
   'jobs.lastRun': 'senast {when}',
   'jobs.activity': 'Aktivitet',
   'jobs.activityEmpty': 'Ingenting än. Det här jobbet har aldrig körts.',
+  'jobs.searchReset': 'Rensa sökningen',
+  'jobs.activityNoMatch': 'Ingen sökväg här innehåller ”{q}”.',
+  'jobs.activitySearch': 'Sök i sökvägar',
   'jobs.cadence.live': 'i realtid',
   'jobs.cadence.every': 'var {n}:e {unit}',
   'jobs.cadence.everyOne.minute': 'varje minut',
@@ -372,6 +375,9 @@ const sv: Translations = {
   'history.filterJob': 'Jobb',
   'history.allJobs': 'Alla jobb',
   'history.filterShow': 'Visa',
+  'history.rangeReset': 'Rensa perioden',
+  'history.until': 'Till',
+  'history.since': 'Från',
   'history.showAll': 'Alla körningar',
   'history.showChanged': 'Bara de som gjorde något',
   'history.showFailed': 'Bara misslyckanden',
@@ -421,6 +427,7 @@ const sv: Translations = {
   'opt.passHelp': 'Använd ett app-lösenord om leverantören erbjuder ett, i stället för kontolösenordet.',
   'opt.vendorHelp': 'Vilken WebDAV-dialekt servern talar. Välj ”annat” om du är osäker.',
   'opt.keyFileHelp': 'Sökväg till den privata nyckeln på maskinen där ArrowLoop körs, inte på den här.',
+  'targets.savedButUnreachable': 'Sparat, men målet svarade inte: {reason}',
 }
 
 export default sv

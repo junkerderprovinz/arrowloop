@@ -331,6 +331,9 @@ const hi: Translations = {
   'jobs.lastRun': 'पिछली बार {when}',
   'jobs.activity': 'गतिविधि',
   'jobs.activityEmpty': 'अभी कुछ नहीं। यह काम कभी नहीं चला।',
+  'jobs.searchReset': 'खोज हटाएँ',
+  'jobs.activityNoMatch': 'यहां किसी पथ में «{q}» नहीं है।',
+  'jobs.activitySearch': 'पथ खोजें',
   'jobs.cadence.live': 'वास्तविक समय में',
   'jobs.cadence.every': 'हर {n} {unit}',
   'jobs.cadence.everyOne.minute': 'हर मिनट',
@@ -372,6 +375,9 @@ const hi: Translations = {
   'history.filterJob': 'काम',
   'history.allJobs': 'सभी काम',
   'history.filterShow': 'दिखाएँ',
+  'history.rangeReset': 'अवधि हटाएँ',
+  'history.until': 'तक',
+  'history.since': 'से',
   'history.showAll': 'सभी चक्र',
   'history.showChanged': 'केवल वे जिन्होंने कुछ किया',
   'history.showFailed': 'केवल विफलताएँ',
@@ -421,6 +427,7 @@ const hi: Translations = {
   'opt.passHelp': 'यदि प्रदाता ऐप पासवर्ड देता है तो वही लें, खाते का पासवर्ड नहीं।',
   'opt.vendorHelp': 'सर्वर WebDAV की कौन-सी बोली बोलता है। संदेह हो तो “अन्य” चुनें।',
   'opt.keyFileHelp': 'उस मशीन पर निजी कुंजी का पाथ जहाँ ArrowLoop चलता है।',
+  'targets.savedButUnreachable': 'सहेजा गया, पर लक्ष्य ने जवाब नहीं दिया: {reason}',
 }
 
 export default hi

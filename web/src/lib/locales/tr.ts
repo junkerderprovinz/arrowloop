@@ -331,6 +331,9 @@ const tr: Translations = {
   'jobs.lastRun': 'son çalıştırma {when}',
   'jobs.activity': 'Etkinlik',
   'jobs.activityEmpty': 'Henüz bir şey yok. Bu iş hiç çalışmadı.',
+  'jobs.searchReset': 'Aramayı temizle',
+  'jobs.activityNoMatch': 'Buradaki hiçbir yol “{q}” içermiyor.',
+  'jobs.activitySearch': 'Yollarda ara',
   'jobs.cadence.live': 'gerçek zamanlı',
   'jobs.cadence.every': '{n} {unit} arayla',
   'jobs.cadence.everyOne.minute': 'her dakika',
@@ -372,6 +375,9 @@ const tr: Translations = {
   'history.filterJob': 'İş',
   'history.allJobs': 'Tüm işler',
   'history.filterShow': 'Göster',
+  'history.rangeReset': 'Aralığı temizle',
+  'history.until': 'Bitiş',
+  'history.since': 'Başlangıç',
   'history.showAll': 'Tüm çalışmalar',
   'history.showChanged': 'Yalnızca bir şey yapanlar',
   'history.showFailed': 'Yalnızca başarısızlıklar',
@@ -421,6 +427,7 @@ const tr: Translations = {
   'opt.passHelp': 'Sağlayıcı uygulama parolası sunuyorsa hesap parolası yerine onu kullan.',
   'opt.vendorHelp': 'Sunucunun hangi WebDAV lehçesini konuştuğu. Emin değilsen “diğer” seç.',
   'opt.keyFileHelp': 'Özel anahtarın ArrowLoop\'un çalıştığı makinedeki yolu, bu makinede değil.',
+  'targets.savedButUnreachable': 'Kaydedildi, ancak hedef yanıt vermedi: {reason}',
 }
 
 export default tr

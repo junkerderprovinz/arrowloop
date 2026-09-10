@@ -331,6 +331,9 @@ const et: Translations = {
   'jobs.lastRun': 'viimati {when}',
   'jobs.activity': 'Tegevus',
   'jobs.activityEmpty': 'Veel mitte midagi. See töö pole kunagi käivitunud.',
+  'jobs.searchReset': 'Puhasta otsing',
+  'jobs.activityNoMatch': 'Ükski siinne tee ei sisalda „{q}”.',
+  'jobs.activitySearch': 'Otsi teid',
   'jobs.cadence.live': 'reaalajas',
   'jobs.cadence.every': 'iga {n} {unit} järel',
   'jobs.cadence.everyOne.minute': 'iga minut',
@@ -372,6 +375,9 @@ const et: Translations = {
   'history.filterJob': 'Töö',
   'history.allJobs': 'Kõik tööd',
   'history.filterShow': 'Näita',
+  'history.rangeReset': 'Puhasta ajavahemik',
+  'history.until': 'Kuni',
+  'history.since': 'Alates',
   'history.showAll': 'Kõik käivitused',
   'history.showChanged': 'Ainult need, mis midagi tegid',
   'history.showFailed': 'Ainult ebaõnnestumised',
@@ -421,6 +427,7 @@ const et: Translations = {
   'opt.passHelp': 'Kasuta rakenduse parooli, kui teenusepakkuja seda pakub, mitte konto parooli.',
   'opt.vendorHelp': 'Millist WebDAVi murret server räägib. Kahtluse korral vali „muu“.',
   'opt.keyFileHelp': 'Privaatvõtme tee masinas, kus ArrowLoop töötab, mitte selles.',
+  'targets.savedButUnreachable': 'Salvestatud, kuid sihtkoht ei vastanud: {reason}',
 }
 
 export default et

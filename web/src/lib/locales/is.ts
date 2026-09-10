@@ -331,6 +331,9 @@ const is: Translations = {
   'jobs.lastRun': 'síðast {when}',
   'jobs.activity': 'Virkni',
   'jobs.activityEmpty': 'Ekkert enn. Þetta verk hefur aldrei keyrt.',
+  'jobs.searchReset': 'Hreinsa leitina',
+  'jobs.activityNoMatch': 'Engin slóð hér inniheldur „{q}“.',
+  'jobs.activitySearch': 'Leita í slóðum',
   'jobs.cadence.live': 'í rauntíma',
   'jobs.cadence.every': 'á {n} {unit} fresti',
   'jobs.cadence.everyOne.minute': 'á mínútu fresti',
@@ -372,6 +375,9 @@ const is: Translations = {
   'history.filterJob': 'Verk',
   'history.allJobs': 'Öll verk',
   'history.filterShow': 'Sýna',
+  'history.rangeReset': 'Hreinsa tímabilið',
+  'history.until': 'Til',
+  'history.since': 'Frá',
   'history.showAll': 'Allar keyrslur',
   'history.showChanged': 'Aðeins þær sem gerðu eitthvað',
   'history.showFailed': 'Aðeins bilanir',
@@ -421,6 +427,7 @@ const is: Translations = {
   'opt.passHelp': 'Notaðu forritslösensorð ef veitandinn býður upp á þannig, ekki aðgangsorðið.',
   'opt.vendorHelp': 'Hvaða WebDAV-mállýsku þjónninn talar. Veldu „annað“ ef þú ert óviss.',
   'opt.keyFileHelp': 'Slóð að einkalyklinum á vélinni þar sem ArrowLoop keyrir, ekki á þessari.',
+  'targets.savedButUnreachable': 'Vistað, en áfangastaðurinn svaraði ekki: {reason}',
 }
 
 export default is

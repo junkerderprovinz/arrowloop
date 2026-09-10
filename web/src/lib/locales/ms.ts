@@ -331,6 +331,9 @@ const ms: Translations = {
   'jobs.lastRun': 'larian terakhir {when}',
   'jobs.activity': 'Aktiviti',
   'jobs.activityEmpty': 'Belum ada apa-apa. Tugas ini belum pernah dijalankan.',
+  'jobs.searchReset': 'Kosongkan carian',
+  'jobs.activityNoMatch': 'Tiada laluan di sini mengandungi “{q}”.',
+  'jobs.activitySearch': 'Cari laluan',
   'jobs.cadence.live': 'secara masa nyata',
   'jobs.cadence.every': 'setiap {n} {unit}',
   'jobs.cadence.everyOne.minute': 'setiap minit',
@@ -372,6 +375,9 @@ const ms: Translations = {
   'history.filterJob': 'Tugas',
   'history.allJobs': 'Semua tugas',
   'history.filterShow': 'Tunjukkan',
+  'history.rangeReset': 'Kosongkan julat',
+  'history.until': 'Hingga',
+  'history.since': 'Dari',
   'history.showAll': 'Semua larian',
   'history.showChanged': 'Hanya yang melakukan sesuatu',
   'history.showFailed': 'Hanya kegagalan',
@@ -421,6 +427,7 @@ const ms: Translations = {
   'opt.passHelp': 'Guna kata laluan aplikasi jika penyedia menawarkannya, bukan kata laluan akaun.',
   'opt.vendorHelp': 'Dialek WebDAV yang dituturkan pelayan. Jika ragu, pilih “lain-lain”.',
   'opt.keyFileHelp': 'Laluan ke kunci peribadi pada mesin tempat ArrowLoop berjalan, bukan mesin ini.',
+  'targets.savedButUnreachable': 'Disimpan, tetapi sasaran tidak menjawab: {reason}',
 }
 
 export default ms

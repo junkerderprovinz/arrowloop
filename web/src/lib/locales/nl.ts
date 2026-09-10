@@ -331,6 +331,9 @@ const nl: Translations = {
   'jobs.lastRun': 'laatste run {when}',
   'jobs.activity': 'Activiteit',
   'jobs.activityEmpty': 'Nog niets. Deze taak heeft niet gelopen.',
+  'jobs.searchReset': 'Zoekopdracht wissen',
+  'jobs.activityNoMatch': 'Geen pad hier bevat ‚{q}’.',
+  'jobs.activitySearch': 'Paden doorzoeken',
   'jobs.cadence.live': 'realtime',
   'jobs.cadence.every': 'elke {n} {unit}',
   'jobs.cadence.everyOne.minute': 'elke minuut',
@@ -372,6 +375,9 @@ const nl: Translations = {
   'history.filterJob': 'Taak',
   'history.allJobs': 'Alle taken',
   'history.filterShow': 'Tonen',
+  'history.rangeReset': 'Periode wissen',
+  'history.until': 'Tot',
+  'history.since': 'Vanaf',
   'history.showAll': 'Alle uitvoeringen',
   'history.showChanged': 'Alleen uitvoeringen die iets deden',
   'history.showFailed': 'Alleen mislukkingen',
@@ -421,6 +427,7 @@ const nl: Translations = {
   'opt.passHelp': 'Gebruik een app-wachtwoord als de aanbieder er een biedt, niet je accountwachtwoord.',
   'opt.vendorHelp': 'Welk WebDAV-dialect de server spreekt. Weet je het niet, kies „overig”.',
   'opt.keyFileHelp': 'Pad naar de privésleutel op de machine waar ArrowLoop draait, niet op deze.',
+  'targets.savedButUnreachable': 'Opgeslagen, maar de bestemming antwoordde niet: {reason}',
 }
 
 export default nl

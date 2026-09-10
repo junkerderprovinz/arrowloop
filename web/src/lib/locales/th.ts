@@ -331,6 +331,9 @@ const th: Translations = {
   'jobs.lastRun': 'ทำงานล่าสุด {when}',
   'jobs.activity': 'ความเคลื่อนไหว',
   'jobs.activityEmpty': 'ยังไม่มีอะไร งานนี้ยังไม่เคยทำงาน',
+  'jobs.searchReset': 'ล้างการค้นหา',
+  'jobs.activityNoMatch': 'ไม่มีเส้นทางใดที่มี “{q}”',
+  'jobs.activitySearch': 'ค้นหาเส้นทาง',
   'jobs.cadence.live': 'แบบเรียลไทม์',
   'jobs.cadence.every': 'ทุก {n} {unit}',
   'jobs.cadence.everyOne.minute': 'ทุกนาที',
@@ -372,6 +375,9 @@ const th: Translations = {
   'history.filterJob': 'งาน',
   'history.allJobs': 'ทุกงาน',
   'history.filterShow': 'แสดง',
+  'history.rangeReset': 'ล้างช่วงเวลา',
+  'history.until': 'ถึง',
+  'history.since': 'ตั้งแต่',
   'history.showAll': 'ทุกรอบการรัน',
   'history.showChanged': 'เฉพาะรอบที่ทำอะไรบางอย่าง',
   'history.showFailed': 'เฉพาะที่ล้มเหลว',
@@ -421,6 +427,7 @@ const th: Translations = {
   'opt.passHelp': 'ใช้รหัสผ่านสำหรับแอปหากผู้ให้บริการมีให้ แทนรหัสผ่านบัญชี',
   'opt.vendorHelp': 'เซิร์ฟเวอร์พูด WebDAV สำเนียงใด หากไม่แน่ใจเลือก “อื่น ๆ”',
   'opt.keyFileHelp': 'เส้นทางไปยังคีย์ส่วนตัวบนเครื่องที่ ArrowLoop ทำงานอยู่',
+  'targets.savedButUnreachable': 'บันทึกแล้ว แต่ปลายทางไม่ตอบ: {reason}',
 }
 
 export default th

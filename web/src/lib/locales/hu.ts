@@ -331,6 +331,9 @@ const hu: Translations = {
   'jobs.lastRun': 'legutóbb {when}',
   'jobs.activity': 'Tevékenység',
   'jobs.activityEmpty': 'Még semmi. Ez a feladat még soha nem futott.',
+  'jobs.searchReset': 'Keresés törlése',
+  'jobs.activityNoMatch': 'Itt egyetlen útvonal sem tartalmazza ezt: „{q}”.',
+  'jobs.activitySearch': 'Keresés az útvonalakban',
   'jobs.cadence.live': 'valós időben',
   'jobs.cadence.every': '{n} {unit} gyakorisággal',
   'jobs.cadence.everyOne.minute': 'percenként',
@@ -372,6 +375,9 @@ const hu: Translations = {
   'history.filterJob': 'Feladat',
   'history.allJobs': 'Minden feladat',
   'history.filterShow': 'Megjelenítés',
+  'history.rangeReset': 'Időszak törlése',
+  'history.until': 'Eddig',
+  'history.since': 'Ettől',
   'history.showAll': 'Minden futás',
   'history.showChanged': 'Csak amelyek csináltak valamit',
   'history.showFailed': 'Csak a hibák',
@@ -421,6 +427,7 @@ const hu: Translations = {
   'opt.passHelp': 'Használj alkalmazásjelszót, ha a szolgáltató kínál ilyet, a fiók jelszava helyett.',
   'opt.vendorHelp': 'Milyen WebDAV-nyelvjárást beszél a kiszolgáló. Ha nem tudod, válaszd az „egyéb” lehetőséget.',
   'opt.keyFileHelp': 'A privát kulcs útvonala azon a gépen, ahol az ArrowLoop fut, nem ezen.',
+  'targets.savedButUnreachable': 'Mentve, de a cél nem válaszolt: {reason}',
 }
 
 export default hu

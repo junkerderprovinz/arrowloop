@@ -453,11 +453,16 @@ export const api = {
    * a job that runs once a day is not on the page at all; filtering afterwards
    * filters the fifty already fetched and leaves it just as missing.
    */
-  history: (job?: string, show: HistoryShow = 'all', limit = 50) =>
+  history: (job?: string, show: HistoryShow = 'all', limit = 50, since = '', until = '') =>
     request<Run[]>(
       `/api/history?limit=${limit}` +
         (job ? `&job=${encodeURIComponent(job)}` : '') +
-        (show !== 'all' ? `&show=${show}` : ''),
+        (show !== 'all' ? `&show=${show}` : '') +
+        // Plain YYYY-MM-DD, cut into a day at the SERVER, in the server's own
+        // zone. Sending an instant instead would mean the browser deciding
+        // where a day begins for a log written somewhere else.
+        (since ? `&since=${since}` : '') +
+        (until ? `&until=${until}` : ''),
     ),
 
   /**
@@ -493,8 +498,11 @@ export const api = {
    * at the job. jdp: "Im aktivitaetslog moechte ich nicht die laeufe sehen
    * sondern ein log ueber die einzelnen dateien."
    */
-  jobTouches: (job: string, limit = 50) =>
-    request<Touch[]>(`/api/jobs/${encodeURIComponent(job)}/touches?limit=${limit}`),
+  jobTouches: (job: string, limit = 50, q = '') =>
+    request<Touch[]>(
+      `/api/jobs/${encodeURIComponent(job)}/touches?limit=${limit}` +
+        (q ? `&q=${encodeURIComponent(q)}` : ''),
+    ),
 
   /** The last month of runs, one row per day. An empty job name means all of them. */
   historyStats: (job?: string, days = 30) =>

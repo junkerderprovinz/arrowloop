@@ -331,6 +331,9 @@ const fr: Translations = {
   'jobs.lastRun': 'dernière exécution {when}',
   'jobs.activity': 'Activité',
   'jobs.activityEmpty': 'Rien pour l\'instant. Cette tâche ne s\'est jamais exécutée.',
+  'jobs.searchReset': 'Effacer la recherche',
+  'jobs.activityNoMatch': 'Aucun chemin ici ne contient « {q} ».',
+  'jobs.activitySearch': 'Rechercher des chemins',
   'jobs.cadence.live': 'en temps réel',
   'jobs.cadence.every': 'à intervalles de {n} {unit}',
   'jobs.cadence.everyOne.minute': 'chaque minute',
@@ -372,6 +375,9 @@ const fr: Translations = {
   'history.filterJob': 'Tâche',
   'history.allJobs': 'Toutes les tâches',
   'history.filterShow': 'Afficher',
+  'history.rangeReset': 'Effacer la période',
+  'history.until': 'Au',
+  'history.since': 'Du',
   'history.showAll': 'Toutes les exécutions',
   'history.showChanged': 'Seulement celles qui ont agi',
   'history.showFailed': 'Seulement les échecs',
@@ -421,6 +427,7 @@ const fr: Translations = {
   'opt.passHelp': 'Utilisez un mot de passe d\'application si le fournisseur en propose un, plutôt que celui du compte.',
   'opt.vendorHelp': 'Quel dialecte WebDAV parle le serveur. En cas de doute, choisissez « autre ».',
   'opt.keyFileHelp': 'Chemin de la clé privée sur la machine où tourne ArrowLoop, pas sur celle-ci.',
+  'targets.savedButUnreachable': 'Enregistré, mais la cible n\'a pas répondu : {reason}',
 }
 
 export default fr

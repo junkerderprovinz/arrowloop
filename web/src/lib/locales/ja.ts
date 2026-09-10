@@ -331,6 +331,9 @@ const ja: Translations = {
   'jobs.lastRun': '前回の実行 {when}',
   'jobs.activity': 'アクティビティ',
   'jobs.activityEmpty': 'まだ何もありません。このジョブは一度も実行されていません。',
+  'jobs.searchReset': '検索をクリア',
+  'jobs.activityNoMatch': 'ここには「{q}」を含むパスはありません。',
+  'jobs.activitySearch': 'パスを検索',
   'jobs.cadence.live': 'リアルタイムで',
   'jobs.cadence.every': '{n}{unit}ごとに',
   'jobs.cadence.everyOne.minute': '毎分',
@@ -372,6 +375,9 @@ const ja: Translations = {
   'history.filterJob': '処理',
   'history.allJobs': 'すべての処理',
   'history.filterShow': '表示',
+  'history.rangeReset': '期間をクリア',
+  'history.until': '終了日',
+  'history.since': '開始日',
   'history.showAll': 'すべての実行',
   'history.showChanged': '何かをした実行のみ',
   'history.showFailed': '失敗のみ',
@@ -421,6 +427,7 @@ const ja: Translations = {
   'opt.passHelp': '提供元がアプリパスワードを用意している場合は、アカウントのパスワードではなくそちらを。',
   'opt.vendorHelp': 'サーバーが話す WebDAV の方言。迷ったら「その他」を。',
   'opt.keyFileHelp': 'ArrowLoop が動いているマシン上の秘密鍵のパス。このマシンではありません。',
+  'targets.savedButUnreachable': '保存しましたが、宛先から応答がありませんでした: {reason}',
 }
 
 export default ja

@@ -331,6 +331,9 @@ const ca: Translations = {
   'jobs.lastRun': 'última execució {when}',
   'jobs.activity': 'Activitat',
   'jobs.activityEmpty': 'Encara res. Aquesta tasca no s\'ha executat mai.',
+  'jobs.searchReset': 'Neteja la cerca',
+  'jobs.activityNoMatch': 'Cap camí d’aquí conté «{q}».',
+  'jobs.activitySearch': 'Cerca camins',
   'jobs.cadence.live': 'en temps real',
   'jobs.cadence.every': 'cada {n} {unit}',
   'jobs.cadence.everyOne.minute': 'cada minut',
@@ -372,6 +375,9 @@ const ca: Translations = {
   'history.filterJob': 'Tasca',
   'history.allJobs': 'Totes les tasques',
   'history.filterShow': 'Mostra',
+  'history.rangeReset': 'Neteja el període',
+  'history.until': 'Fins a',
+  'history.since': 'Des de',
   'history.showAll': 'Totes les execucions',
   'history.showChanged': 'Només les que han fet alguna cosa',
   'history.showFailed': 'Només els errors',
@@ -421,6 +427,7 @@ const ca: Translations = {
   'opt.passHelp': 'Fes servir una contrasenya d\'aplicació si el proveïdor n\'ofereix, en lloc de la del compte.',
   'opt.vendorHelp': 'Quin dialecte de WebDAV parla el servidor. Si no ho saps, tria «altres».',
   'opt.keyFileHelp': 'Camí a la clau privada a la màquina on s\'executa ArrowLoop, no en aquesta.',
+  'targets.savedButUnreachable': 'Desat, però el destí no ha respost: {reason}',
 }
 
 export default ca

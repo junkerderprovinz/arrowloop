@@ -331,6 +331,9 @@ const lt: Translations = {
   'jobs.lastRun': 'paskutinį kartą {when}',
   'jobs.activity': 'Veikla',
   'jobs.activityEmpty': 'Kol kas nieko. Ši užduotis dar nebuvo vykdyta.',
+  'jobs.searchReset': 'Išvalyti paiešką',
+  'jobs.activityNoMatch': 'Nė vienas kelias čia neturi „{q}“.',
+  'jobs.activitySearch': 'Ieškoti kelių',
   'jobs.cadence.live': 'realiuoju laiku',
   'jobs.cadence.every': '{n} {unit} intervalu',
   'jobs.cadence.everyOne.minute': 'kas minutę',
@@ -372,6 +375,9 @@ const lt: Translations = {
   'history.filterJob': 'Užduotis',
   'history.allJobs': 'Visos užduotys',
   'history.filterShow': 'Rodyti',
+  'history.rangeReset': 'Išvalyti laikotarpį',
+  'history.until': 'Iki',
+  'history.since': 'Nuo',
   'history.showAll': 'Visi paleidimai',
   'history.showChanged': 'Tik tie, kurie ką nors padarė',
   'history.showFailed': 'Tik nesėkmės',
@@ -421,6 +427,7 @@ const lt: Translations = {
   'opt.passHelp': 'Naudok programos slaptažodį, jei teikėjas jį siūlo, o ne paskyros slaptažodį.',
   'opt.vendorHelp': 'Kokia WebDAV tarme kalba serveris. Jei neaišku, rinkis „kita“.',
   'opt.keyFileHelp': 'Kelias iki privataus rakto kompiuteryje, kuriame veikia ArrowLoop, ne šiame.',
+  'targets.savedButUnreachable': 'Išsaugota, bet paskirties vieta neatsakė: {reason}',
 }
 
 export default lt

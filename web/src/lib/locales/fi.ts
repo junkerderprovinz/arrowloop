@@ -331,6 +331,9 @@ const fi: Translations = {
   'jobs.lastRun': 'viimeksi {when}',
   'jobs.activity': 'Toiminta',
   'jobs.activityEmpty': 'Ei vielä mitään. Tätä työtä ei ole koskaan ajettu.',
+  'jobs.searchReset': 'Tyhjennä haku',
+  'jobs.activityNoMatch': 'Mikään täällä oleva polku ei sisällä ”{q}”.',
+  'jobs.activitySearch': 'Hae polkuja',
   'jobs.cadence.live': 'reaaliajassa',
   'jobs.cadence.every': 'joka {n}. {unit}',
   'jobs.cadence.everyOne.minute': 'joka minuutti',
@@ -372,6 +375,9 @@ const fi: Translations = {
   'history.filterJob': 'Työ',
   'history.allJobs': 'Kaikki työt',
   'history.filterShow': 'Näytä',
+  'history.rangeReset': 'Tyhjennä aikaväli',
+  'history.until': 'Asti',
+  'history.since': 'Alkaen',
   'history.showAll': 'Kaikki ajot',
   'history.showChanged': 'Vain ne jotka tekivät jotain',
   'history.showFailed': 'Vain epäonnistumiset',
@@ -421,6 +427,7 @@ const fi: Translations = {
   'opt.passHelp': 'Käytä sovellussalasanaa, jos palveluntarjoaja tarjoaa sellaisen, tilin salasanan sijaan.',
   'opt.vendorHelp': 'Mitä WebDAV-murretta palvelin puhuu. Epävarmassa tapauksessa valitse ”muu”.',
   'opt.keyFileHelp': 'Polku yksityiseen avaimeen koneella, jolla ArrowLoop toimii, ei tällä.',
+  'targets.savedButUnreachable': 'Tallennettu, mutta kohde ei vastannut: {reason}',
 }
 
 export default fi

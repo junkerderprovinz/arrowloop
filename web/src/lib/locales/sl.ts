@@ -331,6 +331,9 @@ const sl: Translations = {
   'jobs.lastRun': 'nazadnje {when}',
   'jobs.activity': 'Dejavnost',
   'jobs.activityEmpty': 'Še nič. To opravilo še ni teklo.',
+  'jobs.searchReset': 'Počisti iskanje',
+  'jobs.activityNoMatch': 'Nobena pot tukaj ne vsebuje „{q}“.',
+  'jobs.activitySearch': 'Išči poti',
   'jobs.cadence.live': 'v realnem času',
   'jobs.cadence.every': 'vsakih {n} {unit}',
   'jobs.cadence.everyOne.minute': 'vsako minuto',
@@ -372,6 +375,9 @@ const sl: Translations = {
   'history.filterJob': 'Opravilo',
   'history.allJobs': 'Vsa opravila',
   'history.filterShow': 'Prikaži',
+  'history.rangeReset': 'Počisti obdobje',
+  'history.until': 'Do',
+  'history.since': 'Od',
   'history.showAll': 'Vsi zagoni',
   'history.showChanged': 'Samo tiste, ki so kaj naredili',
   'history.showFailed': 'Samo neuspehi',
@@ -421,6 +427,7 @@ const sl: Translations = {
   'opt.passHelp': 'Uporabi geslo za aplikacijo, če ga ponudnik omogoča, namesto gesla računa.',
   'opt.vendorHelp': 'Katero narečje WebDAV govori strežnik. Če nisi prepričan, izberi „drugo“.',
   'opt.keyFileHelp': 'Pot do zasebnega ključa na računalniku, kjer teče ArrowLoop, ne na tem.',
+  'targets.savedButUnreachable': 'Shranjeno, a cilj se ni odzval: {reason}',
 }
 
 export default sl

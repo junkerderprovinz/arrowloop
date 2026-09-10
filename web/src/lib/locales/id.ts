@@ -331,6 +331,9 @@ const id: Translations = {
   'jobs.lastRun': 'terakhir dijalankan {when}',
   'jobs.activity': 'Aktivitas',
   'jobs.activityEmpty': 'Belum ada apa-apa. Tugas ini belum pernah berjalan.',
+  'jobs.searchReset': 'Bersihkan pencarian',
+  'jobs.activityNoMatch': 'Tidak ada jalur di sini yang memuat ”{q}”.',
+  'jobs.activitySearch': 'Cari jalur',
   'jobs.cadence.live': 'secara waktu nyata',
   'jobs.cadence.every': 'setiap {n} {unit}',
   'jobs.cadence.everyOne.minute': 'setiap menit',
@@ -372,6 +375,9 @@ const id: Translations = {
   'history.filterJob': 'Tugas',
   'history.allJobs': 'Semua tugas',
   'history.filterShow': 'Tampilkan',
+  'history.rangeReset': 'Bersihkan rentang',
+  'history.until': 'Sampai',
+  'history.since': 'Dari',
   'history.showAll': 'Semua jalannya',
   'history.showChanged': 'Hanya yang melakukan sesuatu',
   'history.showFailed': 'Hanya kegagalan',
@@ -421,6 +427,7 @@ const id: Translations = {
   'opt.passHelp': 'Gunakan sandi aplikasi bila penyedia menyediakannya, bukan sandi akun.',
   'opt.vendorHelp': 'Dialek WebDAV mana yang dipakai server. Jika ragu, pilih “lainnya”.',
   'opt.keyFileHelp': 'Jalur ke kunci privat di mesin tempat ArrowLoop berjalan, bukan di mesin ini.',
+  'targets.savedButUnreachable': 'Tersimpan, tetapi tujuan tidak menjawab: {reason}',
 }
 
 export default id

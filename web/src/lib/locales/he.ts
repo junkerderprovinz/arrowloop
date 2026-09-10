@@ -331,6 +331,9 @@ const he: Translations = {
   'jobs.lastRun': 'הרצה אחרונה {when}',
   'jobs.activity': 'פעילות',
   'jobs.activityEmpty': 'עדיין כלום. המשימה הזאת לא רצה מעולם.',
+  'jobs.searchReset': 'ניקוי החיפוש',
+  'jobs.activityNoMatch': 'אין כאן נתיב המכיל «{q}».',
+  'jobs.activitySearch': 'חיפוש נתיבים',
   'jobs.cadence.live': 'בזמן אמת',
   'jobs.cadence.every': 'כל {n} {unit}',
   'jobs.cadence.everyOne.minute': 'כל דקה',
@@ -372,6 +375,9 @@ const he: Translations = {
   'history.filterJob': 'משימה',
   'history.allJobs': 'כל המשימות',
   'history.filterShow': 'הצגה',
+  'history.rangeReset': 'ניקוי הטווח',
+  'history.until': 'עד',
+  'history.since': 'מתאריך',
   'history.showAll': 'כל ההרצות',
   'history.showChanged': 'רק אלה שעשו משהו',
   'history.showFailed': 'רק כשלונות',
@@ -421,6 +427,7 @@ const he: Translations = {
   'opt.passHelp': 'השתמש בסיסמת יישום אם הספק מציע אחת, במקום סיסמת החשבון.',
   'opt.vendorHelp': 'באיזו ניב של WebDAV השרת מדבר. אם אינך בטוח, בחר »אחר«.',
   'opt.keyFileHelp': 'נתיב למפתח הפרטי במכונה שעליה ArrowLoop רץ, לא בזו.',
+  'targets.savedButUnreachable': 'נשמר, אבל היעד לא השיב: {reason}',
 }
 
 export default he

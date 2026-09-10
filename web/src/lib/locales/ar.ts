@@ -331,6 +331,9 @@ const ar: Translations = {
   'jobs.lastRun': 'آخر تشغيل {when}',
   'jobs.activity': 'النشاط',
   'jobs.activityEmpty': 'لا شيء بعد. لم تعمل هذه المهمة قط.',
+  'jobs.searchReset': 'مسح البحث',
+  'jobs.activityNoMatch': 'لا يوجد مسار هنا يحتوي على «{q}».',
+  'jobs.activitySearch': 'البحث في المسارات',
   'jobs.cadence.live': 'في الوقت الفعلي',
   'jobs.cadence.every': 'كل {n} {unit}',
   'jobs.cadence.everyOne.minute': 'كل دقيقة',
@@ -372,6 +375,9 @@ const ar: Translations = {
   'history.filterJob': 'المهمة',
   'history.allJobs': 'كل المهام',
   'history.filterShow': 'إظهار',
+  'history.rangeReset': 'مسح الفترة',
+  'history.until': 'إلى',
+  'history.since': 'من',
   'history.showAll': 'كل عمليات التشغيل',
   'history.showChanged': 'فقط التي فعلت شيئًا',
   'history.showFailed': 'فقط حالات الإخفاق',
@@ -421,6 +427,7 @@ const ar: Translations = {
   'opt.passHelp': 'استخدم كلمة مرور للتطبيق إن وفّرها المزود، بدل كلمة مرور الحساب.',
   'opt.vendorHelp': 'أي لهجة WebDAV يتحدثها الخادم. اختر «أخرى» إن لم تكن متأكدًا.',
   'opt.keyFileHelp': 'مسار المفتاح الخاص على الجهاز الذي يعمل عليه ArrowLoop، لا على هذا.',
+  'targets.savedButUnreachable': 'تم الحفظ، لكن الوجهة لم تردّ: {reason}',
 }
 
 export default ar

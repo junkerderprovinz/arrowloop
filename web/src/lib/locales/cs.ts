@@ -331,6 +331,9 @@ const cs: Translations = {
   'jobs.lastRun': 'naposledy {when}',
   'jobs.activity': 'Aktivita',
   'jobs.activityEmpty': 'Zatím nic. Tato úloha ještě neběžela.',
+  'jobs.searchReset': 'Vymazat hledání',
+  'jobs.activityNoMatch': 'Žádná zdejší cesta neobsahuje „{q}“.',
+  'jobs.activitySearch': 'Hledat v cestách',
   'jobs.cadence.live': 'v reálném čase',
   'jobs.cadence.every': 'v intervalu {n} {unit}',
   'jobs.cadence.everyOne.minute': 'každou minutu',
@@ -372,6 +375,9 @@ const cs: Translations = {
   'history.filterJob': 'Úloha',
   'history.allJobs': 'Všechny úlohy',
   'history.filterShow': 'Zobrazit',
+  'history.rangeReset': 'Vymazat období',
+  'history.until': 'Do',
+  'history.since': 'Od',
   'history.showAll': 'Všechny běhy',
   'history.showChanged': 'Jen ty, které něco udělaly',
   'history.showFailed': 'Jen selhání',
@@ -421,6 +427,7 @@ const cs: Translations = {
   'opt.passHelp': 'Použijte heslo aplikace, pokud ho poskytovatel nabízí, místo hesla k účtu.',
   'opt.vendorHelp': 'Jakým dialektem WebDAV server mluví. Pokud si nejste jisti, zvolte „jiný“.',
   'opt.keyFileHelp': 'Cesta k privátnímu klíči na stroji, kde běží ArrowLoop, ne na tomto.',
+  'targets.savedButUnreachable': 'Uloženo, ale cíl neodpověděl: {reason}',
 }
 
 export default cs

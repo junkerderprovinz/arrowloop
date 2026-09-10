@@ -331,6 +331,9 @@ const it: Translations = {
   'jobs.lastRun': 'ultima esecuzione {when}',
   'jobs.activity': 'Attività',
   'jobs.activityEmpty': 'Ancora niente. Questo lavoro non è mai stato eseguito.',
+  'jobs.searchReset': 'Cancella la ricerca',
+  'jobs.activityNoMatch': 'Nessun percorso qui contiene «{q}».',
+  'jobs.activitySearch': 'Cerca percorsi',
   'jobs.cadence.live': 'in tempo reale',
   'jobs.cadence.every': 'ogni {n} {unit}',
   'jobs.cadence.everyOne.minute': 'ogni minuto',
@@ -372,6 +375,9 @@ const it: Translations = {
   'history.filterJob': 'Lavoro',
   'history.allJobs': 'Tutti i lavori',
   'history.filterShow': 'Mostra',
+  'history.rangeReset': 'Cancella il periodo',
+  'history.until': 'Al',
+  'history.since': 'Dal',
   'history.showAll': 'Tutte le esecuzioni',
   'history.showChanged': 'Solo quelle che hanno fatto qualcosa',
   'history.showFailed': 'Solo gli errori',
@@ -421,6 +427,7 @@ const it: Translations = {
   'opt.passHelp': 'Usa una password per app se il fornitore ne offre una, invece di quella dell\'account.',
   'opt.vendorHelp': 'Quale dialetto WebDAV parla il server. Nel dubbio scegli «altro».',
   'opt.keyFileHelp': 'Percorso della chiave privata sulla macchina dove gira ArrowLoop, non su questa.',
+  'targets.savedButUnreachable': 'Salvato, ma la destinazione non ha risposto: {reason}',
 }
 
 export default it

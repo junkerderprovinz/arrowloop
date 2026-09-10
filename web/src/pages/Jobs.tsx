@@ -16,7 +16,7 @@ import { Stats } from '../components/Stats'
 import { CheckPanel } from '../components/CheckPanel'
 import { TrashPanel } from '../components/TrashPanel'
 import { JobForm, useJobConfig } from './Editor'
-import { Choice } from '../components/Field'
+import { Choice, Day, Field, Text } from '../components/Field'
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { bytes } from '../lib/bytes'
 import { api } from '../lib/api'
@@ -761,25 +761,79 @@ function JobActivity({ job }: { job: string }) {
   // somebody looking for when a particular file was touched wants the list to
   // reach further back, not to be handed page four.
   const [limit, setLimit] = useState(60)
+  // What was typed, and what has actually been asked for. They are two states
+  // because they run at two speeds: the box has to answer every keystroke and
+  // the server must not.
+  const [typed, setTyped] = useState('')
+  const [query, setQuery] = useState('')
+
+  // A quarter of a second of quiet before asking. Without it a nine-letter
+  // filename is nine queries over a table with a row per file per run, eight of
+  // them for a prefix nobody wanted, and the answers can arrive out of order so
+  // the list ends up showing the results for "urlau".
+  useEffect(() => {
+    const timer = setTimeout(() => setQuery(typed.trim()), 250)
+    return () => clearTimeout(timer)
+  }, [typed])
+
+  // Back to one screenful whenever the question changes. Carrying a limit that
+  // grew to 960 rows while scrolling through everything into a search for one
+  // name asks the database for nine hundred rows to draw three.
+  useEffect(() => setLimit(60), [query])
 
   useEffect(() => {
     let live = true
     setError(null)
     api
-      .jobTouches(job, limit)
+      .jobTouches(job, limit, query)
       .then((got) => live && setTouches(got))
       .catch((e: Error) => live && setError(e.message))
     return () => {
       live = false
     }
-  }, [job, limit])
+  }, [job, limit, query])
 
-  if (error) return <p className="mt-1 text-xs text-statusFail">{error}</p>
-  if (!touches) return <Empty>{t('jobs.activityLoading')}</Empty>
-  if (touches.length === 0) return <Empty>{t('jobs.activityEmpty')}</Empty>
+  // The search box is drawn BEFORE the answer is examined, and stays drawn when
+  // the answer is empty. A field that removes itself as soon as its search
+  // finds nothing leaves somebody who mistyped one letter with no way back to
+  // the full list, which is the one moment they need it.
+  const search = (
+    <div className="mb-2 flex items-center gap-2">
+      <Text
+        value={typed}
+        onChange={setTyped}
+        placeholder={t('jobs.activitySearch')}
+        label={t('jobs.activitySearch')}
+        mono
+      />
+      {typed && (
+        <IconAction
+          title={t('jobs.searchReset')}
+          labelKey="jobs.searchReset"
+          tone="subtle"
+          onClick={() => setTyped('')}
+        />
+      )}
+    </div>
+  )
+
+  if (error || !touches || touches.length === 0)
+    return (
+      <div className="mt-1 w-full">
+        {search}
+        {error ? (
+          <p className="mt-1 text-xs text-statusFail">{error}</p>
+        ) : !touches ? (
+          <Empty>{t('jobs.activityLoading')}</Empty>
+        ) : (
+          <Empty>{query ? t('jobs.activityNoMatch', { q: query }) : t('jobs.activityEmpty')}</Empty>
+        )}
+      </div>
+    )
 
   return (
     <div className="mt-1 w-full">
+      {search}
       {/* Loads more when the scroll reaches the bottom, rather than offering a
           button to press. jdp: "wenn man an die untere grenze scrollt soll es
           automatisch mehr laden." A button at the end of a scrolling list asks
@@ -904,6 +958,16 @@ export function History({
   const [open, setOpen] = useState<number | null>(null)
   const [job, setJob] = useState('')
   const [show, setShow] = useState<HistoryShow>('all')
+  /**
+   * The stretch of time, as two calendar days, either of which may be blank.
+   *
+   * Blank means open-ended rather than "today", and both blank is the plain
+   * newest-first list this tab has always been. Defaulting them to a week would
+   * mean a tab that silently hides everything older than seven days from
+   * somebody who never touched the control.
+   */
+  const [since, setSince] = useState('')
+  const [until, setUntil] = useState('')
   const [own, setOwn] = useState<Run[] | null>(null)
   const [loading, setLoading] = useState(false)
   /**
@@ -919,20 +983,20 @@ export function History({
   /** The end of the list, watched so that reaching it asks for more. */
   const sentinel = useRef<HTMLDivElement | null>(null)
 
-  const filtered = job !== '' || show !== 'all'
+  const filtered = job !== '' || show !== 'all' || since !== '' || until !== ''
 
   useEffect(() => {
     let live = true
     setLoading(true)
     api
-      .history(job || undefined, show, limit)
+      .history(job || undefined, show, limit, since, until)
       .then((got) => live && setOwn(got))
       .catch(() => live && setOwn([]))
       .finally(() => live && setLoading(false))
     return () => {
       live = false
     }
-  }, [job, show, limit, runs])
+  }, [job, show, limit, since, until, runs])
 
   const list = own ?? runs
 
@@ -999,6 +1063,56 @@ export function History({
             { value: 'failed', label: t('history.showFailed') },
           ]}
         />
+      </div>
+      {/* The stretch of time, asked for at the server like the other two.
+          "What happened at the weekend" is not answerable by scrolling: a job
+          that runs every minute writes ten thousand rows between Friday and
+          Monday, and the doubling button reaches back through them one screen
+          at a time. jdp approved this as one of the small ones.
+
+          Two separate days rather than a set of presets. A week and a month
+          are the easy cases and neither is the case somebody has, which is
+          usually "the day it went wrong", and that day is already known. */}
+      <div className="flex shrink-0 items-end gap-2">
+        <Field label={t('history.since')}>
+          <Day
+            value={since}
+            onChange={(next) => {
+              setSince(next)
+              setLimit(50)
+            }}
+            label={t('history.since')}
+            // Never past the other end, so the pair cannot be drawn backwards
+            // into a range that is empty by construction and looks like a log
+            // with nothing in it.
+            max={until || undefined}
+          />
+        </Field>
+        <Field label={t('history.until')}>
+          <Day
+            value={until}
+            onChange={(next) => {
+              setUntil(next)
+              setLimit(50)
+            }}
+            label={t('history.until')}
+          />
+        </Field>
+        {(since || until) && (
+          // No glyph passed: the key ends in `Reset` and the app's own table
+          // resolves that to the reset mark, which is the whole point of
+          // mapping by meaning rather than choosing a symbol per call site.
+          <IconAction
+            title={t('history.rangeReset')}
+            labelKey="history.rangeReset"
+            tone="subtle"
+            onClick={() => {
+              setSince('')
+              setUntil('')
+              setLimit(50)
+            }}
+          />
+        )}
       </div>
       <InfoBubble tip={t('history.filterHint')} />
     </div>

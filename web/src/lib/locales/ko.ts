@@ -331,6 +331,9 @@ const ko: Translations = {
   'jobs.lastRun': '마지막 실행 {when}',
   'jobs.activity': '활동',
   'jobs.activityEmpty': '아직 없습니다. 이 작업은 실행된 적이 없습니다.',
+  'jobs.searchReset': '검색어 지우기',
+  'jobs.activityNoMatch': '여기에는 ‘{q}’을(를) 포함하는 경로가 없습니다.',
+  'jobs.activitySearch': '경로 검색',
   'jobs.cadence.live': '실시간으로',
   'jobs.cadence.every': '{n}{unit}마다',
   'jobs.cadence.everyOne.minute': '매분',
@@ -372,6 +375,9 @@ const ko: Translations = {
   'history.filterJob': '작업',
   'history.allJobs': '모든 작업',
   'history.filterShow': '표시',
+  'history.rangeReset': '기간 지우기',
+  'history.until': '끝',
+  'history.since': '시작',
   'history.showAll': '모든 실행',
   'history.showChanged': '무언가를 한 실행만',
   'history.showFailed': '실패만',
@@ -421,6 +427,7 @@ const ko: Translations = {
   'opt.passHelp': '공급자가 앱 비밀번호를 제공하면 계정 비밀번호 대신 그것을 쓰세요.',
   'opt.vendorHelp': '서버가 사용하는 WebDAV 방언. 잘 모르면 “기타”를 고르세요.',
   'opt.keyFileHelp': 'ArrowLoop 이 실행되는 컴퓨터의 개인 키 경로입니다.',
+  'targets.savedButUnreachable': '저장됐지만 대상이 응답하지 않았습니다: {reason}',
 }
 
 export default ko

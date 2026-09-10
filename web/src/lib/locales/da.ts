@@ -331,6 +331,9 @@ const da: Translations = {
   'jobs.lastRun': 'seneste kørsel {when}',
   'jobs.activity': 'Aktivitet',
   'jobs.activityEmpty': 'Ingenting endnu. Dette job har aldrig kørt.',
+  'jobs.searchReset': 'Ryd søgningen',
+  'jobs.activityNoMatch': 'Ingen sti her indeholder „{q}“.',
+  'jobs.activitySearch': 'Søg i stier',
   'jobs.cadence.live': 'i realtid',
   'jobs.cadence.every': 'hver {n}. {unit}',
   'jobs.cadence.everyOne.minute': 'hvert minut',
@@ -372,6 +375,9 @@ const da: Translations = {
   'history.filterJob': 'Job',
   'history.allJobs': 'Alle job',
   'history.filterShow': 'Vis',
+  'history.rangeReset': 'Ryd perioden',
+  'history.until': 'Til',
+  'history.since': 'Fra',
   'history.showAll': 'Alle kørsler',
   'history.showChanged': 'Kun dem der gjorde noget',
   'history.showFailed': 'Kun fejl',
@@ -421,6 +427,7 @@ const da: Translations = {
   'opt.passHelp': 'Brug en app-adgangskode, hvis udbyderen tilbyder en, frem for kontoadgangskoden.',
   'opt.vendorHelp': 'Hvilken WebDAV-dialekt serveren taler. Vælg ”andet”, hvis du er i tvivl.',
   'opt.keyFileHelp': 'Sti til den private nøgle på maskinen, hvor ArrowLoop kører, ikke på denne.',
+  'targets.savedButUnreachable': 'Gemt, men målet svarede ikke: {reason}',
 }
 
 export default da
