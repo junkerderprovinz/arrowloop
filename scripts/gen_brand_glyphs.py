@@ -132,6 +132,24 @@ HEAD = '''import type { SVGProps } from 'react'
 SURFACE_DARK = "#393939"   # --carbon-surface2, dark theme: what a row is filled with
 SURFACE_LIGHT = "#e8e8e8"  # --carbon-surface2, light theme
 
+# A tile is not one ground, it is three, and measuring only the resting one is
+# how eleven marks shipped invisible.
+#
+# The picker's tile is filled with --carbon-surface2 and lights up under the
+# pointer, which in the dark theme means it goes to WHITE. So a mark that sits
+# on #393939 at rest sits on #ffffff a moment later, and the twelve marks whose
+# dark value is near-white measured 1.00 against it - not faint, gone, and gone
+# exactly while somebody was pointing at the thing they wanted to read. The
+# light theme has the milder half of the same fault: its hover is
+# --carbon-surface3 at #d1d1d1, where Cloudflare's orange falls to 1.74.
+#
+# Two answers, and both are needed. A mark's LIGHT value has to clear the floor
+# on every light ground it can land on, which is what this tuple is for. And a
+# dark-theme tile that has gone white is showing a light ground, so the mark
+# switches to its light value for as long as the pointer is there - see the
+# fourth CSS block at the bottom of this file.
+GROUNDS_LIGHT = ("#ffffff", SURFACE_LIGHT, "#d1d1d1")
+
 # Below this, the mark is not readable against that ground. The number is where
 # the measurement and the eye agree: Dropbox's blue sits at 2.28 and reads
 # perfectly well; Filen's black at 1.90 does not.
@@ -194,12 +212,32 @@ def contrast(one_colour, other):
     return (a + 0.05) / (b + 0.05)
 
 
-def shift(colour, surface, upward):
+def on_light_grounds(colour):
+    """The WORST contrast this colour reaches on any light ground it can sit on.
+
+    The question a mark has to answer is not "can it be read where it rests"
+    but "can it be read anywhere it lands", and a tile lands it on three
+    different lights: white when a dark-theme tile is hovered, #e8e8e8 at rest
+    in the light theme, #d1d1d1 when that one is hovered. A near-white colour
+    is worst against white, a dark one worst against #d1d1d1, so neither ground
+    alone is the test and the minimum is.
+    """
+    return min(contrast(colour, ground) for ground in GROUNDS_LIGHT)
+
+
+def shift(colour, surface, upward, also=()):
     """The same colour, moved along lightness until it can be seen.
 
     Hue and saturation are untouched: this is the brand's colour at a different
     brightness, not a different colour. Black and white have no hue to keep, so
     they simply become their opposite end, which is what one wants anyway.
+
+    `also` names further (ground, minimum) pairs the result must satisfy on top
+    of reaching TARGET on `surface`. It exists because the light theme has two
+    grounds rather than one: a colour tuned to 4.5 against the resting
+    #e8e8e8 can still sit under the floor against the #d1d1d1 it moves to
+    under the pointer, and a mark that vanishes exactly while somebody points
+    at it is worse than one that was always faint.
     """
     rgb = _rgb(colour)
     hue, light, sat = colorsys.rgb_to_hls(*(v / 255.0 for v in rgb))
@@ -210,7 +248,9 @@ def shift(colour, surface, upward):
         candidate = "#%02x%02x%02x" % tuple(
             round(v * 255) for v in colorsys.hls_to_rgb(hue, min(max(light, 0.0), 1.0), sat)
         )
-        if contrast(candidate, surface) >= TARGET:
+        if contrast(candidate, surface) >= TARGET and all(
+            contrast(candidate, ground) >= minimum for ground, minimum in also
+        ):
             return candidate
     return "#%02x%02x%02x" % tuple(
         round(v * 255) for v in colorsys.hls_to_rgb(hue, min(max(light, 0.0), 1.0), sat)
@@ -315,24 +355,41 @@ def themed(colours, slug):
     for colour, (on_dark, on_light) in FORCE_THEMED.get(slug, {}).items():
         if colour not in usable:
             raise SystemExit("FORCE_THEMED names %s in %s, which does not paint with it" % (colour, slug))
+        # A hand-given pair skips the measurement that mints every other value,
+        # so it gets the measurement here instead. Without this, the one place
+        # in the file where a human picks the hex is the one place a hex can be
+        # too faint to see and nothing says so.
+        if contrast(on_dark, SURFACE_DARK) < FLOOR or on_light_grounds(on_light) < FLOOR:
+            raise SystemExit(
+                "FORCE_THEMED %s/%s is too faint: %.2f on the dark ground, %.2f on the "
+                "worst light one" % (slug, colour, contrast(on_dark, SURFACE_DARK),
+                                     on_light_grounds(on_light))
+            )
         name = "--brand-%s-forced%d" % (slug, len(forced))
         VARIABLES.append((name, _hex(on_dark), _hex(on_light)))
         forced[colour] = "var(%s)" % name
-    if forced:
+
+    # Naming one colour by hand settles THAT colour, not the mark. Returning
+    # here was a real hole: OpenDrive's white bars are forced, its blue ones
+    # are not, and the blue was never measured at all - it sat at 1.74 against
+    # the light theme's hover for as long as the exception existed. So the rest
+    # of the mark goes through the same measurement as any other.
+    rest = [c for c in usable if c not in forced]
+    if not rest:
         return forced
 
-    dark_best = max(contrast(c, SURFACE_DARK) for c in usable)
-    light_best = max(contrast(c, SURFACE_LIGHT) for c in usable)
+    dark_best = max(contrast(c, SURFACE_DARK) for c in rest)
+    light_best = max(on_light_grounds(c) for c in rest)
     if dark_best >= FLOOR and light_best >= FLOOR:
-        return {}
+        return forced
     if dark_best < FLOOR and light_best < FLOOR:
         raise SystemExit(
             "%s cannot be read on either ground (%.2f dark, %.2f light): it needs a "
             "different source file, not a lightness shift" % (slug, dark_best, light_best)
         )
-    swap = {}
+    swap = dict(forced)
     minted = {}
-    for colour in usable:
+    for colour in rest:
         # Keyed by what the colour IS, not by how it was spelt: one file writes
         # the same navy as `#20434F` and `#20434f`, and two properties for one
         # colour is two things to keep in step for no reason.
@@ -340,7 +397,12 @@ def themed(colours, slug):
         if key not in minted:
             name = "--brand-%s-%d" % (slug, len(minted))
             on_dark = shift(colour, SURFACE_DARK, upward=True) if dark_best < FLOOR else colour
-            on_light = shift(colour, SURFACE_LIGHT, upward=False) if light_best < FLOOR else colour
+            on_light = (
+                shift(colour, SURFACE_LIGHT, upward=False,
+                      also=[(ground, FLOOR) for ground in GROUNDS_LIGHT])
+                if light_best < FLOOR
+                else colour
+            )
             VARIABLES.append((name, _hex(on_dark), _hex(on_light)))
             minted[key] = name
         swap[colour] = "var(%s)" % minted[key]
@@ -362,9 +424,25 @@ def _hex(colour):
 
 
 def apply_swap(source, swap):
-    """Put the custom properties where the literal colours were."""
+    """Put the custom properties where the literal colours were.
+
+    Everywhere the mark PAINTS, and nowhere else. A `<mask>` block is left
+    alone for the same reason its colours were never measured: white there
+    means "show all of this" rather than "draw in white", and a theme variable
+    in its place would make the mark's own visibility follow the theme - a
+    logo that fades instead of a logo that flips.
+    """
+    masks = []
+
+    def park(match):
+        masks.append(match.group(0))
+        return "\0mask%d\0" % (len(masks) - 1)
+
+    source = re.sub(r"<mask\b.*?</mask>", park, source, flags=re.S)
     for colour, variable in swap.items():
         source = source.replace('"%s"' % colour, '"%s"' % variable)
+    for index, block in enumerate(masks):
+        source = source.replace("\0mask%d\0" % index, block)
     return source
 
 
@@ -798,7 +876,18 @@ def local(name, slug, note, source, licence):
     # black - and black is exactly what disappears on a dark ground. Saying so
     # explicitly is what lets the readability check below see it at all;
     # Pixeldrain's mark is one such file and was invisible because of it.
-    painted_text = body + " " + " ".join(root_attrs)
+    # What the mark PAINTS with, which is not everything that names a colour.
+    #
+    # A `<mask>` is drawn in white to mean "show all of this" and in black to
+    # mean "hide it"; neither is ink, and neither is on screen. Quatrix's file
+    # carries two such masks, so the readability check saw a white it would
+    # never draw, called the mark readable on a dark ground on the strength of
+    # it, and left the orange that IS drawn at 1.74 against the light theme's
+    # hover. Worse, had the mark been flipped, the shift would have moved the
+    # mask's white along with everything else - and a mask painted in grey
+    # shows the drawing at grey's opacity, which is a logo fading out rather
+    # than a logo changing colour.
+    painted_text = re.sub(r"<mask\b.*?</mask>", " ", body, flags=re.S) + " " + " ".join(root_attrs)
     found = re.findall(
         r'"(#[0-9a-fA-F]{3,8}|rgb\([^"]*\)|%s)"' % "|".join(KEYWORDS),
         painted_text,
@@ -861,11 +950,28 @@ CSS_HEAD = """/* Brand marks that need a different lightness on one of the two g
    hand-kept list of names: such a list is wrong the moment a mark is added or
    a set changes a hex, and nothing would say so.
 
-   The three blocks mirror tokens.css exactly, so the marks follow the same
-   switch as every other colour in the app: dark by default, light when the OS
-   asks and nothing overrides it, light when the app is explicitly set to it.
+   The first three blocks mirror tokens.css exactly, so the marks follow the
+   same switch as every other colour in the app: dark by default, light when
+   the OS asks and nothing overrides it, light when the app is explicitly set
+   to it.
+
+   The FOURTH block is the one that is not about the theme. A picker tile is
+   filled with --carbon-surface2 and lights up under the pointer, and in the
+   dark theme it lights up all the way to white - so for as long as the pointer
+   is on it, a dark-theme mark is standing on a LIGHT ground and has to wear
+   its light value. Without this, twelve marks measured 1.00 against the tile
+   they were sitting on: put.io, OpenCloud, Cloudinary, the Internet Archive
+   and the rest went from white-on-charcoal to white-on-white the moment
+   somebody pointed at them, which is the one place a list of logos must not
+   go blank. The class marks the tiles that do it; a mark on any other surface
+   is untouched.
 */
 """
+
+# The class a control wears when its hover goes light. Named for what it does
+# to the ground rather than for where it is used, because the rule is about the
+# surface: anything that lights up this far owes its marks the switch.
+HOVER_LIGHT_CLASS = "brand-hover-light"
 
 
 def css_block(selectors, index, indent=0):
@@ -899,6 +1005,10 @@ if VARIABLES:
         + "\n}"
     )
     css.append(css_block(['[data-theme="light"]'], 2))
+    # Only the dark theme needs it. The light theme's hover moves to
+    # --carbon-surface3, which is still a light ground, and the light values
+    # already clear the floor against it - that is what GROUNDS_LIGHT is for.
+    css.append(css_block(['[data-theme="dark"] .%s:hover' % HOVER_LIGHT_CLASS], 2))
 io.open(CSS_OUT, "w", encoding="utf-8", newline="\n").write("\n\n".join(css) + "\n")
 
 flipped = sorted({name.rsplit("-", 1)[0][8:] for name, _, _ in VARIABLES})

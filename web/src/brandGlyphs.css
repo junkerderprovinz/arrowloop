@@ -16,9 +16,21 @@
    hand-kept list of names: such a list is wrong the moment a mark is added or
    a set changes a hex, and nothing would say so.
 
-   The three blocks mirror tokens.css exactly, so the marks follow the same
-   switch as every other colour in the app: dark by default, light when the OS
-   asks and nothing overrides it, light when the app is explicitly set to it.
+   The first three blocks mirror tokens.css exactly, so the marks follow the
+   same switch as every other colour in the app: dark by default, light when
+   the OS asks and nothing overrides it, light when the app is explicitly set
+   to it.
+
+   The FOURTH block is the one that is not about the theme. A picker tile is
+   filled with --carbon-surface2 and lights up under the pointer, and in the
+   dark theme it lights up all the way to white - so for as long as the pointer
+   is on it, a dark-theme mark is standing on a LIGHT ground and has to wear
+   its light value. Without this, twelve marks measured 1.00 against the tile
+   they were sitting on: put.io, OpenCloud, Cloudinary, the Internet Archive
+   and the rest went from white-on-charcoal to white-on-white the moment
+   somebody pointed at them, which is the one place a list of logos must not
+   go blank. The class marks the tiles that do it; a mark on any other surface
+   is untouched.
 */
 
 
@@ -30,6 +42,7 @@
   --brand-citrix-0: #bb9ae1;
   --brand-apachehadoop-0: #66CCFF;
   --brand-wasabi-0: #01CD3E;
+  --brand-cloudflare-0: #F38020;
   --brand-scaleway-0: #c48dfb;
   --brand-ovh-0: #6eaae7;
   --brand-synology-0: #B5B5B6;
@@ -38,9 +51,12 @@
   --brand-pcloud-2: #1cd2e6;
   --brand-koofr-0: #71ba05;
   --brand-opendrive-forced0: #ffffff;
+  --brand-opendrive-0: #6ea1e7;
   --brand-putio-0: #ffffff;
   --brand-putio-1: #FDCE45;
   --brand-ulozto-forced0: #ffffff;
+  --brand-quatrix-0: #f70;
+  --brand-quatrix-1: #ffd6b3;
   --brand-linkbox-0: #fff;
   --brand-gofile-0: #e6ae1e;
   --brand-gofile-1: #e5e6e7;
@@ -61,6 +77,7 @@
     --brand-citrix-0: #452170;
     --brand-apachehadoop-0: #006da3;
     --brand-wasabi-0: #017222;
+    --brand-cloudflare-0: #a45009;
     --brand-scaleway-0: #4F0599;
     --brand-ovh-0: #123F6D;
     --brand-synology-0: #68686a;
@@ -69,9 +86,12 @@
     --brand-pcloud-2: #0d6f7a;
     --brand-koofr-0: #477403;
     --brand-opendrive-forced0: #2b2b2b;
+    --brand-opendrive-0: #2066c4;
     --brand-putio-0: #666666;
     --brand-putio-1: #7f5f01;
     --brand-ulozto-forced0: #3d3d3d;
+    --brand-quatrix-0: #a34c00;
+    --brand-quatrix-1: #a94e00;
     --brand-linkbox-0: #666666;
     --brand-gofile-0: #7c5d0e;
     --brand-gofile-1: #62666b;
@@ -92,6 +112,7 @@
   --brand-citrix-0: #452170;
   --brand-apachehadoop-0: #006da3;
   --brand-wasabi-0: #017222;
+  --brand-cloudflare-0: #a45009;
   --brand-scaleway-0: #4F0599;
   --brand-ovh-0: #123F6D;
   --brand-synology-0: #68686a;
@@ -100,9 +121,46 @@
   --brand-pcloud-2: #0d6f7a;
   --brand-koofr-0: #477403;
   --brand-opendrive-forced0: #2b2b2b;
+  --brand-opendrive-0: #2066c4;
   --brand-putio-0: #666666;
   --brand-putio-1: #7f5f01;
   --brand-ulozto-forced0: #3d3d3d;
+  --brand-quatrix-0: #a34c00;
+  --brand-quatrix-1: #a94e00;
+  --brand-linkbox-0: #666666;
+  --brand-gofile-0: #7c5d0e;
+  --brand-gofile-1: #62666b;
+  --brand-gofile-2: #65686c;
+  --brand-pixeldrain-0: #000000;
+  --brand-filen-0: #666666;
+  --brand-hidrive-0: #003d8f;
+  --brand-cloudinary-0: #000000;
+  --brand-internetarchive-0: #000000;
+  --brand-opencloud-0: #000000;
+}
+
+[data-theme="dark"] .brand-hover-light:hover {
+  --brand-github-0: #181717;
+  --brand-owncloud-0: #041E42;
+  --brand-seafile-0: #8f5500;
+  --brand-citrix-0: #452170;
+  --brand-apachehadoop-0: #006da3;
+  --brand-wasabi-0: #017222;
+  --brand-cloudflare-0: #a45009;
+  --brand-scaleway-0: #4F0599;
+  --brand-ovh-0: #123F6D;
+  --brand-synology-0: #68686a;
+  --brand-pcloud-0: #0e6d78;
+  --brand-pcloud-1: #0e727d;
+  --brand-pcloud-2: #0d6f7a;
+  --brand-koofr-0: #477403;
+  --brand-opendrive-forced0: #2b2b2b;
+  --brand-opendrive-0: #2066c4;
+  --brand-putio-0: #666666;
+  --brand-putio-1: #7f5f01;
+  --brand-ulozto-forced0: #3d3d3d;
+  --brand-quatrix-0: #a34c00;
+  --brand-quatrix-1: #a94e00;
   --brand-linkbox-0: #666666;
   --brand-gofile-0: #7c5d0e;
   --brand-gofile-1: #62666b;

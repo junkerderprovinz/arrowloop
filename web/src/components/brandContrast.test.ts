@@ -21,14 +21,34 @@ import { describe, expect, it } from 'vitest'
  * A mark that fails on one ground carries its colour as a custom property and
  * that property holds a shifted lightness for that ground, so BOTH values have
  * to be checked, each against its own surface.
+ *
+ * And against EVERY surface, which is what this guard used to miss. It
+ * measured the resting fill only, so it had nothing to say about the tile
+ * under the pointer - and the picker's tile goes to white in the dark theme.
+ * Twelve marks sat at 1.00 against it, six of them at literally white on
+ * white, for as long as the tiles have existed. A guard that cannot reach the
+ * failure reports nothing, so the grounds below are now every ground a mark
+ * can land on.
  */
 
 const here = dirname(fileURLToPath(import.meta.url))
 const glyphs = readFileSync(join(here, 'brandGlyphs.tsx'), 'utf8')
 const themed = readFileSync(join(here, '..', 'brandGlyphs.css'), 'utf8')
+const picker = readFileSync(join(here, 'ProviderPicker.tsx'), 'utf8')
 
-/** --carbon-surface2 in each theme: what a row in the picker is filled with. */
-const SURFACE = { dunkel: '#393939', hell: '#e8e8e8' }
+/**
+ * Every ground a mark can be standing on, by theme.
+ *
+ * The dark theme has one, because its tile lights up all the way to white and
+ * the mark switches to its LIGHT value the moment it does - so white belongs
+ * on the light list, not this one. The light theme has three: white where a
+ * hovered dark tile has landed, --carbon-surface2 at rest, --carbon-surface3
+ * under the pointer.
+ */
+const GROUNDS = {
+  dunkel: ['#393939'],
+  hell: ['#ffffff', '#e8e8e8', '#d1d1d1'],
+}
 /** Below this a mark is not readable. Dropbox sits at 2.28 and reads fine. */
 const FLOOR = 2.0
 
@@ -60,16 +80,31 @@ function contrast(a: string, b: string): number {
   return (x + 0.05) / (y + 0.05)
 }
 
-/** Each mark's component name and every literal colour it paints with. */
+/** The worst contrast a colour reaches on any ground that theme can show it. */
+function worst(colour: string, theme: keyof typeof GROUNDS): number {
+  return Math.min(...GROUNDS[theme].map((ground) => contrast(colour, ground)))
+}
+
+/**
+ * Each mark's component name and every literal colour it PAINTS with.
+ *
+ * A `<mask>` is cut out first. White inside one means "show all of this"
+ * rather than "draw in white", and counting it as ink is how Quatrix passed
+ * this guard on the strength of a colour it never draws while the orange it
+ * does draw sat at 1.74 against the light theme's hover.
+ */
 function marks(): { name: string; colours: string[] }[] {
   return glyphs
     .split('export function ')
     .slice(1)
     .map((chunk) => ({
       name: chunk.slice(0, chunk.indexOf('(')),
-      colours: [...chunk.split('\n}')[0].matchAll(/"(#[0-9a-fA-F]{3,6}|rgb\([^"]*\))"/g)].map(
-        (m) => m[1],
-      ),
+      colours: [
+        ...chunk
+          .split('\n}')[0]
+          .replace(/<mask\b[\s\S]*?<\/mask>/g, ' ')
+          .matchAll(/"(#[0-9a-fA-F]{3,6}|rgb\([^"]*\))"/g),
+      ].map((m) => m[1]),
     }))
     .filter((m) => m.colours.length > 0)
 }
@@ -99,11 +134,11 @@ describe('brand contrast', () => {
     expect(variables().length).toBeGreaterThan(5)
   })
 
-  it('gives every themed colour enough contrast on both grounds', () => {
+  it('gives every themed colour enough contrast on every ground', () => {
     const faint = variables().flatMap((v) => {
       const out: string[] = []
-      if (contrast(v.dunkel, SURFACE.dunkel) < FLOOR) out.push(`${v.name} dunkel`)
-      if (contrast(v.hell, SURFACE.hell) < FLOOR) out.push(`${v.name} hell`)
+      if (worst(v.dunkel, 'dunkel') < FLOOR) out.push(`${v.name} dunkel`)
+      if (worst(v.hell, 'hell') < FLOOR) out.push(`${v.name} hell`)
       return out
     })
     expect(faint, `too faint to see: ${faint.join(', ')}`).toEqual([])
@@ -118,11 +153,27 @@ describe('brand contrast', () => {
         const usable = m.colours.filter((c) => rgb(c))
         // Readable if ANY part of it stands out - a two-tone mark with one
         // visible half is still a visible mark.
-        const onDark = Math.max(...usable.map((c) => contrast(c, SURFACE.dunkel)))
-        const onLight = Math.max(...usable.map((c) => contrast(c, SURFACE.hell)))
+        const onDark = Math.max(...usable.map((c) => worst(c, 'dunkel')))
+        const onLight = Math.max(...usable.map((c) => worst(c, 'hell')))
         return onDark < FLOOR || onLight < FLOOR
       })
       .map((m) => m.name)
     expect(faint, `needs a per-theme variant: ${faint.join(', ')}`).toEqual([])
+  })
+
+  /**
+   * The white hover and the switch that pays for it travel together.
+   *
+   * Everything above proves each VALUE is readable on the ground it is meant
+   * for. This proves the mark is actually handed the right one: a tile that
+   * lights up to white shows a light ground, so it has to carry
+   * `brand-hover-light` or the dark values stay put and the logo goes white on
+   * white. The two are written in different files by different hands, which is
+   * exactly the pair that drifts.
+   */
+  it('gives every white hover the switch that goes with it', () => {
+    expect(themed).toContain('[data-theme="dark"] .brand-hover-light:hover {')
+    expect(picker).toContain('dark:hover:bg-white')
+    expect(picker).toContain('brand-hover-light')
   })
 })

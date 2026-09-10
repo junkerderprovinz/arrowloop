@@ -220,11 +220,22 @@ export function ProviderPicker({
  * a literal white hover makes the tile vanish into the card instead of lifting
  * off it. The same reasoning KL's own comment records, reached the same way.
  *
+ * `brand-hover-light` is what pays for that white. A tile that goes white is
+ * showing a LIGHT ground, so every mark on it has to wear its light value for
+ * as long as the pointer is there - and twelve of them did not. Measured on
+ * this build before the class existed: put.io, OpenCloud, Cloudinary, the
+ * Internet Archive, Filen, Linkbox, Uloz.to and OpenDrive all reached exactly
+ * 1.00 against the tile under the pointer, which is white on white. The
+ * caption already flips with `dark:hover:text-[#161616]`; this is the same
+ * flip for the logo above it, and the rule that does it is generated beside
+ * the colours themselves in brandGlyphs.css.
+ *
  * No `focus-visible:outline-none`. A keyboard ring is the only thing telling
  * somebody tabbing through sixty tiles where they are, and a hover that reads
  * the same as focus takes that away.
  */
 const TILE =
-  'flex h-full w-full flex-col items-center justify-center gap-2 rounded-[var(--radius-control)] ' +
-  'bg-carbon-surface2 px-2 py-3 text-carbon-text transition-colors duration-150 ' +
+  'brand-hover-light flex h-full w-full flex-col items-center justify-center gap-2 ' +
+  'rounded-[var(--radius-control)] bg-carbon-surface2 px-2 py-3 text-carbon-text ' +
+  'transition-colors duration-150 ' +
   'hover:bg-carbon-surface3 dark:hover:bg-white dark:hover:text-[#161616]'
