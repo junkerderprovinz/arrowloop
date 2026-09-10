@@ -63,6 +63,32 @@ phone. The debug APK is signed with the standard debug key every Android SDK
 carries. It installs, it runs, and it is honestly named: for trying the thing,
 not for shipping it.
 
+## The x86_64 build does not run, and it is not our bug
+
+Measured on StrawKnight (Android 16, x86_64): the app starts, the engine starts
+and dies immediately with **`SIGSYS: bad system call`**. The traceback names it
+exactly - `modernc.org/sqlite` opening its database calls `lstat`, which
+`modernc.org/libc` issues as raw **syscall 6** on amd64. Android's seccomp
+filter blocks it: bionic has never used the legacy `stat`/`lstat`/`fstat`
+syscalls, so the allowlist does not carry them, and a blocked syscall is a
+`SIGSYS` kill rather than an `ENOSYS` return. The engine is a child of the app
+process and inherits that filter, so there is nothing the app side can do.
+
+**arm64 cannot hit this**, and that is from the library's own source rather
+than from optimism: on arm64 `SYS_lstat` does not exist at all, `Xlstat` routes
+through `Xfstatat`, and that issues `newfstatat` (syscall 79), which Android
+permits. Since arm64 is every phone, the shipping build is unaffected.
+
+It could not be verified end to end here. StrawKnight is x86_64, and its arm64
+binary translation covers code the Android runtime loads - not an arm64 ELF a
+process `exec`s for itself. Installed as arm64 the app runs and the engine
+writes nothing at all, which is the translation declining rather than a second
+bug.
+
+`modernc.org/libc` v1.75.7, the newest at the time of writing, still issues
+syscall 6 on amd64. So the options are upstream, or dropping x86_64 from
+`splits.abi` and accepting that the emulator rig cannot run the app.
+
 ## What it can reach
 
 Everything on the phone's storage, once **All files access** is granted. The app
