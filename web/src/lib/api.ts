@@ -47,6 +47,27 @@ export type Remote = {
 }
 
 /**
+ * Files on one side whose CONTENT is identical.
+ *
+ * `wasted` and `scanned` describe the whole walk and never the part that was
+ * sent: the search had to read the tree to answer at all, so a total worked out
+ * from a truncated list would under-report by more the smaller the screen.
+ */
+export type Duplicates = {
+  job: string
+  side: string
+  groups: { hash: string; size: number; paths: string[]; wasted: number }[]
+  /** What deleting the extra copies would actually return. */
+  wasted: number
+  scanned: number
+  /**
+   * Candidates the target refused to hash. The one thing that makes the answer
+   * incomplete, so it is carried rather than swallowed.
+   */
+  unhashable: number
+}
+
+/**
  * How full a target is.
  *
  * Every figure is optional and its ABSENCE means "this target does not know",
@@ -522,6 +543,18 @@ export const api = {
     request<Touch[]>(
       `/api/jobs/${encodeURIComponent(job)}/touches?limit=${limit}` +
         (q ? `&q=${encodeURIComponent(q)}` : ''),
+    ),
+
+  /**
+   * Files on one side that hold the same content as another.
+   *
+   * Per side rather than per job on purpose: a job's two sides are SUPPOSED to
+   * hold the same files, so a search across both would report the sync doing
+   * its work.
+   */
+  duplicates: (job: string, side: 'left' | 'right', limit = 200) =>
+    request<Duplicates>(
+      `/api/jobs/${encodeURIComponent(job)}/duplicates/${side}?limit=${limit}`,
     ),
 
   /** The last month of runs, one row per day. An empty job name means all of them. */

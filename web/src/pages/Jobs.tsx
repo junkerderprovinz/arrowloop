@@ -14,6 +14,7 @@ import { Pace } from '../components/Pace'
 import { RunDetail } from '../components/RunDetail'
 import { Stats } from '../components/Stats'
 import { CheckPanel } from '../components/CheckPanel'
+import { DupesPanel } from '../components/DupesPanel'
 import { TrashPanel } from '../components/TrashPanel'
 import { JobForm, useJobConfig } from './Editor'
 import { Choice, Day, Field, Text } from '../components/Field'
@@ -449,6 +450,7 @@ export function Jobs({
                   {at !== null && at === editing && (
                     <>
                       <CheckPanel job={j.name} />
+                      <DupesPanel job={j.name} />
                       <TrashPanel job={j.name} />
                     </>
                   )}

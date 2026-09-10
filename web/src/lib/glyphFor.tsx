@@ -96,7 +96,12 @@ const RULES: Rule[] = [
   // fourth letter is an i. Same button, same mark, only the word changes - and
   // without this line it changed from a symbol to a word in the mode that
   // exists to show no words.
-  [/duplicate|copyPath|\.copy|copied/i, () => <IconCopy />],
+  // `dupes` belongs here and not with the checks. What the duplicate search
+  // finds IS copies, and two identical shapes say that at a glance - which
+  // matters more than usual because its button sits in the same card as the
+  // consistency check, and in glyph mode two inspections wearing the same
+  // tick would be one control with two meanings.
+  [/duplicate|dupes|copyPath|\.copy|copied/i, () => <IconCopy />],
   [/edit|rename/i, () => <IconEdit />],
 
   // Carrying a whole setup out to a file and back in. ABOVE `save`, because
