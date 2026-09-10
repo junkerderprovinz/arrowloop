@@ -5,11 +5,30 @@ Beides aus dem VORHANDENEN Werk, nicht neu erfunden: die App traegt dieselbe
 Marke wie der Container und der Schreibtisch, sonst sind es fuer den Betrachter
 drei Programme.
 
-Zwei Symbole, weil Android zwei verschiedene Dinge verlangt. Das Startsymbol
-ist das Bild in voller Farbe. Das Benachrichtigungssymbol wird vom System auf
-eine SILHOUETTE reduziert: alles, was nicht durchsichtig ist, wird weiss
-eingefaerbt. Ein farbiges Logo dort ergibt einen weissen Klecks, deshalb wird
-es hier bewusst auf eine erkennbare Kontur gebracht.
+DREI Symbole, weil Android drei verschiedene Dinge verlangt.
+
+Das ADAPTIVE Symbol ist das, was auf einem Startbildschirm seit Android 8
+wirklich gezeigt wird: zwei Ebenen, Hintergrund und Vordergrund, und der
+Starter legt seine eigene Maske darueber - beim Standard ein Quadrat mit
+runden Ecken. Der Hintergrund ist WEISS, weil jdp genau das verlangt hat
+("Das App-Logo soll zudem eine weiße Kachel sein mit abgerundeten ecken (wie
+die KL app)") und weil KnightLoaders eigene App es so macht: `adaptiveIcon`
+mit `backgroundColor: "#ffffff"`. Ohne adaptives Symbol nimmt der Starter das
+alte Vollbild und legt es in einen grauen Kreis oder eine Umrandung seiner
+Wahl - was jdp gesehen hat und was neben der KL-App aussieht wie eine App aus
+einer anderen Zeit.
+
+Der Vordergrund liegt in der SICHERHEITSZONE. Von den 108 Einheiten eines
+adaptiven Symbols sind nur die mittleren 66 garantiert sichtbar; der Rand ist
+Spielraum fuer die Maske und fuer die Bewegung, die manche Starter beim
+Wischen zeigen. Ein Logo, das die vollen 108 fuellt, wird an den Ecken
+abgeschnitten - und zwar unterschiedlich stark je nach Telefon.
+
+Das alte mipmap-Symbol bleibt fuer Android 7 und aelter, das adaptive kennt.
+Das Benachrichtigungssymbol wird vom System auf eine SILHOUETTE reduziert:
+alles, was nicht durchsichtig ist, wird weiss eingefaerbt. Ein farbiges Logo
+dort ergibt einen weissen Klecks, deshalb wird es hier bewusst auf eine
+erkennbare Kontur gebracht.
 """
 import io
 import os
@@ -21,6 +40,10 @@ RES = r"D:\github\arrowloop\android\app\src\main\res"
 # Die Dichtestufen, die Android erwartet, mit ihrem Faktor auf 48dp.
 DICHTEN = {"mdpi": 1.0, "hdpi": 1.5, "xhdpi": 2.0, "xxhdpi": 3.0, "xxxhdpi": 4.0}
 
+# Ein adaptives Symbol ist 108dp gross, davon sind die mittleren 66dp sicher.
+ADAPTIV_DP = 108
+SICHER_DP = 66
+
 quelle = Image.open(QUELLE).convert("RGBA")
 
 for name, faktor in DICHTEN.items():
@@ -28,6 +51,19 @@ for name, faktor in DICHTEN.items():
     ordner = os.path.join(RES, "mipmap-" + name)
     os.makedirs(ordner, exist_ok=True)
     quelle.resize((kante, kante), Image.LANCZOS).save(os.path.join(ordner, "ic_launcher.png"))
+
+    # Der Vordergrund des adaptiven Symbols: durchsichtige 108dp-Flaeche mit
+    # dem Logo mittig in den sicheren 66dp. Der Hintergrund ist kein Bild,
+    # sondern eine Farbe (siehe values/ic_launcher_background.xml), denn eine
+    # einfarbige Flaeche als PNG in fuenf Dichten waere fuenf Dateien fuer
+    # etwas, das eine Zeile ist.
+    voll = int(round(ADAPTIV_DP * faktor))
+    sicher = int(round(SICHER_DP * faktor))
+    vordergrund = Image.new("RGBA", (voll, voll), (0, 0, 0, 0))
+    logo = quelle.resize((sicher, sicher), Image.LANCZOS)
+    versatz = (voll - sicher) // 2
+    vordergrund.paste(logo, (versatz, versatz), logo)
+    vordergrund.save(os.path.join(ordner, "ic_launcher_foreground.png"))
 
     # Das Benachrichtigungssymbol misst 24dp und ist eine Maske. Aus dem
     # Alphakanal der Vorlage wird eine weisse Silhouette: was gezeichnet ist,

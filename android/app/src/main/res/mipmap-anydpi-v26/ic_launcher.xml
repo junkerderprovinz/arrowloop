@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The adaptive icon, which is what a launcher actually shows from Android 8 on.
+
+  Two layers and no mask of our own: the LAUNCHER applies the mask, and on
+  stock Android that is a squircle - a square with rounded corners. So a white
+  background layer is a white rounded tile, which is what jdp asked for ("Das
+  App-Logo soll zudem eine weiße Kachel sein mit abgerundeten ecken (wie die KL
+  app)") and what KnightLoader's own app does with adaptiveIcon and
+  backgroundColor #ffffff.
+
+  Without this file the launcher falls back to the legacy mipmap and puts it in
+  a grey circle or an outline of its own choosing - which is what was on the
+  phone, and beside the KL app it reads as an app from an older era.
+
+  The background is a COLOUR rather than an image. A flat white as five PNGs in
+  five densities would be five files for something that is one line.
+-->
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@color/ic_launcher_background" />
+    <foreground android:drawable="@mipmap/ic_launcher_foreground" />
+    <monochrome android:drawable="@mipmap/ic_launcher_foreground" />
+</adaptive-icon>

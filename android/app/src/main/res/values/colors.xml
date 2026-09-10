@@ -14,4 +14,11 @@
     <color name="surface3">#525252</color>
     <color name="accent">#FCC419</color>
     <color name="accent_ink">#161616</color>
+
+    <!-- The launcher tile, and the one colour here that is NOT GlimStone's.
+         White on purpose: the launcher masks the background layer into a
+         rounded square, so white is a white rounded tile - what jdp asked for
+         and what KnightLoader's own app already does. A carbon ground would
+         disappear into a dark home screen and leave the logo floating. -->
+    <color name="ic_launcher_background">#ffffff</color>
 </resources>
