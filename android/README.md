@@ -89,6 +89,24 @@ bug.
 syscall 6 on amd64. So the options are upstream, or dropping x86_64 from
 `splits.abi` and accepting that the emulator rig cannot run the app.
 
+**Checked across every syscall, not just the one that crashed.** The arm64
+build of `modernc.org/libc` issues 199 distinct system calls, and of the legacy
+family Android's filter rejects - `stat`, `lstat`, `open`, `getdents`,
+`unlink`, `rename`, `readlink`, `pipe`, `select`, `poll` and the rest - not one
+of them so much as EXISTS as a constant on arm64. The kernel's arm64 ABI never
+had them, so the generated code has to use the `*at` variants that Android
+permits. The single member of that list it does use is `fstat`, which bionic
+uses too and the allowlist carries.
+
+**The emulator cannot answer this question either way**, which is worth knowing
+before spending an evening on it. Its x86_64 build dies on the syscall above.
+Its arm64 build is run through `ndk_translation`, which covers code the Android
+runtime loads and not an arm64 ELF a process `exec`s for itself - that dies
+with SIGSEGV inside the translator, an artefact of the rig rather than
+a fact about the app. A real arm64 phone is the only place this is decidable,
+and the engine log names the ABI it was built for on its first line so a
+screenshot says which one it came from.
+
 ## What it can reach
 
 Everything on the phone's storage, once **All files access** is granted. The app

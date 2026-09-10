@@ -137,13 +137,21 @@ object Engine {
             note(context, "no engine at ${binary.absolutePath} - this build shipped without one")
             return
         }
-        // Named in the log because both have been the answer on a real device:
-        // a file that is there and not executable, and a build whose engine is
-        // for a different architecture than the phone.
+        // Named in the log because all of it has been the answer at some point:
+        // a file that is there and not executable, a build whose engine is for
+        // a different architecture than the phone, and - three times now - a
+        // screenshot from the emulator when the question was about the phone.
+        //
+        // `builtFor` is the last of those and the reason this line grew. The
+        // architecture is in the path: the installer puts the engine in a
+        // folder named after the ABI it was packaged for. Without it, telling
+        // an emulator's arm64 run from a phone's meant recognising the file
+        // SIZE, which is not something anybody should have to do twice.
+        val builtFor = binary.parentFile?.name ?: "?"
         note(
             context,
-            "starting ${binary.name}, ${binary.length()} bytes, " +
-                "executable=${binary.canExecute()}, abi=${Build.SUPPORTED_ABIS.joinToString(",")}",
+            "starting ${binary.name} built for ${builtFor}, ${binary.length()} bytes, " +
+                "executable=${binary.canExecute()}, device=${Build.SUPPORTED_ABIS.joinToString(",")}",
         )
         ensureConfig(context)
 
