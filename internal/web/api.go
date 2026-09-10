@@ -71,6 +71,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /api/jobs", s.listJobs)
 	mux.HandleFunc("GET /api/jobs/{name}/plan", s.previewJob)
 	mux.HandleFunc("POST /api/jobs/{name}/run", s.runJob)
+	mux.HandleFunc("POST /api/jobs/{name}/stop", s.stopJob)
 	mux.HandleFunc("POST /api/jobs/{name}/check", s.checkJob)
 	mux.HandleFunc("GET /api/jobs/{name}/verify", s.verifyJob)
 	mux.HandleFunc("GET /api/jobs/{name}/trash/{side}", s.listTrash)
@@ -299,6 +300,23 @@ type runRequest struct {
 	// Resolve carries the decisions somebody made on the conflict rows, keyed
 	// by path. An absent entry means the default, which keeps both versions.
 	Resolve map[string]string `json:"resolve"`
+}
+
+// stopJob asks a run that is going right now to stop.
+//
+// A separate verb from "run" rather than a toggle, because the two are not
+// opposites a person would want to press blindly: starting is safe and
+// stopping abandons work in flight. The answer says whether there was
+// anything to stop, so the interface can tell "stopped it" from "it had
+// already finished" - which is a real distinction to somebody who pressed the
+// button a second too late.
+func (s *Server) stopJob(w http.ResponseWriter, r *http.Request) {
+	name := r.PathValue("name")
+	if _, ok := s.Runner.Config().Find(name); !ok {
+		writeError(w, http.StatusNotFound, fmt.Errorf("no job called %q", name))
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]any{"stopped": s.Runner.Cancel(name)})
 }
 
 func (s *Server) runJob(w http.ResponseWriter, r *http.Request) {

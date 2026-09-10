@@ -82,8 +82,15 @@ type Runner struct {
 	// full: two edits in quick succession need one rebuild, not two.
 	reload chan struct{}
 
-	mu       sync.Mutex
-	inflight map[string]bool
+	mu sync.Mutex
+	// inflight holds, per running job, the way to stop it.
+	//
+	// It used to hold a bare bool, which answered "is this running" and nothing
+	// else. A run that was started against a share which turned out to be half
+	// mounted could only be watched to the end - and on a phone, where the
+	// engine is going to run next, a sync that cannot be stopped is a sync that
+	// drains a battery on a train.
+	inflight map[string]context.CancelFunc
 	subs     map[chan Event]struct{}
 	watchers map[string]*watch.Watcher
 }
@@ -107,7 +114,7 @@ func New(cfg *job.Config, hist *history.DB, note notify.Notifier, log func(strin
 		note:     note,
 		log:      log,
 		slots:    make(chan struct{}, cfg.ParallelJobs),
-		inflight: map[string]bool{},
+		inflight: map[string]context.CancelFunc{},
 		reload:   make(chan struct{}, 1),
 	}
 }
@@ -181,7 +188,12 @@ func (r *Runner) RunChosen(ctx context.Context, name string, only []string, reso
 	if j.Left == "" || j.Right == "" {
 		return history.Run{}, fmt.Errorf("%w: %s", ErrHalfWritten, name)
 	}
-	if !r.claim(name) {
+	// The run's own context, so it can be stopped by name without stopping
+	// anything else. The caller's context still governs it: cancelling the
+	// program cancels this too.
+	ctx, stop := context.WithCancel(ctx)
+	defer stop()
+	if !r.claim(name, stop) {
 		return history.Run{}, ErrAlreadyRunning
 	}
 	defer r.release(name)
@@ -388,13 +400,32 @@ func applyResolutions(p *plan.Plan, resolve map[string]plan.Resolution, log func
 	}
 }
 
-func (r *Runner) claim(name string) bool {
+func (r *Runner) claim(name string, stop context.CancelFunc) bool {
 	r.mu.Lock()
 	defer r.mu.Unlock()
-	if r.inflight[name] {
+	if _, running := r.inflight[name]; running {
 		return false
 	}
-	r.inflight[name] = true
+	r.inflight[name] = stop
+	return true
+}
+
+// Cancel stops a run that is in progress, and says whether there was one.
+//
+// It cancels the run's own context, which is the same thing that happens when
+// the whole program is asked to stop: the transfer in flight is abandoned, the
+// engine unwinds through the paths it already has, and the run is recorded as
+// what it was rather than vanishing. A cancelled run is not a failed one and
+// not a finished one, and the history says so.
+func (r *Runner) Cancel(name string) bool {
+	r.mu.Lock()
+	stop := r.inflight[name]
+	r.mu.Unlock()
+	if stop == nil {
+		return false
+	}
+	r.log("%s: stopping, asked by hand", name)
+	stop()
 	return true
 }
 

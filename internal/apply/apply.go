@@ -19,6 +19,7 @@ import (
 	"time"
 
 	"github.com/rclone/rclone/fs"
+	"github.com/rclone/rclone/fs/fserrors"
 	"github.com/rclone/rclone/fs/hash"
 	"github.com/rclone/rclone/fs/operations"
 
@@ -667,6 +668,45 @@ func localPath(f fs.Fs, remote string) (string, bool) {
 	return filepath.Join(f.Root(), filepath.FromSlash(remote)), true
 }
 
+// retrying runs a transfer again when the reason it failed was weather.
+//
+// A network that drops for two seconds currently ends the whole run: one file
+// fails, the run reports a failure, and the next scheduled turn starts the
+// whole comparison again. That is the most common way a nightly job "breaks",
+// and it is not a break at all.
+//
+// rclone's own judgement decides what is worth repeating, and it takes TWO
+// questions rather than one: `ShouldRetry` knows about timeouts, resets and the
+// handful of HTTP codes that mean "later", while `IsRetryError` catches the
+// marker a backend puts on an error it wants tried again. Asking only the first
+// misses everything a backend flagged itself, which is most of what the cloud
+// ones raise. Neither says yes to a permission error or a full disk, so this
+// never turns one clear failure into three slow ones.
+//
+// Three attempts with a widening gap, and the context is checked between them:
+// a cancelled run stops during the wait rather than after it.
+// worthRepeating asks rclone both of its questions about an error.
+func worthRepeating(err error) bool {
+	return fserrors.ShouldRetry(err) || fserrors.IsRetryError(err)
+}
+
+func retrying(ctx context.Context, what func() error) error {
+	const attempts = 3
+	var err error
+	for attempt := 1; ; attempt++ {
+		err = what()
+		if err == nil || attempt == attempts || !worthRepeating(err) {
+			return err
+		}
+		pause := time.Duration(attempt) * 2 * time.Second
+		select {
+		case <-ctx.Done():
+			return ctx.Err()
+		case <-time.After(pause):
+		}
+	}
+}
+
 func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID string, opt plan.Options, t *tally) error {
 	switch act.Kind {
 	case plan.Copy:
@@ -682,7 +722,9 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 		if err := keepVersion(ctx, dst, act.DstPath, runID); err != nil {
 			return err
 		}
-		if err := operations.CopyFile(ctx, dst, src, act.DstPath, act.SrcPath); err != nil {
+		if err := retrying(ctx, func() error {
+			return operations.CopyFile(ctx, dst, src, act.DstPath, act.SrcPath)
+		}); err != nil {
 			return err
 		}
 		t.count(func(r *Result) { r.Copied++ })
@@ -698,7 +740,9 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 
 	case plan.Move:
 		dst := ends.side(act.Dst)
-		if err := operations.MoveFile(ctx, dst, dst, act.DstPath, act.OldDstPath); err != nil {
+		if err := retrying(ctx, func() error {
+			return operations.MoveFile(ctx, dst, dst, act.DstPath, act.OldDstPath)
+		}); err != nil {
 			return err
 		}
 		t.count(func(r *Result) { r.Moved++ })
