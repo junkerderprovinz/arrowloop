@@ -405,6 +405,8 @@ const pl: Translations = {
   'targets.cloud': 'Magazyn w chmurze',
   'targets.connections': 'Serwery i udziały',
   'targets.pickMore': 'Jeszcze {count}, pod nazwą rclone',
+  'targets.pickNoMatch': 'Nic tutaj nie pasuje do „{q}”.',
+  'targets.pickSearch': 'Szukaj dostawców',
   'opt.user': 'Nazwa użytkownika',
   'opt.pass': 'Hasło',
   'opt.host': 'Serwer',
@@ -435,6 +437,14 @@ const pl: Translations = {
   'opt.passHelp': 'Użyj hasła aplikacji, jeśli dostawca je oferuje, zamiast hasła do konta.',
   'opt.vendorHelp': 'Jakim dialektem WebDAV mówi serwer. W razie wątpliwości wybierz „inne”.',
   'opt.keyFileHelp': 'Ścieżka do klucza prywatnego na maszynie, na której działa ArrowLoop, nie na tej.',
+  'help.authWhere': 'Tworzysz go na {url}',
+  'help.authLogin': 'Ta sama nazwa użytkownika i hasło co gdzie indziej. Niczego nie trzeba wcześniej pobierać.',
+  'help.authOauth': 'Ta usługa loguje się przez przeglądarkę, więc tutaj nic się nie wpisuje.',
+  'help.authApiKey': 'Klucz API utworzony w ustawieniach usługi.',
+  'help.authAccessKey': 'Para kluczy dostępu z konsoli usługi. Identyfikator jest jawny; sekret zwykle pokazuje się tylko raz, przy tworzeniu.',
+  'help.authAppPassword': 'Użyj hasła aplikacji z ustawień bezpieczeństwa konta, nie hasła logowania. Przy dwuskładnikowym uwierzytelnianiu hasło logowania w ogóle tu nie zadziała.',
+  'help.addressShape': 'Wygląda tak: {shape}',
+  'help.addressWebdav': 'To adres WebDAV serwera, a nie ten, który otwierasz w przeglądarce.',
   'targets.savedButUnreachable': 'Zapisano, ale cel nie odpowiedział: {reason}',
 }
 

@@ -405,6 +405,8 @@ const lt: Translations = {
   'targets.cloud': 'Debesų saugykla',
   'targets.connections': 'Serveriai ir bendrinimai',
   'targets.pickMore': 'Dar {count}, pagal rclone pavadinimą',
+  'targets.pickNoMatch': 'Niekas čia neatitinka „{q}“.',
+  'targets.pickSearch': 'Ieškoti tiekėjų',
   'opt.user': 'Naudotojo vardas',
   'opt.pass': 'Slaptažodis',
   'opt.host': 'Serveris',
@@ -435,6 +437,14 @@ const lt: Translations = {
   'opt.passHelp': 'Naudok programos slaptažodį, jei teikėjas jį siūlo, o ne paskyros slaptažodį.',
   'opt.vendorHelp': 'Kokia WebDAV tarme kalba serveris. Jei neaišku, rinkis „kita“.',
   'opt.keyFileHelp': 'Kelias iki privataus rakto kompiuteryje, kuriame veikia ArrowLoop, ne šiame.',
+  'help.authWhere': 'Jį sukursi adresu {url}',
+  'help.authLogin': 'Tas pats naudotojo vardas ir slaptažodis kaip ir kitur. Nieko iš anksto gauti nereikia.',
+  'help.authOauth': 'Ši paslauga prisijungia per naršyklę, todėl čia nieko rašyti nereikia.',
+  'help.authApiKey': 'API raktas, sukurtas paslaugos nustatymuose.',
+  'help.authAccessKey': 'Prieigos raktų pora iš paslaugos konsolės. Rakto ID yra viešas; paslaptis paprastai parodoma tik kartą, ją kuriant.',
+  'help.authAppPassword': 'Naudok programos slaptažodį iš paskyros saugumo nustatymų, ne prisijungimo slaptažodį. Su dviejų veiksnių patvirtinimu prisijungimo slaptažodis čia išvis neveiks.',
+  'help.addressShape': 'Ji atrodo taip: {shape}',
+  'help.addressWebdav': 'Tai serverio WebDAV adresas, o ne tas, kurį atveri naršyklėje.',
   'targets.savedButUnreachable': 'Išsaugota, bet paskirties vieta neatsakė: {reason}',
 }
 

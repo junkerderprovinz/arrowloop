@@ -405,6 +405,8 @@ const sv: Translations = {
   'targets.cloud': 'Molnlagring',
   'targets.connections': 'Servrar och utdelningar',
   'targets.pickMore': '{count} till, med sina rclone-namn',
+  'targets.pickNoMatch': 'Inget här matchar ”{q}”.',
+  'targets.pickSearch': 'Sök tjänster',
   'opt.user': 'Användarnamn',
   'opt.pass': 'Lösenord',
   'opt.host': 'Server',
@@ -435,6 +437,14 @@ const sv: Translations = {
   'opt.passHelp': 'Använd ett app-lösenord om leverantören erbjuder ett, i stället för kontolösenordet.',
   'opt.vendorHelp': 'Vilken WebDAV-dialekt servern talar. Välj ”annat” om du är osäker.',
   'opt.keyFileHelp': 'Sökväg till den privata nyckeln på maskinen där ArrowLoop körs, inte på den här.',
+  'help.authWhere': 'Du skapar den på {url}',
+  'help.authLogin': 'Samma användarnamn och lösenord som på andra ställen. Inget behöver hämtas i förväg.',
+  'help.authOauth': 'Den här tjänsten loggar in via webbläsaren, så här ska inget skrivas.',
+  'help.authApiKey': 'En API-nyckel som skapas i tjänstens inställningar.',
+  'help.authAccessKey': 'Ett par åtkomstnycklar från tjänstens egen konsol. Nyckel-id:t är offentligt; hemligheten visas oftast bara en gång.',
+  'help.authAppPassword': 'Använd ett applösenord från kontots säkerhetsinställningar, inte inloggningslösenordet. Med tvåfaktor kan inloggningslösenordet inte fungera här alls.',
+  'help.addressShape': 'Den ser ut så här: {shape}',
+  'help.addressWebdav': 'Detta är serverns WebDAV-adress, inte den du öppnar i webbläsaren.',
   'targets.savedButUnreachable': 'Sparat, men målet svarade inte: {reason}',
 }
 

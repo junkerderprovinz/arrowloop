@@ -405,6 +405,8 @@ const nl: Translations = {
   'targets.cloud': 'Cloudopslag',
   'targets.connections': 'Servers en shares',
   'targets.pickMore': 'Nog {count}, onder hun rclone-naam',
+  'targets.pickNoMatch': 'Hier komt niets overeen met ‚{q}’.',
+  'targets.pickSearch': 'Aanbieders zoeken',
   'opt.user': 'Gebruikersnaam',
   'opt.pass': 'Wachtwoord',
   'opt.host': 'Server',
@@ -435,6 +437,14 @@ const nl: Translations = {
   'opt.passHelp': 'Gebruik een app-wachtwoord als de aanbieder er een biedt, niet je accountwachtwoord.',
   'opt.vendorHelp': 'Welk WebDAV-dialect de server spreekt. Weet je het niet, kies „overig”.',
   'opt.keyFileHelp': 'Pad naar de privésleutel op de machine waar ArrowLoop draait, niet op deze.',
+  'help.authWhere': 'Je maakt hem aan op {url}',
+  'help.authLogin': 'Dezelfde gebruikersnaam en hetzelfde wachtwoord als elders. Er hoeft vooraf niets opgehaald te worden.',
+  'help.authOauth': 'Deze dienst logt in via de browser, hier hoeft dus niets ingevuld te worden.',
+  'help.authApiKey': 'Een API-sleutel die je in de instellingen van de dienst aanmaakt.',
+  'help.authAccessKey': 'Een paar toegangssleutels uit de console van de dienst. De sleutel-id is openbaar; het geheim wordt meestal maar één keer getoond, bij het aanmaken.',
+  'help.authAppPassword': 'Gebruik een app-wachtwoord uit de beveiligingsinstellingen van je account, niet je inlogwachtwoord. Met tweestapsverificatie kan het inlogwachtwoord hier helemaal niet werken.',
+  'help.addressShape': 'Het ziet er zo uit: {shape}',
+  'help.addressWebdav': 'Dit is het WebDAV-adres van de server, niet het adres dat je in de browser opent.',
   'targets.savedButUnreachable': 'Opgeslagen, maar de bestemming antwoordde niet: {reason}',
 }
 

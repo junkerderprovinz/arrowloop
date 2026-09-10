@@ -405,6 +405,8 @@ const hr: Translations = {
   'targets.cloud': 'Pohrana u oblaku',
   'targets.connections': 'Poslužitelji i dijeljenja',
   'targets.pickMore': 'Još {count}, pod nazivom u rcloneu',
+  'targets.pickNoMatch': 'Ovdje ništa ne odgovara „{q}“.',
+  'targets.pickSearch': 'Pretraži pružatelje',
   'opt.user': 'Korisničko ime',
   'opt.pass': 'Lozinka',
   'opt.host': 'Poslužitelj',
@@ -435,6 +437,14 @@ const hr: Translations = {
   'opt.passHelp': 'Koristi lozinku aplikacije ako je davatelj nudi, umjesto lozinke računa.',
   'opt.vendorHelp': 'Kojim dijalektom WebDAV-a poslužitelj govori. Ako nisi siguran, odaberi „ostalo“.',
   'opt.keyFileHelp': 'Putanja do privatnog ključa na računalu na kojem radi ArrowLoop, ne na ovom.',
+  'help.authWhere': 'Stvaraš ga na {url}',
+  'help.authLogin': 'Isto korisničko ime i lozinka kao i drugdje. Ništa se ne mora prethodno dohvatiti.',
+  'help.authOauth': 'Ova usluga prijavljuje se putem preglednika, pa se ovdje ništa ne upisuje.',
+  'help.authApiKey': 'API ključ stvoren u postavkama usluge.',
+  'help.authAccessKey': 'Par pristupnih ključeva iz konzole usluge. ID ključa je javan; tajna se obično prikaže samo jednom, pri stvaranju.',
+  'help.authAppPassword': 'Upotrijebi lozinku aplikacije iz sigurnosnih postavki računa, ne lozinku za prijavu. Uz dvofaktorsku potvrdu lozinka za prijavu ovdje uopće ne može raditi.',
+  'help.addressShape': 'Izgleda ovako: {shape}',
+  'help.addressWebdav': 'Ovo je WebDAV adresa poslužitelja, a ne adresa koju otvaraš u pregledniku.',
   'targets.savedButUnreachable': 'Spremljeno, ali odredište nije odgovorilo: {reason}',
 }
 

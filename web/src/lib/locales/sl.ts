@@ -405,6 +405,8 @@ const sl: Translations = {
   'targets.cloud': 'Shramba v oblaku',
   'targets.connections': 'Strežniki in mape v skupni rabi',
   'targets.pickMore': 'Še {count}, pod imenom v rclone',
+  'targets.pickNoMatch': 'Tu se nič ne ujema z „{q}“.',
+  'targets.pickSearch': 'Išči ponudnike',
   'opt.user': 'Uporabniško ime',
   'opt.pass': 'Geslo',
   'opt.host': 'Strežnik',
@@ -435,6 +437,14 @@ const sl: Translations = {
   'opt.passHelp': 'Uporabi geslo za aplikacijo, če ga ponudnik omogoča, namesto gesla računa.',
   'opt.vendorHelp': 'Katero narečje WebDAV govori strežnik. Če nisi prepričan, izberi „drugo“.',
   'opt.keyFileHelp': 'Pot do zasebnega ključa na računalniku, kjer teče ArrowLoop, ne na tem.',
+  'help.authWhere': 'Ustvariš ga na {url}',
+  'help.authLogin': 'Isto uporabniško ime in geslo kot drugod. Ničesar ni treba pridobiti vnaprej.',
+  'help.authOauth': 'Ta storitev se prijavi prek brskalnika, zato tu ni ničesar za vpisati.',
+  'help.authApiKey': 'Ključ API, ustvarjen v nastavitvah storitve.',
+  'help.authAccessKey': 'Par dostopnih ključev iz konzole storitve. ID ključa je javen; skrivnost se navadno prikaže le enkrat, ob ustvarjanju.',
+  'help.authAppPassword': 'Uporabi geslo aplikacije iz varnostnih nastavitev računa, ne prijavnega gesla. Z dvostopenjskim preverjanjem prijavno geslo tu sploh ne more delovati.',
+  'help.addressShape': 'Videti je tako: {shape}',
+  'help.addressWebdav': 'To je naslov WebDAV strežnika, ne naslov, ki ga odpreš v brskalniku.',
   'targets.savedButUnreachable': 'Shranjeno, a cilj se ni odzval: {reason}',
 }
 

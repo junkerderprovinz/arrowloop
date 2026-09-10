@@ -405,6 +405,8 @@ const no: Translations = {
   'targets.cloud': 'Skylagring',
   'targets.connections': 'Servere og delinger',
   'targets.pickMore': '{count} til, under rclone-navnet',
+  'targets.pickNoMatch': 'Ingenting her passer med «{q}».',
+  'targets.pickSearch': 'Søk etter tjenester',
   'opt.user': 'Brukernavn',
   'opt.pass': 'Passord',
   'opt.host': 'Server',
@@ -435,6 +437,14 @@ const no: Translations = {
   'opt.passHelp': 'Bruk et app-passord hvis leverandøren tilbyr det, i stedet for kontopassordet.',
   'opt.vendorHelp': 'Hvilken WebDAV-dialekt tjeneren snakker. Velg «annet» hvis du er usikker.',
   'opt.keyFileHelp': 'Sti til den private nøkkelen på maskinen der ArrowLoop kjører, ikke på denne.',
+  'help.authWhere': 'Du oppretter den på {url}',
+  'help.authLogin': 'Samme brukernavn og passord som ellers. Ingenting må hentes på forhånd.',
+  'help.authOauth': 'Denne tjenesten logger inn via nettleseren, så her skal du ikke skrive noe.',
+  'help.authApiKey': 'En API-nøkkel som opprettes i tjenestens innstillinger.',
+  'help.authAccessKey': 'Et par tilgangsnøkler fra tjenestens egen konsoll. Nøkkel-ID-en er offentlig; hemmeligheten vises som regel bare én gang.',
+  'help.authAppPassword': 'Bruk et app-passord fra kontoens sikkerhetsinnstillinger, ikke innloggingspassordet. Med tofaktor kan innloggingspassordet ikke fungere her i det hele tatt.',
+  'help.addressShape': 'Den ser slik ut: {shape}',
+  'help.addressWebdav': 'Dette er tjenerens WebDAV-adresse, ikke adressen du åpner i nettleseren.',
   'targets.savedButUnreachable': 'Lagret, men målet svarte ikke: {reason}',
 }
 

@@ -482,16 +482,14 @@ function RemoteForm({
    *
    * jdp: "Bitte den Namen schon vorausgefüllt eintragen." Somebody who just
    * pressed Nextcloud has already said what this is, and asking them to type it
-   * again is asking twice. The suggestion is the product's name folded into
-   * what a target name may hold - no spaces, no colons, because the name is
-   * written as `name:path` in a job - and numbered where one is already taken,
-   * so pressing Nextcloud twice gives `nextcloud` and `nextcloud-2` rather than
-   * a collision on save.
+   * again is asking twice. The suggestion keeps the product's OWN spelling and
+   * is numbered where one is already taken, so pressing OpenCloud twice gives
+   * `OpenCloud` and `OpenCloud-2` rather than a collision on save.
    */
   const [name, setName] = useState(() => {
     if (existing) return existing.name
     if (!provider) return ''
-    const base = provider.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+    const base = targetName(provider.name)
     if (!base) return ''
     const used = new Set(taken ?? [])
     if (!used.has(base)) return base
@@ -680,14 +678,107 @@ function RemoteForm({
  * reading Benutzername - and a bubble that repeats its own label is worse than
  * no bubble: it promises an explanation and spends attention on nothing.
  */
+/**
+ * A product's own name, folded into what a target name may hold.
+ *
+ * It used to lowercase everything, so picking OpenCloud suggested `opencloud`
+ * and Google Drive suggested `google-drive`. jdp: "Kann man den Namen nicht
+ * ordentlich schreiben z.B OpenCloud anstatt opencloud im Namensfeld." He is
+ * right, and the lowercasing was never buying anything: rclone accepts capitals
+ * in a remote name perfectly well. What it DID buy was a name that no longer
+ * looks like the thing it points at, in the one field a person reads back later
+ * to work out which target is which.
+ *
+ * What actually has to go is only what would change the MEANING of the name.
+ * A target is written as `name:path` in a job, so a colon, a slash or a space
+ * would split it somewhere nobody intended; the engine refuses those in
+ * `validName` and this refuses them here, before anybody can type them in and
+ * be told no. Everything else - capitals, digits, dots, hyphens - survives
+ * exactly as the product spells it.
+ */
+export function targetName(product: string): string {
+  return product
+    .replace(/[:/\\,"'\s\t]+/g, '-')
+    .replace(/-{2,}/g, '-')
+    .replace(/^-|-$/g, '')
+}
+
+/**
+ * Which fields carry the credential, so the sign-in sentence lands on them.
+ *
+ * Matched on rclone's OWN option names, which are the same in every language
+ * and across every backend that has the concept. `pass` covers webdav, sftp,
+ * ftp and smb; the S3 pair is spelled the same wherever rclone speaks S3.
+ */
+const SECRET_FIELDS = new Set([
+  'pass',
+  'password',
+  'secret_access_key',
+  'key',
+  'api_key',
+  'token',
+])
+
+/**
+ * Everything the bubble beside one field can say, joined.
+ *
+ * jdp: "Bitte die infobubbles ausführlicher. zb. muss man lesen können was man
+ * z.b. bei OpenCloud für eine Adresse eingeben muss. in dem fall also die
+ * WebDav adresse sein. Wenn man zb ein API TOken braucht soll drin stehen wo
+ * man den herbekommt usw. User müssen ganz einfach verstehen können was wo
+ * reingeschrieben werden muss."
+ *
+ * Three sources, in order of how specific they are, and each one is allowed to
+ * be absent:
+ *
+ *  1. What THIS field is, in this app's own words, for the fields where
+ *     rclone's help only restates the label.
+ *  2. What this PRODUCT needs in it. The address field on a webdav backend is
+ *     the one jdp named: rclone calls it "URL of http host to connect to",
+ *     which is true and useless to somebody looking at their OpenCloud in a
+ *     tab wondering which part to copy. It is the WebDAV address, it is not
+ *     the address in the browser bar, and for most products it has a shape.
+ *     The credential field gets the same treatment: an app password is not the
+ *     login password, and with a second factor switched on the login password
+ *     cannot work here at all - which is the commonest reason one of these
+ *     refuses a password that is plainly correct.
+ *  3. rclone's own help, last, and only when it says more than the label does.
+ *
+ * The product-specific half is assembled from TOKENS carried by the provider
+ * table rather than from prose stored there: that table has no language, so a
+ * sentence in it would be English in all forty-two. One sentence per style,
+ * shared by every product using it, is what makes this affordable to translate
+ * at all.
+ */
 function optionHint(
   o: Backend['options'][number],
   t: ReturnType<typeof useT>['t'],
   provider?: Provider | null,
 ): string | undefined {
   const own = optionExplain(o.name, t)
-  const shape = o.name === 'url' ? provider?.urlHint : undefined
-  if (own || shape) return [own, shape].filter(Boolean).join(' ')
+  const about: string[] = []
+
+  if (o.name === 'url') {
+    // Which KIND of address, before the shape of it. The backend answers that
+    // without anybody having to record it per product.
+    if (provider?.backend === 'webdav') about.push(t('help.addressWebdav'))
+    if (provider?.urlHint) about.push(t('help.addressShape', { shape: provider.urlHint }))
+  }
+
+  if (SECRET_FIELDS.has(o.name) && provider?.auth) {
+    const sentence: Partial<Record<NonNullable<Provider['auth']>, string>> = {
+      apppassword: t('help.authAppPassword'),
+      accesskey: t('help.authAccessKey'),
+      apikey: t('help.authApiKey'),
+      oauth: t('help.authOauth'),
+      login: t('help.authLogin'),
+    }
+    const said = sentence[provider.auth]
+    if (said) about.push(said)
+    if (provider.authUrl) about.push(t('help.authWhere', { url: provider.authUrl }))
+  }
+
+  if (own || about.length > 0) return [own, ...about].filter(Boolean).join(' ')
   // No explanation of our own: rclone's, but only when it says more than the
   // label already does. Its own option name comes along there, because
   // somebody reading rclone's documentation is the one this text is for.

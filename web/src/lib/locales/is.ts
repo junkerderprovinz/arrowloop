@@ -405,6 +405,8 @@ const is: Translations = {
   'targets.cloud': 'Skýjageymsla',
   'targets.connections': 'Netþjónar og sameignir',
   'targets.pickMore': '{count} til viðbótar, undir rclone-heiti',
+  'targets.pickNoMatch': 'Ekkert hér passar við „{q}“.',
+  'targets.pickSearch': 'Leita að þjónustum',
   'opt.user': 'Notandanafn',
   'opt.pass': 'Lykilorð',
   'opt.host': 'Netþjónn',
@@ -435,6 +437,14 @@ const is: Translations = {
   'opt.passHelp': 'Notaðu forritslösensorð ef veitandinn býður upp á þannig, ekki aðgangsorðið.',
   'opt.vendorHelp': 'Hvaða WebDAV-mállýsku þjónninn talar. Veldu „annað“ ef þú ert óviss.',
   'opt.keyFileHelp': 'Slóð að einkalyklinum á vélinni þar sem ArrowLoop keyrir, ekki á þessari.',
+  'help.authWhere': 'Þú býrð hann til á {url}',
+  'help.authLogin': 'Sama notandanafn og löann og annars staðar. Ekkert þarf að sækja fyrst.',
+  'help.authOauth': 'Þessi þjónusta skráir sig inn í vafra, svo hér þarf ekkert að skrifa.',
+  'help.authApiKey': 'API-lykill sem búinn er til í stillingum þjónustunnar.',
+  'help.authAccessKey': 'Aðgangslyklapar úr stjórnborði þjónustunnar. Lykilauðkennið er opinbert; leyndarmálið birtist yfirleitt aðeins einu sinni.',
+  'help.authAppPassword': 'Notaðu forritslöannúr öryggisstillingum reikningsins, ekki innskráningarlöann. Með tvítta það innskráningarlöann virkar alls ekki hér.',
+  'help.addressShape': 'Hún lítur svona út: {shape}',
+  'help.addressWebdav': 'Þetta er WebDAV-slóð ýmisþjónsins, ekki slóðin sem þú opnar í vafranum.',
   'targets.savedButUnreachable': 'Vistað, en áfangastaðurinn svaraði ekki: {reason}',
 }
 

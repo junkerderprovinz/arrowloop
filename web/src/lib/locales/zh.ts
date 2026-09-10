@@ -405,6 +405,8 @@ const zh: Translations = {
   'targets.cloud': '云存储',
   'targets.connections': '服务器与共享',
   'targets.pickMore': '还有 {count} 个，按 rclone 名称',
+  'targets.pickNoMatch': '这里没有与“{q}”匹配的项。',
+  'targets.pickSearch': '搜索服务商',
   'opt.user': '用户名',
   'opt.pass': '密码',
   'opt.host': '服务器',
@@ -435,6 +437,14 @@ const zh: Translations = {
   'opt.passHelp': '如果服务商提供应用密码，请用它而不是账户密码。',
   'opt.vendorHelp': '服务器说哪种 WebDAV 方言。不确定时选“其他”。',
   'opt.keyFileHelp': '私钥在运行 ArrowLoop 的机器上的路径，不是这台。',
+  'help.authWhere': '在 {url} 创建。',
+  'help.authLogin': '与你在别处登录时相同的用户名和密码。无需先获取任何东西。',
+  'help.authOauth': '该服务通过浏览器登录，因此这里无需填写。',
+  'help.authApiKey': '在服务设置中创建的 API 密钥。',
+  'help.authAccessKey': '来自服务控制台的访问密钥对。密钥 ID 是公开的，密钥本身通常只在创建时显示一次。',
+  'help.authAppPassword': '请使用账户安全设置中生成的应用密码，而不是登录密码。开启两步验证后，登录密码在这里根本无法使用。',
+  'help.addressShape': '格式如下：{shape}',
+  'help.addressWebdav': '这是服务器的 WebDAV 地址，不是你在浏览器里打开的地址。',
   'targets.savedButUnreachable': '已保存，但目标没有响应：{reason}',
 }
 

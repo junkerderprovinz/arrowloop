@@ -405,6 +405,8 @@ const id: Translations = {
   'targets.cloud': 'Penyimpanan awan',
   'targets.connections': 'Server dan berbagi pakai',
   'targets.pickMore': '{count} lagi, dengan nama rclone-nya',
+  'targets.pickNoMatch': 'Tidak ada yang cocok dengan ”{q}” di sini.',
+  'targets.pickSearch': 'Cari penyedia',
   'opt.user': 'Nama pengguna',
   'opt.pass': 'Kata sandi',
   'opt.host': 'Server',
@@ -435,6 +437,14 @@ const id: Translations = {
   'opt.passHelp': 'Gunakan sandi aplikasi bila penyedia menyediakannya, bukan sandi akun.',
   'opt.vendorHelp': 'Dialek WebDAV mana yang dipakai server. Jika ragu, pilih “lainnya”.',
   'opt.keyFileHelp': 'Jalur ke kunci privat di mesin tempat ArrowLoop berjalan, bukan di mesin ini.',
+  'help.authWhere': 'Kamu membuatnya di {url}',
+  'help.authLogin': 'Nama pengguna dan sandi yang sama seperti di tempat lain. Tidak ada yang perlu diambil lebih dulu.',
+  'help.authOauth': 'Layanan ini masuk lewat peramban, jadi tidak ada yang perlu diketik di sini.',
+  'help.authApiKey': 'Kunci API yang dibuat di pengaturan layanan.',
+  'help.authAccessKey': 'Sepasang kunci akses dari konsol layanan. ID kunci bersifat publik; rahasianya biasanya hanya ditampilkan sekali, saat dibuat.',
+  'help.authAppPassword': 'Gunakan sandi aplikasi dari pengaturan keamanan akun, bukan sandi masuk. Dengan autentikasi dua faktor, sandi masuk sama sekali tidak bisa dipakai di sini.',
+  'help.addressShape': 'Bentuknya seperti ini: {shape}',
+  'help.addressWebdav': 'Ini alamat WebDAV server, bukan alamat yang kamu buka di peramban.',
   'targets.savedButUnreachable': 'Tersimpan, tetapi tujuan tidak menjawab: {reason}',
 }
 

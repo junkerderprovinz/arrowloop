@@ -405,6 +405,8 @@ const et: Translations = {
   'targets.cloud': 'Pilvesalvestus',
   'targets.connections': 'Serverid ja jagamised',
   'targets.pickMore': 'Veel {count}, rclone nime järgi',
+  'targets.pickNoMatch': 'Siin ei vasta miski otsingule „{q}”.',
+  'targets.pickSearch': 'Otsi teenusepakkujaid',
   'opt.user': 'Kasutajanimi',
   'opt.pass': 'Parool',
   'opt.host': 'Server',
@@ -435,6 +437,14 @@ const et: Translations = {
   'opt.passHelp': 'Kasuta rakenduse parooli, kui teenusepakkuja seda pakub, mitte konto parooli.',
   'opt.vendorHelp': 'Millist WebDAVi murret server räägib. Kahtluse korral vali „muu“.',
   'opt.keyFileHelp': 'Privaatvõtme tee masinas, kus ArrowLoop töötab, mitte selles.',
+  'help.authWhere': 'Selle saab luua aadressil {url}',
+  'help.authLogin': 'Sama kasutajanimi ja parool nagu mujal. Midagi ei pea enne hankima.',
+  'help.authOauth': 'See teenus logib sisse brauseris, seega siia ei pea midagi kirjutama.',
+  'help.authApiKey': 'API võti, mis luuakse teenuse seadetes.',
+  'help.authAccessKey': 'Juurdepääsuvõtmete paar teenuse konsoolist. Võtme ID on avalik; saladust näidatakse tavaliselt vaid korra, loomisel.',
+  'help.authAppPassword': 'Kasuta konto turvaseadetest võetud rakendusparooli, mitte sisselogimisparooli. Kaheastmelise kinnitusega ei saa sisselogimisparool siin üldse toimida.',
+  'help.addressShape': 'See näeb välja nii: {shape}',
+  'help.addressWebdav': 'See on serveri WebDAV-aadress, mitte see, mille brauseris avad.',
   'targets.savedButUnreachable': 'Salvestatud, kuid sihtkoht ei vastanud: {reason}',
 }
 

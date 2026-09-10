@@ -65,7 +65,65 @@ type Provider struct {
 	// A shape rather than a sentence: what somebody needs here is the pattern
 	// their own address has to match.
 	UrlHint string `json:"urlHint,omitempty"`
+
+	// Auth names HOW this product wants to be signed into, as one of a closed
+	// set of tokens rather than as prose.
+	//
+	// The screen turns it into a sentence, and that split is the whole point.
+	// jdp: "Bitte die infobubbles ausführlicher. wenn man zb ein API TOken
+	// braucht soll drin stehen wo man den herbekommt usw. User müssen ganz
+	// einfach verstehen können was wo reingeschrieben werden muss." Written as
+	// prose HERE it would be one English paragraph per provider in a table that
+	// has no language at all; written as a token it is one translated sentence
+	// per STYLE, shared by every product that uses that style.
+	//
+	// The value is stable and the screen falls back silently on one it does not
+	// know, so a new provider can name a style before anybody has written its
+	// sentence.
+	Auth AuthStyle `json:"auth,omitempty"`
+
+	// AuthURL is the page where the credential above is created, where there is
+	// one to point at. A bare address, for the same reason UrlHint is: it needs
+	// no translation and it goes stale in exactly one place.
+	//
+	// Empty where the page is inside somebody's OWN server - a Nextcloud's
+	// security settings live at their address, not at a shared one - and the
+	// sentence for that style says where to look instead.
+	AuthURL string `json:"authUrl,omitempty"`
 }
+
+// AuthStyle is how a product wants to be signed into.
+//
+// A closed set on purpose. Every value here has to have a sentence written for
+// it in the interface, in every language, so adding one is a decision rather
+// than a typo - and a product whose style is genuinely new gets a new value
+// instead of a paragraph of its own.
+type AuthStyle string
+
+const (
+	// AuthAppPassword is a password generated in the account's own security
+	// settings, used INSTEAD of the login password. The self-hosted clouds all
+	// work this way, and getting this wrong is the single most common reason a
+	// WebDAV target refuses a password that is plainly correct: with two-factor
+	// authentication switched on, the login password cannot work here at all.
+	AuthAppPassword AuthStyle = "apppassword"
+
+	// AuthOAuth is a sign-in that happens in a browser rather than in a field.
+	// The token cannot be typed, and this style exists to say so: the screen
+	// otherwise shows an empty box for something nobody can fill in.
+	AuthOAuth AuthStyle = "oauth"
+
+	// AuthAPIKey is a key and secret pair created in the service's own console.
+	AuthAPIKey AuthStyle = "apikey"
+
+	// AuthAccessKey is the S3 pair: an access key id, which is public and
+	// appears in every tutorial, and a secret that is not.
+	AuthAccessKey AuthStyle = "accesskey"
+
+	// AuthLogin is the ordinary case: the same user name and password used to
+	// sign in anywhere else, with nothing to fetch first.
+	AuthLogin AuthStyle = "login"
+)
 
 // Group is which of the two cards a provider belongs on.
 //
@@ -91,13 +149,13 @@ const (
 // and the raw-backend fallback below is what keeps that from being a wall.
 var providers = []Provider{
 	// The self-hosted three: one backend, three products, three entries.
-	{ID: "nextcloud", Name: "Nextcloud", Backend: "webdav", Group: GroupCloud,
+	{ID: "nextcloud", Name: "Nextcloud", Auth: AuthAppPassword, Backend: "webdav", Group: GroupCloud,
 		Preset: map[string]string{"vendor": "nextcloud"}, Mark: "IconNextcloud",
 		UrlHint: "https://cloud.example.com/remote.php/webdav/"},
-	{ID: "owncloud", Name: "ownCloud", Backend: "webdav", Group: GroupCloud,
+	{ID: "owncloud", Name: "ownCloud", Auth: AuthAppPassword, Backend: "webdav", Group: GroupCloud,
 		Preset: map[string]string{"vendor": "owncloud"}, Mark: "IconOwncloud",
 		UrlHint: "https://cloud.example.com/remote.php/webdav/"},
-	{ID: "opencloud", Name: "OpenCloud", Backend: "webdav", Group: GroupCloud,
+	{ID: "opencloud", Name: "OpenCloud", Auth: AuthAppPassword, Backend: "webdav", Group: GroupCloud,
 		// `infinitescale`, not `owncloud`. OpenCloud is a fork of ownCloud
 		// Infinite Scale rather than of ownCloud 10, and rclone carries a
 		// vendor for each: the 10 setting speaks the older PHP server's
@@ -126,7 +184,7 @@ var providers = []Provider{
 	// The rest of the consumer field.
 	{ID: "jottacloud", Name: "Jottacloud", Backend: "jottacloud", Group: GroupCloud, Mark: "IconJottacloud"},
 	{ID: "koofr", Name: "Koofr", Backend: "koofr", Group: GroupCloud, Mark: "IconKoofr"},
-	{ID: "seafile", Name: "Seafile", Backend: "seafile", Group: GroupCloud, Mark: "IconSeafile"},
+	{ID: "seafile", Name: "Seafile", Auth: AuthAppPassword, Backend: "seafile", Group: GroupCloud, Mark: "IconSeafile"},
 	{ID: "opendrive", Name: "OpenDrive", Backend: "opendrive", Group: GroupCloud, Mark: "IconOpendrive"},
 	{ID: "yandex", Name: "Yandex Disk", Backend: "yandex", Group: GroupCloud, Mark: "IconYandex"},
 	{ID: "mailru", Name: "Mail.ru Cloud", Backend: "mailru", Group: GroupCloud, Mark: "IconMailru"},
@@ -151,7 +209,7 @@ var providers = []Provider{
 
 	// Object storage: an account with a company, so it belongs with the clouds
 	// however it is addressed underneath.
-	{ID: "b2", Name: "Backblaze B2", Backend: "b2", Group: GroupCloud, Mark: "IconBackblaze"},
+	{ID: "b2", Name: "Backblaze B2", Auth: AuthAccessKey, Backend: "b2", Group: GroupCloud, Mark: "IconBackblaze"},
 	{ID: "azureblob", Name: "Azure Blob Storage", Backend: "azureblob", Group: GroupCloud, Mark: "IconAzure"},
 	{ID: "gcs", Name: "Google Cloud Storage", Backend: "google cloud storage", Group: GroupCloud, Mark: "IconGoogleCloud"},
 	// Huawei's OTHER storage, and the reason both are listed: `huaweidrive`
@@ -160,26 +218,26 @@ var providers = []Provider{
 	// it the way rclone does, as an S3 provider, which is the same arrangement
 	// that puts Nextcloud, ownCloud and OpenCloud on one webdav backend: the
 	// list is products, the backends are plumbing.
-	{ID: "huaweiobs", Name: "Huawei Cloud OBS", Backend: "s3", Group: GroupCloud,
+	{ID: "huaweiobs", Name: "Huawei Cloud OBS", Auth: AuthAccessKey, Backend: "s3", Group: GroupCloud,
 		Preset: map[string]string{"provider": "HuaweiOBS"}, Mark: "IconHuaweiCloud"},
 	{ID: "oracle", Name: "Oracle Object Storage", Backend: "oracleobjectstorage", Group: GroupCloud, Mark: "IconOracleCloud"},
-	{ID: "storj", Name: "Storj", Backend: "storj", Group: GroupCloud, Mark: "IconStorj"},
-	{ID: "swift", Name: "OpenStack Swift", Backend: "swift", Group: GroupCloud, Mark: "IconOpenstack"},
+	{ID: "storj", Name: "Storj", Auth: AuthAccessKey, Backend: "storj", Group: GroupCloud, Mark: "IconStorj"},
+	{ID: "swift", Name: "OpenStack Swift", Auth: AuthAccessKey, Backend: "swift", Group: GroupCloud, Mark: "IconOpenstack"},
 	{ID: "netstorage", Name: "Akamai NetStorage", Backend: "netstorage", Group: GroupCloud, Mark: "IconAkamai"},
 	{ID: "cloudinary", Name: "Cloudinary", Backend: "cloudinary", Group: GroupCloud, Mark: "IconCloudinary"},
 	{ID: "internetarchive", Name: "Internet Archive", Backend: "internetarchive", Group: GroupCloud,
 		Mark: "IconInternetArchive"},
 
 	// Machines, shares and addresses.
-	{ID: "smb", Name: "SMB / Windows share", Backend: "smb", Group: GroupProtocol,
+	{ID: "smb", Name: "SMB / Windows share", Auth: AuthLogin, Backend: "smb", Group: GroupProtocol,
 		Mark: "IconFolder", Hint: "A shared folder on a NAS or a Windows machine."},
-	{ID: "sftp", Name: "SFTP", Backend: "sftp", Group: GroupProtocol,
+	{ID: "sftp", Name: "SFTP", Auth: AuthLogin, Backend: "sftp", Group: GroupProtocol,
 		Mark: "IconServer", Hint: "A server reached over SSH."},
-	{ID: "webdav", Name: "WebDAV", Backend: "webdav", Group: GroupProtocol,
+	{ID: "webdav", Name: "WebDAV", Auth: AuthAppPassword, Backend: "webdav", Group: GroupProtocol,
 		Mark: "IconLink", Hint: "Any WebDAV server. Pick the product above if it has an entry.",
 		UrlHint: "https://server.example.com/remote.php/webdav/"},
-	{ID: "ftp", Name: "FTP", Backend: "ftp", Group: GroupProtocol, Mark: "IconTransfer"},
-	{ID: "s3", Name: "S3 compatible", Backend: "s3", Group: GroupProtocol,
+	{ID: "ftp", Name: "FTP", Auth: AuthLogin, Backend: "ftp", Group: GroupProtocol, Mark: "IconTransfer"},
+	{ID: "s3", Name: "S3 compatible", Auth: AuthAccessKey, Backend: "s3", Group: GroupProtocol,
 		Mark: "IconBuckets", Hint: "Amazon S3 and the thirty-odd services that speak its protocol."},
 	{ID: "http", Name: "HTTP", Backend: "http", Group: GroupProtocol,
 		Mark: "IconLink", Hint: "Read-only, over a plain web server."},

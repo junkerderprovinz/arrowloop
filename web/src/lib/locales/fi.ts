@@ -405,6 +405,8 @@ const fi: Translations = {
   'targets.cloud': 'Pilvitallennus',
   'targets.connections': 'Palvelimet ja jaot',
   'targets.pickMore': '{count} lisää, rclone-nimellään',
+  'targets.pickNoMatch': 'Mikään täällä ei vastaa hakua ”{q}”.',
+  'targets.pickSearch': 'Hae palveluita',
   'opt.user': 'Käyttäjätunnus',
   'opt.pass': 'Salasana',
   'opt.host': 'Palvelin',
@@ -435,6 +437,14 @@ const fi: Translations = {
   'opt.passHelp': 'Käytä sovellussalasanaa, jos palveluntarjoaja tarjoaa sellaisen, tilin salasanan sijaan.',
   'opt.vendorHelp': 'Mitä WebDAV-murretta palvelin puhuu. Epävarmassa tapauksessa valitse ”muu”.',
   'opt.keyFileHelp': 'Polku yksityiseen avaimeen koneella, jolla ArrowLoop toimii, ei tällä.',
+  'help.authWhere': 'Luot sen osoitteessa {url}',
+  'help.authLogin': 'Sama käyttäjätunnus ja salasana kuin muuallakin. Mitään ei tarvitse hakea etukäteen.',
+  'help.authOauth': 'Tämä palvelu kirjautuu selaimen kautta, joten tähän ei kirjoiteta mitään.',
+  'help.authApiKey': 'API-avain, joka luodaan palvelun asetuksissa.',
+  'help.authAccessKey': 'Avainpari palvelun omasta konsolista. Avaimen tunnus on julkinen; salaisuus näytetään yleensä vain kerran, luontihetkellä.',
+  'help.authAppPassword': 'Käytä sovellussalasanaa tilisi suojausasetuksista, älä kirjautumissalasanaa. Kaksivaiheisen vahvistuksen kanssa kirjautumissalasana ei voi toimia täällä lainkaan.',
+  'help.addressShape': 'Se näyttää tältä: {shape}',
+  'help.addressWebdav': 'Tämä on palvelimen WebDAV-osoite, ei se osoite jonka avaat selaimessa.',
   'targets.savedButUnreachable': 'Tallennettu, mutta kohde ei vastannut: {reason}',
 }
 

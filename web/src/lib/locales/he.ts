@@ -405,6 +405,8 @@ const he: Translations = {
   'targets.cloud': 'אחסון בענן',
   'targets.connections': 'שרתים ושיתופים',
   'targets.pickMore': 'עוד {count}, בשם שלהם ב-rclone',
+  'targets.pickNoMatch': 'דבר כאן לא תואם ל־«{q}».',
+  'targets.pickSearch': 'חיפוש ספקים',
   'opt.user': 'שם משתמש',
   'opt.pass': 'סיסמה',
   'opt.host': 'שרת',
@@ -435,6 +437,14 @@ const he: Translations = {
   'opt.passHelp': 'השתמש בסיסמת יישום אם הספק מציע אחת, במקום סיסמת החשבון.',
   'opt.vendorHelp': 'באיזו ניב של WebDAV השרת מדבר. אם אינך בטוח, בחר »אחר«.',
   'opt.keyFileHelp': 'נתיב למפתח הפרטי במכונה שעליה ArrowLoop רץ, לא בזו.',
+  'help.authWhere': 'אתה יוצר אותו ב־{url}',
+  'help.authLogin': 'אותו שם משתמש וסיסמה כמו בכל מקום אחר. אין צורך להשיג משהו מראש.',
+  'help.authOauth': 'השירות הזה מתחבר דרך הדפדפן, אז אין מה להקליד כאן.',
+  'help.authApiKey': 'מפתח API שנוצר בהגדרות השירות.',
+  'help.authAccessKey': 'צמד מפתחות גישה ממסוף השירות. מזהה המפתח ציבורי; הסוד מוצג בדרך כלל פעם אחת בלבד.',
+  'help.authAppPassword': 'השתמש בסיסמת יישום מהגדרות האבטחה של החשבון, לא בסיסמת ההתחברות. עם אימות דו־שלבי, סיסמת ההתחברות לא יכולה לעבוד כאן כלל.',
+  'help.addressShape': 'היא נראית כך: {shape}',
+  'help.addressWebdav': 'זו כתובת ה־ WebDAV של השרת, לא הכתובת שנפתחת בדפדפן.',
   'targets.savedButUnreachable': 'נשמר, אבל היעד לא השיב: {reason}',
 }
 

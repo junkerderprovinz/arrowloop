@@ -405,6 +405,8 @@ const ca: Translations = {
   'targets.cloud': 'Emmagatzematge al núvol',
   'targets.connections': 'Servidors i recursos compartits',
   'targets.pickMore': '{count} més, pel seu nom a rclone',
+  'targets.pickNoMatch': 'Aquí no hi ha res que coincideixi amb «{q}».',
+  'targets.pickSearch': 'Cerca proveïdors',
   'opt.user': 'Nom d\'usuari',
   'opt.pass': 'Contrasenya',
   'opt.host': 'Servidor',
@@ -435,6 +437,14 @@ const ca: Translations = {
   'opt.passHelp': 'Fes servir una contrasenya d\'aplicació si el proveïdor n\'ofereix, en lloc de la del compte.',
   'opt.vendorHelp': 'Quin dialecte de WebDAV parla el servidor. Si no ho saps, tria «altres».',
   'opt.keyFileHelp': 'Camí a la clau privada a la màquina on s\'executa ArrowLoop, no en aquesta.',
+  'help.authWhere': 'El crees a {url}',
+  'help.authLogin': 'El mateix nom d\'usuari i contrasenya que fas servir a tot arreu. No cal obtenir res abans.',
+  'help.authOauth': 'Aquest servei inicia sessió al navegador, així que aquí no cal escriure res.',
+  'help.authApiKey': 'Una clau API creada als ajustos del servei.',
+  'help.authAccessKey': 'Un parell de claus d\'accés de la consola del servei. L\'identificador és públic; el secret només es mostra un cop, en crear-lo.',
+  'help.authAppPassword': 'Fes servir una contrasenya d\'aplicació de la configuració de seguretat del compte, no la d\'inici de sessió. Amb verificació en dos passos, la d\'inici de sessió no pot funcionar aquí.',
+  'help.addressShape': 'Té aquesta forma: {shape}',
+  'help.addressWebdav': 'Aquesta és l\'adreça WebDAV del servidor, no la que obres al navegador.',
   'targets.savedButUnreachable': 'Desat, però el destí no ha respost: {reason}',
 }
 

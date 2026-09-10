@@ -405,6 +405,8 @@ const ko: Translations = {
   'targets.cloud': '클라우드 저장소',
   'targets.connections': '서버 및 공유',
   'targets.pickMore': '{count}개 더, rclone 이름으로',
+  'targets.pickNoMatch': '여기에는 ‘{q}’에 맞는 항목이 없습니다.',
+  'targets.pickSearch': '제공업체 검색',
   'opt.user': '사용자 이름',
   'opt.pass': '비밀번호',
   'opt.host': '서버',
@@ -435,6 +437,14 @@ const ko: Translations = {
   'opt.passHelp': '공급자가 앱 비밀번호를 제공하면 계정 비밀번호 대신 그것을 쓰세요.',
   'opt.vendorHelp': '서버가 사용하는 WebDAV 방언. 잘 모르면 “기타”를 고르세요.',
   'opt.keyFileHelp': 'ArrowLoop 이 실행되는 컴퓨터의 개인 키 경로입니다.',
+  'help.authWhere': '{url} 에서 만듭니다',
+  'help.authLogin': '다른 곳에서 쓰는 것과 같은 사용자 이름과 비밀번호입니다. 미리 받아야 할 것은 없습니다.',
+  'help.authOauth': '이 서비스는 브라우저로 로그인하므로 여기에는 입력할 것이 없습니다.',
+  'help.authApiKey': '서비스 설정에서 만든 API 키입니다.',
+  'help.authAccessKey': '서비스 콘솔에서 만든 액세스 키 쌍입니다. 키 ID는 공개이며, 비밀 키는 보통 생성 시 한 번만 표시됩니다.',
+  'help.authAppPassword': '로그인 비밀번호가 아니라 계정 보안 설정에서 만든 앱 비밀번호를 쓰세요. 2단계 인증을 켜면 로그인 비밀번호는 여기서 아예 작동하지 않습니다.',
+  'help.addressShape': '형식은 다음과 같습니다: {shape}',
+  'help.addressWebdav': '이것은 서버의 WebDAV 주소입니다. 브라우저에서 여는 주소가 아닙니다.',
   'targets.savedButUnreachable': '저장됐지만 대상이 응답하지 않았습니다: {reason}',
 }
 

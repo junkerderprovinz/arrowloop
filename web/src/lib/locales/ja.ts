@@ -405,6 +405,8 @@ const ja: Translations = {
   'targets.cloud': 'クラウドストレージ',
   'targets.connections': 'サーバーと共有',
   'targets.pickMore': '他に {count} 件、rclone の名前で',
+  'targets.pickNoMatch': 'ここには「{q}」に一致するものはありません。',
+  'targets.pickSearch': 'サービスを検索',
   'opt.user': 'ユーザー名',
   'opt.pass': 'パスワード',
   'opt.host': 'サーバー',
@@ -435,6 +437,14 @@ const ja: Translations = {
   'opt.passHelp': '提供元がアプリパスワードを用意している場合は、アカウントのパスワードではなくそちらを。',
   'opt.vendorHelp': 'サーバーが話す WebDAV の方言。迷ったら「その他」を。',
   'opt.keyFileHelp': 'ArrowLoop が動いているマシン上の秘密鍵のパス。このマシンではありません。',
+  'help.authWhere': '作成は {url} で行います',
+  'help.authLogin': '他で使っているのと同じユーザー名とパスワードです。事前に取得するものはありません。',
+  'help.authOauth': 'このサービスはブラウザーでサインインするため、ここに入力するものはありません。',
+  'help.authApiKey': 'サービスの設定で作成する API キーです。',
+  'help.authAccessKey': 'サービスのコンソールで作るアクセスキーの組です。キー ID は公開されるもので、シークレットは通常作成時に一度だけ表示されます。',
+  'help.authAppPassword': 'ログインパスワードではなく、アカウントのセキュリティ設定で作ったアプリパスワードを使います。2要素認証が有効なら、ログインパスワードはここでは使えません。',
+  'help.addressShape': '形式は次のとおりです: {shape}',
+  'help.addressWebdav': 'これはサーバーの WebDAV アドレスです。ブラウザーで開くアドレスではありません。',
   'targets.savedButUnreachable': '保存しましたが、宛先から応答がありませんでした: {reason}',
 }
 

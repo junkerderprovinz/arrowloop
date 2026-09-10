@@ -405,6 +405,8 @@ const eu: Translations = {
   'targets.cloud': 'Hodeiko biltegia',
   'targets.connections': 'Zerbitzariak eta partekatzeak',
   'targets.pickMore': 'Beste {count}, beren rclone izenaz',
+  'targets.pickNoMatch': 'Hemen ez dago «{q}» bat datorrenik.',
+  'targets.pickSearch': 'Bilatu hornitzaileak',
   'opt.user': 'Erabiltzaile-izena',
   'opt.pass': 'Pasahitza',
   'opt.host': 'Zerbitzaria',
@@ -435,6 +437,14 @@ const eu: Translations = {
   'opt.passHelp': 'Erabili aplikazio-pasahitza hornitzaileak eskaintzen badu, kontuarena beharrean.',
   'opt.vendorHelp': 'Zerbitzariak zein WebDAV dialekto darabilen. Zalantzarik baduzu, aukeratu «bestelakoa».',
   'opt.keyFileHelp': 'Gako pribatuaren bidea ArrowLoop exekutatzen den makinan, ez honetan.',
+  'help.authWhere': 'Hemen sortzen duzu: {url}',
+  'help.authLogin': 'Beste edonon erabiltzen duzun erabiltzaile-izena eta pasahitza bera. Ez dago ezer aurrez lortu beharrik.',
+  'help.authOauth': 'Zerbitzu honek nabigatzailean hasten du saioa, beraz hemen ez dago ezer idatzi beharrik.',
+  'help.authApiKey': 'Zerbitzuaren ezarpenetan sortutako API gakoa.',
+  'help.authAccessKey': 'Zerbitzuaren kontsolako sarbide-gako bikotea. Gakoaren IDa publikoa da; sekretua behin bakarrik erakusten da, sortzean.',
+  'help.authAppPassword': 'Erabili kontuaren segurtasun-ezarpenetako aplikazio-pasahitza, ez saioa hasteko pasahitza. Bi faktoreko egiaztapenarekin, saio-hasierakoak ezin du hemen funtzionatu.',
+  'help.addressShape': 'Itxura hau du: {shape}',
+  'help.addressWebdav': 'Hau zerbitzariaren WebDAV helbidea da, ez nabigatzailean irekitzen duzuna.',
   'targets.savedButUnreachable': 'Gordeta, baina helburuak ez du erantzun: {reason}',
 }
 

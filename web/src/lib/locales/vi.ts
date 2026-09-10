@@ -405,6 +405,8 @@ const vi: Translations = {
   'targets.cloud': 'Lưu trữ đám mây',
   'targets.connections': 'Máy chủ và chia sẻ',
   'targets.pickMore': '{count} mục nữa, theo tên rclone',
+  'targets.pickNoMatch': 'Không có gì ở đây khớp với “{q}”.',
+  'targets.pickSearch': 'Tìm nhà cung cấp',
   'opt.user': 'Tên người dùng',
   'opt.pass': 'Mật khẩu',
   'opt.host': 'Máy chủ',
@@ -435,6 +437,14 @@ const vi: Translations = {
   'opt.passHelp': 'Dùng mật khẩu ứng dụng nếu nhà cung cấp có, thay vì mật khẩu tài khoản.',
   'opt.vendorHelp': 'Máy chủ nói phương ngữ WebDAV nào. Nếu không chắc, chọn “khác”.',
   'opt.keyFileHelp': 'Đường dẫn tới khóa riêng trên máy chạy ArrowLoop, không phải máy này.',
+  'help.authWhere': 'Bạn tạo nó tại {url}',
+  'help.authLogin': 'Cùng tên đăng nhập và mật khẩu bạn dùng ở nơi khác. Không cần lấy gì trước.',
+  'help.authOauth': 'Dịch vụ này đăng nhập qua trình duyệt, nên không cần nhập gì ở đây.',
+  'help.authApiKey': 'Một khóa API được tạo trong phần cài đặt của dịch vụ.',
+  'help.authAccessKey': 'Một cặp khóa truy cập từ bảng điều khiển của dịch vụ. Mã khóa là công khai; khóa bí mật thường chỉ hiện một lần khi tạo.',
+  'help.authAppPassword': 'Dùng mật khẩu ứng dụng từ phần cài đặt bảo mật của tài khoản, không phải mật khẩu đăng nhập. Khi bật xác thực hai bước, mật khẩu đăng nhập hoàn toàn không dùng được ở đây.',
+  'help.addressShape': 'Nó có dạng: {shape}',
+  'help.addressWebdav': 'Đây là địa chỉ WebDAV của máy chủ, không phải địa chỉ bạn mở trong trình duyệt.',
   'targets.savedButUnreachable': 'Đã lưu, nhưng đích không trả lời: {reason}',
 }
 

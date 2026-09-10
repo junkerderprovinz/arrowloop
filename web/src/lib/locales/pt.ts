@@ -405,6 +405,8 @@ const pt: Translations = {
   'targets.cloud': 'Armazenamento na nuvem',
   'targets.connections': 'Servidores e partilhas',
   'targets.pickMore': 'Mais {count}, pelo nome em rclone',
+  'targets.pickNoMatch': 'Aqui não há nada que corresponda a «{q}».',
+  'targets.pickSearch': 'Procurar fornecedores',
   'opt.user': 'Utilizador',
   'opt.pass': 'Palavra-passe',
   'opt.host': 'Servidor',
@@ -435,6 +437,14 @@ const pt: Translations = {
   'opt.passHelp': 'Usa uma palavra-passe de aplicação se o fornecedor oferecer uma, em vez da da conta.',
   'opt.vendorHelp': 'Que dialeto de WebDAV fala o servidor. Na dúvida, escolhe «outro».',
   'opt.keyFileHelp': 'Caminho para a chave privada na máquina onde corre o ArrowLoop, não nesta.',
+  'help.authWhere': 'Cria-la em {url}',
+  'help.authLogin': 'O mesmo nome de utilizador e palavra-passe que usas noutros sítios. Não é preciso obter nada antes.',
+  'help.authOauth': 'Este serviço inicia sessão no navegador, por isso aqui não há nada a escrever.',
+  'help.authApiKey': 'Uma chave de API criada nas definições do serviço.',
+  'help.authAccessKey': 'Um par de chaves de acesso da consola do serviço. O identificador é público; o segredo costuma ser mostrado apenas uma vez.',
+  'help.authAppPassword': 'Usa uma palavra-passe de aplicação das definições de segurança da conta, não a de início de sessão. Com autenticação em dois passos, a de início de sessão não pode funcionar aqui.',
+  'help.addressShape': 'Tem esta forma: {shape}',
+  'help.addressWebdav': 'Este é o endereço WebDAV do servidor, não o que abres no navegador.',
   'targets.savedButUnreachable': 'Guardado, mas o destino não respondeu: {reason}',
 }
 

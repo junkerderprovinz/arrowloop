@@ -405,6 +405,8 @@ const cs: Translations = {
   'targets.cloud': 'Cloudové úložiště',
   'targets.connections': 'Servery a sdílení',
   'targets.pickMore': 'Dalších {count}, pod názvem v rclone',
+  'targets.pickNoMatch': 'Nic zde neodpovídá „{q}“.',
+  'targets.pickSearch': 'Hledat poskytovatele',
   'opt.user': 'Uživatelské jméno',
   'opt.pass': 'Heslo',
   'opt.host': 'Server',
@@ -435,6 +437,14 @@ const cs: Translations = {
   'opt.passHelp': 'Použijte heslo aplikace, pokud ho poskytovatel nabízí, místo hesla k účtu.',
   'opt.vendorHelp': 'Jakým dialektem WebDAV server mluví. Pokud si nejste jisti, zvolte „jiný“.',
   'opt.keyFileHelp': 'Cesta k privátnímu klíči na stroji, kde běží ArrowLoop, ne na tomto.',
+  'help.authWhere': 'Vytvoříš ho na {url}',
+  'help.authLogin': 'Stejné uživatelské jméno a heslo jako jinde. Nic se předem nezískává.',
+  'help.authOauth': 'Tato služba se přihlašuje přes prohlížeč, sem se tedy nic nepíše.',
+  'help.authApiKey': 'API klíč vytvořený v nastavení služby.',
+  'help.authAccessKey': 'Dvojice přístupových klíčů z konzole služby. ID klíče je veřejné; tajný klíč se obvykle zobrazí jen jednou, při vytvoření.',
+  'help.authAppPassword': 'Použij heslo aplikace z bezpečnostního nastavení účtu, ne přihlašovací heslo. Se dvoufaktorovým ověřením přihlašovací heslo tady nemůže fungovat vůbec.',
+  'help.addressShape': 'Vypadá takto: {shape}',
+  'help.addressWebdav': 'Toto je adresa WebDAV serveru, nikoli adresa, kterou otevíráš v prohlížeči.',
   'targets.savedButUnreachable': 'Uloženo, ale cíl neodpověděl: {reason}',
 }
 

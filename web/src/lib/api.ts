@@ -114,6 +114,17 @@ export type Provider = {
    * needs at that field is the pattern their own address has to match.
    */
   urlHint?: string
+  /**
+   * How this product wants to be signed into, as one of a closed set.
+   *
+   * A token rather than a sentence, so the screen writes one translated
+   * sentence per STYLE instead of one English paragraph per product. An
+   * unknown value is ignored rather than shown, which lets the engine name a
+   * style before anybody has written its sentence.
+   */
+  auth?: 'apppassword' | 'oauth' | 'apikey' | 'accesskey' | 'login'
+  /** Where that credential is created, where there is one page to point at. */
+  authUrl?: string
 }
 
 export type Backend = {

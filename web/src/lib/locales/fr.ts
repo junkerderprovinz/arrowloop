@@ -405,6 +405,8 @@ const fr: Translations = {
   'targets.cloud': 'Stockage cloud',
   'targets.connections': 'Serveurs et partages',
   'targets.pickMore': '{count} de plus, sous leur nom rclone',
+  'targets.pickNoMatch': 'Rien ici ne correspond à « {q} ».',
+  'targets.pickSearch': 'Rechercher des fournisseurs',
   'opt.user': 'Nom d\'utilisateur',
   'opt.pass': 'Mot de passe',
   'opt.host': 'Serveur',
@@ -435,6 +437,14 @@ const fr: Translations = {
   'opt.passHelp': 'Utilisez un mot de passe d\'application si le fournisseur en propose un, plutôt que celui du compte.',
   'opt.vendorHelp': 'Quel dialecte WebDAV parle le serveur. En cas de doute, choisissez « autre ».',
   'opt.keyFileHelp': 'Chemin de la clé privée sur la machine où tourne ArrowLoop, pas sur celle-ci.',
+  'help.authWhere': 'Tu la crées sur {url}',
+  'help.authLogin': 'Le même nom d\'utilisateur et le même mot de passe qu\'ailleurs. Rien à récupérer au préalable.',
+  'help.authOauth': 'Ce service se connecte via le navigateur, il n\'y a donc rien à saisir ici.',
+  'help.authApiKey': 'Une clé d\'API créée dans les paramètres du service.',
+  'help.authAccessKey': 'Une paire de clés d\'accès depuis la console du service. L\'identifiant est public ; le secret n\'est généralement affiché qu\'une fois, à la création.',
+  'help.authAppPassword': 'Utilise un mot de passe d\'application depuis les paramètres de sécurité du compte, pas ton mot de passe de connexion. Avec la double authentification, celui de connexion ne peut pas fonctionner ici.',
+  'help.addressShape': 'Elle ressemble à ceci : {shape}',
+  'help.addressWebdav': 'C\'est l\'adresse WebDAV du serveur, pas celle que tu ouvres dans le navigateur.',
   'targets.savedButUnreachable': 'Enregistré, mais la cible n\'a pas répondu : {reason}',
 }
 

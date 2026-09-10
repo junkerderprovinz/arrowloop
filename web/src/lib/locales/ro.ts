@@ -405,6 +405,8 @@ const ro: Translations = {
   'targets.cloud': 'Stocare în cloud',
   'targets.connections': 'Servere și partajări',
   'targets.pickMore': 'Încă {count}, după numele din rclone',
+  'targets.pickNoMatch': 'Nimic de aici nu se potrivește cu „{q}”.',
+  'targets.pickSearch': 'Cautați furnizori',
   'opt.user': 'Nume utilizator',
   'opt.pass': 'Parolă',
   'opt.host': 'Server',
@@ -435,6 +437,14 @@ const ro: Translations = {
   'opt.passHelp': 'Folosește o parolă de aplicație dacă furnizorul oferă una, nu parola contului.',
   'opt.vendorHelp': 'Ce dialect WebDAV vorbește serverul. Dacă nu știi, alege „altul”.',
   'opt.keyFileHelp': 'Calea către cheia privată pe mașina pe care rulează ArrowLoop, nu pe aceasta.',
+  'help.authWhere': 'O creezi la {url}',
+  'help.authLogin': 'Același nume de utilizator și parolă ca în alte părți. Nu trebuie obținut nimic în prealabil.',
+  'help.authOauth': 'Acest serviciu se autentifică prin browser, deci aici nu se scrie nimic.',
+  'help.authApiKey': 'O cheie API creată în setările serviciului.',
+  'help.authAccessKey': 'O pereche de chei de acces din consola serviciului. Identificatorul este public; secretul se afișează de obicei o singură dată.',
+  'help.authAppPassword': 'Folosește o parolă de aplicație din setările de securitate ale contului, nu parola de autentificare. Cu verificare în doi pași, parola de autentificare nu poate funcționa aici.',
+  'help.addressShape': 'Arată astfel: {shape}',
+  'help.addressWebdav': 'Aceasta este adresa WebDAV a serverului, nu cea pe care o deschizi în browser.',
   'targets.savedButUnreachable': 'Salvat, dar destinația nu a răspuns: {reason}',
 }
 

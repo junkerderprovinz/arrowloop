@@ -405,6 +405,8 @@ const lv: Translations = {
   'targets.cloud': 'Mākoņkrātuve',
   'targets.connections': 'Serveri un koplietojumi',
   'targets.pickMore': 'Vēl {count}, pēc to rclone nosaukuma',
+  'targets.pickNoMatch': 'Nekas šeit neatbilst „{q}“.',
+  'targets.pickSearch': 'Meklēt pakalpojumus',
   'opt.user': 'Lietotājvārds',
   'opt.pass': 'Parole',
   'opt.host': 'Serveris',
@@ -435,6 +437,14 @@ const lv: Translations = {
   'opt.passHelp': 'Izmanto lietotnes paroli, ja pakalpojuma sniedzējs to piedāvā, nevis konta paroli.',
   'opt.vendorHelp': 'Kurā WebDAV dialektā runā serveris. Ja neesi drošs, izvēlies „cits“.',
   'opt.keyFileHelp': 'Ceļš uz privāto atslēgu datorā, kurā darbojas ArrowLoop, nevis šajā.',
+  'help.authWhere': 'To izveido {url}',
+  'help.authLogin': 'Tas pats lietotājvārds un parole kā citur. Nekas nav jāiegūst iepriekš.',
+  'help.authOauth': 'Šis pakalpojums piesakās pārlūkprogrammā, tāpēc šeit nekas nav jāraksta.',
+  'help.authApiKey': 'API atslēga, kas izveidota pakalpojuma iestatījumos.',
+  'help.authAccessKey': 'Piekļuves atslēgu pāris no pakalpojuma konsoles. Atslēgas ID ir publisks; noslēpumu parasti rāda tikai vienreiz.',
+  'help.authAppPassword': 'Izmanto lietotnes paroli no konta drošības iestatījumiem, nevis pieteikšanās paroli. Ar divfaktoru autentifikāciju pieteikšanās parole šeit nemaz nedarbojas.',
+  'help.addressShape': 'Tā izskatās šādi: {shape}',
+  'help.addressWebdav': 'Šī ir servera WebDAV adrese, nevis tā, ko atver pārlūkprogrammā.',
   'targets.savedButUnreachable': 'Saglabāts, bet mērķis neatbildēja: {reason}',
 }
 

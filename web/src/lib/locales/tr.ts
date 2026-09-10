@@ -405,6 +405,8 @@ const tr: Translations = {
   'targets.cloud': 'Bulut depolama',
   'targets.connections': 'Sunucular ve paylaşımlar',
   'targets.pickMore': '{count} tane daha, rclone adlarıyla',
+  'targets.pickNoMatch': 'Burada “{q}” ile eşleşen bir şey yok.',
+  'targets.pickSearch': 'Sağlayıcı ara',
   'opt.user': 'Kullanıcı adı',
   'opt.pass': 'Parola',
   'opt.host': 'Sunucu',
@@ -435,6 +437,14 @@ const tr: Translations = {
   'opt.passHelp': 'Sağlayıcı uygulama parolası sunuyorsa hesap parolası yerine onu kullan.',
   'opt.vendorHelp': 'Sunucunun hangi WebDAV lehçesini konuştuğu. Emin değilsen “diğer” seç.',
   'opt.keyFileHelp': 'Özel anahtarın ArrowLoop\'un çalıştığı makinedeki yolu, bu makinede değil.',
+  'help.authWhere': 'Onu {url} adresinde oluşturursun',
+  'help.authLogin': 'Başka yerlerde kullandığın kullanıcı adı ve parolanın aynısı. Önceden bir şey almana gerek yok.',
+  'help.authOauth': 'Bu servis tarayıcı üzerinden oturum açar, bu yüzden buraya bir şey yazılmaz.',
+  'help.authApiKey': 'Servisin ayarlarında oluşturulan bir API anahtarı.',
+  'help.authAccessKey': 'Servisin kendi konsolundan alınan bir erişim anahtarı çifti. Anahtar kimliği herkese açıktır; gizli anahtar genellikle yalnızca oluşturulurken bir kez gösterilir.',
+  'help.authAppPassword': 'Giriş parolanı değil, hesabının güvenlik ayarlarından alınan bir uygulama parolası kullan. İki aşamalı doğrulama açıkken giriş parolası burada hiç çalışamaz.',
+  'help.addressShape': 'Şöyle görünür: {shape}',
+  'help.addressWebdav': 'Bu, sunucunun WebDAV adresidir; tarayıcıda açtığın adres değil.',
   'targets.savedButUnreachable': 'Kaydedildi, ancak hedef yanıt vermedi: {reason}',
 }
 

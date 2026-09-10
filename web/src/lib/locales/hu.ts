@@ -405,6 +405,8 @@ const hu: Translations = {
   'targets.cloud': 'Felhőtárhely',
   'targets.connections': 'Kiszolgálók és megosztások',
   'targets.pickMore': 'Még {count}, az rclone-neve szerint',
+  'targets.pickNoMatch': 'Itt semmi nem egyezik ezzel: „{q}”.',
+  'targets.pickSearch': 'Szolgáltatók keresése',
   'opt.user': 'Felhasználónév',
   'opt.pass': 'Jelszó',
   'opt.host': 'Kiszolgáló',
@@ -435,6 +437,14 @@ const hu: Translations = {
   'opt.passHelp': 'Használj alkalmazásjelszót, ha a szolgáltató kínál ilyet, a fiók jelszava helyett.',
   'opt.vendorHelp': 'Milyen WebDAV-nyelvjárást beszél a kiszolgáló. Ha nem tudod, válaszd az „egyéb” lehetőséget.',
   'opt.keyFileHelp': 'A privát kulcs útvonala azon a gépen, ahol az ArrowLoop fut, nem ezen.',
+  'help.authWhere': 'Itt hozhatod létre: {url}',
+  'help.authLogin': 'Ugyanaz a felhasználónév és jelszó, mint máshol. Előzetesen semmit nem kell beszerezni.',
+  'help.authOauth': 'Ez a szolgáltatás a böngészőben jelentkezik be, ide tehát nem kell semmit írni.',
+  'help.authApiKey': 'A szolgáltatás beállításaiban létrehozott API-kulcs.',
+  'help.authAccessKey': 'Hozzáférési kulcspár a szolgáltatás saját konzoljából. A kulcsazonosító nyilvános; a titkot rendszerint csak egyszer mutatják meg.',
+  'help.authAppPassword': 'Használj alkalmazásjelszót a fiók biztonsági beállításaiból, ne a bejelentkezési jelszót. Kétlépcsős azonosítással a bejelentkezési jelszó itt egyáltalán nem működhet.',
+  'help.addressShape': 'Így néz ki: {shape}',
+  'help.addressWebdav': 'Ez a kiszolgáló WebDAV-címe, nem az, amit a böngészőben megnyitsz.',
   'targets.savedButUnreachable': 'Mentve, de a cél nem válaszolt: {reason}',
 }
 

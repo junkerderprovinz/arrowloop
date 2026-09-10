@@ -405,6 +405,8 @@ const ar: Translations = {
   'targets.cloud': 'تخزين سحابي',
   'targets.connections': 'خوادم ومشاركات',
   'targets.pickMore': '{count} أخرى، باسمها في rclone',
+  'targets.pickNoMatch': 'لا شيء هنا يطابق «{q}».',
+  'targets.pickSearch': 'البحث عن مزوّد',
   'opt.user': 'اسم المستخدم',
   'opt.pass': 'كلمة المرور',
   'opt.host': 'الخادم',
@@ -435,6 +437,14 @@ const ar: Translations = {
   'opt.passHelp': 'استخدم كلمة مرور للتطبيق إن وفّرها المزود، بدل كلمة مرور الحساب.',
   'opt.vendorHelp': 'أي لهجة WebDAV يتحدثها الخادم. اختر «أخرى» إن لم تكن متأكدًا.',
   'opt.keyFileHelp': 'مسار المفتاح الخاص على الجهاز الذي يعمل عليه ArrowLoop، لا على هذا.',
+  'help.authWhere': 'تُنشئه على {url}',
+  'help.authLogin': 'نفس اسم المستخدم وكلمة المرور اللذين تستخدمهما في مكان آخر. لا شيء يُجلب مسبقاً.',
+  'help.authOauth': 'تسجّل هذه الخدمة الدخول عبر المتصفح، فلا شيء يُكتب هنا.',
+  'help.authApiKey': 'مفتاح API يُنشأ في إعدادات الخدمة.',
+  'help.authAccessKey': 'زوج مفاتيح وصول من وحدة تحكم الخدمة. معرّف المفتاح علني، أمّا السرّ فيُعرض عادةً مرة واحدة عند إنشائه.',
+  'help.authAppPassword': 'استخدم كلمة مرور تطبيق من إعدادات أمان حسابك، لا كلمة مرور تسجيل الدخول. مع التحقق بخطوتين، لن تعمل كلمة الدخول هنا إطلاقاً.',
+  'help.addressShape': 'شكله كالتالي: {shape}',
+  'help.addressWebdav': 'هذا هو عنوان WebDAV للخادم، وليس العنوان الذي تفتحه في المتصفح.',
   'targets.savedButUnreachable': 'تم الحفظ، لكن الوجهة لم تردّ: {reason}',
 }
 

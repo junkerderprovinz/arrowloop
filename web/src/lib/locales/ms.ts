@@ -405,6 +405,8 @@ const ms: Translations = {
   'targets.cloud': 'Storan awan',
   'targets.connections': 'Pelayan dan perkongsian',
   'targets.pickMore': '{count} lagi, dengan nama rclone mereka',
+  'targets.pickNoMatch': 'Tiada yang sepadan dengan “{q}” di sini.',
+  'targets.pickSearch': 'Cari penyedia',
   'opt.user': 'Nama pengguna',
   'opt.pass': 'Kata laluan',
   'opt.host': 'Pelayan',
@@ -435,6 +437,14 @@ const ms: Translations = {
   'opt.passHelp': 'Guna kata laluan aplikasi jika penyedia menawarkannya, bukan kata laluan akaun.',
   'opt.vendorHelp': 'Dialek WebDAV yang dituturkan pelayan. Jika ragu, pilih “lain-lain”.',
   'opt.keyFileHelp': 'Laluan ke kunci peribadi pada mesin tempat ArrowLoop berjalan, bukan mesin ini.',
+  'help.authWhere': 'Anda menciptanya di {url}',
+  'help.authLogin': 'Nama pengguna dan kata laluan yang sama seperti di tempat lain. Tiada apa perlu diperoleh dahulu.',
+  'help.authOauth': 'Perkhidmatan ini log masuk melalui pelayar, jadi tiada apa perlu ditaip di sini.',
+  'help.authApiKey': 'Kunci API yang dicipta dalam tetapan perkhidmatan.',
+  'help.authAccessKey': 'Sepasang kunci akses daripada konsol perkhidmatan. ID kunci bersifat awam; rahsianya lazimnya dipaparkan sekali sahaja.',
+  'help.authAppPassword': 'Gunakan kata laluan aplikasi daripada tetapan keselamatan akaun, bukan kata laluan log masuk. Dengan pengesahan dua faktor, kata laluan log masuk langsung tidak boleh digunakan di sini.',
+  'help.addressShape': 'Bentuknya begini: {shape}',
+  'help.addressWebdav': 'Ini alamat WebDAV pelayan, bukan alamat yang anda buka dalam pelayar.',
   'targets.savedButUnreachable': 'Disimpan, tetapi sasaran tidak menjawab: {reason}',
 }
 
