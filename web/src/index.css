@@ -5,6 +5,9 @@
    two grounds. Generated beside brandGlyphs.tsx; after tokens.css, because it
    is measured against the surface values that file sets. */
 @import "./brandGlyphs.css";
+/* The two coin discs whose brand ground is black, per theme. Same reason and
+   the same place in the order as the line above. */
+@import "./donateMarks.css";
 
 /* ---------------------------------------------------------------------------
    The type scale, registered so it can be written as a class.

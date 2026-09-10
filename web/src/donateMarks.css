@@ -1,0 +1,40 @@
+/* The two coin marks whose brand ground is BLACK, per theme.
+
+   Every other coin here is a coloured disc with a white symbol on it, and a
+   coloured disc needs nothing from the theme: it brings its own ground, so the
+   symbol's readability is the brand's own number and the same on any tile.
+
+   XRP and Solana are the exception, and not because their colours are awkward
+   - because their ground is the one colour a dark theme already is. XRP's disc
+   is #23292F, which measures 1.27 against the tile it sits on, and Solana's is
+   black. The disc vanishes and the mark reads as a white shape floating on the
+   tile with no edge.
+
+   So they wear the form their own brands publish for a dark background: the
+   mark inverted, dark on a white disc. That is not a lightness shift and not
+   an invention - both sets ship exactly these two lockups, and picking the one
+   that suits the ground is what the lockups are FOR.
+
+   The blocks mirror tokens.css, so the marks follow the same switch as every
+   other colour in the app. */
+
+:root,
+[data-theme="dark"] {
+  --coin-xrp-disc: #ffffff;
+  --coin-xrp-ink: #23292F;
+  --coin-sol-disc: #ffffff;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --coin-xrp-disc: #23292F;
+    --coin-xrp-ink: #ffffff;
+    --coin-sol-disc: #000000;
+  }
+}
+
+[data-theme="light"] {
+  --coin-xrp-disc: #23292F;
+  --coin-xrp-ink: #ffffff;
+  --coin-sol-disc: #000000;
+}
