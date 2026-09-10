@@ -34,6 +34,10 @@ wifi.
 
     gradle assembleRelease
 
+There is no Gradle wrapper in here on purpose: the build runs on a machine that
+already has Gradle (the CI runner does), and a wrapper whose jar nobody checks
+is a binary in the repository that every clone executes without reading.
+
 The engine has to be there first. `.github/workflows/android.yml` builds it:
 
     CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build \

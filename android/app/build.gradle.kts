@@ -27,14 +27,6 @@ android {
         versionCode = 1
         versionName = "0.1.0"
 
-        // Two architectures, and no others. arm64 is every phone sold in the
-        // last decade; x86_64 is what the emulator is, so the rig this was
-        // developed against can install the same build. armeabi-v7a is left out
-        // deliberately: the engine is 75 MB per architecture and a 32-bit phone
-        // that can usefully sync a photo library is not a real device any more.
-        ndk {
-            abiFilters += listOf("arm64-v8a", "x86_64")
-        }
     }
 
     buildTypes {
@@ -47,10 +39,19 @@ android {
         }
     }
 
-    // One APK per architecture rather than one carrying both. The engine is the
-    // whole download, so a universal build is 150 MB of which every phone uses
-    // half - and Play's own limit is on what gets delivered, not on what was
-    // built.
+    // One APK per architecture rather than one carrying both, and the ONLY
+    // place the architectures are named. Saying it here and again in
+    // `ndk.abiFilters` is not a second filter, it is a conflict: the build
+    // stops with "abiFilters cannot be present when splits abi filters are
+    // set", which reads like a rule about one of them and is a rule about
+    // having both.
+    //
+    // arm64 is every phone sold in the last decade; x86_64 is what the emulator
+    // is, so the rig this was developed against installs the same build.
+    // armeabi-v7a is left out deliberately: the engine is 75 MB per
+    // architecture, and a 32-bit phone that can usefully sync a photo library
+    // is not a real device any more. A universal APK would be 150 MB of which
+    // every phone uses half.
     splits {
         abi {
             isEnable = true
@@ -77,8 +78,10 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = "17"
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        }
     }
 }
 
