@@ -1,4 +1,4 @@
-// Copied verbatim from GlimStone 1.7.3, reference/react/ConfirmDialog.tsx.
+// Copied verbatim from GlimStone 1.8.1, reference/react/ConfirmDialog.tsx.
 // Do not edit here: change it in the design language repo and copy again.
 // https://github.com/junkerderprovinz/glimstone
 // ---------------------------------------------------------------------------

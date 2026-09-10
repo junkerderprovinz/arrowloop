@@ -129,6 +129,12 @@ export type ButtonVariant = "default" | "chip" | "icon";
 // destructive-confirm button looks the same after moving into this component.
 const TONE_CLASS: Record<ButtonTone, string> = {
   accent: "bg-accent text-accentContrast hover:opacity-90",
+  // Each of these hovers UP its own ramp (rule 21), and the two below are the
+  // exact pair the rule was written about. `--carbon-hover` is the fill for
+  // something with NO fill of its own, and on the dark ramp it is #353535,
+  // BELOW surface2's #393939 - so a filled control hovered with it goes darker
+  // at the one moment somebody is looking straight at it. Both of these shipped
+  // that way while the rule beside them said otherwise.
   neutral: "bg-carbon-surface3 text-carbon-text hover:bg-carbon-hoverRaised",
   subtle: "bg-carbon-surface2 text-carbon-text hover:bg-carbon-surface3",
   danger: "bg-statusFailSolid text-carbon-background hover:opacity-90",
