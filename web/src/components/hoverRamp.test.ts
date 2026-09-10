@@ -18,10 +18,19 @@ import { describe, expect, it } from 'vitest'
  * and thirteen places across three apps still got it wrong. Prose that has
  * already failed to stop a mistake does not stop it by being repeated.
  *
- * KNOWN LIMIT: this reads two lines at a time, so a class list broken across
- * three or more lines - or split between two string literals and joined with
- * `+` - can carry the pair past it. That catches every way these classes are
- * actually written here today and none of the ways they are not.
+ * It looks inside each STRING LITERAL, not at lines. That distinction is the
+ * whole accuracy of it: a variant table writes one class list per line, so
+ *
+ *   secondary: 'bg-carbon-surface2 … hover:bg-carbon-surface3',
+ *   ghost:     'text-carbon-textSub hover:bg-carbon-hover …',
+ *
+ * has the fill and the hover on ADJACENT lines belonging to different
+ * variants, and a line window flags the ghost variant, which has no fill at
+ * all and is written exactly right. A first draft of this guard did read lines
+ * and reported two such pairs in a sibling app on its first run.
+ *
+ * KNOWN LIMIT: a class list split across two literals joined with `+` is read
+ * as two, so a fill in one half and a hover in the other slips past.
  */
 
 const here = dirname(fileURLToPath(import.meta.url))
@@ -40,18 +49,38 @@ function sourceFiles(dir: string): string[] {
   return found
 }
 
+/** Plain quoted strings, and the static halves of template strings. */
+const QUOTED = /'(?:[^'\\\n]|\\.)*'|"(?:[^"\\\n]|\\.)*"/g
+const TEMPLATE = /`(?:[^`\\]|\\.)*`/g
+
+/** Every piece of text that is ONE class list, with where it starts. */
+function classLists(text: string): [string, number][] {
+  const pieces: [string, number][] = []
+  for (const found of text.matchAll(QUOTED)) pieces.push([found[0], found.index])
+  for (const found of text.matchAll(TEMPLATE)) {
+    // A template's `${…}` holds its own quoted strings, and QUOTED above has
+    // already taken those one by one. What is left is the static text around
+    // them, which is a class list of its own.
+    let at = found.index
+    for (const chunk of found[0].split(/\$\{[\s\S]*?\}/)) {
+      pieces.push([chunk, at])
+      at += chunk.length
+    }
+  }
+  return pieces
+}
+
 /** Every `file:line` where a surface2-filled element hovers to the wrong tone. */
 function offenders(): string[] {
   const hits: string[] = []
   for (const path of sourceFiles(src)) {
-    const lines = readFileSync(path, 'utf8').split('\n')
-    lines.forEach((line, i) => {
-      if (!line.includes(WRONG)) return
-      const window = (lines[i - 1] ?? '') + line
-      if (window.includes(FILLED)) hits.push(`${path.slice(src.length + 1)}:${i + 1}`)
-    })
+    const text = readFileSync(path, 'utf8')
+    for (const [piece, at] of classLists(text)) {
+      if (!piece.includes(WRONG) || !piece.includes(FILLED)) continue
+      hits.push(`${path.slice(src.length + 1)}:${text.slice(0, at).split('\n').length}`)
+    }
   }
-  return hits
+  return hits.sort()
 }
 
 describe('hover ramp', () => {
