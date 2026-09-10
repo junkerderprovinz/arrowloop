@@ -24,26 +24,24 @@ import (
 
 	"github.com/energye/systray"
 
-	// FOUR backends, where the engine and the container carry every one rclone
-	// has. The comment here used to say "exactly as the command line binary
-	// does", and that stopped being true the day jdp asked for "sämtliche" and
-	// cmd/arrowloop moved to backend/all - two mains in one repo, one of them
-	// left behind, with a comment asserting they agree.
+	// Every backend rclone carries, the same as cmd/arrowloop and the
+	// container. This used to be four - local, s3, sftp, smb - with a comment
+	// claiming it matched the command line binary, which stopped being true
+	// the day jdp asked for "sämtliche" and cmd/arrowloop moved to
+	// backend/all. Two mains in one repo, one left behind, and a comment
+	// asserting they agree.
 	//
-	// It is not a crash: remotes.Providers() filters the list by what is
-	// actually registered, so the desktop app offers the handful these four
-	// cover and simply never shows the rest. Which is the quieter failure -
-	// somebody who read the release notes goes looking for Backblaze or pCloud
-	// on Windows and concludes the feature is broken.
+	// It never crashed, and that is what made it the quieter failure:
+	// remotes.Providers() filters the list by what is actually registered, so
+	// the desktop app silently offered the handful those four covered.
+	// Somebody who read the release notes went looking for Backblaze on
+	// Windows and found the feature missing rather than broken.
 	//
-	// Measured before changing anything: 49.5 MB as it stands, and the same
-	// four backends with -s -w come to 35.3. Going to backend/all is a size
-	// decision rather than a correctness one, so it is jdp's to make and is on
-	// the list rather than done here.
-	_ "github.com/rclone/rclone/backend/local"
-	_ "github.com/rclone/rclone/backend/s3"
-	_ "github.com/rclone/rclone/backend/sftp"
-	_ "github.com/rclone/rclone/backend/smb"
+	// It costs size and the size is measured rather than estimated: the four
+	// came to 49.5 MB as they shipped, 35.3 with -s -w, which the desktop
+	// workflow was also missing. jdp chose the providers over the megabytes on
+	// 2026-09-10, with both numbers in front of them.
+	_ "github.com/rclone/rclone/backend/all"
 
 	"github.com/rclone/rclone/fs/config/configfile"
 

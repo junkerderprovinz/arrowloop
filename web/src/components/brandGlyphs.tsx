@@ -871,7 +871,7 @@ export function IconOnedrive(props: SVGProps<SVGSVGElement>) {
 /** Oracle Object Storage, part of Oracle Cloud. Source: homarr-labs/dashboard-icons, svg/oracle-cloud.svg (Apache-2.0) */
 export function IconOracleCloud(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg viewBox="2 2 28 16" width="1em" height="1em" aria-hidden {...props}>
+    <svg viewBox="0 0 32 20" width="1em" height="1em" aria-hidden {...props}>
       <path fill="none" stroke="#C74634" strokeWidth="4" d="M10 2a8 8 0 1 0 0 16h12a8 8 0 1 0 0-16z" />
     </svg>
   )

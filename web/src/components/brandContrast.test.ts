@@ -206,4 +206,27 @@ describe('brand contrast', () => {
     const box = synology.match(/viewBox="([^"]+)"/)![1].split(/\s+/).map(Number)
     expect(box[2] / box[3], 'Synology is a wordmark, not a square').toBeGreaterThan(2)
   })
+
+  /**
+   * A mark drawn as an OUTLINE is its stroke, and the stroke has to fit.
+   *
+   * Oracle Cloud is a stadium in `fill="none"` with a 4-unit stroke: the path
+   * runs 2 to 30 across a 32-wide canvas, and the two units either side are
+   * the drawing rather than margin. Cropping onto the path alone put the box
+   * on the centreline and sliced half the outline off all four edges, which is
+   * how it was reported ("das oracle logo passt nicht"). The generator asks
+   * for the bounds WITH the stroke now; this is the spot check that it still
+   * does.
+   */
+  it('keeps a stroked mark inside its box', () => {
+    const oracle = glyphs.slice(glyphs.indexOf('export function IconOracleCloud'))
+    const head = oracle.slice(0, oracle.indexOf('\n}'))
+    const [x, y, w, h] = head.match(/viewBox="([^"]+)"/)![1].split(/\s+/).map(Number)
+    const stroke = Number(head.match(/strokeWidth="([\d.]+)"/)![1])
+    // The path's own extent, then the room the box has to leave around it.
+    expect(x, 'the box starts before the path').toBeLessThanOrEqual(2 - stroke / 2)
+    expect(y, 'the box starts before the path').toBeLessThanOrEqual(2 - stroke / 2)
+    expect(x + w, 'the box ends after the path').toBeGreaterThanOrEqual(30 + stroke / 2)
+    expect(y + h, 'the box ends after the path').toBeGreaterThanOrEqual(18 + stroke / 2)
+  })
 })

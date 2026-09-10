@@ -834,7 +834,14 @@ def _measure_ink(component, name):
         if not isinstance(element, svgelements.Shape):
             continue
         try:
-            bounds = element.bbox()
+            # WITH the stroke, and that word is the whole difference for a mark
+            # drawn as an outline. Oracle Cloud is a stadium in `fill="none"`
+            # with a 4-unit stroke: the path runs 2..30 across a 32-wide
+            # canvas, and the two units either side ARE the drawing. Measuring
+            # the path alone cropped the box onto the centreline and sliced
+            # half the outline off all four edges. jdp: "das oracle logo passt
+            # nicht."
+            bounds = element.bbox(with_stroke=True)
         except Exception:
             continue
         if not bounds:
