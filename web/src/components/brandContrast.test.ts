@@ -176,4 +176,34 @@ describe('brand contrast', () => {
     expect(picker).toContain('dark:hover:bg-white')
     expect(picker).toContain('brand-hover-light')
   })
+
+  /**
+   * The mark has to be allowed to FILL its box.
+   *
+   * Every mark carries `width="1em" height="1em"`, so the tile's old rule -
+   * `max-h-full max-w-full` - capped something already far smaller than the
+   * cap and did nothing at all: a 16px square in a box of 48 by 96. Synology's
+   * wordmark drew four pixels tall. The generator's cropping is worth nothing
+   * without this, because a tighter viewBox only helps if the viewBox is what
+   * the mark is scaled by.
+   */
+  it('lets a mark fill the tile rather than capping it', () => {
+    expect(picker).toContain('[&_svg]:h-full')
+    expect(picker).toContain('[&_svg]:w-full')
+    expect(picker).not.toContain('[&_svg]:max-h-full')
+  })
+
+  /**
+   * And the boxes have to BE cropped, which is the other half.
+   *
+   * A spot check rather than a recount: Synology sat in a box 3.90 times
+   * taller than its own drawing, which is what made a wordmark that fills its
+   * line render four pixels tall. If that box is ever square again, the
+   * generator's measurement has stopped running.
+   */
+  it('crops a wordmark to its ink', () => {
+    const synology = glyphs.slice(glyphs.indexOf('export function IconSynology'))
+    const box = synology.match(/viewBox="([^"]+)"/)![1].split(/\s+/).map(Number)
+    expect(box[2] / box[3], 'Synology is a wordmark, not a square').toBeGreaterThan(2)
+  })
 })

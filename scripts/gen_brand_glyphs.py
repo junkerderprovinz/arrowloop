@@ -22,10 +22,21 @@ import colorsys
 import io
 import json
 import os
+import os
 import re
 import sys
+import tempfile
 import xml.etree.ElementTree as ET
 from pathlib import Path
+
+# The only third-party thing this generator needs, and it is here to measure
+# rather than to draw: working out where a mark actually paints means resolving
+# transforms and the bounds of bezier curves, which is a renderer's job. The
+# import is soft so the failure names the package instead of a traceback.
+try:
+    import svgelements
+except ImportError:  # pragma: no cover - the message below is the handling
+    svgelements = None
 
 SRC = Path(sys.argv[1] if len(sys.argv) > 1 else
            "C:/Users/JUNKER~1/AppData/Local/Temp/si/node_modules/simple-icons/icons")
@@ -291,50 +302,71 @@ FORCE_THEMED = {
 }
 
 
-def _drop_plate(root, box, slug):
-    """Remove a rectangle that covers the whole canvas.
+def _drop_plate(root, source, slug):
+    """Remove the rectangle the rest of the mark is sitting ON.
 
-    A brand's own asset is often drawn on its plate: a full-bleed rectangle in
-    the brand's dark, with the mark in white on top. That is right for a press
-    kit and wrong in a list of fifty logos, where every OTHER mark sits on the
-    page and this one arrives in its own box. jdp reported it twice, about two
-    different files - "opendrive logo ohne den dunklen hintergrund" and, of
-    Uloz.to, "hat noch ein hintergrund".
+    A brand's own asset is often drawn on its plate: a rectangle in the brand's
+    dark, with the mark in white on top. That is right for a press kit and
+    wrong in a list of fifty logos, where every OTHER mark sits on the page and
+    this one arrives in its own box. jdp reported it twice, about two different
+    files - "opendrive logo ohne den dunklen hintergrund" and, of Uloz.to, "hat
+    noch ein hintergrund".
 
     Measured rather than listed by name, because a list of names only ever
-    contains the files somebody has already complained about. A rectangle at
-    the origin with the canvas's own width and height is not part of any mark:
-    it is the ground the mark was placed on.
+    contains the files somebody has already complained about.
+
+    A plate is defined here by CONTAINMENT: the first thing drawn is a
+    rectangle, and everything else drawn fits inside it. That is what a plate
+    is, and it is a better definition than the one this had first, which asked
+    whether the rectangle filled the CANVAS. Linkbox is why: its file is a
+    367x70 wordmark canvas whose text was lost on export, so the plate covers
+    the symbol block and about a fifth of the canvas - not full-bleed by any
+    measure, and a plate to anybody looking at it.
 
     What it does NOT do is guess about colour. Dropping the plate can leave a
     white mark invisible on a light page, and the answer to that is FORCE_THEMED
     above, which says so per file and in as many words.
     """
+    if svgelements is None:
+        raise SystemExit("the plate rule needs svgelements (pip install svgelements)")
     try:
-        bx, by, bw, bh = (float(v) for v in box.replace(",", " ").split())
-    except ValueError:
+        drawing = svgelements.SVG.parse(str(source))
+    except Exception:
         return
 
-    def near(a, b):
-        # A hair of tolerance: these come out of drawing programs, and a plate
-        # written as 1999.9 is still a plate.
-        return abs(a - b) <= max(1.0, abs(b) * 0.005)
-
-    parents = {child: parent for parent in root.iter() for child in parent}
-    for el in [e for e in root.iter() if e.tag == SVG_NS + "rect"]:
-        x = float(el.get("x", 0) or 0)
-        y = float(el.get("y", 0) or 0)
-        w = el.get("width")
-        h = el.get("height")
-        if not w or not h:
+    boxes = []
+    for element in drawing.elements():
+        if not isinstance(element, svgelements.Shape):
             continue
         try:
-            w, h = float(w), float(h)
-        except ValueError:
+            bounds = element.bbox()
+        except Exception:
             continue
-        if near(x, bx) and near(y, by) and near(w, bw) and near(h, bh):
+        if bounds:
+            boxes.append((type(element).__name__, bounds))
+    if len(boxes) < 2 or boxes[0][0] != "Rect":
+        return
+
+    plate = boxes[0][1]
+    rest = boxes[1:]
+    # Half a unit of tolerance: these come out of drawing programs, and a plate
+    # a rounding short of covering the mark is still the mark's plate.
+    covers = (
+        plate[0] <= min(b[0] for _, b in rest) + 0.5
+        and plate[1] <= min(b[1] for _, b in rest) + 0.5
+        and plate[2] >= max(b[2] for _, b in rest) - 0.5
+        and plate[3] >= max(b[3] for _, b in rest) - 0.5
+    )
+    if not covers:
+        return
+
+    parents = {child: parent for parent in root.iter() for child in parent}
+    for el in root.iter():
+        if el.tag == SVG_NS + "rect":
             parents[el].remove(el)
-            print("  %s: dropped a full-bleed plate (%gx%g)" % (slug, w, h))
+            print("  %s: dropped the plate it was sitting on (%gx%g)"
+                  % (slug, plate[2] - plate[0], plate[3] - plate[1]))
+            return
 
 
 def themed(colours, slug):
@@ -488,7 +520,9 @@ def one(name: str, slug: str, note: str) -> str:
     swap = themed([colour], slug)
     painted = swap.get(colour, colour)
     aside = "" if not swap else ", flipped for the ground it cannot be read on"
-    cropped = INK.get(name) or box.group(1)
+    # The source's own box. Tightening onto the drawing happens later, in
+    # crop_to_ink, off the finished markup.
+    cropped = box.group(1)
     return f'''/** {note}. Simple Icons: {slug}, in its own {colour}{aside} */
 export function {name}(props: SVGProps<SVGSVGElement>) {{
   return (
@@ -688,44 +722,174 @@ SVG_NS = "{http://www.w3.org/2000/svg}"
 # empty rectangle. Linkbox looked like a 5.3:1 wordmark 8 pixels tall and its
 # ink is square.
 #
-# Measured with getBBox() in the running app rather than guessed, because the
-# only honest source for "what does this file actually paint" is a renderer.
-# The files themselves stay untouched: an override here is visible and carries
-# its reason, an edited SVG in the folder would look like the original.
+# NO LONGER HAND-KEPT. This used to be a table of boxes read off getBBox() in
+# the running app, and it had the defect every such table has: it was right for
+# the marks somebody had looked at and silent about the rest. Synology sat in a
+# box 3.90 times taller than its own drawing for as long as the list existed,
+# which is why a wordmark that fills its line rendered six pixels tall. Nobody
+# was going to notice by reading a list of twenty-eight names.
 #
-# Keyed by COMPONENT, so one table covers both sources. Regenerate by opening
-# the provider list and reading getBBox() off each mark; anything that already
-# fills its box needs no entry.
-INK = {
-    "IconAkamai": "0.96 0 22.08 24",
-    "IconBackblaze": "4.74 0 14.53 24",
-    "IconBox": "0 5.52 24 12.95",
-    "IconCitrix": "3.9 0 16.19 24",
-    "IconCloudinary": "0 88.5 512 335",
-    "IconDropbox": "0 1.81 24 20.39",
-    "IconFilen": "2 2 60 60",
-    "IconGofile": "13 0 289.4 190",
-    "IconGoogleCloud": "0 2.38 24 19.25",
-    "IconGoogleDrive": "0 27.3 512.1 457.4",
-    "IconHuaweiCloud": "0.8 0.8 36.5 27.4",
-    "IconInternetArchive": "29.8 0 452.4 512",
-    "IconJottacloud": "0 0 37.6 38.1",
-    "IconKoofr": "84.19 75.2 766.81 762.82",
-    "IconLinkbox": "0 0.1 68.4 68.4",
-    "IconNextcloud": "0 6.54 24 10.93",
-    "IconOpencloud": "58.8 0 394.4 512",
-    "IconOpendrive": "116.93 31.49 197.42 132.68",
-    "IconOpenstack": "0 0.26 24 23.48",
-    "IconOracleCloud": "2 2 28 16",
-    "IconOwncloud": "0 5.51 24 12.97",
-    "IconPcloud": "16 102.5 479.9 307.1",
-    "IconPikpak": "2.8 6 46 38.7",
-    "IconQuatrix": "0 0 59.3 58.5",
-    "IconSeafile": "0 4.27 24 15.46",
-    "IconStorj": "0 93.4 512 325.3",
-    "IconSugarsync": "17.2 0 73.51 75.61",
-    "IconZoho": "0 6.9 24 10.21",
-}
+# `crop_to_ink` below now measures every mark instead, off the FINAL markup -
+# after the plate is dropped, after the styles are folded in - and the
+# measurement reproduced twenty-six of these boxes to the last decimal, which
+# is what earned it the job. The dict stays as an OVERRIDE for a mark the
+# measurement gets wrong, and `crop_to_ink` refuses an entry that merely
+# restates what it measured: a hand value that agrees with the measurement is
+# not a safety net, it is a second copy to keep in step.
+#
+# It no longer feeds the emitted box or the plate rule. It used to do both, and
+# that coupling was a trap: the plate rule recognises a rectangle by it being
+# full-bleed, so handing it a box already cropped to the ink makes every plate
+# invisible to it. Both now read the SOURCE canvas and the cropping happens
+# afterwards, on the finished markup.
+# EMPTY, and that is the result rather than an omission. Twenty-eight entries
+# stood here; the measurement reproduced twenty-six of them to the last
+# decimal, and the two it disagreed with - OpenDrive and Linkbox - were not
+# measured boxes at all but the source file's own loose rectangle. Linkbox's
+# said 68.4 wide where the drawing is 34.7, which is the very defect this table
+# was written to fix, sitting inside the fix.
+INK = {}
+
+# How much of its box a mark may waste before it is cropped. Two percent is
+# below what any eye resolves and above the rounding in these files, so it
+# separates "this box is the drawing" from "this box has room in it".
+SLACK = 1.02
+
+# Overrides the measurement makes unnecessary, collected across the whole run
+# and refused together at the end. One at a time would mean twenty-eight runs
+# to clear twenty-eight entries.
+REDUNDANT = []
+
+
+def _measure_ink(component, name):
+    """The box the mark actually PAINTS in, in its own viewBox units.
+
+    Measured off the finished markup rather than the source file, because by
+    this point three things have already changed the drawing: a full-bleed
+    plate may have been dropped, an Illustrator `<style>` block has been folded
+    into the elements, and the ids have been prefixed. Measuring earlier would
+    describe a mark nobody ships.
+
+    `<defs>`, `<mask>` and `<clipPath>` are cut out first, for the same reason
+    their colours are not counted as ink: what is in them is a recipe, not a
+    drawing, and a full-canvas mask rectangle would report the whole box as
+    painted - which is exactly what Quatrix carries two of.
+    """
+    if svgelements is None:
+        raise SystemExit(
+            "crop_to_ink needs the svgelements package (pip install svgelements).\n"
+            "It is what measures where each mark actually paints; without it the\n"
+            "boxes would go back to being a hand-kept list."
+        )
+    markup = component[component.index("<svg"):component.rindex("</svg>") + 6]
+    markup = markup.replace(" aria-hidden {...props}", " ").replace("{...props}", " ")
+
+    # JSX spellings back to SVG's own. Only the ones these files carry: an
+    # unknown attribute would be ignored by the parser and could take a whole
+    # shape's geometry with it.
+    def style(match):
+        pairs = re.findall(r'(\w+):\s*"([^"]*)"', match.group(1))
+        return 'style="%s"' % ";".join(
+            "%s:%s" % (re.sub(r"(?<!^)(?=[A-Z])", "-", key).lower(), value)
+            for key, value in pairs
+        )
+
+    markup = re.sub(r"style=\{\{([^}]*)\}\}", style, markup)
+    for jsx, svg in (
+        ("fillRule", "fill-rule"), ("fillOpacity", "fill-opacity"),
+        ("clipPath", "clip-path"), ("clipRule", "clip-rule"),
+        ("strokeWidth", "stroke-width"), ("strokeLinecap", "stroke-linecap"),
+        ("strokeLinejoin", "stroke-linejoin"), ("strokeMiterlimit", "stroke-miterlimit"),
+        ("stopColor", "stop-color"), ("stopOpacity", "stop-opacity"),
+        ("xlinkHref", "xlink:href"), ("fillOpacity", "fill-opacity"),
+    ):
+        markup = markup.replace(jsx + "=", svg + "=")
+    for tag in ("defs", "mask", "clipPath"):
+        markup = re.sub(r"<%s\b.*?</%s>" % (tag, tag), "", markup, flags=re.S)
+
+    box = [float(v) for v in re.search(r'viewBox="([^"]+)"', markup).group(1).replace(",", " ").split()]
+    # `width="1em"` is what the interface wants and what the parser cannot
+    # resolve - it raises rather than guessing. Handing it the viewBox's own
+    # size makes the viewport transform the identity, so the numbers that come
+    # back are already in the units the box is written in.
+    markup = re.sub(r'\swidth="[^"]*"', "", markup, count=1)
+    markup = re.sub(r'\sheight="[^"]*"', "", markup, count=1)
+    markup = markup.replace(
+        "<svg ",
+        '<svg xmlns="http://www.w3.org/2000/svg" width="%g" height="%g" ' % (box[2], box[3]),
+        1,
+    )
+
+    handle, path = tempfile.mkstemp(suffix=".svg")
+    os.close(handle)
+    try:
+        io.open(path, "w", encoding="utf-8").write(markup)
+        drawing = svgelements.SVG.parse(path)
+    finally:
+        os.unlink(path)
+
+    left = top = float("inf")
+    right = bottom = float("-inf")
+    for element in drawing.elements():
+        if not isinstance(element, svgelements.Shape):
+            continue
+        try:
+            bounds = element.bbox()
+        except Exception:
+            continue
+        if not bounds:
+            continue
+        left, top = min(left, bounds[0]), min(top, bounds[1])
+        right, bottom = max(right, bounds[2]), max(bottom, bounds[3])
+    if right <= left or bottom <= top:
+        raise SystemExit("%s paints nothing this can measure" % name)
+    # Back into the box's own coordinates: the parse put its origin at 0,0.
+    return box, (left + box[0], top + box[1], right - left, bottom - top)
+
+
+def crop_to_ink(component, name):
+    """Tighten a mark's viewBox onto its drawing.
+
+    The eye compares a glyph's INK, not its viewBox, and a tile scales a mark
+    to fit - so a drawing in a box twice its height arrives at half the size of
+    its neighbours, having asked for the same space and used a quarter of it.
+    """
+    declared, ink = _measure_ink(component, name)
+    slack_x = declared[2] / ink[2]
+    slack_y = declared[3] / ink[3]
+    # `or 0.0` collapses a measured -0.0 onto 0, because -0.0 is falsy: a
+    # bezier that touches the axis lands either side of zero depending on
+    # rounding, and "-0" in a viewBox is a diff nobody caused.
+    tight = "%s %s %s %s" % tuple(
+        (("%.2f" % (round(value, 2) or 0.0)).rstrip("0").rstrip(".") or "0") for value in ink
+    )
+
+    if name in INK:
+        # An override that agrees with the measurement is dead weight, and dead
+        # weight in a table like this is what makes the next person believe the
+        # table is doing the work.
+        if slack_x <= SLACK and slack_y <= SLACK:
+            REDUNDANT.append((name, INK[name], tight))
+        else:
+            # An override that DISAGREES is the one worth keeping, and worth
+            # saying out loud: it is a decision somebody made against the
+            # measurement, and silence would make it look like agreement.
+            print("  %s: kept its override %s over the measured %s"
+                  % (name, INK[name], tight))
+        return component
+
+    if slack_x <= SLACK and slack_y <= SLACK:
+        return component
+    print("  %s: cropped to its ink (%.2fx wide, %.2fx tall)" % (name, slack_x, slack_y))
+    cropped, hits = re.subn(r'viewBox="[^"]*"', 'viewBox="%s"' % tight, component, count=1)
+    # A replacement that does not land is the worst outcome here, because the
+    # line above has already announced the crop: the report would say the mark
+    # was fixed and the file would carry the old box. Matching the viewBox by
+    # pattern rather than by rebuilding its text avoids the whole class - the
+    # numbers come back out of a float and would not round-trip.
+    if hits != 1:
+        raise SystemExit("%s: could not find its viewBox to crop" % name)
+    return cropped
 
 
 def _inline_css(root, slug):
@@ -809,7 +973,7 @@ def pair(name, slug, note, source, licence):
         raise SystemExit("%s: the two inks are not the same drawing" % slug)
 
     root = _inline_css(ET.fromstring(io.open(dark_file, encoding="utf-8").read()), slug)
-    box = INK.get(name) or root.get("viewBox")
+    box = root.get("viewBox")
     if not box:
         raise SystemExit("brand-paths/%s-dark.svg has no viewBox" % slug)
 
@@ -840,17 +1004,23 @@ def local(name, slug, note, source, licence):
     path = BRAND_DIR / (slug + ".svg")
     root = _inline_css(ET.fromstring(io.open(path, encoding="utf-8").read()), slug)
 
-    # The box: its own if it has one, otherwise built from width and height.
-    # Several of these carry only a size, and a component with no viewBox does
-    # not scale to the 1em the interface asks for.
-    box = INK.get(name) or root.get("viewBox")
+    # The SOURCE's box: its own if it has one, otherwise built from width and
+    # height. Several of these carry only a size, and a component with no
+    # viewBox does not scale to the 1em the interface asks for.
+    #
+    # The source's rather than a tightened one, because the plate rule below
+    # measures a candidate rectangle against THIS: a plate is full-bleed by
+    # definition, so it can only be recognised against the canvas it bleeds to.
+    # Handing it a box already cropped to the ink made it miss Linkbox's plate
+    # entirely, which then came back into the mark as a coloured square.
+    box = root.get("viewBox")
     if not box:
         w, h = root.get("width"), root.get("height")
         if not w or not h:
             raise SystemExit("brand-paths/%s.svg has neither viewBox nor size" % slug)
         box = "0 0 %s %s" % (w, h)
 
-    _drop_plate(root, box, slug)
+    _drop_plate(root, path, slug)
 
     ids = {}
     for el in root.iter():
@@ -994,7 +1164,18 @@ if unbenutzt:
 if not SRC.is_dir():
     raise SystemExit("no such directory: %s\nInstall simple-icons and pass its icons path." % SRC)
 
-parts = [HEAD] + [one(*m) for m in MARKS] + [local(*m) for m in LOCAL]
+components = [one(*m) for m in MARKS] + [local(*m) for m in LOCAL]
+# Cropping runs LAST, over the finished markup, so it sees the same drawing the
+# app does: plate dropped, styles folded in, colours swapped for variables.
+components = [crop_to_ink(c, m[0]) for c, m in zip(components, MARKS + LOCAL)]
+if REDUNDANT:
+    raise SystemExit(
+        "These INK overrides only restate what the measurement already found. "
+        "Delete them:\n" + "\n".join(
+            "  %s: %r (measured %r)" % row for row in REDUNDANT
+        )
+    )
+parts = [HEAD] + components
 io.open(OUT, "w", encoding="utf-8", newline="\n").write("\n".join(parts))
 
 css = [CSS_HEAD]

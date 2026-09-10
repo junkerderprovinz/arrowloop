@@ -151,8 +151,22 @@ export function ProviderPicker({
               title={p.hint || undefined}
               className={TILE}
             >
+              {/* The mark FILLS this box rather than being capped by it.
+                  `max-h-full max-w-full` was the whole sizing rule and it does
+                  nothing: every mark carries `width="1em" height="1em"`, so it
+                  arrived as a 16px square inside a box of 48 by 96 and a cap
+                  never fires on something already smaller. Measured on this
+                  build, Synology's wordmark drew four pixels tall.
+
+                  `h-full w-full` does not stretch anything - an svg with a
+                  viewBox letterboxes inside its element - so each mark takes
+                  as much of the box as its own proportions allow. Which is
+                  what makes the cropping in the generator worth anything: the
+                  box a mark declares is now the box it is scaled by, so a
+                  wordmark cropped to its ink gets the full 96px of width
+                  instead of fitting a mostly empty square into 16. */}
               {showMark && (
-                <span className="flex h-12 w-24 shrink-0 items-center justify-center [&_svg]:max-h-full [&_svg]:max-w-full">
+                <span className="flex h-12 w-24 shrink-0 items-center justify-center [&_svg]:h-full [&_svg]:w-full">
                   {brandMark(p.mark)}
                 </span>
               )}
