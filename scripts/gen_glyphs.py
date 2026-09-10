@@ -128,6 +128,11 @@ GLYPHS = [
     ("IconCoffee", "food-drink/coffee-mug.svg", "Buy the author a coffee"),
     ("IconLink", "interface-essential/link-chain.svg", "Open the repository"),
     ("IconMail", "mail/mail-send-envelope.svg", "Write to the author"),
+    # The second way to give. A wallet rather than a coin and never a
+    # brand mark: the window behind this button offers five chains, so
+    # the Bitcoin symbol would name one of them and mislead about the
+    # other four. A wallet is what a donor already has open.
+    ("IconWallet", "money-shopping/wallet.svg", "Give with crypto"),
 ]
 
 # Glyphs COMPOSED from this set rather than taken whole.

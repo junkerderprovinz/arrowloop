@@ -40,6 +40,7 @@ export function AboutCard({
   repoGlyph,
   glimstoneRepoUrl,
   coffeeUrl,
+  onCrypto,
   mailAddress,
   hueIndex,
 }: {
@@ -51,6 +52,8 @@ export function AboutCard({
     body: string;
     coffee: string;
     coffeeButton: string;
+    /** The second give button. Only drawn together with `onCrypto`. */
+    cryptoButton?: string;
     report: string;
     repoButton: string;
     mailButton: string;
@@ -82,6 +85,15 @@ export function AboutCard({
   repoGlyph?: ReactNode;
   glimstoneRepoUrl: string;
   coffeeUrl: string;
+  /**
+   * Open the crypto window (CryptoDonateDialog). Omit it and the card offers
+   * the coffee alone.
+   *
+   * A handler rather than a URL, because this route does not leave the app:
+   * the addresses, the QR and the copy button are all in a house window, which
+   * is the whole reason it is worth offering beside a hosted donation page.
+   */
+  onCrypto?: () => void;
   /** The workshop's own mailbox. Omit it and the card offers no mail route. */
   mailAddress?: string;
   hueIndex?: number;
@@ -106,6 +118,14 @@ export function AboutCard({
       <p className="text-sm text-carbon-textSub">{text.body}</p>
 
       <p className="text-sm text-carbon-textSub">{text.coffee}</p>
+      {/* One sentence, and under it every way to give. Two of them where the
+          app offers crypto as well, and they are two because they reach
+          different people: the coffee takes a card, the crypto window takes
+          what somebody already holds in a wallet and shows no name at either
+          end. Both stay in THIS row rather than getting a row of their own
+          further down, which is the card's own rule — a sentence sits directly
+          above the thing it asks for, and a second row reads as a second,
+          unrelated offer. */}
       <div className="flex flex-wrap items-center gap-2">
         <Button
           label={text.coffeeButton}
@@ -113,6 +133,14 @@ export function AboutCard({
           tone="neutral"
           onClick={() => open(coffeeUrl)}
         />
+        {onCrypto && text.cryptoButton && (
+          <Button
+            label={text.cryptoButton}
+            labelKey="about.crypto"
+            tone="neutral"
+            onClick={onCrypto}
+          />
+        )}
       </div>
 
       {/* One extra step of space above this line, and only above this one. The

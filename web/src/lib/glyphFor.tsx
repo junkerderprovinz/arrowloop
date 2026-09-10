@@ -22,6 +22,7 @@ import {
   IconSettings,
   IconUp,
   IconUpload,
+  IconWallet,
 } from '../components/glyphs'
 import { IconCancel } from '../components/glyphs'
 
@@ -56,6 +57,12 @@ const RULES: Rule[] = [
   // file exists, and each is a specific destination rather than a verb, so
   // nothing further down should be allowed to claim them.
   [/^about\.coffee/i, () => <IconCoffee />],
+  // The second way to give, and it needs a mark of its own rather than the
+  // coffee's: two buttons under one sentence wearing one symbol is the glyph
+  // collision this table exists to avoid. A WALLET and never a coin or a
+  // Bitcoin ₿ — the window behind this button offers five chains, so a brand
+  // mark would name one of them and mislead about the other four.
+  [/^about\.crypto$/i, () => <IconWallet />],
   [/^about\.repo$/i, () => <IconLink />],
   [/^about\.mail$/i, () => <IconMail />],
 
