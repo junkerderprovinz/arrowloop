@@ -137,9 +137,10 @@ SURFACE_LIGHT = "#e8e8e8"  # --carbon-surface2, light theme
 #
 # The picker's tile is filled with --carbon-surface2 and lights up under the
 # pointer, which in the dark theme means it goes to WHITE. So a mark that sits
-# on #393939 at rest sits on #ffffff a moment later, and the twelve marks whose
-# dark value is near-white measured 1.00 against it - not faint, gone, and gone
-# exactly while somebody was pointing at the thing they wanted to read. The
+# on #393939 at rest sits on #ffffff a moment later, and thirteen values across
+# eleven marks fell under the floor against it, eight of them at exactly 1.00 -
+# not faint, gone, and gone exactly while somebody was pointing at the thing
+# they wanted to read. The
 # light theme has the milder half of the same fault: its hover is
 # --carbon-surface3 at #d1d1d1, where Cloudflare's orange falls to 1.74.
 #

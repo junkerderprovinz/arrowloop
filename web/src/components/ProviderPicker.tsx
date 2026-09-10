@@ -222,7 +222,7 @@ export function ProviderPicker({
  *
  * `brand-hover-light` is what pays for that white. A tile that goes white is
  * showing a LIGHT ground, so every mark on it has to wear its light value for
- * as long as the pointer is there - and twelve of them did not. Measured on
+ * as long as the pointer is there - and eleven of them did not. Measured on
  * this build before the class existed: put.io, OpenCloud, Cloudinary, the
  * Internet Archive, Filen, Linkbox, Uloz.to and OpenDrive all reached exactly
  * 1.00 against the tile under the pointer, which is white on white. The
