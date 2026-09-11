@@ -288,6 +288,7 @@ const sl: Translations = {
   'engine.historyHint': 'Kam se zapiše vsak zagon, skupaj s tem, kaj je naredil s katero datoteko. Prazno pomeni poleg nastavitvene datoteke. Relativno ime je relativno na isto mapo.',
   'engine.telling': 'Kdo je obveščen',
   'engine.defaults': 'Globalna nastavitev sinhronizacije',
+  'settings.syncHint': 'Iz česa izhaja novo opravilo. Opravilo, ki o nastavitvi nič ne pove, vzame vrednost od tu.',
   'settings.openSync': 'Odpri nastavitve sinhronizacije',
   'settings.transfer': 'Prenos',
   'settings.contents': 'Kaj se prenese',

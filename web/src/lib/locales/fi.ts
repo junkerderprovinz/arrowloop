@@ -288,6 +288,7 @@ const fi: Translations = {
   'engine.historyHint': 'Minne jokainen ajo kirjataan, ja mitä se teki millekin tiedostolle. Tyhjä tarkoittaa asetustiedoston viereen. Suhteellinen nimi on suhteessa samaan kansioon.',
   'engine.telling': 'Kuka saa tiedon',
   'engine.defaults': 'Yleinen synkronointiasetus',
+  'settings.syncHint': 'Mistä uusi työ lähtee. Työ, joka ei määritä asetusta, ottaa arvon täältä.',
   'settings.openSync': 'Avaa synkronoinnin asetukset',
   'settings.transfer': 'Siirto',
   'settings.contents': 'Mitä siirtyy mukana',

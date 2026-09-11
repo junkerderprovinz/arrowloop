@@ -288,6 +288,7 @@ const is: Translations = {
   'engine.historyHint': 'Hvar hver keyrsla er skráð, ásamt því hvað hún gerði við hvaða skrá. Autt þýðir við hliðina á stillingaskránni. Afstætt heiti miðast við sömu möppu.',
   'engine.telling': 'Hverjum er sagt frá',
   'engine.defaults': 'Almenn samstillingarstilling',
+  'settings.syncHint': 'Hvað nýtt verk byrjar á. Verk sem segir ekkert um stillingu tekur gildið héðan.',
   'settings.openSync': 'Opna samstillingarstillingar',
   'settings.transfer': 'Flutningur',
   'settings.contents': 'Hvað fylgir með',

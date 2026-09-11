@@ -288,6 +288,7 @@ const es: Translations = {
   'engine.historyHint': 'Dónde se anota cada ejecución, con lo que hizo y a qué archivo. Vacío significa junto al archivo de configuración. Un nombre relativo lo es respecto a esa misma carpeta.',
   'engine.telling': 'A quién se avisa',
   'engine.defaults': 'Ajuste de sincronización global',
+  'settings.syncHint': 'De dónde parte una tarea nueva. Una tarea que no dice nada sobre un ajuste toma el valor de aquí.',
   'settings.openSync': 'Abrir ajustes de sincronización',
   'settings.transfer': 'Transferencia',
   'settings.contents': 'Qué se lleva consigo',

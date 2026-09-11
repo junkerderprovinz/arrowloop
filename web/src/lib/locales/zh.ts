@@ -288,6 +288,7 @@ const zh: Translations = {
   'engine.historyHint': '每次运行记录在哪里，连同它对哪个文件做了什么。留空表示放在配置文件旁边。相对名称相对于同一个文件夹。',
   'engine.telling': '通知谁',
   'engine.defaults': '全局同步设置',
+  'settings.syncHint': '新任务的起点。未指定某项设置的任务会采用这里的值。',
   'settings.openSync': '打开同步设置',
   'settings.transfer': '传输',
   'settings.contents': '一起带走的内容',

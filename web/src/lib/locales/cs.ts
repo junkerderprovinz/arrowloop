@@ -288,6 +288,7 @@ const cs: Translations = {
   'engine.historyHint': 'Kam se zapisuje každý běh a co udělal s kterým souborem. Prázdné znamená vedle konfiguračního souboru. Relativní název je vztažen ke stejné složce.',
   'engine.telling': 'Kdo se to dozví',
   'engine.defaults': 'Globální nastavení synchronizace',
+  'settings.syncHint': 'Z čeho vychází nová úloha. Úloha, která k nastavení nic neříká, převezme hodnotu odsud.',
   'settings.openSync': 'Otevřít nastavení synchronizace',
   'settings.transfer': 'Přenos',
   'settings.contents': 'Co se přenáší',

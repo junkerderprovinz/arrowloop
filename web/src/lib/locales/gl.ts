@@ -288,6 +288,7 @@ const gl: Translations = {
   'engine.historyHint': 'Onde se anota cada execución, co que fixo e a que ficheiro. Baleiro significa a carón do ficheiro de configuración. Un nome relativo éo respecto do mesmo cartafol.',
   'engine.telling': 'A quen se avisa',
   'engine.defaults': 'Configuración global de sincronización',
+  'settings.syncHint': 'De onde parte unha tarefa nova. Unha tarefa que non di nada sobre un axuste toma o valor de aquí.',
   'settings.openSync': 'Abrir axustes de sincronización',
   'settings.transfer': 'Transferencia',
   'settings.contents': 'Que se leva',

@@ -479,7 +479,12 @@ export function Settings() {
           bestehende einstellungen die jetzt separat sind darin aufnehmen."
 
           A page somebody CHOOSES to open can be as long as it needs to be. */}
-      <Section title={t("engine.defaults")} hint={t("defaults.followHint")} hue={5}>
+      {/* Its OWN hint, not the one the switch inside a job wears. That one
+          says "take this from the settings instead of deciding it here", which
+          on the settings page points at the page somebody is already standing
+          on (jdp: "der infotext der globalen synceinstellungen ist
+          unverständlich formuliert"). It was never written for this place. */}
+      <Section title={t("engine.defaults")} hint={t("settings.syncHint")} hue={5}>
         <Button
           label={t("settings.openSync")}
           labelKey="settings.openSync"

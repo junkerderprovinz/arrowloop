@@ -288,6 +288,7 @@ const pl: Translations = {
   'engine.historyHint': 'Gdzie zapisywany jest każdy przebieg, wraz z tym, co zrobił i z jakim plikiem. Puste oznacza obok pliku konfiguracyjnego. Nazwa względna odnosi się do tego samego folderu.',
   'engine.telling': 'Kto dostaje wiadomość',
   'engine.defaults': 'Globalne ustawienie synchronizacji',
+  'settings.syncHint': 'Od czego zaczyna nowe zadanie. Zadanie, które nic nie mówi o ustawieniu, bierze wartość stąd.',
   'settings.openSync': 'Otwórz ustawienia synchronizacji',
   'settings.transfer': 'Transfer',
   'settings.contents': 'Co jest zabierane',

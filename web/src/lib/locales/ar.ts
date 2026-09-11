@@ -288,6 +288,7 @@ const ar: Translations = {
   'engine.historyHint': 'أين يُسجَّل كل تشغيل، مع ما فعله وبأي ملف. الفراغ يعني بجوار ملف الإعدادات. الاسم النسبي نسبةً إلى المجلد نفسه.',
   'engine.telling': 'من يُبلَّغ',
   'engine.defaults': 'إعداد المزامنة العام',
+  'settings.syncHint': 'ما يبدأ منه أي مهمة جديدة. المهمة التي لا تحدد إعدادًا تأخذ قيمته من هنا.',
   'settings.openSync': 'فتح إعدادات المزامنة',
   'settings.transfer': 'النقل',
   'settings.contents': 'ما الذي يُنقل معه',

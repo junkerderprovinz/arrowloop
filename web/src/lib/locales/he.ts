@@ -288,6 +288,7 @@ const he: Translations = {
   'engine.historyHint': 'היכן נרשמת כל הרצה, ומה עשתה לאיזה קובץ. ריק פירושו לצד קובץ ההגדרות. שם יחסי הוא יחסי לאותה תיקייה.',
   'engine.telling': 'מי מקבל הודעה',
   'engine.defaults': 'הגדרת סנכרון גלובלית',
+  'settings.syncHint': 'מה נקודת ההתחלה של משימה חדשה. משימה שלא מגדירה דבר לוקחת את הערך מכאן.',
   'settings.openSync': 'פתח הגדרות סנכרון',
   'settings.transfer': 'העברה',
   'settings.contents': 'מה נלקח יחד',

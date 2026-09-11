@@ -288,6 +288,7 @@ const ko: Translations = {
   'engine.historyHint': '각 실행을, 어떤 파일에 무엇을 했는지와 함께 적어 두는 곳입니다. 비워 두면 설정 파일 옆을 뜻합니다. 상대 이름은 같은 폴더 기준입니다.',
   'engine.telling': '누구에게 알릴지',
   'engine.defaults': '전체 동기화 설정',
+  'settings.syncHint': '새 작업이 시작하는 값입니다. 설정을 지정하지 않은 작업은 여기서 값을 가져옵니다.',
   'settings.openSync': '동기화 설정 열기',
   'settings.transfer': '전송',
   'settings.contents': '함께 옮겨지는 것',

@@ -288,6 +288,7 @@ const no: Translations = {
   'engine.historyHint': 'Hvor hver kjøring skrives ned, med hva den gjorde med hvilken fil. Tomt betyr ved siden av konfigurasjonsfilen. Et relativt navn er relativt til samme mappe.',
   'engine.telling': 'Hvem som får beskjed',
   'engine.defaults': 'Global synkroniseringsinnstilling',
+  'settings.syncHint': 'Hva en ny jobb starter fra. En jobb som ikke sier noe om en innstilling, tar verdien herfra.',
   'settings.openSync': 'Åpne synkroniseringsinnstillinger',
   'settings.transfer': 'Overføring',
   'settings.contents': 'Hva som blir med',
