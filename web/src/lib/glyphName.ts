@@ -103,7 +103,6 @@ const RULES: Rule[] = [
   // consistency check, and in glyph mode two inspections wearing the same
   // tick would be one control with two meanings.
   [/duplicate|dupes|copyPath|\.copy|copied/i, 'IconCopy'],
-  [/edit|rename/i, 'IconEdit'],
 
   // Carrying a whole setup out to a file and back in. ABOVE `save`, because
   // exporting is a save in the grammatical sense and a different act entirely:
@@ -113,10 +112,25 @@ const RULES: Rule[] = [
   [/export|download/i, 'IconDownload'],
   [/import|upload/i, 'IconUpload'],
 
+  // ABOVE `edit`, and that ordering is a fix rather than a preference. A key
+  // carries a NAMESPACE and a VERB, and the verb is what the button does:
+  // `edit.save` is the save button on the job editor, and with `edit` first it
+  // matched on its namespace and wore a PENCIL. Measured on the phone, next to
+  // a target form whose `targets.save` wore the floppy correctly - the same
+  // action with two marks, which is the collision the whole table exists to
+  // prevent. The three keys this reorders are `edit.save`, `edit.savedNote`
+  // and `edit.unsaved`, and saving is the right meaning for all three.
+  // Dialogs, and this one is above `save` for the same reason `save` is above
+  // `edit`: `confirm.cancel` is the way OUT of a confirmation dialog, and with
+  // `confirm` matching first it wore the FLOPPY - a cancel button offering to
+  // save, next to a confirm button offering the same thing. Found by the guard
+  // in glyphName.verbs.test.ts on its first run, which is one more than the
+  // number of times anybody had noticed it on screen.
+  [/cancel|close|logout|dismiss/i, 'IconCancel'],
+
   [/save|apply|choose|submit|confirm/i, 'IconSave'],
 
-  // Dialogs.
-  [/cancel|close|logout|dismiss/i, 'IconCancel'],
+  [/edit|rename/i, 'IconEdit'],
   [/\.up$|parent|levelUp/i, 'IconUp'],
 
   // Probing and inspection, below the app's own verbs so `preview` keeps the
