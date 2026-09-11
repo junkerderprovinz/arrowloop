@@ -425,7 +425,7 @@ const cs: Translations = {
   'targets.deleteDriveHint': 'Odebere tento disk ze seznamu A odstraní soubor s identitou z disku samotného. Úloha, která na něj míří, ho přestane nacházet. Soubory na disku zůstanou nedotčené.',
   'confirm.deleteDrive': 'Smazat tento disk?',
   'confirm.deleteDriveStakes': '{name} přestane být registrovaným diskem. Každá úloha, která na něj míří, ho ohlásí jako nepřipojený, dokud ho znovu nezaregistruješ. Na disku se nic nemaže.',
-  'targets.cloud': 'Cloudové úložiště',
+  'targets.cloud': 'Úložiště a cloudy',
   'targets.connections': 'Servery a sdílení',
   'targets.pickMore': 'Dalších {count}, pod názvem v rclone',
   'opt.user': 'Uživatelské jméno',
@@ -477,7 +477,8 @@ const cs: Translations = {
   // German and a second table would drift from the first.
   'phone.access': 'Přístup k souborům',
   'phone.permissionHint': 'Tento přepínač patří Androidu. Klepnutí otevře stránku, kde se oprávnění uděluje nebo odebírá.',
-  'phone.permissionGranted': 'Uděleno',
+  'phone.permissionGranted': 'Oprávnění uděleno',
+  'phone.permissionDenied': 'Oprávnění neuděleno',
   'phone.accessNone': 'Tato verze Androidu takové oprávnění nezná, složky je proto nutné předávat po jedné.',
   'phone.notify': 'Oznámení',
   'phone.openNotifications': 'Nastavení oznámení v Androidu',

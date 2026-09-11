@@ -425,7 +425,7 @@ const fa: Translations = {
   'targets.deleteDriveHint': 'این درایو را از فهرست برمی‌دارد و پرونده شناسه را از خود درایو هم پاک می‌کند. کاری که به آن اشاره دارد دیگر آن را پیدا نمی‌کند. پرونده‌های روی درایو دست‌نخورده می‌مانند.',
   'confirm.deleteDrive': 'این درایو حذف شود؟',
   'confirm.deleteDriveStakes': '{name} دیگر درایو ثبت‌شده نخواهد بود. هر کاری که به آن اشاره دارد آن را متصل‌نشده گزارش می‌کند تا وقتی دوباره ثبتش کنی. روی خود درایو چیزی حذف نمی‌شود.',
-  'targets.cloud': 'فضای ابری',
+  'targets.cloud': 'ذخیره‌سازی و ابرها',
   'targets.connections': 'سرورها و اشتراک‌ها',
   'targets.pickMore': '{count} مورد دیگر، با نامشان در rclone',
   'opt.user': 'نام کاربری',
@@ -477,7 +477,8 @@ const fa: Translations = {
   // German and a second table would drift from the first.
   'phone.access': 'دسترسی به فایل‌ها',
   'phone.permissionHint': 'این کلید در اختیار اندروید است. لمس آن صفحه‌ای را باز می‌کند که اجازه در آن داده یا پس گرفته می‌شود.',
-  'phone.permissionGranted': 'داده شده',
+  'phone.permissionGranted': 'اجازه داده شده',
+  'phone.permissionDenied': 'اجازه داده نشده',
   'phone.accessNone': 'این نسخهٔ اندروید چنین اجازه‌ای را نمی‌شناسد، بنابراین پوشه‌ها باید یکی‌یکی سپرده شوند.',
   'phone.notify': 'اعلان‌ها',
   'phone.openNotifications': 'تنظیمات اعلان اندروید',

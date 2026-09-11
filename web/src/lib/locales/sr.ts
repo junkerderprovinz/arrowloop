@@ -425,7 +425,7 @@ const sr: Translations = {
   'targets.deleteDriveHint': 'Уклања овај диск са списка И брише датотеку идентитета са њега самог. Посао који на њега упућује више га неће налазити. Датотеке на диску остају нетакнуте.',
   'confirm.deleteDrive': 'Обрисати овај диск?',
   'confirm.deleteDriveStakes': '{name} више неће бити регистровани диск. Сваки посао који на њега упућује пријавиће га као неприкљученог док га поново не региструјеш. На диску се ништа не брише.',
-  'targets.cloud': 'Складиште у облаку',
+  'targets.cloud': 'Складишта и облаци',
   'targets.connections': 'Сервери и дељења',
   'targets.pickMore': 'Још {count}, под називом у rclone',
   'opt.user': 'Корисничко име',
@@ -477,7 +477,8 @@ const sr: Translations = {
   // German and a second table would drift from the first.
   'phone.access': 'Приступ датотекама',
   'phone.permissionHint': 'Овај прекидач припада Android-у. Додир отвара страницу на којој се дозвола даје или одузима.',
-  'phone.permissionGranted': 'Додељено',
+  'phone.permissionGranted': 'Дозвола додељена',
+  'phone.permissionDenied': 'Дозвола није додељена',
   'phone.accessNone': 'Ова верзија Android-а не познаје ту дозволу, па се фасцикле морају предавати једна по једна.',
   'phone.notify': 'Обавештења',
   'phone.openNotifications': 'Android подешавања обавештења',

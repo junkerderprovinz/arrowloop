@@ -425,7 +425,7 @@ const he: Translations = {
   'targets.deleteDriveHint': 'מסיר את הכונן הזה מהרשימה וגם מוחק את קובץ הזהות מהכונן עצמו. משימה שמצביעה עליו לא תמצא אותו יותר. הקבצים על הכונן נשארים כמו שהם.',
   'confirm.deleteDrive': 'למחוק את הכונן הזה?',
   'confirm.deleteDriveStakes': '{name} יפסיק להיות כונן רשום. כל משימה שמצביעה עליו תדווח שהוא לא מחובר עד שתרשום אותו מחדש. על הכונן עצמו לא נמחק דבר.',
-  'targets.cloud': 'אחסון בענן',
+  'targets.cloud': 'אחסון ועננים',
   'targets.connections': 'שרתים ושיתופים',
   'targets.pickMore': 'עוד {count}, בשם שלהם ב-rclone',
   'opt.user': 'שם משתמש',
@@ -477,7 +477,8 @@ const he: Translations = {
   // German and a second table would drift from the first.
   'phone.access': 'גישה לקבצים',
   'phone.permissionHint': 'המתג הזה שייך לאנדרואיד. נגיעה פותחת את הדף שבו ההרשאה ניתנת או נלקחת.',
-  'phone.permissionGranted': 'ניתנה',
+  'phone.permissionGranted': 'ההרשאה ניתנה',
+  'phone.permissionDenied': 'ההרשאה לא ניתנה',
   'phone.accessNone': 'גרסת האנדרואיד הזו אינה מכירה את ההרשאה, ולכן יש למסור תיקיות אחת אחת.',
   'phone.notify': 'התראות',
   'phone.openNotifications': 'הגדרות ההתראות של אנדרואיד',

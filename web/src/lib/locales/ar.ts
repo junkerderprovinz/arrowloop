@@ -425,7 +425,7 @@ const ar: Translations = {
   'targets.deleteDriveHint': 'يزيل هذا القرص من القائمة ويحذف ملف الهوية من القرص نفسه. المهمة التي تشير إليه لن تجده بعد ذلك. الملفات على القرص تبقى كما هي.',
   'confirm.deleteDrive': 'حذف هذا القرص؟',
   'confirm.deleteDriveStakes': 'لن يعود {name} قرصًا مسجلًا. أي مهمة تشير إليه ستبلغ أنه غير متصل حتى تسجله من جديد. لا يُحذف شيء على القرص.',
-  'targets.cloud': 'تخزين سحابي',
+  'targets.cloud': 'التخزين والسحابة',
   'targets.connections': 'خوادم ومشاركات',
   'targets.pickMore': '{count} أخرى، باسمها في rclone',
   'opt.user': 'اسم المستخدم',
@@ -477,7 +477,8 @@ const ar: Translations = {
   // German and a second table would drift from the first.
   'phone.access': 'الوصول إلى الملفات',
   'phone.permissionHint': 'هذا المفتاح يملكه أندرويد. اللمس يفتح الصفحة التي يُمنح فيها الإذن أو يُسحب.',
-  'phone.permissionGranted': 'ممنوح',
+  'phone.permissionGranted': 'الإذن ممنوح',
+  'phone.permissionDenied': 'الإذن غير ممنوح',
   'phone.accessNone': 'هذه النسخة من أندرويد لا تعرف ذلك الإذن، لذا يجب تسليم المجلدات واحدًا تلو الآخر.',
   'phone.notify': 'الإشعارات',
   'phone.openNotifications': 'إعدادات إشعارات أندرويد',

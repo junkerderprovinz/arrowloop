@@ -425,7 +425,7 @@ const tr: Translations = {
   'targets.deleteDriveHint': 'Bu sürücüyü listeden çıkarır VE kimlik dosyasını sürücünün kendisinden kaldırır. Onu gösteren bir iş artık bulamaz. Sürücüdeki dosyalara dokunulmaz.',
   'confirm.deleteDrive': 'Bu sürücü silinsin mi?',
   'confirm.deleteDriveStakes': '{name} artık kayıtlı bir sürücü olmayacak. Onu gösteren her iş, yeniden kaydedene kadar bağlı değil diye bildirir. Sürücüde hiçbir şey silinmez.',
-  'targets.cloud': 'Bulut depolama',
+  'targets.cloud': 'Depolama ve bulutlar',
   'targets.connections': 'Sunucular ve paylaşımlar',
   'targets.pickMore': '{count} tane daha, rclone adlarıyla',
   'opt.user': 'Kullanıcı adı',
@@ -477,7 +477,8 @@ const tr: Translations = {
   // German and a second table would drift from the first.
   'phone.access': 'Dosya erişimi',
   'phone.permissionHint': 'Bu anahtar Android\'e aittir. Dokunmak, iznin verildiği ya da geri alındığı sayfayı açar.',
-  'phone.permissionGranted': 'Verildi',
+  'phone.permissionGranted': 'İzin verildi',
+  'phone.permissionDenied': 'İzin verilmedi',
   'phone.accessNone': 'Bu Android sürümü böyle bir izni tanımıyor, bu yüzden klasörlerin teker teker verilmesi gerekiyor.',
   'phone.notify': 'Bildirimler',
   'phone.openNotifications': 'Android\'in bildirim ayarları',

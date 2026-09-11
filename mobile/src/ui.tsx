@@ -54,7 +54,6 @@ export interface Theme {
   radius: Radii;
   labels: LabelMode;
   rainbow: boolean;
-  rainbowReactive: boolean;
   scheme: "dark" | "light";
   accent: string;
   accentContrast: string;
@@ -73,13 +72,28 @@ export function useTheme(): Theme {
     scheme,
     p: base,
     radius: radiusFor(a.shape),
-    labels: a.labels,
+    // `reactive` never reaches a control here: a phone has no pointer, so a
+    // label that appears under one is a label nobody ever sees. A stored value
+    // from an older build resolves to symbols, which is what it looked like
+    // anyway. See settings.ts for the whole reasoning.
+    labels: a.labels === "reactive" ? "glyph" : a.labels,
     rainbow: a.rainbow,
-    rainbowReactive: a.rainbowReactive,
     accent: a.accent,
     accentContrast: contrastOn(a.accent),
     accentInk: inkFor(a.accent, scheme),
-    hueAt: (index: number) => (a.rainbow ? RAINBOW[index % RAINBOW.length] : undefined),
+    // The EDITED palette where there is one, the shipped colours otherwise.
+    // Empty rather than a stored copy of the defaults, so an install that has
+    // never opened the palette follows the defaults when they change.
+    hueAt: (index: number) => {
+      if (!a.rainbow) return undefined;
+      const set = a.palette.length ? a.palette : RAINBOW;
+      // The offset, so a page does not always open on the same colour. Zero
+      // unless the switch is on, which is what makes turning it off put every
+      // colour back where it was rather than somewhere new.
+      const off = a.rainbowRotate ? a.rainbowSeed : 0;
+      const n = ((Math.trunc(index) % set.length) + set.length) % set.length;
+      return set[(n + off) % set.length];
+    },
   };
 }
 
@@ -165,25 +179,28 @@ export function Section({
 }) {
   const { p, radius, accent, accentContrast, hueAt } = useTheme();
   const fill = (hue !== undefined ? hueAt(hue) : undefined) ?? accent;
+  const ink = contrastOn(fill) || accentContrast;
   return (
     <View style={styles.notchWrap}>
       <View style={[styles.notchCard, { backgroundColor: p.surface, borderRadius: radius.card }]}>
-        {/* The card's explanation, in an (i) at its top corner rather than as a
-            paragraph above its contents. jdp: "in der app sollen auch alle
-            infotexte in eine i infobubble." The notch carries the title on the
-            other side of the same edge, so the two things that describe a card
-            sit on its rim and the card itself holds only what it is FOR. */}
-        {hint ? (
-          <View style={styles.cardBubble}>
-            <InfoBubble tip={hint} />
-          </View>
-        ) : null}
         {children}
       </View>
+      {/* THE EXPLANATION LIVES IN THE NOTCH, beside the title, which is where
+          the container puts it too.
+
+          It used to float in the card's top-right corner, and on a card whose
+          first row is a well or a switch that put the (i) somewhere between two
+          controls it did not belong to: jdp, on the corners card, "einige i
+          infobubbles sind schlecht platziert". A card has exactly two things
+          that describe the whole card - its name and its reason - and they
+          belong together on its rim, so the inside holds only what the card is
+          FOR. The badge is also where the eye already is when somebody is
+          working out what a card does. */}
       <View style={[styles.notch, { backgroundColor: fill, borderRadius: radius.pill }]}>
-        <Text style={[styles.notchText, { color: contrastOn(fill) || accentContrast }]} numberOfLines={1}>
+        <Text style={[styles.notchText, { color: ink }]} numberOfLines={1}>
           {title}
         </Text>
+        {hint ? <InfoBubble tip={hint} on={ink} /> : null}
       </View>
     </View>
   );
@@ -298,9 +315,15 @@ export function Badge({ label, tone = "neutral" }: { label: string; tone?: Tone 
  * wide would wrap a sentence into eight lines. The dialog is the same text with
  * room to be read, and it leaves every tile the height it had.
  */
-export function InfoBubble({ tip }: { tip: string }) {
+export function InfoBubble({ tip, on }: { tip: string; on?: string }) {
   const { p, radius, accentInk } = useTheme();
   const [open, setOpen] = useState(false);
+  // `on` is the ink of the surface this sits on - a card notch hands in its own
+  // contrast ink, because an accent-coloured (i) on an accent-coloured badge is
+  // a mark nobody can see. Without it the bubble takes the accent, which is
+  // right everywhere else: on a card it is the one accent-coloured thing in a
+  // row of neutral controls, which is what makes it findable.
+  const ink = on ?? accentInk;
   return (
     <>
       <Pressable
@@ -309,9 +332,9 @@ export function InfoBubble({ tip }: { tip: string }) {
         // form for a provider somebody was only reading about would be the
         // picker answering a question nobody asked.
         hitSlop={8}
-        style={[styles.bubble, { backgroundColor: softOn(accentInk, 0.15), borderRadius: radius.pill }]}
+        style={[styles.bubble, { backgroundColor: softOn(ink, on ? 0.22 : 0.15), borderRadius: radius.pill }]}
       >
-        <Text style={[styles.bubbleMark, { color: accentInk }]}>i</Text>
+        <Text style={[styles.bubbleMark, { color: ink }]}>i</Text>
       </Pressable>
       <Modal visible={open} transparent animationType="fade" onRequestClose={() => setOpen(false)}>
         {/* The ground outside the card dismisses it. A dialog whose only way
@@ -468,8 +491,35 @@ export function Switcher({
 
 /** A labelled switch: the row and the control together, which is what every
  *  yes-or-no question here looks like. Never a checkbox. */
+/**
+ * A switch with its label, and the label may NAME THE STATE.
+ *
+ * Two things a switch's label can be, and they are not interchangeable:
+ *
+ *   - the SETTING, where the switch decides ("Only over Wi-Fi"). The label is
+ *     the question and the switch is the answer.
+ *   - the STATE, where the switch REPORTS something decided elsewhere
+ *     ("Permission granted" / "Permission not granted"). The label is the
+ *     answer, and pressing it goes to wherever the question is really asked.
+ *
+ * `off` opts a control into the second. Pass both labels and the row says what
+ * IS rather than what could be - which is what a permission needs, because
+ * "File access" beside a switch leaves somebody reading the switch's position
+ * to work out a yes or a no that the row could simply have said (jdp: "der text
+ * des Toggles soll Berechtigung erteilt heißen und wenn der toggle deaktiviert
+ * ist soll es Berechtigung nicht erteilt heißen").
+ *
+ * WHY IT IS NOT THE DEFAULT: a label that changes can be read as a BUTTON's
+ * label - does it say what is, or what happens if I press? On a reported state
+ * that ambiguity cannot arise, because the switch's own position says the same
+ * thing and the two reinforce each other. On a setting it would: "Only over
+ * Wi-Fi off" reads like an instruction. So the state-naming label belongs
+ * exactly where the switch is a READING of something this app does not own, and
+ * nowhere else.
+ */
 export function Toggle({
   label,
+  off,
   hint,
   value,
   onChange,
@@ -477,6 +527,9 @@ export function Toggle({
   hue,
 }: {
   label: string;
+  /** The label for the OFF state, where the row names a state rather than a
+   *  setting. Omit it and the label stands in both positions. */
+  off?: string;
   hint?: string;
   value: boolean;
   onChange: (next: boolean) => void;
@@ -485,7 +538,7 @@ export function Toggle({
 }) {
   return (
     <Row
-      label={label}
+      label={off !== undefined && !value ? off : label}
       hint={hint}
       control={<Switcher value={value} onChange={onChange} disabled={disabled} hue={hue} />}
     />
@@ -636,9 +689,17 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: -11,
     left: space.lg,
-    height: 22,
+    // As wide as its contents and no wider. `left` alone does that; setting
+    // `right` as well would STRETCH an absolutely positioned box across the
+    // card, which turns a badge into a bar. The cap keeps a long title from
+    // running off the edge on a narrow handset.
+    maxWidth: "86%",
+    minHeight: 22,
     paddingHorizontal: space.md,
-    justifyContent: "center",
+    paddingVertical: 2,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: space.xs,
     elevation: 3,
     shadowColor: "#000",
     shadowOpacity: 0.25,
@@ -652,7 +713,6 @@ const styles = StyleSheet.create({
   // under it. `flexShrink` on the label is what keeps a long one from pushing
   // the bubble off the end of the row.
   rowText: { flex: 1, minWidth: 0, flexDirection: "row", alignItems: "center", gap: space.sm },
-  cardBubble: { position: "absolute", top: 8, right: 10, zIndex: 1 },
 
   heading: { fontSize: text.heading, fontWeight: "600" },
   title: { fontSize: text.title, fontWeight: "600" },

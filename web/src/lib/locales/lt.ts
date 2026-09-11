@@ -425,7 +425,7 @@ const lt: Translations = {
   'targets.deleteDriveHint': 'Pašalina šį diską iš sąrašo IR ištrina tapatybės failą iš paties disko. Į jį rodanti užduotis jo nebeaptiks. Failai diske lieka nepaliesti.',
   'confirm.deleteDrive': 'Ištrinti šį diską?',
   'confirm.deleteDriveStakes': '{name} nebebus registruotas diskas. Kiekviena į jį rodanti užduotis praneš, kad jis neprijungtas, kol jo neužregistruosi iš naujo. Diske niekas netrinama.',
-  'targets.cloud': 'Debesų saugykla',
+  'targets.cloud': 'Saugyklos ir debesys',
   'targets.connections': 'Serveriai ir bendrinimai',
   'targets.pickMore': 'Dar {count}, pagal rclone pavadinimą',
   'opt.user': 'Naudotojo vardas',
@@ -477,7 +477,8 @@ const lt: Translations = {
   // German and a second table would drift from the first.
   'phone.access': 'Prieiga prie failų',
   'phone.permissionHint': 'Šis jungiklis priklauso Android. Palietus atsidaro puslapis, kuriame leidimas suteikiamas arba atšaukiamas.',
-  'phone.permissionGranted': 'Suteikta',
+  'phone.permissionGranted': 'Leidimas suteiktas',
+  'phone.permissionDenied': 'Leidimas nesuteiktas',
   'phone.accessNone': 'Ši Android versija tokio leidimo nežino, todėl aplankus tenka perduoti po vieną.',
   'phone.notify': 'Pranešimai',
   'phone.openNotifications': 'Android pranešimų nustatymai',

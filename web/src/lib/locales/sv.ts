@@ -425,7 +425,7 @@ const sv: Translations = {
   'targets.deleteDriveHint': 'Tar bort den här enheten från listan OCH tar bort identitetsfilen från enheten själv. Ett jobb som pekar på den hittar den inte längre. Filerna på enheten lämnas orörda.',
   'confirm.deleteDrive': 'Ta bort den här enheten?',
   'confirm.deleteDriveStakes': '{name} är inte längre en registrerad enhet. Alla jobb som pekar på den rapporterar den som inte ansluten tills du registrerar den igen. Inget raderas på enheten.',
-  'targets.cloud': 'Molnlagring',
+  'targets.cloud': 'Lagring och moln',
   'targets.connections': 'Servrar och utdelningar',
   'targets.pickMore': '{count} till, med sina rclone-namn',
   'opt.user': 'Användarnamn',
@@ -477,7 +477,8 @@ const sv: Translations = {
   // German and a second table would drift from the first.
   'phone.access': 'Filåtkomst',
   'phone.permissionHint': 'Den här strömbrytaren ägs av Android. En tryckning öppnar sidan där behörigheten ges eller tas bort.',
-  'phone.permissionGranted': 'Beviljad',
+  'phone.permissionGranted': 'Behörighet beviljad',
+  'phone.permissionDenied': 'Behörighet inte beviljad',
   'phone.accessNone': 'Den här Android-versionen känner inte till den behörigheten, så mappar måste lämnas över en i taget.',
   'phone.notify': 'Aviseringar',
   'phone.openNotifications': 'Androids aviseringsinställningar',

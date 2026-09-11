@@ -425,7 +425,7 @@ const bg: Translations = {
   'targets.deleteDriveHint': 'Премахва този диск от списъка И изтрива файла с идентичност от самия диск. Задача, която сочи към него, спира да го намира. Файловете на диска остават непокътнати.',
   'confirm.deleteDrive': 'Да се изтрие ли този диск?',
   'confirm.deleteDriveStakes': '{name} спира да бъде регистриран диск. Всяка задача, която сочи към него, ще го отчита като невключен, докато не го регистрираш отново. На диска не се изтрива нищо.',
-  'targets.cloud': 'Хранилище в облака',
+  'targets.cloud': 'Хранилища и облаци',
   'targets.connections': 'Сървъри и споделяния',
   'targets.pickMore': 'Още {count}, под името им в rclone',
   'opt.user': 'Потребителско име',
@@ -477,7 +477,8 @@ const bg: Translations = {
   // German and a second table would drift from the first.
   'phone.access': 'Достъп до файловете',
   'phone.permissionHint': 'Този превключвател е на Android. Докосването отваря страницата, където разрешението се дава или отнема.',
-  'phone.permissionGranted': 'Дадено',
+  'phone.permissionGranted': 'Разрешението е дадено',
+  'phone.permissionDenied': 'Разрешението не е дадено',
   'phone.accessNone': 'Тази версия на Android не познава такова разрешение, затова папките трябва да се предават една по една.',
   'phone.notify': 'Известия',
   'phone.openNotifications': 'Настройки за известия на Android',

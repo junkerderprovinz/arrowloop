@@ -425,7 +425,7 @@ const pl: Translations = {
   'targets.deleteDriveHint': 'Usuwa ten dysk z listy ORAZ kasuje plik tożsamości z samego dysku. Zadanie wskazujące na niego przestanie go znajdować. Pliki na dysku pozostają nietknięte.',
   'confirm.deleteDrive': 'Usunąć ten dysk?',
   'confirm.deleteDriveStakes': '{name} przestanie być zarejestrowanym dyskiem. Każde zadanie wskazujące na niego zgłosi go jako niepodłączony, dopóki nie zarejestrujesz go ponownie. Na dysku nic nie jest usuwane.',
-  'targets.cloud': 'Magazyn w chmurze',
+  'targets.cloud': 'Magazyny i chmury',
   'targets.connections': 'Serwery i udziały',
   'targets.pickMore': 'Jeszcze {count}, pod nazwą rclone',
   'opt.user': 'Nazwa użytkownika',
@@ -477,7 +477,8 @@ const pl: Translations = {
   // German and a second table would drift from the first.
   'phone.access': 'Dostęp do plików',
   'phone.permissionHint': 'Ten przełącznik należy do Androida. Dotknięcie otwiera stronę, na której nadaje się lub cofa uprawnienie.',
-  'phone.permissionGranted': 'Udzielone',
+  'phone.permissionGranted': 'Uprawnienie udzielone',
+  'phone.permissionDenied': 'Uprawnienie nieudzielone',
   'phone.accessNone': 'Ta wersja Androida nie zna tego uprawnienia, więc foldery trzeba przekazywać pojedynczo.',
   'phone.notify': 'Powiadomienia',
   'phone.openNotifications': 'Ustawienia powiadomień Androida',

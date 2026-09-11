@@ -425,7 +425,7 @@ const gl: Translations = {
   'targets.deleteDriveHint': 'Quita este disco da lista E elimina o ficheiro de identidade do propio disco. Unha tarefa que apunte a el deixará de atopalo. Os ficheiros do disco non se tocan.',
   'confirm.deleteDrive': 'Eliminar este disco?',
   'confirm.deleteDriveStakes': '{name} deixará de ser un disco rexistrado. Calquera tarefa que apunte a el vaino dar por non conectado ata que o rexistres de novo. No disco non se elimina nada.',
-  'targets.cloud': 'Almacenamento na nube',
+  'targets.cloud': 'Almacenamento e nubes',
   'targets.connections': 'Servidores e comparticións',
   'targets.pickMore': '{count} máis, polo seu nome en rclone',
   'opt.user': 'Usuario',
@@ -477,7 +477,8 @@ const gl: Translations = {
   // German and a second table would drift from the first.
   'phone.access': 'Acceso aos ficheiros',
   'phone.permissionHint': 'Este interruptor pertence a Android. Ao tocalo ábrese a páxina onde se concede ou se retira o permiso.',
-  'phone.permissionGranted': 'Concedido',
+  'phone.permissionGranted': 'Permiso concedido',
+  'phone.permissionDenied': 'Permiso non concedido',
   'phone.accessNone': 'Esta versión de Android non coñece ese permiso, así que os cartafoles hai que entregalos un a un.',
   'phone.notify': 'Notificacións',
   'phone.openNotifications': 'Configuración de notificacións de Android',

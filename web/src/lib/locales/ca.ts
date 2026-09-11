@@ -425,7 +425,7 @@ const ca: Translations = {
   'targets.deleteDriveHint': 'Treu aquest disc de la llista I elimina el fitxer d\'identitat del disc mateix. Una tasca que hi apunti deixarà de trobar-lo. Els fitxers del disc no es toquen.',
   'confirm.deleteDrive': 'Voleu suprimir aquest disc?',
   'confirm.deleteDriveStakes': '{name} deixarà de ser un disc registrat. Qualsevol tasca que hi apunti el donarà per no connectat fins que el torneu a registrar. Al disc no s\'esborra res.',
-  'targets.cloud': 'Emmagatzematge al núvol',
+  'targets.cloud': 'Emmagatzematge i núvols',
   'targets.connections': 'Servidors i recursos compartits',
   'targets.pickMore': '{count} més, pel seu nom a rclone',
   'opt.user': 'Nom d\'usuari',
@@ -477,7 +477,8 @@ const ca: Translations = {
   // German and a second table would drift from the first.
   'phone.access': 'Accés als fitxers',
   'phone.permissionHint': 'Aquest interruptor és de l\'Android. En tocar-lo s\'obre la pàgina on es dona o es retira el permís.',
-  'phone.permissionGranted': 'Concedit',
+  'phone.permissionGranted': 'Permís concedit',
+  'phone.permissionDenied': 'Permís no concedit',
   'phone.accessNone': 'Aquesta versió de l\'Android no coneix aquest permís, així que les carpetes s\'han de lliurar una a una.',
   'phone.notify': 'Notificacions',
   'phone.openNotifications': 'Configuració de notificacions d\'Android',

@@ -425,7 +425,7 @@ const id: Translations = {
   'targets.deleteDriveHint': 'Mengeluarkan drive ini dari daftar DAN menghapus berkas identitas dari drive itu sendiri. Tugas yang menunjuk ke sana tidak akan menemukannya lagi. Berkas di drive tidak disentuh.',
   'confirm.deleteDrive': 'Hapus drive ini?',
   'confirm.deleteDriveStakes': '{name} tidak lagi menjadi drive terdaftar. Setiap tugas yang menunjuk ke sana akan melaporkannya sebagai tidak terpasang sampai kamu mendaftarkannya lagi. Tidak ada yang dihapus di drive.',
-  'targets.cloud': 'Penyimpanan awan',
+  'targets.cloud': 'Penyimpanan dan awan',
   'targets.connections': 'Server dan berbagi pakai',
   'targets.pickMore': '{count} lagi, dengan nama rclone-nya',
   'opt.user': 'Nama pengguna',
@@ -477,7 +477,8 @@ const id: Translations = {
   // German and a second table would drift from the first.
   'phone.access': 'Akses berkas',
   'phone.permissionHint': 'Sakelar ini milik Android. Ketukan membuka halaman tempat izin diberikan atau dicabut.',
-  'phone.permissionGranted': 'Diberikan',
+  'phone.permissionGranted': 'Izin diberikan',
+  'phone.permissionDenied': 'Izin belum diberikan',
   'phone.accessNone': 'Versi Android ini tidak mengenal izin tersebut, jadi folder harus diserahkan satu per satu.',
   'phone.notify': 'Notifikasi',
   'phone.openNotifications': 'Pengaturan notifikasi Android',

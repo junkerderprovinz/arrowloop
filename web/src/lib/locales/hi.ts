@@ -425,7 +425,7 @@ const hi: Translations = {
   'targets.deleteDriveHint': 'यह ड्राइव सूची से हटाता है और ड्राइव पर मौजूद पहचान फ़ाइल भी मिटाता है। इस पर इशारा करने वाला काम इसे अब नहीं ढूँढ़ेगा। ड्राइव की फ़ाइलें अछूती रहती हैं।',
   'confirm.deleteDrive': 'यह ड्राइव मिटाएँ?',
   'confirm.deleteDriveStakes': '{name} अब पंजीकृत ड्राइव नहीं रहेगा। इस पर इशारा करने वाला हर काम इसे तब तक अनसंलग्न बताएगा जब तक तुम इसे फिर से पंजीकृत न करो। ड्राइव पर कुछ नहीं मिटता।',
-  'targets.cloud': 'क्लाउड भंडारण',
+  'targets.cloud': 'भंडारण और क्लाउड',
   'targets.connections': 'सर्वर और साझा फ़ोल्डर',
   'targets.pickMore': '{count} और, उनके rclone नाम से',
   'opt.user': 'उपयोक्ता नाम',
@@ -477,7 +477,8 @@ const hi: Translations = {
   // German and a second table would drift from the first.
   'phone.access': 'फ़ाइल पहुँच',
   'phone.permissionHint': 'यह स्विच Android का है। छूने पर वह पन्ना खुलता है जहाँ अनुमति दी या वापस ली जाती है।',
-  'phone.permissionGranted': 'दी गई',
+  'phone.permissionGranted': 'अनुमति दी गई',
+  'phone.permissionDenied': 'अनुमति नहीं दी गई',
   'phone.accessNone': 'Android का यह संस्करण उस अनुमति को नहीं जानता, इसलिए फ़ोल्डर एक-एक करके सौंपने पड़ते हैं।',
   'phone.notify': 'सूचनाएँ',
   'phone.openNotifications': 'Android की सूचना सेटिंग',

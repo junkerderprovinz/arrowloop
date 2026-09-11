@@ -425,7 +425,7 @@ const uk: Translations = {
   'targets.deleteDriveHint': 'Прибирає цей диск зі списку І видаляє файл ідентифікації з самого диска. Завдання, що вказує на нього, перестане його знаходити. Файли на диску залишаються недоторканими.',
   'confirm.deleteDrive': 'Видалити цей диск?',
   'confirm.deleteDriveStakes': '{name} перестане бути зареєстрованим диском. Будь-яке завдання, що вказує на нього, повідомить, що він не під\'єднаний, доки ти не зареєструєш його знову. На диску нічого не видаляється.',
-  'targets.cloud': 'Хмарне сховище',
+  'targets.cloud': 'Сховища та хмари',
   'targets.connections': 'Сервери та спільні теки',
   'targets.pickMore': 'Ще {count}, під назвою в rclone',
   'opt.user': 'Ім\'я користувача',
@@ -477,7 +477,8 @@ const uk: Translations = {
   // German and a second table would drift from the first.
   'phone.access': 'Доступ до файлів',
   'phone.permissionHint': 'Цим перемикачем керує Android. Дотик відкриває сторінку, де дозвіл надають або відкликають.',
-  'phone.permissionGranted': 'Надано',
+  'phone.permissionGranted': 'Дозвіл надано',
+  'phone.permissionDenied': 'Дозвіл не надано',
   'phone.accessNone': 'Ця версія Android такого дозволу не знає, тому теки доводиться передавати по одній.',
   'phone.notify': 'Сповіщення',
   'phone.openNotifications': 'Налаштування сповіщень Android',

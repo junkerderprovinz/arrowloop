@@ -425,7 +425,7 @@ const hu: Translations = {
   'targets.deleteDriveHint': 'Kiveszi ezt a lemezt a listából ÉS eltávolítja az azonosítófájlt magáról a lemezről. A rá mutató feladat többé nem találja meg. A lemezen lévő fájlok érintetlenek maradnak.',
   'confirm.deleteDrive': 'Törlöd ezt a lemezt?',
   'confirm.deleteDriveStakes': '{name} többé nem lesz regisztrált lemez. Minden rá mutató feladat nem csatlakoztatottként jelenti, amíg újra nem regisztrálod. A lemezen semmi sem törlődik.',
-  'targets.cloud': 'Felhőtárhely',
+  'targets.cloud': 'Tárhelyek és felhők',
   'targets.connections': 'Kiszolgálók és megosztások',
   'targets.pickMore': 'Még {count}, az rclone-neve szerint',
   'opt.user': 'Felhasználónév',
@@ -477,7 +477,8 @@ const hu: Translations = {
   // German and a second table would drift from the first.
   'phone.access': 'Fájlhozzáférés',
   'phone.permissionHint': 'Ez a kapcsoló az Androidé. Megérintve megnyílik az oldal, ahol az engedély megadható vagy visszavonható.',
-  'phone.permissionGranted': 'Megadva',
+  'phone.permissionGranted': 'Engedély megadva',
+  'phone.permissionDenied': 'Engedély nincs megadva',
   'phone.accessNone': 'Ez az Android-verzió nem ismeri ezt a jogosultságot, így a mappákat egyesével kell átadni.',
   'phone.notify': 'Értesítések',
   'phone.openNotifications': 'Az Android értesítési beállításai',

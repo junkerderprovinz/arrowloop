@@ -425,7 +425,7 @@ const zh: Translations = {
   'targets.deleteDriveHint': '把这个驱动器从列表中移除，并且删掉驱动器上的标识文件。指向它的作业将不再找得到它。驱动器上的文件不受影响。',
   'confirm.deleteDrive': '删除这个驱动器？',
   'confirm.deleteDriveStakes': '{name} 将不再是已注册的驱动器。指向它的作业会报告未连接，直到你重新注册它。驱动器上不会删除任何内容。',
-  'targets.cloud': '云存储',
+  'targets.cloud': '存储与云',
   'targets.connections': '服务器与共享',
   'targets.pickMore': '还有 {count} 个，按 rclone 名称',
   'opt.user': '用户名',
@@ -477,7 +477,8 @@ const zh: Translations = {
   // German and a second table would drift from the first.
   'phone.access': '文件访问',
   'phone.permissionHint': '这个开关归 Android 管。点一下会打开授予或收回权限的页面。',
-  'phone.permissionGranted': '已授予',
+  'phone.permissionGranted': '已授予权限',
+  'phone.permissionDenied': '未授予权限',
   'phone.accessNone': '这个 Android 版本不认识该权限，因此文件夹只能一个一个地交出来。',
   'phone.notify': '通知',
   'phone.openNotifications': 'Android 的通知设置',

@@ -425,7 +425,7 @@ const et: Translations = {
   'targets.deleteDriveHint': 'Eemaldab selle ketta loendist JA võtab tuvastusfaili kettalt endalt. Sellele osutav töö ei leia seda enam. Ketta failid jäävad puutumata.',
   'confirm.deleteDrive': 'Kas kustutada see ketas?',
   'confirm.deleteDriveStakes': '{name} ei ole enam registreeritud ketas. Iga sellele osutav töö teatab, et see pole ühendatud, kuni registreerid selle uuesti. Kettal ei kustutata midagi.',
-  'targets.cloud': 'Pilvesalvestus',
+  'targets.cloud': 'Salvestus ja pilved',
   'targets.connections': 'Serverid ja jagamised',
   'targets.pickMore': 'Veel {count}, rclone nime järgi',
   'opt.user': 'Kasutajanimi',
@@ -477,7 +477,8 @@ const et: Translations = {
   // German and a second table would drift from the first.
   'phone.access': 'Juurdepääs failidele',
   'phone.permissionHint': 'See lüliti kuulub Androidile. Puudutus avab lehe, kus luba antakse või võetakse ära.',
-  'phone.permissionGranted': 'Antud',
+  'phone.permissionGranted': 'Luba antud',
+  'phone.permissionDenied': 'Luba pole antud',
   'phone.accessNone': 'See Androidi versioon sellist luba ei tunne, seega tuleb kaustad üle anda ükshaaval.',
   'phone.notify': 'Teavitused',
   'phone.openNotifications': 'Androidi teavituste sätted',

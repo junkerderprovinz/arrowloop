@@ -50,10 +50,9 @@ export function Targets() {
         onPress={() => nav.navigate("TargetPick")}
       />
 
-      {remotes.length === 0 ? (
-        <Empty title={t("targets.cloud")} detail={t("targets.storageEmpty")} />
-      ) : null}
-
+      {/* Nothing where there is nothing. The "Add" button is directly above,
+          so an empty page already says what it is and what to do - a sentence
+          underneath making the same offer is the offer twice. */}
       {remotes.map((remote, index) => (
         <TargetCard
           key={remote.name}

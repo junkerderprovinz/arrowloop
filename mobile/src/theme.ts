@@ -20,7 +20,7 @@
  * #f4f4f4, which left a white card invisible on a white page.
  */
 
-export { ACCENTS, RAINBOW, contrastOn, rainbowAt } from "../../web/src/lib/appearance";
+export { ACCENTS, DEFAULT_ACCENT, RAINBOW, contrastOn, rainbowAt } from "../../web/src/lib/appearance";
 
 export type Scheme = "dark" | "light";
 

@@ -425,7 +425,7 @@ const el: Translations = {
   'targets.deleteDriveHint': 'Αφαιρεί αυτόν τον δίσκο από τη λίστα ΚΑΙ διαγράφει το αρχείο ταυτότητας από τον ίδιο τον δίσκο. Μια εργασία που τον χρησιμοποιεί δεν θα τον βρίσκει πια. Τα αρχεία στον δίσκο μένουν άθικτα.',
   'confirm.deleteDrive': 'Διαγραφή αυτού του δίσκου;',
   'confirm.deleteDriveStakes': 'Το {name} παύει να είναι καταχωρημένος δίσκος. Κάθε εργασία που τον χρησιμοποιεί θα τον αναφέρει ως μη συνδεδεμένο μέχρι να τον καταχωρήσεις ξανά. Στον δίσκο δεν διαγράφεται τίποτα.',
-  'targets.cloud': 'Αποθήκευση στο cloud',
+  'targets.cloud': 'Αποθήκευση και cloud',
   'targets.connections': 'Διακομιστές και κοινόχρηστα',
   'targets.pickMore': 'Άλλα {count}, με το όνομά τους στο rclone',
   'opt.user': 'Όνομα χρήστη',
@@ -477,7 +477,8 @@ const el: Translations = {
   // German and a second table would drift from the first.
   'phone.access': 'Πρόσβαση στα αρχεία',
   'phone.permissionHint': 'Αυτόν τον διακόπτη τον ελέγχει το Android. Το πάτημα ανοίγει τη σελίδα όπου δίνεται ή αφαιρείται η άδεια.',
-  'phone.permissionGranted': 'Δόθηκε',
+  'phone.permissionGranted': 'Η άδεια δόθηκε',
+  'phone.permissionDenied': 'Η άδεια δεν δόθηκε',
   'phone.accessNone': 'Αυτή η έκδοση του Android δεν γνωρίζει αυτή την άδεια, οπότε οι φάκελοι πρέπει να παραδίδονται ένας ένας.',
   'phone.notify': 'Ειδοποιήσεις',
   'phone.openNotifications': 'Ρυθμίσεις ειδοποιήσεων του Android',

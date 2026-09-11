@@ -425,7 +425,7 @@ const ko: Translations = {
   'targets.deleteDriveHint': '이 드라이브를 목록에서 빼고, 드라이브에 있는 식별 파일도 제거합니다. 이를 가리키는 작업은 더 이상 찾지 못합니다. 드라이브의 파일은 그대로입니다.',
   'confirm.deleteDrive': '이 드라이브를 삭제할까요?',
   'confirm.deleteDriveStakes': '{name}은(는) 더 이상 등록된 드라이브가 아닙니다. 이를 가리키는 모든 작업은 다시 등록할 때까지 연결되지 않음으로 보고합니다. 드라이브에서는 아무것도 삭제되지 않습니다.',
-  'targets.cloud': '클라우드 저장소',
+  'targets.cloud': '저장소와 클라우드',
   'targets.connections': '서버 및 공유',
   'targets.pickMore': '{count}개 더, rclone 이름으로',
   'opt.user': '사용자 이름',
@@ -477,7 +477,8 @@ const ko: Translations = {
   // German and a second table would drift from the first.
   'phone.access': '파일 접근',
   'phone.permissionHint': '이 스위치는 Android의 것입니다. 누르면 권한을 주거나 거두는 화면이 열립니다.',
-  'phone.permissionGranted': '허용됨',
+  'phone.permissionGranted': '권한 허용됨',
+  'phone.permissionDenied': '권한 허용되지 않음',
   'phone.accessNone': '이 Android 버전은 그 권한을 모르므로 폴더를 하나씩 넘겨야 합니다.',
   'phone.notify': '알림',
   'phone.openNotifications': 'Android 알림 설정',

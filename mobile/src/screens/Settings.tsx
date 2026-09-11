@@ -1,12 +1,12 @@
 import { useNavigation } from "@react-navigation/native";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { AppState, Linking, PermissionsAndroid, Platform, StyleSheet, Text, View } from "react-native";
 import Constants from "expo-constants";
 import { api } from "../api";
 import { engine, type DevicePolicy } from "../engine";
 import { useT } from "../i18n";
 import type { Nav, SettingsStack } from "../nav";
-import { ACCENTS, RAINBOW, space } from "../theme";
+import { ACCENTS, DEFAULT_ACCENT, RAINBOW, space } from "../theme";
 import {
   setAppearance,
   settings as settingsApi,
@@ -19,6 +19,8 @@ import {
 } from "../settings";
 import { GLIMSTONE_VERSION } from "../../../web/src/lib/glimstone/version";
 import { COFFEE, PAYPAL } from "../../../web/src/lib/donate";
+import { nearestPreset } from "../../../web/src/lib/colorMath";
+import { ColorPicker, EditableSwatch, ResetMark } from "../ColorPicker";
 import { CryptoDonate } from "../donate";
 import { Field } from "../fields";
 import { Schedule } from "./JobEdit";
@@ -30,8 +32,8 @@ import {
   Caption,
   Choice,
   Page,
+  InfoBubble,
   Section,
-  Swatch,
   Title,
   Toggle,
   useTheme,
@@ -75,6 +77,38 @@ export function Settings() {
   const [backupBusy, setBackupBusy] = useState(false);
   const [backupSaid, setBackupSaid] = useState("");
   const [crypto, setCrypto] = useState(false);
+
+  /**
+   * Which circle the picker is open on, or nothing.
+   *
+   * One piece of state for both rows, because only one picker can be open: the
+   * `kind` says which row to write back to, and the index says which slot.
+   */
+  const [editing, setEditing] = useState<{ kind: "accent" | "palette"; index: number; hex: string } | null>(
+    null,
+  );
+
+  /**
+   * Which preset slot owns the live accent, REMEMBERED rather than recomputed.
+   *
+   * Working it out from the colour itself on every render is fine until the
+   * picker nudges a colour far enough to be nearer a DIFFERENT preset - and
+   * then the live value silently moves to another circle while somebody is
+   * still dragging in the picker that opened on the first one. Nearest is still
+   * how an unknown colour finds its home, but only when the value arrives from
+   * OUTSIDE: a reset, a reload, a restored backup.
+   */
+  const [accentSlot, setAccentSlot] = useState(() => nearestPreset(ACCENTS.map((a) => a.hex), look.accent));
+  const seenAccent = useRef(look.accent);
+  useEffect(() => {
+    if (seenAccent.current !== look.accent) {
+      seenAccent.current = look.accent;
+      setAccentSlot(nearestPreset(ACCENTS.map((a) => a.hex), look.accent));
+    }
+  }, [look.accent]);
+
+  /** The palette in force: what was edited, or what the app ships with. */
+  const palette = look.palette.length ? look.palette : RAINBOW;
 
   // The engine's own defaults, read and written through its settings.
   const { settings, update } = useEngineSettings(true);
@@ -224,35 +258,74 @@ export function Settings() {
         />
       </Section>
 
+      {/* The colours, built the way the container builds them: every circle is
+          a control that both CHOOSES and EDITS.
+
+          It used to be eight presets and nothing else, with the rainbow palette
+          drawn `pointerEvents="none"` - eight circles that looked like controls
+          and answered nothing at all. jdp: "die farbfelder sollen bearbeitbar
+          sein." A row of colours nobody can change is a row of colours somebody
+          will press anyway.
+
+          ONE PRESS does both, which is deliberate rather than clever. Reserving
+          the picker for a SECOND press on the already-chosen circle is
+          defensible in isolation and was reported on the container as "kein
+          Farbpicker": a control nobody can find is a control that is not there.
+
+          The reactive switch is gone entirely. It meant "colour where the eye
+          is", which on a screen with no pointer is nowhere. jdp: "den reaktiv
+          toggle können wir in der app weglassen. man hoovert ja nicht mit der
+          maus." */}
       <Section title={t("look.colors")} hue={2}>
-        {/* Label left, swatches right, ONE row. The colours used to be a
-            wrapping strip of named pills, which is a list of words about
-            colours rather than the colours themselves - and it took four lines
-            to say what nine circles say at a glance. The row divides whatever
-            width it has between nine equal things, so it fits on a narrow
-            handset without a smaller fixed size that would only move the wrap
-            to a narrower one. */}
         {/* Gone while the rainbow is on, not dimmed. The mode replaces the
             accent for everything that is one member of a set, so an accent
-            chosen under it is a colour most of the screen has stopped using -
-            and the same rule applies as to the switch below: a row of nine
-            circles nobody can press is a question with no answer. */}
+            chosen under it is a colour most of the screen has stopped using. */}
         {!look.rainbow ? (
           <View style={styles.axisRow}>
-            <Body>{t("look.accent")}</Body>
+            <View style={styles.axisName}>
+              <Body>{t("look.accent")}</Body>
+              {/* A reset BESIDE the row it resets, not in the card's corner: it
+                  undoes this row, not the card. Dimmed when there is nothing to
+                  undo, which is the one greyed control this language allows -
+                  it is REPORTING (the accent is already the default) rather
+                  than refusing because of a decision made elsewhere. */}
+              <ResetMark
+                label={t("look.accentReset")}
+                disabled={look.accent.toLowerCase() === DEFAULT_ACCENT.toLowerCase()}
+                onPress={() => setAppearance({ accent: DEFAULT_ACCENT })}
+              />
+            </View>
             <View style={styles.swatches}>
-              {ACCENTS.map((a) => (
-                <Swatch
-                  key={a.hex}
-                  hex={a.hex}
-                  label={a.name}
-                  selected={a.hex.toLowerCase() === look.accent.toLowerCase()}
-                  onPress={() => setAppearance({ accent: a.hex })}
-                />
-              ))}
+              {ACCENTS.map((a, i) => {
+                // The slot holding the LIVE colour shows it rather than its own
+                // preset. Once the picker can nudge a preset into something
+                // that is no longer a preset, showing the preset would leave
+                // the colour applied everywhere and drawn nowhere: no circle
+                // would match it, none would be marked, and there would be no
+                // way back into the picker that made it.
+                const mine = i === accentSlot;
+                const hex = mine ? look.accent : a.hex;
+                return (
+                  <EditableSwatch
+                    key={a.hex}
+                    hex={hex}
+                    // A preset's NAME on a circle that is no longer that preset
+                    // is the one label worse than none, so an edited slot names
+                    // its own hex instead.
+                    label={mine && hex.toLowerCase() !== a.hex.toLowerCase() ? hex.toUpperCase() : a.name}
+                    selected={mine}
+                    onPress={() => {
+                      setAccentSlot(i);
+                      setAppearance({ accent: hex });
+                      setEditing({ kind: "accent", index: i, hex });
+                    }}
+                  />
+                );
+              })}
             </View>
           </View>
         ) : null}
+
         <Toggle
           label={t("look.rainbowOn")}
           hint={t("look.rainbowHint")}
@@ -260,46 +333,77 @@ export function Settings() {
           hue={0}
           onChange={(rainbow) => setAppearance({ rainbow })}
         />
-        {/* Only while the rainbow is running. jdp: "dieser abgeschaltet toggle
-            soll weg, das hab ich schon oft angesprochen." It was dimmed rather
-            than absent, which is a switch somebody can see, read and reach for
-            and that answers nothing - and the reason it is dead lives one row
-            up, where nobody looks after deciding this row is the interesting
-            one. A control that cannot be used is not information, it is a
-            question with no answer. */}
+
+        {/* Both of these hang off the mode itself, so they are ABSENT while it
+            is off rather than dimmed: an instruction to a rainbow that is not
+            running is a control somebody can see, read and reach for that
+            answers nothing, and the reason it is dead sits one row up where
+            nobody looks after deciding this row is the interesting one. */}
         {look.rainbow ? (
-          <Toggle
-            label={t("look.rainbowReactive")}
-            hint={t("look.reactiveHint")}
-            value={look.rainbowReactive}
-            hue={1}
-            onChange={(rainbowReactive) => setAppearance({ rainbowReactive })}
-          />
-        ) : null}
-        {/* The palette in force, shown rather than described: eight colours say
-            what "rainbow" means faster than any sentence about it. It used to
-            be drawn dimmed while the mode was off, which put two greyed rows of
-            circles in one card. Now the card carries exactly ONE row of colours
-            at a time - the accent while the rainbow is off, the palette while
-            it is on - and neither of them is ever grey. */}
-        {look.rainbow ? (
-          <View style={styles.swatches} pointerEvents="none">
-            {RAINBOW.map((hex, i) => (
-              <Swatch key={`${hex}-${i}`} hex={hex} label={hex} selected={false} onPress={() => {}} />
-            ))}
-          </View>
+          <>
+            <Toggle
+              label={t("look.rainbowRotate")}
+              hint={t("look.rotateHint")}
+              value={look.rainbowRotate}
+              hue={1}
+              onChange={(rainbowRotate) =>
+                setAppearance({
+                  rainbowRotate,
+                  // A new offset on every switch-on, so turning it on twice is
+                  // two different pages rather than the same one.
+                  rainbowSeed: rainbowRotate ? (look.rainbowSeed + 1) % 8 : 0,
+                })
+              }
+            />
+
+            {/* The palette in force, shown rather than described: eight colours
+                say what "rainbow" means faster than any sentence about it, and
+                each of them opens on a press. There is no "the selected one"
+                here - every colour is in force at once - so a press can only
+                mean edit, which is the one way this row differs from the accent
+                row above it. */}
+            <View style={styles.axisRow}>
+              <View style={styles.axisName}>
+                <Body>{t("look.palette")}</Body>
+                <InfoBubble tip={t("look.paletteHint")} />
+                <ResetMark
+                  label={t("look.paletteReset")}
+                  disabled={palette.join() === RAINBOW.join()}
+                  onPress={() => setAppearance({ palette: [] })}
+                />
+              </View>
+              <View style={styles.swatches}>
+                {palette.map((hex, i) => (
+                  <EditableSwatch
+                    key={`${i}-${hex}`}
+                    hex={hex}
+                    label={hex.toUpperCase()}
+                    selected={false}
+                    onPress={() => setEditing({ kind: "palette", index: i, hex })}
+                  />
+                ))}
+              </View>
+            </View>
+          </>
         ) : null}
       </Section>
 
+      {/* Three modes, not the web's four. `reactive` means "the words appear
+          under the pointer", and a phone has no pointer - offered here it is a
+          setting that takes every label away and gives nothing back, because
+          the gesture that brings them back does not exist. jdp: "auch hier gibt
+          es keinen reaktiven modus in der app, das macht kein sinn." */}
       <Section title={t("look.labels")} hint={t("look.labelsHint")} hue={3}>
         <Choice<LabelMode>
-          value={look.labels}
+          // A build that stored `reactive` before this change would otherwise
+          // land on a well with nothing lit, which reads as broken rather than
+          // as migrated. Symbols is what reactive already looked like here.
+          value={look.labels === "reactive" ? "glyph" : look.labels}
           onChange={(labels) => setAppearance({ labels })}
           options={[
             { value: "text", label: t("look.labelText") },
             { value: "textGlyph", label: t("look.labelTextGlyph") },
             { value: "glyph", label: t("look.labelGlyph") },
-            { value: "reactive", label: t("look.labelReactive") },
           ]}
         />
       </Section>
@@ -467,6 +571,7 @@ export function Settings() {
           // The card's notch already carries the permission's NAME, so the row
           // says what the switch answers instead of saying the name twice.
           label={t("phone.permissionGranted")}
+          off={t("phone.permissionDenied")}
           // `null` while the answer is still being fetched, which is a moment
           // long enough to see. Off is the right guess for an unknown
           // permission: it is what Android says until somebody says otherwise.
@@ -479,6 +584,7 @@ export function Settings() {
       <Section title={t("phone.notify")} hint={t("phone.permissionHint")} hue={7}>
         <Toggle
           label={t("phone.permissionGranted")}
+          off={t("phone.permissionDenied")}
           value={notify === true}
           onChange={() => {
             // Asking works once: after a refusal Android answers immediately
@@ -508,6 +614,7 @@ export function Settings() {
       <Section title={t("phone.doze")} hint={t("phone.dozeOff")} hue={0}>
         <Toggle
           label={t("phone.permissionGranted")}
+          off={t("phone.permissionDenied")}
           value={doze === true}
           onChange={() => {
             // Android shows this one as a real dialog, once. Afterwards, and to
@@ -730,6 +837,28 @@ export function Settings() {
       </Section>
 
       {crypto ? <CryptoDonate onClose={() => setCrypto(false)} /> : null}
+
+      {/* One picker for both rows. It writes on every frame of the drag, so the
+          page behind it changes while the finger is still down - which is the
+          whole point of picking a colour for an interface rather than for a
+          swatch book. */}
+      {editing ? (
+        <ColorPicker
+          visible
+          initial={editing.hex}
+          onPick={(hex) => {
+            if (editing.kind === "accent") {
+              seenAccent.current = hex;
+              setAppearance({ accent: hex });
+            } else {
+              const next = [...palette];
+              next[editing.index] = hex;
+              setAppearance({ palette: next });
+            }
+          }}
+          onClose={() => setEditing(null)}
+        />
+      ) : null}
     </Page>
   );
 }
@@ -818,6 +947,11 @@ const styles = StyleSheet.create({
   // yet. Every button already grows, so a wrapped line fills itself.
   actions: { flexDirection: "row", flexWrap: "wrap", gap: space.sm },
   axisRow: { flexDirection: "row", alignItems: "center", gap: space.md, paddingVertical: space.sm },
+  // The row's NAME and the controls that belong to it: the label, its (i) where
+  // it has one, and the reset that undoes this row rather than the card. They
+  // travel together so the reset cannot drift to the card's corner, where it
+  // would read as undoing everything.
+  axisName: { flexDirection: "row", alignItems: "center", gap: space.sm },
   // Tabular figures, so two version numbers under each other do not shift, and
   // the accent ink so a number reads as the destination it is.
   versionLink: { fontVariant: ["tabular-nums"] },

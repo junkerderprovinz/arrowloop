@@ -425,7 +425,7 @@ const sl: Translations = {
   'targets.deleteDriveHint': 'Odstrani ta disk s seznama IN odstrani datoteko z identiteto z diska samega. Opravilo, ki kaže nanj, ga ne bo več našlo. Datoteke na disku ostanejo nedotaknjene.',
   'confirm.deleteDrive': 'Izbrišem ta disk?',
   'confirm.deleteDriveStakes': '{name} ne bo več prijavljen disk. Vsako opravilo, ki kaže nanj, ga bo javilo kot nepriključenega, dokler ga znova ne prijaviš. Na disku se nič ne izbriše.',
-  'targets.cloud': 'Shramba v oblaku',
+  'targets.cloud': 'Shrambe in oblaki',
   'targets.connections': 'Strežniki in mape v skupni rabi',
   'targets.pickMore': 'Še {count}, pod imenom v rclone',
   'opt.user': 'Uporabniško ime',
@@ -477,7 +477,8 @@ const sl: Translations = {
   // German and a second table would drift from the first.
   'phone.access': 'Dostop do datotek',
   'phone.permissionHint': 'To stikalo pripada Androidu. Dotik odpre stran, kjer se dovoljenje podeli ali odvzame.',
-  'phone.permissionGranted': 'Dodeljeno',
+  'phone.permissionGranted': 'Dovoljenje dodeljeno',
+  'phone.permissionDenied': 'Dovoljenje ni dodeljeno',
   'phone.accessNone': 'Ta različica Androida tega dovoljenja ne pozna, zato je treba mape predajati eno po eno.',
   'phone.notify': 'Obvestila',
   'phone.openNotifications': 'Androidove nastavitve obvestil',

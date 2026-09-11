@@ -425,7 +425,7 @@ const ms: Translations = {
   'targets.deleteDriveHint': 'Mengeluarkan pemacu ini daripada senarai DAN membuang fail identiti daripada pemacu itu sendiri. Tugas yang menunjuk kepadanya tidak akan menemuinya lagi. Fail pada pemacu tidak disentuh.',
   'confirm.deleteDrive': 'Padam pemacu ini?',
   'confirm.deleteDriveStakes': '{name} tidak lagi menjadi pemacu berdaftar. Setiap tugas yang menunjuk kepadanya akan melaporkannya sebagai tidak dipasang sehingga anda mendaftarkannya semula. Tiada apa-apa dipadam pada pemacu.',
-  'targets.cloud': 'Storan awan',
+  'targets.cloud': 'Storan dan awan',
   'targets.connections': 'Pelayan dan perkongsian',
   'targets.pickMore': '{count} lagi, dengan nama rclone mereka',
   'opt.user': 'Nama pengguna',
@@ -477,7 +477,8 @@ const ms: Translations = {
   // German and a second table would drift from the first.
   'phone.access': 'Akses fail',
   'phone.permissionHint': 'Suis ini milik Android. Sentuhan membuka halaman tempat kebenaran diberi atau ditarik balik.',
-  'phone.permissionGranted': 'Diberikan',
+  'phone.permissionGranted': 'Kebenaran diberikan',
+  'phone.permissionDenied': 'Kebenaran tidak diberikan',
   'phone.accessNone': 'Versi Android ini tidak mengenali kebenaran itu, jadi folder perlu diserahkan satu demi satu.',
   'phone.notify': 'Pemberitahuan',
   'phone.openNotifications': 'Tetapan pemberitahuan Android',

@@ -27,6 +27,11 @@
 // Framework-free, like appearance.ts/selectScroll.ts/tooltip.ts: talks
 // only to the elements it's given and returns plain DOM nodes.
 
+// The arithmetic lives in colorMath.ts, because the phone mixes the same
+// colours and cannot load a file that builds DOM elements. A colour mixed
+// there and the same colour mixed here have to be the same six digits.
+import { hexToHsv, hsvToHex, normalizeHex, type Hsv } from './colorMath';
+
 export interface ColorPicker {
   /** The root element - append this wherever the picker should render. */
   el: HTMLDivElement;
@@ -34,69 +39,6 @@ export interface ColorPicker {
   setValue: (hex: string) => void;
   /** The picker's current value as a 6-digit lowercase hex string. */
   getValue: () => string;
-}
-
-interface Hsv {
-  h: number;
-  s: number;
-  v: number;
-}
-
-function hexToHsv(hex: string): Hsv | null {
-  const m = /^#?([0-9a-f]{6})$/i.exec(hex || '');
-  const group = m?.[1];
-  if (!group) return null;
-  const n = parseInt(group, 16);
-  const r = ((n >> 16) & 255) / 255;
-  const g = ((n >> 8) & 255) / 255;
-  const b = (n & 255) / 255;
-  const mx = Math.max(r, g, b);
-  const mn = Math.min(r, g, b);
-  const d = mx - mn;
-  let h = 0;
-  if (d) {
-    if (mx === r) h = 60 * (((g - b) / d) % 6);
-    else if (mx === g) h = 60 * ((b - r) / d + 2);
-    else h = 60 * ((r - g) / d + 4);
-  }
-  if (h < 0) h += 360;
-  return { h, s: mx ? d / mx : 0, v: mx };
-}
-
-function hsvToHex(h: number, s: number, v: number): string {
-  const c = v * s;
-  const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
-  const m = v - c;
-  let r = 0;
-  let g = 0;
-  let b = 0;
-  if (h < 60) {
-    r = c;
-    g = x;
-  } else if (h < 120) {
-    r = x;
-    g = c;
-  } else if (h < 180) {
-    g = c;
-    b = x;
-  } else if (h < 240) {
-    g = x;
-    b = c;
-  } else if (h < 300) {
-    r = x;
-    b = c;
-  } else {
-    r = c;
-    b = x;
-  }
-  const f = (u: number) => Math.round((u + m) * 255).toString(16).padStart(2, '0');
-  return `#${f(r)}${f(g)}${f(b)}`;
-}
-
-/** normalizeHex accepts "2f6feb" or "#2F6FEB", returns "#rrggbb" lowercase, or null if invalid. */
-function normalizeHex(value: string): string | null {
-  const trimmed = value.trim().replace(/^#/, '');
-  return /^[0-9a-f]{6}$/i.test(trimmed) ? `#${trimmed.toLowerCase()}` : null;
 }
 
 /**

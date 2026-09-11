@@ -94,9 +94,18 @@ export function Jobs() {
       keyExtractor={(j) => j.name}
       contentContainerStyle={styles.list}
       refreshControl={<RefreshControl refreshing={false} onRefresh={load} tintColor={accent} />}
-      ListEmptyComponent={
-        <Empty title={t("jobs.title")} detail={t("jobs.empty")} />
-      }
+      // NOTHING where there is nothing, and that is not a bare blank: the
+      // "Add job" button sits directly above this, so the empty list already
+      // says what it is and what to do about it. A sentence under a button that
+      // makes the same offer is the offer twice, and on a phone it costs the
+      // first screenful. jdp: "in der Aufträge und ziele seite soll der hinweis
+      // text weg wenn noch kein auftrag oder ziel vorhanden ist."
+      //
+      // The LOADING and FAILED states above keep their own words, and that is
+      // the distinction worth holding: an empty list with a button is a state
+      // somebody can act on, while a list that is still arriving or could not
+      // be fetched is not - and those two really are indistinguishable from a
+      // blank screen.
       ListHeaderComponent={
         <Button
           label={t("edit.add")}

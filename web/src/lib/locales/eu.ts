@@ -425,7 +425,7 @@ const eu: Translations = {
   'targets.deleteDriveHint': 'Disko hau zerrendatik kentzen du ETA identitate-fitxategia diskotik bertatik ere kentzen du. Harengana seinalatzen duen lanak ez du gehiago aurkituko. Diskoko fitxategiak ukitu gabe geratzen dira.',
   'confirm.deleteDrive': 'Disko hau ezabatu?',
   'confirm.deleteDriveStakes': '{name} ez da gehiago erregistratutako diskoa izango. Harengana seinalatzen duen lan orok konektatu gabe dagoela jakinaraziko du, berriro erregistratu arte. Diskoan ez da ezer ezabatzen.',
-  'targets.cloud': 'Hodeiko biltegia',
+  'targets.cloud': 'Biltegia eta hodeiak',
   'targets.connections': 'Zerbitzariak eta partekatzeak',
   'targets.pickMore': 'Beste {count}, beren rclone izenaz',
   'opt.user': 'Erabiltzaile-izena',
@@ -477,7 +477,8 @@ const eu: Translations = {
   // German and a second table would drift from the first.
   'phone.access': 'Fitxategietarako sarbidea',
   'phone.permissionHint': 'Etengailu hau Androidena da. Ukituz gero, baimena eman edo kentzen den orria irekitzen da.',
-  'phone.permissionGranted': 'Emanda',
+  'phone.permissionGranted': 'Baimena emanda',
+  'phone.permissionDenied': 'Baimena eman gabe',
   'phone.accessNone': 'Android bertsio honek ez du baimen hori ezagutzen, beraz karpetak banaka eman behar dira.',
   'phone.notify': 'Jakinarazpenak',
   'phone.openNotifications': 'Androiden jakinarazpen ezarpenak',

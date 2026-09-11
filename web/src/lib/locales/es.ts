@@ -425,7 +425,7 @@ const es: Translations = {
   'targets.deleteDriveHint': 'Quita este disco de la lista Y borra el archivo de identidad del propio disco. Una tarea que lo use dejará de encontrarlo. Los archivos del disco no se tocan.',
   'confirm.deleteDrive': '¿Eliminar este disco?',
   'confirm.deleteDriveStakes': '{name} dejará de ser un disco registrado. Cualquier tarea que lo use lo dará por no conectado hasta que lo registres otra vez. En el disco no se borra nada.',
-  'targets.cloud': 'Almacenamiento en la nube',
+  'targets.cloud': 'Almacenamiento y nubes',
   'targets.connections': 'Servidores y recursos',
   'targets.pickMore': '{count} más, por su nombre en rclone',
   'opt.user': 'Usuario',
@@ -477,7 +477,8 @@ const es: Translations = {
   // German and a second table would drift from the first.
   'phone.access': 'Acceso a los archivos',
   'phone.permissionHint': 'Este interruptor lo controla Android. Al tocarlo se abre la página donde se concede o se retira el permiso.',
-  'phone.permissionGranted': 'Concedido',
+  'phone.permissionGranted': 'Permiso concedido',
+  'phone.permissionDenied': 'Permiso no concedido',
   'phone.accessNone': 'Esta versión de Android no conoce ese permiso, así que las carpetas hay que entregarlas de una en una.',
   'phone.notify': 'Notificaciones',
   'phone.openNotifications': 'Ajustes de notificación de Android',

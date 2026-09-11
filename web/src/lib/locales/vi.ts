@@ -425,7 +425,7 @@ const vi: Translations = {
   'targets.deleteDriveHint': 'Gỡ ổ đĩa này khỏi danh sách VÀ xoá tệp định danh khỏi chính ổ đĩa. Công việc trỏ tới nó sẽ không còn tìm thấy. Các tệp trên ổ đĩa vẫn nguyên vẹn.',
   'confirm.deleteDrive': 'Xoá ổ đĩa này?',
   'confirm.deleteDriveStakes': '{name} sẽ không còn là ổ đĩa đã đăng ký. Mọi công việc trỏ tới nó sẽ báo là chưa gắn cho tới khi bạn đăng ký lại. Không có gì trên ổ đĩa bị xoá.',
-  'targets.cloud': 'Lưu trữ đám mây',
+  'targets.cloud': 'Lưu trữ và đám mây',
   'targets.connections': 'Máy chủ và chia sẻ',
   'targets.pickMore': '{count} mục nữa, theo tên rclone',
   'opt.user': 'Tên người dùng',
@@ -477,7 +477,8 @@ const vi: Translations = {
   // German and a second table would drift from the first.
   'phone.access': 'Quyền truy cập tệp',
   'phone.permissionHint': 'Công tắc này thuộc về Android. Chạm vào sẽ mở trang cấp hoặc thu hồi quyền.',
-  'phone.permissionGranted': 'Đã cấp',
+  'phone.permissionGranted': 'Đã cấp quyền',
+  'phone.permissionDenied': 'Chưa cấp quyền',
   'phone.accessNone': 'Phiên bản Android này không biết quyền đó, nên các thư mục phải được giao từng cái một.',
   'phone.notify': 'Thông báo',
   'phone.openNotifications': 'Cài đặt thông báo của Android',

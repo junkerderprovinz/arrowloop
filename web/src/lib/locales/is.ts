@@ -425,7 +425,7 @@ const is: Translations = {
   'targets.deleteDriveHint': 'Fjarlægir þennan disk af listanum OG tekur auðkennisskrána af disknum sjálfum. Verk sem bendir á hann finnur hann ekki lengur. Skrárnar á disknum eru ósnertar.',
   'confirm.deleteDrive': 'Eyða þessum disk?',
   'confirm.deleteDriveStakes': '{name} verður ekki lengur skráður diskur. Hvert verk sem bendir á hann tilkynnir hann ótengdan þar til þú skráir hann aftur. Engu er eytt á disknum.',
-  'targets.cloud': 'Skýjageymsla',
+  'targets.cloud': 'Geymslur og ský',
   'targets.connections': 'Netþjónar og sameignir',
   'targets.pickMore': '{count} til viðbótar, undir rclone-heiti',
   'opt.user': 'Notandanafn',
@@ -477,7 +477,8 @@ const is: Translations = {
   // German and a second table would drift from the first.
   'phone.access': 'Aðgangur að skrám',
   'phone.permissionHint': 'Þessi rofi tilheyrir Android. Bank opnar síðuna þar sem heimildin er veitt eða tekin af.',
-  'phone.permissionGranted': 'Veitt',
+  'phone.permissionGranted': 'Heimild veitt',
+  'phone.permissionDenied': 'Heimild ekki veitt',
   'phone.accessNone': 'Þessi Android-útgáfa þekkir ekki þá heimild, svo möppur þarf að afhenda eina í einu.',
   'phone.notify': 'Tilkynningar',
   'phone.openNotifications': 'Tilkynningastillingar Android',

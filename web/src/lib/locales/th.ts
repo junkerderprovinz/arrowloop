@@ -425,7 +425,7 @@ const th: Translations = {
   'targets.deleteDriveHint': 'นำไดรฟ์นี้ออกจากรายการ และลบไฟล์ระบุตัวตนออกจากตัวไดรฟ์ด้วย งานที่ชี้ไปที่ไดรฟ์นี้จะหาไม่พบอีก ไฟล์บนไดรฟ์ไม่ถูกแตะต้อง',
   'confirm.deleteDrive': 'ลบไดรฟ์นี้หรือไม่',
   'confirm.deleteDriveStakes': '{name} จะไม่เป็นไดรฟ์ที่ลงทะเบียนอีกต่อไป งานใดที่ชี้ไปที่ไดรฟ์นี้จะรายงานว่าไม่ได้เชื่อมต่อ จนกว่าคุณจะลงทะเบียนใหม่ ไม่มีอะไรบนไดรฟ์ถูกลบ',
-  'targets.cloud': 'ที่เก็บบนคลาวด์',
+  'targets.cloud': 'ที่เก็บและคลาวด์',
   'targets.connections': 'เซิร์ฟเวอร์และการแชร์',
   'targets.pickMore': 'อีก {count} รายการ ตามชื่อใน rclone',
   'opt.user': 'ชื่อผู้ใช้',
@@ -477,7 +477,8 @@ const th: Translations = {
   // German and a second table would drift from the first.
   'phone.access': 'การเข้าถึงไฟล์',
   'phone.permissionHint': 'สวิตช์นี้เป็นของ Android การแตะจะเปิดหน้าที่ให้หรือเพิกถอนสิทธิ์',
-  'phone.permissionGranted': 'ให้แล้ว',
+  'phone.permissionGranted': 'ให้สิทธิ์แล้ว',
+  'phone.permissionDenied': 'ยังไม่ได้ให้สิทธิ์',
   'phone.accessNone': 'Android รุ่นนี้ไม่รู้จักสิทธิ์ดังกล่าว จึงต้องส่งมอบโฟลเดอร์ทีละโฟลเดอร์',
   'phone.notify': 'การแจ้งเตือน',
   'phone.openNotifications': 'การตั้งค่าการแจ้งเตือนของ Android',

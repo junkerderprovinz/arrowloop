@@ -425,7 +425,7 @@ const fi: Translations = {
   'targets.deleteDriveHint': 'Poistaa tämän aseman luettelosta JA ottaa tunnistetiedoston pois itse asemalta. Siihen osoittava työ ei löydä sitä enää. Aseman tiedostoihin ei kosketa.',
   'confirm.deleteDrive': 'Poistetaanko tämä asema?',
   'confirm.deleteDriveStakes': '{name} ei ole enää rekisteröity asema. Jokainen siihen osoittava työ ilmoittaa sen liittämättömäksi, kunnes rekisteröit sen uudelleen. Asemalta ei poisteta mitään.',
-  'targets.cloud': 'Pilvitallennus',
+  'targets.cloud': 'Tallennus ja pilvet',
   'targets.connections': 'Palvelimet ja jaot',
   'targets.pickMore': '{count} lisää, rclone-nimellään',
   'opt.user': 'Käyttäjätunnus',
@@ -477,7 +477,8 @@ const fi: Translations = {
   // German and a second table would drift from the first.
   'phone.access': 'Tiedostojen käyttöoikeus',
   'phone.permissionHint': 'Tämä kytkin kuuluu Androidille. Napautus avaa sivun, jolla lupa annetaan tai perutaan.',
-  'phone.permissionGranted': 'Myönnetty',
+  'phone.permissionGranted': 'Käyttöoikeus myönnetty',
+  'phone.permissionDenied': 'Käyttöoikeutta ei myönnetty',
   'phone.accessNone': 'Tämä Android-versio ei tunne kyseistä lupaa, joten kansiot on luovutettava yksi kerrallaan.',
   'phone.notify': 'Ilmoitukset',
   'phone.openNotifications': 'Androidin ilmoitusasetukset',

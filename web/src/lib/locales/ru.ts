@@ -425,7 +425,7 @@ const ru: Translations = {
   'targets.deleteDriveHint': 'Убирает этот диск из списка И удаляет файл идентификации с самого диска. Задание, указывающее на него, перестанет его находить. Файлы на диске остаются нетронутыми.',
   'confirm.deleteDrive': 'Удалить этот диск?',
   'confirm.deleteDriveStakes': '{name} перестанет быть зарегистрированным диском. Любое задание, указывающее на него, сообщит, что он не подключён, пока ты не зарегистрируешь его снова. На диске ничего не удаляется.',
-  'targets.cloud': 'Облачное хранилище',
+  'targets.cloud': 'Хранилища и облака',
   'targets.connections': 'Серверы и общие папки',
   'targets.pickMore': 'Ещё {count}, под именем в rclone',
   'opt.user': 'Имя пользователя',
@@ -477,7 +477,8 @@ const ru: Translations = {
   // German and a second table would drift from the first.
   'phone.access': 'Доступ к файлам',
   'phone.permissionHint': 'Этим переключателем управляет Android. Нажатие открывает страницу, где разрешение выдают или отзывают.',
-  'phone.permissionGranted': 'Выдано',
+  'phone.permissionGranted': 'Разрешение выдано',
+  'phone.permissionDenied': 'Разрешение не выдано',
   'phone.accessNone': 'Эта версия Android такого разрешения не знает, поэтому папки приходится передавать по одной.',
   'phone.notify': 'Уведомления',
   'phone.openNotifications': 'Настройки уведомлений Android',

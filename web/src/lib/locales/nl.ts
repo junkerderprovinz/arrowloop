@@ -425,7 +425,7 @@ const nl: Translations = {
   'targets.deleteDriveHint': 'Haalt deze schijf uit de lijst EN verwijdert het identiteitsbestand van de schijf zelf. Een taak die ernaar wijst vindt hem niet meer. De bestanden op de schijf blijven ongemoeid.',
   'confirm.deleteDrive': 'Deze schijf verwijderen?',
   'confirm.deleteDriveStakes': '{name} is daarna geen geregistreerde schijf meer. Elke taak die ernaar wijst meldt hem als niet aangesloten totdat je hem opnieuw registreert. Op de schijf wordt niets verwijderd.',
-  'targets.cloud': 'Cloudopslag',
+  'targets.cloud': 'Opslag en clouds',
   'targets.connections': 'Servers en shares',
   'targets.pickMore': 'Nog {count}, onder hun rclone-naam',
   'opt.user': 'Gebruikersnaam',
@@ -477,7 +477,8 @@ const nl: Translations = {
   // German and a second table would drift from the first.
   'phone.access': 'Bestandstoegang',
   'phone.permissionHint': 'Deze schakelaar is van Android. Tikken opent de pagina waar de toestemming wordt gegeven of ingetrokken.',
-  'phone.permissionGranted': 'Verleend',
+  'phone.permissionGranted': 'Toestemming verleend',
+  'phone.permissionDenied': 'Toestemming niet verleend',
   'phone.accessNone': 'Deze Android-versie kent die toestemming niet, dus mappen moeten een voor een worden overgedragen.',
   'phone.notify': 'Meldingen',
   'phone.openNotifications': 'Android-meldingsinstellingen',

@@ -425,7 +425,7 @@ const no: Translations = {
   'targets.deleteDriveHint': 'Fjerner denne stasjonen fra listen OG tar identitetsfilen av stasjonen selv. En jobb som peker på den finner den ikke lenger. Filene på stasjonen røres ikke.',
   'confirm.deleteDrive': 'Slette denne stasjonen?',
   'confirm.deleteDriveStakes': '{name} er ikke lenger en registrert stasjon. Alle jobber som peker på den melder den som ikke tilkoblet til du registrerer den på nytt. Ingenting slettes på stasjonen.',
-  'targets.cloud': 'Skylagring',
+  'targets.cloud': 'Lagring og skyer',
   'targets.connections': 'Servere og delinger',
   'targets.pickMore': '{count} til, under rclone-navnet',
   'opt.user': 'Brukernavn',
@@ -477,7 +477,8 @@ const no: Translations = {
   // German and a second table would drift from the first.
   'phone.access': 'Filtilgang',
   'phone.permissionHint': 'Denne bryteren tilhører Android. Et trykk åpner siden der tillatelsen gis eller fjernes.',
-  'phone.permissionGranted': 'Gitt',
+  'phone.permissionGranted': 'Tillatelse gitt',
+  'phone.permissionDenied': 'Tillatelse ikke gitt',
   'phone.accessNone': 'Denne Android-versjonen kjenner ikke den tillatelsen, så mapper må overleveres én om gangen.',
   'phone.notify': 'Varsler',
   'phone.openNotifications': 'Androids varselinnstillinger',

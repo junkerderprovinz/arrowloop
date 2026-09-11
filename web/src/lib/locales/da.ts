@@ -425,7 +425,7 @@ const da: Translations = {
   'targets.deleteDriveHint': 'Fjerner dette drev fra listen OG tager identitetsfilen af drevet selv. Et job, der peger på det, finder det ikke længere. Filerne på drevet røres ikke.',
   'confirm.deleteDrive': 'Slet dette drev?',
   'confirm.deleteDriveStakes': '{name} er ikke længere et registreret drev. Ethvert job, der peger på det, melder det som ikke tilsluttet, indtil du registrerer det igen. Der slettes intet på drevet.',
-  'targets.cloud': 'Skylagring',
+  'targets.cloud': 'Lager og skyer',
   'targets.connections': 'Servere og delinger',
   'targets.pickMore': '{count} mere, under deres rclone-navn',
   'opt.user': 'Brugernavn',
@@ -477,7 +477,8 @@ const da: Translations = {
   // German and a second table would drift from the first.
   'phone.access': 'Filadgang',
   'phone.permissionHint': 'Denne kontakt tilhører Android. Et tryk åbner siden, hvor tilladelsen gives eller fjernes.',
-  'phone.permissionGranted': 'Givet',
+  'phone.permissionGranted': 'Tilladelse givet',
+  'phone.permissionDenied': 'Tilladelse ikke givet',
   'phone.accessNone': 'Denne Android-version kender ikke den tilladelse, så mapper skal overdrages en ad gangen.',
   'phone.notify': 'Notifikationer',
   'phone.openNotifications': 'Androids notifikationsindstillinger',

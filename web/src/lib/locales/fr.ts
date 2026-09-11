@@ -425,7 +425,7 @@ const fr: Translations = {
   'targets.deleteDriveHint': 'Retire ce disque de la liste ET enlève le fichier d\'identité du disque lui-même. Une tâche qui le vise ne le trouvera plus. Les fichiers sur le disque restent intacts.',
   'confirm.deleteDrive': 'Supprimer ce disque ?',
   'confirm.deleteDriveStakes': '{name} ne sera plus un disque enregistré. Toute tâche qui le vise le signalera comme non connecté jusqu\'à ce que vous l\'enregistriez à nouveau. Rien n\'est supprimé sur le disque.',
-  'targets.cloud': 'Stockage cloud',
+  'targets.cloud': 'Stockage et clouds',
   'targets.connections': 'Serveurs et partages',
   'targets.pickMore': '{count} de plus, sous leur nom rclone',
   'opt.user': 'Nom d\'utilisateur',
@@ -477,7 +477,8 @@ const fr: Translations = {
   // German and a second table would drift from the first.
   'phone.access': 'Accès aux fichiers',
   'phone.permissionHint': 'Cet interrupteur appartient à Android. Un appui ouvre la page où l\'autorisation se donne ou se retire.',
-  'phone.permissionGranted': 'Accordée',
+  'phone.permissionGranted': 'Autorisation accordée',
+  'phone.permissionDenied': 'Autorisation non accordée',
   'phone.accessNone': 'Cette version d\'Android ne connaît pas cette autorisation, les dossiers doivent donc être confiés un par un.',
   'phone.notify': 'Notifications',
   'phone.openNotifications': 'Réglages de notification d\'Android',

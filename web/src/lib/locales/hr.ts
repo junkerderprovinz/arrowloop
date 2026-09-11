@@ -425,7 +425,7 @@ const hr: Translations = {
   'targets.deleteDriveHint': 'Uklanja ovaj disk s popisa I briše datoteku identiteta s njega samog. Posao koji na njega upućuje više ga neće nalaziti. Datoteke na disku ostaju netaknute.',
   'confirm.deleteDrive': 'Izbrisati ovaj disk?',
   'confirm.deleteDriveStakes': '{name} više neće biti registrirani disk. Svaki posao koji na njega upućuje prijavit će ga kao nepriključenog dok ga ponovno ne registriraš. Na disku se ništa ne briše.',
-  'targets.cloud': 'Pohrana u oblaku',
+  'targets.cloud': 'Pohrana i oblaci',
   'targets.connections': 'Poslužitelji i dijeljenja',
   'targets.pickMore': 'Još {count}, pod nazivom u rcloneu',
   'opt.user': 'Korisničko ime',
@@ -477,7 +477,8 @@ const hr: Translations = {
   // German and a second table would drift from the first.
   'phone.access': 'Pristup datotekama',
   'phone.permissionHint': 'Ovaj prekidač pripada Androidu. Dodir otvara stranicu na kojoj se dopuštenje daje ili oduzima.',
-  'phone.permissionGranted': 'Dodijeljeno',
+  'phone.permissionGranted': 'Dozvola dodijeljena',
+  'phone.permissionDenied': 'Dozvola nije dodijeljena',
   'phone.accessNone': 'Ova verzija Androida ne poznaje tu dozvolu, pa se mape moraju predavati jedna po jedna.',
   'phone.notify': 'Obavijesti',
   'phone.openNotifications': 'Androidove postavke obavijesti',

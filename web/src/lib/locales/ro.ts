@@ -425,7 +425,7 @@ const ro: Translations = {
   'targets.deleteDriveHint': 'Scoate acest disc din listă ȘI elimină fișierul de identitate de pe discul însuși. O sarcină care îl vizează nu îl va mai găsi. Fișierele de pe disc rămân neatinse.',
   'confirm.deleteDrive': 'Ștergi acest disc?',
   'confirm.deleteDriveStakes': '{name} nu va mai fi un disc înregistrat. Orice sarcină care îl vizează îl va raporta ca neconectat până îl înregistrezi din nou. Pe disc nu se șterge nimic.',
-  'targets.cloud': 'Stocare în cloud',
+  'targets.cloud': 'Stocare și cloud',
   'targets.connections': 'Servere și partajări',
   'targets.pickMore': 'Încă {count}, după numele din rclone',
   'opt.user': 'Nume utilizator',
@@ -477,7 +477,8 @@ const ro: Translations = {
   // German and a second table would drift from the first.
   'phone.access': 'Acces la fișiere',
   'phone.permissionHint': 'Acest comutator aparține Android. O atingere deschide pagina unde permisiunea se acordă sau se retrage.',
-  'phone.permissionGranted': 'Acordată',
+  'phone.permissionGranted': 'Permisiune acordată',
+  'phone.permissionDenied': 'Permisiune neacordată',
   'phone.accessNone': 'Această versiune de Android nu cunoaște acea permisiune, așa că folderele trebuie predate pe rând.',
   'phone.notify': 'Notificări',
   'phone.openNotifications': 'Setările de notificare din Android',

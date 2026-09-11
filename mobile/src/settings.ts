@@ -17,7 +17,24 @@ import { ORIGIN } from "./api";
  * has never heard of a key cannot remove it by not mentioning it.
  */
 
+/**
+ * How much of a control's label is shown - three answers here, four on the web.
+ *
+ * `reactive` is missing on purpose and this is the reason: it means "the words
+ * appear under the pointer", and a phone has no pointer. Offered here it was a
+ * setting that removed every label and gave nothing back, because the gesture
+ * that brings them back does not exist on a touch screen. jdp: "auch hier gibt
+ * es keinen reaktiven modus in der app, das macht kein sinn."
+ *
+ * The type still ACCEPTS it, because a settings file written by an older build
+ * may carry it and refusing to load that file would be worse than showing
+ * symbols. `LABEL_MODES` below is what the picker offers.
+ */
 export type LabelMode = "text" | "textGlyph" | "glyph" | "reactive";
+
+/** The modes a phone can actually offer, in the order the well shows them. */
+export const LABEL_MODES = ["text", "textGlyph", "glyph"] as const;
+
 export type Shape = "round" | "soft" | "square";
 export type ThemeChoice = "system" | "dark" | "light";
 
@@ -25,8 +42,23 @@ export interface Appearance {
   theme: ThemeChoice;
   accent: string;
   rainbow: boolean;
-  /** Rest neutral, colour where the eye is. */
-  rainbowReactive: boolean;
+  /**
+   * The eight colours the rainbow deals out, editable.
+   *
+   * Empty means "the ones this app ships with", which is what keeps an install
+   * that has never opened the palette out of a stored copy of the defaults - a
+   * copy that would then stay behind the day the defaults change.
+   */
+  palette: string[];
+  /**
+   * Offset the palette, so a page does not always start on the same colour.
+   *
+   * Two fields rather than one because the OFFSET has to survive the switch
+   * being turned off and on again: a single number that reset to zero would
+   * make the switch look like it only worked in one direction.
+   */
+  rainbowRotate: boolean;
+  rainbowSeed: number;
   shape: Shape;
   labels: LabelMode;
   /**
@@ -44,7 +76,9 @@ export const DEFAULT_APPEARANCE: Appearance = {
   theme: "system",
   accent: "#FCC419",
   rainbow: false,
-  rainbowReactive: false,
+  palette: [],
+  rainbowRotate: false,
+  rainbowSeed: 0,
   shape: "round",
   labels: "textGlyph",
   lock: false,
