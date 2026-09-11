@@ -2,6 +2,8 @@ package daemon
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"strings"
 	"time"
 
@@ -74,22 +76,70 @@ func (r *Runner) Due(ctx context.Context, now time.Time) []string {
 // It blocks. The caller is a wake-up that has to know when it may let the phone
 // sleep again, and a function that returned early would have it report success
 // while the copying was still going on.
-func (r *Runner) RunDue(ctx context.Context) int {
+func (r *Runner) RunDue(ctx context.Context) Due {
 	due := r.Due(ctx, time.Now())
 	if len(due) == 0 {
 		r.log("nothing is due")
-		return 0
+		return Due{}
 	}
 	r.log("due now: %s", strings.Join(due, ", "))
-	ran := 0
+	var out Due
 	for _, name := range due {
 		if ctx.Err() != nil {
 			break
 		}
-		r.runAndLog(ctx, name)
-		ran++
+		rec, err := r.runAndReport(ctx, name)
+		out.Ran++
+		switch {
+		case errors.Is(err, ErrHeldBack), errors.Is(err, ErrVolumeMissing),
+			errors.Is(err, ErrAlreadyRunning):
+			// None of these is a failure, and saying so on a phone would train
+			// somebody to ignore the notification that matters. A drive in a
+			// bag has not gone wrong.
+			out.Held++
+		case err != nil:
+			out.Failed++
+			if out.Reason == "" {
+				out.Reason = fmt.Sprintf("%s: %v", name, err)
+			}
+		default:
+			out.Copied += rec.Copied
+			out.Moved += rec.Moved
+			out.Trashed += rec.Trashed
+			out.Conflicts += rec.Conflicts
+		}
 	}
-	return ran
+	return out
+}
+
+// Due is what a wake-up can tell somebody once it is over.
+//
+// A count alone was enough while nothing reported anything: the phone woke, ran
+// what was due and went back to sleep. It is not enough for a notification,
+// which has to distinguish "four jobs copied nine files" from "four jobs and
+// one of them failed" - and a background run that fails silently is the exact
+// complaint this program exists to prevent.
+//
+// Held is deliberately its own number rather than a failure. A job waiting for
+// a drive, for the charger or for its own previous run is doing what somebody
+// asked it to do.
+type Due struct {
+	Ran       int `json:"ran"`
+	Failed    int `json:"failed"`
+	Held      int `json:"held"`
+	Copied    int `json:"copied"`
+	Moved     int `json:"moved"`
+	Trashed   int `json:"trashed"`
+	Conflicts int `json:"conflicts"`
+	// The first failure's sentence, which is what a notification shows. One
+	// rather than all of them: a notification is a line, not a log.
+	Reason string `json:"reason,omitempty"`
+}
+
+// Changed says whether anything actually moved, which is the difference
+// between a notification worth posting and a quiet night.
+func (d Due) Changed() bool {
+	return d.Copied+d.Moved+d.Trashed+d.Conflicts > 0
 }
 
 // lastSuccess is the history lookup with the nil check in one place: a runner

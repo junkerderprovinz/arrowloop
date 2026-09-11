@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="channel_engine">Abgleichmotor</string>
-    <string name="channel_engine_why">Wird angezeigt, solange ArrowLoop im Hintergrund abgleichen kann.</string>
+    <string name="channel_engine">Motor</string>
+    <string name="channel_engine_why">Wird angezeigt, solange ArrowLoop im Hintergrund abgleicht. Lautlos.</string>
+
+    <string name="channel_done">Fertige Läufe</string>
+    <string name="channel_done_why">Was ein zeitgesteuerter Lauf kopiert, verschoben oder in den Papierkorb gelegt hat. Nur wenn sich etwas geändert hat.</string>
+
+    <string name="channel_failed">Fehlgeschlagene Läufe</string>
+    <string name="channel_failed_why">Ein zeitgesteuerter Lauf, der nicht durchkam, und warum. Ein Abgleich, der still scheitert, ist schlimmer als einer, der laut scheitert.</string>
 
     <string name="notify_running">ArrowLoop läuft</string>
     <string name="notify_running_why">Bereit zum Abgleich, auch bei ausgeschaltetem Bildschirm.</string>
     <string name="notify_stop">Anhalten</string>
+
+    <string name="notify_done">Abgleich fertig</string>
+    <!-- Vier Zahlen in dieser Reihenfolge: kopiert, verschoben, Papierkorb, Konflikte. -->
+    <string name="notify_done_what">%1$d kopiert, %2$d verschoben, %3$d in den Papierkorb, %4$d Konflikte</string>
+    <string name="notify_failed">Abgleich fehlgeschlagen</string>
 </resources>

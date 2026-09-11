@@ -72,7 +72,14 @@ const RULES: Rule[] = [
   // before "check" or "show" can.
   [/preview|dryRun/i, 'IconPreview'],
   [/runNow|\.run$|start|resume/i, 'IconRun'],
-  [/pause|hold/i, 'IconPause'],
+  // `stop` beside `pause` and both above the generic rules further down, which
+  // is where two of these were going wrong. `phone.engineStop` matched
+  // `settings|config|engine|backup` and wore a GEAR - a stop button with the
+  // settings mark on it, measured on the phone - and `jobs.stopRun` matched
+  // nothing at all and came up bare. Stopping and pausing share a mark here
+  // because this app has one drawing for "make it stand still" and inventing a
+  // second would be two silhouettes for one idea.
+  [/pause|hold|stop/i, 'IconPause'],
 
   // Destructive and corrective.
   [/\.(delete|remove|prune)$|removeJob|deleteDrive|discard/i, 'IconDelete'],
@@ -137,6 +144,12 @@ const RULES: Rule[] = [
   // eye and a consistency check gets the magnifier.
   [/check|verify|test|probe/i, 'IconCheck'],
   [/activity|history|log\b/i, 'IconHistory'],
+
+  // The lock, above the vague rules below it. Its keys live under `settings.`,
+  // so without this the switch that locks the app wore the SETTINGS gear - the
+  // namespace winning over the verb again, in the one place where the mark is
+  // the whole point of the control.
+  [/lock/i, 'IconLock'],
 
   // Vaguest last.
   [/settings|config|engine|backup/i, 'IconSettings'],

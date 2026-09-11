@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { useCallback, useEffect, useState } from "react";
-import { AppState, Linking, PermissionsAndroid, Platform, StyleSheet, View } from "react-native";
+import { AppState, Linking, PermissionsAndroid, Platform, StyleSheet, Text, View } from "react-native";
 import Constants from "expo-constants";
 import { api } from "../api";
 import { engine, type DevicePolicy } from "../engine";
@@ -17,6 +17,7 @@ import {
   type Shape,
   type ThemeChoice,
 } from "../settings";
+import { GLIMSTONE_VERSION } from "../../../web/src/lib/glimstone/version";
 import { Field } from "../fields";
 import { Schedule } from "./JobEdit";
 import { AxisLabel, Body, Button, Caption, Choice, Page, Section, Swatch, Title, Toggle } from "../ui";
@@ -119,7 +120,11 @@ export function Settings() {
     const [access, can, alive, device, exempt] = await Promise.all([
       engine.storageGranted(),
       engine.storagePossible(),
-      engine.alive(),
+      // Whether it ANSWERS, not whether this app's handle to it is alive: the
+      // handle stays null when the engine was already up at launch, and the
+      // card then said "stopped" while the screen above it was reading the
+      // configuration over HTTP.
+      engine.answering(),
       engine.devicePolicy(),
       engine.batteryExempt(),
     ]);
@@ -594,22 +599,78 @@ export function Settings() {
         </View>
       </Section>
 
-      <Section title={t("settings.about")} hue={2}>
-        {/* The ENGINE's version, not the app manifest's. They are two numbers
-            for one program and only one of them is stamped by the build: the
-            manifest's was typed once and sat at 0.1.0 while the engine beside
-            it reported v0.7.0, so the one card whose whole job is saying what
-            you are looking at was saying the wrong thing. The manifest number
-            is the fallback for a build with no engine to ask. */}
-        <Title>{`ArrowLoop ${version ?? Constants.expoConfig?.version ?? "?"}`}</Title>
+      {/* The About card in the shape the design language sets out, which this
+          one was not. jdp: "Die über card ist nicht auf dem aktuellen stand und
+          im GSS." It carried one sentence, one button, and the version in its
+          TITLE - so the number was a dead end, there was no way to say thank
+          you and no way to report anything.
+
+          The ORDER is the standard, not the markup: a sentence about who made
+          it, a sentence about the money with its buttons directly under it, a
+          sentence inviting a report with its buttons under that, and the
+          versions LAST as a footer. Each sentence sits above the thing it asks
+          for - three sentences stacked over one row of buttons reads as a form
+          to work through.
+
+          No crypto button yet, and that is the card's own rule rather than an
+          omission: never offer a control that reaches nowhere. The window it
+          would open does not exist on the phone, and a button that opens
+          nothing is worse than a button that is absent. */}
+      <Section title={t("about.title")} hue={2}>
         <Caption>{t("about.body")}</Caption>
+
+        <Caption>{t("about.coffee")}</Caption>
+        <View style={styles.actions}>
+          <Button
+            label={t("about.coffeeButton")}
+            labelKey="about.coffeeButton"
+            onPress={() => Linking.openURL("https://buymeacoffee.com/junkerderprovinz")}
+          />
+        </View>
+
+        <Caption>{t("about.report")}</Caption>
         <View style={styles.actions}>
           <Button
             label={t("about.repo")}
             labelKey="about.repo"
             onPress={() => Linking.openURL("https://github.com/junkerderprovinz/arrowloop")}
           />
+          <Button
+            label={t("about.mail")}
+            labelKey="about.mail"
+            onPress={() =>
+              Linking.openURL(
+                `mailto:hello@halleluja.design?subject=${encodeURIComponent(
+                  `ArrowLoop: ${t("about.mailSubject")}`,
+                )}`,
+              )
+            }
+          />
         </View>
+
+        {/* The versions last, one line, muted, and the NUMBER is the link
+            rather than the word in front of it. Read from the build on both
+            halves: the engine stamps its own, and the design-language number
+            travels with the files it describes. The app manifest's number is
+            the fallback for a build with no engine to ask - it was the primary
+            once, and it sat at 0.1.0 while the engine beside it reported
+            v0.7.0. */}
+        <Caption>
+          <Text onPress={() => Linking.openURL(releaseUrl(version))} style={styles.versionLink}>
+            {`ArrowLoop ${version ?? Constants.expoConfig?.version ?? "?"}`}
+          </Text>
+          {"  ·  "}
+          <Text
+            onPress={() =>
+              Linking.openURL(
+                `https://github.com/junkerderprovinz/glimstone/releases/tag/v${GLIMSTONE_VERSION}`,
+              )
+            }
+            style={styles.versionLink}
+          >
+            {`GlimStone ${GLIMSTONE_VERSION}`}
+          </Text>
+        </Caption>
       </Section>
     </Page>
   );
@@ -667,6 +728,22 @@ function clamp(text: string, low: number, high: number): number | undefined {
   return Math.min(high, Math.max(low, value));
 }
 
+/**
+ * The release page for a version stamp, or the releases list when there is none.
+ *
+ * The stamp is `git describe`, so a build ON a tag reads `v0.7.0` and one after
+ * it reads `v0.7.0-47-g7b39f19`. Only the first is a page that exists; the rest
+ * go to the list, which is the honest destination for "somewhere after 0.7.0"
+ * and beats a 404 with a tag name in it.
+ */
+function releaseUrl(version: string | null): string {
+  const repo = "https://github.com/junkerderprovinz/arrowloop";
+  if (version && /^v?\d+\.\d+\.\d+$/.test(version)) {
+    return `${repo}/releases/tag/${version.startsWith("v") ? version : `v${version}`}`;
+  }
+  return `${repo}/releases`;
+}
+
 function langName(code: string): string {
   // Imported lazily rather than at the top, because LANGUAGES is the only
   // thing this needs from a module that carries forty tables behind it.
@@ -677,6 +754,9 @@ function langName(code: string): string {
 const styles = StyleSheet.create({
   actions: { flexDirection: "row", gap: space.sm },
   axisRow: { flexDirection: "row", alignItems: "center", gap: space.md, paddingVertical: space.sm },
+  // Tabular figures, so two version numbers under each other do not shift, and
+  // the accent ink so a number reads as the destination it is.
+  versionLink: { fontVariant: ["tabular-nums"] },
   // `flex: 1` with the swatches' own maxWidth: the row takes what is left
   // after the label and divides it equally, which is what keeps nine circles
   // on one line at every handset width.

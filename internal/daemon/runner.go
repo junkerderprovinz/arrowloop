@@ -581,6 +581,18 @@ func (r *Runner) schedule(ctx context.Context) *cron.Cron {
 // and a job still running from last time are both NORMAL here and neither is a
 // failure, which is exactly the distinction a second copy tends to lose.
 func (r *Runner) runAndLog(ctx context.Context, name string) {
+	r.runAndReport(ctx, name)
+}
+
+// runAndReport is runAndLog with the outcome handed back.
+//
+// Split out for the wake-up on a phone, which has to say something afterwards:
+// a background run that failed silently is the exact complaint this program
+// exists to prevent, and a notification saying so needs the record and the
+// error rather than the log line they were turned into. Everything that used
+// to happen still happens here, so there is one place that decides which
+// outcome is worth a line and which is not.
+func (r *Runner) runAndReport(ctx context.Context, name string) (history.Run, error) {
 	// RunAutomatically rather than Run: this is the clock talking, and a job
 	// marked report-only must not be applied by it.
 	rec, err := r.RunAutomatically(ctx, name)
@@ -608,6 +620,7 @@ func (r *Runner) runAndLog(ctx context.Context, name string) {
 	default:
 		r.log("%s: nothing to do", name)
 	}
+	return rec, err
 }
 
 // runAtStart runs the jobs asking to go as soon as the program does.

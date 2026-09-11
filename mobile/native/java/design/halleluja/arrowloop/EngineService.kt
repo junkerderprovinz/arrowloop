@@ -11,6 +11,7 @@ import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
+import org.json.JSONObject
 import androidx.core.app.NotificationCompat
 import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
@@ -100,15 +101,69 @@ class EngineService : Service() {
     private fun work() {
         try {
             waitForEngine()
-            Log.i(TAG, "woke, ran ${runDueNow()} job(s)")
+            val due = runDueNow()
+            Log.i(TAG, "woke, ran ${due.ran} job(s), ${due.failed} failed")
+            report(due)
         } catch (e: Exception) {
             // Said out loud rather than swallowed. A wake-up that achieved
             // nothing and reported nothing is indistinguishable from one that
             // never happened, and "my schedule does not run" is the complaint
             // with the least evidence behind it of any in this program.
             Log.w(TAG, "woke and could not run: ${e.javaClass.simpleName} ${e.message}")
+            tell(CHANNEL_FAILED, FAILED_ID, getString(R.string.notify_failed), e.message ?: "")
         } finally {
             finish()
+        }
+    }
+
+    /**
+     * What the run did, on the channel that matches the outcome.
+     *
+     * SILENT when nothing changed, and that is the rule worth stating: a phone
+     * that syncs every fifteen minutes would otherwise post ninety-six "nothing
+     * to do" notifications a day, and the one that mattered would be the
+     * ninety-seventh nobody read. A quiet night is the normal case and normal
+     * cases do not interrupt.
+     *
+     * A HELD job is not a failure either - a drive in somebody's bag has not
+     * gone wrong - so it says nothing at all. The log line already carries it
+     * for anybody looking.
+     */
+    private fun report(due: Due) {
+        if (due.failed > 0) {
+            tell(CHANNEL_FAILED, FAILED_ID, getString(R.string.notify_failed), due.reason)
+            return
+        }
+        if (!due.changed()) return
+        tell(
+            CHANNEL_DONE,
+            DONE_ID,
+            getString(R.string.notify_done),
+            getString(R.string.notify_done_what, due.copied, due.moved, due.trashed, due.conflicts),
+        )
+    }
+
+    /** One notification, on one channel. Cancelled by its own id rather than
+     *  stacking: the latest run is the one somebody wants to read. */
+    private fun tell(channel: String, id: Int, title: String, detail: String) {
+        val open = PendingIntent.getActivity(
+            this, 0,
+            Intent(this, MainActivity::class.java),
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+        )
+        val note = NotificationCompat.Builder(this, channel)
+            .setContentTitle(title)
+            .setContentText(detail)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(detail))
+            .setSmallIcon(R.drawable.ic_notification)
+            .setContentIntent(open)
+            .setAutoCancel(true)
+            .build()
+        try {
+            getSystemService(NotificationManager::class.java).notify(id, note)
+        } catch (_: SecurityException) {
+            // The permission was refused. Not worth a crash: the run happened,
+            // and the history inside the app still has every word of it.
         }
     }
 
@@ -131,7 +186,28 @@ class EngineService : Service() {
         throw IllegalStateException("the engine did not answer within thirty seconds")
     }
 
-    private fun runDueNow(): Int {
+    /**
+     * What one wake-up did, as the engine reports it.
+     *
+     * It used to read one number out of the answer with a regular expression,
+     * which was enough while the only consumer was a log line. The answer now
+     * carries the whole summary because a notification has to tell "four jobs
+     * copied nine files" from "four ran and one failed", and those want
+     * different channels and different words.
+     */
+    private data class Due(
+        val ran: Int = 0,
+        val failed: Int = 0,
+        val copied: Int = 0,
+        val moved: Int = 0,
+        val trashed: Int = 0,
+        val conflicts: Int = 0,
+        val reason: String = "",
+    ) {
+        fun changed() = copied + moved + trashed + conflicts > 0
+    }
+
+    private fun runDueNow(): Due {
         val call = URL("${Engine.ORIGIN}/api/run-due").openConnection() as HttpURLConnection
         call.requestMethod = "POST"
         call.doOutput = true
@@ -143,7 +219,20 @@ class EngineService : Service() {
         OutputStreamWriter(call.outputStream).use { it.write("{}") }
         val body = call.inputStream.bufferedReader().readText()
         call.disconnect()
-        return Regex("\"ran\":(\\d+)").find(body)?.groupValues?.get(1)?.toIntOrNull() ?: 0
+
+        // A real parser rather than another regular expression. `reason` is a
+        // sentence from the engine and can hold a brace, a quote or a path, and
+        // a pattern would have to be right about all three.
+        val json = JSONObject(body)
+        return Due(
+            ran = json.optInt("ran"),
+            failed = json.optInt("failed"),
+            copied = json.optInt("copied"),
+            moved = json.optInt("moved"),
+            trashed = json.optInt("trashed"),
+            conflicts = json.optInt("conflicts"),
+            reason = json.optString("reason"),
+        )
     }
 
     private fun finish() {
@@ -163,21 +252,51 @@ class EngineService : Service() {
         super.onDestroy()
     }
 
+    /**
+     * Three channels, so Android's own notification page has something to say.
+     *
+     * jdp: "gibt es nicht unterschiedliche benachrichtigungskanäle? Wie Motor,
+     * Sync ereignisse, fehler, Erfolg, etc die man in native android kanäle
+     * aufteilen kann?" There is, and it pairs with the link this app now has
+     * into that page: with a single channel that page is one switch, which is
+     * the same as having no page at all. Split like this, somebody can leave
+     * the failures loud and silence the rest, or the other way round, without
+     * the app needing a single setting of its own.
+     *
+     * Three rather than the five somebody could name, because a channel with
+     * nothing behind it is a switch that does nothing. These are exactly what
+     * the app can say: it is working, it finished, it failed.
+     *
+     * The IMPORTANCES are the design. The engine's own is LOW because a
+     * foreground service must show something and nobody wants a chime for a
+     * folder syncing. A finished run is LOW too - it is a receipt, not news.
+     * A FAILED run is DEFAULT, and it is the only one that makes a sound,
+     * because it is the only one somebody has to do something about.
+     *
+     * A channel's importance cannot be changed after it exists - Android makes
+     * that the person's to set, deliberately - so these are the starting points
+     * and their page is where they are tuned.
+     */
     private fun channel() {
         val manager = getSystemService(NotificationManager::class.java)
-        if (manager.getNotificationChannel(CHANNEL) != null) return
-        val channel = NotificationChannel(
-            CHANNEL,
-            getString(R.string.channel_engine),
-            // LOW: it must be visible, because that is what a foreground
-            // service is, and it must never make a sound. Nobody wants a chime
-            // because a folder synced.
-            NotificationManager.IMPORTANCE_LOW,
-        ).apply {
-            description = getString(R.string.channel_engine_why)
-            setShowBadge(false)
+        val wanted = listOf(
+            Triple(CHANNEL, R.string.channel_engine, R.string.channel_engine_why)
+                to NotificationManager.IMPORTANCE_LOW,
+            Triple(CHANNEL_DONE, R.string.channel_done, R.string.channel_done_why)
+                to NotificationManager.IMPORTANCE_LOW,
+            Triple(CHANNEL_FAILED, R.string.channel_failed, R.string.channel_failed_why)
+                to NotificationManager.IMPORTANCE_DEFAULT,
+        )
+        for ((names, importance) in wanted) {
+            val (id, title, why) = names
+            if (manager.getNotificationChannel(id) != null) continue
+            manager.createNotificationChannel(
+                NotificationChannel(id, getString(title), importance).apply {
+                    description = getString(why)
+                    setShowBadge(id == CHANNEL_FAILED)
+                },
+            )
         }
-        manager.createNotificationChannel(channel)
     }
 
     private fun notification(): Notification {
@@ -208,7 +327,15 @@ class EngineService : Service() {
     companion object {
         const val TAG = "ArrowLoop"
         const val CHANNEL = "engine"
+        /** One channel per thing the app can say. See `channel()`. */
+        const val CHANNEL_DONE = "done"
+        const val CHANNEL_FAILED = "failed"
         const val NOTIFICATION_ID = 1
+        /** Own ids, so the latest finished run REPLACES the previous one rather
+         *  than stacking: a shade holding nine identical receipts is a shade
+         *  somebody swipes clear without reading. */
+        const val DONE_ID = 2
+        const val FAILED_ID = 3
         const val ACTION_STOP = "design.halleluja.arrowloop.STOP"
 
         /** Run whatever the clock should already have run. Started by a wake-up

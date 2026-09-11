@@ -112,6 +112,26 @@ class EngineModule(private val context: ReactApplicationContext) :
     @ReactMethod
     fun alive(promise: Promise) = promise.resolve(Engine.alive())
 
+    /**
+     * Whether the engine is UP, as opposed to whether this object started it.
+     *
+     * `alive` asks about the process handle, and that is the right question for
+     * telling "died before it could write" from "running and quiet". It is the
+     * wrong question for a card that says whether the engine is running:
+     * `Engine.start` deliberately returns early when the engine already
+     * ANSWERS, so the handle stays null, and the settings card then reported
+     * "the engine is stopped" next to an app that was talking to it. Seen on
+     * the device: the card said stopped while the export it sits above had just
+     * read the configuration over HTTP.
+     *
+     * Off the main thread, because it is a socket: a probe on the UI thread is
+     * a frame dropped every time the card refreshes.
+     */
+    @ReactMethod
+    fun answering(promise: Promise) {
+        Thread { promise.resolve(Engine.answers()) }.start()
+    }
+
     @ReactMethod
     fun storageGranted(promise: Promise) = promise.resolve(Storage.granted(context))
 

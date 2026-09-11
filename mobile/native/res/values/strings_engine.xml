@@ -14,10 +14,33 @@
   been. android/tools/check_strings.py is the guard.
 -->
 <resources>
-    <string name="channel_engine">Sync engine</string>
-    <string name="channel_engine_why">Shown while ArrowLoop is able to sync in the background.</string>
+    <!--
+      THREE channels, not one, so Android's own notification page has something
+      to offer. jdp: "gibt es nicht unterschiedliche benachrichtigungskanäle?
+      Wie Motor, Sync ereignisse, fehler, Erfolg, etc die man in native android
+      kanäle aufteilen kann?" There is, and it pairs with the link this app now
+      has into that page: a single channel makes it a page with one switch on
+      it, which is the same as having no page.
+
+      Three rather than the five somebody could name, because a channel with
+      nothing behind it is a switch that does nothing. These are exactly the
+      three things the app can say: it is working, it finished, it failed.
+    -->
+    <string name="channel_engine">Engine</string>
+    <string name="channel_engine_why">Shown while ArrowLoop is syncing in the background. Silent.</string>
+
+    <string name="channel_done">Finished runs</string>
+    <string name="channel_done_why">What a scheduled run copied, moved or put in the bin. Only when something changed.</string>
+
+    <string name="channel_failed">Failed runs</string>
+    <string name="channel_failed_why">A scheduled run that did not finish, and why. A sync that fails quietly is worse than one that fails loudly.</string>
 
     <string name="notify_running">ArrowLoop is running</string>
     <string name="notify_running_why">Ready to sync, and able to keep going while the screen is off.</string>
     <string name="notify_stop">Stop</string>
+
+    <string name="notify_done">Sync finished</string>
+    <!-- Four numbers in this order: copied, moved, binned, conflicts. -->
+    <string name="notify_done_what">%1$d copied, %2$d moved, %3$d binned, %4$d conflicts</string>
+    <string name="notify_failed">Sync failed</string>
 </resources>

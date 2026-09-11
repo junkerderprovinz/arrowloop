@@ -66,6 +66,10 @@ interface EngineNativeModule {
   devicePolicy(): Promise<DevicePolicy>;
   /** Store the two conditions and tell the engine at once. */
   setDevicePolicy(onlyCharging: boolean, onlyWifi: boolean): Promise<void>;
+  /** Whether the engine is UP and answering, as opposed to whether this app's
+   *  own handle to it is still alive. The card that says "the engine is
+   *  running" wants this one. */
+  answering(): Promise<boolean>;
   /** Whether Android has agreed to leave the app alone in the background. */
   batteryExempt(): Promise<boolean>;
   /** Ask for that, which really is one dialog with one button. */
@@ -118,6 +122,7 @@ export const engine = {
   storagePossible: () => (native ? native.storagePossible() : Promise.resolve(false)),
   openStorageSettings: () => (native ? native.openStorageSettings() : missing()),
   openAppSettings: () => (native ? native.openAppSettings() : missing()),
+  answering: () => (native ? native.answering() : Promise.resolve(false)),
   openNotificationSettings: () => (native ? native.openNotificationSettings() : missing()),
   openBatterySettings: () => (native ? native.openBatterySettings() : missing()),
   exportSettings: (json: string) => (native ? native.exportSettings(json) : missing()),

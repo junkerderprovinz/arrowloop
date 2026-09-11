@@ -52,6 +52,8 @@ func (s *Server) writeDevice(w http.ResponseWriter, r *http.Request) {
 // endpoint that answered immediately would have it report success and go back
 // to sleep with the transfer half done.
 func (s *Server) runDue(w http.ResponseWriter, r *http.Request) {
-	ran := s.Runner.RunDue(r.Context())
-	writeJSON(w, http.StatusOK, map[string]any{"ran": ran})
+	// The whole summary rather than a count. The caller is a phone that has to
+	// say something afterwards, and "four jobs ran" and "four ran and one
+	// failed" are the two answers a notification has to tell apart.
+	writeJSON(w, http.StatusOK, s.Runner.RunDue(r.Context()))
 }
