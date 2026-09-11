@@ -218,7 +218,7 @@ const vi: Translations = {
   'look.motionHint': 'Giao diện động đến mức nào. Điều hệ thống của bạn yêu cầu không bao giờ bị ghi đè, chỉ hạ xuống từ đó.',
   'look.motionOff': 'Tắt',
   'look.motionSubtle': 'Nhẹ nhàng',
-  'look.motionFull': 'Đầy đủ',
+  'look.motionFull': 'Hăng hái',
   'look.labels': 'Nhãn',
   'look.labelsHint': 'Các nút hiện chữ, hiện ký hiệu, hay cả hai. Bề rộng không đổi nên chuyển kiểu không bao giờ làm xê dịch trang.',
   'look.labelsButtons': 'Nút',

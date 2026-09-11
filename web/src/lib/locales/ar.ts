@@ -218,7 +218,7 @@ const ar: Translations = {
   'look.motionHint': 'مقدار حركة الواجهة. ما يطلبه نظامك لا يُتجاوز أبداً، ومن هناك يُخفَّض فقط.',
   'look.motionOff': 'بلا',
   'look.motionSubtle': 'هادئة',
-  'look.motionFull': 'كاملة',
+  'look.motionFull': 'جامحة',
   'look.labels': 'التسميات',
   'look.labelsHint': 'هل تُظهر عناصر التحكم كلماتها أم رمزها أم كليهما. العرض لا يتغير، فالتبديل لا يزحزح الصفحة أبداً.',
   'look.labelsButtons': 'الأزرار',

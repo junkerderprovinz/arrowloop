@@ -815,7 +815,10 @@ body {
   100% { left: 100%; }
 }
 @keyframes glim-page-in {
-  from { opacity: 0; transform: translateY(6px); }
+  from {
+    opacity: 0;
+    transform: translateY(var(--motion-page-travel, 6px)) scale(var(--motion-page-scale, 1));
+  }
   to   { opacity: 1; transform: none; }
 }
 @keyframes glim-fade-in {
@@ -874,11 +877,29 @@ body {
      never evaluates a data-motion selector at all and keeps the values in the
      reduce block below. */
   :root {
-    --motion-page-dur: 280ms;
-    --motion-toast-dur: 220ms;
+    --motion-page-dur: 420ms;
+    --motion-toast-dur: 300ms;
     --motion-pulse-dur: 2s;
-    --motion-fade-dur: 110ms;
+    --motion-fade-dur: 140ms;
     --motion-shake-dur: 360ms;
+    /* THE DISTANCE AND THE CURVE, per intensity, and they are the half that was
+       missing. Every duration was a token and every travel was a literal, so
+       "full" and "subtle" ran the same six-pixel slide at two speeds - which is
+       a difference somebody has to be told about rather than one they can see.
+       A setting whose top end is only "the same thing, slower to finish" earns
+       the quiet name it had; one that actually travels further and overshoots
+       earns a livelier one (jdp: "auf wilder stufe möchte ich auch wilde
+       animationen").
+
+       The rule the language already states survives intact: the same keyframes
+       at all three intensities, never a forked animation. What changes is the
+       number the keyframe reads and the curve it reads it through. */
+    --motion-page-travel: 18px;
+    --motion-page-scale: .96;
+    /* A curve that overshoots and settles. The fourth control point past 1 is
+       what makes it spring rather than ease - the same shape React Native's
+       spring gives the phone, so the two surfaces move alike. */
+    --motion-curve: cubic-bezier(.34, 1.56, .64, 1);
   }
   :root[data-motion='subtle'] {
     --motion-page-dur: 140ms;
@@ -886,12 +907,20 @@ body {
     --motion-pulse-dur: 3.2s;
     --motion-fade-dur: 70ms;
     --motion-shake-dur: 220ms;
+    /* Smaller travel, no scale, and a curve that only eases. Somebody who asked
+       for less movement asked for less movement, not for a faster bounce. */
+    --motion-page-travel: 6px;
+    --motion-page-scale: 1;
+    --motion-curve: cubic-bezier(.2, .6, .2, 1);
   }
   :root[data-motion='off'] {
     --motion-page-dur: 0s;
     --motion-toast-dur: 0s;
     --motion-fade-dur: 0s;
     --motion-shake-dur: 0s;
+    --motion-page-travel: 0px;
+    --motion-page-scale: 1;
+    --motion-curve: linear;
     /* The pulse is the one that does not get a zero. An infinite animation at
        zero duration is a still element, which is correct, but `.glim-live`
        carries a meaning ("this is happening now") that has to survive the
@@ -899,8 +928,8 @@ body {
        block below already does. */
   }
 
-  .glim-page-enter { animation: glim-page-in var(--motion-page-dur) cubic-bezier(.2, .6, .2, 1) both; }
-  .glim-toast { animation: glim-toast-in var(--motion-toast-dur) cubic-bezier(.2, .6, .2, 1) both; }
+  .glim-page-enter { animation: glim-page-in var(--motion-page-dur) var(--motion-curve) both; }
+  .glim-toast { animation: glim-toast-in var(--motion-toast-dur) var(--motion-curve) both; }
   .glim-live { animation: glim-pulse var(--motion-pulse-dur) ease-in-out infinite; }
   /* Short on purpose: a bubble that fades in slowly reads as lag, because the
      pointer is already there waiting for it. */

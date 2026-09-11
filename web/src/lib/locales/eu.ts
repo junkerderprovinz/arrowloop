@@ -218,7 +218,7 @@ const eu: Translations = {
   'look.motionHint': 'Zenbat mugitzen den interfazea. Zure sistemak eskatzen duena ez da inoiz gainidazten, handik behera bakarrik jaisten da.',
   'look.motionOff': 'Bat ere ez',
   'look.motionSubtle': 'Leuna',
-  'look.motionFull': 'Osoa',
+  'look.motionFull': 'Basatia',
   'look.labels': 'Etiketak',
   'look.labelsHint': 'Kontrolek hitzak, ikurra edo biak erakusten dituzten. Zabalera ez da aldatzen, beraz modua aldatzeak ez du orria inoiz mugitzen.',
   'look.labelsButtons': 'Botoiak',

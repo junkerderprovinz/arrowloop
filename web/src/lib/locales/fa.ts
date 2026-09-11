@@ -218,7 +218,7 @@ const fa: Translations = {
   'look.motionHint': 'میزان حرکت رابط. آنچه سامانه‌ات می‌خواهد هرگز نادیده گرفته نمی‌شود، فقط از همان‌جا پایین‌تر می‌آید.',
   'look.motionOff': 'بی‌حرکت',
   'look.motionSubtle': 'ملایم',
-  'look.motionFull': 'کامل',
+  'look.motionFull': 'وحشی',
   'look.labels': 'برچسب‌ها',
   'look.labelsHint': 'اینکه کنترل‌ها واژه‌هایشان را نشان دهند، نشانه‌شان را، یا هر دو. پهنا تغییر نمی‌کند، پس جابه‌جایی هرگز صفحه را نمی‌لغزاند.',
   'look.labelsButtons': 'دکمه‌ها',

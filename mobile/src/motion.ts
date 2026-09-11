@@ -46,10 +46,23 @@ export const DEFAULT_MOTION: MotionIntensity = "full";
  * the animation calls below safe to leave in place rather than branching around
  * them: a zero-duration layout animation is an instant layout change.
  */
-export const MOTION: Record<MotionIntensity, { layout: number; fade: number; toast: number }> = {
-  full: { layout: 280, fade: 110, toast: 220 },
-  subtle: { layout: 140, fade: 70, toast: 120 },
-  off: { layout: 0, fade: 0, toast: 0 },
+export const MOTION: Record<
+  MotionIntensity,
+  { layout: number; fade: number; toast: number; spring: boolean }
+> = {
+  // THE TOP SETTING ACTUALLY MOVES, which started as a naming argument and
+  // ended as a real change. It was every animation at its ordinary speed - a
+  // calm crossfade - under a label promising more, and the honest fix was not
+  // a quieter word but a livelier animation (jdp: "auf wilder stufe möchte ich
+  // auch wilde animationen").
+  //
+  // So this one SPRINGS: it overshoots slightly and settles, where the others
+  // ease. That is still the same animation on the same elements - the language's
+  // rule that subtle is a smaller full, never a different one, survives - but
+  // the curve at the top has energy in it rather than only duration.
+  full: { layout: 420, fade: 140, toast: 300, spring: true },
+  subtle: { layout: 140, fade: 70, toast: 120, spring: false },
+  off: { layout: 0, fade: 0, toast: 0, spring: false },
 };
 
 // Android needs this switched on explicitly, and without it every
@@ -115,13 +128,23 @@ export function useMotion(): { intensity: MotionIntensity; ms: (typeof MOTION)[M
 export function animateNext(intensity: MotionIntensity, kind: "layout" | "fade" = "layout"): void {
   const duration = MOTION[intensity][kind];
   if (!duration) return;
+  const spring = MOTION[intensity].spring;
+  // A SPRING at the top and an ease below it. The spring's damping is what
+  // decides how much it overshoots: 0.6 is a visible bounce and 1.0 is none at
+  // all, so this sits where the movement is felt without the interface looking
+  // like it is made of rubber. Below the top setting the curve eases, because
+  // somebody who asked for less movement asked for less movement and not for a
+  // faster bounce.
   LayoutAnimation.configureNext({
     duration,
-    // Springs are the platform default and read as bouncy, which is not this
-    // language's register: GlimStone's own curve is a firm ease-out, and
-    // `easeInEaseOut` is the closest of the three React Native ships.
-    create: { type: LayoutAnimation.Types.easeInEaseOut, property: LayoutAnimation.Properties.opacity },
-    update: { type: LayoutAnimation.Types.easeInEaseOut },
-    delete: { type: LayoutAnimation.Types.easeInEaseOut, property: LayoutAnimation.Properties.opacity },
+    create: spring
+      ? { type: LayoutAnimation.Types.spring, property: LayoutAnimation.Properties.scaleXY, springDamping: 0.68 }
+      : { type: LayoutAnimation.Types.easeInEaseOut, property: LayoutAnimation.Properties.opacity },
+    update: spring
+      ? { type: LayoutAnimation.Types.spring, springDamping: 0.68 }
+      : { type: LayoutAnimation.Types.easeInEaseOut },
+    delete: spring
+      ? { type: LayoutAnimation.Types.easeInEaseOut, property: LayoutAnimation.Properties.opacity }
+      : { type: LayoutAnimation.Types.easeInEaseOut, property: LayoutAnimation.Properties.opacity },
   });
 }
