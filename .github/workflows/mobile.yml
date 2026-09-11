@@ -50,8 +50,12 @@ jobs:
       # The translations before anything is built, because this class of bug is
       # silent: getString fills by POSITION, so a translation with fewer
       # placeholders drops the rest of the arguments without a word.
+      # The APP's resources, not the old shell's. This was pointing at
+      # android/app/src/main/res, which belongs to the WebView build nobody
+      # installs any more - so the guard was reading the strings of a
+      # different program and reporting that they were fine.
       - name: The translations carry the same placeholders
-        run: python android/tools/check_strings.py
+        run: python android/tools/check_strings.py mobile/native/res
 
       # And the same question about the app's OWN screens. A key that names the
       # right subject but carries a number renders a literal {count} on the
@@ -136,6 +140,14 @@ jobs:
           curl -sf -m 60 -X POST http://127.0.0.1:18423/api/jobs/check/run
           sleep 3
           echo four > "$work/left/four.txt"
+          # And the SAME file changed on both sides, because that is the only
+          # action that carries both versions. A plan made only of copies to
+          # the right has no `right` on any action, and the check then cannot
+          # tell "this state has no right side" from "nobody calls it that" -
+          # which is exactly what it reported the first time this ran.
+          echo left >> "$work/left/one.txt"
+          echo right >> "$work/right/one.txt"
+          sleep 2
           curl -sf -m 10 -X PUT -H 'Content-Type: application/json' -d '{"type":"sftp","settings":{"host":"example.org","user":"nobody"}}' http://127.0.0.1:18423/api/remotes/somewhere
           python mobile/tools/check_shapes.py http://127.0.0.1:18423
 

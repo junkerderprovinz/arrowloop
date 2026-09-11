@@ -32,7 +32,12 @@ import sys
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-RES = Path(__file__).parent.parent / "app" / "src" / "main" / "res"
+# Which resource tree to check, because there are two: the old WebView shell's
+# and the React Native app's, which the config plugin copies out of
+# mobile/native/res. The mobile workflow was pointing this at the shell, so the
+# guard was reading the strings of an app nobody installs any more - a check
+# that cannot reach the failure reports nothing.
+DEFAULT_RES = Path(__file__).parent.parent / "app" / "src" / "main" / "res"
 
 # `%1$s`, `%2$d`, und das blosse `%s` ohne Nummer, das Android ebenfalls nimmt.
 PLACEHOLDER = re.compile(r"%(\d+\$)?[a-zA-Z]")
@@ -56,15 +61,20 @@ def marks(text):
 
 
 def main():
-    base = RES / "values" / "strings.xml"
-    if not base.is_file():
-        raise SystemExit("kein values/strings.xml unter %s" % RES)
+    res = Path(sys.argv[1]) if len(sys.argv) > 1 else DEFAULT_RES
+    # The shell writes values/strings.xml; the config plugin writes
+    # values/strings_engine.xml so its own file cannot collide with the one
+    # prebuild generates. Either is the original.
+    base = next(iter(sorted(res.glob("values/strings*.xml"))), None)
+    if base is None or not base.is_file():
+        raise SystemExit("kein values/strings*.xml unter %s" % res)
     original = strings(base)
+    stem = base.name
 
     problems = []
     checked = 0
-    for folder in sorted(RES.glob("values-*")):
-        path = folder / "strings.xml"
+    for folder in sorted(res.glob("values-*")):
+        path = folder / stem
         if not path.is_file():
             continue
         translated = strings(path)
