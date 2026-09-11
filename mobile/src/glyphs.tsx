@@ -111,9 +111,18 @@ export function BrandMark({
   if (!brand) return null;
   const fill =
     brand.fill === null ? undefined : typeof brand.fill === "string" ? brand.fill : brand.fill[scheme];
+  // The colours a mark carries INSIDE its own drawing, filled in here because
+  // here is the first place the theme is known. Three logos drew as nothing at
+  // all while these were still `var(--brand-putio-1)`: a browser reads that
+  // out of the stylesheet, and an SVG parser reads it as a colour it has never
+  // heard of and paints with it anyway.
+  let body = brand.svg;
+  for (const [slot, pair] of Object.entries(brand.vars)) {
+    body = body.split(`{{${slot}}}`).join(pair[scheme]);
+  }
   const xml = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${brand.box}"${
     fill ? ` fill="${fill}"` : ""
-  }>${brand.svg}</svg>`;
+  }>${body}</svg>`;
   return <SvgXml xml={xml} width={size} height={size} />;
 }
 

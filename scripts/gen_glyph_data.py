@@ -209,10 +209,12 @@ def brand_glyphs(colours: dict[str, dict[str, str]]) -> dict[str, dict]:
         box = re.search(r'viewBox="([^"]+)"', svg)
         if not box:
             raise SystemExit("gen_glyph_data: %s has no viewBox" % name)
+        body, used = detokenise(inner(svg), colours)
         out[name] = {
             "box": box.group(1),
             "fill": resolve(re.search(r'<svg[^>]*\bfill="([^"]+)"', svg), colours),
-            "svg": inner(svg),
+            "svg": body,
+            "vars": used,
         }
     return out
 
@@ -231,6 +233,94 @@ def resolve(match, colours) -> dict[str, str] | str | None:
     return {"light": pair.get("light", "#000000"), "dark": pair.get("dark", pair.get("light", "#ffffff"))}
 
 
+# JSX camelCase to the SVG attribute names a parser knows. Only the ones the
+# fifty-five actually use; anything else raises rather than being dropped.
+STYLE_ATTR = {
+    "clipPath": "clip-path",
+    "clipRule": "clip-rule",
+    "fill": "fill",
+    "fillOpacity": "fill-opacity",
+    "fillRule": "fill-rule",
+    "isolation": "isolation",
+    "mask": "mask",
+    "opacity": "opacity",
+    "stopColor": "stop-color",
+    "stopOpacity": "stop-opacity",
+    "stroke": "stroke",
+    "strokeDasharray": "stroke-dasharray",
+    "strokeLinecap": "stroke-linecap",
+    "strokeLinejoin": "stroke-linejoin",
+    "strokeMiterlimit": "stroke-miterlimit",
+    "strokeOpacity": "stroke-opacity",
+    "strokeWidth": "stroke-width",
+}
+
+# `style={{ fill: "#0066da", fillRule: "evenodd" }}` - React's own way of
+# writing what SVG spells as attributes.
+STYLE = re.compile(r'style=\{\{(.*?)\}\}', re.S)
+PAIR = re.compile(r'(\w+):\s*"([^"]*)"')
+
+
+def unjsx(markup: str) -> str:
+    """React inline styles, rewritten as plain SVG attributes.
+
+    Three marks came out blank on the phone and nothing said why: they are the
+    ones whose source carried `style={{ fill: ... }}`, which a browser's JSX
+    compiler understands and an SVG parser does not. It is not a rendering
+    difference to work around - it is markup that was never SVG - so it is
+    translated once here rather than guessed at by each surface.
+    """
+
+    def one(match: re.Match) -> str:
+        out = []
+        for name, value in PAIR.findall(match.group(1)):
+            attr = STYLE_ATTR.get(name)
+            if attr is None:
+                raise SystemExit("gen_glyph_data: unknown style property %r in a brand mark" % name)
+            out.append('%s="%s"' % (attr, value))
+        return " ".join(out)
+
+    return STYLE.sub(one, markup)
+
+
+def detokenise(body: str, colours) -> tuple[str, dict]:
+    """Theme colours used INSIDE a drawing, pulled out as named slots.
+
+    Three marks stayed blank on the phone after the JSX fix, and for a second
+    reason: their per-path fills are `var(--brand-putio-1)`, which a browser
+    resolves from the stylesheet and an SVG parser leaves as an unknown colour.
+    The root fill was already being resolved; these are the ones that carry
+    theme colours further in.
+
+    Two answers per slot, because a mark carrying a theme colour is exactly the
+    mark that needs a different one on a dark page. The renderer substitutes at
+    draw time, which is the only moment the theme is known.
+    """
+    used: dict[str, dict[str, str]] = {}
+
+    def one(match: re.Match) -> str:
+        name = match.group(1)
+        pair = colours.get(name)
+        if not pair:
+            raise SystemExit("gen_glyph_data: no stylesheet value for %s" % name)
+        used[name] = {
+            "light": pair.get("light", "#000000"),
+            "dark": pair.get("dark", pair.get("light", "#ffffff")),
+        }
+        return "{{%s}}" % name
+
+    body = re.sub(r"var\((--brand-[\w-]+)\)", one, body)
+
+    # Anything still spelled `var(...)` is a colour this does not know how to
+    # look up, and it would reach the phone as a fill nothing can resolve: no
+    # error, no log line, a blank square where a logo belongs. That is exactly
+    # how OpenDrive, put.io and Quatrix came out empty, so it stops here now.
+    left = re.search(r"var\([^)]*\)", body)
+    if left:
+        raise SystemExit("gen_glyph_data: a colour no stylesheet answers for: %s" % left.group(0))
+    return body, used
+
+
 def inner(svg: str) -> str:
     """Everything inside the <svg>, kept as markup.
 
@@ -242,7 +332,12 @@ def inner(svg: str) -> str:
     reported rather than skipped.
     """
     body = re.sub(r"^<svg[^>]*>", "", svg.strip(), count=1)
-    return re.sub(r"</svg>$", "", body).strip()
+    body = re.sub(r"</svg>$", "", body).strip()
+    body = unjsx(body)
+    left = re.search(r"\w+=\{", body)
+    if left:
+        raise SystemExit("gen_glyph_data: JSX left in a brand mark: %r" % body[left.start() - 20 : left.start() + 60])
+    return body
 
 
 HEADER = """// The drawings, as data.
@@ -282,8 +377,16 @@ export interface GlyphData {
 export interface BrandData {
   box: string
   fill: string | { light: string; dark: string } | null
-  /** The markup inside the `<svg>`, verbatim. */
+  /**
+   * The markup inside the `<svg>`, with any theme colour left as `{{name}}`.
+   *
+   * A placeholder rather than a resolved colour because the theme is not known
+   * until the mark is drawn, and a mark whose own paths carry a theme colour is
+   * precisely the one that needs a different colour on a dark page.
+   */
   svg: string
+  /** What each `{{name}}` in `svg` resolves to, per theme. */
+  vars: Record<string, { light: string; dark: string }>
 }
 
 """

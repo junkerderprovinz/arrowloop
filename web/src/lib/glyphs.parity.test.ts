@@ -65,6 +65,33 @@ describe('the drawings survived the lift', () => {
     }
   })
 
+  it('leaves no JSX in a brand mark', () => {
+    // The failure this catches is silent and total: three marks came out blank
+    // on the phone with nothing in any log, because their source carried
+    // `style={{ fill: ... }}` - React's own spelling, which a browser compiles
+    // and an SVG parser does not understand at all. The generator translates
+    // those now, and this is what says so when a new mark arrives carrying a
+    // property nobody has taught it yet.
+    for (const [name, brand] of Object.entries(BRANDS)) {
+      expect(brand.svg, `${name} still carries JSX`).not.toMatch(/\w+=\{/)
+    }
+  })
+
+  it('leaves no colour a stylesheet has to resolve', () => {
+    // The second half of the same silent failure. `fill="var(--brand-putio-1)"`
+    // is a colour only a browser can look up: react-native-svg accepts the
+    // attribute, resolves nothing, and draws an invisible shape - which is how
+    // OpenDrive, put.io and Quatrix reached a phone as three empty squares with
+    // nothing in any log. They travel as `{{name}}` now, filled in at draw time
+    // because that is the first moment the theme is known.
+    for (const [name, brand] of Object.entries(BRANDS)) {
+      expect(brand.svg, `${name} still carries a CSS colour`).not.toMatch(/var\(/)
+      for (const slot of brand.svg.matchAll(/\{\{([^}]+)\}\}/g)) {
+        expect(Object.keys(brand.vars), `${name} has no answer for ${slot[1]}`).toContain(slot[1]!)
+      }
+    }
+  })
+
   it('keeps the marks that need a second colour on a dark page', () => {
     // Fourteen of them carry one, and the reason the count is asserted rather
     // than the names is that the stylesheet is allowed to gain another. Zero
