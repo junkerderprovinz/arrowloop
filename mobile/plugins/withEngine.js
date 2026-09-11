@@ -231,6 +231,21 @@ copy {
     from rootProject.file('../native/res')
     into file('src/main/res')
 }
+
+// The JavaScript bundle depends on ../../web/src, and Gradle did not know.
+//
+// Metro is told about that folder in metro.config.js, because the translations,
+// the glyph data, the accent presets and the schedule reader are imported from
+// there: one table of forty-two languages is one table. The gradle task that
+// RUNS Metro takes its up-to-date check from this project only, so a change in
+// the web tree left the previous bundle in place and the build said nothing.
+// Measured: a glyph rule edited in web/src, three builds, and the old rule
+// still in the APK's bundle.
+tasks.matching { it.name ==~ /^createBundle.*JsAndAssets\$/ }.configureEach {
+    inputs.dir(rootProject.file('../../web/src'))
+        .withPathSensitivity(PathSensitivity.RELATIVE)
+        .withPropertyName('arrowloopSharedSources')
+}
 `;
     }
 
