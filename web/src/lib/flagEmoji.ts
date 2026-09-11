@@ -1,4 +1,4 @@
-// Copied verbatim from GlimStone 1.7.2, reference/flagEmoji.ts.
+// Copied verbatim from GlimStone 1.10.0, reference/flagEmoji.ts.
 // Do not edit here: change it in the design language repo and copy again.
 // https://github.com/junkerderprovinz/glimstone
 // design-language.md, "The user-owned axes" > Language: a native <option>

@@ -44,6 +44,34 @@
 export const COFFEE = "https://buymeacoffee.com/junkerderprovinz";
 export const PAYPAL = "https://paypal.me/hallelujadesign";
 
+/**
+ * The other three addresses the same card carries, here for the same reason.
+ *
+ * They were written out in both interfaces - the container's About card had
+ * them as three constants and the phone's had them typed into four call sites -
+ * which is the shape the give links were moved out of this file to escape and
+ * then quietly re-created next to them. A repository URL is less dangerous than
+ * a donation address, and it fails the same way: the wrong one still opens a
+ * page.
+ *
+ * MAIL is the workshop's mailbox, shared by every tool here. The subject line
+ * carries the product name, so one inbox can tell them apart, and the address
+ * is deliberately not a private one.
+ */
+export const REPO = "https://github.com/junkerderprovinz/arrowloop";
+export const GLIMSTONE_REPO = "https://github.com/junkerderprovinz/glimstone";
+export const MAIL = "hello@halleluja.design";
+
+/**
+ * Where a version number links to.
+ *
+ * Built from the version rather than written out per release, which is
+ * GlimStone's own rule for this link: a hand-kept list of release URLs is a
+ * list that is wrong the first time somebody forgets it.
+ */
+export const glimstoneRelease = (version: string): string =>
+  `${GLIMSTONE_REPO}/releases/tag/v${version}`;
+
 /** One address, and the chain it lives on. */
 export interface CryptoNetwork {
   /** Stable id, for the copy toast and for tests. */

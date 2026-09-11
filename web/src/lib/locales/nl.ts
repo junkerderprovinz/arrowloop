@@ -344,7 +344,6 @@ const nl: Translations = {
   'engine.webhookHint': 'Een adres waar een afgeronde run naartoe post, voor alles wat geen Matrix is. Leeg betekent dat er niets wordt verstuurd.',
   'engine.onSuccess': 'Ook geslaagde runs melden',
   'engine.onSuccessHint': 'Standaard uit, zodat een bericht betekent dat er iets misging. Aan gezet leest een rustige week hetzelfde als een kapotte, want beide zijn stilte.',
-  'settings.about': 'Over',
   'schedule.off': 'Handmatig',
   'schedule.every': 'Elke N',
   'schedule.everyLabel': 'Elke',

@@ -344,7 +344,6 @@ const fi: Translations = {
   'engine.webhookHint': 'Osoite, johon valmis ajo lähettää, kaikelle muulle kuin Matrixille. Tyhjä tarkoittaa, ettei mitään lähetetä.',
   'engine.onSuccess': 'Ilmoita myös onnistuneista ajoista',
   'engine.onSuccessHint': 'Oletuksena pois, jotta viesti tarkoittaa, että jokin meni pieleen. Päälle laitettuna rauhallinen viikko näyttää samalta kuin rikkinäinen, koska molemmat ovat hiljaisuutta.',
-  'settings.about': 'Tietoja',
   'schedule.off': 'Käsin',
   'schedule.every': 'Joka N',
   'schedule.everyLabel': 'Joka',

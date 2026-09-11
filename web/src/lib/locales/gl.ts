@@ -344,7 +344,6 @@ const gl: Translations = {
   'engine.webhookHint': 'Un enderezo ao que envía unha execución rematada, para todo o que non sexa Matrix. Baleiro significa que non se envía nada.',
   'engine.onSuccess': 'Informar tamén das execucións correctas',
   'engine.onSuccessHint': 'Desactivado por defecto, para que unha mensaxe signifique que algo fallou. Activado, unha semana tranquila lese igual ca unha rota, porque ambas son silencio.',
-  'settings.about': 'Sobre',
   'schedule.off': 'Manual',
   'schedule.every': 'Cada N',
   'schedule.everyLabel': 'Cada',

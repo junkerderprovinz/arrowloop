@@ -344,7 +344,6 @@ const pt: Translations = {
   'engine.webhookHint': 'Um endereço para onde uma execução concluída envia o relatório, para tudo o que não seja Matrix. Vazio significa que nada é enviado.',
   'engine.onSuccess': 'Reportar também as execuções bem-sucedidas',
   'engine.onSuccessHint': 'Desligado por omissão, para que uma mensagem signifique que algo correu mal. Ligado, uma semana calma lê-se como uma avariada, porque ambas são silêncio.',
-  'settings.about': 'Acerca',
   'schedule.off': 'Manual',
   'schedule.every': 'A cada N',
   'schedule.everyLabel': 'A cada',

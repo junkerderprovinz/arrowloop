@@ -344,7 +344,6 @@ const he: Translations = {
   'engine.webhookHint': 'כתובת שאליה שולחת הרצה שהסתיימה, לכל מה שאינו Matrix. ריק פירושו שלא נשלח דבר.',
   'engine.onSuccess': 'לדווח גם על הרצות מוצלחות',
   'engine.onSuccessHint': 'כבוי כברירת מחדל, כדי שהודעה תעיד שמשהו השתבש. כשמדליקים, שבוע שקט נראה כמו שבוע מקולקל, כי שניהם שתיקה.',
-  'settings.about': 'אודות',
   'schedule.off': 'ידני',
   'schedule.every': 'כל N',
   'schedule.everyLabel': 'כל',

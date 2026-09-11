@@ -344,7 +344,6 @@ const sl: Translations = {
   'engine.webhookHint': 'Naslov, na katerega pošlje končan zagon, za vse, kar ni Matrix. Prazno pomeni, da se nič ne pošlje.',
   'engine.onSuccess': 'Poročaj tudi o uspešnih zagonih',
   'engine.onSuccessHint': 'Privzeto izklopljeno, da sporočilo pomeni, da je šlo nekaj narobe. Vklopljeno je miren teden videti enako kot pokvarjen, ker je oboje tišina.',
-  'settings.about': 'O programu',
   'schedule.off': 'Ročno',
   'schedule.every': 'Vsakih N',
   'schedule.everyLabel': 'Vsakih',

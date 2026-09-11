@@ -344,7 +344,6 @@ const hr: Translations = {
   'engine.webhookHint': 'Adresa na koju šalje završeno izvođenje, za sve što nije Matrix. Prazno znači da se ništa ne šalje.',
   'engine.onSuccess': 'Javljaj i uspješna izvođenja',
   'engine.onSuccessHint': 'Zadano isključeno, da poruka znači kako je nešto pošlo po zlu. Uključeno, miran tjedan izgleda isto kao pokvaren, jer je oboje tišina.',
-  'settings.about': 'O programu',
   'schedule.off': 'Ručno',
   'schedule.every': 'Svakih N',
   'schedule.everyLabel': 'Svakih',

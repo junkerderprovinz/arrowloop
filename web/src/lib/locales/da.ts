@@ -344,7 +344,6 @@ const da: Translations = {
   'engine.webhookHint': 'En adresse, som en færdig kørsel sender til, for alt der ikke er Matrix. Tomt betyder, at intet sendes.',
   'engine.onSuccess': 'Rapportér også vellykkede kørsler',
   'engine.onSuccessHint': 'Slået fra som standard, så en besked betyder, at noget gik galt. Slået til ligner en rolig uge en ødelagt, for begge er stilhed.',
-  'settings.about': 'Om',
   'schedule.off': 'Manuelt',
   'schedule.every': 'Hver N',
   'schedule.everyLabel': 'Hver',

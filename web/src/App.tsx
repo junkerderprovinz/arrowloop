@@ -8,7 +8,7 @@ import { InfoBubble } from './lib/glimstone/InfoBubble'
 import { ToggleRow } from './components/ToggleRow'
 import { Selector } from './components/Selector'
 import { Sidebar } from './components/Sidebar'
-import { IconAbout, IconHistory, IconJobs, IconLive, IconLook, IconReset, IconSettings, IconTargets } from './components/glyphs'
+import { IconHistory, IconJobs, IconLive, IconLook, IconReset, IconSettings, IconTargets } from './components/glyphs'
 import { AccentSwatches, PaletteSwatches } from './components/Swatches'
 import { About } from './components/About'
 import { SettingsBackup } from './components/SettingsBackup'
@@ -36,7 +36,12 @@ import { wireTooltips } from './lib/tooltip'
 type Tab = 'jobs' | 'targets' | 'history' | 'settings'
 
 /** Settings is one tab with sections, the same shape BombVault uses. */
-type SettingsSection = 'general' | 'engine' | 'look' | 'about'
+// No 'about' among them any more. jdp: "im container die übercard in den
+// allgemeintab verschieben." A tab holding one card that nothing else on the
+// page links to is a tab somebody opens once, and the card it holds is the one
+// that answers "what am I looking at" - which belongs where somebody already
+// is, at the bottom of the first section, rather than behind a fourth click.
+type SettingsSection = 'general' | 'engine' | 'look'
 
 type Theme = 'dark' | 'light'
 
@@ -227,7 +232,11 @@ export function App() {
     // and the one element that was neither read as belonging to the window
     // chrome instead of to the app. The padding here is what lets it float; the
     // rail's own surface and radius do the rest.
-    <div className="flex h-screen gap-4 overflow-hidden bg-carbon-background p-4">
+    // The gutter is the language's token rather than a Tailwind step. Same
+    // 1rem as before, so nothing moves - but it is now the number GlimStone
+    // names, and the drift it exists to stop (one app at 1rem, the sibling at
+    // 1.5rem, and a rail that read as a smaller rail) cannot start here again.
+    <div className="flex h-screen gap-4 overflow-hidden bg-carbon-background p-[var(--page-gutter)]">
       <Sidebar<Tab>
         value={previewing ? 'jobs' : tab}
         mode={labels.sidebar}
@@ -373,7 +382,6 @@ function Settings(props: LookProps) {
           // engine and had nowhere to be set except the file.
           { value: 'engine', label: t('settings.engine'), icon: <IconLive /> },
           { value: 'look', label: t('settings.look'), icon: <IconLook /> },
-          { value: 'about', label: t('settings.about'), icon: <IconAbout /> },
         ]}
       />
       </div>
@@ -396,10 +404,8 @@ function Settings(props: LookProps) {
           <General {...props} />
         ) : section === 'engine' ? (
           <Engine />
-        ) : section === 'look' ? (
-          <Look {...props} />
         ) : (
-          <About version={props.version} />
+          <Look {...props} />
         )}
       </div>
     </Stack>
@@ -450,7 +456,14 @@ function LogOut() {
   )
 }
 
-function General({ lang, onLang, languages, window: windowSettings, onWindow }: LookProps) {
+function General({
+  lang,
+  onLang,
+  languages,
+  window: windowSettings,
+  onWindow,
+  version,
+}: LookProps) {
   const { t } = useT()
   return (
     <Stack>
@@ -538,6 +551,13 @@ function General({ lang, onLang, languages, window: windowSettings, onWindow }: 
           />
         </Card>
       )}
+
+      {/* LAST on the page, and that is the whole of where it belongs. The card
+          answers "what am I looking at and who do I tell about it", which is
+          the question somebody has either at the start or at the end and never
+          in the middle of changing a setting. Everything above it is something
+          to decide; this is something to read. */}
+      <About version={version} />
     </Stack>
   )
 }

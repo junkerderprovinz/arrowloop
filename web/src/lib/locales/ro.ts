@@ -344,7 +344,6 @@ const ro: Translations = {
   'engine.webhookHint': 'O adresă la care trimite o rulare încheiată, pentru tot ce nu este Matrix. Gol înseamnă că nu se trimite nimic.',
   'engine.onSuccess': 'Raportează și rulările reușite',
   'engine.onSuccessHint': 'Dezactivat implicit, ca un mesaj să însemne că ceva a mers prost. Activat, o săptămână liniștită se citește la fel ca una stricată, pentru că amândouă sunt tăcere.',
-  'settings.about': 'Despre',
   'schedule.off': 'Manual',
   'schedule.every': 'La fiecare N',
   'schedule.everyLabel': 'La fiecare',

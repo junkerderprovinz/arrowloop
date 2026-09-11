@@ -344,7 +344,6 @@ const hu: Translations = {
   'engine.webhookHint': 'Egy cím, ahová egy befejezett futás küld, mindenre, ami nem Matrix. Az üres érték azt jelenti, hogy semmi sem megy ki.',
   'engine.onSuccess': 'A sikeres futásokról is jelentsen',
   'engine.onSuccessHint': 'Alapból ki, hogy egy üzenet azt jelentse: valami elromlott. Bekapcsolva egy nyugodt hét ugyanúgy néz ki, mint egy elromlott, mert mindkettő csend.',
-  'settings.about': 'Névjegy',
   'schedule.off': 'Kézzel',
   'schedule.every': 'Minden N',
   'schedule.everyLabel': 'Minden',

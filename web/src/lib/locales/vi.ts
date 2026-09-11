@@ -344,7 +344,6 @@ const vi: Translations = {
   'engine.webhookHint': 'Địa chỉ mà một lần chạy đã xong gửi tới, dành cho mọi thứ không phải Matrix. Để trống là không gửi gì.',
   'engine.onSuccess': 'Báo cả những lần chạy thành công',
   'engine.onSuccessHint': 'Mặc định tắt, để một tin nhắn có nghĩa là có gì đó hỏng. Bật lên thì một tuần yên ả trông y hệt một tuần hỏng, vì cả hai đều là im lặng.',
-  'settings.about': 'Giới thiệu',
   'schedule.off': 'Thủ công',
   'schedule.every': 'Mỗi N',
   'schedule.everyLabel': 'Mỗi',

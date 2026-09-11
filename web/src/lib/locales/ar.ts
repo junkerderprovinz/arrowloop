@@ -344,7 +344,6 @@ const ar: Translations = {
   'engine.webhookHint': 'عنوان يرسل إليه التشغيل المنتهي، لكل ما ليس Matrix. الفراغ يعني ألا يُرسل شيء.',
   'engine.onSuccess': 'أبلغ عن التشغيلات الناجحة أيضًا',
   'engine.onSuccessHint': 'مطفأ افتراضيًا، حتى تعني الرسالة أن شيئًا ما أخفق. وإذا شُغّل، بدا الأسبوع الهادئ كالأسبوع المعطّل، لأن كليهما صمت.',
-  'settings.about': 'حول',
   'schedule.off': 'يدوي',
   'schedule.every': 'كل N',
   'schedule.everyLabel': 'كل',

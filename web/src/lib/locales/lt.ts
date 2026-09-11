@@ -344,7 +344,6 @@ const lt: Translations = {
   'engine.webhookHint': 'Adresas, kuriuo siunčia baigtas paleidimas, viskam, kas nėra Matrix. Tuščia reiškia, kad nieko nesiunčiama.',
   'engine.onSuccess': 'Pranešti ir apie sėkmingus paleidimus',
   'engine.onSuccessHint': 'Pagal numatytuosius nustatymus išjungta, kad žinutė reikštų, jog kažkas nepavyko. Įjungus rami savaitė atrodo taip pat kaip sugedusi, nes abi yra tyla.',
-  'settings.about': 'Apie',
   'schedule.off': 'Rankiniu būdu',
   'schedule.every': 'Kas N',
   'schedule.everyLabel': 'Kas',

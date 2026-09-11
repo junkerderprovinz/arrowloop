@@ -344,7 +344,6 @@ const is: Translations = {
   'engine.webhookHint': 'Vistfang sem lokin keyrsla sendir á, fyrir allt sem er ekki Matrix. Autt þýðir að ekkert er sent.',
   'engine.onSuccess': 'Segja líka frá vel heppnuðum keyrslum',
   'engine.onSuccessHint': 'Sjálfgefið slökkt, svo skilaboð þýði að eitthvað hafi farið úrskeiðis. Kveikt lítur róleg vika eins út og biluð, því hvort tveggja er þögn.',
-  'settings.about': 'Um',
   'schedule.off': 'Handvirkt',
   'schedule.every': 'Á N fresti',
   'schedule.everyLabel': 'Á',

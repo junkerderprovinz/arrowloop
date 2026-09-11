@@ -344,7 +344,6 @@ const sv: Translations = {
   'engine.webhookHint': 'En adress som en avslutad körning postar till, för allt som inte är Matrix. Tomt betyder att inget skickas.',
   'engine.onSuccess': 'Rapportera även lyckade körningar',
   'engine.onSuccessHint': 'Av som standard, så att ett meddelande betyder att något gick fel. Påslaget läses en lugn vecka likadant som en trasig, för båda är tystnad.',
-  'settings.about': 'Om',
   'schedule.off': 'Manuellt',
   'schedule.every': 'Var N',
   'schedule.everyLabel': 'Var',

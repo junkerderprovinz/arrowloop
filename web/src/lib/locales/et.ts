@@ -344,7 +344,6 @@ const et: Translations = {
   'engine.webhookHint': 'Aadress, kuhu lõpetatud käivitus saadab, kõige jaoks, mis pole Matrix. Tühi tähendab, et midagi ei saadeta.',
   'engine.onSuccess': 'Teata ka õnnestunud käivitustest',
   'engine.onSuccessHint': 'Vaikimisi väljas, et sõnum tähendaks, et midagi läks valesti. Sisse lülitatuna näeb vaikne nädal välja samamoodi nagu katkine, sest mõlemad on vaikus.',
-  'settings.about': 'Teave',
   'schedule.off': 'Käsitsi',
   'schedule.every': 'Iga N',
   'schedule.everyLabel': 'Iga',

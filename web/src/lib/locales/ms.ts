@@ -344,7 +344,6 @@ const ms: Translations = {
   'engine.webhookHint': 'Alamat yang dihantar oleh larian yang selesai, untuk apa-apa selain Matrix. Kosong bermaksud tiada apa-apa dihantar.',
   'engine.onSuccess': 'Laporkan juga larian yang berjaya',
   'engine.onSuccessHint': 'Dimatikan secara lalai, supaya satu mesej bermakna ada sesuatu yang tidak kena. Jika dihidupkan, minggu yang tenang kelihatan sama seperti minggu yang rosak, kerana kedua-duanya ialah kesenyapan.',
-  'settings.about': 'Perihal',
   'schedule.off': 'Manual',
   'schedule.every': 'Setiap N',
   'schedule.everyLabel': 'Setiap',

@@ -344,7 +344,6 @@ const fa: Translations = {
   'engine.webhookHint': 'نشانی‌ای که اجرای تمام‌شده به آن می‌فرستد، برای هر چیزی جز Matrix. خالی یعنی چیزی فرستاده نمی‌شود.',
   'engine.onSuccess': 'اجراهای موفق را هم گزارش بده',
   'engine.onSuccessHint': 'به‌طور پیش‌فرض خاموش، تا یک پیام یعنی چیزی خراب شده است. اگر روشن باشد، یک هفته‌ی آرام مثل یک هفته‌ی خراب به نظر می‌رسد، چون هر دو سکوت‌اند.',
-  'settings.about': 'درباره',
   'schedule.off': 'دستی',
   'schedule.every': 'هر N',
   'schedule.everyLabel': 'هر',

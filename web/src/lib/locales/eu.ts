@@ -344,7 +344,6 @@ const eu: Translations = {
   'engine.webhookHint': 'Amaitutako exekuzio batek bidaltzen duen helbidea, Matrix ez den guztirako. Hutsik uzteak ez dela ezer bidaltzen esan nahi du.',
   'engine.onSuccess': 'Eman berri ondo joandako exekuzioez ere',
   'engine.onSuccessHint': 'Lehenetsita itzalita, mezu batek zerbait gaizki joan dela esan nahi izan dezan. Piztuta, aste lasai bat hondatutako baten berdina irakurtzen da, biak isiltasuna baitira.',
-  'settings.about': 'Honi buruz',
   'schedule.off': 'Eskuz',
   'schedule.every': 'N bakoitzeko',
   'schedule.everyLabel': 'Bakoitzeko',

@@ -344,7 +344,6 @@ const cs: Translations = {
   'engine.webhookHint': 'Adresa, na kterou hlásí dokončený běh, pro vše kromě Matrixu. Prázdné znamená, že se nic neodesílá.',
   'engine.onSuccess': 'Hlásit i úspěšné běhy',
   'engine.onSuccessHint': 'Ve výchozím stavu vypnuto, aby zpráva znamenala, že se něco pokazilo. Zapnuté způsobí, že klidný týden vypadá stejně jako rozbitý, protože obojí je ticho.',
-  'settings.about': 'O aplikaci',
   'schedule.off': 'Ručně',
   'schedule.every': 'Každých N',
   'schedule.everyLabel': 'Každých',

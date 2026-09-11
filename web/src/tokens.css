@@ -44,6 +44,18 @@
   --radius-control: 0.625rem;
   --radius-pill: 9999px;
 
+  /* The page gutter: the distance between the window edge and everything on
+     it, and between the rail and the content. ONE number, set on the frame
+     that holds both, never on the rail and never on the content (see "The
+     rail is a CARD, not a wall" in docs/design-language.md).
+
+     It is a token because "one number" alone was not enough to keep two
+     adopting apps on the same one: one took 1rem, the other 1.5rem, and the
+     rail in the second sat further from the edge and, half a rem shorter at
+     the top and the bottom each, read as a smaller rail entirely. The
+     content's own padding is a SEPARATE distance and is not this token. */
+  --page-gutter: 1rem;
+
   /* The navigation rail's width in glyph mode, where it prints no words. A
      NUMBER for the whole house, not each app's own sum: derived from the brand
      mark plus the row padding it gave 64px here and 96px in the sibling, and
@@ -900,7 +912,12 @@ body {
        what makes it spring rather than ease - the same shape React Native's
        spring gives the phone, so the two surfaces move alike. */
     --motion-curve: cubic-bezier(.34, 1.56, .64, 1);
+    /* The toast travels with everything else. It had been left behind at
+       one distance for all three intensities, under a comment claiming it
+       moved further at the top one. */
+    --glim-toast-slide: 24px;
   }
+  :root[dir="rtl"] { --glim-toast-slide: -24px; }
   :root[data-motion='subtle'] {
     --motion-page-dur: 140ms;
     --motion-toast-dur: 120ms;
@@ -912,7 +929,9 @@ body {
     --motion-page-travel: 6px;
     --motion-page-scale: 1;
     --motion-curve: cubic-bezier(.2, .6, .2, 1);
+    --glim-toast-slide: 12px;
   }
+  :root[data-motion='subtle'][dir="rtl"] { --glim-toast-slide: -12px; }
   :root[data-motion='off'] {
     --motion-page-dur: 0s;
     --motion-toast-dur: 0s;
@@ -921,6 +940,8 @@ body {
     --motion-page-travel: 0px;
     --motion-page-scale: 1;
     --motion-curve: linear;
+    /* No RTL twin: zero is its own negative. */
+    --glim-toast-slide: 0px;
     /* The pulse is the one that does not get a zero. An infinite animation at
        zero duration is a still element, which is correct, but `.glim-live`
        carries a meaning ("this is happening now") that has to survive the

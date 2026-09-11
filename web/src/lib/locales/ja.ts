@@ -344,7 +344,6 @@ const ja: Translations = {
   'engine.webhookHint': 'Matrix 以外の宛先として、完了した実行が送信するアドレスです。空欄なら何も送りません。',
   'engine.onSuccess': '成功した実行も知らせる',
   'engine.onSuccessHint': '既定では切ってあります。メッセージが来たら何かが失敗した、という意味になるからです。入れると、静かな週と壊れた週が同じに見えます。どちらも沈黙だからです。',
-  'settings.about': 'このアプリについて',
   'schedule.off': '手動',
   'schedule.every': 'N ごと',
   'schedule.everyLabel': 'ごと',

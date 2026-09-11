@@ -9,7 +9,7 @@ import { IconGithub } from './brandGlyphs'
 // with the addresses, because the phone's About card offers the same three and
 // a donation link written down twice fails silently: the wrong one still opens
 // a page, just not the right person's.
-import { COFFEE, PAYPAL } from '../lib/donate'
+import { COFFEE, GLIMSTONE_REPO, MAIL, PAYPAL, REPO } from '../lib/donate'
 import { useT } from '../lib/i18n'
 
 /**
@@ -27,13 +27,9 @@ import { useT } from '../lib/i18n'
  * and the version. The card fetches nothing.
  */
 
-const REPO = 'https://github.com/junkerderprovinz/arrowloop'
-const GLIMSTONE_REPO = 'https://github.com/junkerderprovinz/glimstone'
-
-/** The workshop's own mailbox, shared by every tool here: the subject carries
- *  the product name, so one inbox can tell them apart. Not a private address,
- *  which is the point of having it. */
-const MAIL = 'hello@halleluja.design'
+/* The three addresses now come from lib/donate.ts, beside the give links and
+   for the same reason: there are two About cards, and every address on them
+   was written out twice. */
 
 /**
  * The design language this interface is built against.

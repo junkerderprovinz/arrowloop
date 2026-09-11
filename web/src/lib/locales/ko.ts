@@ -344,7 +344,6 @@ const ko: Translations = {
   'engine.webhookHint': 'Matrix가 아닌 곳으로, 끝난 실행이 보내는 주소입니다. 비워 두면 아무것도 보내지 않습니다.',
   'engine.onSuccess': '성공한 실행도 알림',
   'engine.onSuccessHint': '기본값은 꺼짐입니다. 메시지가 오면 무언가 잘못됐다는 뜻이 되기 때문입니다. 켜 두면 조용한 주와 고장 난 주가 똑같이 보입니다. 둘 다 침묵이니까요.',
-  'settings.about': '정보',
   'schedule.off': '수동',
   'schedule.every': 'N마다',
   'schedule.everyLabel': '마다',

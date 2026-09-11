@@ -344,7 +344,6 @@ const fr: Translations = {
   'engine.webhookHint': 'Une adresse à laquelle une exécution terminée envoie son rapport, pour tout ce qui n\'est pas Matrix. Vide signifie que rien n\'est envoyé.',
   'engine.onSuccess': 'Signaler aussi les exécutions réussies',
   'engine.onSuccessHint': 'Désactivé par défaut, pour qu\'un message signifie que quelque chose a échoué. Activé, une semaine tranquille ressemble à une semaine en panne, puisque les deux sont du silence.',
-  'settings.about': 'À propos',
   'schedule.off': 'Manuel',
   'schedule.every': 'Tous les N',
   'schedule.everyLabel': 'Tous les',

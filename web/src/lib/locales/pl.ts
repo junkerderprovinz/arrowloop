@@ -344,7 +344,6 @@ const pl: Translations = {
   'engine.webhookHint': 'Adres, pod który melduje zakończony przebieg, dla wszystkiego poza Matrix. Puste oznacza, że nic nie jest wysyłane.',
   'engine.onSuccess': 'Zgłaszaj też udane przebiegi',
   'engine.onSuccessHint': 'Domyślnie wyłączone, żeby wiadomość oznaczała, że coś poszło źle. Włączone sprawia, że spokojny tydzień wygląda tak samo jak zepsuty, bo oba to cisza.',
-  'settings.about': 'O programie',
   'schedule.off': 'Ręcznie',
   'schedule.every': 'Co N',
   'schedule.everyLabel': 'Co',

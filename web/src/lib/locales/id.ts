@@ -344,7 +344,6 @@ const id: Translations = {
   'engine.webhookHint': 'Alamat yang dikirimi oleh proses yang selesai, untuk apa pun selain Matrix. Kosong berarti tidak ada yang dikirim.',
   'engine.onSuccess': 'Laporkan juga proses yang berhasil',
   'engine.onSuccessHint': 'Mati secara bawaan, supaya sebuah pesan berarti ada yang tidak beres. Kalau dinyalakan, minggu yang tenang terbaca sama seperti minggu yang rusak, karena keduanya adalah kesunyian.',
-  'settings.about': 'Tentang',
   'schedule.off': 'Manual',
   'schedule.every': 'Setiap N',
   'schedule.everyLabel': 'Setiap',

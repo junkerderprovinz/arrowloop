@@ -344,7 +344,6 @@ const lv: Translations = {
   'engine.webhookHint': 'Adrese, uz kuru sūta pabeigta palaišana, visam, kas nav Matrix. Tukšs nozīmē, ka nekas netiek sūtīts.',
   'engine.onSuccess': 'Ziņot arī par veiksmīgām palaišanām',
   'engine.onSuccessHint': 'Pēc noklusējuma izslēgts, lai ziņa nozīmētu, ka kaut kas nogāja greizi. Ieslēgtam mierīga nedēļa izskatās tāpat kā salauzta, jo abas ir klusums.',
-  'settings.about': 'Par',
   'schedule.off': 'Manuāli',
   'schedule.every': 'Ik pēc N',
   'schedule.everyLabel': 'Ik pēc',

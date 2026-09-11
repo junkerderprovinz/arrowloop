@@ -344,7 +344,6 @@ const tr: Translations = {
   'engine.webhookHint': 'Biten bir çalıştırmanın gönderdiği adres, Matrix dışındaki her şey için. Boş bırakmak hiçbir şey gönderilmemesi demektir.',
   'engine.onSuccess': 'Başarılı çalıştırmaları da bildir',
   'engine.onSuccessHint': 'Varsayılan olarak kapalı, böylece bir mesaj bir şeylerin ters gittiği anlamına gelir. Açıkken sakin bir hafta bozuk bir hafta gibi okunur, çünkü ikisi de sessizliktir.',
-  'settings.about': 'Hakkında',
   'schedule.off': 'Elle',
   'schedule.every': 'Her N',
   'schedule.everyLabel': 'Her',

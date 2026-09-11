@@ -344,7 +344,6 @@ const zh: Translations = {
   'engine.webhookHint': '运行结束后发送到的地址，用于 Matrix 以外的一切。留空表示什么都不发送。',
   'engine.onSuccess': '成功的运行也通知',
   'engine.onSuccessHint': '默认关闭，这样一条消息就意味着出了问题。打开后，平静的一周和坏掉的一周看起来一样，因为两者都是沉默。',
-  'settings.about': '关于',
   'schedule.off': '手动',
   'schedule.every': '每 N',
   'schedule.everyLabel': '每',

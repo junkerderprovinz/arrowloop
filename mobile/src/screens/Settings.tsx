@@ -18,7 +18,13 @@ import {
   type ThemeChoice,
 } from "../settings";
 import { GLIMSTONE_VERSION } from "../../../web/src/lib/glimstone/version";
-import { COFFEE, PAYPAL } from "../../../web/src/lib/donate";
+import {
+  COFFEE,
+  glimstoneRelease,
+  MAIL,
+  PAYPAL,
+  REPO,
+} from "../../../web/src/lib/donate";
 import { nearestPreset } from "../../../web/src/lib/colorMath";
 import { flagEmoji } from "../../../web/src/lib/flagEmoji";
 import { animateNext, useMotion, type MotionIntensity } from "../motion";
@@ -745,7 +751,7 @@ export function Settings() {
             label={t("about.repo")}
             labelKey="about.repo"
             mark={() => <DonateMark name="github" scheme={scheme} />}
-            onPress={() => Linking.openURL("https://github.com/junkerderprovinz/arrowloop")}
+            onPress={() => Linking.openURL(REPO)}
           />
           {/* The one button on this card that is NOT a brand, and the exception
               proves the rule: it reaches this app's own authors rather than a
@@ -759,7 +765,7 @@ export function Settings() {
             mark={() => <Glyph name="IconMail" color={accentInk} />}
             onPress={() =>
               Linking.openURL(
-                `mailto:hello@halleluja.design?subject=${encodeURIComponent(
+                `mailto:${MAIL}?subject=${encodeURIComponent(
                   `ArrowLoop: ${t("about.mailSubject")}`,
                 )}`,
               )
@@ -782,7 +788,7 @@ export function Settings() {
           <Text
             onPress={() =>
               Linking.openURL(
-                `https://github.com/junkerderprovinz/glimstone/releases/tag/v${GLIMSTONE_VERSION}`,
+                glimstoneRelease(GLIMSTONE_VERSION),
               )
             }
             style={styles.versionLink}
@@ -868,11 +874,10 @@ export async function askNotifications(): Promise<boolean> {
  * and beats a 404 with a tag name in it.
  */
 function releaseUrl(version: string | null): string {
-  const repo = "https://github.com/junkerderprovinz/arrowloop";
   if (version && /^v?\d+\.\d+\.\d+$/.test(version)) {
-    return `${repo}/releases/tag/${version.startsWith("v") ? version : `v${version}`}`;
+    return `${REPO}/releases/tag/${version.startsWith("v") ? version : `v${version}`}`;
   }
-  return `${repo}/releases`;
+  return `${REPO}/releases`;
 }
 
 function langName(code: string): string {

@@ -1,4 +1,4 @@
-// Copied verbatim from GlimStone 1.7.2, reference/appearance.ts.
+// Copied verbatim from GlimStone 1.10.0, reference/appearance.ts.
 // Do not edit here: change it in the design language repo and copy again.
 // https://github.com/junkerderprovinz/glimstone
 // Appearance is the set of looks the user owns: how rounded the interface is,

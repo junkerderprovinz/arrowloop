@@ -344,7 +344,6 @@ const ca: Translations = {
   'engine.webhookHint': 'Una adreça a la qual envia una execució acabada, per a tot allò que no sigui Matrix. Buit vol dir que no s\'envia res.',
   'engine.onSuccess': 'Informa també de les execucions correctes',
   'engine.onSuccessHint': 'Desactivat per defecte, perquè un missatge signifiqui que alguna cosa ha fallat. Activat, una setmana tranquil·la es llegeix igual que una d\'espatllada, perquè totes dues són silenci.',
-  'settings.about': 'Quant a',
   'schedule.off': 'Manual',
   'schedule.every': 'Cada N',
   'schedule.everyLabel': 'Cada',

@@ -344,7 +344,6 @@ const it: Translations = {
   'engine.webhookHint': 'Un indirizzo a cui riferisce un\'esecuzione conclusa, per tutto ciò che non è Matrix. Vuoto significa che non viene inviato nulla.',
   'engine.onSuccess': 'Segnala anche le esecuzioni riuscite',
   'engine.onSuccessHint': 'Disattivo per impostazione predefinita, così un messaggio significa che qualcosa è andato storto. Attivo, una settimana tranquilla si legge come una rotta, perché entrambe sono silenzio.',
-  'settings.about': 'Informazioni',
   'schedule.off': 'Manuale',
   'schedule.every': 'Ogni N',
   'schedule.everyLabel': 'Ogni',
