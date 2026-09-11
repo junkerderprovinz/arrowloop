@@ -1,7 +1,7 @@
 // ไทย (th). Checked against the English table by i18n.parity.test.ts:
 // exactly the same keys, and the same placeholders in every sentence.
 
-import type { Translations } from '../i18n'
+import type { Translations } from '../i18n.data'
 
 const th: Translations = {
   'nav.jobs': 'งาน',
@@ -453,6 +453,46 @@ const th: Translations = {
   'help.addressShape': 'มีรูปแบบนี้: {shape}',
   'help.addressWebdav': 'นี่คือที่อยู่ WebDAV ของเซิร์ฟเวอร์ ไม่ใช่ที่อยู่ที่เปิดในเบราว์เซอร์',
   'targets.savedButUnreachable': 'บันทึกแล้ว แต่ปลายทางไม่ตอบ: {reason}',
+
+  // The phone.
+  //
+  // Android's own questions, which the container has no equivalent for: a
+  // permission granted on a settings page, a schedule that waits for the
+  // charger, a doze rule that turns a nightly job into a suggestion. They
+  // live in the SAME table as everything else, because one German is one
+  // German and a second table would drift from the first.
+  'phone.access': 'การเข้าถึงไฟล์',
+  'phone.accessOn': 'ArrowLoop เข้าถึงโฟลเดอร์ที่งานชี้ไปได้',
+  'phone.accessOff': 'Android กันทุกแอปออกจากโฟลเดอร์ของแอปอื่นทั้งหมด หากไม่มีสิทธิ์นี้ งานจะเข้าถึงได้เพียงมุมเล็ก ๆ ที่เป็นของแอปนี้ ซึ่งกล้องไม่ได้เก็บอะไรไว้ที่นั่น',
+  'phone.accessAsk': 'อนุญาตการเข้าถึงไฟล์',
+  'phone.accessNone': 'Android รุ่นนี้ไม่รู้จักสิทธิ์ดังกล่าว จึงต้องส่งมอบโฟลเดอร์ทีละโฟลเดอร์',
+  'phone.notify': 'การแจ้งเตือน',
+  'phone.notifyOn': 'เครื่องยนต์บอกได้ว่ารอบทำงานจบเมื่อใด และเมื่อใดที่มีอะไรผิดพลาด',
+  'phone.notifyOff': 'หากไม่มี รอบทำงานที่ล้มตอนตีสามจะรู้ก็อีกหลายวันต่อมา',
+  'phone.notifyAsk': 'อนุญาตการแจ้งเตือน',
+  'phone.doze': 'ทำงานเบื้องหลัง',
+  'phone.dozeOn': 'Android ปล่อยรอบทำงานตามเวลาไว้ตามลำพัง',
+  'phone.dozeOff': 'Android จะพักแอปที่คิดว่าไม่ได้ใช้งาน งานที่ตั้งไว้ตอนกลางคืนจึงเริ่มก็ต่อเมื่อหยิบโทรศัพท์ขึ้นมาอีกครั้ง',
+  'phone.dozeAsk': 'อนุญาตให้ทำงานเบื้องหลัง',
+  'phone.schedule': 'เมื่อใดที่งานเริ่มเองได้',
+  'phone.charging': 'เฉพาะตอนชาร์จ',
+  'phone.chargingHint': 'รอบทำงานตามเวลาจะรอจนกว่าโทรศัพท์จะเสียบไฟ รอบที่คุณเริ่มเองจะเดินหน้าอยู่ดี เพราะการกดปุ่มคือการตัดสินใจ และโปรแกรมที่เถียงกับมันย่อมผิด',
+  'phone.wifi': 'เฉพาะบนการเชื่อมต่อที่ไม่คิดเงินตามเมกะไบต์',
+  'phone.wifiHint': 'รอบทำงานตามเวลาจะรอการเชื่อมต่อที่ไม่มีใครจ่ายตามเมกะไบต์ ระบบถาม Android ดังนั้นเครือข่าย wifi ที่ทำเครื่องหมายว่าคิดค่าบริการก็นับด้วย',
+  'phone.heldCharging': 'รอบทำงานตามเวลากำลังรออยู่ เพราะโทรศัพท์เครื่องนี้ไม่ได้ชาร์จ',
+  'phone.heldMetered': 'รอบทำงานตามเวลากำลังรออยู่ เพราะการเชื่อมต่อนี้คิดเงินตามปริมาณ',
+  'phone.engineOn': 'เครื่องยนต์กำลังทำงาน',
+  'phone.engineOff': 'เครื่องยนต์หยุดอยู่',
+  'phone.engineHint': 'เครื่องยนต์คือส่วนที่ทำการซิงค์ และมันทำงานอยู่ในแอปนี้ จากเครือข่ายเข้าถึงส่วนใดของมันไม่ได้เลย นี่คือสองซีกของโปรแกรมเดียวที่คุยกันเอง',
+  'phone.engineStart': 'เริ่มเครื่องยนต์',
+  'phone.engineStop': 'หยุดเครื่องยนต์',
+  'phone.themeSystem': 'ตามระบบ',
+  'phone.noSettings': 'ที่นี่ไม่ต้องการอะไรอีก ตั้งชื่อแล้วบันทึก',
+  'phone.runEmpty': 'รอบทำงานนี้ไม่ได้แตะไฟล์ใดเลย',
+  'phone.bin': 'ถังขยะ',
+  'phone.jobOff': 'ปิดอยู่',
+  'phone.jobOffHint': 'งานที่ปิดอยู่จะไม่เริ่มเองและไม่มีปุ่มให้ งานใหม่เริ่มแบบนี้โดยตั้งใจ สิ่งแรกที่งานซึ่งเพิ่งพิมพ์เสร็จควรทำคือไม่ทำอะไรเลย',
+  'phone.previewExplain': 'ไม่มีอะไรขยับจนกว่าคุณจะกดปุ่ม นี่คือสิ่งที่รอบทำงานจะทำ คำนวณจากทั้งสองฝั่งตามที่เป็นอยู่ตอนนี้',
 }
 
 export default th

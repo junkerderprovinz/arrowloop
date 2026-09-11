@@ -2,7 +2,11 @@ package design.halleluja.arrowloop
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
+import android.os.PowerManager
+import android.provider.Settings
+import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
@@ -12,7 +16,7 @@ import java.io.File
 /**
  * The only bridge between the screens and the engine PROCESS.
  *
- * Six methods, and the list is short on purpose: everything that can be asked
+ * A short list on purpose: everything that can be asked
  * over HTTP is asked over HTTP, by `src/api.ts`, against the same API the web
  * interface uses. What crosses into Kotlin is only what has no expression in
  * JavaScript - executing a binary out of the native library directory, holding
@@ -89,6 +93,74 @@ class EngineModule(private val context: ReactApplicationContext) :
 
     @ReactMethod
     fun storagePossible(promise: Promise) = promise.resolve(Storage.possible)
+
+    /**
+     * The two schedule conditions, and the facts behind them.
+     *
+     * Both halves in one answer on purpose. A switch that says "only while
+     * charging" while the phone is on battery is a switch whose consequence is
+     * invisible, and somebody then waits all evening for a run that was never
+     * going to start. The screen says which of them is holding things up
+     * because this hands it the live state alongside the preference.
+     */
+    @ReactMethod
+    fun devicePolicy(promise: Promise) {
+        val map = Arguments.createMap()
+        map.putBoolean("onlyCharging", Device.onlyCharging(context))
+        map.putBoolean("onlyWifi", Device.onlyWifi(context))
+        map.putBoolean("charging", Device.charging(context))
+        map.putBoolean("metered", Device.metered(context))
+        map.putString("holding", Device.reason(context))
+        promise.resolve(map)
+    }
+
+    @ReactMethod
+    fun setDevicePolicy(onlyCharging: Boolean, onlyWifi: Boolean, promise: Promise) {
+        Device.setPolicy(context, onlyCharging, onlyWifi)
+        promise.resolve(null)
+    }
+
+    /**
+     * Whether Android has agreed to leave this app alone in the background.
+     *
+     * The permission behind every complaint a sync tool on Android ever gets.
+     * Doze puts an app it considers idle to sleep, and a job set for three in
+     * the morning then runs whenever the phone next wakes up, which is when
+     * somebody picks it up at breakfast. The exemption is the difference
+     * between a schedule and a suggestion.
+     */
+    @ReactMethod
+    fun batteryExempt(promise: Promise) {
+        val manager = context.getSystemService(PowerManager::class.java)
+        promise.resolve(manager?.isIgnoringBatteryOptimizations(context.packageName) ?: true)
+    }
+
+    /**
+     * Ask for that exemption, which really is one dialog with one button.
+     *
+     * ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS is the rare Android
+     * permission that still shows a prompt rather than a settings page. Where a
+     * build refuses it - some manufacturers strip it - the fallback lands on
+     * the list, which is a page rather than a prompt but is at least the right
+     * page.
+     */
+    @ReactMethod
+    @android.annotation.SuppressLint("BatteryLife")
+    fun askBatteryExemption(promise: Promise) {
+        val direct = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
+            .setData(Uri.parse("package:${context.packageName}"))
+        val list = Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+        for (intent in listOf(direct, list)) {
+            try {
+                context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                promise.resolve(null)
+                return
+            } catch (_: ActivityNotFoundException) {
+                // Try the page before giving up.
+            }
+        }
+        promise.reject("battery", "this phone has no page for that permission")
+    }
 
     /**
      * Open the page that grants file access.

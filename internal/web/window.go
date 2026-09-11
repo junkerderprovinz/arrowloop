@@ -28,6 +28,11 @@ import (
 func (s *Server) capabilities(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, map[string]any{
 		"window": s.Window != nil,
+		// Whether anything out there can tell the engine that now is a bad
+		// moment - the phone knows it is on battery, a container knows nothing
+		// of the sort. A client that can see this can offer the two switches
+		// that depend on it, and leave them out where they would do nothing.
+		"device": s.Hold != nil,
 		// Read from the build rather than typed anywhere on the page: a number
 		// written down twice is a number that disagrees with itself the day one
 		// of them is bumped.

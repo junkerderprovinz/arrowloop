@@ -38,7 +38,35 @@ interface EngineNativeModule {
    *  permission - Google routed the broadest file access there is through a
    *  full settings page rather than a two-button prompt. */
   openStorageSettings(): Promise<void>;
+
+  /** Both schedule conditions and the facts behind them, in one answer: what
+   *  was asked for, what the phone is actually plugged into, and the sentence
+   *  that is holding automatic runs back right now if one is. */
+  devicePolicy(): Promise<DevicePolicy>;
+  /** Store the two conditions and tell the engine at once. */
+  setDevicePolicy(onlyCharging: boolean, onlyWifi: boolean): Promise<void>;
+  /** Whether Android has agreed to leave the app alone in the background. */
+  batteryExempt(): Promise<boolean>;
+  /** Ask for that, which really is one dialog with one button. */
+  askBatteryExemption(): Promise<void>;
 }
+
+export interface DevicePolicy {
+  onlyCharging: boolean;
+  onlyWifi: boolean;
+  charging: boolean;
+  metered: boolean;
+  /** Empty unless something is holding automatic runs back. */
+  holding: string;
+}
+
+const NOTHING_HELD: DevicePolicy = {
+  onlyCharging: false,
+  onlyWifi: false,
+  charging: true,
+  metered: false,
+  holding: "",
+};
 
 const native = NativeModules.ArrowLoopEngine as EngineNativeModule | undefined;
 
@@ -67,6 +95,11 @@ export const engine = {
   storageGranted: () => (native ? native.storageGranted() : Promise.resolve(false)),
   storagePossible: () => (native ? native.storagePossible() : Promise.resolve(false)),
   openStorageSettings: () => (native ? native.openStorageSettings() : missing()),
+  devicePolicy: () => (native ? native.devicePolicy() : Promise.resolve(NOTHING_HELD)),
+  setDevicePolicy: (onlyCharging: boolean, onlyWifi: boolean) =>
+    native ? native.setDevicePolicy(onlyCharging, onlyWifi) : missing(),
+  batteryExempt: () => (native ? native.batteryExempt() : Promise.resolve(true)),
+  askBatteryExemption: () => (native ? native.askBatteryExemption() : missing()),
   /** Whether this build has an engine at all, so a screen can say so instead
    *  of throwing at the first tap. */
   available: Boolean(native),

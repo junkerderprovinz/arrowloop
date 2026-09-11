@@ -1,7 +1,7 @@
 // 中文 (zh). Checked against the English table by i18n.parity.test.ts:
 // exactly the same keys, and the same placeholders in every sentence.
 
-import type { Translations } from '../i18n'
+import type { Translations } from '../i18n.data'
 
 const zh: Translations = {
   'nav.jobs': '任务',
@@ -453,6 +453,46 @@ const zh: Translations = {
   'help.addressShape': '格式如下：{shape}',
   'help.addressWebdav': '这是服务器的 WebDAV 地址，不是你在浏览器里打开的地址。',
   'targets.savedButUnreachable': '已保存，但目标没有响应：{reason}',
+
+  // The phone.
+  //
+  // Android's own questions, which the container has no equivalent for: a
+  // permission granted on a settings page, a schedule that waits for the
+  // charger, a doze rule that turns a nightly job into a suggestion. They
+  // live in the SAME table as everything else, because one German is one
+  // German and a second table would drift from the first.
+  'phone.access': '文件访问',
+  'phone.accessOn': 'ArrowLoop 能够到达任务所指向的文件夹。',
+  'phone.accessOff': 'Android 让每个应用都进不了其他应用的文件夹。没有这项权限，任务只能到达属于本应用的那个小角落，而相机不会往那里放任何东西。',
+  'phone.accessAsk': '允许访问文件',
+  'phone.accessNone': '这个 Android 版本不认识该权限，因此文件夹只能一个一个地交出来。',
+  'phone.notify': '通知',
+  'phone.notifyOn': '引擎可以说明一次运行何时结束，以及何时出了问题。',
+  'phone.notifyOff': '没有通知，凌晨三点失败的一次运行要过几天才会被发现。',
+  'phone.notifyAsk': '允许通知',
+  'phone.doze': '在后台运行',
+  'phone.dozeOn': 'Android 不会打扰定时运行。',
+  'phone.dozeOff': 'Android 会让它认为闲置的应用睡下，于是安排在夜里的任务要等到手机下一次被拿起来才跑。',
+  'phone.dozeAsk': '允许在后台运行',
+  'phone.schedule': '任务什么时候可以自行开始',
+  'phone.charging': '仅在充电时',
+  'phone.chargingHint': '定时运行会等到手机接上电源。你自己启动的运行照样进行：按下按钮是一个决定，跟它争辩的程序才是错的。',
+  'phone.wifi': '仅在不按流量计费的连接上',
+  'phone.wifiHint': '定时运行会等一个没人按兆字节付费的连接。问的是 Android，所以被标记为计费的 wifi 网络同样算数。',
+  'phone.heldCharging': '定时运行正在等待，因为这部手机没有在充电。',
+  'phone.heldMetered': '定时运行正在等待，因为这个连接按流量计费。',
+  'phone.engineOn': '引擎正在运行。',
+  'phone.engineOff': '引擎已停止。',
+  'phone.engineHint': '引擎是负责同步的那一部分，它就在这个应用里运行。从网络上够不到它的任何地方：这是同一个程序的两半在互相说话。',
+  'phone.engineStart': '启动引擎',
+  'phone.engineStop': '停止引擎',
+  'phone.themeSystem': '跟随系统',
+  'phone.noSettings': '这里不需要别的了。给它起个名字并保存。',
+  'phone.runEmpty': '这次运行没有碰过任何文件。',
+  'phone.bin': '回收站',
+  'phone.jobOff': '已关闭',
+  'phone.jobOffHint': '关闭的任务从不自行开始，也不会出现按钮。新任务故意从这个状态开始：一个刚刚敲进去的任务，第一件该做的事就是什么都不做。',
+  'phone.previewExplain': '按下按钮之前什么都不会动。这是一次运行会做的事，按两边此刻的样子算出来的。',
 }
 
 export default zh

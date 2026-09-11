@@ -1,7 +1,7 @@
 // Bahasa Indonesia (id). Checked against the English table by i18n.parity.test.ts:
 // exactly the same keys, and the same placeholders in every sentence.
 
-import type { Translations } from '../i18n'
+import type { Translations } from '../i18n.data'
 
 const id: Translations = {
   'nav.jobs': 'Tugas',
@@ -453,6 +453,46 @@ const id: Translations = {
   'help.addressShape': 'Bentuknya seperti ini: {shape}',
   'help.addressWebdav': 'Ini alamat WebDAV server, bukan alamat yang kamu buka di peramban.',
   'targets.savedButUnreachable': 'Tersimpan, tetapi tujuan tidak menjawab: {reason}',
+
+  // The phone.
+  //
+  // Android's own questions, which the container has no equivalent for: a
+  // permission granted on a settings page, a schedule that waits for the
+  // charger, a doze rule that turns a nightly job into a suggestion. They
+  // live in the SAME table as everything else, because one German is one
+  // German and a second table would drift from the first.
+  'phone.access': 'Akses berkas',
+  'phone.accessOn': 'ArrowLoop dapat menjangkau folder yang ditunjuk sebuah tugas.',
+  'phone.accessOff': 'Android menjauhkan setiap aplikasi dari folder aplikasi lain. Tanpa izin ini, sebuah tugas hanya menjangkau sudut kecil milik aplikasi ini, dan kamera tidak menaruh apa pun di sana.',
+  'phone.accessAsk': 'Izinkan akses berkas',
+  'phone.accessNone': 'Versi Android ini tidak mengenal izin tersebut, jadi folder harus diserahkan satu per satu.',
+  'phone.notify': 'Notifikasi',
+  'phone.notifyOn': 'Mesin boleh memberi tahu kapan sebuah jalan selesai dan kapan ada yang gagal.',
+  'phone.notifyOff': 'Tanpa ini, jalan yang gagal pukul tiga pagi baru kamu ketahui beberapa hari kemudian.',
+  'phone.notifyAsk': 'Izinkan notifikasi',
+  'phone.doze': 'Berjalan di latar belakang',
+  'phone.dozeOn': 'Android membiarkan jalan terjadwal apa adanya.',
+  'phone.dozeOff': 'Android menidurkan aplikasi yang dianggapnya menganggur, jadi tugas yang disetel untuk malam hari baru berjalan saat ponsel diambil lagi.',
+  'phone.dozeAsk': 'Izinkan berjalan di latar belakang',
+  'phone.schedule': 'Kapan tugas boleh mulai sendiri',
+  'phone.charging': 'Hanya saat mengisi daya',
+  'phone.chargingHint': 'Jalan terjadwal menunggu sampai ponsel tersambung ke listrik. Jalan yang kamu mulai sendiri tetap berangkat: menekan tombol adalah keputusan, dan program yang membantahnya akan keliru.',
+  'phone.wifi': 'Hanya pada sambungan yang tidak dibayar per megabita',
+  'phone.wifiHint': 'Jalan terjadwal menunggu sambungan yang tidak dibayar per megabita. Yang ditanya adalah Android, jadi jaringan wifi yang ditandai berbayar juga terhitung.',
+  'phone.heldCharging': 'Jalan terjadwal sedang menunggu, karena ponsel ini tidak sedang mengisi daya.',
+  'phone.heldMetered': 'Jalan terjadwal sedang menunggu, karena sambungan ini dibayar per volume.',
+  'phone.engineOn': 'Mesin berjalan.',
+  'phone.engineOff': 'Mesin berhenti.',
+  'phone.engineHint': 'Mesin adalah bagian yang menyinkronkan, dan ia berjalan di dalam aplikasi ini. Dari jaringan tidak ada yang bisa menjangkaunya: ini dua bagian dari satu program yang saling berbicara.',
+  'phone.engineStart': 'Jalankan mesin',
+  'phone.engineStop': 'Hentikan mesin',
+  'phone.themeSystem': 'Seperti sistem',
+  'phone.noSettings': 'Di sini tidak perlu apa-apa lagi. Beri nama dan simpan.',
+  'phone.runEmpty': 'Jalan ini tidak menyentuh berkas apa pun.',
+  'phone.bin': 'Tempat sampah',
+  'phone.jobOff': 'Dimatikan',
+  'phone.jobOffHint': 'Tugas yang dimatikan tidak pernah mulai sendiri dan tidak mendapat tombol. Tugas baru sengaja dimulai begini: hal pertama yang harus dilakukan tugas yang baru saja diketik adalah tidak apa-apa.',
+  'phone.previewExplain': 'Tidak ada yang bergerak sampai kamu menekan tombol. Inilah yang akan dilakukan satu jalan, dihitung dari kedua sisi persis seperti sekarang.',
 }
 
 export default id

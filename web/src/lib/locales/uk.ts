@@ -1,7 +1,7 @@
 // Українська (uk). Checked against the English table by i18n.parity.test.ts:
 // exactly the same keys, and the same placeholders in every sentence.
 
-import type { Translations } from '../i18n'
+import type { Translations } from '../i18n.data'
 
 const uk: Translations = {
   'nav.jobs': 'Завдання',
@@ -453,6 +453,46 @@ const uk: Translations = {
   'help.addressShape': 'Виглядає так: {shape}',
   'help.addressWebdav': 'Це WebDAV-адреса сервера, а не адреса, яку ти відкриваєш у браузері.',
   'targets.savedButUnreachable': 'Збережено, але ціль не відповіла: {reason}',
+
+  // The phone.
+  //
+  // Android's own questions, which the container has no equivalent for: a
+  // permission granted on a settings page, a schedule that waits for the
+  // charger, a doze rule that turns a nightly job into a suggestion. They
+  // live in the SAME table as everything else, because one German is one
+  // German and a second table would drift from the first.
+  'phone.access': 'Доступ до файлів',
+  'phone.accessOn': 'ArrowLoop дістає до тек, на які вказує завдання.',
+  'phone.accessOff': 'Android тримає кожен застосунок подалі від тек усіх інших. Без цього дозволу завдання дістає лише до маленького кутка, який належить цьому застосунку, а камера туди нічого не кладе.',
+  'phone.accessAsk': 'Дозволити доступ до файлів',
+  'phone.accessNone': 'Ця версія Android такого дозволу не знає, тому теки доводиться передавати по одній.',
+  'phone.notify': 'Сповіщення',
+  'phone.notifyOn': 'Рушій може сказати, коли запуск завершився і коли щось пішло не так.',
+  'phone.notifyOff': 'Без них про запуск, що зірвався о третій ночі, дізнаєшся лише через кілька днів.',
+  'phone.notifyAsk': 'Дозволити сповіщення',
+  'phone.doze': 'Робота у фоні',
+  'phone.dozeOn': 'Android не чіпає запуски за розкладом.',
+  'phone.dozeOff': 'Android присипляє застосунок, який вважає бездіяльним, тож завдання, призначене на ніч, стартує лише коли телефон знову візьмуть до рук.',
+  'phone.dozeAsk': 'Дозволити роботу у фоні',
+  'phone.schedule': 'Коли завдання можуть стартувати самі',
+  'phone.charging': 'Лише під час заряджання',
+  'phone.chargingHint': 'Запуск за розкладом чекає, доки телефон не буде на живленні. Запуск, який ти почав сам, піде в будь-якому разі: натиснути кнопку це рішення, і програма, що сперечалася б із ним, була б неправа.',
+  'phone.wifi': 'Лише через з\'єднання без оплати за мегабайти',
+  'phone.wifiHint': 'Запуск за розкладом чекає на з\'єднання, за яке ніхто не платить помегабайтно. Питають Android, тож мережа wifi, позначена як платна, теж рахується.',
+  'phone.heldCharging': 'Запуски за розкладом чекають, бо цей телефон не заряджається.',
+  'phone.heldMetered': 'Запуски за розкладом чекають, бо це з\'єднання платне за трафік.',
+  'phone.engineOn': 'Рушій працює.',
+  'phone.engineOff': 'Рушій зупинений.',
+  'phone.engineHint': 'Рушій це та частина, що синхронізує, і вона працює всередині цього застосунку. З мережі до нього не дістатися: це дві половини однієї програми, які розмовляють між собою.',
+  'phone.engineStart': 'Запустити рушій',
+  'phone.engineStop': 'Зупинити рушій',
+  'phone.themeSystem': 'Як у системі',
+  'phone.noSettings': 'Тут більше нічого не треба. Дай назву і збережи.',
+  'phone.runEmpty': 'Цей запуск не торкнувся жодного файлу.',
+  'phone.bin': 'Кошик',
+  'phone.jobOff': 'Вимкнено',
+  'phone.jobOffHint': 'Вимкнене завдання ніколи не стартує саме і кнопки не отримує. Нове завдання навмисне починається так: перше, що має зробити щойно набране завдання, це нічого.',
+  'phone.previewExplain': 'Доки не натиснеш кнопку, нічого не зрушить. Це те, що зробив би запуск, обчислене з обох боків саме такими, якими вони є зараз.',
 }
 
 export default uk

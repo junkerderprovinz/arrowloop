@@ -57,6 +57,13 @@ class EngineService : Service() {
 
         Engine.start(this)
 
+        // Watching for the charger and the connection starts with the service
+        // rather than with the screens, because the hours this matters in are
+        // the ones with no screen: JavaScript can be torn down while this
+        // carries on, and a watcher that lived there would go quiet exactly
+        // when the phone went into a pocket.
+        Device.watch(this)
+
         // START_STICKY: if the system reclaims this service under memory
         // pressure, bring it back. Engine.start checks whether the engine is
         // already answering, so a restart that finds the process still alive
@@ -65,6 +72,7 @@ class EngineService : Service() {
     }
 
     override fun onDestroy() {
+        Device.forget(this)
         Engine.stop()
         super.onDestroy()
     }

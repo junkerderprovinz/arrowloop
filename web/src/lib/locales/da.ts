@@ -1,7 +1,7 @@
 // Dansk (da). Checked against the English table by i18n.parity.test.ts:
 // exactly the same keys, and the same placeholders in every sentence.
 
-import type { Translations } from '../i18n'
+import type { Translations } from '../i18n.data'
 
 const da: Translations = {
   'nav.jobs': 'Job',
@@ -453,6 +453,46 @@ const da: Translations = {
   'help.addressShape': 'Den ser sådan ud: {shape}',
   'help.addressWebdav': 'Dette er serverens WebDAV-adresse, ikke den adresse du åbner i browseren.',
   'targets.savedButUnreachable': 'Gemt, men målet svarede ikke: {reason}',
+
+  // The phone.
+  //
+  // Android's own questions, which the container has no equivalent for: a
+  // permission granted on a settings page, a schedule that waits for the
+  // charger, a doze rule that turns a nightly job into a suggestion. They
+  // live in the SAME table as everything else, because one German is one
+  // German and a second table would drift from the first.
+  'phone.access': 'Filadgang',
+  'phone.accessOn': 'ArrowLoop når de mapper, et job peger på.',
+  'phone.accessOff': 'Android holder hver app væk fra alle andres mapper. Uden denne tilladelse når et job kun det lille hjørne, der hører til denne app, og der lægger kameraet ingenting.',
+  'phone.accessAsk': 'Tillad filadgang',
+  'phone.accessNone': 'Denne Android-version kender ikke den tilladelse, så mapper skal overdrages en ad gangen.',
+  'phone.notify': 'Notifikationer',
+  'phone.notifyOn': 'Motoren må sige, hvornår en kørsel er færdig, og hvornår noget er gået galt.',
+  'phone.notifyOff': 'Uden dem hører du først om en kørsel, der faldt klokken tre om natten, flere dage senere.',
+  'phone.notifyAsk': 'Tillad notifikationer',
+  'phone.doze': 'Kørsel i baggrunden',
+  'phone.dozeOn': 'Android lader planlagte kørsler være i fred.',
+  'phone.dozeOff': 'Android lægger en app, den tror er inaktiv, til at sove, så et job sat til natten først starter, når telefonen samles op igen.',
+  'phone.dozeAsk': 'Tillad kørsel i baggrunden',
+  'phone.schedule': 'Hvornår job må starte af sig selv',
+  'phone.charging': 'Kun under opladning',
+  'phone.chargingHint': 'En planlagt kørsel venter, indtil telefonen er i strøm. En kørsel, du selv starter, går alligevel: at trykke på knappen er en beslutning, og et program, der skændtes om det, ville tage fejl.',
+  'phone.wifi': 'Kun på en forbindelse uden betaling per megabyte',
+  'phone.wifiHint': 'En planlagt kørsel venter på en forbindelse, som ingen betaler per megabyte for. Android bliver spurgt, så et wifi-netværk markeret som betalt tæller også med.',
+  'phone.heldCharging': 'Planlagte kørsler venter, fordi denne telefon ikke lader op.',
+  'phone.heldMetered': 'Planlagte kørsler venter, fordi denne forbindelse betales efter forbrug.',
+  'phone.engineOn': 'Motoren kører.',
+  'phone.engineOff': 'Motoren står stille.',
+  'phone.engineHint': 'Motoren er den del, der synkroniserer, og den kører inde i denne app. Fra netværket kan man ikke nå noget af den: det er to halvdele af ét program, der taler sammen.',
+  'phone.engineStart': 'Start motoren',
+  'phone.engineStop': 'Stop motoren',
+  'phone.themeSystem': 'Som systemet',
+  'phone.noSettings': 'Her skal der ikke mere til. Giv det et navn, og gem.',
+  'phone.runEmpty': 'Denne kørsel rørte ingen filer.',
+  'phone.bin': 'Papirkurv',
+  'phone.jobOff': 'Slået fra',
+  'phone.jobOffHint': 'Et job, der er slået fra, starter aldrig af sig selv og får ingen knap. Et nyt job begynder sådan med vilje: det første, et netop indtastet job bør gøre, er ingenting.',
+  'phone.previewExplain': 'Der sker ingenting, før du trykker på knappen. Det her er, hvad en kørsel ville gøre, regnet ud fra begge sider præcis som de ser ud nu.',
 }
 
 export default da

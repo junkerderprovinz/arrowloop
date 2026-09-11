@@ -1,7 +1,7 @@
 // हिन्दी (hi). Checked against the English table by i18n.parity.test.ts:
 // exactly the same keys, and the same placeholders in every sentence.
 
-import type { Translations } from '../i18n'
+import type { Translations } from '../i18n.data'
 
 const hi: Translations = {
   'nav.jobs': 'काम',
@@ -453,6 +453,46 @@ const hi: Translations = {
   'help.addressShape': 'यह ऐसा दिखता है: {shape}',
   'help.addressWebdav': 'यह सर्वर का WebDAV पता है, वह नहीं जो आप ब्राउज़र में खोलते हैं।',
   'targets.savedButUnreachable': 'सहेजा गया, पर लक्ष्य ने जवाब नहीं दिया: {reason}',
+
+  // The phone.
+  //
+  // Android's own questions, which the container has no equivalent for: a
+  // permission granted on a settings page, a schedule that waits for the
+  // charger, a doze rule that turns a nightly job into a suggestion. They
+  // live in the SAME table as everything else, because one German is one
+  // German and a second table would drift from the first.
+  'phone.access': 'फ़ाइल पहुँच',
+  'phone.accessOn': 'ArrowLoop उन फ़ोल्डरों तक पहुँचता है जिनकी ओर कोई काम इशारा करता है।',
+  'phone.accessOff': 'Android हर ऐप को बाकी सब ऐप के फ़ोल्डरों से दूर रखता है। इस अनुमति के बिना कोई काम सिर्फ़ उस छोटे कोने तक पहुँचता है जो इसी ऐप का है, और कैमरा वहाँ कुछ नहीं रखता।',
+  'phone.accessAsk': 'फ़ाइल पहुँच की अनुमति दें',
+  'phone.accessNone': 'Android का यह संस्करण उस अनुमति को नहीं जानता, इसलिए फ़ोल्डर एक-एक करके सौंपने पड़ते हैं।',
+  'phone.notify': 'सूचनाएँ',
+  'phone.notifyOn': 'इंजन बता सकता है कि कोई चक्र कब पूरा हुआ और कब कुछ बिगड़ा।',
+  'phone.notifyOff': 'इनके बिना रात तीन बजे गिरे चक्र का पता कई दिन बाद चलता है।',
+  'phone.notifyAsk': 'सूचनाओं की अनुमति दें',
+  'phone.doze': 'पृष्ठभूमि में चलना',
+  'phone.dozeOn': 'Android समयबद्ध चक्रों को छेड़ता नहीं।',
+  'phone.dozeOff': 'Android जिस ऐप को निष्क्रिय समझता है उसे सुला देता है, इसलिए रात के लिए तय किया गया काम तभी चलता है जब फ़ोन दोबारा हाथ में लिया जाए।',
+  'phone.dozeAsk': 'पृष्ठभूमि में चलने की अनुमति दें',
+  'phone.schedule': 'काम अपने आप कब शुरू हो सकते हैं',
+  'phone.charging': 'सिर्फ़ चार्ज होते समय',
+  'phone.chargingHint': 'समयबद्ध चक्र तब तक रुकता है जब तक फ़ोन बिजली पर न हो। जो चक्र तुम खुद शुरू करते हो वह वैसे भी चलता है: बटन दबाना एक निर्णय है, और उससे बहस करने वाला कार्यक्रम ग़लत होगा।',
+  'phone.wifi': 'सिर्फ़ ऐसे कनेक्शन पर जिसका मेगाबाइट के हिसाब से पैसा न लगे',
+  'phone.wifiHint': 'समयबद्ध चक्र ऐसे कनेक्शन का इंतज़ार करता है जिसका कोई मेगाबाइट के हिसाब से भुगतान न करे। पूछा Android से जाता है, इसलिए सशुल्क चिह्नित wifi नेटवर्क भी गिना जाता है।',
+  'phone.heldCharging': 'समयबद्ध चक्र रुके हुए हैं, क्योंकि यह फ़ोन चार्ज नहीं हो रहा।',
+  'phone.heldMetered': 'समयबद्ध चक्र रुके हुए हैं, क्योंकि इस कनेक्शन का शुल्क डेटा के हिसाब से लगता है।',
+  'phone.engineOn': 'इंजन चल रहा है।',
+  'phone.engineOff': 'इंजन रुका हुआ है।',
+  'phone.engineHint': 'इंजन वह हिस्सा है जो तालमेल करता है, और वह इसी ऐप के भीतर चलता है। नेटवर्क से उसका कुछ भी नहीं पहुँचा जा सकता: ये एक ही कार्यक्रम के दो आधे हिस्से हैं जो आपस में बात करते हैं।',
+  'phone.engineStart': 'इंजन चालू करें',
+  'phone.engineStop': 'इंजन रोकें',
+  'phone.themeSystem': 'जैसा सिस्टम',
+  'phone.noSettings': 'यहाँ और कुछ नहीं चाहिए। इसे एक नाम दो और सहेज लो।',
+  'phone.runEmpty': 'इस चक्र ने कोई फ़ाइल नहीं छुई।',
+  'phone.bin': 'रद्दी',
+  'phone.jobOff': 'बंद',
+  'phone.jobOffHint': 'बंद किया हुआ काम कभी अपने आप शुरू नहीं होता और उसे बटन भी नहीं मिलता। नया काम जानबूझकर ऐसे ही शुरू होता है: अभी-अभी लिखे गए काम को सबसे पहले कुछ नहीं करना चाहिए।',
+  'phone.previewExplain': 'जब तक तुम बटन नहीं दबाते, कुछ नहीं हिलता। यह वही है जो एक चक्र करता, दोनों तरफ़ से ठीक उसी हाल में गिना गया जैसे वे अभी हैं।',
 }
 
 export default hi

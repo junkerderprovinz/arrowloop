@@ -16,6 +16,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/boot"
 	"github.com/junkerderprovinz/arrowloop/internal/daemon"
 	"github.com/junkerderprovinz/arrowloop/internal/history"
+	"github.com/junkerderprovinz/arrowloop/internal/hold"
 	"github.com/junkerderprovinz/arrowloop/internal/web"
 	webui "github.com/junkerderprovinz/arrowloop/web"
 )
@@ -66,7 +67,21 @@ func cmdWeb(ctx context.Context, args []string) error {
 	if err != nil {
 		return fmt.Errorf("read the built interface: %w", err)
 	}
-	server := &web.Server{History: hist, Runner: runner, UI: ui, Placeholder: webui.Placeholder, Log: logf}
+	// Somewhere to put the report a phone sends about what it is plugged into.
+	// The container never receives one and is never held back; the cost of
+	// carrying the store anyway is one pointer, and the alternative is a build
+	// tag for a feature that is two routes long.
+	held := hold.New()
+	runner.SetCondition(held.Condition())
+
+	server := &web.Server{
+		History:     hist,
+		Runner:      runner,
+		UI:          ui,
+		Placeholder: webui.Placeholder,
+		Hold:        held,
+		Log:         logf,
+	}
 
 	// The default address is loopback on purpose. This interface can start a
 	// job that deletes files, and it has no login of its own; putting it on

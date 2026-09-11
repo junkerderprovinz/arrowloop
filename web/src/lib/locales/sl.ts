@@ -1,7 +1,7 @@
 // Slovenščina (sl). Checked against the English table by i18n.parity.test.ts:
 // exactly the same keys, and the same placeholders in every sentence.
 
-import type { Translations } from '../i18n'
+import type { Translations } from '../i18n.data'
 
 const sl: Translations = {
   'nav.jobs': 'Opravila',
@@ -453,6 +453,46 @@ const sl: Translations = {
   'help.addressShape': 'Videti je tako: {shape}',
   'help.addressWebdav': 'To je naslov WebDAV strežnika, ne naslov, ki ga odpreš v brskalniku.',
   'targets.savedButUnreachable': 'Shranjeno, a cilj se ni odzval: {reason}',
+
+  // The phone.
+  //
+  // Android's own questions, which the container has no equivalent for: a
+  // permission granted on a settings page, a schedule that waits for the
+  // charger, a doze rule that turns a nightly job into a suggestion. They
+  // live in the SAME table as everything else, because one German is one
+  // German and a second table would drift from the first.
+  'phone.access': 'Dostop do datotek',
+  'phone.accessOn': 'ArrowLoop doseže mape, na katere kaže opravilo.',
+  'phone.accessOff': 'Android drži vsako aplikacijo stran od map vseh drugih. Brez tega dovoljenja opravilo doseže le majhen kot, ki pripada tej aplikaciji, in tja kamera ničesar ne odlaga.',
+  'phone.accessAsk': 'Dovoli dostop do datotek',
+  'phone.accessNone': 'Ta različica Androida tega dovoljenja ne pozna, zato je treba mape predajati eno po eno.',
+  'phone.notify': 'Obvestila',
+  'phone.notifyOn': 'Motor lahko pove, kdaj se je zagon končal in kdaj je šlo kaj narobe.',
+  'phone.notifyOff': 'Brez njih za zagon, ki je padel ob treh zjutraj, izveš šele čez nekaj dni.',
+  'phone.notifyAsk': 'Dovoli obvestila',
+  'phone.doze': 'Delovanje v ozadju',
+  'phone.dozeOn': 'Android pusti načrtovane zagone pri miru.',
+  'phone.dozeOff': 'Android uspava aplikacijo, ki se mu zdi nedejavna, zato se opravilo, nastavljeno za noč, zažene šele, ko nekdo telefon spet vzame v roke.',
+  'phone.dozeAsk': 'Dovoli delovanje v ozadju',
+  'phone.schedule': 'Kdaj se opravila smejo zagnati sama',
+  'phone.charging': 'Samo med polnjenjem',
+  'phone.chargingHint': 'Načrtovan zagon počaka, dokler telefon ni na elektriki. Zagon, ki ga sprožiš sam, steče vseeno: pritisk na gumb je odločitev in program, ki bi se z njo prepiral, ne bi imel prav.',
+  'phone.wifi': 'Samo na povezavi, ki se ne plačuje po megabajtu',
+  'phone.wifiHint': 'Načrtovan zagon čaka na povezavo, ki je nihče ne plačuje po megabajtu. Vpraša se Android, zato šteje tudi omrežje wifi, označeno kot plačljivo.',
+  'phone.heldCharging': 'Načrtovani zagoni čakajo, ker se ta telefon ne polni.',
+  'phone.heldMetered': 'Načrtovani zagoni čakajo, ker se ta povezava plačuje po prenosu.',
+  'phone.engineOn': 'Motor teče.',
+  'phone.engineOff': 'Motor stoji.',
+  'phone.engineHint': 'Motor je del, ki usklajuje, in teče znotraj te aplikacije. Iz omrežja do njega ni poti: to sta dve polovici enega programa, ki se pogovarjata.',
+  'phone.engineStart': 'Zaženi motor',
+  'phone.engineStop': 'Ustavi motor',
+  'phone.themeSystem': 'Kot sistem',
+  'phone.noSettings': 'Tu ni treba nič drugega. Daj mu ime in shrani.',
+  'phone.runEmpty': 'Ta zagon se ni dotaknil nobene datoteke.',
+  'phone.bin': 'Koš',
+  'phone.jobOff': 'Izklopljeno',
+  'phone.jobOffHint': 'Izklopljeno opravilo se nikoli ne zažene samo in gumba ne dobi. Novo opravilo se namenoma tako začne: prvo, kar naj bi pravkar vneseno opravilo naredilo, je nič.',
+  'phone.previewExplain': 'Dokler ne pritisneš gumba, se nič ne premakne. To je tisto, kar bi zagon naredil, izračunano iz obeh strani natanko takih, kot sta zdaj.',
 }
 
 export default sl

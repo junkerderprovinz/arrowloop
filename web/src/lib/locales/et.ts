@@ -1,7 +1,7 @@
 // Eesti (et). Checked against the English table by i18n.parity.test.ts:
 // exactly the same keys, and the same placeholders in every sentence.
 
-import type { Translations } from '../i18n'
+import type { Translations } from '../i18n.data'
 
 const et: Translations = {
   'nav.jobs': 'Tööd',
@@ -453,6 +453,46 @@ const et: Translations = {
   'help.addressShape': 'See näeb välja nii: {shape}',
   'help.addressWebdav': 'See on serveri WebDAV-aadress, mitte see, mille brauseris avad.',
   'targets.savedButUnreachable': 'Salvestatud, kuid sihtkoht ei vastanud: {reason}',
+
+  // The phone.
+  //
+  // Android's own questions, which the container has no equivalent for: a
+  // permission granted on a settings page, a schedule that waits for the
+  // charger, a doze rule that turns a nightly job into a suggestion. They
+  // live in the SAME table as everything else, because one German is one
+  // German and a second table would drift from the first.
+  'phone.access': 'Juurdepääs failidele',
+  'phone.accessOn': 'ArrowLoop ulatub kaustadeni, millele töö osutab.',
+  'phone.accessOff': 'Android hoiab iga rakenduse kõigi teiste kaustadest eemal. Ilma selle loata ulatub töö ainult väikese nurgani, mis kuulub sellele rakendusele, ja kaamera ei pane sinna midagi.',
+  'phone.accessAsk': 'Luba juurdepääs failidele',
+  'phone.accessNone': 'See Androidi versioon sellist luba ei tunne, seega tuleb kaustad üle anda ükshaaval.',
+  'phone.notify': 'Teavitused',
+  'phone.notifyOn': 'Mootor saab öelda, millal käik lõppes ja millal midagi untsu läks.',
+  'phone.notifyOff': 'Ilma nendeta saad kolme ajal öösel kukkunud käigust teada alles päevi hiljem.',
+  'phone.notifyAsk': 'Luba teavitused',
+  'phone.doze': 'Töötamine taustal',
+  'phone.dozeOn': 'Android jätab ajastatud käigud rahule.',
+  'phone.dozeOff': 'Android uinutab rakenduse, mida peab tegevusetuks, nii et ööks seatud töö käivitub alles siis, kui telefon uuesti kätte võetakse.',
+  'phone.dozeAsk': 'Luba taustal töötamine',
+  'phone.schedule': 'Millal tööd tohivad ise käivituda',
+  'phone.charging': 'Ainult laadimise ajal',
+  'phone.chargingHint': 'Ajastatud käik ootab, kuni telefon on vooluvõrgus. Käik, mille sa ise käivitad, läheb igal juhul: nupule vajutamine on otsus ja programm, mis sellega vaidleks, eksiks.',
+  'phone.wifi': 'Ainult ühendusel, mille eest ei maksta megabaitide kaupa',
+  'phone.wifiHint': 'Ajastatud käik ootab ühendust, mille eest keegi ei maksa megabaidi kaupa. Küsitakse Androidilt, seega läheb arvesse ka wifi-võrk, mis on märgitud tasuliseks.',
+  'phone.heldCharging': 'Ajastatud käigud ootavad, sest see telefon ei lae.',
+  'phone.heldMetered': 'Ajastatud käigud ootavad, sest selle ühenduse eest makstakse mahu järgi.',
+  'phone.engineOn': 'Mootor töötab.',
+  'phone.engineOff': 'Mootor seisab.',
+  'phone.engineHint': 'Mootor on see osa, mis sünkroonib, ja see töötab selle rakenduse sees. Võrgu kaudu ei ulatu selleni miski: need on ühe programmi kaks poolt, mis omavahel räägivad.',
+  'phone.engineStart': 'Käivita mootor',
+  'phone.engineStop': 'Peata mootor',
+  'phone.themeSystem': 'Nagu süsteem',
+  'phone.noSettings': 'Siin pole midagi muud vaja. Anna nimi ja salvesta.',
+  'phone.runEmpty': 'See käik ei puudutanud ühtegi faili.',
+  'phone.bin': 'Prügikast',
+  'phone.jobOff': 'Välja lülitatud',
+  'phone.jobOffHint': 'Välja lülitatud töö ei käivitu kunagi ise ega saa nuppu. Uus töö algab meelega nii: esimene asi, mida äsja sisestatud töö tegema peaks, on mitte midagi.',
+  'phone.previewExplain': 'Kuni sa nuppu ei vajuta, ei liigu miski. See on see, mida käik teeks, arvutatud mõlemast poolest täpselt sellisena, nagu nad praegu on.',
 }
 
 export default et

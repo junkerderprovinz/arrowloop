@@ -1,7 +1,7 @@
 // Svenska (sv). Checked against the English table by i18n.parity.test.ts:
 // exactly the same keys, and the same placeholders in every sentence.
 
-import type { Translations } from '../i18n'
+import type { Translations } from '../i18n.data'
 
 const sv: Translations = {
   'nav.jobs': 'Jobb',
@@ -453,6 +453,46 @@ const sv: Translations = {
   'help.addressShape': 'Den ser ut så här: {shape}',
   'help.addressWebdav': 'Detta är serverns WebDAV-adress, inte den du öppnar i webbläsaren.',
   'targets.savedButUnreachable': 'Sparat, men målet svarade inte: {reason}',
+
+  // The phone.
+  //
+  // Android's own questions, which the container has no equivalent for: a
+  // permission granted on a settings page, a schedule that waits for the
+  // charger, a doze rule that turns a nightly job into a suggestion. They
+  // live in the SAME table as everything else, because one German is one
+  // German and a second table would drift from the first.
+  'phone.access': 'Filåtkomst',
+  'phone.accessOn': 'ArrowLoop når mapparna som ett jobb pekar på.',
+  'phone.accessOff': 'Android håller varje app borta från alla andras mappar. Utan den här behörigheten når ett jobb bara det lilla hörn som tillhör den här appen, och dit lägger kameran ingenting.',
+  'phone.accessAsk': 'Tillåt filåtkomst',
+  'phone.accessNone': 'Den här Android-versionen känner inte till den behörigheten, så mappar måste lämnas över en i taget.',
+  'phone.notify': 'Aviseringar',
+  'phone.notifyOn': 'Motorn får säga när en körning är klar och när något gått fel.',
+  'phone.notifyOff': 'Utan dem får du veta om en körning som föll klockan tre på natten först flera dagar senare.',
+  'phone.notifyAsk': 'Tillåt aviseringar',
+  'phone.doze': 'Köra i bakgrunden',
+  'phone.dozeOn': 'Android lämnar schemalagda körningar i fred.',
+  'phone.dozeOff': 'Android söver en app som den tror är sysslolös, så ett jobb som är satt till natten startar först när telefonen plockas upp igen.',
+  'phone.dozeAsk': 'Tillåt körning i bakgrunden',
+  'phone.schedule': 'När jobb får starta av sig själva',
+  'phone.charging': 'Bara under laddning',
+  'phone.chargingHint': 'En schemalagd körning väntar tills telefonen sitter i strömmen. En körning du startar själv går ändå: att trycka på knappen är ett beslut, och ett program som bråkade om det skulle ha fel.',
+  'phone.wifi': 'Bara på en anslutning som inte kostar per megabyte',
+  'phone.wifiHint': 'En schemalagd körning väntar på en anslutning som ingen betalar per megabyte för. Android tillfrågas, så ett wifi-nät som är märkt som betalt räknas också.',
+  'phone.heldCharging': 'Schemalagda körningar väntar, eftersom den här telefonen inte laddar.',
+  'phone.heldMetered': 'Schemalagda körningar väntar, eftersom den här anslutningen betalas per datamängd.',
+  'phone.engineOn': 'Motorn är igång.',
+  'phone.engineOff': 'Motorn står stilla.',
+  'phone.engineHint': 'Motorn är den del som synkar, och den kör inuti den här appen. Från nätet går det inte att nå något av den: det är två halvor av ett program som pratar med varandra.',
+  'phone.engineStart': 'Starta motorn',
+  'phone.engineStop': 'Stoppa motorn',
+  'phone.themeSystem': 'Som systemet',
+  'phone.noSettings': 'Här behövs inget mer. Ge det ett namn och spara.',
+  'phone.runEmpty': 'Den här körningen rörde ingen fil.',
+  'phone.bin': 'Papperskorg',
+  'phone.jobOff': 'Avstängt',
+  'phone.jobOffHint': 'Ett avstängt jobb startar aldrig av sig självt och får ingen knapp. Ett nytt jobb börjar så med flit: det första ett nyss inskrivet jobb bör göra är ingenting.',
+  'phone.previewExplain': 'Ingenting rör sig förrän du trycker på knappen. Det här är vad en körning skulle göra, uträknat från båda sidorna precis som de ser ut nu.',
 }
 
 export default sv

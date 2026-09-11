@@ -1,7 +1,7 @@
 // 日本語 (ja). Checked against the English table by i18n.parity.test.ts:
 // exactly the same keys, and the same placeholders in every sentence.
 
-import type { Translations } from '../i18n'
+import type { Translations } from '../i18n.data'
 
 const ja: Translations = {
   'nav.jobs': 'ジョブ',
@@ -453,6 +453,46 @@ const ja: Translations = {
   'help.addressShape': '形式は次のとおりです: {shape}',
   'help.addressWebdav': 'これはサーバーの WebDAV アドレスです。ブラウザーで開くアドレスではありません。',
   'targets.savedButUnreachable': '保存しましたが、宛先から応答がありませんでした: {reason}',
+
+  // The phone.
+  //
+  // Android's own questions, which the container has no equivalent for: a
+  // permission granted on a settings page, a schedule that waits for the
+  // charger, a doze rule that turns a nightly job into a suggestion. They
+  // live in the SAME table as everything else, because one German is one
+  // German and a second table would drift from the first.
+  'phone.access': 'ファイルへのアクセス',
+  'phone.accessOn': 'ArrowLoop はジョブが指すフォルダーに届きます。',
+  'phone.accessOff': 'Android はどのアプリも他のアプリのフォルダーから遠ざけます。この許可がないと、ジョブはこのアプリに属する小さな一角にしか届かず、カメラはそこには何も置きません。',
+  'phone.accessAsk': 'ファイルへのアクセスを許可',
+  'phone.accessNone': 'この Android のバージョンはその許可を知らないため、フォルダーは一つずつ渡す必要があります。',
+  'phone.notify': '通知',
+  'phone.notifyOn': 'エンジンは実行が終わったときと失敗したときを知らせられます。',
+  'phone.notifyOff': 'これがないと、午前三時に落ちた実行を知るのは数日後になります。',
+  'phone.notifyAsk': '通知を許可',
+  'phone.doze': 'バックグラウンドでの動作',
+  'phone.dozeOn': 'Android は予定された実行をそのままにします。',
+  'phone.dozeOff': 'Android は使われていないと判断したアプリを眠らせるため、夜に設定したジョブは次に端末を手に取ったときにようやく動きます。',
+  'phone.dozeAsk': 'バックグラウンドでの動作を許可',
+  'phone.schedule': 'ジョブが自分で始まってよい条件',
+  'phone.charging': '充電中のみ',
+  'phone.chargingHint': '予定された実行は端末が電源につながるまで待ちます。自分で始めた実行はどちらにしても進みます。ボタンを押すのは決定であり、それに逆らうプログラムのほうが間違っています。',
+  'phone.wifi': '従量課金でない接続のときだけ',
+  'phone.wifiHint': '予定された実行は、誰もメガバイト単位で支払わない接続を待ちます。判断は Android に尋ねるので、従量制と印を付けた wifi も含まれます。',
+  'phone.heldCharging': 'この端末が充電されていないため、予定された実行は待っています。',
+  'phone.heldMetered': 'この接続が従量課金のため、予定された実行は待っています。',
+  'phone.engineOn': 'エンジンは動いています。',
+  'phone.engineOff': 'エンジンは止まっています。',
+  'phone.engineHint': 'エンジンは同期を行う部分で、このアプリの中で動いています。ネットワークからはどこにも届きません。ひとつのプログラムの半分どうしが話しているだけです。',
+  'phone.engineStart': 'エンジンを始動',
+  'phone.engineStop': 'エンジンを停止',
+  'phone.themeSystem': 'システムに合わせる',
+  'phone.noSettings': 'ここには他に必要なものはありません。名前を付けて保存してください。',
+  'phone.runEmpty': 'この実行はどのファイルにも触れていません。',
+  'phone.bin': 'ごみ箱',
+  'phone.jobOff': 'オフ',
+  'phone.jobOffHint': 'オフのジョブは自分では決して始まらず、ボタンも出ません。新しいジョブはわざとこの状態で始まります。入力したばかりのジョブが最初にすべきことは、何もしないことです。',
+  'phone.previewExplain': 'ボタンを押すまで何も動きません。これは実行したらどうなるかで、両側の今の状態から計算したものです。',
 }
 
 export default ja

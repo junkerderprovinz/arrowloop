@@ -1,7 +1,7 @@
 // Čeština (cs). Checked against the English table by i18n.parity.test.ts:
 // exactly the same keys, and the same placeholders in every sentence.
 
-import type { Translations } from '../i18n'
+import type { Translations } from '../i18n.data'
 
 const cs: Translations = {
   'nav.jobs': 'Úlohy',
@@ -453,6 +453,46 @@ const cs: Translations = {
   'help.addressShape': 'Vypadá takto: {shape}',
   'help.addressWebdav': 'Toto je adresa WebDAV serveru, nikoli adresa, kterou otevíráš v prohlížeči.',
   'targets.savedButUnreachable': 'Uloženo, ale cíl neodpověděl: {reason}',
+
+  // The phone.
+  //
+  // Android's own questions, which the container has no equivalent for: a
+  // permission granted on a settings page, a schedule that waits for the
+  // charger, a doze rule that turns a nightly job into a suggestion. They
+  // live in the SAME table as everything else, because one German is one
+  // German and a second table would drift from the first.
+  'phone.access': 'Přístup k souborům',
+  'phone.accessOn': 'ArrowLoop dosáhne na složky, na které úloha ukazuje.',
+  'phone.accessOff': 'Android drží každou aplikaci mimo složky všech ostatních. Bez tohoto oprávnění dosáhne úloha jen do malého koutu, který patří této aplikaci, a tam fotoaparát nic neodkládá.',
+  'phone.accessAsk': 'Povolit přístup k souborům',
+  'phone.accessNone': 'Tato verze Androidu takové oprávnění nezná, složky je proto nutné předávat po jedné.',
+  'phone.notify': 'Oznámení',
+  'phone.notifyOn': 'Motor může říct, kdy běh skončil a kdy se něco pokazilo.',
+  'phone.notifyOff': 'Bez nich se o běhu, který spadl ve tři ráno, dozvíš až za pár dní.',
+  'phone.notifyAsk': 'Povolit oznámení',
+  'phone.doze': 'Běh na pozadí',
+  'phone.dozeOn': 'Android nechává naplánované běhy být.',
+  'phone.dozeOff': 'Android uspí aplikaci, kterou považuje za nečinnou, takže úloha nastavená na noc se rozběhne až ve chvíli, kdy někdo telefon zase vezme do ruky.',
+  'phone.dozeAsk': 'Povolit běh na pozadí',
+  'phone.schedule': 'Kdy se úlohy smějí spouštět samy',
+  'phone.charging': 'Jen při nabíjení',
+  'phone.chargingHint': 'Naplánovaný běh počká, až bude telefon v zásuvce. Běh, který spustíš sám, půjde tak jako tak: stisknout tlačítko je rozhodnutí a program, který by se s ním přel, by neměl pravdu.',
+  'phone.wifi': 'Jen na připojení bez plateb za megabajty',
+  'phone.wifiHint': 'Naplánovaný běh čeká na připojení, které nikdo neplatí po megabajtech. Ptáme se Androidu, takže se počítá i wifi síť označená jako placená.',
+  'phone.heldCharging': 'Naplánované běhy čekají, protože se tento telefon nenabíjí.',
+  'phone.heldMetered': 'Naplánované běhy čekají, protože je toto připojení placené podle objemu.',
+  'phone.engineOn': 'Motor běží.',
+  'phone.engineOff': 'Motor stojí.',
+  'phone.engineHint': 'Motor je ta část, která synchronizuje, a běží uvnitř této aplikace. Ze sítě k němu nic nevede: jsou to dvě poloviny jednoho programu, které spolu mluví.',
+  'phone.engineStart': 'Spustit motor',
+  'phone.engineStop': 'Zastavit motor',
+  'phone.themeSystem': 'Jako systém',
+  'phone.noSettings': 'Tady už nic dalšího netřeba. Dej tomu jméno a ulož to.',
+  'phone.runEmpty': 'Tento běh se nedotkl žádného souboru.',
+  'phone.bin': 'Koš',
+  'phone.jobOff': 'Vypnuto',
+  'phone.jobOffHint': 'Vypnutá úloha se nikdy nespustí sama a tlačítko nedostane. Nová úloha takhle začíná záměrně: první, co by měla právě napsaná úloha udělat, je nic.',
+  'phone.previewExplain': 'Dokud nestiskneš tlačítko, nic se nepohne. Tohle je to, co by běh udělal, spočítané z obou stran přesně tak, jak teď vypadají.',
 }
 
 export default cs

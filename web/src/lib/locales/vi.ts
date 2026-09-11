@@ -1,7 +1,7 @@
 // Tiếng Việt (vi). Checked against the English table by i18n.parity.test.ts:
 // exactly the same keys, and the same placeholders in every sentence.
 
-import type { Translations } from '../i18n'
+import type { Translations } from '../i18n.data'
 
 const vi: Translations = {
   'nav.jobs': 'Công việc',
@@ -453,6 +453,46 @@ const vi: Translations = {
   'help.addressShape': 'Nó có dạng: {shape}',
   'help.addressWebdav': 'Đây là địa chỉ WebDAV của máy chủ, không phải địa chỉ bạn mở trong trình duyệt.',
   'targets.savedButUnreachable': 'Đã lưu, nhưng đích không trả lời: {reason}',
+
+  // The phone.
+  //
+  // Android's own questions, which the container has no equivalent for: a
+  // permission granted on a settings page, a schedule that waits for the
+  // charger, a doze rule that turns a nightly job into a suggestion. They
+  // live in the SAME table as everything else, because one German is one
+  // German and a second table would drift from the first.
+  'phone.access': 'Quyền truy cập tệp',
+  'phone.accessOn': 'ArrowLoop với tới được những thư mục mà một công việc trỏ đến.',
+  'phone.accessOff': 'Android giữ mọi ứng dụng tránh xa thư mục của mọi ứng dụng khác. Không có quyền này, một công việc chỉ với tới góc nhỏ thuộc về ứng dụng này, và máy ảnh không đặt gì ở đó.',
+  'phone.accessAsk': 'Cho phép truy cập tệp',
+  'phone.accessNone': 'Phiên bản Android này không biết quyền đó, nên các thư mục phải được giao từng cái một.',
+  'phone.notify': 'Thông báo',
+  'phone.notifyOn': 'Động cơ có thể cho biết khi nào một lượt chạy kết thúc và khi nào có gì đó hỏng.',
+  'phone.notifyOff': 'Không có chúng, một lượt chạy hỏng lúc ba giờ sáng thì mấy ngày sau bạn mới biết.',
+  'phone.notifyAsk': 'Cho phép thông báo',
+  'phone.doze': 'Chạy nền',
+  'phone.dozeOn': 'Android để yên cho các lượt chạy theo lịch.',
+  'phone.dozeOff': 'Android ru ngủ ứng dụng mà nó cho là đang rảnh, nên công việc đặt cho ban đêm chỉ chạy khi điện thoại được cầm lên lần sau.',
+  'phone.dozeAsk': 'Cho phép chạy nền',
+  'phone.schedule': 'Khi nào công việc được tự khởi động',
+  'phone.charging': 'Chỉ khi đang sạc',
+  'phone.chargingHint': 'Lượt chạy theo lịch đợi đến khi điện thoại cắm điện. Lượt chạy bạn tự khởi động thì vẫn đi: bấm nút là một quyết định, và một chương trình cãi lại nó thì sai.',
+  'phone.wifi': 'Chỉ trên kết nối không tính tiền theo megabyte',
+  'phone.wifiHint': 'Lượt chạy theo lịch đợi một kết nối không ai trả tiền theo megabyte. Android được hỏi, nên mạng wifi bị đánh dấu là có tính phí cũng được tính.',
+  'phone.heldCharging': 'Các lượt chạy theo lịch đang đợi, vì điện thoại này không sạc.',
+  'phone.heldMetered': 'Các lượt chạy theo lịch đang đợi, vì kết nối này tính tiền theo lưu lượng.',
+  'phone.engineOn': 'Động cơ đang chạy.',
+  'phone.engineOff': 'Động cơ đã dừng.',
+  'phone.engineHint': 'Động cơ là phần làm việc đồng bộ, và nó chạy bên trong ứng dụng này. Từ mạng không với tới được gì của nó: đó là hai nửa của một chương trình nói chuyện với nhau.',
+  'phone.engineStart': 'Khởi động động cơ',
+  'phone.engineStop': 'Dừng động cơ',
+  'phone.themeSystem': 'Như hệ thống',
+  'phone.noSettings': 'Ở đây không cần gì thêm. Đặt tên rồi lưu lại.',
+  'phone.runEmpty': 'Lượt chạy này không đụng đến tệp nào.',
+  'phone.bin': 'Thùng rác',
+  'phone.jobOff': 'Đã tắt',
+  'phone.jobOffHint': 'Một công việc đã tắt thì không bao giờ tự khởi động và cũng không có nút. Công việc mới cố tình bắt đầu như vậy: điều đầu tiên mà một công việc vừa gõ xong nên làm là không làm gì cả.',
+  'phone.previewExplain': 'Không có gì nhúc nhích cho đến khi bạn bấm nút. Đây là những gì một lượt chạy sẽ làm, tính ra từ cả hai bên đúng như chúng đang có bây giờ.',
 }
 
 export default vi

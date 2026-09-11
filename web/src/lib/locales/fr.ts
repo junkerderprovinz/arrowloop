@@ -1,7 +1,7 @@
 // Français (fr). Checked against the English table by i18n.parity.test.ts:
 // exactly the same keys, and the same placeholders in every sentence.
 
-import type { Translations } from '../i18n'
+import type { Translations } from '../i18n.data'
 
 const fr: Translations = {
   'nav.jobs': 'Tâches',
@@ -453,6 +453,46 @@ const fr: Translations = {
   'help.addressShape': 'Elle ressemble à ceci : {shape}',
   'help.addressWebdav': 'C\'est l\'adresse WebDAV du serveur, pas celle que tu ouvres dans le navigateur.',
   'targets.savedButUnreachable': 'Enregistré, mais la cible n\'a pas répondu : {reason}',
+
+  // The phone.
+  //
+  // Android's own questions, which the container has no equivalent for: a
+  // permission granted on a settings page, a schedule that waits for the
+  // charger, a doze rule that turns a nightly job into a suggestion. They
+  // live in the SAME table as everything else, because one German is one
+  // German and a second table would drift from the first.
+  'phone.access': 'Accès aux fichiers',
+  'phone.accessOn': 'ArrowLoop atteint les dossiers vers lesquels pointe une tâche.',
+  'phone.accessOff': 'Android tient chaque application à l\'écart des dossiers de toutes les autres. Sans cette autorisation, une tâche n\'atteint que le petit coin qui appartient à cette application, et l\'appareil photo n\'y dépose rien.',
+  'phone.accessAsk': 'Autoriser l\'accès aux fichiers',
+  'phone.accessNone': 'Cette version d\'Android ne connaît pas cette autorisation, les dossiers doivent donc être confiés un par un.',
+  'phone.notify': 'Notifications',
+  'phone.notifyOn': 'Le moteur peut dire quand une exécution se termine et quand elle échoue.',
+  'phone.notifyOff': 'Sans cela, une exécution qui a échoué à trois heures du matin ne se découvre que des jours plus tard.',
+  'phone.notifyAsk': 'Autoriser les notifications',
+  'phone.doze': 'Fonctionner en arrière-plan',
+  'phone.dozeOn': 'Android laisse les exécutions programmées tranquilles.',
+  'phone.dozeOff': 'Android endort une application qu\'il croit inactive, donc une tâche prévue pour la nuit ne part que lorsque le téléphone est repris en main.',
+  'phone.dozeAsk': 'Autoriser le fonctionnement en arrière-plan',
+  'phone.schedule': 'Quand les tâches peuvent démarrer seules',
+  'phone.charging': 'Seulement en charge',
+  'phone.chargingHint': 'Une exécution programmée attend que le téléphone soit branché. Une exécution que tu lances toi-même part quand même : appuyer sur le bouton est une décision, et un programme qui la contredirait aurait tort.',
+  'phone.wifi': 'Seulement sur une connexion non facturée au mégaoctet',
+  'phone.wifiHint': 'Une exécution programmée attend une connexion que personne ne paie au mégaoctet. C\'est Android qui répond, donc un réseau wifi marqué comme facturé compte aussi.',
+  'phone.heldCharging': 'Les exécutions programmées attendent, parce que ce téléphone n\'est pas en charge.',
+  'phone.heldMetered': 'Les exécutions programmées attendent, parce que cette connexion est facturée au volume.',
+  'phone.engineOn': 'Le moteur tourne.',
+  'phone.engineOff': 'Le moteur est arrêté.',
+  'phone.engineHint': 'Le moteur est la partie qui synchronise, et il tourne dans cette application. Rien n\'en est joignable par le réseau : ce sont deux moitiés d\'un même programme qui se parlent.',
+  'phone.engineStart': 'Démarrer le moteur',
+  'phone.engineStop': 'Arrêter le moteur',
+  'phone.themeSystem': 'Comme le système',
+  'phone.noSettings': 'Rien d\'autre n\'est nécessaire ici. Donne-lui un nom et enregistre.',
+  'phone.runEmpty': 'Cette exécution n\'a touché aucun fichier.',
+  'phone.bin': 'Corbeille',
+  'phone.jobOff': 'Désactivée',
+  'phone.jobOffHint': 'Une tâche désactivée ne démarre jamais seule et n\'a pas de bouton. Une nouvelle tâche commence ainsi volontairement : la première chose que devrait faire une tâche à peine saisie, c\'est rien.',
+  'phone.previewExplain': 'Rien ne bouge tant que tu n\'appuies pas sur le bouton. Voici ce que ferait une exécution, calculé à partir des deux côtés tels qu\'ils sont maintenant.',
 }
 
 export default fr

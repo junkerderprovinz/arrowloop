@@ -1,7 +1,7 @@
 // Lietuvių (lt). Checked against the English table by i18n.parity.test.ts:
 // exactly the same keys, and the same placeholders in every sentence.
 
-import type { Translations } from '../i18n'
+import type { Translations } from '../i18n.data'
 
 const lt: Translations = {
   'nav.jobs': 'Užduotys',
@@ -453,6 +453,46 @@ const lt: Translations = {
   'help.addressShape': 'Ji atrodo taip: {shape}',
   'help.addressWebdav': 'Tai serverio WebDAV adresas, o ne tas, kurį atveri naršyklėje.',
   'targets.savedButUnreachable': 'Išsaugota, bet paskirties vieta neatsakė: {reason}',
+
+  // The phone.
+  //
+  // Android's own questions, which the container has no equivalent for: a
+  // permission granted on a settings page, a schedule that waits for the
+  // charger, a doze rule that turns a nightly job into a suggestion. They
+  // live in the SAME table as everything else, because one German is one
+  // German and a second table would drift from the first.
+  'phone.access': 'Prieiga prie failų',
+  'phone.accessOn': 'ArrowLoop pasiekia aplankus, į kuriuos rodo užduotis.',
+  'phone.accessOff': 'Android laiko kiekvieną programą atokiai nuo visų kitų aplankų. Be šio leidimo užduotis pasiekia tik mažą kampelį, priklausantį šiai programai, o fotoaparatas ten nieko nededa.',
+  'phone.accessAsk': 'Leisti prieigą prie failų',
+  'phone.accessNone': 'Ši Android versija tokio leidimo nežino, todėl aplankus tenka perduoti po vieną.',
+  'phone.notify': 'Pranešimai',
+  'phone.notifyOn': 'Variklis gali pasakyti, kada vykdymas baigėsi ir kada kas nors nepavyko.',
+  'phone.notifyOff': 'Be jų apie vykdymą, nutrūkusį trečią nakties, sužinai tik po kelių dienų.',
+  'phone.notifyAsk': 'Leisti pranešimus',
+  'phone.doze': 'Veikimas fone',
+  'phone.dozeOn': 'Android palieka suplanuotus vykdymus ramybėje.',
+  'phone.dozeOff': 'Android užmigdo programą, kurią laiko neveiklia, todėl nakčiai nustatyta užduotis pajuda tik tada, kai telefoną vėl paima į rankas.',
+  'phone.dozeAsk': 'Leisti veikti fone',
+  'phone.schedule': 'Kada užduotys gali pasileisti pačios',
+  'phone.charging': 'Tik kraunant',
+  'phone.chargingHint': 'Suplanuotas vykdymas laukia, kol telefonas bus prijungtas prie maitinimo. Vykdymas, kurį paleidi pats, vyksta bet kuriuo atveju: paspausti mygtuką yra sprendimas, ir programa, kuri su juo ginčytųsi, klystų.',
+  'phone.wifi': 'Tik per ryšį, už kurį nemokama pagal megabaitus',
+  'phone.wifiHint': 'Suplanuotas vykdymas laukia ryšio, už kurį niekas nemoka pagal megabaitus. Klausiama Android, todėl skaičiuojamas ir wifi tinklas, pažymėtas kaip mokamas.',
+  'phone.heldCharging': 'Suplanuoti vykdymai laukia, nes šis telefonas nekraunamas.',
+  'phone.heldMetered': 'Suplanuoti vykdymai laukia, nes už šį ryšį mokama pagal srautą.',
+  'phone.engineOn': 'Variklis veikia.',
+  'phone.engineOff': 'Variklis sustojęs.',
+  'phone.engineHint': 'Variklis yra ta dalis, kuri sinchronizuoja, ir jis veikia šios programos viduje. Iš tinklo prie jo neprieiti: tai dvi vienos programos pusės, kalbančios tarpusavyje.',
+  'phone.engineStart': 'Paleisti variklį',
+  'phone.engineStop': 'Sustabdyti variklį',
+  'phone.themeSystem': 'Kaip sistema',
+  'phone.noSettings': 'Čia daugiau nieko nereikia. Duok pavadinimą ir išsaugok.',
+  'phone.runEmpty': 'Šis vykdymas nepalietė nė vieno failo.',
+  'phone.bin': 'Šiukšlinė',
+  'phone.jobOff': 'Išjungta',
+  'phone.jobOffHint': 'Išjungta užduotis niekada nepasileidžia pati ir mygtuko negauna. Nauja užduotis sąmoningai taip prasideda: pirmas dalykas, kurį ką tik surinkta užduotis turėtų padaryti, yra niekas.',
+  'phone.previewExplain': 'Kol nepaspausi mygtuko, niekas nepajudės. Štai ką padarytų vykdymas, apskaičiuota iš abiejų pusių būtent tokių, kokios jos yra dabar.',
 }
 
 export default lt

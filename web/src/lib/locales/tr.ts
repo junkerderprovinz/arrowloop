@@ -1,7 +1,7 @@
 // Türkçe (tr). Checked against the English table by i18n.parity.test.ts:
 // exactly the same keys, and the same placeholders in every sentence.
 
-import type { Translations } from '../i18n'
+import type { Translations } from '../i18n.data'
 
 const tr: Translations = {
   'nav.jobs': 'İşler',
@@ -453,6 +453,46 @@ const tr: Translations = {
   'help.addressShape': 'Şöyle görünür: {shape}',
   'help.addressWebdav': 'Bu, sunucunun WebDAV adresidir; tarayıcıda açtığın adres değil.',
   'targets.savedButUnreachable': 'Kaydedildi, ancak hedef yanıt vermedi: {reason}',
+
+  // The phone.
+  //
+  // Android's own questions, which the container has no equivalent for: a
+  // permission granted on a settings page, a schedule that waits for the
+  // charger, a doze rule that turns a nightly job into a suggestion. They
+  // live in the SAME table as everything else, because one German is one
+  // German and a second table would drift from the first.
+  'phone.access': 'Dosya erişimi',
+  'phone.accessOn': 'ArrowLoop, bir işin gösterdiği klasörlere ulaşabiliyor.',
+  'phone.accessOff': 'Android her uygulamayı diğerlerinin klasörlerinden uzak tutar. Bu izin olmadan bir iş yalnızca bu uygulamaya ait küçük köşeye ulaşır, kamera ise oraya hiçbir şey koymaz.',
+  'phone.accessAsk': 'Dosya erişimine izin ver',
+  'phone.accessNone': 'Bu Android sürümü böyle bir izni tanımıyor, bu yüzden klasörlerin teker teker verilmesi gerekiyor.',
+  'phone.notify': 'Bildirimler',
+  'phone.notifyOn': 'Motor, bir çalışmanın ne zaman bittiğini ve ne zaman ters gittiğini söyleyebilir.',
+  'phone.notifyOff': 'Bunlar olmadan gece üçte düşen bir çalışmayı ancak günler sonra öğrenirsin.',
+  'phone.notifyAsk': 'Bildirimlere izin ver',
+  'phone.doze': 'Arka planda çalışma',
+  'phone.dozeOn': 'Android zamanlanmış çalışmaları rahat bırakıyor.',
+  'phone.dozeOff': 'Android boşta saydığı bir uygulamayı uyutur, bu yüzden geceye ayarlanmış bir iş ancak telefon tekrar eline alındığında başlar.',
+  'phone.dozeAsk': 'Arka planda çalışmaya izin ver',
+  'phone.schedule': 'İşler kendi kendine ne zaman başlayabilir',
+  'phone.charging': 'Yalnızca şarj olurken',
+  'phone.chargingHint': 'Zamanlanmış bir çalışma telefon prizde olana kadar bekler. Kendi başlattığın bir çalışma yine de gider: düğmeye basmak bir karardır ve bununla tartışan bir program haksız olurdu.',
+  'phone.wifi': 'Yalnızca megabayt başına ücretlendirilmeyen bağlantıda',
+  'phone.wifiHint': 'Zamanlanmış bir çalışma, kimsenin megabayt başına ödemediği bir bağlantıyı bekler. Android\'e sorulur, dolayısıyla ücretli olarak işaretlenmiş bir wifi ağı da sayılır.',
+  'phone.heldCharging': 'Zamanlanmış çalışmalar bekliyor, çünkü bu telefon şarj olmuyor.',
+  'phone.heldMetered': 'Zamanlanmış çalışmalar bekliyor, çünkü bu bağlantı kullanıma göre ücretlendiriliyor.',
+  'phone.engineOn': 'Motor çalışıyor.',
+  'phone.engineOff': 'Motor durmuş.',
+  'phone.engineHint': 'Motor, eşitlemeyi yapan parçadır ve bu uygulamanın içinde çalışır. Ağ üzerinden ona hiçbir şekilde ulaşılamaz: bunlar tek bir programın birbiriyle konuşan iki yarısıdır.',
+  'phone.engineStart': 'Motoru başlat',
+  'phone.engineStop': 'Motoru durdur',
+  'phone.themeSystem': 'Sistem gibi',
+  'phone.noSettings': 'Burada başka bir şey gerekmiyor. Bir ad ver ve kaydet.',
+  'phone.runEmpty': 'Bu çalışma hiçbir dosyaya dokunmadı.',
+  'phone.bin': 'Çöp kutusu',
+  'phone.jobOff': 'Kapalı',
+  'phone.jobOffHint': 'Kapalı bir iş asla kendiliğinden başlamaz ve düğme de almaz. Yeni bir iş bilerek böyle başlar: daha yeni yazılmış bir işin yapması gereken ilk şey hiçbir şeydir.',
+  'phone.previewExplain': 'Düğmeye basana kadar hiçbir şey kıpırdamaz. Bu, bir çalışmanın yapacağı şeydir, iki taraftan da tam şu andaki hallerine göre hesaplanmıştır.',
 }
 
 export default tr

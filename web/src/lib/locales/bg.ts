@@ -1,7 +1,7 @@
 // Български (bg). Checked against the English table by i18n.parity.test.ts:
 // exactly the same keys, and the same placeholders in every sentence.
 
-import type { Translations } from '../i18n'
+import type { Translations } from '../i18n.data'
 
 const bg: Translations = {
   'nav.jobs': 'Задачи',
@@ -453,6 +453,46 @@ const bg: Translations = {
   'help.addressShape': 'Изглежда така: {shape}',
   'help.addressWebdav': 'Това е WebDAV адресът на сървъра, а не адресът, който отваряш в браузъра.',
   'targets.savedButUnreachable': 'Запазено, но целта не отговори: {reason}',
+
+  // The phone.
+  //
+  // Android's own questions, which the container has no equivalent for: a
+  // permission granted on a settings page, a schedule that waits for the
+  // charger, a doze rule that turns a nightly job into a suggestion. They
+  // live in the SAME table as everything else, because one German is one
+  // German and a second table would drift from the first.
+  'phone.access': 'Достъп до файловете',
+  'phone.accessOn': 'ArrowLoop достига папките, към които сочи една задача.',
+  'phone.accessOff': 'Android държи всяко приложение далеч от папките на всички останали. Без това разрешение една задача достига само малкото ъгълче, което принадлежи на това приложение, а камерата не оставя нищо там.',
+  'phone.accessAsk': 'Разреши достъпа до файловете',
+  'phone.accessNone': 'Тази версия на Android не познава такова разрешение, затова папките трябва да се предават една по една.',
+  'phone.notify': 'Известия',
+  'phone.notifyOn': 'Двигателят може да каже кога едно изпълнение е приключило и кога нещо се е объркало.',
+  'phone.notifyOff': 'Без тях за изпълнение, паднало в три през нощта, научаваш чак след дни.',
+  'phone.notifyAsk': 'Разреши известията',
+  'phone.doze': 'Работа на заден план',
+  'phone.dozeOn': 'Android оставя насрочените изпълнения на мира.',
+  'phone.dozeOff': 'Android приспива приложение, което смята за бездейно, затова задача, насрочена за нощта, тръгва чак когато телефонът отново бъде взет в ръка.',
+  'phone.dozeAsk': 'Разреши работата на заден план',
+  'phone.schedule': 'Кога задачите може да тръгват сами',
+  'phone.charging': 'Само при зареждане',
+  'phone.chargingHint': 'Насрочено изпълнение чака, докато телефонът е на ток. Изпълнение, което започваш сам, тръгва така или иначе: натискането на бутона е решение, а програма, която би спорила с него, би сгрешила.',
+  'phone.wifi': 'Само по връзка без плащане на мегабайт',
+  'phone.wifiHint': 'Насрочено изпълнение чака връзка, за която никой не плаща на мегабайт. Пита се Android, така че се брои и wifi мрежа, отбелязана като платена.',
+  'phone.heldCharging': 'Насрочените изпълнения чакат, защото този телефон не се зарежда.',
+  'phone.heldMetered': 'Насрочените изпълнения чакат, защото тази връзка се плаща по трафик.',
+  'phone.engineOn': 'Двигателят работи.',
+  'phone.engineOff': 'Двигателят е спрян.',
+  'phone.engineHint': 'Двигателят е частта, която синхронизира, и работи вътре в това приложение. По мрежата до него не се стига: това са две половини на една програма, които си говорят.',
+  'phone.engineStart': 'Стартирай двигателя',
+  'phone.engineStop': 'Спри двигателя',
+  'phone.themeSystem': 'Като системата',
+  'phone.noSettings': 'Тук не трябва нищо повече. Дай му име и запази.',
+  'phone.runEmpty': 'Това изпълнение не е докоснало нито един файл.',
+  'phone.bin': 'Кошче',
+  'phone.jobOff': 'Изключена',
+  'phone.jobOffHint': 'Изключена задача никога не тръгва сама и не получава бутон. Нова задача нарочно започва така: първото, което една току-що написана задача трябва да направи, е нищо.',
+  'phone.previewExplain': 'Докато не натиснеш бутона, нищо не помръдва. Това е, което би направило едно изпълнение, изчислено от двете страни точно такива, каквито са сега.',
 }
 
 export default bg

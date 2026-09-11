@@ -1,7 +1,7 @@
 // Norsk (no). Checked against the English table by i18n.parity.test.ts:
 // exactly the same keys, and the same placeholders in every sentence.
 
-import type { Translations } from '../i18n'
+import type { Translations } from '../i18n.data'
 
 const no: Translations = {
   'nav.jobs': 'Jobber',
@@ -453,6 +453,46 @@ const no: Translations = {
   'help.addressShape': 'Den ser slik ut: {shape}',
   'help.addressWebdav': 'Dette er tjenerens WebDAV-adresse, ikke adressen du åpner i nettleseren.',
   'targets.savedButUnreachable': 'Lagret, men målet svarte ikke: {reason}',
+
+  // The phone.
+  //
+  // Android's own questions, which the container has no equivalent for: a
+  // permission granted on a settings page, a schedule that waits for the
+  // charger, a doze rule that turns a nightly job into a suggestion. They
+  // live in the SAME table as everything else, because one German is one
+  // German and a second table would drift from the first.
+  'phone.access': 'Filtilgang',
+  'phone.accessOn': 'ArrowLoop når mappene en jobb peker på.',
+  'phone.accessOff': 'Android holder hver app unna alle andres mapper. Uten denne tillatelsen når en jobb bare det lille hjørnet som hører til denne appen, og der legger kameraet ingenting.',
+  'phone.accessAsk': 'Tillat filtilgang',
+  'phone.accessNone': 'Denne Android-versjonen kjenner ikke den tillatelsen, så mapper må overleveres én om gangen.',
+  'phone.notify': 'Varsler',
+  'phone.notifyOn': 'Motoren kan si når en kjøring er ferdig og når noe har gått galt.',
+  'phone.notifyOff': 'Uten dem får du først vite om en kjøring som falt klokken tre om natten flere dager senere.',
+  'phone.notifyAsk': 'Tillat varsler',
+  'phone.doze': 'Kjøring i bakgrunnen',
+  'phone.dozeOn': 'Android lar planlagte kjøringer være i fred.',
+  'phone.dozeOff': 'Android legger en app den tror er uvirksom til å sove, så en jobb satt til natten starter først når telefonen plukkes opp igjen.',
+  'phone.dozeAsk': 'Tillat kjøring i bakgrunnen',
+  'phone.schedule': 'Når jobber får starte av seg selv',
+  'phone.charging': 'Bare under lading',
+  'phone.chargingHint': 'En planlagt kjøring venter til telefonen står i strøm. En kjøring du starter selv går uansett: å trykke på knappen er en beslutning, og et program som kranglet på det ville tatt feil.',
+  'phone.wifi': 'Bare på en forbindelse uten betaling per megabyte',
+  'phone.wifiHint': 'En planlagt kjøring venter på en forbindelse ingen betaler per megabyte for. Android blir spurt, så et wifi-nett merket som betalt teller også med.',
+  'phone.heldCharging': 'Planlagte kjøringer venter, fordi denne telefonen ikke lader.',
+  'phone.heldMetered': 'Planlagte kjøringer venter, fordi denne forbindelsen betales etter forbruk.',
+  'phone.engineOn': 'Motoren går.',
+  'phone.engineOff': 'Motoren står.',
+  'phone.engineHint': 'Motoren er delen som synkroniserer, og den kjører inne i denne appen. Fra nettet er ingenting av den tilgjengelig: det er to halvdeler av ett program som snakker sammen.',
+  'phone.engineStart': 'Start motoren',
+  'phone.engineStop': 'Stopp motoren',
+  'phone.themeSystem': 'Som systemet',
+  'phone.noSettings': 'Her trengs ikke noe mer. Gi det et navn og lagre.',
+  'phone.runEmpty': 'Denne kjøringen rørte ingen filer.',
+  'phone.bin': 'Papirkurv',
+  'phone.jobOff': 'Slått av',
+  'phone.jobOffHint': 'En jobb som er slått av starter aldri av seg selv og får ingen knapp. En ny jobb begynner slik med vilje: det første en nettopp innskrevet jobb bør gjøre er ingenting.',
+  'phone.previewExplain': 'Ingenting beveger seg før du trykker på knappen. Dette er hva en kjøring ville gjort, regnet ut fra begge sider akkurat slik de er nå.',
 }
 
 export default no

@@ -1,7 +1,7 @@
 // Magyar (hu). Checked against the English table by i18n.parity.test.ts:
 // exactly the same keys, and the same placeholders in every sentence.
 
-import type { Translations } from '../i18n'
+import type { Translations } from '../i18n.data'
 
 const hu: Translations = {
   'nav.jobs': 'Feladatok',
@@ -453,6 +453,46 @@ const hu: Translations = {
   'help.addressShape': 'Így néz ki: {shape}',
   'help.addressWebdav': 'Ez a kiszolgáló WebDAV-címe, nem az, amit a böngészőben megnyitsz.',
   'targets.savedButUnreachable': 'Mentve, de a cél nem válaszolt: {reason}',
+
+  // The phone.
+  //
+  // Android's own questions, which the container has no equivalent for: a
+  // permission granted on a settings page, a schedule that waits for the
+  // charger, a doze rule that turns a nightly job into a suggestion. They
+  // live in the SAME table as everything else, because one German is one
+  // German and a second table would drift from the first.
+  'phone.access': 'Fájlhozzáférés',
+  'phone.accessOn': 'Az ArrowLoop eléri azokat a mappákat, amelyekre egy feladat mutat.',
+  'phone.accessOff': 'Az Android minden alkalmazást távol tart minden másik mappáitól. E jogosultság nélkül egy feladat csak azt a kis sarkot éri el, amely ehhez az alkalmazáshoz tartozik, és a kamera oda semmit sem tesz.',
+  'phone.accessAsk': 'Fájlhozzáférés engedélyezése',
+  'phone.accessNone': 'Ez az Android-verzió nem ismeri ezt a jogosultságot, így a mappákat egyesével kell átadni.',
+  'phone.notify': 'Értesítések',
+  'phone.notifyOn': 'A motor megmondhatja, mikor fejeződött be egy futás, és mikor romlott el valami.',
+  'phone.notifyOff': 'Nélkülük egy hajnali háromkor elbukott futásról csak napokkal később szerzel tudomást.',
+  'phone.notifyAsk': 'Értesítések engedélyezése',
+  'phone.doze': 'Futás a háttérben',
+  'phone.dozeOn': 'Az Android békén hagyja az időzített futásokat.',
+  'phone.dozeOff': 'Az Android elaltatja azt az alkalmazást, amelyet tétlennek gondol, így egy éjszakára beállított feladat csak akkor indul, amikor legközelebb kézbe veszik a telefont.',
+  'phone.dozeAsk': 'Háttérben futás engedélyezése',
+  'phone.schedule': 'Mikor indulhatnak el maguktól a feladatok',
+  'phone.charging': 'Csak töltés közben',
+  'phone.chargingHint': 'Az időzített futás megvárja, amíg a telefon áram alatt van. Az a futás, amelyet te indítasz, mindenképp elindul: a gomb megnyomása döntés, és az a program, amely vitatkozna vele, tévedne.',
+  'phone.wifi': 'Csak megabájtonként nem fizetett kapcsolaton',
+  'phone.wifiHint': 'Az időzített futás olyan kapcsolatra vár, amelyet senki sem fizet megabájtonként. A kérdés az Androidhoz megy, tehát a forgalmi díjasként megjelölt wifi is ide számít.',
+  'phone.heldCharging': 'Az időzített futások várnak, mert ez a telefon nem töltődik.',
+  'phone.heldMetered': 'Az időzített futások várnak, mert ez a kapcsolat forgalmi díjas.',
+  'phone.engineOn': 'A motor fut.',
+  'phone.engineOff': 'A motor áll.',
+  'phone.engineHint': 'A motor az a rész, amely szinkronizál, és ezen az alkalmazáson belül fut. A hálózat felől semmi sem érhető el belőle: egyetlen program két fele beszélget egymással.',
+  'phone.engineStart': 'Motor indítása',
+  'phone.engineStop': 'Motor leállítása',
+  'phone.themeSystem': 'Ahogy a rendszer',
+  'phone.noSettings': 'Itt semmi másra nincs szükség. Adj neki nevet, és mentsd el.',
+  'phone.runEmpty': 'Ez a futás egyetlen fájlhoz sem nyúlt.',
+  'phone.bin': 'Kuka',
+  'phone.jobOff': 'Kikapcsolva',
+  'phone.jobOffHint': 'A kikapcsolt feladat soha nem indul el magától, és nem kap gombot sem. Egy új feladat szándékosan így kezd: az első dolog, amit egy épp begépelt feladatnak tennie kellene, az a semmi.',
+  'phone.previewExplain': 'Amíg meg nem nyomod a gombot, semmi sem mozdul. Ez az, amit egy futás tenne, mindkét oldalból kiszámolva pontosan úgy, ahogy most állnak.',
 }
 
 export default hu

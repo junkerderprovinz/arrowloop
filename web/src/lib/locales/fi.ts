@@ -1,7 +1,7 @@
 // Suomi (fi). Checked against the English table by i18n.parity.test.ts:
 // exactly the same keys, and the same placeholders in every sentence.
 
-import type { Translations } from '../i18n'
+import type { Translations } from '../i18n.data'
 
 const fi: Translations = {
   'nav.jobs': 'Työt',
@@ -453,6 +453,46 @@ const fi: Translations = {
   'help.addressShape': 'Se näyttää tältä: {shape}',
   'help.addressWebdav': 'Tämä on palvelimen WebDAV-osoite, ei se osoite jonka avaat selaimessa.',
   'targets.savedButUnreachable': 'Tallennettu, mutta kohde ei vastannut: {reason}',
+
+  // The phone.
+  //
+  // Android's own questions, which the container has no equivalent for: a
+  // permission granted on a settings page, a schedule that waits for the
+  // charger, a doze rule that turns a nightly job into a suggestion. They
+  // live in the SAME table as everything else, because one German is one
+  // German and a second table would drift from the first.
+  'phone.access': 'Tiedostojen käyttöoikeus',
+  'phone.accessOn': 'ArrowLoop yltää kansioihin, joihin työ osoittaa.',
+  'phone.accessOff': 'Android pitää jokaisen sovelluksen erossa kaikkien muiden kansioista. Ilman tätä lupaa työ yltää vain siihen pieneen nurkkaan, joka kuuluu tälle sovellukselle, eikä kamera pane sinne mitään.',
+  'phone.accessAsk': 'Salli tiedostojen käyttö',
+  'phone.accessNone': 'Tämä Android-versio ei tunne kyseistä lupaa, joten kansiot on luovutettava yksi kerrallaan.',
+  'phone.notify': 'Ilmoitukset',
+  'phone.notifyOn': 'Moottori voi kertoa, milloin ajo päättyi ja milloin jokin meni pieleen.',
+  'phone.notifyOff': 'Ilman niitä kolmelta yöllä kaatuneesta ajosta kuulee vasta päivien päästä.',
+  'phone.notifyAsk': 'Salli ilmoitukset',
+  'phone.doze': 'Toiminta taustalla',
+  'phone.dozeOn': 'Android jättää ajastetut ajot rauhaan.',
+  'phone.dozeOff': 'Android nukuttaa sovelluksen, jota se pitää joutilaana, joten yöksi asetettu työ käynnistyy vasta kun puhelin otetaan taas käteen.',
+  'phone.dozeAsk': 'Salli toiminta taustalla',
+  'phone.schedule': 'Milloin työt saavat käynnistyä itsekseen',
+  'phone.charging': 'Vain latauksen aikana',
+  'phone.chargingHint': 'Ajastettu ajo odottaa, kunnes puhelin on virrassa. Itse käynnistämäsi ajo lähtee joka tapauksessa: napin painaminen on päätös, ja ohjelma joka väittelisi siitä olisi väärässä.',
+  'phone.wifi': 'Vain yhteydellä, josta ei makseta megatavuilta',
+  'phone.wifiHint': 'Ajastettu ajo odottaa yhteyttä, josta kukaan ei maksa megatavuilta. Kysytään Androidilta, joten mukaan lasketaan myös wifi-verkko, joka on merkitty maksulliseksi.',
+  'phone.heldCharging': 'Ajastetut ajot odottavat, koska tämä puhelin ei lataudu.',
+  'phone.heldMetered': 'Ajastetut ajot odottavat, koska tästä yhteydestä maksetaan siirretyn määrän mukaan.',
+  'phone.engineOn': 'Moottori on käynnissä.',
+  'phone.engineOff': 'Moottori on pysäytetty.',
+  'phone.engineHint': 'Moottori on se osa, joka synkronoi, ja se käy tämän sovelluksen sisällä. Verkosta siihen ei pääse käsiksi: kyseessä on yhden ohjelman kaksi puolikasta, jotka juttelevat keskenään.',
+  'phone.engineStart': 'Käynnistä moottori',
+  'phone.engineStop': 'Pysäytä moottori',
+  'phone.themeSystem': 'Kuten järjestelmä',
+  'phone.noSettings': 'Tässä ei tarvita muuta. Anna nimi ja tallenna.',
+  'phone.runEmpty': 'Tämä ajo ei koskenut yhteenkään tiedostoon.',
+  'phone.bin': 'Roskakori',
+  'phone.jobOff': 'Pois käytöstä',
+  'phone.jobOffHint': 'Pois käytöstä oleva työ ei käynnisty koskaan itsestään eikä saa nappia. Uusi työ alkaa näin tarkoituksella: ensimmäinen asia, jonka juuri kirjoitetun työn pitäisi tehdä, on ei mitään.',
+  'phone.previewExplain': 'Mikään ei liiku ennen kuin painat nappia. Tämä on se, mitä ajo tekisi, laskettuna molemmista puolista juuri sellaisina kuin ne nyt ovat.',
 }
 
 export default fi

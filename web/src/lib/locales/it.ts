@@ -1,7 +1,7 @@
 // Italiano (it). Checked against the English table by i18n.parity.test.ts:
 // exactly the same keys, and the same placeholders in every sentence.
 
-import type { Translations } from '../i18n'
+import type { Translations } from '../i18n.data'
 
 const it: Translations = {
   'nav.jobs': 'Lavori',
@@ -453,6 +453,46 @@ const it: Translations = {
   'help.addressShape': 'Ha questa forma: {shape}',
   'help.addressWebdav': 'Questo è l\'indirizzo WebDAV del server, non quello che apri nel browser.',
   'targets.savedButUnreachable': 'Salvato, ma la destinazione non ha risposto: {reason}',
+
+  // The phone.
+  //
+  // Android's own questions, which the container has no equivalent for: a
+  // permission granted on a settings page, a schedule that waits for the
+  // charger, a doze rule that turns a nightly job into a suggestion. They
+  // live in the SAME table as everything else, because one German is one
+  // German and a second table would drift from the first.
+  'phone.access': 'Accesso ai file',
+  'phone.accessOn': 'ArrowLoop raggiunge le cartelle a cui punta un lavoro.',
+  'phone.accessOff': 'Android tiene ogni app fuori dalle cartelle di ogni altra. Senza questo permesso un lavoro raggiunge solo il piccolo angolo che appartiene a questa app, e lì la fotocamera non mette niente.',
+  'phone.accessAsk': 'Consenti l\'accesso ai file',
+  'phone.accessNone': 'Questa versione di Android non conosce quel permesso, quindi le cartelle vanno consegnate una alla volta.',
+  'phone.notify': 'Notifiche',
+  'phone.notifyOn': 'Il motore può dire quando un\'esecuzione è finita e quando è andata male.',
+  'phone.notifyOff': 'Senza, di un\'esecuzione fallita alle tre di notte lo si scopre giorni dopo.',
+  'phone.notifyAsk': 'Consenti le notifiche',
+  'phone.doze': 'Funzionare in secondo piano',
+  'phone.dozeOn': 'Android lascia in pace le esecuzioni programmate.',
+  'phone.dozeOff': 'Android addormenta un\'app che ritiene inattiva, così un lavoro previsto per la notte parte quando il telefono viene ripreso in mano.',
+  'phone.dozeAsk': 'Consenti il funzionamento in secondo piano',
+  'phone.schedule': 'Quando i lavori possono partire da soli',
+  'phone.charging': 'Solo sotto carica',
+  'phone.chargingHint': 'Un\'esecuzione programmata aspetta che il telefono sia sotto carica. Una che avvii tu parte comunque: premere il pulsante è una decisione, e un programma che la contestasse avrebbe torto.',
+  'phone.wifi': 'Solo su una connessione non pagata a consumo',
+  'phone.wifiHint': 'Un\'esecuzione programmata aspetta una connessione che nessuno paga a megabyte. La domanda va ad Android, quindi conta anche una rete wifi contrassegnata come a consumo.',
+  'phone.heldCharging': 'Le esecuzioni programmate aspettano, perché questo telefono non è sotto carica.',
+  'phone.heldMetered': 'Le esecuzioni programmate aspettano, perché questa connessione è a consumo.',
+  'phone.engineOn': 'Il motore è in funzione.',
+  'phone.engineOff': 'Il motore è fermo.',
+  'phone.engineHint': 'Il motore è la parte che sincronizza e gira dentro questa app. Dalla rete non se ne raggiunge niente: sono due metà di un solo programma che si parlano.',
+  'phone.engineStart': 'Avvia il motore',
+  'phone.engineStop': 'Ferma il motore',
+  'phone.themeSystem': 'Come il sistema',
+  'phone.noSettings': 'Qui non serve altro. Dagli un nome e salva.',
+  'phone.runEmpty': 'Questa esecuzione non ha toccato nessun file.',
+  'phone.bin': 'Cestino',
+  'phone.jobOff': 'Disattivato',
+  'phone.jobOffHint': 'Un lavoro disattivato non parte mai da solo e non ha un pulsante. Un lavoro nuovo comincia così di proposito: la prima cosa che un lavoro appena scritto dovrebbe fare è niente.',
+  'phone.previewExplain': 'Finché non premi il pulsante non si muove niente. Questo è quello che farebbe un\'esecuzione, calcolato da entrambi i lati esattamente come sono adesso.',
 }
 
 export default it

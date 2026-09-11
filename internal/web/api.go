@@ -23,6 +23,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/deskset"
 	"github.com/junkerderprovinz/arrowloop/internal/engine"
 	"github.com/junkerderprovinz/arrowloop/internal/history"
+	"github.com/junkerderprovinz/arrowloop/internal/hold"
 	"github.com/junkerderprovinz/arrowloop/internal/plan"
 	"github.com/junkerderprovinz/arrowloop/internal/scan"
 )
@@ -48,6 +49,13 @@ type Server struct {
 	// window routes unregistered, which is how the interface knows there is no
 	// window to have preferences about.
 	Window *deskset.Store
+
+	// Hold carries a reason, reported by the machine the engine runs on, to
+	// stop automatic runs. Set only where something outside can answer the
+	// question - the phone, which knows whether it is charging and whether this
+	// connection is metered. A nil store leaves the two routes unregistered,
+	// which is how a client knows the engine has nobody to ask.
+	Hold *hold.Store
 
 	// Log is where this layer says the things it cannot answer with a status
 	// code. There is exactly one of those: a setting that saved correctly and
@@ -112,6 +120,11 @@ func (s *Server) Handler() http.Handler {
 	if s.Window != nil {
 		mux.HandleFunc("GET /api/window", s.readWindow)
 		mux.HandleFunc("PUT /api/window", s.writeWindow)
+	}
+
+	if s.Hold != nil {
+		mux.HandleFunc("GET /api/device", s.readDevice)
+		mux.HandleFunc("PUT /api/device", s.writeDevice)
 	}
 
 	mux.HandleFunc("GET /api/remotes", s.listRemotes)

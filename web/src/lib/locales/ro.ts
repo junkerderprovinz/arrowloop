@@ -1,7 +1,7 @@
 // Română (ro). Checked against the English table by i18n.parity.test.ts:
 // exactly the same keys, and the same placeholders in every sentence.
 
-import type { Translations } from '../i18n'
+import type { Translations } from '../i18n.data'
 
 const ro: Translations = {
   'nav.jobs': 'Sarcini',
@@ -453,6 +453,46 @@ const ro: Translations = {
   'help.addressShape': 'Arată astfel: {shape}',
   'help.addressWebdav': 'Aceasta este adresa WebDAV a serverului, nu cea pe care o deschizi în browser.',
   'targets.savedButUnreachable': 'Salvat, dar destinația nu a răspuns: {reason}',
+
+  // The phone.
+  //
+  // Android's own questions, which the container has no equivalent for: a
+  // permission granted on a settings page, a schedule that waits for the
+  // charger, a doze rule that turns a nightly job into a suggestion. They
+  // live in the SAME table as everything else, because one German is one
+  // German and a second table would drift from the first.
+  'phone.access': 'Acces la fișiere',
+  'phone.accessOn': 'ArrowLoop ajunge la folderele către care arată o sarcină.',
+  'phone.accessOff': 'Android ține fiecare aplicație departe de folderele tuturor celorlalte. Fără această permisiune, o sarcină ajunge doar în colțul mic care aparține acestei aplicații, iar camera nu pune nimic acolo.',
+  'phone.accessAsk': 'Permite accesul la fișiere',
+  'phone.accessNone': 'Această versiune de Android nu cunoaște acea permisiune, așa că folderele trebuie predate pe rând.',
+  'phone.notify': 'Notificări',
+  'phone.notifyOn': 'Motorul poate spune când s-a terminat o rulare și când a mers prost.',
+  'phone.notifyOff': 'Fără ele, despre o rulare căzută la trei dimineața afli abia peste câteva zile.',
+  'phone.notifyAsk': 'Permite notificările',
+  'phone.doze': 'Rulare în fundal',
+  'phone.dozeOn': 'Android lasă în pace rulările programate.',
+  'phone.dozeOff': 'Android adoarme o aplicație pe care o crede inactivă, așa că o sarcină pusă pentru noapte pornește abia când telefonul este luat din nou în mână.',
+  'phone.dozeAsk': 'Permite rularea în fundal',
+  'phone.schedule': 'Când au voie sarcinile să pornească singure',
+  'phone.charging': 'Doar în timpul încărcării',
+  'phone.chargingHint': 'O rulare programată așteaptă până când telefonul este la priză. O rulare pe care o pornești tu merge oricum: apăsarea butonului este o decizie, iar un program care s-ar contrazice cu ea ar greși.',
+  'phone.wifi': 'Doar pe o conexiune neplătită la megabyte',
+  'phone.wifiHint': 'O rulare programată așteaptă o conexiune pe care nimeni nu o plătește la megabyte. Este întrebat Android, deci contează și o rețea wifi marcată ca plătită.',
+  'phone.heldCharging': 'Rulările programate așteaptă, pentru că acest telefon nu se încarcă.',
+  'phone.heldMetered': 'Rulările programate așteaptă, pentru că această conexiune este plătită la volum.',
+  'phone.engineOn': 'Motorul funcționează.',
+  'phone.engineOff': 'Motorul este oprit.',
+  'phone.engineHint': 'Motorul este partea care sincronizează și rulează în interiorul acestei aplicații. Din rețea nu se ajunge la nimic din el: sunt două jumătăți ale aceluiași program care vorbesc între ele.',
+  'phone.engineStart': 'Pornește motorul',
+  'phone.engineStop': 'Oprește motorul',
+  'phone.themeSystem': 'Ca sistemul',
+  'phone.noSettings': 'Aici nu mai e nevoie de nimic. Dă-i un nume și salvează.',
+  'phone.runEmpty': 'Această rulare nu a atins niciun fișier.',
+  'phone.bin': 'Coș',
+  'phone.jobOff': 'Dezactivată',
+  'phone.jobOffHint': 'O sarcină dezactivată nu pornește niciodată singură și nu primește buton. O sarcină nouă începe așa în mod intenționat: primul lucru pe care ar trebui să îl facă o sarcină abia scrisă este nimic.',
+  'phone.previewExplain': 'Până nu apeși butonul nu se mișcă nimic. Asta este ce ar face o rulare, calculat din ambele părți exact așa cum sunt acum.',
 }
 
 export default ro

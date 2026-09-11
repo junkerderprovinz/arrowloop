@@ -1,7 +1,7 @@
 // Galego (gl). Checked against the English table by i18n.parity.test.ts:
 // exactly the same keys, and the same placeholders in every sentence.
 
-import type { Translations } from '../i18n'
+import type { Translations } from '../i18n.data'
 
 const gl: Translations = {
   'nav.jobs': 'Tarefas',
@@ -453,6 +453,46 @@ const gl: Translations = {
   'help.addressShape': 'Ten esta forma: {shape}',
   'help.addressWebdav': 'Esta é a enderezo WebDAV do servidor, non o que abres no navegador.',
   'targets.savedButUnreachable': 'Gardado, pero o destino non respondeu: {reason}',
+
+  // The phone.
+  //
+  // Android's own questions, which the container has no equivalent for: a
+  // permission granted on a settings page, a schedule that waits for the
+  // charger, a doze rule that turns a nightly job into a suggestion. They
+  // live in the SAME table as everything else, because one German is one
+  // German and a second table would drift from the first.
+  'phone.access': 'Acceso aos ficheiros',
+  'phone.accessOn': 'ArrowLoop chega aos cartafoles aos que apunta unha tarefa.',
+  'phone.accessOff': 'Android mantén cada aplicación fóra dos cartafoles de todas as demais. Sen este permiso, unha tarefa só chega ao pequeno recuncho que pertence a esta aplicación, e a cámara non deixa nada alí.',
+  'phone.accessAsk': 'Permitir o acceso aos ficheiros',
+  'phone.accessNone': 'Esta versión de Android non coñece ese permiso, así que os cartafoles hai que entregalos un a un.',
+  'phone.notify': 'Notificacións',
+  'phone.notifyOn': 'O motor pode dicir cando remata unha execución e cando sae mal.',
+  'phone.notifyOff': 'Sen elas, dunha execución que caeu ás tres da mañá enteraste días despois.',
+  'phone.notifyAsk': 'Permitir as notificacións',
+  'phone.doze': 'Funcionar en segundo plano',
+  'phone.dozeOn': 'Android deixa en paz as execucións programadas.',
+  'phone.dozeOff': 'Android dorme unha aplicación que cre inactiva, así que unha tarefa prevista para a noite só arranca cando alguén volve coller o teléfono.',
+  'phone.dozeAsk': 'Permitir o funcionamento en segundo plano',
+  'phone.schedule': 'Cando poden arrancar soas as tarefas',
+  'phone.charging': 'Só mentres carga',
+  'phone.chargingHint': 'Unha execución programada agarda a que o teléfono estea enchufado. Unha que inicias ti segue adiante igual: premer o botón é unha decisión, e un programa que discutise con ela estaría errado.',
+  'phone.wifi': 'Só nunha conexión sen custo por megabyte',
+  'phone.wifiHint': 'Unha execución programada agarda por unha conexión que ninguén paga por megabyte. Pregúntaselle a Android, así que unha rede wifi marcada como de pago tamén conta.',
+  'phone.heldCharging': 'As execucións programadas agardan, porque este teléfono non está a cargar.',
+  'phone.heldMetered': 'As execucións programadas agardan, porque esta conexión págase por volume.',
+  'phone.engineOn': 'O motor está a funcionar.',
+  'phone.engineOff': 'O motor está parado.',
+  'phone.engineHint': 'O motor é a parte que sincroniza e funciona dentro desta aplicación. Desde a rede non se chega a nada del: son dúas metades dun mesmo programa falando entre si.',
+  'phone.engineStart': 'Arrincar o motor',
+  'phone.engineStop': 'Parar o motor',
+  'phone.themeSystem': 'Como o sistema',
+  'phone.noSettings': 'Aquí non fai falta nada máis. Ponlle un nome e garda.',
+  'phone.runEmpty': 'Esta execución non tocou ningún ficheiro.',
+  'phone.bin': 'Lixo',
+  'phone.jobOff': 'Desactivada',
+  'phone.jobOffHint': 'Unha tarefa desactivada nunca arranca soa e non ten botón. Unha tarefa nova comeza así a propósito: o primeiro que debería facer unha tarefa recén escrita é nada.',
+  'phone.previewExplain': 'Ata que non premas o botón non se move nada. Isto é o que faría unha execución, calculado a partir dos dous lados tal e como están agora.',
 }
 
 export default gl

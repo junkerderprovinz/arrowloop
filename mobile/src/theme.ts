@@ -8,11 +8,12 @@
  * changed, and nothing would say so.
  *
  * Why copied rather than imported: the web tokens are CSS custom properties
- * resolved by a browser, and there is no browser here. A generator could read
- * that file, and it would be one more moving part for eighteen numbers that
- * change about once a year. The guard against drift is the test beside this
- * file, which reads tokens.css and holds these to it.
+ * resolved by a browser, and there is no browser here. The ACCENT PRESETS and
+ * the rainbow ARE imported, because those are data rather than CSS - see
+ * ACCENTS and RAINBOW below.
  */
+
+export { ACCENTS, RAINBOW, contrastOn } from "../../web/src/lib/appearance";
 
 export type Scheme = "dark" | "light";
 
@@ -98,12 +99,26 @@ export const space = {
   xxl: 32,
 } as const;
 
-/** Corner radii. `card` and `control` are GlimStone's own two. */
-export const radius = {
-  control: 8,
-  card: 12,
-  pill: 999,
-} as const;
+/**
+ * Corner radii per SHAPE, which is a GlimStone setting rather than a constant.
+ *
+ * `round` is the house default, `soft` halves it, `square` removes it. The web
+ * does this with a `data-shape` attribute and three sets of tokens; there is no
+ * attribute selector here, so the numbers are handed out by a function.
+ */
+export const RADII: Record<string, { control: number; card: number }> = {
+  round: { control: 8, card: 12 },
+  soft: { control: 4, card: 6 },
+  square: { control: 0, card: 0 },
+};
+
+export function radiusFor(shape: string): { control: number; card: number; pill: number } {
+  const r = RADII[shape] ?? RADII.round!;
+  // A pill stays a pill in `soft` and becomes a rectangle in `square`: the
+  // shape setting is about how round the app is, and a badge that stayed a
+  // capsule in square mode would be the one thing that did not listen.
+  return { ...r, pill: shape === "square" ? 0 : 999 };
+}
 
 /**
  * The smallest thing a finger may be asked to hit.

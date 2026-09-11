@@ -1,7 +1,7 @@
 // Русский (ru). Checked against the English table by i18n.parity.test.ts:
 // exactly the same keys, and the same placeholders in every sentence.
 
-import type { Translations } from '../i18n'
+import type { Translations } from '../i18n.data'
 
 const ru: Translations = {
   'nav.jobs': 'Задания',
@@ -453,6 +453,46 @@ const ru: Translations = {
   'help.addressShape': 'Выглядит так: {shape}',
   'help.addressWebdav': 'Это WebDAV-адрес сервера, а не адрес, который ты открываешь в браузере.',
   'targets.savedButUnreachable': 'Сохранено, но цель не ответила: {reason}',
+
+  // The phone.
+  //
+  // Android's own questions, which the container has no equivalent for: a
+  // permission granted on a settings page, a schedule that waits for the
+  // charger, a doze rule that turns a nightly job into a suggestion. They
+  // live in the SAME table as everything else, because one German is one
+  // German and a second table would drift from the first.
+  'phone.access': 'Доступ к файлам',
+  'phone.accessOn': 'ArrowLoop дотягивается до папок, на которые указывает задание.',
+  'phone.accessOff': 'Android держит каждое приложение подальше от папок всех остальных. Без этого разрешения задание достаёт только до маленького угла, который принадлежит этому приложению, а камера туда ничего не кладёт.',
+  'phone.accessAsk': 'Разрешить доступ к файлам',
+  'phone.accessNone': 'Эта версия Android такого разрешения не знает, поэтому папки приходится передавать по одной.',
+  'phone.notify': 'Уведомления',
+  'phone.notifyOn': 'Движок может сообщать, когда запуск закончился и когда что-то пошло не так.',
+  'phone.notifyOff': 'Без них о запуске, сорвавшемся в три часа ночи, узнаёшь через несколько дней.',
+  'phone.notifyAsk': 'Разрешить уведомления',
+  'phone.doze': 'Работа в фоне',
+  'phone.dozeOn': 'Android не трогает запуски по расписанию.',
+  'phone.dozeOff': 'Android усыпляет приложение, которое считает бездействующим, поэтому задание, назначенное на ночь, стартует только когда телефон снова возьмут в руки.',
+  'phone.dozeAsk': 'Разрешить работу в фоне',
+  'phone.schedule': 'Когда задания могут запускаться сами',
+  'phone.charging': 'Только при зарядке',
+  'phone.chargingHint': 'Запуск по расписанию ждёт, пока телефон не окажется на питании. Запуск, который ты начал сам, пойдёт в любом случае: нажатие кнопки это решение, и программа, которая стала бы с ним спорить, была бы неправа.',
+  'phone.wifi': 'Только по соединению без оплаты за мегабайты',
+  'phone.wifiHint': 'Запуск по расписанию ждёт соединения, за которое никто не платит помегабайтно. Спрашивают Android, так что сеть wifi, помеченная как платная, тоже считается.',
+  'phone.heldCharging': 'Запуски по расписанию ждут, потому что этот телефон не заряжается.',
+  'phone.heldMetered': 'Запуски по расписанию ждут, потому что это соединение платное по трафику.',
+  'phone.engineOn': 'Движок работает.',
+  'phone.engineOff': 'Движок остановлен.',
+  'phone.engineHint': 'Движок это та часть, которая синхронизирует, и она работает внутри этого приложения. Из сети до него не дотянуться: это две половины одной программы, говорящие друг с другом.',
+  'phone.engineStart': 'Запустить движок',
+  'phone.engineStop': 'Остановить движок',
+  'phone.themeSystem': 'Как в системе',
+  'phone.noSettings': 'Здесь больше ничего не нужно. Дай имя и сохрани.',
+  'phone.runEmpty': 'Этот запуск не тронул ни одного файла.',
+  'phone.bin': 'Корзина',
+  'phone.jobOff': 'Отключено',
+  'phone.jobOffHint': 'Отключённое задание никогда не запускается само и кнопки не получает. Новое задание намеренно начинается так: первое, что должно сделать только что набранное задание, это ничего.',
+  'phone.previewExplain': 'Пока не нажмёшь кнопку, ничего не двинется. Это то, что сделал бы запуск, посчитанное по обеим сторонам ровно в том виде, в каком они сейчас.',
 }
 
 export default ru

@@ -1,7 +1,7 @@
 // Hrvatski (hr). Checked against the English table by i18n.parity.test.ts:
 // exactly the same keys, and the same placeholders in every sentence.
 
-import type { Translations } from '../i18n'
+import type { Translations } from '../i18n.data'
 
 const hr: Translations = {
   'nav.jobs': 'Zadaci',
@@ -453,6 +453,46 @@ const hr: Translations = {
   'help.addressShape': 'Izgleda ovako: {shape}',
   'help.addressWebdav': 'Ovo je WebDAV adresa poslužitelja, a ne adresa koju otvaraš u pregledniku.',
   'targets.savedButUnreachable': 'Spremljeno, ali odredište nije odgovorilo: {reason}',
+
+  // The phone.
+  //
+  // Android's own questions, which the container has no equivalent for: a
+  // permission granted on a settings page, a schedule that waits for the
+  // charger, a doze rule that turns a nightly job into a suggestion. They
+  // live in the SAME table as everything else, because one German is one
+  // German and a second table would drift from the first.
+  'phone.access': 'Pristup datotekama',
+  'phone.accessOn': 'ArrowLoop doseže mape na koje zadatak pokazuje.',
+  'phone.accessOff': 'Android drži svaku aplikaciju podalje od mapa svih ostalih. Bez ove dozvole zadatak doseže samo mali kut koji pripada ovoj aplikaciji, a kamera ondje ništa ne ostavlja.',
+  'phone.accessAsk': 'Dopusti pristup datotekama',
+  'phone.accessNone': 'Ova verzija Androida ne poznaje tu dozvolu, pa se mape moraju predavati jedna po jedna.',
+  'phone.notify': 'Obavijesti',
+  'phone.notifyOn': 'Motor može reći kada je izvođenje završilo i kada je nešto pošlo po zlu.',
+  'phone.notifyOff': 'Bez njih za izvođenje koje je palo u tri ujutro doznaješ tek nakon nekoliko dana.',
+  'phone.notifyAsk': 'Dopusti obavijesti',
+  'phone.doze': 'Rad u pozadini',
+  'phone.dozeOn': 'Android pušta zakazana izvođenja na miru.',
+  'phone.dozeOff': 'Android uspava aplikaciju koju smatra neaktivnom, pa zadatak postavljen za noć krene tek kada netko opet uzme telefon u ruke.',
+  'phone.dozeAsk': 'Dopusti rad u pozadini',
+  'phone.schedule': 'Kada zadaci smiju krenuti sami',
+  'phone.charging': 'Samo dok se puni',
+  'phone.chargingHint': 'Zakazano izvođenje čeka dok telefon ne bude na struji. Izvođenje koje sam pokreneš ide svejedno: pritisak na gumb je odluka, a program koji bi se s njom prepirao ne bi bio u pravu.',
+  'phone.wifi': 'Samo na vezi koja se ne plaća po megabajtu',
+  'phone.wifiHint': 'Zakazano izvođenje čeka vezu koju nitko ne plaća po megabajtu. Pita se Android, pa se broji i wifi mreža označena kao naplatna.',
+  'phone.heldCharging': 'Zakazana izvođenja čekaju jer se ovaj telefon ne puni.',
+  'phone.heldMetered': 'Zakazana izvođenja čekaju jer se ova veza plaća po prometu.',
+  'phone.engineOn': 'Motor radi.',
+  'phone.engineOff': 'Motor stoji.',
+  'phone.engineHint': 'Motor je dio koji sinkronizira i radi unutar ove aplikacije. S mreže se do njega ne dolazi: to su dvije polovice jednog programa koje razgovaraju.',
+  'phone.engineStart': 'Pokreni motor',
+  'phone.engineStop': 'Zaustavi motor',
+  'phone.themeSystem': 'Kao sustav',
+  'phone.noSettings': 'Ovdje ništa više ne treba. Daj mu ime i spremi.',
+  'phone.runEmpty': 'Ovo izvođenje nije dotaknulo nijednu datoteku.',
+  'phone.bin': 'Smeće',
+  'phone.jobOff': 'Isključen',
+  'phone.jobOffHint': 'Isključen zadatak nikada ne kreće sam i ne dobiva gumb. Novi zadatak namjerno ovako počinje: prvo što bi tek upisan zadatak trebao učiniti jest ništa.',
+  'phone.previewExplain': 'Dok ne pritisneš gumb, ništa se ne miče. Ovo je ono što bi izvođenje učinilo, izračunato iz obiju strana točno onakvih kakve su sada.',
 }
 
 export default hr

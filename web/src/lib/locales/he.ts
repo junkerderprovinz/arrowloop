@@ -1,7 +1,7 @@
 // עברית (he). Checked against the English table by i18n.parity.test.ts:
 // exactly the same keys, and the same placeholders in every sentence.
 
-import type { Translations } from '../i18n'
+import type { Translations } from '../i18n.data'
 
 const he: Translations = {
   'nav.jobs': 'משימות',
@@ -453,6 +453,46 @@ const he: Translations = {
   'help.addressShape': 'היא נראית כך: {shape}',
   'help.addressWebdav': 'זו כתובת ה־ WebDAV של השרת, לא הכתובת שנפתחת בדפדפן.',
   'targets.savedButUnreachable': 'נשמר, אבל היעד לא השיב: {reason}',
+
+  // The phone.
+  //
+  // Android's own questions, which the container has no equivalent for: a
+  // permission granted on a settings page, a schedule that waits for the
+  // charger, a doze rule that turns a nightly job into a suggestion. They
+  // live in the SAME table as everything else, because one German is one
+  // German and a second table would drift from the first.
+  'phone.access': 'גישה לקבצים',
+  'phone.accessOn': 'ArrowLoop מגיע לתיקיות שאליהן מצביעה משימה.',
+  'phone.accessOff': 'אנדרואיד מרחיק כל יישום מהתיקיות של כל היתר. בלי ההרשאה הזו משימה מגיעה רק לפינה הקטנה ששייכת ליישום הזה, והמצלמה לא מניחה שם דבר.',
+  'phone.accessAsk': 'לאפשר גישה לקבצים',
+  'phone.accessNone': 'גרסת האנדרואיד הזו אינה מכירה את ההרשאה, ולכן יש למסור תיקיות אחת אחת.',
+  'phone.notify': 'התראות',
+  'phone.notifyOn': 'המנוע יכול לומר מתי הרצה הסתיימה ומתי משהו השתבש.',
+  'phone.notifyOff': 'בלעדיהן על הרצה שנפלה בשלוש לפנות בוקר תדע רק כעבור ימים.',
+  'phone.notifyAsk': 'לאפשר התראות',
+  'phone.doze': 'פעולה ברקע',
+  'phone.dozeOn': 'אנדרואיד מניח להרצות המתוזמנות.',
+  'phone.dozeOff': 'אנדרואיד מרדים יישום שהוא חושב שאינו פעיל, ולכן משימה שנקבעה ללילה יוצאת לדרך רק כשמרימים את הטלפון שוב.',
+  'phone.dozeAsk': 'לאפשר פעולה ברקע',
+  'phone.schedule': 'מתי משימות רשאיות להתחיל מעצמן',
+  'phone.charging': 'רק בזמן טעינה',
+  'phone.chargingHint': 'הרצה מתוזמנת ממתינה עד שהטלפון מחובר לחשמל. הרצה שאתה מתחיל בעצמך יוצאת לדרך בכל מקרה: לחיצה על הכפתור היא החלטה, ותוכנה שתתווכח איתה תטעה.',
+  'phone.wifi': 'רק בחיבור שאינו מחויב לפי מגה־בייט',
+  'phone.wifiHint': 'הרצה מתוזמנת ממתינה לחיבור שאיש אינו משלם עליו לפי מגה־בייט. השאלה מופנית לאנדרואיד, ולכן גם רשת wifi המסומנת כמחויבת נחשבת.',
+  'phone.heldCharging': 'ההרצות המתוזמנות ממתינות, כי הטלפון הזה אינו נטען.',
+  'phone.heldMetered': 'ההרצות המתוזמנות ממתינות, כי החיבור הזה מחויב לפי נפח.',
+  'phone.engineOn': 'המנוע פועל.',
+  'phone.engineOff': 'המנוע עצור.',
+  'phone.engineHint': 'המנוע הוא החלק שמסנכרן, והוא פועל בתוך היישום הזה. מהרשת אי אפשר להגיע אליו כלל: אלה שני חצאים של תוכנה אחת שמדברים ביניהם.',
+  'phone.engineStart': 'להפעיל את המנוע',
+  'phone.engineStop': 'לעצור את המנוע',
+  'phone.themeSystem': 'כמו המערכת',
+  'phone.noSettings': 'כאן לא דרוש דבר נוסף. תן לזה שם ושמור.',
+  'phone.runEmpty': 'ההרצה הזו לא נגעה באף קובץ.',
+  'phone.bin': 'אשפה',
+  'phone.jobOff': 'כבויה',
+  'phone.jobOffHint': 'משימה כבויה לעולם אינה מתחילה מעצמה ואינה מקבלת כפתור. משימה חדשה מתחילה כך בכוונה: הדבר הראשון שמשימה שזה עתה הוקלדה צריכה לעשות הוא כלום.',
+  'phone.previewExplain': 'שום דבר לא זז עד שתלחץ על הכפתור. זה מה שהרצה הייתה עושה, מחושב משני הצדדים בדיוק כפי שהם עכשיו.',
 }
 
 export default he

@@ -1,7 +1,7 @@
 // Polski (pl). Checked against the English table by i18n.parity.test.ts:
 // exactly the same keys, and the same placeholders in every sentence.
 
-import type { Translations } from '../i18n'
+import type { Translations } from '../i18n.data'
 
 const pl: Translations = {
   'nav.jobs': 'Zadania',
@@ -453,6 +453,46 @@ const pl: Translations = {
   'help.addressShape': 'Wygląda tak: {shape}',
   'help.addressWebdav': 'To adres WebDAV serwera, a nie ten, który otwierasz w przeglądarce.',
   'targets.savedButUnreachable': 'Zapisano, ale cel nie odpowiedział: {reason}',
+
+  // The phone.
+  //
+  // Android's own questions, which the container has no equivalent for: a
+  // permission granted on a settings page, a schedule that waits for the
+  // charger, a doze rule that turns a nightly job into a suggestion. They
+  // live in the SAME table as everything else, because one German is one
+  // German and a second table would drift from the first.
+  'phone.access': 'Dostęp do plików',
+  'phone.accessOn': 'ArrowLoop sięga do folderów, na które wskazuje zadanie.',
+  'phone.accessOff': 'Android trzyma każdą aplikację z dala od folderów każdej innej. Bez tego uprawnienia zadanie sięga tylko do małego kąta należącego do tej aplikacji, a aparat nic tam nie odkłada.',
+  'phone.accessAsk': 'Zezwól na dostęp do plików',
+  'phone.accessNone': 'Ta wersja Androida nie zna tego uprawnienia, więc foldery trzeba przekazywać pojedynczo.',
+  'phone.notify': 'Powiadomienia',
+  'phone.notifyOn': 'Silnik może powiedzieć, kiedy przebieg się skończył i kiedy poszedł źle.',
+  'phone.notifyOff': 'Bez nich o przebiegu, który padł o trzeciej w nocy, dowiesz się dopiero po kilku dniach.',
+  'phone.notifyAsk': 'Zezwól na powiadomienia',
+  'phone.doze': 'Praca w tle',
+  'phone.dozeOn': 'Android zostawia zaplanowane przebiegi w spokoju.',
+  'phone.dozeOff': 'Android usypia aplikację, którą uzna za bezczynną, więc zadanie ustawione na noc ruszy dopiero wtedy, gdy ktoś znów weźmie telefon do ręki.',
+  'phone.dozeAsk': 'Zezwól na pracę w tle',
+  'phone.schedule': 'Kiedy zadania mogą ruszać same',
+  'phone.charging': 'Tylko podczas ładowania',
+  'phone.chargingHint': 'Zaplanowany przebieg czeka, aż telefon będzie pod prądem. Przebieg, który uruchomisz sam, ruszy i tak: naciśnięcie przycisku jest decyzją, a program, który by z nią dyskutował, nie miałby racji.',
+  'phone.wifi': 'Tylko na połączeniu bez opłat za megabajty',
+  'phone.wifiHint': 'Zaplanowany przebieg czeka na połączenie, za które nikt nie płaci od megabajta. Pytany jest Android, więc liczy się też sieć wifi oznaczona jako płatna.',
+  'phone.heldCharging': 'Zaplanowane przebiegi czekają, bo ten telefon się nie ładuje.',
+  'phone.heldMetered': 'Zaplanowane przebiegi czekają, bo to połączenie jest płatne za transfer.',
+  'phone.engineOn': 'Silnik działa.',
+  'phone.engineOff': 'Silnik stoi.',
+  'phone.engineHint': 'Silnik to część, która synchronizuje, i działa wewnątrz tej aplikacji. Przez sieć nie da się do niego dosięgnąć: to dwie połowy jednego programu rozmawiające ze sobą.',
+  'phone.engineStart': 'Uruchom silnik',
+  'phone.engineStop': 'Zatrzymaj silnik',
+  'phone.themeSystem': 'Jak system',
+  'phone.noSettings': 'Tu nic więcej nie trzeba. Nadaj nazwę i zapisz.',
+  'phone.runEmpty': 'Ten przebieg nie dotknął żadnego pliku.',
+  'phone.bin': 'Kosz',
+  'phone.jobOff': 'Wyłączone',
+  'phone.jobOffHint': 'Wyłączone zadanie nigdy nie rusza samo i nie dostaje przycisku. Nowe zadanie celowo tak się zaczyna: pierwszą rzeczą, którą powinno zrobić dopiero co wpisane zadanie, jest nic.',
+  'phone.previewExplain': 'Dopóki nie naciśniesz przycisku, nic się nie rusza. To jest to, co zrobiłby przebieg, wyliczone z obu stron dokładnie takich, jakie są teraz.',
 }
 
 export default pl

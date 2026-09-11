@@ -53,6 +53,15 @@ jobs:
       - name: The translations carry the same placeholders
         run: python android/tools/check_strings.py
 
+      # And the same question about the app's OWN screens. A key that names the
+      # right subject but carries a number renders a literal {count} on the
+      # phone, in every language at once, and neither the compiler nor the
+      # language parity test can see it: both are happy with a key that exists
+      # and a sentence that is translated. Seven screens were doing exactly
+      # that, including the one that says how full the bin is.
+      - name: The screens ask for keys that exist, with the numbers they need
+        run: python mobile/tools/check_keys.py
+
       - uses: actions/setup-go@v6
         with:
           go-version-file: go.mod
@@ -91,6 +100,44 @@ jobs:
               ./cmd/arrowloop
           done
           ls -la mobile/native/jniLibs/*/
+
+      # The shapes, against a REAL engine, because nothing else can see this
+      # class of bug: `src/api.ts` declares what comes back and TypeScript
+      # believes every word, so a field the engine calls `reason` and the app
+      # calls `error` compiles perfectly and renders an empty string. Four of
+      # those shipped at once. The binary built above is a static linux/amd64
+      # one, so the runner can simply execute it.
+      - name: The app's idea of the answers matches a real engine
+        run: |
+          set -eux
+          work="$(mktemp -d)"
+          mkdir -p "$work/left" "$work/right"
+          echo one > "$work/left/one.txt"
+          echo two > "$work/left/two.txt"
+          printf '{"jobs":[{"name":"check","left":"%s/left","right":"%s/right","state":"state/check.db","quietPeriod":"0s"}]}' "$work" "$work" > "$work/arrowloop.json"
+          cp mobile/native/jniLibs/x86_64/libarrowloop.so "$work/engine"
+          chmod +x "$work/engine"
+          "$work/engine" web --config "$work/arrowloop.json" --addr 127.0.0.1:18423 &
+          engine=$!
+          trap 'kill $engine' EXIT
+          for _ in $(seq 30); do
+            curl -sf -m 2 http://127.0.0.1:18423/api/capabilities > /dev/null && break
+            sleep 1
+          done
+          # Real divergence, and a bin with something in it. The shapes that
+          # only exist while something is happening are exactly the ones this
+          # is for, and a run against two sides that already agree checks
+          # nothing - which is why check_shapes fails rather than passes when
+          # it could not reach them.
+          curl -sf -m 60 -X POST http://127.0.0.1:18423/api/jobs/check/run
+          sleep 3
+          rm "$work/right/two.txt"
+          echo three > "$work/left/three.txt"
+          curl -sf -m 60 -X POST http://127.0.0.1:18423/api/jobs/check/run
+          sleep 3
+          echo four > "$work/left/four.txt"
+          curl -sf -m 10 -X PUT -H 'Content-Type: application/json' -d '{"type":"sftp","settings":{"host":"example.org","user":"nobody"}}' http://127.0.0.1:18423/api/remotes/somewhere
+          python mobile/tools/check_shapes.py http://127.0.0.1:18423
 
       - uses: actions/setup-java@v4
         with:

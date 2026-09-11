@@ -1,7 +1,7 @@
 // فارسی (fa). Checked against the English table by i18n.parity.test.ts:
 // exactly the same keys, and the same placeholders in every sentence.
 
-import type { Translations } from '../i18n'
+import type { Translations } from '../i18n.data'
 
 const fa: Translations = {
   'nav.jobs': 'کارها',
@@ -453,6 +453,46 @@ const fa: Translations = {
   'help.addressShape': 'شکل آن چنین است: {shape}',
   'help.addressWebdav': 'این نشانی WebDAV کارساز است، نه نشانی‌ای که در مرورگر باز می‌کنی.',
   'targets.savedButUnreachable': 'ذخیره شد، اما مقصد پاسخ نداد: {reason}',
+
+  // The phone.
+  //
+  // Android's own questions, which the container has no equivalent for: a
+  // permission granted on a settings page, a schedule that waits for the
+  // charger, a doze rule that turns a nightly job into a suggestion. They
+  // live in the SAME table as everything else, because one German is one
+  // German and a second table would drift from the first.
+  'phone.access': 'دسترسی به فایل‌ها',
+  'phone.accessOn': 'ArrowLoop به پوشه‌هایی که یک کار به آن‌ها اشاره می‌کند می‌رسد.',
+  'phone.accessOff': 'اندروید هر برنامه را از پوشه‌های همهٔ برنامه‌های دیگر دور نگه می‌دارد. بدون این اجازه، یک کار فقط به گوشهٔ کوچکی می‌رسد که به همین برنامه تعلق دارد، و دوربین چیزی آنجا نمی‌گذارد.',
+  'phone.accessAsk': 'اجازهٔ دسترسی به فایل‌ها',
+  'phone.accessNone': 'این نسخهٔ اندروید چنین اجازه‌ای را نمی‌شناسد، بنابراین پوشه‌ها باید یکی‌یکی سپرده شوند.',
+  'phone.notify': 'اعلان‌ها',
+  'phone.notifyOn': 'موتور می‌تواند بگوید یک اجرا کی تمام شد و کی چیزی خراب شد.',
+  'phone.notifyOff': 'بدون آن‌ها از اجرایی که ساعت سه بامداد افتاده، روزها بعد باخبر می‌شوی.',
+  'phone.notifyAsk': 'اجازهٔ اعلان‌ها',
+  'phone.doze': 'کار در پس‌زمینه',
+  'phone.dozeOn': 'اندروید اجراهای زمان‌بندی‌شده را به حال خود می‌گذارد.',
+  'phone.dozeOff': 'اندروید برنامه‌ای را که بی‌کار بداند می‌خواباند، پس کاری که برای شب تنظیم شده تازه وقتی راه می‌افتد که گوشی دوباره برداشته شود.',
+  'phone.dozeAsk': 'اجازهٔ کار در پس‌زمینه',
+  'phone.schedule': 'کارها کی اجازه دارند خودشان شروع کنند',
+  'phone.charging': 'فقط هنگام شارژ',
+  'phone.chargingHint': 'اجرای زمان‌بندی‌شده صبر می‌کند تا گوشی به برق وصل باشد. اجرایی که خودت شروع می‌کنی به هر حال پیش می‌رود: فشردن دکمه یک تصمیم است، و برنامه‌ای که با آن بحث کند اشتباه می‌کند.',
+  'phone.wifi': 'فقط روی اتصالی که مگابایتی حساب نمی‌شود',
+  'phone.wifiHint': 'اجرای زمان‌بندی‌شده منتظر اتصالی می‌ماند که کسی مگابایتی بابتش نمی‌پردازد. از اندروید پرسیده می‌شود، پس شبکهٔ wifi که هزینه‌دار علامت خورده هم به حساب می‌آید.',
+  'phone.heldCharging': 'اجراهای زمان‌بندی‌شده منتظرند، چون این گوشی شارژ نمی‌شود.',
+  'phone.heldMetered': 'اجراهای زمان‌بندی‌شده منتظرند، چون این اتصال بر اساس مصرف حساب می‌شود.',
+  'phone.engineOn': 'موتور کار می‌کند.',
+  'phone.engineOff': 'موتور ایستاده است.',
+  'phone.engineHint': 'موتور همان بخشی است که همگام‌سازی می‌کند و درون همین برنامه اجرا می‌شود. از شبکه به هیچ جای آن نمی‌توان رسید: دو نیمهٔ یک برنامه‌اند که با هم حرف می‌زنند.',
+  'phone.engineStart': 'روشن کردن موتور',
+  'phone.engineStop': 'خاموش کردن موتور',
+  'phone.themeSystem': 'مانند سیستم',
+  'phone.noSettings': 'اینجا چیز دیگری لازم نیست. نامی به آن بده و ذخیره کن.',
+  'phone.runEmpty': 'این اجرا به هیچ فایلی دست نزد.',
+  'phone.bin': 'سطل زباله',
+  'phone.jobOff': 'خاموش',
+  'phone.jobOffHint': 'کار خاموش هرگز خودش شروع نمی‌شود و دکمه‌ای هم نمی‌گیرد. کار تازه عمداً این‌طور آغاز می‌شود: اولین کاری که یک کار تازه‌تایپ‌شده باید بکند هیچ است.',
+  'phone.previewExplain': 'تا وقتی دکمه را نزنی چیزی تکان نمی‌خورد. این همان کاری است که یک اجرا می‌کرد، حساب‌شده از هر دو سو، دقیقاً همان‌طور که اکنون هستند.',
 }
 
 export default fa

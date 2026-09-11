@@ -1,9 +1,12 @@
+import { useNavigation } from "@react-navigation/native";
 import { useCallback, useEffect, useState } from "react";
 import { FlatList, RefreshControl, StyleSheet, View } from "react-native";
 import { api, type Job } from "../api";
+import { useT } from "../i18n";
+import type { Nav, JobsStack } from "../nav";
 import { space } from "../theme";
 import { useEngineEvents } from "../useEngine";
-import { Badge, Body, Button, Caption, Card, Empty, Title, usePalette } from "../ui";
+import { Badge, Body, Button, Caption, Card, Empty, Title, useHue, useTheme } from "../ui";
 
 /**
  * The jobs, and what each of them is doing right now.
@@ -12,14 +15,15 @@ import { Badge, Body, Button, Caption, Card, Empty, Title, usePalette } from "..
  * eight columns; here it is one card per job, because a table on a phone is a
  * table you scroll sideways and then cannot read.
  *
- * What survives the cut, in order: is it running, when did it last succeed,
- * and the two paths. What does not: the schedule expression, the exclusions,
- * the state database. Those belong to editing a job, which is a desk job -
- * somebody sets a sync up once at a keyboard and then watches it from a phone
- * for years.
+ * What is on the card: is it running, which way it syncs, when it last
+ * succeeded, and the two paths. What is behind a tap: everything else. That
+ * split is the design - a list answers "is it keeping up", and a detail answers
+ * "what exactly does this do".
  */
 export function Jobs() {
-  const p = usePalette();
+  const nav = useNavigation<Nav<JobsStack>>();
+  const { t } = useT();
+  const { p } = useTheme();
   const [jobs, setJobs] = useState<Job[] | null>(null);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState<string | null>(null);
@@ -34,8 +38,9 @@ export function Jobs() {
   }, []);
 
   useEffect(() => {
-    load();
-  }, [load]);
+    const stop = nav.addListener("focus", load);
+    return stop;
+  }, [nav, load]);
 
   // The engine says when something changed, so the list is not on a timer. A
   // run that finishes is visible the moment it finishes.
@@ -53,65 +58,101 @@ export function Jobs() {
     }
   };
 
-  if (jobs === null) {
-    return <Empty title="Loading" detail={error || undefined} />;
-  }
-  if (jobs.length === 0) {
-    return (
-      <Empty
-        title="No jobs yet"
-        detail="A job is set up at a keyboard - open ArrowLoop on a computer and add one there. It will appear here."
-      />
-    );
-  }
+  if (jobs === null) return <Empty title={t("jobs.activityLoading")} detail={error || undefined} />;
 
   return (
     <FlatList
+      style={{ backgroundColor: p.background }}
       data={jobs}
       keyExtractor={(j) => j.name}
       contentContainerStyle={styles.list}
-      refreshControl={
-        <RefreshControl refreshing={false} onRefresh={load} tintColor={p.accent} />
+      refreshControl={<RefreshControl refreshing={false} onRefresh={load} tintColor={p.accent} />}
+      ListEmptyComponent={
+        <Empty title={t("jobs.title")} detail={t("jobs.empty")} />
       }
-      renderItem={({ item }) => (
-        <Card>
-          <View style={styles.head}>
-            <Title>{item.name}</Title>
-            {item.disabled ? (
-              <Badge label="off" />
-            ) : item.running ? (
-              <Badge label="running" tone="accent" />
-            ) : item.watch ? (
-              <Badge label="watching" tone="ok" />
-            ) : null}
-          </View>
-
-          {/* The two paths, one per line and each allowed to wrap. Truncating
-              them with an ellipsis in the middle is what a table does, and it
-              hides exactly the part that distinguishes two similar jobs. */}
-          <Body>{item.left}</Body>
-          <Body>{item.right}</Body>
-
-          <Caption>
-            {item.lastSuccess
-              ? `last succeeded ${when(item.lastSuccess)}`
-              : "has never finished a run"}
-          </Caption>
-
-          <View style={styles.actions}>
-            <Button
-              label={item.running ? "Stop" : "Run now"}
-              tone={item.running ? "neutral" : "accent"}
-              busy={busy === item.name}
-              disabled={item.disabled}
-              onPress={() => act(item)}
-            />
-          </View>
-        </Card>
-      )}
+      ListHeaderComponent={
+        <Button
+          label={t("edit.add")}
+          glyph="+"
+          tone="accent"
+          onPress={() => nav.navigate("JobEdit", {})}
+        />
+      }
       ListFooterComponent={error ? <Caption>{error}</Caption> : null}
+      renderItem={({ item, index }) => (
+        <JobCard
+          job={item}
+          index={index}
+          busy={busy === item.name}
+          onOpen={() => nav.navigate("JobDetail", { name: item.name })}
+          onAct={() => act(item)}
+        />
+      )}
     />
   );
+}
+
+function JobCard({
+  job,
+  index,
+  busy,
+  onOpen,
+  onAct,
+}: {
+  job: Job;
+  index: number;
+  busy: boolean;
+  onOpen: () => void;
+  onAct: () => void;
+}) {
+  const { t } = useT();
+  const hue = useHue(index);
+  return (
+    <Card onPress={onOpen} hue={hue}>
+      <View style={styles.head}>
+        <Title>{job.name}</Title>
+        {job.disabled ? (
+          <Badge label={t("jobs.state.disabled")} />
+        ) : job.running ? (
+          <Badge label={t("jobs.state.running")} tone="accent" />
+        ) : job.watch ? (
+          <Badge label={t("jobs.cadence.live")} tone="ok" />
+        ) : null}
+      </View>
+
+      {/* The two paths with the direction between them, one per line and each
+          allowed to wrap. Truncating a path in the middle is what a table
+          does, and it hides exactly the part that distinguishes two similar
+          jobs. */}
+      <Body>{job.left}</Body>
+      <Caption>{arrow(job.direction)}</Caption>
+      <Body>{job.right}</Body>
+
+      <Caption>
+        {job.lastSuccess
+          ? `${t("jobs.lastRun", { when: when(job.lastSuccess) })} ${t("jobs.ago")}`
+          : t("jobs.activityEmpty")}
+      </Caption>
+
+      <View style={styles.actions}>
+        <Button
+          label={job.running ? t("jobs.pause") : t("jobs.runNow")}
+          glyph={job.running ? "■" : "▶"}
+          tone={job.running ? "neutral" : "accent"}
+          busy={busy}
+          disabled={job.disabled}
+          onPress={onAct}
+        />
+      </View>
+    </Card>
+  );
+}
+
+/** The direction as an arrow, which is read faster than the word. */
+export function arrow(direction: string): string {
+  if (direction === "toRight" || direction === "right") return "→";
+  if (direction === "toLeft" || direction === "left") return "←";
+  return "↔";
 }
 
 /**
@@ -121,20 +162,25 @@ export function Jobs() {
  * "is this thing keeping up", and a date makes the reader do the subtraction.
  * Past a week the date IS the answer, so it switches.
  */
-function when(iso: string): string {
+export function when(iso: string): string {
   const then = new Date(iso).getTime();
   const mins = Math.round((Date.now() - then) / 60000);
   if (mins < 1) return "just now";
-  if (mins < 60) return `${mins} min ago`;
+  if (mins < 60) return `${mins} min`;
   const hours = Math.round(mins / 60);
-  if (hours < 24) return `${hours} h ago`;
+  if (hours < 24) return `${hours} h`;
   const days = Math.round(hours / 24);
-  if (days <= 7) return `${days} d ago`;
+  if (days <= 7) return `${days} d`;
   return new Date(iso).toLocaleDateString();
 }
 
 const styles = StyleSheet.create({
   list: { padding: space.lg, gap: space.md },
-  head: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: space.sm },
+  head: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: space.sm,
+  },
   actions: { flexDirection: "row", gap: space.sm, marginTop: space.xs },
 });

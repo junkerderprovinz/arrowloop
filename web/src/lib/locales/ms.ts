@@ -1,7 +1,7 @@
 // Bahasa Melayu (ms). Checked against the English table by i18n.parity.test.ts:
 // exactly the same keys, and the same placeholders in every sentence.
 
-import type { Translations } from '../i18n'
+import type { Translations } from '../i18n.data'
 
 const ms: Translations = {
   'nav.jobs': 'Tugasan',
@@ -453,6 +453,46 @@ const ms: Translations = {
   'help.addressShape': 'Bentuknya begini: {shape}',
   'help.addressWebdav': 'Ini alamat WebDAV pelayan, bukan alamat yang anda buka dalam pelayar.',
   'targets.savedButUnreachable': 'Disimpan, tetapi sasaran tidak menjawab: {reason}',
+
+  // The phone.
+  //
+  // Android's own questions, which the container has no equivalent for: a
+  // permission granted on a settings page, a schedule that waits for the
+  // charger, a doze rule that turns a nightly job into a suggestion. They
+  // live in the SAME table as everything else, because one German is one
+  // German and a second table would drift from the first.
+  'phone.access': 'Akses fail',
+  'phone.accessOn': 'ArrowLoop boleh mencapai folder yang ditunjuk oleh sesuatu tugas.',
+  'phone.accessOff': 'Android menjauhkan setiap aplikasi daripada folder aplikasi lain. Tanpa kebenaran ini, sesuatu tugas hanya mencapai sudut kecil milik aplikasi ini, dan kamera tidak meletakkan apa-apa di situ.',
+  'phone.accessAsk': 'Benarkan akses fail',
+  'phone.accessNone': 'Versi Android ini tidak mengenali kebenaran itu, jadi folder perlu diserahkan satu demi satu.',
+  'phone.notify': 'Pemberitahuan',
+  'phone.notifyOn': 'Enjin boleh memberitahu bila satu larian selesai dan bila ada yang tersasar.',
+  'phone.notifyOff': 'Tanpanya, larian yang gagal pukul tiga pagi baru kamu tahu beberapa hari kemudian.',
+  'phone.notifyAsk': 'Benarkan pemberitahuan',
+  'phone.doze': 'Berjalan di latar belakang',
+  'phone.dozeOn': 'Android membiarkan larian berjadual.',
+  'phone.dozeOff': 'Android menidurkan aplikasi yang disangkanya terbiar, jadi tugas yang ditetapkan untuk malam hanya bermula apabila telefon diambil semula.',
+  'phone.dozeAsk': 'Benarkan berjalan di latar belakang',
+  'phone.schedule': 'Bila tugas boleh bermula sendiri',
+  'phone.charging': 'Hanya semasa mengecas',
+  'phone.chargingHint': 'Larian berjadual menunggu sehingga telefon disambung ke kuasa. Larian yang kamu mulakan sendiri tetap jalan: menekan butang ialah satu keputusan, dan program yang membantahnya akan tersilap.',
+  'phone.wifi': 'Hanya pada sambungan yang tidak dibayar mengikut megabait',
+  'phone.wifiHint': 'Larian berjadual menunggu sambungan yang tiada sesiapa bayar mengikut megabait. Android yang ditanya, jadi rangkaian wifi yang ditanda berbayar juga dikira.',
+  'phone.heldCharging': 'Larian berjadual sedang menunggu, kerana telefon ini tidak mengecas.',
+  'phone.heldMetered': 'Larian berjadual sedang menunggu, kerana sambungan ini dibayar mengikut penggunaan.',
+  'phone.engineOn': 'Enjin sedang berjalan.',
+  'phone.engineOff': 'Enjin berhenti.',
+  'phone.engineHint': 'Enjin ialah bahagian yang menyelaras, dan ia berjalan di dalam aplikasi ini. Dari rangkaian tiada apa-apa yang boleh dicapai: ini dua bahagian satu program yang bercakap sesama sendiri.',
+  'phone.engineStart': 'Mulakan enjin',
+  'phone.engineStop': 'Hentikan enjin',
+  'phone.themeSystem': 'Seperti sistem',
+  'phone.noSettings': 'Di sini tiada apa-apa lagi diperlukan. Beri nama dan simpan.',
+  'phone.runEmpty': 'Larian ini tidak menyentuh sebarang fail.',
+  'phone.bin': 'Tong sampah',
+  'phone.jobOff': 'Dimatikan',
+  'phone.jobOffHint': 'Tugas yang dimatikan tidak pernah bermula sendiri dan tidak mendapat butang. Tugas baharu sengaja bermula begini: perkara pertama yang patut dilakukan oleh tugas yang baru ditaip ialah tiada apa-apa.',
+  'phone.previewExplain': 'Tiada apa-apa bergerak sehingga kamu menekan butang. Inilah yang akan dilakukan satu larian, dikira daripada kedua-dua belah tepat seperti sekarang.',
 }
 
 export default ms

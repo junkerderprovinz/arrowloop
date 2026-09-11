@@ -1,10 +1,7 @@
-import {
-  EVERY_UNITS,
-  WEEKDAYS,
-  parseSchedule,
-  type EveryUnit,
-} from '../components/Schedule'
-import type { Translate } from './i18n'
+// From lib rather than from the component, so the phone can read a schedule
+// without pulling React and four field components in behind it.
+import { EVERY_UNITS, WEEKDAYS, parseSchedule, type EveryUnit } from './schedule.data'
+import type { Translate } from './i18n.data'
 
 /**
  * A schedule, in words.

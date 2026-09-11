@@ -1,7 +1,7 @@
 // 한국어 (ko). Checked against the English table by i18n.parity.test.ts:
 // exactly the same keys, and the same placeholders in every sentence.
 
-import type { Translations } from '../i18n'
+import type { Translations } from '../i18n.data'
 
 const ko: Translations = {
   'nav.jobs': '작업',
@@ -453,6 +453,46 @@ const ko: Translations = {
   'help.addressShape': '형식은 다음과 같습니다: {shape}',
   'help.addressWebdav': '이것은 서버의 WebDAV 주소입니다. 브라우저에서 여는 주소가 아닙니다.',
   'targets.savedButUnreachable': '저장됐지만 대상이 응답하지 않았습니다: {reason}',
+
+  // The phone.
+  //
+  // Android's own questions, which the container has no equivalent for: a
+  // permission granted on a settings page, a schedule that waits for the
+  // charger, a doze rule that turns a nightly job into a suggestion. They
+  // live in the SAME table as everything else, because one German is one
+  // German and a second table would drift from the first.
+  'phone.access': '파일 접근',
+  'phone.accessOn': 'ArrowLoop이 작업이 가리키는 폴더에 닿습니다.',
+  'phone.accessOff': 'Android는 모든 앱을 다른 앱의 폴더에서 떼어 놓습니다. 이 권한이 없으면 작업은 이 앱에 속한 작은 구석에만 닿는데, 카메라는 거기에 아무것도 두지 않습니다.',
+  'phone.accessAsk': '파일 접근 허용',
+  'phone.accessNone': '이 Android 버전은 그 권한을 모르므로 폴더를 하나씩 넘겨야 합니다.',
+  'phone.notify': '알림',
+  'phone.notifyOn': '엔진이 실행이 끝난 때와 무언가 잘못된 때를 알릴 수 있습니다.',
+  'phone.notifyOff': '이것이 없으면 새벽 세 시에 실패한 실행은 며칠 뒤에나 알게 됩니다.',
+  'phone.notifyAsk': '알림 허용',
+  'phone.doze': '백그라운드 실행',
+  'phone.dozeOn': 'Android가 예약된 실행을 건드리지 않습니다.',
+  'phone.dozeOff': 'Android는 놀고 있다고 판단한 앱을 재우므로, 밤으로 잡아 둔 작업은 다음에 전화기를 집어 들 때에야 시작됩니다.',
+  'phone.dozeAsk': '백그라운드 실행 허용',
+  'phone.schedule': '작업이 스스로 시작해도 되는 때',
+  'phone.charging': '충전 중일 때만',
+  'phone.chargingHint': '예약된 실행은 전화기가 전원에 연결될 때까지 기다립니다. 직접 시작한 실행은 어느 쪽이든 진행됩니다. 버튼을 누른 것은 결정이고, 그것과 다투는 프로그램이 틀린 것입니다.',
+  'phone.wifi': '종량제가 아닌 연결에서만',
+  'phone.wifiHint': '예약된 실행은 아무도 메가바이트 단위로 요금을 내지 않는 연결을 기다립니다. Android에 묻기 때문에 종량제로 표시된 wifi도 해당됩니다.',
+  'phone.heldCharging': '이 전화기가 충전 중이 아니라서 예약된 실행이 기다리고 있습니다.',
+  'phone.heldMetered': '이 연결이 종량제라서 예약된 실행이 기다리고 있습니다.',
+  'phone.engineOn': '엔진이 돌고 있습니다.',
+  'phone.engineOff': '엔진이 멈춰 있습니다.',
+  'phone.engineHint': '엔진은 동기화를 하는 부분이고 이 앱 안에서 돕니다. 네트워크에서는 어디에도 닿을 수 없습니다. 한 프로그램의 두 반쪽이 서로 이야기하는 것뿐입니다.',
+  'phone.engineStart': '엔진 시작',
+  'phone.engineStop': '엔진 정지',
+  'phone.themeSystem': '시스템을 따라',
+  'phone.noSettings': '여기에는 더 필요한 것이 없습니다. 이름을 주고 저장하세요.',
+  'phone.runEmpty': '이 실행은 어떤 파일도 건드리지 않았습니다.',
+  'phone.bin': '휴지통',
+  'phone.jobOff': '꺼짐',
+  'phone.jobOffHint': '꺼진 작업은 스스로 시작하지 않고 버튼도 나오지 않습니다. 새 작업은 일부러 이렇게 시작합니다. 방금 입력한 작업이 가장 먼저 해야 할 일은 아무것도 하지 않는 것입니다.',
+  'phone.previewExplain': '버튼을 누르기 전에는 아무것도 움직이지 않습니다. 이것은 실행하면 어떻게 되는지를, 지금 이 상태의 양쪽에서 계산한 것입니다.',
 }
 
 export default ko

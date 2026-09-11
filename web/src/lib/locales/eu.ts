@@ -1,7 +1,7 @@
 // Euskara (eu). Checked against the English table by i18n.parity.test.ts:
 // exactly the same keys, and the same placeholders in every sentence.
 
-import type { Translations } from '../i18n'
+import type { Translations } from '../i18n.data'
 
 const eu: Translations = {
   'nav.jobs': 'Lanak',
@@ -453,6 +453,46 @@ const eu: Translations = {
   'help.addressShape': 'Itxura hau du: {shape}',
   'help.addressWebdav': 'Hau zerbitzariaren WebDAV helbidea da, ez nabigatzailean irekitzen duzuna.',
   'targets.savedButUnreachable': 'Gordeta, baina helburuak ez du erantzun: {reason}',
+
+  // The phone.
+  //
+  // Android's own questions, which the container has no equivalent for: a
+  // permission granted on a settings page, a schedule that waits for the
+  // charger, a doze rule that turns a nightly job into a suggestion. They
+  // live in the SAME table as everything else, because one German is one
+  // German and a second table would drift from the first.
+  'phone.access': 'Fitxategietarako sarbidea',
+  'phone.accessOn': 'ArrowLoop-ek lan batek seinalatzen dituen karpetetara iristen da.',
+  'phone.accessOff': 'Android-ek aplikazio bakoitza gainerako guztien karpetetatik urrun mantentzen du. Baimen hori gabe, lan batek aplikazio honi dagokion txoko txikira baino ez du iristen, eta kamerak ez du ezer uzten han.',
+  'phone.accessAsk': 'Baimendu fitxategietarako sarbidea',
+  'phone.accessNone': 'Android bertsio honek ez du baimen hori ezagutzen, beraz karpetak banaka eman behar dira.',
+  'phone.notify': 'Jakinarazpenak',
+  'phone.notifyOn': 'Motorrak esan dezake noiz amaitu den exekuzio bat eta noiz joan den gaizki.',
+  'phone.notifyOff': 'Horiek gabe, goizeko hiruretan erori den exekuzio baten berri egun batzuk geroago jakingo duzu.',
+  'phone.notifyAsk': 'Baimendu jakinarazpenak',
+  'phone.doze': 'Bigarren planoan ibiltzea',
+  'phone.dozeOn': 'Android-ek bakean uzten ditu programatutako exekuzioak.',
+  'phone.dozeOff': 'Android-ek geldi dagoela uste duen aplikazioa lokartzen du, beraz gauerako jarritako lan bat telefonoa berriz hartzen denean abiatzen da.',
+  'phone.dozeAsk': 'Baimendu bigarren planoan ibiltzea',
+  'phone.schedule': 'Noiz abiatu daitezkeen lanak beren kabuz',
+  'phone.charging': 'Kargatzen ari denean bakarrik',
+  'phone.chargingHint': 'Programatutako exekuzio batek telefonoa korrontean egon arte itxaroten du. Zuk zeuk abiatutakoa hala ere aurrera doa: botoia sakatzea erabaki bat da, eta horrekin eztabaidatuko lukeen programa oker legoke.',
+  'phone.wifi': 'Megabyteka ordaintzen ez den konexioan bakarrik',
+  'phone.wifiHint': 'Programatutako exekuzio batek inork megabyteka ordaintzen ez duen konexio baten zain egoten da. Android-i galdetzen zaio, beraz ordainpekotzat markatutako wifi sarea ere kontuan hartzen da.',
+  'phone.heldCharging': 'Programatutako exekuzioak zain daude, telefono hau ez delako kargatzen ari.',
+  'phone.heldMetered': 'Programatutako exekuzioak zain daude, konexio hau bolumenaren arabera ordaintzen delako.',
+  'phone.engineOn': 'Motorra martxan dago.',
+  'phone.engineOff': 'Motorra geldirik dago.',
+  'phone.engineHint': 'Motorra sinkronizatzen duen zatia da, eta aplikazio honen barruan dabil. Saretik ezin da harengana iritsi: programa bakar baten bi erdi dira, elkarrekin hizketan.',
+  'phone.engineStart': 'Abiarazi motorra',
+  'phone.engineStop': 'Gelditu motorra',
+  'phone.themeSystem': 'Sistemak bezala',
+  'phone.noSettings': 'Hemen ez da besterik behar. Eman izen bat eta gorde.',
+  'phone.runEmpty': 'Exekuzio honek ez du fitxategirik ukitu.',
+  'phone.bin': 'Zakarrontzia',
+  'phone.jobOff': 'Itzalita',
+  'phone.jobOffHint': 'Itzalitako lan bat ez da inoiz bere kabuz abiatzen eta ez du botoirik jasotzen. Lan berri bat nahita hasten da horrela: idatzi berri den lan batek egin beharko lukeen lehen gauza ezer ez da.',
+  'phone.previewExplain': 'Botoia sakatu arte ez da ezer mugitzen. Hau da exekuzio batek egingo lukeena, bi aldeetatik kalkulatuta, orain dauden bezalaxe.',
 }
 
 export default eu

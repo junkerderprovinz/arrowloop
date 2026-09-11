@@ -1,7 +1,7 @@
 // Català (ca). Checked against the English table by i18n.parity.test.ts:
 // exactly the same keys, and the same placeholders in every sentence.
 
-import type { Translations } from '../i18n'
+import type { Translations } from '../i18n.data'
 
 const ca: Translations = {
   'nav.jobs': 'Tasques',
@@ -453,6 +453,46 @@ const ca: Translations = {
   'help.addressShape': 'Té aquesta forma: {shape}',
   'help.addressWebdav': 'Aquesta és l\'adreça WebDAV del servidor, no la que obres al navegador.',
   'targets.savedButUnreachable': 'Desat, però el destí no ha respost: {reason}',
+
+  // The phone.
+  //
+  // Android's own questions, which the container has no equivalent for: a
+  // permission granted on a settings page, a schedule that waits for the
+  // charger, a doze rule that turns a nightly job into a suggestion. They
+  // live in the SAME table as everything else, because one German is one
+  // German and a second table would drift from the first.
+  'phone.access': 'Accés als fitxers',
+  'phone.accessOn': 'L\'ArrowLoop arriba a les carpetes a les quals apunta una tasca.',
+  'phone.accessOff': 'L\'Android manté cada aplicació fora de les carpetes de totes les altres. Sense aquest permís, una tasca només arriba al racó petit que pertany a aquesta aplicació, i la càmera no hi deixa res.',
+  'phone.accessAsk': 'Permet l\'accés als fitxers',
+  'phone.accessNone': 'Aquesta versió de l\'Android no coneix aquest permís, així que les carpetes s\'han de lliurar una a una.',
+  'phone.notify': 'Notificacions',
+  'phone.notifyOn': 'El motor pot dir quan una execució ha acabat i quan ha anat malament.',
+  'phone.notifyOff': 'Sense elles, d\'una execució que va caure a les tres de la matinada te n\'assabentes dies després.',
+  'phone.notifyAsk': 'Permet les notificacions',
+  'phone.doze': 'Funcionar en segon pla',
+  'phone.dozeOn': 'L\'Android deixa tranquil·les les execucions programades.',
+  'phone.dozeOff': 'L\'Android adorm una aplicació que creu inactiva, així que una tasca prevista per a la nit no arrenca fins que algú torna a agafar el telèfon.',
+  'phone.dozeAsk': 'Permet el funcionament en segon pla',
+  'phone.schedule': 'Quan poden arrencar soles les tasques',
+  'phone.charging': 'Només mentre es carrega',
+  'phone.chargingHint': 'Una execució programada espera fins que el telèfon estigui endollat. Una que inicies tu tira endavant igualment: prémer el botó és una decisió, i un programa que hi discutís s\'equivocaria.',
+  'phone.wifi': 'Només en una connexió sense cost per megabyte',
+  'phone.wifiHint': 'Una execució programada espera una connexió que ningú no paga per megabyte. Es pregunta a l\'Android, així que una xarxa wifi marcada com de pagament també compta.',
+  'phone.heldCharging': 'Les execucions programades esperen, perquè aquest telèfon no s\'està carregant.',
+  'phone.heldMetered': 'Les execucions programades esperen, perquè aquesta connexió es paga per volum.',
+  'phone.engineOn': 'El motor està funcionant.',
+  'phone.engineOff': 'El motor està aturat.',
+  'phone.engineHint': 'El motor és la part que sincronitza i funciona dins d\'aquesta aplicació. Des de la xarxa no se n\'arriba a res: són dues meitats d\'un mateix programa parlant entre elles.',
+  'phone.engineStart': 'Engega el motor',
+  'phone.engineStop': 'Atura el motor',
+  'phone.themeSystem': 'Com el sistema',
+  'phone.noSettings': 'Aquí no cal res més. Posa-li un nom i desa-ho.',
+  'phone.runEmpty': 'Aquesta execució no ha tocat cap fitxer.',
+  'phone.bin': 'Paperera',
+  'phone.jobOff': 'Desactivada',
+  'phone.jobOffHint': 'Una tasca desactivada no arrenca mai sola i no té botó. Una tasca nova comença així a posta: el primer que hauria de fer una tasca acabada d\'escriure és res.',
+  'phone.previewExplain': 'Fins que no premis el botó no es mou res. Això és el que faria una execució, calculat a partir dels dos costats tal com són ara.',
 }
 
 export default ca

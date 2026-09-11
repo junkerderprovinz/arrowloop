@@ -1,7 +1,7 @@
 // العربية (ar). Checked against the English table by i18n.parity.test.ts:
 // exactly the same keys, and the same placeholders in every sentence.
 
-import type { Translations } from '../i18n'
+import type { Translations } from '../i18n.data'
 
 const ar: Translations = {
   'nav.jobs': 'المهام',
@@ -453,6 +453,46 @@ const ar: Translations = {
   'help.addressShape': 'شكله كالتالي: {shape}',
   'help.addressWebdav': 'هذا هو عنوان WebDAV للخادم، وليس العنوان الذي تفتحه في المتصفح.',
   'targets.savedButUnreachable': 'تم الحفظ، لكن الوجهة لم تردّ: {reason}',
+
+  // The phone.
+  //
+  // Android's own questions, which the container has no equivalent for: a
+  // permission granted on a settings page, a schedule that waits for the
+  // charger, a doze rule that turns a nightly job into a suggestion. They
+  // live in the SAME table as everything else, because one German is one
+  // German and a second table would drift from the first.
+  'phone.access': 'الوصول إلى الملفات',
+  'phone.accessOn': 'يصل ArrowLoop إلى المجلدات التي تشير إليها المهمة.',
+  'phone.accessOff': 'يُبقي أندرويد كل تطبيق بعيدًا عن مجلدات التطبيقات الأخرى. بدون هذا الإذن تصل المهمة إلى الركن الصغير الذي يخص هذا التطبيق فقط، والكاميرا لا تضع فيه شيئًا.',
+  'phone.accessAsk': 'السماح بالوصول إلى الملفات',
+  'phone.accessNone': 'هذه النسخة من أندرويد لا تعرف ذلك الإذن، لذا يجب تسليم المجلدات واحدًا تلو الآخر.',
+  'phone.notify': 'الإشعارات',
+  'phone.notifyOn': 'يستطيع المحرك أن يقول متى انتهى التشغيل ومتى حدث خطأ.',
+  'phone.notifyOff': 'بدونها لن تعرف بتشغيل سقط في الثالثة فجرًا إلا بعد أيام.',
+  'phone.notifyAsk': 'السماح بالإشعارات',
+  'phone.doze': 'التشغيل في الخلفية',
+  'phone.dozeOn': 'يترك أندرويد عمليات التشغيل المجدولة وشأنها.',
+  'phone.dozeOff': 'ينوّم أندرويد أي تطبيق يظنه خاملًا، فالمهمة المضبوطة لليل لا تبدأ إلا حين يُلتقط الهاتف مرة أخرى.',
+  'phone.dozeAsk': 'السماح بالتشغيل في الخلفية',
+  'phone.schedule': 'متى يُسمح للمهام أن تبدأ من تلقاء نفسها',
+  'phone.charging': 'أثناء الشحن فقط',
+  'phone.chargingHint': 'ينتظر التشغيل المجدول حتى يكون الهاتف على الكهرباء. أما التشغيل الذي تبدأه بنفسك فيمضي على أي حال: الضغط على الزر قرار، والبرنامج الذي يجادله يكون مخطئًا.',
+  'phone.wifi': 'فقط على اتصال لا يُدفع بالميغابايت',
+  'phone.wifiHint': 'ينتظر التشغيل المجدول اتصالًا لا يدفع أحد ثمنه بالميغابايت. السؤال يُوجَّه إلى أندرويد، لذا تُحتسب أيضًا شبكة wifi موسومة بأنها مدفوعة.',
+  'phone.heldCharging': 'عمليات التشغيل المجدولة تنتظر، لأن هذا الهاتف لا يشحن.',
+  'phone.heldMetered': 'عمليات التشغيل المجدولة تنتظر، لأن هذا الاتصال يُدفع حسب الاستهلاك.',
+  'phone.engineOn': 'المحرك يعمل.',
+  'phone.engineOff': 'المحرك متوقف.',
+  'phone.engineHint': 'المحرك هو الجزء الذي يقوم بالمزامنة، وهو يعمل داخل هذا التطبيق. لا يمكن الوصول إلى أي جزء منه عبر الشبكة: إنهما نصفان لبرنامج واحد يتحدثان معًا.',
+  'phone.engineStart': 'تشغيل المحرك',
+  'phone.engineStop': 'إيقاف المحرك',
+  'phone.themeSystem': 'مثل النظام',
+  'phone.noSettings': 'لا حاجة إلى شيء آخر هنا. امنحه اسمًا واحفظ.',
+  'phone.runEmpty': 'هذا التشغيل لم يمس أي ملف.',
+  'phone.bin': 'سلة المهملات',
+  'phone.jobOff': 'موقوفة',
+  'phone.jobOffHint': 'المهمة الموقوفة لا تبدأ من تلقاء نفسها أبدًا ولا يظهر لها زر. المهمة الجديدة تبدأ هكذا عن قصد: أول ما ينبغي لمهمة كُتبت للتو أن تفعله هو لا شيء.',
+  'phone.previewExplain': 'لا شيء يتحرك حتى تضغط الزر. هذا ما سيفعله تشغيل، محسوبًا من الجانبين تمامًا كما هما الآن.',
 }
 
 export default ar

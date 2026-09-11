@@ -1,7 +1,7 @@
 // Íslenska (is). Checked against the English table by i18n.parity.test.ts:
 // exactly the same keys, and the same placeholders in every sentence.
 
-import type { Translations } from '../i18n'
+import type { Translations } from '../i18n.data'
 
 const is: Translations = {
   'nav.jobs': 'Verk',
@@ -453,6 +453,46 @@ const is: Translations = {
   'help.addressShape': 'Hún lítur svona út: {shape}',
   'help.addressWebdav': 'Þetta er WebDAV-slóð ýmisþjónsins, ekki slóðin sem þú opnar í vafranum.',
   'targets.savedButUnreachable': 'Vistað, en áfangastaðurinn svaraði ekki: {reason}',
+
+  // The phone.
+  //
+  // Android's own questions, which the container has no equivalent for: a
+  // permission granted on a settings page, a schedule that waits for the
+  // charger, a doze rule that turns a nightly job into a suggestion. They
+  // live in the SAME table as everything else, because one German is one
+  // German and a second table would drift from the first.
+  'phone.access': 'Aðgangur að skrám',
+  'phone.accessOn': 'ArrowLoop nær í möppurnar sem verk vísar á.',
+  'phone.accessOff': 'Android heldur hverju forriti frá möppum allra hinna. Án þessarar heimildar nær verk aðeins í litla hornið sem tilheyrir þessu forriti, og þangað setur myndavélin ekkert.',
+  'phone.accessAsk': 'Leyfa aðgang að skrám',
+  'phone.accessNone': 'Þessi Android-útgáfa þekkir ekki þá heimild, svo möppur þarf að afhenda eina í einu.',
+  'phone.notify': 'Tilkynningar',
+  'phone.notifyOn': 'Vélin má segja hvenær keyrslu lauk og hvenær eitthvað fór úrskeiðis.',
+  'phone.notifyOff': 'Án þeirra fréttir þú af keyrslu sem féll klukkan þrjú um nótt fyrst nokkrum dögum síðar.',
+  'phone.notifyAsk': 'Leyfa tilkynningar',
+  'phone.doze': 'Keyrsla í bakgrunni',
+  'phone.dozeOn': 'Android lætur tímasettar keyrslur í friði.',
+  'phone.dozeOff': 'Android svæfir forrit sem það telur aðgerðalaust, svo verk sem sett er á nóttina fer fyrst af stað þegar síminn er tekinn upp aftur.',
+  'phone.dozeAsk': 'Leyfa keyrslu í bakgrunni',
+  'phone.schedule': 'Hvenær verk mega fara af stað sjálf',
+  'phone.charging': 'Aðeins í hleðslu',
+  'phone.chargingHint': 'Tímasett keyrsla bíður þar til síminn er í straumi. Keyrsla sem þú byrjar sjálfur fer af stað hvort sem er: að ýta á hnappinn er ákvörðun og forrit sem þrætti um það hefði rangt fyrir sér.',
+  'phone.wifi': 'Aðeins um tengingu sem ekki er greidd eftir megabætum',
+  'phone.wifiHint': 'Tímasett keyrsla bíður eftir tengingu sem enginn greiðir fyrir eftir megabætum. Android er spurt, svo wifi-net sem merkt er sem gjaldskylt telur líka með.',
+  'phone.heldCharging': 'Tímasettar keyrslur bíða, því þessi sími er ekki í hleðslu.',
+  'phone.heldMetered': 'Tímasettar keyrslur bíða, því þessi tenging er greidd eftir magni.',
+  'phone.engineOn': 'Vélin er í gangi.',
+  'phone.engineOff': 'Vélin er stöðvuð.',
+  'phone.engineHint': 'Vélin er sá hluti sem samstillir og hún keyrir inni í þessu forriti. Af netinu er ekkert í henni aðgengilegt: þetta eru tveir helmingar eins forrits sem tala saman.',
+  'phone.engineStart': 'Ræsa vélina',
+  'phone.engineStop': 'Stöðva vélina',
+  'phone.themeSystem': 'Eins og kerfið',
+  'phone.noSettings': 'Hér þarf ekkert meira. Gefðu því nafn og vistaðu.',
+  'phone.runEmpty': 'Þessi keyrsla snerti enga skrá.',
+  'phone.bin': 'Ruslafata',
+  'phone.jobOff': 'Slökkt',
+  'phone.jobOffHint': 'Verk sem slökkt er á fer aldrei af stað sjálft og fær engan hnapp. Nýtt verk byrjar svona viljandi: það fyrsta sem nýskrifað verk ætti að gera er ekkert.',
+  'phone.previewExplain': 'Ekkert hreyfist fyrr en þú ýtir á hnappinn. Þetta er það sem keyrsla myndi gera, reiknað út frá báðum hliðum nákvæmlega eins og þær eru núna.',
 }
 
 export default is

@@ -1,7 +1,7 @@
 // Nederlands (nl). Checked against the English table by i18n.parity.test.ts:
 // exactly the same keys, and the same placeholders in every sentence.
 
-import type { Translations } from '../i18n'
+import type { Translations } from '../i18n.data'
 
 const nl: Translations = {
   'nav.jobs': 'Taken',
@@ -453,6 +453,46 @@ const nl: Translations = {
   'help.addressShape': 'Het ziet er zo uit: {shape}',
   'help.addressWebdav': 'Dit is het WebDAV-adres van de server, niet het adres dat je in de browser opent.',
   'targets.savedButUnreachable': 'Opgeslagen, maar de bestemming antwoordde niet: {reason}',
+
+  // The phone.
+  //
+  // Android's own questions, which the container has no equivalent for: a
+  // permission granted on a settings page, a schedule that waits for the
+  // charger, a doze rule that turns a nightly job into a suggestion. They
+  // live in the SAME table as everything else, because one German is one
+  // German and a second table would drift from the first.
+  'phone.access': 'Bestandstoegang',
+  'phone.accessOn': 'ArrowLoop kan bij de mappen waar een taak naar wijst.',
+  'phone.accessOff': 'Android houdt elke app buiten de mappen van elke andere app. Zonder deze toestemming bereikt een taak alleen het kleine hoekje dat bij deze app hoort, en daar zet de camera niets neer.',
+  'phone.accessAsk': 'Bestandstoegang toestaan',
+  'phone.accessNone': 'Deze Android-versie kent die toestemming niet, dus mappen moeten een voor een worden overgedragen.',
+  'phone.notify': 'Meldingen',
+  'phone.notifyOn': 'De motor mag zeggen wanneer een run klaar is en wanneer er een is misgegaan.',
+  'phone.notifyOff': 'Zonder dit hoor je pas dagen later van een run die om drie uur \'s nachts is mislukt.',
+  'phone.notifyAsk': 'Meldingen toestaan',
+  'phone.doze': 'Op de achtergrond draaien',
+  'phone.dozeOn': 'Android laat geplande runs met rust.',
+  'phone.dozeOff': 'Android legt een app die het voor inactief houdt slapen, dus een taak die voor de nacht staat draait pas wanneer de telefoon weer wordt opgepakt.',
+  'phone.dozeAsk': 'Draaien op de achtergrond toestaan',
+  'phone.schedule': 'Wanneer taken vanzelf mogen starten',
+  'phone.charging': 'Alleen tijdens het opladen',
+  'phone.chargingHint': 'Een geplande run wacht tot de telefoon aan de stroom ligt. Een run die je zelf start gaat hoe dan ook door: op de knop drukken is een beslissing, en een programma dat daartegenin gaat heeft ongelijk.',
+  'phone.wifi': 'Alleen op een verbinding zonder kosten per megabyte',
+  'phone.wifiHint': 'Een geplande run wacht op een verbinding die niemand per megabyte betaalt. Android wordt gevraagd, dus een wifinetwerk dat als betaald is gemarkeerd telt ook mee.',
+  'phone.heldCharging': 'Geplande runs wachten, omdat deze telefoon niet oplaadt.',
+  'phone.heldMetered': 'Geplande runs wachten, omdat deze verbinding per megabyte wordt betaald.',
+  'phone.engineOn': 'De motor draait.',
+  'phone.engineOff': 'De motor staat stil.',
+  'phone.engineHint': 'De motor is het deel dat synchroniseert, en hij draait in deze app. Via het netwerk is er niets van bereikbaar: het zijn twee helften van één programma die met elkaar praten.',
+  'phone.engineStart': 'Motor starten',
+  'phone.engineStop': 'Motor stoppen',
+  'phone.themeSystem': 'Zoals het systeem',
+  'phone.noSettings': 'Hier is verder niets nodig. Geef het een naam en sla het op.',
+  'phone.runEmpty': 'Deze run heeft geen bestand aangeraakt.',
+  'phone.bin': 'Prullenbak',
+  'phone.jobOff': 'Uitgeschakeld',
+  'phone.jobOffHint': 'Een uitgeschakelde taak start nooit vanzelf en krijgt geen knop. Een nieuwe taak begint expres zo: het eerste wat een net ingetypte taak zou moeten doen is niets.',
+  'phone.previewExplain': 'Tot je op de knop drukt beweegt er niets. Dit is wat een run zou doen, uitgerekend vanuit beide kanten precies zoals ze nu zijn.',
 }
 
 export default nl

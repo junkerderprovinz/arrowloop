@@ -1,7 +1,7 @@
 // Latviešu (lv). Checked against the English table by i18n.parity.test.ts:
 // exactly the same keys, and the same placeholders in every sentence.
 
-import type { Translations } from '../i18n'
+import type { Translations } from '../i18n.data'
 
 const lv: Translations = {
   'nav.jobs': 'Uzdevumi',
@@ -453,6 +453,46 @@ const lv: Translations = {
   'help.addressShape': 'Tā izskatās šādi: {shape}',
   'help.addressWebdav': 'Šī ir servera WebDAV adrese, nevis tā, ko atver pārlūkprogrammā.',
   'targets.savedButUnreachable': 'Saglabāts, bet mērķis neatbildēja: {reason}',
+
+  // The phone.
+  //
+  // Android's own questions, which the container has no equivalent for: a
+  // permission granted on a settings page, a schedule that waits for the
+  // charger, a doze rule that turns a nightly job into a suggestion. They
+  // live in the SAME table as everything else, because one German is one
+  // German and a second table would drift from the first.
+  'phone.access': 'Piekļuve failiem',
+  'phone.accessOn': 'ArrowLoop sasniedz mapes, uz kurām norāda uzdevums.',
+  'phone.accessOff': 'Android tur katru lietotni prom no visu pārējo mapēm. Bez šīs atļaujas uzdevums sasniedz tikai mazo stūrīti, kas pieder šai lietotnei, un kamera tur neko neatstāj.',
+  'phone.accessAsk': 'Atļaut piekļuvi failiem',
+  'phone.accessNone': 'Šī Android versija tādu atļauju nepazīst, tāpēc mapes jānodod pa vienai.',
+  'phone.notify': 'Paziņojumi',
+  'phone.notifyOn': 'Dzinējs var pateikt, kad izpilde beigusies un kad kaut kas nogājis greizi.',
+  'phone.notifyOff': 'Bez tiem par izpildi, kas kritusi trijos naktī, uzzini tikai pēc dažām dienām.',
+  'phone.notifyAsk': 'Atļaut paziņojumus',
+  'phone.doze': 'Darbība fonā',
+  'phone.dozeOn': 'Android liek mierā ieplānotās izpildes.',
+  'phone.dozeOff': 'Android iemidzina lietotni, kuru uzskata par bezdarbīgu, tāpēc naktij ieplānots uzdevums sākas tikai tad, kad telefonu atkal paņem rokā.',
+  'phone.dozeAsk': 'Atļaut darbību fonā',
+  'phone.schedule': 'Kad uzdevumi drīkst sākties paši',
+  'phone.charging': 'Tikai uzlādes laikā',
+  'phone.chargingHint': 'Ieplānota izpilde gaida, līdz telefons ir pieslēgts strāvai. Izpilde, ko sāc pats, notiek jebkurā gadījumā: nospiest pogu ir lēmums, un programma, kas ar to strīdētos, kļūdītos.',
+  'phone.wifi': 'Tikai savienojumā, par ko nemaksā pēc megabaitiem',
+  'phone.wifiHint': 'Ieplānota izpilde gaida savienojumu, par kuru neviens nemaksā pēc megabaitiem. Jautā Android, tāpēc skaitās arī wifi tīkls, kas atzīmēts kā maksas.',
+  'phone.heldCharging': 'Ieplānotās izpildes gaida, jo šis telefons netiek uzlādēts.',
+  'phone.heldMetered': 'Ieplānotās izpildes gaida, jo par šo savienojumu maksā pēc datu apjoma.',
+  'phone.engineOn': 'Dzinējs darbojas.',
+  'phone.engineOff': 'Dzinējs ir apturēts.',
+  'phone.engineHint': 'Dzinējs ir tā daļa, kas sinhronizē, un tā darbojas šīs lietotnes iekšienē. No tīkla tam nevar piekļūt: tās ir vienas programmas divas puses, kas sarunājas.',
+  'phone.engineStart': 'Palaist dzinēju',
+  'phone.engineStop': 'Apturēt dzinēju',
+  'phone.themeSystem': 'Kā sistēma',
+  'phone.noSettings': 'Te vairāk nekas nav vajadzīgs. Dod nosaukumu un saglabā.',
+  'phone.runEmpty': 'Šī izpilde neaizskāra nevienu failu.',
+  'phone.bin': 'Miskaste',
+  'phone.jobOff': 'Izslēgts',
+  'phone.jobOffHint': 'Izslēgts uzdevums nekad nesākas pats un pogu nesaņem. Jauns uzdevums apzināti sākas šādi: pirmais, kas tikko ierakstītam uzdevumam būtu jādara, ir nekas.',
+  'phone.previewExplain': 'Kamēr nenospiedīsi pogu, nekas nekustēsies. Lūk, ko izpilde darītu, aprēķināts no abām pusēm tieši tādām, kādas tās ir tagad.',
 }
 
 export default lv
