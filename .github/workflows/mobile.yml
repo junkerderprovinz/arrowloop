@@ -128,17 +128,36 @@ jobs:
             curl -sf -m 2 http://127.0.0.1:18423/api/capabilities > /dev/null && break
             sleep 1
           done
+          # Wait for the run to actually finish rather than guessing at three
+          # seconds. A fixed sleep makes the guard fail now and then on a slow
+          # runner, and a guard that fails at random gets switched off rather
+          # than read.
+          settle() {
+            for _ in $(seq 60); do
+              # An answer that did not arrive is not an answer that says
+              # "finished". Treating a failed request as done would let the
+              # next step race the run it was waiting for.
+              state="$(curl -sf -m 5 http://127.0.0.1:18423/api/jobs || true)"
+              if [ -n "$state" ] && ! printf '%s' "$state" | grep -q '"running":true'; then
+                return 0
+              fi
+              sleep 1
+            done
+            echo "the run never finished" >&2
+            return 1
+          }
+
           # Real divergence, and a bin with something in it. The shapes that
           # only exist while something is happening are exactly the ones this
           # is for, and a run against two sides that already agree checks
           # nothing - which is why check_shapes fails rather than passes when
           # it could not reach them.
           curl -sf -m 60 -X POST http://127.0.0.1:18423/api/jobs/check/run
-          sleep 3
+          settle
           rm "$work/right/two.txt"
           echo three > "$work/left/three.txt"
           curl -sf -m 60 -X POST http://127.0.0.1:18423/api/jobs/check/run
-          sleep 3
+          settle
           echo four > "$work/left/four.txt"
           # And the SAME file changed on both sides, because that is the only
           # action that carries both versions. A plan made only of copies to
