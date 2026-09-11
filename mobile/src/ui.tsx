@@ -1,6 +1,7 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import {
   ActivityIndicator,
+  Modal,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -258,6 +259,49 @@ export function Badge({ label, tone = "neutral" }: { label: string; tone?: Tone 
     <View style={[styles.badge, { backgroundColor: softOn(ink, 0.15), borderRadius: radius.pill }]}>
       <Text style={[styles.badgeText, { color: ink }]}>{label}</Text>
     </View>
+  );
+}
+
+/**
+ * An explanation, folded into an (i) until somebody asks for it.
+ *
+ * The house rule is that prose belongs in a bubble rather than in the thing it
+ * explains, and the tile grid is where that rule earns its keep: five of the
+ * sixty entries carry a sentence, and printed in place those five tiles stand
+ * taller than the fifty-five around them - a grid of one size becomes a grid of
+ * two because of five sentences nobody needed.
+ *
+ * A TAP rather than a hover, and a small dialog rather than a tooltip pinned to
+ * the corner. A phone has no pointer, so the web's reveal-on-hover has no
+ * gesture behind it at all; and a bubble anchored inside a tile that is 180
+ * wide would wrap a sentence into eight lines. The dialog is the same text with
+ * room to be read, and it leaves every tile the height it had.
+ */
+export function InfoBubble({ tip }: { tip: string }) {
+  const { p, radius, accentInk } = useTheme();
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <Pressable
+        onPress={() => setOpen(true)}
+        // The tile underneath is itself pressable, and a tap that opened the
+        // form for a provider somebody was only reading about would be the
+        // picker answering a question nobody asked.
+        hitSlop={8}
+        style={[styles.bubble, { backgroundColor: softOn(accentInk, 0.15), borderRadius: radius.pill }]}
+      >
+        <Text style={[styles.bubbleMark, { color: accentInk }]}>i</Text>
+      </Pressable>
+      <Modal visible={open} transparent animationType="fade" onRequestClose={() => setOpen(false)}>
+        {/* The ground outside the card dismisses it. A dialog whose only way
+            out is a button is a dialog somebody has to hunt through. */}
+        <Pressable style={styles.tipGround} onPress={() => setOpen(false)}>
+          <View style={[styles.tipCard, { backgroundColor: p.surface2, borderRadius: radius.card }]}>
+            <Text style={[styles.tipText, { color: p.text }]}>{tip}</Text>
+          </View>
+        </Pressable>
+      </Modal>
+    </>
   );
 }
 
@@ -585,6 +629,17 @@ const styles = StyleSheet.create({
 
   badge: { paddingHorizontal: 7, paddingVertical: 2, alignSelf: "flex-start", flexShrink: 0 },
   badgeText: { fontSize: text.caption, fontWeight: "600", letterSpacing: 0.2 },
+  bubble: { width: 18, height: 18, alignItems: "center", justifyContent: "center" },
+  bubbleMark: { fontSize: text.caption, fontWeight: "700", lineHeight: text.caption + 3 },
+  tipGround: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    padding: space.lg,
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  tipCard: { maxWidth: 320, padding: space.lg },
+  tipText: { fontSize: text.body, lineHeight: text.body + 6 },
 
   // ONE height and ONE gap for every labelled button. The gap matters: a row
   // with none sets the glyph against the first letter and the two read as one

@@ -35,15 +35,21 @@ export function Glyph({
   name,
   color,
   size = GLYPH,
+  width,
+  height,
 }: {
   name: string;
   color: string;
   size?: number;
+  /** A box that is not square, for the one place a mark is given room to be
+   *  wide. Both default to `size`, which is every other place. */
+  width?: number;
+  height?: number;
 }) {
   const glyph = GLYPHS[name];
   if (!glyph) return null;
   return (
-    <Svg width={size} height={size} viewBox={glyph.box}>
+    <Svg width={width ?? size} height={height ?? size} viewBox={glyph.box}>
       {glyph.groups.map((group, gi) => (
         <G key={gi} transform={group.transform}>
           {group.parts.map((part, pi) =>
@@ -101,10 +107,22 @@ export function glyphNameForKey(key: string): string | undefined {
 export function BrandMark({
   name,
   size = 20,
+  width,
+  height,
   scheme,
 }: {
   name: string;
   size?: number;
+  /**
+   * A box wider than it is tall, where the mark is given the room.
+   *
+   * An svg letterboxes inside its element, so a square box is a cap on the
+   * LONGER side: Linkbox is 5.3:1, Gofile 3.5, Quatrix 3.1, and a 48px square
+   * draws the first of those nine pixels tall. The web tile hands each mark a
+   * 96 by 48 box for exactly that reason and this is the same box.
+   */
+  width?: number;
+  height?: number;
   scheme: "dark" | "light";
 }) {
   const brand = BRANDS[name];
@@ -123,7 +141,7 @@ export function BrandMark({
   const xml = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${brand.box}"${
     fill ? ` fill="${fill}"` : ""
   }>${body}</svg>`;
-  return <SvgXml xml={xml} width={size} height={size} />;
+  return <SvgXml xml={xml} width={width ?? size} height={height ?? size} />;
 }
 
 /** Whether a brand mark of that name exists, so a row can decide to show its
@@ -149,18 +167,25 @@ export function hasBrandMark(name: string | undefined): boolean {
 export function ProviderMark({
   name,
   size = 20,
+  width,
+  height,
   color,
   scheme,
 }: {
   name: string | undefined;
   size?: number;
+  /** A box that is not square, for a tile that gives a wordmark its width. */
+  width?: number;
+  height?: number;
   /** The ink for an app glyph. Ignored by a brand, which owns its colour. */
   color: string;
   scheme: "dark" | "light";
 }) {
   if (!name) return null;
-  if (name in BRANDS) return <BrandMark name={name} size={size} scheme={scheme} />;
-  if (name in GLYPHS) return <Glyph name={name} color={color} size={size} />;
+  if (name in BRANDS)
+    return <BrandMark name={name} size={size} width={width} height={height} scheme={scheme} />;
+  if (name in GLYPHS)
+    return <Glyph name={name} color={color} size={size} width={width} height={height} />;
   return null;
 }
 

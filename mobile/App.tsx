@@ -128,12 +128,26 @@ function Shell() {
         <Tabs.Navigator
           screenOptions={{
             headerShown: false,
+            // The bar FLOATS as a card rather than being welded to the bottom
+            // of the screen. jdp: "die untere leiste soll nicht am rand kleben
+            // sondern aussehen wie die sidebar." The desktop rail made the same
+            // move for the same reason: everything else on screen is a card on
+            // a ground, and the one element that was neither read as belonging
+            // to the system's chrome instead of to the app.
+            //
+            // The bar itself goes transparent and the card is drawn behind it,
+            // which is what lets the card be INSET while the bar keeps the
+            // height it reserves from the screen above. A bar given margins
+            // directly moves the icons and leaves the reserved space where it
+            // was, so the page ends in a gap and the icons sit in front of it.
             tabBarStyle: {
-              backgroundColor: p.surface,
-              borderTopColor: p.border,
-              borderTopLeftRadius: radius.card,
-              borderTopRightRadius: radius.card,
+              backgroundColor: "transparent",
+              // No line. GlimStone separates surfaces by shade, and there is
+              // nothing to separate here anyway once the bar is a card.
+              borderTopWidth: 0,
+              elevation: 0,
             },
+            tabBarBackground: () => <TabCard />,
             tabBarActiveTintColor: accent,
             tabBarInactiveTintColor: p.textMuted,
             tabBarLabelStyle: { fontSize: text.caption },
@@ -227,6 +241,39 @@ function Shell() {
         </Tabs.Navigator>
       </NavigationContainer>
     </>
+  );
+}
+
+/**
+ * The card the tab bar sits on, drawn behind it and inset from every edge.
+ *
+ * The same surface and the same radius as the desktop's rail, which is the
+ * whole request: one element that reads as part of the app rather than as part
+ * of the phone.
+ *
+ * The bottom inset is where the care goes. Android's gesture bar lives below
+ * the tab bar, and react-navigation already pads the bar by that much so the
+ * ICONS clear it - but the card is drawn across the whole bar including that
+ * padding, so without this it would run underneath the gesture bar and touch
+ * the bottom edge after all. `space.sm` is the floor, for a phone with buttons
+ * rather than a gesture bar, where the inset is zero and a card flush with the
+ * edge is exactly what this is fixing.
+ */
+function TabCard() {
+  const { p, radius } = useTheme();
+  const inset = useSafeAreaInsets();
+  return (
+    <View
+      style={{
+        position: "absolute",
+        left: space.md,
+        right: space.md,
+        top: 0,
+        bottom: Math.max(inset.bottom, space.sm),
+        backgroundColor: p.surface,
+        borderRadius: radius.card,
+      }}
+    />
   );
 }
 
