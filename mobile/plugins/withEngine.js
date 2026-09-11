@@ -206,22 +206,30 @@ function withEngineGradle(config) {
     //
     // Copying again here costs nothing and removes the whole failure mode: the
     // generated tree cannot be older than the source tree.
+    // At CONFIGURATION time, not as a task, and that is the whole trick.
+    //
+    // The first version of this was two Copy tasks with `dependsOn` on the
+    // compile and merge tasks, and Gradle 9 refused it: `generateReleaseResources`
+    // also reads `src/main/res`, so a task writing that directory without a
+    // declared dependency is "a problem with the configuration" and the build
+    // fails. Chasing every AGP task that happens to read those two directories
+    // is a list that is wrong the next time AGP adds one.
+    //
+    // Copying before the task graph exists removes the question. Nothing can
+    // consume a stale tree because the tree is already current when the first
+    // task is created, and there is no dependency to declare because there is
+    // no producing task. It costs one directory walk of about a dozen files.
     const SYNC = "// arrowloop: the native sources cannot go stale";
     if (!gradle.includes(SYNC)) {
       gradle += `
 ${SYNC}
-tasks.register('syncArrowLoopNative', Copy) {
+copy {
     from rootProject.file('../native/java')
     into file('src/main/java')
 }
-tasks.register('syncArrowLoopRes', Copy) {
+copy {
     from rootProject.file('../native/res')
     into file('src/main/res')
-}
-tasks.configureEach { task ->
-    if (task.name ==~ /^(pre|compile).*Kotlin$/ || task.name ==~ /^merge.*Resources$/) {
-        task.dependsOn 'syncArrowLoopNative', 'syncArrowLoopRes'
-    }
 }
 `;
     }
