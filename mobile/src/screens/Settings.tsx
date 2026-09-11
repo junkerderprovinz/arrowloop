@@ -793,7 +793,13 @@ function langName(code: string): string {
 }
 
 const styles = StyleSheet.create({
-  actions: { flexDirection: "row", gap: space.sm },
+  // Wrapping, because the About card's give row is three buttons wide now and
+  // three did not fit: PayPal hung over the right edge of the card with half
+  // its label off-screen, found on the phone rather than in a build. A row that
+  // cannot wrap silently clips its last member, so the member it loses is
+  // always whichever one was added most recently - the one nobody has looked at
+  // yet. Every button already grows, so a wrapped line fills itself.
+  actions: { flexDirection: "row", flexWrap: "wrap", gap: space.sm },
   axisRow: { flexDirection: "row", alignItems: "center", gap: space.md, paddingVertical: space.sm },
   // Tabular figures, so two version numbers under each other do not shift, and
   // the accent ink so a number reads as the destination it is.

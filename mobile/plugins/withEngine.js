@@ -30,6 +30,11 @@ const {
 
 const PACKAGE = "design.halleluja.arrowloop";
 
+/** The engine's filename. `lib*.so` because since Android 10 the native library
+ *  directory is the only place an app may EXECUTE a file from, and only files
+ *  shaped like a library are put there. */
+const ENGINE = "libarrowloop.so";
+
 /** Copy the hand-written native sources into the generated project. */
 function withNativeSources(config) {
   return withDangerousMod(config, [
@@ -52,6 +57,41 @@ function withNativeSources(config) {
       // and one that throws while putting up its notification.
       const res = path.join(root, "app", "src", "main", "res");
       copyTree(path.join(from, "res"), res);
+
+      // THE ENGINE ITSELF, which is the one file without which the app is a
+      // settings screen that cannot answer any question.
+      //
+      // This used to live only in the CI workflow, as a step between prebuild
+      // and assemble, and a local build therefore produced a complete, signed,
+      // installable APK with no engine in it. Nothing said so: gradle is
+      // perfectly happy to package an empty jniLibs, the app installs over the
+      // previous one, and the only symptom is a start screen that never
+      // finishes and a notification reading "the engine did not answer within
+      // thirty seconds" - which reads like a timeout to tune rather than a
+      // missing file. Found on a phone, after a build I had already called
+      // verified because the JavaScript bundle and the dex were right.
+      //
+      // The binary is gitignored (79 MB per architecture) and comes from
+      // `go build` or from the CI artefact, so its ABSENCE is a real state and
+      // has to be an error rather than an empty copy. A build that cannot
+      // include an engine must not produce something that looks like it did.
+      const engines = path.join(from, "jniLibs");
+      const abis = fs.existsSync(engines)
+        ? fs
+            .readdirSync(engines, { withFileTypes: true })
+            .filter((e) => e.isDirectory() && fs.existsSync(path.join(engines, e.name, ENGINE)))
+            .map((e) => e.name)
+        : [];
+      if (abis.length === 0) {
+        throw new Error(
+          `withEngine: no ${ENGINE} under mobile/native/jniLibs - an APK built from here would install and then hang on its start screen, because the engine it supervises would not be in it. Build one into mobile/native/jniLibs/<abi>/${ENGINE}, or take the one from a Mobile CI run.`,
+        );
+      }
+      for (const abi of abis) {
+        const target = path.join(root, "app", "src", "main", "jniLibs", abi);
+        fs.mkdirSync(target, { recursive: true });
+        fs.copyFileSync(path.join(engines, abi, ENGINE), path.join(target, ENGINE));
+      }
       return cfg;
     },
   ]);
@@ -230,6 +270,31 @@ copy {
 copy {
     from rootProject.file('../native/res')
     into file('src/main/res')
+}
+copy {
+    from rootProject.file('../native/jniLibs')
+    into file('src/main/jniLibs')
+}
+
+// An APK with no engine in it must not be a successful build.
+//
+// The copy above cannot help when there is nothing to copy, and that is the
+// state a laptop is usually in: the binary is 79 MB per architecture and
+// gitignored, so a fresh clone has none. Gradle packages an empty jniLibs
+// without complaint, the APK installs over the previous one, and the app hangs
+// on its start screen saying the engine did not answer - which reads like a
+// timeout to tune rather than a file that was never there. Shipped once,
+// verified once, and found on a phone.
+tasks.matching { it.name ==~ /^(merge|package).*[Nn]ativeLibs\$/ || it.name ==~ /^package(Debug|Release)\$/ }.configureEach {
+    doFirst {
+        def dir = file('src/main/jniLibs')
+        def found = dir.exists() ? fileTree(dir).matching { include '**/libarrowloop.so' }.files : []
+        if (found.isEmpty()) {
+            throw new GradleException(
+                'no libarrowloop.so under mobile/native/jniLibs - this build would produce an installable APK with no engine in it. ' +
+                'Build one into mobile/native/jniLibs/<abi>/libarrowloop.so, or take the one from a Mobile CI run.')
+        }
+    }
 }
 
 // The JavaScript bundle depends on ../../web/src, and Gradle did not know.

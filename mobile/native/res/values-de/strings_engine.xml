@@ -17,4 +17,5 @@
     <!-- Vier Zahlen in dieser Reihenfolge: kopiert, verschoben, Papierkorb, Konflikte. -->
     <string name="notify_done_what">%1$d kopiert, %2$d verschoben, %3$d in den Papierkorb, %4$d Konflikte</string>
     <string name="notify_failed">Abgleich fehlgeschlagen</string>
+    <string name="notify_failed_no_engine">Der Motor ist nicht gestartet. Öffne ArrowLoop einmal und sieh auf der Motor-Karte nach.</string>
 </resources>

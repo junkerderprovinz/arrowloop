@@ -43,4 +43,15 @@
     <!-- Four numbers in this order: copied, moved, binned, conflicts. -->
     <string name="notify_done_what">%1$d copied, %2$d moved, %3$d binned, %4$d conflicts</string>
     <string name="notify_failed">Sync failed</string>
+    <!--
+      The one failure this app authors itself, so the one it can say in the
+      phone's language. Everything else under a failed sync is a sentence out
+      of the engine, composed in Go, and it arrives in English until those
+      reasons carry codes.
+
+      Worth saying plainly rather than as a timeout: thirty seconds is long
+      enough that "it was slow" is not the explanation. Either the engine is
+      not in this build or it could not start.
+    -->
+    <string name="notify_failed_no_engine">The engine did not start. Open ArrowLoop once and check the engine card.</string>
 </resources>

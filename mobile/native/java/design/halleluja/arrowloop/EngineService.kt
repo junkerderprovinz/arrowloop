@@ -110,7 +110,13 @@ class EngineService : Service() {
             // never happened, and "my schedule does not run" is the complaint
             // with the least evidence behind it of any in this program.
             Log.w(TAG, "woke and could not run: ${e.javaClass.simpleName} ${e.message}")
-            tell(CHANNEL_FAILED, FAILED_ID, getString(R.string.notify_failed), e.message ?: "")
+            // The phone's language where this app knows the reason, and the raw
+            // message only where it does not. An empty detail rather than an
+            // English one would be worse: a notification saying a sync failed
+            // and refusing to say why is the complaint with the least evidence
+            // behind it of any in this program.
+            val why = if (e is Silent) getString(e.said) else e.message ?: ""
+            tell(CHANNEL_FAILED, FAILED_ID, getString(R.string.notify_failed), why)
         } finally {
             finish()
         }
@@ -183,8 +189,28 @@ class EngineService : Service() {
             }
             Thread.sleep(500)
         }
-        throw IllegalStateException("the engine did not answer within thirty seconds")
+        throw Silent(R.string.notify_failed_no_engine)
     }
+
+    /**
+     * A failure this app already has words for, in the phone's language.
+     *
+     * Everything below a notification is written in English - an exception
+     * message, an HTTP error, a line out of the engine - and that is right for
+     * a log and wrong for a person: "Abgleich fehlgeschlagen" appeared on a
+     * phone in German with "the engine did not answer within thirty seconds"
+     * underneath it. A message this app AUTHORED has no excuse for that, and it
+     * carries a string resource instead so the notification can say it the way
+     * everything else on the screen is said.
+     *
+     * The English text stays as the exception's own message, because the log
+     * line is read by whoever is debugging rather than by whoever is syncing.
+     *
+     * Reasons that come out of the ENGINE are a different problem and not
+     * solved here: they are sentences composed in Go, and translating them
+     * means giving them codes first.
+     */
+    private class Silent(val said: Int) : IllegalStateException("the engine did not answer within thirty seconds")
 
     /**
      * What one wake-up did, as the engine reports it.
