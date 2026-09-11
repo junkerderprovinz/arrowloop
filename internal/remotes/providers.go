@@ -324,14 +324,14 @@ var providers = []Provider{
 		Preset: map[string]string{"provider": "SeaweedFS"}, Mark: "IconSeaweedfs",
 		Hint: "A bucket store you run yourself. Needs its endpoint address."},
 	{ID: "ceph", Name: "Ceph", Backend: "s3", Group: GroupProtocol,
-		Preset: map[string]string{"provider": "Ceph"},
-		Hint:   "A bucket store you run yourself. Needs its endpoint address."},
+		Preset: map[string]string{"provider": "Ceph"}, Mark: "IconCeph",
+		Hint: "A bucket store you run yourself. Needs its endpoint address."},
 	{ID: "garage", Name: "Garage", Backend: "s3", Group: GroupProtocol,
 		// rclone has no Garage preset, so it is reached as a generic
 		// S3 service - which is what Garage is, and what its own
 		// documentation tells people to configure.
-		Preset: map[string]string{"provider": "Other"},
-		Hint:   "A bucket store you run yourself. Needs its endpoint address."},
+		Preset: map[string]string{"provider": "Other"}, Mark: "IconGarage",
+		Hint: "A bucket store you run yourself. Needs its endpoint address."},
 	{ID: "smb", Name: "SMB / Windows share", Backend: "smb", Group: GroupProtocol,
 		Mark: "IconFolder", Hint: "A shared folder on a NAS or a Windows machine."},
 	{ID: "sftp", Name: "SFTP", Backend: "sftp", Group: GroupProtocol,

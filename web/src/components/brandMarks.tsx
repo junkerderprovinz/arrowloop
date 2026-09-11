@@ -55,6 +55,8 @@ import {
   IconLinode,
   IconIdrive,
   IconSeaweedfs,
+  IconCeph,
+  IconGarage,
 } from './brandGlyphs'
 import {
   IconFolder,
@@ -114,6 +116,8 @@ const MARKS: Record<string, () => ReactNode> = {
   IconLinode: () => <IconLinode />,
   IconIdrive: () => <IconIdrive />,
   IconSeaweedfs: () => <IconSeaweedfs />,
+  IconCeph: () => <IconCeph />,
+  IconGarage: () => <IconGarage />,
   IconQuatrix: () => <IconQuatrix />,
   IconLinkbox: () => <IconLinkbox />,
   IconGofile: () => <IconGofile />,

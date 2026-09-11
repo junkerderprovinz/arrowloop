@@ -581,6 +581,14 @@ LOCAL = [
     ("IconLinode", "linode", "Linode Object Storage", JDP, BRAND),
     ("IconIdrive", "idrive", "IDrive e2", JDP, BRAND),
     ("IconSeaweedfs", "seaweedfs", "SeaweedFS", JDP, BRAND),
+
+    # The two the provider sweep added and left markless. Ceph is jdp's file;
+    # Garage comes from the project's own icon, by way of jdp's container
+    # repository for it - the same source SeaweedFS uses, and the most honest
+    # one there is for an open project's mark.
+    ("IconCeph", "ceph", "Ceph", JDP, BRAND),
+    ("IconGarage", "garage", "Garage",
+     "the Garage project's own icon, via junkerderprovinz/garage", BRAND),
     ("IconQuatrix", "quatrix", "Quatrix", JDP, BRAND),
     ("IconLinkbox", "linkbox", "Linkbox", JDP, BRAND),
     ("IconGofile", "gofile", "Gofile", JDP, BRAND),
