@@ -158,11 +158,17 @@ const (
 //   - a name they know and a password  ->  GroupCloud
 //   - an address, host or endpoint     ->  GroupProtocol
 //
-// Nextcloud asks for a server URL and an app password, which is precisely what
-// SFTP asks for, so it is listed where somebody goes looking for their own
-// machines. Dropbox asks for nothing but a button, so it is listed with the
-// services. The line falls in the same place every time and does not depend on
-// anybody's opinion about self-hosting.
+// MinIO asks for an endpoint, so it sits with the machines. Dropbox asks for
+// nothing but a button, so it sits with the services.
+//
+// THE ONE EXCEPTION, and it is jdp's call rather than a hole in the rule:
+// Nextcloud, ownCloud, OpenCloud and Seafile stay with the clouds even though
+// they ask for a server URL. They carry a BRAND somebody goes looking for by
+// name - "where is Nextcloud" is the question, not "what is at this address" -
+// and a list that answers the second question when somebody asked the first
+// is a list they scroll past. The typing rule decides everything else,
+// including the four self-hosted bucket stores, which have no such name in
+// anybody's head.
 
 // providers is the list, in the order it is offered within each group.
 //
@@ -172,13 +178,13 @@ const (
 // and the raw-backend fallback below is what keeps that from being a wall.
 var providers = []Provider{
 	// The self-hosted three: one backend, three products, three entries.
-	{ID: "nextcloud", Name: "Nextcloud", Auth: AuthAppPassword, Backend: "webdav", Group: GroupProtocol,
+	{ID: "nextcloud", Name: "Nextcloud", Auth: AuthAppPassword, Backend: "webdav", Group: GroupCloud,
 		Preset: map[string]string{"vendor": "nextcloud"}, Mark: "IconNextcloud",
 		UrlHint: "https://cloud.example.com/remote.php/webdav/"},
-	{ID: "owncloud", Name: "ownCloud", Auth: AuthAppPassword, Backend: "webdav", Group: GroupProtocol,
+	{ID: "owncloud", Name: "ownCloud", Auth: AuthAppPassword, Backend: "webdav", Group: GroupCloud,
 		Preset: map[string]string{"vendor": "owncloud"}, Mark: "IconOwncloud",
 		UrlHint: "https://cloud.example.com/remote.php/webdav/"},
-	{ID: "opencloud", Name: "OpenCloud", Auth: AuthAppPassword, Backend: "webdav", Group: GroupProtocol,
+	{ID: "opencloud", Name: "OpenCloud", Auth: AuthAppPassword, Backend: "webdav", Group: GroupCloud,
 		// `infinitescale`, not `owncloud`. OpenCloud is a fork of ownCloud
 		// Infinite Scale rather than of ownCloud 10, and rclone carries a
 		// vendor for each: the 10 setting speaks the older PHP server's
@@ -212,7 +218,7 @@ var providers = []Provider{
 	// One of exactly two places in sixty-eight backends where the option list
 	// and the truth disagree, and the only one rclone itself flags.
 	{ID: "koofr", Name: "Koofr", Auth: AuthAppPassword, Backend: "koofr", Group: GroupCloud, Mark: "IconKoofr"},
-	{ID: "seafile", Name: "Seafile", Auth: AuthAppPassword, Backend: "seafile", Group: GroupProtocol, Mark: "IconSeafile"},
+	{ID: "seafile", Name: "Seafile", Auth: AuthAppPassword, Backend: "seafile", Group: GroupCloud, Mark: "IconSeafile"},
 	{ID: "opendrive", Name: "OpenDrive", Backend: "opendrive", Group: GroupCloud, Mark: "IconOpendrive"},
 	{ID: "yandex", Name: "Yandex Disk", Backend: "yandex", Group: GroupCloud, Mark: "IconYandex"},
 	{ID: "mailru", Name: "Mail.ru Cloud", Backend: "mailru", Group: GroupCloud, Mark: "IconMailru"},
