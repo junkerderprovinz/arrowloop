@@ -1,8 +1,8 @@
 import { useNavigation, useRoute, type RouteProp } from "@react-navigation/native";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 import { api, type Config, type JobConfig } from "../api";
-import { Field } from "../fields";
+import { Field, TimeField } from "../fields";
 import { useT } from "../i18n";
 import type { JobsStack, Nav } from "../nav";
 import { contrastOn, space, text } from "../theme";
@@ -338,8 +338,47 @@ export function Schedule({ value, onChange }: { value: string; onChange: (next: 
   // at, which is what keeps a hand-written expression editable instead of
   // silently rewritten.
   const { intensity: motion } = useMotion();
-  const state = parseSchedule(value);
-  const set = (patch: Partial<ScheduleState>) => onChange(buildSchedule({ ...state, ...patch }));
+  const derived = parseSchedule(value);
+
+  /**
+   * THE MODE LIVES HERE, and that is the whole of the fix.
+   *
+   * It was read back out of the stored expression on every render, which works
+   * for every mode except the one that cannot always express itself. Picking
+   * Cron writes `state.cron`, which starts EMPTY - and an empty expression
+   * reads back as "off", so the well jumped straight back and no field ever
+   * appeared. jdp: "cron geht nicht. es kommt kein feld zum einstellen."
+   *
+   * The container's own copy of this control was fixed the same way a round
+   * earlier, for the mirror-image case: switching to cron there seeded the
+   * field from the schedule already set, so the stored string read back as
+   * "daily". Two different starting points, one cause - a builder whose only
+   * memory is its own output cannot hold a state that output does not yet
+   * describe. The phone never got the fix, which is exactly the sibling drift
+   * a shared parser was supposed to end: the DATA moved to one file and the
+   * bug fix did not.
+   *
+   * The stored value stays the single source of truth for the SETTINGS. Only
+   * which picker is open lives here, re-seeded whenever the value changes from
+   * outside, so opening another job never shows the last one's mode.
+   */
+  const [mode, setMode] = useState<ScheduleMode>(derived.mode);
+  const seen = useRef(value);
+  useEffect(() => {
+    if (seen.current !== value) {
+      seen.current = value;
+      setMode(parseSchedule(value).mode);
+    }
+  }, [value]);
+
+  const state: ScheduleState = { ...derived, mode };
+  const set = (patch: Partial<ScheduleState>) => {
+    const next = { ...state, ...patch };
+    if (patch.mode !== undefined) setMode(patch.mode);
+    const built = buildSchedule(next);
+    seen.current = built;
+    onChange(built);
+  };
 
   return (
     <View style={styles.stack}>
@@ -399,18 +438,14 @@ export function Schedule({ value, onChange }: { value: string; onChange: (next: 
         </>
       ) : null}
 
-      {/* The time, for both timed modes. A plain HH:MM field rather than the
-          platform's clock dialog: the dialog is two taps and a confirm for a
-          value somebody usually types faster, and the shared parser already
-          falls back to a sensible hour rather than throwing on anything it
-          cannot read. */}
+      {/* The time, for both timed modes, on Android's own clock face. It was a
+          typed HH:MM box, argued for on the grounds that a dialog costs two
+          taps for a value somebody types faster - which is true of a keyboard
+          and not of a thumb. jdp: "Felder wo man zb eine uhrzeit einstellen
+          kann, soll dieser bekannte radial zeitwähler kommen wenn man
+          reintippt." */}
       {state.mode === "daily" || state.mode === "weekly" ? (
-        <Field
-          label={t("schedule.at")}
-          value={state.time}
-          onChange={(time) => set({ time })}
-          placeholder="03:00"
-        />
+        <TimeField label={t("schedule.at")} value={state.time} onChange={(time) => set({ time })} />
       ) : null}
 
       {/* The days, as seven toggles in a row. Never allowed to reach zero: the

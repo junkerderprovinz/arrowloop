@@ -60,12 +60,17 @@ export function Targets() {
           <p className="text-xs text-statusFail">{error}</p>
         </Card>
       )}
-      {/* Two cards, and the line between them is what somebody HAS: an
-          account with a company, or a machine and an address. That puts
-          Backblaze with the clouds although it speaks S3, and plain S3 with the
-          protocols although it is Amazon's - which is right, because the
-          question being answered is "what am I connecting to", not "which
-          protocol does it use". */}
+      {/* THREE cards. The first line between them is what somebody HAS: an
+          account with a company, or a machine and an address - which is why
+          plain S3 sits with the protocols although it is Amazon's.
+
+          The second line runs through the accounts, and it is what comes BACK.
+          A cloud hands over folders somebody recognises; a bucket store hands
+          over a container, an access key and a secret. Both are signed into, so
+          the first line could not tell them apart - and one card ended up
+          holding fifty-two entries with a photo service three rows from a CDN
+          (jdp: "speicher und clouds sind noch nicht sortiert"). Alphabetical
+          order inside one card is what interleaves them, not what fixes it. */}
       <Storage
         group="cloud"
         title={t('targets.cloud')}
@@ -77,9 +82,19 @@ export function Targets() {
         onChanged={refresh}
       />
       <Storage
+        group="storage"
+        title={t('targets.storage')}
+        hueIndex={1}
+        remotes={remotes}
+        backends={backends}
+        providers={providers}
+        unlisted={[]}
+        onChanged={refresh}
+      />
+      <Storage
         group="protocol"
         title={t('targets.connections')}
-        hueIndex={1}
+        hueIndex={2}
         remotes={remotes}
         backends={backends}
         providers={providers}
@@ -108,8 +123,8 @@ function Storage({
   unlisted,
   onChanged,
 }: {
-  /** Which half of the providers this card offers. */
-  group: 'cloud' | 'protocol'
+  /** Which third of the providers this card offers. */
+  group: 'cloud' | 'storage' | 'protocol'
   title: string
   hueIndex: number
   remotes: Remote[]
@@ -134,16 +149,35 @@ function Storage({
 
   const mine = useMemo(() => providers.filter((p) => p.group === group), [providers, group])
 
-  // Which existing targets belong on THIS card, by the backend their provider
-  // resolves to. A target whose backend no provider on either card claims shows
-  // on the protocol card, where the unlisted backends are.
-  const cloudBackends = useMemo(
-    () => new Set(providers.filter((p) => p.group === 'cloud').map((p) => p.backend)),
-    [providers],
-  )
+  /**
+   * Which existing targets belong on THIS card, by the backend their provider
+   * resolves to.
+   *
+   * The clouds and the bucket stores cannot be told apart this way, and that
+   * is not a bug to fix here: most of the storage group IS the s3 backend, and
+   * so are half a dozen clouds. A saved target only remembers its rclone type,
+   * so asking "which card does this row belong on" has no answer better than
+   * "the one whose providers use this backend, first match wins".
+   *
+   * So the cards claim in order - clouds, then storage, then everything left
+   * over - and a backend nobody claims lands with the protocols, where the
+   * unlisted backends already are. The alternative is a row appearing twice.
+   */
+  const claimed = useMemo(() => {
+    const cloud = new Set(providers.filter((p) => p.group === 'cloud').map((p) => p.backend))
+    const store = new Set(
+      providers.filter((p) => p.group === 'storage' && !cloud.has(p.backend)).map((p) => p.backend),
+    )
+    return { cloud, store }
+  }, [providers])
   const rows = useMemo(
-    () => remotes.filter((r) => (group === 'cloud' ? cloudBackends.has(r.type) : !cloudBackends.has(r.type))),
-    [remotes, group, cloudBackends],
+    () =>
+      remotes.filter((r) => {
+        if (group === 'cloud') return claimed.cloud.has(r.type)
+        if (group === 'storage') return claimed.store.has(r.type)
+        return !claimed.cloud.has(r.type) && !claimed.store.has(r.type)
+      }),
+    [remotes, group, claimed],
   )
 
   return (

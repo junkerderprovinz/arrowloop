@@ -110,7 +110,14 @@ export type Provider = {
   /** The product's own name, deliberately untranslated: a brand is a brand. */
   name: string
   backend: string
-  group: 'cloud' | 'protocol'
+  /**
+   * Which of the three cards this belongs on.
+   *
+   * `storage` joined the other two when the clouds card reached fifty-two
+   * entries: a bucket store is signed into like a cloud and gives back a
+   * container with an access key rather than folders somebody recognises.
+   */
+  group: 'cloud' | 'storage' | 'protocol'
   /** Written into the target without anybody being asked. */
   preset?: Record<string, string>
   /** The component name of its logo, or absent where there is none to use. */

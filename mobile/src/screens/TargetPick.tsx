@@ -48,7 +48,13 @@ export function TargetPick() {
 
   if (!providers) return <Empty title={t("history.working")} detail={error || undefined} />;
 
-  const clouds = providers.filter((x) => x.group !== "protocol");
+  // Three groups, not two. The clouds list held fifty-two entries with the
+  // bucket stores mixed in alphabetically, which put a photo service three
+  // rows from a CDN. jdp: "speicher und clouds sind noch nicht sortiert."
+  // `!== "protocol"` was the old split and is exactly what hid the third
+  // group: anything new landed with the clouds without anybody deciding.
+  const clouds = providers.filter((x) => x.group === "cloud");
+  const storage = providers.filter((x) => x.group === "storage");
   const protocols = providers.filter((x) => x.group === "protocol");
 
   const tile = (provider: Provider) => (
@@ -90,6 +96,8 @@ export function TargetPick() {
     <Page>
       <Title>{t("targets.cloud")}</Title>
       <View style={styles.grid}>{clouds.map(tile)}</View>
+      <Title>{t("targets.storage")}</Title>
+      <View style={styles.grid}>{storage.map(tile)}</View>
       <Title>{t("targets.connections")}</Title>
       <View style={styles.grid}>{protocols.map(tile)}</View>
       {error ? <Caption>{error}</Caption> : null}

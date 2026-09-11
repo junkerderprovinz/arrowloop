@@ -125,19 +125,23 @@ const (
 	AuthLogin AuthStyle = "login"
 )
 
-// Group is which of the two cards a provider belongs on.
+// Group is which of the three cards a provider belongs on.
 //
 // The split is by what somebody HAS rather than by protocol: an account with a
 // company, or a machine and an address. That is the question being answered
-// when somebody opens this screen, and it puts Backblaze with the clouds even
-// though it speaks S3, and plain S3 with the protocols even though it is
-// Amazon's.
+// when somebody opens this screen, and it puts plain S3 with the protocols even
+// though it is Amazon's.
 type Group string
 
 const (
-	// GroupCloud is a service somebody SIGNS IN TO: a name they already know,
-	// reached by pressing its button and giving it a password.
+	// GroupCloud is a service somebody SIGNS IN TO and keeps FILES in: a name
+	// they already know, reached by pressing its button and giving it a
+	// password, and what comes back is folders they recognise.
 	GroupCloud Group = "cloud"
+	// GroupStorage is signed into the same way and gives back BUCKETS: an
+	// access key, a secret, and a container with no folders in it until
+	// somebody makes some.
+	GroupStorage Group = "storage"
 	// GroupProtocol is something somebody POINTS AT: a machine, a share or an
 	// address they have to type in.
 	GroupProtocol Group = "protocol"
@@ -155,11 +159,20 @@ const (
 // The question is WHAT SOMEBODY TYPES, because that is what they are holding
 // when they open this list:
 //
-//   - a name they know and a password  ->  GroupCloud
+//   - a name they know and a password  ->  GroupCloud or GroupStorage
 //   - an address, host or endpoint     ->  GroupProtocol
 //
 // MinIO asks for an endpoint, so it sits with the machines. Dropbox asks for
 // nothing but a button, so it sits with the services.
+//
+// THE SECOND CUT, inside the first group, is what comes BACK: files or buckets.
+// A cloud hands over folders somebody recognises; a bucket store hands over a
+// container with an access key and a secret and nothing in it until they make
+// something. Both are signed into, so the typing rule could not tell them
+// apart - and it did not, which is how one card came to hold fifty-two entries
+// with a photo service three rows from a CDN (jdp: "speicher und clouds sind
+// noch nicht sortiert"). Alphabetical order inside one card cannot fix that;
+// it is what interleaves them.
 //
 // THE ONE EXCEPTION, and it is jdp's call rather than a hole in the rule:
 // Nextcloud, ownCloud, OpenCloud and Seafile stay with the clouds even though
@@ -247,16 +260,16 @@ var providers = []Provider{
 
 	// Object storage: an account with a company, so it belongs with the clouds
 	// however it is addressed underneath.
-	{ID: "b2", Name: "Backblaze B2", Backend: "b2", Group: GroupCloud, Mark: "IconBackblaze"},
-	{ID: "azureblob", Name: "Azure Blob Storage", Backend: "azureblob", Group: GroupCloud, Mark: "IconAzure"},
-	{ID: "gcs", Name: "Google Cloud Storage", Backend: "google cloud storage", Group: GroupCloud, Mark: "IconGoogleCloud"},
+	{ID: "b2", Name: "Backblaze B2", Backend: "b2", Group: GroupStorage, Mark: "IconBackblaze"},
+	{ID: "azureblob", Name: "Azure Blob Storage", Backend: "azureblob", Group: GroupStorage, Mark: "IconAzure"},
+	{ID: "gcs", Name: "Google Cloud Storage", Backend: "google cloud storage", Group: GroupStorage, Mark: "IconGoogleCloud"},
 	// Huawei's OTHER storage, and the reason both are listed: `huaweidrive`
 	// above is the consumer Drive, this is the platform's object storage, and
 	// somebody looking for one of them would not accept the other. It reaches
 	// it the way rclone does, as an S3 provider, which is the same arrangement
 	// that puts Nextcloud, ownCloud and OpenCloud on one webdav backend: the
 	// list is products, the backends are plumbing.
-	{ID: "huaweiobs", Name: "Huawei Cloud OBS", Backend: "s3", Group: GroupCloud,
+	{ID: "huaweiobs", Name: "Huawei Cloud OBS", Backend: "s3", Group: GroupStorage,
 		Preset: map[string]string{"provider": "HuaweiOBS"}, Mark: "IconHuaweiCloud"},
 
 	// The S3-compatible field, by name. rclone knows fifty-three of these and
@@ -269,36 +282,36 @@ var providers = []Provider{
 	// would not announce itself: rclone accepts an unknown provider and falls
 	// back to plain S3, which works for most of them and quietly drops whatever
 	// the named one does differently.
-	{ID: "wasabi", Name: "Wasabi", Backend: "s3", Group: GroupCloud,
+	{ID: "wasabi", Name: "Wasabi", Backend: "s3", Group: GroupStorage,
 		Preset: map[string]string{"provider": "Wasabi"}, Mark: "IconWasabi"},
-	{ID: "r2", Name: "Cloudflare R2", Backend: "s3", Group: GroupCloud,
+	{ID: "r2", Name: "Cloudflare R2", Backend: "s3", Group: GroupStorage,
 		Preset: map[string]string{"provider": "Cloudflare"}, Mark: "IconCloudflare"},
-	{ID: "spaces", Name: "DigitalOcean Spaces", Backend: "s3", Group: GroupCloud,
+	{ID: "spaces", Name: "DigitalOcean Spaces", Backend: "s3", Group: GroupStorage,
 		Preset: map[string]string{"provider": "DigitalOcean"}, Mark: "IconDigitalOcean"},
-	{ID: "idrivee2", Name: "IDrive e2", Backend: "s3", Group: GroupCloud,
+	{ID: "idrivee2", Name: "IDrive e2", Backend: "s3", Group: GroupStorage,
 		Preset: map[string]string{"provider": "IDrive"}, Mark: "IconIdrive"},
-	{ID: "scaleway", Name: "Scaleway Object Storage", Backend: "s3", Group: GroupCloud,
+	{ID: "scaleway", Name: "Scaleway Object Storage", Backend: "s3", Group: GroupStorage,
 		Preset: map[string]string{"provider": "Scaleway"}, Mark: "IconScaleway"},
-	{ID: "hetznerobj", Name: "Hetzner Object Storage", Backend: "s3", Group: GroupCloud,
+	{ID: "hetznerobj", Name: "Hetzner Object Storage", Backend: "s3", Group: GroupStorage,
 		Preset: map[string]string{"provider": "Hetzner"}, Mark: "IconHetzner"},
 	// IONOS twice, and deliberately: HiDrive above is the consumer drive, this
 	// is the object storage. Same company, two products, and somebody looking
 	// for one would not accept the other - the same arrangement as the two
 	// Huawei entries.
-	{ID: "ionosobj", Name: "IONOS Object Storage", Backend: "s3", Group: GroupCloud,
+	{ID: "ionosobj", Name: "IONOS Object Storage", Backend: "s3", Group: GroupStorage,
 		Preset: map[string]string{"provider": "IONOS"}, Mark: "IconIonos"},
-	{ID: "linode", Name: "Linode Object Storage", Backend: "s3", Group: GroupCloud,
+	{ID: "linode", Name: "Linode Object Storage", Backend: "s3", Group: GroupStorage,
 		Preset: map[string]string{"provider": "Linode"}, Mark: "IconLinode"},
-	{ID: "ovh", Name: "OVHcloud Object Storage", Backend: "s3", Group: GroupCloud,
+	{ID: "ovh", Name: "OVHcloud Object Storage", Backend: "s3", Group: GroupStorage,
 		Preset: map[string]string{"provider": "OVHcloud"}, Mark: "IconOvh"},
-	{ID: "synologyc2", Name: "Synology C2", Backend: "s3", Group: GroupCloud,
+	{ID: "synologyc2", Name: "Synology C2", Backend: "s3", Group: GroupStorage,
 		Preset: map[string]string{"provider": "Synology"}, Mark: "IconSynology"},
-	{ID: "oracle", Name: "Oracle Object Storage", Backend: "oracleobjectstorage", Group: GroupCloud, Mark: "IconOracleCloud"},
-	{ID: "storj", Name: "Storj", Backend: "storj", Group: GroupCloud, Mark: "IconStorj"},
+	{ID: "oracle", Name: "Oracle Object Storage", Backend: "oracleobjectstorage", Group: GroupStorage, Mark: "IconOracleCloud"},
+	{ID: "storj", Name: "Storj", Backend: "storj", Group: GroupStorage, Mark: "IconStorj"},
 	{ID: "swift", Name: "OpenStack Swift", Backend: "swift", Group: GroupProtocol, Mark: "IconOpenstack"},
-	{ID: "netstorage", Name: "Akamai NetStorage", Backend: "netstorage", Group: GroupCloud, Mark: "IconAkamai"},
-	{ID: "cloudinary", Name: "Cloudinary", Backend: "cloudinary", Group: GroupCloud, Mark: "IconCloudinary"},
-	{ID: "internetarchive", Name: "Internet Archive", Backend: "internetarchive", Group: GroupCloud,
+	{ID: "netstorage", Name: "Akamai NetStorage", Backend: "netstorage", Group: GroupStorage, Mark: "IconAkamai"},
+	{ID: "cloudinary", Name: "Cloudinary", Backend: "cloudinary", Group: GroupStorage, Mark: "IconCloudinary"},
+	{ID: "internetarchive", Name: "Internet Archive", Backend: "internetarchive", Group: GroupStorage,
 		Mark: "IconInternetArchive"},
 
 	// Machines, shares and addresses.
@@ -356,6 +369,22 @@ var providers = []Provider{
 // does not carry produces a target that fails the first time it runs, with an
 // error about a missing section rather than about the thing that is really
 // wrong.
+// groupOrder is the order the three cards appear in, which is not the order
+// their names happen to sort in. Clouds first because that is what most people
+// are looking for, storage next because it is the same kind of answer with a
+// different shape, and the protocols last because reaching them means already
+// knowing an address.
+func groupOrder(g Group) int {
+	switch g {
+	case GroupCloud:
+		return 0
+	case GroupStorage:
+		return 1
+	default:
+		return 2
+	}
+}
+
 func Providers() []Provider {
 	have := map[string]Backend{}
 	for _, b := range Backends() {
@@ -384,7 +413,7 @@ func Providers() []Provider {
 	// by their capitals rather than by how they read.
 	sort.SliceStable(out, func(i, j int) bool {
 		if out[i].Group != out[j].Group {
-			return out[i].Group == GroupCloud
+			return groupOrder(out[i].Group) < groupOrder(out[j].Group)
 		}
 		return strings.ToLower(out[i].Name) < strings.ToLower(out[j].Name)
 	})
