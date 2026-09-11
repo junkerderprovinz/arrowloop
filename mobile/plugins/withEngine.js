@@ -194,6 +194,38 @@ function withEngineGradle(config) {
   return withAppBuildGradle(config, (cfg) => {
     let gradle = cfg.modResults.contents;
 
+    // The native sources, copied again at BUILD time and not only at prebuild.
+    //
+    // This is a guard against a silent failure that has already happened: the
+    // copy in `withNativeSources` runs when `expo prebuild` runs, and a gradle
+    // build afterwards compiles whatever is in the generated project. Edit a
+    // Kotlin file and build without prebuilding and the build is GREEN - it
+    // compiled the previous copy - so the APK is missing every change and
+    // nothing says so. Found on 2026-09-11 when CI, which always prebuilds,
+    // failed to compile a file that had built fine here three times.
+    //
+    // Copying again here costs nothing and removes the whole failure mode: the
+    // generated tree cannot be older than the source tree.
+    const SYNC = "// arrowloop: the native sources cannot go stale";
+    if (!gradle.includes(SYNC)) {
+      gradle += `
+${SYNC}
+tasks.register('syncArrowLoopNative', Copy) {
+    from rootProject.file('../native/java')
+    into file('src/main/java')
+}
+tasks.register('syncArrowLoopRes', Copy) {
+    from rootProject.file('../native/res')
+    into file('src/main/res')
+}
+tasks.configureEach { task ->
+    if (task.name ==~ /^(pre|compile).*Kotlin$/ || task.name ==~ /^merge.*Resources$/) {
+        task.dependsOn 'syncArrowLoopNative', 'syncArrowLoopRes'
+    }
+}
+`;
+    }
+
     // ABI splits, one APK per architecture. The template has no splits block
     // at all, so this is an insertion rather than a replacement - anchored on
     // `defaultConfig {` because that is a construct every version of the

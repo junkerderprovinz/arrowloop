@@ -382,7 +382,11 @@ class EngineModule(private val context: ReactApplicationContext) :
      */
     @ReactMethod
     fun confirmDeviceLock(title: String, detail: String, promise: Promise) {
-        val activity = currentActivity
+        // `context.currentActivity`, not the module's own `currentActivity`:
+        // the inherited one is deprecated as of React Native 0.80 and is not on
+        // the class at all here. The local build compiled a STALE copy of this
+        // file and said nothing, so CI is what found it.
+        val activity = context.currentActivity
         if (activity == null) {
             promise.reject("lock", "there is no screen to ask in front of")
             return
@@ -411,14 +415,16 @@ class EngineModule(private val context: ReactApplicationContext) :
         }
     }
 
-    override fun onActivityResult(activity: Activity?, requestCode: Int, resultCode: Int, data: Intent?) {
+    // Both parameters are NON-NULL in this React Native's own interface, and
+    // writing them nullable makes the override match nothing at all.
+    override fun onActivityResult(activity: Activity, requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode != UNLOCK_REQUEST) return
         val waiting = pending ?: return
         pending = null
         waiting.resolve(resultCode == Activity.RESULT_OK)
     }
 
-    override fun onNewIntent(intent: Intent?) {
+    override fun onNewIntent(intent: Intent) {
         // Nothing here. The interface wants both halves; only the result is
         // this module's business.
     }
