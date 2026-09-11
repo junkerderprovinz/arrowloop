@@ -2,8 +2,8 @@ import { NavigationContainer, DarkTheme, DefaultTheme } from "@react-navigation/
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
-import { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { AppState, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
 import { I18nProvider, useT } from "./src/i18n";
 import type { HistoryStack, JobsStack, SettingsStack, TargetsStack } from "./src/nav";
@@ -20,10 +20,11 @@ import { TargetPick } from "./src/screens/TargetPick";
 import { Targets } from "./src/screens/Targets";
 import { Trash } from "./src/screens/Trash";
 import { askNotifications, notificationsGranted } from "./src/screens/Settings";
-import { loadAppearance } from "./src/settings";
+import { loadAppearance, useAppearance } from "./src/settings";
 import { space, text } from "./src/theme";
 import { Glyph } from "./src/glyphs";
 import { Body, Button, Heading, Screen, useTheme } from "./src/ui";
+import { engine } from "./src/engine";
 import { useEngine } from "./src/useEngine";
 
 /**
@@ -74,6 +75,54 @@ function Shell() {
   const { p, scheme, radius, accent } = useTheme();
   const { t } = useT();
   const { state, log, retry } = useEngine();
+  const look = useAppearance();
+
+  /**
+   * The lock, if this install asked for one.
+   *
+   * It gates the whole app rather than the settings alone, which is the plain
+   * reading of "die app sperren": somebody who can see the job list can see
+   * every path this phone syncs and can start a run. Half a lock is the kind
+   * that surprises people.
+   *
+   * Locked again after a MINUTE in the background rather than instantly. An app
+   * that asks for the phone's PIN every time somebody glances at a message is
+   * an app people switch the lock back off in, and a minute is short enough
+   * that a phone handed to somebody else is still locked.
+   */
+  const [locked, setLocked] = useState(look.lock);
+  const left = useRef(0);
+
+  const unlock = useCallback(() => {
+    engine
+      .confirmDeviceLock(t("settings.locked"), t("settings.lockHint"))
+      .then((ok) => ok && setLocked(false))
+      .catch(() => {});
+  }, [t]);
+
+  useEffect(() => {
+    // A lock switched on in the settings must not lock the screen it was
+    // switched on from; it takes effect the next time the app is left.
+    if (!look.lock) setLocked(false);
+  }, [look.lock]);
+
+  useEffect(() => {
+    const sub = AppState.addEventListener("change", (next) => {
+      if (next === "active") {
+        if (look.lock && left.current && Date.now() - left.current > AWAY_MS) setLocked(true);
+        left.current = 0;
+      } else if (next === "background") {
+        left.current = Date.now();
+      }
+    });
+    return () => sub.remove();
+  }, [look.lock]);
+
+  // Asked as soon as the app comes up locked, so the first thing on screen is
+  // the phone's own dialog rather than a wall with a button on it.
+  useEffect(() => {
+    if (locked) unlock();
+  }, [locked, unlock]);
 
   // Navigation's own theme, so the chrome it draws - the bar, the header, the
   // ripple - uses GlimStone's colours rather than its defaults. Skipping this
@@ -119,6 +168,8 @@ function Shell() {
       gone = true;
     };
   }, [state]);
+
+  if (locked) return <Locked onUnlock={unlock} />;
 
   if (state !== "ready") return <Waiting state={state} log={log} onRetry={retry} />;
 
@@ -307,6 +358,29 @@ function TabCard() {
 function TabMark({ name, color }: { name: string; color: string }) {
   return <Glyph name={name} color={color} size={20} />;
 }
+
+/**
+ * The wall in front of a locked app.
+ *
+ * It carries a button rather than only a sentence, because the system dialog
+ * can be dismissed and then there has to be a way back to it. Nothing about
+ * the app is visible behind it - not the job names, not the paths - which is
+ * the whole point of the lock.
+ */
+function Locked({ onUnlock }: { onUnlock: () => void }) {
+  const { t } = useT();
+  return (
+    <Screen>
+      <Heading>{t("settings.locked")}</Heading>
+      <Body>{t("settings.lockHint")}</Body>
+      <Button label={t("settings.unlock")} labelKey="settings.unlock" tone="accent" onPress={onUnlock} />
+    </Screen>
+  );
+}
+
+/** A minute away before the lock closes again. Instant would be an app people
+ *  switch the lock back off in; a minute still locks a handed-over phone. */
+const AWAY_MS = 60 * 1000;
 
 /**
  * The screen before the engine answers, and the one after it does not.

@@ -257,7 +257,6 @@ export type RawJob = {
    * applies once: the moment a record exists it is ignored, so a setting left
    * in the file cannot quietly turn a two-way job into a one-way one.
    */
-  firstRun?: string
   /**
    * Delete outright instead of moving into the side's own trash.
    *
@@ -326,6 +325,16 @@ export type Settings = {
    * makes IT different.
    */
   defaults?: {
+    /**
+     * The pair every job starts from, and the schedule beside them.
+     *
+     * They have been defaults in the engine for a while and were reachable from
+     * the PHONE only - the desktop could not set the thing it shares. Same
+     * three axes on both surfaces now.
+     */
+    direction?: string
+    mode?: string
+    schedule?: string
     modWindow?: string
     transfers?: number
     quietPeriod?: string

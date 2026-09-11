@@ -84,7 +84,7 @@ func TestTheExampleShowsTheSettingsItIsPointedAtFor(t *testing.T) {
 	// "reportOnly" left this list with the feature it named. The preview button
 	// already answers "what would a run do", on demand and without a setting
 	// somebody has to remember to switch back off.
-	for _, key := range []string{"excludeSets", "firstRun", "keepVersions", "watch", "foldCase"} {
+	for _, key := range []string{"excludeSets", "keepVersions", "watch", "foldCase"} {
 		if !seen[key] {
 			t.Errorf("no job in the example shows %q", key)
 		}

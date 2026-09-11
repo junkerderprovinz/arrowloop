@@ -41,6 +41,24 @@ interface EngineNativeModule {
   /** This app's own settings page, where a refused permission can be changed.
    *  The request dialog is a one-shot and shows nothing after a no. */
   openAppSettings(): Promise<void>;
+  /** Android's own notification settings for this app: sound, vibration,
+   *  banners, Do Not Disturb, the per-channel switches. All of it is Android's
+   *  to own, so this links there rather than rebuilding it. */
+  openNotificationSettings(): Promise<void>;
+  /** The battery-optimisation list, where an OEM's power manager keeps the
+   *  setting that decides whether a background job ever runs. */
+  openBatterySettings(): Promise<void>;
+  /** Write a settings backup into the public Downloads folder, and hand back
+   *  where it landed. */
+  exportSettings(json: string): Promise<string>;
+  /** Read one back. An empty path means the default place. */
+  importSettings(path: string): Promise<string>;
+  /** Where a backup goes, before one has ever been written. */
+  backupPath(): Promise<string>;
+  /** Whether this phone has a real screen lock, as opposed to a swipe. */
+  hasDeviceLock(): Promise<boolean>;
+  /** Ask for the phone's own lock. True when it was given. */
+  confirmDeviceLock(title: string, detail: string): Promise<boolean>;
 
   /** Both schedule conditions and the facts behind them, in one answer: what
    *  was asked for, what the phone is actually plugged into, and the sentence
@@ -100,6 +118,14 @@ export const engine = {
   storagePossible: () => (native ? native.storagePossible() : Promise.resolve(false)),
   openStorageSettings: () => (native ? native.openStorageSettings() : missing()),
   openAppSettings: () => (native ? native.openAppSettings() : missing()),
+  openNotificationSettings: () => (native ? native.openNotificationSettings() : missing()),
+  openBatterySettings: () => (native ? native.openBatterySettings() : missing()),
+  exportSettings: (json: string) => (native ? native.exportSettings(json) : missing()),
+  importSettings: (path: string) => (native ? native.importSettings(path) : missing()),
+  backupPath: () => (native ? native.backupPath() : missing()),
+  hasDeviceLock: () => (native ? native.hasDeviceLock() : Promise.resolve(false)),
+  confirmDeviceLock: (title: string, detail: string) =>
+    native ? native.confirmDeviceLock(title, detail) : missing(),
   devicePolicy: () => (native ? native.devicePolicy() : Promise.resolve(NOTHING_HELD)),
   setDevicePolicy: (onlyCharging: boolean, onlyWifi: boolean) =>
     native ? native.setDevicePolicy(onlyCharging, onlyWifi) : missing(),

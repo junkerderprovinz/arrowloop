@@ -41,15 +41,29 @@ export function JobEdit() {
           found
             ? { ...found }
             : {
-                // A new job arrives DISABLED and pointing nowhere real. An
-                // example that could run is an example that might, and the
-                // first thing a new job should do is nothing at all.
+                // A new job arrives SWITCHED ON, the same as on the desktop,
+                // and the phone was the odd one out. jdp said it there in as
+                // many words: "Abgeschaltet: das find ich total daemlich. ein
+                // auftrag soll standardmaessig aktiviert sein."
+                //
+                // The old reasoning was that a job pointing nowhere should not
+                // be reachable by a scheduler, which is true and is not this
+                // flag's job: a new job has no schedule either, so there is
+                // nothing to reach it with. What the flag actually did was make
+                // every job somebody created say "abgeschaltet" on its own card
+                // until they found the switch.
+                // It names NEITHER direction nor mode, which is what makes it
+                // follow the global sync settings from its first moment. jdp:
+                // "in den aufträgen sollen die globalen einstellungen per
+                // toggle deaktiviert werden können, standardmäßig sollen sie
+                // aktiviert sein." It used to arrive with `direction: "both"`,
+                // which IS an answer of its own - so every new job silently
+                // opted out of the settings it was supposed to start from, and
+                // the switch that says so came up off.
                 name: t("edit.newJob"),
                 left: "",
                 right: "",
                 state: "",
-                disabled: true,
-                direction: "both",
               },
         );
       },
@@ -234,18 +248,6 @@ export function JobEdit() {
         />
       </Section>
 
-      <Section title={t("edit.firstRun")} hint={t("edit.firstRunHint")}>
-        <Choice
-          value={job.firstRun ?? "merge"}
-          onChange={(firstRun) => set({ firstRun })}
-          options={[
-            { value: "merge", label: t("edit.firstRun.merge") },
-            { value: "left", label: t("edit.firstRun.left") },
-            { value: "right", label: t("edit.firstRun.right") },
-          ]}
-        />
-      </Section>
-
       <Section title={t("edit.exclude")} hint={t("edit.excludeHint")}>
         <Field
           label={t("edit.exclude")}
@@ -308,7 +310,7 @@ export function JobEdit() {
  * expression is what is stored either way, so a job built here and a job built
  * at a desk are the same job.
  */
-function Schedule({ value, onChange }: { value: string; onChange: (next: string) => void }) {
+export function Schedule({ value, onChange }: { value: string; onChange: (next: string) => void }) {
   const { t } = useT();
   const presets: Record<string, string> = {
     "": t("schedule.off"),

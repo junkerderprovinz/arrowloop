@@ -5,7 +5,6 @@ import { ToggleRow } from '../components/ToggleRow'
 import { api, type RawJob } from '../lib/api'
 import { DirectionSwitch } from '../components/Direction'
 import { DEFAULT_QUIET, QuietPeriod } from '../components/QuietPeriod'
-import { Selector } from '../components/Selector'
 import { ExcludeSetPicker } from '../components/ExcludeSets'
 import { FolderPicker, PickButton } from '../components/FolderPicker'
 import { ScheduleField } from '../components/Schedule'
@@ -473,27 +472,6 @@ export function JobForm({
             </Field>
           </div>
         </div>
-      </div>
-
-      {/* The first run, and only while there is one to decide. Shown for a job
-          that has never been saved, because after that the record exists and
-          the setting is ignored: a control that keeps standing there while
-          doing nothing is a control that teaches people the app is confused
-          about its own state. */}
-      <div className="mt-5">
-        <Field label={t('edit.firstRun')} hint={t('edit.firstRunHint')}>
-          <Selector<'merge' | 'left' | 'right'>
-            scale="small"
-            label={t('edit.firstRun')}
-            value={(job.firstRun as 'merge' | 'left' | 'right') || 'merge'}
-            onChange={(v) => patch({ firstRun: v === 'merge' ? undefined : v })}
-            options={[
-              { value: 'merge', label: t('edit.firstRun.merge') },
-              { value: 'left', label: t('edit.firstRun.left') },
-              { value: 'right', label: t('edit.firstRun.right') },
-            ]}
-          />
-        </Field>
       </div>
 
       <div className="mt-5">

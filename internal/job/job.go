@@ -156,25 +156,17 @@ type Job struct {
 
 	Disabled bool `json:"disabled,omitempty"`
 
-	// FirstRun says which side is right the ONE time this job has no record yet.
+	// There used to be a FirstRun field here, naming which side wins the ONE
+	// time a job has no record yet. jdp asked for it to go: "Der erste lauf
+	// koennen wir ganz aus AL streichen, das hat autosync auch nicht."
 	//
-	// It exists because the first run is the one that decides everything and is
-	// the one nobody is asked about. With no record, every file on both sides is
-	// new, so the engine merges: everything on the left arrives on the right and
-	// the other way round. That is the safe default and it is often not what
-	// somebody wanted, and by the time they notice, the other side is full of
-	// files they meant to leave behind.
-	//
-	// Empty is the merge, which is what every job did before this existed.
-	// "left" or "right" seeds from that side instead, and it is deliberately the
-	// same rule a one-way job follows: the source wins every disagreement, and a
-	// file the source never had is LEFT ALONE rather than deleted. Deleting
-	// something the chosen side never knew about would not be propagating a
-	// decision, it would be making one, on the run somebody understands least.
-	//
-	// It applies once. The moment a record exists this is ignored, so a setting
-	// left in the file cannot quietly turn a two-way job into a one-way one.
-	FirstRun string `json:"firstRun,omitempty"`
+	// What it did is worth writing down, because the situation it addressed has
+	// not gone away: with no record, every file on both sides is new, so the
+	// first run MERGES - everything on the left arrives on the right and the
+	// other way round. That is still the behaviour, and it is still the safe
+	// direction to be wrong in. Somebody who wants one side to win the first
+	// time can say so with the job's own direction and switch it back after the
+	// first run, which is the same act in two steps instead of one.
 
 	// KeepVersions keeps the last N contents of a file that gets overwritten,
 	// under the same reserved directory the trash uses.
@@ -466,15 +458,6 @@ func Load(path string) (*Config, error) {
 			return nil, fmt.Errorf("two jobs are both called %q; names are how a job is asked for by hand and how its history is kept apart", j.Name)
 		}
 		seen[j.Name] = true
-		// Checked here rather than trusted at the moment it is used. A value
-		// nobody recognises would otherwise fall through to the merge, which is
-		// the exact opposite of what somebody typing "links" instead of "left"
-		// meant, and they would find out by looking at the other side afterwards.
-		switch j.FirstRun {
-		case "", "merge", "left", "right":
-		default:
-			return nil, fmt.Errorf("job %q says firstRun %q; it has to be left, right or merge", j.Name, j.FirstRun)
-		}
 		// The mode, checked the same way and for a sharper reason: two of the
 		// three DELETE. A spelling nobody recognises would fall through to the
 		// mode that deletes nothing, which is the safe direction to be wrong in

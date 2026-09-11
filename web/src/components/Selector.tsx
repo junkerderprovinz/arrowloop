@@ -43,6 +43,7 @@ export function Selector<T extends string>({
   variant = 'well',
   fill = false,
   label,
+  disabled = false,
 }: {
   options: Option<T>[]
   value: T
@@ -75,6 +76,18 @@ export function Selector<T extends string>({
    *  belongs to something else on the page. */
   fill?: boolean
   label?: string
+  /**
+   * Dimmed and inert, for a control whose answer comes from somewhere else.
+   *
+   * It still SHOWS that answer rather than vanishing: a card that swaps a
+   * control for a sentence has two shapes, and somebody has to recognise them
+   * as one card. The phone's own selector has had this since the mode picker
+   * needed it for a both-ways job, and this is the same need on the desktop.
+   *
+   * Not the same thing as a dimmed SUB-SWITCH, which the design language says
+   * to remove: this one is reporting the value in force, not refusing.
+   */
+  disabled?: boolean
 }) {
   const track = useRef<HTMLDivElement>(null)
 
@@ -170,6 +183,8 @@ export function Selector<T extends string>({
       style={{
         borderRadius: variant === 'well' ? 'var(--radius-control)' : undefined,
         width: fill ? '100%' : 'fit-content',
+        opacity: disabled ? 0.45 : undefined,
+        pointerEvents: disabled ? 'none' : undefined,
       }}
     >
       {options.map((o, i) => {

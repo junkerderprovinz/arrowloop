@@ -201,31 +201,71 @@ export function Engine() {
         </div>
       </Card>
 
-      <Card title={t('engine.defaults')} hueIndex={3}>
+      {/* What every job starts from, and the desktop could not set it at all:
+          direction, mode and schedule have been defaults in the engine for a
+          while and were reachable only from the phone or by editing the file.
+          Same card, same name, same three axes on both surfaces. */}
+      <Card title={t('engine.defaults')} hueIndex={2}>
         <div className="flex flex-col gap-4">
-          {/* The brakes first, and they are the reason this card exists rather
-              than a convenience on it. They are the net that stops a run
-              removing more than half of everything it knows about, and until
-              now they could not be seen at all, let alone set once for every
-              job. */}
-          <Field label={t('engine.brakePercent')} hint={t('engine.brakePercentHint')}>
-            <NumberField
-              value={defaults.brakePercent ?? 50}
-              min={0}
-              max={100}
-              label={t('engine.brakePercent')}
-              onChange={(v) => setDefault({ brakePercent: v })}
+          <Field label={t('direction.label')} hint={t('defaults.followHint')}>
+            <Selector<'both' | 'leftToRight' | 'rightToLeft'>
+              scale="small"
+              label={t('direction.label')}
+              value={(defaults.direction as 'both' | 'leftToRight' | 'rightToLeft') ?? 'both'}
+              onChange={(direction) =>
+                setDefault({ direction, mode: direction === 'both' ? 'sync' : defaults.mode })
+              }
+              options={[
+                { value: 'both', label: t('direction.both') },
+                { value: 'leftToRight', label: t('direction.toRight') },
+                { value: 'rightToLeft', label: t('direction.toLeft') },
+              ]}
             />
           </Field>
-          <Field label={t('engine.brakeFloor')} hint={t('engine.brakeFloorHint')}>
-            <NumberField
-              value={defaults.brakeFloor ?? 10}
-              min={0}
-              max={100000}
-              label={t('engine.brakeFloor')}
-              onChange={(v) => setDefault({ brakeFloor: v })}
+          {/* Inert with `sync` showing for a both-ways default rather than
+              vanishing, which is what the phone does and for the same reason: a
+              card that changes shape with the answer above it is two cards
+              somebody has to recognise as one. */}
+          <Field
+            label={t('mode.label')}
+            hint={(defaults.direction ?? 'both') === 'both' ? t('mode.onlyOneWay') : undefined}
+          >
+            <Selector<'sync' | 'mirror' | 'move'>
+              scale="small"
+              label={t('mode.label')}
+              disabled={(defaults.direction ?? 'both') === 'both'}
+              value={
+                (defaults.direction ?? 'both') === 'both'
+                  ? 'sync'
+                  : ((defaults.mode as 'sync' | 'mirror' | 'move') ?? 'sync')
+              }
+              onChange={(mode) => setDefault({ mode })}
+              options={[
+                { value: 'sync', label: t('mode.sync') },
+                { value: 'mirror', label: t('mode.mirror') },
+                { value: 'move', label: t('mode.move') },
+              ]}
             />
           </Field>
+          <Field label={t('edit.schedule')} hint={t('edit.scheduleHint')}>
+            <Text
+              value={defaults.schedule ?? ''}
+              onChange={(schedule) => setDefault({ schedule })}
+              placeholder="0 3 * * *"
+              mono
+            />
+          </Field>
+        </div>
+      </Card>
+
+      {/* The global sync settings, in the same four groups the phone uses.
+          jdp grouped them there after Autosync's own settings page, and the two
+          surfaces naming the same things differently is how one product starts
+          reading as two. Which is also why they are four cards rather than one
+          long column: "how hard does it push" and "what is the net if it goes
+          wrong" are different questions and were stacked in one list. */}
+      <Card title={t('settings.transfer')} hueIndex={3}>
+        <div className="flex flex-col gap-4">
           <Field label={t('engine.transfers')} hint={t('engine.transfersHint')}>
             <NumberField
               value={defaults.transfers ?? 4}
@@ -233,6 +273,12 @@ export function Engine() {
               max={64}
               label={t('engine.transfers')}
               onChange={(v) => setDefault({ transfers: v })}
+            />
+          </Field>
+          <Field label={t('edit.quietPeriod')} hint={t('edit.quietHint')}>
+            <QuietPeriod
+              value={defaults.quietPeriod ?? ''}
+              onChange={(v) => setDefault({ quietPeriod: v })}
             />
           </Field>
           <Field label={t('engine.modWindow')} hint={t('engine.modWindowHint')}>
@@ -243,12 +289,11 @@ export function Engine() {
               mono
             />
           </Field>
-          <Field label={t('edit.quietPeriod')} hint={t('edit.quietHint')}>
-            <QuietPeriod
-              value={defaults.quietPeriod ?? ''}
-              onChange={(v) => setDefault({ quietPeriod: v })}
-            />
-          </Field>
+        </div>
+      </Card>
+
+      <Card title={t('settings.contents')} hueIndex={4}>
+        <div className="flex flex-col gap-4">
           <ToggleRow
             label={t('edit.emptyDirs')}
             checked={!!defaults.emptyDirs}
@@ -278,6 +323,33 @@ export function Engine() {
                 { value: 'on', label: t('engine.foldOn') },
                 { value: 'off', label: t('engine.foldOff') },
               ]}
+            />
+          </Field>
+        </div>
+      </Card>
+
+      {/* The brakes get a card of their own because of what they are: the net
+          that stops a run removing more than half of everything it knows
+          about. Standing at the end of a list of transfer tuning, they read as
+          two more numbers. */}
+      <Card title={t('settings.safetyNet')} hueIndex={5}>
+        <div className="flex flex-col gap-4">
+          <Field label={t('engine.brakePercent')} hint={t('engine.brakePercentHint')}>
+            <NumberField
+              value={defaults.brakePercent ?? 50}
+              min={0}
+              max={100}
+              label={t('engine.brakePercent')}
+              onChange={(v) => setDefault({ brakePercent: v })}
+            />
+          </Field>
+          <Field label={t('engine.brakeFloor')} hint={t('engine.brakeFloorHint')}>
+            <NumberField
+              value={defaults.brakeFloor ?? 10}
+              min={0}
+              max={100000}
+              label={t('engine.brakeFloor')}
+              onChange={(v) => setDefault({ brakeFloor: v })}
             />
           </Field>
         </div>

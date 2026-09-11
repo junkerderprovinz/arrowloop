@@ -29,6 +29,15 @@ export interface Appearance {
   rainbowReactive: boolean;
   shape: Shape;
   labels: LabelMode;
+  /**
+   * Whether the app asks for the phone's own lock before showing anything.
+   *
+   * It lives beside the look rather than in the engine's settings on purpose:
+   * this is a property of THIS INSTALL, not of the configuration. A backup
+   * carried to a second phone should not switch a lock on there, and the
+   * engine's settings are exactly what a backup carries.
+   */
+  lock: boolean;
 }
 
 export const DEFAULT_APPEARANCE: Appearance = {
@@ -38,6 +47,7 @@ export const DEFAULT_APPEARANCE: Appearance = {
   rainbowReactive: false,
   shape: "round",
   labels: "textGlyph",
+  lock: false,
 };
 
 const KEY = "arrowloop.appearance";

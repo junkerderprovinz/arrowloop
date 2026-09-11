@@ -1,11 +1,15 @@
 package design.halleluja.arrowloop
 
+import android.app.Activity
+import android.app.KeyguardManager
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.os.Environment
 import android.os.PowerManager
 import android.provider.Settings
+import com.facebook.react.bridge.ActivityEventListener
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
@@ -28,7 +32,13 @@ import java.io.File
  * would disagree the first time a field changed.
  */
 class EngineModule(private val context: ReactApplicationContext) :
-    ReactContextBaseJavaModule(context) {
+    ReactContextBaseJavaModule(context), ActivityEventListener {
+
+    init {
+        // For `confirmDeviceLock`, which is the one thing here that asks
+        // Android a question and waits for an answer.
+        context.addActivityEventListener(this)
+    }
 
     override fun getName() = "ArrowLoopEngine"
 
@@ -230,4 +240,194 @@ class EngineModule(private val context: ReactApplicationContext) :
             promise.reject("settings", "this phone has no app settings page")
         }
     }
+
+    /**
+     * Android's OWN notification settings for this app.
+     *
+     * jdp: "die einstellungen für die benachrichtigungen sollen wir in die
+     * nativen Android Benachrichtigungseinstellungen der app verlinken wie in
+     * Autosync." Which is the right answer rather than a shortcut: sound,
+     * vibration, banners, Do Not Disturb and the per-channel switches are all
+     * Android's to own, and an app that rebuilt them would be offering a second
+     * set of switches over the same state - two answers to one question, and
+     * the phone's own is the one that actually applies.
+     */
+    @ReactMethod
+    fun openNotificationSettings(promise: Promise) {
+        val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+            .putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        try {
+            context.startActivity(intent)
+            promise.resolve(null)
+            return
+        } catch (_: ActivityNotFoundException) {
+            // Some OEM builds route this through the app details page instead.
+        }
+        openAppSettings(promise)
+    }
+
+    /**
+     * The battery-optimisation list, where this app can be excluded.
+     *
+     * Different from `askBatteryExemption` on purpose, and both are needed. The
+     * ASK is one dialog with one button and it is what most people should use;
+     * this is the LIST, which is where an OEM's own power manager puts the
+     * setting that actually decides whether a background job ever runs. On the
+     * phones where the dialog is not enough, this is the page to be on.
+     */
+    @ReactMethod
+    fun openBatterySettings(promise: Promise) {
+        val pages = listOf(
+            Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS),
+            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                .setData(Uri.fromParts("package", context.packageName, null)),
+        )
+        for (page in pages) {
+            try {
+                context.startActivity(page.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                promise.resolve(null)
+                return
+            } catch (_: ActivityNotFoundException) {
+                // Try the next one.
+            }
+        }
+        promise.reject("battery", "this phone has no battery settings page")
+    }
+
+    /**
+     * Write a settings backup where somebody can actually find it.
+     *
+     * The public Downloads folder, by a fixed name, because a backup nobody can
+     * locate is not a backup. The app already holds all-files access for the
+     * folders it syncs, so this needs no picker and no second permission - and
+     * a picker would put the file somewhere different every time, which is the
+     * opposite of what "where did I put it" wants.
+     */
+    @ReactMethod
+    fun exportSettings(json: String, promise: Promise) {
+        try {
+            val folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+            folder.mkdirs()
+            val file = File(folder, BACKUP_NAME)
+            // Built fully before the file is opened. `File.writeText` truncates
+            // on open, so a failure while producing the bytes would leave an
+            // empty backup where a good one used to be.
+            val bytes = json.toByteArray(Charsets.UTF_8)
+            file.writeBytes(bytes)
+            promise.resolve(file.absolutePath)
+        } catch (e: Exception) {
+            promise.reject("export", e.message ?: "could not write the backup")
+        }
+    }
+
+    /** Read a backup back. The path is handed in, so a file moved somewhere
+     *  else is still reachable by typing where it went. */
+    @ReactMethod
+    fun importSettings(path: String, promise: Promise) {
+        try {
+            val file = if (path.isBlank()) {
+                File(
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+                    BACKUP_NAME,
+                )
+            } else {
+                File(path)
+            }
+            if (!file.exists()) {
+                promise.reject("import", "there is no file at ${file.absolutePath}")
+                return
+            }
+            promise.resolve(file.readText(Charsets.UTF_8))
+        } catch (e: Exception) {
+            promise.reject("import", e.message ?: "could not read the backup")
+        }
+    }
+
+    /** The default place a backup goes, so the screen can show it before one
+     *  has ever been written. */
+    @ReactMethod
+    fun backupPath(promise: Promise) {
+        val folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+        promise.resolve(File(folder, BACKUP_NAME).absolutePath)
+    }
+
+    /**
+     * Whether this phone HAS a lock to ask for.
+     *
+     * `isDeviceSecure` rather than `isKeyguardSecure`: the second is true for a
+     * swipe-to-unlock screen, which protects nothing. A lock offered on a phone
+     * with no PIN would be a switch that turns on and then lets everybody in.
+     */
+    @ReactMethod
+    fun hasDeviceLock(promise: Promise) {
+        val keyguard = context.getSystemService(KeyguardManager::class.java)
+        promise.resolve(keyguard?.isDeviceSecure ?: false)
+    }
+
+    /**
+     * Ask for the phone's own lock, and say whether it was given.
+     *
+     * The DEVICE's lock rather than an app PIN, which is what jdp asked for
+     * ("die möglichkeit die app zu sperren (gerätesperre)") and is the better
+     * of the two anyway: a second secret is a second thing to forget, and the
+     * app that offers one has to answer "what if I forget it" with "wipe the
+     * app data". The system dialog already offers a fingerprint where one is
+     * enrolled, so this is not a choice between the lock and biometrics.
+     *
+     * `createConfirmDeviceCredentialIntent` rather than BiometricPrompt because
+     * it needs no new dependency and asks exactly this question. It returns
+     * through onActivityResult, which is why the module is an
+     * ActivityEventListener.
+     */
+    @ReactMethod
+    fun confirmDeviceLock(title: String, detail: String, promise: Promise) {
+        val activity = currentActivity
+        if (activity == null) {
+            promise.reject("lock", "there is no screen to ask in front of")
+            return
+        }
+        val keyguard = context.getSystemService(KeyguardManager::class.java)
+        if (keyguard == null || !keyguard.isDeviceSecure) {
+            promise.reject("lock", "this phone has no screen lock set up")
+            return
+        }
+        @Suppress("DEPRECATION")
+        val intent = keyguard.createConfirmDeviceCredentialIntent(title, detail)
+        if (intent == null) {
+            promise.reject("lock", "this phone will not ask for its own lock")
+            return
+        }
+        // One at a time. A second ask while the first is on screen would leave
+        // the first promise unresolved for ever, which in the app is a lock
+        // screen that never goes away.
+        pending?.reject("lock", "another unlock was already being asked for")
+        pending = promise
+        try {
+            activity.startActivityForResult(intent, UNLOCK_REQUEST)
+        } catch (e: Exception) {
+            pending = null
+            promise.reject("lock", e.message ?: "could not ask for the lock")
+        }
+    }
+
+    override fun onActivityResult(activity: Activity?, requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode != UNLOCK_REQUEST) return
+        val waiting = pending ?: return
+        pending = null
+        waiting.resolve(resultCode == Activity.RESULT_OK)
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        // Nothing here. The interface wants both halves; only the result is
+        // this module's business.
+    }
+
+    companion object {
+        /** One name, so "where did I put it" has an answer. */
+        const val BACKUP_NAME = "arrowloop-einstellungen.json"
+        private const val UNLOCK_REQUEST = 8422
+    }
+
+    private var pending: Promise? = null
 }

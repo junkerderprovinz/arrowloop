@@ -9,12 +9,16 @@ import type { Nav, SettingsStack } from "../nav";
 import { ACCENTS, RAINBOW, space } from "../theme";
 import {
   setAppearance,
+  settings as settingsApi,
   useAppearance,
   useEngineSettings,
+  type EngineSettings,
   type LabelMode,
   type Shape,
   type ThemeChoice,
 } from "../settings";
+import { Field } from "../fields";
+import { Schedule } from "./JobEdit";
 import { AxisLabel, Body, Button, Caption, Choice, Page, Section, Swatch, Title, Toggle } from "../ui";
 
 /**
@@ -47,12 +51,69 @@ export function Settings() {
   const [running, setRunning] = useState<boolean | null>(null);
   const [policy, setPolicy] = useState<DevicePolicy | null>(null);
   const [version, setVersion] = useState<string | null>(null);
+  const [lockable, setLockable] = useState(false);
+  const [backupFile, setBackupFile] = useState("");
+  const [backupBusy, setBackupBusy] = useState(false);
+  const [backupSaid, setBackupSaid] = useState("");
 
   // The engine's own defaults, read and written through its settings.
   const { settings, update } = useEngineSettings(true);
   const defaults = (settings?.defaults ?? {}) as Record<string, unknown>;
   const saveDefaults = (patch: Record<string, unknown>) =>
     update({ defaults: { ...defaults, ...patch } });
+
+  /**
+   * Everything the backup carries, as one object.
+   *
+   * The engine's settings and the jobs, and deliberately NOT the look or the
+   * lock: those describe this install rather than the configuration, and a file
+   * carried to a second phone that switched a lock on there would be a surprise
+   * nobody asked for.
+   */
+  const exportSettings = async () => {
+    setBackupBusy(true);
+    setBackupSaid("");
+    try {
+      const [config, current] = await Promise.all([api.config(), settingsApi.read()]);
+      const where = await engine.exportSettings(
+        JSON.stringify({ kind: "arrowloop-settings", version: 1, settings: current, config }, null, 2),
+      );
+      setBackupFile(where);
+      setBackupSaid(t("settings.exported", { path: where }));
+    } catch (e) {
+      setBackupSaid((e as Error).message);
+    } finally {
+      setBackupBusy(false);
+    }
+  };
+
+  const importSettings = async () => {
+    setBackupBusy(true);
+    setBackupSaid("");
+    try {
+      const text = await engine.importSettings(backupFile);
+      const backup = JSON.parse(text) as {
+        kind?: string;
+        settings?: unknown;
+        config?: { jobs?: unknown[] };
+      };
+      // Checked before anything is written. A JSON file that parses is not the
+      // same as a backup, and restoring an arbitrary object into the engine's
+      // settings is how somebody loses the jobs they were trying to keep.
+      if (backup.kind !== "arrowloop-settings" || !backup.settings || !backup.config) {
+        setBackupSaid(t("settings.importNotOurs"));
+        return;
+      }
+      await settingsApi.write(backup.settings as EngineSettings);
+      await api.writeConfig(backup.config as never);
+      setBackupSaid(t("settings.imported"));
+      await refresh();
+    } catch (e) {
+      setBackupSaid((e as Error).message);
+    } finally {
+      setBackupBusy(false);
+    }
+  };
 
   const refresh = useCallback(async () => {
     const [access, can, alive, device, exempt] = await Promise.all([
@@ -67,6 +128,14 @@ export function Settings() {
     setRunning(alive);
     setPolicy(device);
     setDoze(exempt);
+    engine.hasDeviceLock().then(setLockable, () => setLockable(false));
+    // Shown before a backup has ever been written, so the card says where one
+    // WOULD go rather than leaving an empty box above two buttons.
+    setBackupFile((old) => old || "");
+    engine.backupPath().then(
+      (where) => setBackupFile((old) => old || where),
+      () => {},
+    );
     setNotify(await notificationsGranted());
     // Asked rather than assumed, and allowed to fail: a stopped engine is a
     // real state and the card still has to draw.
@@ -257,9 +326,79 @@ export function Settings() {
             </>
           );
         })()}
+        {/* The schedule belongs with the pair above it, not on its own: "every
+            night at three" is a decision about a PHONE far more often than
+            about one folder, which is why the engine has carried it as a
+            default all along. It was reachable only by editing the file. */}
+        <AxisLabel>{t("edit.schedule")}</AxisLabel>
+        <Schedule
+          value={String(defaults.schedule ?? "")}
+          onChange={(schedule) => saveDefaults({ schedule })}
+        />
       </Section>
 
-      <Section title={t("phone.schedule")} hue={5}>
+      {/* How much at once, and how long to wait for a folder to settle. Its own
+          card because Autosync groups the same two that way and the reason
+          holds: these answer "how hard does it push", where the card above
+          answers "what does it do". */}
+      <Section title={t("settings.transfer")} hue={5}>
+        <Field
+          label={t("engine.transfers")}
+          hint={t("engine.transfersHint")}
+          keyboard="numeric"
+          value={String(defaults.transfers ?? 4)}
+          onChange={(v) => saveDefaults({ transfers: Number(v) || undefined })}
+        />
+        <Field
+          label={t("edit.quietPeriod")}
+          hint={t("edit.quietHint")}
+          value={String(defaults.quietPeriod ?? "")}
+          onChange={(quietPeriod) => saveDefaults({ quietPeriod })}
+          placeholder="30s"
+        />
+      </Section>
+
+      {/* What travels besides the file contents. Two switches that change what
+          arrives at the other end rather than how fast. */}
+      <Section title={t("settings.contents")} hue={6}>
+        <Toggle
+          label={t("edit.emptyDirs")}
+          hint={t("edit.emptyDirsHint")}
+          value={Boolean(defaults.emptyDirs)}
+          onChange={(emptyDirs) => saveDefaults({ emptyDirs })}
+        />
+        <Toggle
+          label={t("edit.metadata")}
+          hint={t("edit.metadataHint")}
+          value={Boolean(defaults.metadata)}
+          onChange={(metadata) => saveDefaults({ metadata })}
+        />
+      </Section>
+
+      {/* The brakes, and they get a card of their own because of what they are:
+          the net that stops a run removing more than half of everything it
+          knows about. Until now they were invisible on the phone entirely. */}
+      <Section title={t("settings.safetyNet")} hue={7}>
+        <Field
+          label={t("engine.brakePercent")}
+          hint={t("engine.brakePercentHint")}
+          keyboard="numeric"
+          value={String(defaults.brakePercent ?? 50)}
+          onChange={(v) => saveDefaults({ brakePercent: clamp(v, 0, 100) })}
+        />
+        <Field
+          label={t("engine.brakeFloor")}
+          hint={t("engine.brakeFloorHint")}
+          keyboard="numeric"
+          value={String(defaults.brakeFloor ?? 10)}
+          onChange={(v) => saveDefaults({ brakeFloor: clamp(v, 0, 100000) })}
+        />
+      </Section>
+
+      {/* Autosync's own name for this group, and it is the better one: the two
+          switches are not about WHEN a job is due, they are about whether the
+          phone lets a due job go ahead. */}
+      <Section title={t("phone.schedule")} hue={0}>
         <Toggle
           label={t("phone.charging")}
           hint={t("phone.chargingHint")}
@@ -321,9 +460,21 @@ export function Settings() {
             // Asking works once: after a refusal Android answers immediately
             // without showing anything, and then the settings page is the only
             // place left where the answer can change.
-            if (notify) engine.openAppSettings();
-            else askNotifications().then((ok) => (ok ? refresh() : engine.openAppSettings()));
+            if (notify) engine.openNotificationSettings();
+            else askNotifications().then((ok) => (ok ? refresh() : engine.openNotificationSettings()));
           }}
+        />
+        {/* Straight into Android's own page, which is where every question
+            about a notification is actually answered: sound, vibration,
+            banners, Do Not Disturb, the per-channel switches. jdp: "die
+            einstellungen für die benachrichtigungen sollen wir in die nativen
+            Android Benachrichtigungseinstellungen der app verlinken wie in
+            Autosync." Rebuilding that here would be a second set of switches
+            over the same state, and the phone's own is the one that applies. */}
+        <Button
+          label={t("phone.openNotifications")}
+          labelKey="phone.openNotifications"
+          onPress={() => engine.openNotificationSettings().catch(() => {})}
         />
       </Section>
 
@@ -339,6 +490,86 @@ export function Settings() {
             // take it back, the app's own settings page is where it lives.
             if (doze) engine.openAppSettings();
             else engine.askBatteryExemption().catch(() => engine.openAppSettings());
+          }}
+        />
+        {/* The LIST, beside the dialog above, and both are needed. The dialog
+            is one button and is enough on a stock Android; this is where an
+            OEM's own power manager keeps the setting that actually decides
+            whether a background job ever runs. jdp: "zudem brauchen wir in den
+            einstellungen noch eine verlinkung zu den energiesparmodus damit man
+            die app da ausnehmen kann." */}
+        <Button
+          label={t("phone.openBattery")}
+          labelKey="phone.openBattery"
+          onPress={() => engine.openBatterySettings().catch(() => {})}
+        />
+      </Section>
+
+      {/* Carrying the whole setup off this phone and back onto it.
+
+          It writes ONE file with a fixed name into Downloads, rather than
+          opening a picker: a backup nobody can find again is not a backup, and
+          a picker puts it somewhere different every time. The path is shown
+          and can be edited on the way back in, so a file moved elsewhere is
+          still reachable.
+
+          What travels: the engine's settings and the jobs. NOT the look and not
+          the lock - those are properties of this install rather than of the
+          configuration, and a backup carried to a second phone that switched a
+          lock on there would be a surprise nobody asked for. */}
+      <Section title={t("settings.backup")} hint={t("settings.backupHint")} hue={2}>
+        <Field
+          label={t("settings.backupFile")}
+          value={backupFile}
+          onChange={setBackupFile}
+          placeholder="/storage/emulated/0/Download"
+        />
+        <View style={styles.actions}>
+          <Button
+            label={t("settings.export")}
+            labelKey="settings.export"
+            tone="accent"
+            busy={backupBusy}
+            onPress={exportSettings}
+          />
+          <Button
+            label={t("settings.import")}
+            labelKey="settings.import"
+            busy={backupBusy}
+            onPress={importSettings}
+          />
+        </View>
+        {backupSaid ? <Body>{backupSaid}</Body> : null}
+      </Section>
+
+      {/* The phone's OWN lock rather than an app PIN, which is what jdp asked
+          for ("die möglichkeit die app zu sperren (gerätesperre)") and is the
+          better of the two anyway: a second secret is a second thing to forget,
+          and an app that offers one has to answer "what if I forget it" with
+          "wipe the app data". The system dialog already offers a fingerprint
+          where one is enrolled, so this is not a choice between the two. */}
+      <Section
+        title={t("settings.lock")}
+        hint={lockable ? t("settings.lockHint") : t("settings.lockUnavailable")}
+        hue={3}
+      >
+        <Toggle
+          label={t("settings.lockOn")}
+          value={look.lock}
+          disabled={!lockable}
+          onChange={(on) => {
+            // Asked for BEFORE it goes on, not after. A switch that locks the
+            // app and then discovers the lock does not answer is a switch that
+            // locked somebody out, and the one moment to find that out is while
+            // they are still looking at the settings.
+            if (!on) {
+              setAppearance({ lock: false });
+              return;
+            }
+            engine
+              .confirmDeviceLock(t("settings.lock"), t("settings.lockHint"))
+              .then((ok) => ok && setAppearance({ lock: true }))
+              .catch(() => {});
           }}
         />
       </Section>
@@ -421,6 +652,19 @@ export async function askNotifications(): Promise<boolean> {
   } catch {
     return false;
   }
+}
+
+/**
+ * A typed number, held inside the range the engine accepts.
+ *
+ * An empty box gives `undefined` rather than zero, which is the difference
+ * between "unset, take the built-in" and "zero per cent", and on a brake that
+ * difference is a run that stops at half against one that stops at nothing.
+ */
+function clamp(text: string, low: number, high: number): number | undefined {
+  const value = Number(text.replace(/[^\d]/g, ""));
+  if (!text.trim() || Number.isNaN(value)) return undefined;
+  return Math.min(high, Math.max(low, value));
 }
 
 function langName(code: string): string {
