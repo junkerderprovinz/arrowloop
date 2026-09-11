@@ -31,13 +31,31 @@ import { fileURLToPath } from 'node:url'
 import { en } from './i18n'
 
 const SRC = resolve(dirname(fileURLToPath(import.meta.url)), '..')
-const TABLES = [join(SRC, 'lib', 'i18n.ts'), join(SRC, 'lib', 'locales')]
+/** The phone, which renders half of these keys and none of the other half. */
+const MOBILE = resolve(SRC, '..', '..', 'mobile')
 
-/** Every .ts/.tsx file under src/, minus the translation tables themselves. */
+/**
+ * The files a key must not count as "used" merely by appearing in.
+ *
+ * `i18n.data.ts` is the one that matters and it was NOT here, which made this
+ * whole guard report green on everything: the tables moved out of `i18n.ts`
+ * into their own file so Metro could read them, the exclusion stayed pointing
+ * at the old path, and from that moment every key in the app matched itself in
+ * the corpus. A dead key cost nothing again, silently, which is precisely the
+ * thing this file exists to prevent.
+ */
+const TABLES = [
+  join(SRC, 'lib', 'i18n.ts'),
+  join(SRC, 'lib', 'i18n.data.ts'),
+  join(SRC, 'lib', 'locales'),
+]
+
+/** Every .ts/.tsx file under a tree, minus the translation tables themselves. */
 function sourceFiles(dir: string): string[] {
   const out: string[] = []
   for (const e of readdirSync(dir, { withFileTypes: true })) {
     const p = join(dir, e.name)
+    if (e.name === 'node_modules' || e.name === 'android' || e.name === 'build') continue
     if (TABLES.some((t) => p === t || p.startsWith(t + '\\') || p.startsWith(t + '/'))) continue
     if (e.isDirectory()) out.push(...sourceFiles(p))
     else if (e.name.endsWith('.ts') || e.name.endsWith('.tsx')) out.push(p)
@@ -45,7 +63,10 @@ function sourceFiles(dir: string): string[] {
   return out
 }
 
-const CORPUS = sourceFiles(SRC)
+// BOTH surfaces. One table serves a browser and a phone, so a key rendered
+// only by the phone is not an orphan and a key the phone stopped rendering is.
+// Scanning one tree would make this guard wrong in both directions at once.
+const CORPUS = [...sourceFiles(SRC), ...sourceFiles(MOBILE)]
   .map((p) => readFileSync(p, 'utf8'))
   .join('\n')
 

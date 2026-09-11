@@ -122,7 +122,14 @@ export function JobEdit() {
         <Field label={t("edit.name")} value={job.name} onChange={(name) => set({ name })} />
       </Section>
 
-      <Section title={t("direction.label")} hint={t("edit.sideHint")} hue={1}>
+      {/* Two explanations, one bubble. The sides' own sentence used to sit
+          under the fields as a caption; the card already had a bubble, so the
+          second sentence joins it rather than starting a second convention. */}
+      <Section
+        title={t("direction.label")}
+        hint={`${t("edit.sideHint")} ${t("direction.hint")}`}
+        hue={1}
+      >
         {/* Following the default is a STATE, not a link that appears once
             something has been overridden, so it gets the control every state in
             this house gets. On, the job says nothing about either setting and
@@ -172,37 +179,43 @@ export function JobEdit() {
           onChange={(right) => set({ right })}
           placeholder="nextcloud:Photos"
         />
-        <Caption>{t("direction.hint")}</Caption>
       </Section>
 
       {/* The second axis, and it only exists once a side has been named the
           source. Two of the three modes DELETE, so each carries a sentence
           saying what it removes and what it leaves: a picker of three words
           is how somebody mirrors the wrong way round. */}
-      <Section title={t("mode.label")} hue={2}>
-        {(job.direction ?? "both") === "both" ? (
-          <Body muted>{t("mode.onlyOneWay")}</Body>
-        ) : (
-          <>
-            <Choice
-              value={job.mode ?? "sync"}
-              disabled={follows}
-              onChange={(mode) => set({ mode })}
-              options={[
-                { value: "sync", label: t("mode.sync") },
-                { value: "mirror", label: t("mode.mirror") },
-                { value: "move", label: t("mode.move") },
-              ]}
-            />
-            <Caption>
-              {job.mode === "mirror"
-                ? t("mode.mirrorHint")
-                : job.mode === "move"
-                  ? t("mode.moveHint")
-                  : t("mode.syncHint")}
-            </Caption>
-          </>
-        )}
+      <Section
+        title={t("mode.label")}
+        // What the chosen mode DELETES, in the card's (i). Two of the three
+        // remove files, so the sentence matters - and it moved here rather than
+        // staying a caption under the picker because that is where every
+        // explanation in this app now lives, on both surfaces. It follows the
+        // selection, so the bubble always describes the mode actually set.
+        hint={
+          (job.direction ?? "both") === "both"
+            ? t("mode.onlyOneWay")
+            : job.mode === "mirror"
+              ? t("mode.mirrorHint")
+              : job.mode === "move"
+                ? t("mode.moveHint")
+                : t("mode.syncHint")
+        }
+        hue={2}
+      >
+        {/* Inert with `sync` showing for a both-ways job, rather than replaced
+            by a paragraph: a card that changes shape with the answer above it
+            is two cards somebody has to recognise as one. */}
+        <Choice
+          value={(job.direction ?? "both") === "both" ? "sync" : (job.mode ?? "sync")}
+          disabled={follows || (job.direction ?? "both") === "both"}
+          onChange={(mode) => set({ mode })}
+          options={[
+            { value: "sync", label: t("mode.sync") },
+            { value: "mirror", label: t("mode.mirror") },
+            { value: "move", label: t("mode.move") },
+          ]}
+        />
       </Section>
 
       <Section title={t("edit.schedule")} hint={t("edit.scheduleHint")}>

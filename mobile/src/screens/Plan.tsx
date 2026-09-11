@@ -5,7 +5,7 @@ import { api, type Action, type Plan as PlanType } from "../api";
 import { useT } from "../i18n";
 import type { JobsStack, Nav } from "../nav";
 import { space } from "../theme";
-import { Badge, Body, Button, Caption, Card, Empty, Mono, Page, Title } from "../ui";
+import { Badge, Body, Button, Caption, Card, Empty, InfoBubble, Mono, Page, Title } from "../ui";
 
 /**
  * What this job WOULD do, before it does any of it.
@@ -52,9 +52,13 @@ export function Plan() {
 
   return (
     <Page>
+      {/* What a preview IS, in the (i) beside the title rather than as a
+          paragraph under it. The same rule the rest of the app follows now. */}
       <Card>
-        <Title>{t("preview.for", { job })}</Title>
-        <Caption>{t("phone.previewExplain")}</Caption>
+        <View style={styles.head}>
+          <Title>{t("preview.for", { job })}</Title>
+          <InfoBubble tip={t("phone.previewExplain")} />
+        </View>
       </Card>
 
       {conflicts.length > 0 ? (
@@ -62,8 +66,8 @@ export function Plan() {
           <View style={styles.head}>
             <Title>{t("conflict.title")}</Title>
             <Badge label={String(conflicts.length)} tone="warn" />
+            <InfoBubble tip={t("history.conflictHint")} />
           </View>
-          <Caption>{t("history.conflictHint")}</Caption>
           {conflicts.slice(0, 30).map((action) => (
             <Mono key={action.path}>{action.path}</Mono>
           ))}

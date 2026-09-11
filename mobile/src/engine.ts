@@ -38,6 +38,9 @@ interface EngineNativeModule {
    *  permission - Google routed the broadest file access there is through a
    *  full settings page rather than a two-button prompt. */
   openStorageSettings(): Promise<void>;
+  /** This app's own settings page, where a refused permission can be changed.
+   *  The request dialog is a one-shot and shows nothing after a no. */
+  openAppSettings(): Promise<void>;
 
   /** Both schedule conditions and the facts behind them, in one answer: what
    *  was asked for, what the phone is actually plugged into, and the sentence
@@ -55,7 +58,8 @@ export interface DevicePolicy {
   onlyCharging: boolean;
   onlyWifi: boolean;
   charging: boolean;
-  metered: boolean;
+  /** Whether this phone is on wifi or a cable, as opposed to mobile data. */
+  onWifi: boolean;
   /** Empty unless something is holding automatic runs back. */
   holding: string;
 }
@@ -64,7 +68,7 @@ const NOTHING_HELD: DevicePolicy = {
   onlyCharging: false,
   onlyWifi: false,
   charging: true,
-  metered: false,
+  onWifi: true,
   holding: "",
 };
 
@@ -95,6 +99,7 @@ export const engine = {
   storageGranted: () => (native ? native.storageGranted() : Promise.resolve(false)),
   storagePossible: () => (native ? native.storagePossible() : Promise.resolve(false)),
   openStorageSettings: () => (native ? native.openStorageSettings() : missing()),
+  openAppSettings: () => (native ? native.openAppSettings() : missing()),
   devicePolicy: () => (native ? native.devicePolicy() : Promise.resolve(NOTHING_HELD)),
   setDevicePolicy: (onlyCharging: boolean, onlyWifi: boolean) =>
     native ? native.setDevicePolicy(onlyCharging, onlyWifi) : missing(),

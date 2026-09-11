@@ -98,8 +98,8 @@ export function Settings() {
   const held =
     policy?.onlyCharging && !policy.charging
       ? t("phone.heldCharging")
-      : policy?.onlyWifi && policy.metered
-        ? t("phone.heldMetered")
+      : policy?.onlyWifi && !policy.onWifi
+        ? t("phone.heldWifi")
         : "";
 
   return (
@@ -218,20 +218,29 @@ export function Settings() {
             { value: "rightToLeft", label: t("direction.toLeft") },
           ]}
         />
-        <AxisLabel>{t("mode.label")}</AxisLabel>
-        {(defaults.direction ?? "both") === "both" ? (
-          <Body muted>{t("mode.onlyOneWay")}</Body>
-        ) : (
-          <Choice
-            value={String(defaults.mode ?? "sync")}
-            onChange={(mode) => saveDefaults({ mode })}
-            options={[
-              { value: "sync", label: t("mode.sync") },
-              { value: "mirror", label: t("mode.mirror") },
-              { value: "move", label: t("mode.move") },
-            ]}
-          />
-        )}
+        {/* Both ways has no choice to make here, and the selector says so by
+            going inert with `sync` still showing rather than vanishing. A
+            paragraph used to stand in its place, which left the card two
+            different shapes depending on the answer above it - and the reason
+            belongs in the (i) like every other reason in this app. */}
+        {(() => {
+          const both = (defaults.direction ?? "both") === "both";
+          return (
+            <>
+              <AxisLabel hint={both ? t("mode.onlyOneWay") : undefined}>{t("mode.label")}</AxisLabel>
+              <Choice
+                disabled={both}
+                value={both ? "sync" : String(defaults.mode ?? "sync")}
+                onChange={(mode) => saveDefaults({ mode })}
+                options={[
+                  { value: "sync", label: t("mode.sync") },
+                  { value: "mirror", label: t("mode.mirror") },
+                  { value: "move", label: t("mode.move") },
+                ]}
+              />
+            </>
+          );
+        })()}
       </Section>
 
       <Section title={t("phone.schedule")} hue={5}>
@@ -252,54 +261,70 @@ export function Settings() {
         {held ? <Body>{held}</Body> : null}
       </Section>
 
-      <Section title={t("phone.access")} hue={6}>
-        {granted ? (
-          <Body>{t("phone.accessOn")}</Body>
-        ) : possible ? (
-          <>
-            <Body>{t("phone.accessOff")}</Body>
-            <Button
-              label={t("phone.accessAsk")}
-              labelKey="phone.accessAsk"
-              tone="accent"
-              onPress={engine.openStorageSettings}
-            />
-          </>
-        ) : (
-          <Body>{t("phone.accessNone")}</Body>
-        )}
+      {/* The two permissions, each as a switch that SHOWS whether it is on.
+          jdp: "dateizugriff und benachrichtigungen card sollen jeweils ein
+          toggle zeigen ob es aktiviert ist oder nicht." A card that said
+          "granted" in one state and offered a button in the other made you read
+          a sentence to learn a yes or a no, and the two cards did not even look
+          alike from one state to the next.
+
+          Android owns these switches, not this app: nothing here can grant or
+          revoke a permission, only ask. So a tap goes where the answer is
+          actually given - the request dialog while there is one to show, the
+          system settings page otherwise - and the switch follows what Android
+          says when the screen comes back. It is a READING of the permission
+          with a way to change it, which is the honest version of a control
+          somebody else owns, and the bubble says so. */}
+      <Section
+        // Why the switch is dead, said in the same bubble rather than as a
+        // paragraph beneath it: an Android old enough to lack this permission
+        // leaves a control nobody can move, and a control nobody can move needs
+        // its reason where every other reason lives.
+        title={t("phone.access")}
+        hint={possible ? t("phone.permissionHint") : t("phone.accessNone")}
+        hue={6}
+      >
+        <Toggle
+          // The card's notch already carries the permission's NAME, so the row
+          // says what the switch answers instead of saying the name twice.
+          label={t("phone.permissionGranted")}
+          // `null` while the answer is still being fetched, which is a moment
+          // long enough to see. Off is the right guess for an unknown
+          // permission: it is what Android says until somebody says otherwise.
+          value={granted === true}
+          disabled={!possible}
+          onChange={() => engine.openStorageSettings()}
+        />
       </Section>
 
-      <Section title={t("phone.notify")} hue={7}>
-        {notify ? (
-          <Body>{t("phone.notifyOn")}</Body>
-        ) : (
-          <>
-            <Body>{t("phone.notifyOff")}</Body>
-            <Button
-              label={t("phone.notifyAsk")}
-              labelKey="phone.notifyAsk"
-              tone="accent"
-              onPress={() => askNotifications().then(refresh)}
-            />
-          </>
-        )}
+      <Section title={t("phone.notify")} hint={t("phone.permissionHint")} hue={7}>
+        <Toggle
+          label={t("phone.permissionGranted")}
+          value={notify === true}
+          onChange={() => {
+            // Asking works once: after a refusal Android answers immediately
+            // without showing anything, and then the settings page is the only
+            // place left where the answer can change.
+            if (notify) engine.openAppSettings();
+            else askNotifications().then((ok) => (ok ? refresh() : engine.openAppSettings()));
+          }}
+        />
       </Section>
 
-      <Section title={t("phone.doze")} hue={0}>
-        {doze ? (
-          <Body>{t("phone.dozeOn")}</Body>
-        ) : (
-          <>
-            <Body>{t("phone.dozeOff")}</Body>
-            <Button
-              label={t("phone.dozeAsk")}
-              labelKey="phone.dozeAsk"
-              tone="accent"
-              onPress={() => engine.askBatteryExemption().catch(() => {})}
-            />
-          </>
-        )}
+      {/* The third permission, and the same shape as the two above it. It was
+          not in the request, and leaving it as prose-and-a-button would have
+          made one card out of three look like a different app. */}
+      <Section title={t("phone.doze")} hint={t("phone.dozeOff")} hue={0}>
+        <Toggle
+          label={t("phone.permissionGranted")}
+          value={doze === true}
+          onChange={() => {
+            // Android shows this one as a real dialog, once. Afterwards, and to
+            // take it back, the app's own settings page is where it lives.
+            if (doze) engine.openAppSettings();
+            else engine.askBatteryExemption().catch(() => engine.openAppSettings());
+          }}
+        />
       </Section>
 
       <Section title={t("engine.title")} hint={t("phone.engineHint")} hue={1}>
@@ -347,7 +372,7 @@ const EMPTY: DevicePolicy = {
   onlyCharging: false,
   onlyWifi: false,
   charging: true,
-  metered: false,
+  onWifi: true,
   holding: "",
 };
 

@@ -102,23 +102,30 @@ object Device {
     }
 
     /**
-     * Whether the connection in use is one somebody pays for by the megabyte.
+     * Whether this phone is on wifi rather than on the mobile network.
      *
-     * NOT_METERED is the capability Android exposes, and it is the honest
-     * question: a wifi network the owner has marked as metered counts, and a
-     * mobile connection on an unlimited plan that somebody marked unmetered
-     * does not. Asking "is this wifi" instead would be asking about the radio
-     * when the question is about the bill.
+     * It used to ask NOT_METERED, which is a question about the BILL: a wifi
+     * network its owner marked as metered failed it, and a mobile connection
+     * somebody marked unmetered passed. That is defensible and it is not what
+     * the switch says. jdp: "nur über kostenfreie verbindung soll einfach Nur
+     * über WLAN heißen und es nicht von kosten abhängig machen." A switch
+     * reading "only over wifi" that lets a run out over mobile data because the
+     * tariff looked generous is a switch that lied, and the person who finds
+     * out is the person with the bill.
      *
-     * No network at all is NOT metered. A run with nothing to connect to fails
-     * on its own terms, and that failure says something more useful than this
-     * could.
+     * Ethernet counts. A phone in a dock is on a cable, which is wifi's answer
+     * to the same question and not the mobile network.
+     *
+     * No network at all is NOT wifi, so a run waits. That is the opposite of
+     * what the old metered test did with the same case, and it is the right way
+     * round: with the switch on, "no connection" is not a reason to go ahead.
      */
-    fun metered(context: Context): Boolean {
+    fun onWifi(context: Context): Boolean {
         val manager = context.getSystemService(ConnectivityManager::class.java) ?: return false
         val caps = manager.getNetworkCapabilities(manager.activeNetwork ?: return false)
             ?: return false
-        return !caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED)
+        return caps.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
+            caps.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
     }
 
     /** The verdict, in the words that end up in the engine's log. Empty means
@@ -127,8 +134,8 @@ object Device {
         if (onlyCharging(context) && !charging(context)) {
             return "this phone is not charging"
         }
-        if (onlyWifi(context) && metered(context)) {
-            return "this connection is metered"
+        if (onlyWifi(context) && !onWifi(context)) {
+            return "this phone is not on wifi"
         }
         return ""
     }

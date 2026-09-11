@@ -239,9 +239,17 @@ export function Caption({ children }: { children: ReactNode }) {
 }
 
 /** A small uppercase label naming an axis above its control. */
-export function AxisLabel({ children }: { children: ReactNode }) {
+export function AxisLabel({ children, hint }: { children: ReactNode; hint?: string }) {
   const { p } = useTheme();
-  return <Text style={[styles.axis, { color: p.textSub }]}>{children}</Text>;
+  if (!hint) return <Text style={[styles.axis, { color: p.textSub }]}>{children}</Text>;
+  // An axis can need explaining too, and it gets the same (i) as everything
+  // else rather than a paragraph under the control it introduces.
+  return (
+    <View style={styles.axisRow}>
+      <Text style={[styles.axis, { color: p.textSub }]}>{children}</Text>
+      <InfoBubble tip={hint} />
+    </View>
+  );
 }
 
 export function Mono({ children }: { children: ReactNode }) {
@@ -642,6 +650,7 @@ const styles = StyleSheet.create({
   body: { fontSize: text.body },
   caption: { fontSize: text.caption, lineHeight: 16 },
   axis: { fontSize: text.caption, fontWeight: "500", textTransform: "uppercase", letterSpacing: 1.2 },
+  axisRow: { flexDirection: "row", alignItems: "center", gap: space.sm },
   mono: { fontFamily: "monospace", fontSize: text.caption },
 
   badge: { paddingHorizontal: 7, paddingVertical: 2, alignSelf: "flex-start", flexShrink: 0 },

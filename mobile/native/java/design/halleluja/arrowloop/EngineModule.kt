@@ -123,7 +123,7 @@ class EngineModule(private val context: ReactApplicationContext) :
         map.putBoolean("onlyCharging", Device.onlyCharging(context))
         map.putBoolean("onlyWifi", Device.onlyWifi(context))
         map.putBoolean("charging", Device.charging(context))
-        map.putBoolean("metered", Device.metered(context))
+        map.putBoolean("onWifi", Device.onWifi(context))
         map.putString("holding", Device.reason(context))
         promise.resolve(map)
     }
@@ -207,5 +207,27 @@ class EngineModule(private val context: ReactApplicationContext) :
             }
         }
         promise.reject("storage", "this phone has no page for that permission")
+    }
+
+    /**
+     * Open this app's own settings page.
+     *
+     * Where the notification permission ends up once it has been refused. The
+     * request dialog is a one-shot: after a no, `requestPermissions` returns
+     * immediately with the same no and shows nothing, and a switch that does
+     * nothing twice reads as a broken switch rather than as a decision already
+     * made. This is the page where that decision can be changed.
+     */
+    @ReactMethod
+    fun openAppSettings(promise: Promise) {
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+            .setData(Uri.fromParts("package", context.packageName, null))
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        try {
+            context.startActivity(intent)
+            promise.resolve(null)
+        } catch (_: ActivityNotFoundException) {
+            promise.reject("settings", "this phone has no app settings page")
+        }
     }
 }
