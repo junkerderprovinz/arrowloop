@@ -36,6 +36,15 @@ export type LabelMode = "text" | "textGlyph" | "glyph" | "reactive";
 export const LABEL_MODES = ["text", "textGlyph", "glyph"] as const;
 
 export type Shape = "round" | "soft" | "square";
+
+/**
+ * How much the interface moves.
+ *
+ * Declared here rather than in motion.ts, because motion.ts reads the stored
+ * appearance and a type living there would make the two files import each
+ * other. The ENGINE is in motion.ts; this is only the name of the setting.
+ */
+export type MotionIntensity = "off" | "subtle" | "full";
 export type ThemeChoice = "system" | "dark" | "light";
 
 export interface Appearance {
@@ -62,6 +71,15 @@ export interface Appearance {
   shape: Shape;
   labels: LabelMode;
   /**
+   * How much the interface moves: off, subtle or full.
+   *
+   * Stored here rather than in the engine's settings for the same reason the
+   * theme is: it describes THIS install. A phone on a desk and a phone in a
+   * pocket can want different answers, and a backup carried to a second device
+   * should not decide for it.
+   */
+  motion: MotionIntensity;
+  /**
    * Whether the app asks for the phone's own lock before showing anything.
    *
    * It lives beside the look rather than in the engine's settings on purpose:
@@ -81,6 +99,7 @@ export const DEFAULT_APPEARANCE: Appearance = {
   rainbowSeed: 0,
   shape: "round",
   labels: "textGlyph",
+  motion: "full",
   lock: false,
 };
 

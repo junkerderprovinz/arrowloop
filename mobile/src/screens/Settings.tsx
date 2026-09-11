@@ -21,6 +21,7 @@ import { GLIMSTONE_VERSION } from "../../../web/src/lib/glimstone/version";
 import { COFFEE, PAYPAL } from "../../../web/src/lib/donate";
 import { nearestPreset } from "../../../web/src/lib/colorMath";
 import { flagEmoji } from "../../../web/src/lib/flagEmoji";
+import { animateNext, useMotion, type MotionIntensity } from "../motion";
 import { ColorPicker, EditableSwatch, ResetMark } from "../ColorPicker";
 import { CryptoDonate } from "../donate";
 import { Field } from "../fields";
@@ -65,6 +66,8 @@ export function Settings() {
   // For the About card's marks: the brands carry a per-theme colour of their
   // own, and the one house button takes the accent rather than a vendor's.
   const { scheme, accentInk } = useTheme();
+  // The intensity in force, for the handfuls of places that animate a change.
+  const { intensity: motion } = useMotion();
 
   const [granted, setGranted] = useState<boolean | null>(null);
   const [possible, setPossible] = useState(true);
@@ -278,24 +281,21 @@ export function Settings() {
           toggle können wir in der app weglassen. man hoovert ja nicht mit der
           maus." */}
       <Section title={t("look.colors")} hue={2}>
-        {/* Gone while the rainbow is on, not dimmed. The mode replaces the
-            accent for everything that is one member of a set, so an accent
-            chosen under it is a colour most of the screen has stopped using. */}
-        {!look.rainbow ? (
-          <View style={styles.axisRow}>
-            <View style={styles.axisName}>
-              <Body>{t("look.accent")}</Body>
-              {/* A reset BESIDE the row it resets, not in the card's corner: it
-                  undoes this row, not the card. Dimmed when there is nothing to
-                  undo, which is the one greyed control this language allows -
-                  it is REPORTING (the accent is already the default) rather
-                  than refusing because of a decision made elsewhere. */}
-              <ResetMark
-                label={t("look.accentReset")}
-                disabled={look.accent.toLowerCase() === DEFAULT_ACCENT.toLowerCase()}
-                onPress={() => setAppearance({ accent: DEFAULT_ACCENT })}
-              />
-            </View>
+        {/* DIMMED while the rainbow is on, not gone - which is the container's
+            treatment and the right one here (jdp: "die akzentfarben farbfelder
+            sollen nicht ausgeblendet werden wenn man den regenbogenmodus
+            aktiviert, nur abgedunkelt und deaktiviert wie im container").
+
+            It looks like the opposite of the rule that took the reactive switch
+            away, and it is the rule's own exception: a control greyed because
+            it is REPORTING stays. This row reports which accent is set, and
+            that fact does not stop being true because another mode is painting
+            over it - somebody who turns the rainbow back off wants to see what
+            they are returning to. A greyed SWITCH is a question with no answer;
+            a greyed READING is an answer. */}
+        <View style={[styles.axisRow, look.rainbow ? styles.dimmed : null]} pointerEvents={look.rainbow ? "none" : "auto"}>
+          <View style={styles.axisRowInner}>
+            <Body>{t("look.accent")}</Body>
             <View style={styles.swatches}>
               {ACCENTS.map((a, i) => {
                 // The slot holding the LIVE colour shows it rather than its own
@@ -324,15 +324,32 @@ export function Settings() {
                 );
               })}
             </View>
+            {/* THE RESET AT THE END of the row it resets, which is where the
+                container puts it (jdp: "der reset button der farbfelder soll
+                ganz nach rechts, wie im container"). It reads as the last thing
+                in the row rather than as a label for it: a mark before eight
+                circles looks like it introduces them, and a mark after them
+                looks like what it is - the way back out. */}
+            <ResetMark
+              label={t("look.accentReset")}
+              disabled={look.accent.toLowerCase() === DEFAULT_ACCENT.toLowerCase()}
+              onPress={() => setAppearance({ accent: DEFAULT_ACCENT })}
+            />
           </View>
-        ) : null}
+        </View>
 
         <Toggle
           label={t("look.rainbowOn")}
           hint={t("look.rainbowHint")}
           value={look.rainbow}
           hue={0}
-          onChange={(rainbow) => setAppearance({ rainbow })}
+          onChange={(rainbow) => {
+            // The palette row and the rotate switch appear and disappear with
+            // this, which is exactly what a layout animation is for: without
+            // one the card jumps by two rows.
+            animateNext(motion);
+            setAppearance({ rainbow });
+          }}
         />
 
         {/* Both of these hang off the mode itself, so they are ABSENT while it
@@ -367,11 +384,6 @@ export function Settings() {
               <View style={styles.axisName}>
                 <Body>{t("look.palette")}</Body>
                 <InfoBubble tip={t("look.paletteHint")} />
-                <ResetMark
-                  label={t("look.paletteReset")}
-                  disabled={palette.join() === RAINBOW.join()}
-                  onPress={() => setAppearance({ palette: [] })}
-                />
               </View>
               <View style={styles.swatches}>
                 {palette.map((hex, i) => (
@@ -384,6 +396,11 @@ export function Settings() {
                   />
                 ))}
               </View>
+              <ResetMark
+                label={t("look.paletteReset")}
+                disabled={palette.join() === RAINBOW.join()}
+                onPress={() => setAppearance({ palette: [] })}
+              />
             </View>
           </>
         ) : null}
@@ -409,7 +426,35 @@ export function Settings() {
         />
       </Section>
 
-      <Section title={t("look.language")} hue={4}>
+      {/* THE MOTION ENGINE, which this app had none of: no animation anywhere,
+          and no setting to dial one down. The container has had all three
+          intensities for months, and GlimStone treats motion as one of the
+          axes a person owns - like the theme and the corners - rather than as
+          something an app decides for them.
+
+          It composes with Android's own reduced-motion setting and never
+          overrides it: somebody who turned animations off system-wide did not
+          mean "except in this one app", so the system's answer wins and this
+          picker then only says what WOULD happen. See motion.ts. */}
+      <Section title={t("look.motion")} hue={4}>
+        <Choice<MotionIntensity>
+          value={look.motion}
+          onChange={(motion) => {
+            // The change animates ITSELF at the new intensity, which is the
+            // only honest preview: picking "subtle" and watching the next
+            // thing move subtly is the setting demonstrating itself.
+            animateNext(motion);
+            setAppearance({ motion });
+          }}
+          options={[
+            { value: "off", label: t("look.motionOff") },
+            { value: "subtle", label: t("look.motionSubtle") },
+            { value: "full", label: t("look.motionFull") },
+          ]}
+        />
+      </Section>
+
+      <Section title={t("look.language")} hue={5}>
         {/* THE FLAG ON THE CARD, not only inside the list. The card is where
             somebody checks which language is running, and a row of words with
             no mark on it is the one row on this page carrying no symbol at all.
@@ -854,6 +899,10 @@ const styles = StyleSheet.create({
   // travel together so the reset cannot drift to the card's corner, where it
   // would read as undoing everything.
   axisName: { flexDirection: "row", alignItems: "center", gap: space.sm },
+  // The row keeps its shape while dimmed, so turning the rainbow on and off
+  // does not make the card jump.
+  axisRowInner: { flexDirection: "row", alignItems: "center", gap: space.md, flex: 1 },
+  dimmed: { opacity: 0.4 },
   // Tabular figures, so two version numbers under each other do not shift, and
   // the accent ink so a number reads as the destination it is.
   versionLink: { fontVariant: ["tabular-nums"] },

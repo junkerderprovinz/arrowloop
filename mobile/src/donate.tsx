@@ -7,6 +7,7 @@ import { buildQR } from "../../web/src/lib/qr";
 import { CoinMark } from "./glyphs";
 import { useT } from "./i18n";
 import { engine } from "./engine";
+import { animateNext, useMotion } from "./motion";
 import { contrastOn, space, text, TOUCH } from "./theme";
 import { Button, useTheme } from "./ui";
 
@@ -33,6 +34,7 @@ import { Button, useTheme } from "./ui";
 export function CryptoDonate({ onClose }: { onClose: () => void }) {
   const { t } = useT();
   const { p, radius, scheme, accent, hueAt } = useTheme();
+  const { intensity: motion } = useMotion();
   const [coin, setCoin] = useState<CryptoCoin>(CRYPTO_COINS[0]!);
   const [network, setNetwork] = useState<CryptoNetwork>(CRYPTO_COINS[0]!.networks[0]!);
   const [copied, setCopied] = useState(false);
@@ -116,6 +118,10 @@ export function CryptoDonate({ onClose }: { onClose: () => void }) {
                       accessibilityRole="radio"
                       accessibilityState={{ checked: on }}
                       onPress={() => {
+                        // The address below changes length and the note above
+                        // it comes and goes, so the box resizes: animated, it
+                        // reads as the same box saying something new.
+                        animateNext(motion);
                         setNetwork(n);
                         setCopied(false);
                       }}
@@ -187,6 +193,7 @@ export function CryptoDonate({ onClose }: { onClose: () => void }) {
                     accessibilityState={{ checked: on }}
                     accessibilityLabel={`${c.name} (${c.symbol})`}
                     onPress={() => {
+                      animateNext(motion);
                       setCoin(c);
                       // Picking a coin must land on a network of THAT coin.
                       // Keeping the previous chain when it happens to also

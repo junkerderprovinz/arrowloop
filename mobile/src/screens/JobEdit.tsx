@@ -7,6 +7,7 @@ import { useT } from "../i18n";
 import type { JobsStack, Nav } from "../nav";
 import { contrastOn, space, text } from "../theme";
 import { sideName } from "../sides";
+import { animateNext, useMotion } from "../motion";
 import { AxisLabel, Body, Button, Caption, Choice, Empty, Page, Section, Toggle, useTheme } from "../ui";
 import {
   buildSchedule,
@@ -336,6 +337,7 @@ export function Schedule({ value, onChange }: { value: string; onChange: (next: 
   // builder does not recognise comes back as `cron` rather than being guessed
   // at, which is what keeps a hand-written expression editable instead of
   // silently rewritten.
+  const { intensity: motion } = useMotion();
   const state = parseSchedule(value);
   const set = (patch: Partial<ScheduleState>) => onChange(buildSchedule({ ...state, ...patch }));
 
@@ -347,7 +349,14 @@ export function Schedule({ value, onChange }: { value: string; onChange: (next: 
         // is the watcher, and whether a job WATCHES is stored on the job rather
         // than in the expression - so offering it in a picker that only writes
         // an expression would be a switch that does nothing.
-        onChange={(mode) => set({ mode })}
+        // Each mode shows a different set of rows underneath - a number and a
+        // unit, a time, seven day chips, an expression - so the card's height
+        // changes on every pick. The clearest case for animating a layout there
+        // is.
+        onChange={(mode) => {
+          animateNext(motion);
+          set({ mode });
+        }}
         options={[
           { value: "off", label: t("schedule.off") },
           { value: "every", label: t("schedule.every") },

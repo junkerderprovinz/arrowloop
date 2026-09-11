@@ -27,6 +27,7 @@ import {
   type Radii,
 } from "./theme";
 import { useAppearance, type LabelMode } from "./settings";
+import { useMotion } from "./motion";
 
 /**
  * The GlimStone controls, as React Native.
@@ -317,6 +318,7 @@ export function Badge({ label, tone = "neutral" }: { label: string; tone?: Tone 
  */
 export function InfoBubble({ tip, on }: { tip: string; on?: string }) {
   const { p, radius, accentInk } = useTheme();
+  const { ms } = useMotion();
   const [open, setOpen] = useState(false);
   // `on` is the ink of the surface this sits on - a card notch hands in its own
   // contrast ink, because an accent-coloured (i) on an accent-coloured badge is
@@ -336,7 +338,18 @@ export function InfoBubble({ tip, on }: { tip: string; on?: string }) {
       >
         <Text style={[styles.bubbleMark, { color: ink }]}>i</Text>
       </Pressable>
-      <Modal visible={open} transparent animationType="fade" onRequestClose={() => setOpen(false)}>
+      {/* GlimStone's own asymmetry: a fade on OPEN and nothing on close. Short
+          on purpose - a bubble that fades in slowly reads as lag rather than
+          polish, because the finger is already there waiting for it - and a
+          bubble should get out of the way the instant it is no longer wanted.
+          `animationType` is the platform's own fade, which respects Android's
+          animator scale; the engine's intensity decides whether it runs. */}
+      <Modal
+        visible={open}
+        transparent
+        animationType={ms.fade ? "fade" : "none"}
+        onRequestClose={() => setOpen(false)}
+      >
         {/* The ground outside the card dismisses it. A dialog whose only way
             out is a button is a dialog somebody has to hunt through. */}
         <Pressable style={styles.tipGround} onPress={() => setOpen(false)}>
