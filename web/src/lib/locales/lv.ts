@@ -426,6 +426,7 @@ const lv: Translations = {
   'targets.deleteDriveHint': 'Noņem šo disku no saraksta UN dzēš identitātes datni no paša diska. Darbs, kas uz to norāda, to vairs neatradīs. Datnes diskā paliek neskartas.',
   'confirm.deleteDrive': 'Dzēst šo disku?',
   'confirm.deleteDriveStakes': '{name} vairs nebūs reģistrēts disks. Jebkurš darbs, kas uz to norāda, ziņos, ka tas nav pievienots, līdz reģistrēsi to no jauna. Diskā nekas netiek dzēsts.',
+  'targets.title': 'Krātuves un mākoņi',
   'targets.cloud': 'Mākoņi',
   'targets.storage': 'Objektu krātuve',
   'targets.connections': 'Serveri un koplietojumi',

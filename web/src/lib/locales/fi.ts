@@ -426,6 +426,7 @@ const fi: Translations = {
   'targets.deleteDriveHint': 'Poistaa tämän aseman luettelosta JA ottaa tunnistetiedoston pois itse asemalta. Siihen osoittava työ ei löydä sitä enää. Aseman tiedostoihin ei kosketa.',
   'confirm.deleteDrive': 'Poistetaanko tämä asema?',
   'confirm.deleteDriveStakes': '{name} ei ole enää rekisteröity asema. Jokainen siihen osoittava työ ilmoittaa sen liittämättömäksi, kunnes rekisteröit sen uudelleen. Asemalta ei poisteta mitään.',
+  'targets.title': 'Tallennus ja pilvet',
   'targets.cloud': 'Pilvet',
   'targets.storage': 'Objektitallennus',
   'targets.connections': 'Palvelimet ja jaot',

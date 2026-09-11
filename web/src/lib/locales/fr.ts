@@ -426,6 +426,7 @@ const fr: Translations = {
   'targets.deleteDriveHint': 'Retire ce disque de la liste ET enlève le fichier d\'identité du disque lui-même. Une tâche qui le vise ne le trouvera plus. Les fichiers sur le disque restent intacts.',
   'confirm.deleteDrive': 'Supprimer ce disque ?',
   'confirm.deleteDriveStakes': '{name} ne sera plus un disque enregistré. Toute tâche qui le vise le signalera comme non connecté jusqu\'à ce que vous l\'enregistriez à nouveau. Rien n\'est supprimé sur le disque.',
+  'targets.title': 'Stockage et clouds',
   'targets.cloud': 'Clouds',
   'targets.storage': 'Stockage objet',
   'targets.connections': 'Serveurs et partages',

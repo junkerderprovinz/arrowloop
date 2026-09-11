@@ -426,6 +426,7 @@ const pl: Translations = {
   'targets.deleteDriveHint': 'Usuwa ten dysk z listy ORAZ kasuje plik tożsamości z samego dysku. Zadanie wskazujące na niego przestanie go znajdować. Pliki na dysku pozostają nietknięte.',
   'confirm.deleteDrive': 'Usunąć ten dysk?',
   'confirm.deleteDriveStakes': '{name} przestanie być zarejestrowanym dyskiem. Każde zadanie wskazujące na niego zgłosi go jako niepodłączony, dopóki nie zarejestrujesz go ponownie. Na dysku nic nie jest usuwane.',
+  'targets.title': 'Magazyny i chmury',
   'targets.cloud': 'Chmury',
   'targets.storage': 'Magazyn obiektowy',
   'targets.connections': 'Serwery i udziały',

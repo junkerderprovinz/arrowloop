@@ -426,6 +426,7 @@ const ko: Translations = {
   'targets.deleteDriveHint': '이 드라이브를 목록에서 빼고, 드라이브에 있는 식별 파일도 제거합니다. 이를 가리키는 작업은 더 이상 찾지 못합니다. 드라이브의 파일은 그대로입니다.',
   'confirm.deleteDrive': '이 드라이브를 삭제할까요?',
   'confirm.deleteDriveStakes': '{name}은(는) 더 이상 등록된 드라이브가 아닙니다. 이를 가리키는 모든 작업은 다시 등록할 때까지 연결되지 않음으로 보고합니다. 드라이브에서는 아무것도 삭제되지 않습니다.',
+  'targets.title': '저장소와 클라우드',
   'targets.cloud': '클라우드',
   'targets.storage': '오브젝트 스토리지',
   'targets.connections': '서버 및 공유',

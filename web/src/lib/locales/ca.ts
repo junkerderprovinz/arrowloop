@@ -426,6 +426,7 @@ const ca: Translations = {
   'targets.deleteDriveHint': 'Treu aquest disc de la llista I elimina el fitxer d\'identitat del disc mateix. Una tasca que hi apunti deixarà de trobar-lo. Els fitxers del disc no es toquen.',
   'confirm.deleteDrive': 'Voleu suprimir aquest disc?',
   'confirm.deleteDriveStakes': '{name} deixarà de ser un disc registrat. Qualsevol tasca que hi apunti el donarà per no connectat fins que el torneu a registrar. Al disc no s\'esborra res.',
+  'targets.title': 'Emmagatzematge i núvols',
   'targets.cloud': 'Núvols',
   'targets.storage': 'Emmagatzematge d\'objectes',
   'targets.connections': 'Servidors i recursos compartits',

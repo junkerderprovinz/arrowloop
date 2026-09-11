@@ -426,6 +426,7 @@ const tr: Translations = {
   'targets.deleteDriveHint': 'Bu sürücüyü listeden çıkarır VE kimlik dosyasını sürücünün kendisinden kaldırır. Onu gösteren bir iş artık bulamaz. Sürücüdeki dosyalara dokunulmaz.',
   'confirm.deleteDrive': 'Bu sürücü silinsin mi?',
   'confirm.deleteDriveStakes': '{name} artık kayıtlı bir sürücü olmayacak. Onu gösteren her iş, yeniden kaydedene kadar bağlı değil diye bildirir. Sürücüde hiçbir şey silinmez.',
+  'targets.title': 'Depolama ve bulutlar',
   'targets.cloud': 'Bulutlar',
   'targets.storage': 'Nesne depolama',
   'targets.connections': 'Sunucular ve paylaşımlar',

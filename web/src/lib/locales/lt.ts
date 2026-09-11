@@ -426,6 +426,7 @@ const lt: Translations = {
   'targets.deleteDriveHint': 'Pašalina šį diską iš sąrašo IR ištrina tapatybės failą iš paties disko. Į jį rodanti užduotis jo nebeaptiks. Failai diske lieka nepaliesti.',
   'confirm.deleteDrive': 'Ištrinti šį diską?',
   'confirm.deleteDriveStakes': '{name} nebebus registruotas diskas. Kiekviena į jį rodanti užduotis praneš, kad jis neprijungtas, kol jo neužregistruosi iš naujo. Diske niekas netrinama.',
+  'targets.title': 'Saugyklos ir debesys',
   'targets.cloud': 'Debesys',
   'targets.storage': 'Objektų saugykla',
   'targets.connections': 'Serveriai ir bendrinimai',

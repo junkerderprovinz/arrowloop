@@ -426,6 +426,7 @@ const eu: Translations = {
   'targets.deleteDriveHint': 'Disko hau zerrendatik kentzen du ETA identitate-fitxategia diskotik bertatik ere kentzen du. Harengana seinalatzen duen lanak ez du gehiago aurkituko. Diskoko fitxategiak ukitu gabe geratzen dira.',
   'confirm.deleteDrive': 'Disko hau ezabatu?',
   'confirm.deleteDriveStakes': '{name} ez da gehiago erregistratutako diskoa izango. Harengana seinalatzen duen lan orok konektatu gabe dagoela jakinaraziko du, berriro erregistratu arte. Diskoan ez da ezer ezabatzen.',
+  'targets.title': 'Biltegia eta hodeiak',
   'targets.cloud': 'Hodeiak',
   'targets.storage': 'Objektu-biltegia',
   'targets.connections': 'Zerbitzariak eta partekatzeak',

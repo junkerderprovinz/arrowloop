@@ -426,6 +426,7 @@ const no: Translations = {
   'targets.deleteDriveHint': 'Fjerner denne stasjonen fra listen OG tar identitetsfilen av stasjonen selv. En jobb som peker på den finner den ikke lenger. Filene på stasjonen røres ikke.',
   'confirm.deleteDrive': 'Slette denne stasjonen?',
   'confirm.deleteDriveStakes': '{name} er ikke lenger en registrert stasjon. Alle jobber som peker på den melder den som ikke tilkoblet til du registrerer den på nytt. Ingenting slettes på stasjonen.',
+  'targets.title': 'Lagring og skyer',
   'targets.cloud': 'Skyer',
   'targets.storage': 'Objektlagring',
   'targets.connections': 'Servere og delinger',

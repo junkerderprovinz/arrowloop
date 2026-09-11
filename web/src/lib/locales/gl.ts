@@ -426,6 +426,7 @@ const gl: Translations = {
   'targets.deleteDriveHint': 'Quita este disco da lista E elimina o ficheiro de identidade do propio disco. Unha tarefa que apunte a el deixará de atopalo. Os ficheiros do disco non se tocan.',
   'confirm.deleteDrive': 'Eliminar este disco?',
   'confirm.deleteDriveStakes': '{name} deixará de ser un disco rexistrado. Calquera tarefa que apunte a el vaino dar por non conectado ata que o rexistres de novo. No disco non se elimina nada.',
+  'targets.title': 'Almacenamento e nubes',
   'targets.cloud': 'Nubes',
   'targets.storage': 'Almacenamento de obxectos',
   'targets.connections': 'Servidores e comparticións',

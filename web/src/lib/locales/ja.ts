@@ -426,6 +426,7 @@ const ja: Translations = {
   'targets.deleteDriveHint': 'この드라이브をリストから外し、ドライブ上の識別ファイルも取り除きます。これを指す処理は見つけられなくなります。ドライブ上のファイルはそのままです。',
   'confirm.deleteDrive': 'このドライブを削除しますか？',
   'confirm.deleteDriveStakes': '{name} は登録済みドライブではなくなります。これを指す処理は、再登録するまで未接続として報告します。ドライブ上では何も削除されません。',
+  'targets.title': 'ストレージとクラウド',
   'targets.cloud': 'クラウド',
   'targets.storage': 'オブジェクトストレージ',
   'targets.connections': 'サーバーと共有',

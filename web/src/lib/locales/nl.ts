@@ -426,6 +426,7 @@ const nl: Translations = {
   'targets.deleteDriveHint': 'Haalt deze schijf uit de lijst EN verwijdert het identiteitsbestand van de schijf zelf. Een taak die ernaar wijst vindt hem niet meer. De bestanden op de schijf blijven ongemoeid.',
   'confirm.deleteDrive': 'Deze schijf verwijderen?',
   'confirm.deleteDriveStakes': '{name} is daarna geen geregistreerde schijf meer. Elke taak die ernaar wijst meldt hem als niet aangesloten totdat je hem opnieuw registreert. Op de schijf wordt niets verwijderd.',
+  'targets.title': 'Opslag en clouds',
   'targets.cloud': 'Clouds',
   'targets.storage': 'Objectopslag',
   'targets.connections': 'Servers en shares',

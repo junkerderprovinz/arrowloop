@@ -238,7 +238,7 @@ function Shell() {
                 <TargetsNav.Screen
                   name="TargetList"
                   component={Targets}
-                  options={{ title: t("targets.cloud") }}
+                  options={{ title: t("targets.title") }}
                 />
                 <TargetsNav.Screen
                   name="TargetPick"

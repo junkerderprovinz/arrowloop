@@ -426,6 +426,7 @@ const id: Translations = {
   'targets.deleteDriveHint': 'Mengeluarkan drive ini dari daftar DAN menghapus berkas identitas dari drive itu sendiri. Tugas yang menunjuk ke sana tidak akan menemukannya lagi. Berkas di drive tidak disentuh.',
   'confirm.deleteDrive': 'Hapus drive ini?',
   'confirm.deleteDriveStakes': '{name} tidak lagi menjadi drive terdaftar. Setiap tugas yang menunjuk ke sana akan melaporkannya sebagai tidak terpasang sampai kamu mendaftarkannya lagi. Tidak ada yang dihapus di drive.',
+  'targets.title': 'Penyimpanan dan awan',
   'targets.cloud': 'Awan',
   'targets.storage': 'Penyimpanan objek',
   'targets.connections': 'Server dan berbagi pakai',

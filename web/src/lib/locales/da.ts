@@ -426,6 +426,7 @@ const da: Translations = {
   'targets.deleteDriveHint': 'Fjerner dette drev fra listen OG tager identitetsfilen af drevet selv. Et job, der peger på det, finder det ikke længere. Filerne på drevet røres ikke.',
   'confirm.deleteDrive': 'Slet dette drev?',
   'confirm.deleteDriveStakes': '{name} er ikke længere et registreret drev. Ethvert job, der peger på det, melder det som ikke tilsluttet, indtil du registrerer det igen. Der slettes intet på drevet.',
+  'targets.title': 'Lager og skyer',
   'targets.cloud': 'Skyer',
   'targets.storage': 'Objektlager',
   'targets.connections': 'Servere og delinger',

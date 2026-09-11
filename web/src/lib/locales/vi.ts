@@ -426,6 +426,7 @@ const vi: Translations = {
   'targets.deleteDriveHint': 'Gỡ ổ đĩa này khỏi danh sách VÀ xoá tệp định danh khỏi chính ổ đĩa. Công việc trỏ tới nó sẽ không còn tìm thấy. Các tệp trên ổ đĩa vẫn nguyên vẹn.',
   'confirm.deleteDrive': 'Xoá ổ đĩa này?',
   'confirm.deleteDriveStakes': '{name} sẽ không còn là ổ đĩa đã đăng ký. Mọi công việc trỏ tới nó sẽ báo là chưa gắn cho tới khi bạn đăng ký lại. Không có gì trên ổ đĩa bị xoá.',
+  'targets.title': 'Lưu trữ và đám mây',
   'targets.cloud': 'Đám mây',
   'targets.storage': 'Lưu trữ đối tượng',
   'targets.connections': 'Máy chủ và chia sẻ',

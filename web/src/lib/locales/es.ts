@@ -426,6 +426,7 @@ const es: Translations = {
   'targets.deleteDriveHint': 'Quita este disco de la lista Y borra el archivo de identidad del propio disco. Una tarea que lo use dejará de encontrarlo. Los archivos del disco no se tocan.',
   'confirm.deleteDrive': '¿Eliminar este disco?',
   'confirm.deleteDriveStakes': '{name} dejará de ser un disco registrado. Cualquier tarea que lo use lo dará por no conectado hasta que lo registres otra vez. En el disco no se borra nada.',
+  'targets.title': 'Almacenamiento y nubes',
   'targets.cloud': 'Nubes',
   'targets.storage': 'Almacenamiento de objetos',
   'targets.connections': 'Servidores y recursos',

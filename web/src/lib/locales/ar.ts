@@ -426,6 +426,7 @@ const ar: Translations = {
   'targets.deleteDriveHint': 'يزيل هذا القرص من القائمة ويحذف ملف الهوية من القرص نفسه. المهمة التي تشير إليه لن تجده بعد ذلك. الملفات على القرص تبقى كما هي.',
   'confirm.deleteDrive': 'حذف هذا القرص؟',
   'confirm.deleteDriveStakes': 'لن يعود {name} قرصًا مسجلًا. أي مهمة تشير إليه ستبلغ أنه غير متصل حتى تسجله من جديد. لا يُحذف شيء على القرص.',
+  'targets.title': 'التخزين والسحابة',
   'targets.cloud': 'السحابات',
   'targets.storage': 'تخزين الكائنات',
   'targets.connections': 'خوادم ومشاركات',

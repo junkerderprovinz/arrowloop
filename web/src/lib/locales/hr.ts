@@ -426,6 +426,7 @@ const hr: Translations = {
   'targets.deleteDriveHint': 'Uklanja ovaj disk s popisa I briše datoteku identiteta s njega samog. Posao koji na njega upućuje više ga neće nalaziti. Datoteke na disku ostaju netaknute.',
   'confirm.deleteDrive': 'Izbrisati ovaj disk?',
   'confirm.deleteDriveStakes': '{name} više neće biti registrirani disk. Svaki posao koji na njega upućuje prijavit će ga kao nepriključenog dok ga ponovno ne registriraš. Na disku se ništa ne briše.',
+  'targets.title': 'Pohrana i oblaci',
   'targets.cloud': 'Oblaci',
   'targets.storage': 'Objektna pohrana',
   'targets.connections': 'Poslužitelji i dijeljenja',
