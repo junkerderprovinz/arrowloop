@@ -21,7 +21,11 @@
 <p align="center">A two-way file sync engine with a state database, a trash and a brake, plus the scheduler that keeps it running.</p>
 
 <p align="center">
-  <a href="https://www.buymeacoffee.com/junkerderprovinz"><img src=".github/assets/button-buy-me-a-coffee.svg" alt="Buy me a coffee" width="220"></a>
+  <a href="https://buymeacoffee.com/junkerderprovinz"><img src="https://raw.githubusercontent.com/junkerderprovinz/junkerderprovinz/main/donate/buttons/button-buy-me-a-coffee-live.svg" alt="Buy me a coffee" width="160"></a>
+  &nbsp;
+  <a href="https://paypal.me/hallelujadesign"><img src="https://raw.githubusercontent.com/junkerderprovinz/junkerderprovinz/main/donate/buttons/button-paypal-live.svg" alt="PayPal" width="160"></a>
+  &nbsp;
+  <a href="https://junkerderprovinz.github.io/junkerderprovinz/"><img src="https://raw.githubusercontent.com/junkerderprovinz/junkerderprovinz/main/donate/buttons/button-crypto-live.svg" alt="Donate with crypto" width="160"></a>
 </p>
 
 > [!WARNING]
@@ -328,7 +332,11 @@ a donation keeps the lights on rather than buying anything: the domain, the
 server the documentation is served from, and the evenings themselves.
 
 <p align="center">
-  <a href="https://www.buymeacoffee.com/junkerderprovinz"><img src=".github/assets/button-buy-me-a-coffee.svg" alt="Buy me a coffee" width="220"></a>
+  <a href="https://buymeacoffee.com/junkerderprovinz"><img src="https://raw.githubusercontent.com/junkerderprovinz/junkerderprovinz/main/donate/buttons/button-buy-me-a-coffee-live.svg" alt="Buy me a coffee" width="160"></a>
+  &nbsp;
+  <a href="https://paypal.me/hallelujadesign"><img src="https://raw.githubusercontent.com/junkerderprovinz/junkerderprovinz/main/donate/buttons/button-paypal-live.svg" alt="PayPal" width="160"></a>
+  &nbsp;
+  <a href="https://junkerderprovinz.github.io/junkerderprovinz/"><img src="https://raw.githubusercontent.com/junkerderprovinz/junkerderprovinz/main/donate/buttons/button-crypto-live.svg" alt="Donate with crypto" width="160"></a>
 </p>
 
 Reporting something that went wrong is worth as much. A two-way sync meets
