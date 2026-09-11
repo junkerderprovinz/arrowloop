@@ -2,7 +2,24 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
-    "noUncheckedIndexedAccess": true
+    "noUncheckedIndexedAccess": true,
+    // A package imported from a file in `../web/src`, resolved out of THIS
+    // project's tree.
+    //
+    // TypeScript looks for a package by walking up from the importing FILE, so
+    // `web/src/lib/qr.ts` asking for qrcode-generator searches web/node_modules
+    // and never mobile's. That found it on a laptop, where the web app's own
+    // dependencies happen to be installed, and failed in CI, where the mobile
+    // job installs only this project - a green typecheck locally and a red one
+    // on the gate, which is the wrong order to find out in.
+    //
+    // This says what Metro already does at bundle time: `metro.config.js` pins
+    // `nodeModulesPaths` to mobile/node_modules precisely so a shared file
+    // resolves against the phone's tree rather than the browser's second copy
+    // of React. The two now agree.
+    "paths": {
+      "qrcode-generator": ["./node_modules/qrcode-generator"]
+    }
   },
   "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules", "android"]
