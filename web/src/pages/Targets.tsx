@@ -15,6 +15,7 @@ import { api, type Backend, type Provider, type Remote, type Usage, type Volume 
 import { bytes } from '../lib/bytes'
 import { useT } from '../lib/i18n'
 import { hasOptionLabel, optionExplain, optionLabel } from '../lib/optionNames'
+import { suggestTargetName } from '../lib/targetName'
 import { Since } from './Jobs'
 
 /**
@@ -489,12 +490,7 @@ function RemoteForm({
   const [name, setName] = useState(() => {
     if (existing) return existing.name
     if (!provider) return ''
-    const base = targetName(provider.name)
-    if (!base) return ''
-    const used = new Set(taken ?? [])
-    if (!used.has(base)) return base
-    for (let n = 2; n < 100; n++) if (!used.has(`${base}-${n}`)) return `${base}-${n}`
-    return base
+    return suggestTargetName(provider.name, taken ?? [])
   })
   const kind = existing?.type ?? chosen ?? backends[0]?.name ?? ''
   const [values, setValues] = useState<Record<string, string>>(() => ({
@@ -678,31 +674,6 @@ function RemoteForm({
  * reading Benutzername - and a bubble that repeats its own label is worse than
  * no bubble: it promises an explanation and spends attention on nothing.
  */
-/**
- * A product's own name, folded into what a target name may hold.
- *
- * It used to lowercase everything, so picking OpenCloud suggested `opencloud`
- * and Google Drive suggested `google-drive`. jdp: "Kann man den Namen nicht
- * ordentlich schreiben z.B OpenCloud anstatt opencloud im Namensfeld." He is
- * right, and the lowercasing was never buying anything: rclone accepts capitals
- * in a remote name perfectly well. What it DID buy was a name that no longer
- * looks like the thing it points at, in the one field a person reads back later
- * to work out which target is which.
- *
- * What actually has to go is only what would change the MEANING of the name.
- * A target is written as `name:path` in a job, so a colon, a slash or a space
- * would split it somewhere nobody intended; the engine refuses those in
- * `validName` and this refuses them here, before anybody can type them in and
- * be told no. Everything else - capitals, digits, dots, hyphens - survives
- * exactly as the product spells it.
- */
-export function targetName(product: string): string {
-  return product
-    .replace(/[:/\\,"'\s\t]+/g, '-')
-    .replace(/-{2,}/g, '-')
-    .replace(/^-|-$/g, '')
-}
-
 /**
  * Which fields carry the credential, so the sign-in sentence lands on them.
  *

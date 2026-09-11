@@ -168,7 +168,16 @@ export function Section({
   return (
     <View style={styles.notchWrap}>
       <View style={[styles.notchCard, { backgroundColor: p.surface, borderRadius: radius.card }]}>
-        {hint ? <Caption>{hint}</Caption> : null}
+        {/* The card's explanation, in an (i) at its top corner rather than as a
+            paragraph above its contents. jdp: "in der app sollen auch alle
+            infotexte in eine i infobubble." The notch carries the title on the
+            other side of the same edge, so the two things that describe a card
+            sit on its rim and the card itself holds only what it is FOR. */}
+        {hint ? (
+          <View style={styles.cardBubble}>
+            <InfoBubble tip={hint} />
+          </View>
+        ) : null}
         {children}
       </View>
       <View style={[styles.notch, { backgroundColor: fill, borderRadius: radius.pill }]}>
@@ -195,9 +204,13 @@ export function Row({
   const { p } = useTheme();
   const body = (
     <View style={styles.row}>
+      {/* Beside the label in an (i), like every other explanation in the app.
+          A row is a label and a control on one line, and a second line of grey
+          prose under half of the rows is what made a settings card read as a
+          list of paragraphs with switches attached. */}
       <View style={styles.rowText}>
-        <Text style={[styles.body, { color: p.text }]}>{label}</Text>
-        {hint ? <Text style={[styles.caption, { color: p.textMuted }]}>{hint}</Text> : null}
+        <Text style={[styles.body, { color: p.text, flexShrink: 1 }]}>{label}</Text>
+        {hint ? <InfoBubble tip={hint} /> : null}
       </View>
       {control}
     </View>
@@ -618,7 +631,11 @@ const styles = StyleSheet.create({
   notchText: { fontSize: text.caption, fontWeight: "500", textTransform: "uppercase", letterSpacing: 1.2 },
 
   row: { flexDirection: "row", alignItems: "center", gap: space.md, paddingVertical: space.sm },
-  rowText: { flex: 1, minWidth: 0, gap: 2 },
+  // A row and its (i) on ONE line now, rather than a label with prose stacked
+  // under it. `flexShrink` on the label is what keeps a long one from pushing
+  // the bubble off the end of the row.
+  rowText: { flex: 1, minWidth: 0, flexDirection: "row", alignItems: "center", gap: space.sm },
+  cardBubble: { position: "absolute", top: 8, right: 10, zIndex: 1 },
 
   heading: { fontSize: text.heading, fontWeight: "600" },
   title: { fontSize: text.title, fontWeight: "600" },

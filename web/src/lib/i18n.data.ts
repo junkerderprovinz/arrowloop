@@ -306,7 +306,7 @@ export const en = {
   'targets.addStorage': 'Add storage',
   'targets.remoteName': 'Name',
   'targets.remoteNameHint':
-    'How you will refer to this target in a job, written as name:path. No spaces, no colons.',
+    'A name you pick for this connection, so you can choose it later in a job. No spaces and no colons: the colon is what separates the name from the folder.',
   'targets.check': 'Check',
   'targets.checking': 'Checking',
   'targets.checkOk': 'Reached it',
@@ -322,6 +322,7 @@ export const en = {
   'targets.save': 'Save',
   'targets.secretSet': 'A value is stored. Leave this alone to keep it.',
   'targets.advanced': 'Show every setting',
+  'targets.access': 'Access',
   'confirm.deleteRemote': 'Delete this storage target',
   'confirm.deleteRemoteStakes':
     'The settings for {name} are removed from the rclone configuration, including any password or key stored with them. Nothing is copied anywhere first, and there is no undo: setting it up again means typing the credentials again. Jobs pointing at it will fail on their next run until they are pointed somewhere else.',
@@ -872,7 +873,7 @@ export const de: Translations = {
   'targets.addStorage': 'Speicher anlegen',
   'targets.remoteName': 'Name',
   'targets.remoteNameHint':
-    'Unter diesem Namen sprichst du das Ziel in einem Auftrag an, geschrieben als Name:Pfad. Keine Leerzeichen, keine Doppelpunkte.',
+    'Ein Name, den du dieser Verbindung gibst, um sie später in einem Auftrag auszuwählen. Keine Leerzeichen und keine Doppelpunkte: Der Doppelpunkt trennt den Namen vom Ordner.',
   'targets.check': 'Prüfen',
   'targets.checking': 'Prüft',
   'targets.checkOk': 'Erreicht',
@@ -888,6 +889,7 @@ export const de: Translations = {
   'targets.save': 'Speichern',
   'targets.secretSet': 'Ein Wert ist hinterlegt. Lass ihn stehen, dann bleibt er erhalten.',
   'targets.advanced': 'Alle Einstellungen zeigen',
+  'targets.access': 'Zugang',
   'confirm.deleteRemote': 'Dieses Speicherziel löschen',
   'confirm.deleteRemoteStakes':
     'Die Einstellungen für {name} werden aus rclones Konfiguration entfernt, samt jedem Kennwort und jedem Schlüssel, der dort liegt. Vorher wird nichts irgendwohin kopiert, und es gibt kein Zurück: neu einrichten heißt, die Zugangsdaten neu zu tippen. Aufträge, die darauf zeigen, scheitern beim nächsten Lauf, bis sie woandershin zeigen.',

@@ -22,6 +22,7 @@ import { Trash } from "./src/screens/Trash";
 import { askNotifications, notificationsGranted } from "./src/screens/Settings";
 import { loadAppearance } from "./src/settings";
 import { space, text } from "./src/theme";
+import { Glyph } from "./src/glyphs";
 import { Body, Button, Heading, Screen, useTheme } from "./src/ui";
 import { useEngine } from "./src/useEngine";
 
@@ -155,7 +156,7 @@ function Shell() {
         >
           <Tabs.Screen
             name="JobsTab"
-            options={{ title: t("nav.jobs"), tabBarIcon: () => <Glyph>⇄</Glyph> }}
+            options={{ title: t("nav.jobs"), tabBarIcon: (s) => <TabMark name="IconJobs" {...s} /> }}
           >
             {() => (
               <JobsNav.Navigator screenOptions={header}>
@@ -176,7 +177,7 @@ function Shell() {
 
           <Tabs.Screen
             name="TargetsTab"
-            options={{ title: t("nav.targets"), tabBarIcon: () => <Glyph>☁</Glyph> }}
+            options={{ title: t("nav.targets"), tabBarIcon: (s) => <TabMark name="IconTargets" {...s} /> }}
           >
             {() => (
               <TargetsNav.Navigator screenOptions={header}>
@@ -201,7 +202,7 @@ function Shell() {
 
           <Tabs.Screen
             name="HistoryTab"
-            options={{ title: t("nav.history"), tabBarIcon: () => <Glyph>≡</Glyph> }}
+            options={{ title: t("nav.history"), tabBarIcon: (s) => <TabMark name="IconHistory" {...s} /> }}
           >
             {() => (
               <HistoryNav.Navigator screenOptions={header}>
@@ -221,7 +222,7 @@ function Shell() {
 
           <Tabs.Screen
             name="SettingsTab"
-            options={{ title: t("nav.settings"), tabBarIcon: () => <Glyph>⚙</Glyph> }}
+            options={{ title: t("nav.settings"), tabBarIcon: (s) => <TabMark name="IconSettings" {...s} /> }}
           >
             {() => (
               <SettingsNav.Navigator screenOptions={header}>
@@ -263,25 +264,48 @@ function TabCard() {
   const { p, radius } = useTheme();
   const inset = useSafeAreaInsets();
   return (
-    <View
-      style={{
-        position: "absolute",
-        left: space.md,
-        right: space.md,
-        top: 0,
-        bottom: Math.max(inset.bottom, space.sm),
-        backgroundColor: p.surface,
-        borderRadius: radius.card,
-      }}
-    />
+    <>
+      {/* The app's own ground, edge to edge, UNDER the card.
+
+          Turning the bar transparent uncovered what was behind it, and what was
+          behind it is Android's window background: measured at #fafafa on a
+          page of #161616, so the floating card sat in a near-white band running
+          the width of the screen. jdp: "hinter der bottombar ist ein weißer
+          hintergrund." An app that paints its own ground everywhere else must
+          paint it here too rather than borrow the system's. */}
+      <View style={[StyleSheet.absoluteFill, { backgroundColor: p.background }]} />
+      <View
+        style={{
+          position: "absolute",
+          left: space.md,
+          right: space.md,
+          top: 0,
+          bottom: Math.max(inset.bottom, space.sm),
+          backgroundColor: p.surface,
+          borderRadius: radius.card,
+        }}
+      />
+    </>
   );
 }
 
-/** A tab's symbol. Text rather than an icon font, because four symbols do not
- *  justify a dependency and these four exist in every system face. */
-function Glyph({ children }: { children: string }) {
-  const { p } = useTheme();
-  return <Text style={{ color: p.textMuted, fontSize: 18 }}>{children}</Text>;
+/**
+ * A tab's symbol, from the app's OWN set.
+ *
+ * These four were `⇄ ☁ ≡ ⚙` - characters from whatever face the phone happens
+ * to ship - while the rail they mirror on the desktop draws IconJobs,
+ * IconTargets, IconHistory and IconSettings. jdp: "die glyphen auf der bottombar
+ * passen nicht." They do not: a system font's arrows and gear are somebody
+ * else's drawing at somebody else's weight, sitting under four labels in this
+ * app's own type, and the cloud in particular renders as a colour emoji on
+ * Android rather than as a mark at all.
+ *
+ * The colour comes from the navigator - it hands the icon its own active and
+ * inactive tint - so the current tab's mark carries the accent the way the
+ * label above it does.
+ */
+function TabMark({ name, color }: { name: string; color: string }) {
+  return <Glyph name={name} color={color} size={20} />;
 }
 
 /**

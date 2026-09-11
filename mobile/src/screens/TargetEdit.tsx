@@ -6,6 +6,7 @@ import { Field } from "../fields";
 import { useT, type T } from "../i18n";
 import type { TranslationKey } from "../i18n";
 import type { Nav, TargetsStack } from "../nav";
+import { suggestTargetName } from "../../../web/src/lib/targetName";
 import { space } from "../theme";
 import { Body, Button, Caption, Empty, Page, Section, Title } from "../ui";
 
@@ -41,6 +42,15 @@ export function TargetEdit() {
     api.storage().then(
       (s) => {
         setProviders(s.providers);
+        // The name, suggested rather than demanded. jdp: "Bitte auch in der App
+        // soll der Name der Verbindung schon vorausgefüllt sein." Somebody who
+        // just pressed Nextcloud has already said what this is, and asking them
+        // to type it again is asking twice. Same rule as the desktop, from the
+        // same function, numbered where the name is already in use.
+        const picked = s.providers.find((x) => x.id === providerId);
+        if (!editing && picked) {
+          setName((old) => (old ? old : suggestTargetName(picked.name, s.remotes.map((r) => r.name))));
+        }
         // The unlisted backends too: a product entry covers most of what
         // rclone carries and not all of it, and a target for one of the rest
         // still has to be editable.
@@ -60,7 +70,11 @@ export function TargetEdit() {
       },
       (e: Error) => setError(e.message),
     );
-  }, [editing]);
+    // The suggestion cannot be made at first render: the provider's own NAME
+    // and the names already taken both arrive with the storage list, one round
+    // trip later. `setName` only fills an EMPTY field, so a name somebody has
+    // already typed while this was in flight survives.
+  }, [editing, providerId]);
 
   const provider = useMemo(
     () =>
@@ -141,8 +155,13 @@ export function TargetEdit() {
         </Section>
       ) : null}
 
+      {/* NOT `targets.advanced`, which on the desktop is the label of a switch
+          reading "Show every setting". As a card title it promised a card that
+          reveals more and delivered a card that lists two fields. This card
+          holds how the target is REACHED - an account and a key, a host and a
+          password, an address - so that is what it is called. */}
       <Section
-        title={t("targets.advanced")}
+        title={t("targets.access")}
         hint={provider?.urlHint ? t("help.addressShape", { shape: provider.urlHint }) : undefined}
       >
         {options.map((option) => (
