@@ -22,7 +22,7 @@ import { COFFEE, PAYPAL } from "../../../web/src/lib/donate";
 import { CryptoDonate } from "../donate";
 import { Field } from "../fields";
 import { Schedule } from "./JobEdit";
-import { DonateMark } from "../glyphs";
+import { DonateMark, Glyph } from "../glyphs";
 import {
   AxisLabel,
   Body,
@@ -59,9 +59,9 @@ export function Settings() {
   const nav = useNavigation<Nav<SettingsStack>>();
   const { t, lang } = useT();
   const look = useAppearance();
-  // Only for the donation marks, which are somebody else's drawings and carry
-  // their own colours on one of the two grounds.
-  const { scheme } = useTheme();
+  // For the About card's marks: the brands carry a per-theme colour of their
+  // own, and the one house button takes the accent rather than a vendor's.
+  const { scheme, accentInk } = useTheme();
 
   const [granted, setGranted] = useState<boolean | null>(null);
   const [possible, setPossible] = useState(true);
@@ -646,37 +646,54 @@ export function Settings() {
               which is the design language's rule for a BRAND. A pattern keyed
               on "coffee" would put a company's cup on anything that mentions
               coffee, and one on "crypto" would put the Bitcoin symbol on
-              settings that have nothing to do with it. */}
+              settings that have nothing to do with it.
+
+              ORDER: the two hosted payment pages first and the wallet last
+              (jdp, 2026-09-11). It reads as a ramp rather than an alphabet -
+              the two routes most people already have an account for, then the
+              one that needs none. */}
           <Button
             label={t("about.coffeeButton")}
             labelKey="about.coffeeButton"
-            mark={(ink) => <DonateMark name="coffee" color={ink} scheme={scheme} />}
+            mark={() => <DonateMark name="coffee" scheme={scheme} />}
             onPress={() => Linking.openURL(COFFEE)}
-          />
-          <Button
-            label={t("about.crypto")}
-            labelKey="about.crypto"
-            mark={(ink) => <DonateMark name="bitcoin" color={ink} scheme={scheme} />}
-            onPress={() => setCrypto(true)}
           />
           <Button
             label={t("about.paypal")}
             labelKey="about.paypal"
-            mark={(ink) => <DonateMark name="paypal" color={ink} scheme={scheme} />}
+            mark={() => <DonateMark name="paypal" scheme={scheme} />}
             onPress={() => Linking.openURL(PAYPAL)}
+          />
+          <Button
+            label={t("about.crypto")}
+            labelKey="about.crypto"
+            mark={() => <DonateMark name="bitcoin" scheme={scheme} />}
+            onPress={() => setCrypto(true)}
           />
         </View>
 
         <Caption>{t("about.report")}</Caption>
         <View style={styles.actions}>
+          {/* GitHub's own mark, passed like the three above. It wore the rule
+              table's chain link before, which is a LINK glyph: right for a URL
+              and wrong for a forge, and it would follow this project to a
+              different one and be wrong there too. */}
           <Button
             label={t("about.repo")}
             labelKey="about.repo"
+            mark={() => <DonateMark name="github" scheme={scheme} />}
             onPress={() => Linking.openURL("https://github.com/junkerderprovinz/arrowloop")}
           />
+          {/* The one button on this card that is NOT a brand, and the exception
+              proves the rule: it reaches this app's own authors rather than a
+              third party, so it takes the accent and follows the user's accent
+              and rainbow - which a vendor's mark may never do. Its envelope
+              comes from the rule table like every other app glyph; only the ink
+              is named here. */}
           <Button
             label={t("about.mail")}
             labelKey="about.mail"
+            mark={() => <Glyph name="IconMail" color={accentInk} />}
             onPress={() =>
               Linking.openURL(
                 `mailto:hello@halleluja.design?subject=${encodeURIComponent(

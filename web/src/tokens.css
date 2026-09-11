@@ -95,6 +95,33 @@
   --carbon-hover-raised: #6f6f6f;
   --carbon-border:     #393939;
 
+  /* THE ABOUT CARD'S BRAND MARKS, at rest, and these are NOT the published
+     brand colours.
+
+     A brand colour is designed against white or against its own fill, so on
+     the card's neutral button ground each one dies on one side of the theme
+     switch. Measured on this language's own grounds: Buy Me a Coffee's
+     #FFDD00 reads 1.14:1 and Bitcoin's #F7931A 1.5:1 on the light theme's
+     #d1d1d1, while PayPal's navy and GitHub's near-black fail the same way on
+     the dark theme's #525252 - against the 3:1 a graphic needs. So the warm
+     brands are deepened for the light theme and the dark ones lightened for
+     the dark theme, which is the same job --accent-ink does for the accent.
+     Measured after choosing: 5.7, 3.3, 3.1 and 7.7 to one on the dark ground,
+     3.2, 3.2, 8.7 and 11.9 on the light one.
+
+     These are TOKENS and not a per-app decision, which is the point of adding
+     them here. The rule was written in the design language and the values were
+     not, so one adopting app built its own set and another skipped the rule
+     entirely - the exact drift a shared language exists to prevent.
+
+     The mail button is deliberately absent: it reaches an app's own authors
+     rather than a third party, so it wears the accent and follows the user's
+     accent and rainbow, which a vendor's mark may never do. */
+  --brand-coffee:  #ffdd00;
+  --brand-bitcoin: #f7931a;
+  --brand-paypal:  #4fb5f0;
+  --brand-github:  #ffffff;
+
   /* Text ramp — three steps, the last still legible at 11px. */
   --carbon-text:       #f4f4f4;
   --carbon-text-sub:   #c6c6c6;
@@ -176,6 +203,13 @@
     --carbon-hover-raised: #c6c6c6;
     --carbon-border:     #d1d1d1;
 
+    /* The light theme's answers: warm brands deepened, dark ones left dark.
+       See the block at the top of this file for the measurements. */
+    --brand-coffee:  #8a6d00;
+    --brand-bitcoin: #a85d00;
+    --brand-paypal:  #003087;
+    --brand-github:  #181717;
+
     --carbon-text:       #161616;
     --carbon-text-sub:   #525252;
     --carbon-text-muted: #6f6f6f;
@@ -229,6 +263,14 @@
   --carbon-hover:      #e0e0e0;
   --carbon-hover-raised: #c6c6c6;
   --carbon-border:     #d1d1d1;
+
+  /* The same brand answers as the media block above: an explicit light choice
+     has to reach them too, or a mark that was deepened for a light-preferring
+     OS goes back to being unreadable the moment somebody picks light by hand. */
+  --brand-coffee:  #8a6d00;
+  --brand-bitcoin: #a85d00;
+  --brand-paypal:  #003087;
+  --brand-github:  #181717;
 
   --carbon-text:       #161616;
   --carbon-text-sub:   #525252;

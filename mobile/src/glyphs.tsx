@@ -8,6 +8,7 @@ import {
   type GlyphData,
 } from "../../web/src/lib/glyphs.data";
 import { glyphNameFor } from "../../web/src/lib/glyphName";
+import { BRAND } from "./theme";
 
 /**
  * The same marks the browser draws, drawn here.
@@ -208,35 +209,56 @@ export function CoinMark({
 }
 
 /**
- * The mark on a donation button: Buy Me a Coffee, PayPal, or the Bitcoin disc
- * for the crypto window.
+ * A mark on the About card: Buy Me a Coffee, PayPal, the Bitcoin disc, GitHub.
  *
- * Passed explicitly at the three call sites that mean them and NEVER reachable
- * through `glyphNameFor`, which is the house rule for a brand: a pattern keyed
- * on "coffee" would put a company's cup on anything mentioning coffee, and one
- * on "crypto" would put the Bitcoin symbol on settings that have nothing to do
- * with it.
+ * GlimStone's rule for this card is that EVERY button carries a mark and every
+ * one of them is passed explicitly - five controls, five marks, no gaps, since
+ * a row where four buttons wear a logo and the fifth does not reads as a
+ * missing image. And never reachable by pattern: a glyph table keyed on
+ * "coffee" would put a company's cup on anything mentioning coffee, one on
+ * "crypto" a currency's symbol on settings that have nothing to do with it, and
+ * one on "repo" would follow this project to a different forge and be wrong
+ * there. The GitHub button had exactly that gap - it wore the rule table's
+ * chain link, which is a link glyph and not a brand.
  *
- * The coffee and PayPal marks take the button's INK, because each rides beside
- * its own label on a filled button and is part of that label - neither carries
- * a ground of its own. Bitcoin is the disc from the coin set and keeps its own
- * orange, the way it does on the tile.
+ * THE COLOUR AT REST IS NOT THE PUBLISHED BRAND COLOUR, and `theme.ts` says at
+ * length why. `color` is therefore ignored for the three that carry a brand
+ * value: a vendor's mark may not follow the button's ink, the accent or the
+ * rainbow.
+ *
+ * Bitcoin is the coin's own disc and keeps every colour it was drawn with,
+ * because a disc brings its own ground.
  */
 export function DonateMark({
   name,
-  color,
   size = GLYPH,
   scheme,
 }: {
-  name: "coffee" | "paypal" | "bitcoin";
-  color: string;
+  name: "coffee" | "paypal" | "bitcoin" | "github";
   size?: number;
   scheme: "dark" | "light";
 }) {
   if (name === "bitcoin") return <CoinMark coin="btc" size={size} scheme={scheme} />;
+  const colour = BRAND[scheme][name];
+  if (name === "github") {
+    const mark = BRANDS.IconGithub;
+    if (!mark) return null;
+    // Through the brand renderer rather than `Drawn`, because GitHub's mark is
+    // somebody else's whole drawing rather than one path on this app's grid -
+    // and the fill is forced here rather than taken from the stylesheet, whose
+    // answer is the published near-black that GlimStone measured as unreadable
+    // on a dark ground.
+    return (
+      <SvgXml
+        xml={`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${mark.box}" fill="${colour}">${mark.svg}</svg>`}
+        width={size}
+        height={size}
+      />
+    );
+  }
   const glyph = DONATE_GLYPHS[name === "coffee" ? "IconBuyMeACoffee" : "IconPayPal"];
   if (!glyph) return null;
-  return <Drawn glyph={glyph} color={color} width={size} height={size} />;
+  return <Drawn glyph={glyph} color={colour} width={size} height={size} />;
 }
 
 /** Whether a brand mark of that name exists, so a row can decide to show its

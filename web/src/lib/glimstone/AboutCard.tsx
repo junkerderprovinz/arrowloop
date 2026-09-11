@@ -145,38 +145,56 @@ export function AboutCard({
       <p className="text-sm text-carbon-textSub">{text.body}</p>
 
       <p className="text-sm text-carbon-textSub">{text.coffee}</p>
-      {/* One sentence, and under it every way to give. Two of them where the
-          app offers crypto as well, and they are two because they reach
-          different people: the coffee takes a card, the crypto window takes
-          what somebody already holds in a wallet and shows no name at either
-          end. Both stay in THIS row rather than getting a row of their own
-          further down, which is the card's own rule — a sentence sits directly
-          above the thing it asks for, and a second row reads as a second,
-          unrelated offer. */}
+      {/* One sentence, and under it every way to give. Up to three, and they
+          are three because they reach three different people: a card through
+          the coffee page, a balance through PayPal, and what somebody already
+          holds in a wallet — the last needs no account and shows no name at
+          either end. All of them stay in THIS row rather than getting a row of
+          their own further down, which is the card's own rule — a sentence sits
+          directly above the thing it asks for, and a second row reads as a
+          second, unrelated offer.
+
+          ORDER: the two hosted payment pages first, the wallet last (jdp,
+          2026-09-11). It reads as a ramp rather than an alphabet — the two
+          routes most people already have an account for, then the one that
+          needs none.
+
+          `glim-brand-*` is what paints each mark. The class names are the
+          language's own and the values are its tokens, so an app names a brand
+          and gets the measured colour rather than choosing one: see the brand
+          block in reference/tokens.css for why a published brand colour is the
+          wrong answer at rest. */}
       <div className="flex flex-wrap items-center gap-2">
         <Button
           label={text.coffeeButton}
           labelKey="about.coffeeButton"
           glyph={coffeeGlyph}
           tone="neutral"
+          className="glim-brand-btn glim-brand-coffee"
           onClick={() => open(coffeeUrl)}
         />
-        {onCrypto && text.cryptoButton && (
-          <Button
-            label={text.cryptoButton}
-            labelKey="about.crypto"
-            glyph={cryptoGlyph}
-            tone="neutral"
-            onClick={onCrypto}
-          />
-        )}
         {paypalUrl && text.paypalButton && (
           <Button
             label={text.paypalButton}
             labelKey="about.paypal"
             glyph={paypalGlyph}
             tone="neutral"
+            className="glim-brand-btn glim-brand-paypal"
             onClick={() => open(paypalUrl)}
+          />
+        )}
+        {onCrypto && text.cryptoButton && (
+          <Button
+            label={text.cryptoButton}
+            labelKey="about.crypto"
+            glyph={cryptoGlyph}
+            tone="neutral"
+            // No brand class, and that is the rule rather than an oversight: a
+            // coin disc brings its own ground, so its readability is settled
+            // inside the mark and the same on either theme. Painting it with
+            // one ink would be redrawing the logo. An app that hands in a flat
+            // Bitcoin symbol instead can add `glim-brand-bitcoin` itself.
+            onClick={onCrypto}
           />
         )}
       </div>
@@ -192,15 +210,22 @@ export function AboutCard({
           labelKey="about.repo"
           glyph={repoGlyph}
           tone="neutral"
+          className="glim-brand-btn glim-brand-github"
           onClick={() => open(repoUrl)}
         />
         {wantsMail && (
           // Subject only, never a body: a prefilled body reads as a form to
           // fill in, and this is meant to be a message somebody writes.
+          //
+          // THE ONE BUTTON ON THIS CARD THAT IS NOT A BRAND, and the exception
+          // proves the rule: it reaches the app's own authors rather than a
+          // third party, so it takes the accent tokens and follows the user's
+          // accent and rainbow — which a vendor's mark may never do.
           <Button
             label={text.mailButton}
             labelKey="about.mail"
             tone="neutral"
+            className="glim-brand-btn glim-brand-house"
             onClick={() =>
               open(`mailto:${mailAddress}?subject=${encodeURIComponent(text.mailSubject)}`)
             }

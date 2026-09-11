@@ -94,6 +94,40 @@ const light: Palette = {
 export const palettes: Record<Scheme, Palette> = { dark, light };
 
 /**
+ * The About card's brand marks, at rest, per theme - and NOT the published
+ * brand colours.
+ *
+ * That reads like a compromise and is the opposite: it is what makes the marks
+ * visible at all. A brand colour is designed against white or against its own
+ * fill, so on a neutral button ground each one dies on one side of the theme
+ * switch. GlimStone measured it on this family's own grounds: Bitcoin's
+ * `#F7931A` reads 1.5:1 and Buy Me a Coffee's `#FFDD00` reads 1.14:1 on the
+ * light theme's surface, while PayPal's navy and GitHub's near-black fail the
+ * same way on the dark one - against the 3:1 a graphic needs. So the warm
+ * brands are deepened for the light theme and the dark ones lightened for the
+ * dark theme, which is exactly the job `inkFor` already does for the accent.
+ *
+ * The web spends the TRUE colour on hover, as the button's fill. A phone has no
+ * hover and therefore no second state to spend it in, so here the adjusted
+ * value is the only one - the rule's purpose survives, its second half has no
+ * gesture behind it.
+ *
+ * Bitcoin is absent on purpose. The crypto button wears the coin's own DISC,
+ * which brings its own ground and is therefore readable on either theme
+ * unchanged - the same reason the eight tiles in the crypto window keep their
+ * colours. Flattening it to one ink would be redrawing the logo.
+ *
+ * The mail button is absent too, and that is the rule rather than a gap: it
+ * reaches this app's own authors rather than a third party, so it takes the
+ * accent and follows the user's accent and rainbow - which a vendor's mark may
+ * never do.
+ */
+export const BRAND: Record<Scheme, Record<"coffee" | "paypal" | "github", string>> = {
+  dark: { coffee: "#ffdd00", paypal: "#4fb5f0", github: "#ffffff" },
+  light: { coffee: "#8a6d00", paypal: "#003087", github: "#181717" },
+};
+
+/**
  * The accent, darkened until it can be READ on a light ground.
  *
  * The accent stays the accent wherever something is FILLED with it: the ink on
