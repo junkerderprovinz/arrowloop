@@ -24,6 +24,7 @@ const hr: Translations = {
   'jobs.pause': 'Pauziraj',
   'jobs.resume': 'Nastavi',
   'jobs.runNow': 'Pokreni sada',
+  'jobs.stopRun': 'Zaustavi izvođenje',
   'jobs.runNowHint': 'Pokreni ovaj zadatak odmah, bez pretpregleda. Iste zaštite ostaju: ništa se ne briše zauvijek, a izvođenje koje bi uklonilo više od polovice svega poznatog staje i to kaže.',
   'jobs.check': 'Provjeri zadatak',
   'check.healthy': 'Nema se što prijaviti. Obje strane su dostupne, a spremljeno stanje odgovara onome što je tamo.',
@@ -485,8 +486,6 @@ const hr: Translations = {
   'phone.noSettings': 'Ovdje ništa više ne treba. Daj mu ime i spremi.',
   'phone.runEmpty': 'Ovo izvođenje nije dotaknulo nijednu datoteku.',
   'phone.bin': 'Smeće',
-  'phone.jobOff': 'Isključen',
-  'phone.jobOffHint': 'Isključen zadatak nikada ne kreće sam i ne dobiva gumb. Novi zadatak namjerno ovako počinje: prvo što bi tek upisan zadatak trebao učiniti jest ništa.',
   'phone.previewExplain': 'Dok ne pritisneš gumb, ništa se ne miče. Ovo je ono što bi izvođenje učinilo, izračunato iz obiju strana točno onakvih kakve su sada.',
 
   // The second axis of a one-way job: what happens to everything the

@@ -2,7 +2,8 @@ import { useNavigation } from "@react-navigation/native";
 import { useCallback, useEffect, useState } from "react";
 import { FlatList, RefreshControl, StyleSheet, View } from "react-native";
 import { api, type Job } from "../api";
-import { useT } from "../i18n";
+import { useT, type T } from "../i18n";
+import { since } from "../../../web/src/lib/since";
 import type { Nav, JobsStack } from "../nav";
 import { space } from "../theme";
 import { useEngineEvents } from "../useEngine";
@@ -27,6 +28,7 @@ export function Jobs() {
   const [jobs, setJobs] = useState<Job[] | null>(null);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState<string | null>(null);
+  const [holding, setHolding] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     try {
@@ -58,6 +60,31 @@ export function Jobs() {
     }
   };
 
+  /**
+   * Hold a job, or let it go again.
+   *
+   * Read-modify-write of the whole configuration, because that is the only
+   * shape the engine offers and the same one the editor uses to save. The read
+   * happens HERE rather than from the list on screen: `api.jobs()` returns live
+   * state - what is running, when it last succeeded - and writing that back as
+   * configuration would persist a snapshot of the moment as settings.
+   */
+  const hold = async (job: Job) => {
+    setHolding(job.name);
+    try {
+      const config = await api.config();
+      await api.writeConfig({
+        ...config,
+        jobs: config.jobs.map((j) => (j.name === job.name ? { ...j, disabled: !job.disabled } : j)),
+      });
+      await load();
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setHolding(null);
+    }
+  };
+
   if (jobs === null) return <Empty title={t("jobs.activityLoading")} detail={error || undefined} />;
 
   return (
@@ -86,6 +113,8 @@ export function Jobs() {
           busy={busy === item.name}
           onOpen={() => nav.navigate("JobDetail", { name: item.name })}
           onAct={() => act(item)}
+          holding={holding === item.name}
+          onHold={() => hold(item)}
         />
       )}
     />
@@ -98,12 +127,17 @@ function JobCard({
   busy,
   onOpen,
   onAct,
+  holding,
+  onHold,
 }: {
   job: Job;
   index: number;
   busy: boolean;
   onOpen: () => void;
   onAct: () => void;
+  /** Whether the hold is being written right now. */
+  holding: boolean;
+  onHold: () => void;
 }) {
   const { t } = useT();
   const hue = useHue(index);
@@ -130,18 +164,31 @@ function JobCard({
 
       <Caption>
         {job.lastSuccess
-          ? `${t("jobs.lastRun", { when: when(job.lastSuccess) })} ${t("jobs.ago")}`
+          ? `${t("jobs.lastRun", { when: when(job.lastSuccess, t) })} ${t("jobs.ago")}`
           : t("jobs.activityEmpty")}
       </Caption>
 
+      {/* Two verbs, never one button, which is the desktop's own rule for this
+          pair: a job held on its schedule can still be STARTED by hand, and
+          that is the whole point of holding one rather than deleting it.
+
+          `jobs.stopRun` rather than `jobs.pause` for the left button. Pausing
+          is what the right one does - it holds the schedule - and one card able
+          to print the same word for two different acts is how somebody stops a
+          run when they meant to stop a job. */}
       <View style={styles.actions}>
         <Button
-          label={job.running ? t("jobs.pause") : t("jobs.runNow")}
-          labelKey={job.running ? "jobs.pause" : "jobs.runNow"}
+          label={job.running ? t("jobs.stopRun") : t("jobs.runNow")}
+          labelKey={job.running ? "jobs.stopRun" : "jobs.runNow"}
           tone={job.running ? "neutral" : "accent"}
           busy={busy}
-          disabled={job.disabled}
           onPress={onAct}
+        />
+        <Button
+          label={job.disabled ? t("jobs.resume") : t("jobs.pause")}
+          labelKey={job.disabled ? "jobs.resume" : "jobs.pause"}
+          busy={holding}
+          onPress={onHold}
         />
       </View>
     </Card>
@@ -156,22 +203,20 @@ export function arrow(direction: string): string {
 }
 
 /**
- * A timestamp as somebody would say it out loud.
+ * A timestamp as somebody would say it out loud, in the reader's own language.
  *
- * "3 hours ago" rather than a date, because the question this line answers is
- * "is this thing keeping up", and a date makes the reader do the subtraction.
- * Past a week the date IS the answer, so it switches.
+ * This used to be a second implementation that returned `"just now"`, `"3 h"`
+ * and `"2 d"` as English literals, which the card then wrapped in translated
+ * text: a German screen read "zuletzt just now her", which is neither a
+ * language nor a sentence. Measured on the device.
+ *
+ * The rule is the desktop's, from `lib/since.ts`, and it returns the unit as a
+ * translation KEY rather than a word - which is the only shape that can be said
+ * in forty-two languages.
  */
-export function when(iso: string): string {
-  const then = new Date(iso).getTime();
-  const mins = Math.round((Date.now() - then) / 60000);
-  if (mins < 1) return "just now";
-  if (mins < 60) return `${mins} min`;
-  const hours = Math.round(mins / 60);
-  if (hours < 24) return `${hours} h`;
-  const days = Math.round(hours / 24);
-  if (days <= 7) return `${days} d`;
-  return new Date(iso).toLocaleDateString();
+export function when(iso: string, t: T): string {
+  const { count, unit } = since(iso);
+  return `${count} ${t(unit)}`;
 }
 
 const styles = StyleSheet.create({

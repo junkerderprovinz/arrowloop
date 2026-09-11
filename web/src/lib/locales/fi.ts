@@ -24,6 +24,7 @@ const fi: Translations = {
   'jobs.pause': 'Keskeytä',
   'jobs.resume': 'Jatka',
   'jobs.runNow': 'Suorita nyt',
+  'jobs.stopRun': 'Pysäytä ajo',
   'jobs.runNowHint': 'Käynnistä tämä työ heti, ilman esikatselua. Samat turvaverkot pysyvät: mitään ei poisteta lopullisesti, ja ajo, joka poistaisi yli puolet kaikesta tuntemastaan, pysähtyy ja kertoo siitä.',
   'jobs.check': 'Tarkista työ',
   'check.healthy': 'Ei mitään ilmoitettavaa. Molemmat puolet ovat tavoitettavissa ja tallennettu tila vastaa sitä, mitä siellä on.',
@@ -485,8 +486,6 @@ const fi: Translations = {
   'phone.noSettings': 'Tässä ei tarvita muuta. Anna nimi ja tallenna.',
   'phone.runEmpty': 'Tämä ajo ei koskenut yhteenkään tiedostoon.',
   'phone.bin': 'Roskakori',
-  'phone.jobOff': 'Pois käytöstä',
-  'phone.jobOffHint': 'Pois käytöstä oleva työ ei käynnisty koskaan itsestään eikä saa nappia. Uusi työ alkaa näin tarkoituksella: ensimmäinen asia, jonka juuri kirjoitetun työn pitäisi tehdä, on ei mitään.',
   'phone.previewExplain': 'Mikään ei liiku ennen kuin painat nappia. Tämä on se, mitä ajo tekisi, laskettuna molemmista puolista juuri sellaisina kuin ne nyt ovat.',
 
   // The second axis of a one-way job: what happens to everything the

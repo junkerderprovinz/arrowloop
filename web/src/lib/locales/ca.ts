@@ -24,6 +24,7 @@ const ca: Translations = {
   'jobs.pause': 'Pausa',
   'jobs.resume': 'Reprèn',
   'jobs.runNow': 'Executa ara',
+  'jobs.stopRun': 'Atura l\'execució',
   'jobs.runNowHint': 'Inicia aquesta tasca ara mateix, sense previsualització. Les mateixes xarxes hi continuen: no s\'esborra res definitivament, i una execució que trauria més de la meitat de tot el que coneix s\'atura i ho diu.',
   'jobs.check': 'Comprova la tasca',
   'check.healthy': 'Res a informar. Les dues bandes són accessibles i l\'estat desat coincideix amb el que hi ha.',
@@ -485,8 +486,6 @@ const ca: Translations = {
   'phone.noSettings': 'Aquí no cal res més. Posa-li un nom i desa-ho.',
   'phone.runEmpty': 'Aquesta execució no ha tocat cap fitxer.',
   'phone.bin': 'Paperera',
-  'phone.jobOff': 'Desactivada',
-  'phone.jobOffHint': 'Una tasca desactivada no arrenca mai sola i no té botó. Una tasca nova comença així a posta: el primer que hauria de fer una tasca acabada d\'escriure és res.',
   'phone.previewExplain': 'Fins que no premis el botó no es mou res. Això és el que faria una execució, calculat a partir dels dos costats tal com són ara.',
 
   // The second axis of a one-way job: what happens to everything the

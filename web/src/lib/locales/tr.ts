@@ -24,6 +24,7 @@ const tr: Translations = {
   'jobs.pause': 'Duraklat',
   'jobs.resume': 'Sürdür',
   'jobs.runNow': 'Şimdi çalıştır',
+  'jobs.stopRun': 'Çalışmayı durdur',
   'jobs.runNowHint': 'Bu görevi önizleme olmadan hemen başlat. Aynı emniyet ağları geçerli: hiçbir şey kalıcı olarak silinmez ve bildiği her şeyin yarısından fazlasını kaldıracak bir çalıştırma durur ve bunu söyler.',
   'jobs.check': 'Görevi denetle',
   'check.healthy': 'Bildirilecek bir şey yok. İki tarafa da ulaşılabiliyor ve kayıtlı durum orada gerçekten olanla uyuşuyor.',
@@ -485,8 +486,6 @@ const tr: Translations = {
   'phone.noSettings': 'Burada başka bir şey gerekmiyor. Bir ad ver ve kaydet.',
   'phone.runEmpty': 'Bu çalışma hiçbir dosyaya dokunmadı.',
   'phone.bin': 'Çöp kutusu',
-  'phone.jobOff': 'Kapalı',
-  'phone.jobOffHint': 'Kapalı bir iş asla kendiliğinden başlamaz ve düğme de almaz. Yeni bir iş bilerek böyle başlar: daha yeni yazılmış bir işin yapması gereken ilk şey hiçbir şeydir.',
   'phone.previewExplain': 'Düğmeye basana kadar hiçbir şey kıpırdamaz. Bu, bir çalışmanın yapacağı şeydir, iki taraftan da tam şu andaki hallerine göre hesaplanmıştır.',
 
   // The second axis of a one-way job: what happens to everything the

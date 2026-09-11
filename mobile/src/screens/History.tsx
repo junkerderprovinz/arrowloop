@@ -96,7 +96,7 @@ export function History() {
                 as wide as the card with its last word cut off. The counters
                 below already say it. */}
           </View>
-          <Caption>{`${when(item.Started)} ${t("jobs.ago")}`}</Caption>
+          <Caption>{`${when(item.Started, t)} ${t("jobs.ago")}`}</Caption>
           {failed(item) ? (
             // The engine's own sentence, not a code. It was written for a
             // person, and replacing it with "an error occurred" is the one way

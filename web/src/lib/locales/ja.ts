@@ -24,6 +24,7 @@ const ja: Translations = {
   'jobs.pause': '一時停止',
   'jobs.resume': '再開',
   'jobs.runNow': '今すぐ実行',
+  'jobs.stopRun': '実行を止める',
   'jobs.runNowHint': 'このジョブをプレビューなしで今すぐ開始します。安全策は同じです。完全な削除は行わず、把握しているファイルの半分以上を消すことになる実行は中止して、その旨を伝えます。',
   'jobs.check': 'ジョブを点検',
   'check.healthy': '報告することはありません。両側とも到達でき、記録された状態は実際にあるものと一致しています。',
@@ -485,8 +486,6 @@ const ja: Translations = {
   'phone.noSettings': 'ここには他に必要なものはありません。名前を付けて保存してください。',
   'phone.runEmpty': 'この実行はどのファイルにも触れていません。',
   'phone.bin': 'ごみ箱',
-  'phone.jobOff': 'オフ',
-  'phone.jobOffHint': 'オフのジョブは自分では決して始まらず、ボタンも出ません。新しいジョブはわざとこの状態で始まります。入力したばかりのジョブが最初にすべきことは、何もしないことです。',
   'phone.previewExplain': 'ボタンを押すまで何も動きません。これは実行したらどうなるかで、両側の今の状態から計算したものです。',
 
   // The second axis of a one-way job: what happens to everything the

@@ -24,6 +24,7 @@ const nl: Translations = {
   'jobs.pause': 'Pauzeren',
   'jobs.resume': 'Hervatten',
   'jobs.runNow': 'Nu uitvoeren',
+  'jobs.stopRun': 'Stop de run',
   'jobs.runNowHint': 'Deze taak meteen starten, zonder voorbeeld. Dezelfde vangnetten blijven: niets wordt definitief verwijderd, en een run die meer dan de helft van alles wat hij kent zou weghalen stopt en zegt het.',
   'jobs.check': 'Taak controleren',
   'check.healthy': 'Niets te melden. Beide kanten zijn bereikbaar en de opgeslagen toestand komt overeen met wat er staat.',
@@ -485,8 +486,6 @@ const nl: Translations = {
   'phone.noSettings': 'Hier is verder niets nodig. Geef het een naam en sla het op.',
   'phone.runEmpty': 'Deze run heeft geen bestand aangeraakt.',
   'phone.bin': 'Prullenbak',
-  'phone.jobOff': 'Uitgeschakeld',
-  'phone.jobOffHint': 'Een uitgeschakelde taak start nooit vanzelf en krijgt geen knop. Een nieuwe taak begint expres zo: het eerste wat een net ingetypte taak zou moeten doen is niets.',
   'phone.previewExplain': 'Tot je op de knop drukt beweegt er niets. Dit is wat een run zou doen, uitgerekend vanuit beide kanten precies zoals ze nu zijn.',
 
   // The second axis of a one-way job: what happens to everything the

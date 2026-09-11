@@ -24,6 +24,7 @@ const fr: Translations = {
   'jobs.pause': 'Mettre en pause',
   'jobs.resume': 'Reprendre',
   'jobs.runNow': 'Exécuter maintenant',
+  'jobs.stopRun': 'Arrêter l\'exécution',
   'jobs.runNowHint': 'Lancer cette tâche tout de suite, sans aperçu. Les mêmes filets restent en place : rien n\'est supprimé définitivement, et une exécution qui retirerait plus de la moitié de ce qu\'elle connaît s\'arrête et le dit.',
   'jobs.check': 'Vérifier la tâche',
   'check.healthy': 'Rien à signaler. Les deux côtés sont joignables et l\'état enregistré correspond à ce qui est réellement là.',
@@ -485,8 +486,6 @@ const fr: Translations = {
   'phone.noSettings': 'Rien d\'autre n\'est nécessaire ici. Donne-lui un nom et enregistre.',
   'phone.runEmpty': 'Cette exécution n\'a touché aucun fichier.',
   'phone.bin': 'Corbeille',
-  'phone.jobOff': 'Désactivée',
-  'phone.jobOffHint': 'Une tâche désactivée ne démarre jamais seule et n\'a pas de bouton. Une nouvelle tâche commence ainsi volontairement : la première chose que devrait faire une tâche à peine saisie, c\'est rien.',
   'phone.previewExplain': 'Rien ne bouge tant que tu n\'appuies pas sur le bouton. Voici ce que ferait une exécution, calculé à partir des deux côtés tels qu\'ils sont maintenant.',
 
   // The second axis of a one-way job: what happens to everything the

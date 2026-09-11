@@ -24,6 +24,7 @@ const ro: Translations = {
   'jobs.pause': 'Pauză',
   'jobs.resume': 'Reia',
   'jobs.runNow': 'Rulează acum',
+  'jobs.stopRun': 'Oprește rularea',
   'jobs.runNowHint': 'Pornește această sarcină imediat, fără previzualizare. Aceleași plase rămân: nimic nu se șterge definitiv, iar o rulare care ar elimina mai mult de jumătate din tot ce cunoaște se oprește și o spune.',
   'jobs.check': 'Verifică sarcina',
   'check.healthy': 'Nimic de raportat. Ambele părți sunt accesibile, iar starea salvată se potrivește cu ce este acolo.',
@@ -485,8 +486,6 @@ const ro: Translations = {
   'phone.noSettings': 'Aici nu mai e nevoie de nimic. Dă-i un nume și salvează.',
   'phone.runEmpty': 'Această rulare nu a atins niciun fișier.',
   'phone.bin': 'Coș',
-  'phone.jobOff': 'Dezactivată',
-  'phone.jobOffHint': 'O sarcină dezactivată nu pornește niciodată singură și nu primește buton. O sarcină nouă începe așa în mod intenționat: primul lucru pe care ar trebui să îl facă o sarcină abia scrisă este nimic.',
   'phone.previewExplain': 'Până nu apeși butonul nu se mișcă nimic. Asta este ce ar face o rulare, calculat din ambele părți exact așa cum sunt acum.',
 
   // The second axis of a one-way job: what happens to everything the

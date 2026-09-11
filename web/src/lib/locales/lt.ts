@@ -24,6 +24,7 @@ const lt: Translations = {
   'jobs.pause': 'Pristabdyti',
   'jobs.resume': 'Tęsti',
   'jobs.runNow': 'Paleisti dabar',
+  'jobs.stopRun': 'Sustabdyti vykdymą',
   'jobs.runNowHint': 'Paleisti šią užduotį iškart, be peržiūros. Lieka tie patys saugikliai: niekas nešalinama visam laikui, o paleidimas, kuris pašalintų daugiau nei pusę visų žinomų failų, sustoja ir tai praneša.',
   'jobs.check': 'Patikrinti užduotį',
   'check.healthy': 'Pranešti nėra ko. Abi pusės pasiekiamos, o įrašyta būsena sutampa su tuo, kas ten yra.',
@@ -485,8 +486,6 @@ const lt: Translations = {
   'phone.noSettings': 'Čia daugiau nieko nereikia. Duok pavadinimą ir išsaugok.',
   'phone.runEmpty': 'Šis vykdymas nepalietė nė vieno failo.',
   'phone.bin': 'Šiukšlinė',
-  'phone.jobOff': 'Išjungta',
-  'phone.jobOffHint': 'Išjungta užduotis niekada nepasileidžia pati ir mygtuko negauna. Nauja užduotis sąmoningai taip prasideda: pirmas dalykas, kurį ką tik surinkta užduotis turėtų padaryti, yra niekas.',
   'phone.previewExplain': 'Kol nepaspausi mygtuko, niekas nepajudės. Štai ką padarytų vykdymas, apskaičiuota iš abiejų pusių būtent tokių, kokios jos yra dabar.',
 
   // The second axis of a one-way job: what happens to everything the

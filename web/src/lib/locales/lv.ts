@@ -24,6 +24,7 @@ const lv: Translations = {
   'jobs.pause': 'Apturēt',
   'jobs.resume': 'Atsākt',
   'jobs.runNow': 'Palaist tagad',
+  'jobs.stopRun': 'Apturēt izpildi',
   'jobs.runNowHint': 'Palaist šo uzdevumu uzreiz, bez priekšskatījuma. Paliek tie paši drošības tīkli: nekas netiek dzēsts galīgi, un palaišana, kas noņemtu vairāk nekā pusi no visa zināmā, apstājas un to pasaka.',
   'jobs.check': 'Pārbaudīt uzdevumu',
   'check.healthy': 'Nav ko ziņot. Abas puses ir sasniedzamas, un saglabātais stāvoklis sakrīt ar to, kas tur ir.',
@@ -485,8 +486,6 @@ const lv: Translations = {
   'phone.noSettings': 'Te vairāk nekas nav vajadzīgs. Dod nosaukumu un saglabā.',
   'phone.runEmpty': 'Šī izpilde neaizskāra nevienu failu.',
   'phone.bin': 'Miskaste',
-  'phone.jobOff': 'Izslēgts',
-  'phone.jobOffHint': 'Izslēgts uzdevums nekad nesākas pats un pogu nesaņem. Jauns uzdevums apzināti sākas šādi: pirmais, kas tikko ierakstītam uzdevumam būtu jādara, ir nekas.',
   'phone.previewExplain': 'Kamēr nenospiedīsi pogu, nekas nekustēsies. Lūk, ko izpilde darītu, aprēķināts no abām pusēm tieši tādām, kādas tās ir tagad.',
 
   // The second axis of a one-way job: what happens to everything the

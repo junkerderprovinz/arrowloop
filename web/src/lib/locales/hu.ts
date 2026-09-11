@@ -24,6 +24,7 @@ const hu: Translations = {
   'jobs.pause': 'Szünet',
   'jobs.resume': 'Folytatás',
   'jobs.runNow': 'Futtatás most',
+  'jobs.stopRun': 'Futás leállítása',
   'jobs.runNowHint': 'Indítsd el ezt a feladatot azonnal, előnézet nélkül. Ugyanazok a védőhálók maradnak: semmi nem törlődik véglegesen, és az a futás, amely az összes ismert fájl több mint felét eltávolítaná, leáll és szól.',
   'jobs.check': 'Feladat ellenőrzése',
   'check.healthy': 'Nincs jelentenivaló. Mindkét oldal elérhető, és a mentett állapot megegyezik azzal, ami tényleg ott van.',
@@ -485,8 +486,6 @@ const hu: Translations = {
   'phone.noSettings': 'Itt semmi másra nincs szükség. Adj neki nevet, és mentsd el.',
   'phone.runEmpty': 'Ez a futás egyetlen fájlhoz sem nyúlt.',
   'phone.bin': 'Kuka',
-  'phone.jobOff': 'Kikapcsolva',
-  'phone.jobOffHint': 'A kikapcsolt feladat soha nem indul el magától, és nem kap gombot sem. Egy új feladat szándékosan így kezd: az első dolog, amit egy épp begépelt feladatnak tennie kellene, az a semmi.',
   'phone.previewExplain': 'Amíg meg nem nyomod a gombot, semmi sem mozdul. Ez az, amit egy futás tenne, mindkét oldalból kiszámolva pontosan úgy, ahogy most állnak.',
 
   // The second axis of a one-way job: what happens to everything the

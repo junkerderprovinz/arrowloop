@@ -24,6 +24,7 @@ const gl: Translations = {
   'jobs.pause': 'Pausar',
   'jobs.resume': 'Retomar',
   'jobs.runNow': 'Executar agora',
+  'jobs.stopRun': 'Deter a execución',
   'jobs.runNowHint': 'Iniciar esta tarefa agora mesmo, sen vista previa. As mesmas redes seguen: non se borra nada definitivamente, e unha execución que quitaría máis da metade de todo o coñecido detense e dío.',
   'jobs.check': 'Comprobar a tarefa',
   'check.healthy': 'Nada que informar. Os dous lados están accesibles e o estado gardado coincide co que hai.',
@@ -485,8 +486,6 @@ const gl: Translations = {
   'phone.noSettings': 'Aquí non fai falta nada máis. Ponlle un nome e garda.',
   'phone.runEmpty': 'Esta execución non tocou ningún ficheiro.',
   'phone.bin': 'Lixo',
-  'phone.jobOff': 'Desactivada',
-  'phone.jobOffHint': 'Unha tarefa desactivada nunca arranca soa e non ten botón. Unha tarefa nova comeza así a propósito: o primeiro que debería facer unha tarefa recén escrita é nada.',
   'phone.previewExplain': 'Ata que non premas o botón non se move nada. Isto é o que faría unha execución, calculado a partir dos dous lados tal e como están agora.',
 
   // The second axis of a one-way job: what happens to everything the

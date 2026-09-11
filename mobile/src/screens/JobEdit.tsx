@@ -277,12 +277,14 @@ export function JobEdit() {
           value={Boolean(job.metadata)}
           onChange={(metadata) => set({ metadata })}
         />
-        <Toggle
-          label={t("phone.jobOff")}
-          hint={t("phone.jobOffHint")}
-          value={Boolean(job.disabled)}
-          onChange={(disabled) => set({ disabled })}
-        />
+        {/* The "switched off" toggle used to sit here, and it is gone. jdp:
+            "dieser abgeschaltet toggle soll weg, das hab ich schon oft
+            angesprochen." Holding a job is not a property of how it is
+            CONFIGURED, it is something you do to it - the same class of act as
+            running it now - so it belongs where you look at the job rather than
+            where you edit it. That is where the desktop has always had it, as a
+            hold/resume button on the row, and the phone's card carries the same
+            pair now. */}
       </Section>
 
       {error ? <Body>{error}</Body> : null}

@@ -24,6 +24,7 @@ const sl: Translations = {
   'jobs.pause': 'Premor',
   'jobs.resume': 'Nadaljuj',
   'jobs.runNow': 'Zaženi zdaj',
+  'jobs.stopRun': 'Ustavi zagon',
   'jobs.runNowHint': 'Zaženi to opravilo takoj, brez predogleda. Iste varovalke ostanejo: nič se ne izbriše dokončno, zagon, ki bi odstranil več kot polovico vsega znanega, pa se ustavi in to pove.',
   'jobs.check': 'Preveri opravilo',
   'check.healthy': 'Ni kaj poročati. Obe strani sta dosegljivi, shranjeno stanje pa se ujema s tem, kar je tam.',
@@ -485,8 +486,6 @@ const sl: Translations = {
   'phone.noSettings': 'Tu ni treba nič drugega. Daj mu ime in shrani.',
   'phone.runEmpty': 'Ta zagon se ni dotaknil nobene datoteke.',
   'phone.bin': 'Koš',
-  'phone.jobOff': 'Izklopljeno',
-  'phone.jobOffHint': 'Izklopljeno opravilo se nikoli ne zažene samo in gumba ne dobi. Novo opravilo se namenoma tako začne: prvo, kar naj bi pravkar vneseno opravilo naredilo, je nič.',
   'phone.previewExplain': 'Dokler ne pritisneš gumba, se nič ne premakne. To je tisto, kar bi zagon naredil, izračunano iz obeh strani natanko takih, kot sta zdaj.',
 
   // The second axis of a one-way job: what happens to everything the

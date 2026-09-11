@@ -24,6 +24,7 @@ const it: Translations = {
   'jobs.pause': 'Pausa',
   'jobs.resume': 'Riprendi',
   'jobs.runNow': 'Esegui ora',
+  'jobs.stopRun': 'Ferma l\'esecuzione',
   'jobs.runNowHint': 'Avvia subito questa attività, senza anteprima. Le stesse reti restano: nulla viene cancellato per sempre, e un\'esecuzione che rimuoverebbe più della metà di tutto ciò che conosce si ferma e lo dice.',
   'jobs.check': 'Controlla il lavoro',
   'check.healthy': 'Niente da segnalare. I due lati sono raggiungibili e lo stato salvato corrisponde a quello che c\'è davvero.',
@@ -485,8 +486,6 @@ const it: Translations = {
   'phone.noSettings': 'Qui non serve altro. Dagli un nome e salva.',
   'phone.runEmpty': 'Questa esecuzione non ha toccato nessun file.',
   'phone.bin': 'Cestino',
-  'phone.jobOff': 'Disattivato',
-  'phone.jobOffHint': 'Un lavoro disattivato non parte mai da solo e non ha un pulsante. Un lavoro nuovo comincia così di proposito: la prima cosa che un lavoro appena scritto dovrebbe fare è niente.',
   'phone.previewExplain': 'Finché non premi il pulsante non si muove niente. Questo è quello che farebbe un\'esecuzione, calcolato da entrambi i lati esattamente come sono adesso.',
 
   // The second axis of a one-way job: what happens to everything the

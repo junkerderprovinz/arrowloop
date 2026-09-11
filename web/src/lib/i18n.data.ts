@@ -157,6 +157,7 @@ export const en = {
   'jobs.pause': 'Pause',
   'jobs.resume': 'Resume',
   'jobs.runNow': 'Run now',
+  'jobs.stopRun': 'Stop the run',
   'jobs.runNowHint': 'Start this job straight away, without a preview. The same safety nets apply: nothing is deleted outright, and a run that would remove more than half of everything it knows about stops and says so.',
   'jobs.check': 'Check this job',
   'check.healthy': 'Nothing to report. Both sides are reachable and the record matches what is there.',
@@ -551,8 +552,6 @@ export const en = {
   'phone.noSettings': 'This one needs nothing else. Give it a name and save it.',
   'phone.runEmpty': 'This run touched no files.',
   'phone.bin': 'Bin',
-  'phone.jobOff': 'Switched off',
-  'phone.jobOffHint': 'A job that is switched off never starts by itself and is not offered a button. A new job begins like this on purpose: the first thing a job you have only just typed should do is nothing.',
   'phone.previewExplain': 'Nothing moves until you press the button. This is what a run would do, worked out from both sides exactly as they are now.',
 
   // The second axis of a one-way job: what happens to everything the
@@ -722,6 +721,7 @@ export const de: Translations = {
   'jobs.pause': 'Pausieren',
   'jobs.resume': 'Fortsetzen',
   'jobs.runNow': 'Jetzt ausführen',
+  'jobs.stopRun': 'Lauf anhalten',
   'jobs.runNowHint': 'Diesen Auftrag sofort starten, ohne Vorschau. Die Netze bleiben dieselben: nichts wird endgültig gelöscht, und ein Lauf, der mehr als die Hälfte aller bekannten Dateien entfernen würde, bricht ab und sagt es.',
   'jobs.check': 'Auftrag prüfen',
   'check.healthy': 'Nichts zu melden. Beide Seiten sind erreichbar, und der gespeicherte Zustand stimmt mit dem überein, was tatsächlich da ist.',
@@ -1107,8 +1107,6 @@ export const de: Translations = {
   'phone.noSettings': 'Hier braucht es nichts weiter. Gib ihm einen Namen und speichere.',
   'phone.runEmpty': 'Dieser Lauf hat keine Datei angefasst.',
   'phone.bin': 'Papierkorb',
-  'phone.jobOff': 'Abgeschaltet',
-  'phone.jobOffHint': 'Ein abgeschalteter Auftrag startet nie von selbst und bekommt keinen Knopf. Ein neuer Auftrag fängt absichtlich so an: das Erste, was ein gerade eingetippter Auftrag tun sollte, ist nichts.',
   'phone.previewExplain': 'Bis zum Knopfdruck bewegt sich nichts. Das hier ist, was ein Lauf täte, ermittelt aus beiden Seiten, genau so, wie sie jetzt sind.',
 
   // The second axis of a one-way job: what happens to everything the

@@ -24,6 +24,7 @@ import { api } from '../lib/api'
 import type { HistoryShow, Job, Run, RunEvent, Touch } from '../lib/api'
 import { translateSide, useT, type TranslationKey } from '../lib/i18n'
 import { describeCadence, readCadence } from '../lib/cadence'
+import { since } from '../lib/since'
 
 /**
  * The jobs tab: what exists, what is happening, and the form to change it.
@@ -643,40 +644,21 @@ function Progress({ event }: { event?: RunEvent }) {
   )
 }
 
-const unitKey: [number, TranslationKey][] = [
-  [60, 'time.second'],
-  [60, 'time.minute'],
-  [24, 'time.hour'],
-  [365, 'time.day'],
-]
-
 /**
  * A stamp on its own is a number somebody has to subtract from today. "Two days
  * ago" is the thing they were going to work out anyway, and the exact time
  * stays available on hover for when it matters.
  *
- * The sentence is built with the number first and the unit after it, and the
- * unit is a plain plural in every language. Splitting it into one-and-other
- * forms looks more correct and is less so: languages whose rules select "few"
- * or "many" would fall through to English at the commonest counts.
+ * The arithmetic and the unit table moved to `lib/since.ts`, because the PHONE
+ * says the same line and had written its own version that returned English
+ * literals - "zuletzt just now her" on a German screen. One rule, two surfaces.
  */
 export function Since({ when }: { when: string }) {
   const { t } = useT()
-  const then = new Date(when)
-  const seconds = Math.max(0, (Date.now() - then.getTime()) / 1000)
-  let value = seconds
-  let unit: TranslationKey = 'time.second'
-  for (const [size, name] of unitKey) {
-    if (value < size) {
-      unit = name
-      break
-    }
-    value /= size
-    unit = name
-  }
+  const { count, unit } = since(when)
   return (
-    <span title={then.toLocaleString()}>
-      <Num>{Math.floor(value)}</Num> {t(unit)} {t('jobs.ago')}
+    <span title={new Date(when).toLocaleString()}>
+      <Num>{count}</Num> {t(unit)} {t('jobs.ago')}
     </span>
   )
 }

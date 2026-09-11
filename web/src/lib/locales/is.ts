@@ -24,6 +24,7 @@ const is: Translations = {
   'jobs.pause': 'Gera hlé',
   'jobs.resume': 'Halda áfram',
   'jobs.runNow': 'Keyra núna',
+  'jobs.stopRun': 'Stöðva keyrsluna',
   'jobs.runNowHint': 'Keyra þetta verk strax, án forskoðunar. Sömu öryggisnetin gilda: engu er eytt endanlega, og keyrsla sem myndi fjarlægja meira en helming alls sem hún þekkir stöðvast og segir frá því.',
   'jobs.check': 'Athuga verkið',
   'check.healthy': 'Ekkert er að frétta. Báðar hliðar nást og vistaða staðan passar við það sem er þar.',
@@ -485,8 +486,6 @@ const is: Translations = {
   'phone.noSettings': 'Hér þarf ekkert meira. Gefðu því nafn og vistaðu.',
   'phone.runEmpty': 'Þessi keyrsla snerti enga skrá.',
   'phone.bin': 'Ruslafata',
-  'phone.jobOff': 'Slökkt',
-  'phone.jobOffHint': 'Verk sem slökkt er á fer aldrei af stað sjálft og fær engan hnapp. Nýtt verk byrjar svona viljandi: það fyrsta sem nýskrifað verk ætti að gera er ekkert.',
   'phone.previewExplain': 'Ekkert hreyfist fyrr en þú ýtir á hnappinn. Þetta er það sem keyrsla myndi gera, reiknað út frá báðum hliðum nákvæmlega eins og þær eru núna.',
 
   // The second axis of a one-way job: what happens to everything the

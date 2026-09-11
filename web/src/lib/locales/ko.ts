@@ -24,6 +24,7 @@ const ko: Translations = {
   'jobs.pause': '일시 정지',
   'jobs.resume': '다시 시작',
   'jobs.runNow': '지금 실행',
+  'jobs.stopRun': '실행 중지',
   'jobs.runNowHint': '미리 보기 없이 이 작업을 지금 시작합니다. 같은 안전장치가 그대로 적용됩니다. 완전히 지우지 않으며, 알고 있는 파일의 절반 이상을 없앨 실행은 중단하고 그 사실을 알립니다.',
   'jobs.check': '작업 점검',
   'check.healthy': '보고할 것이 없습니다. 양쪽 모두 접근할 수 있고 기록된 상태가 실제로 있는 것과 일치합니다.',
@@ -485,8 +486,6 @@ const ko: Translations = {
   'phone.noSettings': '여기에는 더 필요한 것이 없습니다. 이름을 주고 저장하세요.',
   'phone.runEmpty': '이 실행은 어떤 파일도 건드리지 않았습니다.',
   'phone.bin': '휴지통',
-  'phone.jobOff': '꺼짐',
-  'phone.jobOffHint': '꺼진 작업은 스스로 시작하지 않고 버튼도 나오지 않습니다. 새 작업은 일부러 이렇게 시작합니다. 방금 입력한 작업이 가장 먼저 해야 할 일은 아무것도 하지 않는 것입니다.',
   'phone.previewExplain': '버튼을 누르기 전에는 아무것도 움직이지 않습니다. 이것은 실행하면 어떻게 되는지를, 지금 이 상태의 양쪽에서 계산한 것입니다.',
 
   // The second axis of a one-way job: what happens to everything the

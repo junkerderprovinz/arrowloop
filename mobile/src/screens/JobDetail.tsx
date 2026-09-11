@@ -127,7 +127,7 @@ export function JobDetail() {
         {runs.map((run) => (
           <Card key={run.ID}>
             <View style={styles.head}>
-              <Caption>{`${when(run.Started)} ${t("jobs.ago")}`}</Caption>
+              <Caption>{`${when(run.Started, t)} ${t("jobs.ago")}`}</Caption>
               {failed(run) ? (
                 <Badge label={t("history.failed")} tone="fail" />
               ) : touched(run) > 0 ? (

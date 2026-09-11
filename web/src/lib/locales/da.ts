@@ -24,6 +24,7 @@ const da: Translations = {
   'jobs.pause': 'Sæt på pause',
   'jobs.resume': 'Genoptag',
   'jobs.runNow': 'Kør nu',
+  'jobs.stopRun': 'Stop kørslen',
   'jobs.runNowHint': 'Start jobbet med det samme, uden forhåndsvisning. De samme sikkerhedsnet gælder: intet slettes endeligt, og en kørsel, der ville fjerne mere end halvdelen af alt kendt, stopper og siger det.',
   'jobs.check': 'Tjek jobbet',
   'check.healthy': 'Intet at melde. Begge sider kan nås, og den gemte tilstand passer med det, der er der.',
@@ -485,8 +486,6 @@ const da: Translations = {
   'phone.noSettings': 'Her skal der ikke mere til. Giv det et navn, og gem.',
   'phone.runEmpty': 'Denne kørsel rørte ingen filer.',
   'phone.bin': 'Papirkurv',
-  'phone.jobOff': 'Slået fra',
-  'phone.jobOffHint': 'Et job, der er slået fra, starter aldrig af sig selv og får ingen knap. Et nyt job begynder sådan med vilje: det første, et netop indtastet job bør gøre, er ingenting.',
   'phone.previewExplain': 'Der sker ingenting, før du trykker på knappen. Det her er, hvad en kørsel ville gøre, regnet ud fra begge sider præcis som de ser ud nu.',
 
   // The second axis of a one-way job: what happens to everything the

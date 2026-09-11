@@ -24,6 +24,7 @@ const id: Translations = {
   'jobs.pause': 'Jeda',
   'jobs.resume': 'Lanjutkan',
   'jobs.runNow': 'Jalankan sekarang',
+  'jobs.stopRun': 'Hentikan jalannya',
   'jobs.runNowHint': 'Mulai tugas ini sekarang juga, tanpa pratinjau. Jaring pengaman yang sama tetap berlaku: tidak ada yang dihapus permanen, dan proses yang akan menghapus lebih dari separuh semua yang diketahuinya akan berhenti dan mengatakannya.',
   'jobs.check': 'Periksa tugas ini',
   'check.healthy': 'Tidak ada yang perlu dilaporkan. Kedua sisi dapat dijangkau dan keadaan yang tersimpan cocok dengan apa yang ada di sana.',
@@ -485,8 +486,6 @@ const id: Translations = {
   'phone.noSettings': 'Di sini tidak perlu apa-apa lagi. Beri nama dan simpan.',
   'phone.runEmpty': 'Jalan ini tidak menyentuh berkas apa pun.',
   'phone.bin': 'Tempat sampah',
-  'phone.jobOff': 'Dimatikan',
-  'phone.jobOffHint': 'Tugas yang dimatikan tidak pernah mulai sendiri dan tidak mendapat tombol. Tugas baru sengaja dimulai begini: hal pertama yang harus dilakukan tugas yang baru saja diketik adalah tidak apa-apa.',
   'phone.previewExplain': 'Tidak ada yang bergerak sampai kamu menekan tombol. Inilah yang akan dilakukan satu jalan, dihitung dari kedua sisi persis seperti sekarang.',
 
   // The second axis of a one-way job: what happens to everything the

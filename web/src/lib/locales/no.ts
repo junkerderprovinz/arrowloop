@@ -24,6 +24,7 @@ const no: Translations = {
   'jobs.pause': 'Pause',
   'jobs.resume': 'Fortsett',
   'jobs.runNow': 'Kjør nå',
+  'jobs.stopRun': 'Stopp kjøringen',
   'jobs.runNowHint': 'Start jobben med en gang, uten forhåndsvisning. De samme sikkerhetsnettene gjelder: ingenting slettes for godt, og en kjøring som ville fjerne mer enn halvparten av alt den kjenner til, stopper og sier fra.',
   'jobs.check': 'Sjekk jobben',
   'check.healthy': 'Ingenting å melde. Begge sider kan nås, og den lagrede tilstanden stemmer med det som er der.',
@@ -485,8 +486,6 @@ const no: Translations = {
   'phone.noSettings': 'Her trengs ikke noe mer. Gi det et navn og lagre.',
   'phone.runEmpty': 'Denne kjøringen rørte ingen filer.',
   'phone.bin': 'Papirkurv',
-  'phone.jobOff': 'Slått av',
-  'phone.jobOffHint': 'En jobb som er slått av starter aldri av seg selv og får ingen knapp. En ny jobb begynner slik med vilje: det første en nettopp innskrevet jobb bør gjøre er ingenting.',
   'phone.previewExplain': 'Ingenting beveger seg før du trykker på knappen. Dette er hva en kjøring ville gjort, regnet ut fra begge sider akkurat slik de er nå.',
 
   // The second axis of a one-way job: what happens to everything the

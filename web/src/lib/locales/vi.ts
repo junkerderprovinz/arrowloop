@@ -24,6 +24,7 @@ const vi: Translations = {
   'jobs.pause': 'Tạm dừng',
   'jobs.resume': 'Tiếp tục',
   'jobs.runNow': 'Chạy ngay',
+  'jobs.stopRun': 'Dừng lần chạy',
   'jobs.runNowHint': 'Chạy tác vụ này ngay, không cần xem trước. Vẫn giữ nguyên các lưới an toàn: không xóa hẳn thứ gì, và lần chạy nào định gỡ quá nửa số tệp đã biết sẽ dừng lại và báo.',
   'jobs.check': 'Kiểm tra tác vụ',
   'check.healthy': 'Không có gì để báo. Cả hai bên đều truy cập được và trạng thái đã lưu khớp với những gì đang có ở đó.',
@@ -485,8 +486,6 @@ const vi: Translations = {
   'phone.noSettings': 'Ở đây không cần gì thêm. Đặt tên rồi lưu lại.',
   'phone.runEmpty': 'Lượt chạy này không đụng đến tệp nào.',
   'phone.bin': 'Thùng rác',
-  'phone.jobOff': 'Đã tắt',
-  'phone.jobOffHint': 'Một công việc đã tắt thì không bao giờ tự khởi động và cũng không có nút. Công việc mới cố tình bắt đầu như vậy: điều đầu tiên mà một công việc vừa gõ xong nên làm là không làm gì cả.',
   'phone.previewExplain': 'Không có gì nhúc nhích cho đến khi bạn bấm nút. Đây là những gì một lượt chạy sẽ làm, tính ra từ cả hai bên đúng như chúng đang có bây giờ.',
 
   // The second axis of a one-way job: what happens to everything the

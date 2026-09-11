@@ -24,6 +24,7 @@ const ms: Translations = {
   'jobs.pause': 'Jeda',
   'jobs.resume': 'Sambung',
   'jobs.runNow': 'Jalankan sekarang',
+  'jobs.stopRun': 'Hentikan larian',
   'jobs.runNowHint': 'Mulakan tugas ini serta-merta, tanpa pratonton. Jaring keselamatan yang sama kekal: tiada apa-apa dipadam terus, dan larian yang akan membuang lebih separuh daripada segala yang diketahuinya akan berhenti dan memberitahunya.',
   'jobs.check': 'Semak tugas ini',
   'check.healthy': 'Tiada apa untuk dilaporkan. Kedua-dua belah boleh dicapai dan keadaan yang disimpan sepadan dengan apa yang ada di sana.',
@@ -485,8 +486,6 @@ const ms: Translations = {
   'phone.noSettings': 'Di sini tiada apa-apa lagi diperlukan. Beri nama dan simpan.',
   'phone.runEmpty': 'Larian ini tidak menyentuh sebarang fail.',
   'phone.bin': 'Tong sampah',
-  'phone.jobOff': 'Dimatikan',
-  'phone.jobOffHint': 'Tugas yang dimatikan tidak pernah bermula sendiri dan tidak mendapat butang. Tugas baharu sengaja bermula begini: perkara pertama yang patut dilakukan oleh tugas yang baru ditaip ialah tiada apa-apa.',
   'phone.previewExplain': 'Tiada apa-apa bergerak sehingga kamu menekan butang. Inilah yang akan dilakukan satu larian, dikira daripada kedua-dua belah tepat seperti sekarang.',
 
   // The second axis of a one-way job: what happens to everything the

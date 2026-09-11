@@ -24,6 +24,7 @@ const et: Translations = {
   'jobs.pause': 'Peata',
   'jobs.resume': 'Jätka',
   'jobs.runNow': 'Käivita kohe',
+  'jobs.stopRun': 'Peata käivitus',
   'jobs.runNowHint': 'Käivita see töö kohe, ilma eelvaateta. Samad turvavõrgud jäävad: midagi ei kustutata jäädavalt ja käivitus, mis eemaldaks üle poole kõigest teadaolevast, peatub ja ütleb seda.',
   'jobs.check': 'Kontrolli tööd',
   'check.healthy': 'Teatada pole midagi. Mõlemad pooled on kättesaadavad ja salvestatud olek vastab sellele, mis seal on.',
@@ -485,8 +486,6 @@ const et: Translations = {
   'phone.noSettings': 'Siin pole midagi muud vaja. Anna nimi ja salvesta.',
   'phone.runEmpty': 'See käik ei puudutanud ühtegi faili.',
   'phone.bin': 'Prügikast',
-  'phone.jobOff': 'Välja lülitatud',
-  'phone.jobOffHint': 'Välja lülitatud töö ei käivitu kunagi ise ega saa nuppu. Uus töö algab meelega nii: esimene asi, mida äsja sisestatud töö tegema peaks, on mitte midagi.',
   'phone.previewExplain': 'Kuni sa nuppu ei vajuta, ei liigu miski. See on see, mida käik teeks, arvutatud mõlemast poolest täpselt sellisena, nagu nad praegu on.',
 
   // The second axis of a one-way job: what happens to everything the

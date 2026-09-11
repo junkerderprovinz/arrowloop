@@ -24,6 +24,7 @@ const pl: Translations = {
   'jobs.pause': 'Wstrzymaj',
   'jobs.resume': 'Wznów',
   'jobs.runNow': 'Uruchom teraz',
+  'jobs.stopRun': 'Zatrzymaj przebieg',
   'jobs.runNowHint': 'Uruchom to zadanie od razu, bez podglądu. Zabezpieczenia pozostają te same: nic nie jest kasowane bezpowrotnie, a przebieg, który usunąłby więcej niż połowę znanych plików, zatrzymuje się i mówi o tym.',
   'jobs.check': 'Sprawdź zadanie',
   'check.healthy': 'Nie ma nic do zgłoszenia. Obie strony są osiągalne, a zapisany stan zgadza się z tym, co tam jest.',
@@ -485,8 +486,6 @@ const pl: Translations = {
   'phone.noSettings': 'Tu nic więcej nie trzeba. Nadaj nazwę i zapisz.',
   'phone.runEmpty': 'Ten przebieg nie dotknął żadnego pliku.',
   'phone.bin': 'Kosz',
-  'phone.jobOff': 'Wyłączone',
-  'phone.jobOffHint': 'Wyłączone zadanie nigdy nie rusza samo i nie dostaje przycisku. Nowe zadanie celowo tak się zaczyna: pierwszą rzeczą, którą powinno zrobić dopiero co wpisane zadanie, jest nic.',
   'phone.previewExplain': 'Dopóki nie naciśniesz przycisku, nic się nie rusza. To jest to, co zrobiłby przebieg, wyliczone z obu stron dokładnie takich, jakie są teraz.',
 
   // The second axis of a one-way job: what happens to everything the

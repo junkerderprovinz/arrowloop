@@ -24,6 +24,7 @@ const sv: Translations = {
   'jobs.pause': 'Pausa',
   'jobs.resume': 'Återuppta',
   'jobs.runNow': 'Kör nu',
+  'jobs.stopRun': 'Stoppa körningen',
   'jobs.runNowHint': 'Starta jobbet direkt, utan förhandsvisning. Samma skyddsnät gäller: inget raderas för gott, och en körning som skulle ta bort mer än hälften av allt den känner till stannar och säger till.',
   'jobs.check': 'Kontrollera jobbet',
   'check.healthy': 'Inget att rapportera. Båda sidor går att nå och det sparade tillståndet stämmer med det som finns där.',
@@ -485,8 +486,6 @@ const sv: Translations = {
   'phone.noSettings': 'Här behövs inget mer. Ge det ett namn och spara.',
   'phone.runEmpty': 'Den här körningen rörde ingen fil.',
   'phone.bin': 'Papperskorg',
-  'phone.jobOff': 'Avstängt',
-  'phone.jobOffHint': 'Ett avstängt jobb startar aldrig av sig självt och får ingen knapp. Ett nytt jobb börjar så med flit: det första ett nyss inskrivet jobb bör göra är ingenting.',
   'phone.previewExplain': 'Ingenting rör sig förrän du trycker på knappen. Det här är vad en körning skulle göra, uträknat från båda sidorna precis som de ser ut nu.',
 
   // The second axis of a one-way job: what happens to everything the

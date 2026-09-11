@@ -24,6 +24,7 @@ const sk: Translations = {
   'jobs.pause': 'Pozastaviť',
   'jobs.resume': 'Pokračovať',
   'jobs.runNow': 'Spustiť teraz',
+  'jobs.stopRun': 'Zastaviť beh',
   'jobs.runNowHint': 'Spustiť túto úlohu hneď, bez náhľadu. Rovnaké poistky zostávajú: nič sa nemaže natrvalo a beh, ktorý by odstránil viac než polovicu všetkého známeho, sa zastaví a povie to.',
   'jobs.check': 'Skontrolovať úlohu',
   'check.healthy': 'Nie je čo hlásiť. Obe strany sú dostupné a uložený stav zodpovedá tomu, čo tam je.',
@@ -485,8 +486,6 @@ const sk: Translations = {
   'phone.noSettings': 'Tu už nič ďalšie netreba. Daj tomu meno a ulož to.',
   'phone.runEmpty': 'Tento beh sa nedotkol žiadneho súboru.',
   'phone.bin': 'Kôš',
-  'phone.jobOff': 'Vypnuté',
-  'phone.jobOffHint': 'Vypnutá úloha sa nikdy nespustí sama a tlačidlo nedostane. Nová úloha takto začína zámerne: prvé, čo by mala práve napísaná úloha urobiť, je nič.',
   'phone.previewExplain': 'Kým nestlačíš tlačidlo, nič sa nepohne. Toto je to, čo by beh urobil, vypočítané z oboch strán presne tak, ako teraz vyzerajú.',
 
   // The second axis of a one-way job: what happens to everything the

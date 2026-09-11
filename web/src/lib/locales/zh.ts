@@ -24,6 +24,7 @@ const zh: Translations = {
   'jobs.pause': '暂停',
   'jobs.resume': '继续',
   'jobs.runNow': '立即运行',
+  'jobs.stopRun': '停止本次运行',
   'jobs.runNowHint': '立即运行此任务，不做预览。同样的保护仍在：不会彻底删除任何内容，若一次运行将移除已知文件的一半以上，它会中止并说明原因。',
   'jobs.check': '检查此任务',
   'check.healthy': '没有需要报告的。两侧都能连上，记录的状态与实际情况一致。',
@@ -485,8 +486,6 @@ const zh: Translations = {
   'phone.noSettings': '这里不需要别的了。给它起个名字并保存。',
   'phone.runEmpty': '这次运行没有碰过任何文件。',
   'phone.bin': '回收站',
-  'phone.jobOff': '已关闭',
-  'phone.jobOffHint': '关闭的任务从不自行开始，也不会出现按钮。新任务故意从这个状态开始：一个刚刚敲进去的任务，第一件该做的事就是什么都不做。',
   'phone.previewExplain': '按下按钮之前什么都不会动。这是一次运行会做的事，按两边此刻的样子算出来的。',
 
   // The second axis of a one-way job: what happens to everything the

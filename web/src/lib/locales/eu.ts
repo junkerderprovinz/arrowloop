@@ -24,6 +24,7 @@ const eu: Translations = {
   'jobs.pause': 'Pausatu',
   'jobs.resume': 'Berrekin',
   'jobs.runNow': 'Exekutatu orain',
+  'jobs.stopRun': 'Gelditu exekuzioa',
   'jobs.runNowHint': 'Hasi lan hau berehala, aurrebistarik gabe. Segurtasun-sareak berdinak dira: ez da ezer betiko ezabatzen, eta ezagutzen duen guztiaren erdia baino gehiago kenduko lukeen exekuzio bat gelditu eta esan egiten du.',
   'jobs.check': 'Egiaztatu lana',
   'check.healthy': 'Ez dago ezer jakinarazteko. Bi aldeak eskuragarri daude eta gordetako egoera bat dator han dagoenarekin.',
@@ -485,8 +486,6 @@ const eu: Translations = {
   'phone.noSettings': 'Hemen ez da besterik behar. Eman izen bat eta gorde.',
   'phone.runEmpty': 'Exekuzio honek ez du fitxategirik ukitu.',
   'phone.bin': 'Zakarrontzia',
-  'phone.jobOff': 'Itzalita',
-  'phone.jobOffHint': 'Itzalitako lan bat ez da inoiz bere kabuz abiatzen eta ez du botoirik jasotzen. Lan berri bat nahita hasten da horrela: idatzi berri den lan batek egin beharko lukeen lehen gauza ezer ez da.',
   'phone.previewExplain': 'Botoia sakatu arte ez da ezer mugitzen. Hau da exekuzio batek egingo lukeena, bi aldeetatik kalkulatuta, orain dauden bezalaxe.',
 
   // The second axis of a one-way job: what happens to everything the
