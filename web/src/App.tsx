@@ -688,47 +688,61 @@ function Look({
             hueIndex={0}
           />
           {/* Both of these hang off the mode itself: reactive and rotate are
-              instructions to a rainbow that is not running, so they are dimmed
-              rather than left live and inert. */}
-          <ToggleRow
-            checked={rainbow.reactive}
-            onChange={(reactive) => onRainbow({ ...rainbow, reactive })}
-            label={t('look.rainbowReactive')}
-            hint={t('look.reactiveHint')}
-            disabled={!rainbow.on}
-            hueIndex={1}
-          />
-          <ToggleRow
-            checked={rainbow.rotate}
-            onChange={(rotate) =>
-              onRainbow({ ...rainbow, rotate, seed: rotate ? (rainbow.seed + 1) % 8 : 0 })
-            }
-            label={t('look.rainbowRotate')}
-            hint={t('look.rotateHint')}
-            disabled={!rainbow.on}
-            hueIndex={2}
-          />
+              instructions to a rainbow that is not running. They used to be
+              DIMMED for that reason, and jdp has asked more than once for the
+              dead switch to go rather than to grey: a control somebody can see,
+              read and reach for that answers nothing is a question with no
+              answer, and the reason it is dead sits one row up where nobody
+              looks after deciding this row is the interesting one. So they are
+              absent while the mode is off, and the mode's own switch is the
+              only thing to press. */}
+          {rainbow.on && (
+            <>
+              <ToggleRow
+                checked={rainbow.reactive}
+                onChange={(reactive) => onRainbow({ ...rainbow, reactive })}
+                label={t('look.rainbowReactive')}
+                hint={t('look.reactiveHint')}
+                hueIndex={1}
+              />
+              <ToggleRow
+                checked={rainbow.rotate}
+                onChange={(rotate) =>
+                  onRainbow({ ...rainbow, rotate, seed: rotate ? (rainbow.seed + 1) % 8 : 0 })
+                }
+                label={t('look.rainbowRotate')}
+                hint={t('look.rotateHint')}
+                hueIndex={2}
+              />
+            </>
+          )}
 
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="flex items-center gap-1.5 text-sm text-carbon-text">
-              {t('look.palette')}
-              <InfoBubble tip={t('look.paletteHint')} />
-            </span>
-            <div className="ms-auto flex flex-wrap items-center gap-2">
-              {/* Every colour here is in force at once, so there is no selected
-                  one and a click can only mean edit. */}
-              <PaletteSwatches
-                palette={rainbow.palette}
-                disabled={!rainbow.on}
-                onChange={(palette) => onRainbow({ ...rainbow, palette })}
-              />
-              <ResetBadge
-                tip={t('look.paletteReset')}
-                disabled={!rainbow.on || rainbow.palette.join() === RAINBOW.join()}
-                onClick={() => onRainbow({ ...rainbow, palette: [...RAINBOW] })}
-              />
+          {/* The palette editor goes with them, for the same reason: eight
+              swatches nobody can open, beside a reset nobody can press. */}
+          {rainbow.on && (
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="flex items-center gap-1.5 text-sm text-carbon-text">
+                {t('look.palette')}
+                <InfoBubble tip={t('look.paletteHint')} />
+              </span>
+              <div className="ms-auto flex flex-wrap items-center gap-2">
+                {/* Every colour here is in force at once, so there is no
+                    selected one and a click can only mean edit. */}
+                <PaletteSwatches
+                  palette={rainbow.palette}
+                  onChange={(palette) => onRainbow({ ...rainbow, palette })}
+                />
+                {/* This one keeps its disabled state, and it is a different
+                    thing: the palette really IS untouched, so the badge is
+                    reporting rather than refusing. */}
+                <ResetBadge
+                  tip={t('look.paletteReset')}
+                  disabled={rainbow.palette.join() === RAINBOW.join()}
+                  onClick={() => onRainbow({ ...rainbow, palette: [...RAINBOW] })}
+                />
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </Card>
 

@@ -139,24 +139,27 @@ export function Settings() {
             width it has between nine equal things, so it fits on a narrow
             handset without a smaller fixed size that would only move the wrap
             to a narrower one. */}
-        <View style={styles.axisRow}>
-          <Body muted={look.rainbow}>{t("look.accent")}</Body>
-          {/* Dimmed and inert while the rainbow is on: the mode replaces the
-              accent for everything that is one member of a set, so choosing an
-              accent under it would be choosing a colour most of the screen has
-              stopped using. */}
-          <View style={[styles.swatches, look.rainbow ? styles.dimmed : null]} pointerEvents={look.rainbow ? "none" : "auto"}>
-            {ACCENTS.map((a) => (
-              <Swatch
-                key={a.hex}
-                hex={a.hex}
-                label={a.name}
-                selected={a.hex.toLowerCase() === look.accent.toLowerCase()}
-                onPress={() => setAppearance({ accent: a.hex })}
-              />
-            ))}
+        {/* Gone while the rainbow is on, not dimmed. The mode replaces the
+            accent for everything that is one member of a set, so an accent
+            chosen under it is a colour most of the screen has stopped using -
+            and the same rule applies as to the switch below: a row of nine
+            circles nobody can press is a question with no answer. */}
+        {!look.rainbow ? (
+          <View style={styles.axisRow}>
+            <Body>{t("look.accent")}</Body>
+            <View style={styles.swatches}>
+              {ACCENTS.map((a) => (
+                <Swatch
+                  key={a.hex}
+                  hex={a.hex}
+                  label={a.name}
+                  selected={a.hex.toLowerCase() === look.accent.toLowerCase()}
+                  onPress={() => setAppearance({ accent: a.hex })}
+                />
+              ))}
+            </View>
           </View>
-        </View>
+        ) : null}
         <Toggle
           label={t("look.rainbowOn")}
           hint={t("look.rainbowHint")}
@@ -164,22 +167,35 @@ export function Settings() {
           hue={0}
           onChange={(rainbow) => setAppearance({ rainbow })}
         />
-        <Toggle
-          label={t("look.rainbowReactive")}
-          hint={t("look.reactiveHint")}
-          value={look.rainbowReactive}
-          hue={1}
-          disabled={!look.rainbow}
-          onChange={(rainbowReactive) => setAppearance({ rainbowReactive })}
-        />
-        {/* The palette itself, shown rather than described, and dimmed while
-            the mode is off. A row of eight colours says what "rainbow" means
-            faster than any sentence about it. */}
-        <View style={[styles.swatches, !look.rainbow ? styles.dimmed : null]} pointerEvents="none">
-          {RAINBOW.map((hex, i) => (
-            <Swatch key={`${hex}-${i}`} hex={hex} label={hex} selected={false} onPress={() => {}} />
-          ))}
-        </View>
+        {/* Only while the rainbow is running. jdp: "dieser abgeschaltet toggle
+            soll weg, das hab ich schon oft angesprochen." It was dimmed rather
+            than absent, which is a switch somebody can see, read and reach for
+            and that answers nothing - and the reason it is dead lives one row
+            up, where nobody looks after deciding this row is the interesting
+            one. A control that cannot be used is not information, it is a
+            question with no answer. */}
+        {look.rainbow ? (
+          <Toggle
+            label={t("look.rainbowReactive")}
+            hint={t("look.reactiveHint")}
+            value={look.rainbowReactive}
+            hue={1}
+            onChange={(rainbowReactive) => setAppearance({ rainbowReactive })}
+          />
+        ) : null}
+        {/* The palette in force, shown rather than described: eight colours say
+            what "rainbow" means faster than any sentence about it. It used to
+            be drawn dimmed while the mode was off, which put two greyed rows of
+            circles in one card. Now the card carries exactly ONE row of colours
+            at a time - the accent while the rainbow is off, the palette while
+            it is on - and neither of them is ever grey. */}
+        {look.rainbow ? (
+          <View style={styles.swatches} pointerEvents="none">
+            {RAINBOW.map((hex, i) => (
+              <Swatch key={`${hex}-${i}`} hex={hex} label={hex} selected={false} onPress={() => {}} />
+            ))}
+          </View>
+        ) : null}
       </Section>
 
       <Section title={t("look.labels")} hint={t("look.labelsHint")} hue={3}>
@@ -421,5 +437,4 @@ const styles = StyleSheet.create({
   // after the label and divides it equally, which is what keeps nine circles
   // on one line at every handset width.
   swatches: { flex: 1, flexDirection: "row", alignItems: "center", gap: 2, justifyContent: "flex-end" },
-  dimmed: { opacity: 0.35 },
 });
