@@ -24,7 +24,7 @@ import { when } from "./Jobs";
 export function History() {
   const nav = useNavigation<Nav<HistoryStack>>();
   const { t } = useT();
-  const { p } = useTheme();
+  const { p, accent } = useTheme();
   const [runs, setRuns] = useState<Run[] | null>(null);
   const [show, setShow] = useState<"all" | "changed" | "failed">("all");
   const [error, setError] = useState("");
@@ -62,7 +62,7 @@ export function History() {
       data={shown}
       keyExtractor={(r) => String(r.ID)}
       contentContainerStyle={styles.list}
-      refreshControl={<RefreshControl refreshing={false} onRefresh={load} tintColor={p.accent} />}
+      refreshControl={<RefreshControl refreshing={false} onRefresh={load} tintColor={accent} />}
       ListHeaderComponent={
         <Choice
           value={show}

@@ -493,6 +493,24 @@ const hu: Translations = {
   'phone.jobOff': 'Kikapcsolva',
   'phone.jobOffHint': 'A kikapcsolt feladat soha nem indul el magától, és nem kap gombot sem. Egy új feladat szándékosan így kezd: az első dolog, amit egy épp begépelt feladatnak tennie kellene, az a semmi.',
   'phone.previewExplain': 'Amíg meg nem nyomod a gombot, semmi sem mozdul. Ez az, amit egy futás tenne, mindkét oldalból kiszámolva pontosan úgy, ahogy most állnak.',
+
+  // The second axis of a one-way job: what happens to everything the
+  // direction alone does not settle. Two of the three DELETE, so each
+  // carries a sentence saying exactly what it removes and what it
+  // leaves - a picker with three words and no explanation is how
+  // somebody mirrors the wrong way round.
+  'mode.label': 'Mi lesz a többivel',
+  'mode.sync': 'Csak másolás',
+  'mode.syncHint': 'Minden átmegy, ami a forrásnak megvan. Egy fájl, ami csak a másik oldalon van, pontosan ott marad, ahol van, és soha semmit nem törlünk helyetted.',
+  'mode.mirror': 'Tükrözés',
+  'mode.mirrorHint': 'A másik oldal a forrás pontos másolata lesz, tehát egy fájl, ami a forrásnak nincs meg, ott törlődik. Előbb az adott oldal kukájába kerül, és az a futás, amelyik mindennek több mint a felét eltávolítaná, megáll és megmondja.',
+  'mode.move': 'Áthelyezés',
+  'mode.moveHint': 'Egy fájl átmegy, majd elhagyja a forrást, így küldi fel egy telefon a kamerát és kapja vissza a helyet. Az eredeti a kukába kerül ahelyett, hogy megsemmisülne, és csak akkor megy el, ha a másolat valóban megérkezett.',
+  'mode.onlyOneWay': 'Csak egyirányú feladathoz. Mindkettő eldönti, melyik oldalnak van igaza, és egy mindkét irányba futó feladat ezt nem mondta meg.',
+  'side.onDevice': 'Az eszközön',
+  'defaults.follow': 'Alapértelmezés átvétele',
+  'defaults.followHint': 'Ezt a beállításokból venni ahelyett, hogy itt döntenéd el. Ott egyszer megváltoztatva minden feladatban változik, amelyik az alapértelmezést követi.',
+  'side.target': 'Egy cél',
 }
 
 export default hu

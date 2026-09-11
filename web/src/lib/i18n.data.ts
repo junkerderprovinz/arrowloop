@@ -559,6 +559,24 @@ export const en = {
   'phone.jobOff': 'Switched off',
   'phone.jobOffHint': 'A job that is switched off never starts by itself and is not offered a button. A new job begins like this on purpose: the first thing a job you have only just typed should do is nothing.',
   'phone.previewExplain': 'Nothing moves until you press the button. This is what a run would do, worked out from both sides exactly as they are now.',
+
+  // The second axis of a one-way job: what happens to everything the
+  // direction alone does not settle. Two of the three DELETE, so each
+  // carries a sentence saying exactly what it removes and what it
+  // leaves - a picker with three words and no explanation is how
+  // somebody mirrors the wrong way round.
+  'mode.label': 'What happens to the rest',
+  'mode.sync': 'Copy only',
+  'mode.syncHint': 'Everything the source has goes across. A file only the other side has is left exactly where it is, and nothing is ever removed for you.',
+  'mode.mirror': 'Mirror',
+  'mode.mirrorHint': 'The other side becomes an exact copy of the source, so a file the source does not have is deleted there. It goes into that side\'s bin first, and a run that would remove more than half of everything it knows about stops and says so.',
+  'mode.move': 'Move',
+  'mode.moveHint': 'A file goes across and then leaves the source, which is how a phone sends the camera up and gets the space back. The original goes into the bin rather than being destroyed, and it only leaves once the copy has actually landed.',
+  'mode.onlyOneWay': 'Only for a one-way job. Both of these decide which side is right, and a job that runs both ways has not said which that is.',
+  'side.onDevice': 'On the device',
+  'defaults.follow': 'Use the default',
+  'defaults.followHint': 'Take this from the settings instead of deciding it here. Change it there once and every job that follows it changes with it.',
+  'side.target': 'A target',
 } as const
 
 export type TranslationKey = keyof typeof en
@@ -1102,6 +1120,24 @@ export const de: Translations = {
   'phone.jobOff': 'Abgeschaltet',
   'phone.jobOffHint': 'Ein abgeschalteter Auftrag startet nie von selbst und bekommt keinen Knopf. Ein neuer Auftrag fängt absichtlich so an: das Erste, was ein gerade eingetippter Auftrag tun sollte, ist nichts.',
   'phone.previewExplain': 'Bis zum Knopfdruck bewegt sich nichts. Das hier ist, was ein Lauf täte, ermittelt aus beiden Seiten, genau so, wie sie jetzt sind.',
+
+  // The second axis of a one-way job: what happens to everything the
+  // direction alone does not settle. Two of the three DELETE, so each
+  // carries a sentence saying exactly what it removes and what it
+  // leaves - a picker with three words and no explanation is how
+  // somebody mirrors the wrong way round.
+  'mode.label': 'Was mit dem Rest passiert',
+  'mode.sync': 'Nur kopieren',
+  'mode.syncHint': 'Alles, was die Quelle hat, geht hinüber. Eine Datei, die nur die andere Seite hat, bleibt genau da liegen, und es wird nie etwas für dich entfernt.',
+  'mode.mirror': 'Spiegeln',
+  'mode.mirrorHint': 'Die andere Seite wird eine genaue Kopie der Quelle, eine Datei, die die Quelle nicht hat, wird dort also gelöscht. Sie landet zuerst im Papierkorb dieser Seite, und ein Lauf, der mehr als die Hälfte aller bekannten Dateien entfernen würde, bricht ab und sagt es.',
+  'mode.move': 'Verschieben',
+  'mode.moveHint': 'Eine Datei geht hinüber und verlässt danach die Quelle, so schickt ein Telefon die Kamera hoch und bekommt den Platz zurück. Das Original wandert in den Papierkorb statt vernichtet zu werden, und es geht erst, wenn die Kopie wirklich angekommen ist.',
+  'mode.onlyOneWay': 'Nur für einen einseitigen Auftrag. Beide entscheiden, welche Seite recht hat, und ein Auftrag in beide Richtungen hat das nicht gesagt.',
+  'side.onDevice': 'Auf dem Gerät',
+  'defaults.follow': 'Vorgabe übernehmen',
+  'defaults.followHint': 'Das hier aus den Einstellungen holen, statt es an dieser Stelle zu entscheiden. Dort einmal geändert, ändert es sich in jedem Auftrag mit, der die Vorgabe übernimmt.',
+  'side.target': 'Ein Ziel',
 }
 
 // ---------------------------------------------------------------------------

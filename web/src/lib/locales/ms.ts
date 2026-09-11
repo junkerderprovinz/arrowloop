@@ -493,6 +493,24 @@ const ms: Translations = {
   'phone.jobOff': 'Dimatikan',
   'phone.jobOffHint': 'Tugas yang dimatikan tidak pernah bermula sendiri dan tidak mendapat butang. Tugas baharu sengaja bermula begini: perkara pertama yang patut dilakukan oleh tugas yang baru ditaip ialah tiada apa-apa.',
   'phone.previewExplain': 'Tiada apa-apa bergerak sehingga kamu menekan butang. Inilah yang akan dilakukan satu larian, dikira daripada kedua-dua belah tepat seperti sekarang.',
+
+  // The second axis of a one-way job: what happens to everything the
+  // direction alone does not settle. Two of the three DELETE, so each
+  // carries a sentence saying exactly what it removes and what it
+  // leaves - a picker with three words and no explanation is how
+  // somebody mirrors the wrong way round.
+  'mode.label': 'Apa jadi pada yang selebihnya',
+  'mode.sync': 'Salin sahaja',
+  'mode.syncHint': 'Semua yang ada pada sumber berpindah ke seberang. Fail yang hanya ada pada sisi lain kekal tepat di tempatnya, dan tiada apa-apa yang pernah dibuang untukmu.',
+  'mode.mirror': 'Cermin',
+  'mode.mirrorHint': 'Sisi lain menjadi salinan tepat sumber, jadi fail yang tiada pada sumber dipadam di sana. Ia masuk dulu ke tong sampah sisi itu, dan larian yang akan membuang lebih separuh daripada semua yang diketahuinya berhenti dan memberitahu.',
+  'mode.move': 'Pindahkan',
+  'mode.moveHint': 'Fail berpindah ke seberang lalu meninggalkan sumber, begitulah telefon menghantar kamera ke atas dan mendapat semula ruang. Yang asal masuk tong sampah dan bukan dimusnahkan, dan hanya pergi setelah salinan benar-benar sampai.',
+  'mode.onlyOneWay': 'Hanya untuk tugas sehala. Kedua-duanya menentukan sisi mana yang betul, dan tugas yang berjalan dua hala belum mengatakannya.',
+  'side.onDevice': 'Pada peranti',
+  'defaults.follow': 'Ambil lalai',
+  'defaults.followHint': 'Ambil ini daripada tetapan dan bukan memutuskannya di sini. Diubah sekali di sana, ia berubah dalam setiap tugas yang mengikut lalai.',
+  'side.target': 'Satu sasaran',
 }
 
 export default ms

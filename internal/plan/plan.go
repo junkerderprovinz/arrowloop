@@ -143,12 +143,23 @@ func (s Side) Other() Side {
 // Kind is what an action does.
 type Kind int
 
-// The four things that can happen to a file.
+// The five things that can happen to a file.
 const (
 	Copy     Kind = iota // bring one side's version over to the other
 	Delete               // remove on one side because the other side removed it
 	Move                 // apply a rename the other side made
 	Conflict             // both sides changed it differently, keep both
+
+	// Relocate copies to the other side and then removes the file from this
+	// one, which is what a job in Move mode does with everything it sends.
+	//
+	// ONE action and not a copy followed by a delete, and that is the whole
+	// reason it is a kind of its own. As two actions the delete sits in the
+	// queue behind the copy, and a copy that fails leaves it there; as one,
+	// the removal is unreachable unless the copy returned without error. It
+	// also shows up in a preview as one line that says "moved", which is the
+	// truth, rather than as two lines somebody has to pair up by eye.
+	Relocate
 )
 
 func (k Kind) String() string {
@@ -159,6 +170,8 @@ func (k Kind) String() string {
 		return "delete"
 	case Move:
 		return "move"
+	case Relocate:
+		return "relocate"
 	default:
 		return "conflict"
 	}
@@ -272,6 +285,11 @@ type Options struct {
 	// which is the safe default: a direction nobody set must never silently
 	// make one side authoritative over the other.
 	Direction Direction
+
+	// Mode is what a one-way job does beyond copying: nothing, mirror, or move.
+	// The zero value is ModeSync, which is the mode that deletes nothing on its
+	// own - the right default for a value a caller forgot to set.
+	Mode Mode
 
 	// Transfers is how many files may be copied at the same time. One is
 	// correct but slow over a network, where most of the wall-clock time of a

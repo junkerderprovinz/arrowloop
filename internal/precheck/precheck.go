@@ -402,7 +402,7 @@ func wouldWrite(p *plan.Plan) map[plan.Side]int64 {
 	out := map[plan.Side]int64{plan.Left: 0, plan.Right: 0}
 	for _, a := range p.Actions {
 		switch a.Kind {
-		case plan.Copy:
+		case plan.Copy, plan.Relocate:
 			out[a.Dst] += sizeOn(a, a.Src)
 		case plan.Conflict:
 			switch a.Resolve {

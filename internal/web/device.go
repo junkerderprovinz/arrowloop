@@ -43,3 +43,15 @@ func (s *Server) writeDevice(w http.ResponseWriter, r *http.Request) {
 	s.Hold.Report(body.Reason)
 	writeJSON(w, http.StatusOK, s.Hold.State())
 }
+
+// runDue runs every job whose schedule has come round since it last succeeded.
+//
+// It BLOCKS until they are done, which is the opposite of what every other run
+// endpoint here does, and deliberately: the caller is Android holding a wake
+// lock, and it may only let the phone sleep once the copying has finished. An
+// endpoint that answered immediately would have it report success and go back
+// to sleep with the transfer half done.
+func (s *Server) runDue(w http.ResponseWriter, r *http.Request) {
+	ran := s.Runner.RunDue(r.Context())
+	writeJSON(w, http.StatusOK, map[string]any{"ran": ran})
+}

@@ -70,7 +70,7 @@ export default function App() {
 }
 
 function Shell() {
-  const { p, scheme, radius } = useTheme();
+  const { p, scheme, radius, accent } = useTheme();
   const { t } = useT();
   const { state, log, retry } = useEngine();
 
@@ -82,12 +82,12 @@ function Shell() {
     ...base,
     colors: {
       ...base.colors,
-      primary: p.accent,
+      primary: accent,
       background: p.background,
       card: p.surface,
       text: p.text,
       border: p.border,
-      notification: p.accent,
+      notification: accent,
     },
   };
 
@@ -134,7 +134,7 @@ function Shell() {
               borderTopLeftRadius: radius.card,
               borderTopRightRadius: radius.card,
             },
-            tabBarActiveTintColor: p.accent,
+            tabBarActiveTintColor: accent,
             tabBarInactiveTintColor: p.textMuted,
             tabBarLabelStyle: { fontSize: text.caption },
           }}
@@ -274,7 +274,7 @@ function Waiting({ state, log, onRetry }: { state: string; log: string; onRetry:
         >
           {log}
         </Text>
-        <Button label={t("phone.engineStart")} glyph="↻" tone="accent" onPress={onRetry} />
+        <Button label={t("phone.engineStart")} labelKey="phone.engineStart" tone="accent" onPress={onRetry} />
       </ScrollView>
     </Screen>
   );

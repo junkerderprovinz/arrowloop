@@ -493,6 +493,24 @@ const ro: Translations = {
   'phone.jobOff': 'Dezactivată',
   'phone.jobOffHint': 'O sarcină dezactivată nu pornește niciodată singură și nu primește buton. O sarcină nouă începe așa în mod intenționat: primul lucru pe care ar trebui să îl facă o sarcină abia scrisă este nimic.',
   'phone.previewExplain': 'Până nu apeși butonul nu se mișcă nimic. Asta este ce ar face o rulare, calculat din ambele părți exact așa cum sunt acum.',
+
+  // The second axis of a one-way job: what happens to everything the
+  // direction alone does not settle. Two of the three DELETE, so each
+  // carries a sentence saying exactly what it removes and what it
+  // leaves - a picker with three words and no explanation is how
+  // somebody mirrors the wrong way round.
+  'mode.label': 'Ce se întâmplă cu restul',
+  'mode.sync': 'Doar copiere',
+  'mode.syncHint': 'Tot ce are sursa trece dincolo. Un fișier pe care îl are doar cealaltă parte rămâne exact unde este, și nu se șterge niciodată nimic în locul tău.',
+  'mode.mirror': 'Oglindire',
+  'mode.mirrorHint': 'Cealaltă parte devine o copie exactă a sursei, așa că un fișier pe care sursa nu îl are se șterge acolo. Trece mai întâi prin coșul acelei părți, iar o rulare care ar înlătura mai mult de jumătate din tot ce cunoaște se oprește și o spune.',
+  'mode.move': 'Mutare',
+  'mode.moveHint': 'Un fișier trece dincolo și apoi părăsește sursa, așa trimite un telefon camera sus și își recuperează spațiul. Originalul ajunge în coș în loc să fie distrus, și pleacă doar după ce copia a ajuns cu adevărat.',
+  'mode.onlyOneWay': 'Doar pentru o sarcină într-un singur sens. Ambele decid ce parte are dreptate, iar o sarcină care merge în ambele sensuri nu a spus-o.',
+  'side.onDevice': 'Pe dispozitiv',
+  'defaults.follow': 'Preia valoarea implicită',
+  'defaults.followHint': 'Ia asta din setări în loc să o decizi aici. Schimbată acolo o dată, se schimbă în fiecare sarcină care urmează valoarea implicită.',
+  'side.target': 'O țintă',
 }
 
 export default ro

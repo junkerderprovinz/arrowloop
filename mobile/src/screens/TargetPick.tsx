@@ -5,6 +5,7 @@ import { api, type Provider } from "../api";
 import { useT } from "../i18n";
 import type { Nav, TargetsStack } from "../nav";
 import { space, text } from "../theme";
+import { ProviderMark } from "../glyphs";
 import { Caption, Empty, Page, Title, useTheme } from "../ui";
 
 /**
@@ -25,7 +26,7 @@ import { Caption, Empty, Page, Title, useTheme } from "../ui";
 export function TargetPick() {
   const nav = useNavigation<Nav<TargetsStack>>();
   const { t } = useT();
-  const { p, radius } = useTheme();
+  const { p, radius, scheme } = useTheme();
   const [providers, setProviders] = useState<Provider[] | null>(null);
   const [error, setError] = useState("");
 
@@ -48,10 +49,17 @@ export function TargetPick() {
       android_ripple={{ color: p.hover }}
       style={[
         styles.tile,
-        { backgroundColor: p.surface2, borderColor: p.border, borderRadius: radius.card },
+        // No border: a tile is one shade above the page, the way this language
+        // separates every surface.
+        { backgroundColor: p.surface2, borderRadius: radius.card },
       ]}
     >
-      <Text style={[styles.name, { color: p.text }]}>{provider.name}</Text>
+      <View style={styles.head}>
+        <ProviderMark name={provider.mark} color={p.textSub} scheme={scheme} />
+        <Text style={[styles.name, { color: p.text }]} numberOfLines={1}>
+          {provider.name}
+        </Text>
+      </View>
       {provider.hint ? (
         <Text numberOfLines={2} style={[styles.hint, { color: p.textMuted }]}>
           {provider.hint}
@@ -73,12 +81,12 @@ export function TargetPick() {
 
 const styles = StyleSheet.create({
   grid: { flexDirection: "row", flexWrap: "wrap", gap: space.sm },
+  head: { flexDirection: "row", alignItems: "center", gap: space.sm },
   tile: {
     // Two across with the page's own gap between them, which is what `48%`
     // buys without having to measure the window.
     width: "48%",
     minHeight: 72,
-    borderWidth: StyleSheet.hairlineWidth,
     padding: space.md,
     justifyContent: "center",
     gap: 2,

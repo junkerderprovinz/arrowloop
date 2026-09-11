@@ -4,42 +4,65 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
-  Switch,
   Text,
+  TouchableOpacity,
   useColorScheme,
   View,
   type StyleProp,
   type ViewStyle,
 } from "react-native";
-import { contrastOn, palettes, RAINBOW, radiusFor, space, text, TOUCH, type Palette } from "./theme";
+import { Glyph, glyphNameForKey, GLYPH } from "./glyphs";
+import {
+  contrastOn,
+  inkFor,
+  palettes,
+  RAINBOW,
+  radiusFor,
+  softOn,
+  space,
+  text,
+  TOUCH,
+  type Palette,
+  type Radii,
+} from "./theme";
 import { useAppearance, type LabelMode } from "./settings";
 
 /**
- * The pieces every screen is built from.
+ * The GlimStone controls, as React Native.
  *
- * Small on purpose. GlimStone on the web is a large component library because
- * the desktop interface is large; a phone shows one thing at a time, and a
- * handful of primitives covers it. Anything that turns up in three screens
- * belongs here, anything used once belongs in the screen that uses it.
+ * This file was rewritten because the screens were drawn with borders, loose
+ * grey captions and the platform's own switch while the product they connect to
+ * draws notch badges, well selectors and filled switches. jdp: "Auch alle
+ * toggles und buttons etc sollen wie in Glimmstone aussehen." The shapes and
+ * numbers here are the design language's, not approximations: the notch is 22
+ * tall and overlaps its card by half, the well is a groove one surface deeper
+ * whose CHOSEN segment is the only badge, the switch is a 36x20 track with a
+ * 16 knob.
+ *
+ * NO BORDERS ANYWHERE, which is the rule the old file broke in the most places
+ * at once: GlimStone separates surfaces by shade, never by a drawn line. Every
+ * `borderWidth` that used to be here was a line the language does not have.
+ *
+ * Every radius comes from the shape engine at render time. A number baked into
+ * a StyleSheet cannot follow a setting, and that is precisely how the corner
+ * selector came to look like it did nothing.
  */
 
 export interface Theme {
   p: Palette;
-  radius: { control: number; card: number; pill: number };
+  radius: Radii;
   labels: LabelMode;
   rainbow: boolean;
   rainbowReactive: boolean;
   scheme: "dark" | "light";
+  accent: string;
+  accentContrast: string;
+  /** The accent darkened enough to be READ on this scheme's ground. */
+  accentInk: string;
+  /** The colour for one position in a set, or undefined with the mode off. */
+  hueAt: (index: number) => string | undefined;
 }
 
-/**
- * Everything a control needs to draw itself, in one hook.
- *
- * The accent OVERRIDES the palette's own, and its contrast is computed rather
- * than configured - a light accent with white text on it is unreadable, and
- * asking somebody to pick a second colour to fix the first one is not a
- * setting, it is a trap. Same rule the web side states in applyAccent.
- */
 export function useTheme(): Theme {
   const system = useColorScheme() === "light" ? "light" : "dark";
   const a = useAppearance();
@@ -47,31 +70,27 @@ export function useTheme(): Theme {
   const base = palettes[scheme];
   return {
     scheme,
-    p: { ...base, accent: a.accent, accentContrast: contrastOn(a.accent) },
+    p: base,
     radius: radiusFor(a.shape),
     labels: a.labels,
     rainbow: a.rainbow,
     rainbowReactive: a.rainbowReactive,
+    accent: a.accent,
+    accentContrast: contrastOn(a.accent),
+    accentInk: inkFor(a.accent, scheme),
+    hueAt: (index: number) => (a.rainbow ? RAINBOW[index % RAINBOW.length] : undefined),
   };
 }
 
-/** Kept for the many call sites that only want colours. */
 export function usePalette(): Palette {
   return useTheme().p;
 }
 
-/**
- * The colour one row in a list gets, by position.
- *
- * Rainbow mode makes a list scannable by colour rather than by reading it, and
- * the colour is handed out by POSITION so the same job is the same colour every
- * time the screen is opened. Off, everything is the accent - which is what the
- * app looks like unless somebody has asked for more.
- */
+/** The colour one member of a set gets, by position. Off, everything is the
+ *  accent - which is what the app looks like unless somebody asked for more. */
 export function useHue(index: number): string {
-  const { p, rainbow } = useTheme();
-  if (!rainbow) return p.accent;
-  return RAINBOW[index % RAINBOW.length]!;
+  const { accent, hueAt } = useTheme();
+  return hueAt(index) ?? accent;
 }
 
 export function Screen({ children }: { children: ReactNode }) {
@@ -79,6 +98,13 @@ export function Screen({ children }: { children: ReactNode }) {
   return <View style={[styles.screen, { backgroundColor: p.background }]}>{children}</View>;
 }
 
+/**
+ * A plain surface. No border, no title: one shade above the page and nothing
+ * else, which is how this language says "these things belong together".
+ *
+ * A card that owns a rainbow position carries it as a filled edge rather than a
+ * drawn line - the same block of colour the web lays down, not a 1px rule.
+ */
 export function Card({
   children,
   onPress,
@@ -88,37 +114,94 @@ export function Card({
   children: ReactNode;
   onPress?: () => void;
   style?: StyleProp<ViewStyle>;
-  /** Rainbow mode paints a card's left edge, which is what makes a list
-   *  scannable without reading it. */
   hue?: string;
 }) {
   const { p, radius, rainbow } = useTheme();
   const body = (
-    <View
-      style={[
-        styles.card,
-        { backgroundColor: p.surface, borderColor: p.border, borderRadius: radius.card },
-        rainbow && hue ? { borderLeftColor: hue, borderLeftWidth: 3 } : null,
-        style,
-      ]}
-    >
+    <View style={[styles.card, { backgroundColor: p.surface, borderRadius: radius.card }, style]}>
+      {rainbow && hue ? (
+        <View
+          style={[
+            styles.edge,
+            { backgroundColor: hue, borderTopLeftRadius: radius.card, borderBottomLeftRadius: radius.card },
+          ]}
+        />
+      ) : null}
       {children}
     </View>
   );
   if (!onPress) return body;
   // `android_ripple` rather than an opacity change, because a ripple is what
   // every other app on the phone does and the difference is felt rather than
-  // seen. This is the one place the mobile build deliberately does NOT copy
-  // the web's hover ramp - there is no pointer to hover.
+  // seen. The one place this build deliberately does not copy the web's hover
+  // ramp: there is no pointer to hover.
   return (
-    <Pressable
-      onPress={onPress}
-      android_ripple={{ color: p.hover }}
-      style={{ borderRadius: radius.card }}
-    >
+    <Pressable onPress={onPress} android_ripple={{ color: p.hover }} style={{ borderRadius: radius.card }}>
       {body}
     </Pressable>
   );
+}
+
+/**
+ * A card with its title as a NOTCH: a filled badge sitting half over the top
+ * edge, which is the shape this family's settings pages are built from.
+ *
+ * The title is not a heading inside the card. A heading inside is a line of
+ * text that has to be told apart from the rows below it by size alone; the
+ * notch is a different object entirely, so the eye never has to.
+ */
+export function Section({
+  title,
+  hint,
+  hue,
+  children,
+}: {
+  title: string;
+  hint?: string;
+  /** This card's position among the page's cards, 0-based. */
+  hue?: number;
+  children: ReactNode;
+}) {
+  const { p, radius, accent, accentContrast, hueAt } = useTheme();
+  const fill = (hue !== undefined ? hueAt(hue) : undefined) ?? accent;
+  return (
+    <View style={styles.notchWrap}>
+      <View style={[styles.notchCard, { backgroundColor: p.surface, borderRadius: radius.card }]}>
+        {hint ? <Caption>{hint}</Caption> : null}
+        {children}
+      </View>
+      <View style={[styles.notch, { backgroundColor: fill, borderRadius: radius.pill }]}>
+        <Text style={[styles.notchText, { color: contrastOn(fill) || accentContrast }]} numberOfLines={1}>
+          {title}
+        </Text>
+      </View>
+    </View>
+  );
+}
+
+/** A row inside a card: label left, control flush right. */
+export function Row({
+  label,
+  hint,
+  control,
+  onPress,
+}: {
+  label: string;
+  hint?: string;
+  control?: ReactNode;
+  onPress?: () => void;
+}) {
+  const { p } = useTheme();
+  const body = (
+    <View style={styles.row}>
+      <View style={styles.rowText}>
+        <Text style={[styles.body, { color: p.text }]}>{label}</Text>
+        {hint ? <Text style={[styles.caption, { color: p.textMuted }]}>{hint}</Text> : null}
+      </View>
+      {control}
+    </View>
+  );
+  return onPress ? <TouchableOpacity onPress={onPress}>{body}</TouchableOpacity> : body;
 }
 
 export function Heading({ children }: { children: ReactNode }) {
@@ -141,6 +224,12 @@ export function Caption({ children }: { children: ReactNode }) {
   return <Text style={[styles.caption, { color: p.textMuted }]}>{children}</Text>;
 }
 
+/** A small uppercase label naming an axis above its control. */
+export function AxisLabel({ children }: { children: ReactNode }) {
+  const { p } = useTheme();
+  return <Text style={[styles.axis, { color: p.textSub }]}>{children}</Text>;
+}
+
 export function Mono({ children }: { children: ReactNode }) {
   const { p } = useTheme();
   return <Text style={[styles.mono, { color: p.textSub }]}>{children}</Text>;
@@ -148,176 +237,285 @@ export function Mono({ children }: { children: ReactNode }) {
 
 export type Tone = "accent" | "neutral" | "ok" | "fail" | "warn";
 
+/**
+ * A status word on a ground in that status's own colour.
+ *
+ * The ground is the status colour at low opacity and the ink is the solid: a
+ * fully filled badge in the fail colour reads as an alarm, and a target that
+ * has not been reached yet is not an alarm. No border - the tinted ground is
+ * what separates it, the way every surface in this language is separated.
+ */
 export function Badge({ label, tone = "neutral" }: { label: string; tone?: Tone }) {
-  const { p, radius } = useTheme();
-  const ink = { accent: p.accent, neutral: p.textMuted, ok: p.ok, fail: p.fail, warn: p.warn }[tone];
+  const { p, radius, accentInk } = useTheme();
+  const ink = {
+    accent: accentInk,
+    neutral: p.neutralInk,
+    ok: p.okInk,
+    fail: p.failInk,
+    warn: p.warnInk,
+  }[tone];
   return (
-    <View style={[styles.badge, { borderColor: ink, borderRadius: radius.pill }]}>
+    <View style={[styles.badge, { backgroundColor: softOn(ink, 0.15), borderRadius: radius.pill }]}>
       <Text style={[styles.badgeText, { color: ink }]}>{label}</Text>
     </View>
   );
 }
 
 /**
- * A button, and it answers the LABEL ENGINE like every control in this house.
+ * Every labelled button, and it answers the LABEL ENGINE like every control in
+ * this house.
  *
- * `text` shows the word, `textGlyph` the word and the symbol, `glyph` the
- * symbol alone, `reactive` the symbol until it is pressed. The one difference
- * from the web: `reactive` resolves to the symbol alone here rather than
- * revealing on hover, because a phone has no hover - a label that appears
- * under a pointer is a label nobody on a phone will ever see.
+ * The glyph is resolved from the button's own TRANSLATION KEY through the rule
+ * table the web interface uses, so a button wears the same mark on both
+ * surfaces and no call site has to name one. A key that matches no rule gets no
+ * glyph, and a button with no glyph keeps its word in every mode - an empty box
+ * somebody has to press to identify is the one failure worth ruling out.
  *
- * A button with NO glyph keeps its word in every mode. The alternative is an
- * empty box somebody has to press to identify, which is the same rule the
- * provider tiles follow on the web.
+ * `reactive` resolves to the symbol alone here rather than revealing on hover,
+ * because a phone has no hover: a label that appears under a pointer is a label
+ * nobody on a phone will ever see.
+ *
+ * `tone`:
+ *   - `accent` fills with the hue and takes contrasting ink.
+ *   - `neutral` keeps the neutral surface and ordinary text ink. It does NOT
+ *     put the hue in the ink: a coloured word on a grey ground reads as a link,
+ *     and the point of the colour engine is that the pressable THING carries
+ *     the colour.
+ *   - `danger` is neutral with the fail colour in the ink, and it ignores
+ *     `hue`: a delete button that turns teal because it is third in a palette
+ *     has stopped warning anybody.
  */
 export function Button({
   label,
-  glyph,
+  labelKey,
+  mark,
   onPress,
   tone = "neutral",
+  hue,
   busy,
   disabled,
   wide,
 }: {
   label: string;
-  glyph?: string;
+  /** The translation key behind `label`, which is what picks the glyph. */
+  labelKey?: string;
+  /** An explicit drawing, for the call sites that mean a particular one. */
+  mark?: ReactNode;
   onPress: () => void;
   tone?: "accent" | "neutral" | "danger";
+  /** This button's position among its siblings, for the rainbow. */
+  hue?: number;
   busy?: boolean;
   disabled?: boolean;
   wide?: boolean;
 }) {
-  const { p, radius, labels } = useTheme();
-  const fill = tone === "accent" ? p.accent : tone === "danger" ? p.fail : p.surface3;
-  const ink = tone === "accent" ? p.accentContrast : tone === "danger" ? p.background : p.text;
+  const { p, radius, labels, accent, hueAt } = useTheme();
+  const fill = (hue !== undefined ? hueAt(hue) : undefined) ?? accent;
+  const ground = tone === "accent" ? fill : p.surface2;
+  const ink =
+    tone === "accent" ? contrastOn(fill) : tone === "danger" ? p.failInk : p.text;
+
+  const name = labelKey ? glyphNameForKey(labelKey) : undefined;
+  const glyph = mark ?? (name ? <Glyph name={name} color={ink} /> : null);
   const showWord = labels === "text" || labels === "textGlyph" || !glyph;
   const showGlyph = Boolean(glyph) && labels !== "text";
+
   return (
     <Pressable
       onPress={onPress}
       disabled={disabled || busy}
+      accessibilityRole="button"
       accessibilityLabel={label}
       android_ripple={{ color: p.hover }}
       style={[
         styles.button,
         {
-          backgroundColor: fill,
+          backgroundColor: ground,
           borderRadius: radius.control,
-          opacity: disabled ? 0.5 : 1,
+          opacity: disabled || busy ? 0.45 : 1,
           flexGrow: wide === false ? 0 : 1,
         },
       ]}
     >
-      {busy ? (
-        <ActivityIndicator color={ink} size="small" />
-      ) : (
-        <View style={styles.buttonInner}>
-          {showGlyph ? <Text style={[styles.buttonGlyph, { color: ink }]}>{glyph}</Text> : null}
-          {showWord ? <Text style={[styles.buttonText, { color: ink }]}>{label}</Text> : null}
-        </View>
-      )}
+      {busy ? <ActivityIndicator color={ink} size="small" /> : showGlyph ? glyph : null}
+      {showWord ? (
+        <Text style={[styles.buttonText, { color: ink }]} numberOfLines={1}>
+          {label}
+        </Text>
+      ) : null}
     </Pressable>
   );
 }
 
-/** A labelled switch, which is what every yes-or-no question here looks like.
- *  Never a checkbox - the house rule, and on a phone a switch is also the
- *  larger target. */
+/**
+ * The switch: a track, a knob, filled when on. The same object the web
+ * interface draws, so somebody who flipped one there recognises this one.
+ *
+ * Both radii come from the shape engine. They were the platform's own `Switch`
+ * before, which follows Android's shape rather than the app's - so on `square`
+ * every other control in the app went rectangular and the switches stayed
+ * capsules.
+ */
+export function Switcher({
+  value,
+  onChange,
+  hue,
+  disabled,
+}: {
+  value: boolean;
+  onChange: (next: boolean) => void;
+  hue?: number;
+  disabled?: boolean;
+}) {
+  const { p, radius, accent, hueAt } = useTheme();
+  const on = (hue !== undefined ? hueAt(hue) : undefined) ?? accent;
+  return (
+    <TouchableOpacity
+      accessibilityRole="switch"
+      accessibilityState={{ checked: value, disabled: !!disabled }}
+      disabled={disabled}
+      onPress={() => onChange(!value)}
+      style={[
+        styles.track,
+        { borderRadius: radius.pill, backgroundColor: value ? on : p.surface3, opacity: disabled ? 0.45 : 1 },
+      ]}
+    >
+      {/* The knob is the page's own ground sitting on the track, not a fixed
+          white: it reads dark in dark mode and light in light mode. */}
+      <View
+        style={[
+          styles.knob,
+          { borderRadius: radius.pill, backgroundColor: p.background, alignSelf: value ? "flex-end" : "flex-start" },
+        ]}
+      />
+    </TouchableOpacity>
+  );
+}
+
+/** A labelled switch: the row and the control together, which is what every
+ *  yes-or-no question here looks like. Never a checkbox. */
 export function Toggle({
   label,
   hint,
   value,
   onChange,
   disabled,
+  hue,
 }: {
   label: string;
   hint?: string;
   value: boolean;
   onChange: (next: boolean) => void;
   disabled?: boolean;
+  hue?: number;
 }) {
-  const { p } = useTheme();
   return (
-    <View style={styles.toggle}>
-      <View style={styles.toggleText}>
-        <Text style={[styles.body, { color: p.text }]}>{label}</Text>
-        {hint ? <Caption>{hint}</Caption> : null}
-      </View>
-      <Switch
-        value={value}
-        onValueChange={onChange}
-        disabled={disabled}
-        trackColor={{ false: p.surface3, true: p.accent }}
-        thumbColor={value ? p.accentContrast : p.textMuted}
-      />
-    </View>
+    <Row
+      label={label}
+      hint={hint}
+      control={<Switcher value={value} onChange={onChange} disabled={disabled} hue={hue} />}
+    />
   );
 }
 
-/** One of a few choices, laid out as pills. The phone's version of a segmented
- *  control, and it wraps rather than scrolling: eight accent names on one line
- *  would be a line nobody can reach the end of. */
+/**
+ * The one horizontal selector: a groove one surface deeper, equal segments, and
+ * only the CHOSEN segment is a badge. Never per-segment borders.
+ *
+ * Each segment owns a palette position, because they are members of one set the
+ * way a tab strip's tabs are. Without that, the Theme and Corners rows stayed
+ * flat accent on a page where every card around them had gone plural.
+ */
 export function Choice<T extends string>({
   options,
   value,
   onChange,
+  disabled,
 }: {
   options: { value: T; label: string; colour?: string }[];
   value: T;
   onChange: (next: T) => void;
+  /** Dimmed and inert, for a control whose answer is coming from somewhere
+   *  else. It still SHOWS that answer, because hiding it would leave somebody
+   *  unable to see what their job is actually set to. */
+  disabled?: boolean;
 }) {
-  const { p, radius } = useTheme();
+  const { p, radius, accent, hueAt } = useTheme();
   return (
-    <View style={styles.choices}>
-      {options.map((option) => {
+    <View
+      pointerEvents={disabled ? "none" : "auto"}
+      style={[
+        styles.well,
+        { backgroundColor: p.surface2, borderRadius: radius.control },
+        disabled ? styles.dimmed : null,
+      ]}
+    >
+      {options.map((option, i) => {
         const on = option.value === value;
-        const fill = option.colour ?? p.accent;
+        const fill = option.colour ?? hueAt(i) ?? accent;
         return (
-          <Pressable
+          <TouchableOpacity
             key={option.value}
             onPress={() => onChange(option.value)}
-            android_ripple={{ color: p.hover }}
-            style={[
-              styles.choice,
-              {
-                borderRadius: radius.pill,
-                backgroundColor: on ? fill : p.surface2,
-                borderColor: on ? fill : p.border,
-              },
-            ]}
+            style={[styles.segment, { borderRadius: radius.control }, on ? { backgroundColor: fill } : null]}
           >
             <Text
+              numberOfLines={1}
               style={[
-                styles.choiceText,
+                styles.segmentText,
+                // Computed against the fill it actually landed on, never a
+                // fixed contrast: a palette position can be far lighter or
+                // darker than the accent, and reusing one answer is how white
+                // text ends up on a pale mint segment.
                 { color: on ? contrastOn(fill) : p.textSub },
               ]}
             >
               {option.label}
             </Text>
-          </Pressable>
+          </TouchableOpacity>
         );
       })}
     </View>
   );
 }
 
-/** A section of a settings page: a heading, an optional sentence, and rows. */
-export function Section({
-  title,
-  hint,
-  children,
+/**
+ * A colour swatch. The current one is marked by a RING - an inset gap in the
+ * card colour, then the ink - drawn as nested views rather than a border,
+ * because a border is a line and this language has none.
+ *
+ * Sized by the ROW rather than by a number here: eight swatches at a fixed size
+ * plus a label do not fit across a phone, and picking a smaller fixed number
+ * just moves the wrap to a narrower handset.
+ */
+export function Swatch({
+  hex,
+  selected,
+  onPress,
+  label,
 }: {
-  title: string;
-  hint?: string;
-  children: ReactNode;
+  hex: string;
+  selected: boolean;
+  onPress: () => void;
+  label: string;
 }) {
+  const { p, radius } = useTheme();
   return (
-    <Card>
-      <Title>{title}</Title>
-      {hint ? <Caption>{hint}</Caption> : null}
-      <View style={styles.section}>{children}</View>
-    </Card>
+    <TouchableOpacity
+      accessibilityLabel={label}
+      accessibilityRole="button"
+      onPress={onPress}
+      style={[styles.swatchRing, { borderRadius: radius.pill, backgroundColor: selected ? p.text : "transparent" }]}
+    >
+      <View
+        style={[
+          styles.swatchGap,
+          { borderRadius: radius.pill, backgroundColor: selected ? p.surface : "transparent" },
+        ]}
+      >
+        <View style={[styles.swatchFill, { borderRadius: radius.pill, backgroundColor: hex }]} />
+      </View>
+    </TouchableOpacity>
   );
 }
 
@@ -325,8 +523,8 @@ export function Section({
  * What an empty list says.
  *
  * Never a bare blank. An empty screen is indistinguishable from a broken one,
- * and on a phone there is no console to check - so every list that can be
- * empty says which of the two it is.
+ * and on a phone there is no console to check - so every list that can be empty
+ * says which of the two it is.
  */
 export function Empty({ title, detail }: { title: string; detail?: string }) {
   return (
@@ -354,42 +552,71 @@ export function Page({ children }: { children: ReactNode }) {
 const styles = StyleSheet.create({
   screen: { flex: 1 },
   page: { padding: space.lg, gap: space.md },
-  card: {
-    borderWidth: StyleSheet.hairlineWidth,
-    padding: space.lg,
-    gap: space.sm,
+  card: { padding: space.lg, gap: space.sm, overflow: "hidden" },
+  edge: { position: "absolute", left: 0, top: 0, bottom: 0, width: 4 },
+
+  // Room for the notch above: the badge is 22 tall and overlaps by 11.
+  notchWrap: { marginTop: space.md + 11 },
+  notchCard: { paddingTop: space.xl, paddingBottom: space.md, paddingHorizontal: space.lg, gap: space.sm },
+  notch: {
+    position: "absolute",
+    top: -11,
+    left: space.lg,
+    height: 22,
+    paddingHorizontal: space.md,
+    justifyContent: "center",
+    elevation: 3,
+    shadowColor: "#000",
+    shadowOpacity: 0.25,
+    shadowRadius: 3,
+    shadowOffset: { width: 0, height: 1 },
   },
-  section: { gap: space.md, marginTop: space.xs },
+  notchText: { fontSize: text.caption, fontWeight: "500", textTransform: "uppercase", letterSpacing: 1.2 },
+
+  row: { flexDirection: "row", alignItems: "center", gap: space.md, paddingVertical: space.sm },
+  rowText: { flex: 1, minWidth: 0, gap: 2 },
+
   heading: { fontSize: text.heading, fontWeight: "600" },
   title: { fontSize: text.title, fontWeight: "600" },
   body: { fontSize: text.body },
-  caption: { fontSize: text.caption },
+  caption: { fontSize: text.caption, lineHeight: 16 },
+  axis: { fontSize: text.caption, fontWeight: "500", textTransform: "uppercase", letterSpacing: 1.2 },
   mono: { fontFamily: "monospace", fontSize: text.caption },
-  badge: {
-    borderWidth: StyleSheet.hairlineWidth,
-    paddingHorizontal: space.sm,
-    paddingVertical: 2,
-    alignSelf: "flex-start",
-  },
-  badgeText: { fontSize: text.caption, fontWeight: "600" },
+
+  badge: { paddingHorizontal: 7, paddingVertical: 2, alignSelf: "flex-start", flexShrink: 0 },
+  badgeText: { fontSize: text.caption, fontWeight: "600", letterSpacing: 0.2 },
+
+  // ONE height and ONE gap for every labelled button. The gap matters: a row
+  // with none sets the glyph against the first letter and the two read as one
+  // smudge.
   button: {
     minHeight: TOUCH,
-    paddingHorizontal: space.lg,
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+    gap: space.sm,
+    paddingHorizontal: space.lg,
+    paddingVertical: space.md,
   },
-  buttonInner: { flexDirection: "row", alignItems: "center", gap: space.sm },
-  buttonGlyph: { fontSize: text.title },
-  buttonText: { fontSize: text.body, fontWeight: "600" },
-  toggle: { flexDirection: "row", alignItems: "center", gap: space.md, minHeight: TOUCH },
-  toggleText: { flex: 1, gap: 2 },
-  choices: { flexDirection: "row", flexWrap: "wrap", gap: space.sm },
-  choice: {
-    minHeight: 40,
-    paddingHorizontal: space.md,
-    justifyContent: "center",
-    borderWidth: StyleSheet.hairlineWidth,
-  },
-  choiceText: { fontSize: text.dense, fontWeight: "600" },
+  buttonText: { fontSize: text.body, fontWeight: "600", flexShrink: 1 },
+
+  track: { width: 36, height: 20, padding: 2, justifyContent: "center" },
+  knob: { width: 16, height: 16 },
+
+  // The groove takes the card's width and the segments divide it, rather than
+  // each segment being as wide as its own word. With four of them and a fixed
+  // minimum the last one simply ran off the edge of the card - and a segment
+  // nobody can see is an option nobody can choose.
+  well: { flexDirection: "row", padding: 3, gap: 2, alignSelf: "stretch" },
+  segment: { flex: 1, minWidth: 0, paddingVertical: 7, paddingHorizontal: 6, alignItems: "center" },
+  segmentText: { fontSize: text.dense, fontWeight: "500" },
+
+  swatchRing: { flex: 1, maxWidth: 32, aspectRatio: 1, alignItems: "center", justifyContent: "center" },
+  swatchGap: { width: "88%", height: "88%", alignItems: "center", justifyContent: "center" },
+  swatchFill: { width: "86%", height: "86%" },
+
+  dimmed: { opacity: 0.4 },
   empty: { padding: space.xxl, gap: space.sm, alignItems: "center" },
 });
+
+export { GLYPH };

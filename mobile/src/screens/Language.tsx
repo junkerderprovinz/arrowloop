@@ -1,7 +1,8 @@
 import { useNavigation } from "@react-navigation/native";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { LANGUAGES, useT } from "../i18n";
-import { space, text } from "../theme";
+import { flagEmoji } from "../../../web/src/lib/flagEmoji";
+import { contrastOn, space, text } from "../theme";
 import { Caption, Page, Title, useTheme } from "../ui";
 
 /**
@@ -20,7 +21,7 @@ import { Caption, Page, Title, useTheme } from "../ui";
 export function Language() {
   const nav = useNavigation();
   const { t, lang, setLang } = useT();
-  const { p, radius } = useTheme();
+  const { p, radius, accent } = useTheme();
 
   return (
     <Page>
@@ -43,14 +44,25 @@ export function Language() {
               style={[
                 styles.row,
                 {
-                  backgroundColor: on ? p.surface2 : p.surface,
-                  borderColor: on ? p.accent : p.border,
+                  // No border. The chosen row is a filled one, the way this
+                  // language separates every other surface: by shade.
+                  backgroundColor: on ? accent : p.surface,
                   borderRadius: radius.control,
                 },
               ]}
             >
-              <Text style={[styles.label, { color: p.text }]}>{language.label}</Text>
-              <Text style={[styles.code, { color: p.textMuted }]}>{language.code}</Text>
+              {/* The flag as the regional-indicator pair, which on Android IS
+                  a flag. The web draws these from a sprite because Windows
+                  renders the same two codepoints as a two-letter tag in its own
+                  emoji font - a Microsoft policy rather than a bug - and that
+                  constraint simply does not exist here. */}
+              <Text style={styles.flag}>{flagEmoji(language.flag)}</Text>
+              <Text style={[styles.label, { color: on ? contrastOn(accent) : p.text }]}>
+                {language.label}
+              </Text>
+              <Text style={[styles.code, { color: on ? contrastOn(accent) : p.textMuted }]}>
+                {language.code}
+              </Text>
             </Pressable>
           );
         })}
@@ -69,6 +81,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
+  flag: { fontSize: 20 },
   label: { fontSize: text.body, fontWeight: "600" },
   code: { fontSize: text.caption },
 });

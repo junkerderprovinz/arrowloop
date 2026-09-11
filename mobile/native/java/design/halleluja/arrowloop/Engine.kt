@@ -123,10 +123,20 @@ object Engine {
     }
 
     @Synchronized
-    fun start(context: Context) {
+    /**
+     * Start it, and report whether THIS call is the one that did.
+     *
+     * The answer matters because two things start the engine now: the screens,
+     * while somebody is looking at them, and the wake-up service, while a
+     * scheduled run is happening. Whichever arrives second must not stop the
+     * process the first one is using - a wake-up that fired while the app was
+     * open used to kill the engine underneath it, and the screens went blank
+     * mid-tap with "the engine exited with code 143" in the log.
+     */
+    fun start(context: Context): Boolean {
         if (answers()) {
             Log.i(TAG, "engine already answering on $ADDRESS")
-            return
+            return false
         }
         try {
             File(home(context), "engine.log").writeText("")
@@ -135,7 +145,7 @@ object Engine {
         val binary = binary(context)
         if (!binary.exists()) {
             note(context, "no engine at ${binary.absolutePath} - this build shipped without one")
-            return
+            return false
         }
         // Named in the log because all of it has been the answer at some point:
         // a file that is there and not executable, a build whose engine is for
@@ -184,7 +194,7 @@ object Engine {
         // traceback for, the log stays empty, and the screen reports thirty
         // seconds of silence without a reason. Watched on its own thread so
         // nothing here blocks the service's start.
-        val started = process ?: return
+        val started = process ?: return false
         Thread {
             val code = try {
                 started.waitFor()
@@ -200,6 +210,7 @@ object Engine {
                 note(context, "the engine exited with code $code$why")
             }
         }.apply { isDaemon = true }.start()
+        return true
     }
 
     /**

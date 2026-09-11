@@ -493,6 +493,24 @@ const lt: Translations = {
   'phone.jobOff': 'Išjungta',
   'phone.jobOffHint': 'Išjungta užduotis niekada nepasileidžia pati ir mygtuko negauna. Nauja užduotis sąmoningai taip prasideda: pirmas dalykas, kurį ką tik surinkta užduotis turėtų padaryti, yra niekas.',
   'phone.previewExplain': 'Kol nepaspausi mygtuko, niekas nepajudės. Štai ką padarytų vykdymas, apskaičiuota iš abiejų pusių būtent tokių, kokios jos yra dabar.',
+
+  // The second axis of a one-way job: what happens to everything the
+  // direction alone does not settle. Two of the three DELETE, so each
+  // carries a sentence saying exactly what it removes and what it
+  // leaves - a picker with three words and no explanation is how
+  // somebody mirrors the wrong way round.
+  'mode.label': 'Kas nutinka likusiam',
+  'mode.sync': 'Tik kopijuoti',
+  'mode.syncHint': 'Viskas, ką turi šaltinis, pereina į kitą pusę. Failas, kurį turi tik kita pusė, lieka tiksliai ten, kur yra, ir niekas už tave niekada netrinama.',
+  'mode.mirror': 'Veidrodis',
+  'mode.mirrorHint': 'Kita pusė tampa tikslia šaltinio kopija, todėl failas, kurio šaltinis neturi, ten ištrinamas. Pirma jis patenka į tos pusės šiukšlinę, o vykdymas, kuris pašalintų daugiau nei pusę visko, ką žino, sustoja ir tai pasako.',
+  'mode.move': 'Perkelti',
+  'mode.moveHint': 'Failas pereina į kitą pusę ir tada palieka šaltinį, taip telefonas siunčia kamerą aukštyn ir atgauna vietą. Originalas keliauja į šiukšlinę, o ne sunaikinamas, ir išeina tik tada, kai kopija tikrai atkeliavo.',
+  'mode.onlyOneWay': 'Tik vienakrypčiam darbui. Abu sprendžia, kuri pusė teisi, o darbas abiem kryptimis to nepasakė.',
+  'side.onDevice': 'Įrenginyje',
+  'defaults.follow': 'Imti numatytąjį',
+  'defaults.followHint': 'Imti tai iš nustatymų, o ne spręsti čia. Ten kartą pakeitus, keičiasi kiekviename darbe, kuris seka numatytuoju.',
+  'side.target': 'Paskirtis',
 }
 
 export default lt

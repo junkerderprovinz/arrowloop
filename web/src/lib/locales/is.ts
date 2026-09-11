@@ -493,6 +493,24 @@ const is: Translations = {
   'phone.jobOff': 'Slökkt',
   'phone.jobOffHint': 'Verk sem slökkt er á fer aldrei af stað sjálft og fær engan hnapp. Nýtt verk byrjar svona viljandi: það fyrsta sem nýskrifað verk ætti að gera er ekkert.',
   'phone.previewExplain': 'Ekkert hreyfist fyrr en þú ýtir á hnappinn. Þetta er það sem keyrsla myndi gera, reiknað út frá báðum hliðum nákvæmlega eins og þær eru núna.',
+
+  // The second axis of a one-way job: what happens to everything the
+  // direction alone does not settle. Two of the three DELETE, so each
+  // carries a sentence saying exactly what it removes and what it
+  // leaves - a picker with three words and no explanation is how
+  // somebody mirrors the wrong way round.
+  'mode.label': 'Hvað verður um afganginn',
+  'mode.sync': 'Aðeins afrita',
+  'mode.syncHint': 'Allt sem uppruninn hefur fer yfir. Skrá sem aðeins hin hliðin hefur liggur nákvæmlega þar sem hún er, og aldrei er neitt fjarlægt fyrir þig.',
+  'mode.mirror': 'Spegla',
+  'mode.mirrorHint': 'Hin hliðin verður nákvæmt afrit af upprunanum, svo skrá sem uppruninn hefur ekki er eytt þar. Hún fer fyrst í ruslafötu þeirrar hliðar, og keyrsla sem fjarlægði meira en helming alls sem hún þekkir stöðvast og segir frá.',
+  'mode.move': 'Færa',
+  'mode.moveHint': 'Skrá fer yfir og yfirgefur svo upprunann, þannig sendir sími myndavélina upp og fær plássið til baka. Frumritið fer í ruslafötuna í stað þess að eyðast, og fer fyrst þegar afritið er raunverulega komið.',
+  'mode.onlyOneWay': 'Aðeins fyrir einstefnuverk. Bæði ákveða hvor hliðin hefur rétt fyrir sér, og verk sem gengur í báðar áttir hefur ekki sagt það.',
+  'side.onDevice': 'Í tækinu',
+  'defaults.follow': 'Taka sjálfgefið',
+  'defaults.followHint': 'Sækja þetta í stillingarnar í stað þess að ákveða það hér. Breytt þar einu sinni breytist það í hverju verki sem fylgir sjálfgefnu.',
+  'side.target': 'Áfangastaður',
 }
 
 export default is

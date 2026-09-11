@@ -246,6 +246,18 @@ type Job struct {
 	// the answer.
 	Direction string `json:"direction,omitempty"`
 
+	// Mode is what a ONE-WAY job does beyond copying: "sync" (the default,
+	// which deletes nothing of its own), "mirror" (the destination becomes an
+	// exact copy, so a file the source never had is removed there) or "move"
+	// (a file leaves the source once it has landed on the other side).
+	//
+	// It is a second field rather than three more directions because it is a
+	// second question. A tool people compare this one against ships seven named
+	// modes, which are these two axes wearing seven names; keeping them apart
+	// is what stops the list growing to fifteen entries the day a third
+	// question turns up.
+	Mode string `json:"mode,omitempty"`
+
 	QuietPeriod string `json:"quietPeriod,omitempty"`
 	ModWindow   string `json:"modWindow,omitempty"`
 	Transfers   int    `json:"transfers,omitempty"`
@@ -287,6 +299,25 @@ type Job struct {
 // Every field is a pointer or a zero-means-unset type, so "the default says on
 // and this job says off" is a sentence the file can express.
 type Defaults struct {
+	// Direction and Mode are here because they are the pair somebody sets once
+	// for a whole phone - "everything goes up, and the space comes back" - and
+	// then wants every new job to start from. A job that names either keeps its
+	// own answer.
+	Direction string `json:"direction,omitempty"`
+	Mode      string `json:"mode,omitempty"`
+
+	// Schedule, for the same reason: "every night at three" is a decision
+	// about a machine far more often than about one folder.
+	//
+	// Watch and NoTrash are deliberately NOT here. Both are plain bools on the
+	// job, so "off" and "not mentioned" are the same value, and a default that
+	// switched either ON could never be switched off again for one job - which
+	// on NoTrash means losing the bins on a job that asked to keep them. The
+	// fix is to make those two pointers on the Job as well, and that is a
+	// change worth making on its own rather than as a side effect of adding
+	// defaults.
+	Schedule string `json:"schedule,omitempty"`
+
 	ModWindow    string `json:"modWindow,omitempty"`
 	Transfers    int    `json:"transfers,omitempty"`
 	EmptyDirs    *bool  `json:"emptyDirs,omitempty"`
@@ -321,6 +352,15 @@ type Defaults struct {
 // applyTo fills in what a job left unset. A job that states a value keeps it,
 // including when what it states is the zero one.
 func (d Defaults) applyTo(j *Job) {
+	if j.Direction == "" {
+		j.Direction = d.Direction
+	}
+	if j.Mode == "" {
+		j.Mode = d.Mode
+	}
+	if j.Schedule == "" {
+		j.Schedule = d.Schedule
+	}
 	if j.ModWindow == "" {
 		j.ModWindow = d.ModWindow
 	}
@@ -435,6 +475,27 @@ func Load(path string) (*Config, error) {
 		default:
 			return nil, fmt.Errorf("job %q says firstRun %q; it has to be left, right or merge", j.Name, j.FirstRun)
 		}
+		// The mode, checked the same way and for a sharper reason: two of the
+		// three DELETE. A spelling nobody recognises would fall through to the
+		// mode that deletes nothing, which is the safe direction to be wrong in
+		// - but somebody who wrote "spiegeln" and got a plain copy would find
+		// out weeks later, from a destination full of files they thought had
+		// been cleared out.
+		switch j.Mode {
+		case "", "sync", "mirror", "move":
+		default:
+			return nil, fmt.Errorf("job %q says mode %q; it has to be sync, mirror or move", j.Name, j.Mode)
+		}
+		// And neither of the two makes sense both ways. Mirroring both ways
+		// asks each side to be the authority on what the other may keep, and
+		// moving both ways is a job that empties each side into the other. A
+		// job that says both is refused rather than quietly run as one of them,
+		// because either guess deletes something.
+		if j.Mode != "" && j.Mode != "sync" && plan.ParseDirection(j.Direction) == plan.Both {
+			return nil, fmt.Errorf(
+				"job %q is set to %s and runs both ways; %s needs a one-way direction, because it decides which side is right",
+				j.Name, j.Mode, j.Mode)
+		}
 		// Named sets are folded into the job's own list here, once, so nothing
 		// downstream has to know sets exist. A name nobody defined is refused
 		// rather than ignored: a filter that silently matches nothing does not
@@ -536,6 +597,7 @@ func ParseSchedule(spec string) (cron.Schedule, error) {
 func (j Job) Options() (engine.Options, error) {
 	compare := plan.DefaultOptions()
 	compare.Direction = plan.ParseDirection(j.Direction)
+	compare.Mode = plan.ParseMode(j.Mode)
 
 	if j.QuietPeriod != "" {
 		d, err := time.ParseDuration(j.QuietPeriod)

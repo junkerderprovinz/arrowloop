@@ -493,6 +493,24 @@ const he: Translations = {
   'phone.jobOff': 'כבויה',
   'phone.jobOffHint': 'משימה כבויה לעולם אינה מתחילה מעצמה ואינה מקבלת כפתור. משימה חדשה מתחילה כך בכוונה: הדבר הראשון שמשימה שזה עתה הוקלדה צריכה לעשות הוא כלום.',
   'phone.previewExplain': 'שום דבר לא זז עד שתלחץ על הכפתור. זה מה שהרצה הייתה עושה, מחושב משני הצדדים בדיוק כפי שהם עכשיו.',
+
+  // The second axis of a one-way job: what happens to everything the
+  // direction alone does not settle. Two of the three DELETE, so each
+  // carries a sentence saying exactly what it removes and what it
+  // leaves - a picker with three words and no explanation is how
+  // somebody mirrors the wrong way round.
+  'mode.label': 'מה קורה לשאר',
+  'mode.sync': 'העתקה בלבד',
+  'mode.syncHint': 'כל מה שיש למקור עובר לצד השני. קובץ שיש רק לצד השני נשאר בדיוק היכן שהוא, ולעולם לא נמחק דבר במקומך.',
+  'mode.mirror': 'שיקוף',
+  'mode.mirrorHint': 'הצד השני הופך לעותק מדויק של המקור, ולכן קובץ שאין למקור נמחק שם. הוא נכנס תחילה לאשפה של אותו צד, והרצה שהייתה מסירה יותר ממחצית מכל מה שהיא מכירה נעצרת ואומרת זאת.',
+  'mode.move': 'העברה',
+  'mode.moveHint': 'קובץ עובר לצד השני ואז עוזב את המקור, כך שולח טלפון את המצלמה למעלה ומקבל את המקום בחזרה. המקור נכנס לאשפה במקום להיהרס, והוא עוזב רק אחרי שהעותק באמת הגיע.',
+  'mode.onlyOneWay': 'רק למשימה חד־כיוונית. שתיהן מחליטות איזה צד צודק, ומשימה שרצה לשני הכיוונים לא אמרה זאת.',
+  'side.onDevice': 'במכשיר',
+  'defaults.follow': 'לקחת את ברירת המחדל',
+  'defaults.followHint': 'לקחת את זה מההגדרות במקום להחליט כאן. שינוי שם פעם אחת משנה בכל משימה שהולכת אחרי ברירת המחדל.',
+  'side.target': 'יעד',
 }
 
 export default he

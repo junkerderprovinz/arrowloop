@@ -91,7 +91,7 @@ export function Plan() {
           count of chosen against total would be the same number twice. */}
       <Button
         label={t("jobs.runNow")}
-        glyph="▶"
+        labelKey="jobs.runNow"
         tone="accent"
         busy={running}
         onPress={async () => {

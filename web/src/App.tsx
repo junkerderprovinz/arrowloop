@@ -351,11 +351,13 @@ function Settings(props: LookProps) {
 
           Which is also why "make the groove bigger" could never land: a strip
           in a groove reads as one control with a slot, whatever size it is. */}
+      <div className="max-w-3xl">
       <Selector<SettingsSection>
         label={t('settings.section')}
         value={section}
         onChange={setSection}
         variant="chip"
+        fill
         // Glyphs on every segment (jdp: "Glyphen fehlen"). This strip carried
         // none, on my own reasoning that two of the three sections had an
         // obvious mark and the third did not. That was the wrong way round:
@@ -374,18 +376,21 @@ function Settings(props: LookProps) {
           { value: 'about', label: t('settings.about'), icon: <IconAbout /> },
         ]}
       />
+      </div>
       {/* A reading width, not the window's width. Without it a label sat at the
           far left of the card and its control a thousand pixels away at the
           right, which is a large part of why this page did not read like the
           rest of the house.
 
-          BombVault caps its own settings cards at the width of its tab strip,
-          and copying that literally is the trap: its strip has seven tabs and
-          this one has three, so the same rule produces a 230px column here and
-          stacks every selector vertically. Measured that, saw it, and took the
-          fixed width BombVault's own Settings.tsx uses elsewhere instead. Same
-          number, and it does not depend on how many tabs a page happens to
-          have. */}
+          The STRIP takes that width too, rather than the cards taking the
+          strip's. jdp: "die cards in den einstellungen so breit machen wie die
+          tabs darüber" - they have to line up, and there are two ways to get
+          there. Shrinking the cards to a four-tab strip is the one that does
+          not work: the strip is as wide as its own words, so the column would
+          change width the day a tab is renamed, and in a language with longer
+          words it would be a different page. Widening the strip fixes the same
+          misalignment against a number that is about reading rather than about
+          how many tabs a page happens to have. */}
       <div className="flex max-w-3xl flex-col gap-10">
         {section === 'general' ? (
           <General {...props} />

@@ -128,6 +128,9 @@ func report(p *plan.Plan) {
 			fmt.Printf("  move     %s: %s -> %s (%s)\n", act.Dst, act.OldDstPath, act.DstPath, act.Reason)
 		case plan.Copy:
 			fmt.Printf("  copy     %s -> %s: %s (%s)\n", act.Src, act.Dst, act.DstPath, act.Reason)
+		case plan.Relocate:
+			fmt.Printf("  move     %s -> %s: %s, then gone from %s (%s)\n",
+				act.Src, act.Dst, act.DstPath, act.Src, act.Reason)
 		case plan.Delete:
 			fmt.Printf("  trash    %s: %s (%s)\n", act.Dst, act.Path, act.Reason)
 		case plan.Conflict:

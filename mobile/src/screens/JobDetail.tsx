@@ -84,7 +84,7 @@ export function JobDetail() {
         <View style={styles.actions}>
           <Button
             label={job.running ? t("jobs.pause") : t("jobs.runNow")}
-            glyph={job.running ? "■" : "▶"}
+            labelKey={job.running ? "jobs.pause" : "jobs.runNow"}
             tone={job.running ? "neutral" : "accent"}
             busy={busy === "run"}
             disabled={job.disabled}
@@ -98,12 +98,12 @@ export function JobDetail() {
               around, so it is one tap from the job rather than buried. */}
           <Button
             label={t("jobs.preview")}
-            glyph="👁"
+            labelKey="jobs.preview"
             onPress={() => nav.navigate("Plan", { name: job.name })}
           />
           <Button
             label={t("jobs.check")}
-            glyph="✓"
+            labelKey="jobs.check"
             busy={busy === "check"}
             onPress={() => act("check", () => api.check(job.name))}
           />
@@ -145,7 +145,7 @@ export function JobDetail() {
         <View style={styles.actions}>
           <Button
             label={t("edit.editJob")}
-            glyph="✎"
+            labelKey="edit.editJob"
             tone="accent"
             onPress={() => nav.navigate("JobEdit", { name: job.name })}
           />

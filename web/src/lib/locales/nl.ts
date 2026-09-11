@@ -493,6 +493,24 @@ const nl: Translations = {
   'phone.jobOff': 'Uitgeschakeld',
   'phone.jobOffHint': 'Een uitgeschakelde taak start nooit vanzelf en krijgt geen knop. Een nieuwe taak begint expres zo: het eerste wat een net ingetypte taak zou moeten doen is niets.',
   'phone.previewExplain': 'Tot je op de knop drukt beweegt er niets. Dit is wat een run zou doen, uitgerekend vanuit beide kanten precies zoals ze nu zijn.',
+
+  // The second axis of a one-way job: what happens to everything the
+  // direction alone does not settle. Two of the three DELETE, so each
+  // carries a sentence saying exactly what it removes and what it
+  // leaves - a picker with three words and no explanation is how
+  // somebody mirrors the wrong way round.
+  'mode.label': 'Wat er met de rest gebeurt',
+  'mode.sync': 'Alleen kopiëren',
+  'mode.syncHint': 'Alles wat de bron heeft gaat over. Een bestand dat alleen de andere kant heeft blijft precies liggen waar het ligt, en er wordt nooit iets voor je verwijderd.',
+  'mode.mirror': 'Spiegelen',
+  'mode.mirrorHint': 'De andere kant wordt een exacte kopie van de bron, dus een bestand dat de bron niet heeft wordt daar verwijderd. Het gaat eerst naar de prullenbak van die kant, en een run die meer dan de helft van alles wat hij kent zou verwijderen stopt en zegt het.',
+  'mode.move': 'Verplaatsen',
+  'mode.moveHint': 'Een bestand gaat over en verlaat daarna de bron, zo stuurt een telefoon de camera omhoog en krijgt de ruimte terug. Het origineel gaat naar de prullenbak in plaats van vernietigd te worden, en het vertrekt pas als de kopie echt is aangekomen.',
+  'mode.onlyOneWay': 'Alleen voor een eenrichtingstaak. Beide bepalen welke kant gelijk heeft, en een taak die beide kanten op loopt heeft dat niet gezegd.',
+  'side.onDevice': 'Op het apparaat',
+  'defaults.follow': 'Standaard overnemen',
+  'defaults.followHint': 'Dit uit de instellingen halen in plaats van het hier te beslissen. Daar één keer gewijzigd verandert het mee in elke taak die de standaard volgt.',
+  'side.target': 'Een doel',
 }
 
 export default nl

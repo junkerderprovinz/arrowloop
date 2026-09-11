@@ -135,7 +135,7 @@ export function TargetEdit() {
         >
           <Button
             label={t("help.authOauth")}
-            glyph="↗"
+            labelKey="help.authOauth"
             onPress={() => Linking.openURL(provider.authUrl!)}
           />
         </Section>
@@ -166,7 +166,7 @@ export function TargetEdit() {
       {error ? <Body>{error}</Body> : null}
 
       <View style={styles.actions}>
-        <Button label={t("targets.save")} glyph="✓" tone="accent" busy={saving} onPress={save} />
+        <Button label={t("targets.save")} labelKey="targets.save" tone="accent" busy={saving} onPress={save} />
         <Button label={t("targets.cancel")} onPress={() => nav.goBack()} />
       </View>
     </Page>

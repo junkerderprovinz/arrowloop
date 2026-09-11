@@ -493,6 +493,24 @@ const ja: Translations = {
   'phone.jobOff': 'オフ',
   'phone.jobOffHint': 'オフのジョブは自分では決して始まらず、ボタンも出ません。新しいジョブはわざとこの状態で始まります。入力したばかりのジョブが最初にすべきことは、何もしないことです。',
   'phone.previewExplain': 'ボタンを押すまで何も動きません。これは実行したらどうなるかで、両側の今の状態から計算したものです。',
+
+  // The second axis of a one-way job: what happens to everything the
+  // direction alone does not settle. Two of the three DELETE, so each
+  // carries a sentence saying exactly what it removes and what it
+  // leaves - a picker with three words and no explanation is how
+  // somebody mirrors the wrong way round.
+  'mode.label': '残りはどうなるか',
+  'mode.sync': 'コピーだけ',
+  'mode.syncHint': '元の側にあるものはすべて向こうへ渡ります。向こうにしかないファイルはそのままの場所に残り、あなたの代わりに何かが消されることはありません。',
+  'mode.mirror': 'ミラー',
+  'mode.mirrorHint': '向こう側が元の側とまったく同じになるので、元の側にないファイルはそこで削除されます。まずその側のごみ箱に入り、知っているものの半分以上を消してしまう実行は止まって、そう伝えます。',
+  'mode.move': '移動',
+  'mode.moveHint': 'ファイルは向こうへ渡り、そのあと元の側から消えます。カメラの中身を上げて空き容量を取り戻す、という携帯のいつものやり方です。元のファイルは破棄されずごみ箱へ入り、コピーが本当に届いてからでなければ消えません。',
+  'mode.onlyOneWay': '一方向のジョブだけです。どちらもどちらの側が正しいかを決めるもので、両方向のジョブはそれを言っていません。',
+  'side.onDevice': 'この端末の中',
+  'defaults.follow': '既定を使う',
+  'defaults.followHint': 'ここで決めるかわりに設定から取ります。設定で一度変えれば、既定に従うすべてのジョブが一緒に変わります。',
+  'side.target': '保存先',
 }
 
 export default ja

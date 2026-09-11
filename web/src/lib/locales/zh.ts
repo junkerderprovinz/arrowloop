@@ -493,6 +493,24 @@ const zh: Translations = {
   'phone.jobOff': '已关闭',
   'phone.jobOffHint': '关闭的任务从不自行开始，也不会出现按钮。新任务故意从这个状态开始：一个刚刚敲进去的任务，第一件该做的事就是什么都不做。',
   'phone.previewExplain': '按下按钮之前什么都不会动。这是一次运行会做的事，按两边此刻的样子算出来的。',
+
+  // The second axis of a one-way job: what happens to everything the
+  // direction alone does not settle. Two of the three DELETE, so each
+  // carries a sentence saying exactly what it removes and what it
+  // leaves - a picker with three words and no explanation is how
+  // somebody mirrors the wrong way round.
+  'mode.label': '剩下的怎么办',
+  'mode.sync': '只复制',
+  'mode.syncHint': '来源有的都会过去。只有另一边才有的文件原地不动，也绝不会替你删掉任何东西。',
+  'mode.mirror': '镜像',
+  'mode.mirrorHint': '另一边会变成来源的精确副本，所以来源没有的文件会在那边被删掉。它会先进那一边的回收站，而一次会删掉已知内容一半以上的运行会停下来并说明。',
+  'mode.move': '移动',
+  'mode.moveHint': '文件过去之后就离开来源，手机把相机里的东西传上去、把空间腾回来，靠的就是这个。原件进回收站而不是被销毁，而且只有副本真的到了才会离开。',
+  'mode.onlyOneWay': '只适用于单向任务。这两种都要决定哪一边说了算，而双向任务并没有说。',
+  'side.onDevice': '在本机上',
+  'defaults.follow': '沿用默认',
+  'defaults.followHint': '从设置里取，而不是在这里决定。在那里改一次，所有沿用默认的任务都跟着改。',
+  'side.target': '一个目标',
 }
 
 export default zh

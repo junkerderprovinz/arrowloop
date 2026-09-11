@@ -7,16 +7,18 @@ import android.util.Log
 import java.io.File
 
 /**
- * Bring the engine back after a reboot, but only if it has something to do.
+ * Put the alarm clock back after a reboot.
  *
- * A scheduled sync that stops existing when the phone restarts is a scheduled
- * sync nobody can rely on, and a phone restarts more often than anybody thinks:
- * an update, a flat battery, a crash.
+ * It used to start the engine, which meant a notification from the first second
+ * after every restart. Now it arms the wake-ups and nothing runs at all until
+ * one of them fires - the periodic entry survives a reboot on its own, but the
+ * content trigger cannot be persisted (Android refuses the combination), so
+ * without this the camera would stop being watched at the first restart and
+ * nothing would say so.
  *
- * The check for a configured job is what keeps this from being rude. A freshly
- * installed app that nobody has set up yet has no reason to hold a foreground
- * service and a notification through every boot, and starting one anyway is the
- * behaviour that gets an app uninstalled.
+ * The check for a configured job stays, and means more than it did. An app
+ * nobody has set up has no schedule to keep, so arming a wake-up for it would
+ * be spending somebody's battery on a question with no answer.
  */
 class BootReceiver : BroadcastReceiver() {
 
@@ -24,9 +26,10 @@ class BootReceiver : BroadcastReceiver() {
         if (intent.action != Intent.ACTION_BOOT_COMPLETED) return
         if (!hasWork(context)) {
             Log.i("ArrowLoop", "booted with no job configured, staying out of the way")
+            Waker.disarm(context)
             return
         }
-        EngineService.start(context)
+        Waker.arm(context)
     }
 
     /**

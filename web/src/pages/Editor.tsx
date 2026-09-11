@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import { Field, Lines, Text } from '../components/Field'
+import { Field, Lines, Text, Choice } from '../components/Field'
 import { ToggleRow } from '../components/ToggleRow'
 import { api, type RawJob } from '../lib/api'
 import { DirectionSwitch } from '../components/Direction'
@@ -383,7 +383,12 @@ export function JobForm({
           <div className="flex shrink-0 flex-col gap-1.5 pt-[1.3rem]">
             <DirectionSwitch
               direction={job.direction ?? 'both'}
-              onChange={(v) => patch({ direction: v })}
+              // Picking two ways takes the mode with it. Neither mirror nor
+              // move means anything without a source side, and leaving a
+              // stored "mirror" behind a two-way direction is a job the engine
+              // then refuses to load - a setting nobody can see, breaking a
+              // file they can.
+              onChange={(v) => patch({ direction: v, mode: v === 'both' ? undefined : job.mode })}
               hint={t('direction.hint')}
             />
           </div>
@@ -397,6 +402,38 @@ export function JobForm({
             />
           </div>
         </div>
+
+        {/* The second axis, and it only exists once a side has been named the
+            source. Two of the three modes DELETE, so the chosen one's sentence
+            is shown rather than hidden behind a tooltip: a row of three words
+            is how somebody mirrors the wrong way round. */}
+        {(job.direction ?? 'both') !== 'both' && (
+          // The explanation goes in the bubble, not on the page: the house
+          // rule, and the guard over it caught this the first time round. The
+          // bubble follows the CHOSEN mode, so the mark beside the label always
+          // explains what is actually set rather than the three things it could
+          // have been.
+          <Field
+            label={t('mode.label')}
+            hint={
+              job.mode === 'mirror'
+                ? t('mode.mirrorHint')
+                : job.mode === 'move'
+                  ? t('mode.moveHint')
+                  : t('mode.syncHint')
+            }
+          >
+            <Choice
+              value={job.mode ?? 'sync'}
+              onChange={(v) => patch({ mode: v })}
+              options={[
+                { value: 'sync', label: t('mode.sync') },
+                { value: 'mirror', label: t('mode.mirror') },
+                { value: 'move', label: t('mode.move') },
+              ]}
+            />
+          </Field>
+        )}
 
         {/* The quiet period sits BESIDE the schedule, not under it. Both answer
             "when does this run", and a field alone on a row below reads as its

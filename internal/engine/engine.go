@@ -234,7 +234,7 @@ func Prepare(ctx context.Context, ends apply.Ends, db *state.DB, opt Options) (*
 	// After the directories, so a one-way job drops the folder work on the
 	// protected side too, and before the unsupported report, which is a report
 	// about both sides regardless of which one may be written.
-	plan.Enforce(p, compare.Direction)
+	plan.Enforce(p, compare.Direction, compare.Mode)
 
 	// Whatever the backend refuses to carry has to be said out loud. rclone
 	// drops symlinks and special files from its listing after a single log

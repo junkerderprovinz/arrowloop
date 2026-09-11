@@ -2,18 +2,20 @@ import { useNavigation } from "@react-navigation/native";
 import { useCallback, useEffect, useState } from "react";
 import { AppState, Linking, PermissionsAndroid, Platform, StyleSheet, View } from "react-native";
 import Constants from "expo-constants";
+import { api } from "../api";
 import { engine, type DevicePolicy } from "../engine";
 import { useT } from "../i18n";
 import type { Nav, SettingsStack } from "../nav";
-import { ACCENTS, space } from "../theme";
+import { ACCENTS, RAINBOW, space } from "../theme";
 import {
   setAppearance,
   useAppearance,
+  useEngineSettings,
   type LabelMode,
   type Shape,
   type ThemeChoice,
 } from "../settings";
-import { Body, Button, Caption, Choice, Page, Section, Title, Toggle } from "../ui";
+import { AxisLabel, Body, Button, Caption, Choice, Page, Section, Swatch, Title, Toggle } from "../ui";
 
 /**
  * Everything that is a setting, in the order somebody reaches for it.
@@ -44,6 +46,13 @@ export function Settings() {
   const [doze, setDoze] = useState<boolean | null>(null);
   const [running, setRunning] = useState<boolean | null>(null);
   const [policy, setPolicy] = useState<DevicePolicy | null>(null);
+  const [version, setVersion] = useState<string | null>(null);
+
+  // The engine's own defaults, read and written through its settings.
+  const { settings, update } = useEngineSettings(true);
+  const defaults = (settings?.defaults ?? {}) as Record<string, unknown>;
+  const saveDefaults = (patch: Record<string, unknown>) =>
+    update({ defaults: { ...defaults, ...patch } });
 
   const refresh = useCallback(async () => {
     const [access, can, alive, device, exempt] = await Promise.all([
@@ -59,6 +68,9 @@ export function Settings() {
     setPolicy(device);
     setDoze(exempt);
     setNotify(await notificationsGranted());
+    // Asked rather than assumed, and allowed to fail: a stopped engine is a
+    // real state and the card still has to draw.
+    api.capabilities().then((c) => setVersion(c.version), () => setVersion(null));
   }, []);
 
   useEffect(() => {
@@ -92,7 +104,10 @@ export function Settings() {
 
   return (
     <Page>
-      <Section title={t("look.theme")}>
+      {/* The look, as one card per axis and each card owning a palette
+          position: they are members of one set the way a tab strip's tabs are,
+          so with the rainbow on they go plural together. */}
+      <Section title={t("look.theme")} hue={0}>
         <Choice<ThemeChoice>
           value={look.theme}
           onChange={(theme) => setAppearance({ theme })}
@@ -104,7 +119,7 @@ export function Settings() {
         />
       </Section>
 
-      <Section title={t("look.corners")} hint={t("look.cornersHint")}>
+      <Section title={t("look.corners")} hint={t("look.cornersHint")} hue={1}>
         <Choice<Shape>
           value={look.shape}
           onChange={(shape) => setAppearance({ shape })}
@@ -116,29 +131,58 @@ export function Settings() {
         />
       </Section>
 
-      <Section title={t("look.colors")} hint={t("look.rainbowHint")}>
-        <Caption>{t("look.accent")}</Caption>
-        <Choice
-          value={look.accent}
-          onChange={(accent) => setAppearance({ accent })}
-          options={ACCENTS.map((a) => ({ value: a.hex, label: a.name, colour: a.hex }))}
-        />
+      <Section title={t("look.colors")} hue={2}>
+        {/* Label left, swatches right, ONE row. The colours used to be a
+            wrapping strip of named pills, which is a list of words about
+            colours rather than the colours themselves - and it took four lines
+            to say what nine circles say at a glance. The row divides whatever
+            width it has between nine equal things, so it fits on a narrow
+            handset without a smaller fixed size that would only move the wrap
+            to a narrower one. */}
+        <View style={styles.axisRow}>
+          <Body muted={look.rainbow}>{t("look.accent")}</Body>
+          {/* Dimmed and inert while the rainbow is on: the mode replaces the
+              accent for everything that is one member of a set, so choosing an
+              accent under it would be choosing a colour most of the screen has
+              stopped using. */}
+          <View style={[styles.swatches, look.rainbow ? styles.dimmed : null]} pointerEvents={look.rainbow ? "none" : "auto"}>
+            {ACCENTS.map((a) => (
+              <Swatch
+                key={a.hex}
+                hex={a.hex}
+                label={a.name}
+                selected={a.hex.toLowerCase() === look.accent.toLowerCase()}
+                onPress={() => setAppearance({ accent: a.hex })}
+              />
+            ))}
+          </View>
+        </View>
         <Toggle
           label={t("look.rainbowOn")}
           hint={t("look.rainbowHint")}
           value={look.rainbow}
+          hue={0}
           onChange={(rainbow) => setAppearance({ rainbow })}
         />
         <Toggle
           label={t("look.rainbowReactive")}
           hint={t("look.reactiveHint")}
           value={look.rainbowReactive}
+          hue={1}
           disabled={!look.rainbow}
           onChange={(rainbowReactive) => setAppearance({ rainbowReactive })}
         />
+        {/* The palette itself, shown rather than described, and dimmed while
+            the mode is off. A row of eight colours says what "rainbow" means
+            faster than any sentence about it. */}
+        <View style={[styles.swatches, !look.rainbow ? styles.dimmed : null]} pointerEvents="none">
+          {RAINBOW.map((hex, i) => (
+            <Swatch key={`${hex}-${i}`} hex={hex} label={hex} selected={false} onPress={() => {}} />
+          ))}
+        </View>
       </Section>
 
-      <Section title={t("look.labels")} hint={t("look.labelsHint")}>
+      <Section title={t("look.labels")} hint={t("look.labelsHint")} hue={3}>
         <Choice<LabelMode>
           value={look.labels}
           onChange={(labels) => setAppearance({ labels })}
@@ -151,11 +195,46 @@ export function Settings() {
         />
       </Section>
 
-      <Section title={t("look.language")}>
-        <Button label={langName(lang)} glyph="🌐" onPress={() => nav.navigate("Language")} />
+      <Section title={t("look.language")} hue={4}>
+        <Button label={langName(lang)} onPress={() => nav.navigate("Language")} />
       </Section>
 
-      <Section title={t("phone.schedule")}>
+      {/* What a new job starts from. The engine has carried defaults for a
+          while and they were only reachable by editing the file: a job that
+          says nothing about a setting takes the default, and a job that says
+          something keeps its own answer. Setting the pair here once is the
+          difference between "everything on this phone goes up and the space
+          comes back" being one decision or one per job. */}
+      <Section title={t("engine.defaults")} hint={t("defaults.followHint")} hue={4}>
+        <AxisLabel>{t("direction.label")}</AxisLabel>
+        <Choice
+          value={String(defaults.direction ?? "both")}
+          onChange={(direction) =>
+            saveDefaults({ direction, mode: direction === "both" ? "sync" : defaults.mode })
+          }
+          options={[
+            { value: "both", label: t("direction.both") },
+            { value: "leftToRight", label: t("direction.toRight") },
+            { value: "rightToLeft", label: t("direction.toLeft") },
+          ]}
+        />
+        <AxisLabel>{t("mode.label")}</AxisLabel>
+        {(defaults.direction ?? "both") === "both" ? (
+          <Body muted>{t("mode.onlyOneWay")}</Body>
+        ) : (
+          <Choice
+            value={String(defaults.mode ?? "sync")}
+            onChange={(mode) => saveDefaults({ mode })}
+            options={[
+              { value: "sync", label: t("mode.sync") },
+              { value: "mirror", label: t("mode.mirror") },
+              { value: "move", label: t("mode.move") },
+            ]}
+          />
+        )}
+      </Section>
+
+      <Section title={t("phone.schedule")} hue={5}>
         <Toggle
           label={t("phone.charging")}
           hint={t("phone.chargingHint")}
@@ -173,7 +252,7 @@ export function Settings() {
         {held ? <Body>{held}</Body> : null}
       </Section>
 
-      <Section title={t("phone.access")}>
+      <Section title={t("phone.access")} hue={6}>
         {granted ? (
           <Body>{t("phone.accessOn")}</Body>
         ) : possible ? (
@@ -181,7 +260,7 @@ export function Settings() {
             <Body>{t("phone.accessOff")}</Body>
             <Button
               label={t("phone.accessAsk")}
-              glyph="🔓"
+              labelKey="phone.accessAsk"
               tone="accent"
               onPress={engine.openStorageSettings}
             />
@@ -191,7 +270,7 @@ export function Settings() {
         )}
       </Section>
 
-      <Section title={t("phone.notify")}>
+      <Section title={t("phone.notify")} hue={7}>
         {notify ? (
           <Body>{t("phone.notifyOn")}</Body>
         ) : (
@@ -199,7 +278,7 @@ export function Settings() {
             <Body>{t("phone.notifyOff")}</Body>
             <Button
               label={t("phone.notifyAsk")}
-              glyph="🔔"
+              labelKey="phone.notifyAsk"
               tone="accent"
               onPress={() => askNotifications().then(refresh)}
             />
@@ -207,7 +286,7 @@ export function Settings() {
         )}
       </Section>
 
-      <Section title={t("phone.doze")}>
+      <Section title={t("phone.doze")} hue={0}>
         {doze ? (
           <Body>{t("phone.dozeOn")}</Body>
         ) : (
@@ -215,7 +294,7 @@ export function Settings() {
             <Body>{t("phone.dozeOff")}</Body>
             <Button
               label={t("phone.dozeAsk")}
-              glyph="⏱"
+              labelKey="phone.dozeAsk"
               tone="accent"
               onPress={() => engine.askBatteryExemption().catch(() => {})}
             />
@@ -223,19 +302,19 @@ export function Settings() {
         )}
       </Section>
 
-      <Section title={t("engine.title")} hint={t("phone.engineHint")}>
+      <Section title={t("engine.title")} hint={t("phone.engineHint")} hue={1}>
         <Body>{running ? t("phone.engineOn") : t("phone.engineOff")}</Body>
         <View style={styles.actions}>
           {running ? (
             <Button
               label={t("phone.engineStop")}
-              glyph="■"
+              labelKey="phone.engineStop"
               onPress={() => engine.stop().then(refresh)}
             />
           ) : (
             <Button
               label={t("phone.engineStart")}
-              glyph="▶"
+              labelKey="phone.engineStart"
               tone="accent"
               onPress={() => engine.start().then(refresh)}
             />
@@ -243,13 +322,19 @@ export function Settings() {
         </View>
       </Section>
 
-      <Section title={t("settings.about")}>
-        <Title>{`ArrowLoop ${Constants.expoConfig?.version ?? "?"}`}</Title>
+      <Section title={t("settings.about")} hue={2}>
+        {/* The ENGINE's version, not the app manifest's. They are two numbers
+            for one program and only one of them is stamped by the build: the
+            manifest's was typed once and sat at 0.1.0 while the engine beside
+            it reported v0.7.0, so the one card whose whole job is saying what
+            you are looking at was saying the wrong thing. The manifest number
+            is the fallback for a build with no engine to ask. */}
+        <Title>{`ArrowLoop ${version ?? Constants.expoConfig?.version ?? "?"}`}</Title>
         <Caption>{t("about.body")}</Caption>
         <View style={styles.actions}>
           <Button
             label={t("about.repo")}
-            glyph="↗"
+            labelKey="about.repo"
             onPress={() => Linking.openURL("https://github.com/junkerderprovinz/arrowloop")}
           />
         </View>
@@ -306,4 +391,10 @@ function langName(code: string): string {
 
 const styles = StyleSheet.create({
   actions: { flexDirection: "row", gap: space.sm },
+  axisRow: { flexDirection: "row", alignItems: "center", gap: space.md, paddingVertical: space.sm },
+  // `flex: 1` with the swatches' own maxWidth: the row takes what is left
+  // after the label and divides it equally, which is what keeps nine circles
+  // on one line at every handset width.
+  swatches: { flex: 1, flexDirection: "row", alignItems: "center", gap: 2, justifyContent: "flex-end" },
+  dimmed: { opacity: 0.35 },
 });

@@ -493,6 +493,24 @@ const tr: Translations = {
   'phone.jobOff': 'Kapalı',
   'phone.jobOffHint': 'Kapalı bir iş asla kendiliğinden başlamaz ve düğme de almaz. Yeni bir iş bilerek böyle başlar: daha yeni yazılmış bir işin yapması gereken ilk şey hiçbir şeydir.',
   'phone.previewExplain': 'Düğmeye basana kadar hiçbir şey kıpırdamaz. Bu, bir çalışmanın yapacağı şeydir, iki taraftan da tam şu andaki hallerine göre hesaplanmıştır.',
+
+  // The second axis of a one-way job: what happens to everything the
+  // direction alone does not settle. Two of the three DELETE, so each
+  // carries a sentence saying exactly what it removes and what it
+  // leaves - a picker with three words and no explanation is how
+  // somebody mirrors the wrong way round.
+  'mode.label': 'Geri kalanına ne olur',
+  'mode.sync': 'Sadece kopyala',
+  'mode.syncHint': 'Kaynakta ne varsa karşıya geçer. Yalnızca öteki tarafta olan bir dosya tam olduğu yerde kalır ve senin adına asla bir şey silinmez.',
+  'mode.mirror': 'Aynala',
+  'mode.mirrorHint': 'Öteki taraf kaynağın birebir kopyası olur, yani kaynakta olmayan bir dosya orada silinir. Önce o tarafın çöp kutusuna gider, ve bildiği her şeyin yarısından fazlasını kaldıracak bir çalışma durur ve bunu söyler.',
+  'mode.move': 'Taşı',
+  'mode.moveHint': 'Bir dosya karşıya geçer ve sonra kaynaktan ayrılır, bir telefon kamerayı böyle yukarı gönderir ve yeri geri alır. Özgün dosya yok edilmek yerine çöp kutusuna gider ve ancak kopya gerçekten vardığında ayrılır.',
+  'mode.onlyOneWay': 'Yalnızca tek yönlü bir iş için. İkisi de hangi tarafın haklı olduğunu belirler, iki yönlü çalışan bir iş ise bunu söylememiştir.',
+  'side.onDevice': 'Cihazda',
+  'defaults.follow': 'Varsayılanı al',
+  'defaults.followHint': 'Bunu burada karar vermek yerine ayarlardan almak. Orada bir kez değiştirildiğinde, varsayılanı izleyen her işte birlikte değişir.',
+  'side.target': 'Bir hedef',
 }
 
 export default tr

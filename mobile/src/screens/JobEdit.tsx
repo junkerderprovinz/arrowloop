@@ -6,6 +6,7 @@ import { Field } from "../fields";
 import { useT } from "../i18n";
 import type { JobsStack, Nav } from "../nav";
 import { space } from "../theme";
+import { sideName } from "../sides";
 import { Body, Button, Caption, Choice, Empty, Page, Section, Toggle } from "../ui";
 
 /**
@@ -55,6 +56,11 @@ export function JobEdit() {
       (e: Error) => setError(e.message),
     );
   }, [editing, t]);
+
+  // A job follows the defaults for as long as it says nothing itself. That is
+  // the engine's own rule rather than a second one here: applyTo fills in only
+  // what a job left unset.
+  const follows = job?.direction === undefined && job?.mode === undefined;
 
   const set = useCallback((patch: Partial<JobConfig>) => {
     setJob((old) => (old ? { ...old, ...patch } : old));
@@ -116,29 +122,87 @@ export function JobEdit() {
         <Field label={t("edit.name")} value={job.name} onChange={(name) => set({ name })} />
       </Section>
 
-      <Section title={t("direction.label")} hint={t("edit.sideHint")}>
+      <Section title={t("direction.label")} hint={t("edit.sideHint")} hue={1}>
+        {/* Following the default is a STATE, not a link that appears once
+            something has been overridden, so it gets the control every state in
+            this house gets. On, the job says nothing about either setting and
+            the engine fills both in from the settings; off, the job's own
+            answers are written down, starting from whatever it is doing now so
+            nothing visibly jumps. */}
+        <Toggle
+          label={t("defaults.follow")}
+          hint={t("defaults.followHint")}
+          value={follows}
+          hue={0}
+          onChange={(on) =>
+            on
+              ? set({ direction: undefined, mode: undefined })
+              : set({ direction: job.direction ?? "both", mode: job.mode ?? "sync" })
+          }
+        />
+        {/* Each side is named after what it IS, not after which column it
+            would sit in on a desk. "Left" and "right" mean nothing on a phone,
+            where there are no two columns - and naming them "local" and
+            "cloud" the way a phone-only tool does would be a lie the first
+            time somebody points both sides at the same machine. A path on the
+            handset says so; a target says its own name. */}
         <Field
-          label={t("edit.left")}
+          label={sideName(job.left, t)}
           value={job.left}
           onChange={(left) => set({ left })}
           placeholder="/storage/emulated/0/DCIM"
         />
         <Choice
           value={job.direction ?? "both"}
-          onChange={(direction) => set({ direction })}
+          disabled={follows}
+          onChange={(direction) => set({ direction, mode: direction === "both" ? "sync" : job.mode })}
           options={[
-            { value: "both", label: `↔ ${t("direction.both")}` },
-            { value: "toRight", label: `→ ${t("direction.toRight")}` },
-            { value: "toLeft", label: `← ${t("direction.toLeft")}` },
+            // The engine's own spellings. They used to be "toRight" and
+            // "toLeft" here, which ParseDirection does not recognise at all -
+            // so it fell through to its safe default and every one-way job on
+            // this app quietly ran both ways.
+            { value: "both", label: t("direction.both") },
+            { value: "leftToRight", label: t("direction.toRight") },
+            { value: "rightToLeft", label: t("direction.toLeft") },
           ]}
         />
         <Field
-          label={t("edit.right")}
+          label={sideName(job.right, t, "target")}
           value={job.right}
           onChange={(right) => set({ right })}
           placeholder="nextcloud:Photos"
         />
         <Caption>{t("direction.hint")}</Caption>
+      </Section>
+
+      {/* The second axis, and it only exists once a side has been named the
+          source. Two of the three modes DELETE, so each carries a sentence
+          saying what it removes and what it leaves: a picker of three words
+          is how somebody mirrors the wrong way round. */}
+      <Section title={t("mode.label")} hue={2}>
+        {(job.direction ?? "both") === "both" ? (
+          <Body muted>{t("mode.onlyOneWay")}</Body>
+        ) : (
+          <>
+            <Choice
+              value={job.mode ?? "sync"}
+              disabled={follows}
+              onChange={(mode) => set({ mode })}
+              options={[
+                { value: "sync", label: t("mode.sync") },
+                { value: "mirror", label: t("mode.mirror") },
+                { value: "move", label: t("mode.move") },
+              ]}
+            />
+            <Caption>
+              {job.mode === "mirror"
+                ? t("mode.mirrorHint")
+                : job.mode === "move"
+                  ? t("mode.moveHint")
+                  : t("mode.syncHint")}
+            </Caption>
+          </>
+        )}
       </Section>
 
       <Section title={t("edit.schedule")} hint={t("edit.scheduleHint")}>
@@ -211,9 +275,9 @@ export function JobEdit() {
       {error ? <Body>{error}</Body> : null}
 
       <View style={styles.actions}>
-        <Button label={t("edit.save")} glyph="✓" tone="accent" busy={saving} onPress={save} />
+        <Button label={t("edit.save")} labelKey="edit.save" tone="accent" busy={saving} onPress={save} />
         {editing ? (
-          <Button label={t("edit.remove")} glyph="🗑" tone="danger" onPress={remove} wide={false} />
+          <Button label={t("edit.remove")} labelKey="edit.remove" tone="danger" onPress={remove} wide={false} />
         ) : null}
       </View>
     </Page>

@@ -11,9 +11,16 @@
  * resolved by a browser, and there is no browser here. The ACCENT PRESETS and
  * the rainbow ARE imported, because those are data rather than CSS - see
  * ACCENTS and RAINBOW below.
+ *
+ * The first cut of this file was copied by EYE rather than by value, and the
+ * difference showed up as three separate complaints at once: the radii were
+ * 12/8 where the language says 16/10, a pill stayed fully round in `soft`
+ * where the language flattens it to 5 - so the corner setting looked like it
+ * did nothing - and the light ground was white where the language uses
+ * #f4f4f4, which left a white card invisible on a white page.
  */
 
-export { ACCENTS, RAINBOW, contrastOn } from "../../web/src/lib/appearance";
+export { ACCENTS, RAINBOW, contrastOn, rainbowAt } from "../../web/src/lib/appearance";
 
 export type Scheme = "dark" | "light";
 
@@ -27,12 +34,17 @@ export interface Palette {
   text: string;
   textSub: string;
   textMuted: string;
-  accent: string;
-  accentContrast: string;
-  ok: string;
-  fail: string;
-  warn: string;
-  neutral: string;
+  /** Status colours come in two: the INK version, readable as text on the
+   *  page's ground, and the SOLID version, meant to be filled with. On a dark
+   *  page they are the same colour; on a light one the ink is darker. */
+  okInk: string;
+  okSolid: string;
+  failInk: string;
+  failSolid: string;
+  warnInk: string;
+  warnSolid: string;
+  neutralInk: string;
+  neutralSolid: string;
 }
 
 const dark: Palette = {
@@ -45,16 +57,22 @@ const dark: Palette = {
   text: "#f4f4f4",
   textSub: "#c6c6c6",
   textMuted: "#8d8d8d",
-  accent: "#FCC419",
-  accentContrast: "#161616",
-  ok: "#6fdc8c",
-  fail: "#ff8389",
-  warn: "#FCC419",
-  neutral: "#8d8d8d",
+  okInk: "#6fdc8c",
+  okSolid: "#6fdc8c",
+  failInk: "#ff8389",
+  failSolid: "#ff8389",
+  warnInk: "#f1c21b",
+  warnSolid: "#f1c21b",
+  neutralInk: "#a8a8a8",
+  neutralSolid: "#8d8d8d",
 };
 
 const light: Palette = {
-  background: "#ffffff",
+  // #f4f4f4 and NOT white. A white ground makes the white surface above it
+  // vanish, and GlimStone separates surfaces by shade rather than by a drawn
+  // line - so on a white page every card loses its edge and the whole screen
+  // reads as one flat sheet.
+  background: "#f4f4f4",
   surface: "#ffffff",
   surface2: "#e8e8e8",
   surface3: "#d1d1d1",
@@ -63,30 +81,67 @@ const light: Palette = {
   text: "#161616",
   textSub: "#525252",
   textMuted: "#6f6f6f",
-  accent: "#8E6A00",
-  accentContrast: "#ffffff",
-  ok: "#0e6027",
-  fail: "#da1e28",
-  warn: "#8E6A00",
-  neutral: "#6f6f6f",
+  okInk: "#0e6027",
+  okSolid: "#198038",
+  failInk: "#da1e28",
+  failSolid: "#da1e28",
+  warnInk: "#8E6A00",
+  warnSolid: "#b28600",
+  neutralInk: "#6f6f6f",
+  neutralSolid: "#8d8d8d",
 };
 
 export const palettes: Record<Scheme, Palette> = { dark, light };
 
 /**
- * The type scale, and it is NOT the web's.
+ * The accent, darkened until it can be READ on a light ground.
+ *
+ * The accent stays the accent wherever something is FILLED with it: the ink on
+ * top is computed, so a yellow button is fine. What needs darkening is the
+ * accent used AS ink, because yellow text on white is unreadable whichever
+ * yellow it is.
+ *
+ * 55% is not a number picked here: it is tokens.css's own `--ink-mix` in the
+ * light theme, through `color-mix(in srgb, var(--accent) var(--ink-mix),
+ * black)`. Reimplementing it as "darken until it clears 4.5:1" sounds better
+ * and is worse - it agrees on Sunflower and diverges on every other preset, so
+ * one setting would produce two different blues on one product.
+ */
+export function inkFor(hex: string, scheme: Scheme): string {
+  if (scheme === "dark") return hex;
+  const m = /^#([0-9a-fA-F]{6})$/.exec(hex);
+  if (!m) return hex;
+  const n = parseInt(m[1]!, 16);
+  const mix = (c: number) => Math.round(c * 0.55);
+  const r = mix((n >> 16) & 255);
+  const g = mix((n >> 8) & 255);
+  const b = mix(n & 255);
+  return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, "0").toUpperCase()}`;
+}
+
+/** A colour as a wash: what a row carries when it owns one. The web lays this
+ *  down with color-mix; React Native has none, so it is rgba. */
+export function softOn(hex: string, alpha = 0.14): string {
+  const m = /^#([0-9a-fA-F]{6})$/.exec(hex);
+  if (!m) return "transparent";
+  const n = parseInt(m[1]!, 16);
+  return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${alpha})`;
+}
+
+/**
+ * The type scale, and it is NOT the web's rem values.
  *
  * GlimStone's sizes are in rem against a 16px root; a phone reads at arm's
- * length rather than at desk distance, and Android's own scale starts at 14sp
- * for body text where the web starts at 14px. So the ROLES are the same - a
- * heading, body, dense, caption - and the numbers are the phone's.
+ * length rather than at desk distance. So the ROLES are the same - a heading,
+ * body, dense, caption - and the numbers are the ones the family's other
+ * phone app already uses, so two apps on one handset agree.
  */
 export const text = {
-  heading: 22,
-  title: 17,
-  body: 15,
-  dense: 13,
-  caption: 12,
+  heading: 20,
+  title: 16,
+  body: 14,
+  dense: 12,
+  caption: 11,
 } as const;
 
 /** Spacing, in the same 4px steps the web uses, so rhythms match. */
@@ -99,25 +154,29 @@ export const space = {
   xxl: 32,
 } as const;
 
+export interface Radii {
+  card: number;
+  control: number;
+  pill: number;
+}
+
 /**
  * Corner radii per SHAPE, which is a GlimStone setting rather than a constant.
  *
- * `round` is the house default, `soft` halves it, `square` removes it. The web
- * does this with a `data-shape` attribute and three sets of tokens; there is no
- * attribute selector here, so the numbers are handed out by a function.
+ * The rem values from tokens.css at the usual 16px root, and all three numbers
+ * matter. `soft` flattens the PILL to 5 as well: a pill that stayed a capsule
+ * while every other corner squared off is the one control that ignores the
+ * setting, and with the switches and badges all being pills, that reads as
+ * "the corner setting does nothing".
  */
-export const RADII: Record<string, { control: number; card: number }> = {
-  round: { control: 8, card: 12 },
-  soft: { control: 4, card: 6 },
-  square: { control: 0, card: 0 },
+export const RADII: Record<string, Radii> = {
+  round: { card: 16, control: 10, pill: 9999 },
+  soft: { card: 8, control: 5, pill: 5 },
+  square: { card: 0, control: 0, pill: 0 },
 };
 
-export function radiusFor(shape: string): { control: number; card: number; pill: number } {
-  const r = RADII[shape] ?? RADII.round!;
-  // A pill stays a pill in `soft` and becomes a rectangle in `square`: the
-  // shape setting is about how round the app is, and a badge that stayed a
-  // capsule in square mode would be the one thing that did not listen.
-  return { ...r, pill: shape === "square" ? 0 : 999 };
+export function radiusFor(shape: string): Radii {
+  return RADII[shape] ?? RADII.round!;
 }
 
 /**

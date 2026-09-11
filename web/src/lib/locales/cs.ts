@@ -493,6 +493,24 @@ const cs: Translations = {
   'phone.jobOff': 'Vypnuto',
   'phone.jobOffHint': 'Vypnutá úloha se nikdy nespustí sama a tlačítko nedostane. Nová úloha takhle začíná záměrně: první, co by měla právě napsaná úloha udělat, je nic.',
   'phone.previewExplain': 'Dokud nestiskneš tlačítko, nic se nepohne. Tohle je to, co by běh udělal, spočítané z obou stran přesně tak, jak teď vypadají.',
+
+  // The second axis of a one-way job: what happens to everything the
+  // direction alone does not settle. Two of the three DELETE, so each
+  // carries a sentence saying exactly what it removes and what it
+  // leaves - a picker with three words and no explanation is how
+  // somebody mirrors the wrong way round.
+  'mode.label': 'Co se stane se zbytkem',
+  'mode.sync': 'Jen kopírovat',
+  'mode.syncHint': 'Všechno, co má zdroj, jde na druhou stranu. Soubor, který má jen druhá strana, zůstane přesně tam, kde je, a nikdy se za tebe nic nemaže.',
+  'mode.mirror': 'Zrcadlit',
+  'mode.mirrorHint': 'Druhá strana se stane přesnou kopií zdroje, takže soubor, který zdroj nemá, se tam smaže. Nejdřív jde do koše té strany, a běh, který by odstranil víc než polovinu všeho, co zná, se zastaví a řekne to.',
+  'mode.move': 'Přesunout',
+  'mode.moveHint': 'Soubor jde na druhou stranu a pak opustí zdroj, tak telefon posílá fotoaparát nahoru a získává zpátky místo. Originál jde do koše místo zničení, a odejde až ve chvíli, kdy kopie opravdu dorazila.',
+  'mode.onlyOneWay': 'Jen pro jednosměrnou úlohu. Obojí rozhoduje, která strana má pravdu, a úloha běžící oběma směry to neřekla.',
+  'side.onDevice': 'V zařízení',
+  'defaults.follow': 'Převzít výchozí',
+  'defaults.followHint': 'Vzít tohle z nastavení místo rozhodování tady. Změněno tam jednou, mění se v každé úloze, která výchozí hodnotu přebírá.',
+  'side.target': 'Cíl',
 }
 
 export default cs

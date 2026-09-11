@@ -4,6 +4,16 @@
 /** Which way a job is allowed to write. */
 export type Direction = 'both' | 'leftToRight' | 'rightToLeft'
 
+/**
+ * What a ONE-WAY job does beyond copying.
+ *
+ * A second axis rather than three more directions, because it is a second
+ * question: the direction says which way a job may write, this says what
+ * happens to everything that leaves open. The engine refuses anything but
+ * `sync` on a two-way job.
+ */
+export type Mode = 'sync' | 'mirror' | 'move'
+
 export type Job = {
   name: string
   left: string
@@ -228,6 +238,7 @@ export type RawJob = {
   state?: string
   schedule?: string
   direction?: Direction
+  mode?: Mode
   disabled?: boolean
   watch?: boolean
   watchSettle?: string

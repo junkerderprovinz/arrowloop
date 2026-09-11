@@ -493,6 +493,24 @@ const pt: Translations = {
   'phone.jobOff': 'Desativada',
   'phone.jobOffHint': 'Uma tarefa desativada nunca arranca sozinha e não tem botão. Uma tarefa nova começa assim de propósito: a primeira coisa que uma tarefa acabada de escrever deve fazer é nada.',
   'phone.previewExplain': 'Até carregares no botão não se mexe nada. Isto é o que uma execução faria, calculado a partir dos dois lados tal como estão agora.',
+
+  // The second axis of a one-way job: what happens to everything the
+  // direction alone does not settle. Two of the three DELETE, so each
+  // carries a sentence saying exactly what it removes and what it
+  // leaves - a picker with three words and no explanation is how
+  // somebody mirrors the wrong way round.
+  'mode.label': 'O que acontece ao resto',
+  'mode.sync': 'Só copiar',
+  'mode.syncHint': 'Tudo o que a origem tem passa para o outro lado. Um ficheiro que só o outro lado tem fica exatamente onde está, e nunca é removido nada por ti.',
+  'mode.mirror': 'Espelhar',
+  'mode.mirrorHint': 'O outro lado passa a ser uma cópia exata da origem, por isso um ficheiro que a origem não tem é apagado lá. Vai primeiro para a reciclagem desse lado, e uma execução que removeria mais de metade de tudo o que conhece para e di-lo.',
+  'mode.move': 'Mover',
+  'mode.moveHint': 'Um ficheiro passa para o outro lado e depois sai da origem, é assim que um telemóvel manda a câmara para cima e recupera o espaço. O original vai para a reciclagem em vez de ser destruído, e só sai quando a cópia chegou mesmo.',
+  'mode.onlyOneWay': 'Só para uma tarefa de sentido único. Ambos decidem que lado tem razão, e uma tarefa que corre nos dois sentidos não o disse.',
+  'side.onDevice': 'No aparelho',
+  'defaults.follow': 'Usar a predefinição',
+  'defaults.followHint': 'Ir buscar isto às definições em vez de o decidir aqui. Alterado lá uma vez, muda em cada tarefa que segue a predefinição.',
+  'side.target': 'Um destino',
 }
 
 export default pt

@@ -493,6 +493,24 @@ const eu: Translations = {
   'phone.jobOff': 'Itzalita',
   'phone.jobOffHint': 'Itzalitako lan bat ez da inoiz bere kabuz abiatzen eta ez du botoirik jasotzen. Lan berri bat nahita hasten da horrela: idatzi berri den lan batek egin beharko lukeen lehen gauza ezer ez da.',
   'phone.previewExplain': 'Botoia sakatu arte ez da ezer mugitzen. Hau da exekuzio batek egingo lukeena, bi aldeetatik kalkulatuta, orain dauden bezalaxe.',
+
+  // The second axis of a one-way job: what happens to everything the
+  // direction alone does not settle. Two of the three DELETE, so each
+  // carries a sentence saying exactly what it removes and what it
+  // leaves - a picker with three words and no explanation is how
+  // somebody mirrors the wrong way round.
+  'mode.label': 'Zer gertatzen zaio gainerakoari',
+  'mode.sync': 'Kopiatu besterik ez',
+  'mode.syncHint': 'Iturburuak duen guztia beste aldera pasatzen da. Beste aldeak bakarrik duen fitxategi bat dagoen-dagoenean geratzen da, eta inoiz ez da ezer kentzen zure ordez.',
+  'mode.mirror': 'Ispilatu',
+  'mode.mirrorHint': 'Beste aldea iturburuaren kopia zehatza bihurtzen da, beraz iturburuak ez duen fitxategi bat han ezabatzen da. Lehenik alde horren zakarrontzira doa, eta ezagutzen duen guztiaren erdia baino gehiago kenduko lukeen exekuzio bat gelditu eta esaten du.',
+  'mode.move': 'Lekuz aldatu',
+  'mode.moveHint': 'Fitxategi bat beste aldera pasatzen da eta gero iturburua uzten du, horrela igotzen du telefonoak kamera eta lekua berreskuratzen. Jatorrizkoa zakarrontzira doa suntsitu beharrean, eta kopia benetan iritsi denean bakarrik alde egiten du.',
+  'mode.onlyOneWay': 'Norabide bakarreko lanetarako bakarrik. Biek erabakitzen dute zein aldek duen arrazoia, eta bi norabideetan doan lan batek ez du hori esan.',
+  'side.onDevice': 'Gailuan',
+  'defaults.follow': 'Hartu lehenetsia',
+  'defaults.followHint': 'Hau ezarpenetatik hartu, hemen erabaki beharrean. Han behin aldatuta, lehenetsia jarraitzen duen lan guztietan aldatzen da.',
+  'side.target': 'Helburu bat',
 }
 
 export default eu

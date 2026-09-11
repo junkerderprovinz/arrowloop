@@ -45,7 +45,7 @@ export function Targets() {
     <Page>
       <Button
         label={t("targets.addStorage")}
-        glyph="+"
+        labelKey="targets.addStorage"
         tone="accent"
         onPress={() => nav.navigate("TargetPick")}
       />
@@ -159,12 +159,11 @@ function TargetCard({
       <View style={styles.actions}>
         <Button
           label={state === "checking" ? t("targets.checking") : t("targets.check")}
-          glyph="✓"
           busy={state === "checking"}
           onPress={check}
         />
-        <Button label={t("targets.edit")} glyph="✎" onPress={onEdit} />
-        <Button label={t("targets.delete")} glyph="🗑" tone="danger" onPress={remove} wide={false} />
+        <Button label={t("targets.edit")} labelKey="targets.edit" onPress={onEdit} />
+        <Button label={t("targets.delete")} labelKey="targets.delete" tone="danger" onPress={remove} wide={false} />
       </View>
     </Card>
   );

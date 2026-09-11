@@ -493,6 +493,24 @@ const fr: Translations = {
   'phone.jobOff': 'Désactivée',
   'phone.jobOffHint': 'Une tâche désactivée ne démarre jamais seule et n\'a pas de bouton. Une nouvelle tâche commence ainsi volontairement : la première chose que devrait faire une tâche à peine saisie, c\'est rien.',
   'phone.previewExplain': 'Rien ne bouge tant que tu n\'appuies pas sur le bouton. Voici ce que ferait une exécution, calculé à partir des deux côtés tels qu\'ils sont maintenant.',
+
+  // The second axis of a one-way job: what happens to everything the
+  // direction alone does not settle. Two of the three DELETE, so each
+  // carries a sentence saying exactly what it removes and what it
+  // leaves - a picker with three words and no explanation is how
+  // somebody mirrors the wrong way round.
+  'mode.label': 'Ce qui arrive au reste',
+  'mode.sync': 'Copier seulement',
+  'mode.syncHint': 'Tout ce que la source possède traverse. Un fichier que seul l\'autre côté possède reste exactement où il est, et rien n\'est jamais supprimé à ta place.',
+  'mode.mirror': 'Miroir',
+  'mode.mirrorHint': 'L\'autre côté devient une copie exacte de la source, donc un fichier que la source n\'a pas y est supprimé. Il passe d\'abord par la corbeille de ce côté, et une exécution qui retirerait plus de la moitié de tout ce qu\'elle connaît s\'arrête et le dit.',
+  'mode.move': 'Déplacer',
+  'mode.moveHint': 'Un fichier traverse puis quitte la source, c\'est ainsi qu\'un téléphone envoie l\'appareil photo vers le haut et récupère la place. L\'original va à la corbeille au lieu d\'être détruit, et il ne part qu\'une fois la copie réellement arrivée.',
+  'mode.onlyOneWay': 'Seulement pour une tâche à sens unique. Les deux décident quel côté a raison, et une tâche qui va dans les deux sens ne l\'a pas dit.',
+  'side.onDevice': 'Sur l\'appareil',
+  'defaults.follow': 'Reprendre la valeur par défaut',
+  'defaults.followHint': 'Prendre ceci dans les réglages au lieu de le décider ici. Modifié là-bas une fois, cela change dans chaque tâche qui suit la valeur par défaut.',
+  'side.target': 'Une cible',
 }
 
 export default fr

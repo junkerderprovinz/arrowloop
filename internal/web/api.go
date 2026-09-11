@@ -127,6 +127,12 @@ func (s *Server) Handler() http.Handler {
 		mux.HandleFunc("PUT /api/device", s.writeDevice)
 	}
 
+	// Catching up on what the clock should already have run. A phone hands the
+	// waking to Android and keeps the schedule here, so this is how a wake-up
+	// says "now would be a good time" without having to know which jobs that
+	// applies to.
+	mux.HandleFunc("POST /api/run-due", s.runDue)
+
 	mux.HandleFunc("GET /api/remotes", s.listRemotes)
 	mux.HandleFunc("PUT /api/remotes/{name}", s.saveRemote)
 	mux.HandleFunc("DELETE /api/remotes/{name}", s.deleteRemote)
@@ -280,7 +286,7 @@ func viewOf(p *plan.Plan) planView {
 		v := actionView{Path: a.Path, Kind: a.Kind.String(), Reason: a.Reason}
 		v.Left, v.Right = sideOf(a.LeftNow), sideOf(a.RightNow)
 		switch a.Kind {
-		case plan.Copy:
+		case plan.Copy, plan.Relocate:
 			v.From, v.To = a.Src.String(), a.Dst.String()
 		case plan.Move:
 			v.From, v.To = a.OldDstPath, a.DstPath

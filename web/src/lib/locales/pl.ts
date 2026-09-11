@@ -493,6 +493,24 @@ const pl: Translations = {
   'phone.jobOff': 'Wyłączone',
   'phone.jobOffHint': 'Wyłączone zadanie nigdy nie rusza samo i nie dostaje przycisku. Nowe zadanie celowo tak się zaczyna: pierwszą rzeczą, którą powinno zrobić dopiero co wpisane zadanie, jest nic.',
   'phone.previewExplain': 'Dopóki nie naciśniesz przycisku, nic się nie rusza. To jest to, co zrobiłby przebieg, wyliczone z obu stron dokładnie takich, jakie są teraz.',
+
+  // The second axis of a one-way job: what happens to everything the
+  // direction alone does not settle. Two of the three DELETE, so each
+  // carries a sentence saying exactly what it removes and what it
+  // leaves - a picker with three words and no explanation is how
+  // somebody mirrors the wrong way round.
+  'mode.label': 'Co dzieje się z resztą',
+  'mode.sync': 'Tylko kopiowanie',
+  'mode.syncHint': 'Wszystko, co ma źródło, przechodzi na drugą stronę. Plik, który ma tylko druga strona, zostaje dokładnie tam, gdzie jest, i nigdy nic nie jest za ciebie usuwane.',
+  'mode.mirror': 'Odbicie lustrzane',
+  'mode.mirrorHint': 'Druga strona staje się dokładną kopią źródła, więc plik, którego źródło nie ma, zostaje tam usunięty. Najpierw trafia do kosza tej strony, a przebieg, który usunąłby ponad połowę wszystkiego, co zna, przerywa i mówi o tym.',
+  'mode.move': 'Przenoszenie',
+  'mode.moveHint': 'Plik przechodzi na drugą stronę i potem opuszcza źródło, tak telefon wysyła aparat w górę i odzyskuje miejsce. Oryginał trafia do kosza zamiast zostać zniszczony, i odchodzi dopiero wtedy, gdy kopia naprawdę dotarła.',
+  'mode.onlyOneWay': 'Tylko dla zadania jednokierunkowego. Oba decydują, która strona ma rację, a zadanie idące w obie strony tego nie powiedziało.',
+  'side.onDevice': 'Na urządzeniu',
+  'defaults.follow': 'Przejmij domyślne',
+  'defaults.followHint': 'Wziąć to z ustawień zamiast decydować tutaj. Zmienione tam raz, zmienia się w każdym zadaniu, które podąża za domyślnym.',
+  'side.target': 'Cel',
 }
 
 export default pl

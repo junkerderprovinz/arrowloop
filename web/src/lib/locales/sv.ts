@@ -493,6 +493,24 @@ const sv: Translations = {
   'phone.jobOff': 'Avstängt',
   'phone.jobOffHint': 'Ett avstängt jobb startar aldrig av sig självt och får ingen knapp. Ett nytt jobb börjar så med flit: det första ett nyss inskrivet jobb bör göra är ingenting.',
   'phone.previewExplain': 'Ingenting rör sig förrän du trycker på knappen. Det här är vad en körning skulle göra, uträknat från båda sidorna precis som de ser ut nu.',
+
+  // The second axis of a one-way job: what happens to everything the
+  // direction alone does not settle. Two of the three DELETE, so each
+  // carries a sentence saying exactly what it removes and what it
+  // leaves - a picker with three words and no explanation is how
+  // somebody mirrors the wrong way round.
+  'mode.label': 'Vad som händer med resten',
+  'mode.sync': 'Bara kopiera',
+  'mode.syncHint': 'Allt som källan har går över. En fil som bara den andra sidan har ligger kvar precis där den ligger, och ingenting tas någonsin bort åt dig.',
+  'mode.mirror': 'Spegla',
+  'mode.mirrorHint': 'Den andra sidan blir en exakt kopia av källan, så en fil som källan inte har raderas där. Den går först till den sidans papperskorg, och en körning som skulle ta bort mer än hälften av allt den känner till stannar och säger det.',
+  'mode.move': 'Flytta',
+  'mode.moveHint': 'En fil går över och lämnar sedan källan, så skickar en telefon upp kameran och får tillbaka utrymmet. Originalet hamnar i papperskorgen i stället för att förstöras, och det lämnar först när kopian verkligen har kommit fram.',
+  'mode.onlyOneWay': 'Bara för ett enkelriktat jobb. Båda bestämmer vilken sida som har rätt, och ett jobb som går åt båda hållen har inte sagt vilken.',
+  'side.onDevice': 'På enheten',
+  'defaults.follow': 'Ta standardvärdet',
+  'defaults.followHint': 'Hämta det här från inställningarna i stället för att bestämma det här. Ändrat där en gång ändras det i varje jobb som följer standardvärdet.',
+  'side.target': 'Ett mål',
 }
 
 export default sv

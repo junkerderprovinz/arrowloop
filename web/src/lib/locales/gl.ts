@@ -493,6 +493,24 @@ const gl: Translations = {
   'phone.jobOff': 'Desactivada',
   'phone.jobOffHint': 'Unha tarefa desactivada nunca arranca soa e non ten botón. Unha tarefa nova comeza así a propósito: o primeiro que debería facer unha tarefa recén escrita é nada.',
   'phone.previewExplain': 'Ata que non premas o botón non se move nada. Isto é o que faría unha execución, calculado a partir dos dous lados tal e como están agora.',
+
+  // The second axis of a one-way job: what happens to everything the
+  // direction alone does not settle. Two of the three DELETE, so each
+  // carries a sentence saying exactly what it removes and what it
+  // leaves - a picker with three words and no explanation is how
+  // somebody mirrors the wrong way round.
+  'mode.label': 'Que pasa co resto',
+  'mode.sync': 'Só copiar',
+  'mode.syncHint': 'Todo o que ten a orixe pasa ao outro lado. Un ficheiro que só ten o outro lado queda exactamente onde está, e nunca se elimina nada por ti.',
+  'mode.mirror': 'Espellar',
+  'mode.mirrorHint': 'O outro lado convértese nunha copia exacta da orixe, así que un ficheiro que a orixe non ten bórrase alí. Pasa primeiro polo lixo dese lado, e unha execución que quitaría máis da metade de todo o que coñece detense e dío.',
+  'mode.move': 'Mover',
+  'mode.moveHint': 'Un ficheiro pasa ao outro lado e despois deixa a orixe, así é como un teléfono sobe a cámara e recupera o espazo. O orixinal vai ao lixo en vez de destruírse, e só marcha cando a copia chegou de verdade.',
+  'mode.onlyOneWay': 'Só para unha tarefa dun só sentido. Ambos deciden que lado ten razón, e unha tarefa que vai nos dous sentidos non o dixo.',
+  'side.onDevice': 'No dispositivo',
+  'defaults.follow': 'Tomar o valor predeterminado',
+  'defaults.followHint': 'Coller isto dos axustes en vez de decidilo aquí. Cambiado alí unha vez, cambia en cada tarefa que segue o valor predeterminado.',
+  'side.target': 'Un destino',
 }
 
 export default gl

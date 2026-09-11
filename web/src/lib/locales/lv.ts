@@ -493,6 +493,24 @@ const lv: Translations = {
   'phone.jobOff': 'Izslēgts',
   'phone.jobOffHint': 'Izslēgts uzdevums nekad nesākas pats un pogu nesaņem. Jauns uzdevums apzināti sākas šādi: pirmais, kas tikko ierakstītam uzdevumam būtu jādara, ir nekas.',
   'phone.previewExplain': 'Kamēr nenospiedīsi pogu, nekas nekustēsies. Lūk, ko izpilde darītu, aprēķināts no abām pusēm tieši tādām, kādas tās ir tagad.',
+
+  // The second axis of a one-way job: what happens to everything the
+  // direction alone does not settle. Two of the three DELETE, so each
+  // carries a sentence saying exactly what it removes and what it
+  // leaves - a picker with three words and no explanation is how
+  // somebody mirrors the wrong way round.
+  'mode.label': 'Kas notiek ar pārējo',
+  'mode.sync': 'Tikai kopēt',
+  'mode.syncHint': 'Viss, kas ir avotam, pāriet uz otru pusi. Fails, kas ir tikai otrai pusei, paliek tieši tur, kur ir, un nekad nekas netiek dzēsts tavā vietā.',
+  'mode.mirror': 'Spogulis',
+  'mode.mirrorHint': 'Otra puse kļūst par precīzu avota kopiju, tāpēc fails, kura avotam nav, tur tiek izdzēsts. Vispirms tas nonāk tās puses miskastē, un izpilde, kas noņemtu vairāk nekā pusi no visa zināmā, apstājas un to pasaka.',
+  'mode.move': 'Pārvietot',
+  'mode.moveHint': 'Fails pāriet uz otru pusi un pēc tam pamet avotu, tā telefons sūta kameru augšup un atgūst vietu. Oriģināls nonāk miskastē, nevis tiek iznīcināts, un aiziet tikai tad, kad kopija tiešām ir nonākusi galā.',
+  'mode.onlyOneWay': 'Tikai vienvirziena uzdevumam. Abi izlemj, kurai pusei ir taisnība, un uzdevums abos virzienos to nav pateicis.',
+  'side.onDevice': 'Ierīcē',
+  'defaults.follow': 'Ņemt noklusējumu',
+  'defaults.followHint': 'Ņemt to no iestatījumiem, nevis izlemt šeit. Tur vienreiz mainīts, tas mainās katrā uzdevumā, kas seko noklusējumam.',
+  'side.target': 'Mērķis',
 }
 
 export default lv

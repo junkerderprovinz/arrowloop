@@ -493,6 +493,24 @@ const sl: Translations = {
   'phone.jobOff': 'Izklopljeno',
   'phone.jobOffHint': 'Izklopljeno opravilo se nikoli ne zažene samo in gumba ne dobi. Novo opravilo se namenoma tako začne: prvo, kar naj bi pravkar vneseno opravilo naredilo, je nič.',
   'phone.previewExplain': 'Dokler ne pritisneš gumba, se nič ne premakne. To je tisto, kar bi zagon naredil, izračunano iz obeh strani natanko takih, kot sta zdaj.',
+
+  // The second axis of a one-way job: what happens to everything the
+  // direction alone does not settle. Two of the three DELETE, so each
+  // carries a sentence saying exactly what it removes and what it
+  // leaves - a picker with three words and no explanation is how
+  // somebody mirrors the wrong way round.
+  'mode.label': 'Kaj se zgodi z ostalim',
+  'mode.sync': 'Samo kopiranje',
+  'mode.syncHint': 'Vse, kar ima vir, gre na drugo stran. Datoteka, ki jo ima samo druga stran, ostane točno tam, kjer je, in nikoli se nič ne izbriše namesto tebe.',
+  'mode.mirror': 'Zrcaljenje',
+  'mode.mirrorHint': 'Druga stran postane natančna kopija vira, zato se datoteka, ki je vir nima, tam izbriše. Najprej gre v koš te strani, zagon, ki bi odstranil več kot polovico vsega, kar pozna, pa se ustavi in to pove.',
+  'mode.move': 'Premikanje',
+  'mode.moveHint': 'Datoteka gre na drugo stran in nato zapusti vir, tako telefon pošlje kamero gor in dobi prostor nazaj. Izvirnik gre v koš namesto da bi bil uničen, in odide šele, ko je kopija res prispela.',
+  'mode.onlyOneWay': 'Samo za enosmerno opravilo. Oboje odloča, katera stran ima prav, opravilo v obe smeri pa tega ni povedalo.',
+  'side.onDevice': 'V napravi',
+  'defaults.follow': 'Prevzemi privzeto',
+  'defaults.followHint': 'To vzeti iz nastavitev namesto odločanja tukaj. Tam enkrat spremenjeno se spremeni v vsakem opravilu, ki sledi privzetemu.',
+  'side.target': 'Cilj',
 }
 
 export default sl

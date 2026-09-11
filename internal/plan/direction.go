@@ -77,7 +77,7 @@ func (d Direction) source() Side {
 //     one thing a one-way job deliberately does not do, and it is the
 //     difference between copying and mirroring: deleting something the source
 //     never knew about is not propagating a decision, it is making one.
-func Enforce(p *Plan, dir Direction) {
+func Enforce(p *Plan, dir Direction, mode Mode) {
 	if dir == Both {
 		return
 	}
@@ -89,12 +89,28 @@ func Enforce(p *Plan, dir Direction) {
 		switch a.Kind {
 		case Copy:
 			if a.Src == src {
+				// In MOVE mode the file leaves the source once it has landed,
+				// and that is one action rather than two: a copy followed by a
+				// separate delete leaves the delete in the queue when the copy
+				// fails.
+				if mode == ModeMove {
+					a.Kind = Relocate
+				}
 				kept = append(kept, a)
 				continue
 			}
 			// A change on the far side. Put the source's version back.
 			if rebuilt, ok := restore(a, src, dst); ok {
 				kept = append(kept, rebuilt)
+				continue
+			}
+			// Nothing on the source to send, so this is a file the source has
+			// never had. Copying leaves it alone; MIRRORING removes it, which
+			// is the single rule that separates the two modes.
+			if mode == ModeMirror {
+				if gone, ok := sweep(a, dst); ok {
+					kept = append(kept, gone)
+				}
 			}
 		case Conflict:
 			if rebuilt, ok := restore(a, src, dst); ok {
@@ -112,11 +128,21 @@ func Enforce(p *Plan, dir Direction) {
 		case Move:
 			if a.Dst == dst {
 				kept = append(kept, a)
+				continue
 			}
 			// A move on the source side is dropped rather than rewritten: the
 			// copy the same run already proposes puts the source's own naming
 			// back, and the file under the destination's old name is left for
 			// the person who renamed it.
+			//
+			// A MIRROR does not leave it: under the destination's own new name
+			// it is a file the source has never had, which is exactly the case
+			// this mode removes.
+			if mode == ModeMirror {
+				if gone, ok := sweep(a, dst); ok {
+					kept = append(kept, gone)
+				}
+			}
 		}
 	}
 	p.Actions = kept
@@ -129,6 +155,33 @@ func Enforce(p *Plan, dir Direction) {
 		}
 	}
 	p.Dirs = dirs
+}
+
+// sweep rebuilds an action as a deletion on the destination side.
+//
+// Only ever reached in ModeMirror, and only for a file the SOURCE does not
+// hold: that is the whole of what mirroring adds to copying. It goes through
+// the ordinary Delete kind, so the bins, the versions and the mass-deletion
+// brake all apply to it exactly as they do to a deletion anybody else made.
+func sweep(a Action, dst Side) (Action, bool) {
+	live := a.LeftNow
+	if dst == Right {
+		live = a.RightNow
+	}
+	if live == nil {
+		// Nothing there to remove. A record that outlived both sides is the
+		// ordinary Delete case and is not this one.
+		return Action{}, false
+	}
+	a.Kind = Delete
+	a.Src = dst.Other()
+	a.Dst = dst
+	a.SrcPath = ""
+	a.DstPath = live.Path
+	a.OldDstPath = ""
+	a.Resolve = KeepBoth
+	a.Reason = because("mirror", "side", dst.Other().String())
+	return a, true
 }
 
 // restore rebuilds an action as a copy from the source side, or reports that

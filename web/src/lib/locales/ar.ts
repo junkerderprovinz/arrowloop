@@ -493,6 +493,24 @@ const ar: Translations = {
   'phone.jobOff': 'موقوفة',
   'phone.jobOffHint': 'المهمة الموقوفة لا تبدأ من تلقاء نفسها أبدًا ولا يظهر لها زر. المهمة الجديدة تبدأ هكذا عن قصد: أول ما ينبغي لمهمة كُتبت للتو أن تفعله هو لا شيء.',
   'phone.previewExplain': 'لا شيء يتحرك حتى تضغط الزر. هذا ما سيفعله تشغيل، محسوبًا من الجانبين تمامًا كما هما الآن.',
+
+  // The second axis of a one-way job: what happens to everything the
+  // direction alone does not settle. Two of the three DELETE, so each
+  // carries a sentence saying exactly what it removes and what it
+  // leaves - a picker with three words and no explanation is how
+  // somebody mirrors the wrong way round.
+  'mode.label': 'ماذا يحدث للبقية',
+  'mode.sync': 'النسخ فقط',
+  'mode.syncHint': 'كل ما لدى المصدر ينتقل إلى الجهة الأخرى. أما الملف الموجود لدى الجهة الأخرى وحدها فيبقى في مكانه تمامًا، ولا يُحذف شيء نيابة عنك أبدًا.',
+  'mode.mirror': 'مطابقة',
+  'mode.mirrorHint': 'تصبح الجهة الأخرى نسخة طبق الأصل عن المصدر، فيُحذف هناك أي ملف لا يملكه المصدر. يذهب أولًا إلى سلة تلك الجهة، وأي تشغيل سيزيل أكثر من نصف كل ما يعرفه يتوقف ويقول ذلك.',
+  'mode.move': 'نقل',
+  'mode.moveHint': 'ينتقل الملف إلى الجهة الأخرى ثم يغادر المصدر، وهكذا يرفع الهاتف ما في الكاميرا ويستعيد المساحة. يذهب الأصل إلى السلة بدل أن يُتلف، ولا يغادر إلا بعد أن تصل النسخة فعلًا.',
+  'mode.onlyOneWay': 'لمهمة باتجاه واحد فقط. كلاهما يقرر أي الجهتين على حق، والمهمة التي تسير في الاتجاهين لم تقل ذلك.',
+  'side.onDevice': 'على الجهاز',
+  'defaults.follow': 'أخذ الإعداد الافتراضي',
+  'defaults.followHint': 'أخذ هذا من الإعدادات بدل تقريره هنا. غيّره هناك مرة واحدة فيتغير في كل مهمة تتبع الافتراضي.',
+  'side.target': 'وجهة',
 }
 
 export default ar

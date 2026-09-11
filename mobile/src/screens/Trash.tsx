@@ -21,7 +21,7 @@ import { bytes } from "./Targets";
 export function Trash() {
   const route = useRoute<RouteProp<JobsStack, "Trash">>();
   const { t } = useT();
-  const { p, radius } = useTheme();
+  const { p, radius, accent } = useTheme();
   const { name: job, side } = route.params;
 
   const [bin, setBin] = useState<Bin | null>(null);
@@ -87,7 +87,7 @@ export function Trash() {
               styles.row,
               {
                 backgroundColor: on ? p.surface2 : p.surface,
-                borderColor: on ? p.accent : p.border,
+                borderColor: on ? accent : p.border,
                 borderRadius: radius.control,
               },
             ]}
@@ -103,7 +103,7 @@ export function Trash() {
 
       <Button
         label={t("trash.restore")}
-        glyph="↩"
+        labelKey="trash.restore"
         tone="accent"
         busy={busy}
         disabled={chosen.size === 0}

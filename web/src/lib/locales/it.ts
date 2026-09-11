@@ -493,6 +493,24 @@ const it: Translations = {
   'phone.jobOff': 'Disattivato',
   'phone.jobOffHint': 'Un lavoro disattivato non parte mai da solo e non ha un pulsante. Un lavoro nuovo comincia così di proposito: la prima cosa che un lavoro appena scritto dovrebbe fare è niente.',
   'phone.previewExplain': 'Finché non premi il pulsante non si muove niente. Questo è quello che farebbe un\'esecuzione, calcolato da entrambi i lati esattamente come sono adesso.',
+
+  // The second axis of a one-way job: what happens to everything the
+  // direction alone does not settle. Two of the three DELETE, so each
+  // carries a sentence saying exactly what it removes and what it
+  // leaves - a picker with three words and no explanation is how
+  // somebody mirrors the wrong way round.
+  'mode.label': 'Cosa succede al resto',
+  'mode.sync': 'Solo copiare',
+  'mode.syncHint': 'Tutto quello che ha la sorgente passa dall\'altra parte. Un file che ha solo l\'altro lato resta esattamente dov\'è, e non viene mai rimosso niente al posto tuo.',
+  'mode.mirror': 'Rispecchiare',
+  'mode.mirrorHint': 'L\'altro lato diventa una copia esatta della sorgente, quindi un file che la sorgente non ha viene eliminato lì. Passa prima dal cestino di quel lato, e un\'esecuzione che toglierebbe più della metà di tutto quello che conosce si ferma e lo dice.',
+  'mode.move': 'Spostare',
+  'mode.moveHint': 'Un file passa dall\'altra parte e poi lascia la sorgente, è così che un telefono manda su la fotocamera e si riprende lo spazio. L\'originale finisce nel cestino invece di essere distrutto, e se ne va solo quando la copia è davvero arrivata.',
+  'mode.onlyOneWay': 'Solo per un lavoro a senso unico. Entrambi decidono quale lato ha ragione, e un lavoro che va in tutte e due le direzioni non l\'ha detto.',
+  'side.onDevice': 'Sul dispositivo',
+  'defaults.follow': 'Usare il valore predefinito',
+  'defaults.followHint': 'Prendere questo dalle impostazioni invece di deciderlo qui. Cambiato là una volta, cambia in ogni lavoro che segue il valore predefinito.',
+  'side.target': 'Una destinazione',
 }
 
 export default it

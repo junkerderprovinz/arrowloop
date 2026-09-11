@@ -493,6 +493,24 @@ const et: Translations = {
   'phone.jobOff': 'Välja lülitatud',
   'phone.jobOffHint': 'Välja lülitatud töö ei käivitu kunagi ise ega saa nuppu. Uus töö algab meelega nii: esimene asi, mida äsja sisestatud töö tegema peaks, on mitte midagi.',
   'phone.previewExplain': 'Kuni sa nuppu ei vajuta, ei liigu miski. See on see, mida käik teeks, arvutatud mõlemast poolest täpselt sellisena, nagu nad praegu on.',
+
+  // The second axis of a one-way job: what happens to everything the
+  // direction alone does not settle. Two of the three DELETE, so each
+  // carries a sentence saying exactly what it removes and what it
+  // leaves - a picker with three words and no explanation is how
+  // somebody mirrors the wrong way round.
+  'mode.label': 'Mis saab ülejäänust',
+  'mode.sync': 'Ainult kopeerida',
+  'mode.syncHint': 'Kõik, mis allikal on, läheb teisele poole. Fail, mis on ainult teisel poolel, jääb täpselt sinna, kus ta on, ja midagi ei kustutata kunagi sinu eest.',
+  'mode.mirror': 'Peegeldus',
+  'mode.mirrorHint': 'Teine pool muutub allika täpseks koopiaks, nii et fail, mida allikal ei ole, kustutatakse seal. Kõigepealt läheb see selle poole prügikasti, ja käik, mis eemaldaks üle poole kõigest, mida ta teab, peatub ja ütleb seda.',
+  'mode.move': 'Teisaldada',
+  'mode.moveHint': 'Fail läheb teisele poole ja lahkub seejärel allikalt, nii saadab telefon kaamera üles ja saab ruumi tagasi. Originaal läheb prügikasti, mitte hävitamisele, ja lahkub alles siis, kui koopia on tõesti kohale jõudnud.',
+  'mode.onlyOneWay': 'Ainult ühesuunalise töö jaoks. Mõlemad otsustavad, kummal poolel on õigus, ja mõlemas suunas käiv töö ei ole seda öelnud.',
+  'side.onDevice': 'Seadmes',
+  'defaults.follow': 'Võta vaikeväärtus',
+  'defaults.followHint': 'Võtta see seadetest, selle asemel et siin otsustada. Seal korra muudetuna muutub see igas töös, mis vaikeväärtust järgib.',
+  'side.target': 'Sihtkoht',
 }
 
 export default et

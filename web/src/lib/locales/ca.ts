@@ -493,6 +493,24 @@ const ca: Translations = {
   'phone.jobOff': 'Desactivada',
   'phone.jobOffHint': 'Una tasca desactivada no arrenca mai sola i no té botó. Una tasca nova comença així a posta: el primer que hauria de fer una tasca acabada d\'escriure és res.',
   'phone.previewExplain': 'Fins que no premis el botó no es mou res. Això és el que faria una execució, calculat a partir dels dos costats tal com són ara.',
+
+  // The second axis of a one-way job: what happens to everything the
+  // direction alone does not settle. Two of the three DELETE, so each
+  // carries a sentence saying exactly what it removes and what it
+  // leaves - a picker with three words and no explanation is how
+  // somebody mirrors the wrong way round.
+  'mode.label': 'Què passa amb la resta',
+  'mode.sync': 'Només copiar',
+  'mode.syncHint': 'Tot el que té l\'origen passa a l\'altra banda. Un fitxer que només té l\'altra banda es queda exactament on és, i mai no s\'elimina res per tu.',
+  'mode.mirror': 'Emmirallar',
+  'mode.mirrorHint': 'L\'altra banda esdevé una còpia exacta de l\'origen, de manera que un fitxer que l\'origen no té s\'hi esborra. Passa primer per la paperera d\'aquella banda, i una execució que trauria més de la meitat de tot el que coneix s\'atura i ho diu.',
+  'mode.move': 'Moure',
+  'mode.moveHint': 'Un fitxer passa a l\'altra banda i després deixa l\'origen, així és com un telèfon puja la càmera i recupera l\'espai. L\'original va a la paperera en lloc de destruir-se, i només marxa quan la còpia ha arribat de debò.',
+  'mode.onlyOneWay': 'Només per a una tasca d\'un sol sentit. Tots dos decideixen quina banda té raó, i una tasca que va en tots dos sentits no ho ha dit.',
+  'side.onDevice': 'Al dispositiu',
+  'defaults.follow': 'Pren el valor per defecte',
+  'defaults.followHint': 'Agafar això dels paràmetres en lloc de decidir-ho aquí. Canviat allà una vegada, canvia a cada tasca que segueix el valor per defecte.',
+  'side.target': 'Una destinació',
 }
 
 export default ca

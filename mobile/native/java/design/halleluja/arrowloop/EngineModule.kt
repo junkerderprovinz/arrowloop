@@ -33,26 +33,40 @@ class EngineModule(private val context: ReactApplicationContext) :
     override fun getName() = "ArrowLoopEngine"
 
     /**
-     * Start the service, which starts the engine.
+     * Start the engine for the screens, as a PLAIN CHILD PROCESS.
      *
-     * The SERVICE rather than the process directly, and that is not a detour:
-     * a plain child process is killed when the app leaves the screen, and a
-     * sync tool that only works while somebody is looking at it is a file
-     * manager. EngineService is what makes the process survive a pocket.
+     * Not through the foreground service, and that is the whole of why this app
+     * no longer has a permanent notification: a service must show one, and
+     * while somebody is looking at a screen there is nothing to tell them that
+     * the screen does not already say. A child process of a visible app is
+     * allowed to live, so this is all it takes.
+     *
+     * It dies with the app, which is correct: the background half is not this
+     * process at all. Android wakes the app on its own schedule and the service
+     * runs then, for as long as the copying takes - see Waker.
+     *
+     * The wake-ups are armed here too, because this is the moment there is
+     * something to wake up FOR: the app has been opened, so a configuration
+     * exists to read.
      */
     @ReactMethod
     fun start(promise: Promise) {
         try {
-            EngineService.start(context)
+            Engine.start(context)
+            Device.watch(context)
+            Waker.arm(context)
             promise.resolve(null)
         } catch (e: Exception) {
             promise.reject("start", e.message, e)
         }
     }
 
+    /** Stop the engine, and any run the service happens to be holding. */
     @ReactMethod
     fun stop(promise: Promise) {
         try {
+            Device.forget(context)
+            Engine.stop()
             context.startService(
                 Intent(context, EngineService::class.java).setAction(EngineService.ACTION_STOP),
             )

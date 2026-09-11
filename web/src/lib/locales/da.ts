@@ -493,6 +493,24 @@ const da: Translations = {
   'phone.jobOff': 'Slået fra',
   'phone.jobOffHint': 'Et job, der er slået fra, starter aldrig af sig selv og får ingen knap. Et nyt job begynder sådan med vilje: det første, et netop indtastet job bør gøre, er ingenting.',
   'phone.previewExplain': 'Der sker ingenting, før du trykker på knappen. Det her er, hvad en kørsel ville gøre, regnet ud fra begge sider præcis som de ser ud nu.',
+
+  // The second axis of a one-way job: what happens to everything the
+  // direction alone does not settle. Two of the three DELETE, so each
+  // carries a sentence saying exactly what it removes and what it
+  // leaves - a picker with three words and no explanation is how
+  // somebody mirrors the wrong way round.
+  'mode.label': 'Hvad der sker med resten',
+  'mode.sync': 'Kun kopiering',
+  'mode.syncHint': 'Alt, hvad kilden har, går over. En fil, som kun den anden side har, bliver liggende præcis hvor den ligger, og der bliver aldrig fjernet noget for dig.',
+  'mode.mirror': 'Spejling',
+  'mode.mirrorHint': 'Den anden side bliver en nøjagtig kopi af kilden, så en fil, som kilden ikke har, bliver slettet der. Den ryger først i den sides papirkurv, og en kørsel, der ville fjerne mere end halvdelen af alt, den kender, stopper og siger det.',
+  'mode.move': 'Flytning',
+  'mode.moveHint': 'En fil går over og forlader derefter kilden, sådan sender en telefon kameraet op og får pladsen tilbage. Originalen ryger i papirkurven i stedet for at blive destrueret, og den går først, når kopien virkelig er kommet frem.',
+  'mode.onlyOneWay': 'Kun til et ensrettet job. Begge afgør hvilken side der har ret, og et job, der kører begge veje, har ikke sagt hvilken.',
+  'side.onDevice': 'På enheden',
+  'defaults.follow': 'Tag standardværdien',
+  'defaults.followHint': 'Hent dette fra indstillingerne i stedet for at bestemme det her. Ændret der én gang ændrer det sig i hvert job, der følger standardværdien.',
+  'side.target': 'Et mål',
 }
 
 export default da

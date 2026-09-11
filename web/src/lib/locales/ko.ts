@@ -493,6 +493,24 @@ const ko: Translations = {
   'phone.jobOff': '꺼짐',
   'phone.jobOffHint': '꺼진 작업은 스스로 시작하지 않고 버튼도 나오지 않습니다. 새 작업은 일부러 이렇게 시작합니다. 방금 입력한 작업이 가장 먼저 해야 할 일은 아무것도 하지 않는 것입니다.',
   'phone.previewExplain': '버튼을 누르기 전에는 아무것도 움직이지 않습니다. 이것은 실행하면 어떻게 되는지를, 지금 이 상태의 양쪽에서 계산한 것입니다.',
+
+  // The second axis of a one-way job: what happens to everything the
+  // direction alone does not settle. Two of the three DELETE, so each
+  // carries a sentence saying exactly what it removes and what it
+  // leaves - a picker with three words and no explanation is how
+  // somebody mirrors the wrong way round.
+  'mode.label': '나머지는 어떻게 되는가',
+  'mode.sync': '복사만',
+  'mode.syncHint': '원본에 있는 것은 모두 건너갑니다. 반대쪽에만 있는 파일은 있던 그 자리에 그대로 남고, 당신을 대신해 무언가가 지워지는 일은 없습니다.',
+  'mode.mirror': '미러',
+  'mode.mirrorHint': '반대쪽이 원본과 똑같아지므로, 원본에 없는 파일은 그곳에서 지워집니다. 먼저 그쪽 휴지통으로 들어가고, 알고 있는 것의 절반을 넘게 지우게 될 실행은 멈추고 그 사실을 알립니다.',
+  'mode.move': '이동',
+  'mode.moveHint': '파일이 건너간 뒤 원본에서 사라집니다. 카메라를 올려 보내고 공간을 되찾는, 휴대전화의 가장 흔한 쓰임새입니다. 원본은 파기되지 않고 휴지통으로 가며, 복사본이 실제로 도착한 뒤에야 떠납니다.',
+  'mode.onlyOneWay': '한 방향 작업에만 해당합니다. 둘 다 어느 쪽이 옳은지를 정하는데, 양방향 작업은 그것을 말하지 않았습니다.',
+  'side.onDevice': '기기 안',
+  'defaults.follow': '기본값 사용',
+  'defaults.followHint': '여기서 정하는 대신 설정에서 가져옵니다. 설정에서 한 번 바꾸면 기본값을 따르는 모든 작업이 함께 바뀝니다.',
+  'side.target': '대상',
 }
 
 export default ko

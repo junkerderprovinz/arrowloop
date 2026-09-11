@@ -493,6 +493,24 @@ const fa: Translations = {
   'phone.jobOff': 'خاموش',
   'phone.jobOffHint': 'کار خاموش هرگز خودش شروع نمی‌شود و دکمه‌ای هم نمی‌گیرد. کار تازه عمداً این‌طور آغاز می‌شود: اولین کاری که یک کار تازه‌تایپ‌شده باید بکند هیچ است.',
   'phone.previewExplain': 'تا وقتی دکمه را نزنی چیزی تکان نمی‌خورد. این همان کاری است که یک اجرا می‌کرد، حساب‌شده از هر دو سو، دقیقاً همان‌طور که اکنون هستند.',
+
+  // The second axis of a one-way job: what happens to everything the
+  // direction alone does not settle. Two of the three DELETE, so each
+  // carries a sentence saying exactly what it removes and what it
+  // leaves - a picker with three words and no explanation is how
+  // somebody mirrors the wrong way round.
+  'mode.label': 'با بقیه چه می‌شود',
+  'mode.sync': 'فقط رونوشت',
+  'mode.syncHint': 'هرچه مبدأ دارد آن سو می‌رود. پرونده‌ای که فقط طرف دیگر دارد دقیقاً همان‌جا می‌ماند، و هرگز چیزی به‌جای تو حذف نمی‌شود.',
+  'mode.mirror': 'آینه',
+  'mode.mirrorHint': 'طرف دیگر رونوشت دقیق مبدأ می‌شود، پس پرونده‌ای که مبدأ ندارد آنجا پاک می‌شود. نخست به سطل زبالهٔ همان طرف می‌رود، و اجرایی که بیش از نیمی از هرچه می‌شناسد را بردارد می‌ایستد و همین را می‌گوید.',
+  'mode.move': 'جابه‌جایی',
+  'mode.moveHint': 'پرونده آن سو می‌رود و سپس مبدأ را ترک می‌کند؛ گوشی این‌گونه دوربین را بالا می‌فرستد و جا را پس می‌گیرد. نسخهٔ اصلی به‌جای نابودی به سطل زباله می‌رود، و تنها وقتی می‌رود که رونوشت واقعاً رسیده باشد.',
+  'mode.onlyOneWay': 'فقط برای کاری یک‌طرفه. هر دو تعیین می‌کنند کدام سو درست است، و کاری که در هر دو جهت می‌رود این را نگفته است.',
+  'side.onDevice': 'روی دستگاه',
+  'defaults.follow': 'گرفتن پیش‌فرض',
+  'defaults.followHint': 'این را به‌جای تصمیم‌گیری در اینجا از تنظیمات بگیر. آنجا یک بار عوض کن، در هر کاری که از پیش‌فرض پیروی می‌کند عوض می‌شود.',
+  'side.target': 'یک مقصد',
 }
 
 export default fa

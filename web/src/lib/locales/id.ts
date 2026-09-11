@@ -493,6 +493,24 @@ const id: Translations = {
   'phone.jobOff': 'Dimatikan',
   'phone.jobOffHint': 'Tugas yang dimatikan tidak pernah mulai sendiri dan tidak mendapat tombol. Tugas baru sengaja dimulai begini: hal pertama yang harus dilakukan tugas yang baru saja diketik adalah tidak apa-apa.',
   'phone.previewExplain': 'Tidak ada yang bergerak sampai kamu menekan tombol. Inilah yang akan dilakukan satu jalan, dihitung dari kedua sisi persis seperti sekarang.',
+
+  // The second axis of a one-way job: what happens to everything the
+  // direction alone does not settle. Two of the three DELETE, so each
+  // carries a sentence saying exactly what it removes and what it
+  // leaves - a picker with three words and no explanation is how
+  // somebody mirrors the wrong way round.
+  'mode.label': 'Apa yang terjadi pada sisanya',
+  'mode.sync': 'Hanya menyalin',
+  'mode.syncHint': 'Semua yang dimiliki sumber pindah ke seberang. Berkas yang hanya dimiliki sisi lain tetap persis di tempatnya, dan tidak pernah ada yang dihapus untukmu.',
+  'mode.mirror': 'Cermin',
+  'mode.mirrorHint': 'Sisi lain menjadi salinan persis dari sumber, jadi berkas yang tidak dimiliki sumber dihapus di sana. Ia masuk dulu ke tempat sampah sisi itu, dan jalan yang akan menghapus lebih dari separuh semua yang dikenalnya berhenti dan mengatakannya.',
+  'mode.move': 'Pindahkan',
+  'mode.moveHint': 'Berkas pindah ke seberang lalu meninggalkan sumber, begitulah ponsel mengirim kamera ke atas dan mendapatkan ruangnya kembali. Aslinya masuk tempat sampah alih-alih dimusnahkan, dan baru pergi setelah salinannya benar-benar sampai.',
+  'mode.onlyOneWay': 'Hanya untuk tugas satu arah. Keduanya memutuskan sisi mana yang benar, dan tugas yang berjalan dua arah belum mengatakannya.',
+  'side.onDevice': 'Di perangkat',
+  'defaults.follow': 'Ambil bawaan',
+  'defaults.followHint': 'Mengambil ini dari pengaturan alih-alih memutuskannya di sini. Diubah sekali di sana, ia berubah di setiap tugas yang mengikuti bawaan.',
+  'side.target': 'Sebuah tujuan',
 }
 
 export default id

@@ -23,7 +23,7 @@ import { Badge, Body, Button, Caption, Card, Empty, Title, useHue, useTheme } fr
 export function Jobs() {
   const nav = useNavigation<Nav<JobsStack>>();
   const { t } = useT();
-  const { p } = useTheme();
+  const { p, accent } = useTheme();
   const [jobs, setJobs] = useState<Job[] | null>(null);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState<string | null>(null);
@@ -66,14 +66,14 @@ export function Jobs() {
       data={jobs}
       keyExtractor={(j) => j.name}
       contentContainerStyle={styles.list}
-      refreshControl={<RefreshControl refreshing={false} onRefresh={load} tintColor={p.accent} />}
+      refreshControl={<RefreshControl refreshing={false} onRefresh={load} tintColor={accent} />}
       ListEmptyComponent={
         <Empty title={t("jobs.title")} detail={t("jobs.empty")} />
       }
       ListHeaderComponent={
         <Button
           label={t("edit.add")}
-          glyph="+"
+          labelKey="edit.add"
           tone="accent"
           onPress={() => nav.navigate("JobEdit", {})}
         />
@@ -137,7 +137,7 @@ function JobCard({
       <View style={styles.actions}>
         <Button
           label={job.running ? t("jobs.pause") : t("jobs.runNow")}
-          glyph={job.running ? "■" : "▶"}
+          labelKey={job.running ? "jobs.pause" : "jobs.runNow"}
           tone={job.running ? "neutral" : "accent"}
           busy={busy}
           disabled={job.disabled}

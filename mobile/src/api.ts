@@ -53,6 +53,10 @@ export interface JobConfig {
   noDefaultExcludes?: boolean;
   excludeSets?: string[];
   direction?: string;
+  /** What a ONE-WAY job does beyond copying: "sync", "mirror" or "move". The
+   *  engine refuses any of the other two on a two-way job, because both decide
+   *  which side is right and a two-way job has not said. */
+  mode?: string;
   quietPeriod?: string;
   modWindow?: string;
   transfers?: number;

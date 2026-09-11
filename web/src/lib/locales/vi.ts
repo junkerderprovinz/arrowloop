@@ -493,6 +493,24 @@ const vi: Translations = {
   'phone.jobOff': 'Đã tắt',
   'phone.jobOffHint': 'Một công việc đã tắt thì không bao giờ tự khởi động và cũng không có nút. Công việc mới cố tình bắt đầu như vậy: điều đầu tiên mà một công việc vừa gõ xong nên làm là không làm gì cả.',
   'phone.previewExplain': 'Không có gì nhúc nhích cho đến khi bạn bấm nút. Đây là những gì một lượt chạy sẽ làm, tính ra từ cả hai bên đúng như chúng đang có bây giờ.',
+
+  // The second axis of a one-way job: what happens to everything the
+  // direction alone does not settle. Two of the three DELETE, so each
+  // carries a sentence saying exactly what it removes and what it
+  // leaves - a picker with three words and no explanation is how
+  // somebody mirrors the wrong way round.
+  'mode.label': 'Phần còn lại thì sao',
+  'mode.sync': 'Chỉ sao chép',
+  'mode.syncHint': 'Mọi thứ nguồn có đều sang bên kia. Tệp mà chỉ bên kia có vẫn nằm đúng chỗ của nó, và không bao giờ có gì bị xóa thay cho bạn.',
+  'mode.mirror': 'Nhân bản',
+  'mode.mirrorHint': 'Bên kia trở thành bản sao chính xác của nguồn, nên tệp mà nguồn không có sẽ bị xóa ở đó. Nó vào thùng rác của bên đó trước, và một lượt chạy sẽ xóa hơn một nửa tất cả những gì nó biết thì dừng lại và nói ra.',
+  'mode.move': 'Di chuyển',
+  'mode.moveHint': 'Tệp sang bên kia rồi rời khỏi nguồn, đó là cách điện thoại đẩy máy ảnh lên và lấy lại chỗ trống. Bản gốc vào thùng rác thay vì bị hủy, và chỉ rời đi khi bản sao thực sự đã đến nơi.',
+  'mode.onlyOneWay': 'Chỉ dành cho công việc một chiều. Cả hai đều quyết định bên nào đúng, còn công việc chạy cả hai chiều thì chưa nói điều đó.',
+  'side.onDevice': 'Trên thiết bị',
+  'defaults.follow': 'Lấy mặc định',
+  'defaults.followHint': 'Lấy cái này từ cài đặt thay vì quyết định ở đây. Đổi ở đó một lần thì nó đổi theo trong mọi công việc đi theo mặc định.',
+  'side.target': 'Một đích',
 }
 
 export default vi

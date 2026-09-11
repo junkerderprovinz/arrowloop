@@ -358,7 +358,7 @@ func RunVerified(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt
 		}
 	}
 
-	for _, group := range [][]plan.Kind{{plan.Copy, plan.Conflict}, {plan.Delete}} {
+	for _, group := range [][]plan.Kind{{plan.Copy, plan.Relocate, plan.Conflict}, {plan.Delete}} {
 		acts := ofKind(p.Actions, group...)
 		if err := t.forEach(ctx, ends, acts, opt.Transfers, func(ctx context.Context, act plan.Action) error {
 			if why, busy := heldOpen(ends, act); busy {
@@ -546,10 +546,13 @@ type touch struct {
 // through a manoeuvre that is only safe as a whole.
 func wantsToTouch(act plan.Action) []touch {
 	switch act.Kind {
-	case plan.Copy:
+	case plan.Copy, plan.Relocate:
 		if act.SrcPath == "" {
 			return nil
 		}
+		// A relocate reads this file and then removes it, so a lock on it
+		// stops the whole manoeuvre - the same answer as for a plain copy,
+		// with more riding on it.
 		return []touch{{act.Src, act.SrcPath}}
 
 	case plan.Move:
@@ -601,7 +604,7 @@ func couldHaveLocked(act plan.Action) []touch {
 		return out
 	}
 	switch act.Kind {
-	case plan.Copy, plan.Move:
+	case plan.Copy, plan.Move, plan.Relocate:
 		return append(out, touch{act.Dst, act.DstPath})
 	}
 	return out
@@ -735,6 +738,44 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 			from = act.LeftNow
 		}
 		t.sized("copy", act.DstPath, act.Dst.String(), sizeOf(from))
+		left, right := act.Names()
+		return rec.settle(ctx, act.Path, left, right)
+
+	case plan.Relocate:
+		// A copy, and then the source's own file goes.
+		//
+		// The removal is written INSIDE this case rather than queued as a
+		// second action, and that is the whole reason this kind exists: every
+		// line below the copy is unreachable unless the copy returned nil, so
+		// there is no arrangement of failures that deletes an original whose
+		// copy did not land. A `Copy` followed by a `Delete` in the action list
+		// has no such guarantee.
+		src, dst := ends.side(act.Src), ends.side(act.Dst)
+		if err := keepVersion(ctx, dst, act.DstPath, runID); err != nil {
+			return err
+		}
+		if err := retrying(ctx, func() error {
+			return operations.CopyFile(ctx, dst, src, act.DstPath, act.SrcPath)
+		}); err != nil {
+			return err
+		}
+		t.count(func(r *Result) { r.Copied++ })
+		sent := act.RightNow
+		if act.Dst == plan.Right {
+			sent = act.LeftNow
+		}
+		t.sized("copy", act.DstPath, act.Dst.String(), sizeOf(sent))
+
+		// Into the source side's own bin, not deleted outright: the same net
+		// every other removal in this program falls into, and the one that
+		// makes "upload and then delete" something a person can undo.
+		if sent != nil {
+			if err := discard(ctx, src, sent.Object(), runID); err != nil {
+				return err
+			}
+			t.count(func(r *Result) { r.Moved++ })
+			t.sized("move", act.SrcPath, act.Src.String(), sent.Size)
+		}
 		left, right := act.Names()
 		return rec.settle(ctx, act.Path, left, right)
 

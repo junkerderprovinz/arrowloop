@@ -493,6 +493,24 @@ const fi: Translations = {
   'phone.jobOff': 'Pois käytöstä',
   'phone.jobOffHint': 'Pois käytöstä oleva työ ei käynnisty koskaan itsestään eikä saa nappia. Uusi työ alkaa näin tarkoituksella: ensimmäinen asia, jonka juuri kirjoitetun työn pitäisi tehdä, on ei mitään.',
   'phone.previewExplain': 'Mikään ei liiku ennen kuin painat nappia. Tämä on se, mitä ajo tekisi, laskettuna molemmista puolista juuri sellaisina kuin ne nyt ovat.',
+
+  // The second axis of a one-way job: what happens to everything the
+  // direction alone does not settle. Two of the three DELETE, so each
+  // carries a sentence saying exactly what it removes and what it
+  // leaves - a picker with three words and no explanation is how
+  // somebody mirrors the wrong way round.
+  'mode.label': 'Mitä lopulle tapahtuu',
+  'mode.sync': 'Vain kopiointi',
+  'mode.syncHint': 'Kaikki, mitä lähteellä on, siirtyy toiselle puolelle. Tiedosto, joka on vain toisella puolella, jää täsmälleen paikalleen, eikä mitään poisteta koskaan puolestasi.',
+  'mode.mirror': 'Peilaus',
+  'mode.mirrorHint': 'Toisesta puolesta tulee lähteen tarkka kopio, joten tiedosto, jota lähteellä ei ole, poistetaan sieltä. Se menee ensin sen puolen roskakoriin, ja ajo, joka poistaisi yli puolet kaikesta tuntemastaan, pysähtyy ja sanoo sen.',
+  'mode.move': 'Siirto',
+  'mode.moveHint': 'Tiedosto siirtyy toiselle puolelle ja lähtee sitten lähteeltä, näin puhelin lähettää kameran ylös ja saa tilan takaisin. Alkuperäinen menee roskakoriin eikä tuhoudu, ja lähtee vasta kun kopio on todella perillä.',
+  'mode.onlyOneWay': 'Vain yhdensuuntaiselle työlle. Molemmat päättävät kumpi puoli on oikeassa, eikä molempiin suuntiin kulkeva työ ole sitä sanonut.',
+  'side.onDevice': 'Laitteella',
+  'defaults.follow': 'Ota oletus',
+  'defaults.followHint': 'Ottaa tämä asetuksista sen sijaan että päättäisi sen tässä. Siellä kerran muutettuna se muuttuu jokaisessa työssä, joka seuraa oletusta.',
+  'side.target': 'Kohde',
 }
 
 export default fi

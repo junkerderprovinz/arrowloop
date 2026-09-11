@@ -131,7 +131,7 @@ export function AboutCard({
   return (
     <Card title={text.title} hueIndex={hueIndex}>
       {/* No reading-width cap on the card's own prose. It carried max-w-2xl
-          (42rem) until 1.8.1, which is a defensible typographic width in the
+          (42rem) at first, which is a defensible typographic width in the
           abstract and looked wrong here for a concrete reason: it is the ONLY
           capped text on its page. Every other card lets its sentences run the
           card, so three paragraphs stopping two thirds of the way across read

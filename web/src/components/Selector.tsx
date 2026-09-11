@@ -41,6 +41,7 @@ export function Selector<T extends string>({
   onChange,
   scale = 'big',
   variant = 'well',
+  fill = false,
   label,
 }: {
   options: Option<T>[]
@@ -68,6 +69,11 @@ export function Selector<T extends string>({
    * and then again after the first attempt only made the groove version bigger.
    */
   variant?: 'well' | 'chip'
+  /** Fill the width it is given, with the segments sharing it equally, instead
+   *  of sitting at the width of its own words. For a strip that heads a column
+   *  of cards: a strip narrower than what it introduces reads as a control that
+   *  belongs to something else on the page. */
+  fill?: boolean
   label?: string
 }) {
   const track = useRef<HTMLDivElement>(null)
@@ -163,7 +169,7 @@ export function Selector<T extends string>({
       }
       style={{
         borderRadius: variant === 'well' ? 'var(--radius-control)' : undefined,
-        width: 'fit-content',
+        width: fill ? '100%' : 'fit-content',
       }}
     >
       {options.map((o, i) => {
@@ -198,7 +204,10 @@ export function Selector<T extends string>({
               borderRadius: 'var(--radius-control)',
               width: scale === 'big' && width ? width : undefined,
               minWidth: scale === 'big' ? undefined : `calc(var(--btn-w-${stage}) / ${options.length})`,
-              flex: 'none',
+              // Equal shares when the strip fills its column, so four tabs
+              // divide the width between them rather than four different
+              // word-lengths deciding it.
+              flex: fill ? '1 1 0' : 'none',
             }}
             className={[
               'glim-hue glim-hue-icon glim-tab inline-flex items-center justify-center gap-1.5 px-3',

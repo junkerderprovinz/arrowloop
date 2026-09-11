@@ -493,6 +493,24 @@ const es: Translations = {
   'phone.jobOff': 'Desactivada',
   'phone.jobOffHint': 'Una tarea desactivada nunca arranca sola y no tiene botón. Una tarea nueva empieza así a propósito: lo primero que debería hacer una tarea recién escrita es nada.',
   'phone.previewExplain': 'Hasta que pulses el botón no se mueve nada. Esto es lo que haría una ejecución, calculado a partir de los dos lados tal y como están ahora.',
+
+  // The second axis of a one-way job: what happens to everything the
+  // direction alone does not settle. Two of the three DELETE, so each
+  // carries a sentence saying exactly what it removes and what it
+  // leaves - a picker with three words and no explanation is how
+  // somebody mirrors the wrong way round.
+  'mode.label': 'Qué pasa con el resto',
+  'mode.sync': 'Solo copiar',
+  'mode.syncHint': 'Todo lo que tiene el origen pasa al otro lado. Un archivo que solo tiene el otro lado se queda exactamente donde está, y nunca se elimina nada por ti.',
+  'mode.mirror': 'Reflejar',
+  'mode.mirrorHint': 'El otro lado se convierte en una copia exacta del origen, así que un archivo que el origen no tiene se elimina allí. Pasa primero por la papelera de ese lado, y una ejecución que quitaría más de la mitad de todo lo que conoce se detiene y lo dice.',
+  'mode.move': 'Mover',
+  'mode.moveHint': 'Un archivo pasa al otro lado y luego abandona el origen, así es como un teléfono sube la cámara y recupera el espacio. El original va a la papelera en vez de destruirse, y solo se va cuando la copia ha llegado de verdad.',
+  'mode.onlyOneWay': 'Solo para una tarea de un sentido. Ambos deciden qué lado tiene razón, y una tarea que va en los dos sentidos no lo ha dicho.',
+  'side.onDevice': 'En el dispositivo',
+  'defaults.follow': 'Tomar el valor por defecto',
+  'defaults.followHint': 'Coger esto de los ajustes en vez de decidirlo aquí. Cambiado allí una vez, cambia en cada tarea que sigue el valor por defecto.',
+  'side.target': 'Un destino',
 }
 
 export default es

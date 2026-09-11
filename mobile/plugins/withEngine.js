@@ -114,6 +114,21 @@ function withEngineManifest(config) {
       });
     }
 
+    // What Android calls when it is time. It needs the system's own permission
+    // to be bindable as a job service, and WITHOUT that line Android silently
+    // refuses to schedule anything: JobScheduler.schedule returns a failure
+    // nobody reads, and the symptom is a phone that simply never syncs on its
+    // own. Nothing in the app would say so.
+    if (!app.service.some((s) => s.$["android:name"] === ".SyncJobService")) {
+      app.service.push({
+        $: {
+          "android:name": ".SyncJobService",
+          "android:exported": "false",
+          "android:permission": "android.permission.BIND_JOB_SERVICE",
+        },
+      });
+    }
+
     app.receiver = app.receiver ?? [];
     if (!app.receiver.some((r) => r.$["android:name"] === ".BootReceiver")) {
       app.receiver.push({

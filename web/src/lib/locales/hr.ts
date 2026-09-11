@@ -493,6 +493,24 @@ const hr: Translations = {
   'phone.jobOff': 'Isključen',
   'phone.jobOffHint': 'Isključen zadatak nikada ne kreće sam i ne dobiva gumb. Novi zadatak namjerno ovako počinje: prvo što bi tek upisan zadatak trebao učiniti jest ništa.',
   'phone.previewExplain': 'Dok ne pritisneš gumb, ništa se ne miče. Ovo je ono što bi izvođenje učinilo, izračunato iz obiju strana točno onakvih kakve su sada.',
+
+  // The second axis of a one-way job: what happens to everything the
+  // direction alone does not settle. Two of the three DELETE, so each
+  // carries a sentence saying exactly what it removes and what it
+  // leaves - a picker with three words and no explanation is how
+  // somebody mirrors the wrong way round.
+  'mode.label': 'Što se događa s ostalim',
+  'mode.sync': 'Samo kopiranje',
+  'mode.syncHint': 'Sve što izvor ima prelazi prijeko. Datoteka koju ima samo druga strana ostaje točno gdje jest, i nikad se ništa ne briše umjesto tebe.',
+  'mode.mirror': 'Zrcaljenje',
+  'mode.mirrorHint': 'Druga strana postaje točna kopija izvora, pa se datoteka koju izvor nema ondje briše. Prvo ide u smeće te strane, a izvođenje koje bi uklonilo više od polovice svega što poznaje staje i to kaže.',
+  'mode.move': 'Premještanje',
+  'mode.moveHint': 'Datoteka prelazi prijeko i zatim napušta izvor, tako telefon šalje kameru gore i vraća si prostor. Izvornik ide u smeće umjesto da bude uništen, i odlazi tek kad je kopija stvarno stigla.',
+  'mode.onlyOneWay': 'Samo za jednosmjerni zadatak. Oboje odlučuje koja je strana u pravu, a zadatak koji ide u oba smjera to nije rekao.',
+  'side.onDevice': 'Na uređaju',
+  'defaults.follow': 'Preuzmi zadano',
+  'defaults.followHint': 'Uzeti ovo iz postavki umjesto da se odlučuje ovdje. Promijenjeno ondje jednom, mijenja se u svakom zadatku koji slijedi zadano.',
+  'side.target': 'Odredište',
 }
 
 export default hr
