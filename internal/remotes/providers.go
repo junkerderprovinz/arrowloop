@@ -135,11 +135,34 @@ const (
 type Group string
 
 const (
-	// GroupCloud is a service somebody has an account with.
+	// GroupCloud is a service somebody SIGNS IN TO: a name they already know,
+	// reached by pressing its button and giving it a password.
 	GroupCloud Group = "cloud"
-	// GroupProtocol is a machine, a share or an address somebody reaches.
+	// GroupProtocol is something somebody POINTS AT: a machine, a share or an
+	// address they have to type in.
 	GroupProtocol Group = "protocol"
 )
+
+// WHICH GROUP A NEW ENTRY BELONGS IN, because the obvious question is the
+// wrong one.
+//
+// It is not "who owns the machine". By that reading MinIO and SeaweedFS sat
+// with the clouds for months on the argument that what you have is an account
+// with a bucket store even when the hardware is your own - and somebody
+// looking for them went through fifty consumer services first (jdp: "ist
+// seaweedfs und object storage nicht im falschen abschnitt?").
+//
+// The question is WHAT SOMEBODY TYPES, because that is what they are holding
+// when they open this list:
+//
+//   - a name they know and a password  ->  GroupCloud
+//   - an address, host or endpoint     ->  GroupProtocol
+//
+// Nextcloud asks for a server URL and an app password, which is precisely what
+// SFTP asks for, so it is listed where somebody goes looking for their own
+// machines. Dropbox asks for nothing but a button, so it is listed with the
+// services. The line falls in the same place every time and does not depend on
+// anybody's opinion about self-hosting.
 
 // providers is the list, in the order it is offered within each group.
 //
@@ -149,13 +172,13 @@ const (
 // and the raw-backend fallback below is what keeps that from being a wall.
 var providers = []Provider{
 	// The self-hosted three: one backend, three products, three entries.
-	{ID: "nextcloud", Name: "Nextcloud", Auth: AuthAppPassword, Backend: "webdav", Group: GroupCloud,
+	{ID: "nextcloud", Name: "Nextcloud", Auth: AuthAppPassword, Backend: "webdav", Group: GroupProtocol,
 		Preset: map[string]string{"vendor": "nextcloud"}, Mark: "IconNextcloud",
 		UrlHint: "https://cloud.example.com/remote.php/webdav/"},
-	{ID: "owncloud", Name: "ownCloud", Auth: AuthAppPassword, Backend: "webdav", Group: GroupCloud,
+	{ID: "owncloud", Name: "ownCloud", Auth: AuthAppPassword, Backend: "webdav", Group: GroupProtocol,
 		Preset: map[string]string{"vendor": "owncloud"}, Mark: "IconOwncloud",
 		UrlHint: "https://cloud.example.com/remote.php/webdav/"},
-	{ID: "opencloud", Name: "OpenCloud", Auth: AuthAppPassword, Backend: "webdav", Group: GroupCloud,
+	{ID: "opencloud", Name: "OpenCloud", Auth: AuthAppPassword, Backend: "webdav", Group: GroupProtocol,
 		// `infinitescale`, not `owncloud`. OpenCloud is a fork of ownCloud
 		// Infinite Scale rather than of ownCloud 10, and rclone carries a
 		// vendor for each: the 10 setting speaks the older PHP server's
@@ -189,7 +212,7 @@ var providers = []Provider{
 	// One of exactly two places in sixty-eight backends where the option list
 	// and the truth disagree, and the only one rclone itself flags.
 	{ID: "koofr", Name: "Koofr", Auth: AuthAppPassword, Backend: "koofr", Group: GroupCloud, Mark: "IconKoofr"},
-	{ID: "seafile", Name: "Seafile", Auth: AuthAppPassword, Backend: "seafile", Group: GroupCloud, Mark: "IconSeafile"},
+	{ID: "seafile", Name: "Seafile", Auth: AuthAppPassword, Backend: "seafile", Group: GroupProtocol, Mark: "IconSeafile"},
 	{ID: "opendrive", Name: "OpenDrive", Backend: "opendrive", Group: GroupCloud, Mark: "IconOpendrive"},
 	{ID: "yandex", Name: "Yandex Disk", Backend: "yandex", Group: GroupCloud, Mark: "IconYandex"},
 	{ID: "mailru", Name: "Mail.ru Cloud", Backend: "mailru", Group: GroupCloud, Mark: "IconMailru"},
@@ -264,22 +287,45 @@ var providers = []Provider{
 		Preset: map[string]string{"provider": "OVHcloud"}, Mark: "IconOvh"},
 	{ID: "synologyc2", Name: "Synology C2", Backend: "s3", Group: GroupCloud,
 		Preset: map[string]string{"provider": "Synology"}, Mark: "IconSynology"},
-	// The two somebody runs themselves, which is why they sit with the clouds
-	// rather than the protocols: what you HAVE is an account with a bucket
-	// store, even when the machine under it is your own.
-	{ID: "minio", Name: "MinIO", Backend: "s3", Group: GroupCloud,
-		Preset: map[string]string{"provider": "Minio"}, Mark: "IconMinio"},
-	{ID: "seaweedfs", Name: "SeaweedFS", Backend: "s3", Group: GroupCloud,
-		Preset: map[string]string{"provider": "SeaweedFS"}, Mark: "IconSeaweedfs"},
 	{ID: "oracle", Name: "Oracle Object Storage", Backend: "oracleobjectstorage", Group: GroupCloud, Mark: "IconOracleCloud"},
 	{ID: "storj", Name: "Storj", Backend: "storj", Group: GroupCloud, Mark: "IconStorj"},
-	{ID: "swift", Name: "OpenStack Swift", Backend: "swift", Group: GroupCloud, Mark: "IconOpenstack"},
+	{ID: "swift", Name: "OpenStack Swift", Backend: "swift", Group: GroupProtocol, Mark: "IconOpenstack"},
 	{ID: "netstorage", Name: "Akamai NetStorage", Backend: "netstorage", Group: GroupCloud, Mark: "IconAkamai"},
 	{ID: "cloudinary", Name: "Cloudinary", Backend: "cloudinary", Group: GroupCloud, Mark: "IconCloudinary"},
 	{ID: "internetarchive", Name: "Internet Archive", Backend: "internetarchive", Group: GroupCloud,
 		Mark: "IconInternetArchive"},
 
 	// Machines, shares and addresses.
+	// THE BUCKET STORES SOMEBODY RUNS THEMSELVES, and they belong here rather
+	// than with the clouds. They used to sit with them, on the argument that
+	// what you have is an account with a bucket store even when the machine
+	// under it is your own - and that reads the wrong half of the question.
+	// What you TYPE is an endpoint: an address, a machine on a network, the
+	// same thing SFTP and SMB ask for. Somebody looking for MinIO is looking
+	// where their own machines are listed, not in a catalogue of services to
+	// subscribe to (jdp: "ist seaweedfs und object storage nicht im falschen
+	// abschnitt?").
+	//
+	// Garage and Ceph are here for the same reason, and because a list that
+	// names two of the four self-hosted stores and leaves the others to be
+	// guessed at under "S3 compatible" is a list that stops halfway. Ceph has
+	// rclone's own preset; Garage has none - it is S3-compatible and reached
+	// through the generic provider, which is exactly what the entry says.
+	{ID: "minio", Name: "MinIO", Backend: "s3", Group: GroupProtocol,
+		Preset: map[string]string{"provider": "Minio"}, Mark: "IconMinio",
+		Hint: "A bucket store you run yourself. Needs its endpoint address."},
+	{ID: "seaweedfs", Name: "SeaweedFS", Backend: "s3", Group: GroupProtocol,
+		Preset: map[string]string{"provider": "SeaweedFS"}, Mark: "IconSeaweedfs",
+		Hint: "A bucket store you run yourself. Needs its endpoint address."},
+	{ID: "ceph", Name: "Ceph", Backend: "s3", Group: GroupProtocol,
+		Preset: map[string]string{"provider": "Ceph"},
+		Hint:   "A bucket store you run yourself. Needs its endpoint address."},
+	{ID: "garage", Name: "Garage", Backend: "s3", Group: GroupProtocol,
+		// rclone has no Garage preset, so it is reached as a generic
+		// S3 service - which is what Garage is, and what its own
+		// documentation tells people to configure.
+		Preset: map[string]string{"provider": "Other"},
+		Hint:   "A bucket store you run yourself. Needs its endpoint address."},
 	{ID: "smb", Name: "SMB / Windows share", Backend: "smb", Group: GroupProtocol,
 		Mark: "IconFolder", Hint: "A shared folder on a NAS or a Windows machine."},
 	{ID: "sftp", Name: "SFTP", Backend: "sftp", Group: GroupProtocol,
