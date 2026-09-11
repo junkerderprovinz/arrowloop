@@ -25,9 +25,33 @@
  * (U+1F1E6 = 'A' ... U+1F1FF = 'Z') and concatenating the two codepoints -
  * the same mechanism every flag emoji on every platform already uses, so
  * this needs no image asset or lookup table.
+ *
+ * ONLY THE FIRST TWO LETTERS, and that is the whole of the fix this function
+ * needed. It used to map EVERY character it was given, which is correct for a
+ * two-letter code and wrong for everything else: a subdivision code like
+ * "es-ct" became five codepoints, so "ES" rendered as Spain's flag, the hyphen
+ * rendered as itself, and "CT" formed a SECOND regional-indicator pair - three
+ * glyphs where one was asked for, reported as "bei manchen sind zwei flaggen".
+ *
+ * A subdivision therefore shows its COUNTRY's flag. That is the honest answer
+ * rather than a compromise: Unicode has tag sequences for exactly three
+ * subdivisions (England, Scotland, Wales) and nothing for anywhere else, so
+ * Catalonia, Galicia and the Basque Country have no flag emoji to show. The
+ * NAME beside it is what identifies the language anyway - it is written in
+ * itself, which is why somebody scanning the list finds "Català" before they
+ * look at any flag.
+ *
+ * A code with no letters at all answers an empty string rather than garbage,
+ * because a caller that hands this a country it does not have should get
+ * nothing to draw rather than two stray boxes.
  */
 export function flagEmoji(isoCode: string): string {
-  return Array.from(isoCode.toUpperCase())
+  const letters = String(isoCode ?? '')
+    .toUpperCase()
+    .replace(/[^A-Z]/g, '')
+    .slice(0, 2);
+  if (letters.length < 2) return '';
+  return Array.from(letters)
     .map((letter) => String.fromCodePoint(0x1f1e6 + letter.charCodeAt(0) - 65))
     .join('');
 }

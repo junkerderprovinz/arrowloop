@@ -288,6 +288,7 @@ const lt: Translations = {
   'engine.historyHint': 'Kur užrašomas kiekvienas paleidimas kartu su tuo, ką jis padarė kuriam failui. Tuščia reiškia šalia konfigūracijos failo. Santykinis pavadinimas skaičiuojamas nuo to paties aplanko.',
   'engine.telling': 'Kam pranešama',
   'engine.defaults': 'Bendrasis sinchronizavimo nustatymas',
+  'settings.openSync': 'Atverti sinchronizavimo nustatymus',
   'settings.transfer': 'Perdavimas',
   'settings.contents': 'Kas perkeliama',
   'settings.safetyNet': 'Apsauginis tinklas',

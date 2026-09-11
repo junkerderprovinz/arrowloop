@@ -288,6 +288,7 @@ const lv: Translations = {
   'engine.historyHint': 'Kur tiek pierakstīta katra palaišana kopā ar to, ko tā izdarīja ar kuru failu. Tukšs nozīmē blakus konfigurācijas failam. Relatīvs nosaukums attiecas uz to pašu mapi.',
   'engine.telling': 'Kam paziņo',
   'engine.defaults': 'Globālais sinhronizācijas iestatījums',
+  'settings.openSync': 'Atvērt sinhronizācijas iestatījumus',
   'settings.transfer': 'Pārsūtīšana',
   'settings.contents': 'Kas tiek pārnests',
   'settings.safetyNet': 'Drošības tīkls',

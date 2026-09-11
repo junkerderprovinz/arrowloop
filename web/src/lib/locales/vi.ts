@@ -288,6 +288,7 @@ const vi: Translations = {
   'engine.historyHint': 'Nơi ghi lại từng lần chạy, kèm theo đã làm gì với tệp nào. Để trống nghĩa là đặt cạnh tệp cấu hình. Tên tương đối được tính từ chính thư mục đó.',
   'engine.telling': 'Ai được báo',
   'engine.defaults': 'Thiết lập đồng bộ toàn cục',
+  'settings.openSync': 'Mở cài đặt đồng bộ',
   'settings.transfer': 'Truyền',
   'settings.contents': 'Những gì được mang theo',
   'settings.safetyNet': 'Lưới an toàn',

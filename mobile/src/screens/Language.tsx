@@ -60,9 +60,10 @@ export function Language() {
               <Text style={[styles.label, { color: on ? contrastOn(accent) : p.text }]}>
                 {language.label}
               </Text>
-              <Text style={[styles.code, { color: on ? contrastOn(accent) : p.textMuted }]}>
-                {language.code}
-              </Text>
+              {/* NO CODE. "cs" beside "Čeština" is the same fact in a notation
+                  nobody reads a language list in - somebody looking for Czech
+                  is looking for the word, and the two-letter tag is what a
+                  program calls it. jdp: "im dropdown die kürzel entfernen." */}
             </Pressable>
           );
         })}
@@ -73,15 +74,17 @@ export function Language() {
 
 const styles = StyleSheet.create({
   list: { gap: space.sm },
+  // NO BORDER. It carried `borderWidth: hairlineWidth`, which is a drawn line
+  // and this language has none: surfaces are separated by shade. The chosen row
+  // is a FILLED one, which is the same separation every other selected thing in
+  // the app uses, and the unchosen rows already sit a shade above the page.
   row: {
-    borderWidth: StyleSheet.hairlineWidth,
     paddingHorizontal: space.lg,
     minHeight: 52,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    gap: space.md,
   },
   flag: { fontSize: 20 },
   label: { fontSize: text.body, fontWeight: "600" },
-  code: { fontSize: text.caption },
 });

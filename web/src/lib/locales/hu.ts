@@ -288,6 +288,7 @@ const hu: Translations = {
   'engine.historyHint': 'Hová kerül minden futás, azzal együtt, hogy mit tett melyik fájllal. Az üres érték a beállítófájl mellé jelenti. A relatív név ugyanahhoz a mappához képest értendő.',
   'engine.telling': 'Ki kap értesítést',
   'engine.defaults': 'Globális szinkronizálási beállítás',
+  'settings.openSync': 'Szinkronizálási beállítások megnyitása',
   'settings.transfer': 'Átvitel',
   'settings.contents': 'Mi kerül át',
   'settings.safetyNet': 'Biztonsági háló',

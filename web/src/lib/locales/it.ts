@@ -288,6 +288,7 @@ const it: Translations = {
   'engine.historyHint': 'Dove viene annotata ogni esecuzione, con ciò che ha fatto e a quale file. Vuoto significa accanto al file di configurazione. Un nome relativo lo è rispetto a quella stessa cartella.',
   'engine.telling': 'Chi viene avvisato',
   'engine.defaults': 'Impostazione di sincronizzazione globale',
+  'settings.openSync': 'Apri impostazioni di sincronizzazione',
   'settings.transfer': 'Trasferimento',
   'settings.contents': 'Cosa viene portato',
   'settings.safetyNet': 'Rete di sicurezza',

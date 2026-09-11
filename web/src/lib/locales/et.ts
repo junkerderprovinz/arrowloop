@@ -288,6 +288,7 @@ const et: Translations = {
   'engine.historyHint': 'Kuhu iga käivitus kirja pannakse koos sellega, mida ta millise failiga tegi. Tühi tähendab seadistusfaili kõrvale. Suhteline nimi on sama kausta suhtes.',
   'engine.telling': 'Kellele teatatakse',
   'engine.defaults': 'Üldine sünkroonimise säte',
+  'settings.openSync': 'Ava sünkroonimise seaded',
   'settings.transfer': 'Ülekanne',
   'settings.contents': 'Mis kaasa läheb',
   'settings.safetyNet': 'Turvavõrk',

@@ -288,6 +288,7 @@ const ca: Translations = {
   'engine.historyHint': 'On s\'anota cada execució, amb què va fer i a quin fitxer. Buit vol dir al costat del fitxer de configuració. Un nom relatiu ho és respecte d\'aquesta mateixa carpeta.',
   'engine.telling': 'A qui s\'avisa',
   'engine.defaults': 'Configuració global de sincronització',
+  'settings.openSync': 'Obre la configuració de sincronització',
   'settings.transfer': 'Transferència',
   'settings.contents': 'Què s\'emporta',
   'settings.safetyNet': 'Xarxa de seguretat',

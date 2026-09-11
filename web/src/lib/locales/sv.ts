@@ -288,6 +288,7 @@ const sv: Translations = {
   'engine.historyHint': 'Var varje körning skrivs ner, med vad den gjorde med vilken fil. Tomt betyder bredvid konfigurationsfilen. Ett relativt namn är relativt samma mapp.',
   'engine.telling': 'Vem som får veta',
   'engine.defaults': 'Global synkroniseringsinställning',
+  'settings.openSync': 'Öppna synkroniseringsinställningar',
   'settings.transfer': 'Överföring',
   'settings.contents': 'Vad som följer med',
   'settings.safetyNet': 'Skyddsnät',

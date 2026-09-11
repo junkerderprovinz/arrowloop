@@ -288,6 +288,7 @@ const id: Translations = {
   'engine.historyHint': 'Tempat setiap proses dicatat, beserta apa yang dilakukannya pada berkas mana. Kosong berarti di samping berkas konfigurasi. Nama relatif dihitung dari folder yang sama.',
   'engine.telling': 'Siapa yang diberi tahu',
   'engine.defaults': 'Pengaturan sinkronisasi global',
+  'settings.openSync': 'Buka pengaturan sinkronisasi',
   'settings.transfer': 'Transfer',
   'settings.contents': 'Apa yang ikut dibawa',
   'settings.safetyNet': 'Jaring pengaman',

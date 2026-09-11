@@ -288,6 +288,7 @@ const eu: Translations = {
   'engine.historyHint': 'Non idazten den exekuzio bakoitza, zer egin zuen eta zein fitxategirekin. Hutsik uzteak konfigurazio-fitxategiaren ondoan esan nahi du. Izen erlatibo bat karpeta beraren araberakoa da.',
   'engine.telling': 'Nori jakinarazten zaion',
   'engine.defaults': 'Sinkronizazio ezarpen orokorra',
+  'settings.openSync': 'Ireki sinkronizazio-ezarpenak',
   'settings.transfer': 'Transferentzia',
   'settings.contents': 'Zer eramaten den',
   'settings.safetyNet': 'Segurtasun sarea',

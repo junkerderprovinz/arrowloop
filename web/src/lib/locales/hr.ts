@@ -288,6 +288,7 @@ const hr: Translations = {
   'engine.historyHint': 'Gdje se zapisuje svako izvođenje, uz to što je učinilo s kojom datotekom. Prazno znači uz konfiguracijsku datoteku. Relativno ime odnosi se na istu mapu.',
   'engine.telling': 'Tko dobiva obavijest',
   'engine.defaults': 'Globalna postavka sinkronizacije',
+  'settings.openSync': 'Otvori postavke sinkronizacije',
   'settings.transfer': 'Prijenos',
   'settings.contents': 'Što se prenosi',
   'settings.safetyNet': 'Sigurnosna mreža',

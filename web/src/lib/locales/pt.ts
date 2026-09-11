@@ -288,6 +288,7 @@ const pt: Translations = {
   'engine.historyHint': 'Onde cada execução é registada, com o que fez e a que ficheiro. Vazio significa ao lado do ficheiro de configuração. Um nome relativo é-o em relação a essa mesma pasta.',
   'engine.telling': 'Quem é avisado',
   'engine.defaults': 'Definição global de sincronização',
+  'settings.openSync': 'Abrir definições de sincronização',
   'settings.transfer': 'Transferência',
   'settings.contents': 'O que é levado',
   'settings.safetyNet': 'Rede de segurança',

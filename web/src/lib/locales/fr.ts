@@ -288,6 +288,7 @@ const fr: Translations = {
   'engine.historyHint': 'Où chaque exécution est consignée, avec ce qu\'elle a fait et à quel fichier. Vide signifie à côté du fichier de configuration. Un nom relatif l\'est par rapport à ce même dossier.',
   'engine.telling': 'Qui est prévenu',
   'engine.defaults': 'Réglage de synchronisation global',
+  'settings.openSync': 'Ouvrir les paramètres de synchronisation',
   'settings.transfer': 'Transfert',
   'settings.contents': 'Ce qui est emporté',
   'settings.safetyNet': 'Filet de sécurité',

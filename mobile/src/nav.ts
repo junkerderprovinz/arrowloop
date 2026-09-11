@@ -32,6 +32,18 @@ export type TargetsStack = {
 export type SettingsStack = {
   SettingsHome: undefined;
   Language: undefined;
+  /**
+   * Everything a job starts from, on a page of its own.
+   *
+   * It used to be five separate cards on the settings page - what a job does,
+   * how hard it pushes, what travels, the brakes, and when the phone lets a due
+   * job go ahead - which made a page of fifteen cards where five of them
+   * answered one question. Autosync puts the same group behind one entry called
+   * "Synchronisation", and the reason holds: these are settings somebody visits
+   * when setting the app UP, not settings they pass on the way to the accent
+   * colour.
+   */
+  Sync: undefined;
 };
 
 export type Nav<T extends Record<string, object | undefined>> = NativeStackNavigationProp<T>;

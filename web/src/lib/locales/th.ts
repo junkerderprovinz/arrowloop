@@ -288,6 +288,7 @@ const th: Translations = {
   'engine.historyHint': 'ที่ที่บันทึกการทำงานแต่ละครั้ง พร้อมกับว่าทำอะไรกับไฟล์ใด เว้นว่างหมายถึงวางไว้ข้างไฟล์ตั้งค่า ชื่อแบบสัมพัทธ์อิงกับโฟลเดอร์เดียวกัน',
   'engine.telling': 'แจ้งใคร',
   'engine.defaults': 'การตั้งค่าการซิงค์ส่วนกลาง',
+  'settings.openSync': 'เปิดการตั้งค่าการซิงค์',
   'settings.transfer': 'การถ่ายโอน',
   'settings.contents': 'สิ่งที่ถูกนำไปด้วย',
   'settings.safetyNet': 'ตาข่ายนิรภัย',

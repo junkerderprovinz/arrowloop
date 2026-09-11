@@ -215,7 +215,7 @@ def brand_glyphs(colours: dict[str, dict[str, str]]) -> dict[str, dict]:
         box = re.search(r'viewBox="([^"]+)"', svg)
         if not box:
             raise SystemExit("gen_glyph_data: %s has no viewBox" % name)
-        body, used = detokenise(inner(svg), colours)
+        body, used = detokenise(inner(svg, name), colours)
         out[name] = {
             "box": box.group(1),
             "fill": resolve(re.search(r'<svg[^>]*\bfill="([^"]+)"', svg), colours),
@@ -411,7 +411,119 @@ def detokenise(body: str, colours) -> tuple[str, dict]:
     return body, used
 
 
-def inner(svg: str) -> str:
+# Marks whose gradients the phone cannot draw, and the flat colour each one
+# falls back to.
+#
+# OneDrive is the case this exists for. Its source is a Cairo export: NINE
+# stacked gradients for one cloud, several of them full-canvas overlays at low
+# opacity whose whole job is to tint what is underneath. A browser composites
+# that correctly; react-native-svg draws the cloud BLACK, which is what reached
+# the phone and what was reported. Chasing which of the nine is at fault is a
+# hunt with no end - the next Cairo export brings a different nine.
+#
+# So the app gets the brand's own flat colour instead, and this is a reproduction
+# rather than a compromise: the drawing is still theirs, path for path, and the
+# tint it loses is a shading nobody can see at forty pixels anyway. The BROWSER
+# keeps the gradients, because it renders them correctly - this list only
+# changes what `glyphs.data.ts` carries.
+#
+# The colour is the brand's own published one, never one picked here.
+FLATTEN = {
+    # OneDrive's own mid-blue, from Microsoft's brand palette.
+    "IconOnedrive": "#0078D4",
+}
+
+
+def flatten(body: str, name: str) -> str:
+    """Replace every gradient reference with one flat colour, and drop the defs."""
+    colour = FLATTEN.get(name)
+    if colour is None:
+        return body
+    before = body.count("url(#")
+    if not before:
+        raise SystemExit(
+            "gen_glyph_data: %s is on the flatten list and has no gradient fills - "
+            "either it was fixed upstream and the entry should go, or the name is wrong" % name
+        )
+    body = re.sub(r'fill="url\(#[^"]*\)"', 'fill="%s"' % colour, body)
+    body = re.sub(r'stroke="url\(#[^"]*\)"', 'stroke="%s"' % colour, body)
+    # The definitions go with them: a <defs> nothing references is dead weight
+    # in a file the phone parses on every draw.
+    body = re.sub(r"<defs>.*?</defs>\s*", "", body, flags=re.S)
+    left = body.count("url(#")
+    if left:
+        raise SystemExit("gen_glyph_data: %s still references %d gradients after flattening" % (name, left))
+    return body
+
+
+# A gradient that inherits its stops from another one, spelled out.
+GRADIENT = re.compile(
+    r"<(linearGradient|radialGradient)\b([^>]*?)(/>|>(.*?)</\1>)", re.S
+)
+INHERITS = re.compile(r'\sxlink[Hh]ref="#([^"]+)"')
+HAS_ID = re.compile(r'\sid="([^"]+)"')
+
+
+def unlink(body: str, name: str) -> str:
+    """Copy inherited gradient stops in, because the phone cannot follow a link.
+
+    SVG lets one gradient take another's stops with `xlink:href`, and it is how
+    every icon set with a two-tone drawing avoids writing the same four stops
+    three times. react-native-svg's XML parser does not implement it AT ALL -
+    the attribute is not in its table - so an inheriting gradient arrives with
+    no stops, a fill referencing it resolves to nothing, and the shape is
+    painted BLACK.
+
+    That is not a theory. pCloud reached the phone as a black cloud with a
+    turquoise P and OneDrive as a plain black cloud, on a screen of fifty-five
+    logos that were otherwise right, and nothing anywhere said why - the same
+    silent-and-total failure the `style={{...}}` and `var(--brand-*)` fixes
+    above were written for, one layer further in.
+
+    So the stops are copied at generation time, which is the only moment both
+    gradients are in one string. The phone then sees two ordinary gradients.
+
+    The ATTRIBUTES are not copied, only the stops: an inheriting gradient
+    usually overrides the coordinates, which is the whole reason it inherits
+    rather than being reused, and copying them over would move the second
+    gradient onto the first one's axis.
+    """
+    stops: dict[str, str] = {}
+    for match in GRADIENT.finditer(body):
+        got = HAS_ID.search(match.group(2))
+        if got and match.group(4):
+            stops[got.group(1)] = match.group(4)
+
+    def one(match: re.Match) -> str:
+        attrs, inner_body = match.group(2), match.group(4) or ""
+        link = INHERITS.search(attrs)
+        if not link:
+            return match.group(0)
+        source = stops.get(link.group(1))
+        if source is None:
+            raise SystemExit(
+                "gen_glyph_data: %s inherits gradient stops from #%s, which is not in the same drawing"
+                % (name, link.group(1))
+            )
+        attrs = INHERITS.sub("", attrs)
+        return "<%s%s>%s%s</%s>" % (match.group(1), attrs, inner_body, source, match.group(1))
+
+    body = GRADIENT.sub(one, body)
+
+    # A gradient with no stops at all paints black wherever it is referenced,
+    # and black on a logo is indistinguishable from "this brand's mark is
+    # black". The generator refuses rather than shipping it.
+    for match in GRADIENT.finditer(body):
+        if "<stop" not in (match.group(4) or ""):
+            got = HAS_ID.search(match.group(2))
+            raise SystemExit(
+                "gen_glyph_data: %s has a gradient with no stops (%s) - anything filled with it draws black"
+                % (name, got.group(1) if got else "unnamed")
+            )
+    return body
+
+
+def inner(svg: str, name: str) -> str:
     """Everything inside the <svg>, kept as markup.
 
     Carried as a STRING rather than parsed into a tree, because these are
@@ -424,6 +536,8 @@ def inner(svg: str) -> str:
     body = re.sub(r"^<svg[^>]*>", "", svg.strip(), count=1)
     body = re.sub(r"</svg>$", "", body).strip()
     body = unjsx(body)
+    body = unlink(body, name)
+    body = flatten(body, name)
     left = re.search(r"\w+=\{", body)
     if left:
         raise SystemExit("gen_glyph_data: JSX left in a brand mark: %r" % body[left.start() - 20 : left.start() + 60])

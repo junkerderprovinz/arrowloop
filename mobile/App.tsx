@@ -15,6 +15,7 @@ import { Language } from "./src/screens/Language";
 import { Plan } from "./src/screens/Plan";
 import { RunDetail } from "./src/screens/RunDetail";
 import { Settings } from "./src/screens/Settings";
+import { SyncSettings } from "./src/screens/SyncSettings";
 import { TargetEdit } from "./src/screens/TargetEdit";
 import { TargetPick } from "./src/screens/TargetPick";
 import { Targets } from "./src/screens/Targets";
@@ -289,6 +290,11 @@ function Shell() {
                   component={Language}
                   options={{ title: t("look.language") }}
                 />
+                <SettingsNav.Screen
+                  name="Sync"
+                  component={SyncSettings}
+                  options={{ title: t("engine.defaults") }}
+                />
               </SettingsNav.Navigator>
             )}
           </Tabs.Screen>
@@ -330,72 +336,76 @@ function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
 
   return (
     <View>
-      {/* The app's own ground, edge to edge, UNDER the card.
+      {/* The app's own ground, edge to edge, UNDER the bar.
           Android's window background measured #fafafa on a page of #161616, so
           a floating card sat in a near-white band the width of the screen. jdp:
           "hinter der bottombar ist ein weißer hintergrund." An app that paints
           its own ground everywhere else must paint it here too. */}
       <View style={[StyleSheet.absoluteFill, { backgroundColor: p.background }]} />
+      {/* THE BAR IS A WELL, which is GlimStone's own horizontal selector: a
+          groove one surface deeper, equal segments, and only the CHOSEN segment
+          is filled. jdp: "die farbflächen sind unterschiedlich groß, sollen wir
+          aus der bottm bar einfach ein horizontaler selektor machen?"
+
+          It is the right answer and not only a tidier one. A pill sized to its
+          own contents made the lit area a different width on every tab -
+          "Ziele" a third of "Einstellungen" - so the one coloured thing on
+          screen changed shape as somebody moved through the app. A well's
+          segments are equal by construction, which is the property being asked
+          for, and the bar stops being four loose buttons and becomes one
+          control with four settled positions - which is what a tab strip IS.
+
+          The same object the Theme and Corners rows are, so the bar is finally
+          built from the same part as the rest of the app rather than from the
+          navigator's defaults. */}
+      {/* THE GROOVE IS THE BAR. No card around it - jdp: "ohne dunklen rahmen
+          ringsum." A well inside a card is two surfaces where one is meant, and
+          at the bottom of the screen the outer one reads as a frame drawn round
+          the control rather than as the card every other surface in the app is.
+          The page's own ground is behind it, which is the separation this
+          language uses everywhere else. */}
       <View
         style={[
           styles.bar,
           {
-            backgroundColor: p.surface,
-            borderRadius: radius.card,
+            backgroundColor: p.surface2,
+            borderRadius: radius.control,
             // The gesture bar lives below this. `space.sm` is the floor, for a
-            // phone with buttons instead, where the inset is zero and a card
+            // phone with buttons instead, where the inset is zero and a bar
             // flush with the bottom edge is exactly what this is fixing.
             marginBottom: Math.max(inset.bottom, space.sm),
           },
         ]}
       >
-        {state.routes.map((route, index) => {
-          const { options } = descriptors[route.key]!;
-          const label = options.title ?? route.name;
-          const on = state.index === index;
-          // Each tab owns a palette position, because they are members of one
-          // set the way a card's rows are. Off, every one of them is the accent
-          // - which is what the app looks like unless somebody asked for more.
-          const fill = hueAt(index) ?? accent;
-          const ink = on ? contrastOn(fill) : p.textMuted;
-          return (
-            <Pressable
-              key={route.key}
-              accessibilityRole="button"
-              accessibilityState={on ? { selected: true } : {}}
-              accessibilityLabel={label}
-              onPress={() => {
-                const event = navigation.emit({
-                  type: "tabPress",
-                  target: route.key,
-                  canPreventDefault: true,
-                });
-                // A second press on the tab you are already on pops its stack,
-                // which is what every other app on the phone does.
-                if (!on && !event.defaultPrevented) navigation.navigate(route.name);
-                else if (on && !event.defaultPrevented) navigation.navigate(route.name);
-              }}
-              android_ripple={{ color: p.hover, borderless: false }}
-              style={styles.slot}
-            >
-              {/* THE PILL is the selected state, and it wraps only what is
-                  actually shown: in symbol mode it is a round badge around one
-                  mark, with words it is a capsule around both. A pill sized for
-                  a label that is not being drawn is a pill with a hole in it. */}
-              <View
+        <View style={styles.well}>
+          {state.routes.map((route, index) => {
+            const { options } = descriptors[route.key]!;
+            const label = options.title ?? route.name;
+            const on = state.index === index;
+            // Each tab owns a palette position, because they are members of one
+            // set the way a well's segments are. Off, every one is the accent.
+            const fill = hueAt(index) ?? accent;
+            const ink = on ? contrastOn(fill) : p.textSub;
+            return (
+              <Pressable
+                key={route.key}
+                accessibilityRole="button"
+                accessibilityState={on ? { selected: true } : {}}
+                accessibilityLabel={label}
+                onPress={() => {
+                  const event = navigation.emit({
+                    type: "tabPress",
+                    target: route.key,
+                    canPreventDefault: true,
+                  });
+                  if (!event.defaultPrevented) navigation.navigate(route.name);
+                }}
+                android_ripple={{ color: p.hover }}
                 style={[
-                  styles.pill,
+                  styles.segment,
                   {
-                    borderRadius: radius.pill,
+                    borderRadius: radius.control,
                     backgroundColor: on ? fill : "transparent",
-                    // With words the pill takes the whole slot, so the longest
-                    // label has every pixel the bar can give it - "Einstellungen"
-                    // came out as "Einstellung..." when the pill was only as
-                    // wide as its content plus padding. With symbols alone it
-                    // stays a round badge around one mark, because a slot-wide
-                    // pill around a 20px glyph is a bar, not a button.
-                    alignSelf: showWord ? "stretch" : "center",
-                    paddingHorizontal: showWord ? space.xs : space.sm,
                   },
                 ]}
               >
@@ -405,10 +415,10 @@ function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
                     {label}
                   </Text>
                 ) : null}
-              </View>
-            </Pressable>
-          );
-        })}
+              </Pressable>
+            );
+          })}
+        </View>
       </View>
     </View>
   );
@@ -516,28 +526,27 @@ const styles = StyleSheet.create({
   trouble: { padding: space.lg, gap: space.md },
   log: { fontFamily: "monospace", fontSize: text.caption, padding: space.md },
 
-  // The floating bar: inset from every edge, so it reads as a card on the page
-  // rather than as part of the phone's own chrome.
-  bar: {
-    flexDirection: "row",
-    marginHorizontal: space.md,
-    paddingVertical: space.sm,
-    paddingHorizontal: space.sm,
-    gap: space.xs,
-  },
-  // Each tab takes an equal share of the bar, and the PILL inside it is only as
-  // wide as what it holds - so four tabs stay evenly spaced whether they are
-  // showing words, symbols or both.
-  slot: { flex: 1, alignItems: "center", justifyContent: "center" },
-  pill: {
-    minHeight: 40,
+  // The bar IS the groove: inset from every edge, so it floats on the page
+  // rather than being welded to the bottom of the screen, and drawn in the
+  // groove's own surface rather than a card's. One surface, not two.
+  bar: { marginHorizontal: space.md, padding: 3 },
+  well: { flexDirection: "row", gap: 2 },
+  // Equal by construction, which is the whole point: `flex: 1` with `minWidth:
+  // 0` makes four segments the same width whatever their words are, so the one
+  // coloured thing on screen stops changing shape as somebody moves through the
+  // app.
+  segment: {
+    flex: 1,
+    minWidth: 0,
+    minHeight: 44,
     alignItems: "center",
     justifyContent: "center",
     // The glyph sits directly over its own word rather than over the space a
-    // word would occupy, which is what the stock bar could not do: it reserves
-    // label height whether or not a label is drawn.
+    // word would occupy - which is what the navigator's own bar could not do:
+    // it reserves label height whether or not a label is drawn.
     gap: 2,
     paddingVertical: 5,
+    paddingHorizontal: 4,
   },
   tabText: { fontSize: text.caption, fontWeight: "500" },
 });

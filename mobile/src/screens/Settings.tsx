@@ -20,6 +20,7 @@ import {
 import { GLIMSTONE_VERSION } from "../../../web/src/lib/glimstone/version";
 import { COFFEE, PAYPAL } from "../../../web/src/lib/donate";
 import { nearestPreset } from "../../../web/src/lib/colorMath";
+import { flagEmoji } from "../../../web/src/lib/flagEmoji";
 import { ColorPicker, EditableSwatch, ResetMark } from "../ColorPicker";
 import { CryptoDonate } from "../donate";
 import { Field } from "../fields";
@@ -409,139 +410,36 @@ export function Settings() {
       </Section>
 
       <Section title={t("look.language")} hue={4}>
-        <Button label={langName(lang)} onPress={() => nav.navigate("Language")} />
-      </Section>
+        {/* THE FLAG ON THE CARD, not only inside the list. The card is where
+            somebody checks which language is running, and a row of words with
+            no mark on it is the one row on this page carrying no symbol at all.
+            jdp: "in der card wird die flagge nicht angezeigt."
 
-      {/* What a new job starts from. The engine has carried defaults for a
-          while and they were only reachable by editing the file: a job that
-          says nothing about a setting takes the default, and a job that says
-          something keeps its own answer. Setting the pair here once is the
-          difference between "everything on this phone goes up and the space
-          comes back" being one decision or one per job. */}
-      <Section title={t("engine.defaults")} hint={t("defaults.followHint")} hue={4}>
-        <AxisLabel>{t("direction.label")}</AxisLabel>
-        <Choice
-          value={String(defaults.direction ?? "both")}
-          onChange={(direction) =>
-            saveDefaults({ direction, mode: direction === "both" ? "sync" : defaults.mode })
-          }
-          options={[
-            { value: "both", label: t("direction.both") },
-            { value: "leftToRight", label: t("direction.toRight") },
-            { value: "rightToLeft", label: t("direction.toLeft") },
-          ]}
-        />
-        {/* Both ways has no choice to make here, and the selector says so by
-            going inert with `sync` still showing rather than vanishing. A
-            paragraph used to stand in its place, which left the card two
-            different shapes depending on the answer above it - and the reason
-            belongs in the (i) like every other reason in this app. */}
-        {(() => {
-          const both = (defaults.direction ?? "both") === "both";
-          return (
-            <>
-              <AxisLabel hint={both ? t("mode.onlyOneWay") : undefined}>{t("mode.label")}</AxisLabel>
-              <Choice
-                disabled={both}
-                value={both ? "sync" : String(defaults.mode ?? "sync")}
-                onChange={(mode) => saveDefaults({ mode })}
-                options={[
-                  { value: "sync", label: t("mode.sync") },
-                  { value: "mirror", label: t("mode.mirror") },
-                  { value: "move", label: t("mode.move") },
-                ]}
-              />
-            </>
-          );
-        })()}
-        {/* The schedule belongs with the pair above it, not on its own: "every
-            night at three" is a decision about a PHONE far more often than
-            about one folder, which is why the engine has carried it as a
-            default all along. It was reachable only by editing the file. */}
-        <AxisLabel>{t("edit.schedule")}</AxisLabel>
-        <Schedule
-          value={String(defaults.schedule ?? "")}
-          onChange={(schedule) => saveDefaults({ schedule })}
+            Passed as an explicit mark rather than resolved from the label key,
+            because a flag is not in the glyph set: it is an emoji the phone
+            draws, and the rule table has no entry that could produce one. */}
+        <Button
+          label={langName(lang)}
+          mark={() => <Text style={styles.flag}>{flagEmoji(langFlag(lang))}</Text>}
+          onPress={() => nav.navigate("Language")}
         />
       </Section>
 
-      {/* How much at once, and how long to wait for a folder to settle. Its own
-          card because Autosync groups the same two that way and the reason
-          holds: these answer "how hard does it push", where the card above
-          answers "what does it do". */}
-      <Section title={t("settings.transfer")} hue={5}>
-        <Field
-          label={t("engine.transfers")}
-          hint={t("engine.transfersHint")}
-          keyboard="numeric"
-          value={String(defaults.transfers ?? 4)}
-          onChange={(v) => saveDefaults({ transfers: Number(v) || undefined })}
-        />
-        <Field
-          label={t("edit.quietPeriod")}
-          hint={t("edit.quietHint")}
-          value={String(defaults.quietPeriod ?? "")}
-          onChange={(quietPeriod) => saveDefaults({ quietPeriod })}
-          placeholder="30s"
-        />
-      </Section>
+      {/* ONE ENTRY where five cards used to be. What a job does, how hard it
+          pushes, what travels, the brakes and when the phone lets a due job go
+          ahead all live behind this now: five cards answering one question,
+          sitting among the accent colour and the three permissions, made a page
+          of fifteen where somebody scrolling for the language passed all of
+          them. jdp: "die globalen synceinstellungen sind mir zu wenig… auch
+          bestehende einstellungen die jetzt separat sind darin aufnehmen."
 
-      {/* What travels besides the file contents. Two switches that change what
-          arrives at the other end rather than how fast. */}
-      <Section title={t("settings.contents")} hue={6}>
-        <Toggle
-          label={t("edit.emptyDirs")}
-          hint={t("edit.emptyDirsHint")}
-          value={Boolean(defaults.emptyDirs)}
-          onChange={(emptyDirs) => saveDefaults({ emptyDirs })}
+          A page somebody CHOOSES to open can be as long as it needs to be. */}
+      <Section title={t("engine.defaults")} hint={t("defaults.followHint")} hue={5}>
+        <Button
+          label={t("settings.openSync")}
+          labelKey="settings.openSync"
+          onPress={() => nav.navigate("Sync")}
         />
-        <Toggle
-          label={t("edit.metadata")}
-          hint={t("edit.metadataHint")}
-          value={Boolean(defaults.metadata)}
-          onChange={(metadata) => saveDefaults({ metadata })}
-        />
-      </Section>
-
-      {/* The brakes, and they get a card of their own because of what they are:
-          the net that stops a run removing more than half of everything it
-          knows about. Until now they were invisible on the phone entirely. */}
-      <Section title={t("settings.safetyNet")} hue={7}>
-        <Field
-          label={t("engine.brakePercent")}
-          hint={t("engine.brakePercentHint")}
-          keyboard="numeric"
-          value={String(defaults.brakePercent ?? 50)}
-          onChange={(v) => saveDefaults({ brakePercent: clamp(v, 0, 100) })}
-        />
-        <Field
-          label={t("engine.brakeFloor")}
-          hint={t("engine.brakeFloorHint")}
-          keyboard="numeric"
-          value={String(defaults.brakeFloor ?? 10)}
-          onChange={(v) => saveDefaults({ brakeFloor: clamp(v, 0, 100000) })}
-        />
-      </Section>
-
-      {/* Autosync's own name for this group, and it is the better one: the two
-          switches are not about WHEN a job is due, they are about whether the
-          phone lets a due job go ahead. */}
-      <Section title={t("phone.schedule")} hue={0}>
-        <Toggle
-          label={t("phone.charging")}
-          hint={t("phone.chargingHint")}
-          value={Boolean(policy?.onlyCharging)}
-          onChange={(onlyCharging) => setConditions({ onlyCharging })}
-        />
-        <Toggle
-          label={t("phone.wifi")}
-          hint={t("phone.wifiHint")}
-          value={Boolean(policy?.onlyWifi)}
-          onChange={(onlyWifi) => setConditions({ onlyWifi })}
-        />
-        {/* What the switches are DOING right now. A condition whose consequence
-            is invisible is a condition somebody waits all evening for. */}
-        {held ? <Body>{held}</Body> : null}
       </Section>
 
       {/* The two permissions, each as a switch that SHOWS whether it is on.
@@ -779,6 +677,14 @@ export function Settings() {
           />
         </View>
 
+        {/* An extra step of space above this sentence, which is GlimStone's
+            general rule for a card that runs sentence, controls, sentence,
+            controls: at even spacing the crypto button sits as close to THIS
+            sentence as to the one it belongs to, so the eye pairs it with the
+            wrong text and the card reads as one column rather than two offers.
+            The step goes above the SENTENCE and never below the controls - a
+            card ending in a gap reads as a missing row. */}
+        <View style={styles.breath} />
         <Caption>{t("about.report")}</Caption>
         <View style={styles.actions}>
           {/* GitHub's own mark, passed like the three above. It wore the rule
@@ -902,18 +808,6 @@ export async function askNotifications(): Promise<boolean> {
   }
 }
 
-/**
- * A typed number, held inside the range the engine accepts.
- *
- * An empty box gives `undefined` rather than zero, which is the difference
- * between "unset, take the built-in" and "zero per cent", and on a brake that
- * difference is a run that stops at half against one that stops at nothing.
- */
-function clamp(text: string, low: number, high: number): number | undefined {
-  const value = Number(text.replace(/[^\d]/g, ""));
-  if (!text.trim() || Number.isNaN(value)) return undefined;
-  return Math.min(high, Math.max(low, value));
-}
 
 /**
  * The release page for a version stamp, or the releases list when there is none.
@@ -938,6 +832,14 @@ function langName(code: string): string {
   return LANGUAGES.find((l) => l.code === code)?.label ?? code;
 }
 
+
+/** The country whose flag stands for a language. Empty for one this app does
+ *  not list, which `flagEmoji` answers with nothing rather than two boxes. */
+function langFlag(code: string): string {
+  const { LANGUAGES } = require("../i18n") as typeof import("../i18n");
+  return LANGUAGES.find((l) => l.code === code)?.flag ?? "";
+}
+
 const styles = StyleSheet.create({
   // Wrapping, because the About card's give row is three buttons wide now and
   // three did not fit: PayPal hung over the right edge of the card with half
@@ -955,6 +857,9 @@ const styles = StyleSheet.create({
   // Tabular figures, so two version numbers under each other do not shift, and
   // the accent ink so a number reads as the destination it is.
   versionLink: { fontVariant: ["tabular-nums"] },
+  flag: { fontSize: 18 },
+  // One step, the same 8 every gap in this house is built from.
+  breath: { height: space.sm },
   // `flex: 1` with the swatches' own maxWidth: the row takes what is left
   // after the label and divides it equally, which is what keeps nine circles
   // on one line at every handset width.

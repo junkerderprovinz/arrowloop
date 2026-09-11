@@ -288,6 +288,7 @@ const nl: Translations = {
   'engine.historyHint': 'Waar elke run wordt opgeschreven, met wat hij met welk bestand deed. Leeg betekent naast het configuratiebestand. Een relatieve naam is relatief aan diezelfde map.',
   'engine.telling': 'Wie bericht krijgt',
   'engine.defaults': 'Globale synchronisatie-instelling',
+  'settings.openSync': 'Synchronisatie-instellingen openen',
   'settings.transfer': 'Overdracht',
   'settings.contents': 'Wat er meegaat',
   'settings.safetyNet': 'Vangnet',

@@ -288,6 +288,7 @@ const ro: Translations = {
   'engine.historyHint': 'Unde se notează fiecare rulare, cu ce a făcut și cărui fișier. Gol înseamnă lângă fișierul de configurare. Un nume relativ este raportat la același dosar.',
   'engine.telling': 'Cine este anunțat',
   'engine.defaults': 'Setare globală de sincronizare',
+  'settings.openSync': 'Deschide setările de sincronizare',
   'settings.transfer': 'Transfer',
   'settings.contents': 'Ce este preluat',
   'settings.safetyNet': 'Plasă de siguranță',

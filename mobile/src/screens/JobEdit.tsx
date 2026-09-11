@@ -1,13 +1,22 @@
 import { useNavigation, useRoute, type RouteProp } from "@react-navigation/native";
 import { useCallback, useEffect, useState } from "react";
-import { Alert, StyleSheet, View } from "react-native";
+import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 import { api, type Config, type JobConfig } from "../api";
 import { Field } from "../fields";
 import { useT } from "../i18n";
 import type { JobsStack, Nav } from "../nav";
-import { space } from "../theme";
+import { contrastOn, space, text } from "../theme";
 import { sideName } from "../sides";
-import { Body, Button, Caption, Choice, Empty, Page, Section, Toggle } from "../ui";
+import { AxisLabel, Body, Button, Caption, Choice, Empty, Page, Section, Toggle, useTheme } from "../ui";
+import {
+  buildSchedule,
+  EVERY_UNITS,
+  parseSchedule,
+  WEEKDAYS,
+  type EveryUnit,
+  type ScheduleMode,
+  type ScheduleState,
+} from "../../../web/src/lib/schedule.data";
 
 /**
  * Making a job, and changing one.
@@ -302,41 +311,167 @@ export function JobEdit() {
 }
 
 /**
- * A schedule without anybody having to know cron.
+ * A schedule without anybody having to know cron - and every answer reachable.
  *
- * The desktop offers a builder with hour and minute pickers; this offers the
- * four answers that cover a phone - never, every fifteen minutes, hourly,
- * daily - and a field for an expression when somebody really means one. The
- * expression is what is stored either way, so a job built here and a job built
- * at a desk are the same job.
+ * It used to offer four fixed presets and a "Cron" segment, and the segment did
+ * not work: picking it wrote `0 * * * *`, which IS one of the four presets, so
+ * the well jumped straight back to "hourly" and the field vanished before
+ * anybody could type in it. From outside that reads as "Cron kann man auch
+ * nicht einstellen", which is exactly what it was.
+ *
+ * Nor could an interval be chosen: fifteen minutes, an hour and a day were the
+ * whole of what a phone could ask for, so "every three hours" needed a cron
+ * expression somebody had to know how to write. jdp: "alle N muss man selbst
+ * wählen können (min, h, tage)."
+ *
+ * SO IT READS THE SHARED MODEL NOW, `lib/schedule.data.ts`, which the container
+ * has edited through all along: off, every N, daily at a time, weekdays at a
+ * time, or a raw expression. That file already knew all of it - the app simply
+ * never asked. One parser and one writer for both surfaces, so a job built here
+ * and a job built at a desk are the same job and read the same on both cards.
  */
 export function Schedule({ value, onChange }: { value: string; onChange: (next: string) => void }) {
   const { t } = useT();
-  const presets: Record<string, string> = {
-    "": t("schedule.off"),
-    "*/15 * * * *": t("jobs.cadence.every", { n: 15, unit: t("schedule.unit.minute") }),
-    "0 * * * *": t("jobs.cadence.everyOne.hour"),
-    "0 3 * * *": t("jobs.cadence.everyOne.day"),
-  };
-  const known = Object.keys(presets).includes(value);
+  // The stored expression, read into the builder's own terms. Anything this
+  // builder does not recognise comes back as `cron` rather than being guessed
+  // at, which is what keeps a hand-written expression editable instead of
+  // silently rewritten.
+  const state = parseSchedule(value);
+  const set = (patch: Partial<ScheduleState>) => onChange(buildSchedule({ ...state, ...patch }));
+
   return (
     <View style={styles.stack}>
-      <Choice
-        value={known ? value : "custom"}
-        onChange={(next) => onChange(next === "custom" ? value || "0 * * * *" : next)}
+      <Choice<ScheduleMode>
+        value={state.mode}
+        // `live` is the container's own mode and is absent here on purpose: it
+        // is the watcher, and whether a job WATCHES is stored on the job rather
+        // than in the expression - so offering it in a picker that only writes
+        // an expression would be a switch that does nothing.
+        onChange={(mode) => set({ mode })}
         options={[
-          ...Object.entries(presets).map(([expression, label]) => ({ value: expression, label })),
-          { value: "custom", label: t("schedule.cron") },
+          { value: "off", label: t("schedule.off") },
+          { value: "every", label: t("schedule.every") },
+          { value: "daily", label: t("schedule.daily") },
+          { value: "weekly", label: t("schedule.weekly") },
+          { value: "cron", label: t("schedule.cron") },
         ]}
       />
-      {!known ? (
-        <Field label={t("schedule.cron")} value={value} onChange={onChange} placeholder="0 * * * *" />
+
+      {/* HOW MANY, and OF WHAT. Two controls rather than a list of intervals,
+          because the list would be as long as the numbers somebody might want:
+          five minutes, twenty minutes, three hours, ten days. A number and a
+          unit cover all of it in the space of one row.
+
+          `@every` rather than a STEP expression is the shared writer's own
+          decision and worth knowing: a step in the hours column fires at 0, 6,
+          12 and 18 o'clock, so "every six hours" set at five waits one hour and
+          then keeps to a clock nobody asked about. `@every 6h` counts from the
+          last run, which is what the words say.
+
+          (The step's own notation is not written out here, because a slash
+          followed by a star ends a JSX comment - the same trap the coin marks
+          hit from the other side.) */}
+      {state.mode === "every" ? (
+        <>
+          <Field
+            label={t("schedule.everyLabel")}
+            keyboard="numeric"
+            value={String(state.everyCount)}
+            onChange={(v) => set({ everyCount: Math.max(1, Math.round(Number(v) || 1)) })}
+          />
+          <Choice<EveryUnit>
+            value={state.everyUnit}
+            onChange={(everyUnit) => set({ everyUnit })}
+            options={EVERY_UNITS.map((unit) => ({
+              value: unit,
+              label: t(`schedule.unit.${unit}`),
+            }))}
+          />
+        </>
+      ) : null}
+
+      {/* The time, for both timed modes. A plain HH:MM field rather than the
+          platform's clock dialog: the dialog is two taps and a confirm for a
+          value somebody usually types faster, and the shared parser already
+          falls back to a sensible hour rather than throwing on anything it
+          cannot read. */}
+      {state.mode === "daily" || state.mode === "weekly" ? (
+        <Field
+          label={t("schedule.at")}
+          value={state.time}
+          onChange={(time) => set({ time })}
+          placeholder="03:00"
+        />
+      ) : null}
+
+      {/* The days, as seven toggles in a row. Never allowed to reach zero: the
+          shared writer falls back to Monday rather than emitting a weekday-less
+          expression, which would quietly turn a weekly schedule into a daily
+          one at the moment somebody unticked the last day. */}
+      {state.mode === "weekly" ? (
+        <>
+          <AxisLabel>{t("schedule.days")}</AxisLabel>
+          <View style={styles.days}>
+            {WEEKDAYS.map(({ day, key }) => {
+              const on = state.days.includes(day);
+              return (
+                <DayChip
+                  key={key}
+                  label={t(`schedule.day.${key}`)}
+                  on={on}
+                  onPress={() =>
+                    set({
+                      days: on ? state.days.filter((d) => d !== day) : [...state.days, day],
+                    })
+                  }
+                />
+              );
+            })}
+          </View>
+        </>
+      ) : null}
+
+      {/* The raw expression, and it STAYS on screen now. It is its own mode
+          rather than a fallback, so writing something that happens to match a
+          preset no longer throws somebody out of the field they are typing in. */}
+      {state.mode === "cron" ? (
+        <Field
+          label={t("schedule.cron")}
+          value={state.cron}
+          onChange={(cron) => set({ cron })}
+          placeholder="0 * * * *"
+        />
       ) : null}
     </View>
+  );
+}
+
+/** One weekday, as a pill that fills when it is on. The same object a chain
+ *  chip in the crypto window is, and for the same reason: a set where several
+ *  members can be chosen at once is chips, not a well. */
+function DayChip({ label, on, onPress }: { label: string; on: boolean; onPress: () => void }) {
+  const { p, radius, accent, hueAt } = useTheme();
+  const fill = hueAt(0) ?? accent;
+  return (
+    <Pressable
+      accessibilityRole="checkbox"
+      accessibilityState={{ checked: on }}
+      accessibilityLabel={label}
+      onPress={onPress}
+      style={[
+        styles.day,
+        { borderRadius: radius.pill, backgroundColor: on ? fill : p.surface2 },
+      ]}
+    >
+      <Text style={[styles.dayText, { color: on ? contrastOn(fill) : p.textSub }]}>{label}</Text>
+    </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   actions: { flexDirection: "row", gap: space.sm },
   stack: { gap: space.sm },
+  days: { flexDirection: "row", flexWrap: "wrap", gap: space.xs },
+  day: { flexGrow: 1, minWidth: 40, paddingVertical: 7, paddingHorizontal: space.sm, alignItems: "center" },
+  dayText: { fontSize: text.dense, fontWeight: "500" },
 });

@@ -288,6 +288,7 @@ const ja: Translations = {
   'engine.historyHint': '各実行を、どのファイルに何をしたかとともに書き留める場所です。空欄は設定ファイルの隣を意味します。相対名は同じフォルダーからの相対です。',
   'engine.telling': '誰に知らせるか',
   'engine.defaults': '全体の同期設定',
+  'settings.openSync': '同期設定を開く',
   'settings.transfer': '転送',
   'settings.contents': 'いっしょに運ばれるもの',
   'settings.safetyNet': '安全網',

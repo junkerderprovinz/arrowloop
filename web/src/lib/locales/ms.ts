@@ -288,6 +288,7 @@ const ms: Translations = {
   'engine.historyHint': 'Tempat setiap larian dicatat, berserta apa yang dilakukannya pada fail mana. Kosong bermaksud di sebelah fail konfigurasi. Nama relatif adalah relatif kepada folder yang sama.',
   'engine.telling': 'Siapa diberitahu',
   'engine.defaults': 'Tetapan penyegerakan global',
+  'settings.openSync': 'Buka tetapan penyegerakan',
   'settings.transfer': 'Pemindahan',
   'settings.contents': 'Apa yang dibawa',
   'settings.safetyNet': 'Jaring keselamatan',
