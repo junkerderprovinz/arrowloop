@@ -74,6 +74,12 @@ interface EngineNativeModule {
   batteryExempt(): Promise<boolean>;
   /** Ask for that, which really is one dialog with one button. */
   askBatteryExemption(): Promise<void>;
+  /** Put a string on the system clipboard. Here rather than through a library
+   *  because the app already owns a native module and this is four lines of it:
+   *  React Native's own Clipboard is deprecated and warns on every use, and a
+   *  second autolinked package for one call is a build dependency to keep
+   *  current forever. */
+  copy(value: string): Promise<void>;
 }
 
 export interface DevicePolicy {
@@ -136,6 +142,7 @@ export const engine = {
     native ? native.setDevicePolicy(onlyCharging, onlyWifi) : missing(),
   batteryExempt: () => (native ? native.batteryExempt() : Promise.resolve(true)),
   askBatteryExemption: () => (native ? native.askBatteryExemption() : missing()),
+  copy: (value: string) => (native ? native.copy(value) : missing()),
   /** Whether this build has an engine at all, so a screen can say so instead
    *  of throwing at the first tap. */
   available: Boolean(native),

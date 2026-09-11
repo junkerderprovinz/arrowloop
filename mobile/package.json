@@ -12,6 +12,7 @@
     "expo-constants": "~57.0.14",
     "expo-localization": "~57.0.1",
     "expo-status-bar": "~57.0.1",
+    "qrcode-generator": "^2.0.4",
     "react": "19.2.3",
     "react-native": "0.86.2",
     "react-native-safe-area-context": "^5.9.1",

@@ -1,5 +1,12 @@
 import Svg, { G, Path, Rect, SvgXml } from "react-native-svg";
-import { BRANDS, GLYPHS } from "../../web/src/lib/glyphs.data";
+import {
+  BRANDS,
+  COINS,
+  DONATE_GLYPHS,
+  GLYPHS,
+  type BrandData,
+  type GlyphData,
+} from "../../web/src/lib/glyphs.data";
 import { glyphNameFor } from "../../web/src/lib/glyphName";
 
 /**
@@ -48,8 +55,29 @@ export function Glyph({
 }) {
   const glyph = GLYPHS[name];
   if (!glyph) return null;
+  return <Drawn glyph={glyph} color={color} width={width ?? size} height={height ?? size} />;
+}
+
+/**
+ * A drawing on the app's grid, in one ink.
+ *
+ * Split out of `Glyph` so a mark that is NOT in the app's own set can still be
+ * drawn the same way - the two donation marks, which are brands and therefore
+ * deliberately unreachable through the rule table.
+ */
+function Drawn({
+  glyph,
+  color,
+  width,
+  height,
+}: {
+  glyph: GlyphData;
+  color: string;
+  width: number;
+  height: number;
+}) {
   return (
-    <Svg width={width ?? size} height={height ?? size} viewBox={glyph.box}>
+    <Svg width={width} height={height} viewBox={glyph.box}>
       {glyph.groups.map((group, gi) => (
         <G key={gi} transform={group.transform}>
           {group.parts.map((part, pi) =>
@@ -127,21 +155,88 @@ export function BrandMark({
 }) {
   const brand = BRANDS[name];
   if (!brand) return null;
+  return <SvgXml xml={whole(brand, scheme)} width={width ?? size} height={height ?? size} />;
+}
+
+/**
+ * A drawing carried whole, as the XML a parser wants.
+ *
+ * The colours a mark carries INSIDE its own drawing are filled in here, because
+ * here is the first place the theme is known. Three logos drew as nothing at all
+ * while these were still `var(--brand-putio-1)`: a browser reads that out of the
+ * stylesheet, and an SVG parser reads it as a colour it has never heard of and
+ * paints with it anyway.
+ */
+function whole(mark: BrandData, scheme: "dark" | "light"): string {
   const fill =
-    brand.fill === null ? undefined : typeof brand.fill === "string" ? brand.fill : brand.fill[scheme];
-  // The colours a mark carries INSIDE its own drawing, filled in here because
-  // here is the first place the theme is known. Three logos drew as nothing at
-  // all while these were still `var(--brand-putio-1)`: a browser reads that
-  // out of the stylesheet, and an SVG parser reads it as a colour it has never
-  // heard of and paints with it anyway.
-  let body = brand.svg;
-  for (const [slot, pair] of Object.entries(brand.vars)) {
+    mark.fill === null ? undefined : typeof mark.fill === "string" ? mark.fill : mark.fill[scheme];
+  let body = mark.svg;
+  for (const [slot, pair] of Object.entries(mark.vars)) {
     body = body.split(`{{${slot}}}`).join(pair[scheme]);
   }
-  const xml = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${brand.box}"${
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${mark.box}"${
     fill ? ` fill="${fill}"` : ""
   }>${body}</svg>`;
-  return <SvgXml xml={xml} width={width ?? size} height={height ?? size} />;
+}
+
+/**
+ * A coin's own logo, for the crypto window's tiles.
+ *
+ * Somebody else's drawing again, so it travels the same way a brand mark does
+ * and is drawn by the same parser. It is NOT reachable through `glyphNameFor`
+ * and never will be: a rule keyed on "crypto" would put a Bitcoin symbol on
+ * settings that have nothing to do with it, so a coin mark is passed explicitly
+ * at the one call site that means it.
+ *
+ * Nothing where the id is unknown, which is the designed answer rather than a
+ * gap: the tile still carries its ticker, and a symbol that means the wrong coin
+ * is worse than none. The test beside lib/donate.ts holds every offered coin to
+ * having a mark, so this is a backstop rather than a plan.
+ */
+export function CoinMark({
+  coin,
+  size = 22,
+  scheme,
+}: {
+  coin: string;
+  size?: number;
+  scheme: "dark" | "light";
+}) {
+  const mark = COINS[coin];
+  if (!mark) return null;
+  return <SvgXml xml={whole(mark, scheme)} width={size} height={size} />;
+}
+
+/**
+ * The mark on a donation button: Buy Me a Coffee, PayPal, or the Bitcoin disc
+ * for the crypto window.
+ *
+ * Passed explicitly at the three call sites that mean them and NEVER reachable
+ * through `glyphNameFor`, which is the house rule for a brand: a pattern keyed
+ * on "coffee" would put a company's cup on anything mentioning coffee, and one
+ * on "crypto" would put the Bitcoin symbol on settings that have nothing to do
+ * with it.
+ *
+ * The coffee and PayPal marks take the button's INK, because each rides beside
+ * its own label on a filled button and is part of that label - neither carries
+ * a ground of its own. Bitcoin is the disc from the coin set and keeps its own
+ * orange, the way it does on the tile.
+ */
+export function DonateMark({
+  name,
+  color,
+  size = GLYPH,
+  scheme,
+}: {
+  name: "coffee" | "paypal" | "bitcoin";
+  color: string;
+  size?: number;
+  scheme: "dark" | "light";
+}) {
+  if (name === "bitcoin") return <CoinMark coin="btc" size={size} scheme={scheme} />;
+  const glyph = DONATE_GLYPHS[name === "coffee" ? "IconBuyMeACoffee" : "IconPayPal"];
+  if (!glyph) return null;
+  return <Drawn glyph={glyph} color={color} width={size} height={size} />;
 }
 
 /** Whether a brand mark of that name exists, so a row can decide to show its

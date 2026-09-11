@@ -28,6 +28,8 @@ ROOT = Path(__file__).resolve().parent.parent
 GLYPHS_TSX = ROOT / "web" / "src" / "components" / "glyphs.tsx"
 BRANDS_TSX = ROOT / "web" / "src" / "components" / "brandGlyphs.tsx"
 BRANDS_CSS = ROOT / "web" / "src" / "brandGlyphs.css"
+DONATE_TSX = ROOT / "web" / "src" / "components" / "donateMarks.tsx"
+DONATE_CSS = ROOT / "web" / "src" / "donateMarks.css"
 OUT = ROOT / "web" / "src" / "lib" / "glyphs.data.ts"
 
 # `paths={['a', 'b']}` - single-quoted strings with backslash escapes.
@@ -139,6 +141,10 @@ def brand_colours() -> dict[str, dict[str, str]]:
     would draw an invisible logo every evening.
     """
     text = io.open(BRANDS_CSS, encoding="utf-8").read()
+    # The coin discs live in their own stylesheet and follow the same
+    # dark-first shape, so they are read as one table rather than two: the
+    # marks that need them sit in the same generated file.
+    text += "\n" + io.open(DONATE_CSS, encoding="utf-8").read()
 
     # Where `@media (prefers-color-scheme: light)` reaches. A declaration block
     # inside it is the light answer whatever its own selector says - and its
@@ -167,7 +173,7 @@ def brand_colours() -> dict[str, dict[str, str]]:
     for block in re.finditer(r"([^{}]*)\{([^{}]*)\}", text):
         selector, body = block.groups()
         if in_light(block.start()):
-            for name, value in re.findall(r"(--brand-[\w-]+):\s*([^;]+);", body):
+            for name, value in re.findall(r"(--(?:brand|coin)-[\w-]+):\s*([^;]+);", body):
                 out.setdefault(name, {})["light"] = value.strip()
             continue
         # A hover rule is not a theme's answer, it is a state's.
@@ -185,7 +191,7 @@ def brand_colours() -> dict[str, dict[str, str]]:
             theme = "dark"
         else:
             continue
-        for name, value in re.findall(r"(--brand-[\w-]+):\s*([^;]+);", body):
+        for name, value in re.findall(r"(--(?:brand|coin)-[\w-]+):\s*([^;]+);", body):
             out.setdefault(name, {})[theme] = value.strip()
 
     # A stylesheet that exists to say "this mark needs a different colour on a
@@ -219,12 +225,90 @@ def brand_glyphs(colours: dict[str, dict[str, str]]) -> dict[str, dict]:
     return out
 
 
+def coin_marks(colours: dict[str, dict[str, str]]) -> dict[str, dict]:
+    """The donation window's coin logos, out of the COINS map.
+
+    Lifted for exactly the reason the brand marks were: they are JSX returning
+    `<svg>` children, Metro has no element for that, and the phone's About card
+    offers the same three ways to give as the desktop's. A second hand-kept set
+    of coin discs would be a Bitcoin logo that agreed with the container until
+    the day one of them was touched.
+
+    Their shape is the brand marks' shape - a box and some markup - so they
+    travel in the same structure and are drawn by the same renderer. Two of them
+    carry a theme colour INSIDE the drawing (XRP and Solana wear the inverted
+    lockup their brands publish for a dark ground), which is precisely what the
+    placeholder machinery below already exists for.
+    """
+    text = io.open(DONATE_TSX, encoding="utf-8").read()
+    start = text.index("const COINS: Record<string, ReactNode> = {")
+    body = text[start:text.index("\n};", start)]
+
+    out: dict[str, dict] = {}
+    for match in re.finditer(r"\n  (\w+): \(\s*<>(.*?)</>\s*\),", body, re.S):
+        coin, markup = match.groups()
+        drawing, used = detokenise(unjsx(markup).strip(), colours)
+        left = re.search(r"\w+=\{", drawing)
+        if left:
+            raise SystemExit("gen_glyph_data: JSX left in coin %s: %r" % (coin, drawing[:80]))
+        out[coin] = {
+            # Every coin disc is drawn on this grid; the file says so once, at
+            # the top of the map, rather than per entry.
+            "box": "0 0 32 32",
+            "fill": None,
+            "svg": drawing,
+            "vars": used,
+        }
+    if len(out) < 5:
+        raise SystemExit("gen_glyph_data: only %d coin marks parsed" % len(out))
+    return out
+
+
+def link_marks() -> dict[str, dict]:
+    """The two marks that are not coins: Buy Me a Coffee and PayPal.
+
+    They sit in the same file as the coins and are a different kind of thing.
+    Each is one path on a 24 grid filling with `currentColor`, which is the
+    APP GLYPH shape rather than the brand shape: they ride on a filled button
+    beside their own label and take the label's ink, exactly like every other
+    button mark in the product.
+
+    The crypto button's mark is not here because it is not a third drawing: it
+    is the Bitcoin disc, which already travels with the coins.
+
+    They are lifted separately from the app's own set, and stay out of the rule
+    table, because they are BRANDS. A rule keyed on "coffee" would put a
+    company's cup on anything mentioning coffee and one on "crypto" would put
+    the Bitcoin symbol on settings that have nothing to do with it, so each is
+    passed explicitly at the one call site that means it - on both surfaces.
+    """
+    text = io.open(DONATE_TSX, encoding="utf-8").read()
+    out: dict[str, dict] = {}
+    for match in re.finditer(
+        r"export function (Icon\w+)\([^)]*\)[^{]*\{\s*return \(\s*<Mark\s+box=\{(\w+)\}"
+        r"\s+size=\{size\}\s+d=\"([^\"]+)\"\s*/>\s*\);?\s*\}",
+        text,
+        re.S,
+    ):
+        name, box, d = match.groups()
+        # `box={B24}` names a constant rather than spelling the numbers, so the
+        # constant is read rather than assumed: a second grid arriving here
+        # would otherwise be drawn on the first one's box and land off-centre.
+        value = re.search(r'const %s = "([^"]+)";' % re.escape(box), text)
+        if not value:
+            raise SystemExit("gen_glyph_data: no box constant %s for %s" % (box, name))
+        out[name] = {"box": value.group(1), "groups": [{"parts": [{"d": d}]}]}
+    if len(out) < 2:
+        raise SystemExit("gen_glyph_data: only %d link marks parsed" % len(out))
+    return out
+
+
 def resolve(match, colours) -> dict[str, str] | str | None:
     """A colour, as the phone needs it: a literal, or one per theme."""
     if not match:
         return None
     value = match.group(1)
-    var = re.fullmatch(r"var\((--brand-[\w-]+)\)", value)
+    var = re.fullmatch(r"var\((--(?:brand|coin)-[\w-]+)\)", value)
     if not var:
         return value
     pair = colours.get(var.group(1))
@@ -260,6 +344,12 @@ STYLE_ATTR = {
 STYLE = re.compile(r'style=\{\{(.*?)\}\}', re.S)
 PAIR = re.compile(r'(\w+):\s*"([^"]*)"')
 
+# `{/* why this disc is black */}` - a JSX comment, which is an expression and
+# not markup at all. The coin marks are hand-written rather than generated and
+# several of them say why they differ from the icon set they came from, so the
+# note has to be dropped here rather than reaching an XML parser.
+JSX_COMMENT = re.compile(r"\{/\*.*?\*/\}\s*", re.S)
+
 
 def unjsx(markup: str) -> str:
     """React inline styles, rewritten as plain SVG attributes.
@@ -280,7 +370,7 @@ def unjsx(markup: str) -> str:
             out.append('%s="%s"' % (attr, value))
         return " ".join(out)
 
-    return STYLE.sub(one, markup)
+    return STYLE.sub(one, JSX_COMMENT.sub("", markup))
 
 
 def detokenise(body: str, colours) -> tuple[str, dict]:
@@ -309,7 +399,7 @@ def detokenise(body: str, colours) -> tuple[str, dict]:
         }
         return "{{%s}}" % name
 
-    body = re.sub(r"var\((--brand-[\w-]+)\)", one, body)
+    body = re.sub(r"var\((--(?:brand|coin)-[\w-]+)\)", one, body)
 
     # Anything still spelled `var(...)` is a colour this does not know how to
     # look up, and it would reach the phone as a fill nothing can resolve: no
@@ -349,6 +439,11 @@ HEADER = """// The drawings, as data.
 // `components/glyphs.tsx` return `<svg>`, which Metro cannot parse and React
 // Native has no element for; the drawings themselves are only path data, so
 // they travel and the elements do not.
+//
+// Three sets, one shape: the app's own glyphs, the storage providers' brand
+// marks, and the coin marks the donation window wears. The coins are here for
+// the same reason the brands are, not because they are icons - they are
+// somebody else's logo living in a React file that only the browser can read.
 
 export interface GlyphPart {
   /** SVG path data. */
@@ -396,9 +491,12 @@ def main() -> int:
     glyphs = app_glyphs()
     if len(glyphs) < 30:
         raise SystemExit("gen_glyph_data: only %d app glyphs parsed, expected the whole set" % len(glyphs))
-    brands = brand_glyphs(brand_colours())
+    colours = brand_colours()
+    brands = brand_glyphs(colours)
     if len(brands) < 40:
         raise SystemExit("gen_glyph_data: only %d brand marks parsed" % len(brands))
+    coins = coin_marks(colours)
+    links = link_marks()
 
     body = [
         HEADER,
@@ -406,10 +504,17 @@ def main() -> int:
         json.dumps(glyphs, indent=2, ensure_ascii=False),
         "\n\nexport const BRANDS: Record<string, BrandData> = ",
         json.dumps(brands, indent=2, ensure_ascii=False),
+        "\n\nexport const COINS: Record<string, BrandData> = ",
+        json.dumps(coins, indent=2, ensure_ascii=False),
+        "\n\nexport const DONATE_GLYPHS: Record<string, GlyphData> = ",
+        json.dumps(links, indent=2, ensure_ascii=False),
         "\n",
     ]
     io.open(OUT, "w", encoding="utf-8", newline="\n").write("".join(body))
-    print("wrote %s: %d glyphs, %d brand marks" % (OUT, len(glyphs), len(brands)))
+    print(
+        "wrote %s: %d glyphs, %d brand marks, %d coin marks, %d link marks"
+        % (OUT, len(glyphs), len(brands), len(coins), len(links))
+    )
     return 0
 
 

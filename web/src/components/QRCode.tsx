@@ -1,12 +1,13 @@
-import qrcode from "qrcode-generator";
 import { useMemo } from "react";
 
+import { buildQR } from "../lib/qr";
+
 // ---------------------------------------------------------------------------
-// QRCode — an otpauth:// URI as a scannable square.
+// QRCode — a URI as a scannable square.
 //
-// Drawn as ONE SVG path rather than a grid of <rect>s. A typical otpauth URI
-// lands on a 33x33 module code, which is around a thousand dark modules; as
-// elements that is a thousand DOM nodes for a picture, and as a path it is one.
+// The geometry lives in lib/qr.ts, because the phone draws the same square and
+// cannot read a file that returns `<svg>`. This is the browser's element around
+// it and nothing more.
 //
 // The colours are fixed black on white and do NOT follow the theme, which is
 // deliberate. A phone camera needs contrast in the direction it expects, and a
@@ -27,7 +28,7 @@ export function QRCode({
   size?: number;
   className?: string;
 }) {
-  const { path, extent } = useMemo(() => build(value), [value]);
+  const { path, extent } = useMemo(() => buildQR(value), [value]);
   return (
     <svg
       viewBox={`0 0 ${extent} ${extent}`}
@@ -42,32 +43,4 @@ export function QRCode({
       <path d={path} fill="#000000" />
     </svg>
   );
-}
-
-/** QUIET is the mandatory clear margin around a code, in modules. */
-const QUIET = 4;
-
-function build(value: string): { path: string; extent: number } {
-  // Type 0 means "pick the smallest version that fits"; level M is the usual
-  // trade for a screen, where the code is not going to be smudged or folded.
-  const qr = qrcode(0, "M");
-  qr.addData(value);
-  qr.make();
-  const count = qr.getModuleCount();
-
-  const parts: string[] = [];
-  for (let row = 0; row < count; row++) {
-    // Runs of adjacent dark modules become one rectangle instead of one each.
-    let runStart = -1;
-    for (let col = 0; col <= count; col++) {
-      const dark = col < count && qr.isDark(row, col);
-      if (dark && runStart < 0) {
-        runStart = col;
-      } else if (!dark && runStart >= 0) {
-        parts.push(`M${runStart + QUIET} ${row + QUIET}h${col - runStart}v1h-${col - runStart}z`);
-        runStart = -1;
-      }
-    }
-  }
-  return { path: parts.join(""), extent: count + QUIET * 2 };
 }

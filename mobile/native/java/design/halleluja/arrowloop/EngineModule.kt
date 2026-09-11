@@ -3,6 +3,8 @@ package design.halleluja.arrowloop
 import android.app.Activity
 import android.app.KeyguardManager
 import android.content.ActivityNotFoundException
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -432,6 +434,35 @@ class EngineModule(private val context: ReactApplicationContext) :
         } catch (e: Exception) {
             pending = null
             promise.reject("lock", e.message ?: "could not ask for the lock")
+        }
+    }
+
+    /**
+     * A string onto the system clipboard.
+     *
+     * Here rather than through a package because the app already owns a native
+     * module and this is the whole of it: React Native's own Clipboard is
+     * deprecated and warns on every call, and @react-native-clipboard would be
+     * a second autolinked dependency, a second prebuild input and a second
+     * thing to keep current - for four lines.
+     *
+     * The label is what Android shows in the clipboard history and in the
+     * "copied" toast the system draws from Android 13 on, so it is the app's
+     * name rather than the address: a history entry reading `bc1q...` tells
+     * nobody where it came from.
+     */
+    @ReactMethod
+    fun copy(value: String, promise: Promise) {
+        val clipboard = context.getSystemService(ClipboardManager::class.java)
+        if (clipboard == null) {
+            promise.reject("clipboard", "this phone has no clipboard service")
+            return
+        }
+        try {
+            clipboard.setPrimaryClip(ClipData.newPlainText("ArrowLoop", value))
+            promise.resolve(null)
+        } catch (e: Exception) {
+            promise.reject("clipboard", e.message ?: "could not copy")
         }
     }
 

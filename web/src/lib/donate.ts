@@ -28,6 +28,22 @@
 // reserve before it exists at all, and a donation to a non-existent account is
 // REJECTED rather than lost.
 
+/**
+ * The two routes that are a plain link, beside the eight coins below.
+ *
+ * Here rather than in either interface's About card, because there are now two
+ * About cards - the container's and the phone's - and a donation address
+ * written down twice is the one kind of copy that fails silently: the wrong one
+ * still opens a page, just not the right person's.
+ *
+ * The PayPal page carries the WORKSHOP's name rather than a product's. One page
+ * serves every tool, the same way hello@ serves every tool's mail. A PayPal.Me
+ * name is created once and cannot be renamed without asking their support, so
+ * it was chosen deliberately rather than guessed at.
+ */
+export const COFFEE = "https://buymeacoffee.com/junkerderprovinz";
+export const PAYPAL = "https://paypal.me/hallelujadesign";
+
 /** One address, and the chain it lives on. */
 export interface CryptoNetwork {
   /** Stable id, for the copy toast and for tests. */

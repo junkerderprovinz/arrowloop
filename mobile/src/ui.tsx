@@ -364,8 +364,17 @@ export function Button({
   label: string;
   /** The translation key behind `label`, which is what picks the glyph. */
   labelKey?: string;
-  /** An explicit drawing, for the call sites that mean a particular one. */
-  mark?: ReactNode;
+  /**
+   * An explicit drawing, for the call sites that mean a particular one - the
+   * donation buttons, whose marks are BRANDS and therefore deliberately
+   * unreachable through the rule table.
+   *
+   * A function of the ink rather than a finished element, because the ink is
+   * computed here: a call site that had to work it out would be a second copy
+   * of the tone table, and the first thing to go wrong would be a black coffee
+   * cup on an accent-filled button.
+   */
+  mark?: (ink: string) => ReactNode;
   onPress: () => void;
   tone?: "accent" | "neutral" | "danger";
   /** This button's position among its siblings, for the rainbow. */
@@ -381,7 +390,7 @@ export function Button({
     tone === "accent" ? contrastOn(fill) : tone === "danger" ? p.failInk : p.text;
 
   const name = labelKey ? glyphNameForKey(labelKey) : undefined;
-  const glyph = mark ?? (name ? <Glyph name={name} color={ink} /> : null);
+  const glyph = mark ? mark(ink) : name ? <Glyph name={name} color={ink} /> : null;
   const showWord = labels === "text" || labels === "textGlyph" || !glyph;
   const showGlyph = Boolean(glyph) && labels !== "text";
 

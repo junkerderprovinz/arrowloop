@@ -18,9 +18,24 @@ import {
   type ThemeChoice,
 } from "../settings";
 import { GLIMSTONE_VERSION } from "../../../web/src/lib/glimstone/version";
+import { COFFEE, PAYPAL } from "../../../web/src/lib/donate";
+import { CryptoDonate } from "../donate";
 import { Field } from "../fields";
 import { Schedule } from "./JobEdit";
-import { AxisLabel, Body, Button, Caption, Choice, Page, Section, Swatch, Title, Toggle } from "../ui";
+import { DonateMark } from "../glyphs";
+import {
+  AxisLabel,
+  Body,
+  Button,
+  Caption,
+  Choice,
+  Page,
+  Section,
+  Swatch,
+  Title,
+  Toggle,
+  useTheme,
+} from "../ui";
 
 /**
  * Everything that is a setting, in the order somebody reaches for it.
@@ -44,6 +59,9 @@ export function Settings() {
   const nav = useNavigation<Nav<SettingsStack>>();
   const { t, lang } = useT();
   const look = useAppearance();
+  // Only for the donation marks, which are somebody else's drawings and carry
+  // their own colours on one of the two grounds.
+  const { scheme } = useTheme();
 
   const [granted, setGranted] = useState<boolean | null>(null);
   const [possible, setPossible] = useState(true);
@@ -56,6 +74,7 @@ export function Settings() {
   const [backupFile, setBackupFile] = useState("");
   const [backupBusy, setBackupBusy] = useState(false);
   const [backupSaid, setBackupSaid] = useState("");
+  const [crypto, setCrypto] = useState(false);
 
   // The engine's own defaults, read and written through its settings.
   const { settings, update } = useEngineSettings(true);
@@ -612,19 +631,39 @@ export function Settings() {
           for - three sentences stacked over one row of buttons reads as a form
           to work through.
 
-          No crypto button yet, and that is the card's own rule rather than an
-          omission: never offer a control that reaches nowhere. The window it
-          would open does not exist on the phone, and a button that opens
-          nothing is worse than a button that is absent. */}
+          Three ways to give, side by side, because they reach three different
+          people: a card through Buy Me a Coffee, a PayPal balance, and what
+          somebody already holds in a wallet - the last one needs no account and
+          no name at either end, and works in a country where the other two do
+          not. The same three the container offers, from the same two constants
+          in lib/donate.ts, so neither card can quietly point somewhere else. */}
       <Section title={t("about.title")} hue={2}>
         <Caption>{t("about.body")}</Caption>
 
         <Caption>{t("about.coffee")}</Caption>
         <View style={styles.actions}>
+          {/* Each mark is passed here rather than resolved from the label key,
+              which is the design language's rule for a BRAND. A pattern keyed
+              on "coffee" would put a company's cup on anything that mentions
+              coffee, and one on "crypto" would put the Bitcoin symbol on
+              settings that have nothing to do with it. */}
           <Button
             label={t("about.coffeeButton")}
             labelKey="about.coffeeButton"
-            onPress={() => Linking.openURL("https://buymeacoffee.com/junkerderprovinz")}
+            mark={(ink) => <DonateMark name="coffee" color={ink} scheme={scheme} />}
+            onPress={() => Linking.openURL(COFFEE)}
+          />
+          <Button
+            label={t("about.crypto")}
+            labelKey="about.crypto"
+            mark={(ink) => <DonateMark name="bitcoin" color={ink} scheme={scheme} />}
+            onPress={() => setCrypto(true)}
+          />
+          <Button
+            label={t("about.paypal")}
+            labelKey="about.paypal"
+            mark={(ink) => <DonateMark name="paypal" color={ink} scheme={scheme} />}
+            onPress={() => Linking.openURL(PAYPAL)}
           />
         </View>
 
@@ -672,6 +711,8 @@ export function Settings() {
           </Text>
         </Caption>
       </Section>
+
+      {crypto ? <CryptoDonate onClose={() => setCrypto(false)} /> : null}
     </Page>
   );
 }
