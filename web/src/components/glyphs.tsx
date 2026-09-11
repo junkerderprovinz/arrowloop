@@ -7,10 +7,12 @@
 //   Free icons from Streamline - https://streamlinehq.com (CC BY 4.0)
 //   The FREE 1000-icon Core Solid subset only:
 //   https://github.com/webalys-hq/streamline-vectors
+//   IconSave from Vecteezy - https://www.vecteezy.com
 //
-// Every glyph here comes from that one set, drawn on one 14-unit grid with one
-// convention, which is why none of them needs the measured ink-crop the design
-// language describes for apps that mix sets.
+// Nearly every glyph here comes from that one Streamline set, drawn on one
+// 14-unit grid with one convention, which is why none of THOSE needs the
+// measured ink-crop the design language describes for apps that mix sets. The
+// one that comes from elsewhere carries its measured crop in the generator.
 
 import type { ReactNode, SVGProps } from 'react'
 
@@ -188,11 +190,6 @@ export function IconUp(props: SVGProps<SVGSVGElement>) {
   return <Stack box="0 0 14 14" groups={[{ transform: 'rotate(-90 7 7)', paths: ['M6.64645 0.146447c0.19526 -0.1952625 0.51184 -0.1952625 0.7071 0L10.8536 3.64645c0.143 0.143 0.1857 0.35805 0.1083 0.54489 -0.0774 0.18684 -0.2597 0.30866 -0.4619 0.30866H8V13c0 0.5523 -0.44772 1 -1 1 -0.55229 0 -1 -0.4477 -1 -1V4.5H3.5c-0.20223 0 -0.38455 -0.12182 -0.46194 -0.30866 -0.07739 -0.18684 -0.03461 -0.40189 0.10839 -0.54489l3.5 -3.500003Z'] }]} {...props} />
 }
 
-/** Save. Streamline: computer-devices/floppy-disk.svg */
-export function IconSave(props: SVGProps<SVGSVGElement>) {
-  return <Glyph box="0 0 14 14" paths={['M4.875 0.000507706C4.49342 0.0104768 4.12949 0.165624 3.85789 0.435009l-0.00144 0.001442L0.436447 3.85645l-0.000003 0 -0.00144 0.00145c-0.277116 0.27939 -0.43334264 0.65649 -0.4349995595 1.05H0V12.5c0 0.3978 0.158035 0.7794 0.43934 1.0607C0.720644 13.842 1.10217 14 1.5 14l0.63361 0V9.5c0 -0.34137 0.16522 -0.63802 0.40467 -0.83561 0.23602 -0.19478 0.53448 -0.28939 0.82624 -0.28939h7.27088c0.2918 0 0.5903 0.09461 0.8263 0.28939 0.2394 0.19759 0.4047 0.49424 0.4047 0.83561V14l0.6336 0c0.3978 0 0.7794 -0.158 1.0607 -0.4393S14 12.8978 14 12.5v-11c0 -0.39782 -0.158 -0.779351 -0.4393 -1.060656C13.2794 0.15804 12.8978 0.0000044107 12.5 0.0000044107L11.8664 0v3.5c0 0.32845 -0.1506 0.6227 -0.3827 0.82488 -0.2294 0.19978 -0.5242 0.30012 -0.8165 0.30012H6.07414c-0.29227 0 -0.58703 -0.10034 -0.81644 -0.30012C5.02555 4.1227 4.875 3.82845 4.875 3.5V0.000507706ZM10.6164 0H6.125v3.375h4.4914V0Zm0 14H3.38361V9.625h7.23279V14Z']} {...props} />
-}
-
 /** Show a stored secret. Streamline: interface-essential/visible.svg */
 export function IconVisible(props: SVGProps<SVGSVGElement>) {
   return <Glyph box="0 0 14 14" paths={['M2.9327 3.49099C4.0559 2.68177 5.4556 2 7 2c1.54441 0 2.9441 0.68177 4.0673 1.49099 1.1273 0.81215 2.0197 1.78397 2.5599 2.4369l0.0045 0.00553c0.2413 0.3002 0.3683 0.68062 0.3683 1.06664 0 0.38601 -0.127 0.76644 -0.3683 1.06664l-0.0045 0.00553c-0.5402 0.65292 -1.4326 1.62475 -2.5599 2.43687 -1.1232 0.8092 -2.52289 1.491 -4.0673 1.491 -1.5444 0 -2.9441 -0.6818 -4.0673 -1.491C1.80544 9.69698 0.913028 8.72515 0.37279 8.07223L0.36828 8.0667C0.127025 7.7665 0 7.38607 0 7.00006c0 -0.38602 0.127025 -0.76644 0.36828 -1.06664l0.00451 -0.00553c0.540238 -0.65293 1.43265 -1.62475 2.55991 -2.4369ZM7 9.25c1.24264 0 2.25 -1.00736 2.25 -2.25S8.24264 4.75 7 4.75 4.75 5.75736 4.75 7 5.75736 9.25 7 9.25Z']} {...props} />
@@ -274,4 +271,9 @@ export function IconConfirm(props: SVGProps<SVGSVGElement>) {
       <path d="M2.4 7.4L5.6 10.9L11.6 3.4" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
     </Drawn>
   )
+}
+
+/** Save. Vecteezy (https://www.vecteezy.com), Free License - attribution required */
+export function IconSave(props: SVGProps<SVGSVGElement>) {
+  return <Glyph box="61.80 62.40 368.70 368.70" paths={['M267.8,79.6v86.4c0,1.7.7,3.2,1.8,4.3,1.1,1.1,2.6,1.8,4.3,1.8h34.4c1.7,0,3.2-.7,4.3-1.8,1.1-1.1,1.8-2.6,1.8-4.3v-86.4c0-1.7-.7-3.2-1.8-4.3-1.1-1.1-2.6-1.8-4.3-1.8h-34.4c-1.7,0-3.2.7-4.3,1.8-1.1,1.1-1.8,2.6-1.8,4.3Z', 'M77.3,431.1h337.8c8.5,0,15.4-6.9,15.4-15.4V108.7l-46.3-46.3h-51.8v120.7h-172.5V62.4h-82.7c-8.5,0-15.4,6.9-15.4,15.4v337.8c0,8.5,6.9,15.4,15.4,15.4h0ZM152.1,265.2h188.4c7.8,0,14.1,6.4,14.1,14.1v108.4c0,7.8-6.4,14.1-14.1,14.1h-188.4c-7.8,0-14.1-6.4-14.1-14.1v-108.4c0-7.8,6.4-14.1,14.1-14.1Z']} {...props} />
 }
