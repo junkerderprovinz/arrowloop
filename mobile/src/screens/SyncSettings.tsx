@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { View } from "react-native";
 
-import { engine, type DevicePolicy } from "../engine";
+import { heldKey } from "../deviceConditions";
+import { engine, type DeviceConditions, type DevicePolicy } from "../engine";
 import { useT } from "../i18n";
 import { useEngineSettings } from "../settings";
 import { Field } from "../fields";
@@ -47,19 +48,27 @@ export function SyncSettings() {
     void refresh();
   }, [refresh]);
 
-  /** The two conditions, stored on the phone AND told to the engine at once:
-   *  the engine is what holds a run back, and Kotlin is what watches the
-   *  battery and the connection while the screen is off. */
-  const setConditions = (patch: { onlyCharging?: boolean; onlyWifi?: boolean }) => {
-    const next = {
-      onlyCharging: patch.onlyCharging ?? Boolean(policy?.onlyCharging),
-      onlyWifi: patch.onlyWifi ?? Boolean(policy?.onlyWifi),
-    };
-    setPolicy((old) => (old ? { ...old, ...next } : old));
-    engine.setDevicePolicy(next.onlyCharging, next.onlyWifi).then(refresh, () => refresh());
+  /** A condition, stored on the phone AND told to the engine at once: the
+   *  engine is what holds a run back, and Kotlin is what watches the battery
+   *  and the connection while the screen is off.
+   *
+   *  Only what changed is sent. The bridge merges, so a switch here cannot
+   *  overwrite a setting this screen happens not to be showing. */
+  const setConditions = (patch: Partial<DeviceConditions>) => {
+    setPolicy((old) => (old ? { ...old, ...patch } : old));
+    engine.setDevicePolicy(patch).then(refresh, () => refresh());
   };
 
-  const held = policy?.holding ?? "";
+  const retry = (settings?.retry ?? {}) as Record<string, unknown>;
+  const saveRetry = (patch: Record<string, unknown>) =>
+    update({ retry: { ...retry, ...patch } });
+
+  // In the app's own words, not the engine's. The engine is told an English
+  // sentence because that sentence lands in a log beside every other line it
+  // wrote; this page used to print that sentence straight out of Kotlin, so a
+  // German phone read "this phone is not charging".
+  const heldAt = heldKey(policy);
+  const held = heldAt ? t(heldAt) : "";
 
   return (
     <Page>
@@ -189,25 +198,87 @@ export function SyncSettings() {
         />
       </Section>
 
-      {/* Autosync's own name for this group, and it is the better one: the two
-          switches are not about WHEN a job is due, they are about whether the
-          phone lets a due job go ahead. */}
-      <Section title={t("phone.schedule")} hue={4}>
+      {/* Power, and it is one card rather than a switch inside a bigger one
+          because both answers are about the same resource: a phone syncing
+          overnight is a phone spending its battery on it. Neither holds a run
+          somebody started by hand - pressing the button is a decision. */}
+      <Section title={t("sync.power")} hue={4}>
         <Toggle
           label={t("phone.charging")}
           hint={t("phone.chargingHint")}
           value={Boolean(policy?.onlyCharging)}
           onChange={(onlyCharging) => setConditions({ onlyCharging })}
         />
+        {/* A number rather than a switch, because the useful answer is not
+            "yes" but "below what". Zero is off, which is what an empty box
+            gives, so the way to stop using it is to clear it rather than to
+            find a second control. */}
+        <Field
+          label={t("phone.minBattery")}
+          hint={t("phone.minBatteryHint")}
+          keyboard="numeric"
+          value={policy?.minBattery ? String(policy.minBattery) : ""}
+          onChange={(v) => setConditions({ minBattery: clamp(v, 0, 95) ?? 0 })}
+        />
+      </Section>
+
+      {/* The connection, in three questions that are genuinely different ones.
+          They were one switch for a while and jdp was right to split them: "nur
+          über WLAN" is about the transport, "kostenpflichtig" is about the
+          bill, and a wifi network its owner marked metered fails the second
+          while passing the first. */}
+      <Section title={t("sync.network")} hue={5}>
         <Toggle
           label={t("phone.wifi")}
           hint={t("phone.wifiHint")}
           value={Boolean(policy?.onlyWifi)}
           onChange={(onlyWifi) => setConditions({ onlyWifi })}
         />
+        <Toggle
+          label={t("phone.metered")}
+          hint={t("phone.meteredHint")}
+          value={Boolean(policy?.notMetered)}
+          onChange={(notMetered) => setConditions({ notMetered })}
+        />
+        <Toggle
+          label={t("phone.roaming")}
+          hint={t("phone.roamingHint")}
+          value={Boolean(policy?.notRoaming)}
+          onChange={(notRoaming) => setConditions({ notRoaming })}
+        />
         {/* What the switches are DOING right now. A condition whose consequence
-            is invisible is a condition somebody waits all evening for. */}
+            is invisible is a condition somebody waits all evening for. It sits
+            under the connection rather than under the power card because that
+            is where four of the five reasons come from - and it names whichever
+            one the engine is actually acting on. */}
         {held ? <Body>{held}</Body> : null}
+      </Section>
+
+      {/* What happens after a run fails, which until now was: try again at
+          every turn of the clock, for ever. On a phone that clock turns every
+          fifteen minutes, so a remote that was down for a night was asked
+          about it ninety-six times. Both numbers matter - without the retries
+          a hiccup at three in the morning costs the whole night, and without
+          the limit nothing ever stops. */}
+      <Section title={t("settings.retry")} hint={t("retry.hint")} hue={6}>
+        <Field
+          label={t("retry.attempts")}
+          hint={t("retry.attemptsHint")}
+          keyboard="numeric"
+          value={retry.attempts === undefined ? "3" : String(retry.attempts)}
+          onChange={(v) => saveRetry({ attempts: clamp(v, 0, 10) ?? 0 })}
+        />
+        {/* In MINUTES, as a number, rather than a well of four durations. The
+            well needed a label per option, and "1 hours" is what a plural-free
+            join gives in most of forty languages - a translation problem
+            invented by the control rather than by the setting. */}
+        <Field
+          label={`${t("retry.wait")} (${t("schedule.unit.minute")})`}
+          hint={t("retry.waitHint")}
+          keyboard="numeric"
+          value={String(waitMinutes(retry.wait))}
+          onChange={(v) => saveRetry({ wait: `${clamp(v, 1, 1440) ?? 5}m` })}
+        />
       </Section>
 
     </Page>
@@ -229,6 +300,22 @@ function modeHint(t: ReturnType<typeof useT>["t"]): string {
     // A blank line between them, so three sentences read as three answers
     // rather than as one paragraph about syncing.
   ].join("\n\n");
+}
+
+/**
+ * The stored wait, as whole minutes.
+ *
+ * The engine takes a Go duration because that is what everything else in the
+ * file takes, and a screen that made somebody type "5m" would be asking them to
+ * know that. Anything it cannot read comes back as the engine's own default
+ * rather than as zero: an unreadable value means the built-in applies, and a
+ * box showing 0 would claim a setting that is not in force.
+ */
+function waitMinutes(raw: unknown): number {
+  const match = /^(\d+)(m|h)$/.exec(String(raw ?? ""));
+  if (!match) return 5;
+  const n = Number(match[1]);
+  return match[2] === "h" ? n * 60 : n;
 }
 
 /**

@@ -352,6 +352,21 @@ export type Settings = {
      */
     foldCase?: boolean
   }
+  /**
+   * What a scheduled run does after it fails.
+   *
+   * Engine-wide rather than per job, so it sits beside bwlimit rather than in
+   * `defaults`: patience after a failure is a fact about the machine and how
+   * often it is awake, not about a folder pair.
+   */
+  retry?: {
+    /** Further tries before it waits for the clock. Zero means none, and
+     *  undefined means the engine's own three. */
+    attempts?: number
+    /** Before the first further try, as a Go duration. Each try after that
+     *  waits twice as long. */
+    wait?: string
+  }
   /** Reusable pattern lists, by name. A job asks for them by name. */
   excludeSets?: Record<string, string[]>
   notify?: {

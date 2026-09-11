@@ -64,8 +64,10 @@ interface EngineNativeModule {
    *  was asked for, what the phone is actually plugged into, and the sentence
    *  that is holding automatic runs back right now if one is. */
   devicePolicy(): Promise<DevicePolicy>;
-  /** Store the two conditions and tell the engine at once. */
-  setDevicePolicy(onlyCharging: boolean, onlyWifi: boolean): Promise<void>;
+  /** Store what the map names and tell the engine at once. Anything it leaves
+   *  out keeps its stored value, so a screen changing one switch does not have
+   *  to restate the other four. */
+  setDevicePolicy(policy: Partial<DeviceConditions>): Promise<void>;
   /** Whether the engine is UP and answering, as opposed to whether this app's
    *  own handle to it is still alive. The card that says "the engine is
    *  running" wants this one. */
@@ -82,21 +84,49 @@ interface EngineNativeModule {
   copy(value: string): Promise<void>;
 }
 
-export interface DevicePolicy {
+/**
+ * What somebody asked for. Separate from the facts below, because these are
+ * the only fields that may be WRITTEN, and a single type covering both invites
+ * a screen to send a live reading back as a preference.
+ */
+export interface DeviceConditions {
   onlyCharging: boolean;
   onlyWifi: boolean;
+  /** Percent, nought to ninety-five. Zero is off. */
+  minBattery: number;
+  notRoaming: boolean;
+  /** A question about the BILL, deliberately not the same one as onlyWifi: a
+   *  wifi network its owner marked metered is exactly what that switch cannot
+   *  catch. */
+  notMetered: boolean;
+}
+
+export interface DevicePolicy extends DeviceConditions {
   charging: boolean;
   /** Whether this phone is on wifi or a cable, as opposed to mobile data. */
   onWifi: boolean;
+  /** Nought to a hundred, or -1 when nothing has published a reading yet. */
+  battery: number;
+  roaming: boolean;
+  metered: boolean;
   /** Empty unless something is holding automatic runs back. */
   holding: string;
 }
 
+/** What a build with no engine reports: every switch off, every fact benign.
+ *  Nothing held, because a stand-in that held runs would look like a bug on the
+ *  one target where nothing can run anyway. */
 const NOTHING_HELD: DevicePolicy = {
   onlyCharging: false,
   onlyWifi: false,
+  minBattery: 0,
+  notRoaming: false,
+  notMetered: false,
   charging: true,
   onWifi: true,
+  battery: 100,
+  roaming: false,
+  metered: false,
   holding: "",
 };
 
@@ -138,8 +168,8 @@ export const engine = {
   confirmDeviceLock: (title: string, detail: string) =>
     native ? native.confirmDeviceLock(title, detail) : missing(),
   devicePolicy: () => (native ? native.devicePolicy() : Promise.resolve(NOTHING_HELD)),
-  setDevicePolicy: (onlyCharging: boolean, onlyWifi: boolean) =>
-    native ? native.setDevicePolicy(onlyCharging, onlyWifi) : missing(),
+  setDevicePolicy: (policy: Partial<DeviceConditions>) =>
+    native ? native.setDevicePolicy(policy) : missing(),
   batteryExempt: () => (native ? native.batteryExempt() : Promise.resolve(true)),
   askBatteryExemption: () => (native ? native.askBatteryExemption() : missing()),
   copy: (value: string) => (native ? native.copy(value) : missing()),

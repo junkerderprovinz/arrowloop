@@ -125,6 +125,9 @@ export function Engine() {
   const defaults = draft.defaults ?? {}
   const setDefault = (next: Partial<NonNullable<Settings['defaults']>>) =>
     patch({ defaults: { ...defaults, ...next } })
+  const retry = draft.retry ?? {}
+  const setRetry = (next: Partial<NonNullable<Settings['retry']>>) =>
+    patch({ retry: { ...retry, ...next } })
 
   const matrix = draft.notify?.matrix ?? { homeserver: '', room: '', token: '' }
   const setMatrix = (next: Partial<typeof matrix>) =>
@@ -355,6 +358,43 @@ export function Engine() {
         </div>
       </Card>
 
+      {/* What happens after a scheduled run fails, which until now was: try
+          again at every turn of the clock, for ever. The schedule works out
+          what is OWED from the last SUCCESS, so a failed job stayed owed - the
+          right instinct and the wrong amount of it, since a remote that is
+          down is usually down for a while.
+
+          Engine-wide rather than a default a job fills in, which is why it is
+          not in the card above: patience after a failure is a fact about this
+          machine and how often it is awake, not about a folder pair. */}
+      <Card title={t('settings.retry')} hint={t('retry.hint')} hueIndex={6}>
+        <div className="flex flex-col gap-4">
+          <Field label={t('retry.attempts')} hint={t('retry.attemptsHint')}>
+            <NumberField
+              value={retry.attempts ?? 3}
+              min={0}
+              max={10}
+              label={t('retry.attempts')}
+              onChange={(v) => setRetry({ attempts: v })}
+            />
+          </Field>
+          {/* In MINUTES, because the engine's own unit is a Go duration and
+              asking somebody to type "5m" is asking them to know that. */}
+          <Field
+            label={`${t('retry.wait')} (${t('schedule.unit.minute')})`}
+            hint={t('retry.waitHint')}
+          >
+            <NumberField
+              value={waitMinutes(retry.wait)}
+              min={1}
+              max={1440}
+              label={t('retry.wait')}
+              onChange={(v) => setRetry({ wait: `${v}m` })}
+            />
+          </Field>
+        </div>
+      </Card>
+
       {/* The explanation rides in the heading's own bubble rather than as a grey
           paragraph above the editor (jdp: "Info texte sollen immer in i
           infobubbles!"). That is rule 8, and this card was one of the three
@@ -407,4 +447,19 @@ export function Engine() {
       </div>
     </Stack>
   )
+}
+
+/**
+ * The stored retry wait, as whole minutes.
+ *
+ * The engine takes a Go duration, because that is what every other duration in
+ * that file is. Anything unreadable comes back as the engine's own default
+ * rather than as zero: unreadable means the built-in applies, and a box showing
+ * 0 would claim a setting that is not in force.
+ */
+function waitMinutes(raw: string | undefined): number {
+  const match = /^(\d+)(m|h)$/.exec(raw ?? '')
+  if (!match) return 5
+  const n = Number(match[1])
+  return match[2] === 'h' ? n * 60 : n
 }

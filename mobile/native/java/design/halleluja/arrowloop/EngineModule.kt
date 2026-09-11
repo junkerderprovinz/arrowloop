@@ -17,6 +17,7 @@ import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
+import com.facebook.react.bridge.ReadableMap
 import java.io.File
 
 /**
@@ -154,15 +155,31 @@ class EngineModule(private val context: ReactApplicationContext) :
         val map = Arguments.createMap()
         map.putBoolean("onlyCharging", Device.onlyCharging(context))
         map.putBoolean("onlyWifi", Device.onlyWifi(context))
+        map.putInt("minBattery", Device.minBattery(context))
+        map.putBoolean("notRoaming", Device.notRoaming(context))
+        map.putBoolean("notMetered", Device.notMetered(context))
+        // The live state beside the preference, so a screen can say WHY a run
+        // is waiting rather than only that a switch is on.
         map.putBoolean("charging", Device.charging(context))
         map.putBoolean("onWifi", Device.onWifi(context))
+        map.putInt("battery", Device.batteryLevel(context))
+        map.putBoolean("roaming", Device.roaming(context))
+        map.putBoolean("metered", Device.metered(context))
         map.putString("holding", Device.reason(context))
         promise.resolve(map)
     }
 
+    /**
+     * One map rather than a parameter per switch.
+     *
+     * It was two booleans and is now five settings, and a positional bridge
+     * method at that size is one where a caller swapping two arguments
+     * compiles, crosses the bridge and quietly enforces the wrong condition.
+     * Anything the map leaves out keeps its stored value.
+     */
     @ReactMethod
-    fun setDevicePolicy(onlyCharging: Boolean, onlyWifi: Boolean, promise: Promise) {
-        Device.setPolicy(context, onlyCharging, onlyWifi)
+    fun setDevicePolicy(policy: ReadableMap, promise: Promise) {
+        Device.setPolicy(context, policy.toHashMap())
         promise.resolve(null)
     }
 

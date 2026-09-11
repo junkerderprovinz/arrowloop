@@ -38,6 +38,12 @@ object Device {
     private const val ONLY_CHARGING = "onlyCharging"
     private const val ONLY_WIFI = "onlyWifi"
 
+    /** The floor, in percent. Zero is off, which is also what a fresh install
+     *  gets: a condition nobody asked for must not hold anything. */
+    private const val MIN_BATTERY = "minBattery"
+    private const val NOT_ROAMING = "notRoaming"
+    private const val NOT_METERED = "notMetered"
+
     /** What was last sent, so an unchanged verdict is not sent again. Android
      *  broadcasts the battery level every few seconds while charging. */
     private var sent: String? = null
@@ -53,13 +59,34 @@ object Device {
 
     fun onlyWifi(context: Context): Boolean = prefs(context).getBoolean(ONLY_WIFI, false)
 
-    /** Store the preference and tell the engine at once, because somebody who
-     *  just switched "only on wifi" off expects the next run to go ahead. */
-    fun setPolicy(context: Context, charging: Boolean, wifi: Boolean) {
-        prefs(context).edit()
-            .putBoolean(ONLY_CHARGING, charging)
-            .putBoolean(ONLY_WIFI, wifi)
-            .apply()
+    fun minBattery(context: Context): Int = prefs(context).getInt(MIN_BATTERY, 0)
+
+    fun notRoaming(context: Context): Boolean = prefs(context).getBoolean(NOT_ROAMING, false)
+
+    fun notMetered(context: Context): Boolean = prefs(context).getBoolean(NOT_METERED, false)
+
+    /**
+     * Store the preferences and tell the engine at once, because somebody who
+     * just switched "only on wifi" off expects the next run to go ahead.
+     *
+     * A map rather than a parameter per switch. It started as two booleans and
+     * grew to five settings, and a positional signature at that size is one
+     * where a caller swapping two arguments compiles and silently enforces the
+     * wrong condition. Anything the map does not mention keeps its stored
+     * value, so an older screen cannot wipe a setting it has never heard of.
+     */
+    fun setPolicy(context: Context, values: Map<String, Any?>) {
+        val edit = prefs(context).edit()
+        for (key in listOf(ONLY_CHARGING, ONLY_WIFI, NOT_ROAMING, NOT_METERED)) {
+            (values[key] as? Boolean)?.let { edit.putBoolean(key, it) }
+        }
+        (values[MIN_BATTERY] as? Number)?.let {
+            // Clamped rather than trusted. A floor above a hundred holds every
+            // run for ever on a phone that is behaving perfectly, and the
+            // person it happens to has no way to see why.
+            edit.putInt(MIN_BATTERY, it.toInt().coerceIn(0, 95))
+        }
+        edit.apply()
         synchronized(Device) {
             sent = null
             inFlight = null
@@ -128,14 +155,96 @@ object Device {
             caps.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
     }
 
-    /** The verdict, in the words that end up in the engine's log. Empty means
-     *  nothing is in the way. */
+    /**
+     * How full the battery is, nought to a hundred, or -1 if nothing has said.
+     *
+     * From the same sticky broadcast as `charging`, and for the same reason:
+     * it is what the framework publishes and what every other app on the phone
+     * reads, so a test rig that moves the broadcast moves this too. The level
+     * arrives as a fraction of a scale rather than as a percentage, because a
+     * device is allowed to count in something other than hundredths.
+     */
+    fun batteryLevel(context: Context): Int {
+        val now = context.registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+            ?: return -1
+        val level = now.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
+        val scale = now.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
+        if (level < 0 || scale <= 0) return -1
+        return level * 100 / scale
+    }
+
+    /**
+     * Whether this phone is on somebody else's network abroad.
+     *
+     * Android answers this with NOT_ROAMING, a capability added in API 28, and
+     * this app runs from 26. On the two versions below it the capability is
+     * simply never reported, so asking would read as "roaming" on every phone
+     * and hold every run on a device that has never left the country. Unknown
+     * therefore means NOT roaming, which is the same direction every other
+     * unanswerable question here takes: a condition that blocks when it cannot
+     * tell is a condition that stops everything the day something breaks.
+     */
+    fun roaming(context: Context): Boolean {
+        if (android.os.Build.VERSION.SDK_INT < 28) return false
+        val manager = context.getSystemService(ConnectivityManager::class.java) ?: return false
+        val caps = manager.getNetworkCapabilities(manager.activeNetwork ?: return false)
+            ?: return false
+        return !caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_ROAMING)
+    }
+
+    /**
+     * Whether this connection is one somebody pays for by the megabyte.
+     *
+     * A question about the BILL, and deliberately separate from "only on wifi",
+     * which is a question about the transport. jdp asked for those two to stop
+     * being one switch - *"nur über kostenfreie verbindung soll einfach Nur
+     * über WLAN heißen und es nicht von kosten abhängig machen"* - and the
+     * answer was to make the wifi switch mean wifi. This is the other half
+     * arriving as its own switch: a wifi network whose owner marked it metered
+     * is exactly the case the wifi switch cannot catch, and a hotspot shared
+     * from a phone is the case that costs real money.
+     *
+     * No connection at all counts as metered, so a run waits. With the switch
+     * on, "no connection" is not a reason to go ahead.
+     */
+    fun metered(context: Context): Boolean {
+        val manager = context.getSystemService(ConnectivityManager::class.java) ?: return true
+        val caps = manager.getNetworkCapabilities(manager.activeNetwork ?: return true)
+            ?: return true
+        return !caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED)
+    }
+
+    /**
+     * The verdict, in the words that end up in the engine's log. Empty means
+     * nothing is in the way.
+     *
+     * The order is the order somebody would check in: power first, because a
+     * flat phone cannot do anything about the network anyway.
+     */
     fun reason(context: Context): String {
         if (onlyCharging(context) && !charging(context)) {
             return "this phone is not charging"
         }
+        // The floor applies only while NOT charging, and that is the whole of
+        // what makes it usable. A phone on the cable at fifteen percent is
+        // climbing, and holding its runs would delay exactly the phones that
+        // spent the night plugged in - which is the case an overnight schedule
+        // is written for.
+        val floor = minBattery(context)
+        if (floor > 0 && !charging(context)) {
+            val level = batteryLevel(context)
+            if (level in 0 until floor) {
+                return "this phone is below $floor percent"
+            }
+        }
         if (onlyWifi(context) && !onWifi(context)) {
             return "this phone is not on wifi"
+        }
+        if (notRoaming(context) && roaming(context)) {
+            return "this phone is roaming"
+        }
+        if (notMetered(context) && metered(context)) {
+            return "this connection is metered"
         }
         return ""
     }

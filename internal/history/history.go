@@ -11,6 +11,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"math"
 	"strings"
 	"time"
 
@@ -416,6 +417,40 @@ func (d *DB) LastSuccess(ctx context.Context, job string) (time.Time, bool, erro
 		return time.Time{}, false, fmt.Errorf("last success for %q: %w", job, err)
 	}
 	return time.Unix(0, finished), true, nil
+}
+
+// FailuresSince counts the runs of one job that ended badly after a given
+// moment, and reports when the last of them finished.
+//
+// The moment to pass is the job's last success, which makes this "how many
+// times in a row has it failed" - the question behind waiting longer between
+// attempts, and behind stopping after a few. A job that has never succeeded
+// gets the zero time, and then this counts every failure it ever had, which is
+// the right answer for a job that has never worked.
+//
+// Held-back runs are not failures and never reach the log as one, so nothing
+// here has to exclude them: a run waiting for a charger is not recorded at all.
+func (d *DB) FailuresSince(ctx context.Context, job string, since time.Time) (int, time.Time, error) {
+	// The zero time means "every failure it ever had", spelled out rather than
+	// left to UnixNano. That method is only defined for years between 1678 and
+	// 2262, and on the zero time it overflows to a large negative number -
+	// which happens to compare correctly here and is not a thing to build on.
+	cut := int64(math.MinInt64)
+	if !since.IsZero() {
+		cut = since.UnixNano()
+	}
+	var count int
+	var last sql.NullInt64
+	err := d.sql.QueryRowContext(ctx,
+		`SELECT COUNT(*), MAX(finished) FROM runs WHERE job = ? AND err != '' AND started > ?`,
+		job, cut).Scan(&count, &last)
+	if err != nil {
+		return 0, time.Time{}, fmt.Errorf("failures for %q: %w", job, err)
+	}
+	if !last.Valid {
+		return count, time.Time{}, nil
+	}
+	return count, time.Unix(0, last.Int64), nil
 }
 
 // Prune drops runs older than the given age, so the log does not grow without

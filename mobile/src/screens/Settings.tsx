@@ -3,7 +3,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { AppState, Linking, PermissionsAndroid, Platform, StyleSheet, Text, View } from "react-native";
 import Constants from "expo-constants";
 import { api } from "../api";
-import { engine, type DevicePolicy } from "../engine";
+import { heldKey } from "../deviceConditions";
+import { engine, type DeviceConditions, type DevicePolicy } from "../engine";
 import { useT } from "../i18n";
 import type { Nav, SettingsStack } from "../nav";
 import { ACCENTS, DEFAULT_ACCENT, RAINBOW, space } from "../theme";
@@ -222,22 +223,21 @@ export function Settings() {
     return () => sub.remove();
   }, [refresh]);
 
-  const setConditions = async (next: Partial<DevicePolicy>) => {
-    const merged = { ...(policy ?? EMPTY), ...next };
-    setPolicy(merged);
-    await engine.setDevicePolicy(merged.onlyCharging, merged.onlyWifi);
+  const setConditions = async (next: Partial<DeviceConditions>) => {
+    setPolicy((old) => ({ ...(old ?? EMPTY), ...next }));
+    await engine.setDevicePolicy(next);
     refresh();
   };
 
-  // Which of the two is holding things up, said in the app's own words rather
+  // Which condition is holding things up, said in the app's own words rather
   // than the engine's. The engine is told a sentence for its log; a screen that
   // repeated that sentence would be showing English to somebody reading German.
-  const held =
-    policy?.onlyCharging && !policy.charging
-      ? t("phone.heldCharging")
-      : policy?.onlyWifi && !policy.onWifi
-        ? t("phone.heldWifi")
-        : "";
+  //
+  // The decision moved into deviceConditions.ts when there were five conditions
+  // instead of two: this page and the sync page each had their own answer, and
+  // the other one was simply printing the engine's English.
+  const heldAt = heldKey(policy);
+  const held = heldAt ? t(heldAt) : "";
 
   return (
     <Page>
@@ -825,11 +825,20 @@ export function Settings() {
   );
 }
 
+/** What to merge into before the phone has answered. Every switch off and
+ *  every fact benign, so a screen that paints before the bridge replies shows
+ *  nothing held rather than a condition nobody set. */
 const EMPTY: DevicePolicy = {
   onlyCharging: false,
   onlyWifi: false,
+  minBattery: 0,
+  notRoaming: false,
+  notMetered: false,
   charging: true,
   onWifi: true,
+  battery: 100,
+  roaming: false,
+  metered: false,
   holding: "",
 };
 

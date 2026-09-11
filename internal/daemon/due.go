@@ -7,6 +7,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/robfig/cron/v3"
+
 	"github.com/junkerderprovinz/arrowloop/internal/job"
 )
 
@@ -53,18 +55,62 @@ func (r *Runner) Due(ctx context.Context, now time.Time) []string {
 			due = append(due, j.Name)
 			continue
 		}
-		if !ok {
-			due = append(due, j.Name)
-			continue
-		}
 		// Would the cron have fired between then and now? `Next` answers the
 		// first time at or after the moment it is given, so a next-after-last
-		// that has already passed is a tick this job missed.
-		if next := parsed.Next(last); !next.After(now) {
-			due = append(due, j.Name)
+		// that has already passed is a tick this job missed. A job that has
+		// never succeeded skips the question: it is owed a run either way.
+		if ok {
+			if next := parsed.Next(last); next.After(now) {
+				continue
+			}
 		}
+		// `last` is the zero time for a job that has never worked, which counts
+		// every failure it ever had. That is the case this matters most for: a
+		// job pointed at a remote that was never reachable is owed a run for
+		// ever, and without this it takes one every quarter of an hour for ever.
+		if r.backingOff(ctx, j.Name, last, parsed, now) {
+			continue
+		}
+		due = append(due, j.Name)
 	}
 	return due
+}
+
+// backingOff reports whether a job that is otherwise due should be left alone
+// because it has just failed.
+//
+// Owed and due are not the same thing once a job has failed. The schedule works
+// out what is OWED from the last success, so a job that failed stays owed until
+// it works - which is what makes a retry happen at all, and without a limit is
+// also what makes a phone wake every fifteen minutes all night at a remote that
+// is not coming back. This is the limit.
+//
+// Three answers, in order: still inside the wait after a failure, so no. Out of
+// attempts, so no until the clock comes round again. Otherwise yes, try it.
+//
+// A history that cannot be read says no backing off. That matches the rest of
+// this file: a broken log must not quietly stop a schedule, and a run too many
+// costs a comparison.
+func (r *Runner) backingOff(ctx context.Context, name string, since time.Time, parsed cron.Schedule, now time.Time) bool {
+	if r.hist == nil {
+		return false
+	}
+	fails, lastFail, err := r.hist.FailuresSince(ctx, name, since)
+	if err != nil {
+		r.log("%s: cannot read its failures (%v), trying it", name, err)
+		return false
+	}
+	if fails == 0 {
+		return false
+	}
+	policy := r.config().Retry
+	if fails > policy.AttemptCount() {
+		// Out of tries. Wait for the next scheduled time AFTER the last
+		// failure, which is the same clock every other job is on - so a nightly
+		// job that failed tonight tries again tomorrow night, not at breakfast.
+		return parsed.Next(lastFail).After(now)
+	}
+	return lastFail.Add(policy.WaitFor(fails)).After(now)
 }
 
 // RunDue runs them, one at a time, and reports how many it ran.

@@ -57,6 +57,9 @@ type Config struct {
 
 	Notify Notify `json:"notify,omitempty"`
 
+	// Retry is what happens after a scheduled run fails.
+	Retry Retry `json:"retry,omitempty"`
+
 	// Defaults fill in per-job settings that a job does not set for itself.
 	// Applied once at load, so everything downstream sees a job whose fields
 	// are already resolved and no code has to remember to ask twice.
@@ -73,6 +76,88 @@ type Config struct {
 	// editor can write the file back without losing anything it did not touch.
 	path string
 	raw  []byte
+}
+
+// Retry is what a scheduled run does after it fails.
+//
+// Without it, a failed job simply stayed due: the schedule works out what to
+// run from the last SUCCESS, so a job that failed was still owed a run and got
+// one at the next turn of the clock - every fifteen minutes on a phone, for as
+// long as the failure lasted. That is the right instinct and the wrong amount
+// of it. A remote that is down is usually down for a while, and a phone that
+// keeps waking to find it still down spends a night's battery learning nothing.
+//
+// So: a few more tries, each after a longer wait, and then it stops and waits
+// for the next scheduled time like any other job. Both halves matter. Dropping
+// the retries would mean a network hiccup at three in the morning costs a whole
+// night; dropping the limit is what we had.
+//
+// Engine-wide rather than per job, and that is a judgement rather than a
+// shortcut: patience after a failure is a fact about the machine and how often
+// it is awake, not about a folder pair. A job that needs its own answer can get
+// one when somebody has such a job.
+type Retry struct {
+	// Attempts is how many FURTHER tries a failed job gets before it waits for
+	// its next scheduled time. Zero means none, so a failure waits for the
+	// clock. Nil is unset, which means the default below.
+	Attempts *int `json:"attempts,omitempty"`
+
+	// Wait is how long to wait before the first further try. Each try after
+	// that waits twice as long, so three tries at five minutes are spread over
+	// thirty-five rather than fifteen. Empty means the default below.
+	Wait string `json:"wait,omitempty"`
+}
+
+// Defaults for the retry policy, applied when the file says nothing.
+//
+// Three and five minutes: long enough that a remote rebooting is back before
+// the last try, short enough that the whole sequence is over inside forty
+// minutes and a nightly job still has the night to finish in.
+const (
+	DefaultRetryAttempts = 3
+	DefaultRetryWait     = 5 * time.Minute
+)
+
+// RetryCap stops the doubling running away. Ten tries would otherwise put the
+// last one days out, which is not a retry any more.
+const RetryCap = 6 * time.Hour
+
+// Attempts is Retry.Attempts with the default applied and nonsense clamped
+// away. A negative number in the file means none rather than an error: a
+// settings file is not a program, and refusing to start over one is worse than
+// reading it charitably.
+func (r Retry) AttemptCount() int {
+	if r.Attempts == nil {
+		return DefaultRetryAttempts
+	}
+	if *r.Attempts < 0 {
+		return 0
+	}
+	return *r.Attempts
+}
+
+// WaitFor is how long to wait before try number n, counting from one.
+//
+// Doubling, capped. An unparseable or negative wait falls back to the default
+// for the same reason AttemptCount clamps.
+func (r Retry) WaitFor(n int) time.Duration {
+	base := DefaultRetryWait
+	if raw := strings.TrimSpace(r.Wait); raw != "" {
+		if d, err := time.ParseDuration(raw); err == nil && d > 0 {
+			base = d
+		}
+	}
+	if n < 1 {
+		n = 1
+	}
+	wait := base
+	for i := 1; i < n; i++ {
+		wait *= 2
+		if wait >= RetryCap {
+			return RetryCap
+		}
+	}
+	return wait
 }
 
 // KeepHistoryFor is HistoryKeep as a duration, with the default applied.
