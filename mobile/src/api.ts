@@ -45,7 +45,10 @@ export interface JobConfig {
   watchSettle?: string;
   runAtStart?: boolean;
   disabled?: boolean;
-  firstRun?: string;
+  // `firstRun` used to live here. It is gone from the engine - the three-way
+  // comparison answers "which side do I believe the first time" from the state
+  // database instead - and a type that still declared it was one edit away from
+  // writing it back into a file the engine now has to strip on every load.
   keepVersions?: number;
   reportOnly?: boolean;
   noTrash?: boolean;
