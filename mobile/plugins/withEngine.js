@@ -87,14 +87,70 @@ function withNativeSources(config) {
           `withEngine: no ${ENGINE} under mobile/native/jniLibs - an APK built from here would install and then hang on its start screen, because the engine it supervises would not be in it. Build one into mobile/native/jniLibs/<abi>/${ENGINE}, or take the one from a Mobile CI run.`,
         );
       }
+      // AND ITS AGE, because absent is not the only way an engine can be
+      // wrong. A binary left over from an earlier round is present, the right
+      // size and loads perfectly - it simply answers the questions it was
+      // built to answer. That cost a round: the provider list was split into
+      // three groups in Go, the app was rebuilt, and the new section came up
+      // on the phone with its heading and nothing under it, because the
+      // engine inside the APK still knew two groups. Everything a build can
+      // check was green.
+      //
+      // Newest .go file against the binary, on the whole tree rather than on
+      // one package: the list lives in internal/remotes, the API that serves
+      // it in internal/web, and either one changing makes the binary stale.
+      const built = newestGo(path.join(root, "..", ".."));
       for (const abi of abis) {
+        const source = path.join(engines, abi, ENGINE);
+        if (built && fs.statSync(source).mtimeMs < built.at) {
+          throw new Error(
+            `withEngine: mobile/native/jniLibs/${abi}/${ENGINE} is OLDER than ${built.file}. ` +
+              `It would build into an APK that runs an engine from before that change, which looks exactly ` +
+              `like the change not working: every layer a build can check would still be green. Rebuild it with\n` +
+              `  CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -trimpath -ldflags="-s -w" -o mobile/native/jniLibs/${abi}/${ENGINE} ./cmd/arrowloop\n` +
+              `(GOARCH=amd64 for x86_64), or take the one from a Mobile CI run.`,
+          );
+        }
         const target = path.join(root, "app", "src", "main", "jniLibs", abi);
         fs.mkdirSync(target, { recursive: true });
-        fs.copyFileSync(path.join(engines, abi, ENGINE), path.join(target, ENGINE));
+        fs.copyFileSync(source, path.join(target, ENGINE));
       }
       return cfg;
     },
   ]);
+}
+
+/**
+ * The most recently changed .go file under a directory, and when.
+ *
+ * Skips what a build never reads - vendor trees, node_modules, the generated
+ * android folder - and returns null rather than throwing if the tree is not
+ * there, because the staleness check is a guard and must not be the thing that
+ * stops a build for its own reasons.
+ */
+function newestGo(root) {
+  const skip = new Set(["node_modules", "android", "vendor", ".git", "dist", "build"]);
+  let best = null;
+  const walk = (dir) => {
+    let entries;
+    try {
+      entries = fs.readdirSync(dir, { withFileTypes: true });
+    } catch {
+      return;
+    }
+    for (const entry of entries) {
+      if (entry.name.startsWith(".") || skip.has(entry.name)) continue;
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        walk(full);
+      } else if (entry.name.endsWith(".go")) {
+        const at = fs.statSync(full).mtimeMs;
+        if (!best || at > best.at) best = { at, file: path.relative(root, full) };
+      }
+    }
+  };
+  walk(root);
+  return best;
 }
 
 function copyTree(from, to) {
