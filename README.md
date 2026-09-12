@@ -21,6 +21,10 @@
 <p align="center">A two-way file sync engine with a state database, a trash and a brake, plus the scheduler that keeps it running.</p>
 
 <p align="center">
+One knight's job: I build it, keep it running, work through the issues and add what people ask for, until nothing is missing. No accounts, no telemetry, no ads. No trial, no tier, no asterisk. Nothing readable ever leaves your own walls.
+</p>
+
+<p align="center">
   <a href="https://buymeacoffee.com/junkerderprovinz"><img src="https://raw.githubusercontent.com/junkerderprovinz/junkerderprovinz/main/donate/buttons/button-buy-me-a-coffee-live.svg" alt="Buy me a coffee" width="160"></a>
   &nbsp;
   <a href="https://paypal.me/hallelujadesign"><img src="https://raw.githubusercontent.com/junkerderprovinz/junkerderprovinz/main/donate/buttons/button-paypal-live.svg" alt="PayPal" width="160"></a>
@@ -327,9 +331,7 @@ The gap this fills is the combination: a job-based tool with the reach of rclone
 
 ## 13. Support this project
 
-ArrowLoop is free and stays free. It is written in evenings and at weekends, and
-a donation keeps the lights on rather than buying anything: the domain, the
-server the documentation is served from, and the evenings themselves.
+If it has earned a place on your computer or server, a donation covers what it costs: the domain, the server, and the evenings that go into it. It also makes this knight's heart beat a little faster. Three ways below, whichever suits you.
 
 <p align="center">
   <a href="https://buymeacoffee.com/junkerderprovinz"><img src="https://raw.githubusercontent.com/junkerderprovinz/junkerderprovinz/main/donate/buttons/button-buy-me-a-coffee-live.svg" alt="Buy me a coffee" width="160"></a>
