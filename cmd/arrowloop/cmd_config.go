@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
+	"strings"
 	"syscall"
 	"text/tabwriter"
 	"time"
@@ -28,6 +29,15 @@ func load(ctx context.Context, path string) (*job.Config, error) {
 	cfg, err := job.Load(path)
 	if err != nil {
 		return nil, err
+	}
+	// A setting this program used to have and no longer does. Said out loud
+	// because the file still shows it: somebody who set it once would otherwise
+	// keep believing it is in force, and the only alternative to saying so is
+	// what this used to do, which was refuse to start at all.
+	if gone := cfg.Retired(); len(gone) > 0 {
+		fmt.Fprintf(os.Stderr,
+			"note: %s carries settings this version no longer has and ignored them: %s\n",
+			path, strings.Join(gone, ", "))
 	}
 	if err := engine.StartAccounting(ctx, cfg.BwLimit); err != nil {
 		return nil, err

@@ -165,14 +165,28 @@ const (
 // MinIO asks for an endpoint, so it sits with the machines. Dropbox asks for
 // nothing but a button, so it sits with the services.
 //
-// THE SECOND CUT, inside the first group, is what comes BACK: files or buckets.
-// A cloud hands over folders somebody recognises; a bucket store hands over a
-// container with an access key and a secret and nothing in it until they make
-// something. Both are signed into, so the typing rule could not tell them
-// apart - and it did not, which is how one card came to hold fifty-two entries
-// with a photo service three rows from a CDN (jdp: "speicher und clouds sind
-// noch nicht sortiert"). Alphabetical order inside one card cannot fix that;
-// it is what interleaves them.
+// THE SECOND CUT is what the thing IS, and it applies to both halves of the
+// answer above: a service that hands out BUCKETS is storage, whoever owns the
+// machine. A cloud hands over folders somebody recognises; a bucket store hands
+// over a container with an access key and a secret and nothing in it until
+// somebody makes something.
+//
+// That cut arrived in two steps and the first one was half of it. The clouds
+// card had grown to fifty-two entries with a photo service three rows from a
+// CDN (jdp: "speicher und clouds sind noch nicht sortiert"), so the bucket
+// stores signed into with an account moved to a card of their own - and MinIO,
+// SeaweedFS, Ceph and Garage stayed with the machines, because the typing rule
+// was still deciding them. jdp, immediately: "wieso ist seaweedfs, garage, etc
+// nicht bei den Objektspeichern einsortiert?"
+//
+// He is right, and the fix is to make the rule smaller rather than to add an
+// exception. A card called OBJEKTSPEICHER with no MinIO in it is a card whose
+// title is not what it holds; the endpoint somebody types is how they REACH it,
+// not what it is. So the typing question now only separates the clouds from
+// everything else, and what comes back decides the rest.
+//
+// HDFS is where the new line runs: a distributed FILESYSTEM with directories,
+// not a bucket store, so it stays with the protocols beside SMB and SFTP.
 //
 // THE ONE EXCEPTION, and it is jdp's call rather than a hole in the rule:
 // Nextcloud, ownCloud, OpenCloud and Seafile stay with the clouds even though
@@ -308,7 +322,7 @@ var providers = []Provider{
 		Preset: map[string]string{"provider": "Synology"}, Mark: "IconSynology"},
 	{ID: "oracle", Name: "Oracle Object Storage", Backend: "oracleobjectstorage", Group: GroupStorage, Mark: "IconOracleCloud"},
 	{ID: "storj", Name: "Storj", Backend: "storj", Group: GroupStorage, Mark: "IconStorj"},
-	{ID: "swift", Name: "OpenStack Swift", Backend: "swift", Group: GroupProtocol, Mark: "IconOpenstack"},
+	{ID: "swift", Name: "OpenStack Swift", Backend: "swift", Group: GroupStorage, Mark: "IconOpenstack"},
 	{ID: "netstorage", Name: "Akamai NetStorage", Backend: "netstorage", Group: GroupStorage, Mark: "IconAkamai"},
 	{ID: "cloudinary", Name: "Cloudinary", Backend: "cloudinary", Group: GroupStorage, Mark: "IconCloudinary"},
 	{ID: "internetarchive", Name: "Internet Archive", Backend: "internetarchive", Group: GroupStorage,
@@ -330,16 +344,16 @@ var providers = []Provider{
 	// guessed at under "S3 compatible" is a list that stops halfway. Ceph has
 	// rclone's own preset; Garage has none - it is S3-compatible and reached
 	// through the generic provider, which is exactly what the entry says.
-	{ID: "minio", Name: "MinIO", Backend: "s3", Group: GroupProtocol,
+	{ID: "minio", Name: "MinIO", Backend: "s3", Group: GroupStorage,
 		Preset: map[string]string{"provider": "Minio"}, Mark: "IconMinio",
 		Hint: "A bucket store you run yourself. Needs its endpoint address."},
-	{ID: "seaweedfs", Name: "SeaweedFS", Backend: "s3", Group: GroupProtocol,
+	{ID: "seaweedfs", Name: "SeaweedFS", Backend: "s3", Group: GroupStorage,
 		Preset: map[string]string{"provider": "SeaweedFS"}, Mark: "IconSeaweedfs",
 		Hint: "A bucket store you run yourself. Needs its endpoint address."},
-	{ID: "ceph", Name: "Ceph", Backend: "s3", Group: GroupProtocol,
+	{ID: "ceph", Name: "Ceph", Backend: "s3", Group: GroupStorage,
 		Preset: map[string]string{"provider": "Ceph"}, Mark: "IconCeph",
 		Hint: "A bucket store you run yourself. Needs its endpoint address."},
-	{ID: "garage", Name: "Garage", Backend: "s3", Group: GroupProtocol,
+	{ID: "garage", Name: "Garage", Backend: "s3", Group: GroupStorage,
 		// rclone has no Garage preset, so it is reached as a generic
 		// S3 service - which is what Garage is, and what its own
 		// documentation tells people to configure.
@@ -353,7 +367,7 @@ var providers = []Provider{
 		Mark: "IconLink", Hint: "Any WebDAV server. Pick the product above if it has an entry.",
 		UrlHint: "https://server.example.com/remote.php/webdav/"},
 	{ID: "ftp", Name: "FTP", Backend: "ftp", Group: GroupProtocol, Mark: "IconTransfer"},
-	{ID: "s3", Name: "S3 compatible", Backend: "s3", Group: GroupProtocol,
+	{ID: "s3", Name: "S3 compatible", Backend: "s3", Group: GroupStorage,
 		Mark: "IconBuckets", Hint: "Amazon S3 and the thirty-odd services that speak its protocol."},
 	{ID: "http", Name: "HTTP", Backend: "http", Group: GroupProtocol,
 		Mark: "IconLink", Hint: "Read-only, over a plain web server."},

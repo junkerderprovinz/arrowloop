@@ -134,6 +134,32 @@ object Engine {
      * mid-tap with "the engine exited with code 143" in the log.
      */
     fun start(context: Context): Boolean {
+        // THE HANDLE FIRST, and that order is the bug fix.
+        //
+        // This used to ask only whether something ANSWERS on the address, which
+        // is a question about a port and not about a process. The two callers
+        // arrive milliseconds apart - the screens when somebody opens the app,
+        // the wake-up service because opening it also arms the waking - and a
+        // process that has been spawned has not yet bound anything. So the
+        // second call asked "is it up?", heard no, and started a SECOND engine,
+        // which lost the race for the port and died: "the engine exited with
+        // code 1", on every single cold start, twenty-three milliseconds after
+        // the first one was spawned.
+        //
+        // Being @Synchronized never helped and could not: it serialises the two
+        // calls, and the first one returns as soon as the process EXISTS, long
+        // before it listens. The handle is the thing that is true immediately,
+        // and this object was already holding it.
+        //
+        // The HTTP probe stays underneath, because it answers a question the
+        // handle cannot: an engine left listening by an earlier process of this
+        // app, where `process` is null and something is bound anyway.
+        process?.let {
+            if (it.isAlive) {
+                Log.i(TAG, "engine already started by this app, not starting a second")
+                return false
+            }
+        }
         if (answers()) {
             Log.i(TAG, "engine already answering on $ADDRESS")
             return false

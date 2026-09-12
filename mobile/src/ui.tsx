@@ -601,6 +601,20 @@ export function Choice<T extends string>({
           >
             <Text
               numberOfLines={1}
+              // SHRINKS rather than clips. jdp: "im zeitplan steht Woche mit
+              // ..., die punkte sollen weg." Five segments across a phone leave
+              // each one narrow enough that a real word runs out of room, and
+              // the ellipsis is the worst of the three possible answers: it
+              // spends a character saying that a character is missing, and the
+              // word it cuts is the one somebody is reading to choose between.
+              //
+              // A floor of 0.7 rather than none, because a segment that shrinks
+              // without limit trades one unreadable label for another. Below
+              // that it clips again, which is the honest failure - and a strip
+              // whose words need less than seven tenths of the body size is a
+              // strip with too many segments, not a font problem.
+              adjustsFontSizeToFit
+              minimumFontScale={0.7}
               style={[
                 styles.segmentText,
                 // Computed against the fill it actually landed on, never a

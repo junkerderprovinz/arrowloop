@@ -76,6 +76,12 @@ type Config struct {
 	// editor can write the file back without losing anything it did not touch.
 	path string
 	raw  []byte
+
+	// retired is the field names this file carried that the program no longer
+	// understands. Kept so a caller can SAY so - the file still holds them, and
+	// somebody who upgraded deserves to know what was ignored rather than
+	// wondering why a setting they remember does nothing.
+	retired []string
 }
 
 // Retry is what a scheduled run does after it fails.
@@ -475,6 +481,82 @@ func (d Defaults) applyTo(j *Job) {
 	}
 }
 
+// RETIRED names fields this program used to write and no longer understands.
+//
+// They exist because of what `DisallowUnknownFields` does to an UPGRADE. The
+// strictness itself is right and stays: "excludes" for "exclude" would leave a
+// filter silently empty and sync the very files somebody meant to keep out, so
+// a field nobody recognises has to be an error. But a field THIS PROGRAM wrote
+// in an earlier version is not a typo, and treating it as one is how an upgrade
+// becomes a dead engine.
+//
+// Found the hard way on jdp's server: a container running a build from the
+// seventh was updated and went into a restart loop, one line of JSON complaint
+// per attempt, because its own configuration carried `firstRun` - a per-job
+// setting this program used to have. Nothing about that message says "your
+// config is from an older version of me".
+//
+// A closed list rather than tolerance for anything unknown: adding a name here
+// is a decision, and the typo guard keeps its whole reach for every other word.
+var RETIRED = map[string]bool{
+	// A per-job choice of which side to believe on the very first run. Gone
+	// because the three-way comparison answers it from the state database
+	// instead of from a setting nobody could get right in advance.
+	"firstRun": true,
+}
+
+// withoutRetired removes retired field names from a raw configuration, and
+// reports which ones it found.
+//
+// Whole document rather than per job: the same name could be added at the top
+// level one day, and a cleaner that only looked inside `jobs` would let that
+// one through to the strict decoder it is supposed to protect.
+//
+// An unparseable document comes back untouched, because the decoder's own error
+// says far more about it than this could.
+func withoutRetired(data []byte) ([]byte, []string) {
+	var doc any
+	if err := json.Unmarshal(data, &doc); err != nil {
+		return data, nil
+	}
+	var found []string
+	var walk func(any) any
+	walk = func(node any) any {
+		switch v := node.(type) {
+		case map[string]any:
+			for key := range v {
+				if RETIRED[key] {
+					delete(v, key)
+					found = append(found, key)
+					continue
+				}
+				v[key] = walk(v[key])
+			}
+			return v
+		case []any:
+			for i := range v {
+				v[i] = walk(v[i])
+			}
+			return v
+		}
+		return node
+	}
+	walk(doc)
+	if len(found) == 0 {
+		return data, nil
+	}
+	out, err := json.Marshal(doc)
+	if err != nil {
+		return data, nil
+	}
+	sort.Strings(found)
+	return out, found
+}
+
+// Retired reports the retired fields found in the file this was loaded from, so
+// a caller can say so out loud. Empty on a configuration that carries none.
+func (c *Config) Retired() []string { return c.retired }
+
 // Load reads and validates a configuration file.
 //
 // Everything is checked here rather than when a job first runs. A typo in a
@@ -486,11 +568,13 @@ func Load(path string) (*Config, error) {
 		return nil, fmt.Errorf("read config: %w", err)
 	}
 	var cfg Config
-	dec := json.NewDecoder(strings.NewReader(string(data)))
+	cleaned, dropped := withoutRetired(data)
+	dec := json.NewDecoder(strings.NewReader(string(cleaned)))
 	dec.DisallowUnknownFields()
 	if err := dec.Decode(&cfg); err != nil {
 		return nil, fmt.Errorf("parse %s: %w", path, err)
 	}
+	cfg.retired = dropped
 	abs, err := filepath.Abs(path)
 	if err != nil {
 		return nil, err

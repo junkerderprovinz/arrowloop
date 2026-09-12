@@ -95,6 +95,14 @@ export function Settings() {
    * One piece of state for both rows, because only one picker can be open: the
    * `kind` says which row to write back to, and the index says which slot.
    */
+  /**
+   * Which swatch a second press would open.
+   *
+   * One slot for both rows, so pressing in the palette clears the accent's ring
+   * and the other way round: two rings at once would say two swatches are about
+   * to be edited, and only one of them ever is.
+   */
+  const [armed, setArmed] = useState<{ kind: "accent" | "palette"; index: number } | null>(null);
   const [editing, setEditing] = useState<{ kind: "accent" | "palette"; index: number; hex: string } | null>(
     null,
   );
@@ -322,9 +330,18 @@ export function Settings() {
                     label={mine && hex.toLowerCase() !== a.hex.toLowerCase() ? hex.toUpperCase() : a.name}
                     selected={mine}
                     onPress={() => {
+                      // Choosing always happens on the first press; only the
+                      // picker waits for the second. An accent that needed two
+                      // presses to APPLY would be a step added to the common
+                      // act to make room for the rare one.
                       setAccentSlot(i);
                       setAppearance({ accent: hex });
-                      setEditing({ kind: "accent", index: i, hex });
+                      if (armed?.kind === "accent" && armed.index === i) {
+                        setEditing({ kind: "accent", index: i, hex });
+                        setArmed(null);
+                      } else {
+                        setArmed({ kind: "accent", index: i });
+                      }
                     }}
                   />
                 );
@@ -358,12 +375,26 @@ export function Settings() {
           }}
         />
 
-        {/* Both of these hang off the mode itself, so they are ABSENT while it
-            is off rather than dimmed: an instruction to a rainbow that is not
-            running is a control somebody can see, read and reach for that
-            answers nothing, and the reason it is dead sits one row up where
-            nobody looks after deciding this row is the interesting one. */}
-        {look.rainbow ? (
+        {/* DIMMED while the rainbow is off, not gone, which is the same shape
+            the accent row above uses in the other direction. jdp: "in der app
+            sollen die regenbogen sachen immer zu sehen sein, nur halt
+            abgedunkelt und deaktiviert so lange der toggle nicht aktiviert ist.
+            wie im container."
+
+            It reverses what was here, and the reason it reverses is worth
+            keeping: the argument for hiding them was that a control answering
+            nothing is a control somebody reaches for in vain. The argument
+            against is what somebody actually wants to know before flipping the
+            switch - which eight colours am I about to turn on - and a row that
+            is not there cannot answer that either. Shown and unreachable
+            answers it; absent does not.
+
+            `pointerEvents` off on the whole block rather than `disabled` on
+            each control: one place to be wrong instead of three. */}
+        <View
+          style={look.rainbow ? null : styles.dimmed}
+          pointerEvents={look.rainbow ? "auto" : "none"}
+        >
           <>
             <Toggle
               label={t("look.rainbowRotate")}
@@ -397,8 +428,18 @@ export function Settings() {
                     key={`${i}-${hex}`}
                     hex={hex}
                     label={hex.toUpperCase()}
-                    selected={false}
-                    onPress={() => setEditing({ kind: "palette", index: i, hex })}
+                    // There is no "the chosen one" in a palette - all eight
+                    // are in force at once - so the ring shows which swatch a
+                    // second press would open instead.
+                    selected={armed?.kind === "palette" && armed.index === i}
+                    onPress={() => {
+                      if (armed?.kind === "palette" && armed.index === i) {
+                        setEditing({ kind: "palette", index: i, hex });
+                        setArmed(null);
+                      } else {
+                        setArmed({ kind: "palette", index: i });
+                      }
+                    }}
                   />
                 ))}
               </View>
@@ -409,7 +450,7 @@ export function Settings() {
               />
             </View>
           </>
-        ) : null}
+        </View>
       </Section>
 
       {/* Three modes, not the web's four. `reactive` means "the words appear

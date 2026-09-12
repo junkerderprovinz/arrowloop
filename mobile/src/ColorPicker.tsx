@@ -298,12 +298,17 @@ export function EditableSwatch({
       >
         {/* No pencil on the disc, and that is a decision rather than an
             omission: a second mark on a 26px circle is a smudge, and the
-            colour is the thing the circle is for. What says a swatch can be
-            edited is that pressing it OPENS the picker - the same press that
-            chooses the colour, exactly as the container does it. A picker
-            reserved for a second press on the already-chosen swatch is a
-            picker nobody finds, which is how the container's was reported
-            missing when it was there all along. */}
+            colour is the thing the circle is for.
+
+            WHAT A PRESS MEANS is two things in order, which is jdp's call:
+            "Farbfelder sollen erst mit einem zweiten klick auf die fläche
+            editierbar sein bzw soll der fabpicker erst dann kommen." The first
+            press picks the colour; a second press on the one already picked
+            opens the picker. One press used to do both, which meant a full
+            picker appeared every time somebody only wanted to choose a colour
+            from the eight in front of them - the common act interrupted by the
+            rare one. The ring this component already draws around the chosen
+            swatch is what says which one a second press would edit. */}
         <View style={[styles.fill, { borderRadius: radius.pill, backgroundColor: hex }]} />
       </View>
     </Pressable>

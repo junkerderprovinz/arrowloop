@@ -411,48 +411,131 @@ def detokenise(body: str, colours) -> tuple[str, dict]:
     return body, used
 
 
-# Marks whose gradients the phone cannot draw, and the flat colour each one
-# falls back to.
+# Marks whose gradients the phone cannot draw, and what to do about it.
 #
 # OneDrive is the case this exists for. Its source is a Cairo export: NINE
 # stacked gradients for one cloud, several of them full-canvas overlays at low
 # opacity whose whole job is to tint what is underneath. A browser composites
 # that correctly; react-native-svg draws the cloud BLACK, which is what reached
-# the phone and what was reported. Chasing which of the nine is at fault is a
-# hunt with no end - the next Cairo export brings a different nine.
+# the phone and what was reported.
 #
-# So the app gets the brand's own flat colour instead, and this is a reproduction
-# rather than a compromise: the drawing is still theirs, path for path, and the
-# tint it loses is a shading nobody can see at forty pixels anyway. The BROWSER
-# keeps the gradients, because it renders them correctly - this list only
-# changes what `glyphs.data.ts` carries.
+# The first answer was to paint every gradient in the mark ONE brand colour.
+# That stopped the black and produced a blue blob: the cloud is three tones and
+# came out as one, next to a container that renders the real thing. jdp: "Das
+# logo von onedrive ist in der app falsch, im container richtig."
 #
-# The colour is the brand's own published one, never one picked here.
-FLATTEN = {
-    # OneDrive's own mid-blue, from Microsoft's brand palette.
-    "IconOnedrive": "#0078D4",
-}
+# So each gradient is now judged on its own stops:
+#
+#   - every stop fully opaque  ->  it is PAINT. Replaced by the colour of the
+#     stop nearest the middle, which is the tone the shape mostly reads as.
+#   - any stop transparent     ->  it is a SHADE, drawn over the paint to
+#     lighten or darken it. The element goes, because a shade reduced to a
+#     solid is a slab of colour across the drawing rather than a hint of one.
+#
+# What is left is the brand's own drawing, path for path, in its own tones,
+# minus the shading nobody can see at forty pixels. The BROWSER keeps the
+# gradients, because it renders them correctly - this only changes what
+# `glyphs.data.ts` carries.
+SOLIDIFY = {"IconOnedrive"}
 
 
-def flatten(body: str, name: str) -> str:
-    """Replace every gradient reference with one flat colour, and drop the defs."""
-    colour = FLATTEN.get(name)
-    if colour is None:
+STOP = re.compile(r"<stop\b[^>]*?/?>", re.S)
+STOP_OFFSET = re.compile(r'offset="([^"]+)"')
+STOP_COLOUR = re.compile(r'stop-color="([^"]+)"')
+STOP_OPACITY = re.compile(r'stop-opacity="([^"]+)"')
+
+
+def _stops(inner: str):
+    """Every stop as (offset, colour, opacity), read from ATTRIBUTES.
+
+    Attributes rather than a style object, because unjsx has already made that
+    translation one step earlier - that is the whole reason it exists. Reading
+    the JSX form here matched nothing at all.
+
+    A missing stop-opacity is 1: SVG's own default, and leaving it out is the
+    ordinary way to write a fully opaque stop.
+    """
+    out = []
+    for tag in STOP.findall(inner):
+        offset = STOP_OFFSET.search(tag)
+        colour = STOP_COLOUR.search(tag)
+        if not colour:
+            continue
+        opacity = STOP_OPACITY.search(tag)
+        out.append((
+            offset.group(1) if offset else "0",
+            colour.group(1),
+            opacity.group(1) if opacity else "1",
+        ))
+    return out
+GRADIENT_BLOCK = re.compile(
+    r'<(linearGradient|radialGradient)\b[^>]*?id="([^"]+)"[^>]*?>(.*?)</\1>', re.S
+)
+
+
+def _rgb(value: str) -> str:
+    """Cairo writes rgb(28.235294%,58.039216%,99.607843%). Hex is what a phone
+    parses fastest and what every other colour in this file already is."""
+    inside = value.strip()
+    if inside.startswith("#"):
+        return inside
+    parts = re.findall(r"([\d.]+)%", inside)
+    if len(parts) != 3:
+        raise SystemExit("gen_glyph_data: a stop colour this cannot read: %s" % value)
+    return "#" + "".join("%02X" % round(float(p) * 255 / 100) for p in parts)
+
+
+def solidify(body: str, name: str) -> str:
+    """Turn each gradient into paint or into nothing, per the rule above."""
+    if name not in SOLIDIFY:
         return body
-    before = body.count("url(#")
-    if not before:
+    if "url(#" not in body:
         raise SystemExit(
-            "gen_glyph_data: %s is on the flatten list and has no gradient fills - "
+            "gen_glyph_data: %s is on the solidify list and has no gradient fills - "
             "either it was fixed upstream and the entry should go, or the name is wrong" % name
         )
-    body = re.sub(r'fill="url\(#[^"]*\)"', 'fill="%s"' % colour, body)
-    body = re.sub(r'stroke="url\(#[^"]*\)"', 'stroke="%s"' % colour, body)
-    # The definitions go with them: a <defs> nothing references is dead weight
-    # in a file the phone parses on every draw.
+
+    paint, shade = {}, set()
+    for block in GRADIENT_BLOCK.finditer(body):
+        gid, inner = block.group(2), block.group(3)
+        stops = _stops(inner)
+        if not stops:
+            raise SystemExit("gen_glyph_data: %s has a gradient with no stops: %s" % (name, gid))
+        if any(float(op) < 1 for _, _, op in stops):
+            shade.add(gid)
+            continue
+        # The stop nearest the middle, which is the tone the shape reads as.
+        middle = min(stops, key=lambda s: abs(float(s[0]) - 0.5))
+        paint[gid] = _rgb(middle[1])
+
+    # A shade's element goes entirely. Matched on the whole element so nothing
+    # is left behind with a fill nothing answers for.
+    for gid in shade:
+        pattern = re.compile(
+            r'<(path|circle|ellipse|rect|polygon)\b[^>]*?url\(#%s\)[^>]*?/>\s*' % re.escape(gid),
+            re.S,
+        )
+        body, gone = pattern.subn("", body)
+        if not gone:
+            raise SystemExit(
+                "gen_glyph_data: %s has a shade gradient %s nothing uses, or used by an "
+                "element shape this does not know" % (name, gid)
+            )
+
+    for gid, colour in paint.items():
+        body = body.replace('url(#%s)' % gid, colour)
+
     body = re.sub(r"<defs>.*?</defs>\s*", "", body, flags=re.S)
     left = body.count("url(#")
     if left:
-        raise SystemExit("gen_glyph_data: %s still references %d gradients after flattening" % (name, left))
+        raise SystemExit(
+            "gen_glyph_data: %s still references %d gradients after solidifying" % (name, left)
+        )
+    if not paint:
+        raise SystemExit(
+            "gen_glyph_data: %s came out with no paint at all - every gradient read as a "
+            "shade, which would leave an empty mark" % name
+        )
     return body
 
 
@@ -537,7 +620,7 @@ def inner(svg: str, name: str) -> str:
     body = re.sub(r"</svg>$", "", body).strip()
     body = unjsx(body)
     body = unlink(body, name)
-    body = flatten(body, name)
+    body = solidify(body, name)
     left = re.search(r"\w+=\{", body)
     if left:
         raise SystemExit("gen_glyph_data: JSX left in a brand mark: %r" % body[left.start() - 20 : left.start() + 60])
