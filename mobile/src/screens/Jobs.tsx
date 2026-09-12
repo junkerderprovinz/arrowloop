@@ -1,7 +1,10 @@
 import { useNavigation } from "@react-navigation/native";
 import { useCallback, useEffect, useState } from "react";
-import { FlatList, RefreshControl, StyleSheet, View } from "react-native";
-import { api, type Job } from "../api";
+import { Alert, FlatList, RefreshControl, StyleSheet, View } from "react-native";
+import { api, type Job, type Provider, type Remote } from "../api";
+import { CardMenu } from "../CardMenu";
+import { ProviderMark } from "../glyphs";
+import { directionKey, markForSide } from "../jobMark";
 import { useT, type T } from "../i18n";
 import { since } from "../../../web/src/lib/since";
 import type { Nav, JobsStack } from "../nav";
@@ -26,6 +29,21 @@ export function Jobs() {
   const { t } = useT();
   const { p, accent } = useTheme();
   const [jobs, setJobs] = useState<Job[] | null>(null);
+  /** The targets and the products behind them, for a card's logo. Fetched
+   *  once: neither changes while somebody is looking at a list of jobs, and a
+   *  card that could not name its target simply shows none. */
+  const [remotes, setRemotes] = useState<Remote[]>([]);
+  const [providers, setProviders] = useState<Provider[]>([]);
+  useEffect(() => {
+    api.storage().then(
+      (list) => {
+        setRemotes(list.remotes);
+        setProviders(list.providers);
+      },
+      () => {},
+    );
+  }, []);
+
   const [error, setError] = useState("");
   const [busy, setBusy] = useState<string | null>(null);
   const [holding, setHolding] = useState<string | null>(null);
@@ -85,6 +103,35 @@ export function Jobs() {
     }
   };
 
+  /**
+   * Deleting from the list, with the question asked first.
+   *
+   * It lived only inside the editor, so getting rid of a job meant opening it
+   * and scrolling past everything it does. The confirmation is not a formality:
+   * this is the one act on the card that cannot be undone from here.
+   */
+  const remove = (job: Job) => {
+    Alert.alert(t("edit.removeJob"), t("edit.removeStakes", { name: job.name }), [
+      { text: t("confirm.cancel"), style: "cancel" },
+      {
+        text: t("confirm.delete"),
+        style: "destructive",
+        onPress: async () => {
+          try {
+            const config = await api.config();
+            await api.writeConfig({
+              ...config,
+              jobs: config.jobs.filter((j) => j.name !== job.name),
+            });
+            await load();
+          } catch (e) {
+            setError((e as Error).message);
+          }
+        },
+      },
+    ]);
+  };
+
   if (jobs === null) return <Empty title={t("jobs.activityLoading")} detail={error || undefined} />;
 
   return (
@@ -124,6 +171,12 @@ export function Jobs() {
           onAct={() => act(item)}
           holding={holding === item.name}
           onHold={() => hold(item)}
+          onEdit={() => nav.navigate("JobEdit", { name: item.name })}
+          onRemove={() => remove(item)}
+          // The RIGHT side, because that is the one that names a target. A job
+          // between two local folders has no logo, which is correct: there is
+          // no cloud in it to show.
+          mark={markForSide(item.right, remotes, providers)}
         />
       )}
     />
@@ -138,6 +191,9 @@ function JobCard({
   onAct,
   holding,
   onHold,
+  onEdit,
+  onRemove,
+  mark,
 }: {
   job: Job;
   index: number;
@@ -147,12 +203,26 @@ function JobCard({
   /** Whether the hold is being written right now. */
   holding: boolean;
   onHold: () => void;
+  onEdit: () => void;
+  onRemove: () => void;
+  /** The target's logo, or nothing when it cannot be named without guessing. */
+  mark?: string;
 }) {
   const { t } = useT();
   const hue = useHue(index);
+  const { p, scheme } = useTheme();
   return (
     <Card onPress={onOpen} hue={hue}>
       <View style={styles.head}>
+        {/* The target's logo, when the target can be named without guessing.
+            See jobMark.ts: a backend claimed by more than one marked provider
+            gets none, because a mark naming the WRONG service is worse than no
+            mark - which is this house's standing rule for brands. */}
+        {mark ? (
+          <View style={styles.cardMark}>
+            <ProviderMark name={mark} width={24} height={24} color={p.textSub} scheme={scheme} />
+          </View>
+        ) : null}
         <Title>{job.name}</Title>
         {job.disabled ? (
           <Badge label={t("jobs.state.disabled")} />
@@ -161,6 +231,15 @@ function JobCard({
         ) : job.watch ? (
           <Badge label={t("jobs.cadence.live")} tone="ok" />
         ) : null}
+        {/* Pushed hard right, and the two rare acts live in it. */}
+        <View style={styles.menuSlot}>
+          <CardMenu
+            items={[
+              { label: t("edit.editJob"), glyph: "IconEdit", onPress: onEdit },
+              { label: t("edit.removeJob"), glyph: "IconDelete", danger: true, onPress: onRemove },
+            ]}
+          />
+        </View>
       </View>
 
       {/* The two paths with the direction between them, one per line and each
@@ -168,7 +247,10 @@ function JobCard({
           does, and it hides exactly the part that distinguishes two similar
           jobs. */}
       <Body>{job.left}</Body>
-      <Caption>{arrow(job.direction)}</Caption>
+      {/* The arrow AND the words. The arrow keeps the position it had between
+          the two paths, where it reads as the relationship between them; the
+          words are what somebody needs the first time. */}
+      <Caption>{`${arrow(job.direction)}  ${t(directionKey(job.direction))}`}</Caption>
       <Body>{job.right}</Body>
 
       <Caption>
@@ -229,6 +311,10 @@ export function when(iso: string, t: T): string {
 }
 
 const styles = StyleSheet.create({
+  // The logo before the name, the menu hard right, and the badge between them
+  // taking whatever is left.
+  cardMark: { width: 26, alignItems: "center" },
+  menuSlot: { marginStart: "auto" },
   list: { padding: space.lg, gap: space.md },
   head: {
     flexDirection: "row",

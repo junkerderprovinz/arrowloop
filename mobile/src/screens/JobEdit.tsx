@@ -311,8 +311,23 @@ export function JobEdit() {
         />
       </Section>
 
+      </>
+      ) : null}
+
+      {/* THE SCHEDULE CARD STAYS, and only the cron builder inside it moves.
+          jdp: "der echtzeit toggle gibt es nicht in den globalen
+          synceinstellungen, der soll in der auftragscard somit auch nicht
+          hinter dem globalen sync toggle versteckt sein."
+
+          The rule it sharpens: the switch governs exactly what the global page
+          can answer. `watch` and `runAtStart` are not in the engine's Defaults
+          and cannot be - they are plain bools, so "off" and "not mentioned" are
+          the same value, and a default that switched one ON could never be
+          switched back off for one job. Only the expression is a default. */}
       <Section title={t("edit.schedule")} hint={t("edit.scheduleHint")}>
-        <Schedule value={job.schedule ?? ""} onChange={(schedule) => set({ schedule })} />
+        {!follows ? (
+          <Schedule value={job.schedule ?? ""} onChange={(schedule) => set({ schedule })} />
+        ) : null}
         <Toggle
           label={t("schedule.live")}
           hint={t("schedule.backstopHint")}
@@ -326,8 +341,6 @@ export function JobEdit() {
           onChange={(runAtStart) => set({ runAtStart })}
         />
       </Section>
-      </>
-      ) : null}
 
       <Section title={t("edit.exclude")} hint={t("edit.excludeHint")}>
         <Field
@@ -601,10 +614,12 @@ function DayChip({ label, on, onPress }: { label: string; on: boolean; onPress: 
 
 const styles = StyleSheet.create({
   actions: { flexDirection: "row", gap: space.sm },
-  // The field takes the room and the button takes what it needs, so a long
-  // path does not squeeze the way out of the form.
-  pickRow: { flexDirection: "row", gap: space.sm, alignItems: "flex-end" },
-  pickField: { flex: 1 },
+  // The button sits UNDER the field rather than beside it. jdp: "der button
+  // ordner wählen soll unter dem pfadfeld sein." Side by side, the field had
+  // to share the width with a button whose label never changes, so a path -
+  // the long thing, the thing being read - got the smaller half.
+  pickRow: { gap: space.xs },
+  pickField: {},
   stack: { gap: space.sm },
   days: { flexDirection: "row", flexWrap: "wrap", gap: space.xs },
   day: { flexGrow: 1, minWidth: 40, paddingVertical: 7, paddingHorizontal: space.sm, alignItems: "center" },
