@@ -5,7 +5,7 @@ import { api, type Remote, type Usage } from "../api";
 import { useT } from "../i18n";
 import type { Nav, TargetsStack } from "../nav";
 import { space } from "../theme";
-import { Badge, Body, Button, Caption, Card, Empty, Page, Title, useHue } from "../ui";
+import { Badge, Body, Button, Caption, Card, Empty, Fab, Floating, Page, Title, useHue } from "../ui";
 
 /**
  * The storage this phone can reach.
@@ -42,17 +42,10 @@ export function Targets() {
   if (!remotes) return <Empty title={t("history.working")} detail={error || undefined} />;
 
   return (
-    <Page>
-      <Button
-        label={t("targets.addStorage")}
-        labelKey="targets.addStorage"
-        tone="accent"
-        onPress={() => nav.navigate("TargetPick")}
-      />
-
-      {/* Nothing where there is nothing. The "Add" button is directly above,
-          so an empty page already says what it is and what to do - a sentence
-          underneath making the same offer is the offer twice. */}
+    <Floating>
+      <Page fab>
+      {/* Nothing where there is nothing. jdp asked for the hint text to go when
+          the page is empty, and the floating button below carries the offer. */}
       {remotes.map((remote, index) => (
         <TargetCard
           key={remote.name}
@@ -64,7 +57,14 @@ export function Targets() {
       ))}
 
       {error ? <Caption>{error}</Caption> : null}
-    </Page>
+      </Page>
+      {/* Bottom right, the same place the job list keeps its own. */}
+      <Fab
+        label={t("targets.addStorage")}
+        labelKey="targets.addStorage"
+        onPress={() => nav.navigate("TargetPick")}
+      />
+    </Floating>
   );
 }
 

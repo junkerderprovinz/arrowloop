@@ -1,5 +1,15 @@
-import { NavigationContainer, DarkTheme, DefaultTheme } from "@react-navigation/native";
-import { createBottomTabNavigator, type BottomTabBarProps } from "@react-navigation/bottom-tabs";
+import {
+  NavigationContainer,
+  DarkTheme,
+  DefaultTheme,
+  getFocusedRouteNameFromRoute,
+  type ParamListBase,
+  type RouteProp,
+} from "@react-navigation/native";
+import {
+  createMaterialTopTabNavigator,
+  type MaterialTopTabBarProps,
+} from "@react-navigation/material-top-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -46,8 +56,21 @@ import { useEngine } from "./src/useEngine";
  * A bottom bar rather than the desktop's rail: a rail is reachable with a
  * mouse and a bar is reachable with a thumb, which is that whole difference in
  * one control.
+ *
+ * THE FOUR PAGES SWIPE. jdp: "zwischen den hauptseiten in der bottom bar soll
+ * man auch seitlich durchswipen koennen." That is the one thing a bottom-tab
+ * navigator cannot do - it mounts a single screen at a time and has no pager
+ * under it - so the four screens hang off the MATERIAL TOP tab navigator with
+ * its bar moved to the bottom. Nothing else changes: the bar below is still
+ * drawn by hand and keeps every rule it was given.
+ *
+ * The swipe is switched OFF whenever a tab's own stack is deeper than its
+ * root. A sideways drag inside the job editor meant to scrub a text field, or
+ * on a detail page reached by tapping a card, would otherwise throw somebody
+ * into the next tab and lose what they were doing - and the way back is not
+ * obvious, because the stack they left is still where they left it.
  */
-const Tabs = createBottomTabNavigator();
+const Tabs = createMaterialTopTabNavigator();
 const JobsNav = createNativeStackNavigator<JobsStack>();
 const HistoryNav = createNativeStackNavigator<HistoryStack>();
 const TargetsNav = createNativeStackNavigator<TargetsStack>();
@@ -179,8 +202,14 @@ function Shell() {
       <StatusBar style={scheme === "light" ? "dark" : "light"} />
       <NavigationContainer theme={navTheme}>
         <Tabs.Navigator
-          screenOptions={{
-            headerShown: false,
+          // The bar belongs at the bottom of the screen, which is the whole
+          // reason this navigator can stand in for the other one.
+          tabBarPosition="bottom"
+          screenOptions={({ route }) => ({
+            // Swipe only while the tab shows the page the bar points at. Once
+            // somebody has drilled into a detail or an editor, a sideways drag
+            // belongs to the screen they are on, not to the navigator.
+            swipeEnabled: !deeperThanRoot(route),
             // The bar FLOATS as a card rather than being welded to the bottom
             // of the screen. jdp: "die untere leiste soll nicht am rand kleben
             // sondern aussehen wie die sidebar." The desktop rail made the same
@@ -200,7 +229,7 @@ function Shell() {
               borderTopWidth: 0,
               elevation: 0,
             },
-          }}
+          })}
           // The bar is drawn HERE rather than configured, because three of the
           // things asked of it are not options react-navigation has: the label
           // engine, a filled pill under the current tab, and a glyph that is
@@ -328,7 +357,7 @@ function Shell() {
  * FLOATS, inset from every edge, and paints the app's own ground underneath
  * because Android's window background is near-white and showed through.
  */
-function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
+function TabBar({ state, descriptors, navigation }: MaterialTopTabBarProps) {
   const { p, radius, labels, accent, hueAt } = useTheme();
   const inset = useSafeAreaInsets();
   const showGlyph = labels !== "text";
@@ -422,6 +451,32 @@ function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
       </View>
     </View>
   );
+}
+
+/**
+ * The first screen of each tab's own stack.
+ *
+ * Named here rather than derived, because the question being asked is "is this
+ * tab showing the page the bar points at, or something somebody drilled into",
+ * and that is a fact about the four tabs, not about the navigator.
+ */
+const TAB_ROOT: Record<string, string> = {
+  JobsTab: "JobList",
+  TargetsTab: "TargetList",
+  HistoryTab: "RunList",
+  SettingsTab: "SettingsHome",
+};
+
+/**
+ * Whether a tab's own stack has moved off its first screen.
+ *
+ * `getFocusedRouteNameFromRoute` returns nothing until the nested navigator has
+ * rendered, and nothing reads as "at its root" - which is correct: a tab nobody
+ * has opened yet cannot be deep in anything.
+ */
+function deeperThanRoot(route: RouteProp<ParamListBase>): boolean {
+  const focused = getFocusedRouteNameFromRoute(route);
+  return focused !== undefined && focused !== TAB_ROOT[route.name];
 }
 
 /**

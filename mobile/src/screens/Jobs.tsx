@@ -10,7 +10,20 @@ import { since } from "../../../web/src/lib/since";
 import type { Nav, JobsStack } from "../nav";
 import { space } from "../theme";
 import { useEngineEvents } from "../useEngine";
-import { Badge, Body, Button, Caption, Card, Empty, Title, useHue, useTheme } from "../ui";
+import {
+  Badge,
+  Body,
+  Button,
+  Caption,
+  Card,
+  Empty,
+  Fab,
+  FAB_ROOM,
+  Floating,
+  Title,
+  useHue,
+  useTheme,
+} from "../ui";
 
 /**
  * The jobs, and what each of them is doing right now.
@@ -135,7 +148,8 @@ export function Jobs() {
   if (jobs === null) return <Empty title={t("jobs.activityLoading")} detail={error || undefined} />;
 
   return (
-    <FlatList
+    <Floating>
+      <FlatList
       style={{ backgroundColor: p.background }}
       data={jobs}
       keyExtractor={(j) => j.name}
@@ -153,14 +167,6 @@ export function Jobs() {
       // somebody can act on, while a list that is still arriving or could not
       // be fetched is not - and those two really are indistinguishable from a
       // blank screen.
-      ListHeaderComponent={
-        <Button
-          label={t("edit.add")}
-          labelKey="edit.add"
-          tone="accent"
-          onPress={() => nav.navigate("JobEdit", {})}
-        />
-      }
       ListFooterComponent={error ? <Caption>{error}</Caption> : null}
       renderItem={({ item, index }) => (
         <JobCard
@@ -179,7 +185,12 @@ export function Jobs() {
           mark={markForSide(item.right, remotes, providers)}
         />
       )}
-    />
+      />
+      {/* The add button floats over the list instead of standing at the top of
+          it. jdp: "die button auftraege und speicher hinzufuegen soll ein
+          schwebender button rechts unten sein." */}
+      <Fab label={t("edit.add")} labelKey="edit.add" onPress={() => nav.navigate("JobEdit", {})} />
+    </Floating>
   );
 }
 
@@ -315,7 +326,9 @@ const styles = StyleSheet.create({
   // taking whatever is left.
   cardMark: { width: 26, alignItems: "center" },
   menuSlot: { marginStart: "auto" },
-  list: { padding: space.lg, gap: space.md },
+  // The extra room at the end is for the floating button, which would
+  // otherwise cover the last card - the one somebody scrolled to reach.
+  list: { padding: space.lg, gap: space.md, paddingBottom: FAB_ROOM },
   head: {
     flexDirection: "row",
     alignItems: "center",

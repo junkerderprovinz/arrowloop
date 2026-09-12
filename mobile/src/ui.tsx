@@ -690,18 +690,99 @@ export function Empty({ title, detail }: { title: string; detail?: string }) {
   );
 }
 
-/** A page that scrolls, with the house padding. */
-export function Page({ children }: { children: ReactNode }) {
+/**
+ * A page that scrolls, with the house padding.
+ *
+ * `fab` adds room at the bottom for a floating button. Without it the button
+ * covers the last row, which is the row somebody scrolled down to reach.
+ */
+export function Page({ children, fab }: { children: ReactNode; fab?: boolean }) {
   const { p } = useTheme();
   return (
     <ScrollView
       style={{ backgroundColor: p.background }}
-      contentContainerStyle={styles.page}
+      contentContainerStyle={[styles.page, fab ? styles.fabRoom : null]}
       keyboardShouldPersistTaps="handled"
     >
       {children}
     </ScrollView>
   );
+}
+
+/** How much a floating button takes from the bottom of a page. */
+export const FAB_ROOM = TOUCH + space.sm + space.lg * 2;
+
+/**
+ * The floating button, bottom right, and the wrapper that gives it a page.
+ *
+ * jdp: "die button auftraege und speicher hinzufuegen soll ein schwebender
+ * button rechts unten sein."
+ *
+ * Both list pages carried their add button as a full-width bar at the TOP,
+ * which spends the first screenful of a phone on the act somebody performs
+ * least. Bottom right is where the thumb already rests, and it is the one
+ * position that does not move as the list grows.
+ *
+ * IT ANSWERS THE LABEL ENGINE, like every other control in this product: a
+ * circle with the mark alone, a pill with the word alone, or a pill with both.
+ * The bottom bar was corrected for exactly this once already - a control that
+ * opts out of the setting is the one that looks bolted on.
+ */
+export function Fab({
+  label,
+  labelKey,
+  onPress,
+}: {
+  label: string;
+  /** The translation key behind `label`, which is what picks the glyph. */
+  labelKey?: string;
+  onPress: () => void;
+}) {
+  const { p, radius, labels, accent } = useTheme();
+  const ink = contrastOn(accent);
+  const name = labelKey ? glyphNameForKey(labelKey) : undefined;
+  const glyph = name ? <Glyph name={name} color={ink} size={22} /> : null;
+  const showWord = labels === "text" || labels === "textGlyph" || !glyph;
+  const showGlyph = Boolean(glyph) && labels !== "text";
+
+  return (
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      android_ripple={{ color: p.hover, borderless: false }}
+      style={[
+        styles.fab,
+        {
+          backgroundColor: accent,
+          // A circle when it holds a mark alone, a pill the moment it holds a
+          // word. `radius.pill` gives both, because a pill radius on a square
+          // IS a circle.
+          borderRadius: radius.pill,
+          paddingHorizontal: showWord ? space.lg : 0,
+          width: showWord ? undefined : TOUCH + space.sm,
+        },
+      ]}
+    >
+      {showGlyph ? glyph : null}
+      {showWord ? (
+        <Text numberOfLines={1} style={[styles.fabText, { color: ink }]}>
+          {label}
+        </Text>
+      ) : null}
+    </Pressable>
+  );
+}
+
+/**
+ * A page with something floating over it.
+ *
+ * The list fills it and the button sits on top, which is the only way to put
+ * anything over a FlatList: a sibling inside a `flex: 1` parent, not a child of
+ * the list, or it would scroll away with the rows.
+ */
+export function Floating({ children }: { children: ReactNode }) {
+  return <View style={styles.screen}>{children}</View>;
 }
 
 const styles = StyleSheet.create({
@@ -767,6 +848,24 @@ const styles = StyleSheet.create({
   // ONE height and ONE gap for every labelled button. The gap matters: a row
   // with none sets the glyph against the first letter and the two read as one
   // smudge.
+  // Bottom right, over whatever the page is. The bottom bar reserves its own
+  // height from the screen above, so `space.lg` here is clear of it.
+  fab: {
+    position: "absolute",
+    right: space.lg,
+    bottom: space.lg,
+    minHeight: TOUCH + space.sm,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: space.sm,
+    // It floats, so it needs the one shadow in the app that says "above the
+    // page" rather than "a surface on it".
+    elevation: 6,
+  },
+  fabText: { fontSize: text.body, fontWeight: "600" },
+  fabRoom: { paddingBottom: TOUCH + space.sm + space.lg * 2 },
+
   button: {
     minHeight: TOUCH,
     flexDirection: "row",
