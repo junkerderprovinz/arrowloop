@@ -483,7 +483,11 @@ export function Settings() {
           overrides it: somebody who turned animations off system-wide did not
           mean "except in this one app", so the system's answer wins and this
           picker then only says what WOULD happen. See motion.ts. */}
-      <Section title={t("look.motion")} hue={4}>
+      {/* The one card on this page without an (i), which is exactly how it was
+          found - jdp: "der infotext für die bewegung fehlt." The sentence
+          already existed and only the container was showing it, so this is a
+          card joining the rule rather than a new sentence being written. */}
+      <Section title={t("look.motion")} hint={t("look.motionHint")} hue={4}>
         <Choice<MotionIntensity>
           value={look.motion}
           onChange={(motion) => {

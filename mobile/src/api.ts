@@ -361,13 +361,30 @@ export const api = {
    *  storage list is not here; that is `storage()`. */
   capabilities: () => call<{ version: string; window: boolean }>("/api/capabilities"),
 
-  /** What is inside a folder, for picking one without typing a path. */
-  browse: (path: string) =>
-    call<{ path: string; entries: { name: string; dir: boolean }[] }>(
-      `/api/browse?path=${encodeURIComponent(path)}`,
+  /**
+   * What folders are inside one folder, for picking without typing a path.
+   *
+   * NO PATH means the top: one root on a phone, one per drive on Windows. It
+   * was a required argument here and the engine has always treated it as
+   * optional, so the picker had no way to ask for the top at all.
+   *
+   * The shape was GUESSED and wrong - `{name, dir}` with no `parent`, while the
+   * engine answers `{path, parent, entries:[{name, path}]}` and lists only
+   * folders, so there was never a `dir` to read. Nothing had used it yet, which
+   * is the only reason it never showed; TypeScript believes every word of a
+   * declaration and cannot check it against a server.
+   */
+  browse: (path?: string) =>
+    call<{ path: string; parent: string; entries: { name: string; path: string }[] }>(
+      `/api/browse${path ? `?path=${encodeURIComponent(path)}` : ""}`,
     ),
-  makeDir: (path: string) =>
-    call<void>("/api/browse/mkdir", { method: "POST", body: JSON.stringify({ path }) }),
+  /** Makes ONE folder inside the folder the picker has open. The name is a
+   *  single segment and the engine refuses anything that looks like a path. */
+  makeDir: (parent: string, name: string) =>
+    call<{ path: string }>("/api/browse/mkdir", {
+      method: "POST",
+      body: JSON.stringify({ parent, name }),
+    }),
 };
 
 /**

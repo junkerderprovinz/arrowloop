@@ -293,6 +293,7 @@ export const en = {
   'edit.nameHint': 'How this job is named in the list, the log and the notifications.',
   'edit.sideHint':
     'A folder, a configured target as name:path, or a drive registered on the Targets tab.',
+  'edit.sides': 'The two sides',
   'edit.stateHint':
     'Where this job remembers what the two sides last agreed on. One file per job, and losing it is not destructive but it is disruptive.',
   'edit.scheduleHint': 'When the job runs on its own. A job with no schedule still runs when you press the button.',
@@ -317,8 +318,7 @@ export const en = {
   'targets.storageEmpty': 'No storage targets yet. Add one to reach an S3 bucket, an SSH host or a Windows share.',
   'targets.addStorage': 'Add storage',
   'targets.remoteName': 'Name',
-  'targets.remoteNameHint':
-    'A name you pick for this connection, so you can choose it later in a job. No spaces and no colons: the colon is what separates the name from the folder.',
+  'targets.remoteNameHint': 'What this storage is called in a job\'s own list, so pick something you will recognise there. No spaces and no colons inside it: a job writes a folder as name:folder, and a colon in the name would split it in the wrong place.',
   'targets.check': 'Check',
   'targets.checking': 'Checking',
   'targets.checkOk': 'Reached it',
@@ -342,9 +342,9 @@ export const en = {
   'confirm.cancel': 'Cancel',
   'about.title': 'About ArrowLoop',
   'about.body':
-    'A one-knight crusade: free, open-source tools that did not exist in this shape. No accounts, no telemetry, and nothing readable ever leaves your own walls. Forged on evenings and weekends with a lot of heart, because waiting was not an option.',
+    'A one-knight crusade: free, good-looking open-source tools that did not exist in the shape I wanted. Built until nothing is missing. No accounts, no telemetry, no ads. No trial, no tier, no asterisk. Nothing readable ever leaves your own walls. Forged on evenings and weekends, with heart and stubbornness.',
   'about.coffee':
-    'ArrowLoop is free and stays free. A donation keeps the project alive and covers what it costs: the domain, the server, and the evenings that go into it.',
+    "If ArrowLoop is useful to you, a donation covers what it costs to keep the lights on: the domain, the server, and the evenings that go into it. It also makes this knight's heart beat a little faster. Three ways below, whichever suits you.",
   'about.coffeeButton': 'Buy me a coffee',
   'about.crypto': 'Crypto',
   'about.paypal': 'PayPal',
@@ -355,7 +355,7 @@ export const en = {
   'common.copy': 'Copy',
   'common.copied': 'Copied',
   'common.close': 'Close',
-  'about.report': 'Problems, wishes or suggestions? Open an issue on GitHub, or send an email.',
+  'about.report': "Problems, wishes or suggestions? You're welcome to open an issue on GitHub, or send an email.",
   'about.version': 'Version',
   'about.unreleased': '{version}, not a released build',
   'about.repo': 'GitHub',
@@ -403,7 +403,7 @@ export const en = {
   'look.palette': 'Colour palette',
   'look.paletteHint': 'Each colour can be changed. A click opens the picker on it.',
   'look.motion': 'Motion',
-  'look.motionHint': 'How much the interface moves. It never overrides what your system asks for, it only dials down from there.',
+  'look.motionHint': 'How much the interface moves when something arrives or changes. All three steps run the same animations - only the distance, the speed and the curve differ - and the system\'s own setting for less motion always wins.',
   'look.motionOff': 'Off',
   'look.motionSubtle': 'Gentle',
   'look.motionFull': 'Wild',
@@ -600,8 +600,8 @@ export const en = {
   'mode.moveHint': 'A file goes across and then leaves the source, which is how a phone sends the camera up and gets the space back. The original goes into the bin rather than being destroyed, and it only leaves once the copy has actually landed.',
   'mode.onlyOneWay': 'Only for a one-way job. Both of these decide which side is right, and a job that runs both ways has not said which that is.',
   'side.onDevice': 'On the device',
-  'defaults.follow': 'Use the default',
-  'defaults.followHint': 'Take this from the settings instead of deciding it here. Change it there once and every job that follows it changes with it.',
+  'defaults.follow': 'Use the global sync settings',
+  'defaults.followHint': 'On, this job takes everything from the global sync settings and changes along with them. Switch it off to give this one job its own answers - the options appear below, starting from whatever it is doing now.',
   'side.target': 'A target',
 } as const
 
@@ -884,6 +884,7 @@ export const de: Translations = {
   'edit.nameHint': 'Unter diesem Namen steht der Auftrag in der Liste, im Protokoll und in den Meldungen.',
   'edit.sideHint':
     'Ein Ordner, ein eingerichtetes Ziel als Name:Pfad, oder ein unter Ziele angemeldeter Datenträger.',
+  'edit.sides': 'Die beiden Seiten',
   'edit.stateHint':
     'Hier merkt sich der Auftrag, worauf sich beide Seiten zuletzt geeinigt haben. Eine Datei je Auftrag. Sie zu verlieren zerstört nichts, wirft den Auftrag aber zurück.',
   'edit.scheduleHint': 'Wann der Auftrag von selbst läuft. Ein Auftrag ohne Zeitplan läuft trotzdem, wenn du den Knopf drückst.',
@@ -909,8 +910,7 @@ export const de: Translations = {
     'Noch kein Speicherziel. Lege eines an, um einen S3-Eimer, einen SSH-Rechner oder eine Windows-Freigabe zu erreichen.',
   'targets.addStorage': 'Speicher anlegen',
   'targets.remoteName': 'Name',
-  'targets.remoteNameHint':
-    'Ein Name, den du dieser Verbindung gibst, um sie später in einem Auftrag auszuwählen. Keine Leerzeichen und keine Doppelpunkte: Der Doppelpunkt trennt den Namen vom Ordner.',
+  'targets.remoteNameHint': 'Wie dieser Speicher in der Auswahl eines Auftrags heißt - nimm also einen Namen, den du dort wiedererkennst. Keine Leerzeichen und keine Doppelpunkte darin: ein Auftrag schreibt einen Ordner als name:ordner, und ein Doppelpunkt im Namen würde an der falschen Stelle trennen.',
   'targets.check': 'Prüfen',
   'targets.checking': 'Prüft',
   'targets.checkOk': 'Erreicht',
@@ -934,9 +934,9 @@ export const de: Translations = {
   'confirm.cancel': 'Abbrechen',
   'about.title': 'Über ArrowLoop',
   'about.body':
-    'Ein einzelner Ritter, ein Feldzug: freie, quelloffene Werkzeuge, die es so nicht gab. Keine Konten, keine Telemetrie, und nichts Lesbares verlässt deine eigenen Mauern. An Abenden und Wochenenden mit viel Herzblut geschmiedet, weil Warten keine Option war.',
+    'Ein einzelner Ritter, ein Feldzug: freie, ansehnliche quelloffene Werkzeuge, die es in der Form, die ich wollte, nicht gab. Gebaut, bis nichts mehr fehlt. Keine Konten, keine Telemetrie, keine Werbung. Keine Testphase, keine Bezahlstufen, kein Sternchen. Nichts Lesbares verlässt je deine eigenen Mauern. An Abenden und Wochenenden geschmiedet, mit Herz und Dickkopf.',
   'about.coffee':
-    'ArrowLoop ist kostenlos und bleibt es. Eine Spende hält das Projekt am Leben und deckt, was es kostet: Domain, Server und die Abende, an denen weitergebaut wird.',
+    'Wenn dir ArrowLoop nützt, deckt eine Spende, was der Betrieb kostet: Domain, Server und die Abende, an denen weitergebaut wird. Und sie lässt das Herz dieses Ritters etwas höher schlagen. Drei Wege stehen unten, nimm den, der dir passt.',
   'about.coffeeButton': 'Kaffee spendieren',
   'about.crypto': 'Krypto',
   'about.paypal': 'PayPal',
@@ -947,7 +947,7 @@ export const de: Translations = {
   'common.copy': 'Kopieren',
   'common.copied': 'Kopiert',
   'common.close': 'Schließen',
-  'about.report': 'Probleme, Wünsche oder Verbesserungsvorschläge? Schreib es auf GitHub als Issue, oder schick eine E-Mail.',
+  'about.report': 'Probleme, Wünsche oder Verbesserungsvorschläge? Mach gern ein Issue auf GitHub auf, oder schick eine E-Mail.',
   'about.version': 'Version',
   'about.unreleased': '{version}, kein veröffentlichter Stand',
   'about.repo': 'GitHub',
@@ -995,7 +995,7 @@ export const de: Translations = {
   'look.palette': 'Farbpalette',
   'look.paletteHint': 'Jede Farbe lässt sich ändern. Ein Klick öffnet den Wähler darauf.',
   'look.motion': 'Bewegung',
-  'look.motionHint': 'Wie stark sich die Oberfläche bewegt. Was dein System verlangt, wird nie überschrieben, sondern nur von dort nach unten geregelt.',
+  'look.motionHint': 'Wie stark sich die Oberfläche bewegt, wenn etwas erscheint oder sich ändert. Alle drei Stufen zeigen dieselben Animationen, nur Weg, Tempo und Kurve unterscheiden sich - und die Systemeinstellung für weniger Bewegung hat immer Vorrang.',
   'look.motionOff': 'Aus',
   'look.motionSubtle': 'Sanft',
   'look.motionFull': 'Wild',
@@ -1187,8 +1187,8 @@ export const de: Translations = {
   'mode.moveHint': 'Eine Datei geht hinüber und verlässt danach die Quelle, so schickt ein Telefon die Kamera hoch und bekommt den Platz zurück. Das Original wandert in den Papierkorb statt vernichtet zu werden, und es geht erst, wenn die Kopie wirklich angekommen ist.',
   'mode.onlyOneWay': 'Nur für einen einseitigen Auftrag. Beide entscheiden, welche Seite recht hat, und ein Auftrag in beide Richtungen hat das nicht gesagt.',
   'side.onDevice': 'Auf dem Gerät',
-  'defaults.follow': 'Vorgabe übernehmen',
-  'defaults.followHint': 'Das hier aus den Einstellungen holen, statt es an dieser Stelle zu entscheiden. Dort einmal geändert, ändert es sich in jedem Auftrag mit, der die Vorgabe übernimmt.',
+  'defaults.follow': 'Globale Synceinstellungen übernehmen',
+  'defaults.followHint': 'Ist das an, nimmt dieser Auftrag alles aus den globalen Synceinstellungen und ändert sich mit ihnen. Schalte es aus, um diesem einen Auftrag eigene Antworten zu geben - die Optionen erscheinen darunter, beginnend mit dem, was er gerade tut.',
   'side.target': 'Ein Ziel',
 }
 

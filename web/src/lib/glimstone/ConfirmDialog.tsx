@@ -1,4 +1,4 @@
-// Copied verbatim from GlimStone 1.10.0, reference/react/ConfirmDialog.tsx.
+// Copied verbatim from GlimStone 1.11.0, reference/react/ConfirmDialog.tsx.
 // Do not edit here: change it in the design language repo and copy again.
 // https://github.com/junkerderprovinz/glimstone
 // ---------------------------------------------------------------------------
@@ -112,7 +112,7 @@ export function ConfirmDialog({
 }: ConfirmDialogProps) {
   return (
     <div
-      className="glim-modal-backdrop fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+      className="glim-modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
       onClick={(e) => {
         if (e.target === e.currentTarget) onCancel();
       }}

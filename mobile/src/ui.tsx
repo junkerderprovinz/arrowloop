@@ -25,6 +25,7 @@ import {
   TOUCH,
   type Palette,
   type Radii,
+  SCRIM,
 } from "./theme";
 import { useAppearance, type LabelMode } from "./settings";
 import { useMotion } from "./motion";
@@ -758,7 +759,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: space.lg,
-    backgroundColor: "rgba(0,0,0,0.5)",
+    backgroundColor: SCRIM,
   },
   tipCard: { maxWidth: 320, padding: space.lg },
   tipText: { fontSize: text.body, lineHeight: text.body + 6 },

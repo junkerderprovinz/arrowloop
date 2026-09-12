@@ -8,7 +8,7 @@ import { CoinMark } from "./glyphs";
 import { useT } from "./i18n";
 import { engine } from "./engine";
 import { animateNext, useMotion } from "./motion";
-import { contrastOn, space, text, TOUCH } from "./theme";
+import { contrastOn, SCRIM, space, text, TOUCH } from "./theme";
 import { Button, useTheme } from "./ui";
 
 /**
@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: space.lg,
-    backgroundColor: "rgba(0,0,0,0.6)",
+    backgroundColor: SCRIM,
   },
   // A cap rather than a height: the window is as tall as it needs to be, and
   // only starts scrolling on a handset that cannot hold it.

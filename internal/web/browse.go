@@ -111,9 +111,36 @@ func parentOf(at string) string {
 // question this answers is not "which drives exist" but "which can be opened",
 // and a mapped network drive whose server is asleep answers the first yes and
 // the second no.
+// androidRoots are the folders a phone's picker should open ON, in the order
+// somebody would look for them.
+//
+// The bare "/" is where this used to start, and on a phone it is a correct
+// answer that helps nobody: it is ten taps from a job's actual folder, through
+// directories nothing in userspace may even read. Android's own pickers open on
+// internal storage for exactly this reason.
+//
+// Offered only when they EXIST, so a container that happens to have a /sdcard
+// symlink does not grow a phantom entry and a phone with no SD card does not
+// offer one. The root stays, last, because a job's side can legitimately be
+// anywhere and a picker that cannot leave one folder is a picker that has to be
+// abandoned for the field beside it.
+var androidRoots = []struct{ name, path string }{
+	{"Internal storage", "/storage/emulated/0"},
+	{"Download", "/storage/emulated/0/Download"},
+	{"DCIM", "/storage/emulated/0/DCIM"},
+	{"Pictures", "/storage/emulated/0/Pictures"},
+	{"Documents", "/storage/emulated/0/Documents"},
+}
+
 func browseRoots() ([]browseEntry, error) {
 	if runtime.GOOS != "windows" {
-		return []browseEntry{{Name: "/", Path: "/"}}, nil
+		out := []browseEntry{}
+		for _, root := range androidRoots {
+			if info, err := os.Stat(root.path); err == nil && info.IsDir() {
+				out = append(out, browseEntry{Name: root.name, Path: root.path})
+			}
+		}
+		return append(out, browseEntry{Name: "/", Path: "/"}), nil
 	}
 	// Empty rather than nil, so a machine that somehow opens no drive answers
 	// with an empty list rather than with null.

@@ -3,7 +3,7 @@ import { Modal, PanResponder, Pressable, StyleSheet, TextInput, View } from "rea
 
 import { hexToHsv, hsvToHex, normalizeHex } from "../../web/src/lib/colorMath";
 import { useT } from "./i18n";
-import { space, text } from "./theme";
+import { SCRIM, space, text } from "./theme";
 import { Glyph } from "./glyphs";
 import { Button, useTheme } from "./ui";
 
@@ -370,7 +370,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: space.xl,
-    backgroundColor: "rgba(0,0,0,0.6)",
+    backgroundColor: SCRIM,
   },
   panel: { width: "100%", maxWidth: 340, padding: space.lg, gap: space.md },
   pad: { width: "100%", aspectRatio: 1, overflow: "hidden" },

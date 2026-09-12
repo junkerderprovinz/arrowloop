@@ -222,3 +222,22 @@ export function radiusFor(shape: string): Radii {
  * comfortable with a mouse is a coin toss with a thumb.
  */
 export const TOUCH = 48;
+
+/**
+ * The ground behind a floating window.
+ *
+ * ONE value, because it was four: three modals at 0.6 and one at 0.5, each
+ * typed where it was needed, so the one at 0.5 had been quietly different for
+ * as long as it existed and nothing could notice. That is the same shape the
+ * brand colours were in before GlimStone grew tokens for those - a value the
+ * rule describes and nothing holds.
+ *
+ * 0.65 rather than 0.6 (jdp, 12.09.2026: "ich würde die abdunkelung hinter
+ * einem schwebefenster nochmal 5 Prozent dunkler machen"). At 0.6 the card in
+ * front and the page behind sit close enough in value that the eye keeps
+ * reading the page, which is the one thing a scrim exists to stop.
+ *
+ * It matches GlimStone's `--glim-scrim`, so the two surfaces dim by the same
+ * amount rather than by two numbers that happen to look similar.
+ */
+export const SCRIM = "rgba(0, 0, 0, 0.65)";

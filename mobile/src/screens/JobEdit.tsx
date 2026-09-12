@@ -3,6 +3,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 import { api, type Config, type JobConfig } from "../api";
 import { Field, TimeField } from "../fields";
+import { FolderPicker } from "../FolderPicker";
+import { Glyph } from "../glyphs";
 import { useT } from "../i18n";
 import type { JobsStack, Nav } from "../nav";
 import { contrastOn, space, text } from "../theme";
@@ -81,10 +83,59 @@ export function JobEdit() {
     );
   }, [editing, t]);
 
-  // A job follows the defaults for as long as it says nothing itself. That is
-  // the engine's own rule rather than a second one here: applyTo fills in only
-  // what a job left unset.
-  const follows = job?.direction === undefined && job?.mode === undefined;
+  /**
+   * A job follows the global sync settings for as long as it says nothing
+   * itself. That is the engine's own rule rather than a second one here:
+   * `applyTo` fills in only what a job left unset.
+   *
+   * EVERY field the settings cover, not just the first two. It used to read
+   * direction and mode alone, which made a switch labelled "use the defaults"
+   * that was true while the job carried its own schedule. The engine's Defaults
+   * fills in direction, mode, schedule, empty folders and metadata, so those
+   * five are what the switch is about.
+   */
+  const OWNED = ["direction", "mode", "schedule", "emptyDirs", "metadata"] as const;
+  const follows = OWNED.every((key) => job?.[key] === undefined);
+
+  /**
+   * Turning it off writes down what the job is doing RIGHT NOW.
+   *
+   * Not the engine's defaults and not a blank: whatever is on screen is what
+   * somebody just looked at, so nothing visibly jumps at the moment the
+   * options appear. Turning it back on clears all five, which is the only way
+   * to say "no opinion" in a file where absent is the opinion.
+   */
+  const setFollows = (on: boolean) => {
+    if (on) {
+      set({
+        direction: undefined,
+        mode: undefined,
+        schedule: undefined,
+        emptyDirs: undefined,
+        metadata: undefined,
+      });
+      return;
+    }
+    set({
+      direction: job?.direction ?? "both",
+      mode: job?.mode ?? "sync",
+      schedule: job?.schedule ?? "",
+      emptyDirs: job?.emptyDirs ?? false,
+      metadata: job?.metadata ?? false,
+    });
+  };
+
+  /** Which field the folder picker is open on, or nothing. */
+  const [picking, setPicking] = useState<"left" | "right" | null>(null);
+  const [targets, setTargets] = useState<string[]>([]);
+  useEffect(() => {
+    api.storage().then(
+      (list) => setTargets(list.remotes.map((r) => r.name)),
+      // A picker with no targets in it is still a picker for the phone's own
+      // folders, so an unreachable list is a shorter list rather than an error.
+      () => setTargets([]),
+    );
+  }, []);
 
   const set = useCallback((patch: Partial<JobConfig>) => {
     setJob((old) => (old ? { ...old, ...patch } : old));
@@ -146,65 +197,83 @@ export function JobEdit() {
         <Field label={t("edit.name")} value={job.name} onChange={(name) => set({ name })} />
       </Section>
 
-      {/* Two explanations, one bubble. The sides' own sentence used to sit
-          under the fields as a caption; the card already had a bubble, so the
-          second sentence joins it rather than starting a second convention. */}
-      <Section
-        title={t("direction.label")}
-        hint={`${t("edit.sideHint")} ${t("direction.hint")}`}
-        hue={1}
-      >
-        {/* Following the default is a STATE, not a link that appears once
-            something has been overridden, so it gets the control every state in
-            this house gets. On, the job says nothing about either setting and
-            the engine fills both in from the settings; off, the job's own
-            answers are written down, starting from whatever it is doing now so
-            nothing visibly jumps. */}
+      {/* THE TWO SIDES, always, because they are what makes this job this job
+          and no setting anywhere can fill them in.
+
+          Each side is named after what it IS, not after which column it would
+          sit in on a desk. "Left" and "right" mean nothing on a phone, where
+          there are no two columns - and naming them "local" and "cloud" the
+          way a phone-only tool does would be a lie the first time somebody
+          points both sides at the same machine. */}
+      <Section title={t("edit.sides")} hint={t("edit.sideHint")} hue={1}>
+        <View style={styles.pickRow}>
+          <View style={styles.pickField}>
+            <Field
+              label={sideName(job.left, t)}
+              value={job.left}
+              onChange={(left) => set({ left })}
+              placeholder="/storage/emulated/0/DCIM"
+            />
+          </View>
+          <Button
+            label={t("pick.title")}
+            labelKey="pick.title"
+            mark={(ink) => <Glyph name="IconFolder" color={ink} />}
+            onPress={() => setPicking("left")}
+          />
+        </View>
+        <View style={styles.pickRow}>
+          <View style={styles.pickField}>
+            <Field
+              label={sideName(job.right, t, "target")}
+              value={job.right}
+              onChange={(right) => set({ right })}
+              placeholder="nextcloud:Photos"
+            />
+          </View>
+          <Button
+            label={t("pick.title")}
+            labelKey="pick.title"
+            mark={(ink) => <Glyph name="IconFolder" color={ink} />}
+            onPress={() => setPicking("right")}
+          />
+        </View>
+      </Section>
+
+      {/* THE SWITCH, on its own card and above everything it governs.
+          Default ON, and while it is on the options are ABSENT rather than
+          greyed: a form that follows the settings used to look exactly as long
+          as one that does not, with nine dead controls in it. Switching it off
+          is what makes them appear. */}
+      <Section title={t("engine.defaults")} hint={t("defaults.followHint")} hue={0}>
         <Toggle
           label={t("defaults.follow")}
-          hint={t("defaults.followHint")}
           value={follows}
           hue={0}
-          onChange={(on) =>
-            on
-              ? set({ direction: undefined, mode: undefined })
-              : set({ direction: job.direction ?? "both", mode: job.mode ?? "sync" })
-          }
-        />
-        {/* Each side is named after what it IS, not after which column it
-            would sit in on a desk. "Left" and "right" mean nothing on a phone,
-            where there are no two columns - and naming them "local" and
-            "cloud" the way a phone-only tool does would be a lie the first
-            time somebody points both sides at the same machine. A path on the
-            handset says so; a target says its own name. */}
-        <Field
-          label={sideName(job.left, t)}
-          value={job.left}
-          onChange={(left) => set({ left })}
-          placeholder="/storage/emulated/0/DCIM"
-        />
-        <Choice
-          value={job.direction ?? "both"}
-          disabled={follows}
-          onChange={(direction) => set({ direction, mode: direction === "both" ? "sync" : job.mode })}
-          options={[
-            // The engine's own spellings. They used to be "toRight" and
-            // "toLeft" here, which ParseDirection does not recognise at all -
-            // so it fell through to its safe default and every one-way job on
-            // this app quietly ran both ways.
-            { value: "both", label: t("direction.both") },
-            { value: "leftToRight", label: t("direction.toRight") },
-            { value: "rightToLeft", label: t("direction.toLeft") },
-          ]}
-        />
-        <Field
-          label={sideName(job.right, t, "target")}
-          value={job.right}
-          onChange={(right) => set({ right })}
-          placeholder="nextcloud:Photos"
+          onChange={setFollows}
         />
       </Section>
 
+      {!follows ? (
+        <Section title={t("direction.label")} hint={t("direction.hint")} hue={2}>
+          <Choice
+            value={job.direction ?? "both"}
+            onChange={(direction) => set({ direction, mode: direction === "both" ? "sync" : job.mode })}
+            options={[
+              // The engine's own spellings. They used to be "toRight" and
+              // "toLeft" here, which ParseDirection does not recognise at all -
+              // so it fell through to its safe default and every one-way job on
+              // this app quietly ran both ways.
+              { value: "both", label: t("direction.both") },
+              { value: "leftToRight", label: t("direction.toRight") },
+              { value: "rightToLeft", label: t("direction.toLeft") },
+            ]}
+          />
+        </Section>
+      ) : null}
+
+      {!follows ? (
+      <>
       {/* The second axis, and it only exists once a side has been named the
           source. Two of the three modes DELETE, so each carries a sentence
           saying what it removes and what it leaves: a picker of three words
@@ -232,7 +301,7 @@ export function JobEdit() {
             is two cards somebody has to recognise as one. */}
         <Choice
           value={(job.direction ?? "both") === "both" ? "sync" : (job.mode ?? "sync")}
-          disabled={follows || (job.direction ?? "both") === "both"}
+          disabled={(job.direction ?? "both") === "both"}
           onChange={(mode) => set({ mode })}
           options={[
             { value: "sync", label: t("mode.sync") },
@@ -257,6 +326,8 @@ export function JobEdit() {
           onChange={(runAtStart) => set({ runAtStart })}
         />
       </Section>
+      </>
+      ) : null}
 
       <Section title={t("edit.exclude")} hint={t("edit.excludeHint")}>
         <Field
@@ -277,18 +348,22 @@ export function JobEdit() {
           value={!job.noTrash}
           onChange={(on) => set({ noTrash: !on })}
         />
-        <Toggle
-          label={t("edit.emptyDirs")}
-          hint={t("edit.emptyDirsHint")}
-          value={Boolean(job.emptyDirs)}
-          onChange={(emptyDirs) => set({ emptyDirs })}
-        />
-        <Toggle
-          label={t("edit.metadata")}
-          hint={t("edit.metadataHint")}
-          value={Boolean(job.metadata)}
-          onChange={(metadata) => set({ metadata })}
-        />
+        {!follows ? (
+          <>
+            <Toggle
+              label={t("edit.emptyDirs")}
+              hint={t("edit.emptyDirsHint")}
+              value={Boolean(job.emptyDirs)}
+              onChange={(emptyDirs) => set({ emptyDirs })}
+            />
+            <Toggle
+              label={t("edit.metadata")}
+              hint={t("edit.metadataHint")}
+              value={Boolean(job.metadata)}
+              onChange={(metadata) => set({ metadata })}
+            />
+          </>
+        ) : null}
         {/* The "switched off" toggle used to sit here, and it is gone. jdp:
             "dieser abgeschaltet toggle soll weg, das hab ich schon oft
             angesprochen." Holding a job is not a property of how it is
@@ -307,6 +382,18 @@ export function JobEdit() {
           <Button label={t("edit.remove")} labelKey="edit.remove" tone="danger" onPress={remove} wide={false} />
         ) : null}
       </View>
+      <FolderPicker
+        visible={picking !== null}
+        start={picking === "left" ? job.left : job.right}
+        // Targets only for the side that can be one. Offering them on the
+        // handset's own side would be offering a path it cannot reach.
+        targets={picking === "right" ? targets : []}
+        onPick={(path) => {
+          if (picking) set({ [picking]: path } as Partial<JobConfig>);
+          setPicking(null);
+        }}
+        onClose={() => setPicking(null)}
+      />
     </Page>
   );
 }
@@ -514,6 +601,10 @@ function DayChip({ label, on, onPress }: { label: string; on: boolean; onPress: 
 
 const styles = StyleSheet.create({
   actions: { flexDirection: "row", gap: space.sm },
+  // The field takes the room and the button takes what it needs, so a long
+  // path does not squeeze the way out of the form.
+  pickRow: { flexDirection: "row", gap: space.sm, alignItems: "flex-end" },
+  pickField: { flex: 1 },
   stack: { gap: space.sm },
   days: { flexDirection: "row", flexWrap: "wrap", gap: space.xs },
   day: { flexGrow: 1, minWidth: 40, paddingVertical: 7, paddingHorizontal: space.sm, alignItems: "center" },

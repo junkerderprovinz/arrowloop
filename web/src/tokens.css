@@ -190,6 +190,9 @@
   /* One elevation, one hairline. Neutral black, not a warm one: a brown
      shadow under a grey card is visible and reads as a colour cast. */
   --elevation: 0 1px 2px rgba(0, 0, 0, .40), 0 18px 40px -24px rgba(0, 0, 0, .85);
+  /* The ground behind a floating window. ONE value, so making it darker is
+     one edit rather than a hunt through every component that floats one. */
+  --glim-scrim: rgba(0, 0, 0, .65);
   --hairline: inset 0 1px 0 rgba(255, 255, 255, .045);
   --focus-ring: rgba(252, 196, 25, .55);
 }
@@ -253,6 +256,7 @@
     --status-neutral-solid: #8d8d8d;
 
     --elevation: 0 1px 2px rgba(0, 0, 0, .06), 0 16px 36px -26px rgba(0, 0, 0, .35);
+    --glim-scrim: rgba(0, 0, 0, .55);
     --hairline: inset 0 0 0 1px rgba(0, 0, 0, .05);
     --focus-ring: rgba(142, 106, 0, .5);
   }
@@ -331,6 +335,7 @@
   --status-neutral-solid: #8d8d8d;
 
   --elevation: 0 1px 2px rgba(0, 0, 0, .06), 0 16px 36px -26px rgba(0, 0, 0, .35);
+  --glim-scrim: rgba(0, 0, 0, .55);
   --hairline: inset 0 0 0 1px rgba(0, 0, 0, .05);
   --focus-ring: rgba(142, 106, 0, .5);
 }
@@ -1406,6 +1411,8 @@ body {
   from { opacity: 0; transform: translateY(10px) scale(.98); }
   to   { opacity: 1; transform: translateY(0) scale(1); }
 }
+
+.glim-modal-backdrop { background: var(--glim-scrim); }
 
 @media (prefers-reduced-motion: no-preference) {
   :root[data-motion="full"] .glim-modal-backdrop { animation: glim-fade-in 200ms ease both; }
