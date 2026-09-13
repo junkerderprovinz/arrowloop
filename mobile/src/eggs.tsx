@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { Animated, Easing, Pressable, StyleSheet, View } from "react-native";
+import { Animated, Easing } from "react-native";
 
 import { Glyph } from "./glyphs";
 import { setAppearance, useAppearance } from "./settings";
@@ -30,7 +30,7 @@ import { RAINBOW } from "./theme";
  *    figure somebody needs.
  */
 
-/** How many taps on the version line open the loop. */
+/** How many taps on the About card's own name open the loop. */
 const TAPS = 7;
 
 /** How long the loop takes to come round, in milliseconds. */
@@ -39,76 +39,88 @@ const LOOP_MS = 1800;
 /**
  * The arrow closes the loop.
  *
- * Tap the version line seven times and the app's own mark turns once, all the
- * way round, while the line travels through the whole accent wheel and comes
- * back to the colour it started in. The app is called ArrowLoop and has never
- * once drawn a loop; this is the name taken literally for two seconds.
+ * Tap the card's own name seven times and the app's mark turns once, all the
+ * way round, travelling through the whole accent wheel and landing back where
+ * it started. The app is called ArrowLoop and has never once drawn a loop; this
+ * is the name taken literally for two seconds.
  *
- * PURELY LOCAL. The colour is interpolated in this component and nothing is
- * written to the stored appearance, so the accent somebody chose is exactly the
- * accent they still have when it stops. An egg that left the app a different
- * colour would be a bug people report rather than a secret they enjoy.
+ * THE TITLE AND NOT THE VERSION LINE, and that was found on the device rather
+ * than reasoned out. The version line is two LINKS, and in React Native an
+ * inner `Text` with its own `onPress` takes the tap before any wrapper sees it
+ * - so the gesture worked only in the empty space beside the words, and
+ * following the instructions as written opened a browser seven times. A card's
+ * name is the one part of a card that carries no other action.
+ *
+ * PURELY LOCAL. Nothing is written to the stored appearance, so the accent
+ * somebody chose is exactly the accent they still have when it stops.
+ *
+ * THE COLOUR IS STATE AND THE TURN IS ANIMATED, which is not a style choice.
+ * An `Animated` colour reaches a `View` fine and does NOT reach an SVG: the
+ * first build handed an interpolation to the glyph's `color`, and on the device
+ * the mark took up its space and drew nothing at all. Twelve state changes over
+ * two seconds cost nothing and are a colour every renderer understands.
  *
  * It ignores the motion setting deliberately, and it is the only thing here
- * that does: this is not an interface animation that somebody might want out of
- * the way, it is the whole content of the gesture. Somebody who taps seven
- * times has asked for it.
+ * that does: this is not an interface animation somebody might want out of the
+ * way, it is the whole content of the gesture. Seven taps is asking for it.
  */
-export function ClosingLoop({ children }: { children: ReactNode }) {
-  const [taps, setTaps] = useState(0);
+export function useClosingLoop(): { tap: () => void; mark: ReactNode } {
   const [running, setRunning] = useState(false);
+  const [step, setStep] = useState(0);
+  const taps = useRef(0);
   const turn = useRef(new Animated.Value(0)).current;
+
+  // Round the whole wheel and back to the start, so the mark ends on the colour
+  // it began on. The fallback is the house yellow and exists only so an empty
+  // palette cannot end a gesture in a crash.
+  const wheel: string[] = [...RAINBOW, RAINBOW[0] ?? "#FCC419"];
 
   useEffect(() => {
     if (!running) return;
     turn.setValue(0);
-    const run = Animated.timing(turn, {
+    const spin = Animated.timing(turn, {
       toValue: 1,
       duration: LOOP_MS,
       easing: Easing.inOut(Easing.cubic),
-      // The rotation could run on the native side; the colour cannot, and one
-      // driver for both keeps the two halves of one gesture in step.
-      useNativeDriver: false,
+      // The rotation is a transform, so this one CAN go to the native side.
+      useNativeDriver: true,
     });
-    run.start(({ finished }) => {
-      if (finished) setRunning(false);
-    });
-    return () => run.stop();
+    spin.start();
+    const every = Math.max(1, Math.round(LOOP_MS / wheel.length));
+    let at = 0;
+    const tick = setInterval(() => {
+      at += 1;
+      setStep(at);
+      if (at >= wheel.length - 1) {
+        clearInterval(tick);
+        setRunning(false);
+      }
+    }, every);
+    return () => {
+      spin.stop();
+      clearInterval(tick);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [running, turn]);
 
-  // Round the whole wheel and back to the start, so the line ends on the colour
-  // it began on whatever the accent happens to be. The fallback is the house
-  // yellow, and it exists only so that an empty palette cannot end a gesture in
-  // a crash - a wheel of one colour is a dull secret, not a broken app.
-  const wheel: string[] = [...RAINBOW, RAINBOW[0] ?? "#FCC419"];
-  const colour = turn.interpolate({
-    inputRange: wheel.map((_, i) => i / (wheel.length - 1)),
-    outputRange: wheel,
-  });
   const spin = turn.interpolate({ inputRange: [0, 1], outputRange: ["0deg", "360deg"] });
 
-  return (
-    <Pressable
-      onPress={() => {
-        const next = taps + 1;
-        if (next >= TAPS) {
-          setTaps(0);
-          setRunning(true);
-          return;
-        }
-        setTaps(next);
-      }}
-      // The line underneath is a link to the release notes, and a tap has to
-      // keep doing that. Counting happens beside it rather than instead of it,
-      // so six taps leave no trace and the seventh adds something.
-      style={styles.row}
-    >
-      <Animated.View style={running ? { transform: [{ rotate: spin }] } : styles.hidden}>
-        <Glyph name="IconBothWays" color={colour as unknown as string} size={16} />
+  return {
+    tap: () => {
+      taps.current += 1;
+      if (taps.current < TAPS) return;
+      taps.current = 0;
+      setStep(0);
+      setRunning(true);
+    },
+    // Out of the layout entirely until it turns, so nothing on the card moves
+    // until the secret is found.
+    mark: running ? (
+      <Animated.View style={{ transform: [{ rotate: spin }] }}>
+        <Glyph name="IconBothWays" color={wheel[step] ?? wheel[0] ?? "#FCC419"} size={18} />
       </Animated.View>
-      <View style={styles.line}>{children}</View>
-    </Pressable>
-  );
+    ) : null,
+  };
 }
 
 /** How many taps on the chosen level open the one below the floor. */
@@ -164,11 +176,3 @@ export function useStormUnlock(): (level: string) => void {
 export function isPerfectlyIdle(runId: number, unchanged: number): boolean {
   return unchanged > 0 && runId > 0 && runId % 50 === 0;
 }
-
-const styles = StyleSheet.create({
-  row: { flexDirection: "row", alignItems: "center", gap: 6 },
-  // Out of the layout entirely until it turns, so the version line sits where
-  // it always sat and nothing shifts when the secret is found.
-  hidden: { width: 0, height: 0, opacity: 0 },
-  line: { flexShrink: 1 },
-});

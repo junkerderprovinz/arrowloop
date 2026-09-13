@@ -192,12 +192,22 @@ export function Section({
   title,
   hint,
   hue,
+  onTitlePress,
   children,
 }: {
   title: string;
   hint?: string;
   /** This card's position among the page's cards, 0-based. */
   hue?: number;
+  /**
+   * A tap on the notch itself, for the rare card whose NAME is a control.
+   *
+   * The notch is a label and stays one: nothing about it changes when this is
+   * given, and a card without it is not pressable at all. It exists because a
+   * title is the one part of a card that carries no other action, which makes
+   * it the only place a second meaning can be added without taking one away.
+   */
+  onTitlePress?: () => void;
   children: ReactNode;
 }) {
   const { p, radius, accent, accentContrast, hueAt } = useTheme();
@@ -220,7 +230,15 @@ export function Section({
           FOR. The badge is also where the eye already is when somebody is
           working out what a card does. */}
       <View style={[styles.notch, { backgroundColor: fill, borderRadius: radius.pill }]}>
-        <Text style={[styles.notchText, { color: ink }]} numberOfLines={1}>
+        <Text
+          style={[styles.notchText, { color: ink }]}
+          numberOfLines={1}
+          onPress={onTitlePress}
+          // No `suppressHighlighting` fiddling and no pressed state: a card
+          // name must look exactly the same whether or not anything is
+          // listening, or the one card that listens announces itself.
+          disabled={!onTitlePress}
+        >
           {title}
         </Text>
         {hint ? <InfoBubble tip={hint} on={ink} /> : null}

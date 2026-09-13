@@ -29,7 +29,7 @@ import {
 } from "../../../web/src/lib/donate";
 import { nearestPreset } from "../../../web/src/lib/colorMath";
 import { flagEmoji } from "../../../web/src/lib/flagEmoji";
-import { ClosingLoop, useStormUnlock } from "../eggs";
+import { useClosingLoop, useStormUnlock } from "../eggs";
 import { animateNext, useMotion, type MotionIntensity } from "../motion";
 import { ColorPicker, EditableSwatch, ResetMark } from "../ColorPicker";
 import { CryptoDonate } from "../donate";
@@ -78,6 +78,8 @@ export function Settings() {
   // The intensity in force, for the handfuls of places that animate a change.
   const { intensity: motion } = useMotion();
   const storm = useStormUnlock();
+  // The mark and the counter for the loop egg; see src/eggs.tsx.
+  const loop = useClosingLoop();
 
   const [granted, setGranted] = useState<boolean | null>(null);
   const [possible, setPossible] = useState(true);
@@ -783,7 +785,13 @@ export function Settings() {
           no name at either end, and works in a country where the other two do
           not. The same three the container offers, from the same two constants
           in lib/donate.ts, so neither card can quietly point somewhere else. */}
-      <Section title={t("about.title")} hue={2}>
+      {/* The card's own NAME counts the taps. It is the one part of this card
+          that does nothing else: the version line below is two links, and an
+          inner Text with its own onPress takes the tap before any wrapper sees
+          it - found on the device, where following the gesture as written
+          opened a browser seven times over. See src/eggs.tsx. */}
+      <Section title={t("about.title")} hue={2} onTitlePress={loop.tap}>
+        {loop.mark}
         {/* BODY, not Caption. jdp: "der text in der über card ist zu klein" -
             and he is right about the cause rather than the symptom: these are
             three lines of prose, and they were set at the size this app uses
@@ -870,7 +878,6 @@ export function Settings() {
             the fallback for a build with no engine to ask - it was the primary
             once, and it sat at 0.1.0 while the engine beside it reported
             v0.7.0. */}
-        <ClosingLoop>
         <Caption>
           <Text onPress={() => Linking.openURL(releaseUrl(version))} style={styles.versionLink}>
             {`ArrowLoop ${version ?? Constants.expoConfig?.version ?? "?"}`}
@@ -887,7 +894,6 @@ export function Settings() {
             {`GlimStone ${GLIMSTONE_VERSION}`}
           </Text>
         </Caption>
-        </ClosingLoop>
       </Section>
 
       {crypto ? <CryptoDonate onClose={() => setCrypto(false)} /> : null}
