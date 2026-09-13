@@ -838,49 +838,128 @@ function JobActivity({ job }: { job: string }) {
         }}
       >
         {touches.map((e, i) => (
-          <li key={`${e.Run}-${e.Path}-${i}`} className="flex items-baseline gap-3 text-xs">
-            <span className="w-20 shrink-0">
-              <Badge tone={touchTone(e.Kind)}>{t(TOUCH_LABEL[e.Kind] ?? 'entry.other')}</Badge>
-            </span>
-            {/* When, and it is why this is a Touch rather than a plain entry:
-                the same file copied twice is two identical lines otherwise.
-                Wide enough for the longest phrase this can produce in any of
-                the forty-two languages, so it never wraps to two lines and
-                pushes its own row out of alignment with its neighbours. */}
-            <span className="w-28 shrink-0 whitespace-nowrap text-carbon-textMuted">
-              <Since when={e.When} />
-            </span>
-            <span className="w-14 shrink-0 text-end tabular-nums text-carbon-textMuted">
-              {e.Size > 0 ? bytes(e.Size) : ''}
-            </span>
-            {/* Which way it went, drawn rather than spelled. jdp: "es gibt eine
-                spalte wo rechts drinnen steht? ist das die richtung der
-                syncronisation? wenn ja bitte nur als pfeil darstellen." It is
-                the side that was WRITTEN to, which is the same fact: a file
-                that landed on the right came from the left. The word stays in
-                the title and in the accessible name, so nothing is lost for a
-                screen reader or a pointer that rests here. */}
-            <span
-              className="flex w-6 shrink-0 justify-center text-carbon-textMuted"
-              title={e.Side ? translateSide(t, e.Side as 'left' | 'right') : undefined}
-            >
-              {e.Side === 'right' ? <IconToRight /> : e.Side === 'left' ? <IconToLeft /> : null}
-              {e.Side && (
-                <span className="sr-only">{translateSide(t, e.Side as 'left' | 'right')}</span>
-              )}
-            </span>
-            <span className="min-w-0 flex-1 break-all font-mono text-carbon-text" title={e.Path}>
-              {e.Path}
-            </span>
-            {e.Note && (
-              <span className="min-w-0 max-w-[30%] shrink-0 text-carbon-textMuted" title={e.Note}>
-                {e.Note}
-              </span>
-            )}
-          </li>
+          <TouchRow key={`${e.Run}-${e.Path}-${i}`} touch={e} />
         ))}
       </ul>
     </div>
+  )
+}
+
+/**
+ * One line of the file log.
+ *
+ * Shared by the job's own activity fold and by the history tab's file view,
+ * because it is the same line: a kind, a time, a size, a direction and a path.
+ * Two copies would drift the first time one of them gained a column, and the
+ * one that did not would be the one somebody was reading.
+ *
+ * `withJob` adds the column that only makes sense across jobs. In the fold it
+ * would print the same name on every row.
+ */
+function TouchRow({ touch: e, withJob }: { touch: Touch; withJob?: boolean }) {
+  const { t } = useT()
+  return (
+    <li className="flex items-baseline gap-3 text-xs">
+      <span className="w-20 shrink-0">
+        <Badge tone={touchTone(e.Kind)}>{t(TOUCH_LABEL[e.Kind] ?? 'entry.other')}</Badge>
+      </span>
+      {/* When, and it is why this is a Touch rather than a plain entry: the
+          same file copied twice is two identical lines otherwise. Wide enough
+          for the longest phrase this can produce in any of the forty-two
+          languages, so it never wraps to two lines and pushes its own row out
+          of alignment with its neighbours. */}
+      <span className="w-28 shrink-0 whitespace-nowrap text-carbon-textMuted">
+        <Since when={e.When} />
+      </span>
+      {withJob && (
+        <span className="w-32 shrink-0 truncate font-medium" title={e.Job}>
+          {e.Job}
+        </span>
+      )}
+      <span className="w-14 shrink-0 text-end tabular-nums text-carbon-textMuted">
+        {e.Size > 0 ? bytes(e.Size) : ''}
+      </span>
+      {/* Which way it went, drawn rather than spelled. jdp: "es gibt eine
+          spalte wo rechts drinnen steht? ist das die richtung der
+          syncronisation? wenn ja bitte nur als pfeil darstellen." It is the
+          side that was WRITTEN to, which is the same fact: a file that landed
+          on the right came from the left. The word stays in the title and in
+          the accessible name, so nothing is lost for a screen reader or a
+          pointer that rests here. */}
+      <span
+        className="flex w-6 shrink-0 justify-center text-carbon-textMuted"
+        title={e.Side ? translateSide(t, e.Side as 'left' | 'right') : undefined}
+      >
+        {e.Side === 'right' ? <IconToRight /> : e.Side === 'left' ? <IconToLeft /> : null}
+        {e.Side && <span className="sr-only">{translateSide(t, e.Side as 'left' | 'right')}</span>}
+      </span>
+      <span className="min-w-0 flex-1 break-all font-mono text-carbon-text" title={e.Path}>
+        {e.Path}
+      </span>
+      {e.Note && (
+        <span className="min-w-0 max-w-[30%] shrink-0 text-carbon-textMuted" title={e.Note}>
+          {e.Note}
+        </span>
+      )}
+    </li>
+  )
+}
+
+/**
+ * Every file this engine has touched, across every job.
+ *
+ * The same question the activity fold answers about ONE job, asked of the whole
+ * log - jdp: "in Autosync sieht man jede einzelne datei im Verlauf, es ist wie
+ * ein log, das moechte ich in AL auch haben." The runs beside it answer a
+ * different one, and both are kept because a run that fails before it touches
+ * anything writes no file lines at all.
+ *
+ * Narrowed in the DATABASE, all three ways. This log runs to tens of thousands
+ * of rows and the list holds a screenful, so filtering what has already arrived
+ * would search the newest page rather than the log.
+ */
+function AllTouches({ job, kinds, query }: { job: string; kinds: string[]; query: string }) {
+  const { t } = useT()
+  const [touches, setTouches] = useState<Touch[] | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const [limit, setLimit] = useState(60)
+
+  // Back to one screenful whenever the question changes, so a limit that grew
+  // to 960 while scrolling is not carried into a search for one name.
+  useEffect(() => setLimit(60), [job, query, kinds.join(',')])
+
+  useEffect(() => {
+    let live = true
+    setError(null)
+    api
+      .log(job, kinds, query, limit)
+      .then((got) => live && setTouches(got))
+      .catch((e: Error) => live && setError(e.message))
+    return () => {
+      live = false
+    }
+  }, [job, kinds.join(','), query, limit])
+
+  if (error) return <p className="mt-1 text-xs text-statusFail">{error}</p>
+  if (!touches) return <Empty>{t('history.working')}</Empty>
+  if (touches.length === 0)
+    return <Empty>{query ? t('jobs.activityNoMatch', { q: query }) : t('history.logEmpty')}</Empty>
+
+  return (
+    <ul
+      className="flex max-h-[32rem] flex-col gap-1 overflow-y-auto"
+      onScroll={(e) => {
+        const el = e.currentTarget
+        if (el.scrollHeight - el.scrollTop - el.clientHeight > 40) return
+        // Only when the last answer FILLED the limit, which is the one honest
+        // signal that there is more: a shorter list is the whole list.
+        if (touches.length >= limit) setLimit((n) => n * 2)
+      }}
+    >
+      {touches.map((e, i) => (
+        <TouchRow key={`${e.Run}-${e.Path}-${i}`} touch={e} withJob={!job} />
+      ))}
+    </ul>
   )
 }
 
@@ -894,6 +973,26 @@ const TOUCH_LABEL: Record<string, TranslationKey> = {
   rmdir: 'entry.rmdir',
   skip: 'entry.skip',
 }
+
+/**
+ * The kinds behind each segment of the file log's "show" filter.
+ *
+ * Grouped rather than one segment per kind: there are nine kinds, and the
+ * grouping is by what somebody is looking FOR - things that arrived, things
+ * that went away, things that went wrong.
+ *
+ * `skip` sits under trouble because that is what it means here: a path the
+ * engine decided not to touch, carrying the reason. There is no "error" kind,
+ * so a segment named after one would filter for something no run can produce.
+ */
+const SHOWS = {
+  all: [] as string[],
+  copied: ['copy', 'move'],
+  gone: ['trash', 'rmdir'],
+  trouble: ['conflict', 'skip'],
+}
+
+type Show = keyof typeof SHOWS
 
 /** Which kinds are a problem, so they stand out in a long list. */
 function touchTone(kind: string): 'ok' | 'warn' | 'fail' | 'neutral' {
@@ -942,6 +1041,23 @@ export function History({
   const [open, setOpen] = useState<number | null>(null)
   const [job, setJob] = useState('')
   const [show, setShow] = useState<HistoryShow>('all')
+  /**
+   * Files or runs.
+   *
+   * FILES first, because that is the question somebody arrives with - where did
+   * that file go, and when - and a list of runs answers it only by opening runs
+   * one at a time until the right one turns up.
+   */
+  const [view, setView] = useState<'runs' | 'files'>('files')
+  const [kind, setKind] = useState<Show>('all')
+  // What was typed, and what has been asked for. Two states because they run at
+  // two speeds: the box answers every keystroke and the engine must not.
+  const [typed, setTyped] = useState('')
+  const [query, setQuery] = useState('')
+  useEffect(() => {
+    const timer = setTimeout(() => setQuery(typed.trim()), 250)
+    return () => clearTimeout(timer)
+  }, [typed])
   /**
    * The stretch of time, as two calendar days, either of which may be blank.
    *
@@ -1019,6 +1135,25 @@ export function History({
 
   const controls = (
     <div className="mb-4 flex flex-wrap items-end gap-3">
+      {/* FILES OR RUNS. jdp: "in Autosync sieht man jede einzelne datei im
+          Verlauf, es ist wie ein log, das möchte ich in AL auch haben."
+
+          Both, rather than one replacing the other: a run that fails before it
+          touches anything - an unreachable target, a drive that is not plugged
+          in - writes no file lines at all, so a view that only showed files
+          would hide exactly the failure somebody needs to see. The job filter
+          beside it applies to either. */}
+      <div className="w-40 shrink-0">
+        <Choice<'runs' | 'files'>
+          label={t('history.filterShow')}
+          value={view}
+          onChange={setView}
+          options={[
+            { value: 'files', label: t('history.files') },
+            { value: 'runs', label: t('history.runs') },
+          ]}
+        />
+      </div>
       <div className="w-56 shrink-0">
         <Choice
           label={t('history.filterJob')}
@@ -1033,6 +1168,37 @@ export function History({
           ]}
         />
       </div>
+      {view === 'files' ? (
+        <>
+          {/* What happened, grouped by what somebody is looking FOR - things
+              that arrived, things that went away, things that went wrong -
+              rather than by the engine's nine kinds. */}
+          <div className="w-56 shrink-0">
+            <Choice<Show>
+              label={t('history.filterShow')}
+              value={kind}
+              onChange={setKind}
+              options={[
+                { value: 'all', label: t('history.everything') },
+                { value: 'copied', label: t('history.onlyCopied') },
+                { value: 'gone', label: t('history.onlyGone') },
+                { value: 'trouble', label: t('history.onlyTrouble') },
+              ]}
+            />
+          </div>
+          <div className="w-56 shrink-0">
+            <Text
+              value={typed}
+              onChange={setTyped}
+              placeholder={t('history.pathHint')}
+              label={t('jobs.activitySearch')}
+              mono
+            />
+          </div>
+        </>
+      ) : null}
+      {view === 'runs' ? (
+      <>
       <div className="w-56 shrink-0">
         <Choice<HistoryShow>
           label={t('history.filterShow')}
@@ -1098,9 +1264,24 @@ export function History({
           />
         )}
       </div>
+      </>
+      ) : null}
       <InfoBubble tip={t('history.filterHint')} />
     </div>
   )
+
+  // The file log is its own list with its own paging, so it does not pass
+  // through the run list's empty states below - a log with lines in it must not
+  // be drawn under "nothing has run yet" just because the RUN query came back
+  // short for the same filter.
+  if (view === 'files') {
+    return (
+      <Card title={t('history.title')} hueIndex={0}>
+        {controls}
+        <AllTouches job={job} kinds={SHOWS[kind]} query={query} />
+      </Card>
+    )
+  }
 
   if (list.length === 0) {
     return (

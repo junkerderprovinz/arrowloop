@@ -221,7 +221,14 @@ func (d *DB) Entries(ctx context.Context, run int64) ([]Entry, error) {
 // Tuesday and again on Friday is two identical lines, and neither says when.
 type Touch struct {
 	Entry
-	Run  int64
+	Run int64
+	// Job is which job's run this line came from.
+	//
+	// Redundant while the log is narrowed to one job and the whole point of it
+	// when it is not: the history tab lists every job at once, and a row that
+	// says a photo was copied without saying by which job leaves the reader to
+	// open the run to find out.
+	Job  string
 	When time.Time
 }
 
@@ -253,26 +260,70 @@ func (d *DB) Touches(ctx context.Context, job string, limit int) ([]Touch, error
 // A plain substring match, case-insensitive, because a path is not prose: what
 // somebody types here is a fragment of a name they half remember.
 func (d *DB) TouchesLike(ctx context.Context, job, contains string, limit int) ([]Touch, error) {
+	return d.Log(ctx, Filter{Job: job, Contains: contains, Limit: limit})
+}
+
+// Filter narrows the per-file log.
+//
+// Every field is optional and an empty one means "do not narrow by this", which
+// is why the whole log is `Filter{}`. A zero Limit takes the default rather than
+// returning nothing: a filter nobody filled in should show the newest page, not
+// an empty screen.
+type Filter struct {
+	// Job narrows to one job. Empty means every job, which is what the history
+	// tab asks for.
+	Job string
+	// Contains is a fragment of a path, matched case-insensitively. A path is
+	// not prose: what somebody types is a piece of a name they half remember.
+	Contains string
+	// Kinds narrows to the things that happened - copy, move, trash, conflict,
+	// error and so on. Empty means all of them.
+	Kinds []string
+	Limit int
+}
+
+// Log is every file this engine has touched, newest first.
+//
+// jdp: "in Autosync sieht man jede einzelne datei im Verlauf, es ist wie ein
+// log, das moechte ich in AL auch haben."
+//
+// NARROWED IN THE DATABASE, never in the screen. This runs to tens of thousands
+// of rows while a screen holds a few dozen, so filtering what was already
+// fetched would search the last page instead of the log - and "which run touched
+// that file" is exactly the question that cannot be answered from the newest
+// fifty rows.
+func (d *DB) Log(ctx context.Context, f Filter) ([]Touch, error) {
+	limit := f.Limit
 	if limit <= 0 {
 		limit = 50
 	}
-	where, args := "r.job = ?", []any{job}
-	if contains != "" {
+	where, args := "1 = 1", []any{}
+	if f.Job != "" {
+		where += " AND r.job = ?"
+		args = append(args, f.Job)
+	}
+	if len(f.Kinds) > 0 {
+		where += " AND e.kind IN (" + strings.TrimSuffix(strings.Repeat("?,", len(f.Kinds)), ",") + ")"
+		for _, k := range f.Kinds {
+			args = append(args, k)
+		}
+	}
+	if f.Contains != "" {
 		// LIKE's own wildcards escaped, so a path with an underscore in it -
 		// which is most of them - does not match everything.
-		esc := strings.NewReplacer(`\`, `\\`, "%", `\%`, "_", `\_`).Replace(contains)
+		esc := strings.NewReplacer(`\`, `\\`, "%", `\%`, "_", `\_`).Replace(f.Contains)
 		where += ` AND e.path LIKE ? ESCAPE '\'`
 		args = append(args, "%"+esc+"%")
 	}
 	args = append(args, limit)
 	rows, err := d.sql.QueryContext(ctx,
-		`SELECT e.run, r.started, e.kind, e.side, e.path, e.note, e.size
+		`SELECT e.run, r.job, r.started, e.kind, e.side, e.path, e.note, e.size
 		 FROM entries e JOIN runs r ON r.id = e.run
 		 WHERE `+where+`
 		 ORDER BY r.started DESC, e.seq DESC
 		 LIMIT ?`, args...)
 	if err != nil {
-		return nil, fmt.Errorf("read what %q did: %w", job, err)
+		return nil, fmt.Errorf("read the file log: %w", err)
 	}
 	defer rows.Close()
 
@@ -280,7 +331,7 @@ func (d *DB) TouchesLike(ctx context.Context, job, contains string, limit int) (
 	for rows.Next() {
 		var t Touch
 		var started int64
-		if err := rows.Scan(&t.Run, &started, &t.Kind, &t.Side, &t.Path, &t.Note, &t.Size); err != nil {
+		if err := rows.Scan(&t.Run, &t.Job, &started, &t.Kind, &t.Side, &t.Path, &t.Note, &t.Size); err != nil {
 			return nil, fmt.Errorf("scan touch: %w", err)
 		}
 		t.When = time.Unix(0, started)

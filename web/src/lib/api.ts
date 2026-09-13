@@ -313,6 +313,9 @@ export type RunEntry = {
  */
 export type Touch = RunEntry & {
   Run: number
+  /** Which job's run this line came from. Redundant while the log is narrowed
+   *  to one job and the whole point of it when it is not. */
+  Job: string
   When: string
 }
 
@@ -601,6 +604,23 @@ export const api = {
     request<Touch[]>(
       `/api/jobs/${encodeURIComponent(job)}/touches?limit=${limit}` +
         (q ? `&q=${encodeURIComponent(q)}` : ''),
+    ),
+
+  /**
+   * The same log across EVERY job, narrowed by the engine.
+   *
+   * Every argument is optional in the sense that an empty one does not narrow,
+   * which is why the whole log is `log()`. The narrowing happens in the
+   * database: this runs to tens of thousands of rows while a list holds a
+   * screenful, so filtering an answer that has already arrived would search the
+   * newest page instead of the log.
+   */
+  log: (job = '', kinds: string[] = [], q = '', limit = 100) =>
+    request<Touch[]>(
+      `/api/log?limit=${limit}` +
+        (job ? `&job=${encodeURIComponent(job)}` : '') +
+        (q ? `&q=${encodeURIComponent(q)}` : '') +
+        (kinds.length ? `&kind=${encodeURIComponent(kinds.join(','))}` : ''),
     ),
 
   /**

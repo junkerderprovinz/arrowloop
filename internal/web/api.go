@@ -17,6 +17,7 @@ import (
 	"io/fs"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/junkerderprovinz/arrowloop/internal/daemon"
@@ -90,6 +91,10 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("POST /api/jobs/{name}/versions/{side}/restore", s.restoreVersion)
 	mux.HandleFunc("GET /api/history", s.listHistory)
 	mux.HandleFunc("GET /api/history/{id}/entries", s.runEntries)
+	// Every file this engine has touched, across all jobs, narrowed in the
+	// database. The history TAB asks this; the per-job one below is the same
+	// question about one job.
+	mux.HandleFunc("GET /api/log", s.fileLog)
 	mux.HandleFunc("GET /api/jobs/{name}/touches", s.jobTouches)
 	mux.HandleFunc("GET /api/history/stats", s.historyStats)
 	mux.HandleFunc("GET /api/events", s.events)
@@ -463,6 +468,39 @@ func (s *Server) jobTouches(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	touches, err := s.History.TouchesLike(r.Context(), r.PathValue("name"), r.URL.Query().Get("q"), limit)
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, err)
+		return
+	}
+	if touches == nil {
+		touches = []history.Touch{}
+	}
+	writeJSON(w, http.StatusOK, touches)
+}
+
+// fileLog is the per-file log across every job.
+//
+// jdp: "in Autosync sieht man jede einzelne datei im Verlauf, es ist wie ein
+// log." Narrowed by job, by a fragment of a path, and by what happened - all in
+// the database, because the screen holds a fraction of what this can return.
+func (s *Server) fileLog(w http.ResponseWriter, r *http.Request) {
+	q := r.URL.Query()
+	limit := 100
+	if raw := q.Get("limit"); raw != "" {
+		if n, err := strconv.Atoi(raw); err == nil {
+			limit = n
+		}
+	}
+	var kinds []string
+	if raw := q.Get("kind"); raw != "" {
+		kinds = strings.Split(raw, ",")
+	}
+	touches, err := s.History.Log(r.Context(), history.Filter{
+		Job:      q.Get("job"),
+		Contains: q.Get("q"),
+		Kinds:    kinds,
+		Limit:    limit,
+	})
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, err)
 		return

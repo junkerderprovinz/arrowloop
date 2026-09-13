@@ -342,6 +342,40 @@ export function Badge({ label, tone = "neutral" }: { label: string; tone?: Tone 
 }
 
 /**
+ * A filled proportion of a track: how far a run has got, how full a target is.
+ *
+ * ONE COMPONENT for both, because they are the same statement - this much of
+ * that - and drawing them differently would say they are different kinds of
+ * fact. The track is the well every other control sits in, and the fill is the
+ * accent or the hue the caller is already using, so a meter on a card belongs to
+ * that card rather than to the app's one accent.
+ *
+ * Clamped at both ends. A total of zero is not an error worth a red screen: it
+ * is a run that has nothing to do, and an empty track says exactly that. Without
+ * the clamp it is a division by zero and a fill of NaN percent, which React
+ * Native renders as a full bar - the most wrong of the available answers.
+ */
+export function Meter({ done, total, hue }: { done: number; total: number; hue?: string }) {
+  const { p, radius, accent } = useTheme();
+  const fill = hue ?? accent;
+  const part = total > 0 ? Math.max(0, Math.min(1, done / total)) : 0;
+  return (
+    <View
+      accessibilityRole="progressbar"
+      accessibilityValue={{ min: 0, max: Math.max(total, 0), now: Math.max(0, Math.min(done, total)) }}
+      style={[styles.meter, { backgroundColor: p.surface2, borderRadius: radius.pill }]}
+    >
+      <View
+        style={[
+          styles.meterFill,
+          { backgroundColor: fill, borderRadius: radius.pill, width: `${part * 100}%` },
+        ]}
+      />
+    </View>
+  );
+}
+
+/**
  * An explanation, folded into an (i) until somebody asks for it.
  *
  * The house rule is that prose belongs in a bubble rather than in the thing it
@@ -883,6 +917,10 @@ const styles = StyleSheet.create({
   cardHeadTitle: { fontSize: text.heading, fontWeight: "600", flexShrink: 1 },
   badge: { paddingHorizontal: 7, paddingVertical: 2, alignSelf: "center", flexShrink: 0 },
   badgeText: { fontSize: text.caption, fontWeight: "600", letterSpacing: 0.2 },
+  // Slim, because it is read at a glance and never touched. `overflow: hidden`
+  // so the fill's own corners cannot poke past the track's at either end.
+  meter: { height: 6, overflow: "hidden" },
+  meterFill: { height: "100%" },
   bubble: { width: 18, height: 18, alignItems: "center", justifyContent: "center" },
   bubbleMark: { fontSize: text.caption, fontWeight: "700", lineHeight: text.caption + 3 },
   tipGround: {

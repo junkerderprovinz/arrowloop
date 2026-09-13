@@ -6,6 +6,7 @@ import { useT } from "../i18n";
 import type { HistoryStack } from "../nav";
 import { space } from "../theme";
 import { Badge, Caption, Card, Empty, Mono, Page, Title } from "../ui";
+import { entryKey } from "./History";
 
 /**
  * What ONE run did, path by path.
@@ -58,30 +59,6 @@ export function RunDetail() {
       ))}
     </Page>
   );
-}
-
-function entryKey(
-  kind: string,
-): "entry.copy" | "entry.move" | "entry.trash" | "entry.conflict" | "entry.mkdir" | "entry.rmdir" | "entry.skip" | "entry.other" {
-  switch (kind) {
-    case "copy":
-      return "entry.copy";
-    case "move":
-      return "entry.move";
-    case "trash":
-    case "delete":
-      return "entry.trash";
-    case "conflict":
-      return "entry.conflict";
-    case "mkdir":
-      return "entry.mkdir";
-    case "rmdir":
-      return "entry.rmdir";
-    case "skip":
-      return "entry.skip";
-    default:
-      return "entry.other";
-  }
 }
 
 const styles = StyleSheet.create({

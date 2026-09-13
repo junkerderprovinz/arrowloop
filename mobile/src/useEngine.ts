@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AppState } from "react-native";
-import { api, events } from "./api";
+import { api, events, type RunEvent } from "./api";
 import { engine } from "./engine";
 
 export type EngineState = "starting" | "ready" | "trouble";
@@ -126,6 +126,21 @@ export function useEngine() {
  * the screen quietly stale, which is the failure nobody notices.
  */
 export function useEngineEvents(ready: boolean, onEvent: () => void) {
+  useEngineStream(ready, onEvent);
+}
+
+/**
+ * The same stream, with what each event SAYS.
+ *
+ * The callback above throws the payload away, which is right for a screen whose
+ * answer is "something changed, ask again". A screen that draws the work itself
+ * - which file, how far along - cannot ask again fast enough to see it: the
+ * event IS the answer, and a request per line would be one round trip per file.
+ *
+ * A frame that does not parse is dropped rather than taken as the end of the
+ * stream. One bad line must not stop a screen watching a transfer.
+ */
+export function useEngineStream(ready: boolean, onEvent: (event: RunEvent) => void) {
   const latest = useRef(onEvent);
   latest.current = onEvent;
 
@@ -137,9 +152,15 @@ export function useEngineEvents(ready: boolean, onEvent: () => void) {
     (async () => {
       while (!stopped) {
         try {
-          for await (const _ of events(control.signal)) {
+          for await (const line of events(control.signal)) {
             if (stopped) return;
-            latest.current();
+            let event: RunEvent;
+            try {
+              event = JSON.parse(line) as RunEvent;
+            } catch {
+              continue;
+            }
+            latest.current(event);
           }
         } catch {
           // Dropped, which on a phone is ordinary: the radio slept, the

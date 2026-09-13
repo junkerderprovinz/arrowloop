@@ -9,6 +9,17 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
  * promise about where you came from, and a single stack breaks it the first
  * time somebody switches tabs mid-task.
  */
+/**
+ * The overview goes nowhere, which is the point of it.
+ *
+ * A stack of one, so the tab is built like the other four rather than being the
+ * one screen hung directly off the bar - and so it has a header that says what
+ * it is. It reports; everything it names is one tap away in its own tab.
+ */
+export type OverviewStack = {
+  OverviewHome: undefined;
+};
+
 export type JobsStack = {
   JobList: undefined;
   JobDetail: { name: string };

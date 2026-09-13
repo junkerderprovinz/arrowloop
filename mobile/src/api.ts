@@ -106,6 +106,24 @@ export interface Entry {
 }
 
 /**
+ * One thing that happened to one file, with the run it belonged to.
+ *
+ * The plain Entry is enough while you are reading ONE run. Across runs it is
+ * not: the same file copied on Tuesday and again on Friday is two identical
+ * lines, and neither says when or which run wrote it.
+ *
+ * CAPITALISED for the same reason Entry is - the engine sends this struct
+ * without json tags.
+ */
+export interface Touch extends Entry {
+  Run: number;
+  /** Which job's run this line came from. The log spans every job, so without
+   *  it a row says a photo was copied and not by what. */
+  Job: string;
+  When: string;
+}
+
+/**
  * Why the engine decided something, as a translatable thing rather than a
  * sentence.
  *
@@ -236,6 +254,26 @@ export interface TrashItem {
   modified: string;
 }
 
+/**
+ * One line off the engine's event stream.
+ *
+ * The SAME shape the container reads (`web/src/lib/api.ts`), because it is the
+ * same stream. `done` and `total` arrive on every progress line and the total
+ * is known before the first byte moves - the plan is built first, so a bar
+ * whose total grows while it runs is not something this can produce.
+ */
+export interface RunEvent {
+  job: string;
+  phase: "started" | "progress" | "finished";
+  error?: string;
+  done?: number;
+  total?: number;
+  kind?: string;
+  path?: string;
+  /** Which side the work lands on, so a screen can say where a file is going. */
+  side?: string;
+}
+
 /** Whether a run went badly, by the same rule the engine uses. */
 export function failed(run: Run): boolean {
   return run.Err !== "";
@@ -344,6 +382,25 @@ export const api = {
     call<Run[]>(`/api/history?job=${name(job)}&limit=${limit}`),
   runEntries: (id: number, limit = 200) =>
     call<Entry[]>(`/api/history/${id}/entries?limit=${limit}`),
+
+  /**
+   * Every file this engine has touched, across every job, newest first.
+   *
+   * NARROWED BY THE ENGINE, never here. The log runs to tens of thousands of
+   * rows and a screen holds a few dozen, so filtering an answer that has
+   * already arrived searches the newest page instead of the log - and "when did
+   * that file last move" is exactly the question the newest page cannot answer.
+   */
+  log: (q: { job?: string; contains?: string; kinds?: string[]; limit?: number } = {}) => {
+    // Assembled by hand rather than with URLSearchParams: React Native ships a
+    // partial URL implementation, and the whole point of this file is that it
+    // speaks the engine's contract exactly.
+    const ask = [`limit=${q.limit ?? 100}`];
+    if (q.job) ask.push(`job=${name(q.job)}`);
+    if (q.contains) ask.push(`q=${name(q.contains)}`);
+    if (q.kinds?.length) ask.push(`kind=${name(q.kinds.join(","))}`);
+    return call<Touch[]>(`/api/log?${ask.join("&")}`);
+  },
 
   config: () => call<Config>("/api/config"),
   writeConfig: (config: Config) =>

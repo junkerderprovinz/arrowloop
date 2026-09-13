@@ -16,11 +16,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { AppState, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
 import { I18nProvider, useT } from "./src/i18n";
-import type { HistoryStack, JobsStack, SettingsStack, TargetsStack } from "./src/nav";
+import type { HistoryStack, JobsStack, OverviewStack, SettingsStack, TargetsStack } from "./src/nav";
 import { History } from "./src/screens/History";
 import { JobEdit } from "./src/screens/JobEdit";
 import { Jobs } from "./src/screens/Jobs";
 import { Language } from "./src/screens/Language";
+import { Overview } from "./src/screens/Overview";
 import { Plan } from "./src/screens/Plan";
 import { RunDetail } from "./src/screens/RunDetail";
 import { Settings } from "./src/screens/Settings";
@@ -40,11 +41,16 @@ import { useEngine } from "./src/useEngine";
 /**
  * ArrowLoop on a phone.
  *
- * FOUR tabs, the same four the desktop has, because they are the same four
+ * FIVE tabs. Four of them are the desktop's, because they are the same four
  * questions: what is set up, where it syncs to, what happened, and how it
  * behaves. What differs is the depth behind each - a desk is where a sync is
  * built and a phone is where it is watched, so the list is one tap from a
  * detail rather than a table with every column visible at once.
+ *
+ * The fifth is the OVERVIEW, and it is the phone's own: a desk has room to show
+ * what is running beside everything else, and a phone does not. jdp asked for
+ * it by name after Autosync's. It sits first because it is the page somebody
+ * opens the app to look at.
  *
  * A stack PER TAB rather than one across the app, which is what makes the back
  * gesture do the obvious thing: leaving a job's detail returns to the job list
@@ -70,6 +76,7 @@ import { useEngine } from "./src/useEngine";
  * obvious, because the stack they left is still where they left it.
  */
 const Tabs = createMaterialTopTabNavigator();
+const OverviewNav = createNativeStackNavigator<OverviewStack>();
 const JobsNav = createNativeStackNavigator<JobsStack>();
 const HistoryNav = createNativeStackNavigator<HistoryStack>();
 const TargetsNav = createNativeStackNavigator<TargetsStack>();
@@ -236,6 +243,29 @@ function Shell() {
           // take. See TabBar below.
           tabBar={(props) => <TabBar {...props} />}
         >
+          {/* THE OVERVIEW COMES FIRST. jdp: "In Autosync gibt es eine
+              Übersichtsseite wo man schön sieht was gerade läuft ... und welche
+              konten verbunden sind inkl. wie viel speicher auf den konten
+              verbraucht ist/frei ist. Das hätte ich auch gerne."
+
+              First rather than last because it is where somebody opens the app
+              to LOOK, and the four tabs after it are where they go to change
+              something. The order jdp gave for the other four is untouched. */}
+          <Tabs.Screen
+            name="OverviewTab"
+            options={{ title: t("nav.overview") }}
+          >
+            {() => (
+              <OverviewNav.Navigator screenOptions={header}>
+                <OverviewNav.Screen
+                  name="OverviewHome"
+                  component={Overview}
+                  options={{ title: t("nav.overview") }}
+                />
+              </OverviewNav.Navigator>
+            )}
+          </Tabs.Screen>
+
           <Tabs.Screen
             name="JobsTab"
             options={{ title: t("nav.jobs") }}
@@ -462,6 +492,7 @@ function TabBar({ state, descriptors, navigation }: MaterialTopTabBarProps) {
  * and that is a fact about the four tabs, not about the navigator.
  */
 const TAB_ROOT: Record<string, string> = {
+  OverviewTab: "OverviewHome",
   JobsTab: "JobList",
   TargetsTab: "TargetList",
   HistoryTab: "RunList",
@@ -497,6 +528,9 @@ function deeperThanRoot(route: RouteProp<ParamListBase>): boolean {
 function markFor(route: string): string {
   return (
     {
+      // IconLive for the overview: the mark the desktop already uses for "what
+      // is happening now", which is exactly what this tab is.
+      OverviewTab: "IconLive",
       JobsTab: "IconJobs",
       TargetsTab: "IconTargets",
       HistoryTab: "IconHistory",
