@@ -14,7 +14,7 @@ import { isPerfectlyIdle } from "../eggs";
 import { Glyph } from "../glyphs";
 import { useT, type T } from "../i18n";
 import { animateNext, useMotion } from "../motion";
-import { bytes, Room, unreachable, useRoom, type Room as Space } from "../space";
+import { bytes, isAccount, Room, unreachable, useRoom, type Room as Space } from "../space";
 import { space } from "../theme";
 import { useEngineStream } from "../useEngine";
 import { Badge, Body, Caption, Card, CardHead, Empty, Fab, Floating, Meter, Mono, Page, Title, useHue, useTheme } from "../ui";
@@ -558,41 +558,6 @@ function Accounts() {
       ))}
     </>
   );
-}
-
-/**
- * Whether a target is an ACCOUNT SOMEWHERE ELSE rather than this phone itself.
- *
- * jdp: "der telefonspeicher soll es nicht anzeigen als card". He is right, and
- * the reason is in the heading: "connected accounts" is a list of the places
- * this phone talks to. The phone's own storage is not one of them, it is the
- * thing doing the talking, and a card asking how full it is answers a question
- * Android's own settings already answer.
- *
- * ONLY THIS LIST, not the targets screen. `Telefonspeicher` is a perfectly good
- * end of a sync job and has to stay pickable - it is the default right-hand
- * side of every job on a phone. What it is not is an account.
- *
- * An `alias` is decided by what it points AT, because it can point either way:
- * a path on this device, or another target. Anything that is not local is an
- * account, including backends this app has never heard of - a list that only
- * showed the products it recognises would quietly drop the one somebody added
- * by hand.
- */
-function isAccount(remote: Remote): boolean {
-  if (remote.type === "local") return false;
-  if (remote.type !== "alias") return true;
-  const points = remote.settings.find((s) => s.key === "remote")?.value ?? "";
-  return !isLocalPath(points);
-}
-
-/** A path on this device rather than a reference to another target. */
-function isLocalPath(value: string): boolean {
-  if (!value) return false;
-  // A target reference carries a colon (`Garage-Test:bucket`); a path does not,
-  // except a Windows drive letter, which this app will not meet but which costs
-  // one clause to be right about.
-  return value.startsWith("/") || value.startsWith("\\") || /^[A-Za-z]:[\\/]/.test(value);
 }
 
 function Account({ remote, room, index }: { remote: Remote; room: Space; index: number }) {

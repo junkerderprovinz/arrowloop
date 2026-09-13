@@ -14,6 +14,44 @@ import { Caption, Meter } from "./ui";
  * places to get the arithmetic wrong.
  */
 
+/**
+ * Whether a target is an ACCOUNT SOMEWHERE ELSE rather than this phone itself.
+ *
+ * jdp, twice: "der telefonspeicher soll es nicht anzeigen als card", and then
+ * "die telefoncard in den zielen soll weg, auch in der übersicht." The first
+ * ask put this rule on the overview only, with a comment arguing that the
+ * targets screen should keep it because the phone's own storage is a perfectly
+ * good end of a sync job. The second ask is the correction, and he is right:
+ * BEING PICKABLE AND BEING LISTED ARE NOT THE SAME THING. A card on a page of
+ * connected storage is a claim that there is something to connect to, and the
+ * phone is the thing doing the connecting.
+ *
+ * Nothing here touches what a job can point AT. A path on this device is typed
+ * or picked with the folder picker, which is a different control on a different
+ * screen, and every existing job keeps working exactly as it did.
+ *
+ * An `alias` is decided by what it points at, because it can point either way:
+ * a path on this device, or another target. Anything that is not local is an
+ * account, including backends this app has never heard of - a list that only
+ * showed the products it recognises would quietly drop one somebody added by
+ * hand.
+ */
+export function isAccount(remote: Remote): boolean {
+  if (remote.type === "local") return false;
+  if (remote.type !== "alias") return true;
+  const points = remote.settings.find((s) => s.key === "remote")?.value ?? "";
+  return !isLocalPath(points);
+}
+
+/** A path on this device rather than a reference to another target. */
+function isLocalPath(value: string): boolean {
+  if (!value) return false;
+  // A target reference carries a colon (`Garage-Test:bucket`); a path does not,
+  // except a Windows drive letter, which this app will not meet but which costs
+  // one clause to be right about.
+  return value.startsWith("/") || value.startsWith("\\") || /^[A-Za-z]:[\\/]/.test(value);
+}
+
 /** Bytes as somebody would say them. */
 export function bytes(n: number | undefined): string {
   if (n === undefined) return "?";

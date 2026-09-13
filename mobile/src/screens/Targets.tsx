@@ -4,7 +4,7 @@ import { Alert, StyleSheet, View } from "react-native";
 import { api, type Remote, type Usage } from "../api";
 import { useT } from "../i18n";
 import type { Nav, TargetsStack } from "../nav";
-import { Room, unreachable, useRoom, type Room as Space } from "../space";
+import { Room, unreachable, isAccount, useRoom, type Room as Space } from "../space";
 import { space } from "../theme";
 import { Badge, Body, Button, Caption, Card, CardHead, Empty, Fab, Floating, Page, useHue, useTheme } from "../ui";
 import { CardMenu } from "../CardMenu";
@@ -29,7 +29,8 @@ export function Targets() {
 
   const load = useCallback(async () => {
     try {
-      setRemotes((await api.storage()).remotes);
+      // The phone itself is not a connected target; see isAccount in space.tsx.
+      setRemotes((await api.storage()).remotes.filter(isAccount));
       setError("");
     } catch (e) {
       setError((e as Error).message);
