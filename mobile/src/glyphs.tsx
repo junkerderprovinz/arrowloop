@@ -139,6 +139,7 @@ export function BrandMark({
   width,
   height,
   scheme,
+  mono,
 }: {
   name: string;
   size?: number;
@@ -153,10 +154,44 @@ export function BrandMark({
   width?: number;
   height?: number;
   scheme: "dark" | "light";
+  /**
+   * Draw it in ONE ink instead of its own colours.
+   *
+   * For the places where the mark is doing a glyph's job rather than presenting
+   * a brand: in front of a path it says "this side is that service", which is
+   * the same job the device glyph does on the line above, and that one is drawn
+   * in the text colour. Two marks doing one job in two visual languages read as
+   * two different kinds of thing.
+   */
+  mono?: string;
 }) {
   const brand = BRANDS[name];
   if (!brand) return null;
-  return <SvgXml xml={whole(brand, scheme)} width={width ?? size} height={height ?? size} />;
+  return (
+    <SvgXml
+      xml={mono ? oneInk(whole(brand, scheme), mono) : whole(brand, scheme)}
+      width={width ?? size}
+      height={height ?? size}
+    />
+  );
+}
+
+/**
+ * Every painted surface in one colour, and every hole left alone.
+ *
+ * `fill="none"` is NOT a colour, it is a counter-shape: several marks are an
+ * outline with a hole cut out of them, and the hole is a path filled with
+ * nothing. Painting it too would fill the hole and turn a recognisable outline
+ * into a blob. Same for `stroke`, which a few marks use instead of a fill.
+ *
+ * A substitution on somebody else's markup, which is normally the wrong tool -
+ * but the alternative is a second, hand-drawn monochrome version of fifty-seven
+ * logos, and that is a set of drawings nobody has and nobody could keep true.
+ */
+function oneInk(svg: string, ink: string): string {
+  return svg
+    .replace(/fill="(?!none")[^"]*"/g, `fill="${ink}"`)
+    .replace(/stroke="(?!none")[^"]*"/g, `stroke="${ink}"`);
 }
 
 /**
@@ -288,19 +323,32 @@ export function ProviderMark({
   height,
   color,
   scheme,
+  mono,
 }: {
   name: string | undefined;
   size?: number;
   /** A box that is not square, for a tile that gives a wordmark its width. */
   width?: number;
   height?: number;
-  /** The ink for an app glyph. Ignored by a brand, which owns its colour. */
+  /** The ink for an app glyph, and for a brand too when `mono` is set. */
   color: string;
   scheme: "dark" | "light";
+  /** Draw a brand in the ink above rather than in its own colours, for the
+   *  places where the mark is doing a glyph's job. See BrandMark. */
+  mono?: boolean;
 }) {
   if (!name) return null;
   if (name in BRANDS)
-    return <BrandMark name={name} size={size} width={width} height={height} scheme={scheme} />;
+    return (
+      <BrandMark
+        name={name}
+        size={size}
+        width={width}
+        height={height}
+        scheme={scheme}
+        mono={mono ? color : undefined}
+      />
+    );
   if (name in GLYPHS)
     return <Glyph name={name} color={color} size={size} width={width} height={height} />;
   return null;

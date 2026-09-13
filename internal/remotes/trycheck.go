@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	rclonefs "github.com/rclone/rclone/fs"
+	"github.com/rclone/rclone/fs/config/obscure"
 )
 
 // Checking settings that have not been saved yet.
@@ -78,10 +79,40 @@ func connectionString(backend string, settings map[string]string) string {
 		b.WriteString(",")
 		b.WriteString(key)
 		b.WriteString("=")
-		b.WriteString(quoteValue(settings[key]))
+		b.WriteString(quoteValue(forConnection(backend, key, settings[key])))
 	}
 	b.WriteString(":")
 	return b.String()
+}
+
+// forConnection obscures what rclone will try to REVEAL.
+//
+// rclone reveals a backend's IsPassword options wherever it reads them, and it
+// reads a connection string the same way it reads the config file. So the split
+// obscuring.go already draws applies here unchanged: WebDAV's `pass` is
+// obscured, S3's `secret_access_key` is not.
+//
+// Measured rather than reasoned: the first version passed everything verbatim
+// and the live engine answered "couldn't decrypt password: input too short when
+// revealing password - is it obscured?".
+//
+// A value that is ALREADY obscured is left alone. The screen sends back what it
+// was given for a secret it did not touch, and obscuring it twice would produce
+// a password nobody typed.
+func forConnection(backend, key, value string) string {
+	if value == "" || !needsObscure(backend, key) {
+		return value
+	}
+	if _, err := obscure.Reveal(value); err == nil {
+		return value
+	}
+	hidden, err := obscure.Obscure(value)
+	if err != nil {
+		// Nothing sensible to do here, and refusing the whole check over it
+		// would turn a test button into an error about encoding.
+		return value
+	}
+	return hidden
 }
 
 // quoteValue wraps a value only when it needs it, because an unquoted string is

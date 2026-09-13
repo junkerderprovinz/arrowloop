@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/rclone/rclone/fs/config"
+	"github.com/rclone/rclone/fs/config/obscure"
 )
 
 func TestAConnectionStringCarriesEverySetting(t *testing.T) {
@@ -23,11 +24,42 @@ func TestAConnectionStringCarriesEverySetting(t *testing.T) {
 
 // A secret with a comma in it would end the option early and silently produce a
 // different target, which reads as a wrong password rather than a parsing bug.
+// Checked on a field rclone does NOT reveal, so the quoting is visible.
 func TestAValueWithASeparatorIsQuoted(t *testing.T) {
-	got := connectionString("webdav", map[string]string{"pass": `a,b "c"`})
-	want := `:webdav,pass="a,b ""c""":`
+	got := connectionString("s3", map[string]string{"endpoint": `a,b "c"`})
+	want := `:s3,endpoint="a,b ""c""":`
 	if got != want {
 		t.Fatalf("got %q, want %q", got, want)
+	}
+}
+
+// WebDAV's password must arrive OBSCURED, because rclone reveals it wherever it
+// reads it and a connection string is read like a config file. Measured against
+// a live engine, which answered "input too short when revealing password".
+func TestAPasswordIsObscuredForTheConnection(t *testing.T) {
+	got := connectionString("webdav", map[string]string{"pass": "demo"})
+	if strings.Contains(got, "pass=demo") {
+		t.Fatalf("the password went verbatim: %s", got)
+	}
+	inside := got[len(":webdav,pass=") : len(got)-1]
+	back, err := obscure.Reveal(inside)
+	if err != nil || back != "demo" {
+		t.Fatalf("reveal(%q) = %q, %v; want demo", inside, back, err)
+	}
+}
+
+// A secret that came back from the screen UNTOUCHED is already obscured, and
+// obscuring it twice would produce a password nobody typed.
+func TestAnAlreadyObscuredSecretIsLeftAlone(t *testing.T) {
+	hidden, err := obscure.Obscure("demo")
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := connectionString("webdav", map[string]string{"pass": hidden})
+	inside := got[len(":webdav,pass=") : len(got)-1]
+	back, err := obscure.Reveal(inside)
+	if err != nil || back != "demo" {
+		t.Fatalf("reveal(%q) = %q, %v; want demo", inside, back, err)
 	}
 }
 

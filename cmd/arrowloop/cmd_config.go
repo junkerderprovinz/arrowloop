@@ -18,6 +18,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/job"
 	"github.com/junkerderprovinz/arrowloop/internal/notify"
+	"github.com/junkerderprovinz/arrowloop/internal/remotes"
 	"github.com/junkerderprovinz/arrowloop/internal/service"
 )
 
@@ -26,6 +27,17 @@ const defaultConfig = "arrowloop.json"
 // load reads the configuration and starts the process-wide accounting, which is
 // what makes a bandwidth limit real rather than decorative.
 func load(ctx context.Context, path string) (*job.Config, error) {
+	// The storage targets live BESIDE this file, not at rclone's default, which
+	// inside a container is part of the container and not part of the volume
+	// anybody mounts. See internal/remotes/where.go: every target this program
+	// saved used to be destroyed by the next container update.
+	//
+	// Here rather than in main, because this is the first point at which the
+	// -config flag has been parsed and the directory is known.
+	if err := remotes.Use(path); err != nil {
+		return nil, fmt.Errorf("decide where the storage targets live: %w", err)
+	}
+
 	cfg, err := job.Load(path)
 	if err != nil {
 		return nil, err

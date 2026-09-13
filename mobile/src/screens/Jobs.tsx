@@ -306,8 +306,18 @@ function JobCard({
       <Side path={job.left} mark={leftMark} />
       {/* The arrow AND the words, unmoved. The arrow keeps the position it had
           between the two paths, where it reads as the relationship between
-          them; the words are what somebody needs the first time. */}
-      <Caption>{`${arrow(job.direction)}  ${t(directionKey(job.direction))}`}</Caption>
+          them; the words are what somebody needs the first time.
+
+          A REAL GLYPH now, not a character from whatever font the phone ships.
+          jdp: "der pfeil fuer die synchronisationsrichtung soll auch ein
+          groesserer glyph sein." The three direction glyphs have existed since
+          the desktop rail was built; this card was drawing a text arrow beside
+          marks from a 14-unit grid, which made it the one symbol here that came
+          from somewhere else. */}
+      <View style={styles.way}>
+        <Glyph name={directionGlyph(job.direction)} color={p.textSub} size={22} />
+        <Caption>{t(directionKey(job.direction))}</Caption>
+      </View>
       <Side path={job.right} mark={rightMark} />
 
       <Caption>
@@ -365,7 +375,11 @@ function Side({ path, mark }: { path: string; mark?: string }) {
       {mark === DEVICE ? (
         <Glyph name="IconThisDevice" color={p.textSub} size={16} />
       ) : mark ? (
-        <ProviderMark name={mark} width={18} height={18} color={p.textSub} scheme={scheme} />
+        // ONE INK. In front of a path the mark is a symbol saying "this side is
+        // that service", which is the job the device glyph does on the other
+        // line - and that one is drawn in the text colour. jdp: "das cloud logo
+        // vor dem Pfad farblos ... und als glyph dienen."
+        <ProviderMark name={mark} width={18} height={18} color={p.textSub} scheme={scheme} mono />
       ) : (
         // An empty slot rather than no slot, so the two paths stay aligned with
         // each other whether or not both sides could be named.
@@ -388,6 +402,24 @@ const DEVICE = "__device__";
 function sideMark(side: string, remotes: Remote[]): string | undefined {
   if (side.indexOf(":") < 2) return side ? DEVICE : undefined;
   return markForSide(side, remotes);
+}
+
+/**
+ * The direction as one of the app's own three marks.
+ *
+ * The engine's spellings and the older ones beside them, exactly as
+ * directionKey does it: a configuration written by an earlier build carries
+ * `toRight`, and falling through to the two-way mark for it would draw a
+ * one-way job as two-way.
+ */
+export function directionGlyph(direction: string | undefined): string {
+  if (direction === "leftToRight" || direction === "toRight" || direction === "right") {
+    return "IconToRight";
+  }
+  if (direction === "rightToLeft" || direction === "toLeft" || direction === "left") {
+    return "IconToLeft";
+  }
+  return "IconBothWays";
 }
 
 /** The direction as an arrow, which is read faster than the word. */
@@ -420,6 +452,9 @@ const styles = StyleSheet.create({
   menuSlot: { marginStart: "auto" },
   // A side: its mark, then its path, the path free to wrap under itself.
   side: { flexDirection: "row", alignItems: "flex-start", gap: space.sm },
+  // The direction sits in the same column the two marks do, so the three
+  // symbols line up down the left edge of the card.
+  way: { flexDirection: "row", alignItems: "center", gap: space.sm },
   sideBlank: { width: 18 },
   // The extra room at the end is for the floating button, which would
   // otherwise cover the last card - the one somebody scrolled to reach.
