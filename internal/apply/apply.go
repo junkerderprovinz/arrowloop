@@ -240,7 +240,22 @@ func (t *tally) record(e Entry) { t.res.Entries = append(t.res.Entries, e) }
 // countWork is what the plan is going to touch, worked out before anything
 // moves. A progress bar whose total grows while it runs is not a progress bar.
 func countWork(p *plan.Plan) int {
-	n := len(p.Actions) + len(p.Agreed)
+	n := len(p.Agreed)
+	for _, a := range p.Actions {
+		n++
+		// A Relocate is TWO pieces of work inside one action: the copy, and
+		// then the source's own file going. Both are reported to the progress
+		// watcher, so counting the action once produced a bar that walked to
+		// twice its total.
+		//
+		// Measured live rather than reasoned about: a move job over 3000 files
+		// on a phone reported "3131 of 3000" while it was still going. Every
+		// other kind here really is one step, which is why this was invisible
+		// until a job with a one-way move mode ran in front of somebody.
+		if a.Kind == plan.Relocate {
+			n++
+		}
+	}
 	for _, d := range p.Dirs {
 		if d.Kind != plan.RecordDir && d.DstPath != "" {
 			n++
