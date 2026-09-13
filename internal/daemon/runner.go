@@ -17,6 +17,7 @@ import (
 	"time"
 
 	rclonefs "github.com/rclone/rclone/fs"
+	"github.com/rclone/rclone/fs/accounting"
 	"github.com/rclone/rclone/fs/fspath"
 	"github.com/robfig/cron/v3"
 
@@ -188,6 +189,14 @@ func (r *Runner) RunChosen(ctx context.Context, name string, only []string, reso
 	if j.Left == "" || j.Right == "" {
 		return history.Run{}, fmt.Errorf("%w: %s", ErrHalfWritten, name)
 	}
+	// The run's own accounting, so what is in the air belongs to THIS job.
+	//
+	// rclone keeps its live transfer map per stats group, and without a group
+	// every run writes into the same one. Two jobs syncing at once would then
+	// each report the other's files as its own - which is not a drawing fault
+	// but a lie about what is happening, and the kind that looks plausible.
+	ctx = accounting.WithStatsGroup(ctx, "job/"+name)
+
 	// The run's own context, so it can be stopped by name without stopping
 	// anything else. The caller's context still governs it: cancelling the
 	// program cancels this too.
@@ -318,6 +327,11 @@ func (r *Runner) execute(ctx context.Context, j job.Job, only []string, resolve 
 		return apply.Result{}, nil, err
 	}
 	defer db.Close()
+
+	// What is in the air, published while this run lasts. Started HERE rather
+	// than in RunChosen because this is the first point where both sides are
+	// open, and the right-hand side is what says which way a file is going.
+	defer r.watchMoving(ctx, j.Name, ends.Right)()
 
 	watcher := progressFor{runner: r, job: j.Name}
 	if only == nil && len(resolve) == 0 {
@@ -689,6 +703,79 @@ func (r *Runner) config() *job.Config {
 	return r.cfg
 }
 
+// MovingTick is how often the files in the air are published.
+//
+// Twice a second: fast enough that a bar moves rather than steps, slow enough
+// that a run of ten thousand small files does not spend its time describing
+// itself. It is a GAUGE, so a frame missed costs nothing - the next one says
+// where things are now, which is all anybody wanted from it.
+const MovingTick = 500 * time.Millisecond
+
+/*
+watchMoving publishes what rclone has in the air, until the returned function
+is called.
+
+Its own ticker rather than a line on the existing progress stream, because the
+two answer different questions. The progress stream reports a step that
+FINISHED and is driven by the work itself; this is a reading taken from
+outside, of files that are part-way across and will be somewhere else a moment
+later. A run that spends four seconds on one large file publishes nothing at all
+on the first stream and eight frames on this one.
+
+IDENTICAL FRAMES ARE DROPPED. Most of a run has nothing in the air - listing,
+comparing, writing state - and a screen that received "nothing is moving" twice
+a second for a minute would be woken sixty times to draw the same nothing. So
+the empty list is sent once, when it becomes empty.
+*/
+func (r *Runner) watchMoving(ctx context.Context, name string, right rclonefs.Fs) func() {
+	done := make(chan struct{})
+	go func() {
+		tick := time.NewTicker(MovingTick)
+		defer tick.Stop()
+		var last []engine.Moving
+		for {
+			select {
+			case <-done:
+				// One last empty frame on the way out, so a screen that was
+				// drawing four rows when the run ended does not keep drawing
+				// them. The finished event says the run is over; this says the
+				// rows are gone.
+				if len(last) > 0 {
+					r.publish(Event{Job: name, Phase: "moving", Moving: []engine.Moving{}})
+				}
+				return
+			case <-ctx.Done():
+				return
+			case <-tick.C:
+				now := engine.InFlight(ctx, right)
+				if sameMoving(last, now) {
+					continue
+				}
+				last = now
+				r.publish(Event{Job: name, Phase: "moving", Moving: now})
+			}
+		}
+	}()
+	return func() { close(done) }
+}
+
+// sameMoving says whether two readings would draw the same rows.
+//
+// The BYTES are part of it, which is the point: a file whose counter has not
+// moved between two ticks is a file whose row would not change, and there is
+// nothing to tell anybody about.
+func sameMoving(a, b []engine.Moving) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i := range a {
+		if a[i] != b[i] {
+			return false
+		}
+	}
+	return true
+}
+
 // Event is something worth telling a watching screen about.
 type Event struct {
 	Job   string       `json:"job"`
@@ -707,6 +794,20 @@ type Event struct {
 	// is going rather than only that one is moving. Empty for a step that
 	// touches neither side, such as writing a record.
 	Side string `json:"side,omitempty"`
+
+	// Moving is what is in the air right now, on a "moving" event.
+	//
+	// A whole list rather than one file, because that is the shape of the
+	// truth: rclone runs `transfers` files at once. jdp: "je nachdem wie viele
+	// up und downloads man gleichzeitig eingestellt hat."
+	//
+	// An EMPTY list is meaningful: it says the rows are gone. `omitempty`
+	// drops it from the JSON, so on the wire that arrives as a "moving" frame
+	// with no `moving` field at all - and a reader takes an absent list on a
+	// moving frame as an empty one. The alternative was sending `null` on every
+	// progress event instead, which is noise on the stream that carries the
+	// most frames.
+	Moving []engine.Moving `json:"moving,omitempty"`
 }
 
 // progressFor turns the apply stage's reports into events on the stream.

@@ -126,7 +126,14 @@ export function useEngine() {
  * the screen quietly stale, which is the failure nobody notices.
  */
 export function useEngineEvents(ready: boolean, onEvent: () => void) {
-  useEngineStream(ready, onEvent);
+  useEngineStream(ready, (event) => {
+    // A "moving" frame changes nothing a list shows. It arrives twice a second
+    // while bytes are crossing, and every one of them would send a screen back
+    // to the engine for a job list or a log page that reads exactly the same.
+    // The screens that DRAW the files in the air take the payload instead.
+    if (event.phase === "moving") return;
+    onEvent();
+  });
 }
 
 /**
