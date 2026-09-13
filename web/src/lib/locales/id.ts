@@ -416,6 +416,7 @@ const id: Translations = {
   'history.filterJob': 'Tugas',
   'history.allJobs': 'Semua tugas',
   'history.filterShow': 'Tampilkan',
+  'history.filterKind': 'Apa yang terjadi',
   'history.rangeReset': 'Bersihkan rentang',
   'history.until': 'Sampai',
   'history.since': 'Dari',

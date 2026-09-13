@@ -416,6 +416,7 @@ const lt: Translations = {
   'history.filterJob': 'Užduotis',
   'history.allJobs': 'Visos užduotys',
   'history.filterShow': 'Rodyti',
+  'history.filterKind': 'Kas nutiko',
   'history.rangeReset': 'Išvalyti laikotarpį',
   'history.until': 'Iki',
   'history.since': 'Nuo',

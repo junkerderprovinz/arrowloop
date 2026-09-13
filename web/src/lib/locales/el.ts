@@ -416,6 +416,7 @@ const el: Translations = {
   'history.filterJob': 'Εργασία',
   'history.allJobs': 'Όλες οι εργασίες',
   'history.filterShow': 'Εμφάνιση',
+  'history.filterKind': 'Τι έγινε',
   'history.rangeReset': 'Καθαρισμός περιόδου',
   'history.until': 'Έως',
   'history.since': 'Από',

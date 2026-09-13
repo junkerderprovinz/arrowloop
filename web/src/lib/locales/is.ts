@@ -416,6 +416,7 @@ const is: Translations = {
   'history.filterJob': 'Verk',
   'history.allJobs': 'Öll verk',
   'history.filterShow': 'Sýna',
+  'history.filterKind': 'Hvað gerðist',
   'history.rangeReset': 'Hreinsa tímabilið',
   'history.until': 'Til',
   'history.since': 'Frá',

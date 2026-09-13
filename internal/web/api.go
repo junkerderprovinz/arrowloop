@@ -491,9 +491,15 @@ func (s *Server) fileLog(w http.ResponseWriter, r *http.Request) {
 			limit = n
 		}
 	}
+	// Empty pieces dropped rather than passed on. `kind=copy,,move` is what a
+	// caller joining a list with a blank in it produces, and an empty string in
+	// the IN clause is a kind no run can have - so it would narrow the answer by
+	// a value nobody asked for, and quietly.
 	var kinds []string
-	if raw := q.Get("kind"); raw != "" {
-		kinds = strings.Split(raw, ",")
+	for _, kind := range strings.Split(q.Get("kind"), ",") {
+		if kind != "" {
+			kinds = append(kinds, kind)
+		}
 	}
 	touches, err := s.History.Log(r.Context(), history.Filter{
 		Job:      q.Get("job"),

@@ -416,6 +416,7 @@ const no: Translations = {
   'history.filterJob': 'Jobb',
   'history.allJobs': 'Alle jobber',
   'history.filterShow': 'Vis',
+  'history.filterKind': 'Hva som skjedde',
   'history.rangeReset': 'Tøm perioden',
   'history.until': 'Til',
   'history.since': 'Fra',

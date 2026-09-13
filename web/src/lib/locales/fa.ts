@@ -416,6 +416,7 @@ const fa: Translations = {
   'history.filterJob': 'کار',
   'history.allJobs': 'همه کارها',
   'history.filterShow': 'نمایش',
+  'history.filterKind': 'چه اتفاقی افتاد',
   'history.rangeReset': 'پاک کردن بازه',
   'history.until': 'تا',
   'history.since': 'از',

@@ -416,6 +416,7 @@ const ar: Translations = {
   'history.filterJob': 'المهمة',
   'history.allJobs': 'كل المهام',
   'history.filterShow': 'إظهار',
+  'history.filterKind': 'ما الذي حدث',
   'history.rangeReset': 'مسح الفترة',
   'history.until': 'إلى',
   'history.since': 'من',

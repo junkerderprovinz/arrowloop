@@ -416,6 +416,7 @@ const sl: Translations = {
   'history.filterJob': 'Opravilo',
   'history.allJobs': 'Vsa opravila',
   'history.filterShow': 'Prikaži',
+  'history.filterKind': 'Kaj se je zgodilo',
   'history.rangeReset': 'Počisti obdobje',
   'history.until': 'Do',
   'history.since': 'Od',

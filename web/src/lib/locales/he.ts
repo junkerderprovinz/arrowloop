@@ -416,6 +416,7 @@ const he: Translations = {
   'history.filterJob': 'משימה',
   'history.allJobs': 'כל המשימות',
   'history.filterShow': 'הצגה',
+  'history.filterKind': 'מה קרה',
   'history.rangeReset': 'ניקוי הטווח',
   'history.until': 'עד',
   'history.since': 'מתאריך',

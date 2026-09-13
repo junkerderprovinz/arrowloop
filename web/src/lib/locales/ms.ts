@@ -416,6 +416,7 @@ const ms: Translations = {
   'history.filterJob': 'Tugas',
   'history.allJobs': 'Semua tugas',
   'history.filterShow': 'Tunjukkan',
+  'history.filterKind': 'Apa yang berlaku',
   'history.rangeReset': 'Kosongkan julat',
   'history.until': 'Hingga',
   'history.since': 'Dari',

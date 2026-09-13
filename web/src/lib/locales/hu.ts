@@ -416,6 +416,7 @@ const hu: Translations = {
   'history.filterJob': 'Feladat',
   'history.allJobs': 'Minden feladat',
   'history.filterShow': 'Megjelenítés',
+  'history.filterKind': 'Mi történt',
   'history.rangeReset': 'Időszak törlése',
   'history.until': 'Eddig',
   'history.since': 'Ettől',

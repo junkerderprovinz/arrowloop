@@ -416,6 +416,7 @@ const lv: Translations = {
   'history.filterJob': 'Darbs',
   'history.allJobs': 'Visi darbi',
   'history.filterShow': 'Rādīt',
+  'history.filterKind': 'Kas notika',
   'history.rangeReset': 'Notīrīt periodu',
   'history.until': 'Līdz',
   'history.since': 'No',

@@ -416,6 +416,7 @@ const gl: Translations = {
   'history.filterJob': 'Tarefa',
   'history.allJobs': 'Todas as tarefas',
   'history.filterShow': 'Amosar',
+  'history.filterKind': 'Que pasou',
   'history.rangeReset': 'Limpar o período',
   'history.until': 'Ata',
   'history.since': 'Desde',

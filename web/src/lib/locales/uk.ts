@@ -416,6 +416,7 @@ const uk: Translations = {
   'history.filterJob': 'Завдання',
   'history.allJobs': 'Усі завдання',
   'history.filterShow': 'Показувати',
+  'history.filterKind': 'Що сталося',
   'history.rangeReset': 'Очистити період',
   'history.until': 'До',
   'history.since': 'Від',

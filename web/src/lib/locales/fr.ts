@@ -416,6 +416,7 @@ const fr: Translations = {
   'history.filterJob': 'Tâche',
   'history.allJobs': 'Toutes les tâches',
   'history.filterShow': 'Afficher',
+  'history.filterKind': 'Ce qui s\'est passé',
   'history.rangeReset': 'Effacer la période',
   'history.until': 'Au',
   'history.since': 'Du',

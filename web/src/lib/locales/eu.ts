@@ -416,6 +416,7 @@ const eu: Translations = {
   'history.filterJob': 'Lana',
   'history.allJobs': 'Lan guztiak',
   'history.filterShow': 'Erakutsi',
+  'history.filterKind': 'Zer gertatu den',
   'history.rangeReset': 'Garbitu epea',
   'history.until': 'Noiz arte',
   'history.since': 'Noiztik',

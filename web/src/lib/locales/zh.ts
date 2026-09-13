@@ -416,6 +416,7 @@ const zh: Translations = {
   'history.filterJob': '作业',
   'history.allJobs': '全部作业',
   'history.filterShow': '显示',
+  'history.filterKind': '发生了什么',
   'history.rangeReset': '清除时间范围',
   'history.until': '截止',
   'history.since': '起始',

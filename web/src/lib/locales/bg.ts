@@ -416,6 +416,7 @@ const bg: Translations = {
   'history.filterJob': 'Задача',
   'history.allJobs': 'Всички задачи',
   'history.filterShow': 'Показване',
+  'history.filterKind': 'Какво се е случило',
   'history.rangeReset': 'Изчистване на периода',
   'history.until': 'До',
   'history.since': 'От',

@@ -416,6 +416,7 @@ const ru: Translations = {
   'history.filterJob': 'Задание',
   'history.allJobs': 'Все задания',
   'history.filterShow': 'Показывать',
+  'history.filterKind': 'Что произошло',
   'history.rangeReset': 'Очистить период',
   'history.until': 'По',
   'history.since': 'С',

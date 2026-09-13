@@ -416,6 +416,7 @@ const tr: Translations = {
   'history.filterJob': 'İş',
   'history.allJobs': 'Tüm işler',
   'history.filterShow': 'Göster',
+  'history.filterKind': 'Ne oldu',
   'history.rangeReset': 'Aralığı temizle',
   'history.until': 'Bitiş',
   'history.since': 'Başlangıç',

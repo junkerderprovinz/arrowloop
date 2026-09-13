@@ -416,6 +416,7 @@ const nl: Translations = {
   'history.filterJob': 'Taak',
   'history.allJobs': 'Alle taken',
   'history.filterShow': 'Tonen',
+  'history.filterKind': 'Wat er gebeurde',
   'history.rangeReset': 'Periode wissen',
   'history.until': 'Tot',
   'history.since': 'Vanaf',

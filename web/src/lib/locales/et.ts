@@ -416,6 +416,7 @@ const et: Translations = {
   'history.filterJob': 'Töö',
   'history.allJobs': 'Kõik tööd',
   'history.filterShow': 'Näita',
+  'history.filterKind': 'Mis juhtus',
   'history.rangeReset': 'Puhasta ajavahemik',
   'history.until': 'Kuni',
   'history.since': 'Alates',

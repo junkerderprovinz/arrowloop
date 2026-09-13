@@ -416,6 +416,7 @@ const ko: Translations = {
   'history.filterJob': '작업',
   'history.allJobs': '모든 작업',
   'history.filterShow': '표시',
+  'history.filterKind': '무슨 일이 있었나',
   'history.rangeReset': '기간 지우기',
   'history.until': '끝',
   'history.since': '시작',

@@ -416,6 +416,7 @@ const vi: Translations = {
   'history.filterJob': 'Công việc',
   'history.allJobs': 'Mọi công việc',
   'history.filterShow': 'Hiển thị',
+  'history.filterKind': 'Điều gì đã xảy ra',
   'history.rangeReset': 'Xóa khoảng thời gian',
   'history.until': 'Đến',
   'history.since': 'Từ',

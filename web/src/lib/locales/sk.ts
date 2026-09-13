@@ -416,6 +416,7 @@ const sk: Translations = {
   'history.filterJob': 'Úloha',
   'history.allJobs': 'Všetky úlohy',
   'history.filterShow': 'Zobraziť',
+  'history.filterKind': 'Čo sa stalo',
   'history.rangeReset': 'Vymazať obdobie',
   'history.until': 'Do',
   'history.since': 'Od',

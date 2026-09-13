@@ -416,6 +416,7 @@ const sv: Translations = {
   'history.filterJob': 'Jobb',
   'history.allJobs': 'Alla jobb',
   'history.filterShow': 'Visa',
+  'history.filterKind': 'Vad som hände',
   'history.rangeReset': 'Rensa perioden',
   'history.until': 'Till',
   'history.since': 'Från',

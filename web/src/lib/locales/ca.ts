@@ -416,6 +416,7 @@ const ca: Translations = {
   'history.filterJob': 'Tasca',
   'history.allJobs': 'Totes les tasques',
   'history.filterShow': 'Mostra',
+  'history.filterKind': 'Què ha passat',
   'history.rangeReset': 'Neteja el període',
   'history.until': 'Fins a',
   'history.since': 'Des de',

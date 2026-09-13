@@ -416,6 +416,7 @@ const hi: Translations = {
   'history.filterJob': 'काम',
   'history.allJobs': 'सभी काम',
   'history.filterShow': 'दिखाएँ',
+  'history.filterKind': 'क्या हुआ',
   'history.rangeReset': 'अवधि हटाएँ',
   'history.until': 'तक',
   'history.since': 'से',

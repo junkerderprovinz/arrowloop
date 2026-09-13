@@ -416,6 +416,7 @@ const th: Translations = {
   'history.filterJob': 'งาน',
   'history.allJobs': 'ทุกงาน',
   'history.filterShow': 'แสดง',
+  'history.filterKind': 'เกิดอะไรขึ้น',
   'history.rangeReset': 'ล้างช่วงเวลา',
   'history.until': 'ถึง',
   'history.since': 'ตั้งแต่',

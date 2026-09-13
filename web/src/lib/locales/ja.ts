@@ -416,6 +416,7 @@ const ja: Translations = {
   'history.filterJob': '処理',
   'history.allJobs': 'すべての処理',
   'history.filterShow': '表示',
+  'history.filterKind': '何が起きたか',
   'history.rangeReset': '期間をクリア',
   'history.until': '終了日',
   'history.since': '開始日',

@@ -416,6 +416,7 @@ const fi: Translations = {
   'history.filterJob': 'Työ',
   'history.allJobs': 'Kaikki työt',
   'history.filterShow': 'Näytä',
+  'history.filterKind': 'Mitä tapahtui',
   'history.rangeReset': 'Tyhjennä aikaväli',
   'history.until': 'Asti',
   'history.since': 'Alkaen',

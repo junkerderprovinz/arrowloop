@@ -1086,6 +1086,10 @@ export function History({
   const filtered = job !== '' || show !== 'all' || since !== '' || until !== ''
 
   useEffect(() => {
+    // Nothing to ask while the file log is showing. It has its own query and
+    // the run list is not on screen; asking anyway would mean a second request
+    // on every keystroke in a search box that has nothing to do with runs.
+    if (view === 'files') return
     let live = true
     setLoading(true)
     api
@@ -1096,7 +1100,7 @@ export function History({
     return () => {
       live = false
     }
-  }, [job, show, limit, since, until, runs])
+  }, [view, job, show, limit, since, until, runs])
 
   const list = own ?? runs
 
@@ -1174,8 +1178,12 @@ export function History({
               that arrived, things that went away, things that went wrong -
               rather than by the engine's nine kinds. */}
           <div className="w-56 shrink-0">
+            {/* Its own label, not a second "Show". Two controls side by side
+                both reading "Anzeigen" is the same inconsistency jdp caught on
+                the targets page, and here one picks what you are looking AT
+                while the other picks what happened to it. */}
             <Choice<Show>
-              label={t('history.filterShow')}
+              label={t('history.filterKind')}
               value={kind}
               onChange={setKind}
               options={[
@@ -1266,7 +1274,9 @@ export function History({
       </div>
       </>
       ) : null}
-      <InfoBubble tip={t('history.filterHint')} />
+      {/* The hint describes what the RUN filters do, in those words. Over the
+          file filters it would be explaining a list it is not about. */}
+      {view === 'runs' ? <InfoBubble tip={t('history.filterHint')} /> : null}
     </div>
   )
 

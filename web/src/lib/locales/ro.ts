@@ -416,6 +416,7 @@ const ro: Translations = {
   'history.filterJob': 'Sarcină',
   'history.allJobs': 'Toate sarcinile',
   'history.filterShow': 'Afișează',
+  'history.filterKind': 'Ce s-a întâmplat',
   'history.rangeReset': 'Ștergeți perioada',
   'history.until': 'Până la',
   'history.since': 'De la',
