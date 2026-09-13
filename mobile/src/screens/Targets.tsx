@@ -4,7 +4,7 @@ import { Alert, StyleSheet, View } from "react-native";
 import { api, type Remote, type Usage } from "../api";
 import { useT } from "../i18n";
 import type { Nav, TargetsStack } from "../nav";
-import { Room, unreachable, isAccount, useRoom, type Room as Space } from "../space";
+import { account, Room, unreachable, isAccount, useRoom, type Room as Space } from "../space";
 import { space } from "../theme";
 import { Badge, Body, Button, Caption, Card, CardHead, Empty, Fab, Floating, Page, useHue, useTheme } from "../ui";
 import { CardMenu } from "../CardMenu";
@@ -107,6 +107,8 @@ function TargetCard({
   /** Only for something that went wrong HERE, which is a failed delete. */
   const [detail, setDetail] = useState("");
 
+  const { who, where } = account(remote);
+
   const remove = () => {
     Alert.alert(t("confirm.deleteRemote"), t("confirm.deleteRemoteStakes", { name: remote.name }), [
       { text: t("confirm.cancel"), style: "cancel" },
@@ -149,6 +151,22 @@ function TargetCard({
           />
         </View>
       </CardHead>
+
+      {/* WHO AND WHERE, which used to be on the overview. jdp turned the two
+          screens around: "kannst du den inhalt von den Zielcards in der
+          übersicht und im Zieltab tauschen? wo welche info angezeigt wird hätte
+          ich genau anders herum."
+
+          This is the screen the detail belongs on. A list of target NAMES
+          answers "which ones are set up" and not "which account is this and
+          where does it point", and the second is what somebody comes here to
+          check - whether a card says the wrong number, or refuses to connect at
+          all. See account() in space.tsx for what is read and what is left out.
+
+          Above the size rather than below it, so the lines read as one block
+          about the target and the meter stays the last thing on the card. */}
+      {who ? <Caption>{who}</Caption> : null}
+      {where ? <Caption>{where}</Caption> : null}
 
       {/* How full it is. Nothing at all while the answer is on its way, rather
           than a placeholder that jumps: a row of "wird gesucht" under every

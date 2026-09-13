@@ -681,23 +681,16 @@ function Account({ remote, room, index }: { remote: Remote; room: Space; index: 
   const { t } = useT();
   const hue = useHue(index);
   /*
-  WHO AND WHERE, under the name. Autosync's account block carries the login and
-  the address beside the size, and jdp asked for that page - with reason: a list
-  of target NAMES answers "which ones are set up" and not "which account is this
-  and where does it point", which is what somebody checks when a card says the
-  wrong number.
+  THE NAME AND HOW FULL IT IS, and deliberately nothing else.
 
-  Read from the target's own settings rather than from a product table, so a
-  backend this app has never heard of still shows whatever it does carry. A
-  secret is never shown: the engine masks them before they leave it, and a row
-  of asterisks under a card would be noise pretending to be information.
+  The login and the address were here, under the name, and jdp turned the two
+  screens around: "kannst du den inhalt von den Zielcards in der übersicht und
+  im Zieltab tauschen? wo welche info angezeigt wird hätte ich genau anders
+  herum." They now sit on the targets screen, and the reason they belong there
+  is the reason this card is short: a page somebody opens to see whether the
+  phone is up to date answers "which accounts, how full" in one look, and four
+  lines of connection detail per card is the thing that makes it take two.
   */
-  const said = (key: string) => remote.settings.find((s) => s.key === key && !s.secret)?.value;
-  // ONLY a user NAME. `access_key_id` is not marked secret and is a credential
-  // all the same - half of one, and the half that names the account. A card
-  // that printed it would put it in every screenshot of this page.
-  const who = said("user");
-  const where = said("url") ?? said("endpoint") ?? said("remote");
   return (
     <Card hue={hue}>
       <CardHead mark={remote.mark} title={remote.name}>
@@ -707,8 +700,6 @@ function Account({ remote, room, index }: { remote: Remote; room: Space; index: 
           </View>
         ) : null}
       </CardHead>
-      {who ? <Caption>{who}</Caption> : null}
-      {where ? <Caption>{where}</Caption> : null}
       <Room room={room} hue={hue} />
       {room === undefined ? <Caption>{t("history.working")}</Caption> : null}
     </Card>

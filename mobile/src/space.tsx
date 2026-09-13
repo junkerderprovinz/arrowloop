@@ -52,6 +52,32 @@ function isLocalPath(value: string): boolean {
   return value.startsWith("/") || value.startsWith("\\") || /^[A-Za-z]:[\\/]/.test(value);
 }
 
+/**
+ * Who this target signs in as, and where it points.
+ *
+ * Read from the target's OWN settings rather than from a product table, so a
+ * backend this app has never heard of still shows whatever it does carry.
+ *
+ * A secret is never shown. The engine masks them before they leave it, and a
+ * row of asterisks under a card would be noise pretending to be information -
+ * and `access_key_id`, which rclone does NOT mark secret, is left out on
+ * purpose: it is half a credential, and the half that names the account, so a
+ * card printing it would put it in every screenshot of the page.
+ *
+ * Here rather than in a screen because BOTH screens want it, at different
+ * times. It began on the overview and jdp moved it: "kannst du den inhalt von
+ * den Zielcards in der übersicht und im Zieltab tauschen? wo welche info
+ * angezeigt wird hätte ich genau anders herum." He is right about which way
+ * round it goes. The overview is read at a glance, where a login and a URL are
+ * four lines of detail nobody is checking; the targets screen is where somebody
+ * goes when a card says the wrong thing, and that is where "which account is
+ * this and where does it point" is the question being asked.
+ */
+export function account(remote: Remote): { who?: string; where?: string } {
+  const said = (key: string) => remote.settings.find((s) => s.key === key && !s.secret)?.value;
+  return { who: said("user"), where: said("url") ?? said("endpoint") ?? said("remote") };
+}
+
 /** Bytes as somebody would say them. */
 export function bytes(n: number | undefined): string {
   if (n === undefined) return "?";
