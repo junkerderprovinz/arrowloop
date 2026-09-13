@@ -389,10 +389,13 @@ function Shell() {
  * because Android's window background is near-white and showed through.
  */
 function TabBar({ state, descriptors, navigation }: MaterialTopTabBarProps) {
-  const { p, radius, labels, accent, hueAt } = useTheme();
+  // The BAR's own answer, not the app's. jdp: "die beschriftungsengine soll
+  // fuer die bottombar separat einstellbar sein." It defaults to following the
+  // app-wide one, so nothing moves for somebody who never opens that setting.
+  const { p, radius, barLabels, accent, hueAt } = useTheme();
   const inset = useSafeAreaInsets();
-  const showGlyph = labels !== "text";
-  const showWord = labels !== "glyph";
+  const showGlyph = barLabels !== "text";
+  const showWord = barLabels !== "glyph";
 
   return (
     <View>
@@ -471,7 +474,18 @@ function TabBar({ state, descriptors, navigation }: MaterialTopTabBarProps) {
               >
                 {showGlyph ? <Glyph name={markFor(route.name)} color={ink} size={20} /> : null}
                 {showWord ? (
-                  <Text numberOfLines={1} style={[styles.tabText, { color: ink }]}>
+                  <Text
+                    numberOfLines={1}
+                    // SHRINKS rather than clips, the same rule the horizontal
+                    // selector follows. jdp on that one: "die punkte sollen
+                    // weg." Five tabs instead of four leave each one narrower,
+                    // and "Einstellungen" came out as "Einstellung…" - a
+                    // character spent to say that a character is missing, on
+                    // the one word somebody is reading to aim at.
+                    adjustsFontSizeToFit
+                    minimumFontScale={0.7}
+                    style={[styles.tabText, { color: ink }]}
+                  >
                     {label}
                   </Text>
                 ) : null}

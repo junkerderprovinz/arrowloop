@@ -27,7 +27,7 @@ import {
   type Radii,
   SCRIM,
 } from "./theme";
-import { useAppearance, type LabelMode } from "./settings";
+import { useAppearance, type BarLabelMode, type LabelMode } from "./settings";
 import { useMotion } from "./motion";
 
 /**
@@ -55,6 +55,16 @@ export interface Theme {
   p: Palette;
   radius: Radii;
   labels: LabelMode;
+  /**
+   * What the BOTTOM BAR shows, which is a separate answer from everything else.
+   *
+   * jdp: "die beschriftungsengine soll für die bottombar separat einstellbar
+   * sein." The bar is the one control that is always on screen and the one with
+   * five words across a phone's width, so the trade it makes between room and
+   * clarity is genuinely not the trade a card's buttons make. Resolved here so
+   * no screen has to know that "wie überall" is stored rather than a mode.
+   */
+  barLabels: LabelMode;
   rainbow: boolean;
   scheme: "dark" | "light";
   accent: string;
@@ -79,6 +89,7 @@ export function useTheme(): Theme {
     // from an older build resolves to symbols, which is what it looked like
     // anyway. See settings.ts for the whole reasoning.
     labels: a.labels === "reactive" ? "glyph" : a.labels,
+    barLabels: barMode(a.barLabels, a.labels),
     rainbow: a.rainbow,
     accent: a.accent,
     accentContrast: contrastOn(a.accent),
@@ -101,6 +112,20 @@ export function useTheme(): Theme {
 
 export function usePalette(): Palette {
   return useTheme().p;
+}
+
+/**
+ * What the bar shows, from its own setting.
+ *
+ * TWO stored values resolve to something else here, and both are values the
+ * picker no longer offers. `reactive` folds to symbols because a phone has no
+ * pointer, so a label that appears under one is a label nobody ever sees.
+ * `"same"` - the "wie überall" option, offered for one afternoon before jdp
+ * took it out - falls back to the global setting, which is what it meant.
+ */
+function barMode(bar: BarLabelMode, everywhere: LabelMode): LabelMode {
+  const mode = bar === "same" ? everywhere : bar;
+  return mode === "reactive" ? "glyph" : mode;
 }
 
 /** The colour one member of a set gets, by position. Off, everything is the

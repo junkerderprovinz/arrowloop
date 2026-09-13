@@ -423,6 +423,9 @@ export const en = {
   'look.labelText': 'Text',
   'look.labelTextGlyph': 'Text and symbol',
   'look.labelGlyph': 'Symbol',
+  'look.labelsEverywhere': 'Everywhere else',
+  'look.barLabels': 'Bottom bar',
+  'look.barLabelsHint': 'The bar is the one control that is always on screen, and it fits five words across a phone. It can therefore answer this differently from everything else. Leave it on "Same as everywhere" and it follows the setting above.',
   'look.labelReactive': 'Reactive',
   'look.language': 'Language',
 
@@ -1032,6 +1035,9 @@ export const de: Translations = {
   'look.labelText': 'Text',
   'look.labelTextGlyph': 'Text und Symbol',
   'look.labelGlyph': 'Symbol',
+  'look.labelsEverywhere': 'Überall sonst',
+  'look.barLabels': 'Untere Leiste',
+  'look.barLabelsHint': 'Die Leiste ist das einzige Bedienelement, das immer zu sehen ist, und auf einem Telefon stehen fünf Wörter nebeneinander. Sie darf das deshalb anders beantworten als alles andere. Bleibt sie auf „Wie überall“, folgt sie der Einstellung darüber.',
   'look.labelReactive': 'Reaktiv',
   'look.language': 'Sprache',
 

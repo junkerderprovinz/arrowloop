@@ -35,6 +35,25 @@ export type LabelMode = "text" | "textGlyph" | "glyph" | "reactive";
 /** The modes a phone can actually offer, in the order the well shows them. */
 export const LABEL_MODES = ["text", "textGlyph", "glyph"] as const;
 
+/**
+ * What the BOTTOM BAR shows - the same three modes, answered separately.
+ *
+ * jdp: "die beschriftungsengine soll für die bottombar separat einstellbar
+ * sein." The bar is the one control that is always on screen, and five words
+ * across a phone's width is a different trade from three buttons on a card.
+ *
+ * It briefly carried a fourth option, "wie überall", which followed the global
+ * setting. jdp took it out the same afternoon: "wie überall im bottom bar
+ * beschriftungsselektor raus." He is right that it was the wrong kind of
+ * answer - the point of the setting is that the bar decides for itself, and an
+ * option that means "do not decide" only makes the picker wider.
+ *
+ * The type still ACCEPTS it, for exactly the reason it accepts `reactive`: a
+ * settings file written in between carries it, and refusing to load that file
+ * would be worse than showing what it looked like anyway.
+ */
+export type BarLabelMode = LabelMode | "same";
+
 export type Shape = "round" | "soft" | "square";
 
 /**
@@ -70,6 +89,8 @@ export interface Appearance {
   rainbowSeed: number;
   shape: Shape;
   labels: LabelMode;
+  /** What the BOTTOM BAR shows. "same" follows `labels`; see BarLabelMode. */
+  barLabels: BarLabelMode;
   /**
    * How much the interface moves: off, subtle or full.
    *
@@ -99,6 +120,7 @@ export const DEFAULT_APPEARANCE: Appearance = {
   rainbowSeed: 0,
   shape: "round",
   labels: "textGlyph",
+  barLabels: "textGlyph",
   motion: "full",
   lock: false,
 };

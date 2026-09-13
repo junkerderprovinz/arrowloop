@@ -13,6 +13,7 @@ import {
   settings as settingsApi,
   useAppearance,
   useEngineSettings,
+  type BarLabelMode,
   type EngineSettings,
   type LabelMode,
   type Shape,
@@ -72,7 +73,7 @@ export function Settings() {
   const look = useAppearance();
   // For the About card's marks: the brands carry a per-theme colour of their
   // own, and the one house button takes the accent rather than a vendor's.
-  const { scheme, accentInk } = useTheme();
+  const { scheme, accentInk, barLabels } = useTheme();
   // The intensity in force, for the handfuls of places that animate a change.
   const { intensity: motion } = useMotion();
 
@@ -458,13 +459,42 @@ export function Settings() {
           setting that takes every label away and gives nothing back, because
           the gesture that brings them back does not exist. jdp: "auch hier gibt
           es keinen reaktiven modus in der app, das macht kein sinn." */}
+      {/* TWO SELECTORS, EACH SAYING WHAT IT IS FOR. jdp: "im oberen selektor
+          auch schreiben für was der ist." A card with one unlabelled strip is
+          clear; a card with two, where only the second is named, reads as one
+          setting and one afterthought.
+
+          The bar answers separately because it is the one control that is
+          always on screen and the one that fits five words across a phone's
+          width, so its trade between room and clarity is genuinely not the
+          trade a card's buttons make. */}
       <Section title={t("look.labels")} hint={t("look.labelsHint")} hue={3}>
+        <AxisLabel>{t("look.labelsEverywhere")}</AxisLabel>
         <Choice<LabelMode>
           // A build that stored `reactive` before this change would otherwise
           // land on a well with nothing lit, which reads as broken rather than
           // as migrated. Symbols is what reactive already looked like here.
           value={look.labels === "reactive" ? "glyph" : look.labels}
           onChange={(labels) => setAppearance({ labels })}
+          options={[
+            { value: "text", label: t("look.labelText") },
+            { value: "textGlyph", label: t("look.labelTextGlyph") },
+            { value: "glyph", label: t("look.labelGlyph") },
+          ]}
+        />
+        {/* No "wie überall" here. It was offered for one afternoon and jdp took
+            it out: "wie überall im bottom bar beschriftungsselektor raus." The
+            point of this setting is that the bar decides for itself, and an
+            option meaning "do not decide" only made the strip narrower for the
+            three that do. A file written in between still resolves - see
+            barMode in ui.tsx. */}
+        <AxisLabel hint={t("look.barLabelsHint")}>{t("look.barLabels")}</AxisLabel>
+        <Choice<BarLabelMode>
+          // The RESOLVED mode, not the stored one: a file that still says
+          // "same" would otherwise light no segment at all, which reads as
+          // broken rather than as migrated. See barMode in ui.tsx.
+          value={barLabels}
+          onChange={(barLabels) => setAppearance({ barLabels })}
           options={[
             { value: "text", label: t("look.labelText") },
             { value: "textGlyph", label: t("look.labelTextGlyph") },
