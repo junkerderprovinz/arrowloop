@@ -331,9 +331,14 @@ func (r *Runner) execute(ctx context.Context, j job.Job, only []string, resolve 
 	// What is in the air, published while this run lasts. Started HERE rather
 	// than in RunChosen because this is the first point where both sides are
 	// open, and the right-hand side is what says which way a file is going.
-	defer r.watchMoving(ctx, j.Name, ends.Right)()
+	//
+	// The counter is shared with the progress watcher below: the ticker uses it
+	// to tell a run that is pushing small files fast from one that is sitting on
+	// a big one, and only the second is worth the cost of a reading.
+	steps := &stepCount{}
+	defer r.watchMoving(ctx, j.Name, ends.Right, steps)()
 
-	watcher := progressFor{runner: r, job: j.Name}
+	watcher := progressFor{runner: r, job: j.Name, steps: steps}
 	if only == nil && len(resolve) == 0 {
 		p, res, err := engine.OnceWatched(ctx, ends, db, opt, watcher)
 		return res, p, err
@@ -712,6 +717,29 @@ func (r *Runner) config() *job.Config {
 const MovingTick = 500 * time.Millisecond
 
 /*
+MovingBusy is how many finished steps in one tick mean "do not ask rclone".
+
+Reading the in-flight list is NOT cheap, and that is the whole reason this
+constant exists. `RemoteStats` takes the lock that every byte of every transfer
+also takes, and it walks the completed-transfer list and merges time ranges
+under it. Asking twice a second while four workers push small files through
+made the accounting queue behind the reading.
+
+MEASURED ON THE DEVICE, not reasoned about: the same job over 600 files took
+9.0 seconds with this reading switched off and 25.6 with it on. Three times
+slower, for a display.
+
+The way out is that a fast stream of finished steps is itself the signal that
+there is nothing worth drawing. Twenty files a second are files that are done
+before a bar could move; the run's own step bar says everything there is to
+say about them. A big file is the opposite case - no steps finish for seconds
+at a time - and that is exactly when the reading is worth taking. So the
+counter below decides, and the expensive call happens only in the case it was
+built for.
+*/
+const MovingBusy = 8
+
+/*
 watchMoving publishes what rclone has in the air, until the returned function
 is called.
 
@@ -726,13 +754,26 @@ IDENTICAL FRAMES ARE DROPPED. Most of a run has nothing in the air - listing,
 comparing, writing state - and a screen that received "nothing is moving" twice
 a second for a minute would be woken sixty times to draw the same nothing. So
 the empty list is sent once, when it becomes empty.
+
+AND THE READING IS SKIPPED WHILE FILES ARE FLYING. See MovingBusy: the reading
+costs the transfers real time, and a tick in which many steps finished is a tick
+whose files were done before a bar could have moved. What that leaves is the
+case the display was built for - a big file, no steps finishing, a bar worth
+drawing.
 */
-func (r *Runner) watchMoving(ctx context.Context, name string, right rclonefs.Fs) func() {
+func (r *Runner) watchMoving(ctx context.Context, name string, right rclonefs.Fs, steps *stepCount) func() {
 	done := make(chan struct{})
 	go func() {
 		tick := time.NewTicker(MovingTick)
 		defer tick.Stop()
 		var last []engine.Moving
+		send := func(now []engine.Moving) {
+			if sameMoving(last, now) {
+				return
+			}
+			last = now
+			r.publish(Event{Job: name, Phase: "moving", Moving: now})
+		}
 		for {
 			select {
 			case <-done:
@@ -747,16 +788,43 @@ func (r *Runner) watchMoving(ctx context.Context, name string, right rclonefs.Fs
 			case <-ctx.Done():
 				return
 			case <-tick.C:
-				now := engine.InFlight(ctx, right)
-				if sameMoving(last, now) {
+				if steps.takeAndReset() >= MovingBusy {
+					// Files are finishing faster than a bar could follow. The
+					// rows are cleared rather than left standing, because
+					// whatever they last named landed long ago.
+					send(nil)
 					continue
 				}
-				last = now
-				r.publish(Event{Job: name, Phase: "moving", Moving: now})
+				send(engine.InFlight(ctx, right))
 			}
 		}
 	}()
 	return func() { close(done) }
+}
+
+// stepCount is how many pieces of work finished since it was last read.
+//
+// One counter per run, written by whichever worker finishes a step and read by
+// the ticker. It exists only to answer "is this run pushing files faster than a
+// bar could follow", which is the question that keeps the expensive reading out
+// of the hot path.
+type stepCount struct {
+	mu sync.Mutex
+	n  int
+}
+
+func (s *stepCount) add() {
+	s.mu.Lock()
+	s.n++
+	s.mu.Unlock()
+}
+
+func (s *stepCount) takeAndReset() int {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	n := s.n
+	s.n = 0
+	return n
 }
 
 // sameMoving says whether two readings would draw the same rows.
@@ -818,6 +886,9 @@ type Event struct {
 type progressFor struct {
 	runner *Runner
 	job    string
+	// steps counts what finishes, for the in-flight ticker. Nil in any caller
+	// that does not publish one, so every use has to survive that.
+	steps *stepCount
 }
 
 func (p progressFor) Starting(total int) {
@@ -825,6 +896,9 @@ func (p progressFor) Starting(total int) {
 }
 
 func (p progressFor) Did(kind, path, side string, done, total int) {
+	if p.steps != nil {
+		p.steps.add()
+	}
 	p.runner.publish(Event{Job: p.job, Phase: "progress", Done: done, Total: total, Kind: kind, Path: path, Side: side})
 }
 
