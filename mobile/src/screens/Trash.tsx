@@ -6,7 +6,7 @@ import { useT } from "../i18n";
 import type { JobsStack } from "../nav";
 import { space } from "../theme";
 import { Badge, Button, Caption, Card, Empty, Mono, Page, Title, useTheme } from "../ui";
-import { bytes } from "./Targets";
+import { bytes } from "../space";
 
 /**
  * What this job deleted, and getting it back.

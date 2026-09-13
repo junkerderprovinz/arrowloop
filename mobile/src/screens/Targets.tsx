@@ -4,6 +4,7 @@ import { Alert, StyleSheet, View } from "react-native";
 import { api, type Remote, type Usage } from "../api";
 import { useT } from "../i18n";
 import type { Nav, TargetsStack } from "../nav";
+import { Room, useRoom, type Room as Space } from "../space";
 import { space } from "../theme";
 import { Badge, Body, Button, Caption, Card, CardHead, Empty, Fab, Floating, Page, useHue, useTheme } from "../ui";
 import { CardMenu } from "../CardMenu";
@@ -40,17 +41,25 @@ export function Targets() {
     return stop;
   }, [nav, load]);
 
-  if (!remotes) return <Empty title={t("history.working")} detail={error || undefined} />;
+  // How full each one is, asked once the list is known. jdp: "die verbundenen
+  // konten sollen den speicherplatz anzeigen auf der card wie in autosync."
+  //
+  // The list is the only thing this screen waits for. The sizes arrive after
+  // it and each card fills in as its own answer lands, because a page that
+  // waited for every cloud would be blank for as long as the slowest one.
+  const room = useRoom(remotes);
 
   return (
     <Floating>
       <Page fab>
       {/* Nothing where there is nothing. jdp asked for the hint text to go when
           the page is empty, and the floating button below carries the offer. */}
-      {remotes.map((remote, index) => (
+      {!remotes ? <Empty title={t("history.working")} detail={error || undefined} /> : null}
+      {(remotes ?? []).map((remote, index) => (
         <TargetCard
           key={remote.name}
           remote={remote}
+          room={room[remote.name]}
           index={index}
           onEdit={() => nav.navigate("TargetEdit", { name: remote.name })}
           onGone={load}
@@ -71,24 +80,28 @@ export function Targets() {
 
 function TargetCard({
   remote,
+  room,
   index,
   onEdit,
   onGone,
 }: {
   remote: Remote;
+  room: Space;
   index: number;
   onEdit: () => void;
   onGone: () => void;
 }) {
   const { t } = useT();
-  const { p, scheme } = useTheme();
   const hue = useHue(index);
-  // No reachable/unreachable state here any more. The button that set it moved
-  // to the form (jdp: "der pruefen button der ziele soll in ziele einrichten
-  // seite nicht auf die card"), and a badge nothing can ever light is worse than
-  // no badge: an empty card reads as "not checked yet" when in truth nothing on
-  // this screen can check it. The space reading went the same way - it was only
-  // ever fetched after a successful check.
+  // No CHECK button here any more. It moved to the form (jdp: "der pruefen
+  // button der ziele soll in ziele einrichten seite nicht auf die card"), where
+  // it can run before a credential is kept.
+  //
+  // The SIZE came back, though, and by a different route: it used to hang off
+  // that button, so it only ever appeared after somebody pressed it. Now the
+  // screen asks every target on its own as soon as it has the list, which is
+  // what jdp meant by "wie in autosync" - there the space is simply part of
+  // what an account IS, not a reward for testing it.
 
   /** Only for something that went wrong HERE, which is a failed delete. */
   const [detail, setDetail] = useState("");
@@ -118,6 +131,10 @@ function TargetCard({
           CardHead in ui.tsx. A target names its product directly, so there is no
           side to resolve first. */}
       <CardHead mark={remote.mark} title={remote.name}>
+        {/* Unreachable is said HERE rather than under the bar, because it is a
+            fact about the target and not about its size. A card that showed
+            both a badge and an empty meter would read as two faults. */}
+        {room === "gone" ? <Badge label={t("targets.checkFailed")} tone="fail" /> : null}
         {/* The two rare acts, out of the row and into a menu, the same way the
             job card does it. jdp: "auch in den ziele card ein hamburgermenue."
             Three buttons of equal weight said all three were equally likely,
@@ -131,6 +148,11 @@ function TargetCard({
           />
         </View>
       </CardHead>
+
+      {/* How full it is. Nothing at all while the answer is on its way, rather
+          than a placeholder that jumps: a row of "wird gesucht" under every
+          card would be the loudest thing on the screen and the least useful. */}
+      <Room room={room} hue={hue} />
       {/* The protocol, only where the logo did not already say it. jdp: "die
           verbindungsart kannst du auf der ziele card weg lassen" - and under a
           Garage mark, `s3` says the same thing twice and less clearly. Kept
@@ -148,19 +170,6 @@ function TargetCard({
           two things to explain with one of them always the wrong one to press. */}
     </Card>
   );
-}
-
-/** Bytes as somebody would say them. */
-export function bytes(n: number | undefined): string {
-  if (n === undefined) return "?";
-  const units = ["B", "KB", "MB", "GB", "TB"];
-  let value = n;
-  let unit = 0;
-  while (value >= 1024 && unit < units.length - 1) {
-    value /= 1024;
-    unit += 1;
-  }
-  return `${value < 10 && unit > 0 ? value.toFixed(1) : Math.round(value)} ${units[unit]}`;
 }
 
 const styles = StyleSheet.create({

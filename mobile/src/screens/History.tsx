@@ -10,7 +10,7 @@ import { contrastOn, space, text } from "../theme";
 import { useEngineEvents } from "../useEngine";
 import { Badge, Body, Caption, Card, Choice, Empty, Mono, Title, useTheme } from "../ui";
 import { when } from "./Jobs";
-import { bytes } from "./Targets";
+import { bytes } from "../space";
 
 /**
  * What has happened - file by file, and run by run.

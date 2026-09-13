@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
-import { api, type Job, type Remote, type RunEvent, type Usage } from "../api";
+import { api, type Job, type Remote, type RunEvent } from "../api";
 import { Glyph } from "../glyphs";
 import { useT } from "../i18n";
+import { Room, useRoom, type Room as Space } from "../space";
 import { space } from "../theme";
 import { useEngineStream } from "../useEngine";
 import { Badge, Body, Caption, Card, CardHead, Empty, Meter, Mono, Page, Title, useHue, useTheme } from "../ui";
 import { entryKey } from "./History";
-import { bytes } from "./Targets";
 
 /**
  * What is happening right now, and what it is happening to.
@@ -169,32 +169,21 @@ function Running({ job, at, index }: { job: Job; at?: Progress; index: number })
 function Accounts() {
   const { t } = useT();
   const [remotes, setRemotes] = useState<Remote[] | null>(null);
-  const [room, setRoom] = useState<Record<string, Usage | "gone">>({});
 
   useEffect(() => {
     let live = true;
     api.storage().then(
-      (storage) => {
-        if (!live) return;
-        setRemotes(storage.remotes);
-        for (const remote of storage.remotes) {
-          api.aboutRemote(remote.name).then(
-            (usage) => live && setRoom((old) => ({ ...old, [remote.name]: usage })),
-            // Unreachable, refused, or a backend with no such question. The
-            // card says which of those it was as far as it can: `about` fails
-            // for a target that cannot be reached, and answers
-            // `supported: false` for one that can be reached and does not
-            // count.
-            () => live && setRoom((old) => ({ ...old, [remote.name]: "gone" })),
-          );
-        }
-      },
+      (storage) => live && setRemotes(storage.remotes),
       () => live && setRemotes([]),
     );
     return () => {
       live = false;
     };
   }, []);
+
+  // The same hook the targets list uses, so the two screens cannot end up
+  // disagreeing about how full the same target is.
+  const room = useRoom(remotes);
 
   if (!remotes) return <Card><Caption>{t("history.working")}</Caption></Card>;
   if (remotes.length === 0) {
@@ -208,61 +197,26 @@ function Accounts() {
   return (
     <>
       {remotes.map((remote, index) => (
-        <Account key={remote.name} remote={remote} usage={room[remote.name]} index={index} />
+        <Account key={remote.name} remote={remote} room={room[remote.name]} index={index} />
       ))}
     </>
   );
 }
 
-function Account({
-  remote,
-  usage,
-  index,
-}: {
-  remote: Remote;
-  usage: Usage | "gone" | undefined;
-  index: number;
-}) {
+function Account({ remote, room, index }: { remote: Remote; room: Space; index: number }) {
   const { t } = useT();
   const hue = useHue(index);
-
-  // `total` is what the service says it has, and `used` what it says is gone.
-  // A backend that reports only one of the two is ordinary - an S3 bucket has
-  // no size at all - so every line below is drawn from what is actually there
-  // rather than from a total that was assumed and then divided by.
-  const usable = usage && usage !== "gone" && usage.supported ? usage : null;
-  const total = usable?.total ?? 0;
-  const used = usable?.used ?? (total && usable?.free !== undefined ? total - usable.free : 0);
-
   return (
     <Card hue={hue}>
       <CardHead mark={remote.mark} title={remote.name}>
-        {usage === "gone" ? (
+        {room === "gone" ? (
           <View style={styles.badgeSlot}>
             <Badge label={t("targets.checkFailed")} tone="fail" />
           </View>
         ) : null}
       </CardHead>
-      {usable ? (
-        <>
-          {total > 0 ? <Meter done={used} total={total} hue={hue} /> : null}
-          <Caption>
-            {total > 0 && usable.free !== undefined
-              ? t("targets.spaceFree", { free: bytes(usable.free), total: bytes(total) })
-              : used > 0
-                ? t("targets.spaceUsed", { used: bytes(used) })
-                : total > 0
-                  ? t("targets.spaceTotal", { total: bytes(total) })
-                  : t("overview.noSpace")}
-          </Caption>
-        </>
-      ) : usage === undefined ? (
-        <Caption>{t("history.working")}</Caption>
-      ) : usage === "gone" ? null : (
-        // Reached, and it does not count. Said plainly rather than shown as an
-        // empty bar, which would read as "completely empty".
-        <Caption>{t("overview.noSpace")}</Caption>
-      )}
+      <Room room={room} hue={hue} />
+      {room === undefined ? <Caption>{t("history.working")}</Caption> : null}
     </Card>
   );
 }
