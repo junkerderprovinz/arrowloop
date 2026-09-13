@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { AppState } from "react-native";
 import { api, events, type RunEvent } from "./api";
 import { engine } from "./engine";
+import type { T } from "./i18n";
 
 export type EngineState = "starting" | "ready" | "trouble";
 
@@ -41,9 +42,46 @@ function readable(text: string): string {
   return [...lines.slice(0, HEAD_LINES), "…", lines[lines.length - 1]].join("\n");
 }
 
-export function useEngine() {
+/**
+ * @param t the app's translator. Passed IN rather than read with the hook,
+ * because the three sentences this screen can say used to be English literals
+ * in this file - so a German phone read English in the one moment it had
+ * nothing else on screen.
+ */
+export function useEngine(t: T) {
   const [state, setState] = useState<EngineState>("starting");
   const [log, setLog] = useState("");
+
+  /**
+   * Keeps asking after the deadline, so a busy engine heals the screen itself.
+   *
+   * The deadline used to be the end of it: sixty seconds and then a wall with a
+   * button, forever, until somebody pressed it. jdp met exactly that - "die app
+   * funktioniert nicht, der motor startet nicht" - while the engine was alive
+   * and finishing runs, which its own log said on the same screen.
+   *
+   * A busy engine is not a dead one, and the difference is not something a
+   * person should have to work out from a log. So the wall stays reachable, and
+   * the app keeps knocking behind it: the moment the engine answers, the screen
+   * it was blocking comes back on its own.
+   */
+  const keepKnocking = useCallback(() => {
+    let stopped = false;
+    const knock = async () => {
+      while (!stopped) {
+        await new Promise((r) => setTimeout(r, 3000));
+        if (stopped) return;
+        if (await api.alive()) {
+          setState("ready");
+          return;
+        }
+      }
+    };
+    void knock();
+    return () => {
+      stopped = true;
+    };
+  }, []);
 
   const wait = useCallback(async () => {
     setState("starting");
@@ -67,19 +105,17 @@ export function useEngine() {
     // shrug. Whether the process is still THERE goes with it: an empty log
     // means two opposite things, and only the process can say which.
     const [text, alive] = await Promise.all([engine.log(), engine.alive()]);
-    setLog(
-      (alive
-        ? "The engine process is still running. It started and has not answered."
-        : "The engine process is gone. It started and stopped, or never started at all.") +
-        "\n\n" +
-        readable(text),
-    );
+    setLog((alive ? t("phone.engineBusy") : t("phone.engineGone")) + "\n\n" + readable(text));
     setState("trouble");
-  }, []);
+    // And keep knocking. A process that is THERE and silent is nearly always a
+    // busy one, and the screen must be able to come back without anybody
+    // pressing anything.
+    if (alive) keepKnocking();
+  }, [keepKnocking, t]);
 
   useEffect(() => {
     if (!engine.available) {
-      setLog("This build has no engine module.");
+      setLog(t("phone.engineNoModule"));
       setState("trouble");
       return;
     }
@@ -97,7 +133,7 @@ export function useEngine() {
     // nothing hangs on it.
     void wait();
     engine.start().catch((e: Error) => setLog((old) => `${e.message}\n\n${old}`));
-  }, [wait]);
+  }, [wait, t]);
 
   // Checked again when the app comes back to the front. Android may have
   // reclaimed the service while the phone was in a pocket, and a screen that

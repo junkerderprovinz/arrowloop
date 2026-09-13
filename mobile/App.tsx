@@ -104,7 +104,7 @@ export default function App() {
 function Shell() {
   const { p, scheme, radius, accent } = useTheme();
   const { t } = useT();
-  const { state, log, retry } = useEngine();
+  const { state, log, retry } = useEngine(t);
   const look = useAppearance();
 
   /**
