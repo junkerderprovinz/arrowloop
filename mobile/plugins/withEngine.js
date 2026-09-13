@@ -332,6 +332,45 @@ copy {
     into file('src/main/jniLibs')
 }
 
+// An engine OLDER than the Go sources must not be a successful build either.
+//
+// The same check exists in this plugin's prebuild step, and that was not
+// enough: prebuild runs on \`expo prebuild\`, while a plain
+// \`./gradlew assembleRelease\` on an already-generated tree skips it
+// entirely. So a Go change plus a gradle build produced an APK running
+// yesterday's engine - which is invisible, because the APK is valid, the
+// right size, and answers every question it was built to answer.
+//
+// Caught for the third time on 2026-09-13: the engine had learned to name a
+// target's product, the container answered with it, and the phone answered
+// with nothing.
+tasks.matching { it.name ==~ /^(merge|package).*[Nn]ativeLibs\$/ || it.name ==~ /^package(Debug|Release)\$/ }.configureEach {
+    doFirst {
+        def repo = rootProject.file('../..')
+        def newest = null
+        repo.traverse(
+            type: groovy.io.FileType.FILES,
+            preDir: { d -> d.name in ['node_modules', 'android', 'vendor', 'dist', 'build'] || d.name.startsWith('.') ? groovy.io.FileVisitResult.SKIP_SUBTREE : groovy.io.FileVisitResult.CONTINUE }
+        ) { f ->
+            if (f.name.endsWith('.go') && (newest == null || f.lastModified() > newest.lastModified())) {
+                newest = f
+            }
+        }
+        if (newest != null) {
+            fileTree(file('src/main/jniLibs')).matching { include '**/libarrowloop.so' }.each { so ->
+                if (so.lastModified() < newest.lastModified()) {
+                    throw new GradleException(
+                        so.absolutePath + ' is OLDER than ' + newest.absolutePath + '. ' +
+                        'This would build an APK running an engine from before that change, which looks exactly like the change not working: ' +
+                        'every layer a build can check stays green. Rebuild it with\n' +
+                        '  CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -trimpath -ldflags="-s -w" -o mobile/native/jniLibs/arm64-v8a/libarrowloop.so ./cmd/arrowloop\n' +
+                        '(GOARCH=amd64 into x86_64), or take the one from a Mobile CI run.')
+                }
+            }
+        }
+    }
+}
+
 // An APK with no engine in it must not be a successful build.
 //
 // The copy above cannot help when there is nothing to copy, and that is the

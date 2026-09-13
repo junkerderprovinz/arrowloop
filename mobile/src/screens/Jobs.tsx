@@ -42,9 +42,8 @@ export function Jobs() {
   const { t } = useT();
   const { p, accent } = useTheme();
   const [jobs, setJobs] = useState<Job[] | null>(null);
-  /** The targets and the products behind them, for a card's logo. Fetched
-   *  once: neither changes while somebody is looking at a list of jobs, and a
-   *  card that could not name its target simply shows none. */
+  /** The targets behind the sides, for a card's logo. A card that cannot name
+   *  its target simply shows none. */
   const [remotes, setRemotes] = useState<Remote[]>([]);
   useEffect(() => {
     // Refetched on focus, not once: a target created on the next tab has to
@@ -127,7 +126,8 @@ export function Jobs() {
       { text: t("confirm.cancel"), style: "cancel" },
       {
         text: t("confirm.delete"),
-        style: "destructive",
+        // Not "destructive": GlimStone 1.12.0 paints no delete red, and
+        // the platform dialog is no exception to a rule about deletes.
         onPress: async () => {
           try {
             const config = await api.config();
@@ -247,15 +247,17 @@ function JobCard({
         <View style={styles.menuSlot}>
           <CardMenu
             items={[
-              // Opening leads the three, because it is the one somebody reaches
-              // for most and the card's own tap does the same thing. jdp: "auch
-              // der Punkt Auftrag oeffnen soll im menue enthalten sein." Being
-              // reachable by tapping the card is not the same as being FINDABLE,
-              // and a menu that lists two of a card's three acts reads as if the
-              // third were somewhere else.
-              { label: t("jobs.open"), glyph: "IconPreview", onPress: onOpen },
-              { label: t("edit.editJob"), glyph: "IconEdit", onPress: onEdit },
-              { label: t("edit.removeJob"), glyph: "IconDelete", danger: true, onPress: onRemove },
+              // Three bare verbs. jdp: "im hamburger menue auf der auftrag card
+              // soll einfach nur oeffnen, bearbeiten und loeschen stehen." The
+              // card they sit on is already the subject, so repeating it in
+              // every row says the same word three times and makes the three
+              // acts harder to tell apart, not easier.
+              //
+              // Opening leads, because the card's own tap does the same thing
+              // and reachable is not the same as findable.
+              { label: t("action.open"), glyph: "IconPreview", onPress: onOpen },
+              { label: t("action.edit"), glyph: "IconEdit", onPress: onEdit },
+              { label: t("action.delete"), glyph: "IconDelete", onPress: onRemove },
             ]}
           />
         </View>
@@ -282,23 +284,29 @@ function JobCard({
           pair: a job held on its schedule can still be STARTED by hand, and
           that is the whole point of holding one rather than deleting it.
 
-          `jobs.stopRun` rather than `jobs.pause` for the left button. Pausing
-          is what the right one does - it holds the schedule - and one card able
-          to print the same word for two different acts is how somebody stops a
-          run when they meant to stop a job. */}
+          `jobs.stopRun` rather than `jobs.pause` for the holding button.
+          Pausing is what the OTHER one does - it holds the schedule - and one
+          card able to print the same word for two different acts is how
+          somebody stops a run when they meant to stop a job.
+
+          RUNNING ON THE RIGHT, holding on the left, per GlimStone 1.14.0: the
+          control that goes ahead sits on the right. jdp: "jetzt ausfuehren soll
+          rechts sein und pausieren links." It was the other way round because
+          running is the commoner act and commoner felt like first - which is
+          exactly the local reasoning that rule exists to overrule. */}
       <View style={styles.actions}>
+        <Button
+          label={job.disabled ? t("jobs.resume") : t("jobs.pause")}
+          labelKey={job.disabled ? "jobs.resume" : "jobs.pause"}
+          busy={holding}
+          onPress={onHold}
+        />
         <Button
           label={job.running ? t("jobs.stopRun") : t("jobs.runNow")}
           labelKey={job.running ? "jobs.stopRun" : "jobs.runNow"}
           tone={job.running ? "neutral" : "accent"}
           busy={busy}
           onPress={onAct}
-        />
-        <Button
-          label={job.disabled ? t("jobs.resume") : t("jobs.pause")}
-          labelKey={job.disabled ? "jobs.resume" : "jobs.pause"}
-          busy={holding}
-          onPress={onHold}
         />
       </View>
     </Card>

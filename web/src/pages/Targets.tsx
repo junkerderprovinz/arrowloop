@@ -385,12 +385,12 @@ function RemoteRow({
           <IconCheck />
         </IconAction>
         <RowActions>
-          <IconAction onClick={onEdit} title={t('targets.edit')} labelKey="targets.edit" hueIndex={row + 2}>
+          <IconAction onClick={onEdit} title={t('action.edit')} labelKey="action.edit" hueIndex={row + 2}>
             <IconEdit />
           </IconAction>
           <IconAction
-            title={t('targets.delete')}
-            labelKey="targets.delete"
+            title={t('action.delete')}
+            labelKey="action.delete"
             hueIndex={row + 3}
             onClick={() => setConfirming(true)}
           >

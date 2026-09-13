@@ -176,7 +176,8 @@ export function JobEdit() {
       { text: t("confirm.cancel"), style: "cancel" },
       {
         text: t("confirm.delete"),
-        style: "destructive",
+        // Not "destructive": GlimStone 1.12.0 paints no delete red, and
+        // the platform dialog is no exception to a rule about deletes.
         onPress: async () => {
           try {
             await api.writeConfig({ ...config, jobs: config.jobs.filter((j) => j.name !== editing) });
@@ -390,10 +391,15 @@ export function JobEdit() {
       {error ? <Body>{error}</Body> : null}
 
       <View style={styles.actions}>
-        <Button label={t("edit.save")} labelKey="edit.save" tone="accent" busy={saving} onPress={save} />
+        {/* Removing on the LEFT and saving on the right, per GlimStone 1.14.0:
+            the control that goes ahead sits on the right. Not red either - see
+            CardAction in CardMenu.tsx: the confirmation is the warning, and a
+            colour that shouts on every delete stops meaning anything by the
+            third time somebody sees it. */}
         {editing ? (
-          <Button label={t("edit.remove")} labelKey="edit.remove" tone="danger" onPress={remove} wide={false} />
+          <Button label={t("edit.remove")} labelKey="edit.remove" onPress={remove} wide={false} />
         ) : null}
+        <Button label={t("edit.save")} labelKey="edit.save" tone="accent" busy={saving} onPress={save} />
       </View>
       <FolderPicker
         visible={picking !== null}

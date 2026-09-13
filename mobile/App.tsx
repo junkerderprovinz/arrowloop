@@ -277,7 +277,7 @@ function Shell() {
                 <TargetsNav.Screen
                   name="TargetEdit"
                   component={TargetEdit}
-                  options={{ title: t("targets.edit") }}
+                  options={{ title: t("action.edit") }}
                 />
               </TargetsNav.Navigator>
             )}

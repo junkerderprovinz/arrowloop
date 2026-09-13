@@ -5,7 +5,9 @@ import { api, type Remote, type Usage } from "../api";
 import { useT } from "../i18n";
 import type { Nav, TargetsStack } from "../nav";
 import { space } from "../theme";
-import { Badge, Body, Button, Caption, Card, Empty, Fab, Floating, Page, Title, useHue } from "../ui";
+import { Badge, Body, Button, Caption, Card, Empty, Fab, Floating, Page, Title, useHue, useTheme } from "../ui";
+import { CardMenu } from "../CardMenu";
+import { ProviderMark } from "../glyphs";
 
 /**
  * The storage this phone can reach.
@@ -80,6 +82,7 @@ function TargetCard({
   onGone: () => void;
 }) {
   const { t } = useT();
+  const { p, scheme } = useTheme();
   const hue = useHue(index);
   const [state, setState] = useState<"unknown" | "checking" | "ok" | "bad">("unknown");
   const [detail, setDetail] = useState("");
@@ -127,7 +130,8 @@ function TargetCard({
       { text: t("confirm.cancel"), style: "cancel" },
       {
         text: t("confirm.delete"),
-        style: "destructive",
+        // Not "destructive": GlimStone 1.12.0 paints no delete red, and
+        // the platform dialog is no exception to a rule about deletes.
         onPress: async () => {
           try {
             await api.deleteRemote(remote.name);
@@ -143,26 +147,48 @@ function TargetCard({
   return (
     <Card hue={hue}>
       <View style={styles.head}>
+        {/* The product's own logo. Easier here than on a job card: a target
+            names its product directly, so there is no side to resolve first.
+            The engine resolves it from the settings the target was created
+            with - see internal/remotes/identify.go. */}
+        {remote.mark ? (
+          <View style={styles.cardMark}>
+            <ProviderMark name={remote.mark} width={24} height={24} color={p.textSub} scheme={scheme} />
+          </View>
+        ) : null}
         <Title>{remote.name}</Title>
         {state === "ok" ? (
           <Badge label={t("targets.checkOk")} tone="ok" />
         ) : state === "bad" ? (
           <Badge label={t("targets.checkFailed")} tone="fail" />
         ) : null}
+        {/* The two rare acts, out of the row and into a menu, the same way the
+            job card does it. jdp: "auch in den ziele card ein hamburgermenue."
+            Three buttons of equal weight said all three were equally likely,
+            and two of them are things somebody does once. */}
+        <View style={styles.menuSlot}>
+          <CardMenu
+            items={[
+              { label: t("action.edit"), glyph: "IconEdit", onPress: onEdit },
+              { label: t("action.delete"), glyph: "IconDelete", onPress: remove },
+            ]}
+          />
+        </View>
       </View>
       <Caption>{remote.type}</Caption>
 
       {room ? <Body>{room}</Body> : null}
       {detail ? <Body>{detail}</Body> : null}
 
+      {/* Checking stays a button, alone. It is what this card is FOR, and the
+          other two moved into the menu above. */}
       <View style={styles.actions}>
         <Button
           label={state === "checking" ? t("targets.checking") : t("targets.check")}
+          tone="accent"
           busy={state === "checking"}
           onPress={check}
         />
-        <Button label={t("targets.edit")} labelKey="targets.edit" onPress={onEdit} />
-        <Button label={t("targets.delete")} labelKey="targets.delete" tone="danger" onPress={remove} wide={false} />
       </View>
     </Card>
   );
@@ -188,5 +214,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     gap: space.sm,
   },
+  // The logo before the name and the menu hard right, the same slots the
+  // job card uses, so the two lists read as one family.
+  cardMark: { width: 26, alignItems: "center" },
+  menuSlot: { marginStart: "auto" },
   actions: { flexDirection: "row", gap: space.sm, flexWrap: "wrap" },
 });

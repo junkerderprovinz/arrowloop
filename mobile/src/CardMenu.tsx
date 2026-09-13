@@ -5,11 +5,18 @@ import { Glyph } from "./glyphs";
 import { SCRIM, space, text, TOUCH } from "./theme";
 import { useTheme } from "./ui";
 
-/** One row of the menu. */
+/**
+ * One row of the menu.
+ *
+ * No `danger` flag. jdp: "hoer bitte auf die loeschen buttons immer rot
+ * einzufaerben. die werden immer ganz normal eingefaerbt." Every delete in this
+ * app asks before it acts, and a colour that shouts on every one of them stops
+ * meaning anything by the third time somebody sees it. The question is the
+ * warning; the row is just a row.
+ */
 export interface CardAction {
   label: string;
   glyph: string;
-  danger?: boolean;
   onPress: () => void;
 }
 
@@ -112,11 +119,8 @@ export function CardMenu({ items }: { items: CardAction[] }) {
                 }}
                 style={[styles.row, { backgroundColor: p.surface2, borderRadius: radius.control }]}
               >
-                <Glyph name={item.glyph} color={item.danger ? p.failInk : p.text} size={18} />
-                <Text
-                  style={[styles.rowText, { color: item.danger ? p.failInk : p.text }]}
-                  numberOfLines={1}
-                >
+                <Glyph name={item.glyph} color={p.text} size={18} />
+                <Text style={[styles.rowText, { color: p.text }]} numberOfLines={1}>
                   {item.label}
                 </Text>
               </Pressable>

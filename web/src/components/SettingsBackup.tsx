@@ -95,9 +95,12 @@ export function SettingsBackup({ hueIndex }: { hueIndex: number }) {
           confirmLabelKey="backup.import"
           confirmGlyph={<IconUpload />}
           cancelLabel={t('confirm.cancel')}
-          // Warn rather than fail: nothing is broken, and one irreversible thing
-          // is about to happen to a setup that took an evening to type.
-          tone="warn"
+          // This used to pass tone="warn": amber rather than red, because
+          // nothing is broken here, one irreversible thing is simply about to
+          // happen to a setup that took an evening to type. GlimStone 1.13.0
+          // dropped the prop after 1.12.0 stopped colouring the commit button
+          // at all, and the distinction survives where it always belonged: in
+          // the message above, which names the file and says what it replaces.
           onCancel={() => setPicked(null)}
           onConfirm={() => {
             const file = picked
