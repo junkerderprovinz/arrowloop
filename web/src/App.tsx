@@ -169,6 +169,14 @@ export function App() {
     // one thing a person watches for, and asking again every second to catch it
     // is both slower and noisier than being told.
     return api.watch((ev) => {
+      // A "moving" frame says which files are part-way across. It arrives twice
+      // a second while bytes are crossing and changes nothing this page draws,
+      // so it must not fall through to the branch below - that one takes every
+      // other phase as "the job list changed", which would mean clearing the
+      // progress bar and refetching the whole list twice a second for the
+      // length of a run. The phone's overview draws these; the desk does not
+      // yet.
+      if (ev.phase === 'moving') return
       if (ev.phase === 'progress') {
         // A progress frame is the only kind that does not change the job list,
         // so it deliberately does not fetch it again. Ten thousand files would

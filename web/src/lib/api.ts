@@ -504,7 +504,12 @@ export type TrashListing = {
 
 export type RunEvent = {
   job: string
-  phase: 'started' | 'progress' | 'finished'
+  /**
+   * `moving` carries the files part-way across, and this page does not draw
+   * them - but it has to KNOW about the phase, or the frames fall through to
+   * whatever handles "anything else" twice a second. See App.tsx.
+   */
+  phase: 'started' | 'progress' | 'finished' | 'moving'
   error?: string
   done?: number
   total?: number
