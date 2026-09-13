@@ -9,9 +9,11 @@ package remotes
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"sort"
 	"strings"
+	"time"
 
 	rclonefs "github.com/rclone/rclone/fs"
 	"github.com/rclone/rclone/fs/config"
@@ -212,16 +214,45 @@ func Delete(name string) error {
 // all differ the moment somebody asks the server. The alternative is a job that
 // looks configured and fails at three in the morning.
 func Check(ctx context.Context, name string) error {
+	// A DEADLINE, because rclone has none here and the operating system's own
+	// is measured in minutes. Found on a phone that had moved to mobile data and
+	// could no longer route to a target on a private address: the button said
+	// "checking" for over four minutes, which is indistinguishable from the app
+	// being stuck. This button asks one question - can the engine reach that
+	// target - and "no" is a good answer; waiting forever is not an answer.
+	//
+	// Thirty seconds is long enough for a slow cloud on a bad connection to
+	// finish an authenticated listing, and short enough that somebody watching
+	// it learns something while still watching.
+	ctx, stop := context.WithTimeout(ctx, CheckWait)
+	defer stop()
+
 	f, err := rclonefs.NewFs(ctx, name+":")
 	if err != nil {
-		return err
+		return checkErr(ctx, err)
 	}
 	// One listing of the root. Enough to prove the credentials work and the
 	// address resolves, cheap enough not to matter on a large tree.
 	if _, err := f.List(ctx, ""); err != nil && !isEmptyTarget(err) {
-		return err
+		return checkErr(ctx, err)
 	}
 	return nil
+}
+
+// CheckWait is how long a target gets to answer before it counts as unreachable.
+const CheckWait = 30 * time.Second
+
+// checkErr says plainly when the deadline was what stopped it.
+//
+// Without this the caller sees rclone's own wording for a cancelled request,
+// which reads like an internal fault rather than like "this address did not
+// answer" - and the difference matters to somebody deciding whether they typed
+// the address wrong or their phone simply cannot reach it.
+func checkErr(ctx context.Context, err error) error {
+	if errors.Is(ctx.Err(), context.DeadlineExceeded) {
+		return fmt.Errorf("no answer within %s: %w", CheckWait, err)
+	}
+	return err
 }
 
 // Usage is how full a target is, as far as the target is willing to say.
