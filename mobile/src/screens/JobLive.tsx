@@ -53,6 +53,12 @@ export function JobLive({ name }: { name: string }) {
   }, [jobName]);
 
   useEffect(() => {
+    // ON MOUNT AND ON FOCUS, and the first half is what this needed when it
+    // stopped being a page. As a screen, navigating to it fired `focus` and
+    // that was the load. As a component inside a screen that is ALREADY
+    // focused, the event never fires again - so it rendered nothing at all,
+    // silently, with no error anywhere. Same code, different lifetime.
+    void load();
     const stop = nav.addListener("focus", load);
     return stop;
   }, [nav, load]);
