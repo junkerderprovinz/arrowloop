@@ -116,11 +116,14 @@ export function Screen({ children }: { children: ReactNode }) {
 }
 
 /**
- * A plain surface. No border, no title: one shade above the page and nothing
- * else, which is how this language says "these things belong together".
+ * A plain surface. No border, no title, and NO coloured edge: one shade above
+ * the page and nothing else, which is how this language says "these things
+ * belong together".
  *
- * A card that owns a rainbow position carries it as a filled edge rather than a
- * drawn line - the same block of colour the web lays down, not a 1px rule.
+ * The edge was this app's own invention - neither GlimStone nor the container
+ * draws one - and jdp asked for it gone: "die cards sollen kein farbige linie
+ * links haben". The rainbow is not lost with it; it lives where the language
+ * actually puts it, in the things INSIDE a card.
  */
 export function Card({
   children,
@@ -136,14 +139,6 @@ export function Card({
   const { p, radius, rainbow } = useTheme();
   const body = (
     <View style={[styles.card, { backgroundColor: p.surface, borderRadius: radius.card }, style]}>
-      {rainbow && hue ? (
-        <View
-          style={[
-            styles.edge,
-            { backgroundColor: hue, borderTopLeftRadius: radius.card, borderBottomLeftRadius: radius.card },
-          ]}
-        />
-      ) : null}
       {children}
     </View>
   );

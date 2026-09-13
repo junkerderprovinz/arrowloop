@@ -744,9 +744,14 @@ export function Settings() {
           not. The same three the container offers, from the same two constants
           in lib/donate.ts, so neither card can quietly point somewhere else. */}
       <Section title={t("about.title")} hue={2}>
-        <Caption>{t("about.body")}</Caption>
+        {/* BODY, not Caption. jdp: "der text in der über card ist zu klein" -
+            and he is right about the cause rather than the symptom: these are
+            three lines of prose, and they were set at the size this app uses
+            for a footnote. The version line further down stays a caption,
+            because that one IS a footnote. */}
+        <Body>{t("about.body")}</Body>
 
-        <Caption>{t("about.coffee")}</Caption>
+        <Body>{t("about.coffee")}</Body>
         <View style={styles.actions}>
           {/* Each mark is passed here rather than resolved from the label key,
               which is the design language's rule for a BRAND. A pattern keyed
@@ -786,7 +791,7 @@ export function Settings() {
             The step goes above the SENTENCE and never below the controls - a
             card ending in a gap reads as a missing row. */}
         <View style={styles.breath} />
-        <Caption>{t("about.report")}</Caption>
+        <Body>{t("about.report")}</Body>
         <View style={styles.actions}>
           {/* GitHub's own mark, passed like the three above. It wore the rule
               table's chain link before, which is a LINK glyph: right for a URL

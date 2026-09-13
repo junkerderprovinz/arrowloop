@@ -335,12 +335,14 @@ export function JobEdit() {
           value={Boolean(job.watch)}
           onChange={(watch) => set({ watch })}
         />
-        <Toggle
-          label={t("edit.runAtStart")}
-          hint={t("edit.runAtStartHint")}
-          value={Boolean(job.runAtStart)}
-          onChange={(runAtStart) => set({ runAtStart })}
-        />
+        {/* No "run as soon as the program starts" here. jdp: "das ist doch
+            fuer die app unnoetig", and he is right about why: on a desktop the
+            program starts when somebody logs in, which is a real moment worth
+            syncing at. On a phone the engine starts with the app, comes back
+            after every eviction and every reboot, and a job that ran on each of
+            those would run several times a day for no reason anybody asked for.
+            The setting still exists in the FILE and the container still offers
+            it, so a job carrying it keeps it. */}
       </Section>
 
       <Section title={t("edit.exclude")} hint={t("edit.excludeHint")}>

@@ -102,18 +102,21 @@ export function TargetEdit() {
       .sort((a, b) => Number(Boolean(b.required)) - Number(Boolean(a.required)));
   }, [backend, provider]);
 
+  /**
+   * Does this work, asked before anything is kept.
+   *
+   * ABOVE the early return below, and that is not a style preference: React
+   * counts hooks per render, so a `useState` after a conditional return runs on
+   * some renders and not others and takes the whole app down. It was below once
+   * and did exactly that, on the first cold open of this screen.
+   */
+  const [trying, setTrying] = useState(false);
+  const [tried, setTried] = useState<{ ok: boolean; reason?: string } | null>(null);
+
   if (!backendName) {
     return <Empty title={t("targets.addStorage")} detail={error || t("history.working")} />;
   }
 
-  /**
-   * Does this work, asked before anything is kept.
-   *
-   * The same settings the save would send, so a pass here and a failure after
-   * saving cannot disagree. Nothing is written by it.
-   */
-  const [trying, setTrying] = useState(false);
-  const [tried, setTried] = useState<{ ok: boolean; reason?: string } | null>(null);
   const tryIt = async () => {
     setTrying(true);
     setTried(null);

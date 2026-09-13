@@ -259,6 +259,26 @@ function Shell() {
           </Tabs.Screen>
 
           <Tabs.Screen
+            name="HistoryTab"
+            options={{ title: t("nav.history") }}
+          >
+            {() => (
+              <HistoryNav.Navigator screenOptions={header}>
+                <HistoryNav.Screen
+                  name="RunList"
+                  component={History}
+                  options={{ title: t("history.title") }}
+                />
+                <HistoryNav.Screen
+                  name="RunDetail"
+                  component={RunDetail}
+                  options={{ title: t("jobs.activity") }}
+                />
+              </HistoryNav.Navigator>
+            )}
+          </Tabs.Screen>
+
+          <Tabs.Screen
             name="TargetsTab"
             options={{ title: t("nav.targets") }}
           >
@@ -280,26 +300,6 @@ function Shell() {
                   options={{ title: t("action.edit") }}
                 />
               </TargetsNav.Navigator>
-            )}
-          </Tabs.Screen>
-
-          <Tabs.Screen
-            name="HistoryTab"
-            options={{ title: t("nav.history") }}
-          >
-            {() => (
-              <HistoryNav.Navigator screenOptions={header}>
-                <HistoryNav.Screen
-                  name="RunList"
-                  component={History}
-                  options={{ title: t("history.title") }}
-                />
-                <HistoryNav.Screen
-                  name="RunDetail"
-                  component={RunDetail}
-                  options={{ title: t("jobs.activity") }}
-                />
-              </HistoryNav.Navigator>
             )}
           </Tabs.Screen>
 
