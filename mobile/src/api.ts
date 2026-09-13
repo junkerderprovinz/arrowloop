@@ -249,6 +249,16 @@ export interface Usage {
   total?: number;
   used?: number;
   free?: number;
+  /**
+   * Why there is no answer, where the target could not be REACHED.
+   *
+   * It is what tells the two silences apart. A target that answered and keeps
+   * no total, and one that never answered at all, both come back with
+   * `supported: false` - and telling somebody "this target does not report its
+   * size" about a target on an address their phone cannot route to sends them
+   * looking in the wrong place entirely.
+   */
+  reason?: string;
 }
 
 /**

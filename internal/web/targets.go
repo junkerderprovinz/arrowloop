@@ -188,6 +188,12 @@ func (s *Server) aboutRemote(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		// Same shape as the check above and for the same reason: a target that
 		// cannot be reached is an answer, not a broken request.
+		//
+		// The `reason` is what tells the two silences apart, and a screen needs
+		// that: a target that could not be REACHED and one that was reached and
+		// keeps no total both come back with `supported: false`, and saying
+		// "this target does not report its size" about an unreachable one is a
+		// sentence that sends somebody looking in the wrong place.
 		writeJSON(w, http.StatusOK, map[string]any{"supported": false, "reason": err.Error()})
 		return
 	}

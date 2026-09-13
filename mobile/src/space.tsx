@@ -37,6 +37,23 @@ export function bytes(n: number | undefined): string {
 export type Room = Usage | "gone" | undefined;
 
 /**
+ * Whether a reading means the target could not be reached.
+ *
+ * TWO WAYS to arrive at the same picture, and they used to be told apart by
+ * only one of them. A request that FAILED gives `"gone"`. But the engine
+ * answers an unreachable target with `200` and `{supported:false, reason:…}`,
+ * because a target that cannot be reached is an answer rather than a broken
+ * request - so the promise resolves, the card called it "reached, keeps no
+ * total", and jdp's OpenCloud sat under a sentence saying it does not report
+ * its size when the truth was that his phone cannot route to it.
+ */
+export function unreachable(room: Room): boolean {
+  if (room === undefined) return false;
+  if (room === "gone") return true;
+  return !!room.reason;
+}
+
+/**
  * Asks every target how full it is, each on its own.
  *
  * ONE REQUEST PER TARGET because that is what the engine offers: `about` is a
@@ -86,26 +103,36 @@ export function useRoom(remotes: Remote[] | null): Record<string, Room> {
  */
 export function Room({ room, hue }: { room: Room; hue?: string }) {
   const { t } = useT();
-  if (!room || room === "gone") return null;
+  // Nothing while the answer is on its way, and nothing for a target that could
+  // not be reached - its card says that in a badge, and saying it twice would
+  // read as two faults.
+  if (!room || unreachable(room) || room === "gone") return null;
   if (!room.supported) return <Caption>{t("overview.noSpace")}</Caption>;
 
   const total = room.total ?? 0;
+  const free = room.free;
   // `used` is what the service says is gone, or what is left over from the
   // total once the free part is taken off. Zero is a real answer here and not
   // a missing one, which is why this is `??` and not `||`.
-  const used = room.used ?? (total > 0 && room.free !== undefined ? total - room.free : 0);
+  const used = room.used ?? (total > 0 && free !== undefined ? total - free : undefined);
+
+  // WHETHER THE SERVICE SAID ANYTHING AT ALL, asked before what it said.
+  //
+  // A WebDAV cloud reports the bytes in use and no total, and an empty one
+  // reports zero - which the old shape could not tell from silence, so
+  // OpenCloud with nothing in it claimed to keep no figures. The three
+  // sentences below then pick themselves from what is actually there.
+  if (total <= 0 && used === undefined) return <Caption>{t("overview.noSpace")}</Caption>;
 
   return (
     <>
-      {total > 0 ? <Meter done={used} total={total} hue={hue} /> : null}
+      {total > 0 ? <Meter done={used ?? 0} total={total} hue={hue} /> : null}
       <Caption>
-        {total > 0 && room.free !== undefined
-          ? t("targets.spaceFree", { free: bytes(room.free), total: bytes(total) })
-          : used > 0
+        {total > 0 && free !== undefined
+          ? t("targets.spaceFree", { free: bytes(free), total: bytes(total) })
+          : used !== undefined
             ? t("targets.spaceUsed", { used: bytes(used) })
-            : total > 0
-              ? t("targets.spaceTotal", { total: bytes(total) })
-              : t("overview.noSpace")}
+            : t("targets.spaceTotal", { total: bytes(total) })}
       </Caption>
     </>
   );

@@ -12,7 +12,7 @@ import {
 } from "../api";
 import { Glyph } from "../glyphs";
 import { useT, type T } from "../i18n";
-import { bytes, Room, useRoom, type Room as Space } from "../space";
+import { bytes, Room, unreachable, useRoom, type Room as Space } from "../space";
 import { space } from "../theme";
 import { useEngineStream } from "../useEngine";
 import { Badge, Body, Caption, Card, CardHead, Empty, Meter, Mono, Page, Title, useHue, useTheme } from "../ui";
@@ -397,7 +397,7 @@ function Account({ remote, room, index }: { remote: Remote; room: Space; index: 
   return (
     <Card hue={hue}>
       <CardHead mark={remote.mark} title={remote.name}>
-        {room === "gone" ? (
+        {unreachable(room) ? (
           <View style={styles.badgeSlot}>
             <Badge label={t("targets.checkFailed")} tone="fail" />
           </View>

@@ -4,7 +4,7 @@ import { Alert, StyleSheet, View } from "react-native";
 import { api, type Remote, type Usage } from "../api";
 import { useT } from "../i18n";
 import type { Nav, TargetsStack } from "../nav";
-import { Room, useRoom, type Room as Space } from "../space";
+import { Room, unreachable, useRoom, type Room as Space } from "../space";
 import { space } from "../theme";
 import { Badge, Body, Button, Caption, Card, CardHead, Empty, Fab, Floating, Page, useHue, useTheme } from "../ui";
 import { CardMenu } from "../CardMenu";
@@ -134,7 +134,7 @@ function TargetCard({
         {/* Unreachable is said HERE rather than under the bar, because it is a
             fact about the target and not about its size. A card that showed
             both a badge and an empty meter would read as two faults. */}
-        {room === "gone" ? <Badge label={t("targets.checkFailed")} tone="fail" /> : null}
+        {unreachable(room) ? <Badge label={t("targets.checkFailed")} tone="fail" /> : null}
         {/* The two rare acts, out of the row and into a menu, the same way the
             job card does it. jdp: "auch in den ziele card ein hamburgermenue."
             Three buttons of equal weight said all three were equally likely,

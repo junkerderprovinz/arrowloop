@@ -285,6 +285,16 @@ type Usage struct {
 // prints a refusal for those, and so does this: `Supported: false` travels to
 // the screen and the screen says nothing about space rather than guessing.
 func About(ctx context.Context, name string) (Usage, error) {
+	// A DEADLINE, the same one the reachability check carries and for a sharper
+	// reason. A target on an address this device cannot route to does not
+	// refuse the connection - it hangs until the network stack gives up, which
+	// on Android is minutes. Without a limit here a card sat on "wird gesucht"
+	// for the whole time, which reads as a screen that is broken rather than as
+	// a target that is out of reach. Measured on jdp's phone against a target
+	// in a VLAN the phone cannot see.
+	ctx, done := context.WithTimeout(ctx, CheckWait)
+	defer done()
+
 	f, err := rclonefs.NewFs(ctx, name+":")
 	if err != nil {
 		return Usage{}, err
