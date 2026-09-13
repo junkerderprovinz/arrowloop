@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import {
   api,
@@ -10,12 +10,14 @@ import {
   type RunEvent,
   type Tally,
 } from "../api";
+import { isPerfectlyIdle } from "../eggs";
 import { Glyph } from "../glyphs";
 import { useT, type T } from "../i18n";
+import { animateNext, useMotion } from "../motion";
 import { bytes, Room, unreachable, useRoom, type Room as Space } from "../space";
 import { space } from "../theme";
 import { useEngineStream } from "../useEngine";
-import { Badge, Body, Caption, Card, CardHead, Empty, Meter, Mono, Page, Title, useHue, useTheme } from "../ui";
+import { Badge, Body, Button, Caption, Card, CardHead, Empty, Meter, Mono, Page, Title, useHue, useTheme } from "../ui";
 import { when } from "./Jobs";
 
 /**
@@ -37,8 +39,17 @@ import { when } from "./Jobs";
  * file at best, and a bar that jumps in fours is worse than no bar - it looks
  * like the transfer is stalling.
  */
+/**
+ * How often the stream's news reaches the screen, in milliseconds.
+ *
+ * Eight times a second. See the comment at the refs below for why this is a
+ * rate rather than "whenever an event arrives".
+ */
+const DRAW_MS = 120;
+
 export function Overview() {
   const { t } = useT();
+  const { intensity: motion } = useMotion();
   const [jobs, setJobs] = useState<Job[] | null>(null);
   const [live, setLive] = useState<Record<string, Progress>>({});
   // What each job has in the air, kept apart from the step progress above
@@ -63,6 +74,48 @@ export function Overview() {
     void load();
   }, [load]);
 
+  /*
+  WHAT THE STREAM SAID lives in refs; what the SCREEN draws lives in state, and
+  the two are joined at a fixed rate rather than once per event.
+
+  Measured reason: the engine publishes a line per finished step, and a run over
+  four thousand small files sends more than a hundred a second. Setting state on
+  each one re-rendered this screen a hundred times a second, which made the
+  phone warm and - the part that matters here - left nothing for an animation to
+  animate: a bar retargeted every eight milliseconds never travels anywhere, it
+  simply is wherever it last was.
+
+  Eight times a second is above what an eye resolves as steps and far below what
+  the stream delivers, so the bar glides and the phone stays cool.
+  */
+  const heard = useRef<{
+    live: Record<string, Progress>;
+    moving: Record<string, MovingFile[]>;
+    rate: Record<string, number>;
+  }>({ live: {}, moving: {}, rate: {} });
+  const pending = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const draw = useCallback(() => {
+    setLive({ ...heard.current.live });
+    setMoving({ ...heard.current.moving });
+    setRate({ ...heard.current.rate });
+  }, []);
+
+  const drawSoon = useCallback(() => {
+    if (pending.current) return;
+    pending.current = setTimeout(() => {
+      pending.current = null;
+      draw();
+    }, DRAW_MS);
+  }, [draw]);
+
+  useEffect(
+    () => () => {
+      if (pending.current) clearTimeout(pending.current);
+    },
+    [],
+  );
+
   // The stream keeps the PROGRESS; the job list keeps the roster. A run that
   // started before this screen opened has no progress line yet, and the list is
   // what says it is running at all - so the two are held apart rather than one
@@ -72,50 +125,73 @@ export function Overview() {
       // An ABSENT list means nothing is in the air: the engine drops an empty
       // one from the JSON rather than sending null on every other frame. See
       // internal/daemon/runner.go.
-      setMoving((old) => ({ ...old, [event.job]: event.moving ?? [] }));
-      setRate((old) => ({ ...old, [event.job]: event.rate ?? 0 }));
+      heard.current.moving[event.job] = event.moving ?? [];
+      heard.current.rate[event.job] = event.rate ?? 0;
+      drawSoon();
       return;
     }
     if (event.phase === "progress") {
-      setLive((old) => ({
-        ...old,
-        [event.job]: {
-          done: event.done ?? 0,
-          total: event.total ?? 0,
-        },
-      }));
+      heard.current.live[event.job] = { done: event.done ?? 0, total: event.total ?? 0 };
+      drawSoon();
       return;
     }
     // Started and finished both change the roster, so both go and ask. The
     // progress is dropped on the way out: a bar left at 98% under a job that
     // ended an hour ago is a lie that nothing later corrects.
     if (event.phase === "finished") {
-      setLive((old) => {
-        const next = { ...old };
-        delete next[event.job];
-        return next;
-      });
-      setMoving((old) => {
-        const next = { ...old };
-        delete next[event.job];
-        return next;
-      });
-      setRate((old) => {
-        const next = { ...old };
-        delete next[event.job];
-        return next;
-      });
+      delete heard.current.live[event.job];
+      delete heard.current.moving[event.job];
+      delete heard.current.rate[event.job];
     }
+    // A run starting or ending is the one moment worth drawing AT ONCE: it is
+    // rare, and it is the frame the layout animation below rides on.
+    if (pending.current) {
+      clearTimeout(pending.current);
+      pending.current = null;
+    }
+    animateNext(motion);
+    draw();
     void load();
   });
 
   const running = useMemo(() => (jobs ?? []).filter((j) => j.running), [jobs]);
+
+  /*
+  A CARD ARRIVING AND GOING is a layout change, so it takes the layout engine
+  rather than a driven value: one call before the commit animates the whole
+  subtree, including the file rows inside the card.
+
+  Keyed on the NAMES of what is running, so it fires when the set changes and
+  not on every re-render - this screen redraws eight times a second while a run
+  is going, and configuring a layout animation that often would animate the
+  progress caption's own text reflow.
+  */
+  const roster = running.map((j) => j.name).join("\n");
+  useEffect(() => {
+    animateNext(motion);
+  }, [roster, motion]);
 
   if (!jobs) return <Empty title={t("history.working")} detail={error || undefined} />;
 
   return (
     <Page>
       <Title>{t("overview.running")}</Title>
+
+      {/* THE ONE BUTTON THAT STARTS EVERYTHING. jdp: "in der übersicht soll ein
+          button sein mit dem man die synchronisation anstoßen kann."
+
+          It starts every job that COULD run - switched on, with both sides,
+          not already going - because this screen has no single job selected and
+          "synchronise now" on a page about the whole phone means all of it. A
+          job somebody switched off stays off: that switch is an instruction,
+          and a button that overrode it would make the switch meaningless.
+
+          And it becomes the ABORT while anything is running, which is the same
+          shape the job cards took when jdp asked for it there ("lauf anhalten
+          soll den lauf abbrechen und auch so heißen"). One button, one place,
+          whichever of the two is the useful one right now. */}
+      <SyncNow jobs={jobs} running={running} onDone={load} />
+
       {running.length === 0 ? (
         <Card>
           <Body>{t("overview.idle")}</Body>
@@ -150,6 +226,60 @@ export function Overview() {
 
       {error ? <Caption>{error}</Caption> : null}
     </Page>
+  );
+}
+
+/**
+ * Start everything, or stop everything, depending on which is useful.
+ *
+ * ONE REQUEST PER JOB because that is what the engine offers, and they are
+ * fired together rather than in turn: the engine already decides how many runs
+ * it will have at once (`parallelJobs`), and a screen that queued them itself
+ * would be a second, worse scheduler. A job that refuses - it started a
+ * half-second ago from its own schedule - is left alone rather than reported:
+ * "already running" is the outcome the button wanted anyway.
+ */
+function SyncNow({
+  jobs,
+  running,
+  onDone,
+}: {
+  jobs: Job[];
+  running: Job[];
+  onDone: () => void;
+}) {
+  const { t } = useT();
+  const [busy, setBusy] = useState(false);
+
+  // What the button would actually reach. A draft with no sides cannot run, and
+  // a switched-off job must not be switched on by a button that says "now".
+  const ready = jobs.filter((j) => !j.disabled && !j.running && j.left && j.right);
+  const live = running.length > 0;
+
+  // Nothing to start and nothing to stop: no button at all rather than a dead
+  // one. This is the state of a fresh install, and a greyed-out control is a
+  // thing somebody tries to press.
+  if (!live && ready.length === 0) return null;
+
+  const act = async () => {
+    setBusy(true);
+    try {
+      await Promise.allSettled(
+        live ? running.map((j) => api.stop(j.name)) : ready.map((j) => api.run(j.name)),
+      );
+    } finally {
+      setBusy(false);
+      onDone();
+    }
+  };
+
+  return (
+    <Button
+      label={live ? t("overview.stopAll") : t("overview.syncNow")}
+      labelKey={live ? "jobs.cancelRun" : "jobs.run"}
+      onPress={() => void act()}
+      disabled={busy}
+    />
   );
 }
 
@@ -362,7 +492,15 @@ function summary(run: Run, tally: Tally | null, t: T): string {
   if (tally.down > 0) parts.push(t("overview.downloaded", { count: tally.down }));
   if (tally.trashed > 0) parts.push(t("history.trashed", { count: tally.trashed }));
   if (tally.conflicts > 0) parts.push(t("history.conflicts", { count: tally.conflicts }));
-  if (parts.length === 0) return t("preview.identical", { count: run.Unchanged });
+  if (parts.length === 0) {
+    // Every fiftieth run that had nothing to do says so differently. See
+    // src/eggs.tsx: it is arithmetic on the run's own number rather than a
+    // random draw, so the same run always says the same thing and can be shown
+    // to somebody. The count it replaces is repeated nowhere else on this card,
+    // which is why the sentence is allowed to stand in for it.
+    if (isPerfectlyIdle(run.ID, run.Unchanged)) return t("history.perfectlyIdle");
+    return t("preview.identical", { count: run.Unchanged });
+  }
   return parts.join(", ");
 }
 
@@ -385,7 +523,7 @@ function Accounts() {
   useEffect(() => {
     let live = true;
     api.storage().then(
-      (storage) => live && setRemotes(storage.remotes),
+      (storage) => live && setRemotes(storage.remotes.filter(isAccount)),
       () => live && setRemotes([]),
     );
     return () => {
@@ -413,6 +551,41 @@ function Accounts() {
       ))}
     </>
   );
+}
+
+/**
+ * Whether a target is an ACCOUNT SOMEWHERE ELSE rather than this phone itself.
+ *
+ * jdp: "der telefonspeicher soll es nicht anzeigen als card". He is right, and
+ * the reason is in the heading: "connected accounts" is a list of the places
+ * this phone talks to. The phone's own storage is not one of them, it is the
+ * thing doing the talking, and a card asking how full it is answers a question
+ * Android's own settings already answer.
+ *
+ * ONLY THIS LIST, not the targets screen. `Telefonspeicher` is a perfectly good
+ * end of a sync job and has to stay pickable - it is the default right-hand
+ * side of every job on a phone. What it is not is an account.
+ *
+ * An `alias` is decided by what it points AT, because it can point either way:
+ * a path on this device, or another target. Anything that is not local is an
+ * account, including backends this app has never heard of - a list that only
+ * showed the products it recognises would quietly drop the one somebody added
+ * by hand.
+ */
+function isAccount(remote: Remote): boolean {
+  if (remote.type === "local") return false;
+  if (remote.type !== "alias") return true;
+  const points = remote.settings.find((s) => s.key === "remote")?.value ?? "";
+  return !isLocalPath(points);
+}
+
+/** A path on this device rather than a reference to another target. */
+function isLocalPath(value: string): boolean {
+  if (!value) return false;
+  // A target reference carries a colon (`Garage-Test:bucket`); a path does not,
+  // except a Windows drive letter, which this app will not meet but which costs
+  // one clause to be right about.
+  return value.startsWith("/") || value.startsWith("\\") || /^[A-Za-z]:[\\/]/.test(value);
 }
 
 function Account({ remote, room, index }: { remote: Remote; room: Space; index: number }) {

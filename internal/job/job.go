@@ -683,6 +683,25 @@ func Load(path string) (*Config, error) {
 		if !j.Disabled && !draft && (j.Left == "" || j.Right == "") {
 			return nil, fmt.Errorf("job %q needs both a left and a right side", j.Name)
 		}
+		// THE SNAKE EATING ITS OWN TAIL: both sides naming the same place.
+		//
+		// There was no guard at all, which is the part that matters. Such a job
+		// scans one tree as two, records every file as existing on both sides,
+		// and in mirror or move mode acts on a destination that IS its source -
+		// a move job would carry each file to where it already is and then
+		// delete it from there.
+		//
+		// EXACT EQUALITY ONLY, and the limit is deliberate. One side NESTED in
+		// the other (`/fotos` into `/fotos/2026`) is the same hazard and cannot
+		// be settled by comparing strings: two remotes may spell one place
+		// differently, and a check that caught only the obvious spelling would
+		// promise more than it delivers. This catches what people actually
+		// create by hand, which is the same path typed or picked twice.
+		if !draft && sameSide(j.Left, j.Right) {
+			return nil, fmt.Errorf(
+				"job %q has both sides pointing at %s, so it would be a snake eating its own tail: every file would be its own copy, and in mirror or move mode the job would act on the very place it read from",
+				j.Name, j.Left)
+		}
 		if j.State == "" {
 			return nil, fmt.Errorf("job %q needs a state database path; without one it can never tell a new file from a deleted one", j.Name)
 		}
@@ -710,6 +729,27 @@ func Load(path string) (*Config, error) {
 	}
 	sort.SliceStable(cfg.Jobs, func(a, b int) bool { return cfg.Jobs[a].Name < cfg.Jobs[b].Name })
 	return &cfg, nil
+}
+
+// sameSide says whether two sides name the same place by the same name.
+//
+// Trailing separators are the one difference worth forgiving, because they are
+// the one a picker and a typist disagree about: `/fotos` and `/fotos/` are the
+// same folder to every backend here, and a guard that missed the pair because
+// of one character would be a guard nobody trusts. Case is NOT folded - two
+// backends disagree about whether it matters, and the job's own fold-case
+// answer is not available this early.
+func sameSide(left, right string) bool {
+	trim := func(s string) string {
+		s = strings.TrimSpace(s)
+		// A lone separator is a real path (`/`), so it keeps its character.
+		for len(s) > 1 && (strings.HasSuffix(s, "/") || strings.HasSuffix(s, `\`)) {
+			s = s[:len(s)-1]
+		}
+		return s
+	}
+	left, right = trim(left), trim(right)
+	return left != "" && left == right
 }
 
 // resolve makes a path in the file mean what its author meant: relative to the

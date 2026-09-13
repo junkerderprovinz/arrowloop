@@ -7,6 +7,7 @@ import { Glyph, ProviderMark } from "../glyphs";
 import { directionKey, markForSide } from "../jobMark";
 import { jobCopy } from "../../../web/src/lib/jobCopy.data";
 import { useT, type T } from "../i18n";
+import { animateNext, useMotion } from "../motion";
 import { since } from "../../../web/src/lib/since";
 import type { Nav, JobsStack } from "../nav";
 import { space } from "../theme";
@@ -43,6 +44,7 @@ export function Jobs() {
   const nav = useNavigation<Nav<JobsStack>>();
   const { t } = useT();
   const { p, accent } = useTheme();
+  const { intensity: motion } = useMotion();
   const [jobs, setJobs] = useState<Job[] | null>(null);
   /** The targets behind the sides, for a card's logo. A card that cannot name
    *  its target simply shows none. */
@@ -78,6 +80,21 @@ export function Jobs() {
   // The engine says when something changed, so the list is not on a timer. A
   // run that finishes is visible the moment it finishes.
   useEngineEvents(true, load);
+
+  /*
+  AND IT MOVES WHEN IT CHANGES. A job starting or ending swaps a badge, a
+  schedule line and two buttons on its card, and until now all of that simply
+  blinked into place - jdp, looking at the app: "mir kommt es vor als würde ich
+  keine sehen". The motion engine existed; it was wired into forms and settings,
+  which are exactly the screens nobody sits and watches.
+
+  Keyed on the RUNNING SET rather than the list, so it fires on the change worth
+  animating and not on a refetch that returns the same jobs.
+  */
+  const roster = (jobs ?? []).filter((j) => j.running).map((j) => j.name).join("\n");
+  useEffect(() => {
+    animateNext(motion);
+  }, [roster, motion]);
 
   const act = async (job: Job) => {
     setBusy(job.name);

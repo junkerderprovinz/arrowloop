@@ -2,6 +2,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FlatList, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
 import { api, failed, touched, type Run, type Touch } from "../api";
+import { isPerfectlyIdle } from "../eggs";
 import { Field } from "../fields";
 import { Glyph } from "../glyphs";
 import { useT, type T } from "../i18n";
@@ -492,7 +493,13 @@ export function counters(run: Run, t: T): string {
   add(run.Moved, "history.moved");
   add(run.Trashed, "history.trashed");
   add(run.Conflicts, "history.conflicts");
-  if (parts.length === 0) return t("preview.identical", { count: run.Unchanged });
+  // The same fiftieth run says the same thing here as on the overview, which is
+  // the point of the rule being arithmetic: a card somebody noticed on one
+  // screen is findable again on the other. See src/eggs.tsx.
+  if (parts.length === 0) {
+    if (isPerfectlyIdle(run.ID, run.Unchanged)) return t("history.perfectlyIdle");
+    return t("preview.identical", { count: run.Unchanged });
+  }
   return parts.join(", ");
 }
 

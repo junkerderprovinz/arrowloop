@@ -257,10 +257,22 @@ function Shell() {
           >
             {() => (
               <OverviewNav.Navigator screenOptions={header}>
+                {/* THE PAGE WEARS THE PRODUCT'S NAME, and only this page.
+                    jdp: "in der übersicht soll statt übersicht Arrowloop als
+                    überschrift stehen." It is the first screen the app opens
+                    on, so its header is the one place a name belongs - the
+                    four tabs after it are rooms, and rooms carry their own
+                    labels.
+
+                    Not a translation key: a product name is the same word in
+                    every language, and a key would invite forty tables to
+                    disagree about it. The TAB underneath keeps its translated
+                    label, because in a row of five it has to say which room it
+                    is rather than which program this is. */}
                 <OverviewNav.Screen
                   name="OverviewHome"
                   component={Overview}
-                  options={{ title: t("nav.overview") }}
+                  options={{ title: "ArrowLoop" }}
                 />
               </OverviewNav.Navigator>
             )}

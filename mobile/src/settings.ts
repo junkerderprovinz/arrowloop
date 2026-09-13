@@ -63,7 +63,15 @@ export type Shape = "round" | "soft" | "square";
  * appearance and a type living there would make the two files import each
  * other. The ENGINE is in motion.ts; this is only the name of the setting.
  */
-export type MotionIntensity = "off" | "subtle" | "full";
+/**
+ * `storm` is not in the picker until somebody finds it. See `src/eggs.tsx`.
+ *
+ * It is a real intensity and not a joke setting: the same animations on the
+ * same elements, with a spring that overshoots further and takes longer to
+ * settle. The language's rule that a stronger level is a BIGGER version of the
+ * same animation, never a different one, holds here too.
+ */
+export type MotionIntensity = "off" | "subtle" | "full" | "storm";
 export type ThemeChoice = "system" | "dark" | "light";
 
 export interface Appearance {
@@ -109,6 +117,14 @@ export interface Appearance {
    * engine's settings are exactly what a backup carries.
    */
   lock: boolean;
+  /**
+   * Whether the hidden fourth motion level has been found.
+   *
+   * Remembered so that finding it once is finding it: an easter egg that made
+   * somebody repeat the gesture after every restart would be a chore wearing a
+   * secret's clothes. See `src/eggs.tsx` for the gesture and the reasoning.
+   */
+  storm: boolean;
 }
 
 export const DEFAULT_APPEARANCE: Appearance = {
@@ -123,6 +139,7 @@ export const DEFAULT_APPEARANCE: Appearance = {
   barLabels: "textGlyph",
   motion: "full",
   lock: false,
+  storm: false,
 };
 
 const KEY = "arrowloop.appearance";

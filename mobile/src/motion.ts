@@ -48,8 +48,15 @@ export const DEFAULT_MOTION: MotionIntensity = "full";
  */
 export const MOTION: Record<
   MotionIntensity,
-  { layout: number; fade: number; toast: number; spring: boolean }
+  { layout: number; fade: number; toast: number; spring: boolean; damping: number }
 > = {
+  // THE HIDDEN FOURTH, and it is a real level rather than a joke. Same
+  // animations, same elements, a spring that swings further and takes longer to
+  // come to rest - which is the language's own rule about levels, kept. It is
+  // out of the picker until somebody finds it; `src/eggs.tsx` holds the gesture
+  // and says why an easter egg that changes behaviour has to be one somebody
+  // can switch back off.
+  storm: { layout: 760, fade: 200, toast: 420, spring: true, damping: 0.34 },
   // THE TOP SETTING ACTUALLY MOVES, which started as a naming argument and
   // ended as a real change. It was every animation at its ordinary speed - a
   // calm crossfade - under a label promising more, and the honest fix was not
@@ -60,9 +67,9 @@ export const MOTION: Record<
   // ease. That is still the same animation on the same elements - the language's
   // rule that subtle is a smaller full, never a different one, survives - but
   // the curve at the top has energy in it rather than only duration.
-  full: { layout: 420, fade: 140, toast: 300, spring: true },
-  subtle: { layout: 140, fade: 70, toast: 120, spring: false },
-  off: { layout: 0, fade: 0, toast: 0, spring: false },
+  full: { layout: 420, fade: 140, toast: 300, spring: true, damping: 0.68 },
+  subtle: { layout: 140, fade: 70, toast: 120, spring: false, damping: 1 },
+  off: { layout: 0, fade: 0, toast: 0, spring: false, damping: 1 },
 };
 
 // Android needs this switched on explicitly, and without it every
@@ -131,17 +138,18 @@ export function animateNext(intensity: MotionIntensity, kind: "layout" | "fade" 
   const spring = MOTION[intensity].spring;
   // A SPRING at the top and an ease below it. The spring's damping is what
   // decides how much it overshoots: 0.6 is a visible bounce and 1.0 is none at
-  // all, so this sits where the movement is felt without the interface looking
-  // like it is made of rubber. Below the top setting the curve eases, because
-  // somebody who asked for less movement asked for less movement and not for a
-  // faster bounce.
+  // all, so `full` sits where the movement is felt without the interface
+  // looking like it is made of rubber, and the hidden level goes further on
+  // purpose. Below the top setting the curve eases, because somebody who asked
+  // for less movement asked for less movement and not for a faster bounce.
+  const damping = MOTION[intensity].damping;
   LayoutAnimation.configureNext({
     duration,
     create: spring
-      ? { type: LayoutAnimation.Types.spring, property: LayoutAnimation.Properties.scaleXY, springDamping: 0.68 }
+      ? { type: LayoutAnimation.Types.spring, property: LayoutAnimation.Properties.scaleXY, springDamping: damping }
       : { type: LayoutAnimation.Types.easeInEaseOut, property: LayoutAnimation.Properties.opacity },
     update: spring
-      ? { type: LayoutAnimation.Types.spring, springDamping: 0.68 }
+      ? { type: LayoutAnimation.Types.spring, springDamping: damping }
       : { type: LayoutAnimation.Types.easeInEaseOut },
     delete: spring
       ? { type: LayoutAnimation.Types.easeInEaseOut, property: LayoutAnimation.Properties.opacity }

@@ -29,6 +29,7 @@ import {
 } from "../../../web/src/lib/donate";
 import { nearestPreset } from "../../../web/src/lib/colorMath";
 import { flagEmoji } from "../../../web/src/lib/flagEmoji";
+import { ClosingLoop, useStormUnlock } from "../eggs";
 import { animateNext, useMotion, type MotionIntensity } from "../motion";
 import { ColorPicker, EditableSwatch, ResetMark } from "../ColorPicker";
 import { CryptoDonate } from "../donate";
@@ -76,6 +77,7 @@ export function Settings() {
   const { scheme, accentInk, barLabels } = useTheme();
   // The intensity in force, for the handfuls of places that animate a change.
   const { intensity: motion } = useMotion();
+  const storm = useStormUnlock();
 
   const [granted, setGranted] = useState<boolean | null>(null);
   const [possible, setPossible] = useState(true);
@@ -526,11 +528,19 @@ export function Settings() {
             // thing move subtly is the setting demonstrating itself.
             animateNext(motion);
             setAppearance({ motion });
+            // And a tap on the level that is ALREADY chosen reaches nothing
+            // else, which is what makes it a gesture available to be given a
+            // second meaning. See src/eggs.tsx.
+            storm(motion);
           }}
           options={[
             { value: "off", label: t("look.motionOff") },
             { value: "subtle", label: t("look.motionSubtle") },
             { value: "full", label: t("look.motionFull") },
+            // The fourth appears once it has been found, and then behaves like
+            // any other: it can be turned back down, which is the rule for an
+            // easter egg that changes a setting rather than a picture.
+            ...(look.storm ? [{ value: "storm" as MotionIntensity, label: t("look.motionStorm") }] : []),
           ]}
         />
       </Section>
@@ -860,6 +870,7 @@ export function Settings() {
             the fallback for a build with no engine to ask - it was the primary
             once, and it sat at 0.1.0 while the engine beside it reported
             v0.7.0. */}
+        <ClosingLoop>
         <Caption>
           <Text onPress={() => Linking.openURL(releaseUrl(version))} style={styles.versionLink}>
             {`ArrowLoop ${version ?? Constants.expoConfig?.version ?? "?"}`}
@@ -876,6 +887,7 @@ export function Settings() {
             {`GlimStone ${GLIMSTONE_VERSION}`}
           </Text>
         </Caption>
+        </ClosingLoop>
       </Section>
 
       {crypto ? <CryptoDonate onClose={() => setCrypto(false)} /> : null}

@@ -1,6 +1,7 @@
-import { useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import {
   ActivityIndicator,
+  Animated,
   Modal,
   Pressable,
   ScrollView,
@@ -382,18 +383,78 @@ export function Badge({ label, tone = "neutral" }: { label: string; tone?: Tone 
  */
 export function Meter({ done, total, hue }: { done: number; total: number; hue?: string }) {
   const { p, radius, accent } = useTheme();
+  const { intensity, ms } = useMotion();
   const fill = hue ?? accent;
   const part = total > 0 ? Math.max(0, Math.min(1, done / total)) : 0;
+
+  /*
+  THE BAR MOVES, and it is the one animation on the screen somebody actually
+  watches. jdp: "Hast du animationen in der app eingebaut? Auch wilde? mir kommt
+  es vor als würde ich keine sehen." He was right, and this is why: the motion
+  engine was wired into five places, all of them a section folding open in a
+  form or in the settings. Everything on the screens he keeps open - a bar
+  filling, a job card arriving, a file row going - changed instantly.
+
+  A DRIVEN VALUE and not `animateNext`, which is the one case `motion.ts`
+  reserves for `Animated`: nothing here changes LAYOUT. The track keeps its size
+  and the fill inside it grows, so there is no tree to re-measure, only a number
+  to travel.
+
+  `useNativeDriver` is OFF because the thing being animated is a WIDTH, and
+  widths are laid out on the JS side. That is affordable exactly here: the value
+  is retargeted a handful of times a second (the screens that feed it throttle
+  their stream), not once per frame.
+
+  THE SPRING AT THE TOP is the point of the top setting. A progress bar that
+  overshoots a fraction and settles is the most visible place in the app to put
+  the "wild" that the label promises, and it is honest: the bar still ends at
+  the number it reports.
+  */
+  const width = useRef(new Animated.Value(part)).current;
+  useEffect(() => {
+    if (!ms.layout) {
+      width.setValue(part);
+      return;
+    }
+    // The damping comes from the intensity table, so the hidden fourth level
+    // swings the bar further than the top visible one without a second set of
+    // numbers here. Critical damping for this spring is near 20, which is why
+    // the top level lands under it (a bounce you can see) and the hidden one
+    // well under it (a bounce you cannot miss).
+    const run = ms.spring
+      ? Animated.spring(width, {
+          toValue: part,
+          useNativeDriver: false,
+          damping: 22 * ms.damping,
+          stiffness: 140,
+          mass: 0.7,
+        })
+      : Animated.timing(width, { toValue: part, useNativeDriver: false, duration: ms.layout });
+    run.start();
+    return () => run.stop();
+  }, [part, ms.layout, ms.spring, width, intensity]);
+
   return (
     <View
       accessibilityRole="progressbar"
       accessibilityValue={{ min: 0, max: Math.max(total, 0), now: Math.max(0, Math.min(done, total)) }}
       style={[styles.meter, { backgroundColor: p.surface2, borderRadius: radius.pill }]}
     >
-      <View
+      <Animated.View
         style={[
           styles.meterFill,
-          { backgroundColor: fill, borderRadius: radius.pill, width: `${part * 100}%` },
+          {
+            backgroundColor: fill,
+            borderRadius: radius.pill,
+            // Clamped on the way out as well as on the way in: a spring
+            // overshoots by design, and a bar wider than its own track would
+            // spill past the rounded end.
+            width: width.interpolate({
+              inputRange: [0, 1],
+              outputRange: ["0%", "100%"],
+              extrapolate: "clamp",
+            }),
+          },
         ]}
       />
     </View>
