@@ -284,6 +284,7 @@ const ja: Translations = {
   'overview.lastSync': '最後の同期',
   'overview.uploaded': 'アップロード: {count}',
   'overview.downloaded': 'ダウンロード: {count}',
+  'overview.manySmall': '小さなファイルが大量、毎秒およそ {count} 件',
   'settings.section': '設定の区分',
   'settings.general': '一般',
   'settings.look': '外観',

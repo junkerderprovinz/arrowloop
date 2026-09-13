@@ -284,6 +284,7 @@ const ko: Translations = {
   'overview.lastSync': '마지막 동기화',
   'overview.uploaded': '올림: {count}',
   'overview.downloaded': '내림: {count}',
+  'overview.manySmall': '작은 파일이 많음, 초당 약 {count}개',
   'settings.section': '설정 구역',
   'settings.general': '일반',
   'settings.look': '모양',

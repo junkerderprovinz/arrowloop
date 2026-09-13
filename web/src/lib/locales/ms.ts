@@ -284,6 +284,7 @@ const ms: Translations = {
   'overview.lastSync': 'Penyegerakan terakhir',
   'overview.uploaded': 'dimuat naik: {count}',
   'overview.downloaded': 'dimuat turun: {count}',
+  'overview.manySmall': 'Banyak fail kecil, kira-kira {count} sesaat',
   'settings.section': 'Bahagian tetapan',
   'settings.general': 'Umum',
   'settings.look': 'Rupa',

@@ -284,6 +284,7 @@ const he: Translations = {
   'overview.lastSync': 'סנכרון אחרון',
   'overview.uploaded': 'הועלו: {count}',
   'overview.downloaded': 'הורדו: {count}',
+  'overview.manySmall': 'הרבה קבצים קטנים, בערך {count} בשנייה',
   'settings.section': 'מקטע הגדרות',
   'settings.general': 'כללי',
   'settings.look': 'מראה',

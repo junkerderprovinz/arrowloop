@@ -284,6 +284,7 @@ const uk: Translations = {
   'overview.lastSync': 'Остання синхронізація',
   'overview.uploaded': 'надіслано: {count}',
   'overview.downloaded': 'отримано: {count}',
+  'overview.manySmall': 'Багато дрібних файлів, близько {count} за секунду',
   'settings.section': 'Розділ налаштувань',
   'settings.general': 'Загальні',
   'settings.look': 'Вигляд',

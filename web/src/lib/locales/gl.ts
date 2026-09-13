@@ -284,6 +284,7 @@ const gl: Translations = {
   'overview.lastSync': 'Última sincronización',
   'overview.uploaded': 'subidos: {count}',
   'overview.downloaded': 'baixados: {count}',
+  'overview.manySmall': 'Moitos ficheiros pequenos, uns {count} por segundo',
   'settings.section': 'Sección de axustes',
   'settings.general': 'Xeral',
   'settings.look': 'Aparencia',

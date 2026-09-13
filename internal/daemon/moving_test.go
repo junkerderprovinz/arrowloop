@@ -82,6 +82,45 @@ func TestAnEmptyMovingFrameArrivesWithoutTheField(t *testing.T) {
 	}
 }
 
+// A busy run sends its rate instead of rows, and the field has to survive JSON.
+//
+// This is the frame that replaced a blank space under a running job. Nothing on
+// the screen's side would fail if the name changed here: the caption would
+// simply never appear, which looks exactly like the bug it was built to fix.
+func TestABusyFrameCarriesTheRateAndNoRows(t *testing.T) {
+	raw, err := json.Marshal(Event{Job: "Fotos", Phase: "moving", Rate: 240})
+	if err != nil {
+		t.Fatalf("marshal: %v", err)
+	}
+	var back map[string]any
+	if err := json.Unmarshal(raw, &back); err != nil {
+		t.Fatalf("unmarshal: %v", err)
+	}
+	if back["rate"] != float64(240) {
+		t.Errorf("the rate came back as %v: %s", back["rate"], raw)
+	}
+	if _, there := back["moving"]; there {
+		t.Errorf("a busy frame carried rows as well: %s", raw)
+	}
+
+	// And a quiet frame carries no rate at all, so a screen cannot mistake
+	// "nothing is moving" for "nothing is moving, at zero files a second".
+	quiet, err := json.Marshal(Event{Job: "Fotos", Phase: "moving", Moving: []engine.Moving{{Path: "a.jpg"}}})
+	if err != nil {
+		t.Fatalf("marshal: %v", err)
+	}
+	// A FRESH map. Unmarshalling into one that already has keys MERGES into it,
+	// so reusing the one above would have left `rate` standing from the first
+	// frame and this check would have failed on a frame that was correct.
+	var second map[string]any
+	if err := json.Unmarshal(quiet, &second); err != nil {
+		t.Fatalf("unmarshal: %v", err)
+	}
+	if _, there := second["rate"]; there {
+		t.Errorf("a frame with rows carried a rate: %s", quiet)
+	}
+}
+
 // Two readings that would draw the same rows are one frame, not two.
 func TestOnlyAChangedReadingIsWorthSending(t *testing.T) {
 	one := []engine.Moving{{Path: "a.jpg", Bytes: 10, Size: 100, Side: "right"}}

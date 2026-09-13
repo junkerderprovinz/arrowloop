@@ -284,6 +284,7 @@ const ru: Translations = {
   'overview.lastSync': 'Последняя синхронизация',
   'overview.uploaded': 'отправлено: {count}',
   'overview.downloaded': 'получено: {count}',
+  'overview.manySmall': 'Много мелких файлов, примерно {count} в секунду',
   'settings.section': 'Раздел настроек',
   'settings.general': 'Общие',
   'settings.look': 'Внешний вид',

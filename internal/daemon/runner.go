@@ -767,13 +767,15 @@ func (r *Runner) watchMoving(ctx context.Context, name string, right rclonefs.Fs
 		tick := time.NewTicker(MovingTick)
 		defer tick.Stop()
 		var last []engine.Moving
-		send := func(now []engine.Moving) {
-			if sameMoving(last, now) {
+		lastRate := 0
+		send := func(now []engine.Moving, rate int) {
+			if sameMoving(last, now) && rate == lastRate {
 				return
 			}
-			last = now
-			r.publish(Event{Job: name, Phase: "moving", Moving: now})
+			last, lastRate = now, rate
+			r.publish(Event{Job: name, Phase: "moving", Moving: now, Rate: rate})
 		}
+		since := time.Now()
 		for {
 			select {
 			case <-done:
@@ -781,50 +783,88 @@ func (r *Runner) watchMoving(ctx context.Context, name string, right rclonefs.Fs
 				// drawing four rows when the run ended does not keep drawing
 				// them. The finished event says the run is over; this says the
 				// rows are gone.
-				if len(last) > 0 {
+				if len(last) > 0 || lastRate > 0 {
 					r.publish(Event{Job: name, Phase: "moving", Moving: []engine.Moving{}})
 				}
 				return
 			case <-ctx.Done():
 				return
 			case <-tick.C:
-				if steps.takeAndReset() >= MovingBusy {
+				now := time.Now()
+				elapsed := now.Sub(since)
+				since = now
+				count, files := steps.takeAndReset()
+				if count >= MovingBusy {
 					// Files are finishing faster than a bar could follow. The
 					// rows are cleared rather than left standing, because
-					// whatever they last named landed long ago.
-					send(nil)
+					// whatever they last named landed long ago - and the RATE
+					// goes out in their place, so the screen can say what is
+					// happening instead of showing an empty space that reads as
+					// a stall. jdp chose that over leaving it blank.
+					send(nil, perSecond(files, elapsed))
 					continue
 				}
-				send(engine.InFlight(ctx, right))
+				send(engine.InFlight(ctx, right), 0)
 			}
 		}
 	}()
 	return func() { close(done) }
 }
 
-// stepCount is how many pieces of work finished since it was last read.
-//
-// One counter per run, written by whichever worker finishes a step and read by
-// the ticker. It exists only to answer "is this run pushing files faster than a
-// bar could follow", which is the question that keeps the expensive reading out
-// of the hot path.
+/*
+stepCount is how many pieces of work finished since it was last read.
+
+One counter per run, written by whichever worker finishes a step and read by
+the ticker. It exists to answer "is this run pushing files faster than a bar
+could follow", which is the question that keeps the expensive reading out of
+the hot path.
+
+TWO NUMBERS, because the two readers want different things. `n` is every step
+and it decides whether to ask rclone at all: a run making two hundred folders a
+second is just as busy as one copying two hundred files, and asking during
+either costs the run time it does not have. `files` is only what actually moved
+bytes, and it is the one a person reads - "made 200 folders" is not what
+somebody watching a transfer means by "going fast".
+*/
 type stepCount struct {
-	mu sync.Mutex
-	n  int
+	mu    sync.Mutex
+	n     int
+	files int
 }
 
-func (s *stepCount) add() {
+// add counts one finished step. `kind` is the engine's own word for it, and
+// only the two that move bytes count toward the rate.
+func (s *stepCount) add(kind string) {
 	s.mu.Lock()
 	s.n++
+	if kind == "copy" || kind == "move" {
+		s.files++
+	}
 	s.mu.Unlock()
 }
 
-func (s *stepCount) takeAndReset() int {
+// takeAndReset returns the steps and the file transfers since the last read,
+// and empties both. A tick sees what happened since the last tick, never a
+// total that only grows.
+func (s *stepCount) takeAndReset() (int, int) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	n := s.n
-	s.n = 0
-	return n
+	n, files := s.n, s.files
+	s.n, s.files = 0, 0
+	return n, files
+}
+
+// perSecond turns a count over a measured span into a rate.
+//
+// Measured rather than assumed from MovingTick: a phone under load delivers a
+// tick late, and dividing by the interval that was ASKED for would then report
+// a rate higher than anything that happened. Zero for a span that is not
+// positive, which a clock stepping backwards can produce.
+func perSecond(count int, over time.Duration) int {
+	if count <= 0 || over <= 0 {
+		return 0
+	}
+	return int(float64(count)/over.Seconds() + 0.5)
 }
 
 // sameMoving says whether two readings would draw the same rows.
@@ -876,6 +916,20 @@ type Event struct {
 	// progress event instead, which is noise on the stream that carries the
 	// most frames.
 	Moving []engine.Moving `json:"moving,omitempty"`
+
+	// Rate is files a second, on a "moving" frame that carries no rows.
+	//
+	// It exists because the empty list has two meanings and they look alike on
+	// a screen. Nothing is moving, and so many things are moving that reading
+	// which ones would slow the run down, both draw the same blank space under
+	// a job - and the second one reads as a stall to the person watching. The
+	// number is what tells them apart, and it is free: it comes off the counter
+	// that was already deciding whether to take the reading.
+	//
+	// Only file transfers count toward it. Folders made and records written are
+	// steps too, and a run that reported "180 a second" while it created
+	// directories would be answering a question nobody asked.
+	Rate int `json:"rate,omitempty"`
 }
 
 // progressFor turns the apply stage's reports into events on the stream.
@@ -897,7 +951,7 @@ func (p progressFor) Starting(total int) {
 
 func (p progressFor) Did(kind, path, side string, done, total int) {
 	if p.steps != nil {
-		p.steps.add()
+		p.steps.add(kind)
 	}
 	p.runner.publish(Event{Job: p.job, Phase: "progress", Done: done, Total: total, Kind: kind, Path: path, Side: side})
 }

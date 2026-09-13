@@ -284,6 +284,7 @@ const da: Translations = {
   'overview.lastSync': 'Seneste synkronisering',
   'overview.uploaded': 'uploadet: {count}',
   'overview.downloaded': 'downloadet: {count}',
+  'overview.manySmall': 'Mange små filer, omkring {count} i sekundet',
   'settings.section': 'Indstillingsafsnit',
   'settings.general': 'Generelt',
   'settings.look': 'Udseende',

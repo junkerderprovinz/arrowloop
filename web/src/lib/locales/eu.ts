@@ -284,6 +284,7 @@ const eu: Translations = {
   'overview.lastSync': 'Azken sinkronizazioa',
   'overview.uploaded': 'igota: {count}',
   'overview.downloaded': 'jaitsita: {count}',
+  'overview.manySmall': 'Fitxategi txiki asko, {count} inguru segundoko',
   'settings.section': 'Ezarpen atala',
   'settings.general': 'Orokorra',
   'settings.look': 'Itxura',

@@ -284,6 +284,7 @@ const lv: Translations = {
   'overview.lastSync': 'Pēdējā sinhronizācija',
   'overview.uploaded': 'augšupielādēti: {count}',
   'overview.downloaded': 'lejupielādēti: {count}',
+  'overview.manySmall': 'Daudz mazu failu, aptuveni {count} sekundē',
   'settings.section': 'Iestatījumu daļa',
   'settings.general': 'Vispārīgi',
   'settings.look': 'Izskats',

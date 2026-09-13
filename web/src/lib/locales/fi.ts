@@ -284,6 +284,7 @@ const fi: Translations = {
   'overview.lastSync': 'Viimeisin synkronointi',
   'overview.uploaded': 'lähetetty: {count}',
   'overview.downloaded': 'ladattu: {count}',
+  'overview.manySmall': 'Paljon pieniä tiedostoja, noin {count} sekunnissa',
   'settings.section': 'Asetusosio',
   'settings.general': 'Yleiset',
   'settings.look': 'Ulkoasu',

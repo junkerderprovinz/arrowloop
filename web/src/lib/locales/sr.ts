@@ -284,6 +284,7 @@ const sr: Translations = {
   'overview.lastSync': 'Последња синхронизација',
   'overview.uploaded': 'послато: {count}',
   'overview.downloaded': 'преузето: {count}',
+  'overview.manySmall': 'Много малих датотека, око {count} у секунди',
   'settings.section': 'Одељак подешавања',
   'settings.general': 'Опште',
   'settings.look': 'Изглед',

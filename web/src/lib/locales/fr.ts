@@ -284,6 +284,7 @@ const fr: Translations = {
   'overview.lastSync': 'Dernière synchronisation',
   'overview.uploaded': 'envoyés : {count}',
   'overview.downloaded': 'reçus : {count}',
+  'overview.manySmall': 'Beaucoup de petits fichiers, environ {count} par seconde',
   'settings.section': 'Section des réglages',
   'settings.general': 'Général',
   'settings.look': 'Apparence',

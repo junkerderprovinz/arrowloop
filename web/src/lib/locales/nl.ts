@@ -284,6 +284,7 @@ const nl: Translations = {
   'overview.lastSync': 'Laatste synchronisatie',
   'overview.uploaded': 'geüpload: {count}',
   'overview.downloaded': 'gedownload: {count}',
+  'overview.manySmall': 'Veel kleine bestanden, ongeveer {count} per seconde',
   'settings.section': 'Instellingengedeelte',
   'settings.general': 'Algemeen',
   'settings.look': 'Uiterlijk',

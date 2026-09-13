@@ -284,6 +284,7 @@ const ca: Translations = {
   'overview.lastSync': 'Darrera sincronització',
   'overview.uploaded': 'pujats: {count}',
   'overview.downloaded': 'baixats: {count}',
+  'overview.manySmall': 'Molts fitxers petits, uns {count} per segon',
   'settings.section': 'Secció de configuració',
   'settings.general': 'General',
   'settings.look': 'Aparença',

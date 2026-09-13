@@ -284,6 +284,7 @@ const tr: Translations = {
   'overview.lastSync': 'Son eşitleme',
   'overview.uploaded': 'yüklenen: {count}',
   'overview.downloaded': 'indirilen: {count}',
+  'overview.manySmall': 'Çok sayıda küçük dosya, saniyede yaklaşık {count}',
   'settings.section': 'Ayar bölümü',
   'settings.general': 'Genel',
   'settings.look': 'Görünüm',

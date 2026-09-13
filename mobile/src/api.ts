@@ -308,6 +308,15 @@ export interface RunEvent {
    * list is how "the rows are gone" arrives. See internal/daemon/runner.go.
    */
   moving?: Moving[];
+  /**
+   * Files a second, on a "moving" frame that carries no rows.
+   *
+   * The empty list has two meanings that look identical on a screen: nothing is
+   * moving, or so much is moving that reading which files would slow the run
+   * down. This number is what tells them apart, and it is only ever sent for
+   * the second one.
+   */
+  rate?: number;
 }
 
 /**

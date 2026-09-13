@@ -284,6 +284,7 @@ const hi: Translations = {
   'overview.lastSync': 'पिछला सिंक',
   'overview.uploaded': 'अपलोड: {count}',
   'overview.downloaded': 'डाउनलोड: {count}',
+  'overview.manySmall': 'बहुत सी छोटी फ़ाइलें, लगभग {count} प्रति सेकंड',
   'settings.section': 'सेटिंग्स अनुभाग',
   'settings.general': 'सामान्य',
   'settings.look': 'रूप',

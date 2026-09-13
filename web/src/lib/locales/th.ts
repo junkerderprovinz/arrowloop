@@ -284,6 +284,7 @@ const th: Translations = {
   'overview.lastSync': 'ซิงค์ล่าสุด',
   'overview.uploaded': 'อัปโหลด: {count}',
   'overview.downloaded': 'ดาวน์โหลด: {count}',
+  'overview.manySmall': 'ไฟล์เล็กจำนวนมาก ประมาณ {count} ต่อวินาที',
   'settings.section': 'ส่วนของการตั้งค่า',
   'settings.general': 'ทั่วไป',
   'settings.look': 'รูปลักษณ์',

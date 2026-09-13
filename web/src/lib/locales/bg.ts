@@ -284,6 +284,7 @@ const bg: Translations = {
   'overview.lastSync': 'Последна синхронизация',
   'overview.uploaded': 'качени: {count}',
   'overview.downloaded': 'изтеглени: {count}',
+  'overview.manySmall': 'Много малки файлове, около {count} в секунда',
   'settings.section': 'Раздел настройки',
   'settings.general': 'Общи',
   'settings.look': 'Външен вид',

@@ -284,6 +284,7 @@ const sk: Translations = {
   'overview.lastSync': 'Posledná synchronizácia',
   'overview.uploaded': 'nahraté: {count}',
   'overview.downloaded': 'stiahnuté: {count}',
+  'overview.manySmall': 'Veľa malých súborov, asi {count} za sekundu',
   'settings.section': 'Oddiel nastavení',
   'settings.general': 'Všeobecné',
   'settings.look': 'Vzhľad',

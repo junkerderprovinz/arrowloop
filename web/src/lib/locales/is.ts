@@ -284,6 +284,7 @@ const is: Translations = {
   'overview.lastSync': 'Síðasta samstilling',
   'overview.uploaded': 'hlaðið upp: {count}',
   'overview.downloaded': 'hlaðið niður: {count}',
+  'overview.manySmall': 'Margar litlar skrár, um {count} á sekúndu',
   'settings.section': 'Stillingahluti',
   'settings.general': 'Almennt',
   'settings.look': 'Útlit',

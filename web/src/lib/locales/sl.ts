@@ -284,6 +284,7 @@ const sl: Translations = {
   'overview.lastSync': 'Zadnja sinhronizacija',
   'overview.uploaded': 'poslano: {count}',
   'overview.downloaded': 'preneseno: {count}',
+  'overview.manySmall': 'Veliko majhnih datotek, približno {count} na sekundo',
   'settings.section': 'Razdelek nastavitev',
   'settings.general': 'Splošno',
   'settings.look': 'Videz',

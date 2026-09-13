@@ -284,6 +284,7 @@ const vi: Translations = {
   'overview.lastSync': 'Lần đồng bộ cuối',
   'overview.uploaded': 'đã tải lên: {count}',
   'overview.downloaded': 'đã tải xuống: {count}',
+  'overview.manySmall': 'Nhiều tệp nhỏ, khoảng {count} mỗi giây',
   'settings.section': 'Phần cài đặt',
   'settings.general': 'Chung',
   'settings.look': 'Giao diện',

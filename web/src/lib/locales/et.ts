@@ -284,6 +284,7 @@ const et: Translations = {
   'overview.lastSync': 'Viimane sünkroonimine',
   'overview.uploaded': 'üles laaditud: {count}',
   'overview.downloaded': 'alla laaditud: {count}',
+  'overview.manySmall': 'Palju väikeseid faile, umbes {count} sekundis',
   'settings.section': 'Seadete osa',
   'settings.general': 'Üldine',
   'settings.look': 'Välimus',

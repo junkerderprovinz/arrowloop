@@ -44,6 +44,10 @@ export function Overview() {
   // What each job has in the air, kept apart from the step progress above
   // because they arrive on different frames and mean different things.
   const [moving, setMoving] = useState<Record<string, MovingFile[]>>({});
+  // How fast files are going by when they are going by too fast to name. Kept
+  // beside the rows rather than inside them, because it is what stands IN THEIR
+  // PLACE: the two are never drawn at the same time.
+  const [rate, setRate] = useState<Record<string, number>>({});
   const [error, setError] = useState("");
 
   const load = useCallback(async () => {
@@ -69,6 +73,7 @@ export function Overview() {
       // one from the JSON rather than sending null on every other frame. See
       // internal/daemon/runner.go.
       setMoving((old) => ({ ...old, [event.job]: event.moving ?? [] }));
+      setRate((old) => ({ ...old, [event.job]: event.rate ?? 0 }));
       return;
     }
     if (event.phase === "progress") {
@@ -91,6 +96,11 @@ export function Overview() {
         return next;
       });
       setMoving((old) => {
+        const next = { ...old };
+        delete next[event.job];
+        return next;
+      });
+      setRate((old) => {
         const next = { ...old };
         delete next[event.job];
         return next;
@@ -118,6 +128,7 @@ export function Overview() {
             job={job}
             at={live[job.name]}
             moving={moving[job.name] ?? []}
+            rate={rate[job.name] ?? 0}
             index={index}
           />
         ))
@@ -167,15 +178,16 @@ function Running({
   job,
   at,
   moving,
+  rate,
   index,
 }: {
   job: Job;
   at?: Progress;
   moving: MovingFile[];
+  rate: number;
   index: number;
 }) {
   const { t } = useT();
-  const { p } = useTheme();
   const hue = useHue(index);
   return (
     <Card hue={hue}>
@@ -205,6 +217,18 @@ function Running({
       {moving.map((file) => (
         <InFlight key={file.path} file={file} hue={hue} />
       ))}
+
+      {/* WHEN THERE ARE NO ROWS BECAUSE THERE ARE TOO MANY FILES, the rate says
+          so. A run pushing two hundred small files a second draws nothing here
+          on purpose - asking rclone which four are in the air right now costs
+          the run more than the answer is worth - and an empty space under a
+          running job reads as a stall. jdp picked this over leaving it blank.
+
+          Only when there is nothing to draw: a rate arrives only on a frame
+          without rows, so the two can never both be on screen. */}
+      {moving.length === 0 && rate > 0 ? (
+        <Caption>{t("overview.manySmall", { count: rate })}</Caption>
+      ) : null}
     </Card>
   );
 }

@@ -284,6 +284,7 @@ const hr: Translations = {
   'overview.lastSync': 'Zadnja sinkronizacija',
   'overview.uploaded': 'poslano: {count}',
   'overview.downloaded': 'preuzeto: {count}',
+  'overview.manySmall': 'Mnogo malih datoteka, oko {count} u sekundi',
   'settings.section': 'Odjeljak postavki',
   'settings.general': 'Općenito',
   'settings.look': 'Izgled',

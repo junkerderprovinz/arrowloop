@@ -284,6 +284,7 @@ const hu: Translations = {
   'overview.lastSync': 'Legutóbbi szinkronizálás',
   'overview.uploaded': 'feltöltve: {count}',
   'overview.downloaded': 'letöltve: {count}',
+  'overview.manySmall': 'Sok kis fájl, körülbelül {count} másodpercenként',
   'settings.section': 'Beállítási szakasz',
   'settings.general': 'Általános',
   'settings.look': 'Megjelenés',

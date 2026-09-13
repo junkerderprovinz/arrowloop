@@ -284,6 +284,7 @@ const id: Translations = {
   'overview.lastSync': 'Sinkronisasi terakhir',
   'overview.uploaded': 'diunggah: {count}',
   'overview.downloaded': 'diunduh: {count}',
+  'overview.manySmall': 'Banyak berkas kecil, sekitar {count} per detik',
   'settings.section': 'Bagian pengaturan',
   'settings.general': 'Umum',
   'settings.look': 'Tampilan',

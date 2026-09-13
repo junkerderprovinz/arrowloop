@@ -284,6 +284,7 @@ const ro: Translations = {
   'overview.lastSync': 'Ultima sincronizare',
   'overview.uploaded': 'încărcate: {count}',
   'overview.downloaded': 'descărcate: {count}',
+  'overview.manySmall': 'Multe fișiere mici, aproximativ {count} pe secundă',
   'settings.section': 'Secțiune setări',
   'settings.general': 'General',
   'settings.look': 'Aspect',

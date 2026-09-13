@@ -284,6 +284,7 @@ const lt: Translations = {
   'overview.lastSync': 'Paskutinis sinchronizavimas',
   'overview.uploaded': 'įkelta: {count}',
   'overview.downloaded': 'atsisiųsta: {count}',
+  'overview.manySmall': 'Daug mažų failų, apie {count} per sekundę',
   'settings.section': 'Nustatymų dalis',
   'settings.general': 'Bendra',
   'settings.look': 'Išvaizda',

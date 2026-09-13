@@ -284,6 +284,7 @@ const fa: Translations = {
   'overview.lastSync': 'آخرین همگام‌سازی',
   'overview.uploaded': 'بارگذاری‌شده: {count}',
   'overview.downloaded': 'بارگیری‌شده: {count}',
+  'overview.manySmall': 'پرونده‌های کوچک زیاد، حدود {count} در ثانیه',
   'settings.section': 'بخش تنظیمات',
   'settings.general': 'عمومی',
   'settings.look': 'ظاهر',

@@ -284,6 +284,7 @@ const zh: Translations = {
   'overview.lastSync': '最近同步',
   'overview.uploaded': '已上传：{count}',
   'overview.downloaded': '已下载：{count}',
+  'overview.manySmall': '大量小文件，每秒约 {count} 个',
   'settings.section': '设置分区',
   'settings.general': '常规',
   'settings.look': '外观',

@@ -284,6 +284,7 @@ const ar: Translations = {
   'overview.lastSync': 'آخر مزامنة',
   'overview.uploaded': 'رُفع: {count}',
   'overview.downloaded': 'نُزّل: {count}',
+  'overview.manySmall': 'ملفات صغيرة كثيرة، نحو {count} في الثانية',
   'settings.section': 'قسم الإعدادات',
   'settings.general': 'عام',
   'settings.look': 'المظهر',

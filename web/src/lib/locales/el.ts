@@ -284,6 +284,7 @@ const el: Translations = {
   'overview.lastSync': 'Τελευταίος συγχρονισμός',
   'overview.uploaded': 'ανέβηκαν: {count}',
   'overview.downloaded': 'κατέβηκαν: {count}',
+  'overview.manySmall': 'Πολλά μικρά αρχεία, περίπου {count} ανά δευτερόλεπτο',
   'settings.section': 'Ενότητα ρυθμίσεων',
   'settings.general': 'Γενικά',
   'settings.look': 'Εμφάνιση',
