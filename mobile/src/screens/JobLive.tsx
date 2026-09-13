@@ -91,8 +91,12 @@ export function JobLive({ name }: { name: string }) {
       <Section title={t("jobs.runNow")} hint={t("jobs.runNowHint")}>
         <View style={styles.actions}>
           <Button
-            label={job.running ? t("jobs.pause") : t("jobs.runNow")}
-            labelKey={job.running ? "jobs.pause" : "jobs.runNow"}
+            // ABBRECHEN, not pausing. This button cancels the run's context, so
+            // the next run starts from the beginning - and it said "Pausieren",
+            // which is the word the OTHER control uses for holding a schedule.
+            // Two acts, one word, on the same page.
+            label={job.running ? t("jobs.cancelRun") : t("jobs.runNow")}
+            labelKey={job.running ? "jobs.cancelRun" : "jobs.runNow"}
             tone={job.running ? "neutral" : "accent"}
             busy={busy === "run"}
             disabled={job.disabled}

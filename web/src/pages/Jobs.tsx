@@ -403,13 +403,19 @@ export function Jobs({
                           horizontal padding, so the row came out as five tiles
                           with two lozenges on the end. Measured in the browser,
                           not guessed: 48 by 32 against 32 by 32. */}
+                      {/* One tile, two verbs. A running job used to grey this
+                          out, which left the desk with no way to call a run
+                          off at all - the phone has had one all along. jdp:
+                          "lauf anhalten soll den lauf abbrechen und auch so
+                          heißen und ein anderen glyph bekommen", and a control
+                          that cannot be reached is the sharpest version of a
+                          wrong name. */}
                       <IconAction
-                        title={t('jobs.runNow')}
-                        labelKey="jobs.runNow"
-                        hint={t('jobs.runNowHint')}
+                        title={j.running ? t('jobs.cancelRun') : t('jobs.runNow')}
+                        labelKey={j.running ? 'jobs.cancelRun' : 'jobs.runNow'}
+                        hint={j.running ? undefined : t('jobs.runNowHint')}
                         hueIndex={i + 6}
-                        disabled={j.running}
-                        onClick={() => void api.run(j.name)}
+                        onClick={() => void (j.running ? api.stopJob(j.name) : api.run(j.name))}
                       />
                       <IconAction
                         title={t('jobs.preview')}

@@ -333,10 +333,13 @@ function JobCard({
           pair: a job held on its schedule can still be STARTED by hand, and
           that is the whole point of holding one rather than deleting it.
 
-          `jobs.stopRun` rather than `jobs.pause` for the holding button.
+          `jobs.cancelRun` rather than `jobs.pause` for the running button.
           Pausing is what the OTHER one does - it holds the schedule - and one
           card able to print the same word for two different acts is how
-          somebody stops a run when they meant to stop a job.
+          somebody stops a run when they meant to stop a job. And ABBRECHEN
+          rather than anhalten, because that is what happens: the run's context
+          is cancelled and the next one starts from the beginning. jdp: "lauf
+          anhalten soll den lauf abbrechen und auch so heissen."
 
           RUNNING ON THE RIGHT, holding on the left, per GlimStone 1.14.0: the
           control that goes ahead sits on the right. jdp: "jetzt ausfuehren soll
@@ -351,8 +354,8 @@ function JobCard({
           onPress={onHold}
         />
         <Button
-          label={job.running ? t("jobs.stopRun") : t("jobs.runNow")}
-          labelKey={job.running ? "jobs.stopRun" : "jobs.runNow"}
+          label={job.running ? t("jobs.cancelRun") : t("jobs.runNow")}
+          labelKey={job.running ? "jobs.cancelRun" : "jobs.runNow"}
           tone={job.running ? "neutral" : "accent"}
           busy={busy}
           onPress={onAct}

@@ -72,13 +72,23 @@ const RULES: Rule[] = [
   // before "check" or "show" can.
   [/preview|dryRun/i, 'IconPreview'],
   [/runNow|\.run$|start|resume/i, 'IconRun'],
+  // ABORTING is not pausing, and it gets its own mark. jdp: "lauf anhalten soll
+  // den lauf abbrechen und auch so heißen und ein anderen glyph bekommen."
+  //
+  // The line below used to claim this one too, on the reasoning that this app
+  // has a single drawing for "make it stand still". That reasoning holds for
+  // the engine, which really does stand still and then carry on. A run does
+  // not: cancelling it throws away what it was doing, and the next run starts
+  // from the beginning. Two acts, two marks - and this rule sits above the
+  // pause rule because `cancelRun` contains neither word the other matches,
+  // but a future `stopAndCancel` would.
+  [/cancelRun|abort/i, 'IconCancel'],
+
   // `stop` beside `pause` and both above the generic rules further down, which
   // is where two of these were going wrong. `phone.engineStop` matched
   // `settings|config|engine|backup` and wore a GEAR - a stop button with the
-  // settings mark on it, measured on the phone - and `jobs.stopRun` matched
-  // nothing at all and came up bare. Stopping and pausing share a mark here
-  // because this app has one drawing for "make it stand still" and inventing a
-  // second would be two silhouettes for one idea.
+  // settings mark on it, measured on the phone - and the run's own stop matched
+  // nothing at all and came up bare.
   [/pause|hold|stop/i, 'IconPause'],
 
   // Destructive and corrective.

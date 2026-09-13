@@ -583,6 +583,23 @@ export const api = {
     }),
 
   /**
+   * Call a running job off.
+   *
+   * It CANCELS rather than pauses: the run's context is cancelled, whatever it
+   * was in the middle of is abandoned, and the next run starts from the
+   * beginning. There is no half-finished state to resume from, which is why
+   * the button says abbrechen.
+   *
+   * `false` comes back when nothing was running under that name - not an
+   * error, just an answer, and usually means the run ended while somebody was
+   * reaching for the button.
+   */
+  stopJob: (name: string) =>
+    request<{ stopped: boolean }>(`/api/jobs/${encodeURIComponent(name)}/stop`, {
+      method: 'POST',
+    }),
+
+  /**
    * What one run did, path by path.
    *
    * Asked for when a run is opened rather than fetched with the list: fifty
