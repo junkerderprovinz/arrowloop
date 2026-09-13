@@ -239,6 +239,12 @@ function Storage({
                 <RemoteForm
                   backends={backends}
                   existing={r}
+                  /* Which product this target IS, from the engine rather than
+                     from a guess: it resolves it out of the settings the target
+                     was created with (internal/remotes/identify.go). Without it
+                     the form knew the backend and nothing about the product, so
+                     it offered the preset fields as ordinary options. */
+                  provider={mine.find((x) => x.id === r.provider) ?? null}
                   onDone={(saved) => {
                     setEditing(null)
                     if (saved) onChanged()

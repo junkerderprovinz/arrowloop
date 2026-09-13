@@ -4,6 +4,7 @@ import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 import { api, type Config, type JobConfig } from "../api";
 import { Field, TimeField } from "../fields";
 import { FolderPicker } from "../FolderPicker";
+import { JobLive } from "./JobLive";
 import { Glyph } from "../glyphs";
 import { useT } from "../i18n";
 import type { JobsStack, Nav } from "../nav";
@@ -33,8 +34,15 @@ import {
  * desktop editor uses. A second, simpler path for "just a few small values" is
  * how a configuration ends up invalid in a way only the next start reveals.
  */
+/** How long a field waits before it writes itself. Long enough that typing a
+ *  path is one write, short enough that leaving the screen straight after a
+ *  change still keeps it. */
+const WRITE_AFTER = 700;
+
 export function JobEdit() {
-  const route = useRoute<RouteProp<JobsStack, "JobEdit">>();
+  // Either route name: opening a job and editing it are the same screen, and
+  // both carry the same parameter. See App.tsx.
+  const route = useRoute<RouteProp<JobsStack, "JobEdit" | "JobDetail">>();
   const nav = useNavigation<Nav<JobsStack>>();
   const { t } = useT();
   const editing = route.params?.name;
@@ -42,7 +50,6 @@ export function JobEdit() {
   const [config, setConfig] = useState<Config | null>(null);
   const [job, setJob] = useState<JobConfig | null>(null);
   const [error, setError] = useState("");
-  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     api.config().then(
@@ -137,37 +144,96 @@ export function JobEdit() {
     );
   }, []);
 
-  const set = useCallback((patch: Partial<JobConfig>) => {
-    setJob((old) => (old ? { ...old, ...patch } : old));
-  }, []);
+  /**
+   * The name this job is SAVED under, which is not what the name field shows.
+   *
+   * A job is found in the file by its name, so a rename has to look for the old
+   * one and put the new one in its place. Held in a ref rather than in state
+   * because nothing renders from it and a stale copy here would write a second
+   * job instead of moving the first.
+   */
+  const savedAs = useRef<string | undefined>(editing);
 
-  const save = async () => {
-    if (!config || !job) return;
-    if (!job.name.trim() || !job.left.trim() || !job.right.trim()) {
-      setError(t("edit.nameHint"));
-      return;
-    }
-    setSaving(true);
-    try {
-      const jobs = [...config.jobs];
-      const at = editing ? jobs.findIndex((j) => j.name === editing) : -1;
-      // The state file is named after the job when nobody has said otherwise.
-      // One file per job is the rule the engine documents, and asking somebody
-      // to invent a path on a phone would be asking for a typo.
-      const complete: JobConfig = {
-        ...job,
-        state: job.state?.trim() || `state/${job.name.trim()}.db`,
-      };
-      if (at >= 0) jobs[at] = complete;
-      else jobs.push(complete);
-      await api.writeConfig({ ...config, jobs });
-      nav.goBack();
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setSaving(false);
-    }
-  };
+  /** The pending write, so typing a path is one write and not forty. */
+  const pending = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  /**
+   * Write the job as it stands.
+   *
+   * Reads the configuration FRESH each time rather than trusting the copy this
+   * screen loaded: something else may have changed another job in between, and
+   * writing back a stale whole-file copy would undo it.
+   */
+  const persist = useCallback(
+    async (next: JobConfig) => {
+      const name = next.name.trim();
+      if (!name || !next.left.trim() || !next.right.trim()) return;
+      try {
+        const current = await api.config();
+        const jobs = [...current.jobs];
+        const at = jobs.findIndex((j) => j.name === savedAs.current);
+        const complete: JobConfig = {
+          ...next,
+          name,
+          // The state file follows the name, so a renamed job does not keep
+          // pointing at a database named after what it used to be called.
+          state: next.state?.trim() || `state/${name}.db`,
+        };
+        if (at >= 0) jobs[at] = complete;
+        else jobs.push(complete);
+        await api.writeConfig({ ...current, jobs });
+        savedAs.current = name;
+        setError("");
+      } catch (e) {
+        setError((e as Error).message);
+      }
+    },
+    [],
+  );
+
+  /**
+   * Change a field, and keep it.
+   *
+   * jdp chose the shape with no Save button, which is what GlimStone already
+   * says about a settings field: it is independently valid the moment it is set,
+   * so a batched commit in front of it is not guarding anything.
+   *
+   * `now` writes immediately - for a switch or a pick from a small set, where
+   * there is nothing more coming. Everything else waits a beat, so a path being
+   * typed is one write rather than one per character.
+   */
+  const set = useCallback(
+    (patch: Partial<JobConfig>, now = false) => {
+      setJob((old) => {
+        if (!old) return old;
+        const next = { ...old, ...patch };
+        if (pending.current) clearTimeout(pending.current);
+        if (now) void persist(next);
+        else pending.current = setTimeout(() => void persist(next), WRITE_AFTER);
+        return next;
+      });
+    },
+    [persist],
+  );
+
+  // A screen left mid-pause must still keep what was typed.
+  useEffect(
+    () => () => {
+      if (pending.current) clearTimeout(pending.current);
+    },
+    [],
+  );
+
+  /**
+   * Whether this job exists yet.
+   *
+   * A job needs a name and both sides before it can be written at all, and one
+   * being typed does not have them. `persist` refuses such a job, which is
+   * right and silent, so the page says it out loud instead - otherwise
+   * somebody fills in half a job, leaves, and finds nothing in the list with no
+   * idea why.
+   */
+  const incomplete = !job?.name.trim() || !job?.left.trim() || !job?.right.trim();
 
   const remove = () => {
     if (!config || !editing) return;
@@ -194,6 +260,11 @@ export function JobEdit() {
 
   return (
     <Page>
+      {/* WHAT IT DOES, above what it is. Only for a job that exists: one
+          being typed has nothing to run and no history, and empty sections
+          above the fields would be worse than none. */}
+      {editing ? <JobLive name={editing} /> : null}
+
       <Section title={t("edit.name")} hint={t("edit.nameHint")}>
         <Field label={t("edit.name")} value={job.name} onChange={(name) => set({ name })} />
       </Section>
@@ -259,7 +330,7 @@ export function JobEdit() {
         <Section title={t("direction.label")} hint={t("direction.hint")} hue={2}>
           <Choice
             value={job.direction ?? "both"}
-            onChange={(direction) => set({ direction, mode: direction === "both" ? "sync" : job.mode })}
+            onChange={(direction) => set({ direction, mode: direction === "both" ? "sync" : job.mode }, true)}
             options={[
               // The engine's own spellings. They used to be "toRight" and
               // "toLeft" here, which ParseDirection does not recognise at all -
@@ -303,7 +374,7 @@ export function JobEdit() {
         <Choice
           value={(job.direction ?? "both") === "both" ? "sync" : (job.mode ?? "sync")}
           disabled={(job.direction ?? "both") === "both"}
-          onChange={(mode) => set({ mode })}
+          onChange={(mode) => set({ mode }, true)}
           options={[
             { value: "sync", label: t("mode.sync") },
             { value: "mirror", label: t("mode.mirror") },
@@ -327,13 +398,13 @@ export function JobEdit() {
           switched back off for one job. Only the expression is a default. */}
       <Section title={t("edit.schedule")} hint={t("edit.scheduleHint")}>
         {!follows ? (
-          <Schedule value={job.schedule ?? ""} onChange={(schedule) => set({ schedule })} />
+          <Schedule value={job.schedule ?? ""} onChange={(schedule) => set({ schedule }, true)} />
         ) : null}
         <Toggle
           label={t("schedule.live")}
           hint={t("schedule.backstopHint")}
           value={Boolean(job.watch)}
-          onChange={(watch) => set({ watch })}
+          onChange={(watch) => set({ watch }, true)}
         />
         {/* No "run as soon as the program starts" here. jdp: "das ist doch
             fuer die app unnoetig", and he is right about why: on a desktop the
@@ -362,7 +433,7 @@ export function JobEdit() {
           label={t("edit.trash")}
           hint={t("edit.trashHint")}
           value={!job.noTrash}
-          onChange={(on) => set({ noTrash: !on })}
+          onChange={(on) => set({ noTrash: !on }, true)}
         />
         {!follows ? (
           <>
@@ -370,13 +441,13 @@ export function JobEdit() {
               label={t("edit.emptyDirs")}
               hint={t("edit.emptyDirsHint")}
               value={Boolean(job.emptyDirs)}
-              onChange={(emptyDirs) => set({ emptyDirs })}
+              onChange={(emptyDirs) => set({ emptyDirs }, true)}
             />
             <Toggle
               label={t("edit.metadata")}
               hint={t("edit.metadataHint")}
               value={Boolean(job.metadata)}
-              onChange={(metadata) => set({ metadata })}
+              onChange={(metadata) => set({ metadata }, true)}
             />
           </>
         ) : null}
@@ -391,18 +462,23 @@ export function JobEdit() {
       </Section>
 
       {error ? <Body>{error}</Body> : null}
+      {/* Not an error and not a warning: a statement of what is still missing,
+          on a page that otherwise keeps everything the moment it is typed. */}
+      {incomplete ? <Body muted>{t("edit.nameHint")}</Body> : null}
 
-      <View style={styles.actions}>
-        {/* Removing on the LEFT and saving on the right, per GlimStone 1.14.0:
-            the control that goes ahead sits on the right. Not red either - see
-            CardAction in CardMenu.tsx: the confirmation is the warning, and a
-            colour that shouts on every delete stops meaning anything by the
-            third time somebody sees it. */}
-        {editing ? (
+      {/* NO SAVE BUTTON. jdp chose the shape where every field writes itself,
+          which is what this language already says about a settings field: it is
+          independently valid the moment it is set, so a batched commit in front
+          of it guards nothing. Two pages per job became one.
+
+          Removing stays, and is not red: the confirmation is the warning, and a
+          colour that shouts on every delete stops meaning anything by the third
+          time somebody sees it. */}
+      {editing ? (
+        <View style={styles.actions}>
           <Button label={t("edit.remove")} labelKey="edit.remove" onPress={remove} wide={false} />
-        ) : null}
-        <Button label={t("edit.save")} labelKey="edit.save" tone="accent" busy={saving} onPress={save} />
-      </View>
+        </View>
+      ) : null}
       <FolderPicker
         visible={picking !== null}
         start={picking === "left" ? job.left : job.right}

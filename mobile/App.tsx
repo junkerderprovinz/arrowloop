@@ -18,7 +18,6 @@ import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-cont
 import { I18nProvider, useT } from "./src/i18n";
 import type { HistoryStack, JobsStack, SettingsStack, TargetsStack } from "./src/nav";
 import { History } from "./src/screens/History";
-import { JobDetail } from "./src/screens/JobDetail";
 import { JobEdit } from "./src/screens/JobEdit";
 import { Jobs } from "./src/screens/Jobs";
 import { Language } from "./src/screens/Language";
@@ -244,7 +243,9 @@ function Shell() {
             {() => (
               <JobsNav.Navigator screenOptions={header}>
                 <JobsNav.Screen name="JobList" component={Jobs} options={{ title: t("jobs.title") }} />
-                <JobsNav.Screen name="JobDetail" component={JobDetail} options={{ title: "" }} />
+                {/* Opening a job and editing it are one screen now. The route
+                    name stays, so anything linking to it keeps working. */}
+                <JobsNav.Screen name="JobDetail" component={JobEdit} options={{ title: "" }} />
                 <JobsNav.Screen
                   name="JobEdit"
                   component={JobEdit}

@@ -197,6 +197,9 @@ export function Jobs() {
           onAct={() => act(item)}
           holding={holding === item.name}
           onHold={() => hold(item)}
+          // Opening and editing are one screen now, so both verbs land in the
+          // same place. They stay as two menu rows because they are two
+          // INTENTIONS, and somebody looking for "bearbeiten" should find it.
           onEdit={() => nav.navigate("JobEdit", { name: item.name })}
           onDuplicate={() => duplicate(item)}
           onRemove={() => remove(item)}

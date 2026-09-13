@@ -76,9 +76,25 @@ export function TargetEdit() {
     // already typed while this was in flight survives.
   }, [editing, providerId]);
 
+  /**
+   * Which product this target IS, in order of how much each source knows.
+   *
+   * 1. The one somebody just picked, when creating.
+   * 2. The one the ENGINE names for a saved target, resolved from the settings
+   *    it was created with - see internal/remotes/identify.go.
+   * 3. The first provider with the same backend, which is a GUESS and is last
+   *    for that reason: it is right only for a target written by hand or by
+   *    rclone itself, which carries no preset to be named by.
+   *
+   * Step 2 was missing, and step 3 therefore answered for everything: opening
+   * Garage-Test showed a page headed "Ceph", because sixteen products speak
+   * `s3` and Ceph comes first. Same defect the card's logo had this morning,
+   * one screen further along.
+   */
   const provider = useMemo(
     () =>
       providers.find((x) => x.id === providerId) ??
+      providers.find((x) => x.id === existing?.provider) ??
       providers.find((x) => x.backend === existing?.type) ??
       null,
     [providers, providerId, existing],

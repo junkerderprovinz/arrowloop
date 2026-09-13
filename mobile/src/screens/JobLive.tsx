@@ -19,11 +19,22 @@ import { arrow, when } from "./Jobs";
  * and it is reached by tapping the card rather than by a row of icons nobody
  * can hit with a thumb.
  */
-export function JobDetail() {
-  const route = useRoute<RouteProp<JobsStack, "JobDetail">>();
+/**
+ * What a job DOES, at the top of the page that says what it is.
+ *
+ * Was a page of its own until 2026-09-13. jdp: "ist irgendwie bloed wenn man
+ * zwei unterschiedliche seiten pro auftrag hat die unterschiedliches zeigen."
+ * The split ran along a line nobody could see - doing on one page, being on the
+ * other - and the two words for reaching them said nothing about which was
+ * which.
+ *
+ * Only for a job that EXISTS. A job being typed has nothing to run, no trash and
+ * no history, and four empty sections above the fields would be worse than none.
+ */
+export function JobLive({ name }: { name: string }) {
   const nav = useNavigation<Nav<JobsStack>>();
   const { t } = useT();
-  const jobName = route.params.name;
+  const jobName = name;
 
   const [job, setJob] = useState<Job | null>(null);
   const [runs, setRuns] = useState<Run[]>([]);
@@ -59,26 +70,17 @@ export function JobDetail() {
     }
   };
 
-  if (!job) return <Empty title={t("jobs.activityLoading")} detail={error || undefined} />;
+  // Nothing at all until the job is known: four empty sections above the
+  // fields would be worse than none.
+  if (!job) return null;
 
   return (
-    <Page>
-      <Card>
-        <View style={styles.head}>
-          <Title>{job.name}</Title>
-          {job.running ? <Badge label={t("jobs.state.running")} tone="accent" /> : null}
-        </View>
-        <Body>{job.left}</Body>
-        <Caption>{`${arrow(job.direction)}  ${t(directionKey(job.direction))}`}</Caption>
-        <Body>{job.right}</Body>
-        {/* The schedule in WORDS, through the desktop's own reader. Printing
-            the stored expression puts `0 3 * * 1,5` on a phone card, which is
-            the engine's vocabulary shown to somebody who never asked to learn
-            it - and a second reader with its own idea of what that means is
-            how a card ends up describing a schedule the editor shows
-            differently. */}
-        <Caption>{describeCadence(readCadence(job.schedule, job.watch), t)}</Caption>
-      </Card>
+    <>
+      {/* NO status card. Name, paths, direction and schedule are all fields a
+          few lines below this now, and printing them twice on one page is the
+          kind of duplication that starts disagreeing with itself. What is left
+          here is what the fields cannot say: whether it is running, what it did
+          last, and what is in its trash. */}
 
       <Section title={t("jobs.runNow")} hint={t("jobs.runNowHint")}>
         <View style={styles.actions}>
@@ -141,19 +143,9 @@ export function JobDetail() {
         ))}
       </Section>
 
-      <Section title={t("edit.editJob")}>
-        <View style={styles.actions}>
-          <Button
-            label={t("edit.editJob")}
-            labelKey="edit.editJob"
-            tone="accent"
-            onPress={() => nav.navigate("JobEdit", { name: job.name })}
-          />
-        </View>
-      </Section>
-
+      {/* No link to the editor: this IS the editor, a few lines further down. */}
       {error ? <Caption>{error}</Caption> : null}
-    </Page>
+    </>
   );
 }
 
