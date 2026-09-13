@@ -3,7 +3,6 @@ import { useCallback, useEffect, useState } from "react";
 import { Alert, FlatList, RefreshControl, StyleSheet, View } from "react-native";
 import { api, type Job, type Remote } from "../api";
 import { CardMenu } from "../CardMenu";
-import { ProviderMark } from "../glyphs";
 import { directionKey, markForSide } from "../jobMark";
 import { useT, type T } from "../i18n";
 import { since } from "../../../web/src/lib/since";
@@ -16,6 +15,7 @@ import {
   Button,
   Caption,
   Card,
+  CardHead,
   Empty,
   Fab,
   FAB_ROOM,
@@ -225,17 +225,10 @@ function JobCard({
   const { p, scheme } = useTheme();
   return (
     <Card onPress={onOpen} hue={hue}>
-      <View style={styles.head}>
-        {/* The target's logo, when the target can be named without guessing.
-            See jobMark.ts: a backend claimed by more than one marked provider
-            gets none, because a mark naming the WRONG service is worse than no
-            mark - which is this house's standing rule for brands. */}
-        {mark ? (
-          <View style={styles.cardMark}>
-            <ProviderMark name={mark} width={24} height={24} color={p.textSub} scheme={scheme} />
-          </View>
-        ) : null}
-        <Title>{job.name}</Title>
+      {/* The same head the target list draws, from the same component - see
+          CardHead in ui.tsx. The logo comes from the engine, which resolves the
+          product from the settings the target was created with. */}
+      <CardHead mark={mark} title={job.name}>
         {job.disabled ? (
           <Badge label={t("jobs.state.disabled")} />
         ) : job.running ? (
@@ -261,7 +254,7 @@ function JobCard({
             ]}
           />
         </View>
-      </View>
+      </CardHead>
 
       {/* The two paths with the direction between them, one per line and each
           allowed to wrap. Truncating a path in the middle is what a table
@@ -340,7 +333,6 @@ export function when(iso: string, t: T): string {
 const styles = StyleSheet.create({
   // The logo before the name, the menu hard right, and the badge between them
   // taking whatever is left.
-  cardMark: { width: 26, alignItems: "center" },
   menuSlot: { marginStart: "auto" },
   // The extra room at the end is for the floating button, which would
   // otherwise cover the last card - the one somebody scrolled to reach.

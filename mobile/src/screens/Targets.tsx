@@ -5,9 +5,8 @@ import { api, type Remote, type Usage } from "../api";
 import { useT } from "../i18n";
 import type { Nav, TargetsStack } from "../nav";
 import { space } from "../theme";
-import { Badge, Body, Button, Caption, Card, Empty, Fab, Floating, Page, Title, useHue, useTheme } from "../ui";
+import { Badge, Body, Button, Caption, Card, CardHead, Empty, Fab, Floating, Page, useHue, useTheme } from "../ui";
 import { CardMenu } from "../CardMenu";
-import { ProviderMark } from "../glyphs";
 
 /**
  * The storage this phone can reach.
@@ -146,17 +145,10 @@ function TargetCard({
 
   return (
     <Card hue={hue}>
-      <View style={styles.head}>
-        {/* The product's own logo. Easier here than on a job card: a target
-            names its product directly, so there is no side to resolve first.
-            The engine resolves it from the settings the target was created
-            with - see internal/remotes/identify.go. */}
-        {remote.mark ? (
-          <View style={styles.cardMark}>
-            <ProviderMark name={remote.mark} width={24} height={24} color={p.textSub} scheme={scheme} />
-          </View>
-        ) : null}
-        <Title>{remote.name}</Title>
+      {/* The same head the job list draws, from the same component - see
+          CardHead in ui.tsx. A target names its product directly, so there is no
+          side to resolve first. */}
+      <CardHead mark={remote.mark} title={remote.name}>
         {state === "ok" ? (
           <Badge label={t("targets.checkOk")} tone="ok" />
         ) : state === "bad" ? (
@@ -174,7 +166,7 @@ function TargetCard({
             ]}
           />
         </View>
-      </View>
+      </CardHead>
       {/* The protocol, only where the logo did not already say it. jdp: "die
           verbindungsart kannst du auf der ziele card weg lassen" - and under a
           Garage mark, `s3` says the same thing twice and less clearly. Kept
@@ -219,9 +211,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     gap: space.sm,
   },
-  // The logo before the name and the menu hard right, the same slots the
-  // job card uses, so the two lists read as one family.
-  cardMark: { width: 26, alignItems: "center" },
   menuSlot: { marginStart: "auto" },
   actions: { flexDirection: "row", gap: space.sm, flexWrap: "wrap" },
 });

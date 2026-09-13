@@ -12,7 +12,7 @@ import {
   type StyleProp,
   type ViewStyle,
 } from "react-native";
-import { Glyph, glyphNameForKey, GLYPH } from "./glyphs";
+import { Glyph, glyphNameForKey, GLYPH, ProviderMark } from "./glyphs";
 import {
   contrastOn,
   inkFor,
@@ -245,6 +245,50 @@ export function Heading({ children }: { children: ReactNode }) {
 export function Title({ children }: { children: ReactNode }) {
   const { p } = useTheme();
   return <Text style={[styles.title, { color: p.text }]}>{children}</Text>;
+}
+
+/**
+ * The head of a card in a list: the product's logo, the name, then whatever the
+ * card wants beside them.
+ *
+ * jdp: "logo und name des ziels auf der card groesser, auf der auftrag card
+ * gleich formatieren."
+ *
+ * ONE component rather than the same markup in two files. The job list and the
+ * target list already had identical heads, and they were identical because both
+ * were edited the same way twice - which holds until the third edit. Asked to
+ * format them the same, the answer is a thing they SHARE, not a second careful
+ * copy.
+ *
+ * The name takes the heading size, not the title size. A card in a list is the
+ * heading of its own row: nothing above it competes, and at the smaller size the
+ * name of the thing was quieter than the paths beneath it.
+ */
+export function CardHead({
+  mark,
+  title,
+  children,
+}: {
+  /** The provider's logo, where the target names one. */
+  mark?: string;
+  title: string;
+  /** Badges, a menu, anything that belongs on the same line. */
+  children?: ReactNode;
+}) {
+  const { p, scheme } = useTheme();
+  return (
+    <View style={styles.cardHead}>
+      {mark ? (
+        <View style={styles.cardHeadMark}>
+          <ProviderMark name={mark} width={32} height={32} color={p.textSub} scheme={scheme} />
+        </View>
+      ) : null}
+      <Text style={[styles.cardHeadTitle, { color: p.text }]} numberOfLines={1}>
+        {title}
+      </Text>
+      {children}
+    </View>
+  );
 }
 
 export function Body({ children, muted }: { children: ReactNode; muted?: boolean }) {
@@ -836,6 +880,12 @@ const styles = StyleSheet.create({
   // row - reported on a target card, true on all six. It was there to stop a
   // badge stretching to full width in a COLUMN, and no badge in this app is
   // in one; `center` prevents the stretch just as well.
+  // The shared card head: the logo, the name, and room for what follows.
+  cardHead: { flexDirection: "row", alignItems: "center", gap: space.sm },
+  cardHeadMark: { width: 36, alignItems: "center" },
+  // `flexShrink` so a long name yields to the badge and the menu beside it
+  // rather than pushing them off the card.
+  cardHeadTitle: { fontSize: text.heading, fontWeight: "600", flexShrink: 1 },
   badge: { paddingHorizontal: 7, paddingVertical: 2, alignSelf: "center", flexShrink: 0 },
   badgeText: { fontSize: text.caption, fontWeight: "600", letterSpacing: 0.2 },
   bubble: { width: 18, height: 18, alignItems: "center", justifyContent: "center" },
