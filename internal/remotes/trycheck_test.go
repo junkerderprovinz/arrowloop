@@ -16,7 +16,10 @@ func TestAConnectionStringCarriesEverySetting(t *testing.T) {
 		"type":     "s3", // never repeated: it is already the backend
 		"region":   "",   // empty settings are absent, not empty
 	})
-	want := `:s3,endpoint=http://192.168.20.76:3900,provider=Minio:`
+	// The endpoint is QUOTED, because it carries colons and slashes. The
+	// first version of this test expected it bare, which is precisely the
+	// bug: a colon ends a connection string.
+	want := `:s3,endpoint="http://192.168.20.76:3900",provider=Minio:`
 	if got != want {
 		t.Fatalf("got %q, want %q", got, want)
 	}
@@ -60,6 +63,43 @@ func TestAnAlreadyObscuredSecretIsLeftAlone(t *testing.T) {
 	back, err := obscure.Reveal(inside)
 	if err != nil || back != "demo" {
 		t.Fatalf("reveal(%q) = %q, %v; want demo", inside, back, err)
+	}
+}
+
+// THE ADDRESS THAT BROKE IT, kept as the case rather than as a memory.
+//
+// A connection string is `:backend,k=v,k=v:`, so a COLON ends it - and every
+// WebDAV address has two. The first version quoted only commas, quotes and
+// spaces, so the engine received a URL eaten from `http:` onward and answered
+// "unsupported protocol scheme". jdp: "Ich kann die OpenCloud Verbindung nicht
+// testen."
+func TestAUrlSurvivesTheConnectionString(t *testing.T) {
+	const url = "http://192.168.20.77:9200/remote.php/webdav/"
+	got := connectionString("webdav", map[string]string{"url": url})
+	want := `:webdav,url="http://192.168.20.77:9200/remote.php/webdav/":`
+	if got != want {
+		t.Fatalf("got %q, want %q", got, want)
+	}
+}
+
+// The rule is an ALLOW-list, so anything outside letters, digits and -._~ is
+// quoted - including separators nobody has thought of yet. A deny-list of
+// separators is never finished.
+func TestAnythingUnusualIsQuoted(t *testing.T) {
+	for _, value := range []string{"a:b", "a/b", "a=b", "a b", "a,b", "a	b", "a\"b"} {
+		got := connectionString("webdav", map[string]string{"x": value})
+		if !strings.Contains(got, `x="`) {
+			t.Errorf("%q went bare: %s", value, got)
+		}
+	}
+}
+
+// And a plain value stays bare, because an unquoted string is what somebody
+// reading a log expects to see.
+func TestAPlainValueStaysBare(t *testing.T) {
+	got := connectionString("s3", map[string]string{"region": "eu-central-1"})
+	if got != ":s3,region=eu-central-1:" {
+		t.Fatalf("got %q", got)
 	}
 }
 

@@ -115,11 +115,32 @@ func forConnection(backend, key, value string) string {
 	return hidden
 }
 
-// quoteValue wraps a value only when it needs it, because an unquoted string is
-// what a person reading a log expects to see.
+// quoteValue wraps a value unless it is made of characters that cannot mean
+// anything else.
+//
+// AN ALLOW-LIST, not a list of separators to avoid. The first version quoted
+// values containing a comma, a quote or a space - and a connection string is
+// `:backend,k=v,k=v:`, so a COLON ends it too. Every WebDAV address has two, and
+// the engine answered with a URL that had been eaten from the first one onward.
+//
+// Adding the colon would have fixed that address and left the next separator to
+// be found by somebody whose target simply does not work. A deny-list of
+// separators is never finished; this list is finished the moment it is written.
 func quoteValue(value string) string {
-	if !strings.ContainsAny(value, `,"' `) {
+	if value != "" && strings.IndexFunc(value, needsQuoting) < 0 {
 		return value
 	}
 	return `"` + strings.ReplaceAll(value, `"`, `""`) + `"`
+}
+
+// needsQuoting is true for anything outside the set that is safe bare: letters,
+// digits, and the four punctuation marks no part of the syntax uses.
+func needsQuoting(r rune) bool {
+	switch {
+	case r >= 'a' && r <= 'z', r >= 'A' && r <= 'Z', r >= '0' && r <= '9':
+		return false
+	case r == '-', r == '_', r == '.', r == '~':
+		return false
+	}
+	return true
 }
