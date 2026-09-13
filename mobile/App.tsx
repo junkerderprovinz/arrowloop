@@ -635,14 +635,25 @@ const styles = StyleSheet.create({
   // groove's own surface rather than a card's. One surface, not two.
   bar: { marginHorizontal: space.md, padding: 3 },
   well: { flexDirection: "row", gap: 2 },
-  // Equal by construction, which is the whole point: `flex: 1` with `minWidth:
-  // 0` makes four segments the same width whatever their words are, so the one
-  // coloured thing on screen stops changing shape as somebody moves through the
-  // app.
+  // Equal by construction in BOTH directions, which is the whole point.
+  //
+  // WIDTH: `flex: 1` with `minWidth: 0` makes the segments the same width
+  // whatever their words are, so the one coloured thing on screen stops
+  // changing shape as somebody moves through the app.
+  //
+  // HEIGHT: a fixed one rather than a floor. jdp: "die bottom bar soll immer
+  // gleich groß bleiben." It was `minHeight: 44`, which every mode cleared
+  // except word-and-symbol - that one measures a glyph plus a gap plus a line
+  // of text plus the padding, lands a couple of points over, and the bar grew
+  // by exactly that much. A strip at the bottom edge that changes height when
+  // a SETTING changes reads as the page having moved.
+  //
+  // 48 is the tallest case measured, not a guess: 20 for the glyph, 2 for the
+  // gap, the caption's line, and 5 above and below.
   segment: {
     flex: 1,
     minWidth: 0,
-    minHeight: 44,
+    height: 48,
     alignItems: "center",
     justifyContent: "center",
     // The glyph sits directly over its own word rather than over the space a
