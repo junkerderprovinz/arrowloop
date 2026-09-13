@@ -59,6 +59,11 @@ func main() {
 		os.Exit(2)
 	}
 
+	// Before anything opens a connection or reads a clock. On Android the
+	// runtime cannot find the resolver's configuration or the zone database,
+	// and both failures look like something else entirely - see android.go.
+	applyAndroidEnvironment()
+
 	// Before anything can create a file. The mask governs every create this
 	// process makes, rclone's included, so it has to be in place before the
 	// first one rather than before the first SYNC: the configuration file and

@@ -1,11 +1,13 @@
 package design.halleluja.arrowloop
 
 import android.content.Context
+import android.net.ConnectivityManager
 import android.os.Build
 import android.util.Log
 import java.io.File
 import java.net.HttpURLConnection
 import java.net.URL
+import java.util.TimeZone
 
 /**
  * The engine process: starting it, knowing whether it answers, stopping it.
@@ -32,6 +34,36 @@ object Engine {
 
     @Volatile
     private var process: Process? = null
+
+    /**
+     * The nameservers this phone is currently using, comma-separated.
+     *
+     * From the ACTIVE network rather than from a setting, because it changes:
+     * wifi and mobile data hand out different resolvers, and a resolver that
+     * was right in the kitchen is unreachable on the train. The engine is
+     * restarted with the network it has.
+     *
+     * Null where the framework will not say - no active network, or a version
+     * that does not expose it - and the caller then simply does not set the
+     * variable, which leaves the engine on its own behaviour rather than on a
+     * guessed public resolver. Guessing one would send every lookup this phone
+     * makes to a company nobody chose.
+     */
+    private fun nameservers(context: Context): String? {
+        return try {
+            val manager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
+                ?: return null
+            val active = manager.activeNetwork ?: return null
+            val links = manager.getLinkProperties(active) ?: return null
+            val list = links.dnsServers.mapNotNull { it.hostAddress }.filter { it.isNotBlank() }
+            if (list.isEmpty()) null else list.joinToString(",")
+        } catch (e: Exception) {
+            // A phone that will not answer this question is not a reason to
+            // refuse to start the engine.
+            Log.w(TAG, "could not read the nameservers: ${e.javaClass.simpleName}")
+            null
+        }
+    }
 
     /**
      * Where the engine's own binary lives, and why it is not where you would
@@ -205,6 +237,28 @@ object Engine {
         // the engine would write the remotes somewhere that is not this app's.
         builder.environment()["HOME"] = home(context).absolutePath
         builder.environment()["TMPDIR"] = context.cacheDir.absolutePath
+        /*
+        TWO THINGS THE ENGINE CANNOT FIND OUT FOR ITSELF on Android, and both
+        failures look like something else.
+
+        The zone: Android keeps its zone data in a format the Go runtime does
+        not read, and `/usr/share/zoneinfo` does not exist. Without TZ the
+        engine runs in UTC, so a job set to run at eight in the morning fires at
+        ten - silently, with no error anywhere. Measured on jdp's phone.
+
+        The nameservers: Go reads `/etc/resolv.conf`, which Android also does
+        not have, and falls back to asking a resolver on localhost. There is
+        none, so every hostname fails with "connection refused" on [::1]:53 -
+        a message that reads like a network fault and is not one. jdp met it as
+        "ich habe den app token in OpenCloud eingegeben aber die verbindung geht
+        nicht", and neither the token nor the address was wrong.
+
+        Both are things the FRAMEWORK knows and a plain process does not, which
+        is exactly what this class is for. See cmd/arrowloop/android.go for the
+        other half.
+        */
+        builder.environment()["TZ"] = TimeZone.getDefault().id
+        nameservers(context)?.let { builder.environment()["ARROWLOOP_DNS"] = it }
         builder.redirectErrorStream(true)
         builder.redirectOutput(ProcessBuilder.Redirect.appendTo(log))
 
