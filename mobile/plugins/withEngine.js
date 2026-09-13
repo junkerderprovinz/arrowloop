@@ -315,8 +315,24 @@ function withEngineGradle(config) {
     // consume a stale tree because the tree is already current when the first
     // task is created, and there is no dependency to declare because there is
     // no producing task. It costs one directory walk of about a dozen files.
+    // REPLACED on every pass, not written once. The first version of this was
+    // guarded with `if (!gradle.includes(SYNC))`, which meant a tree that
+    // already carried the block never received a better one - so the day the
+    // staleness check was added to it, every existing checkout silently kept
+    // the version without it. An injected block that cannot be updated is a
+    // block whose next fix is invisible.
     const SYNC = "// arrowloop: the native sources cannot go stale";
-    if (!gradle.includes(SYNC)) {
+    const SYNC_END = "// arrowloop: end of the native-sources block";
+    {
+      const from = gradle.indexOf(SYNC);
+      const to = gradle.indexOf(SYNC_END);
+      if (from !== -1 && to !== -1) {
+        gradle = gradle.slice(0, from) + gradle.slice(to + SYNC_END.length);
+      } else if (from !== -1) {
+        // An older block with no end marker: everything from the start marker
+        // to the end of the file was this block, which is where it was appended.
+        gradle = gradle.slice(0, from);
+      }
       gradle += `
 ${SYNC}
 copy {
@@ -357,13 +373,18 @@ tasks.matching { it.name ==~ /^(merge|package).*[Nn]ativeLibs\$/ || it.name ==~ 
             }
         }
         if (newest != null) {
-            fileTree(file('src/main/jniLibs')).matching { include '**/libarrowloop.so' }.each { so ->
+            // The SOURCE tree, never src/main/jniLibs: the copy above runs at
+            // configuration time and Gradle stamps what it copies with the time
+            // of the copy, so the destination is always seconds old and the
+            // comparison always passed. Measured, after the check sat silent
+            // through a deliberately stale engine twice.
+            fileTree(rootProject.file('../native/jniLibs')).matching { include '**/libarrowloop.so' }.each { so ->
                 if (so.lastModified() < newest.lastModified()) {
                     throw new GradleException(
                         so.absolutePath + ' is OLDER than ' + newest.absolutePath + '. ' +
                         'This would build an APK running an engine from before that change, which looks exactly like the change not working: ' +
-                        'every layer a build can check stays green. Rebuild it with\n' +
-                        '  CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -trimpath -ldflags="-s -w" -o mobile/native/jniLibs/arm64-v8a/libarrowloop.so ./cmd/arrowloop\n' +
+                        'every layer a build can check stays green. Rebuild it with\\n' +
+                        '  CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -trimpath -ldflags="-s -w" -o mobile/native/jniLibs/arm64-v8a/libarrowloop.so ./cmd/arrowloop\\n' +
                         '(GOARCH=amd64 into x86_64), or take the one from a Mobile CI run.')
                 }
             }
@@ -406,6 +427,7 @@ tasks.matching { it.name ==~ /^createBundle.*JsAndAssets\$/ }.configureEach {
         .withPathSensitivity(PathSensitivity.RELATIVE)
         .withPropertyName('arrowloopSharedSources')
 }
+${SYNC_END}
 `;
     }
 
