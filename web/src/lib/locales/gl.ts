@@ -356,6 +356,7 @@ const gl: Translations = {
   'schedule.weekly': 'Días da semana',
   'schedule.cron': 'Cron',
   'schedule.live': 'Transferir de inmediato',
+  'schedule.liveHint': 'Os cambios neste dispositivo transfírense en canto ocorren, en vez de agardar pola seguinte execución programada. Só se pode vixiar o lado deste dispositivo, así que un cambio no outro lado chega coa programación.',
   'schedule.settleHint': 'Canto tempo non debe pasar nada no cartafol antes de que o tempo real inicie unha execución. Copia cincuenta ficheiros dentro e o sistema informa de cincuenta cambios: sen espera son cincuenta execucións, e as primeiras corenta e nove sincronizan un cartafol a medio encher. Cinco segundos chegan para o día a día, un minuto vai mellor para ficheiros grandes por rede.',
   'schedule.settle': 'Tempo de acougo',
   'schedule.backstop': 'Plan de reserva',

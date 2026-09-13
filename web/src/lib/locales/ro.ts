@@ -356,6 +356,7 @@ const ro: Translations = {
   'schedule.weekly': 'Zilele săptămânii',
   'schedule.cron': 'Cron',
   'schedule.live': 'Transferă imediat',
+  'schedule.liveHint': 'Modificările de pe acest dispozitiv sunt transferate imediat ce apar, în loc să aștepte următoarea rulare programată. Doar partea de pe acest dispozitiv poate fi urmărită, așa că o modificare de pe cealaltă parte ajunge tot cu programarea.',
   'schedule.settleHint': 'Cât timp nu trebuie să se întâmple nimic în dosar înainte ca timpul real să pornească o rulare. Copiază cincizeci de fișiere înăuntru și sistemul raportează cincizeci de modificări: fără așteptare acestea sunt cincizeci de rulări, iar primele patruzeci și nouă sincronizează un dosar umplut pe jumătate. Cinci secunde ajung pentru zi cu zi, un minut este mai potrivit pentru fișiere mari prin rețea.',
   'schedule.settle': 'Timp de liniștire',
   'schedule.backstop': 'Plan de rezervă',

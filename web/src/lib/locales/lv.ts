@@ -356,6 +356,7 @@ const lv: Translations = {
   'schedule.weekly': 'Nedēļas dienas',
   'schedule.cron': 'Cron',
   'schedule.live': 'Pārsūtīt uzreiz',
+  'schedule.liveHint': 'Šīs ierīces izmaiņas tiek pārsūtītas uzreiz, negaidot nākamo ieplānoto palaišanu. Var novērot tikai šīs ierīces pusi, tāpēc izmaiņas otrā pusē joprojām pienāk ar grafiku.',
   'schedule.settleHint': 'Cik ilgi mapē nekam nav jānotiek, pirms reāllaiks sāk izpildi. Iekopējiet tajā piecdesmit datnes, un sistēma ziņos par piecdesmit izmaiņām: bez gaidīšanas tās ir piecdesmit izpildes, un pirmās četrdesmit deviņas sinhronizē pa pusei piepildītu mapi. Piecas sekundes pietiek ikdienai, minūte ir labāka lielām datnēm pa tīklu.',
   'schedule.settle': 'Norimšanas laiks',
   'schedule.backstop': 'Rezerves grafiks',

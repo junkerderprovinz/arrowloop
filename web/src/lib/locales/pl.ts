@@ -356,6 +356,7 @@ const pl: Translations = {
   'schedule.weekly': 'Dni tygodnia',
   'schedule.cron': 'Cron',
   'schedule.live': 'Przesyłaj natychmiast',
+  'schedule.liveHint': 'Zmiany na tym urządzeniu są przesyłane od razu, zamiast czekać na kolejne zaplanowane uruchomienie. Obserwować można tylko stronę na tym urządzeniu, więc zmiana po drugiej stronie nadal przychodzi z harmonogramem.',
   'schedule.settleHint': 'Jak długo w folderze nic nie może się dziać, zanim czas rzeczywisty rozpocznie przebieg. Skopiuj do niego pięćdziesiąt plików, a system zgłosi pięćdziesiąt zmian: bez czekania to pięćdziesiąt przebiegów, a pierwsze czterdzieści dziewięć zsynchronizuje folder wypełniony do połowy. Pięć sekund wystarcza na co dzień, minuta lepiej pasuje do dużych plików przez sieć.',
   'schedule.settle': 'Czas uspokojenia',
   'schedule.backstop': 'Plan zapasowy',

@@ -356,6 +356,7 @@ const fi: Translations = {
   'schedule.weekly': 'Viikonpäivät',
   'schedule.cron': 'Cron',
   'schedule.live': 'Siirrä heti',
+  'schedule.liveHint': 'Tämän laitteen muutokset siirretään heti, eikä seuraavaa ajastettua ajoa odoteta. Vain tämän laitteen puolta voidaan tarkkailla, joten toisella puolella tehty muutos saapuu yhä aikataulun mukana.',
   'schedule.settleHint': 'Kuinka kauan kansiossa ei saa tapahtua mitään, ennen kuin reaaliaika käynnistää ajon. Kopioi sinne viisikymmentä tiedostoa, ja järjestelmä ilmoittaa viisikymmentä muutosta: ilman odotusta se on viisikymmentä ajoa, ja ensimmäiset neljäkymmentäyhdeksän synkronoivat puoliksi täytettyä kansiota. Viisi sekuntia riittää arkeen, minuutti on parempi suurille tiedostoille verkon yli.',
   'schedule.settle': 'Rauhoittumisaika',
   'schedule.backstop': 'Varasuunnitelma',

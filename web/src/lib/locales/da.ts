@@ -356,6 +356,7 @@ const da: Translations = {
   'schedule.weekly': 'Ugedage',
   'schedule.cron': 'Cron',
   'schedule.live': 'Overfør straks',
+  'schedule.liveHint': 'Ændringer på denne enhed overføres, så snart de sker, i stedet for at vente på næste planlagte kørsel. Kun siden på denne enhed kan overvåges, så en ændring på den anden side kommer stadig med planen.',
   'schedule.settleHint': 'Hvor længe der ikke må ske noget i mappen, før realtid starter en kørsel. Kopier halvtreds filer ind, og systemet melder halvtreds ændringer: uden ventetid er det halvtreds kørsler, og de første niogfyrre synkroniserer en halvfyldt mappe. Fem sekunder rækker til hverdagen, et minut er bedre til store filer over netværket.',
   'schedule.settle': 'Rotid',
   'schedule.backstop': 'Reserveplan',

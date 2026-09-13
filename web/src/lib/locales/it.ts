@@ -356,6 +356,7 @@ const it: Translations = {
   'schedule.weekly': 'Giorni feriali',
   'schedule.cron': 'Cron',
   'schedule.live': 'Trasferisci subito',
+  'schedule.liveHint': 'Le modifiche su questo dispositivo vengono trasferite appena avvengono, invece di attendere la prossima esecuzione pianificata. Si può osservare solo il lato su questo dispositivo, quindi una modifica sull\'altro lato arriva comunque con la pianificazione.',
   'schedule.settleHint': 'Per quanto tempo nella cartella non deve succedere nulla prima che il tempo reale avvii un’esecuzione. Copiaci dentro cinquanta file e il sistema segnala cinquanta modifiche: senza attesa sono cinquanta esecuzioni, e le prime quarantanove sincronizzano una cartella riempita a metà. Cinque secondi bastano per l’uso quotidiano, un minuto è meglio per file grandi in rete.',
   'schedule.settle': 'Tempo di quiete',
   'schedule.backstop': 'Piano di riserva',

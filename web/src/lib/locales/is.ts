@@ -356,6 +356,7 @@ const is: Translations = {
   'schedule.weekly': 'Vikudagar',
   'schedule.cron': 'Cron',
   'schedule.live': 'Flytja strax',
+  'schedule.liveHint': 'Breytingar á þessu tæki eru fluttar um leið og þær gerast, í stað þess að bíða eftir næstu áætlun. Aðeins hliðin á þessu tæki er vöktuð, svo breyting hinum megin kemur áfram með áætluninni.',
   'schedule.settleHint': 'Hversu lengi ekkert má gerast í möppunni áður en rauntími hefur keyrslu. Afritaðu fimmtíu skrár inn í hana og kerfið tilkynnir fimmtíu breytingar: án biðar eru það fimmtíu keyrslur, og fyrstu fjörutíu og níu samstilla hálffulla möppu. Fimm sekúndur duga í daglegu amstri, mínúta er betri fyrir stórar skrár yfir net.',
   'schedule.settle': 'Kyrrðartími',
   'schedule.backstop': 'Varaáætlun',

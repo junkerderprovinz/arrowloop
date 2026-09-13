@@ -356,6 +356,7 @@ const fr: Translations = {
   'schedule.weekly': 'Jours de la semaine',
   'schedule.cron': 'Cron',
   'schedule.live': 'Transférer immédiatement',
+  'schedule.liveHint': 'Les modifications sur cet appareil sont transférées dès qu\'elles se produisent, au lieu d\'attendre la prochaine exécution planifiée. Seul le côté de cet appareil peut être surveillé, donc une modification de l\'autre côté arrive toujours avec la planification.',
   'schedule.settleHint': 'Combien de temps rien ne doit se passer dans le dossier avant que le temps réel ne lance une exécution. Copiez-y cinquante fichiers et le système signale cinquante changements : sans attente cela fait cinquante exécutions, et les quarante-neuf premières synchronisent un dossier à moitié rempli. Cinq secondes suffisent au quotidien, une minute vaut mieux pour de gros fichiers sur le réseau.',
   'schedule.settle': 'Temps de stabilisation',
   'schedule.backstop': 'Plan de repli',

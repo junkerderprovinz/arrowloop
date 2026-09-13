@@ -356,6 +356,7 @@ const eu: Translations = {
   'schedule.weekly': 'Asteko egunak',
   'schedule.cron': 'Cron',
   'schedule.live': 'Berehala transferitu',
+  'schedule.liveHint': 'Gailu honetako aldaketak gertatu bezain laster bidaltzen dira, hurrengo programaziorako itxaron beharrean. Gailu honetako aldea baino ezin da zaindu, beraz beste aldeko aldaketa programazioarekin iristen da.',
   'schedule.settleHint': 'Zenbat denbora ez den ezer gertatu behar karpetan denbora errealak exekuzio bat hasi aurretik. Kopiatu berrogeita hamar fitxategi bertan eta sistemak berrogeita hamar aldaketa jakinaraziko ditu: itxaronaldirik gabe berrogeita hamar exekuzio dira, eta lehen berrogeita bederatziek erdi beteta dagoen karpeta bat sinkronizatzen dute. Bost segundo nahikoa dira egunerokorako, minutu bat hobea da sarearen bidezko fitxategi handietarako.',
   'schedule.settle': 'Baretze-denbora',
   'schedule.backstop': 'Erreserba-plana',

@@ -356,6 +356,7 @@ const ca: Translations = {
   'schedule.weekly': 'Dies de la setmana',
   'schedule.cron': 'Cron',
   'schedule.live': 'Transfereix immediatament',
+  'schedule.liveHint': 'Els canvis en aquest dispositiu s\'envien tan bon punt passen, en lloc d\'esperar la propera execució programada. Només es pot vigilar el costat d\'aquest dispositiu, així que un canvi a l\'altre costat arriba amb la programació.',
   'schedule.settleHint': 'Quant de temps no ha de passar res a la carpeta abans que el temps real iniciï una execució. Copieu-hi cinquanta fitxers i el sistema informa de cinquanta canvis: sense espera són cinquanta execucions, i les primeres quaranta-nou sincronitzen una carpeta mig plena. Cinc segons van bé per al dia a dia, un minut és millor per a fitxers grans per xarxa.',
   'schedule.settle': 'Temps de repòs',
   'schedule.backstop': 'Pla de reserva',

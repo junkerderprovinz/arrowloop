@@ -356,6 +356,7 @@ const hu: Translations = {
   'schedule.weekly': 'Hétköznapok',
   'schedule.cron': 'Cron',
   'schedule.live': 'Azonnali átvitel',
+  'schedule.liveHint': 'Az eszközön történt változások azonnal átkerülnek, nem várnak a következő ütemezett futásra. Csak az ezen az eszközön lévő oldal figyelhető, így a túloldali változás továbbra is az ütemezéssel érkezik.',
   'schedule.settleHint': 'Meddig nem történhet semmi a mappában, mielőtt a valós idő elindít egy futást. Másolj bele ötven fájlt, és a rendszer ötven változást jelent: várakozás nélkül ez ötven futás, és az első negyvenkilenc egy félig telt mappát szinkronizál. Öt másodperc elég a mindennapokra, hálózaton át nagy fájlokhoz inkább egy perc.',
   'schedule.settle': 'Megnyugvási idő',
   'schedule.backstop': 'Tartalékterv',

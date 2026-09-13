@@ -356,6 +356,7 @@ const sv: Translations = {
   'schedule.weekly': 'Veckodagar',
   'schedule.cron': 'Cron',
   'schedule.live': 'Överför direkt',
+  'schedule.liveHint': 'Ändringar på den här enheten överförs så fort de sker, i stället för att vänta på nästa schemalagda körning. Bara sidan på den här enheten kan bevakas, så en ändring på andra sidan kommer fortfarande med schemat.',
   'schedule.settleHint': 'Hur länge inget får hända i mappen innan realtid startar en körning. Kopiera in femtio filer så rapporterar systemet femtio ändringar: utan väntan blir det femtio körningar, och de första fyrtionio synkroniserar en halvfylld mapp. Fem sekunder räcker till vardags, en minut är bättre för stora filer över nätverket.',
   'schedule.settle': 'Lugntid',
   'schedule.backstop': 'Skyddsnät',

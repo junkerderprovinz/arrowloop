@@ -356,6 +356,7 @@ const et: Translations = {
   'schedule.weekly': 'Nädalapäevad',
   'schedule.cron': 'Cron',
   'schedule.live': 'Kanna kohe üle',
+  'schedule.liveHint': 'Selle seadme muudatused kantakse üle kohe, mitte järgmist ajastatud käivitust oodates. Jälgida saab ainult selle seadme poolt, nii et teisel poolel tehtud muudatus saabub ikka ajakavaga.',
   'schedule.settleHint': 'Kui kaua ei tohi kaustas midagi juhtuda, enne kui reaalaeg käivituse alustab. Kopeeri sinna viiskümmend faili ja süsteem teatab viiekümnest muutusest: ilma ootamiseta on see viiskümmend käivitust ja esimesed nelikümmend üheksa sünkroonivad poolikut kausta. Viis sekundit sobib igapäevaks, minut on parem suurte failide jaoks üle võrgu.',
   'schedule.settle': 'Rahunemisaeg',
   'schedule.backstop': 'Varuplaan',

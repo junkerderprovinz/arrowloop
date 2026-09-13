@@ -356,6 +356,7 @@ const cs: Translations = {
   'schedule.weekly': 'Dny v týdnu',
   'schedule.cron': 'Cron',
   'schedule.live': 'Přenášet ihned',
+  'schedule.liveHint': 'Změny na tomto zařízení se přenášejí hned, místo čekání na další naplánované spuštění. Sledovat lze jen stranu na tomto zařízení, takže změna na druhé straně přijde až s plánem.',
   'schedule.settleHint': 'Jak dlouho se ve složce nesmí nic dít, než reálný čas spustí běh. Zkopírujte do ní padesát souborů a systém ohlásí padesát změn: bez čekání je to padesát běhů a prvních čtyřicet devět synchronizuje napůl naplněnou složku. Pět sekund stačí na běžnou práci, minuta je lepší pro velké soubory po síti.',
   'schedule.settle': 'Doba klidu',
   'schedule.backstop': 'Záložní plán',

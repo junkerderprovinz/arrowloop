@@ -356,6 +356,7 @@ const id: Translations = {
   'schedule.weekly': 'Hari dalam minggu',
   'schedule.cron': 'Cron',
   'schedule.live': 'Transfer segera',
+  'schedule.liveHint': 'Perubahan di perangkat ini dikirim begitu terjadi, bukan menunggu jadwal berikutnya. Hanya sisi di perangkat ini yang bisa diawasi, jadi perubahan di sisi lain tetap datang bersama jadwal.',
   'schedule.settleHint': 'Berapa lama tidak boleh terjadi apa pun di folder sebelum waktu nyata memulai satu jalannya. Salin lima puluh berkas ke dalamnya dan sistem melaporkan lima puluh perubahan: tanpa jeda itu berarti lima puluh kali jalan, dan empat puluh sembilan yang pertama menyinkronkan folder yang baru terisi separuh. Lima detik cukup untuk sehari-hari, satu menit lebih baik untuk berkas besar lewat jaringan.',
   'schedule.settle': 'Waktu tenang',
   'schedule.backstop': 'Jaring pengaman',

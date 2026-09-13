@@ -356,6 +356,7 @@ const lt: Translations = {
   'schedule.weekly': 'Savaitės dienos',
   'schedule.cron': 'Cron',
   'schedule.live': 'Perduoti iškart',
+  'schedule.liveHint': 'Šio įrenginio pakeitimai perduodami iškart, nelaukiant kito suplanuoto paleidimo. Stebėti galima tik šio įrenginio pusę, tad kitoje pusėje padarytas pakeitimas vis tiek ateina su tvarkaraščiu.',
   'schedule.settleHint': 'Kiek laiko aplanke nieko neturi vykti, kol realusis laikas pradės vykdymą. Nukopijuokite į jį penkiasdešimt rinkmenų ir sistema praneš apie penkiasdešimt pakeitimų: be laukimo tai penkiasdešimt vykdymų, o pirmieji keturiasdešimt devyni sinchronizuoja pusiau pripildytą aplanką. Penkių sekundžių užtenka kasdienai, minutė geriau tinka didelėms rinkmenoms per tinklą.',
   'schedule.settle': 'Nurimimo laikas',
   'schedule.backstop': 'Atsarginis tvarkaraštis',

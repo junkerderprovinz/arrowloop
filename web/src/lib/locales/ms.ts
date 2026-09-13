@@ -356,6 +356,7 @@ const ms: Translations = {
   'schedule.weekly': 'Hari dalam minggu',
   'schedule.cron': 'Cron',
   'schedule.live': 'Pindah serta-merta',
+  'schedule.liveHint': 'Perubahan pada peranti ini dihantar sebaik ia berlaku, bukan menunggu jadual seterusnya. Hanya sisi pada peranti ini boleh diawasi, jadi perubahan di sisi lain tetap tiba mengikut jadual.',
   'schedule.settleHint': 'Berapa lama tiada apa-apa boleh berlaku dalam folder sebelum masa nyata memulakan satu larian. Salin lima puluh fail ke dalamnya dan sistem melaporkan lima puluh perubahan: tanpa menunggu itu bermakna lima puluh larian, dan empat puluh sembilan yang pertama menyegerakkan folder yang baru separuh penuh. Lima saat memadai untuk kegunaan harian, satu minit lebih baik untuk fail besar melalui rangkaian.',
   'schedule.settle': 'Masa reda',
   'schedule.backstop': 'Jadual sandaran',

@@ -356,6 +356,7 @@ const sl: Translations = {
   'schedule.weekly': 'Dnevi v tednu',
   'schedule.cron': 'Cron',
   'schedule.live': 'Prenesi takoj',
+  'schedule.liveHint': 'Spremembe na tej napravi se prenesejo takoj, namesto da bi čakale na naslednji načrtovani zagon. Opazovati je mogoče le stran na tej napravi, zato sprememba na drugi strani še vedno pride z urnikom.',
   'schedule.settleHint': 'Kako dolgo se v mapi ne sme nič zgoditi, preden realni čas začne zagon. Vanjo kopirajte petdeset datotek in sistem javi petdeset sprememb: brez čakanja je to petdeset zagonov, prvih devetinštirideset pa uskladi na pol napolnjeno mapo. Pet sekund zadošča za vsakdanjo rabo, minuta je boljša za velike datoteke prek omrežja.',
   'schedule.settle': 'Čas umiritve',
   'schedule.backstop': 'Varovalka',

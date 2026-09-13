@@ -356,6 +356,7 @@ const zh: Translations = {
   'schedule.weekly': '按星期',
   'schedule.cron': 'Cron',
   'schedule.live': '立即传输',
+  'schedule.liveHint': '本设备上的更改一发生就会传输，而不必等下一次计划运行。只能监视本设备这一侧，因此对侧的更改仍按计划到达。',
   'schedule.settleHint': '实时启动一次运行之前，文件夹里必须多久没有动静。往里复制五十个文件，系统会报告五十次更改：不等待就是五十次运行，其中前四十九次同步的都是只装了一半的文件夹。日常使用五秒就够，通过网络传大文件时一分钟更合适。',
   'schedule.settle': '静置时间',
   'schedule.backstop': '兜底计划',

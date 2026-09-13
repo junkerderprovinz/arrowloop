@@ -402,7 +402,12 @@ export function JobEdit() {
         ) : null}
         <Toggle
           label={t("schedule.live")}
-          hint={t("schedule.backstopHint")}
+          // The switch's OWN hint. It carried schedule.backstopHint, which
+          // describes how often a job also runs by the clock - true, and about
+          // a different control. jdp: "Der infotext von sofort uebertragung
+          // passt nicht." In the container that text sits on the backstop
+          // field, where it belongs.
+          hint={t("schedule.liveHint")}
           value={Boolean(job.watch)}
           onChange={(watch) => set({ watch }, true)}
         />
@@ -428,13 +433,34 @@ export function JobEdit() {
         />
       </Section>
 
-      <Section title={t("settings.general")}>
+      {/* ONE CARD FOR THE BIN. jdp: "auf jeder seite ein papierkorb fuehren
+          und die papierkorb card zusammenfuehren." The switch and the two ways
+          into it were two cards with the same title and the same hint, several
+          screens apart: one said whether there is a bin, the other opened it.
+          Now they are asked in the order somebody thinks them. */}
+      <Section title={t("edit.trash")} hint={t("edit.trashHint")}>
         <Toggle
           label={t("edit.trash")}
-          hint={t("edit.trashHint")}
           value={!job.noTrash}
           onChange={(on) => set({ noTrash: !on }, true)}
         />
+        {/* Hidden while the bin is OFF: two buttons opening something that does
+            not exist is a worse answer than none. */}
+        {editing && !job.noTrash ? (
+          <View style={styles.actions}>
+            <Button
+              label={`${t("phone.bin")} ${t("side.left")}`}
+              onPress={() => nav.navigate("Trash", { name: editing, side: "left" })}
+            />
+            <Button
+              label={`${t("phone.bin")} ${t("side.right")}`}
+              onPress={() => nav.navigate("Trash", { name: editing, side: "right" })}
+            />
+          </View>
+        ) : null}
+      </Section>
+
+      <Section title={t("settings.general")}>
         {!follows ? (
           <>
             <Toggle
@@ -476,7 +502,7 @@ export function JobEdit() {
           time somebody sees it. */}
       {editing ? (
         <View style={styles.actions}>
-          <Button label={t("edit.remove")} labelKey="edit.remove" onPress={remove} wide={false} />
+          <Button label={t("action.delete")} labelKey="action.delete" onPress={remove} wide={false} />
         </View>
       ) : null}
       <FolderPicker

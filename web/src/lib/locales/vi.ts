@@ -356,6 +356,7 @@ const vi: Translations = {
   'schedule.weekly': 'Ngày trong tuần',
   'schedule.cron': 'Cron',
   'schedule.live': 'Chuyển ngay',
+  'schedule.liveHint': 'Thay đổi trên thiết bị này được chuyển ngay khi xảy ra, thay vì chờ lần chạy theo lịch kế tiếp. Chỉ có thể theo dõi phía trên thiết bị này, nên thay đổi ở phía bên kia vẫn đến theo lịch.',
   'schedule.settleHint': 'Trong thư mục phải không có gì xảy ra bao lâu trước khi thời gian thực bắt đầu một lần chạy. Chép năm mươi tệp vào đó và hệ thống báo năm mươi thay đổi: nếu không chờ thì đó là năm mươi lần chạy, và bốn mươi chín lần đầu đồng bộ một thư mục mới đầy một nửa. Năm giây là đủ cho việc hằng ngày, một phút hợp hơn với tệp lớn qua mạng.',
   'schedule.settle': 'Thời gian lắng',
   'schedule.backstop': 'Lưới an toàn',

@@ -356,6 +356,7 @@ const es: Translations = {
   'schedule.weekly': 'Días de la semana',
   'schedule.cron': 'Cron',
   'schedule.live': 'Transferir de inmediato',
+  'schedule.liveHint': 'Los cambios en este dispositivo se transfieren en cuanto ocurren, en vez de esperar a la próxima ejecución programada. Solo puede vigilarse el lado de este dispositivo, así que un cambio en el otro lado sigue llegando con la programación.',
   'schedule.settleHint': 'Cuánto tiempo no debe ocurrir nada en la carpeta antes de que el tiempo real inicie una ejecución. Copia cincuenta archivos dentro y el sistema informa de cincuenta cambios: sin espera son cincuenta ejecuciones, y las primeras cuarenta y nueve sincronizan una carpeta a medio llenar. Cinco segundos bastan para el día a día, un minuto va mejor para archivos grandes por red.',
   'schedule.settle': 'Tiempo de reposo',
   'schedule.backstop': 'Plan de reserva',

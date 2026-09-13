@@ -356,6 +356,7 @@ const nl: Translations = {
   'schedule.weekly': 'Weekdagen',
   'schedule.cron': 'Cron',
   'schedule.live': 'Meteen overdragen',
+  'schedule.liveHint': 'Wijzigingen op dit apparaat worden meteen overgedragen in plaats van te wachten op de volgende geplande run. Alleen de kant op dit apparaat kan bekeken worden, dus een wijziging aan de andere kant komt nog steeds met de planning.',
   'schedule.settleHint': 'Hoe lang er niets in de map mag gebeuren voordat realtime een run start. Kopieer er vijftig bestanden in en het systeem meldt vijftig wijzigingen: zonder wachttijd zijn dat vijftig runs, en de eerste negenenveertig synchroniseren een halfgevulde map. Vijf seconden volstaat voor dagelijks gebruik, een minuut is beter voor grote bestanden over het netwerk.',
   'schedule.settle': 'Rusttijd',
   'schedule.backstop': 'Terugvalplan',

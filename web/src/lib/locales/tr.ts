@@ -356,6 +356,7 @@ const tr: Translations = {
   'schedule.weekly': 'Hafta günleri',
   'schedule.cron': 'Cron',
   'schedule.live': 'Hemen aktar',
+  'schedule.liveHint': 'Bu cihazdaki değişiklikler bir sonraki planlı çalışmayı beklemeden, olur olmaz aktarılır. Yalnızca bu cihazdaki taraf izlenebilir, bu yüzden diğer taraftaki bir değişiklik yine planlamayla gelir.',
   'schedule.settleHint': 'Gerçek zamanlı bir çalıştırma başlatmadan önce klasörde ne kadar süre hiçbir şey olmaması gerektiği. İçine elli dosya kopyalayın, sistem elli değişiklik bildirir: beklemeden bu elli çalıştırma eder ve ilk kırk dokuzu yarı dolu bir klasörü eşitler. Günlük kullanım için beş saniye yeter, ağ üzerinden büyük dosyalar için bir dakika daha iyidir.',
   'schedule.settle': 'Durulma süresi',
   'schedule.backstop': 'Emniyet ağı',

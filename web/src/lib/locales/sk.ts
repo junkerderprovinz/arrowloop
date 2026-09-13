@@ -356,6 +356,7 @@ const sk: Translations = {
   'schedule.weekly': 'Dni v týždni',
   'schedule.cron': 'Cron',
   'schedule.live': 'Prenašať ihneď',
+  'schedule.liveHint': 'Zmeny na tomto zariadení sa prenášajú hneď, namiesto čakania na ďalšie naplánované spustenie. Sledovať možno len stranu na tomto zariadení, takže zmena na druhej strane príde až s plánom.',
   'schedule.settleHint': 'Ako dlho sa v priečinku nesmie nič diať, kým reálny čas spustí beh. Skopírujte doň päťdesiat súborov a systém ohlási päťdesiat zmien: bez čakania je to päťdesiat behov a prvých štyridsaťdeväť synchronizuje napoly naplnený priečinok. Päť sekúnd stačí na bežnú prácu, minúta je lepšia pre veľké súbory cez sieť.',
   'schedule.settle': 'Doba pokoja',
   'schedule.backstop': 'Poistka',

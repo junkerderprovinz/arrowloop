@@ -7,7 +7,7 @@ import { useT } from "../i18n";
 import type { JobsStack, Nav } from "../nav";
 import { space } from "../theme";
 import { useEngineEvents } from "../useEngine";
-import { Badge, Body, Button, Caption, Card, Empty, Page, Section, Title } from "../ui";
+import { Badge, Body, Button, Caption, Card, Section } from "../ui";
 import { counters } from "./History";
 import { arrow, when } from "./Jobs";
 
@@ -118,19 +118,11 @@ export function JobLive({ name }: { name: string }) {
         </View>
       </Section>
 
-      <Section title={t("edit.trash")} hint={t("edit.trashHint")}>
-        <View style={styles.actions}>
-          <Button
-            label={`${t("phone.bin")} ${t("side.left")}`}
-            onPress={() => nav.navigate("Trash", { name: job.name, side: "left" })}
-          />
-          <Button
-            label={`${t("phone.bin")} ${t("side.right")}`}
-            onPress={() => nav.navigate("Trash", { name: job.name, side: "right" })}
-          />
-        </View>
-      </Section>
 
+      {/* The bin's own card is gone from here. jdp: "die papierkorb card
+          zusammenfuehren." It was a card with the same title and the same hint
+          as the switch several screens below it, and reading either alone left
+          the other half unanswered. Both live in one card now, in JobEdit. */}
       <Section title={t("jobs.activity")} hint={runs.length ? undefined : t("jobs.activityEmpty")}>
         {runs.map((run) => (
           <Card key={run.ID}>
