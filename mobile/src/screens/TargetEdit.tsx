@@ -6,6 +6,7 @@ import { Field } from "../fields";
 import { useT, type T } from "../i18n";
 import type { TranslationKey } from "../i18n";
 import type { Nav, TargetsStack } from "../nav";
+import { optionHint } from "../../../web/src/lib/optionHint";
 import { suggestTargetName } from "../../../web/src/lib/targetName";
 import { space } from "../theme";
 import { Body, Button, Caption, Empty, Page, Section, Title } from "../ui";
@@ -204,15 +205,16 @@ export function TargetEdit() {
           reveals more and delivered a card that lists two fields. This card
           holds how the target is REACHED - an account and a key, a host and a
           password, an address - so that is what it is called. */}
-      <Section
-        title={t("targets.access")}
-        hint={provider?.urlHint ? t("help.addressShape", { shape: provider.urlHint }) : undefined}
-      >
+      {/* No hint on the card itself any more: the address shape it used to
+          carry is now said by the address FIELD, next to the box it applies to,
+          and a card repeating one of its own fields is the same wasted bubble
+          rclone's help was. */}
+      <Section title={t("targets.access")}>
         {options.map((option) => (
           <Field
             key={option.name}
             label={label(option.name, t)}
-            hint={fieldHint(option.name, t)}
+            hint={optionHint(option, t, provider)}
             secret={option.secret}
             value={values[option.name] ?? ""}
             onChange={(next) => setValues((old) => ({ ...old, [option.name]: next }))}
@@ -291,47 +293,6 @@ function label(option: string, t: T): string {
   };
   const key = known[option];
   return key ? t(key) : option;
-}
-
-/**
- * What belongs in one of these fields, in the reader's language.
- *
- * IT USED TO BE rclone's OWN `help`, and jdp was blunt about the result: "die
- * info texte in der zugangscard sind völlig nutzlos und auch in englisch." Both
- * halves are true and they have one cause. rclone's help is written for its
- * interactive setup, in English, for somebody who already knows what the
- * backend is - "Remote or path to alias.", "Storage Account Name." It is a
- * reference note, not an instruction, and passing it through put an English
- * reference note behind a German (i).
- *
- * So the same shape the LABELS already use: a short hand-kept list, one
- * translated sentence per field that people actually fill in, saying what to
- * put there and where to get it.
- *
- * A FIELD WITH NO SENTENCE GETS NO BUBBLE. That is the deliberate half: the
- * house rule is that an explanation lives in an (i), not that every field needs
- * one - and an (i) holding somebody else's English is worse than no (i) at all,
- * because it promises help and delivers a lookup. rclone carries hundreds of
- * options across its backends and no hand-kept list will cover them; the ones
- * it does not cover simply stand on their label, which is already translated.
- */
-function fieldHint(option: string, t: T): string | undefined {
-  const known: Record<string, TranslationKey> = {
-    url: "opt.urlHint",
-    user: "opt.userHint",
-    username: "opt.userHint",
-    pass: "opt.passHint",
-    password: "opt.passHint",
-    host: "opt.hostHint",
-    port: "opt.portHint",
-    token: "opt.tokenHint",
-    access_key_id: "opt.accessKeyHint",
-    secret_access_key: "opt.secretKeyHint",
-    endpoint: "opt.endpointHint",
-    region: "opt.regionHint",
-  };
-  const key = known[option];
-  return key ? t(key) : undefined;
 }
 
 const styles = StyleSheet.create({

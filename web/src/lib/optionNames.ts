@@ -1,4 +1,4 @@
-import type { TranslationKey } from './i18n'
+import type { TranslationKey } from './i18n.data'
 
 /**
  * The rclone option names people actually see, in words.
@@ -69,32 +69,7 @@ export function hasOptionLabel(name: string): boolean {
   return NAMES[name] !== undefined
 }
 
-/**
- * The bubble beside a field: an explanation, where there is one to give.
- *
- * rclone's own help was being shown there, prefixed with the option's rclone
- * name, and for most fields that produced "user - User name." under a label
- * already reading Benutzername. jdp: "die texte der i infobubble sind nicht
- * richtig." A bubble that restates its own label is worse than no bubble: it
- * promises an explanation and spends the reader's attention on nothing.
- *
- * So only the fields with something to SAY have one. The rest show rclone's
- * help if it adds anything, and nothing at all if it does not - see
- * optionHint() in the form.
- */
-const EXPLAIN: Record<string, TranslationKey> = {
-  url: 'opt.urlHelp',
-  pass: 'opt.passHelp',
-  password: 'opt.passHelp',
-  vendor: 'opt.vendorHelp',
-  key_file: 'opt.keyFileHelp',
-}
-
-/** This option's own explanation, or undefined where it needs none. */
-export function optionExplain(
-  name: string,
-  t: (key: TranslationKey) => string,
-): string | undefined {
-  const key = EXPLAIN[name]
-  return key ? t(key) : undefined
-}
+/* The bubble text that used to live here has moved to optionHint.ts, whole:
+   the desktop had it and the phone did not, which is how the phone ended up
+   showing rclone's English help on its access card. One copy now, two callers,
+   and the names above stay here because they answer a different question. */

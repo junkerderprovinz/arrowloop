@@ -15,7 +15,8 @@ import { ToggleRow } from '../components/ToggleRow'
 import { api, type Backend, type Provider, type Remote, type Usage, type Volume } from '../lib/api'
 import { bytes } from '../lib/bytes'
 import { useT } from '../lib/i18n'
-import { hasOptionLabel, optionExplain, optionLabel } from '../lib/optionNames'
+import { optionHint } from '../lib/optionHint'
+import { optionLabel } from '../lib/optionNames'
 import { suggestTargetName } from '../lib/targetName'
 import { Since } from './Jobs'
 
@@ -747,137 +748,6 @@ function RemoteForm({
       </div>
     </div>
   )
-}
-
-/**
- * What the bubble beside one field says, and whether there is a bubble at all.
- *
- * Three sources, in order of how much they are worth:
- *
- *  1. This app's own explanation, translated, for the fields where there is
- *     something to explain. An address needs its shape; a password is better
- *     as an app password.
- *  2. The chosen PRODUCT's own address shape, appended to the address field.
- *     Three products share the WebDAV backend and each has its own path, and
- *     rclone's "URL of http host to connect to" helps nobody looking at their
- *     Nextcloud in a tab wondering which part to copy.
- *  3. rclone's own help, for everything else.
- *
- * And nothing at all where rclone's help merely restates the label. That is
- * what it did on almost every field - "user - User name." under a label
- * reading Benutzername - and a bubble that repeats its own label is worse than
- * no bubble: it promises an explanation and spends attention on nothing.
- */
-/**
- * Which fields carry the credential, so the sign-in sentence lands on them.
- *
- * Matched on rclone's OWN option names, which are the same in every language
- * and across every backend that has the concept. `pass` covers webdav, sftp,
- * ftp and smb; the S3 pair is spelled the same wherever rclone speaks S3.
- */
-const SECRET_FIELDS = new Set([
-  'pass',
-  'password',
-  'secret_access_key',
-  'key',
-  'api_key',
-  'token',
-])
-
-/**
- * Everything the bubble beside one field can say, joined.
- *
- * jdp: "Bitte die infobubbles ausführlicher. zb. muss man lesen können was man
- * z.b. bei OpenCloud für eine Adresse eingeben muss. in dem fall also die
- * WebDav adresse sein. Wenn man zb ein API TOken braucht soll drin stehen wo
- * man den herbekommt usw. User müssen ganz einfach verstehen können was wo
- * reingeschrieben werden muss."
- *
- * Three sources, in order of how specific they are, and each one is allowed to
- * be absent:
- *
- *  1. What THIS field is, in this app's own words, for the fields where
- *     rclone's help only restates the label.
- *  2. What this PRODUCT needs in it. The address field on a webdav backend is
- *     the one jdp named: rclone calls it "URL of http host to connect to",
- *     which is true and useless to somebody looking at their OpenCloud in a
- *     tab wondering which part to copy. It is the WebDAV address, it is not
- *     the address in the browser bar, and for most products it has a shape.
- *     The credential field gets the same treatment: an app password is not the
- *     login password, and with a second factor switched on the login password
- *     cannot work here at all - which is the commonest reason one of these
- *     refuses a password that is plainly correct.
- *  3. rclone's own help, last, and only when it says more than the label does.
- *
- * The product-specific half is assembled from TOKENS carried by the provider
- * table rather than from prose stored there: that table has no language, so a
- * sentence in it would be English in all forty-two. One sentence per style,
- * shared by every product using it, is what makes this affordable to translate
- * at all.
- */
-function optionHint(
-  o: Backend['options'][number],
-  t: ReturnType<typeof useT>['t'],
-  provider?: Provider | null,
-): string | undefined {
-  const own = optionExplain(o.name, t)
-  const about: string[] = []
-
-  if (o.name === 'url') {
-    // Which KIND of address, before the shape of it. The backend answers that
-    // without anybody having to record it per product.
-    if (provider?.backend === 'webdav') about.push(t('help.addressWebdav'))
-    if (provider?.urlHint) about.push(t('help.addressShape', { shape: provider.urlHint }))
-  }
-
-  // The product's own sentence REPLACES the general one here rather than
-  // following it, and that is not tidiness. The general text for a password
-  // hedges - "use an app password where the provider offers one" - because it
-  // has to hold for every backend; the specific one knows. Both together read
-  // as the bubble saying the same thing twice with different wording, which is
-  // what got the bubbles reported in the first place ("die texte der i
-  // infobubble sind nicht richtig"). Measured on the deployed build: the
-  // OpenCloud password bubble said "App-Passwort" in two consecutive sentences.
-  let general: string | undefined = own
-  if (SECRET_FIELDS.has(o.name) && provider?.auth) {
-    const sentence: Partial<Record<NonNullable<Provider['auth']>, string>> = {
-      apppassword: t('help.authAppPassword'),
-      accesskey: t('help.authAccessKey'),
-      apikey: t('help.authApiKey'),
-      oauth: t('help.authOauth'),
-      login: t('help.authLogin'),
-    }
-    const said = sentence[provider.auth]
-    if (said) {
-      about.push(said)
-      general = undefined
-    }
-    if (provider.authUrl) about.push(t('help.authWhere', { url: provider.authUrl }))
-  }
-
-  if (general || about.length > 0) return [general, ...about].filter(Boolean).join(' ')
-  // No explanation of our own: rclone's, but only when it says more than the
-  // label already does. Its own option name comes along there, because
-  // somebody reading rclone's documentation is the one this text is for.
-  if (!o.help) return undefined
-  if (hasOptionLabel(o.name) && sameAsLabel(o.name, o.help)) return undefined
-  return hasOptionLabel(o.name) ? `${o.name} - ${o.help}` : o.help
-}
-
-/**
- * Whether rclone's help for an option says anything its own name does not.
- *
- * Compared on the rclone NAME rather than on the translated label, because the
- * help is always English and the label is not: "user" against "User name."
- * matches in every language, "user" against "Benutzername" in none.
- */
-function sameAsLabel(name: string, help: string): boolean {
-  const flat = (text: string) => text.toLowerCase().replace(/[^a-z0-9]+/g, '')
-  const body = flat(help)
-  const own = flat(name)
-  // "User name." for `user`, "Password." for `pass`: the help is the name with
-  // a word of padding at most.
-  return body.length <= own.length + 6 && (body.startsWith(own) || body.includes(own))
 }
 
 // ---------------------------------------------------------------------------

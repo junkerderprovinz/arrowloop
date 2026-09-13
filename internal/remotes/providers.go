@@ -219,13 +219,21 @@ var providers = []Provider{
 		// carries none, and it must never wear ownCloud's, which would name the
 		// wrong project.
 		Preset: map[string]string{"vendor": "infinitescale"},
-		Mark:   "IconOpencloud"},
-	// No UrlHint on purpose. Infinite Scale gives every space its own
-	// address - rclone's own documentation says to read it out of the
-	// space's details panel - so there is no pattern to print, and a made-up
-	// one would be worse than none. This field carries a URL SHAPE and
-	// nothing else: a sentence here would be an untranslated string in a
-	// table that has no language.
+		Mark:   "IconOpencloud",
+		// The PERSONAL SPACE, which is the one somebody setting this up means.
+		// This entry said "no UrlHint on purpose" for a while, because Infinite
+		// Scale gives every space an address of its own and there seemed to be
+		// no single pattern to print. That reasoning left the field with no
+		// shape at all, and the first person to fill it in typed the Nextcloud
+		// one: jdp's target read `/remote.php/dav/files` with no name after it,
+		// which is not a collection on any server of this family.
+		//
+		// `/remote.php/webdav` is Infinite Scale's own name for the personal
+		// space and is what rclone's WebDAV documentation prints for this
+		// vendor. Any OTHER space still has an address of its own, read out of
+		// its details panel - a shape is a starting point, not a claim that
+		// nothing else works.
+		UrlHint: "https://cloud.example.com/remote.php/webdav"},
 
 	// The big consumer services.
 	{ID: "dropbox", Name: "Dropbox", Backend: "dropbox", Group: GroupCloud, Mark: "IconDropbox"},
