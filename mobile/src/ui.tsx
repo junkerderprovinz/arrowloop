@@ -831,7 +831,12 @@ const styles = StyleSheet.create({
   axisRow: { flexDirection: "row", alignItems: "center", gap: space.sm },
   mono: { fontFamily: "monospace", fontSize: text.caption },
 
-  badge: { paddingHorizontal: 7, paddingVertical: 2, alignSelf: "flex-start", flexShrink: 0 },
+  // `center`, not `flex-start`. The latter beats a row's own
+  // `alignItems: "center"` and pinned every badge to the top of its head
+  // row - reported on a target card, true on all six. It was there to stop a
+  // badge stretching to full width in a COLUMN, and no badge in this app is
+  // in one; `center` prevents the stretch just as well.
+  badge: { paddingHorizontal: 7, paddingVertical: 2, alignSelf: "center", flexShrink: 0 },
   badgeText: { fontSize: text.caption, fontWeight: "600", letterSpacing: 0.2 },
   bubble: { width: 18, height: 18, alignItems: "center", justifyContent: "center" },
   bubbleMark: { fontSize: text.caption, fontWeight: "700", lineHeight: text.caption + 3 },

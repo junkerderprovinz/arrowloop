@@ -175,7 +175,12 @@ function TargetCard({
           />
         </View>
       </View>
-      <Caption>{remote.type}</Caption>
+      {/* The protocol, only where the logo did not already say it. jdp: "die
+          verbindungsart kannst du auf der ziele card weg lassen" - and under a
+          Garage mark, `s3` says the same thing twice and less clearly. Kept
+          for a target no provider claims, where it is the only line that says
+          what this is at all. */}
+      {remote.mark ? null : <Caption>{remote.type}</Caption>}
 
       {room ? <Body>{room}</Body> : null}
       {detail ? <Body>{detail}</Body> : null}

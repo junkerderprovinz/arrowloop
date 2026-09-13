@@ -349,7 +349,11 @@ function RemoteRow({
             </span>
           ) : null}
           <span className="truncate text-sm font-medium">{remote.name}:</span>
-          <Badge>{remote.type}</Badge>
+          {/* The protocol, only where the logo did not already say it: under a
+              Garage mark, `s3` says the same thing twice and less clearly. Kept
+              for a target no provider claims, where it is the only thing that
+              says what this is. */}
+          {remote.mark ? null : <Badge>{remote.type}</Badge>}
           {result && (
             <Badge tone={result.ok ? 'ok' : 'fail'}>
               {result.ok ? t('targets.checkOk') : t('targets.checkFailed')}
