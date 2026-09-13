@@ -129,23 +129,40 @@ export function TargetEdit() {
    */
   const [trying, setTrying] = useState(false);
   const [tried, setTried] = useState<{ ok: boolean; reason?: string } | null>(null);
+  /* How many times the answer has been NO, which is what the button wobbles on.
+     A counter rather than a flag, so pressing again after a failure shakes
+     again instead of sitting still - see Button in ui.tsx. */
+  const [refused, setRefused] = useState(0);
 
   if (!backendName) {
     return <Empty title={t("targets.addStorage")} detail={error || t("history.working")} />;
   }
 
+  /** Both pieces of the answer at once, so the colour and the wobble can never
+   *  disagree about what just happened. */
+  const answered = (answer: { ok: boolean; reason?: string }) => {
+    setTried(answer);
+    if (!answer.ok) setRefused((n) => n + 1);
+  };
+
   const tryIt = async () => {
     setTrying(true);
     setTried(null);
     try {
-      setTried(
-        await api.tryRemote(backendName, {
-          ...(provider?.preset ?? {}),
-          ...prune(values),
-        }),
+      answered(
+        await api.tryRemote(
+          backendName,
+          { ...(provider?.preset ?? {}), ...prune(values) },
+          // The target being EDITED, so the engine fills in the password this
+          // form never received. The box is empty because the secret was
+          // withheld on its way here, not because somebody cleared it - the
+          // same reading `save` below has always used. jdp: "wenn ich beim
+          // opencloud konto auf verbindung testen gehe kommt ein fehler."
+          editing,
+        ),
       );
     } catch (e) {
-      setTried({ ok: false, reason: (e as Error).message });
+      answered({ ok: false, reason: (e as Error).message });
     } finally {
       setTrying(false);
     }
@@ -230,19 +247,49 @@ export function TargetEdit() {
 
       {error ? <Body>{error}</Body> : null}
 
-      {/* The answer, in the server's own words when it said no. */}
-      {tried ? (
-        <Body>
-          {tried.ok ? t("targets.checkOk") : `${t("targets.checkFailed")}: ${tried.reason ?? ""}`}
-        </Body>
-      ) : null}
+      {/* THE REASON ONLY, because the verdict itself is now on the button.
+          This line said "Erreicht" and "Nicht erreichbar: <reason>", and once
+          the button carries those two words the first half is the same sentence
+          twice. What a colour and a glyph cannot say is "401 Unauthorized", and
+          that is what is left here. On a success there is nothing to add, so
+          nothing appears. */}
+      {tried && !tried.ok && tried.reason ? <Body>{tried.reason}</Body> : null}
 
       {/* Testing sits WITH the form, so it can run before anything is kept.
-          jdp: "dann kann man direkt pruefen bevor man auf speichern tippt." */}
+          jdp: "dann kann man direkt pruefen bevor man auf speichern tippt."
+
+          THE BUTTON CARRIES THE ANSWER, which is what jdp asked for: "Wenn die
+          verbindung nicht passt soll der button rot werden und wackeln, wenn
+          sie funktioniert soll er grün werden", and then "der verbindung testen
+          button soll auch seinen glyph und text entsprechend dem test ergebnis
+          ändern."
+
+          So all four change together - colour, wobble, word and drawing - and
+          they say ONE thing rather than four. A button that turned green while
+          still reading "Verbindung testen" would be asking to be pressed again
+          in the same breath as saying it worked; the colour alone also carries
+          nothing for somebody who cannot separate the two.
+
+          A new press clears all of it back to neutral, so what is shown is
+          always about the attempt just made. */}
       <Button
-        label={trying ? t("targets.checking") : t("targets.check")}
+        label={
+          trying
+            ? t("targets.checking")
+            : !tried
+              ? t("targets.check")
+              : tried.ok
+                ? t("targets.checkOk")
+                : t("targets.checkFailed")
+        }
         labelKey="targets.check"
+        // The magnifier asks the question; a tick and a cross answer it. Named
+        // outright rather than left to the key-to-glyph rule, which reads the
+        // WORD "check" and would hand all three the same magnifier.
+        glyph={!tried || trying ? undefined : tried.ok ? "IconConfirm" : "IconCancel"}
         busy={trying}
+        tone={trying || !tried ? "neutral" : tried.ok ? "ok" : "fail"}
+        shake={refused}
         onPress={tryIt}
       />
 

@@ -603,7 +603,11 @@ function RemoteForm({
     setTried(null)
     try {
       const filled = Object.fromEntries(Object.entries(values).filter(([, value]) => value !== ''))
-      setTried(await api.tryRemote(kind, { ...(preset ?? {}), ...filled }))
+      // The target's NAME goes along when there is one, so the engine can take
+      // the secrets this form never received from the saved target. A withheld
+      // password reaches the screen as a placeholder, and sending that back as
+      // the password is testing eight asterisks.
+      setTried(await api.tryRemote(kind, { ...(preset ?? {}), ...filled }, existing?.name))
     } catch (e) {
       setTried({ ok: false, reason: (e as Error).message })
     } finally {

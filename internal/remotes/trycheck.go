@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	rclonefs "github.com/rclone/rclone/fs"
+	"github.com/rclone/rclone/fs/config"
 	"github.com/rclone/rclone/fs/config/obscure"
 )
 
@@ -26,6 +27,60 @@ import (
 // rclone already has the right door: a CONNECTION STRING, `:backend,k=v,k=v:`,
 // which builds a filesystem from settings given inline and touches no config
 // file at all. Nothing is written, so nothing has to be cleaned up.
+
+/*
+WithSavedSecrets fills in the credentials the form did not send.
+
+A SECRET IS WITHHELD ON ITS WAY TO THE SCREEN, so a form editing a saved target
+has an empty password box even though the target has a password. Save has always
+read that as "leave the one that is there" - the box comes back empty or holding
+the placeholder and the stored value survives. Check did not, and that is the
+whole of the bug jdp hit: "wenn ich beim opencloud konto auf verbindung testen
+gehe kommt ein fehler." The test built a connection with no password and got
+exactly what an anonymous request gets, so a target that works reported that it
+does not.
+
+Two readings of one form, and they have to agree. An untouched secret means the
+saved one, in both.
+
+Only for secrets, and only where the form left one out. Anything typed wins,
+which is what makes the button useful for a credential somebody is CHANGING: the
+new value is tested, not the old one. A target that is not saved yet (no name,
+or a name that does not exist) has nothing to fill in from, so the settings pass
+through untouched.
+
+The value handed back is the STORED one, obscured exactly as rclone's config
+holds it - and connectionString leaves an already-obscured value alone, so it
+arrives at the backend the same way a saved target's does.
+*/
+func WithSavedSecrets(name string, settings map[string]string) map[string]string {
+	if strings.TrimSpace(name) == "" {
+		return settings
+	}
+	data := config.LoadedData()
+	if !data.HasSection(name) {
+		return settings
+	}
+
+	// A copy, because the caller's map came off a request body and a function
+	// that quietly grows somebody else's map is a surprise waiting to happen.
+	out := make(map[string]string, len(settings)+2)
+	for key, value := range settings {
+		out[key] = value
+	}
+	for _, key := range data.GetKeyList(name) {
+		if key == "type" || !IsSecret(key) {
+			continue
+		}
+		if given, ok := out[key]; ok && given != "" && given != Placeholder {
+			continue
+		}
+		if stored, ok := data.GetValue(name, key); ok && stored != "" {
+			out[key] = stored
+		}
+	}
+	return out
+}
 
 // CheckSettings reports whether a target built from these settings answers.
 //

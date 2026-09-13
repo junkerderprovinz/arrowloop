@@ -160,12 +160,23 @@ func (s *Server) tryRemote(w http.ResponseWriter, r *http.Request) {
 	var body struct {
 		Type     string            `json:"type"`
 		Settings map[string]string `json:"settings"`
+		// WHICH SAVED TARGET this form is editing, when it is editing one.
+		//
+		// Only the secrets are taken from it, and only the ones the form left
+		// empty. A password box is empty because the password was withheld on
+		// its way to the screen, not because somebody cleared it, and Save has
+		// always read it that way; without this the CHECK read it the other
+		// way and reported a working target as broken. See
+		// remotes.WithSavedSecrets.
+		//
+		// Absent for a target being created, which has nothing to fill in from.
+		Name string `json:"name"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 		writeError(w, http.StatusBadRequest, fmt.Errorf("read the request: %w", err))
 		return
 	}
-	if err := remotes.CheckSettings(r.Context(), body.Type, body.Settings); err != nil {
+	if err := remotes.CheckSettings(r.Context(), body.Type, remotes.WithSavedSecrets(body.Name, body.Settings)); err != nil {
 		writeJSON(w, http.StatusOK, map[string]any{"ok": false, "reason": err.Error()})
 		return
 	}

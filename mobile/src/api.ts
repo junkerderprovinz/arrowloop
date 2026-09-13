@@ -493,11 +493,16 @@ export const api = {
   /** Remotes, providers and backends in one answer - see Storage. */
   storage: () => call<Storage>("/api/remotes"),
   /** Settings that are not saved yet, so a form can be tested before it is
-   *  kept. Nothing is written: see internal/remotes/trycheck.go. */
-  tryRemote: (type: string, settings: Record<string, string>) =>
+   *  kept. Nothing is written: see internal/remotes/trycheck.go.
+   *
+   *  `remote` names the target being EDITED, where there is one. The engine
+   *  takes the secrets the form left empty from it, because an empty password
+   *  box means "the one already there" - the same reading saving has always
+   *  used. Without it, testing a saved target sent no password at all. */
+  tryRemote: (type: string, settings: Record<string, string>, remote?: string) =>
     call<{ ok: boolean; reason?: string }>("/api/remotes-check", {
       method: "POST",
-      body: JSON.stringify({ type, settings }),
+      body: JSON.stringify({ type, settings, name: remote ?? "" }),
     }),
   saveRemote: (remote: string, body: { type: string; settings: Record<string, string> }) =>
     call<void>(`/api/remotes/${name(remote)}`, { method: "PUT", body: JSON.stringify(body) }),

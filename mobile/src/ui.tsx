@@ -589,6 +589,18 @@ export function InfoBubble({ tip, on }: { tip: string; on?: string }) {
  *   - `danger` is neutral with the fail colour in the ink, and it ignores
  *     `hue`: a delete button that turns teal because it is third in a palette
  *     has stopped warning anybody.
+ *   - `ok` and `fail` FILL with the status colour, and they are the answer
+ *     rather than the invitation: a button that has just been pressed and has
+ *     come back with a verdict. jdp asked for exactly this on the connection
+ *     test: "Wenn die verbindung nicht passt soll der button rot werden und
+ *     wackeln, wenn sie funktioniert soll er grün werden." They ignore `hue`
+ *     for the same reason `danger` does - a verdict that changes colour with
+ *     its position on the page is not a verdict.
+ *
+ * `shake` is a COUNTER, not a flag. Every increment runs one wobble, so a
+ * second failure after a first shakes again; a boolean would have gone true
+ * once and then sat there while nothing moved, which reads as the button having
+ * stopped working. Zero, its starting value, runs nothing.
  */
 export function Button({
   label,
@@ -600,10 +612,23 @@ export function Button({
   busy,
   disabled,
   wide,
+  shake,
+  glyph: named,
 }: {
   label: string;
   /** The translation key behind `label`, which is what picks the glyph. */
   labelKey?: string;
+  /**
+   * ONE NAMED GLYPH, overriding what `labelKey` would have chosen.
+   *
+   * The rule table reads the key's WORDS, which is right for a button whose
+   * meaning is fixed and wrong for one whose meaning changes under it: the
+   * connection test asks with a magnifier and answers with a tick or a cross,
+   * and all three sit under the same `targets.check` key. Naming the drawing is
+   * the honest way to say "this one, now" - and it stays a name rather than an
+   * element so the ink is still computed here.
+   */
+  glyph?: string;
   /**
    * An explicit drawing, for the call sites that mean a particular one - the
    * donation buttons, whose marks are BRANDS and therefore deliberately
@@ -616,26 +641,56 @@ export function Button({
    */
   mark?: (ink: string) => ReactNode;
   onPress: () => void;
-  tone?: "accent" | "neutral" | "danger";
+  tone?: "accent" | "neutral" | "danger" | "ok" | "fail";
   /** This button's position among its siblings, for the rainbow. */
   hue?: number;
   busy?: boolean;
   disabled?: boolean;
   wide?: boolean;
+  /** Bump to wobble once. See the note above: a counter, not a flag. */
+  shake?: number;
 }) {
   const { p, radius, labels, accent, hueAt } = useTheme();
+  const { ms } = useMotion();
   const fill = (hue !== undefined ? hueAt(hue) : undefined) ?? accent;
-  const ground = tone === "accent" ? fill : p.surface2;
+  const ground =
+    tone === "accent" ? fill : tone === "ok" ? p.okSolid : tone === "fail" ? p.failSolid : p.surface2;
   const ink =
-    tone === "accent" ? contrastOn(fill) : tone === "danger" ? p.failInk : p.text;
+    tone === "accent" || tone === "ok" || tone === "fail"
+      ? contrastOn(ground)
+      : tone === "danger"
+        ? p.failInk
+        : p.text;
 
-  const name = labelKey ? glyphNameForKey(labelKey) : undefined;
+  /*
+  The wobble: a short left-right ripple that ends where it started.
+
+  `useNativeDriver` because a transform can run on the UI thread, and this one
+  fires at the exact moment the screen is also re-rendering with the answer -
+  the one moment a JavaScript-driven animation would stutter.
+
+  At `off` every duration in the table is zero, so the sequence runs and lands
+  in no time at all: nothing branches on the intensity, the intensity decides
+  how long it takes. Same rule as every other animation in this file.
+  */
+  const wobble = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    if (!shake) return;
+    const leg = Math.max(1, Math.round(ms.fade / 2));
+    Animated.sequence(
+      [1, -1, 0.6, -0.6, 0].map((to) =>
+        Animated.timing(wobble, { toValue: to, duration: leg, useNativeDriver: true }),
+      ),
+    ).start();
+  }, [shake, ms.fade, wobble]);
+
+  const name = named ?? (labelKey ? glyphNameForKey(labelKey) : undefined);
   const glyph = mark ? mark(ink) : name ? <Glyph name={name} color={ink} /> : null;
   const showWord = labels === "text" || labels === "textGlyph" || !glyph;
   const showGlyph = Boolean(glyph) && labels !== "text";
 
   return (
-    <Pressable
+    <AnimatedPressable
       onPress={onPress}
       disabled={disabled || busy}
       accessibilityRole="button"
@@ -648,6 +703,11 @@ export function Button({
           borderRadius: radius.control,
           opacity: disabled || busy ? 0.45 : 1,
           flexGrow: wide === false ? 0 : 1,
+          // Eight points each way: far enough to read as a refusal across the
+          // room, short enough not to collide with the button beside it.
+          transform: [
+            { translateX: wobble.interpolate({ inputRange: [-1, 1], outputRange: [-8, 8] }) },
+          ],
         },
       ]}
     >
@@ -657,9 +717,15 @@ export function Button({
           {label}
         </Text>
       ) : null}
-    </Pressable>
+    </AnimatedPressable>
   );
 }
+
+/** A Pressable that a transform can move. `Animated.createAnimatedComponent`
+ *  is called ONCE, at module level: doing it inside the component would make a
+ *  new component type on every render, and React would unmount and remount the
+ *  button mid-animation - which looks like the wobble being cut off. */
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 /**
  * The switch: a track, a knob, filled when on. The same object the web
