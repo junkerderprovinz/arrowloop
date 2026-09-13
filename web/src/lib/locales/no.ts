@@ -387,6 +387,7 @@ const no: Translations = {
   'schedule.day.sun': 'Søn',
   'edit.editJob': 'Rediger',
   'edit.removeJob': 'Fjern denne jobben',
+  'jobs.open': 'Åpne jobben',
   'edit.removeStakes': 'Jobben {name} tas ut av oppsettet. Det som allerede er kopiert, blir liggende nøyaktig der det er på begge sider; ingenting slettes fra mappene dine.',
   'edit.removeState': 'Slett også tilstandsdatabasen',
   'edit.removeStateHint': 'Notatet over hva begge sider sist var enige om. Behold det bare hvis det samme paret kommer tilbake, så neste kjøring ikke behandler hver fil som ny.',

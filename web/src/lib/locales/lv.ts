@@ -387,6 +387,7 @@ const lv: Translations = {
   'schedule.day.sun': 'Sv',
   'edit.editJob': 'Rediģēt',
   'edit.removeJob': 'Noņemt šo darbu',
+  'jobs.open': 'Atvērt darbu',
   'edit.removeStakes': 'Uzdevums {name} tiek izņemts no konfigurācijas. Tas, ko tas jau ir nokopējis, paliek tieši tur, kur ir, abās pusēs; no jūsu mapēm nekas netiek dzēsts.',
   'edit.removeState': 'Dzēst arī tā stāvokļa datubāzi',
   'edit.removeStateHint': 'Ieraksts par to, par ko abas puses pēdējoreiz vienojās. Saglabājiet to tikai tad, ja tas pats pāris atgriezīsies, lai nākamā palaišana neuzskatītu katru failu par jaunu.',

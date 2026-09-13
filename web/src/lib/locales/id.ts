@@ -387,6 +387,7 @@ const id: Translations = {
   'schedule.day.sun': 'Min',
   'edit.editJob': 'Ubah',
   'edit.removeJob': 'Hapus tugas ini',
+  'jobs.open': 'Buka tugas',
   'edit.removeStakes': 'Tugas {name} dikeluarkan dari konfigurasi. Yang sudah disalin tetap persis di tempatnya di kedua sisi; tidak ada yang dihapus dari folder Anda.',
   'edit.removeState': 'Hapus juga basis data statusnya',
   'edit.removeStateHint': 'Catatan tentang apa yang terakhir disepakati kedua sisi. Simpan hanya jika pasangan yang sama akan kembali, agar jalannya berikutnya tidak menganggap setiap berkas sebagai baru.',

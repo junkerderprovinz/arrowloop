@@ -387,6 +387,7 @@ const ca: Translations = {
   'schedule.day.sun': 'Dg',
   'edit.editJob': 'Edita',
   'edit.removeJob': 'Treu aquesta tasca',
+  'jobs.open': 'Obre la tasca',
   'edit.removeStakes': 'La tasca {name} es treu de la configuració. Allò que ja ha copiat es queda exactament on és a totes dues bandes; no s\'elimina res de les teves carpetes.',
   'edit.removeState': 'Elimina també la seva base d\'estat',
   'edit.removeStateHint': 'El registre d\'allò en què les dues bandes van coincidir per darrera vegada. Conserva\'l només si la mateixa parella torna, perquè la propera execució no tracti cada fitxer com a nou.',

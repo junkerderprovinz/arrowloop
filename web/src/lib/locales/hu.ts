@@ -387,6 +387,7 @@ const hu: Translations = {
   'schedule.day.sun': 'V',
   'edit.editJob': 'Szerkesztés',
   'edit.removeJob': 'Feladat eltávolítása',
+  'jobs.open': 'Feladat megnyitása',
   'edit.removeStakes': 'A(z) {name} feladat kikerül a beállításokból. Amit már átmásolt, mindkét oldalon pontosan ott marad, ahol van; a mappáidból semmi nem törlődik.',
   'edit.removeState': 'Az állapot-adatbázisa is törlődjön',
   'edit.removeStateHint': 'Annak feljegyzése, amiben a két oldal legutóbb megegyezett. Csak akkor tartsd meg, ha ugyanaz a pár visszatér, hogy a következő futás ne kezeljen minden fájlt újként.',

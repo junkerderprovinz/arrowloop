@@ -387,6 +387,7 @@ const fr: Translations = {
   'schedule.day.sun': 'Dim',
   'edit.editJob': 'Modifier',
   'edit.removeJob': 'Retirer cette tâche',
+  'jobs.open': 'Ouvrir la tâche',
   'edit.removeStakes': 'La tâche {name} est retirée de la configuration. Ce qu\'elle a déjà copié reste exactement où il est des deux côtés ; rien n\'est supprimé de vos dossiers.',
   'edit.removeState': 'Supprimer aussi sa base d\'état',
   'edit.removeStateHint': 'Le relevé de ce sur quoi les deux côtés se sont accordés en dernier. À conserver seulement si la même paire revient, pour que la prochaine exécution ne traite pas chaque fichier comme nouveau.',

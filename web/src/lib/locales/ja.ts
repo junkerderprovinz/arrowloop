@@ -387,6 +387,7 @@ const ja: Translations = {
   'schedule.day.sun': '日',
   'edit.editJob': '編集',
   'edit.removeJob': 'このジョブを削除',
+  'jobs.open': 'ジョブを開く',
   'edit.removeStakes': 'ジョブ {name} を設定から外します。すでにコピーされたものは両側ともそのままの場所に残り、あなたのフォルダーからは何も削除されません。',
   'edit.removeState': '状態データベースも削除する',
   'edit.removeStateHint': '両側が前回どこまで一致していたかの記録です。同じ組み合わせをまた使う場合だけ残してください。残さないと次回の実行ですべてのファイルが新規として扱われます。',

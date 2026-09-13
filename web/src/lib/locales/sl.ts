@@ -387,6 +387,7 @@ const sl: Translations = {
   'schedule.day.sun': 'Ned',
   'edit.editJob': 'Uredi',
   'edit.removeJob': 'Odstrani to opravilo',
+  'jobs.open': 'Odpri opravilo',
   'edit.removeStakes': 'Opravilo {name} se odstrani iz nastavitev. Kar je že prekopiralo, ostane točno tam, kjer je, na obeh straneh; iz vaših map se ne izbriše nič.',
   'edit.removeState': 'Izbriši tudi njegovo zbirko stanja',
   'edit.removeStateHint': 'Zapis o tem, o čem sta se strani nazadnje ujemali. Obdržite ga le, če se ista dvojica vrne, da naslednji zagon ne obravnava vsake datoteke kot novo.',

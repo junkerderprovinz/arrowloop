@@ -387,6 +387,7 @@ const zh: Translations = {
   'schedule.day.sun': '日',
   'edit.editJob': '编辑',
   'edit.removeJob': '移除这个任务',
+  'jobs.open': '打开任务',
   'edit.removeStakes': '作业 {name} 将从配置中移除。已经复制的内容在两侧都原样保留，不会从你的文件夹中删除任何东西。',
   'edit.removeState': '同时删除它的状态数据库',
   'edit.removeStateHint': '记录两侧上次达成一致的内容。只有同一组还会再用时才保留，否则下次运行会把每个文件都当作新文件。',

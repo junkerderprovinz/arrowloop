@@ -387,6 +387,7 @@ const tr: Translations = {
   'schedule.day.sun': 'Paz',
   'edit.editJob': 'Düzenle',
   'edit.removeJob': 'Bu işi kaldır',
+  'jobs.open': 'İşi aç',
   'edit.removeStakes': '{name} işi yapılandırmadan çıkarılır. Halihazırda kopyaladıkları her iki tarafta da tam olarak olduğu yerde kalır; klasörlerinizden hiçbir şey silinmez.',
   'edit.removeState': 'Durum veritabanını da sil',
   'edit.removeStateHint': 'İki tarafın en son üzerinde anlaştığı şeyin kaydı. Yalnızca aynı çift geri gelecekse saklayın, böylece sonraki çalıştırma her dosyayı yeni saymaz.',

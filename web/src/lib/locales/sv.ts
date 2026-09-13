@@ -387,6 +387,7 @@ const sv: Translations = {
   'schedule.day.sun': 'Sön',
   'edit.editJob': 'Redigera',
   'edit.removeJob': 'Ta bort det här jobbet',
+  'jobs.open': 'Öppna jobbet',
   'edit.removeStakes': 'Jobbet {name} tas bort ur konfigurationen. Det som redan kopierats ligger kvar exakt där det är på båda sidor; ingenting raderas från dina mappar.',
   'edit.removeState': 'Ta bort även dess tillståndsdatabas',
   'edit.removeStateHint': 'Noteringen om vad båda sidor senast var överens om. Behåll den bara om samma par kommer tillbaka, så att nästa körning inte behandlar varje fil som ny.',

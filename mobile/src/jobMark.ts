@@ -1,5 +1,5 @@
 import type { TranslationKey } from "../../web/src/lib/i18n.data";
-import type { Provider, Remote } from "./api";
+import type { Remote } from "./api";
 
 /**
  * Which logo belongs on a job's card, from the target its side names.
@@ -7,35 +7,24 @@ import type { Provider, Remote } from "./api";
  * jdp: "Auf der card soll auch das logo des verbundenen cloudspeichers sein."
  *
  * A side is either a path on the phone or `target:folder`, so the name before
- * the colon is the target, the target says which rclone BACKEND it is, and a
- * provider with that backend says which mark to draw.
+ * the colon is the target, and the TARGET already knows its own logo: the
+ * engine resolves the product from the settings it was created with and hands
+ * back `mark`. See internal/remotes/identify.go.
  *
- * THE LAST STEP IS WHERE THIS HAS TO BE CAREFUL. Several products share one
- * backend - Nextcloud, ownCloud, OpenCloud and Seafile are all `webdav` - and a
- * target does not record which of them created it. Picking the first match
- * would put Nextcloud's logo on somebody's ownCloud, and this house's standing
- * rule is that a mark naming the WRONG service is worse than no mark at all.
- *
- * So a backend claimed by more than one marked provider gets NONE. Twenty-odd
- * targets are unambiguous - Dropbox, MEGA, Backblaze, pCloud - and those are
- * the ones this answers for.
+ * This used to work it out here, from the rclone backend alone, and had to
+ * refuse whenever more than one product shared one - which was every object
+ * store and every WebDAV cloud, so the two groups most likely to be somebody's
+ * target were exactly the two that never got a logo. The rule it refused under
+ * is still the right rule (a mark naming the WRONG service is worse than no
+ * mark); what changed is that nothing has to be guessed any more.
  */
-export function markForSide(
-  side: string,
-  remotes: Remote[],
-  providers: Provider[],
-): string | undefined {
+export function markForSide(side: string, remotes: Remote[]): string | undefined {
   const colon = side.indexOf(":");
   // A Windows drive letter is not a target. Nothing on a phone writes one, and
   // a one-character name before the colon is the cheap way to say so.
   if (colon < 2) return undefined;
-  const name = side.slice(0, colon);
-  const remote = remotes.find((r) => r.name === name);
-  if (!remote) return undefined;
-
-  const marked = providers.filter((p) => p.backend === remote.type && p.mark);
-  if (marked.length !== 1) return undefined;
-  return marked[0]?.mark;
+  const remote = remotes.find((r) => r.name === side.slice(0, colon));
+  return remote?.mark || undefined;
 }
 
 /**

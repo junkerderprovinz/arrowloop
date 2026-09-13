@@ -387,6 +387,7 @@ const nl: Translations = {
   'schedule.day.sun': 'Zo',
   'edit.editJob': 'Bewerken',
   'edit.removeJob': 'Deze taak verwijderen',
+  'jobs.open': 'Taak openen',
   'edit.removeStakes': 'De taak {name} wordt uit de configuratie gehaald. Wat al gekopieerd is blijft aan beide kanten precies waar het staat; er wordt niets uit je mappen verwijderd.',
   'edit.removeState': 'Verwijder ook de statusdatabase',
   'edit.removeStateHint': 'De vastlegging van waar beide kanten het voor het laatst over eens waren. Bewaar hem alleen als hetzelfde paar terugkomt, zodat de volgende run niet elk bestand als nieuw behandelt.',

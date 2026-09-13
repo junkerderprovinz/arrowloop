@@ -387,6 +387,7 @@ const lt: Translations = {
   'schedule.day.sun': 'Sk',
   'edit.editJob': 'Redaguoti',
   'edit.removeJob': 'Pašalinti šį darbą',
+  'jobs.open': 'Atverti darbą',
   'edit.removeStakes': 'Užduotis {name} pašalinama iš konfigūracijos. Tai, ką ji jau nukopijavo, lieka tiksliai ten, kur yra, abiejose pusėse; iš jūsų aplankų niekas neištrinama.',
   'edit.removeState': 'Ištrinti ir jo būsenos duomenų bazę',
   'edit.removeStateHint': 'Įrašas apie tai, dėl ko abi pusės paskutinį kartą sutarė. Palikite jį tik jei ta pati pora sugrįš, kad kitas paleidimas nelaikytų kiekvieno failo nauju.',

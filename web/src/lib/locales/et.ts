@@ -387,6 +387,7 @@ const et: Translations = {
   'schedule.day.sun': 'P',
   'edit.editJob': 'Muuda',
   'edit.removeJob': 'Eemalda see töö',
+  'jobs.open': 'Ava töö',
   'edit.removeStakes': 'Töö {name} eemaldatakse seadistusest. See, mille ta on juba kopeerinud, jääb mõlemal poolel täpselt sinna, kus on; sinu kaustadest ei kustutata midagi.',
   'edit.removeState': 'Kustuta ka selle olekuandmebaas',
   'edit.removeStateHint': 'Kirje sellest, milles mõlemad pooled viimati kokku leppisid. Hoia see alles ainult siis, kui sama paar naaseb, et järgmine käitus ei peaks iga faili uueks.',

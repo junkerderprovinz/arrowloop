@@ -175,6 +175,11 @@ export interface Bin {
 export interface Remote {
   name: string;
   type: string;
+  /** The PRODUCT behind the target, and its logo, both named by the engine
+   *  from the settings the target was created with. Absent where the settings
+   *  do not pin one down. See internal/remotes/identify.go. */
+  provider?: string;
+  mark?: string;
   /** `key` and not `name`, which is the engine's own field. Reading `name`
    *  here produced an edit form for an existing target with every field
    *  empty, and an empty field means "leave the secret alone" - so saving it

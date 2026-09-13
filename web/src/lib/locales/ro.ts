@@ -387,6 +387,7 @@ const ro: Translations = {
   'schedule.day.sun': 'Dum',
   'edit.editJob': 'Editează',
   'edit.removeJob': 'Elimină această sarcină',
+  'jobs.open': 'Deschide sarcina',
   'edit.removeStakes': 'Sarcina {name} este scoasă din configurație. Ce a copiat deja rămâne exact unde este pe ambele părți; din folderele tale nu se șterge nimic.',
   'edit.removeState': 'Șterge și baza de stare',
   'edit.removeStateHint': 'Înregistrarea a ceea ce au convenit ultima dată cele două părți. Păstreaz-o doar dacă aceeași pereche revine, ca rularea următoare să nu trateze fiecare fișier ca nou.',

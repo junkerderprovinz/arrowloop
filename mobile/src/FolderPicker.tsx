@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 
 import { api } from "./api";
 import { useT } from "./i18n";
@@ -54,6 +54,9 @@ export function FolderPicker({
   const [entries, setEntries] = useState<{ name: string; path: string }[]>([]);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  /** The name being typed, or nothing while no folder is being made. A string
+   *  and not a boolean beside a string, so there is one thing to reset. */
+  const [naming, setNaming] = useState<string | null>(null);
 
   const go = useCallback(async (path: string) => {
     setBusy(true);
@@ -72,11 +75,37 @@ export function FolderPicker({
     }
   }, []);
 
+  /**
+   * Make the folder, then walk into it.
+   *
+   * Walking in is the point: somebody who creates a folder here is creating the
+   * one they are about to choose, and leaving them standing outside it means a
+   * second tap to do the obvious thing. The engine refuses a name with a
+   * separator in it, so the error below is the engine's own words.
+   */
+  const make = async () => {
+    const name = (naming ?? "").trim();
+    if (!name) return;
+    setBusy(true);
+    setError("");
+    try {
+      await api.makeDir(at, name);
+      setNaming(null);
+      await go(`${at}/${name}`.replace(/\/{2,}/g, "/"));
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
   // Re-seeded on every open rather than resuming where the last visit ended:
   // this opens from a specific field, and that field's value is the answer to
   // "where were we". A target's name is not a path, so it starts at the top.
   useEffect(() => {
     if (!visible) return;
+    // A half-typed name from a previous visit has nothing to do with this one.
+    setNaming(null);
     const from = start && !start.includes(":") ? start : "";
     void go(from);
   }, [visible, start, go]);
@@ -121,6 +150,40 @@ export function FolderPicker({
             {error ? <Caption>{error}</Caption> : null}
           </ScrollView>
 
+          {/* Making a folder, only ever INSIDE one. At the list of roots there
+              is nothing to create inside: those are whole storage volumes. */}
+          {at && naming === null ? (
+            <Button label={t("pick.newFolder")} labelKey="pick.newFolder" onPress={() => setNaming("")} />
+          ) : null}
+          {at && naming !== null ? (
+            <View style={styles.naming}>
+              <TextInput
+                value={naming}
+                onChangeText={setNaming}
+                placeholder={t("pick.newFolder")}
+                placeholderTextColor={p.textSub}
+                autoFocus
+                autoCapitalize="none"
+                autoCorrect={false}
+                // Enter finishes it, because a keyboard is already open and
+                // reaching past it to a button is the slower half of the job.
+                onSubmitEditing={() => void make()}
+                style={[
+                  styles.name,
+                  { backgroundColor: p.surface2, borderRadius: radius.control, color: p.text },
+                ]}
+              />
+              <Button
+                label={t("pick.choose")}
+                labelKey="pick.choose"
+                tone="accent"
+                wide={false}
+                disabled={!naming.trim() || busy}
+                onPress={() => void make()}
+              />
+            </View>
+          ) : null}
+
           <View style={styles.actions}>
             <Button label={t("pick.cancel")} labelKey="pick.cancel" onPress={onClose} />
             {/* Chooses the folder somebody is STANDING IN, which is what the
@@ -160,4 +223,6 @@ const styles = StyleSheet.create({
   },
   rowText: { flex: 1, fontSize: text.body },
   actions: { flexDirection: "row", gap: space.sm, justifyContent: "flex-end" },
+  naming: { flexDirection: "row", gap: space.sm, alignItems: "center" },
+  name: { flex: 1, minHeight: TOUCH, paddingHorizontal: space.md, fontSize: text.body },
 });

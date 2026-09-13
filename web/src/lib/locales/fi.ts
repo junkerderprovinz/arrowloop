@@ -387,6 +387,7 @@ const fi: Translations = {
   'schedule.day.sun': 'Su',
   'edit.editJob': 'Muokkaa',
   'edit.removeJob': 'Poista tämä työ',
+  'jobs.open': 'Avaa työ',
   'edit.removeStakes': 'Työ {name} poistetaan asetuksista. Se, minkä se on jo kopioinut, jää täsmälleen paikoilleen molemmille puolille; kansioistasi ei poisteta mitään.',
   'edit.removeState': 'Poista myös sen tilatietokanta',
   'edit.removeStateHint': 'Merkintä siitä, mistä molemmat puolet olivat viimeksi yhtä mieltä. Säilytä se vain, jos sama pari palaa, jottei seuraava ajo käsittele jokaista tiedostoa uutena.',

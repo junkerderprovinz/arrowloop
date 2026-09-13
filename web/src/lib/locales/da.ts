@@ -387,6 +387,7 @@ const da: Translations = {
   'schedule.day.sun': 'Søn',
   'edit.editJob': 'Rediger',
   'edit.removeJob': 'Fjern dette job',
+  'jobs.open': 'Åbn job',
   'edit.removeStakes': 'Jobbet {name} tages ud af konfigurationen. Det, der allerede er kopieret, bliver liggende præcis hvor det er på begge sider; der slettes intet fra dine mapper.',
   'edit.removeState': 'Slet også dens tilstandsdatabase',
   'edit.removeStateHint': 'Optegnelsen over hvad begge sider sidst var enige om. Behold den kun, hvis det samme par kommer tilbage, så næste kørsel ikke behandler hver fil som ny.',

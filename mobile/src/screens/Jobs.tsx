@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import { useCallback, useEffect, useState } from "react";
 import { Alert, FlatList, RefreshControl, StyleSheet, View } from "react-native";
-import { api, type Job, type Provider, type Remote } from "../api";
+import { api, type Job, type Remote } from "../api";
 import { CardMenu } from "../CardMenu";
 import { ProviderMark } from "../glyphs";
 import { directionKey, markForSide } from "../jobMark";
@@ -46,16 +46,15 @@ export function Jobs() {
    *  once: neither changes while somebody is looking at a list of jobs, and a
    *  card that could not name its target simply shows none. */
   const [remotes, setRemotes] = useState<Remote[]>([]);
-  const [providers, setProviders] = useState<Provider[]>([]);
   useEffect(() => {
-    api.storage().then(
-      (list) => {
-        setRemotes(list.remotes);
-        setProviders(list.providers);
-      },
-      () => {},
-    );
-  }, []);
+    // Refetched on focus, not once: a target created on the next tab has to
+    // reach this list, and a card whose logo appears only after a restart is
+    // the kind of thing somebody reports as "the logo is missing".
+    const stop = nav.addListener("focus", () => {
+      api.storage().then((list) => setRemotes(list.remotes), () => {});
+    });
+    return stop;
+  }, [nav]);
 
   const [error, setError] = useState("");
   const [busy, setBusy] = useState<string | null>(null);
@@ -179,10 +178,12 @@ export function Jobs() {
           onHold={() => hold(item)}
           onEdit={() => nav.navigate("JobEdit", { name: item.name })}
           onRemove={() => remove(item)}
-          // The RIGHT side, because that is the one that names a target. A job
-          // between two local folders has no logo, which is correct: there is
-          // no cloud in it to show.
-          mark={markForSide(item.right, remotes, providers)}
+          // EITHER side, right first because that is the usual shape. A job
+          // that pulls from a cloud into a folder on the phone carries its
+          // target on the left, and only asking the right drew nothing for it.
+          // A job between two local folders still has no logo, which is
+          // correct: there is no cloud in it to show.
+          mark={markForSide(item.right, remotes) ?? markForSide(item.left, remotes)}
         />
       )}
       />
@@ -246,6 +247,13 @@ function JobCard({
         <View style={styles.menuSlot}>
           <CardMenu
             items={[
+              // Opening leads the three, because it is the one somebody reaches
+              // for most and the card's own tap does the same thing. jdp: "auch
+              // der Punkt Auftrag oeffnen soll im menue enthalten sein." Being
+              // reachable by tapping the card is not the same as being FINDABLE,
+              // and a menu that lists two of a card's three acts reads as if the
+              // third were somewhere else.
+              { label: t("jobs.open"), glyph: "IconPreview", onPress: onOpen },
               { label: t("edit.editJob"), glyph: "IconEdit", onPress: onEdit },
               { label: t("edit.removeJob"), glyph: "IconDelete", danger: true, onPress: onRemove },
             ]}

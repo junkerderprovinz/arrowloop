@@ -387,6 +387,7 @@ const eu: Translations = {
   'schedule.day.sun': 'Ig',
   'edit.editJob': 'Editatu',
   'edit.removeJob': 'Lan hau kendu',
+  'jobs.open': 'Ireki lana',
   'edit.removeStakes': '{name} lana konfiguraziotik kentzen da. Dagoeneko kopiatu duena zegoen tokian bertan geratzen da bi aldeetan; ez da ezer ezabatzen zure karpetetatik.',
   'edit.removeState': 'Ezabatu haren egoera-datu-basea ere',
   'edit.removeStateHint': 'Bi aldeek azkenekoz zertan bat egin zuten jasotzen duen erregistroa. Gorde ezazu bikote bera itzultzen bada bakarrik, hurrengo exekuzioak fitxategi guztiak berritzat har ez ditzan.',

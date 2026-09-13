@@ -387,6 +387,7 @@ const ms: Translations = {
   'schedule.day.sun': 'Ahd',
   'edit.editJob': 'Sunting',
   'edit.removeJob': 'Buang tugasan ini',
+  'jobs.open': 'Buka tugasan',
   'edit.removeStakes': 'Tugas {name} dikeluarkan daripada konfigurasi. Apa yang sudah disalin kekal tepat di tempatnya di kedua-dua belah; tiada apa-apa dipadam daripada folder anda.',
   'edit.removeState': 'Padam juga pangkalan data keadaannya',
   'edit.removeStateHint': 'Rekod tentang apa yang kedua-dua belah pihak persetujui kali terakhir. Simpan hanya jika pasangan yang sama akan kembali, supaya larian seterusnya tidak menganggap setiap fail sebagai baharu.',

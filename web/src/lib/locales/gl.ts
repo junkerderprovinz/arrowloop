@@ -387,6 +387,7 @@ const gl: Translations = {
   'schedule.day.sun': 'Dom',
   'edit.editJob': 'Editar',
   'edit.removeJob': 'Quitar esta tarefa',
+  'jobs.open': 'Abrir a tarefa',
   'edit.removeStakes': 'A tarefa {name} retírase da configuración. O que xa copiou queda exactamente onde está en ambos os lados; non se elimina nada dos teus cartafoles.',
   'edit.removeState': 'Eliminar tamén a súa base de estado',
   'edit.removeStateHint': 'O rexistro daquilo en que ambos os lados coincidiron por última vez. Consérvao só se a mesma parella volve, para que a seguinte execución non trate cada ficheiro como novo.',

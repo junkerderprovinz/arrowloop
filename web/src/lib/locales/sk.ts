@@ -387,6 +387,7 @@ const sk: Translations = {
   'schedule.day.sun': 'Ne',
   'edit.editJob': 'Upraviť',
   'edit.removeJob': 'Odobrať túto úlohu',
+  'jobs.open': 'Otvoriť úlohu',
   'edit.removeStakes': 'Úloha {name} sa odoberie z konfigurácie. To, čo už skopírovala, zostane presne tam, kde je, na oboch stranách; z vašich priečinkov sa nič nemaže.',
   'edit.removeState': 'Zmazať aj jeho databázu stavu',
   'edit.removeStateHint': 'Záznam o tom, na čom sa obe strany naposledy zhodli. Ponechajte ho iba vtedy, ak sa tá istá dvojica vráti, aby ďalší beh nepovažoval každý súbor za nový.',

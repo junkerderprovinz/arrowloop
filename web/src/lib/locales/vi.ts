@@ -387,6 +387,7 @@ const vi: Translations = {
   'schedule.day.sun': 'CN',
   'edit.editJob': 'Sửa',
   'edit.removeJob': 'Bỏ công việc này',
+  'jobs.open': 'Mở công việc',
   'edit.removeStakes': 'Tác vụ {name} được gỡ khỏi cấu hình. Những gì đã sao chép vẫn nằm nguyên tại chỗ ở cả hai bên; không có gì bị xóa khỏi thư mục của bạn.',
   'edit.removeState': 'Xóa luôn cơ sở dữ liệu trạng thái',
   'edit.removeStateHint': 'Bản ghi những gì hai bên đã thống nhất lần cuối. Chỉ giữ lại nếu cùng cặp đó sẽ quay lại, để lần chạy sau không coi mọi tệp là mới.',

@@ -387,6 +387,7 @@ const pl: Translations = {
   'schedule.day.sun': 'Nd',
   'edit.editJob': 'Edytuj',
   'edit.removeJob': 'Usuń to zadanie',
+  'jobs.open': 'Otwórz zadanie',
   'edit.removeStakes': 'Zadanie {name} zostaje usunięte z konfiguracji. To, co już skopiowało, zostaje dokładnie tam, gdzie jest, po obu stronach; z twoich folderów nic nie jest usuwane.',
   'edit.removeState': 'Usuń także jego bazę stanu',
   'edit.removeStateHint': 'Zapis tego, co obie strony ostatnio uzgodniły. Zachowaj go tylko wtedy, gdy ta sama para wróci, aby następne uruchomienie nie potraktowało każdego pliku jako nowego.',

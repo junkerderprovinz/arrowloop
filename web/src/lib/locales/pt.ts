@@ -387,6 +387,7 @@ const pt: Translations = {
   'schedule.day.sun': 'Dom',
   'edit.editJob': 'Editar',
   'edit.removeJob': 'Remover esta tarefa',
+  'jobs.open': 'Abrir tarefa',
   'edit.removeStakes': 'A tarefa {name} é retirada da configuração. O que já copiou fica exatamente onde está em ambos os lados; nada é eliminado das suas pastas.',
   'edit.removeState': 'Eliminar também a base de estado',
   'edit.removeStateHint': 'O registo daquilo em que ambos os lados concordaram pela última vez. Mantenha-o apenas se o mesmo par voltar, para que a próxima execução não trate cada ficheiro como novo.',

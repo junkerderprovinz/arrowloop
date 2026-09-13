@@ -9,6 +9,7 @@ import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
 import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
 import { IconCheck, IconCopy, IconDelete, IconEdit } from '../components/glyphs'
+import { brandMark } from '../components/brandMarks'
 import { Choice, Field, Secret, Text } from '../components/Field'
 import { ToggleRow } from '../components/ToggleRow'
 import { api, type Backend, type Provider, type Remote, type Usage, type Volume } from '../lib/api'
@@ -338,6 +339,15 @@ function RemoteRow({
     <div className="group flex flex-wrap items-center gap-x-3 gap-y-2 py-3">
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
+          {/* The product's logo, where the saved settings name one. The engine
+              answers this (internal/remotes/identify.go) rather than either
+              interface guessing from the backend, which is what kept every
+              object store and every WebDAV cloud without a mark. */}
+          {remote.mark && brandMark(remote.mark) ? (
+            <span className="flex h-5 w-5 shrink-0 items-center justify-center">
+              {brandMark(remote.mark)}
+            </span>
+          ) : null}
           <span className="truncate text-sm font-medium">{remote.name}:</span>
           <Badge>{remote.type}</Badge>
           {result && (

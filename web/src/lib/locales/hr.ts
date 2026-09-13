@@ -387,6 +387,7 @@ const hr: Translations = {
   'schedule.day.sun': 'Ned',
   'edit.editJob': 'Uredi',
   'edit.removeJob': 'Ukloni ovaj zadatak',
+  'jobs.open': 'Otvori zadatak',
   'edit.removeStakes': 'Zadatak {name} uklanja se iz konfiguracije. Ono što je već kopirao ostaje točno gdje jest s obje strane; iz vaših mapa ništa se ne briše.',
   'edit.removeState': 'Obriši i njegovu bazu stanja',
   'edit.removeStateHint': 'Zapis o tome oko čega su se obje strane zadnji put složile. Zadržite ga samo ako se isti par vraća, kako sljedeće pokretanje ne bi svaku datoteku smatralo novom.',

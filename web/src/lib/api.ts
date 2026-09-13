@@ -53,6 +53,11 @@ export type Resolution = 'both' | 'left' | 'right'
 export type Remote = {
   name: string
   type: string
+  /** The PRODUCT behind the target, and its logo, both named by the engine from
+   *  the settings the target was created with. Absent where the settings do not
+   *  pin one down. See internal/remotes/identify.go. */
+  provider?: string
+  mark?: string
   settings: { key: string; value: string; secret: boolean }[]
 }
 

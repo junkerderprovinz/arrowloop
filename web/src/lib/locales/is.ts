@@ -387,6 +387,7 @@ const is: Translations = {
   'schedule.day.sun': 'Sun',
   'edit.editJob': 'Breyta',
   'edit.removeJob': 'Fjarlægja þetta verk',
+  'jobs.open': 'Opna verk',
   'edit.removeStakes': 'Verkið {name} er tekið úr stillingunum. Það sem það hefur þegar afritað verður nákvæmlega kyrrt á báðum hliðum; engu er eytt úr möppunum þínum.',
   'edit.removeState': 'Eyða líka stöðugagnagrunni hans',
   'edit.removeStateHint': 'Skráin um hvað báðar hliðar voru síðast sammála um. Haltu henni aðeins ef sama parið kemur aftur, svo næsta keyrsla telji ekki hverja skrá nýja.',

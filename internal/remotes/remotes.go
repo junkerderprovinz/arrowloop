@@ -59,8 +59,16 @@ type Setting struct {
 
 // Remote is one configured storage target.
 type Remote struct {
-	Name     string    `json:"name"`
-	Type     string    `json:"type"`
+	Name string `json:"name"`
+	Type string `json:"type"`
+
+	// Provider is the PRODUCT behind the target, where the saved settings name
+	// one, and Mark is its logo. Both are derived rather than stored: see
+	// identify.go for why a backend alone cannot answer this, and why the
+	// answer belongs here rather than in each interface.
+	Provider string `json:"provider,omitempty"`
+	Mark     string `json:"mark,omitempty"`
+
 	Settings []Setting `json:"settings"`
 }
 
@@ -96,6 +104,9 @@ func List() []Remote {
 			r.Settings = append(r.Settings, Setting{Key: key, Value: value})
 		}
 		sort.Slice(r.Settings, func(i, j int) bool { return r.Settings[i].Key < r.Settings[j].Key })
+		// Named AFTER the settings are gathered, because that is what names it.
+		r.Provider = ProviderFor(r)
+		r.Mark = MarkFor(r)
 		out = append(out, r)
 	}
 	return out
@@ -139,6 +150,12 @@ func Save(name, backend string, settings map[string]string) error {
 		if key == "type" {
 			continue
 		}
+		// WITHHOLDING and OBSCURING are two different questions, and they used
+		// to share one answer. A value is withheld from the screen because a
+		// person should not read it; a value is obscured because rclone will
+		// UNOBSCURE it when it reads the file back. S3's secret_access_key is
+		// the first but not the second, and obscuring it wrote a credential
+		// that could never work. See obscuring.go.
 		if IsSecret(key) {
 			if value == Placeholder {
 				continue // came back untouched from the screen, so leave it be
@@ -147,11 +164,15 @@ func Save(name, backend string, settings map[string]string) error {
 				data.DeleteKey(name, key)
 				continue
 			}
-			hidden, err := obscure.Obscure(value)
-			if err != nil {
-				return fmt.Errorf("obscure %s: %w", key, err)
+			if needsObscure(backend, key) {
+				hidden, err := obscure.Obscure(value)
+				if err != nil {
+					return fmt.Errorf("obscure %s: %w", key, err)
+				}
+				data.SetValue(name, key, hidden)
+				continue
 			}
-			data.SetValue(name, key, hidden)
+			data.SetValue(name, key, value)
 			continue
 		}
 		if value == "" {

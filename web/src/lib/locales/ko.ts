@@ -387,6 +387,7 @@ const ko: Translations = {
   'schedule.day.sun': '일',
   'edit.editJob': '편집',
   'edit.removeJob': '이 작업 제거',
+  'jobs.open': '작업 열기',
   'edit.removeStakes': '작업 {name}을(를) 설정에서 뺍니다. 이미 복사된 것은 양쪽 모두 그대로 남고, 폴더에서 삭제되는 것은 없습니다.',
   'edit.removeState': '상태 데이터베이스도 삭제',
   'edit.removeStateHint': '양쪽이 마지막으로 일치했던 내용의 기록입니다. 같은 조합을 다시 쓸 때만 남겨 두세요. 그래야 다음 실행에서 모든 파일을 새 파일로 보지 않습니다.',

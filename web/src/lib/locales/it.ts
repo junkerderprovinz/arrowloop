@@ -387,6 +387,7 @@ const it: Translations = {
   'schedule.day.sun': 'Dom',
   'edit.editJob': 'Modifica',
   'edit.removeJob': 'Rimuovi questo lavoro',
+  'jobs.open': 'Apri lavoro',
   'edit.removeStakes': 'Il lavoro {name} viene tolto dalla configurazione. Ciò che ha già copiato resta esattamente dov\'è su entrambi i lati; dalle tue cartelle non viene eliminato nulla.',
   'edit.removeState': 'Elimina anche il suo archivio di stato',
   'edit.removeStateHint': 'Il registro di ciò su cui i due lati erano d\'accordo l\'ultima volta. Conservalo solo se la stessa coppia tornerà, così la prossima esecuzione non tratterà ogni file come nuovo.',
