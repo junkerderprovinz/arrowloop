@@ -4,6 +4,7 @@ import { Alert, FlatList, RefreshControl, StyleSheet, View } from "react-native"
 import { api, type Job, type Remote } from "../api";
 import { CardMenu } from "../CardMenu";
 import { directionKey, markForSide } from "../jobMark";
+import { jobCopy } from "../../../web/src/lib/jobCopy.data";
 import { useT, type T } from "../i18n";
 import { since } from "../../../web/src/lib/since";
 import type { Nav, JobsStack } from "../nav";
@@ -115,6 +116,25 @@ export function Jobs() {
   };
 
   /**
+   * A copy of a job, beside the original, and immediately visible.
+   *
+   * No confirmation: this one is undone by deleting the copy, and a dialog in
+   * front of a reversible act only teaches people to click through dialogs.
+   */
+  const duplicate = async (job: Job) => {
+    try {
+      const config = await api.config();
+      const source = config.jobs.find((j) => j.name === job.name);
+      if (!source) return;
+      const copy = jobCopy(source, config.jobs.map((j) => j.name), t("edit.copySuffix"), t("edit.newJob"));
+      await api.writeConfig({ ...config, jobs: [...config.jobs, copy] });
+      await load();
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  };
+
+  /**
    * Deleting from the list, with the question asked first.
    *
    * It lived only inside the editor, so getting rid of a job meant opening it
@@ -177,6 +197,7 @@ export function Jobs() {
           holding={holding === item.name}
           onHold={() => hold(item)}
           onEdit={() => nav.navigate("JobEdit", { name: item.name })}
+          onDuplicate={() => duplicate(item)}
           onRemove={() => remove(item)}
           // EITHER side, right first because that is the usual shape. A job
           // that pulls from a cloud into a folder on the phone carries its
@@ -204,6 +225,7 @@ function JobCard({
   holding,
   onHold,
   onEdit,
+  onDuplicate,
   onRemove,
   mark,
 }: {
@@ -216,6 +238,7 @@ function JobCard({
   holding: boolean;
   onHold: () => void;
   onEdit: () => void;
+  onDuplicate: () => void;
   onRemove: () => void;
   /** The target's logo, or nothing when it cannot be named without guessing. */
   mark?: string;
@@ -250,6 +273,11 @@ function JobCard({
               // and reachable is not the same as findable.
               { label: t("action.open"), glyph: "IconPreview", onPress: onOpen },
               { label: t("action.edit"), glyph: "IconEdit", onPress: onEdit },
+              // jdp: "auftraege soll man via hamburgermenue auch duplizieren
+              // koennen." The copy arrives HELD and pointing at the same two
+              // folders as its original - see jobCopy.data.ts for why that is
+              // the only safe state for it to arrive in.
+              { label: t("edit.duplicate"), glyph: "IconCopy", onPress: onDuplicate },
               { label: t("action.delete"), glyph: "IconDelete", onPress: onRemove },
             ]}
           />

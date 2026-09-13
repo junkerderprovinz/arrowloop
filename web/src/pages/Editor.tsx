@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { jobCopy, uniqueName } from '../lib/jobCopy.data'
 
 import { Field, Lines, Text, Choice } from '../components/Field'
 import { ToggleRow } from '../components/ToggleRow'
@@ -167,9 +168,10 @@ export function useJobConfig(onSaved: () => void) {
   const add = useCallback((): number => {
     setSaved(false)
     const current = jobs ?? []
-    const base = t('edit.newJob')
-    let name = base
-    for (let n = 2; current.some((j) => j.name === name); n++) name = `${base}-${n}`
+    // The same rule copying a job uses. See uniqueName in jobCopy.data.ts:
+    // adding and copying are one question asked twice, and they were two
+    // implementations of it until a source guard noticed.
+    const name = uniqueName(t('edit.newJob'), current.map((j) => j.name ?? ''))
     const next: RawJob = {
       name,
       left: '',
@@ -274,15 +276,15 @@ export function useJobConfig(onSaved: () => void) {
       const current = jobs ?? []
       const source = current[at]
       if (!source) return at
-      const base = `${source.name ?? t('edit.newJob')}-${t('edit.copySuffix')}`
-      let name = base
-      for (let n = 2; current.some((j) => j.name === name); n++) name = `${base}-${n}`
-      const copy: RawJob = {
-        ...source,
-        name,
-        state: `state/${name}.db`,
-        disabled: true,
-      }
+      // One function, shared with the app. See jobCopy.data.ts: the naming,
+      // the copy's own state database and the reason it arrives held all live
+      // there now, so the phone cannot grow a second opinion about any of them.
+      const copy = jobCopy<RawJob>(
+        source,
+        current.map((j) => j.name ?? ''),
+        t('edit.copySuffix'),
+        t('edit.newJob'),
+      )
       setJobs([...current, copy])
       return current.length
     },
