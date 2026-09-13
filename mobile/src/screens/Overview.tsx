@@ -17,7 +17,7 @@ import { animateNext, useMotion } from "../motion";
 import { bytes, isAccount, Room, unreachable, useRoom, type Room as Space } from "../space";
 import { space } from "../theme";
 import { useEngineStream } from "../useEngine";
-import { Badge, Body, Caption, Card, CardHead, Empty, Fab, Floating, Meter, Mono, Page, Title, useHue, useTheme } from "../ui";
+import { Badge, Body, Caption, Card, CardHead, Empty, Fab, Floating, Meter, Mono, Page, Pair, Title, useHue, useTheme } from "../ui";
 import { when } from "./Jobs";
 
 /**
@@ -47,8 +47,53 @@ import { when } from "./Jobs";
  */
 const DRAW_MS = 120;
 
+/**
+ * The newest run across every job, and what it moved.
+ *
+ * ONE HOOK FOR TWO CARDS, because it is one question. The status card and the
+ * changes card both describe the same run, and two copies of this would be two
+ * requests and - the part that actually bites - two moments in time: the cards
+ * would disagree for as long as one of them was still loading.
+ *
+ * ONLY when a run ENDS, which is the only moment this can change. It took the
+ * generic "something happened" hook first, and that one passes on every
+ * progress line - so during a run over three thousand files these cards asked
+ * the engine for the history and a summary hundreds of times a second.
+ */
+function useLastRun(): { run: Run | null | "none"; tally: Tally | null } {
+  const [run, setRun] = useState<Run | null | "none">(null);
+  const [tally, setTally] = useState<Tally | null>(null);
+
+  const load = useCallback(async () => {
+    try {
+      const recent = await api.history(1);
+      const newest = recent[0];
+      if (!newest) {
+        setRun("none");
+        return;
+      }
+      setRun(newest);
+      setTally(await api.runSummary(newest.ID));
+    } catch {
+      // Cards that cannot be read say nothing rather than an error: the page
+      // above them is already reporting whether the engine answers.
+      setRun("none");
+    }
+  }, []);
+
+  useEffect(() => {
+    void load();
+  }, [load]);
+  useEngineStream(true, (event) => {
+    if (event.phase === "finished") void load();
+  });
+
+  return { run, tally };
+}
+
 export function Overview() {
   const { t } = useT();
+  const last = useLastRun();
   const { intensity: motion } = useMotion();
   const [jobs, setJobs] = useState<Job[] | null>(null);
   const [live, setLive] = useState<Record<string, Progress>>({});
@@ -205,7 +250,13 @@ export function Overview() {
           opens to watch should answer "is it working right now" before "what
           did it do earlier". */}
       <Title>{t("overview.status")}</Title>
-      <SyncStatus />
+      <SyncStatus jobs={jobs} run={last.run} tally={last.tally} />
+
+      {/* WHAT THE LAST RUN MOVED, its own card. Autosync keeps "when" and
+          "what" apart, and so does this: somebody checking whether their photos
+          went up reads exactly one of the four lines below. */}
+      <Title>{t("overview.changes")}</Title>
+      <LastChanges tally={last.run === "none" ? null : last.tally} />
 
       <Title>{t("overview.accounts")}</Title>
       <Accounts />
@@ -288,6 +339,39 @@ function SyncNow({
       onPress={() => void act()}
     />
   );
+}
+
+/**
+ * A moment, written the way the reader's own phone writes moments.
+ *
+ * ABSOLUTE and not relative, which is a correction: the status card first used
+ * the same "22 Minuten her" the job cards use, and that helper only counts
+ * BACKWARDS. Applied to the next due run it printed "0 Sekunden", because a
+ * time in the future is zero seconds ago. Seen on the device.
+ *
+ * Absolute is also simply the better reading here. Autosync's card says "Heute
+ * 04:27", and a status card is scanned for "when", where a clock time answers
+ * in one glance and an elapsed count has to be subtracted from now.
+ *
+ * The PHONE'S OWN format, via the app's language, so the order of day and month
+ * and the twelve-or-twenty-four hour question are answered where they are
+ * already answered. A date that cannot be parsed comes back as a dash rather
+ * than as "Invalid Date".
+ */
+function clock(iso: string, lang: string): string {
+  const at = new Date(iso);
+  if (Number.isNaN(at.getTime())) return "-";
+  try {
+    return at.toLocaleString(lang, {
+      day: "2-digit",
+      month: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  } catch {
+    // An unknown language tag is not a reason to show nothing.
+    return at.toLocaleString();
+  }
 }
 
 /** Where one running job has got to, as the stream last said. */
@@ -417,41 +501,21 @@ function InFlight({ file, hue }: { file: MovingFile; hue: string }) {
  * carries the side it landed on. One extra request, for the run that is being
  * named anyway.
  */
-function SyncStatus() {
-  const { t } = useT();
-  const [run, setRun] = useState<Run | null | "none">(null);
-  const [tally, setTally] = useState<Tally | null>(null);
+function SyncStatus({ jobs, run, tally }: { jobs: Job[]; run: Run | null | "none"; tally: Tally | null }) {
+  const { t, lang } = useT();
+  /*
+  THE NEXT DUE TIME ACROSS EVERY JOB, and whether anything is going right now.
 
-  const load = useCallback(async () => {
-    try {
-      const recent = await api.history(1);
-      const newest = recent[0];
-      if (!newest) {
-        setRun("none");
-        return;
-      }
-      setRun(newest);
-      setTally(await api.runSummary(newest.ID));
-    } catch {
-      // A status card that cannot be read says nothing rather than an error:
-      // the page above it is already reporting whether the engine answers.
-      setRun("none");
-    }
-  }, []);
-
-  useEffect(() => {
-    void load();
-  }, [load]);
-  // ONLY when a run ENDS, which is the only moment this can change.
-  //
-  // It took the generic "something happened" hook first, and that hook passes
-  // on every progress line - so during a run over three thousand files this
-  // card asked the engine for the history and a summary hundreds of times a
-  // second. Measured on the device, where it showed up as a card that never
-  // settled on a number.
-  useEngineStream(true, (event) => {
-    if (event.phase === "finished") void load();
-  });
+  The engine reports a due time per job and this card asks one question, so the
+  EARLIEST of them is the answer: "when will something next happen here". Jobs
+  the clock will never start report nothing and drop out on their own, which is
+  why this needs no second rule for switched-off or hand-started jobs.
+  */
+  const due = jobs
+    .map((j) => j.nextRun)
+    .filter((s): s is string => Boolean(s))
+    .sort()[0];
+  const running = jobs.some((j) => j.running);
 
   if (run === null) return <Card><Caption>{t("history.working")}</Caption></Card>;
   if (run === "none") {
@@ -462,21 +526,74 @@ function SyncStatus() {
     );
   }
 
+  /*
+  FIVE FACTS ON FIVE LINES, which is the shape jdp asked for: "kannst du bitte
+  die Übersichtsseite von Autosync anschauen. ich hätte sie auch gerne so."
+  Autosync's status card is label and value, one per line - last sync, finished
+  at, duration, state, next sync - and the prose sentence that used to stand
+  here answered the same questions in a form nobody scans.
+
+  NEXT SYNC IS THE ONE THAT WAS MISSING ENTIRELY, and it is the line somebody
+  opens this page for: the other four say what already happened. It is the
+  earliest of the times the engine reports per job, and "by hand" where no
+  clock is going to start anything.
+  */
+  const finished = run.Finished ? new Date(run.Finished) : null;
+  const started = new Date(run.Started);
+  const secs = finished ? Math.max(0, Math.round((finished.getTime() - started.getTime()) / 1000)) : null;
+
   return (
     <Card>
       <View style={styles.head}>
         <Title>{run.Job}</Title>
         {failed(run) ? <Badge label={t("history.failed")} tone="fail" /> : null}
       </View>
-      <Caption>{`${t("overview.lastSync")}: ${when(run.Finished || run.Started, t)} ${t("jobs.ago")}`}</Caption>
+      <Pair label={t("overview.lastSync")} value={clock(run.Started, lang)} />
+      {finished ? <Pair label={t("overview.finishedAt")} value={clock(run.Finished as string, lang)} /> : null}
+      {secs !== null ? (
+        <Pair label={t("overview.duration")} value={t("overview.seconds", { count: secs })} />
+      ) : null}
+      <Pair
+        label={t("overview.state")}
+        value={running ? t("jobs.state.running") : failed(run) ? t("history.failed") : t("jobs.state.idle")}
+      />
+      <Pair label={t("overview.nextSync")} value={due ? clock(due, lang) : t("overview.byHand")} />
       {failed(run) ? (
-        // The engine's own sentence. A card that said "failed" and nothing else
-        // would send somebody to the history tab to read the one line that
-        // matters.
+        // The engine's own sentence, under the five facts. A card that said
+        // "failed" and nothing else would send somebody to the history tab to
+        // read the one line that matters.
         <Body>{run.Err}</Body>
-      ) : (
-        <Body>{summary(run, tally, t)}</Body>
-      )}
+      ) : null}
+    </Card>
+  );
+}
+
+/**
+ * What the last run actually moved, four numbers on four lines.
+ *
+ * Autosync's second card, and the reason it is a card of its own rather than a
+ * sentence under the status: the two answer different questions. The status
+ * says WHEN, this says WHAT, and somebody checking whether their photos went up
+ * is reading exactly one of the four lines.
+ *
+ * DELETIONS ARE SPLIT BY SIDE, which the old single number could not do. "12
+ * gelöscht" on a two-way job leaves the reader guessing which end lost the
+ * files, and that is the one thing a deletion count is checked for.
+ *
+ * Every line is shown, including the zeroes. That is the opposite of the rule
+ * the history cards follow, and deliberately: a card of label-value pairs is a
+ * FORM somebody reads down, and a form whose rows appear and disappear is one
+ * whose rows move under the eye. "Download 0 Dateien" is also an answer.
+ */
+function LastChanges({ tally }: { tally: Tally | null }) {
+  const { t } = useT();
+  if (!tally) return <Card><Caption>{t("history.working")}</Caption></Card>;
+  return (
+    <Card>
+      <Pair label={t("overview.uploadedLabel")} value={t("overview.files", { count: tally.up })} />
+      <Pair label={t("overview.downloadedLabel")} value={t("overview.files", { count: tally.down })} />
+      <Pair label={t("overview.deletedHere")} value={t("overview.files", { count: tally.trashedLeft })} />
+      <Pair label={t("overview.deletedThere")} value={t("overview.files", { count: tally.trashedRight })} />
     </Card>
   );
 }
@@ -563,6 +680,24 @@ function Accounts() {
 function Account({ remote, room, index }: { remote: Remote; room: Space; index: number }) {
   const { t } = useT();
   const hue = useHue(index);
+  /*
+  WHO AND WHERE, under the name. Autosync's account block carries the login and
+  the address beside the size, and jdp asked for that page - with reason: a list
+  of target NAMES answers "which ones are set up" and not "which account is this
+  and where does it point", which is what somebody checks when a card says the
+  wrong number.
+
+  Read from the target's own settings rather than from a product table, so a
+  backend this app has never heard of still shows whatever it does carry. A
+  secret is never shown: the engine masks them before they leave it, and a row
+  of asterisks under a card would be noise pretending to be information.
+  */
+  const said = (key: string) => remote.settings.find((s) => s.key === key && !s.secret)?.value;
+  // ONLY a user NAME. `access_key_id` is not marked secret and is a credential
+  // all the same - half of one, and the half that names the account. A card
+  // that printed it would put it in every screenshot of this page.
+  const who = said("user");
+  const where = said("url") ?? said("endpoint") ?? said("remote");
   return (
     <Card hue={hue}>
       <CardHead mark={remote.mark} title={remote.name}>
@@ -572,6 +707,8 @@ function Account({ remote, room, index }: { remote: Remote; room: Space; index: 
           </View>
         ) : null}
       </CardHead>
+      {who ? <Caption>{who}</Caption> : null}
+      {where ? <Caption>{where}</Caption> : null}
       <Room room={room} hue={hue} />
       {room === undefined ? <Caption>{t("history.working")}</Caption> : null}
     </Card>

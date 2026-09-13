@@ -32,6 +32,20 @@ type Tally struct {
 	// Trashed is files that went to a bin, Conflicts the ones kept twice.
 	Trashed   int `json:"trashed"`
 	Conflicts int `json:"conflicts"`
+	/*
+		The same deletions, split by the side they were removed FROM.
+
+		Autosync's overview says "Vom Gerät gelöscht" and "Von Cloud gelöscht" on
+		two lines, and jdp asked for that page. One total cannot be read that way:
+		"12 gelöscht" on a two-way job leaves the reader guessing which end lost
+		the files, which is the one thing somebody checks a deletion count for.
+
+		`Trashed` stays and is not their sum by accident - it IS their sum, kept
+		because a one-way job has nothing to split and one number reads better
+		there.
+	*/
+	TrashedLeft  int `json:"trashedLeft"`
+	TrashedRight int `json:"trashedRight"`
 }
 
 /*
@@ -65,6 +79,14 @@ func (d *DB) Summarise(ctx context.Context, run int64) (Tally, error) {
 			}
 		case "trash":
 			out.Trashed += n
+			// The side is where the file WAS, which is what "deleted from the
+			// phone" means. A line with no side is counted in the total and in
+			// neither half rather than guessed into one.
+			if side == "right" {
+				out.TrashedRight += n
+			} else if side == "left" {
+				out.TrashedLeft += n
+			}
 		case "conflict":
 			out.Conflicts += n
 		}

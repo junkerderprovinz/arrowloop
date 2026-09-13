@@ -32,6 +32,15 @@ export interface Job {
   disabled: boolean;
   running: boolean;
   lastSuccess: string | null;
+  /**
+   * When the clock will next reach this job, or absent.
+   *
+   * ABSENT for a job with no schedule, a job switched off, and one whose
+   * expression does not parse - all three mean the same thing to a reader, and
+   * a time printed for any of them would promise a run that is not coming. See
+   * `nextRun` in internal/web/api.go.
+   */
+  nextRun?: string;
 }
 
 /** A job as the FILE holds it, which is what an editor works on. */
@@ -121,6 +130,9 @@ export interface Tally {
   down: number;
   trashed: number;
   conflicts: number;
+  /** The same deletions, split by the side they were removed FROM. */
+  trashedLeft: number;
+  trashedRight: number;
 }
 
 /**

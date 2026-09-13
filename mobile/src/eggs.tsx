@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { Animated, Easing } from "react-native";
+import { Animated, Easing, StyleSheet, View } from "react-native";
 
 import { Glyph } from "./glyphs";
 import { setAppearance, useAppearance } from "./settings";
@@ -34,7 +34,13 @@ import { RAINBOW } from "./theme";
 const TAPS = 7;
 
 /** How long the loop takes to come round, in milliseconds. */
-const LOOP_MS = 1800;
+const LOOP_MS = 2600;
+
+/** How many arrows stand on the ring. */
+const ARROWS = 8;
+
+/** How far from the middle they stand, in points. */
+const RADIUS = 78;
 
 /**
  * The arrow closes the loop.
@@ -70,8 +76,8 @@ export function useClosingLoop(): { tap: () => void; mark: ReactNode } {
   const taps = useRef(0);
   const turn = useRef(new Animated.Value(0)).current;
 
-  // Round the whole wheel and back to the start, so the mark ends on the colour
-  // it began on. The fallback is the house yellow and exists only so an empty
+  // Round the whole wheel and back to the start, so it ends on the colour it
+  // began on. The fallback is the house yellow and exists only so an empty
   // palette cannot end a gesture in a crash.
   const wheel: string[] = [...RAINBOW, RAINBOW[0] ?? "#FCC419"];
 
@@ -81,8 +87,12 @@ export function useClosingLoop(): { tap: () => void; mark: ReactNode } {
     const spin = Animated.timing(turn, {
       toValue: 1,
       duration: LOOP_MS,
+      // OUT of nothing, IN to nothing, and fast in the middle. A linear turn
+      // reads as a loading spinner, which is the one thing this must not look
+      // like; the ease is what makes it an event with a beginning and an end.
       easing: Easing.inOut(Easing.cubic),
-      // The rotation is a transform, so this one CAN go to the native side.
+      // Transforms and opacity only, so the whole thing runs on the native
+      // side and stays smooth while the engine is busy.
       useNativeDriver: true,
     });
     spin.start();
@@ -103,7 +113,29 @@ export function useClosingLoop(): { tap: () => void; mark: ReactNode } {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [running, turn]);
 
-  const spin = turn.interpolate({ inputRange: [0, 1], outputRange: ["0deg", "360deg"] });
+  /*
+  A RING OF ARROWS THAT CLOSES, and it is the second attempt. jdp on the first:
+  "easter egg von der übercard hätte ich gern anders und spektakulärer." He was
+  right - one small mark turning once beside a version line is a detail, and a
+  secret that takes seven taps to find should be worth the seventh.
+
+  So now eight arrows stand on a ring, the ring turns three full times, and the
+  whole thing grows out of the middle and shrinks back into it while the colour
+  travels the accent wheel. The app is called ArrowLoop; this is the name drawn
+  at the size of the card.
+
+  EVERY PART IS A TRANSFORM OR AN OPACITY, which is what lets it run on the
+  native driver: the ring rotates, each arrow is pushed out along its own angle,
+  and the group scales and fades. The colour is React state, because an animated
+  colour reaches a View and not an SVG - found on the device the hard way, see
+  the comment on the first build in the vault.
+  */
+  const spin = turn.interpolate({ inputRange: [0, 1], outputRange: ["0deg", "1080deg"] });
+  // Out of nothing, past its full size, and back to nothing. The overshoot is
+  // what makes it land rather than stop.
+  const scale = turn.interpolate({ inputRange: [0, 0.25, 0.75, 1], outputRange: [0.2, 1.12, 1, 0.2] });
+  const fade = turn.interpolate({ inputRange: [0, 0.12, 0.85, 1], outputRange: [0, 1, 1, 0] });
+  const colour = wheel[step] ?? wheel[0] ?? "#FCC419";
 
   return {
     tap: () => {
@@ -113,12 +145,28 @@ export function useClosingLoop(): { tap: () => void; mark: ReactNode } {
       setStep(0);
       setRunning(true);
     },
-    // Out of the layout entirely until it turns, so nothing on the card moves
-    // until the secret is found.
+    // Out of the layout entirely until it runs, so nothing on the card moves
+    // until the secret is found - and ABSOLUTE while it does, so the ring lies
+    // over the card rather than pushing its text around.
     mark: running ? (
-      <Animated.View style={{ transform: [{ rotate: spin }] }}>
-        <Glyph name="IconBothWays" color={wheel[step] ?? wheel[0] ?? "#FCC419"} size={18} />
-      </Animated.View>
+      <View pointerEvents="none" style={styles.stage}>
+        <Animated.View style={[styles.ring, { opacity: fade, transform: [{ rotate: spin }, { scale }] }]}>
+          {Array.from({ length: ARROWS }, (_, i) => (
+            <View
+              key={i}
+              style={[
+                styles.spoke,
+                // Each arrow is turned to its own place on the ring and then
+                // pushed outward along that direction, so the eight of them
+                // sit on a circle and all point the same way round it.
+                { transform: [{ rotate: `${(360 / ARROWS) * i}deg` }, { translateY: -RADIUS }] },
+              ]}
+            >
+              <Glyph name="IconToRight" color={colour} size={26} />
+            </View>
+          ))}
+        </Animated.View>
+      </View>
     ) : null,
   };
 }
@@ -188,3 +236,20 @@ export function useStormUnlock(): { offered: boolean; tap: (level: string) => vo
 export function isPerfectlyIdle(runId: number, unchanged: number): boolean {
   return unchanged > 0 && runId > 0 && runId % 50 === 0;
 }
+
+const styles = StyleSheet.create({
+  // The ring lies OVER the card and takes no space in it: the card's own text
+  // must not jump aside the moment somebody finds the secret.
+  stage: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 10,
+  },
+  ring: { width: RADIUS * 2, height: RADIUS * 2, alignItems: "center", justifyContent: "center" },
+  spoke: { position: "absolute" },
+});

@@ -340,6 +340,32 @@ export function Caption({ children }: { children: ReactNode }) {
   return <Text style={[styles.caption, { color: p.textMuted }]}>{children}</Text>;
 }
 
+/**
+ * One fact: what it is on the left, what it says on the right.
+ *
+ * A READING, not a control, and that is the whole distinction from `Row`. A row
+ * carries something to change and is sized for a thumb; this is a line somebody
+ * reads, so it is the height of its own text and nothing is pressable.
+ *
+ * The VALUE takes the accent-free ink and the label the muted one, which is the
+ * way round somebody scans a status card: the eye goes to the numbers and uses
+ * the words to place them. Autosync's overview does the same, and jdp asked for
+ * that page.
+ *
+ * The value wraps rather than truncates and the label does not shrink below its
+ * own words, so a long value pushes down instead of pushing the label away -
+ * the label is what makes the value mean anything.
+ */
+export function Pair({ label, value }: { label: string; value: ReactNode }) {
+  const { p } = useTheme();
+  return (
+    <View style={styles.pair}>
+      <Text style={[styles.pairLabel, { color: p.textMuted }]}>{label}</Text>
+      <Text style={[styles.pairValue, { color: p.text }]}>{value}</Text>
+    </View>
+  );
+}
+
 /** A small uppercase label naming an axis above its control. */
 export function AxisLabel({ children, hint }: { children: ReactNode; hint?: string }) {
   const { p } = useTheme();
@@ -1004,6 +1030,12 @@ const styles = StyleSheet.create({
   title: { fontSize: text.title, fontWeight: "600" },
   body: { fontSize: text.body },
   caption: { fontSize: text.caption, lineHeight: 16 },
+  // A read line, not a control: its height is its text. The label keeps its own
+  // words and the value takes what is left and wraps, because a long value
+  // pushing the label off the row would take away the thing that names it.
+  pair: { flexDirection: "row", alignItems: "flex-start", gap: space.md },
+  pairLabel: { fontSize: text.body, flexShrink: 0 },
+  pairValue: { fontSize: text.body, fontWeight: "600", flex: 1, textAlign: "right" },
   axis: { fontSize: text.caption, fontWeight: "500", textTransform: "uppercase", letterSpacing: 1.2 },
   axisRow: { flexDirection: "row", alignItems: "center", gap: space.sm },
   mono: { fontFamily: "monospace", fontSize: text.caption },

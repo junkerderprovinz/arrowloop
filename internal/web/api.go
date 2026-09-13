@@ -25,6 +25,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/engine"
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/hold"
+	"github.com/junkerderprovinz/arrowloop/internal/job"
 	"github.com/junkerderprovinz/arrowloop/internal/plan"
 	"github.com/junkerderprovinz/arrowloop/internal/scan"
 )
@@ -189,6 +190,51 @@ type jobView struct {
 	Disabled    bool    `json:"disabled"`
 	Running     bool    `json:"running"`
 	LastSuccess *string `json:"lastSuccess"`
+	/*
+		NextRun is when the clock will next reach this job, or absent.
+
+		Computed from the SCHEDULE rather than read out of the running cron, and
+		that is deliberate: `cron.Schedule.Next` is exactly what the scheduler
+		itself asks, so the two cannot disagree, and this way the answer needs no
+		live scheduler at all - it is right in a test, right on a daemon that has
+		not started its cron yet, and right for a job that is switched off.
+
+		ABSENT for a job with no schedule, a job switched off, and a job whose
+		expression does not parse. All three mean the same thing to a reader -
+		the clock is not going to start this - and a screen that printed a time
+		for any of them would be promising a run that is not coming.
+
+		It is a DUE TIME and not a promise. A run held back for mains power or a
+		metered connection still has its slot here; what the conditions do is
+		decide whether the slot is used, and that is a different question the
+		card answers separately.
+	*/
+	NextRun *string `json:"nextRun,omitempty"`
+}
+
+/*
+nextRun is when the clock will next reach this job.
+
+Three ways to have no answer, and they are all the same answer to a reader:
+no schedule at all (the job runs when somebody says so), switched off (the
+clock is not going to start it), and an expression that does not parse (which
+`job.Load` refuses, so it cannot reach a running daemon - the check is here
+because this function is also called on configurations that came from
+somewhere else).
+
+A WATCHING job still gets its time. The watcher is not a schedule, it is a
+shortcut that reacts sooner; the schedule behind it is the backstop, and it is
+the thing that will definitely happen.
+*/
+func nextRun(j job.Job, now time.Time) (time.Time, bool) {
+	if j.Disabled || strings.TrimSpace(j.Schedule) == "" {
+		return time.Time{}, false
+	}
+	parsed, err := job.ParseSchedule(j.Schedule)
+	if err != nil {
+		return time.Time{}, false
+	}
+	return parsed.Next(now), true
 }
 
 // directionName is the name the interface keys off, which is the same spelling
@@ -220,6 +266,10 @@ func (s *Server) listJobs(w http.ResponseWriter, r *http.Request) {
 		if when, ok, err := s.History.LastSuccess(r.Context(), j.Name); err == nil && ok {
 			stamp := when.UTC().Format(time.RFC3339)
 			v.LastSuccess = &stamp
+		}
+		if when, ok := nextRun(j, time.Now()); ok {
+			stamp := when.UTC().Format(time.RFC3339)
+			v.NextRun = &stamp
 		}
 		out = append(out, v)
 	}

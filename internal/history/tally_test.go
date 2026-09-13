@@ -58,9 +58,47 @@ func TestTheSummaryCountsEveryLineAndSplitsBySide(t *testing.T) {
 	if err != nil {
 		t.Fatalf("summarise: %v", err)
 	}
-	want := history.Tally{Up: 250, Down: 7, Trashed: 2, Conflicts: 1}
+	// The two deletions are one per side, and the split has to say so: a total
+	// of "2 gelöscht" on a two-way job leaves the reader guessing which end
+	// lost the files, which is the one thing a deletion count is checked for.
+	// Autosync says it on two lines ("Vom Gerät gelöscht", "Von Cloud
+	// gelöscht") and jdp asked for that page.
+	want := history.Tally{Up: 250, Down: 7, Trashed: 2, Conflicts: 1, TrashedLeft: 1, TrashedRight: 1}
 	if got != want {
 		t.Errorf("summary = %+v, want %+v", got, want)
+	}
+	// And the halves add up to the total, which is the contract that lets a
+	// one-way job keep showing the single number.
+	if got.TrashedLeft+got.TrashedRight != got.Trashed {
+		t.Errorf("the split %d+%d does not add up to %d", got.TrashedLeft, got.TrashedRight, got.Trashed)
+	}
+}
+
+// A deletion with no side lands in the total and in neither half.
+//
+// It is not a shape the engine writes today, and that is exactly why it is
+// pinned: the split must never invent a side, because "deleted from the phone"
+// is a sentence somebody acts on.
+func TestADeletionWithNoSideIsCountedOnceAndSplitNowhere(t *testing.T) {
+	db := openTemp(t)
+	ctx := context.Background()
+	now := time.Date(2027, 3, 1, 12, 0, 0, 0, time.UTC)
+
+	if err := db.Record(ctx,
+		history.Run{Job: "Fotos", Started: now, Finished: now},
+		[]history.Entry{{Kind: "trash", Path: "seitenlos.jpg"}}); err != nil {
+		t.Fatalf("record: %v", err)
+	}
+	runs, err := db.Recent(ctx, "", history.ShowAll, 1)
+	if err != nil || len(runs) != 1 {
+		t.Fatalf("recent: %v, %d runs", err, len(runs))
+	}
+	got, err := db.Summarise(ctx, runs[0].ID)
+	if err != nil {
+		t.Fatalf("summarise: %v", err)
+	}
+	if got.Trashed != 1 || got.TrashedLeft != 0 || got.TrashedRight != 0 {
+		t.Errorf("summary = %+v, want one deletion in the total and none in either half", got)
 	}
 }
 
