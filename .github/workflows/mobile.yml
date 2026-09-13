@@ -118,7 +118,20 @@ jobs:
           mkdir -p "$work/left" "$work/right"
           echo one > "$work/left/one.txt"
           echo two > "$work/left/two.txt"
-          printf '{"jobs":[{"name":"check","left":"%s/left","right":"%s/right","state":"state/check.db","quietPeriod":"0s"}]}' "$work" "$work" > "$work/arrowloop.json"
+          # TWO JOBS, and the second exists only to have a SCHEDULE. The app
+          # declares `nextRun`, which the engine sends only for a job the clock
+          # will reach - so a fixture where nothing is scheduled makes that
+          # field absent from every object, and the shape check is right to call
+          # that out: an optional field that never arrives is how a renamed
+          # field hides. The first job keeps no schedule, so the run below is
+          # still the only thing that happens.
+          #
+          # SWITCHED ON, and that is the point rather than an oversight: the
+          # engine deliberately reports no due time for a job the clock will not
+          # start, so a disabled fixture would leave the field just as absent.
+          # What keeps it quiet is the EXPRESSION - the first of January at
+          # three is real, valid, and will not come round inside a CI run.
+          printf '{"jobs":[{"name":"check","left":"%s/left","right":"%s/right","state":"state/check.db","quietPeriod":"0s"},{"name":"scheduled","left":"%s/left","right":"%s/right","state":"state/scheduled.db","schedule":"0 3 1 1 *"}]}' "$work" "$work" "$work" "$work" > "$work/arrowloop.json"
           cp mobile/native/jniLibs/x86_64/libarrowloop.so "$work/engine"
           chmod +x "$work/engine"
           "$work/engine" web --config "$work/arrowloop.json" --addr 127.0.0.1:18423 &
