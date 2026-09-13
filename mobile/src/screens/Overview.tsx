@@ -17,7 +17,7 @@ import { animateNext, useMotion } from "../motion";
 import { bytes, Room, unreachable, useRoom, type Room as Space } from "../space";
 import { space } from "../theme";
 import { useEngineStream } from "../useEngine";
-import { Badge, Body, Button, Caption, Card, CardHead, Empty, Meter, Mono, Page, Title, useHue, useTheme } from "../ui";
+import { Badge, Body, Caption, Card, CardHead, Empty, Fab, Floating, Meter, Mono, Page, Title, useHue, useTheme } from "../ui";
 import { when } from "./Jobs";
 
 /**
@@ -174,23 +174,9 @@ export function Overview() {
   if (!jobs) return <Empty title={t("history.working")} detail={error || undefined} />;
 
   return (
+    <Floating>
     <Page>
       <Title>{t("overview.running")}</Title>
-
-      {/* THE ONE BUTTON THAT STARTS EVERYTHING. jdp: "in der übersicht soll ein
-          button sein mit dem man die synchronisation anstoßen kann."
-
-          It starts every job that COULD run - switched on, with both sides,
-          not already going - because this screen has no single job selected and
-          "synchronise now" on a page about the whole phone means all of it. A
-          job somebody switched off stays off: that switch is an instruction,
-          and a button that overrode it would make the switch meaningless.
-
-          And it becomes the ABORT while anything is running, which is the same
-          shape the job cards took when jdp asked for it there ("lauf anhalten
-          soll den lauf abbrechen und auch so heißen"). One button, one place,
-          whichever of the two is the useful one right now. */}
-      <SyncNow jobs={jobs} running={running} onDone={load} />
 
       {running.length === 0 ? (
         <Card>
@@ -226,6 +212,28 @@ export function Overview() {
 
       {error ? <Caption>{error}</Caption> : null}
     </Page>
+
+    {/* THE ONE BUTTON THAT STARTS EVERYTHING, and it is the SAME KIND of button
+        as the one that creates a job. jdp: "jetzt abgleichen soll ein button
+        sein wie der wo man ein auftrag anlegt und er soll Syncronisieren heißen
+        mit glyph (pfeile die einen kreis bilden)."
+
+        Floating rather than standing in the page, for the reason that shape
+        exists at all: it is the page's ONE act, and a control that scrolls away
+        with the content is one somebody has to go back for. The jobs list
+        already settled this ("die button ... soll ein schwebender button rechts
+        unten sein"), and a second page inventing a second answer would be two
+        ideas about the same thing.
+
+        It starts every job that COULD run - switched on, with both sides, not
+        already going - because this screen has no single job selected and
+        "synchronise" on a page about the whole phone means all of it. A job
+        somebody switched off stays off: that switch is an instruction.
+
+        And it becomes the ABORT while anything runs, the same shape the job
+        cards took when jdp asked for it there. */}
+    <SyncNow jobs={jobs} running={running} onDone={load} />
+    </Floating>
   );
 }
 
@@ -249,7 +257,6 @@ function SyncNow({
   onDone: () => void;
 }) {
   const { t } = useT();
-  const [busy, setBusy] = useState(false);
 
   // What the button would actually reach. A draft with no sides cannot run, and
   // a switched-off job must not be switched on by a button that says "now".
@@ -262,23 +269,23 @@ function SyncNow({
   if (!live && ready.length === 0) return null;
 
   const act = async () => {
-    setBusy(true);
     try {
       await Promise.allSettled(
         live ? running.map((j) => api.stop(j.name)) : ready.map((j) => api.run(j.name)),
       );
     } finally {
-      setBusy(false);
       onDone();
     }
   };
 
   return (
-    <Button
+    <Fab
       label={live ? t("overview.stopAll") : t("overview.syncNow")}
-      labelKey={live ? "jobs.cancelRun" : "jobs.run"}
+      // The KEY picks the mark, so the two states wear two marks without this
+      // call site naming either: the circle of arrows while there is something
+      // to start, the cancel mark while there is something to stop.
+      labelKey={live ? "jobs.cancelRun" : "overview.syncNow"}
       onPress={() => void act()}
-      disabled={busy}
     />
   );
 }

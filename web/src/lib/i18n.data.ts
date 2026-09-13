@@ -36,7 +36,7 @@ export const en = {
   'overview.lastSync': 'Last sync',
   'overview.uploaded': 'uploaded: {count}',
   'overview.downloaded': 'downloaded: {count}',
-  'overview.syncNow': 'Sync now',
+  'overview.syncNow': 'Synchronise',
   'overview.stopAll': 'Cancel every run',
   'overview.manySmall': 'Many small files, about {count} a second',
   'settings.section': 'Settings section',
@@ -306,6 +306,7 @@ export const en = {
   'edit.quiet.m': 'Minutes',
   'edit.quiet.h': 'Hours',
   'edit.nameHint': 'How this job is named in the list, the log and the notifications.',
+  'edit.sameSides': 'Both sides point at the same place, so this job would be a snake eating its own tail. Pick a different folder for one of them.',
   'edit.sideHint':
     'A folder, a configured target as name:path, or a drive registered on the Targets tab.',
   'edit.sides': 'The two sides',
@@ -665,7 +666,7 @@ export const de: Translations = {
   'overview.lastSync': 'Zuletzt abgeglichen',
   'overview.uploaded': 'hochgeladen: {count}',
   'overview.downloaded': 'heruntergeladen: {count}',
-  'overview.syncNow': 'Jetzt abgleichen',
+  'overview.syncNow': 'Synchronisieren',
   'overview.stopAll': 'Alle Läufe abbrechen',
   'overview.manySmall': 'Viele kleine Dateien, etwa {count} je Sekunde',
   'settings.section': 'Einstellungsbereich',
@@ -929,6 +930,7 @@ export const de: Translations = {
   'edit.quiet.m': 'Minuten',
   'edit.quiet.h': 'Stunden',
   'edit.nameHint': 'Unter diesem Namen steht der Auftrag in der Liste, im Protokoll und in den Meldungen.',
+  'edit.sameSides': 'Beide Seiten zeigen auf denselben Ort, damit wäre der Auftrag eine Schlange, die sich in den Schwanz beißt. Wähle für eine der beiden einen anderen Ordner.',
   'edit.sideHint':
     'Ein Ordner, ein eingerichtetes Ziel als Name:Pfad, oder ein unter Ziele angemeldeter Datenträger.',
   'edit.sides': 'Die beiden Seiten',

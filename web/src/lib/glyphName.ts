@@ -71,6 +71,13 @@ const RULES: Rule[] = [
   // program is FOR - reading a plan before anything moves - so it takes the eye
   // before "check" or "show" can.
   [/preview|dryRun/i, 'IconPreview'],
+  // SYNCHRONISING IS THE CIRCLE, not the play triangle, and it sits above the
+  // run rule because `syncNow` contains the word that rule matches. jdp asked
+  // for "pfeile die einen kreis bilden", and the set already has exactly one:
+  // the same mark the jobs tab wears, because it is the same idea. A job IS a
+  // synchronisation, and drawing that concept twice would be two marks for one
+  // thing rather than one thing named twice.
+  [/^overview\.syncNow$/i, 'IconJobs'],
   [/runNow|\.run$|start|resume/i, 'IconRun'],
   // ABORTING is not pausing, and it gets its own mark. jdp: "lauf anhalten soll
   // den lauf abbrechen und auch so heißen und ein anderen glyph bekommen."

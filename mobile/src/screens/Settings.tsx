@@ -533,7 +533,7 @@ export function Settings() {
             // And a tap on the level that is ALREADY chosen reaches nothing
             // else, which is what makes it a gesture available to be given a
             // second meaning. See src/eggs.tsx.
-            storm(motion);
+            storm.tap(motion);
           }}
           options={[
             { value: "off", label: t("look.motionOff") },
@@ -542,7 +542,7 @@ export function Settings() {
             // The fourth appears once it has been found, and then behaves like
             // any other: it can be turned back down, which is the rule for an
             // easter egg that changes a setting rather than a picture.
-            ...(look.storm ? [{ value: "storm" as MotionIntensity, label: t("look.motionStorm") }] : []),
+            ...(storm.offered ? [{ value: "storm" as MotionIntensity, label: t("look.motionStorm") }] : []),
           ]}
         />
       </Section>

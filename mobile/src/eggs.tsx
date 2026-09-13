@@ -136,28 +136,40 @@ const STORM_TAPS = 5;
  * was asked for: jdp, looking at the app, "Hast du animationen in der app
  * eingebaut? Auch wilde? mir kommt es vor als würde ich keine sehen."
  *
- * IT CHANGES A SETTING, which makes it the one egg here that does anything
- * lasting, and that is why it is a setting rather than a mode: once found, the
- * fourth option simply stands in the picker beside the other three and can be
- * turned down again like any of them. A secret somebody cannot switch off is a
- * fault.
+ * IT IS NOT REMEMBERED AS A DISCOVERY, and that was jdp's correction: "sturm
+ * soll wieder verschwinden wenn man zb sanft einstellt und die einstellungen
+ * verlässt." The first build stored a "found it" flag, so the fourth option
+ * stood in the picker for ever after one gesture - which turns a secret into a
+ * setting somebody has to explain to themselves later.
  *
- * Returns the tap handler, and the caller decides what wearing it means.
+ * So what keeps it visible is the plain truth about the current state: it is
+ * there while it is CHOSEN, and otherwise only for as long as this screen stays
+ * open. Choose something else and leave, and it is gone until the gesture is
+ * made again. Choose it and leave, and it stays - because a picker that hid the
+ * value it is showing would be lying.
+ *
+ * Returns whether it is on offer and the tap handler; the caller owns the
+ * screen and therefore owns how long "open" lasts.
  */
-export function useStormUnlock(): (level: string) => void {
+export function useStormUnlock(): { offered: boolean; tap: (level: string) => void } {
   const look = useAppearance();
+  const [found, setFound] = useState(false);
   const taps = useRef(0);
-  return (level: string) => {
-    // Only counts while the top VISIBLE level is the one already chosen. Tapping
-    // "off" five times means somebody is annoyed, not curious.
-    if (level !== "full" || look.motion !== "full" || look.storm) {
+  return {
+    offered: found || look.motion === "storm",
+    tap: (level: string) => {
+      // Only counts while the top VISIBLE level is the one already chosen.
+      // Tapping "off" five times means somebody is annoyed, not curious.
+      if (level !== "full" || look.motion !== "full") {
+        taps.current = 0;
+        return;
+      }
+      taps.current += 1;
+      if (taps.current < STORM_TAPS) return;
       taps.current = 0;
-      return;
-    }
-    taps.current += 1;
-    if (taps.current < STORM_TAPS) return;
-    taps.current = 0;
-    void setAppearance({ storm: true, motion: "storm" });
+      setFound(true);
+      void setAppearance({ motion: "storm" });
+    },
   };
 }
 

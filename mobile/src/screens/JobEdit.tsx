@@ -168,6 +168,20 @@ export function JobEdit() {
     async (next: JobConfig) => {
       const name = next.name.trim();
       if (!name || !next.left.trim() || !next.right.trim()) return;
+      // BOTH SIDES ON ONE PLACE IS NOT SENT AT ALL, for the same reason a
+      // half-filled job is not: there is nothing to write yet, only something
+      // still being typed. The engine refuses it either way - that guard is
+      // what protects the files - but sending it means the engine's English
+      // sentence lands under the form beside the form's own German one, which
+      // is exactly what jdp met: "komt ganz unten ein Text der ist englisch".
+      //
+      // Found on the device, after a first fix that only ADDED the translated
+      // line and left the engine's underneath it. Two sentences for one fact
+      // is not a translation.
+      if (bothSidesOnePlace(next.left, next.right)) {
+        setError("");
+        return;
+      }
       try {
         const current = await api.config();
         const jobs = [...current.jobs];
@@ -460,37 +474,57 @@ export function JobEdit() {
         ) : null}
       </Section>
 
-      <Section title={t("settings.general")}>
-        {!follows ? (
-          <>
-            <Toggle
-              label={t("edit.emptyDirs")}
-              hint={t("edit.emptyDirsHint")}
-              value={Boolean(job.emptyDirs)}
-              onChange={(emptyDirs) => set({ emptyDirs }, true)}
-            />
-            <Toggle
-              label={t("edit.metadata")}
-              hint={t("edit.metadataHint")}
-              value={Boolean(job.metadata)}
-              onChange={(metadata) => set({ metadata }, true)}
-            />
-          </>
-        ) : null}
-        {/* The "switched off" toggle used to sit here, and it is gone. jdp:
-            "dieser abgeschaltet toggle soll weg, das hab ich schon oft
-            angesprochen." Holding a job is not a property of how it is
-            CONFIGURED, it is something you do to it - the same class of act as
-            running it now - so it belongs where you look at the job rather than
-            where you edit it. That is where the desktop has always had it, as a
-            hold/resume button on the row, and the phone's card carries the same
-            pair now. */}
-      </Section>
+      {/* THE CARD GOES WHEN ITS CONTENTS DO. jdp: "die allgemein card ist leer
+          wenn globale synceinstellungen an sind, blende sie dann aus."
+
+          Both switches inside it belong to the job only while the job answers
+          for itself; following the global settings takes both away and left a
+          titled card with nothing under it, which reads as something that
+          failed to load rather than as something that does not apply.
+
+          The "switched off" toggle used to sit here too, and it is gone. jdp:
+          "dieser abgeschaltet toggle soll weg, das hab ich schon oft
+          angesprochen." Holding a job is not a property of how it is
+          CONFIGURED, it is something you do to it - the same class of act as
+          running it now - so it belongs where you look at the job rather than
+          where you edit it. */}
+      {!follows ? (
+        <Section title={t("settings.general")}>
+          <Toggle
+            label={t("edit.emptyDirs")}
+            hint={t("edit.emptyDirsHint")}
+            value={Boolean(job.emptyDirs)}
+            onChange={(emptyDirs) => set({ emptyDirs }, true)}
+          />
+          <Toggle
+            label={t("edit.metadata")}
+            hint={t("edit.metadataHint")}
+            value={Boolean(job.metadata)}
+            onChange={(metadata) => set({ metadata }, true)}
+          />
+        </Section>
+      ) : null}
 
       {error ? <Body>{error}</Body> : null}
       {/* Not an error and not a warning: a statement of what is still missing,
           on a page that otherwise keeps everything the moment it is typed. */}
       {incomplete ? <Body muted>{t("edit.nameHint")}</Body> : null}
+      {/* THE SNAKE, SAID HERE AND IN THE READER'S LANGUAGE. jdp: "wenn ich
+          einen auftrag erstelle mit links und recht dem gleichen ziel komt ganz
+          unten ein Text der ist englisch."
+
+          He was reading the ENGINE's refusal, which is English by design like
+          every other sentence the engine writes. The fix is not to translate
+          the engine: it is for the form to know what the form can know. Both
+          sides naming one place is visible in the two fields on this screen,
+          without asking anything, so it is said the moment it is true rather
+          than when a save comes back refused.
+
+          THE ENGINE STILL REFUSES IT. This line is a courtesy and not a guard -
+          a configuration can arrive by backup or by hand, and the check that
+          protects the files has to sit where the files are. Same rule as the
+          two brakes. */}
+      {bothSidesOnePlace(job.left, job.right) ? <Body muted>{t("edit.sameSides")}</Body> : null}
 
       {/* NO SAVE BUTTON. jdp chose the shape where every field writes itself,
           which is what this language already says about a settings field: it is
@@ -502,7 +536,12 @@ export function JobEdit() {
           time somebody sees it. */}
       {editing ? (
         <View style={styles.actions}>
-          <Button label={t("action.delete")} labelKey="action.delete" onPress={remove} wide={false} />
+          {/* THE FULL WIDTH, because it is alone on its row. jdp: "der löschen
+              button wenn man ein auftrag geöffnet hat soll über die ganze
+              breite gehen." A button sized to its own word, centred in an empty
+              row, reads as one of a pair whose other half failed to render -
+              which is exactly what it used to be, before the save button went. */}
+          <Button label={t("action.delete")} labelKey="action.delete" onPress={remove} />
         </View>
       ) : null}
       <FolderPicker
@@ -720,6 +759,32 @@ function DayChip({ label, on, onPress }: { label: string; on: boolean; onPress: 
       <Text style={[styles.dayText, { color: on ? contrastOn(fill) : p.textSub }]}>{label}</Text>
     </Pressable>
   );
+}
+
+/**
+ * Whether both sides of a job name one and the same place.
+ *
+ * THE SAME RULE THE ENGINE APPLIES, written twice because the two halves speak
+ * two languages: `sameSide` in `internal/job/job.go` is what actually refuses
+ * the job, and this is what lets the form say so before anybody presses
+ * anything. If one of the two ever changes, the engine is the one that is
+ * right - it is the one holding the files.
+ *
+ * Trailing separators are forgiven because they are the one difference a picker
+ * and a typist disagree about. Case is NOT folded: two backends disagree about
+ * whether it matters, and guessing here would put a sentence under a job that
+ * is perfectly fine on a case-sensitive pair.
+ */
+export function bothSidesOnePlace(left: string, right: string): boolean {
+  const trim = (s: string) => {
+    let out = s.trim();
+    // A lone separator is a real path, so it keeps its character.
+    while (out.length > 1 && (out.endsWith("/") || out.endsWith("\\"))) out = out.slice(0, -1);
+    return out;
+  };
+  const a = trim(left ?? "");
+  const b = trim(right ?? "");
+  return a !== "" && a === b;
 }
 
 const styles = StyleSheet.create({

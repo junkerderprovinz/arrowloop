@@ -117,14 +117,6 @@ export interface Appearance {
    * engine's settings are exactly what a backup carries.
    */
   lock: boolean;
-  /**
-   * Whether the hidden fourth motion level has been found.
-   *
-   * Remembered so that finding it once is finding it: an easter egg that made
-   * somebody repeat the gesture after every restart would be a chore wearing a
-   * secret's clothes. See `src/eggs.tsx` for the gesture and the reasoning.
-   */
-  storm: boolean;
 }
 
 export const DEFAULT_APPEARANCE: Appearance = {
@@ -139,7 +131,6 @@ export const DEFAULT_APPEARANCE: Appearance = {
   barLabels: "textGlyph",
   motion: "full",
   lock: false,
-  storm: false,
 };
 
 const KEY = "arrowloop.appearance";
