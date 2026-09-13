@@ -81,6 +81,10 @@ GLYPHS = [
     ("IconToLeft", "interface-essential/arrow-up-1.svg", "Right to left only",
      "rotate(-90 7 7)"),
 
+    # The two SIDES of a job, on its card. The cloud side draws the
+    # provider's own brand mark instead, so only the device needs one here.
+    ("IconThisDevice", "phone/phone-mobile-phone.svg",
+     "The side of a job that is a folder on this phone"),
     # Folders, the picker, and saving.
     ("IconFolder", "interface-essential/new-folder.svg", "Pick a folder. The plain shape: the local-storage one carries a drive motif and reads as a monitor at fourteen pixels"),
     ("IconNewFolder", "interface-essential/folder-add.svg", "Make a folder here"),

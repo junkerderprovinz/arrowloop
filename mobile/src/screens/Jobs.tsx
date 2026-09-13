@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Alert, FlatList, RefreshControl, StyleSheet, View } from "react-native";
 import { api, type Job, type Remote } from "../api";
 import { CardMenu } from "../CardMenu";
+import { Glyph, ProviderMark } from "../glyphs";
 import { directionKey, markForSide } from "../jobMark";
 import { jobCopy } from "../../../web/src/lib/jobCopy.data";
 import { useT, type T } from "../i18n";
@@ -205,6 +206,8 @@ export function Jobs() {
           // A job between two local folders still has no logo, which is
           // correct: there is no cloud in it to show.
           mark={markForSide(item.right, remotes) ?? markForSide(item.left, remotes)}
+          leftMark={sideMark(item.left, remotes)}
+          rightMark={sideMark(item.right, remotes)}
         />
       )}
       />
@@ -228,6 +231,8 @@ function JobCard({
   onDuplicate,
   onRemove,
   mark,
+  leftMark,
+  rightMark,
 }: {
   job: Job;
   index: number;
@@ -242,6 +247,10 @@ function JobCard({
   onRemove: () => void;
   /** The target's logo, or nothing when it cannot be named without guessing. */
   mark?: string;
+  /** What goes in front of each side: a provider's mark, the phone glyph, or
+   *  nothing. See sideMark. */
+  leftMark?: string;
+  rightMark?: string;
 }) {
   const { t } = useT();
   const hue = useHue(index);
@@ -287,13 +296,19 @@ function JobCard({
       {/* The two paths with the direction between them, one per line and each
           allowed to wrap. Truncating a path in the middle is what a table
           does, and it hides exactly the part that distinguishes two similar
-          jobs. */}
-      <Body>{job.left}</Body>
-      {/* The arrow AND the words. The arrow keeps the position it had between
-          the two paths, where it reads as the relationship between them; the
-          words are what somebody needs the first time. */}
+          jobs.
+
+          EACH SIDE SAYS WHAT IT IS FIRST. jdp: "vor dem Pfad der Cloud soll das
+          cloudlogo als glyph sein und vor dem Geraetepfad ein Handy glyph."
+          Two stacked paths left the reader to work that out by reading them,
+          which is fine for /storage/emulated/0/DCIM and useless for two targets
+          whose names are both somebody's own. */}
+      <Side path={job.left} mark={leftMark} />
+      {/* The arrow AND the words, unmoved. The arrow keeps the position it had
+          between the two paths, where it reads as the relationship between
+          them; the words are what somebody needs the first time. */}
       <Caption>{`${arrow(job.direction)}  ${t(directionKey(job.direction))}`}</Caption>
-      <Body>{job.right}</Body>
+      <Side path={job.right} mark={rightMark} />
 
       <Caption>
         {job.lastSuccess
@@ -334,6 +349,47 @@ function JobCard({
   );
 }
 
+/**
+ * One side of a job: what it is, then where.
+ *
+ * The mark is the provider's own where the side names a target, and the phone
+ * glyph where it is a path on this device. A side that is neither - a path on
+ * some other machine, a target whose product cannot be named without guessing -
+ * gets no mark and keeps the plain line it always had. An unknown side drawn
+ * with a borrowed symbol would be worse than an unmarked one.
+ */
+function Side({ path, mark }: { path: string; mark?: string }) {
+  const { p, scheme } = useTheme();
+  return (
+    <View style={styles.side}>
+      {mark === DEVICE ? (
+        <Glyph name="IconThisDevice" color={p.textSub} size={16} />
+      ) : mark ? (
+        <ProviderMark name={mark} width={18} height={18} color={p.textSub} scheme={scheme} />
+      ) : (
+        // An empty slot rather than no slot, so the two paths stay aligned with
+        // each other whether or not both sides could be named.
+        <View style={styles.sideBlank} />
+      )}
+      <Body>{path}</Body>
+    </View>
+  );
+}
+
+/** Not a provider: the marker for "this is a folder on this phone". */
+const DEVICE = "__device__";
+
+/**
+ * What to draw in front of a side.
+ *
+ * A side with no colon is a path on this device. Anything else is a target, and
+ * the engine says which product it is.
+ */
+function sideMark(side: string, remotes: Remote[]): string | undefined {
+  if (side.indexOf(":") < 2) return side ? DEVICE : undefined;
+  return markForSide(side, remotes);
+}
+
 /** The direction as an arrow, which is read faster than the word. */
 export function arrow(direction: string): string {
   if (direction === "toRight" || direction === "right") return "→";
@@ -362,6 +418,9 @@ const styles = StyleSheet.create({
   // The logo before the name, the menu hard right, and the badge between them
   // taking whatever is left.
   menuSlot: { marginStart: "auto" },
+  // A side: its mark, then its path, the path free to wrap under itself.
+  side: { flexDirection: "row", alignItems: "flex-start", gap: space.sm },
+  sideBlank: { width: 18 },
   // The extra room at the end is for the floating button, which would
   // otherwise cover the last card - the one somebody scrolled to reach.
   list: { padding: space.lg, gap: space.md, paddingBottom: FAB_ROOM },
