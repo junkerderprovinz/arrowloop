@@ -610,6 +610,14 @@ export const api = {
    * hold the same files, so a search across both would report the sync doing
    * its work.
    */
+  /** Settings that are not saved yet, so a form can be tested before it is
+   *  kept. Nothing is written: see internal/remotes/trycheck.go. */
+  tryRemote: (type: string, settings: Record<string, string>) =>
+    request<{ ok: boolean; reason?: string }>('/api/remotes-check', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type, settings }),
+    }),
   duplicates: (job: string, side: 'left' | 'right', limit = 200) =>
     request<Duplicates>(
       `/api/jobs/${encodeURIComponent(job)}/duplicates/${side}?limit=${limit}`,

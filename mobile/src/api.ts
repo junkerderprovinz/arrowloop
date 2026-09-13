@@ -351,6 +351,13 @@ export const api = {
 
   /** Remotes, providers and backends in one answer - see Storage. */
   storage: () => call<Storage>("/api/remotes"),
+  /** Settings that are not saved yet, so a form can be tested before it is
+   *  kept. Nothing is written: see internal/remotes/trycheck.go. */
+  tryRemote: (type: string, settings: Record<string, string>) =>
+    call<{ ok: boolean; reason?: string }>("/api/remotes-check", {
+      method: "POST",
+      body: JSON.stringify({ type, settings }),
+    }),
   saveRemote: (remote: string, body: { type: string; settings: Record<string, string> }) =>
     call<void>(`/api/remotes/${name(remote)}`, { method: "PUT", body: JSON.stringify(body) }),
   deleteRemote: (remote: string) =>

@@ -83,46 +83,15 @@ function TargetCard({
   const { t } = useT();
   const { p, scheme } = useTheme();
   const hue = useHue(index);
-  const [state, setState] = useState<"unknown" | "checking" | "ok" | "bad">("unknown");
+  // No reachable/unreachable state here any more. The button that set it moved
+  // to the form (jdp: "der pruefen button der ziele soll in ziele einrichten
+  // seite nicht auf die card"), and a badge nothing can ever light is worse than
+  // no badge: an empty card reads as "not checked yet" when in truth nothing on
+  // this screen can check it. The space reading went the same way - it was only
+  // ever fetched after a successful check.
+
+  /** Only for something that went wrong HERE, which is a failed delete. */
   const [detail, setDetail] = useState("");
-  const [usage, setUsage] = useState<Usage | null>(null);
-
-  const check = async () => {
-    setState("checking");
-    try {
-      const result = await api.checkRemote(remote.name);
-      if (result.ok) {
-        setState("ok");
-        setDetail("");
-        // Space only AFTER it answers: asking a target that is not reachable
-        // how full it is produces a second error about the same thing.
-        api.aboutRemote(remote.name).then(setUsage, () => setUsage(null));
-      } else {
-        setState("bad");
-        setDetail(result.reason ?? "");
-      }
-    } catch (e) {
-      setState("bad");
-      setDetail((e as Error).message);
-    }
-  };
-
-  // The same three-way the desktop uses, and in the same order: free space is
-  // the number somebody is actually asking about, used is the consolation
-  // prize, and a total on its own at least says the service answered. A
-  // service that reports none of the three gets no line rather than a zero.
-  const room = (() => {
-    if (!usage?.supported) return null;
-    const total = usage.total;
-    const used =
-      usage.used ?? (total !== undefined && usage.free !== undefined ? total - usage.free : undefined);
-    if (usage.free !== undefined && total !== undefined) {
-      return t("targets.spaceFree", { free: bytes(usage.free), total: bytes(total) });
-    }
-    if (used !== undefined) return t("targets.spaceUsed", { used: bytes(used) });
-    if (total !== undefined) return t("targets.spaceTotal", { total: bytes(total) });
-    return null;
-  })();
 
   const remove = () => {
     Alert.alert(t("confirm.deleteRemote"), t("confirm.deleteRemoteStakes", { name: remote.name }), [
@@ -149,11 +118,6 @@ function TargetCard({
           CardHead in ui.tsx. A target names its product directly, so there is no
           side to resolve first. */}
       <CardHead mark={remote.mark} title={remote.name}>
-        {state === "ok" ? (
-          <Badge label={t("targets.checkOk")} tone="ok" />
-        ) : state === "bad" ? (
-          <Badge label={t("targets.checkFailed")} tone="fail" />
-        ) : null}
         {/* The two rare acts, out of the row and into a menu, the same way the
             job card does it. jdp: "auch in den ziele card ein hamburgermenue."
             Three buttons of equal weight said all three were equally likely,
@@ -174,19 +138,14 @@ function TargetCard({
           what this is at all. */}
       {remote.mark ? null : <Caption>{remote.type}</Caption>}
 
-      {room ? <Body>{room}</Body> : null}
       {detail ? <Body>{detail}</Body> : null}
 
-      {/* Checking stays a button, alone. It is what this card is FOR, and the
-          other two moved into the menu above. */}
-      <View style={styles.actions}>
-        <Button
-          label={state === "checking" ? t("targets.checking") : t("targets.check")}
-          tone="accent"
-          busy={state === "checking"}
-          onPress={check}
-        />
-      </View>
+      {/* No test button here any more. jdp: "der pruefen button der ziele soll
+          in ziele einrichten seite nicht auf die card, dann kann man direkt
+          pruefen bevor man auf speichern tippt." It lives on the form, where it
+          can run BEFORE a credential is kept - and two buttons running the same
+          check, one against saved settings and one against typed ones, would be
+          two things to explain with one of them always the wrong one to press. */}
     </Card>
   );
 }

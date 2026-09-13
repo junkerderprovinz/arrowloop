@@ -137,6 +137,9 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("PUT /api/remotes/{name}", s.saveRemote)
 	mux.HandleFunc("DELETE /api/remotes/{name}", s.deleteRemote)
 	mux.HandleFunc("POST /api/remotes/{name}/check", s.checkRemote)
+	// Settings that are not saved yet, so a form can answer "does this
+	// work" before it answers "do you want to keep this".
+	mux.HandleFunc("POST /api/remotes-check", s.tryRemote)
 	mux.HandleFunc("GET /api/remotes/{name}/about", s.aboutRemote)
 
 	// An address under /api that nothing has claimed is a mistake, and it has

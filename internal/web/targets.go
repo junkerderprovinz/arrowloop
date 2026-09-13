@@ -146,6 +146,32 @@ func (s *Server) checkRemote(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, map[string]any{"ok": true})
 }
 
+// tryRemote checks settings that have not been saved.
+//
+// jdp: "der pruefen button der ziele soll in ziele einrichten seite nicht auf
+// die card, dann kann man direkt pruefen bevor man auf speichern tippt." A form
+// that can only be tested after it is kept makes somebody save a credential to
+// find out it is wrong.
+//
+// Same shape of answer as checkRemote: 200 with a reason, because a credential
+// that does not work is an answer to the question and not a failure of the
+// request.
+func (s *Server) tryRemote(w http.ResponseWriter, r *http.Request) {
+	var body struct {
+		Type     string            `json:"type"`
+		Settings map[string]string `json:"settings"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		writeError(w, http.StatusBadRequest, fmt.Errorf("read the request: %w", err))
+		return
+	}
+	if err := remotes.CheckSettings(r.Context(), body.Type, body.Settings); err != nil {
+		writeJSON(w, http.StatusOK, map[string]any{"ok": false, "reason": err.Error()})
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]any{"ok": true})
+}
+
 // aboutRemote reports how full a target is.
 //
 // Its own address rather than a field on the target listing, and that is the

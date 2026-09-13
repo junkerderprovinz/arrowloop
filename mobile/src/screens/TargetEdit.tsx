@@ -106,6 +106,31 @@ export function TargetEdit() {
     return <Empty title={t("targets.addStorage")} detail={error || t("history.working")} />;
   }
 
+  /**
+   * Does this work, asked before anything is kept.
+   *
+   * The same settings the save would send, so a pass here and a failure after
+   * saving cannot disagree. Nothing is written by it.
+   */
+  const [trying, setTrying] = useState(false);
+  const [tried, setTried] = useState<{ ok: boolean; reason?: string } | null>(null);
+  const tryIt = async () => {
+    setTrying(true);
+    setTried(null);
+    try {
+      setTried(
+        await api.tryRemote(backendName, {
+          ...(provider?.preset ?? {}),
+          ...prune(values),
+        }),
+      );
+    } catch (e) {
+      setTried({ ok: false, reason: (e as Error).message });
+    } finally {
+      setTrying(false);
+    }
+  };
+
   const save = async () => {
     if (!name.trim()) {
       setError(t("targets.remoteNameHint"));
@@ -184,9 +209,27 @@ export function TargetEdit() {
 
       {error ? <Body>{error}</Body> : null}
 
+      {/* The answer, in the server's own words when it said no. */}
+      {tried ? (
+        <Body>
+          {tried.ok ? t("targets.checkOk") : `${t("targets.checkFailed")}: ${tried.reason ?? ""}`}
+        </Body>
+      ) : null}
+
+      {/* Testing sits WITH the form, so it can run before anything is kept.
+          jdp: "dann kann man direkt pruefen bevor man auf speichern tippt." */}
+      <Button
+        label={trying ? t("targets.checking") : t("targets.check")}
+        labelKey="targets.check"
+        busy={trying}
+        onPress={tryIt}
+      />
+
+      {/* Cancel left, save right: GlimStone 1.14.0, the control that goes ahead
+          sits on the right. */}
       <View style={styles.actions}>
-        <Button label={t("targets.save")} labelKey="targets.save" tone="accent" busy={saving} onPress={save} />
         <Button label={t("targets.cancel")} onPress={() => nav.goBack()} />
+        <Button label={t("targets.save")} labelKey="targets.save" tone="accent" busy={saving} onPress={save} />
       </View>
     </Page>
   );

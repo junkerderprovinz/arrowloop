@@ -549,6 +549,9 @@ function RemoteForm({
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
   const [checking, setChecking] = useState(false)
+  /** The answer from a test that ran BEFORE saving, or nothing yet. */
+  const [trying, setTrying] = useState(false)
+  const [tried, setTried] = useState<{ ok: boolean; reason?: string } | null>(null)
 
   const backend = useMemo(() => backends.find((b) => b.name === kind), [backends, kind])
   /**
@@ -580,6 +583,26 @@ function RemoteForm({
         .filter((o) => advanced || !preset || preset[o.name] === undefined),
     [backend, advanced, preset],
   )
+
+  /**
+   * Does this work, asked before anything is kept.
+   *
+   * The same settings save would send, and the provider's preset with them, so a
+   * pass here and a failure after saving cannot disagree about what was tested.
+   * Nothing is written: see internal/remotes/trycheck.go.
+   */
+  async function tryIt() {
+    setTrying(true)
+    setTried(null)
+    try {
+      const filled = Object.fromEntries(Object.entries(values).filter(([, value]) => value !== ''))
+      setTried(await api.tryRemote(kind, { ...(preset ?? {}), ...filled }))
+    } catch (e) {
+      setTried({ ok: false, reason: (e as Error).message })
+    } finally {
+      setTrying(false)
+    }
+  }
 
   async function save() {
     setBusy(true)
@@ -689,8 +712,25 @@ function RemoteForm({
         {error && <p className="text-xs text-statusFail">{error}</p>}
       </div>
 
+      {/* The answer from a test, in the server's own words when it said no. */}
+      {tried && (
+        <p className={`text-xs ${tried.ok ? 'text-statusOk' : 'text-statusFail'}`}>
+          {tried.ok ? t('targets.checkOk') : `${t('targets.checkFailed')}: ${tried.reason ?? ''}`}
+        </p>
+      )}
+
       <div className="flex items-center justify-end gap-2">
         <Button label={t('targets.cancel')} labelKey="targets.cancel" onClick={() => onDone(false)} />
+        {/* Testing BEFORE saving. jdp: "dann kann man direkt pruefen bevor man
+            auf speichern tippt." The form already checked after saving, which is
+            useful and is not the same thing: by then the credential is on disk.
+            Nothing is written by this one. */}
+        <Button
+          label={trying ? t('targets.checking') : t('targets.check')}
+          labelKey="targets.check"
+          onClick={() => void tryIt()}
+          disabled={busy || trying || !kind}
+        />
         <Button
           label={checking ? t('targets.checking') : t('targets.save')}
           labelKey={checking ? 'targets.checking' : 'targets.save'}
