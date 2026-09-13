@@ -91,6 +91,9 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("POST /api/jobs/{name}/versions/{side}/restore", s.restoreVersion)
 	mux.HandleFunc("GET /api/history", s.listHistory)
 	mux.HandleFunc("GET /api/history/{id}/entries", s.runEntries)
+	// What one run did, counted rather than listed. The entries above are a
+	// PAGE, so anything that counted them would be counting the page.
+	mux.HandleFunc("GET /api/history/{id}/summary", s.runSummary)
 	// Every file this engine has touched, across all jobs, narrowed in the
 	// database. The history TAB asks this; the per-job one below is the same
 	// question about one job.
@@ -515,6 +518,27 @@ func (s *Server) fileLog(w http.ResponseWriter, r *http.Request) {
 		touches = []history.Touch{}
 	}
 	writeJSON(w, http.StatusOK, touches)
+}
+
+// runSummary is what one run did, split by the side each file landed on.
+//
+// jdp asked the overview for "eine kleine zusammenfassung wie viele datien
+// hoch- und runtergeladen und gelöscht wurden etc." The run record cannot say:
+// it counts copies and deletions without a direction, and the direction lives
+// on the entries. Counted in the database, because the entries endpoint beside
+// this one answers with a page and a summary of a page is not a summary.
+func (s *Server) runSummary(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
+	if err != nil {
+		writeError(w, http.StatusBadRequest, fmt.Errorf("not a run id: %s", r.PathValue("id")))
+		return
+	}
+	tally, err := s.History.Summarise(r.Context(), id)
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, tally)
 }
 
 func (s *Server) runEntries(w http.ResponseWriter, r *http.Request) {

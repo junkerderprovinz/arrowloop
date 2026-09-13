@@ -106,6 +106,24 @@ export interface Entry {
 }
 
 /**
+ * What one run did, split by the side each file landed on.
+ *
+ * `up` is files that landed on the RIGHT and `down` files that landed on the
+ * left, which is what somebody reads as uploaded and downloaded: the right
+ * side of a job is the cloud in nearly every job anybody writes.
+ *
+ * Only copies count towards the two. A move writes the copy that landed AND
+ * the source going away, and counting the second would turn every one-way move
+ * job into one that moves files both ways.
+ */
+export interface Tally {
+  up: number;
+  down: number;
+  trashed: number;
+  conflicts: number;
+}
+
+/**
  * One thing that happened to one file, with the run it belonged to.
  *
  * The plain Entry is enough while you are reading ONE run. Across runs it is
@@ -264,13 +282,39 @@ export interface TrashItem {
  */
 export interface RunEvent {
   job: string;
-  phase: "started" | "progress" | "finished";
+  phase: "started" | "progress" | "finished" | "moving";
   error?: string;
   done?: number;
   total?: number;
   kind?: string;
   path?: string;
   /** Which side the work lands on, so a screen can say where a file is going. */
+  side?: string;
+  /**
+   * What is in the air right now, on a "moving" frame.
+   *
+   * ABSENT means nothing is - the engine drops an empty list from the JSON
+   * rather than sending `null` on every other frame, so a moving event with no
+   * list is how "the rows are gone" arrives. See internal/daemon/runner.go.
+   */
+  moving?: Moving[];
+}
+
+/**
+ * One file part-way across, as the engine reads it from rclone.
+ *
+ * There is never a fixed number of these: rclone moves `transfers` files at
+ * once, so the list is as long as the setting. jdp: "je nachdem wie viele up
+ * und downloads man gleichzeitig eingestellt hat."
+ *
+ * `size` is -1 where the service did not say how big the file is, which is
+ * ordinary on some clouds. A bar cannot be drawn from it, and treating it as
+ * zero would draw a full one.
+ */
+export interface Moving {
+  path: string;
+  bytes: number;
+  size: number;
   side?: string;
 }
 
@@ -382,6 +426,15 @@ export const api = {
     call<Run[]>(`/api/history?job=${name(job)}&limit=${limit}`),
   runEntries: (id: number, limit = 200) =>
     call<Entry[]>(`/api/history/${id}/entries?limit=${limit}`),
+
+  /**
+   * What one run did, COUNTED rather than listed.
+   *
+   * The entries call above answers with a page, so counting what it returns
+   * counts the page: a run over three thousand files would report two hundred.
+   * This is the same question asked of the database.
+   */
+  runSummary: (id: number) => call<Tally>(`/api/history/${id}/summary`),
 
   /**
    * Every file this engine has touched, across every job, newest first.
