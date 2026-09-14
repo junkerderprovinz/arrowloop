@@ -449,6 +449,7 @@ const is: Translations = {
   'history.showFailed': 'Aðeins bilanir',
   'history.files': 'Skrár',
   'history.runs': 'Keyrslur',
+  'history.filter': 'Sía',
   'history.everything': 'Allt',
   'history.onlyCopied': 'Afritað',
   'history.onlyGone': 'Eytt',

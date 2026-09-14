@@ -449,6 +449,7 @@ const sr: Translations = {
   'history.showFailed': 'Само неуспеси',
   'history.files': 'Датотеке',
   'history.runs': 'Покретања',
+  'history.filter': 'Филтер',
   'history.everything': 'Све',
   'history.onlyCopied': 'Копирано',
   'history.onlyGone': 'Обрисано',

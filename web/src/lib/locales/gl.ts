@@ -449,6 +449,7 @@ const gl: Translations = {
   'history.showFailed': 'Só os fallos',
   'history.files': 'Ficheiros',
   'history.runs': 'Execucións',
+  'history.filter': 'Filtro',
   'history.everything': 'Todo',
   'history.onlyCopied': 'Copiados',
   'history.onlyGone': 'Eliminados',

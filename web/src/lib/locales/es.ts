@@ -449,6 +449,7 @@ const es: Translations = {
   'history.showFailed': 'Solo los fallos',
   'history.files': 'Archivos',
   'history.runs': 'Ejecuciones',
+  'history.filter': 'Filtro',
   'history.everything': 'Todo',
   'history.onlyCopied': 'Copiados',
   'history.onlyGone': 'Borrados',

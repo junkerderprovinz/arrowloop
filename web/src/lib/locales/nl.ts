@@ -449,6 +449,7 @@ const nl: Translations = {
   'history.showFailed': 'Alleen mislukkingen',
   'history.files': 'Bestanden',
   'history.runs': 'Runs',
+  'history.filter': 'Filter',
   'history.everything': 'Alles',
   'history.onlyCopied': 'Gekopieerd',
   'history.onlyGone': 'Verwijderd',

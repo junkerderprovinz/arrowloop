@@ -449,6 +449,7 @@ const et: Translations = {
   'history.showFailed': 'Ainult ebaõnnestumised',
   'history.files': 'Failid',
   'history.runs': 'Käivitused',
+  'history.filter': 'Filter',
   'history.everything': 'Kõik',
   'history.onlyCopied': 'Kopeeritud',
   'history.onlyGone': 'Kustutatud',

@@ -449,6 +449,7 @@ const vi: Translations = {
   'history.showFailed': 'Chỉ các lần thất bại',
   'history.files': 'Tệp',
   'history.runs': 'Lần chạy',
+  'history.filter': 'Bộ lọc',
   'history.everything': 'Tất cả',
   'history.onlyCopied': 'Đã sao chép',
   'history.onlyGone': 'Đã xóa',

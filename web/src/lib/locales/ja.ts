@@ -449,6 +449,7 @@ const ja: Translations = {
   'history.showFailed': '失敗のみ',
   'history.files': 'ファイル',
   'history.runs': '実行',
+  'history.filter': '絞り込み',
   'history.everything': 'すべて',
   'history.onlyCopied': 'コピー',
   'history.onlyGone': '削除',

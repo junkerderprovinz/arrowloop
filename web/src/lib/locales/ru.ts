@@ -449,6 +449,7 @@ const ru: Translations = {
   'history.showFailed': 'Только неудачи',
   'history.files': 'Файлы',
   'history.runs': 'Запуски',
+  'history.filter': 'Фильтр',
   'history.everything': 'Всё',
   'history.onlyCopied': 'Скопировано',
   'history.onlyGone': 'Удалено',

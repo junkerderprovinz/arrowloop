@@ -449,6 +449,7 @@ const ko: Translations = {
   'history.showFailed': '실패만',
   'history.files': '파일',
   'history.runs': '실행',
+  'history.filter': '필터',
   'history.everything': '전체',
   'history.onlyCopied': '복사됨',
   'history.onlyGone': '삭제됨',

@@ -449,6 +449,7 @@ const tr: Translations = {
   'history.showFailed': 'Yalnızca başarısızlıklar',
   'history.files': 'Dosyalar',
   'history.runs': 'Çalışmalar',
+  'history.filter': 'Filtre',
   'history.everything': 'Hepsi',
   'history.onlyCopied': 'Kopyalandı',
   'history.onlyGone': 'Silindi',

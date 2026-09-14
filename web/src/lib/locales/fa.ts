@@ -449,6 +449,7 @@ const fa: Translations = {
   'history.showFailed': 'فقط شکست‌ها',
   'history.files': 'پرونده‌ها',
   'history.runs': 'اجراها',
+  'history.filter': 'پالایه',
   'history.everything': 'همه',
   'history.onlyCopied': 'کپی‌شده',
   'history.onlyGone': 'حذف‌شده',

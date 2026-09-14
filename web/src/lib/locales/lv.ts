@@ -449,6 +449,7 @@ const lv: Translations = {
   'history.showFailed': 'Tikai neizdošanās',
   'history.files': 'Faili',
   'history.runs': 'Palaišanas',
+  'history.filter': 'Filtrs',
   'history.everything': 'Viss',
   'history.onlyCopied': 'Kopēts',
   'history.onlyGone': 'Dzēsts',

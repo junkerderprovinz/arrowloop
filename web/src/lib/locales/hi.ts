@@ -449,6 +449,7 @@ const hi: Translations = {
   'history.showFailed': 'केवल विफलताएँ',
   'history.files': 'फ़ाइलें',
   'history.runs': 'चक्र',
+  'history.filter': 'फ़िल्टर',
   'history.everything': 'सब कुछ',
   'history.onlyCopied': 'कॉपी',
   'history.onlyGone': 'हटाए गए',

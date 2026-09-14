@@ -449,6 +449,7 @@ const bg: Translations = {
   'history.showFailed': 'Само неуспехите',
   'history.files': 'Файлове',
   'history.runs': 'Изпълнения',
+  'history.filter': 'Филтър',
   'history.everything': 'Всичко',
   'history.onlyCopied': 'Копирани',
   'history.onlyGone': 'Изтрити',

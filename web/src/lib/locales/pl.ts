@@ -449,6 +449,7 @@ const pl: Translations = {
   'history.showFailed': 'Tylko niepowodzenia',
   'history.files': 'Pliki',
   'history.runs': 'Przebiegi',
+  'history.filter': 'Filtr',
   'history.everything': 'Wszystko',
   'history.onlyCopied': 'Skopiowane',
   'history.onlyGone': 'Usunięte',

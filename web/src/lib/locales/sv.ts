@@ -449,6 +449,7 @@ const sv: Translations = {
   'history.showFailed': 'Bara misslyckanden',
   'history.files': 'Filer',
   'history.runs': 'Körningar',
+  'history.filter': 'Filter',
   'history.everything': 'Allt',
   'history.onlyCopied': 'Kopierat',
   'history.onlyGone': 'Raderat',

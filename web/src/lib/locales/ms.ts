@@ -449,6 +449,7 @@ const ms: Translations = {
   'history.showFailed': 'Hanya kegagalan',
   'history.files': 'Fail',
   'history.runs': 'Larian',
+  'history.filter': 'Penapis',
   'history.everything': 'Semua',
   'history.onlyCopied': 'Disalin',
   'history.onlyGone': 'Dipadam',

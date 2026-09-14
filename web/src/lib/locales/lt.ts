@@ -449,6 +449,7 @@ const lt: Translations = {
   'history.showFailed': 'Tik nesėkmės',
   'history.files': 'Failai',
   'history.runs': 'Paleidimai',
+  'history.filter': 'Filtras',
   'history.everything': 'Viskas',
   'history.onlyCopied': 'Nukopijuota',
   'history.onlyGone': 'Ištrinta',

@@ -30,29 +30,48 @@ const (
 	// dominates the time rather than the filesystem does.
 	payload = 512 * 1024
 	limit   = "256k"
-	// What the limit implies for that payload, less a generous margin. rclone
-	// fills its bucket before the first read, so the first burst is free and
-	// the measured time is always somewhat under the arithmetic.
-	atLeast = 900 * time.Millisecond
+	// What the limit implies for that payload: 512 KiB at 256 KiB/s is two
+	// seconds, and the floor below keeps a wide margin under it.
+	//
+	// It used to keep that margin for the wrong reason - "rclone fills its
+	// bucket before the first read, so the first burst is free" - and the
+	// opposite is true. rclone hands out an EMPTY bucket (newEmptyTokenBucket
+	// drains it the moment it is made) and lets it refill with elapsed time. So
+	// nothing is free at the start, and every second between creating the bucket
+	// and moving the first byte is a second of payload the limit will wave
+	// through. That is why the bucket is now created immediately before the
+	// measurement rather than during setup; see timeOneCopy.
+	atLeast = 1500 * time.Millisecond
 )
 
 func TestTheBandwidthLimitActuallyLimits(t *testing.T) {
-	unlimited := timeOneCopy(t, "")
+	unlimited := timeOneCopy(t, "off")
 	limited := timeOneCopy(t, limit)
-
-	if limited < atLeast {
-		t.Errorf("copying %d bytes under a %s limit took %v, which is faster than that limit allows: "+
-			"the limit is being accepted and ignored", payload, limit, limited)
-	}
-	// And the comparison, which is what tells a slow machine apart from a limit
-	// that does nothing. Without the bucket both runs take the same time.
-	if limited < unlimited*2 {
-		t.Errorf("limited %v against unlimited %v: the limit made no measurable difference", limited, unlimited)
-	}
 	t.Logf("unlimited %v, limited to %s %v", unlimited, limit, limited)
+
+	// The baseline is a guard rather than a second assertion. A machine that
+	// needs most of the floor to move these bytes with no limit at all cannot
+	// tell a working limit from its own slowness, and a measurement that cannot
+	// reach the failure should say so instead of reporting a colour.
+	//
+	// It also replaces the old "limited must be at least twice unlimited" check,
+	// which fired alongside the floor below and turned one fault into two
+	// messages. Past this guard that comparison is arithmetic, not evidence.
+	if unlimited >= atLeast/2 {
+		t.Skipf("moving %d bytes with no limit at all took %v on this machine, too close to the %v floor "+
+			"for the measurement to mean anything", payload, unlimited, atLeast)
+	}
+	if limited < atLeast {
+		t.Errorf("copying %d bytes under a %s limit took %v (unlimited: %v), which is faster than that limit "+
+			"allows: the limit is being accepted and ignored", payload, limit, limited, unlimited)
+	}
 }
 
 // timeOneCopy moves one file of a known size and returns how long it took.
+//
+// bwLimit is rclone's own syntax and is never empty here: "off" is a real value
+// that turns the limit off, while "" only means "do not touch it", which is a
+// different thing and the wrong one for a measurement.
 func timeOneCopy(t *testing.T, bwLimit string) time.Duration {
 	t.Helper()
 	root := t.TempDir()
@@ -73,11 +92,13 @@ func timeOneCopy(t *testing.T, bwLimit string) time.Duration {
 		t.Fatalf("write: %v", err)
 	}
 
-	// A context of its own for each measurement, because the limit lives in the
-	// configuration the context carries and the two runs must not share one.
+	// A context of its own for each measurement, so the two runs do not share a
+	// configuration. The bucket itself is process-wide whatever the context says
+	// - rclone keeps one - which is exactly why the limit is applied below
+	// rather than here.
 	ctx := context.Background()
 	ctx, _ = rclonefs.AddConfig(ctx)
-	if err := engine.StartAccounting(ctx, bwLimit); err != nil {
+	if err := engine.StartAccounting(ctx, ""); err != nil {
 		t.Fatalf("start accounting: %v", err)
 	}
 
@@ -105,6 +126,30 @@ func timeOneCopy(t *testing.T, bwLimit string) time.Duration {
 	defer db.Close()
 
 	opt := engine.Options{Compare: plan.Options{ModWindow: 2 * time.Second, Transfers: 1}}
+
+	// The bucket is made here, one statement before the clock starts, and not up
+	// with the rest of the setup. Two reasons, and the second one is why this
+	// test was intermittent on the CI Windows runner:
+	//
+	//   - ApplyBwLimit REPLACES the bucket, so "off" is genuinely off. Starting
+	//     accounting without a limit leaves whatever bucket the process already
+	//     had, so the unlimited baseline quietly inherited the limit from an
+	//     earlier run in the same binary. Visible with -count=3: the second
+	//     "unlimited" measurement came out at 1.9s, the same as the limited one.
+	//   - An empty bucket refills while the rest of the setup runs. Building two
+	//     backends and opening the state database took about 1.4s on that
+	//     runner, which banks roughly 360 KiB of the 512 KiB payload, and the
+	//     copy then finished in 360ms. The slower the machine, the more it
+	//     banks, so the test failed where it should have been most patient.
+	//
+	// With the bucket made here, everything that is left runs INSIDE the
+	// measured window, where banking and waiting cancel out exactly: time spent
+	// before the first byte moves is time the bucket spends filling, so the
+	// total lands on the arithmetic either way.
+	if err := engine.ApplyBwLimit(ctx, bwLimit); err != nil {
+		t.Fatalf("apply bandwidth limit %q: %v", bwLimit, err)
+	}
+
 	started := time.Now()
 	_, res, err := engine.Once(ctx, apply.Ends{Left: leftFs, Right: rightFs}, db, opt)
 	took := time.Since(started)

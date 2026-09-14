@@ -449,6 +449,7 @@ const ar: Translations = {
   'history.showFailed': 'فقط حالات الإخفاق',
   'history.files': 'ملفات',
   'history.runs': 'عمليات',
+  'history.filter': 'تصفية',
   'history.everything': 'الكل',
   'history.onlyCopied': 'نُسخ',
   'history.onlyGone': 'حُذف',

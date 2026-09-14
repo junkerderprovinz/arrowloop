@@ -449,6 +449,7 @@ const no: Translations = {
   'history.showFailed': 'Bare feil',
   'history.files': 'Filer',
   'history.runs': 'Kjøringer',
+  'history.filter': 'Filter',
   'history.everything': 'Alt',
   'history.onlyCopied': 'Kopiert',
   'history.onlyGone': 'Slettet',

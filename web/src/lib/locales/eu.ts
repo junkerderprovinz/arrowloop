@@ -449,6 +449,7 @@ const eu: Translations = {
   'history.showFailed': 'Hutsegiteak bakarrik',
   'history.files': 'Fitxategiak',
   'history.runs': 'Exekuzioak',
+  'history.filter': 'Iragazkia',
   'history.everything': 'Dena',
   'history.onlyCopied': 'Kopiatuta',
   'history.onlyGone': 'Ezabatuta',

@@ -449,6 +449,7 @@ const th: Translations = {
   'history.showFailed': 'เฉพาะที่ล้มเหลว',
   'history.files': 'ไฟล์',
   'history.runs': 'การทำงาน',
+  'history.filter': 'ตัวกรอง',
   'history.everything': 'ทั้งหมด',
   'history.onlyCopied': 'คัดลอก',
   'history.onlyGone': 'ลบ',

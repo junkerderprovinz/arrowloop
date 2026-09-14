@@ -449,6 +449,7 @@ const id: Translations = {
   'history.showFailed': 'Hanya kegagalan',
   'history.files': 'Berkas',
   'history.runs': 'Jalan',
+  'history.filter': 'Filter',
   'history.everything': 'Semua',
   'history.onlyCopied': 'Disalin',
   'history.onlyGone': 'Dihapus',

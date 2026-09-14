@@ -449,6 +449,7 @@ const he: Translations = {
   'history.showFailed': 'רק כשלונות',
   'history.files': 'קבצים',
   'history.runs': 'הרצות',
+  'history.filter': 'סינון',
   'history.everything': 'הכול',
   'history.onlyCopied': 'הועתקו',
   'history.onlyGone': 'נמחקו',

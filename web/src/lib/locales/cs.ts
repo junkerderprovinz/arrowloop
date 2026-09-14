@@ -449,6 +449,7 @@ const cs: Translations = {
   'history.showFailed': 'Jen selhání',
   'history.files': 'Soubory',
   'history.runs': 'Běhy',
+  'history.filter': 'Filtr',
   'history.everything': 'Vše',
   'history.onlyCopied': 'Zkopírované',
   'history.onlyGone': 'Smazané',

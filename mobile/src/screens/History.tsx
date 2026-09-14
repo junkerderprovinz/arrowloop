@@ -9,7 +9,7 @@ import { useT, type T } from "../i18n";
 import type { HistoryStack, Nav } from "../nav";
 import { contrastOn, space, text } from "../theme";
 import { useEngineEvents } from "../useEngine";
-import { Badge, Body, Caption, Card, Choice, Empty, Mono, Title, useTheme } from "../ui";
+import { Badge, Body, Button, Caption, Card, Choice, Empty, Mono, Title, useTheme } from "../ui";
 import { when } from "./Jobs";
 import { bytes } from "../space";
 
@@ -52,6 +52,52 @@ function Mode({ value, onChange }: { value: "files" | "runs"; onChange: (next: "
         { value: "runs", label: t("history.runs") },
       ]}
     />
+  );
+}
+
+/**
+ * The bar above either list: which log, and the way into the filters.
+ *
+ * The filters are FOLDED AWAY by default. Open, they took the top third of the
+ * screen on the file log - a search box, four segments and a sideways row of job
+ * chips - so the log somebody came to read started below the fold on a tab whose
+ * whole job is showing it. A filter is something you reach for occasionally; the
+ * list is why the tab exists.
+ *
+ * The switch between files and runs stays out, because it is not a filter. It
+ * decides WHICH log is on screen, and hiding it would hide half the tab.
+ *
+ * `active` is what keeps the fold honest: filters that are hidden and working
+ * are filters somebody will blame the engine for. The count rides in the label
+ * and the button takes the accent, so a narrowed list always says so from the
+ * one control that can widen it again.
+ */
+function FilterBar({
+  mode,
+  onMode,
+  open,
+  onOpen,
+  active,
+}: {
+  mode: "files" | "runs";
+  onMode: (next: "files" | "runs") => void;
+  open: boolean;
+  onOpen: (next: boolean) => void;
+  active: number;
+}) {
+  const { t } = useT();
+  return (
+    <View style={styles.filterBar}>
+      <View style={styles.filterMode}>
+        <Mode value={mode} onChange={onMode} />
+      </View>
+      <Button
+        label={active > 0 ? `${t("history.filter")} (${active})` : t("history.filter")}
+        onPress={() => onOpen(!open)}
+        tone={active > 0 ? "accent" : "neutral"}
+        wide={false}
+      />
+    </View>
   );
 }
 
@@ -105,6 +151,7 @@ function FileLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "fil
   // touched wants the list to reach further back, not to be handed page four.
   const [limit, setLimit] = useState(60);
   const [error, setError] = useState("");
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => setQuery(typed.trim()), 250);
@@ -149,36 +196,49 @@ function FileLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "fil
 
   useThrottledEvents(load);
 
+  // Counted off what is ASKED of the engine, not off what was typed: a name
+  // still settling in the box has not narrowed anything yet, and a button that
+  // said it had would be counting a keystroke.
+  const active = (query ? 1 : 0) + (show === "all" ? 0 : 1) + (job ? 1 : 0);
+
   const header = (
     <View style={styles.filters}>
-      <Mode value={mode} onChange={onMode} />
-      <Field
-        label={t("jobs.activitySearch")}
-        value={typed}
-        onChange={setTyped}
-        placeholder={t("history.pathHint")}
-      />
-      <Choice<Show>
-        value={show}
-        onChange={setShow}
-        options={[
-          { value: "all", label: t("history.everything") },
-          { value: "copied", label: t("history.onlyCopied") },
-          { value: "gone", label: t("history.onlyGone") },
-          { value: "trouble", label: t("history.onlyTrouble") },
-        ]}
-      />
-      {/* The job filter scrolls sideways rather than sharing the four segments
-          above it. A segmented strip divides the width it has; a list of jobs
-          has no width it can promise, and the fifth job would be three letters
-          and an ellipsis. */}
-      {names.length > 1 ? (
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>
-          <Chip label={t("history.allJobs")} on={job === ""} onPress={() => setJob("")} />
-          {names.map((n) => (
-            <Chip key={n} label={n} on={job === n} onPress={() => setJob(n)} />
-          ))}
-        </ScrollView>
+      <FilterBar mode={mode} onMode={onMode} open={open} onOpen={setOpen} active={active} />
+      {open ? (
+        <>
+          <Field
+            label={t("jobs.activitySearch")}
+            value={typed}
+            onChange={setTyped}
+            placeholder={t("history.pathHint")}
+          />
+          <Choice<Show>
+            value={show}
+            onChange={setShow}
+            options={[
+              { value: "all", label: t("history.everything") },
+              { value: "copied", label: t("history.onlyCopied") },
+              { value: "gone", label: t("history.onlyGone") },
+              { value: "trouble", label: t("history.onlyTrouble") },
+            ]}
+          />
+          {/* The job filter scrolls sideways rather than sharing the four
+              segments above it. A segmented strip divides the width it has; a
+              list of jobs has no width it can promise, and the fifth job would
+              be three letters and an ellipsis. */}
+          {names.length > 1 ? (
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.chips}
+            >
+              <Chip label={t("history.allJobs")} on={job === ""} onPress={() => setJob("")} />
+              {names.map((n) => (
+                <Chip key={n} label={n} on={job === n} onPress={() => setJob(n)} />
+              ))}
+            </ScrollView>
+          ) : null}
+        </>
       ) : null}
     </View>
   );
@@ -271,6 +331,7 @@ function RunLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "file
   const [runs, setRuns] = useState<Run[] | null>(null);
   const [show, setShow] = useState<"all" | "changed" | "failed">("all");
   const [error, setError] = useState("");
+  const [open, setOpen] = useState(false);
 
   const load = useCallback(async () => {
     try {
@@ -299,16 +360,24 @@ function RunLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "file
 
   const header = (
     <View style={styles.filters}>
-      <Mode value={mode} onChange={onMode} />
-      <Choice
-        value={show}
-        onChange={setShow}
-        options={[
-          { value: "all", label: t("history.showAll") },
-          { value: "changed", label: t("history.showChanged") },
-          { value: "failed", label: t("history.showFailed") },
-        ]}
+      <FilterBar
+        mode={mode}
+        onMode={onMode}
+        open={open}
+        onOpen={setOpen}
+        active={show === "all" ? 0 : 1}
       />
+      {open ? (
+        <Choice
+          value={show}
+          onChange={setShow}
+          options={[
+            { value: "all", label: t("history.showAll") },
+            { value: "changed", label: t("history.showChanged") },
+            { value: "failed", label: t("history.showFailed") },
+          ]}
+        />
+      ) : null}
     </View>
   );
 
@@ -506,6 +575,11 @@ export function counters(run: Run, t: T): string {
 const styles = StyleSheet.create({
   list: { padding: space.lg, gap: space.md },
   filters: { gap: space.sm },
+  filterBar: { flexDirection: "row", alignItems: "center", gap: space.sm },
+  // The switch takes whatever is left, the button takes what it needs. The
+  // other way round, a two-segment switch sits squeezed beside a button that
+  // has stretched across half the row.
+  filterMode: { flex: 1 },
   chips: { gap: space.sm, paddingVertical: space.xs },
   chip: { paddingHorizontal: space.md, paddingVertical: space.xs },
   chipText: { fontSize: text.caption, fontWeight: "600" },

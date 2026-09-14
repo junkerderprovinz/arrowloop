@@ -449,6 +449,7 @@ const fi: Translations = {
   'history.showFailed': 'Vain epäonnistumiset',
   'history.files': 'Tiedostot',
   'history.runs': 'Ajot',
+  'history.filter': 'Suodatin',
   'history.everything': 'Kaikki',
   'history.onlyCopied': 'Kopioidut',
   'history.onlyGone': 'Poistetut',

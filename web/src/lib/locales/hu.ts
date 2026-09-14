@@ -449,6 +449,7 @@ const hu: Translations = {
   'history.showFailed': 'Csak a hibák',
   'history.files': 'Fájlok',
   'history.runs': 'Futások',
+  'history.filter': 'Szűrő',
   'history.everything': 'Minden',
   'history.onlyCopied': 'Másolva',
   'history.onlyGone': 'Törölve',

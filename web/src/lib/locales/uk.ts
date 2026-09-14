@@ -449,6 +449,7 @@ const uk: Translations = {
   'history.showFailed': 'Лише невдачі',
   'history.files': 'Файли',
   'history.runs': 'Запуски',
+  'history.filter': 'Фільтр',
   'history.everything': 'Усе',
   'history.onlyCopied': 'Скопійовано',
   'history.onlyGone': 'Видалено',

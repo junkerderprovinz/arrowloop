@@ -449,6 +449,7 @@ const ro: Translations = {
   'history.showFailed': 'Doar eșecurile',
   'history.files': 'Fișiere',
   'history.runs': 'Rulări',
+  'history.filter': 'Filtru',
   'history.everything': 'Tot',
   'history.onlyCopied': 'Copiate',
   'history.onlyGone': 'Șterse',

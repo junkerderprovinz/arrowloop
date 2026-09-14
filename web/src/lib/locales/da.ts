@@ -449,6 +449,7 @@ const da: Translations = {
   'history.showFailed': 'Kun fejl',
   'history.files': 'Filer',
   'history.runs': 'Kørsler',
+  'history.filter': 'Filter',
   'history.everything': 'Alt',
   'history.onlyCopied': 'Kopieret',
   'history.onlyGone': 'Slettet',

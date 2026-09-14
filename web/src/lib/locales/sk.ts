@@ -449,6 +449,7 @@ const sk: Translations = {
   'history.showFailed': 'Len zlyhania',
   'history.files': 'Súbory',
   'history.runs': 'Behy',
+  'history.filter': 'Filter',
   'history.everything': 'Všetko',
   'history.onlyCopied': 'Skopírované',
   'history.onlyGone': 'Zmazané',

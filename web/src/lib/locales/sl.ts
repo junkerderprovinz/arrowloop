@@ -449,6 +449,7 @@ const sl: Translations = {
   'history.showFailed': 'Samo neuspehi',
   'history.files': 'Datoteke',
   'history.runs': 'Zagoni',
+  'history.filter': 'Filter',
   'history.everything': 'Vse',
   'history.onlyCopied': 'Kopirano',
   'history.onlyGone': 'Izbrisano',

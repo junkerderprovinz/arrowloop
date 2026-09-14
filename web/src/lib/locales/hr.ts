@@ -449,6 +449,7 @@ const hr: Translations = {
   'history.showFailed': 'Samo neuspjesi',
   'history.files': 'Datoteke',
   'history.runs': 'Pokretanja',
+  'history.filter': 'Filtar',
   'history.everything': 'Sve',
   'history.onlyCopied': 'Kopirano',
   'history.onlyGone': 'Izbrisano',

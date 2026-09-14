@@ -449,6 +449,7 @@ const zh: Translations = {
   'history.showFailed': '只看失败',
   'history.files': '文件',
   'history.runs': '运行',
+  'history.filter': '筛选',
   'history.everything': '全部',
   'history.onlyCopied': '已复制',
   'history.onlyGone': '已删除',

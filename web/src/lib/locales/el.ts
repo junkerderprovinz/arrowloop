@@ -449,6 +449,7 @@ const el: Translations = {
   'history.showFailed': 'Μόνο οι αποτυχίες',
   'history.files': 'Αρχεία',
   'history.runs': 'Εκτελέσεις',
+  'history.filter': 'Φίλτρο',
   'history.everything': 'Όλα',
   'history.onlyCopied': 'Αντιγραφή',
   'history.onlyGone': 'Διαγραφή',

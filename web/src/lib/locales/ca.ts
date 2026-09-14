@@ -449,6 +449,7 @@ const ca: Translations = {
   'history.showFailed': 'Només els errors',
   'history.files': 'Fitxers',
   'history.runs': 'Execucions',
+  'history.filter': 'Filtre',
   'history.everything': 'Tot',
   'history.onlyCopied': 'Copiats',
   'history.onlyGone': 'Esborrats',
