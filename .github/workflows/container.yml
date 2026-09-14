@@ -122,12 +122,49 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      # Is the tag being built the newest release this repo has?
+      #
+      # Only a tag build moves `latest`, and only the highest version among the
+      # tags does. The two conditions guard two different accidents, which is
+      # why neither one alone is enough. Without the tag condition a merge to
+      # main hands everybody pulling `latest` a build that was never released,
+      # and the bug reports arrive before the release notes. Without the newest
+      # condition, re-cutting an old version tag drags `latest` backwards onto
+      # a version that was already superseded.
+      #
+      # The tags are fetched rather than assumed, and sorted with `sort -V` so
+      # that v0.10.0 counts as newer than v0.9.0, which a string sort gets
+      # wrong.
+      - id: newest
+        name: Ask whether this tag is the newest release
+        if: github.ref_type == 'tag'
+        run: |
+          set -eu
+          git fetch --tags --force --quiet
+          newest="$(git tag -l 'v[0-9]*.[0-9]*.[0-9]*' | sort -V | tail -1)"
+          echo "building: ${GITHUB_REF_NAME}, newest tag: ${newest}"
+          if [ "${newest}" = "${GITHUB_REF_NAME}" ]; then
+            echo "is_newest=true" >> "$GITHUB_OUTPUT"
+            echo "this build moves :latest"
+          else
+            echo "is_newest=false" >> "$GITHUB_OUTPUT"
+            echo "this build leaves :latest where it is"
+          fi
       - id: meta
         uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6
         with:
           images: ${{ env.IMAGE }}
+          # `latest` means the newest released version, and nothing else. It
+          # used to mean the tip of the default branch, which is a different
+          # thing: it handed anyone pulling `latest` whatever had last been
+          # merged, released or not.
+          #
+          # The tip of the default branch gets `edge` now. It is still built,
+          # still smoke tested and still pullable, but nobody lands on it
+          # without asking for it by name.
           tags: |
-            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=edge,enable={{is_default_branch}}
+            type=raw,value=latest,enable=${{ github.ref_type == 'tag' && steps.newest.outputs.is_newest == 'true' }}
             type=semver,pattern={{version}}
             type=sha
       - uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7
