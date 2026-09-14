@@ -575,7 +575,11 @@ export function counters(run: Run, t: T): string {
 const styles = StyleSheet.create({
   list: { padding: space.lg, gap: space.md },
   filters: { gap: space.sm },
-  filterBar: { flexDirection: "row", alignItems: "center", gap: space.sm },
+  // `stretch`, so the selector takes the button's height rather than the button
+  // being squashed to the selector's. The button carries a 44pt touch target and
+  // a thumb needs it; a groove has no such floor and simply grows. Two controls
+  // side by side at two heights read as two rows.
+  filterBar: { flexDirection: "row", alignItems: "stretch", gap: space.sm },
   // The switch takes whatever is left, the button takes what it needs. The
   // other way round, a two-segment switch sits squeezed beside a button that
   // has stretched across half the row.

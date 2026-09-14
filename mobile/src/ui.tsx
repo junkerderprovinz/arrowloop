@@ -1175,7 +1175,18 @@ const styles = StyleSheet.create({
   // minimum the last one simply ran off the edge of the card - and a segment
   // nobody can see is an option nobody can choose.
   well: { flexDirection: "row", padding: 3, gap: 2, alignSelf: "stretch" },
-  segment: { flex: 1, minWidth: 0, paddingVertical: 7, paddingHorizontal: 6, alignItems: "center" },
+  // `justifyContent` so a segment centres its word when the groove is TALLER
+  // than its own content - which happens when the selector shares a row with a
+  // button and stretches to the button's touch height. On its own the groove is
+  // exactly as tall as its segments, so this changes nothing there.
+  segment: {
+    flex: 1,
+    minWidth: 0,
+    paddingVertical: 7,
+    paddingHorizontal: 6,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   segmentText: { fontSize: text.dense, fontWeight: "500" },
 
   swatchRing: { flex: 1, maxWidth: 32, aspectRatio: 1, alignItems: "center", justifyContent: "center" },
