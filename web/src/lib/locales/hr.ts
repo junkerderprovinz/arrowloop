@@ -220,7 +220,7 @@ const hr: Translations = {
   'look.motionHint': 'Koliko se sučelje pomiče kada se nešto pojavi ili promijeni. Sve tri razine pokreću iste animacije, razlikuju se samo udaljenost, brzina i krivulja, a postavka sustava za manje pokreta uvijek ima prednost.',
   'look.motionOff': 'Bez',
   'look.motionSubtle': 'Nježno',
-  'look.motionFull': 'Divlje',
+  'look.motionWild': 'Divlje',
   'look.motionStorm': 'Oluja',
   'look.labels': 'Oznake',
   'look.labelsHint': 'Pokazuju li kontrole svoje riječi, svoj znak ili oboje. Širina se ne mijenja, pa prebacivanje nikad ne pomiče stranicu.',

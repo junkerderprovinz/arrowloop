@@ -220,7 +220,7 @@ const zh: Translations = {
   'look.motionHint': '界面在有东西出现或变化时移动的幅度。三档用的是同一组动画，只有距离、速度和曲线不同；系统自身的“减少动态效果”设置始终优先。',
   'look.motionOff': '关闭',
   'look.motionSubtle': '轻柔',
-  'look.motionFull': '狂野',
+  'look.motionWild': '狂野',
   'look.motionStorm': '风暴',
   'look.labels': '标签',
   'look.labelsHint': '控件显示文字、图形还是两者。宽度不变，所以切换从不挪动页面。',

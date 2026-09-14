@@ -65,7 +65,7 @@ body {
    and the three [data-motion] blocks itself, because the language shipped its
    animations with the durations written into the rules: the switch had nothing
    to redefine, so it reached whatever an app wired up on its own and no more.
-   Measured rather than assumed: the page entrance ran at 280ms on full, on
+   Measured rather than assumed: the page entrance ran at 280ms on wild, on
    subtle and on off alike. The tokens are in the language now and every one of
    its animations reads them, so one setting reaches all of them in every app
    that copies the file.

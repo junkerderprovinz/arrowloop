@@ -87,7 +87,7 @@ const ATTRIBUTE: Record<ControlAxis, string> = {
 
 /**
  * DEFAULT is 'textGlyph' for every axis: the look an app already has. Same
- * reasoning the motion engine gives for defaulting to 'full' — this axis is
+ * reasoning the motion engine gives for defaulting to 'wild' - this axis is
  * something a user dials, not a fallback they have to opt into.
  */
 export const DEFAULT_LABEL_MODE: LabelMode = 'textGlyph';

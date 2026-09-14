@@ -220,7 +220,7 @@ const lv: Translations = {
   'look.motionHint': 'Cik daudz saskarne kustas, kad kaut kas parādās vai mainās. Visas trīs pakāpes izmanto vienas un tās pašas animācijas, atšķiras tikai attālums, ātrums un līkne, un sistēmas iestatījums mazākai kustībai vienmēr uzvar.',
   'look.motionOff': 'Nav',
   'look.motionSubtle': 'Maiga',
-  'look.motionFull': 'Savšķīrs',
+  'look.motionWild': 'Mežonīga',
   'look.motionStorm': 'Vētra',
   'look.labels': 'Uzraksti',
   'look.labelsHint': 'Vai vadīklas rāda savus vārdus, savu zīmi vai abus. Platums nemainās, tāpēc pārslēgšana nekad nepārbīda lapu.',

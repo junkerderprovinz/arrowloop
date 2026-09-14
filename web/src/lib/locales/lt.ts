@@ -220,7 +220,7 @@ const lt: Translations = {
   'look.motionHint': 'Kiek sąsaja juda, kai kas nors atsiranda ar pasikeičia. Visos trys pakopos naudoja tas pačias animacijas, skiriasi tik atstumas, greitis ir kreivė, o sistemos nuostata mažiau judesio visada nusveria.',
   'look.motionOff': 'Nėra',
   'look.motionSubtle': 'Švelnus',
-  'look.motionFull': 'Laukinis',
+  'look.motionWild': 'Laukinis',
   'look.motionStorm': 'Audra',
   'look.labels': 'Etiketės',
   'look.labelsHint': 'Ar valdikliai rodo savo žodžius, savo ženklą ar abu. Plotis nesikeičia, tad perjungimas niekada nepastumia puslapio.',

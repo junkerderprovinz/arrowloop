@@ -220,7 +220,7 @@ const ro: Translations = {
   'look.motionHint': 'Cât de mult se mișcă interfața când ceva apare sau se schimbă. Toate cele trei trepte rulează aceleași animații, diferă doar distanța, viteza și curba, iar setarea sistemului pentru mai puțină mișcare are întotdeauna prioritate.',
   'look.motionOff': 'Fără',
   'look.motionSubtle': 'Blândă',
-  'look.motionFull': 'Sălbatică',
+  'look.motionWild': 'Sălbatică',
   'look.motionStorm': 'Furtună',
   'look.labels': 'Etichete',
   'look.labelsHint': 'Dacă butoanele arată cuvintele, semnul sau ambele. Lățimea nu se schimbă, deci comutarea nu mută niciodată pagina.',

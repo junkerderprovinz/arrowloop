@@ -220,7 +220,7 @@ const gl: Translations = {
   'look.motionHint': 'Canto se move a interface cando algo aparece ou cambia. Os tres niveis executan as mesmas animacións, só cambian a distancia, a velocidade e a curva, e o axuste do sistema para menos movemento sempre manda.',
   'look.motionOff': 'Ningún',
   'look.motionSubtle': 'Suave',
-  'look.motionFull': 'Salvaxe',
+  'look.motionWild': 'Salvaxe',
   'look.motionStorm': 'Tormenta',
   'look.labels': 'Etiquetas',
   'look.labelsHint': 'Se os controis amosan as palabras, o símbolo ou ambos. O ancho non cambia, así que trocar de modo nunca move a páxina.',

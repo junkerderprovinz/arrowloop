@@ -538,7 +538,7 @@ export function Settings() {
           options={[
             { value: "off", label: t("look.motionOff") },
             { value: "subtle", label: t("look.motionSubtle") },
-            { value: "full", label: t("look.motionFull") },
+            { value: "wild", label: t("look.motionWild") },
             // The fourth appears once it has been found, and then behaves like
             // any other: it can be turned back down, which is the rule for an
             // easter egg that changes a setting rather than a picture.

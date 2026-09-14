@@ -220,7 +220,7 @@ const pt: Translations = {
   'look.motionHint': 'Quanto a interface se move quando algo aparece ou muda. Os três níveis executam as mesmas animações, só mudam a distância, a velocidade e a curva, e a definição do sistema para menos movimento ganha sempre.',
   'look.motionOff': 'Nenhum',
   'look.motionSubtle': 'Suave',
-  'look.motionFull': 'Selvagem',
+  'look.motionWild': 'Selvagem',
   'look.motionStorm': 'Tempestade',
   'look.labels': 'Rótulos',
   'look.labelsHint': 'Se os controlos mostram as palavras, o símbolo ou ambos. A largura não muda, por isso trocar de modo nunca desloca a página.',

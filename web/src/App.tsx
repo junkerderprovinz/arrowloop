@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { Stack } from './components/Shell'
 import { Card } from './lib/glimstone/Card'
@@ -591,6 +591,55 @@ interface LookProps {
   languages: { code: string; label: string; flag: string }[]
 }
 
+/** How many clicks on the chosen level open the one above the ceiling. */
+const STORM_CLICKS = 5
+
+/**
+ * The storm: a fourth motion level, for somebody who thought the third was too
+ * quiet.
+ *
+ * Set the motion to "wild", then click that same word five more times. It is
+ * the gesture of somebody pressing a button that is already pressed because
+ * they wanted more of it, which is exactly who this is for. Only the top
+ * VISIBLE level counts: clicking "off" five times means somebody is annoyed,
+ * not curious.
+ *
+ * IT IS NOT REMEMBERED AS A DISCOVERY, and that is the rule rather than an
+ * omission. A stored "found it" flag would leave the fourth option standing in
+ * the picker for ever after one gesture, which turns a secret into a setting
+ * somebody has to explain to themselves later. `found` lives in the settings
+ * screen's own state and never in storage, so what keeps the option visible is
+ * the plain truth about the current state: it is there while it is CHOSEN, and
+ * otherwise only for as long as this screen stays open. Choose something else
+ * and leave, and it is gone until the gesture is made again. Choose it and
+ * leave, and it stays - because a picker that hid the value it is showing
+ * would be lying.
+ *
+ * The stored VALUE is a different question and outlives all of this: see
+ * MOTION_VALUES in lib/motion.ts. The phone runs the identical rule, and this
+ * is mirrored from it - mobile/src/eggs.tsx.
+ */
+function useStormUnlock(motion: MotionIntensity, onMotion: (next: MotionIntensity) => void) {
+  const [found, setFound] = useState(false)
+  const clicks = useRef(0)
+  return {
+    offered: found || motion === 'storm',
+    click: (level: MotionIntensity) => {
+      // Only counts while the top VISIBLE level is the one already chosen, and
+      // any other click resets the count rather than leaving it part-made.
+      if (level !== 'wild' || motion !== 'wild') {
+        clicks.current = 0
+        return
+      }
+      clicks.current += 1
+      if (clicks.current < STORM_CLICKS) return
+      clicks.current = 0
+      setFound(true)
+      onMotion('storm')
+    },
+  }
+}
+
 /** The looks a person owns. */
 function Look({
   theme,
@@ -607,6 +656,9 @@ function Look({
   onLabels,
 }: LookProps) {
   const { t } = useT()
+  // The gesture's own counter and its "found" flag. They belong to this screen
+  // and are gone with it, which is the whole rule - see useStormUnlock.
+  const storm = useStormUnlock(motion, onMotion)
   return (
     <Stack>
       {/* The language lives under General now, not here. It decides what the
@@ -641,8 +693,20 @@ function Look({
         <Selector<MotionIntensity>
           label={t('look.motion')}
           value={motion}
-          onChange={onMotion}
-          options={MOTION_INTENSITIES.map((m) => ({ value: m, label: t(motionKey[m]) }))}
+          onChange={(next) => {
+            onMotion(next)
+            // A click on the level that is ALREADY chosen reaches nothing
+            // else, which is what makes it a gesture available to be given a
+            // second meaning. See useStormUnlock.
+            storm.click(next)
+          }}
+          options={[
+            ...MOTION_INTENSITIES.map((m) => ({ value: m, label: t(motionKey[m]) })),
+            // The fourth appears once it has been found, and then behaves like
+            // any other: it can be turned back down, which is the rule for an
+            // easter egg that changes a setting rather than a picture.
+            ...(storm.offered ? [{ value: 'storm' as MotionIntensity, label: t(motionKey.storm) }] : []),
+          ]}
         />
       </Card>
 
@@ -828,7 +892,11 @@ function ResetBadge({
 const motionKey = {
   off: 'look.motionOff',
   subtle: 'look.motionSubtle',
-  full: 'look.motionFull',
+  wild: 'look.motionWild',
+  // Named here with the other three even though the picker lists three: the
+  // fourth is a level like any other once it has been found, and a label held
+  // somewhere else is the one that goes stale.
+  storm: 'look.motionStorm',
 } as const
 
 const axisKey = {

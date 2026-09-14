@@ -885,10 +885,10 @@ body {
      animation: every duration in this block was written into the rule itself,
      so `data-motion` had nothing to redefine and the switch changed nothing.
      Found by measuring an adopting app rather than by reading: the page
-     entrance ran at 280ms on "full", on "subtle" and on "off" alike.
+     entrance ran at 280ms on "wild", on "subtle" and on "off" alike.
 
-     One token set per intensity, consumed by the SAME keyframes at all three:
-     the difference between full and subtle is a smaller number, never a
+     One token set per intensity, consumed by the SAME keyframes at all of
+     them: the difference between wild and subtle is a smaller number, never a
      different animation. The whole thing lives inside no-preference on purpose,
      so a machine whose owner has asked the operating system for less motion
      never evaluates a data-motion selector at all and keeps the values in the
@@ -901,7 +901,7 @@ body {
     --motion-shake-dur: 360ms;
     /* THE DISTANCE AND THE CURVE, per intensity, and they are the half that was
        missing. Every duration was a token and every travel was a literal, so
-       "full" and "subtle" ran the same six-pixel slide at two speeds - which is
+       "wild" and "subtle" ran the same six-pixel slide at two speeds - which is
        a difference somebody has to be told about rather than one they can see.
        A setting whose top end is only "the same thing, slower to finish" earns
        the quiet name it had; one that actually travels further and overshoots
@@ -937,6 +937,36 @@ body {
     --glim-toast-slide: 12px;
   }
   :root[data-motion='subtle'][dir="rtl"] { --glim-toast-slide: -12px; }
+  /* THE HIDDEN FOURTH, and it is a real level rather than a joke.
+
+     Same keyframes, same elements, same tokens: a spring that swings further
+     and takes longer to come to rest. The language's own rule about intensities
+     - a level is a different number, never a different animation - is what
+     makes a fourth one cost nothing but this block.
+
+     It is not in the picker. See "A hidden fourth level" in the design
+     language for the gesture that reveals it and, more importantly, for the
+     rule it establishes: an easter egg that changes BEHAVIOUR has to be one
+     somebody can switch back off, and must not quietly become a permanent
+     entry in a settings list.
+
+     The phone reaches the same shape with `springDamping: 0.34` against wild's
+     0.68, so the two surfaces overshoot alike rather than merely both
+     overshooting. */
+  :root[data-motion='storm'] {
+    --motion-page-dur: 760ms;
+    --motion-toast-dur: 420ms;
+    --motion-pulse-dur: 1.4s;
+    --motion-fade-dur: 200ms;
+    --motion-shake-dur: 520ms;
+    --motion-page-travel: 34px;
+    --motion-page-scale: .9;
+    /* Further past 1 than wild's curve, and slower to settle: the overshoot is
+       the whole point of the level. */
+    --motion-curve: cubic-bezier(.22, 1.94, .45, 1);
+    --glim-toast-slide: 44px;
+  }
+  :root[data-motion='storm'][dir="rtl"] { --glim-toast-slide: -44px; }
   :root[data-motion='off'] {
     --motion-page-dur: 0s;
     --motion-toast-dur: 0s;
@@ -1346,7 +1376,7 @@ body {
   transform-origin: left center;
 }
 
-/* ANY STATE ADDED HERE MUST ALSO BE ADDED to the `full` motion block below:
+/* ANY STATE ADDED HERE MUST ALSO BE ADDED to the lively motion block below:
    this rule hands back width, opacity and margin, that one hands back the
    resting transform. A state in one list and not the other leaves the label
    revealed but still displaced. */
@@ -1380,10 +1410,17 @@ body {
       margin-inline-start 160ms cubic-bezier(0.22, 0.61, 0.36, 1);
   }
 
-  /* Full lets the label's own width do the bouncing, with the overshoot in the
-     easing curve so nothing else has to move, while the text slides in from
-     the left and unsquashes back to 1. */
-  :root[data-motion="full"] .glim-label-reactive {
+  /* Above subtle, the label's own width does the bouncing, with the overshoot
+     in the easing curve so nothing else has to move, while the text slides in
+     from the left and unsquashes back to 1.
+
+     THE SELECTOR NAMES THE QUIET LEVELS AND NOT THE LIVELY ONE, on purpose.
+     This said `[data-motion="full"]`, which is a level that no longer exists
+     under that name - and naming `wild` instead would go on excluding `storm`,
+     a level with MORE motion getting none of this. Written this way it covers
+     wild, storm and the attribute being absent, and goes on covering whatever
+     is added above. */
+  :root:not([data-motion="subtle"]):not([data-motion="off"]) .glim-label-reactive {
     transition:
       max-width 320ms cubic-bezier(0.34, 1.56, 0.64, 1),
       opacity 180ms ease-out,
@@ -1392,10 +1429,10 @@ body {
     transform: translateX(-0.4rem) scaleX(0.82);
   }
 
-  :root[data-motion="full"] .glim-reactive.glim-active .glim-label-reactive,
-  :root[data-motion="full"] .glim-reactive:hover .glim-label-reactive,
-  :root[data-motion="full"] .glim-reactive:focus-visible .glim-label-reactive,
-  :root[data-motion="full"] .glim-reactive:focus-within .glim-label-reactive {
+  :root:not([data-motion="subtle"]):not([data-motion="off"]) .glim-reactive.glim-active .glim-label-reactive,
+  :root:not([data-motion="subtle"]):not([data-motion="off"]) .glim-reactive:hover .glim-label-reactive,
+  :root:not([data-motion="subtle"]):not([data-motion="off"]) .glim-reactive:focus-visible .glim-label-reactive,
+  :root:not([data-motion="subtle"]):not([data-motion="off"]) .glim-reactive:focus-within .glim-label-reactive {
     transform: translateX(0) scaleX(1);
   }
 }
@@ -1415,8 +1452,10 @@ body {
 .glim-modal-backdrop { background: var(--glim-scrim); }
 
 @media (prefers-reduced-motion: no-preference) {
-  :root[data-motion="full"] .glim-modal-backdrop { animation: glim-fade-in 200ms ease both; }
-  :root[data-motion="full"] .glim-modal-card { animation: glim-modal-in 260ms cubic-bezier(.2, .6, .2, 1) both; }
+  /* The quiet levels are named, not the lively one - see the label rule above
+     for why, and for what it cost when this was the other way round. */
+  :root:not([data-motion="subtle"]):not([data-motion="off"]) .glim-modal-backdrop { animation: glim-fade-in 200ms ease both; }
+  :root:not([data-motion="subtle"]):not([data-motion="off"]) .glim-modal-card { animation: glim-modal-in 260ms cubic-bezier(.2, .6, .2, 1) both; }
 
   :root[data-motion="subtle"] .glim-modal-backdrop { animation: glim-fade-in 150ms ease both; }
   :root[data-motion="subtle"] .glim-modal-card { animation: glim-fade-in 150ms ease both; }

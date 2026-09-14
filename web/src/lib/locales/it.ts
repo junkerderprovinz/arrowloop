@@ -220,7 +220,7 @@ const it: Translations = {
   'look.motionHint': 'Quanto si muove l\'interfaccia quando qualcosa appare o cambia. Tutti e tre i livelli eseguono le stesse animazioni, cambiano solo la distanza, la velocità e la curva, e l\'impostazione di sistema per meno movimento ha sempre la precedenza.',
   'look.motionOff': 'Nessuno',
   'look.motionSubtle': 'Delicato',
-  'look.motionFull': 'Selvaggio',
+  'look.motionWild': 'Selvaggio',
   'look.motionStorm': 'Tempesta',
   'look.labels': 'Etichette',
   'look.labelsHint': 'Se i comandi mostrano le parole, il simbolo o entrambi. La larghezza non cambia, quindi passare da un modo all\'altro non sposta mai la pagina.',

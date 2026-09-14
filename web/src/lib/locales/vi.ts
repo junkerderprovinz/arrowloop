@@ -220,7 +220,7 @@ const vi: Translations = {
   'look.motionHint': 'Giao diện chuyển động nhiều đến đâu khi có gì đó xuất hiện hoặc thay đổi. Cả ba mức đều chạy cùng những hoạt ảnh, chỉ khác quãng đường, tốc độ và đường cong, và thiết lập giảm chuyển động của hệ thống luôn được ưu tiên.',
   'look.motionOff': 'Tắt',
   'look.motionSubtle': 'Nhẹ nhàng',
-  'look.motionFull': 'Hăng hái',
+  'look.motionWild': 'Hăng hái',
   'look.motionStorm': 'Bão',
   'look.labels': 'Nhãn',
   'look.labelsHint': 'Các nút hiện chữ, hiện ký hiệu, hay cả hai. Bề rộng không đổi nên chuyển kiểu không bao giờ làm xê dịch trang.',

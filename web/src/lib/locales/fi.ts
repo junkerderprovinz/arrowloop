@@ -220,7 +220,7 @@ const fi: Translations = {
   'look.motionHint': 'Kuinka paljon käyttöliittymä liikkuu, kun jokin ilmestyy tai muuttuu. Kaikki kolme porrasta käyttävät samoja animaatioita, vain matka, nopeus ja käyrä muuttuvat, ja järjestelmän oma vähemmän liikettä -asetus voittaa aina.',
   'look.motionOff': 'Ei mitään',
   'look.motionSubtle': 'Lempeä',
-  'look.motionFull': 'Villi',
+  'look.motionWild': 'Villi',
   'look.motionStorm': 'Myörsky',
   'look.labels': 'Nimikkeet',
   'look.labelsHint': 'Näyttävätkö säätimet sanansa, merkkinsä vai molemmat. Leveys ei muutu, joten vaihto ei koskaan siirrä sivua.',

@@ -220,7 +220,7 @@ const sv: Translations = {
   'look.motionHint': 'Hur mycket gränssnittet rör sig när något dyker upp eller ändras. Alla tre stegen kör samma animationer, bara avståndet, hastigheten och kurvan skiljer sig, och systemets egen inställning för mindre rörelse vinner alltid.',
   'look.motionOff': 'Ingen',
   'look.motionSubtle': 'Mjuk',
-  'look.motionFull': 'Vild',
+  'look.motionWild': 'Vild',
   'look.motionStorm': 'Storm',
   'look.labels': 'Etiketter',
   'look.labelsHint': 'Om kontrollerna visar sina ord, sitt tecken eller båda. Bredden ändras inte, så ett byte flyttar aldrig sidan.',

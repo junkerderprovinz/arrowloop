@@ -220,7 +220,7 @@ const et: Translations = {
   'look.motionHint': 'Kui palju liides liigub, kui midagi ilmub või muutub. Kõik kolm astet kasutavad samu animatsioone, erinevad vaid kaugus, kiirus ja kõver, ning süsteemi enda vähema liikumise säte võidab alati.',
   'look.motionOff': 'Puudub',
   'look.motionSubtle': 'Õrn',
-  'look.motionFull': 'Metsik',
+  'look.motionWild': 'Metsik',
   'look.motionStorm': 'Torm',
   'look.labels': 'Sildid',
   'look.labelsHint': 'Kas juhtelemendid näitavad oma sõnu, oma märki või mõlemat. Laius ei muutu, nii et vahetus ei nihuta kunagi lehte.',

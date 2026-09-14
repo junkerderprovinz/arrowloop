@@ -220,7 +220,7 @@ const fr: Translations = {
   'look.motionHint': 'À quel point l\'interface bouge quand quelque chose apparaît ou change. Les trois niveaux jouent les mêmes animations, seuls la distance, la vitesse et la courbe diffèrent, et le réglage du système pour moins de mouvement l\'emporte toujours.',
   'look.motionOff': 'Aucun',
   'look.motionSubtle': 'Douce',
-  'look.motionFull': 'Sauvage',
+  'look.motionWild': 'Sauvage',
   'look.motionStorm': 'Tempête',
   'look.labels': 'Libellés',
   'look.labelsHint': 'Si les commandes montrent leurs mots, leur symbole, ou les deux. La largeur ne change pas, donc basculer ne déplace jamais la page.',

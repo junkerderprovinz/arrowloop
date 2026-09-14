@@ -208,7 +208,7 @@ export function useStormUnlock(): { offered: boolean; tap: (level: string) => vo
     tap: (level: string) => {
       // Only counts while the top VISIBLE level is the one already chosen.
       // Tapping "off" five times means somebody is annoyed, not curious.
-      if (level !== "full" || look.motion !== "full") {
+      if (level !== "wild" || look.motion !== "wild") {
         taps.current = 0;
         return;
       }

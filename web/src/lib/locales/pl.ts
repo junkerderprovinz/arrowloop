@@ -220,7 +220,7 @@ const pl: Translations = {
   'look.motionHint': 'Jak bardzo interfejs się porusza, gdy coś się pojawia lub zmienia. Wszystkie trzy stopnie odtwarzają te same animacje, różnią się tylko dystans, szybkość i krzywa, a ustawienie systemu na mniej ruchu zawsze wygrywa.',
   'look.motionOff': 'Brak',
   'look.motionSubtle': 'Łagodny',
-  'look.motionFull': 'Dziki',
+  'look.motionWild': 'Dziki',
   'look.motionStorm': 'Burza',
   'look.labels': 'Etykiety',
   'look.labelsHint': 'Czy elementy pokazują swoje słowa, swój znak, czy oba. Szerokość się nie zmienia, więc przełączenie nigdy nie przesuwa strony.',

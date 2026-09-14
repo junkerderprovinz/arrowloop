@@ -220,7 +220,7 @@ const eu: Translations = {
   'look.motionHint': 'Zenbat mugitzen den interfazea zerbait agertzen edo aldatzen denean. Hiru mailek animazio berberak erakusten dituzte, distantzia, abiadura eta kurba bakarrik aldatzen dira, eta sistemaren mugimendu gutxiagoko ezarpenak beti irabazten du.',
   'look.motionOff': 'Bat ere ez',
   'look.motionSubtle': 'Leuna',
-  'look.motionFull': 'Basatia',
+  'look.motionWild': 'Basatia',
   'look.motionStorm': 'Ekaitza',
   'look.labels': 'Etiketak',
   'look.labelsHint': 'Kontrolek hitzak, ikurra edo biak erakusten dituzten. Zabalera ez da aldatzen, beraz modua aldatzeak ez du orria inoiz mugitzen.',

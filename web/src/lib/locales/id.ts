@@ -220,7 +220,7 @@ const id: Translations = {
   'look.motionHint': 'Seberapa banyak antarmuka bergerak saat sesuatu muncul atau berubah. Ketiga tingkat menjalankan animasi yang sama, hanya jarak, kecepatan, dan kurvanya yang berbeda, dan pengaturan sistem untuk gerakan lebih sedikit selalu menang.',
   'look.motionOff': 'Mati',
   'look.motionSubtle': 'Lembut',
-  'look.motionFull': 'Liar',
+  'look.motionWild': 'Liar',
   'look.motionStorm': 'Badai',
   'look.labels': 'Label',
   'look.labelsHint': 'Apakah kendali menampilkan kata, lambang, atau keduanya. Lebarnya tidak berubah, jadi berganti mode tak pernah menggeser halaman.',

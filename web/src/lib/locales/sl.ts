@@ -220,7 +220,7 @@ const sl: Translations = {
   'look.motionHint': 'Koliko se vmesnik premika, ko se kaj pojavi ali spremeni. Vse tri stopnje uporabljajo iste animacije, razlikujejo se le razdalja, hitrost in krivulja, sistemska nastavitev za manj gibanja pa vedno prevlada.',
   'look.motionOff': 'Brez',
   'look.motionSubtle': 'Nežno',
-  'look.motionFull': 'Divje',
+  'look.motionWild': 'Divje',
   'look.motionStorm': 'Nevihta',
   'look.labels': 'Oznake',
   'look.labelsHint': 'Ali kontrolniki kažejo svoje besede, svoj znak ali oboje. Širina se ne spremeni, zato preklop nikoli ne premakne strani.',

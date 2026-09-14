@@ -220,7 +220,7 @@ const ko: Translations = {
   'look.motionHint': '무언가 나타나거나 바뀔 때 화면이 얼마나 움직이는지. 세 단계 모두 같은 애니메이션을 쓰고 거리와 속도와 곡선만 달라집니다. 동작을 줄이라는 기기 설정이 항상 우선합니다.',
   'look.motionOff': '없음',
   'look.motionSubtle': '부드럽게',
-  'look.motionFull': '열정적으로',
+  'look.motionWild': '열정적으로',
   'look.motionStorm': '폭풍',
   'look.labels': '레이블',
   'look.labelsHint': '조작 요소가 글자를 보일지, 기호를 보일지, 둘 다 보일지. 너비는 그대로라 바꿔도 화면이 밀리지 않습니다.',

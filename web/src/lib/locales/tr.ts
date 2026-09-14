@@ -220,7 +220,7 @@ const tr: Translations = {
   'look.motionHint': 'Bir şey belirdiğinde veya değiştiğinde arayüzün ne kadar hareket ettiği. Üç kademe de aynı animasyonları oynatır, yalnızca mesafe, hız ve eğri değişir, ve sistemin daha az hareket ayarı her zaman öne geçer.',
   'look.motionOff': 'Yok',
   'look.motionSubtle': 'Yumuşak',
-  'look.motionFull': 'Vahşi',
+  'look.motionWild': 'Vahşi',
   'look.motionStorm': 'Fırtına',
   'look.labels': 'Etiketler',
   'look.labelsHint': 'Denetimlerin sözlerini mi, simgesini mi, yoksa ikisini birden mi gösterdiği. Genişlik değişmez, bu yüzden geçiş sayfayı asla kaydırmaz.',

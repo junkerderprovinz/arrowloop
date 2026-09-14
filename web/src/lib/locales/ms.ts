@@ -220,7 +220,7 @@ const ms: Translations = {
   'look.motionHint': 'Sebanyak mana antara muka bergerak apabila sesuatu muncul atau berubah. Ketiga-tiga tahap menjalankan animasi yang sama, hanya jarak, kelajuan dan lengkung berbeza, dan tetapan sistem untuk kurang pergerakan sentiasa mengatasi.',
   'look.motionOff': 'Tiada',
   'look.motionSubtle': 'Lembut',
-  'look.motionFull': 'Liar',
+  'look.motionWild': 'Liar',
   'look.motionStorm': 'Ribut',
   'look.labels': 'Label',
   'look.labelsHint': 'Sama ada kawalan menunjukkan perkataannya, lambangnya atau kedua-duanya. Lebarnya tidak berubah, jadi bertukar mod tidak pernah menganjak halaman.',

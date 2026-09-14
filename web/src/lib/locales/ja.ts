@@ -220,7 +220,7 @@ const ja: Translations = {
   'look.motionHint': '何かが現れたり変わったりするときに画面がどれだけ動くか。三段階とも同じアニメーションを使い、距離と速さとカーブだけが変わります。動きを減らすという端末側の設定は常に優先されます。',
   'look.motionOff': 'なし',
   'look.motionSubtle': 'やわらか',
-  'look.motionFull': 'はしゃいで',
+  'look.motionWild': 'はしゃいで',
   'look.motionStorm': '嵐',
   'look.labels': 'ラベル',
   'look.labelsHint': '操作部が文字を出すか、記号を出すか、両方を出すか。幅は変わらないので、切り替えても画面はずれません。',

@@ -220,7 +220,7 @@ const hu: Translations = {
   'look.motionHint': 'Mennyit mozog a felület, amikor valami megjelenik vagy megváltozik. Mindhárom fokozat ugyanazokat az animációkat játssza le, csak a távolság, a sebesség és a görbe tér el, és a rendszer kevesebb mozgásra vonatkozó beállítása mindig erősebb.',
   'look.motionOff': 'Nincs',
   'look.motionSubtle': 'Lágy',
-  'look.motionFull': 'Vad',
+  'look.motionWild': 'Vad',
   'look.motionStorm': 'Vihar',
   'look.labels': 'Feliratok',
   'look.labelsHint': 'A vezérlők a szavaikat, a jelüket vagy mindkettőt mutatják. A szélesség nem változik, így a váltás sosem mozdítja el az oldalt.',

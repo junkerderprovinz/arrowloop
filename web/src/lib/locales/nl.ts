@@ -220,7 +220,7 @@ const nl: Translations = {
   'look.motionHint': 'Hoeveel de interface beweegt als er iets verschijnt of verandert. Alle drie de standen draaien dezelfde animaties, alleen de afstand, de snelheid en de curve verschillen, en de systeeminstelling voor minder beweging wint altijd.',
   'look.motionOff': 'Geen',
   'look.motionSubtle': 'Zacht',
-  'look.motionFull': 'Wild',
+  'look.motionWild': 'Wild',
   'look.motionStorm': 'Storm',
   'look.labels': 'Labels',
   'look.labelsHint': 'Of bedieningselementen hun woorden tonen, hun teken of allebei. De breedte verandert niet, dus wisselen verschuift de pagina nooit.',

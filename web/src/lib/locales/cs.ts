@@ -220,7 +220,7 @@ const cs: Translations = {
   'look.motionHint': 'Jak moc se rozhraní pohybuje, když se něco objeví nebo změní. Všechny tři stupně používají stejné animace, liší se jen vzdálenost, rychlost a křivka, a systémové nastavení pro menší pohyb má vždy přednost.',
   'look.motionOff': 'Žádný',
   'look.motionSubtle': 'Jemný',
-  'look.motionFull': 'Divoký',
+  'look.motionWild': 'Divoký',
   'look.motionStorm': 'Bouře',
   'look.labels': 'Popisky',
   'look.labelsHint': 'Zda prvky ukazují svá slova, svůj znak nebo obojí. Šířka se nemění, takže přepnutí nikdy neposune stránku.',

@@ -220,7 +220,7 @@ const is: Translations = {
   'look.motionHint': 'Hversu mikið viðmótið hreyfist þegar eitthvað birtist eða breytist. Öll þrjú þrepin keyra sömu hreyfingarnar, aðeins vegalengd, hraði og ferill eru ólík, og stilling kerfisins fyrir minni hreyfingu vinnur alltaf.',
   'look.motionOff': 'Engin',
   'look.motionSubtle': 'Mýk',
-  'look.motionFull': 'Villt',
+  'look.motionWild': 'Villt',
   'look.motionStorm': 'Stormur',
   'look.labels': 'Merkingar',
   'look.labelsHint': 'Hvort stýringar sýna orðin sín, táknið sitt eða hvort tveggja. Breiddin breytist ekki, svo skipti hnika síðunni aldrei.',

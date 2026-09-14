@@ -220,7 +220,7 @@ const no: Translations = {
   'look.motionHint': 'Hvor mye grensesnittet beveger seg når noe dukker opp eller endrer seg. Alle tre trinn kjører de samme animasjonene, bare avstanden, farten og kurven er forskjellig, og systemets egen innstilling for mindre bevegelse vinner alltid.',
   'look.motionOff': 'Ingen',
   'look.motionSubtle': 'Mild',
-  'look.motionFull': 'Vill',
+  'look.motionWild': 'Vill',
   'look.motionStorm': 'Storm',
   'look.labels': 'Etiketter',
   'look.labelsHint': 'Om kontrollene viser ordene sine, tegnet sitt eller begge deler. Bredden endrer seg ikke, så et bytte flytter aldri siden.',

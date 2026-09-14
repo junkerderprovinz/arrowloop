@@ -71,7 +71,7 @@ export type Shape = "round" | "soft" | "square";
  * settle. The language's rule that a stronger level is a BIGGER version of the
  * same animation, never a different one, holds here too.
  */
-export type MotionIntensity = "off" | "subtle" | "full" | "storm";
+export type MotionIntensity = "off" | "subtle" | "wild" | "storm";
 export type ThemeChoice = "system" | "dark" | "light";
 
 export interface Appearance {
@@ -100,7 +100,7 @@ export interface Appearance {
   /** What the BOTTOM BAR shows. "same" follows `labels`; see BarLabelMode. */
   barLabels: BarLabelMode;
   /**
-   * How much the interface moves: off, subtle or full.
+   * How much the interface moves: off, subtle or wild.
    *
    * Stored here rather than in the engine's settings for the same reason the
    * theme is: it describes THIS install. A phone on a desk and a phone in a
@@ -129,7 +129,7 @@ export const DEFAULT_APPEARANCE: Appearance = {
   shape: "round",
   labels: "textGlyph",
   barLabels: "textGlyph",
-  motion: "full",
+  motion: "wild",
   lock: false,
 };
 
@@ -142,7 +142,22 @@ const listeners = new Set<() => void>();
 export async function loadAppearance(): Promise<Appearance> {
   try {
     const raw = await AsyncStorage.getItem(KEY);
-    if (raw) cache = { ...DEFAULT_APPEARANCE, ...(JSON.parse(raw) as Partial<Appearance>) };
+    if (raw) {
+      const stored = JSON.parse(raw) as Partial<Appearance>;
+      // THE TOP LEVEL WAS CALLED `full` before GlimStone 2.0.0 renamed it to
+      // `wild`, and that name is a stored VALUE rather than wording - a phone
+      // set to the top level before the rename still has the old word in this
+      // file. Nothing else here validates what it reads, so the old word would
+      // survive straight into a motion table that no longer has a row for it.
+      // Renaming it on read keeps the level somebody actually chose, where
+      // falling back to the default would only be right by accident.
+      //
+      // Only that one word moves. A stored value may legally be any of the four
+      // levels, `storm` included, which is a different question from the three
+      // the picker offers - see MOTION_INTENSITIES in motion.ts.
+      if ((stored.motion as string) === "full") stored.motion = "wild";
+      cache = { ...DEFAULT_APPEARANCE, ...stored };
+    }
   } catch {
     // A store that cannot be read is a fresh install as far as this is
     // concerned. Defaults are a working app; a thrown error at startup is not.

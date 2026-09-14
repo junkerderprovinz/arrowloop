@@ -220,7 +220,7 @@ const da: Translations = {
   'look.motionHint': 'Hvor meget grænsefladen bevæger sig, når noget dukker op eller ændrer sig. Alle tre trin viser de samme animationer, kun afstanden, hastigheden og kurven er forskellige, og systemets egen indstilling for mindre bevægelse vinder altid.',
   'look.motionOff': 'Ingen',
   'look.motionSubtle': 'Blid',
-  'look.motionFull': 'Vild',
+  'look.motionWild': 'Vild',
   'look.motionStorm': 'Storm',
   'look.labels': 'Etiketter',
   'look.labelsHint': 'Om kontrollerne viser deres ord, deres tegn eller begge dele. Bredden ændrer sig ikke, så et skift flytter aldrig siden.',

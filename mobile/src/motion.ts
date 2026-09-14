@@ -6,14 +6,14 @@ import { useAppearance, type MotionIntensity } from "./settings";
 /**
  * The motion engine, as React Native.
  *
- * THE SAME THREE STATES the container has - `off`, `subtle`, `full` - and the
+ * THE SAME THREE STATES the container has - `off`, `subtle`, `wild` - and the
  * same rule behind them: one animation at every intensity, with only the
- * NUMBERS changing. "Subtle" is never a different animation from "full", it is
+ * NUMBERS changing. "Subtle" is never a different animation from "wild", it is
  * a smaller one. The container's own `lib/motion.ts` says why at length; this
  * is that engine with CSS custom properties swapped for a plain table, because
  * there is no stylesheet here to redefine.
  *
- * DEFAULT IS FULL. This axis is polish somebody dials DOWN rather than a
+ * DEFAULT IS WILD. This axis is polish somebody dials DOWN rather than a
  * fallback they opt into, which is the opposite of the theme axis and for the
  * opposite reason.
  *
@@ -34,9 +34,12 @@ import { useAppearance, type MotionIntensity } from "./settings";
 
 export type { MotionIntensity };
 
-export const MOTION_INTENSITIES: MotionIntensity[] = ["off", "subtle", "full"];
+/** THE LEVELS THE PICKER OFFERS, which is three and not four: `storm` is out
+ *  of it until somebody finds the gesture. This is not a validator - a stored
+ *  value may legally be any of the four levels. */
+export const MOTION_INTENSITIES: MotionIntensity[] = ["off", "subtle", "wild"];
 
-export const DEFAULT_MOTION: MotionIntensity = "full";
+export const DEFAULT_MOTION: MotionIntensity = "wild";
 
 /**
  * The durations, in milliseconds, per intensity.
@@ -65,9 +68,9 @@ export const MOTION: Record<
   //
   // So this one SPRINGS: it overshoots slightly and settles, where the others
   // ease. That is still the same animation on the same elements - the language's
-  // rule that subtle is a smaller full, never a different one, survives - but
+  // rule that subtle is a smaller wild, never a different one, survives - but
   // the curve at the top has energy in it rather than only duration.
-  full: { layout: 420, fade: 140, toast: 300, spring: true, damping: 0.68 },
+  wild: { layout: 420, fade: 140, toast: 300, spring: true, damping: 0.68 },
   subtle: { layout: 140, fade: 70, toast: 120, spring: false, damping: 1 },
   off: { layout: 0, fade: 0, toast: 0, spring: false, damping: 1 },
 };
@@ -138,7 +141,7 @@ export function animateNext(intensity: MotionIntensity, kind: "layout" | "fade" 
   const spring = MOTION[intensity].spring;
   // A SPRING at the top and an ease below it. The spring's damping is what
   // decides how much it overshoots: 0.6 is a visible bounce and 1.0 is none at
-  // all, so `full` sits where the movement is felt without the interface
+  // all, so `wild` sits where the movement is felt without the interface
   // looking like it is made of rubber, and the hidden level goes further on
   // purpose. Below the top setting the curve eases, because somebody who asked
   // for less movement asked for less movement and not for a faster bounce.

@@ -220,7 +220,7 @@ const ca: Translations = {
   'look.motionHint': 'Quant es mou la interfície quan alguna cosa apareix o canvia. Els tres nivells mostren les mateixes animacions, només en canvien la distància, la velocitat i la corba, i l\'opció del sistema per a menys moviment sempre té prioritat.',
   'look.motionOff': 'Cap',
   'look.motionSubtle': 'Suau',
-  'look.motionFull': 'Salvatge',
+  'look.motionWild': 'Salvatge',
   'look.motionStorm': 'Tempesta',
   'look.labels': 'Etiquetes',
   'look.labelsHint': 'Si els controls mostren les paraules, el símbol o tots dos. L\'amplada no canvia, així que canviar de mode no mou mai la pàgina.',
