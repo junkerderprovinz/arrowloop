@@ -46,6 +46,7 @@ export function AboutCard({
   paypalUrl,
   onCrypto,
   mailAddress,
+  mailGlyph,
   hueIndex,
 }: {
   /** The card's copy, in the app's own language. `report` decides whether the
@@ -103,6 +104,15 @@ export function AboutCard({
   coffeeGlyph?: ReactNode;
   cryptoGlyph?: ReactNode;
   paypalGlyph?: ReactNode;
+  /**
+   * The envelope on the mail button.
+   *
+   * Passed like the four above, although it is the one mark here that is
+   * NOT a brand: the card's rule is that every button in these rows carries
+   * a mark, and a row where four wear a logo and the fifth wears nothing
+   * reads as a missing image rather than as a plainer button.
+   */
+  mailGlyph?: ReactNode;
   /**
    * A hosted payment page (PayPal.Me and the like). Omitted where none exists.
    *
@@ -189,11 +199,13 @@ export function AboutCard({
             labelKey="about.crypto"
             glyph={cryptoGlyph}
             tone="neutral"
-            // No brand class, and that is the rule rather than an oversight: a
-            // coin disc brings its own ground, so its readability is settled
-            // inside the mark and the same on either theme. Painting it with
-            // one ink would be redrawing the logo. An app that hands in a flat
-            // Bitcoin symbol instead can add `glim-brand-bitcoin` itself.
+            // A brand class like the other four, because the mark this button
+            // wears is the bare LETTERFORM, disc cut away. The class paints
+            // every path in the mark, so a disc handed in here did not keep
+            // its ground, it became a solid orange blob with the letter filled
+            // in too. The disc belongs on the coin tiles in the window, where
+            // nothing repaints it; this row takes flat marks only.
+            className="glim-brand-btn glim-brand-bitcoin"
             onClick={onCrypto}
           />
         )}
@@ -224,6 +236,7 @@ export function AboutCard({
           <Button
             label={text.mailButton}
             labelKey="about.mail"
+            glyph={mailGlyph}
             tone="neutral"
             className="glim-brand-btn glim-brand-house"
             onClick={() =>

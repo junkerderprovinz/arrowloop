@@ -1342,6 +1342,11 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  /* `.glim-btn` sets `line-height: 1`, which is right for a fixed-height
+     control and wrong for a box that hides its overflow: at 0.875rem the line
+     box is 14px while a UI face wants about 18.6, so the bottom of every p, g,
+     y and j is cut off. 1.4 clears it, and nothing moves. */
+  line-height: 1.4;
 }
 
 /* In reactive mode the collapsed label is still a flex item, so the container's
@@ -1374,6 +1379,8 @@ body {
   padding: 0;
   margin-inline-start: 0;
   transform-origin: left center;
+  /* The same clipped descenders `.glim-btn-label` explains above. */
+  line-height: 1.4;
 }
 
 /* ANY STATE ADDED HERE MUST ALSO BE ADDED to the lively motion block below:

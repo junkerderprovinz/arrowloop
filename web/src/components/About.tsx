@@ -5,6 +5,9 @@ import { CryptoDonate } from './CryptoDonate'
 import { IconBitcoin, IconBuyMeACoffee, IconPayPal } from './donateMarks'
 import { GLIMSTONE_VERSION } from '../lib/glimstone/version'
 import { IconGithub } from './brandGlyphs'
+// The envelope on the mail button. Not a brand, and passed anyway: the card's
+// rule is that every button in those two rows carries a mark.
+import { IconMail } from './glyphs'
 // The two link-shaped give routes, beside the eight coins. In lib/donate.ts
 // with the addresses, because the phone's About card offers the same three and
 // a donation link written down twice fails silently: the wrong one still opens
@@ -73,6 +76,7 @@ export function About({ version }: { version: string | null }) {
         paypalUrl={PAYPAL}
         paypalGlyph={<IconPayPal />}
         mailAddress={MAIL}
+        mailGlyph={<IconMail />}
         hueIndex={0}
         text={{
           title: t('about.title'),
