@@ -8,6 +8,23 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## v0.7.1
+
+The About card says what it has to say in fewer sentences, asks for support in a friendlier way, and its buttons stop losing the bottom of their letters.
+
+## 🎨 Design
+
+- **The crypto button wears the bare Bitcoin letterform instead of the coin disc.** At 16px, beside a coffee cup and a PayPal P, a filled circle hands the eye the shape of the ground rather than the shape of the letter, so the one button that should say "crypto" said "orange dot". The full coin logos stay in the donation window, where the marks are large and telling eight of them apart is the job.
+- **The mail button carries an envelope.** It was the one control in that row with no mark at all, which reads as a missing image rather than as a plainer button. Its label names the thing rather than the act: "Email" instead of "Send an email", in every language.
+
+## ⚡ Improved
+
+- **A shorter, friendlier support text, in 42 languages.** Two sentences listing what the app does not do became one, the itemised running costs are gone, and the ask is a coin tossed to the knight. The card and the README now carry the same claims in the same order, so the page somebody reads before installing and the card they find afterwards no longer sound like two different projects.
+
+## 🐛 Fixed
+
+- **Button labels lost the bottom of every descender.** The label box hides its overflow while the button sets a line height of 1, so at 14px every p, g, y and j was cut about 1.7px short. Both label boxes carry their own line height now, and nothing else moves.
+
 ## v0.7.0
 
 Four questions this could not answer before, and all four are answered in the database rather than in the browser: search the activity log by path, narrow the history to a stretch of days, ask a target how full it is, and find files whose content is identical.
