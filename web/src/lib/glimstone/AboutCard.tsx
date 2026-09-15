@@ -107,10 +107,12 @@ export function AboutCard({
   /**
    * The envelope on the mail button.
    *
-   * Passed like the four above, although it is the one mark here that is
-   * NOT a brand: the card's rule is that every button in these rows carries
-   * a mark, and a row where four wear a logo and the fifth wears nothing
-   * reads as a missing image rather than as a plainer button.
+   * Passed like the four above, although it is the one mark here that is NOT a
+   * brand: the card's rule is that every button in these rows carries a mark,
+   * and a row where four buttons wear a logo and the fifth wears nothing reads
+   * as a missing image rather than as a plainer button. An envelope rather
+   * than a paper plane, because the button names a place to write to and not
+   * the act of sending, which the label already says.
    */
   mailGlyph?: ReactNode;
   /**
@@ -200,14 +202,20 @@ export function AboutCard({
             glyph={cryptoGlyph}
             tone="neutral"
             // A brand class like the other four, because the mark this button
-            // wears is the bare LETTERFORM, disc cut away. Two things made the
-            // disc wrong here. A coin logo drawn in two colours, a filled
+            // wears is the bare LETTERFORM, disc cut away.
+            //
+            // Two separate things made the disc wrong here, and only one of
+            // them is about colour. A coin logo drawn in TWO colours, a filled
             // circle with a white symbol on it, cannot take this class at all:
-            // the rule paints every path with one ink and the symbol vanishes
-            // into the circle. A one-path disc with the symbol knocked out
-            // survives that and still loses, because at 16px beside a cup and
-            // a P it reads as an orange dot. The disc keeps its place on the
-            // coin tiles in the donation window, where nothing repaints it.
+            // the rule paints every path in the mark with one ink, so the
+            // symbol disappears into the circle. A disc drawn as ONE path with
+            // the symbol knocked out of it survives that, and still loses the
+            // argument: at 16px in a row beside a cup and a P it reads as an
+            // orange dot, because what the eye gets is the shape of the ground
+            // rather than the shape of the letter. Reported that way against an
+            // adopting app. The disc keeps its place on the coin tiles in the
+            // donation window, where the mark is large, nothing repaints it,
+            // and telling eight logos apart is the whole job.
             className="glim-brand-btn glim-brand-bitcoin"
             onClick={onCrypto}
           />

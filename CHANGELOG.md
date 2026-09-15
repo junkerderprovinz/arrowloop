@@ -8,6 +8,21 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## v0.7.2
+
+The design language's copies here were newer than the number that named them, and two of its rules had never been adopted. Both are in now, so the version on the About card is a claim the files back up.
+
+## 🎨 Design
+
+- **A page entrance moves and no longer scales.** An ancestor that scales while its contents animate makes the compositor resample them through it, which is where the shimmer on the top level came from. The entrance travels and stops there.
+- **The fade is its own animation, on a curve that cannot overshoot.** Opacity never rides a spring: a spring drives its value through the target and back, which is the point for a distance and meaningless for opacity, because it clamps at 1. The fade used to finish early and then sit flat, so the dial set to make an entrance longer made its fade shorter.
+- **One curve token became two.** A page may overshoot; a toast slides in from the edge of the screen, and a spring carries it back past that edge, which reads as a glitch. The quiet level names no toast curve on purpose, and at the top level both spring, because that is the level where restraint is the thing being switched off.
+
+## ⚡ Improved
+
+- **The About card matches the language's own file again.** The two had drifted apart in their comments after the same fix landed in both by hand.
+- **The GlimStone version on the card reads 2.5.0**, which is what these files now are. It had been left at 1.14.0 while the files themselves were carried forward, so the one number a reader can check was the one thing that was wrong.
+
 ## v0.7.1
 
 The About card says what it has to say in fewer sentences, asks for support in a friendlier way, and its buttons stop losing the bottom of their letters.

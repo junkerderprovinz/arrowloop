@@ -831,12 +831,21 @@ body {
   0%   { left: -35%; }
   100% { left: 100%; }
 }
+/* MOVEMENT ONLY, and the fade beside it is a second animation on a curve that
+   does not spring. OPACITY NEVER RIDES A SPRING: a spring drives its value
+   through the target and back, which is the point for a distance and
+   meaningless for opacity, because it clamps at 1. The fade would finish early
+   and then sit flat, so the dial set to make the entrance LONGER would make
+   the fade SHORTER.
+
+   No scale either. An ancestor's entrance may translate and may not scale, or
+   its animating contents are resampled through it. The same applies to
+   glim-toast-in below. */
 @keyframes glim-page-in {
   from {
-    opacity: 0;
-    transform: translateY(var(--motion-page-travel, 6px)) scale(var(--motion-page-scale, 1));
+    transform: translateY(var(--motion-page-travel, 6px));
   }
-  to   { opacity: 1; transform: none; }
+  to   { transform: none; }
 }
 @keyframes glim-fade-in {
   from { opacity: 0; }
@@ -851,8 +860,8 @@ body {
 [dir="rtl"] { --glim-toast-slide: -12px; }
 
 @keyframes glim-toast-in {
-  from { opacity: 0; transform: translateX(var(--glim-toast-slide, 12px)); }
-  to   { opacity: 1; transform: none; }
+  from { transform: translateX(var(--glim-toast-slide, 12px)); }
+  to   { transform: none; }
 }
 @keyframes glim-pulse {
   0%, 100% { opacity: 1; }
@@ -912,11 +921,14 @@ body {
        at all three intensities, never a forked animation. What changes is the
        number the keyframe reads and the curve it reads it through. */
     --motion-page-travel: 18px;
-    --motion-page-scale: .96;
     /* A curve that overshoots and settles. The fourth control point past 1 is
        what makes it spring rather than ease - the same shape React Native's
        spring gives the phone, so the two surfaces move alike. */
-    --motion-curve: cubic-bezier(.34, 1.56, .64, 1);
+    --motion-page-ease: cubic-bezier(.34, 1.56, .64, 1);
+    /* The toast gets its own, and it does not spring: it enters from the edge
+       of the screen, and an overshoot carries it back past that edge, which
+       reads as a glitch rather than as liveliness. */
+    --motion-toast-ease: cubic-bezier(.2, .6, .2, 1);
     /* The toast travels with everything else. It had been left behind at
        one distance for all three intensities, under a comment claiming it
        moved further at the top one. */
@@ -932,8 +944,9 @@ body {
     /* Smaller travel, no scale, and a curve that only eases. Somebody who asked
        for less movement asked for less movement, not for a faster bounce. */
     --motion-page-travel: 6px;
-    --motion-page-scale: 1;
-    --motion-curve: cubic-bezier(.2, .6, .2, 1);
+    /* No toast curve named here, deliberately: asking for less movement is not
+       asking for a different easing, and the shorter duration carries it. */
+    --motion-page-ease: cubic-bezier(.2, .6, .2, 1);
     --glim-toast-slide: 12px;
   }
   :root[data-motion='subtle'][dir="rtl"] { --glim-toast-slide: -12px; }
@@ -960,10 +973,11 @@ body {
     --motion-fade-dur: 200ms;
     --motion-shake-dur: 520ms;
     --motion-page-travel: 34px;
-    --motion-page-scale: .9;
     /* Further past 1 than wild's curve, and slower to settle: the overshoot is
        the whole point of the level. */
-    --motion-curve: cubic-bezier(.22, 1.94, .45, 1);
+    --motion-page-ease: cubic-bezier(.22, 1.94, .45, 1);
+    /* Both spring at this level: restraint is the thing being switched off. */
+    --motion-toast-ease: cubic-bezier(.22, 1.94, .45, 1);
     --glim-toast-slide: 44px;
   }
   :root[data-motion='storm'][dir="rtl"] { --glim-toast-slide: -44px; }
@@ -973,8 +987,8 @@ body {
     --motion-fade-dur: 0s;
     --motion-shake-dur: 0s;
     --motion-page-travel: 0px;
-    --motion-page-scale: 1;
-    --motion-curve: linear;
+    --motion-page-ease: linear;
+    --motion-toast-ease: ease;
     /* No RTL twin: zero is its own negative. */
     --glim-toast-slide: 0px;
     /* The pulse is the one that does not get a zero. An infinite animation at
@@ -984,8 +998,16 @@ body {
        block below already does. */
   }
 
-  .glim-page-enter { animation: glim-page-in var(--motion-page-dur) var(--motion-curve) both; }
-  .glim-toast { animation: glim-toast-in var(--motion-toast-dur) var(--motion-curve) both; }
+  .glim-page-enter {
+    animation:
+      glim-page-in var(--motion-page-dur) var(--motion-page-ease) both,
+      glim-fade-in var(--motion-page-dur) ease-out both;
+  }
+  .glim-toast {
+    animation:
+      glim-toast-in var(--motion-toast-dur) var(--motion-toast-ease, var(--motion-page-ease)) both,
+      glim-fade-in var(--motion-toast-dur) ease-out both;
+  }
   .glim-live { animation: glim-pulse var(--motion-pulse-dur) ease-in-out infinite; }
   /* Short on purpose: a bubble that fades in slowly reads as lag, because the
      pointer is already there waiting for it. */
