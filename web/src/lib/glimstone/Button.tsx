@@ -119,27 +119,7 @@ export type ButtonTone = "accent" | "neutral" | "subtle" | "danger" | "warn";
  * the reason the variant exists at all: the colour engine, the tone table, the
  * busy spinner, one tooltip mechanism, and the disabled-with-a-reason wrapper.
  */
-/**
- * "close" - a window's own dismiss control, the square in the top right corner.
- *
- * It is square in EVERY mode, which is the one thing `icon` deliberately is
- * not, and the difference is what the two controls are for. A row action stands
- * among its siblings inside a card and answers the labelling setting with them;
- * a window's corner control stands on the window's chrome, opposite a title
- * badge, and its position is half of what says what it does. A word printed
- * there grows a lozenge into the badge it sits beside, and "Close" next to a
- * title reads as part of the title.
- *
- * It is a shape with a fixed answer, in other words, the same way a chip is,
- * and for the same kind of reason. What it keeps that a chip drops is the tone
- * table: it sits on a window rather than inside a pill, so it paints a surface
- * of its own.
- *
- * The accessible name is not optional and is not skipped: the label is still
- * passed, still announced, and still shown in the hover bubble. Only the
- * printing is gone.
- */
-export type ButtonVariant = "default" | "chip" | "icon" | "close";
+export type ButtonVariant = "default" | "chip" | "icon";
 
 // `danger`/`warn` use the SOLID status tokens over `carbon-background`, the
 // pairing ConfirmDialog worked out for itself and documented at length: both
@@ -211,8 +191,7 @@ export function Button({
   glyph?: ReactNode;
   onClick?: () => void;
   tone?: ButtonTone;
-  /** "chip" inside a pill, "icon" for a row action, "close" for a window's own
-   *  corner control; see ButtonVariant. */
+  /** "chip" inside a pill, "icon" for a row action; see ButtonVariant. */
   variant?: ButtonVariant;
   disabled?: boolean;
   type?: "button" | "submit";
@@ -288,14 +267,10 @@ export function Button({
   // An explicit glyph wins; otherwise the key decides, so the same verb wears
   // the same symbol app-wide without 163 call sites each making a choice.
   const chip = variant === "chip";
-  const corner = variant === "close";
-  // Square: for a row action only while the mode paints no words, for a
-  // window's corner control always - see ButtonVariant.
-  const iconOnly = variant === "icon" || corner;
-  // A chip and a corner control both always close, so they have a glyph even
-  // when no call site passes one.
-  const resolved =
-    glyph ?? (labelKey ? glyphFor(labelKey) : undefined) ?? (chip || corner ? <IconClose /> : undefined);
+  // Square, but only while the mode paints no words - see ButtonVariant.
+  const iconOnly = variant === "icon";
+  // A chip always closes, so it has a glyph even when no call site passes one.
+  const resolved = glyph ?? (labelKey ? glyphFor(labelKey) : undefined) ?? (chip ? <IconClose /> : undefined);
   // No glyph to show means text, whatever the mode says — see the header note.
   const hasGlyph = !!resolved || busy;
   // A glyphless button falls back to its text in BOTH hiding modes: an empty
@@ -319,7 +294,7 @@ export function Button({
   // `iconOnly` is NOT in this expression, and that is 1.7.7's correction: a row
   // action answers the setting like everything else, and the variant only
   // decides what shape it takes once the answer is in.
-  const effective = chip || corner
+  const effective = chip
     ? "glyph"
     : keepLabel
       ? hasGlyph

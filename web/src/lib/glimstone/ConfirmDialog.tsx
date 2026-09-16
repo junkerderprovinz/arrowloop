@@ -1,4 +1,4 @@
-// Copied verbatim from GlimStone 2.6.0, reference/react/ConfirmDialog.tsx.
+// Copied verbatim from GlimStone 2.7.0, reference/react/ConfirmDialog.tsx.
 // Do not edit here: change it in the design language repo and copy again.
 // https://github.com/junkerderprovinz/glimstone
 // ---------------------------------------------------------------------------
@@ -138,21 +138,13 @@ export function ConfirmDialog({
             <Badge tone="heading" size="heading" wrap>{title}</Badge>
           </h2>
           {/* #178, [201]: the dialog's close control is a Button like every
-              other clickable thing, so it carries a real label and a tone from
-              the same tables as the rest.
-                What it no longer does is PRINT that label. It followed the
-              labelling mode until 2.6.0, which put the word "Close" in the
-              corner opposite the title badge whenever the mode painted words -
-              a lozenge wide enough to crowd the heading, saying what its
-              position and its X already say, while the footer below carried
-              the two answers that actually decide anything. The variant is the
-              shape now; see ButtonVariant's own note. */}
+              other clickable thing, so it follows the label mode instead of
+              being a permanently glyph-only square of its own. */}
           {closeLabel !== undefined && (
             <Button
               label={closeLabel}
               labelKey="common.close"
               glyph={<IconClose />}
-              variant="close"
               tone="neutral"
               onClick={onCancel}
               className="shrink-0"

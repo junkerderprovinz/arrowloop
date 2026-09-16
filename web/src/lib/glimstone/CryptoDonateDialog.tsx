@@ -144,30 +144,14 @@ export function CryptoDonateDialog({
         className="glim-modal-card relative flex max-h-[85vh] w-full max-w-lg flex-col rounded-card bg-carbon-surface shadow-2xl"
       >
         {/* Rule 15: a window is a window, and its title is a badge straddling
-            the top edge. The answer sits opposite it, in the corner, as a
-            square carrying an X.
-              It used to be a labelled button on a line of its own along the
-            bottom, on the reasoning that one answer offered twice reads as two
-            choices - which is still true, and is why there is no footer here
-            any more rather than two ways out. What that reasoning missed is
-            that a window with nothing to decide has no footer to put an answer
-            in: a bar holding a single "Close" is a row of buttons with one
-            button in it, and it costs a line of the window to say what the
-            corner says for nothing. */}
+            the top edge. No corner X — the footer already answers, and one
+            answer offered twice reads as two choices. */}
         <div className="flex items-start justify-between gap-4 px-5 py-4">
           <h2 id="cryptodonate-title" className="flex items-center">
             <Badge tone="heading" size="heading" wrap>
               {text.title}
             </Badge>
           </h2>
-          <Button
-            label={text.closeLabel}
-            labelKey="common.close"
-            variant="close"
-            tone="neutral"
-            onClick={onClose}
-            className="shrink-0"
-          />
         </div>
 
         <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-5 pb-5">
@@ -222,8 +206,8 @@ export function CryptoDonateDialog({
             {network.note && <p className="text-center text-xs text-statusWarn">{network.note}</p>}
             {/* The one accent surface in this box, so it takes the position of
                 the coin it belongs to: in rainbow mode the copy button is the
-                same colour as the tile the address came from. The corner
-                control has no position, and that is not an omission - it is
+                same colour as the tile the address came from. The close button
+                below has no position, and that is not an omission - it is
                 neutral-toned, and a palette colour on a control that paints no
                 accent resolves to nothing. */}
             <Button
@@ -271,6 +255,10 @@ export function CryptoDonateDialog({
             ))}
           </div>
 
+        </div>
+
+        <div className="flex justify-end gap-2 px-5 pb-5">
+          <Button label={text.closeLabel} labelKey="common.close" tone="neutral" onClick={onClose} />
         </div>
       </div>
     </div>
