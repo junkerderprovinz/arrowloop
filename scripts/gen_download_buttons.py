@@ -177,6 +177,15 @@ os.makedirs(OUT, exist_ok=True)
 # written into the table above: a hand-kept column of seconds is a column
 # somebody reorders the row without touching, and then the band hands off into
 # nothing.
+#
+# THIS ROW STARTS AT ZERO because it is the FIRST row on the page. One band
+# works its way down the README rather than one band per row running beside the
+# others: the whole first row, then the whole second. The give row below carries
+# the other half of that schedule - a fixed 3.8s offset, which is when THIS row,
+# the longest in the house at four buttons, has finished. It has to be a fixed
+# number rather than a derived one, because those three buttons are one shared
+# asset referenced by twenty-six repositories and cannot know what a given
+# README puts above them.
 for index, (slug, mark, bg, ink, head, sub_text, alt) in enumerate(BUTTONS):
     path, scale, inset = brand(mark)
     svg = TEMPLATE.format(
