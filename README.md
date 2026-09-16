@@ -31,7 +31,7 @@ If it has earned a place on your server or computer, toss a coin to your knight:
 <p align="center">
   <a href="https://buymeacoffee.com/junkerderprovinz"><img src="https://raw.githubusercontent.com/junkerderprovinz/junkerderprovinz/main/donate/buttons/button-buy-me-a-coffee-live.svg" alt="Buy me a coffee" width="160"></a>
   &nbsp;
-  <a href="https://paypal.me/hallelujadesign"><img src="https://raw.githubusercontent.com/junkerderprovinz/junkerderprovinz/main/donate/buttons/button-paypal-live.svg" alt="PayPal" width="160"></a>
+  <a href="https://www.paypal.com/donate/?business=UWM4XMNDSUBNN&amp;currency_code=EUR&amp;item_name=ArrowLoop"><img src="https://raw.githubusercontent.com/junkerderprovinz/junkerderprovinz/main/donate/buttons/button-paypal-live.svg" alt="PayPal" width="160"></a>
   &nbsp;
   <a href="https://junkerderprovinz.github.io/junkerderprovinz/"><img src="https://raw.githubusercontent.com/junkerderprovinz/junkerderprovinz/main/donate/buttons/button-crypto-live.svg" alt="Donate with crypto" width="160"></a>
 </p>
@@ -55,9 +55,12 @@ If it has earned a place on your server or computer, toss a coin to your knight:
 <br>
 
 <p align="center">
-  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-windows-amd64-installer.exe"><img src=".github/assets/download-buttons/button-windows-installer.svg" alt="Download for Windows, installer" width="195"></a>&nbsp;
-  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-windows-amd64-portable.exe"><img src=".github/assets/download-buttons/button-windows-portable.svg" alt="Download for Windows, portable" width="195"></a>&nbsp;
-  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-macos-universal.dmg"><img src=".github/assets/download-buttons/button-macos.svg" alt="Download for macOS" width="195"></a>&nbsp;
+  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-windows-amd64-installer.exe"><img src=".github/assets/download-buttons/button-windows-installer.svg" alt="Download for Windows, installer" width="195"></a>
+  &nbsp;
+  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-windows-amd64-portable.exe"><img src=".github/assets/download-buttons/button-windows-portable.svg" alt="Download for Windows, portable" width="195"></a>
+  &nbsp;
+  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-macos-universal.dmg"><img src=".github/assets/download-buttons/button-macos.svg" alt="Download for macOS" width="195"></a>
+  &nbsp;
   <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-amd64"><img src=".github/assets/download-buttons/button-linux.svg" alt="Download for Linux" width="195"></a>
 </p>
 
@@ -342,7 +345,7 @@ If it has earned a place on your server or computer, toss a coin to your knight:
 <p align="center">
   <a href="https://buymeacoffee.com/junkerderprovinz"><img src="https://raw.githubusercontent.com/junkerderprovinz/junkerderprovinz/main/donate/buttons/button-buy-me-a-coffee-live.svg" alt="Buy me a coffee" width="160"></a>
   &nbsp;
-  <a href="https://paypal.me/hallelujadesign"><img src="https://raw.githubusercontent.com/junkerderprovinz/junkerderprovinz/main/donate/buttons/button-paypal-live.svg" alt="PayPal" width="160"></a>
+  <a href="https://www.paypal.com/donate/?business=UWM4XMNDSUBNN&amp;currency_code=EUR&amp;item_name=ArrowLoop"><img src="https://raw.githubusercontent.com/junkerderprovinz/junkerderprovinz/main/donate/buttons/button-paypal-live.svg" alt="PayPal" width="160"></a>
   &nbsp;
   <a href="https://junkerderprovinz.github.io/junkerderprovinz/"><img src="https://raw.githubusercontent.com/junkerderprovinz/junkerderprovinz/main/donate/buttons/button-crypto-live.svg" alt="Donate with crypto" width="160"></a>
 </p>

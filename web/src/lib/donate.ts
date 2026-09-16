@@ -42,7 +42,7 @@
  * it was chosen deliberately rather than guessed at.
  */
 export const COFFEE = "https://buymeacoffee.com/junkerderprovinz";
-export const PAYPAL = "https://paypal.me/hallelujadesign";
+export const PAYPAL = "https://www.paypal.com/donate/?business=UWM4XMNDSUBNN&currency_code=EUR&item_name=ArrowLoop";
 
 /**
  * The other three addresses the same card carries, here for the same reason.
