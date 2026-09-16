@@ -27,12 +27,14 @@ are unmodified, and nothing here claims endorsement by or affiliation with
 Microsoft, Apple or the Linux Foundation.
 
 Run from anywhere:  python scripts/gen_download_buttons.py
-Writes .github/assets/download-buttons/*.svg, which are committed.
+Writes .github/assets/download-buttons/*.svg, which are committed, and the
+button row in README.md between its two markers.
 """
 
 import io
 import math
 import os
+from html import escape
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 # Relative to this file, so the generator works from any working directory and
@@ -147,17 +149,44 @@ PASS = (SHEEN_TO - SHEEN_FROM) / SCALE / SPEED
 STEP = (RENDER_PX + GAP_PX) / SPEED
 PASS_PCT = PASS / CYCLE * 100.0
 
-# slug, brand file, background, ink, heading, second line, accessible name
+# slug, brand file, background, ink, heading, second line, accessible name, and
+# where the button leads. The last one lives here with the rest of the button
+# because this file writes the README row too, see write_readme().
+RELEASE = "https://github.com/junkerderprovinz/arrowloop/releases/latest/download/"
 BUTTONS = [
-    ("windows-installer", "windows", "#0078d4", "#ffffff", "Windows", "Installer", "Download for Windows, installer"),
-    ("windows-portable", "windows", "#0078d4", "#ffffff", "Windows", "Portable", "Download for Windows, portable"),
+    ("windows-installer", "windows", "#0078d4", "#ffffff", "Windows", "Installer", "Download for Windows, installer",
+     RELEASE + "arrowloop-windows-amd64-installer.exe"),
+    ("windows-portable", "windows", "#0078d4", "#ffffff", "Windows", "Portable", "Download for Windows, portable",
+     RELEASE + "arrowloop-windows-amd64-portable.exe"),
     # Apple's own space grey. Black is the usual answer and the wrong one here:
     # with no outline it vanishes against GitHub's dark theme.
-    ("macos", "apple", "#6e6e73", "#ffffff", "macOS", "Universal", "Download for macOS"),
+    ("macos", "apple", "#6e6e73", "#ffffff", "macOS", "Universal", "Download for macOS",
+     RELEASE + "arrowloop-macos-universal.dmg"),
     # The yellow Tux is drawn in, dark ink on it for the same reason road signs
     # do that.
-    ("linux", "linux", "#fcc624", "#1b1b1b", "Linux", "amd64", "Download for Linux"),
+    ("linux", "linux", "#fcc624", "#1b1b1b", "Linux", "amd64", "Download for Linux",
+     RELEASE + "arrowloop-linux-amd64"),
 ]
+
+# THE README ROW is written here as well, between two markers, so a button added
+# to BUTTONS reaches the page by running this file and nothing else, once it is
+# on main: the Worker below always reads main, so a branch's README preview
+# shows a button that exists only on that branch as a broken image.
+#
+# Its images come from buttons.halleluja.design, not straight from this
+# repository. Every <img> runs its animation on its own clock, started when that
+# one image arrived, and on a first visit the images of one row arrived up to
+# 1.2 s apart, so the band jumped between buttons instead of travelling. That
+# Worker serves these same files with the delay rewritten against the wall clock
+# at the moment it answers, which puts every image on one schedule however late
+# it loads. It serves any file in .github/assets/download-buttons/ of any
+# junkerderprovinz repository, so a new button needs no change there. Source and
+# measurements: junkerderprovinz/junkerderprovinz, donate/worker/.
+REPO = "arrowloop"
+BUTTON_HOST = "https://buttons.halleluja.design"
+README = os.path.join(HERE, "..", "README.md")
+ROW_OPEN = "<!-- download-buttons: written by scripts/gen_download_buttons.py -->"
+ROW_CLOSE = "<!-- /download-buttons -->"
 
 
 def brand(name):
@@ -172,27 +201,72 @@ def brand(name):
     return path, scale, (GLYPH - width * scale) / 2
 
 
-os.makedirs(OUT, exist_ok=True)
+def read_readme():
+    """README.md and where its row sits, checked before anything is written.
+
+    Checked first, so a README without its markers stops the run while the
+    buttons are still untouched, instead of leaving them and the row out of
+    step. REPO is checked against the links for the same reason: copied into
+    another repository and left unchanged, it would quietly show this
+    repository's buttons there.
+    """
+    text = io.open(README, encoding="utf-8", newline="").read()
+    start = text.find(ROW_OPEN)
+    end = text.find(ROW_CLOSE, start) if start >= 0 else -1
+    if end < 0:
+        raise SystemExit("README.md has no %s ... %s around the button row" % (ROW_OPEN, ROW_CLOSE))
+    for slug, *_, href in BUTTONS:
+        if "/%s/" % REPO not in href:
+            raise SystemExit("REPO is %r, but %s leads to %s" % (REPO, slug, href))
+    return text, start, end
+
+
+def write_readme(text, start, end):
+    """Replace the row between the markers.
+
+    The separator stands on its own line, two spaces in, because that is the
+    gap GAP_PX was measured on. The width is RENDER_PX for the same reason. The
+    row takes the line ending of its own marker line.
+    """
+    nl = "\r\n" if text[start:].split("\n", 1)[0].endswith("\r") else "\n"
+    row = [ROW_OPEN, '<p align="center">']
+    for index, (slug, *_, alt, href) in enumerate(BUTTONS):
+        if index:
+            row.append("  &nbsp;")
+        row.append('  <a href="%s"><img src="%s/%s/button-%s.svg" alt="%s" width="%g"></a>'
+                   % (escape(href), BUTTON_HOST, REPO, slug, escape(alt), RENDER_PX))
+    row.append("</p>")
+    io.open(README, "w", encoding="utf-8", newline="").write(text[:start] + nl.join(row) + nl + text[end:])
+    print("wrote", os.path.normpath(README), "row of", len(BUTTONS))
+
+
 # The delay is the button's POSITION times STEP, computed here rather than
 # written into the table above: a hand-kept column of seconds is a column
 # somebody reorders the row without touching, and then the band hands off into
 # nothing.
 #
-# THIS ROW STARTS AT ZERO because it is the FIRST row on the page. One band
-# works its way down the README rather than one band per row running beside the
-# others: the whole first row, then the whole second. The give row below carries
-# the other half of that schedule - a fixed 3.8s offset, which is when THIS row,
-# the longest in the house at four buttons, has finished. It has to be a fixed
-# number rather than a derived one, because those three buttons are one shared
-# asset referenced by twenty-six repositories and cannot know what a given
-# README puts above them.
-for index, (slug, mark, bg, ink, head, sub_text, alt) in enumerate(BUTTONS):
+# THIS ROW STARTS AFTER THE GIVE ROW, because in this README the give row stands
+# ABOVE it. One band works its way down the page, the whole first row and then
+# the whole second, and the give row cannot move to make room: its three buttons
+# are one shared asset referenced by every README in the house, with a fixed
+# place in the loop (3.8 s in, then one step per button at their own rendered
+# width of 160px plus the same measured gap). So this row takes the slot a
+# fourth give button would have had, and what is left of the seven seconds is
+# the pause before the band comes back to the top. Starting at zero instead, as
+# a row that stands first on its page does, ran the band up the page here.
+GIVE_START = 3.8
+GIVE_STEP = (160.0 + GAP_PX) / SPEED
+ROW_START = GIVE_START + 3 * GIVE_STEP
+
+readme = read_readme()
+os.makedirs(OUT, exist_ok=True)
+for index, (slug, mark, bg, ink, head, sub_text, alt, _href) in enumerate(BUTTONS):
     path, scale, inset = brand(mark)
     svg = TEMPLATE.format(
         w=W, h=H, r=R, bg=bg, ink=ink, gx=round(GX + inset, 2), gy=round(GY, 2),
         scale=round(scale, 5), path=path, font=FONT,
-        head=head, sub_text=sub_text, alt=alt,
-        delay="%.3f" % (STEP * index), cycle="%g" % CYCLE,
+        head=head, sub_text=sub_text, alt=escape(alt),
+        delay="%.3f" % ((ROW_START + STEP * index) % CYCLE), cycle="%g" % CYCLE,
         pass_pct="%.2f" % PASS_PCT, band_w="%.1f" % SHEEN_W,
         band_h="%g" % SHEEN_H, band_start="%.1f" % SHEEN_FROM,
         band_end="%.1f" % SHEEN_TO,
@@ -200,3 +274,4 @@ for index, (slug, mark, bg, ink, head, sub_text, alt) in enumerate(BUTTONS):
     out = os.path.join(OUT, "button-" + slug + ".svg")
     io.open(out, "w", encoding="utf-8", newline="\n").write(svg)
     print("wrote", os.path.normpath(out), len(svg), "bytes")
+write_readme(*readme)

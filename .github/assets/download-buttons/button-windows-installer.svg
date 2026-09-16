@@ -28,7 +28,7 @@
        its left edge. Without it the stagger that makes the row read as one band
        also parks a motionless band on every button but the first, for as long
        as that button's delay, every time the page loads. */
-    .band { animation: pass 7s linear 0.000s infinite backwards; }
+    .band { animation: pass 7s linear 5.878s infinite backwards; }
     @media (prefers-reduced-motion: reduce) {
       .band { animation: none; opacity: 0; }
     }
