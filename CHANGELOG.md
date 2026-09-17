@@ -8,6 +8,22 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## Unreleased
+
+## ✨ Added
+
+- **The Android app is on every release.** Two APKs, `arm64` for a phone and `x86_64` for an emulator, each once with the version in its name and once without, so the README can link the newest one directly.
+- **A second row of download buttons, Docker and Android.** The Docker button opens the container image's page, the Android button downloads the newest APK.
+
+## 🎨 Design
+
+- **One band crosses all three rows of buttons in turn**: the donation row, the desktop row, then the new row. Three rows need slightly more than seven seconds of travel, so this page's loop is 8.2 seconds, at the house speed and with the house pause.
+
+## ⚡ Improved
+
+- **Released APKs are signed with the project's own key.** CI builds carried Android's public debug key, which anybody can use to sign an update that installs over the real app. A release now signs with a key from the repository secrets and fails if any APK still carries the debug certificate. A copy installed from an earlier CI build has to be uninstalled once.
+- **A released APK says which release it is.** Its version and version code come from the tag rather than from whatever `app.json` said last.
+
 ## v0.7.4
 
 The crypto window's way out is a button in its row again, with its words and its glyph.

@@ -26,7 +26,7 @@ on:
   workflow_dispatch:
     inputs:
       signed:
-        description: "Sign with the release key and check the certificate, publishing nothing"
+        description: "Sign with the release key and check the certificate; no artifact, no release"
         type: boolean
         default: false
 
@@ -42,10 +42,18 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
-      # Signed with the release key on a release tag, and on a dispatched run
+      # A release is a PUSHED version tag. A run dispatched on a tag ref is a
+      # test like any other dispatch and publishes nothing.
+      RELEASE: ${{ github.event_name == 'push' && github.ref_type == 'tag' && 'true' || 'false' }}
+      # Signed with the release key for a release, and on a dispatched run
       # that asks for it, so the signing can be tried on a branch before a
       # release depends on it. Every other build keeps the public debug key.
-      SIGNED: ${{ (github.ref_type == 'tag' || inputs.signed == true) && 'true' || 'false' }}
+      SIGNED: ${{ ((github.event_name == 'push' && github.ref_type == 'tag') || inputs.signed == true) && 'true' || 'false' }}
+      # The release certificate, as apksigner prints its SHA-256. Not a secret:
+      # it is in every APK the key signs. Pinned so that a wrong keystore in the
+      # secrets fails the build instead of publishing APKs no later release can
+      # update.
+      RELEASE_CERT_SHA256: 13477be473caf942e1c6d0fabee878776f32c849c2341c2541893a3474ab10e6
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
@@ -233,11 +241,12 @@ jobs:
       # from the same three numbers and rises with every release. Edited on the
       # runner only, never committed.
       - name: Stamp the version from the tag
-        if: github.ref_type == 'tag'
+        if: env.RELEASE == 'true'
         working-directory: mobile
         run: |
           node -e '
             const fs = require("fs");
+            if (!/^v[0-9]+[.][0-9]+[.][0-9]+$/.test(process.env.GITHUB_REF_NAME)) throw new Error(process.env.GITHUB_REF_NAME + " is not a vX.Y.Z tag");
             const version = process.env.GITHUB_REF_NAME.slice(1);
             const [major, minor, patch] = version.split(".").map(Number);
             if (minor > 99 || patch > 99) throw new Error(version + " does not fit versionCode = major*10000 + minor*100 + patch");
@@ -325,13 +334,20 @@ jobs:
             certs=$("$apksigner" verify --print-certs "$apk")
             echo "$apk"
             echo "$certs"
-            if printf '%s' "$certs" | grep -qi 'CN=Android Debug'; then
-              echo "::error::$apk is signed with the public Android debug key. Check the ANDROID_KEYSTORE_* secrets and mobile/plugins/withEngine.js."
+            # Every signer line, whichever scheme prints it: "Signer #1 certificate
+            # SHA-256 digest" and "V3.0 Signer: certificate SHA-256 digest" are
+            # both in use. More than one distinct key is a mismatch too.
+            digests=$(echo "$certs" | grep -oE 'certificate SHA-256 digest: [0-9a-f]{64}' | awk '{print $4}' | sort -u)
+            if [ "$digests" != "$RELEASE_CERT_SHA256" ]; then
+              echo "::error::$apk is signed by $digests, not by the release certificate $RELEASE_CERT_SHA256. Check the ANDROID_KEYSTORE_* secrets and mobile/plugins/withEngine.js."
               exit 1
             fi
           done
 
+      # Not from a signed test run: an APK carrying the release key is
+      # published by a release and nowhere else.
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: env.RELEASE == 'true' || env.SIGNED != 'true'
         with:
           name: arrowloop-mobile
           path: mobile/out/*.apk
@@ -342,7 +358,7 @@ jobs:
   # who wants the app without building it.
   attach:
     needs: apk
-    if: github.ref_type == 'tag'
+    if: github.event_name == 'push' && github.ref_type == 'tag'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
