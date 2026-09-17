@@ -22,9 +22,10 @@ permissions:
   packages: write
 
 # The name is written out rather than taken from github.workflow, which is the
-# CALLER's name when release.yml calls this: the app build would otherwise land
-# in the same group and the two would cancel each other. The event is in it for
-# the same reason a test dispatch must not cancel a real release.
+# CALLER's name when release.yml calls this. Two runs that reach this workflow
+# through different doors would otherwise share one group and cancel each other,
+# and the event keeps a dispatched test apart from a real release on the same
+# ref.
 concurrency:
   group: container-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
@@ -136,6 +137,12 @@ jobs:
         uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6
         with:
           images: ${{ env.IMAGE }}
+          # WITHOUT THIS the action adds `latest` on its own: its default is
+          # latest=auto, which tags every semver build that is not a
+          # pre-release. That is what it did here, so the guard this file used
+          # to carry decided nothing, and an unreleased build took `latest`
+          # before any release existed.
+          flavor: latest=false
           # The tip of the default branch gets `edge`. It is built, smoke
           # tested and pullable, but nobody lands on it without asking for it by
           # name: `latest` means the newest released version, and release.yml

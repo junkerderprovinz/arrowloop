@@ -62,19 +62,31 @@ jobs:
 
   # The image for this version, with its smoke test. It carries no `latest`:
   # that one is moved below, once the release is out.
+  #
+  # Only for a real release: container.yml pushes whatever it builds, and a
+  # dispatched run of this workflow publishes nothing.
   container:
     needs: notes
+    if: github.event_name == 'push' && github.ref_type == 'tag'
     permissions:
       contents: read
       packages: write
     uses: ./.github/workflows/container.yml
 
+  # The image is one of the things the README offers, so a release waits for it
+  # like it waits for the bundles. `always()` because `container` is skipped on
+  # a dispatched run, and a skipped job would otherwise take this one with it.
   publish:
-    needs: [desktop, mobile]
+    needs: [desktop, mobile, container]
+    if: always() && needs.desktop.result == 'success' && needs.mobile.result == 'success' && (needs.container.result == 'success' || needs.container.result == 'skipped')
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
       contents: write
+    outputs:
+      # Decided by publish-release.sh, so image-latest below does not decide it
+      # a second time.
+      latest: ${{ steps.publish.outputs.latest }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
@@ -118,6 +130,7 @@ jobs:
       # Only from a pushed tag; a dispatched run stops after packaging. The
       # checks before publishing, and the rule for "Latest", are in the script.
       - name: Publish
+        id: publish
         if: github.event_name == 'push' && github.ref_type == 'tag'
         env:
           GH_TOKEN: ${{ github.token }}
@@ -125,42 +138,32 @@ jobs:
 
   # `latest` on the image means "the newest released version", and nothing else.
   #
-  # It moves here rather than in the build, and only after the release exists,
-  # by the same rule publish-release.sh uses for the "Latest" badge: the badge,
-  # the download buttons and `docker pull …:latest` then always name the same
-  # version. A tag whose release never came out never becomes `latest`, and
-  # re-cutting an older version never drags it back. Pointing `latest` at the
-  # version just pushed copies the manifest in the registry; nothing is rebuilt.
+  # It moves here rather than in the build, and only once the release exists and
+  # carries the "Latest" badge: the badge, the download buttons and
+  # `docker pull …:latest` then always name the same version, because the answer
+  # is the one publish-release.sh already gave. A version whose release never
+  # came out cannot take it, and re-cutting an older one cannot drag it back.
+  # Pointing `latest` at the version just pushed copies the manifest in the
+  # registry; nothing is rebuilt, and imagetools needs no builder for it.
   image-latest:
     needs: [publish, container]
-    if: github.event_name == 'push' && github.ref_type == 'tag'
+    if: needs.publish.outputs.latest == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
       contents: read
       packages: write
     steps:
-      - uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4
-
       - uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Move latest if this is the newest published release
+      - name: Move latest to this release
         env:
-          GH_TOKEN: ${{ github.token }}
           IMAGE: ghcr.io/${{ github.repository }}
         run: |
-          set -euo pipefail
-          published=$(gh release list --repo "$GITHUB_REPOSITORY" --exclude-drafts --limit 1000 --json tagName -q '.[].tagName')
-          newest=$(printf '%s\n' "$published" | grep -E '^v[0-9]+[.][0-9]+[.][0-9]+$' | sort -V | tail -1)
-          echo "this tag: ${GITHUB_REF_NAME}"
-          echo "newest:   ${newest}"
-          if [ "$newest" != "${GITHUB_REF_NAME}" ]; then
-            echo "-> latest stays where it is"
-            exit 0
-          fi
+          set -eu
           docker buildx imagetools create --tag "${IMAGE}:latest" "${IMAGE}:${GITHUB_REF_NAME#v}"
-          echo "-> ${IMAGE}:latest is ${GITHUB_REF_NAME#v}"
+          echo "${IMAGE}:latest is ${GITHUB_REF_NAME#v}"
