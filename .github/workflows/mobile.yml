@@ -34,8 +34,11 @@ on:
 permissions:
   contents: read
 
+# The event is part of the group. Called by release.yml, github.workflow is
+# "Release", so without it a test dispatch of release.yml on a tag ref would
+# share the group of the real release on that tag and cancel its app build.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -346,11 +349,13 @@ jobs:
           done
 
       # Not from a signed test run: an APK carrying the release key is
-      # published by a release and nowhere else.
+      # published by a release and nowhere else. A release keeps its artifact as
+      # long as the desktop bundles, so re-running a failed publish later still
+      # finds both.
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: env.RELEASE == 'true' || env.SIGNED != 'true'
         with:
           name: arrowloop-mobile
           path: mobile/out/*.apk
           if-no-files-found: error
-          retention-days: 14
+          retention-days: ${{ env.RELEASE == 'true' && 90 || 14 }}
