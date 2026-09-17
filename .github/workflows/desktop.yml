@@ -1,10 +1,11 @@
 name: Desktop build
 
+# Builds the three desktop bundles and keeps them as artifacts. It attaches
+# nothing: on a release tag release.yml calls this, waits for it and for the
+# app, and creates the release with every file at once.
 on:
   workflow_dispatch:
-  push:
-    tags:
-      - "v[0-9]+.[0-9]+.[0-9]+"
+  workflow_call:
 
 permissions:
   contents: read
@@ -178,86 +179,3 @@ jobs:
           name: arrowloop-${{ matrix.slug }}
           path: desktop/build/bin/*
           if-no-files-found: error
-
-  # Without this the bundles are built on every tag and then thrown away when
-  # the artifact expires: green CI, and nobody outside Actions can download the
-  # desktop app at all.
-  attach:
-    needs: build
-    if: startsWith(github.ref, 'refs/tags/v')
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    permissions:
-      contents: write
-    steps:
-      # Only the publishing script and its list, and before the download:
-      # checkout empties the workspace it lands in.
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-        with:
-          sparse-checkout: .github/scripts
-
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
-        with:
-          path: bundles
-
-      - name: Package
-        run: |
-          set -eu
-          mkdir -p dist
-          cp bundles/arrowloop-windows-amd64/ArrowLoop.exe \
-            "dist/arrowloop-${GITHUB_REF_NAME}-windows-amd64-portable.exe"
-          cp bundles/arrowloop-windows-amd64/*-installer.exe \
-            "dist/arrowloop-${GITHUB_REF_NAME}-windows-amd64-installer.exe"
-          cp bundles/arrowloop-macos-universal/ArrowLoop.dmg \
-            "dist/arrowloop-${GITHUB_REF_NAME}-macos-universal.dmg"
-          cp bundles/arrowloop-linux-amd64/ArrowLoop \
-            "dist/arrowloop-${GITHUB_REF_NAME}-linux-amd64"
-          chmod +x "dist/arrowloop-${GITHUB_REF_NAME}-linux-amd64"
-
-          # A second copy of each bundle under a name with no version in it.
-          #
-          # This is what makes a download button in the README possible at all.
-          # GitHub serves the newest release's asset from
-          # /releases/latest/download/<EXACT NAME>, and there is no pattern, no
-          # wildcard and no "whatever matches" - so a name carrying the version
-          # can only ever be linked for the one release it belongs to, and every
-          # button in the README would go stale on the next tag.
-          #
-          # A copy rather than a rename, because the versioned name is the one
-          # worth keeping: a folder holding three downloads called
-          # arrowloop-windows-installer.exe is a folder nobody can tell apart.
-          # The cost is the upload, and a public release has no storage bill.
-          for f in dist/arrowloop-"${GITHUB_REF_NAME}"-*; do
-            cp "$f" "$(echo "$f" | sed "s/-${GITHUB_REF_NAME}-/-/")"
-          done
-          ls -lh dist
-
-      # The release is expected to exist by the time these are ready, as a
-      # draft, but a desktop build can easily outlast release creation and a
-      # runner queue can invert the order further. Waiting beats racing. gh
-      # finds a draft by its tag as well.
-      - name: Wait for the release
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -eu
-          for i in $(seq 1 30); do
-            if gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-              exit 0
-            fi
-            sleep 10
-          done
-          echo "no release for $GITHUB_REF_NAME after five minutes" >&2
-          exit 1
-
-      - name: Attach the bundles
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh release upload "$GITHUB_REF_NAME" dist/* --repo "$GITHUB_REPOSITORY" --clobber
-
-      # Public once the APKs from mobile.yml are on it too, whichever of the two
-      # jobs finishes last. The list is .github/scripts/release-assets.txt.
-      - name: Publish the release when it is complete
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: bash .github/scripts/publish-when-complete.sh

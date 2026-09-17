@@ -1,24 +1,40 @@
 name: Release
 
-# Fires on the version tag and publishes the hand-written notes for it. There is
-# deliberately no auto-generated changelog: a list of commit subjects is a
-# record of what was typed, not of what changed for the person reading it.
+# Fires on the version tag and publishes the hand-written notes for it, with
+# every download attached. There is deliberately no auto-generated changelog: a
+# list of commit subjects is a record of what was typed, not of what changed for
+# the person reading it.
+#
+# THE RELEASE COMES LAST. The README's download buttons point at
+# /releases/latest/download/<name>, and a release is "latest" from the moment it
+# is published. It used to be published straight away, while desktop.yml and
+# mobile.yml attached their files twenty minutes and more later, each on its
+# own, so every release left the buttons answering 404 for that long. Now this
+# workflow runs both builds and creates the release only when both are done,
+# with all the files in one command: gh makes it a draft, uploads, and publishes
+# it complete. A build that fails leaves no release at all; re-running the
+# failed jobs finishes it.
 on:
   push:
     tags:
       - "v[0-9]+.[0-9]+.[0-9]+"
+  # Runs both builds from a branch and packages the files, and releases
+  # nothing, so a change to this chain can be tried before a tag depends on it.
+  workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  release:
+  # Before forty minutes of builds rather than after them.
+  notes:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Check that the notes exist
+        if: github.ref_type == 'tag'
         run: |
           set -eu
           notes=".github/release-notes/${GITHUB_REF_NAME}.md"
@@ -28,24 +44,103 @@ jobs:
             exit 1
           fi
 
-      # AS A DRAFT. desktop.yml and mobile.yml attach the downloads twenty
-      # minutes and more later, and the README's buttons point at
-      # /releases/latest/download/. Published at once, the release was "latest"
-      # with nothing on it and every button answered 404 for that long. The
-      # draft goes public when the last of those uploads is done; see
-      # .github/scripts/publish-when-complete.sh. A re-run finds the draft it
-      # made rather than adding a second one.
-      - name: Create the release as a draft
+  desktop:
+    needs: notes
+    uses: ./.github/workflows/desktop.yml
+
+  mobile:
+    needs: notes
+    uses: ./.github/workflows/mobile.yml
+    # The release key, for a signed APK.
+    secrets: inherit
+
+  publish:
+    needs: [desktop, mobile]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      # Every artifact of this run, each in a folder named after it.
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          path: bundles
+
+      # The version in every name, so a download in somebody's folder still says
+      # what it is. And a second copy of each without it, which is what makes a
+      # download button possible at all: GitHub serves the newest release's asset
+      # from /releases/latest/download/<EXACT NAME>, with no pattern and no
+      # wildcard, so a name carrying the version could only ever be linked for
+      # the one release it belongs to. A copy rather than a rename, because a
+      # folder holding three files called arrowloop-windows-installer.exe is a
+      # folder nobody can tell apart.
+      #
+      # The Android APKs: arm64 is every phone sold in the last decade, x86_64
+      # is an emulator. The README links arm64.
+      - name: Package
+        run: |
+          set -eu
+          v="$GITHUB_REF_NAME"
+          mkdir -p dist
+          cp bundles/arrowloop-windows-amd64/ArrowLoop.exe "dist/arrowloop-${v}-windows-amd64-portable.exe"
+          cp bundles/arrowloop-windows-amd64/*-installer.exe "dist/arrowloop-${v}-windows-amd64-installer.exe"
+          cp bundles/arrowloop-macos-universal/ArrowLoop.dmg "dist/arrowloop-${v}-macos-universal.dmg"
+          cp bundles/arrowloop-linux-amd64/ArrowLoop "dist/arrowloop-${v}-linux-amd64"
+          chmod +x "dist/arrowloop-${v}-linux-amd64"
+          cp bundles/arrowloop-mobile/arrowloop-app-arm64-v8a-release.apk "dist/arrowloop-${v}-android-arm64.apk"
+          cp bundles/arrowloop-mobile/arrowloop-app-x86_64-release.apk "dist/arrowloop-${v}-android-x86_64.apk"
+          for f in dist/arrowloop-"${v}"-*; do
+            cp "$f" "$(echo "$f" | sed "s/-${v}-/-/")"
+          done
+          ls -lh dist
+
+      # Only from a pushed tag. A dispatched run stops after packaging.
+      #
+      # A DRAFT FOR THIS TAG is what a failed earlier attempt leaves behind: it
+      # is private and its files belong to that attempt, so it goes, and the
+      # files below are the only ones the release carries. A PUBLISHED release
+      # for this tag stops the run. Re-cutting a published version is a
+      # deliberate act: delete that release first.
+      #
+      # "LATEST" only when no published release has a newer plain vX.Y.Z tag, so
+      # re-cutting an older version does not pull the badge and the download
+      # buttons back to it. Counted over published releases rather than tags: a
+      # newer tag whose release never came out must not keep this one from being
+      # the newest that exists.
+      #
+      # --target is the commit that was built. If the tag vanished while this
+      # ran, gh would otherwise let GitHub recreate it on the default branch.
+      - name: Publish
+        if: github.event_name == 'push' && github.ref_type == 'tag'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          set -eu
-          if gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            echo "$GITHUB_REF_NAME already has a release"
-            exit 0
+          set -euo pipefail
+          releases=$(gh api --paginate "repos/$GITHUB_REPOSITORY/releases?per_page=100" \
+            -q '.[] | select(.tag_name == env.GITHUB_REF_NAME) | "\(.id) \(.draft)"')
+          while read -r id draft; do
+            [ -n "$id" ] || continue
+            if [ "$draft" != "true" ]; then
+              echo "::error::$GITHUB_REF_NAME is already published. To re-cut it, delete that release first."
+              exit 1
+            fi
+            gh api -X DELETE "repos/$GITHUB_REPOSITORY/releases/$id"
+            echo "removed the draft $id an earlier attempt left"
+          done <<< "$releases"
+
+          newest=$( { gh release list --repo "$GITHUB_REPOSITORY" --exclude-drafts --limit 1000 \
+            --json tagName -q '.[].tagName'; echo "$GITHUB_REF_NAME"; } \
+            | grep -E '^v[0-9]+[.][0-9]+[.][0-9]+$' | sort -V | tail -1)
+          latest=false
+          if [ "$newest" = "$GITHUB_REF_NAME" ]; then
+            latest=true
           fi
+
           gh release create "$GITHUB_REF_NAME" \
             --repo "$GITHUB_REPOSITORY" \
-            --draft --verify-tag \
+            --verify-tag --target "$GITHUB_SHA" \
             --title "$GITHUB_REF_NAME" \
-            --notes-file ".github/release-notes/${GITHUB_REF_NAME}.md"
+            --notes-file ".github/release-notes/${GITHUB_REF_NAME}.md" \
+            --latest="$latest" \
+            dist/*
+          echo "published $GITHUB_REF_NAME, latest=$latest"

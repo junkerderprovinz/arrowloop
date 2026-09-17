@@ -16,10 +16,11 @@ on:
       - "go.sum"
       - "android/debug.keystore"
       - ".github/workflows/mobile.yml"
-    # A release tag builds the APKs the release publishes, signed with the
-    # release key. A tag push ignores the paths above.
-    tags:
-      - "v[0-9]+.[0-9]+.[0-9]+"
+  # On a release tag release.yml calls this and publishes the APKs it keeps as
+  # an artifact. Called from a pushed tag, github.event_name is that push, so
+  # RELEASE and SIGNED below hold exactly as they did when this ran on the tag
+  # itself.
+  workflow_call:
   pull_request:
     paths:
       - "mobile/**"
@@ -353,69 +354,3 @@ jobs:
           path: mobile/out/*.apk
           if-no-files-found: error
           retention-days: 14
-
-  # The APKs on the release, for the README's download button and for anybody
-  # who wants the app without building it.
-  attach:
-    needs: apk
-    if: github.event_name == 'push' && github.ref_type == 'tag'
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    permissions:
-      contents: write
-    steps:
-      # Only the publishing script and its list, and before the download:
-      # checkout empties the workspace it lands in.
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-        with:
-          sparse-checkout: .github/scripts
-
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
-        with:
-          name: arrowloop-mobile
-          path: apk
-
-      # Named like the desktop bundles: the version in the name, so a download
-      # in somebody's folder still says what it is, and a second copy without
-      # it, because /releases/latest/download/ needs a name that does not
-      # change from one release to the next.
-      - name: Package
-        run: |
-          set -eu
-          mkdir -p dist
-          cp apk/arrowloop-app-arm64-v8a-release.apk "dist/arrowloop-${GITHUB_REF_NAME}-android-arm64.apk"
-          cp apk/arrowloop-app-x86_64-release.apk "dist/arrowloop-${GITHUB_REF_NAME}-android-x86_64.apk"
-          for f in dist/arrowloop-"${GITHUB_REF_NAME}"-*; do
-            cp "$f" "$(echo "$f" | sed "s/-${GITHUB_REF_NAME}-/-/")"
-          done
-          ls -lh dist
-
-      # release.yml creates the release, as a draft, within a minute, and this
-      # build takes far longer, but a runner queue can turn that round. gh finds
-      # a draft by its tag as well.
-      - name: Wait for the release
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -eu
-          for i in $(seq 1 30); do
-            if gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-              exit 0
-            fi
-            sleep 10
-          done
-          echo "no release for $GITHUB_REF_NAME after five minutes" >&2
-          exit 1
-
-      - name: Attach the APKs
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh release upload "$GITHUB_REF_NAME" dist/* --repo "$GITHUB_REPOSITORY" --clobber
-
-      # Public once the desktop bundles from desktop.yml are on it too,
-      # whichever of the two jobs finishes last. The list is
-      # .github/scripts/release-assets.txt.
-      - name: Publish the release when it is complete
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: bash .github/scripts/publish-when-complete.sh

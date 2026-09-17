@@ -12,8 +12,9 @@ The full notes for each release are in
 
 ## ⚡ Improved
 
-- **A release goes public only once its downloads are attached.** The README's buttons lead to `/releases/latest/download/`, and a release used to be "latest" from the moment `release.yml` created it, twenty minutes and more before `desktop.yml` and `mobile.yml` attached the files, so the buttons answered 404 for that long. `release.yml` now creates a draft, and whichever of the two jobs finishes last publishes it, once every file in `.github/scripts/release-assets.txt` is uploaded.
-- **"Latest" goes only to the newest plain vX.Y.Z tag**, so re-cutting an older version publishes it without pulling the badge and the download buttons back.
+- **A release goes public only with its downloads attached.** The README's buttons lead to `/releases/latest/download/`, and a release used to be "latest" from the moment it was created, twenty minutes and more before `desktop.yml` and `mobile.yml` attached their files, so the buttons answered 404 for that long. `release.yml` now runs both builds itself and creates the release once both are done, with every file in the same command. A failed build leaves no half-finished release behind.
+- **"Latest" goes only to the newest published version**, so re-cutting an older one does not pull the badge and the download buttons back to it.
+- **The release workflow can be dispatched**: it builds everything, packages the files and publishes nothing.
 
 ## v0.7.5
 
