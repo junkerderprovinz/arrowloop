@@ -15,7 +15,7 @@
   <style>
     @keyframes pass {
       0%       { transform: translateX(-226.6px); }
-      18.16%   { transform: translateX(946.6px); }
+      15.51%   { transform: translateX(946.6px); }
       100%     { transform: translateX(946.6px); }
     }
     /* linear, not eased: an eased pass varies the speed inside each button, so
@@ -28,7 +28,7 @@
        its left edge. Without it the stagger that makes the row read as one band
        also parks a motionless band on every button but the first, for as long
        as that button's delay, every time the page loads. */
-    .band { animation: pass 7s linear 5.878s infinite backwards; }
+    .band { animation: pass 8.196s linear 2.078s infinite backwards; }
     @media (prefers-reduced-motion: reduce) {
       .band { animation: none; opacity: 0; }
     }

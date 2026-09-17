@@ -25,7 +25,8 @@ const {
  *  3. The service, the receiver, and the loopback exception in the manifest.
  *  4. The packaging rules that let a 79 MB binary be EXECUTED rather than
  *     loaded, which is the whole reason this app can exist.
- *  5. One stable debug key, so a build installs over the previous one.
+ *  5. One stable debug key, so a build installs over the previous one, and a
+ *     release key from the environment for the APKs a release publishes.
  */
 
 const PACKAGE = "design.halleluja.arrowloop";
@@ -478,6 +479,60 @@ $1`,
       );
       if (gradle === before) {
         throw new Error("withEngine: could not find the debug signing config to repoint");
+      }
+    }
+
+    // A RELEASE key for the APKs a release publishes, and the debug key above
+    // for everything else. The debug key is public, so an APK signed with it is
+    // one anybody can build an "update" for that Android accepts; and the key
+    // can never be swapped later without every installed copy being
+    // uninstalled first, because to Android a different key is a different app.
+    //
+    // The credentials come from the environment, never from this repository:
+    //
+    //   ARROWLOOP_ANDROID_KEYSTORE        path to the keystore
+    //   ARROWLOOP_ANDROID_STORE_PASSWORD  its password
+    //   ARROWLOOP_ANDROID_KEY_ALIAS       the key inside it
+    //   ARROWLOOP_ANDROID_KEY_PASSWORD    that key's password
+    //
+    // Unset or empty, the release build signs with the debug key as before, so
+    // a laptop build stays a one-command build. That fallback is not the safety
+    // net: mobile.yml refuses a signed build without the secrets and then reads
+    // the certificate out of the finished APK.
+    const RELEASE_KEY = "// arrowloop: release signing from the environment";
+    if (!gradle.includes(RELEASE_KEY)) {
+      const before = gradle;
+      gradle = gradle.replace(
+        /(\n\s*signingConfigs\s*\{)/,
+        `$1
+        release {
+            ${RELEASE_KEY}
+            // Groovy truth rather than a null check: the workflow passes an
+            // EMPTY string on a build that is not signed, and "" is not null.
+            def ks = System.getenv('ARROWLOOP_ANDROID_KEYSTORE')
+            if (ks) {
+                storeFile file(ks)
+                storePassword System.getenv('ARROWLOOP_ANDROID_STORE_PASSWORD')
+                keyAlias System.getenv('ARROWLOOP_ANDROID_KEY_ALIAS')
+                keyPassword System.getenv('ARROWLOOP_ANDROID_KEY_PASSWORD')
+                // v3 is the scheme that supports key rotation, the one way a
+                // lost or leaked key could ever be replaced without an
+                // uninstall. minSdk is 26, so nothing reads v1.
+                enableV2Signing true
+                enableV3Signing true
+            }
+        }`,
+      );
+      const releaseType = /(\n\s*release\s*\{\s*\n(?:\s*\/\/[^\n]*\n)*\s*)signingConfig signingConfigs\.debug/;
+      gradle = gradle.replace(
+        releaseType,
+        "$1signingConfig System.getenv('ARROWLOOP_ANDROID_KEYSTORE') ? signingConfigs.release : signingConfigs.debug",
+      );
+      if (gradle === before || !gradle.includes(RELEASE_KEY) || !gradle.includes("? signingConfigs.release : signingConfigs.debug")) {
+        // Both edits or a stopped build: half of this is a release config
+        // nothing uses, or a release build pointing at a config that does not
+        // exist.
+        throw new Error("withEngine: could not find signingConfigs and the release buildType's debug signing - the Expo template changed");
       }
     }
 

@@ -16,10 +16,19 @@ on:
       - "go.sum"
       - "android/debug.keystore"
       - ".github/workflows/mobile.yml"
+    # A release tag builds the APKs the release publishes, signed with the
+    # release key. A tag push ignores the paths above.
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
   pull_request:
     paths:
       - "mobile/**"
   workflow_dispatch:
+    inputs:
+      signed:
+        description: "Sign with the release key and check the certificate, publishing nothing"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -32,6 +41,11 @@ jobs:
   apk:
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    env:
+      # Signed with the release key on a release tag, and on a dispatched run
+      # that asks for it, so the signing can be tried on a branch before a
+      # release depends on it. Every other build keeps the public debug key.
+      SIGNED: ${{ (github.ref_type == 'tag' || inputs.signed == true) && 'true' || 'false' }}
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
@@ -190,6 +204,50 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@ed408507eac070d1f99cc633dbcf757c94c7933a # v4
 
+      # Before anything is generated, so a missing secret stops the run in
+      # seconds rather than after the build. A release APK signed with the
+      # debug key instead is the one mistake here with no cheap correction:
+      # anybody can sign an update for it, and changing the key later means
+      # every installed copy has to be uninstalled first.
+      - name: The release key is available
+        if: env.SIGNED == 'true'
+        env:
+          KS: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KS_PASS: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASS: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          missing=""
+          [ -n "$KS" ] || missing="$missing ANDROID_KEYSTORE_BASE64"
+          [ -n "$KS_PASS" ] || missing="$missing ANDROID_KEYSTORE_PASSWORD"
+          [ -n "$KEY_ALIAS" ] || missing="$missing ANDROID_KEY_ALIAS"
+          [ -n "$KEY_PASS" ] || missing="$missing ANDROID_KEY_PASSWORD"
+          if [ -n "$missing" ]; then
+            echo "::error::missing repository secret(s):$missing - a published APK must not be signed with the public debug key."
+            exit 1
+          fi
+
+      # The APK carries the release's version, not whatever app.json last said:
+      # otherwise the phone's app info names one version and the release page
+      # another. versionCode is what Android orders updates by, so it is derived
+      # from the same three numbers and rises with every release. Edited on the
+      # runner only, never committed.
+      - name: Stamp the version from the tag
+        if: github.ref_type == 'tag'
+        working-directory: mobile
+        run: |
+          node -e '
+            const fs = require("fs");
+            const version = process.env.GITHUB_REF_NAME.slice(1);
+            const [major, minor, patch] = version.split(".").map(Number);
+            if (minor > 99 || patch > 99) throw new Error(version + " does not fit versionCode = major*10000 + minor*100 + patch");
+            const app = JSON.parse(fs.readFileSync("app.json", "utf8"));
+            app.expo.version = version;
+            app.expo.android.versionCode = major * 10000 + minor * 100 + patch;
+            fs.writeFileSync("app.json", JSON.stringify(app, null, 2) + "\n");
+            console.log("version", version, "versionCode", app.expo.android.versionCode);
+          '
+
       # prebuild generates android/ from app.json and the plugins. It is not
       # committed, so this is the only place it exists - which is what keeps
       # plugins/withEngine.js honest: an edit that is not in the plugin does
@@ -207,6 +265,16 @@ jobs:
           cp -r mobile/native/jniLibs/* mobile/android/app/src/main/jniLibs/
           ls -la mobile/android/app/src/main/jniLibs/*/
 
+      # Outside the workspace, so nothing archived later can sweep it up.
+      - name: Unpack the release key
+        if: env.SIGNED == 'true'
+        env:
+          KS: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          umask 077
+          printf '%s' "$KS" | base64 -d > "$RUNNER_TEMP/release.jks"
+          test -s "$RUNNER_TEMP/release.jks"
+
       # RELEASE and not debug, and that is not about optimisation. A React
       # Native DEBUG build expects Metro, the development server, to hand it
       # the JavaScript at runtime - installed on a phone with no Metro it shows
@@ -216,9 +284,16 @@ jobs:
       #
       # It is signed with the debug key at android/debug.keystore, which the
       # config plugin points the template at. Stable, so a build installs over
-      # the previous one; public, so it is not fit for publishing anywhere.
+      # the previous one; public, so it is not fit for publishing anywhere. A
+      # signed build gets the release key instead, through the same plugin and
+      # the four variables below.
       - name: Assemble
         working-directory: mobile/android
+        env:
+          ARROWLOOP_ANDROID_KEYSTORE: ${{ env.SIGNED == 'true' && format('{0}/release.jks', runner.temp) || '' }}
+          ARROWLOOP_ANDROID_STORE_PASSWORD: ${{ env.SIGNED == 'true' && secrets.ANDROID_KEYSTORE_PASSWORD || '' }}
+          ARROWLOOP_ANDROID_KEY_ALIAS: ${{ env.SIGNED == 'true' && secrets.ANDROID_KEY_ALIAS || '' }}
+          ARROWLOOP_ANDROID_KEY_PASSWORD: ${{ env.SIGNED == 'true' && secrets.ANDROID_KEY_PASSWORD || '' }}
         run: ./gradlew assembleRelease --no-daemon
 
       - name: Name the outputs
@@ -232,9 +307,84 @@ jobs:
           done
           ls -la out/
 
+      # The variables having been set is no proof the APKs came out signed with
+      # them: a template the plugin stopped matching, or a keystore holding
+      # another alias, ends in a debug-signed file and a green build. The
+      # certificate inside each finished APK is what answers the question.
+      - name: The APKs carry the release key
+        if: env.SIGNED == 'true'
+        working-directory: mobile
+        run: |
+          set -eu
+          apksigner=$(ls -d "$ANDROID_HOME"/build-tools/*/apksigner 2>/dev/null | sort -V | tail -1)
+          if [ -z "$apksigner" ]; then
+            echo "::error::no apksigner in $ANDROID_HOME/build-tools, so nothing can say which key signed these APKs."
+            exit 1
+          fi
+          for apk in out/*.apk; do
+            certs=$("$apksigner" verify --print-certs "$apk")
+            echo "$apk"
+            echo "$certs"
+            if printf '%s' "$certs" | grep -qi 'CN=Android Debug'; then
+              echo "::error::$apk is signed with the public Android debug key. Check the ANDROID_KEYSTORE_* secrets and mobile/plugins/withEngine.js."
+              exit 1
+            fi
+          done
+
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: arrowloop-mobile
           path: mobile/out/*.apk
           if-no-files-found: error
           retention-days: 14
+
+  # The APKs on the release, for the README's download button and for anybody
+  # who wants the app without building it.
+  attach:
+    needs: apk
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: arrowloop-mobile
+          path: apk
+
+      # Named like the desktop bundles: the version in the name, so a download
+      # in somebody's folder still says what it is, and a second copy without
+      # it, because /releases/latest/download/ needs a name that does not
+      # change from one release to the next.
+      - name: Package
+        run: |
+          set -eu
+          mkdir -p dist
+          cp apk/arrowloop-app-arm64-v8a-release.apk "dist/arrowloop-${GITHUB_REF_NAME}-android-arm64.apk"
+          cp apk/arrowloop-app-x86_64-release.apk "dist/arrowloop-${GITHUB_REF_NAME}-android-x86_64.apk"
+          for f in dist/arrowloop-"${GITHUB_REF_NAME}"-*; do
+            cp "$f" "$(echo "$f" | sed "s/-${GITHUB_REF_NAME}-/-/")"
+          done
+          ls -lh dist
+
+      # release.yml creates the release within a minute, and this build takes
+      # far longer, but a runner queue can turn that round.
+      - name: Wait for the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -eu
+          for i in $(seq 1 30); do
+            if gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "no release for $GITHUB_REF_NAME after five minutes" >&2
+          exit 1
+
+      - name: Attach the APKs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "$GITHUB_REF_NAME" dist/* --repo "$GITHUB_REPOSITORY" --clobber

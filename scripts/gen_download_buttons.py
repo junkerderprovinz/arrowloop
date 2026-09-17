@@ -1,8 +1,9 @@
-"""Generate the README's four download buttons from one template.
+"""Generate the README's download buttons from one template.
 
-From a template, because four hand-drawn buttons are four chances to type one
+From a template, because six hand-drawn buttons are six chances to type one
 number differently, and the whole point of a row of them is that they look like
-one control repeated.
+one control repeated. Two rows: the desktop builds, then the container and the
+Android app.
 
 THE GEOMETRY. Height and corner radius are the Buy Me a Coffee button's own
 (245.3 tall, rx 38.2), so a download button and the coffee button rendered at
@@ -24,7 +25,7 @@ the icons; see scripts/brand-paths/). Each mark is a trademark of its owner and
 is used here the one way a trademark may be used without permission: to name the
 thing it refers to. Each button links to a download FOR that platform, the marks
 are unmodified, and nothing here claims endorsement by or affiliation with
-Microsoft, Apple or the Linux Foundation.
+Microsoft, Apple, the Linux Foundation, Docker or Google.
 
 Run from anywhere:  python scripts/gen_download_buttons.py
 Writes .github/assets/download-buttons/*.svg, which are committed, and the
@@ -117,14 +118,13 @@ TEMPLATE = """<?xml version="1.0" encoding="UTF-8"?>
 
 # THE SHEEN, and it is DEFINED ON SCREEN rather than on this canvas.
 #
-# A tilted white band, clipped to the button, crossing once every seven seconds.
-# It is the donation row's own band, and the point is that it is the SAME band
-# there and here: a row of house buttons carries one band that appears to travel
-# the whole row, and two rows on one page have to look like one effect rather
-# than two.
+# A tilted white band, clipped to the button, crossing once per loop. It is the
+# donation row's own band, and the point is that it is the SAME band there and
+# here: a row of house buttons carries one band that appears to travel the whole
+# row, and three rows on one page have to look like one effect rather than three.
 #
-# That is why these three numbers are in SCREEN pixels (see the GitHub style
-# guide, "Der Schein"). Described in canvas units they come out different in
+# That is why these numbers are in SCREEN pixels (see the GitHub style guide,
+# "Der Schein"). Described in canvas units they come out different in
 # every row, because the canvases differ (720 here, 841.9 for the donation row)
 # and so do the widths the READMEs render them at.
 #
@@ -136,7 +136,6 @@ BAND_PX = 33.0     # the band's width on screen
 SPEED = 250.0      # screen pixels per second
 GAP_PX = 13.16     # measured, see above
 RENDER_PX = 195.0  # the width the README asks for
-CYCLE = 7.0        # seconds, one full loop including the rest
 
 SCALE = W / RENDER_PX              # canvas units per screen pixel
 SHEEN_W = BAND_PX * SCALE
@@ -153,13 +152,13 @@ SHEEN_TO = W + CLEAR
 # leaves button n at the moment it enters button n+1.
 PASS = (SHEEN_TO - SHEEN_FROM) / SCALE / SPEED
 STEP = (RENDER_PX + GAP_PX) / SPEED
-PASS_PCT = PASS / CYCLE * 100.0
 
 # slug, brand file, background, ink, heading, second line, accessible name, and
 # where the button leads. The last one lives here with the rest of the button
-# because this file writes the README row too, see write_readme().
+# because this file writes the README rows too, see write_readme(). One list per
+# row, top to bottom.
 RELEASE = "https://github.com/junkerderprovinz/arrowloop/releases/latest/download/"
-BUTTONS = [
+DESKTOP = [
     ("windows-installer", "windows", "#0078d4", "#ffffff", "Windows", "Installer", "Download for Windows, installer",
      RELEASE + "arrowloop-windows-amd64-installer.exe"),
     ("windows-portable", "windows", "#0078d4", "#ffffff", "Windows", "Portable", "Download for Windows, portable",
@@ -173,11 +172,23 @@ BUTTONS = [
     ("linux", "linux", "#fcc624", "#1b1b1b", "Linux", "amd64", "Download for Linux",
      RELEASE + "arrowloop-linux-amd64"),
 ]
+SERVER_AND_PHONE = [
+    # The container has no file to download, so this one leads to the image's
+    # own page, which carries the pull command and every tag.
+    ("docker", "docker", "#1d63ed", "#ffffff", "Docker", "Container", "Run it with Docker",
+     "https://github.com/junkerderprovinz/arrowloop/pkgs/container/arrowloop"),
+    # arm64 only: that is every phone sold in the last decade. The x86_64 APK
+    # is for an emulator and stays on the release page.
+    ("android", "android", "#3ddc84", "#1b1b1b", "Android", "App", "Download the Android app",
+     RELEASE + "arrowloop-android-arm64.apk"),
+]
+ROWS = [DESKTOP, SERVER_AND_PHONE]
+BUTTONS = [button for buttons in ROWS for button in buttons]
 
 # THE README ROWS are written here as well, between markers, so a button added
-# to BUTTONS reaches the page by running this file and nothing else: the
-# download row, and every donation row (the one above it and the one in
-# Support).
+# to ROWS reaches the page by running this file and nothing else: both download
+# rows (one marked block), and every donation row (the one above them and the
+# one in Support).
 #
 # ALL OF THEM SHOW ONE FILE, buttons.svg, each button through its own
 # #svgView fragment inside its own link. The shine is a CSS animation, and a
@@ -186,7 +197,7 @@ BUTTONS = [
 # Firefox reuses an image it already has when GitHub swaps the page without a
 # reload, starting a new clock on it. One file arrives once for every button on
 # the page and all of its <img> are inserted together, so all clocks start
-# together: the donation row, then the download row below it, in order. That is
+# together: the donation row, then the download rows below it, in order. That is
 # also why the donation buttons are copied into this file rather than linked
 # from the profile repository's give.svg: two files would be two arrivals again.
 # Measured on github.com in Firefox, loaded fresh and after in-page navigation.
@@ -341,10 +352,10 @@ def read_readme():
     return text
 
 
-def row(opener, items, nl):
+def row(items, nl):
     """One centred row: a link per button, the separator on its own line, two
     spaces in, because that is the gap GAP_PX was measured on."""
-    lines = [opener, '<p align="center">']
+    lines = ['<p align="center">']
     for index, (href, alt, x, width, height, render) in enumerate(items):
         if index:
             lines.append("  &nbsp;")
@@ -355,44 +366,81 @@ def row(opener, items, nl):
 
 
 def write_readme(text, xs, gives):
-    """Replace every marked row, each taking the line ending of its own marker.
+    """Replace every marked block, each taking the line ending of its own marker.
 
     width AND height are both set, because the image's own proportions are the
     whole sprite's, not the button's.
     """
-    downloads = [(href, alt, xs[i], W, H, RENDER_PX) for i, (_s, *_, alt, href) in enumerate(BUTTONS)]
-    donations = [(href, alt, xs[len(BUTTONS) + i], gives[i][1], gives[i][2], GIVE_RENDER_PX)
-                 for i, (_s, href, alt) in enumerate(GIVE)]
-    for opener, closer, items in ((ROW_OPEN, ROW_CLOSE, downloads), (GIVE_OPEN, GIVE_CLOSE, donations)):
+    downloads, at = [], 0
+    for buttons in ROWS:
+        downloads.append([(href, alt, xs[at + i], W, H, RENDER_PX) for i, (_s, *_, alt, href) in enumerate(buttons)])
+        at += len(buttons)
+    donations = [[(href, alt, xs[len(BUTTONS) + i], gives[i][1], gives[i][2], GIVE_RENDER_PX)
+                  for i, (_s, href, alt) in enumerate(GIVE)]]
+    for opener, closer, rows in ((ROW_OPEN, ROW_CLOSE, downloads), (GIVE_OPEN, GIVE_CLOSE, donations)):
         for start, end in reversed(blocks(text, opener, closer)):
             nl = "\r\n" if text[start:].split("\n", 1)[0].endswith("\r") else "\n"
-            text = text[:start] + row(opener, items, nl) + text[end:]
+            text = text[:start] + opener + nl + "".join(row(items, nl) for items in rows) + text[end:]
     io.open(README, "w", encoding="utf-8", newline="").write(text)
-    print("README.md  download row of %d, donation rows of %d" % (len(BUTTONS), len(GIVE)))
+    print("README.md  download rows of %s, donation rows of %d" % ("+".join(str(len(r)) for r in ROWS), len(GIVE)))
 
 
-# The delay is the button's POSITION times STEP, computed here rather than
-# written into the table above: a hand-kept column of seconds is a column
-# somebody reorders the row without touching, and then the band hands off into
-# nothing.
+ANIMATION = re.compile(r"animation: pass (\d+(?:\.\d+)?)s linear (\d+(?:\.\d+)?)s infinite backwards;")
+PASS_STOP = re.compile(r"^(\s*)(\d+(?:\.\d+)?)%(\s+\{ transform: translateX\()", re.M)
+
+
+def retime(svg, delay, cycle):
+    """A donation button moved to another place in the loop, and to a longer loop.
+
+    The profile repository bakes 3.8 s and a seven second loop into these files
+    (see below for why that does not fit here). The band's own time across the
+    button is read from the file rather than recomputed, because its geometry is
+    that repository's business: the percentage at which it reaches the far edge,
+    times the loop it was written for. Anything that does not look exactly like
+    the one animation and the one keyframe expected stops the run, rather than
+    leaving a button on its old clock in a sprite where every other button moved.
+    """
+    found = ANIMATION.findall(svg)
+    stops = [m for m in PASS_STOP.finditer(svg) if float(m.group(2)) not in (0.0, 100.0)]
+    if len(found) != 1 or len(stops) != 1:
+        raise SystemExit("a donation button no longer has the one animation and keyframe this retimes")
+    crossing = float(stops[0].group(2)) / 100.0 * float(found[0][0])
+    stop = stops[0]
+    svg = svg[:stop.start()] + "%s%.2f%%%s" % (stop.group(1), crossing / cycle * 100.0, stop.group(3)) + svg[stop.end():]
+    return ANIMATION.sub("animation: pass %gs linear %.3fs infinite backwards;" % (cycle, delay), svg)
+
+
+# THE SCHEDULE. One band works its way down the page: the whole donation row,
+# then the desktop row, then the row below it. Each row starts where a button
+# after the last one of the row above would have started, and each button one
+# STEP after its neighbour, at that row's own rendered width plus the measured
+# gap. Computed rather than written into the tables above: a hand-kept column of
+# seconds is a column somebody reorders the row without touching, and then the
+# band hands off into nothing.
 #
-# THIS ROW STARTS AFTER THE GIVE ROW, because in this README the give row stands
-# ABOVE it. One band works its way down the page, the whole first row and then
-# the whole second, and the give row cannot move to make room: its three buttons
-# are the same three files every README in the house uses, with a fixed place in
-# the loop (3.8 s in, then one step per button at their own rendered width of
-# 160px plus the same measured gap). So this row takes the slot a fourth give
-# button would have had, and what is left of the seven seconds is the pause
-# before the band comes back to the top. Starting at zero instead, as a row that
-# stands first on its page does, ran the band up the page here.
+# THE DONATION ROW IS FIRST because in this README it stands ABOVE the download
+# rows, and so it is retimed here. Everywhere else those three files sit at 3.8 s
+# into a seven second loop, after at most one download row; three rows need
+# 7.07 s of travel before any rest, which a seven second loop cannot hold. So on
+# this page the loop is as long as the three rows plus the rest the house
+# schedule leaves on every page with a download row: 7 s minus the end of the
+# donation row there (3.8 s plus three of its steps), 1.12 s. The speed, the
+# band and the order stay the house's own; only the rest before the band returns
+# to the top is measured out afresh.
 #
-# NOT WRAPPED INTO THE SEVEN SECONDS. The last two delays come out past 7 s
-# (7.543 and 8.376). Folded back to 0.543 and 1.376 they are the same phase from
-# the second loop on, but every clock in the sprite starts at zero together, so
-# in the first loop those two buttons would shine before everything above them.
-GIVE_START = 3.8
-GIVE_STEP = (160.0 + GAP_PX) / SPEED
-ROW_START = GIVE_START + 3 * GIVE_STEP
+# EVERY DELAY STAYS INSIDE THE LOOP. All clocks in the sprite start together, so
+# a delay past the loop's length would not be the same phase as its remainder in
+# the first loop, and that button would shine before everything above it.
+GIVE_STEP = (GIVE_RENDER_PX + GAP_PX) / SPEED
+HOUSE_CYCLE, HOUSE_GIVE_START = 7.0, 3.8
+REST = HOUSE_CYCLE - (HOUSE_GIVE_START + len(GIVE) * GIVE_STEP)
+DELAYS, at = [], len(GIVE) * GIVE_STEP
+GIVE_DELAYS = [GIVE_STEP * i for i in range(len(GIVE))]
+for buttons in ROWS:
+    DELAYS += [at + STEP * i for i in range(len(buttons))]
+    at += len(buttons) * STEP
+CYCLE = round(max(HOUSE_CYCLE, at + REST), 3)
+PASS_PCT = PASS / CYCLE * 100.0
 
 gives = give_buttons()
 readme = read_readme()
@@ -403,11 +451,12 @@ for index, (slug, mark, bg, ink, head, sub_text, alt, _href) in enumerate(BUTTON
         w=W, h=H, r=R, bg=bg, ink=ink, gx=round(GX + inset, 2), gy=round(GY, 2),
         scale=round(scale, 5), path=path, font=FONT,
         head=head, sub_text=sub_text, alt=escape(alt),
-        delay="%.3f" % (ROW_START + STEP * index), cycle="%g" % CYCLE,
+        delay="%.3f" % DELAYS[index], cycle="%g" % CYCLE,
         pass_pct="%.2f" % PASS_PCT, band_w="%.1f" % SHEEN_W,
         band_h="%g" % SHEEN_H, band_start="%.1f" % SHEEN_FROM,
         band_end="%.1f" % SHEEN_TO,
     )))
+gives = [(retime(svg, GIVE_DELAYS[i], CYCLE), width, height) for i, (svg, width, height) in enumerate(gives)]
 # Built, and checked, before anything is written.
 whole, xs = sprite([(svg, W, H) for _slug, svg in svgs] + gives)
 os.makedirs(OUT, exist_ok=True)

@@ -76,7 +76,8 @@ mobile.yml` does all of this.
 
 ## Signing
 
-The debug key at `../android/debug.keystore`, pointed at by the plugin. Stable
+Two keys. Every build that is not a release signs with the debug key at
+`../android/debug.keystore`, pointed at by the plugin. Stable
 across builds, which is what makes an update an update: Gradle otherwise signs
 with whatever debug keystore it finds in the builder's home directory and
 creates one if there is none, so every CI build carried a different key - and
@@ -85,11 +86,20 @@ with `INSTALL_FAILED_UPDATE_INCOMPATIBLE: signatures do not match`, which the
 phone reports as "conflicts with an existing package".
 
 It is public, and therefore fit for installing on your own devices and nothing
-else. A real key belongs in a repository secret, never here.
+else.
+
+The APKs a release publishes carry the release key. It lives in the repository
+secrets (`ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`,
+`ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`), never here. On a release tag
+`mobile.yml` hands it to the plugin through four `ARROWLOOP_ANDROID_*`
+variables, then reads the certificate out of each finished APK and fails on the
+debug one. A dispatched run with `signed` ticked does the same on a branch and
+publishes nothing. A phone with a debug build on it has to uninstall that once
+before a release build will install, because to Android two keys are two apps.
 
 ## What the emulator can and cannot tell you
 
-[[StrawKnight]] runs the app itself perfectly well - the screens, the bridge,
+[StrawDroid](https://github.com/junkerderprovinz/strawdroid) runs the app itself perfectly well - the screens, the bridge,
 the log. What it cannot do is run the ENGINE, in either architecture and for
 two unrelated reasons:
 

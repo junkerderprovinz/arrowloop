@@ -80,7 +80,7 @@ not for shipping it.
 
 ## The x86_64 build does not run, and it is not our bug
 
-Measured on StrawKnight (Android 16, x86_64): the app starts, the engine starts
+Measured on StrawDroid (Android 16, x86_64): the app starts, the engine starts
 and dies immediately with **`SIGSYS: bad system call`**. The traceback names it
 exactly - `modernc.org/sqlite` opening its database calls `lstat`, which
 `modernc.org/libc` issues as raw **syscall 6** on amd64. Android's seccomp
@@ -94,7 +94,7 @@ than from optimism: on arm64 `SYS_lstat` does not exist at all, `Xlstat` routes
 through `Xfstatat`, and that issues `newfstatat` (syscall 79), which Android
 permits. Since arm64 is every phone, the shipping build is unaffected.
 
-It could not be verified end to end here. StrawKnight is x86_64, and its arm64
+It could not be verified end to end here. StrawDroid is x86_64, and its arm64
 binary translation covers code the Android runtime loads - not an arm64 ELF a
 process `exec`s for itself. Installed as arm64 the app runs and the engine
 writes nothing at all, which is the translation declining rather than a second

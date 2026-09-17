@@ -30,11 +30,11 @@ If it has earned a place on your server or computer, toss a coin to your knight:
 
 <!-- give-buttons: written by scripts/gen_download_buttons.py -->
 <p align="center">
-  <a href="https://buymeacoffee.com/junkerderprovinz"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(2880,0,841.9,245.3))" alt="Buy me a coffee" width="160" height="46.618"></a>
+  <a href="https://buymeacoffee.com/junkerderprovinz"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(4320,0,841.9,245.3))" alt="Buy me a coffee" width="160" height="46.618"></a>
   &nbsp;
-  <a href="https://www.paypal.com/donate/?hosted_button_id=76FVV52TKXTUS"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(3721.9,0,841.9,245.3))" alt="PayPal" width="160" height="46.618"></a>
+  <a href="https://www.paypal.com/donate/?hosted_button_id=76FVV52TKXTUS"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(5161.9,0,841.9,245.3))" alt="PayPal" width="160" height="46.618"></a>
   &nbsp;
-  <a href="https://junkerderprovinz.github.io/junkerderprovinz/"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(4563.8,0,841.9,245.3))" alt="Donate with crypto" width="160" height="46.618"></a>
+  <a href="https://junkerderprovinz.github.io/junkerderprovinz/"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(6003.8,0,841.9,245.3))" alt="Donate with crypto" width="160" height="46.618"></a>
 </p>
 <!-- /give-buttons -->
 
@@ -66,10 +66,15 @@ If it has earned a place on your server or computer, toss a coin to your knight:
   &nbsp;
   <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-amd64"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(2160,0,720,245.3))" alt="Download for Linux" width="195" height="66.435"></a>
 </p>
+<p align="center">
+  <a href="https://github.com/junkerderprovinz/arrowloop/pkgs/container/arrowloop"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(2880,0,720,245.3))" alt="Run it with Docker" width="195" height="66.435"></a>
+  &nbsp;
+  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-android-arm64.apk"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(3600,0,720,245.3))" alt="Download the Android app" width="195" height="66.435"></a>
+</p>
 <!-- /download-buttons -->
 
 <p align="center">
-  <sub>Always the newest release &nbsp;·&nbsp; <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest">release notes and checksums</a> &nbsp;·&nbsp; on a server, run it <a href="#9-installing-it">as a container</a> instead</sub>
+  <sub>Always the newest release &nbsp;·&nbsp; <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest">release notes</a> &nbsp;·&nbsp; <a href="#9-installing-it">how to install each one</a></sub>
 </p>
 
 <br>
@@ -297,6 +302,8 @@ The desktop builds are **not signed**. Windows shows its blue warning on first s
 
 Wails v2 has no tray of its own, so this is `energye/systray`, which is the fork that does not demand the main thread on macOS. The icon is built around the same PNG the window wears, at startup, rather than committed as a second file: two icon files are two things to remember when the logo changes, and the day one is forgotten is the day the window and the notification area wear different marks. **Verified by hand on Windows only**; the other two builds are compiled but untested.
 
+**On Android** it is an app that runs the engine on the phone itself, so the phone's own files can take part in a job. Every release carries two APKs: `arm64` for a phone and `x86_64` for an emulator. They are signed with this project's own key, so a later release installs over an earlier one. A build from CI before that key existed carries the public debug key instead, and has to be uninstalled once first.
+
 <br>
 
 ## 10. Tests
@@ -357,11 +364,11 @@ If it has earned a place on your server or computer, toss a coin to your knight:
 
 <!-- give-buttons: written by scripts/gen_download_buttons.py -->
 <p align="center">
-  <a href="https://buymeacoffee.com/junkerderprovinz"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(2880,0,841.9,245.3))" alt="Buy me a coffee" width="160" height="46.618"></a>
+  <a href="https://buymeacoffee.com/junkerderprovinz"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(4320,0,841.9,245.3))" alt="Buy me a coffee" width="160" height="46.618"></a>
   &nbsp;
-  <a href="https://www.paypal.com/donate/?hosted_button_id=76FVV52TKXTUS"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(3721.9,0,841.9,245.3))" alt="PayPal" width="160" height="46.618"></a>
+  <a href="https://www.paypal.com/donate/?hosted_button_id=76FVV52TKXTUS"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(5161.9,0,841.9,245.3))" alt="PayPal" width="160" height="46.618"></a>
   &nbsp;
-  <a href="https://junkerderprovinz.github.io/junkerderprovinz/"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(4563.8,0,841.9,245.3))" alt="Donate with crypto" width="160" height="46.618"></a>
+  <a href="https://junkerderprovinz.github.io/junkerderprovinz/"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(6003.8,0,841.9,245.3))" alt="Donate with crypto" width="160" height="46.618"></a>
 </p>
 <!-- /give-buttons -->
 
