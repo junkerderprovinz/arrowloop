@@ -61,24 +61,19 @@ jobs:
     secrets: inherit
 
   # The image for this version, with its smoke test. It carries no `latest`:
-  # that one is moved below, once the release is out.
-  #
-  # Only for a real release: container.yml pushes whatever it builds, and a
-  # dispatched run of this workflow publishes nothing.
+  # that one is moved below, once the release is out. On a dispatched run it
+  # builds both architectures and pushes nothing, like every other job here.
   container:
     needs: notes
-    if: github.event_name == 'push' && github.ref_type == 'tag'
     permissions:
       contents: read
       packages: write
     uses: ./.github/workflows/container.yml
 
   # The image is one of the things the README offers, so a release waits for it
-  # like it waits for the bundles. `always()` because `container` is skipped on
-  # a dispatched run, and a skipped job would otherwise take this one with it.
+  # as it waits for the bundles: a published release always has both.
   publish:
     needs: [desktop, mobile, container]
-    if: always() && needs.desktop.result == 'success' && needs.mobile.result == 'success' && (needs.container.result == 'success' || needs.container.result == 'skipped')
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
@@ -146,8 +141,8 @@ jobs:
   # Pointing `latest` at the version just pushed copies the manifest in the
   # registry; nothing is rebuilt, and imagetools needs no builder for it.
   image-latest:
-    needs: [publish, container]
-    if: needs.publish.outputs.latest == 'true'
+    needs: publish
+    if: github.event_name == 'push' && github.ref_type == 'tag'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -162,8 +157,26 @@ jobs:
 
       - name: Move latest to this release
         env:
-          IMAGE: ghcr.io/${{ github.repository }}
+          # Written out rather than built from the repository name, which
+          # imagetools would not lowercase for us.
+          IMAGE: ghcr.io/junkerderprovinz/arrowloop
+          LATEST: ${{ needs.publish.outputs.latest }}
         run: |
           set -eu
-          docker buildx imagetools create --tag "${IMAGE}:latest" "${IMAGE}:${GITHUB_REF_NAME#v}"
-          echo "${IMAGE}:latest is ${GITHUB_REF_NAME#v}"
+          # An ANSWER, not a guess: publish-release.sh decided this and handed
+          # it on. Empty means it never said, and a silent skip would leave
+          # the badge on this version while the image tag stays on the last
+          # one, green all the way.
+          case "$LATEST" in
+            true) ;;
+            false) echo "the release is not the newest one, so latest stays where it is"; exit 0 ;;
+            *) echo "::error::publish did not say whether $GITHUB_REF_NAME is the latest release, so the image tag is not moved blindly."; exit 1 ;;
+          esac
+          version="${GITHUB_REF_NAME#v}"
+          # The tag the build pushed, checked rather than assumed: the build
+          # derives it from the ref through metadata-action, this job by
+          # stripping the v, and a tag those two spell differently would fail
+          # here after the release is already public.
+          docker buildx imagetools inspect "${IMAGE}:${version}" > /dev/null
+          docker buildx imagetools create --tag "${IMAGE}:latest" "${IMAGE}:${version}"
+          echo "${IMAGE}:latest is ${version}"

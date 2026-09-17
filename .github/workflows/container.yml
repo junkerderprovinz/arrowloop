@@ -21,13 +21,14 @@ permissions:
   contents: read
   packages: write
 
-# The name is written out rather than taken from github.workflow, which is the
-# CALLER's name when release.yml calls this. Two runs that reach this workflow
-# through different doors would otherwise share one group and cancel each other,
-# and the event keeps a dispatched test apart from a real release on the same
-# ref.
+# THREE PARTS, and each one separates a pair of runs that must not cancel each
+# other. The name of this workflow, because github.workflow is the CALLER's
+# name when release.yml calls this, and the app build and the container build
+# would land in one group. The caller's name, so a run started here directly
+# and one started through release.yml stay apart. The event, so a dispatched
+# test on a tag ref cannot cancel the real release on it.
 concurrency:
-  group: container-${{ github.event_name }}-${{ github.ref }}
+  group: container-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
 
 env:
@@ -155,7 +156,9 @@ jobs:
         with:
           context: .
           platforms: linux/amd64,linux/arm64
-          push: true
+          # A dispatched run builds and pushes nothing, whether it was started
+          # here or through release.yml: only a pushed branch or tag publishes.
+          push: ${{ github.event_name == 'push' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: VERSION=${{ steps.version.outputs.value }}
