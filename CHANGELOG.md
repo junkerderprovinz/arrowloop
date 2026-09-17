@@ -8,21 +8,23 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
-## Unreleased
+## v0.7.5
+
+The Android app ships with the release, signed with ArrowLoop's own key, and the README gets a button for it and one for the container.
 
 ## ✨ Added
 
-- **The Android app is on every release.** Two APKs, `arm64` for a phone and `x86_64` for an emulator, each once with the version in its name and once without, so the README can link the newest one directly.
-- **A second row of download buttons, Docker and Android.** The Docker button opens the container image's page, the Android button downloads the newest APK.
+- **The Android app is attached to every release**: an `arm64` APK for phones and an `x86_64` APK for emulators, each once with the version in its name and once without.
+- **Docker and Android download buttons**, in a second row under the desktop ones. Docker opens the container image's page, Android downloads the newest APK.
 
 ## 🎨 Design
 
-- **One band crosses all three rows of buttons in turn**: the donation row, the desktop row, then the new row. Three rows need slightly more than seven seconds of travel, so this page's loop is 8.2 seconds, at the house speed and with the house pause.
+- **One band of light crosses all three rows of buttons in turn**, the donation row first. Three rows need a little more than seven seconds, so the loop on this page runs 8.2 seconds. The band keeps the speed and the pause it has on every other README.
 
 ## ⚡ Improved
 
-- **Released APKs are signed with the project's own key.** CI builds carried Android's public debug key, which anybody can use to sign an update that installs over the real app. A release now signs with a key from the repository secrets and fails if any APK still carries the debug certificate. A copy installed from an earlier CI build has to be uninstalled once.
-- **A released APK says which release it is.** Its version and version code come from the tag rather than from whatever `app.json` said last.
+- **Released APKs are signed with ArrowLoop's own key** instead of Android's public debug key, which anyone could use to sign an update that installs over the app. The release build checks every APK's certificate against the real one and stops if it does not match. An APK installed from an earlier CI build has to be uninstalled once before this one will install.
+- **The app reports the release's version.** Its version name and version code come from the release tag.
 
 ## v0.7.4
 
