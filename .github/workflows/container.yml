@@ -1,22 +1,32 @@
 name: Container
 
-# Builds the image and, on main and on a release tag, pushes it to GHCR. A pull
-# request builds only.
+# Builds the image and pushes it to GHCR: `edge` from main, and the version
+# tags on a release, where release.yml calls this. A pull request builds only.
+#
+# `latest` is not set here any more. It belongs to the newest RELEASE, and this
+# workflow cannot know whether the release for its tag ever came out: the
+# desktop or app build beside it may fail, and then nothing is published. So
+# release.yml moves it, after the release exists, by the same rule it uses for
+# the "Latest" badge.
 on:
   push:
     branches: [main]
-    tags: ["v[0-9]+.[0-9]+.[0-9]+"]
     paths-ignore: ["**.md", "LICENSE"]
   pull_request:
     branches: [main]
   workflow_dispatch:
+  workflow_call:
 
 permissions:
   contents: read
   packages: write
 
+# The name is written out rather than taken from github.workflow, which is the
+# CALLER's name when release.yml calls this: the app build would otherwise land
+# in the same group and the two would cancel each other. The event is in it for
+# the same reason a test dispatch must not cancel a real release.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: container-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
 
 env:
@@ -122,49 +132,16 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      # Is the tag being built the newest release this repo has?
-      #
-      # Only a tag build moves `latest`, and only the highest version among the
-      # tags does. The two conditions guard two different accidents, which is
-      # why neither one alone is enough. Without the tag condition a merge to
-      # main hands everybody pulling `latest` a build that was never released,
-      # and the bug reports arrive before the release notes. Without the newest
-      # condition, re-cutting an old version tag drags `latest` backwards onto
-      # a version that was already superseded.
-      #
-      # The tags are fetched rather than assumed, and sorted with `sort -V` so
-      # that v0.10.0 counts as newer than v0.9.0, which a string sort gets
-      # wrong.
-      - id: newest
-        name: Ask whether this tag is the newest release
-        if: github.ref_type == 'tag'
-        run: |
-          set -eu
-          git fetch --tags --force --quiet
-          newest="$(git tag -l 'v[0-9]*.[0-9]*.[0-9]*' | sort -V | tail -1)"
-          echo "building: ${GITHUB_REF_NAME}, newest tag: ${newest}"
-          if [ "${newest}" = "${GITHUB_REF_NAME}" ]; then
-            echo "is_newest=true" >> "$GITHUB_OUTPUT"
-            echo "this build moves :latest"
-          else
-            echo "is_newest=false" >> "$GITHUB_OUTPUT"
-            echo "this build leaves :latest where it is"
-          fi
       - id: meta
         uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6
         with:
           images: ${{ env.IMAGE }}
-          # `latest` means the newest released version, and nothing else. It
-          # used to mean the tip of the default branch, which is a different
-          # thing: it handed anyone pulling `latest` whatever had last been
-          # merged, released or not.
-          #
-          # The tip of the default branch gets `edge` now. It is still built,
-          # still smoke tested and still pullable, but nobody lands on it
-          # without asking for it by name.
+          # The tip of the default branch gets `edge`. It is built, smoke
+          # tested and pullable, but nobody lands on it without asking for it by
+          # name: `latest` means the newest released version, and release.yml
+          # sets it once that release exists.
           tags: |
             type=raw,value=edge,enable={{is_default_branch}}
-            type=raw,value=latest,enable=${{ github.ref_type == 'tag' && steps.newest.outputs.is_newest == 'true' }}
             type=semver,pattern={{version}}
             type=sha
       - uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7

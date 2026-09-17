@@ -34,11 +34,13 @@ on:
 permissions:
   contents: read
 
-# The event is part of the group. Called by release.yml, github.workflow is
-# "Release", so without it a test dispatch of release.yml on a tag ref would
-# share the group of the real release on that tag and cancel its app build.
+# The name is written out rather than taken from github.workflow, which is the
+# CALLER's name when release.yml calls this: the container build would otherwise
+# land in the same group and the two would cancel each other. The event is in it
+# so a test dispatch of release.yml on a tag ref cannot cancel the real
+# release's app build.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  group: mobile-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
