@@ -28,12 +28,24 @@ jobs:
             exit 1
           fi
 
-      - name: Publish
+      # AS A DRAFT. desktop.yml and mobile.yml attach the downloads twenty
+      # minutes and more later, and the README's buttons point at
+      # /releases/latest/download/. Published at once, the release was "latest"
+      # with nothing on it and every button answered 404 for that long. The
+      # draft goes public when the last of those uploads is done; see
+      # .github/scripts/publish-when-complete.sh. A re-run finds the draft it
+      # made rather than adding a second one.
+      - name: Create the release as a draft
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -eu
+          if gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "$GITHUB_REF_NAME already has a release"
+            exit 0
+          fi
           gh release create "$GITHUB_REF_NAME" \
             --repo "$GITHUB_REPOSITORY" \
+            --draft --verify-tag \
             --title "$GITHUB_REF_NAME" \
             --notes-file ".github/release-notes/${GITHUB_REF_NAME}.md"

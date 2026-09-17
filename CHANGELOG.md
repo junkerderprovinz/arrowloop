@@ -8,6 +8,13 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## Unreleased
+
+## ⚡ Improved
+
+- **A release goes public only once its downloads are attached.** The README's buttons lead to `/releases/latest/download/`, and a release used to be "latest" from the moment `release.yml` created it, twenty minutes and more before `desktop.yml` and `mobile.yml` attached the files, so the buttons answered 404 for that long. `release.yml` now creates a draft, and whichever of the two jobs finishes last publishes it, once every file in `.github/scripts/release-assets.txt` is uploaded.
+- **"Latest" goes only to the newest plain vX.Y.Z tag**, so re-cutting an older version publishes it without pulling the badge and the download buttons back.
+
 ## v0.7.5
 
 The Android app ships with the release, signed with ArrowLoop's own key, and the README gets a button for it and one for the container.

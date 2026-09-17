@@ -1,0 +1,22 @@
+# Every file a release has to carry before it is published, read by
+# publish-when-complete.sh. {tag} stands for the tag, vX.Y.Z.
+#
+# The names without a version are what the README's download buttons link;
+# the versioned ones are uploaded in the same call and listed so a release is
+# never published with half of an upload.
+
+# desktop.yml
+arrowloop-windows-amd64-installer.exe
+arrowloop-windows-amd64-portable.exe
+arrowloop-macos-universal.dmg
+arrowloop-linux-amd64
+arrowloop-{tag}-windows-amd64-installer.exe
+arrowloop-{tag}-windows-amd64-portable.exe
+arrowloop-{tag}-macos-universal.dmg
+arrowloop-{tag}-linux-amd64
+
+# mobile.yml
+arrowloop-android-arm64.apk
+arrowloop-android-x86_64.apk
+arrowloop-{tag}-android-arm64.apk
+arrowloop-{tag}-android-x86_64.apk

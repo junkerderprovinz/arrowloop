@@ -190,6 +190,12 @@ jobs:
     permissions:
       contents: write
     steps:
+      # Only the publishing script and its list, and before the download:
+      # checkout empties the workspace it lands in.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          sparse-checkout: .github/scripts
+
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           path: bundles
@@ -226,9 +232,10 @@ jobs:
           done
           ls -lh dist
 
-      # The release is expected to exist by the time these are ready, but a
-      # desktop build can easily outlast release creation and a runner queue can
-      # invert the order further. Waiting beats racing.
+      # The release is expected to exist by the time these are ready, as a
+      # draft, but a desktop build can easily outlast release creation and a
+      # runner queue can invert the order further. Waiting beats racing. gh
+      # finds a draft by its tag as well.
       - name: Wait for the release
         env:
           GH_TOKEN: ${{ github.token }}
@@ -247,3 +254,10 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh release upload "$GITHUB_REF_NAME" dist/* --repo "$GITHUB_REPOSITORY" --clobber
+
+      # Public once the APKs from mobile.yml are on it too, whichever of the two
+      # jobs finishes last. The list is .github/scripts/release-assets.txt.
+      - name: Publish the release when it is complete
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash .github/scripts/publish-when-complete.sh
