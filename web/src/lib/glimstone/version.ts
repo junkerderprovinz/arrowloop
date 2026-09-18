@@ -14,4 +14,4 @@
  *
  * Bumped here, in the release that changes the files.
  */
-export const GLIMSTONE_VERSION = "2.6.0";
+export const GLIMSTONE_VERSION = "2.6.1";

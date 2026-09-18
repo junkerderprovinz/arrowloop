@@ -18,6 +18,10 @@ The full notes for each release are in
 - **A test dispatch can no longer cancel a real release's app build.** The app build's concurrency group now includes the event, since a called workflow runs under the caller's name, and names itself rather than the workflow that called it.
 - **`latest` on the image follows the newest published release**, like the "Latest" badge, instead of the newest tag. The release builds the image too, and moves `latest` once the release exists, so a version whose release never came out cannot take it, and `docker pull …:latest` cannot name a different version than the download buttons.
 
+## 🐛 Fixed
+
+- **Tooltips no longer stay on the page after a click.** Focus opens a tooltip only after keyboard input, so a dialog handing focus back to the button that opened it, or the click itself, leaves no tooltip behind; one that was open when its button got disabled closes as well. GlimStone 2.6.1, from BombVault [#243](https://github.com/junkerderprovinz/bombvault/issues/243).
+
 ## v0.7.5
 
 The Android app ships with the release, signed with ArrowLoop's own key, and the README gets a button for it and one for the container.

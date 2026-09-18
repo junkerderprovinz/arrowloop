@@ -48,7 +48,8 @@ export interface TipBubble {
    *  can feed both from one attribute. */
   ref: (el: HTMLElement | null) => void;
   /** Spread on the trigger. Focus as well as hover, always: a tooltip only a
-   *  mouse can reach is the exact defect the native balloon has. */
+   *  mouse can reach is the exact defect the native balloon has. Focus counts
+   *  when it came from the keyboard; see `showOnFocus`. */
   handlers: {
     onMouseEnter: () => void;
     onMouseLeave: () => void;
@@ -90,6 +91,18 @@ export function useTipBubble(tip?: string, disabled = false): TipBubble {
   const bubbleRef = useRef<HTMLDivElement | null>(null);
   const tooltipId = useId();
 
+  // Flipping `disabled` replaces the trigger element: `wrap` boxes a disabled
+  // one, so React mounts a new <button> in its place. The old one takes its
+  // focus and hover with it without firing blur or mouseleave, so an open
+  // bubble would stay up for good (#243). Closing during render keeps it from
+  // being painted even once; a pointer still over the control reopens it on
+  // its next move, through the wrapper's mouseenter.
+  const [seenDisabled, setSeenDisabled] = useState(disabled);
+  if (seenDisabled !== disabled) {
+    setSeenDisabled(disabled);
+    setOpen(false);
+  }
+
   const shown = !!tip && open;
 
   function show() {
@@ -98,6 +111,14 @@ export function useTipBubble(tip?: string, disabled = false): TipBubble {
   }
   function hide() {
     setOpen(false);
+  }
+  // Focus opens the bubble only when the keyboard was used last. Opening on
+  // focus is for Tab users. A mouse user gets focus as a side effect, from a
+  // click or from a dialog handing it back to its opener (useConfirm), and a
+  // bubble opened then stays where the pointer no longer is.
+  useEffect(trackInputModality, []);
+  function showOnFocus() {
+    if (!pointerWasLast) show();
   }
 
   // Positions the bubble (clamped into the viewport, flipped above the trigger
@@ -160,7 +181,7 @@ export function useTipBubble(tip?: string, disabled = false): TipBubble {
     handlers: {
       onMouseEnter: show,
       onMouseLeave: hide,
-      onFocus: show,
+      onFocus: showOnFocus,
       onBlur: hide,
     },
     describedBy: shown ? tooltipId : undefined,
@@ -190,4 +211,22 @@ export function useTipBubble(tip?: string, disabled = false): TipBubble {
     show,
     hide,
   };
+}
+
+// Whether the user's last input was a pointer rather than a key. Kept for the
+// whole page, not per trigger, because the focus in question usually lands on
+// one element after the user acted on another: Cancel in a dialog, and then
+// the focus handed back to the button that opened it.
+//
+// Not `:focus-visible`: jsdom evaluates it in a document listener that runs
+// after React's focus handler, so inside the handler it reads false for
+// keyboard focus too, and no test could tell the two cases apart.
+let pointerWasLast = false;
+let tracking = false;
+
+function trackInputModality() {
+  if (tracking || typeof document === "undefined") return;
+  tracking = true;
+  document.addEventListener("pointerdown", () => (pointerWasLast = true), true);
+  document.addEventListener("keydown", () => (pointerWasLast = false), true);
 }
