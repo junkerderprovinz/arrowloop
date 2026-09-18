@@ -240,8 +240,10 @@ export function Sidebar<T extends string>({
     // and the two rails then did the same job at different widths. The mark
     // fits the rail now: 44px still sits centred at 85, with more air than it
     // had.
+    // A window shorter than the rows scrolls the rail instead of cutting off
+    // Settings at its foot.
     <aside
-      className={`flex h-full shrink-0 flex-col overflow-hidden rounded-card bg-carbon-sidebar ${
+      className={`flex h-full shrink-0 flex-col overflow-x-hidden overflow-y-auto rounded-card bg-carbon-sidebar ${
         narrow ? 'w-(--rail-narrow)' : 'w-56'
       }`}
     >

@@ -21,6 +21,7 @@ The full notes for each release are in
 ## 🐛 Fixed
 
 - **Tooltips no longer stay on the page after a click.** Focus opens a tooltip only after keyboard input, so a dialog handing focus back to the button that opened it, or the click itself, leaves no tooltip behind; one that was open when its button got disabled closes as well. GlimStone 2.6.1, from BombVault [#243](https://github.com/junkerderprovinz/bombvault/issues/243).
+- **The sidebar scrolls when the window is too short for it.** It was cut off at the window's height, and Settings at its foot went out of reach. From BombVault [#247](https://github.com/junkerderprovinz/bombvault/issues/247).
 
 ## v0.7.5
 
