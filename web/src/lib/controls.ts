@@ -1,4 +1,4 @@
-// Copied verbatim from GlimStone 1.10.0, reference/controls.ts.
+// Copied verbatim from GlimStone 2.6.0, reference/controls.ts.
 // Do not edit here: change it in the design language repo and copy again.
 // https://github.com/junkerderprovinz/glimstone
 // How much of a control's identity is shown: its text, its glyph, or both.
@@ -52,37 +52,56 @@ export function hidesLabel(mode: LabelMode): boolean {
 }
 
 /**
- * THREE INDEPENDENT AXES, not one global switch.
+ * Independent axes, not one global switch.
  *
- * The same answer is rarely right for all three surfaces: a navigation rail
- * reduced to glyphs is a layout decision — the rail gets narrower and the page
- * gets wider — while a button reduced to glyphs is only a density preference.
+ * The same answer is rarely right for every surface: a navigation rail
+ * reduced to glyphs is a layout decision (the rail gets narrower and the page
+ * gets wider), while a button reduced to glyphs is only a density preference.
  * Tying them together forces a user who wants a compact rail to also accept
  * unlabelled buttons, which is a different question they were never asked.
  *
- * 'buttons' — action buttons throughout the app.
- * 'sidebar' — the navigation rail.
- * 'tabs'    — tab strips inside pages.
+ * 'buttons':   action buttons throughout the app.
+ * 'sidebar':   the navigation rail.
+ * 'tabs':      tab strips inside pages.
+ * 'bottombar': the bar that replaces the rail in a phone layout.
  *
- * Kept as a list rather than three copies of the same code, so a fourth
- * surface is one entry and a settings card can iterate instead of repeating
- * itself.
+ * Kept as a list rather than copies of the same code, so a new surface is one
+ * entry and a settings card can iterate instead of repeating itself.
  */
 export type ControlAxis = 'buttons' | 'sidebar' | 'tabs';
 
+/**
+ * Only an app with a phone layout has a bar, so its axis has a type of its own
+ * and stays out of CONTROL_AXES. An app without a bar never lists a row that
+ * changes nothing, and state it keys by ControlAxis keeps compiling.
+ */
+export type BarAxis = 'bottombar';
+
+/** Every axis the engine can store and apply. */
+export type LabelAxis = ControlAxis | BarAxis;
+
+/** The axes every adopting app has. */
 export const CONTROL_AXES: ControlAxis[] = ['buttons', 'sidebar', 'tabs'];
 
+/**
+ * An app with a bar appends this to its label settings, with a note that the
+ * row only affects the phone layout, and passes it to applyStoredLabelModes.
+ */
+export const BOTTOM_BAR_AXIS: BarAxis = 'bottombar';
+
 /** Per-axis storage keys. Prefix them per app the way `bv-shape` is prefixed. */
-const STORAGE_KEY: Record<ControlAxis, string> = {
+const STORAGE_KEY: Record<LabelAxis, string> = {
   buttons: 'glim-labels-buttons',
   sidebar: 'glim-labels-sidebar',
   tabs: 'glim-labels-tabs',
+  bottombar: 'glim-labels-bottombar',
 };
 
-const ATTRIBUTE: Record<ControlAxis, string> = {
+const ATTRIBUTE: Record<LabelAxis, string> = {
   buttons: 'data-labels-buttons',
   sidebar: 'data-labels-sidebar',
   tabs: 'data-labels-tabs',
+  bottombar: 'data-labels-bottombar',
 };
 
 /**
@@ -97,7 +116,7 @@ function isLabelMode(v: unknown): v is LabelMode {
 }
 
 /** The stored preference for one axis, defaulting when unset or corrupt. */
-export function getLabelMode(axis: ControlAxis): LabelMode {
+export function getLabelMode(axis: LabelAxis): LabelMode {
   let stored: string | null = null;
   try {
     stored = localStorage.getItem(STORAGE_KEY[axis]);
@@ -112,7 +131,7 @@ export function getLabelMode(axis: ControlAxis): LabelMode {
  * Sets the attribute the stylesheet keys off, validating first, so a caller
  * can pass an unvalidated value straight out of storage.
  */
-export function applyLabelMode(axis: ControlAxis, mode: LabelMode | string | undefined): void {
+export function applyLabelMode(axis: LabelAxis, mode: LabelMode | string | undefined): void {
   document.documentElement.setAttribute(
     ATTRIBUTE[axis],
     isLabelMode(mode) ? mode : DEFAULT_LABEL_MODE,
@@ -120,7 +139,7 @@ export function applyLabelMode(axis: ControlAxis, mode: LabelMode | string | und
 }
 
 /** Persists the choice and applies it immediately — no separate save step. */
-export function setLabelMode(axis: ControlAxis, mode: LabelMode): void {
+export function setLabelMode(axis: LabelAxis, mode: LabelMode): void {
   try {
     localStorage.setItem(STORAGE_KEY[axis], mode);
   } catch {
@@ -139,9 +158,12 @@ export function setLabelMode(axis: ControlAxis, mode: LabelMode): void {
  * opening in `textGlyph` and snapping over. The first app to build this axis
  * shipped exactly that bug — every OTHER engine's boot call was present, and
  * this one had been added to the settings page instead of to the root.
+ *
+ * An app with a bar passes [BOTTOM_BAR_AXIS], or the bar opens in the default
+ * mode just the same.
  */
-export function applyStoredLabelModes(): void {
-  for (const axis of CONTROL_AXES) applyLabelMode(axis, getLabelMode(axis));
+export function applyStoredLabelModes(extraAxes: LabelAxis[] = []): void {
+  for (const axis of [...CONTROL_AXES, ...extraAxes]) applyLabelMode(axis, getLabelMode(axis));
 }
 
 // ---------------------------------------------------------------------------

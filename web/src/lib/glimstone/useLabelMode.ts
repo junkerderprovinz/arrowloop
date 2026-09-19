@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getLabelMode, type ControlAxis, type LabelMode } from "../controls";
+import { getLabelMode, type LabelAxis, type LabelMode } from "../controls";
 
 // ---------------------------------------------------------------------------
 // useLabelMode (#178) — the current label mode for one axis, kept in step
@@ -22,7 +22,7 @@ export function labelModeChanged(): void {
   window.dispatchEvent(new Event(LABEL_MODE_CHANGED));
 }
 
-export function useLabelMode(axis: ControlAxis): LabelMode {
+export function useLabelMode(axis: LabelAxis): LabelMode {
   const [mode, setMode] = useState<LabelMode>(() => getLabelMode(axis));
   useEffect(() => {
     const reread = () => setMode(getLabelMode(axis));
