@@ -1,25 +1,20 @@
 /**
- * Generates every ArrowLoop image from ONE master: icon.svg (jdp's artwork,
- * embedded verbatim, never redrawn).
+ * Generates every ArrowLoop image from one master, icon.svg, embedded verbatim.
  *
  * Outputs, all in this folder:
- *   icon.png             : CA icon, 512, transparent — the gold arrow and the
- *                          light ring carry the shape on Unraid's dark page.
- *   banner.png/.svg      : white 1600x500, logo + "ArrowLoop" + claim   [README light]
- *   banner-dark.png/.svg : #0d1117 1600x500, same                        [README <picture> dark]
- *   banner-logo.png/.svg : white 1600x500, logo only, no text            [support thread]
+ *   icon.png             : CA icon, 512, transparent
+ *   banner.png/.svg      : white 1600x500, logo, name and claim   [README light]
+ *   banner-dark.png/.svg : #0d1117 1600x500, same                  [README dark]
+ *   banner-logo.png/.svg : white 1600x500, logo only              [support thread]
  *   favicon.png          : 256, transparent, for the web UI
  *   appicon.png          : 1024, transparent, for the Wails desktop shell
  *
- * The master reads on both grounds (mid-grey ring plus gold), so both themes
- * embed the same file and only the text colours flip.
+ * The master reads on both grounds, so both themes embed the same file and only
+ * the text colours flip. Banner layout: logo ink about 400px with its left edge
+ * at x=165 and its centre at y=250, name 132, claim 44, logo-to-text gap 70,
+ * name-to-claim gap 8.
  *
- * House banner standard (vault "Style Guide - GitHub"): 1600x500, logo ink
- * ~400px anchored with its INK left edge at x=165 and its ink centre at y=250,
- * name 132 / claim 44 / logo-to-text gap 70 / name-to-claim gap 8.
- *
- * viewBox-agnostic: the embed reads the master's own viewBox. Fonts (OFL) are
- * fetched to the OS temp dir at runtime, never committed.
+ * Fonts (OFL) are fetched to the OS temp dir at runtime.
  * Deps (global): @resvg/resvg-js, opentype.js.
  *
  * Run: node .github/assets/render-assets.mjs
@@ -36,7 +31,6 @@ const { Resvg } = require(`${gRoot}/@resvg/resvg-js`);
 const opentype = require(`${gRoot}/opentype.js`);
 const here = (p) => new URL(p, import.meta.url);
 
-// ---- content + styling ------------------------------------------------------
 const NAME = 'ArrowLoop';
 const CLAIM = 'Fires both ways. Loses nothing.';
 const W = 1600, H = 500;
@@ -46,14 +40,13 @@ const THEMES = [
   { suffix: '',      bg: '#ffffff', name: '#1f2328', claim: '#5a5d5e' },
   { suffix: '-dark', bg: '#0d1117', name: '#e6edf3', claim: '#9aa4ad' },
 ];
-// -----------------------------------------------------------------------------
 
 const master = readFileSync(here('./icon.svg'), 'utf8').replace(/<\?xml[^>]*\?>\s*/, '');
 const vb = (master.match(/viewBox="([^"]+)"/) || [, '0 0 1000 1000'])[1];
 const [vbX, vbY, vbW, vbH] = vb.split(/[\s,]+/).map(Number);
 
-// Anchor by INK, not by the box: a mark inset in its viewBox would otherwise sit
-// off the 165 line. innerBBox is in the master's own user units.
+// Anchored by ink rather than by the box, since a mark inset in its viewBox would
+// otherwise sit off the 165 line. innerBBox is in the master's own user units.
 const ink = new Resvg(Buffer.from(master)).innerBBox();
 if (!ink) throw new Error('no ink bbox from the master');
 const scale = INK / Math.max(ink.width, ink.height);
@@ -81,14 +74,11 @@ async function getFont(file, url) {
   return opentype.parse(b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength));
 }
 
-// ---- 1) square logo PNGs (CA icon, favicon, desktop shell) ------------------
-// Transparent: the mark is a ring plus a gold arrow, so it reads on Unraid's
-// dark page without a tile behind it, and a solid square would just be a box.
+// The ring and gold arrow read on Unraid's dark page without a tile behind them.
 for (const [file, size] of [['icon.png', 512], ['favicon.png', 256], ['appicon.png', 1024]]) {
   writeFileSync(here('./' + file), png(master, size));
 }
 
-// ---- 2) banners ------------------------------------------------------------
 const bree = await getFont('ArrowLoop-BreeSerif-Regular.ttf',
   'https://github.com/google/fonts/raw/main/ofl/breeserif/BreeSerif-Regular.ttf');
 const lato = await getFont('ArrowLoop-Lato-Regular.ttf',
@@ -101,13 +91,10 @@ const blockH = nameAsc + nameDesc + lineGap + claimAsc;
 const nameBaseline = H / 2 - blockH / 2 + nameAsc;
 const claimBaseline = nameBaseline + nameDesc + lineGap + claimAsc;
 
-// opentype.js emits a NaN control point for some glyph/absolute-x combinations:
-// here Lato's "e" in "Loses" is clean at the origin and NaN once its cumulative
-// advance carries it far enough right. Measured, not guessed. So every glyph is
-// built at x=0 and carried to its place by a transform, and the advances are
-// stepped by hand (advance plus kerning, exactly what getPath does internally)
-// because that is the only way to keep opentype.js away from the poisoned
-// coordinate. This also sidesteps resvg's tail-drop on long merged paths.
+// opentype.js emits a NaN control point for some glyphs at a large absolute x
+// (Lato's "e" in "Loses"), so every glyph is built at x=0 and moved into place by
+// a transform, with advance plus kerning stepped by hand as getPath would. This
+// also avoids resvg dropping the tail of a long merged path.
 function glyphs(font, text, size) {
   const scale = size / font.unitsPerEm;
   const gs = font.stringToGlyphs(text);
@@ -143,7 +130,6 @@ for (const t of THEMES) {
   writeFileSync(here(`./banner${t.suffix}.png`), png(svg, W, t.bg));
 }
 
-// ---- 3) text-free banner for the support thread ----------------------------
 const logoOnly = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
   <rect width="${W}" height="${H}" fill="#ffffff"/>
   ${embed((W - boxW) / 2, (H - boxH) / 2, boxW, boxH)}

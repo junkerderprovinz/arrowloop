@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Three things stacked on one another, one visible at a time: the waiting line,
-  the interface, and the log if the engine never answered. The WebView starts
-  INVISIBLE rather than blank, so the first thing on screen is a sentence rather
-  than a white rectangle nobody can interpret.
+  One of three is visible at a time: the waiting line, the interface, and the
+  log if the engine never answered. The WebView starts hidden, so the first
+  thing on screen is a sentence rather than a white rectangle.
 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -39,18 +38,10 @@
         android:visibility="gone" />
 
     <!--
-      The one screen in this app drawn in Android views rather than by the
-      engine, and it is here because it has to be: it is about a permission the
-      engine cannot see, ask for or explain, and it has to be readable before
-      the engine has answered.
-
-      It covers the WebView, and one tap on "Not now" takes it away for the rest
-      of the launch. Not a gate: the engine runs either way and a job inside the
-      app's own folder works either way, so refusing to show the interface until
-      somebody grants the broadest file permission Android has would be asking
-      with the app held hostage. What it is instead is the first thing on screen
-      while the answer is missing, because a sync tool that can only see one
-      folder is a fact somebody should meet before they build a job, not after.
+      Drawn in Android views because it concerns a permission the engine cannot
+      see, and has to be readable before the engine answers. It is not a gate:
+      "Not now" hides it for the launch, and jobs inside the app's own folder
+      work either way.
     -->
     <LinearLayout
         android:id="@+id/storage"

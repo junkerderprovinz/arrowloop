@@ -19,9 +19,7 @@ jobs:
           - os: windows-latest
             platform: windows/amd64
             slug: windows-amd64
-            # -nsis produces a real installer alongside the portable exe in the
-            # same build/bin output, so somebody who wants a Start Menu entry
-            # and somebody who wants a single file both get what they want.
+            # An installer alongside the portable exe.
             extra: "-nsis"
           - os: macos-latest
             platform: darwin/universal
@@ -34,11 +32,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 40
     steps:
-      # Full history and tags, because the version stamp is `git describe`. A
-      # shallow checkout has no tags to describe against and a commit count of
-      # 1, so the release bundles would carry a bare hash in the properties
-      # dialog and 0.0.0.1 in the numeric field, on the one build where the
-      # number matters most.
+      # The version stamp is `git describe`, which needs the tags and the
+      # commit count a shallow checkout lacks.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
@@ -57,10 +52,8 @@ jobs:
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev
 
-      # -nsis shells out to makensis. windows-latest has historically carried
-      # NSIS preinstalled, but that is an implicit runner-image detail rather
-      # than a promise, and wails degrades to a warning rather than an error
-      # when it is missing, so the installer would quietly stop being built.
+      # NSIS on the runner image is not guaranteed, and wails only warns when
+      # makensis is missing, so the installer would quietly stop being built.
       - name: Install NSIS
         if: runner.os == 'Windows'
         run: |
@@ -69,90 +62,51 @@ jobs:
           # already-running job process.
           echo "C:\Program Files (x86)\NSIS" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
-      # Pinned to the same version desktop/go.mod requires. Renovate bumps the
-      # library but has no way to catch a version pinned inside a shell string
-      # in a workflow, so these two have to be moved together by hand.
+      # Must match the version desktop/go.mod requires; Renovate cannot see a
+      # version inside a shell string, so the two move together by hand.
       - name: Install the Wails CLI
         run: go install github.com/wailsapp/wails/v2/cmd/wails@v2.15.0
 
-      # Only the install. Building the interface and copying it into the shell
-      # is wails.json's frontend:build, so it happens on a laptop as well as
-      # here; doing it a second time in this file would be the copy that gets
-      # forgotten when the other one moves.
+      # Building the interface is wails.json's frontend:build, so it runs the
+      # same way on a laptop.
       - name: Install the interface dependencies
         run: npm --prefix web ci --no-audit --no-fund
 
-      # One source of truth for what this build is called, shared with
-      # scripts/build-windows.mjs and read by wails.json's own frontend:build
-      # step when it writes the Windows version resource.
+      # Shared with scripts/build-windows.mjs and read by wails.json's
+      # frontend:build when it writes the Windows version resource.
       - name: Work out the version
         run: node scripts/stamp.mjs --github-env
 
-      # The NSIS installer takes its version from wails.json and nowhere else,
-      # so the file is stamped before the build and put back after it. Left
-      # alone it ships Wails' own default of "1.0.0" and shows that in Apps and
-      # features: a number that never belonged to any build.
-      #
-      # ARROWLOOP_VERSION was worked out above while the tree was still clean,
-      # and every later reader takes it from there, so the edit below cannot
-      # make a clean commit call itself "-dirty".
+      # The NSIS installer reads its version only from wails.json, and would
+      # otherwise show Wails' default "1.0.0" in Apps and features. The version
+      # was worked out above on the clean tree, so this edit cannot make the
+      # build call itself "-dirty".
       - name: Stamp the installer version
         if: runner.os == 'Windows'
         run: node scripts/stamp.mjs --stamp-installer
 
-      # The ldflags are not optional here, and leaving them off is the specific
-      # failure this whole stamp exists to prevent. Without them boot.Version
-      # stays "dev", so a released bundle would show "dev" on its About card
-      # while the properties dialog of the very same file showed the tag: two
-      # answers to one question, from one build.
-      #
-      # `-s -w` was missing and that was 14.2 MB of nothing, measured on this
-      # tree: 49.5 MB without, 35.3 MB with, for a bundle whose whole point is
-      # that somebody downloads it. It strips the symbol table and the DWARF -
-      # a debugger's furniture. Go's own panic traces come from separate
-      # runtime tables and are unaffected, which is what makes this free rather
-      # than a trade. The container build has carried these two since it
-      # existed; the desktop simply never got them.
-      #
-      # `-trimpath` is a different kind of win and a much smaller one: 0.11 MB.
-      # It is here because it takes the build machine's directory layout out of
-      # the binary, so the same commit produces the same bytes on a runner and
-      # on somebody's laptop.
+      # Without the -X flag boot.Version stays "dev", and the About card would
+      # disagree with the file's properties dialog. -s -w drop the symbol table
+      # and DWARF (about 14 MB; panic traces use separate runtime tables), and
+      # -trimpath makes the same commit produce the same bytes anywhere.
       - name: Build
         working-directory: desktop
         run: >
           wails build -platform ${{ matrix.platform }} -clean -trimpath ${{ matrix.extra }}
           -ldflags "-s -w -X github.com/junkerderprovinz/arrowloop/internal/boot.Version=${{ env.ARROWLOOP_VERSION }}"
 
-      # The runner is thrown away either way, but a restored tree means the next
-      # step in this job sees the commit it was given rather than an edited one.
+      # Later steps see the commit as given rather than an edited one.
       - name: Put wails.json back
         if: always() && runner.os == 'Windows'
         run: git checkout -- desktop/wails.json
 
-      # macOS gets no installer step from wails, so the .app is wrapped into the
-      # .dmg that is Apple's own convention. hdiutil is on every runner. The bare
-      # .app goes afterwards so the artifact holds the one file somebody should
-      # actually download.
+      # wails has no macOS installer step, so the .app is wrapped into a .dmg
+      # and the bare .app removed from the artifact.
       #
-      # THE SIZE IS EXPLICIT, and that is the whole fix. Left to itself,
-      # `hdiutil create -srcfolder` estimates how big a scratch image it needs
-      # and then copies the app into it; when the estimate falls short the copy
-      # fails INSIDE that image with "No space left on device", which names the
-      # wrong disk and sends anybody reading it to look at the runner's own free
-      # space. That is exactly what happened here: an earlier round read the
-      # message at face value, cleared the Go caches, saw two green runs and
-      # called it fixed. It came back on v0.2.0 with `df` reporting 95 GiB free
-      # on the line directly above the failure, which is the proof the disk was
-      # never the problem and the two green runs were luck.
-      #
-      # `du` plus a fixed 200 MB of slack, rather than a guessed total: the app
-      # is a universal binary and its size moves with the product, so a hard
-      # number would be a fresh estimate to get wrong later.
-      #
-      # The cache clean stays. It was not the fix, but a universal build does
-      # compile this tree twice and there is no reason to carry the caches into
-      # the packaging step now that nothing needs them.
+      # The size is explicit because `hdiutil create -srcfolder` otherwise
+      # estimates its scratch image, and a short estimate fails inside that
+      # image with "No space left on device" however much the runner has free.
+      # The app's own size plus 200 MB of slack follows the product as it grows.
       - name: Package the macOS app into a dmg
         if: runner.os == 'macOS'
         working-directory: desktop
@@ -162,9 +116,7 @@ jobs:
           cache=$(go env GOCACHE)
           modcache=$(go env GOMODCACHE)
           go clean -cache -modcache || true
-          # Recreated empty, because setup-go saves both of these in a post
-          # step and refuses a path that is not there. An empty cache costs a
-          # slower next run; a missing one fails the job after it passed.
+          # setup-go saves both in a post step and fails on a missing path.
           mkdir -p "$cache" "$modcache"
           rm -rf ../web/node_modules
           df -h /

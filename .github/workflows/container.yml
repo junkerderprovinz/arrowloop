@@ -3,11 +3,8 @@ name: Container
 # Builds the image and pushes it to GHCR: `edge` from main, and the version
 # tags on a release, where release.yml calls this. A pull request builds only.
 #
-# `latest` is not set here any more. It belongs to the newest RELEASE, and this
-# workflow cannot know whether the release for its tag ever came out: the
-# desktop or app build beside it may fail, and then nothing is published. So
-# release.yml moves it, after the release exists, by the same rule it uses for
-# the "Latest" badge.
+# `latest` belongs to the newest published release, which this workflow cannot
+# know about, so release.yml moves it once the release exists.
 on:
   push:
     branches: [main]
@@ -21,12 +18,11 @@ permissions:
   contents: read
   packages: write
 
-# THREE PARTS, and each one separates a pair of runs that must not cancel each
-# other. The name of this workflow, because github.workflow is the CALLER's
-# name when release.yml calls this, and the app build and the container build
-# would land in one group. The caller's name, so a run started here directly
-# and one started through release.yml stay apart. The event, so a dispatched
-# test on a tag ref cannot cancel the real release on it.
+# Each part keeps apart two runs that must not cancel each other. The literal
+# prefix, because github.workflow is the caller's name under release.yml and
+# would put the app and container builds in one group; the caller's name, so a
+# direct run and a release run stay apart; the event, so a dispatched test on a
+# tag cannot cancel the real release.
 concurrency:
   group: container-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
@@ -35,9 +31,8 @@ env:
   IMAGE: ghcr.io/${{ github.repository }}
 
 jobs:
-  # A green build is not a booting container. This builds the amd64 image, runs
-  # it, and demands that it answers before anything is pushed, so an image that
-  # compiles and then dies on startup can never reach the registry.
+  # Runs the amd64 image and requires an answer before anything is pushed, so an
+  # image that dies on startup cannot reach the registry.
   smoke:
     name: Boot smoke test
     runs-on: ubuntu-latest
@@ -45,8 +40,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
-          # The whole history, because git describe needs the tags to describe
-          # against. A shallow clone has none and answers with the bare commit.
+          # git describe needs the tags; a shallow clone has none.
           fetch-depth: 0
       - id: version
         name: Work out what to stamp into the binary
@@ -78,31 +72,16 @@ jobs:
           done
           test -s /tmp/jobs.json
 
-          # The container writes a starter configuration on an empty /config,
-          # and that path is exactly what a first Unraid install hits. An image
-          # that instead dies on the missing file would restart-loop with an
-          # error nobody can act on from the log.
+          # A first Unraid install starts with an empty /config, where the
+          # container writes a starter configuration.
           test -f smoke-config/arrowloop.json
 
-          # The startup banner and the READY line are what somebody reading the
-          # Unraid log actually looks for, so their absence is a defect.
           docker logs smoke | grep -q "IS READY"
 
-          # And the healthcheck the image declares has to pass on its own terms.
           docker exec smoke /usr/local/bin/arrowloop healthcheck
 
-          # The version stamp says what somebody is looking at, and it is the
-          # reason this project got tagged at all: "bitte versioniere, damit ich
-          # sehen kann welche version ich gerade ansehe."
-          #
-          # It used to be github.ref_name, which is the TAG on a release build
-          # and the BRANCH on every other one, so a container built from main
-          # reported its version as "main". That is not a version, it is the
-          # answer the tag existed to replace, and nothing was checking it.
-          #
-          # Exact equality with what git describe says, rather than a shape
-          # test: a pattern loose enough to accept both a tag and a commit is
-          # also loose enough to accept "main".
+          # Exact equality rather than a pattern: one loose enough to accept a
+          # tag and a commit also accepts a branch name such as "main".
           want="$(git describe --tags --always)"
           got="$(docker exec smoke /usr/local/bin/arrowloop version)"
           echo "stamped: ${got}, expected: ${want}"
@@ -138,16 +117,11 @@ jobs:
         uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6
         with:
           images: ${{ env.IMAGE }}
-          # WITHOUT THIS the action adds `latest` on its own: its default is
-          # latest=auto, which tags every semver build that is not a
-          # pre-release. That is what it did here, so the guard this file used
-          # to carry decided nothing, and an unreleased build took `latest`
-          # before any release existed.
+          # The default latest=auto tags every semver build that is not a
+          # pre-release, including one whose release never came out.
           flavor: latest=false
-          # The tip of the default branch gets `edge`. It is built, smoke
-          # tested and pullable, but nobody lands on it without asking for it by
-          # name: `latest` means the newest released version, and release.yml
-          # sets it once that release exists.
+          # The tip of the default branch is pullable as `edge` for anyone who
+          # asks for it by name.
           tags: |
             type=raw,value=edge,enable={{is_default_branch}}
             type=semver,pattern={{version}}
@@ -156,8 +130,8 @@ jobs:
         with:
           context: .
           platforms: linux/amd64,linux/arm64
-          # A dispatched run builds and pushes nothing, whether it was started
-          # here or through release.yml: only a pushed branch or tag publishes.
+          # Only a pushed branch or tag publishes; a dispatched run, direct or
+          # through release.yml, builds only.
           push: ${{ github.event_name == 'push' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

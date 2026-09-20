@@ -1,20 +1,13 @@
 """Turn the generated glyph components into data both bundlers can read.
 
-`web/src/components/glyphs.tsx` and `brandGlyphs.tsx` are React: they return
-`<svg>`, which Metro cannot render and React Native has no element for. The
-drawings themselves are not React, though - they are path data - so this lifts
-them out into `web/src/lib/glyphs.data.ts`, and the phone renders the same
-paths through react-native-svg.
+`web/src/components/glyphs.tsx` and `brandGlyphs.tsx` return `<svg>`, which
+React Native has no element for. The drawings are only path data, so this lifts
+them into `web/src/lib/glyphs.data.ts` and the phone renders the same paths
+through react-native-svg, keeping one icon set for both.
 
-The same move the translation table and the schedule reader already made, and
-for the same reason: ONE source. A second hand-kept icon set for the phone
-would be right on the day it was written and quietly wrong a year later, which
-on an icon set means a button wearing the mark of a different action.
-
-It reads the GENERATED files rather than Streamline and Simple Icons, so it
-needs neither source set installed and can be re-run any time. Run it after
-gen_glyphs.py or gen_brand_glyphs.py; `glyphs.parity.test.ts` fails if you
-forget.
+It reads the generated files, so neither source set has to be installed. Run it
+after gen_glyphs.py or gen_brand_glyphs.py; `glyphs.parity.test.ts` fails if
+you forget.
 """
 
 from __future__ import annotations
@@ -32,7 +25,7 @@ DONATE_TSX = ROOT / "web" / "src" / "components" / "donateMarks.tsx"
 DONATE_CSS = ROOT / "web" / "src" / "donateMarks.css"
 OUT = ROOT / "web" / "src" / "lib" / "glyphs.data.ts"
 
-# `paths={['a', 'b']}` - single-quoted strings with backslash escapes.
+# `paths={['a', 'b']}`: single-quoted strings with backslash escapes.
 STRINGS = re.compile(r"'((?:[^'\\]|\\.)*)'")
 
 
@@ -40,12 +33,8 @@ def unquote(raw: str) -> str:
     return raw.replace("\\'", "'").replace("\\\\", "\\")
 
 
-# ---------------------------------------------------------------------------
-# The app's own set: one grid, one convention, no gradients.
-# ---------------------------------------------------------------------------
-
-
 def app_glyphs() -> dict[str, dict]:
+    """The app's own set: one grid, one convention, no gradients."""
     text = io.open(GLYPHS_TSX, encoding="utf-8").read()
     out: dict[str, dict] = {}
 
@@ -87,8 +76,8 @@ def app_glyphs() -> dict[str, dict]:
 
 def drawn(markup: str) -> list[dict]:
     """The two marks drawn by hand: rounded bars in a rotated group, and one
-    stroked polyline. Anything else raises rather than being dropped, because a
-    glyph that vanishes silently is a button with no mark on it."""
+    stroked polyline. Anything else raises rather than leaving a button with no
+    mark."""
     groups: list[dict] = []
     rest = markup
 
@@ -127,29 +116,18 @@ def shapes(markup: str) -> list[dict]:
     return out
 
 
-# ---------------------------------------------------------------------------
-# The brand marks: somebody else's drawings, with gradients and theme colours.
-# ---------------------------------------------------------------------------
-
-
 def brand_colours() -> dict[str, dict[str, str]]:
     """`--brand-x-0` per theme, from the stylesheet the web reads them through.
 
     Two answers per name, because several marks carry a colour that cannot be
-    read on one of the two grounds - a black wordmark on a dark page - and the
-    stylesheet already holds the swap. A phone that took only the light answer
-    would draw an invisible logo every evening.
+    read on one of the two grounds, such as a black wordmark on a dark page.
     """
     text = io.open(BRANDS_CSS, encoding="utf-8").read()
-    # The coin discs live in their own stylesheet and follow the same
-    # dark-first shape, so they are read as one table rather than two: the
-    # marks that need them sit in the same generated file.
+    # The coin discs' stylesheet has the same dark-first shape.
     text += "\n" + io.open(DONATE_CSS, encoding="utf-8").read()
 
-    # Where `@media (prefers-color-scheme: light)` reaches. A declaration block
-    # inside it is the light answer whatever its own selector says - and its
-    # own selector says `:root:not([data-theme="dark"])`, which is why the
-    # selector alone cannot be trusted: the innermost-block regex below never
+    # A block inside `@media (prefers-color-scheme: light)` is the light answer
+    # whatever its own selector says, and the innermost-block regex below never
     # sees the media query it sits in.
     light_spans: list[tuple[int, int]] = []
     for at in re.finditer(r"@media \(prefers-color-scheme: light\)", text):
@@ -176,12 +154,10 @@ def brand_colours() -> dict[str, dict[str, str]]:
             for name, value in re.findall(r"(--(?:brand|coin)-[\w-]+):\s*([^;]+);", body):
                 out.setdefault(name, {})["light"] = value.strip()
             continue
-        # A hover rule is not a theme's answer, it is a state's.
         if ":hover" in selector:
             continue
-        # `:not([data-theme="dark"])` names dark in order to EXCLUDE it, and a
-        # plain substring test reads that as "this block is the dark one" -
-        # which is how every mark ended up with one colour for both themes.
+        # `:not([data-theme="dark"])` names dark to exclude it, which a plain
+        # substring test would read as the dark block.
         naked = re.sub(r":not\([^)]*\)", "", selector)
         if 'data-theme="light"' in naked:
             theme = "light"
@@ -194,16 +170,16 @@ def brand_colours() -> dict[str, dict[str, str]]:
         for name, value in re.findall(r"(--(?:brand|coin)-[\w-]+):\s*([^;]+);", body):
             out.setdefault(name, {})[theme] = value.strip()
 
-    # A stylesheet that exists to say "this mark needs a different colour on a
-    # dark page" and produces the same colour twice has been misread, and the
-    # symptom is a logo nobody can see on one of the two grounds.
+    # No mark differing between the themes means the stylesheet was misread.
     swapped = sum(1 for pair in out.values() if pair.get("light") != pair.get("dark"))
     if swapped == 0:
-        raise SystemExit("gen_glyph_data: no mark differs between the themes - the stylesheet was misread")
+        raise SystemExit("gen_glyph_data: no mark differs between the themes; the stylesheet was misread")
     return out
 
 
 def brand_glyphs(colours: dict[str, dict[str, str]]) -> dict[str, dict]:
+    """The brand marks: somebody else's drawings, with gradients and theme
+    colours."""
     text = io.open(BRANDS_TSX, encoding="utf-8").read()
     out: dict[str, dict] = {}
     for match in re.finditer(
@@ -228,17 +204,9 @@ def brand_glyphs(colours: dict[str, dict[str, str]]) -> dict[str, dict]:
 def coin_marks(colours: dict[str, dict[str, str]]) -> dict[str, dict]:
     """The donation window's coin logos, out of the COINS map.
 
-    Lifted for exactly the reason the brand marks were: they are JSX returning
-    `<svg>` children, Metro has no element for that, and the phone's About card
-    offers the same three ways to give as the desktop's. A second hand-kept set
-    of coin discs would be a Bitcoin logo that agreed with the container until
-    the day one of them was touched.
-
-    Their shape is the brand marks' shape - a box and some markup - so they
-    travel in the same structure and are drawn by the same renderer. Two of them
-    carry a theme colour INSIDE the drawing (XRP and Solana wear the inverted
-    lockup their brands publish for a dark ground), which is precisely what the
-    placeholder machinery below already exists for.
+    They travel in the brand marks' structure, a box and some markup. XRP and
+    Solana carry a theme colour inside the drawing, the inverted lockup their
+    brands publish for a dark ground.
     """
     text = io.open(DONATE_TSX, encoding="utf-8").read()
     start = text.index("const COINS: Record<string, ReactNode> = {")
@@ -252,8 +220,7 @@ def coin_marks(colours: dict[str, dict[str, str]]) -> dict[str, dict]:
         if left:
             raise SystemExit("gen_glyph_data: JSX left in coin %s: %r" % (coin, drawing[:80]))
         out[coin] = {
-            # Every coin disc is drawn on this grid; the file says so once, at
-            # the top of the map, rather than per entry.
+            # Every coin disc is drawn on this grid.
             "box": "0 0 32 32",
             "fill": None,
             "svg": drawing,
@@ -267,20 +234,13 @@ def coin_marks(colours: dict[str, dict[str, str]]) -> dict[str, dict]:
 def link_marks() -> dict[str, dict]:
     """The two marks that are not coins: Buy Me a Coffee and PayPal.
 
-    They sit in the same file as the coins and are a different kind of thing.
-    Each is one path on a 24 grid filling with `currentColor`, which is the
-    APP GLYPH shape rather than the brand shape: they ride on a filled button
-    beside their own label and take the label's ink, exactly like every other
-    button mark in the product.
+    Each is one path on a 24 grid filled with `currentColor`, the app glyph
+    shape, since they take the ink of the button label beside them. The crypto
+    button wears the Bitcoin disc from the coins.
 
-    The crypto button's mark is not here because it is not a third drawing: it
-    is the Bitcoin disc, which already travels with the coins.
-
-    They are lifted separately from the app's own set, and stay out of the rule
-    table, because they are BRANDS. A rule keyed on "coffee" would put a
-    company's cup on anything mentioning coffee and one on "crypto" would put
-    the Bitcoin symbol on settings that have nothing to do with it, so each is
-    passed explicitly at the one call site that means it - on both surfaces.
+    They stay out of the app's own set and its rule table because they are
+    brands: a rule keyed on "coffee" would put a company's cup on anything
+    mentioning coffee. Each is passed explicitly where it is meant.
     """
     text = io.open(DONATE_TSX, encoding="utf-8").read()
     out: dict[str, dict] = {}
@@ -291,9 +251,8 @@ def link_marks() -> dict[str, dict]:
         re.S,
     ):
         name, box, d = match.groups()
-        # `box={B24}` names a constant rather than spelling the numbers, so the
-        # constant is read rather than assumed: a second grid arriving here
-        # would otherwise be drawn on the first one's box and land off-centre.
+        # `box={B24}` names a constant, which is read rather than assumed in
+        # case a second grid arrives.
         value = re.search(r'const %s = "([^"]+)";' % re.escape(box), text)
         if not value:
             raise SystemExit("gen_glyph_data: no box constant %s for %s" % (box, name))
@@ -317,8 +276,8 @@ def resolve(match, colours) -> dict[str, str] | str | None:
     return {"light": pair.get("light", "#000000"), "dark": pair.get("dark", pair.get("light", "#ffffff"))}
 
 
-# JSX camelCase to the SVG attribute names a parser knows. Only the ones the
-# fifty-five actually use; anything else raises rather than being dropped.
+# JSX camelCase to the SVG attribute names a parser knows, only the ones the
+# marks use; anything else raises rather than being dropped.
 STYLE_ATTR = {
     "clipPath": "clip-path",
     "clipRule": "clip-rule",
@@ -339,27 +298,19 @@ STYLE_ATTR = {
     "strokeWidth": "stroke-width",
 }
 
-# `style={{ fill: "#0066da", fillRule: "evenodd" }}` - React's own way of
-# writing what SVG spells as attributes.
+# `style={{ fill: "#0066da", fillRule: "evenodd" }}`, React's way of writing
+# what SVG spells as attributes.
 STYLE = re.compile(r'style=\{\{(.*?)\}\}', re.S)
 PAIR = re.compile(r'(\w+):\s*"([^"]*)"')
 
-# `{/* why this disc is black */}` - a JSX comment, which is an expression and
-# not markup at all. The coin marks are hand-written rather than generated and
-# several of them say why they differ from the icon set they came from, so the
-# note has to be dropped here rather than reaching an XML parser.
+# `{/* why this disc is black */}`: a JSX comment in the hand-written coin marks,
+# which is an expression rather than markup and must not reach an XML parser.
 JSX_COMMENT = re.compile(r"\{/\*.*?\*/\}\s*", re.S)
 
 
 def unjsx(markup: str) -> str:
-    """React inline styles, rewritten as plain SVG attributes.
-
-    Three marks came out blank on the phone and nothing said why: they are the
-    ones whose source carried `style={{ fill: ... }}`, which a browser's JSX
-    compiler understands and an SVG parser does not. It is not a rendering
-    difference to work around - it is markup that was never SVG - so it is
-    translated once here rather than guessed at by each surface.
-    """
+    """React inline styles, rewritten as plain SVG attributes, since an SVG
+    parser draws a mark carrying `style={{ fill: ... }}` blank."""
 
     def one(match: re.Match) -> str:
         out = []
@@ -374,17 +325,11 @@ def unjsx(markup: str) -> str:
 
 
 def detokenise(body: str, colours) -> tuple[str, dict]:
-    """Theme colours used INSIDE a drawing, pulled out as named slots.
+    """Theme colours used inside a drawing, pulled out as named slots.
 
-    Three marks stayed blank on the phone after the JSX fix, and for a second
-    reason: their per-path fills are `var(--brand-putio-1)`, which a browser
-    resolves from the stylesheet and an SVG parser leaves as an unknown colour.
-    The root fill was already being resolved; these are the ones that carry
-    theme colours further in.
-
-    Two answers per slot, because a mark carrying a theme colour is exactly the
-    mark that needs a different one on a dark page. The renderer substitutes at
-    draw time, which is the only moment the theme is known.
+    An SVG parser cannot resolve a per-path fill such as `var(--brand-putio-1)`.
+    Each slot gets a light and a dark answer, and the renderer substitutes them
+    at draw time, when the theme is known.
     """
     used: dict[str, dict[str, str]] = {}
 
@@ -401,41 +346,25 @@ def detokenise(body: str, colours) -> tuple[str, dict]:
 
     body = re.sub(r"var\((--(?:brand|coin)-[\w-]+)\)", one, body)
 
-    # Anything still spelled `var(...)` is a colour this does not know how to
-    # look up, and it would reach the phone as a fill nothing can resolve: no
-    # error, no log line, a blank square where a logo belongs. That is exactly
-    # how OpenDrive, put.io and Quatrix came out empty, so it stops here now.
+    # Any other `var(...)` would reach the phone as a fill nothing resolves, a
+    # blank square where a logo belongs.
     left = re.search(r"var\([^)]*\)", body)
     if left:
         raise SystemExit("gen_glyph_data: a colour no stylesheet answers for: %s" % left.group(0))
     return body, used
 
 
-# Marks whose gradients the phone cannot draw, and what to do about it.
+# Marks whose gradients react-native-svg draws black. OneDrive's source is a
+# Cairo export with nine stacked gradients for one cloud, several of them
+# full-canvas tints at low opacity. Each gradient is judged on its own stops:
 #
-# OneDrive is the case this exists for. Its source is a Cairo export: NINE
-# stacked gradients for one cloud, several of them full-canvas overlays at low
-# opacity whose whole job is to tint what is underneath. A browser composites
-# that correctly; react-native-svg draws the cloud BLACK, which is what reached
-# the phone and what was reported.
+#   every stop fully opaque:  paint, replaced by the colour of the stop nearest
+#                             the middle, the tone the shape mostly reads as.
+#   any stop transparent:     a shade over the paint. The element goes, since
+#                             a shade reduced to a solid is a slab of colour.
 #
-# The first answer was to paint every gradient in the mark ONE brand colour.
-# That stopped the black and produced a blue blob: the cloud is three tones and
-# came out as one, next to a container that renders the real thing. jdp: "Das
-# logo von onedrive ist in der app falsch, im container richtig."
-#
-# So each gradient is now judged on its own stops:
-#
-#   - every stop fully opaque  ->  it is PAINT. Replaced by the colour of the
-#     stop nearest the middle, which is the tone the shape mostly reads as.
-#   - any stop transparent     ->  it is a SHADE, drawn over the paint to
-#     lighten or darken it. The element goes, because a shade reduced to a
-#     solid is a slab of colour across the drawing rather than a hint of one.
-#
-# What is left is the brand's own drawing, path for path, in its own tones,
-# minus the shading nobody can see at forty pixels. The BROWSER keeps the
-# gradients, because it renders them correctly - this only changes what
-# `glyphs.data.ts` carries.
+# The browser keeps the gradients; this only changes what `glyphs.data.ts`
+# carries.
 SOLIDIFY = {"IconOnedrive"}
 
 
@@ -446,15 +375,8 @@ STOP_OPACITY = re.compile(r'stop-opacity="([^"]+)"')
 
 
 def _stops(inner: str):
-    """Every stop as (offset, colour, opacity), read from ATTRIBUTES.
-
-    Attributes rather than a style object, because unjsx has already made that
-    translation one step earlier - that is the whole reason it exists. Reading
-    the JSX form here matched nothing at all.
-
-    A missing stop-opacity is 1: SVG's own default, and leaving it out is the
-    ordinary way to write a fully opaque stop.
-    """
+    """Every stop as (offset, colour, opacity), read from the attributes unjsx
+    has already written. A missing stop-opacity is SVG's default of 1."""
     out = []
     for tag in STOP.findall(inner):
         offset = STOP_OFFSET.search(tag)
@@ -491,7 +413,7 @@ def solidify(body: str, name: str) -> str:
         return body
     if "url(#" not in body:
         raise SystemExit(
-            "gen_glyph_data: %s is on the solidify list and has no gradient fills - "
+            "gen_glyph_data: %s is on the solidify list and has no gradient fills; "
             "either it was fixed upstream and the entry should go, or the name is wrong" % name
         )
 
@@ -504,12 +426,11 @@ def solidify(body: str, name: str) -> str:
         if any(float(op) < 1 for _, _, op in stops):
             shade.add(gid)
             continue
-        # The stop nearest the middle, which is the tone the shape reads as.
         middle = min(stops, key=lambda s: abs(float(s[0]) - 0.5))
         paint[gid] = _rgb(middle[1])
 
-    # A shade's element goes entirely. Matched on the whole element so nothing
-    # is left behind with a fill nothing answers for.
+    # Matched on the whole element, so nothing is left with a fill nothing
+    # answers for.
     for gid in shade:
         pattern = re.compile(
             r'<(path|circle|ellipse|rect|polygon)\b[^>]*?url\(#%s\)[^>]*?/>\s*' % re.escape(gid),
@@ -533,7 +454,7 @@ def solidify(body: str, name: str) -> str:
         )
     if not paint:
         raise SystemExit(
-            "gen_glyph_data: %s came out with no paint at all - every gradient read as a "
+            "gen_glyph_data: %s came out with no paint at all; every gradient read as a "
             "shade, which would leave an empty mark" % name
         )
     return body
@@ -550,26 +471,10 @@ HAS_ID = re.compile(r'\sid="([^"]+)"')
 def unlink(body: str, name: str) -> str:
     """Copy inherited gradient stops in, because the phone cannot follow a link.
 
-    SVG lets one gradient take another's stops with `xlink:href`, and it is how
-    every icon set with a two-tone drawing avoids writing the same four stops
-    three times. react-native-svg's XML parser does not implement it AT ALL -
-    the attribute is not in its table - so an inheriting gradient arrives with
-    no stops, a fill referencing it resolves to nothing, and the shape is
-    painted BLACK.
-
-    That is not a theory. pCloud reached the phone as a black cloud with a
-    turquoise P and OneDrive as a plain black cloud, on a screen of fifty-five
-    logos that were otherwise right, and nothing anywhere said why - the same
-    silent-and-total failure the `style={{...}}` and `var(--brand-*)` fixes
-    above were written for, one layer further in.
-
-    So the stops are copied at generation time, which is the only moment both
-    gradients are in one string. The phone then sees two ordinary gradients.
-
-    The ATTRIBUTES are not copied, only the stops: an inheriting gradient
-    usually overrides the coordinates, which is the whole reason it inherits
-    rather than being reused, and copying them over would move the second
-    gradient onto the first one's axis.
+    react-native-svg does not implement `xlink:href` on a gradient, so an
+    inheriting gradient arrives with no stops and paints its shape black. Only
+    the stops are copied: an inheriting gradient usually overrides the
+    coordinates, and copying those would move it onto the source's axis.
     """
     stops: dict[str, str] = {}
     for match in GRADIENT.finditer(body):
@@ -593,29 +498,22 @@ def unlink(body: str, name: str) -> str:
 
     body = GRADIENT.sub(one, body)
 
-    # A gradient with no stops at all paints black wherever it is referenced,
-    # and black on a logo is indistinguishable from "this brand's mark is
-    # black". The generator refuses rather than shipping it.
+    # A gradient with no stops paints black, which on a logo passes for the
+    # brand's own colour.
     for match in GRADIENT.finditer(body):
         if "<stop" not in (match.group(4) or ""):
             got = HAS_ID.search(match.group(2))
             raise SystemExit(
-                "gen_glyph_data: %s has a gradient with no stops (%s) - anything filled with it draws black"
+                "gen_glyph_data: %s has a gradient with no stops (%s); anything filled with it draws black"
                 % (name, got.group(1) if got else "unnamed")
             )
     return body
 
 
 def inner(svg: str, name: str) -> str:
-    """Everything inside the <svg>, kept as markup.
-
-    Carried as a STRING rather than parsed into a tree, because these are
-    somebody else's drawings: gradients, clip paths and nested groups, and a
-    parser that understood only what today's fifty-five happen to use would
-    drop part of the fifty-sixth without a word. The phone turns this into
-    react-native-svg elements at load time, and anything it cannot turn is
-    reported rather than skipped.
-    """
+    """Everything inside the <svg>, kept as markup rather than parsed, since a
+    parser covering only today's marks would silently drop part of the next
+    one. The phone reports anything it cannot turn into an element."""
     body = re.sub(r"^<svg[^>]*>", "", svg.strip(), count=1)
     body = re.sub(r"</svg>$", "", body).strip()
     body = unjsx(body)
@@ -632,15 +530,9 @@ HEADER = """// The drawings, as data.
 // GENERATED by scripts/gen_glyph_data.py from the two generated component
 // files. Do not hand-edit: regenerate, or the next run discards the change.
 //
-// It exists so the phone and the browser draw ONE icon set. The components in
-// `components/glyphs.tsx` return `<svg>`, which Metro cannot parse and React
-// Native has no element for; the drawings themselves are only path data, so
-// they travel and the elements do not.
-//
-// Three sets, one shape: the app's own glyphs, the storage providers' brand
-// marks, and the coin marks the donation window wears. The coins are here for
-// the same reason the brands are, not because they are icons - they are
-// somebody else's logo living in a React file that only the browser can read.
+// The phone and the browser draw one icon set. The components return `<svg>`,
+// which React Native has no element for, so only the path data travels: the
+// app's own glyphs, the storage providers' brand marks and the donation coins.
 
 export interface GlyphPart {
   /** SVG path data. */
@@ -665,16 +557,13 @@ export interface GlyphData {
 }
 
 /** A brand mark: somebody else's drawing, kept whole, with the colour it is
- *  drawn in - one value, or one per theme where it cannot be read on both. */
+ *  drawn in, one value or one per theme where it cannot be read on both. */
 export interface BrandData {
   box: string
   fill: string | { light: string; dark: string } | null
   /**
-   * The markup inside the `<svg>`, with any theme colour left as `{{name}}`.
-   *
-   * A placeholder rather than a resolved colour because the theme is not known
-   * until the mark is drawn, and a mark whose own paths carry a theme colour is
-   * precisely the one that needs a different colour on a dark page.
+   * The markup inside the `<svg>`, with any theme colour left as `{{name}}`
+   * until the mark is drawn and the theme is known.
    */
   svg: string
   /** What each `{{name}}` in `svg` resolves to, per theme. */

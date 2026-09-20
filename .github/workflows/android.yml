@@ -1,9 +1,7 @@
 name: Android
 
-# Built here rather than on a machine, and the reason is the toolchain. A GitHub
-# runner arrives with the Android SDK, a JDK and the build tools already on it;
-# assembling that inside a container to build one APK is a day of work whose
-# only product is a second place for the toolchain to drift.
+# A GitHub runner arrives with the Android SDK, a JDK and the build tools
+# installed, so the toolchain lives in one place only.
 on:
   push:
     branches: [main]
@@ -34,14 +32,8 @@ jobs:
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
-      # Before anything is built, because this one shipped and cost a round of
-      # testing: `getString` fills by POSITION, so a translation with fewer
-      # placeholders than the original silently drops the rest of the
-      # arguments. The German engine_silent kept its one placeholder after the
-      # English gained a second, and the trouble screen on a real phone showed
-      # the number 60 where the log should have been - the one screen whose
-      # entire job is explaining why the engine did not start, explaining
-      # nothing. Nothing was red.
+      # `getString` fills by position, so a translation with fewer placeholders
+      # than the original silently drops the remaining arguments.
       - name: The translations carry the same placeholders
         run: python android/tools/check_strings.py
 
@@ -51,9 +43,8 @@ jobs:
           cache: npm
           cache-dependency-path: web/package-lock.json
 
-      # The interface is compiled INTO the engine with go:embed, so it has to
-      # exist before Go builds anything. Skipping this gives a binary that
-      # starts, serves a placeholder and looks like a broken app.
+      # The engine embeds the interface; without it the binary serves a
+      # placeholder page.
       - name: Build the interface
         run: |
           cd web
@@ -65,14 +56,13 @@ jobs:
           go-version-file: go.mod
           cache: true
 
-      # CGO_ENABLED=0 is what makes this work without the NDK at all. Everything
-      # the engine needs is pure Go - modernc.org/sqlite exists precisely so
-      # that is true - and a static binary makes its own syscalls, so it runs on
-      # Android's bionic exactly as it does on glibc.
+      # CGO_ENABLED=0 needs no NDK: the engine is pure Go (modernc.org/sqlite
+      # included), and a static binary makes its own syscalls, so it runs on
+      # bionic as it does on glibc.
       #
-      # The name is not a choice. Since Android 10 an app may not execute a file
-      # out of its own data directory, so the binary has to travel in the native
-      # library directory, and only files matching lib*.so are put there.
+      # Since Android 10 an app may not execute a file from its data directory,
+      # so the binary travels in the native library directory, which takes only
+      # files named lib*.so.
       - name: Build the engine for both architectures
         env:
           CGO_ENABLED: "0"
@@ -96,25 +86,10 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@ed408507eac070d1f99cc633dbcf757c94c7933a # v4
 
-      # The debug build signs with android/debug.keystore, which is IN the
-      # repo, and app/build.gradle.kts carries the reasoning. The short version
-      # is that a runner is thrown away after every job, so Gradle was creating
-      # a fresh debug key each time - and to Android a different signing key is
-      # a different app. Every update refused with "signatures do not match".
-      #
-      # BOTH, and the debug build is the one anybody can actually use today.
-      #
-      # A release APK here is unsigned, because signing needs a keystore that
-      # only jdp has and a workflow that quietly signs with a throwaway key
-      # produces an app that installs once and can never be updated - every
-      # later build would be a different app as far as Android is concerned.
-      # But an unsigned APK cannot be installed at all, so a job that produced
-      # only that would be a green tick over something nobody can put on a
-      # phone.
-      #
-      # The debug build is signed with the standard debug key that every
-      # Android SDK carries. It installs, it runs, and it is honestly named:
-      # it is for trying the thing, not for shipping it.
+      # The release APK is unsigned, since a throwaway key would give an app
+      # that can never be updated, and an unsigned APK cannot be installed. The
+      # debug build is the installable one: it signs with the committed
+      # android/debug.keystore (app/build.gradle.kts says why).
       - name: Assemble
         working-directory: android
         run: gradle --no-daemon assembleDebug assembleRelease

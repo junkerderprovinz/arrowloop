@@ -1,9 +1,7 @@
 name: Mobile
 
-# The React Native app. Built here for the same reason the old shell was: a
-# GitHub runner arrives with the Android SDK, a JDK and Node already on it, and
-# assembling that inside a container to produce one APK is a day of work whose
-# only product is a second place for the toolchain to drift.
+# The React Native app. A GitHub runner arrives with the Android SDK, a JDK and
+# Node installed, so the toolchain lives in one place only.
 on:
   push:
     branches: [main]
@@ -17,9 +15,8 @@ on:
       - "android/debug.keystore"
       - ".github/workflows/mobile.yml"
   # On a release tag release.yml calls this and publishes the APKs it keeps as
-  # an artifact. Called from a pushed tag, github.event_name is that push, so
-  # RELEASE and SIGNED below hold exactly as they did when this ran on the tag
-  # itself.
+  # an artifact. github.event_name is then the tag push, which RELEASE and
+  # SIGNED below rely on.
   workflow_call:
   pull_request:
     paths:
@@ -34,12 +31,11 @@ on:
 permissions:
   contents: read
 
-# THREE PARTS, and each one separates a pair of runs that must not cancel each
-# other. The name of this workflow, because github.workflow is the CALLER's
-# name when release.yml calls this, and the app build and the container build
-# would land in one group. The caller's name, so a run started here directly
-# and one started through release.yml stay apart. The event, so a dispatched
-# test on a tag ref cannot cancel the real release on it.
+# Each part keeps apart two runs that must not cancel each other. The literal
+# prefix, because github.workflow is the caller's name under release.yml and
+# would put the app and container builds in one group; the caller's name, so a
+# direct run and a release run stay apart; the event, so a dispatched test on a
+# tag cannot cancel the real release.
 concurrency:
   group: mobile-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
@@ -49,17 +45,15 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
-      # A release is a PUSHED version tag. A run dispatched on a tag ref is a
-      # test like any other dispatch and publishes nothing.
+      # A release is a pushed version tag; a run dispatched on a tag ref is a
+      # test and publishes nothing.
       RELEASE: ${{ github.event_name == 'push' && github.ref_type == 'tag' && 'true' || 'false' }}
-      # Signed with the release key for a release, and on a dispatched run
-      # that asks for it, so the signing can be tried on a branch before a
-      # release depends on it. Every other build keeps the public debug key.
+      # A dispatched run can ask for the release key, so signing can be tried
+      # on a branch before a release depends on it.
       SIGNED: ${{ ((github.event_name == 'push' && github.ref_type == 'tag') || inputs.signed == true) && 'true' || 'false' }}
-      # The release certificate, as apksigner prints its SHA-256. Not a secret:
-      # it is in every APK the key signs. Pinned so that a wrong keystore in the
-      # secrets fails the build instead of publishing APKs no later release can
-      # update.
+      # The release certificate as apksigner prints it; public, since every APK
+      # carries it. A wrong keystore in the secrets then fails the build instead
+      # of publishing APKs no later release can update.
       RELEASE_CERT_SHA256: 13477be473caf942e1c6d0fabee878776f32c849c2341c2541893a3474ab10e6
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
@@ -76,22 +70,13 @@ jobs:
         working-directory: mobile
         run: npx tsc --noEmit
 
-      # The translations before anything is built, because this class of bug is
-      # silent: getString fills by POSITION, so a translation with fewer
-      # placeholders drops the rest of the arguments without a word.
-      # The APP's resources, not the old shell's. This was pointing at
-      # android/app/src/main/res, which belongs to the WebView build nobody
-      # installs any more - so the guard was reading the strings of a
-      # different program and reporting that they were fine.
+      # getString fills by position, so a translation with fewer placeholders
+      # silently drops the remaining arguments.
       - name: The translations carry the same placeholders
         run: python android/tools/check_strings.py mobile/native/res
 
-      # And the same question about the app's OWN screens. A key that names the
-      # right subject but carries a number renders a literal {count} on the
-      # phone, in every language at once, and neither the compiler nor the
-      # language parity test can see it: both are happy with a key that exists
-      # and a sentence that is translated. Seven screens were doing exactly
-      # that, including the one that says how full the bin is.
+      # A key used without the number it carries renders a literal {count},
+      # which neither the compiler nor the language parity test can see.
       - name: The screens ask for keys that exist, with the numbers they need
         run: python mobile/tools/check_keys.py
 
@@ -100,24 +85,21 @@ jobs:
           go-version-file: go.mod
           cache: true
 
-      # The interface is compiled INTO the engine with go:embed, so it has to
-      # exist before Go builds anything - even though the phone never shows it.
-      # The engine serves it to a browser on a laptop pointed at the phone, and
-      # a binary built without it serves a placeholder instead.
+      # The phone never shows it, but the engine serves it to a browser pointed
+      # at the phone, and without it serves a placeholder.
       - name: Build the interface the engine embeds
         run: |
           cd web
           npm ci
           npm run build
 
-      # CGO_ENABLED=0 is what makes this work without the NDK at all.
-      # modernc.org/sqlite exists precisely so that is true, and a static
-      # binary makes its own syscalls, so it runs on Android's bionic exactly
-      # as it does on glibc.
+      # CGO_ENABLED=0 needs no NDK: the engine is pure Go (modernc.org/sqlite
+      # included), and a static binary makes its own syscalls, so it runs on
+      # bionic as it does on glibc.
       #
-      # The name is not a choice. Since Android 10 an app may not execute a
-      # file out of its own data directory, so the binary travels in the native
-      # library directory, and only files matching lib*.so are put there.
+      # Since Android 10 an app may not execute a file from its data directory,
+      # so the binary travels in the native library directory, which takes only
+      # files named lib*.so.
       - name: Build the engine for both architectures
         env:
           CGO_ENABLED: "0"
@@ -134,12 +116,9 @@ jobs:
           done
           ls -la mobile/native/jniLibs/*/
 
-      # The shapes, against a REAL engine, because nothing else can see this
-      # class of bug: `src/api.ts` declares what comes back and TypeScript
-      # believes every word, so a field the engine calls `reason` and the app
-      # calls `error` compiles perfectly and renders an empty string. Four of
-      # those shipped at once. The binary built above is a static linux/amd64
-      # one, so the runner can simply execute it.
+      # TypeScript trusts the shapes `src/api.ts` declares, so a field the
+      # engine calls `reason` and the app calls `error` compiles and renders
+      # empty. The x86_64 engine built above runs on the runner as it is.
       - name: The app's idea of the answers matches a real engine
         run: |
           set -eux
@@ -147,19 +126,10 @@ jobs:
           mkdir -p "$work/left" "$work/right"
           echo one > "$work/left/one.txt"
           echo two > "$work/left/two.txt"
-          # TWO JOBS, and the second exists only to have a SCHEDULE. The app
-          # declares `nextRun`, which the engine sends only for a job the clock
-          # will reach - so a fixture where nothing is scheduled makes that
-          # field absent from every object, and the shape check is right to call
-          # that out: an optional field that never arrives is how a renamed
-          # field hides. The first job keeps no schedule, so the run below is
-          # still the only thing that happens.
-          #
-          # SWITCHED ON, and that is the point rather than an oversight: the
-          # engine deliberately reports no due time for a job the clock will not
-          # start, so a disabled fixture would leave the field just as absent.
-          # What keeps it quiet is the EXPRESSION - the first of January at
-          # three is real, valid, and will not come round inside a CI run.
+          # The second job exists to have a schedule: the engine sends
+          # `nextRun` only for an enabled job the clock will reach, and the
+          # shape check rejects a field that never arrives. The first of January
+          # at three will not come round inside a CI run.
           printf '{"jobs":[{"name":"check","left":"%s/left","right":"%s/right","state":"state/check.db","quietPeriod":"0s"},{"name":"scheduled","left":"%s/left","right":"%s/right","state":"state/scheduled.db","schedule":"0 3 1 1 *"}]}' "$work" "$work" "$work" "$work" > "$work/arrowloop.json"
           cp mobile/native/jniLibs/x86_64/libarrowloop.so "$work/engine"
           chmod +x "$work/engine"
@@ -170,15 +140,10 @@ jobs:
             curl -sf -m 2 http://127.0.0.1:18423/api/capabilities > /dev/null && break
             sleep 1
           done
-          # Wait for the run to actually finish rather than guessing at three
-          # seconds. A fixed sleep makes the guard fail now and then on a slow
-          # runner, and a guard that fails at random gets switched off rather
-          # than read.
+          # A fixed sleep would fail now and then on a slow runner.
           settle() {
             for _ in $(seq 60); do
-              # An answer that did not arrive is not an answer that says
-              # "finished". Treating a failed request as done would let the
-              # next step race the run it was waiting for.
+              # A failed request does not mean the run finished.
               state="$(curl -sf -m 5 http://127.0.0.1:18423/api/jobs || true)"
               if [ -n "$state" ] && ! printf '%s' "$state" | grep -q '"running":true'; then
                 return 0
@@ -189,11 +154,9 @@ jobs:
             return 1
           }
 
-          # Real divergence, and a bin with something in it. The shapes that
-          # only exist while something is happening are exactly the ones this
-          # is for, and a run against two sides that already agree checks
-          # nothing - which is why check_shapes fails rather than passes when
-          # it could not reach them.
+          # Real divergence and a bin with something in it, since some shapes
+          # exist only while something is happening; check_shapes fails when it
+          # could not reach them.
           curl -sf -m 60 -X POST http://127.0.0.1:18423/api/jobs/check/run
           settle
           rm "$work/right/two.txt"
@@ -201,11 +164,8 @@ jobs:
           curl -sf -m 60 -X POST http://127.0.0.1:18423/api/jobs/check/run
           settle
           echo four > "$work/left/four.txt"
-          # And the SAME file changed on both sides, because that is the only
-          # action that carries both versions. A plan made only of copies to
-          # the right has no `right` on any action, and the check then cannot
-          # tell "this state has no right side" from "nobody calls it that" -
-          # which is exactly what it reported the first time this ran.
+          # One file changed on both sides, the only action that carries both
+          # versions, so the plan has a `right` for the check to see.
           echo left >> "$work/left/one.txt"
           echo right >> "$work/right/one.txt"
           sleep 2
@@ -219,10 +179,8 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@ed408507eac070d1f99cc633dbcf757c94c7933a # v4
 
-      # Before anything is generated, so a missing secret stops the run in
-      # seconds rather than after the build. A release APK signed with the
-      # debug key instead is the one mistake here with no cheap correction:
-      # anybody can sign an update for it, and changing the key later means
+      # Checked early, since a release APK signed with the public debug key
+      # lets anybody sign an update for it, and changing the key later means
       # every installed copy has to be uninstalled first.
       - name: The release key is available
         if: env.SIGNED == 'true'
@@ -238,15 +196,13 @@ jobs:
           [ -n "$KEY_ALIAS" ] || missing="$missing ANDROID_KEY_ALIAS"
           [ -n "$KEY_PASS" ] || missing="$missing ANDROID_KEY_PASSWORD"
           if [ -n "$missing" ]; then
-            echo "::error::missing repository secret(s):$missing - a published APK must not be signed with the public debug key."
+            echo "::error::missing repository secret(s):$missing. A published APK must not be signed with the public debug key."
             exit 1
           fi
 
-      # The APK carries the release's version, not whatever app.json last said:
-      # otherwise the phone's app info names one version and the release page
-      # another. versionCode is what Android orders updates by, so it is derived
-      # from the same three numbers and rises with every release. Edited on the
-      # runner only, never committed.
+      # The APK takes the tag's version rather than app.json's, so the phone's
+      # app info and the release page agree. Android orders updates by
+      # versionCode, so it rises with every release.
       - name: Stamp the version from the tag
         if: env.RELEASE == 'true'
         working-directory: mobile
@@ -264,16 +220,13 @@ jobs:
             console.log("version", version, "versionCode", app.expo.android.versionCode);
           '
 
-      # prebuild generates android/ from app.json and the plugins. It is not
-      # committed, so this is the only place it exists - which is what keeps
-      # plugins/withEngine.js honest: an edit that is not in the plugin does
-      # not survive to here.
+      # android/ is not committed, so any native change has to live in
+      # plugins/withEngine.js to survive to here.
       - name: Generate the Android project
         working-directory: mobile
         run: npx expo prebuild --platform android --clean
 
-      # After prebuild, because prebuild --clean throws android/ away and would
-      # take the engine with it.
+      # prebuild --clean throws android/ away, engine included.
       - name: Put the engine in place
         run: |
           set -eux
@@ -291,18 +244,9 @@ jobs:
           printf '%s' "$KS" | base64 -d > "$RUNNER_TEMP/release.jks"
           test -s "$RUNNER_TEMP/release.jks"
 
-      # RELEASE and not debug, and that is not about optimisation. A React
-      # Native DEBUG build expects Metro, the development server, to hand it
-      # the JavaScript at runtime - installed on a phone with no Metro it shows
-      # a red screen saying "Unable to load script". The release build packages
-      # the bundle into the APK, which is what makes it a program somebody can
-      # be given.
-      #
-      # It is signed with the debug key at android/debug.keystore, which the
-      # config plugin points the template at. Stable, so a build installs over
-      # the previous one; public, so it is not fit for publishing anywhere. A
-      # signed build gets the release key instead, through the same plugin and
-      # the four variables below.
+      # A React Native debug build loads its JavaScript from Metro at runtime;
+      # only the release build packages the bundle into the APK. Unless SIGNED,
+      # it is signed with the stable, public android/debug.keystore.
       - name: Assemble
         working-directory: mobile/android
         env:
@@ -323,10 +267,8 @@ jobs:
           done
           ls -la out/
 
-      # The variables having been set is no proof the APKs came out signed with
-      # them: a template the plugin stopped matching, or a keystore holding
-      # another alias, ends in a debug-signed file and a green build. The
-      # certificate inside each finished APK is what answers the question.
+      # A template the plugin stopped matching, or a keystore holding another
+      # alias, ends in a debug-signed file and a green build.
       - name: The APKs carry the release key
         if: env.SIGNED == 'true'
         working-directory: mobile
@@ -341,9 +283,9 @@ jobs:
             certs=$("$apksigner" verify --print-certs "$apk")
             echo "$apk"
             echo "$certs"
-            # Every signer line, whichever scheme prints it: "Signer #1 certificate
-            # SHA-256 digest" and "V3.0 Signer: certificate SHA-256 digest" are
-            # both in use. More than one distinct key is a mismatch too.
+            # Both "Signer #1 certificate SHA-256 digest" and "V3.0 Signer:
+            # certificate SHA-256 digest" occur; more than one distinct key is a
+            # mismatch too.
             digests=$(echo "$certs" | grep -oE 'certificate SHA-256 digest: [0-9a-f]{64}' | awk '{print $4}' | sort -u)
             if [ "$digests" != "$RELEASE_CERT_SHA256" ]; then
               echo "::error::$apk is signed by $digests, not by the release certificate $RELEASE_CERT_SHA256. Check the ANDROID_KEYSTORE_* secrets and mobile/plugins/withEngine.js."
@@ -351,10 +293,9 @@ jobs:
             fi
           done
 
-      # Not from a signed test run: an APK carrying the release key is
-      # published by a release and nowhere else. A release keeps its artifact as
-      # long as the desktop bundles, so re-running a failed publish later still
-      # finds both.
+      # An APK carrying the release key leaves only through a release. A
+      # release keeps its artifact as long as the desktop bundles, so re-running
+      # a failed publish later still finds both.
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: env.RELEASE == 'true' || env.SIGNED != 'true'
         with:

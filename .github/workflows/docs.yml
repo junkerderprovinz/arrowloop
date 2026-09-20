@@ -40,21 +40,15 @@ jobs:
           python-version: "3.x"
       - run: pip install -r docs-requirements.txt
 
-      # --strict turns a broken internal link into a failed build. A
-      # documentation site whose links quietly rot is worse than none, because
-      # somebody trusts it.
+      # --strict turns a broken internal link into a failed build.
       - run: mkdocs build --strict
 
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
         with:
           path: site
 
-  # The build above runs on every change and is the part that matters day to
-  # day: --strict turns a broken internal link into a failed build. Publishing
-  # is separate and waits for the repository to be public, because GitHub Pages
-  # is not available for a private one on this plan. Guarding the job rather
-  # than letting it fail keeps a red tick from meaning "somebody has to look at
-  # this" when nobody does.
+  # GitHub Pages is not available for a private repository on this plan, so
+  # publishing waits for the repository to be public instead of failing.
   deploy:
     name: Deploy
     needs: build

@@ -8,8 +8,7 @@ import (
 	"testing"
 )
 
-// A small stand-in for the real mark: a gold ring on nothing, which is the one
-// property every check below actually depends on.
+// sample is a gold ring on a transparent ground, standing in for the real mark.
 func sample(t *testing.T) []byte {
 	t.Helper()
 	img := image.NewNRGBA(image.Rect(0, 0, 32, 32))
@@ -46,12 +45,8 @@ func TestBuildTraySetProducesEveryState(t *testing.T) {
 	}
 }
 
-// The states have to LOOK different, not merely exist.
-//
-// Comparing the bytes is the whole point: a tint that silently did nothing, or
-// a rotation that produced the same image twelve times, would pass every test
-// that only counts frames, and would then say nothing at all in the one place
-// this feature exists for.
+// A tint that did nothing, or a rotation that produced the same image twelve
+// times, would pass a test that only counts frames.
 func TestEveryTrayStateLooksDifferent(t *testing.T) {
 	set, err := BuildTraySet(sample(t))
 	if err != nil {
@@ -66,15 +61,13 @@ func TestEveryTrayStateLooksDifferent(t *testing.T) {
 	if bytes.Equal(set.Settled, set.Failed) {
 		t.Error("settled and failed are the same image, so the colour carries no meaning")
 	}
-	// A quarter turn on a ring that is not rotationally symmetric must differ;
-	// comparing neighbours would be the weaker check, because a rotation that
-	// only ever produced a one pixel shift would still pass it.
+	// A quarter turn rather than neighbouring frames, which a one pixel shift
+	// would already tell apart.
 	if bytes.Equal(set.Working[0], set.Working[Frames/4]) {
 		t.Error("a quarter turn produced the same image, so the icon does not spin")
 	}
 }
 
-// The tint has to be the colour it was asked for, not merely a different one.
 func TestTintCarriesTheColourItWasGiven(t *testing.T) {
 	src, err := png.Decode(bytes.NewReader(sample(t)))
 	if err != nil {
@@ -104,11 +97,6 @@ func TestTintCarriesTheColourItWasGiven(t *testing.T) {
 	}
 }
 
-// Transparency survives the tint.
-//
-// A tinted icon whose ground turned opaque is a coloured square in the
-// notification area, which is worse than no state at all: it reads as a
-// different program.
 func TestTintLeavesTheGroundTransparent(t *testing.T) {
 	src, err := png.Decode(bytes.NewReader(sample(t)))
 	if err != nil {

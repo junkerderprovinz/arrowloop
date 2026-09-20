@@ -5,15 +5,8 @@ import (
 	"testing"
 )
 
-// TestTheTrayIconIsBuiltFromTheOneLogo.
-//
-// Windows draws an ICO in the notification area and this program has one master
-// and it is a PNG. Committing a second file would work and would be the thing
-// somebody forgets to change the day the logo changes, so the container is
-// built around the same bytes instead. What that costs is a header, and this is
-// the test that the header is the right shape: it was wrong once, and the only
-// symptom was systray saying "unable to set icon" followed by Windows saying
-// the operation completed successfully.
+// A malformed header shows only as systray's "unable to set icon" followed by
+// Windows reporting success.
 func TestTheTrayIconIsBuiltFromTheOneLogo(t *testing.T) {
 	ico, err := icoFromPNG(trayIcon)
 	if err != nil {
@@ -40,9 +33,7 @@ func TestTheTrayIconIsBuiltFromTheOneLogo(t *testing.T) {
 	}
 }
 
-// TestASquareLogoIsNotSilentlyMisreported. A 256 pixel side is written as zero,
-// which is the format saying the byte is too small for the number, and reading
-// that rule backwards would ship an icon claiming to be zero pixels across.
+// A 256 pixel side is written as zero, and only that one.
 func TestASquareLogoIsNotSilentlyMisreported(t *testing.T) {
 	width, height, err := pngSize(trayIcon)
 	if err != nil {
@@ -64,8 +55,6 @@ func TestASquareLogoIsNotSilentlyMisreported(t *testing.T) {
 	}
 }
 
-// TestSomethingThatIsNotAPNGIsRefused, rather than producing a container around
-// bytes nothing can draw.
 func TestSomethingThatIsNotAPNGIsRefused(t *testing.T) {
 	for _, bad := range [][]byte{nil, []byte("short"), make([]byte, 64)} {
 		if _, err := icoFromPNG(bad); err == nil {

@@ -12,19 +12,9 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 
 /**
- * The engine, kept alive while the app is not on screen.
- *
- * A sync tool that only works while somebody is looking at it is a file
- * manager. The whole reason this is a service is the case nobody watches: the
- * phone in a pocket on a train, syncing what the camera made this morning.
- *
- * `dataSync` is the declared type, and it is the honest one - this moves files
- * between two places on somebody's behalf. It also carries the rules that come
- * with it: since Android 14 a dataSync service is capped at six hours in a day,
- * and since 15 it can be timed out sooner. That is not a limitation to work
- * around, it is the budget the app has to live inside, and the emulator this
- * was developed against runs Android 16 precisely so those rules are the ones
- * being tested.
+ * Keeps the engine alive while the app is not on screen. As a dataSync service
+ * it is capped at six hours a day from Android 14, and from 15 it can be timed
+ * out sooner.
  */
 class EngineService : Service() {
 
@@ -43,10 +33,8 @@ class EngineService : Service() {
             return START_NOT_STICKY
         }
 
-        // The notification goes up BEFORE the work starts, and that ordering is
-        // the whole contract: a foreground service that has not called
-        // startForeground within a few seconds is killed with an exception
-        // naming a timeout rather than the work.
+        // Before the work starts: a foreground service that has not called
+        // startForeground within a few seconds is killed.
         startForeground(
             NOTIFICATION_ID,
             notification(),
@@ -57,10 +45,7 @@ class EngineService : Service() {
 
         Engine.start(this)
 
-        // START_STICKY: if the system reclaims this service under memory
-        // pressure, bring it back. Engine.start checks whether the engine is
-        // already answering, so a restart that finds the process still alive
-        // does nothing rather than starting a second one.
+        // A restart that finds the engine still answering starts no second one.
         return START_STICKY
     }
 
@@ -75,9 +60,7 @@ class EngineService : Service() {
         val channel = NotificationChannel(
             CHANNEL,
             getString(R.string.channel_engine),
-            // LOW: it must be visible, because that is what a foreground
-            // service is, and it must never make a sound. Nobody wants a chime
-            // because a folder synced.
+            // Visible, as a foreground service must be, but silent.
             NotificationManager.IMPORTANCE_LOW,
         ).apply {
             description = getString(R.string.channel_engine_why)
@@ -102,9 +85,7 @@ class EngineService : Service() {
             .setContentText(getString(R.string.notify_running_why))
             .setSmallIcon(R.drawable.ic_notification)
             .setContentIntent(open)
-            // A way OUT of the notification, because a notification that can
-            // only be swiped and comes straight back reads as an app that will
-            // not let go. This one stops the engine and means it.
+            // An ongoing notification needs a way to stop what it stands for.
             .addAction(0, getString(R.string.notify_stop), stop)
             .setOngoing(true)
             .setSilent(true)

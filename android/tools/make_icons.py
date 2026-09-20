@@ -1,34 +1,14 @@
 # -*- coding: utf-8 -*-
-"""Startsymbol und Benachrichtigungssymbol fuer die Android-App.
+"""Startsymbol und Benachrichtigungssymbol fuer die Android-App, aus appicon.png.
 
-Beides aus dem VORHANDENEN Werk, nicht neu erfunden: die App traegt dieselbe
-Marke wie der Container und der Schreibtisch, sonst sind es fuer den Betrachter
-drei Programme.
+Drei Symbole: das alte mipmap-Symbol fuer Android 7 und aelter, das adaptive
+Symbol ab Android 8 (Vordergrund auf weissem Hintergrund, die Maske legt der
+Starter darueber) und das Benachrichtigungssymbol, das das System auf eine
+Silhouette reduziert.
 
-DREI Symbole, weil Android drei verschiedene Dinge verlangt.
-
-Das ADAPTIVE Symbol ist das, was auf einem Startbildschirm seit Android 8
-wirklich gezeigt wird: zwei Ebenen, Hintergrund und Vordergrund, und der
-Starter legt seine eigene Maske darueber - beim Standard ein Quadrat mit
-runden Ecken. Der Hintergrund ist WEISS, weil jdp genau das verlangt hat
-("Das App-Logo soll zudem eine weiße Kachel sein mit abgerundeten ecken (wie
-die KL app)") und weil KnightLoaders eigene App es so macht: `adaptiveIcon`
-mit `backgroundColor: "#ffffff"`. Ohne adaptives Symbol nimmt der Starter das
-alte Vollbild und legt es in einen grauen Kreis oder eine Umrandung seiner
-Wahl - was jdp gesehen hat und was neben der KL-App aussieht wie eine App aus
-einer anderen Zeit.
-
-Der Vordergrund liegt in der SICHERHEITSZONE. Von den 108 Einheiten eines
-adaptiven Symbols sind nur die mittleren 66 garantiert sichtbar; der Rand ist
-Spielraum fuer die Maske und fuer die Bewegung, die manche Starter beim
-Wischen zeigen. Ein Logo, das die vollen 108 fuellt, wird an den Ecken
-abgeschnitten - und zwar unterschiedlich stark je nach Telefon.
-
-Das alte mipmap-Symbol bleibt fuer Android 7 und aelter, das adaptive kennt.
-Das Benachrichtigungssymbol wird vom System auf eine SILHOUETTE reduziert:
-alles, was nicht durchsichtig ist, wird weiss eingefaerbt. Ein farbiges Logo
-dort ergibt einen weissen Klecks, deshalb wird es hier bewusst auf eine
-erkennbare Kontur gebracht.
+Von den 108 Einheiten eines adaptiven Symbols sind nur die mittleren 66 sicher
+sichtbar; ein Logo, das mehr fuellt, wird je nach Telefon an den Ecken
+abgeschnitten.
 """
 import io
 import os
@@ -40,19 +20,8 @@ RES = r"D:\github\arrowloop\android\app\src\main\res"
 # Die Dichtestufen, die Android erwartet, mit ihrem Faktor auf 48dp.
 DICHTEN = {"mdpi": 1.0, "hdpi": 1.5, "xhdpi": 2.0, "xxhdpi": 3.0, "xxxhdpi": 4.0}
 
-# Ein adaptives Symbol ist 108dp gross. Die mittleren 66dp sind die
-# SICHERHEITSZONE - was dort liegt, wird nie abgeschnitten - aber sie ist nicht
-# die richtige Groesse fuer die Marke.
-#
-# Androids eigene Keyline dafuer: eine VOLLFLAECHIGE runde Form soll 60dp
-# messen, eine quadratische 44dp. ArrowLoops Marke ist ein Kreis und fuellt
-# ihre Vorlage randlos aus, also gilt der Kreiswert. Auf 66dp gebaut sah sie
-# entsprechend gross aus, und genau so wurde sie gemeldet ("das logo auf der
-# kachel ist zu groß").
-#
-# 58 statt 60, und das ist gemessen statt geraten: KnightLoaders Marke belegt
-# 37% der Breite ihrer Leinwand, weil sie ein hoher schmaler Schild ist. Ein
-# Kreis mit demselben optischen Gewicht sitzt unter der Keyline, nicht darauf.
+# Androids Keyline fuer eine vollflaechige runde Form ist 60dp; die Marke bleibt
+# knapp darunter, damit der Kreis neben schmalen Marken nicht schwerer wirkt.
 ADAPTIV_DP = 108
 MARKE_DP = 58
 
@@ -64,11 +33,7 @@ for name, faktor in DICHTEN.items():
     os.makedirs(ordner, exist_ok=True)
     quelle.resize((kante, kante), Image.LANCZOS).save(os.path.join(ordner, "ic_launcher.png"))
 
-    # Der Vordergrund des adaptiven Symbols: durchsichtige 108dp-Flaeche mit
-    # dem Logo mittig in den sicheren 66dp. Der Hintergrund ist kein Bild,
-    # sondern eine Farbe (siehe values/ic_launcher_background.xml), denn eine
-    # einfarbige Flaeche als PNG in fuenf Dichten waere fuenf Dateien fuer
-    # etwas, das eine Zeile ist.
+    # Der Hintergrund ist eine Farbe in values/colors.xml, kein Bild.
     voll = int(round(ADAPTIV_DP * faktor))
     marke = int(round(MARKE_DP * faktor))
     vordergrund = Image.new("RGBA", (voll, voll), (0, 0, 0, 0))
@@ -77,11 +42,8 @@ for name, faktor in DICHTEN.items():
     vordergrund.paste(logo, (versatz, versatz), logo)
     vordergrund.save(os.path.join(ordner, "ic_launcher_foreground.png"))
 
-    # Das Benachrichtigungssymbol misst 24dp und ist eine Maske. Aus dem
-    # Alphakanal der Vorlage wird eine weisse Silhouette: was gezeichnet ist,
-    # wird weiss, der Rest bleibt durchsichtig. Das System faerbt es danach
-    # ohnehin um, also ist jede Farbe hier verschwendet - und ein volles Logo
-    # ergaebe eine unlesbare Flaeche.
+    # 24dp, eine weisse Silhouette aus dem Alphakanal; das System faerbt sie
+    # ohnehin um.
     rand = int(round(24 * faktor))
     klein = quelle.resize((rand, rand), Image.LANCZOS)
     alpha = klein.getchannel("A")

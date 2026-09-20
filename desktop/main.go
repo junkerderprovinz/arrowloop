@@ -1,10 +1,5 @@
-// Command arrowloop-desktop is the same engine in a window.
-//
-// It is not a client talking to a server: the scheduler, the run log and the
-// API all live in this process, and the window is a webview pointed at them.
-// That is what makes the desktop build worth having at all — a separate client
-// would need a server to be running somewhere, which is exactly the setup step
-// somebody installing a desktop app is trying to avoid.
+// Command arrowloop-desktop is the same engine in a window. The scheduler, the
+// run log and the API live in this process, so no server has to run elsewhere.
 package main
 
 import (
@@ -24,23 +19,8 @@ import (
 
 	"github.com/energye/systray"
 
-	// Every backend rclone carries, the same as cmd/arrowloop and the
-	// container. This used to be four - local, s3, sftp, smb - with a comment
-	// claiming it matched the command line binary, which stopped being true
-	// the day jdp asked for "sämtliche" and cmd/arrowloop moved to
-	// backend/all. Two mains in one repo, one left behind, and a comment
-	// asserting they agree.
-	//
-	// It never crashed, and that is what made it the quieter failure:
-	// remotes.Providers() filters the list by what is actually registered, so
-	// the desktop app silently offered the handful those four covered.
-	// Somebody who read the release notes went looking for Backblaze on
-	// Windows and found the feature missing rather than broken.
-	//
-	// It costs size and the size is measured rather than estimated: the four
-	// came to 49.5 MB as they shipped, 35.3 with -s -w, which the desktop
-	// workflow was also missing. jdp chose the providers over the megabytes on
-	// 2026-09-10, with both numbers in front of them.
+	// Every backend, as in cmd/arrowloop. remotes.Providers() offers only what
+	// is registered, so a shorter list here would silently hide providers.
 	_ "github.com/rclone/rclone/backend/all"
 
 	"github.com/rclone/rclone/fs/config/configfile"
@@ -58,16 +38,13 @@ import (
 	webui "github.com/junkerderprovinz/arrowloop/web"
 )
 
-// The interface is embedded here as well as in the command line binary. Wails
-// wants its own copy at build time, and a build tag sharing one directory
-// between two modules is more machinery than a second embed directive.
+// Wails wants its own copy of the interface at build time.
 //
 //go:embed all:frontend/dist
 var assets embed.FS
 
-// The icon the notification area draws. The same file the executable and the
-// installer wear, so the three cannot drift into showing different marks for
-// the same program.
+// The tray icon is the file the executable and the installer use, so all three
+// show one mark.
 //
 //go:embed build/appicon.png
 var trayIcon []byte
@@ -121,33 +98,22 @@ func run() error {
 		Log:         desktopLog,
 	}
 
-	// An autostart entry records a path, and a path is a promise about where
-	// this file will still be in six months. Somebody who switched it on for a
-	// portable copy and later installed the program properly has an entry
-	// pointing at nothing, and it fails at a reboot without saying so. This
-	// makes the entry follow the program instead.
-	//
-	// A warning rather than a refusal: the window opening matters more than the
-	// entry being current, and the settings switch still reports the truth
-	// either way.
+	// An autostart entry records a path, which goes stale when a portable copy
+	// is later installed properly. A failure only warns: opening the window
+	// matters more.
 	if err := autostart.Refresh(); err != nil {
 		log.Printf("could not re-point the autostart entry: %v", err)
 	}
 
-	// The schedules run for as long as the window is open. A desktop app that
-	// only syncs while somebody is watching it would be a worse version of the
-	// command line; one that keeps running after the window closes would be a
-	// background service pretending to be an app. The daemon and the service
-	// files exist for the second case.
+	// The schedules run for as long as the program does; running after it
+	// quits is what the daemon and the service files are for.
 	go func() {
 		if err := runner.Serve(ctx); err != nil {
 			log.Printf("the scheduler stopped: %v", err)
 		}
 	}()
 
-	// Every icon the notification area will show, derived once from the one
-	// embedded PNG. A failure here costs the spin and the colours, not the
-	// program: the plain mark is still a working tray icon.
+	// A failure costs the spin and the colours; the plain mark still works.
 	icons, err := BuildTraySet(trayIcon)
 	if err != nil {
 		log.Printf("the tray icon has no states: %v", err)
@@ -158,31 +124,22 @@ func run() error {
 		icons = &TraySet{Idle: plain, Settled: plain, Failed: plain, Working: [][]byte{plain}}
 	}
 	live := newTrayLive(icons)
-	// The machine's own conditions, which only this build can ask about. The
-	// container build hands back nil and nothing is ever held back there.
+	// Battery and metered-connection holds, nil where the platform cannot tell.
 	runner.SetCondition(powerCondition(window))
 
 	live.Watch(ctx, runner)
 
-	// Held so the second-instance handler can reach the window. Wails passes
-	// the context to OnStartup and nowhere else, and that handler runs long
-	// after this function has returned.
+	// Wails passes the context only to OnStartup, and the second-instance
+	// handler needs it later.
 	var uiCtx context.Context
 
 	return wails.Run(&options.App{
 		Title:  "ArrowLoop",
 		Width:  1100,
 		Height: 760,
-		// One copy at a time, and a second launch brings the first one back
-		// rather than starting a race.
-		//
-		// Two copies cannot work anyway: they would share one WebView2 profile
-		// and the second would fail to create its window with a bare
-		// ERROR_BUSY and a twenty-two frame stack trace. They would also both
-		// run the same schedules over the same state database. Double-clicking
-		// an icon whose window is hidden in the notification area is the
-		// obvious way to reach that, and it is also the obvious way somebody
-		// expects to get their window back.
+		// A second launch brings the first window back. Two copies would share
+		// one WebView2 profile, where the second fails with ERROR_BUSY, and
+		// would run the same schedules over the same state database.
 		SingleInstanceLock: &options.SingleInstanceLock{
 			UniqueId: "com.junkerderprovinz.arrowloop",
 			OnSecondInstanceLaunch: func(options.SecondInstanceData) {
@@ -191,18 +148,12 @@ func run() error {
 				}
 			},
 		},
-		// The context arrives here and nowhere else, and everything that has to
-		// reach the window runs long after this function returns, so both
-		// helpers below are handed it rather than looking it up later.
 		OnStartup: func(c context.Context) {
 			uiCtx = c
 			startTray(c, window, live, runner)
 			watchMinimise(c, window)
 		},
-		// What the close button does is a setting, and its default is that it
-		// closes. A close button that quietly hides a running program is the
-		// kind of surprise somebody discovers a week later, wondering why a job
-		// keeps running; anybody who wants that behaviour can ask for it.
+		// Closing hides the window only when the setting asks for it.
 		OnBeforeClose: func(c context.Context) bool {
 			if !window.Get().CloseToTray {
 				return false
@@ -210,19 +161,15 @@ func run() error {
 			wruntime.WindowHide(c)
 			return true
 		},
-		// The API is handed to the asset server as the fallback handler, so
-		// /api/... reaches the engine and everything else is served from the
-		// bundle. No second port, no loopback socket, and nothing listening on
-		// the network at all: a desktop build that opened a port would be a
-		// server somebody did not ask to run.
+		// The API is the asset server's fallback handler, so nothing listens
+		// on the network.
 		AssetServer: &assetserver.Options{Assets: ui, Handler: server.Handler()},
 	})
 }
 
-// configLocation puts the configuration where the operating system says user
-// configuration goes, rather than beside the executable. An app installed under
-// Program Files cannot write beside itself, and one that tried would fail in a
-// way that looks like a permissions bug rather than a design mistake.
+// configLocation returns the configuration path in the user's configuration
+// directory, since an app installed under Program Files cannot write beside
+// itself.
 func configLocation() (string, error) {
 	base, err := os.UserConfigDir()
 	if err != nil {
@@ -269,31 +216,18 @@ func notifier(cfg *job.Config) notify.Notifier {
 	return out
 }
 
-// activityLines is how many running jobs the little panel names before it stops
-// naming them.
-//
-// Six is more than anybody runs at once and few enough that the panel stays a
-// panel. A tray menu that scrolls is a window, and a window is what the second
-// entry opens.
+// activityLines is how many running jobs the tray panel names.
 const activityLines = 6
 
 // jobRow is one row of the tray's job block: what it says and what it starts.
-//
-// An empty name means the row is unused and hidden. Kept as a pair rather than
-// as two lists, because the two can only ever be wrong together: a row that
-// shows one job's name and starts another is the failure this shape rules out.
+// An empty name means the row is unused and hidden.
 type jobRow struct {
 	title string
 	name  string
 }
 
-// jobRowTitles decides what each of the fixed rows carries.
-//
-// A real function rather than a loop inside the menu builder, because it is the
-// only part of the tray that can be checked without a notification area, and
-// the thing that has been wrong before is exactly here: an off-by-one at the
-// boundary, which shows up as the last job never being offered and is invisible
-// until somebody has precisely that many jobs.
+// jobRowTitles decides what each of the fixed rows carries. It is separate from
+// the menu builder so it can be tested without a notification area.
 func jobRowTitles(jobs []job.Job, rows int) []jobRow {
 	out := make([]jobRow, rows)
 	for i := range out {
@@ -305,24 +239,12 @@ func jobRowTitles(jobs []job.Job, rows int) []jobRow {
 	return out
 }
 
-// jobLines is how many jobs the panel offers to start.
-//
-// Twelve rather than six: an activity list is bounded by what is running right
-// now, and a job list is bounded by how many somebody has. Beyond this the
-// window is the right place, and it is one entry down.
+// jobLines is how many jobs the tray panel offers to start.
 const jobLines = 12
 
-// startTray puts the program in the notification area, if it is wanted.
-//
-// The icon says what the program is doing without being asked: it turns while
-// files move, goes green when a run settles and red when one fails. That is the
-// entire reason a tray icon is worth having over a taskbar button, which can
-// only ever say that the program exists.
-//
-// A left click opens a small panel with the current activity rather than the
-// whole window, because "what is it doing right now" is a question somebody
-// asks in the middle of something else. The window is one entry down for when
-// the answer is worth acting on.
+// startTray puts the program in the notification area when the setting asks for
+// it. The icon turns while files move and goes green or red when a run settles
+// or fails; a click opens a small panel with the current activity and the jobs.
 func startTray(ctx context.Context, window *deskset.Store, live *TrayLive, runner *daemon.Runner) {
 	if !window.Get().Tray {
 		return
@@ -333,10 +255,8 @@ func startTray(ctx context.Context, window *deskset.Store, live *TrayLive, runne
 		systray.SetTooltip("ArrowLoop")
 		systray.SetIcon(live.set.Idle)
 
-		// The activity rows are built once and re-titled, because a systray menu
-		// cannot grow or shrink after it has been shown: adding a row per event
-		// would work on the first run and quietly stop working on the second.
-		// Rows with nothing to say are hidden rather than blank.
+		// A systray menu cannot grow or shrink after it has been shown, so the
+		// rows are built once, re-titled, and hidden when unused.
 		rows := make([]*systray.MenuItem, activityLines)
 		for i := range rows {
 			rows[i] = systray.AddMenuItem("", "")
@@ -345,17 +265,6 @@ func startTray(ctx context.Context, window *deskset.Store, live *TrayLive, runne
 		}
 		systray.AddSeparator()
 
-		// The jobs, startable from here.
-		//
-		// The activity rows above say what is happening; these say what COULD
-		// be. That is the other half of the question somebody asks in the middle
-		// of something else, and answering it here is the difference between
-		// "before I leave, sync the photos" being one click and being: find the
-		// window, wait for it, find the card, press the button.
-		//
-		// Same fixed-rows trick as above, and for the same reason: a systray
-		// menu cannot grow after it has been shown, so a row per job would work
-		// on the first run and quietly stop working once a job was added.
 		jobRows := make([]*systray.MenuItem, jobLines)
 		for i := range jobRows {
 			jobRows[i] = systray.AddMenuItem("", "")
@@ -367,16 +276,13 @@ func startTray(ctx context.Context, window *deskset.Store, live *TrayLive, runne
 		systray.AddSeparator()
 		quit := systray.AddMenuItem("Quit", "Stop ArrowLoop and its schedules")
 
-		// Which job each row currently stands for. Read and written only from
-		// the systray callbacks, which is one goroutine, and guarded anyway
-		// because a click can land while the menu is being refilled.
+		// Which job each row stands for. A click can land while the menu is
+		// being refilled.
 		var namesMu sync.Mutex
 		names := make([]string, jobLines)
 
 		for i := range jobRows {
-			// The index is captured, not the name: the name changes every time
-			// the menu is refilled, and a closure that captured it would start
-			// whatever job was in that slot when the program began.
+			// The index, not the name, since the name changes on every refill.
 			at := i
 			jobRows[at].Click(func() {
 				namesMu.Lock()
@@ -385,9 +291,8 @@ func startTray(ctx context.Context, window *deskset.Store, live *TrayLive, runne
 				if name == "" {
 					return
 				}
-				// A hand start, so it goes through Run rather than through the
-				// automatic entry point: pressing this IS the decision a
-				// report-only job withholds from the clock.
+				// Run rather than the automatic entry point: a click is the
+				// decision a report-only job withholds from the clock.
 				go func() {
 					if _, err := runner.Run(ctx, name); err != nil {
 						log.Printf("tray: %s: %v", name, err)
@@ -427,9 +332,7 @@ func startTray(ctx context.Context, window *deskset.Store, live *TrayLive, runne
 			}
 		}
 
-		// Both buttons open the panel, filled a moment before it is drawn: a
-		// panel showing the state from whenever it was last opened is a panel
-		// that lies, and this is the one thing it exists to be right about.
+		// Filled just before it is drawn, so the panel never shows stale state.
 		systray.SetOnClick(func(menu systray.IMenu) {
 			fill()
 			_ = menu.ShowMenu()
@@ -452,13 +355,8 @@ func show(ctx context.Context) {
 	wruntime.WindowShow(ctx)
 }
 
-// watchMinimise sends a minimised window to the notification area when that is
-// what somebody asked for.
-//
-// Polling rather than an event, because Wails v2 does not raise one for
-// minimising: it exposes the window's state and nothing that fires when it
-// changes. Half a second is slow enough to cost nothing and quick enough that
-// the window does not sit visibly in the taskbar on its way out.
+// watchMinimise sends a minimised window to the notification area when the
+// setting asks for it. It polls because Wails v2 raises no event for minimising.
 func watchMinimise(ctx context.Context, window *deskset.Store) {
 	go func() {
 		tick := time.NewTicker(500 * time.Millisecond)
@@ -472,9 +370,7 @@ func watchMinimise(ctx context.Context, window *deskset.Store) {
 					continue
 				}
 				if wruntime.WindowIsMinimised(ctx) {
-					// Unminimise first: a window hidden while minimised comes
-					// back minimised, which looks like the tray icon did
-					// nothing.
+					// A window hidden while minimised comes back minimised.
 					wruntime.WindowUnminimise(ctx)
 					wruntime.WindowHide(ctx)
 				}

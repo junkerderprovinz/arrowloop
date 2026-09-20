@@ -12,18 +12,15 @@ copyright: Copyright (C) 2026 Junker der Provinz. Licensed AGPL-3.0.
 theme:
   name: material
   language: en
-  # The mark carries its own colour and reads on both palettes, so one file
-  # serves the header on the dark scheme and the light one alike.
+  # The mark reads on both palettes, so one file serves both headers.
   logo: assets/logo.svg
   favicon: assets/favicon.png
   font:
     text: IBM Plex Sans
     code: IBM Plex Mono
   palette:
-    # The dark scheme is listed first and carries no media query, so it is the
-    # unconditional default: with plain palettes Material takes the first as the
-    # default rather than following the operating system. The same choice the
-    # other sites in this stable make.
+    # Without media queries Material takes the first palette as the default,
+    # so the site opens dark whatever the operating system prefers.
     - scheme: slate
       primary: black
       accent: yellow

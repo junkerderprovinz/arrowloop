@@ -7,16 +7,8 @@ import android.util.Log
 import java.io.File
 
 /**
- * Bring the engine back after a reboot, but only if it has something to do.
- *
- * A scheduled sync that stops existing when the phone restarts is a scheduled
- * sync nobody can rely on, and a phone restarts more often than anybody thinks:
- * an update, a flat battery, a crash.
- *
- * The check for a configured job is what keeps this from being rude. A freshly
- * installed app that nobody has set up yet has no reason to hold a foreground
- * service and a notification through every boot, and starting one anyway is the
- * behaviour that gets an app uninstalled.
+ * Brings the engine back after a reboot, but only when a job is configured, so
+ * an app nobody has set up holds no foreground service and notification.
  */
 class BootReceiver : BroadcastReceiver() {
 
@@ -30,12 +22,8 @@ class BootReceiver : BroadcastReceiver() {
     }
 
     /**
-     * Whether anything is set up, read from the engine's own configuration.
-     *
-     * Deliberately a crude check on the file rather than a parse: this runs in
-     * a broadcast receiver with seconds to live, and the question is only "has
-     * somebody set this up", which an empty job list answers as plainly as a
-     * full parse would.
+     * Whether the engine's configuration names any job. A text check is enough
+     * for a broadcast receiver with seconds to live.
      */
     private fun hasWork(context: Context): Boolean = try {
         val text = File(Engine.home(context), "arrowloop.json").readText()

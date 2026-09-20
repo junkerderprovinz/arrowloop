@@ -7,22 +7,9 @@ import (
 	"fmt"
 )
 
-// Windows wants an ICO in the notification area, and the one master this
-// program has is a PNG.
-//
-// Rather than committing a second file, the ICO is built around the PNG at
-// startup. Since Windows Vista an ICO entry may hold a PNG verbatim, so the
-// whole conversion is a twenty-two byte header in front of bytes that are
-// already there. That matters more than the saving: a second icon file is a
-// second thing to remember when the logo changes, and the day somebody forgets
-// is the day the window and the notification area wear different marks.
-//
-// Found by running it: systray reported "unable to set icon" followed by
-// Windows' own "the operation completed successfully", which is what
-// GetLastError says when nothing failed at the system call level and the
-// argument was simply the wrong shape.
-
-// icoFromPNG wraps PNG bytes in the smallest possible ICO container.
+// icoFromPNG wraps PNG bytes in the smallest possible ICO container, which the
+// Windows notification area needs. Since Vista an ICO entry may hold a PNG
+// verbatim, so one logo file serves both.
 func icoFromPNG(png []byte) ([]byte, error) {
 	width, height, err := pngSize(png)
 	if err != nil {
@@ -35,8 +22,7 @@ func icoFromPNG(png []byte) ([]byte, error) {
 	binary.Write(&out, binary.LittleEndian, uint16(1))
 	binary.Write(&out, binary.LittleEndian, uint16(1))
 
-	// ICONDIRENTRY. A dimension of 256 is written as zero, which is the format's
-	// own way of saying "the byte is too small for this number".
+	// ICONDIRENTRY. The format writes a dimension of 256 as zero.
 	out.WriteByte(byteDim(width))
 	out.WriteByte(byteDim(height))
 	out.WriteByte(0)                                    // colours in the palette: none, this is true colour
@@ -57,13 +43,8 @@ func byteDim(n int) byte {
 	return byte(n)
 }
 
-// pngSize reads the dimensions out of the header chunk.
-//
-// A PNG begins with an eight byte signature, then the length and type of the
-// first chunk, which the format requires to be IHDR, and IHDR opens with two
-// big-endian widths. So the numbers are always at the same two offsets, and
-// decoding the image to learn its size would be a megabyte of work for eight
-// bytes of answer.
+// pngSize reads the dimensions out of the IHDR chunk, which the format requires
+// to come first, so they sit at fixed offsets.
 func pngSize(png []byte) (int, int, error) {
 	const header = 8 + 4 + 4 // signature, chunk length, chunk type
 	if len(png) < header+8 {

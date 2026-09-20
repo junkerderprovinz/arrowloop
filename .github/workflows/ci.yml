@@ -1,8 +1,7 @@
 name: CI
 
-# The convergence suite is the gate. A change that makes the engine lose or
-# invent a file must never reach main, and that is not something a reviewer can
-# see by reading a diff.
+# The convergence suite catches a change that makes the engine lose or invent a
+# file, which no reviewer can see in a diff.
 on:
   push:
     branches: [main]
@@ -19,9 +18,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # The interface is built first and its output is embedded in the binary, so a
-  # frontend that does not compile has to fail here rather than shipping as a
-  # placeholder page nobody notices.
+  # The binary embeds the interface, and one that does not compile would
+  # otherwise ship as a placeholder page nobody notices.
   ui:
     name: Build the interface
     runs-on: ubuntu-latest
@@ -38,10 +36,8 @@ jobs:
       - run: npm run build
         working-directory: web
 
-  # The desktop shell is a separate module with its own go.mod, so nothing in
-  # the main test matrix compiles it. Without this a change to the engine's API
-  # would break the shell and only be found on a release tag, when the desktop
-  # workflow finally runs.
+  # The desktop shell is a separate module, so the test matrix does not compile
+  # it and an engine API change would otherwise surface only on a release tag.
   desktop:
     name: Vet the desktop shell
     runs-on: ubuntu-latest
@@ -62,10 +58,9 @@ jobs:
     timeout-minutes: 15
     strategy:
       fail-fast: false
-      # Path handling, modification-time resolution and case sensitivity all
-      # differ between these three, and every one of those differences is a way
-      # for a sync engine to be wrong. Testing on Linux alone would prove the
-      # least interesting third of it.
+      # Path handling, modification-time resolution and case sensitivity differ
+      # between these three, and each difference is a way for a sync engine to
+      # be wrong.
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
     steps:

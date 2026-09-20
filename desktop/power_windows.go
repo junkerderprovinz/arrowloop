@@ -13,18 +13,6 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/job"
 )
 
-// What the machine is doing that a schedule should respect.
-//
-// Both answers can only be had from the operating system, and only on the
-// desktop: a container has no battery and no idea what kind of connection the
-// host is on. The engine therefore asks a function, and this file is what the
-// desktop build hands it. Neither question exists in the container build and
-// nothing there is ever held back.
-//
-// Held back is not failed. A laptop on battery, or a phone hotspot somebody
-// pays for by the megabyte, is a machine behaving exactly as instructed, and a
-// log full of "failed" for that teaches people to stop reading the log.
-
 var (
 	kernel32              = syscall.NewLazyDLL("kernel32.dll")
 	procGetSystemPowerSt  = kernel32.NewProc("GetSystemPowerStatus")
@@ -43,12 +31,8 @@ type systemPowerStatus struct {
 }
 
 // onBattery reports whether the machine is running from its battery.
-//
-// ACLineStatus is 0 offline, 1 online and 255 unknown. Unknown is treated as ON
-// MAINS on purpose, and the direction matters: a desktop PC with no battery
-// reports unknown on some hardware, and treating that as "on battery" would
-// silently stop every scheduled job on a machine that has no battery to save.
-// Being wrong in the other direction costs a laptop some charge once.
+// ACLineStatus 255 (unknown) counts as mains, because some desktop PCs without a
+// battery report it and would otherwise never run a scheduled job.
 func onBattery() (bool, error) {
 	var status systemPowerStatus
 	ret, _, err := procGetSystemPowerSt.Call(uintptr(unsafe.Pointer(&status)))
@@ -58,22 +42,15 @@ func onBattery() (bool, error) {
 	return status.ACLineStatus == 0, nil
 }
 
-// meteredish reports whether Windows says this connection is one to be careful
-// with.
-//
-// INTERNET_CONNECTION_MODEM (0x01) is the flag that survives from the dial-up
-// era and is what Windows still sets for a metered mobile connection. It is an
-// approximation and it is named as one: the modern answer lives in the WinRT
-// NetworkInformation API, which needs a COM apartment and a considerably larger
-// amount of machinery than a scheduled sync is worth. What this catches is the
-// case somebody actually has, a phone hotspot, and what it misses is a metered
-// Ethernet link somebody marked by hand.
+// meteredish approximates whether the connection is metered from
+// INTERNET_CONNECTION_MODEM, which Windows still sets for a mobile connection
+// such as a phone hotspot. It misses an Ethernet link marked metered by hand;
+// the exact answer needs WinRT's NetworkInformation and a COM apartment.
 func meteredish() (bool, error) {
 	var flags uint32
 	ret, _, err := procInternetGetConnSt.Call(uintptr(unsafe.Pointer(&flags)), 0)
 	if ret == 0 {
-		// No connection at all. Not metered, and the run will fail on its own
-		// terms in a way that says something more useful than this could.
+		// No connection at all; the run will fail with a better reason.
 		return false, nil
 	}
 	if err != nil && err.(syscall.Errno) != 0 {
@@ -84,18 +61,14 @@ func meteredish() (bool, error) {
 }
 
 // powerCondition builds the check the runner asks before every automatic run.
-//
-// It reads the settings each time rather than closing over them, because
-// somebody switching "not on battery" on expects the next scheduled run to
-// respect it, not the next restart.
+// It reads the settings on each call so a change applies to the next run. A
+// held-back run is not a failure.
 func powerCondition(window *deskset.Store) daemon.Condition {
 	return func(_ context.Context, _ job.Job) error {
 		set := window.Get()
 		if set.NotOnBattery {
 			on, err := onBattery()
-			// An unanswerable question lets the run through. A condition that
-			// blocks when it cannot tell is a condition that stops everything
-			// the day an API returns an error, and nobody would connect the two.
+			// A question the system cannot answer lets the run through.
 			if err == nil && on {
 				return fmt.Errorf("this machine is on battery")
 			}

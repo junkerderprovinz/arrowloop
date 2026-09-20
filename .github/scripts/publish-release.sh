@@ -3,28 +3,24 @@
 #
 #   publish-release.sh <file>...
 #
-# Called by release.yml's last job, after every build it needs is done. gh
-# creates the release as a draft, uploads the files, and only then publishes
-# it, so a release is never public without its downloads. If an upload or the
-# publish fails, gh removes its own draft.
+# gh creates the release as a draft, uploads the files and only then publishes
+# it, so a release is never public without its downloads; if anything fails, gh
+# removes its own draft.
 #
-# BEFORE THAT, THREE CHECKS, each of which stops the run rather than guessing:
+# Three checks come first, each stopping the run rather than guessing:
 #
 # - The tag still points at the commit that was built. GitHub ignores the
-#   target of a release whose tag exists, so a tag moved to another commit
-#   while this ran would get a release carrying the old binaries.
-# - No published release exists for the tag. Re-cutting a published version is
-#   a deliberate act: delete that release first. A DRAFT for the tag is what a
-#   failed earlier attempt leaves; it is private and its files belong to that
-#   attempt, so it is removed.
+#   target of a release whose tag exists, so a moved tag would get a release
+#   carrying the old binaries.
+# - No published release exists for the tag; re-cutting one means deleting it
+#   first. A draft for the tag is left over from a failed attempt and removed.
 # - The list of published releases could be read, because "latest" depends on
 #   it.
 #
-# "LATEST" only when no published release has a newer plain vX.Y.Z tag, so
-# re-cutting an older version does not pull the badge and the download buttons
-# (and in KnightLoader the in-app update) back to it. Counted over published
-# releases rather than tags: a newer tag whose release never came out must not
-# keep this one from being the newest that exists.
+# The release is marked latest only when no published release has a newer plain
+# vX.Y.Z tag, so re-cutting an older version does not pull the badge and the
+# download buttons back to it. A newer tag whose release never came out does not
+# count.
 set -euo pipefail
 
 tag=$GITHUB_REF_NAME
@@ -54,8 +50,8 @@ printf '%s\n' "$existing" | while read -r id _draft; do
 done
 
 published=$(gh release list --repo "$repo" --exclude-drafts --limit 1000 --json tagName -q '.[].tagName')
-# The `|| true` keeps a repository whose releases are all pre-releases from
-# failing here: "no plain version anywhere" is an answer, not an error.
+# grep fails when there is no plain version at all, which is an answer here
+# rather than an error.
 newest=$(printf '%s\n%s\n' "$published" "$tag" | { grep -E '^v[0-9]+[.][0-9]+[.][0-9]+$' || true; } | sort -V | tail -1)
 latest=false
 if [ "$newest" = "$tag" ]; then
@@ -72,8 +68,7 @@ gh release create "$tag" \
   "$@"
 echo "published $tag with $# files, latest=$latest"
 
-# Handed on, so the job that moves the image tag does not decide this a second
-# time and the two answers cannot drift apart.
+# The job that moves the image tag reuses this answer instead of deciding again.
 if [ -n "${GITHUB_OUTPUT:-}" ]; then
   echo "latest=$latest" >> "$GITHUB_OUTPUT"
 fi

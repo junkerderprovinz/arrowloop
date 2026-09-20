@@ -1,15 +1,12 @@
 # -*- coding: utf-8 -*-
 """The drawn extent of an SVG path, measured rather than guessed.
 
-GlimStone's rule 2: a path's drawn extent and its viewBox have no necessary
-relationship, so a glyph from a new source has to be MEASURED before it can be
-cropped to match the set it is joining. `getBBox()` in a browser is the tool the
-reference names; this is the same number without one, by flattening every curve
-and taking the extremes of the points.
+A path's drawn extent and its viewBox are unrelated, so a glyph from a new
+source is measured before it is cropped to match its set. This is the number a
+browser's `getBBox()` gives, found by flattening every curve.
 
-Only the commands these two paths use are implemented, and anything else raises
-rather than being skipped: a command silently ignored is a corner of the drawing
-missing from the measurement, which would crop the glyph through its own ink.
+An unhandled command raises rather than being skipped, since a skipped command
+would crop the glyph through its own ink.
 """
 
 import re
@@ -98,8 +95,7 @@ def main() -> None:
     x0, x1, y0, y1 = min(xs), max(xs), min(ys), max(ys)
     w, h = x1 - x0, y1 - y0
     side = max(w, h)
-    # Squared off and centred, which is rule 3: the crop changes the BOX, never
-    # a coordinate, so the drawing that survived review survives this too.
+    # Squared off and centred; the crop changes the box, never a coordinate.
     cx, cy = x0 - (side - w) / 2, y0 - (side - h) / 2
     print("ink  x %.2f..%.2f  y %.2f..%.2f  (%.2f x %.2f)" % (x0, x1, y0, y1, w, h))
     box = re.search(r'viewBox="([^"]+)"', svg)

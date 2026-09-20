@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  GlimStone's own carbon values rather than new ones: the window behind the
-  WebView has to match what the interface paints, or the first frame is a flash
-  of the wrong ground and every rotation is another. The same goes for the one
-  screen drawn here in Android views rather than by the engine - the storage
-  panel - which is why the surface and the accent are here too, at the exact
-  hexes tokens.css sets.
+  GlimStone's carbon values as tokens.css sets them, so the window behind the
+  WebView matches the interface and no rotation flashes the wrong ground. The
+  surface and accent are for the storage panel, drawn in Android views.
 -->
 <resources>
     <color name="ground">#161616</color>
@@ -15,10 +12,7 @@
     <color name="accent">#FCC419</color>
     <color name="accent_ink">#161616</color>
 
-    <!-- The launcher tile, and the one colour here that is NOT GlimStone's.
-         White on purpose: the launcher masks the background layer into a
-         rounded square, so white is a white rounded tile - what jdp asked for
-         and what KnightLoader's own app already does. A carbon ground would
-         disappear into a dark home screen and leave the logo floating. -->
+    <!-- The launcher masks this layer into a white rounded tile; a carbon ground
+         would disappear into a dark home screen. -->
     <color name="ic_launcher_background">#ffffff</color>
 </resources>

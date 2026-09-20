@@ -1,31 +1,20 @@
 name: Release
 
 # Fires on the version tag and publishes the hand-written notes for it, with
-# every download attached. There is deliberately no auto-generated changelog: a
-# list of commit subjects is a record of what was typed, not of what changed for
-# the person reading it.
+# every download attached.
 #
-# THE RELEASE COMES LAST. The README's download buttons point at
-# /releases/latest/download/<name>, and a release is "latest" from the moment it
-# is published. It used to be published straight away, while desktop.yml and
-# mobile.yml attached their files twenty minutes and more later, each on its
-# own, so every release left the buttons answering 404 for that long. Now this
-# workflow runs both builds and creates the release only when both are done,
-# with all the files in one command (.github/scripts/publish-release.sh). A
-# build that fails leaves no release at all; re-running the failed jobs
-# finishes it.
-#
-# The container image is built here as well, and `latest` on it moves only once
-# the release is out, by the same rule, so the badge, the download buttons and
-# `docker pull` never name different versions.
+# The README's download buttons point at /releases/latest/download/<name>, and a
+# release is "latest" from the moment it is published, so the release is created
+# last, with all files at once, once every build is done. A failed build leaves
+# no release; re-running the failed jobs finishes it. The image's `latest` tag
+# follows the same rule, so the badge, the buttons and `docker pull` name the
+# same version.
 on:
   push:
     tags:
       - "v[0-9]+.[0-9]+.[0-9]+"
-  # Runs both builds and packages the files, and publishes nothing, so a change
-  # to this chain can be tried before a tag depends on it. A run dispatched on a
-  # tag ref is such a test too. The app it builds is debug-signed: signing
-  # belongs to a release.
+  # Builds and packages without publishing, so a change to this chain can be
+  # tried before a tag depends on it, even on a tag ref. The app is debug-signed.
   workflow_dispatch:
 
 permissions:
@@ -60,9 +49,8 @@ jobs:
     # The release key, for a signed APK.
     secrets: inherit
 
-  # The image for this version, with its smoke test. It carries no `latest`:
-  # that one is moved below, once the release is out. On a dispatched run it
-  # builds both architectures and pushes nothing, like every other job here.
+  # The image for this version, without `latest`, which image-latest moves once
+  # the release is out.
   container:
     needs: notes
     permissions:
@@ -70,8 +58,7 @@ jobs:
       packages: write
     uses: ./.github/workflows/container.yml
 
-  # The image is one of the things the README offers, so a release waits for it
-  # as it waits for the bundles: a published release always has both.
+  # The README offers the image too, so a release waits for it as well.
   publish:
     needs: [desktop, mobile, container]
     runs-on: ubuntu-latest
@@ -79,32 +66,21 @@ jobs:
     permissions:
       contents: write
     outputs:
-      # Decided by publish-release.sh, so image-latest below does not decide it
-      # a second time.
+      # Decided once, by publish-release.sh.
       latest: ${{ steps.publish.outputs.latest }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
-      # The bundles and the APKs, each in a folder named after its artifact.
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           pattern: arrowloop-*
           path: bundles
 
-      # The version in every name, so a download in somebody's folder still says
-      # what it is. And a second copy of each without it, which is what makes a
-      # download button possible at all: GitHub serves the newest release's asset
-      # from /releases/latest/download/<EXACT NAME>, with no pattern and no
-      # wildcard, so a name carrying the version could only ever be linked for
-      # the one release it belongs to. A copy rather than a rename, because a
-      # folder holding three files called arrowloop-windows-installer.exe is a
-      # folder nobody can tell apart.
-      #
-      # The Android APKs: arm64 is every phone sold in the last decade, x86_64
-      # is an emulator. The README links arm64.
-      #
-      # A dispatched run from a branch such as fix/x has a slash in its ref
-      # name, which a file name cannot hold.
+      # Each file carries the version, so a download still says what it is,
+      # and has a copy without it, because /releases/latest/download/ takes an
+      # exact name only. The README links the arm64 APK; x86_64 is for
+      # emulators. A branch ref such as fix/x holds a slash, which a file name
+      # cannot.
       - name: Package
         run: |
           set -eu
@@ -131,15 +107,10 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: bash .github/scripts/publish-release.sh dist/*
 
-  # `latest` on the image means "the newest released version", and nothing else.
-  #
-  # It moves here rather than in the build, and only once the release exists and
-  # carries the "Latest" badge: the badge, the download buttons and
-  # `docker pull …:latest` then always name the same version, because the answer
-  # is the one publish-release.sh already gave. A version whose release never
-  # came out cannot take it, and re-cutting an older one cannot drag it back.
-  # Pointing `latest` at the version just pushed copies the manifest in the
-  # registry; nothing is rebuilt, and imagetools needs no builder for it.
+  # `latest` on the image means the newest released version. It follows the
+  # answer publish-release.sh gave for the "Latest" badge, so a version whose
+  # release never came out cannot take it and re-cutting an older one cannot
+  # drag it back. imagetools copies the manifest; nothing is rebuilt.
   image-latest:
     needs: publish
     if: github.event_name == 'push' && github.ref_type == 'tag'
@@ -163,20 +134,16 @@ jobs:
           LATEST: ${{ needs.publish.outputs.latest }}
         run: |
           set -eu
-          # An ANSWER, not a guess: publish-release.sh decided this and handed
-          # it on. Empty means it never said, and a silent skip would leave
-          # the badge on this version while the image tag stays on the last
-          # one, green all the way.
+          # Empty means publish-release.sh never said, and a silent skip would
+          # leave the badge and the image tag on different versions.
           case "$LATEST" in
             true) ;;
             false) echo "the release is not the newest one, so latest stays where it is"; exit 0 ;;
             *) echo "::error::publish did not say whether $GITHUB_REF_NAME is the latest release, so the image tag is not moved blindly."; exit 1 ;;
           esac
           version="${GITHUB_REF_NAME#v}"
-          # The tag the build pushed, checked rather than assumed: the build
-          # derives it from the ref through metadata-action, this job by
-          # stripping the v, and a tag those two spell differently would fail
-          # here after the release is already public.
+          # metadata-action and this job derive the tag separately, so check it
+          # exists before moving latest.
           docker buildx imagetools inspect "${IMAGE}:${version}" > /dev/null
           docker buildx imagetools create --tag "${IMAGE}:latest" "${IMAGE}:${version}"
           echo "${IMAGE}:latest is ${version}"

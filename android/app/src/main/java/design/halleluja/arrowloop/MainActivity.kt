@@ -23,13 +23,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * The app's one screen: the engine's own interface, in a WebView.
- *
- * Not a second interface written in Kotlin. ArrowLoop's screens are forty-two
- * languages of a design language that already exists, and a phone-shaped
- * rewrite of them would be a second thing to keep in step with the first -
- * which is how two interfaces end up disagreeing about what a job is. The
- * engine serves its own interface on loopback and this shows it.
+ * The app's one screen: the engine's own interface in a WebView, so there is
+ * one interface to keep in step rather than two.
  */
 class MainActivity : AppCompatActivity() {
 
@@ -39,36 +34,20 @@ class MainActivity : AppCompatActivity() {
     private lateinit var storage: View
 
     /**
-     * Asked once per launch while the permission is missing, and not again
-     * after "Not now".
-     *
-     * Per LAUNCH rather than once ever, and that is a deliberate re-ask: an
-     * ArrowLoop that cannot leave its own private folder cannot do the thing
-     * it was installed for, so somebody who dismissed this by accident has to
-     * be able to get back to it, and there is nowhere else to put the way back
-     * - the rest of the interface belongs to the engine, which cannot see this
-     * permission at all. One tap, on a cold start, is the smallest version of
-     * that which still works.
+     * Set by "Not now" for the rest of this launch. The panel returns on the next
+     * cold start, since the engine's interface cannot see this permission and
+     * offers no other way back to it.
      */
     private var storageDismissed = false
 
     /**
-     * Asked for at the moment it MEANS something, not at launch.
-     *
-     * On Android 13 and up a foreground service without this permission still
-     * runs and its notification is silently dropped - so a sync would be going
-     * with nothing on screen saying so, which is exactly the state a foreground
-     * service exists to prevent. Refusing is allowed; the engine still runs,
-     * and the only thing lost is the row in the shade.
+     * From Android 13 a foreground service without this permission still runs,
+     * but its notification is dropped. Refusing costs only that notification.
      */
     private val askNotifications =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { }
 
-    /**
-     * Below Android 11 the reach comes from an ordinary runtime permission,
-     * so it is asked for the ordinary way rather than by sending somebody to a
-     * settings page that does not exist on those versions.
-     */
+    /** Below Android 11 storage access is an ordinary runtime permission. */
     private val askLegacyStorage =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { showStorageIfNeeded() }
 
@@ -85,9 +64,7 @@ class MainActivity : AppCompatActivity() {
 
         web.settings.javaScriptEnabled = true
         web.settings.domStorageEnabled = true
-        // No file or content access from the page. The interface is served over
-        // loopback and has no business reading the phone's filesystem through
-        // the WebView: everything it needs comes from the engine's own API.
+        // Everything the interface needs comes from the engine's API.
         web.settings.allowFileAccess = false
         web.settings.allowContentAccess = false
         web.settings.mediaPlaybackRequiresUserGesture = false
@@ -98,16 +75,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // The system back button walks the interface's own history before it
-        // leaves the app. Without this, one tap out of a job's editor closes
-        // ArrowLoop, which is the single most reported thing about any app
-        // wrapped this way.
+        // Back walks the interface's own history before it leaves the app.
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                // The storage panel first: while it is up it is what is on
-                // screen, and back stepping through the history of a WebView
-                // nobody can see is the kind of thing that reads as the button
-                // doing nothing.
+                // While the storage panel is up, it is what is on screen.
                 if (storage.visibility == View.VISIBLE) {
                     storageDismissed = true
                     storage.visibility = View.GONE
@@ -132,14 +103,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Checked again on every return, because this is the one permission that is
-     * granted somewhere ELSE.
-     *
-     * MANAGE_EXTERNAL_STORAGE has no dialog and no result callback: the person
-     * leaves for a system settings page, flips a switch and comes back, and
-     * nothing tells the app that happened. Re-reading it here is what makes the
-     * panel disappear on its own instead of sitting there after the permission
-     * was granted.
+     * MANAGE_EXTERNAL_STORAGE is granted on a settings page with no result
+     * callback, so it is checked again on every return.
      */
     override fun onResume() {
         super.onResume()
@@ -159,9 +124,8 @@ class MainActivity : AppCompatActivity() {
             askLegacyStorage.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             return
         }
-        // The targeted page first, the list of every app as a fallback: some
-        // builds refuse the per-package form, and an unhandled intent here
-        // would crash the app on the one route that is supposed to fix things.
+        // Some builds refuse the per-package page, and an unhandled intent would
+        // crash the app.
         try {
             startActivity(Storage.manageIntent(this))
         } catch (_: ActivityNotFoundException) {
@@ -174,21 +138,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Asked FOR you the first time, so the only thing left is the switch.
-     *
-     * jdp: "Können wir in der AL App nicht automatisch nach der berechtigung
-     * fragen lassen so das man dann nur noch Zulassen anklicken muss?" As
-     * close as Android allows, and the limit is worth writing down:
-     * MANAGE_EXTERNAL_STORAGE has no dialog. It is the one permission Google
-     * deliberately routed through a full settings page rather than a
-     * two-button prompt, precisely because it is the broadest one there is -
-     * there is no "Allow" to hand somebody, only a page with one switch on it.
-     *
-     * So the app opens that page itself on the first launch that finds the
-     * permission missing, and the panel behind it is what you come back to if
-     * you did not flip it. ONCE per install rather than every launch: a
-     * settings screen that appears unbidden every time you open an app is the
-     * behaviour people uninstall over.
+     * Opens the storage settings page on the first launch that finds the
+     * permission missing, once per install. MANAGE_EXTERNAL_STORAGE has no
+     * dialog, only a page with one switch.
      */
     private fun askForStorageOnce() {
         val prefs = getSharedPreferences("arrowloop", MODE_PRIVATE)
@@ -203,9 +155,8 @@ class MainActivity : AppCompatActivity() {
             storage.visibility = View.GONE
             return
         }
-        // Android 10 has no way to grant this at all. The panel still appears,
-        // because somebody whose sync only sees one folder deserves to know
-        // why, but it says so and offers no button that would do nothing.
+        // Android 10 cannot grant this at all, so the panel explains why and
+        // offers no button.
         if (!Storage.possible) {
             findViewById<TextView>(R.id.storage_why).setText(R.string.storage_why_ten)
             findViewById<View>(R.id.storage_grant).visibility = View.GONE
@@ -214,21 +165,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Wait for the engine to answer before loading its address.
-     *
-     * A WebView pointed at a port nothing is listening on shows its own error
-     * page - "ERR_CONNECTION_REFUSED" over a Chrome logo - and that page is
-     * what somebody would report as the app being broken. The engine takes a
-     * second or two to open its port on a cold start, and the honest thing to
-     * put on screen meanwhile is a line saying so.
+     * Waits for the engine before loading its address, since a WebView pointed
+     * at a closed port shows Chrome's own error page.
      */
     private fun waitForEngine() {
         CoroutineScope(Dispatchers.Main).launch {
-            // A DEADLINE rather than a count of attempts, because the count was
-            // not what it claimed. Sixty rounds of "poll, then wait half a
-            // second" reads like thirty seconds and is not: the poll itself
-            // could take its own timeout, so the screen said thirty and could
-            // sit there for two minutes.
+            // A deadline rather than a count of attempts, since each poll can
+            // take its own timeout.
             val until = SystemClock.elapsedRealtime() + WAIT_MS
             while (SystemClock.elapsedRealtime() < until) {
                 if (withContext(Dispatchers.IO) { Engine.answers() }) {
@@ -237,15 +180,11 @@ class MainActivity : AppCompatActivity() {
                 }
                 delay(400)
             }
-            // Silence this long is not slowness any more. What goes on screen
-            // is the engine's own log, because the reason is in it and a person
-            // with a broken app deserves the reason rather than a shrug.
             waiting.visibility = View.GONE
             trouble.visibility = View.VISIBLE
-            // Whether the process is STILL THERE goes on the screen with the
-            // log, because an empty log means two opposite things - died
-            // before it could write anything, or running fine and simply not
-            // answering - and only the process itself can say which.
+            // An empty log means either a crash before the first write or an
+            // engine that is running and not answering; only the process can
+            // tell which.
             val state = getString(
                 if (Engine.alive()) R.string.engine_still_running else R.string.engine_gone,
             )
@@ -255,23 +194,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun whatItSaid(): String = try {
         val lines = java.io.File(Engine.home(this), "engine.log").readLines()
-        // Empty is a real answer and has to look like one. It happened on the
-        // first phone this was installed on: the screen said the engine had
-        // not answered and then showed nothing at all, which reads as the
-        // screen being broken rather than as the engine having said nothing.
         if (lines.isEmpty()) getString(R.string.engine_no_log)
-        // The TOP of the log, not the bottom, and that is the whole point.
-        //
-        // A Go crash writes its reason on the first line - "SIGSYS: bad system
-        // call" - and then several hundred lines of goroutines and a register
-        // dump. Showing the tail therefore filled a phone screen with `rcx`,
-        // `rsp` and `r15` while the one sentence that explains it scrolled off
-        // the top. It cost a round: the photo that came back was almost
-        // entirely registers.
-        //
-        // So: the first lines, which carry what started and what went wrong,
-        // and the last line, which carries the exit code. Everything between
-        // them is for a debugger, and nobody reading this has one.
+        // A Go crash writes its reason on the first line and then hundreds of
+        // lines of goroutines and registers, so the screen shows the head of the
+        // log and the last line, which carries the exit code.
         else if (lines.size <= HEAD_LINES + 1) lines.joinToString("\n")
         else (lines.take(HEAD_LINES) + listOf("…", lines.last())).joinToString("\n")
     } catch (e: Exception) {
@@ -279,17 +205,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        /** How long the engine gets before the screen stops waiting for it.
-         *
-         *  Sixty seconds rather than thirty, and that is measured rather than
-         *  generous: the engine is a 79 MB static binary carrying every rclone
-         *  backend, and a cold start has to page all of it in on a phone that
-         *  may also be installing it. */
+        /**
+         * How long the engine gets before the screen stops waiting. A cold start
+         * pages in a 79 MB binary, possibly while the phone is still installing
+         * it.
+         */
         private const val WAIT_MS = 60_000L
 
-        /** How many lines from the START of the log go on screen. Eight covers
-         *  the line naming what was started, the fatal line under it, and the
-         *  first frames of whatever raised it. */
+        /**
+         * Lines from the start of the log shown on screen: what was started, the
+         * fatal line and the first frames under it.
+         */
         private const val HEAD_LINES = 8
 
         /** Whether the storage page has been opened for this install already. */

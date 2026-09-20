@@ -17,6 +17,7 @@ The full notes for each release are in
 - **The release workflow can be dispatched**: it builds everything, packages the files and publishes nothing, also from a branch with a slash in its name.
 - **A test dispatch can no longer cancel a real release's app build.** The app build's concurrency group now includes the event, since a called workflow runs under the caller's name, and names itself rather than the workflow that called it.
 - **`latest` on the image follows the newest published release**, like the "Latest" badge, instead of the newest tag. The release builds the image too, and moves `latest` once the release exists, so a version whose release never came out cannot take it, and `docker pull …:latest` cannot name a different version than the download buttons.
+- **Tidied the code comments and log messages.**
 
 ## 🐛 Fixed
 
