@@ -1,15 +1,13 @@
 # ArrowLoop for Android
 
-> **This shell is being replaced.** jdp decided on 2026-09-11 that the app gets
-> a real mobile interface in React Native rather than the desktop interface in
-> a WebView - see [`../mobile/PLAN.md`](../mobile/PLAN.md). The engine plumbing
-> in here carries over unchanged behind a native module; what goes is the
-> WebView and nothing else.
+> **This shell is being replaced.** The app gets a real mobile interface in
+> React Native rather than the desktop interface in a WebView, described in
+> [`../mobile/README.md`](../mobile/README.md). The engine plumbing in here
+> carries over unchanged behind a native module; what goes is the WebView and
+> nothing else.
 >
-> **And the engine RUNS on a real phone.** That was the open risk for days.
-> jdp: *"auf dem handy läuft die app. sonst hätte ich es ja nicht sehen
-> können."* The WebView only loads once the engine answers, so seeing the
-> interface at all is the proof.
+> **The engine runs on a real phone.** That was the open risk. The WebView only
+> loads once the engine answers, so seeing the interface at all is the proof.
 
 The same engine, on a phone. Not a rewrite: `libarrowloop.so` in this app is
 byte for byte the binary the container runs, cross-compiled for the phone's
@@ -108,13 +106,13 @@ syscall 6 on amd64. So the options are upstream, or dropping x86_64 from
 build of `modernc.org/libc` issues 199 distinct system calls, and of the legacy
 family Android's filter rejects - `stat`, `lstat`, `open`, `getdents`,
 `unlink`, `rename`, `readlink`, `pipe`, `select`, `poll` and the rest - not one
-of them so much as EXISTS as a constant on arm64. The kernel's arm64 ABI never
+of them so much as exists as a constant on arm64. The kernel's arm64 ABI never
 had them, so the generated code has to use the `*at` variants that Android
 permits. The single member of that list it does use is `fstat`, which bionic
 uses too and the allowlist carries.
 
-**The emulator cannot answer this question either way**, which is worth knowing
-before spending an evening on it. Its x86_64 build dies on the syscall above.
+**The emulator cannot answer this question either way.** Its x86_64 build dies
+on the syscall above.
 Its arm64 build is run through `ndk_translation`, which covers code the Android
 runtime loads and not an arm64 ELF a process `exec`s for itself.
 

@@ -5,15 +5,13 @@ screens, and the engine running beside them on the phone.
 
 ## Why this and not a WebView
 
-There was a WebView shell before this. jdp, looking at it on his phone: *"das
-ist einfach das normale program in einem fenster. das soll nicht so sein. Die
-App soll eine native App sein mit an die mobilgeräte zugeschnittetnes UI."*
+There was a WebView shell before this, and on a phone it was the desktop
+program in a window rather than an app. The number behind that: the web
+interface carries **ten** responsive classes in the entire application.
 
-He was right, and the number says so: the web interface carries **ten**
-responsive classes in the entire application. On a phone it is exactly what he
-called it. Both routes were put to him with their costs - one interface with a
-phone layout, or a second interface built and then maintained twice - and he
-chose React Native on 2026-09-11.
+Two routes out, each with a cost. One interface that grows a phone layout, or a
+second interface built and then maintained alongside the first. This is the
+second one.
 
 ## How this differs from KnightLoader's app, which is not a detail
 
@@ -23,8 +21,8 @@ JDownloader rather than a second one.
 
 This one **hosts** the engine. Syncing a phone's own photos is the point of
 being on a phone at all, so the engine runs here, and the screens talk to it on
-`127.0.0.1:8422` - the same REST API the web interface uses, and deliberately
-not a second one. Starting and supervising that process stays in Kotlin,
+`127.0.0.1:8422`, the same REST API the web interface uses and not a second
+one. Starting and supervising that process stays in Kotlin,
 because none of it is expressible in JavaScript.
 
 ## The shape
@@ -43,7 +41,7 @@ plugins/           what turns a stock Expo project into this one
 
 **Three tabs, and the count is the design.** The desktop has jobs, targets,
 history and settings across three sub-tabs, because a desk is where a sync is
-BUILT. A phone is where it is watched: is it running, did it work, does it have
+built. A phone is where it is watched: is it running, did it work, does it have
 the access it needs. Everything else would be a form nobody wants to fill in
 with a thumb.
 
@@ -55,7 +53,7 @@ be a hand edit - that would be gone the next time anybody ran `--clean`.
 applies the same way on a laptop as in CI instead of living in one workflow's
 sed. It does five things, each with its reason written beside it: the Kotlin
 sources and their resources, registering the package, the service and the
-loopback exception, the packaging that lets a 79 MB binary be EXECUTED rather
+loopback exception, the packaging that lets a 79 MB binary be executed rather
 than loaded, and one stable signing key.
 
 ## Building it
@@ -100,7 +98,7 @@ before a release build will install, because to Android two keys are two apps.
 ## What the emulator can and cannot tell you
 
 [StrawDroid](https://github.com/junkerderprovinz/strawdroid) runs the app itself perfectly well - the screens, the bridge,
-the log. What it cannot do is run the ENGINE, in either architecture and for
+the log. What it cannot do is run the engine, in either architecture and for
 two unrelated reasons:
 
 - The **x86_64** engine dies with `SIGSYS`. `modernc.org/sqlite` opens its

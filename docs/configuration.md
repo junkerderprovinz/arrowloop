@@ -112,7 +112,7 @@ This is also the setting that makes autostart worth switching on, since a
 program that starts with the session and then sits there until 03:00 has not
 helped anybody who has just turned their computer on.
 
-Three things it deliberately does not do. It fires **once per program start**
+Three things it does not do. It fires **once per program start**
 and never on a configuration reload, so saving one job in the interface does not
 set every job in the file running. A `disabled` job does not run, because
 disabled has to mean disabled everywhere. And the runs go one after another in

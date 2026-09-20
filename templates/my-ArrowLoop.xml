@@ -18,7 +18,7 @@ It keeps a per-file record of what both sides looked like the last time they agr
 
 Local folders, Unraid shares, SMB, SFTP and S3-compatible storage, with rclone compiled in rather than shelled out to.
 
-Note: the WebUI has no login of its own. Keep it on your LAN or put it behind a reverse proxy that asks who you are.</Overview>
+The WebUI has no login of its own. Keep it on your LAN or put it behind a reverse proxy that asks who you are.</Overview>
   <Category>Backup: Tools:Utilities</Category>
   <WebUI>http://[IP]:[PORT:8422]/</WebUI>
   <TemplateURL>https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/templates/my-ArrowLoop.xml</TemplateURL>
@@ -72,7 +72,7 @@ Note: the WebUI has no login of its own. Keep it on your LAN or put it behind a 
     Target="ARROWLOOP_ADDR"
     Default="0.0.0.0:8422"
     Mode=""
-    Description="Where the interface binds inside the container. Leave this alone unless you know why you are changing it: outside a container the program deliberately defaults to loopback, and the container overrides that because loopback inside a container means nobody can reach it."
+    Description="Where the interface binds inside the container. Leave this alone unless you know why you are changing it: outside a container the program defaults to loopback, and the container overrides that because loopback inside a container means nobody can reach it."
     Type="Variable"
     Display="advanced"
     Required="false"
