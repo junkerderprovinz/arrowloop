@@ -7,16 +7,9 @@ import { CRYPTO_COINS, type CryptoCoin, type CryptoNetwork } from '../lib/donate
 import { useT } from '../lib/i18n'
 
 /**
- * The crypto window's stateful half, the same split every dialog here uses: the
- * design language owns the markup and the rules, this file owns the parts a
- * language cannot know about — which coin and chain are picked, Escape, focus,
- * and what "copied" says in this app's words.
- *
- * The QR encoder and the coin marks are handed in rather than imported by the
- * language, which has no dependencies and no right to hand out somebody else's
- * logo. See lib/donate.ts for the one rule that matters about the list itself:
- * every network a donor can pick carries its OWN address, so a chain we cannot
- * receive on is unofferable rather than merely discouraged.
+ * The crypto window's state: the picked coin and chain, Escape, focus and the
+ * copied label. GlimStone's dialog owns the markup and is handed the QR encoder
+ * and the coin marks, since the language ships neither.
  */
 export function CryptoDonate({ onClose }: { onClose: () => void }) {
   const { t } = useT()
@@ -24,9 +17,6 @@ export function CryptoDonate({ onClose }: { onClose: () => void }) {
   const [network, setNetwork] = useState<CryptoNetwork>(CRYPTO_COINS[0]!.networks[0]!)
   const [copied, setCopied] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
-  // No palette subscription here: Shell.tsx subscribes once for the whole
-  // app and repaints on any appearance change, so a second subscriber in a
-  // dialog would only duplicate what the shell already does.
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -37,10 +27,8 @@ export function CryptoDonate({ onClose }: { onClose: () => void }) {
     return () => document.removeEventListener('keydown', onKey)
   }, [onClose])
 
-  // The label flips for a moment and goes back, which is how every other copy
-  // control in this app answers. No toast system here to push to, and a line
-  // of feedback that appears somewhere else on the page would be worse than
-  // the button saying it itself.
+  // The copy label flips for a moment and goes back, like every copy control
+  // in the app.
   useEffect(() => {
     if (!copied) return
     const id = setTimeout(() => setCopied(false), 1500)

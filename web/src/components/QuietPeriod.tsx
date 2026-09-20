@@ -4,22 +4,9 @@ import { Choice, NumberField } from './Field'
 import { useT } from '../lib/i18n'
 
 /**
- * The quiet period: a number and the unit it is counted in.
- *
- * It used to be one text box with a `5s` placeholder, which is the shape of a
- * field that knows the answer and will not say it. jdp: "ruhezeit: ist voellig
- * unklar was man da wie einstellen soll." A duration written as text asks
- * somebody to guess a syntax, and the guesses that fail ("5 sec", "5 Sekunden",
- * "00:00:05") fail silently as far as the box is concerned.
- *
- * Two controls answer both halves of that: how many, and of what. The stored
- * value stays a Go duration string, because that is what the engine parses and
- * what somebody editing the file by hand will see.
- *
- * Seconds, minutes and hours, and no days. A quiet period is how long a folder
- * has to stop changing before a watched job believes the writing is over; the
- * useful range is seconds to minutes, hours is already generous, and a "days"
- * entry would only be there to make the list look complete.
+ * The quiet period, edited as a number and a unit and stored as the Go
+ * duration string the engine parses. It is how long a folder must stop
+ * changing before a watched job acts, so days are not offered.
  */
 
 export type QuietUnit = 's' | 'm' | 'h'
@@ -27,30 +14,18 @@ export type QuietUnit = 's' | 'm' | 'h'
 const UNITS: QuietUnit[] = ['s', 'm', 'h']
 
 /**
- * What a job starts with, rather than nothing.
- *
- * An empty box reads as "no quiet period", and that is a real setting: it means
- * a watched job acts on the first event it sees. Copying a folder in produces
- * one event per file, so the answer nobody wants is the one an empty field
- * gives by default. jdp: "Ruhezeit. stell eine standrad zeit ein."
- *
- * Five seconds because that is long enough for a file manager to finish writing
- * a file and short enough that nobody notices the wait. It is a starting value
- * on a new job, not a floor: clearing the field still means zero, deliberately.
+ * A new job's quiet period. Without one, a watched job acts on the first of
+ * the many events a folder copy produces; five seconds lets a file manager
+ * finish writing. Clearing the field still means zero.
  */
 export const DEFAULT_QUIET = '5s'
 
 /**
  * A duration string split into a number and a unit.
  *
- * Anything this cannot read comes back as the default rather than as an error,
- * because the box is edited character by character: "1" is a perfectly good
- * thing to have typed on the way to "10m", and a field that blanked itself
- * every time the text was briefly unparseable would be unusable.
- *
- * A compound Go duration ("1m30s") is read by its LARGEST unit and its total,
- * so it survives a round trip in the only way two controls can represent it:
- * 90s. Rewriting it as "1m" would silently drop the thirty seconds.
+ * Text it cannot read comes back as zero seconds rather than an error, since
+ * the box is edited character by character. A compound duration ("1m30s")
+ * keeps its total in the largest unit that loses nothing (90s).
  */
 export function readQuiet(value: string): { amount: number; unit: QuietUnit } {
   const text = value.trim()
@@ -58,8 +33,7 @@ export function readQuiet(value: string): { amount: number; unit: QuietUnit } {
 
   const parts = [...text.matchAll(/(\d+(?:\.\d+)?)\s*(h|m|s)/g)]
   if (parts.length === 0) {
-    // A bare number with no unit at all. Go would reject it, and the person
-    // typing it almost certainly means seconds.
+    // Go rejects a bare number, but whoever typed it means seconds.
     const bare = Number(text)
     if (Number.isFinite(bare) && bare >= 0) return { amount: Math.round(bare), unit: 's' }
     return { amount: 0, unit: 's' }
@@ -98,33 +72,20 @@ export function QuietPeriod({
 
   return (
     <div className="flex items-center gap-2">
-      {/* The steppers come from the design language's own file, which is also
-          where the wheel lives: the field answers it while it has focus, so a
-          value being dialled in needs neither the keyboard nor a click. That is
-          GlimStone 1.7.4, added for this and available to every number field in
-          the app at the same time. */}
       <NumberField
         value={amount}
         min={0}
         onChange={(next) => onChange(writeQuiet(next, unit))}
         label={t('edit.quietPeriod')}
       />
-      {/* A fixed narrow column, not `flex-1`. The picker holds one of three
-          words and it was being handed every pixel the row had left over: half
-          an editor row in the job form, and the whole width of a card minus the
-          number box on the Engine tab, where the same component sits in a
-          `<Field>`. jdp: "das dropdown fuer stunde, min soll nicht so breit
-          sein." 8rem clears the longest of the three in every locale that has
-          been measured, and the row no longer changes shape depending on which
-          page it is on. */}
+      {/* A fixed width that fits the longest unit name in every measured
+          locale, so the row keeps its shape on every page. */}
       <div className="w-32 shrink-0">
         <Choice<QuietUnit>
           value={unit}
           label={t('edit.quietUnit')}
-          // Changing the unit keeps the NUMBER rather than the duration. "5
-          // seconds" switched to minutes means five minutes, which is what the
-          // control looks like it is doing; converting to 0.08 minutes would be
-          // arithmetically honest and would silently ruin the setting.
+          // Changing the unit keeps the number: 5 seconds switched to minutes
+          // is 5 minutes, not 0.08.
           onChange={(next) => onChange(writeQuiet(amount, next))}
           options={UNITS.map((u) => ({ value: u, label: t(`edit.quiet.${u}` as const) }))}
         />

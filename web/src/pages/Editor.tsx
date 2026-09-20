@@ -12,28 +12,8 @@ import { ScheduleField } from '../components/Schedule'
 import { useT } from '../lib/i18n'
 
 /**
- * The configuration a job list edits, and everything that can be done to it.
- *
- * This is a hook rather than a page because the list and the form are now on
- * the same tab: a job is added, picked and edited without going anywhere, so
- * the state they share has to live above both of them. It writes the same
- * configuration file a person can still open in an editor, validated by the
- * same function that guards it there, and a refused edit leaves the file
- * exactly as it was because the new content is written beside it and only moved
- * into place once it has passed.
- */
-/**
- * What a new job starts out ignoring.
- *
- * These used to be a placeholder in the box, which is grey text that vanishes
- * the moment anybody types and was never actually part of the job: every new
- * job shipped with an empty exclude list and copied its way through somebody's
- * caches. They are real values now.
- *
- * Chosen for one reason only: each is a file the operating system or a tool
- * rewrites on its own, so syncing it means copying noise back and forth for
- * ever and generating conflicts out of nothing. Nothing here is about taste,
- * and anything a person might actually want is left alone.
+ * What a new job starts out ignoring: files the operating system or a tool
+ * rewrites on its own, which would only produce noise and conflicts.
  */
 export const DEFAULT_EXCLUDES = [
   // Half-written by definition.
@@ -42,7 +22,7 @@ export const DEFAULT_EXCLUDES = [
   '*.part',
   '*.crdownload',
   '~$*',
-  // The file managers, written on merely LOOKING at a folder.
+  // Written by file managers merely looking at a folder.
   'Thumbs.db',
   'desktop.ini',
   '.DS_Store',
@@ -58,6 +38,11 @@ export const DEFAULT_EXCLUDES = [
   '**/.git/**',
 ]
 
+/**
+ * The job list shared by the list and the form on the Jobs tab, and every edit
+ * to it. It writes the configuration file through the same validator a
+ * hand-edited file meets.
+ */
 export function useJobConfig(onSaved: () => void) {
   const { t } = useT()
   const [jobs, setJobs] = useState<RawJob[] | null>(null)
@@ -73,9 +58,8 @@ export function useJobConfig(onSaved: () => void) {
       .catch((e: Error) => setError(e.message))
   }, [])
 
-  // What a side can point at without anybody typing it: a registered drive or a
-  // configured target. Both are set up on the Targets tab, and a job that has to
-  // repeat their exact spelling by hand is a job with a typo in it.
+  // Registered drives and configured targets, offered so nobody has to retype
+  // their exact spelling.
   useEffect(() => {
     const offers: { value: string; label: string }[] = []
     void Promise.allSettled([api.volumes(), api.remotes()]).then(([v, r]) => {
@@ -99,12 +83,9 @@ export function useJobConfig(onSaved: () => void) {
   }, [])
 
   /**
-   * Writes a list to the file and takes back what the server made of it.
-   *
-   * Takes the list rather than reading `jobs`, because the two callers below
-   * need different ones: saving means "this list", removing means "this list
-   * minus one", and a remove that went through `jobs` would write the list
-   * from before the removal.
+   * Writes a list to the file and takes back what the server made of it. It
+   * takes the list as an argument, since a removal writes one that `jobs` does
+   * not hold yet.
    */
   const persist = useCallback(
     async (list: RawJob[]) => {
@@ -117,8 +98,6 @@ export function useJobConfig(onSaved: () => void) {
         onSaved()
         return true
       } catch (e) {
-        // The message comes from the validator, so it says the same thing it
-        // would say about a hand-written file.
         setError((e as Error).message)
         return false
       } finally {
@@ -134,43 +113,17 @@ export function useJobConfig(onSaved: () => void) {
   }, [jobs, persist])
 
   /**
-   * Adds a job and hands back where it landed, so the caller can open it.
+   * Adds a draft job and returns its index, so the caller can open it.
    *
-   * The index is worked out from the CURRENT jobs, not from inside the updater.
-   * React runs an updater when it gets round to it, so a value assigned in
-   * there and returned from here is the value from before the click: the first
-   * version of this opened the job above the new one, every time. There is one
-   * writer to this state, so the length now is where the new job lands.
-   *
-   * The name carries a number as soon as one is taken, because two jobs called
-   * the same thing are one job as far as every list, log and record is
-   * concerned, and the second plus press is exactly when that happens.
-   *
-   * It arrives SWITCHED ON, and it used to arrive switched off.
-   *
-   * The old reasoning was that a job with no sides yet is not one a scheduler
-   * should reach, which is true and is not this flag's job: a new job also has
-   * no schedule, so there is nothing for a scheduler to reach it with. What the
-   * flag actually did was make every job somebody created say "abgeschaltet" on
-   * its own card until they noticed a switch at the bottom of the form and
-   * turned it off again. jdp: "Abgeschaltet: das find ich total daemlich. ein
-   * auftrag soll standardmaessig aktiviert sein."
-   *
-   * The validator moved with it rather than being weakened: an enabled job with
-   * ONE side and not the other is still refused, because that is a job somebody
-   * half filled in. An enabled job with NEITHER side is a draft, and a draft is
-   * what this button makes.
-   *
-   * The quiet period is seeded for the same reason the sides are not: an empty
-   * duration is a real setting that means "act on the first event", which is the
-   * one answer nobody wants when a folder of a thousand files arrives at once.
+   * The index comes from the current jobs rather than from inside a state
+   * updater, which React runs later. A new job is enabled: with neither side
+   * set the validator treats it as a draft, and it has no schedule yet. The
+   * quiet period is seeded to DEFAULT_QUIET.
    */
   const add = useCallback((): number => {
     setSaved(false)
     const current = jobs ?? []
-    // The same rule copying a job uses. See uniqueName in jobCopy.data.ts:
-    // adding and copying are one question asked twice, and they were two
-    // implementations of it until a source guard noticed.
+    // Two jobs with one name would be one job to every list, log and record.
     const name = uniqueName(t('edit.newJob'), current.map((j) => j.name ?? ''))
     const next: RawJob = {
       name,
@@ -185,22 +138,13 @@ export function useJobConfig(onSaved: () => void) {
   }, [jobs, t])
 
   /**
-   * Removes a job, and writes the file straight away.
+   * Removes a job and writes the file straight away, since the removal was
+   * already confirmed.
    *
-   * It used to change the list in the browser and stop there, so a job was
-   * gone from the page and still in the file: reload and it was back. Reported
-   * as "den example auftrag kann ich nicht löschen", which is exactly what it
-   * looks like from the outside. A removal is a confirmed, deliberate act, so
-   * it does not wait for a second press somewhere else.
-   *
-   * `alsoState` deletes the job's own state database first, while the job is
-   * still IN the configuration: the server resolves the path from the job's
-   * own entry rather than being handed one, so nothing here can name a file
-   * outside the configuration. Doing it second would leave the server with no
-   * way to look the path up. A failure there does not stop the removal, and it
-   * is not silent either: the file is a cache of what the two sides agreed on,
-   * not the user's data, and refusing to remove a job because a leftover
-   * database could not be deleted would be the worse answer.
+   * `alsoState` deletes the job's state database first, while the job is still
+   * in the configuration: the server resolves the path from the job's entry, so
+   * nothing here can name a file outside it. A failure there is shown but does
+   * not stop the removal, since the database is only a cache.
    */
   const remove = useCallback(
     async (at: number, alsoState: boolean) => {
@@ -208,8 +152,7 @@ export function useJobConfig(onSaved: () => void) {
       const job = current[at]
       if (!job) return
       setSaved(false)
-      // A job with no name has never been saved, so there is no state database
-      // on disk under it and nothing to ask the server about.
+      // A job with no name was never saved and has no state database.
       if (alsoState && job.name) {
         try {
           await api.forgetJobState(job.name)
@@ -223,18 +166,9 @@ export function useJobConfig(onSaved: () => void) {
   )
 
   /**
-   * Hold a job's schedule, or let it go again, and write it straight away.
-   *
-   * Separate from `patch` on purpose. `patch` edits the draft in the open form
-   * and waits for a save; this is pressed on a card that is not being edited,
-   * where there is no save button to press afterwards and no form open to say
-   * that something is pending. A switch that visibly flips and then quietly
-   * does not persist is the same defect deleting a job had, and it took a live
-   * click to find that one.
-   *
-   * It does NOT touch whether the job can be started by hand. A held job that
-   * could no longer be started would be a deleted job with extra steps; the
-   * whole point of holding one is to keep it and run it when you decide to.
+   * Holds or releases a job's schedule and writes it straight away, unlike
+   * `patch`, because it is pressed on a card with no form open and no save
+   * button. A held job can still be started by hand.
    */
   const setDisabled = useCallback(
     async (at: number, disabled: boolean) => {
@@ -248,27 +182,9 @@ export function useJobConfig(onSaved: () => void) {
   )
 
   /**
-   * Copy a job, and open the copy for editing.
-   *
-   * The copy is switched OFF and carries no state database of its own yet: two
-   * jobs pointing at the same state file would each write what the other just
-   * wrote, and the first run of the pair would look like every file had changed
-   * on both sides. So the copy gets a fresh name and a state path derived from
-   * it, the same way a new job does.
-   *
-   * Not written to disk. Duplicating is the START of an edit rather than the
-   * end of one - nobody wants two identical jobs, they want the second one
-   * pointing somewhere else - so it behaves like the plus button: a draft in
-   * the form, saved when it says what it is for.
-   *
-   * And it is the one job that still arrives HELD, which is a deliberate
-   * exception to "a new job is switched on" rather than a leftover. A fresh job
-   * has no sides, so switching it on can start nothing. A copy has both sides
-   * already, pointing at the same two trees as its original, with a state
-   * database of its own: let go on the same schedule, the pair would compare the
-   * same files against two different records and undo each other's work. It is
-   * released by the same switch every other job uses, once it points somewhere
-   * else.
+   * Copies a job as a draft in the form, not yet written, and returns its
+   * index. The copy's name, own state database and held state come from
+   * jobCopy, shared with the phone.
    */
   const duplicate = useCallback(
     (at: number): number => {
@@ -276,9 +192,6 @@ export function useJobConfig(onSaved: () => void) {
       const current = jobs ?? []
       const source = current[at]
       if (!source) return at
-      // One function, shared with the app. See jobCopy.data.ts: the naming,
-      // the copy's own state database and the reason it arrives held all live
-      // there now, so the phone cannot grow a second opinion about any of them.
       const copy = jobCopy<RawJob>(
         source,
         current.map((j) => j.name ?? ''),
@@ -294,13 +207,7 @@ export function useJobConfig(onSaved: () => void) {
   return { jobs, known, error, saved, busy, patch, save, add, remove, setDisabled, duplicate }
 }
 
-/**
- * One job's fields.
- *
- * The two sides and the arrow between them are one row, because the direction
- * is a fact about the pair: anywhere else on the form and the reader has to
- * hold both boxes in their head to make sense of it.
- */
+/** One job's fields, with the direction between the two sides it relates. */
 export function JobForm({
   job,
   known,
@@ -312,17 +219,8 @@ export function JobForm({
 }) {
   const { t } = useT()
 
-  /**
-   * Renaming a job carries its state database along, unless somebody has moved
-   * it themselves.
-   *
-   * The two are written together when a job is created, as `state/<name>.db`,
-   * and then the name changes and the path does not: a job called "photos"
-   * with a database called `state/neuer-auftrag.db`. Nobody notices until they
-   * go looking for the file. So the path follows the name for as long as it
-   * still LOOKS like the generated one, and stops the moment it does not,
-   * because a path somebody typed on purpose is not this function's to rewrite.
-   */
+  // The state path follows the name while it still has the generated
+  // `state/<name>.db` form; a path somebody typed is left alone.
   function rename(next: string): Partial<RawJob> {
     const generated = (n: string) => `state/${n}.db`
     const current = job.state ?? ''
@@ -332,12 +230,8 @@ export function JobForm({
 
   return (
     <>
-      {/* Name and state database sit in the SAME three-part row the two sides
-          below use: field, spacer the width of a pick button, field. They used
-          to be an ordinary two-column grid, so each ended one button's width
-          short of the box under it and no column in the form lined up with any
-          other. Reported as exactly that measurement. The spacer is inert and
-          hidden from assistive technology: it exists to hold a column open. */}
+      {/* Rows use the same three parts as the two sides: field, a spacer as
+          wide as the direction switch, field, so the columns line up. */}
       <div className="flex flex-col gap-4">
         <div className="flex items-start gap-3">
           <div className="min-w-0 flex-1">
@@ -365,30 +259,14 @@ export function JobForm({
               onChange={(v) => patch({ left: v })}
             />
           </div>
-          {/* A caption row with nothing in it but an (i) was a bubble hanging
-              off no label, which is the one shape rule 8 rules out: the (i)
-              belongs BESIDE a label, and there was none. The explanation moved
-              onto the arrow itself, which already carries a tip because it is
-              an icon-only control, and the empty caption row went with it. The
-              spacer keeps the arrow level with the two boxes rather than with
-              the words above them. */}
-          {/* 1.3rem rather than the 1.55rem the two spacer rows use, and the
-              quarter rem of difference is the whole point. The direction switch
-              is a key control now (GlimStone 1.7.5), so it is half a rem taller
-              than the boxes on either side of it; padded to the same top edge
-              it would hang a quarter rem below them, which is the four-pixel
-              kind of difference that gets reported as a bug. Centred against
-              its neighbours, eight pixels of extra height read as deliberate,
-              which is what the language's own rule for a key control in a field
-              row asks for. */}
+          {/* 1.3rem rather than the spacers' 1.55rem: the switch is a key
+              control half a rem taller than the boxes, so this centres it
+              against them. */}
           <div className="flex shrink-0 flex-col gap-1.5 pt-[1.3rem]">
             <DirectionSwitch
               direction={job.direction ?? 'both'}
-              // Picking two ways takes the mode with it. Neither mirror nor
-              // move means anything without a source side, and leaving a
-              // stored "mirror" behind a two-way direction is a job the engine
-              // then refuses to load - a setting nobody can see, breaking a
-              // file they can.
+              // Mirror and move need a source side, and the engine refuses a
+              // two-way job that still stores one.
               onChange={(v) => patch({ direction: v, mode: v === 'both' ? undefined : job.mode })}
               hint={t('direction.hint')}
             />
@@ -404,16 +282,9 @@ export function JobForm({
           </div>
         </div>
 
-        {/* The second axis, and it only exists once a side has been named the
-            source. Two of the three modes DELETE, so the chosen one's sentence
-            is shown rather than hidden behind a tooltip: a row of three words
-            is how somebody mirrors the wrong way round. */}
+        {/* The mode exists only once one side is the source. Two of the three
+            modes delete, so the bubble explains the one currently chosen. */}
         {(job.direction ?? 'both') !== 'both' && (
-          // The explanation goes in the bubble, not on the page: the house
-          // rule, and the guard over it caught this the first time round. The
-          // bubble follows the CHOSEN mode, so the mark beside the label always
-          // explains what is actually set rather than the three things it could
-          // have been.
           <Field
             label={t('mode.label')}
             hint={
@@ -436,19 +307,8 @@ export function JobForm({
           </Field>
         )}
 
-        {/* The quiet period sits BESIDE the schedule, not under it. Both answer
-            "when does this run", and a field alone on a row below reads as its
-            own subject; there it was a bare duration box with no idea what to
-            put in it.
-
-            And it sits in the SAME three-part row as the two above: field,
-            spacer the width of a pick button, field. It used to be flex-1 next
-            to a fixed 14rem box, so it was the one row in the form whose two
-            columns matched nothing above them. jdp asked for it by the column
-            it should match rather than by a number ("ruhezeit feld soll so
-            breit sein wie das der zustandsdatei"), which is the right way to
-            ask: a width copied from a neighbour cannot drift, a width written
-            as 14rem can. */}
+        {/* The quiet period sits beside the schedule, since both answer when
+            the job runs. */}
         <div className="flex items-start gap-3">
           <div className="min-w-0 flex-1">
             <Field label={t('edit.schedule')} hint={t('edit.scheduleHint')}>
@@ -503,29 +363,6 @@ export function JobForm({
       </div>
 
       <div className="mt-5 flex flex-col gap-3">
-        {/* The "Active" switch used to stand here and it is gone (jdp: "Der
-            Aktiv toggle soll weg. ein auftrag soll atuomatisch aktiv sein wenn
-            man ihn anlegt"). A new job has arrived switched on for a while now,
-            so the switch spent its life showing the answer it was created with,
-            and holding a job is not something anybody does while filling in a
-            form: it is something you decide later, about a job that exists,
-            looking at the list. That control is on the card, next to the one
-            that starts a run by hand, and it saves itself.
-
-            The one job that still arrives held is a DUPLICATE, for the reason
-            `duplicate` gives at length: it points at the same two folders as its
-            original and would fight it. It is released by the same card control
-            as any other held job, once it points somewhere else. */}
-        {/* The watcher used to be here, and it moved INTO the schedule field
-            above: jdp went looking for it there ("zeitplan: echtzeit option
-            fehlt") and he was looking in the right place. Two copies of one
-            switch would have been worse than the wrong place, so this is a
-            move rather than an addition.
-
-            "Run at start" stays, because it answers a different question. The
-            schedule says when, the watcher says also-when-something-happens,
-            and this one says what to do about the turns that were missed while
-            the machine was off. */}
         <ToggleRow
           label={t('edit.runAtStart')}
           checked={!!job.runAtStart}
@@ -544,16 +381,8 @@ export function JobForm({
           onChange={(v) => patch({ metadata: v })}
           hint={t('edit.metadataHint')}
         />
-        {/* Shown the RIGHT way round: the switch says "keep a bin", and the
-            stored field says "do not". A switch labelled with a negative is a
-            switch people get backwards, and getting this one backwards deletes
-            files.
-
-            It is here because the bin is visible. It lives inside the synced
-            tree, so a shared download folder grows an `.arrowloop` directory
-            that everyone on that share can see, which is what prompted the
-            question: "braucht es den .arrowloop ordner im Zielordner? Kann man
-            den nicht weglassen?" */}
+        {/* Inverted from the stored `noTrash`, since a switch labelled with a
+            negative gets flipped the wrong way, and here that deletes files. */}
         <ToggleRow
           label={t('edit.trash')}
           checked={!job.noTrash}
@@ -566,20 +395,8 @@ export function JobForm({
 }
 
 /**
- * One side of a job: a field, a button that walks the folders, and a list of
- * the things already registered.
- *
- * The browse button is always there, and that is the fix for what it replaced:
- * the registered list only appeared once a target or a drive existed, so on a
- * fresh installation there was no way to choose a side at all, only a box to
- * type into. The first job somebody ever makes is exactly the one where they
- * have registered nothing.
- *
- * The list writes the prefix and leaves the rest of the path to be typed, rather
- * than replacing whatever was there. A picker that overwrote the field would
- * lose the subfolder somebody had just entered, which is the only part they
- * could not have picked from a list. The folder browser DOES replace the value,
- * because what it returns is a whole real path rather than a prefix.
+ * One side of a job: a path field and a folder picker, which also offers the
+ * registered drives and targets.
  */
 function Side({
   label,
@@ -605,17 +422,11 @@ function Side({
           <PickButton onClick={() => setPicking(true)} />
         </div>
       </Field>
-      {/* The registered drives and configured targets are offered INSIDE the
-          picker now, at the top of its list, rather than in a second dropdown
-          under the field. They were findable only by noticing a control below
-          the box, so the one thing a target exists for, being picked without
-          retyping its exact spelling, was the hardest thing to reach. */}
       <FolderPicker
         open={picking}
         known={known}
-        // A value with a colon in it is a target's name, not a folder on this
-        // machine, so the browser starts at the top rather than failing to read
-        // something that was never a path.
+        // A value with a colon is a target's name rather than a local folder
+        // (a Windows drive letter aside), so browsing starts at the top.
         start={value.includes(':') && !/^[A-Za-z]:[\\/]/.test(value) ? undefined : value}
         onClose={() => setPicking(false)}
         onPick={(path) => {

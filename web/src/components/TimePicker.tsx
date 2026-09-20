@@ -1,18 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 
-/**
- * An hour and a minute, picked rather than typed.
- *
- * A native `<input type="time">` is the obvious answer and it is the wrong one
- * twice over: it renders the operating system's own widget inside a surface
- * that follows none of the engines, and it asks somebody to type a time when
- * every value it accepts is a short list. So the trigger is read-only text in a
- * field's own clothing, and the popover holds two scrollable lists.
- *
- * The minute column steps rather than offering sixty rows. A schedule in this
- * program is a cadence, not an appointment: nobody needs a sync at 03:47, and a
- * list of sixty is a list nobody scrolls to the end of.
- */
+// An hour and a minute picked from two lists rather than a native time input,
+// whose widget follows none of the engines. Minutes step by five, since a
+// schedule is a cadence rather than an appointment.
 const MINUTE_STEP = 5
 
 export function minutes(step = MINUTE_STEP): number[] {
@@ -29,12 +19,8 @@ export function formatTime(hour: number, minute: number): string {
 }
 
 /**
- * Reads "HH:MM" back, falling back to a sensible hour rather than throwing.
- *
- * A stored value can be anything: a hand-edited configuration file, a schedule
- * written before this picker existed. Refusing to render is the one behaviour
- * that would make such a value uneditable, which is the opposite of what an
- * editor is for.
+ * Reads "HH:MM" back. A hand-edited value it cannot read falls back to 03:00
+ * rather than throwing, so it stays editable.
  */
 export function parseTime(value: string): { hour: number; minute: number } {
   const m = /^(\d{1,2}):(\d{2})$/.exec((value ?? '').trim())
@@ -68,9 +54,7 @@ export function TimePicker({
   const steps = minutes()
   const shownMinute = nearestStep(steps, minute)
 
-  // Closing on an outside press and on Escape, both of which somebody expects
-  // from anything that floats. Bound only while open, so a page full of these
-  // costs one listener rather than one per field.
+  // Bound only while open, so a page full of these costs one listener.
   useEffect(() => {
     if (!open) return
     function away(e: MouseEvent) {

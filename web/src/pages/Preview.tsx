@@ -11,14 +11,9 @@ import { api, type Action, type ActionKind, type Plan, type Resolution, type Sid
 import { translateSide, useReason, useT, type TranslationKey } from '../lib/i18n'
 
 /**
- * The preview is the screen this whole product exists for.
- *
- * Every other sync tool's main view is a progress bar, which is a report on a
- * decision somebody already made on your behalf. Here the decision is yours:
- * each proposed change is listed with its direction and the reason the engine
- * gives for it, each one can be unticked, and nothing moves until the button is
- * pressed. A two-way sync that acts before the plan has been read is asking for
- * trust it has not earned.
+ * A job's plan before anything moves: each proposed change with its direction
+ * and the engine's reason, each one untickable, and nothing runs until the
+ * button is pressed.
  */
 export function Preview({ job, onDone }: { job: string; onDone: () => void }) {
   const { t } = useT()
@@ -29,16 +24,7 @@ export function Preview({ job, onDone }: { job: string; onDone: () => void }) {
   const [resolutions, setResolutions] = useState<Record<string, Resolution>>({})
   const [busy, setBusy] = useState(false)
 
-  /**
-   * Escape leaves, the same as it does in every dialog in the app.
-   *
-   * This page had no way out at all: `onDone` fired only after a run finished,
-   * so somebody who pressed preview to LOOK - which is the entire point of the
-   * page - could only get back by way of another tab in the rail. jdp: "Wenn
-   * man auf vorschau klickt, kommt man nicht wieder zurueck." It is skipped
-   * while a run is starting, because leaving then would hide the one thing
-   * worth watching and the run would carry on regardless.
-   */
+  // Escape leaves, except while a run is starting.
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.key === 'Escape' && !busy) onDone()
@@ -80,10 +66,8 @@ export function Preview({ job, onDone }: { job: string; onDone: () => void }) {
   async function start() {
     setBusy(true)
     try {
-      // The full selection is sent as an explicit list rather than as "no
-      // filter", so what runs is exactly what was on screen. Sending nothing
-      // would run whatever the plan looks like at that moment, including rows
-      // the person never saw.
+      // An explicit list even when everything is ticked, so what runs is
+      // exactly what was on screen rather than a fresh plan.
       await api.run(job, chosen, resolutions)
       onDone()
     } catch (e) {
@@ -93,12 +77,7 @@ export function Preview({ job, onDone }: { job: string; onDone: () => void }) {
     }
   }
 
-  // The way out is on EVERY state of this page, including the two that are not
-  // the plan. A preview that fails to plan is exactly the moment somebody most
-  // wants to leave, and it used to be the moment with nothing on screen but the
-  // error.
-  // Hard right, the same corner as the save/cancel pair on every other card.
-  // jdp: "der zurückbutton in den cards bitte auch nach ganz rechts."
+  // The way back shows on every state of the page, the error and the wait too.
   const back = (
     <div className="flex justify-end">
       <IconAction
@@ -136,9 +115,6 @@ export function Preview({ job, onDone }: { job: string; onDone: () => void }) {
         title={t('preview.for', { job })}
         hueIndex={0}
       >
-        {/* The one thing somebody came to this card to do, at the top of its
-            body. GlimStone's Card draws a heading and nothing else, so a card's
-            own controls live in the body, the same as in BombVault. */}
         <div className="flex flex-wrap items-center justify-between gap-2">
           {back}
           <Button
@@ -200,11 +176,8 @@ export function Preview({ job, onDone }: { job: string; onDone: () => void }) {
 }
 
 /**
- * A proposed change has not happened yet, so it is waiting, and waiting is the
- * neutral hue. The accent is reserved for activity, which on this page is the
- * one Run button and nothing else. The two kinds that remove something keep the
- * fault hue, because a row that is about to take a file away should not look
- * the same as one that is about to add one.
+ * A proposed change is waiting, so it takes the neutral hue; the accent is
+ * for the Run button alone. Kinds that take something away wear the fault hue.
  */
 const tone = {
   copy: 'neutral',
@@ -239,8 +212,7 @@ function Row({
 }) {
   const { t } = useT()
   const reason = useReason()
-  // A copy names two sides and a move names two paths, so only the first pair
-  // goes through the side translation. A path is a path in every language.
+  // A copy names two sides, which are translated; a move names two paths.
   const label =
     action.kind === 'copy'
       ? `${translateSide(t, action.from ?? '')} → ${translateSide(t, action.to ?? '')}`
@@ -251,9 +223,7 @@ function Row({
   return (
     <div className="py-2.5">
       <label className="flex cursor-pointer items-center gap-3">
-        {/* A switch rather than a checkbox: the design language never uses a
-            checkbox, and this is the one control on the page whose state
-            decides whether a file is touched at all. */}
+        {/* A switch, since the design language never uses a checkbox. */}
         <span
           role="switch"
           aria-checked={ticked}
@@ -265,9 +235,7 @@ function Row({
               onToggle()
             }
           }}
-          // De-coloured on purpose. Every row arrives ticked, so a switch that
-          // is on in all of them is not marking activity, and the accent means
-          // activity or it means nothing.
+          // Not the accent: every row arrives ticked, so "on" marks no activity.
           className={`inline-flex h-4 w-7 shrink-0 items-center p-0.5 transition-colors ${
             ticked ? 'bg-carbon-text' : 'bg-carbon-surface3'
           }`}
@@ -297,12 +265,8 @@ function Row({
 }
 
 /**
- * The two versions, side by side, and what to do with them.
- *
- * A conflict row that only says "conflict" asks somebody to go and look at two
- * files themselves before they can answer the question the screen just put to
- * them. The size and the time are the two facts that settle it in almost every
- * case, so they belong here rather than in a file manager.
+ * The two versions side by side, with the size and time that settle most
+ * conflicts, and the choice of what to keep.
  */
 function Conflict({
   action,
@@ -368,8 +332,7 @@ function Version({ side, version, newer }: { side: string; version?: SideVersion
   )
 }
 
-/** A size a person can read. Binary steps, because that is what a file manager
- *  on every one of these platforms shows next to the same file. */
+/** A readable size in binary steps, as file managers show it. */
 function bytes(n: number): string {
   const units = ['B', 'KiB', 'MiB', 'GiB', 'TiB']
   let value = n

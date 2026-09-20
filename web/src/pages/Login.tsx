@@ -8,17 +8,9 @@ import { api } from '../lib/api'
 import { useT } from '../lib/i18n'
 
 /**
- * The password box, drawn only when there is a password to give.
- *
- * The interface asks the server whether one is required before it draws
- * anything, which is why there is a probe route open to everybody. Working it
- * out from a 401 instead would mean every page load starting with a failed
- * request, and the interface guessing at the difference between "you are logged
- * out" and "there is no login here".
- *
- * Deliberately NOT the browser's own credential dialogue. That box cannot be
- * styled, cannot be translated, and has no way to log out again short of closing
- * the browser, which is why the server sends no WWW-Authenticate header.
+ * The password box, drawn only when the server's open probe route says one is
+ * required. The browser's own credential dialogue cannot be styled, translated
+ * or logged out of, so the server sends no WWW-Authenticate header.
  */
 export function Login({ onIn }: { onIn: () => void }) {
   const { t } = useT()
@@ -31,16 +23,12 @@ export function Login({ onIn }: { onIn: () => void }) {
     setError(null)
     try {
       await api.login(password)
-      // The password is dropped the moment it has been spent. It is not needed
-      // again, and a component that keeps holding it is one more place it can
-      // end up in a crash report.
+      // Dropped once spent, so it cannot end up in a crash report.
       setPassword('')
       onIn()
     } catch (e) {
       const message = (e as Error).message
-      // The server answers 429 with its own words when somebody has tried too
-      // often. Told apart here because the two need different reactions: one
-      // means type it again, the other means stop and wait.
+      // A 429 means wait rather than type it again.
       setError(message.includes('429') || /too many/i.test(message) ? t('login.locked') : t('login.wrong'))
     } finally {
       setBusy(false)
@@ -54,9 +42,6 @@ export function Login({ onIn }: { onIn: () => void }) {
           <form
             className="flex flex-col gap-4"
             onSubmit={(e) => {
-              // A real form, so Enter submits. A password box that only answers
-              // a mouse click is the one control everybody tries to use with the
-              // keyboard.
               e.preventDefault()
               void submit()
             }}

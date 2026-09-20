@@ -10,17 +10,9 @@ import { api } from '../lib/api'
 import { useT } from '../lib/i18n'
 
 /**
- * Picking a folder instead of typing one.
- *
- * A typed path is where a job goes wrong quietly: a folder that does not exist
- * is a perfectly valid string, so the first anybody hears of a typo is a run
- * that copied nothing, or one that made the wrong tree and then kept it in step
- * with the right one. A picker can only offer folders that are really there.
- *
- * The field stays. This is a button beside it, not a replacement for it,
- * because a path can also be a target's own name with a colon, which no
- * folder listing will ever produce, and because pasting a path somebody was
- * given is faster than walking to it.
+ * Picks a folder that really exists, where a typo in a typed path would only
+ * show up as a run that copied nothing. It sits beside the path field rather
+ * than replacing it, since a path can also be a target name no listing offers.
  */
 export function FolderPicker({
   open,
@@ -43,19 +35,16 @@ export function FolderPicker({
   const [entries, setEntries] = useState<{ name: string; path: string }[]>([])
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
-  // null while the name box is closed, a string while it is open. An empty
-  // string is a box waiting to be typed in, which is not the same as no box.
+  // null while the new-folder name box is closed.
   const [naming, setNaming] = useState<string | null>(null)
 
-  // Reset to the starting folder every time it opens, rather than resuming
-  // wherever the last visit ended: this is opened from a specific field, and
-  // that field's own value is the answer to "where were we".
+  // Each opening starts from the field it was opened from, not where the last
+  // visit ended.
   useEffect(() => {
     if (!open) return
     setError(null)
     void go(start ?? '')
-    // go is defined below and stable for the life of this render; listing it
-    // here would re-run the effect on every keystroke in the field behind.
+    // Listing go would re-run the effect on every keystroke in the field behind.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, start])
 
@@ -69,18 +58,9 @@ export function FolderPicker({
   }, [open, onClose])
 
   /**
-   * Lists one folder, falling back to the top of the tree when it cannot.
-   *
-   * The fallback is what makes this usable at all on a fresh job: the field it
-   * opens from holds whatever was typed, which on a machine that has never run
-   * this job is very often a path from somewhere else, or a placeholder, or
-   * nothing that exists. Opening on an error and an empty list would leave
-   * somebody stuck at a dialog that refuses to show them anything, with no way
-   * up because there is no folder to be above.
-   *
-   * A folder somebody NAVIGATED to and cannot read is a different matter and
-   * keeps its message: there the listing behind it is still on screen and the
-   * message says which folder refused.
+   * Lists one folder. With fallback set, an unusable starting path (often a
+   * placeholder or a path from another machine) opens the top of the tree
+   * instead of a dead end; a folder navigated to keeps its error.
    */
   async function go(path: string, fallback = true) {
     setBusy(true)
@@ -127,19 +107,12 @@ export function FolderPicker({
       aria-label={t('pick.title')}
       onClick={onClose}
     >
-      {/* Wider than the max-w-lg it was. Two things share this width and both
-          wanted more of it: a path printed in full, which is the whole point of
-          the window, and the three buttons at the foot, which at 512px could
-          not stand in one row in German and wrapped ("Diesen Ordner nehmen"
-          alone on a second line). jdp: "die buttons sollen alle in eine Zeile."
-          The row below no longer wraps at all, so this width is what keeps that
-          promise rather than a hope. */}
+      {/* Wide enough for the three footer buttons in one row in German, since
+          that row does not wrap. */}
       <div className="w-full max-w-2xl" onClick={(e) => e.stopPropagation()}>
         <Card
           title={t('pick.title')}
         >
-          {/* Where we are, in full, because the whole point is to end up with a
-              path somebody can read back. */}
           <p className="mb-3 truncate font-mono text-xs text-carbon-text" title={at}>
             {at || t('pick.roots')}
           </p>
@@ -147,10 +120,8 @@ export function FolderPicker({
           {error && <p className="mb-3 text-xs text-statusFail">{error}</p>}
 
           <ul className="flex max-h-72 flex-col overflow-y-auto">
-            {/* The things that are not folders on this machine, first, because
-                they are the ones nobody can reach by walking a tree. Picking
-                one closes the window: a target's name IS the answer, there is
-                nothing further in to walk. */}
+            {/* Drives and targets cannot be reached by walking the tree, so they
+                come first, and picking one is the answer. */}
             {known.map((k) => (
               <li key={k.value}>
                 <button
@@ -175,9 +146,6 @@ export function FolderPicker({
                   className="flex w-full items-center gap-2 px-2 py-1.5 text-start text-xs text-carbon-textMuted transition hover:bg-carbon-hover hover:text-carbon-text"
                   style={{ borderRadius: 'var(--radius-control)' }}
                 >
-                  {/* An arrow, not a rotated plus. A plus turned upside down is
-                      still a plus, and it read as "add" in the one place that
-                      means "back". */}
                   <IconUp />
                   {t('pick.up')}
                 </button>
@@ -204,18 +172,11 @@ export function FolderPicker({
             )}
           </ul>
 
-          {/* At the foot, which is where a window's own controls go. Choosing
-              takes the folder currently OPEN rather than one highlighted in the
-              list: walking into a folder and pressing the button is one
-              gesture, selecting a row and then confirming is two, and the
-              second is the one people forget. */}
+          {/* Choosing takes the folder currently open rather than a highlighted
+              row, so walking in and pressing the button is one gesture. */}
           <div className="flex items-center justify-end gap-2">
-            {/* Making a folder belongs HERE, at the moment somebody discovers
-                the one they wanted does not exist yet. The alternative is
-                leaving the picker, making it elsewhere, and coming back. It
-                acts on the folder currently open, and refuses a name with a
-                separator in it: this makes ONE folder, it does not take a
-                path. */}
+            {/* Makes one folder inside the open one; a name with a separator
+                is refused. */}
             <Button
               label={t('pick.newFolder')}
               labelKey="pick.newFolder"

@@ -68,18 +68,9 @@ import {
 } from './glyphs'
 
 /**
- * A provider's mark by the name the server sends, or undefined.
- *
- * TWO sources on purpose. The brand marks are somebody else's drawings in
- * somebody else's colours, and must not be redrawn to fit. The protocol marks
- * are this app's own glyphs, because there is no company behind "SFTP" to have
- * a logo - and a tile with an empty square beside its neighbours reads as a
- * missing image rather than as "this one has no logo".
- *
- * A lookup rather than a switch, and the KEY is what the Go table wrote down:
- * `remotes.Provider.Mark`. So a provider gains a mark by one line in one Go
- * file, and one whose mark this build does not carry falls back rather than
- * failing.
+ * Provider marks keyed by `remotes.Provider.Mark` from the Go table. Brands
+ * keep their own drawings and colours; protocols such as SFTP, which have no
+ * logo, get the app's own glyphs. An unknown key yields no mark.
  */
 const MARKS: Record<string, () => ReactNode> = {
   IconNextcloud: () => <IconNextcloud />,

@@ -9,14 +9,7 @@ import { useT } from '../lib/i18n'
 import { Flag } from './Flag'
 import { IconHidden, IconVisible } from './glyphs'
 
-/**
- * A labelled field: the eyebrow above, the control below.
- *
- * The explanation rides in GlimStone's own info bubble rather than in a grey
- * paragraph, and the bubble is imported rather than drawn here. This file used
- * to carry its own copy, which is precisely the dialect the language's React
- * folder exists to end.
- */
+/** A labelled field: the eyebrow and its info bubble above, the control below. */
 export function Field({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
   return (
     <label className="flex flex-col gap-1.5">
@@ -30,55 +23,20 @@ export function Field({ label, hint, children }: { label: string; hint?: string;
 }
 
 /**
- * The height every control in a row shares.
- *
- * It is a constant rather than a repeated class because it was NOT one, and
- * that cost a report: an input's height came out of its padding (py-2 on
- * text-xs is 32px) while the direction button between two of them was written
- * as h-9, which is 36. Nothing was wrong with either number on its own, and
- * side by side the button was visibly taller (jdp: "der button ist groesser als
- * die felder daneben").
- *
- * Naming it here does more than fix the four pixels: two controls that must
- * match can no longer be given two numbers by two people on two days. Anything
- * that sits in a row with a field takes THIS, and the guard in
- * Field.height.test.ts fails if a call site writes its own instead.
- *
- * It reads the --btn-h token rather than restating its value, and that is not
- * tidiness. The editor's name row holds its middle column open with a spacer
- * sized in --btn-h, to line that row up with the two sides below it. Written as
- * a plain h-8 this constant AGREED with the token by coincidence, and the first
- * change to either number would have quietly pulled two rows out of line
- * somewhere nobody was looking.
+ * The height every control in a row with a field shares; Field.height.test.ts
+ * fails if a call site writes its own. It reads --btn-h because the editor's
+ * name row lines up with a spacer sized in that token.
  */
 export const CONTROL_H = 'h-[var(--btn-h)]'
 
 /**
- * The one step up, for a control that carries a decision rather than an action.
- *
- * GlimStone 1.7.5 added a SECOND button height and said there will not be a
- * third, which is the answer to a question asked here twice in one round about
- * two different controls: "der Button fuer auftrag anlegen soll groesser sein.
- * haben wir nicht eine groessere standardisierte groesse?" and "koennen wir den
- * button in die naechste groesse anheben? das ist ein kritischer button." The
- * honest answer at the time was that no such size existed, and the wrong way to
- * supply one is to raise --btn-h: that puts every button in the app out of line
- * with every field beside it to solve a problem two controls have.
- *
- * Two things in this app take it: the button that creates a job, and the
- * direction switch. Both are the reason their surface exists. Everything else
- * stays on CONTROL_H, and a key control standing in a field row is CENTRED
- * against its neighbours rather than top-aligned with them, or eight pixels of
- * deliberate difference read as the four pixels of accident that produced the
- * original report.
+ * GlimStone's one step up, for the control a surface exists for: the button
+ * that creates a job and the direction switch. In a field row it is centred
+ * against its neighbours rather than top-aligned.
  */
 export const KEY_CONTROL_H = 'h-[var(--btn-h-key)]'
 
-/**
- * Form fields are borderless and filled, and focus is a brightness step rather
- * than a ring. A box drawn around every input is hierarchy from borders, which
- * is the thing this design language spends most of its rules avoiding.
- */
+/** A borderless, filled text box; focus is a brightness step rather than a ring. */
 export function Text({
   value,
   onChange,
@@ -90,11 +48,7 @@ export function Text({
   onChange: (next: string) => void
   placeholder?: string
   mono?: boolean
-  /**
-   * The name a screen reader announces, for the boxes that stand ALONE rather
-   * than under a Field's caption. A placeholder is not a name: it disappears
-   * the moment somebody types, and several browsers never read it out at all.
-   */
+  /** The accessible name for a box that stands outside a Field. */
   label?: string
 }) {
   return (
@@ -113,17 +67,8 @@ export function Text({
 }
 
 /**
- * A calendar day, as `YYYY-MM-DD`.
- *
- * The browser's own date box rather than a written one, and that is a decision
- * about locale rather than about effort: it shows the day in the reader's own
- * order (day first here, month first elsewhere) and takes keyboard entry in
- * that order too, in all forty-two languages, which a hand-built picker would
- * have to be told one language at a time. The value stays ISO on the wire in
- * every case, so what travels never depends on where it was typed.
- *
- * Its calendar button follows the theme because `color-scheme` is declared on
- * the root; without that it is a dark glyph on a dark box.
+ * A calendar day, as `YYYY-MM-DD`. The browser's own date box shows and takes
+ * the day in the reader's locale order while the value stays ISO.
  */
 export function Day({
   value,
@@ -150,15 +95,7 @@ export function Day({
   )
 }
 
-/**
- * A number, with GlimStone's own steppers inside the box.
- *
- * The steppers are attached by the design language's own file rather than drawn
- * here, because that file exists precisely to stop each app inventing its own
- * pair: the rule was written twice and got it wrong once, and the working piece
- * is what carries the answer. The browser's native spinner is off by the same
- * token, in tokens.css.
- */
+/** A number, with GlimStone's steppers inside the box. */
 export function NumberField({
   value,
   onChange,
@@ -188,9 +125,8 @@ export function NumberField({
       aria-label={label}
       onChange={(e) => {
         const next = parseInt(e.target.value, 10)
-        // An empty box is a value being typed, not a value of zero. Passing NaN
-        // up would write a schedule of "@every NaNh" the moment somebody
-        // selects the digits to replace them.
+        // An empty box is a value being typed; passing NaN up would write a
+        // schedule of "@every NaNh".
         if (Number.isFinite(next)) onChange(next)
       }}
       className={`w-24 ${CONTROL_H} bg-carbon-surface2 px-3 text-xs text-carbon-text outline-none transition focus:brightness-125`}
@@ -224,31 +160,9 @@ export function Lines({
 }
 
 /**
- * A picker: a button that opens GlimStone's own listbox.
- *
- * It was a native `<select>` until 2026-09-07, which the design language calls
- * the default rather than the rule, and names the ceiling it runs into: a native
- * select's closed height and its open list's row padding are both drawn by the
- * operating system, so neither can be styled, and its open list is not page DOM
- * at all. Reported as exactly that ("das drop down war auch nicht im GSS") and
- * it was right: everything else on the settings page came from the language, and
- * this one control came from the platform.
- *
- * Two things follow from the change rather than one. The panel is now the same
- * portalled, edge-aware listbox every other picker in the house uses, and its
- * rows are ordinary elements, so an option can hold a real flag rather than the
- * two-letter tag Windows draws for the emoji a native option was limited to.
- *
- * All four pickers in this app go through here, so none of them is left behind
- * as a second, differently-drawn version of the same control.
- *
- * It answers the MOUSE WHEEL, and that is the other half of replacing the native
- * control rather than the price of it. A closed `<select>` has stepped its value
- * on a wheel roll since GlimStone 1.5.0; replacing the last one in the app took
- * the behaviour away with it, and jdp asked for it back by name:
- * "Dropdownlisten soll man ueberall auch per scrollen umschalten koennen." Since
- * every picker here comes through this component, wiring it once covers all of
- * them.
+ * A picker: a button that opens GlimStone's listbox, used by every picker in
+ * the app. Unlike a native `<select>` it can be styled and its options can hold
+ * a real flag. Like one, a wheel roll over the closed control steps its value.
  */
 export function Choice<T extends string>({
   value,
@@ -263,20 +177,9 @@ export function Choice<T extends string>({
   options: { value: T; label: string; flag?: string }[]
   label?: string
   /**
-   * One step up in text size, for a picker that is the whole point of its card
-   * rather than one field among several in a form row.
-   *
-   * The language list is the case it was added for. jdp: "das sprach dropdown
-   * ist zu klein bzw. die texte und flaggen" - and the flags were never sized
-   * here at all: the sprite is 1.25em by 1em, so it is exactly as big as the
-   * text beside it and shrinks with it. One size decides both, which is why
-   * there is one switch and not two.
-   *
-   * BombVault's own language card is the reference, opened rather than guessed
-   * at: text-sm with gap-2.5, and its trigger stays the same 32px tall, because
-   * py-1.5 on a 20px line box comes to the same height as the form rows do at
-   * py-2 on a 16px one. So this changes the reading size and nothing about how
-   * the control lines up.
+   * One step up in text size, for a picker that is its card's main control,
+   * such as the language list. The flag sprite is sized in em, so it grows with
+   * the text; the height stays that of the form rows.
    */
   roomy?: boolean
 }) {
@@ -284,16 +187,8 @@ export function Choice<T extends string>({
   const [open, setOpen] = useState(false)
   const current = options.find((o) => o.value === value)
 
-  /**
-   * The wheel is attached ONCE and reads the current options through a ref.
-   *
-   * Every call site builds its option array inline, so the array and the change
-   * handler are new objects on every render; in the effect's dependency list
-   * they would detach and re-attach the listener on each keystroke elsewhere on
-   * the page. The ref keeps one listener for the life of the control and still
-   * sees the latest list, which matters for the language picker, whose labels
-   * change when the language does.
-   */
+  // Call sites build their options inline, so the wheel listener reads them
+  // through a ref instead of re-attaching on every render.
   const latest = useRef({ options, value, onChange })
   latest.current = { options, value, onChange }
   useEffect(() => {
@@ -321,15 +216,11 @@ export function Choice<T extends string>({
         style={{ borderRadius: 'var(--radius-control)' }}
       >
         {current?.flag && <Flag code={current.flag} />}
-        {/* The row must not grow with its content: forty-two locale names go
-            through here, and the longest of them would otherwise decide how wide
-            the field is. */}
+        {/* Truncated, or the longest locale name would decide the field's width. */}
         <span className="min-w-0 flex-1 truncate">{current?.label ?? ''}</span>
       </button>
 
-      {/* Drawn rather than a glyph, so it follows the text colour in every
-          theme. It sits on the button rather than inside it so the button's own
-          flex row never has to reserve space for it. */}
+      {/* Outside the button, so its flex row reserves no space for the chevron. */}
       <svg
         aria-hidden
         width="10"
@@ -370,13 +261,8 @@ export function Choice<T extends string>({
 }
 
 /**
- * A field holding a secret, with its show and hide control inside it.
- *
- * The eye is furniture rather than a control: a bare glyph the field's own
- * trailing padding reserves room for, neutral rather than accented, because it
- * means "look" and not "activity". It does not change the field's width either,
- * or secret fields would read as narrower than every other field, which is the
- * one thing the eye should not draw attention to.
+ * A field holding a secret, with a neutral show and hide eye inside its
+ * trailing padding so it keeps the width of every other field.
  */
 export function Secret({
   value,

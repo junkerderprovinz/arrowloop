@@ -1,30 +1,7 @@
-// ---------------------------------------------------------------------------
-// One control, one tooltip mechanism.
-//
-// GlimStone 1.7.5 wrote the rule after it was reported here: the direction
-// button opened TWO hover bubbles, the app's own and the operating system's,
-// one a moment after the other, at different places, in different fonts. jdp:
-// "der seitenwecheselbutton hat zwei mouseover infofenster."
-//
-// It was never one button. Seven elements in this app carried `title` and
-// `data-tip` together, each of them correct in isolation: `data-tip` is what
-// the app's bubble reads, `title` is the habit. The delegated auto-upgrade the
-// language describes cannot rescue this pairing, because there is nothing left
-// to upgrade - `data-tip` is already there and the `title` simply also paints.
-//
-// So it is a grep, which is what the rule says it should be. A REGRESSION here
-// is invisible in review and obvious on screen, which is exactly the shape of
-// defect a cheap guard is for.
-//
-// THE TAG SCANNER IS THE WHOLE FILE, and the first version of it was blind.
-// A regex of `<[A-Za-z][^>]*?>` stops at the first `>` character, and in JSX
-// that is almost never the end of the tag: an `onClick={() => ...}` handler
-// puts a `>` inside the attribute list, so the "tag" ended before the
-// attributes that matter. Written that way this file passed while the exact
-// defect it was written for was reintroduced two lines below the handler.
-// Found by breaking it on purpose, which is the only reason it is not still
-// reporting green.
-// ---------------------------------------------------------------------------
+// One control, one tooltip mechanism (GlimStone 1.7.5). An element carrying
+// both `title` and `data-tip` opens two hover bubbles, the app's and the
+// operating system's, and the language's auto-upgrade cannot help because
+// `data-tip` is already there.
 import { describe, expect, it } from 'vitest'
 import { readFileSync, readdirSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
@@ -43,17 +20,9 @@ function sourceFiles(dir: string): string[] {
 }
 
 /**
- * The opening tags in a file, each as one flat string.
- *
- * Scanned rather than matched, because a JSX tag's attribute list can contain
- * every character that would end a regex: `>` inside an arrow function, `{}`
- * inside an expression, quotes inside a string, braces inside a nested object.
- * So this walks the text and closes a tag only on a `>` that is outside every
- * brace and every quote.
- *
- * Attributes are gathered per TAG rather than per file, or a component with a
- * `title` prop on one element and a `data-tip` on another fifty lines away
- * would be reported for a defect it does not have.
+ * The opening tags in a file, each as one flat string. Scanned rather than
+ * matched, since a JSX attribute list can hold a `>` inside an arrow function;
+ * a tag closes only on a `>` outside every brace and quote.
  */
 export function openingTags(source: string): string[] {
   const out: string[] = []
@@ -76,9 +45,7 @@ export function openingTags(source: string): string[] {
       if (c === '{') depth++
       else if (c === '}') depth--
       else if (c === '>' && depth === 0) break
-      // A `<` at depth zero means the scan started on something that was not a
-      // tag after all (a comparison, a generic). Give up on this one rather
-      // than swallowing the rest of the file into a single "tag".
+      // A `<` at depth zero means this was a comparison or a generic, not a tag.
       else if (c === '<' && depth === 0) {
         j = -1
         break
@@ -98,8 +65,8 @@ describe('one control, one tooltip', () => {
     for (const file of sourceFiles(SRC)) {
       const source = readFileSync(file, 'utf8')
       for (const tag of openingTags(source)) {
-        // `title=` has to be its own attribute: `confirmTitle=` and
-        // `data-title=` are different props and neither paints a balloon.
+        // `title=` must stand alone: `confirmTitle=` and `data-title=` paint
+        // no balloon.
         const hasTitle = /(^|\s)title=/.test(tag)
         const hasTip = /(^|\s)data-tip=/.test(tag)
         if (hasTitle && hasTip) {
@@ -114,9 +81,6 @@ describe('one control, one tooltip', () => {
   })
 
   it('reads a whole tag, including everything after an arrow function', () => {
-    // The regression test for this file's own first version. A `>` inside an
-    // event handler used to end the tag, so every attribute written below a
-    // handler was invisible and the scan reported green on a real defect.
     const tag = openingTags(
       [
         '<button',
@@ -144,11 +108,8 @@ describe('one control, one tooltip', () => {
   })
 
   it('keeps two separate elements separate', () => {
-    // The false positive that would get this guard switched off: one component
-    // with a title on one element and a data-tip on another.
     const tags = openingTags('<span title={a}>x</span>\n<span data-tip={b}>y</span>')
-    // Two, not four: a closing tag starts `</`, and the scanner only opens on a
-    // letter, so it never sees one.
+    // The scanner only opens on a letter, so closing tags are not counted.
     expect(tags).toHaveLength(2)
     expect(tags.filter((tg) => /(^|\s)title=/.test(tg) && /(^|\s)data-tip=/.test(tg))).toEqual([])
   })

@@ -3,33 +3,10 @@ import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 
-/**
- * No mark may disappear into the surface it sits on.
- *
- * "Original und farbig" has one failure mode that is not a matter of taste: a
- * logo drawn in navy or black cannot be seen on a dark row, and one drawn in
- * near-white cannot be seen on a light one. Measured on the running app before
- * this was fixed, ShareFile reached 1.07 against the dark row and OpenCloud
- * 1.09 - they were there and could not be seen. Six marks were in that state,
- * four of them for as long as the list has existed, and nobody noticed until
- * the logos got big enough to look at.
- *
- * The generator already refuses to emit such a mark, so this guards the file
- * against a hand-edit - which the header of brandGlyphs.tsx asks nobody to
- * make, and which somebody will make anyway.
- *
- * A mark that fails on one ground carries its colour as a custom property and
- * that property holds a shifted lightness for that ground, so BOTH values have
- * to be checked, each against its own surface.
- *
- * And against EVERY surface, which is what this guard used to miss. It
- * measured the resting fill only, so it had nothing to say about the tile
- * under the pointer - and the picker's tile goes to white in the dark theme.
- * Twelve marks sat at 1.00 against it, six of them at literally white on
- * white, for as long as the tiles have existed. A guard that cannot reach the
- * failure reports nothing, so the grounds below are now every ground a mark
- * can land on.
- */
+// No brand mark may disappear into any surface it can sit on, at rest or under
+// the pointer. The generator already refuses such a mark; this catches a hand
+// edit. A mark that fails on one ground carries a custom property with a
+// shifted lightness for that ground, so both values are checked.
 
 const here = dirname(fileURLToPath(import.meta.url))
 const glyphs = readFileSync(join(here, 'brandGlyphs.tsx'), 'utf8')
@@ -37,13 +14,9 @@ const themed = readFileSync(join(here, '..', 'brandGlyphs.css'), 'utf8')
 const picker = readFileSync(join(here, 'ProviderPicker.tsx'), 'utf8')
 
 /**
- * Every ground a mark can be standing on, by theme.
- *
- * The dark theme has one, because its tile lights up all the way to white and
- * the mark switches to its LIGHT value the moment it does - so white belongs
- * on the light list, not this one. The light theme has three: white where a
- * hovered dark tile has landed, --carbon-surface2 at rest, --carbon-surface3
- * under the pointer.
+ * Every ground a mark can stand on, by theme. A dark tile hovers to white and
+ * the mark switches to its light value there, so white is on the light list,
+ * with --carbon-surface2 at rest and --carbon-surface3 under the pointer.
  */
 const GROUNDS = {
   dunkel: ['#393939'],
@@ -86,12 +59,8 @@ function worst(colour: string, theme: keyof typeof GROUNDS): number {
 }
 
 /**
- * Each mark's component name and every literal colour it PAINTS with.
- *
- * A `<mask>` is cut out first. White inside one means "show all of this"
- * rather than "draw in white", and counting it as ink is how Quatrix passed
- * this guard on the strength of a colour it never draws while the orange it
- * does draw sat at 1.74 against the light theme's hover.
+ * Each mark's component name and every literal colour it paints with. Masks
+ * are cut out first, since white inside one means "show this", not ink.
  */
 function marks(): { name: string; colours: string[] }[] {
   return glyphs
@@ -111,9 +80,8 @@ function marks(): { name: string; colours: string[] }[] {
 
 /** The two values behind each custom property, in theme order. */
 function variables(): { name: string; dunkel: string; hell: string }[] {
-  // From the selector to its closing brace. Splitting on line starts does not
-  // work here: the dark rule spans two selector lines and the light one is
-  // nested inside a media query.
+  // From the selector to its closing brace: the dark rule spans two selector
+  // lines and the light one is nested in a media query.
   const read = (selector: string) => {
     const at = themed.indexOf(selector + ' {')
     if (at < 0) return {}
@@ -129,7 +97,7 @@ function variables(): { name: string; dunkel: string; hell: string }[] {
 
 describe('brand contrast', () => {
   it('reads both generated files', () => {
-    // Guards the guard: an empty list would let every assertion below pass.
+    // An empty list would let every assertion below pass.
     expect(marks().length).toBeGreaterThan(20)
     expect(variables().length).toBeGreaterThan(5)
   })
@@ -151,8 +119,7 @@ describe('brand contrast', () => {
       .filter((m) => m.colours.some((c) => rgb(c)))
       .filter((m) => {
         const usable = m.colours.filter((c) => rgb(c))
-        // Readable if ANY part of it stands out - a two-tone mark with one
-        // visible half is still a visible mark.
+        // A two-tone mark with one visible half is still visible.
         const onDark = Math.max(...usable.map((c) => worst(c, 'dunkel')))
         const onLight = Math.max(...usable.map((c) => worst(c, 'hell')))
         return onDark < FLOOR || onLight < FLOOR
@@ -161,63 +128,32 @@ describe('brand contrast', () => {
     expect(faint, `needs a per-theme variant: ${faint.join(', ')}`).toEqual([])
   })
 
-  /**
-   * The white hover and the switch that pays for it travel together.
-   *
-   * Everything above proves each VALUE is readable on the ground it is meant
-   * for. This proves the mark is actually handed the right one: a tile that
-   * lights up to white shows a light ground, so it has to carry
-   * `brand-hover-light` or the dark values stay put and the logo goes white on
-   * white. The two are written in different files by different hands, which is
-   * exactly the pair that drifts.
-   */
+  // A tile that hovers to white must switch its marks to their light values,
+  // and the two halves live in different files.
   it('gives every white hover the switch that goes with it', () => {
     expect(themed).toContain('[data-theme="dark"] .brand-hover-light:hover {')
     expect(picker).toContain('dark:hover:bg-white')
     expect(picker).toContain('brand-hover-light')
   })
 
-  /**
-   * The mark has to be allowed to FILL its box.
-   *
-   * Every mark carries `width="1em" height="1em"`, so the tile's old rule -
-   * `max-h-full max-w-full` - capped something already far smaller than the
-   * cap and did nothing at all: a 16px square in a box of 48 by 96. Synology's
-   * wordmark drew four pixels tall. The generator's cropping is worth nothing
-   * without this, because a tighter viewBox only helps if the viewBox is what
-   * the mark is scaled by.
-   */
+  // Every mark carries width="1em", so a max-size cap never fires and the mark
+  // stays a 16px square in a 48 by 96 box.
   it('lets a mark fill the tile rather than capping it', () => {
     expect(picker).toContain('[&_svg]:h-full')
     expect(picker).toContain('[&_svg]:w-full')
     expect(picker).not.toContain('[&_svg]:max-h-full')
   })
 
-  /**
-   * And the boxes have to BE cropped, which is the other half.
-   *
-   * A spot check rather than a recount: Synology sat in a box 3.90 times
-   * taller than its own drawing, which is what made a wordmark that fills its
-   * line render four pixels tall. If that box is ever square again, the
-   * generator's measurement has stopped running.
-   */
+  // A spot check that the generator crops viewBoxes to their ink: Synology is a
+  // wordmark and its box must stay wide.
   it('crops a wordmark to its ink', () => {
     const synology = glyphs.slice(glyphs.indexOf('export function IconSynology'))
     const box = synology.match(/viewBox="([^"]+)"/)![1].split(/\s+/).map(Number)
     expect(box[2] / box[3], 'Synology is a wordmark, not a square').toBeGreaterThan(2)
   })
 
-  /**
-   * A mark drawn as an OUTLINE is its stroke, and the stroke has to fit.
-   *
-   * Oracle Cloud is a stadium in `fill="none"` with a 4-unit stroke: the path
-   * runs 2 to 30 across a 32-wide canvas, and the two units either side are
-   * the drawing rather than margin. Cropping onto the path alone put the box
-   * on the centreline and sliced half the outline off all four edges, which is
-   * how it was reported ("das oracle logo passt nicht"). The generator asks
-   * for the bounds WITH the stroke now; this is the spot check that it still
-   * does.
-   */
+  // Oracle Cloud is an outline with a 4-unit stroke on a path from 2 to 30, so
+  // a box cropped to the path alone would slice half the stroke off.
   it('keeps a stroked mark inside its box', () => {
     const oracle = glyphs.slice(glyphs.indexOf('export function IconOracleCloud'))
     const head = oracle.slice(0, oracle.indexOf('\n}'))

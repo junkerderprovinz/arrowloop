@@ -5,71 +5,26 @@ import { CryptoDonate } from './CryptoDonate'
 import { IconBitcoin, IconBuyMeACoffee, IconPayPal } from './donateMarks'
 import { GLIMSTONE_VERSION } from '../lib/glimstone/version'
 import { IconGithub } from './brandGlyphs'
-// The envelope on the mail button. Not a brand, and passed anyway: the card's
-// rule is that every button in those two rows carries a mark.
 import { IconMail } from './glyphs'
-// The two link-shaped give routes, beside the eight coins. In lib/donate.ts
-// with the addresses, because the phone's About card offers the same three and
-// a donation link written down twice fails silently: the wrong one still opens
-// a page, just not the right person's.
 import { COFFEE, GLIMSTONE_REPO, MAIL, PAYPAL, REPO } from '../lib/donate'
 import { useT } from '../lib/i18n'
 
-/**
- * The About card, which is now GlimStone's own file with this app's strings
- * handed to it.
- *
- * It used to be built here, from the language's prose, and that is exactly the
- * dialect the language's React folder exists to end: three apps read the same
- * section and produced three different cards, one leading with the sentence,
- * one with the versions, one with a two-column list of labelled fields. The
- * order is the standard, not the markup, so the order now arrives with the
- * component rather than being re-derived per app.
- *
- * Everything app-shaped stays here: the language, the repository, the mailbox
- * and the version. The card fetches nothing.
- */
-
-/* The three addresses now come from lib/donate.ts, beside the give links and
-   for the same reason: there are two About cards, and every address on them
-   was written out twice. */
-
-/**
- * The design language this interface is built against.
- *
- * Bumped by hand, because the files in `lib/glimstone/` are copied by hand. It
- * has to match what was actually copied: a number claiming a release the code
- * is not built from is worse than no number, because it sends somebody to the
- * wrong changelog.
- */
-// Imported from the copied reference files rather than typed here. It used to
-// be a constant of its own and drifted exactly the way a number written down
-// twice does: the card said 1.7.6 while the files beside it were 1.7.7. The
-// version now travels with what it describes.
-
+/** GlimStone's About card, handed this app's strings, links and version. */
 export function About({ version }: { version: string | null }) {
   const { t } = useT()
   const [cryptoOpen, setCryptoOpen] = useState(false)
-  /* The mark on the repository button is passed here rather than resolved
-     from the label key, which is the design language's rule for a BRAND: a
-     pattern keyed on "repo" would put GitHub's logo on repository settings
-     that have nothing to do with GitHub, and it would follow this project to
-     a different forge and be wrong there. jdp: "der github button soll das
-     github logo haben." */
   return (
     <>
       <AboutCard
         version={version}
         glimstoneVersion={GLIMSTONE_VERSION}
         repoUrl={REPO}
+        // Brand marks are passed rather than resolved from the label key: a
+        // rule keyed on "repo", "coffee" or "crypto" would put a company's logo
+        // on settings that have nothing to do with it.
         repoGlyph={<IconGithub />}
         glimstoneRepoUrl={GLIMSTONE_REPO}
         coffeeUrl={COFFEE}
-        // Both marks are passed rather than resolved from the label key,
-        // which is the language's rule for a BRAND. A pattern keyed on
-        // "coffee" would put a company's cup on anything that mentions coffee,
-        // and one on "crypto" would put the Bitcoin symbol on settings that
-        // have nothing to do with it.
         coffeeGlyph={<IconBuyMeACoffee />}
         cryptoGlyph={<IconBitcoin />}
         onCrypto={() => setCryptoOpen(true)}

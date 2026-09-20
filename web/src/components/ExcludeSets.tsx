@@ -7,17 +7,10 @@ import { api } from '../lib/api'
 import { useT } from '../lib/i18n'
 
 /**
- * Reusable exclude lists, edited in one place and asked for by name.
+ * Reusable exclude lists, written once in the settings and named by jobs.
  *
- * "The usual junk" was being pasted into every job and then drifting apart, so
- * two jobs that were meant to ignore the same things quietly stopped doing so.
- * A set is written once here; a job names it.
- *
- * A name nobody defined is refused when the file loads, and that refusal is the
- * point rather than strictness. A filter that silently matches nothing does not
- * break anything: it just quietly syncs the thing somebody asked to leave alone,
- * and nobody finds out until they go looking for why their private folder is on
- * the other machine.
+ * The loader refuses a job that names an undefined set, because a filter that
+ * silently matches nothing syncs exactly what somebody asked to leave alone.
  */
 
 export type Sets = Record<string, string[]>
@@ -47,11 +40,9 @@ export function ExcludeSetEditor({
               title={t('sets.remove')}
               labelKey="sets.remove"
               onClick={() => {
-                // Removing a set does NOT go looking for the jobs that use it.
-                // The loader refuses a job asking for a set that is gone, which
-                // means the mistake surfaces at the moment the file is saved,
-                // with the job's own name in the message. Silently editing
-                // somebody's jobs from here would be the worse answer.
+                // The jobs that use it are left alone: saving then fails with
+                // the job's name in the message, which beats silently editing
+                // somebody's jobs.
                 const next = { ...sets }
                 delete next[name]
                 onChange(next)
@@ -66,9 +57,8 @@ export function ExcludeSetEditor({
             onChange={(text) =>
               onChange({
                 ...sets,
-                // Blank lines dropped: a trailing newline is what a textarea
-                // gives you for free, and an empty pattern matches nothing in
-                // some engines and everything in others.
+                // An empty pattern matches nothing in some engines and
+                // everything in others.
                 [name]: text.split('\n').map((l) => l.trim()).filter(Boolean),
               })
             }
@@ -85,9 +75,7 @@ export function ExcludeSetEditor({
           labelKey="sets.add"
           onClick={() => {
             const name = adding.trim()
-            // An empty name, or one that is already taken. Overwriting a set
-            // because two of them share a name is how a list somebody spent an
-            // evening on disappears.
+            // A taken name would overwrite the existing set.
             if (!name || sets[name]) return
             onChange({ ...sets, [name]: [] })
             setAdding('')
@@ -100,13 +88,7 @@ export function ExcludeSetEditor({
   )
 }
 
-/**
- * The picker, for a job.
- *
- * Chips rather than a dropdown, because a job takes SEVERAL sets and a dropdown
- * that closes after one choice makes picking three of them three interactions
- * plus three re-openings.
- */
+/** The picker, for a job. Chips, because a job can take several sets. */
 export function ExcludeSetPicker({
   chosen,
   onChange,

@@ -24,46 +24,22 @@ import { useT } from './lib/i18n'
 import { getMotion, MOTION_INTENSITIES, setMotion, type MotionIntensity } from './lib/motion'
 import { wireTooltips } from './lib/tooltip'
 
-/**
- * The four places this app has, in the order every other program in this house
- * puts them: the thing you came for, the things it points at, what it did, and
- * settings last.
- *
- * There is no separate editing tab any more. A job was created on one tab and
- * watched on another, which meant the plus button and the list it added to were
- * never on screen together, and every edit began by finding the same job twice.
- */
+/** The app's places, in the order the sibling apps use, settings last. */
 type Tab = 'jobs' | 'targets' | 'history' | 'settings'
 
 /** Settings is one tab with sections, the same shape BombVault uses. */
-// No 'about' among them any more. jdp: "im container die übercard in den
-// allgemeintab verschieben." A tab holding one card that nothing else on the
-// page links to is a tab somebody opens once, and the card it holds is the one
-// that answers "what am I looking at" - which belongs where somebody already
-// is, at the bottom of the first section, rather than behind a fourth click.
 type SettingsSection = 'general' | 'engine' | 'look'
 
 type Theme = 'dark' | 'light'
 
-/**
- * The house accent, and the one a reset returns to.
- *
- * Read from the preset list rather than written out again, so the swatch that
- * is offered first and the colour the button restores can never disagree.
- */
+/** The house accent a reset returns to, the first preset. */
 const DEFAULT_ACCENT = ACCENTS[0]?.hex ?? '#FCC419'
 
 const THEME_KEY = 'arrowloop.theme'
 
 /**
- * The theme in use.
- *
- * There is deliberately no third "system" entry. That entry looks like an
- * option and is an excuse: it fails to answer the only question somebody opens
- * the list to ask, which is which theme is running right now, and it leaves the
- * control reading "system" on a page that is visibly dark. The device setting
- * is resolved here instead, and the real theme it lands on is what the control
- * shows as selected, until somebody chooses for themselves.
+ * The theme in use. There is no "system" choice: the device setting resolves
+ * to the real theme, which the control shows until somebody picks one.
  */
 function currentTheme(): Theme {
   try {
@@ -86,13 +62,8 @@ function applyTheme(theme: Theme, remember: boolean) {
 }
 
 /**
- * The gate in front of the app.
- *
- * A separate component from App on purpose. App's own effects fetch jobs, open
- * the event stream and read the capabilities, and every one of those would
- * answer 401 on a protected install: the screen would be a login box with a row
- * of error banners behind it, and the event stream would reconnect for ever.
- * Nothing of App exists until there is a session to run it with.
+ * The login gate. App mounts only once there is a session, since its fetches
+ * and event stream would all answer 401 on a protected install.
  */
 export function Gate() {
   const [state, setState] = useState<'asking' | 'in' | 'out'>('asking')
@@ -102,10 +73,8 @@ export function Gate() {
       .session()
       .then((s) => setState(s.required && !s.authenticated ? 'out' : 'in'))
       .catch(() => {
-        // The probe itself failed, which is not a password problem: the engine
-        // is unreachable. Going in lets App show its own "the engine is
-        // unreachable" banner, which says something true, rather than a login
-        // box that would accept nothing.
+        // An unreachable engine is no password problem; App shows its own
+        // banner for it.
         setState('in')
       })
   }, [])
@@ -131,8 +100,7 @@ export function App() {
   const [accent, setAccent] = useState<string>(ACCENTS[0]?.hex ?? '#FCC419')
   const [rainbow, setRainbow] = useState<RainbowState>(rainbowState)
   const [motion, setMotionState] = useState<MotionIntensity>(getMotion)
-  // Null until asked, and null for ever on a build with no window. The card is
-  // left out entirely rather than shown inert.
+  // Null until asked, and always on a build with no window of its own.
   const [window_, setWindow] = useState<WindowSettings | null>(null)
   const [version, setVersion] = useState('dev')
   const [labels, setLabels] = useState<Record<ControlAxis, LabelMode>>(() => ({
@@ -150,8 +118,7 @@ export function App() {
       .history(undefined, 'all', 50)
       .then(setRuns)
       .catch(() => {
-        // A missing history is not worth an error banner over the whole page:
-        // the job list is still useful without it.
+        // The job list is still useful without the history.
       })
   }, [])
 
@@ -165,23 +132,12 @@ export function App() {
   useEffect(() => {
     wireTooltips()
     refresh()
-    // Live events replace polling. A job going from waiting to running is the
-    // one thing a person watches for, and asking again every second to catch it
-    // is both slower and noisier than being told.
     return api.watch((ev) => {
-      // A "moving" frame says which files are part-way across. It arrives twice
-      // a second while bytes are crossing and changes nothing this page draws,
-      // so it must not fall through to the branch below - that one takes every
-      // other phase as "the job list changed", which would mean clearing the
-      // progress bar and refetching the whole list twice a second for the
-      // length of a run. The phone's overview draws these; the desk does not
-      // yet.
+      // "moving" frames arrive twice a second during a run and change nothing
+      // drawn here; falling through would refetch the job list each time.
       if (ev.phase === 'moving') return
       if (ev.phase === 'progress') {
-        // A progress frame is the only kind that does not change the job list,
-        // so it deliberately does not fetch it again. Ten thousand files would
-        // otherwise mean ten thousand round trips for a list that says the same
-        // thing every time.
+        // Progress does not change the job list, so it is not refetched.
         setProgress((prev) => ({ ...prev, [ev.job]: ev }))
         return
       }
@@ -194,9 +150,7 @@ export function App() {
     })
   }, [refresh])
 
-  // The device's own setting keeps applying until somebody picks a theme. After
-  // that the choice holds, which is why the listener checks storage rather than
-  // simply following the media query.
+  // The device setting applies until somebody picks a theme.
   useEffect(() => {
     const media = window.matchMedia?.('(prefers-color-scheme: light)')
     if (!media) return
@@ -204,7 +158,7 @@ export function App() {
       try {
         if (localStorage.getItem(THEME_KEY)) return
       } catch {
-        // Nothing stored anywhere, so follow the device.
+        // Without storage nothing was picked, so follow the device.
       }
       setTheme(media.matches ? 'light' : 'dark')
     }
@@ -219,31 +173,15 @@ export function App() {
     cacheAppearance(shape, accent, rainbow)
   }, [shape, accent, rainbow])
 
-  // The palette follows the accent when it is asked to, so a reactive rainbow
-  // has to be rebuilt whenever the accent changes rather than only when one of
-  // its own switches is touched.
   useEffect(() => {
     applyRainbow(rainbow)
   }, [rainbow])
 
-  // The rail carries the number of jobs working right now, because that is the
-  // one fact somebody watches for without going and looking.
   const running = jobs.filter((j) => j.running).length
 
   return (
-    // The house frame: a fixed rail, and a page that scrolls beside it. The
-    // window is the height, not the content, so the rail never scrolls away
-    // from under the pointer.
-    // The rail floats as a CARD rather than being welded to the window edge.
-    // jdp: "jetzt klebt sie ja an den fenster raendern und hebt sich von dem
-    // uebrigen design ab." Everything else on the page is a card on a ground,
-    // and the one element that was neither read as belonging to the window
-    // chrome instead of to the app. The padding here is what lets it float; the
-    // rail's own surface and radius do the rest.
-    // The gutter is the language's token rather than a Tailwind step. Same
-    // 1rem as before, so nothing moves - but it is now the number GlimStone
-    // names, and the drift it exists to stop (one app at 1rem, the sibling at
-    // 1.5rem, and a rail that read as a smaller rail) cannot start here again.
+    // A fixed rail and a page that scrolls beside it. The gutter padding lets
+    // the rail float as a card on the ground.
     <div className="flex h-screen gap-4 overflow-hidden bg-carbon-background p-[var(--page-gutter)]">
       <Sidebar<Tab>
         value={previewing ? 'jobs' : tab}
@@ -261,16 +199,8 @@ export function App() {
       />
 
       <main className="min-w-0 flex-1 overflow-y-auto">
-        {/* Keyed on the tab, so React rebuilds this subtree when the tab
-            changes and the entrance animation runs again. Without the key it
-            plays once, on the first load, and never again: the element is the
-            same element, only its contents changed, and an animation attached
-            to an element that never re-mounts is an animation nobody sees.
-
-            The class is GlimStone's own and the motion engine already dials it
-            down or off; nothing here decides how long anything takes. This app
-            had the engine and its three-way switch and, apart from the progress
-            bar, nothing for it to act on. */}
+        {/* Keyed on the tab, so the subtree remounts and GlimStone's entrance
+            animation plays on every tab change. */}
         <div
           key={previewing ? `preview:${previewing}` : tab}
           className="glim-page-enter flex min-h-full w-full flex-col gap-8 p-6 md:p-8"
@@ -336,18 +266,8 @@ export function App() {
 }
 
 /**
- * Settings: one tab, three sections behind a strip of its own.
- *
- * The sections exist because a single column holding language, theme, corner
- * shape, accent, palette, motion, four label axes, the window buttons and the
- * versions is a page somebody scrolls rather than reads. Splitting it the way
- * every other program here splits it, general first and appearance second, puts
- * each answer where somebody would go looking for it.
- *
- * Every card carries its own palette position, so turning the rainbow on
- * colours this page as it colours every other one. A settings page that edits a
- * mode without showing it is asking somebody to change a value and then go
- * elsewhere to find out what they did.
+ * Settings: one tab with general, engine and appearance sections. Every card
+ * carries its own palette position, so the rainbow shows on this page too.
  */
 function Settings(props: LookProps) {
   const { t } = useT()
@@ -355,19 +275,8 @@ function Settings(props: LookProps) {
 
   return (
     <Stack>
-      {/* The settings strip is CHIPS, not a groove.
-          "die tabs sollen tabs sein, kein horizontaler selektor", reported
-          twice. The first answer was that tabs and segmented controls are one
-          component differing only in scale, so this strip was made bigger and
-          left in the groove. That was wrong, and BombVault's own file says why:
-          it has both shapes, arrived at through two separate rejections. Its
-          small selectors were once given per-segment fills ("die nicht
-          ausgewaehlten Optionen sollen kein Badge sein") and its settings tab
-          strip was once given the groove. Two different controls, one
-          implementation, and the difference is the TRACK, not the size.
-
-          Which is also why "make the groove bigger" could never land: a strip
-          in a groove reads as one control with a slot, whatever size it is. */}
+      {/* Chips rather than a groove: a settings strip is tabs, not a
+          segmented control. */}
       <div className="max-w-3xl">
       <Selector<SettingsSection>
         label={t('settings.section')}
@@ -375,38 +284,15 @@ function Settings(props: LookProps) {
         onChange={setSection}
         variant="chip"
         fill
-        // Glyphs on every segment (jdp: "Glyphen fehlen"). This strip carried
-        // none, on my own reasoning that two of the three sections had an
-        // obvious mark and the third did not. That was the wrong way round:
-        // BombVault's own settings strip gives every tab an icon, and "I could
-        // not find a third glyph I liked" is a reason to go and find one, not a
-        // reason to leave a whole strip out of the house pattern. The third one
-        // exists, it is the information mark, and it is now in the generated
-        // set beside the other nineteen.
         options={[
           { value: 'general', label: t('settings.general'), icon: <IconSettings /> },
-          // The engine's own settings: how hard it may work, how long it
-          // remembers, who it tells. Every one of them was already read by the
-          // engine and had nowhere to be set except the file.
           { value: 'engine', label: t('settings.engine'), icon: <IconLive /> },
           { value: 'look', label: t('settings.look'), icon: <IconLook /> },
         ]}
       />
       </div>
-      {/* A reading width, not the window's width. Without it a label sat at the
-          far left of the card and its control a thousand pixels away at the
-          right, which is a large part of why this page did not read like the
-          rest of the house.
-
-          The STRIP takes that width too, rather than the cards taking the
-          strip's. jdp: "die cards in den einstellungen so breit machen wie die
-          tabs darüber" - they have to line up, and there are two ways to get
-          there. Shrinking the cards to a four-tab strip is the one that does
-          not work: the strip is as wide as its own words, so the column would
-          change width the day a tab is renamed, and in a language with longer
-          words it would be a different page. Widening the strip fixes the same
-          misalignment against a number that is about reading rather than about
-          how many tabs a page happens to have. */}
+      {/* A reading width that the strip above shares, so cards and tabs line
+          up without the column depending on the length of the tab labels. */}
       <div className="flex max-w-3xl flex-col gap-10">
         {section === 'general' ? (
           <General {...props} />
@@ -420,17 +306,7 @@ function Settings(props: LookProps) {
   )
 }
 
-/**
- * The settings that are not about how the app looks: what language it speaks,
- * and what its own window does when a button on it is pressed.
- */
-/**
- * The log-out row, drawn only on an install that has a password.
- *
- * Asked rather than assumed: on the ordinary install there is nothing to log
- * out of, and a button that answers "you were not logged in anyway" is a button
- * that teaches people the app is confused about its own state.
- */
+/** The log-out row, drawn only on an install that has a password. */
 function LogOut() {
   const { t } = useT()
   const [required, setRequired] = useState(false)
@@ -445,18 +321,11 @@ function LogOut() {
   if (!required) return null
   return (
     <div className="flex justify-end">
-      {/* No explicit glyph any more: the resolver maps this key, and the one
-          written here was a reset arrow, which means "put this back" rather
-          than "leave". A glyph passed at a call site always wins over the
-          resolver, so a wrong one written once stays wrong everywhere. */}
       <Button
         label={t('login.logout')}
         labelKey="login.logout"
         onClick={() => {
-          // Reloaded rather than routed back to the login box in place. Every
-          // piece of state on the page was fetched with a session that is now
-          // gone, and a reload is the one way to be sure none of it is still on
-          // screen behind the password.
+          // A reload, so nothing fetched with the old session stays on screen.
           void api.logout().finally(() => window.location.reload())
         }}
       />
@@ -464,6 +333,7 @@ function LogOut() {
   )
 }
 
+/** The settings that are not about looks: language, backup, window, About. */
 function General({
   lang,
   onLang,
@@ -475,27 +345,18 @@ function General({
   const { t } = useT()
   return (
     <Stack>
-      {/* The card is named for the section, the field for the setting. Naming
-          both after the same thing prints the word twice, forty pixels apart,
-          which is the shape BombVault had to unpick three separate times. */}
+      {/* Named for the section rather than the field, so the word does not
+          print twice. */}
       <Card title={t('settings.general')} hueIndex={0}>
         <Field label={t('look.language')}>
           <Choice
             value={lang}
             onChange={onLang}
             label={t('look.language')}
-            // The one picker on this page that is the point of its own card,
-            // and the one carrying artwork rather than words alone. Sized to
-            // match BombVault's language card, which is where the flags have
-            // read correctly the longest.
             roomy
             options={languages.map((l) => ({
               value: l.code,
               label: l.label,
-              // The flag is its own element now rather than two codepoints
-              // glued to the front of the name. It has to be: an option in a
-              // native list could hold nothing but text, and Windows draws that
-              // text as a two-letter tag instead of a flag.
               flag: l.flag,
             }))}
           />
@@ -504,15 +365,9 @@ function General({
 
       <LogOut />
 
-      {/* Carrying the whole setup out to a file and back in. It stood on the
-          engine tab until now, among the settings the engine itself reads, and
-          it is not one of those: it is the file that holds all of them plus
-          every job. jdp put it here by name. */}
       <SettingsBackup hueIndex={1} />
 
-      {/* Left out entirely on a build with no window of its own, rather than
-          shown inert. A switch that cannot do anything is worse than a missing
-          one: it invites somebody to press it and then says nothing. */}
+      {/* Left out rather than shown inert on a build with no window. */}
       {windowSettings && (
         <Card title={t('window.title')} hueIndex={2}>
           <div className="flex flex-col gap-3">
@@ -522,8 +377,7 @@ function General({
               checked={windowSettings.tray}
               onChange={(tray) => onWindow({ ...windowSettings, tray })}
             />
-            {/* Both of these hang off the tray icon: without it, a window that
-                hides has nothing left to bring it back. */}
+            {/* Both rely on the tray icon to bring a hidden window back. */}
             <ToggleRow
               label={t('window.close')}
               hint={t('window.closeHint')}
@@ -540,15 +394,8 @@ function General({
         </Card>
       )}
 
-      {/* A card of its own rather than a fourth switch in the one above, because
-          this is not about the window. The three up there decide what a button
-          on the frame does; this one decides whether the program is running at
-          all before anybody has touched it, which is a different question and
-          the one that makes a schedule worth setting.
-
-          Gated on the system having a mechanism, not just on there being a
-          window: a build on a platform with no autostart would otherwise draw a
-          switch that reports false however it is pressed. */}
+      {/* Gated on the platform having an autostart mechanism, or the switch
+          would report false however it is pressed. */}
       {windowSettings?.canStartWithSystem && (
         <Card title={t('start.title')} hueIndex={2}>
           <ToggleRow
@@ -560,11 +407,6 @@ function General({
         </Card>
       )}
 
-      {/* LAST on the page, and that is the whole of where it belongs. The card
-          answers "what am I looking at and who do I tell about it", which is
-          the question somebody has either at the start or at the end and never
-          in the middle of changing a setting. Everything above it is something
-          to decide; this is something to read. */}
       <About version={version} />
     </Stack>
   )
@@ -595,29 +437,13 @@ interface LookProps {
 const STORM_CLICKS = 5
 
 /**
- * The storm: a fourth motion level, for somebody who thought the third was too
- * quiet.
+ * The storm, a hidden fourth motion level: with the motion on "wild", click
+ * "wild" five more times.
  *
- * Set the motion to "wild", then click that same word five more times. It is
- * the gesture of somebody pressing a button that is already pressed because
- * they wanted more of it, which is exactly who this is for. Only the top
- * VISIBLE level counts: clicking "off" five times means somebody is annoyed,
- * not curious.
- *
- * IT IS NOT REMEMBERED AS A DISCOVERY, and that is the rule rather than an
- * omission. A stored "found it" flag would leave the fourth option standing in
- * the picker for ever after one gesture, which turns a secret into a setting
- * somebody has to explain to themselves later. `found` lives in the settings
- * screen's own state and never in storage, so what keeps the option visible is
- * the plain truth about the current state: it is there while it is CHOSEN, and
- * otherwise only for as long as this screen stays open. Choose something else
- * and leave, and it is gone until the gesture is made again. Choose it and
- * leave, and it stays - because a picker that hid the value it is showing
- * would be lying.
- *
- * The stored VALUE is a different question and outlives all of this: see
- * MOTION_VALUES in lib/motion.ts. The phone runs the identical rule, and this
- * is mirrored from it - mobile/src/eggs.tsx.
+ * The discovery is not stored. The option shows while it is chosen, and
+ * otherwise only while this screen stays open. The chosen value itself is
+ * stored like any other (see MOTION_VALUES in lib/motion.ts). The phone runs
+ * the same rule in mobile/src/eggs.tsx.
  */
 function useStormUnlock(motion: MotionIntensity, onMotion: (next: MotionIntensity) => void) {
   const [found, setFound] = useState(false)
@@ -625,8 +451,6 @@ function useStormUnlock(motion: MotionIntensity, onMotion: (next: MotionIntensit
   return {
     offered: found || motion === 'storm',
     click: (level: MotionIntensity) => {
-      // Only counts while the top VISIBLE level is the one already chosen, and
-      // any other click resets the count rather than leaving it part-made.
       if (level !== 'wild' || motion !== 'wild') {
         clicks.current = 0
         return
@@ -656,14 +480,9 @@ function Look({
   onLabels,
 }: LookProps) {
   const { t } = useT()
-  // The gesture's own counter and its "found" flag. They belong to this screen
-  // and are gone with it, which is the whole rule - see useStormUnlock.
   const storm = useStormUnlock(motion, onMotion)
   return (
     <Stack>
-      {/* The language lives under General now, not here. It decides what the
-          app SAYS, not how it looks, and it sat at the top of this page only
-          because this page used to be the only settings page there was. */}
       <Card title={t('look.theme')} hueIndex={0}>
         <Selector<Theme>
           label={t('look.theme')}
@@ -695,16 +514,10 @@ function Look({
           value={motion}
           onChange={(next) => {
             onMotion(next)
-            // A click on the level that is ALREADY chosen reaches nothing
-            // else, which is what makes it a gesture available to be given a
-            // second meaning. See useStormUnlock.
             storm.click(next)
           }}
           options={[
             ...MOTION_INTENSITIES.map((m) => ({ value: m, label: t(motionKey[m]) })),
-            // The fourth appears once it has been found, and then behaves like
-            // any other: it can be turned back down, which is the rule for an
-            // easter egg that changes a setting rather than a picture.
             ...(storm.offered ? [{ value: 'storm' as MotionIntensity, label: t(motionKey.storm) }] : []),
           ]}
         />
@@ -712,9 +525,6 @@ function Look({
 
       <Card title={t('look.labels')} hueIndex={3} hint={t('look.labelsHint')}>
         <div className="flex flex-col gap-4">
-          {/* All three surfaces now. The rail axis used to be filtered out
-              because this app had no rail; it has one, so hiding the control
-              would be hiding a setting that works. */}
           {CONTROL_AXES.map((axis) => (
             <div key={axis} className="flex flex-col gap-1">
               <span className="text-xs text-carbon-textSub">{t(axisKey[axis])}</span>
@@ -729,32 +539,18 @@ function Look({
         </div>
       </Card>
 
-      {/* ONE card for both, and it comes LAST, which is where BombVault puts it
-          (jdp, about its own settings page: "Die card von Akzentfarbe und
-          Regenbogenmodus in eine mergen. Gehört ja zusammen").
-
-          They were two cards here, and that is the split BombVault already
-          undid: the accent IS the rainbow's position zero, so a person changing
-          one is looking at the other. Two cards made that one setting look like
-          two unrelated ones, and put the palette a card away from the colour it
-          starts with. */}
+      {/* Accent and rainbow share one card, last, as in BombVault: the accent
+          is the rainbow's position zero. */}
       <Card title={t('look.colors')} hueIndex={4}>
         <div className="flex flex-col gap-4">
-          {/* Label left, controls hard right, the way every row in this house
-              is built. The reset sits at the END of the row it resets, not in
-              the card's action slot: it undoes THIS row, not the card. */}
+          {/* The reset belongs to this row rather than to the card's action
+              slot: it resets only the accent. */}
           <div className="flex flex-wrap items-center gap-3">
             <span className={`text-sm text-carbon-text${rainbow.on ? ' opacity-50' : ''}`}>
               {t('look.accent')}
             </span>
             <div className="ms-auto flex flex-wrap items-center gap-2">
-              {/* Dimmed and inert while the rainbow is on. With the rainbow
-                  running, the palette below hands out the colours by list
-                  position and the accent is only its position zero, so picking
-                  one here changes almost nothing anybody can see: a live
-                  control whose effect has been taken away by another switch.
-                  The palette row already had this treatment for the mirror
-                  case, and now both say the same thing. */}
+              {/* Inert while the rainbow hands out the colours. */}
               <AccentSwatches
                 presets={ACCENTS}
                 value={accent}
@@ -769,9 +565,6 @@ function Look({
             </div>
           </div>
 
-          {/* Each row takes its OWN position in the palette. Three switches
-              sharing one accent read as one setting with three parts; three
-              colours read as three settings, which is what they are. */}
           <ToggleRow
             checked={rainbow.on}
             onChange={(on) => onRainbow({ ...rainbow, on })}
@@ -779,15 +572,9 @@ function Look({
             hint={t('look.rainbowHint')}
             hueIndex={0}
           />
-          {/* Both of these hang off the mode itself: reactive and rotate are
-              instructions to a rainbow that is not running. They used to be
-              DIMMED for that reason, and jdp has asked more than once for the
-              dead switch to go rather than to grey: a control somebody can see,
-              read and reach for that answers nothing is a question with no
-              answer, and the reason it is dead sits one row up where nobody
-              looks after deciding this row is the interesting one. So they are
-              absent while the mode is off, and the mode's own switch is the
-              only thing to press. */}
+          {/* Reactive, rotate and the palette only mean something while the
+              rainbow runs, so they are absent rather than dimmed when it is
+              off. */}
           {rainbow.on && (
             <>
               <ToggleRow
@@ -809,8 +596,6 @@ function Look({
             </>
           )}
 
-          {/* The palette editor goes with them, for the same reason: eight
-              swatches nobody can open, beside a reset nobody can press. */}
           {rainbow.on && (
             <div className="flex flex-wrap items-center gap-3">
               <span className="flex items-center gap-1.5 text-sm text-carbon-text">
@@ -818,15 +603,10 @@ function Look({
                 <InfoBubble tip={t('look.paletteHint')} />
               </span>
               <div className="ms-auto flex flex-wrap items-center gap-2">
-                {/* Every colour here is in force at once, so there is no
-                    selected one and a click can only mean edit. */}
                 <PaletteSwatches
                   palette={rainbow.palette}
                   onChange={(palette) => onRainbow({ ...rainbow, palette })}
                 />
-                {/* This one keeps its disabled state, and it is a different
-                    thing: the palette really IS untouched, so the badge is
-                    reporting rather than refusing. */}
                 <ResetBadge
                   tip={t('look.paletteReset')}
                   disabled={rainbow.palette.join() === RAINBOW.join()}
@@ -837,26 +617,16 @@ function Look({
           )}
         </div>
       </Card>
-
-      {/* About has its own section in the strip above, so it is not repeated at
-          the bottom of this one. */}
     </Stack>
   )
 }
 
 /**
- * The reset at the end of a row of colour swatches.
+ * The reset at the end of a row of colour swatches. Always rendered and
+ * disabled when there is nothing to undo, so the row never changes length.
  *
- * Always rendered, disabled when there is nothing to undo, never conditionally
- * unmounted. A control that appears only once it has work to do is a control
- * nobody knows about until the moment they have already made the mess, and a
- * row whose length changes as you use it is a row that moves under the pointer.
- *
- * Deliberately NOT in the colour engine, and this is the one exception in the
- * app. It sits inside the very row of colours it throws away, chrome-identical
- * to them: same box, same border, same radius. An accent or rainbow fill would
- * make it read as one more colour to pick, when clicking it discards the picked
- * colour instead. Same call and the same reasoning as BombVault's own two.
+ * The one control outside the colour engine, as in BombVault: in a row of
+ * swatches an accent fill would read as one more colour to pick.
  */
 function ResetBadge({
   tip,
@@ -874,10 +644,7 @@ function ResetBadge({
       disabled={disabled}
       data-tip={tip}
       aria-label={tip}
-      // The same 32px outer box as a swatch, reached the same way: a 2px border
-      // around a 28px content area. Without the border the fill would reach the
-      // full box edge to edge while every neighbouring disc is inset by its own
-      // ring, so at an identical measured size it would still read as bigger.
+      // Built like a swatch, a border around a fill, so it reads the same size.
       className="inline-flex h-7 w-7 items-center justify-center bg-carbon-surface2 text-carbon-textSub transition disabled:cursor-not-allowed disabled:opacity-50"
       style={{
         borderRadius: 'var(--radius-control)',
@@ -893,9 +660,6 @@ const motionKey = {
   off: 'look.motionOff',
   subtle: 'look.motionSubtle',
   wild: 'look.motionWild',
-  // Named here with the other three even though the picker lists three: the
-  // fourth is a level like any other once it has been found, and a label held
-  // somewhere else is the one that goes stale.
   storm: 'look.motionStorm',
 } as const
 

@@ -27,17 +27,9 @@ import { describeCadence, readCadence } from '../lib/cadence'
 import { since } from '../lib/since'
 
 /**
- * The jobs tab: what exists, what is happening, and the form to change it.
- *
- * The list and the editor used to be two tabs, which meant the plus button and
- * the list it added to were never on screen together and every edit began by
- * finding the same job twice. They are one page now: the plus adds a job and
- * opens it, the pencil on a row opens that row, and the form appears under the
- * list rather than on a tab somebody has to go and find.
- *
- * The list itself answers the question a person actually has, which is not
- * "when did this last run" but "when did this last WORK". A job failing every
- * quarter of an hour looks busy in a log while being of no use at all.
+ * The jobs tab: one card per job with its state, actions and live progress,
+ * and the form that opens inside a job's own card. The mark on each card says
+ * whether the last attempt worked, not merely whether it ran.
  */
 export function Jobs({
   jobs,
@@ -48,12 +40,8 @@ export function Jobs({
 }: {
   jobs: Job[]
   /**
-   * The recent runs, so a card can say whether the last one ended badly.
-   *
-   * The live job list carries what a job IS doing and its last SUCCESS, and
-   * neither of those answers "did the last attempt fail". A job that failed an
-   * hour ago and is now sitting idle looks identical to one that has never had
-   * a problem, which is the state somebody most needs to be told about.
+   * The recent runs, newest first. The live job list only carries the last
+   * success, which cannot say whether the last attempt failed.
    */
   runs: Run[]
   progress: Record<string, RunEvent>
@@ -62,54 +50,23 @@ export function Jobs({
 }) {
   const { t } = useT()
 
-  /**
-   * Whether this job's MOST RECENT run failed.
-   *
-   * Most recent, not "any of them failed": a job that failed last week and has
-   * worked every day since is not currently in trouble, and a mark that says it
-   * is would be one somebody learns to ignore. The list arrives newest first,
-   * so the first entry for a name is the one that counts.
-   */
+  // Only the most recent run counts: a job that failed last week and has worked
+  // since is not in trouble.
   function lastFailed(name: string): boolean {
     const last = runs.find((r) => r.Job === name)
     return !!last && last.Err !== ''
   }
   const config = useJobConfig(onSaved)
-  // Which job the form is showing, by its position in the configuration file.
-  // Null is a closed form, which is the state this page opens in: somebody
-  // arriving here is far more often looking than editing.
+  // The job open in the form, by its position in the configuration file.
   const [editing, setEditing] = useState<number | null>(null)
   const [removing, setRemoving] = useState<number | null>(null)
-  /**
-   * Whose activity fold is open, by job name. One at a time.
-   *
-   * It used to live inside the fold's own component, which was fine while the
-   * button and the list were one block at the left of the row. They are not any
-   * more: the button belongs with the other actions on the right (jdp: "der
-   * aktivitaetsbutton auch nach rechts zu den anderen") and the list belongs
-   * under the whole row, full width, so the state has to sit above both.
-   *
-   * One at a time for the same reason the history tab keeps one run open: the
-   * question is about ONE job, and several open folds turn a page of cards into
-   * a page of tables.
-   */
+  // Whose activity fold is open, by job name; one at a time.
   const [activity, setActivity] = useState<string | null>(null)
-  /**
-   * A counter, not a boolean, and that is the whole trick.
-   *
-   * The shake is an animation on a class, so it plays when the class ARRIVES.
-   * A boolean already true when a second save is refused adds no class and
-   * plays nothing, which is exactly the case that matters: the second time you
-   * press save the validator still refuses. A number that goes up every
-   * refusal makes the key change, React replaces the element, and the
-   * animation starts over. GlimStone's tokens.css says the same thing above
-   * its own keyframe.
-   */
+  // A counter used as the error's key, so each refused save remounts it and
+  // replays the shake.
   const [refused, setRefused] = useState(0)
-  // Deleting the state database along with the job is the DEFAULT, because a
-  // job somebody is removing on purpose leaves a database nothing will ever
-  // open again. Keeping it is the deliberate answer, for the case the same
-  // pair is coming back and every file should not count as new.
+  // A removed job's state database is deleted by default. Keeping it is for a
+  // pair that is coming back, so its files do not all count as new.
   const [dropState, setDropState] = useState(true)
 
   const raw = config.jobs
@@ -122,28 +79,14 @@ export function Jobs({
     return at === -1 ? null : at
   }
 
-  // A job added a moment ago is in the configuration and not yet in the engine,
-  // because the engine only learns about it on save. It still gets a row: a
-  // plus button whose result appears nowhere reads as a button that did
-  // nothing, and the fix for that is not a message but the row itself. The row
-  // says it is unsaved rather than pretending to be a real one.
+  // Jobs in the configuration that the engine only learns about on save still
+  // get a card, marked unsaved.
   const pending = (raw ?? [])
     .map((j, at) => ({ job: j, at }))
     .filter(({ job }) => !jobs.some((live) => live.name === job.name))
 
   return (
     <Stack>
-      {/* The page's own action, above the cards rather than inside one.
-          A card exists to group a subject, and "add a job" is not a subject; a
-          card holding a button and nothing else is a box drawn around a
-          toolbar. Same arrangement BombVault's own list pages use.
-
-          Right-aligned, and there is only one of it now. The save button that
-          used to sit here is gone: it acted on the whole page, so a job edited
-          in a card at the bottom was saved by a control at the top, and the
-          most common thing anybody does here, deleting a job, did not reach the
-          file at all until that button was found and pressed. Saving belongs on
-          the thing being saved, and removing saves itself. */}
       <div className="flex flex-wrap items-center justify-end gap-2">
         {config.error && (
           <p key={refused} className="glim-shake me-auto text-xs text-statusFail">
@@ -153,18 +96,8 @@ export function Jobs({
         {config.saved && !config.error && (
           <p className="me-auto text-xs text-statusOk">{t('edit.savedNote')}</p>
         )}
-        {/* One step up, and the only control in this app that takes it. The
-            page exists to hold jobs and this is the button that makes one, so
-            it is the thing somebody arriving at an empty list has to find.
-            GlimStone 1.7.5's second height, which is what "haben wir nicht eine
-            groessere standardisierte groesse?" turned out to need: there was no
-            such size, and the answer was to give the language one rather than
-            to raise every button in the house.
-
-            hueIndex, because it stands outside every card: a Card rebinds
-            --accent for its whole subtree, so a row action inside one is
-            already painting in that card's colour, and this one has no card to
-            inherit from. Position zero, the same the first job card takes. */}
+        {/* The key size, since making a job is what this page is for. It
+            stands outside every card, so it needs its own hueIndex. */}
         <IconAction
           title={t('edit.add')}
           labelKey="edit.add"
@@ -179,19 +112,6 @@ export function Jobs({
         </IconAction>
       </div>
 
-      {/* ONE CARD PER JOB (jdp: "jeder auftrag soll eine eigene card sein").
-          It was one card holding a list of rules-separated rows, and the rows
-          were the problem: a job is a subject in its own right, with a name, a
-          state, two sides and its own actions, and a hairline between two of
-          them says less than a surface around each. Each card also takes its
-          own position in the palette, so a page of jobs reads as a set rather
-          than as one long striped block.
-
-          The live progress moved in here with them. It had a card of its own at
-          the top of the page ("Gerade jetzt"), which meant a running job was
-          described in two places at once and the top one repeated a name the
-          list below was already showing. Progress belongs on the job that is
-          making it. */}
       {jobs.length === 0 && (!raw || raw.length === 0) ? (
         <Card title={t('jobs.title')} hueIndex={0}>
           <Empty>{t('jobs.empty')}</Empty>
@@ -206,12 +126,7 @@ export function Jobs({
                 title={j.name}
                 hueIndex={i}
               >
-                {/* ONE card, not two. Opening a job used to leave its summary
-                    card standing and add a second card underneath with the
-                    form in it, so "auftrag anlegen" produced two boxes for one
-                    job and the name appeared twice. The form REPLACES the
-                    summary inside the job's own card: same card, same colour,
-                    same place on the page. */}
+                {/* The form replaces the summary inside the job's own card. */}
                 {at !== null && at === editing ? (
                   <div className="flex flex-col gap-4">
                     <JobForm
@@ -246,43 +161,10 @@ export function Jobs({
                   </div>
                 ) : (
                 <div className="flex flex-col gap-2">
-                  {/* The card's one sentence: the mark, the left side, the
-                      arrow, the right side. The arrow sits between the two
-                      because that is where the question is, and both sides hug
-                      it rather than stretching to the edges, where a pair of
-                      short paths reads as two unrelated facts with a gap in the
-                      middle.
-
-                      Set one step up from everything under it, because this row
-                      is what the card is ABOUT and it used to be the same 12px
-                      as the schedule and the timestamp, so nothing on the card
-                      led. jdp: "der PFad der linke seite soll in grosser
-                      schrift da stehen, dann das pfeilsymbol, dann der pfad der
-                      rechtenseite ebenfalls gross." The arrow grows with the
-                      text rather than by a number of its own, because it is
-                      punctuation in that sentence.
-
-                      The mark stands at the far left and IS the status display
-                      ("ganz links soll das AL Logo in grau stehen und als
-                      statusanzeige fungieren"). It is the two-arrow loop the
-                      logo is drawn from rather than the logo, for the reason
-                      JobMark gives at length: a multi-colour drawing recoloured
-                      to a status hue is not a logo any more. Grey is one of the
-                      four states it wears and the one a held job gets. */}
-                  {/* Two columns, and they are aligned to two different edges
-                      on purpose. What the card is ABOUT - the mark and the two
-                      paths - sits centred against the whole block, so it reads
-                      as the card's one sentence rather than as the first of
-                      several rows. Everything you DO to the job, and the line
-                      saying when it last did anything, sits at the top of the
-                      other column. jdp: "kannst du die pfade und die status
-                      anzeige in der card vertikal zentriert ausrichten? und die
-                      buttons und der zuletz gelaufen und läuft text weiter nach
-                      oben in der card?"
-
-                      `items-stretch` is what makes the centring possible: the
-                      left column has to be as tall as the right one before
-                      centring inside it means anything. */}
+                  {/* The card's sentence (status mark, left side, direction,
+                      right side) is centred in the left column, which
+                      `items-stretch` makes as tall as the right one holding the
+                      cadence and the actions at the top. */}
                   <div className="flex flex-wrap items-stretch gap-3">
                     <div className="flex min-w-0 flex-1 items-center gap-3">
                       <JobMark status={statusOf(j, lastFailed(j.name))} size={28} />
@@ -297,53 +179,12 @@ export function Jobs({
                       </p>
                     </div>
                     <div className="flex shrink-0 flex-col items-end gap-2">
-                    {/* What it does and when it last did it, at the top right,
-                        in words. It used to be a row of three under the paths:
-                        a badge saying "abgeschaltet", the word "abgeschaltet"
-                        again beside it, and "noch nie gelaufen". jdp: "kann
-                        weg: abgeschaltet abgeschaltet noch nie gelaufen."
-
-                        So the state is carried by the mark on the left, which
-                        already had it, and this says the two things nothing
-                        else on the card could: the cadence in a sentence rather
-                        than as a cron expression, and the last run with a real
-                        date under it. A job that has never run gets no second
-                        line at all, because "never" is exactly what an empty
-                        space says. */}
                     <Cadence job={j} />
-                    {/* Every button here owns its OWN palette position rather
-                        than inheriting the card's.
-
-                        Inheriting was the previous answer and it was reported as
-                        the same defect a third time: "Die ganzen buttons auf der
-                        auftragscard sind nicht in der farbengine. im
-                        regenbogenmodus sollen die unterschiedliche farben haben."
-                        A card rebinds --accent for its whole subtree, so seven
-                        buttons inside it painted in one colour - which IS the
-                        engine, and from a foot away is indistinguishable from
-                        seven buttons the engine never reached.
-
-                        The design language allows this: a position belongs to one
-                        member of a SET whose members are all equal, and a row of
-                        row-actions is exactly that. The offsets are FIXED per
-                        action rather than counted along the row, so a button
-                        keeps its colour when a neighbour is not rendered - four
-                        of these appear only for a job the configuration knows,
-                        and a running count would repaint the rest as they came
-                        and went.
-
-                        They start one past the card's own index, so each card
-                        opens its row on a different colour instead of every card
-                        showing the identical seven. */}
+                    {/* Each action takes its own palette position at a fixed
+                        offset from the card's index, so a button keeps its
+                        colour when a neighbour is not rendered and each card
+                        starts its row on a different colour. */}
                     <div className="flex flex-wrap items-center justify-end gap-2">
-                      {/* The activity fold's button stands WITH the other actions
-                          rather than at the far end of the row (jdp: "der
-                          aktivitaetsbutton auch nach rechts zu den anderen"). It
-                          was pushed left with `me-auto` so the row would read as
-                          "look at it" on one side and "act on it" on the other,
-                          which is a distinction the row itself never made: looking
-                          at a job's runs is one of the things you do to it. Its
-                          list opens under the whole row instead, full width. */}
                       <IconAction
                         title={t('jobs.activity')}
                         labelKey="jobs.activity"
@@ -378,12 +219,8 @@ export function Jobs({
                           </IconAction>
                         </>
                       )}
-                      {/* Start and hold. Two verbs, never one button: a job
-                          held on its schedule can still be started by hand, and
-                          that is the point of holding it rather than deleting it.
-                          Starting is a HUMAN press and goes through the same
-                          entry point a scheduled run does not, so a held job
-                          stays held afterwards. */}
+                      {/* Holding and starting are separate controls: a held
+                          job can still be started by hand, and stays held. */}
                       {at !== null && (
                         <IconAction
                           title={j.disabled ? t('jobs.resume') : t('jobs.pause')}
@@ -394,22 +231,6 @@ export function Jobs({
                           {j.disabled ? <IconRun /> : <IconPause />}
                         </IconAction>
                       )}
-                      {/* The same control as the four above them, which they were
-                          not: they were ordinary buttons in the flat `neutral`
-                          grey the colour engine cannot reach, so a card whose
-                          actions all painted in its own hue would have kept
-                          exactly two that did not. And in a mode that hides words
-                          an ordinary button still hugs its glyph inside its own
-                          horizontal padding, so the row came out as five tiles
-                          with two lozenges on the end. Measured in the browser,
-                          not guessed: 48 by 32 against 32 by 32. */}
-                      {/* One tile, two verbs. A running job used to grey this
-                          out, which left the desk with no way to call a run
-                          off at all - the phone has had one all along. jdp:
-                          "lauf anhalten soll den lauf abbrechen und auch so
-                          heißen und ein anderen glyph bekommen", and a control
-                          that cannot be reached is the sharpest version of a
-                          wrong name. */}
                       <IconAction
                         title={j.running ? t('jobs.cancelRun') : t('jobs.runNow')}
                         labelKey={j.running ? 'jobs.cancelRun' : 'jobs.runNow'}
@@ -428,32 +249,10 @@ export function Jobs({
                     </div>
                   </div>
 
-                  {/* The live detail moved here from the card that used to sit
-                      at the top of the page. It is the same two facts it always
-                      carried, and they belong on the job making them: the path
-                      is what changes second by second and is the whole reason
-                      to watch, and the side is what says which way, which is
-                      the question a two-way sync raises every time it acts. */}
-                  {/* The card's own controls, at the foot of its body. The
-                      card has no action slot of its own: GlimStone's Card
-                      draws a heading and nothing else, and a row of buttons
-                      inside the body is where BombVault keeps a card's
-                      controls too. The delete badge is NOT red, because the
-                      language is explicit that a destructive TRIGGER takes the
-                      same treatment as the badges beside it and carries its
-                      meaning in its glyph, its tip and the window it opens. */}
-
-                  {/* Under the row and across the card, which is the width this
-                      list needs: a run is a badge, a date, four counts and
-                      sometimes an error message. */}
                   {activity === j.name && (
                     <JobActivity job={j.name} />
                   )}
 
-                  {/* Only while the card is open for editing, because this is
-                      a question somebody asks deliberately and a panel on every
-                      card would be a wall of buttons on a page whose subject is
-                      the jobs themselves. */}
                   {at !== null && at === editing && (
                     <>
                       <CheckPanel job={j.name} />
@@ -482,10 +281,6 @@ export function Jobs({
                         </p>
                       )}
                       <Progress event={progress[j.name]} />
-                      {/* The bar says how far along; this says how fast and how
-                          much longer. A bar alone answers the wrong question:
-                          "half done" is useless without "and the other half is
-                          four minutes". */}
                       <Pace event={progress[j.name]} />
                     </>
                   )}
@@ -508,11 +303,7 @@ export function Jobs({
                     known={config.known}
                     patch={(next) => config.patch(at, next)}
                   />
-                  {/* Delete beside save, and it is only here because it was
-                      missing: a job opened by the plus button and then thought
-                      better of could not be got rid of without saving it
-                      first. The same is true of an existing job whose form is
-                      open, so both get it rather than only the new one. */}
+                  {/* Delete beside save, so a draft can be dropped unsaved. */}
                   <div className="flex justify-end gap-2">
                     <IconAction
                       title={t('edit.remove')}
@@ -540,11 +331,7 @@ export function Jobs({
                 </div>
               ) : (
               <div className="flex flex-col gap-2">
-                {/* The SAME sentence the saved cards draw, at the same size.
-                    It was 12px with a 14px arrow while the card above it was
-                    16px with a 20px one, so one page showed two different job
-                    rows and the unsaved one read as a footnote. A draft is a
-                    job that has not been saved, not a smaller kind of job. */}
+                {/* The same sentence, at the same size, as a saved card. */}
                 <p className="flex min-w-0 flex-wrap items-center gap-2.5 text-base text-carbon-text">
                   <span className="max-w-[45%] shrink truncate">{p.left}</span>
                   <DirectionMark direction={p.direction ?? 'both'} size={20} />
@@ -553,11 +340,8 @@ export function Jobs({
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
                   <Badge tone="neutral">{t('edit.unsaved')}</Badge>
                 </div>
-                {/* No preview here: there is nothing for the engine to plan
-                    against until this has been saved. */}
-                {/* Its own positions, and deliberately the SAME offsets the
-                    saved card gives these two actions: the pencil is the
-                    pencil whether or not the job has been written yet. */}
+                {/* No preview until the engine knows the job. The offsets
+                    match the saved card's for the same two actions. */}
                 <div className="flex flex-wrap items-center justify-end gap-2">
                   <IconAction
                     title={t('edit.editJob')}
@@ -611,16 +395,10 @@ export function Jobs({
   )
 }
 
-
-
 /**
- * What a running job is doing right now.
- *
- * The bar is the one place on this page where the accent is correct, because
- * this is the only thing on it that is actually happening. Before the first
- * step arrives the bar is deliberately indeterminate rather than sitting at
- * zero: a bar stuck at zero reads as a job that is failing to start, when it is
- * a job that is still listing two sides.
+ * A running job's progress bar, in the accent because it is activity. Until
+ * the first step arrives it is indeterminate, since a bar stuck at zero reads
+ * as a job failing to start rather than one still listing its sides.
  */
 function Progress({ event }: { event?: RunEvent }) {
   const { t } = useT()
@@ -651,13 +429,8 @@ function Progress({ event }: { event?: RunEvent }) {
 }
 
 /**
- * A stamp on its own is a number somebody has to subtract from today. "Two days
- * ago" is the thing they were going to work out anyway, and the exact time
- * stays available on hover for when it matters.
- *
- * The arithmetic and the unit table moved to `lib/since.ts`, because the PHONE
- * says the same line and had written its own version that returned English
- * literals - "zuletzt just now her" on a German screen. One rule, two surfaces.
+ * A time as "two days ago", with the exact time on hover. The arithmetic lives
+ * in lib/since.ts, which the phone shares.
  */
 export function Since({ when }: { when: string }) {
   const { t } = useT()
@@ -670,18 +443,9 @@ export function Since({ when }: { when: string }) {
 }
 
 /**
- * What this job does, and when it last did it.
- *
- * It replaces a badge and two words that said the same thing three times: the
- * badge read "abgeschaltet", the field beside it read "abgeschaltet", and the
- * field beside THAT read "noch nie gelaufen" on the same held job. The state is
- * the mark at the other end of the row, which was already carrying it in colour
- * and in its own tip.
- *
- * A running job still gets the one badge that means "right now", and it keeps
- * the pulse the design language's `.glim-live` exists for. That one is not a
- * repeat: the mark says running by turning, and a person who has switched motion
- * off would otherwise have nothing.
+ * What the job does, in a sentence, and when it last succeeded; the state
+ * itself is the mark. A running job also gets a live badge, since with motion
+ * off the mark does not turn.
  */
 function Cadence({ job }: { job: Job }) {
   const { t } = useT()
@@ -698,11 +462,8 @@ function Cadence({ job }: { job: Job }) {
           {job.disabled ? t('jobs.state.disabled') : t('jobs.runs', { cadence: words })}
         </span>
       )}
-      {/* The date AND the time, spelled out, rather than only "two days ago".
-          jdp: "darunter zuletzt gelaufen mit zeit und datum." The relative form
-          answers "is this thing still alive" at a glance and cannot answer "was
-          that before or after I changed the folder", so both are here: the
-          reading is relative, the fact is absolute, and neither needs a hover. */}
+      {/* The absolute date and time, which "two days ago" cannot replace when
+          somebody needs to know whether it was before or after a change. */}
       {job.lastSuccess && (
         <span className="text-end">
           {t('jobs.lastRun', { when: new Date(job.lastSuccess).toLocaleString() })}
@@ -713,62 +474,28 @@ function Cadence({ job }: { job: Job }) {
 }
 
 /**
- * This job's own runs, folded away under the card.
- *
- * It draws the same rows the history tab draws and opens the same detail panel,
- * deliberately: two lists of the same thing that look different are two things
- * to learn. What it does NOT do is repeat the history's chart or its whole-app
- * list, because the question here is about one job.
- *
- * Five, and a line saying so. A card is a summary and an unbounded list inside
- * one turns the jobs page into the history tab with extra steps; the History tab
- * is where the rest lives and it is one click away.
- */
-/**
- * What this job has done to individual FILES, newest first.
- *
- * It used to list the job's runs, which is the history tab's list in a smaller
- * box: same rows, same counts, one screen away from each other. jdp: "Im
- * aktivitaetslog moechte ich nicht die laeufe sehen sondern ein log ueber die
- * einzelnen dateien, welche kopiert, welche geloescht wurden etc.: Das andere
- * steht ja im Verlauf tab."
- *
- * He is right that they were the same list, and right about which one belongs
- * here. "Which runs happened" is a question about the schedule. "What has this
- * thing done to my files" is the question somebody has while looking at the job
- * itself, and it was the one thing the interface could not answer at all
- * without opening runs one by one.
- *
- * Fetched from its own address rather than assembled from the runs the page
- * already holds: those carry counts, not paths, and a job that ran two hundred
- * times to produce four interesting lines would cost two hundred requests.
+ * What this job has done to individual files, newest first, folded under its
+ * card. The runs the page holds carry counts rather than paths, so this has
+ * its own endpoint.
  */
 function JobActivity({ job }: { job: string }) {
   const { t } = useT()
   const [touches, setTouches] = useState<Touch[] | null>(null)
   const [error, setError] = useState<string | null>(null)
-  // Doubles on request, the same as the history list and for the same reason:
-  // somebody looking for when a particular file was touched wants the list to
-  // reach further back, not to be handed page four.
+  // Doubles as the list is scrolled to its end, rather than paging.
   const [limit, setLimit] = useState(60)
-  // What was typed, and what has actually been asked for. They are two states
-  // because they run at two speeds: the box has to answer every keystroke and
-  // the server must not.
+  // The box answers every keystroke; the server only gets the settled query.
   const [typed, setTyped] = useState('')
   const [query, setQuery] = useState('')
 
-  // A quarter of a second of quiet before asking. Without it a nine-letter
-  // filename is nine queries over a table with a row per file per run, eight of
-  // them for a prefix nobody wanted, and the answers can arrive out of order so
-  // the list ends up showing the results for "urlau".
+  // Without the pause, each keystroke is a query and out-of-order answers can
+  // leave the list showing the results for a prefix.
   useEffect(() => {
     const timer = setTimeout(() => setQuery(typed.trim()), 250)
     return () => clearTimeout(timer)
   }, [typed])
 
-  // Back to one screenful whenever the question changes. Carrying a limit that
-  // grew to 960 rows while scrolling through everything into a search for one
-  // name asks the database for nine hundred rows to draw three.
+  // A new question starts again at one screenful.
   useEffect(() => setLimit(60), [query])
 
   useEffect(() => {
@@ -783,10 +510,7 @@ function JobActivity({ job }: { job: string }) {
     }
   }, [job, limit, query])
 
-  // The search box is drawn BEFORE the answer is examined, and stays drawn when
-  // the answer is empty. A field that removes itself as soon as its search
-  // finds nothing leaves somebody who mistyped one letter with no way back to
-  // the full list, which is the one moment they need it.
+  // The search box stays when nothing matches, so a typo can be corrected.
   const search = (
     <div className="mb-2 flex items-center gap-2">
       <Text
@@ -824,22 +548,14 @@ function JobActivity({ job }: { job: string }) {
   return (
     <div className="mt-1 w-full">
       {search}
-      {/* Loads more when the scroll reaches the bottom, rather than offering a
-          button to press. jdp: "wenn man an die untere grenze scrollt soll es
-          automatisch mehr laden." A button at the end of a scrolling list asks
-          somebody to stop reading, aim, and click, to carry on doing the thing
-          they were already doing.
-
-          The threshold is 40px rather than exact equality: a list that only
-          loads at the precise bottom never loads on a trackpad, which stops a
-          pixel or two short. */}
+      {/* Loads more near the bottom; 40px rather than the exact end, which a
+          trackpad stops a pixel or two short of. */}
       <ul
         className="flex max-h-80 flex-col gap-1 overflow-y-auto"
         onScroll={(e) => {
           const el = e.currentTarget
           if (el.scrollHeight - el.scrollTop - el.clientHeight > 40) return
-          // Only when the last answer FILLED the limit, which is the one honest
-          // signal that there is more: a shorter list is the whole list.
+          // A list shorter than the limit is the whole list.
           if (touches.length >= limit) setLimit((n) => n * 2)
         }}
       >
@@ -852,15 +568,8 @@ function JobActivity({ job }: { job: string }) {
 }
 
 /**
- * One line of the file log.
- *
- * Shared by the job's own activity fold and by the history tab's file view,
- * because it is the same line: a kind, a time, a size, a direction and a path.
- * Two copies would drift the first time one of them gained a column, and the
- * one that did not would be the one somebody was reading.
- *
- * `withJob` adds the column that only makes sense across jobs. In the fold it
- * would print the same name on every row.
+ * One line of the file log, shared by a job's activity fold and the history
+ * tab. `withJob` adds the job column, which only makes sense across jobs.
  */
 function TouchRow({ touch: e, withJob }: { touch: Touch; withJob?: boolean }) {
   const { t } = useT()
@@ -869,11 +578,7 @@ function TouchRow({ touch: e, withJob }: { touch: Touch; withJob?: boolean }) {
       <span className="w-20 shrink-0">
         <Badge tone={touchTone(e.Kind)}>{t(TOUCH_LABEL[e.Kind] ?? 'entry.other')}</Badge>
       </span>
-      {/* When, and it is why this is a Touch rather than a plain entry: the
-          same file copied twice is two identical lines otherwise. Wide enough
-          for the longest phrase this can produce in any of the forty-two
-          languages, so it never wraps to two lines and pushes its own row out
-          of alignment with its neighbours. */}
+      {/* Wide enough for the longest phrase in any locale, so it never wraps. */}
       <span className="w-28 shrink-0 whitespace-nowrap text-carbon-textMuted">
         <Since when={e.When} />
       </span>
@@ -885,13 +590,8 @@ function TouchRow({ touch: e, withJob }: { touch: Touch; withJob?: boolean }) {
       <span className="w-14 shrink-0 text-end tabular-nums text-carbon-textMuted">
         {e.Size > 0 ? bytes(e.Size) : ''}
       </span>
-      {/* Which way it went, drawn rather than spelled. jdp: "es gibt eine
-          spalte wo rechts drinnen steht? ist das die richtung der
-          syncronisation? wenn ja bitte nur als pfeil darstellen." It is the
-          side that was WRITTEN to, which is the same fact: a file that landed
-          on the right came from the left. The word stays in the title and in
-          the accessible name, so nothing is lost for a screen reader or a
-          pointer that rests here. */}
+      {/* The side written to, drawn as an arrow; the word stays in the title
+          and the accessible name. */}
       <span
         className="flex w-6 shrink-0 justify-center text-carbon-textMuted"
         title={e.Side ? translateSide(t, e.Side as 'left' | 'right') : undefined}
@@ -912,17 +612,9 @@ function TouchRow({ touch: e, withJob }: { touch: Touch; withJob?: boolean }) {
 }
 
 /**
- * Every file this engine has touched, across every job.
- *
- * The same question the activity fold answers about ONE job, asked of the whole
- * log - jdp: "in Autosync sieht man jede einzelne datei im Verlauf, es ist wie
- * ein log, das moechte ich in AL auch haben." The runs beside it answer a
- * different one, and both are kept because a run that fails before it touches
- * anything writes no file lines at all.
- *
- * Narrowed in the DATABASE, all three ways. This log runs to tens of thousands
- * of rows and the list holds a screenful, so filtering what has already arrived
- * would search the newest page rather than the log.
+ * Every file the engine has touched, across jobs. All three filters apply in
+ * the database, since the log runs to tens of thousands of rows and only a
+ * screenful has arrived.
  */
 function AllTouches({ job, kinds, query }: { job: string; kinds: string[]; query: string }) {
   const { t } = useT()
@@ -930,8 +622,7 @@ function AllTouches({ job, kinds, query }: { job: string; kinds: string[]; query
   const [error, setError] = useState<string | null>(null)
   const [limit, setLimit] = useState(60)
 
-  // Back to one screenful whenever the question changes, so a limit that grew
-  // to 960 while scrolling is not carried into a search for one name.
+  // A new question starts again at one screenful.
   useEffect(() => setLimit(60), [job, query, kinds.join(',')])
 
   useEffect(() => {
@@ -957,8 +648,7 @@ function AllTouches({ job, kinds, query }: { job: string; kinds: string[]; query
       onScroll={(e) => {
         const el = e.currentTarget
         if (el.scrollHeight - el.scrollTop - el.clientHeight > 40) return
-        // Only when the last answer FILLED the limit, which is the one honest
-        // signal that there is more: a shorter list is the whole list.
+        // A list shorter than the limit is the whole list.
         if (touches.length >= limit) setLimit((n) => n * 2)
       }}
     >
@@ -981,15 +671,9 @@ const TOUCH_LABEL: Record<string, TranslationKey> = {
 }
 
 /**
- * The kinds behind each segment of the file log's "show" filter.
- *
- * Grouped rather than one segment per kind: there are nine kinds, and the
- * grouping is by what somebody is looking FOR - things that arrived, things
- * that went away, things that went wrong.
- *
- * `skip` sits under trouble because that is what it means here: a path the
- * engine decided not to touch, carrying the reason. There is no "error" kind,
- * so a segment named after one would filter for something no run can produce.
+ * The kinds behind each choice of the file log's filter, grouped by what
+ * somebody looks for. A `skip` carries the reason a path was not touched, and
+ * there is no "error" kind, so trouble means conflict or skip.
  */
 const SHOWS = {
   all: [] as string[],
@@ -1008,21 +692,12 @@ function touchTone(kind: string): 'ok' | 'warn' | 'fail' | 'neutral' {
 }
 
 /**
- * The run log, newest first, with the two questions that make it readable.
+ * The history tab: the file log, or the run log newest first.
  *
- * It fetches for ITSELF rather than sharing the page's copy, and that is the
- * load-bearing part. The page fetches the last fifty runs of everything so a
- * job card can say whether its own last attempt failed, and that list must stay
- * unfiltered or the cards start lying. This tab is asking a different question
- * and gets its own answer.
- *
- * Both narrowings go to the server. A job watching a folder writes a run a
- * minute, so fifty runs is fifty minutes and a job that runs once a day is not
- * further down the page, it is not on the page at all. jdp: "im verlauftab,
- * sollte man filtern koennen. zb. echtzeit auftraege ausblenden weil die
- * andauernd laufen und ein eintrag machen. wenn ein auftrag zb nur einemal am
- * tag laeuft geht der unter." Filtering what was already fetched would filter
- * those same fifty and leave the daily job exactly as missing.
+ * It fetches its own runs rather than filtering the page's copy, which must
+ * stay unfiltered for the job cards. Filters go to the server, since a job
+ * watching a folder writes a run a minute and would push a daily job out of
+ * any fixed window.
  */
 export function History({
   runs,
@@ -1031,70 +706,38 @@ export function History({
 }: {
   /** The page's own unfiltered copy, used until this tab's first answer lands. */
   runs: Run[]
-  /** The names to offer, which the run log itself cannot supply: a job with no
-   *  runs yet has nothing in it to be listed by. */
+  /** The job names to offer, including jobs with no runs yet. */
   jobs: Job[]
   onChanged?: () => void
 }) {
   const { t } = useT()
-  /**
-   * Which run is open, by its id. One at a time.
-   *
-   * Several open at once would turn the page into a wall of paths, and the
-   * question somebody arrives with is about ONE run: the one that failed, or
-   * the one that touched something they did not expect.
-   */
+  // Which run is open, by its id; one at a time.
   const [open, setOpen] = useState<number | null>(null)
   const [job, setJob] = useState('')
   const [show, setShow] = useState<HistoryShow>('all')
-  /**
-   * Files or runs.
-   *
-   * FILES first, because that is the question somebody arrives with - where did
-   * that file go, and when - and a list of runs answers it only by opening runs
-   * one at a time until the right one turns up.
-   */
+  // Files first: where a file went is the usual question.
   const [view, setView] = useState<'runs' | 'files'>('files')
   const [kind, setKind] = useState<Show>('all')
-  // What was typed, and what has been asked for. Two states because they run at
-  // two speeds: the box answers every keystroke and the engine must not.
+  // The box answers every keystroke; the engine only gets the settled query.
   const [typed, setTyped] = useState('')
   const [query, setQuery] = useState('')
   useEffect(() => {
     const timer = setTimeout(() => setQuery(typed.trim()), 250)
     return () => clearTimeout(timer)
   }, [typed])
-  /**
-   * The stretch of time, as two calendar days, either of which may be blank.
-   *
-   * Blank means open-ended rather than "today", and both blank is the plain
-   * newest-first list this tab has always been. Defaulting them to a week would
-   * mean a tab that silently hides everything older than seven days from
-   * somebody who never touched the control.
-   */
+  // Two calendar days bounding the runs; blank means open-ended.
   const [since, setSince] = useState('')
   const [until, setUntil] = useState('')
   const [own, setOwn] = useState<Run[] | null>(null)
   const [loading, setLoading] = useState(false)
-  /**
-   * How many runs to ask for. Doubles on request rather than paging.
-   *
-   * A cursor would be the tidier mechanism and the wrong one for this list:
-   * somebody looking for a run does not want page four, they want the list to
-   * go back further, and doubling reaches a month of a watching job's records
-   * in three presses. The filter above is the sharp instrument; this is the
-   * blunt one for when you do not know what you are looking for.
-   */
+  // How many runs to ask for; doubles as the end of the list comes into view.
   const [limit, setLimit] = useState(50)
-  /** The end of the list, watched so that reaching it asks for more. */
   const sentinel = useRef<HTMLDivElement | null>(null)
 
   const filtered = job !== '' || show !== 'all' || since !== '' || until !== ''
 
   useEffect(() => {
-    // Nothing to ask while the file log is showing. It has its own query and
-    // the run list is not on screen; asking anyway would mean a second request
-    // on every keystroke in a search box that has nothing to do with runs.
+    // The file log has its own query.
     if (view === 'files') return
     let live = true
     setLoading(true)
@@ -1110,16 +753,9 @@ export function History({
 
   const list = own ?? runs
 
-  // Reaching the end of the list asks for the next helping.
-  //
-  // Re-armed whenever the list or the limit changes, because the sentinel is a
-  // different element each time the list is rebuilt and an observer left
-  // pointing at the old one watches something that is no longer on the page.
-  //
-  // `loading` deliberately gates the ASK rather than the observer: an answer
-  // that arrives while the sentinel is still on screen should be able to ask
-  // again straight away, which is what makes a fast scroll to the bottom keep
-  // going instead of stopping after one helping.
+  // Re-armed whenever the list changes, since the sentinel is then a new
+  // element. The dependency on `loading` re-arms it too, so an answer that lands
+  // with the sentinel still on screen asks again straight away.
   useEffect(() => {
     const end = sentinel.current
     if (!end) return
@@ -1130,11 +766,8 @@ export function History({
     return () => watcher.disconnect()
   }, [list.length, limit, loading])
 
-  // The names come from the configuration AND from the log, joined. A job that
-  // has been renamed or deleted still has its runs in here, and leaving it out
-  // of the list would make them unreachable; a job that has never run is in the
-  // configuration and not in the log, and leaving THAT out means the one job
-  // somebody suspects of doing nothing cannot be asked about.
+  // Configuration and log joined: a renamed or deleted job still has runs, and
+  // a job that never ran has none.
   const names = useMemo(() => {
     const seen = new Set<string>()
     for (const j of jobs) seen.add(j.name)
@@ -1145,14 +778,8 @@ export function History({
 
   const controls = (
     <div className="mb-4 flex flex-wrap items-end gap-3">
-      {/* FILES OR RUNS. jdp: "in Autosync sieht man jede einzelne datei im
-          Verlauf, es ist wie ein log, das möchte ich in AL auch haben."
-
-          Both, rather than one replacing the other: a run that fails before it
-          touches anything - an unreachable target, a drive that is not plugged
-          in - writes no file lines at all, so a view that only showed files
-          would hide exactly the failure somebody needs to see. The job filter
-          beside it applies to either. */}
+      {/* Both views stay: a run that fails before touching anything writes no
+          file lines at all. */}
       <div className="w-40 shrink-0">
         <Choice<'runs' | 'files'>
           label={t('history.filterShow')}
@@ -1180,14 +807,8 @@ export function History({
       </div>
       {view === 'files' ? (
         <>
-          {/* What happened, grouped by what somebody is looking FOR - things
-              that arrived, things that went away, things that went wrong -
-              rather than by the engine's nine kinds. */}
           <div className="w-56 shrink-0">
-            {/* Its own label, not a second "Show". Two controls side by side
-                both reading "Anzeigen" is the same inconsistency jdp caught on
-                the targets page, and here one picks what you are looking AT
-                while the other picks what happened to it. */}
+            {/* Its own label, so it is not a second "Show" beside the first. */}
             <Choice<Show>
               label={t('history.filterKind')}
               value={kind}
@@ -1228,15 +849,8 @@ export function History({
           ]}
         />
       </div>
-      {/* The stretch of time, asked for at the server like the other two.
-          "What happened at the weekend" is not answerable by scrolling: a job
-          that runs every minute writes ten thousand rows between Friday and
-          Monday, and the doubling button reaches back through them one screen
-          at a time. jdp approved this as one of the small ones.
-
-          Two separate days rather than a set of presets. A week and a month
-          are the easy cases and neither is the case somebody has, which is
-          usually "the day it went wrong", and that day is already known. */}
+      {/* Two free days rather than presets, since the day in question is
+          usually the day it went wrong. */}
       <div className="flex shrink-0 items-end gap-2">
         <Field label={t('history.since')}>
           <Day
@@ -1246,9 +860,7 @@ export function History({
               setLimit(50)
             }}
             label={t('history.since')}
-            // Never past the other end, so the pair cannot be drawn backwards
-            // into a range that is empty by construction and looks like a log
-            // with nothing in it.
+            // A backwards range would look like an empty log.
             max={until || undefined}
           />
         </Field>
@@ -1263,9 +875,7 @@ export function History({
           />
         </Field>
         {(since || until) && (
-          // No glyph passed: the key ends in `Reset` and the app's own table
-          // resolves that to the reset mark, which is the whole point of
-          // mapping by meaning rather than choosing a symbol per call site.
+          // The glyph resolves from the key, which ends in `Reset`.
           <IconAction
             title={t('history.rangeReset')}
             labelKey="history.rangeReset"
@@ -1280,16 +890,12 @@ export function History({
       </div>
       </>
       ) : null}
-      {/* The hint describes what the RUN filters do, in those words. Over the
-          file filters it would be explaining a list it is not about. */}
+      {/* The hint describes the run filters only. */}
       {view === 'runs' ? <InfoBubble tip={t('history.filterHint')} /> : null}
     </div>
   )
 
-  // The file log is its own list with its own paging, so it does not pass
-  // through the run list's empty states below - a log with lines in it must not
-  // be drawn under "nothing has run yet" just because the RUN query came back
-  // short for the same filter.
+  // The file log has its own paging and empty states.
   if (view === 'files') {
     return (
       <Card title={t('history.title')} hueIndex={0}>
@@ -1303,11 +909,7 @@ export function History({
     return (
       <Card title={t('history.title')} hueIndex={0}>
         {controls}
-        {/* An empty list means two different things and they must not read the
-            same. With no filter on, this log has nothing in it. With one on,
-            there is a log and nothing in it matches - and saying "no history"
-            there would be a lie about the program rather than about the
-            filter. */}
+        {/* With a filter on, empty means nothing matches, not no history. */}
         <Empty>{loading ? t('history.working') : filtered ? t('history.noMatch') : t('history.empty')}</Empty>
       </Card>
     )
@@ -1315,10 +917,6 @@ export function History({
   return (
     <Card title={t('history.title')} hueIndex={0}>
       {controls}
-      {/* The shape of the last month, above the list of what happened on each
-          day. The list answers "what happened on Tuesday"; it cannot answer
-          "is this thing doing anything at all", which is the question somebody
-          has after leaving a sync tool alone for three weeks. */}
       <div className="mb-4">
         <Stats />
       </div>
@@ -1326,9 +924,6 @@ export function History({
         {list.map((r, i) => (
           <li key={`${r.Job}-${r.Started}-${i}`}>
             {i > 0 && <Rule />}
-            {/* The whole row opens it, not a chevron at one end. The row is
-                already the thing being asked about, and a target the width of
-                the card is a target nobody has to aim at. */}
             <button
               type="button"
               aria-expanded={open === r.ID}
@@ -1356,9 +951,7 @@ export function History({
                   </>
                 )}
               </span>
-              {/* A count of the things somebody would want to look at, on the
-                  closed row. Without it, opening every run one by one is the
-                  only way to find the one that had a conflict. */}
+              {/* Shows which closed run had conflicts without opening each. */}
               {r.Conflicts > 0 && <Badge tone="warn">{r.Conflicts}</Badge>}
             </button>
             {open === r.ID && (
@@ -1367,21 +960,9 @@ export function History({
           </li>
         ))}
       </ul>
-      {/* Reaching the end of the list IS the request for more. jdp: "im
-          verlauftab soll es sein wie im aktivitätslog, wenn man ans untere ende
-          scroll soll es automatisch mehr einträge laden. der button mehr
-          anzeigen soll weg." A button at the end of a list asks somebody to
-          stop reading, aim and click, in order to carry on doing the thing they
-          were already doing.
-
-          A sentinel watched by an IntersectionObserver rather than the activity
-          log's scroll arithmetic, because this list has no box of its own: it
-          is the page, and the thing that scrolls is the window. The observer
-          answers "is the end of the list on screen" without either of them
-          having to know which element is doing the scrolling.
-
-          Armed only when the answer FILLED the limit, which is the one honest
-          signal that there may be more: a shorter list is the whole list. */}
+      {/* Reaching the end loads more. An observed sentinel rather than scroll
+          arithmetic, because here the window scrolls, not a box of the list's
+          own. Only present when the answer filled the limit. */}
       {list.length >= limit && (
         <div ref={sentinel} className="mt-3 flex justify-center py-2 text-caption text-carbon-textMuted">
           {loading ? t('history.working') : ''}

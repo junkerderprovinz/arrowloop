@@ -6,24 +6,12 @@ import type { RunEvent } from '../lib/api'
 /**
  * How fast a run is going and how long it has left.
  *
- * The bar already says how far along it is, and a bar alone answers the wrong
- * question: "half done" is useless without "and the other half is four minutes".
- *
- * FILES per second, not bytes, and that is a limit worth stating rather than
- * hiding. The progress events carry a count of finished pieces of work and not
- * a byte total, so a run moving one enormous file looks stalled here while it is
- * working perfectly. Saying "files" in the label is what stops that reading as a
- * fault: a number labelled honestly is better than a byte figure invented from
- * data that is not there.
- *
- * The rate is measured over a WINDOW rather than since the start. A run that
- * spent its first minute on one huge file and is now flying through small ones
- * would otherwise report the average of the two for ever, and the estimate it
- * produces would be wrong in the direction that matters: too pessimistic
- * exactly when somebody is deciding whether to wait.
+ * The rate is in files per second because progress events carry a count of
+ * finished work, not bytes, so one enormous file looks stalled. It is measured
+ * over a recent window, so an early slow stretch does not skew the estimate.
  */
 
-/** How far back the rate looks. Long enough to be steady, short enough to react. */
+/** How far back the rate looks: long enough to be steady, short enough to react. */
 const WINDOW_MS = 15_000
 
 type Sample = { at: number; done: number }
@@ -38,8 +26,7 @@ export function Pace({ event }: { event: RunEvent | undefined }) {
 
   useEffect(() => {
     if (!event || event.phase !== 'progress') {
-      // A finished or restarted run starts its own measurement. Carrying the
-      // last run's samples forward would report a rate for work that is over.
+      // A finished or restarted run starts its own measurement.
       samples.current = []
       return
     }
@@ -48,8 +35,7 @@ export function Pace({ event }: { event: RunEvent | undefined }) {
     samples.current = samples.current.filter((s) => now - s.at <= WINDOW_MS)
   }, [event, done])
 
-  // A second hand of its own, so the estimate keeps counting down between
-  // events. Without it a run that stalls looks like it is still nearly there.
+  // Re-renders every second, so a stalled run does not look nearly done.
   useEffect(() => {
     const id = setInterval(() => tick((n) => n + 1), 1000)
     return () => clearInterval(id)
@@ -59,9 +45,7 @@ export function Pace({ event }: { event: RunEvent | undefined }) {
 
   const first = samples.current[0]
   const last = samples.current[samples.current.length - 1]
-  // Two samples at least, and a real gap between them. One sample is not a rate,
-  // and dividing by a zero interval produces Infinity, which renders as the word
-  // "Infinity" in the middle of a sentence.
+  // A zero interval would render the rate as "Infinity".
   const span = first && last ? (last.at - first.at) / 1000 : 0
   const moved = first && last ? last.done - first.done : 0
   const rate = span >= 1 && moved > 0 ? moved / span : null
@@ -79,12 +63,8 @@ export function Pace({ event }: { event: RunEvent | undefined }) {
 }
 
 /**
- * A duration a person reads at a glance.
- *
- * Deliberately coarse above a minute. "4 min" is what somebody wants from an
- * estimate built on a fifteen-second sample; "4 min 17 s" claims a precision the
- * measurement does not have, and it changes every second, which makes it harder
- * to read rather than easier.
+ * A duration read at a glance. Above a minute it drops the seconds, a
+ * precision an estimate from a fifteen-second sample does not have.
  */
 export function humanTime(seconds: number): string {
   if (seconds < 60) return `${seconds} s`

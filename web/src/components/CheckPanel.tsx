@@ -7,21 +7,10 @@ import { api, type CheckFinding, type VerifyFinding } from '../lib/api'
 import { useT } from '../lib/i18n'
 
 /**
- * The two questions somebody asks about a job they are not sure about.
+ * Checks whether a job can work at all and whether both sides match its record.
  *
- * "Can it even work" (both sides there, writable, room, record readable) and
- * "do the two sides actually match what the record says". They sit together
- * because they are asked together, by somebody who has just been surprised by
- * something, and splitting them across two places would mean finding out which
- * of the two they wanted.
- *
- * The findings are rendered from the server's OWN sentence rather than from a
- * translation of its code. Both packages ship a worded `text` beside the code
- * for exactly this, and the alternative was worse: forty-two translations of
- * twenty codes, written before anybody has seen one of them on screen, ageing
- * out of step with the engine that produces them. The codes are in the payload,
- * so a locale can take any of them over later, one at a time, and the sentence
- * stays as the fallback for the rest.
+ * Findings show the server's own sentence rather than a translation of their
+ * code; the code is in the payload for a locale that wants to take one over.
  */
 
 type Row = { key: string; text: string; bad: boolean }
@@ -37,10 +26,8 @@ export function CheckPanel({ job }: { job: string }) {
     setError(null)
     setRows(null)
     try {
-      // Health first and consistency second, because the second cannot say
-      // anything useful when the first has already found that a side is not
-      // there: it would list every file as missing and bury the one fact that
-      // matters.
+      // With a side missing, the consistency check would list every file as
+      // missing and bury the one finding that matters.
       const health = await api.checkJob(job)
       const out: Row[] = health.findings.map((f: CheckFinding, i: number) => ({
         key: `h${i}`,
@@ -55,9 +42,7 @@ export function CheckPanel({ job }: { job: string }) {
             ...seen.findings.map((f: VerifyFinding, i: number) => ({
               key: `v${i}`,
               text: f.text,
-              // Invisible means no future run will notice this by itself,
-              // which is the one class of problem that never fixes itself and
-              // never announces itself.
+              // No future run would notice an invisible finding by itself.
               bad: f.invisible,
             })),
           )
@@ -69,9 +54,8 @@ export function CheckPanel({ job }: { job: string }) {
             })
           }
         } catch (e) {
-          // A refused consistency check is a real answer and not a crash: the
-          // record does not exist yet, or a side listed nothing. Shown as a
-          // row rather than swallowed.
+          // A refusal is an answer (no record yet, or a side listed nothing),
+          // so it is shown as a row.
           out.push({ key: 'verr', text: (e as Error).message, bad: false })
         }
       }

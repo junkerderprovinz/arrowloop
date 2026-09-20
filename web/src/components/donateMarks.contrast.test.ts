@@ -3,28 +3,14 @@ import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 
-/**
- * A coin logo has to carry its own ground, or read on the tile's.
- *
- * The provider marks answer readability one way: a single-ink wordmark has
- * nothing behind it but the row, so its colour is measured against the row and
- * shifted when it fails. The coins answer it the other way. Each is a filled
- * disc in the brand's colour with a white symbol on it, so the thing that
- * decides whether the logo can be READ is the symbol against the disc - the
- * brand's own number, and the same on any tile it lands on.
- *
- * That is what makes "original colour" safe here and not there, so it is what
- * this guards. Take the disc away and the argument goes with it: the mark
- * becomes a bare glyph on a grey tile, and Bitcoin's orange measures 1.50
- * against the light theme's.
- */
+// A coin keeps its brand colours only because it brings its own disc, so its
+// readability is the symbol against the disc rather than against the tile.
 
 const here = dirname(fileURLToPath(import.meta.url))
 const marks = readFileSync(join(here, 'donateMarks.tsx'), 'utf8')
 const themed = readFileSync(join(here, '..', 'donateMarks.css'), 'utf8')
 
-/** Every ground a coin tile can show, by theme: --carbon-surface2 at rest,
- *  --carbon-surface3 under the pointer. */
+/** Every ground a coin tile can show, by theme: surface2 at rest, surface3 hovered. */
 const GROUNDS = {
   dunkel: ['#393939', '#525252'],
   hell: ['#e8e8e8', '#d1d1d1'],
@@ -33,16 +19,9 @@ const GROUNDS = {
 const FLOOR = 2.0
 
 /**
- * Where the brand's OWN lockup sits under the floor, and at exactly what.
- *
- * Binance draws a white diamond on #F3BA2F, which measures 1.77. That is
- * Binance's decision about Binance's logo, and repainting it to clear a floor
- * of ours would be the one thing this whole file exists not to do - it would
- * no longer be their mark.
- *
- * The number is written down rather than the coin being waved through, so this
- * stays a guard. Change the disc or the symbol by a shade and the measurement
- * no longer matches what is recorded here, and the test fails asking why.
+ * Brand lockups that sit below the floor as published, held to their exact
+ * measurement so any change still fails. Binance's white diamond on #F3BA2F is
+ * their own logo and is not repainted.
  */
 const BRAND_OWN: Record<string, number> = { bnb: 1.77 }
 
@@ -83,8 +62,7 @@ function variable(name: string): { dunkel: string; hell: string } {
   return { dunkel: read('[data-theme="dark"]'), hell: read('[data-theme="light"]') }
 }
 
-/** What a colour resolves to in one theme: a hex as written, or the value
- *  behind the custom property it names. */
+/** A colour in one theme: a hex as written, or the value behind its custom property. */
 function resolve(colour: string, theme: keyof typeof GROUNDS): string {
   const named = colour.match(/var\((--[\w-]+)\)/)
   return named ? variable(named[1])[theme] : colour
@@ -92,7 +70,7 @@ function resolve(colour: string, theme: keyof typeof GROUNDS): string {
 
 describe('coin marks', () => {
   it('reads the table', () => {
-    // Guards the guard: an empty list would let every assertion below pass.
+    // An empty list would let every assertion below pass.
     expect(coins().map((c) => c.id).sort()).toEqual([
       'bnb', 'btc', 'eth', 'sol', 'sui', 'usdc', 'usdt', 'xrp',
     ])
@@ -107,9 +85,8 @@ describe('coin marks', () => {
     const faint: string[] = []
     for (const coin of coins()) {
       const disc = coin.body.match(/<circle[^>]*fill="([^"]+)"/)![1]
-      // Everything else the mark paints with. Readable if ANY part of it
-      // stands out - the house rule for a two-tone mark, and Solana's bars are
-      // a gradient whose purple end carries what its green end cannot.
+      // Readable if any part of the ink stands out, as with the purple end of
+      // Solana's gradient.
       const ink = [...coin.body.matchAll(/(?:fill|stopColor)="(#[0-9a-fA-F]{3,6}|var\([^"]+\))"/g)]
         .map((m) => m[1])
         .filter((c) => c !== disc)
@@ -118,7 +95,6 @@ describe('coin marks', () => {
         const best = Math.max(...ink.map((c) => contrast(resolve(c, theme), ground)))
         const allowed = BRAND_OWN[coin.id]
         if (allowed !== undefined) {
-          // Held to the recorded number, not excused from measurement.
           expect(best, `${coin.id} ${theme} moved off its recorded value`).toBeCloseTo(allowed, 2)
           continue
         }
@@ -129,8 +105,6 @@ describe('coin marks', () => {
   })
 
   it('keeps every themed disc off the tile it sits on', () => {
-    // A disc that follows the theme does so because the fixed one vanished
-    // into the tile, so the values it flips to have to clear the floor there.
     const faint: string[] = []
     for (const coin of coins()) {
       const disc = coin.body.match(/<circle[^>]*fill="(var\([^"]+\))"/)?.[1]
@@ -146,10 +120,8 @@ describe('coin marks', () => {
   })
 
   it('leaves the two button marks monochrome', () => {
-    // PayPal and Buy Me a Coffee sit beside a label on a filled button, where
-    // a glyph takes the label's ink like every other glyph in the app - and
-    // neither carries a disc to stand on. A fixed hex here would be the same
-    // mistake as a coin without one: PayPal's navy measures 1.03 on that fill.
+    // They take the label's ink on a filled button, where PayPal's own navy
+    // would measure 1.03.
     for (const name of ['IconPayPal', 'IconBuyMeACoffee']) {
       const body = marks.slice(marks.indexOf(`export function ${name}`))
       expect(body.slice(0, body.indexOf('\n}')), name).not.toMatch(/#[0-9a-fA-F]{6}/)

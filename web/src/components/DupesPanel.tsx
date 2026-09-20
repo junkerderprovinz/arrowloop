@@ -7,22 +7,11 @@ import { bytes } from '../lib/bytes'
 import { translateSide, useT } from '../lib/i18n'
 
 /**
- * The same content, found in more than one place on one side.
+ * Lists content found in more than one place on one side of a job.
  *
- * Per SIDE and not per job, and that is the point rather than a shortcut: a
- * job's two sides are SUPPOSED to hold the same files, so a search across both
- * would report the sync doing its work. What somebody actually wants to know is
- * whether their own folder holds the holiday photos three times.
- *
- * It reports and it does not delete. Deciding which of three identical files is
- * the one to keep is a decision about what somebody's folders MEAN - the copy
- * in `urlaub/` and the copy in `backup/` are the same bytes and not the same
- * thing - and a button that picked for them would sooner or later pick wrong on
- * a file with no second copy anywhere.
- *
- * Behind a press rather than run on open. It walks the whole tree and hashes
- * every file that shares a size with another, which on a large job over a
- * network is minutes: something that expensive has to be asked for.
+ * Per side, because the two sides are meant to hold the same files. It reports
+ * and never deletes, since which copy to keep depends on what the folders mean.
+ * The search hashes much of the tree, so it runs only when asked.
  */
 export function DupesPanel({ job }: { job: string }) {
   const { t } = useT()
@@ -47,9 +36,6 @@ export function DupesPanel({ job }: { job: string }) {
 
   return (
     <div className="flex flex-col gap-2">
-      {/* One button per side rather than a side switch and a search button.
-          Two presses to ask one question is one press too many, and the pair
-          says what the search is about at the same time. */}
       <div className="flex justify-end gap-2">
         {(['left', 'right'] as const).map((which) => (
           <Button
@@ -78,10 +64,8 @@ export function DupesPanel({ job }: { job: string }) {
               scanned: found.scanned,
             })}
           </p>
-          {/* Said out loud rather than swallowed. It is the one thing that
-              makes the answer incomplete, and a target that cannot hash is
-              common enough that silence here would read as "nothing more to
-              find" on a search that never looked. */}
+          {/* Without this, a target that cannot hash would read as nothing
+              more to find. */}
           {found.unhashable > 0 && (
             <p className="text-xs text-statusWarn">
               {t('dupes.unhashable', { count: found.unhashable })}

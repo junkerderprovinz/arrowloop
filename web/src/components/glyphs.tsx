@@ -4,21 +4,18 @@
 // the next run silently discards the change.
 //
 // Attribution, required by the licence:
-//   Free icons from Streamline - https://streamlinehq.com (CC BY 4.0)
-//   The FREE 1000-icon Core Solid subset only:
+//   Free icons from Streamline, https://streamlinehq.com (CC BY 4.0)
+//   The free 1000-icon Core Solid subset only:
 //   https://github.com/webalys-hq/streamline-vectors
-//   IconSave from Vecteezy - https://www.vecteezy.com
+//   IconSave from Vecteezy, https://www.vecteezy.com
 //
-// Nearly every glyph here comes from that one Streamline set, drawn on one
-// 14-unit grid with one convention, which is why none of THOSE needs the
-// measured ink-crop the design language describes for apps that mix sets. The
-// one that comes from elsewhere carries its measured crop in the generator.
+// The Streamline glyphs share one 14-unit grid, so they keep their own
+// viewBox; IconSave carries a measured crop.
 
 import type { ReactNode, SVGProps } from 'react'
 
-/** Two or more glyphs from the same set, stacked into one drawing. Each group
- *  carries its own transform, so a composed glyph needs no second source set
- *  and no ink measuring: every part was drawn on this grid already. */
+/** Two or more glyphs from the same set, stacked into one drawing, each group
+ *  with its own transform. */
 function Stack({ box, groups, ...rest }: { box: string; groups: { transform: string; paths: string[] }[] } & SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -41,8 +38,7 @@ function Stack({ box, groups, ...rest }: { box: string; groups: { transform: str
   )
 }
 
-/** One glyph. Sized by the caller through width and height, coloured by
- *  currentColor so it follows whatever the surrounding text is doing. */
+/** One glyph, sized by the caller and coloured by currentColor. */
 function Glyph({ box, paths, ...rest }: { box: string; paths: string[] } & SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -61,9 +57,8 @@ function Glyph({ box, paths, ...rest }: { box: string; paths: string[] } & SVGPr
   )
 }
 
-/** A mark drawn here rather than taken from the set, because it had to be made
- *  to agree with the set. See the DRAWN table in scripts/gen_glyphs.py for why
- *  exactly two glyphs are allowed to be here and what "agree" measures. */
+/** A mark drawn to match the set's size; see the DRAWN table in
+ *  scripts/gen_glyphs.py. */
 function Drawn({ box, children, ...rest }: { box: string; children: ReactNode } & SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -255,7 +250,7 @@ export function IconWallet(props: SVGProps<SVGSVGElement>) {
   return <Glyph box="0 0 14 14" paths={['M0 4.35474C0 2.42174 1.567 0.854736 3.5 0.854736H10c0.2761 0 0.5 0.223854 0.5 0.500004v1.39795l-7.14453 0c-0.34518 0 -0.625 0.27982 -0.625 0.625 0 0.34517 0.27982 0.625 0.625 0.625l7.58413 0c0.0198 0 0.0394 -0.00093 0.0587 -0.00273l0.2138 0c0.3978 0 0.7793 0.15803 1.0606 0.43934 0.2813 0.2813 0.4394 0.66283 0.4394 1.06066v0.91618H9.76276c-0.82448 0 -1.75 0.62476 -1.75 1.6946v1.77843c0 1.06983 0.92552 1.69463 1.75 1.69463h2.94934v0.9161c0 0.3979 -0.1581 0.7794 -0.4394 1.0607s-0.6628 0.4393 -1.0606 0.4393L1.5 14c-0.39783 0 -0.779356 -0.1581 -1.06066 -0.4394C0.158035 13.2793 0 12.8978 0 12.5V4.35474Zm9.76276 3.3114h3.50004c0.2761 0 0.5 0.19905 0.5 0.4446v1.77843c0 0.24553 -0.2239 0.44463 -0.5 0.44463H9.76276c-0.27615 0 -0.5 -0.1991 -0.5 -0.44463V8.11074c0 -0.24555 0.22385 -0.4446 0.5 -0.4446Z']} {...props} />
 }
 
-/** Both ways: the same two arrows the one-way settings use, one above the other and pointing opposite ways. It used to be the reload loop, which draws hooks instead of arrowheads and reads as retry rather than as two directions. Streamline: interface-essential/arrow-up-1.svg + interface-essential/arrow-up-1.svg */
+/** Both ways: the one-way arrows, one above the other and pointing opposite ways. Streamline: interface-essential/arrow-up-1.svg + interface-essential/arrow-up-1.svg */
 export function IconBothWays(props: SVGProps<SVGSVGElement>) {
   return <Stack box="0 0 14 14" groups={[{ transform: 'rotate(90 7 7) translate(-0.7 2.8) scale(0.6)', paths: ['M6.64645 0.146447c0.19526 -0.1952625 0.51184 -0.1952625 0.7071 0L10.8536 3.64645c0.143 0.143 0.1857 0.35805 0.1083 0.54489 -0.0774 0.18684 -0.2597 0.30866 -0.4619 0.30866H8V13c0 0.5523 -0.44772 1 -1 1 -0.55229 0 -1 -0.4477 -1 -1V4.5H3.5c-0.20223 0 -0.38455 -0.12182 -0.46194 -0.30866 -0.07739 -0.18684 -0.03461 -0.40189 0.10839 -0.54489l3.5 -3.500003Z'] }, { transform: 'rotate(-90 7 7) translate(-0.7 2.8) scale(0.6)', paths: ['M6.64645 0.146447c0.19526 -0.1952625 0.51184 -0.1952625 0.7071 0L10.8536 3.64645c0.143 0.143 0.1857 0.35805 0.1083 0.54489 -0.0774 0.18684 -0.2597 0.30866 -0.4619 0.30866H8V13c0 0.5523 -0.44772 1 -1 1 -0.55229 0 -1 -0.4477 -1 -1V4.5H3.5c-0.20223 0 -0.38455 -0.12182 -0.46194 -0.30866 -0.07739 -0.18684 -0.03461 -0.40189 0.10839 -0.54489l3.5 -3.500003Z'] }]} {...props} />
 }
@@ -269,7 +264,7 @@ export function IconCancel(props: SVGProps<SVGSVGElement>) {
   )
 }
 
-/** Confirm. NOT IconCheck, which is the magnifying glass this app uses for "open a target and look at it". Drawn here, see gen_glyphs.py's DRAWN table for why */
+/** Confirm. Not IconCheck, which is the magnifying glass this app uses for "open a target and look at it". Drawn here, see gen_glyphs.py's DRAWN table for why */
 export function IconConfirm(props: SVGProps<SVGSVGElement>) {
   return (
     <Drawn box="0 0 14 14" {...props}>
@@ -278,7 +273,7 @@ export function IconConfirm(props: SVGProps<SVGSVGElement>) {
   )
 }
 
-/** Save. Vecteezy (https://www.vecteezy.com), Free License - attribution required */
+/** Save. Vecteezy (https://www.vecteezy.com), Free License, attribution required */
 export function IconSave(props: SVGProps<SVGSVGElement>) {
   return <Glyph box="61.80 62.40 368.70 368.70" paths={['M267.8,79.6v86.4c0,1.7.7,3.2,1.8,4.3,1.1,1.1,2.6,1.8,4.3,1.8h34.4c1.7,0,3.2-.7,4.3-1.8,1.1-1.1,1.8-2.6,1.8-4.3v-86.4c0-1.7-.7-3.2-1.8-4.3-1.1-1.1-2.6-1.8-4.3-1.8h-34.4c-1.7,0-3.2.7-4.3,1.8-1.1,1.1-1.8,2.6-1.8,4.3Z', 'M77.3,431.1h337.8c8.5,0,15.4-6.9,15.4-15.4V108.7l-46.3-46.3h-51.8v120.7h-172.5V62.4h-82.7c-8.5,0-15.4,6.9-15.4,15.4v337.8c0,8.5,6.9,15.4,15.4,15.4h0ZM152.1,265.2h188.4c7.8,0,14.1,6.4,14.1,14.1v108.4c0,7.8-6.4,14.1-14.1,14.1h-188.4c-7.8,0-14.1-6.4-14.1-14.1v-108.4c0-7.8,6.4-14.1,14.1-14.1Z']} {...props} />
 }

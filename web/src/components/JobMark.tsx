@@ -3,44 +3,16 @@ import { useT } from '../lib/i18n'
 import type { Job } from '../lib/api'
 
 /**
- * A job's state, drawn as the app's own logo.
- *
- * jdp asked for "das logo wie in der taskleiste das sich bewegt wenn es laeuft
- * und sich nach zustand faerbt", and this was the two-arrow GLYPH rather than
- * the logo, because the logo is a two-material drawing and painting the whole of
- * it one status colour leaves a smear rather than a mark. jdp answered the
- * objection instead of accepting it: "du kannst die ringe nach status einfaerbig
- * einfaerben."
- *
- * That is the better answer, and it works because the two materials say
- * different things. The arrow is the identity, so it keeps its own greys in
- * every state. The rings are decoration around it, so they can carry a colour
- * without the mark stopping being this mark. See LogoMark for the mechanism.
- *
- * Four states, and each is a different question answered:
- *
- *   running   the accent, turning. The turn is the point: it says "right now"
- *             faster than any word on the card, and it is the only thing here
- *             that a still image cannot say.
- *   failed    the fail colour, still. The last run ended badly and nothing has
- *             happened since to say otherwise.
- *   paused    muted, still. Switched off on purpose, which is not a problem
- *             and must not look like one.
- *   ok        the ok colour, still.
- *
- * The turn reads --motion-turn-dur, so the motion setting reaches it like every
- * other animation in the app rather than running at one hard-coded speed.
+ * A job's state, drawn as the app's logo with its rings in the status colour.
+ * The arrow keeps its greys, since it is what makes the logo recognisable. A
+ * running job's mark turns; paused is muted rather than alarming.
  */
 
 export type JobStatus = 'running' | 'failed' | 'paused' | 'ok'
 
 /**
- * What a job's mark should say.
- *
- * Running wins over everything, including a previous failure: a job that is
- * working right now is not currently broken, whatever happened last time.
- * Paused beats failed for the same kind of reason in the other direction, since
- * a switched-off job is not going to fix its own last run.
+ * What a job's mark should say. Running beats a previous failure, and paused
+ * beats failed because a switched-off job will not fix its own last run.
  */
 export function statusOf(job: Job, lastFailed: boolean): JobStatus {
   if (job.running) return 'running'
@@ -74,9 +46,8 @@ export function JobMark({ status, size = 20 }: { status: JobStatus; size?: numbe
       aria-label={name}
       role="img"
     >
-      {/* The turn is on the drawing rather than on this wrapper, so the tip's
-          own box does not spin with it: a tooltip anchor that rotates is a
-          tooltip that walks around the screen. */}
+      {/* The drawing turns rather than the wrapper, so the tooltip anchor
+          stays put. */}
       <LogoMark
         size={size}
         className={status === 'running' ? 'al-turning shrink-0' : 'shrink-0'}

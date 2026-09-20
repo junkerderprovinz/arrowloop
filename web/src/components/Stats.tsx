@@ -4,18 +4,9 @@ import { api, type HistoryStats } from '../lib/api'
 import { useT } from '../lib/i18n'
 
 /**
- * What the runs have added up to, over the last month.
- *
- * The list below this answers "what happened on Tuesday". It cannot answer "is
- * this thing actually doing anything", which is the question somebody has after
- * leaving a sync tool alone for three weeks, and it is the question a row of
- * numbers answers badly: fifty rows of "12 copied" is not the same as seeing
- * that the last four days are empty.
- *
- * A day with no runs is drawn as an empty column rather than left out. A chart
- * that closes its gaps turns "nothing happened" into "nothing to show", and
- * those are opposite meanings: one is a machine at rest and the other is a
- * machine that stopped.
+ * What the runs have added up to over the last month, as totals and a column
+ * per day. A day with no runs keeps an empty column, so a machine that stopped
+ * shows as a gap.
  */
 
 /** How tall the tallest column is, in pixels. */
@@ -33,8 +24,8 @@ export function Stats({ job }: { job?: string }) {
         if (live) setStats(got)
       })
       .catch(() => {
-        // A missing summary is not worth an error banner over a page whose
-        // main content is the list underneath. It simply does not draw.
+        // The list underneath is the page's content; a missing summary just
+        // does not draw.
         if (live) setStats(null)
       })
     return () => {
@@ -44,9 +35,8 @@ export function Stats({ job }: { job?: string }) {
 
   if (!stats || stats.rows.length === 0) return null
 
-  // Scaled against the busiest day rather than against a fixed number, because
-  // one person's busy day is twelve files and another's is nine thousand, and a
-  // fixed scale makes one of those two charts a flat line.
+  // Scaled against the busiest day, since a fixed scale flattens either a quiet
+  // setup or a busy one.
   const busiest = Math.max(1, ...stats.rows.map((r) => r.runs))
 
   return (
@@ -73,14 +63,8 @@ export function Stats({ job }: { job?: string }) {
         )}
       </div>
 
-      {/* Drawn with plain boxes rather than a charting library. Thirty columns
-          that are one number tall each is not a chart problem, and a library
-          would be three hundred kilobytes to draw thirty rectangles. */}
-      {/* ONE colour across the chart, deliberately, and against the house habit
-          of giving every element in a list its own palette position. That rule
-          is about destinations and controls: thirty bars in thirty colours is a
-          barcode, and the red that marks a day with a failure would be one hue
-          among thirty rather than the one thing that stands out. */}
+      {/* One colour for every bar rather than a palette position each, so the
+          red of a day with a failure stands out. */}
       <div className="flex items-end gap-[2px]" style={{ height: HEIGHT }} aria-hidden>
         {stats.rows.map((r) => (
           <div
@@ -88,15 +72,9 @@ export function Stats({ job }: { job?: string }) {
             data-tip={`${r.day}: ${t('stats.runs', { count: r.runs })}`}
             className="min-w-[3px] flex-1"
             style={{
-              // A day with runs always draws something, even when it is a
-              // single run against a busiest day of two hundred: a column
-              // rounded down to nothing says the same as no column at all.
+              // A day with runs never rounds down to an empty column.
               height: r.runs === 0 ? 2 : Math.max(3, Math.round((r.runs / busiest) * HEIGHT)),
               borderRadius: 'var(--radius-control)',
-              // The raw tokens, not the Tailwind aliases: this is an inline
-              // style, and `bg-statusFailSolid` is a class name rather than a
-              // value. Getting that wrong renders a transparent bar, which
-              // reads as a quiet day rather than as a mistake.
               background: r.failed > 0 ? 'var(--status-fail-solid)' : 'var(--accent)',
               opacity: r.runs === 0 ? 0.25 : 1,
             }}

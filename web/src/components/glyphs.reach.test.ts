@@ -2,22 +2,10 @@ import { createRequire } from 'node:module'
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 
-/**
- * Reach, which is the thing "this glyph is too big" actually means.
- *
- * jdp reported the cross and the check as not matching their neighbours, and
- * the same complaint cost BombVault three rounds because each round measured
- * something true that was not the complaint: extent, then painted area, then
- * reach. Reach is the distance from the centre to the furthest ink. A cross
- * puts its four tips on the CORNERS of its box; a round glyph puts its ink on
- * the edge midpoints. Fill the same box with both and the cross reaches
- * sqrt(2) further, while extent and area can agree exactly.
- *
- * So this file measures reach as a fraction of the box, where a frame-filling
- * round glyph sits at 0.5, and it measures it on the two marks the rule is
- * about. Both assertions fail in both directions on purpose: a mark that grows
- * back to the corners fails, and one shrunk into a dot fails too.
- */
+// Reach is the distance from a glyph's centre to its furthest ink, as a
+// fraction of its box; a frame-filling round glyph sits at 0.5. A cross that
+// fills its box puts its tips in the corners and reaches sqrt(2) further, which
+// is what makes it look too big beside its neighbours even at equal extent.
 
 const require_ = createRequire(import.meta.url)
 const source = readFileSync(
@@ -43,15 +31,14 @@ function bodyOf(name: string): string {
   return after.split('\n}')[0]
 }
 
-describe('the marks that had to be made to agree with the set', () => {
+describe('cross and check reach', () => {
   it('puts the cross tips exactly where a round glyph puts its ink', () => {
     const [x, y, w, h] = boxOf('IconCancel')
     expect(w).toBe(h)
     const cx = x + w / 2
     const cy = y + h / 2
 
-    // The cross is one bar rotated about the box centre, so the tip radius is
-    // half the bar's length, and the rotation cannot move it.
+    // Rotating about the box centre cannot change the tip radius.
     const bars = [...bodyOf('IconCancel').matchAll(
       /<rect x="([-\d.]+)" y="([-\d.]+)" width="([-\d.]+)" height="([-\d.]+)"/g,
     )]
@@ -67,8 +54,6 @@ describe('the marks that had to be made to agree with the set', () => {
       const by = Number(bar[2])
       const bw = Number(bar[3])
       const bh = Number(bar[4])
-      // Distance from the centre to the far end of this bar, along its own
-      // axis. Rotating about the centre leaves it unchanged.
       const reach = Math.max(
         Math.abs(bx - cx), Math.abs(bx + bw - cx),
         Math.abs(by - cy), Math.abs(by + bh - cy),
@@ -99,27 +84,21 @@ describe('the marks that had to be made to agree with the set', () => {
     const reach = Math.max(
       ...points.map(([px, py]) => Math.hypot(px - cx, py - cy) + cap),
     )
-    // Just inside the round glyphs' 0.5, never past it. A diagonal mark sitting
-    // a hair inside the circle keyline is what icon sets do on purpose; sitting
-    // outside it is the complaint.
+    // Icon sets keep a diagonal mark a hair inside the circle keyline.
     expect(reach / w).toBeGreaterThan(0.44)
     expect(reach / w).toBeLessThanOrEqual(0.5)
   })
 })
 
 describe('the arrows carry no bar', () => {
-  // move-left.svg and move-right.svg draw a full-height rounded rectangle
-  // behind the arrowhead. That is the "jump to the end" keyboard idea, and jdp
-  // reported it on both the folder picker's up button and the direction button.
-  // The bare arrow is arrow-up-1.svg, turned.
+  // move-left.svg and move-right.svg put a "jump to the end" bar behind the
+  // arrowhead; the bare arrow is arrow-up-1.svg, turned.
   it.each(['IconUp', 'IconToLeft', 'IconToRight', 'IconBothWays'])(
     '%s is the bare arrow, turned',
     (name) => {
       const body = bodyOf(name)
       expect(body).toMatch(/rotate\(-?90 7 7\)/)
-      // The bar is a 1.5-radius rounded rectangle spanning the full 14 units of
-      // height. Its signature in the source path is the "A1.5 1.5 0 0 0 ... 14"
-      // run; the bare arrow has no arc at all.
+      // The bar's rounded corners are the only arcs; the bare arrow has none.
       expect(body).not.toMatch(/a1\.5 1\.5 0 0 0/i)
     },
   )

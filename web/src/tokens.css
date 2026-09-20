@@ -1,4 +1,4 @@
-/* Copied verbatim from GlimStone 1.7.3, reference/tokens.css, plus ONE marked
+/* Copied verbatim from GlimStone 1.7.3, reference/tokens.css, plus one marked
    local addition at the very bottom. Do not edit the copied part here:
    change it in the design language repo and copy again.
    https://github.com/junkerderprovinz/glimstone */
@@ -1513,15 +1513,9 @@ body {
   --color-accentSoft: var(--item-hue-soft);
 }
 
-/* ---------------------------------------------------------------------------
-   The one thing this file carries that GlimStone does not.
-   ---------------------------------------------------------------------------
-   The height of a segment in the grooved selector. Two strips a pixel apart in
-   height read as two different controls, and padding plus a font size is two
-   ways of arriving at a height that only agree by accident. The value is
-   BombVault's, where it was measured. It belongs in the language rather than
-   here and is not there yet; when it arrives, this block goes.
-   --------------------------------------------------------------------------- */
+/* Local addition, not in GlimStone: the height of a selector segment, so every
+   strip is exactly the same height. The value is BombVault's. It belongs in
+   the design language, and this block goes once it is there. */
 :root {
   --badge-md: 2.35rem;
 }

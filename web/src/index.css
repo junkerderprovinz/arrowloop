@@ -1,30 +1,14 @@
 @import "tailwindcss";
 @import "./tokens.css";
 @import "./tailwind-theme.css";
-/* The per-theme lightness of the brand marks that cannot be read on one of the
-   two grounds. Generated beside brandGlyphs.tsx; after tokens.css, because it
-   is measured against the surface values that file sets. */
+/* Both are measured against the surface values tokens.css sets, so they come
+   after it. */
 @import "./brandGlyphs.css";
-/* The two coin discs whose brand ground is black, per theme. Same reason and
-   the same place in the order as the line above. */
 @import "./donateMarks.css";
 
-/* ---------------------------------------------------------------------------
-   The type scale, registered so it can be written as a class.
-
-   GlimStone defines the four sizes as tokens in tokens.css and stops there:
-   its tailwind-theme.css registers the radii and the colours but not these, so
-   `text-caption` and its siblings resolve to nothing. BombVault noticed the
-   same gap and closed it in its own stylesheet, with the same self-pointing
-   trick, and this is that block. It belongs in the design language rather than
-   in two apps, and is raised there.
-
-   Why it matters here rather than being cosmetic: this app used to write its
-   sizes as `text-[11px]` and `text-[12px]`, one step below the same element in
-   BombVault, which is what "die schriftgroesse ist ueberall kleiner als in BV"
-   was. A literal pixel value cannot drift back into line on its own; a name
-   from a shared scale can.
-   --------------------------------------------------------------------------- */
+/* GlimStone's tailwind-theme.css does not register the type scale, so
+   `text-caption` and its siblings would resolve to nothing without this. It is
+   the same block BombVault carries until the design language takes it. */
 @theme inline {
   --text-heading: var(--text-heading);
   --text-body: var(--text-body);
@@ -32,16 +16,16 @@
   --text-caption: var(--text-caption);
 }
 
-/* The page's own ground. Everything above this line is GlimStone; everything
-   below is this app, and there should be very little of it: a rule that lives
-   here rather than in a component is a rule the design language does not
-   know about. */
+/* Everything above is GlimStone; a rule below is one the design language does
+   not know about, so keep them few. */
 html,
 body,
 #root {
   height: 100%;
 }
 
+/* No font-size: BombVault sets none either, and its body inherits the
+   browser's 16px. */
 body {
   margin: 0;
   background: var(--carbon-bg);
@@ -49,47 +33,15 @@ body {
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
 
-/* No font-size here, deliberately, and it used to say 14px.
-   BombVault sets none either, so its body inherits the browser's 16px. Every
-   element that carries no size class of its own therefore read two pixels
-   smaller here than the same element there, which is half of what "die
-   schriftgroesse ist ueberall kleiner als in BV" meant. The other half was the
-   literal pixel sizes above. Measured on both running apps rather than
-   reasoned about: identical tokens, identical html size, and the body was the
-   one value that differed. */
-
-/* ---------------------------------------------------------------------------
-   The motion engine, and what is left of it here.
-   ---------------------------------------------------------------------------
-   Nothing, since GlimStone 1.7.3. This app used to carry the whole token set
-   and the three [data-motion] blocks itself, because the language shipped its
-   animations with the durations written into the rules: the switch had nothing
-   to redefine, so it reached whatever an app wired up on its own and no more.
-   Measured rather than assumed: the page entrance ran at 280ms on wild, on
-   subtle and on off alike. The tokens are in the language now and every one of
-   its animations reads them, so one setting reaches all of them in every app
-   that copies the file.
-
-   What stays below is this app's ONE animation of its own, the indeterminate
-   progress bar, which the language defines a keyframe for and deliberately no
-   class: a bar's geometry belongs to the app that draws it.
-   --------------------------------------------------------------------------- */
-
-/* This app's own animation gets the same three-step ladder the language's five
-   have, in the same place: inside no-preference, one token redefined per
-   intensity, one rule reading it. The language's own words are that an app
-   adopting more keyframes gives each the same ladder, and this is that. */
+/* The app's own animations get the same three-step ladder as GlimStone's: one
+   token per intensity, read by one rule. */
 @media (prefers-reduced-motion: no-preference) {
   :root { --motion-bar-dur: 1.4s; --motion-turn-dur: 2.2s; }
   :root[data-motion='subtle'] { --motion-bar-dur: 2.4s; --motion-turn-dur: 4s; }
   :root[data-motion='off'] { --motion-bar-dur: 0s; --motion-turn-dur: 0s; }
 }
 
-/* The job mark's turn.
-   A job card carries the same two-arrow loop the app is named for, and while
-   the job is working the loop turns. It is the one animation in the app that
-   says something no text on the card says as fast: this is moving right now.
-   Own ladder, same three steps, same reason as the bar above. */
+/* The job mark's loop turns while the job is working. */
 @keyframes al-turn {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
@@ -99,9 +51,8 @@ body {
   animation: al-turn var(--motion-turn-dur, 2.2s) linear infinite;
 }
 
-/* Off means off, and it has to mean off in BOTH directions: the token going to
-   zero would otherwise leave a zero-second animation still running, which some
-   engines treat as "as fast as possible" rather than as "not at all". */
+/* Some engines run a zero-second animation as fast as possible rather than not
+   at all, so off removes it. */
 :root[data-motion='off'] .al-turning,
 .al-turning[data-motion='off'] {
   animation: none;
@@ -113,48 +64,19 @@ body {
   }
 }
 
-/* The easter egg: the arrow gets loose.
+/* The easter egg: the arrow flies out of its rings along the diagonal it
+   points, round the far side and back in, while the rings turn once.
 
-   The logo is an arrow bent into a loop, so the one thing it can do that no
-   other mark could is come UNBENT - fly out of its own rings, round the outside,
-   and back in. It says the product's sentence in a second and a half: what goes
-   out comes back.
-
-   Two groups, two jobs. The arrow flies; the rings stay put and turn once, which
-   is what makes the flight read as leaving something rather than as the whole
-   picture sliding.
-
-   THE WHOLE FLIGHT STAYS INSIDE THE DRAWING'S OWN BOX, and that is a
-   correction rather than a preference. It first travelled to 150% of the box,
-   on the reasoning that `overflow: visible` on the svg would let it out. It
-   does - and then the frame around the rail clips it anyway: measured on the
-   running app, the logo sits 80px tall with 24px of room above it, so a
-   120px climb was gone behind the top edge before anybody could see it. What
-   was left to watch was the arrow disappearing and coming back, which is not
-   the joke. Reported twice as "das easter egg geht nicht", and both times what
-   I had measured was that the animation RAN, never that it could be seen.
-
-   So it now travels 34% of its own box and fades out there, which reads as
-   distance rather than as an exit, and needs no room outside itself at all.
-   That also makes it work in the narrow rail, where there is even less.
-
-   The path is diagonal because the arrow is: it runs from the lower left to the
-   upper right, so it leaves the way it points. Coming back from the other side
-   is the loop closing rather than a rewind, which a straight there-and-back
-   would have looked like. */
+   The flight stays within 34% of the drawing's own box and fades out there.
+   The frame around the rail clips anything further, and the logo has only
+   24px of room above it. */
 @keyframes al-shoot {
   0% { transform: translate(0, 0) scale(1); opacity: 1; }
-  /* Drawing back, the way anything shot is pulled back first. */
   12% { transform: translate(7%, 7%) scale(0.96); opacity: 1; }
-  /* Away up and to the right, shrinking into the distance. It stops at 34% of
-     its own box rather than leaving it, and fades out there. */
   38% { transform: translate(-34%, -34%) scale(0.3); opacity: 0; }
-  /* Round the far side. Nothing is drawn here; this keyframe is what makes it
-     re-enter from the OPPOSITE corner instead of backing up its own path. */
+  /* Re-enters from the opposite corner instead of backing up its own path. */
   50% { transform: translate(34%, 34%) scale(0.3); opacity: 0; }
-  /* Back in from the lower left, growing as it comes. */
   76% { transform: translate(14%, 14%) scale(1.04); opacity: 1; }
-  /* Overshooting once, so it lands rather than stopping. */
   88% { transform: translate(-3%, -3%) scale(0.99); opacity: 1; }
   100% { transform: translate(0, 0) scale(1); opacity: 1; }
 }
@@ -167,9 +89,8 @@ body {
   100% { transform: rotate(360deg) scale(1); }
 }
 
-/* The whole flight, timed off the same motion token as everything else here.
-   Applied to the SVG rather than to a wrapper, so the two groups animate about
-   the drawing's own centre. */
+/* On the SVG rather than a wrapper, so both groups turn about the drawing's
+   own centre. */
 .al-logo-loose {
   overflow: visible;
 }
@@ -182,9 +103,6 @@ body {
   animation: al-rings-settle calc(var(--motion-turn-dur, 2.2s) * 0.64) cubic-bezier(0.4, 0, 0.2, 1) 1;
 }
 
-/* Off means off in both directions, exactly as for the turn above: a
-   zero-second animation is treated by some engines as "instantly" rather than
-   as "not at all", and an arrow that teleports is not the joke. */
 :root[data-motion='off'] .al-logo-loose .al-logo-arrow,
 :root[data-motion='off'] .al-logo-loose .al-logo-rings {
   animation: none;
@@ -197,20 +115,16 @@ body {
   }
 }
 
-/* The design language already defines the @keyframes glim-indeterminate that
-   travels a bar with no known length. It does not define a class that uses it,
-   because a bar's own geometry belongs to the app that draws it, so this is the
-   one line that binds the two together.
-
-   The animation moves `left`, so the element has to be positioned for it to
-   have any effect at all. */
+/* GlimStone defines the glim-indeterminate keyframes but no class, since a
+   bar's geometry belongs to the app. The animation moves `left`, so the bar
+   has to be positioned. */
 .glim-indeterminate {
   position: relative;
   animation: glim-indeterminate var(--motion-bar-dur, 1.4s) ease-in-out infinite;
 }
 
-/* At zero duration the bar would sit at its start position, which reads as a
-   job that never began. It fills the track instead: still, but plainly there. */
+/* A still bar at its start position reads as a job that never began, so
+   without motion it fills the track instead. */
 :root[data-motion='off'] .glim-indeterminate {
   animation: none;
   left: 0;
@@ -218,8 +132,6 @@ body {
   opacity: 0.5;
 }
 
-/* Somebody who has asked for less movement gets a still bar rather than none:
-   it still says "this is running", it just stops travelling. */
 @media (prefers-reduced-motion: reduce) {
   .glim-indeterminate {
     animation: none;
@@ -229,47 +141,30 @@ body {
   }
 }
 
-/* ---------------------------------------------------------------------------
-   The label engine's contract.
+/* The label engine's contract. The engine sets the mode attributes on the
+   root and these rules act on buttons and the tab strip; the rail reads its
+   mode in Sidebar.tsx.
 
-   The engine sets three attributes on the root and this is what the app puts
-   under them. Two surfaces exist here, buttons and the tab strip; ArrowLoop has
-   no navigation rail, so the third axis is applied and has nothing to act on,
-   which is stated rather than hidden by offering a control that does nothing.
-
-   The width tokens are the point of the whole thing: a control keeps the SAME
-   width in all four modes, so switching mode never reflows the page. The width
-   therefore comes from the LABEL, which is present in every mode even when it
-   is only the accessible name, and not from what happens to be drawn.
-
-   The four stage widths are BombVault's, verbatim. They were this app's own
-   numbers until 2026-09-07, "derived from this app's own labels across its
-   forty-two locales", which sounds like care and was a fork: every button in
-   the app then sat a full rem wider than the same button in the other one, and
-   that is the sort of difference that gets reported as "sieht nicht aus wie in
-   BV" without anybody being able to name it. Two apps in one house measure
-   their buttons once.
-   --------------------------------------------------------------------------- */
+   A control keeps the same width in all four modes so switching never reflows
+   the page, which is why the width comes from the label (present in every mode,
+   at least as the accessible name) rather than from what is drawn. The stage
+   widths are BombVault's, so the same button is the same size in both apps. */
 :root {
   --btn-w-xs: 5.5rem;
   --btn-w-sm: 8rem;
   --btn-w-md: 11.5rem;
   --btn-w-lg: 15rem;
 
-  /* The other three the button reads, which this app simply never had. Nothing
-     complained, because nothing here used GlimStone's own Button until now. */
   --btn-h: 2rem;
-  /* The one step up, GlimStone 1.7.5. It has to be repeated here rather than
-     left to tokens.css because this block wins over that one, and a key
-     control reading a token this file did not define would silently fall back
-     to no height at all. */
+  /* Repeated from tokens.css because this block wins over that one, and a key
+     control reading an undefined token would get no height at all. */
   --btn-h-key: 2.5rem;
   --btn-pad-x: 0.875rem;
   --btn-gap: 0.5rem;
 }
 
-/* Hidden, but still there: the label stays in the accessibility tree and in the
-   hover bubble, so what goes away is the ink and nothing else. */
+/* The label stays in the accessibility tree and in the hover bubble; only the
+   ink goes. */
 [data-labels-buttons='glyph'] .glim-btn-label,
 [data-labels-buttons='reactive'] .glim-btn-label,
 [data-labels-tabs='glyph'] .glim-tab-label,
@@ -282,8 +177,8 @@ body {
   white-space: nowrap;
 }
 
-/* A zero-width label is still a flex item, so the gap survives it and the
-   glyph sits visibly off-centre in what is meant to be a square control. */
+/* A zero-width label is still a flex item, so the gap would push the glyph
+   off-centre. */
 [data-labels-buttons='glyph'] .glim-btn,
 [data-labels-buttons='reactive'] .glim-btn,
 [data-labels-tabs='glyph'] .glim-tab,
@@ -291,47 +186,29 @@ body {
   gap: 0;
 }
 
-/* Text only: the glyph goes, the words stay. */
 [data-labels-buttons='text'] .glim-btn-glyph,
 [data-labels-tabs='text'] .glim-tab-glyph {
   display: none;
 }
 
-/* Unless there are no words. GlimStone 1.7.5.
-   A control whose only child is its glyph - the direction switch is the one in
-   this app - has no label sibling to fall back to, so the rule above rendered
-   it as an empty box in text mode: accessible name intact, nothing at all on
-   screen, nothing red anywhere. A glyph with no label beside it is not
-   decoration to be stripped, it IS the label, drawn. A control that really
-   does have words has a `.glim-btn-label` sibling, so this never matches it. */
+/* A control whose only child is its glyph, such as the direction switch, has
+   no words to fall back to, so there the glyph is the label. */
 [data-labels-buttons='text'] .glim-btn-glyph:only-child,
 [data-labels-tabs='text'] .glim-tab-glyph:only-child {
   display: inline-flex;
 }
 
 /* A button carrying somebody else's mark: the About card's give routes and its
-   repository link.
-   ---------------------------------------------------------------------------
-   Three values per brand and the split between them is the whole point. The
-   ADJUSTED colour rides at rest (--brand, a theme token) because a published
-   brand colour dies on one of the two grounds; the TRUE colour is spent on
-   HOVER as the button's own fill (--brand-fill), which is the ground that
-   colour was actually drawn for, with the label and the mark both flipping to
-   that colour's measured ink (--brand-ink) - a fixed ink on a fill somebody
-   else chose is a contrast nobody can predict.
+   repository link. At rest the mark wears the theme-adjusted colour (--brand),
+   since a published brand colour dies on one of the two grounds. On hover the
+   true colour becomes the fill (--brand-fill) and label and mark take its
+   measured ink (--brand-ink).
 
-   The `svg path` half of the selector is not belt-and-braces, it is the half
-   that works for some of them. A fill set on the <svg> only reaches paths that
-   declare none of their own, and a glyph set that writes fill="currentColor"
-   on the PATH beats an inherited value from the parent. Found live, where four
-   marks obeyed and the fifth silently kept the button's ink. Every mark here is
-   a single-colour drawing, so painting both levels is safe.
+   The `svg path` selector is needed because a glyph that writes
+   fill="currentColor" on the path ignores a fill inherited from the svg.
 
-   A mark that brings its OWN GROUND is the exception and takes none of these
-   classes: a coin disc is a filled circle in the brand's colour with a white
-   symbol on it, so the contrast that decides whether it can be read is inside
-   the mark and the same on any tile. Flattening it to one ink would be
-   redrawing the logo. */
+   Coin discs take none of these classes: they bring their own ground, and
+   flattening them to one ink would redraw the logo. */
 .glim-brand-btn .glim-btn-glyph svg,
 .glim-brand-btn .glim-btn-glyph svg path {
   fill: var(--brand);
@@ -346,12 +223,10 @@ body {
   fill: currentColor;
 }
 
-/* One block per brand: the adjusted resting mark (a token, because it changes
-   with the theme), then the true colour and its measured ink, which do not. */
 .glim-brand-coffee {
   --brand: var(--brand-coffee);
   --brand-fill: #ffdd00;
-  /* Buy Me a Coffee's own near-black, the ink their button uses. 13.8:1. */
+  /* Buy Me a Coffee's own button ink. 13.8:1. */
   --brand-ink: #0d0c22;
 }
 .glim-brand-bitcoin {
@@ -370,22 +245,15 @@ body {
   --brand-ink: #ffffff; /* 18.3:1 */
 }
 
-/* The house's own button: the route that reaches an app's AUTHORS rather than
-   a third party. It is the one button in that row that follows the colour
-   engine, so all three values are engine tokens - --accent-ink is the token for
-   accent-coloured GRAPHICS on an ordinary surface, which is the same job
-   --brand-* does for the four brands, and the hover pair is the ordinary accent
-   pairing. This one changes with the user's accent and with rainbow mode; a
-   vendor's mark may not. */
+/* The route to the app's own authors follows the user's accent and rainbow,
+   which a vendor's mark may not. */
 .glim-brand-house {
   --brand: var(--accent-ink);
   --brand-fill: var(--accent);
   --brand-ink: var(--accent-contrast);
 }
 
-/* Reactive brings the words back under the pointer and under the keyboard, and
-   only there. It is a colour and visibility rule, never a motion one, so the
-   animation that carries it keeps running at whatever the motion engine says. */
+/* Reactive brings the words back under the pointer and the keyboard. */
 [data-labels-buttons='reactive'] .glim-btn:hover .glim-btn-label,
 [data-labels-buttons='reactive'] .glim-btn:focus-visible .glim-btn-label,
 [data-labels-tabs='reactive'] .glim-tab:hover .glim-tab-label,

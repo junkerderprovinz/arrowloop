@@ -2,22 +2,11 @@ import { useMemo } from "react";
 
 import { buildQR } from "../lib/qr";
 
-// ---------------------------------------------------------------------------
-// QRCode — a URI as a scannable square.
-//
-// The geometry lives in lib/qr.ts, because the phone draws the same square and
-// cannot read a file that returns `<svg>`. This is the browser's element around
-// it and nothing more.
-//
-// The colours are fixed black on white and do NOT follow the theme, which is
-// deliberate. A phone camera needs contrast in the direction it expects, and a
-// code drawn in the interface's own dark surface with a light foreground is
-// inverted: some scanners cope, plenty do not, and "my authenticator will not
-// read it" is a bad first minute with a security feature. The white square is
-// given a little padding of its own because the quiet zone is part of the spec,
-// not decoration.
-// ---------------------------------------------------------------------------
-
+/**
+ * A URI as a scannable square, drawn from the geometry in lib/qr.ts, which the
+ * phone shares. Always black on white, since many scanners fail on an inverted
+ * code.
+ */
 export function QRCode({
   value,
   size = 200,

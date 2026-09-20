@@ -11,33 +11,10 @@ import { api, type Settings } from '../lib/api'
 import { useT } from '../lib/i18n'
 
 /**
- * The settings that are not about one job.
+ * The engine settings that are not about one job, saved as they change.
  *
- * Every value on this page was already read by the engine and had nowhere to be
- * set except the configuration file itself. jdp, looking at the app: "Das
- * programm sieht so klein und unfertig aus und wirkt als haette es keine
- * funktionen." It had them. It just never showed them, which from the outside
- * is the same thing.
- *
- * Three cards rather than one long column, because these answer three different
- * questions: how hard may it work, how long does it remember, and who gets told.
- */
-
-/**
- * The engine's settings, saved as they are changed.
- *
- * There was a save button at the foot of the page, and it is gone (jdp: "im
- * motortab gibt es einen speichern button. der soll weg. es soll alles live
- * speichern"). A page of settings is not a form somebody fills in and submits:
- * every control on it stands alone, and a button at the bottom means a switch
- * flipped at the top does nothing until somebody scrolls down and finds it. The
- * jobs page learned the same thing the hard way, where a deletion did not reach
- * the file until a button elsewhere was pressed.
- *
- * WRITING IS DELAYED, and that is not a detail. Half of these controls are text
- * boxes, so saving on every change would send a request per keystroke and, for
- * the bandwidth limit, would refuse "1" on the way to "1M" and flash an error at
- * somebody who is typing correctly. The delay lets a value settle first.
+ * Writes wait for a value to settle, or a text box would send a request per
+ * keystroke and the bandwidth limit would refuse "1" on the way to "1M".
  */
 const SETTLE_MS = 700
 
@@ -58,16 +35,10 @@ function useSettings() {
       .catch((e: Error) => setError(e.message))
   }, [])
 
-  /**
-   * The pending write, held outside React's state on purpose.
-   *
-   * The timer's callback fires long after the render that scheduled it, so it
-   * cannot close over `draft`: it would send whatever the draft was when the
-   * FIRST character was typed. A ref is the value at the moment the timer runs.
-   */
+  // A ref, because the timer fires long after the render that scheduled it and
+  // would otherwise send a stale draft.
   const latest = useRef<Settings>({})
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
-  /** Cancels a pending write when the page is left mid-edit. */
   useEffect(() => () => {
     if (timer.current) clearTimeout(timer.current)
   }, [])
@@ -76,13 +47,10 @@ function useSettings() {
     setBusy(true)
     setError(null)
     try {
-      // The whole draft, not a diff. The endpoint merges, so sending a key back
-      // unchanged costs nothing, and working out a diff is a second place for
-      // "did this field change" to be decided differently from the first.
+      // The whole draft rather than a diff; the endpoint merges.
       const got = await api.saveSettings(latest.current)
-      // `settings` takes the server's answer; the DRAFT deliberately does not.
-      // A reply arriving while somebody is still typing would replace the box
-      // under their cursor with the value they had a second ago.
+      // Only `settings` takes the answer: replacing the draft would overwrite a
+      // box somebody is still typing in.
       setSettings(got)
       setSaved(true)
     } catch (e) {
@@ -170,7 +138,6 @@ export function Engine() {
 
       <Card title={t('engine.telling')} hueIndex={2}>
         <div className="flex flex-col gap-4">
-          {/* Matrix first, because it is the one this house actually uses. */}
           <Field label={t('engine.matrixHome')} hint={t('engine.matrixHint')}>
             <Text
               value={matrix.homeserver}
@@ -183,8 +150,6 @@ export function Engine() {
             <Text value={matrix.room} onChange={(v) => setMatrix({ room: v })} placeholder="!abc:example.org" mono />
           </Field>
           <Field label={t('engine.matrixToken')}>
-            {/* Covered in the field, shown by the eye. A token pasted into a
-                plain box is a token on screen for as long as the page is. */}
             <Secret value={matrix.token} onChange={(v) => setMatrix({ token: v })} />
           </Field>
           <Field label={t('engine.webhook')} hint={t('engine.webhookHint')}>
@@ -204,10 +169,7 @@ export function Engine() {
         </div>
       </Card>
 
-      {/* What every job starts from, and the desktop could not set it at all:
-          direction, mode and schedule have been defaults in the engine for a
-          while and were reachable only from the phone or by editing the file.
-          Same card, same name, same three axes on both surfaces. */}
+      {/* What every new job starts from, the same card as on the phone. */}
       <Card title={t('engine.defaults')} hueIndex={2}>
         <div className="flex flex-col gap-4">
           <Field label={t('direction.label')} hint={t('defaults.followHint')}>
@@ -225,10 +187,8 @@ export function Engine() {
               ]}
             />
           </Field>
-          {/* Inert with `sync` showing for a both-ways default rather than
-              vanishing, which is what the phone does and for the same reason: a
-              card that changes shape with the answer above it is two cards
-              somebody has to recognise as one. */}
+          {/* Inert and showing `sync` for a both-ways default rather than
+              vanishing, so the card keeps its shape, as on the phone. */}
           <Field
             label={t('mode.label')}
             hint={(defaults.direction ?? 'both') === 'both' ? t('mode.onlyOneWay') : undefined}
@@ -261,12 +221,7 @@ export function Engine() {
         </div>
       </Card>
 
-      {/* The global sync settings, in the same four groups the phone uses.
-          jdp grouped them there after Autosync's own settings page, and the two
-          surfaces naming the same things differently is how one product starts
-          reading as two. Which is also why they are four cards rather than one
-          long column: "how hard does it push" and "what is the net if it goes
-          wrong" are different questions and were stacked in one list. */}
+      {/* The global sync settings, in the same groups the phone uses. */}
       <Card title={t('settings.transfer')} hueIndex={3}>
         <div className="flex flex-col gap-4">
           <Field label={t('engine.transfers')} hint={t('engine.transfersHint')}>
@@ -309,10 +264,8 @@ export function Engine() {
             onChange={(v) => setDefault({ metadata: v })}
             hint={t('edit.metadataHint')}
           />
-          {/* Three answers, not two, and the third one is the default. "Ask the
-              two sides" is right for almost every job, and it is a genuinely
-              different instruction from "never fold": a toggle could only offer
-              two of the three and would have to pick which truth to hide. */}
+          {/* Three answers rather than a toggle, since the default "ask the two
+              sides" differs from "never fold". */}
           <Field label={t('engine.foldCase')} hint={t('engine.foldCaseHint')}>
             <Selector<'auto' | 'on' | 'off'>
               scale="small"
@@ -331,10 +284,8 @@ export function Engine() {
         </div>
       </Card>
 
-      {/* The brakes get a card of their own because of what they are: the net
-          that stops a run removing more than half of everything it knows
-          about. Standing at the end of a list of transfer tuning, they read as
-          two more numbers. */}
+      {/* The brakes stop a run from removing more than a share of what it knows
+          about, so they get a card of their own. */}
       <Card title={t('settings.safetyNet')} hueIndex={5}>
         <div className="flex flex-col gap-4">
           <Field label={t('engine.brakePercent')} hint={t('engine.brakePercentHint')}>
@@ -358,15 +309,9 @@ export function Engine() {
         </div>
       </Card>
 
-      {/* What happens after a scheduled run fails, which until now was: try
-          again at every turn of the clock, for ever. The schedule works out
-          what is OWED from the last SUCCESS, so a failed job stayed owed - the
-          right instinct and the wrong amount of it, since a remote that is
-          down is usually down for a while.
-
-          Engine-wide rather than a default a job fills in, which is why it is
-          not in the card above: patience after a failure is a fact about this
-          machine and how often it is awake, not about a folder pair. */}
+      {/* Retries after a failed scheduled run. Engine-wide rather than a job
+          default: patience after a failure depends on the machine, not on a
+          folder pair. */}
       <Card title={t('settings.retry')} hint={t('retry.hint')} hueIndex={6}>
         <div className="flex flex-col gap-4">
           <Field label={t('retry.attempts')} hint={t('retry.attemptsHint')}>
@@ -378,8 +323,7 @@ export function Engine() {
               onChange={(v) => setRetry({ attempts: v })}
             />
           </Field>
-          {/* In MINUTES, because the engine's own unit is a Go duration and
-              asking somebody to type "5m" is asking them to know that. */}
+          {/* Minutes, so nobody has to know the Go duration syntax. */}
           <Field
             label={`${t('retry.wait')} (${t('schedule.unit.minute')})`}
             hint={t('retry.waitHint')}
@@ -395,12 +339,6 @@ export function Engine() {
         </div>
       </Card>
 
-      {/* The explanation rides in the heading's own bubble rather than as a grey
-          paragraph above the editor (jdp: "Info texte sollen immer in i
-          infobubbles!"). That is rule 8, and this card was one of the three
-          places in the app still printing its prose on the page: read once, then
-          costing vertical space for ever, and hiding the control it was meant to
-          clarify. */}
       <Card title={t('engine.sets')} hint={t('engine.setsHint')} hueIndex={4}>
         <div className="flex flex-col gap-3">
           <ExcludeSetEditor
@@ -410,28 +348,8 @@ export function Engine() {
         </div>
       </Card>
 
-      {/* The card that carried the whole setup in and out of a file used to sit
-          here, and it has moved to the general section (jdp: "Eine Kopie der
-          Einrichtung behalten-card in den allgemein tab"). It never belonged
-          among these: this tab holds what the ENGINE reads, and that card is
-          about the file holding all of it plus every job. It lives in
-          components/SettingsBackup.tsx now. */}
-
-      {/* What is left where the save button stood: the page says what it just
-          did, and nothing here is a control. A refusal keeps its place, because
-          an invalid bandwidth limit has to be seen and corrected, and it now
-          arrives while the field is still in front of the person who typed it
-          rather than on the next boot. */}
-      {/* A REFUSAL STICKS TO THE BOTTOM OF THE WINDOW, and that is the price of
-          taking the save button away. With a button, the answer appears where
-          the finger just was; saving as you type puts the answer at the foot of
-          a long page while the eye is on a field near the top. Measured on the
-          running page: an invalid bandwidth limit is refused correctly, the
-          value never reaches the file, and the sentence saying so was three
-          cards below the fold.
-          Only a refusal sticks. A line saying "saved" is not news worth pinning
-          over the page, and a strip that is always there for a message that is
-          usually empty is furniture. */}
+      {/* The save status. A refusal sticks to the bottom of the window, since
+          the field that caused it may be far up a long page; "saved" does not. */}
       <div
         className={`flex min-h-4 flex-wrap items-center justify-end gap-2 text-xs ${
           error ? 'sticky bottom-0 -mx-2 rounded-card bg-carbon-surface px-2 py-1.5 shadow-lg' : ''
@@ -450,12 +368,8 @@ export function Engine() {
 }
 
 /**
- * The stored retry wait, as whole minutes.
- *
- * The engine takes a Go duration, because that is what every other duration in
- * that file is. Anything unreadable comes back as the engine's own default
- * rather than as zero: unreadable means the built-in applies, and a box showing
- * 0 would claim a setting that is not in force.
+ * The stored retry wait, a Go duration, as whole minutes. Anything unreadable
+ * shows the engine's built-in default, which is what then applies.
  */
 function waitMinutes(raw: string | undefined): number {
   const match = /^(\d+)(m|h)$/.exec(raw ?? '')

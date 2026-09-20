@@ -3,34 +3,16 @@ import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 
-/**
- * Every `Mark:` the Go table writes down must arrive at a drawing.
- *
- * The chain has three links in three languages: `internal/remotes/providers.go`
- * names a component, `brandMarks.tsx` maps that name to one, and
- * `brandGlyphs.tsx` exports it. Nothing connects them at compile time - the
- * name travels as a plain string in JSON - and the fallback is silent: a
- * provider whose mark does not resolve simply shows no logo. So a typo in a
- * name, or a Mark set before its component is generated, looks exactly like
- * "this provider has no logo yet", which is a real and common state here.
- *
- * That is the same shape as the missing glyph for `targets.deleteDrive` and the
- * five orphaned translation keys: a break that renders. It needs a test rather
- * than an eye.
- *
- * Both directions are checked. An unreachable mark is a provider missing its
- * logo; an entry in the map that no provider names is dead weight that will
- * still be here long after somebody forgets why.
- */
+// Every `Mark:` in internal/remotes/providers.go must reach a drawing through
+// brandMarks.tsx. The name travels as a plain string and an unresolved mark
+// silently shows no logo, so nothing but this test connects the three files.
 
 const here = dirname(fileURLToPath(import.meta.url))
 const repo = join(here, '..', '..', '..')
 
 const providersGo = readFileSync(join(repo, 'internal', 'remotes', 'providers.go'), 'utf8')
 const marksTsx = readFileSync(join(here, 'brandMarks.tsx'), 'utf8')
-// Two drawing files on purpose, and the lookup reaches into both: the brand
-// marks are somebody else's logos, the protocol marks are this app's own glyphs
-// because there is no company behind "SFTP" to have one.
+// Brand marks come from brandGlyphs.tsx, protocol marks from the app's glyphs.
 const glyphsTsx =
   readFileSync(join(here, 'brandGlyphs.tsx'), 'utf8') + readFileSync(join(here, 'glyphs.tsx'), 'utf8')
 
@@ -42,9 +24,7 @@ const mapped = [...marksTsx.matchAll(/^ {2}(Icon\w+):\s*\(\)\s*=>/gm)].map((m) =
 
 describe('brand marks', () => {
   it('has a Go table that names some marks at all', () => {
-    // Guards the guard: both lists being empty would make every assertion
-    // below pass while proving nothing, which is how a test quietly stops
-    // testing after somebody renames a field.
+    // Empty lists would let every assertion below pass without proving anything.
     expect(wanted.length).toBeGreaterThan(20)
     expect(mapped.length).toBeGreaterThan(20)
   })
@@ -60,8 +40,7 @@ describe('brand marks', () => {
   })
 
   it('keeps no mark nobody uses', () => {
-    // The protocol marks come from the app's own glyph set through a second
-    // lookup in the same file, so only the brand half is checked here.
+    // Only the brand half: protocol marks are the app's own glyphs.
     const orphans = mapped.filter(
       (name) => !wanted.includes(name) && glyphsTsx.includes(`export function ${name}(`),
     )
