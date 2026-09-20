@@ -1,12 +1,9 @@
 // Package filter decides which paths a job is allowed to see at all.
 //
-// The dangerous part of a filter is not the matching, it is what an excluded
-// path means. A file that used to be synced and is now excluded has NOT been
-// deleted, and an engine that simply drops it from the listing will read it as
-// a deletion and remove it on the other side. Adding one exclude pattern would
-// then wipe every matching file the user already had. So a filter has to hide a
-// path from the record as well as from both sides, which is why the exclusion
-// is applied in one place and handed to everything that reads paths.
+// An excluded path has not been deleted. If it were only dropped from the
+// listings, the engine would read a newly excluded file as a deletion and
+// remove it on the other side, so the same exclusion is applied to the record
+// and to both sides.
 package filter
 
 import (
@@ -16,18 +13,14 @@ import (
 )
 
 // InProgress are the names programs use while they are still writing a file.
-//
-// These are excluded by default and it is not really a filter decision: these
-// files are meaningless outside the machine that made them, they exist for
-// seconds, and copying one produces a file the other side can never use. Word's
-// owner files are the classic case, because they appear next to a document the
-// moment somebody opens it and vanish when they close it.
+// They are excluded by default: they exist for seconds and mean nothing on
+// another machine.
 var InProgress = []string{
-	"~$*",          // Microsoft Office owner files
-	".~lock.*#",    // LibreOffice lock files
-	"*.tmp",        //
-	"*.temp",       //
-	"*.partial",    //
+	"~$*",       // Microsoft Office owner files
+	".~lock.*#", // LibreOffice lock files
+	"*.tmp",
+	"*.temp",
+	"*.partial",
 	"*.part",       // wget, curl and most download managers
 	"*.crdownload", // Chrome
 	"*.download",   // Safari
@@ -82,8 +75,7 @@ func (s *Set) Excluded(rel string) bool {
 		if re.MatchString(subject) {
 			return true
 		}
-		// A pattern naming a directory hides everything under it, otherwise
-		// excluding "cache" would leave "cache/a/b.txt" syncing merrily.
+		// A pattern naming a directory hides everything under it.
 		if strings.HasPrefix(rel, s.patterns[i]+"/") {
 			return true
 		}
@@ -91,9 +83,8 @@ func (s *Set) Excluded(rel string) bool {
 	return false
 }
 
-// compile turns one glob into an anchored regular expression. Writing this out
-// rather than using path.Match is what buys "**": path.Match has no way to say
-// "across directory separators", and without it "build/**" cannot be expressed.
+// compile turns one glob into an anchored regular expression. path.Match has
+// no pattern that spans directory separators, so it cannot express "**".
 func compile(pattern string) (*regexp.Regexp, error) {
 	var b strings.Builder
 	b.WriteString("^")

@@ -6,23 +6,12 @@ import (
 	"testing"
 )
 
-// The per-file log promises what a run cost, and a size of zero is not a cost.
-//
-// jdp, looking at the running container: "im aktivitätslog ist die dateigröße
-// nicht sichtbar." The database said why - 25515 entries, 24758 of them copies,
-// and not ONE of them carrying a size. Not old rows either: the column has been
-// there for days and the test jobs write into it constantly. The write path was
-// simply never producing a number.
-//
-// So this asserts the thing the screen shows rather than the thing the code
-// says: run a real sync of files whose sizes are known, and read the sizes back
-// off the entries the run recorded. A unit test on `sizeOf` would have passed
-// throughout, because `sizeOf` was never the part that was wrong.
+// The sizes are read back from the entries a real run recorded, which is what
+// the activity log shows.
 func TestACopyRecordsHowManyBytesItMoved(t *testing.T) {
 	j := newJob(t, quick())
 
-	// Three files, three different lengths, so a mixed-up mapping cannot pass
-	// by accident: one wrong size would still be one of these three numbers.
+	// Three different lengths, so a mixed-up mapping cannot pass.
 	want := map[string]int64{
 		"klein.txt":       4,
 		"mittel.txt":      40,
@@ -50,13 +39,8 @@ func TestACopyRecordsHowManyBytesItMoved(t *testing.T) {
 	}
 }
 
-// A file both sides already had is still a file with a size.
-//
-// This is the row that matters most, and the one that looked broken: on a pair
-// of trees that are in sync, nearly every line of the activity log is a
-// "record" - nothing was transferred, the two sides simply agreed. With no size
-// on those, the column is blank on 696 lines out of 697 and the one line that
-// carries a number is easy to miss entirely.
+// On trees already in sync nearly every log line is a "record", so those need
+// a size too.
 func TestAnAgreedFileRecordsItsSizeToo(t *testing.T) {
 	j := newJob(t, quick())
 	write(t, j.left, "beide.txt", string(make([]byte, 321)))
@@ -79,9 +63,8 @@ func TestAnAgreedFileRecordsItsSizeToo(t *testing.T) {
 func TestATrashedFileRecordsWhatItWeighed(t *testing.T) {
 	j := newJob(t, quick())
 	write(t, j.left, "weg.txt", string(make([]byte, 123)))
-	// A second file that stays: a side that lists NOTHING at all is refused as
-	// unmounted rather than treated as a mass deletion, and a one-file tree
-	// emptied is exactly that case.
+	// A second file that stays, or the emptied side would be refused as
+	// unmounted.
 	write(t, j.left, "bleibt.txt", string(make([]byte, 7)))
 	j.sync(t)
 

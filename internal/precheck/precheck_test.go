@@ -19,11 +19,6 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/state"
 )
 
-// The whole point of this check is that it is asked BEFORE anything moves, so
-// every test here reads the report and then, where it matters, goes and looks
-// at the two folders to see whether the check kept its own promise about what
-// it would touch.
-
 type fixture struct {
 	dir   string
 	left  string
@@ -50,10 +45,8 @@ func newFixture(t *testing.T) *fixture {
 			Left:  filepath.ToSlash(left),
 			Right: filepath.ToSlash(right),
 			State: filepath.Join(dir, "photos.db"),
-			// Without this every file these tests write is younger than the
-			// default quiet period, so the plan postpones all of it and the
-			// byte estimate is always zero for reasons that have nothing to do
-			// with what is being tested.
+			// The files these tests write are younger than the default quiet
+			// period, which would postpone all of them.
 			QuietPeriod: "0s",
 		},
 	}
@@ -75,9 +68,8 @@ func write(t *testing.T, dir, name, content string) {
 	}
 }
 
-// remember writes a state row by hand, which is what a run that has already
-// happened leaves behind. Sizes that match nothing on either side are the
-// point in some of these tests: they make the file read as changed.
+// remember writes a state row as an earlier run would. Sizes that match
+// neither side make the file read as changed.
 func remember(t *testing.T, f *fixture, path string, leftSize, rightSize int64) {
 	t.Helper()
 	ctx := context.Background()
@@ -98,11 +90,8 @@ func remember(t *testing.T, f *fixture, path string, leftSize, rightSize int64) 
 	}
 }
 
-// agreeOn writes a state row that matches a file exactly as it stands on the
-// left, which is what the last run leaves behind for a file nobody has touched
-// since. The hashes are left empty on purpose: an empty hash means "unknown"
-// everywhere in this engine, so the comparison falls back to size and time,
-// which is the pair this helper actually controls.
+// agreeOn writes a state row that matches a file exactly as it stands. Without
+// hashes the comparison uses size and time, which this helper controls.
 func agreeOn(t *testing.T, f *fixture, path string, size int64, mod time.Time) {
 	t.Helper()
 	ctx := context.Background()
@@ -154,9 +143,6 @@ func exists(t *testing.T, path string) bool {
 	return false
 }
 
-// TestAHealthyJobMeasuresBothSides is the ordinary answer, and it has to be
-// specific rather than merely green: a check that reported "fine" without ever
-// having worked out a number would pass a test that only looked at OK.
 func TestAHealthyJobMeasuresBothSides(t *testing.T) {
 	f := newFixture(t)
 	write(t, f.left, "a.txt", "hello")
@@ -189,9 +175,7 @@ func TestAHealthyJobMeasuresBothSides(t *testing.T) {
 	}
 }
 
-// TestTheWriteProbeCleansUpAfterItself checks both halves of the promise: that
-// the side really was written to, and that nothing is left on it afterwards. A
-// probe that quietly did nothing would pass the second half alone.
+// The side has to have been written to, and nothing may be left on it.
 func TestTheWriteProbeCleansUpAfterItself(t *testing.T) {
 	f := newFixture(t)
 	write(t, f.left, "a.txt", "hello")
@@ -214,14 +198,11 @@ func TestTheWriteProbeCleansUpAfterItself(t *testing.T) {
 	}
 }
 
-// TestABackendThatCannotSaySaysUnknownNotZero is the rule the whole space check
-// stands on. Zero is a real answer meaning "full"; a bucket has no size at all,
-// and confusing the two would refuse every job pointed at one.
+// Zero free space would mean full.
 func TestABackendThatCannotSaySaysUnknownNotZero(t *testing.T) {
 	f := newFixture(t)
 	write(t, f.left, "a.txt", "hello")
-	// A bucket name of its own: the memory backend keeps its contents in one
-	// process-wide place, so two tests sharing a name would read each other's.
+	// The memory backend is process-wide, so each test uses its own bucket.
 	f.job.Right = ":memory:precheck-unknown-space"
 
 	rep := f.check(t, precheck.Opts{})
@@ -242,17 +223,11 @@ func TestABackendThatCannotSaySaysUnknownNotZero(t *testing.T) {
 	if !rep.OK {
 		t.Errorf("a job onto a bucket is healthy, got %v", fatals(rep))
 	}
-	// The bytes are still counted. Not knowing what the far side has left is a
-	// different thing from not knowing what the run would send.
 	if rep.Right.Needed == nil || *rep.Right.Needed != 5 {
 		t.Errorf("the estimate is still worth having, got %v", rep.Right.Needed)
 	}
 }
 
-// TestASideThatVanishedIsFatalOnlyWhenItHeldSomething separates the two ways a
-// folder can be missing. A job pointed at a share that failed to mount is the
-// classic total loss waiting to happen. A job whose destination has simply not
-// been created yet is an ordinary new job.
 func TestASideThatVanishedIsFatalOnlyWhenItHeldSomething(t *testing.T) {
 	t.Run("recorded files make it fatal", func(t *testing.T) {
 		f := newFixture(t)
@@ -301,10 +276,7 @@ func TestASideThatVanishedIsFatalOnlyWhenItHeldSomething(t *testing.T) {
 	})
 }
 
-// TestTheCheckDoesNotCreateTheFolderItIsCheckingIs the guard that keeps this a
-// question rather than an action. The local backend's Put makes every missing
-// parent including the root, so a write probe on a mistyped path would create
-// it and the check would then report a healthy job it had just invented.
+// The local backend's Put creates missing parents, root included.
 func TestTheCheckDoesNotCreateTheFolderItIsChecking(t *testing.T) {
 	f := newFixture(t)
 	write(t, f.left, "a.txt", "hello")
@@ -319,10 +291,6 @@ func TestTheCheckDoesNotCreateTheFolderItIsChecking(t *testing.T) {
 	}
 }
 
-// TestAJobThatHasNeverRunGetsNoStateDatabase is the same promise for the
-// record. Opening the job's own path would create it, and somebody asking
-// whether a job is set up correctly should not find a new file on their disk
-// because they asked.
 func TestAJobThatHasNeverRunGetsNoStateDatabase(t *testing.T) {
 	f := newFixture(t)
 	write(t, f.left, "a.txt", "hello")
@@ -339,16 +307,11 @@ func TestAJobThatHasNeverRunGetsNoStateDatabase(t *testing.T) {
 	if found.Fatal {
 		t.Error("never having run is not a fault")
 	}
-	// And the estimate still happened, which is the harder half: a job with no
-	// record is exactly the job whose first run is the big one.
 	if rep.Right.Needed == nil || *rep.Right.Needed != 5 {
 		t.Errorf("the first run is the one most likely to fill a disk, so it has to be measured, got %v", rep.Right.Needed)
 	}
 }
 
-// TestAnUnreadableRecordIsFatal covers the state database that is there and is
-// not a database, which is what a wrong path or a truncated file looks like. A
-// job whose record cannot be read would treat every file on both sides as new.
 func TestAnUnreadableRecordIsFatal(t *testing.T) {
 	f := newFixture(t)
 	write(t, f.left, "a.txt", "hello")
@@ -376,9 +339,6 @@ func TestAnUnreadableRecordIsFatal(t *testing.T) {
 	}
 }
 
-// TestAOneWayJobIsNeverWrittenToOnItsSource. Choosing a direction is a promise
-// that one side is only ever read, and a check that wrote a probe there to
-// prove it could would break exactly that promise.
 func TestAOneWayJobIsNeverWrittenToOnItsSource(t *testing.T) {
 	f := newFixture(t)
 	f.job.Direction = "leftToRight"
@@ -390,7 +350,7 @@ func TestAOneWayJobIsNeverWrittenToOnItsSource(t *testing.T) {
 		t.Error("the check wrote to the side this job promises never to touch")
 	}
 	if !exists(t, filepath.Join(f.right, ".arrowloop")) {
-		t.Error("the side that IS written to should still have been proved writable")
+		t.Error("the side that is written to should still have been proved writable")
 	}
 	found, ok := findingFor(rep, "sideNotWritten", "left")
 	if !ok {
@@ -407,10 +367,7 @@ func TestAOneWayJobIsNeverWrittenToOnItsSource(t *testing.T) {
 	}
 }
 
-// TestARunThatWouldNotFitIsRefused is the whole of the first feature. The free
-// number is said out loud rather than manufactured, because a disk with a
-// handful of bytes left is an ordinary state of a real disk and there is no
-// portable way to stand in one.
+// The free space is forced, since there is no portable way to fill a disk.
 func TestARunThatWouldNotFitIsRefused(t *testing.T) {
 	t.Run("more bytes than room", func(t *testing.T) {
 		f := newFixture(t)
@@ -460,15 +417,12 @@ func TestARunThatWouldNotFitIsRefused(t *testing.T) {
 	})
 }
 
-// TestAConflictCountsAgainstBothSides is the least obvious piece of the
-// arithmetic. Keeping both versions leaves each side holding the other side's
-// file beside its own, so a conflict costs room on both ends and not on one.
+// Keeping both versions puts each side's file on the other.
 func TestAConflictCountsAgainstBothSides(t *testing.T) {
 	f := newFixture(t)
 	write(t, f.left, "a.txt", "hello")     // five bytes
 	write(t, f.right, "a.txt", "worldly!") // eight
-	// A record that matches neither side, so both read as changed since the
-	// last agreement and the plan calls it a conflict.
+	// A record that matches neither side makes this a conflict.
 	remember(t, f, "a.txt", 1, 1)
 
 	rep := f.check(t, precheck.Opts{})
@@ -481,22 +435,14 @@ func TestAConflictCountsAgainstBothSides(t *testing.T) {
 	}
 }
 
-// TestADeletionFreesNothingAndCostsNothing is the rule that stops this check
-// waving through the very run it exists to catch. A deletion in this program is
-// a move into the tree's own trash, which lives inside the same tree, so a run
-// that removes a hundred gigabytes has a hundred gigabytes exactly where it had
-// them before.
-//
-// The first half is there so the second half cannot pass for the wrong reason.
-// Zero bytes needed is also what a plan with nothing in it reports, so the same
-// tree is measured first WITHOUT the record, where it has to come to five.
+// A deletion moves the file into the tree's own trash, so it frees nothing.
+// The tree is first measured without the record, since an empty plan would
+// also need zero bytes.
 func TestADeletionFreesNothingAndCostsNothing(t *testing.T) {
 	f := newFixture(t)
 	write(t, f.left, "a.txt", "hello")
-	// A second file that both sides keep. The engine refuses to believe a side
-	// that lists nothing at all while the record says it held files, so a tree
-	// where the ONLY recorded file has gone is a tree no plan is ever built
-	// for, and this test would be measuring that refusal instead.
+	// A file both sides keep, so the right side does not list empty and trip
+	// the empty-side guard.
 	write(t, f.left, "b.txt", "keepme")
 	write(t, f.right, "b.txt", "keepme")
 	stamp := time.Now().Add(-time.Hour).Truncate(time.Second)
@@ -511,9 +457,7 @@ func TestADeletionFreesNothingAndCostsNothing(t *testing.T) {
 		t.Fatalf("without a record a.txt is new and would be copied, got %v", before.Right.Needed)
 	}
 
-	// Now say the two sides once agreed on both files, exactly as they stand.
-	// The right side no longer has a.txt, so the run would delete it on the
-	// left, and nothing else would happen at all.
+	// With both files recorded, a.txt reads as deleted on the right.
 	info, err := os.Stat(filepath.Join(f.left, "a.txt"))
 	if err != nil {
 		t.Fatalf("stat: %v", err)
@@ -532,15 +476,10 @@ func TestADeletionFreesNothingAndCostsNothing(t *testing.T) {
 	if !rep.OK {
 		t.Errorf("this job is fine, got %v", fatals(rep))
 	}
-	// The count comes from the record that is actually there, and it is what
-	// the missing-side decision is made against: a side listing nothing is
-	// ordinary when this number is zero and an emergency when it is not.
 	if rep.Known == nil || *rep.Known != 2 {
 		t.Errorf("two files were recorded, got %v", rep.Known)
 	}
-	// And with the record in place there is nothing at all left to say, which
-	// has to reach the browser as an empty list rather than as null: a screen
-	// promised a list of findings should not have to guard every use of it.
+	// No findings, as an empty list rather than null.
 	if rep.Findings == nil {
 		t.Error("a job with nothing wrong has no findings, not an absent field")
 	}
@@ -549,16 +488,11 @@ func TestADeletionFreesNothingAndCostsNothing(t *testing.T) {
 	}
 }
 
-// TestARefusedPlanIsReportedRatherThanHidden. The engine has brakes of its own,
-// and a job that those brakes would stop is a job that will not run tonight.
-// Saying so here, in the engine's own words, means there is one wording to
-// recognise rather than two.
 func TestARefusedPlanIsReportedRatherThanHidden(t *testing.T) {
 	f := newFixture(t)
 	write(t, f.left, "a.txt", "hello")
-	// The right side exists and lists nothing while the record says it held
-	// files, which is what a share that failed to mount looks like from the
-	// inside: the folder is there, the contents are not.
+	// The right side lists nothing while the record says it held files, like
+	// a share that failed to mount.
 	remember(t, f, "a.txt", 5, 5)
 
 	rep := f.check(t, precheck.Opts{})
@@ -578,9 +512,6 @@ func TestARefusedPlanIsReportedRatherThanHidden(t *testing.T) {
 	}
 }
 
-// TestSkippingTheEstimateSaysSo. The listing pass costs minutes on a large tree,
-// so it can be left out, and a report that left it out must not read like one
-// that measured and found room to spare.
 func TestSkippingTheEstimateSaysSo(t *testing.T) {
 	f := newFixture(t)
 	write(t, f.left, "a.txt", "hello")
@@ -596,16 +527,11 @@ func TestSkippingTheEstimateSaysSo(t *testing.T) {
 	if !rep.OK {
 		t.Errorf("skipping the estimate is not a fault, got %v", fatals(rep))
 	}
-	// The cheap half still ran, which is the reason to offer the option at all.
 	if rep.Left.Free == nil {
 		t.Error("the sides can still say how much room they have")
 	}
 }
 
-// TestAHalfWrittenJobIsRefusedBeforeAnythingIsOpened. A job switched off while
-// somebody fills it in is allowed to be missing a side; checking one has to say
-// so rather than hand an empty string to a backend and report what it makes of
-// it.
 func TestAHalfWrittenJobIsRefusedBeforeAnythingIsOpened(t *testing.T) {
 	f := newFixture(t)
 	f.job.Right = ""
@@ -624,9 +550,6 @@ func TestAHalfWrittenJobIsRefusedBeforeAnythingIsOpened(t *testing.T) {
 	}
 }
 
-// TestASideThatIsNotAFolderIsReported covers the everyday typo of pointing a
-// side at a file. rclone refuses to open it as a filesystem, and the check has
-// to carry that refusal rather than swallow it.
 func TestASideThatIsNotAFolderIsReported(t *testing.T) {
 	f := newFixture(t)
 	notAFolder := filepath.Join(f.dir, "notes.txt")
@@ -649,21 +572,14 @@ func TestASideThatIsNotAFolderIsReported(t *testing.T) {
 	}
 }
 
-// TestASideThatRefusesAWriteIsFatal is the read-only share, which lists
-// perfectly and fails on the first transfer.
-//
-// Two ways in, because only one of them exists everywhere. A folder with no
-// write bit is the real shape of the problem and Windows cannot express it with
-// a mode bit at all; a reserved directory that cannot be made is the same
-// refusal reached through a name, and it works on every platform. Both end at
-// the same place: the backend said no when it was asked to write.
+// A read-only side lists fine and fails on the first transfer. A folder without
+// a write bit cannot be made on Windows, so a file blocking the reserved
+// directory produces the same refusal on every platform.
 func TestASideThatRefusesAWriteIsFatal(t *testing.T) {
 	t.Run("the reserved directory cannot be made", func(t *testing.T) {
 		f := newFixture(t)
 		write(t, f.left, "a.txt", "hello")
-		// A FILE where the tool's own directory has to go. The scanner skips
-		// this name on both sides, so nothing ever removes it, and the trash a
-		// real run needs could not be made here either.
+		// A file where the reserved directory has to go.
 		if err := os.WriteFile(filepath.Join(f.right, ".arrowloop"), []byte("in the way"), 0o644); err != nil {
 			t.Fatalf("write: %v", err)
 		}
@@ -682,9 +598,7 @@ func TestASideThatRefusesAWriteIsFatal(t *testing.T) {
 		}
 	})
 
-	// A user whose account bypasses permissions entirely, such as root in a
-	// container, cannot reach this state either, and the test says so instead
-	// of pretending to have tested it.
+	// Root in a container bypasses the permission, so the subtest skips there.
 	t.Run("a folder with no write bit", func(t *testing.T) {
 		if runtime.GOOS == "windows" {
 			t.Skip("a read-only folder is not something a Windows mode bit can make")
@@ -713,9 +627,7 @@ func TestASideThatRefusesAWriteIsFatal(t *testing.T) {
 	})
 }
 
-// TestEveryFindingCarriesWordsAndACode. The interface translates from the code
-// and falls back to the sentence for a code it has never heard of, so a finding
-// with neither is a row nobody can act on.
+// The interface translates from the code and falls back to the sentence.
 func TestEveryFindingCarriesWordsAndACode(t *testing.T) {
 	f := newFixture(t)
 	write(t, f.left, "a.txt", "hello")
@@ -742,13 +654,8 @@ func TestEveryFindingCarriesWordsAndACode(t *testing.T) {
 	}
 }
 
-// TestTheReportSurvivesBeingEncoded pins the contract the browser reads.
-//
-// The handler does nothing to this structure but hand it to the encoder, so
-// this is where a renamed field or a number that quietly became zero would show
-// up. The unknown case is the one worth pinning: "free" has to arrive as null
-// and never as 0, because a screen cannot tell a full disk from an unanswerable
-// question once the difference has been encoded away.
+// TestTheReportSurvivesBeingEncoded pins the JSON the browser reads. An
+// unknown "free" has to arrive as null, never as 0.
 func TestTheReportSurvivesBeingEncoded(t *testing.T) {
 	f := newFixture(t)
 	write(t, f.left, "a.txt", "hello")
@@ -792,8 +699,7 @@ func TestTheReportSurvivesBeingEncoded(t *testing.T) {
 	}
 }
 
-// containsBrace spots a template value that was never substituted, which is how
-// a wording and its variables silently stop matching each other.
+// containsBrace spots a template value that was never substituted.
 func containsBrace(s string) bool {
 	for i := range s {
 		if s[i] == '{' {

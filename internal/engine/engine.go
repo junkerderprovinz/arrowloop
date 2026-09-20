@@ -1,8 +1,5 @@
-// Package engine is the one path a sync run takes.
-//
-// It exists so that the command line and the tests cannot drift apart. A test
-// that assembles the stages itself would eventually prove that a sequence
-// nobody ships works correctly, which is worse than no test at all.
+// Package engine is the one path a sync run takes, shared by the command line
+// and the tests so they cannot drift apart.
 package engine
 
 import (
@@ -28,17 +25,16 @@ type Options struct {
 	Compare plan.Options
 	Exclude *filter.Set
 
-	// EmptyDirs asks the job to carry directories that hold no files. Off by
-	// default: it costs a second listing pass and a second record, and most
-	// jobs never notice the difference.
+	// EmptyDirs asks the job to carry directories that hold no files, at the
+	// cost of a second listing pass and record.
 	EmptyDirs bool
 
 	// Metadata asks for permissions, ownership and extended attributes to be
 	// carried along with the bytes, where both sides can do it.
 	Metadata bool
 
-	// ForceFoldCase overrides what the backends report about case sensitivity.
-	// Only the tests need it: the real answer comes from the filesystems.
+	// ForceFoldCase overrides what the backends report about case sensitivity,
+	// for tests.
 	ForceFoldCase *bool
 
 	// ForceEmptyDirs overrides the capability check, for tests.
@@ -46,17 +42,11 @@ type Options struct {
 }
 
 // StartAccounting turns on rclone's bandwidth limiting, once per process.
+// rclone's binary does this from its flag parser; without it there is no token
+// bucket and a limit is silently ignored. The limit is process-wide because
+// the token bucket is.
 //
-// rclone's own binary does this from its flag parser, which is easy to mistake
-// for something that happens automatically. It does not: without this call
-// there is no token bucket, so a bandwidth limit is accepted and then silently
-// ignored, which is the worst of both answers.
-//
-// The limit is process-wide and not per job, because the token bucket is. Two
-// jobs sharing a machine share one uplink, so a per-job limit would be a
-// promise the underlying mechanism cannot keep.
-//
-// bwLimit takes rclone's own syntax, so "1M" or a timetable like
+// bwLimit takes rclone's syntax, such as "1M" or a timetable like
 // "08:00,512k 19:00,off". An empty string leaves it unlimited.
 func StartAccounting(ctx context.Context, bwLimit string) error {
 	ci := fs.GetConfig(ctx)
@@ -67,35 +57,24 @@ func StartAccounting(ctx context.Context, bwLimit string) error {
 	}
 	accounting.Start(ctx)
 	bwState.Lock()
-	// A timetable needs a ticker to follow it, and accounting.Start only starts
-	// one when the timetable it sees at BOOT has more than one entry. Remember
-	// which happened, so a limit set later can start the ticker that was never
-	// started rather than quietly having no way to change slot.
+	// accounting.Start only starts the timetable ticker when the timetable has
+	// more than one entry at startup, so ApplyBwLimit may have to start it.
 	bwState.ticking = len(ci.BwLimit) > 1
 	bwState.started = true
 	bwState.Unlock()
 	return nil
 }
 
-// bwState remembers what StartAccounting did, because rclone does not.
-//
-// accounting.Start is not safe to call twice: it would start a second ticker
-// goroutine every time, and after a few settings saves the process would have a
-// small crowd of them all writing the same limit.
+// bwState remembers what StartAccounting did. accounting.Start is not safe to
+// call twice, as each call starts another ticker goroutine.
 var bwState struct {
 	sync.Mutex
 	started bool
 	ticking bool
 }
 
-// ValidateBwLimit says whether rclone would accept a limit, applying nothing.
-//
-// It exists so the configuration file can be checked the same way every other
-// setting in it is. Without it, a typed-in limit saved cleanly and the program
-// then refused to START on the next boot, which is the worst place to find out:
-// the setting that broke it is in a file, the message appears on a console
-// nobody is looking at, and the interface that could have said so is the one
-// thing that is no longer running.
+// ValidateBwLimit reports whether rclone would accept a limit, without applying
+// it, so a bad limit is refused when saved rather than at the next start.
 func ValidateBwLimit(bwLimit string) error {
 	if bwLimit == "" {
 		return nil
@@ -107,26 +86,10 @@ func ValidateBwLimit(bwLimit string) error {
 	return nil
 }
 
-// ApplyBwLimit changes the limit on a process that is already running.
-//
-// Saving a bandwidth limit used to write it to the file and nothing else, so
-// the setting was correct, the interface showed it, and the next transfer went
-// at full speed until somebody restarted the program. A setting that takes
-// effect at an unannounced later time is worse than one that says it needs a
-// restart.
-//
-// What it can promise, exactly:
-//
-//   - A plain limit ("1M", "off") applies to the next transferred block. The
-//     token bucket is replaced outright rather than waiting for a tick.
-//   - A timetable applies its CURRENT slot the same way, and its later slots
-//     are followed by the minute ticker. If the process booted without a
-//     timetable there was no ticker, so one is started here - once, which is
-//     what bwState is for.
-//
-// Transfers already in flight keep the bucket they started with for whatever is
-// left of the current block, which is a fraction of a second and not worth
-// tearing a transfer down over.
+// ApplyBwLimit changes the limit on a running process. A plain limit, or the
+// current slot of a timetable, applies from the next transferred block; later
+// slots are followed by the ticker, which is started here if the process
+// booted without a timetable.
 func ApplyBwLimit(ctx context.Context, bwLimit string) error {
 	if err := ValidateBwLimit(bwLimit); err != nil {
 		return err
@@ -143,8 +106,7 @@ func ApplyBwLimit(ctx context.Context, bwLimit string) error {
 	bwState.Lock()
 	defer bwState.Unlock()
 	if !bwState.started {
-		// Nothing has started accounting yet, so there is no bucket to change.
-		// Whoever starts it will read the value that was just written.
+		// StartAccounting will read the value just written.
 		return nil
 	}
 	accounting.TokenBucket.SetBwLimit(t.LimitAt(time.Now()).Bandwidth)
@@ -155,12 +117,9 @@ func ApplyBwLimit(ctx context.Context, bwLimit string) error {
 	return nil
 }
 
-// Configure returns a context carrying this job's rclone settings.
-//
-// It uses fs.AddConfig, which copies the config into the context rather than
-// changing the process-wide one. That matters as soon as two jobs run at the
-// same time: one job asking for metadata, or for eight transfers, must not
-// quietly change what the other job is doing.
+// Configure returns a context carrying this job's rclone settings. fs.AddConfig
+// copies the config into the context, so concurrent jobs do not change each
+// other's settings.
 func Configure(ctx context.Context, opt Options) context.Context {
 	ctx, ci := fs.AddConfig(ctx)
 	if opt.Compare.Transfers > 0 {
@@ -182,12 +141,8 @@ func Prepare(ctx context.Context, ends apply.Ends, db *state.DB, opt Options) (*
 	if err != nil {
 		return nil, compare, err
 	}
-	// The record has to be filtered exactly as the sides are. A path that is
-	// newly excluded has not been deleted, and leaving its row in place while
-	// hiding it from both listings would make the engine read it as a deletion
-	// on both sides and clear the row. Worse, hiding it from only one listing
-	// would delete the real file on the other side. Adding a single exclude
-	// pattern must never destroy the files it starts hiding.
+	// The record is filtered exactly as the sides are, or a newly excluded
+	// path would read as a deletion.
 	visible := make(map[string]state.Entry, len(prev))
 	for key, entry := range prev {
 		if opt.Exclude.Excluded(entry.LeftPath) || opt.Exclude.Excluded(entry.RightPath) || opt.Exclude.Excluded(key) {
@@ -231,15 +186,11 @@ func Prepare(ctx context.Context, ends apply.Ends, db *state.DB, opt Options) (*
 		p.Dirs = plan.BuildDirs(left, right, visibleDirs)
 	}
 
-	// After the directories, so a one-way job drops the folder work on the
-	// protected side too, and before the unsupported report, which is a report
-	// about both sides regardless of which one may be written.
+	// After the directories, so a one-way job drops folder work on the
+	// protected side too, and before the unsupported report, which covers both
+	// sides.
 	plan.Enforce(p, compare.Direction, compare.Mode)
 
-	// Whatever the backend refuses to carry has to be said out loud. rclone
-	// drops symlinks and special files from its listing after a single log
-	// line, so without this the user would be told the folder is in sync while
-	// part of it was never looked at.
 	for side, f := range map[plan.Side]fs.Fs{plan.Left: ends.Left, plan.Right: ends.Right} {
 		odd, err := scan.FindUnsupported(ctx, f, scanOpt)
 		if err != nil {
@@ -256,12 +207,8 @@ func Prepare(ctx context.Context, ends apply.Ends, db *state.DB, opt Options) (*
 	return p, compare, nil
 }
 
-// foldCase decides whether names are matched case-insensitively.
-//
-// It is one answer for the whole job, not one per side. If only the
-// case-insensitive end folded, the case-sensitive end's "Bild.jpg" and
-// "bild.jpg" would both match the single file over there, and the engine would
-// copy them over each other on every run without ever settling.
+// foldCase decides whether names are matched case-insensitively, one answer
+// for the whole job (see pathid.Key).
 func foldCase(ends apply.Ends, opt Options) bool {
 	if opt.ForceFoldCase != nil {
 		return *opt.ForceFoldCase
@@ -277,12 +224,9 @@ func caseInsensitive(f fs.Fs) bool {
 	return features != nil && features.CaseInsensitive
 }
 
-// canHoldEmptyDirs reports whether both ends have real directories.
-//
-// A bucket backend such as S3 does not: what looks like a folder there is a
-// shared prefix on the keys, and it exists exactly as long as some key uses it.
-// Trying to create one would succeed and then vanish, so the job would report
-// making the same folder on every single run.
+// canHoldEmptyDirs reports whether both ends have real directories. On a bucket
+// backend such as S3 a folder is only a key prefix, so an empty one would be
+// created again on every run.
 func canHoldEmptyDirs(ends apply.Ends, opt Options) bool {
 	if opt.ForceEmptyDirs != nil {
 		return *opt.ForceEmptyDirs
@@ -323,12 +267,8 @@ func OnceWatched(ctx context.Context, ends apply.Ends, db *state.DB, opt Options
 	return p, res, err
 }
 
-// NothingToSyncError says a job's sides do not exist.
-//
-// This is almost always a typo, a share that is not mounted, or a removable
-// drive that is not attached. The alternative to saying so is reporting a
-// successful run of zero files, which is how somebody comes to believe in a
-// backup that has never happened.
+// NothingToSyncError says a job's sides do not exist, usually because of a
+// typo, an unmounted share or a detached drive.
 type NothingToSyncError struct {
 	Missing []string
 }
@@ -341,18 +281,10 @@ func (e *NothingToSyncError) Error() string {
 
 // somethingToWorkWith refuses a job whose sides are not there.
 //
-// The cheap conditions are checked first and the question is only actually
-// asked in the one case that warrants it. A job with anything in its record is
-// left alone: that is the ordinary empty-side case and plan.Build refuses it
-// with a better message, because a side that used to hold files and now holds
-// none is a different and more alarming thing than a side that never existed.
-//
-// When both sides do look empty, each is asked outright whether it is there,
-// rather than the reason being guessed from what the listing did not contain. A
-// folder holding nothing but symbolic links, or nothing but files the job
-// excludes, lists no files and exists perfectly well, and telling its owner to
-// go and check whether their path exists would send them looking in the wrong
-// place entirely.
+// A job with a record is left to plan.Build, which refuses an emptied side
+// with a better message. When both sides list empty, each is asked whether it
+// exists, since a folder holding only symlinks or excluded files lists empty
+// too.
 func somethingToWorkWith(ctx context.Context, ends apply.Ends, left, right *scan.Listing, visible map[string]state.Entry) error {
 	if len(visible) > 0 {
 		return nil

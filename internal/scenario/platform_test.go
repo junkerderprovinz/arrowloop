@@ -15,12 +15,6 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/engine"
 )
 
-// TestEmptyDirectoriesTravel covers the folders that hold nothing.
-//
-// A folder with files in it needs no help: the files imply it. An empty one has
-// nothing to imply it, so without a record of its own it can never reach the
-// other side. A project skeleton or a folder somebody made ready for next
-// month's photos simply fails to arrive, and nothing says so.
 func TestEmptyDirectoriesTravel(t *testing.T) {
 	opt := quick()
 	opt.EmptyDirs = true
@@ -42,8 +36,7 @@ func TestEmptyDirectoriesTravel(t *testing.T) {
 		}
 	}
 
-	// And a folder the user removes must go away on the other side too, rather
-	// than lingering forever because nothing inside it changed.
+	// A removed folder goes away on the other side too.
 	if err := os.Remove(filepath.Join(j.left, "incoming", "2027")); err != nil {
 		t.Fatalf("rmdir: %v", err)
 	}
@@ -59,9 +52,6 @@ func TestEmptyDirectoriesTravel(t *testing.T) {
 	}
 }
 
-// TestEmptyDirectoriesAreOffByDefault pins the default. Carrying folders costs a
-// second listing pass and a second record, so a job that does not need it should
-// not pay for it.
 func TestEmptyDirectoriesAreOffByDefault(t *testing.T) {
 	j := newJob(t, quick())
 	if err := os.MkdirAll(filepath.Join(j.left, "empty"), 0o755); err != nil {
@@ -78,13 +68,8 @@ func TestEmptyDirectoriesAreOffByDefault(t *testing.T) {
 	}
 }
 
-// TestRmdirRefusesToTakeFilesWithIt is the reason removal goes through Rmdir
-// instead of a recursive delete.
-//
-// A folder that still holds something must survive, because what is left in it
-// may be exactly the file the engine decided to keep: one it postponed because
-// it was still being written, or one it could not read this time round. A
-// recursive delete here would quietly undo those decisions.
+// A folder that still holds a file the engine kept, for example one it
+// postponed, must survive its removal on the other side.
 func TestRmdirRefusesToTakeFilesWithIt(t *testing.T) {
 	opt := quick()
 	opt.EmptyDirs = true
@@ -94,15 +79,12 @@ func TestRmdirRefusesToTakeFilesWithIt(t *testing.T) {
 		t.Fatalf("mkdir: %v", err)
 	}
 	write(t, j.left, "shared/notes.txt", "somebody's work")
-	// A second file outside the folder, so that emptying "shared" does not
-	// empty the whole side. Without it the empty-side guard fires first and
-	// this test measures that guard instead of the one it is named after.
+	// Keeps the side from emptying, which the empty-side guard would refuse.
 	write(t, j.left, "elsewhere.txt", "unrelated")
 	j.sync(t)
 	requireConverged(t, j, "after the first run")
 
-	// The folder disappears on the left, but the right side has meanwhile
-	// grown a file inside it that the left never saw.
+	// The folder goes on the left while the right gains a file in it.
 	if err := os.RemoveAll(filepath.Join(j.left, "shared")); err != nil {
 		t.Fatalf("remove: %v", err)
 	}
@@ -117,19 +99,12 @@ func TestRmdirRefusesToTakeFilesWithIt(t *testing.T) {
 	}
 }
 
-// TestUnsupportedEntriesAreReported covers what rclone will not carry.
-//
-// Its local backend drops a symlink from the listing after one log line, so a
-// library caller cannot tell it apart from a file that is not there. Saying
-// nothing would be the worst outcome: the user is told the folder is in sync
-// while part of it was never even looked at.
+// rclone's local backend drops a symlink from the listing with only a log line.
 func TestUnsupportedEntriesAreReported(t *testing.T) {
 	j := newJob(t, quick())
 	write(t, j.left, "target.txt", "the real file")
 	if err := os.Symlink(filepath.Join(j.left, "target.txt"), filepath.Join(j.left, "shortcut.txt")); err != nil {
-		// Windows needs developer mode or elevation, and a runner has neither.
-		// Anywhere else a failure here means the test has stopped testing, and
-		// a skip would hide that on every platform at once.
+		// Windows needs developer mode or elevation for a symlink.
 		if runtime.GOOS != "windows" {
 			t.Fatalf("could not create a symlink on %s, so this test no longer exercises anything: %v", runtime.GOOS, err)
 		}
@@ -151,14 +126,8 @@ func TestUnsupportedEntriesAreReported(t *testing.T) {
 	}
 }
 
-// TestLongWindowsPathsSurvive is a claim that has to be measured rather than
-// reasoned about.
-//
-// Windows refuses paths over 260 characters unless the caller opts into the
-// extended form. Go's os package has done that automatically for absolute paths
-// since 1.20 and rclone's local backend has its own handling, but a sync tool
-// cannot take that on trust: the failure would only show up on somebody's
-// deeply nested photo archive, long after release.
+// Windows refuses paths over 260 characters unless the caller uses the extended
+// form, which Go and rclone are both supposed to handle.
 func TestLongWindowsPathsSurvive(t *testing.T) {
 	j := newJob(t, quick())
 
@@ -179,9 +148,6 @@ func TestLongWindowsPathsSurvive(t *testing.T) {
 	requireConverged(t, j, "after a long path")
 }
 
-// TestManyFilesConvergeInParallel checks that raising the transfer count does
-// not cost correctness. Concurrency is where a sync engine grows the sort of bug
-// that appears once in fifty runs and is never reproduced on demand.
 func TestManyFilesConvergeInParallel(t *testing.T) {
 	opt := quick()
 	opt.Compare.Transfers = 8
@@ -194,35 +160,25 @@ func TestManyFilesConvergeInParallel(t *testing.T) {
 	if res.Copied != 200 {
 		t.Fatalf("expected 200 files across, got %d (skips: %+v)", res.Copied, res.Skipped)
 	}
-	// Nothing may be postponed. A skip here would mean a file was copied and
-	// then failed to be recorded, which the next assertion sees only as a
-	// missing record with no explanation attached to it.
+	// A skip here would be a copied file whose record failed.
 	if len(res.Skipped) != 0 {
 		t.Fatalf("a parallel run postponed %d things it should not have: %+v", len(res.Skipped), res.Skipped)
 	}
 	requireConverged(t, j, "after a parallel run")
 
-	// A second pass must find nothing left to do, which is the real test: a
-	// counter or a record written from two goroutines without protection shows
-	// up here as work that never finishes.
+	// Unprotected concurrent writes to a counter or the record would show up
+	// as work left over.
 	p, res := j.sync(t)
 	if len(p.Actions) != 0 || res.Copied != 0 {
 		t.Fatalf("the parallel run did not settle: %d actions, %d copied again", len(p.Actions), res.Copied)
 	}
 	if p.Unchanged != 200 {
-		// A file with no record is treated as new on both sides, which lands in
-		// Agreed rather than Unchanged. Naming the count separates "the record
-		// was never written" from "the record was written and is wrong".
+		// A file without a record lands in Agreed rather than Unchanged.
 		t.Errorf("only %d of 200 files were recorded as agreed; %d had no record at all and were re-derived",
 			p.Unchanged, len(p.Agreed))
 	}
 }
 
-// TestPermissionsTravelWhenAsked covers file modes.
-//
-// Windows has no POSIX mode bits, so there is nothing to compare there. On Unix
-// a backup that comes back world-readable is a real problem, and one that a user
-// only discovers after restoring.
 func TestPermissionsTravelWhenAsked(t *testing.T) {
 	if runtime.GOOS == "windows" {
 		t.Skip("Windows has no POSIX mode bits to carry")
@@ -251,8 +207,8 @@ func TestPermissionsTravelWhenAsked(t *testing.T) {
 }
 
 // configureMetadata flips rclone's global metadata switch and puts it back
-// afterwards. It is global because rclone's config is: fs.GetConfig on a
-// background context hands out the one default config the whole process shares.
+// afterwards. fs.GetConfig on a background context returns the process-wide
+// default config.
 func configureMetadata(t *testing.T, on bool) {
 	t.Helper()
 	ci := rclonefs.GetConfig(context.Background())
@@ -261,12 +217,8 @@ func configureMetadata(t *testing.T, on bool) {
 	t.Cleanup(func() { ci.Metadata = prev })
 }
 
-// TestConfigureSetsTheGlobalsItClaims guards the seam between ArrowLoop's
-// options and rclone's process-wide config.
-//
-// rclone's own binary sets these from its flag parser, which is easy to mistake
-// for something that happens by itself. It does not, and a bandwidth limit that
-// is accepted and then ignored is worse than one that is refused.
+// rclone's binary sets these from its flag parser, so nothing sets them for a
+// library caller.
 func TestConfigureSetsTheGlobalsItClaims(t *testing.T) {
 	base := context.Background()
 	global := rclonefs.GetConfig(base)
@@ -285,9 +237,8 @@ func TestConfigureSetsTheGlobalsItClaims(t *testing.T) {
 		t.Error("the metadata switch did not reach rclone, so permissions would be dropped silently")
 	}
 
-	// The settings must live in the context, not in the process. Two jobs run
-	// at once otherwise change each other's behaviour, and the symptom would be
-	// a job that behaves differently depending on what else is scheduled.
+	// The settings live in the context, so concurrent jobs do not change each
+	// other's behaviour.
 	if global.Transfers != prevTransfers || global.Metadata != prevMeta {
 		t.Errorf("one job's settings leaked into the process-wide config: transfers %d, metadata %v",
 			global.Transfers, global.Metadata)
@@ -301,7 +252,6 @@ func TestConfigureSetsTheGlobalsItClaims(t *testing.T) {
 	if global.BwLimit.LimitAt(time.Now()).Bandwidth.Tx <= 0 {
 		t.Errorf("the bandwidth limit did not take: %v", global.BwLimit)
 	}
-	// A limit rclone cannot parse must be refused rather than ignored.
 	if err := engine.StartAccounting(base, "not-a-limit"); err == nil {
 		t.Error("an unparseable bandwidth limit was accepted")
 	}

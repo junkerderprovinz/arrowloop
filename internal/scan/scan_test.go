@@ -2,14 +2,6 @@ package scan
 
 import "testing"
 
-// TestTheOldReservedNameStaysReserved guards the rename of the tool.
-//
-// A tree an older build already synced still holds a .reeveroll directory with
-// a trash can inside it, and that directory has no row in the state database,
-// because back then it was skipped for exactly this reason. Stop reserving the
-// name and the next run reads it as a folder somebody just created: the engine
-// copies a can full of deleted files onto the other side, and from then on both
-// sides have one and neither will ever let go of it.
 func TestTheOldReservedNameStaysReserved(t *testing.T) {
 	for _, rel := range []string{
 		MetaDir,
@@ -23,10 +15,8 @@ func TestTheOldReservedNameStaysReserved(t *testing.T) {
 		}
 	}
 
-	// The guard has to stay narrow in both directions. A file the user owns
-	// must not vanish from a sync because its name happens to start with the
-	// same letters, and the reserved directory is the one at the root of the
-	// job: a folder of that name further down is the user's business.
+	// Only the directories at the root of the job are reserved, and only by
+	// their exact names.
 	for _, rel := range []string{
 		"notes.txt",
 		".arrowloopish/notes.txt",

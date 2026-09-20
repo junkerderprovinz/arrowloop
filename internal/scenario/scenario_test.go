@@ -1,13 +1,8 @@
-// Package scenario holds the tests that decide whether this engine can be
-// trusted with somebody's files.
+// Package scenario runs the engine end to end against real folders.
 //
-// A two-way sync cannot be proved correct by checking a handful of hand-written
-// cases, because the interesting failures come from sequences nobody thought
-// to write down: a file renamed on one side and edited on the other, a
-// directory deleted while a file inside it was being changed, the same name
-// created independently on both ends. So the main test here does not check a
-// scenario, it generates thousands of them from a seed and demands the same
-// property every time: after a run, both sides hold exactly the same files.
+// The interesting failures of a two-way sync come from sequences nobody
+// thought to write down, so the main test generates them from seeds and checks
+// one property each time: after a run, both sides hold exactly the same files.
 package scenario
 
 import (
@@ -72,8 +67,7 @@ func newJob(t *testing.T, opt engine.Options) *job {
 }
 
 // quick is the comparison used by most tests: brakes off, and no settling
-// delay, because a test writes a file and syncs it in the same millisecond. The
-// quiet period gets its own test with a controlled clock instead.
+// delay, because a test writes a file and syncs it in the same millisecond.
 func quick() engine.Options {
 	return engine.Options{Compare: plan.Options{ModWindow: 2 * time.Second}}
 }
@@ -95,8 +89,7 @@ func (j *job) sync(t *testing.T) (*plan.Plan, apply.Result) {
 }
 
 // tree reads one side as a map of relative path to content hash, skipping the
-// tool's own reserved area. Comparing content rather than metadata is the whole
-// point: two sides that merely look equal in a listing are not the test.
+// tool's own reserved area.
 func tree(t *testing.T, root string) map[string]string {
 	t.Helper()
 	out := map[string]string{}
@@ -165,18 +158,13 @@ func write(t *testing.T, root, rel, content string) {
 	}
 }
 
-// TestConvergence is the test this whole stage exists to make possible.
-//
-// Each seed produces a different sequence of edits on both sides. The property
-// is unconditional: whatever happened, after a sync the two sides hold the same
-// files with the same contents. If that ever fails, the engine has either lost
-// something or invented something, and both are fatal for a sync tool.
+// TestConvergence applies a different sequence of edits to both sides for each
+// seed and requires the sides to hold the same files after every sync.
 func TestConvergence(t *testing.T) {
 	for _, seed := range []int64{1, 2, 3, 7, 11, 23, 42, 99} {
 		t.Run(fmt.Sprintf("seed-%d", seed), func(t *testing.T) {
-			// The brake is off here on purpose. Random editing regularly
-			// deletes a large share of a small tree, which is exactly what the
-			// brake is meant to stop; it gets its own test.
+			// Random edits often delete a large share of a small tree, which
+			// would trip the brake.
 			j := newJob(t, quick())
 			rnd := rand.New(rand.NewSource(seed))
 
@@ -234,9 +222,6 @@ func mutate(t *testing.T, rnd *rand.Rand, root string) {
 	}
 }
 
-// TestDeleteGoesToTrash proves a deletion is survivable. A user who deletes the
-// wrong folder on one machine has minutes to notice before the other machine
-// syncs; without a trash they have nothing at all.
 func TestDeleteGoesToTrash(t *testing.T) {
 	j := newJob(t, quick())
 	write(t, j.left, "keep.txt", "keep me")
@@ -272,9 +257,6 @@ func TestDeleteGoesToTrash(t *testing.T) {
 	}
 }
 
-// TestRenameBecomesAMove proves that renaming a file does not re-transfer it.
-// On a folder of photos over a slow link this is the difference between a
-// second and an afternoon.
 func TestRenameBecomesAMove(t *testing.T) {
 	j := newJob(t, quick())
 	write(t, j.left, "holiday/IMG_1.jpg", "pretend this is a large photo")
@@ -290,9 +272,7 @@ func TestRenameBecomesAMove(t *testing.T) {
 	requireConverged(t, j, "after the rename")
 }
 
-// TestConflictKeepsBothVersions proves that when both sides edit the same file
-// neither edit is thrown away, and that the job still converges afterwards
-// rather than reporting the same conflict forever.
+// Neither edit is lost, and the next run has nothing left to do.
 func TestConflictKeepsBothVersions(t *testing.T) {
 	j := newJob(t, quick())
 	write(t, j.left, "notes.txt", "original")
@@ -317,7 +297,6 @@ func TestConflictKeepsBothVersions(t *testing.T) {
 		t.Fatalf("expected the surviving file plus one conflict copy, got %v", kept)
 	}
 
-	// Both texts must still exist somewhere on the side.
 	var texts []string
 	for p := range found {
 		data, err := os.ReadFile(filepath.Join(j.left, filepath.FromSlash(p)))
@@ -338,15 +317,13 @@ func TestConflictKeepsBothVersions(t *testing.T) {
 		}
 	}
 
-	// And the next run must have nothing left to say.
 	p2, _ := j.sync(t)
 	if len(p2.Actions) != 0 {
 		t.Errorf("the conflict did not settle, the next run still wants to do %d things", len(p2.Actions))
 	}
 }
 
-// TestBrakeStopsAnUnmountedSide is the scenario that destroys real data: a disk
-// that did not mount looks exactly like a folder whose contents were deleted.
+// A disk that did not mount looks like a folder whose contents were deleted.
 func TestBrakeStopsAnUnmountedSide(t *testing.T) {
 	j := newJob(t, guarded())
 	for i := range 30 {
@@ -355,7 +332,7 @@ func TestBrakeStopsAnUnmountedSide(t *testing.T) {
 	j.sync(t)
 	requireConverged(t, j, "after the first run")
 
-	// The left side "fails to mount": everything under it disappears at once.
+	// The left side fails to mount.
 	entries, err := os.ReadDir(j.left)
 	if err != nil {
 		t.Fatalf("read left: %v", err)
@@ -375,14 +352,8 @@ func TestBrakeStopsAnUnmountedSide(t *testing.T) {
 	}
 }
 
-// TestSmallSideVanishing covers the gap between the two safety mechanisms, and
-// is the reason both of them exist.
-//
-// The mass-delete brake never fires below its floor, so a job holding only a
-// handful of files gets no protection from it at all: five deletions out of
-// five is under the floor of ten and passes. Only the refusal to believe an
-// empty side stops this one, which is worth knowing, because "it is just a
-// small folder" is precisely the situation where a user has no other backup.
+// Five deletions are below the brake's floor, so only the empty-side guard
+// protects a small job.
 func TestSmallSideVanishing(t *testing.T) {
 	opt := guarded()
 	j := newJob(t, opt)
@@ -402,9 +373,6 @@ func TestSmallSideVanishing(t *testing.T) {
 		}
 	}
 
-	// Proof that the brake genuinely cannot help here: five deletions is below
-	// its floor, so if the empty-side guard is the thing being tested, it has
-	// to be the thing doing the work.
 	if 5 > opt.Compare.BrakeFloor {
 		t.Fatalf("this test only proves anything while the brake floor (%d) is above the file count", opt.Compare.BrakeFloor)
 	}

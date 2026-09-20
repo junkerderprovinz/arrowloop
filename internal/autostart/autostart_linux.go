@@ -12,9 +12,8 @@ const supported = true
 
 var errUnsupported = errors.New("autostart is not supported on this system")
 
-// entryPath is the file every freedesktop session manager reads on login. It
-// honours XDG_CONFIG_HOME because a session that sets it means it, and falling
-// straight to ~/.config would write somewhere nothing looks.
+// entryPath is the file freedesktop session managers read on login, under
+// XDG_CONFIG_HOME when the session sets it.
 func entryPath() (string, error) {
 	dir := os.Getenv("XDG_CONFIG_HOME")
 	if dir == "" {
@@ -39,10 +38,8 @@ func enabled() (bool, error) {
 		}
 		return false, fmt.Errorf("read %s: %w", path, err)
 	}
-	// A file left behind with the GNOME key set to false is how the desktop's
-	// own settings dialog switches an entry OFF without deleting it. Reading
-	// the file's existence alone would report autostart as on for an entry the
-	// session is deliberately ignoring.
+	// Desktop settings dialogs switch an entry off by setting this key rather
+	// than deleting the file.
 	return !strings.Contains(string(body), "X-GNOME-Autostart-enabled=false"), nil
 }
 
@@ -89,11 +86,8 @@ func disable() error {
 	return nil
 }
 
-// entry is the desktop file itself.
-//
-// Exec is quoted for the same reason the Windows value is: the desktop entry
-// specification splits the field on spaces, so an unquoted path breaks for
-// anybody whose home directory has one in it.
+// entry is the desktop file. Exec is quoted because the desktop entry
+// specification splits the field on spaces.
 func entry(exe string) string {
 	return "[Desktop Entry]\n" +
 		"Type=Application\n" +

@@ -10,19 +10,8 @@ import (
 	"testing"
 )
 
-// TestNothingIsHeldOpenAwayFromWindows pins the answer this package gives
-// everywhere else, which is "no" and is correct rather than unfinished.
-//
-// POSIX locks are advisory: a process that locks a file does not stop anyone
-// reading it. A future edition that started reporting busy here would make
-// Linux and macOS runs postpone files for a condition that does not prevent
-// anything, and the files would be postponed on every run forever.
-//
-// Errno 32 is the interesting line. It is ERROR_SHARING_VIOLATION on Windows,
-// which is exactly what the other branch of this package looks for, and EPIPE
-// here, which is a broken pipe and has nothing to do with anybody holding a
-// file. A classifier that matched on the number alone rather than on the
-// platform would call a dead network connection a document somebody left open.
+// Errno 32 is ERROR_SHARING_VIOLATION on Windows but EPIPE here, so matching on
+// the number alone would call a broken pipe a locked file.
 func TestNothingIsHeldOpenAwayFromWindows(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "notes.txt")
 	if err := os.WriteFile(path, []byte("anything"), 0o644); err != nil {

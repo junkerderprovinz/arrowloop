@@ -15,12 +15,8 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/state"
 )
 
-// cmdSync runs one pair of paths once, entirely from flags.
-//
-// This is the shape a person wants while setting a job up: nothing to write to
-// disk first, and -dry-run to see what would happen before anything does. A
-// machine wants the configuration file instead, which is what every other
-// command works from.
+// cmdSync runs one pair of paths once, entirely from flags, with -dry-run to
+// see the plan first.
 func cmdSync(ctx context.Context, args []string) error {
 	defaults := plan.DefaultOptions()
 	fset := flag.NewFlagSet("sync", flag.ExitOnError)
@@ -155,8 +151,8 @@ func report(p *plan.Plan) {
 	}
 }
 
-// hasDirWork reports whether any directory action would actually touch a side.
-// A plan full of record refreshes is not work the user needs to be told about.
+// hasDirWork reports whether any directory action would actually touch a side,
+// as opposed to refreshing the record.
 func hasDirWork(p *plan.Plan) bool {
 	for _, d := range p.Dirs {
 		if d.Kind != plan.RecordDir && d.DstPath != "" {

@@ -6,14 +6,8 @@ import (
 	"testing"
 )
 
-// Registering, reading back and unregistering, against the real system this
-// test runs on. It is the only way to prove Enabled reads the SYSTEM rather
-// than a remembered boolean, which is the property the settings toggle relies
-// on to stay honest when somebody removes the entry with their own tools.
-//
-// It leaves nothing behind: the starting state is restored whatever happens,
-// because a test that switches somebody's real autostart on and forgets to
-// switch it off is a test that changes the machine it ran on.
+// TestRegisterAndRemove runs against the real system so it proves Enabled reads
+// the system rather than a stored flag. The starting state is restored.
 func TestRegisterAndRemove(t *testing.T) {
 	if !Supported() {
 		t.Skip("no implementation on this system")
@@ -51,15 +45,11 @@ func TestRegisterAndRemove(t *testing.T) {
 		t.Fatal("unregistered, and the system still says it is registered")
 	}
 
-	// Twice, because the caller is a settings toggle and somebody will press it
-	// twice. Removing something that is not there is the state they asked for,
-	// not an error.
 	if err := Set(false); err != nil {
 		t.Fatalf("unregister a second time: %v", err)
 	}
 }
 
-// An unsupported system answers rather than failing to build or panicking.
 func TestUnsupportedAnswersFalse(t *testing.T) {
 	if Supported() {
 		t.Skip("this system has an implementation")
@@ -76,14 +66,6 @@ func TestUnsupportedAnswersFalse(t *testing.T) {
 	}
 }
 
-// TestRefreshFollowsTheExecutable covers the silent failure this whole entry is
-// prone to: it records a PATH, and a path is a promise about where a file will
-// still be months from now.
-//
-// Somebody switches autostart on for a portable copy on their desktop, later
-// installs the program properly or simply moves the file, and the entry now
-// points at nothing. It fails at a reboot, quietly, which is the worst place and
-// the worst way to find out.
 func TestRefreshFollowsTheExecutable(t *testing.T) {
 	if !Supported() {
 		t.Skip("no implementation on this system")
@@ -99,7 +81,6 @@ func TestRefreshFollowsTheExecutable(t *testing.T) {
 		}
 	})
 
-	// An entry left behind by a copy that used to live somewhere else.
 	if err := enable(filepath.Join(t.TempDir(), "somewhere-else", "ArrowLoop")); err != nil {
 		t.Fatalf("write the stale entry: %v", err)
 	}
@@ -123,9 +104,6 @@ func TestRefreshFollowsTheExecutable(t *testing.T) {
 	}
 }
 
-// Refresh must not switch a setting back on for somebody who turned it off.
-// Rewriting an absent entry would do exactly that, and it would do it at every
-// start, so the switch could never be made to stay off.
 func TestRefreshLeavesAnAbsentEntryAlone(t *testing.T) {
 	if !Supported() {
 		t.Skip("no implementation on this system")

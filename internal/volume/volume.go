@@ -1,20 +1,11 @@
 // Package volume finds a removable drive or a network share again after it has
 // moved.
 //
-// A drive letter is not an identity. A USB disk that was D: last week comes
-// back as E: today, and worse, D: may by then belong to something else
-// entirely. A job pointed at a letter therefore has two failure modes and the
-// second one is the dangerous one: it does not fail, it syncs against the wrong
-// disk. A network share has the same problem wearing a different hat, since a
-// mapped letter and a UNC path are the same share and neither is stable.
-//
-// The identity used here is a marker file written on the volume itself, not a
-// serial number or a filesystem UUID. That is a deliberate trade. A serial is
-// free and needs no write, but reading one means a different platform API on
-// every operating system, it does not exist at all for a network share, and it
-// changes when somebody reformats. A marker is one small file, works the same
-// everywhere including over SMB, survives a drive letter change, and is
-// self-describing: anybody who finds it can see what it is for.
+// A drive letter is not an identity: a USB disk that was D: last week may come
+// back as E:, and D: may then be another disk, which a job would sync against
+// without failing. The identity here is a marker file on the volume rather than
+// a serial number or filesystem UUID, because a marker works the same on every
+// system and over SMB, and survives a letter change.
 package volume
 
 import (
@@ -34,17 +25,13 @@ import (
 // is today": volume:<id>/some/folder.
 const Prefix = "volume:"
 
-// markerPath is where the identity lives, relative to the volume root. It sits
-// under the same reserved directory the engine already skips when listing, so
-// a marker never travels to the other side of a sync.
+// markerPath is where the identity lives, relative to the volume root. The
+// engine skips that directory, so a marker never travels to the other side.
 const markerPath = ".arrowloop/volume.json"
 
-// legacyMarkerPath is where a drive marked before the rename carries its
-// identity. It is still read, because a marker that cannot be found does not
-// fail loudly: the drive drops out of Attached, Find answers ErrNotAttached,
-// and every job pointed at that volume is postponed with "not attached" while
-// the disk sits plugged in. That is the worst shape a rename can take, a
-// correct-looking answer that is wrong, so the old path stays readable.
+// legacyMarkerPath is where drives marked by older builds carry their
+// identity. Without reading it, such a drive would count as not attached while
+// plugged in.
 const legacyMarkerPath = ".reeveroll/volume.json"
 
 // Marker is what is written on the volume.
@@ -61,30 +48,20 @@ type Volume struct {
 	Mount string `json:"mount"`
 }
 
-// ErrNotAttached says a volume is known but not currently here.
-//
-// This is deliberately its own error rather than a path that fails to open. A
-// job whose drive is unplugged has to be POSTPONED, and postponing is a
-// different outcome from failing: nothing is wrong, the disk is simply in
-// somebody's bag.
+// ErrNotAttached says a volume is known but not currently here. A job whose
+// drive is unplugged is postponed rather than failed.
 var ErrNotAttached = errors.New("that volume is not attached")
 
-// Mark writes an identity onto a volume, or returns the one already there.
-//
-// Marking twice is not an error and does not produce a second identity. A
-// person who clicks the button again on a disk they already registered should
-// get the same answer, not a new drive that shadows the old one.
+// Mark writes an identity onto a volume, or returns the one already there, so
+// marking a disk twice does not give it a second identity.
 func Mark(mount, label string) (Marker, error) {
 	if existing, from, err := readMarkerFrom(mount); err == nil {
 		relabel := label != "" && label != existing.Label
 		if relabel {
 			existing.Label = label
 		}
-		// A marker that answered from the old path is copied to the current one,
-		// so the identity does not depend on a fallback for ever. The old file is
-		// deliberately left where it is: removing it would strand an older build
-		// somebody still has on another machine, and it costs nothing sitting
-		// inside a directory the engine skips anyway.
+		// A marker found at the old path is copied to the current one. The old
+		// file stays for older builds on other machines.
 		if relabel || from != markerPath {
 			if err := writeMarker(mount, existing); err != nil {
 				return Marker{}, err
@@ -129,11 +106,9 @@ func readMarker(mount string) (Marker, error) {
 	return m, err
 }
 
-// readMarkerFrom also reports which of the two paths answered, so Mark can move
-// an old marker up to the current one. The current path is asked first, so a
-// volume that has already been adopted never pays for the fallback, and a
-// missing marker still comes back as os.ErrNotExist for the current path, which
-// is what Mark tests to decide that this drive has no identity yet.
+// readMarkerFrom also reports which path answered, so Mark can move an old
+// marker to the current path. When neither exists it returns the error for the
+// current path.
 func readMarkerFrom(mount string) (Marker, string, error) {
 	var first error
 	for _, rel := range [...]string{markerPath, legacyMarkerPath} {
@@ -156,10 +131,8 @@ func readMarkerFrom(mount string) (Marker, string, error) {
 	return Marker{}, "", first
 }
 
-// Candidates lists the mount points a marked volume could be sitting on, and is
-// a variable rather than a function so a test can point the search at
-// directories it controls instead of at whatever is plugged into the machine
-// running it. The real implementations are per platform.
+// Candidates lists the mount points a marked volume could be sitting on. It is
+// a variable so tests can point it at their own directories.
 var Candidates = platformCandidates
 
 // Attached lists every marked volume that is here right now.
@@ -190,11 +163,8 @@ func Find(id string) (Volume, error) {
 	return Volume{}, fmt.Errorf("%w: %s", ErrNotAttached, id)
 }
 
-// Resolve turns a job path into a real one.
-//
-// A path that does not start with the prefix is handed back untouched, so an
-// ordinary local path and any rclone remote pass through unchanged and this
-// costs nothing for the jobs that do not use it.
+// Resolve turns a job path into a real one. A path without the prefix is
+// returned unchanged.
 func Resolve(path string) (string, error) {
 	if !strings.HasPrefix(path, Prefix) {
 		return path, nil
@@ -223,10 +193,8 @@ func Describe(path string) string {
 	}
 	rest := strings.TrimPrefix(path, Prefix)
 	id, sub, _ := strings.Cut(rest, "/")
-	// The drive itself is asked first, because a label somebody has just
-	// changed is on the disk before it is in the register. Only when the drive
-	// is not here does the register answer, which is exactly the moment a
-	// person most needs a name they recognise.
+	// The drive is asked first, because a changed label reaches the disk
+	// before the register.
 	var label string
 	if v, err := Find(id); err == nil {
 		label = v.Label

@@ -1,26 +1,19 @@
 package plan
 
-// Which way a job is allowed to write.
+// Direction is which way a job is allowed to write.
 //
-// The engine always compares both sides, because comparing is how it knows what
-// changed. What a direction changes is what it is allowed to DO with the answer:
-// one side becomes the source and is never written to, and every proposed action
-// is rewritten to run the other way or dropped.
-//
-// Rewritten rather than filtered, and the difference matters. Filtering would
-// leave a job that never converges: the far side's own edit would simply be
-// skipped, reported again on the next run, and again for ever. Rewriting says
-// what a one-way job actually means, which is that the source is right and the
-// destination is made to agree with it.
+// Both sides are always compared. A one-way direction makes one side the
+// source, which is never written to, and rewrites every action to run the
+// other way or drops it. Filtering instead would report the far side's edits
+// again on every run without ever converging.
 type Direction int
 
 const (
-	// Both ways, which is what this program is for. A conflict is a real
-	// conflict and both versions are kept.
+	// Both writes both ways; a conflict keeps both versions.
 	Both Direction = iota
-	// Left is the source and only the right side is written to.
+	// LeftToRight writes only to the right side.
 	LeftToRight
-	// Right is the source and only the left side is written to.
+	// RightToLeft writes only to the left side.
 	RightToLeft
 )
 
@@ -35,12 +28,8 @@ func (d Direction) String() string {
 	}
 }
 
-// ParseDirection reads what a person picked.
-//
-// Anything unrecognised is two ways, which is the safe answer rather than an
-// error: a newer interface asking an older engine for a direction it has never
-// heard of must keep both sides intact, not refuse the run and not guess at a
-// side to overwrite.
+// ParseDirection reads what a person picked. Anything unrecognised is both
+// ways, so an older engine never guesses at a side to overwrite.
 func ParseDirection(text string) Direction {
 	switch text {
 	case "leftToRight", "left to right":
@@ -60,23 +49,17 @@ func (d Direction) source() Side {
 	return Left
 }
 
-// Enforce rewrites a plan so that it only ever writes to one side.
+// Enforce rewrites a plan so that it only writes to one side, treating the
+// source as right:
 //
-// The rules, and every one of them follows from "the source is right":
-//
-//   - A copy TOWARDS the source means the destination changed. The change is
-//     undone by copying the source's version over it.
-//   - A delete ON the source means the destination deleted something the source
-//     still has. It comes back, from the source.
-//   - A conflict is not a conflict here. The source wins and nothing is kept
-//     beside it, because keeping the destination's version would put a file on
-//     the source side that its owner never made.
-//   - A rename ON the source is the same case as a copy towards it: the
-//     destination moved something, so the source's own naming is restored.
-//   - A file the source has never had is left exactly where it is. That is the
-//     one thing a one-way job deliberately does not do, and it is the
-//     difference between copying and mirroring: deleting something the source
-//     never knew about is not propagating a decision, it is making one.
+//   - A copy towards the source means the destination changed; the source's
+//     version is copied back over it.
+//   - A delete on the source means the destination deleted something; it is
+//     restored from the source.
+//   - A conflict is won by the source, with nothing kept beside it.
+//   - A rename on the source is dropped; the copy the same plan proposes
+//     restores the source's naming.
+//   - A file the source has never had stays, unless the mode is ModeMirror.
 func Enforce(p *Plan, dir Direction, mode Mode) {
 	if dir == Both {
 		return
@@ -89,24 +72,17 @@ func Enforce(p *Plan, dir Direction, mode Mode) {
 		switch a.Kind {
 		case Copy:
 			if a.Src == src {
-				// In MOVE mode the file leaves the source once it has landed,
-				// and that is one action rather than two: a copy followed by a
-				// separate delete leaves the delete in the queue when the copy
-				// fails.
 				if mode == ModeMove {
 					a.Kind = Relocate
 				}
 				kept = append(kept, a)
 				continue
 			}
-			// A change on the far side. Put the source's version back.
 			if rebuilt, ok := restore(a, src, dst); ok {
 				kept = append(kept, rebuilt)
 				continue
 			}
-			// Nothing on the source to send, so this is a file the source has
-			// never had. Copying leaves it alone; MIRRORING removes it, which
-			// is the single rule that separates the two modes.
+			// A file the source has never had.
 			if mode == ModeMirror {
 				if gone, ok := sweep(a, dst); ok {
 					kept = append(kept, gone)
@@ -121,7 +97,6 @@ func Enforce(p *Plan, dir Direction, mode Mode) {
 				kept = append(kept, a)
 				continue
 			}
-			// The destination removed something the source still holds.
 			if rebuilt, ok := restore(a, src, dst); ok {
 				kept = append(kept, rebuilt)
 			}
@@ -130,14 +105,8 @@ func Enforce(p *Plan, dir Direction, mode Mode) {
 				kept = append(kept, a)
 				continue
 			}
-			// A move on the source side is dropped rather than rewritten: the
-			// copy the same run already proposes puts the source's own naming
-			// back, and the file under the destination's old name is left for
-			// the person who renamed it.
-			//
-			// A MIRROR does not leave it: under the destination's own new name
-			// it is a file the source has never had, which is exactly the case
-			// this mode removes.
+			// Under its new name on the destination, the file is one the
+			// source has never had.
 			if mode == ModeMirror {
 				if gone, ok := sweep(a, dst); ok {
 					kept = append(kept, gone)
@@ -157,20 +126,15 @@ func Enforce(p *Plan, dir Direction, mode Mode) {
 	p.Dirs = dirs
 }
 
-// sweep rebuilds an action as a deletion on the destination side.
-//
-// Only ever reached in ModeMirror, and only for a file the SOURCE does not
-// hold: that is the whole of what mirroring adds to copying. It goes through
-// the ordinary Delete kind, so the bins, the versions and the mass-deletion
-// brake all apply to it exactly as they do to a deletion anybody else made.
+// sweep rebuilds an action as a deletion on the destination side, for a file
+// the source does not hold in ModeMirror. As an ordinary Delete it goes
+// through the trash and the mass-delete brake like any other.
 func sweep(a Action, dst Side) (Action, bool) {
 	live := a.LeftNow
 	if dst == Right {
 		live = a.RightNow
 	}
 	if live == nil {
-		// Nothing there to remove. A record that outlived both sides is the
-		// ordinary Delete case and is not this one.
 		return Action{}, false
 	}
 	a.Kind = Delete
@@ -192,8 +156,6 @@ func restore(a Action, src, dst Side) (Action, bool) {
 		have = a.RightNow
 	}
 	if have == nil {
-		// The source does not hold this file either. Nothing to send, and
-		// nothing may be deleted on the source, so there is nothing to do.
 		return Action{}, false
 	}
 	a.Kind = Copy

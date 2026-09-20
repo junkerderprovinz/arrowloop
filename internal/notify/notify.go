@@ -1,9 +1,4 @@
 // Package notify sends a line about a run to wherever the user is watching.
-//
-// The point is not to be chatty. A tool that announces every successful sync
-// teaches its user to ignore it, and then the one message that mattered gets
-// ignored with the rest. So the default is failures only, and the message says
-// which job, what went wrong, and nothing else.
 package notify
 
 import (
@@ -67,13 +62,8 @@ type Matrix struct {
 // Describe names the room.
 func (m *Matrix) Describe() string { return "matrix room " + m.Room }
 
-// Send posts a message.
-//
-// The transaction id has to be unique per message, because Matrix uses it to
-// deduplicate retries. It is built from the clock plus a counter rather than
-// the clock alone: two messages in the same nanosecond are unlikely and a
-// deduplicated failure notice is exactly the message nobody would miss until it
-// mattered.
+// Send posts a message. Matrix deduplicates retries by transaction id, so the
+// id adds a counter to the clock to stay unique per message.
 func (m *Matrix) Send(ctx context.Context, subject, body string) error {
 	if m.Homeserver == "" || m.Room == "" || m.Token == "" {
 		return fmt.Errorf("matrix needs a homeserver, a room and a token")
@@ -104,8 +94,8 @@ func (m *Matrix) Send(ctx context.Context, subject, body string) error {
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		// The body carries Matrix's own error code, which is the difference
-		// between "the token expired" and "that room does not exist".
+		// The body carries Matrix's error code, which tells an expired token
+		// from a missing room.
 		var buf bytes.Buffer
 		buf.ReadFrom(resp.Body)
 		return fmt.Errorf("%s: %s", resp.Status, strings.TrimSpace(buf.String()))

@@ -75,16 +75,9 @@ func disable() error {
 	return nil
 }
 
-// plist is the LaunchAgent launchd reads at login.
-//
-// ProgramArguments rather than Program, because that form takes the path as one
-// array element and needs no quoting at all: launchd never splits it, so a path
-// with a space in it cannot break the way an unquoted command line does on the
-// other two platforms.
-//
-// KeepAlive is deliberately absent. This starts the program once at login; a
-// KeepAlive agent restarts it every time somebody quits it, which is not an
-// autostart setting, it is a program that cannot be closed.
+// plist is the LaunchAgent launchd reads at login. ProgramArguments passes the
+// path as one element, so a space in it needs no quoting. There is no KeepAlive
+// because that would restart the program every time somebody quits it.
 func plist(exe string) string {
 	return `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">

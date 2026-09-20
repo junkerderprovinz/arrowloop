@@ -15,31 +15,19 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/state"
 )
 
-// A one-way job is not a two-way job with half the actions removed.
-//
-// Filtering would leave a job that never settles: the far side's own edit would
-// be skipped, reported again on the next run, and again for ever. What a
-// direction means is that one side is right and the other is made to agree with
-// it, so every action is REWRITTEN to run that way or dropped.
-
-// TestOneWayNeverWritesToItsSource is the promise the whole setting rests on.
 func TestOneWayNeverWritesToItsSource(t *testing.T) {
 	j := oneWay(t, plan.LeftToRight)
 
-	// Two files, not one. Emptying a side completely is refused by the
-	// empty-side guard whatever the direction says, and rightly: an unmounted
-	// destination looks exactly like a destination somebody emptied. What is
-	// under test here is a deletion, not that guard.
+	// A second file keeps the side from emptying, which the empty-side guard
+	// would refuse.
 	write(t, j.left, "from-the-source.txt", "written on the left")
 	write(t, j.left, "keeps-the-side-populated.txt", "so a side never lists nothing")
 	if _, res := j.run(t); res.Copied != 2 {
 		t.Fatalf("new files on the source did not travel: %d copied", res.Copied)
 	}
 
-	// The far side edits something. A two-way job would carry that back; a
-	// one-way job puts the source's version over it, because the source is what
-	// the setting says is right.
-	write(t, j.right, "from-the-source.txt", "written on the RIGHT, which does not decide")
+	// An edit on the far side is overwritten with the source's version.
+	write(t, j.right, "from-the-source.txt", "written on the right, which does not decide")
 	p, res := j.run(t)
 	if res.Copied != 1 {
 		t.Fatalf("the far side's edit was not undone: %d copied, plan %+v", res.Copied, p.Actions)
@@ -51,8 +39,7 @@ func TestOneWayNeverWritesToItsSource(t *testing.T) {
 		t.Errorf("the destination was not brought back into line: %q", got)
 	}
 
-	// The far side deletes something. The source still has it, so it comes back
-	// rather than being deleted on the source.
+	// A deletion on the far side is restored from the source.
 	if err := os.Remove(filepath.Join(j.right, "from-the-source.txt")); err != nil {
 		t.Fatalf("remove: %v", err)
 	}
@@ -63,8 +50,7 @@ func TestOneWayNeverWritesToItsSource(t *testing.T) {
 		t.Errorf("the file was removed from the source: %v", err)
 	}
 
-	// A deletion on the SOURCE does propagate, because that is the one
-	// direction this job is for.
+	// A deletion on the source propagates.
 	if err := os.Remove(filepath.Join(j.left, "from-the-source.txt")); err != nil {
 		t.Fatalf("remove: %v", err)
 	}
@@ -72,19 +58,11 @@ func TestOneWayNeverWritesToItsSource(t *testing.T) {
 		t.Fatalf("a deletion on the source did not propagate: %d trashed", res.Trashed)
 	}
 
-	// And it settles. A one-way job that keeps proposing the same undo every
-	// run is the failure this rewrite exists to prevent.
 	if p, res := j.run(t); len(p.Actions) != 0 || res.Copied != 0 {
 		t.Fatalf("the one-way job did not settle: %d actions, %d copied", len(p.Actions), res.Copied)
 	}
 }
 
-// TestOneWayLeavesWhatTheSourceNeverHad is the line between copying and
-// mirroring, and it is deliberate.
-//
-// Deleting something the source has never known about is not propagating
-// somebody's decision, it is making one on their behalf. A file that only ever
-// existed on the destination stays there.
 func TestOneWayLeavesWhatTheSourceNeverHad(t *testing.T) {
 	j := oneWay(t, plan.LeftToRight)
 	write(t, j.left, "shared.txt", "from the source")
@@ -106,8 +84,6 @@ func TestOneWayLeavesWhatTheSourceNeverHad(t *testing.T) {
 	}
 }
 
-// TestTheOtherDirectionIsTheMirrorImage. The two settings must not be one
-// working feature and one that was written from memory.
 func TestTheOtherDirectionIsTheMirrorImage(t *testing.T) {
 	j := oneWay(t, plan.RightToLeft)
 	write(t, j.right, "from-the-source.txt", "written on the right")
@@ -115,7 +91,7 @@ func TestTheOtherDirectionIsTheMirrorImage(t *testing.T) {
 		t.Fatalf("a new file on the source did not travel: %d copied", res.Copied)
 	}
 
-	write(t, j.left, "from-the-source.txt", "written on the LEFT, which does not decide")
+	write(t, j.left, "from-the-source.txt", "written on the left, which does not decide")
 	if _, res := j.run(t); res.Copied != 1 {
 		t.Fatalf("the far side's edit was not undone: %d copied", res.Copied)
 	}
@@ -127,8 +103,6 @@ func TestTheOtherDirectionIsTheMirrorImage(t *testing.T) {
 	}
 }
 
-// TestBothWaysIsUntouched. A direction nobody set must behave exactly as this
-// program did before the setting existed.
 func TestBothWaysIsUntouched(t *testing.T) {
 	j := oneWay(t, plan.Both)
 	write(t, j.left, "l.txt", "left")
@@ -137,7 +111,6 @@ func TestBothWaysIsUntouched(t *testing.T) {
 		t.Fatalf("a two-way job did not carry both files: %d copied", res.Copied)
 	}
 
-	// And a genuine disagreement is still a conflict, with both versions kept.
 	write(t, j.left, "l.txt", "changed on the left")
 	time.Sleep(1100 * time.Millisecond)
 	write(t, j.right, "l.txt", "changed on the right")
@@ -145,8 +118,6 @@ func TestBothWaysIsUntouched(t *testing.T) {
 		t.Fatalf("a two-way job stopped treating a disagreement as a conflict: %d conflicts", res.Conflicts)
 	}
 }
-
-// ---------------------------------------------------------------------------
 
 type directed struct {
 	left, right string

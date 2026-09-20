@@ -1,10 +1,8 @@
 // Package plan turns "what both sides look like now" plus "what they agreed on
 // last time" into an ordered list of actions, without touching anything.
 //
-// Building the plan and applying it are deliberately separate. The plan is what
-// the user gets shown before a single byte moves, and it is what the safety
-// brakes are measured against. A design that decides and acts in the same pass
-// cannot offer either.
+// The plan is built separately from applying it, so it can be shown to the
+// user before anything moves and the safety brakes can be measured against it.
 package plan
 
 import (
@@ -28,17 +26,10 @@ const (
 	Right
 )
 
-// A reason travels twice: as the English sentence the command line and the log
-// print, and as a code with its values, so that an interface reading in another
-// language can say the same thing in that language.
-//
-// Translating on this side would be the worse trade. The engine would need to
-// know the reader's language on every run, and the log would then be written in
-// whichever language somebody last asked a question in.
-//
-// The sentence is built from the same template the interface translates, so the
-// two cannot drift: there is one place where a reason is worded and one place
-// where its values are named.
+// Reason is why an action or skip happens, as the English sentence the command
+// line and the log print and as a code with values that an interface can
+// translate. Translating here would tie the log to whichever language a reader
+// last used.
 type Reason struct {
 	Code string            `json:"code"`
 	Vars map[string]string `json:"vars,omitempty"`
@@ -65,9 +56,8 @@ var reasonText = map[string]string{
 	"dirRemovedOnSide": "folder removed on the {side}",
 	"dirGoneBoth":      "folder gone on both sides, dropping the record",
 
-	// Reasons a run gives while it is running rather than while it is deciding.
-	// Each carries the underlying error as a value, because a backend's own
-	// words about what went wrong are worth more than any sentence written here.
+	// Reasons found while running rather than while deciding. They carry the
+	// backend's own error as a value.
 	"stepFailed":      "{what} failed, leaving it for the next run: {error}",
 	"removeDirFailed": "could not remove the folder, leaving it: {error}",
 	"heldOpen":        "held open by another program on the {side} side, waiting for it to be closed",
@@ -78,29 +68,17 @@ var reasonText = map[string]string{
 	"oneWay":          "this job only writes away from the {side}, so the {side} version is the one that stands",
 }
 
-// String is the English sentence, so that anything printing a reason with %s or
-// %v gets the sentence rather than the struct.
-//
-// Without it the command line printed "{newOnSide map[side:left] new on the
-// left}" the moment a reason stopped being a plain string, in eight places at
-// once, and every one of them looked correct in the diff that caused it.
+// String is the English sentence, so %s and %v print the sentence rather than
+// the struct.
 func (r Reason) String() string { return r.Text }
 
 // Because builds a reason from a code and its values, for the stages that
 // discover one while running rather than while deciding.
 func Because(code string, pairs ...string) Reason { return because(code, pairs...) }
 
-// because builds a reason. The variadic values are key and value in turn, which
-// keeps a call site to one line and reads in the order the sentence does.
-//
-// A code nobody has worded here answers with the code itself rather than with
-// an empty string. That fallback was described one function down and never
-// actually written, and the map was short of three codes the engine really
-// produces: goneBoth, appearedSame and appearedDiffer. The result was a run that
-// printed a path, a colon and then nothing at all, on the two cases anybody
-// looking at a fresh pair of folders meets first. A missing sentence must be
-// loud, because a blank one is indistinguishable from a reason that genuinely
-// had nothing to add.
+// because builds a reason from a code and alternating keys and values. A code
+// without wording falls back to the code itself, so a missing sentence shows
+// instead of printing nothing.
 func because(code string, pairs ...string) Reason {
 	vars := make(map[string]string, len(pairs)/2)
 	for i := 0; i+1 < len(pairs); i += 2 {
@@ -151,14 +129,8 @@ const (
 	Conflict             // both sides changed it differently, keep both
 
 	// Relocate copies to the other side and then removes the file from this
-	// one, which is what a job in Move mode does with everything it sends.
-	//
-	// ONE action and not a copy followed by a delete, and that is the whole
-	// reason it is a kind of its own. As two actions the delete sits in the
-	// queue behind the copy, and a copy that fails leaves it there; as one,
-	// the removal is unreachable unless the copy returned without error. It
-	// also shows up in a preview as one line that says "moved", which is the
-	// truth, rather than as two lines somebody has to pair up by eye.
+	// one, as a job in Move mode does. Being one action, the removal cannot
+	// run unless the copy succeeded, and a preview shows one line.
 	Relocate
 )
 
@@ -177,13 +149,9 @@ func (k Kind) String() string {
 	}
 }
 
-// Action is one change to make.
-//
-// Path is the matching key and is never handed to a backend. SrcPath, DstPath
-// and OldDstPath are real names as each side spells them, which is not the same
-// thing: a file stored decomposed on macOS and composed on Windows shares one
-// key and has two spellings, and handing the wrong one to a backend produces a
-// second file rather than an error.
+// Action is one change to make. Path is the matching key and is never handed
+// to a backend; SrcPath, DstPath and OldDstPath are the names as each side
+// spells them.
 type Action struct {
 	Kind   Kind
 	Path   string
@@ -199,10 +167,8 @@ type Action struct {
 	RightNow *scan.Entry
 	Prev     *state.Entry
 
-	// Resolve applies to a conflict and to nothing else. Its zero value is
-	// KeepBoth, which is what an unattended run always does: a scheduled job
-	// has nobody to ask, and picking a winner unasked would delete somebody's
-	// work while they were not looking.
+	// Resolve applies only to a conflict. Its zero value is KeepBoth, which is
+	// what an unattended run always does.
 	Resolve Resolution
 }
 
@@ -210,14 +176,11 @@ type Action struct {
 type Resolution int
 
 const (
-	// KeepBoth is the default and the only outcome a run reaches on its own.
-	// The newer version keeps the plain name on both sides and the older is
-	// preserved beside it. Nothing is lost and the job converges.
+	// KeepBoth gives the newer version the plain name on both sides and keeps
+	// the older one beside it.
 	KeepBoth Resolution = iota
-	// KeepLeft and KeepRight are only ever set by a person looking at the two
-	// versions. The losing version still goes to the trash rather than being
-	// overwritten, because "I chose this one" and "I meant to destroy the
-	// other one for good" are different statements.
+	// KeepLeft and KeepRight are only set by a person. The losing version
+	// still goes to the trash.
 	KeepLeft
 	KeepRight
 )
@@ -233,10 +196,8 @@ func (r Resolution) String() string {
 	}
 }
 
-// ParseResolution reads what a person picked. Anything unrecognised is the safe
-// default rather than an error: a newer interface asking an older engine for a
-// resolution it has never heard of must keep both versions, not fail the run
-// and not guess.
+// ParseResolution reads what a person picked. Anything unrecognised keeps both
+// versions, so an older engine never guesses at a newer interface's choice.
 func ParseResolution(text string) Resolution {
 	switch text {
 	case "left", "keep left":
@@ -256,9 +217,8 @@ func (a Action) Names() (left, right string) {
 	return a.DstPath, a.SrcPath
 }
 
-// Skip is a path the run deliberately left alone, with the reason. Skips are
-// not failures and not successes; they are work postponed, and the state row
-// is left untouched so the next run reconsiders from scratch.
+// Skip is a path the run left alone, with the reason. It is postponed work:
+// the state row stays untouched so the next run reconsiders it.
 type Skip struct {
 	Path   string
 	Reason Reason
@@ -277,60 +237,40 @@ type Plan struct {
 	Dirs []DirAction
 }
 
-// Options is the per-job settings bag shared by the comparison and the apply
-// stage: how files are judged equal, what the safety brakes allow, and how many
-// transfers may be in flight at once.
+// Options is the per-job settings shared by the comparison and the apply stage.
 type Options struct {
-	// Direction is which way this job may write. The zero value is both ways,
-	// which is the safe default: a direction nobody set must never silently
-	// make one side authoritative over the other.
+	// Direction is which way this job may write. The zero value is both ways.
 	Direction Direction
 
-	// Mode is what a one-way job does beyond copying: nothing, mirror, or move.
-	// The zero value is ModeSync, which is the mode that deletes nothing on its
-	// own - the right default for a value a caller forgot to set.
+	// Mode is what a one-way job does beyond copying: nothing, mirror, or
+	// move. The zero value is ModeSync, which deletes nothing on its own.
 	Mode Mode
 
-	// Transfers is how many files may be copied at the same time. One is
-	// correct but slow over a network, where most of the wall-clock time of a
-	// small file is round trips rather than bytes.
+	// Transfers is how many files may be copied at the same time.
 	Transfers int
 
 	// ModWindow is how far two modification times may differ and still count
-	// as the same instant. Filesystems disagree wildly here: exFAT stores two
-	// second resolution, S3 keeps whatever was put in the metadata. Two
-	// seconds is the traditional rsync value. It only ever applies when at
-	// least one side cannot produce a hash, because a hash comparison is
-	// exact and needs no window.
+	// as the same instant (exFAT stores two-second resolution). It only
+	// applies when a side cannot produce a hash.
 	ModWindow time.Duration
 
 	// QuietPeriod is how long a file has to sit unchanged before the engine
-	// will touch it.
-	//
-	// This is not about latency, it is about half-written files. A run started
-	// while somebody is saving a large document copies whatever is on disk at
-	// that instant, and the copy is garbage. A schedule does not help: a run
-	// every two minutes lands mid-write just as readily as a filesystem watch
-	// does. Waiting for the file to stop changing is the only portable defence,
-	// and it is worth more than any amount of cleverness afterwards.
+	// touches it, so a file still being saved is not copied half-written.
 	QuietPeriod time.Duration
 
-	// Now is the reference point for QuietPeriod. Zero means time.Now, which
-	// is what everything but the tests wants.
+	// Now is the reference point for QuietPeriod. Zero means time.Now.
 	Now time.Time
 
-	// FoldCase records whether this job matches names case-insensitively. It is
-	// derived from the two backends rather than configured: if either side
-	// cannot tell "Bild.jpg" from "bild.jpg", the matching must fold for both.
+	// FoldCase records whether this job matches names case-insensitively,
+	// derived from the two backends (see pathid.Key).
 	FoldCase bool
 
 	// BrakePercent trips the mass-delete brake when a single run would delete
 	// more than this share of the known files. Zero disables the brake.
 	BrakePercent int
 
-	// BrakeFloor is a number of deletions below which the brake never trips,
-	// so that a tiny job is not blocked by its own arithmetic. Deleting three
-	// of four files is 75 percent and almost certainly intentional.
+	// BrakeFloor is a number of deletions at or below which the brake never
+	// trips, so a tiny job is not blocked by its own arithmetic.
 	BrakeFloor int
 }
 
@@ -353,8 +293,7 @@ func (o Options) now() time.Time {
 }
 
 // BrakeError is returned when a run would delete an implausible share of the
-// tree. It carries enough detail for the message to be actionable, because a
-// brake that only says "refused" trains the user to disable it.
+// tree. It carries enough detail for the user to judge the refusal.
 type BrakeError struct {
 	Deletes int
 	Known   int
@@ -368,13 +307,8 @@ func (e *BrakeError) Error() string {
 }
 
 // EmptySideError is returned when a side lists nothing while the state says it
-// used to hold files.
-//
-// This is the single most valuable check in the whole engine. The classic total
-// loss is not a bug: a disk fails to mount, the side lists zero files, the
-// engine reads that correctly as "everything was deleted" and correctly deletes
-// it on the other side. Nothing malfunctioned. The only defence is to refuse to
-// believe an empty side.
+// used to hold files. A disk that failed to mount lists empty, and believing it
+// would delete everything on the other side.
 type EmptySideError struct {
 	Side  Side
 	Known int
@@ -396,22 +330,17 @@ const (
 	deleted                 // known before, gone now
 )
 
-// Facts is the minimum needed to compare two versions of a file. It is
-// exported because the apply stage has to make exactly the same judgement when
-// it decides whether two sides have really ended up equal, and two comparison
-// functions that are meant to agree eventually will not.
+// Facts is the minimum needed to compare two versions of a file. The apply
+// stage uses the same comparison to check that two sides ended up equal.
 type Facts struct {
 	Size int64
 	Mod  time.Time
 	Hash string
 }
 
-// Same reports whether two versions of a file are the same content.
-//
-// The hash wins whenever both sides can produce one, and then the modification
-// time is irrelevant. That matters more than it looks: with a two second
-// window, a file edited twice within two seconds and left at the same length
-// would otherwise be declared unchanged and silently not synced.
+// Same reports whether two versions of a file are the same content. When both
+// have a hash the modification time is ignored, so two edits within the window
+// that keep the length are still told apart.
 func Same(a, b Facts, window time.Duration) bool {
 	if a.Hash != "" && b.Hash != "" {
 		return a.Size == b.Size && a.Hash == b.Hash
@@ -547,10 +476,9 @@ func Build(ctx context.Context, left, right *scan.Listing, prev map[string]state
 		case rState == deleted && lState == unchanged:
 			out.Actions = append(out.Actions, deleteAction(base, Left, because("deletedOnSide", "side", "right")))
 
-		// One side deleted while the other edited. An edit is evidence that
-		// somebody wanted the file; a deletion is evidence that somebody did
-		// not. Only one of those can be undone by hand later, so the edit wins
-		// and the file comes back.
+		// One side deleted while the other edited. The edit wins, because a
+		// restored file can be deleted again by hand but a lost edit cannot
+		// be recovered.
 		case lState == deleted && rState == modified:
 			out.Actions = append(out.Actions, copyAction(base, Right, because("restoredOnSide", "side", "right", "other", "left")))
 		case rState == deleted && lState == modified:
@@ -613,9 +541,8 @@ func copyAction(base Action, from Side, reason Reason) Action {
 	if from == Right {
 		src = base.RightNow
 	}
-	// The destination gets the source's own spelling. That is what makes a
-	// composed and a decomposed tree converge on one form instead of trading
-	// copies back and forth forever.
+	// The destination gets the source's spelling, so both sides converge on
+	// one Unicode form.
 	base.SrcPath = src.Path
 	base.DstPath = src.Path
 	return base
@@ -642,14 +569,9 @@ func conflictAction(base Action, reason Reason) Action {
 }
 
 // detectRenames folds a delete plus a copy of identical content into a single
-// move.
-//
-// Without this, renaming a folder of holiday photos on a laptop re-uploads
-// every one of them and deletes the originals on the far side. With it, the
-// far side does a server-side rename and no bytes cross the wire. It only fires
-// when a real hash is available on both the record and the new file, because
-// matching by size alone would happily "rename" two unrelated files that happen
-// to be the same length.
+// move, so a renamed folder is renamed on the far side instead of uploaded
+// again. It needs a hash on both the record and the new file, since equal
+// sizes alone would pair up unrelated files.
 func detectRenames(ctx context.Context, p *Plan) {
 	type key struct {
 		size int64
@@ -657,32 +579,17 @@ func detectRenames(ctx context.Context, p *Plan) {
 	}
 	deletions := map[key]int{}
 	for i, a := range p.Actions {
-		// Only a real deletion on one side can be the other half of a rename.
-		// A record cleanup for a path already gone everywhere has no file
-		// behind it to move.
+		// A record cleanup for a path gone on both sides has no file to move.
 		if a.Kind != Delete || a.Prev == nil || (a.LeftNow == nil && a.RightNow == nil) {
 			continue
 		}
-		// The recorded hash is taken from the side where the rename HAPPENED,
-		// which is the side opposite the one being told to delete. That side
-		// holds both halves of the evidence: the record of what the file used
-		// to be, and the live file it has become.
-		//
-		// Reading the destination's hash instead looks equivalent, because a
-		// recorded agreement means both sides held the same content. It is not
-		// equivalent when the destination cannot produce a hash at all: an SFTP
-		// host with no remote shell records an empty one, and every rename then
-		// degrades into a full re-upload plus a delete. Found by running a job
-		// against a real SFTP server for the first time, where renaming one
-		// file reported "0 moved, 1 copied".
+		// The recorded hash comes from the side where the rename happened,
+		// opposite the deletion. The deleting side may be a backend that
+		// records no hash, such as SFTP without a remote shell.
 		h, size := a.Prev.RightHash, a.Prev.RightSize
 		if a.Dst == Right {
 			h, size = a.Prev.LeftHash, a.Prev.LeftSize
 		}
-		// Matching on size alone would happily "rename" two unrelated files
-		// that happen to be the same length, so a job where NEITHER side can
-		// hash simply gets no rename detection: a copy and a delete are slower
-		// but correct.
 		if h == "" {
 			continue
 		}
@@ -713,8 +620,6 @@ func detectRenames(ctx context.Context, p *Plan) {
 		if !ok || removed[j] || p.Actions[j].Dst != a.Dst {
 			continue
 		}
-		// The far side must move the file from where it used to be to where
-		// it now is on the source side.
 		p.Actions[i] = Action{
 			Kind:       Move,
 			Path:       a.Path,
@@ -752,8 +657,7 @@ func checkBrake(p *Plan, known int, opt Options) error {
 	var deletes int
 	var sample []string
 	for _, a := range p.Actions {
-		// A record cleanup for a file already gone on both sides destroys
-		// nothing, so it must not count towards the brake.
+		// A record cleanup for a file gone on both sides destroys nothing.
 		if a.Kind != Delete || (a.LeftNow == nil && a.RightNow == nil) {
 			continue
 		}
@@ -769,13 +673,6 @@ func checkBrake(p *Plan, known int, opt Options) error {
 		return nil
 	}
 	return &BrakeError{Deletes: deletes, Known: known, Percent: opt.BrakePercent, Sample: sample}
-}
-
-func max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
 }
 
 // DirKind is what a directory action does.
@@ -807,26 +704,15 @@ type DirAction struct {
 	Dst     Side
 	Reason  Reason
 
-	// LeftPath and RightPath are the names each side ends up holding, which can
-	// differ in spelling for the same reason file names can.
+	// LeftPath and RightPath are the names each side ends up holding.
 	LeftPath  string
 	RightPath string
 }
 
 // BuildDirs compares the directory listings the same way files are compared.
-//
-// This exists only for EMPTY directories. A directory holding files is implied
-// by the files and needs no help. An empty one has nothing to imply it, so
-// without a record of its own it can never be created on the far side, and a
-// project skeleton or a photo folder waiting to be filled quietly fails to
-// travel.
-//
-// The record is what makes removal safe. Without it, "this folder is not over
-// there" is ambiguous in exactly the way a missing file is: it could be a
-// deletion to propagate or a folder that has simply never existed on that side.
-// Removal also goes through Rmdir rather than a recursive delete, so a
-// directory that still holds anything refuses to go, and that refusal is
-// reported instead of being forced.
+// It matters for empty directories, which no file implies. Removal goes
+// through Rmdir rather than a recursive delete, so a directory that still
+// holds anything refuses to go and the refusal is reported.
 func BuildDirs(left, right *scan.Listing, prev map[string]state.Dir) []DirAction {
 	if left.Dirs == nil || right.Dirs == nil {
 		return nil
@@ -874,9 +760,8 @@ func BuildDirs(left, right *scan.Listing, prev map[string]state.Dir) []DirAction
 		}
 	}
 
-	// Create shallow directories before deep ones, and remove deep ones before
-	// their parents. Rmdir refuses a directory that still has a child in it, so
-	// the wrong order would turn every nested removal into a reported failure.
+	// Create shallow directories first and remove deep ones first, since Rmdir
+	// refuses a directory that still has a child.
 	sort.SliceStable(out, func(i, j int) bool {
 		ri, rj := out[i].Kind == RemoveDir, out[j].Kind == RemoveDir
 		if ri != rj {

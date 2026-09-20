@@ -10,9 +10,6 @@ import (
 	"testing"
 )
 
-// TestMatrixPostsWhereItSaysItWill pins the request shape. Matrix is picky about
-// the path and the header, and a notification that silently 404s is worth less
-// than no notification at all, because it looks configured.
 func TestMatrixPostsWhereItSaysItWill(t *testing.T) {
 	var mu sync.Mutex
 	var paths, bodies []string
@@ -43,8 +40,7 @@ func TestMatrixPostsWhereItSaysItWill(t *testing.T) {
 	if !strings.Contains(paths[0], "/_matrix/client/v3/rooms/") || !strings.Contains(paths[0], "/send/m.room.message/") {
 		t.Errorf("wrong endpoint: %s", paths[0])
 	}
-	// The room id starts with a "!" and usually contains a colon, both of which
-	// have to survive as path segments rather than being taken as syntax.
+	// The "!" and the colon of a room id have to survive as a path segment.
 	if !strings.Contains(paths[0], "%21room:example.org") && !strings.Contains(paths[0], "!room:example.org") {
 		t.Errorf("the room id was mangled: %s", paths[0])
 	}
@@ -55,17 +51,12 @@ func TestMatrixPostsWhereItSaysItWill(t *testing.T) {
 		t.Errorf("the subject did not carry: %s", bodies[0])
 	}
 
-	// Matrix deduplicates on the transaction id, so two messages that shared one
-	// would show up as a single message, and the one that got swallowed would be
-	// the second failure notice.
+	// Matrix deduplicates on the transaction id.
 	if paths[0] == paths[1] {
 		t.Errorf("two messages used the same transaction id, so the second would be dropped: %s", paths[0])
 	}
 }
 
-// TestMatrixReportsWhatTheServerSaid keeps the error useful: the body carries
-// Matrix's own code, which is the difference between an expired token and a
-// room that does not exist.
 func TestMatrixReportsWhatTheServerSaid(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusForbidden)
@@ -83,8 +74,6 @@ func TestMatrixReportsWhatTheServerSaid(t *testing.T) {
 	}
 }
 
-// TestMatrixRefusesToBeHalfConfigured turns a missing token into an error rather
-// than a request that cannot possibly work.
 func TestMatrixRefusesToBeHalfConfigured(t *testing.T) {
 	m := &Matrix{Homeserver: "https://example.org", Room: "!x:y"}
 	if err := m.Send(context.Background(), "s", "b"); err == nil {
@@ -92,8 +81,6 @@ func TestMatrixRefusesToBeHalfConfigured(t *testing.T) {
 	}
 }
 
-// TestMultiTriesEveryDestination is the reason Multi does not stop at the first
-// failure: a Matrix outage must not stop a webhook from firing.
 func TestMultiTriesEveryDestination(t *testing.T) {
 	var reached bool
 	good := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -118,7 +105,6 @@ func TestMultiTriesEveryDestination(t *testing.T) {
 	}
 }
 
-// TestWebhookReportsARefusal keeps a rejected webhook from looking delivered.
 func TestWebhookReportsARefusal(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)

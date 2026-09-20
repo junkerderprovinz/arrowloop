@@ -10,14 +10,8 @@ import (
 	"golang.org/x/sys/windows"
 )
 
-// TestBusyAndWasBusyAgreeAboutARealLock drives both halves of the package
-// against a lock Windows really took, rather than against a number copied out
-// of a header.
-//
-// The two answers have to agree. Busy is asked before an operation and WasBusy
-// after one, and a pair that disagreed would produce a run that skipped a file
-// as held open and then, on the next run, reported the same file as a plain
-// failure, with nothing to tell the reader they were the same event.
+// TestBusyAndWasBusyAgreeAboutARealLock checks both functions against a lock
+// Windows really took.
 func TestBusyAndWasBusyAgreeAboutARealLock(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "notes.txt")
 	if err := os.WriteFile(path, []byte("a document somebody has open"), 0o644); err != nil {
@@ -31,14 +25,10 @@ func TestBusyAndWasBusyAgreeAboutARealLock(t *testing.T) {
 	if err != nil {
 		t.Fatalf("a file nobody holds would not open: %v", err)
 	}
-	// Closed before the lock is taken, and not with a defer. This test's own
-	// open handle is enough to stop the exclusive open below, which is the
-	// whole mechanism under test working correctly against the wrong process.
+	// Closed now rather than deferred, or it would block the exclusive open.
 	free.Close()
 
-	// Share mode zero is what a program that means to keep a file to itself
-	// asks for, and it is what makes the file genuinely unreadable to everyone
-	// else. This is the situation, not an imitation of it.
+	// Share mode zero keeps the file to this handle.
 	p, err := windows.UTF16PtrFromString(path)
 	if err != nil {
 		t.Fatalf("path: %v", err)
@@ -53,9 +43,7 @@ func TestBusyAndWasBusyAgreeAboutARealLock(t *testing.T) {
 		t.Error("a locked file reported as free, so the run would go on to fail on it")
 	}
 
-	// The error the operating system hands back through the standard library,
-	// wrappers and all. Recognising a hand-built errno and not this one would
-	// be a guard that only works in its own test.
+	// The real error as the standard library wraps it, not a hand-built errno.
 	_, err = os.Open(path)
 	if err == nil {
 		t.Fatal("a locked file opened, so Windows did not take the lock and the rest proves nothing")
@@ -65,10 +53,6 @@ func TestBusyAndWasBusyAgreeAboutARealLock(t *testing.T) {
 	}
 }
 
-// TestWasBusyLeavesOtherFailuresAlone is the other direction. A classifier that
-// answered yes too readily would relabel a full disk or a refused permission as
-// "close the document", which is worse than the generic reason it replaced:
-// somebody would go looking for an open window that does not exist.
 func TestWasBusyLeavesOtherFailuresAlone(t *testing.T) {
 	_, err := os.Open(filepath.Join(t.TempDir(), "no-such-file.txt"))
 	if err == nil {

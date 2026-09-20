@@ -1,11 +1,8 @@
 // Package state holds the last agreed state of a sync job.
 //
-// This is the piece rclone's own bisync does not have, and the reason this
-// project exists at all. Without a per-file record of what BOTH sides looked
-// like the last time they agreed, "the file is on the left but not on the
-// right" is ambiguous: it means either "created on the left" or "deleted on
-// the right", and those two readings call for opposite actions. Every two-way
-// sync that loses data loses it here.
+// Without a per-file record of what both sides looked like when they last
+// agreed, a file present only on the left could have been created there or
+// deleted on the right, and the two call for opposite actions.
 package state
 
 import (
@@ -22,16 +19,9 @@ import (
 
 // Entry is one file as it stood on both sides the last time they agreed.
 //
-// Hash is best effort. Some backends cannot produce one (plain SFTP without a
-// remote shell, for example), so an empty Hash means "unknown", never "empty
-// file". Comparisons must treat it that way or a hashless backend turns every
-// run into a full re-copy.
-//
-// Path is the matching key, not a name any backend would recognise. LeftPath
-// and RightPath are what each side actually calls the file, which can differ
-// from the key and from each other when one side stores names decomposed and
-// the other composed. Keeping all three is what lets the engine hand every
-// backend a name it will accept while still knowing the two are one file.
+// An empty hash means the backend could not produce one, not an empty file.
+// Path is the matching key; LeftPath and RightPath are each side's own name for
+// the file, which can differ in Unicode normalisation.
 type Entry struct {
 	Path      string
 	LeftPath  string
@@ -77,10 +67,6 @@ CREATE TABLE IF NOT EXISTS dirs (
 
 // Open opens or creates the state database at path.
 func Open(ctx context.Context, path string) (*DB, error) {
-	// Creating the file is half a promise on its own. A job created in the
-	// interface is given a state path of "state/<name>.db", and until this line
-	// existed nobody created the folder, so every run of every such job failed
-	// with SQLITE_CANTOPEN and a message that mentions a file and not a folder.
 	if err := dbfile.EnsureDir(path); err != nil {
 		return nil, err
 	}
@@ -91,24 +77,10 @@ func Open(ctx context.Context, path string) (*DB, error) {
 	if err != nil {
 		return nil, fmt.Errorf("open state db: %w", err)
 	}
-	// One connection, and therefore one writer.
-	//
-	// Records are written from every transfer worker at once, so without this
-	// the pool hands each of them a connection of its own and they contend for
-	// SQLite's single write lock. The busy handler waits, and on a slow disk it
-	// waits longer than its timeout: the write fails with SQLITE_BUSY, the file
-	// is reported as postponed, and its record is simply not there.
-	//
-	// That is not a lost transfer, which would be obvious, but a lost RECORD,
-	// which is quieter and worse. The file is on both sides and the job has no
-	// note of it, so the next run finds it new on both sides with identical
-	// content and files it under "appeared on both sides" instead of
-	// "unchanged". Nothing is broken and nothing converges.
-	//
-	// Serialising here rather than leaning on the busy handler costs nothing
-	// worth measuring: these writes are a few dozen bytes each and the run is
-	// waiting on a network or a disk, not on them. It also means the timeout
-	// can never be reached, rather than being reached less often.
+	// Transfer workers write records concurrently. With a connection each they
+	// contend for SQLite's write lock, and on a slow disk the busy timeout
+	// expires and a record is lost without the transfer failing. The writes
+	// are tiny, so one connection costs nothing.
 	handle.SetMaxOpenConns(1)
 
 	if _, err := handle.ExecContext(ctx, schema); err != nil {
@@ -144,12 +116,9 @@ func (d *DB) All(ctx context.Context) (map[string]Entry, error) {
 	return out, rows.Err()
 }
 
-// Put records that both sides now agree on this file.
-//
-// Called per file as the plan is applied, not once at the end. A run that dies
-// halfway then leaves a state that is smaller than reality but never wrong,
-// and the next run picks up from there. The opposite order, writing everything
-// at the end, turns every crash into a full resync.
+// Put records that both sides now agree on this file. It is called per file as
+// the plan is applied, so a run that dies halfway leaves a state that is
+// incomplete but never wrong.
 func (d *DB) Put(ctx context.Context, e Entry) error {
 	_, err := d.sql.ExecContext(ctx,
 		`INSERT INTO entries (path, left_path, right_path, left_size, left_mod, left_hash, right_size, right_mod, right_hash, agreed_at)
@@ -176,9 +145,8 @@ func (d *DB) Forget(ctx context.Context, path string) error {
 }
 
 // Count returns how many files the last agreed state covers. The mass-delete
-// brake measures against this, so it has to come from the state and not from a
-// live listing: a side that failed to mount lists zero files, and measuring a
-// proposed deletion against zero would make any deletion look proportionate.
+// brake measures against it rather than a live listing, which reads zero for a
+// side that failed to mount.
 func (d *DB) Count(ctx context.Context) (int, error) {
 	var n int
 	err := d.sql.QueryRowContext(ctx, `SELECT COUNT(*) FROM entries`).Scan(&n)
@@ -188,12 +156,8 @@ func (d *DB) Count(ctx context.Context) (int, error) {
 	return n, nil
 }
 
-// Dir is one directory both sides were known to hold.
-//
-// Directories are recorded separately from files, and only when the job syncs
-// empty ones at all. Without a record there is no way to tell "the user deleted
-// this folder over there" from "this folder has simply never existed over
-// there", and those call for opposite actions, exactly as they do for files.
+// Dir is one directory both sides were known to hold. Directories are only
+// recorded for jobs that sync empty ones, for the same reason files are.
 type Dir struct {
 	Path      string
 	LeftPath  string

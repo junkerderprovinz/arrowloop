@@ -7,12 +7,8 @@ import (
 	"testing"
 )
 
-// The desktop entry specification splits the Exec field on spaces exactly the
-// way a command line is split, so an unquoted path breaks for anybody whose
-// home directory has a space in it. Same failure as the Windows Run value, same
-// silent shape: nothing happens at the next login and nothing says why.
 func TestTheExecLineIsQuoted(t *testing.T) {
-	const exe = "/home/junker der provinz/bin/ArrowLoop"
+	const exe = "/home/jane doe/bin/ArrowLoop"
 	dir := t.TempDir()
 	t.Setenv("XDG_CONFIG_HOME", dir)
 
@@ -42,9 +38,7 @@ func TestTheExecLineIsQuoted(t *testing.T) {
 }
 
 // A desktop environment switches an entry off by setting this key rather than
-// deleting the file. Reading the file's existence alone would report autostart
-// as on for an entry the session is deliberately ignoring, and the toggle would
-// show the opposite of what the machine does.
+// deleting the file.
 func TestADisabledEntryReadsAsOff(t *testing.T) {
 	dir := t.TempDir()
 	t.Setenv("XDG_CONFIG_HOME", dir)

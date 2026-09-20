@@ -12,11 +12,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/scan"
 )
 
-// TestKeepingVersionsIsOffUntilSomebodyAsks.
-//
-// Keeping versions doubles what a busy tree holds, silently, inside the tree
-// itself. A sync tool that started eating disk space on an upgrade is a sync tool
-// nobody upgrades again, so nothing at all may happen until a number is set.
+// Kept versions take space inside the tree, so nothing is kept until asked.
 func TestKeepingVersionsIsOffUntilSomebodyAsks(t *testing.T) {
 	for _, keep := range []int{0, -1} {
 		s := newSide(t)
@@ -38,13 +34,7 @@ func TestKeepingVersionsIsOffUntilSomebodyAsks(t *testing.T) {
 	}
 }
 
-// TestAKeptVersionGoesWhereTheScannerWillNotLook is the property the whole
-// feature rests on, and it is inherited from toTrash rather than invented here.
-//
-// A copy left anywhere else inside the synced tree would be synced to the other
-// side on the next run, where it would land inside that side's own reserved
-// rules and stay for ever. Outside the tree is not an option, because on an S3
-// bucket or an SFTP export there is often no outside.
+// A version kept anywhere else in the tree would be synced to the other side.
 func TestAKeptVersionGoesWhereTheScannerWillNotLook(t *testing.T) {
 	s := newSide(t)
 	s.put(t, "docs/notes.txt", "the version about to be replaced", time.Time{})
@@ -81,9 +71,7 @@ func TestAKeptVersionGoesWhereTheScannerWillNotLook(t *testing.T) {
 	}
 }
 
-// TestNothingToOverwriteIsNotAFailure. A file arriving on a side for the first
-// time is the ordinary case, and treating it as a failed version would turn every
-// new file into a skipped copy.
+// A failure here would turn every new file into a skipped copy.
 func TestNothingToOverwriteIsNotAFailure(t *testing.T) {
 	s := newSide(t)
 	if err := KeepVersion(context.Background(), s.fs, "docs/notes.txt", "20260907-101500", 3); err != nil {
@@ -98,8 +86,6 @@ func TestNothingToOverwriteIsNotAFailure(t *testing.T) {
 	}
 }
 
-// TestTheHistoryIsPrunedToTheNumberAsked is the second half of the setting. A
-// history that only ever grows is a disk that only ever fills.
 func TestTheHistoryIsPrunedToTheNumberAsked(t *testing.T) {
 	s := newSide(t)
 	ctx := context.Background()
@@ -118,9 +104,7 @@ func TestTheHistoryIsPrunedToTheNumberAsked(t *testing.T) {
 	if len(entries) != 3 {
 		t.Fatalf("three versions were asked for and %d are kept: %+v", len(entries), entries)
 	}
-	// The listing is newest first, and the newest three are the last three
-	// written. Keeping an arbitrary three would satisfy a count and lose the
-	// only versions anybody wants.
+	// The listing is newest first.
 	want := []string{"20260905-000000", "20260904-000000", "20260903-000000"}
 	for i, run := range want {
 		if entries[i].RunID != run {
@@ -136,10 +120,6 @@ func TestTheHistoryIsPrunedToTheNumberAsked(t *testing.T) {
 	}
 }
 
-// TestOneFilesHistoryDoesNotPruneAnother. Versions are filed under the path
-// precisely so that keeping the last three of one file is one listing of one
-// directory, and a prune that reached wider would delete a neighbour's history to
-// satisfy a count that was never about it.
 func TestOneFilesHistoryDoesNotPruneAnother(t *testing.T) {
 	s := newSide(t)
 	ctx := context.Background()
@@ -173,16 +153,8 @@ func TestOneFilesHistoryDoesNotPruneAnother(t *testing.T) {
 	}
 }
 
-// TestAFailureToKeepAVersionReachesTheCaller.
-//
-// The state is reachable and is not contrived: a plain file sitting where the
-// versions directory for docs/notes.txt has to be. Nothing removes it, because
-// the scanner skips the whole reserved prefix, so once it exists on a side it
-// stays there. What matters is that the failure comes back rather than being
-// swallowed: internal/apply turns it into a skip and the overwrite does not
-// happen, which is the outcome somebody who asked for versions wants. Swallowing
-// it would hand them an overwrite with no version kept, which is exactly what the
-// setting exists to prevent.
+// A plain file where the versions directory has to go makes keeping fail; the
+// error has to reach the caller so the overwrite does not happen.
 func TestAFailureToKeepAVersionReachesTheCaller(t *testing.T) {
 	s := newSide(t)
 	s.put(t, "docs/notes.txt", "the version about to be replaced", time.Time{})
@@ -197,13 +169,6 @@ func TestAFailureToKeepAVersionReachesTheCaller(t *testing.T) {
 	}
 }
 
-// TestRestoringAVersionKeepsWhatItReplaces.
-//
-// This is the one restore allowed to land on an occupied name, and it is allowed
-// only because it puts a bin behind itself first. The rule is not "never
-// overwrite", it is "never destroy something with nothing behind it". Refusing
-// outright instead would refuse every single time, since the live file is always
-// there, and the feature would be unreachable.
 func TestRestoringAVersionKeepsWhatItReplaces(t *testing.T) {
 	s := newSide(t)
 	ctx := context.Background()
@@ -220,16 +185,12 @@ func TestRestoringAVersionKeepsWhatItReplaces(t *testing.T) {
 	if body, ok := s.read(t, ".arrowloop/versions/docs/notes.txt/20260907-101500.txt"); !ok || body != "today, which nobody has another copy of" {
 		t.Errorf("the file that was replaced was not kept: %q", body)
 	}
-	// The version that was restored stays in the history. Moving it out would
-	// mean restoring a version costs you that version.
+	// The restored version stays in the history.
 	if body, ok := s.read(t, ".arrowloop/versions/docs/notes.txt/20260901-000000.txt"); !ok || body != "yesterday" {
 		t.Errorf("the restored version left the history: %q", body)
 	}
 }
 
-// TestRestoringAVersionOntoNothingKeepsNothing. Somebody deleting a file and then
-// asking for a version of it back is an ordinary way to arrive here, and there
-// is nothing to preserve.
 func TestRestoringAVersionOntoNothingKeepsNothing(t *testing.T) {
 	s := newSide(t)
 	s.put(t, ".arrowloop/versions/docs/notes.txt/20260901-000000.txt", "yesterday", time.Time{})
@@ -250,8 +211,6 @@ func TestRestoringAVersionOntoNothingKeepsNothing(t *testing.T) {
 	}
 }
 
-// TestRestoringAVersionRefusesAnythingThatIsNotAPlainRelativePath. The same wire
-// guard as the trash, because it is the same wire.
 func TestRestoringAVersionRefusesAnythingThatIsNotAPlainRelativePath(t *testing.T) {
 	cases := []struct {
 		path  string
@@ -274,7 +233,6 @@ func TestRestoringAVersionRefusesAnythingThatIsNotAPlainRelativePath(t *testing.
 	}
 }
 
-// TestAMissingVersionIsSaidPlainly rather than silently doing nothing.
 func TestAMissingVersionIsSaidPlainly(t *testing.T) {
 	s := newSide(t)
 	s.put(t, "docs/notes.txt", "today", time.Time{})

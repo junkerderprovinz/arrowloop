@@ -34,9 +34,6 @@ func TestExcluded(t *testing.T) {
 	}
 }
 
-// TestInProgressCatchesTheUsualSuspects pins the default list to the names it
-// exists for. Somebody trimming this list later should have to change a test
-// that says out loud what each entry is protecting against.
 func TestInProgressCatchesTheUsualSuspects(t *testing.T) {
 	s, err := New(InProgress)
 	if err != nil {
@@ -62,8 +59,7 @@ func TestInProgressCatchesTheUsualSuspects(t *testing.T) {
 	}
 }
 
-// A nil set is the common case when no patterns were given, and it must not
-// panic on the hot path.
+// A nil set is what a job without patterns has.
 func TestNilSetExcludesNothing(t *testing.T) {
 	var s *Set
 	if s.Excluded("anything.txt") {

@@ -22,12 +22,8 @@ import (
 )
 
 // cmdWeb serves the interface and, unless told otherwise, runs the schedules
-// alongside it.
-//
-// One process rather than two: a browser tab that can start a job but cannot
-// see the scheduled ones would be lying by omission, and two processes sharing
-// one state database is the sort of arrangement that works until the day both
-// happen to run the same job.
+// in the same process, so the interface sees the scheduled runs and no two
+// processes share a state database.
 func cmdWeb(ctx context.Context, args []string) error {
 	fset := flag.NewFlagSet("web", flag.ExitOnError)
 	configPath := fset.String("config", defaultConfig, "the configuration file")
@@ -39,11 +35,8 @@ func cmdWeb(ctx context.Context, args []string) error {
 	}
 	quieten(ctx, *verbose)
 
-	// A container starting for the first time has an empty /config, and dying
-	// on a missing file would put it into a restart loop with an error nobody
-	// can act on from the Unraid log. Writing a starter file instead means the
-	// interface comes up, shows one disabled example job, and the person can
-	// edit it into their own.
+	// A new container has an empty /config; failing on the missing file would
+	// put it into a restart loop.
 	if err := writeStarterConfig(*configPath); err != nil {
 		return err
 	}
@@ -67,10 +60,8 @@ func cmdWeb(ctx context.Context, args []string) error {
 	if err != nil {
 		return fmt.Errorf("read the built interface: %w", err)
 	}
-	// Somewhere to put the report a phone sends about what it is plugged into.
-	// The container never receives one and is never held back; the cost of
-	// carrying the store anyway is one pointer, and the alternative is a build
-	// tag for a feature that is two routes long.
+	// Receives the phone's reports about battery and metered connections. The
+	// container never gets one, which costs nothing.
 	held := hold.New()
 	runner.SetCondition(held.Condition())
 
@@ -83,11 +74,6 @@ func cmdWeb(ctx context.Context, args []string) error {
 		Log:         logf,
 	}
 
-	// The default address is loopback on purpose. This interface can start a
-	// job that deletes files, and it has no login of its own; putting it on
-	// 0.0.0.0 by default would hand that to anybody on the network. Someone who
-	// wants it reachable can say so, and should put it behind something that
-	// asks who they are.
 	listener, err := net.Listen("tcp", *addr)
 	if err != nil {
 		return fmt.Errorf("listen on %s: %w", *addr, err)
@@ -116,8 +102,6 @@ func cmdWeb(ctx context.Context, args []string) error {
 		}()
 	}
 
-	// Last thing before the process blocks, so a log reader can tell at a
-	// glance whether it came up.
 	boot.Ready(fmt.Sprintf("http://%s", listener.Addr()))
 
 	select {
@@ -132,10 +116,8 @@ func cmdWeb(ctx context.Context, args []string) error {
 }
 
 // starterConfig is what a first run writes when there is no configuration yet.
-//
-// The one job in it is disabled and points nowhere real. That is deliberate: an
-// example that could run is an example that might, and the first thing a new
-// installation should do is nothing at all.
+// Its one job is disabled and points nowhere real, so a new installation does
+// nothing until it is set up.
 const starterConfig = `{
   "jobs": [
     {

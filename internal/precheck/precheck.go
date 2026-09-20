@@ -1,25 +1,13 @@
 // Package precheck answers, before anything moves, whether a job could run.
 //
-// Two quiet failures are the reason it exists.
+// It catches what the job list does not show: a destination too full for the
+// run (rclone would stop mid-transfer and leave the tree between two runs), a
+// share mounted read-only, a state database that is gone, a path that no
+// longer exists.
 //
-// The first is a run that fills the destination. rclone stops mid-transfer with
-// an out-of-space error, which reads like an ordinary failure and is not one:
-// the files that did land have their state rows written, the file that was half
-// written has none, and the tree is left in a condition whose only honest
-// description is "somewhere between the last two runs". The disk was already
-// too full before the first byte moved, and nothing asked it.
-//
-// The second is everything a person cannot see from the job list. A share
-// mounted read-only, a state database on a disk that has since been swapped, a
-// path that was right last month: each of those looks exactly like a healthy
-// job until three in the morning, when the run that was supposed to happen does
-// not. This package is the one button that asks all of it at once.
-//
-// Nothing here changes anything, with two deliberate exceptions, and both are
-// written down where they happen: proving a side is writable means writing to
-// it, and working out how many bytes a run would move means listing both sides.
-// The probe goes under the tool's own reserved directory, which the scanner
-// skips, and it is removed again.
+// It changes nothing, with two exceptions: proving a side is writable means
+// writing a probe file under the reserved directory and removing it again, and
+// estimating a run means listing both sides.
 package precheck
 
 import (
@@ -46,18 +34,12 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/volume"
 )
 
-// Finding is one thing the check learned, in the shape plan.Reason established.
-//
-// A code and its values rather than a sentence, because the interface
-// translates and this engine has no business knowing which language somebody
-// reads. The English wording travels alongside for a reader that has never
-// heard of the code: an untranslated explanation is worth more than a blank.
+// Finding is one thing the check learned, as a code with values for the
+// interface to translate and the English wording beside it (see plan.Reason).
 //
 // Side is "left", "right", or empty for a finding about the job as a whole.
-// Fatal says whether this one thing would stop the job running, which is the
-// judgement a screen must not have to make for itself: a list of codes with no
-// severity forces every interface to keep its own copy of which ones matter,
-// and those copies drift.
+// Fatal says whether it would stop the job running, so interfaces do not each
+// keep their own list of which codes matter.
 type Finding struct {
 	Code  string            `json:"code"`
 	Side  string            `json:"side,omitempty"`
@@ -87,23 +69,16 @@ var findingText = map[string]string{
 }
 
 // Side is what one end of the job reported about itself.
-//
-// Free, Total and Needed are pointers because "unknown" is a real answer and
-// zero is a different real answer. An S3 bucket has no size, so it cannot say
-// how much room is left; reporting that as zero would mean "full", and every
-// job pointed at a bucket would be refused. The distinction is the whole reason
-// these are not plain numbers.
 type Side struct {
 	Path string `json:"path"`
 
 	// Free and Total are what the backend says about itself, in bytes. Nil
-	// means the backend cannot say, which is not a fault.
+	// means the backend cannot say, as with an S3 bucket; zero would mean full.
 	Free  *int64 `json:"free"`
 	Total *int64 `json:"total"`
 
 	// Needed is the bytes a run started now would write to this side. Nil when
-	// no plan was worked out, either because the caller asked for none or
-	// because something fatal made planning pointless.
+	// no plan was worked out.
 	Needed *int64 `json:"needed"`
 
 	// Written says whether this job writes to this side at all. A one-way job
@@ -121,46 +96,32 @@ type Report struct {
 	Right    Side      `json:"right"`
 
 	// Known is how many files the state database covers. Nil when it could not
-	// be read, which is itself a fatal finding: without the record a two-way
-	// job cannot tell a new file from a deleted one.
+	// be read, which is a fatal finding.
 	Known *int `json:"known"`
 }
 
 // Opts is what a caller can vary about the check.
 type Opts struct {
-	// NoEstimate skips working out what the job would do.
-	//
-	// That estimate is a full listing of both sides, which is the same work a
-	// preview does: minutes on a large tree over SFTP. Somebody who only wants
-	// to know whether their share is mounted should not have to wait for it.
-	// Without the estimate there is nothing to compare the free space against,
-	// and the report says so rather than quietly reporting room to spare.
+	// NoEstimate skips working out what the job would do, which lists both
+	// sides and can take minutes on a large remote tree. The report then says
+	// the free space was not compared.
 	NoEstimate bool
 
-	// ForceFree overrides what a side reports as its remaining room, in bytes.
-	// Only the tests need it: a disk with a hundred bytes left is an ordinary
-	// state of a real disk, and there is no portable way to stand in one, so
-	// the number is said out loud instead of being manufactured.
+	// ForceFree overrides what a side reports as its remaining room, in bytes,
+	// for tests.
 	ForceFree map[plan.Side]int64
 }
 
-// sides is the order every loop here goes in, so that a report reads the same
-// way twice and a screen does not reshuffle its own list between two checks.
+// sides is the order every loop here goes in, so reports list findings in a
+// stable order.
 var sides = [...]plan.Side{plan.Left, plan.Right}
 
-// Check works out whether one job could run right now.
-//
-// It never returns an error. Every way this can go wrong is a fact about the
-// job rather than a fault of the request, and the caller asked precisely to be
-// told those facts: a check that answered "error" for an unplugged drive would
-// be hiding its own answer.
+// Check works out whether one job could run right now. It never returns an
+// error: everything that can go wrong is a finding about the job.
 func Check(ctx context.Context, j job.Job, opt Opts) Report {
 	rep := Report{Job: j.Name, Left: Side{Path: j.Left}, Right: Side{Path: j.Right}}
 
-	// A job that is switched off is allowed to be half written, which is the
-	// state of every job between being created and being filled in. Checking
-	// one has to say so plainly rather than handing an empty string to a
-	// backend and reporting whatever that backend makes of it.
+	// A disabled job may be half filled in.
 	if j.Left == "" || j.Right == "" {
 		rep.note("halfWritten", true)
 		return rep.done()
@@ -172,10 +133,8 @@ func Check(ctx context.Context, j job.Job, opt Opts) Report {
 		return rep.done()
 	}
 
-	// Both sides are resolved before either is opened, for the reason the
-	// runner resolves them first: a drive letter that has since been handed to
-	// a different disk is not empty, and a check that opened it would report
-	// confidently about the wrong volume.
+	// Both sides are resolved before either is opened, as the runner does, so
+	// a drive letter now given to another disk is not reported on.
 	paths := map[plan.Side]string{}
 	for _, side := range sides {
 		resolved, err := volume.Resolve(sideOf(j, side))
@@ -204,8 +163,6 @@ func Check(ctx context.Context, j job.Job, opt Opts) Report {
 		defer db.Close()
 	}
 
-	// A side that is not there is found here and remembered, because it changes
-	// what may be done to it afterwards.
 	absent := map[plan.Side]bool{}
 	for _, side := range sides {
 		f := opened[side]
@@ -215,11 +172,8 @@ func Check(ctx context.Context, j job.Job, opt Opts) Report {
 		if _, err := f.List(ctx, ""); err != nil {
 			if errors.Is(err, rclonefs.ErrorDirNotFound) {
 				absent[side] = true
-				// A side that never held anything and is not there yet is an
-				// ordinary new job: the first run creates it. A side that used
-				// to hold files and is not there now is the classic total loss
-				// waiting to happen, and it is the single most valuable thing
-				// this check can say out loud.
+				// A missing side is fine for a new job, which creates it, but
+				// fatal when files were recorded on it.
 				if known > 0 {
 					rep.noteSide("sideMissing", side, true, "known", strconv.Itoa(known))
 					continue
@@ -247,24 +201,16 @@ func Check(ctx context.Context, j job.Job, opt Opts) Report {
 		view.Free, view.Total = free, total
 
 		if !written[side] {
-			// A one-way job promises never to touch its source. Writing a probe
-			// there to prove it could would break exactly the promise somebody
-			// chose the direction for.
+			// A one-way job never writes to its source, not even a probe.
 			rep.noteSide("sideNotWritten", side, false)
 			continue
 		}
 		if view.Free == nil {
-			// Deliberately not fatal, and deliberately reported. A bucket that
-			// cannot say how full it is has not gone wrong, but a person
-			// reading a green report has to know that the space question was
-			// never actually answered for that side.
 			rep.noteSide("spaceUnknown", side, false, unknownWhy(err)...)
 		}
 		if absent[side] {
-			// A side that is not there is NOT probed. The local backend's Put
-			// makes every missing parent including the root, so a probe here
-			// would create the folder somebody mistyped and the check would
-			// then report a healthy job it had just invented.
+			// The local backend's Put creates missing parents, so a probe here
+			// would create the mistyped folder.
 			continue
 		}
 		name, wrote, err := probeWrite(ctx, f)
@@ -272,9 +218,6 @@ func Check(ctx context.Context, j job.Job, opt Opts) Report {
 		case err != nil && !wrote:
 			rep.noteSide("sideReadOnly", side, true, "error", err.Error())
 		case err != nil:
-			// The side can be written to, which is what was asked, and there is
-			// now a file on it that this check put there. Saying nothing would
-			// leave somebody to find it themselves.
 			rep.noteSide("probeLeftBehind", side, false, "path", name, "error", err.Error())
 		}
 	}
@@ -283,12 +226,8 @@ func Check(ctx context.Context, j job.Job, opt Opts) Report {
 	return rep.done()
 }
 
-// record opens the job's state database and counts what it covers.
-//
-// The database is only opened when it is already there. state.Open creates one
-// otherwise, and a check is a question rather than a first run: somebody asking
-// whether a job is set up correctly should not find a new file on their disk
-// because they asked. A job that has never run is reported as exactly that.
+// record opens the job's state database, if it exists, and counts what it
+// covers. state.Open would create a missing one, which a check must not do.
 func (r *Report) record(ctx context.Context, path string) (*state.DB, int) {
 	if _, err := os.Stat(path); err != nil {
 		if errors.Is(err, os.ErrNotExist) {
@@ -306,10 +245,7 @@ func (r *Report) record(ctx context.Context, path string) (*state.DB, int) {
 		r.note("stateUnreadable", true, "path", path, "error", err.Error())
 		return nil, 0
 	}
-	// Counted rather than merely opened. Opening proves the file is a database;
-	// only reading from it proves the schema is one this build understands, and
-	// a job whose record cannot be read is a job that would treat every file on
-	// both sides as brand new.
+	// Counting proves the schema can be read, not only that the file opens.
 	n, err := db.Count(ctx)
 	if err != nil {
 		db.Close()
@@ -320,14 +256,9 @@ func (r *Report) record(ctx context.Context, path string) (*state.DB, int) {
 	return db, n
 }
 
-// estimate works out what a run would write and whether it would fit.
-//
-// This is the half of the check that costs something, because there is no way
-// to know how many bytes a run would move without listing both sides, which is
-// exactly what a preview does. It is skipped when anything fatal has already
-// been found: a side that could not be opened cannot be listed either, and
-// planning would only produce a second, less useful sentence about the same
-// fault.
+// estimate works out what a run would write and whether it would fit. It
+// lists both sides, like a preview, and is skipped once anything fatal has
+// been found.
 func (r *Report) estimate(ctx context.Context, opened map[plan.Side]rclonefs.Fs, db *state.DB, settings engine.Options, opt Opts) {
 	if opt.NoEstimate {
 		r.note("estimateSkipped", false)
@@ -338,10 +269,8 @@ func (r *Report) estimate(ctx context.Context, opened map[plan.Side]rclonefs.Fs,
 	}
 
 	if db == nil {
-		// A job that has never run has an empty record, and an empty database
-		// in a temporary directory IS that state rather than an approximation
-		// of it. Opening the job's own path here would leave a file behind for
-		// a job somebody was only asking a question about.
+		// A job that has never run has an empty record; a temporary empty
+		// database stands in for it without leaving a file at the job's path.
 		scratch, err := os.MkdirTemp("", "arrowloop-precheck")
 		if err != nil {
 			r.note("planFailed", true, "error", err.Error())
@@ -360,10 +289,8 @@ func (r *Report) estimate(ctx context.Context, opened map[plan.Side]rclonefs.Fs,
 	ends := apply.Ends{Left: opened[plan.Left], Right: opened[plan.Right]}
 	p, _, err := engine.Prepare(engine.Configure(ctx, settings), ends, db, settings)
 	if err != nil {
-		// The engine's own words. A job refused by the mass-delete brake or by
-		// the empty-side guard is a job that will not run tonight, and saying
-		// so in the same sentence the run would use means there is one wording
-		// to recognise rather than two.
+		// Includes the mass-delete brake and the empty-side guard, in the
+		// engine's own words.
 		r.note("planFailed", true, "error", err.Error())
 		return
 	}
@@ -384,20 +311,10 @@ func (r *Report) estimate(ctx context.Context, opened map[plan.Side]rclonefs.Fs,
 	}
 }
 
-// wouldWrite adds up the bytes a plan would put on each side.
-//
-// It is a floor, and calling it anything else would be a lie: a copy that
-// replaces a file needs the new bytes before the old ones are released on some
-// backends, and a retried transfer writes the same file twice. Padding the
-// number to cover that would refuse runs that would in fact have fitted, and a
-// check that cries wolf is a check somebody switches off.
-//
-// Nothing is ever subtracted, and that is the part worth reading twice. A
-// deletion in this program is a move into the tree's OWN trash, which lives
-// inside the same tree: deleting a hundred gigabytes frees nothing at all, and
-// a check that credited those bytes back would wave through a run that then
-// filled the disk exactly as before. A rename is a rename on the far side and
-// brings no new bytes either.
+// wouldWrite adds up the bytes a plan would put on each side. It is a lower
+// bound: some backends need the new bytes before releasing the old, and
+// retries write twice. Nothing is subtracted, because a deletion is a move
+// into the tree's own trash and frees no space.
 func wouldWrite(p *plan.Plan) map[plan.Side]int64 {
 	out := map[plan.Side]int64{plan.Left: 0, plan.Right: 0}
 	for _, a := range p.Actions {
@@ -406,20 +323,14 @@ func wouldWrite(p *plan.Plan) map[plan.Side]int64 {
 			out[a.Dst] += sizeOn(a, a.Src)
 		case plan.Conflict:
 			switch a.Resolve {
-			// A resolution somebody chose leaves one version standing on both
-			// sides, so only the side that loses gains anything: the winner's
-			// bytes. The loser's own copy goes to the trash inside its own
-			// tree, which costs nothing new.
+			// Only the losing side gains the winner's bytes; its own copy
+			// goes to its trash.
 			case plan.KeepLeft:
 				out[plan.Right] += sizeOn(a, plan.Left)
 			case plan.KeepRight:
 				out[plan.Left] += sizeOn(a, plan.Right)
 			default:
-				// Keeping both leaves each side holding the other side's
-				// version beside its own, so each gains what the other has.
-				// Which of the two wins the plain name is decided by
-				// modification time when the run happens, and it does not
-				// change the arithmetic either way.
+				// Keeping both puts each side's version on the other.
 				out[plan.Left] += sizeOn(a, plan.Right)
 				out[plan.Right] += sizeOn(a, plan.Left)
 			}
@@ -440,17 +351,8 @@ func sizeOn(a plan.Action, side plan.Side) int64 {
 	return e.Size
 }
 
-// room asks a side how much space it has left.
-//
-// Not every backend can answer, and the ones that cannot are not broken: an S3
-// bucket has no size, so there is no number to give. That has to come back as
-// "unknown" and never as zero, because zero is itself a real answer meaning
-// "full", and a check that confused the two would refuse every job pointed at a
-// bucket while claiming to have measured something.
-//
-// An error is treated the same way as an unsupported backend. A quota call that
-// times out has told us nothing about the disk, and turning "I could not ask"
-// into "there is no room" would stop a run that had nothing wrong with it.
+// room asks a side how much space it has left. A backend that cannot say, or
+// a quota call that fails, answers nil rather than zero, which would mean full.
 func room(ctx context.Context, f rclonefs.Fs) (free, total *int64, err error) {
 	features := f.Features()
 	if features == nil || features.About == nil {
@@ -466,9 +368,8 @@ func room(ctx context.Context, f rclonefs.Fs) (free, total *int64, err error) {
 	return usage.Free, usage.Total, nil
 }
 
-// unknownWhy carries the backend's own words when there were any. A quota call
-// that failed and a backend that has no quota are both "unknown" and they are
-// not the same thing to whoever has to fix it.
+// unknownWhy carries the backend's error, if there was one, so a failed quota
+// call reads differently from a backend without quotas.
 func unknownWhy(err error) []string {
 	if err == nil {
 		return nil
@@ -476,19 +377,11 @@ func unknownWhy(err error) []string {
 	return []string{"error", err.Error()}
 }
 
-// probeWrite proves a side can be written to, which listing it does not.
-//
-// A share mounted read-only, a bucket policy that allows listing and not
-// putting, a disk that is already full: all three list perfectly and all three
-// fail on the first transfer. Asking the backend what it believes it supports
-// catches none of them, because every one of those backends does support
-// writing in general and is refusing this particular caller.
-//
-// The probe goes under the tool's own reserved directory, which the scanner
-// skips on both sides. A probe that somehow survives is therefore never synced
-// anywhere, which is the difference between leaving one stray file and seeding
-// it into somebody's other machine. The clock is in the name so that two checks
-// running at once cannot land on each other.
+// probeWrite proves a side can be written to, which listing it does not: a
+// read-only mount, a bucket policy without put and a full disk all list fine.
+// The probe goes under the reserved directory, so even one left behind is
+// never synced, and carries the clock in its name so concurrent checks do not
+// collide.
 func probeWrite(ctx context.Context, f rclonefs.Fs) (name string, wrote bool, err error) {
 	name = path.Join(scan.MetaDir, fmt.Sprintf("writable-%d.tmp", time.Now().UnixNano()))
 	body := []byte("arrowloop write probe\n")
@@ -501,9 +394,8 @@ func probeWrite(ctx context.Context, f rclonefs.Fs) (name string, wrote bool, er
 	return name, true, obj.Remove(ctx)
 }
 
-// writtenSides says which ends this job may put bytes on. A one-way job reads
-// its source and never writes to it, so a full disk on that side is not this
-// job's problem and a probe there would be a broken promise.
+// writtenSides says which ends this job may put bytes on. A one-way job never
+// writes to its source.
 func writtenSides(dir plan.Direction) map[plan.Side]bool {
 	out := map[plan.Side]bool{plan.Left: true, plan.Right: true}
 	switch dir {
@@ -534,9 +426,8 @@ func (r *Report) note(code string, fatal bool, pairs ...string) {
 	r.Findings = append(r.Findings, finding(code, "", fatal, pairs...))
 }
 
-// noteSide records a finding about one end, and puts the side into the values
-// as well so that the wording and the machine-readable half can never disagree
-// about which end is meant.
+// noteSide records a finding about one end, with the side in the values as
+// well so the wording and the field agree.
 func (r *Report) noteSide(code string, s plan.Side, fatal bool, pairs ...string) {
 	pairs = append(pairs, "side", s.String())
 	r.Findings = append(r.Findings, finding(code, s.String(), fatal, pairs...))
@@ -553,10 +444,7 @@ func finding(code, side string, fatal bool, pairs ...string) Finding {
 	return Finding{Code: code, Side: side, Vars: vars, Text: fill(findingText[code], vars), Fatal: fatal}
 }
 
-// fill substitutes {name} for the value of name. A code nobody has worded yet
-// answers with the code itself rather than with an empty string: an interface
-// that does not recognise it then shows something, which is worth more than a
-// blank where an explanation should be.
+// fill substitutes {name} for the value of name.
 func fill(template string, vars map[string]string) string {
 	if template == "" {
 		return ""
@@ -577,11 +465,8 @@ func (r *Report) fatal() bool {
 	return false
 }
 
-// done settles the verdict and hands back a report that survives being encoded.
-//
-// The empty list rather than a nil one is not tidiness: a nil slice marshals to
-// null, and a screen promised a list of findings would have to guard every use
-// of it. A job with nothing wrong has no findings, not an absent field.
+// done settles the verdict. Findings is an empty list rather than nil, which
+// would marshal to null.
 func (r Report) done() Report {
 	if r.Findings == nil {
 		r.Findings = []Finding{}

@@ -1,11 +1,10 @@
 // Command arrowloop synchronises two folders in both directions.
 //
-// It has two ways in. `sync` takes a pair of paths on the command line and runs
-// once, which is what a person wants while setting a job up or checking a
-// suspicion. Everything else works from a configuration file holding named
-// jobs, which is what a machine wants: `daemon` runs them on their schedules,
-// `run` runs one by name, `history` says what happened, and `service` produces
-// the file this operating system needs to keep the daemon alive.
+// `sync` runs one pair of paths given on the command line once. The other
+// commands work from a configuration file of named jobs: `daemon` runs them on
+// their schedules, `run` runs one by name, `history` says what happened, and
+// `service` prints the file this operating system needs to keep the daemon
+// running.
 package main
 
 import (
@@ -19,23 +18,8 @@ import (
 
 	"github.com/junkerderprovinz/arrowloop/internal/boot"
 
-	// The four kinds of target this product promises: a local disk or mounted
-	// share, anything speaking the S3 API (MinIO, Garage, Backblaze), SSH, and
-	// SMB, which is what an Unraid share is. Importing backend/all would pull
-	// in every cloud SDK rclone supports and inflate the binary by an order of
-	// magnitude for targets nobody has asked for yet.
-	_ "github.com/rclone/rclone/backend/local"
-	// Every backend rclone carries, rather than the four this started with.
-	//
-	// jdp asked for the cloud providers by name and then for "sämtliche", and
-	// the honest way to answer that is not a longer hand-picked list: it is the
-	// whole registry, so that the answer to "can I point it at X" stops being a
-	// question about which four somebody guessed at in advance. What is
-	// compiled in is what the interface offers, so the two can never disagree.
-	//
-	// It costs size, measured rather than estimated: 39 MB before, 82 MB after.
-	// That is the price of the feature and it is stated in the release notes
-	// rather than discovered on a download page.
+	// Every backend rclone carries, so the interface can offer whatever is
+	// compiled in. It roughly doubles the size of the binary.
 	_ "github.com/rclone/rclone/backend/all"
 )
 
@@ -59,15 +43,11 @@ func main() {
 		os.Exit(2)
 	}
 
-	// Before anything opens a connection or reads a clock. On Android the
-	// runtime cannot find the resolver's configuration or the zone database,
-	// and both failures look like something else entirely - see android.go.
+	// Before anything opens a connection or reads a clock (see android.go).
 	applyAndroidEnvironment()
 
-	// Before anything can create a file. The mask governs every create this
-	// process makes, rclone's included, so it has to be in place before the
-	// first one rather than before the first SYNC: the configuration file and
-	// the state databases are written too, and they land in the same share.
+	// Before anything creates a file, the configuration and state databases
+	// included.
 	if err := applyUmask(umaskSetting()); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(2)
@@ -99,11 +79,8 @@ func main() {
 	case "healthcheck":
 		err = cmdHealth(ctx, args)
 	case "version", "-version", "--version":
-		// A Go binary carries no Windows version resource, so its file
-		// properties cannot answer "which build is this". The desktop shell has
-		// one; this is the same answer for the command line, and it has to be a
-		// command of its own because the banner only prints on `web`, which
-		// means the one way to read the version was to start a server.
+		// The binary has no Windows version resource, and the banner only
+		// prints on `web`.
 		fmt.Println(boot.Version)
 	case "-h", "--help", "help":
 		fmt.Print(usage)
@@ -125,10 +102,7 @@ type repeatable []string
 func (r *repeatable) String() string     { return strings.Join(*r, ",") }
 func (r *repeatable) Set(v string) error { *r = append(*r, v); return nil }
 
-// quieten puts rclone's own chatter behind -v.
-//
-// The interesting output of this program is the plan: the user has to be able
-// to read what will happen to their files without a transfer log in between.
+// quieten puts rclone's own log output behind -v, so the plan stays readable.
 func quieten(ctx context.Context, verbose bool) {
 	if !verbose {
 		fs.GetConfig(ctx).LogLevel = fs.LogLevelError

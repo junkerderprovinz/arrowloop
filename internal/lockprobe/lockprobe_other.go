@@ -4,21 +4,10 @@
 // program. See lockprobe_windows.go for why this only means something there.
 package lockprobe
 
-// Busy always reports false away from Windows.
-//
-// This is the correct answer, not a stub. POSIX file locks are advisory: a
-// process that locks a file does not stop anyone else from reading it, so there
-// is no state here that would justify skipping a file. Pretending otherwise
-// would make Linux and macOS runs skip files for no reason.
+// Busy always reports false away from Windows, because POSIX locks are
+// advisory and do not stop a reader.
 func Busy(path string) bool { return false }
 
-// WasBusy always reports false away from Windows, for the same reason Busy
-// does: nothing here fails an operation on the grounds that another process has
-// the file open, so there is no such failure to recognise.
-//
-// It exists so that the caller has one shape on every platform. The alternative
-// is a build tag at every call site in the apply stage, and a build tag around
-// a decision is where a rule quietly stops applying to one platform without
-// anybody noticing, because the code that would have said so does not compile
-// there.
+// WasBusy always reports false away from Windows. It exists so callers have the
+// same shape on every platform without build tags.
 func WasBusy(err error) bool { return false }

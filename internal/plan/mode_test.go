@@ -9,16 +9,8 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/state"
 )
 
-// The two modes a one-way job can be run in beyond plain copying, and both of
-// them DELETE. That is why these cases are written against the same situation
-// three times rather than once per mode: what separates them is not what each
-// one does, it is what the other two do NOT do to the same file, and a test per
-// mode in isolation cannot say that.
-
-// The situation every case below shares: each side holds one file the other
-// has never had, and nothing was ever recorded. One situation, three modes, so
-// what separates them is visible as a difference rather than asserted three
-// times over.
+// bothWays builds the situation every mode is tested against: each side holds
+// one file the other has never had, and nothing was recorded.
 func bothWays(t *testing.T, dir Direction, mode Mode) *Plan {
 	t.Helper()
 	p, err := Build(
@@ -50,10 +42,6 @@ func TestSyncLeavesTheFileTheSourceNeverHad(t *testing.T) {
 	if a, ok := find(p, "mine.txt"); !ok || a.Kind != Copy {
 		t.Fatalf("the source's own file was not sent: %+v", p.Actions)
 	}
-	// The whole difference between copying and mirroring, asserted as an
-	// ABSENCE: a file the source has never had is not the destination's
-	// mistake, and removing it would be making a decision rather than passing
-	// one on.
 	if a, ok := find(p, "theirs.txt"); ok {
 		t.Fatalf("plain copying touched a file the source never had: %v on %v", a.Kind, a.Dst)
 	}
@@ -72,8 +60,6 @@ func TestMirrorRemovesTheFileTheSourceNeverHad(t *testing.T) {
 	if a.Kind != Delete {
 		t.Fatalf("mirroring proposed %v for a file only the destination has, want a deletion", a.Kind)
 	}
-	// On the DESTINATION. A mirror that removed it on the source would be
-	// deleting the thing it is supposed to be copying from.
 	if a.Dst != Right {
 		t.Fatalf("mirroring deleted on %v, want the destination side", a.Dst)
 	}
@@ -101,9 +87,7 @@ func TestMoveTakesTheFileOffTheSource(t *testing.T) {
 	if a.Kind != Relocate {
 		t.Fatalf("move mode proposed %v, want a relocate", a.Kind)
 	}
-	// ONE action. As a copy plus a separate deletion, a copy that failed would
-	// leave the deletion behind it in the queue - which is the difference
-	// between "the upload did not work" and "the original is gone".
+	// One action, so a failed copy cannot leave a deletion queued behind it.
 	if n := len(p.Actions); n != 1 {
 		t.Fatalf("move mode produced %d actions for one file: %+v", n, p.Actions)
 	}
@@ -112,17 +96,12 @@ func TestMoveTakesTheFileOffTheSource(t *testing.T) {
 func TestMoveLeavesTheFileTheSourceNeverHad(t *testing.T) {
 	p := bothWays(t, LeftToRight, ModeMove)
 
-	// Moving is not mirroring. It empties the source of what it sends and says
-	// nothing about what it never had.
 	if a, ok := find(p, "theirs.txt"); ok {
 		t.Fatalf("move mode touched a file the source never had: %v on %v", a.Kind, a.Dst)
 	}
 }
 
 func TestBothWaysIgnoresTheMode(t *testing.T) {
-	// Enforce returns immediately for a two-way job, so neither mode may leak
-	// into one. Mirroring both ways is a contradiction and moving both ways
-	// empties each side into the other.
 	for _, mode := range []Mode{ModeMirror, ModeMove} {
 		p := bothWays(t, Both, mode)
 		for _, a := range p.Actions {

@@ -4,7 +4,6 @@ import (
 	"crypto/ed25519"
 	"crypto/rand"
 	"fmt"
-	"io"
 	"net"
 	"net/http/httptest"
 	"os"
@@ -27,15 +26,9 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/scan"
 )
 
-// The two backends this product is sold on had never once been run. Every test
-// in the repository synced one local folder to another, so "reaches SFTP and
-// S3" was a claim resting entirely on rclone being rclone.
-//
-// Both servers below are real and run in this process: gofakes3 speaks the S3
-// API that rclone's own `serve s3` speaks, and pkg/sftp speaks SFTP over a real
-// SSH transport. No credential, no container, no external host. What is being
-// tested is not the servers, it is the engine's own assumptions meeting a
-// backend that is not a filesystem.
+// These tests run the engine against backends that are not filesystems. Both
+// servers run in this process: gofakes3 speaks the S3 API and pkg/sftp speaks
+// SFTP over a real SSH transport.
 
 // startS3 runs an S3 server and returns the rclone remote string that reaches
 // it. Path style is forced because a virtual-host-style address would need DNS
@@ -63,7 +56,7 @@ func startS3(t *testing.T, bucket string) string {
 // directory, and returns the rclone remote string that reaches it.
 func startSFTP(t *testing.T, root string) string {
 	t.Helper()
-	const user, password = "reeve", "roll"
+	const user, password = "tester", "secret"
 
 	_, priv, err := ed25519.GenerateKey(rand.Reader)
 	if err != nil {
@@ -145,11 +138,8 @@ func serveSFTP(conn net.Conn, cfg *ssh.ServerConfig, root string) {
 			channel.Close()
 			continue
 		}
-		if err := server.Serve(); err != nil && err != io.EOF {
-			// Nothing useful to do with it here; the test will fail on the
-			// operation that could not complete, with a better message.
-			_ = err
-		}
+		// A failure shows up in the operation that could not complete.
+		_ = server.Serve()
 		server.Close()
 		channel.Close()
 	}
@@ -168,40 +158,31 @@ func throughBackend(t *testing.T, remote string) {
 	if res.Copied != 10 {
 		t.Fatalf("expected ten files across, got %d", res.Copied)
 	}
-	// Nothing may be postponed here, and the reason to say so at this point is
-	// that the alternative reads as something else entirely. A file that copies
-	// and then fails to be recorded turns up two assertions later as a file
-	// that is not "unchanged", which sounds like a modification time that did
-	// not survive the round trip and sent the last search in the wrong
-	// direction for an afternoon.
+	// Checked here, because a file that copied but was not recorded would
+	// otherwise surface below looking like a lost modification time.
 	if len(res.Skipped) != 0 {
 		t.Fatalf("the first run postponed %d things: %+v", len(res.Skipped), res.Skipped)
 	}
 	requireSame(t, m, "after the first run")
 
-	// The one that finds a backend whose modification times do not survive a
-	// round trip: every file would look changed forever.
+	// A backend that loses modification times would make every file look
+	// changed.
 	p, res := m.sync(t)
 	if len(p.Actions) != 0 || res.Copied != 0 {
 		t.Fatalf("the job did not settle: %d actions, %d copied again", len(p.Actions), res.Copied)
 	}
 	if p.Unchanged != 10 {
-		// Agreed is the tell. A file both sides hold identically with no record
-		// of it lands there rather than in Unchanged, which means the record
-		// was lost rather than the modification time being wrong.
+		// A file held identically with no record lands in Agreed.
 		t.Fatalf("only %d of 10 were recognised as unchanged, and %d were treated as newly identical, "+
 			"which is what a lost record looks like", p.Unchanged, len(p.Agreed))
 	}
 
-	// An edit travels.
 	write(t, m.local, "dir0/file00.txt", "edited locally")
 	if _, res := m.sync(t); res.Copied != 1 {
 		t.Fatalf("an edit did not travel: %d copied", res.Copied)
 	}
 	requireSame(t, m, "after an edit")
 
-	// A rename becomes a move rather than a fresh upload, which is the
-	// difference between a second and an afternoon on a real link.
 	if err := os.Rename(
 		filepath.Join(m.local, "dir1", "file01.txt"),
 		filepath.Join(m.local, "dir1", "renamed.txt"),
@@ -213,8 +194,6 @@ func throughBackend(t *testing.T, remote string) {
 	}
 	requireSame(t, m, "after a rename")
 
-	// A deletion propagates and the removed file lands in the remote's trash
-	// rather than simply going.
 	if err := os.Remove(filepath.Join(m.local, "dir2", "file02.txt")); err != nil {
 		t.Fatalf("remove: %v", err)
 	}
@@ -234,20 +213,15 @@ func throughBackend(t *testing.T, remote string) {
 	}
 }
 
-// TestThroughRealS3 runs a job against a genuine S3 API.
 func TestThroughRealS3(t *testing.T) {
 	throughBackend(t, startS3(t, "arrowloop"))
 }
 
-// TestThroughRealSFTP runs a job against a genuine SFTP server over SSH.
 func TestThroughRealSFTP(t *testing.T) {
 	throughBackend(t, startSFTP(t, t.TempDir()))
 }
 
-// TestS3RefusesEmptyFolders states the capability rather than the wish. A
-// bucket has no directories, so a folder created there disappears the moment
-// nothing uses the prefix, and a job that kept trying would report making the
-// same folder on every run.
+// A bucket has no directories, only key prefixes.
 func TestS3RefusesEmptyFolders(t *testing.T) {
 	m := newRemoteJob(t, startS3(t, "emptydirs"))
 	m.opt.EmptyDirs = true
@@ -266,10 +240,7 @@ func TestS3RefusesEmptyFolders(t *testing.T) {
 	}
 }
 
-// TestSFTPCarriesEmptyFolders is the other half of that pair. SFTP does have
-// real directories, so the same job that refuses on a bucket has to carry them
-// here, and the difference has to come from what the backend reports rather
-// than from anything hard-coded.
+// SFTP has real directories, and the backend's reported features decide it.
 func TestSFTPCarriesEmptyFolders(t *testing.T) {
 	m := newRemoteJob(t, startSFTP(t, t.TempDir()))
 	m.opt.EmptyDirs = true
@@ -285,8 +256,6 @@ func TestSFTPCarriesEmptyFolders(t *testing.T) {
 	}
 }
 
-// TestAConflictAcrossSFTP resolves a genuine disagreement over the wire, which
-// takes three operations and has to leave both versions on both sides.
 func TestAConflictAcrossSFTP(t *testing.T) {
 	remoteRoot := t.TempDir()
 	m := newRemoteJob(t, startSFTP(t, remoteRoot))
@@ -296,8 +265,7 @@ func TestAConflictAcrossSFTP(t *testing.T) {
 
 	write(t, m.local, "notes.txt", "the local version")
 	time.Sleep(1100 * time.Millisecond) // SFTP stores whole seconds
-	// Change the far side behind the engine's back, which is what a second
-	// machine writing to the same host looks like from here.
+	// Another machine writes to the same host.
 	if err := os.WriteFile(filepath.Join(remoteRoot, "notes.txt"), []byte("the remote version"), 0o644); err != nil {
 		t.Fatalf("write on the remote: %v", err)
 	}

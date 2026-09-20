@@ -21,19 +21,14 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/state"
 )
 
-// The same name, spelled the two ways real filesystems spell it. macOS stores
-// the decomposed form, Windows and Linux the composed one.
+// The same name as macOS (decomposed) and Windows and Linux (composed) store
+// it.
 const (
 	composed   = "Müller.txt"  // one code point for the umlaut, as Windows and Linux store it
 	decomposed = "Müller.txt" // u plus a combining diaeresis, as macOS stores it
 )
 
-// TestUnicodeSpellingIsOneFile is the endless-loop test.
-//
-// Without normalisation the engine sees a file that exists only on the left and
-// a different file that exists only on the right, copies each one across, and
-// does it again on the next run. The tree grows by two files every time and
-// never settles. Counting files after three runs is the whole assertion.
+// Without normalisation each spelling would be copied across on every run.
 func TestUnicodeSpellingIsOneFile(t *testing.T) {
 	j := newJob(t, quick())
 	write(t, j.left, composed, "the same content")
@@ -57,12 +52,7 @@ func TestUnicodeSpellingIsOneFile(t *testing.T) {
 	}
 }
 
-// TestExcludingDoesNotDelete guards the trap that makes filters dangerous.
-//
-// A path that stops being visible has not been deleted. An engine that simply
-// drops excluded paths from the listing reads the disappearance as a deletion
-// and removes the file on the other side, so adding one pattern would wipe
-// every file it starts hiding. The record has to be filtered as well.
+// A newly excluded path must not read as a deletion.
 func TestExcludingDoesNotDelete(t *testing.T) {
 	j := newJob(t, quick())
 	write(t, j.left, "keep.txt", "keep me")
@@ -87,9 +77,6 @@ func TestExcludingDoesNotDelete(t *testing.T) {
 	}
 }
 
-// TestDefaultExcludesSkipHalfWrittenFiles proves the in-progress names never
-// travel. A copy of somebody's half-finished download is not useful to anyone,
-// and Office owner files are meaningless on another machine.
 func TestDefaultExcludesSkipHalfWrittenFiles(t *testing.T) {
 	excl, err := filter.New(filter.InProgress)
 	if err != nil {
@@ -114,13 +101,7 @@ func TestDefaultExcludesSkipHalfWrittenFiles(t *testing.T) {
 	}
 }
 
-// TestQuietPeriodPostponesAFreshFile covers the half-written file directly.
-//
-// A run that starts while somebody is still saving a large document copies
-// whatever happens to be on disk at that instant. A schedule is no defence: a
-// run every two minutes lands mid-write just as readily as a filesystem watch
-// does. The only portable answer is to wait until the file stops changing, and
-// the clock is injected here so the test does not have to sleep for it.
+// The clock is injected so the test does not have to wait out the period.
 func TestQuietPeriodPostponesAFreshFile(t *testing.T) {
 	opt := quick()
 	opt.Compare.QuietPeriod = time.Hour
@@ -140,8 +121,7 @@ func TestQuietPeriodPostponesAFreshFile(t *testing.T) {
 		t.Fatal("the half-written file reached the other side")
 	}
 
-	// The record must be untouched, so that simply waiting is enough. A skip
-	// that wrote a state row would make the engine believe the sides agree.
+	// The skip wrote no state row, so waiting is enough.
 	j.opt.Compare.Now = time.Now().Add(2 * time.Hour)
 	_, res = j.sync(t)
 	if res.Copied != 1 {
@@ -150,13 +130,8 @@ func TestQuietPeriodPostponesAFreshFile(t *testing.T) {
 	requireConverged(t, j, "after the file settled")
 }
 
-// TestCaseCollisionIsRefused covers the pair of files a case-insensitive side
-// cannot hold.
-//
-// Copying both means the second silently overwrites the first, and the engine
-// would then record that overwrite as a successful sync: one of the two files
-// is gone and nothing anywhere says so. Refusing both and naming them is the
-// only honest answer.
+// On a case-insensitive side one of the two files would silently overwrite
+// the other.
 func TestCaseCollisionIsRefused(t *testing.T) {
 	fold := true
 	opt := quick()
@@ -168,11 +143,8 @@ func TestCaseCollisionIsRefused(t *testing.T) {
 	write(t, j.left, "safe.txt", "no trouble here")
 
 	if len(tree(t, j.left)) != 3 {
-		// On Windows and macOS the filesystem folded the two names together
-		// before the engine ever saw them, so there is genuinely nothing to
-		// collide. On Linux there is, and a skip there would mean this test has
-		// quietly stopped exercising anything on every platform at once, which
-		// is how a suite ends up green and worthless.
+		// Windows and macOS fold the two names into one file. Linux must
+		// not, or the test would skip everywhere.
 		if runtime.GOOS == "linux" {
 			t.Fatal("the two names did not survive on a case-sensitive filesystem, so this test is no longer testing the collision path")
 		}
@@ -196,8 +168,6 @@ func TestCaseCollisionIsRefused(t *testing.T) {
 	}
 }
 
-// TestReservedDirectoryNeverTravels keeps the trash from being synced into the
-// other side's trash, which would grow without bound.
 func TestReservedDirectoryNeverTravels(t *testing.T) {
 	j := newJob(t, quick())
 	write(t, j.left, scan.TrashDir+"/old/deleted.txt", "a previously deleted file")
@@ -212,8 +182,6 @@ func TestReservedDirectoryNeverTravels(t *testing.T) {
 	}
 }
 
-// TestSkippedWorkLeavesTheRecordAlone states the rule that makes every skip
-// safe: postponing is not agreeing.
 func TestSkippedWorkLeavesTheRecordAlone(t *testing.T) {
 	opt := quick()
 	opt.Compare.QuietPeriod = time.Hour
@@ -233,18 +201,12 @@ func TestSkippedWorkLeavesTheRecordAlone(t *testing.T) {
 	}
 }
 
-// TestAJobWithNothingToWorkWithIsRefused covers the difference between a job
-// that has nothing to do and a job that is pointed at nothing.
-//
-// The two look identical from inside a single run: both sides list no files.
-// They are not the same thing, and reporting the second as a successful run of
-// zero files is how somebody comes to believe in a backup that has never
-// happened.
+// A job pointed at nothing lists no files, like a job with nothing to do, but
+// must not report success.
 func TestAJobWithNothingToWorkWithIsRefused(t *testing.T) {
 	ctx := context.Background()
 	root := t.TempDir()
-	// A path with a typo in it, which is what an unmounted share and a
-	// mistyped folder both look like.
+	// Like an unmounted share or a mistyped folder.
 	missing := filepath.Join(root, "not-here")
 	right := filepath.Join(root, "right")
 	if err := os.MkdirAll(right, 0o755); err != nil {
@@ -274,14 +236,12 @@ func TestAJobWithNothingToWorkWithIsRefused(t *testing.T) {
 		t.Fatalf("a job pointed at a folder that does not exist reported %v", err)
 	}
 
-	// The message has to name both sides, because the whole job of this
-	// refusal is to send somebody to look at a path.
+	// The refusal has to name the path to look at.
 	if !strings.Contains(err.Error(), "not-here") {
 		t.Errorf("the refusal does not name the side that is missing: %v", err)
 	}
 
-	// Now the same pair with one file, which is the ordinary case and must not
-	// be caught by the same guard.
+	// With one file it is an ordinary first run.
 	if err := os.MkdirAll(missing, 0o755); err != nil {
 		t.Fatalf("mkdir: %v", err)
 	}
@@ -292,11 +252,8 @@ func TestAJobWithNothingToWorkWithIsRefused(t *testing.T) {
 		t.Fatalf("an ordinary first run was refused: %v", err)
 	}
 
-	// And the case the guard must not break: a folder that holds only files
-	// this job excludes. Both sides list nothing, the record is empty, and the
-	// job has no history, so all three conditions above hold. Sending somebody
-	// to check whether their paths exist would be exactly wrong: the paths are
-	// there and full, and the reason nothing syncs is a rule they wrote.
+	// A folder holding only excluded files lists nothing either, but it
+	// exists.
 	fresh := t.TempDir()
 	onlyExcluded := filepath.Join(fresh, "left")
 	otherSide := filepath.Join(fresh, "right")
@@ -333,13 +290,8 @@ func TestAJobWithNothingToWorkWithIsRefused(t *testing.T) {
 	}
 }
 
-// TestAVanishedSideIsNamedByItsRecord pins which of two refusals a person gets.
-//
-// A folder that no longer exists and a folder that never existed are both empty
-// and are not the same news. The first is alarming and the message has to carry
-// the alarming part: files were here last time. Sending somebody to check
-// whether their path is spelled correctly, when the answer is that forty of
-// their files have stopped being visible, is the wrong instruction.
+// A side that vanished gets the empty-side refusal, which says how many files
+// were known there, rather than the one for a path that never existed.
 func TestAVanishedSideIsNamedByItsRecord(t *testing.T) {
 	ctx := context.Background()
 	root := t.TempDir()
@@ -376,7 +328,7 @@ func TestAVanishedSideIsNamedByItsRecord(t *testing.T) {
 		t.Fatalf("the first run failed: %v", err)
 	}
 
-	// The drive is pulled out, so the folder is not merely empty, it is gone.
+	// The drive is pulled out.
 	if err := os.RemoveAll(left); err != nil {
 		t.Fatalf("remove: %v", err)
 	}
@@ -396,10 +348,7 @@ func TestAVanishedSideIsNamedByItsRecord(t *testing.T) {
 		t.Fatalf("a vanished side was not refused at all: %v", err)
 	}
 
-	// Both sides gone at once, which is what one unmounted share holding both
-	// halves of a job looks like. The record is still the more useful thing to
-	// say: that this job knew about four files here is the alarming part, and
-	// it survives whichever side disappeared.
+	// Both sides gone, as with one unmounted share holding both.
 	if err := os.RemoveAll(right); err != nil {
 		t.Fatalf("remove: %v", err)
 	}
@@ -412,15 +361,8 @@ func TestAVanishedSideIsNamedByItsRecord(t *testing.T) {
 	}
 }
 
-// TestAChosenConflictKeepsOneVersionAndBinsTheOther covers the resolution a
-// person makes while looking at both files, as opposed to the one a scheduled
-// run makes with nobody watching.
-//
-// Two properties matter and they pull against each other. The chosen version
-// has to end up on both sides under the plain name, with no second copy left
-// beside it: somebody who picked a winner does not want to be handed two files
-// and a tidying job. And the version they did not pick has to be recoverable,
-// because a click on the wrong row is a thing that happens.
+// A resolution picked by a person leaves the chosen version on both sides
+// under the plain name, with the other one recoverable from the trash.
 func TestAChosenConflictKeepsOneVersionAndBinsTheOther(t *testing.T) {
 	ctx := context.Background()
 	root := t.TempDir()
@@ -456,9 +398,8 @@ func TestAChosenConflictKeepsOneVersionAndBinsTheOther(t *testing.T) {
 		t.Fatalf("first run: %v", err)
 	}
 
-	// Both sides edited between runs, which is the only thing a conflict is.
-	// The left version is deliberately the OLDER of the two, so that choosing
-	// it is a choice and not the same answer the automatic rule would give.
+	// The left version is the older one, so choosing it differs from what the
+	// automatic rule would do.
 	if err := os.WriteFile(filepath.Join(left, "notes.txt"), []byte("the version I want"), 0o644); err != nil {
 		t.Fatalf("write: %v", err)
 	}
@@ -485,7 +426,6 @@ func TestAChosenConflictKeepsOneVersionAndBinsTheOther(t *testing.T) {
 		t.Fatalf("execute: %v", err)
 	}
 
-	// The chosen version is on both sides under the plain name.
 	for _, dir := range []string{left, right} {
 		body, err := os.ReadFile(filepath.Join(dir, "notes.txt"))
 		if err != nil {
@@ -496,7 +436,6 @@ func TestAChosenConflictKeepsOneVersionAndBinsTheOther(t *testing.T) {
 		}
 	}
 
-	// And nothing was left beside it to tidy up.
 	entries, err := os.ReadDir(right)
 	if err != nil {
 		t.Fatalf("read the right side: %v", err)
@@ -507,7 +446,6 @@ func TestAChosenConflictKeepsOneVersionAndBinsTheOther(t *testing.T) {
 		}
 	}
 
-	// The version that lost is in the trash, not gone.
 	var rescued bool
 	err = filepath.WalkDir(right, func(p string, d os.DirEntry, err error) error {
 		if err != nil || d.IsDir() {
@@ -529,8 +467,6 @@ func TestAChosenConflictKeepsOneVersionAndBinsTheOther(t *testing.T) {
 		t.Error("the version that was not chosen is gone rather than in the trash")
 	}
 
-	// And the job settles: a resolution that leaves work behind would report
-	// the same conflict on every run for ever.
 	after, _, err := engine.Prepare(ctx, ends, db, opt)
 	if err != nil {
 		t.Fatalf("second prepare: %v", err)

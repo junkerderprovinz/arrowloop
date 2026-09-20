@@ -1,12 +1,9 @@
 // Package service writes the file each operating system wants in order to keep
-// a program running in the background.
+// a program running in the background, and the command that installs it.
 //
-// It deliberately stops short of installing anything. Registering a service
-// means writing outside the user's own files and, on two of the three systems,
-// asking for administrative rights, which is not something a sync tool should
-// do quietly on the user's behalf. What it can do honestly is produce exactly
-// the right file and the one command that installs it, so nobody has to
-// reverse-engineer a unit file from a forum post.
+// It installs nothing itself: registering a service writes outside the user's
+// files and on some systems needs administrative rights, which a sync tool
+// should not take on quietly.
 package service
 
 import (
@@ -24,13 +21,12 @@ type Definition struct {
 	// Install is the command that registers the service once the file is in
 	// place.
 	Install string
-	// Notes are the things that will otherwise be found out the hard way.
+	// Notes are caveats printed after the command.
 	Notes []string
 }
 
-// For builds the definition for one platform. Pass runtime.GOOS for the current
-// machine; the other values exist so the file for another machine can be
-// produced from here.
+// For builds the definition for one platform, which need not be the current
+// one.
 func For(goos, exe, config string) (Definition, error) {
 	switch goos {
 	case "linux":
@@ -77,7 +73,7 @@ WantedBy=default.target
 		Content: unit,
 		Install: "systemctl --user daemon-reload && systemctl --user enable --now arrowloop",
 		Notes: []string{
-			"This is a USER service, so it needs no root and stops when the user logs out.",
+			"This is a user service, so it needs no root and stops when the user logs out.",
 			"To keep it running while nobody is logged in: sudo loginctl enable-linger $USER",
 			"Follow it with: journalctl --user -u arrowloop -f",
 		},
@@ -125,8 +121,7 @@ func darwin(exe, config string) Definition {
 }
 
 func windows(exe, config string) Definition {
-	// sc.exe is fussy in two ways that cost people an afternoon: the space
-	// after binPath= is part of the syntax, and the whole command has to be one
+	// sc.exe needs the space after binPath=, and the whole command as one
 	// quoted string when the paths contain spaces.
 	install := fmt.Sprintf(`sc.exe create ArrowLoop binPath= "\"%s\" daemon -config \"%s\"" start= auto DisplayName= "ArrowLoop file synchronisation"`, exe, config)
 

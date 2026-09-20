@@ -24,16 +24,12 @@ import (
 
 const defaultConfig = "arrowloop.json"
 
-// load reads the configuration and starts the process-wide accounting, which is
-// what makes a bandwidth limit real rather than decorative.
+// load reads the configuration and starts the process-wide accounting, which
+// the bandwidth limit needs.
 func load(ctx context.Context, path string) (*job.Config, error) {
-	// The storage targets live BESIDE this file, not at rclone's default, which
-	// inside a container is part of the container and not part of the volume
-	// anybody mounts. See internal/remotes/where.go: every target this program
-	// saved used to be destroyed by the next container update.
-	//
-	// Here rather than in main, because this is the first point at which the
-	// -config flag has been parsed and the directory is known.
+	// Storage targets live beside the configuration rather than at rclone's
+	// default, which inside a container is not on a mounted volume (see
+	// internal/remotes/where.go).
 	if err := remotes.Use(path); err != nil {
 		return nil, fmt.Errorf("decide where the storage targets live: %w", err)
 	}
@@ -42,10 +38,8 @@ func load(ctx context.Context, path string) (*job.Config, error) {
 	if err != nil {
 		return nil, err
 	}
-	// A setting this program used to have and no longer does. Said out loud
-	// because the file still shows it: somebody who set it once would otherwise
-	// keep believing it is in force, and the only alternative to saying so is
-	// what this used to do, which was refuse to start at all.
+	// Settings the file still carries but this version ignores are named, so
+	// nobody believes they are in force.
 	if gone := cfg.Retired(); len(gone) > 0 {
 		fmt.Fprintf(os.Stderr,
 			"note: %s carries settings this version no longer has and ignored them: %s\n",
@@ -137,8 +131,7 @@ func cmdDaemon(ctx context.Context, args []string) error {
 		logf("dropped %d run records older than %s", n, *keep)
 	}
 
-	// A daemon has to stop when the system asks, or a shutdown turns into a
-	// kill halfway through a transfer.
+	// Stopping on a signal keeps a shutdown from killing a transfer halfway.
 	ctx, stop := signal.NotifyContext(ctx, os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
@@ -150,12 +143,8 @@ func cmdDaemon(ctx context.Context, args []string) error {
 	return runner.Serve(ctx)
 }
 
-// cmdJobs lists what the configuration defines, and when each job last worked.
-//
-// "When did this last run" is the wrong question and the easy one to answer.
-// "When did this last SUCCEED" is what a person actually needs, because a job
-// failing every quarter of an hour for a week looks busy in a log while being
-// of no use at all.
+// cmdJobs lists what the configuration defines and when each job last
+// succeeded, since a job that fails every run still looks busy in a log.
 func cmdJobs(ctx context.Context, args []string) error {
 	fset := flag.NewFlagSet("jobs", flag.ExitOnError)
 	configPath := fset.String("config", defaultConfig, "the configuration file")
@@ -235,12 +224,7 @@ func cmdHistory(ctx context.Context, args []string) error {
 }
 
 // cmdService prints the file this operating system wants in order to keep the
-// daemon running, and the one command that switches it on.
-//
-// It prints rather than installs. Registering a service means writing outside
-// the user's own files and, on two of the three systems, asking for
-// administrative rights, and a sync tool should not be doing either quietly on
-// somebody's behalf.
+// daemon running, and the command that switches it on (see package service).
 func cmdService(args []string) error {
 	fset := flag.NewFlagSet("service", flag.ExitOnError)
 	configPath := fset.String("config", defaultConfig, "the configuration file the service should use")
@@ -253,10 +237,7 @@ func cmdService(args []string) error {
 	if err != nil {
 		return fmt.Errorf("find this program's own path: %w", err)
 	}
-	// The service manager starts the daemon from a directory nobody chose, so
-	// a relative config path in the unit file would resolve somewhere else
-	// entirely. Make it absolute here, while the shell's idea of "here" is
-	// still the right one.
+	// The service manager starts the daemon in some other directory.
 	abs, err := filepath.Abs(*configPath)
 	if err != nil {
 		return fmt.Errorf("resolve %q: %w", *configPath, err)

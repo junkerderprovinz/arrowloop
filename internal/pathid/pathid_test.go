@@ -26,9 +26,6 @@ func TestCaseFoldingIsOptional(t *testing.T) {
 	}
 }
 
-// Folding must not undo the normalisation, and normalisation must not undo the
-// folding. Getting the order wrong here produces a matcher that works for
-// ASCII and quietly fails on the first accented name.
 func TestFoldingAndNormalisationCompose(t *testing.T) {
 	if !SameKey("MÜLLER.txt", nfd, true) {
 		t.Errorf("an uppercase composed name did not match a lowercase decomposed one: %q vs %q",
@@ -36,9 +33,7 @@ func TestFoldingAndNormalisationCompose(t *testing.T) {
 	}
 }
 
-// The key is for matching only. It must never be handed to a backend as a name,
-// and this test is here to make that visible: the key of a decomposed path is
-// not the path.
+// The key is for matching only and must not be used as a name.
 func TestKeyIsNotThePath(t *testing.T) {
 	if Key(nfd, false) == nfd {
 		t.Error("the decomposed path came back unchanged, so nothing was normalised")

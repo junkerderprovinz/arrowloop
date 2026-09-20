@@ -9,17 +9,10 @@ import (
 	"time"
 )
 
-// A volume that is not attached still has to have a name.
-//
-// The marker file carries the label, but the marker is on the drive, and the
-// moment somebody most needs to read the label is the moment the drive is in
-// their bag. "Backup drive is not connected" is a sentence anybody can act on;
-// "bc04a5dcbb9a2ba6c2b0236c is not connected" is not.
-//
-// So every volume that is ever seen is written down here, and the note survives
-// the drive leaving. The register is a convenience and never an authority: the
-// marker on the disk is what decides identity, and a register that is missing,
-// stale or unwritable only costs a nicer message.
+// The register remembers every volume ever seen, so a drive that is not
+// attached can still be named by its label rather than its identity. Only the
+// marker decides identity; a missing or stale register costs nothing but the
+// nicer name.
 
 // Known is a volume that has been seen at some point, whether or not it is
 // here now.
@@ -36,9 +29,8 @@ var (
 	registryPath string
 )
 
-// SetRegistry says where to remember volumes. Called once at startup with a
-// path beside the configuration. Until it is, nothing is remembered and the
-// only cost is that an absent drive is named by its identity.
+// SetRegistry says where to remember volumes. It is called once at startup;
+// until then nothing is remembered.
 func SetRegistry(path string) {
 	registryMu.Lock()
 	defer registryMu.Unlock()
@@ -80,25 +72,12 @@ func Remembered() []Known {
 	return out
 }
 
-// Forget drops a volume from the register. The drive itself keeps its marker,
-// so plugging it in again brings it straight back; this only removes the note
-// that it was ever here.
+// Forget drops a volume from the register and removes its marker if the drive
+// is attached.
 func Forget(id string) {
-	// The MARKER first, and this is the whole of the bug this used to have.
-	//
-	// Removing only the register entry does nothing visible while the drive is
-	// plugged in: Remembered() builds its list from the register AND from what
-	// is attached right now, and anything attached that the register has not
-	// caught up with is added back on the spot. So the endpoint answered 200,
-	// said "forgotten", and the row was still there on the next refresh -
-	// measured exactly that way. jdp: "der button funktioniert auch noch
-	// nicht. ich kann die datenträger nicht löschen."
-	//
-	// Best effort, deliberately: a drive that is in a drawer cannot have its
-	// marker removed, and refusing to forget it for that reason would leave
-	// somebody unable to tidy up a register entry for a disk they no longer
-	// own. The register entry goes either way; when the drive comes back with
-	// its marker still on it, it is a new registration, which is honest.
+	// Remembered adds every attached volume back, so an attached drive keeps
+	// showing up until its marker is gone. A drive that is not attached keeps
+	// its marker and is registered again when it returns.
 	unmark(id)
 
 	registryMu.Lock()
@@ -114,7 +93,7 @@ func Forget(id string) {
 }
 
 // unmark removes the identity file from the volume with this id, if it is
-// attached. Silent when it is not: see Forget.
+// attached.
 func unmark(id string) {
 	for _, v := range Attached() {
 		if v.ID != id {
@@ -123,10 +102,8 @@ func unmark(id string) {
 		for _, rel := range []string{markerPath, legacyMarkerPath} {
 			full := filepath.Join(v.Mount, filepath.FromSlash(rel))
 			if err := os.Remove(full); err == nil {
-				// The reserved directory it sat in goes too when it is empty,
-				// so forgetting a volume leaves nothing of itself behind. A
-				// non-empty one is left alone: the trash lives under the same
-				// prefix and is somebody's deleted files.
+				// The directory goes too, but only when empty: the trash
+				// lives under it.
 				_ = os.Remove(filepath.Dir(full))
 			}
 		}
@@ -147,9 +124,8 @@ func remember(v Volume) {
 		if k.ID != v.ID {
 			continue
 		}
-		// Nothing changed worth a write. Volumes are looked up on every run of
-		// every job, so rewriting the file each time would be a lot of disk for
-		// a timestamp nobody reads to the second.
+		// Volumes are looked up on every run, so an unchanged entry is only
+		// rewritten once an hour.
 		if k.Label == v.Label && k.Mount == v.Mount && now.Sub(k.LastSeen) < time.Hour {
 			return
 		}
@@ -173,11 +149,8 @@ func labelFor(id string) string {
 	return id
 }
 
-// readRegistry reads the note. Callers hold the lock.
-//
-// Every failure answers with an empty register rather than an error. A missing
-// file is the ordinary first-run state, and a corrupt one must not stop a job
-// from syncing: the worst it can cost is a less friendly name.
+// readRegistry reads the register, empty on any failure. Callers hold the
+// lock.
 func readRegistry() []Known {
 	if registryPath == "" {
 		return nil
@@ -193,8 +166,8 @@ func readRegistry() []Known {
 	return out
 }
 
-// writeRegistry replaces the note in one step, so a crash midway leaves the old
-// one rather than half of a new one. Callers hold the lock.
+// writeRegistry replaces the register in one step, so a crash leaves the old
+// one intact. Callers hold the lock.
 func writeRegistry(all []Known) {
 	if registryPath == "" {
 		return

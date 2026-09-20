@@ -25,17 +25,9 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/verify"
 )
 
-// Every test here stages a record by hand, and that is worth saying out loud
-// once rather than defending in each one.
-//
-// A test must not build a state the program cannot reach, and a record that
-// disagrees with the two sides IS reachable: it is what a restore from a backup
-// taken between two runs leaves behind, what a copy of the database from
-// another machine looks like, what a crash between the bytes landing and the
-// row being written can produce, and what somebody who edited a row by hand to
-// unstick a job has made. The apply stage refuses to WRITE such a row, which is
-// exactly why nothing else in this program can produce one, and exactly why the
-// only way to test the check that finds one is to write it here.
+// The tests stage records by hand. A record that disagrees with the sides is
+// reachable (a restored backup, a copied database, a crash, a hand edit), but
+// the apply stage never writes one, so this is the only way to produce it.
 
 type fixture struct {
 	dir   string
@@ -76,15 +68,11 @@ func (f *fixture) check(t *testing.T, opt verify.Opts) verify.Report {
 	return rep
 }
 
-// settled is an hour ago, so that nothing these tests write is young enough for
-// the engine's quiet period to postpone it. A file the engine would leave alone
-// for being half written would make the comparison in TestAFrozenDisagreement
-// prove nothing.
+// settled is an hour ago, so the engine's quiet period postpones nothing these
+// tests write.
 var settled = time.Now().Add(-time.Hour).Truncate(time.Second)
 
-// write puts a file on one side and dates it, because the whole comparison
-// turns on size and modification time and a test that let the clock decide
-// those would be testing the clock.
+// write puts a file on one side and dates it to settled.
 func write(t *testing.T, dir, name, content string) {
 	t.Helper()
 	full := filepath.Join(dir, filepath.FromSlash(name))
@@ -108,9 +96,8 @@ func openState(t *testing.T, f *fixture) *state.DB {
 	return db
 }
 
-// emptyRecord makes the database without putting anything in it, which is what
-// a job whose every row was dropped looks like. The check refuses a job with no
-// database at all, so a test about an empty record has to make one.
+// emptyRecord makes the database without putting anything in it. The check
+// refuses a job with no database at all.
 func emptyRecord(t *testing.T, f *fixture) {
 	t.Helper()
 	openState(t, f).Close()
@@ -128,10 +115,8 @@ func putRow(t *testing.T, f *fixture, e state.Entry) {
 	}
 }
 
-// agreeOn writes the row a finished run would leave for a file that really is
-// the same on both sides. The hashes stay empty on purpose: an empty hash means
-// "unknown" everywhere in this engine, so the comparison falls back to size and
-// time, which is the pair these tests control.
+// agreeOn writes the row a finished run would leave for a file as it stands on
+// both sides. Without hashes the comparison uses size and time.
 func agreeOn(t *testing.T, f *fixture, path string) {
 	t.Helper()
 	left := stat(t, filepath.Join(f.left, filepath.FromSlash(path)))
@@ -169,10 +154,8 @@ func codes(rep verify.Report) []string {
 	return out
 }
 
-// wouldDoNothing runs the real comparison the engine runs and reports what it
-// decided. It is here so that the flagship test can prove the claim the whole
-// package rests on, that a frozen disagreement is genuinely invisible, rather
-// than merely asserting that this package says so.
+// wouldDoNothing asks the engine what it would do with the tree, to prove that
+// a frozen disagreement really is invisible to it.
 func wouldDoNothing(t *testing.T, f *fixture) (actions, unchanged int) {
 	t.Helper()
 	ctx := context.Background()
@@ -199,19 +182,13 @@ func openFs(t *testing.T, path string) rclonefs.Fs {
 	return f
 }
 
-// TestAFrozenDisagreementIsFound is the whole reason this package exists.
-//
-// Both sides still match their own half of the record, so every run from here
-// to the end of time calls them unchanged and reports a success, and the two
-// sides hold different files. The engine is asked outright what it would do
-// with this tree, because a test that only checked the report would prove that
-// this package agrees with itself.
+// Both sides match their half of the record, so every run calls them
+// unchanged, yet they hold different files.
 func TestAFrozenDisagreementIsFound(t *testing.T) {
 	f := newFixture(t)
 	write(t, f.left, "a.txt", "hello")
 	write(t, f.right, "a.txt", "worldly!")
-	// The row that should never have been written: it says the sides agreed,
-	// and it describes each of them exactly as it stands.
+	// A row that claims agreement and describes each side as it stands.
 	putRow(t, f, state.Entry{
 		Path: "a.txt", LeftPath: "a.txt", RightPath: "a.txt",
 		LeftSize: 5, LeftMod: settled,
@@ -242,8 +219,7 @@ func TestAFrozenDisagreementIsFound(t *testing.T) {
 		t.Errorf("one finding, all of it returned, got found=%d returned=%d truncated=%v", rep.Found, rep.Returned, rep.Truncated)
 	}
 
-	// The other direction: the same tree with a record that tells the truth
-	// about it has nothing to report.
+	// With a truthful record the same tree has nothing to report.
 	write(t, f.right, "a.txt", "hello")
 	agreeOn(t, f, "a.txt")
 	if rep := f.check(t, verify.Opts{}); rep.Found != 0 {
@@ -251,15 +227,8 @@ func TestAFrozenDisagreementIsFound(t *testing.T) {
 	}
 }
 
-// TestWhatAChecksumlessCheckCannotSee is the honest half of the checksum
-// decision, and it is a test of a limitation rather than of a feature.
-//
-// Two files of the same length written in the same second are the same file as
-// far as size and modification time are concerned, which is exactly the rule
-// the engine syncs by. A check without checksums therefore cannot see this
-// divergence, and must not be described as if it could; with checksums it is
-// found. Both halves are asserted, because a package that quietly read every
-// byte of both trees by default would be as wrong as one that claimed to have.
+// Two files of the same length written in the same second look equal by size
+// and time, so only a check with checksums sees the difference.
 func TestWhatAChecksumlessCheckCannotSee(t *testing.T) {
 	f := newFixture(t)
 	write(t, f.left, "a.txt", "hello")
@@ -290,8 +259,7 @@ func TestWhatAChecksumlessCheckCannotSee(t *testing.T) {
 	}
 }
 
-// TestARowForAFileOnNeitherSideIsFound covers the record that outlived the
-// file, which is what a run interrupted before it could drop the row leaves.
+// A run interrupted before it dropped a row leaves one for a file that is gone.
 func TestARowForAFileOnNeitherSideIsFound(t *testing.T) {
 	f := newFixture(t)
 	write(t, f.left, "b.txt", "kept")
@@ -315,7 +283,7 @@ func TestARowForAFileOnNeitherSideIsFound(t *testing.T) {
 		t.Errorf("the file both sides agree on is not a finding, got %v", codes(rep))
 	}
 
-	// The other direction: without the stray row the same tree is clean.
+	// Without the stray row the same tree is clean.
 	db := openState(t, f)
 	if err := db.Forget(context.Background(), "ghost.txt"); err != nil {
 		t.Fatalf("forget: %v", err)
@@ -326,9 +294,6 @@ func TestARowForAFileOnNeitherSideIsFound(t *testing.T) {
 	}
 }
 
-// TestAFileOnBothSidesTheRecordNeverHeardOfIsFound. One of these is two people
-// saving the same attachment; a hundred thousand of them is a record that
-// belongs to different folders than the ones it is being used for.
 func TestAFileOnBothSidesTheRecordNeverHeardOfIsFound(t *testing.T) {
 	f := newFixture(t)
 	write(t, f.left, "a.txt", "hello")
@@ -356,11 +321,6 @@ func TestAFileOnBothSidesTheRecordNeverHeardOfIsFound(t *testing.T) {
 	}
 }
 
-// TestAFileTheRecordSaysWasOnBothSidesAndIsOnOneIsFound. The record only ever
-// holds a path once both sides held it, so a row plus one side always means it
-// went away over there. That is a deletion on its way to being propagated and
-// it is also a share that half mounted, and this check cannot tell them apart
-// from one moment: it says what it sees and says that the next run will act.
 func TestAFileTheRecordSaysWasOnBothSidesAndIsOnOneIsFound(t *testing.T) {
 	f := newFixture(t)
 	write(t, f.left, "a.txt", "hello")
@@ -399,10 +359,6 @@ func TestAFileTheRecordSaysWasOnBothSidesAndIsOnOneIsFound(t *testing.T) {
 	}
 }
 
-// TestANewFileOnOneSideIsNotAFinding is the guard against a check nobody would
-// keep. A file on one side that the record has never heard of is the single
-// most common thing in a working sync job, and reporting it would bury every
-// real finding under the ordinary traffic.
 func TestANewFileOnOneSideIsNotAFinding(t *testing.T) {
 	f := newFixture(t)
 	write(t, f.left, "b.txt", "kept")
@@ -420,10 +376,8 @@ func TestANewFileOnOneSideIsNotAFinding(t *testing.T) {
 	}
 }
 
-// TestARowThatContradictsItselfIsFound covers a row whose own two halves
-// describe different files. The run that writes a row compares the two sides by
-// exactly this rule and refuses to write one that fails it, so a row like this
-// never stood for an agreement between anything.
+// A row whose two halves describe different files never stood for an
+// agreement.
 func TestARowThatContradictsItselfIsFound(t *testing.T) {
 	f := newFixture(t)
 	write(t, f.left, "a.txt", "hello")
@@ -431,9 +385,8 @@ func TestARowThatContradictsItselfIsFound(t *testing.T) {
 	putRow(t, f, state.Entry{
 		Path: "a.txt", LeftPath: "a.txt", RightPath: "a.txt",
 		LeftSize: 5, LeftMod: settled,
-		// Eight bytes on the right, where five are sitting. The right side has
-		// therefore moved on since this row was written, which is what keeps
-		// this out of the frozen case above.
+		// The right side no longer matches this, which keeps the case apart
+		// from a frozen disagreement.
 		RightSize: 8, RightMod: settled,
 	})
 
@@ -456,11 +409,6 @@ func TestARowThatContradictsItselfIsFound(t *testing.T) {
 	}
 }
 
-// TestTheListIsBoundedAndTheTotalIsNot. A tree whose record was wiped produces
-// one finding per file, and a browser handed forty thousand of them stops
-// responding. The bound is only safe because the totals are not bounded with
-// it: a list of five that said nothing about the bound would read exactly like
-// a complete list of five.
 func TestTheListIsBoundedAndTheTotalIsNot(t *testing.T) {
 	f := newFixture(t)
 	emptyRecord(t, f)
@@ -482,10 +430,7 @@ func TestTheListIsBoundedAndTheTotalIsNot(t *testing.T) {
 		t.Error("a truncated list that does not say so reads as a complete one")
 	}
 
-	// Deterministic, which is what makes a bounded list usable at all: an
-	// unsorted walk over a map would hand back a different arbitrary five every
-	// time, so two checks of an unchanged tree would disagree and nobody could
-	// work through the list.
+	// A bounded list has to hold the same findings every time.
 	first := codes(rep)
 	if first[0] != "onBothSidesUnrecorded file-00.txt" {
 		t.Errorf("the list starts at the first path in order, got %q", first[0])
@@ -503,19 +448,14 @@ func TestTheListIsBoundedAndTheTotalIsNot(t *testing.T) {
 	}
 }
 
-// TestAnExcludedFileIsNotReportedAsMissing. A pattern hides its paths from both
-// listings while their rows stay in the record, so a check that did not filter
-// the record the same way would report every newly excluded file as a row for a
-// file nobody has. The engine filters the record in the same place and for a
-// harder reason: reading those rows as deletions is how adding one exclude
-// pattern destroys the files it was meant to leave alone.
+// An excluded path is hidden from the listings while its row stays in the
+// record.
 func TestAnExcludedFileIsNotReportedAsMissing(t *testing.T) {
 	f := newFixture(t)
 	write(t, f.left, "b.txt", "kept")
 	write(t, f.right, "b.txt", "kept")
 	agreeOn(t, f, "b.txt")
-	// *.tmp is excluded by default, so both sides hold this file and neither
-	// listing can see it.
+	// *.tmp is excluded by default.
 	write(t, f.left, "notes.tmp", "scratch")
 	write(t, f.right, "notes.tmp", "scratch")
 	agreeOn(t, f, "notes.tmp")
@@ -529,8 +469,7 @@ func TestAnExcludedFileIsNotReportedAsMissing(t *testing.T) {
 		t.Errorf("the excluded row is not part of what was checked, got %d known", rep.Known)
 	}
 
-	// And the check has not simply gone quiet: an identical row whose file the
-	// job CAN see, and which really is on neither side, is still reported.
+	// A visible row whose file really is gone is still reported.
 	putRow(t, f, state.Entry{
 		Path: "notes.txt", LeftPath: "notes.txt", RightPath: "notes.txt",
 		LeftSize: 7, LeftMod: settled, RightSize: 7, RightMod: settled,
@@ -540,11 +479,8 @@ func TestAnExcludedFileIsNotReportedAsMissing(t *testing.T) {
 	}
 }
 
-// TestASideThatListsNothingIsRefusedRatherThanCompared. A share that failed to
-// mount lists nothing, and comparing it would produce one finding per recorded
-// file: thousands of rows for one fact, and the one fact would be the only
-// thing not said. It is also the condition the engine refuses a run for, so the
-// same sentence comes back rather than a second wording of it.
+// A share that failed to mount lists nothing; the check returns the engine's
+// refusal instead of one finding per recorded file.
 func TestASideThatListsNothingIsRefusedRatherThanCompared(t *testing.T) {
 	f := newFixture(t)
 	for i := 0; i < 3; i++ {
@@ -584,11 +520,6 @@ func TestASideThatListsNothingIsRefusedRatherThanCompared(t *testing.T) {
 	}
 }
 
-// TestAJobThatHasNeverRunIsRefusedAndGetsNoDatabase. Opening the record creates
-// it, so this check must never be the call that does. A job with no record has
-// nothing to hold its sides up against, and answering with one finding per file
-// would be thousands of rows about a job with nothing whatsoever the matter
-// with it.
 func TestAJobThatHasNeverRunIsRefusedAndGetsNoDatabase(t *testing.T) {
 	f := newFixture(t)
 	write(t, f.left, "a.txt", "hello")
@@ -606,21 +537,15 @@ func TestAJobThatHasNeverRunIsRefusedAndGetsNoDatabase(t *testing.T) {
 		t.Errorf("the check created %s just by asking about it", f.job.State)
 	}
 
-	// The other direction: with a record in place, the same job answers.
 	emptyRecord(t, f)
 	if _, err := verify.Check(context.Background(), f.job, verify.Opts{}); err != nil {
 		t.Errorf("a job with a record can be checked, got %v", err)
 	}
 }
 
-// TestCollidingNamesAreLeftOutRatherThanReportedAsMissing. The scanner drops a
-// key that two files on one side both claim, because copying them onto a side
-// that cannot tell them apart would silently overwrite one with the other. The
-// record still holds a row for it, and reporting that row as a file nobody has
-// would be a false alarm about a file sitting right there.
-//
-// Both sides are memory backends because they are case-sensitive on every
-// platform, and a local folder on Windows cannot hold the two names this needs.
+// The scanner drops a colliding key from its side, while the record keeps its
+// row. Memory backends are case-sensitive on every platform, unlike a local
+// folder on Windows.
 func TestCollidingNamesAreLeftOutRatherThanReportedAsMissing(t *testing.T) {
 	fold := true
 	f := newFixture(t)
@@ -635,10 +560,7 @@ func TestCollidingNamesAreLeftOutRatherThanReportedAsMissing(t *testing.T) {
 		Path: "a.txt", LeftPath: "a.txt", RightPath: "a.txt",
 		LeftSize: 5, LeftMod: settled, RightSize: 5, RightMod: settled,
 	})
-	// A second file that does not collide, on both sides and in the record.
-	// Without it the left side lists nothing at all once the colliding key is
-	// dropped, and the check refuses the job for that instead: a side holding
-	// only files it cannot tell apart is a different problem than this one.
+	// A file that does not collide, so the left side does not list empty.
 	putRemote(t, f.job.Left, "keep.txt", "kept")
 	putRemote(t, f.job.Right, "keep.txt", "kept")
 	putRow(t, f, state.Entry{
@@ -655,8 +577,7 @@ func TestCollidingNamesAreLeftOutRatherThanReportedAsMissing(t *testing.T) {
 		t.Errorf("the file is on the left twice over, so calling it missing there would be a false alarm, got %v", codes(rep))
 	}
 
-	// The other direction, on a tree where the same row really has lost its
-	// file on the left: the finding this test suppresses is still produced.
+	// Where the row really has lost its file on the left, it is still reported.
 	other := newFixture(t)
 	other.job.Left = ":memory:verify-collision-control-left"
 	other.job.Right = ":memory:verify-collision-control-right"
@@ -672,8 +593,7 @@ func TestCollidingNamesAreLeftOutRatherThanReportedAsMissing(t *testing.T) {
 	}
 }
 
-// putRemote writes one file into an rclone backend, which is how a memory
-// backend gets any content at all.
+// putRemote writes one file into an rclone backend.
 func putRemote(t *testing.T, remote, name, body string) {
 	t.Helper()
 	ctx := context.Background()
@@ -684,9 +604,7 @@ func putRemote(t *testing.T, remote, name, body string) {
 	}
 }
 
-// TestEveryFindingCarriesWordsAndACode. The interface translates from the code
-// and falls back to the sentence for a code it has never heard of, so a finding
-// with neither is a row nobody can act on.
+// The interface translates from the code and falls back to the sentence.
 func TestEveryFindingCarriesWordsAndACode(t *testing.T) {
 	f := newFixture(t)
 	write(t, f.left, "kept.txt", "kept")
@@ -750,9 +668,7 @@ func agreeOn2(t *testing.T, f *fixture, path string, leftSize, rightSize int64) 
 	})
 }
 
-// TestTheReportSurvivesBeingEncoded pins the contract the browser reads. The
-// handler does nothing to this structure but hand it to the encoder, so this is
-// where a renamed field or a list that quietly became null would show up.
+// TestTheReportSurvivesBeingEncoded pins the JSON the browser reads.
 func TestTheReportSurvivesBeingEncoded(t *testing.T) {
 	f := newFixture(t)
 	write(t, f.left, "a.txt", "hello")
@@ -773,8 +689,7 @@ func TestTheReportSurvivesBeingEncoded(t *testing.T) {
 			t.Errorf("the report lost its %q field: %s", key, raw)
 		}
 	}
-	// The one that has actually broken a screen before: a nil slice encodes as
-	// null, and a job with nothing wrong is the case a browser meets most.
+	// A nil slice would encode as null.
 	list, ok := doc["findings"].([]any)
 	if !ok {
 		t.Fatalf("findings has to arrive as a list, got %T", doc["findings"])
@@ -783,7 +698,6 @@ func TestTheReportSurvivesBeingEncoded(t *testing.T) {
 		t.Errorf("nothing is wrong with this job, got %v", list)
 	}
 
-	// And a report that does carry findings keeps their fields.
 	write(t, f.left, "b.txt", "one")
 	write(t, f.right, "b.txt", "two and a half")
 	putRow(t, f, state.Entry{

@@ -1,12 +1,9 @@
-// Package dupes finds files whose CONTENT is identical, wherever they sit.
+// Package dupes finds files with identical content, wherever they sit.
 //
-// It is not rclone's `dedupe`, which is about one remote holding two objects
-// under the same NAME - a thing only Google Drive really does. This is the
-// question somebody asks about their own folder: the same holiday photos under
-// three different names, an archive unpacked twice, a backup of a backup. jdp
-// asked for it among the small ones, and it earns its place on a sync tool
-// because duplicates are paid for twice - once in space on this side, once in
-// transfer to the other.
+// Unlike rclone's dedupe, which handles one remote holding two objects under
+// the same name, this looks for the same content under different names in one
+// folder. Duplicates are paid for twice on a sync tool: in space here and in
+// transfer to the other side.
 package dupes
 
 import (
@@ -20,48 +17,35 @@ import (
 
 // Group is one piece of content and every place it was found.
 type Group struct {
-	// Hash is the content's MD5, which is what made these one group.
+	// Hash is the content's MD5.
 	Hash string `json:"hash"`
-	// Size is one copy's size. They are all the same size by construction.
+	// Size is the size of one copy.
 	Size int64 `json:"size"`
-	// Paths, sorted, and always at least two long.
+	// Paths is sorted and holds at least two entries.
 	Paths []string `json:"paths"`
-	// Wasted is what the extra copies cost: every copy but the first. The
-	// first one is the file, not a duplicate of it, and a total that counts it
-	// tells somebody they would get back more than deleting can ever return.
+	// Wasted is the size of every copy but the first.
 	Wasted int64 `json:"wasted"`
 }
 
 // Report is what a search found, and what it could not look at.
 type Report struct {
 	Groups []Group `json:"groups"`
-	// Wasted is the sum of the groups' waste: what deleting the extra copies
-	// would actually return.
+	// Wasted is the sum of the groups' waste.
 	Wasted int64 `json:"wasted"`
-	// Scanned is how many files were considered at all.
+	// Scanned is how many files were considered.
 	Scanned int `json:"scanned"`
-	// Unhashable is how many candidates the backend refused to hash.
-	//
-	// It is reported rather than swallowed because it is the one thing that
-	// makes this answer incomplete, and the alternative is worse than silence:
-	// two files of the same size on a hashless backend are NOT duplicates, and
-	// pairing them up would offer somebody a delete button over two files that
-	// merely happen to weigh the same.
+	// Unhashable is how many candidates the backend could not hash. They are
+	// counted rather than grouped by size, because equal size does not make
+	// two files duplicates.
 	Unhashable int `json:"unhashable"`
 }
 
-// Find walks one side and returns every set of identical files.
+// Find walks one side and returns every set of identical files, at most limit
+// groups when limit is positive.
 //
-// The cheap filter first, and it is what makes this affordable at all: two
-// files can only be identical if they are the same SIZE, and a size that only
-// one file has cannot be part of a duplicate set. On a real tree that removes
-// almost everything before a single byte is hashed. Hashing the whole tree
-// instead would cost more than the sync it is supposed to save.
-//
-// Empty files are left out entirely. Every zero-byte file matches every other
-// one, so including them turns the answer into a list of placeholder files,
-// `.gitkeep` and half-finished downloads, with nothing to reclaim: the waste is
-// zero bytes by definition. That is noise standing where the finding should be.
+// Only files that share their size with another file are hashed, which on a
+// real tree rules out almost everything. Empty files are left out: they all
+// match each other and deleting them reclaims nothing.
 func Find(ctx context.Context, f rclonefs.Fs, opt scan.Options, limit int) (Report, error) {
 	listing, err := scan.List(ctx, f, opt)
 	if err != nil {
@@ -83,8 +67,6 @@ func Find(ctx context.Context, f rclonefs.Fs, opt scan.Options, limit int) (Repo
 			continue
 		}
 		for _, e := range sharing {
-			// A cancelled search stops here rather than at the end. Hashing is
-			// the expensive half and a tree can hold a lot of it.
 			if err := ctx.Err(); err != nil {
 				return Report{}, err
 			}
@@ -110,10 +92,7 @@ func Find(ctx context.Context, f rclonefs.Fs, opt scan.Options, limit int) (Repo
 		out.Wasted += group.Wasted
 	}
 
-	// Biggest waste first, because that is the order somebody would work in:
-	// one duplicated film is worth more than four hundred duplicated icons.
-	// Ties settle on the first path so the list does not reshuffle itself
-	// between two identical searches.
+	// Biggest waste first, ties by first path so repeated searches agree.
 	sort.Slice(out.Groups, func(i, j int) bool {
 		if out.Groups[i].Wasted != out.Groups[j].Wasted {
 			return out.Groups[i].Wasted > out.Groups[j].Wasted
@@ -121,10 +100,8 @@ func Find(ctx context.Context, f rclonefs.Fs, opt scan.Options, limit int) (Repo
 		return out.Groups[i].Paths[0] < out.Groups[j].Paths[0]
 	})
 
-	// The cap applies to what is SENT and never to what was counted. The walk
-	// had to read the whole tree to answer at all, so the totals above are the
-	// real ones and stay the real ones - a total computed from a truncated list
-	// would under-report the waste and quietly reward a smaller screen.
+	// The limit applies to the list only; the totals stay those of the whole
+	// tree.
 	if limit > 0 && len(out.Groups) > limit {
 		out.Groups = out.Groups[:limit]
 	}

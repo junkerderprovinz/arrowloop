@@ -22,22 +22,12 @@ type Unsupported struct {
 
 // FindUnsupported lists what a local side holds that the engine cannot carry.
 //
-// This exists because rclone does not tell a library caller. Its local backend
-// decides in Object.Storable(): a symlink or a special file is dropped from the
-// listing after a single log line, so from the outside it is indistinguishable
-// from a file that is not there. Silently omitting a file is the worst possible
-// answer for a sync tool, because the user believes the folder is covered.
-//
-// Nothing is done about these entries beyond naming them. Following a symlink
-// would copy the target and turn one link into a full second copy on the other
-// side; storing it as rclone's `.rclonelink` text file would produce something
-// no other program can use and would break the moment the target path means
-// something different over there. Neither is obviously right, so the engine
-// reports and leaves them, which at least lets the user decide.
-//
-// Only local sides are inspected, because only a local side has a filesystem
-// underneath that can be asked. Over SFTP or S3 the same entries are equally
-// invisible and there is no second channel to look through.
+// rclone's local backend drops symlinks and special files from the listing
+// (Object.Storable) with only a log line, so without this they would be
+// silently left out. They are only named: following a link would turn it into
+// a second full copy, and rclone's .rclonelink files are of no use to other
+// programs. Remote sides offer no way to look, so only local sides are
+// inspected.
 func FindUnsupported(ctx context.Context, f rclonefs.Fs, opt Options) ([]Unsupported, error) {
 	root, ok := localRoot(f)
 	if !ok {
@@ -47,14 +37,9 @@ func FindUnsupported(ctx context.Context, f rclonefs.Fs, opt Options) ([]Unsuppo
 	var out []Unsupported
 	err := filepath.WalkDir(root, func(p string, d fs.DirEntry, err error) error {
 		if err != nil {
-			// A directory that cannot be read is a real problem, but it is not
-			// this function's problem: the listing will fail on it too, and
-			// with a better message.
-			//
-			// The root not being there at all is not a problem either. The
-			// destination of a brand new job is a folder nobody has made yet,
-			// and refusing to start because there are no symlinks in a folder
-			// that does not exist would stop every first run.
+			// An unreadable directory is left to the listing, which fails on
+			// it with a better message, and a missing root is a new job's
+			// target that does not exist yet.
 			if p == root && !errors.Is(err, fs.ErrNotExist) {
 				return err
 			}
@@ -108,21 +93,15 @@ func unsupportedKind(mode os.FileMode) string {
 	case mode&os.ModeDevice != 0:
 		return "device node"
 	case mode&os.ModeIrregular != 0:
-		// Windows reports a junction point this way, and rclone's local backend
-		// treats it as a symlink for exactly this reason.
+		// Windows reports a junction point this way.
 		return "junction or irregular file"
 	}
 	return ""
 }
 
-// localRoot maps a filesystem back to a real directory, when there is one.
-//
-// The Clean is not cosmetic. On Windows rclone's local backend makes every root
-// an extended-length path so that names over 260 characters work at all, and
-// then Root() hands it back with forward slashes, as "//?/C:/...". Win32 does
-// not accept that spelling, and filepath.Rel would compare it against the
-// backslash form that WalkDir produces and get the wrong answer. Clean turns it
-// back into the form both of them want.
+// localRoot maps a filesystem back to a real directory, when there is one. On
+// Windows rclone returns the root as "//?/C:/...", which Win32 and
+// filepath.Rel do not accept until it is cleaned.
 func localRoot(f rclonefs.Fs) (string, bool) {
 	if f == nil || f.Name() != "local" {
 		return "", false

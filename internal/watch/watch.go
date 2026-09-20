@@ -1,15 +1,9 @@
 // Package watch notices when a folder changes, so a job can run because
-// something happened rather than because a clock struck.
+// something happened rather than because a clock struck. A scheduled run lists
+// both sides in full, which is most of its cost on a large tree.
 //
-// This is worth having for one reason only, and it is not latency. A schedule
-// has to list both sides in full on every tick, which on a large tree or over
-// a network is most of what a run costs. Watching lets the engine sit still
-// until there is a reason not to.
-//
-// It is deliberately not a replacement for the schedule. Only a local side can
-// be watched at all, most remote backends have no way to tell anyone anything,
-// and a watcher that missed an event has no way to know it did. Every job keeps
-// its schedule as the thing that eventually notices what the watcher did not.
+// It does not replace the schedule: only local sides can be watched, and a
+// watcher cannot know about an event it missed.
 package watch
 
 import (
@@ -31,28 +25,21 @@ import (
 
 // Options configures one watcher.
 type Options struct {
-	// Roots are the local directories to watch. A remote side contributes
-	// none, and a job with no local side at all cannot be watched.
+	// Roots are the local directories to watch.
 	Roots []string
 
-	// Exclude hides paths from the watcher exactly as it hides them from the
-	// job. Without this a folder full of temporary files would keep waking a
-	// job that has been told to ignore every one of them.
+	// Exclude hides paths from the watcher as it hides them from the job.
 	Exclude *filter.Set
 
-	// Settle is how long the tree has to go quiet before the change is
-	// reported. Copying a folder produces one event per file, and a run per
-	// event would be a thousand runs for one action.
+	// Settle is how long the tree has to go quiet before a change is reported,
+	// so copying a folder is one change rather than one per file.
 	Settle time.Duration
 
-	// Cooldown is how long events are ignored after a change has been
-	// reported. A sync writes files, which the watcher sees, which would
-	// report another change, which would sync again. The second run finds
-	// nothing to do, so it terminates either way, but a job that answers every
-	// one of its own writes is a job that never sits still.
+	// Cooldown is how long events are ignored after Mute, so a run's own
+	// writes do not start another run.
 	Cooldown time.Duration
 
-	// Log receives anything worth saying out loud. Optional.
+	// Log receives warnings. Optional.
 	Log func(format string, args ...any)
 }
 
@@ -68,8 +55,7 @@ type Watcher struct {
 }
 
 // New builds a watcher over the given roots. It returns an error when there is
-// nothing to watch, because a job configured to watch and silently watching
-// nothing is worse than one that says so.
+// nothing to watch.
 func New(opt Options, onEvent func()) (*Watcher, error) {
 	if len(opt.Roots) == 0 {
 		return nil, errors.New("nothing local to watch: a remote side cannot report its own changes")
@@ -101,11 +87,8 @@ func New(opt Options, onEvent func()) (*Watcher, error) {
 // Close releases the underlying watches.
 func (w *Watcher) Close() error { return w.fsw.Close() }
 
-// Mute stops events being reported for the cooldown period, starting now.
-//
-// The runner calls this around a run of its own. Without it the engine's own
-// writes come straight back as changes, and the job spends its life answering
-// itself.
+// Mute stops events being reported for the cooldown period, starting now. The
+// runner calls it around its own runs.
 func (w *Watcher) Mute() {
 	w.mu.Lock()
 	defer w.mu.Unlock()
@@ -118,11 +101,8 @@ func (w *Watcher) isMuted() bool {
 	return time.Now().Before(w.muted)
 }
 
-// Run reports changes until the context is cancelled.
-//
-// Events are collected rather than acted on one by one: a folder dropped into a
-// watched tree produces one event per file, and the interesting fact is that
-// something changed, not how many times.
+// Run reports changes until the context is cancelled. Events within the settle
+// window are reported once.
 func (w *Watcher) Run(ctx context.Context) error {
 	var timer *time.Timer
 	var fire <-chan time.Time
@@ -139,9 +119,7 @@ func (w *Watcher) Run(ctx context.Context) error {
 			if !w.interesting(ev) {
 				continue
 			}
-			// A new directory has to be watched itself: the kernel reports on
-			// a directory's own entries, not on its whole subtree, so a folder
-			// created and then filled would otherwise go unnoticed.
+			// Watches do not cover subtrees, so a new directory needs its own.
 			if ev.Has(fsnotify.Create) {
 				if info, err := os.Stat(ev.Name); err == nil && info.IsDir() {
 					if err := w.addTree(ev.Name); err != nil {
@@ -167,9 +145,7 @@ func (w *Watcher) Run(ctx context.Context) error {
 			if !open {
 				return nil
 			}
-			// A watch error is worth saying out loud and never worth stopping
-			// for: the schedule is still there, so the worst case is that this
-			// job goes back to noticing things late rather than not at all.
+			// The schedule still catches what the watcher misses.
 			w.opt.Log("watch error: %v", err)
 		}
 	}
@@ -202,9 +178,7 @@ func (w *Watcher) interesting(ev fsnotify.Event) bool {
 func (w *Watcher) addTree(root string) error {
 	return filepath.WalkDir(root, func(p string, d fs.DirEntry, err error) error {
 		if err != nil {
-			// A directory that cannot be read is not a reason to give up on
-			// the rest of the tree. It will be reported by the listing, which
-			// has a better message for it.
+			// An unreadable subdirectory is left to the listing to report.
 			if p == root {
 				return err
 			}
@@ -237,8 +211,7 @@ func (w *Watcher) addTree(root string) error {
 	})
 }
 
-// Watching reports how many directories are being watched, which is the number
-// that matters when somebody asks why the process has so many open handles.
+// Watching reports how many directories are being watched.
 func (w *Watcher) Watching() int {
 	w.mu.Lock()
 	defer w.mu.Unlock()

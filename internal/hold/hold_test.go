@@ -8,9 +8,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/job"
 )
 
-// at builds a store whose clock is one this test moves by hand. A real clock
-// would make the staleness test either slow or flaky, and both are worse than
-// a field.
+// at builds a store whose clock the test moves by hand.
 func at(start time.Time) (*Store, *time.Time) {
 	now := start
 	s := New()
@@ -32,8 +30,7 @@ func TestAReportedReasonHoldsARun(t *testing.T) {
 	if err == nil {
 		t.Fatal("a reported reason did not hold the run")
 	}
-	// The reporter's words, unaltered: the log is read by somebody who needs to
-	// know WHICH condition stopped it, and a house sentence would lose that.
+	// The log needs the reporter's words to say which condition stopped it.
 	if err.Error() != "this phone is on battery" {
 		t.Fatalf("the reason was rewritten: %q", err.Error())
 	}
@@ -49,9 +46,7 @@ func TestAnEmptyReportClearsTheHold(t *testing.T) {
 	}
 }
 
-// The one that matters. An app that is killed stops reporting, and a hold that
-// never expires would stop every scheduled run from then on - on a phone that
-// has been on the charger since.
+// A killed app stops reporting, so its last hold must expire.
 func TestAStaleReportStopsHolding(t *testing.T) {
 	s, now := at(time.Now())
 	s.Report("this phone is on battery")

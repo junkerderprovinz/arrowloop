@@ -13,14 +13,6 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/scan"
 )
 
-// Identical CONTENT, and everything that is not.
-//
-// The failure worth guarding against here is the cheerful one: an answer that
-// pairs files up because they weigh the same and hands somebody a delete button
-// over two documents that have nothing to do with each other. So most of the
-// cases below are near misses - the same size and different content, an empty
-// file, a backend that cannot hash - rather than the happy path.
-
 func tree(t *testing.T, files map[string]string) rclonefs.Fs {
 	t.Helper()
 	root := t.TempDir()
@@ -64,21 +56,14 @@ func TestTheSameFileInThreePlacesIsOneGroup(t *testing.T) {
 	if len(group.Paths) != 3 {
 		t.Errorf("the group holds %d paths: %v", len(group.Paths), group.Paths)
 	}
-	// Two copies too many, not three. The first one is the file.
 	if want := group.Size * 2; group.Wasted != want {
-		t.Errorf("waste is %d, expected %d - the original is not a duplicate of itself", group.Wasted, want)
+		t.Errorf("waste is %d, expected %d; the original is not a duplicate of itself", group.Wasted, want)
 	}
 	if got.Wasted != group.Wasted {
 		t.Errorf("the total (%d) disagrees with the only group (%d)", got.Wasted, group.Wasted)
 	}
 }
 
-// TestTwoFilesOfTheSameSizeAreNotDuplicates.
-//
-// The whole reason the hash is fetched at all. The size filter is a way of
-// finding CANDIDATES cheaply, and a search that stopped there would pair up
-// every pair of files that happen to weigh the same, which on a tree of photos
-// is a great many of them.
 func TestTwoFilesOfTheSameSizeAreNotDuplicates(t *testing.T) {
 	got := find(t, tree(t, map[string]string{
 		"eins.txt": "aaaaaaaaaaaa",
@@ -89,12 +74,6 @@ func TestTwoFilesOfTheSameSizeAreNotDuplicates(t *testing.T) {
 	}
 }
 
-// TestEmptyFilesAreNotReported.
-//
-// Every zero-byte file matches every other one, and deleting them returns
-// nothing at all: the waste is zero by definition. A real tree holds dozens -
-// .gitkeep, lock files, half-started downloads - and putting them at the top of
-// a list about reclaiming space is noise standing where the finding should be.
 func TestEmptyFilesAreNotReported(t *testing.T) {
 	got := find(t, tree(t, map[string]string{
 		"a/.gitkeep": "",
@@ -109,9 +88,6 @@ func TestEmptyFilesAreNotReported(t *testing.T) {
 	}
 }
 
-// TestASingleCopyIsNotAGroup covers the other half: a file with no twin must
-// not appear at all, and a size shared by exactly one file must not cost a
-// hash.
 func TestASingleCopyIsNotAGroup(t *testing.T) {
 	got := find(t, tree(t, map[string]string{
 		"nur-einmal.txt": "einzelstueck",
@@ -125,10 +101,6 @@ func TestASingleCopyIsNotAGroup(t *testing.T) {
 	}
 }
 
-// TestTheBiggestWasteComesFirst.
-//
-// The order is the order somebody works in: one duplicated film is worth more
-// than four hundred duplicated icons, and a list sorted by path buries it.
 func TestTheBiggestWasteComesFirst(t *testing.T) {
 	big := strings.Repeat("x", 4096)
 	got := find(t, tree(t, map[string]string{
@@ -147,12 +119,6 @@ func TestTheBiggestWasteComesFirst(t *testing.T) {
 	}
 }
 
-// TestTheCapLimitsTheListAndNotTheTotals.
-//
-// The walk had to read everything to answer at all, so a total computed from
-// the truncated list would under-report the waste - and it would do so by
-// MORE the smaller the screen, which is the sort of number somebody would go on
-// to make a decision with.
 func TestTheCapLimitsTheListAndNotTheTotals(t *testing.T) {
 	files := map[string]string{}
 	for _, name := range []string{"a", "b", "c", "d"} {
@@ -182,10 +148,7 @@ func TestTheCapLimitsTheListAndNotTheTotals(t *testing.T) {
 	}
 }
 
-// TestNothingFoundIsAnEmptyListRatherThanNull.
-//
-// A nil slice marshals to `null`, and the first thing a browser does with a
-// list is iterate it.
+// A nil slice would marshal to null.
 func TestNothingFoundIsAnEmptyListRatherThanNull(t *testing.T) {
 	got := find(t, tree(t, map[string]string{"allein.txt": "eins"}))
 	if got.Groups == nil {

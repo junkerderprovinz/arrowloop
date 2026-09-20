@@ -10,19 +10,8 @@ import (
 	"time"
 )
 
-// TestOnlyOneWriterEverReachesTheDatabase.
-//
-// Records are written from every transfer worker at once. Left to itself the
-// connection pool hands each worker a connection of its own, and they contend
-// for SQLite's single write lock: the busy handler waits, and on a slow disk it
-// waits past its timeout. The write then fails with SQLITE_BUSY and the file is
-// reported as postponed with its record missing.
-//
-// This is asserted structurally rather than by racing, because a race that only
-// shows up on a loaded machine is a test that passes on the machine you are
-// looking at and fails on the one you are not. It did exactly that: green on
-// this laptop over six consecutive runs, red on a Windows runner, five files at
-// a time.
+// Asserted on the pool rather than by racing writers, because the contention
+// only shows up on a loaded machine.
 func TestOnlyOneWriterEverReachesTheDatabase(t *testing.T) {
 	db := openTemp(t)
 	if got := db.sql.Stats().MaxOpenConnections; got != 1 {
@@ -30,9 +19,6 @@ func TestOnlyOneWriterEverReachesTheDatabase(t *testing.T) {
 	}
 }
 
-// TestConcurrentRecordsAllArrive exercises the path the structural check above
-// protects: every worker's record has to be there afterwards, and none of them
-// may fail.
 func TestConcurrentRecordsAllArrive(t *testing.T) {
 	db := openTemp(t)
 	ctx := context.Background()
@@ -76,10 +62,6 @@ func TestConcurrentRecordsAllArrive(t *testing.T) {
 	if err != nil {
 		t.Fatalf("read back: %v", err)
 	}
-	// The count is the part that matters. A missing record is not a missing
-	// file: both sides hold it and the job has no note of it, so the next run
-	// files it under "appeared on both sides" rather than "unchanged" and
-	// nothing ever says anything went wrong.
 	if len(all) != workers*each {
 		t.Errorf("%d of %d records are in the database", len(all), workers*each)
 	}
@@ -95,12 +77,8 @@ func openTemp(t *testing.T) *DB {
 	return db
 }
 
-// TestOpenMakesTheFolderItWasAskedToWriteInto.
-//
-// SQLite creates the file and refuses to create the folder, and its refusal is
-// SQLITE_CANTOPEN: "unable to open database file", which names a file and
-// means a directory. Every job the interface creates points at
-// "state/<name>.db", so without this the ordinary case was the broken one.
+// SQLite creates the file but not its folder, and jobs created in the interface
+// point at "state/<name>.db".
 func TestOpenMakesTheFolderItWasAskedToWriteInto(t *testing.T) {
 	root := t.TempDir()
 	path := filepath.Join(root, "state", "Test.db")
@@ -111,8 +89,6 @@ func TestOpenMakesTheFolderItWasAskedToWriteInto(t *testing.T) {
 	}
 	defer db.Close()
 
-	// Opened is not enough: the schema has to have been written, which is the
-	// step that actually failed.
 	if err := db.Put(context.Background(), Entry{Path: "a.txt", LeftSize: 1, RightSize: 1}); err != nil {
 		t.Fatalf("write to the new database: %v", err)
 	}
@@ -121,9 +97,6 @@ func TestOpenMakesTheFolderItWasAskedToWriteInto(t *testing.T) {
 	}
 }
 
-// TestOpenLeavesAnExistingFolderAlone keeps the fix from becoming a habit of
-// creating folders on paths that already have one, which is where a wrong
-// mkdir would quietly change permissions on somebody's directory.
 func TestOpenLeavesAnExistingFolderAlone(t *testing.T) {
 	root := t.TempDir()
 	before, err := os.Stat(root)

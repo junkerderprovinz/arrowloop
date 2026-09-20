@@ -8,8 +8,7 @@ import (
 	"testing"
 )
 
-// withCandidates points the search at a set of directories a test controls,
-// instead of at whatever happens to be plugged into the machine running it.
+// withCandidates points the search at directories the test controls.
 func withCandidates(t *testing.T, dirs ...string) {
 	t.Helper()
 	previous := Candidates
@@ -17,8 +16,6 @@ func withCandidates(t *testing.T, dirs ...string) {
 	t.Cleanup(func() { Candidates = previous })
 }
 
-// TestAVolumeIsFoundAfterItMoves is the whole point of the package. The same
-// disk, mounted somewhere else, has to still be the same disk.
 func TestAVolumeIsFoundAfterItMoves(t *testing.T) {
 	first := t.TempDir()
 	m, err := Mark(first, "Photo backup")
@@ -35,9 +32,7 @@ func TestAVolumeIsFoundAfterItMoves(t *testing.T) {
 		t.Fatalf("resolved to %q", resolved)
 	}
 
-	// The drive comes back somewhere else, which on Windows is a different
-	// letter and on Linux a different mount point. Everything about the path
-	// changes except the disk.
+	// The same disk under another letter or mount point.
 	second := t.TempDir()
 	if err := os.MkdirAll(filepath.Join(second, ".arrowloop"), 0o755); err != nil {
 		t.Fatalf("mkdir: %v", err)
@@ -60,9 +55,7 @@ func TestAVolumeIsFoundAfterItMoves(t *testing.T) {
 	}
 }
 
-// TestAMissingVolumeIsItsOwnAnswer covers the difference between "the disk is
-// in somebody's bag" and "something is wrong". The engine treats the two
-// completely differently, so they must not arrive as the same error.
+// The engine postpones a job on a missing volume instead of failing it.
 func TestAMissingVolumeIsItsOwnAnswer(t *testing.T) {
 	withCandidates(t)
 	_, err := Resolve(Prefix + "0123456789abcdef/anything")
@@ -74,8 +67,6 @@ func TestAMissingVolumeIsItsOwnAnswer(t *testing.T) {
 	}
 }
 
-// TestOrdinaryPathsPassThrough keeps the cost of this feature at zero for every
-// job that does not use it.
 func TestOrdinaryPathsPassThrough(t *testing.T) {
 	for _, path := range []string{
 		`D:\Photos`, "/mnt/user/Photos", "sftp:backup/photos", "s3:bucket/photos", "",
@@ -90,9 +81,6 @@ func TestOrdinaryPathsPassThrough(t *testing.T) {
 	}
 }
 
-// TestMarkingTwiceKeepsOneIdentity. Somebody who registers a disk they already
-// registered should get the same answer, not a second volume shadowing the
-// first, which would leave one job pointing at an identity nothing carries.
 func TestMarkingTwiceKeepsOneIdentity(t *testing.T) {
 	dir := t.TempDir()
 	first, err := Mark(dir, "Backup")
@@ -120,20 +108,13 @@ func TestMarkingTwiceKeepsOneIdentity(t *testing.T) {
 	}
 }
 
-// TestTheMarkerLivesWhereTheScannerSkips. The marker sits inside the tree the
-// engine syncs, so it has to be under the reserved prefix or it would travel to
-// the other side and one disk's identity would end up on another.
+// A marker outside the reserved directory would be synced to the other side.
 func TestTheMarkerLivesWhereTheScannerSkips(t *testing.T) {
 	if !strings.HasPrefix(markerPath, ".arrowloop/") {
 		t.Fatalf("the marker at %q is not under the reserved prefix and would be synced", markerPath)
 	}
 }
 
-// TestALabelSurvivesTheDriveLeaving. An identity is twenty-four characters of
-// hex, which is the right thing to store and the wrong thing to show anybody.
-// The label lives on the drive, so the one moment it cannot be read is the one
-// moment somebody needs it: "Backup drive is not connected" can be acted on and
-// a line of hex cannot.
 func TestALabelSurvivesTheDriveLeaving(t *testing.T) {
 	dir := t.TempDir()
 	SetRegistry(filepath.Join(t.TempDir(), "volumes.json"))
@@ -149,7 +130,7 @@ func TestALabelSurvivesTheDriveLeaving(t *testing.T) {
 		t.Fatalf("described as %q while attached", got)
 	}
 
-	// Unplugged. The marker is now unreachable and only the register is left.
+	// Unplugged: only the register is left.
 	withCandidates(t)
 	if got := Describe(Prefix + m.ID + "/holiday"); got != "Backup drive/holiday" {
 		t.Errorf("an unplugged drive described itself as %q, which names nothing anybody owns", got)
@@ -172,15 +153,12 @@ func TestALabelSurvivesTheDriveLeaving(t *testing.T) {
 		t.Error("a drive that has been seen was forgotten the moment it was unplugged")
 	}
 
-	// Forgetting is deliberate and complete.
 	Forget(m.ID)
 	if len(Remembered()) != 0 {
 		t.Error("a forgotten volume is still remembered")
 	}
 }
 
-// TestWithoutARegisterNothingBreaks. The register is a convenience, so every
-// path through the package has to work without one.
 func TestWithoutARegisterNothingBreaks(t *testing.T) {
 	SetRegistry("")
 	dir := t.TempDir()
@@ -198,14 +176,7 @@ func TestWithoutARegisterNothingBreaks(t *testing.T) {
 	}
 }
 
-// TestAVolumeMarkedBeforeTheRenameIsStillFound is the other half of the rename.
-//
-// A drive registered by an older build carries its identity under the old
-// directory name. Losing sight of it does not fail in a way anybody can act on:
-// the drive drops out of Attached, Find answers ErrNotAttached, and every job
-// pointed at that volume is postponed with "not attached" while the disk sits
-// plugged in and spinning.
-func TestAVolumeMarkedBeforeTheRenameIsStillFound(t *testing.T) {
+func TestAVolumeWithTheLegacyMarkerIsFound(t *testing.T) {
 	mount := t.TempDir()
 	const id = "0f1e2d3c4b5a69788796a5b4"
 	if err := os.MkdirAll(filepath.Join(mount, filepath.Dir(filepath.FromSlash(legacyMarkerPath))), 0o755); err != nil {
@@ -225,8 +196,8 @@ func TestAVolumeMarkedBeforeTheRenameIsStillFound(t *testing.T) {
 		t.Fatalf("found %+v, wanted the drive at %s labelled Photo backup", v, mount)
 	}
 
-	// Marking it again moves the identity up to the current path, and leaves
-	// the old file alone so an older build on another machine still works.
+	// Marking copies the identity to the current path and keeps the old file
+	// for older builds.
 	m, err := Mark(mount, "")
 	if err != nil {
 		t.Fatalf("mark: %v", err)
@@ -242,19 +213,9 @@ func TestAVolumeMarkedBeforeTheRenameIsStillFound(t *testing.T) {
 	}
 }
 
-// TestForgettingAnAttachedVolumeActuallyForgetsIt.
-//
-// The defect this guards against answered 200 and changed nothing visible.
-// Forget removed the register entry, and Remembered() builds its list from the
-// register AND from whatever is attached right now - so a drive whose marker
-// was still on it came straight back on the next listing, having been
-// "forgotten" a moment earlier. jdp: "der button funktioniert auch noch nicht.
-// ich kann die datentraeger nicht loeschen."
-//
-// The assertion is deliberately about REMEMBERED rather than about the marker
-// file: what was broken is the thing somebody sees, and a test on the file
-// alone would have passed while the row stayed on screen.
-func TestForgettingAnAttachedVolumeActuallyForgetsIt(t *testing.T) {
+// Remembered lists attached volumes as well as the register, so an attached
+// drive has to lose its marker to disappear from the list.
+func TestForgettingAnAttachedVolumeRemovesIt(t *testing.T) {
 	root := t.TempDir()
 	SetRegistry(filepath.Join(root, "volumes.json"))
 	t.Cleanup(func() { SetRegistry("") })
@@ -273,11 +234,8 @@ func TestForgettingAnAttachedVolumeActuallyForgetsIt(t *testing.T) {
 	Forget(m.ID)
 
 	if got := Remembered(); len(got) != 0 {
-		t.Fatalf("the volume came back after being forgotten, which is exactly what "+
-			"the endpoint's 200 was hiding: %+v", got)
+		t.Fatalf("the volume came back after being forgotten: %+v", got)
 	}
-	// And nothing of it is left on the disk, so plugging it in later does not
-	// re-register a drive somebody deliberately removed.
 	if _, err := os.Stat(filepath.Join(mount, filepath.FromSlash(markerPath))); !os.IsNotExist(err) {
 		t.Errorf("the marker is still on the volume: %v", err)
 	}

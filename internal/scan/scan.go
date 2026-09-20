@@ -1,9 +1,6 @@
-// Package scan lists one side of a sync job through rclone.
-//
-// Everything below goes through rclone's Fs interface rather than the local
-// filesystem, so a side is a local folder, an SMB share, an SFTP host or an S3
-// bucket without a single branch in the calling code. That is the whole reason
-// rclone is embedded instead of reimplemented.
+// Package scan lists one side of a sync job through rclone's Fs interface, so a
+// side can be a local folder, an SMB share, an SFTP host or an S3 bucket
+// without a branch in the calling code.
 package scan
 
 import (
@@ -23,12 +20,9 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/pathid"
 )
 
-// Entry is one file as it exists right now on one side.
-//
-// Path is what the backend actually calls it, byte for byte, and it is what
-// gets handed back to the backend for any operation. Key is what the file is
-// matched by, which can differ: a name stored decomposed on macOS and composed
-// on Windows is one file with two spellings.
+// Entry is one file as it exists right now on one side. Path is the backend's
+// name for it, byte for byte, and is what operations use; Key is what it is
+// matched by (see pathid.Key).
 type Entry struct {
 	Path string
 	Key  string
@@ -47,12 +41,10 @@ func (e *Entry) Object() fs.Object { return e.obj }
 // Side is a listing of one side, keyed by matching key.
 type Side map[string]*Entry
 
-// Collision is two files on ONE side whose names differ only in ways the other
-// side cannot represent, almost always just letter case.
-//
-// This has to be reported rather than resolved. Copying both onto a
-// case-insensitive destination means the second silently overwrites the first,
-// and the engine would then record that overwrite as a successful sync.
+// Collision is two files on one side whose names differ only in ways the other
+// side cannot represent, usually letter case. It is reported rather than
+// resolved, because copying both to a case-insensitive side would silently
+// overwrite one with the other.
 type Collision struct {
 	Key   string
 	Paths []string
@@ -62,10 +54,8 @@ type Collision struct {
 type Listing struct {
 	Files Side
 	// Dirs maps a matching key to the directory's real name on this side. It
-	// is only filled when Options.Dirs is set, because most jobs do not need
-	// it: a directory holding files is implied by the files, and listing
-	// directories costs a second pass on backends that cannot return both at
-	// once. Empty directories are the reason it exists at all.
+	// is only filled when Options.Dirs is set; it exists for empty
+	// directories, which the files do not imply.
 	Dirs       map[string]string
 	Collisions []Collision
 	Excluded   int
@@ -73,39 +63,29 @@ type Listing struct {
 
 // Options controls how a side is read.
 type Options struct {
-	// FoldCase must be true when EITHER side is case-insensitive. It is a
-	// property of the job, not of one side: folding on one end only makes two
-	// files over there map onto one file over here, and the engine then
-	// oscillates between them.
+	// FoldCase must be true when either side is case-insensitive (see
+	// pathid.Key).
 	FoldCase bool
 
-	// Exclude hides paths from the job entirely. The same set has to be applied
-	// to the stored record as well, or newly excluded files read as deletions.
+	// Exclude hides paths from the job. The same set has to be applied to the
+	// stored record, or newly excluded files read as deletions.
 	Exclude *filter.Set
 
-	// Dirs asks for directories as well as files. Only worth setting when both
-	// sides can actually hold an empty directory: a bucket backend such as S3
-	// has no directories at all, only key prefixes, so there is nothing there
-	// to create or remove.
+	// Dirs asks for directories as well as files. It only makes sense when
+	// both sides can hold an empty directory, which bucket backends such as S3
+	// cannot.
 	Dirs bool
 }
 
-// reserved names this tool keeps for itself inside a synced tree. They are
-// skipped on both sides, otherwise the trash would be synced into the other
-// side's trash, forever.
+// Directories the tool keeps for itself inside a synced tree. They are skipped
+// on both sides, or each side's trash would be synced into the other's.
 const (
 	MetaDir  = ".arrowloop"
 	TrashDir = MetaDir + "/trash"
 
-	// legacyMetaDir is what this directory was called before the tool was
-	// renamed. It stays reserved for good, and the reason is not tidiness: a
-	// tree that an older build already synced still holds one, it has no row in
-	// the state database because it was skipped back then, so the moment it
-	// counts as ordinary data it looks like a folder somebody just created. The
-	// engine would then copy a trash folder full of deleted files onto the other
-	// side, where it lands inside that side's own reserved directory rules and
-	// stays for ever. Two string comparisons are a cheap price for never doing
-	// that to anybody.
+	// legacyMetaDir is the reserved directory of older builds. Trees they
+	// synced still hold one, with no row in the state database, so without
+	// the reservation its trash would be copied to the other side as new data.
 	legacyMetaDir = ".reeveroll"
 )
 
@@ -120,12 +100,9 @@ func IsReserved(rel string) bool {
 	return false
 }
 
-// List walks one side and returns every file in it.
-//
-// Hashes are deliberately NOT computed here. On a large tree hashing every
-// file on every run costs more than the sync itself, and most files are
-// settled by size and modification time alone. The hash is fetched lazily by
-// Hash below, only for the files where it actually decides something.
+// List walks one side and returns every file in it. Hashes are not computed
+// here, since size and modification time settle most files; Hash fetches one
+// only where it decides something.
 func List(ctx context.Context, f fs.Fs, opt Options) (*Listing, error) {
 	out := &Listing{Files: make(Side)}
 	clashes := map[string][]string{}
@@ -170,25 +147,17 @@ func List(ctx context.Context, f fs.Fs, opt Options) (*Listing, error) {
 		return nil
 	})
 	if err != nil {
-		// A side that does not exist yet is empty, not broken. On a bucket
-		// backend the destination of a brand new job is a bucket nobody has
-		// created, and on SFTP it is a directory nobody has made; both answer a
-		// listing with "not found". Treating that as a failure would mean no
-		// job could ever run for the first time against a fresh target, which
-		// is precisely the moment somebody is setting one up.
-		//
-		// This does not weaken the refusal to believe an empty side. That guard
-		// compares against the RECORD: a side that used to hold files and now
-		// reports nothing is still refused, whether it reported nothing by
-		// listing zero objects or by not being there at all.
+		// A side that does not exist yet is empty: the target of a new job is
+		// often a bucket or directory nobody has created. The guard against
+		// an empty side compares with the record, so it still catches a side
+		// that used to hold files.
 		if !errors.Is(err, fs.ErrorDirNotFound) {
 			return nil, fmt.Errorf("list %s: %w", f.Name(), err)
 		}
 	}
 
 	for key, paths := range clashes {
-		// The first path was already in the map, so it appears twice in the
-		// slice the first time a clash is seen. Collapse it.
+		// The first path is appended again on every further clash.
 		seen := map[string]bool{}
 		var uniq []string
 		for _, p := range paths {
@@ -199,8 +168,7 @@ func List(ctx context.Context, f fs.Fs, opt Options) (*Listing, error) {
 		}
 		sort.Strings(uniq)
 		out.Collisions = append(out.Collisions, Collision{Key: key, Paths: uniq})
-		// A colliding key is removed from the listing entirely. Leaving one of
-		// the two in would sync an arbitrary winner and quietly drop the other.
+		// Keeping one of them would sync an arbitrary winner.
 		delete(out.Files, key)
 	}
 	sort.Slice(out.Collisions, func(i, j int) bool { return out.Collisions[i].Key < out.Collisions[j].Key })
@@ -208,12 +176,8 @@ func List(ctx context.Context, f fs.Fs, opt Options) (*Listing, error) {
 }
 
 // Hash returns the file's MD5, or an empty string when the backend cannot
-// produce one.
-//
-// An empty result means "unknown", never "no content". Callers must fall back
-// to size and modification time in that case instead of treating two unknown
-// hashes as equal, otherwise two different files of the same size on a
-// hashless backend would silently be considered identical.
+// produce one. Callers must then fall back to size and modification time
+// rather than treat two empty hashes as equal.
 func (e *Entry) Hash(ctx context.Context) string {
 	if e.hashed {
 		return e.hashsum
