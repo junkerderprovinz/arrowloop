@@ -8,23 +8,14 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 )
 
-// The summary a status card reads, counted over the WHOLE run.
-//
-// jdp: "eine kleine zusammenfassung wie viele datien hoch- und runtergeladen
-// und gelöscht wurden etc."
-//
-// The count has to come from the database, not from the page of entries a
-// screen can fetch: a run over three thousand files writes six thousand lines
-// and the entries endpoint hands back two hundred. Counting those would report
-// "200 uploaded" for a run that uploaded three thousand - a wrong number that
-// looks exactly like a right one.
+// The count comes from the database rather than from the page of entries a
+// screen can fetch.
 func TestTheSummaryCountsEveryLineAndSplitsBySide(t *testing.T) {
 	db := openTemp(t)
 	ctx := context.Background()
 	now := time.Date(2027, 3, 1, 12, 0, 0, 0, time.UTC)
 
-	// More lines than any page a screen asks for, so a summary that quietly
-	// counted a page would come back short.
+	// More lines than any page a screen asks for.
 	var entries []history.Entry
 	for i := 0; i < 250; i++ {
 		entries = append(entries, history.Entry{Kind: "copy", Side: "right", Path: "hoch.jpg"})
@@ -36,9 +27,8 @@ func TestTheSummaryCountsEveryLineAndSplitsBySide(t *testing.T) {
 		history.Entry{Kind: "trash", Side: "left", Path: "weg.jpg"},
 		history.Entry{Kind: "trash", Side: "right", Path: "auch-weg.jpg"},
 		history.Entry{Kind: "conflict", Path: "streit.txt"},
-		// A move writes the copy that landed AND the source going away. Only
-		// the copy is a transfer; counting the second line would turn every
-		// one-way move job into one that moves files both ways.
+		// A move writes the copy that landed and this line for the source
+		// going away. Only the copy is a transfer.
 		history.Entry{Kind: "move", Side: "left", Path: "hoch.jpg"},
 		history.Entry{Kind: "skip", Path: "spaeter.txt", Note: "in use"},
 	)
@@ -58,27 +48,18 @@ func TestTheSummaryCountsEveryLineAndSplitsBySide(t *testing.T) {
 	if err != nil {
 		t.Fatalf("summarise: %v", err)
 	}
-	// The two deletions are one per side, and the split has to say so: a total
-	// of "2 gelöscht" on a two-way job leaves the reader guessing which end
-	// lost the files, which is the one thing a deletion count is checked for.
-	// Autosync says it on two lines ("Vom Gerät gelöscht", "Von Cloud
-	// gelöscht") and jdp asked for that page.
 	want := history.Tally{Up: 250, Down: 7, Trashed: 2, Conflicts: 1, TrashedLeft: 1, TrashedRight: 1}
 	if got != want {
 		t.Errorf("summary = %+v, want %+v", got, want)
 	}
-	// And the halves add up to the total, which is the contract that lets a
-	// one-way job keep showing the single number.
+	// A one-way job shows only the total, so the halves have to add up to it.
 	if got.TrashedLeft+got.TrashedRight != got.Trashed {
 		t.Errorf("the split %d+%d does not add up to %d", got.TrashedLeft, got.TrashedRight, got.Trashed)
 	}
 }
 
-// A deletion with no side lands in the total and in neither half.
-//
-// It is not a shape the engine writes today, and that is exactly why it is
-// pinned: the split must never invent a side, because "deleted from the phone"
-// is a sentence somebody acts on.
+// The engine does not write a deletion without a side, but the split must never
+// invent one.
 func TestADeletionWithNoSideIsCountedOnceAndSplitNowhere(t *testing.T) {
 	db := openTemp(t)
 	ctx := context.Background()
@@ -102,10 +83,7 @@ func TestADeletionWithNoSideIsCountedOnceAndSplitNowhere(t *testing.T) {
 	}
 }
 
-// A run nobody recorded lines for summarises to nothing, rather than failing.
-//
-// It is an ordinary state: a run that found nothing to do writes no entries at
-// all, and the card above it still has to draw something.
+// A run that found nothing to do writes no entries.
 func TestARunWithNoLinesSummarisesToZero(t *testing.T) {
 	db := openTemp(t)
 	ctx := context.Background()

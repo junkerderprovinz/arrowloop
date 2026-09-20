@@ -17,22 +17,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/state"
 )
 
-// The checksum comparison after a write was ALREADY here before any of this.
-// settle re-reads both sides, asks each for its MD5 and hands both to
-// plan.Same, which compares the checksums whenever both sides can produce one
-// and only falls back to size and modification time when they cannot. A
-// mismatch is a DisagreementError and stops the whole run.
-//
-// What was missing is the difference between those two verdicts. Both were
-// written down as the same word, "agreed", and the fallback is genuinely
-// weaker: two different files can share a length and a timestamp. These tests
-// are about that difference being visible, and about a job being able to refuse
-// the weak one.
-
-// TestAPairThatCannotBeChecksummedIsStillRecorded is the default, and it has to
-// stay the default. Whole backends cannot hash: plain SFTP without a remote
-// shell answers nothing at all, and refusing to record anything there would
-// postpone every file on every run forever.
+// Some backends cannot hash at all, such as SFTP without a remote shell.
 func TestAPairThatCannotBeChecksummedIsStillRecorded(t *testing.T) {
 	f := newFixture(t, hash.ErrUnsupported)
 
@@ -42,21 +27,14 @@ func TestAPairThatCannotBeChecksummedIsStillRecorded(t *testing.T) {
 	if !f.recorded(t, "notes.txt") {
 		t.Error("nothing was written down, so the next run will do the same work again")
 	}
-	// Silent on purpose. A backend with no checksums is a fact about the JOB,
-	// true of every file in it, and one line per file would bury the run's own
-	// list under thousands of copies of a sentence nobody needed twice.
+	// A backend without checksums is true of every file, so it gets no line.
 	if got := f.saidAbout("notes.txt"); len(got) != 0 {
 		t.Errorf("a backend that simply has no checksums produced %d lines of comment: %v", len(got), got)
 	}
 }
 
-// TestAChecksumThatFailedForAnyOtherReasonIsSaidOutLoud is the case worth a
-// line: not "this backend has no checksums" but "this file could not be read".
-//
-// The two arrived as the same empty string until the error stopped being thrown
-// away, and an empty checksum is what silently drops the comparison down to a
-// length and a clock reading. A side that could hash yesterday and cannot today
-// is the whole reason anybody would want to know.
+// A file whose checksum could not be read is worth a line, unlike a backend
+// that has none.
 func TestAChecksumThatFailedForAnyOtherReasonIsSaidOutLoud(t *testing.T) {
 	f := newFixture(t, errors.New("the disk returned a read error"))
 
@@ -80,12 +58,7 @@ func TestAChecksumThatFailedForAnyOtherReasonIsSaidOutLoud(t *testing.T) {
 	}
 }
 
-// TestRequireChecksumWithholdsTheRowRatherThanTheFile is the configurable half.
-//
-// The refusal must cost the copy nothing. The bytes are already across; only
-// the row saying the two sides agree is withheld, so the next run looks again.
-// A version of this that undid the transfer, or that stopped the run, would be
-// destroying work to satisfy a preference.
+// The refusal withholds only the row; the transfer stays and the run goes on.
 func TestRequireChecksumWithholdsTheRowRatherThanTheFile(t *testing.T) {
 	f := newFixture(t, hash.ErrUnsupported)
 	f.rec.verify.RequireChecksum = true
@@ -99,16 +72,13 @@ func TestRequireChecksumWithholdsTheRowRatherThanTheFile(t *testing.T) {
 		t.Errorf("the refusal blames side %v, and the right side is the one that cannot hash", unver.Side)
 	}
 	if f.recorded(t, "notes.txt") {
-		t.Error("a row was written for a pair the job refused to accept, which is the one thing this setting exists to prevent")
+		t.Error("a row was written for a pair the job refused to accept")
 	}
-	// Not a disagreement. A disagreement means the engine's picture of the
-	// tree is wrong and every further action would rest on it, so it stops the
-	// run; this means one file went unproven and the run carries on.
+	// A disagreement would stop the run.
 	var dis *DisagreementError
 	if errors.As(err, &dis) {
 		t.Error("an unproven file stopped the whole run, which turns a preference into an outage")
 	}
-	// Both files are still exactly where they were.
 	for _, side := range []string{f.left, f.right} {
 		if _, statErr := os.Stat(filepath.Join(side, "notes.txt")); statErr != nil {
 			t.Errorf("%s lost its file over a checksum it could not produce: %v", side, statErr)
@@ -116,18 +86,11 @@ func TestRequireChecksumWithholdsTheRowRatherThanTheFile(t *testing.T) {
 	}
 }
 
-// TestADisagreementNamesTheChecksums is about the message, and the message is
-// the entire value of the check.
-//
-// The one case a checksum decides is two files of the same length written in
-// the same second. In exactly that case the sizes and the times read as a
-// matched pair, so a message built from those alone describes a disagreement
-// that looks like agreement, and sends whoever reads it hunting for a bug in
-// the comparison instead of looking at the file.
+// When the checksum decides, size and time match, so only the checksums in the
+// message show what differs.
 func TestADisagreementNamesTheChecksums(t *testing.T) {
 	f := newFixture(t, nil)
-	// Same length, and the modification times are forced to match, so size and
-	// time alone cannot tell these apart. Only the checksum can.
+	// Same length and the same modification time.
 	writeAt(t, filepath.Join(f.right, "notes.txt"), "BBBB", f.stamp)
 
 	err := f.rec.settle(context.Background(), "notes.txt", "notes.txt", "notes.txt")
@@ -135,9 +98,8 @@ func TestADisagreementNamesTheChecksums(t *testing.T) {
 	if !errors.As(err, &dis) {
 		t.Fatalf("two different files of the same size and time were recorded as agreeing: %v", err)
 	}
-	// The real MD5s of "AAAA" and "BBBB", written out rather than computed
-	// here. A test that hashes the files itself with the same library would
-	// pass just as happily on a message quoting the wrong file's checksum.
+	// The MD5s of "AAAA" and "BBBB", written out rather than computed with the
+	// library under test.
 	for _, want := range []string{"098890dde069e9abad63f19a0d9e1f32", "f50881ced34c7d9e6bce100bf33dec60"} {
 		if !strings.Contains(dis.Details, want) {
 			t.Errorf("the message leaves out the checksum %s, so it reads as a false alarm: %s", want, dis.Details)
@@ -145,8 +107,6 @@ func TestADisagreementNamesTheChecksums(t *testing.T) {
 	}
 }
 
-// TestHashOfKeepsTheReasonItCouldNotHash covers the two answers that used to
-// arrive as one.
 func TestHashOfKeepsTheReasonItCouldNotHash(t *testing.T) {
 	ctx := context.Background()
 
@@ -159,19 +119,14 @@ func TestHashOfKeepsTheReasonItCouldNotHash(t *testing.T) {
 		t.Errorf("a real read failure was reported as %v, losing the only useful part", err)
 	}
 
-	// A backend can answer successfully with nothing at all, for an object it
-	// was never told the checksum of. That is the unsupported case wearing
-	// different clothes, and returning it as a success would have the caller
-	// believe it holds a checksum equal to every other empty one.
+	// An empty checksum without an error counts as unsupported.
 	if _, err := hashOf(ctx, brokenObject{}); !errors.Is(err, hash.ErrUnsupported) {
 		t.Errorf("an empty checksum reported as a success: %v", err)
 	}
 }
 
-// brokenObject is an rclone object that answers only the one question hashOf
-// asks. Everything else is left nil deliberately: a call to any other method
-// panics loudly rather than quietly returning a zero value, so this cannot grow
-// into a fake filesystem by accident.
+// brokenObject is an rclone object that answers only Hash. Any other method
+// panics on the nil embedded object.
 type brokenObject struct {
 	rclonefs.Object
 	err error
@@ -179,13 +134,8 @@ type brokenObject struct {
 
 func (o brokenObject) Hash(context.Context, hash.Type) (string, error) { return "", o.err }
 
-// hashless wraps a real filesystem and takes its checksums away.
-//
-// This is not an imitation of an awkward backend, it is what one is: an SFTP
-// host with no remote shell lists files, reads them, has sizes and times, and
-// answers nothing when asked for a checksum. Everything else is delegated to a
-// real local filesystem, so the files, the sizes and the times under test are
-// genuine.
+// hashless wraps a real filesystem and takes its checksums away, as an SFTP
+// host without a remote shell behaves.
 type hashless struct {
 	rclonefs.Fs
 	err error
@@ -231,9 +181,7 @@ func newFixture(t *testing.T, hashErr error) *fixture {
 		}
 	}
 
-	// One instant for both sides. The fallback comparison is size plus a time
-	// window, and a fixture whose two files were written a few milliseconds
-	// apart would be testing the window rather than the checksum.
+	// One instant for both sides, so the time window plays no part.
 	stamp := time.Now().Add(-time.Hour).Truncate(time.Second)
 	writeAt(t, filepath.Join(left, "notes.txt"), "AAAA", stamp)
 	writeAt(t, filepath.Join(right, "notes.txt"), "AAAA", stamp)

@@ -6,13 +6,8 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/plan"
 )
 
-// The total a progress bar is drawn against has to be what the run will
-// actually report, and a move reports twice.
-//
-// Found live rather than by reading: jdp's phone ran a one-way move job over
-// 3000 files while the new overview screen was open, and the bar read "3131 of
-// 3000" and kept climbing. Every other action really is one step, which is why
-// nothing caught it until a job with a move mode ran in front of somebody.
+// The progress total has to be what the run will report, and a move reports
+// twice.
 func TestAMoveCountsAsTheTwoStepsItReports(t *testing.T) {
 	cases := []struct {
 		name string

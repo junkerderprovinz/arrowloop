@@ -11,28 +11,16 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/remotes"
 )
 
-// No list this API answers with may ever arrive as `null`.
-//
-// A nil slice in Go marshals to `null`, not to `[]`, and every consumer of this
-// API treats a list as a list: the first `.filter` or `.map` on a null takes the
-// whole page down with a blank screen and one line in a console nobody has
-// open. That is not a hypothetical. A storage target saved with nothing but its
-// type, which is exactly what the create form produces before a single field is
-// filled in, came back with `"settings": null` and blanked the interface the
-// moment the row tried to draw itself.
-//
-// The trap is that the nil case is the EMPTY case, so it appears on a fresh
-// installation and never once during development on a machine that already has
-// data. That is why this is a test over the responses rather than a note asking
-// people to remember: remembering is what failed.
+// A nil slice marshals to null, and the first .map over a null blanks the
+// interface. It only happens in the empty case, as on a fresh install, so this
+// sweeps the responses rather than relying on anybody remembering.
 
 // nullLists finds every `"key": null` in a JSON document, so the failure names
 // the field rather than only the endpoint.
 var nullLists = regexp.MustCompile(`"([A-Za-z]+)"\s*:\s*null`)
 
-// Fields that are genuinely allowed to be null, because null is a real answer
-// there rather than an empty collection: a job that has never worked has no
-// last success, and saying so with null is clearer than with a fake date.
+// nullable lists the fields where null is a real answer rather than an empty
+// collection, such as the last success of a job that has never worked.
 var nullable = map[string]bool{
 	"lastSuccess": true,
 	"left":        true,
@@ -43,15 +31,9 @@ var nullable = map[string]bool{
 func TestNoEndpointAnswersWithANullList(t *testing.T) {
 	h := newHarness(t)
 
-	// A storage target with a type and NOTHING else, which is what the create
-	// form produces before a single field is filled in, and the only state in
-	// which the settings list is empty.
-	//
-	// Without this the sweep below runs against a machine that has no targets
-	// at all, so the empty list never appears, so `null` never appears, so the
-	// test passes with the bug present. Checked that way round rather than
-	// assumed: with the fix reverted and no target configured, this test was
-	// green.
+	// A target with nothing but a type, as the create form saves it, is the
+	// only state with an empty settings list. Without it the sweep would pass
+	// with the bug present.
 	withRcloneConfig(t)
 	if err := remotes.Save("bare", "s3", map[string]string{}); err != nil {
 		t.Fatalf("save a bare target: %v", err)
@@ -79,13 +61,12 @@ func TestNoEndpointAnswersWithANullList(t *testing.T) {
 			if err != nil {
 				t.Fatalf("read: %v", err)
 			}
-			// Parsed first, so a body that is not JSON at all fails here with a
-			// clear message rather than silently passing the regular expression.
+			// Parsed first, so a body that is not JSON cannot pass the regular
+			// expression.
 			var any any
 			if err := json.Unmarshal(body, &any); err != nil {
 				t.Fatalf("not JSON: %v", err)
 			}
-			// A bare `null` document is the same fault one level up.
 			if bytes.Equal(bytes.TrimSpace(body), []byte("null")) {
 				t.Fatal("the whole response is null rather than an empty list")
 			}

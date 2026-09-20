@@ -12,20 +12,9 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/job"
 )
 
-// What a failed schedule does next.
-//
-// The schedule works out what is OWED from the last SUCCESS, so a job that
-// failed is still owed a run and gets one at the next turn of the clock. On a
-// phone that clock turns every fifteen minutes, so before this the answer to
-// "the remote is down" was: wake up and try again, all night, for ever.
-//
-// Every test here is about the second half of the sentence, not the first. The
-// retry itself must survive - a hiccup at three in the morning must not cost a
-// whole night - and it must stop.
-
-// retrySandbox is a job with a nightly schedule and a history we can write
-// failures into by hand, which is what makes the timing testable at all: a real
-// failure needs a real broken remote, and the thing under test is the clock.
+// retrySandbox is a job with a nightly schedule and a history that failures
+// are written into by hand, so the timing can be tested without a broken
+// remote.
 func retrySandbox(t *testing.T, attempts int, wait string) (*daemon.Runner, *history.DB) {
 	t.Helper()
 	dir := t.TempDir()
@@ -120,8 +109,7 @@ func TestItStopsTryingAndWaitsForTheClock(t *testing.T) {
 	if isDue(t, r, last.Add(2*time.Hour)) {
 		t.Error("it kept trying past its last attempt, which is the all-night wake-up this setting exists to stop")
 	}
-	// Three in the morning the next day. The job is owed a run again, and the
-	// point of stopping was to wait for exactly this, not to give up.
+	// The next night's scheduled run is owed again.
 	if !isDue(t, r, time.Date(2026, 9, 13, 3, 1, 0, 0, time.Local)) {
 		t.Error("it never came back, so one bad night switched the schedule off for good")
 	}
@@ -145,8 +133,7 @@ func TestASuccessClearsTheFailures(t *testing.T) {
 	at := time.Date(2026, 9, 12, 3, 0, 0, 0, time.Local)
 	record(t, hist, at, "down")
 	record(t, hist, at.Add(10*time.Minute), "down")
-	// Out of attempts, and then it works. The next night must be a clean slate
-	// rather than a job still counting yesterday's failures.
+	// Out of attempts, and then it works.
 	record(t, hist, at.Add(20*time.Minute), "")
 
 	next := time.Date(2026, 9, 13, 3, 1, 0, 0, time.Local)

@@ -12,25 +12,10 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/job"
 )
 
-// Running what the clock should already have run.
-//
-// It exists for a phone. On a server the engine is always up, so its own cron
-// fires and nothing is ever missed; on a phone the engine may not be running at
-// three in the morning at all, because a process that runs all night is a
-// process that needs a permanent notification hanging in the shade - which is
-// the one thing an app like this must not have.
-//
-// So the phone hands the SCHEDULING to Android, which is the only thing on a
-// phone allowed to wake anything, and the engine keeps the SCHEDULE. Android
-// says "now would be a good time"; this works out which jobs that applies to.
-// One definition of when a job runs, in the cron expression the person wrote,
-// and no second copy on the Kotlin side to drift away from it.
-
-// Due is the jobs whose schedule has come round since they last succeeded.
-//
-// A job that has never run and has a schedule counts as due: the first run has
-// to happen at some point, and waiting a whole cycle to do something the person
-// asked for the moment they saved it reads as an app that ignored them.
+// Due is the jobs whose schedule has come round since they last succeeded. On
+// a phone the engine is not running at night, so Android wakes it and this
+// works out which jobs are due from the cron expressions, leaving one
+// definition of the schedule. A scheduled job that has never run is due.
 func (r *Runner) Due(ctx context.Context, now time.Time) []string {
 	var due []string
 	for _, j := range r.config().Jobs {
@@ -39,35 +24,26 @@ func (r *Runner) Due(ctx context.Context, now time.Time) []string {
 		}
 		parsed, err := job.ParseSchedule(j.Schedule)
 		if err != nil {
-			// Load refuses anything unparseable, so reaching here means the
-			// file changed underneath us. Saying so beats a job that quietly
-			// stops being scheduled.
 			r.log("%s: unusable schedule %q: %v", j.Name, j.Schedule, err)
 			continue
 		}
 		last, ok, err := r.lastSuccess(ctx, j.Name)
 		if err != nil {
-			// The history is unreadable. Treating that as "not due" would mean
-			// a broken log silently stops every schedule, so the opposite: run
-			// it. A run too many costs a comparison; a run too few costs a
-			// night's backup.
+			// A broken log must not stop every schedule: a run too many costs
+			// a comparison, a run too few a night's backup.
 			r.log("%s: cannot read when it last succeeded (%v), treating it as due", j.Name, err)
 			due = append(due, j.Name)
 			continue
 		}
-		// Would the cron have fired between then and now? `Next` answers the
-		// first time at or after the moment it is given, so a next-after-last
-		// that has already passed is a tick this job missed. A job that has
-		// never succeeded skips the question: it is owed a run either way.
+		// A next tick after the last success that has already passed is a
+		// tick this job missed.
 		if ok {
 			if next := parsed.Next(last); next.After(now) {
 				continue
 			}
 		}
-		// `last` is the zero time for a job that has never worked, which counts
-		// every failure it ever had. That is the case this matters most for: a
-		// job pointed at a remote that was never reachable is owed a run for
-		// ever, and without this it takes one every quarter of an hour for ever.
+		// For a job that never worked, last is the zero time and every
+		// failure counts.
 		if r.backingOff(ctx, j.Name, last, parsed, now) {
 			continue
 		}
@@ -77,20 +53,10 @@ func (r *Runner) Due(ctx context.Context, now time.Time) []string {
 }
 
 // backingOff reports whether a job that is otherwise due should be left alone
-// because it has just failed.
-//
-// Owed and due are not the same thing once a job has failed. The schedule works
-// out what is OWED from the last success, so a job that failed stays owed until
-// it works - which is what makes a retry happen at all, and without a limit is
-// also what makes a phone wake every fifteen minutes all night at a remote that
-// is not coming back. This is the limit.
-//
-// Three answers, in order: still inside the wait after a failure, so no. Out of
-// attempts, so no until the clock comes round again. Otherwise yes, try it.
-//
-// A history that cannot be read says no backing off. That matches the rest of
-// this file: a broken log must not quietly stop a schedule, and a run too many
-// costs a comparison.
+// because it has just failed: it is still inside the wait after a failure, or
+// out of attempts until its next scheduled time. A failed job stays owed until
+// it works, and without this limit a phone would wake all night for a remote
+// that is down. An unreadable history does not back off.
 func (r *Runner) backingOff(ctx context.Context, name string, since time.Time, parsed cron.Schedule, now time.Time) bool {
 	if r.hist == nil {
 		return false
@@ -105,23 +71,15 @@ func (r *Runner) backingOff(ctx context.Context, name string, since time.Time, p
 	}
 	policy := r.config().Retry
 	if fails > policy.AttemptCount() {
-		// Out of tries. Wait for the next scheduled time AFTER the last
-		// failure, which is the same clock every other job is on - so a nightly
-		// job that failed tonight tries again tomorrow night, not at breakfast.
+		// Out of tries: a nightly job that failed tonight tries again
+		// tomorrow night.
 		return parsed.Next(lastFail).After(now)
 	}
 	return lastFail.Add(policy.WaitFor(fails)).After(now)
 }
 
-// RunDue runs them, one at a time, and reports how many it ran.
-//
-// Serialised for the same reason every other run in this program is: two jobs
-// at once share one uplink and one disk, and on a phone they also share a
-// wake-up whose length somebody is paying for in battery.
-//
-// It blocks. The caller is a wake-up that has to know when it may let the phone
-// sleep again, and a function that returned early would have it report success
-// while the copying was still going on.
+// RunDue runs the due jobs one at a time and reports what happened. It blocks,
+// because the wake-up calling it has to know when the phone may sleep again.
 func (r *Runner) RunDue(ctx context.Context) Due {
 	due := r.Due(ctx, time.Now())
 	if len(due) == 0 {
@@ -139,9 +97,7 @@ func (r *Runner) RunDue(ctx context.Context) Due {
 		switch {
 		case errors.Is(err, ErrHeldBack), errors.Is(err, ErrVolumeMissing),
 			errors.Is(err, ErrAlreadyRunning):
-			// None of these is a failure, and saying so on a phone would train
-			// somebody to ignore the notification that matters. A drive in a
-			// bag has not gone wrong.
+			// None of these is a failure.
 			out.Held++
 		case err != nil:
 			out.Failed++
@@ -158,17 +114,9 @@ func (r *Runner) RunDue(ctx context.Context) Due {
 	return out
 }
 
-// Due is what a wake-up can tell somebody once it is over.
-//
-// A count alone was enough while nothing reported anything: the phone woke, ran
-// what was due and went back to sleep. It is not enough for a notification,
-// which has to distinguish "four jobs copied nine files" from "four jobs and
-// one of them failed" - and a background run that fails silently is the exact
-// complaint this program exists to prevent.
-//
-// Held is deliberately its own number rather than a failure. A job waiting for
-// a drive, for the charger or for its own previous run is doing what somebody
-// asked it to do.
+// Due is what a wake-up can tell somebody once it is over. Held counts jobs
+// waiting for a drive, the charger or their own previous run, which are not
+// failures.
 type Due struct {
 	Ran       int `json:"ran"`
 	Failed    int `json:"failed"`
@@ -177,19 +125,18 @@ type Due struct {
 	Moved     int `json:"moved"`
 	Trashed   int `json:"trashed"`
 	Conflicts int `json:"conflicts"`
-	// The first failure's sentence, which is what a notification shows. One
-	// rather than all of them: a notification is a line, not a log.
+	// Reason is the first failure's message, which a notification shows.
 	Reason string `json:"reason,omitempty"`
 }
 
-// Changed says whether anything actually moved, which is the difference
-// between a notification worth posting and a quiet night.
+// Changed says whether anything moved, and so whether a notification is worth
+// posting.
 func (d Due) Changed() bool {
 	return d.Copied+d.Moved+d.Trashed+d.Conflicts > 0
 }
 
-// lastSuccess is the history lookup with the nil check in one place: a runner
-// built without a history (which the tests do) has never succeeded at anything.
+// lastSuccess is the history lookup; a runner without a history has never
+// succeeded.
 func (r *Runner) lastSuccess(ctx context.Context, name string) (time.Time, bool, error) {
 	if r.hist == nil {
 		return time.Time{}, false, nil

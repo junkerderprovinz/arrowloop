@@ -14,22 +14,14 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// These tests live inside the package rather than beside it in web_test,
-// because two of them cannot be written from the outside at all: the session
-// lifetime has to be shortened to reach the expiry path without waiting half a
-// day for it, and the routing guard is worth testing on its own rather than
-// only through whichever addresses happen to be registered today.
+// These tests are in the package so they can shorten the session lifetime and
+// test the routing guard on its own.
 
 // guardedPassword is what every test here logs in with.
 const guardedPassword = "correct horse battery staple"
 
-// testHash hashes at the CHEAPEST cost bcrypt allows.
-//
-// Deliberate, and it does not weaken what is under test: the cost lives in the
-// hash string itself, so the verification path taken here is byte for byte the
-// one a real install takes, only faster. Hashing at the shipped cost in every
-// one of these tests would spend most of the suite's time proving that bcrypt
-// is slow, which is the one thing about bcrypt nobody doubts.
+// testHash hashes at the cheapest cost bcrypt allows. The cost is part of the
+// hash string, so verification takes the same path as on a real install.
 func testHash(t *testing.T, password string) string {
 	t.Helper()
 	h, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
@@ -39,11 +31,8 @@ func testHash(t *testing.T, password string) string {
 	return string(h)
 }
 
-// newGuarded stands up a server behind Protect, with the interface present.
-//
-// The three open routes are registered here EXACTLY as api.go has to register
-// them, so these tests fail if the lines handed over are wrong, rather than
-// passing against a mounting that only exists in the test.
+// newGuarded stands up a server behind Protect, with the interface present and
+// the three open routes registered as api.go registers them.
 func newGuarded(t *testing.T) (*Server, *httptest.Server) {
 	t.Helper()
 	s := &Server{UI: fstest.MapFS{
@@ -61,8 +50,7 @@ func newGuarded(t *testing.T) (*Server, *httptest.Server) {
 	return s, srv
 }
 
-// browser is a client that keeps cookies, which is the only way a test can act
-// like the thing this feature is for.
+// browser is a client that keeps cookies.
 func browser(t *testing.T) *http.Client {
 	t.Helper()
 	jar, err := cookiejar.New(nil)
@@ -107,14 +95,8 @@ func sessionTokenOf(t *testing.T, resp *http.Response) string {
 	return ""
 }
 
-// TestWithNoPasswordNothingChangesAtAll is the promise the whole feature is
-// built around, and it is the test that has to keep passing when everything
-// else here is rewritten.
-//
-// An install that has set no hash must not be able to tell that any of this was
-// added: the API answers, the interface is served, no cookie appears, and even
-// the login route refuses to become a wall. The failure it prevents is an
-// upgrade that locks somebody out of the machine holding his own photos.
+// An upgrade must never lock anybody out: with no hash set the API answers,
+// the interface is served, no cookie appears and the login route lets through.
 func TestWithNoPasswordNothingChangesAtAll(t *testing.T) {
 	t.Setenv(PasswordHashEnv, "")
 	_, srv := newGuarded(t)
@@ -151,15 +133,11 @@ func TestWithNoPasswordNothingChangesAtAll(t *testing.T) {
 		t.Error("an install with no password says the caller is not allowed in")
 	}
 
-	// And the login route does not become a wall on the way. Somebody who
-	// posts to it on an unprotected install gets told there is nothing to log
-	// in to, not a refusal that would leave a login screen unable to proceed.
 	if got, said := attemptLogin(t, srv, c, "anything at all"); got.StatusCode != http.StatusOK {
 		t.Errorf("logging in on an install with no password answered %s: %s", got.Status, said)
 	}
 }
 
-// TestAWrongPasswordIsRefusedAndOpensNothing.
 func TestAWrongPasswordIsRefusedAndOpensNothing(t *testing.T) {
 	t.Setenv(PasswordHashEnv, testHash(t, guardedPassword))
 	_, srv := newGuarded(t)
@@ -174,8 +152,6 @@ func TestAWrongPasswordIsRefusedAndOpensNothing(t *testing.T) {
 			t.Error("a wrong password was handed a session anyway")
 		}
 	}
-	// The refusal says the same thing whatever went wrong, so it cannot be used
-	// to ask questions about this install.
 	if !strings.Contains(said, "wrong password") {
 		t.Errorf("the refusal does not say what happened: %s", said)
 	}
@@ -186,10 +162,8 @@ func TestAWrongPasswordIsRefusedAndOpensNothing(t *testing.T) {
 	}
 }
 
-// TestTheRightPasswordLetsTheNextRequestThrough is the other direction of the
-// same guard, and it checks the cookie's own attributes rather than only that
-// one arrived. A session that is readable by a script or sent on a cross-site
-// post is a session that leaks, and neither of those shows up in a status code.
+// The cookie's attributes are checked too, since a leaking session shows up in
+// no status code.
 func TestTheRightPasswordLetsTheNextRequestThrough(t *testing.T) {
 	t.Setenv(PasswordHashEnv, testHash(t, guardedPassword))
 	_, srv := newGuarded(t)
@@ -233,19 +207,8 @@ func TestTheRightPasswordLetsTheNextRequestThrough(t *testing.T) {
 	}
 }
 
-// TestATokenFromOneServerIsNotAcceptedByAnother.
-//
-// The sessions have to belong to the server that minted them. A store shared
-// across servers would pass every other test in this file while being wrong,
-// and the day this grows a second listener the tokens would be interchangeable
-// between them.
-//
-// SOMEBODY IS LOGGED IN TO BOTH, which is the part that makes this test worth
-// having. Presenting a foreign token to a server with no sessions at all proves
-// nothing: a check that accepted any token whenever ANY session was live would
-// walk straight through it, and so would one that handed both servers the same
-// predictable token. The second server has a live session of its own and still
-// has to refuse the first server's token.
+// Both servers have a live session, so a check that accepted any token while
+// any session was live, or handed out predictable tokens, would fail.
 func TestATokenFromOneServerIsNotAcceptedByAnother(t *testing.T) {
 	t.Setenv(PasswordHashEnv, testHash(t, guardedPassword))
 	_, first := newGuarded(t)
@@ -265,8 +228,7 @@ func TestATokenFromOneServerIsNotAcceptedByAnother(t *testing.T) {
 		t.Fatal("two logins were handed the same token, so it is not being drawn at random")
 	}
 
-	// The same token, presented by hand, to each server in turn. Both
-	// directions, so this cannot pass by refusing everything.
+	// Both directions, so this cannot pass by refusing everything.
 	if code := replay(t, first, token); code != http.StatusOK {
 		t.Errorf("the server that minted the token answered %d", code)
 	}
@@ -292,12 +254,8 @@ func replay(t *testing.T, srv *httptest.Server, token string) int {
 	return resp.StatusCode
 }
 
-// TestLoggingOutInvalidatesTheTokenOnTheServer.
-//
-// Clearing the cookie in the browser is not logging out, it is asking the
-// browser to forget something the server still honours. The test therefore
-// replays the raw token afterwards, which is exactly what somebody who copied
-// it off a shared machine would do.
+// Clearing the cookie is not enough, so the raw token is replayed afterwards,
+// as somebody who copied it would.
 func TestLoggingOutInvalidatesTheTokenOnTheServer(t *testing.T) {
 	t.Setenv(PasswordHashEnv, testHash(t, guardedPassword))
 	_, srv := newGuarded(t)
@@ -329,10 +287,7 @@ func TestLoggingOutInvalidatesTheTokenOnTheServer(t *testing.T) {
 	}
 }
 
-// TestTheInterfaceIsServedWhileTheApiIsShut records the choice made at the top
-// of auth.go rather than merely allowing it: the static files are open on
-// purpose, because a browser that cannot fetch index.html has nowhere to type a
-// password.
+// A browser that cannot fetch index.html has nowhere to type a password.
 func TestTheInterfaceIsServedWhileTheApiIsShut(t *testing.T) {
 	t.Setenv(PasswordHashEnv, testHash(t, guardedPassword))
 	_, srv := newGuarded(t)
@@ -345,22 +300,18 @@ func TestTheInterfaceIsServedWhileTheApiIsShut(t *testing.T) {
 	if api, _ := fetch(t, c, srv.URL+"/api/capabilities"); api.StatusCode != http.StatusUnauthorized {
 		t.Errorf("the API is open to a caller with no session, answering %s", api.Status)
 	}
-	// The probe is open too, so the interface can tell "logged out" from "there
-	// is no login here" without reading a refusal to find out.
+	// The probe tells the interface whether there is a login at all.
 	if probe, _ := fetch(t, c, srv.URL+"/api/session"); probe.StatusCode != http.StatusOK {
 		t.Errorf("the session probe is behind the lock it exists to describe, answering %s", probe.Status)
 	}
 }
 
-// TestAnExpiredSessionIsRefused, with the lifetime shortened so the expiry path
-// is reached in a test rather than only after half a day of running.
 func TestAnExpiredSessionIsRefused(t *testing.T) {
 	t.Setenv(PasswordHashEnv, testHash(t, guardedPassword))
 	restore := sessionLifetime
 	t.Cleanup(func() { sessionLifetime = restore })
 
-	// Long enough to still be valid, which is the direction that catches a
-	// guard that simply refuses everything.
+	// Still valid, which catches a guard that refuses everything.
 	sessionLifetime = 10 * time.Second
 	_, live := newGuarded(t)
 	resp, _ := attemptLogin(t, live, browser(t), guardedPassword)
@@ -387,17 +338,12 @@ func TestAnExpiredSessionIsRefused(t *testing.T) {
 	}
 }
 
-// TestTooManyWrongPasswordsStopEvenTheRightOne.
-//
-// The delay alone is not a rate limit, because an attacker pays it in parallel.
-// This is the guard that actually bounds the guessing, and the way to prove it
-// is real is that the CORRECT password is refused once the count is spent: a
-// limit that let the right password through would be a limit an attacker never
-// meets, since getting it right is the last thing he does.
+// A limit that let the right password through would never stop an attacker,
+// since getting it right is the last thing he does.
 func TestTooManyWrongPasswordsStopEvenTheRightOne(t *testing.T) {
 	t.Setenv(PasswordHashEnv, testHash(t, guardedPassword))
 
-	// First the direction that catches a limiter that refuses everybody.
+	// First catch a limiter that refuses everybody.
 	_, calm := newGuarded(t)
 	if resp, said := attemptLogin(t, calm, browser(t), guardedPassword); resp.StatusCode != http.StatusOK {
 		t.Fatalf("the first correct password was refused: %s %s", resp.Status, said)
@@ -420,19 +366,14 @@ func TestTooManyWrongPasswordsStopEvenTheRightOne(t *testing.T) {
 		t.Error("the refusal does not say how long to wait")
 	}
 
-	// A different server is untouched, which is the same per-server separation
-	// the token test pins and matters here for a different reason: one person
-	// getting locked out must not be everybody.
+	// Another server is untouched.
 	_, other := newGuarded(t)
 	if fresh, _ := attemptLogin(t, other, browser(t), guardedPassword); fresh.StatusCode != http.StatusOK {
 		t.Errorf("a lockout on one server refused a correct password on another, answering %s", fresh.Status)
 	}
 }
 
-// TestOnlyTheThreeOpenRoutesAreOpen tests the routing guard directly, including
-// the shapes that are built to look like something they are not. A path is
-// cleaned before it is judged, so an address that reaches a protected handler
-// cannot reach it while wearing the login's name.
+// Includes paths dressed up to look like an open route or unlike an API path.
 func TestOnlyTheThreeOpenRoutesAreOpen(t *testing.T) {
 	protected := []string{
 		"/api/jobs",
@@ -446,10 +387,7 @@ func TestOnlyTheThreeOpenRoutesAreOpen(t *testing.T) {
 		"/api/./jobs",
 		"/api/jobs/../../api/config",
 
-		// The three open routes are matched EXACTLY, never as prefixes. A
-		// prefix would open every address that happens to start with one of
-		// their names, and the next route somebody adds beside the logout is
-		// then quietly outside the lock.
+		// The open routes are matched exactly, never as prefixes.
 		"/api/logins",
 		"/api/logout-everyone",
 		"/api/session/all",
@@ -476,8 +414,6 @@ func TestOnlyTheThreeOpenRoutesAreOpen(t *testing.T) {
 	}
 }
 
-// TestHashPasswordRoundTrips, and refuses the empty password that would look
-// like protection while being none.
 func TestHashPasswordRoundTrips(t *testing.T) {
 	hash, err := HashPassword(guardedPassword)
 	if err != nil {

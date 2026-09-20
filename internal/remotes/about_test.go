@@ -13,14 +13,6 @@ import (
 	"github.com/rclone/rclone/fs/config/configfile"
 )
 
-// "Unknown" and "zero" are different answers, and this is where they part.
-//
-// A bucket store has no size at all: S3 will take another terabyte and has no
-// quota to report. A full disk reports no free space, which is a real number
-// and an emergency. Both arrive at the screen as an absent field or a zero, and
-// a type that cannot tell them apart puts "0 bytes free" on a target that has
-// no limit.
-
 func configured(t *testing.T, name, backend string, settings map[string]string) {
 	t.Helper()
 	dir := t.TempDir()
@@ -37,18 +29,11 @@ func configured(t *testing.T, name, backend string, settings map[string]string) 
 	}
 }
 
-// TestALocalFolderReportsItsDisk.
-//
-// The local backend implements About, so this is the case where a real number
-// is expected, and the shape of that number matters: a total of zero would pass
-// a test that only checks for the absence of an error.
 func TestALocalFolderReportsItsDisk(t *testing.T) {
 	configured(t, "disk", "local", nil)
 
-	// "disk:" with no path is the working directory, which is on a real disk on
-	// every machine this ever runs on. A temporary folder appended after the
-	// colon would be a SECOND colon on Windows (`disk:C:\Users\...`), and rclone
-	// reads the remote string, not the intent.
+	// The working directory rather than a temporary folder, whose Windows path
+	// would add a second colon to the remote string.
 	usage, err := About(context.Background(), "disk")
 	if err != nil {
 		t.Fatalf("a local disk refused to report its size: %v", err)
@@ -64,12 +49,8 @@ func TestALocalFolderReportsItsDisk(t *testing.T) {
 	}
 }
 
-// TestABackendThatCannotSaySaysSo.
-//
-// S3 has no About, and this is the answer most cloud targets give. It must come
-// back as "not supported" rather than as an error - an error would put a red
-// line on a perfectly healthy bucket - and it must NOT come back as a usage of
-// zero, which would read as a full disk.
+// S3 has no About. An error would mark a healthy bucket red, and a usage of zero
+// would read as a full disk.
 func TestABackendThatCannotSaySaysSo(t *testing.T) {
 	configured(t, "bucket", "s3", map[string]string{
 		"provider":          "Other",
@@ -90,11 +71,6 @@ func TestABackendThatCannotSaySaysSo(t *testing.T) {
 	}
 }
 
-// TestNothingKnownIsAbsentOnTheWireRatherThanZero.
-//
-// The pointers exist for the JSON. Written as plain int64 the same struct sends
-// `"free": 0` for a target that has no idea, and every screen that draws it
-// then draws a full disk.
 func TestNothingKnownIsAbsentOnTheWireRatherThanZero(t *testing.T) {
 	raw, err := json.Marshal(Usage{})
 	if err != nil {
@@ -104,7 +80,7 @@ func TestNothingKnownIsAbsentOnTheWireRatherThanZero(t *testing.T) {
 		t.Errorf("an unknown usage travels as %s", got)
 	}
 
-	// And a real zero survives, because a full disk has to be reportable.
+	// A full disk has to be reportable.
 	zero := int64(0)
 	raw, err = json.Marshal(Usage{Supported: true, Free: &zero})
 	if err != nil {

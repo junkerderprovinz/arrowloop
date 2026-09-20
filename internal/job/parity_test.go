@@ -9,27 +9,6 @@ import (
 	"testing"
 )
 
-// The interface may not offer a field the configuration will refuse.
-//
-// This is the guard for a defect that survived unnoticed for months.
-// `reportOnly` was in the interface's own job type, and in a comment in the
-// runner describing what such a job should do, and in no Go field at all. So
-// the configuration answered "unknown field" and refused the whole file, which
-// means the interface was advertising a setting that could not be saved. It was
-// found by trying to use it, which is the worst way to find anything.
-//
-// Two directions, and only one of them is an error. A field the interface does
-// not offer is fine and common: `brakeFloor` and `modWindow` are for people who
-// edit the file, and the form deliberately does not carry every knob. A field
-// the interface DOES offer and the parser does not know is always a bug,
-// because `DisallowUnknownFields` turns it into a refusal of the entire
-// configuration rather than into one ignored line.
-//
-// Read from the two sources rather than generated from one, deliberately. A
-// generator would keep them in step and would also mean nobody ever looks at
-// this seam again; what is wanted here is a red test naming the field, at the
-// moment somebody adds it to one side.
-
 var (
 	// `json:"name,omitempty"` -> name
 	goTag = regexp.MustCompile(`json:"([a-zA-Z][a-zA-Z0-9]*)`)
@@ -58,6 +37,9 @@ func block(t *testing.T, path, start string) string {
 	return rest[:end]
 }
 
+// A field the interface offers and the Go struct lacks makes the configuration
+// refuse the whole file with "unknown field". The other direction is fine: the
+// form does not carry every knob.
 func TestTheInterfaceNeverOffersAFieldTheConfigurationWouldRefuse(t *testing.T) {
 	root := filepath.Join("..", "..")
 
@@ -86,7 +68,7 @@ func TestTheInterfaceNeverOffersAFieldTheConfigurationWouldRefuse(t *testing.T) 
 	sort.Strings(ghosts)
 	if len(ghosts) > 0 {
 		t.Fatalf("the interface offers %v, which internal/job does not accept. "+
-			"Saving a job with any of them makes the parser refuse the WHOLE configuration "+
+			"Saving a job with any of them makes the parser refuse the whole configuration "+
 			"with \"unknown field\", so this is not one ignored setting but a broken file. "+
 			"Either add the field to the Job struct or take it off the type.", ghosts)
 	}

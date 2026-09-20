@@ -9,18 +9,6 @@ import (
 	"github.com/rclone/rclone/fs/fserrors"
 )
 
-// A transfer that failed because of the weather gets another go.
-//
-// One dropped connection currently ended the whole run: a file failed, the run
-// reported a failure, and the next scheduled turn started the entire comparison
-// again. That is the most common way a nightly job "breaks" and it is not a
-// break at all.
-//
-// What is guarded here is the JUDGEMENT as much as the loop. Retrying a
-// permission error or a full disk turns one clear failure into three slow ones
-// and tells the person nothing new, so the decision is rclone's own and this
-// pins that it stays that way.
-
 func TestATransientFailureIsTriedAgain(t *testing.T) {
 	tries := 0
 	err := retrying(context.Background(), func() error {
@@ -53,10 +41,6 @@ func TestAPermanentFailureIsNotTriedAgain(t *testing.T) {
 	}
 }
 
-// TestASucceedingTransferIsNotDelayed.
-//
-// The ordinary case is the one that must cost nothing: no wait, no second call,
-// no wrapper visible in the result.
 func TestASucceedingTransferIsNotDelayed(t *testing.T) {
 	tries := 0
 	started := time.Now()
@@ -71,11 +55,7 @@ func TestASucceedingTransferIsNotDelayed(t *testing.T) {
 	}
 }
 
-// TestACancelledRunStopsDuringTheWait.
-//
-// The gap between attempts is where a cancelled run would otherwise sit for
-// seconds doing nothing. Stopping has to reach INTO the wait, not queue behind
-// it, or the stop button appears not to work.
+// Otherwise the stop button would appear not to work for seconds.
 func TestACancelledRunStopsDuringTheWait(t *testing.T) {
 	ctx, stop := context.WithCancel(context.Background())
 	go func() {

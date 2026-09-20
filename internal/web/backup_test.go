@@ -11,12 +11,8 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/web"
 )
 
-// TestABackupComesBackByteForByte.
-//
-// The whole value of a backup. Re-serialising through a struct would drop every
-// key this build has never heard of and rewrite the relative paths somebody
-// chose on purpose, and the loss would only show up on the day the backup was
-// needed.
+// Re-serialising through a struct would drop unknown keys and rewrite relative
+// paths.
 func TestABackupComesBackByteForByte(t *testing.T) {
 	h := newHarness(t)
 	srv := newServer(t, &web.Server{History: h.history, Runner: h.runner})
@@ -37,11 +33,8 @@ func TestABackupComesBackByteForByte(t *testing.T) {
 	}
 }
 
-// TestARestoreIsCheckedBeforeItLands.
-//
-// Restoring is the one action here that replaces everything, so a bad file must
-// fail at the door. It goes through the same validator a hand-written file does
-// and the old configuration stays exactly where it was.
+// A restore replaces everything, so a bad file must be refused and leave the
+// old configuration in place.
 func TestARestoreIsCheckedBeforeItLands(t *testing.T) {
 	h := newHarness(t)
 	srv := newServer(t, &web.Server{History: h.history, Runner: h.runner})
@@ -70,21 +63,13 @@ func TestARestoreIsCheckedBeforeItLands(t *testing.T) {
 	}
 }
 
-// TestAGoodRestoreReplacesEverything.
-//
-// Replaces, not merges. A restore that kept a job the backup did not have would
-// be a restore that does not restore, and the job it kept would be the one
-// somebody deleted on purpose before making the copy.
+// A restore replaces rather than merges, so nothing the backup lacks survives.
 func TestAGoodRestoreReplacesEverything(t *testing.T) {
 	h := newHarness(t)
 	srv := newServer(t, &web.Server{History: h.history, Runner: h.runner})
 
-	// A key the machine has and the backup does not. This is the case a merge
-	// gets wrong and a replace gets right, and it is the only case that can tell
-	// them apart: a key the backup DOES mention is overwritten either way.
-	//
-	// It matters because the setting somebody removed on purpose before making
-	// the copy is exactly the one a merge would put back.
+	// A key the machine has and the backup does not is the only case that
+	// tells a merge from a replace.
 	set, _ := json.Marshal(map[string]any{"parallelJobs": 7})
 	setReq, _ := http.NewRequest(http.MethodPut, srv.URL+"/api/settings", bytes.NewReader(set))
 	setResp, err := srv.Client().Do(setReq)

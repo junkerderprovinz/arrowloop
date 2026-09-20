@@ -9,10 +9,6 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/volume"
 )
 
-// The two things a job needs before it can point anywhere: a place to reach,
-// and a drive to recognise. Both are edited here rather than in a file, because
-// the alternative is telling somebody to paste an S3 key into JSON by hand.
-
 // volumeView is one drive, attached or not.
 type volumeView struct {
 	ID       string  `json:"id"`
@@ -29,8 +25,7 @@ func (s *Server) listVolumes(w http.ResponseWriter, r *http.Request) {
 	for _, k := range known {
 		v := volumeView{
 			ID: k.ID, Label: k.Label, Mount: k.Mount, Attached: k.Attached,
-			// The string a job actually stores, so the screen can offer it
-			// without anybody having to know the syntax.
+			// The string a job stores for this drive.
 			Path: volume.Prefix + k.ID,
 		}
 		if !k.LastSeen.IsZero() {
@@ -70,16 +65,15 @@ func (s *Server) markVolume(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-// forgetVolume drops the note that a drive was ever here. The marker on the
-// drive itself is left alone, so plugging it in again brings it back; anything
-// else would be this screen reaching onto a disk to delete from it.
+// forgetVolume forgets that a drive was ever here. The marker on the drive is
+// left alone, so plugging it in again brings it back.
 func (s *Server) forgetVolume(w http.ResponseWriter, r *http.Request) {
 	volume.Forget(r.PathValue("id"))
 	writeJSON(w, http.StatusOK, map[string]any{"forgotten": r.PathValue("id")})
 }
 
-// candidates offers the places a drive could be, so somebody can pick one
-// rather than type a path.
+// volumeCandidates offers the places a drive could be, so somebody can pick
+// one rather than type a path.
 func (s *Server) volumeCandidates(w http.ResponseWriter, r *http.Request) {
 	marked := map[string]bool{}
 	for _, v := range volume.Attached() {
@@ -101,8 +95,7 @@ func (s *Server) listRemotes(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, map[string]any{
 		"remotes":  remotes.List(),
 		"backends": remotes.Backends(),
-		// The list somebody actually picks from: products, not protocols. See
-		// remotes.Provider for why the two are different questions.
+		// Products rather than protocols; see remotes.Provider.
 		"providers": remotes.Providers(),
 		"unlisted":  remotes.UnlistedBackends(),
 	})
@@ -136,40 +129,22 @@ func (s *Server) deleteRemote(w http.ResponseWriter, r *http.Request) {
 // checkRemote proves the settings work, which saving them does not.
 func (s *Server) checkRemote(w http.ResponseWriter, r *http.Request) {
 	if err := remotes.Check(r.Context(), r.PathValue("name")); err != nil {
-		// Deliberately 200 with a reason rather than an error status. A
-		// credential that does not work is an answer to the question that was
-		// asked, not a failure of the request, and the screen wants to show
-		// the server's own words.
+		// 200 with a reason: a credential that does not work answers the
+		// question rather than failing the request.
 		writeJSON(w, http.StatusOK, map[string]any{"ok": false, "reason": err.Error()})
 		return
 	}
 	writeJSON(w, http.StatusOK, map[string]any{"ok": true})
 }
 
-// tryRemote checks settings that have not been saved.
-//
-// jdp: "der pruefen button der ziele soll in ziele einrichten seite nicht auf
-// die card, dann kann man direkt pruefen bevor man auf speichern tippt." A form
-// that can only be tested after it is kept makes somebody save a credential to
-// find out it is wrong.
-//
-// Same shape of answer as checkRemote: 200 with a reason, because a credential
-// that does not work is an answer to the question and not a failure of the
-// request.
+// tryRemote checks settings that have not been saved, so a form can be tested
+// before a credential is kept. It answers like checkRemote.
 func (s *Server) tryRemote(w http.ResponseWriter, r *http.Request) {
 	var body struct {
 		Type     string            `json:"type"`
 		Settings map[string]string `json:"settings"`
-		// WHICH SAVED TARGET this form is editing, when it is editing one.
-		//
-		// Only the secrets are taken from it, and only the ones the form left
-		// empty. A password box is empty because the password was withheld on
-		// its way to the screen, not because somebody cleared it, and Save has
-		// always read it that way; without this the CHECK read it the other
-		// way and reported a working target as broken. See
-		// remotes.WithSavedSecrets.
-		//
-		// Absent for a target being created, which has nothing to fill in from.
+		// Name is the saved target this form edits, if any. The secrets the
+		// form left empty are taken from it; see remotes.WithSavedSecrets.
 		Name string `json:"name"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
@@ -183,28 +158,14 @@ func (s *Server) tryRemote(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, map[string]any{"ok": true})
 }
 
-// aboutRemote reports how full a target is.
-//
-// Its own address rather than a field on the target listing, and that is the
-// load-bearing decision: this asks the SERVER, over the network, once per
-// target. Folded into the listing it would make opening the targets page a
-// round of requests to every cloud account somebody has ever configured, so a
-// page that used to be instant would sit there for as long as the slowest of
-// them, and a target that is switched off would hold up the ones that are not.
-//
-// Asked for one target at a time, on request, it costs nothing until somebody
-// wants the number.
+// aboutRemote reports how full a target is. It is its own route rather than a
+// field on the listing, which would ask every target over the network whenever
+// the page opens.
 func (s *Server) aboutRemote(w http.ResponseWriter, r *http.Request) {
 	usage, err := remotes.About(r.Context(), r.PathValue("name"))
 	if err != nil {
-		// Same shape as the check above and for the same reason: a target that
-		// cannot be reached is an answer, not a broken request.
-		//
-		// The `reason` is what tells the two silences apart, and a screen needs
-		// that: a target that could not be REACHED and one that was reached and
-		// keeps no total both come back with `supported: false`, and saying
-		// "this target does not report its size" about an unreachable one is a
-		// sentence that sends somebody looking in the wrong place.
+		// The reason tells an unreachable target from one that keeps no
+		// total; both are unsupported.
 		writeJSON(w, http.StatusOK, map[string]any{"supported": false, "reason": err.Error()})
 		return
 	}

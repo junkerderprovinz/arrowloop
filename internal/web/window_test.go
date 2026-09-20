@@ -12,12 +12,8 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/web"
 )
 
-// TestAContainerHasNoWindowSettings.
-//
-// A container has no title bar and no notification area. Serving it a card
-// about what the close button does would be serving a control that is present
-// and inert, and somebody will change it and expect something. The routes are
-// simply not registered, and the interface asks once and leaves the card out.
+// A container has no window, so the routes are not registered and the card is
+// left out rather than drawn inert.
 func TestAContainerHasNoWindowSettings(t *testing.T) {
 	h := newHarness(t)
 	resp, err := h.srv.Client().Get(h.srv.URL + "/api/window")
@@ -29,9 +25,7 @@ func TestAContainerHasNoWindowSettings(t *testing.T) {
 		t.Error("a build with no window answered a question about its window")
 	}
 
-	// And it says so before being asked, so the interface never has to learn it
-	// from a failed request. Every build answers this, including the ones that
-	// can do the least.
+	// The capabilities say so up front.
 	var can struct {
 		Window bool `json:"window"`
 	}
@@ -41,7 +35,6 @@ func TestAContainerHasNoWindowSettings(t *testing.T) {
 	}
 }
 
-// TestADesktopBuildAnswersAndRemembers.
 func TestADesktopBuildAnswersAndRemembers(t *testing.T) {
 	h := newHarness(t)
 	store := deskset.Open(filepath.Join(t.TempDir(), "arrowloop.json"))
@@ -62,22 +55,9 @@ func TestADesktopBuildAnswersAndRemembers(t *testing.T) {
 		t.Errorf("a fresh desktop build did not answer with the default: %+v", got)
 	}
 
-	// The autostart pair, which this test used to decode straight past.
-	//
-	// It read the answer into deskset.Settings, and those two fields are not on
-	// deskset.Settings: they are added by the handler's own view, because one of
-	// them lives in the operating system rather than in the file. So the switch
-	// could have been renamed, dropped from the JSON, or served as a constant
-	// false, and every test here would still have passed while the card quietly
-	// stopped being drawn. Decoding into the shape the interface actually reads
-	// is the whole point.
-	// Both keys have to BE there, checked before their values are looked at.
-	//
-	// Comparing values alone does not do it: a machine whose autostart is off
-	// answers false, a field that has been renamed or dropped decodes to false as
-	// well, and the two are indistinguishable. The rename really did slip past an
-	// earlier version of this test for exactly that reason. So the raw object is
-	// read first and asked which keys it carries.
+	// The autostart fields are not part of deskset.Settings. Both keys have to
+	// be present, since a missing field decodes to false just like autostart
+	// being off.
 	var raw map[string]any
 	getJSON(t, srv, "/api/window", &raw)
 	for _, key := range []string{"startWithSystem", "canStartWithSystem"} {
@@ -103,23 +83,10 @@ func TestADesktopBuildAnswersAndRemembers(t *testing.T) {
 		t.Errorf("the wire says autostart is %v, the system itself says %v", view.StartWithSystem, on)
 	}
 
-	// Saving without touching the switch must leave it exactly where it was, and
-	// must still answer with it. Nothing here ever flips it on purpose: Set
-	// registers whatever binary is running, so a test that turned it on would
-	// point the machine's real ArrowLoop entry at a temporary test executable and
-	// would overwrite the setting of whoever ran the tests. Worse, it could not
-	// put it back: Set registers the running binary, so restoring would re-point
-	// a real entry at the test's temporary path.
-	//
-	// What that leaves uncovered, said plainly rather than left to be assumed:
-	// the `was != next` compare in writeWindow is NOT reached by this test.
-	// Inverting it still passes here, because the write it then performs asks the
-	// system for the state it is already in, and removing an entry that does not
-	// exist succeeds silently. The compare saves a needless registry write; it is
-	// not what keeps the setting correct. What this test does cover is that the
-	// two fields reach the wire under the names the interface reads, that they
-	// report the system rather than a stored copy, and that saving the window
-	// settings never moves the switch as a side effect.
+	// The switch is never flipped here: Set registers the running binary, so
+	// the test would point the machine's real entry at a temporary executable.
+	// That leaves the was != next compare in writeWindow untested, which only
+	// saves a needless registry write.
 	putJSON(t, srv, "/api/window", `{"tray":true,"closeToTray":true,"minimiseToTray":false,`+
 		`"startWithSystem":`+strconv.FormatBool(on)+`}`)
 	getJSON(t, srv, "/api/window", &view)
@@ -139,9 +106,8 @@ func TestADesktopBuildAnswersAndRemembers(t *testing.T) {
 		t.Errorf("the choice was not kept: %+v", got)
 	}
 
-	// And the store's own rule reaches the wire: with no icon there is nowhere
-	// to send the window, so what comes back is what will actually happen
-	// rather than what was asked for.
+	// With no tray icon there is nowhere to send the window, and the answer
+	// says what will actually happen.
 	putJSON(t, srv, "/api/window", `{"tray":false,"closeToTray":true,"minimiseToTray":true}`)
 	getJSON(t, srv, "/api/window", &got)
 	if got.CloseToTray || got.MinimiseToTray {
@@ -149,14 +115,8 @@ func TestADesktopBuildAnswersAndRemembers(t *testing.T) {
 	}
 }
 
-// TestAnUnknownApiAddressIsNotThePage.
-//
-// The interface's own fallback answers anything the routes do not, which is
-// right for a page somebody reloaded and wrong for an address under /api: a
-// client asking whether a feature exists would be told yes, with a 200, and
-// handed a web page. The window settings were reachable that way on a build
-// that has no window, and nothing broke only because the client happened to
-// fail on the parse rather than on the status.
+// The interface's fallback is right for a reloaded page and wrong under /api,
+// where it would tell a client probing for a feature that it exists.
 func TestAnUnknownApiAddressIsNotThePage(t *testing.T) {
 	h := newHarness(t)
 	withUI := &web.Server{
@@ -166,7 +126,6 @@ func TestAnUnknownApiAddressIsNotThePage(t *testing.T) {
 	}
 	srv := newServer(t, withUI)
 
-	// The page itself still answers, which is what the fallback is for.
 	if resp, err := srv.Client().Get(srv.URL + "/some/deep/route"); err != nil {
 		t.Fatalf("GET: %v", err)
 	} else {

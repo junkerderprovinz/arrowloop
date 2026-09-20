@@ -5,56 +5,26 @@ import (
 	"fmt"
 )
 
-/*
-Tally is what one run did, split by the side each line landed on.
-
-jdp asked the sync-status card for "eine kleine zusammenfassung wie viele
-datien hoch- und runtergeladen und gelöscht wurden etc." The run record itself
-cannot answer that: it counts copies, moves and deletions, and none of those
-carry a direction. The direction is on the ENTRIES, one per file, where every
-line says which side it landed on.
-
-COUNTED IN THE DATABASE rather than by reading the lines back. A run over three
-thousand files writes six thousand lines, and the entries endpoint hands back a
-page of two hundred - so counting what arrived would have reported "200
-uploaded" for a run that uploaded three thousand, confidently and quietly.
-*/
+// Tally is what one run did, split by the side each file landed on. The run
+// record carries no direction, so this counts the entries, and it counts them
+// in the database because the entries endpoint only hands back one page.
 type Tally struct {
-	// Up is files that landed on the RIGHT, Down files that landed on the left.
-	//
-	// Up and down rather than left and right, because that is what somebody
-	// reads it as: the right-hand side of a job is the cloud in nearly every
-	// job anybody writes, and "12 hochgeladen" is the sentence they want. For a
-	// job between two local folders the words are a stretch and the arrows on
-	// the log say the same thing more precisely - but the count is still right.
+	// Up is files that landed on the right, Down files that landed on the
+	// left. The right side is the cloud in nearly every job.
 	Up   int `json:"up"`
 	Down int `json:"down"`
 	// Trashed is files that went to a bin, Conflicts the ones kept twice.
 	Trashed   int `json:"trashed"`
 	Conflicts int `json:"conflicts"`
-	/*
-		The same deletions, split by the side they were removed FROM.
-
-		Autosync's overview says "Vom Gerät gelöscht" and "Von Cloud gelöscht" on
-		two lines, and jdp asked for that page. One total cannot be read that way:
-		"12 gelöscht" on a two-way job leaves the reader guessing which end lost
-		the files, which is the one thing somebody checks a deletion count for.
-
-		`Trashed` stays and is not their sum by accident - it IS their sum, kept
-		because a one-way job has nothing to split and one number reads better
-		there.
-	*/
+	// TrashedLeft and TrashedRight split Trashed by the side the files were
+	// removed from, so a two-way job says which end lost them.
 	TrashedLeft  int `json:"trashedLeft"`
 	TrashedRight int `json:"trashedRight"`
 }
 
-/*
-Summarise counts one run's lines by what happened and where it landed.
-
-Only COPIES count towards up and down. A move writes two lines - the copy that
-landed, and the source going away - and counting the second as a download would
-turn every one-way move job into a job that moves files in both directions.
-*/
+// Summarise counts one run's entries by what happened and where it landed.
+// Only copies count towards up and down: a move also writes a line for the
+// source going away, and counting it would make a one-way move look two-way.
 func (d *DB) Summarise(ctx context.Context, run int64) (Tally, error) {
 	rows, err := d.sql.QueryContext(ctx,
 		`SELECT kind, side, COUNT(*) FROM entries WHERE run = ? GROUP BY kind, side`, run)
@@ -79,9 +49,8 @@ func (d *DB) Summarise(ctx context.Context, run int64) (Tally, error) {
 			}
 		case "trash":
 			out.Trashed += n
-			// The side is where the file WAS, which is what "deleted from the
-			// phone" means. A line with no side is counted in the total and in
-			// neither half rather than guessed into one.
+			// The side is where the file was. A line with no side counts in
+			// the total and in neither half.
 			if side == "right" {
 				out.TrashedRight += n
 			} else if side == "left" {

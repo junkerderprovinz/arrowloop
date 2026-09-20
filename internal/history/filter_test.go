@@ -7,14 +7,8 @@ import (
 	"time"
 )
 
-// Narrowing happens in the DATABASE, and that is the whole point of both.
-//
-// This log runs to tens of thousands of rows and the screen holds a few dozen.
-// Filtering what was already fetched searches the last page instead of the log,
-// which answers a different question and looks exactly like an answer to the
-// right one. So both tests below put the wanted row DEEP in the data, past any
-// limit a screen would use, and then ask for it.
-
+// filled records five days of runs with the wanted row in the oldest, past any
+// limit a screen would use, so narrowing after the fetch would miss it.
 func filled(t *testing.T) *DB {
 	t.Helper()
 	ctx := context.Background()
@@ -24,9 +18,6 @@ func filled(t *testing.T) *DB {
 	}
 	t.Cleanup(func() { db.Close() })
 
-	// Five days of runs, oldest first, each with a handful of ordinary files.
-	// The needle sits in the OLDEST run, so anything that only looks at recent
-	// rows will miss it.
 	base := time.Date(2026, 3, 1, 9, 0, 0, 0, time.Local)
 	for day := 0; day < 5; day++ {
 		started := base.AddDate(0, 0, day)
@@ -47,8 +38,7 @@ func filled(t *testing.T) *DB {
 
 func TestTheActivityLogFindsAPathPastTheLimit(t *testing.T) {
 	db := filled(t)
-	// A limit far smaller than the distance to the needle: 200 rows sit on top
-	// of it, so a search over "the newest 20" cannot possibly find it.
+	// 200 rows sit on top of the needle.
 	got, err := db.TouchesLike(context.Background(), "test", "nadel", 20)
 	if err != nil {
 		t.Fatalf("search: %v", err)
@@ -61,11 +51,6 @@ func TestTheActivityLogFindsAPathPastTheLimit(t *testing.T) {
 	}
 }
 
-// TestTheSearchDoesNotTreatAnUnderscoreAsAWildcard.
-//
-// LIKE reads `_` as "any one character", and paths are full of underscores. An
-// unescaped search for `a_b` would match `axb` and read as a search that
-// quietly does something else.
 func TestTheSearchDoesNotTreatAnUnderscoreAsAWildcard(t *testing.T) {
 	ctx := context.Background()
 	db := filled(t)
@@ -92,8 +77,8 @@ func TestTheHistoryNarrowsToAStretchOfTime(t *testing.T) {
 	ctx := context.Background()
 	db := filled(t)
 
-	// The middle day only. Both bounds name the SAME day, which is the case
-	// that breaks when an upper bound means midnight rather than the day's end.
+	// Both bounds name the same day, which breaks if the upper bound means
+	// midnight rather than the day's end.
 	day := time.Date(2026, 3, 3, 0, 0, 0, 0, time.Local)
 	got, err := db.Between(ctx, "test", ShowAll, day, day.AddDate(0, 0, 1).Add(-time.Nanosecond), 50)
 	if err != nil {
@@ -120,7 +105,6 @@ func TestAnOpenEndedStretchIsOpenEnded(t *testing.T) {
 		t.Errorf("everything since the 4th is two runs, got %d", len(got))
 	}
 
-	// And both ends absent is the plain listing.
 	all, err := db.Between(ctx, "test", ShowAll, time.Time{}, time.Time{}, 50)
 	if err != nil {
 		t.Fatalf("between: %v", err)

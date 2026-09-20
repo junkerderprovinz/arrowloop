@@ -10,11 +10,6 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/web"
 )
 
-// TestARunsOwnWorkIsReachable.
-//
-// The counts a run reports are a summary, and a summary is where a per-file
-// error goes to be forgotten. This is the request that gets the detail back:
-// which path, and for a conflict what was decided.
 func TestARunsOwnWorkIsReachable(t *testing.T) {
 	h := newHarness(t)
 	now := time.Now()
@@ -48,17 +43,10 @@ func TestARunsOwnWorkIsReachable(t *testing.T) {
 		t.Fatalf("expected two entries, got %d", len(got))
 	}
 	if got[1].Note != "keep both" {
-		// The decision is the whole point. A conflict row that says only
-		// "conflict" repeats what the count already said.
 		t.Errorf("the conflict came back without its decision: %+v", got[1])
 	}
 }
 
-// TestAnEmptyRunIsAListAndNotNull.
-//
-// A nil slice encodes as JSON null, and a page that expects a list would then
-// have to guard every use of it. This app has had that exact bug before, in a
-// different endpoint, which is why it gets a test rather than a comment.
 func TestAnEmptyRunIsAListAndNotNull(t *testing.T) {
 	h := newHarness(t)
 	now := time.Now()
@@ -83,10 +71,6 @@ func TestAnEmptyRunIsAListAndNotNull(t *testing.T) {
 	}
 }
 
-// TestSomethingThatIsNotARunIdIsRefused.
-//
-// Not politeness. The id goes into a query, and a handler that shrugs at a
-// value it cannot parse is a handler that has decided to guess.
 func TestSomethingThatIsNotARunIdIsRefused(t *testing.T) {
 	h := newHarness(t)
 	srv := newServer(t, &web.Server{History: h.history, Runner: h.runner})

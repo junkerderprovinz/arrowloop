@@ -1,11 +1,5 @@
-// Package web serves the interface and the small API behind it.
-//
-// The API is deliberately thin: it exposes what the engine already decides
-// rather than deciding anything of its own. The one screen it exists for is the
-// preview, where a person reads every proposed change with its direction and
-// its reason, unticks the ones they do not want, and only then lets anything
-// happen. A two-way sync that acts before somebody has seen the plan is asking
-// for trust it has not earned.
+// Package web serves the interface and the API behind it. The API exposes what
+// the engine decides rather than deciding anything of its own.
 package web
 
 import (
@@ -30,41 +24,31 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/scan"
 )
 
-// Server answers the browser.
-//
-// It deliberately holds no configuration of its own. The runner owns the one
-// copy, and an editor that could change one of two pointers would be an editor
-// whose result depends on which half of the program somebody asks.
+// Server answers the browser. It holds no configuration of its own: the runner
+// owns the one copy.
 type Server struct {
 	History *history.DB
 	Runner  *daemon.Runner
 
-	// UI is the built interface. A nil filesystem serves the API only, which is
-	// what the tests use and what a headless deployment can live with.
+	// UI is the built interface. A nil filesystem serves the API only.
 	UI fs.FS
 
-	// Placeholder is the page served when UI carries no index.html, which is
-	// what a binary built without the frontend looks like.
+	// Placeholder is the page served when UI carries no index.html, as in a
+	// binary built without the frontend.
 	Placeholder []byte
 
-	// Window is set only by the desktop shell. A nil store leaves the two
-	// window routes unregistered, which is how the interface knows there is no
-	// window to have preferences about.
+	// Window is set only by the desktop shell. A nil store leaves the window
+	// routes unregistered, which tells the interface there is no window.
 	Window *deskset.Store
 
-	// Hold carries a reason, reported by the machine the engine runs on, to
-	// stop automatic runs. Set only where something outside can answer the
-	// question - the phone, which knows whether it is charging and whether this
-	// connection is metered. A nil store leaves the two routes unregistered,
-	// which is how a client knows the engine has nobody to ask.
+	// Hold carries a reason, reported by the device the engine runs on, to stop
+	// automatic runs. Only the phone sets it, knowing whether it is charging
+	// and whether the connection is metered. A nil store leaves the routes
+	// unregistered.
 	Hold *hold.Store
 
-	// Log is where this layer says the things it cannot answer with a status
-	// code. There is exactly one of those: a setting that saved correctly and
-	// then could not be applied to the running process. Answering a successful
-	// save with an error would be the wrong lie in the other direction, and
-	// saying nothing at all would be the failure mode this whole round was
-	// about. Nil is allowed and means silence, which is what the tests want.
+	// Log reports what a status code cannot, such as a setting that saved but
+	// could not be applied to the running process. Nil means silence.
 	Log func(format string, args ...any)
 }
 
@@ -92,12 +76,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("POST /api/jobs/{name}/versions/{side}/restore", s.restoreVersion)
 	mux.HandleFunc("GET /api/history", s.listHistory)
 	mux.HandleFunc("GET /api/history/{id}/entries", s.runEntries)
-	// What one run did, counted rather than listed. The entries above are a
-	// PAGE, so anything that counted them would be counting the page.
 	mux.HandleFunc("GET /api/history/{id}/summary", s.runSummary)
-	// Every file this engine has touched, across all jobs, narrowed in the
-	// database. The history TAB asks this; the per-job one below is the same
-	// question about one job.
 	mux.HandleFunc("GET /api/log", s.fileLog)
 	mux.HandleFunc("GET /api/jobs/{name}/touches", s.jobTouches)
 	mux.HandleFunc("GET /api/history/stats", s.historyStats)
@@ -119,9 +98,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("POST /api/browse/mkdir", s.makeDir)
 	mux.HandleFunc("GET /api/capabilities", s.capabilities)
 
-	// The three routes an unauthenticated caller may reach. Everything else
-	// under /api/ needs a session once a password hash is set, and nothing at
-	// all changes when one is not: see Protect in auth.go.
+	// The three routes an unauthenticated caller may reach; see Protect.
 	mux.HandleFunc("POST /api/login", s.login)
 	mux.HandleFunc("POST /api/logout", s.logout)
 	mux.HandleFunc("GET /api/session", s.session)
@@ -136,30 +113,20 @@ func (s *Server) Handler() http.Handler {
 		mux.HandleFunc("PUT /api/device", s.writeDevice)
 	}
 
-	// Catching up on what the clock should already have run. A phone hands the
-	// waking to Android and keeps the schedule here, so this is how a wake-up
-	// says "now would be a good time" without having to know which jobs that
-	// applies to.
+	// A phone's wake-up runs whatever the schedule says is due.
 	mux.HandleFunc("POST /api/run-due", s.runDue)
 
 	mux.HandleFunc("GET /api/remotes", s.listRemotes)
 	mux.HandleFunc("PUT /api/remotes/{name}", s.saveRemote)
 	mux.HandleFunc("DELETE /api/remotes/{name}", s.deleteRemote)
 	mux.HandleFunc("POST /api/remotes/{name}/check", s.checkRemote)
-	// Settings that are not saved yet, so a form can answer "does this
-	// work" before it answers "do you want to keep this".
+	// Settings that are not saved yet, so a form can check them first.
 	mux.HandleFunc("POST /api/remotes-check", s.tryRemote)
 	mux.HandleFunc("GET /api/remotes/{name}/about", s.aboutRemote)
 
-	// An address under /api that nothing has claimed is a mistake, and it has
-	// to look like one.
-	//
-	// Without this the interface's own fallback answers it: every unknown API
-	// path would come back as the application's HTML with a 200, so a client
-	// asking whether a feature exists would be told yes and handed a web page.
-	// That is exactly how the window settings were reached on a build that has
-	// no window, and the only reason nothing broke is that the client happened
-	// to fail on the parse instead of on the status.
+	// Otherwise the interface's fallback would answer an unknown API path
+	// with its HTML and a 200, telling a client that probes for a feature
+	// that it exists.
 	mux.HandleFunc("/api/", func(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusNotFound, fmt.Errorf("no such address: %s", r.URL.Path))
 	})
@@ -167,10 +134,7 @@ func (s *Server) Handler() http.Handler {
 	if s.UI != nil {
 		mux.Handle("/", spa{fs: s.UI, placeholder: s.Placeholder, assets: &assets{}})
 	}
-	// The whole tree goes through the gate, and the gate is a straight passthrough
-	// when no password hash is set. That is the important half: an install that
-	// never asked for a password must behave exactly as it did before this
-	// existed, and the check for that is the first thing Protect does.
+	// Protect passes everything straight through when no password is set.
 	return s.Protect(mux)
 }
 
@@ -181,51 +145,21 @@ type jobView struct {
 	Right     string `json:"right"`
 	Direction string `json:"direction"`
 	Schedule  string `json:"schedule"`
-	// Watch, because the schedule alone cannot say it. A watching job and one
-	// that only keeps to the clock write the same expression: the watcher's is
-	// the backstop behind it. Without this the card describes a job that reacts
-	// in seconds as one that runs every hour, which is true and is the wrong
-	// answer to "what does this do".
+	// Watch, because a watching job writes the same schedule as one that only
+	// keeps to the clock.
 	Watch       bool    `json:"watch"`
 	Disabled    bool    `json:"disabled"`
 	Running     bool    `json:"running"`
 	LastSuccess *string `json:"lastSuccess"`
-	/*
-		NextRun is when the clock will next reach this job, or absent.
-
-		Computed from the SCHEDULE rather than read out of the running cron, and
-		that is deliberate: `cron.Schedule.Next` is exactly what the scheduler
-		itself asks, so the two cannot disagree, and this way the answer needs no
-		live scheduler at all - it is right in a test, right on a daemon that has
-		not started its cron yet, and right for a job that is switched off.
-
-		ABSENT for a job with no schedule, a job switched off, and a job whose
-		expression does not parse. All three mean the same thing to a reader -
-		the clock is not going to start this - and a screen that printed a time
-		for any of them would be promising a run that is not coming.
-
-		It is a DUE TIME and not a promise. A run held back for mains power or a
-		metered connection still has its slot here; what the conditions do is
-		decide whether the slot is used, and that is a different question the
-		card answers separately.
-	*/
+	// NextRun is when the schedule next reaches this job; see nextRun. It is a
+	// due time, and a condition such as mains power may still hold the run.
 	NextRun *string `json:"nextRun,omitempty"`
 }
 
-/*
-nextRun is when the clock will next reach this job.
-
-Three ways to have no answer, and they are all the same answer to a reader:
-no schedule at all (the job runs when somebody says so), switched off (the
-clock is not going to start it), and an expression that does not parse (which
-`job.Load` refuses, so it cannot reach a running daemon - the check is here
-because this function is also called on configurations that came from
-somewhere else).
-
-A WATCHING job still gets its time. The watcher is not a schedule, it is a
-shortcut that reacts sooner; the schedule behind it is the backstop, and it is
-the thing that will definitely happen.
-*/
+// nextRun is when the schedule will next reach this job. It is computed with
+// the same Next the scheduler uses, so it needs no live scheduler. A job with
+// no schedule, a disabled job and an expression that does not parse have no
+// next run; a watching job still has its scheduled time.
 func nextRun(j job.Job, now time.Time) (time.Time, bool) {
 	if j.Disabled || strings.TrimSpace(j.Schedule) == "" {
 		return time.Time{}, false
@@ -257,9 +191,7 @@ func (s *Server) listJobs(w http.ResponseWriter, r *http.Request) {
 	for _, j := range cfg.Jobs {
 		v := jobView{
 			Name: j.Name, Left: j.Left, Right: j.Right, Watch: j.Watch,
-			// Sent resolved rather than as it stands in the file, so an
-			// unset field and an explicit "both" reach the screen as the
-			// same thing and the arrows never have to guess.
+			// Resolved, so an unset field and "both" look the same.
 			Direction: directionName(plan.ParseDirection(j.Direction)),
 			Schedule:  j.Schedule, Disabled: j.Disabled, Running: running[j.Name],
 		}
@@ -283,15 +215,12 @@ type actionView struct {
 	From string `json:"from,omitempty"`
 	To   string `json:"to,omitempty"`
 
-	// The reason twice over: the code and its values, which the interface
-	// translates, and the English sentence, which it falls back to for a code
-	// it has never heard of. An untranslated explanation is worth more than a
-	// dotted identifier.
+	// Reason carries the code and its values, which the interface translates,
+	// and the English sentence it falls back to for a code it does not know.
 	Reason plan.Reason `json:"reason"`
 
-	// What each side holds right now. Present for a conflict, where the whole
-	// question is which of two versions to keep, and for a copy, where it says
-	// what is about to be replaced.
+	// Left and Right are what each side holds right now: for a conflict the
+	// two versions to choose from, for a copy what is about to be replaced.
 	Left  *sideView `json:"left,omitempty"`
 	Right *sideView `json:"right,omitempty"`
 }
@@ -305,8 +234,7 @@ type planView struct {
 }
 
 // sideView is one side's version of a file: what it is called there, how big
-// it is and when it changed. A conflict screen that cannot show those three
-// things is asking somebody to choose between two names.
+// it is and when it changed.
 type sideView struct {
 	Path string `json:"path"`
 	Size int64  `json:"size"`
@@ -370,12 +298,9 @@ func viewOf(p *plan.Plan) planView {
 	return out
 }
 
-// runRequest optionally narrows a run to the paths somebody ticked.
-//
-// An absent "only" means everything. An "only" that is present and empty means
-// exactly that: nothing was ticked, so nothing should happen. Those two have to
-// stay distinguishable, or unticking every row would silently run the whole
-// plan, which is the opposite of what the person just asked for.
+// runRequest optionally narrows a run to the paths somebody ticked. An absent
+// "only" means everything; a present, empty one means nothing, or unticking
+// every row would run the whole plan.
 type runRequest struct {
 	Only *[]string `json:"only"`
 
@@ -384,14 +309,9 @@ type runRequest struct {
 	Resolve map[string]string `json:"resolve"`
 }
 
-// stopJob asks a run that is going right now to stop.
-//
-// A separate verb from "run" rather than a toggle, because the two are not
-// opposites a person would want to press blindly: starting is safe and
-// stopping abandons work in flight. The answer says whether there was
-// anything to stop, so the interface can tell "stopped it" from "it had
-// already finished" - which is a real distinction to somebody who pressed the
-// button a second too late.
+// stopJob asks a run that is going right now to stop. The answer says whether
+// there was anything to stop, so the interface can tell "stopped it" from "it
+// had already finished".
 func (s *Server) stopJob(w http.ResponseWriter, r *http.Request) {
 	name := r.PathValue("name")
 	if _, ok := s.Runner.Config().Find(name); !ok {
@@ -410,9 +330,8 @@ func (s *Server) runJob(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// A present-but-empty list stays distinguishable from an absent one:
-	// encoding/json decodes [] into a non-nil empty slice, so "only": [] gives
-	// an empty selection here while a missing field leaves this nil.
+	// encoding/json decodes [] into a non-nil empty slice, so an empty
+	// selection stays distinct from a missing field.
 	var only []string
 	if req.Only != nil {
 		only = *req.Only
@@ -426,26 +345,18 @@ func (s *Server) runJob(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// The browser tab is not the run's owner. Somebody navigating away, or a
-	// laptop closing its lid, must not cancel a transfer that is already moving
-	// files, so the work gets a context of its own.
+	// The run gets a context of its own, so navigating away does not cancel
+	// a transfer in flight.
 	name := r.PathValue("name")
 	go func() {
-		if _, err := s.Runner.RunChosen(context.Background(), name, only, resolve); err != nil && !errors.Is(err, daemon.ErrAlreadyRunning) {
-			// The failure is already in the run log and on its way to whatever
-			// notifier is configured; nothing further to do here.
-			_ = err
-		}
+		// A failure is already in the run log and goes to the notifier.
+		_, _ = s.Runner.RunChosen(context.Background(), name, only, resolve)
 	}()
 	writeJSON(w, http.StatusAccepted, map[string]string{"job": name, "status": "started"})
 }
 
-// parseDay reads a plain date, in the machine's own time zone.
-//
-// `end` decides which edge of the day it means: the start for a lower bound,
-// the last instant for an upper one. Without that, "until the 9th" would
-// exclude everything that happened ON the 9th, which is not what anybody means
-// by it and is the classic off-by-one-day in every date filter.
+// parseDay reads a plain date in the machine's own time zone. With end set it
+// means the last instant of the day, so "until the 9th" includes the 9th.
 func parseDay(raw string, end bool) time.Time {
 	if raw == "" {
 		return time.Time{}
@@ -467,10 +378,8 @@ func (s *Server) listHistory(w http.ResponseWriter, r *http.Request) {
 			limit = n
 		}
 	}
-	// An unknown value is ALL rather than an error. This parameter narrows a
-	// listing, so getting it wrong should show too much and never too little:
-	// a typo that returned nothing would read as "there is no history", which
-	// is the one answer this log must never give falsely.
+	// An unknown value shows everything: a filter that goes wrong must show
+	// too much, never an empty history.
 	var show history.Show
 	switch history.Show(r.URL.Query().Get("show")) {
 	case history.ShowChanged:
@@ -480,11 +389,8 @@ func (s *Server) listHistory(w http.ResponseWriter, r *http.Request) {
 	default:
 		show = history.ShowAll
 	}
-	// A stretch of time, either end optional. Written as a date, because that
-	// is what somebody asking "what happened at the weekend" has in mind; a
-	// value that will not parse is ignored rather than refused, for the same
-	// reason an unknown `show` is: this parameter narrows, so getting it wrong
-	// must show too much and never too little.
+	// Either end is optional, and a date that does not parse is ignored for
+	// the same reason.
 	runs, err := s.History.Between(r.Context(), r.URL.Query().Get("job"), show,
 		parseDay(r.URL.Query().Get("since"), false),
 		parseDay(r.URL.Query().Get("until"), true),
@@ -499,20 +405,8 @@ func (s *Server) listHistory(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, runs)
 }
 
-// runEntries lists what ONE run did, path by path.
-//
-// A separate request rather than a field on every run in the list, and that is
-// the whole design of it: a page showing fifty runs wants fifty summaries, and
-// fetching every path each of them touched to draw a row that says "12 copied"
-// would be thousands of strings nobody reads. The detail is fetched when a run
-// is opened, which is the moment somebody has asked for it.
-// jobTouches lists what ONE job did to individual files, newest first, across
+// jobTouches lists what one job did to individual files, newest first, across
 // all of its runs.
-//
-// Deliberately a different endpoint from the run log rather than a parameter on
-// it: the two answer different questions. "Which runs happened" belongs to the
-// history tab; "what has this job done to my files" is what somebody asks while
-// looking at the job itself.
 func (s *Server) jobTouches(w http.ResponseWriter, r *http.Request) {
 	limit := 50
 	if raw := r.URL.Query().Get("limit"); raw != "" {
@@ -531,11 +425,8 @@ func (s *Server) jobTouches(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, touches)
 }
 
-// fileLog is the per-file log across every job.
-//
-// jdp: "in Autosync sieht man jede einzelne datei im Verlauf, es ist wie ein
-// log." Narrowed by job, by a fragment of a path, and by what happened - all in
-// the database, because the screen holds a fraction of what this can return.
+// fileLog is the per-file log across every job, narrowed in the database by
+// job, a fragment of a path and what happened.
 func (s *Server) fileLog(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Query()
 	limit := 100
@@ -544,10 +435,8 @@ func (s *Server) fileLog(w http.ResponseWriter, r *http.Request) {
 			limit = n
 		}
 	}
-	// Empty pieces dropped rather than passed on. `kind=copy,,move` is what a
-	// caller joining a list with a blank in it produces, and an empty string in
-	// the IN clause is a kind no run can have - so it would narrow the answer by
-	// a value nobody asked for, and quietly.
+	// Empty pieces such as in kind=copy,,move are dropped; no entry has an
+	// empty kind.
 	var kinds []string
 	for _, kind := range strings.Split(q.Get("kind"), ",") {
 		if kind != "" {
@@ -570,13 +459,8 @@ func (s *Server) fileLog(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, touches)
 }
 
-// runSummary is what one run did, split by the side each file landed on.
-//
-// jdp asked the overview for "eine kleine zusammenfassung wie viele datien
-// hoch- und runtergeladen und gelöscht wurden etc." The run record cannot say:
-// it counts copies and deletions without a direction, and the direction lives
-// on the entries. Counted in the database, because the entries endpoint beside
-// this one answers with a page and a summary of a page is not a summary.
+// runSummary is what one run did, split by the side each file landed on. It is
+// counted in the database, since runEntries answers with a page.
 func (s *Server) runSummary(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
 	if err != nil {
@@ -591,6 +475,8 @@ func (s *Server) runSummary(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, tally)
 }
 
+// runEntries lists what one run did, path by path. It is fetched when a run is
+// opened rather than sent with every run in the list.
 func (s *Server) runEntries(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
 	if err != nil {
@@ -603,8 +489,6 @@ func (s *Server) runEntries(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if entries == nil {
-		// A nil slice encodes as null, and a page that expects a list would then
-		// have to guard every use of it. An empty run is an empty list.
 		entries = []history.Entry{}
 	}
 	writeJSON(w, http.StatusOK, entries)
@@ -627,9 +511,8 @@ func (s *Server) events(w http.ResponseWriter, r *http.Request) {
 	ch, stop := s.Runner.Subscribe()
 	defer stop()
 
-	// A comment line every twenty seconds. Without it a proxy in the middle
-	// closes an idle stream and the screen quietly stops updating, which looks
-	// exactly like a job that never ran.
+	// A comment line every twenty seconds keeps a proxy from closing the idle
+	// stream.
 	ping := time.NewTicker(20 * time.Second)
 	defer ping.Stop()
 
@@ -664,23 +547,14 @@ func writeError(w http.ResponseWriter, code int, err error) {
 	writeJSON(w, code, map[string]string{"error": err.Error()})
 }
 
-// spa serves the built interface, falling back to index.html for any path the
-// bundle does not contain, so a reload on a sub-page does not 404.
-// spa serves the built interface, and falls back twice.
-//
-// A path that is not a file is answered with index.html, because the interface
-// routes in the browser and a reload of any page has to reach it. And an
-// index.html that is not there at all is answered with the page that explains
-// why: that is a binary built without the frontend, which is a thing a plain
-// `go build` produces, and a blank screen is indistinguishable from a broken
-// one.
+// spa serves the built interface. A path that is not a file gets index.html,
+// since the interface routes in the browser, and a missing index.html gets the
+// placeholder page, as in a binary built with a plain go build.
 type spa struct {
 	fs          fs.FS
 	placeholder []byte
 
-	// One fingerprint per embedded file, worked out once. See assets.go for why
-	// an embedded file has no validator of its own and what goes wrong without
-	// one.
+	// assets fingerprints each embedded file once; see assets.go.
 	assets *assets
 }
 
@@ -693,14 +567,9 @@ func (s spa) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	f, err := s.fs.Open(name)
 	if err != nil {
-		// A missing file under assets/ is a MISSING FILE, not a page.
-		//
-		// The fallback below exists so a reload of a sub-page reaches the
-		// interface's own router. Applying it to assets/ turns "this bundle is
-		// gone" into "here is some HTML, with a 200", and a browser holding a
-		// stale index.html then asks for a bundle that no longer exists and is
-		// handed a web page where it expected a script. It fails silently and
-		// keeps showing what it had. Exactly the trap already closed for /api/.
+		// A browser holding a stale index.html asks for a bundle that no
+		// longer exists, and must get a 404 rather than HTML where it
+		// expected a script.
 		if isFingerprinted(name) {
 			http.NotFound(w, r)
 			return
@@ -729,9 +598,7 @@ func (s spa) explain(w http.ResponseWriter) {
 		return
 	}
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	// Not 404. The engine is running and the API is answering; what is missing
-	// is a build step, and a status that says "there is nothing at this address"
-	// would send somebody looking in the wrong place.
+	// Not 404: the engine and the API work, and only a build step is missing.
 	w.WriteHeader(http.StatusOK)
 	w.Write(s.placeholder)
 }
@@ -756,15 +623,11 @@ func (s *Server) readConfig(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, map[string]any{"jobs": jobs})
 }
 
-// readRawConfig hands back the configuration file exactly as it stands.
-//
-// Bytes, not a re-serialised struct. A backup is only worth having if it comes
-// back the same, including the keys this build has never heard of and the
-// relative paths somebody wrote on purpose.
+// readRawConfig hands back the configuration file byte for byte, so a backup
+// keeps unknown keys and relative paths.
 func (s *Server) readRawConfig(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	// Never cached: this is a file somebody is about to keep as a backup, and a
-	// stale one is worse than none.
+	// A stale backup is worse than none.
 	w.Header().Set("Cache-Control", "no-store")
 	w.WriteHeader(http.StatusOK)
 	_, _ = w.Write(s.Runner.Config().Raw())
@@ -772,9 +635,7 @@ func (s *Server) readRawConfig(w http.ResponseWriter, r *http.Request) {
 
 // replaceConfig puts a whole saved configuration back.
 func (s *Server) replaceConfig(w http.ResponseWriter, r *http.Request) {
-	// A cap, because this is a file upload and an unbounded read from a request
-	// body is a way to be handed a gigabyte. Four megabytes is far more than any
-	// real configuration and small enough to refuse cheaply.
+	// Four megabytes is far more than any real configuration.
 	doc, err := io.ReadAll(io.LimitReader(r.Body, 4<<20))
 	if err != nil {
 		writeError(w, http.StatusBadRequest, fmt.Errorf("read the request: %w", err))
@@ -789,11 +650,8 @@ func (s *Server) replaceConfig(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, map[string]any{"jobs": len(next.Jobs)})
 }
 
-// readSettings hands back the file's top-level keys apart from the jobs.
-//
-// The whole map rather than a named struct, for the same reason the job editor
-// works in maps: a key this build does not understand still has to survive
-// being read and written by it. A struct would drop it silently on the way out.
+// readSettings hands back the file's top-level keys apart from the jobs, as a
+// map so keys this build does not know survive a round trip.
 func (s *Server) readSettings(w http.ResponseWriter, r *http.Request) {
 	settings, err := s.Runner.Config().SettingsAsMap()
 	if err != nil {
@@ -803,12 +661,8 @@ func (s *Server) readSettings(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, settings)
 }
 
-// writeSettings merges the keys it is given and reloads.
-//
-// Merges rather than replaces: a caller sends the settings it edits, and a
-// caller that has never heard of a key must not be able to remove it by not
-// mentioning it. Deleting a setting is done by sending it empty, which is a
-// deliberate act rather than an omission.
+// writeSettings merges the keys it is given and reloads. A key the caller does
+// not mention is kept; a setting is deleted by sending it empty.
 func (s *Server) writeSettings(w http.ResponseWriter, r *http.Request) {
 	var body map[string]any
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
@@ -818,19 +672,13 @@ func (s *Server) writeSettings(w http.ResponseWriter, r *http.Request) {
 
 	next, err := s.Runner.Config().SaveSettings(body)
 	if err != nil {
-		// The validator's own words, so an edit here and a hand-written file
-		// fail in exactly the same way.
 		writeError(w, http.StatusBadRequest, err)
 		return
 	}
 	s.Runner.Reload(next)
-	// The bandwidth limit lives in rclone's process-wide token bucket, not in
-	// the configuration the runner just swapped, so reloading is not enough:
-	// the value was correct in the file and in this page, and the next transfer
-	// still went at whatever speed the program booted with. A failure here is
-	// logged rather than returned - the setting IS saved, and answering a
-	// successful save with an error would be the wrong lie in the other
-	// direction.
+	// The bandwidth limit lives in rclone's process-wide token bucket, which a
+	// reload does not touch. The setting is saved either way, so a failure is
+	// logged rather than returned.
 	if err := engine.ApplyBwLimit(r.Context(), next.BwLimit); err != nil {
 		s.logf("could not apply the new bandwidth limit: %v", err)
 	}
@@ -842,11 +690,8 @@ func (s *Server) writeSettings(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, settings)
 }
 
-// writeConfig replaces the job list and reloads the schedules.
-//
-// The whole list arrives at once rather than one job at a time, because a
-// configuration is validated as a whole: two jobs sharing a name is a defect
-// neither of them can see on its own.
+// writeConfig replaces the job list and reloads the schedules. The whole list
+// arrives at once, because two jobs sharing a name is only visible as a whole.
 func (s *Server) writeConfig(w http.ResponseWriter, r *http.Request) {
 	var body struct {
 		Jobs []map[string]any `json:"jobs"`
@@ -858,8 +703,6 @@ func (s *Server) writeConfig(w http.ResponseWriter, r *http.Request) {
 
 	next, err := s.Runner.Config().SaveJobs(body.Jobs)
 	if err != nil {
-		// The validator's own words, so an edit here and a hand-written file
-		// fail in exactly the same way.
 		writeError(w, http.StatusBadRequest, err)
 		return
 	}

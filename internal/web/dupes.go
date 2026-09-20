@@ -9,16 +9,10 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/scan"
 )
 
-// findDuplicates reports files on one side whose content is identical.
-//
-// Per SIDE rather than per job, because that is where the question lives: the
-// same photos under three names are one folder's problem, and a job's two sides
-// are supposed to hold the same files - reporting every synced pair as a
-// duplicate would be reporting the job doing its work.
-//
-// The job's own exclude patterns apply. A file the job has been told to ignore
-// must not turn up in a list somebody is about to delete from, or a rule written
-// to protect something becomes the reason it is offered up.
+// findDuplicates reports files on one side whose content is identical. It
+// works per side, since the two sides of a job are meant to hold the same
+// files. The job's exclude patterns apply, so an excluded file is never offered
+// for deletion.
 func (s *Server) findDuplicates(w http.ResponseWriter, r *http.Request) {
 	name, side := r.PathValue("name"), r.PathValue("side")
 	j, ok := s.Runner.Config().Find(name)
@@ -38,9 +32,7 @@ func (s *Server) findDuplicates(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// An unreadable limit is refused rather than quietly replaced, the same way
-	// the verify route refuses one: somebody who asked for a different bound and
-	// silently got the standard one reads a truncated list believing otherwise.
+	// An unreadable limit is refused, as in verifyJob.
 	limit := 200
 	if raw := r.URL.Query().Get("limit"); raw != "" {
 		n, err := strconv.Atoi(raw)
@@ -51,9 +43,7 @@ func (s *Server) findDuplicates(w http.ResponseWriter, r *http.Request) {
 		limit = n
 	}
 
-	// The request's own context, so navigating away stops a walk that now has
-	// nobody to report to. Unlike a run, this moves nothing and has no reason to
-	// outlive the tab that asked.
+	// The request's context, so navigating away stops the walk.
 	report, err := dupes.Find(r.Context(), f, scan.Options{Exclude: settings.Exclude}, limit)
 	if err != nil {
 		writeError(w, http.StatusBadGateway, err)

@@ -26,11 +26,6 @@ func write(t *testing.T, body string) *job.Config {
 
 const sides = `"left":"/tmp/a","right":"/tmp/b","state":"a.db"`
 
-// TestADefaultReachesAJobThatSaysNothing.
-//
-// The point of the whole thing. The brakes in particular could not be seen at
-// all before this, let alone set once for every job, and they are the net that
-// stops a run removing more than half of everything it knows about.
 func TestADefaultReachesAJobThatSaysNothing(t *testing.T) {
 	cfg := write(t, `{
 		"defaults": {"transfers": 8, "modWindow": "2s", "brakePercent": 30, "emptyDirs": true},
@@ -52,10 +47,7 @@ func TestADefaultReachesAJobThatSaysNothing(t *testing.T) {
 	}
 }
 
-// TestAJobThatSaysSomethingKeepsIt.
-//
-// The other half, and the one that would quietly not work. A default is a
-// fallback, never an override.
+// A default is a fallback, never an override.
 func TestAJobThatSaysSomethingKeepsIt(t *testing.T) {
 	cfg := write(t, `{
 		"defaults": {"transfers": 8, "brakePercent": 30},
@@ -71,12 +63,8 @@ func TestAJobThatSaysSomethingKeepsIt(t *testing.T) {
 	}
 }
 
-// TestOffIsAnAnswerAndNotAnAbsence.
-//
-// This is why the two switches became pointers. As plain bools, a job that
-// deliberately turned one OFF was indistinguishable from one that never
-// mentioned it, so the default turned it back on and nothing said so. That is
-// the worst kind of setting: one that appears to be respected and is not.
+// As plain bools, a job that switched one off could not be told from one that
+// never mentioned it, and the default would switch it back on.
 func TestOffIsAnAnswerAndNotAnAbsence(t *testing.T) {
 	cfg := write(t, `{
 		"defaults": {"emptyDirs": true, "metadata": true},
@@ -92,11 +80,6 @@ func TestOffIsAnAnswerAndNotAnAbsence(t *testing.T) {
 	}
 }
 
-// TestZeroIsAnAnswerForTheBrakeToo.
-//
-// Zero switches the mass-delete brake off entirely, which has to be something
-// somebody typed rather than something they got by leaving a field out. The
-// pointer already carried that distinction and the default must not break it.
 func TestZeroIsAnAnswerForTheBrakeToo(t *testing.T) {
 	cfg := write(t, `{
 		"defaults": {"brakePercent": 50},
@@ -109,11 +92,6 @@ func TestZeroIsAnAnswerForTheBrakeToo(t *testing.T) {
 	}
 }
 
-// TestADefaultIsCheckedLikeAnythingElse.
-//
-// Applied before validation on purpose. A default that produces an invalid job
-// has to fail when the file is read, not at three in the morning on the one job
-// that mattered.
 func TestADefaultIsCheckedLikeAnythingElse(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "arrowloop.json")
@@ -129,17 +107,8 @@ func TestADefaultIsCheckedLikeAnythingElse(t *testing.T) {
 	}
 }
 
-// TestTheCaseOverrideReachesTheEngine.
-//
-// The engine normally asks each backend whether it can tell "Bild.jpg" from
-// "bild.jpg". The override exists because backends lie: a share exported from
-// Windows and mounted on Linux reports itself case-sensitive and is not, and
-// left wrong the two sides each keep their own copy of one file, growing the
-// tree by one file per run for ever.
-//
-// It is a pointer the whole way down, so "not set" stays distinguishable from
-// "set to false" - the second of which is a deliberate instruction to match
-// case exactly, and would be lost as a plain bool.
+// The override stays a pointer all the way to the engine, so "not set" (ask
+// the backends) can be told from false (match case exactly).
 func TestTheCaseOverrideReachesTheEngine(t *testing.T) {
 	yes := write(t, `{
 		"jobs": [{"name":"x","foldCase":true,`+sides+`}]
@@ -178,10 +147,6 @@ func TestTheCaseOverrideReachesTheEngine(t *testing.T) {
 	}
 }
 
-// TestANamedExcludeSetReachesTheJobThatAsksForIt.
-//
-// The whole point: "the usual junk" written once instead of pasted into every
-// job and then drifting apart.
 func TestANamedExcludeSetReachesTheJobThatAsksForIt(t *testing.T) {
 	cfg := write(t, `{
 		"excludeSets": {"junk": ["*.tmp", "Thumbs.db"], "media": ["*.iso"]},
@@ -200,12 +165,7 @@ func TestANamedExcludeSetReachesTheJobThatAsksForIt(t *testing.T) {
 	}
 }
 
-// TestTheJobsOwnPatternsAreKept.
-//
-// The sets are the shared part and the job's own list is what makes THIS job
-// different, so a set must add to it rather than replace it. Replacing would
-// throw away the one line somebody wrote for this job specifically, which is
-// the line they would least expect to lose.
+// A set adds to the job's own list rather than replacing it.
 func TestTheJobsOwnPatternsAreKept(t *testing.T) {
 	cfg := write(t, `{
 		"excludeSets": {"junk": ["*.tmp"]},
@@ -222,12 +182,8 @@ func TestTheJobsOwnPatternsAreKept(t *testing.T) {
 	}
 }
 
-// TestASetNobodyDefinedIsRefused.
-//
-// This is the guard that matters most, and the reason is worth stating: a
-// filter that silently matches nothing does not break anything. It just quietly
-// syncs the thing somebody asked to leave alone, and nobody finds out until the
-// day they go looking for why their private folder is on the other machine.
+// A filter that silently matches nothing would sync what somebody asked to
+// leave alone.
 func TestASetNobodyDefinedIsRefused(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "arrowloop.json")

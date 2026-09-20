@@ -8,16 +8,8 @@ import (
 	"github.com/rclone/rclone/fs/config"
 )
 
-// THE DATA-LOSS BUG THIS FILE EXISTS FOR.
-//
-// rclone's default configuration path is under $HOME, which inside a container
-// is part of the container's own filesystem and not part of the volume anybody
-// mounts. So every storage target this program saved was destroyed by the next
-// container update: not corrupted, not reported, simply gone, with the jobs that
-// pointed at them left naming something that no longer answers.
-//
-// The targets must land beside the engine's own configuration, because that is
-// the directory a person mounts precisely because they want it to survive.
+// rclone's default path under $HOME is not on a container's mounted volume, so
+// targets kept there vanish with the next update.
 func TestTheTargetsLiveBesideTheEnginesOwnConfig(t *testing.T) {
 	restore := keepConfigPath(t)
 	defer restore()
@@ -34,9 +26,6 @@ func TestTheTargetsLiveBesideTheEnginesOwnConfig(t *testing.T) {
 	}
 }
 
-// An existing rclone.conf at the default is ADOPTED once, so a desktop install
-// that has been using rclone for years does not read this change as "all your
-// targets are gone".
 func TestAnExistingConfigIsAdoptedOnce(t *testing.T) {
 	restore := keepConfigPath(t)
 	defer restore()
@@ -64,9 +53,7 @@ func TestAnExistingConfigIsAdoptedOnce(t *testing.T) {
 	}
 }
 
-// Adoption happens ONCE. A second start must not overwrite what this program has
-// been keeping since, or every restart would restore an old set of targets over
-// the current one.
+// Otherwise every restart would restore the old targets over the current ones.
 func TestAdoptionDoesNotOverwriteWhatIsAlreadyThere(t *testing.T) {
 	restore := keepConfigPath(t)
 	defer restore()
@@ -98,8 +85,6 @@ func TestAdoptionDoesNotOverwriteWhatIsAlreadyThere(t *testing.T) {
 	}
 }
 
-// RCLONE_CONFIG is rclone's own documented override, and somebody who set it
-// meant it.
 func TestRcloneConfigEnvWins(t *testing.T) {
 	restore := keepConfigPath(t)
 	defer restore()

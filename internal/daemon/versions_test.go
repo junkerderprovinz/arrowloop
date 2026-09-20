@@ -11,16 +11,9 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/job"
 )
 
-// Versioning is a setting on a job, applied by a package three layers down,
-// carried there through a context. Every one of those hops is somewhere it can
-// quietly not arrive, and the symptom would be the worst kind: the setting is
-// on, nothing errors, and the versions somebody is relying on are simply not
-// being kept. Nobody finds out until they go looking for one.
-//
-// So this is an end-to-end test on purpose, from the configuration file to the
-// bytes on disk, rather than a check that one function passes a number to
-// another.
-
+// versionSandbox builds a job with the given keepVersions, so the setting is
+// tested from the configuration file to the bytes on disk; it travels three
+// layers down through a context and could silently get lost on the way.
 func versionSandbox(t *testing.T, keep int) (*daemon.Runner, string, string) {
 	t.Helper()
 	dir := t.TempDir()
@@ -93,7 +86,6 @@ func versionsIn(t *testing.T, side string) []string {
 }
 
 func TestVersioningIsOffUntilAJobAsksForIt(t *testing.T) {
-	// The default, and every job today. Nothing extra on disk.
 	r, left, right := versionSandbox(t, 0)
 	overwrite(t, r, left, "one")
 	overwrite(t, r, left, "two")
@@ -115,8 +107,6 @@ func TestTheSettingReachesAllTheWayToTheDisk(t *testing.T) {
 }
 
 func TestOnlyTheLastFewAreKept(t *testing.T) {
-	// The other half of the promise. A history that grows without bound is not
-	// a feature, it is the tree doubling in size while nobody watches.
 	r, left, right := versionSandbox(t, 2)
 	for _, body := range []string{"one", "two", "three", "four", "five"} {
 		overwrite(t, r, left, body)

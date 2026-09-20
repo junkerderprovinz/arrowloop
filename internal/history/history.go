@@ -1,10 +1,5 @@
-// Package history keeps a record of what every run did.
-//
-// A scheduled job that nobody watches is only trustworthy if it can be asked
-// afterwards. The failure this guards against is not a crash, which is loud,
-// but a job that has been quietly doing nothing for three weeks because a path
-// changed: without a history there is nothing to notice, and the backup that
-// was believed to exist does not.
+// Package history keeps a record of what every run did, so a job that has
+// quietly done nothing for weeks can be noticed.
 package history
 
 import (
@@ -46,26 +41,17 @@ func (r Run) Changed() bool {
 	return r.Copied+r.Moved+r.Trashed+r.Conflicts+r.DirsMade+r.DirsRemoved > 0
 }
 
-// Entry is one thing a run did to one path.
-//
-// The counts on a Run answer "how much", and that turned out not to be the
-// question. A run that reports one error says nothing about WHICH file, and a
-// run that reports two conflicts says nothing about what it decided, which
-// matters most for a scheduled run nobody watched: the default keeps both
-// versions, so the decision was made on somebody's behalf and they were never
-// told. jdp: "was passiert bei fehlern und konflikten? Wo werden die angezeigt
-// und wo kann man konflikte loesen?"
+// Entry is one thing a run did to one path. The counts on a Run do not say
+// which file failed or how a conflict was decided; entries do.
 type Entry struct {
 	Kind string // copy, move, trash, conflict, mkdir, rmdir, skip, error
 	Side string // left, right, or empty where the action has no side
 	Path string
-	// Note carries what a number cannot: the error's own words, or which way a
-	// conflict was resolved. Empty for the ordinary case.
+	// Note is the error's own words, or which way a conflict was resolved.
+	// Empty for the ordinary case.
 	Note string
-	// Size is how big the file was, where the action had one. Zero for a
-	// folder, a skip and an error, which is "not applicable" rather than "an
-	// empty file". A per-file log without it says what moved and not what it
-	// cost.
+	// Size is how big the file was. Zero for a folder, a skip and an error,
+	// where it does not apply.
 	Size int64
 }
 
@@ -102,23 +88,17 @@ CREATE TABLE IF NOT EXISTS entries (
 );
 `
 
-// migrations are the ALTERs an existing database needs, which CREATE TABLE IF
-// NOT EXISTS cannot give it: that statement is a no-op on a table that already
-// exists, so a column added to the schema above reaches new installs only.
-//
-// Each has to be harmless when it has already been applied, because there is no
-// version number here to consult - the error from adding a duplicate column is
-// the check. Kept as a list rather than as one string so that one failing does
-// not stop the rest.
+// migrations are the ALTERs an existing database needs, since the schema
+// leaves a table that already exists alone. There is no version number, so
+// each must be harmless when it has already run; they are separate so that one
+// failing does not stop the rest.
 var migrations = []string{
 	`ALTER TABLE entries ADD COLUMN size INTEGER NOT NULL DEFAULT 0`,
 }
 
 // Open opens or creates the history database.
 func Open(ctx context.Context, path string) (*DB, error) {
-	// The run log defaults to sitting beside the configuration, whose folder
-	// always exists, but the path is configurable and a nested one would fail
-	// the same way a job's state database used to.
+	// The path is configurable, and a nested one may not exist yet.
 	if err := dbfile.EnsureDir(path); err != nil {
 		return nil, err
 	}
@@ -131,10 +111,8 @@ func Open(ctx context.Context, path string) (*DB, error) {
 		return nil, fmt.Errorf("create history schema: %w", err)
 	}
 	for _, m := range migrations {
-		// Errors ignored on purpose: the expected one is "duplicate column",
-		// which means the migration has already run. A real failure shows up on
-		// the next read, and refusing to open the log over it would take the
-		// whole program down for a column nothing has needed yet.
+		// The expected error is "duplicate column", meaning the migration has
+		// already run. A real failure shows up on the next read.
 		_, _ = handle.ExecContext(ctx, m)
 	}
 	return &DB{sql: handle}, nil
@@ -143,23 +121,10 @@ func Open(ctx context.Context, path string) (*DB, error) {
 // Close releases the handle.
 func (d *DB) Close() error { return d.sql.Close() }
 
-// Record stores one finished run and everything it did, together.
-//
-// One transaction, and that is the point rather than a performance note. A run
-// row without its entries reads as a run that touched nothing, which is exactly
-// the picture somebody would be given about the run they most want to look
-// into. Written apart, a crash between the two writes produces that picture
-// permanently.
-//
-// Said plainly because it would otherwise be assumed: THE ATOMICITY ITSELF IS
-// NOT COVERED BY A TEST. Reaching the failure it guards against means dying
-// between two writes, and the only ways to stage that from a test are a hook
-// that exists for the test alone or a data value crafted to break the second
-// insert - and a test that builds a state the program cannot reach is a test
-// that proves something about the test. What the tests beside this DO cover is
-// everything observable: the entries arrive, in order, tied to their own run,
-// and they are pruned with it. The transaction is here because it is right,
-// not because something checks it.
+// Record stores one finished run and everything it did in one transaction,
+// because a run row without its entries would read as a run that touched
+// nothing. The atomicity itself has no test, since staging a crash between the
+// two writes would need a hook that exists only for the test.
 func (d *DB) Record(ctx context.Context, r Run, entries []Entry) error {
 	tx, err := d.sql.BeginTx(ctx, nil)
 	if err != nil {
@@ -190,11 +155,8 @@ func (d *DB) Record(ctx context.Context, r Run, entries []Entry) error {
 	return tx.Commit()
 }
 
-// Entries returns what one run did, in the order it did it.
-//
-// Order matters here in a way it does not for the counts: reading down the list
-// of a failed run is how somebody works out what it got through before it
-// stopped.
+// Entries returns what one run did, in the order it did it, so a failed run
+// shows how far it got.
 func (d *DB) Entries(ctx context.Context, run int64) ([]Entry, error) {
 	rows, err := d.sql.QueryContext(ctx,
 		`SELECT kind, side, path, note, size FROM entries WHERE run = ? ORDER BY seq`, run)
@@ -214,84 +176,42 @@ func (d *DB) Entries(ctx context.Context, run int64) ([]Entry, error) {
 	return out, rows.Err()
 }
 
-// Touch is one thing that happened to one file, with the run it belonged to.
-//
-// The plain Entry says what was done and to which path, which is enough while
-// you are reading ONE run. Across runs it is not: the same file copied on
-// Tuesday and again on Friday is two identical lines, and neither says when.
+// Touch is one thing that happened to one file, with the run, job and time it
+// belongs to, so lines from different runs can be told apart.
 type Touch struct {
 	Entry
-	Run int64
-	// Job is which job's run this line came from.
-	//
-	// Redundant while the log is narrowed to one job and the whole point of it
-	// when it is not: the history tab lists every job at once, and a row that
-	// says a photo was copied without saying by which job leaves the reader to
-	// open the run to find out.
+	Run  int64
 	Job  string
 	When time.Time
 }
 
-// Recent touches for one job, newest first, across all of its runs.
-//
-// This is a different question from Recent(), and the difference is what a job
-// card's activity fold is for. "Which runs happened" is the run log's question
-// and the history tab answers it. "What has this job actually DONE to my files"
-// is the one somebody has while looking at the job, and until now the fold
-// answered the first one - the same list, in a smaller box. jdp: "Im
-// aktivitaetslog moechte ich nicht die laeufe sehen sondern ein log ueber die
-// einzelnen dateien, welche kopiert, welche geloescht wurden etc."
-//
-// Joined rather than fetched run by run: a job that ran two hundred times to
-// produce four interesting lines would otherwise cost two hundred queries to
-// find them.
+// Touches returns what one job did to files, newest first, across all of its
+// runs.
 func (d *DB) Touches(ctx context.Context, job string, limit int) ([]Touch, error) {
 	return d.TouchesLike(ctx, job, "", limit)
 }
 
 // TouchesLike is Touches, narrowed to the paths that contain a piece of text.
-//
-// In the DATABASE rather than in the browser, and that is the whole point: this
-// log runs to tens of thousands of rows, the screen holds a few dozen of them,
-// and filtering what was already fetched would search the last page instead of
-// the log. "Which run touched that file" is the question this answers, and it
-// cannot be answered by looking at the newest fifty rows.
-//
-// A plain substring match, case-insensitive, because a path is not prose: what
-// somebody types here is a fragment of a name they half remember.
 func (d *DB) TouchesLike(ctx context.Context, job, contains string, limit int) ([]Touch, error) {
 	return d.Log(ctx, Filter{Job: job, Contains: contains, Limit: limit})
 }
 
-// Filter narrows the per-file log.
-//
-// Every field is optional and an empty one means "do not narrow by this", which
-// is why the whole log is `Filter{}`. A zero Limit takes the default rather than
-// returning nothing: a filter nobody filled in should show the newest page, not
-// an empty screen.
+// Filter narrows the per-file log. An empty field does not narrow, so the
+// whole log is Filter{}, and a zero Limit takes the default.
 type Filter struct {
-	// Job narrows to one job. Empty means every job, which is what the history
-	// tab asks for.
+	// Job narrows to one job. Empty means every job.
 	Job string
-	// Contains is a fragment of a path, matched case-insensitively. A path is
-	// not prose: what somebody types is a piece of a name they half remember.
+	// Contains is a fragment of a path, matched case-insensitively.
 	Contains string
-	// Kinds narrows to the things that happened - copy, move, trash, conflict,
-	// error and so on. Empty means all of them.
+	// Kinds narrows to kinds of entry such as copy, trash or error. Empty
+	// means all of them.
 	Kinds []string
 	Limit int
 }
 
-// Log is every file this engine has touched, newest first.
-//
-// jdp: "in Autosync sieht man jede einzelne datei im Verlauf, es ist wie ein
-// log, das moechte ich in AL auch haben."
-//
-// NARROWED IN THE DATABASE, never in the screen. This runs to tens of thousands
-// of rows while a screen holds a few dozen, so filtering what was already
-// fetched would search the last page instead of the log - and "which run touched
-// that file" is exactly the question that cannot be answered from the newest
-// fifty rows.
+// Log is every file this engine has touched, newest first. It narrows in the
+// database, since the log runs to tens of thousands of rows and filtering the
+// newest page would not find which run touched an older file.
 func (d *DB) Log(ctx context.Context, f Filter) ([]Touch, error) {
 	limit := f.Limit
 	if limit <= 0 {
@@ -309,8 +229,8 @@ func (d *DB) Log(ctx context.Context, f Filter) ([]Touch, error) {
 		}
 	}
 	if f.Contains != "" {
-		// LIKE's own wildcards escaped, so a path with an underscore in it -
-		// which is most of them - does not match everything.
+		// LIKE's wildcards are escaped, so an underscore in a path matches
+		// only an underscore.
 		esc := strings.NewReplacer(`\`, `\\`, "%", `\%`, "_", `\_`).Replace(f.Contains)
 		where += ` AND e.path LIKE ? ESCAPE '\'`
 		args = append(args, "%"+esc+"%")
@@ -340,39 +260,23 @@ func (d *DB) Log(ctx context.Context, f Filter) ([]Touch, error) {
 	return out, rows.Err()
 }
 
-// Show says which runs a listing is asking for.
-//
-// It exists because the run log's honesty is also its problem. Every run is
-// written down, including the ones that found nothing to do, and that is what
-// makes "has this been working" answerable at all. But a job watching a folder
-// runs on every change and on its schedule besides, so it writes an entry a
-// minute, and fifty entries is then fifty minutes: a job that runs once a day is
-// not further down the page, it is not on the page. jdp: "echtzeit auftraege
-// ausblenden weil die andauernd laufen und ein eintrag machen. wenn ein auftrag
-// zb nur einemal am tag laeuft geht der unter."
-//
-// Which is why this is a QUERY and not a filter the browser applies to what it
-// was sent. Hiding the quiet runs after the fact hides them out of the fifty
-// already fetched and leaves the daily job just as missing.
+// Show says which runs a listing is asking for. A watching job writes a run
+// every few minutes and pushes a daily job off the page, so the quiet runs are
+// left out by the query rather than hidden from what was already fetched.
 type Show string
 
 const (
 	// ShowAll is every run, which is what the log is for.
 	ShowAll Show = ""
-	// ShowChanged is the runs that did something: copied, moved, trashed,
-	// resolved a conflict, or made or removed a folder. A run that failed did
-	// not do those things and is included anyway, because a failure is the
-	// most interesting thing a run can report.
+	// ShowChanged is the runs that copied, moved, trashed, resolved a
+	// conflict, or made or removed a folder, plus every failed run.
 	ShowChanged Show = "changed"
-	// ShowFailed is the runs that ended badly, and nothing else.
+	// ShowFailed is the runs that ended badly.
 	ShowFailed Show = "failed"
 )
 
-// where is the SQL this filter means, or the empty string for all of them.
-//
-// Written next to the constants rather than at the call site so the two cannot
-// drift: `changed` here has to keep meaning what Run.Changed() means, and a
-// copy of this condition somewhere else is how those two stop agreeing.
+// where is the SQL condition for this filter, or "" for all runs. The changed
+// condition has to match Run.Changed.
 func (s Show) where() string {
 	switch s {
 	case ShowChanged:
@@ -390,15 +294,8 @@ func (d *DB) Recent(ctx context.Context, job string, show Show, limit int) ([]Ru
 	return d.Between(ctx, job, show, time.Time{}, time.Time{}, limit)
 }
 
-// Between is Recent, narrowed to a stretch of time.
-//
-// Either end may be zero, which means "no bound that way": a person asking
-// "what happened at the weekend" has one end in mind, and one asking "anything
-// since Tuesday" has the other. Both zero is Recent.
-//
-// In the query rather than after it, for the same reason the activity log's
-// search is: a watching job writes a row every few minutes, and filtering the
-// newest fifty rows by date answers a question about the newest fifty rows.
+// Between is Recent, narrowed to a stretch of time. A zero end means no bound
+// that way.
 func (d *DB) Between(ctx context.Context, job string, show Show, since, until time.Time, limit int) ([]Run, error) {
 	if limit <= 0 {
 		limit = 20
@@ -414,7 +311,6 @@ func (d *DB) Between(ctx context.Context, job string, show Show, since, until ti
 	if w := show.where(); w != "" {
 		conds = append(conds, w)
 	}
-	// Stored as nanoseconds since the epoch, which is what `started` holds.
 	if !since.IsZero() {
 		conds = append(conds, `started >= ?`)
 		args = append(args, since.UnixNano())
@@ -452,11 +348,6 @@ func (d *DB) Between(ctx context.Context, job string, show Show, since, until ti
 
 // LastSuccess returns when a job last finished without an error, and whether it
 // ever has.
-//
-// This is the question a person actually asks, and the one a list of runs
-// answers badly: "when did this last work" is not the same as "when did this
-// last run", and a job failing every fifteen minutes for a week looks busy in a
-// log while being of no use whatsoever.
 func (d *DB) LastSuccess(ctx context.Context, job string) (time.Time, bool, error) {
 	var finished int64
 	err := d.sql.QueryRowContext(ctx,
@@ -471,21 +362,10 @@ func (d *DB) LastSuccess(ctx context.Context, job string) (time.Time, bool, erro
 }
 
 // FailuresSince counts the runs of one job that ended badly after a given
-// moment, and reports when the last of them finished.
-//
-// The moment to pass is the job's last success, which makes this "how many
-// times in a row has it failed" - the question behind waiting longer between
-// attempts, and behind stopping after a few. A job that has never succeeded
-// gets the zero time, and then this counts every failure it ever had, which is
-// the right answer for a job that has never worked.
-//
-// Held-back runs are not failures and never reach the log as one, so nothing
-// here has to exclude them: a run waiting for a charger is not recorded at all.
+// moment, and reports when the last of them finished. Passed the job's last
+// success, it counts the failures in a row; the zero time counts them all.
 func (d *DB) FailuresSince(ctx context.Context, job string, since time.Time) (int, time.Time, error) {
-	// The zero time means "every failure it ever had", spelled out rather than
-	// left to UnixNano. That method is only defined for years between 1678 and
-	// 2262, and on the zero time it overflows to a large negative number -
-	// which happens to compare correctly here and is not a thing to build on.
+	// UnixNano is undefined for the zero time.
 	cut := int64(math.MinInt64)
 	if !since.IsZero() {
 		cut = since.UnixNano()
@@ -511,11 +391,8 @@ func (d *DB) Prune(ctx context.Context, keep time.Duration, now time.Time) (int6
 		return 0, nil
 	}
 	cut := now.Add(-keep).UnixNano()
-	// The entries go with their run, and they go FIRST. SQLite does not enforce
-	// a foreign key unless asked to, so nothing here would have complained
-	// about entries whose run no longer exists - they would simply have sat in
-	// the file for ever, invisible and growing, which is the exact failure
-	// pruning exists to prevent.
+	// Entries go first, while their runs can still be found. SQLite does not
+	// enforce the foreign key, so orphaned entries would stay for ever.
 	if _, err := d.sql.ExecContext(ctx,
 		`DELETE FROM entries WHERE run IN (SELECT id FROM runs WHERE started < ?)`, cut); err != nil {
 		return 0, fmt.Errorf("prune history entries: %w", err)

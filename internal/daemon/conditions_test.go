@@ -12,13 +12,6 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/job"
 )
 
-// A condition holds automatic work and never holds a person.
-//
-// That asymmetry is the whole feature. Somebody pressing the button on battery
-// has decided; a program that refused it would be arguing. And a machine
-// behaving exactly as instructed must not fill the log with failures, or people
-// stop reading the log, which is the one thing it exists for.
-
 func condSandbox(t *testing.T) (*daemon.Runner, string) {
 	t.Helper()
 	dir := t.TempDir()
@@ -62,8 +55,7 @@ func TestAConditionHoldsAScheduledRun(t *testing.T) {
 	if _, statErr := os.Stat(filepath.Join(right, "a.txt")); statErr == nil {
 		t.Error("a held run wrote anyway")
 	}
-	// The reason comes through, or the log says "held back" and nothing about
-	// which condition, which is the one thing somebody needs to know.
+	// The log has to say which condition held it.
 	if err.Error() == daemon.ErrHeldBack.Error() {
 		t.Error("the refusal carries none of the condition's own words")
 	}
@@ -82,8 +74,7 @@ func TestAConditionNeverHoldsAHandStartedRun(t *testing.T) {
 }
 
 func TestNoConditionMeansNothingIsHeld(t *testing.T) {
-	// The container build, and every desktop that has not switched either
-	// setting on. This is the default and it must be untouched by the feature.
+	// The container build, and every desktop with neither setting on.
 	r, right := condSandbox(t)
 	if _, err := r.RunAutomatically(context.Background(), "x"); err != nil {
 		t.Fatalf("a run with no condition was held: %v", err)

@@ -6,11 +6,8 @@ import (
 	"testing"
 	"time"
 
-	// The real zone database, carried in the test binary. The DST test below
-	// needs a zone that actually moves its clocks, and a fixed offset cannot
-	// provide one. Without this the test would depend on the machine having a
-	// zone database installed, so it would pass on a developer's laptop and skip
-	// or fail on a build machine, which is the same as not having written it.
+	// The clock change test needs Europe/Berlin on machines without a zone
+	// database.
 	_ "time/tzdata"
 
 	"github.com/junkerderprovinz/arrowloop/internal/history"
@@ -41,14 +38,7 @@ func rowFor(t *testing.T, s history.Stats, day, job string) history.DailyStat {
 	return history.DailyStat{}
 }
 
-// TestEveryDayInTheWindowComesBackIncludingTheQuietOnes.
-//
-// A chart drawn from only the days that have rows draws the quiet week as a gap,
-// and a gap reads as data that was not collected rather than as a machine that
-// did nothing. Those two mean opposite things, and the second one is exactly
-// what somebody opens this page to find out. Checked in both directions: the
-// silent days have to be there AND the busy day has to keep its numbers, so a
-// range filled in by throwing the real rows away fails just as loudly.
+// The quiet days have to be there and the busy days have to keep their numbers.
 func TestEveryDayInTheWindowComesBackIncludingTheQuietOnes(t *testing.T) {
 	db := openTemp(t)
 	now := time.Date(2027, 3, 10, 12, 0, 0, 0, time.UTC)
@@ -67,8 +57,6 @@ func TestEveryDayInTheWindowComesBackIncludingTheQuietOnes(t *testing.T) {
 	want := []string{"2027-03-06", "2027-03-07", "2027-03-08", "2027-03-09", "2027-03-10"}
 	for i, day := range want {
 		if got.Rows[i].Day != day {
-			// Order is not a nicety here. A chart plotted from rows in whatever
-			// order the database felt like is a scribble.
 			t.Fatalf("row %d is %s, expected %s: the days are not in order", i, got.Rows[i].Day, day)
 		}
 	}
@@ -89,15 +77,8 @@ func TestEveryDayInTheWindowComesBackIncludingTheQuietOnes(t *testing.T) {
 	}
 }
 
-// TestTheDayIsCutInTheCallersZoneAndNotInUTC.
-//
-// The timestamps are stored as UnixNano, so cutting the buckets in UTC is the
-// thing that happens by accident, and it is wrong for most of the planet: a run
-// at 01:00 on a Tuesday in Berlin is still Monday in UTC. The two cases below
-// push the answer in OPPOSITE directions from UTC on purpose, so a summary that
-// quietly groups in UTC cannot pass one of them by luck. Both runs sit well
-// inside their window either way, so the failure shows up as the wrong date on
-// the bar rather than as a row that fell out of the range.
+// The two cases move the day in opposite directions from UTC, so grouping in
+// UTC cannot pass both.
 func TestTheDayIsCutInTheCallersZoneAndNotInUTC(t *testing.T) {
 	east := time.FixedZone("Kiritimati", 14*3600)
 	west := time.FixedZone("Baker", -12*3600)
@@ -133,21 +114,9 @@ func TestTheDayIsCutInTheCallersZoneAndNotInUTC(t *testing.T) {
 	}
 }
 
-// TestAWindowAcrossAClockChangeKeepsItsDaysStraight.
-//
-// A day is not always 24 hours long, and this is the test that says so out loud.
-// The last Sunday in March is 23 hours long in Berlin, so a window built by
-// taking 24 hours off a midnight five times drifts an hour further out of step
-// with every step: it produces the 27th twice, drops the 28th entirely, and
-// starts a day earlier than it should. A missing bar in the middle of a chart is
-// the failure the empty days were filled in to prevent, arriving through the
-// back door.
-//
-// The two runs on either side of the changeover cover the other half of it. The
-// window spans two different offsets, so a summary that works out the offset
-// once and applies it to everything is wrong for whichever side it did not
-// measure, and these two are placed so that either choice puts one of them on
-// the wrong day.
+// The last Sunday in March is 23 hours long in Berlin, so stepping back 24 hours
+// at a time would produce the 27th twice and drop the 28th. The runs on either
+// side of the change catch an offset worked out once for the whole window.
 func TestAWindowAcrossAClockChangeKeepsItsDaysStraight(t *testing.T) {
 	berlin, err := time.LoadLocation("Europe/Berlin")
 	if err != nil {
@@ -155,11 +124,8 @@ func TestAWindowAcrossAClockChangeKeepsItsDaysStraight(t *testing.T) {
 	}
 	db := openTemp(t)
 
-	// 23:30 on the 27th, still on winter time, half an hour before the day ends.
 	record(t, db, "photos", time.Date(2027, 3, 27, 23, 30, 0, 0, berlin), history.Run{Copied: 1})
-	// Midday on the 28th, the short day itself.
 	record(t, db, "photos", time.Date(2027, 3, 28, 12, 0, 0, 0, berlin), history.Run{Copied: 2})
-	// 00:30 on the 29th, now on summer time, half an hour after the day began.
 	record(t, db, "photos", time.Date(2027, 3, 29, 0, 30, 0, 0, berlin), history.Run{Copied: 4})
 
 	now := time.Date(2027, 3, 30, 12, 0, 0, 0, berlin)
@@ -186,12 +152,6 @@ func TestAWindowAcrossAClockChangeKeepsItsDaysStraight(t *testing.T) {
 	}
 }
 
-// TestTheAnswerNamesTheZoneItCutIn.
-//
-// A chart with no zone on it is a chart every reader assumes was cut in theirs,
-// and half of them are wrong. The name has to be the one actually in effect,
-// which is why this compares against what the zone itself reports rather than
-// against a string typed here.
 func TestTheAnswerNamesTheZoneItCutIn(t *testing.T) {
 	db := openTemp(t)
 	zone := time.FixedZone("Kiritimati", 14*3600)
@@ -207,13 +167,6 @@ func TestTheAnswerNamesTheZoneItCutIn(t *testing.T) {
 	}
 }
 
-// TestTheWindowIsBoundedAndSaysSo.
-//
-// An unbounded summary is an invitation to ask for everything ever, and on a run
-// log nobody has pruned that is a browser being handed tens of thousands of rows
-// to draw a chart three hundred pixels wide. Both directions: an absurd request
-// is cut down, and a request for nothing in particular still gets a real window
-// rather than none.
 func TestTheWindowIsBoundedAndSaysSo(t *testing.T) {
 	db := openTemp(t)
 	now := time.Date(2027, 3, 10, 12, 0, 0, 0, time.UTC)
@@ -227,9 +180,6 @@ func TestTheWindowIsBoundedAndSaysSo(t *testing.T) {
 			wide.Days, len(wide.Rows), history.MaxDays)
 	}
 
-	// The cut has to be visible. Answering a shorter window while letting the
-	// caller go on believing it got the one it asked for puts a chart on the
-	// screen with the wrong label under it.
 	if wide.Days == 5000 {
 		t.Error("the answer claims the window it was asked for rather than the one it used")
 	}
@@ -244,14 +194,8 @@ func TestTheWindowIsBoundedAndSaysSo(t *testing.T) {
 	}
 }
 
-// TestARunOutsideTheWindowIsNotCounted.
-//
-// Both ends, because both are a bound and a bound that is only applied at one
-// end is half a bound. The old run is the ordinary case. The one dated ahead is
-// not hypothetical: a machine whose clock was wrong and then corrected has runs
-// stamped in the future for ever, and without the upper bound they would be
-// quietly added to the totals while appearing on no bar at all, which is the
-// worst of both, a number under the chart that the chart does not add up to.
+// A machine whose clock was wrong and then corrected has runs stamped in the
+// future, which would count in the totals and on no bar.
 func TestARunOutsideTheWindowIsNotCounted(t *testing.T) {
 	db := openTemp(t)
 	now := time.Date(2027, 3, 10, 12, 0, 0, 0, time.UTC)
@@ -275,13 +219,6 @@ func TestARunOutsideTheWindowIsNotCounted(t *testing.T) {
 	}
 }
 
-// TestTheTotalsAreTheSumOfTheBars.
-//
-// The number beside a chart and the chart itself have to be the same claim. They
-// are computed from one pass here for exactly this reason, and this is what says
-// so: a total worked out separately drifts the first time one of the two grows a
-// filter the other does not have, and a total that disagrees with the picture
-// under it is worse than no total, because it looks authoritative.
 func TestTheTotalsAreTheSumOfTheBars(t *testing.T) {
 	db := openTemp(t)
 	now := time.Date(2027, 3, 10, 12, 0, 0, 0, time.UTC)
@@ -309,20 +246,14 @@ func TestTheTotalsAreTheSumOfTheBars(t *testing.T) {
 		sum.Skipped != got.Totals.Skipped || sum.Failed != got.Totals.Failed {
 		t.Errorf("the bars add up to %+v and the totals say %+v", sum, got.Totals)
 	}
-	// And the sum is the right sum, not merely a consistent one: two totals
-	// computed from the same broken pass agree with each other perfectly.
+	// Two totals from the same broken pass would agree with each other.
 	if got.Totals.Runs != 3 || got.Totals.Copied != 19 || got.Totals.Skipped != 4 {
 		t.Errorf("three runs copying 19 files between them came back as %+v", got.Totals)
 	}
 }
 
-// TestAFailedRunIsStillARun.
-//
-// Counted twice on purpose, once as a run and once as a failure, because the two
-// answer different questions: how busy was this day, and how much of that
-// busyness was a job failing over and over. A failure taken out of the run count
-// makes a job failing every fifteen minutes look like a quiet day, which is the
-// picture that lets it go on failing for a fortnight.
+// A failure taken out of the run count would make a job failing every fifteen
+// minutes look like a quiet day.
 func TestAFailedRunIsStillARun(t *testing.T) {
 	db := openTemp(t)
 	now := time.Date(2027, 3, 10, 12, 0, 0, 0, time.UTC)
@@ -346,12 +277,6 @@ func TestAFailedRunIsStillARun(t *testing.T) {
 	}
 }
 
-// TestPerJobRowsKeepTheJobsApart.
-//
-// Both directions in one test, because they are the same mistake seen from
-// either side: asked to split, a summary that ignores the job name hands back
-// one line with everything on it, and asked not to split, one that keys on the
-// job anyway hands back two rows for the same day and doubles the chart.
 func TestPerJobRowsKeepTheJobsApart(t *testing.T) {
 	db := openTemp(t)
 	now := time.Date(2027, 3, 10, 12, 0, 0, 0, time.UTC)
@@ -366,9 +291,6 @@ func TestPerJobRowsKeepTheJobsApart(t *testing.T) {
 	if len(split.Rows) != 2 {
 		t.Fatalf("two jobs ran on one day and the split summary has %d rows: %+v", len(split.Rows), split.Rows)
 	}
-	// Sorted, because a map hands its keys back differently every time and a
-	// chart whose lines swap colours between refreshes cannot be compared with
-	// the one somebody was just looking at.
 	if split.Rows[0].Job != "docs" || split.Rows[1].Job != "photos" {
 		t.Errorf("the lines are in the order %q, %q rather than sorted", split.Rows[0].Job, split.Rows[1].Job)
 	}
@@ -394,19 +316,13 @@ func TestPerJobRowsKeepTheJobsApart(t *testing.T) {
 	}
 }
 
-// TestAJobThatDidNothingStillDrawsItsFlatLine.
-//
-// This is the whole reason the run log exists, asked as a chart. A job that has
-// quietly stopped working has no rows, so a series built from what the database
-// returned would answer "there is no such job" to the exact question "has this
-// job been doing anything", and an empty chart looks like a page that failed to
-// load rather than like a job that has not run since February.
+// A job that has stopped working has no rows, and its chart still has to show
+// the flat line.
 func TestAJobThatDidNothingStillDrawsItsFlatLine(t *testing.T) {
 	db := openTemp(t)
 	now := time.Date(2027, 3, 10, 12, 0, 0, 0, time.UTC)
 
-	// Another job that IS busy, so the summary cannot pass by returning an empty
-	// answer for an empty database.
+	// Another job is busy, so an empty database cannot pass the test.
 	record(t, db, "docs", now, history.Run{Copied: 9})
 
 	got, err := db.Summary(t.Context(), history.StatsQuery{Job: "photos", Days: 7, Now: now, In: time.UTC})
@@ -429,15 +345,8 @@ func TestAJobThatDidNothingStillDrawsItsFlatLine(t *testing.T) {
 	}
 }
 
-// TestAskingForEveryJobOnAFreshMachineIsAListAndNotNull.
-//
-// A nil slice encodes as JSON null, and everything that draws this treats a list
-// as a list: the first map or filter over a null takes the page down with a
-// blank screen and one line in a console nobody has open. The trap is that the
-// nil case is the EMPTY case, so it shows up on a fresh installation and never
-// once on a machine that already has data, which is every machine this gets
-// developed on. Split per job with nothing to split is the only way to reach it,
-// because every other shape fills its days in.
+// A nil slice encodes as null and breaks the chart. Splitting per job with
+// nothing to split is the only shape that does not fill its days in.
 func TestAskingForEveryJobOnAFreshMachineIsAListAndNotNull(t *testing.T) {
 	db := openTemp(t)
 	now := time.Date(2027, 3, 10, 12, 0, 0, 0, time.UTC)
@@ -453,9 +362,6 @@ func TestAskingForEveryJobOnAFreshMachineIsAListAndNotNull(t *testing.T) {
 		t.Fatalf("nothing has ever run and the answer holds %d rows", len(got.Rows))
 	}
 
-	// Through the encoder, because the nil is only a problem once it has been
-	// written out and a struct field that reads fine in Go is what makes this
-	// easy to miss.
 	body, err := json.Marshal(got)
 	if err != nil {
 		t.Fatalf("marshal: %v", err)

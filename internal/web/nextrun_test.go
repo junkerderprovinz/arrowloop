@@ -7,15 +7,8 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/job"
 )
 
-/*
-When the clock will next reach a job, and the three ways it never will.
-
-jdp asked the overview to look like Autosync's, and Autosync's status card says
-"Nächste Sync" on its own line. A time printed there for a job the clock is
-never going to start would be a promise nobody keeps - which is worse than the
-empty line it replaced, because an empty line asks a question and a wrong time
-answers one.
-*/
+// A time shown for a job the clock will never start would be a promise nobody
+// keeps.
 func TestWhenTheClockNextReachesAJob(t *testing.T) {
 	// A Monday, so the weekday expression below has a day to land on.
 	now := time.Date(2027, 3, 1, 12, 30, 0, 0, time.UTC)
@@ -45,8 +38,7 @@ func TestWhenTheClockNextReachesAJob(t *testing.T) {
 			want:     time.Date(2027, 3, 2, 3, 0, 0, 0, time.UTC),
 			haveTime: true,
 		},
-		// THE THREE SILENCES, and they are one answer to a reader: the clock is
-		// not going to start this job.
+		// The clock will not start these.
 		{name: "no schedule at all, so it runs when somebody says so", schedule: ""},
 		{name: "whitespace is no schedule either", schedule: "   "},
 		{name: "switched off, whatever the expression says", schedule: "0 3 * * *", disabled: true},
@@ -64,13 +56,7 @@ func TestWhenTheClockNextReachesAJob(t *testing.T) {
 	}
 }
 
-/*
-A WATCHING job still gets its time.
-
-The watcher is not a schedule; it is a shortcut that reacts sooner. The
-schedule behind it is the backstop and the thing that will definitely happen,
-so hiding the time for a watching job would hide the only guarantee it has.
-*/
+// The schedule behind a watcher is the run that will definitely happen.
 func TestAWatchingJobStillHasItsBackstop(t *testing.T) {
 	now := time.Date(2027, 3, 1, 12, 30, 0, 0, time.UTC)
 	when, ok := nextRun(job.Job{Schedule: "@every 1h", Watch: true}, now)

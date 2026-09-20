@@ -18,13 +18,8 @@ func uiFS() fstest.MapFS {
 	}
 }
 
-// TestTheInterfaceCarriesAValidator.
-//
-// An embedded file has no modification time, so net/http sends no
-// Last-Modified. Without an ETag the browser has NO validator at all and may
-// keep the bundle it has for as long as it likes. The symptom is not an error
-// anybody can see from outside: it is one person looking at a new build and
-// seeing the old interface, while the server is answering perfectly.
+// An embedded file has no modification time, so without an ETag a browser can
+// keep showing an old build.
 func TestTheInterfaceCarriesAValidator(t *testing.T) {
 	h := newHarness(t)
 	srv := newServer(t, &web.Server{History: h.history, Runner: h.runner, UI: uiFS()})
@@ -44,12 +39,8 @@ func TestTheInterfaceCarriesAValidator(t *testing.T) {
 	}
 }
 
-// TestTheTwoCacheRulesPullApartOnPurpose.
-//
-// index.html must be revalidated on every load, because it names the others.
-// A content-hashed bundle may be kept without asking, because a changed file
-// arrives under a different name and this copy can never become wrong. Getting
-// these the same way round is what makes an update invisible.
+// index.html names the other files and is revalidated on every load; a
+// content-hashed bundle changes its name when it changes and may be kept.
 func TestTheTwoCacheRulesPullApartOnPurpose(t *testing.T) {
 	h := newHarness(t)
 	srv := newServer(t, &web.Server{History: h.history, Runner: h.runner, UI: uiFS()})
@@ -73,10 +64,7 @@ func TestTheTwoCacheRulesPullApartOnPurpose(t *testing.T) {
 	}
 }
 
-// TestAValidatorActuallySavesTheTransfer.
-//
-// The header is only half of it: a conditional request has to come back 304
-// with no body, or "revalidate every time" costs a full download every time.
+// Without a 304, revalidating on every load would download everything again.
 func TestAValidatorActuallySavesTheTransfer(t *testing.T) {
 	h := newHarness(t)
 	srv := newServer(t, &web.Server{History: h.history, Runner: h.runner, UI: uiFS()})
@@ -103,11 +91,7 @@ func TestAValidatorActuallySavesTheTransfer(t *testing.T) {
 	}
 }
 
-// TestTwoDifferentFilesGetTwoDifferentTags.
-//
-// One tag for everything would validate as "unchanged" across a real change,
-// which is worse than no tag: the browser would then be entitled to keep the
-// old copy AND be told it was right to.
+// One tag for everything would validate a real change as unchanged.
 func TestTwoDifferentFilesGetTwoDifferentTags(t *testing.T) {
 	h := newHarness(t)
 	srv := newServer(t, &web.Server{History: h.history, Runner: h.runner, UI: uiFS()})
@@ -130,14 +114,8 @@ func TestTwoDifferentFilesGetTwoDifferentTags(t *testing.T) {
 	}
 }
 
-// TestAMissingBundleIsNotThePage.
-//
-// The SPA fallback exists so a reload of a sub-page reaches the interface's own
-// router. Applying it under assets/ turns "this bundle is gone" into "here is
-// some HTML, with a 200", and a browser holding a stale index.html then asks
-// for a bundle that no longer exists and is handed a web page where it expected
-// a script. It fails silently and goes on showing what it had, which is exactly
-// what "das UI ist völlig unverändert" looks like from the inside.
+// A browser holding a stale index.html asks for a bundle that no longer
+// exists; handed HTML instead, it silently keeps showing the old interface.
 func TestAMissingBundleIsNotThePage(t *testing.T) {
 	h := newHarness(t)
 	srv := newServer(t, &web.Server{History: h.history, Runner: h.runner, UI: uiFS()})
@@ -151,8 +129,6 @@ func TestAMissingBundleIsNotThePage(t *testing.T) {
 		t.Errorf("a bundle from an older build answered %s rather than saying it is gone", resp.Status)
 	}
 
-	// And the fallback still works for everything that is not an asset, which is
-	// the whole reason it exists.
 	page, err := srv.Client().Get(srv.URL + "/some/deep/route")
 	if err != nil {
 		t.Fatal(err)

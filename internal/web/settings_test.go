@@ -10,11 +10,6 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/web"
 )
 
-// TestASettingArrivesInTheFile.
-//
-// The whole point of this endpoint. Every one of these values was already read
-// by the engine and had nowhere to be set except the file, which is why the
-// program looked like it could not do things it has always done.
 func TestASettingArrivesInTheFile(t *testing.T) {
 	h := newHarness(t)
 	srv := newServer(t, &web.Server{History: h.history, Runner: h.runner})
@@ -47,12 +42,8 @@ func TestASettingArrivesInTheFile(t *testing.T) {
 	}
 }
 
-// TestAKeyNobodyMentionedSurvives.
-//
-// The endpoint merges. A caller sends the settings it edits, and one that has
-// never heard of a key must not be able to remove it by not mentioning it -
-// which is exactly what a newer interface talking to an older file, or an older
-// interface talking to a newer one, would otherwise do on every save.
+// The endpoint merges, so an interface of another version cannot drop a key it
+// does not know.
 func TestAKeyNobodyMentionedSurvives(t *testing.T) {
 	h := newHarness(t)
 	srv := newServer(t, &web.Server{History: h.history, Runner: h.runner})
@@ -84,11 +75,7 @@ func TestAKeyNobodyMentionedSurvives(t *testing.T) {
 	}
 }
 
-// TestAnEmptySettingIsRemovedRatherThanWrittenBlank.
-//
-// Clearing a value has to mean the key goes. Written as "" it is a value
-// somebody hand-editing the file has to wonder about, and the day one of these
-// grows a non-empty default an empty string would silently override it.
+// An empty string left in the file would override a future default.
 func TestAnEmptySettingIsRemovedRatherThanWrittenBlank(t *testing.T) {
 	h := newHarness(t)
 	srv := newServer(t, &web.Server{History: h.history, Runner: h.runner})
@@ -117,12 +104,8 @@ func TestAnEmptySettingIsRemovedRatherThanWrittenBlank(t *testing.T) {
 	}
 }
 
-// TestTheJobListCannotBeReplacedThroughHere.
-//
-// A caller that read the whole document and handed it back would otherwise
-// replace the job list with whatever it last saw, which is how a job added in
-// another window disappears. Settings and jobs have separate endpoints and this
-// is the boundary between them.
+// A caller handing back the whole document would otherwise drop a job added in
+// another window.
 func TestTheJobListCannotBeReplacedThroughHere(t *testing.T) {
 	h := newHarness(t)
 	srv := newServer(t, &web.Server{History: h.history, Runner: h.runner})
@@ -153,7 +136,6 @@ func TestTheJobListCannotBeReplacedThroughHere(t *testing.T) {
 	}
 }
 
-// TestReadingBackGivesTheSettingsAndNotTheJobs.
 func TestReadingBackGivesTheSettingsAndNotTheJobs(t *testing.T) {
 	h := newHarness(t)
 	srv := newServer(t, &web.Server{History: h.history, Runner: h.runner})

@@ -18,20 +18,8 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/state"
 )
 
-// TestConflictSurvivesACrashAtEveryStep pins the crash behaviour of the conflict
-// manoeuvre at every point it can be interrupted.
-//
-// A run can die between any two filesystem operations: the power goes, the
-// process is killed, the network drops. Resolving a conflict takes three
-// operations, so there are three ways to be interrupted, and after each of them
-// the NEXT run has to recover on its own without losing either version.
-//
-// What makes this work is not the order of the steps but the decision table: a
-// crash after the first step leaves the losing side without the plain name
-// while the winning side still holds its edited copy, and "deleted on one side,
-// edited on the other" restores the file instead of propagating the deletion.
-// This test also demands recovery in a SINGLE run, which is what separates this
-// order from the alternatives that converge only after an extra round.
+// After a crash between any two steps of a conflict resolution, the next run
+// has to recover on its own, in a single run, without losing either version.
 func TestConflictSurvivesACrashAtEveryStep(t *testing.T) {
 	for crashAfter := range apply.ConflictStepCount() {
 		t.Run(fmt.Sprintf("crash-after-step-%d", crashAfter+1), func(t *testing.T) {
@@ -52,15 +40,12 @@ func TestConflictSurvivesACrashAtEveryStep(t *testing.T) {
 			if !found {
 				t.Fatalf("expected a conflict to resolve, got %+v", p.Actions)
 			}
-			// Die partway through, using the engine's own steps.
 			if err := apply.RunConflictPrefix(ctx, j.ends, act, "crashrun", crashAfter+1); err != nil {
 				t.Fatalf("partial resolution: %v", err)
 			}
 
-			// Exactly ONE run must be enough to clean up after the crash.
-			// Allowing two would hide a real difference: an order that leaves
-			// the plain name still contested recovers eventually but costs an
-			// extra round and an extra conflict copy every time.
+			// One run, since an order that leaves the plain name contested
+			// would need an extra round and an extra conflict copy.
 			if _, _, err := engine.Once(ctx, j.ends, j.db, j.opt); err != nil {
 				t.Fatalf("recovery run: %v", err)
 			}
@@ -74,9 +59,7 @@ func TestConflictSurvivesACrashAtEveryStep(t *testing.T) {
 					t.Fatalf("%q differs between the sides after recovery", name)
 				}
 			}
-			// Neither version may have been lost. Both were real edits, and a
-			// conflict that quietly discards one of them is the failure this
-			// whole design exists to prevent.
+			// Both versions were real edits and neither may be lost.
 			for _, want := range []string{"the older text", "the newer text"} {
 				var seen bool
 				for _, content := range left {
@@ -138,8 +121,8 @@ func newConflict(t *testing.T) *conflictJob {
 	if _, _, err := engine.Once(ctx, j.ends, j.db, j.opt); err != nil {
 		t.Fatalf("seed run: %v", err)
 	}
-	// Two independent edits, with the right side deliberately the newer one so
-	// the winner is not whichever side happens to be written first.
+	// The right side is the newer, so the winner is not simply whichever side
+	// was written first.
 	writeFile(t, left, "notes.txt", "the older text")
 	time.Sleep(10 * time.Millisecond)
 	writeFile(t, right, "notes.txt", "the newer text")

@@ -14,16 +14,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/trash"
 )
 
-// These drive keepVersion directly rather than through Run.
-//
-// That is not a shortcut and it is worth stating plainly: the one line that
-// calls this from the Copy case is NOT in apply.go yet, so there is no path from
-// Run to here to drive. Writing a test that reached it anyway would mean building
-// a state the program cannot be in, which proves nothing about the program and
-// hides that the wiring is missing. What is tested is the function apply.go will
-// call, and what is not tested is that apply.go calls it.
-
-// versionSide is a real local filesystem, because the whole subject is what a
+// versionSide is a real local filesystem, because what is tested is what a
 // backend does with a path.
 type versionSide struct {
 	root string
@@ -69,16 +60,10 @@ func (s *versionSide) versions(t *testing.T) []trash.Entry {
 	return entries
 }
 
-// TestARunThatWasNeverToldToKeepVersionsKeepsNone.
-//
-// The default has to be off. Keeping versions doubles what a busy tree holds,
-// silently, inside the tree itself, and a sync tool that started eating disk
-// space on an upgrade is a sync tool nobody upgrades again.
 func TestARunThatWasNeverToldToKeepVersionsKeepsNone(t *testing.T) {
 	s := newVersionSide(t)
 	s.write(t, "docs/notes.txt", "the file about to be replaced")
 
-	// A plain context, exactly what every existing caller of Run passes today.
 	if err := keepVersion(context.Background(), s.fs, "docs/notes.txt", "20260907-101500"); err != nil {
 		t.Fatalf("a run with no versioning setting failed: %v", err)
 	}
@@ -90,13 +75,6 @@ func TestARunThatWasNeverToldToKeepVersionsKeepsNone(t *testing.T) {
 	}
 }
 
-// TestVersionsKeptReadsBackWhatTheRunWasTold, including the answer for a run that
-// was told nothing.
-//
-// The context is where this program already carries per-job settings, for the
-// reason engine.Configure gives: two jobs running at once must not be able to
-// take each other's. A package variable would have exactly that fault, and
-// parallelJobs is a real setting somebody uses.
 func TestVersionsKeptReadsBackWhatTheRunWasTold(t *testing.T) {
 	if got := versionsKept(context.Background()); got != 0 {
 		t.Errorf("a run that was told nothing keeps %d versions", got)
@@ -106,8 +84,7 @@ func TestVersionsKeptReadsBackWhatTheRunWasTold(t *testing.T) {
 			t.Errorf("a run told to keep %d reads back %d", want, got)
 		}
 	}
-	// Two runs at once, which is what parallelJobs allows. Each carries its own
-	// answer and neither can reach the other's.
+	// Two runs at once under parallelJobs keep their own answers.
 	one := WithVersions(context.Background(), 3)
 	two := WithVersions(context.Background(), 7)
 	if versionsKept(one) != 3 || versionsKept(two) != 7 {
@@ -115,7 +92,6 @@ func TestVersionsKeptReadsBackWhatTheRunWasTold(t *testing.T) {
 	}
 }
 
-// TestTheOldFileIsSetAsideBeforeTheCopyLandsOnIt is the hook doing its job.
 func TestTheOldFileIsSetAsideBeforeTheCopyLandsOnIt(t *testing.T) {
 	s := newVersionSide(t)
 	s.write(t, "docs/notes.txt", "the file about to be replaced")
@@ -132,9 +108,7 @@ func TestTheOldFileIsSetAsideBeforeTheCopyLandsOnIt(t *testing.T) {
 	if len(kept) != 1 {
 		t.Fatalf("one file was replaced and %d versions were kept: %+v", len(kept), kept)
 	}
-	// The same reserved prefix the trash uses, which is the one property that
-	// makes a copy safe to leave inside a synced tree: internal/scan skips it on
-	// both sides, so it never travels and never comes back as a new file.
+	// The scanner skips the reserved prefix, so the version never travels.
 	if !scan.IsReserved(kept[0].Remote) {
 		t.Errorf("the version went to %q, which the next run would sync to the other side", kept[0].Remote)
 	}
@@ -149,8 +123,6 @@ func TestTheOldFileIsSetAsideBeforeTheCopyLandsOnIt(t *testing.T) {
 	}
 }
 
-// TestTheHistoryStopsAtTheNumberAsked. A history that only grows is a disk that
-// only fills, and the whole point of asking for a number is that it is a bound.
 func TestTheHistoryStopsAtTheNumberAsked(t *testing.T) {
 	s := newVersionSide(t)
 	ctx := WithVersions(context.Background(), 2)
@@ -172,11 +144,7 @@ func TestTheHistoryStopsAtTheNumberAsked(t *testing.T) {
 	}
 }
 
-// TestAFileArrivingForTheFirstTimeIsNotAFailure.
-//
-// Most of what a copy does is put a file where there was none. If that answered
-// an error, every new file would become a skip with a reason, and switching
-// versioning on would look exactly like a job that had stopped working.
+// Most copies put a file where there was none.
 func TestAFileArrivingForTheFirstTimeIsNotAFailure(t *testing.T) {
 	s := newVersionSide(t)
 	ctx := WithVersions(context.Background(), 3)
@@ -188,18 +156,8 @@ func TestAFileArrivingForTheFirstTimeIsNotAFailure(t *testing.T) {
 	}
 }
 
-// TestAVersionThatCouldNotBeKeptStopsTheOverwrite is the reason this returns an
-// error at all.
-//
-// Somebody who asked for the last three versions of their files, and got an
-// overwrite instead because setting the old one aside quietly failed, has been
-// handed the exact outcome the setting exists to prevent. Returned as an error it
-// becomes a skip with a reason in internal/apply, the copy does not happen, and
-// the next run tries the same file again.
-//
-// The state is reachable and not contrived: a plain file where the versions
-// directory for this path has to be. Nothing removes it, because the scanner
-// skips the whole reserved prefix, so once such a file exists on a side it stays.
+// A plain file where the versions directory has to be stays for good, since
+// the scanner skips the reserved prefix.
 func TestAVersionThatCouldNotBeKeptStopsTheOverwrite(t *testing.T) {
 	s := newVersionSide(t)
 	s.write(t, "docs/notes.txt", "the file about to be replaced")

@@ -28,9 +28,8 @@ type volumeList struct {
 	} `json:"volumes"`
 }
 
-// TestMarkingADriveThroughTheScreen is the whole flow somebody actually
-// performs: plug a disk in, give it a name, and get back the string a job
-// stores. The identity is never typed by a person, which is the point.
+// Plug a disk in, give it a name and get back the string a job stores, without
+// anybody typing the identity.
 func TestMarkingADriveThroughTheScreen(t *testing.T) {
 	h := newHarness(t)
 	drive := t.TempDir()
@@ -87,17 +86,14 @@ func TestMarkingADriveThroughTheScreen(t *testing.T) {
 	if len(list.Volumes) != 0 {
 		t.Errorf("a forgotten drive is still listed: %+v", list.Volumes)
 	}
-	// The marker itself is left on the disk, so plugging it back in brings it
-	// back rather than asking for a new name.
+	// The marker stays on the disk, so plugging it back in brings it back.
 	if _, err := os.Stat(filepath.Join(drive, ".arrowloop", "volume.json")); err != nil {
 		t.Errorf("forgetting a drive deleted the marker on it: %v", err)
 	}
 }
 
-// TestTheBackendsOfferedAreTheOnesBuiltIn. A screen that offers a backend the
-// binary does not carry produces a job that fails on its first run with an
-// error about a missing configuration section, which points at the wrong thing
-// entirely.
+// A backend the binary does not carry would give a job that fails on its first
+// run with a misleading error.
 func TestTheBackendsOfferedAreTheOnesBuiltIn(t *testing.T) {
 	h := newHarness(t)
 	var got struct {
@@ -125,14 +121,12 @@ func TestTheBackendsOfferedAreTheOnesBuiltIn(t *testing.T) {
 	if offered["local"] {
 		t.Error("local is offered as a remote, which asks somebody to name the folder they are looking at")
 	}
-	// A backend nobody compiled in must not appear.
+	// This test binary does not compile dropbox in.
 	if offered["dropbox"] {
 		t.Error("a backend this build cannot reach is offered")
 	}
 
-	// And the promised ones come first. The registry is alphabetical, which
-	// puts crypt at the top: a wrapper around another remote, offered ahead of
-	// the four things anybody came here for, and the one the form opens on.
+	// The promised ones come first; the registry alone would start with crypt.
 	if len(got.Backends) == 0 || got.Backends[0].Name != "s3" {
 		var leading string
 		if len(got.Backends) > 0 {
@@ -141,7 +135,6 @@ func TestTheBackendsOfferedAreTheOnesBuiltIn(t *testing.T) {
 		t.Errorf("the list opens on %q rather than on a backend this product promises", leading)
 	}
 
-	// And every password field must be marked, or the screen will show one.
 	for _, b := range got.Backends {
 		if b.Name != "sftp" {
 			continue
@@ -164,9 +157,6 @@ func TestTheBackendsOfferedAreTheOnesBuiltIn(t *testing.T) {
 	}
 }
 
-// TestASecretNeverLeavesTheProcess is the one that matters. A screen that shows
-// a stored password to whoever opens it has undone the point of storing it
-// obscured.
 func TestASecretNeverLeavesTheProcess(t *testing.T) {
 	h := newHarness(t)
 	withRcloneConfig(t)
@@ -216,9 +206,7 @@ func TestASecretNeverLeavesTheProcess(t *testing.T) {
 		t.Fatal("the saved remote is not listed")
 	}
 
-	// Editing the host and sending the placeholder back must leave the password
-	// alone. Without that rule, changing an address in a form silently replaces
-	// the password with eight asterisks and the job fails on its next run.
+	// Sending the placeholder back with another edit leaves the password alone.
 	edit := `{"type":"sftp","settings":{"host":"other.example","user":"reeve","pass":"` + remotes.Placeholder + `"}}`
 	if resp, said = h.put(t, "/api/remotes/backup", edit); resp.StatusCode != http.StatusOK {
 		t.Fatalf("editing the remote: %s %s", resp.Status, said)
@@ -241,10 +229,8 @@ func quote(s string) string {
 	return string(out)
 }
 
-// withRcloneConfig points rclone at a configuration file this test owns.
-//
-// Without it these tests would write remotes into whatever rclone.conf the
-// machine running them happens to have, which is somebody's real one.
+// withRcloneConfig points rclone at a configuration file this test owns rather
+// than the real rclone.conf of the machine running it.
 func withRcloneConfig(t *testing.T) string {
 	t.Helper()
 	path := filepath.Join(t.TempDir(), "rclone.conf")

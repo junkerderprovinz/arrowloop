@@ -48,8 +48,6 @@ func fixture(t *testing.T, body func(dir, left, right string) string) (*job.Conf
 
 func jsonPath(p string) string { return strings.ReplaceAll(p, `\`, `\\`) }
 
-// TestRunSyncsAndRecords is the ordinary case: a job runs, the files move, and
-// the run leaves a record.
 func TestRunSyncsAndRecords(t *testing.T) {
 	cfg, hist, left, right := fixture(t, func(dir, left, right string) string {
 		return fmt.Sprintf(`{"jobs":[{"name":"photos","left":"%s","right":"%s","state":"%s","quietPeriod":"0s"}]}`,
@@ -81,12 +79,6 @@ func TestRunSyncsAndRecords(t *testing.T) {
 	}
 }
 
-// TestAFailedRunIsStillRecorded is the point of keeping a history at all.
-//
-// The failure this guards against is not a crash, which is loud, but a job that
-// has been failing quietly every quarter of an hour because a path changed. If
-// only successes were written down there would be nothing to notice, and the
-// backup somebody believes in does not exist.
 func TestAFailedRunIsStillRecorded(t *testing.T) {
 	cfg, hist, _, _ := fixture(t, func(dir, left, right string) string {
 		missing := filepath.Join(dir, "not-here", "at", "all")
@@ -113,12 +105,6 @@ func TestAFailedRunIsStillRecorded(t *testing.T) {
 	}
 }
 
-// TestAJobDoesNotOverlapItself covers the schedule that is faster than the job.
-//
-// A job set to run every fifteen minutes that takes twenty must not start a
-// second copy of itself. Two runs over one pair of folders would race each
-// other through the same files and the same state database, and the right
-// answer is simply to let this turn go by.
 func TestAJobDoesNotOverlapItself(t *testing.T) {
 	cfg, hist, left, _ := fixture(t, func(dir, left, right string) string {
 		return fmt.Sprintf(`{"jobs":[{"name":"slow","left":"%s","right":"%s","state":"%s","quietPeriod":"0s"}]}`,
@@ -163,8 +149,6 @@ func TestAJobDoesNotOverlapItself(t *testing.T) {
 	}
 }
 
-// TestAnUnknownJobIsNamed keeps the error useful. A typo in a job name at three
-// in the morning should say which name was not found, not fail obscurely.
 func TestAnUnknownJobIsNamed(t *testing.T) {
 	cfg, hist, _, _ := fixture(t, func(dir, left, right string) string {
 		return fmt.Sprintf(`{"jobs":[{"name":"real","left":"%s","right":"%s","state":"%s"}]}`,
@@ -177,8 +161,6 @@ func TestAnUnknownJobIsNamed(t *testing.T) {
 	}
 }
 
-// TestPruneDropsOldRuns keeps the log from growing without bound on a machine
-// nobody looks at.
 func TestPruneDropsOldRuns(t *testing.T) {
 	ctx := context.Background()
 	dir := t.TempDir()
@@ -211,19 +193,14 @@ func TestPruneDropsOldRuns(t *testing.T) {
 	if len(runs) != 2 {
 		t.Fatalf("%d runs left, want 2", len(runs))
 	}
-	// And a keep of zero must mean "forever", not "delete everything".
+	// A keep of zero means for ever, not delete everything.
 	if n, err := hist.Prune(ctx, 0, now); err != nil || n != 0 {
 		t.Fatalf("a zero retention deleted %d runs (err %v); it must mean keep forever", n, err)
 	}
 }
 
-// TestAnUnpluggedVolumeIsNotARun covers the whole reason internal/volume
-// exists. A job that lives on a removable drive has three possible outcomes
-// when the drive is not there, and only one of them is acceptable:
-//
-//   - it syncs against whatever now holds that path, which destroys data;
-//   - it fails, which trains its owner to ignore the notifications;
-//   - it does not run, which is the truth.
+// Syncing against whatever now holds the path would destroy data, and failing
+// would train the owner to ignore notifications, so the job does not run.
 func TestAnUnpluggedVolumeIsNotARun(t *testing.T) {
 	drive := t.TempDir()
 	marker, err := volume.Mark(drive, "Backup drive")
@@ -246,8 +223,6 @@ func TestAnUnpluggedVolumeIsNotARun(t *testing.T) {
 	realCandidates := volume.Candidates
 	t.Cleanup(func() { volume.Candidates = realCandidates })
 
-	// Plugged in: an ordinary run, and the destination is created on the drive
-	// under the folder the job names.
 	attached(drive)
 	r := daemon.New(cfg, hist, nil, nil)
 	if _, err := r.Run(t.Context(), "onstick"); err != nil {
@@ -262,7 +237,6 @@ func TestAnUnpluggedVolumeIsNotARun(t *testing.T) {
 		t.Fatalf("history: %v", err)
 	}
 
-	// The drive is now in somebody's bag.
 	attached()
 	if err := os.WriteFile(filepath.Join(left, "second.jpg"), []byte("another"), 0o644); err != nil {
 		t.Fatalf("write: %v", err)
@@ -276,7 +250,6 @@ func TestAnUnpluggedVolumeIsNotARun(t *testing.T) {
 		t.Errorf("the message names no drive anybody could recognise: %v", err)
 	}
 
-	// Nothing was written down, because nothing happened.
 	after, err := hist.Recent(t.Context(), "", history.ShowAll, 100)
 	if err != nil {
 		t.Fatalf("history: %v", err)
@@ -285,17 +258,14 @@ func TestAnUnpluggedVolumeIsNotARun(t *testing.T) {
 		t.Fatalf("an unplugged drive left %d extra rows in the history", len(after)-len(before))
 	}
 
-	// And the local side is untouched: neither file was treated as deleted on
-	// the far side, which is what a naive "the destination is empty" reading
-	// would have done.
+	// An empty destination must not read as both files deleted there.
 	for _, name := range []string{"holiday.jpg", "second.jpg"} {
 		if _, err := os.Stat(filepath.Join(left, name)); err != nil {
 			t.Errorf("%s was removed while the drive was unplugged: %v", name, err)
 		}
 	}
 
-	// Back in the machine, at a different mount point, which is the case a
-	// drive letter cannot survive.
+	// Back at a different mount point, which a drive letter cannot survive.
 	moved := t.TempDir()
 	if err := os.MkdirAll(filepath.Join(moved, ".arrowloop"), 0o755); err != nil {
 		t.Fatalf("mkdir: %v", err)
@@ -322,19 +292,14 @@ func TestAnUnpluggedVolumeIsNotARun(t *testing.T) {
 	if _, err := os.Stat(filepath.Join(moved, "photos", "second.jpg")); err != nil {
 		t.Errorf("the new file did not reach the drive at its new mount point: %v", err)
 	}
-	// The first file is still there and was not copied a second time, which
-	// proves the record survived the drive moving.
+	// Only one copy and no deletion: the record survived the move.
 	if rec.Trashed != 0 {
 		t.Errorf("%d files were deleted after the drive moved", rec.Trashed)
 	}
 }
 
-// TestAHalfWrittenJobIsRefusedByName is the other half of the rule that lets a
-// switched-off job be saved without both its sides.
-//
-// Allowing it to be stored and then handing an empty string to a backend would
-// trade one clear refusal for whatever error that backend happens to produce
-// about a path that is not a path.
+// A job saved without its sides is refused with its own error rather than
+// handing an empty path to a backend.
 func TestAHalfWrittenJobIsRefusedByName(t *testing.T) {
 	cfg, hist, _, _ := fixture(t, func(dir, left, right string) string {
 		return fmt.Sprintf(`{"jobs":[{"name":"unfinished","left":"","right":"","state":"%s","disabled":true}]}`,
@@ -358,16 +323,8 @@ func TestAHalfWrittenJobIsRefusedByName(t *testing.T) {
 	}
 }
 
-// TestRunAtStartFiresOnceAndNotOnReload is the guard on the setting that runs a
-// job as soon as the program does.
-//
-// Two halves, and the second is the one that would have been shipped broken.
-// Firing at start is easy to get right. Not firing AGAIN on a reload is not:
-// Serve rebuilds its whole round on every configuration change, which happens
-// every time somebody saves a job in the interface, so the obvious placement
-// (inside the round, beside the cron build) turns one edit into a sync of every
-// job in the file. This test edits the configuration the way the interface does
-// and insists nothing new runs.
+// Serve rebuilds its round on every configuration change, which happens every
+// time a job is saved, and the start-up runs must not fire again then.
 func TestRunAtStartFiresOnceAndNotOnReload(t *testing.T) {
 	cfg, hist, left, right := fixture(t, func(dir, left, right string) string {
 		return fmt.Sprintf(
@@ -385,15 +342,8 @@ func TestRunAtStartFiresOnceAndNotOnReload(t *testing.T) {
 	served := make(chan error, 1)
 	go func() { served <- r.Serve(ctx) }()
 
-	// Wait for the RECORD, not for the file.
-	//
-	// The first version of this waited for the copied file to appear, which is
-	// the wrong effect to wait on and went red on the Windows runner while
-	// passing here every time: the bytes land before the run finishes, and the
-	// history row is written after it does. So the file existing proves the
-	// transfer happened, not that the thing being counted below has been
-	// counted yet. Waiting for the row makes the wait and the assertion the
-	// same event.
+	// Wait for the record rather than the file: the file lands before the run
+	// finishes and the record after.
 	waitFor(t, func() bool {
 		runs, err := hist.Recent(context.Background(), "photos", history.ShowAll, 10)
 		return err == nil && len(runs) >= 1
@@ -410,12 +360,9 @@ func TestRunAtStartFiresOnceAndNotOnReload(t *testing.T) {
 		t.Fatalf("expected exactly one run at start, got %d", len(runs))
 	}
 
-	// Now a reload, exactly as saving a job in the interface produces one.
 	r.Reload(cfg)
 
-	// A second start-up run would have to get through the whole cycle to be
-	// counted, and the first one did it in a fraction of this on the slowest
-	// machine either of us runs it on.
+	// Long enough for a second start-up run to be recorded.
 	time.Sleep(2 * time.Second)
 
 	runs, err = hist.Recent(context.Background(), "photos", history.ShowAll, 10)
@@ -432,9 +379,6 @@ func TestRunAtStartFiresOnceAndNotOnReload(t *testing.T) {
 	}
 }
 
-// TestADisabledJobDoesNotRunAtStart, because "disabled" has to mean disabled
-// everywhere. A switched-off job that still syncs at every program start is the
-// worst kind of wrong: it looks off in the list and moves files anyway.
 func TestADisabledJobDoesNotRunAtStart(t *testing.T) {
 	cfg, hist, left, right := fixture(t, func(dir, left, right string) string {
 		return fmt.Sprintf(
@@ -452,9 +396,7 @@ func TestADisabledJobDoesNotRunAtStart(t *testing.T) {
 	served := make(chan error, 1)
 	go func() { served <- r.Serve(ctx) }()
 
-	// A negative assertion needs long enough that the thing it denies would
-	// have happened. Too short and it passes because nothing has got round to
-	// running yet, which is a test that reports on nothing.
+	// Long enough that a start-up run would have happened.
 	time.Sleep(2 * time.Second)
 
 	if _, err := os.Stat(filepath.Join(right, "a.txt")); err == nil {
@@ -474,8 +416,7 @@ func TestADisabledJobDoesNotRunAtStart(t *testing.T) {
 	}
 }
 
-// waitFor polls for a condition, so a test proves an effect happened rather
-// than sleeping for a duration somebody guessed and hoping.
+// waitFor polls for a condition for up to ten seconds.
 func waitFor(t *testing.T, ok func() bool, complaint string) {
 	t.Helper()
 	deadline := time.Now().Add(10 * time.Second)
@@ -488,16 +429,8 @@ func waitFor(t *testing.T, ok func() bool, complaint string) {
 	t.Fatal(complaint)
 }
 
-// TestAJobWhoseStateFolderDoesNotExistStillRuns is jdp's bug, at the level it
-// was actually met.
-//
-// Every job created in the interface is given a state path of
-// "state/<name>.db", and the config directory ships without a "state" folder.
-// SQLite creates a database file that is not there and will not create the
-// folder it was asked to put it in, so every run of every such job failed -
-// on the clock and on a watched change alike - with "unable to open database
-// file", a message about a file that is really about a folder. A container
-// that had been running for hours had synced nothing at all.
+// Jobs created in the interface get a state path of "state/<name>.db", and
+// SQLite does not create a missing folder.
 func TestAJobWhoseStateFolderDoesNotExistStillRuns(t *testing.T) {
 	var stateDir string
 	cfg, hist, left, right := fixture(t, func(dir, left, right string) string {
@@ -529,17 +462,8 @@ func TestAJobWhoseStateFolderDoesNotExistStillRuns(t *testing.T) {
 	}
 }
 
-// TestATrashlessJobDeletesOutrightAndLeavesNoReservedFolder is the wiring the
-// apply package's own tests deliberately cannot see.
-//
-// Those drive `discard` directly and say so: what they check is that the
-// function behaves, not that anything calls it with the job's answer. A setting
-// that is read from the file, validated, and then never reaches the code it
-// names is the failure mode this whole switch would fail at silently - the
-// folder would keep appearing and the box would keep saying it was off.
-//
-// jdp: "braucht es den .arrowloop ordner im Zielordner? Kann man den nicht
-// weglassen?"
+// The apply package's tests call discard directly; this checks that the job's
+// setting actually reaches it.
 func TestATrashlessJobDeletesOutrightAndLeavesNoReservedFolder(t *testing.T) {
 	for _, tc := range []struct {
 		name      string
@@ -556,11 +480,8 @@ func TestATrashlessJobDeletesOutrightAndLeavesNoReservedFolder(t *testing.T) {
 					jsonPath(left), jsonPath(right), jsonPath(filepath.Join(dir, "photos.db")), tc.noTrash)
 			})
 
-			// TWO files, and only one of them is removed later. A side that
-			// lists nothing at all trips the brake that exists for an unmounted
-			// volume - "the left side lists no files at all, but 1 were known
-			// there last time" - which is the guard working, and would make this
-			// test about that instead of about the trash.
+			// Two files, so removing one does not leave an empty side, which
+			// trips the brake for an unmounted volume.
 			for _, name := range []string{"a.txt", "stays.txt"} {
 				if err := os.WriteFile(filepath.Join(left, name), []byte("hello"), 0o644); err != nil {
 					t.Fatalf("write: %v", err)
@@ -568,9 +489,7 @@ func TestATrashlessJobDeletesOutrightAndLeavesNoReservedFolder(t *testing.T) {
 			}
 
 			r := daemon.New(cfg, hist, nil, nil)
-			// The first run is what makes the second one a DELETION rather than
-			// a creation: without a record, a file missing on the left is a file
-			// the right side just made.
+			// The first run's record makes the second one a deletion.
 			if _, err := r.Run(context.Background(), "photos"); err != nil {
 				t.Fatalf("first run: %v", err)
 			}
@@ -603,17 +522,8 @@ func TestATrashlessJobDeletesOutrightAndLeavesNoReservedFolder(t *testing.T) {
 	}
 }
 
-// TestAReportOnlyJobPlansOnTheClockAndMovesNothing.
-//
-// The field existed in the interface's own type and nowhere in the
-// configuration, so writing it into a file got "unknown field" and the runner
-// carried a comment about behaviour that had never been built. What it is FOR
-// is watching a job at work without letting it work: the comparison is the
-// expensive half of a run, it happens in full, and nothing moves.
-//
-// Both halves are asserted, because either alone would pass for the wrong
-// reason. That the file did not arrive could equally mean the run never
-// happened; that a run was recorded could equally mean it copied everything.
+// Both halves are asserted: a missing file alone could mean no run happened,
+// and a recorded run alone could mean it copied everything.
 func TestAReportOnlyJobPlansOnTheClockAndMovesNothing(t *testing.T) {
 	cfg, hist, left, right := fixture(t, func(dir, left, right string) string {
 		return fmt.Sprintf(`{"jobs":[{"name":"watchonly","left":"%s","right":"%s","state":"%s","quietPeriod":"0s","reportOnly":true}]}`,
@@ -641,9 +551,7 @@ func TestAReportOnlyJobPlansOnTheClockAndMovesNothing(t *testing.T) {
 		t.Fatalf("a report-only run counted %d copies", runs[0].Copied)
 	}
 
-	// And it stays that way: nothing was learned, so the next turn finds the
-	// same work. That is what makes such a job useful to watch rather than a
-	// job that is busy once and idle for ever after.
+	// Nothing was recorded as done, so the next turn finds the same work.
 	if _, err := r.RunAutomatically(context.Background(), "watchonly"); err != nil {
 		t.Fatalf("second automatic run: %v", err)
 	}
@@ -651,9 +559,7 @@ func TestAReportOnlyJobPlansOnTheClockAndMovesNothing(t *testing.T) {
 		t.Fatal("the second automatic run copied the file")
 	}
 
-	// A HAND-started run applies, exactly as the conditions in
-	// RunAutomatically are skipped for one: somebody pressing the button has
-	// decided.
+	// A run started by hand applies.
 	if _, err := r.Run(context.Background(), "watchonly"); err != nil {
 		t.Fatalf("hand-started run: %v", err)
 	}

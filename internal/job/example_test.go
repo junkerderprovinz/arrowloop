@@ -9,20 +9,8 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/job"
 )
 
-// The example configuration has to load.
-//
-// The README points at it as the complete one, so it is the first file anybody
-// copies, and a broken example is worse than none: somebody edits their paths
-// into it, the daemon refuses to start, and the thing they mistrust is their own
-// typing rather than the file they were handed.
-//
-// It has aged out of true before. Every setting added since it was written was
-// added somewhere else, and nothing said so, because a JSON file that nobody
-// parses in CI is a file that is correct until somebody tries it.
-//
-// The load goes through job.Load, which is the same function that guards a
-// hand-written file, so this fails for exactly the reasons a person's own file
-// would fail.
+// The README points at the example as the complete configuration, so it is the
+// first file anybody copies.
 func TestTheExampleConfigurationLoads(t *testing.T) {
 	path := filepath.Join("..", "..", "arrowloop.example.json")
 	raw, err := os.ReadFile(path)
@@ -30,11 +18,8 @@ func TestTheExampleConfigurationLoads(t *testing.T) {
 		t.Fatalf("read the example: %v", err)
 	}
 
-	// Loaded from a COPY in a sandbox, because Load resolves relative paths
-	// against the file's own directory and a state path of "state/photos.db"
-	// would otherwise be resolved against the repository root. Nothing is
-	// created by loading, but resolving against the real tree would make the
-	// test's meaning depend on where the repository happens to sit.
+	// Load resolves relative paths against the file's directory, so a copy
+	// keeps the result independent of where the repository sits.
 	dir := t.TempDir()
 	copied := filepath.Join(dir, "arrowloop.json")
 	if err := os.WriteFile(copied, raw, 0o644); err != nil {
@@ -50,13 +35,7 @@ func TestTheExampleConfigurationLoads(t *testing.T) {
 	}
 }
 
-// TestTheExampleShowsTheSettingsItIsPointedAtFor.
-//
-// Not pedantry about coverage. The example is documentation that happens to be
-// executable, and a setting missing from it is a setting somebody has to find
-// out about from the source. Every name here is one that was added after the
-// example was first written and had to be put back into it by hand, which is
-// exactly the drift this catches next time.
+// A setting missing from the example is one somebody has to find in the source.
 func TestTheExampleShowsTheSettingsItIsPointedAtFor(t *testing.T) {
 	raw, err := os.ReadFile(filepath.Join("..", "..", "arrowloop.example.json"))
 	if err != nil {
@@ -81,9 +60,6 @@ func TestTheExampleShowsTheSettingsItIsPointedAtFor(t *testing.T) {
 			seen[k] = true
 		}
 	}
-	// "reportOnly" left this list with the feature it named. The preview button
-	// already answers "what would a run do", on demand and without a setting
-	// somebody has to remember to switch back off.
 	for _, key := range []string{"excludeSets", "keepVersions", "watch", "foldCase"} {
 		if !seen[key] {
 			t.Errorf("no job in the example shows %q", key)

@@ -10,50 +10,28 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/deskset"
 )
 
-// The window settings exist only where there is a window.
-//
-// The command line binary and the container leave Server.Window nil, the two
-// routes are then never registered, and the interface asks once and hides the
-// card when nothing answers. That is better than serving a card that is
-// present and inert: a setting that cannot do anything is worse than a setting
-// that is not offered, because somebody will change it and expect something.
-
-// capabilities says what this build can do, and every build answers it.
-//
-// The interface used to find out by asking for the window settings and reading
-// the 404, which worked and put a red line in the browser's console on every
-// load of a container build. A refusal that is expected is not an error, and a
-// console full of expected errors is a console nobody reads when a real one
-// appears.
+// capabilities says what this build can do, so the interface can leave out
+// what does not apply instead of probing routes and reading a 404.
 func (s *Server) capabilities(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, map[string]any{
+		// Only the desktop shell has window settings.
 		"window": s.Window != nil,
-		// Whether anything out there can tell the engine that now is a bad
-		// moment - the phone knows it is on battery, a container knows nothing
-		// of the sort. A client that can see this can offer the two switches
-		// that depend on it, and leave them out where they would do nothing.
-		"device": s.Hold != nil,
-		// Read from the build rather than typed anywhere on the page: a number
-		// written down twice is a number that disagrees with itself the day one
-		// of them is bumped.
+		// Whether the device can report that now is a bad moment, as a phone
+		// on battery can.
+		"device":  s.Hold != nil,
 		"version": boot.Version,
 	})
 }
 
-// windowView is the window settings plus the one that is not stored here.
-//
-// StartWithSystem lives in the operating system, not in window.json, and this
-// endpoint reads it back from there on every request. Keeping a copy in the
-// file would give one setting two sources of truth, and the copy would go on
-// claiming autostart was on after somebody removed the entry with the Task
-// Manager's own startup tab. A toggle that disagrees with the thing it controls
-// is worse than no toggle.
+// windowView is the window settings plus StartWithSystem, which is read from
+// the operating system on every request rather than kept in window.json, so it
+// cannot disagree with an entry removed elsewhere.
 type windowView struct {
 	deskset.Settings
 	StartWithSystem bool `json:"startWithSystem"`
 
-	// Whether this system has an autostart mechanism at all, so the interface
-	// can leave the switch out instead of drawing one that cannot act.
+	// CanStartWithSystem says whether this system has an autostart mechanism
+	// at all.
 	CanStartWithSystem bool `json:"canStartWithSystem"`
 }
 
@@ -85,11 +63,8 @@ func (s *Server) writeWindow(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// The autostart entry goes first, because it is the half that can fail on
-	// something outside this program: a locked registry, a read-only home. Doing
-	// it first means a failure leaves EVERYTHING unchanged, instead of leaving
-	// the file written and the system not, which is the state that makes the
-	// next read look like the setting silently reverted itself.
+	// The autostart entry goes first, since it can fail on something outside
+	// this program, and a failure then leaves everything unchanged.
 	if autostart.Supported() {
 		was, err := autostart.Enabled()
 		if err != nil {
@@ -109,11 +84,8 @@ func (s *Server) writeWindow(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Answered from the store and the system rather than from the request,
-	// because both correct what they cannot honour: with no icon in the
-	// notification area there is nowhere for either button to send the window,
-	// and a system with no autostart mechanism answers false however it was
-	// asked.
+	// Answered from the store and the system rather than the request, since
+	// both correct what they cannot honour.
 	v, err := s.view()
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, err)

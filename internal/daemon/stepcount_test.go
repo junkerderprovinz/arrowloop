@@ -6,17 +6,6 @@ import (
 	"time"
 )
 
-// The counter that keeps an expensive reading out of a hot run.
-//
-// Measured on jdp's phone: the same job over 600 files took 9.0 seconds with
-// the in-flight reading off and 25.6 with it on, twice a second. `RemoteStats`
-// takes the lock every byte of every transfer also takes, so asking while four
-// workers push small files makes the accounting queue behind the question.
-//
-// The counter is what tells the two cases apart. A tick in which many steps
-// finished is a tick whose files were done before a bar could have moved; a
-// tick in which none did is a big file, which is the only case the display was
-// ever for.
 func TestTheCounterEmptiesWhenItIsRead(t *testing.T) {
 	var steps stepCount
 
@@ -30,21 +19,14 @@ func TestTheCounterEmptiesWhenItIsRead(t *testing.T) {
 	if got, files := steps.takeAndReset(); got != 5 || files != 5 {
 		t.Errorf("read %d steps and %d files after five copies, want 5 and 5", got, files)
 	}
-	// EMPTIED by the read, which is the whole contract: a tick sees what
-	// happened since the last tick, never a total that only ever grows and
-	// would mute the reading forever after a busy start.
+	// A growing total would mute the reading for ever after a busy start.
 	if got, files := steps.takeAndReset(); got != 0 || files != 0 {
 		t.Errorf("read %d steps and %d files on the second read, want 0 and 0", got, files)
 	}
 }
 
-// Only the kinds that move bytes reach the rate.
-//
-// The gate and the caption read the SAME counter and want different things
-// from it. A run making folders is busy, so the expensive reading stays off;
-// but "180 a second" under a job, when not one file has moved, describes work
-// nobody was watching for. Getting this wrong is invisible in a copy-only run,
-// which is every test that came before this one.
+// A run making folders is busy, but only the kinds that move bytes reach the
+// rate.
 func TestOnlyTransfersCountTowardTheRate(t *testing.T) {
 	var steps stepCount
 	for _, kind := range []string{"mkdir", "record", "rmdir", "conflict", "trash"} {
@@ -55,17 +37,14 @@ func TestOnlyTransfersCountTowardTheRate(t *testing.T) {
 
 	count, files := steps.takeAndReset()
 	if count != 7 {
-		t.Errorf("the gate saw %d steps, want all 7 - a busy run is busy whatever it is doing", count)
+		t.Errorf("the gate saw %d steps, want all 7; a busy run is busy whatever it is doing", count)
 	}
 	if files != 2 {
-		t.Errorf("the rate saw %d files, want 2 - only copy and move moved bytes", files)
+		t.Errorf("the rate saw %d files, want 2; only copy and move moved bytes", files)
 	}
 }
 
-// The rate is worked out from the time that actually passed.
-//
-// A phone under load delivers a tick late, and a rate divided by the interval
-// that was ASKED for would then claim more files a second than the run managed.
+// A phone under load delivers a tick late.
 func TestTheRateUsesTheSpanThatActuallyPassed(t *testing.T) {
 	for _, c := range []struct {
 		name  string
@@ -86,9 +65,7 @@ func TestTheRateUsesTheSpanThatActuallyPassed(t *testing.T) {
 	}
 }
 
-// Several workers finish steps at once, so the counter is written from several
-// goroutines and read from the ticker. Under `-race` this is the test that
-// says so.
+// Several workers write the counter at once; run under -race.
 func TestTheCounterSurvivesEveryWorkerAtOnce(t *testing.T) {
 	var steps stepCount
 	var wg sync.WaitGroup
@@ -110,15 +87,9 @@ func TestTheCounterSurvivesEveryWorkerAtOnce(t *testing.T) {
 	}
 }
 
-// A progress watcher without a counter must not panic.
-//
-// Nil is the ordinary state in every caller that does not publish in-flight
-// frames, and a run is not the place to find out that a field was optional.
 func TestAProgressWatcherWithoutACounterStillWorks(t *testing.T) {
-	// Built directly rather than through New, which wants a configuration on
-	// disk. What is under test is the optional field, not the constructor.
+	// Built directly, since New wants a configuration on disk.
 	watcher := progressFor{runner: &Runner{}, job: "Fotos"}
-	// Nobody is subscribed, so this only has to not blow up.
 	watcher.Starting(3)
 	watcher.Did("copy", "a.jpg", "right", 1, 3)
 }

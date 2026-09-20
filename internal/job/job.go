@@ -1,10 +1,4 @@
 // Package job turns a configuration file into runnable sync jobs.
-//
-// Up to here the engine had one job, described entirely by command-line flags.
-// That is the right shape for proving an engine and the wrong shape for using
-// one: a person with a photo folder, a documents folder and a server backup has
-// three jobs with different schedules, different filters and different ideas
-// about what may be deleted, and none of that survives in a shell history.
 package job
 
 import (
@@ -30,29 +24,17 @@ type Config struct {
 	// History is where run records go. Empty means alongside the config file.
 	History string `json:"history,omitempty"`
 
-	// BwLimit is process-wide and not per job, because rclone's token bucket
-	// is. Two jobs on one machine share one uplink, so a per-job limit would be
-	// a promise the mechanism underneath cannot keep. rclone's own syntax, so
-	// "1M" or a timetable like "08:00,512k 19:00,off".
+	// BwLimit is process-wide because rclone's token bucket is. It takes
+	// rclone's syntax, so "1M" or a timetable like "08:00,512k 19:00,off".
 	BwLimit string `json:"bwlimit,omitempty"`
 
 	// HistoryKeep is how long a run record is kept. Empty means ninety days,
 	// and "0" keeps them for ever.
-	//
-	// It exists because the log only used to be pruned at STARTUP, from a
-	// command-line flag. That is fine for a desktop install somebody restarts
-	// and useless for the case this program is mostly used in: a container that
-	// runs for months. A job watching a folder writes a record on every change
-	// and on every scheduled turn besides, so the file grows without limit and
-	// the one thing that would trim it never runs. Now the runner prunes on a
-	// daily turn of its own, and the setting lives in the file where the rest of
-	// the engine's settings are rather than in a flag nobody passes twice.
 	HistoryKeep string `json:"historyKeep,omitempty"`
 
-	// ParallelJobs is how many jobs may run at once. One by default, and that
-	// is a deliberate default rather than a limitation: two jobs running at the
-	// same time share one line and one disk, so they mostly slow each other
-	// down while making the log harder to read.
+	// ParallelJobs is how many jobs may run at once. The default is one,
+	// because two jobs share one line and one disk and mostly slow each other
+	// down.
 	ParallelJobs int `json:"parallelJobs,omitempty"`
 
 	Notify Notify `json:"notify,omitempty"`
@@ -61,77 +43,55 @@ type Config struct {
 	Retry Retry `json:"retry,omitempty"`
 
 	// Defaults fill in per-job settings that a job does not set for itself.
-	// Applied once at load, so everything downstream sees a job whose fields
-	// are already resolved and no code has to remember to ask twice.
+	// They are applied once at load, so everything downstream sees resolved
+	// jobs.
 	Defaults Defaults `json:"defaults,omitempty"`
 
-	// ExcludeSets are reusable pattern lists, by name. A job asks for them by
-	// name instead of carrying its own copy of the same twenty lines.
+	// ExcludeSets are reusable pattern lists that a job asks for by name.
 	ExcludeSets map[string][]string `json:"excludeSets,omitempty"`
 
-	// dir is where the file was read from, so relative paths inside it mean
-	// what the person writing it expected.
+	// dir is where the file was read from, so relative paths inside it are
+	// relative to the file.
 	dir string
-	// path is the file itself, and raw is its exact content, both kept so the
-	// editor can write the file back without losing anything it did not touch.
+	// path and raw let the editor write the file back without losing anything
+	// it did not touch.
 	path string
 	raw  []byte
 
-	// retired is the field names this file carried that the program no longer
-	// understands. Kept so a caller can SAY so - the file still holds them, and
-	// somebody who upgraded deserves to know what was ignored rather than
-	// wondering why a setting they remember does nothing.
+	// retired lists field names in the file that this program no longer
+	// understands, so a caller can say what was ignored.
 	retired []string
 }
 
-// Retry is what a scheduled run does after it fails.
+// Retry is what a scheduled run does after it fails: a few more tries, each
+// after a longer wait, and then the job waits for its next scheduled time.
 //
-// Without it, a failed job simply stayed due: the schedule works out what to
-// run from the last SUCCESS, so a job that failed was still owed a run and got
-// one at the next turn of the clock - every fifteen minutes on a phone, for as
-// long as the failure lasted. That is the right instinct and the wrong amount
-// of it. A remote that is down is usually down for a while, and a phone that
-// keeps waking to find it still down spends a night's battery learning nothing.
-//
-// So: a few more tries, each after a longer wait, and then it stops and waits
-// for the next scheduled time like any other job. Both halves matter. Dropping
-// the retries would mean a network hiccup at three in the morning costs a whole
-// night; dropping the limit is what we had.
-//
-// Engine-wide rather than per job, and that is a judgement rather than a
-// shortcut: patience after a failure is a fact about the machine and how often
-// it is awake, not about a folder pair. A job that needs its own answer can get
-// one when somebody has such a job.
+// Without the limit a failed job stays due and runs at every tick, which on a
+// phone spends a night's battery on a remote that is still down. It is
+// engine-wide because patience after a failure depends on the machine, not on
+// a folder pair.
 type Retry struct {
-	// Attempts is how many FURTHER tries a failed job gets before it waits for
-	// its next scheduled time. Zero means none, so a failure waits for the
-	// clock. Nil is unset, which means the default below.
+	// Attempts is how many further tries a failed job gets before it waits for
+	// its next scheduled time. Zero means none; nil means the default.
 	Attempts *int `json:"attempts,omitempty"`
 
 	// Wait is how long to wait before the first further try. Each try after
-	// that waits twice as long, so three tries at five minutes are spread over
-	// thirty-five rather than fifteen. Empty means the default below.
+	// that waits twice as long. Empty means the default.
 	Wait string `json:"wait,omitempty"`
 }
 
-// Defaults for the retry policy, applied when the file says nothing.
-//
-// Three and five minutes: long enough that a remote rebooting is back before
-// the last try, short enough that the whole sequence is over inside forty
-// minutes and a nightly job still has the night to finish in.
+// Defaults for the retry policy. Three tries starting at five minutes are over
+// inside forty minutes, so a nightly job still has the night to finish in.
 const (
 	DefaultRetryAttempts = 3
 	DefaultRetryWait     = 5 * time.Minute
 )
 
-// RetryCap stops the doubling running away. Ten tries would otherwise put the
-// last one days out, which is not a retry any more.
+// RetryCap stops the doubling from putting the last try days out.
 const RetryCap = 6 * time.Hour
 
-// Attempts is Retry.Attempts with the default applied and nonsense clamped
-// away. A negative number in the file means none rather than an error: a
-// settings file is not a program, and refusing to start over one is worse than
-// reading it charitably.
+// AttemptCount is Retry.Attempts with the default applied. A negative number
+// means none rather than an error, so the program still starts over it.
 func (r Retry) AttemptCount() int {
 	if r.Attempts == nil {
 		return DefaultRetryAttempts
@@ -142,10 +102,9 @@ func (r Retry) AttemptCount() int {
 	return *r.Attempts
 }
 
-// WaitFor is how long to wait before try number n, counting from one.
-//
-// Doubling, capped. An unparseable or negative wait falls back to the default
-// for the same reason AttemptCount clamps.
+// WaitFor is how long to wait before try number n, counting from one. The wait
+// doubles up to RetryCap, and an unparseable or non-positive wait falls back to
+// the default.
 func (r Retry) WaitFor(n int) time.Duration {
 	base := DefaultRetryWait
 	if raw := strings.TrimSpace(r.Wait); raw != "" {
@@ -166,11 +125,9 @@ func (r Retry) WaitFor(n int) time.Duration {
 	return wait
 }
 
-// KeepHistoryFor is HistoryKeep as a duration, with the default applied.
-//
-// Zero means for ever, which is why this returns a second value rather than
-// using zero as "unset": those are opposite intentions and a single duration
-// cannot tell them apart.
+// KeepHistoryFor is HistoryKeep as a duration, with the default applied. The
+// second value is false for "keep for ever", which a zero duration could not
+// tell apart from unset.
 func (c *Config) KeepHistoryFor() (time.Duration, bool) {
 	raw := strings.TrimSpace(c.HistoryKeep)
 	if raw == "" {
@@ -178,9 +135,7 @@ func (c *Config) KeepHistoryFor() (time.Duration, bool) {
 	}
 	d, err := time.ParseDuration(raw)
 	if err != nil || d < 0 {
-		// Unparseable is treated as the default rather than as "for ever": a
-		// typo must not quietly switch off the thing that keeps the file from
-		// growing without limit.
+		// A typo must not switch off pruning.
 		return 90 * 24 * time.Hour, true
 	}
 	if d == 0 {
@@ -194,10 +149,9 @@ type Notify struct {
 	Matrix  *Matrix `json:"matrix,omitempty"`
 	Webhook string  `json:"webhook,omitempty"`
 
-	// OnSuccess sends a message for every run, not only for failures. Off by
-	// default: a sync tool that reports success every fifteen minutes trains
-	// its user to ignore it, and then the one message that mattered is ignored
-	// too.
+	// OnSuccess sends a message for every run, not only for failures. It is
+	// off by default, because regular success messages teach people to ignore
+	// all of them.
 	OnSuccess bool `json:"onSuccess,omitempty"`
 }
 
@@ -215,190 +169,92 @@ type Job struct {
 	Right string `json:"right"`
 	State string `json:"state"`
 
-	// Schedule is a cron expression. Empty means the job only ever runs when
+	// Schedule is a cron expression. Empty means the job only runs when
 	// somebody asks for it by name.
 	Schedule string `json:"schedule,omitempty"`
 
-	// Watch runs the job when a local side changes, instead of waiting for the
-	// next tick. It does NOT replace the schedule and is not meant to: only a
-	// local side can be watched at all, and a watcher that missed an event has
-	// no way to know it did. The schedule stays as the thing that eventually
-	// notices what the watcher did not.
+	// Watch runs the job when a local side changes. It does not replace the
+	// schedule: a watcher that misses an event cannot know it did, and the
+	// schedule catches what it missed.
 	Watch bool `json:"watch,omitempty"`
 
-	// WatchSettle is how long the tree must go quiet before a change counts.
-	// Copying a folder in produces one event per file, and a run per event
-	// would be a thousand runs for one action.
+	// WatchSettle is how long the tree must stay quiet before a change counts,
+	// so copying a folder in starts one run rather than one per file.
 	WatchSettle string `json:"watchSettle,omitempty"`
 
-	// RunAtStart runs the job once as soon as the program starts, before
-	// waiting for the first tick of its schedule.
-	//
-	// It exists because of what a schedule cannot say. A machine that was off
-	// overnight missed every turn a daily job had, and the job's next run is
-	// tomorrow: the sides stay apart for a whole day for no reason other than
-	// the clock. This is also the setting that makes autostart worth switching
-	// on, since a program that starts with the session and then sits there
-	// until 03:00 has not helped anybody who just turned their computer on.
-	//
-	// It fires ONCE per program start, never on a configuration reload, so
-	// editing a job in the interface does not set every job in the file running.
+	// RunAtStart runs the job once when the program starts, so a machine that
+	// was off overnight does not wait for the next scheduled turn. It fires
+	// once per program start, never on a configuration reload.
 	RunAtStart bool `json:"runAtStart,omitempty"`
 
 	Disabled bool `json:"disabled,omitempty"`
 
-	// There used to be a FirstRun field here, naming which side wins the ONE
-	// time a job has no record yet. jdp asked for it to go: "Der erste lauf
-	// koennen wir ganz aus AL streichen, das hat autosync auch nicht."
-	//
-	// What it did is worth writing down, because the situation it addressed has
-	// not gone away: with no record, every file on both sides is new, so the
-	// first run MERGES - everything on the left arrives on the right and the
-	// other way round. That is still the behaviour, and it is still the safe
-	// direction to be wrong in. Somebody who wants one side to win the first
-	// time can say so with the job's own direction and switch it back after the
-	// first run, which is the same act in two steps instead of one.
-
 	// KeepVersions keeps the last N contents of a file that gets overwritten,
-	// under the same reserved directory the trash uses.
-	//
-	// Off by default, and the default is the honest one: most jobs move files
-	// that are never edited in place, and keeping a copy of every overwrite on
-	// those would quietly double the tree. It exists for the folder somebody
-	// edits the same documents in every day, where the bin catches a deletion
-	// and catches nothing at all about the version from Tuesday.
+	// under the same reserved directory the trash uses. It is off by default,
+	// since most trees are never edited in place and a copy of every overwrite
+	// would double them.
 	KeepVersions int `json:"keepVersions,omitempty"`
 
-	// ReportOnly plans on every automatic turn and applies nothing.
-	//
-	// The comparison is the expensive half of a run and the half worth watching:
-	// both sides are listed, every difference is worked out, and the result goes
-	// into the run log. Nothing moves. A job left like this says what it WOULD
-	// do, every quarter of an hour, for as long as you leave it - which is what
-	// makes it useful for watching a job at work without letting it work.
-	//
-	// Automatic turns only. A run somebody starts by hand applies normally,
-	// because a person pressing the button has decided, exactly as with the
-	// conditions in RunAutomatically. The runner already said this in a comment
-	// that pointed at a field which did not exist yet; the interface's own type
-	// has been offering `reportOnly` for as long, and the configuration refused
-	// it with "unknown field".
+	// ReportOnly plans on every automatic turn and writes the result to the
+	// run log without applying anything. A run started by hand applies
+	// normally.
 	ReportOnly bool `json:"reportOnly,omitempty"`
 
-	// NoTrash deletes outright instead of moving into the side's own trash.
-	//
-	// Spelled as the NEGATIVE so that the zero value is the safe one. A field
-	// called `trash` would be false in every configuration written before it
-	// existed and in every one where somebody forgot it, and false would then
-	// mean "destroy things" - which is the failure mode a two-way sync can least
-	// afford to have as a default.
-	//
-	// It exists because the trash is visible. It lives inside the synced tree
-	// under a reserved prefix, so a shared download folder grows an `.arrowloop`
-	// directory that everybody using that share can see, and jdp asked the
-	// obvious question about it: "braucht es den .arrowloop ordner im
-	// Zielordner? Kann man den nicht weglassen?" With this on, nothing is ever
-	// moved under the prefix and the folder is never created.
-	//
-	// What it costs is stated plainly in the interface rather than softened:
-	// with no trash a deletion is final, and so is the losing side of a
-	// conflict. That is a reasonable trade for a folder of downloads and a bad
-	// one for a folder of documents, which is exactly why it is per job.
+	// NoTrash deletes outright instead of moving into the side's own trash, so
+	// no .arrowloop folder appears inside the synced tree. It is negative so
+	// that the zero value keeps the trash. With it on, a deletion and the
+	// losing side of a conflict are final.
 	NoTrash bool `json:"noTrash,omitempty"`
 
 	Exclude           []string `json:"exclude,omitempty"`
 	NoDefaultExcludes bool     `json:"noDefaultExcludes,omitempty"`
 
-	// ExcludeSets names reusable pattern lists defined once at the top of the
-	// file, so "the usual junk" is written in one place instead of being pasted
-	// into every job and then drifting apart. A job's own Exclude list is added
-	// to whatever the sets bring rather than replacing it: the sets are the
-	// shared part and the list is what makes THIS job different.
-	//
-	// A name that no set defines is an error at load rather than an empty list.
-	// A filter that silently matches nothing is the worst possible failure mode
-	// here: it does not break anything, it just quietly syncs the thing somebody
-	// asked to leave alone.
+	// ExcludeSets names reusable pattern lists defined at the top of the file.
+	// Their patterns are added to Exclude rather than replacing it. An
+	// undefined name is an error at load, because a filter that silently
+	// matches nothing syncs what it was meant to keep out.
 	ExcludeSets []string `json:"excludeSets,omitempty"`
 
-	// Direction says which way this job is allowed to write: "both" (the
-	// default and what this program is for), "leftToRight" or "rightToLeft".
-	//
-	// A one-way job still compares both sides, because comparing is how it
-	// knows what changed. What the direction changes is what it may DO with
-	// the answer.
+	// Direction says which way this job may write: "both" (the default),
+	// "leftToRight" or "rightToLeft". A one-way job still compares both sides
+	// to know what changed.
 	Direction string `json:"direction,omitempty"`
 
-	// Mode is what a ONE-WAY job does beyond copying: "sync" (the default,
-	// which deletes nothing of its own), "mirror" (the destination becomes an
-	// exact copy, so a file the source never had is removed there) or "move"
-	// (a file leaves the source once it has landed on the other side).
-	//
-	// It is a second field rather than three more directions because it is a
-	// second question. A tool people compare this one against ships seven named
-	// modes, which are these two axes wearing seven names; keeping them apart
-	// is what stops the list growing to fifteen entries the day a third
-	// question turns up.
+	// Mode is what a one-way job does beyond copying: "sync" (the default,
+	// which deletes nothing), "mirror" (the destination becomes an exact copy)
+	// or "move" (a file leaves the source once it has landed on the other
+	// side). It is separate from Direction because it answers a separate
+	// question.
 	Mode string `json:"mode,omitempty"`
 
 	QuietPeriod string `json:"quietPeriod,omitempty"`
 	ModWindow   string `json:"modWindow,omitempty"`
 	Transfers   int    `json:"transfers,omitempty"`
 
-	// EmptyDirs and Metadata are pointers for the same reason the two brakes
-	// below are: a plain bool cannot tell "off" from "not mentioned", and the
-	// file now carries defaults that fill in what a job does not say. Left as
-	// plain bools, a job that deliberately switched one OFF would have it
-	// switched back on by the default, and nothing would say so.
+	// EmptyDirs and Metadata are pointers so that a job can switch off what
+	// the defaults switch on.
 	EmptyDirs *bool `json:"emptyDirs,omitempty"`
 	Metadata  *bool `json:"metadata,omitempty"`
 
-	// BrakePercent and BrakeFloor are pointers so that "0" can be told apart
-	// from "not set". Zero switches the mass-delete brake off entirely, and
-	// that has to be something somebody typed on purpose rather than something
-	// they got by leaving a field out.
+	// BrakePercent and BrakeFloor are pointers because "0" switches the
+	// mass-delete brake off, and that has to be typed on purpose.
 	BrakePercent *int `json:"brakePercent,omitempty"`
 	BrakeFloor   *int `json:"brakeFloor,omitempty"`
 
-	// FoldCase overrides the backends' own answer about case sensitivity for
-	// this one job. See Defaults.FoldCase for why a backend's answer is not
-	// always to be believed.
+	// FoldCase overrides the backends' answer about case sensitivity for this
+	// job. See Defaults.FoldCase.
 	FoldCase *bool `json:"foldCase,omitempty"`
 }
 
-// Defaults fill in the per-job settings a job does not set for itself.
-//
-// They exist because these settings had to become visible and the job form was
-// already the thing jdp asked to simplify ("fuer was muessen hier so wahnsinnig
-// viele eingabefelder sein"). Both asks are right and they point the same way:
-// the answer that is usually the same for every job belongs in one place, and
-// the job keeps only what makes IT different.
-//
-// The brakes are the reason this matters rather than a convenience. They are
-// the safety net that stops a run removing more than half of everything it
-// knows about, and until now they could not be seen at all, let alone set once
-// for every job.
-//
-// Every field is a pointer or a zero-means-unset type, so "the default says on
-// and this job says off" is a sentence the file can express.
+// Defaults fill in the per-job settings a job does not set for itself, so a
+// job carries only what makes it different. The pointer fields let a job
+// switch off what a default switches on.
 type Defaults struct {
-	// Direction and Mode are here because they are the pair somebody sets once
-	// for a whole phone - "everything goes up, and the space comes back" - and
-	// then wants every new job to start from. A job that names either keeps its
-	// own answer.
 	Direction string `json:"direction,omitempty"`
 	Mode      string `json:"mode,omitempty"`
 
-	// Schedule, for the same reason: "every night at three" is a decision
-	// about a machine far more often than about one folder.
-	//
-	// Watch and NoTrash are deliberately NOT here. Both are plain bools on the
-	// job, so "off" and "not mentioned" are the same value, and a default that
-	// switched either ON could never be switched off again for one job - which
-	// on NoTrash means losing the bins on a job that asked to keep them. The
-	// fix is to make those two pointers on the Job as well, and that is a
-	// change worth making on its own rather than as a side effect of adding
-	// defaults.
+	// Watch and NoTrash have no default: they are plain bools on the job, so a
+	// default that switched one on could not be switched off for a single job.
 	Schedule string `json:"schedule,omitempty"`
 
 	ModWindow    string `json:"modWindow,omitempty"`
@@ -407,28 +263,18 @@ type Defaults struct {
 	Metadata     *bool  `json:"metadata,omitempty"`
 	BrakePercent *int   `json:"brakePercent,omitempty"`
 	BrakeFloor   *int   `json:"brakeFloor,omitempty"`
+	QuietPeriod  string `json:"quietPeriod,omitempty"`
 
-	// QuietPeriod is here too, because "wait for a file to stop changing" is
-	// almost always one answer for a whole machine rather than per job.
-	QuietPeriod string `json:"quietPeriod,omitempty"`
-
-	// KeepVersions is the same setting for every job that does not say
-	// otherwise. Zero means off, which is why a job wanting it off while the
-	// default is on has to be able to say so, and cannot: see applyTo.
+	// KeepVersions applies to every job that leaves it at zero. See applyTo
+	// for why a job cannot turn it off.
 	KeepVersions int `json:"keepVersions,omitempty"`
 
-	// FoldCase overrides what the two backends say about themselves.
-	//
-	// Normally nothing needs setting: the engine asks each side whether it can
-	// tell "Bild.jpg" from "bild.jpg" and folds when EITHER cannot. The override
-	// exists for the case where a backend lies, and they do: a network share
-	// exported from Windows and mounted on Linux reports itself
-	// case-sensitive and is not. Left wrong, the two sides each keep their own
-	// copy of one file and the pair grows by one file per run, for ever.
-	//
-	// It has to be decided per PAIR rather than per side. If one side folds and
-	// the matching does not, that side's two files both map onto the one file
-	// over there and the engine oscillates between them.
+	// FoldCase overrides what the two backends say about case sensitivity.
+	// The engine folds when either side cannot tell "Bild.jpg" from
+	// "bild.jpg", but a Windows share mounted on Linux reports itself
+	// case-sensitive and is not, and the pair then grows by one file per run.
+	// It is decided per pair, because one folding side against a matching that
+	// does not fold makes the engine oscillate.
 	FoldCase *bool `json:"foldCase,omitempty"`
 }
 
@@ -468,52 +314,26 @@ func (d Defaults) applyTo(j *Job) {
 	if j.FoldCase == nil {
 		j.FoldCase = d.FoldCase
 	}
-	// Said plainly because it is a real limitation rather than an oversight: a
-	// job CANNOT turn versioning off against a default that turns it on, since
-	// zero is both "off" and "not mentioned" for a plain int. Every other
-	// setting here that can be switched off is a pointer for exactly that
-	// reason. This one is not, because it is a count and not a switch, and a
-	// job that wants none while the default wants three can say 1 and keep the
-	// one version it is about to overwrite. Turning it into a pointer is the
-	// fix if that is ever not enough.
+	// Zero means both off and unset here, so a job cannot turn versioning off
+	// against a default that turns it on. Setting 1 keeps only the version
+	// about to be overwritten.
 	if j.KeepVersions == 0 {
 		j.KeepVersions = d.KeepVersions
 	}
 }
 
-// RETIRED names fields this program used to write and no longer understands.
-//
-// They exist because of what `DisallowUnknownFields` does to an UPGRADE. The
-// strictness itself is right and stays: "excludes" for "exclude" would leave a
-// filter silently empty and sync the very files somebody meant to keep out, so
-// a field nobody recognises has to be an error. But a field THIS PROGRAM wrote
-// in an earlier version is not a typo, and treating it as one is how an upgrade
-// becomes a dead engine.
-//
-// Found the hard way on jdp's server: a container running a build from the
-// seventh was updated and went into a restart loop, one line of JSON complaint
-// per attempt, because its own configuration carried `firstRun` - a per-job
-// setting this program used to have. Nothing about that message says "your
-// config is from an older version of me".
-//
-// A closed list rather than tolerance for anything unknown: adding a name here
-// is a decision, and the typo guard keeps its whole reach for every other word.
-var RETIRED = map[string]bool{
-	// A per-job choice of which side to believe on the very first run. Gone
-	// because the three-way comparison answers it from the state database
-	// instead of from a setting nobody could get right in advance.
+// retiredFields names fields that older versions wrote and this one does not
+// understand. Load strips them before the strict decoder, which would
+// otherwise refuse a file the program wrote itself. The list is closed so the
+// unknown-field check still catches a typo such as "excludes" for "exclude".
+var retiredFields = map[string]bool{
+	// A per-job choice of which side wins the very first run.
 	"firstRun": true,
 }
 
-// withoutRetired removes retired field names from a raw configuration, and
-// reports which ones it found.
-//
-// Whole document rather than per job: the same name could be added at the top
-// level one day, and a cleaner that only looked inside `jobs` would let that
-// one through to the strict decoder it is supposed to protect.
-//
-// An unparseable document comes back untouched, because the decoder's own error
-// says far more about it than this could.
+// withoutRetired removes retired field names anywhere in a raw configuration
+// and reports which ones it found. An unparseable document comes back
+// untouched, so the decoder reports the real error.
 func withoutRetired(data []byte) ([]byte, []string) {
 	var doc any
 	if err := json.Unmarshal(data, &doc); err != nil {
@@ -525,7 +345,7 @@ func withoutRetired(data []byte) ([]byte, []string) {
 		switch v := node.(type) {
 		case map[string]any:
 			for key := range v {
-				if RETIRED[key] {
+				if retiredFields[key] {
 					delete(v, key)
 					found = append(found, key)
 					continue
@@ -553,15 +373,11 @@ func withoutRetired(data []byte) ([]byte, []string) {
 	return out, found
 }
 
-// Retired reports the retired fields found in the file this was loaded from, so
-// a caller can say so out loud. Empty on a configuration that carries none.
+// Retired reports the retired fields found in the file this was loaded from.
 func (c *Config) Retired() []string { return c.retired }
 
-// Load reads and validates a configuration file.
-//
-// Everything is checked here rather than when a job first runs. A typo in a
-// cron expression that only surfaces at three in the morning, on the one job
-// that mattered, is the kind of failure a daemon must not have.
+// Load reads and validates a configuration file. Everything is checked here,
+// so a bad cron expression fails at start rather than when the job first runs.
 func Load(path string) (*Config, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
@@ -587,10 +403,8 @@ func Load(path string) (*Config, error) {
 	} else {
 		cfg.History = cfg.resolve(cfg.History)
 	}
-	// The bandwidth limit is checked here rather than only where it is applied.
-	// It used to be neither: a bad value saved cleanly through the settings page
-	// and the program then refused to start on the next boot, with the message
-	// on a console and the interface that could have shown it gone.
+	// Checked here as well as where it is applied, so the settings page cannot
+	// save a value that stops the next start.
 	if err := engine.ValidateBwLimit(cfg.BwLimit); err != nil {
 		return nil, err
 	}
@@ -598,27 +412,13 @@ func Load(path string) (*Config, error) {
 		cfg.ParallelJobs = 1
 	}
 
-	// A configuration with no jobs is allowed, and refusing it was a real bug
-	// rather than strictness.
-	//
-	// It is the state you are in before creating your first job and after
-	// deleting your last one, and the second of those was impossible: the
-	// editor sent a list with the only job removed, the validator refused it,
-	// and the job came back on the next read. Reported as "den example auftrag
-	// kann ich nicht löschen", which is what a delete that cannot be saved
-	// looks like from the outside. The check was defensible when the file was
-	// only ever hand-written; it stopped being so the moment the interface
-	// could edit it.
-	//
-	// Nothing downstream needs a non-empty list: the scheduler with nothing to
-	// schedule idles, and the interface with nothing to show says so.
+	// No jobs at all is valid: it is the state before the first job is created
+	// and after the last one is deleted.
 	seen := map[string]bool{}
 	for i := range cfg.Jobs {
 		j := &cfg.Jobs[i]
-		// Defaults are applied BEFORE validation, so a value that arrives from
-		// the defaults is checked by exactly the same rules a value written on
-		// the job is. A default that produces an invalid job must fail here and
-		// not at three in the morning on the one job that mattered.
+		// Defaults are applied before validation, so a value from the defaults
+		// is checked by the same rules as one written on the job.
 		cfg.Defaults.applyTo(j)
 		if j.Name == "" {
 			return nil, fmt.Errorf("job %d has no name", i+1)
@@ -627,32 +427,22 @@ func Load(path string) (*Config, error) {
 			return nil, fmt.Errorf("two jobs are both called %q; names are how a job is asked for by hand and how its history is kept apart", j.Name)
 		}
 		seen[j.Name] = true
-		// The mode, checked the same way and for a sharper reason: two of the
-		// three DELETE. A spelling nobody recognises would fall through to the
-		// mode that deletes nothing, which is the safe direction to be wrong in
-		// - but somebody who wrote "spiegeln" and got a plain copy would find
-		// out weeks later, from a destination full of files they thought had
-		// been cleared out.
+		// Two of the modes delete, so an unknown spelling is refused rather
+		// than quietly run as a plain copy.
 		switch j.Mode {
 		case "", "sync", "mirror", "move":
 		default:
 			return nil, fmt.Errorf("job %q says mode %q; it has to be sync, mirror or move", j.Name, j.Mode)
 		}
-		// And neither of the two makes sense both ways. Mirroring both ways
-		// asks each side to be the authority on what the other may keep, and
-		// moving both ways is a job that empties each side into the other. A
-		// job that says both is refused rather than quietly run as one of them,
-		// because either guess deletes something.
+		// Mirror and move decide which side is right, so neither can run both
+		// ways, and guessing one direction would delete something.
 		if j.Mode != "" && j.Mode != "sync" && plan.ParseDirection(j.Direction) == plan.Both {
 			return nil, fmt.Errorf(
 				"job %q is set to %s and runs both ways; %s needs a one-way direction, because it decides which side is right",
 				j.Name, j.Mode, j.Mode)
 		}
-		// Named sets are folded into the job's own list here, once, so nothing
-		// downstream has to know sets exist. A name nobody defined is refused
-		// rather than ignored: a filter that silently matches nothing does not
-		// break anything, it just quietly syncs the thing somebody asked to
-		// leave alone, and that is the failure this whole feature is about.
+		// Sets are folded into the job's own list here, so nothing downstream
+		// needs to know they exist.
 		for _, name := range j.ExcludeSets {
 			patterns, ok := cfg.ExcludeSets[name]
 			if !ok {
@@ -660,43 +450,18 @@ func Load(path string) (*Config, error) {
 			}
 			j.Exclude = append(j.Exclude, patterns...)
 		}
-		// A job that cannot run is allowed to be half written, and there are two
-		// ways to be unable to run.
-		//
-		// The first is being switched off. That is the state of a duplicate
-		// until it is pointed somewhere else, and of any job somebody is holding.
-		//
-		// The second is having NO sides at all, which is what the editor's own
-		// "add a job" button produces and is the reason this rule changed. A new
-		// job used to arrive switched off purely so that it could be saved,
-		// which meant every job anybody created announced itself as
-		// "abgeschaltet" until they found a switch at the bottom of the form
-		// (jdp: "das find ich total daemlich. ein auftrag soll standardmaessig
-		// aktiviert sein"). A job with neither side is a draft: it has no
-		// schedule either, so nothing reaches it, and pressing the button on it
-		// gets the same sentence this used to refuse the whole file with.
-		//
-		// ONE side and not the other is still refused, switched on. That is not
-		// a draft, it is a job somebody half filled in, and it is the shape that
-		// runs and does something surprising.
+		// A disabled job may be half written, and a job with no sides at all
+		// is a draft, which is what the editor's "add a job" button creates.
+		// A job with only one side is refused.
 		draft := j.Left == "" && j.Right == ""
 		if !j.Disabled && !draft && (j.Left == "" || j.Right == "") {
 			return nil, fmt.Errorf("job %q needs both a left and a right side", j.Name)
 		}
-		// THE SNAKE EATING ITS OWN TAIL: both sides naming the same place.
-		//
-		// There was no guard at all, which is the part that matters. Such a job
-		// scans one tree as two, records every file as existing on both sides,
-		// and in mirror or move mode acts on a destination that IS its source -
-		// a move job would carry each file to where it already is and then
-		// delete it from there.
-		//
-		// EXACT EQUALITY ONLY, and the limit is deliberate. One side NESTED in
-		// the other (`/fotos` into `/fotos/2026`) is the same hazard and cannot
-		// be settled by comparing strings: two remotes may spell one place
-		// differently, and a check that caught only the obvious spelling would
-		// promise more than it delivers. This catches what people actually
-		// create by hand, which is the same path typed or picked twice.
+		// Both sides naming the same place would scan one tree as two, and a
+		// mirror or move job would act on its own source. Only the same
+		// spelling is caught: a side nested in the other, or one place spelled
+		// two ways by different remotes, cannot be settled by comparing
+		// strings.
 		if !draft && sameSide(j.Left, j.Right) {
 			return nil, fmt.Errorf(
 				"job %q has both sides pointing at %s, so it would be a snake eating its own tail: every file would be its own copy, and in mirror or move mode the job would act on the very place it read from",
@@ -720,10 +485,6 @@ func Load(path string) (*Config, error) {
 			}
 		}
 		if j.Watch && j.Schedule == "" {
-			// Not fatal, but worth refusing: a watch-only job on a tree the
-			// watcher cannot fully cover would look like it was running and
-			// quietly not be. The schedule is the backstop that makes watching
-			// an optimisation rather than the only mechanism.
 			return nil, fmt.Errorf("job %q watches but has no schedule; watching can miss an event and never know it did, so it needs a schedule behind it", j.Name)
 		}
 	}
@@ -731,14 +492,10 @@ func Load(path string) (*Config, error) {
 	return &cfg, nil
 }
 
-// sameSide says whether two sides name the same place by the same name.
-//
-// Trailing separators are the one difference worth forgiving, because they are
-// the one a picker and a typist disagree about: `/fotos` and `/fotos/` are the
-// same folder to every backend here, and a guard that missed the pair because
-// of one character would be a guard nobody trusts. Case is NOT folded - two
-// backends disagree about whether it matters, and the job's own fold-case
-// answer is not available this early.
+// sameSide reports whether two sides name the same place by the same name.
+// Trailing separators are ignored, since /fotos and /fotos/ are the same folder
+// to every backend. Case is not folded, because the job's fold-case answer is
+// not known this early.
 func sameSide(left, right string) bool {
 	trim := func(s string) string {
 		s = strings.TrimSpace(s)
@@ -752,8 +509,8 @@ func sameSide(left, right string) bool {
 	return left != "" && left == right
 }
 
-// resolve makes a path in the file mean what its author meant: relative to the
-// file itself, not to whatever directory the daemon happened to start in.
+// resolve makes a relative path in the file relative to the file itself, not
+// to the directory the daemon started in.
 func (c *Config) resolve(p string) string {
 	if p == "" || filepath.IsAbs(p) {
 		return p
@@ -774,12 +531,9 @@ func (c *Config) Find(name string) (Job, bool) {
 	return Job{}, false
 }
 
-// ParseSchedule accepts standard five-field cron, the usual @every and @daily
-// shorthands, and nothing else.
-//
-// Seconds are deliberately not enabled. A sync job that runs every few seconds
-// is not a schedule, it is a busy loop over two filesystems, and the answer to
-// wanting one is file watching rather than a faster cron.
+// ParseSchedule accepts standard five-field cron and the @every and @daily
+// shorthands. Seconds are not enabled: a job that has to react within seconds
+// wants file watching, not a faster cron.
 func ParseSchedule(spec string) (cron.Schedule, error) {
 	return cron.ParseStandard(spec)
 }
@@ -815,9 +569,8 @@ func (j Job) Options() (engine.Options, error) {
 		compare.BrakeFloor = *j.BrakeFloor
 	}
 
-	// The job's own patterns, plus whatever its named sets bring. Resolved at
-	// load rather than here, so this function keeps working on a Job that was
-	// built by a test without a Config around it.
+	// Named sets were merged into Exclude at load, so this also works on a Job
+	// built without a Config.
 	patterns := append([]string(nil), j.Exclude...)
 	if !j.NoDefaultExcludes {
 		patterns = append(patterns, filter.InProgress...)
@@ -832,8 +585,7 @@ func (j Job) Options() (engine.Options, error) {
 		Exclude:   excl,
 		EmptyDirs: j.EmptyDirs != nil && *j.EmptyDirs,
 		Metadata:  j.Metadata != nil && *j.Metadata,
-		// Nil is "ask the backends", which is what almost every job wants. The
-		// override only reaches the engine when somebody set it.
+		// Nil means ask the backends.
 		ForceFoldCase: j.FoldCase,
 	}, nil
 }
@@ -850,50 +602,30 @@ func (j Job) SettleFor() time.Duration {
 	return d
 }
 
-// Raw returns the configuration file exactly as it was read.
-//
-// The editor works on these bytes rather than on the parsed struct, so a field
-// this version does not know about survives being edited by it, and a relative
-// path stays relative instead of being rewritten as the absolute one Load
-// resolved it to.
+// Raw returns the configuration file exactly as it was read. The editor works
+// on these bytes, so unknown fields survive and relative paths stay relative.
 func (c *Config) Raw() []byte { return append([]byte(nil), c.raw...) }
 
 // Path is where the configuration was read from.
 func (c *Config) Path() string { return c.path }
 
-// SaveJobs writes a new set of jobs back over the configuration file.
-//
-// Validation is not reimplemented here. The new content is written to a
-// neighbouring temporary file and put through Load, which is the same function
-// that guards a hand-written file, and only a file that survives that is moved
-// into place. A second validator would eventually disagree with the first, and
-// the disagreement would show up as an editor that accepts something the daemon
-// then refuses to start with.
+// SaveJobs writes a new set of jobs back over the configuration file. The
+// result goes through Load before it replaces anything, so the editor cannot
+// save a file the daemon would refuse.
 func (c *Config) SaveJobs(jobs []map[string]any) (*Config, error) {
 	return c.save(func(doc map[string]any) { doc["jobs"] = jobs })
 }
 
-// SaveSettings writes the keys that are NOT the job list: the bandwidth limit,
-// how many jobs may run at once, where the history lives, who gets told.
-//
-// Every one of these was already read by the engine and had nowhere to be set
-// except the file itself, which is the reason it needs saying: the program
-// could do these things and did not appear to. jdp: "Das programm sieht so
-// klein und unfertig aus und wirkt als haette es keine funktionen."
-//
-// A key whose value arrives empty is DELETED rather than written as "". The
-// difference is not cosmetic: an empty bandwidth limit means "no limit" and a
-// missing one means the same thing, but an empty string written into the file
-// is a value somebody hand-editing it has to wonder about, and the day one of
-// these settings grows a non-empty default it would also override it.
+// SaveSettings writes the top-level keys other than the job list, such as the
+// bandwidth limit, parallelism, history and notifications. A key whose value
+// arrives empty is deleted rather than written as "", so it cannot override a
+// default later.
 func (c *Config) SaveSettings(settings map[string]any) (*Config, error) {
 	return c.save(func(doc map[string]any) {
 		for k, v := range settings {
 			if k == "jobs" {
-				// The one key this call may not touch. Sent by a caller that
-				// read the whole document and handed it back, it would replace
-				// the job list with whatever that caller last saw, which is a
-				// way to lose a job added in another window.
+				// A caller handing back the whole document would otherwise
+				// drop a job added in another window.
 				continue
 			}
 			if isBlank(v) {
@@ -920,20 +652,11 @@ func isBlank(v any) bool {
 	return false
 }
 
-// Replace writes a whole configuration document over this one.
-//
-// The restore half of "save your settings somewhere". It goes through the same
-// write-beside-then-validate-then-rename path as every other write here, so a
-// file somebody edited by hand, or one saved by a different version, fails in
-// exactly the words a hand-written file would.
-//
-// It takes the document as bytes rather than as a parsed struct on purpose: a
-// backup is only worth having if it comes back byte for byte, including the
-// keys this build has never heard of.
+// Replace writes a whole configuration document over this one, to restore a
+// backup. It takes bytes so keys this build does not know survive, and the
+// result is validated by Load like every other write.
 func (c *Config) Replace(doc []byte) (*Config, error) {
-	// Parsed once here purely to refuse something that is not JSON at all, with
-	// a sentence about THAT rather than whatever Load would say about a file
-	// full of HTML. Everything else is Load's business.
+	// Parsed here only to give a clear error for something that is not JSON.
 	var probe map[string]any
 	if err := json.Unmarshal(doc, &probe); err != nil {
 		return nil, fmt.Errorf("this is not a configuration file: %w", err)
@@ -961,14 +684,9 @@ func (c *Config) SettingsAsMap() (map[string]any, error) {
 	return doc, nil
 }
 
-// save applies one edit to the document and puts the result through Load before
-// it replaces anything.
-//
-// Shared by both callers so that a settings write gets the identical treatment
-// a job write already had: written beside the real file, validated by the same
-// function that guards a hand-written one, and only then renamed into place. A
-// second, simpler path for "just a few small values" is how a configuration
-// ends up invalid in a way only the daemon's next start reveals.
+// save applies one edit to the document, writes the result beside the real
+// file, validates it with Load and only then renames it into place, so a crash
+// or a refused edit leaves the old file intact.
 func (c *Config) save(edit func(map[string]any)) (*Config, error) {
 	var doc map[string]any
 	if err := json.Unmarshal(c.raw, &doc); err != nil {
@@ -992,14 +710,9 @@ func (c *Config) save(edit func(map[string]any)) (*Config, error) {
 	defer os.Remove(tmp)
 
 	if _, err := Load(tmp); err != nil {
-		// The message is the validator's own, so an editor and a hand-written
-		// file fail in the same words.
 		return nil, err
 	}
 
-	// A crash between these two lines leaves the old file intact, which is the
-	// point of writing beside it first: a half-written configuration is a
-	// daemon that will not start.
 	if err := os.Rename(tmp, c.path); err != nil {
 		return nil, fmt.Errorf("replace %s: %w", c.path, err)
 	}

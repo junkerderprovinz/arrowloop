@@ -11,27 +11,16 @@ import (
 	"testing"
 )
 
-// TestANewFolderIsAsWritableAsTheOneItSitsIn.
-//
-// The report this exists for, with the Windows dialog attached: two folders
-// created through the browse panel on an Unraid share could be opened and not
-// written to. Measured on the box, which is what named the cause - the share is
-// `nobody:users` 0777 and both folders came out `root:root` 0755, because the
-// mode handed to Mkdir is masked by the process umask and a container's default
-// is 022.
-//
-// The umask is set deliberately in this test rather than trusted: it is process
-// state, so a suite that happened to run under 000 would pass with the fix
-// removed, and a guard that can only fail under one ambient setting is a guard
-// that reports nothing. 022 is what a container has.
+// On a 0777 share, a folder made under a container's umask of 022 would come
+// out 0755. The umask is set here, since a suite running under 000 would pass
+// either way.
 func TestANewFolderIsAsWritableAsTheOneItSitsIn(t *testing.T) {
 	was := syscall.Umask(0o022)
 	t.Cleanup(func() { syscall.Umask(was) })
 
 	h := newHarness(t)
 	parent := t.TempDir()
-	// The share's own mode. t.TempDir() makes 0700, which cannot show the
-	// defect: 0700 masked by 022 is still 0700.
+	// The share's mode; t.TempDir makes 0700, which the umask leaves alone.
 	if err := os.Chmod(parent, 0o777); err != nil {
 		t.Fatal(err)
 	}
@@ -52,11 +41,7 @@ func TestANewFolderIsAsWritableAsTheOneItSitsIn(t *testing.T) {
 	}
 }
 
-// TestInheritingLeavesAPrivateFolderPrivate.
-//
-// The rule is INHERIT, not "make it world-writable". A folder created inside a
-// private directory has to stay private, or a fix for a share would quietly
-// open up every folder anybody makes on their own disk.
+// The rule is to inherit, not to make folders world-writable.
 func TestInheritingLeavesAPrivateFolderPrivate(t *testing.T) {
 	was := syscall.Umask(0o022)
 	t.Cleanup(func() { syscall.Umask(was) })

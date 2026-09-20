@@ -9,11 +9,7 @@ import (
 	"testing"
 )
 
-// TestForgettingAJobsStateTakesItsSiblings.
-//
-// SQLite writes two files beside the database and both outlive it. A leftover
-// -wal is not merely untidy: the next database created under the same name can
-// be opened against somebody else's write-ahead log.
+// A leftover -wal could be opened against the next database of the same name.
 func TestForgettingAJobsStateTakesItsSiblings(t *testing.T) {
 	h := newHarness(t)
 
@@ -33,8 +29,6 @@ func TestForgettingAJobsStateTakesItsSiblings(t *testing.T) {
 		state = filepath.Join(h.dir, state)
 	}
 
-	// Every one of the three, so the test can tell "removed the database" from
-	// "removed the database and its log".
 	made := []string{state, state + "-wal", state + "-shm"}
 	if err := os.MkdirAll(filepath.Dir(state), 0o755); err != nil {
 		t.Fatal(err)
@@ -55,19 +49,13 @@ func TestForgettingAJobsStateTakesItsSiblings(t *testing.T) {
 		}
 	}
 
-	// Already gone is the state the caller asked for, so a second call is not
-	// an error. A route that failed here would make "delete the job" fail on a
-	// job whose database was never created.
+	// A job whose database was never created must still be deletable.
 	if resp, body := doJSON(t, h.srv, http.MethodDelete, "/api/jobs/"+name+"/state", ""); resp.StatusCode != http.StatusOK {
 		t.Errorf("deleting it twice: %s %s", resp.Status, body)
 	}
 }
 
-// TestForgettingTheStateOfAJobThatIsNotThere.
-//
-// The NAME is what comes in, and the path is resolved from the configuration.
-// A name nothing matches has to be refused rather than turned into a path, or
-// the resolution step is not doing the job it exists for.
+// A name nothing matches is refused rather than turned into a path.
 func TestForgettingTheStateOfAJobThatIsNotThere(t *testing.T) {
 	h := newHarness(t)
 	resp, _ := doJSON(t, h.srv, http.MethodDelete, "/api/jobs/no-such-job/state", "")
@@ -76,13 +64,8 @@ func TestForgettingTheStateOfAJobThatIsNotThere(t *testing.T) {
 	}
 }
 
-// TestMakingAFolderTakesANameAndNeverAPath.
-//
-// This is the whole guard. The control says "make a folder here", so the parent
-// is a folder the caller has already walked to and the name is one segment. A
-// separator or a dot segment is REFUSED rather than cleaned, because cleaning a
-// name that was never meant to be a path is how a control that says "here"
-// quietly makes one somewhere else.
+// A separator or a dot segment is refused rather than cleaned, so the folder
+// cannot land somewhere other than "here".
 func TestMakingAFolderTakesANameAndNeverAPath(t *testing.T) {
 	h := newHarness(t)
 	parent := t.TempDir()
@@ -105,8 +88,7 @@ func TestMakingAFolderTakesANameAndNeverAPath(t *testing.T) {
 		_ = said
 	}
 
-	// Nothing landed beside the parent, which is the failure the refusals
-	// exist to prevent and the one a status code alone would not catch.
+	// A status code alone would not show something landing beside the parent.
 	beside, err := os.ReadDir(filepath.Dir(parent))
 	if err != nil {
 		t.Fatal(err)
@@ -122,8 +104,6 @@ func TestMakingAFolderTakesANameAndNeverAPath(t *testing.T) {
 		t.Errorf("the parent is not empty after only refusals: %v", entries)
 	}
 
-	// And an ordinary name works, so the refusals above are a filter rather
-	// than a wall.
 	body, _ := json.Marshal(map[string]string{"parent": parent, "name": "Fotos"})
 	resp, said := doJSON(t, h.srv, http.MethodPost, "/api/browse/mkdir", string(body))
 	if resp.StatusCode != http.StatusOK {
@@ -134,10 +114,6 @@ func TestMakingAFolderTakesANameAndNeverAPath(t *testing.T) {
 	}
 }
 
-// TestMakingAFolderIsNotRecursive.
-//
-// A parent that does not exist is an error rather than a tree appearing out of
-// nowhere: the parent is meant to be a folder somebody has already walked to.
 func TestMakingAFolderIsNotRecursive(t *testing.T) {
 	h := newHarness(t)
 	missing := filepath.Join(t.TempDir(), "not", "there")
@@ -152,19 +128,8 @@ func TestMakingAFolderIsNotRecursive(t *testing.T) {
 	}
 }
 
-// TestDeletingTheLastJobReachesTheFile.
-//
-// The bug this exists for had two layers and the second was the real one. The
-// editor changed its own list and never wrote the file, so a removal survived
-// until the next read; that was fixed first. Underneath it, the validator
-// refused a configuration with no jobs at all, so removing the ONLY job could
-// never be written even once the write was attempted. A fresh install has
-// exactly one job, which is why "den example auftrag kann ich nicht löschen"
-// was reported against the only job there is.
-//
-// The test goes through the API rather than the validator, because that is the
-// path that was broken: each half passed its own tests while the two together
-// could not delete a job.
+// A fresh install has exactly one job, and removing it has to reach the file.
+// This goes through the API, where the editor and the validator meet.
 func TestDeletingTheLastJobReachesTheFile(t *testing.T) {
 	h := newHarness(t)
 
@@ -180,8 +145,7 @@ func TestDeletingTheLastJobReachesTheFile(t *testing.T) {
 		t.Fatalf("removing the only job: %s %s", resp.Status, said)
 	}
 
-	// Read back from the server, which re-reads the file, so this cannot pass
-	// on a list the browser is merely holding.
+	// The server re-reads the file.
 	var after struct {
 		Jobs []map[string]any `json:"jobs"`
 	}

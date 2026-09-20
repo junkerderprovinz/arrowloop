@@ -18,13 +18,8 @@ func writeConfig(t *testing.T, body string) string {
 	return path
 }
 
-// TestLoadResolvesPathsAgainstTheFile covers the trap of running a daemon from
-// a directory nobody chose.
-//
-// A service manager starts the process wherever it likes, usually the root of
-// the filesystem. A relative state path in the configuration would then resolve
-// somewhere else entirely, and the job would find an empty record and treat
-// every file on both sides as new.
+// A service manager starts the daemon wherever it likes, and a state path
+// resolved against that directory would give the job an empty record.
 func TestLoadResolvesPathsAgainstTheFile(t *testing.T) {
 	path := writeConfig(t, `{
 	  "jobs": [{"name":"photos","left":"/a","right":"/b","state":"state/photos.db"}]
@@ -45,8 +40,6 @@ func TestLoadResolvesPathsAgainstTheFile(t *testing.T) {
 	}
 }
 
-// TestLoadRefusesBrokenConfigurations checks everything at load time rather than
-// at three in the morning on the one job that mattered.
 func TestLoadRefusesBrokenConfigurations(t *testing.T) {
 	cases := []struct {
 		name string
@@ -76,11 +69,8 @@ func TestLoadRefusesBrokenConfigurations(t *testing.T) {
 	}
 }
 
-// TestMisspelledFieldIsRefused deserves its own note. JSON decoding normally
-// ignores a field it does not recognise, so "excludes" instead of "exclude"
-// would leave the filter silently empty and the job would sync the very files
-// the user thought they had excluded. DisallowUnknownFields turns that into an
-// error at load time.
+// Ignoring an unknown field would turn "excludes" for "exclude" into a filter
+// that silently matches nothing.
 func TestMisspelledFieldIsRefused(t *testing.T) {
 	_, err := Load(writeConfig(t, `{"jobs":[{"name":"x","left":"/a","right":"/b","state":"s.db","emptyDir":true}]}`))
 	if err == nil {
@@ -88,10 +78,6 @@ func TestMisspelledFieldIsRefused(t *testing.T) {
 	}
 }
 
-// TestZeroBrakeIsNotTheSameAsUnset is why those two fields are pointers.
-//
-// Zero switches the mass-delete brake off completely. That has to be something
-// somebody typed on purpose, never something they got by leaving a field out.
 func TestZeroBrakeIsNotTheSameAsUnset(t *testing.T) {
 	unset, err := Load(writeConfig(t, `{"jobs":[{"name":"x","left":"/a","right":"/b","state":"s.db"}]}`))
 	if err != nil {
@@ -118,8 +104,6 @@ func TestZeroBrakeIsNotTheSameAsUnset(t *testing.T) {
 	}
 }
 
-// TestOptionsFillInTheDefaults checks that leaving a field out means the
-// engine's default rather than a zero value.
 func TestOptionsFillInTheDefaults(t *testing.T) {
 	cfg, err := Load(writeConfig(t, `{"jobs":[{
 	  "name":"x","left":"/a","right":"/b","state":"s.db",
@@ -148,21 +132,13 @@ func TestOptionsFillInTheDefaults(t *testing.T) {
 	if !opt.Exclude.Excluded("deep/inside/app.log") {
 		t.Error("the exclude pattern did not reach the filter")
 	}
-	// The in-progress names come along unless they are explicitly refused,
-	// because a half-written download is never worth copying.
 	if !opt.Exclude.Excluded("movie.mkv.part") {
 		t.Error("the default excludes were dropped")
 	}
 }
 
-// TestAHalfWrittenJobCanBeSavedButNotRun covers the state every job passes
-// through between being created and being filled in.
-//
-// The editor's own "add a job" button makes exactly this: a name, a state file,
-// no sides, switched off. A validator that refuses it is a validator that stops
-// the button from saving what it just made, and it stopped the desktop
-// application from starting at all, because its starter configuration holds one
-// of these and it reads that file before it opens a window.
+// The editor's "add a job" button saves a job with a name, a state file and no
+// sides, and the desktop starter configuration holds one.
 func TestAHalfWrittenJobCanBeSavedButNotRun(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "arrowloop.json")
@@ -179,32 +155,19 @@ func TestAHalfWrittenJobCanBeSavedButNotRun(t *testing.T) {
 		t.Fatalf("expected the job to survive loading, got %d", len(cfg.Jobs))
 	}
 
-	// Switched ON with no sides at all is a draft, and it loads.
-	//
-	// This asserted the opposite until 2026-09-07, and the old assertion is why
-	// the editor had to create every job switched off: the only way to save what
-	// the button had just made was to hold it, so every new job announced itself
-	// as "abgeschaltet" until somebody found a switch at the bottom of the form.
-	// Nothing runs a job with no sides - it has no schedule, and the runner
-	// refuses it by hand with ErrHalfWritten - so refusing the whole FILE over
-	// it bought nothing and cost that.
+	// Switched on with no sides it is still a draft: it has no schedule, and
+	// the runner refuses it by hand with ErrHalfWritten.
 	body = `{"jobs":[{"name":"not-finished-yet","left":"","right":"","state":"state/x.db"}]}`
 	if err := os.WriteFile(path, []byte(body), 0o644); err != nil {
 		t.Fatalf("write: %v", err)
 	}
 	if _, err := Load(path); err != nil {
-		t.Fatalf("a switched-on job with NEITHER side is a draft and must load: %v", err)
+		t.Fatalf("a switched-on job with neither side is a draft and must load: %v", err)
 	}
 }
 
-// TestAJobWithOneSideIsStillRefused is the other half of the rule above, and it
-// is the half that has to keep holding.
-//
-// A job with neither side is a draft nothing can reach. A job with ONE side is
-// somebody who filled in half a form, and it is the shape that runs and does
-// something surprising - so being switched on, it is refused when the file is
-// read, exactly as it always was. Both directions are pinned here because the
-// draft rule was widened once and the widening must not swallow this case.
+// A job with one side is half a form filled in, and switched on it would run
+// and do something surprising.
 func TestAJobWithOneSideIsStillRefused(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "arrowloop.json")
@@ -221,7 +184,6 @@ func TestAJobWithOneSideIsStillRefused(t *testing.T) {
 		}
 	}
 
-	// And switched off it loads, because a held job cannot run either.
 	held := `{"jobs":[{"name":"half","left":"/data","right":"","state":"state/x.db","disabled":true}]}`
 	if err := os.WriteFile(path, []byte(held), 0o644); err != nil {
 		t.Fatalf("write: %v", err)
@@ -231,17 +193,7 @@ func TestAJobWithOneSideIsStillRefused(t *testing.T) {
 	}
 }
 
-// TestAConfigurationWithNoJobsIsAccepted.
-//
-// This asserted the opposite until 2026-09-07, and the old assertion was the
-// bug. An empty list is the state before the first job is created and after the
-// last one is deleted, and refusing it made the second impossible: the editor
-// sent the list with the only job removed, the validator refused it, and the
-// job came back on the next read. From the outside that is "I cannot delete
-// this job".
-//
-// Kept as a test of its own rather than a row in the table above, because the
-// table is about REFUSALS and this is the case that must not be refused.
+// An empty list is what the editor saves after the last job is deleted.
 func TestAConfigurationWithNoJobsIsAccepted(t *testing.T) {
 	cfg, err := Load(writeConfig(t, `{"jobs":[]}`))
 	if err != nil {

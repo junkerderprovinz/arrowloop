@@ -8,20 +8,9 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/web"
 )
 
-// TestTheRouteTheHealthcheckAsksForStaysOpen.
-//
-// The container asks this every thirty seconds and carries no cookie. Once a
-// password is set, every route but three needs a session, so a healthcheck
-// pointed at a protected route answers 401 and the container goes unhealthy
-// every half minute on a machine where nothing at all is wrong.
-//
-// This test exists because that failure is entirely invisible from inside the
-// app: both halves are correct on their own, the password gate is doing its job
-// and the healthcheck is doing its job, and the only symptom is a red container
-// somebody has to go and diagnose.
+// The container's healthcheck carries no cookie, so its route has to stay open
+// once a password is set, or the container turns unhealthy.
 func TestTheRouteTheHealthcheckAsksForStaysOpen(t *testing.T) {
-	// A real hash, so the gate is genuinely on. Generated here rather than
-	// pasted, because a stale constant is a test that silently stops testing.
 	hash, err := web.HashPassword("a password")
 	if err != nil {
 		t.Fatalf("hash: %v", err)
@@ -40,8 +29,7 @@ func TestTheRouteTheHealthcheckAsksForStaysOpen(t *testing.T) {
 		t.Fatalf("the healthcheck's route answered %s with a password set", resp.Status)
 	}
 
-	// And the gate really is on, or the test above proves nothing: a route that
-	// SHOULD be shut has to be shut in the same breath.
+	// The gate has to be on for the check above to mean anything.
 	shut, err := srv.Client().Get(srv.URL + "/api/jobs")
 	if err != nil {
 		t.Fatal(err)
@@ -52,9 +40,6 @@ func TestTheRouteTheHealthcheckAsksForStaysOpen(t *testing.T) {
 	}
 }
 
-// TestWithoutAPasswordTheHealthcheckRouteStillAnswers.
-//
-// The ordinary install, which is every install today.
 func TestWithoutAPasswordTheHealthcheckRouteStillAnswers(t *testing.T) {
 	if got := os.Getenv(web.PasswordHashEnv); got != "" {
 		t.Skipf("a password hash is set in this environment: %q", got)

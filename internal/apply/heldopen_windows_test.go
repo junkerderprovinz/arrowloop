@@ -20,16 +20,10 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/state"
 )
 
-// A file somebody has open is the single most common thing that goes wrong on a
-// Windows sync, and it is not a fault: the remedy is to close a window, and the
-// next run picks the file up. These two tests are the difference between a run
-// that says so and a run that files it beside a full disk.
-//
-// Windows only, and not by omission. Locking is mandatory there and advisory on
-// POSIX, so the state under test cannot be reached at all on Linux or macOS.
+// Locking is mandatory on Windows and advisory on POSIX, so these states only
+// exist on Windows.
 
-// TestALockedSourceIsPostponedBeforeItIsAttempted covers the probe that runs
-// before a transfer: the file is known to be locked, so no attempt is made.
+// The source is known to be locked before the transfer, so no attempt is made.
 func TestALockedSourceIsPostponedBeforeItIsAttempted(t *testing.T) {
 	j := newLockJob(t)
 	writeTo(t, j.left, "notes.txt", "an edit made while the document is open")
@@ -42,21 +36,13 @@ func TestALockedSourceIsPostponedBeforeItIsAttempted(t *testing.T) {
 	if skip.Reason.Vars["side"] != "left" {
 		t.Errorf("the reason names the %q side, and the lock is on the left", skip.Reason.Vars["side"])
 	}
-	// Nothing may have travelled. A skip that copied the file anyway would be
-	// reporting a postponement it did not make.
 	if got := readOrEmpty(t, filepath.Join(j.right, "notes.txt")); got != "the original" {
 		t.Errorf("the far side holds %q, so the locked file was copied after all", got)
 	}
 }
 
-// TestALockedDestinationIsRecordedAsHeldOpenNotAsAFailure covers the half the
-// probe cannot reach.
-//
-// The destination is deliberately not probed, and a lock can be taken in the
-// moment between any probe and the transfer, so the everyday way a run meets a
-// locked file is by failing on it. Before this, that failure was recorded under
-// the generic step-failed reason with a localised Win32 sentence attached, in
-// the same list as a full disk and a refused permission.
+// The destination is not probed beforehand, so the run meets its lock by
+// failing on it.
 func TestALockedDestinationIsRecordedAsHeldOpenNotAsAFailure(t *testing.T) {
 	j := newLockJob(t)
 	writeTo(t, j.left, "notes.txt", "an edit that has to travel")
@@ -66,55 +52,41 @@ func TestALockedDestinationIsRecordedAsHeldOpenNotAsAFailure(t *testing.T) {
 	if skip.Reason.Code != "heldOpenDuring" {
 		t.Errorf("a locked destination was recorded as %q (%s), wanted heldOpenDuring", skip.Reason.Code, skip.Reason.Text)
 	}
-	// The backend's own words are kept. They are localised and unreliable as a
-	// thing to match on, and they are still the only place the reader learns
-	// which operation died.
+	// The backend's own words are the only place the reader learns which
+	// operation died.
 	if skip.Reason.Vars["error"] == "" {
 		t.Error("the reason dropped the backend's own words, leaving nothing to search for")
 	}
 }
 
-// TestALockedRenameIsPostponedRatherThanAttempted covers the kind of work the
-// probe used to walk straight past.
-//
-// A rename is applied on the FAR side, over a file that side is holding, and
-// renames run in their own sequential pass before any copy. Nothing in that
-// pass asked whether the file was free, so renaming a folder of documents while
-// one of them was open reported a raw Win32 sentence under the generic failure
-// reason.
+// A rename is applied on the far side, over a file that side is holding, in its
+// own pass before any copy.
 func TestALockedRenameIsPostponedRatherThanAttempted(t *testing.T) {
 	j := newLockJob(t)
-	// The same content under a new name, which is what makes this a rename
-	// rather than a delete and a copy: the engine matches the two by checksum.
+	// The same content under a new name, which the engine matches by checksum
+	// as a rename.
 	if err := os.Rename(filepath.Join(j.left, "notes.txt"), filepath.Join(j.left, "renamed.txt")); err != nil {
 		t.Fatalf("rename: %v", err)
 	}
 	defer lockFile(t, filepath.Join(j.right, "notes.txt"))()
 
 	skip := runAndFindSkip(t, j, "renamed.txt")
-	// heldOpen and not heldOpenDuring, deliberately. The rename is never
-	// attempted: the pass asks first. Accepting either code here would let the
-	// probe be taken out of the rename pass entirely without anything noticing,
-	// because the failure would then be classified after the fact and read
-	// almost the same in the report.
+	// heldOpen, not heldOpenDuring: accepting either would let the probe be
+	// dropped from the rename pass without anything noticing.
 	if skip.Reason.Code != "heldOpen" {
 		t.Errorf("a rename onto a held file was recorded as %q (%s), wanted heldOpen before it was tried", skip.Reason.Code, skip.Reason.Text)
 	}
 	if skip.Reason.Vars["side"] != "right" {
 		t.Errorf("the reason names the %q side, and the far side is the one holding the file", skip.Reason.Vars["side"])
 	}
-	// The far side still holds the old name. A rename reported as postponed
-	// that had in fact happened would leave the record and the disk disagreeing.
+	// A rename reported as postponed that had happened would leave the record
+	// and the disk disagreeing.
 	if _, err := os.Stat(filepath.Join(j.right, "notes.txt")); err != nil {
 		t.Errorf("the far side lost the file the run said it had left alone: %v", err)
 	}
 }
 
-// TestALockedFileReachesTheRunsOwnList is the point of both: the outcome has to
-// be in the record the daemon writes down, not only in a counter.
-//
-// The count answers "how much" and nobody has that question afterwards. A run
-// reporting "1 skipped" and nothing else is why this list exists.
+// The outcome has to be in the run's list, not only in a counter.
 func TestALockedFileReachesTheRunsOwnList(t *testing.T) {
 	j := newLockJob(t)
 	writeTo(t, j.left, "notes.txt", "an edit made while the document is open")
@@ -134,8 +106,7 @@ func TestALockedFileReachesTheRunsOwnList(t *testing.T) {
 	if !found {
 		t.Errorf("the locked file is not in the run's list at all: %+v", res.Entries)
 	}
-	// A skip is work postponed, not work done, and moving the bar for one
-	// would walk it past its own total on a run where several files are open.
+	// A skip is work postponed, not done on a side.
 	for _, e := range res.Entries {
 		if e.Kind == "skip" && e.Side != "" {
 			t.Errorf("a skip was recorded as though it had happened on a side: %+v", e)
@@ -182,9 +153,8 @@ func newLockJob(t *testing.T) *lockJob {
 		left: left, right: right,
 		ends: apply.Ends{Left: leftFs, Right: rightFs},
 		db:   db,
-		// No quiet period. The files here are written and then immediately
-		// synced, and the settling rule would postpone every one of them for
-		// its own perfectly good reason, hiding the reason under test.
+		// No quiet period, which would postpone the freshly written files
+		// for a reason of its own.
 		opt: engine.Options{Compare: plan.Options{ModWindow: 2 * time.Second}},
 	}
 
@@ -216,12 +186,9 @@ func runAndFindSkip(t *testing.T, j *lockJob, path string) plan.Skip {
 	return plan.Skip{}
 }
 
-// lockFile takes the kind of lock a program holds when it means to keep a file
-// to itself, and returns the release.
-//
-// Share mode zero rather than a Go os.Open handle, because a Go handle asks for
-// read and write sharing and would not stop anything. This is the situation, not
-// an imitation of it.
+// lockFile opens a file with share mode zero, as a program keeping it to itself
+// does, and returns the release. A Go os.Open handle allows sharing and would
+// not lock anything.
 func lockFile(t *testing.T, path string) func() {
 	t.Helper()
 	p, err := windows.UTF16PtrFromString(path)
@@ -232,9 +199,8 @@ func lockFile(t *testing.T, path string) func() {
 	if err != nil {
 		t.Fatalf("could not lock %s, so this test would prove nothing: %v", path, err)
 	}
-	// Released before the temporary directory is cleaned up, or the cleanup
-	// itself fails on the lock and the failure is reported against whichever
-	// test ran next.
+	// Released before the temporary directory is cleaned up, which would
+	// otherwise fail on the lock.
 	return func() { windows.CloseHandle(h) }
 }
 

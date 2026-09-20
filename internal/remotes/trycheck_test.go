@@ -16,18 +16,14 @@ func TestAConnectionStringCarriesEverySetting(t *testing.T) {
 		"type":     "s3", // never repeated: it is already the backend
 		"region":   "",   // empty settings are absent, not empty
 	})
-	// The endpoint is QUOTED, because it carries colons and slashes. The
-	// first version of this test expected it bare, which is precisely the
-	// bug: a colon ends a connection string.
+	// The endpoint is quoted, because a colon ends a connection string.
 	want := `:s3,endpoint="http://192.168.20.76:3900",provider=Minio:`
 	if got != want {
 		t.Fatalf("got %q, want %q", got, want)
 	}
 }
 
-// A secret with a comma in it would end the option early and silently produce a
-// different target, which reads as a wrong password rather than a parsing bug.
-// Checked on a field rclone does NOT reveal, so the quoting is visible.
+// Checked on a field rclone does not reveal, so the quoting is visible.
 func TestAValueWithASeparatorIsQuoted(t *testing.T) {
 	got := connectionString("s3", map[string]string{"endpoint": `a,b "c"`})
 	want := `:s3,endpoint="a,b ""c""":`
@@ -36,9 +32,8 @@ func TestAValueWithASeparatorIsQuoted(t *testing.T) {
 	}
 }
 
-// WebDAV's password must arrive OBSCURED, because rclone reveals it wherever it
-// reads it and a connection string is read like a config file. Measured against
-// a live engine, which answered "input too short when revealing password".
+// rclone reveals WebDAV's password in a connection string as it does in the
+// config file.
 func TestAPasswordIsObscuredForTheConnection(t *testing.T) {
 	got := connectionString("webdav", map[string]string{"pass": "demo"})
 	if strings.Contains(got, "pass=demo") {
@@ -51,8 +46,7 @@ func TestAPasswordIsObscuredForTheConnection(t *testing.T) {
 	}
 }
 
-// A secret that came back from the screen UNTOUCHED is already obscured, and
-// obscuring it twice would produce a password nobody typed.
+// A saved secret is already obscured.
 func TestAnAlreadyObscuredSecretIsLeftAlone(t *testing.T) {
 	hidden, err := obscure.Obscure("demo")
 	if err != nil {
@@ -66,13 +60,6 @@ func TestAnAlreadyObscuredSecretIsLeftAlone(t *testing.T) {
 	}
 }
 
-// THE ADDRESS THAT BROKE IT, kept as the case rather than as a memory.
-//
-// A connection string is `:backend,k=v,k=v:`, so a COLON ends it - and every
-// WebDAV address has two. The first version quoted only commas, quotes and
-// spaces, so the engine received a URL eaten from `http:` onward and answered
-// "unsupported protocol scheme". jdp: "Ich kann die OpenCloud Verbindung nicht
-// testen."
 func TestAUrlSurvivesTheConnectionString(t *testing.T) {
 	const url = "http://192.168.20.77:9200/remote.php/webdav/"
 	got := connectionString("webdav", map[string]string{"url": url})
@@ -82,9 +69,7 @@ func TestAUrlSurvivesTheConnectionString(t *testing.T) {
 	}
 }
 
-// The rule is an ALLOW-list, so anything outside letters, digits and -._~ is
-// quoted - including separators nobody has thought of yet. A deny-list of
-// separators is never finished.
+// Anything outside letters, digits and -._~ is quoted.
 func TestAnythingUnusualIsQuoted(t *testing.T) {
 	for _, value := range []string{"a:b", "a/b", "a=b", "a b", "a,b", "a	b", "a\"b"} {
 		got := connectionString("webdav", map[string]string{"x": value})
@@ -94,8 +79,6 @@ func TestAnythingUnusualIsQuoted(t *testing.T) {
 	}
 }
 
-// And a plain value stays bare, because an unquoted string is what somebody
-// reading a log expects to see.
 func TestAPlainValueStaysBare(t *testing.T) {
 	got := connectionString("s3", map[string]string{"region": "eu-central-1"})
 	if got != ":s3,region=eu-central-1:" {
@@ -103,15 +86,11 @@ func TestAPlainValueStaysBare(t *testing.T) {
 	}
 }
 
-// THE PROPERTY THAT MAKES THIS SAFE: nothing is written. The obvious way to
-// check unsaved settings is to save them under a temporary name, and a crash
-// between that and the delete leaves real credentials in the config file under a
-// name nobody recognises.
 func TestCheckingUnsavedSettingsWritesNothing(t *testing.T) {
 	before := config.LoadedData().GetSectionList()
 
-	// TEST-NET-1 (RFC 5737) is reserved for documentation, so nothing anywhere
-	// answers it and this cannot wander onto a real server.
+	// TEST-NET-1 (RFC 5737) is reserved for documentation, so nothing answers
+	// it.
 	_ = CheckSettings(context.Background(), "webdav", map[string]string{
 		"url":  "http://192.0.2.1:9999/",
 		"user": "nobody",

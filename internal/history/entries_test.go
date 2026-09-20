@@ -20,13 +20,6 @@ func openTemp(t *testing.T) *history.DB {
 	return db
 }
 
-// TestARunAndWhatItDidArriveTogether.
-//
-// A run row without its entries reads as a run that touched nothing, which is
-// exactly the picture somebody would be handed about the run they most want to
-// look into. The two writes therefore share one transaction, and this checks
-// they actually arrive together rather than merely being written next to each
-// other.
 func TestARunAndWhatItDidArriveTogether(t *testing.T) {
 	db := openTemp(t)
 	ctx := context.Background()
@@ -59,17 +52,13 @@ func TestARunAndWhatItDidArriveTogether(t *testing.T) {
 	}
 }
 
-// TestTheOrderIsTheOrderItHappenedIn.
-//
-// Not a nicety. Reading down the list of a FAILED run is how somebody works out
-// what it got through before it stopped, and a list sorted by path or by
-// whatever the database felt like answers a different question.
+// Reading down the list of a failed run shows how far it got.
 func TestTheOrderIsTheOrderItHappenedIn(t *testing.T) {
 	db := openTemp(t)
 	ctx := context.Background()
 	now := time.Now()
 
-	// Deliberately not in alphabetical order, so a sort by path would show.
+	// Not alphabetical, so a sort by path would show.
 	want := []string{"zebra", "apple", "mango", "banana"}
 	var entries []history.Entry
 	for _, p := range want {
@@ -91,11 +80,8 @@ func TestTheOrderIsTheOrderItHappenedIn(t *testing.T) {
 	}
 }
 
-// TestEntriesBelongToTheirOwnRun.
-//
-// Two runs of the same job, and asking for one must not hand back the other's
-// work. The obvious way to get this wrong is a query that filters by job rather
-// than by run, which would look correct on a database holding one run.
+// A query that filtered by job rather than by run would pass with one run, so
+// this records two.
 func TestEntriesBelongToTheirOwnRun(t *testing.T) {
 	db := openTemp(t)
 	ctx := context.Background()
@@ -123,7 +109,6 @@ func TestEntriesBelongToTheirOwnRun(t *testing.T) {
 			t.Fatalf("run %d came back with %d entries, expected its own one", r.ID, len(got))
 		}
 	}
-	// And the two runs must not have been handed the same list.
 	a, _ := db.Entries(ctx, runs[0].ID)
 	b, _ := db.Entries(ctx, runs[1].ID)
 	if a[0].Path == b[0].Path {
@@ -131,12 +116,8 @@ func TestEntriesBelongToTheirOwnRun(t *testing.T) {
 	}
 }
 
-// TestPruningTakesTheEntriesWithIt.
-//
-// SQLite does not enforce a foreign key unless it is asked to, so nothing would
-// complain about entries whose run no longer exists. They would sit in the file
-// for ever, invisible and growing, which is the exact failure pruning exists to
-// prevent - and the count pruning reports would keep looking right.
+// SQLite does not enforce the foreign key, so nothing else would notice entries
+// left behind by a pruned run.
 func TestPruningTakesTheEntriesWithIt(t *testing.T) {
 	db := openTemp(t)
 	ctx := context.Background()
@@ -174,7 +155,6 @@ func TestPruningTakesTheEntriesWithIt(t *testing.T) {
 	if len(left) != 0 {
 		t.Errorf("%d entries survived the run they belonged to", len(left))
 	}
-	// The recent run keeps its own, or pruning is deleting too much.
 	runs, _ = db.Recent(ctx, "x", history.ShowAll, 10)
 	if len(runs) != 1 {
 		t.Fatalf("expected one run left, got %d", len(runs))
@@ -185,10 +165,6 @@ func TestPruningTakesTheEntriesWithIt(t *testing.T) {
 	}
 }
 
-// TestARunWithNothingToSayIsStillARun.
-//
-// The common case: a job that found nothing to do. It records no entries, and
-// that must not be an error or a missing row.
 func TestARunWithNothingToSayIsStillARun(t *testing.T) {
 	db := openTemp(t)
 	ctx := context.Background()
@@ -210,10 +186,6 @@ func TestARunWithNothingToSayIsStillARun(t *testing.T) {
 	}
 }
 
-// TestOpenMakesTheFolderItWasAskedToWriteInto is the run log's half of the
-// same rule. Its path defaults to the configuration's own folder, which
-// always exists, but the path is configurable and a nested one would fail
-// exactly the way every job's state database used to.
 func TestOpenMakesTheFolderItWasAskedToWriteInto(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "logs", "runs.db")
 	db, err := history.Open(context.Background(), path)
@@ -229,30 +201,18 @@ func TestOpenMakesTheFolderItWasAskedToWriteInto(t *testing.T) {
 	}
 }
 
-// TestTheQuietRunsCanBeLeftOutOfTheListing is jdp's report, staged as the
-// numbers that produce it.
-//
-// A job watching a folder writes a run a minute, almost all of them finding
-// nothing to do. A job that runs once a day writes one. Ask for the newest
-// fifty and every one of them belongs to the watcher: the daily job is not
-// further down the page, it is not on the page. jdp: "wenn ein auftrag zb nur
-// einemal am tag laeuft geht der unter."
-//
-// This is what makes the filter a QUERY rather than something the browser does
-// to what it was sent. Hiding the quiet runs after the fact hides them out of
-// the fifty already fetched, and the daily job stays exactly as missing.
+// A watcher's quiet runs fill the newest fifty and push a daily job off the
+// page, so hiding them from what was already fetched would not bring it back.
 func TestTheQuietRunsCanBeLeftOutOfTheListing(t *testing.T) {
 	db := openTemp(t)
 	ctx := context.Background()
 	base := time.Date(2026, 9, 9, 8, 0, 0, 0, time.UTC)
 
-	// The daily job, oldest of the lot and the one that did something.
 	if err := db.Record(ctx, history.Run{
 		Job: "daily", Started: base, Finished: base.Add(time.Second), Copied: 3,
 	}, nil); err != nil {
 		t.Fatalf("record: %v", err)
 	}
-	// Sixty minutes of a watcher finding nothing.
 	for i := 1; i <= 60; i++ {
 		at := base.Add(time.Duration(i) * time.Minute)
 		if err := db.Record(ctx, history.Run{Job: "watcher", Started: at, Finished: at}, nil); err != nil {
@@ -282,12 +242,8 @@ func TestTheQuietRunsCanBeLeftOutOfTheListing(t *testing.T) {
 	}
 }
 
-// TestAFailedRunIsNeverFilteredAway.
-//
-// "Changed" means "did something", and a run that failed did NOT copy, move or
-// trash anything - so the plain reading of the filter hides exactly the runs
-// somebody turned it on to find. A failure is the most interesting thing a run
-// can report and is never quiet, whatever its counts say.
+// A failed run changed nothing, but it is what somebody turns the filter on to
+// find.
 func TestAFailedRunIsNeverFilteredAway(t *testing.T) {
 	db := openTemp(t)
 	ctx := context.Background()

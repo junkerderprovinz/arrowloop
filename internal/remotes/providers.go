@@ -5,30 +5,16 @@ import (
 	"strings"
 )
 
-// A PROVIDER is what somebody is looking for; a BACKEND is what rclone speaks.
-//
-// They are not the same thing, and treating them as the same is what made the
-// setup screen unusable for the case it exists for. Nextcloud, ownCloud and
-// OpenCloud are three products with three websites and three logos, and to
-// rclone they are one `webdav` backend distinguished by a `vendor` string.
-// Offering "webdav" and expecting somebody to know that is asking them to know
-// the implementation in order to use the product. jdp: "Ich möchte jede Cloud
-// einzeln aufgelistet haben auch wenn sie das gleiche Protokoll nutzen wie z.b.
-// Nextcloud und Opencloud."
-//
-// So this is the list a person picks from, and each entry says which backend it
-// resolves to and what to fill in for them. A backend with no provider entry is
-// still reachable: the list ends with the raw backends, so nothing that was
-// possible becomes impossible.
+// Provider is a product somebody looks for, as opposed to the rclone backend
+// that reaches it: Nextcloud, ownCloud and OpenCloud are three products and one
+// webdav backend. A backend with no provider entry is still offered after the
+// list.
 type Provider struct {
-	// ID is stable and is what the interface sends back. Never a display name:
-	// those get translated, and a translated identifier is a bug waiting for
-	// its first non-English user.
+	// ID is stable and is what the interface sends back. Display names are
+	// translated, so they cannot serve as identifiers.
 	ID string `json:"id"`
 
-	// Name is the product's own, and is deliberately NOT translated. A brand is
-	// a brand in every language, and "Google Drive" translated into forty-two
-	// languages is forty-two chances to name something that does not exist.
+	// Name is the product's own and is not translated.
 	Name string `json:"name"`
 
 	// Backend is the rclone type this becomes.
@@ -37,174 +23,83 @@ type Provider struct {
 	// Group decides which card it appears on.
 	Group Group `json:"group"`
 
-	// Preset is what gets written into the target without anybody being asked.
-	// For the three self-hosted clouds this is the `vendor` that makes WebDAV
-	// work properly against them rather than merely connect.
+	// Preset is written into the target without anybody being asked, such as
+	// the vendor that makes WebDAV work properly against a self-hosted cloud.
 	Preset map[string]string `json:"preset,omitempty"`
 
 	// Mark is the component name of this provider's logo, or empty where there
-	// is none to use. Empty is a real answer: a mark naming the WRONG service
-	// is worse than a generic glyph, so OpenCloud shows no logo rather than
-	// ownCloud's, and Microsoft's, Amazon's and Apple's own products have no
-	// mark in the CC0 set at all.
+	// is none. A mark naming the wrong service is worse than a generic glyph.
 	Mark string `json:"mark,omitempty"`
 
 	// Hint is one line about what this is, for the ones whose name does not say
-	// it. Empty where the name is enough.
+	// it.
 	Hint string `json:"hint,omitempty"`
 
-	// UrlHint is what this product's address looks like, for the backends where
-	// the address is not the thing people already have in their browser.
-	//
-	// WebDAV is the case that needs it: three products share one backend and
-	// each has its own path, and "URL of http host to connect to" - rclone's
-	// own words for the field - helps nobody who is looking at their Nextcloud
-	// in a tab and wondering which part to copy. jdp: "kann man einen hinweis
-	// hinterlegen wie die URL jeweils aussehen muss?"
-	//
-	// A shape rather than a sentence: what somebody needs here is the pattern
-	// their own address has to match.
+	// UrlHint is the shape this product's address takes, where it is not the
+	// address people already have in their browser. The WebDAV products share
+	// one backend and each has its own path.
 	UrlHint string `json:"urlHint,omitempty"`
 
-	// Auth names HOW this product wants to be signed into, as one of a closed
-	// set of tokens rather than as prose.
-	//
-	// The screen turns it into a sentence, and that split is the whole point.
-	// jdp: "Bitte die infobubbles ausführlicher. wenn man zb ein API TOken
-	// braucht soll drin stehen wo man den herbekommt usw. User müssen ganz
-	// einfach verstehen können was wo reingeschrieben werden muss." Written as
-	// prose HERE it would be one English paragraph per provider in a table that
-	// has no language at all; written as a token it is one translated sentence
-	// per STYLE, shared by every product that uses that style.
-	//
-	// The value is stable and the screen falls back silently on one it does not
-	// know, so a new provider can name a style before anybody has written its
-	// sentence.
+	// Auth says how this product wants to be signed into. The interface turns
+	// it into one translated sentence per style and ignores a style it does
+	// not know.
 	Auth AuthStyle `json:"auth,omitempty"`
 
-	// AuthURL is the page where the credential above is created, where there is
-	// one to point at. A bare address, for the same reason UrlHint is: it needs
-	// no translation and it goes stale in exactly one place.
-	//
-	// Empty where the page is inside somebody's OWN server - a Nextcloud's
-	// security settings live at their address, not at a shared one - and the
-	// sentence for that style says where to look instead.
+	// AuthURL is the page where the credential is created, where there is a
+	// shared one to point at. Empty where the page is on somebody's own server.
 	AuthURL string `json:"authUrl,omitempty"`
 }
 
-// AuthStyle is how a product wants to be signed into.
-//
-// A closed set on purpose. Every value here has to have a sentence written for
-// it in the interface, in every language, so adding one is a decision rather
-// than a typo - and a product whose style is genuinely new gets a new value
-// instead of a paragraph of its own.
+// AuthStyle is how a product wants to be signed into. The set is closed,
+// because every value needs a sentence in the interface in every language.
 type AuthStyle string
 
 const (
-	// AuthAppPassword is a password generated in the account's own security
-	// settings, used INSTEAD of the login password. The self-hosted clouds all
-	// work this way, and getting this wrong is the single most common reason a
-	// WebDAV target refuses a password that is plainly correct: with two-factor
-	// authentication switched on, the login password cannot work here at all.
+	// AuthAppPassword is a password generated in the account's security
+	// settings and used instead of the login password, which cannot work once
+	// two-factor authentication is on. The self-hosted clouds all work this
+	// way.
 	AuthAppPassword AuthStyle = "apppassword"
 
-	// AuthOAuth is a sign-in that happens in a browser rather than in a field.
-	// The token cannot be typed, and this style exists to say so: the screen
-	// otherwise shows an empty box for something nobody can fill in.
+	// AuthOAuth is a sign-in that happens in a browser rather than in a field,
+	// so the token cannot be typed.
 	AuthOAuth AuthStyle = "oauth"
 
 	// AuthAPIKey is a key and secret pair created in the service's own console.
 	AuthAPIKey AuthStyle = "apikey"
 
-	// AuthAccessKey is the S3 pair: an access key id, which is public and
-	// appears in every tutorial, and a secret that is not.
+	// AuthAccessKey is the S3 pair: a public access key id and a secret.
 	AuthAccessKey AuthStyle = "accesskey"
 
-	// AuthLogin is the ordinary case: the same user name and password used to
-	// sign in anywhere else, with nothing to fetch first.
+	// AuthLogin is the ordinary user name and password, with nothing to fetch
+	// first.
 	AuthLogin AuthStyle = "login"
 )
 
 // Group is which of the three cards a provider belongs on.
 //
-// The split is by what somebody HAS rather than by protocol: an account with a
-// company, or a machine and an address. That is the question being answered
-// when somebody opens this screen, and it puts plain S3 with the protocols even
-// though it is Amazon's.
+// A service that hands out buckets is storage, whoever runs the machine, so
+// MinIO, SeaweedFS, Ceph and Garage are storage although they ask for an
+// endpoint. Of the rest, a service somebody signs into by name is a cloud and
+// something they point at by address is a protocol; HDFS is a filesystem with
+// directories and stays a protocol. Nextcloud, ownCloud, OpenCloud and Seafile
+// ask for a server URL but are clouds, because people look for them by name.
 type Group string
 
 const (
-	// GroupCloud is a service somebody SIGNS IN TO and keeps FILES in: a name
-	// they already know, reached by pressing its button and giving it a
-	// password, and what comes back is folders they recognise.
+	// GroupCloud is a service somebody signs into and keeps folders in.
 	GroupCloud Group = "cloud"
-	// GroupStorage is signed into the same way and gives back BUCKETS: an
-	// access key, a secret, and a container with no folders in it until
-	// somebody makes some.
+	// GroupStorage is a bucket store: an access key, a secret and containers
+	// with nothing in them until somebody adds something.
 	GroupStorage Group = "storage"
-	// GroupProtocol is something somebody POINTS AT: a machine, a share or an
-	// address they have to type in.
+	// GroupProtocol is a machine, a share or an address somebody types in.
 	GroupProtocol Group = "protocol"
 )
 
-// WHICH GROUP A NEW ENTRY BELONGS IN, because the obvious question is the
-// wrong one.
-//
-// It is not "who owns the machine". By that reading MinIO and SeaweedFS sat
-// with the clouds for months on the argument that what you have is an account
-// with a bucket store even when the hardware is your own - and somebody
-// looking for them went through fifty consumer services first (jdp: "ist
-// seaweedfs und object storage nicht im falschen abschnitt?").
-//
-// The question is WHAT SOMEBODY TYPES, because that is what they are holding
-// when they open this list:
-//
-//   - a name they know and a password  ->  GroupCloud or GroupStorage
-//   - an address, host or endpoint     ->  GroupProtocol
-//
-// MinIO asks for an endpoint, so it sits with the machines. Dropbox asks for
-// nothing but a button, so it sits with the services.
-//
-// THE SECOND CUT is what the thing IS, and it applies to both halves of the
-// answer above: a service that hands out BUCKETS is storage, whoever owns the
-// machine. A cloud hands over folders somebody recognises; a bucket store hands
-// over a container with an access key and a secret and nothing in it until
-// somebody makes something.
-//
-// That cut arrived in two steps and the first one was half of it. The clouds
-// card had grown to fifty-two entries with a photo service three rows from a
-// CDN (jdp: "speicher und clouds sind noch nicht sortiert"), so the bucket
-// stores signed into with an account moved to a card of their own - and MinIO,
-// SeaweedFS, Ceph and Garage stayed with the machines, because the typing rule
-// was still deciding them. jdp, immediately: "wieso ist seaweedfs, garage, etc
-// nicht bei den Objektspeichern einsortiert?"
-//
-// He is right, and the fix is to make the rule smaller rather than to add an
-// exception. A card called OBJEKTSPEICHER with no MinIO in it is a card whose
-// title is not what it holds; the endpoint somebody types is how they REACH it,
-// not what it is. So the typing question now only separates the clouds from
-// everything else, and what comes back decides the rest.
-//
-// HDFS is where the new line runs: a distributed FILESYSTEM with directories,
-// not a bucket store, so it stays with the protocols beside SMB and SFTP.
-//
-// THE ONE EXCEPTION, and it is jdp's call rather than a hole in the rule:
-// Nextcloud, ownCloud, OpenCloud and Seafile stay with the clouds even though
-// they ask for a server URL. They carry a BRAND somebody goes looking for by
-// name - "where is Nextcloud" is the question, not "what is at this address" -
-// and a list that answers the second question when somebody asked the first
-// is a list they scroll past. The typing rule decides everything else,
-// including the four self-hosted bucket stores, which have no such name in
-// anybody's head.
-
-// providers is the list, in the order it is offered within each group.
-//
-// Hand-kept, and it has to be: which products exist, what they are called and
-// which of them people here actually use is not something rclone's registry
-// knows. The cost is that a new rclone backend does not appear here on its own,
-// and the raw-backend fallback below is what keeps that from being a wall.
+// providers is the hand-kept list of products, since rclone's registry does
+// not know what products exist or what they are called. A backend missing
+// from it is still offered through UnlistedBackends.
 var providers = []Provider{
-	// The self-hosted three: one backend, three products, three entries.
 	{ID: "nextcloud", Name: "Nextcloud", Auth: AuthAppPassword, Backend: "webdav", Group: GroupCloud,
 		Preset: map[string]string{"vendor": "nextcloud"}, Mark: "IconNextcloud",
 		UrlHint: "https://cloud.example.com/remote.php/webdav/"},
@@ -212,30 +107,15 @@ var providers = []Provider{
 		Preset: map[string]string{"vendor": "owncloud"}, Mark: "IconOwncloud",
 		UrlHint: "https://cloud.example.com/remote.php/webdav/"},
 	{ID: "opencloud", Name: "OpenCloud", Auth: AuthAppPassword, Backend: "webdav", Group: GroupCloud,
-		// `infinitescale`, not `owncloud`. OpenCloud is a fork of ownCloud
-		// Infinite Scale rather than of ownCloud 10, and rclone carries a
-		// vendor for each: the 10 setting speaks the older PHP server's
-		// dialect. Its OWN mark, taken from its own repository - the CC0 set
-		// carries none, and it must never wear ownCloud's, which would name the
-		// wrong project.
+		// OpenCloud is a fork of ownCloud Infinite Scale, not of ownCloud 10,
+		// whose vendor setting speaks the older PHP server's dialect. Its mark
+		// comes from its own repository, since the CC0 set has none.
 		Preset: map[string]string{"vendor": "infinitescale"},
 		Mark:   "IconOpencloud",
-		// The PERSONAL SPACE, which is the one somebody setting this up means.
-		// This entry said "no UrlHint on purpose" for a while, because Infinite
-		// Scale gives every space an address of its own and there seemed to be
-		// no single pattern to print. That reasoning left the field with no
-		// shape at all, and the first person to fill it in typed the Nextcloud
-		// one: jdp's target read `/remote.php/dav/files` with no name after it,
-		// which is not a collection on any server of this family.
-		//
-		// `/remote.php/webdav` is Infinite Scale's own name for the personal
-		// space and is what rclone's WebDAV documentation prints for this
-		// vendor. Any OTHER space still has an address of its own, read out of
-		// its details panel - a shape is a starting point, not a claim that
-		// nothing else works.
+		// Infinite Scale's address for the personal space, as rclone documents
+		// it. Other spaces have their own address in their details panel.
 		UrlHint: "https://cloud.example.com/remote.php/webdav"},
 
-	// The big consumer services.
 	{ID: "dropbox", Name: "Dropbox", Backend: "dropbox", Group: GroupCloud, Mark: "IconDropbox"},
 	{ID: "gdrive", Name: "Google Drive", Backend: "drive", Group: GroupCloud, Mark: "IconGoogleDrive"},
 	{ID: "onedrive", Name: "OneDrive", Backend: "onedrive", Group: GroupCloud, Mark: "IconOnedrive"},
@@ -245,13 +125,9 @@ var providers = []Provider{
 	{ID: "protondrive", Name: "Proton Drive", Backend: "protondrive", Group: GroupCloud, Mark: "IconProtonDrive"},
 	{ID: "icloud", Name: "iCloud Drive", Auth: AuthAppPassword, Backend: "iclouddrive", Group: GroupCloud, Mark: "IconICloud"},
 
-	// The rest of the consumer field.
 	{ID: "jottacloud", Name: "Jottacloud", Backend: "jottacloud", Group: GroupCloud, Mark: "IconJottacloud"},
-	// Koofr's fields are a user and a password, so the shape says an ordinary
-	// login - and rclone's OWN help for that field says otherwise: "Your
-	// password for rclone (generate one at your service's settings page)".
-	// One of exactly two places in sixty-eight backends where the option list
-	// and the truth disagree, and the only one rclone itself flags.
+	// Koofr's fields look like an ordinary login, but rclone's own help says
+	// the password is generated in the service's settings.
 	{ID: "koofr", Name: "Koofr", Auth: AuthAppPassword, Backend: "koofr", Group: GroupCloud, Mark: "IconKoofr"},
 	{ID: "seafile", Name: "Seafile", Auth: AuthAppPassword, Backend: "seafile", Group: GroupCloud, Mark: "IconSeafile"},
 	{ID: "opendrive", Name: "OpenDrive", Backend: "opendrive", Group: GroupCloud, Mark: "IconOpendrive"},
@@ -268,10 +144,7 @@ var providers = []Provider{
 	{ID: "filen", Name: "Filen", Backend: "filen", Group: GroupCloud, Mark: "IconFilen"},
 	{ID: "filescom", Name: "Files.com", Backend: "filescom", Group: GroupCloud, Mark: "IconFilesCom"},
 	{ID: "huaweidrive", Name: "Huawei Drive", Backend: "huaweidrive", Group: GroupCloud, Mark: "IconHuaweiCloud"},
-	// "Ulož.to" with the caron, which is how the company writes it. jdp:
-	// "überm z fehlt das zeichen." The ID stays ASCII on purpose - it is what
-	// the interface sends back, and an identifier that needs a keyboard layout
-	// is an identifier waiting to be mistyped.
+	// The name keeps the company's caron; the ID stays ASCII.
 	{ID: "ulozto", Name: "Ulož.to", Backend: "ulozto", Group: GroupCloud, Mark: "IconUlozto"},
 	{ID: "quatrix", Name: "Quatrix", Backend: "quatrix", Group: GroupCloud, Mark: "IconQuatrix"},
 	{ID: "linkbox", Name: "Linkbox", Backend: "linkbox", Group: GroupCloud, Mark: "IconLinkbox"},
@@ -280,30 +153,17 @@ var providers = []Provider{
 	{ID: "googlephotos", Name: "Google Photos", Backend: "google photos", Group: GroupCloud,
 		Mark: "IconGooglePhotos", Hint: "Photos only, and read-mostly."},
 
-	// Object storage: an account with a company, so it belongs with the clouds
-	// however it is addressed underneath.
 	{ID: "b2", Name: "Backblaze B2", Backend: "b2", Group: GroupStorage, Mark: "IconBackblaze"},
 	{ID: "azureblob", Name: "Azure Blob Storage", Backend: "azureblob", Group: GroupStorage, Mark: "IconAzure"},
 	{ID: "gcs", Name: "Google Cloud Storage", Backend: "google cloud storage", Group: GroupStorage, Mark: "IconGoogleCloud"},
-	// Huawei's OTHER storage, and the reason both are listed: `huaweidrive`
-	// above is the consumer Drive, this is the platform's object storage, and
-	// somebody looking for one of them would not accept the other. It reaches
-	// it the way rclone does, as an S3 provider, which is the same arrangement
-	// that puts Nextcloud, ownCloud and OpenCloud on one webdav backend: the
-	// list is products, the backends are plumbing.
+	// Huawei's object storage, a different product from huaweidrive above,
+	// reached as an S3 provider.
 	{ID: "huaweiobs", Name: "Huawei Cloud OBS", Backend: "s3", Group: GroupStorage,
 		Preset: map[string]string{"provider": "HuaweiOBS"}, Mark: "IconHuaweiCloud"},
 
-	// The S3-compatible field, by name. rclone knows fifty-three of these and
-	// this list offered one generic entry, so somebody looking for Wasabi or R2
-	// found nothing among fifty-one products and had to know to pick "S3" and
-	// then set a field correctly. Each is one preset away, exactly as Huawei
-	// OBS above already was, and the generic entry stays for the rest.
-	//
-	// The Preset values are rclone's OWN spelling from that list. A typo here
-	// would not announce itself: rclone accepts an unknown provider and falls
-	// back to plain S3, which works for most of them and quietly drops whatever
-	// the named one does differently.
+	// S3-compatible services by name, so nobody has to know to pick S3. The
+	// Preset values are rclone's own spelling: rclone silently treats an
+	// unknown provider as plain S3.
 	{ID: "wasabi", Name: "Wasabi", Backend: "s3", Group: GroupStorage,
 		Preset: map[string]string{"provider": "Wasabi"}, Mark: "IconWasabi"},
 	{ID: "r2", Name: "Cloudflare R2", Backend: "s3", Group: GroupStorage,
@@ -316,10 +176,7 @@ var providers = []Provider{
 		Preset: map[string]string{"provider": "Scaleway"}, Mark: "IconScaleway"},
 	{ID: "hetznerobj", Name: "Hetzner Object Storage", Backend: "s3", Group: GroupStorage,
 		Preset: map[string]string{"provider": "Hetzner"}, Mark: "IconHetzner"},
-	// IONOS twice, and deliberately: HiDrive above is the consumer drive, this
-	// is the object storage. Same company, two products, and somebody looking
-	// for one would not accept the other - the same arrangement as the two
-	// Huawei entries.
+	// A different IONOS product from HiDrive above.
 	{ID: "ionosobj", Name: "IONOS Object Storage", Backend: "s3", Group: GroupStorage,
 		Preset: map[string]string{"provider": "IONOS"}, Mark: "IconIonos"},
 	{ID: "linode", Name: "Linode Object Storage", Backend: "s3", Group: GroupStorage,
@@ -336,22 +193,7 @@ var providers = []Provider{
 	{ID: "internetarchive", Name: "Internet Archive", Backend: "internetarchive", Group: GroupStorage,
 		Mark: "IconInternetArchive"},
 
-	// Machines, shares and addresses.
-	// THE BUCKET STORES SOMEBODY RUNS THEMSELVES, and they belong here rather
-	// than with the clouds. They used to sit with them, on the argument that
-	// what you have is an account with a bucket store even when the machine
-	// under it is your own - and that reads the wrong half of the question.
-	// What you TYPE is an endpoint: an address, a machine on a network, the
-	// same thing SFTP and SMB ask for. Somebody looking for MinIO is looking
-	// where their own machines are listed, not in a catalogue of services to
-	// subscribe to (jdp: "ist seaweedfs und object storage nicht im falschen
-	// abschnitt?").
-	//
-	// Garage and Ceph are here for the same reason, and because a list that
-	// names two of the four self-hosted stores and leaves the others to be
-	// guessed at under "S3 compatible" is a list that stops halfway. Ceph has
-	// rclone's own preset; Garage has none - it is S3-compatible and reached
-	// through the generic provider, which is exactly what the entry says.
+	// Bucket stores somebody runs themselves.
 	{ID: "minio", Name: "MinIO", Backend: "s3", Group: GroupStorage,
 		Preset: map[string]string{"provider": "Minio"}, Mark: "IconMinio",
 		Hint: "A bucket store you run yourself. Needs its endpoint address."},
@@ -362,9 +204,8 @@ var providers = []Provider{
 		Preset: map[string]string{"provider": "Ceph"}, Mark: "IconCeph",
 		Hint: "A bucket store you run yourself. Needs its endpoint address."},
 	{ID: "garage", Name: "Garage", Backend: "s3", Group: GroupStorage,
-		// rclone has no Garage preset, so it is reached as a generic
-		// S3 service - which is what Garage is, and what its own
-		// documentation tells people to configure.
+		// rclone has no Garage preset, and Garage's own documentation
+		// configures it as a generic S3 service.
 		Preset: map[string]string{"provider": "Other"}, Mark: "IconGarage",
 		Hint: "A bucket store you run yourself. Needs its endpoint address."},
 	{ID: "smb", Name: "SMB / Windows share", Backend: "smb", Group: GroupProtocol,
@@ -384,18 +225,8 @@ var providers = []Provider{
 		Mark: "IconLock", Hint: "Wraps another target and encrypts what goes into it."},
 }
 
-// Providers lists what can be offered on this build, which is the ones whose
-// backend is actually compiled in.
-//
-// Filtered rather than assumed: a provider offered for a backend the binary
-// does not carry produces a target that fails the first time it runs, with an
-// error about a missing section rather than about the thing that is really
-// wrong.
-// groupOrder is the order the three cards appear in, which is not the order
-// their names happen to sort in. Clouds first because that is what most people
-// are looking for, storage next because it is the same kind of answer with a
-// different shape, and the protocols last because reaching them means already
-// knowing an address.
+// groupOrder is the order the three cards appear in: clouds first, because
+// that is what most people are looking for, and protocols last.
 func groupOrder(g Group) int {
 	switch g {
 	case GroupCloud:
@@ -407,6 +238,8 @@ func groupOrder(g Group) int {
 	}
 }
 
+// Providers lists the providers whose backend is compiled into this build,
+// alphabetically within each group.
 func Providers() []Provider {
 	have := map[string]Backend{}
 	for _, b := range Backends() {
@@ -418,21 +251,13 @@ func Providers() []Provider {
 		if !ok {
 			continue
 		}
-		// The hand-written style always wins; the shape fills in the rest.
-		// See derivedAuth for why that order and not the other one.
+		// A hand-written style wins over the derived one.
 		if p.Auth == "" {
 			p.Auth = derivedAuth(b)
 		}
 		out = append(out, p)
 	}
-	// Alphabetical, within each group. The table above is written in rough
-	// order of how often anybody reaches for one, and that order only helps
-	// somebody who already agrees with it: anybody looking for a particular
-	// name has to read the whole list to find out it is not near the top.
-	// A name is what somebody arrives with, so a name is what the order uses.
-	//
-	// Case-insensitive, because "ownCloud" and "OpenDrive" would otherwise sort
-	// by their capitals rather than by how they read.
+	// Case-insensitive, so "ownCloud" sorts by how it reads.
 	sort.SliceStable(out, func(i, j int) bool {
 		if out[i].Group != out[j].Group {
 			return groupOrder(out[i].Group) < groupOrder(out[j].Group)
@@ -442,40 +267,20 @@ func Providers() []Provider {
 	return out
 }
 
-// derivedAuth works out how a backend wants to be signed into, from the shape
-// of the fields it asks for.
-//
-// This is the answer to filling the styles in for fifty-one products, and it
-// beats the obvious one. Looking each up by hand means a table that is right on
-// the day it is written and quietly wrong a year later, and it means asserting
-// things about services nobody here has an account with. rclone already knows
-// what each backend asks for, that knowledge arrives with every build, and the
-// shape of the question is usually enough to say what the answer is.
-//
-// It is deliberately CONSERVATIVE. Only two shapes are read, both unmistakable,
-// and everything else comes back empty - which puts the field back to what it
-// says today rather than guessing. A wrong sentence here is worse than none:
-// "nothing has to be fetched first" in front of a service that wants a
-// generated token sends somebody looking in the wrong place with confidence.
-//
-// The hand-written value WINS over this, and that is where the knowledge rclone
-// cannot have lives. Nextcloud's fields are a user and a password, so the shape
-// says an ordinary login - and with two-factor authentication switched on the
-// login password cannot work at all, which no option list anywhere says.
+// derivedAuth works out how a backend wants to be signed into from the fields
+// it asks for, so the styles follow rclone rather than a table that goes stale.
+// Only two unmistakable shapes are read and everything else is empty, because
+// a wrong sentence sends somebody looking in the wrong place.
 func derivedAuth(b Backend) AuthStyle {
-	// A backend reached only with an OAuth token already says so through
-	// NeedsToken, and the form prints its own note above the fields. A second
-	// sentence beside a box nobody can type into would be the same news twice.
+	// NeedsToken already puts its own note above the fields.
 	if b.NeedsToken {
 		return ""
 	}
 
 	var hasKeyID, hasKeySecret, hasUser, hasPass, hasToken bool
 	for _, o := range b.Options {
-		// Only the fields somebody is actually shown. The long tail of advanced
-		// options carries alternative credentials for cases nobody here is in -
-		// swift alone offers three - and reading those would label a backend by
-		// a route its own form never offers.
+		// Advanced options carry alternative credentials the form never
+		// offers.
 		if !o.Required && !o.Essential {
 			continue
 		}
@@ -494,42 +299,25 @@ func derivedAuth(b Backend) AuthStyle {
 	}
 
 	switch {
-	// A public half and a secret half, created together in a console. Covers
-	// S3 everywhere it is spoken, plus b2's account-and-key and netstorage's
-	// account-and-secret, which are the same idea under other names.
+	// S3, b2's account and key, and netstorage's account and secret.
 	case hasKeyID && hasKeySecret:
 		return AuthAccessKey
-	// A name and a password and nothing to fetch. This is the shape that most
-	// often leaves somebody hunting for a token that does not exist, so saying
-	// there is none is worth a sentence.
-	//
-	// A token shown ALONGSIDE them disqualifies it, and that exclusion is not
-	// theoretical: Linkbox, Uloz.to and Filen each ask for an email, a password
-	// AND a token, so "nothing has to be fetched first" would be exactly wrong
-	// on the three products where somebody most needs to be told there is
-	// something to fetch. Without an answer for where to fetch it, they get
-	// silence instead of a confident lie.
+	// A token beside the login, as Linkbox, Ulozto and Filen ask for, means
+	// there is something to fetch after all.
 	case hasUser && hasPass && !hasToken:
 		return AuthLogin
 	}
 	return ""
 }
 
-// UnlistedBackends are the compiled-in backends no provider entry covers.
-//
-// They are offered after the list, and that is what keeps the hand-kept table
-// above from being a wall: a backend nobody has written an entry for is still
-// reachable by its rclone name, so the day rclone gains one it works here
-// before anybody gets round to naming it.
+// UnlistedBackends are the compiled-in backends no provider entry covers, so a
+// new rclone backend is reachable by its rclone name before anybody lists it.
 func UnlistedBackends() []Backend {
 	named := map[string]bool{}
 	for _, p := range providers {
 		named[p.Backend] = true
 	}
-	// An empty SLICE rather than a nil one, because a nil slice marshals to
-	// JSON null and a browser handed null where it was promised a list falls
-	// over on the first map. There is a test for exactly this across every
-	// endpoint, and it caught this the moment the field was added.
+	// Not nil, so it marshals as a list.
 	out := []Backend{}
 	for _, b := range Backends() {
 		if !named[b.Name] {

@@ -1,9 +1,5 @@
-// Package daemon runs jobs on a schedule and remembers what happened.
-//
-// The engine underneath knows how to sync one pair of folders once. Everything
-// here is about doing that unattended: not letting a slow job pile up on itself,
-// not letting two jobs fight over one uplink, writing down what each run did,
-// and telling somebody when a run fails.
+// Package daemon runs jobs unattended: on a schedule or on a change, one run
+// per job at a time, with each run recorded and failures reported.
 package daemon
 
 import (
@@ -33,43 +29,28 @@ import (
 )
 
 // ErrAlreadyRunning is returned when a job is asked for while the same job is
-// still going.
-//
-// This is a normal outcome, not a fault. A job scheduled every fifteen minutes
-// that takes twenty must not start a second copy of itself: two runs over one
-// pair of folders would race each other through the same files and the state
-// database, and the answer is simply to let this tick go by.
+// still going. Two runs over one pair of folders would race through the same
+// files and state database, so the tick is let go by.
 var ErrAlreadyRunning = errors.New("this job is still running from last time")
 
 // ErrVolumeMissing is returned when a job points at a removable drive or a
-// share that is not attached right now.
-//
-// This is not a failure and is deliberately not recorded as one. A disk in
-// somebody's bag has not gone wrong, and a job that reported a failure every
-// quarter of an hour for the days between two backups would train its owner to
-// ignore the very notification that matters when something really breaks. One
-// line in the log, no history row, no message.
+// share that is not attached right now. It is not recorded as a failure,
+// because a disk in somebody's bag has not gone wrong.
 var ErrVolumeMissing = errors.New("the volume this job points at is not attached")
 
-// ErrHalfWritten says a job has not been finished being set up.
-//
-// A switched-off job is allowed to be missing a side, because that is the state
-// of every job between being created and being filled in. Asking for it to run
-// anyway has to say so plainly, rather than handing an empty string to a
-// backend and reporting whatever that backend makes of it.
+// ErrHalfWritten is returned when a job without both sides is asked to run.
 var ErrHalfWritten = errors.New("this job has not been given both sides yet")
 
 // Runner executes jobs, one at a time by default.
 type Runner struct {
 	// cond is asked before every automatic run and never before a hand-started
-	// one. Set by the desktop build, which is the only one that can ask whether
-	// this machine is on battery or on a connection somebody pays for.
+	// one. The desktop build sets it, since only it can tell battery and
+	// metered connections.
 	condMu sync.Mutex
 	cond   Condition
 
 	// waiting remembers the jobs whose drive was not attached, so the interface
-	// can say "waiting for a drive" instead of showing a job that has never
-	// worked.
+	// can say "waiting for a drive".
 	waiting waiting
 
 	cfg  *job.Config
@@ -85,12 +66,6 @@ type Runner struct {
 
 	mu sync.Mutex
 	// inflight holds, per running job, the way to stop it.
-	//
-	// It used to hold a bare bool, which answered "is this running" and nothing
-	// else. A run that was started against a share which turned out to be half
-	// mounted could only be watched to the end - and on a phone, where the
-	// engine is going to run next, a sync that cannot be stopped is a sync that
-	// drains a battery on a train.
 	inflight map[string]context.CancelFunc
 	subs     map[chan Event]struct{}
 	watchers map[string]*watch.Watcher
@@ -103,10 +78,9 @@ func New(cfg *job.Config, hist *history.DB, note notify.Notifier, log func(strin
 		log = func(string, ...any) {}
 	}
 
-	// Volumes are remembered beside the configuration, so that a drive which
-	// is not plugged in can still be named by the label its owner gave it. The
-	// register belongs to the process rather than to this runner, and there is
-	// one runner per process, so here is where it is set.
+	// Volumes are remembered beside the configuration, so a drive that is not
+	// plugged in can still be named by its label. The registry is per process,
+	// and so is the runner.
 	volume.SetRegistry(filepath.Join(filepath.Dir(cfg.Path()), "volumes.json"))
 
 	return &Runner{
@@ -120,12 +94,8 @@ func New(cfg *job.Config, hist *history.DB, note notify.Notifier, log func(strin
 	}
 }
 
-// Preview works out what a job would do and changes nothing.
-//
-// This is the screen a person actually decides from: every action with its
-// direction and its reason, before a single byte moves. It re-plans rather than
-// handing back something cached, because a preview is only worth looking at if
-// it describes the tree as it is now.
+// Preview works out what a job would do and changes nothing. It plans afresh,
+// so the preview describes the tree as it is now.
 func (r *Runner) Preview(ctx context.Context, name string) (*plan.Plan, error) {
 	j, ok := r.config().Find(name)
 	if !ok {
@@ -150,37 +120,22 @@ func (r *Runner) Preview(ctx context.Context, name string) (*plan.Plan, error) {
 	return p, err
 }
 
-// Run executes one job by name and returns what it did.
-//
-// The record is written whatever happens, including on failure, because "this
-// job has been failing every quarter of an hour since Tuesday" is exactly the
-// thing a history is for.
+// Run executes one job by name and returns what it did. The record is written
+// whatever happens, failures included.
 func (r *Runner) Run(ctx context.Context, name string) (history.Run, error) {
 	return r.RunOnly(ctx, name, nil)
 }
 
-// RunOnly executes a job but touches only the listed paths.
-//
-// It re-plans first and then filters, rather than replaying a plan the caller
-// was shown earlier. That matters: between somebody reading a preview and
-// pressing the button, a file can change, and acting on the older plan would
-// mean acting on a description of a tree that no longer exists. Filtering by
-// path keeps the person's choice while letting the engine decide afresh what
-// that path now needs.
-//
-// A nil list means everything, which is what Run passes.
+// RunOnly executes a job but touches only the listed paths; nil means all of
+// them. It plans afresh and then filters rather than replaying the plan the
+// caller was shown, since a file can change between the preview and the run.
 func (r *Runner) RunOnly(ctx context.Context, name string, only []string) (history.Run, error) {
 	return r.RunChosen(ctx, name, only, nil)
 }
 
 // RunChosen executes a job with the paths somebody ticked and the conflicts
-// they decided.
-//
-// A resolution is keyed by path and only ever reaches a conflict. Everything
-// else in the plan is untouched by it, so a stale entry from a preview taken a
-// minute ago costs nothing: the path either still disagrees, in which case the
-// decision still applies, or it does not, in which case there is no conflict to
-// resolve and the entry is ignored.
+// they decided. A resolution only applies to a path that is still a conflict,
+// so a stale one from an older preview is ignored.
 func (r *Runner) RunChosen(ctx context.Context, name string, only []string, resolve map[string]plan.Resolution) (history.Run, error) {
 	j, ok := r.config().Find(name)
 	if !ok {
@@ -189,17 +144,11 @@ func (r *Runner) RunChosen(ctx context.Context, name string, only []string, reso
 	if j.Left == "" || j.Right == "" {
 		return history.Run{}, fmt.Errorf("%w: %s", ErrHalfWritten, name)
 	}
-	// The run's own accounting, so what is in the air belongs to THIS job.
-	//
-	// rclone keeps its live transfer map per stats group, and without a group
-	// every run writes into the same one. Two jobs syncing at once would then
-	// each report the other's files as its own - which is not a drawing fault
-	// but a lie about what is happening, and the kind that looks plausible.
+	// rclone keeps its live transfer map per stats group, so without a group
+	// two jobs syncing at once would each report the other's files.
 	ctx = accounting.WithStatsGroup(ctx, "job/"+name)
 
-	// The run's own context, so it can be stopped by name without stopping
-	// anything else. The caller's context still governs it: cancelling the
-	// program cancels this too.
+	// The run's own context, so it can be stopped by name.
 	ctx, stop := context.WithCancel(ctx)
 	defer stop()
 	if !r.claim(name, stop) {
@@ -222,8 +171,7 @@ func (r *Runner) RunChosen(ctx context.Context, name string, only []string, reso
 	rec := history.Run{Job: name, Started: time.Now()}
 	res, p, err := r.execute(ctx, j, only, resolve)
 
-	// A drive that is not plugged in is not a run. Nothing is written down and
-	// nobody is told, because there is nothing to tell.
+	// A drive that is not plugged in is not a run, so nothing is recorded.
 	if errors.Is(err, ErrVolumeMissing) {
 		r.publish(Event{Job: name, Phase: "finished", Error: err.Error()})
 		return history.Run{}, err
@@ -254,13 +202,8 @@ func (r *Runner) RunChosen(ctx context.Context, name string, only []string, reso
 	return rec, err
 }
 
-// entriesOf carries what a run did across the one package boundary that stands
-// between the engine and the log.
-//
-// A conversion rather than a shared type, because apply and history have no
-// business importing each other: one of them applies a plan and the other keeps
-// a database, and the day a column is added to one of them is not a day the
-// other should have to rebuild.
+// entriesOf converts what a run did into log entries, so apply and history do
+// not have to import each other.
 func entriesOf(res apply.Result) []history.Entry {
 	if len(res.Entries) == 0 {
 		return nil
@@ -272,13 +215,9 @@ func entriesOf(res apply.Result) []history.Entry {
 	return out
 }
 
-// open builds the two ends and the record for one job.
-//
-// Both sides are resolved before either is opened. A job on a removable drive
-// has to be stopped BEFORE anything is listed: if the drive is gone and the
-// engine went ahead, the empty-side guard would catch it, but a drive letter
-// that has since been handed to a different disk would not be empty at all, and
-// the engine would happily reconcile against the wrong volume.
+// open builds the two ends and the record for one job. Both sides are resolved
+// before either is opened, because a drive letter since given to another disk
+// would not look empty and the engine would reconcile against the wrong volume.
 func (r *Runner) open(ctx context.Context, j job.Job) (apply.Ends, *state.DB, error) {
 	leftPath, err := volume.Resolve(j.Left)
 	if err != nil {
@@ -310,16 +249,10 @@ func (r *Runner) execute(ctx context.Context, j job.Job, only []string, resolve 
 	if err != nil {
 		return apply.Result{}, nil, err
 	}
-	// Each job gets its own copy of rclone's settings, so one job asking for
-	// eight transfers or for metadata does not quietly change another's.
+	// Per-job settings travel in the context, so two jobs running at once under
+	// parallelJobs do not share them.
 	ctx = engine.Configure(ctx, opt)
-	// How many old contents to keep, carried the same way and for the same
-	// reason: a package variable would be shared between two jobs running at
-	// once under parallelJobs, and each job's answer is its own.
 	ctx = apply.WithVersions(ctx, j.KeepVersions)
-	// And whether this job keeps a trash at all, carried the same way for the
-	// same reason. Note the inversion: the field says what NOT to do, so that a
-	// configuration written before it existed reads as "keep one".
 	ctx = apply.WithTrash(ctx, !j.NoTrash)
 
 	ends, db, err := r.open(ctx, j)
@@ -328,13 +261,8 @@ func (r *Runner) execute(ctx context.Context, j job.Job, only []string, resolve 
 	}
 	defer db.Close()
 
-	// What is in the air, published while this run lasts. Started HERE rather
-	// than in RunChosen because this is the first point where both sides are
-	// open, and the right-hand side is what says which way a file is going.
-	//
-	// The counter is shared with the progress watcher below: the ticker uses it
-	// to tell a run that is pushing small files fast from one that is sitting on
-	// a big one, and only the second is worth the cost of a reading.
+	// Started here because the right side has to be open to say which way a
+	// file is going. The step counter is shared with the progress watcher.
 	steps := &stepCount{}
 	defer r.watchMoving(ctx, j.Name, ends.Right, steps)()
 
@@ -359,12 +287,8 @@ func (r *Runner) execute(ctx context.Context, j job.Job, only []string, resolve 
 	return res, p, err
 }
 
-// keep narrows a plan to the paths somebody picked.
-//
-// Only the actions are filtered. The agreed list is left alone because it moves
-// nothing, and the skips are left alone because they are a report rather than
-// work: hiding the reason a file was postponed, just because the person did not
-// tick that file, would make the run look tidier than it was.
+// keep narrows a plan's actions to the paths somebody picked. The skips stay,
+// because they report why a file was postponed rather than describe work.
 func keep(p *plan.Plan, only []string) {
 	wanted := make(map[string]bool, len(only))
 	for _, path := range only {
@@ -380,8 +304,7 @@ func keep(p *plan.Plan, only []string) {
 
 	var dirs []plan.DirAction
 	for _, d := range p.Dirs {
-		// A record refresh costs nothing and keeps the directory state honest,
-		// so it survives whatever was ticked.
+		// A record refresh moves nothing and keeps the directory state right.
 		if d.Kind == plan.RecordDir || wanted[d.Path] {
 			dirs = append(dirs, d)
 		}
@@ -389,11 +312,8 @@ func keep(p *plan.Plan, only []string) {
 	p.Dirs = dirs
 }
 
-// applyResolutions marks the conflicts a person decided.
-//
-// Only conflicts are touched. A resolution naming a path that turned out to be
-// an ordinary copy is not an error and not a warning: between the preview and
-// the run the file may simply have stopped disagreeing, which is the good case.
+// applyResolutions marks the conflicts a person decided. A resolution for a
+// path that is no longer a conflict is ignored.
 func applyResolutions(p *plan.Plan, resolve map[string]plan.Resolution, log func(string, ...any), name string) {
 	if len(resolve) == 0 {
 		return
@@ -423,13 +343,8 @@ func (r *Runner) claim(name string, stop context.CancelFunc) bool {
 	return true
 }
 
-// Cancel stops a run that is in progress, and says whether there was one.
-//
-// It cancels the run's own context, which is the same thing that happens when
-// the whole program is asked to stop: the transfer in flight is abandoned, the
-// engine unwinds through the paths it already has, and the run is recorded as
-// what it was rather than vanishing. A cancelled run is not a failed one and
-// not a finished one, and the history says so.
+// Cancel stops a run that is in progress, and says whether there was one. The
+// run unwinds as on shutdown and is still recorded.
 func (r *Runner) Cancel(name string) bool {
 	r.mu.Lock()
 	stop := r.inflight[name]
@@ -471,8 +386,7 @@ func (r *Runner) announce(ctx context.Context, rec history.Run, res apply.Result
 	if rec.Err != "" {
 		fmt.Fprintf(&b, "\n%s", rec.Err)
 	}
-	// A handful of the postponed paths, not all of them: a run that postponed
-	// four thousand files should not send four thousand lines to a chat room.
+	// Only a handful of the postponed paths go to the chat room.
 	if n := len(res.Skipped); n > 0 {
 		fmt.Fprintf(&b, "\n%d left for the next run", n)
 		for i, s := range res.Skipped {
@@ -490,12 +404,9 @@ func (r *Runner) announce(ctx context.Context, rec history.Run, res apply.Result
 }
 
 // Serve runs every scheduled job until the context is cancelled, rebuilding
-// itself whenever the configuration changes.
-//
-// A job with no schedule is not started here at all; it exists to be asked for
-// by name. A job that is still running when its next turn comes round is
-// skipped with a line in the log rather than queued, because queueing would let
-// a job that is simply too slow build an unbounded backlog of itself.
+// itself whenever the configuration changes. A job still running when its next
+// turn comes is skipped rather than queued, so a slow job cannot build a
+// backlog of itself.
 func (r *Runner) Serve(ctx context.Context) error {
 	first := true
 	for {
@@ -503,10 +414,7 @@ func (r *Runner) Serve(ctx context.Context) error {
 		c := r.schedule(round)
 		c.Start()
 
-		// Only on the way in, never on a reload. A reload happens every time
-		// somebody saves a job in the interface, and firing the start-up runs
-		// again there would turn one edit into a sync of every job in the file
-		// - including the twelve the person was not touching.
+		// Never on a reload, which happens every time a job is saved.
 		if first {
 			r.runAtStart(round)
 			first = false
@@ -518,10 +426,8 @@ func (r *Runner) Serve(ctx context.Context) error {
 			r.stopCron(c)
 			return nil
 		case <-r.reload:
-			// The watchers belong to this round's context, so cancelling it is
-			// what closes them. Rebuilding from scratch rather than working out
-			// what changed keeps one code path for "start" and "restart": two
-			// paths would eventually disagree about what a reload leaves behind.
+			// Cancelling the round closes its watchers. Rebuilding from
+			// scratch keeps one code path for start and restart.
 			endRound()
 			r.stopCron(c)
 			r.mu.Lock()
@@ -546,13 +452,11 @@ func (r *Runner) schedule(ctx context.Context) *cron.Cron {
 		name := j.Name
 		parsed, err := job.ParseSchedule(j.Schedule)
 		if err != nil {
-			// Load already refused anything unparseable, so reaching here means
-			// the file changed underneath us in a way validation should have
-			// caught. Say so and carry on with the jobs that are fine.
+			// Load refuses this, so carry on with the jobs that are fine.
 			r.log("%s: unusable schedule %q: %v", name, j.Schedule, err)
 			continue
 		}
-		c.Schedule(parsed, cron.FuncJob(func() { r.runAndLog(ctx, name) }))
+		c.Schedule(parsed, cron.FuncJob(func() { r.runAndReport(ctx, name) }))
 		scheduled = append(scheduled, fmt.Sprintf("%s (%s)", name, j.Schedule))
 	}
 
@@ -563,13 +467,8 @@ func (r *Runner) schedule(ctx context.Context) *cron.Cron {
 		r.startWatcher(ctx, j)
 	}
 
-	// The run log's own housekeeping, on a turn of its own.
-	//
-	// It used to happen once at startup and nowhere else, which suits a desktop
-	// install somebody restarts and not the case this program mostly runs in: a
-	// container that stays up for months while a watching job writes a record
-	// per change. Daily rather than hourly because nothing here is urgent - the
-	// file grows slowly and the point is only that it stops growing for ever.
+	// Pruned daily, since a container stays up for months while a watching
+	// job writes a record per change.
 	if keep, on := cfg.KeepHistoryFor(); on && r.hist != nil {
 		c.Schedule(cron.Every(24*time.Hour), cron.FuncJob(func() {
 			n, err := r.hist.Prune(ctx, keep, time.Now())
@@ -592,39 +491,15 @@ func (r *Runner) schedule(ctx context.Context) *cron.Cron {
 	return c
 }
 
-// runAndLog runs one job by name and writes the one line a log reader wants.
-//
-// One function rather than a copy at each caller: the schedule tick and the
-// start-up run report the same outcomes, and two copies of this switch would
-// eventually disagree about which outcomes are worth a line. A missing volume
-// and a job still running from last time are both NORMAL here and neither is a
-// failure, which is exactly the distinction a second copy tends to lose.
-func (r *Runner) runAndLog(ctx context.Context, name string) {
-	r.runAndReport(ctx, name)
-}
-
-// runAndReport is runAndLog with the outcome handed back.
-//
-// Split out for the wake-up on a phone, which has to say something afterwards:
-// a background run that failed silently is the exact complaint this program
-// exists to prevent, and a notification saying so needs the record and the
-// error rather than the log line they were turned into. Everything that used
-// to happen still happens here, so there is one place that decides which
-// outcome is worth a line and which is not.
+// runAndReport runs one job automatically, writes the one log line its outcome
+// is worth, and hands the outcome back. A missing volume, a held-back run and a
+// job still running from last time are normal here, not failures.
 func (r *Runner) runAndReport(ctx context.Context, name string) (history.Run, error) {
-	// RunAutomatically rather than Run: this is the clock talking, and a job
-	// marked report-only must not be applied by it.
 	rec, err := r.RunAutomatically(ctx, name)
 	switch {
 	case errors.Is(err, ErrHeldBack):
-		// Not a failure and not worth alarm: the machine is doing exactly what
-		// somebody asked it to do. It still gets a line, because a job that
-		// silently never runs is the thing this whole log exists to prevent.
 		r.log("%s: %v", name, err)
 	case errors.Is(err, ErrNotEnoughSpace):
-		// Its own line, because this one is actionable and the others are not:
-		// nothing was written, nothing is half done, and somebody has to free
-		// space or the job will keep refusing every turn.
 		r.log("%s did not start: %v", name, err)
 	case errors.Is(err, ErrVolumeMissing):
 		r.log("%s: %v", name, err)
@@ -642,17 +517,9 @@ func (r *Runner) runAndReport(ctx context.Context, name string) (history.Run, er
 	return rec, err
 }
 
-// runAtStart runs the jobs asking to go as soon as the program does.
-//
-// In its own goroutine, and that is the load-bearing part: Serve has to reach
-// its select and start answering reloads immediately. Running these inline
-// would leave the interface unable to save a job for as long as the first sync
-// takes, which on a large folder over SFTP is minutes, and would look exactly
-// like a program that hung on startup.
-//
-// One at a time in file order, because the alternative is every job in the file
-// starting at once on one uplink and one disk. That is the same reason ordinary
-// runs are serialised, and a start-up burst is the moment it matters most.
+// runAtStart runs the jobs asking to go as soon as the program does, one at a
+// time in file order. It runs them in a goroutine so Serve can answer reloads
+// while the first sync takes minutes.
 func (r *Runner) runAtStart(ctx context.Context) {
 	var due []string
 	for _, j := range r.config().Jobs {
@@ -669,7 +536,7 @@ func (r *Runner) runAtStart(ctx context.Context) {
 			if ctx.Err() != nil {
 				return
 			}
-			r.runAndLog(ctx, name)
+			r.runAndReport(ctx, name)
 		}
 	}()
 }
@@ -685,10 +552,8 @@ func (r *Runner) stopCron(c *cron.Cron) {
 }
 
 // Reload swaps in a new configuration and rebuilds the schedules and watchers.
-//
-// The signal is dropped rather than queued when a rebuild is already pending:
-// two edits in quick succession need one rebuild, not two, and the second one
-// would rebuild from the same file anyway.
+// When a rebuild is already pending the signal is dropped, since that rebuild
+// reads the new configuration anyway.
 func (r *Runner) Reload(cfg *job.Config) {
 	r.mu.Lock()
 	r.cfg = cfg
@@ -708,59 +573,21 @@ func (r *Runner) config() *job.Config {
 	return r.cfg
 }
 
-// MovingTick is how often the files in the air are published.
-//
-// Twice a second: fast enough that a bar moves rather than steps, slow enough
-// that a run of ten thousand small files does not spend its time describing
-// itself. It is a GAUGE, so a frame missed costs nothing - the next one says
-// where things are now, which is all anybody wanted from it.
+// MovingTick is how often the files in the air are published: often enough
+// that a bar moves smoothly. A missed frame costs nothing, since the next one
+// says where things are.
 const MovingTick = 500 * time.Millisecond
 
-/*
-MovingBusy is how many finished steps in one tick mean "do not ask rclone".
-
-Reading the in-flight list is NOT cheap, and that is the whole reason this
-constant exists. `RemoteStats` takes the lock that every byte of every transfer
-also takes, and it walks the completed-transfer list and merges time ranges
-under it. Asking twice a second while four workers push small files through
-made the accounting queue behind the reading.
-
-MEASURED ON THE DEVICE, not reasoned about: the same job over 600 files took
-9.0 seconds with this reading switched off and 25.6 with it on. Three times
-slower, for a display.
-
-The way out is that a fast stream of finished steps is itself the signal that
-there is nothing worth drawing. Twenty files a second are files that are done
-before a bar could move; the run's own step bar says everything there is to
-say about them. A big file is the opposite case - no steps finish for seconds
-at a time - and that is exactly when the reading is worth taking. So the
-counter below decides, and the expensive call happens only in the case it was
-built for.
-*/
+// MovingBusy is how many finished steps in one tick mean rclone is not asked
+// what is in flight. RemoteStats takes the lock every transfer takes, and
+// reading it twice a second made a 600-file job take 25.6 seconds instead of
+// 9.0. Files finishing that fast are done before a bar could move anyway.
 const MovingBusy = 8
 
-/*
-watchMoving publishes what rclone has in the air, until the returned function
-is called.
-
-Its own ticker rather than a line on the existing progress stream, because the
-two answer different questions. The progress stream reports a step that
-FINISHED and is driven by the work itself; this is a reading taken from
-outside, of files that are part-way across and will be somewhere else a moment
-later. A run that spends four seconds on one large file publishes nothing at all
-on the first stream and eight frames on this one.
-
-IDENTICAL FRAMES ARE DROPPED. Most of a run has nothing in the air - listing,
-comparing, writing state - and a screen that received "nothing is moving" twice
-a second for a minute would be woken sixty times to draw the same nothing. So
-the empty list is sent once, when it becomes empty.
-
-AND THE READING IS SKIPPED WHILE FILES ARE FLYING. See MovingBusy: the reading
-costs the transfers real time, and a tick in which many steps finished is a tick
-whose files were done before a bar could have moved. What that leaves is the
-case the display was built for - a big file, no steps finishing, a bar worth
-drawing.
-*/
+// watchMoving publishes what rclone has in the air until the returned function
+// is called. It runs its own ticker because a large file finishes no steps for
+// seconds at a time. Identical frames are dropped, and the reading is skipped
+// while many steps finish in one tick; see MovingBusy.
 func (r *Runner) watchMoving(ctx context.Context, name string, right rclonefs.Fs, steps *stepCount) func() {
 	done := make(chan struct{})
 	go func() {
@@ -779,10 +606,7 @@ func (r *Runner) watchMoving(ctx context.Context, name string, right rclonefs.Fs
 		for {
 			select {
 			case <-done:
-				// One last empty frame on the way out, so a screen that was
-				// drawing four rows when the run ended does not keep drawing
-				// them. The finished event says the run is over; this says the
-				// rows are gone.
+				// One last empty frame clears the rows on the screen.
 				if len(last) > 0 || lastRate > 0 {
 					r.publish(Event{Job: name, Phase: "moving", Moving: []engine.Moving{}})
 				}
@@ -795,12 +619,8 @@ func (r *Runner) watchMoving(ctx context.Context, name string, right rclonefs.Fs
 				since = now
 				count, files := steps.takeAndReset()
 				if count >= MovingBusy {
-					// Files are finishing faster than a bar could follow. The
-					// rows are cleared rather than left standing, because
-					// whatever they last named landed long ago - and the RATE
-					// goes out in their place, so the screen can say what is
-					// happening instead of showing an empty space that reads as
-					// a stall. jdp chose that over leaving it blank.
+					// The rows are cleared and the rate goes out instead, so
+					// the empty space does not read as a stall.
 					send(nil, perSecond(files, elapsed))
 					continue
 				}
@@ -811,29 +631,17 @@ func (r *Runner) watchMoving(ctx context.Context, name string, right rclonefs.Fs
 	return func() { close(done) }
 }
 
-/*
-stepCount is how many pieces of work finished since it was last read.
-
-One counter per run, written by whichever worker finishes a step and read by
-the ticker. It exists to answer "is this run pushing files faster than a bar
-could follow", which is the question that keeps the expensive reading out of
-the hot path.
-
-TWO NUMBERS, because the two readers want different things. `n` is every step
-and it decides whether to ask rclone at all: a run making two hundred folders a
-second is just as busy as one copying two hundred files, and asking during
-either costs the run time it does not have. `files` is only what actually moved
-bytes, and it is the one a person reads - "made 200 folders" is not what
-somebody watching a transfer means by "going fast".
-*/
+// stepCount is how many pieces of work finished since it was last read,
+// written by the workers and read by the ticker. n counts every step and
+// decides whether rclone is asked at all; files counts only what moved bytes,
+// which is the rate a person reads.
 type stepCount struct {
 	mu    sync.Mutex
 	n     int
 	files int
 }
 
-// add counts one finished step. `kind` is the engine's own word for it, and
-// only the two that move bytes count toward the rate.
+// add counts one finished step of the given kind.
 func (s *stepCount) add(kind string) {
 	s.mu.Lock()
 	s.n++
@@ -844,8 +652,7 @@ func (s *stepCount) add(kind string) {
 }
 
 // takeAndReset returns the steps and the file transfers since the last read,
-// and empties both. A tick sees what happened since the last tick, never a
-// total that only grows.
+// and empties both.
 func (s *stepCount) takeAndReset() (int, int) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -854,12 +661,9 @@ func (s *stepCount) takeAndReset() (int, int) {
 	return n, files
 }
 
-// perSecond turns a count over a measured span into a rate.
-//
-// Measured rather than assumed from MovingTick: a phone under load delivers a
-// tick late, and dividing by the interval that was ASKED for would then report
-// a rate higher than anything that happened. Zero for a span that is not
-// positive, which a clock stepping backwards can produce.
+// perSecond turns a count over a measured span into a rate. The span is
+// measured because a phone under load delivers a tick late; it is not positive
+// when the clock steps backwards.
 func perSecond(count int, over time.Duration) int {
 	if count <= 0 || over <= 0 {
 		return 0
@@ -867,11 +671,8 @@ func perSecond(count int, over time.Duration) int {
 	return int(float64(count)/over.Seconds() + 0.5)
 }
 
-// sameMoving says whether two readings would draw the same rows.
-//
-// The BYTES are part of it, which is the point: a file whose counter has not
-// moved between two ticks is a file whose row would not change, and there is
-// nothing to tell anybody about.
+// sameMoving says whether two readings, byte counts included, would draw the
+// same rows.
 func sameMoving(a, b []engine.Moving) bool {
 	if len(a) != len(b) {
 		return false
@@ -892,56 +693,33 @@ type Event struct {
 	Error string       `json:"error,omitempty"`
 
 	// Filled on a progress event. Total is known before the first byte moves,
-	// because the plan is built first: a bar whose total grows while it runs is
-	// not a bar.
+	// because the plan is built first.
 	Done  int    `json:"done,omitempty"`
 	Total int    `json:"total,omitempty"`
 	Kind  string `json:"kind,omitempty"`
 	Path  string `json:"path,omitempty"`
-	// Which side the work lands on, so a watching screen can say WHERE a file
-	// is going rather than only that one is moving. Empty for a step that
-	// touches neither side, such as writing a record.
+	// Side is where the work lands. Empty for a step that touches neither
+	// side, such as writing a record.
 	Side string `json:"side,omitempty"`
 
-	// Moving is what is in the air right now, on a "moving" event.
-	//
-	// A whole list rather than one file, because that is the shape of the
-	// truth: rclone runs `transfers` files at once. jdp: "je nachdem wie viele
-	// up und downloads man gleichzeitig eingestellt hat."
-	//
-	// An EMPTY list is meaningful: it says the rows are gone. `omitempty`
-	// drops it from the JSON, so on the wire that arrives as a "moving" frame
-	// with no `moving` field at all - and a reader takes an absent list on a
-	// moving frame as an empty one. The alternative was sending `null` on every
-	// progress event instead, which is noise on the stream that carries the
-	// most frames.
+	// Moving is what is in the air right now, on a "moving" event; rclone runs
+	// several transfers at once. An empty list means the rows are gone, and
+	// omitempty sends it as a frame with no moving field, which a reader takes
+	// as empty.
 	Moving []engine.Moving `json:"moving,omitempty"`
 
-	// Rate is files a second, on a "moving" frame that carries no rows.
-	//
-	// It exists because the empty list has two meanings and they look alike on
-	// a screen. Nothing is moving, and so many things are moving that reading
-	// which ones would slow the run down, both draw the same blank space under
-	// a job - and the second one reads as a stall to the person watching. The
-	// number is what tells them apart, and it is free: it comes off the counter
-	// that was already deciding whether to take the reading.
-	//
-	// Only file transfers count toward it. Folders made and records written are
-	// steps too, and a run that reported "180 a second" while it created
-	// directories would be answering a question nobody asked.
+	// Rate is file transfers a second, on a "moving" frame that carries no
+	// rows because too much is moving to read. It tells that apart from
+	// nothing moving.
 	Rate int `json:"rate,omitempty"`
 }
 
-// progressFor turns the apply stage's reports into events on the stream.
-//
-// Every step is published rather than sampled. The stream already drops a send
-// that would block, so a screen that cannot keep up loses frames instead of
-// holding up a transfer, which is the right way round.
+// progressFor turns the apply stage's reports into events on the stream. Every
+// step is published; publish drops a send that would block.
 type progressFor struct {
 	runner *Runner
 	job    string
-	// steps counts what finishes, for the in-flight ticker. Nil in any caller
-	// that does not publish one, so every use has to survive that.
+	// steps counts what finishes, for the in-flight ticker. It may be nil.
 	steps *stepCount
 }
 
@@ -956,12 +734,9 @@ func (p progressFor) Did(kind, path, side string, done, total int) {
 	p.runner.publish(Event{Job: p.job, Phase: "progress", Done: done, Total: total, Kind: kind, Path: path, Side: side})
 }
 
-// Subscribe returns a channel of events and the function that stops it.
-//
-// The channel is buffered and a send that would block is DROPPED rather than
-// waited on. A browser tab that stopped reading, or a laptop that went to
-// sleep mid-run, must never be able to hold up a transfer: the screen exists to
-// report on the work, so it is the screen that gives way.
+// Subscribe returns a channel of events and the function that stops it. A send
+// that would block is dropped, so a browser tab that stopped reading can never
+// hold up a transfer.
 func (r *Runner) Subscribe() (<-chan Event, func()) {
 	ch := make(chan Event, 32)
 	r.mu.Lock()
@@ -1003,17 +778,13 @@ func (r *Runner) Running() map[string]bool {
 	return out
 }
 
-// localRoots returns the sides of a job that live on a real filesystem.
-//
-// Parsed rather than connected: fspath.Parse tells a local path from a remote
-// without opening anything, so starting the daemon does not have to reach an
-// S3 bucket just to find out that it is not a folder.
+// localRoots returns the sides of a job that live on a real filesystem. It
+// parses rather than connects, so starting the daemon does not reach out to a
+// remote.
 func localRoots(j job.Job) []string {
 	var out []string
 	for _, side := range []string{j.Left, j.Right} {
-		// A volume path is local by definition, so it is worth watching as soon
-		// as the drive is attached and not worth complaining about when it is
-		// not.
+		// A volume that is not attached is skipped without complaint.
 		resolved, err := volume.Resolve(side)
 		if err != nil {
 			continue
@@ -1031,12 +802,8 @@ func localRoots(j job.Job) []string {
 	return out
 }
 
-// startWatcher makes one job react to changes instead of only to the clock.
-//
-// A watcher is an optimisation on top of the schedule and never a replacement
-// for it: only a local side can be watched, and a watcher that missed an event
-// has no way to know it did. The configuration refuses a watching job with no
-// schedule for exactly that reason.
+// startWatcher makes one job react to changes as well as to the clock. Only a
+// local side can be watched, and the schedule stays behind it.
 func (r *Runner) startWatcher(ctx context.Context, j job.Job) {
 	roots := localRoots(j)
 	if len(roots) == 0 {
@@ -1057,8 +824,6 @@ func (r *Runner) startWatcher(ctx context.Context, j job.Job) {
 		Cooldown: 5 * time.Second,
 		Log:      func(format string, args ...any) { r.log(name+": "+format, args...) },
 	}, func() {
-		// The watcher is automation too, so a report-only job reports rather
-		// than writes when a folder changes under it.
 		rec, err := r.RunAutomatically(ctx, name)
 		switch {
 		case errors.Is(err, ErrAlreadyRunning):
@@ -1090,13 +855,8 @@ func (r *Runner) startWatcher(ctx context.Context, j job.Job) {
 	}()
 }
 
-// muteWatcher stops a job's own writes coming back as a change.
-//
-// Without this the engine answers itself: a run writes files, the watcher sees
-// them, the job runs again. The second run finds nothing to do so it does
-// terminate, but a job that reacts to every one of its own writes never sits
-// still, and on a schedule of one change per second that is a lot of listing
-// for no result.
+// muteWatcher stops a job's own writes coming back as a change that runs the
+// job again.
 func (r *Runner) muteWatcher(name string) {
 	r.mu.Lock()
 	w := r.watchers[name]

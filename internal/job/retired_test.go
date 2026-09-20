@@ -5,19 +5,8 @@ import (
 	"testing"
 )
 
-// A field this program used to write is not a typo.
-//
-// `DisallowUnknownFields` exists so that "excludes" for "exclude" is an error
-// rather than a filter that silently does nothing, and that reach is worth
-// keeping whole. It also means every field ever REMOVED from this program turns
-// an existing installation into a dead engine at the next update: the process
-// exits, the container restarts, and the only message is one line of JSON
-// complaint that says nothing about versions.
-//
-// Found on jdp's server. A container from the seventh was updated and went into
-// a restart loop on `firstRun`, a per-job setting this program had since
-// dropped. Nothing had changed on that machine except the version.
-
+// A field an earlier version wrote is not a typo, and refusing it would stop
+// the engine at the first start after an update.
 func TestARetiredFieldDoesNotStopTheEngine(t *testing.T) {
 	cfg, err := Load(writeConfig(t, `{"jobs":[{"name":"x","left":"/a","right":"/b","state":"s.db","firstRun":"left"}]}`))
 	if err != nil {
@@ -33,9 +22,8 @@ func TestARetiredFieldIsReportedRatherThanSwallowed(t *testing.T) {
 	if err != nil {
 		t.Fatalf("load: %v", err)
 	}
-	// Ignoring it silently would be the other half of the same bug: somebody
-	// who set it once should hear that it does nothing now, rather than
-	// believing a setting is in force because the file still shows it.
+	// Somebody who set it should hear that it has no effect, rather than
+	// believe it is in force because the file still shows it.
 	if got := cfg.Retired(); len(got) != 1 || got[0] != "firstRun" {
 		t.Errorf("the retired field was dropped without a word: %v", got)
 	}
@@ -51,9 +39,7 @@ func TestAConfigWithNoRetiredFieldSaysNothing(t *testing.T) {
 	}
 }
 
-// The guard the strictness exists for, unchanged. This is the half that must
-// not be traded away for the half above: the retired list is CLOSED, so every
-// other unknown word is still a refusal.
+// The retired list is closed, so every other unknown word is still refused.
 func TestAMisspelledFieldIsStillRefused(t *testing.T) {
 	_, err := Load(writeConfig(t, `{"jobs":[{"name":"x","left":"/a","right":"/b","state":"s.db","emptyDir":true}]}`))
 	if err == nil {
@@ -64,10 +50,8 @@ func TestAMisspelledFieldIsStillRefused(t *testing.T) {
 	}
 }
 
-// A retired name nested anywhere, not only where it used to live. The cleaner
-// walks the whole document because the next retired field might be a top-level
-// one, and a cleaner that only looked inside `jobs` would hand that one to the
-// strict decoder it is supposed to protect.
+// The next retired field might be a top-level one, so the whole document is
+// cleaned, not only the jobs.
 func TestARetiredFieldIsFoundAtTheTopLevelToo(t *testing.T) {
 	_, err := Load(writeConfig(t, `{"firstRun":"left","jobs":[{"name":"x","left":"/a","right":"/b","state":"s.db"}]}`))
 	if err != nil {

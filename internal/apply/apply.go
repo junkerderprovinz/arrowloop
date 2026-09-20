@@ -1,11 +1,9 @@
 // Package apply executes a plan and records the result.
 //
-// Two rules govern everything here. Nothing is destroyed outright unless
-// somebody said so: a deletion is a move into the side's own trash, and the one
-// way past that is a job explicitly configured without one, which is a decision
-// made about those particular files rather than a default. And the state row
-// for a path is written the moment that path is settled, not once at the end,
-// so a run that dies halfway leaves a state that is incomplete but never wrong.
+// A deletion is a move into the side's own trash unless the job is configured
+// without one. The state row for a path is written the moment that path is
+// settled, so a run that dies halfway leaves a state that is incomplete but
+// never wrong.
 package apply
 
 import (
@@ -30,15 +28,8 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/state"
 )
 
-// Progress is told what a run is doing while it does it.
-//
-// A long run that shows nothing is indistinguishable from one that has hung,
-// and the person watching has no way to tell which. The engine already knows
-// the total before it starts, because the plan is built first, so there is no
-// excuse for a spinner.
-//
-// Implementations are called from several workers at once and must be safe for
-// that. A nil Progress means nobody is watching.
+// Progress is told what a run is doing while it does it. Implementations are
+// called from several workers at once. A nil Progress means nobody is watching.
 type Progress interface {
 	Starting(total int)
 	Did(kind, path, side string, done, total int)
@@ -68,31 +59,21 @@ type Result struct {
 	Skipped     []plan.Skip
 
 	// Entries is what the run did, path by path, in the order it finished each
-	// piece of work.
-	//
-	// The counts above answer "how much" and that turned out not to be the
-	// question anybody has afterwards. A run reporting one error says nothing
-	// about which file; a run reporting two conflicts says nothing about what it
-	// decided, and for a scheduled run that decision was made on somebody's
-	// behalf while they were not watching.
+	// piece of work, so the log can say which file failed and how a conflict
+	// was decided.
 	Entries []Entry
 }
 
-// Entry is one finished piece of work, recorded rather than only counted.
+// Entry is one finished piece of work.
 type Entry struct {
 	Kind string
 	Side string
 	Path string
-	// Note carries what a number cannot: an error's own words, or which way a
-	// conflict went. Empty for the ordinary case.
+	// Note is an error's own words, or which way a conflict went. Empty for
+	// the ordinary case.
 	Note string
-	// Size is how big the file was, in bytes, where the action had one.
-	//
-	// Zero for a folder, for a skip and for an error: those have no size, and
-	// zero reads as "not applicable" rather than as "an empty file", which is
-	// the only ambiguity worth having here. A per-file log without sizes can
-	// say what moved and not what it cost, and "why did this run take an hour"
-	// is a question about bytes.
+	// Size is how big the file was, in bytes. Zero for a folder, a skip and an
+	// error, where it does not apply.
 	Size int64
 }
 
@@ -110,17 +91,13 @@ func (e *DisagreementError) Error() string {
 }
 
 // UnverifiedError means the two sides looked equal and the engine could not
-// PROVE it, on a job that asked for proof.
-//
-// It is not a disagreement and does not stop the run. The bytes are across, the
-// file is there, and the only thing missing is the state row saying so, which
-// costs the next run a comparison and costs nobody any data.
+// prove it, on a job that asked for proof. It does not stop the run: the file
+// is across and only its state row is withheld, so the next run compares again.
 type UnverifiedError struct {
 	Path string
 	Side plan.Side
-	// Err is what the backend said when asked for a checksum, which is the
-	// difference between "this backend has no checksums" and "this file could
-	// not be read". Only the second is alarming.
+	// Err is what the backend said when asked for a checksum, which tells "this
+	// backend has no checksums" from "this file could not be read".
 	Err error
 }
 
@@ -131,29 +108,13 @@ func (e *UnverifiedError) Error() string {
 func (e *UnverifiedError) Unwrap() error { return e.Err }
 
 // Verify says how much proof a run demands before it writes down that two sides
-// hold the same file.
-//
-// The default, the zero value, is what every existing caller gets and is what
-// the engine has always done: compare checksums where both sides can produce
-// them, and fall back to size and modification time where they cannot. That
-// fallback is not paranoia satisfied, it is a real weakening, and until now
-// nothing in the run said which of the two had happened.
+// hold the same file. The zero value compares checksums where both sides can
+// produce them and falls back to size and modification time where they cannot.
 type Verify struct {
 	// RequireChecksum refuses to record an agreement that rests on size and
-	// modification time alone.
-	//
-	// Off by default, and it has to be, because whole backends cannot hash at
-	// all: plain SFTP without a remote shell answers nothing, and a job across
-	// one would postpone every single file on every single run. Turning this on
-	// is a statement about a particular pair of ends, made by somebody who
-	// knows those ends can hash and wants to hear about it the day one of them
-	// stops.
-	//
-	// A refusal costs the copy nothing. The file has already been written, and
-	// only the row saying the two sides agree is withheld, so the next run
-	// looks again. What it does NOT do is converge: a pair that can never be
-	// checksummed will be reconsidered on every run forever. That is the point
-	// of asking for it.
+	// modification time alone. It is off by default because some backends
+	// cannot hash at all, such as SFTP without a remote shell, and a job across
+	// one would then reconsider every file on every run.
 	RequireChecksum bool
 }
 
@@ -169,19 +130,12 @@ type tally struct {
 	done     int
 }
 
-// step reports one finished piece of work. The count is taken under the same
-// lock as everything else, so the numbers a watcher sees always add up even
-// when several workers finish at the same instant.
+// step reports one finished piece of work.
 func (t *tally) step(kind, path, side string) {
 	t.note(kind, path, side, "")
 }
 
 // sized is step for a piece of work that moved a known number of bytes.
-//
-// Separate from step rather than a fifth parameter on it, because most of the
-// callers have no size to give: a folder made, a path skipped and an error
-// raised are all sizeless, and passing 0 at each of them would read as "an
-// empty file" at the call site rather than as "not applicable".
 func (t *tally) sized(kind, path, side string, size int64) {
 	t.mu.Lock()
 	t.done++
@@ -202,13 +156,9 @@ func sizeOf(e *scan.Entry) int64 {
 	return e.Size
 }
 
-// note is step with something to say about this particular piece of work: the
-// words of an error, or which way a conflict went.
-//
-// Recorded under the same lock as the count, so the list and the numbers can
-// never describe two different runs. Several workers finish at once, and a
-// slice appended to from more than one of them without the lock is a data race
-// that shows up as a corrupted history rather than as a crash.
+// note is step with something to say about this piece of work: the words of an
+// error, or which way a conflict went. The entry and the count are taken under
+// one lock, so the numbers a watcher sees add up.
 func (t *tally) note(kind, path, side, note string) {
 	t.mu.Lock()
 	t.done++
@@ -220,13 +170,9 @@ func (t *tally) note(kind, path, side, note string) {
 	}
 }
 
-// observe records something true about one file that is not a piece of work:
-// how an agreement was verified, why a check was weaker than usual.
-//
-// Deliberately not through note(), for the same reason skip() is not: countWork
-// counted the transfers, and a remark ABOUT a transfer is not a second one.
-// Sending these through note() would walk the progress bar past its own total,
-// and a bar that reads 106 of 100 is worse than no bar at all.
+// observe records something about one file that is not a piece of work, such
+// as why a check was weaker than usual. Like skip, it does not go through note,
+// which would walk the progress bar past the total countWork worked out.
 func (t *tally) observe(kind, path, side, note string) {
 	t.mu.Lock()
 	defer t.mu.Unlock()
@@ -238,20 +184,12 @@ func (t *tally) observe(kind, path, side, note string) {
 func (t *tally) record(e Entry) { t.res.Entries = append(t.res.Entries, e) }
 
 // countWork is what the plan is going to touch, worked out before anything
-// moves. A progress bar whose total grows while it runs is not a progress bar.
+// moves so the progress total does not grow.
 func countWork(p *plan.Plan) int {
 	n := len(p.Agreed)
 	for _, a := range p.Actions {
 		n++
-		// A Relocate is TWO pieces of work inside one action: the copy, and
-		// then the source's own file going. Both are reported to the progress
-		// watcher, so counting the action once produced a bar that walked to
-		// twice its total.
-		//
-		// Measured live rather than reasoned about: a move job over 3000 files
-		// on a phone reported "3131 of 3000" while it was still going. Every
-		// other kind here really is one step, which is why this was invisible
-		// until a job with a one-way move mode ran in front of somebody.
+		// A Relocate reports two steps: the copy, and the source going.
 		if a.Kind == plan.Relocate {
 			n++
 		}
@@ -274,13 +212,8 @@ func (t *tally) skip(path string, reason plan.Reason) {
 	t.mu.Lock()
 	defer t.mu.Unlock()
 	t.res.Skipped = append(t.res.Skipped, plan.Skip{Path: path, Reason: reason})
-	// A skip is a thing that happened to a named file, and until now the only
-	// place it went was a count. "One file was skipped" is not something anybody
-	// can act on; the name and the reason are.
-	//
-	// Deliberately NOT through note(): a skip is not a finished piece of work
-	// and must not move the progress bar, which is the one thing note() does
-	// besides recording.
+	// Not through note: a skip is not finished work and must not move the
+	// progress bar.
 	t.record(Entry{Kind: "skip", Path: path, Note: reason.String()})
 }
 
@@ -300,18 +233,15 @@ func (t *tally) fatalErr() error {
 
 // Run executes every action in the plan.
 //
-// A single action that fails is recorded as a skip and the run carries on. That
-// is safe precisely because a state row is only written after the operation
-// succeeded AND both sides were re-read and found to match: a file that could
-// not be copied keeps its old record, or none, so the next run tries again. The
-// one thing that does stop the run is a disagreement, because that means the
-// engine no longer understands the tree it is working on, and every further
-// action would be taken on a false picture.
+// A single action that fails is recorded as a skip and the run carries on,
+// which is safe because a state row is only written once both sides were
+// re-read and found to match. A disagreement stops the run, because it means
+// the engine's picture of the tree is wrong.
 //
-// The order is not decoration. Directories are created before anything is
-// copied into them and removed after everything has been taken out of them,
-// renames run before copies so a freed name is available, and deletions come
-// last so a file is never removed before its replacement has landed.
+// Directories are created before anything is copied into them and removed
+// after they are emptied, renames run before copies so a freed name is
+// available, and deletions come last so a file is never removed before its
+// replacement has landed.
 func Run(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt plan.Options) (Result, error) {
 	return RunWatched(ctx, ends, db, p, opt, nil)
 }
@@ -322,14 +252,8 @@ func RunWatched(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt 
 }
 
 // RunVerified is RunWatched with the strength of the after-the-fact check
-// spelled out rather than left at its default.
-//
-// A separate entry point rather than another field on plan.Options, because
-// plan.Options is the bag the COMPARISON reads: how names fold, how wide the
-// time window is, what the brakes allow. How hard the apply stage insists on
-// proof after a write is not a question the planner has any use for, and adding
-// it there would put a setting in front of every caller that builds a plan and
-// never applies one.
+// spelled out. It is not part of plan.Options because the planner never uses
+// it.
 func RunVerified(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt plan.Options, watcher Progress, verify Verify) (Result, error) {
 	t := &tally{res: Result{Skipped: append([]plan.Skip(nil), p.Skipped...)}, progress: watcher}
 	t.total = countWork(p)
@@ -353,9 +277,8 @@ func RunVerified(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt
 		}
 	}
 
-	// Renames stay sequential. Two of them in flight can chase each other
-	// through the same name, and folding a rename into a single move is cheap
-	// anyway, so there is nothing to gain by racing them.
+	// Renames stay sequential, since two in flight can chase each other
+	// through the same name.
 	for _, act := range p.Actions {
 		if act.Kind != plan.Move {
 			continue
@@ -389,12 +312,9 @@ func RunVerified(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt
 	// Files both sides created identically need no transfer, only a record.
 	for _, act := range p.Agreed {
 		left, right := act.Names()
-		// WITH its size, even though nothing was transferred. The row describes
-		// a file and the file has a size, and on a settled pair of trees this
-		// is nearly every row there is: without it the activity log's size
-		// column is blank on 696 lines out of 697, which is what "die
-		// dateigröße ist nicht sichtbar" looked like from the outside. Either
-		// side will do, since agreeing is what put them in this list.
+		// With its size although nothing was transferred, since on a settled
+		// pair of trees these are nearly all the rows. Both sides agree, so
+		// either will do.
 		agreed := act.LeftNow
 		if agreed == nil {
 			agreed = act.RightNow
@@ -426,15 +346,9 @@ func RunVerified(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt
 	return t.res, t.fatalErr()
 }
 
-// forEach runs the actions concurrently, up to workers at a time.
-//
-// A failure on one file becomes a skip and the others carry on. A disagreement
-// is different: it says the engine's picture of the tree is wrong, so the
-// context is cancelled and the whole run stops rather than taking further
-// decisions on a false basis.
-//
-// It is handed the two ends only so that a failure can be classified: naming
-// what stopped a file means asking the file, and the file lives on one of them.
+// forEach runs the actions concurrently, up to workers at a time. A failure on
+// one file becomes a skip; a disagreement cancels the context and stops the
+// run. The ends are only needed to classify a failure.
 func (t *tally) forEach(ctx context.Context, ends Ends, acts []plan.Action, workers int, fn func(context.Context, plan.Action) error) error {
 	if len(acts) == 0 {
 		return nil
@@ -488,12 +402,9 @@ func ofKind(acts []plan.Action, kinds ...plan.Kind) []plan.Action {
 	return out
 }
 
-// applyDir creates, removes or merely records one directory.
-//
-// Removal goes through Rmdir, which refuses a directory that still holds
-// anything. That refusal is the safety property: a recursive delete here would
-// take out files the engine had decided to keep, for instance ones it had just
-// postponed because they were still being written.
+// applyDir creates, removes or merely records one directory. Removal goes
+// through Rmdir, which refuses a directory that still holds anything, such as
+// a file postponed because it was still being written.
 func applyDir(ctx context.Context, ends Ends, db *state.DB, d plan.DirAction) error {
 	switch d.Kind {
 	case plan.MakeDir:
@@ -516,21 +427,9 @@ func applyDir(ctx context.Context, ends Ends, db *state.DB, d plan.DirAction) er
 }
 
 // heldOpen asks whether any file this action has to get at is locked by another
-// program, before the action is attempted.
-//
-// It used to ask about copies only, and only about their source. That covered
-// the single case somebody thinks of first, a document left open in a word
-// processor, and left three others reporting a raw Win32 sentence under the
-// generic "step failed" reason: a rename of an open file, a conflict whose two
-// versions cannot be shuffled about, and a deletion that cannot move its victim
-// into the trash. All four are the same situation with the same remedy, and the
-// person reading the run has no way to reach that remedy from "MoveFile
-// notes.txt: The process cannot access the file".
-//
-// The destination of a copy is still not probed here. Probing it means opening
-// a file the run is about to overwrite, which is an intrusion of its own for an
-// answer the attempt itself will give. It is asked about afterwards instead,
-// once something has actually gone wrong: see couldHaveLocked.
+// program, before the action is attempted, so the run can name the remedy
+// rather than report a raw Win32 sentence. The destination of a copy is only
+// probed after a failure; see couldHaveLocked.
 func heldOpen(ends Ends, act plan.Action) (plan.Reason, bool) {
 	for _, w := range wantsToTouch(act) {
 		full, ok := localPath(ends.side(w.side), w.path)
@@ -548,39 +447,26 @@ type touch struct {
 	path string
 }
 
-// wantsToTouch lists the files an action needs to get at, so that a lock on any
-// of them is found before the action starts rather than halfway through it.
-//
-// Only files that must ALREADY be there are listed. The destination name of a
-// copy or a rename is usually nothing at all, and probing a path that does not
-// exist answers "not busy" truthfully and uselessly.
-//
-// The conflict case is why this returns a list rather than one path. Resolving a
-// conflict moves one version aside and copies in both directions, so it touches
-// a real file on each side, and a lock on either of them will stop it partway
-// through a manoeuvre that is only safe as a whole.
+// wantsToTouch lists the existing files an action needs to get at, so a lock on
+// any of them is found before the action starts. A conflict touches a file on
+// each side, and a lock on either would stop it partway through.
 func wantsToTouch(act plan.Action) []touch {
 	switch act.Kind {
 	case plan.Copy, plan.Relocate:
 		if act.SrcPath == "" {
 			return nil
 		}
-		// A relocate reads this file and then removes it, so a lock on it
-		// stops the whole manoeuvre - the same answer as for a plain copy,
-		// with more riding on it.
 		return []touch{{act.Src, act.SrcPath}}
 
 	case plan.Move:
-		// The file being renamed lives on the destination side under its old
-		// name: a rename is applied over there, not carried across.
+		// A rename is applied on the destination side, to the old name.
 		if act.OldDstPath == "" {
 			return nil
 		}
 		return []touch{{act.Dst, act.OldDstPath}}
 
 	case plan.Delete:
-		// A path already gone from both sides has nothing behind it to lock;
-		// only its record is being cleared.
+		// A path gone from both sides only has its record cleared.
 		if act.DstPath == "" || (act.LeftNow == nil && act.RightNow == nil) {
 			return nil
 		}
@@ -599,20 +485,11 @@ func wantsToTouch(act plan.Action) []touch {
 	return nil
 }
 
-// couldHaveLocked lists the files a failed action might have been stopped by.
-//
-// It is wantsToTouch plus the destination, and the destination is why it exists
-// separately. Probing a destination BEFORE a copy means opening a file the run
-// is about to overwrite, for an answer the attempt itself will give. Probing it
-// AFTER the attempt failed costs one open on a path that has already gone
-// wrong, and it is the only way to recognise the commonest case of all.
-//
-// rclone does not write over the destination. It writes a temporary name beside
-// it and renames that into place, and Windows refuses a rename onto a file
-// somebody is holding with a plain access denial rather than with a sharing
-// violation. Access denied is also exactly what a genuine permission problem
-// looks like, and the two want opposite things from the reader, so the error
-// number cannot settle this on its own and the file has to be asked directly.
+// couldHaveLocked lists the files a failed action might have been stopped by:
+// wantsToTouch plus the destination, which is only probed once the attempt has
+// failed. rclone renames a temporary file onto the destination, and Windows
+// refuses that for a held file with a plain access denial, which a permission
+// problem also produces, so the file has to be asked directly.
 func couldHaveLocked(act plan.Action) []touch {
 	out := wantsToTouch(act)
 	if act.DstPath == "" {
@@ -625,28 +502,14 @@ func couldHaveLocked(act plan.Action) []touch {
 	return out
 }
 
-// whyFailed turns a failed operation into the reason the run writes down.
+// whyFailed turns a failed operation into the reason the run writes down: a
+// file held open by another program, a checksum the job insisted on and could
+// not get, or an ordinary failure in the backend's own words.
 //
-// Three failures that read alike to the code are three different messages to
-// the person holding the machine. "Another program has this file open" is
-// something they can fix in ten seconds and is not a fault. "This job insists
-// on a checksum and could not get one" is a decision the job made about itself.
-// Everything else is an ordinary failure carrying the backend's own words.
-// Before this, all three arrived as one reason code with a raw error glued on,
-// so the only way to tell a busy document from a full disk was to read Win32
-// error prose, in whatever language that machine speaks, and know what it meant.
-//
-// The lock is established two ways because neither is enough alone. The error
-// number is proof when it is one of the sharing violations, and no help at all
-// when the operation that died was the rename of a temporary file. Asking the
-// files is the other way, and it is only asked once the operation has already
-// failed: a file that probes busy at that moment is the explanation, and a
-// probe on a run where nothing went wrong would be a guess looking for
-// something to blame.
-//
-// what names the operation for the sentence. ordinary is the code to fall back
-// on, because "the folder could not be removed" and "the copy failed" send the
-// reader to different places and collapsing them would be a loss.
+// A lock shows either in the error number, which misses the rename of a
+// temporary file, or by probing the suspects once the operation has failed.
+// what names the operation for the sentence, and ordinary is the reason code
+// to fall back on.
 func whyFailed(ends Ends, suspects []touch, what, ordinary string, err error) plan.Reason {
 	var unver *UnverifiedError
 	if errors.As(err, &unver) {
@@ -659,26 +522,17 @@ func whyFailed(ends Ends, suspects []touch, what, ordinary string, err error) pl
 		}
 	}
 	if lockprobe.WasBusy(err) {
-		// The operating system said so and the lock has since been released,
-		// which happens constantly: a document is saved, and the lock is taken
-		// and given back around the save. No side is named because none is
-		// known, and naming one on a guess would send somebody to the wrong
-		// machine.
+		// The lock has since been released, as around a document being saved,
+		// so no side is known.
 		return plan.Because("heldOpenDuring", "what", what, "error", err.Error())
 	}
 	return plan.Because(ordinary, "what", what, "error", err.Error())
 }
 
-// localPath maps an rclone object back to a real filesystem path, when there is
-// one. Anything that is not the local backend has no such path, and the probe
-// simply does not apply.
-//
-// filepath.Join is doing more work here than it looks. On Windows rclone makes
-// every local root an extended-length path so that names over 260 characters
-// work, and Root() returns that prefix with forward slashes, as "//?/C:/...".
-// Join cleans it back into the backslash form Win32 accepts. Concatenating the
-// two strings by hand instead would produce a path the operating system
-// refuses, and only for the deeply nested files this exists to support.
+// localPath maps an rclone object back to a real filesystem path, for the local
+// backend only. On Windows Root() returns the extended-length prefix with
+// forward slashes, "//?/C:/...", and filepath.Join cleans it back into the
+// backslash form Win32 accepts.
 func localPath(f fs.Fs, remote string) (string, bool) {
 	if f == nil || f.Name() != "local" {
 		return "", false
@@ -686,28 +540,17 @@ func localPath(f fs.Fs, remote string) (string, bool) {
 	return filepath.Join(f.Root(), filepath.FromSlash(remote)), true
 }
 
-// retrying runs a transfer again when the reason it failed was weather.
-//
-// A network that drops for two seconds currently ends the whole run: one file
-// fails, the run reports a failure, and the next scheduled turn starts the
-// whole comparison again. That is the most common way a nightly job "breaks",
-// and it is not a break at all.
-//
-// rclone's own judgement decides what is worth repeating, and it takes TWO
-// questions rather than one: `ShouldRetry` knows about timeouts, resets and the
-// handful of HTTP codes that mean "later", while `IsRetryError` catches the
-// marker a backend puts on an error it wants tried again. Asking only the first
-// misses everything a backend flagged itself, which is most of what the cloud
-// ones raise. Neither says yes to a permission error or a full disk, so this
-// never turns one clear failure into three slow ones.
-//
-// Three attempts with a widening gap, and the context is checked between them:
-// a cancelled run stops during the wait rather than after it.
-// worthRepeating asks rclone both of its questions about an error.
+// worthRepeating asks rclone whether an error is transient. ShouldRetry knows
+// timeouts, resets and the HTTP codes that mean later; IsRetryError catches the
+// marker a backend puts on an error itself. Neither says yes to a permission
+// error or a full disk.
 func worthRepeating(err error) bool {
 	return fserrors.ShouldRetry(err) || fserrors.IsRetryError(err)
 }
 
+// retrying runs a transfer up to three times with a widening gap while the
+// error is worth repeating, so a network that drops for two seconds does not
+// fail the file. A cancelled run stops during the wait.
 func retrying(ctx context.Context, what func() error) error {
 	const attempts = 3
 	var err error
@@ -729,14 +572,8 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 	switch act.Kind {
 	case plan.Copy:
 		src, dst := ends.side(act.Src), ends.side(act.Dst)
-		// Whatever this copy is about to replace is kept first, when the run was
-		// told to keep versions. A failure here stops the copy on purpose: the
-		// whole promise is that the old content is somewhere before the new
-		// content lands on it, and a keep that quietly failed would break that
-		// promise on exactly the file somebody later goes looking for.
-		//
-		// It makes no backend calls at all when versioning is off, which is
-		// every run today.
+		// A failure to keep the old version stops the copy, since the promise
+		// is that the old content is kept before the new content lands.
 		if err := keepVersion(ctx, dst, act.DstPath, runID); err != nil {
 			return err
 		}
@@ -746,8 +583,7 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 			return err
 		}
 		t.count(func(r *Result) { r.Copied++ })
-		// The SOURCE's size, which is what was just written. The destination's
-		// is the old file's where there was one, and zero where there was not.
+		// The source's size is what was just written.
 		from := act.RightNow
 		if act.Dst == plan.Right {
 			from = act.LeftNow
@@ -757,14 +593,9 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 		return rec.settle(ctx, act.Path, left, right)
 
 	case plan.Relocate:
-		// A copy, and then the source's own file goes.
-		//
-		// The removal is written INSIDE this case rather than queued as a
-		// second action, and that is the whole reason this kind exists: every
-		// line below the copy is unreachable unless the copy returned nil, so
-		// there is no arrangement of failures that deletes an original whose
-		// copy did not land. A `Copy` followed by a `Delete` in the action list
-		// has no such guarantee.
+		// A copy, and then the source's own file goes. The removal is only
+		// reached after the copy succeeded, which a Copy followed by a Delete
+		// in the action list could not guarantee.
 		src, dst := ends.side(act.Src), ends.side(act.Dst)
 		if err := keepVersion(ctx, dst, act.DstPath, runID); err != nil {
 			return err
@@ -781,9 +612,7 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 		}
 		t.sized("copy", act.DstPath, act.Dst.String(), sizeOf(sent))
 
-		// Into the source side's own bin, not deleted outright: the same net
-		// every other removal in this program falls into, and the one that
-		// makes "upload and then delete" something a person can undo.
+		// Into the source side's own bin, like every other removal.
 		if sent != nil {
 			if err := discard(ctx, src, sent.Object(), runID); err != nil {
 				return err
@@ -834,9 +663,7 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 
 	case plan.Conflict:
 		t.count(func(r *Result) { r.Conflicts++ })
-		// What was DECIDED, not only that there was a conflict. On a scheduled
-		// run nobody chose, so the default was taken on somebody's behalf and
-		// this line is the only place that ever says so.
+		// Record what was decided, since on a scheduled run nobody chose.
 		t.note("conflict", act.Path, "", act.Resolve.String())
 		return resolveConflict(ctx, ends, rec, act, runID, opt)
 	}
@@ -844,24 +671,12 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 }
 
 // discard gets rid of an object: into the side's own trash, or outright when
-// this job has been told not to keep one.
+// the job keeps none, in which case the reserved folder is never created.
 //
-// The trash lives inside the synced tree but under a reserved prefix that the
-// scanner skips, so it never travels to the other side. Putting it outside the
-// tree instead would be cleaner in principle and unusable in practice: on an
-// S3 bucket or an SFTP export there is often no "outside".
-//
-// That reserved folder is also the whole of what somebody sees of this
-// mechanism, and it is what gets asked about: jdp, looking at a synced download
-// share, "braucht es den .arrowloop ordner im Zielordner? Kann man den nicht
-// weglassen?" It can, and this is where: with the trash off nothing is ever
-// moved under the prefix, so the folder is never created. The decision lives on
-// the job because it is a decision about what THOSE files are worth.
-//
-// The choice is made here rather than at the two call sites, so that both a
-// deletion and a conflict's losing version answer it the same way. Two copies
-// of this `if` would eventually disagree, and the one that kept a trash nobody
-// asked for would be the quiet one.
+// The trash lives inside the synced tree under a reserved prefix the scanner
+// skips, because an S3 bucket or an SFTP export often has no outside. Deletions
+// and a conflict's losing version both come through here, so they answer the
+// question the same way.
 func discard(ctx context.Context, f fs.Fs, obj fs.Object, runID string) error {
 	if !trashKept(ctx) {
 		return operations.DeleteFile(ctx, obj)
@@ -870,15 +685,11 @@ func discard(ctx context.Context, f fs.Fs, obj fs.Object, runID string) error {
 	return operations.MoveFile(ctx, f, f, dst, obj.Remote())
 }
 
-// resolveConflict keeps both versions and leaves the two sides identical.
-//
-// The newer file keeps the plain name on both sides and the older one is
-// preserved next to it under a name that says where it came from. Deciding by
-// modification time is arbitrary in the sense that it can pick the "wrong"
-// file, but it is never destructive, and it converges: after the run both sides
-// hold exactly the same two files, so the next run has nothing left to argue
-// about. Refusing to resolve at all would look safer and would in fact leave
-// the job permanently stuck, re-reporting the same conflict forever.
+// resolveConflict keeps both versions and leaves the two sides identical. The
+// newer file keeps the plain name and the older one is kept beside it under a
+// name that says where it came from. That can pick the wrong file, but it
+// destroys nothing and converges, where refusing to resolve would report the
+// same conflict for ever.
 func resolveConflict(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID string, opt plan.Options) error {
 	steps, err := conflictSteps(ends, act, runID)
 	if err != nil {
@@ -895,10 +706,8 @@ func resolveConflict(ctx context.Context, ends Ends, rec recorder, act plan.Acti
 		return err
 	}
 	if last.losingName == "" {
-		// A chosen resolution leaves one file, so there is one row to write.
-		// Forgetting the second is not an omission here: writing a row for a
-		// file that is not there would have the next run read it as a deletion
-		// and go looking for something to remove.
+		// A chosen resolution leaves one file. A row for a file that is not
+		// there would read as a deletion on the next run.
 		return nil
 	}
 	return rec.settle(ctx, pathid.Key(last.losingName, opt.FoldCase), last.losingName, last.losingName)
@@ -915,23 +724,13 @@ type conflictStep struct {
 }
 
 // conflictSteps builds the resolution as an ordered list, because a run can die
-// between any two of them and every prefix has to leave a tree the next run can
-// recover from unaided.
+// between any two steps and every prefix has to leave a tree the next run can
+// recover from.
 //
-// It does, and NOT because of anything clever here: the recovery comes from the
-// decision table. A crash after the first step leaves the losing side without
-// the plain name while the winning side still holds its edited copy, which is
-// exactly the "deleted on one side, edited on the other" row, and that row
-// restores the file rather than propagating the deletion. The manoeuvre is safe
-// because that rule exists, which is worth writing down, since it means
-// reordering these steps to make them "safer" is solving a problem the engine
-// already solved.
-//
-// That was tried. Copying the losing version across BEFORE setting it aside
-// looks stronger, since its content then exists in two places from the first
-// step onwards. The crash test passes either way, and the earlier-copy order is
-// measurably worse: it leaves the plain name contested, so recovery costs an
-// extra round and an extra conflict copy. The order below converges in one.
+// The recovery comes from the decision table: a crash after the first step
+// leaves "deleted on one side, edited on the other", which restores the file.
+// Copying the losing version across before setting it aside would leave the
+// plain name contested and cost an extra round to converge.
 func conflictSteps(ends Ends, act plan.Action, runID string) ([]conflictStep, error) {
 	if act.LeftNow == nil || act.RightNow == nil {
 		return nil, fmt.Errorf("conflict without both sides present")
@@ -973,18 +772,10 @@ func conflictSteps(ends Ends, act plan.Action, runID string) ([]conflictStep, er
 	}, nil
 }
 
-// chosenSteps resolves a conflict the way a person looking at both versions
-// asked for, rather than by modification time.
-//
-// The losing version goes to the trash rather than being overwritten. Somebody
-// choosing between two files is saying which one they want next to them, not
-// that the other should stop existing: a click made in a hurry on the wrong row
-// has to be recoverable, and the trash is already where every other deletion in
-// this program goes.
-//
-// The two steps are in this order for the same reason the three above are: a
-// crash between them leaves "deleted on one side, edited on the other", which
-// the decision table restores rather than propagates.
+// chosenSteps resolves a conflict the way a person asked for rather than by
+// modification time. The losing version goes to the trash, so a click on the
+// wrong row can be undone. The order is safe for the same reason as in
+// conflictSteps.
 func chosenSteps(ends Ends, act plan.Action, runID string) ([]conflictStep, error) {
 	winner, loser := plan.Left, plan.Right
 	if act.Resolve == plan.KeepRight {
@@ -1013,8 +804,7 @@ func chosenSteps(ends Ends, act plan.Action, runID string) ([]conflictStep, erro
 }
 
 // conflictName builds the name the losing version is kept under. The timestamp
-// makes repeated conflicts on the same file pile up instead of overwriting each
-// other, which would defeat the point.
+// keeps repeated conflicts on one file from overwriting each other.
 func conflictName(p string, side plan.Side, runID string) string {
 	dir, base := path.Split(p)
 	ext := path.Ext(base)
@@ -1030,12 +820,8 @@ type recorder struct {
 	window time.Duration
 	verify Verify
 
-	// observe is how the recorder gets a line into the run's list without
-	// being handed the whole tally. A recorder that could reach the counters
-	// would eventually increment one.
-	//
-	// Nil when nobody is collecting, which is the case in the tests that drive
-	// a recorder directly, so every call has to survive it.
+	// observe gets a line into the run's list without handing the recorder
+	// the counters. It may be nil.
 	observe func(kind, path, side, note string)
 }
 
@@ -1047,36 +833,22 @@ func (r recorder) say(kind, path, side, note string) {
 
 // settle re-reads a path on both sides and stores it as the new agreement.
 //
-// Re-reading costs one metadata call per side per file. It would be cheaper to
-// assume the destination now matches the source, but that assumption is exactly
-// where silent corruption hides: a backend that rounds modification times, or
-// rewrites a name, would leave a state row describing something that is not
-// there, and every later run would then re-copy the file forever.
+// Assuming the destination matches the source would be cheaper, but a backend
+// that rounds modification times or rewrites a name would then leave a row
+// describing something that is not there. The equality check must stay: a row
+// for a pair that does not agree would make every later run see no change, so
+// the run fails loudly instead.
 //
-// The equality check afterwards is the part that must never be dropped. A state
-// row means "these two sides agree", and writing one for a pair that does not
-// agree is how a sync tool stops noticing a difference: the next run compares
-// both sides against a record that already matches them both, concludes nothing
-// changed, and the divergence becomes permanent and invisible. Better to fail
-// the run loudly here than to let the engine lie to itself.
-//
-// How strong that check is depends on what the two backends can answer. With a
-// checksum from both sides it is a comparison of the content; without one it
-// falls back to a length and a clock reading, which two different files can
-// share. The fallback is necessary and it is genuinely weaker, and until it was
-// written down here the run said the same word, "agreed", for both. It now says
-// which, and a job can refuse the weak one outright: see Verify.
+// With a checksum from both sides the check compares content; without one it
+// falls back to size and modification time, which is weaker and is reported,
+// and a job can refuse it; see Verify.
 func (r recorder) settle(ctx context.Context, key, leftPath, rightPath string) error {
 	left, lErr := reread(ctx, r.ends.Left, leftPath)
 	right, rErr := reread(ctx, r.ends.Right, rightPath)
 
-	// A file that is genuinely not there means the two sides agree on nothing,
-	// so the record goes. Any OTHER failure to look is a different thing
-	// entirely and must not be treated the same way: dropping the record
-	// because a stat happened to fail would make the next run treat a file it
-	// had just copied as brand new, and nothing anywhere would say why. Found
-	// on a Windows runner, where two of two hundred files came out of a
-	// parallel run with no record at all.
+	// Only a file that is really not there drops the record. Dropping it
+	// because a stat failed would make the next run treat a file it had just
+	// copied as new.
 	if errors.Is(lErr, fs.ErrorObjectNotFound) || errors.Is(rErr, fs.ErrorObjectNotFound) {
 		return r.db.Forget(ctx, key)
 	}
@@ -1092,30 +864,23 @@ func (r recorder) settle(ctx context.Context, key, leftPath, rightPath string) e
 	leftFacts := plan.Facts{Size: left.Size(), Mod: left.ModTime(ctx), Hash: leftSum}
 	rightFacts := plan.Facts{Size: right.Size(), Mod: right.ModTime(ctx), Hash: rightSum}
 	if !plan.Same(leftFacts, rightFacts, r.window) {
-		// The checksums belong in the message. The one case where a checksum
-		// decides anything is two files of the same length written in the same
-		// second, and in exactly that case the sizes and the times read as a
-		// matched pair, so a message built from those two alone describes a
-		// disagreement that looks like agreement and sends the reader hunting
-		// for a bug in the comparison instead of at the file.
+		// The checksums belong in the message: when they decide, the sizes and
+		// times match and would describe a disagreement that looks like
+		// agreement.
 		return &DisagreementError{
 			Path:    key,
 			Details: fmt.Sprintf("left %s, right %s", describeSide(leftPath, leftFacts), describeSide(rightPath, rightFacts)),
 		}
 	}
 
-	// Same() reached that verdict one of two ways, and which one is not
-	// something the caller can work out afterwards.
+	// Same agreed either on checksums or on size and time alone.
 	if leftSum == "" || rightSum == "" {
 		side, why := unhashed(leftSum, leftHashErr, rightHashErr)
 		if r.verify.RequireChecksum {
 			return &UnverifiedError{Path: key, Side: side, Err: why}
 		}
-		// Reported for the surprising case only. A backend that has no
-		// checksums at all is a fact about the job, true of every file in it,
-		// and one line per file would bury the run's own list under thousands
-		// of copies of a sentence nobody needed twice. A checksum that failed
-		// for any OTHER reason is a fact about THIS file and is worth a line.
+		// A backend without checksums is true of every file in the job and
+		// would bury the list; any other checksum failure is worth a line.
 		if !errors.Is(why, hash.ErrUnsupported) {
 			r.say("unverified", key, side.String(), fmt.Sprintf(
 				"no checksum from the %s side, so this pair was accepted on size and modification time alone: %v", side, why))
@@ -1136,38 +901,23 @@ func (r recorder) settle(ctx context.Context, key, leftPath, rightPath string) e
 	})
 }
 
-// hashOf asks an object for its MD5, and returns why it could not have one.
-//
-// MD5 specifically, and not whichever algorithm the two backends happen to
-// share. The scanner records MD5 into the state row and compares MD5 against it
-// on the next run, so a settle that stored a SHA-1 here would look like a
-// changed file to every run that followed, forever. One algorithm or none.
-//
-// The error used to be dropped on the floor. That is what made the two very
-// different answers, "this backend has no checksums" and "this file could not
-// be read", arrive as the same empty string, and an empty string is what makes
-// the comparison fall back to size and time without a word.
+// hashOf asks an object for its MD5, and returns why it could not have one. It
+// is always MD5 because the scanner compares MD5 against the state row, and any
+// other algorithm stored here would look like a changed file on every run.
 func hashOf(ctx context.Context, obj fs.Object) (string, error) {
 	sum, err := obj.Hash(ctx, hash.MD5)
 	if err != nil {
 		return "", err
 	}
-	// A backend can answer successfully with nothing at all, for an object it
-	// has never been told the checksum of. That is the unsupported case wearing
-	// different clothes, and the caller has one meaning for it.
+	// An empty answer without an error means the same as unsupported.
 	if sum == "" {
 		return "", hash.ErrUnsupported
 	}
 	return sum, nil
 }
 
-// unhashed names the side that could not produce a checksum, and why.
-//
-// The left side is asked about first, so a pair where neither side can hash is
-// reported against the left. Naming both would be more accurate and less
-// useful: the reader has to go and look at one of them first anyway, and a
-// sentence that names two sides at once reads as though the problem were the
-// pairing rather than the backends.
+// unhashed names the side that could not produce a checksum, and why. When
+// neither side can, the left is named.
 func unhashed(leftSum string, leftErr, rightErr error) (plan.Side, error) {
 	if leftSum == "" {
 		return plan.Left, leftErr
@@ -1193,17 +943,9 @@ func contains(kinds []plan.Kind, k plan.Kind) bool {
 	return false
 }
 
-// reread looks a path up again after it has been written.
-//
-// The retry is for Windows. A file that has just been closed can still be
-// briefly unavailable there, because an indexer or a virus scanner is holding
-// it, and a caller that gives up on the first attempt turns that into a run
-// that reports a failure for a file which is in fact perfectly fine. Three
-// attempts over a few milliseconds costs nothing on the path where everything
-// works, which is nearly always.
-//
-// A file that is genuinely absent is not retried: that answer will not change,
-// and the caller has a correct meaning for it.
+// reread looks a path up again after it has been written. It retries briefly
+// because on Windows an indexer or virus scanner can hold a file that was just
+// closed. A file that is absent is not retried.
 func reread(ctx context.Context, f fs.Fs, path string) (fs.Object, error) {
 	var err error
 	for attempt := range 3 {

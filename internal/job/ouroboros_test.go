@@ -7,13 +7,8 @@ import (
 	"testing"
 )
 
-// A job pointing at one place twice is refused, and until now nothing stopped it.
-//
-// The hazard is not theoretical. With mode `move`, a job whose destination IS
-// its source carries every file to where it already is and then removes it from
-// the source, which is the same place. With `mirror`, the destination's extra
-// files are the source's own files. Sync is merely nonsense; the other two
-// delete.
+// A move job whose destination is its source would remove every file from the
+// place it just copied it to.
 func TestBothSidesInOnePlaceIsRefused(t *testing.T) {
 	for _, c := range []struct {
 		name        string
@@ -26,8 +21,7 @@ func TestBothSidesInOnePlaceIsRefused(t *testing.T) {
 		{"whitespace somebody did not see", "/fotos", "  /fotos  ", true},
 		{"the same remote and bucket", "Garage:eimer", "Garage:eimer", true},
 		{"the root of one filesystem", "/", "/", true},
-		// The ordinary shapes have to keep working, and the nested case is
-		// deliberately NOT caught: see the comment at the guard.
+		// The nested case is not caught; see the comment at the guard.
 		{"two different folders", "/fotos", "/sicherung", false},
 		{"one inside the other, which this does not claim to catch", "/fotos", "/fotos/2026", false},
 		{"same name on two backends", "Garage:eimer", "Wasabi:eimer", false},
@@ -43,22 +37,15 @@ func TestBothSidesInOnePlaceIsRefused(t *testing.T) {
 	}
 }
 
-// A draft with no sides at all is still allowed through.
-//
-// That is the state the editor's own "add a job" button produces, and the guard
-// above must not turn an empty new job into a file the program refuses to read.
+// The editor's "add a job" button produces a job with no sides.
 func TestADraftWithNoSidesIsNotASnake(t *testing.T) {
 	if err := loadWithSides(t, "", ""); err != nil {
 		t.Errorf("an empty draft was refused: %v", err)
 	}
 }
 
-// And a switched-off job with both sides the same is refused too.
-//
-// Being switched off excuses a job from being COMPLETE; it does not make a
-// destructive shape safe, because switching it on is one tap. The half-written
-// rule above deliberately lets a disabled job miss a side; this one deliberately
-// does not.
+// Being switched off excuses a job from being complete, not from a destructive
+// shape, because switching it on is one tap.
 func TestSwitchingItOffDoesNotExcuseIt(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "arrowloop.json")
@@ -77,9 +64,8 @@ func loadWithSides(t *testing.T, left, right string) error {
 	return err
 }
 
-// quote is enough JSON escaping for the paths these tests use, and a backslash
-// in a Windows path is exactly the character that would otherwise turn the
-// fixture into a parse error rather than a test.
+// quote escapes the backslashes of a Windows path, which is all the JSON
+// escaping these paths need.
 func quote(s string) string { return `"` + strings.ReplaceAll(s, `\`, `\\`) + `"` }
 
 func write(t *testing.T, path, body string) {

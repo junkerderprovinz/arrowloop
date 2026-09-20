@@ -1,10 +1,8 @@
 // Package remotes manages the storage targets a job can point at.
 //
-// A target is an rclone remote and lives in rclone's own configuration file,
-// not in a second one of our own. That is deliberate: somebody who already has
-// an rclone.conf keeps their remotes, and anything set up here works from the
-// rclone command line too. A tool that invented a parallel place to keep an S3
-// key would be asking its user to maintain two.
+// A target is an rclone remote in rclone's own configuration file, so an
+// existing rclone.conf keeps working and anything set up here works from the
+// rclone command line too.
 package remotes
 
 import (
@@ -20,14 +18,10 @@ import (
 	"github.com/rclone/rclone/fs/config/obscure"
 )
 
-// A credential must never leave this process, and deciding which settings are
-// credentials is done by rule rather than by an exhaustive list, because rclone
-// has some seventy backends and each names things its own way.
-//
-// The rule is: a setting whose name IS or ENDS IN one of these words. That
-// deliberately does not catch access_key_id, which is the public half of an S3
-// key pair and appears in every tutorial; hiding it would cost the screen its
-// usefulness and protect nothing.
+// secretWords decide by rule which settings are credentials that must never
+// leave this process, since rclone's seventy backends each name them their own
+// way. A setting is secret when its name is or ends in one of these words,
+// which leaves out access_key_id, the public half of an S3 key pair.
 var secretWords = []string{"pass", "password", "secret", "key", "token", "credentials", "passphrase"}
 
 // alwaysSecret are the ones the rule misses. key_pem is an SSH private key
@@ -64,21 +58,16 @@ type Remote struct {
 	Name string `json:"name"`
 	Type string `json:"type"`
 
-	// Provider is the PRODUCT behind the target, where the saved settings name
-	// one, and Mark is its logo. Both are derived rather than stored: see
-	// identify.go for why a backend alone cannot answer this, and why the
-	// answer belongs here rather than in each interface.
+	// Provider is the product behind the target, where the saved settings name
+	// one, and Mark is its logo. Both are derived; see identify.go.
 	Provider string `json:"provider,omitempty"`
 	Mark     string `json:"mark,omitempty"`
 
 	Settings []Setting `json:"settings"`
 }
 
-// List returns every remote rclone knows about, with the secrets withheld.
-//
-// A value that is set but hidden still reports that it is there, because
-// "there is a password and you cannot see it" and "there is no password" are
-// different facts and a screen that confuses them is worse than no screen.
+// List returns every remote rclone knows about, with the secrets withheld. A
+// secret that is set still reports that it is there.
 func List() []Remote {
 	data := config.LoadedData()
 	names := data.GetSectionList()
@@ -86,12 +75,8 @@ func List() []Remote {
 
 	out := make([]Remote, 0, len(names))
 	for _, name := range names {
-		// Started as an empty slice rather than left nil, because a nil slice
-		// marshals to `null` and not to `[]`. A target saved with nothing but a
-		// type, which is exactly what the "create" form produces before anybody
-		// fills a field in, therefore arrived in the browser as a settings list
-		// that was not a list, and the first thing the row did with it took the
-		// whole page down. Found by making one.
+		// Not nil: a remote with nothing but a type would marshal its settings
+		// as null and break the page.
 		r := Remote{Name: name, Settings: []Setting{}}
 		r.Type, _ = data.GetValue(name, "type")
 		for _, key := range data.GetKeyList(name) {
@@ -106,7 +91,7 @@ func List() []Remote {
 			r.Settings = append(r.Settings, Setting{Key: key, Value: value})
 		}
 		sort.Slice(r.Settings, func(i, j int) bool { return r.Settings[i].Key < r.Settings[j].Key })
-		// Named AFTER the settings are gathered, because that is what names it.
+		// The provider is read from the settings gathered above.
 		r.Provider = ProviderFor(r)
 		r.Mark = MarkFor(r)
 		out = append(out, r)
@@ -127,12 +112,9 @@ func placeholderFor(value string) string {
 	return Placeholder
 }
 
-// Save writes a remote, obscuring anything that needs it.
-//
-// A secret whose submitted value is the placeholder is left exactly as it was.
-// Without that rule, editing a remote's endpoint in a form would overwrite its
-// password with eight asterisks, and the failure would only show up the next
-// time the job ran.
+// Save writes a remote, obscuring anything that needs it. A secret submitted as
+// the placeholder is left as it was, so editing another field in a form does
+// not overwrite the password with asterisks.
 func Save(name, backend string, settings map[string]string) error {
 	if err := validName(name); err != nil {
 		return err
@@ -152,12 +134,9 @@ func Save(name, backend string, settings map[string]string) error {
 		if key == "type" {
 			continue
 		}
-		// WITHHOLDING and OBSCURING are two different questions, and they used
-		// to share one answer. A value is withheld from the screen because a
-		// person should not read it; a value is obscured because rclone will
-		// UNOBSCURE it when it reads the file back. S3's secret_access_key is
-		// the first but not the second, and obscuring it wrote a credential
-		// that could never work. See obscuring.go.
+		// Withholding and obscuring are separate questions: a value is obscured
+		// only if rclone unobscures it on reading. S3's secret_access_key is
+		// withheld but stored plain. See obscuring.go.
 		if IsSecret(key) {
 			if value == Placeholder {
 				continue // came back untouched from the screen, so leave it be
@@ -208,22 +187,9 @@ func Delete(name string) error {
 
 // Check opens a remote and lists it, which is the only way to know whether the
 // settings are right.
-//
-// Saving a credential proves nothing: a typo in an endpoint, a rotated key and
-// a bucket that does not exist all look identical in a configuration file and
-// all differ the moment somebody asks the server. The alternative is a job that
-// looks configured and fails at three in the morning.
 func Check(ctx context.Context, name string) error {
-	// A DEADLINE, because rclone has none here and the operating system's own
-	// is measured in minutes. Found on a phone that had moved to mobile data and
-	// could no longer route to a target on a private address: the button said
-	// "checking" for over four minutes, which is indistinguishable from the app
-	// being stuck. This button asks one question - can the engine reach that
-	// target - and "no" is a good answer; waiting forever is not an answer.
-	//
-	// Thirty seconds is long enough for a slow cloud on a bad connection to
-	// finish an authenticated listing, and short enough that somebody watching
-	// it learns something while still watching.
+	// rclone has no deadline here and the operating system's is minutes long,
+	// so an address the device cannot route to would leave the check hanging.
 	ctx, stop := context.WithTimeout(ctx, CheckWait)
 	defer stop()
 
@@ -231,23 +197,19 @@ func Check(ctx context.Context, name string) error {
 	if err != nil {
 		return checkErr(ctx, err)
 	}
-	// One listing of the root. Enough to prove the credentials work and the
-	// address resolves, cheap enough not to matter on a large tree.
+	// One listing of the root proves the credentials and the address.
 	if _, err := f.List(ctx, ""); err != nil && !isEmptyTarget(err) {
 		return checkErr(ctx, err)
 	}
 	return nil
 }
 
-// CheckWait is how long a target gets to answer before it counts as unreachable.
+// CheckWait is how long a target gets to answer before it counts as
+// unreachable: long enough for a slow cloud on a bad connection to list.
 const CheckWait = 30 * time.Second
 
-// checkErr says plainly when the deadline was what stopped it.
-//
-// Without this the caller sees rclone's own wording for a cancelled request,
-// which reads like an internal fault rather than like "this address did not
-// answer" - and the difference matters to somebody deciding whether they typed
-// the address wrong or their phone simply cannot reach it.
+// checkErr says when the deadline stopped the check, since rclone's
+// wording for a cancelled request reads like an internal fault.
 func checkErr(ctx context.Context, err error) error {
 	if errors.Is(ctx.Err(), context.DeadlineExceeded) {
 		return fmt.Errorf("no answer within %s: %w", CheckWait, err)
@@ -255,17 +217,12 @@ func checkErr(ctx context.Context, err error) error {
 	return err
 }
 
-// Usage is how full a target is, as far as the target is willing to say.
-//
-// Every field is a POINTER because "unknown" is the common answer and it is not
-// zero. A bucket store has no size: S3 will happily take another terabyte and
-// has no notion of a quota to report, so Total there is genuinely absent, while
-// a full disk reports Free as a real zero. Collapsing those two into the same
-// number puts "0 bytes free" on a target that has no limit at all, which reads
-// as an emergency.
+// Usage is how full a target is, as far as the target is willing to say. The
+// fields are pointers because unknown is common and is not zero: S3 has no
+// quota to report, while a full disk reports Free as a real zero.
 type Usage struct {
-	// Supported is false when the backend has no way to answer at all, which is
-	// the honest state for most bucket stores and for a plain SFTP login.
+	// Supported is false when the backend cannot answer at all, as with most
+	// bucket stores and a plain SFTP login.
 	Supported bool   `json:"supported"`
 	Total     *int64 `json:"total,omitempty"`
 	Used      *int64 `json:"used,omitempty"`
@@ -274,24 +231,11 @@ type Usage struct {
 	Other     *int64 `json:"other,omitempty"`
 }
 
-// About asks a target how much room is left on it.
-//
-// jdp asked for this among the small ones, and it answers the question a person
-// has BEFORE a sync rather than after: a job that copies eighty gigabytes onto a
-// cloud drive with twelve left fails eighty gigabytes in, having spent an
-// evening on it, and the number that would have said so was one request away.
-//
-// A backend that does not implement it is not an error. rclone's own `about`
-// prints a refusal for those, and so does this: `Supported: false` travels to
-// the screen and the screen says nothing about space rather than guessing.
+// About asks a target how much room is left on it. A backend that cannot say
+// is not an error: it returns a Usage with Supported false.
 func About(ctx context.Context, name string) (Usage, error) {
-	// A DEADLINE, the same one the reachability check carries and for a sharper
-	// reason. A target on an address this device cannot route to does not
-	// refuse the connection - it hangs until the network stack gives up, which
-	// on Android is minutes. Without a limit here a card sat on "wird gesucht"
-	// for the whole time, which reads as a screen that is broken rather than as
-	// a target that is out of reach. Measured on jdp's phone against a target
-	// in a VLAN the phone cannot see.
+	// An address the device cannot route to hangs rather than refusing, for
+	// minutes on Android.
 	ctx, done := context.WithTimeout(ctx, CheckWait)
 	defer done()
 
@@ -321,7 +265,7 @@ func About(ctx context.Context, name string) (Usage, error) {
 }
 
 // isEmptyTarget reports whether an error only means the target does not exist
-// yet, which is a perfectly good state for a remote somebody has just set up.
+// yet, which is fine for a remote that was just set up.
 func isEmptyTarget(err error) bool {
 	return err == rclonefs.ErrorDirNotFound || err == rclonefs.ErrorObjectNotFound
 }

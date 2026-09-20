@@ -3,9 +3,6 @@ package remotes
 import "testing"
 
 // A MinIO target names MinIO, not the plain S3 provider that also matches.
-//
-// This is the whole point of the exercise: sixteen products speak `s3`, and
-// before this the honest answer for every one of them was "I cannot tell".
 func TestTheMostSpecificPresetWins(t *testing.T) {
 	r := Remote{Type: "s3", Settings: []Setting{
 		{Key: "provider", Value: "Minio"},
@@ -19,8 +16,6 @@ func TestTheMostSpecificPresetWins(t *testing.T) {
 	}
 }
 
-// The four WebDAV clouds are told apart by their vendor, which is exactly the
-// pair the old rule refused to answer for.
 func TestTheWebdavCloudsAreToldApart(t *testing.T) {
 	for vendor, want := range map[string]string{
 		"nextcloud": "nextcloud",
@@ -42,16 +37,14 @@ func TestABareBackendFallsToTheGenericProvider(t *testing.T) {
 	}
 }
 
-// A preset whose value does not match must not count as a match. Without this,
-// `provider = Wasabi` would satisfy MinIO's preset by having the key at all.
-func TestAPresetMustMatchTheVALUE(t *testing.T) {
+// Having the preset's key with another value is not a match.
+func TestAPresetMustMatchTheValue(t *testing.T) {
 	r := Remote{Type: "s3", Settings: []Setting{{Key: "provider", Value: "Wasabi"}}}
 	if got := ProviderFor(r); got != "wasabi" {
 		t.Fatalf("provider = %q, want wasabi", got)
 	}
 }
 
-// Nothing at all for a backend no provider claims, rather than a wrong guess.
 func TestAnUnknownBackendNamesNothing(t *testing.T) {
 	r := Remote{Type: "not-a-backend", Settings: []Setting{}}
 	if got := ProviderFor(r); got != "" {
@@ -59,18 +52,12 @@ func TestAnUnknownBackendNamesNothing(t *testing.T) {
 	}
 }
 
-// THE PROPERTY THE WHOLE DESIGN RESTS ON, asserted rather than assumed: backend
-// plus preset is unique across every provider. The moment somebody adds a
-// seventeenth S3 product with a preset that already exists, resolution becomes
-// a coin toss and every target of both products silently loses its logo. A test
-// that fails at the moment the duplicate is WRITTEN is the only warning anybody
-// gets, because nothing else about it looks wrong.
+// ProviderFor relies on this: a duplicate would make every target of both
+// products lose its logo.
 func TestBackendAndPresetAreUniqueAcrossProviders(t *testing.T) {
 	seen := map[string]string{}
 	for _, p := range providers {
 		key := p.Backend + "\x00"
-		// Sorted by construction: a map has no order, so the key is built from
-		// the pairs in a fixed order to compare two providers fairly.
 		for _, k := range sortedKeys(p.Preset) {
 			key += k + "=" + p.Preset[k] + ";"
 		}
@@ -81,9 +68,7 @@ func TestBackendAndPresetAreUniqueAcrossProviders(t *testing.T) {
 	}
 }
 
-// Every provider that carries a logo must be REACHABLE through a saved target,
-// otherwise the logo is decoration in a table nobody can get to. Built by
-// creating the target each provider would create and asking for it back.
+// Builds the target each provider would create and asks for its logo back.
 func TestEveryMarkedProviderCanBeFoundFromItsOwnTarget(t *testing.T) {
 	for _, p := range providers {
 		if p.Mark == "" {

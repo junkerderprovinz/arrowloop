@@ -13,8 +13,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/web"
 )
 
-// A server with somewhere to put a device report, which is what the phone build
-// has and the container does not.
+// deviceServer is a server with a hold store, as the phone build has.
 func deviceServer(t *testing.T) (*httptest.Server, *hold.Store) {
 	t.Helper()
 	h := newHarness(t)
@@ -32,9 +31,7 @@ func TestWithoutAHoldStoreThereIsNoDeviceRoute(t *testing.T) {
 		t.Fatalf("GET: %v", err)
 	}
 	defer resp.Body.Close()
-	// 404 rather than the interface's own HTML: a client asking whether the
-	// engine has anybody to report to must be told no, not handed a web page
-	// with a 200 on it.
+	// 404 rather than the interface's HTML with a 200.
 	if resp.StatusCode != http.StatusNotFound {
 		t.Fatalf("a build with nothing to report to answered /api/device with %s", resp.Status)
 	}
@@ -55,9 +52,8 @@ func TestAReportReachesTheConditionThatHoldsRuns(t *testing.T) {
 		t.Fatalf("PUT /api/device: %s", resp.Status)
 	}
 
-	// The point of the whole route: what was posted is what the runner asks.
-	// A handler that stored it somewhere the condition never reads would pass
-	// a test that only read the endpoint back.
+	// What was posted has to reach the condition the runner asks, not only
+	// the endpoint that reads it back.
 	if err := held.Condition()(context.Background(), job.Job{Name: "photos"}); err == nil {
 		t.Fatal("a reported reason did not reach the condition")
 	}

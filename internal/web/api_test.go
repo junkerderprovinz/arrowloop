@@ -28,17 +28,14 @@ type harness struct {
 	left  string
 	right string
 
-	// The sandbox the configuration lives in, so a test can find a job's state
-	// database when the file names it relatively.
+	// dir is the sandbox the configuration lives in.
 	dir string
 
-	// The configuration file itself, so a test that saves a setting can read
-	// the file back rather than trusting the response about it. A write that
-	// answers 200 and changes nothing on disk is the failure worth catching.
+	// configPath lets a test read the file back rather than trust the
+	// response about it.
 	configPath string
 
-	// Kept so a test can stand a second server on the same engine, which is how
-	// the interface-was-not-built case is reached without a second sandbox.
+	// history and runner let a test stand a second server on the same engine.
 	history *history.DB
 	runner  *daemon.Runner
 }
@@ -112,9 +109,6 @@ func write(t *testing.T, dir, name, content string) {
 	}
 }
 
-// TestPreviewChangesNothing is the promise the whole screen rests on. Somebody
-// opening a job to see what it would do must be able to close the tab again and
-// find both folders exactly as they were.
 func TestPreviewChangesNothing(t *testing.T) {
 	h := newHarness(t)
 	write(t, h.left, "a.txt", "hello")
@@ -137,9 +131,7 @@ func TestPreviewChangesNothing(t *testing.T) {
 	if got.Reason.Text == "" {
 		t.Error("a proposed change with no reason is not something anybody can decide on")
 	}
-	// The code is the half an interface in another language reads. A reason
-	// that arrives as an English sentence alone is a sentence that will still be
-	// English on a page that is otherwise German.
+	// The code is what the interface translates.
 	if got.Reason.Code == "" {
 		t.Error("the reason carries no code, so nothing can translate it")
 	}
@@ -148,8 +140,6 @@ func TestPreviewChangesNothing(t *testing.T) {
 	}
 }
 
-// TestRunOnlyTouchesWhatWasTicked is why the preview is worth having: the ticks
-// have to mean something.
 func TestRunOnlyTouchesWhatWasTicked(t *testing.T) {
 	h := newHarness(t)
 	write(t, h.left, "wanted.txt", "yes")
@@ -170,11 +160,8 @@ func TestRunOnlyTouchesWhatWasTicked(t *testing.T) {
 	}
 }
 
-// TestAnEmptySelectionDoesNothing separates "everything" from "nothing".
-//
-// An absent list means everything, and an empty list means exactly what it
-// says. If those two collapsed into one, unticking every row would run the
-// whole plan, which is the precise opposite of what the person just did.
+// An absent list means everything and an empty list means nothing, or
+// unticking every row would run the whole plan.
 func TestAnEmptySelectionDoesNothing(t *testing.T) {
 	h := newHarness(t)
 	write(t, h.left, "a.txt", "hello")
@@ -188,7 +175,6 @@ func TestAnEmptySelectionDoesNothing(t *testing.T) {
 	}
 }
 
-// TestNoSelectionRunsEverything is the other half of that pair.
 func TestNoSelectionRunsEverything(t *testing.T) {
 	h := newHarness(t)
 	write(t, h.left, "a.txt", "hello")
@@ -205,8 +191,6 @@ func TestNoSelectionRunsEverything(t *testing.T) {
 	}
 }
 
-// TestJobListReportsLastSuccess pins the column that matters. "When did this
-// last run" is the easy question; "when did it last work" is the useful one.
 func TestJobListReportsLastSuccess(t *testing.T) {
 	h := newHarness(t)
 	var before []struct {
@@ -233,7 +217,7 @@ func TestJobListReportsLastSuccess(t *testing.T) {
 	}
 }
 
-// TestAnUnknownJobIsRefused keeps a typo from looking like an empty plan.
+// A typo must not look like an empty plan.
 func TestAnUnknownJobIsRefused(t *testing.T) {
 	h := newHarness(t)
 	resp, err := h.srv.Client().Get(h.srv.URL + "/api/jobs/nosuchjob/plan")
@@ -284,9 +268,8 @@ func (h *harness) put(t *testing.T, path, body string) (*http.Response, string) 
 	return resp, buf.String()
 }
 
-// TestEditingAJobSurvivesAReload is the point of the editor: a change made in a
-// browser has to be the change the daemon is running, not a file somebody has
-// to restart something to pick up.
+// A change made in the browser has to reach the running daemon without a
+// restart.
 func TestEditingAJobSurvivesAReload(t *testing.T) {
 	h := newHarness(t)
 
@@ -315,13 +298,7 @@ func TestEditingAJobSurvivesAReload(t *testing.T) {
 	}
 }
 
-// TestARefusedEditLeavesTheFileAlone is why the new content is written beside
-// the real file and only moved into place once it has been through the same
-// validator a hand-written file goes through.
-//
-// The failure this prevents is the worst kind: an editor that half-writes a
-// configuration leaves a daemon that will not start, and the person who has to
-// fix it is looking at a file they did not type.
+// A half-written configuration would leave a daemon that will not start.
 func TestARefusedEditLeavesTheFileAlone(t *testing.T) {
 	h := newHarness(t)
 
@@ -355,10 +332,8 @@ func TestARefusedEditLeavesTheFileAlone(t *testing.T) {
 	}
 }
 
-// TestTheEditorUsesTheSameValidator checks that a rule the file already has is
-// enforced through the editor too, in the same words. Two validators eventually
-// disagree, and the disagreement shows up as an editor accepting something the
-// daemon then refuses to start with.
+// The editor enforces the file's rules in the same words, since a second
+// validator would eventually disagree with the daemon's.
 func TestTheEditorUsesTheSameValidator(t *testing.T) {
 	h := newHarness(t)
 	twins := []map[string]any{
@@ -376,10 +351,7 @@ func TestTheEditorUsesTheSameValidator(t *testing.T) {
 	}
 }
 
-// TestAnUnknownFieldIsRefusedThroughTheEditor keeps the editor from being a way
-// around the check that catches a misspelled setting. JSON ignores a field it
-// does not recognise, so "excludes" instead of "exclude" would leave the filter
-// empty and sync exactly the files somebody thought they had excluded.
+// "excludes" for "exclude" would otherwise leave the filter silently empty.
 func TestAnUnknownFieldIsRefusedThroughTheEditor(t *testing.T) {
 	h := newHarness(t)
 	body, _ := json.Marshal(map[string]any{"jobs": []map[string]any{
@@ -395,22 +367,11 @@ func TestAnUnknownFieldIsRefusedThroughTheEditor(t *testing.T) {
 	}
 }
 
-// TestABinaryWithoutTheInterfaceSaysSo covers the state a plain `go build`
-// produces: the engine runs, the API answers, and there is no interface to
-// draw.
-//
-// This used to be a blank page. A built index.html was committed as the
-// "placeholder", which looks like the same thing and is not: it names two
-// hashed asset files by their content, and neither of those is committed. The
-// browser asked for them, got nothing, and rendered an empty document, which is
-// indistinguishable from a broken one and sends its owner looking at the wrong
-// thing entirely.
+// A plain go build runs the engine and the API with no interface to draw.
 func TestABinaryWithoutTheInterfaceSaysSo(t *testing.T) {
 	h := newHarness(t)
 
-	// An interface filesystem that exists and holds no index.html, which is
-	// exactly what //go:embed produces from a dist directory nobody has built
-	// into.
+	// What //go:embed produces from a dist directory nobody has built into.
 	empty := fstest.MapFS{".gitkeep": &fstest.MapFile{}}
 	s := &web.Server{
 		History:     h.history,
@@ -427,9 +388,7 @@ func TestABinaryWithoutTheInterfaceSaysSo(t *testing.T) {
 	}
 	defer resp.Body.Close()
 
-	// Deliberately not a 404. The engine is running and the API is answering;
-	// what is missing is a build step, and "there is nothing at this address"
-	// would be the wrong thing to tell somebody.
+	// Not a 404: only a build step is missing.
 	if resp.StatusCode != http.StatusOK {
 		t.Errorf("a binary without the interface answered %s", resp.Status)
 	}
@@ -444,7 +403,6 @@ func TestABinaryWithoutTheInterfaceSaysSo(t *testing.T) {
 		t.Error("a blank page is indistinguishable from a broken one")
 	}
 
-	// And the API still works, which is the fact the page claims.
 	jobs, err := srv.Client().Get(srv.URL + "/api/jobs")
 	if err != nil {
 		t.Fatalf("GET /api/jobs: %v", err)
@@ -455,8 +413,8 @@ func TestABinaryWithoutTheInterfaceSaysSo(t *testing.T) {
 	}
 }
 
-// TestTheShippedPlaceholderNeedsNothingElse. The page is served when the build
-// that would have produced its stylesheet was skipped, so it cannot ask for one.
+// The placeholder is served when the frontend build was skipped, so it cannot
+// ask for a stylesheet or script.
 func TestTheShippedPlaceholderNeedsNothingElse(t *testing.T) {
 	page := string(webui.Placeholder)
 	if page == "" {
@@ -510,9 +468,7 @@ func putJSON(t *testing.T, srv *httptest.Server, path, body string) (*http.Respo
 	return resp, buf.String()
 }
 
-// doJSON sends any method with an optional JSON body. putJSON above predates it
-// and stays: rewriting a helper every existing test calls to save one line here
-// would be a change with more risk than value.
+// doJSON sends any method with an optional JSON body.
 func doJSON(t *testing.T, srv *httptest.Server, method, path, body string) (*http.Response, string) {
 	t.Helper()
 	req, err := http.NewRequest(method, srv.URL+path, strings.NewReader(body))
