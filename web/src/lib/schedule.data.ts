@@ -1,25 +1,11 @@
 /**
- * What a schedule expression MEANS, without any of the pickers that edit one.
- *
- * Split out of `components/Schedule.tsx` for the same reason the translation
- * table was split out of `i18n.ts`: the Android app needs to read a schedule
- * and has no use at all for the builder around it. That file imports React,
- * the field components, the info bubble and the time picker, and none of that
- * belongs in a phone that only wants to print "every six hours" on a card.
- *
- * ONE parser, not two. A second reader with its own idea of what `0 3 * * *`
- * means is how a card ends up describing a schedule the editor would show
- * differently, and the person then has two answers and no way to tell which is
- * the real one.
+ * What a schedule expression means, without the pickers that edit one, so the
+ * Android app reads schedules with the same parser as `components/Schedule.tsx`.
  */
 
 export type ScheduleMode = 'off' | 'live' | 'every' | 'daily' | 'weekly' | 'cron'
 
-/**
- * The weekdays, stored as cron's own numbers so nothing has to be mapped at the
- * point where the expression is written. Sunday is 0, which is cron's own
- * convention and not a choice this file gets to make.
- */
+/** The weekdays in display order, as cron's numbers (Sunday is 0). */
 export const WEEKDAYS: { day: number; key: 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat' | 'sun' }[] = [
   { day: 1, key: 'mon' },
   { day: 2, key: 'tue' },
@@ -65,12 +51,8 @@ export function formatTime(hour: number, minute: number): string {
 }
 
 /**
- * Reads "HH:MM" back, falling back to a sensible hour rather than throwing.
- *
- * A stored value can be anything: a hand-edited configuration file, a schedule
- * written before this picker existed. Refusing to render is the one behaviour
- * that would make such a value uneditable, which is the opposite of what an
- * editor is for.
+ * Reads "HH:MM" back, falling back to 03:00 rather than throwing, so a
+ * hand-edited value stays editable.
  */
 export function parseTime(value: string): { hour: number; minute: number } {
   const m = /^(\d{1,2}):(\d{2})$/.exec((value ?? '').trim())
@@ -86,17 +68,12 @@ export function buildSchedule(s: ScheduleState): string {
   switch (s.mode) {
     case 'off':
       return ''
-    // Real time writes the same expression the "every N" mode does, because
-    // that IS what it writes: the backstop behind the watcher. The two differ
-    // in whether the job also watches, which is stored on the job rather than
-    // in the expression.
+    // Live writes the backstop interval behind the watcher; the watch flag
+    // itself is stored on the job.
     case 'live':
     case 'every': {
-      // `@every` rather than a step expression, because the two are not the
-      // same promise: `*/6` in the hours column fires at 0, 6, 12 and 18
-      // o'clock, so "every six hours" set at five o'clock waits one hour and
-      // then keeps to a clock nobody asked about. `@every 6h` counts from the
-      // last run, which is what the words say.
+      // `@every 6h` counts from the last run, where `*/6` would fire at fixed
+      // hours of the clock.
       const n = Math.max(1, Math.round(s.everyCount))
       if (s.everyUnit === 'minute') return `@every ${n}m`
       return `@every ${n * HOURS_IN[s.everyUnit]}h`
@@ -104,9 +81,7 @@ export function buildSchedule(s: ScheduleState): string {
     case 'daily':
       return `${minute} ${hour} * * *`
     case 'weekly': {
-      // Never emit an empty day list: "* * *" with no weekday would quietly
-      // turn a weekly schedule into a daily one, which is a change nobody asked
-      // for made at the moment they unticked the last day.
+      // An empty day list would turn the schedule into a daily one.
       const days = s.days.length > 0 ? [...s.days].sort((a, b) => a - b) : [1]
       return `${minute} ${hour} * * ${days.join(',')}`
     }
@@ -116,11 +91,9 @@ export function buildSchedule(s: ScheduleState): string {
 }
 
 /**
- * Reads a stored expression back into builder state.
- *
- * Only the shapes this builder itself writes are recognised. Anything else,
- * including an expression that is perfectly valid, comes back as cron: the
- * alternative is guessing, and a guess here rewrites somebody's schedule.
+ * Reads a stored expression back into builder state. Only the shapes this
+ * builder writes are recognised; anything else comes back as cron rather than
+ * being guessed at.
  */
 export function parseSchedule(raw: string): ScheduleState {
   const s = (raw ?? '').trim()
@@ -132,8 +105,7 @@ export function parseSchedule(raw: string): ScheduleState {
     if (every[2] === 'm') {
       return { ...DEFAULT_SCHEDULE, mode: 'every', everyCount: n, everyUnit: 'minute' }
     }
-    // Hours come back as the largest whole unit they divide into, so "168h"
-    // reads as one week rather than as a hundred and sixty-eight hours.
+    // The largest whole unit, so "168h" reads as one week.
     for (const unit of ['week', 'day'] as const) {
       if (n % HOURS_IN[unit] === 0) {
         return { ...DEFAULT_SCHEDULE, mode: 'every', everyCount: n / HOURS_IN[unit], everyUnit: unit }

@@ -1,25 +1,10 @@
-// The translation TABLE, and the languages on offer.
+// The translation tables and the languages on offer. Data and types only, so
+// the Android app's Metro bundler can share it with the browser.
 //
-// Split out of i18n.ts so the Android app can share it. That file carries the
-// React context and Vite's `import.meta.glob`, neither of which Metro can
-// parse; this one is data and type declarations and nothing else, so both
-// bundlers read it happily.
-//
-// ONE table, not two. A phone showing a different German from the container is
-// the kind of drift nobody reports and everybody notices, and translating the
-// same forty-two languages a second time is not work anybody should do twice.
-
-
-// ---------------------------------------------------------------------------
-// The key set. English is the source of truth and every other table is checked
-// against it by i18n.parity.test.ts.
-//
-// Every sentence with a number in it is written count-neutral, with the number
-// at the end. A one-and-other split looks correct and is not: languages whose
-// plural rules select "few" or "many" look for a suffix that split never
-// writes, and fall through to English in the middle of an otherwise translated
-// page, at exactly the commonest counts.
-// ---------------------------------------------------------------------------
+// English is the source of truth; i18n.parity.test.ts checks every other table
+// against it. Sentences with a number are written count-neutral with the
+// number at the end, because a one-and-other split makes languages with "few"
+// and "many" rules fall through to English at the commonest counts.
 
 export const en = {
   'nav.jobs': 'Jobs',
@@ -215,8 +200,7 @@ export const en = {
   'jobs.schedule.onRequest': 'on request',
   'jobs.ago': 'ago',
 
-  // Units of elapsed time, written out because an abbreviation that reads
-  // naturally in English rarely does anywhere else.
+  // Written out, because abbreviations rarely carry over between languages.
   'time.second': 'seconds',
   'time.minute': 'minutes',
   'time.hour': 'hours',
@@ -452,10 +436,8 @@ export const en = {
 
   // Progress
 
-  // The engine's own reasons, keyed by the code it sends. The engine words them
-  // in English as well and the interface falls back to that sentence for a code
-  // it has never heard of: an explanation in the wrong language is worth more
-  // than a dotted identifier.
+  // The engine's reasons, keyed by the code it sends. An unknown code falls
+  // back to the engine's own English sentence.
   'reason.newOnSide': 'new on the {side}',
   'reason.changedOnSide': 'changed on the {side}',
   'reason.changedBothSame': 'changed on both sides to the same content',
@@ -586,13 +568,7 @@ export const en = {
   'help.addressShape': 'It looks like this: {shape}',
   'targets.savedButUnreachable': 'Saved, but the target did not answer: {reason}',
 
-  // The phone.
-  //
-  // Android's own questions, which the container has no equivalent for: a
-  // permission granted on a settings page, a schedule that waits for the
-  // charger, a doze rule that turns a nightly job into a suggestion. They
-  // live in the SAME table as everything else, because one German is one
-  // German and a second table would drift from the first.
+  // The phone: Android's own questions, which the container never asks.
   'phone.access': 'File access',
   'phone.permissionHint': 'Android owns this switch. Tapping it opens the page where the permission is given or taken away.',
   'phone.permissionGranted': 'Permission granted',
@@ -640,11 +616,8 @@ export const en = {
   'phone.bin': 'Bin',
   'phone.previewExplain': 'Nothing moves until you press the button. This is what a run would do, worked out from both sides exactly as they are now.',
 
-  // The second axis of a one-way job: what happens to everything the
-  // direction alone does not settle. Two of the three DELETE, so each
-  // carries a sentence saying exactly what it removes and what it
-  // leaves - a picker with three words and no explanation is how
-  // somebody mirrors the wrong way round.
+  // A one-way job's mode. Two of the three delete, so each hint says exactly
+  // what it removes and what it leaves.
   'mode.label': 'What happens to the rest',
   'mode.sync': 'Copy only',
   'mode.syncHint': 'Everything the source has goes across. A file only the other side has is left exactly where it is, and nothing is ever removed for you.',
@@ -662,14 +635,7 @@ export const en = {
 export type TranslationKey = keyof typeof en
 export type Translations = Record<TranslationKey, string>
 
-/**
- * Looking a sentence up, as a type.
- *
- * HERE rather than beside the React context, because the things that take a
- * translator are mostly plain functions - the cadence words, the reason codes -
- * and the phone imports those. A type that lives next to `import.meta.glob`
- * cannot be imported by Metro at all.
- */
+/** Looking a sentence up. Here rather than in i18n.ts, so the phone can import it. */
 export type Translate = (key: TranslationKey, vars?: Record<string, string | number>) => string
 
 export const de: Translations = {
@@ -1227,13 +1193,7 @@ export const de: Translations = {
   'help.addressShape': 'Sie sieht so aus: {shape}',
   'targets.savedButUnreachable': 'Gespeichert, aber das Ziel hat nicht geantwortet: {reason}',
 
-  // The phone.
-  //
-  // Android's own questions, which the container has no equivalent for: a
-  // permission granted on a settings page, a schedule that waits for the
-  // charger, a doze rule that turns a nightly job into a suggestion. They
-  // live in the SAME table as everything else, because one German is one
-  // German and a second table would drift from the first.
+  // The phone: Android's own questions, which the container never asks.
   'phone.access': 'Dateizugriff',
   'phone.permissionHint': 'Diesen Schalter besitzt Android. Ein Tippen öffnet die Seite, auf der die Berechtigung erteilt oder entzogen wird.',
   'phone.permissionGranted': 'Berechtigung erteilt',
@@ -1281,11 +1241,8 @@ export const de: Translations = {
   'phone.bin': 'Papierkorb',
   'phone.previewExplain': 'Bis zum Knopfdruck bewegt sich nichts. Das hier ist, was ein Lauf täte, ermittelt aus beiden Seiten, genau so, wie sie jetzt sind.',
 
-  // The second axis of a one-way job: what happens to everything the
-  // direction alone does not settle. Two of the three DELETE, so each
-  // carries a sentence saying exactly what it removes and what it
-  // leaves - a picker with three words and no explanation is how
-  // somebody mirrors the wrong way round.
+  // A one-way job's mode. Two of the three delete, so each hint says exactly
+  // what it removes and what it leaves.
   'mode.label': 'Was mit dem Rest passiert',
   'mode.sync': 'Nur kopieren',
   'mode.syncHint': 'Alles, was die Quelle hat, geht hinüber. Eine Datei, die nur die andere Seite hat, bleibt genau da liegen, und es wird nie etwas für dich entfernt.',
@@ -1300,12 +1257,8 @@ export const de: Translations = {
   'side.target': 'Ein Ziel',
 }
 
-// ---------------------------------------------------------------------------
-// The languages on offer
-// ---------------------------------------------------------------------------
-
 export interface Language {
-  /** BCP-47 code, and the name of the chunk under ./locales. */
+  /** BCP 47 code, and the name of the chunk under ./locales. */
   code: string
   /** The language's own name for itself, which is what belongs in a picker. */
   label: string
@@ -1351,8 +1304,7 @@ export const LANGUAGES: Language[] = [
   { code: 'lv', label: 'Latviešu', flag: 'lv' },
   { code: 'et', label: 'Eesti', flag: 'ee' },
   { code: 'is', label: 'Íslenska', flag: 'is' },
-  // The three languages of Spain get their own regional flags rather than three
-  // identical Spanish ones, which would make the list unreadable at a glance.
+  // Regional flags, so the three languages of Spain are told apart at a glance.
   { code: 'ca', label: 'Català', flag: 'es-ct' },
   { code: 'gl', label: 'Galego', flag: 'es-ga' },
   { code: 'eu', label: 'Euskara', flag: 'es-pv' },

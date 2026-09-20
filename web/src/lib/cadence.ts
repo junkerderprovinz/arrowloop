@@ -1,25 +1,14 @@
-// From lib rather than from the component, so the phone can read a schedule
-// without pulling React and four field components in behind it.
+// In lib rather than in the component, so the phone can read a schedule
+// without pulling React in behind it.
 import { EVERY_UNITS, WEEKDAYS, parseSchedule, type EveryUnit } from './schedule.data'
 import type { Translate } from './i18n.data'
 
 /**
  * A schedule, in words.
  *
- * The card used to print the stored expression: `@every 6h` on one job and
- * `0 3 * * 1,5` on another, which is the engine's vocabulary shown to somebody
- * who never asked to learn it. jdp: "rechts oben in der card soll stehen laeuft
- * ... (und dann der Zeitplan, z.b alle 3 stunden)."
- *
- * It reads through `parseSchedule`, deliberately, rather than matching the
- * expression itself. That parser already knows exactly which shapes the builder
- * writes and refuses to guess at anything else, and a second reader with its own
- * idea of what `0 3 * * *` means is how a card ends up describing a schedule the
- * editor would show differently.
- *
- * Real time is not in the expression at all - it is the watch flag - so it
- * arrives as a separate argument for the same reason the editor holds it
- * separately.
+ * It reads through `parseSchedule` rather than matching the expression itself,
+ * so the card and the editor cannot disagree about what a schedule means. The
+ * watch flag is not part of the expression and arrives separately.
  */
 export type Cadence =
   | { kind: 'none' }
@@ -30,9 +19,7 @@ export type Cadence =
   | { kind: 'cron'; expression: string }
 
 export function readCadence(schedule: string, watch: boolean): Cadence {
-  // Watching wins, because a watching job's schedule is its backstop rather
-  // than its cadence: saying "every hour" about a job that reacts in seconds
-  // would be true and would describe the wrong thing.
+  // A watching job's schedule is only its backstop.
   if (watch) return { kind: 'live' }
   const s = parseSchedule(schedule)
   switch (s.mode) {
@@ -52,14 +39,10 @@ export function readCadence(schedule: string, watch: boolean): Cadence {
 /**
  * The words for a cadence.
  *
- * An interval of one gets a phrase of its own per unit rather than the number
- * and the plural unit, and that is not a nicety: `schedule.unit.*` is a PLAIN
- * PLURAL in all forty-two tables, on purpose, because splitting it into one-and-
- * other forms would make every language whose rules select "few" or "many" fall
- * through to English at the commonest counts. Reusing it for one would print
- * "every hours". So one is four whole sentences, written by a translator, and
- * every other count keeps the number in front of the plural, which is what the
- * existing rule already produces correctly.
+ * An interval of one has its own phrase per unit, because `schedule.unit.*` is
+ * a plain plural in every table and would print "every hours". Plural forms are
+ * not split, since languages with "few" and "many" rules would then fall
+ * through to English at the commonest counts.
  */
 export function describeCadence(c: Cadence, t: Translate): string {
   switch (c.kind) {
@@ -78,19 +61,13 @@ export function describeCadence(c: Cadence, t: Translate): string {
     case 'weekly':
       return t('jobs.cadence.weekly', { days: weekdayNames(c.days, t), time: c.time })
     case 'cron':
-      // The one cadence with no words. An expression this app's own builder
-      // cannot express is one somebody wrote deliberately, and paraphrasing it
-      // would be a guess printed as a fact.
+      // An expression the builder cannot write is shown as written rather than
+      // paraphrased.
       return t('jobs.cadence.cron', { expression: c.expression })
   }
 }
 
-/**
- * The picked weekdays, in the week's own order.
- *
- * Sorted by the row order rather than by cron's numbers, because cron starts its
- * week on Sunday and a person reading "So, Mo, Fr" wonders why Sunday is first.
- */
+// In the week's row order rather than cron's numbers, which start on Sunday.
 function weekdayNames(days: number[], t: Translate): string {
   const picked = WEEKDAYS.filter((d) => days.includes(d.day))
   return picked.map((d) => t(`schedule.day.${d.key}` as const)).join(', ')

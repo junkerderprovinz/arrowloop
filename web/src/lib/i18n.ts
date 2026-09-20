@@ -1,20 +1,13 @@
-// Translation, forty-two languages, with English and German inline as the two
-// sources of truth.
-//
-// The other forty arrive one chunk at a time. Bundling them all would put
-// forty-one languages nobody is reading into the download of every visitor, and
-// translations are the one part of an interface where that waste is certain
-// rather than likely. English stays static because it is the fallback behind
-// every missing key, and a fallback that has to be fetched is not a fallback.
+// Translation. English and German are bundled as the sources; every other
+// language is its own chunk, fetched when chosen. English stays bundled because
+// it is the fallback behind every missing key.
 
 import type { Translate } from './i18n.data'
 import { createContext, createElement, useCallback, useContext, useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
 
 
-// import.meta.glob rather than forty hand-written arrow functions: Vite
-// resolves the pattern at build time, so adding a language is adding a file,
-// and a map that has to be edited in step is a map that will not be.
+// Vite resolves the pattern at build time, so adding a language is adding a file.
 const localeChunks = import.meta.glob<{ default: Partial<Translations> }>('./locales/*.ts')
 
 const loaded: Record<string, Partial<Translations>> = {}
@@ -29,10 +22,8 @@ export async function loadLocale(code: string): Promise<Partial<Translations>> {
     loaded[code] = mod.default
     return mod.default
   } catch {
-    // A chunk that never arrives, because the machine is offline or a stale
-    // page is asking for a hash that no longer exists, must not take the
-    // interface down with it. English is a worse experience than the language
-    // somebody chose and a far better one than a blank page.
+    // Offline, or a stale page asking for a hash that no longer exists:
+    // English is better than a blank page.
     return {}
   }
 }
@@ -47,9 +38,7 @@ import {
   type Translations,
 } from './i18n.data'
 
-// Re-exported so every existing import of these from './i18n' keeps working.
-// The table itself lives in i18n.data.ts, which the Android app shares - see
-// the note at the top of that file.
+// The tables live in i18n.data.ts, which the Android app shares.
 export { en, de, LANGUAGES, SUPPORTED, isRtl }
 export type { Language, TranslationKey, Translations }
 
@@ -59,12 +48,8 @@ const STORAGE_KEY = 'arrowloop.lang'
 
 /**
  * The language in use, resolved from the browser when nobody has chosen one.
- *
- * There is deliberately no "automatic" entry in the picker. That entry looks
- * like an option and is an excuse: it fails to answer the only question
- * somebody opens the list to ask, which is which language is running right now.
- * The browser's preference is resolved here and the real language it lands on
- * is what the list shows as selected.
+ * The picker has no "automatic" entry, so it always shows the language that is
+ * actually running.
  */
 function resolveCode(raw: string | null): string {
   if (raw && SUPPORTED.includes(raw)) return raw
@@ -93,15 +78,8 @@ export function applyStoredLanguage(): void {
 
 export const locales: Record<string, Partial<Translations>> = { en, de }
 
-/**
- * The translate function, named so a plain function can take one.
- *
- * A helper that turns data into a sentence needs `t` and nothing else from the
- * context, and it should not have to be a component to say so.
- */
-// Defined beside the table so plain functions that take a translator - the
-// cadence words, the reason codes - can be imported by a bundler that cannot
-// parse this file's import.meta.glob. Re-exported here so nothing else moves.
+// Defined in i18n.data.ts, so plain functions that take a translator can be
+// imported by a bundler that cannot parse this file's import.meta.glob.
 export type { Translate }
 
 export interface I18nContextValue {
@@ -136,8 +114,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
       return
     }
     let current = true
-    // A flag rather than an abort: two quick switches race, and the LAST one
-    // has to win whichever chunk happens to land first.
+    // Two quick switches race, and the last one has to win.
     void loadLocale(lang).then((next) => {
       if (current) setTable(next)
     })
@@ -151,13 +128,11 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     try {
       localStorage.setItem(STORAGE_KEY, code)
     } catch {
-      // A browser with storage turned off forgets the choice on reload, which
-      // is worth strictly less than refusing to change language at all.
+      // With storage off the choice is forgotten on reload, but still applies.
     }
     document.documentElement.setAttribute('lang', code)
     document.documentElement.setAttribute('dir', isRtl(code) ? 'rtl' : 'ltr')
-    // Fetch before the state change, so switching shows the new language
-    // rather than a beat of English on the way to it.
+    // Fetch first, so the switch does not flash English.
     void loadLocale(code).then(() => setLangState(code))
   }, [])
 
@@ -182,17 +157,9 @@ export interface Reason {
 }
 
 /**
- * Render a reason in the reader's language.
- *
- * The engine sends both halves on purpose. Translating on its side would mean
- * knowing the reader's language on every run, and would leave the log written
- * in whichever language somebody last asked a question in. So the code is
- * translated here, and a code this build has never heard of falls back to the
- * engine's own sentence rather than to the code itself: an explanation in the
- * wrong language is worth more than a dotted identifier.
- *
- * The values are translated too. A sentence that reads "geändert on the left"
- * is not translated, it is half translated, which is the more annoying half.
+ * Render a reason in the reader's language. The engine sends a code and its
+ * English sentence; a code this build does not know falls back to that
+ * sentence. Side names in the values are translated too.
  */
 export function useReason(): (reason?: Reason | null) => string {
   const { t } = useT()
@@ -203,8 +170,7 @@ export function useReason(): (reason?: Reason | null) => string {
     for (const [name, value] of Object.entries(reason.vars ?? {})) {
       vars[name] = name === 'side' || name === 'other' ? translateSide(t, value) : value
     }
-    // en carries every code this build knows. Anything else is a newer engine
-    // talking to an older interface, and its own sentence is the better answer.
+    // A code missing from en comes from a newer engine.
     if (!(key in en)) return reason.text
     return t(key, vars)
   }

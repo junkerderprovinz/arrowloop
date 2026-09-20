@@ -1,15 +1,6 @@
-// The permanent guard on the forty-two language tables.
-//
-// English is the source of truth. Every other table has to carry exactly the
-// English key set, zero missing and zero extra, and every value has to use the
-// same placeholder tokens as its English counterpart.
-//
-// This test exists because neither the compiler nor the build can see the
-// problem: the locale tables are typed Partial, so a missing key is legal
-// TypeScript and a legal build, and the only symptom is one English sentence in
-// the middle of an otherwise translated page. A placeholder that was dropped or
-// renamed in translation is worse still: the sentence loses its number, or
-// renders a literal brace.
+// Every language table carries exactly the English key set and the same
+// placeholders per value. The tables are typed Partial, so the compiler cannot
+// see a missing key.
 
 import { describe, expect, it } from 'vitest'
 
@@ -34,8 +25,7 @@ describe('the language registry', () => {
   })
 
   it('offers no entry that resolves rather than names a language', () => {
-    // "Automatic" and "System" look like options and are excuses: they fail to
-    // answer the only question somebody opens the list to ask.
+    // The picker shows the language actually running.
     for (const l of LANGUAGES) {
       expect(['auto', 'system', 'default']).not.toContain(l.code)
     }
@@ -68,9 +58,8 @@ describe.each(Object.entries(locales))('locale %s', (code, table) => {
 
   it('translates rather than copying English through', () => {
     if (code === 'en') return
-    // A table that is a copy of English passes every check above while being no
-    // translation at all. Some keys legitimately match: a technical token, or a
-    // word a language borrowed whole. Most cannot.
+    // A copy of English passes every check above. Some keys legitimately match,
+    // such as technical tokens and borrowed words; most cannot.
     const same = EN_KEYS.filter((k) => table[k as keyof typeof en] === en[k as keyof typeof en])
     expect(
       same.length / EN_KEYS.length,

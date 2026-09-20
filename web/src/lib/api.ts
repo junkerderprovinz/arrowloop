@@ -1,16 +1,12 @@
-// The one place that talks to the engine. Everything here mirrors a type the
-// Go side already defines; nothing is invented on this side.
+// The one place that talks to the engine. Every type here mirrors one the Go
+// side defines.
 
 /** Which way a job is allowed to write. */
 export type Direction = 'both' | 'leftToRight' | 'rightToLeft'
 
 /**
- * What a ONE-WAY job does beyond copying.
- *
- * A second axis rather than three more directions, because it is a second
- * question: the direction says which way a job may write, this says what
- * happens to everything that leaves open. The engine refuses anything but
- * `sync` on a two-way job.
+ * What a one-way job does beyond copying: what happens to files that leave the
+ * source. The engine refuses anything but `sync` on a two-way job.
  */
 export type Mode = 'sync' | 'mirror' | 'move'
 
@@ -31,7 +27,7 @@ export type Job = {
 export type { Reason } from './i18n'
 import type { Reason } from './i18n'
 
-/** What one side holds right now: its name there, its size and when it changed. */
+/** What one side holds: its name there, its size and when it changed. */
 export type SideVersion = { path: string; size: number; mod: string }
 
 export type ActionKind = 'copy' | 'move' | 'delete' | 'conflict' | 'mkdir' | 'rmdir'
@@ -53,42 +49,31 @@ export type Resolution = 'both' | 'left' | 'right'
 export type Remote = {
   name: string
   type: string
-  /** The PRODUCT behind the target, and its logo, both named by the engine from
-   *  the settings the target was created with. Absent where the settings do not
-   *  pin one down. See internal/remotes/identify.go. */
+  /** The product behind the target and its logo, named by the engine from the
+   *  target's settings (internal/remotes/identify.go). */
   provider?: string
   mark?: string
   settings: { key: string; value: string; secret: boolean }[]
 }
 
 /**
- * Files on one side whose CONTENT is identical.
- *
- * `wasted` and `scanned` describe the whole walk and never the part that was
- * sent: the search had to read the tree to answer at all, so a total worked out
- * from a truncated list would under-report by more the smaller the screen.
+ * Files on one side whose content is identical. `wasted` and `scanned` cover
+ * the whole walk, not just the groups that were sent.
  */
 export type Duplicates = {
   job: string
   side: string
   groups: { hash: string; size: number; paths: string[]; wasted: number }[]
-  /** What deleting the extra copies would actually return. */
+  /** What deleting the extra copies would return. */
   wasted: number
   scanned: number
-  /**
-   * Candidates the target refused to hash. The one thing that makes the answer
-   * incomplete, so it is carried rather than swallowed.
-   */
+  /** Candidates the target refused to hash, which leave the answer incomplete. */
   unhashable: number
 }
 
 /**
- * How full a target is.
- *
- * Every figure is optional and its ABSENCE means "this target does not know",
- * which is the ordinary answer for a bucket store. That is a different fact
- * from a figure of zero, which means a genuinely full disk, and the two must
- * not be allowed to render the same.
+ * How full a target is. An absent figure means the target does not know, which
+ * is normal for a bucket store and must not render like a figure of zero.
  */
 export type Usage = {
   /** False when the backend has no way to answer, which is not an error. */
@@ -102,47 +87,29 @@ export type Usage = {
   reason?: string
 }
 
-/** One kind of storage this build can reach, described by the backend itself. */
 /**
- * A PROVIDER is what somebody is looking for; a BACKEND is what rclone speaks.
- *
- * Nextcloud, ownCloud and OpenCloud are three products and one `webdav`
- * backend. Offering the backend and expecting somebody to know that asks them
- * to know the implementation in order to use the product.
+ * A product somebody is looking for, as opposed to the rclone backend that
+ * speaks to it: Nextcloud, ownCloud and OpenCloud are three providers on one
+ * `webdav` backend.
  */
 export type Provider = {
   id: string
-  /** The product's own name, deliberately untranslated: a brand is a brand. */
+  /** The product's own name, which is not translated. */
   name: string
   backend: string
-  /**
-   * Which of the three cards this belongs on.
-   *
-   * `storage` joined the other two when the clouds card reached fifty-two
-   * entries: a bucket store is signed into like a cloud and gives back a
-   * container with an access key rather than folders somebody recognises.
-   */
+  /** Which of the three cards this belongs on. */
   group: 'cloud' | 'storage' | 'protocol'
   /** Written into the target without anybody being asked. */
   preset?: Record<string, string>
-  /** The component name of its logo, or absent where there is none to use. */
+  /** The component name of its logo, absent where there is none. */
   mark?: string
   hint?: string
-  /**
-   * What this product's address looks like, where the address is not simply
-   * the thing already in somebody's browser.
-   *
-   * A SHAPE rather than a sentence, so it needs no translation: what somebody
-   * needs at that field is the pattern their own address has to match.
-   */
+  /** The pattern this product's address has to match, where that is not
+   *  obvious. A shape rather than a sentence, so it needs no translation. */
   urlHint?: string
   /**
-   * How this product wants to be signed into, as one of a closed set.
-   *
-   * A token rather than a sentence, so the screen writes one translated
-   * sentence per STYLE instead of one English paragraph per product. An
-   * unknown value is ignored rather than shown, which lets the engine name a
-   * style before anybody has written its sentence.
+   * How this product wants to be signed into. The screen writes one translated
+   * sentence per style, and an unknown value is ignored rather than shown.
    */
   auth?: 'apppassword' | 'oauth' | 'apikey' | 'accesskey' | 'login'
   /** Where that credential is created, where there is one page to point at. */
@@ -152,14 +119,8 @@ export type Provider = {
 export type Backend = {
   name: string
   description: string
-  /**
-   * This backend can only be reached with an OAuth token, and the token has to
-   * be obtained outside this program.
-   *
-   * Without saying so, somebody opens the Dropbox form, fills in the two boxes
-   * it shows, and gets a target that cannot connect - with nothing anywhere
-   * explaining that the one field that matters is fetched elsewhere.
-   */
+  /** Reachable only with an OAuth token that has to be obtained outside this
+   *  program, which the form has to say. */
   needsToken?: boolean
   options: {
     name: string
@@ -167,12 +128,9 @@ export type Backend = {
     required: boolean
     secret: boolean
     /**
-     * Without this, the target will not work in practice.
-     *
-     * Separate from `required`, which describes rclone's own interactive setup
-     * rather than a form: s3 marks none of its seventy-eight options required,
-     * so this form used to open empty for the one backend somebody would point
-     * at a cloud provider.
+     * Without this, the target will not work in practice. Separate from
+     * `required`, which describes rclone's interactive setup: s3 marks none of
+     * its options required.
      */
     essential?: boolean
     advanced: boolean
@@ -188,11 +146,9 @@ export type WindowSettings = {
   minimiseToTray: boolean
 
   /**
-   * Whether the program is registered to start with the session.
-   *
-   * Read back from the operating system on every request rather than stored
-   * beside the others, so the switch cannot go on claiming autostart is on
-   * after somebody removed the entry with the Task Manager's own startup tab.
+   * Whether the program is registered to start with the session. Read back from
+   * the operating system on every request, so the switch notices an entry that
+   * was removed elsewhere.
    */
   startWithSystem: boolean
 
@@ -239,9 +195,8 @@ export type Run = {
 }
 
 /**
- * A job exactly as it stands in the configuration file, rather than as the
- * parsed struct sees it. Unknown keys are carried through untouched, so a field
- * this build does not understand survives being edited by it.
+ * A job exactly as it stands in the configuration file. Unknown keys are
+ * carried through, so a field this build does not understand survives an edit.
  */
 export type RawJob = {
   name?: string
@@ -263,19 +218,8 @@ export type RawJob = {
   /** Runs the whole comparison on the schedule and applies nothing. */
   reportOnly?: boolean
   /**
-   * Which side is right the ONE time this job has no record yet.
-   *
-   * Empty is the merge, which is what every job did before this existed. It
-   * applies once: the moment a record exists it is ignored, so a setting left
-   * in the file cannot quietly turn a two-way job into a one-way one.
-   */
-  /**
-   * Delete outright instead of moving into the side's own trash.
-   *
-   * Spelled as the NEGATIVE, the same way the Go field is, so the value a
-   * missing field takes is the safe one: `false` has to mean "keep a trash",
-   * because every configuration written before this existed has no field here
-   * at all.
+   * Delete outright instead of moving into the side's own trash. Spelled as the
+   * negative, like the Go field, so a missing field keeps the trash.
    */
   noTrash?: boolean
   exclude?: string[]
@@ -283,11 +227,8 @@ export type RawJob = {
 }
 
 /**
- * One thing a run did to one path.
- *
- * The counts on a Run say how much; this says which file and, for a conflict,
- * what was decided. A conflict resolved by a scheduled run was resolved on
- * somebody's behalf, and this is the only place that ever says so.
+ * One thing a run did to one path. A conflict resolved by a scheduled run was
+ * resolved on somebody's behalf, and this is the only place that says so.
  */
 export type RunEntry = {
   Kind: string
@@ -295,58 +236,27 @@ export type RunEntry = {
   Path: string
   /** An error's own words, or which way a conflict went. Often empty. */
   Note: string
-  /**
-   * How big the file was, where the action had a size.
-   *
-   * Zero for a folder, a skip and an error: "not applicable" rather than "an
-   * empty file", which is the only ambiguity worth having here.
-   */
+  /** How big the file was. Zero for a folder, a skip and an error. */
   Size: number
 }
 
-/**
- * One thing that happened to one file, with the run it belonged to.
- *
- * A RunEntry is enough while reading ONE run. Across runs it is not: the same
- * file copied on Tuesday and again on Friday is two identical lines, and
- * neither says when.
- */
+/** One thing that happened to one file, with the run it belonged to. */
 export type Touch = RunEntry & {
   Run: number
-  /** Which job's run this line came from. Redundant while the log is narrowed
-   *  to one job and the whole point of it when it is not. */
   Job: string
   When: string
 }
 
 /**
- * The configuration's top-level keys, apart from the job list.
- *
- * Deliberately open: a key this build has never heard of still has to survive
- * being read and written back, the same way a job's unknown fields do. A closed
- * type here would mean an older interface silently deleting a newer setting on
- * every save.
+ * The configuration's top-level keys, apart from the job list. Open, so a key
+ * this build has never heard of survives being read and written back.
  */
 export type Settings = {
   bwlimit?: string
   parallelJobs?: number
   history?: string
-  /**
-   * Per-job settings that fill in what a job does not say for itself.
-   *
-   * Two asks pointed the same way. These had to become visible, and the job
-   * form was already the thing that was too long. The answer that is usually
-   * the same for every job belongs in one place, and the job keeps only what
-   * makes IT different.
-   */
+  /** Per-job settings that fill in what a job does not say for itself. */
   defaults?: {
-    /**
-     * The pair every job starts from, and the schedule beside them.
-     *
-     * They have been defaults in the engine for a while and were reachable from
-     * the PHONE only - the desktop could not set the thing it shares. Same
-     * three axes on both surfaces now.
-     */
     direction?: string
     mode?: string
     schedule?: string
@@ -358,21 +268,14 @@ export type Settings = {
     brakePercent?: number
     brakeFloor?: number
     /**
-     * Three states, and undefined is one of them: ask the two sides.
-     *
-     * A plain boolean could not say that, and "ask" is what almost every job
-     * wants. The override exists because backends lie about themselves: a share
-     * exported from Windows and mounted on Linux reports itself case-sensitive
-     * and is not.
+     * Undefined means ask the two sides. The override exists because backends
+     * misreport: a Windows share mounted on Linux claims to be case-sensitive.
      */
     foldCase?: boolean
   }
   /**
-   * What a scheduled run does after it fails.
-   *
-   * Engine-wide rather than per job, so it sits beside bwlimit rather than in
-   * `defaults`: patience after a failure is a fact about the machine and how
-   * often it is awake, not about a folder pair.
+   * What a scheduled run does after it fails. Engine-wide rather than per job,
+   * because patience after a failure depends on the machine, not the folder pair.
    */
   retry?: {
     /** Further tries before it waits for the clock. Zero means none, and
@@ -393,12 +296,8 @@ export type Settings = {
 }
 
 /**
- * What the runs added up to, day by day.
- *
- * Every day in the window is present, including the ones with nothing in them.
- * A series that closes its gaps turns "nothing happened" into "nothing to
- * show", and those are opposite meanings: a machine at rest and a machine that
- * stopped.
+ * What the runs added up to, day by day. Every day in the window is present,
+ * including empty ones, so a machine at rest does not look like one that stopped.
  */
 export type HistoryStats = {
   from: string
@@ -428,12 +327,8 @@ export type StatCounts = {
 export type DailyStat = StatCounts & { day: string; job: string }
 
 /**
- * One thing wrong with a job, as the engine words it.
- *
- * The sentence travels beside the code on purpose. A screen renders `text` and
- * a locale can take a code over later, one at a time; forty-two translations of
- * twenty codes written before anybody has seen one on screen would age out of
- * step with the engine that produces them.
+ * One thing wrong with a job. The engine's own sentence travels beside the
+ * code, so a locale can take codes over one at a time.
  */
 export type CheckFinding = {
   code: string
@@ -456,13 +351,8 @@ export type VerifyFinding = {
   side?: string
   vars?: Record<string, string>
   text: string
-  /**
-   * No future run will notice this by itself.
-   *
-   * The one class of problem that never fixes itself and never announces
-   * itself: the record says the two sides agree, they do not, and every run
-   * from now on compares both against a record that matches both.
-   */
+  /** No future run will notice this by itself: the record says both sides
+   *  agree and they do not. */
   invisible: boolean
 }
 
@@ -478,11 +368,9 @@ export type VerifyReport = {
 /**
  * One thing in a job's bin.
  *
- * `filed` is null when the run id cannot be read, which is a real state rather
- * than a bug: such an entry is listed so nothing is hidden, and it is never
- * pruned by age because its age is unknown. `modified` is what the file says
- * about itself and is NOT when it was deleted: a local move is a rename, so a
- * document last edited in 2019 and binned this morning still reads as 2019.
+ * `filed` is null when the run id cannot be read; such an entry is listed but
+ * never pruned by age. `modified` is the file's own time, not when it was
+ * deleted, because a local move is a rename.
  */
 export type TrashEntry = {
   path: string
@@ -504,28 +392,20 @@ export type TrashListing = {
 
 export type RunEvent = {
   job: string
-  /**
-   * `moving` carries the files part-way across, and this page does not draw
-   * them - but it has to KNOW about the phase, or the frames fall through to
-   * whatever handles "anything else" twice a second. See App.tsx.
-   */
+  /** `moving` is not drawn here, but it has to be known so its frames do not
+   *  fall through to the generic handler. See App.tsx. */
   phase: 'started' | 'progress' | 'finished' | 'moving'
   error?: string
   done?: number
   total?: number
   kind?: string
   path?: string
-  /** Which side the work lands on, so a screen can say where a file is going. */
+  /** Which side the work lands on. */
   side?: string
 }
 
-/**
- * Every response is checked before it is parsed.
- *
- * A decoder that goes straight to json() turns a 500 with an HTML error page
- * into a parse failure three layers away from the thing that actually went
- * wrong, and a 404 into an empty screen that looks like "nothing to do".
- */
+// Checks the status before parsing, so a 500 with an HTML page does not turn
+// into a JSON error somewhere else.
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(path, init)
   if (!res.ok) {
@@ -542,9 +422,8 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 /**
- * Which runs a history listing asks for. Mirrors internal/history's Show, and
- * 'all' is spelled out here rather than being the empty string the server uses:
- * a selector needs a value for every option it offers.
+ * Which runs a history listing asks for. Mirrors internal/history's Show, with
+ * 'all' standing for the server's empty string so a selector has a value.
  */
 export type HistoryShow = 'all' | 'changed' | 'failed'
 
@@ -552,30 +431,22 @@ export const api = {
   jobs: () => request<Job[]>('/api/jobs'),
   plan: (name: string) => request<Plan>(`/api/jobs/${encodeURIComponent(name)}/plan`),
   /**
-   * The run log, newest first.
-   *
-   * `show` narrows it AT THE SERVER, which is the whole point of it being a
-   * parameter rather than something the page does to what it received. A job
-   * watching a folder writes a run a minute, so fifty runs is fifty minutes and
-   * a job that runs once a day is not on the page at all; filtering afterwards
-   * filters the fifty already fetched and leaves it just as missing.
+   * The run log, newest first. `show` filters at the server: a watching job
+   * writes a run a minute, so filtering the fetched page would miss most runs.
    */
   history: (job?: string, show: HistoryShow = 'all', limit = 50, since = '', until = '') =>
     request<Run[]>(
       `/api/history?limit=${limit}` +
         (job ? `&job=${encodeURIComponent(job)}` : '') +
         (show !== 'all' ? `&show=${show}` : '') +
-        // Plain YYYY-MM-DD, cut into a day at the SERVER, in the server's own
-        // zone. Sending an instant instead would mean the browser deciding
-        // where a day begins for a log written somewhere else.
+        // Plain dates, so the server decides in its own zone where a day begins.
         (since ? `&since=${since}` : '') +
         (until ? `&until=${until}` : ''),
     ),
 
   /**
-   * Start a run. Passing `only` sends exactly the paths that were ticked, and
-   * an empty array means an empty selection rather than "everything" — those
-   * two have to stay apart, or unticking every row would run the whole plan.
+   * Start a run. `only` sends exactly the ticked paths, and an empty array
+   * means nothing rather than everything.
    */
   run: (name: string, only?: string[], resolve?: Record<string, Resolution>) =>
     request<{ job: string; status: string }>(`/api/jobs/${encodeURIComponent(name)}/run`, {
@@ -588,40 +459,18 @@ export const api = {
     }),
 
   /**
-   * Call a running job off.
-   *
-   * It CANCELS rather than pauses: the run's context is cancelled, whatever it
-   * was in the middle of is abandoned, and the next run starts from the
-   * beginning. There is no half-finished state to resume from, which is why
-   * the button says abbrechen.
-   *
-   * `false` comes back when nothing was running under that name - not an
-   * error, just an answer, and usually means the run ended while somebody was
-   * reaching for the button.
+   * Cancel a running job. There is nothing to resume: the next run starts from
+   * the beginning. `false` means nothing was running under that name.
    */
   stopJob: (name: string) =>
     request<{ stopped: boolean }>(`/api/jobs/${encodeURIComponent(name)}/stop`, {
       method: 'POST',
     }),
 
-  /**
-   * What one run did, path by path.
-   *
-   * Asked for when a run is opened rather than fetched with the list: fifty
-   * runs' worth of paths, to draw fifty rows that each say "12 copied", is
-   * thousands of strings nobody reads.
-   */
+  /** What one run did, path by path. Fetched when a run is opened, not with the list. */
   runEntries: (id: number) => request<RunEntry[]>(`/api/history/${id}/entries`),
 
-  /**
-   * What one job has done to individual files, newest first, across its runs.
-   *
-   * A different question from the run log, which is why it is a different
-   * address: "which runs happened" belongs to the history tab, and "what has
-   * this job actually done to my files" is the one somebody has while looking
-   * at the job. jdp: "Im aktivitaetslog moechte ich nicht die laeufe sehen
-   * sondern ein log ueber die einzelnen dateien."
-   */
+  /** What one job has done to individual files, newest first, across its runs. */
   jobTouches: (job: string, limit = 50, q = '') =>
     request<Touch[]>(
       `/api/jobs/${encodeURIComponent(job)}/touches?limit=${limit}` +
@@ -629,13 +478,8 @@ export const api = {
     ),
 
   /**
-   * The same log across EVERY job, narrowed by the engine.
-   *
-   * Every argument is optional in the sense that an empty one does not narrow,
-   * which is why the whole log is `log()`. The narrowing happens in the
-   * database: this runs to tens of thousands of rows while a list holds a
-   * screenful, so filtering an answer that has already arrived would search the
-   * newest page instead of the log.
+   * The same log across every job. An empty argument does not narrow. The
+   * database does the filtering, because the log is far longer than a page.
    */
   log: (job = '', kinds: string[] = [], q = '', limit = 100) =>
     request<Touch[]>(
@@ -646,25 +490,18 @@ export const api = {
     ),
 
   /**
-   * Files on one side that hold the same content as another.
-   *
-   * Per side rather than per job on purpose: a job's two sides are SUPPOSED to
-   * hold the same files, so a search across both would report the sync doing
-   * its work.
+   * Tests settings that are not saved yet (internal/remotes/trycheck.go).
+   * `remote` names the target being edited, whose stored secrets fill the
+   * password boxes the form left empty.
    */
-  /** Settings that are not saved yet, so a form can be tested before it is
-   *  kept. Nothing is written: see internal/remotes/trycheck.go.
-   *
-   *  `remote` names the target being EDITED, where there is one. The engine
-   *  takes the secrets the form left empty from it, because an empty password
-   *  box means "the one already there" - the same reading saving has always
-   *  used. Without it, testing a saved target sent no password at all. */
   tryRemote: (type: string, settings: Record<string, string>, remote?: string) =>
     request<{ ok: boolean; reason?: string }>('/api/remotes-check', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ type, settings, name: remote ?? '' }),
     }),
+
+  /** Identical files on one side. Not across both, because a job's two sides are supposed to match. */
   duplicates: (job: string, side: 'left' | 'right', limit = 200) =>
     request<Duplicates>(
       `/api/jobs/${encodeURIComponent(job)}/duplicates/${side}?limit=${limit}`,
@@ -678,12 +515,8 @@ export const api = {
 
   /**
    * Whether this install wants a password, and whether this browser has given
-   * one.
-   *
-   * Asked BEFORE anything else is drawn. Working it out from a 401 instead
-   * would mean every page load starting with a failed request, and the
-   * interface guessing at the difference between "you are logged out" and
-   * "there is no login here".
+   * one. Asked before anything else is drawn, so a page load does not start
+   * with a 401.
    */
   session: () => request<{ required: boolean; authenticated: boolean }>('/api/session'),
 
@@ -698,12 +531,7 @@ export const api = {
 
   settings: () => request<Settings>('/api/settings'),
 
-  /**
-   * The configuration file exactly as it stands, for keeping a copy of.
-   *
-   * Text rather than parsed and re-serialised: a backup is only worth having if
-   * it comes back the same, including keys this build has never heard of.
-   */
+  /** The configuration file as text, so a backup keeps keys this build does not know. */
   rawConfig: async (): Promise<string> => {
     const res = await fetch('/api/config/raw')
     if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
@@ -718,10 +546,7 @@ export const api = {
       body: doc,
     }),
 
-  /**
-   * Save the settings. The whole draft goes, and the server merges: a key this
-   * build does not know about is not mentioned and therefore not touched.
-   */
+  /** Save the settings. The server merges, so a key this build does not send stays. */
   saveSettings: (settings: Settings) =>
     request<Settings>('/api/settings', {
       method: 'PUT',
@@ -761,7 +586,6 @@ export const api = {
     request<{
       remotes: Remote[]
       backends: Backend[]
-      /** What somebody picks from: products, not protocols. */
       providers: Provider[]
       /** Compiled-in backends no provider entry covers. */
       unlisted: Backend[] | null
@@ -777,50 +601,26 @@ export const api = {
   deleteRemote: (name: string) =>
     request<{ deleted: string }>(`/api/remotes/${encodeURIComponent(name)}`, { method: 'DELETE' }),
 
-  /**
-   * Open a target and list it.
-   *
-   * A refusal comes back as ok:false with the server's own words rather than as
-   * an error status, because settings that do not work are an answer to the
-   * question that was asked and not a failure of the request.
-   */
+  /** Open a target and list it. A refusal comes back as ok:false, not an error status. */
   checkRemote: (name: string) =>
     request<{ ok: boolean; reason?: string }>(`/api/remotes/${encodeURIComponent(name)}/check`, {
       method: 'POST',
     }),
 
-  /**
-   * How full a target is, as far as the target is willing to say.
-   *
-   * Every number is OPTIONAL and absent means unknown, which is the common
-   * answer: a bucket store has no size to report, and treating a missing figure
-   * as zero would put "nothing free" on a target that has no limit at all.
-   *
-   * Its own request rather than a field on the target listing, because this one
-   * goes over the network: folded into the list it would make opening the page
-   * a round trip to every cloud account ever configured.
-   */
+  /** How full a target is. A request of its own because it goes over the network. */
   aboutRemote: (name: string) =>
     request<Usage>(`/api/remotes/${encodeURIComponent(name)}/about`),
 
-  /**
-   * What this build can do. Every build answers, including the ones that can do
-   * the least, so asking costs one request and never a failed one.
-   */
+  /** What this build can do. Every build answers, so asking never fails. */
   capabilities: () => request<{ window: boolean; version: string }>('/api/capabilities'),
 
-  /**
-   * The folders inside one folder, for picking a job's side rather than typing
-   * it. An empty path asks for the top of the tree, which is one entry on a
-   * system with a single root and one per drive on Windows.
-   */
+  /** The folders inside one folder. An empty path asks for the roots. */
   browse: (path?: string) =>
     request<{ path: string; parent: string; entries: { name: string; path: string }[] }>(
       `/api/browse${path ? `?path=${encodeURIComponent(path)}` : ''}`,
     ),
 
-  /** Makes ONE folder inside the folder the picker has open. The name is a
-   *  single segment and the server refuses anything that looks like a path. */
+  /** Makes one folder inside `parent`. The server refuses a name that is a path. */
   makeDir: (parent: string, name: string) =>
     request<{ path: string }>('/api/browse/mkdir', {
       method: 'POST',
@@ -829,12 +629,8 @@ export const api = {
     }),
 
   /**
-   * The window settings, which only a desktop build has.
-   *
-   * A container has no title bar and no notification area, so it says so in its
-   * capabilities and this is never called there. Asking anyway would answer 404
-   * and put a red line in the browser's console on every load, and a console
-   * full of expected errors is a console nobody reads when a real one appears.
+   * The window settings, which only a desktop build has. The capabilities are
+   * asked first, so a container does not log an expected 404 on every load.
    */
   window: async (): Promise<WindowSettings | null> => {
     const can = await api.capabilities().catch(() => ({ window: false }))
@@ -866,13 +662,7 @@ export const api = {
 
   config: () => request<{ jobs: RawJob[] }>('/api/config'),
 
-  /**
-   * Write the whole job list back.
-   *
-   * All of it at once rather than one job at a time, because a configuration is
-   * validated as a whole: two jobs sharing a name is a defect neither of them
-   * can see on its own. A refusal leaves the file exactly as it was.
-   */
+  /** Write the whole job list back. It is validated as a whole, and a refusal changes nothing. */
   saveConfig: (jobs: RawJob[]) =>
     request<{ jobs: RawJob[] }>('/api/config', {
       method: 'PUT',
@@ -881,11 +671,8 @@ export const api = {
     }),
 
   /**
-   * Deletes a job's state database.
-   *
-   * The name goes over the wire, never the path: the server resolves it from
-   * the job's own entry, so this has to be called while the job is still in the
-   * configuration. Nothing here can name a file.
+   * Deletes a job's state database. The server resolves the file from the job's
+   * entry, so this has to be called while the job is still configured.
    */
   forgetJobState: (name: string) =>
     request<{ removed: number }>(`/api/jobs/${encodeURIComponent(name)}/state`, {

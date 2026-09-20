@@ -4,29 +4,15 @@ import { en } from './i18n'
 import { glyphNameFor } from './glyphName'
 
 /**
- * The mark a button wears has to come from its VERB, not from its namespace.
+ * The mark a button wears comes from its verb, not from its namespace.
  *
- * A translation key is `area.verb`, and the rule table is an ordered list of
- * regular expressions over the whole key. That works until an area is named
- * after an action: `edit.save` is the save button on the job editor, and with
- * the `edit` rule sitting above the `save` rule it matched on the namespace and
- * wore a PENCIL. Measured on the phone, beside a target form whose
- * `targets.save` wore the floppy correctly, so the same action carried two
- * marks - which is exactly the collision the table exists to prevent.
- *
- * Nothing could see it. Both keys resolve to a real glyph, both render, both
- * type-check; the only symptom is a save button with the wrong picture on it,
- * on one of the two surfaces, in a set of forty that all look plausible.
- *
- * So this is the guard: for every key whose LAST segment names one of the verbs
- * the table knows, the answer has to be the verb's glyph. It reads the real
- * table through the real function rather than restating the rules, so a future
- * reorder that reintroduces the bug fails here rather than shipping.
+ * A key is `area.verb` and the rule table matches the whole key, so an area
+ * named after an action can win: `edit.save` would wear the pencil if the edit
+ * rule sat above the save rule. Every key whose last segment is a known verb
+ * has to get that verb's glyph.
  */
 
-/** The verbs whose glyph is decided by the last segment, whatever the area is
- *  called. Deliberately short: these are the ones an area is plausibly NAMED
- *  after, which is the whole way this goes wrong. */
+/** The verbs an area is plausibly named after. */
 const VERBS: Record<string, string> = {
   save: 'IconSave',
   edit: 'IconEdit',
@@ -44,9 +30,7 @@ describe('the glyph rule table', () => {
       const want = VERBS[last]
       if (!want) continue
       const got = glyphNameFor(key)
-      // A key the table answers nothing for is fine: a label with no glyph
-      // keeps its word in every mode, which is the designed fallback. What is
-      // not fine is answering with somebody else's mark.
+      // No glyph is fine, since the label keeps its word; another verb's mark is not.
       if (got && got !== want) wrong.push(`${key} -> ${got}, wanted ${want}`)
     }
     expect(
@@ -55,10 +39,8 @@ describe('the glyph rule table', () => {
     ).toEqual([])
   })
 
-  it('sees the failure it was written for', () => {
-    // The guard above passes trivially if the verb list never matches anything,
-    // so this pins the one case that produced it: `edit.save` is a save button
-    // living in the edit area, and it has to be the floppy.
+  it('gives the save button in the edit area the save glyph', () => {
+    // Keeps the check above from passing because no key matched a verb.
     expect(Object.keys(en)).toContain('edit.save')
     expect(glyphNameFor('edit.save')).toBe('IconSave')
   })

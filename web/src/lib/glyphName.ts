@@ -1,101 +1,36 @@
-/**
- * Which mark a button wears, decided once - as NAMES rather than as elements.
- *
- * Split out of `glyphFor.tsx` for the same reason the translation table and the
- * schedule reader were split out of theirs: the phone needs the decision and
- * cannot have the elements. That file returns React `<svg>`, which Metro cannot
- * parse; this one returns the name of a drawing, and each surface renders it
- * with whatever it has - `<svg>` in a browser, react-native-svg on a phone.
- *
- * ONE table, so a button cannot wear a tick in one place and a magnifier in the
- * other.
- */
-
-// ---------------------------------------------------------------------------
-// glyphFor - which symbol a button wears, decided once.
+// Which mark a button wears, as the name of a drawing rather than an element,
+// so the browser and the phone share one table. It maps by meaning off the
+// translation key, which is the same in every language.
 //
-// It was a `switch` over eight keys in main.tsx, and eight was the problem: the
-// app has around forty buttons, so thirty-two of them resolved to nothing and
-// fell back to their text. In glyph mode that is a strip where some controls are
-// symbols and the rest are words, which reads as an unfinished setting rather
-// than as a choice, and the only way to find the gaps was to go looking. The
-// About card is how they were found: jdp saw three buttons with no marks on
-// them ("in der uebercard fehlen die glyphen") on a card this app does not even
-// draw itself.
-//
-// So it is a rule table now, ported from the sibling app rather than
-// re-invented, and it maps by MEANING off the translation key. A key is stable
-// across all forty-two languages in a way the visible text is not, and a reader
-// learns "this shape means delete" far faster from one repeated symbol than from
-// forty unique ones.
-//
-// ORDER MATTERS: the first match wins, so specific patterns sit above general
-// ones. A key that matches nothing returns undefined, and Button then shows that
-// button's text rather than an empty square, which is the one failure mode worth
-// having.
-// ---------------------------------------------------------------------------
+// The first match wins, so specific patterns sit above general ones. A key
+// that matches nothing returns undefined and the button keeps its text.
 
 type Rule = [RegExp, string]
 
-
 const RULES: Rule[] = [
-  // The About card's three, first and by exact key. They are the reason this
-  // file exists, and each is a specific destination rather than a verb, so
-  // nothing further down should be allowed to claim them.
+  // The About card's destinations, by exact key so no verb below claims them.
   [/^about\.coffee/i, 'IconCoffee'],
-  // The second way to give. A neutral wallet, and it never actually renders:
-  // the call site hands over Bitcoin's own mark, which is what jdp asked for
-  // and what GlimStone 1.8.3 settled on after arguing the opposite in 1.8.2.
-  // The rule stays so the guard over unreachable label keys has something to
-  // resolve, and so an app that passes no brand still gets a symbol rather
-  // than a word among symbols.
+  // The call sites pass a brand mark for crypto, PayPal and the repository.
+  // These rules still resolve so every label key has a glyph and an app that
+  // passes no brand gets a symbol.
   [/^about\.crypto$/i, 'IconWallet'],
   [/^about\.repo$/i, 'IconLink'],
-  // The same generic link, and deliberately the same one: a hosted payment
-  // page and a repository are both "opens somebody else's page", and
-  // neither of these two rules ever actually renders. Both call sites hand
-  // over that company's own mark, which is the house rule for a BRAND. The
-  // rules exist so the guard over unreachable label keys stays absolute:
-  // every key resolves something, with no allow-list to rot.
   [/^about\.paypal$/i, 'IconLink'],
   [/^about\.mail$/i, 'IconMail'],
 
-  // Going back, and it has to sit ABOVE the preview rule rather than beside it:
-  // the key that needs this is `preview.back`, which contains the word the rule
-  // below matches on, so ordered the other way round the button leaving the
-  // preview would wear the preview's own symbol. The same left-pointing arrow
-  // the folder picker climbs with, because it is the same movement.
+  // Above the preview rule, which would otherwise claim `preview.back`.
   [/\.back$|goBack|\.return$/i, 'IconUp'],
 
-  // This app's own verbs, above anything generic. A preview is what this
-  // program is FOR - reading a plan before anything moves - so it takes the eye
-  // before "check" or "show" can.
+  // This app's own verbs, above anything generic.
   [/preview|dryRun/i, 'IconPreview'],
-  // SYNCHRONISING IS THE CIRCLE, not the play triangle, and it sits above the
-  // run rule because `syncNow` contains the word that rule matches. jdp asked
-  // for "pfeile die einen kreis bilden", and the set already has exactly one:
-  // the same mark the jobs tab wears, because it is the same idea. A job IS a
-  // synchronisation, and drawing that concept twice would be two marks for one
-  // thing rather than one thing named twice.
+  // Syncing is the circle the jobs tab wears, and sits above the run rule
+  // because `syncNow` contains its word.
   [/^overview\.syncNow$/i, 'IconJobs'],
   [/runNow|\.run$|start|resume/i, 'IconRun'],
-  // ABORTING is not pausing, and it gets its own mark. jdp: "lauf anhalten soll
-  // den lauf abbrechen und auch so heißen und ein anderen glyph bekommen."
-  //
-  // The line below used to claim this one too, on the reasoning that this app
-  // has a single drawing for "make it stand still". That reasoning holds for
-  // the engine, which really does stand still and then carry on. A run does
-  // not: cancelling it throws away what it was doing, and the next run starts
-  // from the beginning. Two acts, two marks - and this rule sits above the
-  // pause rule because `cancelRun` contains neither word the other matches,
-  // but a future `stopAndCancel` would.
+  // Cancelling a run throws its work away, which is not the same as pausing.
   [/cancelRun|abort/i, 'IconCancel'],
 
-  // `stop` beside `pause` and both above the generic rules further down, which
-  // is where two of these were going wrong. `phone.engineStop` matched
-  // `settings|config|engine|backup` and wore a GEAR - a stop button with the
-  // settings mark on it, measured on the phone - and the run's own stop matched
-  // nothing at all and came up bare.
+  // Above the generic rules, which gave `phone.engineStop` the settings gear.
   [/pause|hold|stop/i, 'IconPause'],
 
   // Destructive and corrective.
@@ -105,51 +40,23 @@ const RULES: Rule[] = [
 
   // Creation and editing.
   [/newFolder|addSet|createFolder/i, 'IconNewFolder'],
-  // Opening a folder in the picker. Above the `\.add` rule so that a future
-  // "open and add" key cannot be claimed by the wrong half.
+  // Above `\.add`, so an "open and add" key cannot be claimed by the wrong half.
   [/\.open$|openFolder/i, 'IconFolder'],
-  // `register` belongs with `add` rather than on its own: registering a drive
-  // IS adding one to the list, and the sibling control right beside it says
-  // "add" and wears this mark. Without the word here, `targets.registerDrive`
-  // matched nothing at all and fell back to its text, so in the mode meant to
-  // show only symbols one button in that pair printed a word and the other did
-  // not. jdp: "der datentraeger anmelden button ist nicht in der
-  // beschriftungsengine."
+  // Registering a drive adds it to the list, like the control beside it.
   [/\.add|addStorage|addTarget|create|register/i, 'IconAdd'],
-  // `copied` is spelled out beside `copy` rather than being caught by it: the
-  // key is `targets.copied`, and `\.copy` does not match `.copied` because the
-  // fourth letter is an i. Same button, same mark, only the word changes - and
-  // without this line it changed from a symbol to a word in the mode that
-  // exists to show no words.
-  // `dupes` belongs here and not with the checks. What the duplicate search
-  // finds IS copies, and two identical shapes say that at a glance - which
-  // matters more than usual because its button sits in the same card as the
-  // consistency check, and in glyph mode two inspections wearing the same
-  // tick would be one control with two meanings.
+  // `\.copy` does not match `targets.copied`, so it is spelled out. The
+  // duplicate search finds copies, and sharing the check's tick would give two
+  // controls in one card the same mark.
   [/duplicate|dupes|copyPath|\.copy|copied/i, 'IconCopy'],
 
-  // Carrying a whole setup out to a file and back in. ABOVE `save`, because
-  // exporting is a save in the grammatical sense and a different act entirely:
-  // one writes the file the program already owns, the other hands a copy to
-  // somebody's own disk. One box with the arrow reversed says the pair without
-  // a second silhouette to keep in step.
+  // Above `save`: exporting hands a copy to the person's disk rather than
+  // writing the program's own file.
   [/export|download/i, 'IconDownload'],
   [/import|upload/i, 'IconUpload'],
 
-  // ABOVE `edit`, and that ordering is a fix rather than a preference. A key
-  // carries a NAMESPACE and a VERB, and the verb is what the button does:
-  // `edit.save` is the save button on the job editor, and with `edit` first it
-  // matched on its namespace and wore a PENCIL. Measured on the phone, next to
-  // a target form whose `targets.save` wore the floppy correctly - the same
-  // action with two marks, which is the collision the whole table exists to
-  // prevent. The three keys this reorders are `edit.save`, `edit.savedNote`
-  // and `edit.unsaved`, and saving is the right meaning for all three.
-  // Dialogs, and this one is above `save` for the same reason `save` is above
-  // `edit`: `confirm.cancel` is the way OUT of a confirmation dialog, and with
-  // `confirm` matching first it wore the FLOPPY - a cancel button offering to
-  // save, next to a confirm button offering the same thing. Found by the guard
-  // in glyphName.verbs.test.ts on its first run, which is one more than the
-  // number of times anybody had noticed it on screen.
+  // A key is namespace and verb, and the verb decides. Cancel sits above save
+  // so `confirm.cancel` does not wear the floppy, and save above edit so
+  // `edit.save` does not wear the pencil.
   [/cancel|close|logout|dismiss/i, 'IconCancel'],
 
   [/save|apply|choose|submit|confirm/i, 'IconSave'],
@@ -157,15 +64,11 @@ const RULES: Rule[] = [
   [/edit|rename/i, 'IconEdit'],
   [/\.up$|parent|levelUp/i, 'IconUp'],
 
-  // Probing and inspection, below the app's own verbs so `preview` keeps the
-  // eye and a consistency check gets the magnifier.
+  // Below the app's own verbs, so `preview` keeps the eye.
   [/check|verify|test|probe/i, 'IconCheck'],
   [/activity|history|log\b/i, 'IconHistory'],
 
-  // The lock, above the vague rules below it. Its keys live under `settings.`,
-  // so without this the switch that locks the app wore the SETTINGS gear - the
-  // namespace winning over the verb again, in the one place where the mark is
-  // the whole point of the control.
+  // Above the settings rule, since the lock's keys live under `settings.`.
   [/lock/i, 'IconLock'],
 
   // Vaguest last.
@@ -174,11 +77,7 @@ const RULES: Rule[] = [
 
 /**
  * The name of the glyph for a translation key, or undefined when nothing
- * sensible matches.
- *
- * Undefined is a real answer rather than a gap to fill with a placeholder: a
- * button with no glyph keeps showing its text even in glyph mode, which beats a
- * symbol that means nothing.
+ * matches, in which case the button shows its text even in glyph mode.
  */
 export function glyphNameFor(key: string): string | undefined {
   for (const [pattern, name] of RULES) {

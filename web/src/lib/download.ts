@@ -1,14 +1,9 @@
 /**
  * Hand a file to the browser.
  *
- * One place rather than three, because the cleanup is the part that gets
- * forgotten: an object URL that is never revoked keeps its whole blob in memory
- * for the life of the page, and the leak is invisible until somebody exports a
- * long run log a few dozen times.
- *
- * The anchor is added to the document before it is clicked. A detached anchor
- * works in some browsers and silently does nothing in others, which is the
- * worst of both: it looks fine everywhere it was tested.
+ * The anchor is attached before the click because some browsers ignore a click
+ * on a detached one, and the object URL is revoked so its blob does not stay in
+ * memory for the life of the page.
  */
 export function download(name: string, body: string, type = 'text/plain;charset=utf-8') {
   const blob = new Blob([body], { type })
@@ -20,17 +15,12 @@ export function download(name: string, body: string, type = 'text/plain;charset=
   document.body.appendChild(link)
   link.click()
   link.remove()
-  // Not revoked in the same tick: the click starts the download asynchronously,
-  // and a URL revoked before it begins hands the browser nothing at all.
+  // The download starts asynchronously, and a URL revoked before it begins
+  // hands the browser nothing.
   setTimeout(() => URL.revokeObjectURL(url), 10_000)
 }
 
-/**
- * Read one file the person picked, as text.
- *
- * Resolves with null when the picker is dismissed, which is not an error and
- * must not be reported as one.
- */
+/** Read one file the person picked, as text. Resolves with null when the picker is dismissed. */
 export function pickTextFile(accept: string): Promise<{ name: string; text: string } | null> {
   return new Promise((resolve) => {
     const input = document.createElement('input')
@@ -39,9 +29,8 @@ export function pickTextFile(accept: string): Promise<{ name: string; text: stri
     input.style.display = 'none'
     document.body.appendChild(input)
 
-    // Cancelling a file picker fires no event in most browsers, so this listener
-    // is what stops a dismissed dialog from leaving an <input> in the document
-    // for ever. It is deliberately one-shot on either path.
+    // Removed on change and on cancel alike, so a dismissed picker does not
+    // leave the input in the document.
     const done = (value: { name: string; text: string } | null) => {
       input.remove()
       resolve(value)

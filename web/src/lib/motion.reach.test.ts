@@ -2,22 +2,11 @@ import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 
 /**
- * An animation that cannot be SEEN has not been checked.
+ * The easter egg's movement stays inside the element's own box.
  *
- * The easter egg was reported broken twice. Both times the thing measured was
- * that the animation ran - `getAnimations()` said so, the transforms stepped
- * through their keyframes exactly as written - and both times the arrow was
- * behind a clipping edge for the whole of it. It travelled to 150% of its own
- * box while the running app gave it 24px of room above an 80px logo, so the
- * climb was gone before anybody could see it and what was left to watch was the
- * arrow blinking out and back.
- *
- * `overflow: visible` on the element does not help: the frame around the rail
- * clips it anyway, and no amount of CSS on the drawing can undo an ancestor's
- * clip. The only reliable answer is to keep the movement inside the box the
- * element already occupies, and that is what this checks - by reading the
- * stylesheet, because a unit test has no layout and a browser test that only
- * asks "is it animating" is exactly the test that missed this twice.
+ * An animation that runs can still be invisible: an ancestor's clip hides
+ * anything that leaves the box, and `overflow: visible` on the element cannot
+ * undo that. The stylesheet is read directly, because a unit test has no layout.
  */
 
 const css = readFileSync(new URL('../index.css', import.meta.url), 'utf8')
@@ -57,12 +46,7 @@ describe('the easter egg stays where it can be seen', () => {
     expect(travels('al-shoot').length).toBeGreaterThan(4)
   })
 
-  /**
-   * Half the drawing's own box, which is the distance at which its centre
-   * reaches the box edge. Past that the shape is leaving the area it is
-   * guaranteed to own, and whether any of it survives depends on what an
-   * ancestor happens to clip - which is not something a stylesheet may assume.
-   */
+  // At half its box the drawing's centre reaches the box edge.
   it('never travels further than half its own box', () => {
     const tooFar = travels('al-shoot').filter((p) => p > 50)
     expect(
@@ -73,17 +57,13 @@ describe('the easter egg stays where it can be seen', () => {
   })
 
   it('does not lean on overflow to be seen', () => {
-    // The class may still set it - a shape at 34% with a shadow or a stroke can
-    // graze the edge - but the movement must not DEPEND on it.
+    // The class may still set overflow for a shadow that grazes the edge, but
+    // the movement must not depend on it.
     const worst = Math.max(...travels('al-shoot'))
     expect(worst).toBeLessThanOrEqual(50)
   })
 
-  /**
-   * The rings turn rather than travel, so their own block is checked for the
-   * opposite mistake: a scale that grows the drawing past its box has the same
-   * clipping problem as a translate that moves it there.
-   */
+  // A scale past the box clips just like a translate out of it.
   it('does not grow the rings out of the box either', () => {
     const scales = [...keyframes('al-rings-settle').matchAll(/scale\(([\d.]+)\)/g)].map((m) =>
       Number(m[1]),

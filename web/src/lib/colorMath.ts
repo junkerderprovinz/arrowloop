@@ -1,18 +1,5 @@
-// ---------------------------------------------------------------------------
-// Hex and HSV, and nothing that needs a document.
-//
-// Split out of lib/colorPicker.ts so the phone can mix the same colours: that
-// file builds DOM elements from its first line, and Metro has no document to
-// build them in. The arithmetic is not DOM, though - it is three pure
-// functions - so it travels and the elements do not.
-//
-// The same move glyphs.data.ts, schedule.data.ts and qr.ts already made, and
-// here the reason has a sharp edge: a colour mixed on a phone and the same
-// colour mixed in a browser have to be the same six digits. Two
-// implementations agree until the day one of them rounds differently, and then
-// an accent set on the phone comes back a shade off in the container, with
-// nothing anywhere to say which one moved.
-// ---------------------------------------------------------------------------
+// Hex and HSV without a document, so the phone mixes a colour to the same six
+// digits as the browser's colorPicker.ts.
 
 export interface Hsv {
   h: number;
@@ -83,14 +70,9 @@ export function normalizeHex(value: string): string | null {
 }
 
 /**
- * Which preset a live colour belongs to: plain squared distance in RGB.
- *
- * It only has to be stable and unsurprising across widely separated hues,
- * which is what a preset row is, so a perceptual colour space would be
- * precision nobody can see spent on a question nobody asks.
- *
- * Answers -1 for an empty list rather than 0, so a caller cannot index into
- * nothing.
+ * Which preset a live colour belongs to, by squared distance in RGB. The
+ * presets are far apart, so a perceptual space would add nothing. Answers -1
+ * for an empty list.
  */
 export function nearestPreset(presets: string[], value: string): number {
   const target = hexToHsv(value);

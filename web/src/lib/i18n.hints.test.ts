@@ -4,19 +4,9 @@ import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 
 /**
- * An explanation belongs in a bubble, never printed on the page.
- *
- * The design language has said so since rule 8 was written: prose under a
- * control is read once and then costs vertical space for ever, and a page of
- * grey paragraphs hides the controls it was meant to clarify. It was said again
- * here, in a live review, after three of them had accumulated anyway:
- * "Info texte sollen immer in i infobubbles!"
- *
- * Nothing catches this by itself. A hint printed as a paragraph compiles, tests
- * green, translates fine and looks deliberate in a diff - it is one `<p>` among
- * many, and the only symptom is a page that reads as a manual. So the guard is
- * the source itself: a translation key whose name says it is an explanation may
- * only be used as a PROP.
+ * An explanation belongs in a bubble, not printed on the page, as the design
+ * language requires. A translation key whose name says it is an explanation may
+ * only be used as a prop.
  */
 
 const SRC = join(import.meta.dirname, '..')
@@ -36,24 +26,17 @@ function screens(dir: string): string[] {
 }
 
 /**
- * The props an explanation is allowed to arrive in.
- *
- * `hint` and `tip` are the two bubbles; `message` is a dialog's own sentence,
- * which is the body of a window rather than prose beside a control; `title` is
- * the second line inside a button's bubble.
+ * The props an explanation may arrive in. `hint` and `tip` are the bubbles,
+ * `message` is a dialog's body and `title` the second line in a button's bubble.
  */
 const CARRIERS = new Set(['hint', 'tip', 'title', 'message', 'label', 'placeholder'])
 
 /**
  * Which prop, if any, this expression is the value of.
  *
- * A real scanner rather than a pattern, because the interesting cases are
- * exactly the ones a pattern gets wrong: an explanation may sit inside a
- * ternary (`tip={a ? t('oneHint') : t('otherHint')}`) or a template, so the
- * enclosing brace has to be FOUND rather than assumed to be the nearest one to
- * the left. Walk back counting braces, brackets and parentheses; the first
- * opening brace that nothing closes is the JSX expression container, and what
- * stands before it says whether this is a prop or a page.
+ * An explanation may sit inside a ternary or a template, so this walks back
+ * counting brackets: the first opening brace nothing closes is the JSX
+ * expression container, and what stands before it names the prop.
  */
 export function propAround(source: string, at: number): string | null {
   let depth = 0
@@ -63,8 +46,7 @@ export function propAround(source: string, at: number): string | null {
     else if (c === '(' || c === '[') depth--
     else if (c === '{') {
       if (depth === 0) {
-        // Found the container. Anything but `name=` in front of it means this
-        // expression is being rendered rather than handed over.
+        // Without `name=` in front, the expression is rendered as page text.
         const before = source.slice(0, i).trimEnd()
         if (!before.endsWith('=')) return null
         const name = /([A-Za-z][A-Za-z0-9]*)\s*=$/.exec(before)
@@ -82,9 +64,7 @@ function usages(): { file: string; key: string; prop: string | null }[] {
   for (const file of screens(SRC)) {
     if (file.endsWith('.test.tsx')) continue
     const source = readFileSync(file, 'utf8')
-    // Keys whose NAME says they explain something: `edit.quietHint`,
-    // `direction.hint`. The name is the contract; a key called `...Hint` that is
-    // not an explanation is misnamed, which this would also catch.
+    // Keys named as explanations, such as `edit.quietHint` or `direction.hint`.
     const pattern = /t\(\s*'([A-Za-z0-9.]*(?:Hint|\.hint))'/g
     for (let m = pattern.exec(source); m; m = pattern.exec(source)) {
       found.push({ file: file.slice(SRC.length + 1), key: m[1], prop: propAround(source, m.index) })
@@ -103,8 +83,7 @@ describe('every explanation', () => {
   })
 
   it('is actually read somewhere', () => {
-    // The scan finding nothing would make the test above pass for ever, which is
-    // the failure mode a source guard has and a unit test does not.
+    // A scan that found nothing would let the test above pass.
     expect(usages().length).toBeGreaterThan(15)
   })
 })

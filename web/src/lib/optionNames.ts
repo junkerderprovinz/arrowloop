@@ -1,24 +1,10 @@
 import type { TranslationKey } from './i18n.data'
 
 /**
- * The rclone option names people actually see, in words.
- *
- * rclone names its settings for its own configuration file: `pass`, `user`,
- * `access_key_id`, `sse_kms_key_id`. Those are correct and they are what goes
- * INTO the file, and putting them on a form label leaves somebody reading
- * `pass` above an empty box in a program that is otherwise entirely in their
- * own language. jdp: "zb. User und Pass, die ganzen begriffe sollen alle in die
- * sprachen übersetzt werden."
- *
- * Only the ones a form actually shows are here, which is the ones marked
- * required or essential - about twenty names across every backend. An option
- * behind the advanced switch keeps its rclone name deliberately: somebody who
- * opened that switch is looking for a specific setting they read about in
- * rclone's own documentation, and translating it there would hide the thing
- * they came for.
- *
- * A name with no entry falls back to itself, so a backend gaining an option
- * shows it rather than nothing.
+ * Translated labels for the rclone options a form shows, the ones marked
+ * required or essential. Advanced options keep their rclone name, which is what
+ * somebody following rclone's documentation searches for, and a name with no
+ * entry falls back to itself.
  */
 const NAMES: Record<string, TranslationKey> = {
   user: 'opt.user',
@@ -51,14 +37,7 @@ const NAMES: Record<string, TranslationKey> = {
   '2fa': 'opt.twoFactor',
 }
 
-/**
- * The label for one option: its own words where we have them, its rclone name
- * otherwise.
- *
- * The rclone name is kept alongside the translated one rather than replaced, so
- * anybody following rclone's documentation can still find the field. The
- * translation is what the eye reads; the original is what the search finds.
- */
+/** The label for one option: its translation where there is one, its rclone name otherwise. */
 export function optionLabel(name: string, t: (key: TranslationKey) => string): string {
   const key = NAMES[name]
   return key ? t(key) : name
@@ -68,8 +47,3 @@ export function optionLabel(name: string, t: (key: TranslationKey) => string): s
 export function hasOptionLabel(name: string): boolean {
   return NAMES[name] !== undefined
 }
-
-/* The bubble text that used to live here has moved to optionHint.ts, whole:
-   the desktop had it and the phone did not, which is how the phone ended up
-   showing rclone's English help on its access card. One copy now, two callers,
-   and the names above stay here because they answer a different question. */

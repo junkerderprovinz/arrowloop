@@ -6,18 +6,11 @@ import { describe, expect, it } from 'vitest'
 import { BRANDS, COINS, DONATE_GLYPHS, GLYPHS } from './glyphs.data'
 
 /**
- * The data file against the components it was lifted from.
+ * The data file against the components it was generated from.
  *
- * `glyphs.data.ts` is generated from the two generated component files, which
- * makes it the third link in a chain and therefore the one that goes stale
- * silently: regenerating the icons and forgetting the second command leaves the
- * browser with a new mark and the phone with the old one, or with none. Nothing
- * else can see that - both files compile, both apps build, and the only symptom
- * is a button on a phone wearing no icon.
- *
- * It compares NAMES rather than drawings. A path that changed shape is a
- * redraw and shows up in review; a name that exists on one side and not the
- * other is a gap, and a gap is what a forgotten command produces.
+ * Regenerating the icons without re-running scripts/gen_glyph_data.py leaves
+ * the phone with an old mark or none, and both apps still build. The check
+ * compares names, since a gap is what a forgotten command produces.
  */
 
 function component(file: string): string {
@@ -28,9 +21,8 @@ function exported(file: string): string[] {
   return [...component(file).matchAll(/^export function (Icon\w+)\(/gm)].map((m) => m[1]!).sort()
 }
 
-/** The coin ids in donateMarks.tsx's own COINS map, which is what the browser
- *  draws from. They are map keys rather than exported functions, so they are
- *  read as such - the test still compares the two lists of names. */
+/** The coin ids in donateMarks.tsx's COINS map, which are map keys rather than
+ *  exported functions. */
 function coins(): string[] {
   const source = component('donateMarks.tsx')
   const map = source.slice(source.indexOf('const COINS: Record<string, ReactNode> = {'))
@@ -57,10 +49,7 @@ describe.each([
 
 describe('donateMarks.tsx', () => {
   it('has the two link marks the donation buttons wear', () => {
-    // Buy Me a Coffee and PayPal, and no more: the crypto button wears the
-    // Bitcoin disc, which travels with the coins rather than as a third
-    // drawing. A count rather than an eyeball, because the failure is a
-    // donation button reaching the phone with an empty square on it.
+    // The crypto button wears the Bitcoin disc from the coins, not a third drawing.
     expect(Object.keys(DONATE_GLYPHS).sort()).toEqual(['IconBuyMeACoffee', 'IconPayPal'])
     for (const [name, glyph] of Object.entries(DONATE_GLYPHS)) {
       expect(glyph.box, name).toMatch(/^[\d. -]+$/)
@@ -82,10 +71,8 @@ describe('donateMarks.tsx', () => {
   })
 })
 
-/** Every drawing carried whole rather than parsed - the brand marks and the
- *  coins. The two failures below are the same failure in both sets, because
- *  both are somebody else's markup travelling as a string. Brand names are
- *  `IconX` and coin ids are lowercase tickers, so nothing overwrites anything. */
+/** The drawings carried as whole markup strings rather than parsed. Brand names
+ *  are `IconX` and coin ids are lowercase tickers, so the spread overwrites nothing. */
 const WHOLE = { ...BRANDS, ...COINS }
 
 describe('the drawings survived the lift', () => {
@@ -95,9 +82,7 @@ describe('the drawings survived the lift', () => {
       const parts = glyph.groups.flatMap((g) => g.parts)
       expect(parts.length, name).toBeGreaterThan(0)
       for (const part of parts) {
-        // A part is either a path or a rounded rectangle. One that is neither
-        // was dropped by the extractor, and a dropped part is a mark that
-        // renders as half of itself.
+        // A part that is neither a path nor a rectangle was dropped by the extractor.
         expect(Boolean(part.d) || Boolean(part.rect), `${name} has an empty part`).toBe(true)
       }
     }
@@ -111,16 +96,9 @@ describe('the drawings survived the lift', () => {
   })
 
   it('leaves no JSX in a mark carried whole', () => {
-    // The failure this catches is silent and total: three marks came out blank
-    // on the phone with nothing in any log, because their source carried
-    // `style={{ fill: ... }}` - React's own spelling, which a browser compiles
-    // and an SVG parser does not understand at all. The generator translates
-    // those now, and this is what says so when a new mark arrives carrying a
-    // property nobody has taught it yet.
-    //
-    // The coins are hand-written rather than generated, so they carry a second
-    // kind of JSX the brand marks never do: `{/* why this disc is black */}`,
-    // which is an expression and not markup at all.
+    // An SVG parser does not understand `style={{ ... }}` and draws a blank
+    // mark without logging anything. The hand-written coins can also carry a
+    // `{/* */}` comment, which is an expression rather than markup.
     for (const [name, brand] of Object.entries(WHOLE)) {
       expect(brand.svg, `${name} still carries JSX`).not.toMatch(/\w+=\{/)
       expect(brand.svg, `${name} still carries a JSX comment`).not.toContain('{/*')
@@ -128,12 +106,8 @@ describe('the drawings survived the lift', () => {
   })
 
   it('leaves no colour a stylesheet has to resolve', () => {
-    // The second half of the same silent failure. `fill="var(--brand-putio-1)"`
-    // is a colour only a browser can look up: react-native-svg accepts the
-    // attribute, resolves nothing, and draws an invisible shape - which is how
-    // OpenDrive, put.io and Quatrix reached a phone as three empty squares with
-    // nothing in any log. They travel as `{{name}}` now, filled in at draw time
-    // because that is the first moment the theme is known.
+    // react-native-svg cannot resolve `var(--x)` and draws the shape invisible,
+    // so colours travel as `{{name}}` and are filled in when the theme is known.
     for (const [name, brand] of Object.entries(WHOLE)) {
       expect(brand.svg, `${name} still carries a CSS colour`).not.toMatch(/var\(/)
       for (const slot of brand.svg.matchAll(/\{\{([^}]+)\}\}/g)) {
@@ -143,11 +117,8 @@ describe('the drawings survived the lift', () => {
   })
 
   it('keeps the marks that need a second colour on a dark page', () => {
-    // Fourteen of them carry one, and the reason the count is asserted rather
-    // than the names is that the stylesheet is allowed to gain another. Zero
-    // means the generator misread it, which it did once: a
-    // `:not([data-theme="dark"])` reads as "this block is the dark one" to a
-    // plain substring test, and every mark came out with one colour twice.
+    // A count rather than names, so the stylesheet may gain more. Zero means the
+    // generator misread `:not([data-theme="dark"])` as the dark block.
     const swapped = Object.values(BRANDS).filter(
       (b) => b.fill !== null && typeof b.fill === 'object' && b.fill.light !== b.fill.dark,
     )

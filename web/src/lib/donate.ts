@@ -1,74 +1,21 @@
-// The donation addresses ([3524], regrouped as coin-then-chain in [3554]).
+// The donation addresses and the other links the About cards carry, kept in
+// one place for the container and the phone.
 //
-// WHAT MAKES THIS LIST SAFE: every network a donor can pick carries its OWN
-// address. There is no line anywhere that names a chain without an address to
-// go with it, so the wrong choice is not merely discouraged, it cannot be
-// made.
-//
-// That property is the whole reason this file is shaped the way it is, and it
-// came out of the list as it was FIRST written: it named "Tether" with the
-// networks "BNB, Tron, Solana, Ethereum" above a single 0x… address. That
-// address exists on EVM chains only. It is not a Tron address (those start
-// with T) and not a Solana one, so a donor picking Tron would have sent USDT
-// into nothing and the money would be gone. Nobody would ever have reported
-// it, because the person it happens to is a stranger who never writes.
-//
-// The second version fixed that by offering CHAINS only, with the coins as a
-// subtitle. This one offers coins again, the way a donor actually thinks ("I
-// have USDT"), and keeps the property by making the chain a second, real
-// choice underneath: pick USDT and you pick between Ethereum, BNB Smart Chain
-// and Solana, each of which resolves to an address that lives there. Tron is
-// absent, as it was before, because there is no Tron address.
-//
-// Verified before shipping, as far as each format allows, and in a test rather
-// than by eye (donate.test.ts): the Bitcoin address passes its bech32
-// checksum, the XRP address its base58check, the Solana one decodes to 32
-// bytes, and the two EVM/Sui ones are well-formed hex of the right length. The
-// XRP account was also checked on the ledger — an XRP account must hold a base
-// reserve before it exists at all, and a donation to a non-existent account is
-// REJECTED rather than lost.
+// Every network a donor can pick carries its own address, so no chain can be
+// offered without a wallet that lives on it. A single 0x address listed under
+// Tron or Solana would send the money nowhere. donate.test.ts checks each
+// address as far as its format allows.
 
-/**
- * The two routes that are a plain link, beside the eight coins below.
- *
- * Here rather than in either interface's About card, because there are now two
- * About cards - the container's and the phone's - and a donation address
- * written down twice is the one kind of copy that fails silently: the wrong one
- * still opens a page, just not the right person's.
- *
- * The PayPal page carries the WORKSHOP's name rather than a product's. One page
- * serves every tool, the same way hello@ serves every tool's mail. A PayPal.Me
- * name is created once and cannot be renamed without asking their support, so
- * it was chosen deliberately rather than guessed at.
- */
+/** The two routes that are a plain link, beside the coins below. */
 export const COFFEE = "https://buymeacoffee.com/junkerderprovinz";
 export const PAYPAL = "https://www.paypal.com/donate/?hosted_button_id=76FVV52TKXTUS";
 
-/**
- * The other three addresses the same card carries, here for the same reason.
- *
- * They were written out in both interfaces - the container's About card had
- * them as three constants and the phone's had them typed into four call sites -
- * which is the shape the give links were moved out of this file to escape and
- * then quietly re-created next to them. A repository URL is less dangerous than
- * a donation address, and it fails the same way: the wrong one still opens a
- * page.
- *
- * MAIL is the workshop's mailbox, shared by every tool here. The subject line
- * carries the product name, so one inbox can tell them apart, and the address
- * is deliberately not a private one.
- */
 export const REPO = "https://github.com/junkerderprovinz/arrowloop";
 export const GLIMSTONE_REPO = "https://github.com/junkerderprovinz/glimstone";
+/** Shared by every tool; the subject line names the product. */
 export const MAIL = "hello@halleluja.design";
 
-/**
- * Where a version number links to.
- *
- * Built from the version rather than written out per release, which is
- * GlimStone's own rule for this link: a hand-kept list of release URLs is a
- * list that is wrong the first time somebody forgets it.
- */
+/** Where a version number links to, built from the version rather than listed per release. */
 export const glimstoneRelease = (version: string): string =>
   `${GLIMSTONE_REPO}/releases/tag/v${version}`;
 
@@ -95,9 +42,6 @@ export interface CryptoCoin {
   networks: CryptoNetwork[];
 }
 
-// The five wallets, named once. They are written into the networks below, so a
-// chain can never be listed without one — but defined here, so one wallet is
-// one string rather than four copies that can drift apart.
 const BTC = "bc1q078lt57t4n5zq5md3knz3ythum0w78zmjw5eda";
 /** One address for every EVM chain: the same key controls it on all of them. */
 const EVM = "0xFF6726C5bd76C8FD6b6bE7Ea5CEd4621fde5e841";
@@ -122,9 +66,7 @@ export const CRYPTO_COINS: CryptoCoin[] = [
     id: "eth",
     symbol: "ETH",
     name: "Ethereum",
-    // Native ETH on all three. NOT BNB Smart Chain: what trades as ETH there
-    // is a bridged token, and offering it beside the real thing invites
-    // somebody to send the wrong one.
+    // Native ETH only. ETH on BNB Smart Chain is a bridged token.
     networks: [ETHEREUM, BASE, OPTIMISM],
   },
   {
@@ -166,10 +108,8 @@ export const CRYPTO_COINS: CryptoCoin[] = [
         id: "xrpl",
         name: "XRP Ledger",
         address: XRP,
-        // Worth saying out loud: plenty of exchanges demand a destination tag,
-        // and somebody trained by one will go looking for a field that is not
-        // there. This is a self-custody account and its RequireDest flag is
-        // off, checked on the ledger.
+        // Exchanges often demand a destination tag. This self-custody account
+        // has RequireDest off, so the note says none is needed.
         noteKey: "about.cryptoNoTag",
       },
     ],
@@ -177,12 +117,8 @@ export const CRYPTO_COINS: CryptoCoin[] = [
 ];
 
 /**
- * Which wallet each chain must resolve to, so the test can check the list
- * against something other than itself.
- *
- * Written out by hand on purpose. Derived from the list it is meant to guard,
- * it would agree with any mistake in it; written here, a chain that ever gets
- * pointed at the wrong wallet fails immediately.
+ * Which wallet each chain must resolve to. Written out by hand rather than
+ * derived from the list, so the test cannot agree with a mistake in it.
  */
 export const ADDRESS_BY_CHAIN: Record<string, string> = {
   bitcoin: BTC,
