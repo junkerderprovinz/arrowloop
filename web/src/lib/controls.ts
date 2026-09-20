@@ -1,36 +1,26 @@
 // Copied verbatim from GlimStone 2.6.0, reference/controls.ts.
 // Do not edit here: change it in the design language repo and copy again.
 // https://github.com/junkerderprovinz/glimstone
-// How much of a control's identity is shown: its text, its glyph, or both.
+// The label engine: how much of a control's identity is shown, its text, its
+// glyph, or both. Like the shape and motion engines it turns one setting into
+// attributes on the document root, and components pick the answer up from CSS.
 //
-// This is the label engine. Like the shape and motion engines it turns one
-// setting into attributes on the document root, and every component picks the
-// answer up from CSS it already reads — nothing downstream is told about the
-// change, and no component decides for itself what "glyph mode" means.
-//
-// This file stays free of any UI framework on purpose: it's the piece an
-// adopting app copies wholesale, and a design language shouldn't arrive with a
-// framework attached. A React app wraps it in a small hook; anything else calls
-// the functions directly.
+// The file has no framework dependency, since an adopting app copies it whole;
+// a React app wraps it in a small hook.
 
 /**
  * The four modes.
  *
- * 'text'      — label only, no glyph.
- * 'textGlyph' — glyph beside the label. The default, because it is what an app
- *               looks like before the setting exists, and nobody's interface
- *               should change merely because a preference was added.
- * 'glyph'     — glyph only. The label survives as the accessible name and as
- *               the hover bubble, never as nothing.
- * 'reactive'  — glyph only at rest, words returning on hover and on focus.
+ * 'text'      label only, no glyph.
+ * 'textGlyph' glyph beside the label, the default and the look an app has
+ *             before the setting exists.
+ * 'glyph'     glyph only. The label stays as the accessible name and the hover
+ *             bubble.
+ * 'reactive'  glyph only at rest, the words returning on hover and focus.
  *
- * Why 'reactive' can exist at all, and why it is last: it costs no layout.
- * Every control already reserves its LABEL's width in glyph mode (see the
- * width stages below), so the box is wide enough for the words before they
- * arrive, and revealing them moves nothing on the page. Without the stages
- * this mode would reflow the interface under the pointer, which is the exact
- * thing the stages exist to prevent — build them first, or don't offer this
- * mode.
+ * 'reactive' moves nothing on the page because every control already reserves
+ * its label's width through the width stages below. Without the stages it
+ * would reflow the interface under the pointer.
  */
 export type LabelMode = 'text' | 'textGlyph' | 'glyph' | 'reactive';
 
@@ -38,35 +28,22 @@ export const LABEL_MODES: LabelMode[] = ['text', 'textGlyph', 'glyph', 'reactive
 
 /**
  * Whether a mode hides the label from view. Both hiding modes keep the
- * accessible name and the hover bubble; they differ only in whether the words
- * themselves come back.
- *
- * A predicate rather than `mode === 'glyph'` written out at each call site.
- * That comparison lived at eleven places in the first app to build this, and
- * every one of them would have had to learn about the fourth mode
- * independently — the kind of spot where a new enum value gets half-adopted
- * and nobody notices until one strip renders wrong.
+ * accessible name and the hover bubble. Call sites use this rather than
+ * comparing against 'glyph', so a new hiding mode is added in one place.
  */
 export function hidesLabel(mode: LabelMode): boolean {
   return mode === 'glyph' || mode === 'reactive';
 }
 
 /**
- * Independent axes, not one global switch.
- *
- * The same answer is rarely right for every surface: a navigation rail
- * reduced to glyphs is a layout decision (the rail gets narrower and the page
- * gets wider), while a button reduced to glyphs is only a density preference.
- * Tying them together forces a user who wants a compact rail to also accept
- * unlabelled buttons, which is a different question they were never asked.
+ * The surfaces that each carry their own mode. A rail reduced to glyphs is a
+ * layout decision, a button reduced to glyphs only a density preference, so one
+ * switch for both would force a question the user never asked.
  *
  * 'buttons':   action buttons throughout the app.
  * 'sidebar':   the navigation rail.
  * 'tabs':      tab strips inside pages.
  * 'bottombar': the bar that replaces the rail in a phone layout.
- *
- * Kept as a list rather than copies of the same code, so a new surface is one
- * entry and a settings card can iterate instead of repeating itself.
  */
 export type ControlAxis = 'buttons' | 'sidebar' | 'tabs';
 
@@ -84,7 +61,7 @@ export type LabelAxis = ControlAxis | BarAxis;
 export const CONTROL_AXES: ControlAxis[] = ['buttons', 'sidebar', 'tabs'];
 
 /**
- * An app with a bar appends this to its label settings, with a note that the
+ * An app with a bar appends this to its label settings, explaining that the
  * row only affects the phone layout, and passes it to applyStoredLabelModes.
  */
 export const BOTTOM_BAR_AXIS: BarAxis = 'bottombar';
@@ -104,11 +81,7 @@ const ATTRIBUTE: Record<LabelAxis, string> = {
   bottombar: 'data-labels-bottombar',
 };
 
-/**
- * DEFAULT is 'textGlyph' for every axis: the look an app already has. Same
- * reasoning the motion engine gives for defaulting to 'wild' - this axis is
- * something a user dials, not a fallback they have to opt into.
- */
+/** The default for every axis, so adding the setting changes no interface. */
 export const DEFAULT_LABEL_MODE: LabelMode = 'textGlyph';
 
 function isLabelMode(v: unknown): v is LabelMode {
@@ -121,8 +94,7 @@ export function getLabelMode(axis: LabelAxis): LabelMode {
   try {
     stored = localStorage.getItem(STORAGE_KEY[axis]);
   } catch {
-    // Private windows and blocked site data throw on access rather than
-    // returning null; the default is a perfectly good answer there.
+    // Private windows and blocked site data throw here instead of returning null.
   }
   return isLabelMode(stored) ? stored : DEFAULT_LABEL_MODE;
 }
@@ -138,70 +110,42 @@ export function applyLabelMode(axis: LabelAxis, mode: LabelMode | string | undef
   );
 }
 
-/** Persists the choice and applies it immediately — no separate save step. */
+/** Persists the choice and applies it at once. */
 export function setLabelMode(axis: LabelAxis, mode: LabelMode): void {
   try {
     localStorage.setItem(STORAGE_KEY[axis], mode);
   } catch {
-    // Not being able to remember the choice is no reason to refuse it for
-    // this session.
+    // The choice still applies for this session.
   }
   applyLabelMode(axis, mode);
 }
 
 /**
- * Called at boot, before first render, so the layout never flashes in one mode
- * and settles into another.
- *
- * This step is easy to leave out and hard to see missing: the setting works,
- * the picker works, and only a reload in a non-default mode shows the app
- * opening in `textGlyph` and snapping over. The first app to build this axis
- * shipped exactly that bug — every OTHER engine's boot call was present, and
- * this one had been added to the settings page instead of to the root.
- *
- * An app with a bar passes [BOTTOM_BAR_AXIS], or the bar opens in the default
- * mode just the same.
+ * Call at boot from the app root, before first render, or a reload in a
+ * non-default mode opens in `textGlyph` and snaps over. An app with a bar
+ * passes [BOTTOM_BAR_AXIS].
  */
 export function applyStoredLabelModes(extraAxes: LabelAxis[] = []): void {
   for (const axis of [...CONTROL_AXES, ...extraAxes]) applyLabelMode(axis, getLabelMode(axis));
 }
 
-// ---------------------------------------------------------------------------
-// Width stages
+// Width stages. A control keeps the same width in all four modes so switching
+// never reflows the page, which means the width comes from the label, present
+// in every mode at least as the accessible name. A stage is a pure function of
+// the label, known before first paint, so no control has to measure itself.
 //
-// The requirement that makes this engine usable: a control keeps the SAME
-// width in all four modes, so switching mode never reflows the page. The width
-// therefore cannot come from what is currently rendered — a lone glyph is
-// narrow — it has to come from the LABEL, which is present in every mode even
-// when it is only the accessible name.
-//
-// Why stages rather than each control measuring its own text: measurement
-// happens in the browser, after layout, which is both untestable and a source
-// of jitter. A stage is a pure function of the label, known before first
-// paint, and it gives the tidy aligned look that a mixed set of hand-measured
-// widths does not.
-//
-// Why the CURRENT language decides the stage, measured rather than assumed:
-// across a large locale set the same label grows by up to 3.4x ("Clear"
-// becomes "Kijelölés törlése" in Hungarian, "Show" becomes "Megjelenítés").
-// Pinning one global stage per control would make every English and Chinese
-// interface pay for the longest translation, permanently. Deriving the stage
-// from the active language keeps each language tidy on its own terms, and the
-// width then changes when the LANGUAGE changes — a reload-level event, not
-// something that happens while someone is looking at a mode selector.
-// ---------------------------------------------------------------------------
+// The current language decides the stage: a label can grow 3.4 times across
+// locales ("Clear" is "Kijelölés törlése" in Hungarian), and one global stage
+// would make every English interface pay for the longest translation.
 
 export type WidthStage = 'xs' | 'sm' | 'md' | 'lg';
 
 export const WIDTH_STAGES: WidthStage[] = ['xs', 'sm', 'md', 'lg'];
 
 /**
- * Upper bounds in "visual units", where a CJK/fullwidth character counts as
- * two. These four came out of the real distribution of one app's 80 button
- * labels across 42 locales; an adopting app with a very different vocabulary
- * should re-derive them from its own labels rather than inherit these on
- * faith. Four stages is the number that mattered — enough that a short label
- * is not padded to a paragraph's width, few enough that a row still aligns.
+ * Upper bounds in visual units, where a CJK or fullwidth character counts as
+ * two. They come from one app's 80 button labels across 42 locales; an app with
+ * a very different vocabulary should derive its own.
  */
 export const STAGE_MAX: [WidthStage, number][] = [
   ['xs', 10],
@@ -231,10 +175,7 @@ export function labelWidth(label: string): number {
   return total;
 }
 
-/**
- * The stage a label belongs to. Pure, so it is testable without a DOM and
- * gives the same answer during first paint as it does later.
- */
+/** The stage a label belongs to. */
 export function widthStage(label: string): WidthStage {
   const w = labelWidth(label);
   for (const [stage, max] of STAGE_MAX) {
@@ -243,36 +184,17 @@ export function widthStage(label: string): WidthStage {
   return 'lg';
 }
 
-/**
- * Padding for the things a stage table cannot see.
- *
- * `widthStage` measures TEXT, but a rendered control also carries a glyph, the
- * gap beside it and its own horizontal padding — about eight units at the
- * scale these bounds are calibrated to. For the ordinary case that gap does
- * not matter, because a derived stage is a FLOOR and a slightly wide label
- * simply overhangs it.
- *
- * It matters for `groupStage`, where the result is applied as an EXACT width.
- * Left unpadded, a label landing at the top of `md` renders wider than `md`,
- * so the pair it was supposed to match would be the one thing it does not do.
- *
- * Eight blanks rather than a number, so it flows through the same
- * labelWidth/widthStage pair as everything else instead of duplicating their
- * arithmetic somewhere it can drift.
- */
+// The glyph, its gap and the control's padding come to about eight units. A
+// derived stage is only a floor, but groupStage applies an exact width, so a
+// label at the top of `md` would otherwise render wider than `md`. Blanks keep
+// the padding in the same arithmetic as the label.
 const GROUP_CHROME = '        ';
 
 /**
- * The stage a set of labels shares: the one the LONGEST of them needs.
- *
- * For controls that belong together visually but are rendered by different
- * components, so neither can see the other's label — two buttons side by side
- * in one card, where one lands on `sm` and the other on `md`.
- *
- * Both components compute this from the SAME labels rather than one passing a
- * width to the other, so they agree in every language without a prop threaded
- * through the markup between them, and they keep agreeing when one of the two
- * words is retranslated.
+ * The stage a set of labels shares: the one the longest of them needs. Two
+ * controls rendered by different components, such as two buttons in one card,
+ * each compute it from the same labels and agree in every language without a
+ * prop between them.
  */
 export function groupStage(labels: string[]): WidthStage {
   let widest: WidthStage = 'xs';
@@ -283,12 +205,7 @@ export function groupStage(labels: string[]): WidthStage {
   return widest;
 }
 
-// ---------------------------------------------------------------------------
-// What the stylesheet has to provide
-//
-// The engine sets attributes; the tokens below are the contract the app's own
-// CSS fulfils. Four width tokens, one per stage, plus the reveal geometry for
-// the reactive mode:
+// The stylesheet's side of the contract:
 //
 //   --btn-w-xs / --btn-w-sm / --btn-w-md / --btn-w-lg
 //       min-width floors for a derived stage, exact widths for a group stage.
@@ -296,11 +213,8 @@ export function groupStage(labels: string[]): WidthStage {
 //   --reactive-chars
 //       set inline per control from `labelWidth(label)`, read by the reveal
 //       rule as `max-width: calc(var(--reactive-chars) * 0.62em + <padding>)`.
-//       Use `em`, not `ch`: `ch` measures the "0" glyph, which is narrower
-//       than the average letter in most faces, so a `ch`-based cap clips long
-//       labels — found the hard way, on a 47-unit German label.
+//       `ch` measures the "0" glyph, narrower than the average letter, so a
+//       `ch` cap clips long labels.
 //
-// A control in a hiding mode drops the gap between glyph and label (`gap: 0`).
-// A zero-width label is still a flex item, so the gap survives it and the
-// glyph sits visibly off-centre in what is supposed to be a square button.
-// ---------------------------------------------------------------------------
+// A control in a hiding mode sets `gap: 0`, because a zero-width label is still
+// a flex item and the gap would push the glyph off-centre.

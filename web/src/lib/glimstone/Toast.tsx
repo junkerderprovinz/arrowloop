@@ -1,33 +1,18 @@
 import type { ToastSeverity } from "./toastEngine";
 
-// ---------------------------------------------------------------------------
-// Toast / ToastViewport — the GlimStone toast system's presentational half
-// (form-engine Task 9, design-language.md "Toasts").
+// The toast system's presentational half (design-language.md, "Toasts"). These
+// components hold no state, so a test can call them with props; the companion
+// hook owns the queue, the timers and the portal that lets `position: fixed`
+// escape a transformed ancestor.
 //
-// Pure, hookless function components on purpose — same shape as Toggle.tsx/
-// Badge.tsx/RevealInput.tsx/ConfirmDialog.tsx (props in, an element tree
-// out) — so stacking, dismiss wiring and the severity->role mapping stay
-// unit-testable by calling these directly (no jsdom/renderer; see
-// Toggle.test.ts's header comment). The STATEFUL half — the toast queue,
-// real setTimeout handles, and the createPortal(..., document.body) call
-// that lets `position: fixed` escape any transformed ancestor (the same
-// containing-block bug useConfirm.tsx/InfoBubble.tsx already fixed for their
-// own portals) — lives in the companion hook, lib/toast.tsx.
-//
-// NON-BLOCKING BY DESIGN — the opposite requirement from Task 7's confirm
-// dialog: a toast must NEVER intercept a click meant for the page behind or
-// around it. The viewport wrapper is `pointer-events: none`; only each
-// individual card re-enables `pointer-events: auto` (via .glim-toast in
-// reference/tokens.css), so the empty space in the corner — which is most of it — lets
-// every click straight through to whatever is actually underneath.
-// ---------------------------------------------------------------------------
+// A toast never blocks the page: the viewport is `pointer-events: none` and only
+// each card turns them back on, so clicks pass through the empty corner.
 
 export interface ToastCardProps {
   id: string;
   message: string;
   severity: ToastSeverity;
-  /** Accessible name for the dismiss (X) button — generic across every
-   *  toast, not per-message copy (mirrors ConfirmDialog's closeLabel). */
+  /** Accessible name for the dismiss button, the same for every toast. */
   dismissLabel: string;
   onDismiss: (id: string) => void;
   onMouseEnter: (id: string) => void;
@@ -36,38 +21,23 @@ export interface ToastCardProps {
   onBlur: (id: string) => void;
 }
 
-// Neutral glyphs, colour-coded ONLY via the state hue itself (rule 4: "four
-// state hues... never introduce a fifth"). Deliberately NOT a coloured left
-// bar/rail on the card — rule 5 rules that out explicitly ("no vertical
-// marks at all... a rail also breaks under the square corner setting").
+// Severity shows only in the glyph's state hue (rule 4), never as a coloured
+// rail on the card (rule 5).
 const SEVERITY_ICON_CLASS: Record<ToastSeverity, string> = {
   success: "text-statusOkSolid",
   warn: "text-statusWarnSolid",
   fail: "text-statusFailSolid",
 };
 
-// role="alert" carries an IMPLICIT aria-live="assertive" (interrupts the
-// screen reader immediately — matches design-language.md's "failures...
-// always surface"); role="status" carries an implicit aria-live="polite"
-// (announced once the user's screen reader is idle, never interrupting a
-// routine completion). Both roles are live regions on their own the moment
-// the browser sees them; no separately-managed, always-present
-// `<div aria-live>` wrapper is needed, because each toast is a brand-new
-// element inserted once (not existing content mutated in place) — exactly
-// the case both roles are designed to announce on insertion.
+// "alert" is assertive, so a failure interrupts the screen reader; "status" is
+// polite. Each toast is a new element, which both roles announce on insertion,
+// so no separate aria-live wrapper is needed.
 function roleFor(severity: ToastSeverity): "alert" | "status" {
   return severity === "success" ? "status" : "alert";
 }
 
-// FILLED (design-language.md "Icon glyphs" — GlimStone follow-up round, full
-// icon-fill sweep): each badge shape below was already a closed silhouette
-// (a circle, a triangle) so it flips directly to a solid fill (rule 218);
-// the exclamation mark / checkmark inside each is now punched out in
-// `var(--carbon-surface, ...)` — the toast card's own `bg-carbon-surface` —
-// rather than drawn as a second currentColor fill, so it reads as a genuine
-// cutout against the solid badge the same way the old thin stroke read
-// against the outline (same technique this app already uses for a slider
-// knob/switch dot).
+// Filled shapes (design-language.md, "Icon glyphs"). The mark inside each is
+// painted in the card's own surface colour so it reads as a cutout.
 function ToastGlyph({ severity }: { severity: ToastSeverity }) {
   const className = `mt-0.5 shrink-0 ${SEVERITY_ICON_CLASS[severity]}`;
   const cutout = "var(--carbon-surface, transparent)";
@@ -112,20 +82,13 @@ export function ToastCard({
   return (
     <div
       role={roleFor(severity)}
-      // onFocus/onBlur are React's delegated focusin/focusout — they fire
-      // when the dismiss button INSIDE this div gains/loses focus too, so
-      // Tab-ing onto it pauses the countdown exactly like a mouse hover
-      // does (design-language.md: "Hover OR focus pauses"). No extra
-      // plumbing needed on the button itself.
+      // React's onFocus and onBlur bubble, so tabbing onto the dismiss button
+      // pauses the countdown like a hover does.
       onMouseEnter={() => onMouseEnter(id)}
       onMouseLeave={() => onMouseLeave(id)}
       onFocus={() => onFocus(id)}
       onBlur={() => onBlur(id)}
       onKeyDown={(e) => {
-        // Escape dismisses the focused toast — same precedent as
-        // ConfirmDialog's Escape handling, offered here as a second,
-        // keyboard-native way to close a toast beyond Tab-then-Enter on the
-        // X button.
         if (e.key === "Escape") {
           e.stopPropagation();
           onDismiss(id);
@@ -141,8 +104,6 @@ export function ToastCard({
         aria-label={dismissLabel}
         className="-m-1 shrink-0 rounded-control p-1 text-carbon-textMuted opacity-80 hover:bg-carbon-hover hover:text-carbon-text hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--focus-ring)"
       >
-        {/* FILLED × (design-language.md "Icon glyphs", rule 219) — same
-            technique as Sidebar.tsx's own IconClose, same 16×16 box. */}
         <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
           <rect x="6.8" y="2.5" width="2.4" height="11" rx="0.6" transform="rotate(45 8 8)" />
           <rect x="6.8" y="2.5" width="2.4" height="11" rx="0.6" transform="rotate(-45 8 8)" />
@@ -162,44 +123,21 @@ export interface ToastViewportProps {
   toasts: ToastViewportEntry[];
   dismissLabel: string;
   onDismiss: (id: string) => void;
-  // Four DISCRETE events, passed straight through to each ToastCard rather
-  // than pre-collapsed into a single onPause/onResume pair. Collapsing them
-  // here would force whoever wires this viewport up to treat "mouse left"
-  // and "focus left" as interchangeable triggers for resuming the countdown
-  // — which is exactly the bug this shape exists to prevent: hover and focus
-  // are tracked as two INDEPENDENT engagement flags by the caller (see
-  // lib/toast.tsx), which only actually resumes once BOTH have disengaged
-  // (Tab into a hovered toast, then move the mouse away, must NOT resume —
-  // the user is still tabbed into it).
+  // Four separate events rather than onPause and onResume, because the caller
+  // resumes only once hover and focus have both ended (applyEngagement).
   onMouseEnter: (id: string) => void;
   onMouseLeave: (id: string) => void;
   onFocus: (id: string) => void;
   onBlur: (id: string) => void;
 }
 
-// Fixed bottom-end corner (inset-inline-end via Tailwind's logical `end-*`,
-// per design-language.md's RTL section: the corner itself must follow
-// writing direction, same as the reveal eye's `end-2`). New toasts are
-// appended to the END of the array (toastEngine.addToast, itself capped at
-// MAX_VISIBLE_TOASTS so this corner can never grow into an unreachable,
-// off-screen, page-blocking wall of cards — see toastEngine.ts) and rendered
-// in plain DOM order, so the newest toast lands closest to the anchored
-// bottom edge (where it visually "enters" from) and older ones get pushed
-// upward — no flex-reverse needed. `max-h`+`overflow-y-auto` is a defensive
-// backstop only (the cap should make it a no-op on any normal viewport): on
-// a very short viewport it keeps the stack scrollable instead of spilling
-// cards above y=0 with no way to reach them.
+// The bottom-end corner follows writing direction. Toasts render in array order,
+// so the newest sits nearest the bottom edge. The overflow only matters on a
+// very short viewport, where it keeps the stack scrollable.
 //
-// The corner inset is `p-4` on a `bottom-0 end-0` box rather than `bottom-4
-// end-4` on a padding-less one — same 1rem gap, but the cards now sit 1rem
-// inside the clip boundary instead of flush against it. `overflow-y: auto`
-// forces `overflow-x` to compute to `auto` too, so a flush box clips
-// everything that paints outside the cards: each card's `--elevation` drop
-// shadow, and — visibly — the first ~100ms of the `glim-toast-in` entrance,
-// which starts offset by `translateX(±12px)` (sign follows direction, see
-// reference/tokens.css's `--glim-toast-slide`) and so got its outer edge sliced square
-// against the boundary on every single toast. max-h-screen minus that 2rem
-// of padding leaves exactly the same content height as before.
+// The inset is padding inside the box rather than an offset of it, because
+// `overflow-y: auto` also clips horizontally and would cut off the cards'
+// shadows and the sideways slide of their entrance.
 export function ToastViewport({ toasts, dismissLabel, onDismiss, onMouseEnter, onMouseLeave, onFocus, onBlur }: ToastViewportProps) {
   return (
     <div className="pointer-events-none fixed bottom-0 end-0 z-[70] flex max-h-screen flex-col gap-2 overflow-y-auto p-4">

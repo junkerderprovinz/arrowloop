@@ -9,80 +9,46 @@ import {
 import { createPortal } from "react-dom";
 import { computeBubblePosition } from "./bubblePosition";
 
-// ---------------------------------------------------------------------------
-// useTipBubble — the app's ONE hover/focus tooltip, as a hook (#178).
+// The one hover and focus tooltip, as a hook. The "(i)" of InfoBubble, a
+// bare IconTipButton, a SelectorTab segment and a Button whose text the label
+// engine hides are all triggers of this same bubble (design-language.md, "The
+// tooltip and info bubble"). A trigger owns its element, its classes and when
+// it has something to say; the positioning lives here once.
 //
-// design-language.md, "The tooltip and info bubble": "A plain icon-only
-// button's hover tooltip and a control's '(i)' explanatory bubble are the same
-// mechanism wearing two different trigger elements, not two separate
-// implementations that happen to look similar." That was the rule; the code
-// said otherwise. The identical open-state / measure-then-clamp / close-on-
-// scroll-or-Escape block existed FOUR times over — InfoBubble.tsx's "(i)"
-// glyph, Selector.tsx's SelectorTab, IconTipButton.tsx, and it was about to be
-// written a fifth time for Button.tsx (jdp's decision, glyph-mode round: a
-// button that hides its text gets the real bubble, not the native balloon).
-// Four copies is where "the same mechanism" stops being true: the viewport
-// clamp had already been fixed twice, in two files, from the same bug report.
-//
-// So the mechanism moved here and the four call sites became four TRIGGERS,
-// which is what they always were:
-//
-//   InfoBubble      a 15px "(i)" <span>
-//   IconTipButton   a bare icon-only <button>
-//   SelectorTab     one segment of a Selector strip
-//   Button          any action button whose text the label engine has hidden
-//
-// What the trigger owns is its own element, its own classes, and WHEN it has
-// something to say. What it no longer owns is a copy of the positioning maths.
-//
-// The native `title=` attribute is deliberately not an option here. It never
-// appears on keyboard focus, it cannot be styled, and lint-rules/
-// icon-badge-needs-tooltip.js rejects it on sight — it is the anti-pattern
-// this hook is the alternative to.
-// ---------------------------------------------------------------------------
+// The native `title=` attribute never shows on keyboard focus and cannot be
+// styled, which is why this hook exists.
 
 export interface TipBubble {
-  /** Ref callback for the trigger element — the rect the bubble is placed
-   *  against. Callback rather than an object ref so a trigger that already
-   *  keeps its own (SelectorTab registers every segment with its parent strip)
-   *  can feed both from one attribute. */
+  /** Ref callback for the trigger element the bubble is placed against. A
+   *  callback, so a trigger that keeps its own ref can feed both from one
+   *  attribute. */
   ref: (el: HTMLElement | null) => void;
-  /** Spread on the trigger. Focus as well as hover, always: a tooltip only a
-   *  mouse can reach is the exact defect the native balloon has. Focus counts
-   *  when it came from the keyboard; see `showOnFocus`. */
+  /** Spread on the trigger. Focus opens the bubble too, when it came from the
+   *  keyboard. */
   handlers: {
     onMouseEnter: () => void;
     onMouseLeave: () => void;
     onFocus: () => void;
     onBlur: () => void;
   };
-  /** `aria-describedby` while open, `undefined` otherwise, so the bubble is
-   *  announced as the trigger's description rather than being invisible to
-   *  assistive tech. */
+  /** `aria-describedby` while open, so the bubble is announced as the
+   *  trigger's description. */
   describedBy: string | undefined;
-  /** The portalled bubble, or null when there is nothing to show. Render it
-   *  as a sibling of the trigger; it lands on <body> either way, so no card's
-   *  `overflow: hidden` can clip it. */
+  /** The bubble, portalled to <body> so no card's `overflow: hidden` clips it,
+   *  or null when there is nothing to show. Render it beside the trigger. */
   bubble: ReactNode;
-  /** Wraps a DISABLED trigger in a box that can still see the pointer.
-   *
-   *  A disabled <button> emits no mouse events and takes no focus, so the
-   *  handlers above never fire — and that is exactly the moment the user most
-   *  wants to know why the control is dead. Applied ONLY when disabled and
-   *  only when there is a tip, so an enabled layout is untouched rather than
-   *  gaining a box everywhere for a corner case. */
+  /** Wraps a disabled trigger with a tip in a box that still sees the pointer,
+   *  since a disabled <button> emits no mouse events. Other triggers pass
+   *  through unchanged. */
   wrap: (node: ReactNode) => ReactNode;
-  /** Open/close by hand, for a trigger that needs its own extra reason to
-   *  (a hover wrapper of the call site's own making). */
+  /** Open or close by hand, for a hover wrapper of the call site's own. */
   show: () => void;
   hide: () => void;
 }
 
 /**
- * @param tip  What the bubble says. Falsy (no tip, empty string) means the
- *             trigger has nothing to explain: nothing opens, nothing renders,
- *             and `wrap` is a no-op — so a caller can pass a value that is
- *             only sometimes present without branching around this hook.
+ * @param tip  What the bubble says. When it is empty nothing opens or renders
+ *             and `wrap` passes its node through.
  * @param disabled  Whether the trigger is currently disabled; see `wrap`.
  */
 export function useTipBubble(tip?: string, disabled = false): TipBubble {
@@ -94,9 +60,9 @@ export function useTipBubble(tip?: string, disabled = false): TipBubble {
   // Flipping `disabled` replaces the trigger element: `wrap` boxes a disabled
   // one, so React mounts a new <button> in its place. The old one takes its
   // focus and hover with it without firing blur or mouseleave, so an open
-  // bubble would stay up for good (#243). Closing during render keeps it from
-  // being painted even once; a pointer still over the control reopens it on
-  // its next move, through the wrapper's mouseenter.
+  // bubble would stay up for good. Closing during render keeps it from being
+  // painted even once; a pointer still over the control reopens it on its
+  // next move, through the wrapper's mouseenter.
   const [seenDisabled, setSeenDisabled] = useState(disabled);
   if (seenDisabled !== disabled) {
     setSeenDisabled(disabled);
@@ -121,23 +87,8 @@ export function useTipBubble(tip?: string, disabled = false): TipBubble {
     if (!pointerWasLast) show();
   }
 
-  // Positions the bubble (clamped into the viewport, flipped above the trigger
-  // when opening below would clip the bottom edge) AFTER it has mounted and
-  // laid out — offsetWidth/offsetHeight only resolve once the element is in
-  // the DOM, and the real wrapped height depends on the tip's own length, not
-  // on the CSS max-width.
-  //
-  // useLayoutEffect, not useEffect: this has to run before the browser paints,
-  // so the corrected position is what is actually painted rather than a
-  // visible jump on the next frame.
-  //
-  // The bug this exists for (jdp, live): the "Wiederherstellungskit" bubble in
-  // Settings overflowed the window and could not be read. Every copy of this
-  // code centred the bubble on its trigger and always opened downward with no
-  // viewport awareness at all, so a trigger near an edge pushed its bubble
-  // half off-screen. `computeBubblePosition` (lib/bubblePosition.ts, ported
-  // from GlimStone's reference/tooltip.ts) is the fix, and living here means
-  // it cannot be fixed in one trigger and left broken in the next three.
+  // The bubble is measured after it mounts, because its wrapped height depends
+  // on the tip's length, and placed before paint so it never visibly jumps.
   useLayoutEffect(() => {
     if (!shown) return;
     const trigger = triggerRef.current;
@@ -157,9 +108,8 @@ export function useTipBubble(tip?: string, disabled = false): TipBubble {
     bubble.style.top = `${top}px`;
   }, [shown]);
 
-  // A floating box anchored to a live rect must not drift out of position
-  // under the trigger it is pointing at, and Escape has to dismiss it without
-  // requiring the pointer to move.
+  // Scrolling would leave the bubble behind its trigger, and Escape has to
+  // dismiss it without a pointer move.
   useEffect(() => {
     if (!shown) return;
     const onScroll = () => hide();
@@ -200,8 +150,6 @@ export function useTipBubble(tip?: string, disabled = false): TipBubble {
       : null,
     wrap: (node: ReactNode) =>
       disabled && tip ? (
-        // `inline-flex`, matching what these controls already sit in, so the
-        // wrapper is the same shape as the thing it wraps.
         <span className="inline-flex" onMouseEnter={show} onMouseLeave={hide}>
           {node}
         </span>
@@ -213,14 +161,12 @@ export function useTipBubble(tip?: string, disabled = false): TipBubble {
   };
 }
 
-// Whether the user's last input was a pointer rather than a key. Kept for the
-// whole page, not per trigger, because the focus in question usually lands on
-// one element after the user acted on another: Cancel in a dialog, and then
-// the focus handed back to the button that opened it.
+// Whether the last input was a pointer rather than a key. It is tracked for the
+// whole page because focus often lands on one element after the user acted on
+// another, such as a dialog handing focus back to its opener.
 //
-// Not `:focus-visible`: jsdom evaluates it in a document listener that runs
-// after React's focus handler, so inside the handler it reads false for
-// keyboard focus too, and no test could tell the two cases apart.
+// Not `:focus-visible`: jsdom evaluates it after React's focus handler runs, so
+// inside the handler it reads false for keyboard focus too.
 let pointerWasLast = false;
 let tracking = false;
 

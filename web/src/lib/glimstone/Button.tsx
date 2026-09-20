@@ -6,47 +6,16 @@ import { useTipBubble } from "./useTipBubble";
 import { glyphFor } from "./glyphs";
 import { IconClose } from "./glyphs";
 
-// ---------------------------------------------------------------------------
-// Button — the one clickable control (#178).
+// The one clickable control. Something you can click is a button and
+// something you only read is a badge, since only a real <button> is reachable
+// by keyboard.
 //
-// Naming, jdp's own (2026-08-28): something you can CLICK is a button,
-// something you only read is a badge. That is also what HTML and assistive
-// technology require, so the split is not cosmetic: a clickable thing has to
-// be a real <button> or it cannot be reached by keyboard.
-//
-// This component owns four things a call site should never repeat:
-//
-//   1. WHAT IS SHOWN — text, text with glyph, or glyph alone, from the shared
-//      "buttons" axis. One setting for the whole app, not a prop per site.
-//   2. HOW WIDE IT IS — a stage derived from the LABEL, so the width is the
-//      same in all three modes and switching mode never reflows the page.
-//      This is jdp's explicit requirement; the width therefore cannot come
-//      from what is currently visible, because a lone glyph is narrow.
-//   3. THAT IT STAYS READABLE — in glyph mode the label is visually hidden but
-//      still in the accessible tree (`sr-only`), and it becomes the tooltip.
-//      Nothing here can produce a button whose purpose is unlabelled.
-//      That tooltip is the app's REAL `.glim-bubble` (lib/useTipBubble.tsx),
-//      never the native `title=` balloon — jdp's ruling on the contradiction
-//      glyph mode created. design-language.md calls a native title on an
-//      icon-only control the anti-pattern IconTipButton exists to replace,
-//      and lint-rules/icon-badge-needs-tooltip.js fails the build over it;
-//      glyph mode would otherwise have committed that anti-pattern 171 times
-//      in one setting, where before it was a handful of deliberate spots.
-//      The choice was to weaken the rule or to make this component honour it.
-//      It honours it — and while the bubble was being wired in, the native
-//      balloon left this component entirely, so a button's `title` is now
-//      shown the same way in every mode instead of switching mechanism when
-//      the text disappears.
-//   4. ITS COLOUR-ENGINE POSITION — `hueIndex` works exactly as it does on
-//      Badge, because rainbow mode is a standing, app-wide rule: a control
-//      that opts out of it is a bug, not a simplification.
-//
-// A glyph is optional for now. Only 17 of the app's 163 buttons carry one
-// today, and jdp wants all of them to get one; until a given button has its
-// glyph, glyph mode falls back to showing that button's text, which is the one
-// failure mode worth having (a slightly inconsistent strip beats a row of
-// blank squares nobody can identify).
-// ---------------------------------------------------------------------------
+// The component owns what a call site should not repeat: what is shown, from
+// the shared "buttons" label axis; the width stage derived from the label; the
+// label as accessible name and, in glyph mode, as the `.glim-bubble` tooltip
+// rather than a native `title=`; and the colour engine position through
+// `hueIndex`. A button without a glyph shows its text in every mode, since a
+// row of blank squares cannot be identified.
 
 const STAGE_CLASS: Record<WidthStage, string> = {
   xs: "glim-btn-xs",
@@ -56,85 +25,33 @@ const STAGE_CLASS: Record<WidthStage, string> = {
 };
 
 /**
- * "subtle" joins the table for [332], and it is not a new look — it is a look
- * the app already had, written out by hand at five call sites as
- * `bg-carbon-surface2` in a `className`. That is the shape of thing this tone
- * table exists to stop: a background set beside `tone` rather than by it wins
- * or loses purely by where the two utilities land in the compiled stylesheet,
- * so the class list reads correctly and the button paints wrong. It cost a
- * round already ([326], set to accent, shipped grey).
- *
- * The lesson generalises past this one class: if a control needs a surface the
- * table does not have, the answer is to add it here, not to write it at the
- * call site.
+ * The fills a button can take. A background written in `className` beside a
+ * tone wins or loses by stylesheet order, so a control that needs a surface
+ * the table lacks gets a new tone here instead.
  */
 export type ButtonTone = "accent" | "neutral" | "subtle" | "danger" | "warn";
 
 /**
- * "default" — the ordinary action button described above.
- * "chip"    — the tiny remove control that lives INSIDE a pill (a selected
- *             path, a stop-hook name, an exclusion line, the day filter).
- *
- * Why this needs to be its own variant rather than a `className` override at
- * four call sites: a chip's control is glyph-only by nature, in every mode. It
- * sits inside its chip, so it cannot take a width stage without bursting the
- * pill, and its text would be absurd if shown ("Remove exclusion /var/log/*"
- * printed next to the line it already sits on). It still satisfies the
- * same-width-in-all-modes rule, trivially: it is the same size in all three.
- *
- * What it does NOT get to skip is the accessible name. These four buttons each
- * carried a real one in an `aria-label`, naming the thing they remove, and it
- * survives here as the label: hidden, announced, and shown on hover.
- */
-/**
- * "icon" - the small, single-purpose action that stands in a row of its
- *          siblings: copy, reset, undo, edit, delete on a list row.
- *
- * IT IS A SHAPE, NOT AN ANSWER TO THE MODE, and that sentence is the whole of
- * 1.7.7. The variant shipped in 1.7.6 resolving the way `chip` does - glyph in
- * every mode - on the reasoning that such a control's identity IS its symbol,
- * and that an ordinary button would print five verbs in a row that used to be a
- * tidy strip. The reasoning was sound and the result was rejected, by the same
- * person and in the same words as the defect it was meant to fix: "alle buttons
- * sind nach wie vor nicht in der farb und beschriftungs engine."
- *
- * Measured on the running app rather than argued about: the mode was
- * `textGlyph`, and five controls in one card row printed no word while three
- * beside them did. From outside, a documented exemption and a control that
- * simply ignores the setting look identical - which is the lesson worth keeping,
- * because the first fix changed the component and changed nothing anybody could
- * see.
- *
- * So the variant now decides the SHAPE only. In a mode that paints words it is
- * an ordinary button with its label and its width stage; in one that hides them
- * it is a square at the button height, which is what an ordinary button cannot
- * be (it hugs its glyph inside its own horizontal padding, so a row of them
- * comes out as a row of lozenges rather than of tiles).
- *
- * Reactive is deliberately NOT square. Its whole idea is a box that grows as the
- * words arrive, and a fixed width is the one thing that cannot do; there it is an
- * ordinary reactive button.
- *
- * What it gains by being a Button rather than a Badge is unchanged and is still
- * the reason the variant exists at all: the colour engine, the tone table, the
- * busy spinner, one tooltip mechanism, and the disabled-with-a-reason wrapper.
+ * "default" the ordinary action button.
+ * "chip"    the small remove control inside a pill, such as a selected path or
+ *           an exclusion line. It shows its glyph in every mode and takes no
+ *           width stage, which would burst the pill; its label stays the
+ *           accessible name and the hover text.
+ * "icon"    a single-purpose action in a row of siblings: copy, reset, undo,
+ *           edit, delete. It follows the label mode like any button and only
+ *           changes shape: where the mode hides words it is a square at the
+ *           button height instead of hugging its glyph. Reactive stays an
+ *           ordinary reactive button, because it grows on hover.
  */
 export type ButtonVariant = "default" | "chip" | "icon";
 
-// `danger`/`warn` use the SOLID status tokens over `carbon-background`, the
-// pairing ConfirmDialog worked out for itself and documented at length: both
-// themes' solid fail/warn values sit at the opposite lightness to that theme's
-// own background, so one ink is legible on both without a dedicated contrast
-// token. Adopting it here rather than inventing a second recipe means the
-// destructive-confirm button looks the same after moving into this component.
+// `danger` and `warn` put the solid status tokens under `carbon-background`
+// ink: in both themes the solid values sit at the opposite lightness to the
+// background, so one ink reads on both.
 const TONE_CLASS: Record<ButtonTone, string> = {
   accent: "bg-accent text-accentContrast hover:opacity-90",
-  // Each of these hovers UP its own ramp (rule 21), and the two below are the
-  // exact pair the rule was written about. `--carbon-hover` is the fill for
-  // something with NO fill of its own, and on the dark ramp it is #353535,
-  // BELOW surface2's #393939 - so a filled control hovered with it goes darker
-  // at the one moment somebody is looking straight at it. Both of these shipped
-  // that way while the rule beside them said otherwise.
+  // Filled tones hover up their own ramp (rule 21). `--carbon-hover` is for
+  // controls with no fill, and on the dark ramp it is darker than surface2.
   neutral: "bg-carbon-surface3 text-carbon-text hover:bg-carbon-hoverRaised",
   subtle: "bg-carbon-surface2 text-carbon-text hover:bg-carbon-surface3",
   danger: "bg-statusFailSolid text-carbon-background hover:opacity-90",
@@ -159,32 +76,18 @@ export function Button({
   keepLabel = false,
   ref,
 }: {
-  /** The button's words. Always present, in every mode: visible as text, or
-   *  hidden but still announced and shown as the tooltip in glyph mode.
-   *
-   *  It must be STABLE. A label that changes while the button works ("Backing
-   *  up…") would resize the control mid-action, which is exactly what the
-   *  width stages exist to prevent — pass that through `title` instead. */
+  /** The button's words, present in every mode: visible, or hidden but
+   *  announced and shown as the tooltip. Keep it stable, since a label that
+   *  changes while the button works would resize it; put changing state in
+   *  `title`. */
   label: string;
-  /** The translation key behind `label`, or `null` when the label is DATA — a
-   *  directory name, a path — and so has no key.
+  /** The translation key behind `label`, or `null` when the label is data such
+   *  as a path. It picks the glyph by meaning (glyphFor), so the same verb
+   *  wears the same symbol everywhere; an explicit `glyph` wins.
    *
-   *  It lets the component pick a glyph by MEANING (glyphFor), so a call site
-   *  does not have to choose one and the same verb wears the same symbol
-   *  everywhere. An explicit `glyph` always wins over it.
-   *
-   *  REQUIRED, and `null` is a real answer rather than a way out ([335]).
-   *  Optional, it was quietly missing on 49 of the app's 171 buttons — 29% of
-   *  them, each unable to pick a glyph, so glyph and reactive mode fell back
-   *  to text for exactly those. Nothing failed and no test went red; the
-   *  buttons simply never joined the engine, and the only way to find them was
-   *  to go looking. Required, the compiler asks once per call site and the
-   *  author answers either "this key" or "there isn't one" — both useful, and
-   *  neither skippable by accident.
-   *
-   *  When the label branches, the key branches with it. A fixed key on a
-   *  button whose wording flips between two states names the wrong one half
-   *  the time, which picks the wrong glyph exactly when the state changed. */
+   *  It is required so every call site answers "this key" or "none" instead of
+   *  silently falling back to text in glyph mode. When the label branches, the
+   *  key branches with it. */
   labelKey: string | null;
   /** Optional icon, overriding whatever `labelKey` would have chosen. Without
    *  either, glyph mode shows this button's text instead of an empty box. */
@@ -196,104 +99,41 @@ export function Button({
   disabled?: boolean;
   type?: "button" | "submit";
   className?: string;
-  /** Extra explanation, and the place for anything that CHANGES: the running
-   *  state, why the button is unavailable right now, which other job is
-   *  holding it. The label is used as the tooltip in glyph mode on its own,
-   *  and both are shown when both exist.
-   *
-   *  Shown in the app's own hover/focus bubble, NOT as a native `title`
-   *  attribute — the name is kept because that is what 57 call sites already
-   *  call this, and because "the extra line of explanation" is exactly what a
-   *  title was for. Reaching a DISABLED button's explanation still works: see
-   *  useTipBubble's `wrap`, which is why the native balloon could go without
-   *  losing the "why is this dead" hint 54 of those call sites pass. */
+  /** Extra explanation, and the place for anything that changes: the running
+   *  state, or why the button is unavailable. It shows in the hover and focus
+   *  bubble, joined with the label where the label is hidden, and still
+   *  reaches a disabled button through useTipBubble's `wrap`. */
   title?: string;
-  /** This button's OWN rainbow position, same meaning as Badge's own prop.
-   *
-   *  Usually unnecessary, and worth knowing why before adding one ([340]). A
-   *  Card carrying a `hueIndex` already renders `.glim-hue`, which rebinds
-   *  `--accent` for its whole subtree — and custom properties inherit, so
-   *  every control inside it is already painting in that card's colour with
-   *  no prop at all. That is the design language's own rule: the position
-   *  belongs on the CONTAINER, because a per-control list is one somebody has
-   *  to maintain against a growing page.
-   *
-   *  Pass it only when this button needs a colour DIFFERENT from its card's —
-   *  a row in a list where each row owns its position. Passing the card's own
-   *  index back in resolves to the identical colour and changes nothing;
-   *  measured, not assumed, after a round where three buttons were "fixed"
-   *  that way and the fix turned out to be a no-op. The real defects that
-   *  round were the missing glyphs beside it. */
+  /** This button's own rainbow position, as on Badge. Usually unnecessary: a
+   *  Card with a `hueIndex` rebinds `--accent` for everything inside it, and
+   *  passing the card's own index changes nothing. Pass it only for a
+   *  colour different from the card's, such as a row that owns its position. */
   hueIndex?: number;
-  /** Forwarded to the underlying <button>. Dialogs need it: they move focus
-   *  to their close control on open, which is what makes the Escape key and
-   *  the focus trap behave. */
+  /** Forwarded to the underlying <button>, so a dialog can move focus to it. */
   ref?: Ref<HTMLButtonElement>;
-  /** Shows a spinner in place of the glyph. Deliberately separate from
-   *  `disabled`: a busy button is usually disabled too, but the two are not
-   *  the same thing and a caller may want one without the other. */
+  /** Shows a spinner in place of the glyph. Separate from `disabled`, since a
+   *  caller may want one without the other. */
   busy?: boolean;
-  /** Dialogs open with focus already on one of their buttons; that is what
-   *  makes Escape and the focus trap behave, so it has to be expressible
-   *  here rather than forcing a call site back to a raw <button>. */
+  /** For a dialog that opens with focus on one of its buttons. */
   autoFocus?: boolean;
-  /** Forces a width stage instead of deriving one from this button's own
-   *  label. For two buttons that belong together visually but are rendered by
-   *  different components, so neither can see the other's label — pass
-   *  `groupStage([labelA, labelB])` to both (jdp: "die buttons jetzt sichern
-   *  und Export sollen gleich breit sein").
-   *
-   *  Not a general escape hatch: deriving from the label is what keeps 171
-   *  buttons tidy without anyone choosing. Use it only to make a real, visible
-   *  pair agree, and always through `groupStage` so the answer is the same in
-   *  all 42 languages. Ignored in glyph and reactive mode, where nothing takes
-   *  a stage at all. */
+  /** Forces a width stage instead of deriving one from the label, for two
+   *  buttons rendered by different components that should match: pass
+   *  `groupStage([labelA, labelB])` to both. Use it only for such a pair.
+   *  Ignored in glyph and reactive mode, which take no stage. */
   stage?: WidthStage;
-  /** Opts this button out of the label engine entirely: its text is always
-   *  shown, in every mode.
-   *
-   *  For the rare button whose label is CONTENT rather than a verb. The folder
-   *  browser's directory rows are the case this exists for — there the name IS
-   *  the row, and in reactive mode a listing you have to hover one line at a
-   *  time to read is, in jdp's words, "wahnsinnig mühsam". A glyph-only file
-   *  listing is a column of identical folder icons.
-   *
-   *  Deliberately narrow. This is not "my button looks better with text": the
-   *  test is whether the label names an ACTION (engine) or IS the data
-   *  (opt out). */
+  /** Keeps the label visible in every mode, for a button whose label is
+   *  content rather than a verb, such as a directory row in a folder browser.
+   *  The glyph still shows beside it. */
   keepLabel?: boolean;
 }) {
   const mode = useLabelMode("buttons");
-  // An explicit glyph wins; otherwise the key decides, so the same verb wears
-  // the same symbol app-wide without 163 call sites each making a choice.
   const chip = variant === "chip";
-  // Square, but only while the mode paints no words - see ButtonVariant.
   const iconOnly = variant === "icon";
   // A chip always closes, so it has a glyph even when no call site passes one.
   const resolved = glyph ?? (labelKey ? glyphFor(labelKey) : undefined) ?? (chip ? <IconClose /> : undefined);
-  // No glyph to show means text, whatever the mode says — see the header note.
   const hasGlyph = !!resolved || busy;
-  // A glyphless button falls back to its text in BOTH hiding modes: an empty
-  // box is unusable, and a reactive empty box is an empty box you have to hunt
-  // for with the pointer first.
-  //
-  // keepLabel means the LABEL never hides. It used to mean "text only", which
-  // threw the GLYPH away as well ([469]) — and silently, because a call site
-  // that passes both `keepLabel` and `glyph={…}` gets no warning that one of
-  // the two was ignored. The folder browser's rows do exactly that, and
-  // rendered as bare words 14.2px tall: no icon, no padding, less than half the
-  // height of the `..` row above them. jdp saw the symptom, not the cause:
-  // "die listeneinträge sind in unterschiedlichen ebenen unterschiedlich groß.
-  // in der obersten ebene sind sie zu klein".
-  //
-  // A prop that says "keep this" must not remove that. keepLabel now lands on
-  // textGlyph when there is a glyph, and only falls back to plain text when
-  // there is none — which is the same fallback the line above already makes for
-  // the hiding modes, applied consistently.
-  //
-  // `iconOnly` is NOT in this expression, and that is 1.7.7's correction: a row
-  // action answers the setting like everything else, and the variant only
-  // decides what shape it takes once the answer is in.
+  // A glyphless button shows its text in both hiding modes, and keepLabel
+  // keeps the glyph beside the text when there is one.
   const effective = chip
     ? "glyph"
     : keepLabel
@@ -304,38 +144,16 @@ export function Button({
         ? "text"
         : mode;
   const reactive = effective === "reactive";
-  // "Shown" means painted at rest. Reactive is not: its words arrive on hover,
-  // which is a CSS state, so as far as this render is concerned it is a hiding
-  // mode like glyph.
+  // Reactive words arrive on hover, a CSS state, so this render treats reactive
+  // as a hiding mode.
   const showText = effective !== "glyph" && !reactive;
   const showGlyph = effective !== "text" && hasGlyph;
 
-  // The stage comes from the label in the CURRENT language, never from what is
-  // The stage comes from the label in the CURRENT language, never from what is
-  // rendered. A chip takes no stage at all: it is sized by its glyph so it fits
-  // inside its pill.
-  //
-  // NEITHER DO THE TWO HIDING MODES ANY MORE, and that is a deliberate reversal
-  // of this engine's founding rule. "Alle buttons bleiben in allen drei modi
-  // auch gleich breit" was jdp's own requirement and the reason stages exist at
-  // all; he has now overridden it for exactly these two modes: "im glyph und
-  // reaktiven modus können alle buttons (außer die tabs von sidebar und
-  // settings) schmaler sein und beim mouseover sollen die buttons auf die
-  // benötigte größe anwachsen". So a glyph-only button hugs its glyph, and a
-  // reactive one grows out of it as the words arrive — the button itself
-  // animates now, not just the label inside a box that was already big enough.
-  //
-  // The rule survives where it was actually about alignment: text and
-  // text-with-glyph still take the stage, so nothing reflows between those two,
-  // and the sidebar rail and Settings tab strip keep their own fixed widths
-  // because neither is a Button.
-  //
-  // The icon variant takes its square HERE rather than in `effective` above,
-  // which is the whole of the shape-not-mode split: it is the same class the
-  // glyph mode would have left empty, so a row action is a tile exactly when
-  // there are no words to print and an ordinary labelled button the rest of the
-  // time. Reactive is excluded on purpose - it grows on hover, and a fixed width
-  // is the one thing that cannot do.
+  // Text and text-with-glyph take the stage from the label in the current
+  // language, so switching between them never reflows. In the hiding modes a
+  // button hugs its glyph, and a reactive one grows as its words arrive. A chip
+  // is sized by its glyph to fit its pill, and the icon variant is a square
+  // only in glyph mode.
   const stage = chip
     ? "glim-btn-chip"
     : effective === "glyph"
@@ -346,50 +164,32 @@ export function Button({
         ? ""
         : STAGE_CLASS[stageOverride ?? widthStage(label)];
 
-  // In glyph mode the label IS the tooltip, so the control still explains
-  // itself on hover. When both exist they are joined rather than one replacing
-  // the other, so neither the name nor the state explanation is lost — unless
-  // they are the same words, which collapse rather than printing twice (the
-  // Settings tab strip does exactly that on purpose, one component over).
-  //
-  // Reactive counts as "text is shown" here even though it is hidden at rest:
-  // hovering is exactly what reveals the words, so a bubble carrying the same
-  // words would arrive at the same moment, say the same thing, and cover the
-  // animation doing it.
+  // In glyph mode the tooltip carries the label joined with the title, once if
+  // they are the same words. Reactive counts as showing text, since hovering
+  // reveals the words and a bubble would repeat them.
   const tip =
     (showText || reactive
       ? title
       : [...new Set([label, title].filter(Boolean))].join(" — ")) || undefined;
-  // Reactive shows nothing on hover but the words themselves (jdp). The
-  // DISABLED case keeps its bubble: it takes no hover, so the label never
-  // reveals, and the tip is the only thing left explaining why it is dead.
+  // A disabled reactive button takes no hover, so its words never reveal and
+  // the bubble is what explains it.
   const tooltip = useTipBubble(reactive && !disabled ? undefined : tip, disabled);
 
   const hueOn = hueIndex !== undefined;
-  // The reveal's own ceiling, in the label's visual units — see
-  // `.glim-label-reactive` in reference/tokens.css for why a fixed one both clipped long
-  // labels and made short ones snap.
+  // The reveal's ceiling in the label's visual units (see `.glim-label-reactive`
+  // in reference/tokens.css).
   const hueStyle = {
     ...(hueOn ? (hueVars(rainbowAt(hueIndex)) as CSSProperties) : {}),
     ...(reactive ? ({ "--reactive-chars": labelWidth(label) } as CSSProperties) : {}),
-    // An EXPLICIT stage is a promise that two buttons match, so it is applied
-    // as a real width rather than the usual floor. A derived stage stays a
-    // floor: a label that overhangs its own stage is a known, accepted
-    // property of the engine, and turning that into a truncation everywhere
-    // would be a much bigger change than the pair that asked for this.
+    // An explicit stage promises that two buttons match, so it is an exact
+    // width; a derived stage stays a floor a long label may overhang.
     ...(stageOverride && stage ? ({ width: `var(--btn-w-${stageOverride})` } as CSSProperties) : {}),
   };
 
   return (
     <>
-      {/* `wrap` only does anything for a DISABLED button carrying a tip, which
-          is 54 of the 57 that pass one: a disabled <button> emits no mouse
-          events and takes no focus, so without a box around it the "why is
-          this unavailable" line would be unreachable at the exact moment it is
-          wanted. The native balloon used to show there for free; that is the
-          one thing it did better, and this is the price of replacing it.
-          No enabled button gains a wrapper, and no `w-full`/`flex-1` call site
-          is ever disabled, so no layout changes. */}
+      {/* `wrap` boxes only a disabled button with a tip, since a disabled
+          <button> emits no mouse events. */}
       {tooltip.wrap(
         <button
           ref={mergeRefs(ref, tooltip.ref)}
@@ -414,13 +214,8 @@ export function Button({
               )}
             </span>
           )}
-          {/* Never removed from the DOM, only hidden: a button whose text is
-              gone entirely has no accessible name, which is the exact defect
-              this engine could otherwise introduce 197 times over.
-              Reactive gets a THIRD treatment: visible to everyone, but with a
-              collapsed box that opens on hover — so unlike `sr-only` it is
-              really there, and unlike `glim-btn-label` it takes no room until
-              asked. */}
+          {/* Hidden, never removed, so the button keeps its accessible name.
+              Reactive collapses the label's box until hover opens it. */}
           <span className={showText ? "glim-btn-label" : reactive ? "glim-label-reactive" : "sr-only"}>
             {label}
           </span>
@@ -432,13 +227,8 @@ export function Button({
 }
 
 /**
- * Feeds one element to both the caller's `ref` (dialogs move focus to a button
- * on open, which is what makes Escape and the focus trap behave) and the
- * tooltip's own, which needs the same node's rect to place the bubble against.
- *
- * Written out rather than reached for from a library because this is the only
- * place in the app that needs it, and because the object-ref case has to be
- * handled too: `ConfirmDialog` passes a `useRef`, not a callback.
+ * Feeds one element to both the caller's `ref`, a callback or an object, and
+ * the tooltip's, which places the bubble against it.
  */
 function mergeRefs(
   outer: Ref<HTMLButtonElement> | undefined,

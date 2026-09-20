@@ -4,33 +4,15 @@ import { Button } from "./Button";
 import { Card } from "./Card";
 
 /**
- * The About card, in the order the design language lays down for it: what this
- * is, then the money with its own button, then the way to report something with
- * its own buttons, then the versions as a footer.
+ * The About card, in the order the design language lays down: what this is,
+ * then the money with its own buttons, then the way to report something, then
+ * the versions as a footer. It replaces an app's version footer rather than
+ * joining one.
  *
- * It REPLACES a version footer rather than joining one. That is the failure mode
- * worth naming, because both are individually defensible and the result is one
- * number in two type sizes twelve pixels apart.
- *
- * Two rules the order encodes, and they are the whole point of shipping this as
- * a component rather than as prose:
- *
- * - **Each sentence sits directly above the thing it asks for.** Three sentences
- *   stacked over one row of buttons reads as a form; a sentence with its own
- *   button under it reads as one offer.
- * - **Never name a route no control on the card can reach.** If the sentence
- *   mentions e-mail, there is a mail button; if there is no address yet, the
- *   sentence does not mention one. A contact route that reaches nowhere is worse
- *   than none, because somebody writes and then waits.
- *
- * Only the NUMBER in the footer is a link, and it points at its own tag's
- * release page: a version answers "which build is this", and the question
- * straight after is always "and what changed". A build that is not a published
- * release gets no link at all — a link to a tag page that 404s is worse than
- * plain text.
- *
- * Every string is passed in. The card knows the order; the app knows its own
- * language, its own product name and its own addresses.
+ * Each sentence sits directly above the buttons it asks for, and the card never
+ * names a route no control on it can reach. In the footer only the number is a
+ * link, to its tag's release page; a build that is not a published release gets
+ * no link. Every string is passed in.
  */
 export function AboutCard({
   text,
@@ -49,9 +31,8 @@ export function AboutCard({
   mailGlyph,
   hueIndex,
 }: {
-  /** The card's copy, in the app's own language. `report` decides whether the
-   *  mail button may exist at all: it is drawn only when the sentence names a
-   *  mail route AND `mailAddress` is set. */
+  /** The card's copy, in the app's own language. The mail button is drawn only
+   *  when `report` names a mail route and `mailAddress` is set. */
   text: {
     title: string;
     body: string;
@@ -68,69 +49,37 @@ export function AboutCard({
     version: string;
     unreleased: (version: string) => string;
   };
-  /** The running build, read from the app's own build stamp — never typed into
-   *  the card, since a number written down twice disagrees with itself the day
-   *  one of them is bumped. */
+  /** The running build, read from the app's build stamp rather than typed in. */
   version: string | null;
-  /** The GlimStone release this interface is built against. Bumped by hand when
-   *  the reference files are re-copied, because the files are copied by hand. */
+  /** The GlimStone release this interface is built against. */
   glimstoneVersion: string;
   repoUrl: string;
   /**
-   * The mark on the repository button, when the host it points at has one.
-   *
-   * Passed rather than resolved, and that is the rule rather than a
-   * convenience. A brand mark must never be reachable BY PATTERN: a glyph rule
-   * keyed on "repo" would put GitHub's logo on repository settings that have
-   * nothing to do with GitHub, and on the day a project moves to a different
-   * forge the logo would follow it there and be wrong. So the app names its
-   * own forge at the one call site that means it, and a project hosted
-   * somewhere without a mark passes nothing and keeps the generic link glyph.
-   *
-   * jdp: "der github button soll das github logo haben."
+   * The mark on the repository button, when its host has one. It is passed
+   * rather than resolved by label key, because a rule keyed on "repo" would put
+   * a forge's logo on settings that have nothing to do with it.
    */
   repoGlyph?: ReactNode;
   glimstoneRepoUrl: string;
   coffeeUrl: string;
   /**
-   * The mark on the give buttons, where the route belongs to a named company.
-   *
-   * Passed rather than resolved, for the same reason as `repoGlyph`: a brand
-   * must never be reachable BY PATTERN. A glyph rule keyed on "coffee" would
-   * put one company's cup on anything that mentions coffee, and one keyed on
-   * "crypto" would put a currency's symbol on settings that have nothing to do
-   * with it. An app that passes nothing keeps whatever its own table resolves.
+   * The marks on the give buttons, passed for the same reason as `repoGlyph`.
+   * An app that passes nothing keeps whatever its own table resolves.
    */
   coffeeGlyph?: ReactNode;
   cryptoGlyph?: ReactNode;
   paypalGlyph?: ReactNode;
   /**
-   * The envelope on the mail button.
-   *
-   * Passed like the four above, although it is the one mark here that is NOT a
-   * brand: the card's rule is that every button in these rows carries a mark,
-   * and a row where four buttons wear a logo and the fifth wears nothing reads
-   * as a missing image rather than as a plainer button. An envelope rather
-   * than a paper plane, because the button names a place to write to and not
-   * the act of sending, which the label already says.
+   * The envelope on the mail button. It is not a brand, but every button in
+   * these rows carries a mark, and a row with one bare button reads as a
+   * missing image.
    */
   mailGlyph?: ReactNode;
-  /**
-   * A hosted payment page (PayPal.Me and the like). Omitted where none exists.
-   *
-   * The card's own rule applied to a route rather than to a sentence: never
-   * offer a control that reaches nowhere. Such a link is usually created once
-   * and cannot be renamed afterwards, so an app hands one over only when it
-   * really has it.
-   */
+  /** A hosted payment page such as PayPal.Me. Omit it where none exists. */
   paypalUrl?: string;
   /**
-   * Open the crypto window (CryptoDonateDialog). Omit it and the card offers
-   * the coffee alone.
-   *
-   * A handler rather than a URL, because this route does not leave the app:
-   * the addresses, the QR and the copy button are all in a house window, which
-   * is the whole reason it is worth offering beside a hosted donation page.
+   * Opens the crypto window (CryptoDonateDialog), which stays inside the app.
+   * Omit it and the card offers no crypto button.
    */
   onCrypto?: () => void;
   /** The workshop's own mailbox. Omit it and the card offers no mail route. */
@@ -142,40 +91,15 @@ export function AboutCard({
 
   return (
     <Card title={text.title} hueIndex={hueIndex}>
-      {/* No reading-width cap on the card's own prose. It carried max-w-2xl
-          (42rem) at first, which is a defensible typographic width in the
-          abstract and looked wrong here for a concrete reason: it is the ONLY
-          capped text on its page. Every other card lets its sentences run the
-          card, so three paragraphs stopping two thirds of the way across read
-          as hand-set line breaks rather than as a measure. Reported exactly
-          that way ("in der übercard sind künstliche Zeilenumbrüche") and
-          measured before believing it: 672px of text in a 1244px card.
-
-          The rule that follows, and it is the reusable half: a reading width
-          is a property of a PAGE, never of one card on it. Cap all the prose
-          or none of it. */}
+      {/* No reading-width cap: a reading width belongs to a whole page, and a
+          cap on this card alone reads as hand-set line breaks. */}
       <p className="text-sm text-carbon-textSub">{text.body}</p>
 
       <p className="text-sm text-carbon-textSub">{text.coffee}</p>
-      {/* One sentence, and under it every way to give. Up to three, and they
-          are three because they reach three different people: a card through
-          the coffee page, a balance through PayPal, and what somebody already
-          holds in a wallet — the last needs no account and shows no name at
-          either end. All of them stay in THIS row rather than getting a row of
-          their own further down, which is the card's own rule — a sentence sits
-          directly above the thing it asks for, and a second row reads as a
-          second, unrelated offer.
-
-          ORDER: the two hosted payment pages first, the wallet last (jdp,
-          2026-09-11). It reads as a ramp rather than an alphabet — the two
-          routes most people already have an account for, then the one that
-          needs none.
-
-          `glim-brand-*` is what paints each mark. The class names are the
-          language's own and the values are its tokens, so an app names a brand
-          and gets the measured colour rather than choosing one: see the brand
-          block in reference/tokens.css for why a published brand colour is the
-          wrong answer at rest. */}
+      {/* Every way to give sits in one row under its sentence, the two hosted
+          payment pages first and the wallet, which needs no account, last. The
+          brand classes take their colours from the brand block in
+          reference/tokens.css. */}
       <div className="flex flex-wrap items-center gap-2">
         <Button
           label={text.coffeeButton}
@@ -201,31 +125,17 @@ export function AboutCard({
             labelKey="about.crypto"
             glyph={cryptoGlyph}
             tone="neutral"
-            // A brand class like the other four, because the mark this button
-            // wears is the bare LETTERFORM, disc cut away.
-            //
-            // Two separate things made the disc wrong here, and only one of
-            // them is about colour. A coin logo drawn in TWO colours, a filled
-            // circle with a white symbol on it, cannot take this class at all:
-            // the rule paints every path in the mark with one ink, so the
-            // symbol disappears into the circle. A disc drawn as ONE path with
-            // the symbol knocked out of it survives that, and still loses the
-            // argument: at 16px in a row beside a cup and a P it reads as an
-            // orange dot, because what the eye gets is the shape of the ground
-            // rather than the shape of the letter. Reported that way against an
-            // adopting app. The disc keeps its place on the coin tiles in the
-            // donation window, where the mark is large, nothing repaints it,
-            // and telling eight logos apart is the whole job.
+            // The mark here is the bare letterform without its disc: the brand
+            // class paints every path in one ink, and at 16px a disc reads as
+            // an orange dot. The coin tiles in the donation window keep it.
             className="glim-brand-btn glim-brand-bitcoin"
             onClick={onCrypto}
           />
         )}
       </div>
 
-      {/* One extra step of space above this line, and only above this one. The
-          card holds two offers, and without the break the coffee button sits as
-          close to the next sentence as to the one it belongs to, so the eye
-          pairs it with the wrong text. */}
+      {/* Extra space above the second offer, so the give buttons do not pair
+          with the wrong sentence. */}
       <p className="mt-2 text-sm text-carbon-textSub">{text.report}</p>
       <div className="flex flex-wrap items-center gap-2">
         <Button
@@ -237,13 +147,9 @@ export function AboutCard({
           onClick={() => open(repoUrl)}
         />
         {wantsMail && (
-          // Subject only, never a body: a prefilled body reads as a form to
-          // fill in, and this is meant to be a message somebody writes.
-          //
-          // THE ONE BUTTON ON THIS CARD THAT IS NOT A BRAND, and the exception
-          // proves the rule: it reaches the app's own authors rather than a
-          // third party, so it takes the accent tokens and follows the user's
-          // accent and rainbow — which a vendor's mark may never do.
+          // Subject only: a prefilled body reads as a form to fill in. This
+          // button reaches the app's own authors rather than a third party, so
+          // `glim-brand-house` follows the user's accent and rainbow.
           <Button
             label={text.mailButton}
             labelKey="about.mail"
@@ -257,9 +163,7 @@ export function AboutCard({
         )}
       </div>
 
-      {/* The footer. One line with a middle dot, not two rows: two rows read as
-          two facts of equal weight that happen to sit together, and this is one
-          fact about one build. */}
+      {/* One line with a middle dot: this is one fact about one build. */}
       <p className="glim-num flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-carbon-textMuted">
         {version && (
           <VersionLink label={text.version} version={version} repo={repoUrl} unreleased={text.unreleased} />
@@ -277,12 +181,8 @@ export function AboutCard({
 }
 
 /**
- * The tag behind a running version string.
- *
- * A build stamps `v8.3.1+feature-branch.59b73a6`; the tag is the part before the
- * build metadata, which is exactly what semver says the "+" means. Derived from
- * the version rather than kept in a list, because a hand-maintained list of
- * links is wrong the first time somebody forgets it.
+ * The tag behind a running version string: for `v8.3.1+feature-branch.59b73a6`
+ * it is the part before the semver build metadata.
  */
 export function releaseTag(version: string): string {
   const bare = version.split("+")[0].trim();
@@ -291,13 +191,8 @@ export function releaseTag(version: string): string {
 }
 
 /**
- * One `Label 1.2.3` pair, where only the NUMBER is the link.
- *
- * The label is plain text on purpose: the word is not the thing anybody wants to
- * open, and underlining it makes the eye read "Version" as a destination. No
- * underline on the number either — the affordance is the ink lifting on hover,
- * which is enough for a number nobody is hunting for, and a dotted rule under a
- * version string reads as an annotation with nothing to annotate.
+ * One `Label 1.2.3` pair where only the number is a link. It has no underline;
+ * the ink lifts on hover.
  */
 function VersionLink({
   label,

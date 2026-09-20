@@ -1,88 +1,41 @@
 // Copied verbatim from GlimStone 2.6.0, reference/react/ConfirmDialog.tsx.
 // Do not edit here: change it in the design language repo and copy again.
 // https://github.com/junkerderprovinz/glimstone
-// ---------------------------------------------------------------------------
-// ConfirmDialog — the GlimStone styled confirmation dialog (form-engine
-// Task 7), replacing every window.confirm() call site in the app.
+// The styled confirmation dialog that replaces window.confirm(): an anchored
+// header, a scrolling message and a footer with Cancel and Confirm. A backdrop
+// click, the header close button and Cancel all call onCancel.
 //
-// Extracted from the SAME modal chrome already used by WhatsNewDialog.tsx and
-// ErrorDetailPanel.tsx: rounded-card bg-carbon-surface, an anchored header
-// (title + close X), a scrolling middle (the actual per-call-site message —
-// same copy every call site already passed to window.confirm(), this task
-// swaps the MECHANISM only, never the copy), an anchored footer (Cancel +
-// Confirm). Backdrop-click/the header X/the footer Cancel button all resolve
-// to the same onCancel. Escape and the Tab focus-trap are NOT handled here —
-// see lib/useConfirm.tsx's header comment for why (a real modal needs both to
-// work even when focus has left the dialog's own DOM subtree, which a React
-// `onKeyDown` on this root can never observe).
-//
-// Pure, hookless function component on purpose — same shape as Toggle.tsx/
-// Badge.tsx/RevealInput.tsx (props in, an element tree out) — so it stays
-// unit-testable by calling it directly with props, no renderer/jsdom needed
-// (see Toggle.test.ts's header comment: this repo's test suite is
-// `environment: "node"` with zero DOM-rendering infrastructure — `document`
-// itself is undefined there, which is also why the createPortal(...,
-// document.body) call that makes this dialog genuinely modal lives in
-// useConfirm.tsx instead of here: this component never touches `document`).
-// The STATEFUL half (the pending-request queue, the promise plumbing, the
-// portal, Escape, the focus trap, and returning focus to the trigger on
-// close) lives in the companion hook, lib/useConfirm.tsx — mirrors
-// useReveal.ts/RevealInput.tsx's split, extended to cover real modality.
-//
-// `ref` is a plain prop here (React 19 — function components accept `ref`
-// without forwardRef): useConfirm.tsx attaches it to the dialog card so it
-// can find the card's focusable elements for the Tab trap and query
-// `document.activeElement` against it. Passing it through a plain function
-// call in a test (as this file's own tests do) is inert — React only treats
-// `ref` specially on a JSX-created host element, not on the props object a
-// hand-written test builds, and no test here exercises it.
-// ---------------------------------------------------------------------------
+// The component holds no state and never touches `document`, so a test can call
+// it with props and no DOM. The companion hook useConfirm owns the queue, the
+// promise, the portal, Escape, the focus trap and returning focus on close,
+// because Escape and the trap must work after focus has left this subtree.
+// `ref` (a plain prop in React 19) is the card the hook traps focus in.
 import type { ReactNode, Ref } from "react";
 import { Badge } from "./Badge";
 import { Button } from "./Button";
 import { IconCancel, IconClose } from "./glyphs";
 
-
 export interface ConfirmDialogProps {
-  /** Generic, reusable dialog title (e.g. t("confirmDialog.title") = "Confirm")
-   *  — NOT per-call-site copy; every migrated confirm() site already carried
-   *  exactly one string, which is `message` below. */
+  /** A generic title such as "Confirm"; the call site's own text is `message`. */
   title: string;
-  /** The exact string every call site used to pass to window.confirm() —
-   *  unchanged copy, per Task 7's scope (mechanism swap only). */
+  /** The question or explanation, also the dialog's accessible description. */
   message: string;
   confirmLabel: string;
   /** Translation key behind `confirmLabel`, so the confirm button can pick
    *  a glyph. Optional: a caller passing a composed or data label has none. */
   confirmLabelKey?: string;
   cancelLabel: string;
-  /** A control the confirming action needs an answer to, shown under the
-   *  message. Optional, and most confirmations have none.
-   *
-   *  It exists because the alternative is worse: an app that needs to ask
-   *  "and shall I also remove X?" either builds a second dialog of its own,
-   *  which is how a house ends up with two confirmation windows that look
-   *  almost alike, or asks afterwards, which is a second question about an
-   *  action already taken. The answer belongs in the window that asks. Keep
-   *  it to a switch or two - a dialog with a form in it is a page. */
+  /** A control the confirming action needs an answer to, such as "also remove
+   *  X?", shown under the message so the question is asked in one window.
+   *  Keep it to a switch or two. */
   extra?: ReactNode;
-  /** Glyph for the confirm button. Optional, because the action it confirms
-   *  changes per call site and no fixed key can name it. Without one the
-   *  button is words alone, which reads as unfinished beside a cancel button
-   *  that has a glyph — reported exactly that way on an adopting app
-   *  ("löschen hat kein Glyph"). */
+  /** Glyph for the confirm button. The action changes per call site, so no
+   *  fixed key can name it; without one the button beside a glyphed Cancel
+   *  looks unfinished. */
   confirmGlyph?: ReactNode;
-  /** Accessible name for the header close (X) button — DELIBERATELY separate
-   *  from cancelLabel: they are two distinct controls that both cancel, and
-   *  sharing one label gave them the same accessible name (a screen-reader
-   *  user would hear two identically-named controls; it also broke
-   *  Playwright's own strict-mode selector matching in review).
-   *
-   *  OPTIONAL since 1.7.3, and leaving it out leaves the X out. Two controls
-   *  that do the same thing, one of them in the corner where a window's close
-   *  button lives, read as a choice rather than as one answer offered twice:
-   *  "der obere stehen lassen button weg". An app that wants the corner X
-   *  keeps passing this and nothing changes for it. */
+  /** Accessible name for the header close button, separate from cancelLabel so
+   *  the two controls are not announced alike. Leave it out and the button is
+   *  not drawn, since a corner close beside Cancel reads as a second choice. */
   closeLabel?: string;
   onConfirm: () => void;
   onCancel: () => void;
@@ -117,29 +70,14 @@ export function ConfirmDialog({
         aria-describedby="confirmdialog-message"
         className="glim-modal-card relative flex max-h-[85vh] w-full max-w-md flex-col rounded-card bg-carbon-surface shadow-2xl"
       >
-        {/* Header */}
         <div className="flex items-start justify-between gap-4 px-5 py-4">
-          {/* Task 5 follow-up (rule 15 — "a window is a window... title as a
-              badge"): a dialog's <h2> names the WINDOW CHROME itself, so it
-              gets the same tone="heading" Badge treatment as a page's section
-              headings (rule 11), just applied to a different element class.
-              The <h2>+id stays exactly where it was — aria-labelledby reads
-              the referenced element's computed text content, which still
-              includes the Badge's text regardless of the span nested inside,
-              so the accessible name is unaffected by this markup change.
-              GlimStone follow-up pass ("half-overlap card notch"): `relative`
-              added on the OUTER dialog div above (not this Header, not the
-              <h2> below) — this outer box has no overflow/scroll of its own
-              (only the Body further down scrolls), so the heading Badge's
-              new `position: absolute` -11px poke straddles the WHOLE
-              modal's own top edge cleanly, unclipped; see Badge.tsx's
-              badgeClassName comment. */}
+          {/* Rule 15: the title is a heading badge. It straddles the card's top
+              edge against the `relative` outer box, which does not scroll and
+              so does not clip it. */}
           <h2 id="confirmdialog-title" className="flex items-center">
             <Badge tone="heading" size="heading" wrap>{title}</Badge>
           </h2>
-          {/* #178, [201]: the dialog's close control is a Button like every
-              other clickable thing, so it follows the label mode instead of
-              being a permanently glyph-only square of its own. */}
+          {/* A Button, so the close control follows the label mode. */}
           {closeLabel !== undefined && (
             <Button
               label={closeLabel}
@@ -152,9 +90,6 @@ export function ConfirmDialog({
           )}
         </div>
 
-        {/* Body (scrolls) — the real per-call-site question/explanation. Also
-            the dialog's accessible description (aria-describedby above), so
-            the stake-bearing confirmation text is announced, not just shown. */}
         <div className="min-h-0 flex-1 overflow-y-auto px-5 py-4">
           <p id="confirmdialog-message" className="text-sm leading-relaxed text-carbon-textSub wrap-break-word">
             {message}
@@ -162,7 +97,6 @@ export function ConfirmDialog({
           {extra !== undefined && <div className="mt-4 flex flex-col gap-3">{extra}</div>}
         </div>
 
-        {/* Footer */}
         <div className="flex items-center justify-end gap-3 px-5 py-4">
           <Button
             label={cancelLabel}
@@ -172,25 +106,13 @@ export function ConfirmDialog({
             autoFocus
             onClick={onCancel}
           />
-          {/* No convention exception here any more. Until 1.12.0 this was THE
-              sanctioned place for a status colour on a control, marked
-              `glim-convention-exception: no-status-color-on-control`, because
-              the language kept fault-red for the button that ends something.
-              It does not any more, so the exception is not relocated - it is
-              gone, and the guard now covers this file like any other. */}
           <Button
             label={confirmLabel}
-            // The confirm button's meaning changes with the action it confirms
-            // (delete, prune, overwrite), so its glyph cannot come from a fixed
-            // key the way close and cancel above do. `null` where the caller
-            // gave none is the deliberate 'no key' answer, not an oversight.
+            // `null` means no key: the action being confirmed has no fixed one.
             labelKey={confirmLabelKey ?? null}
             glyph={confirmGlyph}
-            // NOT red, since 1.12.0. See "Destructive and confirmable
-            // actions": the window's own sentence is the warning, and a colour
-            // repeating it louder on every delete stops being read. Cancel and
-            // commit look alike on purpose - neither is recommended, the
-            // sentence decides which one somebody wants.
+            // Not red ("Destructive and confirmable actions"): the dialog's
+            // sentence is the warning, and neither button is recommended.
             tone="neutral"
             onClick={onConfirm}
           />
