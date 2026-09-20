@@ -12,24 +12,8 @@ import { counters } from "./History";
 import { arrow, when } from "./Jobs";
 
 /**
- * One job: what it is, what it has been doing, and everything it can be told.
- *
- * This is where the desktop's eight columns went. The list answers "is it
- * keeping up"; this answers "what exactly does this do and what has it done",
- * and it is reached by tapping the card rather than by a row of icons nobody
- * can hit with a thumb.
- */
-/**
- * What a job DOES, at the top of the page that says what it is.
- *
- * Was a page of its own until 2026-09-13. jdp: "ist irgendwie bloed wenn man
- * zwei unterschiedliche seiten pro auftrag hat die unterschiedliches zeigen."
- * The split ran along a line nobody could see - doing on one page, being on the
- * other - and the two words for reaching them said nothing about which was
- * which.
- *
- * Only for a job that EXISTS. A job being typed has nothing to run, no trash and
- * no history, and four empty sections above the fields would be worse than none.
+ * The actions and recent runs of a saved job, shown above its fields in
+ * JobEdit. A job still being typed has none of either.
  */
 export function JobLive({ name }: { name: string }) {
   const nav = useNavigation<Nav<JobsStack>>();
@@ -53,11 +37,8 @@ export function JobLive({ name }: { name: string }) {
   }, [jobName]);
 
   useEffect(() => {
-    // ON MOUNT AND ON FOCUS, and the first half is what this needed when it
-    // stopped being a page. As a screen, navigating to it fired `focus` and
-    // that was the load. As a component inside a screen that is ALREADY
-    // focused, the event never fires again - so it rendered nothing at all,
-    // silently, with no error anywhere. Same code, different lifetime.
+    // Loaded on mount as well: this mounts inside a screen that is already
+    // focused, so the first `focus` event has passed.
     void load();
     const stop = nav.addListener("focus", load);
     return stop;
@@ -76,25 +57,15 @@ export function JobLive({ name }: { name: string }) {
     }
   };
 
-  // Nothing at all until the job is known: four empty sections above the
-  // fields would be worse than none.
   if (!job) return null;
 
   return (
     <>
-      {/* NO status card. Name, paths, direction and schedule are all fields a
-          few lines below this now, and printing them twice on one page is the
-          kind of duplication that starts disagreeing with itself. What is left
-          here is what the fields cannot say: whether it is running, what it did
-          last, and what is in its trash. */}
-
       <Section title={t("jobs.runNow")} hint={t("jobs.runNowHint")}>
         <View style={styles.actions}>
           <Button
-            // ABBRECHEN, not pausing. This button cancels the run's context, so
-            // the next run starts from the beginning - and it said "Pausieren",
-            // which is the word the OTHER control uses for holding a schedule.
-            // Two acts, one word, on the same page.
+            // Cancel rather than pause: the next run starts from the beginning,
+            // and "pause" is the word for holding a schedule.
             label={job.running ? t("jobs.cancelRun") : t("jobs.runNow")}
             labelKey={job.running ? "jobs.cancelRun" : "jobs.runNow"}
             tone={job.running ? "neutral" : "accent"}
@@ -106,8 +77,6 @@ export function JobLive({ name }: { name: string }) {
           />
         </View>
         <View style={styles.actions}>
-          {/* A PREVIEW before a run is the safety net this product is built
-              around, so it is one tap from the job rather than buried. */}
           <Button
             label={t("jobs.preview")}
             labelKey="jobs.preview"
@@ -122,11 +91,6 @@ export function JobLive({ name }: { name: string }) {
         </View>
       </Section>
 
-
-      {/* The bin's own card is gone from here. jdp: "die papierkorb card
-          zusammenfuehren." It was a card with the same title and the same hint
-          as the switch several screens below it, and reading either alone left
-          the other half unanswered. Both live in one card now, in JobEdit. */}
       <Section title={t("jobs.activity")} hint={runs.length ? undefined : t("jobs.activityEmpty")}>
         {runs.map((run) => (
           <Card key={run.ID}>
@@ -145,7 +109,6 @@ export function JobLive({ name }: { name: string }) {
         ))}
       </Section>
 
-      {/* No link to the editor: this IS the editor, a few lines further down. */}
       {error ? <Caption>{error}</Caption> : null}
     </>
   );
@@ -156,7 +119,6 @@ export function directionKey(direction: string): "direction.toRight" | "directio
   if (direction === "toLeft" || direction === "left") return "direction.toLeft";
   return "direction.both";
 }
-
 
 const styles = StyleSheet.create({
   head: {

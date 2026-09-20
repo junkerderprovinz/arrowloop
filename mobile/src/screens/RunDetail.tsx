@@ -9,13 +9,8 @@ import { Badge, Caption, Card, Empty, Mono, Page, Title } from "../ui";
 import { entryKey } from "./History";
 
 /**
- * What ONE run did, path by path.
- *
- * A separate request rather than a field on every run in the list, and that is
- * the engine's own design: a page showing fifty runs wants fifty summaries,
- * and fetching every path each of them touched to draw a row saying "12
- * copied" would be thousands of strings nobody reads. The detail is fetched
- * when a run is opened, which is the moment somebody has asked for it.
+ * What one run did, path by path. The entries are fetched only when a run is
+ * opened, since the history list needs nothing but the summaries.
  */
 export function RunDetail() {
   const route = useRoute<RouteProp<HistoryStack, "RunDetail">>();
@@ -33,8 +28,6 @@ export function RunDetail() {
     return <Empty title={t("phone.runEmpty")} />;
   }
 
-  // Grouped by what was done, because "what changed" is the question and a
-  // hundred rows in file order answers it only after a hundred rows.
   const groups = new Map<string, Entry[]>();
   for (const entry of entries) {
     const list = groups.get(entry.Kind) ?? [];

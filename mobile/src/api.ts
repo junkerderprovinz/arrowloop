@@ -1,27 +1,10 @@
-/**
- * The engine's own API, over loopback.
- *
- * The SAME REST surface the web interface uses - `internal/web/api.go` - and
- * deliberately no second one. A phone-shaped API would be a second contract to
- * keep in step with the first, and the two would disagree the first time a
- * field changed. What differs between the desktop and the phone is which
- * screens exist, not what the engine can be asked.
- *
- * 127.0.0.1 and nothing else, and that address is an implementation detail
- * rather than something to show anybody: the engine runs INSIDE this app, as a
- * child process, and loopback is simply how two parts of one program talk. The
- * engine binds it because it has no login of its own - on a phone there is no
- * network boundary to hide behind, and a port on 0.0.0.0 would hand a tool
- * that deletes files to anybody on the same wifi.
- */
+// The engine's REST API over loopback, the same one the web app uses
+// (internal/web/api.go). The engine has no login, so it listens on 127.0.0.1
+// only.
 
 export const ORIGIN = "http://127.0.0.1:8422";
 
-// ---------------------------------------------------------------------------
-// What the engine says
-// ---------------------------------------------------------------------------
-
-/** A job as the LIST shows it: resolved, with what it is doing right now. */
+/** A job as the list shows it: resolved, with its live state. */
 export interface Job {
   name: string;
   left: string;
@@ -33,17 +16,13 @@ export interface Job {
   running: boolean;
   lastSuccess: string | null;
   /**
-   * When the clock will next reach this job, or absent.
-   *
-   * ABSENT for a job with no schedule, a job switched off, and one whose
-   * expression does not parse - all three mean the same thing to a reader, and
-   * a time printed for any of them would promise a run that is not coming. See
-   * `nextRun` in internal/web/api.go.
+   * When the schedule next runs this job; absent for a job without a
+   * schedule, a held job, or an unparsable expression (internal/web/api.go).
    */
   nextRun?: string;
 }
 
-/** A job as the FILE holds it, which is what an editor works on. */
+/** A job as the configuration file holds it. */
 export interface JobConfig {
   name: string;
   left: string;
@@ -54,10 +33,6 @@ export interface JobConfig {
   watchSettle?: string;
   runAtStart?: boolean;
   disabled?: boolean;
-  // `firstRun` used to live here. It is gone from the engine - the three-way
-  // comparison answers "which side do I believe the first time" from the state
-  // database instead - and a type that still declared it was one edit away from
-  // writing it back into a file the engine now has to strip on every load.
   keepVersions?: number;
   reportOnly?: boolean;
   noTrash?: boolean;
@@ -65,9 +40,7 @@ export interface JobConfig {
   noDefaultExcludes?: boolean;
   excludeSets?: string[];
   direction?: string;
-  /** What a ONE-WAY job does beyond copying: "sync", "mirror" or "move". The
-   *  engine refuses any of the other two on a two-way job, because both decide
-   *  which side is right and a two-way job has not said. */
+  /** "sync", "mirror" or "move"; a two-way job only takes "sync". */
   mode?: string;
   quietPeriod?: string;
   modWindow?: string;
@@ -98,13 +71,8 @@ export interface Run {
 }
 
 /**
- * One path a run touched.
- *
- * CAPITALISED, because the engine sends this struct without json tags and Go
- * then uses the field names as they are written. Assuming the lower-case shape
- * the rest of the API uses produced a screen with the right counts and no
- * paths at all - every row rendered an empty string, which looks like a
- * styling problem and is a contract problem.
+ * One path a run touched. Capitalised, since the engine sends this struct
+ * without json tags.
  */
 export interface Entry {
   Path: string;
@@ -115,52 +83,29 @@ export interface Entry {
 }
 
 /**
- * What one run did, split by the side each file landed on.
- *
- * `up` is files that landed on the RIGHT and `down` files that landed on the
- * left, which is what somebody reads as uploaded and downloaded: the right
- * side of a job is the cloud in nearly every job anybody writes.
- *
- * Only copies count towards the two. A move writes the copy that landed AND
- * the source going away, and counting the second would turn every one-way move
- * job into one that moves files both ways.
+ * What one run did. `up` counts copies that landed on the right side and
+ * `down` those on the left; moves are counted once, by their copy.
  */
 export interface Tally {
   up: number;
   down: number;
   trashed: number;
   conflicts: number;
-  /** The same deletions, split by the side they were removed FROM. */
+  /** The same deletions, split by the side they were removed from. */
   trashedLeft: number;
   trashedRight: number;
 }
 
-/**
- * One thing that happened to one file, with the run it belonged to.
- *
- * The plain Entry is enough while you are reading ONE run. Across runs it is
- * not: the same file copied on Tuesday and again on Friday is two identical
- * lines, and neither says when or which run wrote it.
- *
- * CAPITALISED for the same reason Entry is - the engine sends this struct
- * without json tags.
- */
+/** A log entry across runs, with the run and job it came from. Capitalised like Entry. */
 export interface Touch extends Entry {
   Run: number;
-  /** Which job's run this line came from. The log spans every job, so without
-   *  it a row says a photo was copied and not by what. */
   Job: string;
   When: string;
 }
 
 /**
- * Why the engine decided something, as a translatable thing rather than a
- * sentence.
- *
- * The engine sends a CODE and the values that go in it, and `text` is the
- * English it would have written. A screen renders the code through its own
- * table, which is how a German phone gets a German reason for a decision the
- * engine made in Go.
+ * Why the engine decided something: a code and its values to translate, and
+ * `text`, the English fallback.
  */
 export interface Reason {
   code: string;
@@ -168,14 +113,13 @@ export interface Reason {
   text: string;
 }
 
-/** One side's version of a file, as a plan describes it. */
 export interface SideVersion {
   path: string;
   size: number;
   mod: string;
 }
 
-/** One proposed change, from a preview. */
+/** One proposed change in a plan. */
 export interface Action {
   path: string;
   kind: string;
@@ -196,12 +140,8 @@ export interface Plan {
 }
 
 /**
- * The one call that answers "what storage exists and what could exist".
- *
- * ONE request rather than three, because the engine answers it as one: the
- * configured remotes, the products it can offer, the backends behind them, and
- * the backends no product entry covers. Asking separately would be three round
- * trips for one screen and three chances for them to disagree.
+ * The configured remotes, the products on offer, their backends, and the
+ * backends no product covers, all in one answer.
  */
 export interface Storage {
   remotes: Remote[];
@@ -210,7 +150,6 @@ export interface Storage {
   unlisted: Backend[];
 }
 
-/** What a bin holds, and where it is. */
 export interface Bin {
   job: string;
   side: string;
@@ -223,15 +162,10 @@ export interface Bin {
 export interface Remote {
   name: string;
   type: string;
-  /** The PRODUCT behind the target, and its logo, both named by the engine
-   *  from the settings the target was created with. Absent where the settings
-   *  do not pin one down. See internal/remotes/identify.go. */
+  /** The product behind the target and its logo, as the engine identifies
+   *  them (internal/remotes/identify.go); absent when unknown. */
   provider?: string;
   mark?: string;
-  /** `key` and not `name`, which is the engine's own field. Reading `name`
-   *  here produced an edit form for an existing target with every field
-   *  empty, and an empty field means "leave the secret alone" - so saving it
-   *  would have looked like it worked and changed nothing. */
   settings: { key: string; value: string; secret: boolean }[];
 }
 
@@ -262,28 +196,16 @@ export interface Usage {
   used?: number;
   free?: number;
   /**
-   * Why there is no answer, where the target could not be REACHED.
-   *
-   * It is what tells the two silences apart. A target that answered and keeps
-   * no total, and one that never answered at all, both come back with
-   * `supported: false` - and telling somebody "this target does not report its
-   * size" about a target on an address their phone cannot route to sends them
-   * looking in the wrong place entirely.
+   * Set when the target could not be reached, which tells that case apart
+   * from a target that answered without reporting its size.
    */
   reason?: string;
 }
 
 /**
- * One file in a bin.
- *
- * `filed` is when the run that deleted it happened and is null when the run id
- * cannot be read, which is a real state rather than an oddity: such a file can
- * still be restored but never pruned by age, because its age is unknown.
- * `modified` is what the file itself says.
- *
- * The `runId` is not decoration either - it is half of the address. A path can
- * be in the bin several times over from several runs, and restoring needs to
- * know which one.
+ * One file in a bin. `filed` is when the deleting run happened, or null when
+ * its run id cannot be read. A path can be in the bin once per run, so
+ * `runId` is part of its address.
  */
 export interface TrashItem {
   path: string;
@@ -295,12 +217,9 @@ export interface TrashItem {
 }
 
 /**
- * One line off the engine's event stream.
- *
- * The SAME shape the container reads (`web/src/lib/api.ts`), because it is the
- * same stream. `done` and `total` arrive on every progress line and the total
- * is known before the first byte moves - the plan is built first, so a bar
- * whose total grows while it runs is not something this can produce.
+ * One event from the engine's stream, the same shape web/src/lib/api.ts
+ * reads. The plan is built before the first byte moves, so `total` is known
+ * from the first progress event.
  */
 export interface RunEvent {
   job: string;
@@ -310,37 +229,23 @@ export interface RunEvent {
   total?: number;
   kind?: string;
   path?: string;
-  /** Which side the work lands on, so a screen can say where a file is going. */
+  /** The side the work lands on. */
   side?: string;
   /**
-   * What is in the air right now, on a "moving" frame.
-   *
-   * ABSENT means nothing is - the engine drops an empty list from the JSON
-   * rather than sending `null` on every other frame, so a moving event with no
-   * list is how "the rows are gone" arrives. See internal/daemon/runner.go.
+   * The files in transfer on a "moving" event; the engine omits an empty list
+   * (internal/daemon/runner.go).
    */
   moving?: Moving[];
   /**
-   * Files a second, on a "moving" frame that carries no rows.
-   *
-   * The empty list has two meanings that look identical on a screen: nothing is
-   * moving, or so much is moving that reading which files would slow the run
-   * down. This number is what tells them apart, and it is only ever sent for
-   * the second one.
+   * Files per second, sent on a "moving" event without rows when too many
+   * small files pass to name them.
    */
   rate?: number;
 }
 
 /**
- * One file part-way across, as the engine reads it from rclone.
- *
- * There is never a fixed number of these: rclone moves `transfers` files at
- * once, so the list is as long as the setting. jdp: "je nachdem wie viele up
- * und downloads man gleichzeitig eingestellt hat."
- *
- * `size` is -1 where the service did not say how big the file is, which is
- * ordinary on some clouds. A bar cannot be drawn from it, and treating it as
- * zero would draw a full one.
+ * One file in transfer, as rclone reports it; there are up to `transfers` at
+ * once. `size` is -1 when the service does not report it.
  */
 export interface Moving {
   path: string;
@@ -349,19 +254,14 @@ export interface Moving {
   side?: string;
 }
 
-/** Whether a run went badly, by the same rule the engine uses. */
 export function failed(run: Run): boolean {
   return run.Err !== "";
 }
 
-/** What a run actually changed, which is not the same as what it looked at. */
+/** Counts what a run changed, as opposed to what it compared. */
 export function touched(run: Run): number {
   return run.Copied + run.Moved + run.Trashed + run.DirsMade + run.DirsRemoved;
 }
-
-// ---------------------------------------------------------------------------
-// Asking it
-// ---------------------------------------------------------------------------
 
 export class EngineError extends Error {
   readonly status: number;
@@ -379,22 +279,17 @@ async function call<T>(path: string, init?: RequestInit): Promise<T> {
       headers: { "Content-Type": "application/json", ...(init?.headers ?? {}) },
     });
   } catch (cause) {
-    // A refused connection is the engine not being up YET, which on a cold
-    // start is the ordinary case rather than a fault. Named as itself so the
-    // screens can say "starting" instead of "network error", which is what
-    // every wrapper of this kind says and what nobody can act on.
+    // Status 0: no connection, usually an engine that is still starting.
     throw new EngineError(0, String(cause));
   }
   if (!response.ok) {
-    // The engine answers an error as {"error": "..."} and that sentence is
-    // written for a person. Falling back to the status code only when there is
-    // no sentence keeps the useful case useful.
+    // The engine explains errors as {"error": "..."}.
     let detail = `HTTP ${response.status}`;
     try {
       const body = (await response.json()) as { error?: string };
       if (body?.error) detail = body.error;
     } catch {
-      // A body that is not JSON tells us nothing the status has not.
+      // Not JSON; the status is all there is.
     }
     throw new EngineError(response.status, detail);
   }
@@ -408,13 +303,8 @@ const name = encodeURIComponent;
 
 export const api = {
   /**
-   * Whether the engine is up and answering, rather than merely started.
-   *
-   * With a TIMEOUT of its own, and that is not belt-and-braces: a health check
-   * without one can hang, and a caller polling it in a loop then never reaches
-   * its own deadline. Measured on the rig - the screen sat on "starting the
-   * engine" for three minutes against a sixty-second limit, because the limit
-   * was checked between calls that never came back.
+   * Reports whether the engine answers. It has its own timeout, or a hanging
+   * request would keep a polling caller from ever reaching its deadline.
    */
   async alive(): Promise<boolean> {
     const abort = new AbortController();
@@ -432,14 +322,13 @@ export const api = {
   jobs: () => call<Job[]>("/api/jobs"),
   run: (job: string) => call<void>(`/api/jobs/${name(job)}/run`, { method: "POST" }),
   stop: (job: string) => call<void>(`/api/jobs/${name(job)}/stop`, { method: "POST" }),
-  /** A dry run: what WOULD happen, without doing any of it. */
+  /** A dry run: what would happen, without doing any of it. */
   plan: (job: string) => call<Plan>(`/api/jobs/${name(job)}/plan`),
   check: (job: string) => call<unknown>(`/api/jobs/${name(job)}/check`, { method: "POST" }),
   forgetState: (job: string) => call<void>(`/api/jobs/${name(job)}/state`, { method: "DELETE" }),
 
   trash: (job: string, side: string) => call<Bin>(`/api/jobs/${name(job)}/trash/${side}`),
-  /** ONE file, addressed by path AND run: the same path can be in the bin
-   *  several times over from several runs. */
+  /** Restores one file, addressed by path and run. */
   restoreTrash: (job: string, side: string, path: string, runId: string) =>
     call<void>(`/api/jobs/${name(job)}/trash/${side}/restore`, {
       method: "POST",
@@ -458,27 +347,12 @@ export const api = {
   runEntries: (id: number, limit = 200) =>
     call<Entry[]>(`/api/history/${id}/entries?limit=${limit}`),
 
-  /**
-   * What one run did, COUNTED rather than listed.
-   *
-   * The entries call above answers with a page, so counting what it returns
-   * counts the page: a run over three thousand files would report two hundred.
-   * This is the same question asked of the database.
-   */
+  /** Counts what one run did; `runEntries` returns only a page. */
   runSummary: (id: number) => call<Tally>(`/api/history/${id}/summary`),
 
-  /**
-   * Every file this engine has touched, across every job, newest first.
-   *
-   * NARROWED BY THE ENGINE, never here. The log runs to tens of thousands of
-   * rows and a screen holds a few dozen, so filtering an answer that has
-   * already arrived searches the newest page instead of the log - and "when did
-   * that file last move" is exactly the question the newest page cannot answer.
-   */
+  /** Every file the engine has touched, newest first, filtered by the engine. */
   log: (q: { job?: string; contains?: string; kinds?: string[]; limit?: number } = {}) => {
-    // Assembled by hand rather than with URLSearchParams: React Native ships a
-    // partial URL implementation, and the whole point of this file is that it
-    // speaks the engine's contract exactly.
+    // Built by hand, since React Native's URLSearchParams is incomplete.
     const ask = [`limit=${q.limit ?? 100}`];
     if (q.job) ask.push(`job=${name(q.job)}`);
     if (q.contains) ask.push(`q=${name(q.contains)}`);
@@ -490,15 +364,12 @@ export const api = {
   writeConfig: (config: Config) =>
     call<void>("/api/config", { method: "PUT", body: JSON.stringify(config) }),
 
-  /** Remotes, providers and backends in one answer - see Storage. */
   storage: () => call<Storage>("/api/remotes"),
-  /** Settings that are not saved yet, so a form can be tested before it is
-   *  kept. Nothing is written: see internal/remotes/trycheck.go.
-   *
-   *  `remote` names the target being EDITED, where there is one. The engine
-   *  takes the secrets the form left empty from it, because an empty password
-   *  box means "the one already there" - the same reading saving has always
-   *  used. Without it, testing a saved target sent no password at all. */
+  /**
+   * Tests unsaved settings without writing anything
+   * (internal/remotes/trycheck.go). `remote` names the target being edited, so
+   * the engine can fill in the secrets the form left empty.
+   */
   tryRemote: (type: string, settings: Record<string, string>, remote?: string) =>
     call<{ ok: boolean; reason?: string }>("/api/remotes-check", {
       method: "POST",
@@ -508,36 +379,20 @@ export const api = {
     call<void>(`/api/remotes/${name(remote)}`, { method: "PUT", body: JSON.stringify(body) }),
   deleteRemote: (remote: string) =>
     call<void>(`/api/remotes/${name(remote)}`, { method: "DELETE" }),
-  /** Whether the target answers. The sentence is `reason`, not `error` - the
-   *  engine's own field name, and the card showed a red badge with nothing
-   *  under it for exactly as long as this said otherwise. */
+  /** Reports whether the target answers; the explanation is in `reason`. */
   checkRemote: (remote: string) =>
     call<{ ok: boolean; reason?: string }>(`/api/remotes/${name(remote)}/check`, { method: "POST" }),
   aboutRemote: (remote: string) => call<Usage>(`/api/remotes/${name(remote)}/about`),
 
-  /** What this BUILD is - the version, and whether it has a window. The
-   *  storage list is not here; that is `storage()`. */
+  /** The engine build's version and whether it has a window. */
   capabilities: () => call<{ version: string; window: boolean }>("/api/capabilities"),
 
-  /**
-   * What folders are inside one folder, for picking without typing a path.
-   *
-   * NO PATH means the top: one root on a phone, one per drive on Windows. It
-   * was a required argument here and the engine has always treated it as
-   * optional, so the picker had no way to ask for the top at all.
-   *
-   * The shape was GUESSED and wrong - `{name, dir}` with no `parent`, while the
-   * engine answers `{path, parent, entries:[{name, path}]}` and lists only
-   * folders, so there was never a `dir` to read. Nothing had used it yet, which
-   * is the only reason it never showed; TypeScript believes every word of a
-   * declaration and cannot check it against a server.
-   */
+  /** Lists the folders inside a folder; no path lists the roots. */
   browse: (path?: string) =>
     call<{ path: string; parent: string; entries: { name: string; path: string }[] }>(
       `/api/browse${path ? `?path=${encodeURIComponent(path)}` : ""}`,
     ),
-  /** Makes ONE folder inside the folder the picker has open. The name is a
-   *  single segment and the engine refuses anything that looks like a path. */
+  /** Makes one folder; the engine refuses a name with a path separator. */
   makeDir: (parent: string, name: string) =>
     call<{ path: string }>("/api/browse/mkdir", {
       method: "POST",
@@ -546,16 +401,8 @@ export const api = {
 };
 
 /**
- * The engine's event stream, as an async iterator.
- *
- * Server-sent events over `fetch`, because React Native has no EventSource.
- * The alternative was polling, and polling is what makes a list of jobs feel
- * like a web page from 2005: a run that finishes is visible when it finishes,
- * not up to five seconds later.
- *
- * The engine sends a comment line every twenty seconds precisely so a silent
- * stream is distinguishable from a dead one, and this keeps reading until the
- * caller stops it.
+ * Yields the data of each server-sent event from the engine, read over fetch
+ * since React Native has no EventSource. It reads until the signal aborts.
  */
 export async function* events(signal: AbortSignal): AsyncGenerator<string> {
   const response = await fetch(ORIGIN + "/api/events", { signal });
@@ -567,9 +414,7 @@ export async function* events(signal: AbortSignal): AsyncGenerator<string> {
     const { done, value } = await reader.read();
     if (done) return;
     buffer += decoder.decode(value, { stream: true });
-    // Events are separated by a blank line. Anything after the last one is a
-    // partial event and stays in the buffer - splitting on every newline is
-    // the classic way to hand a screen half a JSON object.
+    // Events end with a blank line; a partial event stays in the buffer.
     const parts = buffer.split("\n\n");
     buffer = parts.pop() ?? "";
     for (const part of parts) {

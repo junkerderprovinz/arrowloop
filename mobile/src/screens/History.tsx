@@ -14,21 +14,9 @@ import { when } from "./Jobs";
 import { bytes } from "../space";
 
 /**
- * What has happened - file by file, and run by run.
- *
- * jdp: "in Autosync sieht man jede einzelne datei im Verlauf, es ist wie ein
- * log, das möchte ich in AL auch haben. Können wir es so machen? Eventuell mit
- * Filterfunktion etc."
- *
- * So FILES are what this tab opens on, because that is the question somebody
- * actually arrives with: where did that photo go, and when. A list of runs
- * answers it only by opening runs one at a time until the right one is found.
- *
- * The runs did not go away, and that is not sentiment: a run that fails before
- * it touches anything - an unreachable target, a drive that is not plugged in -
- * writes NO file lines at all. A tab that only showed files would hide exactly
- * the failure somebody most needs to see. So the two live under one switch,
- * files first.
+ * The history tab: a log of every file touched, and a list of runs behind a
+ * switch. The runs stay because a run that fails before touching anything
+ * writes no file lines.
  */
 export function History() {
   const [mode, setMode] = useState<"files" | "runs">("files");
@@ -40,7 +28,6 @@ export function History() {
   );
 }
 
-/** The switch between the two, drawn identically above either list. */
 function Mode({ value, onChange }: { value: "files" | "runs"; onChange: (next: "files" | "runs") => void }) {
   const { t } = useT();
   return (
@@ -56,21 +43,9 @@ function Mode({ value, onChange }: { value: "files" | "runs"; onChange: (next: "
 }
 
 /**
- * The bar above either list: which log, and the way into the filters.
- *
- * The filters are FOLDED AWAY by default. Open, they took the top third of the
- * screen on the file log - a search box, four segments and a sideways row of job
- * chips - so the log somebody came to read started below the fold on a tab whose
- * whole job is showing it. A filter is something you reach for occasionally; the
- * list is why the tab exists.
- *
- * The switch between files and runs stays out, because it is not a filter. It
- * decides WHICH log is on screen, and hiding it would hide half the tab.
- *
- * `active` is what keeps the fold honest: filters that are hidden and working
- * are filters somebody will blame the engine for. The count rides in the label
- * and the button takes the accent, so a narrowed list always says so from the
- * one control that can widen it again.
+ * The log switch and the button that unfolds the filters, which start folded
+ * so the list stays on the first screen. The button counts the active filters
+ * and takes the accent, so a narrowed list always says so.
  */
 function FilterBar({
   mode,
@@ -102,17 +77,8 @@ function FilterBar({
 }
 
 /**
- * The kinds behind each segment of the "show" filter.
- *
- * Grouped rather than one segment per kind: there are nine kinds and a phone
- * holds four segments. The grouping is by what somebody is looking FOR - things
- * that arrived, things that went away, and things that went wrong - which is
- * the question, rather than by the engine's own vocabulary.
- *
- * `skip` is under trouble because that is what it means here: a path the engine
- * decided not to touch and wrote the reason for. There is no "error" kind - a
- * failure is a skip carrying its reason - so a segment called after one would
- * filter for something no run can produce.
+ * The entry kinds behind each segment of the "show" filter. A failure is a
+ * `skip` carrying its reason; there is no separate error kind.
  */
 const SHOWS = {
   all: [] as string[],
@@ -124,13 +90,8 @@ const SHOWS = {
 type Show = keyof typeof SHOWS;
 
 /**
- * Every file this engine has touched, newest first, narrowed three ways.
- *
- * Every narrowing is asked of the ENGINE. The log runs to tens of thousands of
- * rows on a watching job and the screen holds a few dozen; filtering an answer
- * that has already arrived would search the newest page rather than the log,
- * which is the difference between "nothing matches" and "nothing matches in the
- * last hundred lines".
+ * Every file the engine has touched, newest first. The engine does the
+ * filtering, since the screen holds only the newest page of a long log.
  */
 function FileLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "files" | "runs") => void }) {
   const nav = useNavigation<Nav<HistoryStack>>();
@@ -141,14 +102,11 @@ function FileLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "fil
   const [jobs, setJobs] = useState<string[]>([]);
   const [job, setJob] = useState("");
   const [show, setShow] = useState<Show>("all");
-  // What was typed, and what has actually been asked for. Two states because
-  // they run at two speeds: the box answers every keystroke, the engine must
-  // not - a nine-letter name would otherwise be nine queries over a table with
-  // a row per file per run, and the answers can come back out of order.
+  // The search is debounced, so the engine sees one query per pause rather
+  // than one per keystroke.
   const [typed, setTyped] = useState("");
   const [query, setQuery] = useState("");
-  // Doubles on request rather than paging. Somebody looking for when a file was
-  // touched wants the list to reach further back, not to be handed page four.
+  // Doubles as the list scrolls, rather than paging.
   const [limit, setLimit] = useState(60);
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
@@ -158,9 +116,7 @@ function FileLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "fil
     return () => clearTimeout(timer);
   }, [typed]);
 
-  // Back to one screenful whenever the question changes. Carrying a limit that
-  // grew to 960 rows while scrolling into a search for one name asks the engine
-  // for nine hundred rows to draw three.
+  // Back to one screenful whenever the question changes.
   useEffect(() => setLimit(60), [query, job, show]);
 
   const load = useCallback(async () => {
@@ -176,11 +132,8 @@ function FileLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "fil
     void load();
   }, [load]);
 
-  // The job names come from the CONFIGURATION and from the log, joined. A job
-  // that was renamed or deleted still has its lines in here and leaving it out
-  // would make them unreachable; a job that has never run is in the
-  // configuration and not in the log, and leaving that one out means the job
-  // somebody suspects of doing nothing cannot be asked about.
+  // Job names from both the configuration and the log: a deleted job still has
+  // lines, and a job that never ran has none.
   useEffect(() => {
     api.jobs().then(
       (list) => setJobs(list.map((j) => j.name)),
@@ -196,9 +149,7 @@ function FileLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "fil
 
   useThrottledEvents(load);
 
-  // Counted off what is ASKED of the engine, not off what was typed: a name
-  // still settling in the box has not narrowed anything yet, and a button that
-  // said it had would be counting a keystroke.
+  // Counts the debounced query, not what is still being typed.
   const active = (query ? 1 : 0) + (show === "all" ? 0 : 1) + (job ? 1 : 0);
 
   const header = (
@@ -222,10 +173,7 @@ function FileLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "fil
               { value: "trouble", label: t("history.onlyTrouble") },
             ]}
           />
-          {/* The job filter scrolls sideways rather than sharing the four
-              segments above it. A segmented strip divides the width it has; a
-              list of jobs has no width it can promise, and the fifth job would
-              be three letters and an ellipsis. */}
+          {/* Job chips scroll sideways, since any number of jobs can exist. */}
           {names.length > 1 ? (
             <ScrollView
               horizontal
@@ -271,11 +219,7 @@ function FileLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "fil
         />
       }
       ListFooterComponent={error ? <Caption>{error}</Caption> : null}
-      // Asks for more when the end comes into view, rather than offering a
-      // button. A button at the end of a scrolling list asks somebody to stop
-      // reading, aim and tap, to carry on doing what they were already doing.
-      // Only when the last answer FILLED the limit, which is the one honest
-      // signal that there is more: a shorter list is the whole list.
+      // Only an answer that filled the limit can have more behind it.
       onEndReachedThreshold={0.4}
       onEndReached={() => {
         if (rows.length >= limit) setLimit((n) => n * 2);
@@ -286,15 +230,10 @@ function FileLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "fil
           android_ripple={{ color: p.hover }}
           style={[styles.row, { backgroundColor: p.surface, borderRadius: radius.control }]}
         >
-          {/* The path first, and allowed to wrap. It is what somebody came
-              here to read, and truncating it hides the part that tells two
-              similar files apart. */}
           <Mono>{item.Path}</Mono>
           <View style={styles.meta}>
             <Badge label={t(entryKey(item.Kind))} tone={tone(item.Kind)} />
-            {/* Which way it went, drawn rather than spelled: this is the side
-                that was WRITTEN to, and a file that landed on the right came
-                from the left. */}
+            {/* The arrow points at the side that was written to. */}
             {item.Side === "left" || item.Side === "right" ? (
               <Glyph
                 name={item.Side === "left" ? "IconToLeft" : "IconToRight"}
@@ -306,9 +245,7 @@ function FileLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "fil
             <Caption>{`${when(item.When, t)} ${t("jobs.ago")}`}</Caption>
             {item.Size ? <Caption>{bytes(item.Size)}</Caption> : null}
           </View>
-          {/* Why, where the engine had something to say - the reason a path was
-              left alone, or which way a conflict went. It is the whole value of
-              a `skip` line and the one thing a count can never carry. */}
+          {/* Why a path was skipped, or which way a conflict went. */}
           {item.Note ? <Caption>{item.Note}</Caption> : null}
         </Pressable>
       )}
@@ -317,12 +254,8 @@ function FileLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "fil
 }
 
 /**
- * The runs, newest first: did this run do anything, and did it go wrong.
- *
- * The desktop shows nine counters per run in a table; nine numbers in a row on
- * a phone is a wall, and eight of them are zero on an ordinary night. So the
- * counters are FILTERED to the ones that are not zero, and a run that changed
- * nothing says so in words.
+ * The runs, newest first, each showing only its non-zero counters or, when
+ * nothing changed, a sentence saying so.
  */
 function RunLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "files" | "runs") => void }) {
   const nav = useNavigation<Nav<HistoryStack>>();
@@ -347,10 +280,7 @@ function RunLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "file
   }, [load]);
   useThrottledEvents(load);
 
-  // Filtered HERE rather than by asking again. A hundred runs is a small list
-  // and a round trip per tap on a filter is a screen that feels slow for no
-  // reason anybody can see. The FILE log opposite does the opposite, and the
-  // difference is the size of the thing being filtered.
+  // Filtered locally, unlike the file log: a hundred runs is a small list.
   const shown = useMemo(() => {
     if (!runs) return [];
     if (show === "failed") return runs.filter(failed);
@@ -418,17 +348,10 @@ function RunLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "file
             ) : touched(item) > 0 ? (
               <Badge label={t("history.ok")} tone="ok" />
             ) : null}
-            {/* A run that changed nothing gets no badge at all, and that is
-                the fix rather than a shorter one: the sentence for it is a
-                whole sentence, and a whole sentence beside a title is a pill
-                as wide as the card with its last word cut off. The counters
-                below already say it. */}
+            {/* An idle run gets no badge; the line below already says so. */}
           </View>
           <Caption>{`${when(item.Started, t)} ${t("jobs.ago")}`}</Caption>
           {failed(item) ? (
-            // The engine's own sentence, not a code. It was written for a
-            // person, and replacing it with "an error occurred" is the one way
-            // to make a failure less useful than it already is.
             <Body>{item.Err}</Body>
           ) : (
             <Body>{counters(item, t)}</Body>
@@ -440,12 +363,8 @@ function RunLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "file
 }
 
 /**
- * A pill that is a filter rather than a label.
- *
- * Deliberately the Badge's shape and not the Badge itself: a badge REPORTS and
- * this one is pressed. Sharing the component would mean every badge in the app
- * had to grow an onPress nobody else passes, and somebody would eventually
- * press one that reports.
+ * A pressable filter pill. It has a Badge's shape but is its own component,
+ * since badges only report.
  */
 function Chip({ label, on, onPress }: { label: string; on: boolean; onPress: () => void }) {
   const { p, radius, accent } = useTheme();
@@ -455,9 +374,6 @@ function Chip({ label, on, onPress }: { label: string; on: boolean; onPress: () 
       android_ripple={{ color: p.hover }}
       style={[styles.chip, { backgroundColor: on ? accent : p.surface2, borderRadius: radius.pill }]}
     >
-      {/* Computed against the fill it actually landed on, never a fixed
-          contrast: an accent can be far lighter or darker than the last one,
-          and reusing one answer is how white text ends up on pale mint. */}
       <Text numberOfLines={1} style={[styles.chipText, { color: on ? contrastOn(accent) : p.textSub }]}>
         {label}
       </Text>
@@ -466,12 +382,8 @@ function Chip({ label, on, onPress }: { label: string; on: boolean; onPress: () 
 }
 
 /**
- * Reload on the engine's events, but at most once a second.
- *
- * The stream sends a line per file during a run, and a query per line over a
- * table with a row per file per run is a phone that gets hot showing a log. A
- * second is under the time it takes to read one row and far above the rate the
- * events arrive at.
+ * Reloads on engine events at most once a second, since a run sends an event
+ * per file.
  */
 function useThrottledEvents(load: () => void) {
   const latest = useRef(load);
@@ -492,9 +404,7 @@ function useThrottledEvents(load: () => void) {
       latest.current();
       return;
     }
-    // A trailing call, so the LAST event of a burst is not the one that gets
-    // dropped. Without it a run that finishes inside the quiet second leaves
-    // the screen showing the state from just before it ended.
+    // A trailing call, so the last event of a burst is not dropped.
     if (pending.current) return;
     pending.current = setTimeout(() => {
       pending.current = null;
@@ -504,20 +414,13 @@ function useThrottledEvents(load: () => void) {
   });
 }
 
-/** Which kinds are a problem, so a bad line stands out in a list of good ones. */
 function tone(kind: string): "ok" | "warn" | "fail" | "neutral" {
   if (kind === "skip") return "fail";
   if (kind === "conflict") return "warn";
   return "neutral";
 }
 
-/**
- * A kind as a translation key.
- *
- * The same table RunDetail uses, and it lives here because both screens draw
- * the same vocabulary: a kind spelled one way in one list and another way in
- * the other is the drift nobody reports and everybody notices.
- */
+/** Returns the translation key for an entry kind; RunDetail uses it too. */
 export function entryKey(
   kind: string,
 ):
@@ -552,9 +455,6 @@ export function entryKey(
 
 export function counters(run: Run, t: T): string {
   const parts: string[] = [];
-  // The keys carry their own placeholder - `copied: {count}` - so the number
-  // goes INSIDE rather than in front. Putting it in front produced
-  // "3 kopiert: {count}" on screen, which is the placeholder showing through.
   const add = (n: number, key: "history.copied" | "history.moved" | "history.trashed" | "history.conflicts") => {
     if (n > 0) parts.push(t(key, { count: n }));
   };
@@ -562,9 +462,6 @@ export function counters(run: Run, t: T): string {
   add(run.Moved, "history.moved");
   add(run.Trashed, "history.trashed");
   add(run.Conflicts, "history.conflicts");
-  // The same fiftieth run says the same thing here as on the overview, which is
-  // the point of the rule being arithmetic: a card somebody noticed on one
-  // screen is findable again on the other. See src/eggs.tsx.
   if (parts.length === 0) {
     if (isPerfectlyIdle(run.ID, run.Unchanged)) return t("history.perfectlyIdle");
     return t("preview.identical", { count: run.Unchanged });
@@ -575,21 +472,13 @@ export function counters(run: Run, t: T): string {
 const styles = StyleSheet.create({
   list: { padding: space.lg, gap: space.md },
   filters: { gap: space.sm },
-  // `stretch`, so the selector takes the button's height rather than the button
-  // being squashed to the selector's. The button carries a 44pt touch target and
-  // a thumb needs it; a groove has no such floor and simply grows. Two controls
-  // side by side at two heights read as two rows.
+  // The switch grows to the button's touch height rather than squashing it.
   filterBar: { flexDirection: "row", alignItems: "stretch", gap: space.sm },
-  // The switch takes whatever is left, the button takes what it needs. The
-  // other way round, a two-segment switch sits squeezed beside a button that
-  // has stretched across half the row.
   filterMode: { flex: 1 },
   chips: { gap: space.sm, paddingVertical: space.xs },
   chip: { paddingHorizontal: space.md, paddingVertical: space.xs },
   chipText: { fontSize: text.caption, fontWeight: "600" },
-  // A log line: a surface on the page's ground, not a card. A card is an
-  // object somebody acts on; a hundred of them down a log is a hundred objects
-  // where there is one list.
+  // A log line is a plain surface rather than a card.
   row: { padding: space.md, gap: space.xs },
   meta: { flexDirection: "row", alignItems: "center", flexWrap: "wrap", gap: space.sm },
   head: {

@@ -31,46 +31,23 @@ import {
 import { useAppearance, type BarLabelMode, type LabelMode } from "./settings";
 import { useMotion } from "./motion";
 
-/**
- * The GlimStone controls, as React Native.
- *
- * This file was rewritten because the screens were drawn with borders, loose
- * grey captions and the platform's own switch while the product they connect to
- * draws notch badges, well selectors and filled switches. jdp: "Auch alle
- * toggles und buttons etc sollen wie in Glimmstone aussehen." The shapes and
- * numbers here are the design language's, not approximations: the notch is 22
- * tall and overlaps its card by half, the well is a groove one surface deeper
- * whose CHOSEN segment is the only badge, the switch is a 36x20 track with a
- * 16 knob.
- *
- * NO BORDERS ANYWHERE, which is the rule the old file broke in the most places
- * at once: GlimStone separates surfaces by shade, never by a drawn line. Every
- * `borderWidth` that used to be here was a line the language does not have.
- *
- * Every radius comes from the shape engine at render time. A number baked into
- * a StyleSheet cannot follow a setting, and that is precisely how the corner
- * selector came to look like it did nothing.
- */
+// GlimStone's controls for React Native, with the design language's shapes
+// and sizes: a notch 22 tall overlapping its card by half, a well whose chosen
+// segment is the only filled one, a 36 by 20 switch with a 16 knob. Surfaces
+// are separated by shade, never by borders, and every radius is read from the
+// shape setting at render time.
 
 export interface Theme {
   p: Palette;
   radius: Radii;
   labels: LabelMode;
-  /**
-   * What the BOTTOM BAR shows, which is a separate answer from everything else.
-   *
-   * jdp: "die beschriftungsengine soll für die bottombar separat einstellbar
-   * sein." The bar is the one control that is always on screen and the one with
-   * five words across a phone's width, so the trade it makes between room and
-   * clarity is genuinely not the trade a card's buttons make. Resolved here so
-   * no screen has to know that "wie überall" is stored rather than a mode.
-   */
+  /** The bottom bar's label mode, resolved from its own setting. */
   barLabels: LabelMode;
   rainbow: boolean;
   scheme: "dark" | "light";
   accent: string;
   accentContrast: string;
-  /** The accent darkened enough to be READ on this scheme's ground. */
+  /** The accent darkened enough to read as text on this scheme. */
   accentInk: string;
   /** The colour for one position in a set, or undefined with the mode off. */
   hueAt: (index: number) => string | undefined;
@@ -85,25 +62,17 @@ export function useTheme(): Theme {
     scheme,
     p: base,
     radius: radiusFor(a.shape),
-    // `reactive` never reaches a control here: a phone has no pointer, so a
-    // label that appears under one is a label nobody ever sees. A stored value
-    // from an older build resolves to symbols, which is what it looked like
-    // anyway. See settings.ts for the whole reasoning.
+    // A stored `reactive` resolves to symbols; see settings.ts.
     labels: a.labels === "reactive" ? "glyph" : a.labels,
     barLabels: barMode(a.barLabels, a.labels),
     rainbow: a.rainbow,
     accent: a.accent,
     accentContrast: contrastOn(a.accent),
     accentInk: inkFor(a.accent, scheme),
-    // The EDITED palette where there is one, the shipped colours otherwise.
-    // Empty rather than a stored copy of the defaults, so an install that has
-    // never opened the palette follows the defaults when they change.
     hueAt: (index: number) => {
       if (!a.rainbow) return undefined;
       const set = a.palette.length ? a.palette : RAINBOW;
-      // The offset, so a page does not always open on the same colour. Zero
-      // unless the switch is on, which is what makes turning it off put every
-      // colour back where it was rather than somewhere new.
+      // Zero unless rotation is on, so switching it off restores every colour.
       const off = a.rainbowRotate ? a.rainbowSeed : 0;
       const n = ((Math.trunc(index) % set.length) + set.length) % set.length;
       return set[(n + off) % set.length];
@@ -116,21 +85,15 @@ export function usePalette(): Palette {
 }
 
 /**
- * What the bar shows, from its own setting.
- *
- * TWO stored values resolve to something else here, and both are values the
- * picker no longer offers. `reactive` folds to symbols because a phone has no
- * pointer, so a label that appears under one is a label nobody ever sees.
- * `"same"` - the "wie überall" option, offered for one afternoon before jdp
- * took it out - falls back to the global setting, which is what it meant.
+ * Resolves the bar's label mode. Two stored values the picker does not offer
+ * are mapped: `same` follows the global setting and `reactive` becomes symbols.
  */
 function barMode(bar: BarLabelMode, everywhere: LabelMode): LabelMode {
   const mode = bar === "same" ? everywhere : bar;
   return mode === "reactive" ? "glyph" : mode;
 }
 
-/** The colour one member of a set gets, by position. Off, everything is the
- *  accent - which is what the app looks like unless somebody asked for more. */
+/** Returns the colour for a position in a set, or the accent without the rainbow. */
 export function useHue(index: number): string {
   const { accent, hueAt } = useTheme();
   return hueAt(index) ?? accent;
@@ -141,16 +104,7 @@ export function Screen({ children }: { children: ReactNode }) {
   return <View style={[styles.screen, { backgroundColor: p.background }]}>{children}</View>;
 }
 
-/**
- * A plain surface. No border, no title, and NO coloured edge: one shade above
- * the page and nothing else, which is how this language says "these things
- * belong together".
- *
- * The edge was this app's own invention - neither GlimStone nor the container
- * draws one - and jdp asked for it gone: "die cards sollen kein farbige linie
- * links haben". The rainbow is not lost with it; it lives where the language
- * actually puts it, in the things INSIDE a card.
- */
+/** A plain surface one shade above the page, without border or title. */
 export function Card({
   children,
   onPress,
@@ -169,10 +123,6 @@ export function Card({
     </View>
   );
   if (!onPress) return body;
-  // `android_ripple` rather than an opacity change, because a ripple is what
-  // every other app on the phone does and the difference is felt rather than
-  // seen. The one place this build deliberately does not copy the web's hover
-  // ramp: there is no pointer to hover.
   return (
     <Pressable onPress={onPress} android_ripple={{ color: p.hover }} style={{ borderRadius: radius.card }}>
       {body}
@@ -181,12 +131,8 @@ export function Card({
 }
 
 /**
- * A card with its title as a NOTCH: a filled badge sitting half over the top
- * edge, which is the shape this family's settings pages are built from.
- *
- * The title is not a heading inside the card. A heading inside is a line of
- * text that has to be told apart from the rows below it by size alone; the
- * notch is a different object entirely, so the eye never has to.
+ * A card whose title is a notch: a filled badge sitting half over the top
+ * edge, with the card's (i) beside the title.
  */
 export function Section({
   title,
@@ -199,14 +145,7 @@ export function Section({
   hint?: string;
   /** This card's position among the page's cards, 0-based. */
   hue?: number;
-  /**
-   * A tap on the notch itself, for the rare card whose NAME is a control.
-   *
-   * The notch is a label and stays one: nothing about it changes when this is
-   * given, and a card without it is not pressable at all. It exists because a
-   * title is the one part of a card that carries no other action, which makes
-   * it the only place a second meaning can be added without taking one away.
-   */
+  /** A tap on the title, which looks the same whether or not this is set. */
   onTitlePress?: () => void;
   children: ReactNode;
 }) {
@@ -218,25 +157,12 @@ export function Section({
       <View style={[styles.notchCard, { backgroundColor: p.surface, borderRadius: radius.card }]}>
         {children}
       </View>
-      {/* THE EXPLANATION LIVES IN THE NOTCH, beside the title, which is where
-          the container puts it too.
-
-          It used to float in the card's top-right corner, and on a card whose
-          first row is a well or a switch that put the (i) somewhere between two
-          controls it did not belong to: jdp, on the corners card, "einige i
-          infobubbles sind schlecht platziert". A card has exactly two things
-          that describe the whole card - its name and its reason - and they
-          belong together on its rim, so the inside holds only what the card is
-          FOR. The badge is also where the eye already is when somebody is
-          working out what a card does. */}
       <View style={[styles.notch, { backgroundColor: fill, borderRadius: radius.pill }]}>
         <Text
           style={[styles.notchText, { color: ink }]}
           numberOfLines={1}
           onPress={onTitlePress}
-          // No `suppressHighlighting` fiddling and no pressed state: a card
-          // name must look exactly the same whether or not anything is
-          // listening, or the one card that listens announces itself.
+          // No pressed state, so a listening title does not give itself away.
           disabled={!onTitlePress}
         >
           {title}
@@ -262,10 +188,6 @@ export function Row({
   const { p } = useTheme();
   const body = (
     <View style={styles.row}>
-      {/* Beside the label in an (i), like every other explanation in the app.
-          A row is a label and a control on one line, and a second line of grey
-          prose under half of the rows is what made a settings card read as a
-          list of paragraphs with switches attached. */}
       <View style={styles.rowText}>
         <Text style={[styles.body, { color: p.text, flexShrink: 1 }]}>{label}</Text>
         {hint ? <InfoBubble tip={hint} /> : null}
@@ -287,21 +209,8 @@ export function Title({ children }: { children: ReactNode }) {
 }
 
 /**
- * The head of a card in a list: the product's logo, the name, then whatever the
- * card wants beside them.
- *
- * jdp: "logo und name des ziels auf der card groesser, auf der auftrag card
- * gleich formatieren."
- *
- * ONE component rather than the same markup in two files. The job list and the
- * target list already had identical heads, and they were identical because both
- * were edited the same way twice - which holds until the third edit. Asked to
- * format them the same, the answer is a thing they SHARE, not a second careful
- * copy.
- *
- * The name takes the heading size, not the title size. A card in a list is the
- * heading of its own row: nothing above it competes, and at the smaller size the
- * name of the thing was quieter than the paths beneath it.
+ * The head of a job or target card: the provider's logo, the name at heading
+ * size, then whatever else belongs on the line.
  */
 export function CardHead({
   mark,
@@ -341,20 +250,8 @@ export function Caption({ children }: { children: ReactNode }) {
 }
 
 /**
- * One fact: what it is on the left, what it says on the right.
- *
- * A READING, not a control, and that is the whole distinction from `Row`. A row
- * carries something to change and is sized for a thumb; this is a line somebody
- * reads, so it is the height of its own text and nothing is pressable.
- *
- * The VALUE takes the accent-free ink and the label the muted one, which is the
- * way round somebody scans a status card: the eye goes to the numbers and uses
- * the words to place them. Autosync's overview does the same, and jdp asked for
- * that page.
- *
- * The value wraps rather than truncates and the label does not shrink below its
- * own words, so a long value pushes down instead of pushing the label away -
- * the label is what makes the value mean anything.
+ * A label and a value on one line, for reading rather than changing, unlike
+ * Row. The value is the brighter ink and wraps instead of squeezing the label.
  */
 export function Pair({ label, value }: { label: string; value: ReactNode }) {
   const { p } = useTheme();
@@ -370,8 +267,6 @@ export function Pair({ label, value }: { label: string; value: ReactNode }) {
 export function AxisLabel({ children, hint }: { children: ReactNode; hint?: string }) {
   const { p } = useTheme();
   if (!hint) return <Text style={[styles.axis, { color: p.textSub }]}>{children}</Text>;
-  // An axis can need explaining too, and it gets the same (i) as everything
-  // else rather than a paragraph under the control it introduces.
   return (
     <View style={styles.axisRow}>
       <Text style={[styles.axis, { color: p.textSub }]}>{children}</Text>
@@ -388,12 +283,8 @@ export function Mono({ children }: { children: ReactNode }) {
 export type Tone = "accent" | "neutral" | "ok" | "fail" | "warn";
 
 /**
- * A status word on a ground in that status's own colour.
- *
- * The ground is the status colour at low opacity and the ink is the solid: a
- * fully filled badge in the fail colour reads as an alarm, and a target that
- * has not been reached yet is not an alarm. No border - the tinted ground is
- * what separates it, the way every surface in this language is separated.
+ * A status word on a faint wash of its colour; a fully filled fail badge
+ * would read as an alarm.
  */
 export function Badge({ label, tone = "neutral" }: { label: string; tone?: Tone }) {
   const { p, radius, accentInk } = useTheme();
@@ -412,18 +303,8 @@ export function Badge({ label, tone = "neutral" }: { label: string; tone?: Tone 
 }
 
 /**
- * A filled proportion of a track: how far a run has got, how full a target is.
- *
- * ONE COMPONENT for both, because they are the same statement - this much of
- * that - and drawing them differently would say they are different kinds of
- * fact. The track is the well every other control sits in, and the fill is the
- * accent or the hue the caller is already using, so a meter on a card belongs to
- * that card rather than to the app's one accent.
- *
- * Clamped at both ends. A total of zero is not an error worth a red screen: it
- * is a run that has nothing to do, and an empty track says exactly that. Without
- * the clamp it is a division by zero and a fill of NaN percent, which React
- * Native renders as a full bar - the most wrong of the available answers.
+ * A filled track for progress and for how full a target is. A total of zero
+ * draws an empty track rather than a NaN width, which would render full.
  */
 export function Meter({ done, total, hue }: { done: number; total: number; hue?: string }) {
   const { p, radius, accent } = useTheme();
@@ -431,40 +312,17 @@ export function Meter({ done, total, hue }: { done: number; total: number; hue?:
   const fill = hue ?? accent;
   const part = total > 0 ? Math.max(0, Math.min(1, done / total)) : 0;
 
-  /*
-  THE BAR MOVES, and it is the one animation on the screen somebody actually
-  watches. jdp: "Hast du animationen in der app eingebaut? Auch wilde? mir kommt
-  es vor als würde ich keine sehen." He was right, and this is why: the motion
-  engine was wired into five places, all of them a section folding open in a
-  form or in the settings. Everything on the screens he keeps open - a bar
-  filling, a job card arriving, a file row going - changed instantly.
-
-  A DRIVEN VALUE and not `animateNext`, which is the one case `motion.ts`
-  reserves for `Animated`: nothing here changes LAYOUT. The track keeps its size
-  and the fill inside it grows, so there is no tree to re-measure, only a number
-  to travel.
-
-  `useNativeDriver` is OFF because the thing being animated is a WIDTH, and
-  widths are laid out on the JS side. That is affordable exactly here: the value
-  is retargeted a handful of times a second (the screens that feed it throttle
-  their stream), not once per frame.
-
-  THE SPRING AT THE TOP is the point of the top setting. A progress bar that
-  overshoots a fraction and settles is the most visible place in the app to put
-  the "wild" that the label promises, and it is honest: the bar still ends at
-  the number it reports.
-  */
+  // A driven value rather than a layout animation, since only the fill's width
+  // changes. Width cannot use the native driver, which is affordable because
+  // the callers throttle their updates.
   const width = useRef(new Animated.Value(part)).current;
   useEffect(() => {
     if (!ms.layout) {
       width.setValue(part);
       return;
     }
-    // The damping comes from the intensity table, so the hidden fourth level
-    // swings the bar further than the top visible one without a second set of
-    // numbers here. Critical damping for this spring is near 20, which is why
-    // the top level lands under it (a bounce you can see) and the hidden one
-    // well under it (a bounce you cannot miss).
+    // Critical damping for this spring is near 20, so both spring levels
+    // overshoot visibly.
     const run = ms.spring
       ? Animated.spring(width, {
           toValue: part,
@@ -490,9 +348,7 @@ export function Meter({ done, total, hue }: { done: number; total: number; hue?:
           {
             backgroundColor: fill,
             borderRadius: radius.pill,
-            // Clamped on the way out as well as on the way in: a spring
-            // overshoots by design, and a bar wider than its own track would
-            // spill past the rounded end.
+            // Clamped again, since the spring overshoots past the track's end.
             width: width.interpolate({
               inputRange: [0, 1],
               outputRange: ["0%", "100%"],
@@ -506,56 +362,34 @@ export function Meter({ done, total, hue }: { done: number; total: number; hue?:
 }
 
 /**
- * An explanation, folded into an (i) until somebody asks for it.
- *
- * The house rule is that prose belongs in a bubble rather than in the thing it
- * explains, and the tile grid is where that rule earns its keep: five of the
- * sixty entries carry a sentence, and printed in place those five tiles stand
- * taller than the fifty-five around them - a grid of one size becomes a grid of
- * two because of five sentences nobody needed.
- *
- * A TAP rather than a hover, and a small dialog rather than a tooltip pinned to
- * the corner. A phone has no pointer, so the web's reveal-on-hover has no
- * gesture behind it at all; and a bubble anchored inside a tile that is 180
- * wide would wrap a sentence into eight lines. The dialog is the same text with
- * room to be read, and it leaves every tile the height it had.
+ * An (i) that opens its explanation in a small dialog on tap, since a phone
+ * has no hover and a tooltip inside a narrow tile would wrap badly.
  */
 export function InfoBubble({ tip, on }: { tip: string; on?: string }) {
   const { p, radius, accentInk } = useTheme();
   const { ms } = useMotion();
   const [open, setOpen] = useState(false);
-  // `on` is the ink of the surface this sits on - a card notch hands in its own
-  // contrast ink, because an accent-coloured (i) on an accent-coloured badge is
-  // a mark nobody can see. Without it the bubble takes the accent, which is
-  // right everywhere else: on a card it is the one accent-coloured thing in a
-  // row of neutral controls, which is what makes it findable.
+  // `on` is the ink of the surface underneath, such as a notch filled with
+  // the accent; otherwise the (i) takes the accent.
   const ink = on ?? accentInk;
   return (
     <>
       <Pressable
         onPress={() => setOpen(true)}
-        // The tile underneath is itself pressable, and a tap that opened the
-        // form for a provider somebody was only reading about would be the
-        // picker answering a question nobody asked.
+        // Often sits on a pressable tile.
         hitSlop={8}
         style={[styles.bubble, { backgroundColor: softOn(ink, on ? 0.22 : 0.15), borderRadius: radius.pill }]}
       >
         <Text style={[styles.bubbleMark, { color: ink }]}>i</Text>
       </Pressable>
-      {/* GlimStone's own asymmetry: a fade on OPEN and nothing on close. Short
-          on purpose - a bubble that fades in slowly reads as lag rather than
-          polish, because the finger is already there waiting for it - and a
-          bubble should get out of the way the instant it is no longer wanted.
-          `animationType` is the platform's own fade, which respects Android's
-          animator scale; the engine's intensity decides whether it runs. */}
+      {/* The platform fade follows Android's animator scale; the motion
+          setting decides whether it runs at all. */}
       <Modal
         visible={open}
         transparent
         animationType={ms.fade ? "fade" : "none"}
         onRequestClose={() => setOpen(false)}
       >
-        {/* The ground outside the card dismisses it. A dialog whose only way
-            out is a button is a dialog somebody has to hunt through. */}
         <Pressable style={styles.tipGround} onPress={() => setOpen(false)}>
           <View style={[styles.tipCard, { backgroundColor: p.surface2, borderRadius: radius.card }]}>
             <Text style={[styles.tipText, { color: p.text }]}>{tip}</Text>
@@ -567,40 +401,16 @@ export function InfoBubble({ tip, on }: { tip: string; on?: string }) {
 }
 
 /**
- * Every labelled button, and it answers the LABEL ENGINE like every control in
- * this house.
+ * A labelled button that follows the label setting. Its glyph comes from the
+ * translation key through the web app's rule table; a button without a glyph
+ * shows its word in every mode.
  *
- * The glyph is resolved from the button's own TRANSLATION KEY through the rule
- * table the web interface uses, so a button wears the same mark on both
- * surfaces and no call site has to name one. A key that matches no rule gets no
- * glyph, and a button with no glyph keeps its word in every mode - an empty box
- * somebody has to press to identify is the one failure worth ruling out.
+ * `tone`: `accent` fills with the hue; `neutral` keeps the neutral surface and
+ * text ink, since a coloured word on grey reads as a link; `danger` uses the
+ * fail colour as ink; `ok` and `fail` fill with the status colour to show a
+ * result. `danger`, `ok` and `fail` ignore `hue`.
  *
- * `reactive` resolves to the symbol alone here rather than revealing on hover,
- * because a phone has no hover: a label that appears under a pointer is a label
- * nobody on a phone will ever see.
- *
- * `tone`:
- *   - `accent` fills with the hue and takes contrasting ink.
- *   - `neutral` keeps the neutral surface and ordinary text ink. It does NOT
- *     put the hue in the ink: a coloured word on a grey ground reads as a link,
- *     and the point of the colour engine is that the pressable THING carries
- *     the colour.
- *   - `danger` is neutral with the fail colour in the ink, and it ignores
- *     `hue`: a delete button that turns teal because it is third in a palette
- *     has stopped warning anybody.
- *   - `ok` and `fail` FILL with the status colour, and they are the answer
- *     rather than the invitation: a button that has just been pressed and has
- *     come back with a verdict. jdp asked for exactly this on the connection
- *     test: "Wenn die verbindung nicht passt soll der button rot werden und
- *     wackeln, wenn sie funktioniert soll er grün werden." They ignore `hue`
- *     for the same reason `danger` does - a verdict that changes colour with
- *     its position on the page is not a verdict.
- *
- * `shake` is a COUNTER, not a flag. Every increment runs one wobble, so a
- * second failure after a first shakes again; a boolean would have gone true
- * once and then sat there while nothing moved, which reads as the button having
- * stopped working. Zero, its starting value, runs nothing.
+ * `shake` is a counter: every increment runs one wobble.
  */
 export function Button({
   label,
@@ -616,28 +426,13 @@ export function Button({
   glyph: named,
 }: {
   label: string;
-  /** The translation key behind `label`, which is what picks the glyph. */
+  /** The translation key behind `label`, which picks the glyph. */
   labelKey?: string;
-  /**
-   * ONE NAMED GLYPH, overriding what `labelKey` would have chosen.
-   *
-   * The rule table reads the key's WORDS, which is right for a button whose
-   * meaning is fixed and wrong for one whose meaning changes under it: the
-   * connection test asks with a magnifier and answers with a tick or a cross,
-   * and all three sit under the same `targets.check` key. Naming the drawing is
-   * the honest way to say "this one, now" - and it stays a name rather than an
-   * element so the ink is still computed here.
-   */
+  /** A glyph name overriding the one `labelKey` would pick. */
   glyph?: string;
   /**
-   * An explicit drawing, for the call sites that mean a particular one - the
-   * donation buttons, whose marks are BRANDS and therefore deliberately
-   * unreachable through the rule table.
-   *
-   * A function of the ink rather than a finished element, because the ink is
-   * computed here: a call site that had to work it out would be a second copy
-   * of the tone table, and the first thing to go wrong would be a black coffee
-   * cup on an accent-filled button.
+   * An explicit mark, such as a brand logo, drawn from the ink this button
+   * computes.
    */
   mark?: (ink: string) => ReactNode;
   onPress: () => void;
@@ -647,7 +442,7 @@ export function Button({
   busy?: boolean;
   disabled?: boolean;
   wide?: boolean;
-  /** Bump to wobble once. See the note above: a counter, not a flag. */
+  /** Increment to wobble once. */
   shake?: number;
 }) {
   const { p, radius, labels, accent, hueAt } = useTheme();
@@ -662,17 +457,8 @@ export function Button({
         ? p.failInk
         : p.text;
 
-  /*
-  The wobble: a short left-right ripple that ends where it started.
-
-  `useNativeDriver` because a transform can run on the UI thread, and this one
-  fires at the exact moment the screen is also re-rendering with the answer -
-  the one moment a JavaScript-driven animation would stutter.
-
-  At `off` every duration in the table is zero, so the sequence runs and lands
-  in no time at all: nothing branches on the intensity, the intensity decides
-  how long it takes. Same rule as every other animation in this file.
-  */
+  // The wobble runs on the native driver, since it fires while the screen
+  // re-renders with the result. At `off` its durations are zero.
   const wobble = useRef(new Animated.Value(0)).current;
   useEffect(() => {
     if (!shake) return;
@@ -703,8 +489,6 @@ export function Button({
           borderRadius: radius.control,
           opacity: disabled || busy ? 0.45 : 1,
           flexGrow: wide === false ? 0 : 1,
-          // Eight points each way: far enough to read as a refusal across the
-          // room, short enough not to collide with the button beside it.
           transform: [
             { translateX: wobble.interpolate({ inputRange: [-1, 1], outputRange: [-8, 8] }) },
           ],
@@ -721,20 +505,13 @@ export function Button({
   );
 }
 
-/** A Pressable that a transform can move. `Animated.createAnimatedComponent`
- *  is called ONCE, at module level: doing it inside the component would make a
- *  new component type on every render, and React would unmount and remount the
- *  button mid-animation - which looks like the wobble being cut off. */
+// Created at module level; inside a component it would be a new type on every
+// render and remount the button mid-animation.
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 /**
- * The switch: a track, a knob, filled when on. The same object the web
- * interface draws, so somebody who flipped one there recognises this one.
- *
- * Both radii come from the shape engine. They were the platform's own `Switch`
- * before, which follows Android's shape rather than the app's - so on `square`
- * every other control in the app went rectangular and the switches stayed
- * capsules.
+ * The web app's switch: a track filled when on, with a knob. Drawn by hand
+ * rather than with the platform Switch, so it follows the shape setting.
  */
 export function Switcher({
   value,
@@ -760,8 +537,7 @@ export function Switcher({
         { borderRadius: radius.pill, backgroundColor: value ? on : p.surface3, opacity: disabled ? 0.45 : 1 },
       ]}
     >
-      {/* The knob is the page's own ground sitting on the track, not a fixed
-          white: it reads dark in dark mode and light in light mode. */}
+      {/* The knob takes the page's ground colour rather than a fixed white. */}
       <View
         style={[
           styles.knob,
@@ -772,33 +548,11 @@ export function Switcher({
   );
 }
 
-/** A labelled switch: the row and the control together, which is what every
- *  yes-or-no question here looks like. Never a checkbox. */
 /**
- * A switch with its label, and the label may NAME THE STATE.
- *
- * Two things a switch's label can be, and they are not interchangeable:
- *
- *   - the SETTING, where the switch decides ("Only over Wi-Fi"). The label is
- *     the question and the switch is the answer.
- *   - the STATE, where the switch REPORTS something decided elsewhere
- *     ("Permission granted" / "Permission not granted"). The label is the
- *     answer, and pressing it goes to wherever the question is really asked.
- *
- * `off` opts a control into the second. Pass both labels and the row says what
- * IS rather than what could be - which is what a permission needs, because
- * "File access" beside a switch leaves somebody reading the switch's position
- * to work out a yes or a no that the row could simply have said (jdp: "der text
- * des Toggles soll Berechtigung erteilt heißen und wenn der toggle deaktiviert
- * ist soll es Berechtigung nicht erteilt heißen").
- *
- * WHY IT IS NOT THE DEFAULT: a label that changes can be read as a BUTTON's
- * label - does it say what is, or what happens if I press? On a reported state
- * that ambiguity cannot arise, because the switch's own position says the same
- * thing and the two reinforce each other. On a setting it would: "Only over
- * Wi-Fi off" reads like an instruction. So the state-naming label belongs
- * exactly where the switch is a READING of something this app does not own, and
- * nowhere else.
+ * A switch with its label. Normally the label names the setting; with `off`
+ * given, the label names the current state instead ("Permission granted" or
+ * not), for a switch that reports something decided elsewhere. A changing
+ * label on a real setting would read like an instruction.
  */
 export function Toggle({
   label,
@@ -810,8 +564,7 @@ export function Toggle({
   hue,
 }: {
   label: string;
-  /** The label for the OFF state, where the row names a state rather than a
-   *  setting. Omit it and the label stands in both positions. */
+  /** The label for the off state, when the row names a state. */
   off?: string;
   hint?: string;
   value: boolean;
@@ -829,12 +582,9 @@ export function Toggle({
 }
 
 /**
- * The one horizontal selector: a groove one surface deeper, equal segments, and
- * only the CHOSEN segment is a badge. Never per-segment borders.
- *
- * Each segment owns a palette position, because they are members of one set the
- * way a tab strip's tabs are. Without that, the Theme and Corners rows stayed
- * flat accent on a page where every card around them had gone plural.
+ * The horizontal selector: a groove one surface deeper with equal segments,
+ * where only the chosen segment is filled. Each segment takes its own palette
+ * position.
  */
 export function Choice<T extends string>({
   options,
@@ -845,9 +595,7 @@ export function Choice<T extends string>({
   options: { value: T; label: string; colour?: string }[];
   value: T;
   onChange: (next: T) => void;
-  /** Dimmed and inert, for a control whose answer is coming from somewhere
-   *  else. It still SHOWS that answer, because hiding it would leave somebody
-   *  unable to see what their job is actually set to. */
+  /** Dimmed and inert, but still showing the value in force. */
   disabled?: boolean;
 }) {
   const { p, radius, accent, hueAt } = useTheme();
@@ -871,26 +619,12 @@ export function Choice<T extends string>({
           >
             <Text
               numberOfLines={1}
-              // SHRINKS rather than clips. jdp: "im zeitplan steht Woche mit
-              // ..., die punkte sollen weg." Five segments across a phone leave
-              // each one narrow enough that a real word runs out of room, and
-              // the ellipsis is the worst of the three possible answers: it
-              // spends a character saying that a character is missing, and the
-              // word it cuts is the one somebody is reading to choose between.
-              //
-              // A floor of 0.7 rather than none, because a segment that shrinks
-              // without limit trades one unreadable label for another. Below
-              // that it clips again, which is the honest failure - and a strip
-              // whose words need less than seven tenths of the body size is a
-              // strip with too many segments, not a font problem.
+              // Shrinks rather than truncates with an ellipsis, down to 0.7;
+              // below that the strip has too many segments.
               adjustsFontSizeToFit
               minimumFontScale={0.7}
               style={[
                 styles.segmentText,
-                // Computed against the fill it actually landed on, never a
-                // fixed contrast: a palette position can be far lighter or
-                // darker than the accent, and reusing one answer is how white
-                // text ends up on a pale mint segment.
                 { color: on ? contrastOn(fill) : p.textSub },
               ]}
             >
@@ -904,13 +638,8 @@ export function Choice<T extends string>({
 }
 
 /**
- * A colour swatch. The current one is marked by a RING - an inset gap in the
- * card colour, then the ink - drawn as nested views rather than a border,
- * because a border is a line and this language has none.
- *
- * Sized by the ROW rather than by a number here: eight swatches at a fixed size
- * plus a label do not fit across a phone, and picking a smaller fixed number
- * just moves the wrap to a narrower handset.
+ * A colour swatch, sized by its row. The current one is marked by a ring of
+ * nested views rather than a border.
  */
 export function Swatch({
   hex,
@@ -943,13 +672,7 @@ export function Swatch({
   );
 }
 
-/**
- * What an empty list says.
- *
- * Never a bare blank. An empty screen is indistinguishable from a broken one,
- * and on a phone there is no console to check - so every list that can be empty
- * says which of the two it is.
- */
+/** A message in place of an empty or loading list, so it does not look broken. */
 export function Empty({ title, detail }: { title: string; detail?: string }) {
   return (
     <View style={styles.empty}>
@@ -960,10 +683,8 @@ export function Empty({ title, detail }: { title: string; detail?: string }) {
 }
 
 /**
- * A page that scrolls, with the house padding.
- *
- * `fab` adds room at the bottom for a floating button. Without it the button
- * covers the last row, which is the row somebody scrolled down to reach.
+ * A scrolling page. `fab` adds room at the bottom so a floating button does
+ * not cover the last row.
  */
 export function Page({ children, fab }: { children: ReactNode; fab?: boolean }) {
   const { p } = useTheme();
@@ -982,20 +703,8 @@ export function Page({ children, fab }: { children: ReactNode; fab?: boolean }) 
 export const FAB_ROOM = TOUCH + space.sm + space.lg * 2;
 
 /**
- * The floating button, bottom right, and the wrapper that gives it a page.
- *
- * jdp: "die button auftraege und speicher hinzufuegen soll ein schwebender
- * button rechts unten sein."
- *
- * Both list pages carried their add button as a full-width bar at the TOP,
- * which spends the first screenful of a phone on the act somebody performs
- * least. Bottom right is where the thumb already rests, and it is the one
- * position that does not move as the list grows.
- *
- * IT ANSWERS THE LABEL ENGINE, like every other control in this product: a
- * circle with the mark alone, a pill with the word alone, or a pill with both.
- * The bottom bar was corrected for exactly this once already - a control that
- * opts out of the setting is the one that looks bolted on.
+ * The floating button at the bottom right, where the thumb rests. It follows
+ * the label setting: a circle with the glyph alone, otherwise a pill.
  */
 export function Fab({
   label,
@@ -1003,7 +712,7 @@ export function Fab({
   onPress,
 }: {
   label: string;
-  /** The translation key behind `label`, which is what picks the glyph. */
+  /** The translation key behind `label`, which picks the glyph. */
   labelKey?: string;
   onPress: () => void;
 }) {
@@ -1024,9 +733,7 @@ export function Fab({
         styles.fab,
         {
           backgroundColor: accent,
-          // A circle when it holds a mark alone, a pill the moment it holds a
-          // word. `radius.pill` gives both, because a pill radius on a square
-          // IS a circle.
+          // A pill radius on a square box is a circle.
           borderRadius: radius.pill,
           paddingHorizontal: showWord ? space.lg : 0,
           width: showWord ? undefined : TOUCH + space.sm,
@@ -1044,11 +751,8 @@ export function Fab({
 }
 
 /**
- * A page with something floating over it.
- *
- * The list fills it and the button sits on top, which is the only way to put
- * anything over a FlatList: a sibling inside a `flex: 1` parent, not a child of
- * the list, or it would scroll away with the rows.
+ * A container for a list and a floating button as siblings, so the button
+ * does not scroll with the rows.
  */
 export function Floating({ children }: { children: ReactNode }) {
   return <View style={styles.screen}>{children}</View>;
@@ -1067,10 +771,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: -11,
     left: space.lg,
-    // As wide as its contents and no wider. `left` alone does that; setting
-    // `right` as well would STRETCH an absolutely positioned box across the
-    // card, which turns a badge into a bar. The cap keeps a long title from
-    // running off the edge on a narrow handset.
+    // No `right`, which would stretch the badge across the card; the cap keeps
+    // a long title on it.
     maxWidth: "86%",
     minHeight: 22,
     paddingHorizontal: space.md,
@@ -1087,18 +789,12 @@ const styles = StyleSheet.create({
   notchText: { fontSize: text.caption, fontWeight: "500", textTransform: "uppercase", letterSpacing: 1.2 },
 
   row: { flexDirection: "row", alignItems: "center", gap: space.md, paddingVertical: space.sm },
-  // A row and its (i) on ONE line now, rather than a label with prose stacked
-  // under it. `flexShrink` on the label is what keeps a long one from pushing
-  // the bubble off the end of the row.
   rowText: { flex: 1, minWidth: 0, flexDirection: "row", alignItems: "center", gap: space.sm },
 
   heading: { fontSize: text.heading, fontWeight: "600" },
   title: { fontSize: text.title, fontWeight: "600" },
   body: { fontSize: text.body },
   caption: { fontSize: text.caption, lineHeight: 16 },
-  // A read line, not a control: its height is its text. The label keeps its own
-  // words and the value takes what is left and wraps, because a long value
-  // pushing the label off the row would take away the thing that names it.
   pair: { flexDirection: "row", alignItems: "flex-start", gap: space.md },
   pairLabel: { fontSize: text.body, flexShrink: 0 },
   pairValue: { fontSize: text.body, fontWeight: "600", flex: 1, textAlign: "right" },
@@ -1106,21 +802,14 @@ const styles = StyleSheet.create({
   axisRow: { flexDirection: "row", alignItems: "center", gap: space.sm },
   mono: { fontFamily: "monospace", fontSize: text.caption },
 
-  // `center`, not `flex-start`. The latter beats a row's own
-  // `alignItems: "center"` and pinned every badge to the top of its head
-  // row - reported on a target card, true on all six. It was there to stop a
-  // badge stretching to full width in a COLUMN, and no badge in this app is
-  // in one; `center` prevents the stretch just as well.
-  // The shared card head: the logo, the name, and room for what follows.
   cardHead: { flexDirection: "row", alignItems: "center", gap: space.sm },
   cardHeadMark: { width: 36, alignItems: "center" },
-  // `flexShrink` so a long name yields to the badge and the menu beside it
-  // rather than pushing them off the card.
+  // A long name yields to the badge and menu beside it.
   cardHeadTitle: { fontSize: text.heading, fontWeight: "600", flexShrink: 1 },
+  // `center` keeps a badge from stretching without overriding the row's
+  // vertical centring.
   badge: { paddingHorizontal: 7, paddingVertical: 2, alignSelf: "center", flexShrink: 0 },
   badgeText: { fontSize: text.caption, fontWeight: "600", letterSpacing: 0.2 },
-  // Slim, because it is read at a glance and never touched. `overflow: hidden`
-  // so the fill's own corners cannot poke past the track's at either end.
   meter: { height: 6, overflow: "hidden" },
   meterFill: { height: "100%" },
   bubble: { width: 18, height: 18, alignItems: "center", justifyContent: "center" },
@@ -1135,11 +824,7 @@ const styles = StyleSheet.create({
   tipCard: { maxWidth: 320, padding: space.lg },
   tipText: { fontSize: text.body, lineHeight: text.body + 6 },
 
-  // ONE height and ONE gap for every labelled button. The gap matters: a row
-  // with none sets the glyph against the first letter and the two read as one
-  // smudge.
-  // Bottom right, over whatever the page is. The bottom bar reserves its own
-  // height from the screen above, so `space.lg` here is clear of it.
+  // The bottom bar reserves its own height, so `space.lg` clears it.
   fab: {
     position: "absolute",
     right: space.lg,
@@ -1149,8 +834,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: space.sm,
-    // It floats, so it needs the one shadow in the app that says "above the
-    // page" rather than "a surface on it".
     elevation: 6,
   },
   fabText: { fontSize: text.body, fontWeight: "600" },
@@ -1170,15 +853,10 @@ const styles = StyleSheet.create({
   track: { width: 36, height: 20, padding: 2, justifyContent: "center" },
   knob: { width: 16, height: 16 },
 
-  // The groove takes the card's width and the segments divide it, rather than
-  // each segment being as wide as its own word. With four of them and a fixed
-  // minimum the last one simply ran off the edge of the card - and a segment
-  // nobody can see is an option nobody can choose.
+  // The segments divide the card's width rather than sizing to their words,
+  // so none runs off the edge.
   well: { flexDirection: "row", padding: 3, gap: 2, alignSelf: "stretch" },
-  // `justifyContent` so a segment centres its word when the groove is TALLER
-  // than its own content - which happens when the selector shares a row with a
-  // button and stretches to the button's touch height. On its own the groove is
-  // exactly as tall as its segments, so this changes nothing there.
+  // Centred for when the groove stretches to a neighbouring button's height.
   segment: {
     flex: 1,
     minWidth: 0,

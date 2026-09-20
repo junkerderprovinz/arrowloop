@@ -18,24 +18,11 @@ import { settings } from "./settings";
 export type { Language, TranslationKey };
 export { LANGUAGES, isRtl };
 
-/**
- * Forty-two languages, from the SAME table the container uses.
- *
- * `web/src/lib/i18n.data.ts` holds every sentence, and this reads it. The web
- * app's own i18n.ts carries a React context and Vite's `import.meta.glob`,
- * neither of which Metro can parse - so the data was split out rather than
- * copied. A phone showing a different German from the container is the kind of
- * drift nobody reports and everybody notices.
- *
- * The LANGUAGE ITSELF lives in the engine's settings, not in this app. Somebody
- * who picks Czech at a desk expects Czech on the phone; two independent
- * settings would be two places to change it and one of them always forgotten.
- * The phone's own locale is the fallback for a fresh install that has never
- * been told.
- */
+// The sentences come from web/src/lib/i18n.data.ts, shared with the container.
+// The chosen language is kept in the engine's settings so the phone and the
+// desktop agree; the phone's locale is only the fallback for a fresh install.
 
-/** The translate function, named so a plain helper can take one without
- *  having to be a component to say so. */
+/** The translate function, typed so a plain helper can take one. */
 export type T = (key: TranslationKey, vars?: Record<string, string | number>) => string;
 
 interface I18n {
@@ -47,7 +34,6 @@ interface I18n {
 
 const Ctx = createContext<I18n | null>(null);
 
-/** The phone's own language, when nothing has been chosen. */
 function fromDevice(): string {
   for (const locale of Localization.getLocales()) {
     const short = locale.languageCode?.toLowerCase();
@@ -59,9 +45,6 @@ function fromDevice(): string {
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState(fromDevice);
 
-  // The engine's settings win over the device, once they have been read. Until
-  // then the device's language is on screen rather than English, because a
-  // flash of the wrong language is worse than a moment of the right one.
   useEffect(() => {
     settings
       .read()
@@ -69,8 +52,8 @@ export function I18nProvider({ children }: { children: ReactNode }) {
         if (s.language && SUPPORTED.includes(s.language)) setLangState(s.language);
       })
       .catch(() => {
-        // The engine not answering yet is the ordinary case on a cold start.
-        // The device's language stays, and the next read corrects it.
+        // On a cold start the engine may not answer yet; the device's
+        // language stays until the next read.
       });
   }, []);
 
@@ -80,9 +63,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const table = useMemo(() => {
-    // English underneath everything, always. It is the fallback behind every
-    // missing key, and a language whose table is half finished should show the
-    // English sentence rather than the key itself.
+    // A key missing from an unfinished table falls back to English.
     const chosen: Partial<Translations> =
       lang === "en" ? en : lang === "de" ? de : (locales[lang] ?? {});
     return { ...en, ...chosen } as Translations;
@@ -90,9 +71,8 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 
   const rtl = isRtl(lang);
 
-  // Right to left is a LAYOUT direction, not a text style: React Native flips
-  // every row, every margin and every icon position for it. Told once, here,
-  // rather than by each screen remembering.
+  // Right to left is a layout direction that React Native applies to every
+  // row and margin, so it is set once here.
   useEffect(() => {
     I18nManager.allowRTL(true);
     if (I18nManager.isRTL !== rtl) I18nManager.forceRTL(rtl);

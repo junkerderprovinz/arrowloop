@@ -12,24 +12,10 @@ import { contrastOn, SCRIM, space, text, TOUCH } from "./theme";
 import { Button, useTheme } from "./ui";
 
 /**
- * The crypto window, on the phone.
- *
- * The same window the container opens, built from the same list: `lib/donate.ts`
- * and `lib/qr.ts` are plain data and plain geometry, so both surfaces read them
- * rather than each keeping its own. On a payment address that is not a tidiness
- * argument - a second copy that drifted would be a code scanning to somebody
- * else's wallet, and the person it happens to is a stranger who never writes.
- *
- * THE RULE THE WINDOW EXISTS TO ENFORCE, unchanged from the web: every network a
- * donor can pick carries its OWN address. No line here names a chain without a
- * wallet behind it, so a chain the money cannot arrive on is unofferable rather
- * than merely discouraged. See lib/donate.ts for how nearly shipping the
- * opposite bought that rule.
- *
- * THE ANSWER COMES BEFORE THE QUESTION. The code sits at the top and the picker
- * under it, which is the other way round from a normal dialog: the code is what
- * the window was opened for, and the picker changes it in place, so the thing
- * somebody came to scan never moves off the top of the window.
+ * The crypto donation dialog, built from the web app's lib/donate.ts and
+ * lib/qr.ts so the addresses cannot drift apart. Every network offered carries
+ * its own address. The code sits above the picker, so what somebody came to
+ * scan stays in place while the picker changes it.
  */
 export function CryptoDonate({ onClose }: { onClose: () => void }) {
   const { t } = useT();
@@ -39,10 +25,6 @@ export function CryptoDonate({ onClose }: { onClose: () => void }) {
   const [network, setNetwork] = useState<CryptoNetwork>(CRYPTO_COINS[0]!.networks[0]!);
   const [copied, setCopied] = useState(false);
 
-  // The label flips for a moment and goes back, which is how every other copy
-  // control in this app answers. No toast system here to push to, and a line of
-  // feedback somewhere else on the screen would be worse than the button saying
-  // it itself.
   useEffect(() => {
     if (!copied) return;
     const id = setTimeout(() => setCopied(false), 1500);
@@ -53,20 +35,14 @@ export function CryptoDonate({ onClose }: { onClose: () => void }) {
 
   return (
     <Modal visible transparent animationType="fade" onRequestClose={onClose}>
-      {/* The ground outside the card dismisses it, like every other dialog in
-          this app. Android's own Back does too, through onRequestClose. */}
       <Pressable style={styles.ground} onPress={onClose}>
-        {/* The card swallows the press so a tap inside it does not close the
-            window it is trying to use. */}
+        {/* Swallows presses so a tap inside does not close the dialog. */}
         <Pressable
           onPress={() => {}}
           style={[styles.card, { backgroundColor: p.surface, borderRadius: radius.card }]}
         >
-          {/* Rule 15: a window is a window, and its title is a filled badge on
-              its top edge - the same object a card's notch is, so a dialog and
-              a card are recognisably the same family. No corner X: the footer
-              already answers, and one answer offered twice reads as two
-              choices. */}
+          {/* The title is a filled badge on the top edge, like a card's notch.
+              No corner X, since the footer already closes. */}
           <View style={styles.titleRow}>
             <View style={[styles.title, { backgroundColor: accent, borderRadius: radius.pill }]}>
               <Text style={[styles.titleText, { color: contrastOn(accent) }]} numberOfLines={2}>
@@ -75,9 +51,7 @@ export function CryptoDonate({ onClose }: { onClose: () => void }) {
             </View>
           </View>
 
-          {/* `flexShrink` so the title and the footer keep their room and the
-              middle is what gives on a short screen. Without it the card grows
-              past its own cap and the close button leaves the screen. */}
+          {/* The middle shrinks on a short screen, so the footer stays visible. */}
           <ScrollView
             style={styles.scroll}
             contentContainerStyle={styles.body}
@@ -85,25 +59,16 @@ export function CryptoDonate({ onClose }: { onClose: () => void }) {
           >
             <Text style={[styles.intro, { color: p.textSub }]}>{t("about.cryptoIntro")}</Text>
 
-            {/* The answer, first. */}
             <View style={[styles.answer, { backgroundColor: p.surface2, borderRadius: radius.card }]}>
               <QR value={network.address} size={168} />
 
-              {/* Whole, in one piece, in a mono face, and never shortened. An
-                  address is read back by eye before somebody sends to it, so an
-                  ellipsis in the middle turns the one string that has to be
-                  exact into a string nobody can check. */}
+              {/* Never shortened: an address is checked by eye before sending. */}
               <Text selectable style={[styles.address, { color: p.text }]}>
                 {network.address}
               </Text>
 
-              {/* The chain, switched HERE, directly under the address it
-                  changes. A picker one box away from its own effect makes
-                  somebody look twice to see whether the address moved; a row of
-                  chips under it changes the string in front of their eyes.
-                  Shown even for a coin with one chain, because this is also the
-                  line that SAYS which network the address belongs to, and that
-                  fact may not appear and disappear depending on the tile. */}
+              {/* Shown even for a coin with one chain, since it also names the
+                  network the address belongs to. */}
               <View
                 style={styles.chains}
                 accessibilityRole="radiogroup"
@@ -118,9 +83,7 @@ export function CryptoDonate({ onClose }: { onClose: () => void }) {
                       accessibilityRole="radio"
                       accessibilityState={{ checked: on }}
                       onPress={() => {
-                        // The address below changes length and the note above
-                        // it comes and goes, so the box resizes: animated, it
-                        // reads as the same box saying something new.
+                        // The address and note change length, so the box resizes.
                         animateNext(motion);
                         setNetwork(n);
                         setCopied(false);
@@ -141,17 +104,14 @@ export function CryptoDonate({ onClose }: { onClose: () => void }) {
                 })}
               </View>
 
-              {/* Warn-coloured, and that is not a warning: it is the line a
-                  donor would otherwise go hunting for. Exchanges train people
-                  to look for a destination tag or a memo, so the chain that
-                  does not want one has to say so where the address is. */}
+              {/* Says, for example, that a chain needs no memo, which donors who
+                  know exchanges would otherwise look for. */}
               {network.noteKey ? (
                 <Text style={[styles.note, { color: p.warnInk }]}>{t(network.noteKey)}</Text>
               ) : null}
 
-              {/* The one accent surface in this box, so it takes the position
-                  of the coin it belongs to: in rainbow mode the copy button is
-                  the same colour as the tile the address came from. */}
+              {/* Takes the coin's position, so in rainbow mode the button
+                  matches the picked tile. */}
               <View style={styles.copyRow}>
                 <Button
                   label={copied ? t("common.copied") : t("common.copy")}
@@ -162,26 +122,16 @@ export function CryptoDonate({ onClose }: { onClose: () => void }) {
                     try {
                       void engine.copy(network.address).then(() => setCopied(true));
                     } catch {
-                      // No native module, which is `expo start` on a laptop and
-                      // nowhere else. The address above is selectable, so there
-                      // is still a way to take it - and the button saying
-                      // "copied" when nothing was copied would be worse.
+                      // No native module under `expo start`; the address stays
+                      // selectable.
                     }
                   }}
                 />
               </View>
             </View>
 
-            {/* The picker, under the answer it changes. Tiles rather than a
-                list, because a coin is recognised by its mark faster than its
-                name is read, and a grid of marks is the one layout that says at
-                a glance what is on offer. Four across, as on the web, so the
-                eight land in two even rows.
-
-                The marks are shown in EVERY label mode, which is the one place
-                this app departs from the engine: a coin's mark is what the grid
-                is scanned by, and hiding it until a word is asked for would
-                turn "find USDT" into reading eight tickers in turn. */}
+            {/* The coin marks show in every label mode, since the grid is
+                scanned by mark. */}
             <View style={styles.grid} accessibilityRole="radiogroup" accessibilityLabel={t("about.cryptoTitle")}>
               {CRYPTO_COINS.map((c, i) => {
                 const on = c.id === coin.id;
@@ -195,11 +145,8 @@ export function CryptoDonate({ onClose }: { onClose: () => void }) {
                     onPress={() => {
                       animateNext(motion);
                       setCoin(c);
-                      // Picking a coin must land on a network of THAT coin.
-                      // Keeping the previous chain when it happens to also
-                      // carry the new coin is a convenience with one bad case:
-                      // a chain somebody last looked at staying selected under
-                      // a coin they never checked it against.
+                      // Always the new coin's first network, never a chain
+                      // carried over from the previous coin.
                       setNetwork(c.networks[0]!);
                       setCopied(false);
                     }}
@@ -231,13 +178,8 @@ export function CryptoDonate({ onClose }: { onClose: () => void }) {
 }
 
 /**
- * The address as a scannable square.
- *
- * Black on white and NOT theme-following, which is deliberate and the same
- * decision the browser makes: a camera wants contrast in the direction it
- * expects, and a code drawn light-on-dark is inverted. Some scanners cope,
- * plenty do not, and a wallet that will not read the code is the last minute of
- * somebody trying to give money away.
+ * The address as a QR code, black on white in every theme: many scanners
+ * cannot read an inverted code.
  */
 function QR({ value, size }: { value: string; size: number }) {
   const { path, extent } = useMemo(() => buildQR(value), [value]);
@@ -257,8 +199,6 @@ const styles = StyleSheet.create({
     padding: space.lg,
     backgroundColor: SCRIM,
   },
-  // A cap rather than a height: the window is as tall as it needs to be, and
-  // only starts scrolling on a handset that cannot hold it.
   card: { width: "100%", maxWidth: 420, maxHeight: "88%", overflow: "hidden" },
   titleRow: { paddingHorizontal: space.lg, paddingTop: space.lg },
   title: { alignSelf: "flex-start", paddingHorizontal: space.md, paddingVertical: 3 },
@@ -272,7 +212,6 @@ const styles = StyleSheet.create({
     fontFamily: "monospace",
     fontSize: text.dense,
     textAlign: "center",
-    // Wrapped rather than truncated, for the reason above the element.
     width: "100%",
   },
   chains: { flexDirection: "row", flexWrap: "wrap", justifyContent: "center", gap: space.sm },
@@ -281,10 +220,8 @@ const styles = StyleSheet.create({
   note: { fontSize: text.dense, textAlign: "center" },
   copyRow: { flexDirection: "row", alignSelf: "stretch" },
 
-  // Four across on any width, which is what the eight coins need to land in two
-  // even rows. A fifth cannot fit - five bases of 20% plus four gaps is over the
-  // line - and `flexGrow` then spreads the four across whatever is left, so the
-  // row fills exactly rather than leaving a ragged margin on a narrow handset.
+  // Four across at any width: five 20% bases plus the gaps overflow, and
+  // flexGrow spreads the four over the row.
   grid: { flexDirection: "row", flexWrap: "wrap", gap: space.sm },
   tile: {
     flexBasis: "20%",

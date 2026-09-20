@@ -1,111 +1,66 @@
 import { NativeModules, Platform } from "react-native";
 
-/**
- * The engine PROCESS, as opposed to the engine's API.
- *
- * Two different things and it is worth keeping them apart: `api.ts` talks to a
- * running engine over HTTP, this starts and stops the process that answers.
- * Everything here crosses into Kotlin, because none of it is expressible in
- * JavaScript - executing a binary out of the native library directory, holding
- * a foreground service, asking for a permission Android grants on a settings
- * page.
- *
- * The Kotlin behind it is the code the WebView shell already used, moved
- * behind a module rather than rewritten: `Engine.kt`, `EngineService.kt` and
- * `Storage.kt` keep every comment explaining why they are the way they are -
- * the exec-from-nativeLibraryDir rule, the dataSync caps, the whole SAF
- * finding.
- */
+// Starts and stops the engine process through the native module; api.ts talks
+// to the running engine over HTTP.
 
 interface EngineNativeModule {
-  /** Start the foreground service, which starts the engine. Idempotent. */
+  /** Starts the foreground service, which starts the engine. Idempotent. */
   start(): Promise<void>;
-  /** Stop the service and the engine with it. */
   stop(): Promise<void>;
-  /** The engine's own log for this run, newest last. */
+  /** The engine's log for this run, newest last. */
   log(): Promise<string>;
-  /** Whether the process we started is still alive - which an empty log
-   *  cannot say, since "died before writing" and "running and quiet" look
-   *  identical from the outside. */
+  /** Whether the started process is alive, which an empty log cannot tell. */
   alive(): Promise<boolean>;
-  /** Whether the app may read and write the phone's files. */
   storageGranted(): Promise<boolean>;
-  /** Whether this Android version can grant that at all. Android 10 cannot:
-   *  MANAGE_EXTERNAL_STORAGE arrived in 11, and requestLegacyExternalStorage
-   *  is ignored for an app targeting above 29. */
+  /** False on Android 10, which cannot grant full file access. */
   storagePossible(): Promise<boolean>;
-  /** Open the settings page that grants it. There is no dialog for this
-   *  permission - Google routed the broadest file access there is through a
-   *  full settings page rather than a two-button prompt. */
+  /** Opens the settings page that grants file access; there is no dialog for it. */
   openStorageSettings(): Promise<void>;
-  /** This app's own settings page, where a refused permission can be changed.
-   *  The request dialog is a one-shot and shows nothing after a no. */
+  /** Opens the app's settings, where a refused permission can be changed. */
   openAppSettings(): Promise<void>;
-  /** Android's own notification settings for this app: sound, vibration,
-   *  banners, Do Not Disturb, the per-channel switches. All of it is Android's
-   *  to own, so this links there rather than rebuilding it. */
   openNotificationSettings(): Promise<void>;
-  /** The battery-optimisation list, where an OEM's power manager keeps the
-   *  setting that decides whether a background job ever runs. */
+  /** Opens the battery optimisation list, where OEMs decide whether background jobs run. */
   openBatterySettings(): Promise<void>;
-  /** Write a settings backup into the public Downloads folder, and hand back
-   *  where it landed. */
+  /** Writes a settings backup to Downloads and returns its path. */
   exportSettings(json: string): Promise<string>;
-  /** Read one back. An empty path means the default place. */
+  /** Reads a backup; an empty path means the default place. */
   importSettings(path: string): Promise<string>;
-  /** Where a backup goes, before one has ever been written. */
   backupPath(): Promise<string>;
-  /** Whether this phone has a real screen lock, as opposed to a swipe. */
+  /** Whether the phone has a real screen lock rather than a swipe. */
   hasDeviceLock(): Promise<boolean>;
-  /** Ask for the phone's own lock. True when it was given. */
+  /** Asks for the phone's lock and resolves true when it was given. */
   confirmDeviceLock(title: string, detail: string): Promise<boolean>;
 
-  /** Both schedule conditions and the facts behind them, in one answer: what
-   *  was asked for, what the phone is actually plugged into, and the sentence
-   *  that is holding automatic runs back right now if one is. */
   devicePolicy(): Promise<DevicePolicy>;
-  /** Store what the map names and tell the engine at once. Anything it leaves
-   *  out keeps its stored value, so a screen changing one switch does not have
-   *  to restate the other four. */
+  /** Stores the given conditions and tells the engine; omitted ones keep their value. */
   setDevicePolicy(policy: Partial<DeviceConditions>): Promise<void>;
-  /** Whether the engine is UP and answering, as opposed to whether this app's
-   *  own handle to it is still alive. The card that says "the engine is
-   *  running" wants this one. */
+  /** Whether the engine answers over HTTP, not merely whether its process lives. */
   answering(): Promise<boolean>;
-  /** Whether Android has agreed to leave the app alone in the background. */
   batteryExempt(): Promise<boolean>;
-  /** Ask for that, which really is one dialog with one button. */
   askBatteryExemption(): Promise<void>;
-  /** Put a string on the system clipboard. Here rather than through a library
-   *  because the app already owns a native module and this is four lines of it:
-   *  React Native's own Clipboard is deprecated and warns on every use, and a
-   *  second autolinked package for one call is a build dependency to keep
-   *  current forever. */
+  /** Copies to the clipboard; React Native's own Clipboard is deprecated. */
   copy(value: string): Promise<void>;
 }
 
 /**
- * What somebody asked for. Separate from the facts below, because these are
- * the only fields that may be WRITTEN, and a single type covering both invites
- * a screen to send a live reading back as a preference.
+ * The run conditions somebody chose. Kept apart from the live readings in
+ * DevicePolicy, since only these may be written.
  */
 export interface DeviceConditions {
   onlyCharging: boolean;
   onlyWifi: boolean;
-  /** Percent, nought to ninety-five. Zero is off. */
+  /** Percent, 0 to 95. Zero is off. */
   minBattery: number;
   notRoaming: boolean;
-  /** A question about the BILL, deliberately not the same one as onlyWifi: a
-   *  wifi network its owner marked metered is exactly what that switch cannot
-   *  catch. */
+  /** About cost rather than transport: a wifi network can be metered. */
   notMetered: boolean;
 }
 
 export interface DevicePolicy extends DeviceConditions {
   charging: boolean;
-  /** Whether this phone is on wifi or a cable, as opposed to mobile data. */
+  /** On wifi or a cable, as opposed to mobile data. */
   onWifi: boolean;
-  /** Nought to a hundred, or -1 when nothing has published a reading yet. */
+  /** 0 to 100, or -1 before the first reading. */
   battery: number;
   roaming: boolean;
   metered: boolean;
@@ -113,9 +68,7 @@ export interface DevicePolicy extends DeviceConditions {
   holding: string;
 }
 
-/** What a build with no engine reports: every switch off, every fact benign.
- *  Nothing held, because a stand-in that held runs would look like a bug on the
- *  one target where nothing can run anyway. */
+/** What a build without the native module reports: nothing held. */
 const NOTHING_HELD: DevicePolicy = {
   onlyCharging: false,
   onlyWifi: false,
@@ -133,19 +86,14 @@ const NOTHING_HELD: DevicePolicy = {
 const native = NativeModules.ArrowLoopEngine as EngineNativeModule | undefined;
 
 /**
- * A stand-in for anywhere the native module is absent.
- *
- * That is `expo start` on a laptop and the web target, where there is no
- * engine to supervise. It REFUSES rather than pretending: a stub that resolved
- * happily would make a development build look like it had started an engine
- * that does not exist, and the screens would then wait sixty seconds for
- * nothing.
+ * Throws where the native module is absent (`expo start`, the web target), so
+ * a development build never looks as if it started an engine.
  */
 function missing(): never {
   throw new Error(
     Platform.OS === "android"
       ? "the engine module is missing from this build"
-      : `there is no engine on ${Platform.OS} - ArrowLoop's engine is Android-only`,
+      : `there is no engine on ${Platform.OS}; ArrowLoop's engine is Android-only`,
   );
 }
 
@@ -173,7 +121,6 @@ export const engine = {
   batteryExempt: () => (native ? native.batteryExempt() : Promise.resolve(true)),
   askBatteryExemption: () => (native ? native.askBatteryExemption() : missing()),
   copy: (value: string) => (native ? native.copy(value) : missing()),
-  /** Whether this build has an engine at all, so a screen can say so instead
-   *  of throwing at the first tap. */
+  /** Whether this build has an engine at all. */
   available: Boolean(native),
 };

@@ -1,25 +1,14 @@
 #!/usr/bin/env python3
-"""The app's idea of the engine's answers, checked against a real engine.
+"""Checks the response shapes declared in src/api.ts against a live engine.
 
-`src/api.ts` declares what comes back from every endpoint, and TypeScript
-believes every word of it: a declaration is a promise, not a measurement, so a
-field the engine calls `reason` and the app calls `error` compiles perfectly and
-renders an empty string. Four of those shipped at once - a red badge with no
-sentence under it, an edit form whose fields were all empty, a bin where every
-row said "age unknown", and a restore that posted a list to an endpoint that
-takes one file.
-
-None of them is visible to the compiler, to the language tests, or to a screen
-that renders an empty string where a sentence should be. This is the only check
-that can see them, because it is the only one that asks the engine.
-
-Run it against a live engine:
+TypeScript trusts the declarations, so a field the engine calls `reason` and
+the app calls `error` compiles and renders an empty string. Run it against a
+live engine:
 
     python mobile/tools/check_shapes.py http://127.0.0.1:8422
 
-It reports a field the app declares and the engine never sends, which is the
-direction that matters. The other direction - the engine sending more than the
-app reads - is normal and says nothing.
+It reports fields the app declares and the engine never sends. Extra fields
+from the engine are normal.
 """
 
 from __future__ import annotations
@@ -49,19 +38,13 @@ CHECKS = [
     ("Backend", "/api/remotes", ["backends", "[]"]),
     ("Bin", "/api/jobs/{job}/trash/left", []),
     ("TrashItem", "/api/jobs/{job}/trash/left", ["entries", "[]"]),
-    # Only when the service actually answers the question: a target that says
-    # `supported: false` sends none of the three numbers, and that is the
-    # correct answer rather than a missing field.
+    # A target answering `supported: false` rightly sends none of the numbers.
     ("Usage", "/api/remotes/{remote}/about", [], ("supported", True)),
 ]
 
-# The shapes whose absence is a FAILED check rather than a quiet skip.
-#
-# A checker that reports nothing because it could reach nothing is the same
-# blind pass as a test that cannot fail. These three need real divergence to
-# exist at all - an empty plan carries no actions and therefore no reason - so
-# a run against an engine whose sides already agree has not checked them, and
-# has to say so with its exit code rather than a line nobody reads.
+# Shapes that fail the check when they cannot be reached. They only exist when
+# the sides differ and the bin holds something, and an engine without that has
+# not checked them.
 REQUIRED = {"Action", "Reason", "TrashItem"}
 
 # Every entry is (interface, path, into) with an optional fourth element: a
@@ -70,14 +53,10 @@ CHECKS = [check if len(check) == 4 else (*check, None) for check in CHECKS]
 
 
 def declared(source: str, name: str) -> tuple[set[str], set[str]] | None:
-    """What one interface declares, split into required and optional.
+    """Returns the required and optional fields one interface declares.
 
-    Both halves are checked, and differently. A REQUIRED field has to be in
-    every object. An OPTIONAL one only has to turn up in at least one of them -
-    `Action.right` is genuinely absent when only the left has the file, while
-    `TrashItem.deleted` was absent from every entry ever sent, because the
-    engine calls it `filed`. Sampling one object cannot tell those apart;
-    sampling all of them can.
+    A required field has to be in every object, an optional one in at least
+    one: `Action.right` is legitimately absent when only the left has the file.
     """
     match = re.search(
         rf"^export interface {re.escape(name)} \{{(.*?)^\}}", source, re.M | re.S
@@ -85,7 +64,7 @@ def declared(source: str, name: str) -> tuple[set[str], set[str]] | None:
     if not match:
         return None
     body = match.group(1)
-    # An index signature means the shape is deliberately open; nothing to check.
+    # An index signature leaves the shape open, so there is nothing to check.
     if re.search(r"^\s*\[key: string\]", body, re.M):
         return set(), set()
     need, maybe = set(), set()
@@ -162,8 +141,6 @@ def main() -> int:
             unchecked.append(f"{name}: {only[0]} is not {only[1]} here")
             continue
 
-        # Required: absent from the first object is absent. Optional: absent
-        # from EVERY object is a name nobody sends.
         ever = set().union(*(set(item) for item in found))
         missing = sorted(
             [field for field in need if field not in found[0]]
@@ -175,7 +152,7 @@ def main() -> int:
             )
 
     for line in unchecked:
-        print(f"not checked - {line}")
+        print(f"not checked: {line}")
     for line in problems:
         print(line)
 

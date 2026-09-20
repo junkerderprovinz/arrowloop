@@ -1,30 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Only what ANDROID ITSELF shows. Everything a person reads inside the app now
-  comes from React Native, which is the whole point of the rewrite - so this
-  file is down to the notification and its channel, and it will not grow.
+  Only what Android itself shows: the notification and its channels.
+  Everything read inside the app comes from React Native.
 
-  Named strings_engine.xml rather than strings.xml because `expo prebuild`
-  generates a strings.xml of its own for the app name and the scheme, and two
-  files of the same name in the same folder is one overwriting the other.
+  Not strings.xml, because `expo prebuild` generates one of that name for the
+  app name and the scheme, and two files of one name in a folder overwrite
+  each other.
 
-  Every placeholder must match values-de/. `getString` fills by POSITION, so a
-  translation with fewer placeholders silently drops the rest of the arguments
-  - which shipped once and put the number 60 on screen where a log should have
-  been. android/tools/check_strings.py is the guard.
+  Every placeholder must match values-de/. `getString` fills by position, so a
+  translation with fewer placeholders silently drops the remaining arguments.
+  android/tools/check_strings.py is the guard.
 -->
 <resources>
     <!--
-      THREE channels, not one, so Android's own notification page has something
-      to offer. jdp: "gibt es nicht unterschiedliche benachrichtigungskanäle?
-      Wie Motor, Sync ereignisse, fehler, Erfolg, etc die man in native android
-      kanäle aufteilen kann?" There is, and it pairs with the link this app now
-      has into that page: a single channel makes it a page with one switch on
-      it, which is the same as having no page.
-
-      Three rather than the five somebody could name, because a channel with
-      nothing behind it is a switch that does nothing. These are exactly the
-      three things the app can say: it is working, it finished, it failed.
+      One channel per thing the app can say, so Android's own notification
+      page has more than a single switch on it: it is working, it finished, it
+      failed. A fourth channel would be a switch with nothing behind it.
     -->
     <string name="channel_engine">Engine</string>
     <string name="channel_engine_why">Shown while ArrowLoop is syncing in the background. Silent.</string>
@@ -44,14 +35,13 @@
     <string name="notify_done_what">%1$d copied, %2$d moved, %3$d binned, %4$d conflicts</string>
     <string name="notify_failed">Sync failed</string>
     <!--
-      The one failure this app authors itself, so the one it can say in the
-      phone's language. Everything else under a failed sync is a sentence out
-      of the engine, composed in Go, and it arrives in English until those
-      reasons carry codes.
+      The one failure this app authors itself, and so the one it can say in
+      the phone's language; every other reason under a failed sync is a
+      sentence the engine composed in Go and arrives in English.
 
-      Worth saying plainly rather than as a timeout: thirty seconds is long
-      enough that "it was slow" is not the explanation. Either the engine is
-      not in this build or it could not start.
+      Said plainly rather than as a timeout: after thirty seconds "it was
+      slow" is not the explanation, and either the engine is missing from this
+      build or it could not start.
     -->
     <string name="notify_failed_no_engine">The engine did not start. Open ArrowLoop once and check the engine card.</string>
 </resources>

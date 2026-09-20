@@ -38,43 +38,11 @@ import { Body, Button, Heading, Screen, useTheme } from "./src/ui";
 import { engine } from "./src/engine";
 import { useEngine } from "./src/useEngine";
 
-/**
- * ArrowLoop on a phone.
- *
- * FIVE tabs. Four of them are the desktop's, because they are the same four
- * questions: what is set up, where it syncs to, what happened, and how it
- * behaves. What differs is the depth behind each - a desk is where a sync is
- * built and a phone is where it is watched, so the list is one tap from a
- * detail rather than a table with every column visible at once.
- *
- * The fifth is the OVERVIEW, and it is the phone's own: a desk has room to show
- * what is running beside everything else, and a phone does not. jdp asked for
- * it by name after Autosync's. It sits first because it is the page somebody
- * opens the app to look at.
- *
- * A stack PER TAB rather than one across the app, which is what makes the back
- * gesture do the obvious thing: leaving a job's detail returns to the job list
- * and not to whatever was open in another tab. Android's back button is a
- * promise about where you came from, and a single stack breaks it the first
- * time somebody switches tabs mid-task.
- *
- * A bottom bar rather than the desktop's rail: a rail is reachable with a
- * mouse and a bar is reachable with a thumb, which is that whole difference in
- * one control.
- *
- * THE FOUR PAGES SWIPE. jdp: "zwischen den hauptseiten in der bottom bar soll
- * man auch seitlich durchswipen koennen." That is the one thing a bottom-tab
- * navigator cannot do - it mounts a single screen at a time and has no pager
- * under it - so the four screens hang off the MATERIAL TOP tab navigator with
- * its bar moved to the bottom. Nothing else changes: the bar below is still
- * drawn by hand and keeps every rule it was given.
- *
- * The swipe is switched OFF whenever a tab's own stack is deeper than its
- * root. A sideways drag inside the job editor meant to scrub a text field, or
- * on a detail page reached by tapping a card, would otherwise throw somebody
- * into the next tab and lose what they were doing - and the way back is not
- * obvious, because the stack they left is still where they left it.
- */
+// Five tabs: the overview first, then the desktop's four. Each tab has its own
+// stack, so back returns within the tab. The tabs use the material top tab
+// navigator with its bar at the bottom, because the bottom tab navigator has no
+// pager to swipe between pages; swiping is off once a tab has left its root
+// screen, where a sideways drag belongs to the screen.
 const Tabs = createMaterialTopTabNavigator();
 const OverviewNav = createNativeStackNavigator<OverviewStack>();
 const JobsNav = createNativeStackNavigator<JobsStack>();
@@ -83,9 +51,7 @@ const TargetsNav = createNativeStackNavigator<TargetsStack>();
 const SettingsNav = createNativeStackNavigator<SettingsStack>();
 
 export default function App() {
-  // Read BEFORE the first paint, so nothing flashes in the wrong accent. A
-  // theme that arrives a frame late is the tell of an app assembled rather
-  // than designed.
+  // Loaded before the first paint, so nothing flashes in the wrong theme.
   const [ready, setReady] = useState(false);
   useEffect(() => {
     loadAppearance().finally(() => setReady(true));
@@ -107,19 +73,8 @@ function Shell() {
   const { state, log, retry } = useEngine(t);
   const look = useAppearance();
 
-  /**
-   * The lock, if this install asked for one.
-   *
-   * It gates the whole app rather than the settings alone, which is the plain
-   * reading of "die app sperren": somebody who can see the job list can see
-   * every path this phone syncs and can start a run. Half a lock is the kind
-   * that surprises people.
-   *
-   * Locked again after a MINUTE in the background rather than instantly. An app
-   * that asks for the phone's PIN every time somebody glances at a message is
-   * an app people switch the lock back off in, and a minute is short enough
-   * that a phone handed to somebody else is still locked.
-   */
+  // The optional lock gates the whole app, since the job list alone shows
+  // every synced path. It closes again after AWAY_MS in the background.
   const [locked, setLocked] = useState(look.lock);
   const left = useRef(0);
 
@@ -131,8 +86,7 @@ function Shell() {
   }, [t]);
 
   useEffect(() => {
-    // A lock switched on in the settings must not lock the screen it was
-    // switched on from; it takes effect the next time the app is left.
+    // Switching the lock on takes effect the next time the app is left.
     if (!look.lock) setLocked(false);
   }, [look.lock]);
 
@@ -148,15 +102,12 @@ function Shell() {
     return () => sub.remove();
   }, [look.lock]);
 
-  // Asked as soon as the app comes up locked, so the first thing on screen is
-  // the phone's own dialog rather than a wall with a button on it.
+  // A locked app opens straight into the phone's own unlock dialog.
   useEffect(() => {
     if (locked) unlock();
   }, [locked, unlock]);
 
-  // Navigation's own theme, so the chrome it draws - the bar, the header, the
-  // ripple - uses GlimStone's colours rather than its defaults. Skipping this
-  // is what makes a React Native app look like a React Native app.
+  // So the navigator's own chrome uses GlimStone's colours.
   const base = scheme === "light" ? DefaultTheme : DarkTheme;
   const navTheme = {
     ...base,
@@ -179,15 +130,8 @@ function Shell() {
     contentStyle: { backgroundColor: p.background },
   } as const;
 
-  // The notification permission, asked ONCE and automatically, the moment
-  // there is an engine to be notified about. Android grants this one through a
-  // real dialog with an Allow button, so there is no reason to make somebody go
-  // looking for it in the settings first; the button on the settings screen is
-  // for afterwards, when the answer was no and has become yes.
-  //
-  // Only when the engine is up, because the request opens a dialog over
-  // whatever is on screen, and a dialog over a "starting the engine" message is
-  // a dialog about something that has not happened yet.
+  // Asks for the notification permission once the engine is up; the settings
+  // screen covers a later change of mind.
   useEffect(() => {
     if (state !== "ready") return;
     let gone = false;
@@ -208,67 +152,27 @@ function Shell() {
       <StatusBar style={scheme === "light" ? "dark" : "light"} />
       <NavigationContainer theme={navTheme}>
         <Tabs.Navigator
-          // The bar belongs at the bottom of the screen, which is the whole
-          // reason this navigator can stand in for the other one.
           tabBarPosition="bottom"
           screenOptions={({ route }) => ({
-            // Swipe only while the tab shows the page the bar points at. Once
-            // somebody has drilled into a detail or an editor, a sideways drag
-            // belongs to the screen they are on, not to the navigator.
             swipeEnabled: !deeperThanRoot(route),
-            // The bar FLOATS as a card rather than being welded to the bottom
-            // of the screen. jdp: "die untere leiste soll nicht am rand kleben
-            // sondern aussehen wie die sidebar." The desktop rail made the same
-            // move for the same reason: everything else on screen is a card on
-            // a ground, and the one element that was neither read as belonging
-            // to the system's chrome instead of to the app.
-            //
-            // The bar itself goes transparent and the card is drawn behind it,
-            // which is what lets the card be INSET while the bar keeps the
-            // height it reserves from the screen above. A bar given margins
-            // directly moves the icons and leaves the reserved space where it
-            // was, so the page ends in a gap and the icons sit in front of it.
+            // TabBar draws the floating bar itself; the navigator's own bar
+            // only keeps its reserved height.
             tabBarStyle: {
               backgroundColor: "transparent",
-              // No line. GlimStone separates surfaces by shade, and there is
-              // nothing to separate here anyway once the bar is a card.
               borderTopWidth: 0,
               elevation: 0,
             },
           })}
-          // The bar is drawn HERE rather than configured, because three of the
-          // things asked of it are not options react-navigation has: the label
-          // engine, a filled pill under the current tab, and a glyph that is
-          // centred over its own word rather than over the space a word would
-          // take. See TabBar below.
           tabBar={(props) => <TabBar {...props} />}
         >
-          {/* THE OVERVIEW COMES FIRST. jdp: "In Autosync gibt es eine
-              Übersichtsseite wo man schön sieht was gerade läuft ... und welche
-              konten verbunden sind inkl. wie viel speicher auf den konten
-              verbraucht ist/frei ist. Das hätte ich auch gerne."
-
-              First rather than last because it is where somebody opens the app
-              to LOOK, and the four tabs after it are where they go to change
-              something. The order jdp gave for the other four is untouched. */}
           <Tabs.Screen
             name="OverviewTab"
             options={{ title: t("nav.overview") }}
           >
             {() => (
               <OverviewNav.Navigator screenOptions={header}>
-                {/* THE PAGE WEARS THE PRODUCT'S NAME, and only this page.
-                    jdp: "in der übersicht soll statt übersicht Arrowloop als
-                    überschrift stehen." It is the first screen the app opens
-                    on, so its header is the one place a name belongs - the
-                    four tabs after it are rooms, and rooms carry their own
-                    labels.
-
-                    Not a translation key: a product name is the same word in
-                    every language, and a key would invite forty tables to
-                    disagree about it. The TAB underneath keeps its translated
-                    label, because in a row of five it has to say which room it
-                    is rather than which program this is. */}
+                {/* The first screen carries the product name, untranslated;
+                    its tab keeps the translated label. */}
                 <OverviewNav.Screen
                   name="OverviewHome"
                   component={Overview}
@@ -285,8 +189,7 @@ function Shell() {
             {() => (
               <JobsNav.Navigator screenOptions={header}>
                 <JobsNav.Screen name="JobList" component={Jobs} options={{ title: t("jobs.title") }} />
-                {/* Opening a job and editing it are one screen now. The route
-                    name stays, so anything linking to it keeps working. */}
+                {/* Opening and editing a job share one screen under two route names. */}
                 <JobsNav.Screen name="JobDetail" component={JobEdit} options={{ title: "" }} />
                 <JobsNav.Screen
                   name="JobEdit"
@@ -377,33 +280,12 @@ function Shell() {
 }
 
 /**
- * The bottom bar, drawn here rather than configured.
- *
- * Three things were asked of it that react-navigation's own bar cannot do, and
- * each of them is the same kind of thing - the bar was the one surface in the
- * app that had opted out of the house rules:
- *
- *  - IT ANSWERS THE LABEL ENGINE. Every other control in the product shows
- *    text, text and symbol, or symbol alone according to one setting, and the
- *    bar showed both whatever anybody chose. jdp: "Die bottombar ist nicht in
- *    der beschriftungsengine."
- *  - THE CURRENT TAB IS A BUTTON. It was a word in the accent colour, which is
- *    how a link looks; everywhere else in this language what is selected is
- *    FILLED. Autosync's own bar does the same thing, and the difference is
- *    visible from across a room.
- *  - THE GLYPH SITS OVER ITS OWN WORD. The stock bar reserves label height
- *    whether or not there is a label, so in symbol mode the marks hung above
- *    an empty strip, and with words they sat slightly high. jdp: "die glyphen
- *    mit text sind auch nicht vertikal zentriert."
- *
- * The card behind it is unchanged and keeps its own long comment: the bar
- * FLOATS, inset from every edge, and paints the app's own ground underneath
- * because Android's window background is near-white and showed through.
+ * The bottom bar, drawn by hand because react-navigation's bar cannot follow
+ * the label setting, fill the current tab, or centre a glyph when no label is
+ * drawn. It is a well, GlimStone's horizontal selector, with equal segments.
  */
 function TabBar({ state, descriptors, navigation }: MaterialTopTabBarProps) {
-  // The BAR's own answer, not the app's. jdp: "die beschriftungsengine soll
-  // fuer die bottombar separat einstellbar sein." It defaults to following the
-  // app-wide one, so nothing moves for somebody who never opens that setting.
+  // The bar has its own label setting.
   const { p, radius, barLabels, accent, hueAt } = useTheme();
   const inset = useSafeAreaInsets();
   const showGlyph = barLabels !== "text";
@@ -411,43 +293,16 @@ function TabBar({ state, descriptors, navigation }: MaterialTopTabBarProps) {
 
   return (
     <View>
-      {/* The app's own ground, edge to edge, UNDER the bar.
-          Android's window background measured #fafafa on a page of #161616, so
-          a floating card sat in a near-white band the width of the screen. jdp:
-          "hinter der bottombar ist ein weißer hintergrund." An app that paints
-          its own ground everywhere else must paint it here too. */}
+      {/* The app's ground under the bar, or Android's near-white window
+          background shows through around it. */}
       <View style={[StyleSheet.absoluteFill, { backgroundColor: p.background }]} />
-      {/* THE BAR IS A WELL, which is GlimStone's own horizontal selector: a
-          groove one surface deeper, equal segments, and only the CHOSEN segment
-          is filled. jdp: "die farbflächen sind unterschiedlich groß, sollen wir
-          aus der bottm bar einfach ein horizontaler selektor machen?"
-
-          It is the right answer and not only a tidier one. A pill sized to its
-          own contents made the lit area a different width on every tab -
-          "Ziele" a third of "Einstellungen" - so the one coloured thing on
-          screen changed shape as somebody moved through the app. A well's
-          segments are equal by construction, which is the property being asked
-          for, and the bar stops being four loose buttons and becomes one
-          control with four settled positions - which is what a tab strip IS.
-
-          The same object the Theme and Corners rows are, so the bar is finally
-          built from the same part as the rest of the app rather than from the
-          navigator's defaults. */}
-      {/* THE GROOVE IS THE BAR. No card around it - jdp: "ohne dunklen rahmen
-          ringsum." A well inside a card is two surfaces where one is meant, and
-          at the bottom of the screen the outer one reads as a frame drawn round
-          the control rather than as the card every other surface in the app is.
-          The page's own ground is behind it, which is the separation this
-          language uses everywhere else. */}
       <View
         style={[
           styles.bar,
           {
             backgroundColor: p.surface2,
             borderRadius: radius.control,
-            // The gesture bar lives below this. `space.sm` is the floor, for a
-            // phone with buttons instead, where the inset is zero and a bar
-            // flush with the bottom edge is exactly what this is fixing.
+            // Clear of the gesture bar, with a floor for phones with buttons.
             marginBottom: Math.max(inset.bottom, space.sm),
           },
         ]}
@@ -457,8 +312,7 @@ function TabBar({ state, descriptors, navigation }: MaterialTopTabBarProps) {
             const { options } = descriptors[route.key]!;
             const label = options.title ?? route.name;
             const on = state.index === index;
-            // Each tab owns a palette position, because they are members of one
-            // set the way a well's segments are. Off, every one is the accent.
+            // Each tab takes a palette position; without the rainbow, the accent.
             const fill = hueAt(index) ?? accent;
             const ink = on ? contrastOn(fill) : p.textSub;
             return (
@@ -488,12 +342,7 @@ function TabBar({ state, descriptors, navigation }: MaterialTopTabBarProps) {
                 {showWord ? (
                   <Text
                     numberOfLines={1}
-                    // SHRINKS rather than clips, the same rule the horizontal
-                    // selector follows. jdp on that one: "die punkte sollen
-                    // weg." Five tabs instead of four leave each one narrower,
-                    // and "Einstellungen" came out as "Einstellung…" - a
-                    // character spent to say that a character is missing, on
-                    // the one word somebody is reading to aim at.
+                    // Shrinks rather than truncates, like the horizontal selector.
                     adjustsFontSizeToFit
                     minimumFontScale={0.7}
                     style={[styles.tabText, { color: ink }]}
@@ -510,13 +359,7 @@ function TabBar({ state, descriptors, navigation }: MaterialTopTabBarProps) {
   );
 }
 
-/**
- * The first screen of each tab's own stack.
- *
- * Named here rather than derived, because the question being asked is "is this
- * tab showing the page the bar points at, or something somebody drilled into",
- * and that is a fact about the four tabs, not about the navigator.
- */
+/** The first screen of each tab's stack. */
 const TAB_ROOT: Record<string, string> = {
   OverviewTab: "OverviewHome",
   JobsTab: "JobList",
@@ -526,36 +369,18 @@ const TAB_ROOT: Record<string, string> = {
 };
 
 /**
- * Whether a tab's own stack has moved off its first screen.
- *
- * `getFocusedRouteNameFromRoute` returns nothing until the nested navigator has
- * rendered, and nothing reads as "at its root" - which is correct: a tab nobody
- * has opened yet cannot be deep in anything.
+ * Reports whether a tab's stack has moved off its first screen. A tab whose
+ * stack has not rendered yet reports no focused route and counts as at root.
  */
 function deeperThanRoot(route: RouteProp<ParamListBase>): boolean {
   const focused = getFocusedRouteNameFromRoute(route);
   return focused !== undefined && focused !== TAB_ROOT[route.name];
 }
 
-/**
- * A tab's symbol, from the app's OWN set.
- *
- * These four were `⇄ ☁ ≡ ⚙` - characters from whatever face the phone happens
- * to ship - while the rail they mirror on the desktop draws IconJobs,
- * IconTargets, IconHistory and IconSettings. jdp: "die glyphen auf der bottombar
- * passen nicht." They do not: a system font's arrows and gear are somebody
- * else's drawing at somebody else's weight, sitting under four labels in this
- * app's own type, and the cloud in particular renders as a colour emoji on
- * Android rather than as a mark at all.
- *
- * Keyed on the ROUTE rather than passed per screen, because the bar now draws
- * itself: the mark belongs to the tab, not to the options object.
- */
+/** A tab's glyph, the same marks the desktop rail uses. */
 function markFor(route: string): string {
   return (
     {
-      // IconLive for the overview: the mark the desktop already uses for "what
-      // is happening now", which is exactly what this tab is.
       OverviewTab: "IconLive",
       JobsTab: "IconJobs",
       TargetsTab: "IconTargets",
@@ -566,12 +391,8 @@ function markFor(route: string): string {
 }
 
 /**
- * The wall in front of a locked app.
- *
- * It carries a button rather than only a sentence, because the system dialog
- * can be dismissed and then there has to be a way back to it. Nothing about
- * the app is visible behind it - not the job names, not the paths - which is
- * the whole point of the lock.
+ * The screen in front of a locked app. Its button reopens the system dialog
+ * after it has been dismissed.
  */
 function Locked({ onUnlock }: { onUnlock: () => void }) {
   const { t } = useT();
@@ -584,24 +405,20 @@ function Locked({ onUnlock }: { onUnlock: () => void }) {
   );
 }
 
-/** A minute away before the lock closes again. Instant would be an app people
- *  switch the lock back off in; a minute still locks a handed-over phone. */
+/**
+ * Time in the background before the lock closes again. Locking at once would
+ * ask for the PIN after every glance at a message.
+ */
 const AWAY_MS = 60 * 1000;
 
 /**
- * The screen before the engine answers, and the one after it does not.
- *
- * Two states in one component because they are the same moment: waiting, and
- * having waited long enough. What matters is that the second shows the
- * engine's own log - a person with a broken app deserves the reason rather
- * than a shrug, and on a phone there is no console to find it in.
+ * The screen while the engine starts, and the engine's log when it does not
+ * answer.
  */
 function Waiting({ state, log, onRetry }: { state: string; log: string; onRetry: () => void }) {
   const { p, radius } = useTheme();
   const { t } = useT();
-  // The insets by hand, because this screen is OUTSIDE the navigator - the one
-  // place nothing else is holding the status bar off the content. It showed:
-  // the heading sat on top of the clock.
+  // This screen is outside the navigator, so it applies the insets itself.
   const inset = useSafeAreaInsets();
   if (state === "starting") {
     return (
@@ -642,35 +459,18 @@ const styles = StyleSheet.create({
   trouble: { padding: space.lg, gap: space.md },
   log: { fontFamily: "monospace", fontSize: text.caption, padding: space.md },
 
-  // The bar IS the groove: inset from every edge, so it floats on the page
-  // rather than being welded to the bottom of the screen, and drawn in the
-  // groove's own surface rather than a card's. One surface, not two.
+  // Inset from the edges so the bar floats on the page.
   bar: { marginHorizontal: space.md, padding: 3 },
   well: { flexDirection: "row", gap: 2 },
-  // Equal by construction in BOTH directions, which is the whole point.
-  //
-  // WIDTH: `flex: 1` with `minWidth: 0` makes the segments the same width
-  // whatever their words are, so the one coloured thing on screen stops
-  // changing shape as somebody moves through the app.
-  //
-  // HEIGHT: a fixed one rather than a floor. jdp: "die bottom bar soll immer
-  // gleich groß bleiben." It was `minHeight: 44`, which every mode cleared
-  // except word-and-symbol - that one measures a glyph plus a gap plus a line
-  // of text plus the padding, lands a couple of points over, and the bar grew
-  // by exactly that much. A strip at the bottom edge that changes height when
-  // a SETTING changes reads as the page having moved.
-  //
-  // 48 is the tallest case measured, not a guess: 20 for the glyph, 2 for the
-  // gap, the caption's line, and 5 above and below.
+  // Equal widths whatever the words, and a fixed height so the bar does not
+  // change size with the label setting. 48 fits glyph, gap, caption and
+  // padding.
   segment: {
     flex: 1,
     minWidth: 0,
     height: 48,
     alignItems: "center",
     justifyContent: "center",
-    // The glyph sits directly over its own word rather than over the space a
-    // word would occupy - which is what the navigator's own bar could not do:
-    // it reserves label height whether or not a label is drawn.
     gap: 2,
     paddingVertical: 5,
     paddingHorizontal: 4,

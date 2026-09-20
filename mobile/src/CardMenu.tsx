@@ -6,13 +6,8 @@ import { SCRIM, space, text, TOUCH } from "./theme";
 import { useTheme } from "./ui";
 
 /**
- * One row of the menu.
- *
- * No `danger` flag. jdp: "hoer bitte auf die loeschen buttons immer rot
- * einzufaerben. die werden immer ganz normal eingefaerbt." Every delete in this
- * app asks before it acts, and a colour that shouts on every one of them stops
- * meaning anything by the third time somebody sees it. The question is the
- * warning; the row is just a row.
+ * One row of the menu. There is no danger style: every delete asks first, and
+ * the question is the warning.
  */
 export interface CardAction {
   label: string;
@@ -21,30 +16,9 @@ export interface CardAction {
 }
 
 /**
- * The menu on a card's top right, and the button that opens it.
- *
- * jdp, in order: "rechts oben ein hamburgermenue mit bearbeiten und loeschen",
- * then "das hamburgermenue soll ein button sein mit hintergrund, auch der Punkt
- * Auftrag oeffnen soll im menue enthalten sein. Das fenster soll nicht in der
- * mitte des fensters erscheinen sondern direkt am hamburger menue. Der glyph
- * soll drei striche sein anstatt drei punkte."
- *
- * All four corrections point the same way, and the first version had it wrong in
- * the same way each time: it was drawn as a hint rather than as a control.
- *
- *  - IT IS A BUTTON, so it has a ground like every other button in the app.
- *    Three marks floating on a card read as decoration, and somebody has to
- *    guess that they can be pressed.
- *  - IT OPENS WHERE IT IS. A sheet in the middle of the screen is a dialog, and
- *    a dialog is for something that needs answering. This is a menu belonging to
- *    ONE card, and appearing next to that card is how it says which one.
- *  - THREE LINES, not three dots. Both are primitives rather than somebody's
- *    drawing, so neither needs the icon set; jdp asked for the one that reads as
- *    a menu everywhere else.
- *
- * Still a Modal underneath, because React Native has nothing that floats above
- * the list without one. What changed is where its contents sit: measured against
- * the button and placed there, rather than centred.
+ * The menu button on a card's top right. The menu opens next to the button,
+ * since it belongs to one card; it is a Modal because React Native has no
+ * other way to float above the list.
  */
 export function CardMenu({ items }: { items: CardAction[] }) {
   const { p, radius } = useTheme();
@@ -52,22 +26,14 @@ export function CardMenu({ items }: { items: CardAction[] }) {
   const button = useRef<View>(null);
   const [at, setAt] = useState<{ top: number; right: number } | null>(null);
 
-  /**
-   * Measure first, open second.
-   *
-   * `measureInWindow` is asynchronous, so opening the modal and measuring in
-   * parallel would paint the sheet at the top left for a frame and then jump.
-   * The measurement IS the open: no position, no menu.
-   */
+  // The menu opens only once the button is measured, so it never paints at
+  // the top left for a frame.
   const open = () => {
     button.current?.measureInWindow((x, y, w, h) => {
       const height = items.length * (TOUCH + space.xs) + space.sm * 2;
       setAt({
-        // Below the button, unless there is no room below - then above it, so a
-        // card near the bottom of a list does not open its menu off-screen.
+        // Above the button when there is no room below it.
         top: y + h + space.xs + height > screen.height ? Math.max(space.sm, y - height) : y + h + space.xs,
-        // Anchored by its RIGHT edge to the button's right edge, which is what
-        // keeps it under the button rather than running off the screen.
         right: Math.max(space.sm, screen.width - (x + w)),
       });
     });
@@ -79,16 +45,12 @@ export function CardMenu({ items }: { items: CardAction[] }) {
         ref={button}
         onPress={open}
         accessibilityRole="button"
-        // The card underneath is pressable too, and a tap meant for the menu
-        // that opened the job instead would be the worst kind of near miss.
+        // The card underneath is pressable too.
         hitSlop={6}
         android_ripple={{ color: p.hover }}
         style={[styles.button, { backgroundColor: p.surface2, borderRadius: radius.control }]}
       >
-        {/* Three bars, drawn from three Views. The app's icon set has no menu
-            mark, and the rule against redrawing one is about somebody else's
-            DRAWING - three rectangles are a primitive, not a design. Adding one
-            to the generated set would mean adding a source nobody has. */}
+        {/* The icon set has no menu mark, so the three bars are plain Views. */}
         <View style={[styles.bar, { backgroundColor: p.text }]} />
         <View style={[styles.bar, { backgroundColor: p.text }]} />
         <View style={[styles.bar, { backgroundColor: p.text }]} />
@@ -112,8 +74,8 @@ export function CardMenu({ items }: { items: CardAction[] }) {
                 key={item.label}
                 android_ripple={{ color: p.hover }}
                 onPress={() => {
-                  // Closed BEFORE the act, so a confirmation dialog from a
-                  // delete does not open behind this sheet.
+                  // Closed first, so a delete's confirmation does not open
+                  // behind the sheet.
                   setAt(null);
                   item.onPress();
                 }}
@@ -133,7 +95,6 @@ export function CardMenu({ items }: { items: CardAction[] }) {
 }
 
 const styles = StyleSheet.create({
-  // A real button: its own ground, its own touch target, the bars centred in it.
   button: {
     width: TOUCH,
     height: TOUCH,
@@ -143,8 +104,7 @@ const styles = StyleSheet.create({
   },
   bar: { width: 16, height: 2, borderRadius: 1 },
 
-  // The ground fills the screen so a tap anywhere closes the menu, and the
-  // sheet is placed on it by the measurement rather than by a layout rule.
+  // Fills the screen so a tap anywhere closes the menu.
   ground: { flex: 1, backgroundColor: SCRIM },
   sheet: {
     position: "absolute",

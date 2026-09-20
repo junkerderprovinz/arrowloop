@@ -9,28 +9,9 @@ import { ProviderMark } from "../glyphs";
 import { Caption, Empty, InfoBubble, Page, Title, useTheme } from "../ui";
 
 /**
- * Which kind of storage, by NAME rather than by protocol.
- *
- * The container's tile, tile for tile. jdp: "die Cloud Kacheln bitte genauso
- * machen wie in der container version." Which means the mark ABOVE the name and
- * both centred, rather than the mark beside it: a tile that puts them on one
- * line spends its width on the name and leaves the logo whatever is left, and
- * what is left was 20 pixels.
- *
- * The mark box is 96 by 48 and that is the whole point of the change. An svg
- * letterboxes inside its element, so a square box caps the LONGER side - and a
- * third of these marks are words rather than symbols. Linkbox is 5.3:1: in the
- * 20px square it had, it drew four pixels tall.
- *
- * No sub-text on a cloud tile. The name and the mark say it, and a line of
- * explanation under a brand somebody already recognises is noise on every tile
- * in order to help on none. The protocol tiles keep theirs, because "SMB" and
- * "WebDAV" genuinely do not say what they are - but in an (i) at the corner,
- * which is the house rule and also what keeps five tiles from standing taller
- * than the fifty-five around them.
- *
- * The list is whatever the ENGINE offers: `remotes.Providers()` filters by what
- * is actually compiled in, so a provider on screen is one this build can reach.
+ * Picks the kind of storage for a new target, as tiles matching the web app's.
+ * The engine lists only the providers compiled into this build. Only protocol
+ * tiles carry a hint, since "SMB" or "WebDAV" does not say what it is.
  */
 export function TargetPick() {
   const nav = useNavigation<Nav<TargetsStack>>();
@@ -48,38 +29,26 @@ export function TargetPick() {
 
   if (!providers) return <Empty title={t("history.working")} detail={error || undefined} />;
 
-  // Three groups, not two. The clouds list held fifty-two entries with the
-  // bucket stores mixed in alphabetically, which put a photo service three
-  // rows from a CDN. jdp: "speicher und clouds sind noch nicht sortiert."
-  // `!== "protocol"` was the old split and is exactly what hid the third
-  // group: anything new landed with the clouds without anybody deciding.
   const clouds = providers.filter((x) => x.group === "cloud");
   const storage = providers.filter((x) => x.group === "storage");
   const protocols = providers.filter((x) => x.group === "protocol");
 
   const tile = (provider: Provider) => (
-    // The (i) is a SIBLING of the pressable tile rather than a child, the same
-    // arrangement the web uses and for the same reason: nesting it would make a
-    // tap on the (i) also fire the tile underneath and open the form for a
-    // provider somebody was only reading about.
+    // The (i) sits beside the tile rather than inside it, so tapping it does
+    // not also open the form.
     <View key={provider.id} style={styles.cell}>
       <Pressable
         onPress={() => nav.navigate("TargetEdit", { provider: provider.id })}
         android_ripple={{ color: p.hover }}
         style={[
           styles.tile,
-          // No border: a tile is one shade above the page, the way this language
-          // separates every surface.
           { backgroundColor: p.surface2, borderRadius: radius.card },
         ]}
       >
         <View style={styles.markBox}>
           <ProviderMark name={provider.mark} width={MARK_W} height={MARK_H} color={p.textSub} scheme={scheme} />
         </View>
-        {/* Two lines, and wrapping rather than an ellipsis. "OVHcloud Object
-            Storage" truncated to one line is "OVHcloud Object S…", which reads
-            as a different product; the name is the whole thing somebody is
-            scanning for. */}
+        {/* Two lines, since a name cut to one can read as another product. */}
         <Text style={[styles.name, { color: p.text }]} numberOfLines={2}>
           {provider.name}
         </Text>
@@ -105,15 +74,14 @@ export function TargetPick() {
   );
 }
 
-/** The mark's box: the web's 96 by 48, which is the number that lets a 5.3:1
- *  wordmark use the tile's width instead of a square's height. */
+// A wide box, since an SVG letterboxes inside it and many marks are wordmarks
+// (Linkbox is 5.3:1).
 const MARK_W = 96;
 const MARK_H = 48;
 
 const styles = StyleSheet.create({
   grid: { flexDirection: "row", flexWrap: "wrap", gap: space.sm },
-  // Two across with the page's own gap between them, which is what `48%` buys
-  // without having to measure the window.
+  // Two across with the grid gap between them, without measuring the window.
   cell: { width: "48%" },
   tile: {
     minHeight: 112,

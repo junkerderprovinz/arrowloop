@@ -7,30 +7,10 @@ import { SCRIM, space, text } from "./theme";
 import { Glyph } from "./glyphs";
 import { Button, useTheme } from "./ui";
 
-/**
- * A colour picker: a saturation/value pad, a hue rail and a hex field.
- *
- * It exists because the app could SHOW colours and not change them. Eight
- * accent presets were the whole of what a colour could be, and the rainbow
- * palette was drawn with `pointerEvents="none"` - eight circles that looked
- * like controls and answered nothing. The container has had a picker on both
- * rows for months.
- *
- * TRANSCRIBED FROM KNIGHTLOADER rather than written again, because that one was
- * paid for twice over in bugs that are invisible until somebody drags a finger
- * across it. Both are kept below as comments where they bit, because both are
- * the kind that come back.
- *
- * The maths is `web/src/lib/colorMath.ts`, the same file the browser's picker
- * reads, so a colour mixed here and the same colour mixed there are the same
- * six digits rather than nearly.
- *
- * Drawn from plain Views and one PanResponder. Two things deliberately not
- * used: a gradient library, because the pad is a grid of flat cells and that is
- * what a gradient looks like once it is quantised anyway; and
- * react-native-gesture-handler, because PanResponder is in React Native itself
- * and the alternative is a native dependency and a new prebuild for one drag.
- */
+// A colour picker with a saturation/value pad, a hue rail and a hex field. The
+// maths is web/src/lib/colorMath.ts, shared with the web picker. The pad is a
+// grid of flat cells driven by one PanResponder, so it needs neither a gradient
+// library nor a native gesture dependency.
 
 /** Cells across and down the saturation/value pad. */
 const PAD = 15;
@@ -54,26 +34,14 @@ export function ColorPicker({
   const { t } = useT();
   const start = hexToHsv(initial) ?? { h: 45, s: 1, v: 1 };
   const [hsv, setHsv] = useState(start);
-  // Read by the pan handlers, which are built once: a handler closing over
-  // `hsv` would hold the value from the render that created it, and the drag
-  // would snap back to where it began on every frame.
+  // The pan handlers are built once, so they read the colour through a ref
+  // rather than a stale closure.
   const live = useRef(hsv);
   live.current = hsv;
 
-  /**
-   * Re-seed from `initial` every time this opens.
-   *
-   * `useState(start)` runs ONCE, at mount - and this never unmounts, because a
-   * Modal is toggled by its `visible` prop rather than by leaving the tree. So
-   * the second time it opened it still held the colour from the first time, and
-   * the first frame of the next drag wrote that old colour into whichever
-   * swatch had just been pressed. From outside it read as the edit jumping to
-   * another swatch while the first one reverted.
-   *
-   * Keyed on `visible` rather than on `initial`: `initial` changes as the drag
-   * moves, because the caller applies the colour live, so re-seeding on it
-   * would fight the gesture on every frame.
-   */
+  // Re-seeded from `initial` on every open: the Modal stays mounted, so the
+  // state would otherwise keep the last colour. Keyed on `visible` because
+  // `initial` changes during the drag.
   const wasOpen = useRef(false);
   if (visible && !wasOpen.current) {
     wasOpen.current = true;
@@ -85,7 +53,7 @@ export function ColorPicker({
     wasOpen.current = false;
   }
 
-  /** The pad's own box in SCREEN coordinates, measured rather than assumed. */
+  /** The pad's box in screen coordinates. */
   const box = useRef({ x: 0, y: 0, w: 1 });
   const padRef = useRef<View>(null);
 
@@ -94,19 +62,8 @@ export function ColorPicker({
       PanResponder.create({
         onStartShouldSetPanResponder: () => true,
         onMoveShouldSetPanResponder: () => true,
-        // moveX/moveY, NEVER nativeEvent.locationX.
-        //
-        // locationX is relative to the touch's TARGET, and the target is the
-        // deepest view under the finger - which here is one of the pad's own
-        // grid cells, not the pad. So x ran 0..19 instead of 0..288 and was
-        // then divided by the pad's width: saturation never left the first few
-        // per cent and value never left the top few, which reads as "I can only
-        // pick very pale or very black". The pad held the responder the whole
-        // time, which is what makes this one hard to see - the handler fires
-        // correctly and reads the wrong number.
-        //
-        // gestureState's moveX/moveY are screen coordinates and belong to no
-        // view at all, so they cannot pick up a child's origin.
+        // Screen coordinates from gestureState, not nativeEvent.locationX,
+        // which is relative to the grid cell under the finger.
         onPanResponderGrant: (_e, g) => move(g.x0, g.y0),
         onPanResponderMove: (_e, g) => move(g.moveX, g.moveY),
       }),
@@ -125,10 +82,8 @@ export function ColorPicker({
 
   const current = hsvToHex(hsv.h, hsv.s, hsv.v);
 
-  // Rebuilt only when the HUE changes, never while dragging. Without this the
-  // drag rebuilt 225 cells and ran 225 colour conversions every frame, which is
-  // the difference between a smooth drag and one that stutters. Only the
-  // marker actually moves during a drag, and a marker is one view.
+  // Rebuilt only when the hue changes, so a drag moves just the marker instead
+  // of redrawing 225 cells per frame.
   const cells = useMemo(
     () =>
       Array.from({ length: PAD }, (_, row) => (
@@ -149,22 +104,18 @@ export function ColorPicker({
 
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
-      {/* The ground closes it, which is what a popover does. The panel swallows
-          the press so a drag inside never dismisses. */}
       <Pressable style={styles.ground} onPress={onClose}>
+        {/* Swallows presses so a drag inside does not close the picker. */}
         <Pressable
           style={[styles.panel, { backgroundColor: p.surface, borderRadius: radius.card }]}
           onPress={() => {}}
         >
-          {/* Saturation left to right, value bottom to top, at the hue chosen
-              on the rail below. */}
+          {/* Saturation left to right, value bottom to top. */}
           <View
             ref={padRef}
             style={[styles.pad, { borderRadius: radius.control }]}
-            // measureInWindow, not the layout event's own x/y: those are
-            // relative to the parent and the gesture reports screen
-            // coordinates. Re-measured on every layout because the panel is
-            // inside a Modal that lays out after it mounts.
+            // measureInWindow, since the layout event's x/y are relative to the
+            // parent and the gesture reports screen coordinates.
             onLayout={() => {
               padRef.current?.measureInWindow((x, y, w) => {
                 box.current = { x, y, w };
@@ -173,11 +124,8 @@ export function ColorPicker({
             {...responder.panHandlers}
           >
             {cells}
-            {/* Where you are. Two nested views rather than a border: this
-                language separates surfaces by shade and never by a drawn line,
-                and the swatch outside draws its ring the same way. The outer
-                ink flips with the value under it, so the marker stays visible
-                in a white corner and a black one alike. */}
+            {/* The marker's outer ring flips with the value beneath it, so it
+                stays visible in both the white and the black corner. */}
             <View
               pointerEvents="none"
               style={[
@@ -193,8 +141,7 @@ export function ColorPicker({
             </View>
           </View>
 
-          {/* The hue rail, tapped rather than dragged: 24 wide targets in a row,
-              and a tap lands on the one you meant. */}
+          {/* The hue rail is tapped rather than dragged. */}
           <View style={[styles.rail, { borderRadius: radius.control }]}>
             {Array.from({ length: HUES }, (_, i) => {
               const h = (i * 360) / HUES;
@@ -241,16 +188,8 @@ export function ColorPicker({
           </View>
 
           <View style={styles.actions}>
-            {/* NO hue, and that is the one deliberate exception on this screen:
-                without one the button resolves to the accent, which is exactly
-                what it should wear. It closes a dialog whose whole subject is a
-                colour, and giving it a palette POSITION would paint it in a
-                colour that has nothing to do with the one being mixed. */}
-            {/* "Close", not "Done", and that is not a shrug: the colour is
-                applied on every frame of the drag, so there is nothing here to
-                confirm. A button labelled Done over a change that already
-                happened invites somebody to look for a Cancel that does not
-                exist either. */}
+            {/* No hue, so the button wears the accent. "Close" rather than
+                "Done", since the colour is already applied during the drag. */}
             <Button label={t("common.close")} labelKey="common.close" tone="accent" onPress={onClose} />
           </View>
         </Pressable>
@@ -260,13 +199,8 @@ export function ColorPicker({
 }
 
 /**
- * One colour disc, and the selection is a RING rather than an outline.
- *
- * An outline is drawn outside the box, so a selected swatch grows and the row
- * jumps every time somebody picks a different colour. Here every swatch keeps
- * the same outer box in both states and only the ring's colour moves, which is
- * what makes a row of eight read as one control. The same construction the
- * container uses, and the same one this app's own `Swatch` already had.
+ * One colour disc. The selection is a ring inside the same outer box, so a
+ * selected swatch does not grow and shift the row.
  */
 export function EditableSwatch({
   hex,
@@ -296,19 +230,8 @@ export function EditableSwatch({
           { borderRadius: radius.pill, backgroundColor: selected ? p.surface : "transparent" },
         ]}
       >
-        {/* No pencil on the disc, and that is a decision rather than an
-            omission: a second mark on a 26px circle is a smudge, and the
-            colour is the thing the circle is for.
-
-            WHAT A PRESS MEANS is two things in order, which is jdp's call:
-            "Farbfelder sollen erst mit einem zweiten klick auf die fläche
-            editierbar sein bzw soll der fabpicker erst dann kommen." The first
-            press picks the colour; a second press on the one already picked
-            opens the picker. One press used to do both, which meant a full
-            picker appeared every time somebody only wanted to choose a colour
-            from the eight in front of them - the common act interrupted by the
-            rare one. The ring this component already draws around the chosen
-            swatch is what says which one a second press would edit. */}
+        {/* The first press selects the colour; a press on the selected one
+            opens the picker. */}
         <View style={[styles.fill, { borderRadius: radius.pill, backgroundColor: hex }]} />
       </View>
     </Pressable>
@@ -316,20 +239,9 @@ export function EditableSwatch({
 }
 
 /**
- * The reset at the end of a row of colour swatches.
- *
- * ALWAYS rendered, dimmed when there is nothing to undo, never conditionally
- * unmounted - and this is the one greyed control this language allows. It is
- * REPORTING rather than refusing: "the accent is already the default" is an
- * answer about the thing the control acts on, not about a decision made
- * somewhere else on the page. A control that appears only once it has work to
- * do is a control nobody knows about until they have already made the mess, and
- * a row whose length changes as you use it is a row that moves under the thumb.
- *
- * Deliberately NOT in the colour engine, which is the exception the container
- * makes too: it sits inside the very row of colours it throws away, so an
- * accent or rainbow fill would make it read as one more colour to pick - when
- * pressing it discards the picked colour instead.
+ * The reset at the end of a row of swatches. It is always rendered and only
+ * dimmed when there is nothing to undo, so the row never changes length. It
+ * stays neutral, since an accent fill would make it look like one more colour.
  */
 export function ResetMark({
   label,

@@ -18,26 +18,11 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 /**
- * The engine, alive for exactly as long as a sync takes.
- *
- * It used to be alive permanently, and on Android that means a notification in
- * the shade permanently: a foreground service MUST show one, and there is no
- * flag that hides it. jdp: "die app soll keine dauerhafte benachrichtigung
- * haben." So the service is no longer something that RUNS; it is something that
- * HAPPENS, started by a wake-up from Android and stopping itself the moment the
- * run is over. The notification comes and goes with the copying, which is the
- * only time there is anything to tell anybody about.
- *
- * The app's own use of the engine does not come through here at all. While
- * somebody is looking at a screen, the process is simply a child of a visible
- * app, which Android lets live without a service and therefore without a
- * notification - see EngineModule.start.
- *
- * `dataSync` is the declared type, and it is the honest one: this moves files
- * between two places on somebody's behalf. It also carries the rules that come
- * with it - since Android 14 a dataSync service is capped at six hours in a day
- * - and those rules now cost nothing, because the service only exists while a
- * sync does.
+ * Runs the engine for one scheduled wake-up and stops when the run is over, so
+ * its required foreground notification lasts only as long as the copying. The
+ * screens do not use it: while the app is visible the engine runs as its plain
+ * child process (see EngineModule.start). The service type is dataSync, which
+ * Android 14 caps at six hours a day.
  */
 class EngineService : Service() {
 
@@ -57,10 +42,8 @@ class EngineService : Service() {
             return START_NOT_STICKY
         }
 
-        // The notification goes up BEFORE the work starts, and that ordering is
-        // the whole contract: a foreground service that has not called
-        // startForeground within a few seconds is killed with an exception
-        // naming a timeout rather than the work.
+        // Before any work: a foreground service that does not call
+        // startForeground within a few seconds is killed.
         startForeground(
             NOTIFICATION_ID,
             notification(),
@@ -69,34 +52,22 @@ class EngineService : Service() {
             else 0,
         )
 
-        // WHO started it decides who may stop it. With the app open the engine
-        // is already running as the screens' own child process, and a wake-up
-        // that stopped it on the way out would blank the app mid-tap - which it
-        // did, with "the engine exited with code 143" in the log and nothing on
-        // screen to explain it.
+        // Only the service that started the engine stops it; with the app open
+        // the engine belongs to the screens, and stopping it would blank them.
         ours = Engine.start(this)
 
-        // Watching for the charger and the connection starts with the service
-        // rather than with the screens, because the moment this matters is a
-        // moment with no screen: it is what tells the engine whether this run
-        // is allowed to go ahead at all.
+        // The run conditions matter most when no screen is open.
         Device.watch(this)
         Thread { work() }.start()
 
-        // START_NOT_STICKY, where this used to ask to be brought back. Coming
-        // back is Android's business now, through the wake-ups in Waker, and a
-        // service that restarted itself after being reclaimed would be a
-        // notification reappearing for a run nobody asked for.
+        // Waker brings the service back; restarting itself would only bring
+        // back the notification.
         return START_NOT_STICKY
     }
 
     /**
-     * Ask the engine to catch up, then get out of the way.
-     *
-     * The engine decides WHAT is due, from the cron expressions in its own
-     * configuration; this only says when. The call blocks for as long as the
-     * copying takes, which is why it runs on its own thread and why the service
-     * outlives the wake-up that started it.
+     * Asks the engine to run whatever its cron expressions say is due. The call
+     * blocks until the copying is done, hence the thread.
      */
     private fun work() {
         try {
@@ -105,16 +76,9 @@ class EngineService : Service() {
             Log.i(TAG, "woke, ran ${due.ran} job(s), ${due.failed} failed")
             report(due)
         } catch (e: Exception) {
-            // Said out loud rather than swallowed. A wake-up that achieved
-            // nothing and reported nothing is indistinguishable from one that
-            // never happened, and "my schedule does not run" is the complaint
-            // with the least evidence behind it of any in this program.
             Log.w(TAG, "woke and could not run: ${e.javaClass.simpleName} ${e.message}")
-            // The phone's language where this app knows the reason, and the raw
-            // message only where it does not. An empty detail rather than an
-            // English one would be worse: a notification saying a sync failed
-            // and refusing to say why is the complaint with the least evidence
-            // behind it of any in this program.
+            // A reason this app authored is shown translated, anything else as
+            // the raw message.
             val why = if (e is Silent) getString(e.said) else e.message ?: ""
             tell(CHANNEL_FAILED, FAILED_ID, getString(R.string.notify_failed), why)
         } finally {
@@ -123,17 +87,8 @@ class EngineService : Service() {
     }
 
     /**
-     * What the run did, on the channel that matches the outcome.
-     *
-     * SILENT when nothing changed, and that is the rule worth stating: a phone
-     * that syncs every fifteen minutes would otherwise post ninety-six "nothing
-     * to do" notifications a day, and the one that mattered would be the
-     * ninety-seventh nobody read. A quiet night is the normal case and normal
-     * cases do not interrupt.
-     *
-     * A HELD job is not a failure either - a drive in somebody's bag has not
-     * gone wrong - so it says nothing at all. The log line already carries it
-     * for anybody looking.
+     * Posts the outcome on the matching channel. A run that changed nothing, or
+     * a held job, posts nothing: the phone wakes every fifteen minutes.
      */
     private fun report(due: Due) {
         if (due.failed > 0) {
@@ -149,8 +104,7 @@ class EngineService : Service() {
         )
     }
 
-    /** One notification, on one channel. Cancelled by its own id rather than
-     *  stacking: the latest run is the one somebody wants to read. */
+    /** Posts a notification that replaces the previous one with the same id. */
     private fun tell(channel: String, id: Int, title: String, detail: String) {
         val open = PendingIntent.getActivity(
             this, 0,
@@ -168,13 +122,11 @@ class EngineService : Service() {
         try {
             getSystemService(NotificationManager::class.java).notify(id, note)
         } catch (_: SecurityException) {
-            // The permission was refused. Not worth a crash: the run happened,
-            // and the history inside the app still has every word of it.
+            // Notifications were refused; the app's history still has the run.
         }
     }
 
-    /** Up to thirty seconds for the engine to answer. It is a process start and
-     *  a database open rather than a network call, so this is a wide margin. */
+    /** Waits up to thirty seconds for the engine to answer. */
     private fun waitForEngine() {
         repeat(60) {
             try {
@@ -193,34 +145,13 @@ class EngineService : Service() {
     }
 
     /**
-     * A failure this app already has words for, in the phone's language.
-     *
-     * Everything below a notification is written in English - an exception
-     * message, an HTTP error, a line out of the engine - and that is right for
-     * a log and wrong for a person: "Abgleich fehlgeschlagen" appeared on a
-     * phone in German with "the engine did not answer within thirty seconds"
-     * underneath it. A message this app AUTHORED has no excuse for that, and it
-     * carries a string resource instead so the notification can say it the way
-     * everything else on the screen is said.
-     *
-     * The English text stays as the exception's own message, because the log
-     * line is read by whoever is debugging rather than by whoever is syncing.
-     *
-     * Reasons that come out of the ENGINE are a different problem and not
-     * solved here: they are sentences composed in Go, and translating them
-     * means giving them codes first.
+     * A failure this app authored, carrying a string resource so the
+     * notification is in the phone's language. The English message is for the
+     * log.
      */
     private class Silent(val said: Int) : IllegalStateException("the engine did not answer within thirty seconds")
 
-    /**
-     * What one wake-up did, as the engine reports it.
-     *
-     * It used to read one number out of the answer with a regular expression,
-     * which was enough while the only consumer was a log line. The answer now
-     * carries the whole summary because a notification has to tell "four jobs
-     * copied nine files" from "four ran and one failed", and those want
-     * different channels and different words.
-     */
+    /** The summary of one wake-up, as the engine reports it. */
     private data class Due(
         val ran: Int = 0,
         val failed: Int = 0,
@@ -238,17 +169,12 @@ class EngineService : Service() {
         call.requestMethod = "POST"
         call.doOutput = true
         call.connectTimeout = 5000
-        // No read timeout at all. The answer arrives when the copying has
-        // finished, and a cap here would be this program deciding how long
-        // somebody's photos are allowed to take.
+        // No read timeout: the answer arrives when the copying has finished.
         call.readTimeout = 0
         OutputStreamWriter(call.outputStream).use { it.write("{}") }
         val body = call.inputStream.bufferedReader().readText()
         call.disconnect()
 
-        // A real parser rather than another regular expression. `reason` is a
-        // sentence from the engine and can hold a brace, a quote or a path, and
-        // a pattern would have to be right about all three.
         val json = JSONObject(body)
         return Due(
             ran = json.optInt("ran"),
@@ -279,29 +205,9 @@ class EngineService : Service() {
     }
 
     /**
-     * Three channels, so Android's own notification page has something to say.
-     *
-     * jdp: "gibt es nicht unterschiedliche benachrichtigungskanäle? Wie Motor,
-     * Sync ereignisse, fehler, Erfolg, etc die man in native android kanäle
-     * aufteilen kann?" There is, and it pairs with the link this app now has
-     * into that page: with a single channel that page is one switch, which is
-     * the same as having no page at all. Split like this, somebody can leave
-     * the failures loud and silence the rest, or the other way round, without
-     * the app needing a single setting of its own.
-     *
-     * Three rather than the five somebody could name, because a channel with
-     * nothing behind it is a switch that does nothing. These are exactly what
-     * the app can say: it is working, it finished, it failed.
-     *
-     * The IMPORTANCES are the design. The engine's own is LOW because a
-     * foreground service must show something and nobody wants a chime for a
-     * folder syncing. A finished run is LOW too - it is a receipt, not news.
-     * A FAILED run is DEFAULT, and it is the only one that makes a sound,
-     * because it is the only one somebody has to do something about.
-     *
-     * A channel's importance cannot be changed after it exists - Android makes
-     * that the person's to set, deliberately - so these are the starting points
-     * and their page is where they are tuned.
+     * Creates one channel per thing the app can say: running, finished,
+     * failed. Only failures make a sound. Android lets only the person change
+     * a channel's importance once it exists, so these are starting points.
      */
     private fun channel() {
         val manager = getSystemService(NotificationManager::class.java)
@@ -341,9 +247,6 @@ class EngineService : Service() {
             .setContentText(getString(R.string.notify_running_why))
             .setSmallIcon(R.drawable.ic_notification)
             .setContentIntent(open)
-            // A way OUT of the notification, because a notification that can
-            // only be swiped and comes straight back reads as an app that will
-            // not let go. This one stops the run and means it.
             .addAction(0, getString(R.string.notify_stop), stop)
             .setOngoing(true)
             .setSilent(true)
@@ -353,20 +256,15 @@ class EngineService : Service() {
     companion object {
         const val TAG = "ArrowLoop"
         const val CHANNEL = "engine"
-        /** One channel per thing the app can say. See `channel()`. */
         const val CHANNEL_DONE = "done"
         const val CHANNEL_FAILED = "failed"
         const val NOTIFICATION_ID = 1
-        /** Own ids, so the latest finished run REPLACES the previous one rather
-         *  than stacking: a shade holding nine identical receipts is a shade
-         *  somebody swipes clear without reading. */
+        /** Fixed ids, so the latest run replaces the previous notification. */
         const val DONE_ID = 2
         const val FAILED_ID = 3
         const val ACTION_STOP = "design.halleluja.arrowloop.STOP"
 
-        /** Run whatever the clock should already have run. Started by a wake-up
-         *  from Android and by nothing else: the app's own screens talk to a
-         *  plain child process that needs no service at all. */
+        /** Starts the service to run whatever is due. Only a wake-up calls this. */
         fun runDue(context: Context) {
             val intent = Intent(context, EngineService::class.java)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

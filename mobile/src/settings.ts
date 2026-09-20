@@ -2,74 +2,31 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useCallback, useEffect, useState } from "react";
 import { ORIGIN } from "./api";
 
-/**
- * Two kinds of setting, kept apart on purpose.
- *
- * APPEARANCE belongs to the phone. Which accent, whether the rainbow is on,
- * how much text a button shows, light or dark - none of that should follow a
- * container that a household might share, and a phone held at arm's length
- * wants different answers from a monitor anyway. It lives in AsyncStorage.
- *
- * BEHAVIOUR belongs to the engine. The language, whether automatic runs wait
- * for mains power or a connection nobody pays for by the megabyte - those are
- * facts about the sync, and the engine is the thing that syncs. They go
- * through its settings API, which merges rather than replaces, so an app that
- * has never heard of a key cannot remove it by not mentioning it.
- */
+// Appearance belongs to the phone and lives in AsyncStorage. Behaviour, such
+// as the language and the run conditions, belongs to the engine and goes
+// through its settings API, which merges rather than replaces.
 
 /**
- * How much of a control's label is shown - three answers here, four on the web.
- *
- * `reactive` is missing on purpose and this is the reason: it means "the words
- * appear under the pointer", and a phone has no pointer. Offered here it was a
- * setting that removed every label and gave nothing back, because the gesture
- * that brings them back does not exist on a touch screen. jdp: "auch hier gibt
- * es keinen reaktiven modus in der app, das macht kein sinn."
- *
- * The type still ACCEPTS it, because a settings file written by an older build
- * may carry it and refusing to load that file would be worse than showing
- * symbols. `LABEL_MODES` below is what the picker offers.
+ * How much of a control's label is shown. `reactive` shows words under the
+ * pointer and makes no sense on a touch screen; it is accepted only because
+ * older settings files may carry it.
  */
 export type LabelMode = "text" | "textGlyph" | "glyph" | "reactive";
 
-/** The modes a phone can actually offer, in the order the well shows them. */
+/** The label modes the picker offers. */
 export const LABEL_MODES = ["text", "textGlyph", "glyph"] as const;
 
 /**
- * What the BOTTOM BAR shows - the same three modes, answered separately.
- *
- * jdp: "die beschriftungsengine soll für die bottombar separat einstellbar
- * sein." The bar is the one control that is always on screen, and five words
- * across a phone's width is a different trade from three buttons on a card.
- *
- * It briefly carried a fourth option, "wie überall", which followed the global
- * setting. jdp took it out the same afternoon: "wie überall im bottom bar
- * beschriftungsselektor raus." He is right that it was the wrong kind of
- * answer - the point of the setting is that the bar decides for itself, and an
- * option that means "do not decide" only makes the picker wider.
- *
- * The type still ACCEPTS it, for exactly the reason it accepts `reactive`: a
- * settings file written in between carries it, and refusing to load that file
- * would be worse than showing what it looked like anyway.
+ * The label mode of the bottom bar, set separately. `same` is accepted only
+ * because older settings files may carry it.
  */
 export type BarLabelMode = LabelMode | "same";
 
 export type Shape = "round" | "soft" | "square";
 
 /**
- * How much the interface moves.
- *
- * Declared here rather than in motion.ts, because motion.ts reads the stored
- * appearance and a type living there would make the two files import each
- * other. The ENGINE is in motion.ts; this is only the name of the setting.
- */
-/**
- * `storm` is not in the picker until somebody finds it. See `src/eggs.tsx`.
- *
- * It is a real intensity and not a joke setting: the same animations on the
- * same elements, with a spring that overshoots further and takes longer to
- * settle. The language's rule that a stronger level is a BIGGER version of the
- * same animation, never a different one, holds here too.
+ * How much the interface moves. Declared here rather than in motion.ts, which
+ * imports this file. `storm` is hidden until unlocked (see eggs.tsx).
  */
 export type MotionIntensity = "off" | "subtle" | "wild" | "storm";
 export type ThemeChoice = "system" | "dark" | "light";
@@ -79,42 +36,24 @@ export interface Appearance {
   accent: string;
   rainbow: boolean;
   /**
-   * The eight colours the rainbow deals out, editable.
-   *
-   * Empty means "the ones this app ships with", which is what keeps an install
-   * that has never opened the palette out of a stored copy of the defaults - a
-   * copy that would then stay behind the day the defaults change.
+   * The rainbow's colours. Empty means the shipped defaults, so an untouched
+   * install follows them when they change.
    */
   palette: string[];
   /**
-   * Offset the palette, so a page does not always start on the same colour.
-   *
-   * Two fields rather than one because the OFFSET has to survive the switch
-   * being turned off and on again: a single number that reset to zero would
-   * make the switch look like it only worked in one direction.
+   * Whether pages start at an offset into the palette. The seed is kept
+   * separately so it survives turning the switch off and on.
    */
   rainbowRotate: boolean;
   rainbowSeed: number;
   shape: Shape;
   labels: LabelMode;
-  /** What the BOTTOM BAR shows. "same" follows `labels`; see BarLabelMode. */
+  /** The bottom bar's label mode; "same" follows `labels`. */
   barLabels: BarLabelMode;
-  /**
-   * How much the interface moves: off, subtle or wild.
-   *
-   * Stored here rather than in the engine's settings for the same reason the
-   * theme is: it describes THIS install. A phone on a desk and a phone in a
-   * pocket can want different answers, and a backup carried to a second device
-   * should not decide for it.
-   */
   motion: MotionIntensity;
   /**
-   * Whether the app asks for the phone's own lock before showing anything.
-   *
-   * It lives beside the look rather than in the engine's settings on purpose:
-   * this is a property of THIS INSTALL, not of the configuration. A backup
-   * carried to a second phone should not switch a lock on there, and the
-   * engine's settings are exactly what a backup carries.
+   * Whether the app asks for the phone's lock before showing anything. Kept
+   * with the appearance so a settings backup does not switch it on elsewhere.
    */
   lock: boolean;
 }
@@ -144,23 +83,13 @@ export async function loadAppearance(): Promise<Appearance> {
     const raw = await AsyncStorage.getItem(KEY);
     if (raw) {
       const stored = JSON.parse(raw) as Partial<Appearance>;
-      // THE TOP LEVEL WAS CALLED `full` before GlimStone 2.0.0 renamed it to
-      // `wild`, and that name is a stored VALUE rather than wording - a phone
-      // set to the top level before the rename still has the old word in this
-      // file. Nothing else here validates what it reads, so the old word would
-      // survive straight into a motion table that no longer has a row for it.
-      // Renaming it on read keeps the level somebody actually chose, where
-      // falling back to the default would only be right by accident.
-      //
-      // Only that one word moves. A stored value may legally be any of the four
-      // levels, `storm` included, which is a different question from the three
-      // the picker offers - see MOTION_INTENSITIES in motion.ts.
+      // GlimStone 2.0.0 renamed the top motion level from `full` to `wild`,
+      // and the motion table has no row for the old value.
       if ((stored.motion as string) === "full") stored.motion = "wild";
       cache = { ...DEFAULT_APPEARANCE, ...stored };
     }
   } catch {
-    // A store that cannot be read is a fresh install as far as this is
-    // concerned. Defaults are a working app; a thrown error at startup is not.
+    // An unreadable store counts as a fresh install.
   }
   listeners.forEach((fn) => fn());
   return cache;
@@ -177,12 +106,8 @@ export function setAppearance(next: Partial<Appearance>): void {
 }
 
 /**
- * The appearance, re-rendering every screen that asks when it changes.
- *
- * A subscription rather than a context, for the same reason GlimStone's web
- * side uses a window event: this is edited in ONE place and read in every
- * control on every screen, and threading a provider through all of them would
- * be a lot of wiring for a value that changes twice a year.
+ * Returns the appearance and re-renders when it changes. A subscription
+ * rather than a context, since it is read by nearly every control.
  */
 export function useAppearance(): Appearance {
   const [, bump] = useState(0);
@@ -196,17 +121,11 @@ export function useAppearance(): Appearance {
   return cache;
 }
 
-// ---------------------------------------------------------------------------
-// The engine's own settings.
-// ---------------------------------------------------------------------------
-
 export interface EngineSettings {
   language?: string;
-  /** Hold automatic runs while the phone is on its battery. Autosync calls
-   *  this "only while charging", and it is the same question. */
+  /** Holds automatic runs while the phone is on battery. */
   notOnBattery?: boolean;
-  /** Hold them on a connection somebody pays for by the megabyte, which on a
-   *  phone means mobile data. Autosync's "wifi only". */
+  /** Holds automatic runs on a metered connection. */
   notOnMetered?: boolean;
   [key: string]: unknown;
 }
@@ -218,7 +137,7 @@ export const settings = {
     return (await response.json()) as EngineSettings;
   },
 
-  /** MERGES. Send only what changed - the engine keeps everything else. */
+  /** Merges the patch into the engine's settings. */
   async write(patch: EngineSettings): Promise<void> {
     const response = await fetch(ORIGIN + "/api/settings", {
       method: "PUT",
@@ -244,9 +163,7 @@ export function useEngineSettings(ready: boolean) {
 
   const update = useCallback(
     async (patch: EngineSettings) => {
-      // Optimistic, then reloaded. A toggle that waits for a round trip before
-      // moving feels broken on a phone, and the reload is what keeps it honest
-      // if the engine refused.
+      // Applied at once and then reloaded, in case the engine refused.
       setValue((old) => ({ ...(old ?? {}), ...patch }));
       try {
         await settings.write(patch);

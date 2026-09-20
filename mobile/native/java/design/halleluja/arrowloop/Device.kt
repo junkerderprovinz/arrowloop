@@ -13,24 +13,11 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 /**
- * What this phone is plugged into, and whether that should stop a timed run.
- *
- * Autosync's two most-used switches are "only while charging" and "only on
- * wifi", and both are questions only Android can answer. The engine has the
- * hook for it - a condition asked before every AUTOMATIC run and never before
- * one somebody pressed a button for - and this is the half that fills it in.
- *
- * IN KOTLIN rather than in JavaScript, and that is the part that makes it work
- * at all. The whole point of both switches is the hours nobody is looking:
- * React Native's context can be torn down while the foreground service carries
- * on, and a watcher that lives in JavaScript would stop reporting at exactly
- * the moment the phone went into a pocket. The preference is kept in
- * SharedPreferences for the same reason - it has to be readable by a broadcast
- * receiver waking up at four in the morning with no interface anywhere.
- *
- * It reports a SENTENCE, not a pair of flags. The engine has no business
- * knowing which of the two conditions applies, only whether one does and what
- * a person should read in the log.
+ * Watches power and network and tells the engine whether a condition holds
+ * automatic runs; runs started by hand are never held. It lives in Kotlin,
+ * with its settings in SharedPreferences, because it has to keep working
+ * after React Native's context is gone. The engine gets a sentence for its
+ * log rather than flags.
  */
 object Device {
 
@@ -38,18 +25,15 @@ object Device {
     private const val ONLY_CHARGING = "onlyCharging"
     private const val ONLY_WIFI = "onlyWifi"
 
-    /** The floor, in percent. Zero is off, which is also what a fresh install
-     *  gets: a condition nobody asked for must not hold anything. */
+    /** The battery floor in percent; zero, the default, is off. */
     private const val MIN_BATTERY = "minBattery"
     private const val NOT_ROAMING = "notRoaming"
     private const val NOT_METERED = "notMetered"
 
-    /** What was last sent, so an unchanged verdict is not sent again. Android
-     *  broadcasts the battery level every few seconds while charging. */
+    /** The last verdict sent; Android rebroadcasts the battery level every few seconds. */
     private var sent: String? = null
 
-    /** What a thread is currently trying to send, so a burst of broadcasts
-     *  produces one report rather than one per broadcast. */
+    /** The verdict being sent, so a burst of broadcasts sends it once. */
     private var inFlight: String? = null
 
     private var power: BroadcastReceiver? = null
@@ -66,14 +50,8 @@ object Device {
     fun notMetered(context: Context): Boolean = prefs(context).getBoolean(NOT_METERED, false)
 
     /**
-     * Store the preferences and tell the engine at once, because somebody who
-     * just switched "only on wifi" off expects the next run to go ahead.
-     *
-     * A map rather than a parameter per switch. It started as two booleans and
-     * grew to five settings, and a positional signature at that size is one
-     * where a caller swapping two arguments compiles and silently enforces the
-     * wrong condition. Anything the map does not mention keeps its stored
-     * value, so an older screen cannot wipe a setting it has never heard of.
+     * Stores the given conditions and tells the engine at once. Keys the map
+     * leaves out keep their stored value.
      */
     fun setPolicy(context: Context, values: Map<String, Any?>) {
         val edit = prefs(context).edit()
@@ -81,9 +59,7 @@ object Device {
             (values[key] as? Boolean)?.let { edit.putBoolean(key, it) }
         }
         (values[MIN_BATTERY] as? Number)?.let {
-            // Clamped rather than trusted. A floor above a hundred holds every
-            // run for ever on a phone that is behaving perfectly, and the
-            // person it happens to has no way to see why.
+            // A floor above 100 would hold every run for ever.
             edit.putInt(MIN_BATTERY, it.toInt().coerceIn(0, 95))
         }
         edit.apply()
@@ -95,20 +71,10 @@ object Device {
     }
 
     /**
-     * Whether a cable, a dock or a wireless pad is putting power in.
-     *
-     * From the STICKY broadcast rather than from BatteryManager.isCharging, and
-     * that is not a style preference. isCharging reads the battery HAL
-     * directly; the sticky intent is what the framework publishes and what
-     * every other app on the phone reads. On an emulator the two disagree
-     * outright - `dumpsys battery set ac 1` moves the broadcast and leaves
-     * isCharging where it was - and the emulator is where this gets tested, so
-     * a check nothing can move is a check nothing can verify.
-     *
-     * PLUGGED first, because that is the question. A phone at a hundred percent
-     * on a charger reports status FULL rather than CHARGING, and treating that
-     * as "not charging" would hold every overnight job on exactly the phones
-     * that spent the night on the cable.
+     * Reports whether a cable, dock or wireless pad supplies power. It reads
+     * the sticky broadcast rather than BatteryManager.isCharging, which
+     * `dumpsys battery set ac 1` does not move on an emulator. A full battery on
+     * the charger reports FULL, which counts as charging.
      */
     fun charging(context: Context): Boolean {
         val now = context.registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
@@ -123,29 +89,14 @@ object Device {
             }
             if (plugged == 0 || status != -1) return false
         }
-        // Nothing has published one yet, which happens in the seconds after a
-        // boot. Charging is the answer that lets runs through.
+        // No broadcast yet, as in the seconds after a boot; assume charging so
+        // runs go through.
         return context.getSystemService(BatteryManager::class.java)?.isCharging ?: true
     }
 
     /**
-     * Whether this phone is on wifi rather than on the mobile network.
-     *
-     * It used to ask NOT_METERED, which is a question about the BILL: a wifi
-     * network its owner marked as metered failed it, and a mobile connection
-     * somebody marked unmetered passed. That is defensible and it is not what
-     * the switch says. jdp: "nur über kostenfreie verbindung soll einfach Nur
-     * über WLAN heißen und es nicht von kosten abhängig machen." A switch
-     * reading "only over wifi" that lets a run out over mobile data because the
-     * tariff looked generous is a switch that lied, and the person who finds
-     * out is the person with the bill.
-     *
-     * Ethernet counts. A phone in a dock is on a cable, which is wifi's answer
-     * to the same question and not the mobile network.
-     *
-     * No network at all is NOT wifi, so a run waits. That is the opposite of
-     * what the old metered test did with the same case, and it is the right way
-     * round: with the switch on, "no connection" is not a reason to go ahead.
+     * Reports whether the phone is on wifi or ethernet rather than mobile data,
+     * regardless of cost. No network at all counts as not on wifi.
      */
     fun onWifi(context: Context): Boolean {
         val manager = context.getSystemService(ConnectivityManager::class.java) ?: return false
@@ -156,13 +107,9 @@ object Device {
     }
 
     /**
-     * How full the battery is, nought to a hundred, or -1 if nothing has said.
-     *
-     * From the same sticky broadcast as `charging`, and for the same reason:
-     * it is what the framework publishes and what every other app on the phone
-     * reads, so a test rig that moves the broadcast moves this too. The level
-     * arrives as a fraction of a scale rather than as a percentage, because a
-     * device is allowed to count in something other than hundredths.
+     * Returns the battery level from 0 to 100, or -1 when unknown, from the
+     * same sticky broadcast as `charging`. The level is scaled, since a device
+     * may count in other units than percent.
      */
     fun batteryLevel(context: Context): Int {
         val now = context.registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
@@ -174,15 +121,9 @@ object Device {
     }
 
     /**
-     * Whether this phone is on somebody else's network abroad.
-     *
-     * Android answers this with NOT_ROAMING, a capability added in API 28, and
-     * this app runs from 26. On the two versions below it the capability is
-     * simply never reported, so asking would read as "roaming" on every phone
-     * and hold every run on a device that has never left the country. Unknown
-     * therefore means NOT roaming, which is the same direction every other
-     * unanswerable question here takes: a condition that blocks when it cannot
-     * tell is a condition that stops everything the day something breaks.
+     * Reports whether the phone is roaming. NET_CAPABILITY_NOT_ROAMING needs
+     * API 28, and below that, or when unknown, the answer is not roaming so
+     * runs are not held.
      */
     fun roaming(context: Context): Boolean {
         if (android.os.Build.VERSION.SDK_INT < 28) return false
@@ -193,19 +134,8 @@ object Device {
     }
 
     /**
-     * Whether this connection is one somebody pays for by the megabyte.
-     *
-     * A question about the BILL, and deliberately separate from "only on wifi",
-     * which is a question about the transport. jdp asked for those two to stop
-     * being one switch - *"nur über kostenfreie verbindung soll einfach Nur
-     * über WLAN heißen und es nicht von kosten abhängig machen"* - and the
-     * answer was to make the wifi switch mean wifi. This is the other half
-     * arriving as its own switch: a wifi network whose owner marked it metered
-     * is exactly the case the wifi switch cannot catch, and a hotspot shared
-     * from a phone is the case that costs real money.
-     *
-     * No connection at all counts as metered, so a run waits. With the switch
-     * on, "no connection" is not a reason to go ahead.
+     * Reports whether the connection is metered, which a wifi hotspot can be.
+     * No connection at all counts as metered.
      */
     fun metered(context: Context): Boolean {
         val manager = context.getSystemService(ConnectivityManager::class.java) ?: return true
@@ -215,21 +145,15 @@ object Device {
     }
 
     /**
-     * The verdict, in the words that end up in the engine's log. Empty means
-     * nothing is in the way.
-     *
-     * The order is the order somebody would check in: power first, because a
-     * flat phone cannot do anything about the network anyway.
+     * Returns the first condition holding automatic runs, as a sentence for the
+     * engine's log, or an empty string. deviceConditions.ts checks in the same
+     * order.
      */
     fun reason(context: Context): String {
         if (onlyCharging(context) && !charging(context)) {
             return "this phone is not charging"
         }
-        // The floor applies only while NOT charging, and that is the whole of
-        // what makes it usable. A phone on the cable at fifteen percent is
-        // climbing, and holding its runs would delay exactly the phones that
-        // spent the night plugged in - which is the case an overnight schedule
-        // is written for.
+        // The floor applies only off the charger; a phone on the cable is climbing.
         val floor = minBattery(context)
         if (floor > 0 && !charging(context)) {
             val level = batteryLevel(context)
@@ -250,24 +174,17 @@ object Device {
     }
 
     /**
-     * Tell the engine, unless it already knows.
-     *
-     * On its own thread: this is called from a broadcast receiver, and a
-     * receiver that makes a network call on the main thread is an app that
-     * stops painting while the engine answers.
+     * Sends the verdict to the engine unless it already has it. The request
+     * runs on its own thread, since this is called from broadcast receivers on
+     * the main thread.
      */
     @Synchronized
     fun report(context: Context) {
         val now = reason(context)
         if (now == sent || now == inFlight) return
-        // Claimed BEFORE the thread starts, and released only if it fails.
-        // Android broadcasts the battery several times a second when a cable
-        // goes in, and without this each one starts its own connection to say
-        // the same thing - four threads racing to report one event.
+        // Claimed before the thread starts, since a cable going in fires
+        // several broadcasts a second.
         inFlight = now
-        // Said out loud, because this is a decision taken with no screen
-        // anywhere near it. Without the line, "the schedule did not run last
-        // night" has no evidence at all on the phone it happened on.
         android.util.Log.i("ArrowLoop", if (now.isEmpty()) "nothing holds automatic runs" else "holding automatic runs: $now")
         val body = """{"reason":${quote(now)}}"""
         Thread {
@@ -284,9 +201,8 @@ object Device {
                     disconnect()
                 }
             } catch (_: Exception) {
-                // The engine is not up yet, or is on its way down. Leaving
-                // `sent` alone is what makes the next broadcast try again
-                // rather than assume it got through.
+                // The engine is not up; `sent` stays unchanged so the next
+                // broadcast tries again.
             } finally {
                 synchronized(Device) { if (inFlight == now) inFlight = null }
             }
@@ -294,21 +210,15 @@ object Device {
     }
 
     /**
-     * Start listening, and report once straight away.
-     *
-     * The immediate report is not a nicety: a phone that has been on the
-     * charger since before the service started produces no broadcast, and
-     * waiting for one would mean the engine learns nothing until the cable
-     * comes out.
+     * Starts listening and reports straight away, since a phone already on
+     * the charger sends no broadcast.
      */
     fun watch(context: Context) {
         if (power == null) {
             power = object : BroadcastReceiver() {
                 override fun onReceive(c: Context, i: Intent) = report(context)
             }
-            // ACTION_BATTERY_CHANGED is a sticky broadcast that cannot be
-            // declared in the manifest, which is exactly why this is registered
-            // in code and lives as long as the service.
+            // ACTION_BATTERY_CHANGED cannot be declared in the manifest.
             val filter = IntentFilter().apply {
                 addAction(Intent.ACTION_POWER_CONNECTED)
                 addAction(Intent.ACTION_POWER_DISCONNECTED)
@@ -332,14 +242,13 @@ object Device {
         report(context)
     }
 
-    /** Stop listening. Called when the service goes down, so the receivers do
-     *  not outlive the thing they were reporting to. */
+    /** Stops listening when the service goes down. */
     fun forget(context: Context) {
         power?.let {
             try {
                 context.unregisterReceiver(it)
             } catch (_: IllegalArgumentException) {
-                // Already gone. Not worth a crash on the way out.
+                // Already unregistered.
             }
         }
         power = null
@@ -357,9 +266,7 @@ object Device {
     private fun prefs(context: Context) =
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
 
-    /** A JSON string. The reasons are ours and carry nothing exotic, but a
-     *  hand-built body that breaks on a quote is a bug waiting for the day
-     *  somebody writes one. */
+    /** Encodes a string as a JSON string literal. */
     private fun quote(s: String): String {
         val out = StringBuilder("\"")
         for (c in s) {

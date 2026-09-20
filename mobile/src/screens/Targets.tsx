@@ -10,16 +10,8 @@ import { Badge, Body, Button, Caption, Card, CardHead, Empty, Fab, Floating, Pag
 import { CardMenu } from "../CardMenu";
 
 /**
- * The storage this phone can reach.
- *
- * A job's right-hand side is usually `something:path`, and `something` is
- * configured here. Without this screen the app can only sync two folders on
- * the phone itself, which is not what anybody installs a sync tool for.
- *
- * Each target says whether it ANSWERS, and how full it is where the service
- * will say. A target that was saved and cannot be reached is the commonest
- * failure by a distance, and finding that out when a job runs at three in the
- * morning is finding out too late.
+ * The configured targets, each with whether it answers and how full it is
+ * where the service says.
  */
 export function Targets() {
   const nav = useNavigation<Nav<TargetsStack>>();
@@ -42,19 +34,13 @@ export function Targets() {
     return stop;
   }, [nav, load]);
 
-  // How full each one is, asked once the list is known. jdp: "die verbundenen
-  // konten sollen den speicherplatz anzeigen auf der card wie in autosync."
-  //
-  // The list is the only thing this screen waits for. The sizes arrive after
-  // it and each card fills in as its own answer lands, because a page that
-  // waited for every cloud would be blank for as long as the slowest one.
+  // Each card fills in its size as its own answer lands, so the slowest
+  // service does not hold up the list.
   const room = useRoom(remotes);
 
   return (
     <Floating>
       <Page fab>
-      {/* Nothing where there is nothing. jdp asked for the hint text to go when
-          the page is empty, and the floating button below carries the offer. */}
       {!remotes ? <Empty title={t("history.working")} detail={error || undefined} /> : null}
       {(remotes ?? []).map((remote, index) => (
         <TargetCard
@@ -69,7 +55,6 @@ export function Targets() {
 
       {error ? <Caption>{error}</Caption> : null}
       </Page>
-      {/* Bottom right, the same place the job list keeps its own. */}
       <Fab
         label={t("targets.addStorage")}
         labelKey="targets.addStorage"
@@ -94,17 +79,8 @@ function TargetCard({
 }) {
   const { t } = useT();
   const hue = useHue(index);
-  // No CHECK button here any more. It moved to the form (jdp: "der pruefen
-  // button der ziele soll in ziele einrichten seite nicht auf die card"), where
-  // it can run before a credential is kept.
-  //
-  // The SIZE came back, though, and by a different route: it used to hang off
-  // that button, so it only ever appeared after somebody pressed it. Now the
-  // screen asks every target on its own as soon as it has the list, which is
-  // what jdp meant by "wie in autosync" - there the space is simply part of
-  // what an account IS, not a reward for testing it.
 
-  /** Only for something that went wrong HERE, which is a failed delete. */
+  /** A failed delete. */
   const [detail, setDetail] = useState("");
 
   const { who, where } = account(remote);
@@ -114,8 +90,7 @@ function TargetCard({
       { text: t("confirm.cancel"), style: "cancel" },
       {
         text: t("confirm.delete"),
-        // Not "destructive": GlimStone 1.12.0 paints no delete red, and
-        // the platform dialog is no exception to a rule about deletes.
+        // Not "destructive": GlimStone paints no delete red, dialogs included.
         onPress: async () => {
           try {
             await api.deleteRemote(remote.name);
@@ -130,18 +105,10 @@ function TargetCard({
 
   return (
     <Card hue={hue}>
-      {/* The same head the job list draws, from the same component - see
-          CardHead in ui.tsx. A target names its product directly, so there is no
-          side to resolve first. */}
       <CardHead mark={remote.mark} title={remote.name}>
-        {/* Unreachable is said HERE rather than under the bar, because it is a
-            fact about the target and not about its size. A card that showed
-            both a badge and an empty meter would read as two faults. */}
+        {/* Unreachable belongs in the head, since it is about the target and
+            not its size. */}
         {unreachable(room) ? <Badge label={t("targets.checkFailed")} tone="fail" /> : null}
-        {/* The two rare acts, out of the row and into a menu, the same way the
-            job card does it. jdp: "auch in den ziele card ein hamburgermenue."
-            Three buttons of equal weight said all three were equally likely,
-            and two of them are things somebody does once. */}
         <View style={styles.menuSlot}>
           <CardMenu
             items={[
@@ -152,41 +119,15 @@ function TargetCard({
         </View>
       </CardHead>
 
-      {/* WHO AND WHERE, which used to be on the overview. jdp turned the two
-          screens around: "kannst du den inhalt von den Zielcards in der
-          übersicht und im Zieltab tauschen? wo welche info angezeigt wird hätte
-          ich genau anders herum."
-
-          This is the screen the detail belongs on. A list of target NAMES
-          answers "which ones are set up" and not "which account is this and
-          where does it point", and the second is what somebody comes here to
-          check - whether a card says the wrong number, or refuses to connect at
-          all. See account() in space.tsx for what is read and what is left out.
-
-          Above the size rather than below it, so the lines read as one block
-          about the target and the meter stays the last thing on the card. */}
+      {/* Which account and where it points; see account() in space.tsx. */}
       {who ? <Caption>{who}</Caption> : null}
       {where ? <Caption>{where}</Caption> : null}
 
-      {/* How full it is. Nothing at all while the answer is on its way, rather
-          than a placeholder that jumps: a row of "wird gesucht" under every
-          card would be the loudest thing on the screen and the least useful. */}
       <Room room={room} hue={hue} />
-      {/* The protocol, only where the logo did not already say it. jdp: "die
-          verbindungsart kannst du auf der ziele card weg lassen" - and under a
-          Garage mark, `s3` says the same thing twice and less clearly. Kept
-          for a target no provider claims, where it is the only line that says
-          what this is at all. */}
+      {/* The protocol only for a target no provider mark describes. */}
       {remote.mark ? null : <Caption>{remote.type}</Caption>}
 
       {detail ? <Body>{detail}</Body> : null}
-
-      {/* No test button here any more. jdp: "der pruefen button der ziele soll
-          in ziele einrichten seite nicht auf die card, dann kann man direkt
-          pruefen bevor man auf speichern tippt." It lives on the form, where it
-          can run BEFORE a credential is kept - and two buttons running the same
-          check, one against saved settings and one against typed ones, would be
-          two things to explain with one of them always the wrong one to press. */}
     </Card>
   );
 }

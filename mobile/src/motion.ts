@@ -4,88 +4,43 @@ import { AccessibilityInfo, LayoutAnimation, Platform, UIManager } from "react-n
 import { useAppearance, type MotionIntensity } from "./settings";
 
 /**
- * The motion engine, as React Native.
- *
- * THE SAME THREE STATES the container has - `off`, `subtle`, `wild` - and the
- * same rule behind them: one animation at every intensity, with only the
- * NUMBERS changing. "Subtle" is never a different animation from "wild", it is
- * a smaller one. The container's own `lib/motion.ts` says why at length; this
- * is that engine with CSS custom properties swapped for a plain table, because
- * there is no stylesheet here to redefine.
- *
- * DEFAULT IS WILD. This axis is polish somebody dials DOWN rather than a
- * fallback they opt into, which is the opposite of the theme axis and for the
- * opposite reason.
- *
- * IT COMPOSES WITH ANDROID'S OWN SETTING and never overrides it. A phone whose
- * owner has asked the system for less motion gets the `off` numbers whatever
- * this app is set to - the web achieves that by living inside a
- * `prefers-reduced-motion: no-preference` block, and here it is a subscription
- * to `AccessibilityInfo`. Somebody who turned animations off system-wide did
- * not mean "except in this one app".
- *
- * WHY `LayoutAnimation` AND NOT `Animated`: almost everything that moves here
- * is a LAYOUT change - a row appearing, a card growing, a palette opening. For
- * those, one call before the state update animates the whole tree, where
- * `Animated` would need a driven value per element and a measured height for
- * anything that grows. Where a real driven animation is wanted, `Animated` is
- * still there; this is the common case, not the only one.
+ * The motion levels of the web app's lib/motion.ts as a plain table: one
+ * animation at every level, with only the numbers changing. Android's reduce
+ * motion setting always wins. LayoutAnimation covers most movement here, since
+ * nearly everything that moves is a layout change.
  */
 
 export type { MotionIntensity };
 
-/** THE LEVELS THE PICKER OFFERS, which is three and not four: `storm` is out
- *  of it until somebody finds the gesture. This is not a validator - a stored
- *  value may legally be any of the four levels. */
+/** The levels the picker offers. A stored value may also be the hidden `storm`. */
 export const MOTION_INTENSITIES: MotionIntensity[] = ["off", "subtle", "wild"];
 
 export const DEFAULT_MOTION: MotionIntensity = "wild";
 
 /**
- * The durations, in milliseconds, per intensity.
- *
- * The same numbers the container's tokens carry, so a phone and a browser side
- * by side move at the same speed. `off` is zero everywhere, which is what makes
- * the animation calls below safe to leave in place rather than branching around
- * them: a zero-duration layout animation is an instant layout change.
+ * Durations in milliseconds per level, the same as the web app's tokens. A
+ * zero duration is an instant layout change, so callers need no branch for
+ * `off`.
  */
 export const MOTION: Record<
   MotionIntensity,
   { layout: number; fade: number; toast: number; spring: boolean; damping: number }
 > = {
-  // THE HIDDEN FOURTH, and it is a real level rather than a joke. Same
-  // animations, same elements, a spring that swings further and takes longer to
-  // come to rest - which is the language's own rule about levels, kept. It is
-  // out of the picker until somebody finds it; `src/eggs.tsx` holds the gesture
-  // and says why an easter egg that changes behaviour has to be one somebody
-  // can switch back off.
+  // Hidden behind a gesture in eggs.tsx.
   storm: { layout: 760, fade: 200, toast: 420, spring: true, damping: 0.34 },
-  // THE TOP SETTING ACTUALLY MOVES, which started as a naming argument and
-  // ended as a real change. It was every animation at its ordinary speed - a
-  // calm crossfade - under a label promising more, and the honest fix was not
-  // a quieter word but a livelier animation (jdp: "auf wilder stufe möchte ich
-  // auch wilde animationen").
-  //
-  // So this one SPRINGS: it overshoots slightly and settles, where the others
-  // ease. That is still the same animation on the same elements - the language's
-  // rule that subtle is a smaller wild, never a different one, survives - but
-  // the curve at the top has energy in it rather than only duration.
+  // The top two spring and overshoot; the lower levels ease.
   wild: { layout: 420, fade: 140, toast: 300, spring: true, damping: 0.68 },
   subtle: { layout: 140, fade: 70, toast: 120, spring: false, damping: 1 },
   off: { layout: 0, fade: 0, toast: 0, spring: false, damping: 1 },
 };
 
-// Android needs this switched on explicitly, and without it every
-// LayoutAnimation call is silently a no-op - which is the worst of both worlds:
-// the code reads as animated and the app does not move. It is deprecated on
-// the new architecture, where layout animations work without it, so a missing
-// method is not an error here.
+// Without this, LayoutAnimation is a no-op on the old architecture. The new
+// architecture drops the method, so its absence is fine.
 if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-/** Whether Android itself has been asked for less motion. Read once and then
- *  watched, because somebody can change it while the app is open. */
+/** Whether Android's reduce motion setting is on; watched while the app runs. */
 let systemReduced = false;
 const listeners = new Set<() => void>();
 
@@ -95,8 +50,7 @@ AccessibilityInfo.isReduceMotionEnabled()
     listeners.forEach((fn) => fn());
   })
   .catch(() => {
-    // An Android that cannot answer is an Android with no such setting, and
-    // the app's own choice is then the whole answer.
+    // No such setting on this Android; the app's own choice applies.
   });
 
 AccessibilityInfo.addEventListener("reduceMotionChanged", (on) => {
@@ -104,15 +58,7 @@ AccessibilityInfo.addEventListener("reduceMotionChanged", (on) => {
   listeners.forEach((fn) => fn());
 });
 
-/**
- * The intensity in force: the app's own choice, or `off` where the system asked
- * for less motion.
- *
- * The system WINS rather than being merged with. A person who turned animations
- * off in Android's accessibility settings has made a decision about every app
- * on the phone, and an app that treated that as a suggestion would be arguing
- * with an accessibility setting.
- */
+/** The level in force: the app's own choice, or `off` when Android asks for less motion. */
 export function useMotion(): { intensity: MotionIntensity; ms: (typeof MOTION)[MotionIntensity] } {
   const a = useAppearance();
   const [, bump] = useState(0);
@@ -128,23 +74,14 @@ export function useMotion(): { intensity: MotionIntensity; ms: (typeof MOTION)[M
 }
 
 /**
- * Animate the next layout change, at the intensity in force.
- *
- * Called BEFORE the state update that changes the layout, which is how
- * LayoutAnimation works: it configures the next commit rather than animating
- * anything itself. A zero duration configures an instant one, so call sites
- * never have to ask whether motion is on.
+ * Animates the next layout change. Call it before the state update, since
+ * LayoutAnimation configures the next commit.
  */
 export function animateNext(intensity: MotionIntensity, kind: "layout" | "fade" = "layout"): void {
   const duration = MOTION[intensity][kind];
   if (!duration) return;
   const spring = MOTION[intensity].spring;
-  // A SPRING at the top and an ease below it. The spring's damping is what
-  // decides how much it overshoots: 0.6 is a visible bounce and 1.0 is none at
-  // all, so `wild` sits where the movement is felt without the interface
-  // looking like it is made of rubber, and the hidden level goes further on
-  // purpose. Below the top setting the curve eases, because somebody who asked
-  // for less movement asked for less movement and not for a faster bounce.
+  // Damping sets the overshoot: 0.6 is a visible bounce, 1.0 none.
   const damping = MOTION[intensity].damping;
   LayoutAnimation.configureNext({
     duration,

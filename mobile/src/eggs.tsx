@@ -5,70 +5,27 @@ import { Glyph } from "./glyphs";
 import { setAppearance, useAppearance } from "./settings";
 import { RAINBOW } from "./theme";
 
-/**
- * The easter eggs, all of them, in one place.
- *
- * ONE MODULE ON PURPOSE. Four small secrets scattered across four screens are
- * four things nobody remembers are there, and the first person to tidy one of
- * those screens deletes one without knowing what it was. Here they are a named
- * category with the rules written down, which is also how they are kept in the
- * design language (`[[GlimStone]]`, section "Easter Eggs").
- *
- * THE RULES THEY ALL FOLLOW, and they are the whole reason this file can exist
- * in a program that moves people's files:
- *
- * 1. **Nothing an egg does may lose data or change what a sync does.** Three of
- *    the four are pure display. The fourth adds a real setting, and it is one
- *    that can be turned straight back down.
- * 2. **A guard stays a guard.** The Ouroboros egg lives in the WORDING of a
- *    refusal, never in whether the refusal happens - the engine refuses the job
- *    either way, and the joke is only what it says while doing it.
- * 3. **No randomness.** A secret that appears at random cannot be shown to
- *    somebody else, which is most of the point of finding one. Every egg here
- *    is a repeatable gesture or a stated arithmetic.
- * 4. **Nothing hides a fault.** No egg replaces an error, a warning or a
- *    figure somebody needs.
- */
+// The easter eggs, kept together so none is lost to a tidy-up. They never
+// change what a sync does, never decide whether a guard refuses (only how it
+// words the refusal), are never random, and never hide an error or a figure.
 
-/** How many taps on the About card's own name open the loop. */
+/** Taps on the About card's title that start the loop. */
 const TAPS = 7;
 
-/** How long the loop takes to come round, in milliseconds. */
 const LOOP_MS = 2600;
 
-/** How many arrows stand on the ring. */
+/** Arrows on the ring. */
 const ARROWS = 8;
 
-/** How far from the middle they stand, in points. */
+/** The ring's radius in points. */
 const RADIUS = 78;
 
 /**
- * The arrow closes the loop.
- *
- * Tap the card's own name seven times and the app's mark turns once, all the
- * way round, travelling through the whole accent wheel and landing back where
- * it started. The app is called ArrowLoop and has never once drawn a loop; this
- * is the name taken literally for two seconds.
- *
- * THE TITLE AND NOT THE VERSION LINE, and that was found on the device rather
- * than reasoned out. The version line is two LINKS, and in React Native an
- * inner `Text` with its own `onPress` takes the tap before any wrapper sees it
- * - so the gesture worked only in the empty space beside the words, and
- * following the instructions as written opened a browser seven times. A card's
- * name is the one part of a card that carries no other action.
- *
- * PURELY LOCAL. Nothing is written to the stored appearance, so the accent
- * somebody chose is exactly the accent they still have when it stops.
- *
- * THE COLOUR IS STATE AND THE TURN IS ANIMATED, which is not a style choice.
- * An `Animated` colour reaches a `View` fine and does NOT reach an SVG: the
- * first build handed an interpolation to the glyph's `color`, and on the device
- * the mark took up its space and drew nothing at all. Twelve state changes over
- * two seconds cost nothing and are a colour every renderer understands.
- *
- * It ignores the motion setting deliberately, and it is the only thing here
- * that does: this is not an interface animation somebody might want out of the
- * way, it is the whole content of the gesture. Seven taps is asking for it.
+ * Seven taps on the About card's title spin a ring of arrows through the
+ * accent wheel. The title carries no other action, unlike the version line's
+ * links, which take the tap first. Nothing is stored, and the animation
+ * ignores the motion setting, since the animation is what the gesture asks for.
+ * The colour is React state since an animated colour does not reach an SVG.
  */
 export function useClosingLoop(): { tap: () => void; mark: ReactNode } {
   const [running, setRunning] = useState(false);
@@ -76,9 +33,7 @@ export function useClosingLoop(): { tap: () => void; mark: ReactNode } {
   const taps = useRef(0);
   const turn = useRef(new Animated.Value(0)).current;
 
-  // Round the whole wheel and back to the start, so it ends on the colour it
-  // began on. The fallback is the house yellow and exists only so an empty
-  // palette cannot end a gesture in a crash.
+  // Ends on the colour it began with.
   const wheel: string[] = [...RAINBOW, RAINBOW[0] ?? "#FCC419"];
 
   useEffect(() => {
@@ -87,12 +42,9 @@ export function useClosingLoop(): { tap: () => void; mark: ReactNode } {
     const spin = Animated.timing(turn, {
       toValue: 1,
       duration: LOOP_MS,
-      // OUT of nothing, IN to nothing, and fast in the middle. A linear turn
-      // reads as a loading spinner, which is the one thing this must not look
-      // like; the ease is what makes it an event with a beginning and an end.
+      // A linear turn would read as a loading spinner.
       easing: Easing.inOut(Easing.cubic),
-      // Transforms and opacity only, so the whole thing runs on the native
-      // side and stays smooth while the engine is busy.
+      // Only transforms and opacity, so it can run on the native driver.
       useNativeDriver: true,
     });
     spin.start();
@@ -113,26 +65,9 @@ export function useClosingLoop(): { tap: () => void; mark: ReactNode } {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [running, turn]);
 
-  /*
-  A RING OF ARROWS THAT CLOSES, and it is the second attempt. jdp on the first:
-  "easter egg von der übercard hätte ich gern anders und spektakulärer." He was
-  right - one small mark turning once beside a version line is a detail, and a
-  secret that takes seven taps to find should be worth the seventh.
-
-  So now eight arrows stand on a ring, the ring turns three full times, and the
-  whole thing grows out of the middle and shrinks back into it while the colour
-  travels the accent wheel. The app is called ArrowLoop; this is the name drawn
-  at the size of the card.
-
-  EVERY PART IS A TRANSFORM OR AN OPACITY, which is what lets it run on the
-  native driver: the ring rotates, each arrow is pushed out along its own angle,
-  and the group scales and fades. The colour is React state, because an animated
-  colour reaches a View and not an SVG - found on the device the hard way, see
-  the comment on the first build in the vault.
-  */
+  // Three full turns, growing out of the middle past full size and shrinking
+  // back into it.
   const spin = turn.interpolate({ inputRange: [0, 1], outputRange: ["0deg", "1080deg"] });
-  // Out of nothing, past its full size, and back to nothing. The overshoot is
-  // what makes it land rather than stop.
   const scale = turn.interpolate({ inputRange: [0, 0.25, 0.75, 1], outputRange: [0.2, 1.12, 1, 0.2] });
   const fade = turn.interpolate({ inputRange: [0, 0.12, 0.85, 1], outputRange: [0, 1, 1, 0] });
   const colour = wheel[step] ?? wheel[0] ?? "#FCC419";
@@ -145,9 +80,6 @@ export function useClosingLoop(): { tap: () => void; mark: ReactNode } {
       setStep(0);
       setRunning(true);
     },
-    // Out of the layout entirely until it runs, so nothing on the card moves
-    // until the secret is found - and ABSOLUTE while it does, so the ring lies
-    // over the card rather than pushing its text around.
     mark: running ? (
       <View pointerEvents="none" style={styles.stage}>
         <Animated.View style={[styles.ring, { opacity: fade, transform: [{ rotate: spin }, { scale }] }]}>
@@ -156,9 +88,7 @@ export function useClosingLoop(): { tap: () => void; mark: ReactNode } {
               key={i}
               style={[
                 styles.spoke,
-                // Each arrow is turned to its own place on the ring and then
-                // pushed outward along that direction, so the eight of them
-                // sit on a circle and all point the same way round it.
+                // Turned to its angle, then pushed out along it.
                 { transform: [{ rotate: `${(360 / ARROWS) * i}deg` }, { translateY: -RADIUS }] },
               ]}
             >
@@ -171,33 +101,13 @@ export function useClosingLoop(): { tap: () => void; mark: ReactNode } {
   };
 }
 
-/** How many taps on the chosen level open the one below the floor. */
+/** Further taps on an already chosen "wild" that unlock the storm level. */
 const STORM_TAPS = 5;
 
 /**
- * The storm: a fourth motion level, for somebody who thought the third was too
- * quiet.
- *
- * Set the motion to "wild", then tap that same word five more times. It is the
- * gesture of somebody pressing a button that is already pressed because they
- * wanted more of it, which is exactly who this is for - and it is how this egg
- * was asked for: jdp, looking at the app, "Hast du animationen in der app
- * eingebaut? Auch wilde? mir kommt es vor als würde ich keine sehen."
- *
- * IT IS NOT REMEMBERED AS A DISCOVERY, and that was jdp's correction: "sturm
- * soll wieder verschwinden wenn man zb sanft einstellt und die einstellungen
- * verlässt." The first build stored a "found it" flag, so the fourth option
- * stood in the picker for ever after one gesture - which turns a secret into a
- * setting somebody has to explain to themselves later.
- *
- * So what keeps it visible is the plain truth about the current state: it is
- * there while it is CHOSEN, and otherwise only for as long as this screen stays
- * open. Choose something else and leave, and it is gone until the gesture is
- * made again. Choose it and leave, and it stays - because a picker that hid the
- * value it is showing would be lying.
- *
- * Returns whether it is on offer and the tap handler; the caller owns the
- * screen and therefore owns how long "open" lasts.
+ * Unlocks the hidden `storm` motion level after five more taps on an already
+ * chosen "wild". The level stays on offer while it is chosen, and otherwise
+ * only while the calling screen stays mounted.
  */
 export function useStormUnlock(): { offered: boolean; tap: (level: string) => void } {
   const look = useAppearance();
@@ -206,8 +116,6 @@ export function useStormUnlock(): { offered: boolean; tap: (level: string) => vo
   return {
     offered: found || look.motion === "storm",
     tap: (level: string) => {
-      // Only counts while the top VISIBLE level is the one already chosen.
-      // Tapping "off" five times means somebody is annoyed, not curious.
       if (level !== "wild" || look.motion !== "wild") {
         taps.current = 0;
         return;
@@ -222,24 +130,15 @@ export function useStormUnlock(): { offered: boolean; tap: (level: string) => vo
 }
 
 /**
- * A run that did nothing, once in every fifty.
- *
- * Both sides already the same is the most ordinary outcome there is, and the
- * line reporting it counts the files that did not need to move. Every fiftieth
- * such run says something else instead.
- *
- * FROM THE RUN'S OWN NUMBER and not from a random draw, so the same run says the
- * same thing every time it is looked at, and so it can be shown to somebody.
- * The run log's identity is a counter, so one run in fifty is exactly what this
- * is.
+ * Reports whether an idle run gets the alternative wording: every fiftieth
+ * run by id, so the same run always reads the same.
  */
 export function isPerfectlyIdle(runId: number, unchanged: number): boolean {
   return unchanged > 0 && runId > 0 && runId % 50 === 0;
 }
 
 const styles = StyleSheet.create({
-  // The ring lies OVER the card and takes no space in it: the card's own text
-  // must not jump aside the moment somebody finds the secret.
+  // Laid over the card, so its text does not move.
   stage: {
     position: "absolute",
     top: 0,

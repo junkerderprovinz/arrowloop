@@ -10,35 +10,14 @@ import {
 import { glyphNameFor } from "../../web/src/lib/glyphName";
 import { BRAND } from "./theme";
 
-/**
- * The same marks the browser draws, drawn here.
- *
- * The app's set and the brand marks both come out of `glyphs.data.ts`, which is
- * generated from the two generated component files - so there is one icon set
- * for the whole product rather than a phone-shaped copy that would be right on
- * the day it was written and wrong a year later. On an icon set that drift is
- * not cosmetic: it means a button wearing the mark of a different action.
- *
- * TEXT GLYPHS ARE NOT AN OPTION and that is what this file replaces. A "✓" or a
- * "🗑" in a Text element is whatever the handset's font decides - a different
- * weight from the icon beside it, a colour emoji on one phone and a line
- * drawing on another - and the design language's whole assortment rule is that
- * icons agree with each other because they were drawn to.
- */
+// The web app's icon set and brand marks, drawn from the generated
+// web/src/lib/glyphs.data.ts so both apps share one set. Text symbols such as
+// "✓" would take whatever the handset's font draws.
 
-/** The optical size every mark is drawn at, unless a call site says otherwise.
- *  ONE size: three buttons in a column wearing three visibly different icons is
- *  what a shared measure exists to prevent. */
+/** The default size of every mark. */
 export const GLYPH = 16;
 
-/**
- * One of the app's own marks, in the colour the surrounding text is using.
- *
- * `color` rather than a fill baked into the drawing, because these are the
- * app's own vocabulary: the same tick is ink on a card and contrast-ink on a
- * filled button, and a drawing that carried its own colour could be only one of
- * the two.
- */
+/** One of the app's own marks, drawn in the given ink. */
 export function Glyph({
   name,
   color,
@@ -49,8 +28,7 @@ export function Glyph({
   name: string;
   color: string;
   size?: number;
-  /** A box that is not square, for the one place a mark is given room to be
-   *  wide. Both default to `size`, which is every other place. */
+  /** A non-square box; both default to `size`. */
   width?: number;
   height?: number;
 }) {
@@ -60,11 +38,8 @@ export function Glyph({
 }
 
 /**
- * A drawing on the app's grid, in one ink.
- *
- * Split out of `Glyph` so a mark that is NOT in the app's own set can still be
- * drawn the same way - the two donation marks, which are brands and therefore
- * deliberately unreachable through the rule table.
+ * Draws a mark on the app's grid in one ink. Separate from Glyph so the two
+ * donation marks, which are not in the app's set, draw the same way.
  */
 function Drawn({
   glyph,
@@ -96,9 +71,8 @@ function Drawn({
               <Path
                 key={pi}
                 d={part.d}
-                // The one stroked mark in the set keeps its stroke and takes no
-                // fill; everything else is a filled shape with the even-odd
-                // rule, which is how the source set was drawn.
+                // The one stroked mark takes no fill; the rest are even-odd
+                // filled shapes, as the source set was drawn.
                 fill={part.fill === "none" ? "none" : color}
                 fillRule="evenodd"
                 stroke={part.stroke ? color : undefined}
@@ -120,18 +94,9 @@ export function glyphNameForKey(key: string): string | undefined {
 }
 
 /**
- * A brand mark: somebody else's drawing, reproduced rather than redrawn.
- *
- * Rendered through SvgXml because these are not one set on one grid. They carry
- * gradients, clip paths and nested groups, and a hand-written converter that
- * understood only what today's fifty-five happen to use would silently drop
- * part of the fifty-sixth. The markup travels whole and react-native-svg parses
- * it, which is the same contract the browser has.
- *
- * `scheme` picks the colour for marks that cannot be read on one of the two
- * grounds - a black wordmark on a dark page. Fourteen of them carry a second
- * colour for exactly that, and the stylesheet the web reads them through
- * already held the swap.
+ * A brand mark, rendered whole through SvgXml since the marks use gradients,
+ * clip paths and nested groups. `scheme` picks the second colour some marks
+ * carry for the theme they would vanish on.
  */
 export function BrandMark({
   name,
@@ -143,26 +108,11 @@ export function BrandMark({
 }: {
   name: string;
   size?: number;
-  /**
-   * A box wider than it is tall, where the mark is given the room.
-   *
-   * An svg letterboxes inside its element, so a square box is a cap on the
-   * LONGER side: Linkbox is 5.3:1, Gofile 3.5, Quatrix 3.1, and a 48px square
-   * draws the first of those nine pixels tall. The web tile hands each mark a
-   * 96 by 48 box for exactly that reason and this is the same box.
-   */
+  /** A wide box for wordmarks, which letterbox inside a square. */
   width?: number;
   height?: number;
   scheme: "dark" | "light";
-  /**
-   * Draw it in ONE ink instead of its own colours.
-   *
-   * For the places where the mark is doing a glyph's job rather than presenting
-   * a brand: in front of a path it says "this side is that service", which is
-   * the same job the device glyph does on the line above, and that one is drawn
-   * in the text colour. Two marks doing one job in two visual languages read as
-   * two different kinds of thing.
-   */
+  /** An ink to draw the mark in, where it stands in for a glyph. */
   mono?: string;
 }) {
   const brand = BRANDS[name];
@@ -177,16 +127,8 @@ export function BrandMark({
 }
 
 /**
- * Every painted surface in one colour, and every hole left alone.
- *
- * `fill="none"` is NOT a colour, it is a counter-shape: several marks are an
- * outline with a hole cut out of them, and the hole is a path filled with
- * nothing. Painting it too would fill the hole and turn a recognisable outline
- * into a blob. Same for `stroke`, which a few marks use instead of a fill.
- *
- * A substitution on somebody else's markup, which is normally the wrong tool -
- * but the alternative is a second, hand-drawn monochrome version of fifty-seven
- * logos, and that is a set of drawings nobody has and nobody could keep true.
+ * Repaints every fill and stroke in one ink. `none` is left alone, since it
+ * cuts the holes that keep an outline from becoming a blob.
  */
 function oneInk(svg: string, ink: string): string {
   return svg
@@ -195,13 +137,9 @@ function oneInk(svg: string, ink: string): string {
 }
 
 /**
- * A drawing carried whole, as the XML a parser wants.
- *
- * The colours a mark carries INSIDE its own drawing are filled in here, because
- * here is the first place the theme is known. Three logos drew as nothing at all
- * while these were still `var(--brand-putio-1)`: a browser reads that out of the
- * stylesheet, and an SVG parser reads it as a colour it has never heard of and
- * paints with it anyway.
+ * Wraps a mark's markup in an svg element and fills in its themed colour
+ * slots, which an SVG parser cannot resolve the way a browser resolves CSS
+ * variables.
  */
 function whole(mark: BrandData, scheme: "dark" | "light"): string {
   const fill =
@@ -216,18 +154,9 @@ function whole(mark: BrandData, scheme: "dark" | "light"): string {
 }
 
 /**
- * A coin's own logo, for the crypto window's tiles.
- *
- * Somebody else's drawing again, so it travels the same way a brand mark does
- * and is drawn by the same parser. It is NOT reachable through `glyphNameFor`
- * and never will be: a rule keyed on "crypto" would put a Bitcoin symbol on
- * settings that have nothing to do with it, so a coin mark is passed explicitly
- * at the one call site that means it.
- *
- * Nothing where the id is unknown, which is the designed answer rather than a
- * gap: the tile still carries its ticker, and a symbol that means the wrong coin
- * is worse than none. The test beside lib/donate.ts holds every offered coin to
- * having a mark, so this is a backstop rather than a plan.
+ * A coin's logo for the crypto dialog, passed explicitly rather than through
+ * the glyph rule table. An unknown id draws nothing; the tile still shows its
+ * ticker.
  */
 export function CoinMark({
   coin,
@@ -244,25 +173,9 @@ export function CoinMark({
 }
 
 /**
- * A mark on the About card: Buy Me a Coffee, PayPal, the Bitcoin disc, GitHub.
- *
- * GlimStone's rule for this card is that EVERY button carries a mark and every
- * one of them is passed explicitly - five controls, five marks, no gaps, since
- * a row where four buttons wear a logo and the fifth does not reads as a
- * missing image. And never reachable by pattern: a glyph table keyed on
- * "coffee" would put a company's cup on anything mentioning coffee, one on
- * "crypto" a currency's symbol on settings that have nothing to do with it, and
- * one on "repo" would follow this project to a different forge and be wrong
- * there. The GitHub button had exactly that gap - it wore the rule table's
- * chain link, which is a link glyph and not a brand.
- *
- * THE COLOUR AT REST IS NOT THE PUBLISHED BRAND COLOUR, and `theme.ts` says at
- * length why. `color` is therefore ignored for the three that carry a brand
- * value: a vendor's mark may not follow the button's ink, the accent or the
- * rainbow.
- *
- * Bitcoin is the coin's own disc and keeps every colour it was drawn with,
- * because a disc brings its own ground.
+ * A mark for the About card's donation and repository buttons, always passed
+ * explicitly. The colours come from BRAND in theme.ts rather than the button's
+ * ink; the Bitcoin disc keeps its own colours.
  */
 export function DonateMark({
   name,
@@ -278,11 +191,8 @@ export function DonateMark({
   if (name === "github") {
     const mark = BRANDS.IconGithub;
     if (!mark) return null;
-    // Through the brand renderer rather than `Drawn`, because GitHub's mark is
-    // somebody else's whole drawing rather than one path on this app's grid -
-    // and the fill is forced here rather than taken from the stylesheet, whose
-    // answer is the published near-black that GlimStone measured as unreadable
-    // on a dark ground.
+    // The fill is forced, since the stylesheet's published near-black is
+    // unreadable on the dark theme.
     return (
       <SvgXml
         xml={`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${mark.box}" fill="${colour}">${mark.svg}</svg>`}
@@ -296,25 +206,14 @@ export function DonateMark({
   return <Drawn glyph={glyph} color={colour} width={size} height={size} />;
 }
 
-/** Whether a brand mark of that name exists, so a row can decide to show its
- *  name instead rather than leaving a gap where a logo should be. */
 export function hasBrandMark(name: string | undefined): boolean {
   return !!name && name in BRANDS;
 }
 
 /**
- * The mark for a storage provider, whichever kind it is.
- *
- * A provider's `mark` names either somebody else's logo or one of the app's own
- * glyphs - a plain folder for a local path, a server for SFTP - and the picker
- * should not have to know which. The two are drawn differently: a brand carries
- * its own colour and must not be recoloured, and an app glyph takes the ink
- * around it.
- *
- * Nothing at all where the name is unknown, and that is the designed answer
- * rather than a gap: several providers deliberately have no mark, because a
- * logo naming the WRONG service is worse than none. The row shows its name
- * instead, which it was going to do anyway.
+ * A storage provider's mark, which names either a brand logo (drawn in its
+ * own colours) or an app glyph (drawn in the surrounding ink). Several
+ * providers have no mark, since a wrong logo is worse than none.
  */
 export function ProviderMark({
   name,
@@ -327,14 +226,13 @@ export function ProviderMark({
 }: {
   name: string | undefined;
   size?: number;
-  /** A box that is not square, for a tile that gives a wordmark its width. */
+  /** A non-square box, for a tile that gives a wordmark its width. */
   width?: number;
   height?: number;
   /** The ink for an app glyph, and for a brand too when `mono` is set. */
   color: string;
   scheme: "dark" | "light";
-  /** Draw a brand in the ink above rather than in its own colours, for the
-   *  places where the mark is doing a glyph's job. See BrandMark. */
+  /** Draws a brand in `color` rather than its own colours. */
   mono?: boolean;
 }) {
   if (!name) return null;
@@ -354,8 +252,6 @@ export function ProviderMark({
   return null;
 }
 
-/** Whether a provider has any mark at all, so a tile can decide whether it
- *  still needs to print its name in the mode that shows only symbols. */
 export function hasMark(name: string | undefined): boolean {
   return !!name && (name in BRANDS || name in GLYPHS);
 }

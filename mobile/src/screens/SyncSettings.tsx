@@ -10,26 +10,8 @@ import { Schedule } from "./JobEdit";
 import { AxisLabel, Body, Choice, Page, Section, Toggle } from "../ui";
 
 /**
- * Everything a job starts from, on one page.
- *
- * It was FIVE separate cards on the settings page - what a job does, how hard
- * it pushes, what travels, the brakes, and when the phone lets a due job go
- * ahead - sitting among the accent colour, the language, the three permissions
- * and the backup. Fifteen cards on one page, five of them answering one
- * question. jdp: "du sollst nicht nur neue features in die globalen sync
- * einstellungen aufnehmen sondern auch bestehende einstellungen die jetzt
- * separat sind darin aufnehmen."
- *
- * Autosync puts the same group behind one entry called "Synchronisation" and
- * the reason holds for this app too: these are settings somebody visits while
- * setting the app UP, not settings they pass on the way to the corner radius.
- * A page somebody chooses to open can be as long as it needs to be; a page
- * everybody scrolls through cannot.
- *
- * WHAT A DEFAULT IS, said once here rather than on each card: a job that says
- * nothing about a setting takes the value from this page, and a job that says
- * something keeps its own answer. So changing one of these changes every job
- * that never disagreed, and none of the jobs that did.
+ * The defaults every job starts from, and the phone's run conditions. A job
+ * that sets a value keeps it; every other job takes the value from here.
  */
 export function SyncSettings() {
   const { t } = useT();
@@ -48,12 +30,7 @@ export function SyncSettings() {
     void refresh();
   }, [refresh]);
 
-  /** A condition, stored on the phone AND told to the engine at once: the
-   *  engine is what holds a run back, and Kotlin is what watches the battery
-   *  and the connection while the screen is off.
-   *
-   *  Only what changed is sent. The bridge merges, so a switch here cannot
-   *  overwrite a setting this screen happens not to be showing. */
+  /** Sends only the changed conditions; the bridge merges them with the rest. */
   const setConditions = (patch: Partial<DeviceConditions>) => {
     setPolicy((old) => (old ? { ...old, ...patch } : old));
     engine.setDevicePolicy(patch).then(refresh, () => refresh());
@@ -63,21 +40,11 @@ export function SyncSettings() {
   const saveRetry = (patch: Record<string, unknown>) =>
     update({ retry: { ...retry, ...patch } });
 
-  // In the app's own words, not the engine's. The engine is told an English
-  // sentence because that sentence lands in a log beside every other line it
-  // wrote; this page used to print that sentence straight out of Kotlin, so a
-  // German phone read "this phone is not charging".
   const heldAt = heldKey(policy);
   const held = heldAt ? t(heldAt) : "";
 
   return (
     <Page>
-      {/* What a new job starts from. The engine has carried defaults for a
-          while and they were only reachable by editing the file: a job that
-          says nothing about a setting takes the default, and a job that says
-          something keeps its own answer. Setting the pair here once is the
-          difference between "everything on this phone goes up and the space
-          comes back" being one decision or one per job. */}
       <Section title={t("engine.defaults")} hint={t("defaults.followHint")} hue={0}>
         <AxisLabel>{t("direction.label")}</AxisLabel>
         <Choice
@@ -91,28 +58,12 @@ export function SyncSettings() {
             { value: "rightToLeft", label: t("direction.toLeft") },
           ]}
         />
-        {/* Both ways has no choice to make here, and the selector says so by
-            going inert with `sync` still showing rather than vanishing. A
-            paragraph used to stand in its place, which left the card two
-            different shapes depending on the answer above it - and the reason
-            belongs in the (i) like every other reason in this app. */}
+        {/* Both ways has only one mode, so the selector goes inert on `sync`
+            instead of vanishing and changing the card's shape. */}
         {(() => {
           const both = (defaults.direction ?? "both") === "both";
           return (
             <>
-              {/* THE THREE MODES, EXPLAINED. They were three words in a well
-                  and nothing else - "Nur kopieren", "Spiegeln", "Verschieben" -
-                  and the difference between them is the difference between a
-                  job that never deletes anything and one that does. jdp: "die
-                  modi nur kopieren, spiegeln und verschieben bitte erklären."
-
-                  Assembled from the three hints the translation table already
-                  carries rather than written again: they exist in all forty
-                  languages, they were simply never shown on this surface. All
-                  three at once rather than the chosen one, because the question
-                  somebody has while looking at this row is what the DIFFERENCE
-                  is, and a description of the option already picked does not
-                  answer it. */}
               <AxisLabel hint={both ? t("mode.onlyOneWay") : modeHint(t)}>
                 {t("mode.label")}
               </AxisLabel>
@@ -129,10 +80,6 @@ export function SyncSettings() {
             </>
           );
         })()}
-        {/* The schedule belongs with the pair above it, not on its own: "every
-            night at three" is a decision about a PHONE far more often than
-            about one folder, which is why the engine has carried it as a
-            default all along. It was reachable only by editing the file. */}
         <AxisLabel>{t("edit.schedule")}</AxisLabel>
         <Schedule
           value={String(defaults.schedule ?? "")}
@@ -140,10 +87,6 @@ export function SyncSettings() {
         />
       </Section>
 
-      {/* How much at once, and how long to wait for a folder to settle. Its own
-          card because Autosync groups the same two that way and the reason
-          holds: these answer "how hard does it push", where the card above
-          answers "what does it do". */}
       <Section title={t("settings.transfer")} hue={1}>
         <Field
           label={t("engine.transfers")}
@@ -161,8 +104,6 @@ export function SyncSettings() {
         />
       </Section>
 
-      {/* What travels besides the file contents. Two switches that change what
-          arrives at the other end rather than how fast. */}
       <Section title={t("settings.contents")} hue={2}>
         <Toggle
           label={t("edit.emptyDirs")}
@@ -178,9 +119,6 @@ export function SyncSettings() {
         />
       </Section>
 
-      {/* The brakes, and they get a card of their own because of what they are:
-          the net that stops a run removing more than half of everything it
-          knows about. Until now they were invisible on the phone entirely. */}
       <Section title={t("settings.safetyNet")} hue={3}>
         <Field
           label={t("engine.brakePercent")}
@@ -198,10 +136,7 @@ export function SyncSettings() {
         />
       </Section>
 
-      {/* Power, and it is one card rather than a switch inside a bigger one
-          because both answers are about the same resource: a phone syncing
-          overnight is a phone spending its battery on it. Neither holds a run
-          somebody started by hand - pressing the button is a decision. */}
+      {/* Neither power condition holds a run started by hand. */}
       <Section title={t("sync.power")} hue={4}>
         <Toggle
           label={t("phone.charging")}
@@ -209,10 +144,7 @@ export function SyncSettings() {
           value={Boolean(policy?.onlyCharging)}
           onChange={(onlyCharging) => setConditions({ onlyCharging })}
         />
-        {/* A number rather than a switch, because the useful answer is not
-            "yes" but "below what". Zero is off, which is what an empty box
-            gives, so the way to stop using it is to clear it rather than to
-            find a second control. */}
+        {/* An empty box is zero, which turns the floor off. */}
         <Field
           label={t("phone.minBattery")}
           hint={t("phone.minBatteryHint")}
@@ -222,11 +154,8 @@ export function SyncSettings() {
         />
       </Section>
 
-      {/* The connection, in three questions that are genuinely different ones.
-          They were one switch for a while and jdp was right to split them: "nur
-          über WLAN" is about the transport, "kostenpflichtig" is about the
-          bill, and a wifi network its owner marked metered fails the second
-          while passing the first. */}
+      {/* Wifi and metered are separate questions: a wifi network marked
+          metered passes the first and fails the second. */}
       <Section title={t("sync.network")} hue={5}>
         <Toggle
           label={t("phone.wifi")}
@@ -246,20 +175,10 @@ export function SyncSettings() {
           value={Boolean(policy?.notRoaming)}
           onChange={(notRoaming) => setConditions({ notRoaming })}
         />
-        {/* What the switches are DOING right now. A condition whose consequence
-            is invisible is a condition somebody waits all evening for. It sits
-            under the connection rather than under the power card because that
-            is where four of the five reasons come from - and it names whichever
-            one the engine is actually acting on. */}
+        {/* The condition the engine is holding runs on right now, if any. */}
         {held ? <Body>{held}</Body> : null}
       </Section>
 
-      {/* What happens after a run fails, which until now was: try again at
-          every turn of the clock, for ever. On a phone that clock turns every
-          fifteen minutes, so a remote that was down for a night was asked
-          about it ninety-six times. Both numbers matter - without the retries
-          a hiccup at three in the morning costs the whole night, and without
-          the limit nothing ever stops. */}
       <Section title={t("settings.retry")} hint={t("retry.hint")} hue={6}>
         <Field
           label={t("retry.attempts")}
@@ -268,10 +187,7 @@ export function SyncSettings() {
           value={retry.attempts === undefined ? "3" : String(retry.attempts)}
           onChange={(v) => saveRetry({ attempts: clamp(v, 0, 10) ?? 0 })}
         />
-        {/* In MINUTES, as a number, rather than a well of four durations. The
-            well needed a label per option, and "1 hours" is what a plural-free
-            join gives in most of forty languages - a translation problem
-            invented by the control rather than by the setting. */}
+        {/* Minutes as a number, which needs no plural forms in translation. */}
         <Field
           label={`${t("retry.wait")} (${t("schedule.unit.minute")})`}
           hint={t("retry.waitHint")}
@@ -286,30 +202,20 @@ export function SyncSettings() {
 }
 
 /**
- * What the three modes do, as one bubble.
- *
- * Built from the existing per-mode hints rather than from a new string: those
- * are already translated into forty languages, and a fourth sentence saying the
- * same thing would be a fourth thing to keep in step with them.
+ * Explains all three modes in one bubble, built from the per-mode hints the
+ * translations already carry.
  */
 function modeHint(t: ReturnType<typeof useT>["t"]): string {
   return [
     `${t("mode.sync")}: ${t("mode.syncHint")}`,
     `${t("mode.mirror")}: ${t("mode.mirrorHint")}`,
     `${t("mode.move")}: ${t("mode.moveHint")}`,
-    // A blank line between them, so three sentences read as three answers
-    // rather than as one paragraph about syncing.
   ].join("\n\n");
 }
 
 /**
- * The stored wait, as whole minutes.
- *
- * The engine takes a Go duration because that is what everything else in the
- * file takes, and a screen that made somebody type "5m" would be asking them to
- * know that. Anything it cannot read comes back as the engine's own default
- * rather than as zero: an unreadable value means the built-in applies, and a
- * box showing 0 would claim a setting that is not in force.
+ * Converts the stored Go duration to whole minutes. An unreadable value shows
+ * the engine's default of 5, which is what applies.
  */
 function waitMinutes(raw: unknown): number {
   const match = /^(\d+)(m|h)$/.exec(String(raw ?? ""));
@@ -319,11 +225,8 @@ function waitMinutes(raw: unknown): number {
 }
 
 /**
- * A typed number, held inside the range the engine accepts.
- *
- * An empty box gives `undefined` rather than zero, which is the difference
- * between "unset, take the built-in" and "zero per cent", and on a brake that
- * difference is a run that stops at half against one that stops at nothing.
+ * Clamps a typed number to the range the engine accepts. An empty box gives
+ * undefined, meaning the built-in default, which is not the same as zero.
  */
 function clamp(text: string, low: number, high: number): number | undefined {
   const value = Number(text.replace(/[^\d]/g, ""));

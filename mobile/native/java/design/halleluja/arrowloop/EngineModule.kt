@@ -21,46 +21,26 @@ import com.facebook.react.bridge.ReadableMap
 import java.io.File
 
 /**
- * The only bridge between the screens and the engine PROCESS.
- *
- * A short list on purpose: everything that can be asked
- * over HTTP is asked over HTTP, by `src/api.ts`, against the same API the web
- * interface uses. What crosses into Kotlin is only what has no expression in
- * JavaScript - executing a binary out of the native library directory, holding
- * a foreground service, and a permission Android grants on a settings page
- * rather than in a dialog.
- *
- * Keeping that line sharp is what stops this from becoming a second API. A
- * `listJobs` here would be a second way to ask the same question, and the two
- * would disagree the first time a field changed.
+ * The native side of src/engine.ts: only what JavaScript cannot do, such as
+ * running the engine binary and opening Android's settings pages. Anything
+ * the engine can answer over HTTP goes through src/api.ts instead, so this
+ * never becomes a second API.
  */
 class EngineModule(private val context: ReactApplicationContext) :
     ReactContextBaseJavaModule(context), ActivityEventListener {
 
     init {
-        // For `confirmDeviceLock`, which is the one thing here that asks
-        // Android a question and waits for an answer.
+        // confirmDeviceLock gets its answer through onActivityResult.
         context.addActivityEventListener(this)
     }
 
     override fun getName() = "ArrowLoopEngine"
 
     /**
-     * Start the engine for the screens, as a PLAIN CHILD PROCESS.
-     *
-     * Not through the foreground service, and that is the whole of why this app
-     * no longer has a permanent notification: a service must show one, and
-     * while somebody is looking at a screen there is nothing to tell them that
-     * the screen does not already say. A child process of a visible app is
-     * allowed to live, so this is all it takes.
-     *
-     * It dies with the app, which is correct: the background half is not this
-     * process at all. Android wakes the app on its own schedule and the service
-     * runs then, for as long as the copying takes - see Waker.
-     *
-     * The wake-ups are armed here too, because this is the moment there is
-     * something to wake up FOR: the app has been opened, so a configuration
-     * exists to read.
+     * Starts the engine for the screens as a plain child process, which a
+     * visible app may run without a foreground service or its notification.
+     * It dies with the app; scheduled runs go through Waker and EngineService.
+     * The wake-ups are armed here, once the app has been opened.
      */
     @ReactMethod
     fun start(promise: Promise) {
@@ -74,7 +54,7 @@ class EngineModule(private val context: ReactApplicationContext) :
         }
     }
 
-    /** Stop the engine, and any run the service happens to be holding. */
+    /** Stops the engine and any run the service is holding. */
     @ReactMethod
     fun stop(promise: Promise) {
         try {
@@ -89,15 +69,7 @@ class EngineModule(private val context: ReactApplicationContext) :
         }
     }
 
-    /**
-     * The engine's own log for this run.
-     *
-     * Handed over whole rather than tailed here. Which lines matter is a
-     * question about what is on screen, and the screen is in JavaScript - the
-     * WebView shell got this backwards and showed the LAST twenty lines of a
-     * Go crash, which is a register dump, while the one sentence explaining it
-     * scrolled off the top.
-     */
+    /** Returns the whole engine log; the screen decides which lines to show. */
     @ReactMethod
     fun log(promise: Promise) {
         promise.resolve(
@@ -109,26 +81,14 @@ class EngineModule(private val context: ReactApplicationContext) :
         )
     }
 
-    /** Whether the process we started is still running - which an empty log
-     *  cannot say, because "died before writing" and "running and quiet" look
-     *  identical from outside. */
+    /** Reports whether the process this app started is still running. */
     @ReactMethod
     fun alive(promise: Promise) = promise.resolve(Engine.alive())
 
     /**
-     * Whether the engine is UP, as opposed to whether this object started it.
-     *
-     * `alive` asks about the process handle, and that is the right question for
-     * telling "died before it could write" from "running and quiet". It is the
-     * wrong question for a card that says whether the engine is running:
-     * `Engine.start` deliberately returns early when the engine already
-     * ANSWERS, so the handle stays null, and the settings card then reported
-     * "the engine is stopped" next to an app that was talking to it. Seen on
-     * the device: the card said stopped while the export it sits above had just
-     * read the configuration over HTTP.
-     *
-     * Off the main thread, because it is a socket: a probe on the UI thread is
-     * a frame dropped every time the card refreshes.
+     * Reports whether the engine answers over HTTP. Unlike `alive` this is
+     * true for an engine another caller started. The probe opens a socket, so
+     * it runs off the main thread.
      */
     @ReactMethod
     fun answering(promise: Promise) {
@@ -142,13 +102,8 @@ class EngineModule(private val context: ReactApplicationContext) :
     fun storagePossible(promise: Promise) = promise.resolve(Storage.possible)
 
     /**
-     * The two schedule conditions, and the facts behind them.
-     *
-     * Both halves in one answer on purpose. A switch that says "only while
-     * charging" while the phone is on battery is a switch whose consequence is
-     * invisible, and somebody then waits all evening for a run that was never
-     * going to start. The screen says which of them is holding things up
-     * because this hands it the live state alongside the preference.
+     * Returns the run conditions together with the live readings, so a screen
+     * can say which condition is holding runs.
      */
     @ReactMethod
     fun devicePolicy(promise: Promise) {
@@ -158,8 +113,6 @@ class EngineModule(private val context: ReactApplicationContext) :
         map.putInt("minBattery", Device.minBattery(context))
         map.putBoolean("notRoaming", Device.notRoaming(context))
         map.putBoolean("notMetered", Device.notMetered(context))
-        // The live state beside the preference, so a screen can say WHY a run
-        // is waiting rather than only that a switch is on.
         map.putBoolean("charging", Device.charging(context))
         map.putBoolean("onWifi", Device.onWifi(context))
         map.putInt("battery", Device.batteryLevel(context))
@@ -170,12 +123,8 @@ class EngineModule(private val context: ReactApplicationContext) :
     }
 
     /**
-     * One map rather than a parameter per switch.
-     *
-     * It was two booleans and is now five settings, and a positional bridge
-     * method at that size is one where a caller swapping two arguments
-     * compiles, crosses the bridge and quietly enforces the wrong condition.
-     * Anything the map leaves out keeps its stored value.
+     * Takes a map rather than positional booleans, so swapped arguments cannot
+     * compile. Keys the map leaves out keep their stored value.
      */
     @ReactMethod
     fun setDevicePolicy(policy: ReadableMap, promise: Promise) {
@@ -184,13 +133,8 @@ class EngineModule(private val context: ReactApplicationContext) :
     }
 
     /**
-     * Whether Android has agreed to leave this app alone in the background.
-     *
-     * The permission behind every complaint a sync tool on Android ever gets.
-     * Doze puts an app it considers idle to sleep, and a job set for three in
-     * the morning then runs whenever the phone next wakes up, which is when
-     * somebody picks it up at breakfast. The exemption is the difference
-     * between a schedule and a suggestion.
+     * Reports whether the app is exempt from battery optimisation. Without it
+     * Doze delays a night-time job until the phone next wakes.
      */
     @ReactMethod
     fun batteryExempt(promise: Promise) {
@@ -199,13 +143,8 @@ class EngineModule(private val context: ReactApplicationContext) :
     }
 
     /**
-     * Ask for that exemption, which really is one dialog with one button.
-     *
-     * ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS is the rare Android
-     * permission that still shows a prompt rather than a settings page. Where a
-     * build refuses it - some manufacturers strip it - the fallback lands on
-     * the list, which is a page rather than a prompt but is at least the right
-     * page.
+     * Asks for the exemption with Android's one-button prompt, falling back to
+     * the optimisation list on builds that strip the prompt.
      */
     @ReactMethod
     @android.annotation.SuppressLint("BatteryLife")
@@ -219,23 +158,15 @@ class EngineModule(private val context: ReactApplicationContext) :
                 promise.resolve(null)
                 return
             } catch (_: ActivityNotFoundException) {
-                // Try the page before giving up.
+                // Try the list before giving up.
             }
         }
         promise.reject("battery", "this phone has no page for that permission")
     }
 
     /**
-     * Open the page that grants file access.
-     *
-     * There is no dialog for this one. Google routed the broadest file
-     * permission there is through a full settings page rather than a
-     * two-button prompt, so "ask for it like the notification permission" is
-     * not available - the closest thing is landing somebody on a page with a
-     * single switch, which is what the targeted intent does.
-     *
-     * FLAG_ACTIVITY_NEW_TASK because this is started from a module rather than
-     * from an Activity, and without it Android refuses the intent outright.
+     * Opens the settings page that grants file access; there is no dialog for
+     * it. FLAG_ACTIVITY_NEW_TASK is required when starting from a module.
      */
     @ReactMethod
     fun openStorageSettings(promise: Promise) {
@@ -249,23 +180,15 @@ class EngineModule(private val context: ReactApplicationContext) :
                 promise.resolve(null)
                 return
             } catch (_: ActivityNotFoundException) {
-                // The targeted per-package page first, the list of every app as
-                // a fallback: some builds refuse the first form, and an
-                // unhandled intent would crash the app on the one control that
-                // is supposed to fix things.
+                // Some builds refuse the per-package page; try the app list.
             }
         }
         promise.reject("storage", "this phone has no page for that permission")
     }
 
     /**
-     * Open this app's own settings page.
-     *
-     * Where the notification permission ends up once it has been refused. The
-     * request dialog is a one-shot: after a no, `requestPermissions` returns
-     * immediately with the same no and shows nothing, and a switch that does
-     * nothing twice reads as a broken switch rather than as a decision already
-     * made. This is the page where that decision can be changed.
+     * Opens the app's settings page, where a refused permission can be granted
+     * after the one-shot request dialog stops showing.
      */
     @ReactMethod
     fun openAppSettings(promise: Promise) {
@@ -281,15 +204,8 @@ class EngineModule(private val context: ReactApplicationContext) :
     }
 
     /**
-     * Android's OWN notification settings for this app.
-     *
-     * jdp: "die einstellungen für die benachrichtigungen sollen wir in die
-     * nativen Android Benachrichtigungseinstellungen der app verlinken wie in
-     * Autosync." Which is the right answer rather than a shortcut: sound,
-     * vibration, banners, Do Not Disturb and the per-channel switches are all
-     * Android's to own, and an app that rebuilt them would be offering a second
-     * set of switches over the same state - two answers to one question, and
-     * the phone's own is the one that actually applies.
+     * Opens Android's notification settings for the app, which own sound,
+     * vibration and the per-channel switches.
      */
     @ReactMethod
     fun openNotificationSettings(promise: Promise) {
@@ -307,13 +223,8 @@ class EngineModule(private val context: ReactApplicationContext) :
     }
 
     /**
-     * The battery-optimisation list, where this app can be excluded.
-     *
-     * Different from `askBatteryExemption` on purpose, and both are needed. The
-     * ASK is one dialog with one button and it is what most people should use;
-     * this is the LIST, which is where an OEM's own power manager puts the
-     * setting that actually decides whether a background job ever runs. On the
-     * phones where the dialog is not enough, this is the page to be on.
+     * Opens the battery optimisation list, for phones whose OEM power manager
+     * overrides the exemption prompt.
      */
     @ReactMethod
     fun openBatterySettings(promise: Promise) {
@@ -335,13 +246,8 @@ class EngineModule(private val context: ReactApplicationContext) :
     }
 
     /**
-     * Write a settings backup where somebody can actually find it.
-     *
-     * The public Downloads folder, by a fixed name, because a backup nobody can
-     * locate is not a backup. The app already holds all-files access for the
-     * folders it syncs, so this needs no picker and no second permission - and
-     * a picker would put the file somewhere different every time, which is the
-     * opposite of what "where did I put it" wants.
+     * Writes a settings backup to the public Downloads folder under a fixed
+     * name. The app's all-files access covers it, so no picker is needed.
      */
     @ReactMethod
     fun exportSettings(json: String, promise: Promise) {
@@ -349,9 +255,7 @@ class EngineModule(private val context: ReactApplicationContext) :
             val folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
             folder.mkdirs()
             val file = File(folder, BACKUP_NAME)
-            // Built fully before the file is opened. `File.writeText` truncates
-            // on open, so a failure while producing the bytes would leave an
-            // empty backup where a good one used to be.
+            // Encoded before the file is opened, since opening truncates it.
             val bytes = json.toByteArray(Charsets.UTF_8)
             file.writeBytes(bytes)
             promise.resolve(file.absolutePath)
@@ -360,8 +264,7 @@ class EngineModule(private val context: ReactApplicationContext) :
         }
     }
 
-    /** Read a backup back. The path is handed in, so a file moved somewhere
-     *  else is still reachable by typing where it went. */
+    /** Reads a backup from the given path, or from the default place when it is blank. */
     @ReactMethod
     fun importSettings(path: String, promise: Promise) {
         try {
@@ -383,8 +286,7 @@ class EngineModule(private val context: ReactApplicationContext) :
         }
     }
 
-    /** The default place a backup goes, so the screen can show it before one
-     *  has ever been written. */
+    /** The default backup path, shown before a backup has been written. */
     @ReactMethod
     fun backupPath(promise: Promise) {
         val folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
@@ -392,11 +294,8 @@ class EngineModule(private val context: ReactApplicationContext) :
     }
 
     /**
-     * Whether this phone HAS a lock to ask for.
-     *
-     * `isDeviceSecure` rather than `isKeyguardSecure`: the second is true for a
-     * swipe-to-unlock screen, which protects nothing. A lock offered on a phone
-     * with no PIN would be a switch that turns on and then lets everybody in.
+     * Reports whether the phone has a real lock. `isKeyguardSecure` would also
+     * accept swipe to unlock, which protects nothing.
      */
     @ReactMethod
     fun hasDeviceLock(promise: Promise) {
@@ -405,26 +304,14 @@ class EngineModule(private val context: ReactApplicationContext) :
     }
 
     /**
-     * Ask for the phone's own lock, and say whether it was given.
-     *
-     * The DEVICE's lock rather than an app PIN, which is what jdp asked for
-     * ("die möglichkeit die app zu sperren (gerätesperre)") and is the better
-     * of the two anyway: a second secret is a second thing to forget, and the
-     * app that offers one has to answer "what if I forget it" with "wipe the
-     * app data". The system dialog already offers a fingerprint where one is
-     * enrolled, so this is not a choice between the lock and biometrics.
-     *
-     * `createConfirmDeviceCredentialIntent` rather than BiometricPrompt because
-     * it needs no new dependency and asks exactly this question. It returns
-     * through onActivityResult, which is why the module is an
-     * ActivityEventListener.
+     * Asks for the phone's own lock, fingerprint included where enrolled, and
+     * resolves whether it was given. It uses the device credential intent
+     * rather than BiometricPrompt to avoid a dependency; the answer arrives in
+     * onActivityResult.
      */
     @ReactMethod
     fun confirmDeviceLock(title: String, detail: String, promise: Promise) {
-        // `context.currentActivity`, not the module's own `currentActivity`:
-        // the inherited one is deprecated as of React Native 0.80 and is not on
-        // the class at all here. The local build compiled a STALE copy of this
-        // file and said nothing, so CI is what found it.
+        // The module's inherited currentActivity is gone as of React Native 0.80.
         val activity = context.currentActivity
         if (activity == null) {
             promise.reject("lock", "there is no screen to ask in front of")
@@ -441,9 +328,7 @@ class EngineModule(private val context: ReactApplicationContext) :
             promise.reject("lock", "this phone will not ask for its own lock")
             return
         }
-        // One at a time. A second ask while the first is on screen would leave
-        // the first promise unresolved for ever, which in the app is a lock
-        // screen that never goes away.
+        // A second ask settles the first, which would otherwise never resolve.
         pending?.reject("lock", "another unlock was already being asked for")
         pending = promise
         try {
@@ -455,18 +340,8 @@ class EngineModule(private val context: ReactApplicationContext) :
     }
 
     /**
-     * A string onto the system clipboard.
-     *
-     * Here rather than through a package because the app already owns a native
-     * module and this is the whole of it: React Native's own Clipboard is
-     * deprecated and warns on every call, and @react-native-clipboard would be
-     * a second autolinked dependency, a second prebuild input and a second
-     * thing to keep current - for four lines.
-     *
-     * The label is what Android shows in the clipboard history and in the
-     * "copied" toast the system draws from Android 13 on, so it is the app's
-     * name rather than the address: a history entry reading `bc1q...` tells
-     * nobody where it came from.
+     * Copies a string to the clipboard, since React Native's own Clipboard is
+     * deprecated. The label, shown in the clipboard history, is the app's name.
      */
     @ReactMethod
     fun copy(value: String, promise: Promise) {
@@ -483,8 +358,8 @@ class EngineModule(private val context: ReactApplicationContext) :
         }
     }
 
-    // Both parameters are NON-NULL in this React Native's own interface, and
-    // writing them nullable makes the override match nothing at all.
+    // Non-null parameters, as React Native's interface declares them; nullable
+    // ones would override nothing.
     override fun onActivityResult(activity: Activity, requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode != UNLOCK_REQUEST) return
         val waiting = pending ?: return
@@ -492,13 +367,9 @@ class EngineModule(private val context: ReactApplicationContext) :
         waiting.resolve(resultCode == Activity.RESULT_OK)
     }
 
-    override fun onNewIntent(intent: Intent) {
-        // Nothing here. The interface wants both halves; only the result is
-        // this module's business.
-    }
+    override fun onNewIntent(intent: Intent) {}
 
     companion object {
-        /** One name, so "where did I put it" has an answer. */
         const val BACKUP_NAME = "arrowloop-einstellungen.json"
         private const val UNLOCK_REQUEST = 8422
     }

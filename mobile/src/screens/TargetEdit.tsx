@@ -12,17 +12,9 @@ import { space } from "../theme";
 import { Body, Button, Caption, Empty, Page, Section, Title } from "../ui";
 
 /**
- * Setting a target up, from what the BACKEND says it needs.
- *
- * The fields are not a hand-kept list per provider. rclone ships, with every
- * build, which options a backend requires and which are essential; the engine
- * passes that through, and this draws a field for each. A hand-written list
- * would be right on the day it was written and quietly wrong a year later.
- *
- * The provider's PRESET is applied underneath - the values that make a generic
- * backend into a named product, like the S3 provider or a WebDAV vendor. They
- * are not shown, because they are not questions: somebody who picked Wasabi
- * does not also need to be told the answer is `Wasabi`.
+ * The target form. Its fields are the options rclone marks required or
+ * essential for the backend; the provider's preset (such as the S3 provider
+ * name) is applied underneath and not shown.
  */
 export function TargetEdit() {
   const route = useRoute<RouteProp<TargetsStack, "TargetEdit">>();
@@ -43,27 +35,21 @@ export function TargetEdit() {
     api.storage().then(
       (s) => {
         setProviders(s.providers);
-        // The name, suggested rather than demanded. jdp: "Bitte auch in der App
-        // soll der Name der Verbindung schon vorausgefüllt sein." Somebody who
-        // just pressed Nextcloud has already said what this is, and asking them
-        // to type it again is asking twice. Same rule as the desktop, from the
-        // same function, numbered where the name is already in use.
+        // A new target's name is prefilled from the provider, numbered when
+        // taken. Only an empty field is filled, so typing during the request
+        // survives.
         const picked = s.providers.find((x) => x.id === providerId);
         if (!editing && picked) {
           setName((old) => (old ? old : suggestTargetName(picked.name, s.remotes.map((r) => r.name))));
         }
-        // The unlisted backends too: a product entry covers most of what
-        // rclone carries and not all of it, and a target for one of the rest
-        // still has to be editable.
+        // Backends no provider entry covers still have to be editable.
         setBackends([...s.backends, ...s.unlisted]);
         const found = s.remotes.find((r) => r.name === editing) ?? null;
         setExisting(found);
         if (found) {
           const start: Record<string, string> = {};
           for (const setting of found.settings) {
-            // A secret comes back withheld. Leaving the field EMPTY rather than
-            // filling it with the placeholder is what lets somebody keep the
-            // password they already set by not touching it.
+            // Secrets come back withheld; an untouched empty field keeps them.
             if (!setting.secret) start[setting.key] = setting.value;
           }
           setValues(start);
@@ -71,26 +57,12 @@ export function TargetEdit() {
       },
       (e: Error) => setError(e.message),
     );
-    // The suggestion cannot be made at first render: the provider's own NAME
-    // and the names already taken both arrive with the storage list, one round
-    // trip later. `setName` only fills an EMPTY field, so a name somebody has
-    // already typed while this was in flight survives.
   }, [editing, providerId]);
 
   /**
-   * Which product this target IS, in order of how much each source knows.
-   *
-   * 1. The one somebody just picked, when creating.
-   * 2. The one the ENGINE names for a saved target, resolved from the settings
-   *    it was created with - see internal/remotes/identify.go.
-   * 3. The first provider with the same backend, which is a GUESS and is last
-   *    for that reason: it is right only for a target written by hand or by
-   *    rclone itself, which carries no preset to be named by.
-   *
-   * Step 2 was missing, and step 3 therefore answered for everything: opening
-   * Garage-Test showed a page headed "Ceph", because sixteen products speak
-   * `s3` and Ceph comes first. Same defect the card's logo had this morning,
-   * one screen further along.
+   * The product this target is: the one just picked, else the one the engine
+   * resolved for a saved target (internal/remotes/identify.go), else a guess
+   * from the backend for a target written by hand.
    */
   const provider = useMemo(
     () =>
@@ -107,10 +79,7 @@ export function TargetEdit() {
     [backends, backendName],
   );
 
-  // Required first, then the ones rclone calls essential. Everything else is
-  // behind nothing at all: an option somebody needs but cannot see is worse on
-  // a phone than a longer page, because there is no settings dialog to go
-  // hunting in.
+  // Required options first, then the ones rclone calls essential.
   const options = useMemo(() => {
     const all = backend?.options ?? [];
     const preset = provider?.preset ?? {};
@@ -119,27 +88,17 @@ export function TargetEdit() {
       .sort((a, b) => Number(Boolean(b.required)) - Number(Boolean(a.required)));
   }, [backend, provider]);
 
-  /**
-   * Does this work, asked before anything is kept.
-   *
-   * ABOVE the early return below, and that is not a style preference: React
-   * counts hooks per render, so a `useState` after a conditional return runs on
-   * some renders and not others and takes the whole app down. It was below once
-   * and did exactly that, on the first cold open of this screen.
-   */
+  // The connection test's state. These hooks have to stay above the early
+  // return, or the hook count changes between renders.
   const [trying, setTrying] = useState(false);
   const [tried, setTried] = useState<{ ok: boolean; reason?: string } | null>(null);
-  /* How many times the answer has been NO, which is what the button wobbles on.
-     A counter rather than a flag, so pressing again after a failure shakes
-     again instead of sitting still - see Button in ui.tsx. */
+  // A counter rather than a flag, so every failed attempt shakes the button.
   const [refused, setRefused] = useState(0);
 
   if (!backendName) {
     return <Empty title={t("targets.addStorage")} detail={error || t("history.working")} />;
   }
 
-  /** Both pieces of the answer at once, so the colour and the wobble can never
-   *  disagree about what just happened. */
   const answered = (answer: { ok: boolean; reason?: string }) => {
     setTried(answer);
     if (!answer.ok) setRefused((n) => n + 1);
@@ -153,11 +112,7 @@ export function TargetEdit() {
         await api.tryRemote(
           backendName,
           { ...(provider?.preset ?? {}), ...prune(values) },
-          // The target being EDITED, so the engine fills in the password this
-          // form never received. The box is empty because the secret was
-          // withheld on its way here, not because somebody cleared it - the
-          // same reading `save` below has always used. jdp: "wenn ich beim
-          // opencloud konto auf verbindung testen gehe kommt ein fehler."
+          // Lets the engine fill in the withheld secrets of a saved target.
           editing,
         ),
       );
@@ -202,9 +157,7 @@ export function TargetEdit() {
       </Section>
 
       {provider?.auth === "oauth" && provider.authUrl ? (
-        // An OAuth backend cannot be set up by typing: it needs a browser round
-        // trip that ends in a token. Saying so and pointing at the page beats a
-        // form that looks fillable and produces a target that never works.
+        // An OAuth backend needs a token from a browser round trip.
         <Section
           title={t("targets.tokenNeeded", { backend: provider.name })}
           hint={t("targets.tokenHowTo", { backend: provider.backend })}
@@ -217,15 +170,6 @@ export function TargetEdit() {
         </Section>
       ) : null}
 
-      {/* NOT `targets.advanced`, which on the desktop is the label of a switch
-          reading "Show every setting". As a card title it promised a card that
-          reveals more and delivered a card that lists two fields. This card
-          holds how the target is REACHED - an account and a key, a host and a
-          password, an address - so that is what it is called. */}
-      {/* No hint on the card itself any more: the address shape it used to
-          carry is now said by the address FIELD, next to the box it applies to,
-          and a card repeating one of its own fields is the same wasted bubble
-          rclone's help was. */}
       <Section title={t("targets.access")}>
         {options.map((option) => (
           <Field
@@ -247,31 +191,12 @@ export function TargetEdit() {
 
       {error ? <Body>{error}</Body> : null}
 
-      {/* THE REASON ONLY, because the verdict itself is now on the button.
-          This line said "Erreicht" and "Nicht erreichbar: <reason>", and once
-          the button carries those two words the first half is the same sentence
-          twice. What a colour and a glyph cannot say is "401 Unauthorized", and
-          that is what is left here. On a success there is nothing to add, so
-          nothing appears. */}
+      {/* Only the reason: the button itself shows the verdict. */}
       {tried && !tried.ok && tried.reason ? <Body>{tried.reason}</Body> : null}
 
-      {/* Testing sits WITH the form, so it can run before anything is kept.
-          jdp: "dann kann man direkt pruefen bevor man auf speichern tippt."
-
-          THE BUTTON CARRIES THE ANSWER, which is what jdp asked for: "Wenn die
-          verbindung nicht passt soll der button rot werden und wackeln, wenn
-          sie funktioniert soll er grün werden", and then "der verbindung testen
-          button soll auch seinen glyph und text entsprechend dem test ergebnis
-          ändern."
-
-          So all four change together - colour, wobble, word and drawing - and
-          they say ONE thing rather than four. A button that turned green while
-          still reading "Verbindung testen" would be asking to be pressed again
-          in the same breath as saying it worked; the colour alone also carries
-          nothing for somebody who cannot separate the two.
-
-          A new press clears all of it back to neutral, so what is shown is
-          always about the attempt just made. */}
+      {/* The test runs before anything is saved. The button's colour, word,
+          glyph and shake all show the result of the last attempt, so colour is
+          never the only signal. */}
       <Button
         label={
           trying
@@ -283,9 +208,8 @@ export function TargetEdit() {
                 : t("targets.checkFailed")
         }
         labelKey="targets.check"
-        // The magnifier asks the question; a tick and a cross answer it. Named
-        // outright rather than left to the key-to-glyph rule, which reads the
-        // WORD "check" and would hand all three the same magnifier.
+        // Named outright, since the key-to-glyph rule would give every state
+        // the magnifier.
         glyph={!tried || trying ? undefined : tried.ok ? "IconConfirm" : "IconCancel"}
         busy={trying}
         tone={trying || !tried ? "neutral" : tried.ok ? "ok" : "fail"}
@@ -293,8 +217,7 @@ export function TargetEdit() {
         onPress={tryIt}
       />
 
-      {/* Cancel left, save right: GlimStone 1.14.0, the control that goes ahead
-          sits on the right. */}
+      {/* The control that goes ahead sits on the right. */}
       <View style={styles.actions}>
         <Button label={t("targets.cancel")} onPress={() => nav.goBack()} />
         <Button label={t("targets.save")} labelKey="targets.save" tone="accent" busy={saving} onPress={save} />
@@ -303,8 +226,7 @@ export function TargetEdit() {
   );
 }
 
-/** Empty strings are NOT sent. An empty secret means "leave the one that is
- *  already there"; sending it would erase a password by opening a form. */
+/** Drops empty values, since an empty secret means "keep the saved one". */
 function prune(values: Record<string, string>): Record<string, string> {
   const out: Record<string, string> = {};
   for (const [key, value] of Object.entries(values)) {
@@ -313,8 +235,7 @@ function prune(values: Record<string, string>): Record<string, string> {
   return out;
 }
 
-/** rclone's option names, in the words the rest of the app uses. Anything
- *  without a translation keeps its own name, which is better than a guess. */
+/** Translates common rclone option names; others keep their own name. */
 function label(option: string, t: T): string {
   const known: Record<string, TranslationKey> = {
     user: "opt.user",

@@ -1,18 +1,9 @@
 #!/usr/bin/env python3
-"""Every translation key the app asks for, checked against the English table.
+"""Checks every translation key the app asks for against the English table.
 
-Three failures, and the compiler catches none of them:
-
-  * a key that does not exist - `t()` is typed, but a key assembled at runtime
-    or a table entry renamed on the web side slips straight through;
-  * a sentence with a placeholder asked for WITHOUT one, which renders a
-    literal `{count}` on screen, in every language at once;
-  * a placeholder passed that the sentence does not carry, which is silently
-    dropped and usually means the wrong key was picked.
-
-The third is the one that found the real bug: the phone screens were built by
-reaching for whatever key said something roughly similar, and roughly similar
-reads, in German, as a sentence about something else entirely.
+It reports keys that do not exist (a key assembled at runtime or renamed on the
+web side gets past the compiler) and sentences with a placeholder that are asked
+for without one, which would render a literal `{count}`.
 """
 
 from __future__ import annotations
@@ -38,10 +29,8 @@ def english() -> dict[str, str]:
     start = text.index("export const en = {")
     # The table ends at the first line that is a closing brace on its own.
     end = text.index("\n}", start)
-    # The trailing newline is not cosmetic: without it the LAST key in the
-    # table has nothing after it for the lookahead to find, and the parser
-    # silently drops one key - which reads, from the outside, exactly like a
-    # screen asking for a key that does not exist.
+    # Without the trailing newline the lookahead finds nothing after the last
+    # key and drops it.
     body = text[start:end] + "\n"
     out: dict[str, str] = {}
     # A value may run over several lines; the key always starts one.
@@ -57,7 +46,7 @@ def english() -> dict[str, str]:
 def main() -> int:
     table = english()
     if len(table) < 100:
-        print(f"check_keys: read only {len(table)} keys from {TABLE} - parser is wrong")
+        print(f"check_keys: read only {len(table)} keys from {TABLE}, the parser is wrong")
         return 2
 
     problems: list[str] = []
@@ -70,9 +59,8 @@ def main() -> int:
                 continue
             line = source.count("\n", 0, call.start()) + 1
             where = f"{path.relative_to(MOBILE)}:{line}"
-            # Per KEY rather than per call. `t(a, { x: t(b) })` carries two of
-            # them, and only the outer one was handed anything - asking whether
-            # the call contains a brace anywhere would clear the inner one too.
+            # Checked per key: in `t(a, { x: t(b) })` only the outer key was
+            # handed placeholders.
             spans = [m.span() for m in KEY.finditer(args)]
             for index, key in enumerate(keys):
                 after = spans[index][1]

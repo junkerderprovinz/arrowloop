@@ -8,15 +8,9 @@ import { space } from "../theme";
 import { Badge, Body, Button, Caption, Card, Empty, InfoBubble, Mono, Page, Title } from "../ui";
 
 /**
- * What this job WOULD do, before it does any of it.
- *
- * The safety net the whole product is built around, and the one screen that
- * justifies a sync tool asking for access to every file on a phone. Nothing
- * here changes anything: it asks the engine for a plan and lists it.
- *
- * Grouped by KIND rather than listed flat. A hundred copies and one deletion
- * is a completely different plan from one copy and a hundred deletions, and a
- * flat list of a hundred and one rows says neither.
+ * Lists what a job would do without changing anything. Actions are grouped by
+ * kind, since a hundred copies and one deletion is a different plan from the
+ * reverse.
  */
 export function Plan() {
   const route = useRoute<RouteProp<JobsStack, "Plan">>();
@@ -52,8 +46,6 @@ export function Plan() {
 
   return (
     <Page>
-      {/* What a preview IS, in the (i) beside the title rather than as a
-          paragraph under it. The same rule the rest of the app follows now. */}
       <Card>
         <View style={styles.head}>
           <Title>{t("preview.for", { job })}</Title>
@@ -80,9 +72,7 @@ export function Plan() {
             <Title>{t(kindKey(kind))}</Title>
             <Badge label={String(list.length)} />
           </View>
-          {/* Thirty, and then a count. A phone that renders nine hundred rows
-              of monospace is a phone that has stopped scrolling, and nobody
-              reads past the first screen of a list like this anyway. */}
+          {/* Capped, since hundreds of monospace rows stall the scroll. */}
           {list.slice(0, 30).map((action) => (
             <Mono key={action.path}>{action.path}</Mono>
           ))}
@@ -90,9 +80,8 @@ export function Plan() {
         </Card>
       ))}
 
-      {/* "Run now" rather than the desktop's "Run 5 of 12": there is nothing
-          to tick here, so every action in the plan is going to happen and a
-          count of chosen against total would be the same number twice. */}
+      {/* Nothing can be deselected here, so the desktop's "Run 5 of 12" count
+          would always show the same number twice. */}
       <Button
         label={t("jobs.runNow")}
         labelKey="jobs.runNow"

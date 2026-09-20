@@ -29,16 +29,8 @@ import {
 } from "../ui";
 
 /**
- * The jobs, and what each of them is doing right now.
- *
- * The screen somebody opens the app FOR. On a desktop this is a table with
- * eight columns; here it is one card per job, because a table on a phone is a
- * table you scroll sideways and then cannot read.
- *
- * What is on the card: is it running, which way it syncs, when it last
- * succeeded, and the two paths. What is behind a tap: everything else. That
- * split is the design - a list answers "is it keeping up", and a detail answers
- * "what exactly does this do".
+ * The job list, one card per job with its state, direction, last success and
+ * both paths. Everything else is behind a tap.
  */
 export function Jobs() {
   const nav = useNavigation<Nav<JobsStack>>();
@@ -46,13 +38,10 @@ export function Jobs() {
   const { p, accent } = useTheme();
   const { intensity: motion } = useMotion();
   const [jobs, setJobs] = useState<Job[] | null>(null);
-  /** The targets behind the sides, for a card's logo. A card that cannot name
-   *  its target simply shows none. */
+  /** The targets behind the sides, for the cards' logos. */
   const [remotes, setRemotes] = useState<Remote[]>([]);
   useEffect(() => {
-    // Refetched on focus, not once: a target created on the next tab has to
-    // reach this list, and a card whose logo appears only after a restart is
-    // the kind of thing somebody reports as "the logo is missing".
+    // Refetched on focus, so a target created in another tab gets its logo.
     const stop = nav.addListener("focus", () => {
       api.storage().then((list) => setRemotes(list.remotes), () => {});
     });
@@ -77,20 +66,10 @@ export function Jobs() {
     return stop;
   }, [nav, load]);
 
-  // The engine says when something changed, so the list is not on a timer. A
-  // run that finishes is visible the moment it finishes.
   useEngineEvents(true, load);
 
-  /*
-  AND IT MOVES WHEN IT CHANGES. A job starting or ending swaps a badge, a
-  schedule line and two buttons on its card, and until now all of that simply
-  blinked into place - jdp, looking at the app: "mir kommt es vor als würde ich
-  keine sehen". The motion engine existed; it was wired into forms and settings,
-  which are exactly the screens nobody sits and watches.
-
-  Keyed on the RUNNING SET rather than the list, so it fires on the change worth
-  animating and not on a refetch that returns the same jobs.
-  */
+  // Animates a job starting or stopping. Keyed on the running set, so a
+  // refetch of the same jobs does not animate.
   const roster = (jobs ?? []).filter((j) => j.running).map((j) => j.name).join("\n");
   useEffect(() => {
     animateNext(motion);
@@ -109,13 +88,9 @@ export function Jobs() {
   };
 
   /**
-   * Hold a job, or let it go again.
-   *
-   * Read-modify-write of the whole configuration, because that is the only
-   * shape the engine offers and the same one the editor uses to save. The read
-   * happens HERE rather than from the list on screen: `api.jobs()` returns live
-   * state - what is running, when it last succeeded - and writing that back as
-   * configuration would persist a snapshot of the moment as settings.
+   * Holds or releases a job by rewriting the whole configuration. It is read
+   * fresh, since the list on screen carries live state that must not be saved
+   * as settings.
    */
   const hold = async (job: Job) => {
     setHolding(job.name);
@@ -133,12 +108,7 @@ export function Jobs() {
     }
   };
 
-  /**
-   * A copy of a job, beside the original, and immediately visible.
-   *
-   * No confirmation: this one is undone by deleting the copy, and a dialog in
-   * front of a reversible act only teaches people to click through dialogs.
-   */
+  /** Adds a copy of a job without asking, since deleting the copy undoes it. */
   const duplicate = async (job: Job) => {
     try {
       const config = await api.config();
@@ -152,20 +122,12 @@ export function Jobs() {
     }
   };
 
-  /**
-   * Deleting from the list, with the question asked first.
-   *
-   * It lived only inside the editor, so getting rid of a job meant opening it
-   * and scrolling past everything it does. The confirmation is not a formality:
-   * this is the one act on the card that cannot be undone from here.
-   */
   const remove = (job: Job) => {
     Alert.alert(t("edit.removeJob"), t("edit.removeStakes", { name: job.name }), [
       { text: t("confirm.cancel"), style: "cancel" },
       {
         text: t("confirm.delete"),
-        // Not "destructive": GlimStone 1.12.0 paints no delete red, and
-        // the platform dialog is no exception to a rule about deletes.
+        // Not "destructive": GlimStone paints no delete red, dialogs included.
         onPress: async () => {
           try {
             const config = await api.config();
@@ -192,18 +154,7 @@ export function Jobs() {
       keyExtractor={(j) => j.name}
       contentContainerStyle={styles.list}
       refreshControl={<RefreshControl refreshing={false} onRefresh={load} tintColor={accent} />}
-      // NOTHING where there is nothing, and that is not a bare blank: the
-      // "Add job" button sits directly above this, so the empty list already
-      // says what it is and what to do about it. A sentence under a button that
-      // makes the same offer is the offer twice, and on a phone it costs the
-      // first screenful. jdp: "in der Aufträge und ziele seite soll der hinweis
-      // text weg wenn noch kein auftrag oder ziel vorhanden ist."
-      //
-      // The LOADING and FAILED states above keep their own words, and that is
-      // the distinction worth holding: an empty list with a button is a state
-      // somebody can act on, while a list that is still arriving or could not
-      // be fetched is not - and those two really are indistinguishable from a
-      // blank screen.
+      // No empty-list text: the add button already makes the offer.
       ListFooterComponent={error ? <Caption>{error}</Caption> : null}
       renderItem={({ item, index }) => (
         <JobCard
@@ -214,26 +165,18 @@ export function Jobs() {
           onAct={() => act(item)}
           holding={holding === item.name}
           onHold={() => hold(item)}
-          // Opening and editing are one screen now, so both verbs land in the
-          // same place. They stay as two menu rows because they are two
-          // INTENTIONS, and somebody looking for "bearbeiten" should find it.
+          // Opening and editing reach the same screen but stay two menu rows,
+          // so somebody looking for "edit" finds it.
           onEdit={() => nav.navigate("JobEdit", { name: item.name })}
           onDuplicate={() => duplicate(item)}
           onRemove={() => remove(item)}
-          // EITHER side, right first because that is the usual shape. A job
-          // that pulls from a cloud into a folder on the phone carries its
-          // target on the left, and only asking the right drew nothing for it.
-          // A job between two local folders still has no logo, which is
-          // correct: there is no cloud in it to show.
+          // Either side can be the target; the right is the usual one.
           mark={markForSide(item.right, remotes) ?? markForSide(item.left, remotes)}
           leftMark={sideMark(item.left, remotes)}
           rightMark={sideMark(item.right, remotes)}
         />
       )}
       />
-      {/* The add button floats over the list instead of standing at the top of
-          it. jdp: "die button auftraege und speicher hinzufuegen soll ein
-          schwebender button rechts unten sein." */}
       <Fab label={t("edit.add")} labelKey="edit.add" onPress={() => nav.navigate("JobEdit", {})} />
     </Floating>
   );
@@ -265,10 +208,9 @@ function JobCard({
   onEdit: () => void;
   onDuplicate: () => void;
   onRemove: () => void;
-  /** The target's logo, or nothing when it cannot be named without guessing. */
+  /** The target's logo, if the engine could name its product. */
   mark?: string;
-  /** What goes in front of each side: a provider's mark, the phone glyph, or
-   *  nothing. See sideMark. */
+  /** The mark in front of each side; see sideMark. */
   leftMark?: string;
   rightMark?: string;
 }) {
@@ -277,9 +219,6 @@ function JobCard({
   const { p, scheme } = useTheme();
   return (
     <Card onPress={onOpen} hue={hue}>
-      {/* The same head the target list draws, from the same component - see
-          CardHead in ui.tsx. The logo comes from the engine, which resolves the
-          product from the settings the target was created with. */}
       <CardHead mark={mark} title={job.name}>
         {job.disabled ? (
           <Badge label={t("jobs.state.disabled")} />
@@ -288,24 +227,14 @@ function JobCard({
         ) : job.watch ? (
           <Badge label={t("jobs.cadence.live")} tone="ok" />
         ) : null}
-        {/* Pushed hard right, and the two rare acts live in it. */}
         <View style={styles.menuSlot}>
           <CardMenu
             items={[
-              // Three bare verbs. jdp: "im hamburger menue auf der auftrag card
-              // soll einfach nur oeffnen, bearbeiten und loeschen stehen." The
-              // card they sit on is already the subject, so repeating it in
-              // every row says the same word three times and makes the three
-              // acts harder to tell apart, not easier.
-              //
-              // Opening leads, because the card's own tap does the same thing
-              // and reachable is not the same as findable.
+              // Open is listed although tapping the card does the same, so it
+              // can be found.
               { label: t("action.open"), glyph: "IconPreview", onPress: onOpen },
               { label: t("action.edit"), glyph: "IconEdit", onPress: onEdit },
-              // jdp: "auftraege soll man via hamburgermenue auch duplizieren
-              // koennen." The copy arrives HELD and pointing at the same two
-              // folders as its original - see jobCopy.data.ts for why that is
-              // the only safe state for it to arrive in.
+              // The copy starts held; see jobCopy.data.ts.
               { label: t("edit.duplicate"), glyph: "IconCopy", onPress: onDuplicate },
               { label: t("action.delete"), glyph: "IconDelete", onPress: onRemove },
             ]}
@@ -313,27 +242,9 @@ function JobCard({
         </View>
       </CardHead>
 
-      {/* The two paths with the direction between them, one per line and each
-          allowed to wrap. Truncating a path in the middle is what a table
-          does, and it hides exactly the part that distinguishes two similar
-          jobs.
-
-          EACH SIDE SAYS WHAT IT IS FIRST. jdp: "vor dem Pfad der Cloud soll das
-          cloudlogo als glyph sein und vor dem Geraetepfad ein Handy glyph."
-          Two stacked paths left the reader to work that out by reading them,
-          which is fine for /storage/emulated/0/DCIM and useless for two targets
-          whose names are both somebody's own. */}
+      {/* Paths wrap rather than truncate, since the cut part is what tells
+          two similar jobs apart. */}
       <Side path={job.left} mark={leftMark} />
-      {/* The arrow AND the words, unmoved. The arrow keeps the position it had
-          between the two paths, where it reads as the relationship between
-          them; the words are what somebody needs the first time.
-
-          A REAL GLYPH now, not a character from whatever font the phone ships.
-          jdp: "der pfeil fuer die synchronisationsrichtung soll auch ein
-          groesserer glyph sein." The three direction glyphs have existed since
-          the desktop rail was built; this card was drawing a text arrow beside
-          marks from a 14-unit grid, which made it the one symbol here that came
-          from somewhere else. */}
       <View style={styles.way}>
         <Glyph name={directionGlyph(job.direction)} color={p.textSub} size={22} />
         <Caption>{t(directionKey(job.direction))}</Caption>
@@ -346,23 +257,10 @@ function JobCard({
           : t("jobs.activityEmpty")}
       </Caption>
 
-      {/* Two verbs, never one button, which is the desktop's own rule for this
-          pair: a job held on its schedule can still be STARTED by hand, and
-          that is the whole point of holding one rather than deleting it.
-
-          `jobs.cancelRun` rather than `jobs.pause` for the running button.
-          Pausing is what the OTHER one does - it holds the schedule - and one
-          card able to print the same word for two different acts is how
-          somebody stops a run when they meant to stop a job. And ABBRECHEN
-          rather than anhalten, because that is what happens: the run's context
-          is cancelled and the next one starts from the beginning. jdp: "lauf
-          anhalten soll den lauf abbrechen und auch so heissen."
-
-          RUNNING ON THE RIGHT, holding on the left, per GlimStone 1.14.0: the
-          control that goes ahead sits on the right. jdp: "jetzt ausfuehren soll
-          rechts sein und pausieren links." It was the other way round because
-          running is the commoner act and commoner felt like first - which is
-          exactly the local reasoning that rule exists to overrule. */}
+      {/* Two buttons, since a held job can still be started by hand. A
+          running job's button cancels the run rather than pausing, which is
+          what the hold button does. The control that goes ahead sits on the
+          right. */}
       <View style={styles.actions}>
         <Button
           label={job.disabled ? t("jobs.resume") : t("jobs.pause")}
@@ -383,13 +281,9 @@ function JobCard({
 }
 
 /**
- * One side of a job: what it is, then where.
- *
- * The mark is the provider's own where the side names a target, and the phone
- * glyph where it is a path on this device. A side that is neither - a path on
- * some other machine, a target whose product cannot be named without guessing -
- * gets no mark and keeps the plain line it always had. An unknown side drawn
- * with a borrowed symbol would be worse than an unmarked one.
+ * One side of a job, its path behind a mark: the phone glyph for a path on
+ * this device, the provider's mark for a target, and an empty slot when the
+ * product is unknown.
  */
 function Side({ path, mark }: { path: string; mark?: string }) {
   const { p, scheme } = useTheme();
@@ -398,14 +292,10 @@ function Side({ path, mark }: { path: string; mark?: string }) {
       {mark === DEVICE ? (
         <Glyph name="IconThisDevice" color={p.textSub} size={16} />
       ) : mark ? (
-        // ONE INK. In front of a path the mark is a symbol saying "this side is
-        // that service", which is the job the device glyph does on the other
-        // line - and that one is drawn in the text colour. jdp: "das cloud logo
-        // vor dem Pfad farblos ... und als glyph dienen."
+        // In one ink, like the device glyph it stands beside.
         <ProviderMark name={mark} width={18} height={18} color={p.textSub} scheme={scheme} mono />
       ) : (
-        // An empty slot rather than no slot, so the two paths stay aligned with
-        // each other whether or not both sides could be named.
+        // Keeps the two paths aligned.
         <View style={styles.sideBlank} />
       )}
       <Body>{path}</Body>
@@ -413,27 +303,17 @@ function Side({ path, mark }: { path: string; mark?: string }) {
   );
 }
 
-/** Not a provider: the marker for "this is a folder on this phone". */
+/** The mark for a folder on this phone. */
 const DEVICE = "__device__";
 
-/**
- * What to draw in front of a side.
- *
- * A side with no colon is a path on this device. Anything else is a target, and
- * the engine says which product it is.
- */
 function sideMark(side: string, remotes: Remote[]): string | undefined {
   if (side.indexOf(":") < 2) return side ? DEVICE : undefined;
   return markForSide(side, remotes);
 }
 
 /**
- * The direction as one of the app's own three marks.
- *
- * The engine's spellings and the older ones beside them, exactly as
- * directionKey does it: a configuration written by an earlier build carries
- * `toRight`, and falling through to the two-way mark for it would draw a
- * one-way job as two-way.
+ * Returns the glyph for a job's direction, accepting the older spellings as
+ * directionKey does.
  */
 export function directionGlyph(direction: string | undefined): string {
   if (direction === "leftToRight" || direction === "toRight" || direction === "right") {
@@ -445,42 +325,24 @@ export function directionGlyph(direction: string | undefined): string {
   return "IconBothWays";
 }
 
-/** The direction as an arrow, which is read faster than the word. */
 export function arrow(direction: string): string {
   if (direction === "toRight" || direction === "right") return "→";
   if (direction === "toLeft" || direction === "left") return "←";
   return "↔";
 }
 
-/**
- * A timestamp as somebody would say it out loud, in the reader's own language.
- *
- * This used to be a second implementation that returned `"just now"`, `"3 h"`
- * and `"2 d"` as English literals, which the card then wrapped in translated
- * text: a German screen read "zuletzt just now her", which is neither a
- * language nor a sentence. Measured on the device.
- *
- * The rule is the desktop's, from `lib/since.ts`, and it returns the unit as a
- * translation KEY rather than a word - which is the only shape that can be said
- * in forty-two languages.
- */
+/** Formats how long ago a timestamp was, using lib/since.ts and the translated unit. */
 export function when(iso: string, t: T): string {
   const { count, unit } = since(iso);
   return `${count} ${t(unit)}`;
 }
 
 const styles = StyleSheet.create({
-  // The logo before the name, the menu hard right, and the badge between them
-  // taking whatever is left.
   menuSlot: { marginStart: "auto" },
-  // A side: its mark, then its path, the path free to wrap under itself.
   side: { flexDirection: "row", alignItems: "flex-start", gap: space.sm },
-  // The direction sits in the same column the two marks do, so the three
-  // symbols line up down the left edge of the card.
   way: { flexDirection: "row", alignItems: "center", gap: space.sm },
   sideBlank: { width: 18 },
-  // The extra room at the end is for the floating button, which would
-  // otherwise cover the last card - the one somebody scrolled to reach.
+  // Room at the end so the floating button does not cover the last card.
   list: { padding: space.lg, gap: space.md, paddingBottom: FAB_ROOM },
   head: {
     flexDirection: "row",
