@@ -9,9 +9,9 @@ replace github.com/junkerderprovinz/arrowloop => ../
 
 require (
 	github.com/energye/systray v1.0.3
-	github.com/junkerderprovinz/arrowloop v0.7.0
+	github.com/junkerderprovinz/arrowloop v0.7.5
 	github.com/rclone/rclone v1.75.1
-	github.com/wailsapp/wails/v2 v2.15.0
+	github.com/wailsapp/wails/v2 v2.16.0
 	golang.org/x/image v0.46.0
 )
 
