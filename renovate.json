@@ -47,6 +47,13 @@
       "platformAutomerge": true,
       "commitMessagePrefix": "ci:",
       "labels": ["docker"]
+    },
+    {
+      "description": "The Expo SDK decides React, React Native and the native modules in mobile/; npx expo install --fix moves them with an SDK upgrade",
+      "matchFileNames": ["mobile/package.json"],
+      "matchPackageNames": ["expo", "expo-*", "@expo/**", "react", "react-dom", "@types/react", "react-native", "react-native-*", "@react-native/**", "@react-native-community/**"],
+      "matchUpdateTypes": ["minor", "major"],
+      "enabled": false
     }
   ]
 }
