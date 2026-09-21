@@ -56,7 +56,7 @@ jobs:
       # of publishing APKs no later release can update.
       RELEASE_CERT_SHA256: 13477be473caf942e1c6d0fabee878776f32c849c2341c2541893a3474ab10e6
     steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
