@@ -1,11 +1,10 @@
 plugins {
-    id("com.android.application") version "8.7.3"
-    id("org.jetbrains.kotlin.android") version "2.4.20"
+    id("com.android.application") version "9.4.1"
 }
 
 android {
     namespace = "design.halleluja.arrowloop"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "design.halleluja.arrowloop"
@@ -84,11 +83,11 @@ android {
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.15.0")
+    implementation("androidx.core:core-ktx:1.19.0")
     implementation("androidx.appcompat:appcompat:1.8.0")
-    implementation("androidx.activity:activity-ktx:1.9.3")
+    implementation("androidx.activity:activity-ktx:1.13.0")
     implementation("androidx.documentfile:documentfile:1.1.0")
-    implementation("androidx.work:work-runtime-ktx:2.10.0")
+    implementation("androidx.work:work-runtime-ktx:2.11.2")
     // Waiting for the engine to open its port without blocking the screen.
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.11.0")
 }
