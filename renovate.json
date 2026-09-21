@@ -54,6 +54,12 @@
       "matchPackageNames": ["expo", "expo-*", "@expo/**", "react", "react-dom", "@types/react", "react-native", "react-native-*", "@react-native/**", "@react-native-community/**"],
       "matchUpdateTypes": ["minor", "major"],
       "enabled": false
+    },
+    {
+      "description": "React Native's Android build expects JDK 17; on 25 the CMake step fails on restricted-method warnings",
+      "matchFileNames": [".github/workflows/mobile.yml"],
+      "matchDepNames": ["java-jdk"],
+      "allowedVersions": "17"
     }
   ]
 }
