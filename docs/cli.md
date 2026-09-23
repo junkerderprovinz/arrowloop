@@ -81,6 +81,19 @@ Three things it tells you that are otherwise found out the hard way:
   until that is granted the job fails with an ordinary permission error that
   looks like a bug and is not one.
 
+## hash-password
+
+Prints the value `ARROWLOOP_PASSWORD_HASH` wants. At a terminal it asks for the
+password twice without echoing it; piped, it takes the first line.
+
+```bash
+arrowloop hash-password
+printf '%s\n' "$PASSWORD" | arrowloop hash-password
+```
+
+The password never goes on the command line, where it would end up in a shell
+history and in the process list.
+
 ## version
 
 Prints which build this binary is, and nothing else, so it can be read from a

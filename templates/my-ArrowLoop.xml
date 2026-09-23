@@ -32,7 +32,7 @@ The WebUI has no login of its own. Keep it on your LAN or put it behind a revers
     Target="8422"
     Default="8422"
     Mode="tcp"
-    Description="The port the interface listens on. It has no login of its own, so do not forward it from the internet."
+    Description="The port the interface listens on. Without a password hash below, anyone who can reach it can start a sync that deletes files, so do not forward it from the internet."
     Type="Port"
     Display="always"
     Required="true"
@@ -57,6 +57,16 @@ The WebUI has no login of its own. Keep it on your LAN or put it behind a revers
     Display="always"
     Required="true"
     Mask="false">/mnt/user</Config>
+  <Config
+    Name="Password hash"
+    Target="ARROWLOOP_PASSWORD_HASH"
+    Default=""
+    Mode=""
+    Description="Leave empty and the interface asks nobody for a password. To set one, open this container's console, run: arrowloop hash-password, type the password twice and paste the line it prints here. The hash lives here rather than in arrowloop.json because that file can be downloaded and restored from inside the interface."
+    Type="Variable"
+    Display="always"
+    Required="false"
+    Mask="true"></Config>
   <Config
     Name="Timezone"
     Target="TZ"

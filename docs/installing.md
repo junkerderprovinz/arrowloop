@@ -22,12 +22,31 @@ A first start on an empty `/config` writes a starter configuration with one
 disabled example job, so the interface comes up and can be edited rather than
 crash-looping on a missing file.
 
+### A password for the interface
+
+The container listens on every address, so anyone on the network who reaches
+port 8422 can start a job. To make the interface ask for a password, have the
+image hash one and hand the result back as `ARROWLOOP_PASSWORD_HASH`:
+
+```bash
+docker run --rm -it ghcr.io/junkerderprovinz/arrowloop:latest hash-password
+
+docker run -d --name arrowloop -p 8422:8422 \
+  -e ARROWLOOP_PASSWORD_HASH='$2a$10$...' \
+  ...
+```
+
+The single quotes matter: the hash is full of `$`, which a shell would otherwise
+read as variables. In a Compose file, write every `$` as `$$`.
+
 ### On Unraid
 
 The template is
 [`templates/my-ArrowLoop.xml`](https://github.com/junkerderprovinz/arrowloop/blob/main/templates/my-ArrowLoop.xml).
 Drop it into `/boot/config/plugins/dockerMan/templates-user/` and it appears in
-the Docker tab's Add Container list, with every field editable.
+the Docker tab's Add Container list, with every field editable. The password
+hash has a field of its own there, masked; the template's text says how to fill
+it from the container's console.
 
 Mount the data path read-write. A two-way job writes to both sides by
 definition, and a read-only mount produces a job that fails on every run for a
