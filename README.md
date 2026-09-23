@@ -107,29 +107,36 @@ Targets come from [rclone](https://rclone.org), embedded as a library rather tha
 
 ### How it compares
 
-The tool this replaces is [GoodSync](https://www.goodsync.com): job-based and two-way, with a preview before every run, but proprietary, and the free tier stops at three jobs and a hundred files. [FreeFileSync](https://freefilesync.org) comes closest to GoodSync's comparison screen among the free tools, but it is a desktop program, and past SFTP, FTP and Google Drive it reaches no cloud or object storage. [Syncthing](https://syncthing.net) and [Resilio Sync](https://www.resilio.com/sync/) are a different kind of tool: devices that keep a folder identical between them in real time, with no plan to read first and no cloud targets. [rclone bisync](https://rclone.org/bisync/) reaches everything ArrowLoop reaches, since both sit on rclone, but it is a command for cron, with no interface and nothing to look at before a run except a dry-run log.
+[GoodSync](https://www.goodsync.com) is the tool this was built to replace. [FreeFileSync](https://freefilesync.org), [Syncovery](https://www.syncovery.com) and [SyncBack](https://www.2brightsparks.com/syncback/) work the same way, a job you run or schedule, and are desktop programs first. [Syncthing](https://syncthing.net) and [Resilio Sync](https://www.resilio.com/sync/) keep folders identical between devices in real time, with nothing to review before it happens. [Unison](https://github.com/bcpierce00/unison) and [rclone bisync](https://rclone.org/bisync/) are two-way sync for the command line. ArrowLoop takes GoodSync's way of working and rclone's reach, runs as a container or a desktop app, and keeps a record of what both sides last agreed on.
 
-What ArrowLoop adds is the combination: GoodSync's way of working, rclone's reach, a record of what both sides last agreed on, and brakes that assume a disk will one day fail to mount.
+| | **ArrowLoop** | GoodSync | FreeFileSync | Syncthing | Resilio | bisync | Unison | Syncovery | SyncBack |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| Every change shown before the run, single ones can be dropped | ✅ | ✅ | ✅ | ❌ | ❓ | ❌ | ✅ | ✅ | ✅ |
+| Brake on a run that deletes too much | ✅ | ⚠️ | ⚠️ | ❌ | ❓ | ✅ | ⚠️ | ✅ | ⚠️ |
+| An empty or unmounted side is refused | ✅ | ⚠️ | ⚠️ | ✅ | ⚠️ | ✅ | ✅ | ✅ | ⚠️ |
+| Deletions go to a trash by default | ✅ | ✅ | ✅ | ⚠️ | ✅ | ⚠️ | ⚠️ | ✅ | ⚠️ |
+| An edit on both sides keeps both versions by itself | ✅ | ⚠️ | ⚠️ | ✅ | ⚠️ | ✅ | ⚠️ | ⚠️ | ❌ |
+| Cloud and server targets without a mount | ✅ | ✅ | ⚠️ | ❌ | ❌ | ✅ | ⚠️ | ✅ | ✅ |
+| Encryption at the destination | ✅ | ⚠️ | ❌ | ⚠️ | ✅ | ✅ | ❌ | ✅ | ✅ |
+| Sends only the changed part of a file | ❌ | ⚠️ | ❌ | ✅ | ✅ | ❌ | ✅ | ✅ | ⚠️ |
+| Copies files another program holds open | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ |
+| Built-in schedule | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ⚠️ | ✅ | ⚠️ |
+| Real-time watching | ✅ | ✅ | ⚠️ | ✅ | ✅ | ❌ | ✅ | ⚠️ | ✅ |
+| Scripts before and after a run | ❌ | ✅ | ⚠️ | ❌ | ❓ | ❌ | ❌ | ✅ | ✅ |
+| Notification when a run fails | ✅ | ✅ | ⚠️ | ⚠️ | ⚠️ | ❌ | ❌ | ✅ | ✅ |
+| Device to device over the internet, no port forwarding | ❌ | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Official container image | ✅ | ❌ | ❌ | ✅ | ⚠️ | ✅ | ❌ | ❌ | ❌ |
+| Web interface | ✅ | ⚠️ | ❌ | ✅ | ⚠️ | ❌ | ❌ | ⚠️ | ❌ |
+| Desktop app | ✅ | ✅ | ✅ | ⚠️ | ✅ | ❌ | ✅ | ✅ | ✅ |
+| Windows, macOS and Linux | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
+| Android | ✅ | ✅ | ❌ | ⚠️ | ✅ | ⚠️ | ❌ | ❌ | ⚠️ |
+| iOS | ❌ | ✅ | ❌ | ⚠️ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| No account and no vendor relay | ✅ | ❌ | ✅ | ⚠️ | ⚠️ | ✅ | ✅ | ✅ | ✅ |
+| Open source | ✅ | ❌ | ⚠️ | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ |
+| Free, with every feature | ✅ | ❌ | ⚠️ | ✅ | ⚠️ | ✅ | ✅ | ❌ | ⚠️ |
+| Past 1.0 and years in use | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
-| | **ArrowLoop** | GoodSync | FreeFileSync | Syncthing | rclone bisync | Resilio Sync |
-|---|:---:|:---:|:---:|:---:|:---:|:---:|
-| Every change listed before the run, single ones can be unticked | ✅ | ✅ | ✅ | ❌ | ❌ dry-run log only | ❓ |
-| Brake on a run that deletes too much | ✅ share and floor, both adjustable | ⚠️ 50%, automatic two-way jobs only | ⚠️ fixed warning, can be switched off | ❌ | ✅ `--max-delete` | ❓ |
-| An empty side (disk not mounted) is refused | ✅ | ⚠️ only a missing folder | ⚠️ only a missing folder | ✅ folder marker | ✅ empty listing aborts | ⚠️ folder marker |
-| Deletions go to a trash by default | ✅ | ✅ kept 30 days | ✅ recycle bin | ⚠️ versioning, off by default | ⚠️ `--backup-dir`, opt-in | ✅ archive, 30 days |
-| A two-sided edit keeps both versions, no one has to step in | ✅ | ⚠️ waits for you, or one side wins | ⚠️ skipped until you pick | ✅ | ✅ | ⚠️ last arrival wins, loser archived |
-| Cloud and server targets without a mount | ✅ every rclone backend | ✅ | ⚠️ SFTP, FTP, Google Drive | ❌ devices only | ✅ every rclone backend | ❌ devices only |
-| macOS and Windows spellings of one name, case-only clashes | ✅ normalised, clashes refused and named | ⚠️ case clash left to you | ✅ | ✅ | ✅ | ✅ |
-| Schedule and real-time watching, built in | ✅ both | ✅ both | ⚠️ OS scheduler, separate watcher | ⚠️ real time only | ❌ cron | ⚠️ real time only |
-| Device to device with no server in between | ❌ both sides must be reachable | ✅ | ❌ | ✅ | ❌ | ✅ |
-| Official container image | ✅ plus Unraid template | ❌ Linux packages | ❌ community image | ✅ | ✅ | ⚠️ deprecated, community image |
-| Web interface | ✅ plus desktop app | ⚠️ on Linux only | ❌ desktop only | ✅ | ❌ command line | ⚠️ on Linux and NAS only |
-| Android | ✅ | ✅ | ❌ | ⚠️ community fork | ⚠️ test builds | ✅ |
-| No account and no vendor relay | ✅ | ❌ account, optional relay | ✅ | ⚠️ public relays by default | ✅ | ⚠️ vendor relay by default |
-| Free and open source | ✅ AGPL-3.0 | ❌ from €29.95 a year | ⚠️ GPLv3 source, binaries for private use | ✅ MPL-2.0 | ✅ MIT | ❌ free for private use only |
-| Past 1.0 and years in use | ❌ 0.7, young | ✅ | ✅ | ✅ | ✅ | ✅ |
-
-✅ yes · ❌ no · ⚠️ present but limited · ❓ undocumented. Checked against each project's own documentation in September 2026.
+✅ yes · ⚠️ with a catch: off by default, a paid edition, one platform only or a community build · ❌ no · ❓ undocumented. Checked against each project's own documentation in September 2026.
 
 <br>
 
