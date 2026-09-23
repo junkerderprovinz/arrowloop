@@ -8,30 +8,29 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
-## Unreleased
+## v0.7.6
+
+The interface password gets a way to set it, every build moves to Go 1.27.1, and a release now goes public only once all its downloads are there.
 
 ## ✨ Added
 
-- **`arrowloop hash-password`** prints the value for `ARROWLOOP_PASSWORD_HASH`. The interface could already ask for a password, but there was no way to make the hash short of writing bcrypt by hand. At a terminal it asks twice without echo; piped, it reads one line. The Unraid template has a masked field for it, and its text says how to fill it.
+- **`arrowloop hash-password`** prints the value for `ARROWLOOP_PASSWORD_HASH`. The interface could already ask for a password, but making the hash meant writing bcrypt by hand. At a terminal it asks twice without echo; piped, it reads one line. On Unraid, run `docker run --rm -it ghcr.io/junkerderprovinz/arrowloop:latest hash-password` and paste the result into the template's new masked **Password hash** field.
 
 ## 🔒 Security
 
-- **Every build uses Go 1.27.1.** The desktop, Android and phone builds took their Go version from `go.mod`, which still said 1.26.4, and that release carries nine standard-library vulnerabilities the code can reach, in `net/http`, `crypto/tls` and `os` among others. The container and CI were on 1.27 already.
-- **A weekly govulncheck run** fails on any vulnerability the code can reach, in the engine and in the desktop shell, and runs on every change to Go code as well.
+- **Every build uses Go 1.27.1.** The desktop, Android and phone builds were made with Go 1.26.4, which has nine standard-library vulnerabilities the code can reach, in `net/http`, `crypto/tls` and `os` among others. The container was already on 1.27.
+- **A weekly vulnerability check** fails on anything the code can reach, in the engine and in the desktop app.
 
 ## ⚡ Improved
 
-- **A release goes public only with its downloads attached.** The README's buttons lead to `/releases/latest/download/`, and a release used to be "latest" from the moment it was created, twenty minutes and more before `desktop.yml` and `mobile.yml` attached their files, so the buttons answered 404 for that long. `release.yml` now runs both builds itself and creates the release once both are done, with every file in the same command. A failed build leaves no half-finished release behind.
-- **"Latest" goes only to the newest published version**, so re-cutting an older one does not pull the badge and the download buttons back to it.
-- **The release workflow can be dispatched**: it builds everything, packages the files and publishes nothing, also from a branch with a slash in its name.
-- **A test dispatch can no longer cancel a real release's app build.** The app build's concurrency group now includes the event, since a called workflow runs under the caller's name, and names itself rather than the workflow that called it.
-- **`latest` on the image follows the newest published release**, like the "Latest" badge, instead of the newest tag. The release builds the image too, and moves `latest` once the release exists, so a version whose release never came out cannot take it, and `docker pull …:latest` cannot name a different version than the download buttons.
-- **Tidied the code comments and log messages.**
+- **A release goes public only with its downloads attached.** The download buttons used to answer 404 for twenty minutes or more after a release appeared, while the builds were still running. Now the release is created once every file is ready, and a failed build leaves nothing half finished behind.
+- **`latest` on the container image follows the newest published release**, the same as the download buttons, so `docker pull …:latest` and the buttons always name the same version.
+- **The Android app is built with current Android tooling** (AGP 9 and current androidx libraries).
 
 ## 🐛 Fixed
 
-- **Tooltips no longer stay on the page after a click.** Focus opens a tooltip only after keyboard input, so a dialog handing focus back to the button that opened it, or the click itself, leaves no tooltip behind; one that was open when its button got disabled closes as well. GlimStone 2.6.0, from BombVault [#243](https://github.com/junkerderprovinz/bombvault/issues/243).
-- **The sidebar scrolls when the window is too short for it.** It was cut off at the window's height, and Settings at its foot went out of reach. From BombVault [#247](https://github.com/junkerderprovinz/bombvault/issues/247).
+- **Tooltips no longer stay on the page after a click.** A tooltip opens on focus only after keyboard input, and one whose button gets disabled closes. From BombVault [#243](https://github.com/junkerderprovinz/bombvault/issues/243).
+- **The sidebar scrolls when the window is too short**, so Settings at its foot stays reachable. From BombVault [#247](https://github.com/junkerderprovinz/bombvault/issues/247).
 
 ## v0.7.5
 
