@@ -1,6 +1,6 @@
 module github.com/junkerderprovinz/arrowloop/desktop
 
-go 1.26.4
+go 1.27.1
 
 // The engine is the module next door rather than a published dependency: the
 // desktop shell and the command line binary must never be able to drift onto
