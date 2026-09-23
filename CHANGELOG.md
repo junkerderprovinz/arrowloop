@@ -10,6 +10,15 @@ The full notes for each release are in
 
 ## Unreleased
 
+## ✨ Added
+
+- **`arrowloop hash-password`** prints the value for `ARROWLOOP_PASSWORD_HASH`. The interface could already ask for a password, but there was no way to make the hash short of writing bcrypt by hand. At a terminal it asks twice without echo; piped, it reads one line. The Unraid template has a masked field for it, and its text says how to fill it.
+
+## 🔒 Security
+
+- **Every build uses Go 1.27.1.** The desktop, Android and phone builds took their Go version from `go.mod`, which still said 1.26.4, and that release carries nine standard-library vulnerabilities the code can reach, in `net/http`, `crypto/tls` and `os` among others. The container and CI were on 1.27 already.
+- **A weekly govulncheck run** fails on any vulnerability the code can reach, in the engine and in the desktop shell, and runs on every change to Go code as well.
+
 ## ⚡ Improved
 
 - **A release goes public only with its downloads attached.** The README's buttons lead to `/releases/latest/download/`, and a release used to be "latest" from the moment it was created, twenty minutes and more before `desktop.yml` and `mobile.yml` attached their files, so the buttons answered 404 for that long. `release.yml` now runs both builds itself and creates the release once both are done, with every file in the same command. A failed build leaves no half-finished release behind.
