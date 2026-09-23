@@ -92,9 +92,8 @@ If it has earned a place on your server or computer, toss a coin to your knight:
 9. [Installing it](#9-installing-it)
 10. [Tests](#10-tests)
 11. [What it will not carry, and what it says about it](#11-what-it-will-not-carry-and-what-it-says-about-it)
-12. [Why not just use something that exists](#12-why-not-just-use-something-that-exists)
-13. [How AI is used here](#13-how-ai-is-used-here)
-14. [Support this project](#14-support-this-project)
+12. [How AI is used here](#12-how-ai-is-used-here)
+13. [Support this project](#13-support-this-project)
 
 <br>
 
@@ -104,7 +103,33 @@ A self-hosted GoodSync replacement. The engine came first, cut down to the part 
 
 The name is the shape. Two arrows closing a loop: what happens on one side arrives on the other and comes back, and between the two ends sits the record of what they last agreed on. Those are the three pieces below, and the third one is the one that matters when something goes wrong: the two ends, the state database, and the refusal to apply a reckoning that does not add up.
 
-Targets come from [rclone](https://rclone.org), embedded as a library rather than shelled out to, so local folders, SMB shares, SFTP hosts and S3 buckets are all the same thing to the engine. Only `local`, `sftp` and `s3` are compiled in at this stage: importing every backend rclone supports would multiply the binary size for targets nobody has asked for.
+Targets come from [rclone](https://rclone.org), embedded as a library rather than shelled out to, so a local folder, an SMB share, an SFTP host, an S3 bucket and a Nextcloud or OpenCloud over WebDAV are all the same thing to the engine. Every backend rclone ships is compiled in. The services that only sign in through a browser, such as OneDrive, Google Drive and Dropbox, take a token made once with `rclone authorize`, because the engine often runs on a machine that has no browser to open.
+
+### How it compares
+
+The tool this replaces is [GoodSync](https://www.goodsync.com): job-based and two-way, with a preview before every run, but proprietary, and the free tier stops at three jobs and a hundred files. [FreeFileSync](https://freefilesync.org) comes closest to GoodSync's comparison screen among the free tools, but it is a desktop program, and past SFTP, FTP and Google Drive it reaches no cloud or object storage. [Syncthing](https://syncthing.net) and [Resilio Sync](https://www.resilio.com/sync/) are a different kind of tool: devices that keep a folder identical between them in real time, with no plan to read first and no cloud targets. [rclone bisync](https://rclone.org/bisync/) reaches everything ArrowLoop reaches, since both sit on rclone, but it is a command for cron, with no interface and nothing to look at before a run except a dry-run log.
+
+What ArrowLoop adds is the combination: GoodSync's way of working, rclone's reach, a record of what both sides last agreed on, and brakes that assume a disk will one day fail to mount.
+
+| | **ArrowLoop** | GoodSync | FreeFileSync | Syncthing | rclone bisync | Resilio Sync |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|
+| Every change listed before the run, single ones can be unticked | ✅ | ✅ | ✅ | ❌ | ❌ dry-run log only | ❓ |
+| Brake on a run that deletes too much | ✅ share and floor, both adjustable | ⚠️ 50%, automatic two-way jobs only | ⚠️ fixed warning, can be switched off | ❌ | ✅ `--max-delete` | ❓ |
+| An empty side (disk not mounted) is refused | ✅ | ⚠️ only a missing folder | ⚠️ only a missing folder | ✅ folder marker | ✅ empty listing aborts | ⚠️ folder marker |
+| Deletions go to a trash by default | ✅ | ✅ kept 30 days | ✅ recycle bin | ⚠️ versioning, off by default | ⚠️ `--backup-dir`, opt-in | ✅ archive, 30 days |
+| A two-sided edit keeps both versions, no one has to step in | ✅ | ⚠️ waits for you, or one side wins | ⚠️ skipped until you pick | ✅ | ✅ | ⚠️ last arrival wins, loser archived |
+| Cloud and server targets without a mount | ✅ every rclone backend | ✅ | ⚠️ SFTP, FTP, Google Drive | ❌ devices only | ✅ every rclone backend | ❌ devices only |
+| macOS and Windows spellings of one name, case-only clashes | ✅ normalised, clashes refused and named | ⚠️ case clash left to you | ✅ | ✅ | ✅ | ✅ |
+| Schedule and real-time watching, built in | ✅ both | ✅ both | ⚠️ OS scheduler, separate watcher | ⚠️ real time only | ❌ cron | ⚠️ real time only |
+| Device to device with no server in between | ❌ both sides must be reachable | ✅ | ❌ | ✅ | ❌ | ✅ |
+| Official container image | ✅ plus Unraid template | ❌ Linux packages | ❌ community image | ✅ | ✅ | ⚠️ deprecated, community image |
+| Web interface | ✅ plus desktop app | ⚠️ on Linux only | ❌ desktop only | ✅ | ❌ command line | ⚠️ on Linux and NAS only |
+| Android | ✅ | ✅ | ❌ | ⚠️ community fork | ⚠️ test builds | ✅ |
+| No account and no vendor relay | ✅ | ❌ account, optional relay | ✅ | ⚠️ public relays by default | ✅ | ⚠️ vendor relay by default |
+| Free and open source | ✅ AGPL-3.0 | ❌ from €29.95 a year | ⚠️ GPLv3 source, binaries for private use | ✅ MPL-2.0 | ✅ MIT | ❌ free for private use only |
+| Past 1.0 and years in use | ❌ 0.7, young | ✅ | ✅ | ✅ | ✅ | ✅ |
+
+✅ yes · ❌ no · ⚠️ present but limited · ❓ undocumented. Checked against each project's own documentation in September 2026.
 
 <br>
 
@@ -266,7 +291,7 @@ Ticking is not decoration. The run re-plans and then keeps only the paths that w
 
 **A job's direction is an arrow**, in the list and in the editor: both ways, left to right, or right to left. A one-way job does not simply drop the changes that point the wrong way, because dropping them would leave the two sides further apart with every run. It **rebuilds** them: a file edited on the destination is restored from the source, and a file deleted there is copied back, so a one-way job converges on the source rather than drifting. What the source never had is left alone, since nothing there says it should exist.
 
-**The look is [GlimStone](https://github.com/junkerderprovinz/glimstone) 1.7.7**, and its reference tokens and appearance engine are copied in verbatim rather than reimplemented. Theme, corner shape and accent are the viewer's to set. The accent marks activity and nothing else, which is why the switches down the preview are colourless: every row arrives ticked, and a control that is on in all of them is not activity.
+**The look is [GlimStone](https://github.com/junkerderprovinz/glimstone) 2.6.0**, and its reference tokens and appearance engine are copied in verbatim rather than reimplemented. Theme, corner shape and accent are the viewer's to set. The accent marks activity and nothing else, which is why the switches down the preview are colourless: every row arrives ticked, and a control that is on in all of them is not activity.
 
 **It listens on loopback by default,** and it can ask for a password. This interface starts jobs that delete files, so an install anybody on the network can reach is an install anybody on the network can drive. Set `ARROWLOOP_PASSWORD_HASH` and every route but the login itself needs a session; leave it unset and nothing changes at all, which is what every install does today. The hash does not live in the configuration file, because that file is served whole as a backup and can be replaced whole by a restore: a hash there would be handed out over the routes it protects, and restoring an older backup would switch protection off without a word. Over plain HTTP the session cookie still crosses the wire in clear, so a machine reachable from outside wants TLS in front of it either way.
 
@@ -312,8 +337,6 @@ The suite that matters is not a list of cases, it is a property. `TestConvergenc
 
 Around it sit the tests for the things that go wrong quietly rather than loudly: two spellings of one name must not multiply, a newly added exclude pattern must not delete anything, a postponed file must leave the record untouched, a case collision must be refused rather than resolved.
 
-The suite is checked against deliberate sabotage rather than only against itself. Removing the empty-side guard, dropping the second half of conflict resolution, switching off rename detection, removing Unicode normalisation, or filtering the sides without filtering the record each produce a failing test.
-
 ```
 go test ./...
 ```
@@ -336,19 +359,9 @@ CI runs the whole suite on Linux, Windows and macOS, because path handling, modi
 
 **Rename detection matches on content**, so two unrelated files with identical bytes can in principle be paired.
 
-
-
 <br>
 
-## 12. Why not just use something that exists
-
-Nothing wrong with the alternatives, and it is worth being honest about them. [Syncthing](https://syncthing.net) is a proven real-time mesh, but it is a mesh of equal devices rather than a directed job, and it does not speak to cloud targets at all. [rclone bisync](https://rclone.org/bisync/) reaches every target but keeps only a listing per side rather than a per-file state, and re-scans both ends on every run.
-
-The gap this fills is the combination: a job-based tool with the reach of rclone, a state database underneath it, and safety brakes that assume the user's disk will eventually fail to mount.
-
-<br>
-
-## 13. How AI is used here
+## 12. How AI is used here
 
 One knight builds this, and AI is one of the tools I work with, the same way I work with an editor or a compiler. It helps me write code and documentation and it checks my work, and that saves me a good many evenings. It does not make the decisions, though. I read and understand everything before it ships, and if something here breaks, that is on me and not on the tool.
 
@@ -356,7 +369,7 @@ You do not have to take my word for it. The code is open and every release note 
 
 <br>
 
-## 14. Support this project
+## 13. Support this project
 
 A one-knight job: I build it, keep it running, work through the issues and add what people ask for, until nothing is missing. It is free, with no accounts, no telemetry, no ads and no paid tier. No asterisk anywhere. Nothing readable ever leaves your own walls. Forged on evenings and weekends, with heart and stubbornness.
 

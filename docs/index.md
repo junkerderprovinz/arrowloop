@@ -20,7 +20,8 @@ A run that would delete an implausible share of your files stops and says so. A
 side that lists nothing at all is never believed, because a disk that failed to
 mount looks exactly like a folder somebody emptied.
 
-It reaches **local folders, network shares, SFTP and S3-compatible storage**,
+It reaches **local folders, network shares, SFTP, S3-compatible storage, WebDAV
+clouds such as Nextcloud and OpenCloud, and the other services rclone speaks**,
 with [rclone](https://rclone.org) compiled in as a library rather than shelled
 out to. There is no second executable to keep in step.
 
@@ -33,6 +34,7 @@ out to. There is no second executable to keep in step.
 - [Command line](cli.md) for a machine nobody is looking at.
 - [When something goes wrong](troubleshooting.md).
 
-!!! warning "The interface has no login of its own"
-    Keep it on your own network, or put it behind something that asks who the
+!!! warning "Without a password, anyone who reaches the interface can drive it"
+    It asks for a password only when `ARROWLOOP_PASSWORD_HASH` is set. Otherwise
+    keep it on your own network, or put it behind something that asks who the
     visitor is. It can start a job that deletes files.

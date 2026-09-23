@@ -54,8 +54,8 @@ state database is the sort of arrangement that works until the day both happen
 to run the same job.
 
 It listens on loopback unless told otherwise. The interface can start a job that
-deletes files and has no login of its own, so making it reachable has to be a
-decision somebody took on purpose.
+deletes files and asks for no password unless `ARROWLOOP_PASSWORD_HASH` is set,
+so making it reachable has to be a decision somebody took on purpose.
 
 `daemon` is the same scheduler with no interface, for a machine where nobody is
 looking.
