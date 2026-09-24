@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { NavigationContext } from "@react-navigation/native";
+import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
   ActivityIndicator,
   Animated,
@@ -30,7 +31,7 @@ import {
 } from "./theme";
 import { useAppearance, type BarLabelMode, type LabelMode } from "./settings";
 import { useWalkedPalette } from "./disco";
-import { useMotion } from "./motion";
+import { springOf, useMotion } from "./motion";
 
 // GlimStone's controls for React Native, with the design language's shapes
 // and sizes: a notch 22 tall overlapping its card by half, a well whose chosen
@@ -103,6 +104,69 @@ export function useHue(index: number): string {
   return hueAt(index) ?? accent;
 }
 
+/**
+ * The cards of one page arriving: each takes the next place in line, and the
+ * whole line plays again when the tab comes back into view. Only a Page
+ * provides it, so rows a list recycles while scrolling never fly in.
+ */
+const Arrival = createContext<{ take: () => number; round: number } | null>(null);
+
+// Past this many a long page would still be arriving a second later.
+const ARRIVAL_CAP = 8;
+
+/** The moving style for one card on a page, or nothing outside a page. */
+function useArrival() {
+  const line = useContext(Arrival);
+  const { ms } = useMotion();
+  const place = useRef<number | null>(null);
+  if (line && place.current === null) place.current = line.take();
+  const v = useRef(new Animated.Value(line && ms.travel > 0 ? 0 : 1)).current;
+  const round = line?.round;
+
+  useEffect(() => {
+    if (round === undefined || ms.travel === 0) {
+      v.setValue(1);
+      return;
+    }
+    v.setValue(0);
+    // Waiting for the tab's first focus, which follows the mount at once.
+    if (round < 0) return;
+    const run = Animated.spring(v, {
+      toValue: 1,
+      delay: Math.min(place.current ?? 0, ARRIVAL_CAP) * ms.stagger,
+      useNativeDriver: true,
+      ...springOf(ms.bounce),
+    });
+    run.start();
+    return () => run.stop();
+  }, [round, ms.travel, ms.stagger, ms.bounce, v]);
+
+  if (!line) return null;
+  // Every other card comes from the other side. Translation only: a card
+  // holds a meter and buttons that move on their own.
+  const side = (place.current ?? 0) % 2 === 0 ? -1 : 1;
+  return {
+    opacity: v.interpolate({ inputRange: [0, 0.35, 1], outputRange: [0, 1, 1], extrapolate: "clamp" }),
+    transform: [
+      { translateY: v.interpolate({ inputRange: [0, 1], outputRange: [ms.travel, 0] }) },
+      { translateX: v.interpolate({ inputRange: [0, 1], outputRange: [side * ms.sway, 0] }) },
+    ],
+  };
+}
+
+/** A scale that gives way under a finger and springs back. */
+function usePress() {
+  const { ms } = useMotion();
+  const scale = useRef(new Animated.Value(1)).current;
+  const to = (value: number) =>
+    Animated.spring(scale, { toValue: value, useNativeDriver: true, ...springOf(ms.bounce) }).start();
+  return {
+    scale,
+    onPressIn: () => ms.press < 1 && to(ms.press),
+    onPressOut: () => to(1),
+  };
+}
+
 export function Screen({ children }: { children: ReactNode }) {
   const { p } = useTheme();
   return <View style={[styles.screen, { backgroundColor: p.background }]}>{children}</View>;
@@ -120,17 +184,27 @@ export function Card({
   style?: StyleProp<ViewStyle>;
   hue?: string;
 }) {
-  const { p, radius, rainbow } = useTheme();
+  const { p, radius } = useTheme();
+  const arrival = useArrival();
+  const press = usePress();
   const body = (
     <View style={[styles.card, { backgroundColor: p.surface, borderRadius: radius.card }, style]}>
       {children}
     </View>
   );
-  if (!onPress) return body;
+  if (!onPress) return <Animated.View style={arrival}>{body}</Animated.View>;
   return (
-    <Pressable onPress={onPress} android_ripple={{ color: p.hover }} style={{ borderRadius: radius.card }}>
-      {body}
-    </Pressable>
+    <Animated.View style={[arrival, { transform: [...(arrival?.transform ?? []), { scale: press.scale }] }]}>
+      <Pressable
+        onPress={onPress}
+        onPressIn={press.onPressIn}
+        onPressOut={press.onPressOut}
+        android_ripple={{ color: p.hover }}
+        style={{ borderRadius: radius.card }}
+      >
+        {body}
+      </Pressable>
+    </Animated.View>
   );
 }
 
@@ -156,8 +230,9 @@ export function Section({
   const { p, radius, accent, accentContrast, hueAt } = useTheme();
   const fill = (hue !== undefined ? hueAt(hue) : undefined) ?? accent;
   const ink = contrastOn(fill) || accentContrast;
+  const arrival = useArrival();
   return (
-    <View style={styles.notchWrap}>
+    <Animated.View style={[styles.notchWrap, arrival]}>
       <View style={[styles.notchCard, { backgroundColor: p.surface, borderRadius: radius.card }]}>
         {children}
       </View>
@@ -173,7 +248,7 @@ export function Section({
         </Text>
         {hint ? <InfoBubble tip={hint} on={ink} /> : null}
       </View>
-    </View>
+    </Animated.View>
   );
 }
 
@@ -464,6 +539,7 @@ export function Button({
   // The wobble runs on the native driver, since it fires while the screen
   // re-renders with the result. At `off` its durations are zero.
   const wobble = useRef(new Animated.Value(0)).current;
+  const press = usePress();
   useEffect(() => {
     if (!shake) return;
     const leg = Math.max(1, Math.round(ms.fade / 2));
@@ -482,6 +558,8 @@ export function Button({
   return (
     <AnimatedPressable
       onPress={onPress}
+      onPressIn={press.onPressIn}
+      onPressOut={press.onPressOut}
       disabled={disabled || busy}
       accessibilityRole="button"
       accessibilityLabel={label}
@@ -495,6 +573,7 @@ export function Button({
           flexGrow: wide === false ? 0 : 1,
           transform: [
             { translateX: wobble.interpolate({ inputRange: [-1, 1], outputRange: [-8, 8] }) },
+            { scale: press.scale },
           ],
         },
       ]}
@@ -692,13 +771,21 @@ export function Empty({ title, detail }: { title: string; detail?: string }) {
  */
 export function Page({ children, fab }: { children: ReactNode; fab?: boolean }) {
   const { p } = useTheme();
+  const nav = useContext(NavigationContext);
+  // Outside a navigator nothing will report focus, so the cards go at once.
+  const [round, setRound] = useState(nav ? -1 : 0);
+  const next = useRef(0);
+  // A tab stays mounted when it is left, so its cards arrive again on return.
+  useEffect(() => nav?.addListener("focus", () => setRound((r) => r + 1)), [nav]);
+  const line = useMemo(() => ({ take: () => next.current++, round }), [round]);
+
   return (
     <ScrollView
       style={{ backgroundColor: p.background }}
       contentContainerStyle={[styles.page, fab ? styles.fabRoom : null]}
       keyboardShouldPersistTaps="handled"
     >
-      {children}
+      <Arrival.Provider value={line}>{children}</Arrival.Provider>
     </ScrollView>
   );
 }
