@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { FlatList, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
 import { entryLabel } from "../../../web/src/lib/entryLabel";
 import { api, failed, touched, type Job, type Run, type Touch } from "../api";
 import { isPerfectlyIdle } from "../eggs";
@@ -10,7 +10,7 @@ import { useT, type T } from "../i18n";
 import type { HistoryStack, Nav } from "../nav";
 import { contrastOn, space, text } from "../theme";
 import { useEngineEvents } from "../useEngine";
-import { Badge, Body, Button, Caption, Card, Choice, Empty, Mono, Title, useTheme } from "../ui";
+import { Arrive, Badge, Body, Button, Caption, Card, Choice, Empty, Mono, MovingList, Title, useTheme } from "../ui";
 import { when } from "./Jobs";
 import { bytes } from "../space";
 
@@ -205,7 +205,7 @@ function FileLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "fil
 
   if (!rows) {
     return (
-      <FlatList
+      <MovingList
         style={{ backgroundColor: p.background }}
         data={[]}
         contentContainerStyle={styles.list}
@@ -217,7 +217,7 @@ function FileLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "fil
   }
 
   return (
-    <FlatList
+    <MovingList
       style={{ backgroundColor: p.background }}
       data={rows}
       keyExtractor={(r, i) => `${r.Run}-${r.Path}-${i}`}
@@ -237,37 +237,39 @@ function FileLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "fil
         if (rows.length >= limit) setLimit((n) => n * 2);
       }}
       renderItem={({ item }) => (
-        <Pressable
-          onPress={() => nav.navigate("RunDetail", { id: item.Run, job: item.Job })}
-          android_ripple={{ color: p.hover }}
-          style={[styles.row, { backgroundColor: p.surface, borderRadius: radius.control }]}
-        >
-          <Mono>{item.Path}</Mono>
-          <View style={styles.meta}>
-            <Badge
-              label={entryLabel(
-                t,
-                { Kind: item.Kind, Side: item.Side ?? "" },
-                configs.find((c) => c.name === item.Job),
-                drives,
-              )}
-              tone={tone(item.Kind)}
-            />
-            {/* The arrow points at the side that was written to. */}
-            {item.Side === "left" || item.Side === "right" ? (
-              <Glyph
-                name={item.Side === "left" ? "IconToLeft" : "IconToRight"}
-                color={p.textSub}
-                size={16}
+        <Arrive>
+          <Pressable
+            onPress={() => nav.navigate("RunDetail", { id: item.Run, job: item.Job })}
+            android_ripple={{ color: p.hover }}
+            style={[styles.row, { backgroundColor: p.surface, borderRadius: radius.control }]}
+          >
+            <Mono>{item.Path}</Mono>
+            <View style={styles.meta}>
+              <Badge
+                label={entryLabel(
+                  t,
+                  { Kind: item.Kind, Side: item.Side ?? "" },
+                  configs.find((c) => c.name === item.Job),
+                  drives,
+                )}
+                tone={tone(item.Kind)}
               />
-            ) : null}
-            {item.Job ? <Caption>{item.Job}</Caption> : null}
-            <Caption>{`${when(item.When, t)} ${t("jobs.ago")}`}</Caption>
-            {item.Size ? <Caption>{bytes(item.Size)}</Caption> : null}
-          </View>
-          {/* Why a path was skipped, or which way a conflict went. */}
-          {item.Note ? <Caption>{item.Note}</Caption> : null}
-        </Pressable>
+              {/* The arrow points at the side that was written to. */}
+              {item.Side === "left" || item.Side === "right" ? (
+                <Glyph
+                  name={item.Side === "left" ? "IconToLeft" : "IconToRight"}
+                  color={p.textSub}
+                  size={16}
+                />
+              ) : null}
+              {item.Job ? <Caption>{item.Job}</Caption> : null}
+              <Caption>{`${when(item.When, t)} ${t("jobs.ago")}`}</Caption>
+              {item.Size ? <Caption>{bytes(item.Size)}</Caption> : null}
+            </View>
+            {/* Why a path was skipped, or which way a conflict went. */}
+            {item.Note ? <Caption>{item.Note}</Caption> : null}
+          </Pressable>
+        </Arrive>
       )}
     />
   );
@@ -333,7 +335,7 @@ function RunLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "file
 
   if (!runs) {
     return (
-      <FlatList
+      <MovingList
         style={{ backgroundColor: p.background }}
         data={[]}
         contentContainerStyle={styles.list}
@@ -345,7 +347,7 @@ function RunLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "file
   }
 
   return (
-    <FlatList
+    <MovingList
       style={{ backgroundColor: p.background }}
       data={shown}
       keyExtractor={(r) => String(r.ID)}

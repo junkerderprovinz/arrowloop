@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { useCallback, useEffect, useState } from "react";
-import { Alert, FlatList, RefreshControl, StyleSheet, View } from "react-native";
+import { Alert, RefreshControl, StyleSheet, View } from "react-native";
 import { api, type Job, type Remote } from "../api";
 import { CardMenu } from "../CardMenu";
 import { Glyph, ProviderMark } from "../glyphs";
@@ -23,6 +23,7 @@ import {
   Fab,
   FAB_ROOM,
   Floating,
+  MovingList,
   Title,
   useHue,
   useTheme,
@@ -148,7 +149,7 @@ export function Jobs() {
 
   return (
     <Floating>
-      <FlatList
+      <MovingList
       style={{ backgroundColor: p.background }}
       data={jobs}
       keyExtractor={(j) => j.name}

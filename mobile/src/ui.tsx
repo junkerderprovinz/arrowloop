@@ -3,6 +3,7 @@ import { createContext, useContext, useEffect, useMemo, useRef, useState, type R
 import {
   ActivityIndicator,
   Animated,
+  FlatList,
   Modal,
   Pressable,
   ScrollView,
@@ -11,6 +12,9 @@ import {
   TouchableOpacity,
   useColorScheme,
   View,
+  type FlatListProps,
+  type NativeScrollEvent,
+  type NativeSyntheticEvent,
   type StyleProp,
   type ViewStyle,
 } from "react-native";
@@ -105,11 +109,13 @@ export function useHue(index: number): string {
 }
 
 /**
- * The cards of one page arriving: each takes the next place in line, and the
- * whole line plays again when the tab comes back into view. Only a Page
- * provides it, so rows a list recycles while scrolling never fly in.
+ * The cards of one page or list arriving: each takes the next place in line,
+ * and the whole line plays again when the tab comes back into view. A card
+ * that mounts after the list was scrolled came in by scrolling, and appears
+ * without flying in.
  */
-const Arrival = createContext<{ take: () => number; round: number } | null>(null);
+type Line = { take: () => number; round: number; scrolled: { current: boolean } };
+const Arrival = createContext<Line | null>(null);
 
 // Past this many a long page would still be arriving a second later.
 const ARRIVAL_CAP = 8;
@@ -119,12 +125,17 @@ function useArrival() {
   const line = useContext(Arrival);
   const { ms } = useMotion();
   const place = useRef<number | null>(null);
-  if (line && place.current === null) place.current = line.take();
-  const v = useRef(new Animated.Value(line && ms.travel > 0 ? 0 : 1)).current;
+  const late = useRef(false);
+  if (line && place.current === null) {
+    place.current = line.take();
+    late.current = line.scrolled.current;
+  }
+  const v = useRef(new Animated.Value(line && ms.travel > 0 && !late.current ? 0 : 1)).current;
   const round = line?.round;
+  const born = useRef(round);
 
   useEffect(() => {
-    if (round === undefined || ms.travel === 0) {
+    if (round === undefined || ms.travel === 0 || (late.current && round === born.current)) {
       v.setValue(1);
       return;
     }
@@ -165,6 +176,83 @@ function usePress() {
     onPressIn: () => ms.press < 1 && to(ms.press),
     onPressOut: () => to(1),
   };
+}
+
+/**
+ * What a scrolling page or list shares: the arrival line for its cards and a
+ * spring at either end, where the content runs on past the edge and swings
+ * back. Android's own overscroll glow stays at the levels without one.
+ */
+function useScrollMotion() {
+  const { ms } = useMotion();
+  const nav = useContext(NavigationContext);
+  // Outside a navigator nothing will report focus, so the cards go at once;
+  // a page that mounts after its tab was focused goes at once as well.
+  const [round, setRound] = useState(!nav || nav.isFocused() ? 0 : -1);
+  const next = useRef(0);
+  const scrolled = useRef(false);
+  // A tab stays mounted when it is left, so its cards arrive again on return.
+  useEffect(() => nav?.addListener("focus", () => setRound((r) => r + 1)), [nav]);
+  const line = useMemo<Line>(() => ({ take: () => next.current++, round, scrolled }), [round]);
+
+  const shift = useRef(new Animated.Value(0)).current;
+  const resting = useRef<"top" | "bottom" | null>("top");
+  const kick = (toward: number, speed: number) => {
+    // A fast flick hits the edge harder than a slow one.
+    const reach = toward * ms.edge * Math.min(1, 0.4 + Math.abs(speed) / 5);
+    Animated.sequence([
+      Animated.timing(shift, { toValue: reach, duration: 90, useNativeDriver: true }),
+      Animated.spring(shift, { toValue: 0, useNativeDriver: true, ...springOf(ms.bounce) }),
+    ]).start();
+  };
+  const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const { contentOffset, contentSize, layoutMeasurement, velocity } = e.nativeEvent;
+    if (contentOffset.y > 0) scrolled.current = true;
+    const at =
+      contentOffset.y <= 0
+        ? "top"
+        : contentOffset.y + layoutMeasurement.height >= contentSize.height - 1
+          ? "bottom"
+          : null;
+    if (at && at !== resting.current && ms.edge > 0) kick(at === "top" ? 1 : -1, velocity?.y ?? 0);
+    resting.current = at;
+  };
+
+  return {
+    line,
+    style: { flex: 1, transform: [{ translateY: shift }] },
+    scroll: {
+      onScroll,
+      scrollEventThrottle: 16,
+      overScrollMode: ms.edge > 0 ? ("never" as const) : ("auto" as const),
+    },
+  };
+}
+
+/** A FlatList whose cards arrive like a page's and which springs at either end. */
+export function MovingList<T>(props: FlatListProps<T>) {
+  const motion = useScrollMotion();
+  const { onScroll } = props;
+  return (
+    <Arrival.Provider value={motion.line}>
+      <Animated.View style={motion.style}>
+        <FlatList
+          {...props}
+          {...motion.scroll}
+          onScroll={(e) => {
+            motion.scroll.onScroll(e);
+            onScroll?.(e);
+          }}
+        />
+      </Animated.View>
+    </Arrival.Provider>
+  );
+}
+
+/** A row that is not a card, arriving with the cards around it. */
+export function Arrive({ children }: { children: ReactNode }) {
+  const arrival = useArrival();
+  return <Animated.View style={arrival}>{children}</Animated.View>;
 }
 
 export function Screen({ children }: { children: ReactNode }) {
@@ -774,22 +862,18 @@ export function Empty({ title, detail }: { title: string; detail?: string }) {
  */
 export function Page({ children, fab }: { children: ReactNode; fab?: boolean }) {
   const { p } = useTheme();
-  const nav = useContext(NavigationContext);
-  // Outside a navigator nothing will report focus, so the cards go at once.
-  const [round, setRound] = useState(nav ? -1 : 0);
-  const next = useRef(0);
-  // A tab stays mounted when it is left, so its cards arrive again on return.
-  useEffect(() => nav?.addListener("focus", () => setRound((r) => r + 1)), [nav]);
-  const line = useMemo(() => ({ take: () => next.current++, round }), [round]);
-
+  const motion = useScrollMotion();
   return (
-    <ScrollView
-      style={{ backgroundColor: p.background }}
-      contentContainerStyle={[styles.page, fab ? styles.fabRoom : null]}
-      keyboardShouldPersistTaps="handled"
-    >
-      <Arrival.Provider value={line}>{children}</Arrival.Provider>
-    </ScrollView>
+    <Animated.View style={motion.style}>
+      <ScrollView
+        {...motion.scroll}
+        style={{ backgroundColor: p.background }}
+        contentContainerStyle={[styles.page, fab ? styles.fabRoom : null]}
+        keyboardShouldPersistTaps="handled"
+      >
+        <Arrival.Provider value={motion.line}>{children}</Arrival.Provider>
+      </ScrollView>
+    </Animated.View>
   );
 }
 

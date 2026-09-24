@@ -40,26 +40,28 @@ export const MOTION: Record<
     press: number;
     /** The damping ratio of the arrival and the press: below 1 overshoots. */
     bounce: number;
+    /** How far a page runs on past its top or bottom before it swings back. */
+    edge: number;
   }
 > = {
   // Hidden behind a gesture in eggs.tsx.
   storm: {
     layout: 760, fade: 200, toast: 420, spring: true, damping: 0.34,
-    travel: 72, sway: 48, stagger: 85, press: 0.84, bounce: 0.3,
+    travel: 72, sway: 48, stagger: 85, press: 0.84, bounce: 0.3, edge: 64,
   },
   // The top two spring and overshoot; the lower levels ease. The top one is
   // picked for its energy, so the cards fly in from both sides and bounce.
   wild: {
     layout: 420, fade: 140, toast: 300, spring: true, damping: 0.68,
-    travel: 44, sway: 28, stagger: 65, press: 0.9, bounce: 0.42,
+    travel: 44, sway: 28, stagger: 65, press: 0.9, bounce: 0.42, edge: 36,
   },
   subtle: {
     layout: 140, fade: 70, toast: 120, spring: false, damping: 1,
-    travel: 10, sway: 0, stagger: 25, press: 0.97, bounce: 1,
+    travel: 10, sway: 0, stagger: 25, press: 0.97, bounce: 1, edge: 0,
   },
   off: {
     layout: 0, fade: 0, toast: 0, spring: false, damping: 1,
-    travel: 0, sway: 0, stagger: 0, press: 1, bounce: 1,
+    travel: 0, sway: 0, stagger: 0, press: 1, bounce: 1, edge: 0,
   },
 };
 

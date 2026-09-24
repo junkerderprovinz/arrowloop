@@ -126,7 +126,7 @@ function Shell() {
 
   const header = {
     headerStyle: { backgroundColor: p.background },
-    headerTitleStyle: { color: p.text, fontSize: text.title },
+    headerTitleStyle: { color: p.text, fontSize: text.heading, fontWeight: "600" },
     headerTintColor: p.text,
     headerShadowVisible: false,
     contentStyle: { backgroundColor: p.background },

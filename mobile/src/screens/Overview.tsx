@@ -17,7 +17,7 @@ import { animateNext, useMotion } from "../motion";
 import { bytes, isAccount, Room, unreachable, useRoom, type Room as Space } from "../space";
 import { space } from "../theme";
 import { useEngineStream } from "../useEngine";
-import { Badge, Body, Caption, Card, CardHead, Empty, Fab, Floating, Meter, Mono, Page, Pair, Title, useHue, useTheme } from "../ui";
+import { Badge, Body, Caption, CardHead, Empty, Fab, Floating, Meter, Mono, Page, Pair, Section, Title, useHue, useTheme } from "../ui";
 import { when } from "./Jobs";
 
 // The overview: what is running now, drawn from the event stream rather than
@@ -163,34 +163,37 @@ export function Overview() {
   return (
     <Floating>
     <Page>
-      <Title>{t("overview.running")}</Title>
+      <Section title={t("overview.running")} hue={0}>
+        {running.length === 0 ? (
+          <>
+            <Body>{t("overview.idle")}</Body>
+            <Caption>{t("overview.idleHint")}</Caption>
+          </>
+        ) : (
+          running.map((job, index) => (
+            <Running
+              key={job.name}
+              job={job}
+              at={live[job.name]}
+              moving={moving[job.name] ?? []}
+              rate={rate[job.name] ?? 0}
+              index={index}
+            />
+          ))
+        )}
+      </Section>
 
-      {running.length === 0 ? (
-        <Card>
-          <Body>{t("overview.idle")}</Body>
-          <Caption>{t("overview.idleHint")}</Caption>
-        </Card>
-      ) : (
-        running.map((job, index) => (
-          <Running
-            key={job.name}
-            job={job}
-            at={live[job.name]}
-            moving={moving[job.name] ?? []}
-            rate={rate[job.name] ?? 0}
-            index={index}
-          />
-        ))
-      )}
+      <Section title={t("overview.status")} hue={1}>
+        <SyncStatus jobs={jobs} run={last.run} tally={last.tally} />
+      </Section>
 
-      <Title>{t("overview.status")}</Title>
-      <SyncStatus jobs={jobs} run={last.run} tally={last.tally} />
+      <Section title={t("overview.changes")} hue={2}>
+        <LastChanges tally={last.run === "none" ? null : last.tally} />
+      </Section>
 
-      <Title>{t("overview.changes")}</Title>
-      <LastChanges tally={last.run === "none" ? null : last.tally} />
-
-      <Title>{t("overview.accounts")}</Title>
-      <Accounts />
+      <Section title={t("overview.accounts")} hue={3}>
+        <Accounts />
+      </Section>
 
       {error ? <Caption>{error}</Caption> : null}
     </Page>
@@ -290,7 +293,7 @@ function Running({
   const { t } = useT();
   const hue = useHue(index);
   return (
-    <Card hue={hue}>
+    <View style={styles.block}>
       <View style={styles.head}>
         <Title>{job.name}</Title>
         <Badge label={t("jobs.state.running")} tone="accent" />
@@ -314,7 +317,7 @@ function Running({
       {moving.length === 0 && rate > 0 ? (
         <Caption>{t("overview.manySmall", { count: rate })}</Caption>
       ) : null}
-    </Card>
+    </View>
   );
 }
 
@@ -357,21 +360,15 @@ function SyncStatus({ jobs, run, tally }: { jobs: Job[]; run: Run | null | "none
     .sort()[0];
   const running = jobs.some((j) => j.running);
 
-  if (run === null) return <Card><Caption>{t("history.working")}</Caption></Card>;
-  if (run === "none") {
-    return (
-      <Card>
-        <Body>{t("history.empty")}</Body>
-      </Card>
-    );
-  }
+  if (run === null) return <Caption>{t("history.working")}</Caption>;
+  if (run === "none") return <Body>{t("history.empty")}</Body>;
 
   const finished = run.Finished ? new Date(run.Finished) : null;
   const started = new Date(run.Started);
   const secs = finished ? Math.max(0, Math.round((finished.getTime() - started.getTime()) / 1000)) : null;
 
   return (
-    <Card>
+    <>
       <View style={styles.head}>
         <Title>{run.Job}</Title>
         {failed(run) ? <Badge label={t("history.failed")} tone="fail" /> : null}
@@ -387,7 +384,7 @@ function SyncStatus({ jobs, run, tally }: { jobs: Job[]; run: Run | null | "none
       />
       <Pair label={t("overview.nextSync")} value={due ? clock(due, lang) : t("overview.byHand")} />
       {failed(run) ? <Body>{run.Err}</Body> : null}
-    </Card>
+    </>
   );
 }
 
@@ -397,14 +394,14 @@ function SyncStatus({ jobs, run, tally }: { jobs: Job[]; run: Run | null | "none
  */
 function LastChanges({ tally }: { tally: Tally | null }) {
   const { t } = useT();
-  if (!tally) return <Card><Caption>{t("history.working")}</Caption></Card>;
+  if (!tally) return <Caption>{t("history.working")}</Caption>;
   return (
-    <Card>
+    <>
       <Pair label={t("overview.uploadedLabel")} value={t("overview.files", { count: tally.up })} />
       <Pair label={t("overview.downloadedLabel")} value={t("overview.files", { count: tally.down })} />
       <Pair label={t("overview.deletedHere")} value={t("overview.files", { count: tally.trashedLeft })} />
       <Pair label={t("overview.deletedThere")} value={t("overview.files", { count: tally.trashedRight })} />
-    </Card>
+    </>
   );
 }
 
@@ -443,14 +440,8 @@ function Accounts() {
 
   const room = useRoom(remotes);
 
-  if (!remotes) return <Card><Caption>{t("history.working")}</Caption></Card>;
-  if (remotes.length === 0) {
-    return (
-      <Card>
-        <Body>{t("targets.storageEmpty")}</Body>
-      </Card>
-    );
-  }
+  if (!remotes) return <Caption>{t("history.working")}</Caption>;
+  if (remotes.length === 0) return <Body>{t("targets.storageEmpty")}</Body>;
 
   return (
     <>
@@ -466,7 +457,7 @@ function Account({ remote, room, index }: { remote: Remote; room: Space; index: 
   const hue = useHue(index);
   // Only the name and the space; the account details are on the targets tab.
   return (
-    <Card hue={hue}>
+    <View style={styles.block}>
       <CardHead mark={remote.mark} title={remote.name}>
         {unreachable(room) ? (
           <View style={styles.badgeSlot}>
@@ -476,7 +467,7 @@ function Account({ remote, room, index }: { remote: Remote; room: Space; index: 
       </CardHead>
       <Room room={room} hue={hue} />
       {room === undefined ? <Caption>{t("history.working")}</Caption> : null}
-    </Card>
+    </View>
   );
 }
 
@@ -488,6 +479,8 @@ const styles = StyleSheet.create({
     gap: space.sm,
   },
   badgeSlot: { marginStart: "auto" },
+  // One job or account among several inside a section.
+  block: { gap: space.sm, paddingVertical: space.xs },
   line: { flexDirection: "row", alignItems: "center", gap: space.sm },
   file: { gap: space.xs, marginTop: space.xs },
   // Wraps rather than truncates; the end of a path tells files apart.
