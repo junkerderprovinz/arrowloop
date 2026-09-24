@@ -7,7 +7,7 @@ import type { Backend, Provider } from '../lib/api'
 
 /**
  * Picks what a target connects to by product name rather than by protocol, as
- * a two-column grid of tiles in the style of KnightLoader's extension tiles.
+ * a grid of tiles in the style of KnightLoader's extension tiles.
  * Only the protocol tiles carry a hint, in an info bubble, since a cloud's name
  * already says what it is. The order is alphabetical, set in the Go table.
  */
@@ -52,11 +52,12 @@ export function ProviderPicker({
         />
       </div>
 
-      {/* Narrow, centred and always two across. The mark box is wide because
-          several marks are wordmarks (Linkbox is 5.3:1). The list scrolls at
-          four tiles deep so the card's own controls stay on screen, and `pe-1`
-          gives the scrollbar its own lane. */}
-      <ul className="mx-auto grid max-h-96 w-full max-w-sm grid-cols-2 gap-3 overflow-y-auto pe-1">
+      {/* As many across as the card is wide, each tile at least the mark box
+          plus its padding; the mark box is wide because several marks are
+          wordmarks (Linkbox is 5.3:1). The list scrolls at four tiles deep so
+          the card's own controls stay on screen, and `pe-1` gives the
+          scrollbar its own lane. */}
+      <ul className="grid max-h-96 w-full grid-cols-[repeat(auto-fill,minmax(8.5rem,1fr))] gap-3 overflow-y-auto pe-1">
         {providers.map((p) => (
           <li key={p.id} className="relative">
             <button
