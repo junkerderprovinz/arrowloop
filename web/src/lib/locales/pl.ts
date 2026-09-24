@@ -140,6 +140,8 @@ const pl: Translations = {
   'edit.newJob': 'nowe-zadanie',
   'edit.pickDrive': 'Zgłoszony dysk',
   'edit.pickRemote': 'Skonfigurowany cel',
+  'targets.storageEmpty': 'Nie ma jeszcze celów magazynowych. Dodaj jeden, aby sięgnąć po kubełek S3, serwer SSH albo udział Windows.',
+  'targets.addStorage': 'Dodaj magazyn lub chmurę',
   'targets.cloudEmpty': 'Nie połączono jeszcze żadnej chmury. Tutaj dodaje się Dropbox, OneDrive, Google Drive i inne chmury.',
   'targets.bucketEmpty': 'Nie ma jeszcze magazynu obiektowego. Tutaj dodaje się kubełki w Backblaze B2, Wasabi, MinIO i każdym innym magazynie S3.',
   'targets.serverEmpty': 'Nie ma jeszcze serwera ani udziału. Tutaj dodaje się serwery SSH przez SFTP, serwery WebDAV i udziały Windows.',

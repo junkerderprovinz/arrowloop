@@ -140,6 +140,8 @@ const lt: Translations = {
   'edit.newJob': 'nauja-uzduotis',
   'edit.pickDrive': 'Užregistruotas diskas',
   'edit.pickRemote': 'Sukonfigūruota paskirtis',
+  'targets.storageEmpty': 'Kol kas saugyklos paskirčių nėra. Pridėkite vieną, kad pasiektumėte S3 kibirą, SSH kompiuterį ar Windows bendrinį aplanką.',
+  'targets.addStorage': 'Pridėti saugyklą arba debesį',
   'targets.cloudEmpty': 'Kol kas neprijungtas joks debesis. Čia pridedami Dropbox, OneDrive, Google Drive ir kiti debesys.',
   'targets.bucketEmpty': 'Kol kas nėra objektų saugyklos. Čia pridedami kibirai Backblaze B2, Wasabi, MinIO ir bet kurioje kitoje S3 saugykloje.',
   'targets.serverEmpty': 'Kol kas nėra serverio ar bendrinimo. Čia pridedami SSH kompiuteriai per SFTP, WebDAV serveriai ir Windows bendrinami aplankai.',

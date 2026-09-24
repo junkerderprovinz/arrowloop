@@ -140,6 +140,8 @@ const zh: Translations = {
   'edit.newJob': 'new-job',
   'edit.pickDrive': '已登记的磁盘',
   'edit.pickRemote': '已配置的目标',
+  'targets.storageEmpty': '还没有存储目标。添加一个，以便连到 S3 存储桶、SSH 主机或 Windows 共享。',
+  'targets.addStorage': '添加存储或云',
   'targets.cloudEmpty': '还没有连接云服务。Dropbox、OneDrive、Google Drive 等云服务在这里添加。',
   'targets.bucketEmpty': '还没有对象存储。Backblaze B2、Wasabi、MinIO 以及其他 S3 存储上的存储桶在这里添加。',
   'targets.serverEmpty': '还没有服务器或共享。通过 SFTP 的 SSH 主机、WebDAV 服务器和 Windows 共享在这里添加。',

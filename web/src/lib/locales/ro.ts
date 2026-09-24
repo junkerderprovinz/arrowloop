@@ -140,6 +140,8 @@ const ro: Translations = {
   'edit.newJob': 'sarcina-noua',
   'edit.pickDrive': 'Un disc înregistrat',
   'edit.pickRemote': 'O destinație configurată',
+  'targets.storageEmpty': 'Încă nicio destinație de stocare. Adăugați una pentru a ajunge la o găleată S3, la o gazdă SSH sau la o partajare Windows.',
+  'targets.addStorage': 'Adaugă stocare sau cloud',
   'targets.cloudEmpty': 'Încă niciun cloud conectat. Aici se adaugă Dropbox, OneDrive, Google Drive și celelalte cloud-uri.',
   'targets.bucketEmpty': 'Încă nicio stocare de obiecte. Aici se adaugă găleți pe Backblaze B2, Wasabi, MinIO și orice altă stocare S3.',
   'targets.serverEmpty': 'Încă niciun server sau partajare. Aici se adaugă gazde SSH prin SFTP, servere WebDAV și partajări Windows.',

@@ -140,6 +140,8 @@ const bg: Translations = {
   'edit.newJob': 'nova-zadacha',
   'edit.pickDrive': 'Регистриран диск',
   'edit.pickRemote': 'Настроена цел',
+  'targets.storageEmpty': 'Още няма цели за съхранение. Добавете една, за да стигнете до кофа S3, до машина по SSH или до споделена папка на Windows.',
+  'targets.addStorage': 'Добави хранилище или облак',
   'targets.cloudEmpty': 'Още няма свързан облак. Тук се добавят Dropbox, OneDrive, Google Drive и другите облаци.',
   'targets.bucketEmpty': 'Още няма обектно хранилище. Тук се добавят кофи в Backblaze B2, Wasabi, MinIO и всяко друго S3 хранилище.',
   'targets.serverEmpty': 'Още няма сървър или споделяне. Тук се добавят машини по SSH през SFTP, WebDAV сървъри и споделени папки на Windows.',

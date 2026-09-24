@@ -140,6 +140,8 @@ const ar: Translations = {
   'edit.newJob': 'mohemma-jadida',
   'edit.pickDrive': 'قرص مسجَّل',
   'edit.pickRemote': 'وجهة معدّة',
+  'targets.storageEmpty': 'لا وجهات تخزين بعد. أضف واحدة للوصول إلى سلة S3 أو مضيف SSH أو مشاركة ويندوز.',
+  'targets.addStorage': 'إضافة تخزين أو سحابة',
   'targets.cloudEmpty': 'لا سحابة متصلة بعد. هنا تُضاف Dropbox وOneDrive وGoogle Drive وسائر السحابات.',
   'targets.bucketEmpty': 'لا تخزين كائنات بعد. هنا تُضاف سلال S3 على Backblaze B2 وWasabi وMinIO وأي تخزين S3 آخر.',
   'targets.serverEmpty': 'لا خوادم ولا مشاركات بعد. هنا تُضاف مضيفات SSH عبر SFTP وخوادم WebDAV ومشاركات ويندوز.',

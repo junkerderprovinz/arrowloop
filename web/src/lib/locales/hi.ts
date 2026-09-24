@@ -140,6 +140,8 @@ const hi: Translations = {
   'edit.newJob': 'naya-kaam',
   'edit.pickDrive': 'दर्ज की गई डिस्क',
   'edit.pickRemote': 'तय किया गया गंतव्य',
+  'targets.storageEmpty': 'अभी कोई भंडारण गंतव्य नहीं। S3 बाल्टी, SSH मशीन या Windows साझा फ़ोल्डर तक पहुँचने के लिए एक जोड़ें।',
+  'targets.addStorage': 'स्टोरेज या क्लाउड जोड़ें',
   'targets.cloudEmpty': 'अभी कोई क्लाउड कनेक्ट नहीं है। Dropbox, OneDrive, Google Drive और बाकी क्लाउड यहाँ जुड़ते हैं।',
   'targets.bucketEmpty': 'अभी कोई ऑब्जेक्ट स्टोरेज नहीं। Backblaze B2, Wasabi, MinIO और किसी भी दूसरे S3 स्टोरेज की बाल्टियाँ यहाँ जुड़ती हैं।',
   'targets.serverEmpty': 'अभी कोई सर्वर या साझा फ़ोल्डर नहीं। SFTP से SSH मशीनें, WebDAV सर्वर और Windows साझा फ़ोल्डर यहाँ जुड़ते हैं।',

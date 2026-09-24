@@ -327,6 +327,8 @@ export const en = {
   'edit.newJob': 'new-job',
   'edit.pickDrive': 'A registered drive',
   'edit.pickRemote': 'A configured target',
+  'targets.storageEmpty': 'No storage targets yet. Add one to reach an S3 bucket, an SSH host or a Windows share.',
+  'targets.addStorage': 'Add storage or cloud',
   'targets.cloudEmpty': 'No cloud connected yet. Dropbox, OneDrive, Google Drive and the other clouds go here.',
   'targets.bucketEmpty': 'No object storage yet. Buckets on Backblaze B2, Wasabi, MinIO and any other S3 store go here.',
   'targets.serverEmpty': 'No server or share yet. SSH hosts over SFTP, WebDAV servers and Windows shares go here.',
@@ -1017,6 +1019,9 @@ export const de: Translations = {
   'edit.newJob': 'neuer-auftrag',
   'edit.pickDrive': 'Ein angemeldeter Datenträger',
   'edit.pickRemote': 'Ein eingerichtetes Ziel',
+  'targets.storageEmpty':
+    'Noch kein Speicherziel. Lege eines an, um einen S3-Eimer, einen SSH-Rechner oder eine Windows-Freigabe zu erreichen.',
+  'targets.addStorage': 'Speicher oder Cloud anlegen',
   'targets.cloudEmpty': 'Noch keine Cloud verbunden. Hier kommen Dropbox, OneDrive, Google Drive und die anderen Clouds dazu.',
   'targets.bucketEmpty': 'Noch kein Objektspeicher. Hier kommen Eimer bei Backblaze B2, Wasabi, MinIO und jedem anderen S3-Speicher dazu.',
   'targets.serverEmpty': 'Noch kein Server und keine Freigabe. Hier kommen SSH-Rechner über SFTP, WebDAV-Server und Windows-Freigaben dazu.',

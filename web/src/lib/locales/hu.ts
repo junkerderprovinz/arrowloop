@@ -140,6 +140,8 @@ const hu: Translations = {
   'edit.newJob': 'uj-feladat',
   'edit.pickDrive': 'Egy bejelentett lemez',
   'edit.pickRemote': 'Egy beállított cél',
+  'targets.storageEmpty': 'Még nincs tárolócél. Vegyen fel egyet, hogy elérjen egy S3 vödröt, egy SSH gépet vagy egy Windows megosztást.',
+  'targets.addStorage': 'Tárhely vagy felhő hozzáadása',
   'targets.cloudEmpty': 'Még nincs csatlakoztatott felhő. Ide kerül a Dropbox, a OneDrive, a Google Drive és a többi felhő.',
   'targets.bucketEmpty': 'Még nincs objektumároló. Ide kerülnek a Backblaze B2, a Wasabi, a MinIO és bármely más S3 tároló vödrei.',
   'targets.serverEmpty': 'Még nincs kiszolgáló vagy megosztás. Ide kerülnek az SFTP-n elérhető SSH gépek, a WebDAV kiszolgálók és a Windows megosztások.',

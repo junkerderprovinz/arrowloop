@@ -140,6 +140,8 @@ const uk: Translations = {
   'edit.newJob': 'нове-завдання',
   'edit.pickDrive': 'Зареєстрований диск',
   'edit.pickRemote': 'Налаштоване призначення',
+  'targets.storageEmpty': 'Сховищ ще немає. Додайте одне, щоб дістатися до кошика S3, вузла SSH або спільної теки Windows.',
+  'targets.addStorage': 'Додати сховище або хмару',
   'targets.cloudEmpty': 'Хмари ще не під\'єднано. Тут додаються Dropbox, OneDrive, Google Drive та інші хмари.',
   'targets.bucketEmpty': 'Об\'єктного сховища ще немає. Тут додаються кошики в Backblaze B2, Wasabi, MinIO та будь-якому іншому сховищі S3.',
   'targets.serverEmpty': 'Серверів і спільних тек ще немає. Тут додаються вузли SSH через SFTP, сервери WebDAV і спільні теки Windows.',

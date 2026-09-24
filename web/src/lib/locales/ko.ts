@@ -140,6 +140,8 @@ const ko: Translations = {
   'edit.newJob': 'new-job',
   'edit.pickDrive': '등록된 디스크',
   'edit.pickRemote': '설정된 대상',
+  'targets.storageEmpty': '저장소 대상이 아직 없습니다. S3 버킷이나 SSH 호스트, Windows 공유에 닿도록 하나 추가하세요.',
+  'targets.addStorage': '저장소 또는 클라우드 추가',
   'targets.cloudEmpty': '아직 연결된 클라우드가 없습니다. Dropbox, OneDrive, Google Drive 등 다른 클라우드는 여기에 추가합니다.',
   'targets.bucketEmpty': '아직 오브젝트 스토리지가 없습니다. Backblaze B2, Wasabi, MinIO 등 다른 S3 저장소의 버킷은 여기에 추가합니다.',
   'targets.serverEmpty': '아직 서버나 공유가 없습니다. SFTP를 통한 SSH 호스트, WebDAV 서버, Windows 공유는 여기에 추가합니다.',

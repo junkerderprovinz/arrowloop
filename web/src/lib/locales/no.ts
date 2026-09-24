@@ -140,6 +140,8 @@ const no: Translations = {
   'edit.newJob': 'ny-jobb',
   'edit.pickDrive': 'En innmeldt disk',
   'edit.pickRemote': 'Et oppsatt mål',
+  'targets.storageEmpty': 'Ingen lagringsmål ennå. Legg til ett for å nå en S3-bucket, en SSH-vert eller en Windows-deling.',
+  'targets.addStorage': 'Legg til lagring eller sky',
   'targets.cloudEmpty': 'Ingen sky er koblet til ennå. Dropbox, OneDrive, Google Drive og de andre skyene legges til her.',
   'targets.bucketEmpty': 'Ingen objektlagring ennå. Buckets hos Backblaze B2, Wasabi, MinIO og all annen S3-lagring legges til her.',
   'targets.serverEmpty': 'Ingen server eller deling ennå. SSH-verter via SFTP, WebDAV-servere og Windows-delinger legges til her.',

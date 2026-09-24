@@ -140,6 +140,8 @@ const is: Translations = {
   'edit.newJob': 'nytt-verk',
   'edit.pickDrive': 'Skráður diskur',
   'edit.pickRemote': 'Uppsettur áfangastaður',
+  'targets.storageEmpty': 'Engir geymsluáfangastaðir enn. Bættu einum við til að ná í S3 fötu, SSH vél eða Windows sameign.',
+  'targets.addStorage': 'Bæta við geymslu eða skýi',
   'targets.cloudEmpty': 'Ekkert ský tengt enn. Dropbox, OneDrive, Google Drive og hin skýin bætast við hér.',
   'targets.bucketEmpty': 'Engin hlutageymsla enn. Fötur hjá Backblaze B2, Wasabi, MinIO og hverri annarri S3 geymslu bætast við hér.',
   'targets.serverEmpty': 'Enginn netþjónn eða sameign enn. SSH vélar um SFTP, WebDAV netþjónar og Windows sameignir bætast við hér.',

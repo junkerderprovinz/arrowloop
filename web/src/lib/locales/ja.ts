@@ -140,6 +140,8 @@ const ja: Translations = {
   'edit.newJob': 'new-job',
   'edit.pickDrive': '登録済みのドライブ',
   'edit.pickRemote': '設定済みの接続先',
+  'targets.storageEmpty': 'ストレージの接続先がまだありません。S3 バケット、SSH ホスト、Windows 共有に届くように追加してください。',
+  'targets.addStorage': 'ストレージまたはクラウドを追加',
   'targets.cloudEmpty': 'まだクラウドが接続されていません。Dropbox、OneDrive、Google Drive などのクラウドはここに追加します。',
   'targets.bucketEmpty': 'まだオブジェクトストレージがありません。Backblaze B2、Wasabi、MinIO などの S3 ストレージのバケットはここに追加します。',
   'targets.serverEmpty': 'まだサーバーも共有もありません。SFTP 経由の SSH ホスト、WebDAV サーバー、Windows 共有はここに追加します。',

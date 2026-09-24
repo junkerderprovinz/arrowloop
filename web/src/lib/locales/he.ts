@@ -140,6 +140,8 @@ const he: Translations = {
   'edit.newJob': 'mesima-hadasha',
   'edit.pickDrive': 'כונן רשום',
   'edit.pickRemote': 'יעד מוגדר',
+  'targets.storageEmpty': 'אין עדיין יעדי אחסון. הוסף אחד כדי להגיע לדלי S3, למארח SSH או לשיתוף Windows.',
+  'targets.addStorage': 'הוסף אחסון או ענן',
   'targets.cloudEmpty': 'עדיין לא חובר ענן. כאן מוסיפים את Dropbox, OneDrive, Google Drive ושאר העננים.',
   'targets.bucketEmpty': 'עדיין אין אחסון אובייקטים. כאן מוסיפים דליים ב-Backblaze B2, Wasabi, MinIO ובכל אחסון S3 אחר.',
   'targets.serverEmpty': 'עדיין אין שרת או שיתוף. כאן מוסיפים מארחי SSH דרך SFTP, שרתי WebDAV ושיתופי Windows.',

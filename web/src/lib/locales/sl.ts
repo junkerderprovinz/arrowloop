@@ -140,6 +140,8 @@ const sl: Translations = {
   'edit.newJob': 'novo-opravilo',
   'edit.pickDrive': 'Prijavljen disk',
   'edit.pickRemote': 'Nastavljen cilj',
+  'targets.storageEmpty': 'Še ni ciljev shrambe. Dodajte enega, da sežete do vedra S3, do gostitelja SSH ali do skupne rabe Windows.',
+  'targets.addStorage': 'Dodaj shrambo ali oblak',
   'targets.cloudEmpty': 'Noben oblak še ni povezan. Tu se dodajo Dropbox, OneDrive, Google Drive in drugi oblaki.',
   'targets.bucketEmpty': 'Objektne shrambe še ni. Tu se dodajo vedra v Backblaze B2, Wasabi, MinIO in vsaki drugi shrambi S3.',
   'targets.serverEmpty': 'Strežnika ali skupne rabe še ni. Tu se dodajo gostitelji SSH prek SFTP, strežniki WebDAV in mape v skupni rabi Windows.',

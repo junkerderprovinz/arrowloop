@@ -140,6 +140,8 @@ const gl: Translations = {
   'edit.newJob': 'tarefa-nova',
   'edit.pickDrive': 'Un disco rexistrado',
   'edit.pickRemote': 'Un destino configurado',
+  'targets.storageEmpty': 'Aínda non hai destinos de almacenamento. Engade un para chegar a un balde S3, a unha máquina SSH ou a unha compartición de Windows.',
+  'targets.addStorage': 'Engadir almacenamento ou nube',
   'targets.cloudEmpty': 'Aínda non hai ningunha nube conectada. Aquí engádense Dropbox, OneDrive, Google Drive e as demais nubes.',
   'targets.bucketEmpty': 'Aínda non hai almacenamento de obxectos. Aquí engádense baldes en Backblaze B2, Wasabi, MinIO e calquera outro almacenamento S3.',
   'targets.serverEmpty': 'Aínda non hai servidores nin comparticións. Aquí engádense máquinas SSH por SFTP, servidores WebDAV e comparticións de Windows.',

@@ -140,6 +140,8 @@ const pt: Translations = {
   'edit.newJob': 'tarefa-nova',
   'edit.pickDrive': 'Um disco registado',
   'edit.pickRemote': 'Um destino configurado',
+  'targets.storageEmpty': 'Ainda não há destinos de armazenamento. Adicione um para alcançar um bucket S3, um servidor SSH ou uma partilha Windows.',
+  'targets.addStorage': 'Adicionar armazenamento ou nuvem',
   'targets.cloudEmpty': 'Ainda não há nenhuma nuvem ligada. Dropbox, OneDrive, Google Drive e as outras nuvens adicionam-se aqui.',
   'targets.bucketEmpty': 'Ainda não há armazenamento de objetos. Buckets no Backblaze B2, Wasabi, MinIO e em qualquer outro armazenamento S3 adicionam-se aqui.',
   'targets.serverEmpty': 'Ainda não há servidores nem partilhas. Servidores SSH por SFTP, servidores WebDAV e partilhas Windows adicionam-se aqui.',

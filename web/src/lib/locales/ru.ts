@@ -140,6 +140,8 @@ const ru: Translations = {
   'edit.newJob': 'новое-задание',
   'edit.pickDrive': 'Зарегистрированный диск',
   'edit.pickRemote': 'Настроенное назначение',
+  'targets.storageEmpty': 'Хранилищ пока нет. Добавьте одно, чтобы достучаться до корзины S3, узла SSH или общей папки Windows.',
+  'targets.addStorage': 'Добавить хранилище или облако',
   'targets.cloudEmpty': 'Облака пока не подключены. Здесь добавляются Dropbox, OneDrive, Google Drive и другие облака.',
   'targets.bucketEmpty': 'Объектных хранилищ пока нет. Здесь добавляются корзины в Backblaze B2, Wasabi, MinIO и любом другом хранилище S3.',
   'targets.serverEmpty': 'Серверов и общих папок пока нет. Здесь добавляются узлы SSH через SFTP, серверы WebDAV и общие папки Windows.',
