@@ -1,5 +1,4 @@
 import { brandMark } from './brandMarks'
-import { IconAction } from './IconAction'
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { useLabelMode } from '../lib/glimstone/useLabelMode'
 import { useT } from '../lib/i18n'
@@ -15,7 +14,6 @@ export function ProviderPicker({
   providers,
   unlisted,
   onPick,
-  onCancel,
 }: {
   providers: Provider[]
   /** Compiled-in backends no provider entry covers, offered after the list. */
@@ -25,7 +23,6 @@ export function ProviderPicker({
    * explain its address shape. An unlisted backend arrives as its bare name.
    */
   onPick: (picked: Provider | string) => void
-  onCancel: () => void
 }) {
   const { t } = useT()
   const showHint = (p: Provider) => p.group === 'protocol' && Boolean(p.hint)
@@ -40,24 +37,11 @@ export function ProviderPicker({
   const showName = (p: Provider) => mode !== 'glyph' || !brandMark(p.mark)
 
   return (
-    <div className="flex flex-col gap-4 py-2">
-      {/* Right-aligned, where the form this list leads to keeps its own
-          save and cancel. */}
-      <div className="flex justify-end">
-        <IconAction
-          title={t('preview.back')}
-          labelKey="preview.back"
-          hueIndex={1}
-          onClick={onCancel}
-        />
-      </div>
-
-      {/* As many across as the card is wide, each tile at least the mark box
-          plus its padding; the mark box is wide because several marks are
-          wordmarks (Linkbox is 5.3:1). The list scrolls at four tiles deep so
-          the card's own controls stay on screen, and `pe-1` gives the
-          scrollbar its own lane. */}
-      <ul className="grid max-h-96 w-full grid-cols-[repeat(auto-fill,minmax(8.5rem,1fr))] gap-3 overflow-y-auto pe-1">
+    <div className="flex flex-col gap-4">
+      {/* As many across as the window is wide, each tile at least the mark
+          box plus its padding; the mark box is wide because several marks are
+          wordmarks (Linkbox is 5.3:1). The window scrolls the list. */}
+      <ul className="grid w-full grid-cols-[repeat(auto-fill,minmax(8.5rem,1fr))] gap-3">
         {providers.map((p) => (
           <li key={p.id} className="relative">
             <button

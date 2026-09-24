@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { Empty, Rule, Stack } from '../components/Shell'
+import { Dialog } from '../components/Dialog'
 import { IconAction } from '../components/IconAction'
 import { ProviderPicker } from '../components/ProviderPicker'
 import { Card } from '../lib/glimstone/Card'
@@ -94,6 +95,13 @@ export function Targets() {
   )
 }
 
+/** Each card's own button and empty line, so the three never read alike. */
+const TEXT = {
+  cloud: { add: 'targets.addCloud', empty: 'targets.cloudEmpty' },
+  storage: { add: 'targets.addBucket', empty: 'targets.bucketEmpty' },
+  protocol: { add: 'targets.addServer', empty: 'targets.serverEmpty' },
+} as const
+
 function Storage({
   group,
   title,
@@ -117,8 +125,9 @@ function Storage({
   const { t } = useT()
   const [editing, setEditing] = useState<string | null>(null)
   // Adding picks a product first, then shows that backend's fields, so nobody
-  // has to know Nextcloud is "webdav". Null is closed, 'pick' is the list, and
-  // a string is the chosen backend.
+  // has to know Nextcloud is "webdav". Both steps sit in one window over the
+  // page. Null is closed, 'pick' is the list, and a string is the chosen
+  // backend.
   const [adding, setAdding] = useState<null | 'pick' | string>(null)
   const [provider, setProvider] = useState<Provider | null>(null)
 
@@ -146,51 +155,57 @@ function Storage({
 
   return (
     <Card title={title} hueIndex={hueIndex}>
-      {!adding && editing === null && (
+      {editing === null && (
         <div className="flex justify-end">
           <Button
-            label={t('targets.addStorage')}
-            labelKey="targets.addStorage"
+            label={t(TEXT[group].add)}
+            labelKey={TEXT[group].add}
             tone="accent"
             onClick={() => {
               setAdding('pick')
               setProvider(null)
-              setEditing(null)
             }}
           />
         </div>
       )}
-      {adding === 'pick' && (
-        <ProviderPicker
-          providers={mine}
-          unlisted={unlisted}
-          onPick={(picked) => {
-            setProvider(typeof picked === 'string' ? null : picked)
-            setAdding(typeof picked === 'string' ? picked : picked.backend)
-          }}
-          onCancel={() => setAdding(null)}
-        />
-      )}
-      {adding !== null && adding !== 'pick' && (
-        <RemoteForm
-          backends={backends}
-          kind={adding}
-          provider={provider}
-          taken={remotes.map((r) => r.name)}
-          onDone={(saved) => {
-            setAdding(null)
-            if (saved) onChanged()
-          }}
-        />
+      {adding !== null && (
+        <Dialog
+          title={t(TEXT[group].add)}
+          hueIndex={hueIndex}
+          onClose={() => setAdding(null)}
+          closeOnBackdrop={adding === 'pick'}
+        >
+          {adding === 'pick' ? (
+            <ProviderPicker
+              providers={mine}
+              unlisted={unlisted}
+              onPick={(picked) => {
+                setProvider(typeof picked === 'string' ? null : picked)
+                setAdding(typeof picked === 'string' ? picked : picked.backend)
+              }}
+            />
+          ) : (
+            <RemoteForm
+              backends={backends}
+              kind={adding}
+              provider={provider}
+              taken={remotes.map((r) => r.name)}
+              onDone={(saved) => {
+                setAdding(null)
+                if (saved) onChanged()
+              }}
+            />
+          )}
+        </Dialog>
       )}
 
-      {rows.length === 0 && adding === null ? (
-        <Empty>{t('targets.storageEmpty')}</Empty>
+      {rows.length === 0 ? (
+        <Empty>{t(TEXT[group].empty)}</Empty>
       ) : (
         <ul className="flex flex-col">
           {rows.map((r, i) => (
             <li key={r.name}>
-              {(i > 0 || adding !== null) && <Rule />}
+              {i > 0 && <Rule />}
               {editing === r.name ? (
                 <RemoteForm
                   backends={backends}
@@ -207,10 +222,7 @@ function Storage({
                 <RemoteRow
                   remote={r}
                   row={i}
-                  onEdit={() => {
-                    setEditing(r.name)
-                    setAdding(null)
-                  }}
+                  onEdit={() => setEditing(r.name)}
                   onChanged={onChanged}
                 />
               )}
