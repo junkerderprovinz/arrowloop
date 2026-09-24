@@ -235,6 +235,8 @@ const ms: Translations = {
   'reason.stepFailed': '{what} gagal, ditinggalkan untuk larian berikutnya: {error}',
   'reason.removeDirFailed': 'Foldernya tidak dapat dibuang dan dibiarkan: {error}',
   'reason.heldOpen': 'program lain menahannya terbuka di sebelah {side}, menunggu sehingga ia ditutup',
+  'reason.heldOpenAdmin': 'program lain menahannya terbuka di sebelah {side}; ArrowLoop sebagai perkhidmatan dengan hak pentadbir akan menyalinnya daripada salinan bayang',
+  'reason.snapshotFailed': 'program lain menahannya terbuka di sebelah {side}, dan tiada salinan bayang dapat dibuat untuk membacanya: {error}',
   'reason.unsupported': '{kind} di sebelah {side}, yang tidak dibawa oleh enjin ini',
   'reason.recordFailed': 'Rekodnya tidak dapat ditulis, ditinggalkan untuk larian berikutnya: {error}',
   'look.palette': 'Palet warna',

@@ -235,6 +235,8 @@ const es: Translations = {
   'reason.stepFailed': '{what} ha fallado, queda para la siguiente ejecución: {error}',
   'reason.removeDirFailed': 'no se pudo quitar la carpeta y se queda donde está: {error}',
   'reason.heldOpen': 'otro programa lo tiene abierto a la {side}, esperando a que se cierre',
+  'reason.heldOpenAdmin': 'otro programa lo tiene abierto a la {side}; ArrowLoop como servicio, con derechos de administrador, lo copiaría desde una instantánea de volumen',
+  'reason.snapshotFailed': 'otro programa lo tiene abierto a la {side}, y no se pudo crear una instantánea de volumen desde la que leerlo: {error}',
   'reason.unsupported': '{kind} a la {side}, que este motor no se lleva',
   'reason.recordFailed': 'no se pudo escribir el registro, queda para la siguiente ejecución: {error}',
   'look.palette': 'Paleta de colores',

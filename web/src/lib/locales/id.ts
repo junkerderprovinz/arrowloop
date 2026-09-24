@@ -235,6 +235,8 @@ const id: Translations = {
   'reason.stepFailed': '{what} gagal, ditinggalkan untuk jalannya yang berikut: {error}',
   'reason.removeDirFailed': 'Foldernya tidak dapat dibuang dan dibiarkan: {error}',
   'reason.heldOpen': 'program lain menahannya tetap terbuka di sisi {side}, menunggu sampai ditutup',
+  'reason.heldOpenAdmin': 'program lain menahannya tetap terbuka di sisi {side}; ArrowLoop sebagai layanan dengan hak administrator akan menyalinnya dari salinan bayangan',
+  'reason.snapshotFailed': 'program lain menahannya tetap terbuka di sisi {side}, dan tidak ada salinan bayangan yang bisa dibuat untuk membacanya: {error}',
   'reason.unsupported': '{kind} di sisi {side}, yang tidak dibawa oleh mesin ini',
   'reason.recordFailed': 'Catatannya tidak dapat ditulis, ditinggalkan untuk jalannya yang berikut: {error}',
   'look.palette': 'Palet warna',

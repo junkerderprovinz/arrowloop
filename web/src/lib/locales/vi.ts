@@ -235,6 +235,8 @@ const vi: Translations = {
   'reason.stepFailed': '{what} thất bại, để lại cho lần chạy sau: {error}',
   'reason.removeDirFailed': 'Không bỏ được thư mục nên để nguyên: {error}',
   'reason.heldOpen': 'một chương trình khác đang giữ nó mở ở bên {side}, đang chờ nó đóng lại',
+  'reason.heldOpenAdmin': 'một chương trình khác đang giữ nó mở ở bên {side}; khi chạy như một dịch vụ với quyền quản trị, ArrowLoop sẽ sao chép nó từ một bản sao bóng',
+  'reason.snapshotFailed': 'một chương trình khác đang giữ nó mở ở bên {side}, và không tạo được bản sao bóng để đọc nó: {error}',
   'reason.unsupported': '{kind} ở bên {side}, thứ mà bộ máy này không mang theo',
   'reason.recordFailed': 'Không ghi được ghi chú, để lại cho lần chạy sau: {error}',
   'look.palette': 'Bảng màu',

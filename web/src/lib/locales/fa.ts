@@ -235,6 +235,8 @@ const fa: Translations = {
   'reason.stepFailed': '{what} ناموفق ماند و برای اجرای بعدی می‌ماند: {error}',
   'reason.removeDirFailed': 'برداشتن پوشه ممکن نشد و همان‌جا می‌ماند: {error}',
   'reason.heldOpen': 'برنامهٔ دیگری آن را در طرف {side} باز نگه داشته، در انتظار بسته شدن',
+  'reason.heldOpenAdmin': 'برنامهٔ دیگری آن را در طرف {side} باز نگه داشته; ArrowLoop اگر به‌صورت سرویس با دسترسی مدیر اجرا شود، آن را از یک کپی سایه کپی می‌کند',
+  'reason.snapshotFailed': 'برنامهٔ دیگری آن را در طرف {side} باز نگه داشته, و هیچ کپی سایه‌ای برای خواندن آن ساخته نشد: {error}',
   'reason.unsupported': '{kind} در طرف {side}، که این موتور آن را نمی‌برد',
   'reason.recordFailed': 'نوشتن یادداشت ممکن نشد و برای اجرای بعدی می‌ماند: {error}',
   'look.palette': 'پالت رنگ',

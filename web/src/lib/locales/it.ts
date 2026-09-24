@@ -235,6 +235,8 @@ const it: Translations = {
   'reason.stepFailed': '{what} non è riuscito, resta alla prossima esecuzione: {error}',
   'reason.removeDirFailed': 'non è stato possibile rimuovere la cartella, che resta dov\'è: {error}',
   'reason.heldOpen': 'un altro programma lo tiene aperto a {side}, in attesa che venga chiuso',
+  'reason.heldOpenAdmin': 'un altro programma lo tiene aperto a {side}; ArrowLoop come servizio, con diritti di amministratore, lo copierebbe da una copia shadow',
+  'reason.snapshotFailed': 'un altro programma lo tiene aperto a {side}, e non è stato possibile creare una copia shadow da cui leggerlo: {error}',
   'reason.unsupported': '{kind} a {side}, che questo motore non porta con sé',
   'reason.recordFailed': 'non è stato possibile scrivere il registro, resta alla prossima esecuzione: {error}',
   'look.palette': 'Tavolozza dei colori',

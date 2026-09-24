@@ -235,6 +235,8 @@ const sv: Translations = {
   'reason.stepFailed': '{what} misslyckades, lämnas till nästa körning: {error}',
   'reason.removeDirFailed': 'Mappen gick inte att ta bort och lämnas kvar: {error}',
   'reason.heldOpen': 'ett annat program håller den öppen på {side} sida, väntar på att den ska stängas',
+  'reason.heldOpenAdmin': 'ett annat program håller den öppen på {side} sida; ArrowLoop som tjänst med administratörsrättigheter skulle kopiera den från en skuggkopia',
+  'reason.snapshotFailed': 'ett annat program håller den öppen på {side} sida, och ingen skuggkopia kunde tas att läsa den från: {error}',
   'reason.unsupported': '{kind} på {side} sida, som den här motorn inte tar med',
   'reason.recordFailed': 'Anteckningen gick inte att skriva, lämnas till nästa körning: {error}',
   'look.palette': 'Färgpalett',

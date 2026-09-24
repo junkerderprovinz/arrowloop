@@ -235,6 +235,8 @@ const pl: Translations = {
   'reason.stepFailed': '{what} nie powiodło się, zostaje na następne uruchomienie: {error}',
   'reason.removeDirFailed': 'Nie udało się usunąć folderu, zostaje na miejscu: {error}',
   'reason.heldOpen': 'inny program trzyma plik otwarty, strona {side}, czeka na zamknięcie',
+  'reason.heldOpenAdmin': 'inny program trzyma plik otwarty, strona {side}; ArrowLoop jako usługa z uprawnieniami administratora skopiowałby go z kopii w tle',
+  'reason.snapshotFailed': 'inny program trzyma plik otwarty, strona {side}, i nie udało się utworzyć kopii w tle, z której można by go odczytać: {error}',
   'reason.unsupported': '{kind}, strona {side}, czego ten silnik nie przenosi',
   'reason.recordFailed': 'Nie udało się zapisać wpisu, zostaje na następne uruchomienie: {error}',
   'look.palette': 'Paleta kolorów',

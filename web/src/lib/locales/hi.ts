@@ -235,6 +235,8 @@ const hi: Translations = {
   'reason.stepFailed': '{what} विफल रहा, अगली बारी के लिए छोड़ा जा रहा है: {error}',
   'reason.removeDirFailed': 'फ़ोल्डर हटाया नहीं जा सका, वह वैसा ही रहेगा: {error}',
   'reason.heldOpen': '{side} कोई दूसरा प्रोग्राम इसे खोले हुए है, बंद होने की प्रतीक्षा है',
+  'reason.heldOpenAdmin': '{side} कोई दूसरा प्रोग्राम इसे खोले हुए है; एडमिनिस्ट्रेटर अधिकारों वाली सेवा के रूप में ArrowLoop इसे शैडो कॉपी से कॉपी कर लेता',
+  'reason.snapshotFailed': '{side} कोई दूसरा प्रोग्राम इसे खोले हुए है, और इसे पढ़ने के लिए कोई शैडो कॉपी नहीं बन सकी: {error}',
   'reason.unsupported': '{side} {kind}, जिसे यह इंजन साथ नहीं ले जाता',
   'reason.recordFailed': 'लेखा लिखा नहीं जा सका, अगली बारी के लिए छोड़ा जा रहा है: {error}',
   'look.palette': 'कलर पैलेट',

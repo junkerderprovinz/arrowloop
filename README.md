@@ -119,7 +119,7 @@ Targets come from [rclone](https://rclone.org), embedded as a library rather tha
 | Cloud and server targets without a mount | ✅ | ✅ | ⚠️ | ❌ | ❌ | ✅ | ⚠️ | ✅ | ✅ |
 | Encryption at the destination | ✅ | ⚠️ | ❌ | ⚠️ | ✅ | ✅ | ❌ | ✅ | ✅ |
 | Sends only the changed part of a file | ❌ | ⚠️ | ❌ | ✅ | ✅ | ❌ | ✅ | ✅ | ⚠️ |
-| Copies files another program holds open | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ |
+| Copies files another program holds open | ⚠️ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ |
 | Built-in schedule | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ⚠️ | ✅ | ⚠️ |
 | Real-time watching | ✅ | ✅ | ⚠️ | ✅ | ✅ | ❌ | ✅ | ⚠️ | ✅ |
 | Scripts before and after a run | ✅ | ✅ | ⚠️ | ❌ | ❓ | ❌ | ❌ | ✅ | ✅ |
@@ -201,7 +201,7 @@ The two brakes cover different ground and both are needed. The percentage brake 
 
 **The quiet period.** A file is left alone until it has sat unchanged for five seconds. This is not about latency, it is about half-written files: a run that starts while somebody is saving a large document copies whatever is on disk at that instant, and the copy is garbage. A schedule is no defence, since a run every two minutes lands mid-write just as readily as a filesystem watch does.
 
-**The lock probe.** On Windows, a file another program holds exclusively is skipped with that as the reason, instead of surfacing a sharing violation. This is Windows-only by nature and not by omission: Windows locking is mandatory and really does make a file unreadable, while POSIX locks are advisory and do not stop a reader, so elsewhere there is nothing to probe. It covers every kind of action rather than copies alone, including renames, and it asks the files directly after a failure rather than trusting an error code: rclone writes a partial file and renames it into place, and Windows refuses that rename onto a held file with plain access-denied instead of a sharing violation.
+**The lock probe.** On Windows, a file another program holds exclusively is skipped with that as the reason, instead of surfacing a sharing violation. This is Windows-only by nature and not by omission: Windows locking is mandatory and really does make a file unreadable, while POSIX locks are advisory and do not stop a reader, so elsewhere there is nothing to probe. It covers every kind of action rather than copies alone, including renames, and it asks the files directly after a failure rather than trusting an error code: rclone writes a partial file and renames it into place, and Windows refuses that rename onto a held file with plain access-denied instead of a sharing violation. **With administrator rights**, which `arrowloop service` has, a copy whose source is held open is read from a shadow copy of its volume instead of being postponed: one per volume and run, taken only when a held file turns up and removed when the run ends. The record is settled against the shadow copy, so a file that went on changing is copied again by the next run. Without those rights the reason says so. A rename, a removal or a conflict still waits, since those have to change the file itself.
 
 **Default excludes.** The names programs use while still writing never travel: `~$*`, `.~lock.*#`, `*.tmp`, `*.temp`, `*.part`, `*.partial`, `*.crdownload`, `*.download`. These exist for seconds, mean nothing on another machine, and a copy of one is a file the other side can never use. `-no-default-excludes` turns that off.
 

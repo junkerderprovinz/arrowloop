@@ -303,8 +303,7 @@ func RunVerified(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt
 		acts := ofKind(p.Actions, group...)
 		if err := t.forEach(ctx, ends, acts, opt.Transfers, func(ctx context.Context, act plan.Action) error {
 			if why, busy := heldOpen(ends, act); busy {
-				t.skip(act.Path, "", why)
-				return nil
+				return copyHeldOpen(ctx, ends, rec, act, why, runID, opt, t)
 			}
 			return one(ctx, ends, rec, act, runID, opt, t)
 		}); err != nil {

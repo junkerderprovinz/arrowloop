@@ -235,6 +235,8 @@ const ja: Translations = {
   'reason.stepFailed': '{what} に失敗し、次回の実行に持ち越します: {error}',
   'reason.removeDirFailed': 'フォルダーを削除できなかったため、そのまま残します: {error}',
   'reason.heldOpen': '{side}側で別のプログラムが開いたままにしています。閉じられるのを待っています',
+  'reason.heldOpenAdmin': '{side}側で別のプログラムが開いたままにしています。管理者権限のサービスとして動く ArrowLoop ならシャドウ コピーからコピーできます',
+  'reason.snapshotFailed': '{side}側で別のプログラムが開いたままにしています。さらに、読み取るためのシャドウ コピーを作成できませんでした: {error}',
   'reason.unsupported': '{side}側の {kind} は、このエンジンでは運べません',
   'reason.recordFailed': '記録を書き込めなかったため、次回の実行に持ち越します: {error}',
   'look.palette': 'カラーパレット',

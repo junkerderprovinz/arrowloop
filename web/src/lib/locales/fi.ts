@@ -235,6 +235,8 @@ const fi: Translations = {
   'reason.stepFailed': '{what} epäonnistui, jää seuraavaan ajoon: {error}',
   'reason.removeDirFailed': 'Kansiota ei voitu poistaa, se jää paikalleen: {error}',
   'reason.heldOpen': '{side} puoli: toinen ohjelma pitää sitä auki, odotetaan sulkemista',
+  'reason.heldOpenAdmin': '{side} puoli: toinen ohjelma pitää sitä auki; palveluna järjestelmänvalvojan oikeuksin ArrowLoop kopioisi sen varjokopiosta',
+  'reason.snapshotFailed': '{side} puoli: toinen ohjelma pitää sitä auki, eikä varjokopiota, josta sen voisi lukea, saatu tehtyä: {error}',
   'reason.unsupported': '{side} puoli: {kind}, jota tämä moottori ei kuljeta',
   'reason.recordFailed': 'Merkintää ei voitu kirjoittaa, se jää seuraavaan ajoon: {error}',
   'look.palette': 'Väripaletti',

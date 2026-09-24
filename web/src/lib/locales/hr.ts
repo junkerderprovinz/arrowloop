@@ -235,6 +235,8 @@ const hr: Translations = {
   'reason.stepFailed': '{what} nije uspjelo, ostaje za sljedeće pokretanje: {error}',
   'reason.removeDirFailed': 'Mapu nije bilo moguće ukloniti pa ostaje: {error}',
   'reason.heldOpen': 'drugi program drži ovu datoteku otvorenom {side}, čeka se zatvaranje',
+  'reason.heldOpenAdmin': 'drugi program drži ovu datoteku otvorenom {side}; ArrowLoop kao usluga s administratorskim pravima kopirao bi je iz sjenovite kopije',
+  'reason.snapshotFailed': 'drugi program drži ovu datoteku otvorenom {side}, a nije se mogla napraviti sjenovita kopija iz koje bi se čitala: {error}',
   'reason.unsupported': '{kind} {side}, što ovaj pogon ne prenosi',
   'reason.recordFailed': 'Zapis nije bilo moguće spremiti pa ostaje za sljedeće pokretanje: {error}',
   'look.palette': 'Paleta boja',

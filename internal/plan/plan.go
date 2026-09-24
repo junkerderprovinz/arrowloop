@@ -62,6 +62,8 @@ var reasonText = map[string]string{
 	"removeDirFailed": "could not remove the folder, leaving it: {error}",
 	"heldOpen":        "held open by another program on the {side} side, waiting for it to be closed",
 	"heldOpenDuring":  "held open by another program while {what} was running, leaving it for the next run: {error}",
+	"heldOpenAdmin":   "held open by another program on the {side} side; running with administrator rights, as a service, ArrowLoop would copy it from a shadow copy",
+	"snapshotFailed":  "held open by another program on the {side} side, and no shadow copy could be taken to read it from: {error}",
 	"unverified":      "{what} finished, but the {side} side could not produce a checksum and this job insists on one; leaving it for the next run",
 	"unsupported":     "{kind} on the {side} side, which this engine does not carry",
 	"recordFailed":    "the record could not be written, leaving it for the next run: {error}",

@@ -235,6 +235,8 @@ const fr: Translations = {
   'reason.stepFailed': '{what} a échoué, laissé pour la prochaine exécution : {error}',
   'reason.removeDirFailed': 'le dossier n\'a pas pu être supprimé, il reste en place : {error}',
   'reason.heldOpen': 'un autre programme le tient ouvert à {side}, en attente de sa fermeture',
+  'reason.heldOpenAdmin': 'un autre programme le tient ouvert à {side}; en tant que service avec des droits d\'administrateur, ArrowLoop le copierait depuis un cliché instantané',
+  'reason.snapshotFailed': 'un autre programme le tient ouvert à {side}, et aucun cliché instantané n\'a pu être pris pour le lire : {error}',
   'reason.unsupported': '{kind} à {side}, que ce moteur n\'emporte pas',
   'reason.recordFailed': 'l\'enregistrement n\'a pas pu être écrit, laissé pour la prochaine exécution : {error}',
   'look.palette': 'Palette de couleurs',

@@ -235,6 +235,8 @@ const ko: Translations = {
   'reason.stepFailed': '{what} 실패, 다음 실행으로 미룹니다: {error}',
   'reason.removeDirFailed': '폴더를 지우지 못해 그대로 둡니다: {error}',
   'reason.heldOpen': '{side}에서 다른 프로그램이 열어 두고 있어 닫히기를 기다리는 중',
+  'reason.heldOpenAdmin': '{side}에서 다른 프로그램이 열어 두고 있음; 관리자 권한의 서비스로 실행되는 ArrowLoop라면 섀도 복사본에서 복사합니다',
+  'reason.snapshotFailed': '{side}에서 다른 프로그램이 열어 두고 있음, 그리고 읽어 올 섀도 복사본을 만들 수 없었음: {error}',
   'reason.unsupported': '{side}의 {kind}. 이 엔진은 옮기지 않습니다',
   'reason.recordFailed': '기록을 쓰지 못해 다음 실행으로 미룹니다: {error}',
   'look.palette': '색상 팔레트',

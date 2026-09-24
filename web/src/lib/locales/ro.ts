@@ -235,6 +235,8 @@ const ro: Translations = {
   'reason.stepFailed': '{what} a eșuat, rămâne pentru rularea următoare: {error}',
   'reason.removeDirFailed': 'Dosarul nu a putut fi eliminat și rămâne: {error}',
   'reason.heldOpen': 'un alt program îl ține deschis în {side}, se așteaptă închiderea',
+  'reason.heldOpenAdmin': 'un alt program îl ține deschis în {side}; ArrowLoop ca serviciu, cu drepturi de administrator, l-ar copia dintr-o copie umbră',
+  'reason.snapshotFailed': 'un alt program îl ține deschis în {side}, și nu s-a putut crea o copie umbră din care să fie citit: {error}',
   'reason.unsupported': '{kind} în {side}, ceva ce acest motor nu duce mai departe',
   'reason.recordFailed': 'Însemnarea nu a putut fi scrisă, rămâne pentru rularea următoare: {error}',
   'look.palette': 'Paletă de culori',

@@ -235,6 +235,8 @@ const da: Translations = {
   'reason.stepFailed': '{what} mislykkedes, bliver liggende til næste kørsel: {error}',
   'reason.removeDirFailed': 'Mappen kunne ikke fjernes og bliver stående: {error}',
   'reason.heldOpen': 'et andet program holder den åben på {side} side, venter på at den bliver lukket',
+  'reason.heldOpenAdmin': 'et andet program holder den åben på {side} side; ArrowLoop som tjeneste med administratorrettigheder ville kopiere den fra en skyggekopi',
+  'reason.snapshotFailed': 'et andet program holder den åben på {side} side, og der kunne ikke tages en skyggekopi at læse den fra: {error}',
   'reason.unsupported': '{kind} på {side} side, som denne motor ikke tager med',
   'reason.recordFailed': 'Noten kunne ikke skrives, bliver liggende til næste kørsel: {error}',
   'look.palette': 'Farvepalet',

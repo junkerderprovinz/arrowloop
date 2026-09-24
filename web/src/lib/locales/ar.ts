@@ -235,6 +235,8 @@ const ar: Translations = {
   'reason.stepFailed': 'أخفق {what}، ويبقى للتشغيل التالي: {error}',
   'reason.removeDirFailed': 'تعذّرت إزالة المجلد، فبقي كما هو: {error}',
   'reason.heldOpen': 'يُبقيه برنامج آخر مفتوحاً على {side}، وينتظر إغلاقه',
+  'reason.heldOpenAdmin': 'يُبقيه برنامج آخر مفتوحاً على {side}; لو عمل ArrowLoop كخدمة بصلاحيات المسؤول لنسخه من نسخة الظل',
+  'reason.snapshotFailed': 'يُبقيه برنامج آخر مفتوحاً على {side}, ولم يمكن إنشاء نسخة ظل لقراءته منها: {error}',
   'reason.unsupported': '{kind} على {side}، وهو ما لا ينقله هذا المحرك',
   'reason.recordFailed': 'تعذّرت كتابة القيد، ويبقى للتشغيل التالي: {error}',
   'look.palette': 'لوحة الألوان',

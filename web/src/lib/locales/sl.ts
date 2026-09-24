@@ -235,6 +235,8 @@ const sl: Translations = {
   'reason.stepFailed': '{what} ni uspelo, ostane za naslednji tek: {error}',
   'reason.removeDirFailed': 'Mape ni bilo mogoče odstraniti, zato ostane: {error}',
   'reason.heldOpen': 'drug program ima to datoteko {side} odprto, čaka se na zaprtje',
+  'reason.heldOpenAdmin': 'drug program ima to datoteko {side} odprto; ArrowLoop kot storitev s skrbniškimi pravicami bi jo kopiral iz senčne kopije',
+  'reason.snapshotFailed': 'drug program ima to datoteko {side} odprto, in ni bilo mogoče ustvariti senčne kopije, iz katere bi jo prebral: {error}',
   'reason.unsupported': '{kind} {side}, česar ta pogon ne prenaša',
   'reason.recordFailed': 'Zapisa ni bilo mogoče shraniti, ostane za naslednji tek: {error}',
   'look.palette': 'Barvna paleta',

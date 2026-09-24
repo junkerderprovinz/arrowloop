@@ -235,6 +235,8 @@ const is: Translations = {
   'reason.stepFailed': '{what} mistókst, bíður næstu keyrslu: {error}',
   'reason.removeDirFailed': 'Ekki tókst að fjarlægja möppuna, hún stendur eftir: {error}',
   'reason.heldOpen': '{side} hlið: annað forrit heldur henni opinni, bíð eftir að henni verði lokað',
+  'reason.heldOpenAdmin': '{side} hlið: annað forrit heldur henni opinni; sem þjónusta með stjórnandaréttindi myndi ArrowLoop afrita hana úr skuggaafriti',
+  'reason.snapshotFailed': '{side} hlið: annað forrit heldur henni opinni, og ekki tókst að taka skuggaafrit til að lesa hana úr: {error}',
   'reason.unsupported': '{side} hlið: {kind}, sem þessi vél flytur ekki með',
   'reason.recordFailed': 'Ekki tókst að skrifa færsluna, hún bíður næstu keyrslu: {error}',
   'look.palette': 'Litaspjald',

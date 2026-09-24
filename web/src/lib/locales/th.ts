@@ -235,6 +235,8 @@ const th: Translations = {
   'reason.stepFailed': '{what} ล้มเหลว เก็บไว้ให้รอบถัดไป: {error}',
   'reason.removeDirFailed': 'เอาโฟลเดอร์ออกไม่ได้ จึงคงไว้: {error}',
   'reason.heldOpen': 'มีอีกโปรแกรมเปิดค้างไว้ที่ฝั่ง{side} กำลังรอให้ปิด',
+  'reason.heldOpenAdmin': 'มีอีกโปรแกรมเปิดค้างไว้ที่ฝั่ง{side} ถ้า ArrowLoop ทำงานเป็นเซอร์วิสด้วยสิทธิ์ผู้ดูแลระบบ จะคัดลอกจากสำเนาเงาได้',
+  'reason.snapshotFailed': 'มีอีกโปรแกรมเปิดค้างไว้ที่ฝั่ง{side} และสร้างสำเนาเงาเพื่ออ่านไฟล์ไม่ได้: {error}',
   'reason.unsupported': '{kind} ที่ฝั่ง{side} ซึ่งกลไกนี้ไม่พาไปด้วย',
   'reason.recordFailed': 'เขียนบันทึกไม่ได้ เก็บไว้ให้รอบถัดไป: {error}',
   'look.palette': 'จานสี',

@@ -25,6 +25,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/job"
 	"github.com/junkerderprovinz/arrowloop/internal/notify"
 	"github.com/junkerderprovinz/arrowloop/internal/plan"
+	"github.com/junkerderprovinz/arrowloop/internal/shadow"
 	"github.com/junkerderprovinz/arrowloop/internal/state"
 	"github.com/junkerderprovinz/arrowloop/internal/volume"
 	"github.com/junkerderprovinz/arrowloop/internal/watch"
@@ -294,6 +295,16 @@ func (r *Runner) execute(ctx context.Context, j job.Job, only []string, resolve 
 	ctx = engine.Configure(ctx, opt)
 	ctx = apply.WithVersions(ctx, j.KeepVersions)
 	ctx = apply.WithTrash(ctx, !j.NoTrash)
+	// A shadow copy is taken only once a file is found held open, and removed
+	// with the run, since it holds space on its volume.
+	if shots := shadow.New(); shots != nil {
+		ctx = apply.WithSnapshots(ctx, shots)
+		defer func() {
+			if err := shots.Close(context.WithoutCancel(ctx)); err != nil {
+				r.log("%s: %v", j.Name, err)
+			}
+		}()
+	}
 
 	ends, db, err := r.open(ctx, j)
 	if err != nil {

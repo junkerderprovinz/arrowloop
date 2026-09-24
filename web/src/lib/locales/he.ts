@@ -235,6 +235,8 @@ const he: Translations = {
   'reason.stepFailed': '{what} נכשל, נשאר להרצה הבאה: {error}',
   'reason.removeDirFailed': 'לא ניתן היה להסיר את התיקייה, והיא נשארת: {error}',
   'reason.heldOpen': 'תוכנה אחרת מחזיקה אותו פתוח בצד {side}, ממתין עד שייסגר',
+  'reason.heldOpenAdmin': 'תוכנה אחרת מחזיקה אותו פתוח בצד {side}; ArrowLoop כשירות עם הרשאות מנהל היה מעתיק אותו מעותק צל',
+  'reason.snapshotFailed': 'תוכנה אחרת מחזיקה אותו פתוח בצד {side}, ולא ניתן היה ליצור עותק צל כדי לקרוא ממנו: {error}',
   'reason.unsupported': '{kind} בצד {side}, והמנוע הזה לא מעביר את זה',
   'reason.recordFailed': 'לא ניתן היה לכתוב את הרישום, נשאר להרצה הבאה: {error}',
   'look.palette': 'לוח צבעים',

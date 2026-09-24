@@ -235,6 +235,8 @@ const et: Translations = {
   'reason.stepFailed': '{what} ebaõnnestus, jääb järgmisele käivitusele: {error}',
   'reason.removeDirFailed': 'Kausta ei õnnestunud eemaldada, see jääb alles: {error}',
   'reason.heldOpen': '{side} pool: teine programm hoiab seda lahti, ootan sulgemist',
+  'reason.heldOpenAdmin': '{side} pool: teine programm hoiab seda lahti; teenusena administraatori õigustega kopeeriks ArrowLoop selle varikoopiast',
+  'reason.snapshotFailed': '{side} pool: teine programm hoiab seda lahti, ja varikoopiat, millest seda lugeda, ei õnnestunud teha: {error}',
   'reason.unsupported': '{side} pool: {kind}, mida see mootor kaasa ei võta',
   'reason.recordFailed': 'Kirjet ei õnnestunud kirjutada, see jääb järgmisele käivitusele: {error}',
   'look.palette': 'Värvipalett',

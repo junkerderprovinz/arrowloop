@@ -235,6 +235,8 @@ const lv: Translations = {
   'reason.stepFailed': '{what} neizdevās, paliek nākamajai izpildei: {error}',
   'reason.removeDirFailed': 'Mapi nevarēja noņemt, tā paliek: {error}',
   'reason.heldOpen': 'cita programma to tur atvērtu ({side} puse), gaida, kamēr tas tiks aizvērts',
+  'reason.heldOpenAdmin': 'cita programma to tur atvērtu ({side} puse); ArrowLoop kā pakalpojums ar administratora tiesībām to nokopētu no ēnkopijas',
+  'reason.snapshotFailed': 'cita programma to tur atvērtu ({side} puse), un neizdevās izveidot ēnkopiju, no kuras to nolasīt: {error}',
   'reason.unsupported': '{kind} ({side} puse), ko šis dzinējs neņem līdzi',
   'reason.recordFailed': 'Ierakstu nevarēja saglabāt, paliek nākamajai izpildei: {error}',
   'look.palette': 'Krāsu palete',

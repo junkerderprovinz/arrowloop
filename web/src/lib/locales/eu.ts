@@ -235,6 +235,8 @@ const eu: Translations = {
   'reason.stepFailed': '{what} huts egin du, hurrengo exekuziorako uzten da: {error}',
   'reason.removeDirFailed': 'Karpeta ezin izan da kendu, eta bere horretan gelditzen da: {error}',
   'reason.heldOpen': 'beste programa batek zabalik dauka ({side}), itxi zain',
+  'reason.heldOpenAdmin': 'beste programa batek zabalik dauka ({side}); ArrowLoop-ek zerbitzu gisa, administratzaile-eskubideekin, itzal-kopia batetik kopiatuko luke',
+  'reason.snapshotFailed': 'beste programa batek zabalik dauka ({side}), eta ezin izan da itzal-kopiarik egin hura irakurtzeko: {error}',
   'reason.unsupported': '{kind} ({side}), motor honek eramaten ez duena',
   'reason.recordFailed': 'Erregistroa ezin izan da idatzi, hurrengo exekuziorako uzten da: {error}',
   'look.palette': 'Kolore-paleta',

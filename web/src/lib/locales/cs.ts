@@ -235,6 +235,8 @@ const cs: Translations = {
   'reason.stepFailed': '{what} selhalo, zůstává na příští běh: {error}',
   'reason.removeDirFailed': 'Složku se nepodařilo odebrat, zůstává: {error}',
   'reason.heldOpen': 'jiný program to drží otevřené {side}, čeká na zavření',
+  'reason.heldOpenAdmin': 'jiný program to drží otevřené {side}; ArrowLoop jako služba s právy správce by to zkopíroval ze stínové kopie',
+  'reason.snapshotFailed': 'jiný program to drží otevřené {side}, a nepodařilo se vytvořit stínovou kopii, ze které by se to dalo číst: {error}',
   'reason.unsupported': '{kind} {side}, což tento motor nebere',
   'reason.recordFailed': 'Záznam se nepodařilo zapsat, zůstává na příští běh: {error}',
   'look.palette': 'Barevná paleta',

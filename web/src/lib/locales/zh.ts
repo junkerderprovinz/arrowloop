@@ -235,6 +235,8 @@ const zh: Translations = {
   'reason.stepFailed': '{what} 失败，留到下一次运行：{error}',
   'reason.removeDirFailed': '文件夹无法移除，先留着：{error}',
   'reason.heldOpen': '{side}有另一个程序把它开着，正在等它关闭',
+  'reason.heldOpenAdmin': '{side}有另一个程序把它开着；以管理员权限作为服务运行时，ArrowLoop 会从卷影副本复制它',
+  'reason.snapshotFailed': '{side}有另一个程序把它开着，而且无法创建卷影副本来读取它：{error}',
   'reason.unsupported': '{side}的 {kind}，这个引擎不带它走',
   'reason.recordFailed': '记录写不进去，留到下一次运行：{error}',
   'look.palette': '调色板',

@@ -235,6 +235,8 @@ const nl: Translations = {
   'reason.stepFailed': '{what} is mislukt, blijft liggen voor de volgende uitvoering: {error}',
   'reason.removeDirFailed': 'De map kon niet worden weggehaald en blijft staan: {error}',
   'reason.heldOpen': 'wordt {side} door een ander programma opengehouden, wacht tot het sluit',
+  'reason.heldOpenAdmin': 'wordt {side} door een ander programma opengehouden; als dienst met beheerdersrechten zou ArrowLoop het uit een schaduwkopie kopiëren',
+  'reason.snapshotFailed': 'wordt {side} door een ander programma opengehouden, en er kon geen schaduwkopie worden gemaakt om het uit te lezen: {error}',
   'reason.unsupported': '{kind} {side}, wat deze motor niet meeneemt',
   'reason.recordFailed': 'De aantekening kon niet worden weggeschreven, blijft liggen voor de volgende uitvoering: {error}',
   'look.palette': 'Kleurenpalet',

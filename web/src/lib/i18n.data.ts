@@ -480,6 +480,8 @@ export const en = {
   'reason.stepFailed': '{what} failed, leaving it for the next run: {error}',
   'reason.removeDirFailed': 'the folder could not be removed, leaving it: {error}',
   'reason.heldOpen': 'another program is holding it open on the {side}, waiting for it to be closed',
+  'reason.heldOpenAdmin': 'another program is holding it open on the {side}; ArrowLoop running as a service, with administrator rights, would copy it from a shadow copy',
+  'reason.snapshotFailed': 'another program is holding it open on the {side}, and no shadow copy could be taken to read it from: {error}',
   'reason.unsupported': '{kind} on the {side}, which this engine does not carry',
   'reason.recordFailed': 'the record could not be written, leaving it for the next run: {error}',
 
@@ -1204,6 +1206,8 @@ export const de: Translations = {
   'reason.stepFailed': '{what} fehlgeschlagen, bleibt für den nächsten Lauf liegen: {error}',
   'reason.removeDirFailed': 'Der Ordner ließ sich nicht entfernen und bleibt stehen: {error}',
   'reason.heldOpen': 'wird {side} von einem anderen Programm offen gehalten, wartet auf das Schließen',
+  'reason.heldOpenAdmin': 'wird {side} von einem anderen Programm offen gehalten; als Dienst mit Administratorrechten würde ArrowLoop sie aus einer Schattenkopie kopieren',
+  'reason.snapshotFailed': 'wird {side} von einem anderen Programm offen gehalten, und es ließ sich keine Schattenkopie anlegen, aus der sie gelesen werden könnte: {error}',
   'reason.unsupported': '{kind} {side}, was dieser Dienst nicht mitnimmt',
   'reason.recordFailed': 'Der Vermerk ließ sich nicht schreiben, bleibt für den nächsten Lauf liegen: {error}',
 

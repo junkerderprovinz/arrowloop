@@ -45,7 +45,8 @@ Look at the postponed list; every run prints one. The usual reasons:
 - It matches an exclude pattern, including the built-in ones for half-written
   files. A file called `notes.tmp` will never travel.
 - It is a symbolic link or a special file, which are reported and left alone.
-- On Windows, another program is holding it open.
+- On Windows, another program is holding it open. Run as a service, or with
+  administrator rights, and a plain copy is read from a shadow copy instead.
 
 ## The job has not run for days
 

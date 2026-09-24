@@ -235,6 +235,8 @@ const ca: Translations = {
   'reason.stepFailed': '{what} ha fallat, queda per a l\'execució següent: {error}',
   'reason.removeDirFailed': 'no s\'ha pogut treure la carpeta i es queda on és: {error}',
   'reason.heldOpen': 'un altre programa el manté obert a la banda {side}, s\'espera que es tanqui',
+  'reason.heldOpenAdmin': 'un altre programa el manté obert a la banda {side}; ArrowLoop com a servei, amb drets d\'administrador, el copiaria d\'una còpia d\'ombra',
+  'reason.snapshotFailed': 'un altre programa el manté obert a la banda {side}, i no s\'ha pogut crear cap còpia d\'ombra per llegir-lo: {error}',
   'reason.unsupported': '{kind} a la banda {side}, que aquest motor no s\'emporta',
   'reason.recordFailed': 'no s\'ha pogut escriure el registre, queda per a l\'execució següent: {error}',
   'look.palette': 'Paleta de colors',

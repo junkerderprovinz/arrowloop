@@ -235,6 +235,8 @@ const tr: Translations = {
   'reason.stepFailed': '{what} başarısız oldu, sonraki çalışmaya bırakıldı: {error}',
   'reason.removeDirFailed': 'Klasör kaldırılamadı, olduğu gibi bırakıldı: {error}',
   'reason.heldOpen': '{side} tarafta başka bir program onu açık tutuyor, kapanmasını bekliyor',
+  'reason.heldOpenAdmin': '{side} tarafta başka bir program onu açık tutuyor; yönetici haklarıyla hizmet olarak çalışan ArrowLoop onu bir gölge kopyadan kopyalardı',
+  'reason.snapshotFailed': '{side} tarafta başka bir program onu açık tutuyor, ve okunabilecek bir gölge kopya alınamadı: {error}',
   'reason.unsupported': '{side} tarafta {kind}, bu motor bunu taşımıyor',
   'reason.recordFailed': 'Kayıt yazılamadı, sonraki çalışmaya bırakıldı: {error}',
   'look.palette': 'Renk paleti',

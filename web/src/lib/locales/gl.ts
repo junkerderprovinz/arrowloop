@@ -235,6 +235,8 @@ const gl: Translations = {
   'reason.stepFailed': '{what} fallou, queda para a seguinte execución: {error}',
   'reason.removeDirFailed': 'Non se puido quitar o cartafol e queda como está: {error}',
   'reason.heldOpen': 'outro programa tenno aberto na {side}, agardando a que se peche',
+  'reason.heldOpenAdmin': 'outro programa tenno aberto na {side}; ArrowLoop como servizo, con dereitos de administrador, copiaríao desde unha copia sombra',
+  'reason.snapshotFailed': 'outro programa tenno aberto na {side}, e non se puido crear unha copia sombra desde a que lelo: {error}',
   'reason.unsupported': '{kind} na {side}, que este motor non leva',
   'reason.recordFailed': 'Non se puido escribir o rexistro, queda para a seguinte execución: {error}',
   'look.palette': 'Paleta de cores',

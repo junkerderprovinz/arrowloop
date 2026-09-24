@@ -51,6 +51,16 @@ On Windows, a file another program holds exclusively is skipped with that as the
 reason. That is Windows-only by nature: its locking is mandatory and really does
 make a file unreadable, while POSIX locks are advisory and do not stop a reader.
 
+With administrator rights, as the Windows service has, a copy of such a file is
+read from a shadow copy instead: a frozen view of the whole volume that Windows
+keeps beside the live one. ArrowLoop takes one per volume and run, only once a
+held file turns up, and removes it when the run ends, since it takes space on
+that volume. What travels is the file as it was at that moment, which for a
+database is only as consistent as the database keeps its own file; a `before`
+command that dumps or pauses it is the safer way. Renames, removals and
+conflicts still wait for the file to be closed, because they change the file
+itself.
+
 The names programs use while still writing never travel at all: Office owner
 files, LibreOffice lock files, and the usual half-download suffixes.
 
