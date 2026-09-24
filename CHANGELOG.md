@@ -18,6 +18,12 @@ The full notes for each release are in
 - **Two-factor authentication** with an authenticator app and eight single-use recovery codes. A code is accepted once, so one read over somebody's shoulder cannot be used again within its thirty seconds, and wrong codes count toward the same lockout as wrong passwords.
 - **Passkeys** sign in with a key on a phone, a laptop or a security stick instead of the password. A browser offers them only on a host name with a certificate it trusts, or on `localhost`, so they work behind a reverse proxy; opened on an IP address, the section says why it cannot offer one.
 
+## 🐛 Fixed
+
+- **Selectors keep their words when the labels are set to symbols.** A choice with no symbol of its own, such as every option on the appearance page, was hidden like a label beside a symbol and left an empty box.
+- **An edited accent swatch keeps its colour** when another swatch is chosen, and every swatch remembers its own colour. The reset puts both the accent and the swatches back.
+- **The accent colour and the corners survive a reload.** They were stored, but the page started from the defaults and wrote those back over them.
+
 ## 🎨 Design
 
 - **An App tab in the settings** offers the phone app, with a QR code to scan it straight onto the phone, and the desktop builds for Windows, macOS and Linux. Every tile downloads the newest release.

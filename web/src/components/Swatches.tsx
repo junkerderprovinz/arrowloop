@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef } from 'react'
 
 import { openColorPickerPopover } from '../lib/colorPicker'
 
@@ -49,68 +49,53 @@ function Disc({
 /**
  * The accent row. One click selects a swatch and opens the picker on it: the
  * inner button opens the picker and the click bubbles to the wrapper, which
- * selects.
- *
- * The slot that owns the live value shows that value rather than its preset,
- * so an edited colour stays drawn, marked and editable.
+ * selects. Each swatch holds its own colour, so an edited one keeps it after
+ * another is chosen.
  */
 export function AccentSwatches({
   presets,
+  slots,
   value,
   onChange,
+  onSlots,
   disabled,
 }: {
   presets: { name: string; hex: string }[]
+  /** The colour each swatch holds, edited or not. */
+  slots: string[]
   value: string
   onChange: (hex: string) => void
+  onSlots: (next: string[]) => void
   /** Set while the rainbow is on, when the palette decides the colours. */
   disabled?: boolean
 }) {
-  // The owning slot is remembered rather than recomputed as the nearest preset,
-  // which would jump to another swatch while the picker is being dragged. Only
-  // a value from outside (a reset, a reload) is matched to its nearest preset.
-  const hexes = presets.map((p) => p.hex)
-  const [owner, setOwner] = useState(() => nearest(hexes, value))
-  const seen = useRef(value)
-  useEffect(() => {
-    if (seen.current !== value) {
-      seen.current = value
-      setOwner(nearest(hexes, value))
-    }
-    // hexes is rebuilt every render; the value is what this watches.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value])
-
-  function take(i: number, hex: string) {
-    setOwner(i)
-    seen.current = hex
-    onChange(hex)
-  }
+  // A value no swatch holds came from outside (an older setting), and belongs
+  // to the swatch nearest to it.
+  const same = slots.findIndex((hex) => hex.toUpperCase() === value.toUpperCase())
+  const owner = same >= 0 ? same : nearest(slots, value)
 
   return (
     <div
       className={`flex flex-wrap items-center gap-2 ${disabled ? 'pointer-events-none opacity-50' : ''}`}
     >
-      {presets.map((p, i) => {
-        const mine = i === owner
-        const hex = mine ? value : p.hex
-        // An edited slot shows a colour other than its preset, so it is named by
-        // its hex.
-        const label =
-          mine && value.toUpperCase() !== p.hex.toUpperCase() ? value.toUpperCase() : p.name
-        return (
-          <Disc
-            key={p.hex}
-            hex={hex}
-            label={label}
-            active={mine}
-            onSelect={() => take(i, hex)}
-            onEdit={(anchor, current) =>
-              openColorPickerPopover(anchor, current, (next) => take(i, next))
-            }
-          />
-        )
-      })}
+      {slots.map((hex, i) => (
+        <Disc
+          key={i}
+          hex={hex}
+          // An edited swatch no longer shows its preset, so it is named by its hex.
+          label={
+            hex.toUpperCase() === presets[i]?.hex.toUpperCase() ? (presets[i]?.name ?? hex) : hex.toUpperCase()
+          }
+          active={i === owner}
+          onSelect={() => onChange(hex)}
+          onEdit={(anchor, current) =>
+            openColorPickerPopover(anchor, current, (next) => {
+              onSlots(slots.map((h, j) => (j === i ? next : h)))
+              onChange(next)
+            })
+          }
+        />
+      ))}
     </div>
   )
 }

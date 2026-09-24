@@ -293,6 +293,19 @@ body {
   white-space: nowrap;
 }
 
+/* A control with no glyph has only its words, so hiding them would leave an
+   empty box: the selectors in the settings are all words. */
+[data-labels-buttons='glyph'] .glim-btn-label:only-child,
+[data-labels-buttons='reactive'] .glim-btn-label:only-child,
+[data-labels-tabs='glyph'] .glim-tab-label:only-child,
+[data-labels-tabs='reactive'] .glim-tab-label:only-child {
+  position: static;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  clip-path: none;
+}
+
 /* A zero-width label is still a flex item, so the gap would push the glyph
    off-centre. */
 [data-labels-buttons='glyph'] .glim-btn,

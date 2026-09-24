@@ -22,6 +22,7 @@ import { Targets } from './pages/Targets'
 import { api, type Job, type Run, type RunEvent, type Volume, type WindowSettings } from './lib/api'
 import { Places } from './lib/places'
 import { ACCENTS, applyAccent, applyRainbow, applyShape, cacheAppearance, RAINBOW, rainbowState, type RainbowState, type Shape } from './lib/appearance'
+import { storedLook, storedSlots, storeSlots } from './lib/look'
 import { applyDisco, discoTap } from './lib/disco'
 import { getDisco, setDisco } from './lib/discoSetting'
 import { CONTROL_AXES, getLabelMode, LABEL_MODES, setLabelMode, type ControlAxis, type LabelMode } from './lib/controls'
@@ -39,6 +40,7 @@ type Theme = 'dark' | 'light'
 
 /** The house accent a reset returns to, the first preset. */
 const DEFAULT_ACCENT = ACCENTS[0]?.hex ?? '#FCC419'
+const presetHexes = ACCENTS.map((a) => a.hex)
 
 const THEME_KEY = 'arrowloop.theme'
 
@@ -101,8 +103,9 @@ export function App() {
   const [error, setError] = useState<string | null>(null)
 
   const [theme, setTheme] = useState<Theme>(currentTheme)
-  const [shape, setShape] = useState<Shape>('round')
-  const [accent, setAccent] = useState<string>(ACCENTS[0]?.hex ?? '#FCC419')
+  const [shape, setShape] = useState<Shape>(() => storedLook().shape ?? 'round')
+  const [accent, setAccent] = useState<string>(() => storedLook().accent ?? DEFAULT_ACCENT)
+  const [slots, setSlots] = useState(() => storedSlots(presetHexes))
   const [rainbow, setRainbow] = useState<RainbowState>(rainbowState)
   const [motion, setMotionState] = useState<MotionIntensity>(getMotion)
   const [disco, setDiscoState] = useState(getDisco)
@@ -261,6 +264,11 @@ export function App() {
           onShape={setShape}
           accent={accent}
           onAccent={setAccent}
+          slots={slots}
+          onSlots={(next) => {
+            setSlots(next)
+            storeSlots(next)
+          }}
           rainbow={rainbow}
           onRainbow={setRainbow}
           disco={disco}
@@ -461,6 +469,9 @@ interface LookProps {
   onShape: (next: Shape) => void
   accent: string
   onAccent: (next: string) => void
+  /** The colour each accent swatch holds. */
+  slots: string[]
+  onSlots: (next: string[]) => void
   rainbow: RainbowState
   onRainbow: (next: RainbowState) => void
   disco: boolean
@@ -538,6 +549,8 @@ function Look({
   onShape,
   accent,
   onAccent,
+  slots,
+  onSlots,
   rainbow,
   onRainbow,
   disco,
@@ -626,14 +639,19 @@ function Look({
               {/* Inert while the rainbow hands out the colours. */}
               <AccentSwatches
                 presets={ACCENTS}
+                slots={slots}
                 value={accent}
                 onChange={onAccent}
+                onSlots={onSlots}
                 disabled={rainbow.on}
               />
               <ResetBadge
                 tip={t('look.accentReset')}
-                disabled={rainbow.on || accent === DEFAULT_ACCENT}
-                onClick={() => onAccent(DEFAULT_ACCENT)}
+                disabled={rainbow.on || (accent === DEFAULT_ACCENT && slots.join() === presetHexes.join())}
+                onClick={() => {
+                  onAccent(DEFAULT_ACCENT)
+                  onSlots(presetHexes)
+                }}
               />
             </div>
           </div>
