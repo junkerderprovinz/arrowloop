@@ -1,11 +1,10 @@
-import { createContext, useContext } from 'react'
-
 import type { TranslationKey } from './i18n.data'
 
-// Only the fields read here, and not the api module's types, so the phone app
-// can share this file without the web's Vite-only i18n loader.
-type Job = { name: string; left: string; right: string }
-type Drive = { id: string; label: string }
+// Only the fields read here, and not the api module's types or React, so the
+// phone app can share this file: its build installs neither the web's
+// packages nor the web's Vite-only i18n loader.
+export type Job = { name: string; left: string; right: string }
+export type Drive = { id: string; label: string }
 type Entry = { Kind: string; Side: string }
 
 /**
@@ -13,13 +12,6 @@ type Entry = { Kind: string; Side: string }
  * named before the colon, such as a cloud or a server.
  */
 export type Place = { kind: 'device' } | { kind: 'drive' | 'target'; name: string }
-
-/** The jobs and drives the log needs to name a side, provided once by App. */
-export const Places = createContext<{ jobs: Job[]; drives: Drive[] }>({ jobs: [], drives: [] })
-
-export function usePlaces() {
-  return useContext(Places)
-}
 
 const DRIVE = 'volume:'
 
