@@ -20,6 +20,10 @@ export type Option<T extends string> = { value: T; label: string; icon?: ReactNo
  */
 const MIN_SEGMENT = 200
 
+/** The gaps between segments, in pixels: 0.2rem in the well, 0.25rem between chips. */
+const WELL_GAP = 3.2
+const CHIP_GAP = 4
+
 export function Selector<T extends string>({
   options,
   value,
@@ -63,42 +67,62 @@ export function Selector<T extends string>({
   // concatenate alike apart.
   const labelKey = options.map((o) => o.label).join('\n')
 
-  // Measured rather than a flex share: a flex item with a zero basis adds
-  // nothing to a shrink-to-fit parent and truncates the widest label.
-  const [width, setWidth] = useState<number | null>(null)
+  // The widest natural segment, measured rather than a flex share: a flex item
+  // with a zero basis adds nothing to a shrink-to-fit parent and truncates the
+  // widest label.
+  const [widest, setWidest] = useState<number | null>(null)
+  // The parent's content width. A card's padding is not room: counted as room,
+  // it wraps a fourth option.
+  const [room, setRoom] = useState(0)
 
-  // Pass 1 drops the applied width when the labels change. A segment with an
+  // Pass 1 drops the measurement when the labels change. A segment with an
   // explicit width measures as that width, so measuring without this grows the
   // strip on every render.
   useLayoutEffect(() => {
-    if (scale === 'big') setWidth(null)
+    if (scale === 'big') setWidest(null)
   }, [scale, labelKey])
 
-  // Pass 2 measures the widest natural segment and pins all of them to it.
-  // Both passes are layout effects, so nothing flickers between them.
+  // Pass 2 measures the natural segments. Both passes are layout effects, so
+  // nothing flickers between them.
   useLayoutEffect(() => {
-    if (scale !== 'big' || width !== null || !track.current) return
-    let widest = 0
+    if (scale !== 'big' || widest !== null || !track.current) return
+    let most = 0
     for (const el of track.current.querySelectorAll<HTMLElement>('[data-segment]')) {
-      widest = Math.max(widest, el.getBoundingClientRect().width)
+      most = Math.max(most, el.getBoundingClientRect().width)
     }
-    if (widest === 0) return
+    if (most > 0) setWidest(most)
+  }, [scale, widest, labelKey])
 
-    // The floor is capped at this strip's share of the room it has, so a
-    // narrow column shrinks the segments together instead of wrapping the
-    // last one. Measured off the parent, since the track is fit-content, and
-    // inside its padding: a card's padding counted as room wraps a fourth
-    // option.
-    const parent = track.current.parentElement
-    const pad = parent ? getComputedStyle(parent) : null
-    const room =
-      parent && pad
-        ? parent.clientWidth - parseFloat(pad.paddingLeft) - parseFloat(pad.paddingRight)
-        : 0
-    const gaps = 0.2 * 16 * (options.length + 1)
-    const share = room > 0 ? (room - gaps) / options.length : Number.POSITIVE_INFINITY
-    setWidth(Math.min(Math.max(widest, MIN_SEGMENT), Math.max(widest, share)))
-  }, [scale, width, labelKey, options.length])
+  // How many segments share a row depends on the room, so it follows the
+  // parent's size and not only the labels.
+  useLayoutEffect(() => {
+    const parent = track.current?.parentElement
+    if (!parent) return
+    const measure = () => {
+      const pad = getComputedStyle(parent)
+      setRoom(parent.clientWidth - parseFloat(pad.paddingLeft) - parseFloat(pad.paddingRight))
+    }
+    measure()
+    const observer = new ResizeObserver(measure)
+    observer.observe(parent)
+    return () => observer.disconnect()
+  }, [])
+
+  const n = options.length
+  const gap = variant === 'well' ? WELL_GAP : CHIP_GAP
+  const inner = room - (variant === 'well' ? 2 * WELL_GAP : 0)
+  // The floor is capped at this strip's share of the room, so a narrow column
+  // shrinks the segments together before it wraps the last one.
+  const share = inner > 0 ? (inner - gap * (n - 1)) / n : Number.POSITIVE_INFINITY
+  const pinned =
+    scale === 'big' && widest !== null
+      ? Math.min(Math.max(widest, MIN_SEGMENT), Math.max(widest, share))
+      : null
+  // Once it wraps, the segments share each row evenly and grow to fill it, so
+  // no row ends in an empty strip: six that fit four to a row go three and
+  // three.
+  const fit = pinned && inner > 0 ? Math.max(1, Math.floor((inner + gap) / (pinned + gap))) : n
+  const perRow = Math.ceil(n / Math.ceil(n / fit))
 
   // Every segment reads a rainbow position, so the strip repaints when the
   // mode changes.
@@ -117,6 +141,7 @@ export function Selector<T extends string>({
       style={{
         borderRadius: variant === 'well' ? 'var(--radius-control)' : undefined,
         width: fill ? '100%' : 'fit-content',
+        maxWidth: '100%',
         opacity: disabled ? 0.45 : undefined,
         pointerEvents: disabled ? 'none' : undefined,
       }}
@@ -138,9 +163,17 @@ export function Selector<T extends string>({
               // The full control radius, as BombVault uses; subtracting the
               // well's padding left the strip looking square at the Soft stage.
               borderRadius: 'var(--radius-control)',
-              width: scale === 'big' && width ? width : undefined,
-              minWidth: scale === 'big' ? undefined : `calc(var(--btn-w-${stage}) / ${options.length})`,
-              flex: fill ? '1 1 0' : 'none',
+              ...(pinned !== null
+                ? {
+                    // The basis leaves one gap of slack so rounding cannot
+                    // push a full row's last segment down; growth takes it
+                    // back.
+                    minWidth: pinned,
+                    flex: `1 0 calc((100% - ${perRow} * ${gap}px) / ${perRow})`,
+                  }
+                : scale === 'big'
+                  ? { flex: 'none' }
+                  : { minWidth: `calc(var(--btn-w-${stage}) / ${n})`, flex: '1 0 auto' }),
             }}
             className={[
               'glim-hue glim-hue-icon glim-tab inline-flex items-center justify-center gap-1.5 px-3',
