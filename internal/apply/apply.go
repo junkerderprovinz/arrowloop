@@ -208,13 +208,16 @@ func (t *tally) count(f func(*Result)) {
 	f(&t.res)
 }
 
-func (t *tally) skip(path string, reason plan.Reason) {
+// skip records work that did not happen. side is the side a failed step was
+// writing to, so the log can say an upload failed; a postponed file passes an
+// empty side, since nothing was tried there.
+func (t *tally) skip(path, side string, reason plan.Reason) {
 	t.mu.Lock()
 	defer t.mu.Unlock()
 	t.res.Skipped = append(t.res.Skipped, plan.Skip{Path: path, Reason: reason})
 	// Not through note: a skip is not finished work and must not move the
 	// progress bar.
-	t.record(Entry{Kind: "skip", Path: path, Note: reason.String()})
+	t.record(Entry{Kind: "skip", Side: side, Path: path, Note: reason.String()})
 }
 
 func (t *tally) setFatal(err error) {
@@ -268,7 +271,7 @@ func RunVerified(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt
 			continue
 		}
 		if err := applyDir(ctx, ends, db, d); err != nil {
-			t.skip(d.Path, whyFailed(ends, nil, d.Kind.String(), "stepFailed", err))
+			t.skip(d.Path, d.Dst.String(), whyFailed(ends, nil, d.Kind.String(), "stepFailed", err))
 			continue
 		}
 		if d.Kind == plan.MakeDir {
@@ -284,7 +287,7 @@ func RunVerified(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt
 			continue
 		}
 		if why, busy := heldOpen(ends, act); busy {
-			t.skip(act.Path, why)
+			t.skip(act.Path, "", why)
 			continue
 		}
 		if err := one(ctx, ends, rec, act, runID, opt, t); err != nil {
@@ -292,7 +295,7 @@ func RunVerified(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt
 			if errors.As(err, &dis) {
 				return t.res, err
 			}
-			t.skip(act.Path, whyFailed(ends, couldHaveLocked(act), "move", "stepFailed", err))
+			t.skip(act.Path, act.Dst.String(), whyFailed(ends, couldHaveLocked(act), "move", "stepFailed", err))
 		}
 	}
 
@@ -300,7 +303,7 @@ func RunVerified(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt
 		acts := ofKind(p.Actions, group...)
 		if err := t.forEach(ctx, ends, acts, opt.Transfers, func(ctx context.Context, act plan.Action) error {
 			if why, busy := heldOpen(ends, act); busy {
-				t.skip(act.Path, why)
+				t.skip(act.Path, "", why)
 				return nil
 			}
 			return one(ctx, ends, rec, act, runID, opt, t)
@@ -325,7 +328,7 @@ func RunVerified(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt
 			if errors.As(err, &dis) {
 				return t.res, err
 			}
-			t.skip(act.Path, whyFailed(ends, couldHaveLocked(act), "record", "recordFailed", err))
+			t.skip(act.Path, "", whyFailed(ends, couldHaveLocked(act), "record", "recordFailed", err))
 		}
 	}
 
@@ -336,7 +339,7 @@ func RunVerified(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt
 			continue
 		}
 		if err := applyDir(ctx, ends, db, d); err != nil {
-			t.skip(d.Path, whyFailed(ends, nil, "removing the folder", "removeDirFailed", err))
+			t.skip(d.Path, d.Dst.String(), whyFailed(ends, nil, "removing the folder", "removeDirFailed", err))
 			continue
 		}
 		t.count(func(r *Result) { r.DirsRemoved++ })
@@ -373,7 +376,7 @@ func (t *tally) forEach(ctx context.Context, ends Ends, acts []plan.Action, work
 						cancel()
 						return
 					}
-					t.skip(act.Path, whyFailed(ends, couldHaveLocked(act), act.Kind.String(), "stepFailed", err))
+					t.skip(act.Path, act.Dst.String(), whyFailed(ends, couldHaveLocked(act), act.Kind.String(), "stepFailed", err))
 				}
 			}
 		}()

@@ -107,7 +107,7 @@ func TestOnlyFinishedWorkMovesTheProgressBar(t *testing.T) {
 		name string
 		do   func(*tally)
 	}{
-		{"a postponed file does not", func(tal *tally) { tal.skip("notes.txt", plan.Because("heldOpen", "side", "left")) }},
+		{"a postponed file does not", func(tal *tally) { tal.skip("notes.txt", "right", plan.Because("heldOpen", "side", "left")) }},
 		{"a remark about a file does not", func(tal *tally) { tal.observe("unverified", "notes.txt", "right", "no checksum") }},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
@@ -199,5 +199,16 @@ func TestTheDestinationIsOnlySuspectedAfterAFailure(t *testing.T) {
 	del := plan.Action{Kind: plan.Delete, Dst: plan.Right, DstPath: "notes.txt", RightNow: &scan.Entry{Path: "notes.txt"}}
 	if got := couldHaveLocked(del); len(got) != 1 {
 		t.Errorf("a failed deletion probes %v, wanted the victim once", got)
+	}
+}
+
+func TestSkipNamesTheSideItWouldHaveWritten(t *testing.T) {
+	var tal tally
+	tal.skip("notes.txt", "right", plan.Because("stepFailed", "what", "copy", "error", "timeout"))
+	if len(tal.res.Entries) != 1 {
+		t.Fatalf("got %d entries, want the one skip", len(tal.res.Entries))
+	}
+	if got := tal.res.Entries[0].Side; got != "right" {
+		t.Errorf("skip recorded side %q, want right, so the log can tell an upload from a download", got)
 	}
 }
