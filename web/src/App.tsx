@@ -8,11 +8,12 @@ import { InfoBubble } from './lib/glimstone/InfoBubble'
 import { ToggleRow } from './components/ToggleRow'
 import { HUE_OFFSET, Selector } from './components/Selector'
 import { Sidebar } from './components/Sidebar'
-import { IconHistory, IconJobs, IconLive, IconLock, IconLook, IconReset, IconSettings, IconTargets } from './components/glyphs'
+import { IconHistory, IconJobs, IconLive, IconLock, IconLook, IconPhone, IconReset, IconSettings, IconTargets } from './components/glyphs'
 import { AccentSwatches, PaletteSwatches } from './components/Swatches'
 import { About } from './components/About'
 import { SettingsBackup } from './components/SettingsBackup'
 import { Login } from './pages/Login'
+import { Apps } from './pages/Apps'
 import { Engine } from './pages/Engine'
 import { History, Jobs } from './pages/Jobs'
 import { Preview } from './pages/Preview'
@@ -32,7 +33,7 @@ import { wireTooltips } from './lib/tooltip'
 type Tab = 'jobs' | 'targets' | 'history' | 'settings'
 
 /** Settings is one tab with sections, the same shape BombVault uses. */
-type SettingsSection = 'general' | 'engine' | 'look' | 'security'
+type SettingsSection = 'general' | 'engine' | 'look' | 'app' | 'security'
 
 type Theme = 'dark' | 'light'
 
@@ -320,6 +321,7 @@ function Settings(props: LookProps) {
           { value: 'general', label: t('settings.general'), icon: <IconSettings /> },
           { value: 'engine', label: t('settings.engine'), icon: <IconLive /> },
           { value: 'look', label: t('settings.look'), icon: <IconLook /> },
+          { value: 'app', label: t('settings.app'), icon: <IconPhone /> },
           // Left out where the interface cannot keep a password of its own.
           ...(props.security
             ? [{ value: 'security' as SettingsSection, label: t('settings.security'), icon: <IconLock /> }]
@@ -334,6 +336,8 @@ function Settings(props: LookProps) {
           <General {...props} />
         ) : section === 'engine' ? (
           <Engine />
+        ) : section === 'app' ? (
+          <Apps />
         ) : section === 'security' ? (
           <Security />
         ) : (
