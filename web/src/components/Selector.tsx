@@ -20,6 +20,25 @@ export type Option<T extends string> = { value: T; label: string; icon?: ReactNo
  */
 const MIN_SEGMENT = 200
 
+/**
+ * Where each selector in the settings starts in the palette. Stacked selectors
+ * of similar width would otherwise repeat every colour straight down the page;
+ * settingsHue.test.ts holds every settings selector to this table. The engine
+ * tab's three share starts with the look tab's, since the two are never on
+ * screen together, and none shares the section tabs' start above both.
+ */
+export const HUE_OFFSET = {
+  tabs: 0,
+  /** The three label rows take +0..2 by row, so the block reads as one group. */
+  labels: 1,
+  shape: 4,
+  motion: 5,
+  theme: 6,
+  direction: 1,
+  mode: 2,
+  foldCase: 3,
+} as const
+
 /** The gaps between segments, in pixels: 0.2rem in the well, 0.25rem between chips. */
 const WELL_GAP = 3.2
 const CHIP_GAP = 4
@@ -31,6 +50,7 @@ export function Selector<T extends string>({
   scale = 'big',
   variant = 'well',
   fill = false,
+  hueOffset = 0,
   label,
   disabled = false,
 }: {
@@ -49,6 +69,8 @@ export function Selector<T extends string>({
    * of cards and should not be narrower than what it introduces.
    */
   fill?: boolean
+  /** Where this selector starts in the palette; see HUE_OFFSET. */
+  hueOffset?: number
   label?: string
   /**
    * Dimmed and inert, for a control whose value comes from elsewhere. It still
@@ -159,7 +181,7 @@ export function Selector<T extends string>({
               // Each segment takes its own palette position. It sits on the
               // segment because `.glim-hue` rebinds the accent for the fill,
               // the ink and the focus ring together.
-              ...(hueVars(i) as CSSProperties),
+              ...(hueVars(i + hueOffset) as CSSProperties),
               // The full control radius, as BombVault uses; subtracting the
               // well's padding left the strip looking square at the Soft stage.
               borderRadius: 'var(--radius-control)',

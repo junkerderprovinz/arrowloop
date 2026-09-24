@@ -6,7 +6,7 @@ import { Button } from './lib/glimstone/Button'
 import { Choice, Field } from './components/Field'
 import { InfoBubble } from './lib/glimstone/InfoBubble'
 import { ToggleRow } from './components/ToggleRow'
-import { Selector } from './components/Selector'
+import { HUE_OFFSET, Selector } from './components/Selector'
 import { Sidebar } from './components/Sidebar'
 import { IconHistory, IconJobs, IconLive, IconLock, IconLook, IconReset, IconSettings, IconTargets } from './components/glyphs'
 import { AccentSwatches, PaletteSwatches } from './components/Swatches'
@@ -307,6 +307,7 @@ function Settings(props: LookProps) {
       <div className="max-w-4xl">
       <Selector<SettingsSection>
         label={t('settings.section')}
+        hueOffset={HUE_OFFSET.tabs}
         value={section}
         onChange={setSection}
         variant="chip"
@@ -546,6 +547,7 @@ function Look({
       <Card title={t('look.theme')} hueIndex={0}>
         <Selector<Theme>
           label={t('look.theme')}
+          hueOffset={HUE_OFFSET.theme}
           value={theme}
           onChange={onTheme}
           options={[
@@ -558,6 +560,7 @@ function Look({
       <Card title={t('look.corners')} hueIndex={1} hint={t('look.cornersHint')}>
         <Selector<Shape>
           label={t('look.corners')}
+          hueOffset={HUE_OFFSET.shape}
           value={shape}
           onChange={onShape}
           options={[
@@ -571,6 +574,7 @@ function Look({
       <Card title={t('look.motion')} hueIndex={2} hint={t('look.motionHint')}>
         <Selector<MotionIntensity>
           label={t('look.motion')}
+          hueOffset={HUE_OFFSET.motion}
           value={motion}
           onChange={(next) => {
             onMotion(next)
@@ -585,11 +589,12 @@ function Look({
 
       <Card title={t('look.labels')} hueIndex={3} hint={t('look.labelsHint')}>
         <div className="flex flex-col gap-4">
-          {CONTROL_AXES.map((axis) => (
+          {CONTROL_AXES.map((axis, row) => (
             <div key={axis} className="flex flex-col gap-1">
               <span className="text-xs text-carbon-textSub">{t(axisKey[axis])}</span>
               <Selector<LabelMode>
                 label={t(axisKey[axis])}
+                hueOffset={HUE_OFFSET.labels + row}
                 value={labels[axis]}
                 onChange={(next) => onLabels(axis, next)}
                 options={LABEL_MODES.map((m) => ({ value: m, label: t(labelModeKey[m]) }))}

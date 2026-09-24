@@ -6,7 +6,7 @@ import { Stack } from '../components/Shell'
 import { ToggleRow } from '../components/ToggleRow'
 import { QuietPeriod } from '../components/QuietPeriod'
 import { ExcludeSetEditor, type Sets } from '../components/ExcludeSets'
-import { Selector } from '../components/Selector'
+import { HUE_OFFSET, Selector } from '../components/Selector'
 import { api, type Settings } from '../lib/api'
 import { useT } from '../lib/i18n'
 
@@ -176,6 +176,7 @@ export function Engine() {
             <Selector<'both' | 'leftToRight' | 'rightToLeft'>
               scale="small"
               label={t('direction.label')}
+              hueOffset={HUE_OFFSET.direction}
               value={(defaults.direction as 'both' | 'leftToRight' | 'rightToLeft') ?? 'both'}
               onChange={(direction) =>
                 setDefault({ direction, mode: direction === 'both' ? 'sync' : defaults.mode })
@@ -196,6 +197,7 @@ export function Engine() {
             <Selector<'sync' | 'mirror' | 'move'>
               scale="small"
               label={t('mode.label')}
+              hueOffset={HUE_OFFSET.mode}
               disabled={(defaults.direction ?? 'both') === 'both'}
               value={
                 (defaults.direction ?? 'both') === 'both'
@@ -270,6 +272,7 @@ export function Engine() {
             <Selector<'auto' | 'on' | 'off'>
               scale="small"
               label={t('engine.foldCase')}
+              hueOffset={HUE_OFFSET.foldCase}
               value={defaults.foldCase === undefined ? 'auto' : defaults.foldCase ? 'on' : 'off'}
               onChange={(next) =>
                 setDefault({ foldCase: next === 'auto' ? undefined : next === 'on' })
