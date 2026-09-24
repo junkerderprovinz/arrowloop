@@ -22,7 +22,7 @@ The full notes for each release are in
 - **Cloud and storage logos are larger on the targets page.** The mark stands left of the target's name and settings, 32 pixels across instead of the size of the text beside it.
 - **Provider tiles hover to a light grey instead of white** on the dark theme, with dark text, the same as in the sibling apps. Logos that would fade on the grey switch to a deeper shade of their own colour while hovered.
 - **The name under the logo is one word in one colour**, bold and at the size every sibling app uses.
-- **The interface uses the same system font list as the sibling apps**, so on Windows it is Segoe UI Variable rather than plain Segoe UI.
+- **Noto Sans is the interface's font**, shipped with it, so it looks the same on Windows, a Mac, Android and a Linux desktop. Arabic, Hebrew and Thai use Noto's own cuts, and a page loads only the characters it shows. Chinese, Japanese and Korean use Noto where the system has it and the system font otherwise.
 
 ## v0.7.6
 

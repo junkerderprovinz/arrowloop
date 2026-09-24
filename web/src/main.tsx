@@ -8,6 +8,10 @@ import { setGlyphResolver } from './lib/glimstone/glyphs'
 import { glyphFor } from './lib/glyphFor'
 import { applyStoredLanguage, I18nProvider } from './lib/i18n'
 import { applyStoredMotion } from './lib/motion'
+import '@fontsource-variable/noto-sans'
+import '@fontsource-variable/noto-sans-arabic'
+import '@fontsource-variable/noto-sans-hebrew'
+import '@fontsource-variable/noto-sans-thai'
 import './index.css'
 // Bundled rather than fetched: the interface runs on machines with no route to
 // the internet.
