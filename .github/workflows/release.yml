@@ -88,6 +88,8 @@ jobs:
           mkdir -p dist
           cp bundles/arrowloop-windows-amd64/ArrowLoop.exe "dist/arrowloop-${v}-windows-amd64-portable.exe"
           cp bundles/arrowloop-windows-amd64/*-installer.exe "dist/arrowloop-${v}-windows-amd64-installer.exe"
+          cp bundles/arrowloop-windows-arm64/ArrowLoop.exe "dist/arrowloop-${v}-windows-arm64-portable.exe"
+          cp bundles/arrowloop-windows-arm64/*-installer.exe "dist/arrowloop-${v}-windows-arm64-installer.exe"
           cp bundles/arrowloop-macos-universal/ArrowLoop.dmg "dist/arrowloop-${v}-macos-universal.dmg"
           cp bundles/arrowloop-linux-amd64/ArrowLoop "dist/arrowloop-${v}-linux-amd64"
           chmod +x "dist/arrowloop-${v}-linux-amd64"
