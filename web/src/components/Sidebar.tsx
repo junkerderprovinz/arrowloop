@@ -179,9 +179,7 @@ export function Sidebar<T extends string>({
           className={`shrink-0 ${flight > 0 ? 'al-logo-loose' : ''}`}
         />
         {!narrow && (
-          <span className="text-[19px] font-semibold tracking-tight text-carbon-text">
-            Arrow<span className="text-accentInk">Loop</span>
-          </span>
+          <span className="text-xl font-bold tracking-tight text-carbon-text">ArrowLoop</span>
         )}
       </button>
 

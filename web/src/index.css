@@ -30,7 +30,6 @@ body {
   margin: 0;
   background: var(--carbon-bg);
   color: var(--carbon-text);
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
 
 /* The app's own animations get the same three-step ladder as GlimStone's: one

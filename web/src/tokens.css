@@ -105,6 +105,8 @@
   --carbon-surface3:   #525252;
   --carbon-hover:      #353535;
   --carbon-hover-raised: #6f6f6f;
+  --carbon-tile-hover: #a8a8a8;
+  --carbon-tile-hover-ink: #161616;
   --carbon-border:     #393939;
 
   /* THE ABOUT CARD'S BRAND MARKS, at rest, and these are NOT the published
@@ -216,6 +218,8 @@
     --carbon-surface3:   #d1d1d1;
     --carbon-hover:      #e0e0e0;
     --carbon-hover-raised: #c6c6c6;
+    --carbon-tile-hover: #d1d1d1;
+    --carbon-tile-hover-ink: #161616;
     --carbon-border:     #d1d1d1;
 
     /* The light theme's answers: warm brands deepened, dark ones left dark.
@@ -278,6 +282,8 @@
   --carbon-surface3:   #d1d1d1;
   --carbon-hover:      #e0e0e0;
   --carbon-hover-raised: #c6c6c6;
+  --carbon-tile-hover: #d1d1d1;
+  --carbon-tile-hover-ink: #161616;
   --carbon-border:     #d1d1d1;
 
   /* The same brand answers as the media block above: an explicit light choice

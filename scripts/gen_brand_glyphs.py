@@ -100,12 +100,11 @@ HEAD = '''import type { SVGProps } from 'react'
 SURFACE_DARK = "#393939"   # --carbon-surface2, dark theme: what a row is filled with
 SURFACE_LIGHT = "#e8e8e8"  # --carbon-surface2, light theme
 
-# A picker tile is three grounds, not one. In the dark theme it turns white under
-# the pointer, and the light theme's hover is --carbon-surface3 at #d1d1d1. A
-# mark's light value has to clear the floor on every light ground it can land
-# on, and a hovered dark-theme tile switches its marks to their light values
-# (the last CSS block at the bottom of this file).
-GROUNDS_LIGHT = ("#ffffff", SURFACE_LIGHT, "#d1d1d1")
+# A mark's light value lands on four grounds: the white card on the light
+# theme, a tile's own #e8e8e8, the light theme's hover at #d1d1d1, and
+# --carbon-tile-hover at #a8a8a8, where a hovered dark-theme tile switches its
+# marks to their light values (the last CSS block at the bottom of this file).
+GROUNDS_LIGHT = ("#ffffff", SURFACE_LIGHT, "#d1d1d1", "#a8a8a8")
 
 # Below this contrast a mark is not readable against a ground: Dropbox's blue at
 # 2.28 reads well, Filen's black at 1.90 does not.
@@ -829,9 +828,9 @@ CSS_HEAD = """/* Brand marks that need a different lightness on one of the two g
    The first three blocks mirror tokens.css: dark by default, light when the
    OS asks and nothing overrides it, light when the app is set to it.
 
-   The fourth is for a picker tile, which lights up to white under the pointer
-   in the dark theme. While hovered, its marks stand on a light ground and wear
-   their light values.
+   The fourth is for a picker tile, which lights up to --carbon-tile-hover under
+   the pointer in the dark theme. While hovered, its marks stand on a light
+   ground and wear their light values.
 */
 """
 

@@ -120,14 +120,13 @@ export function ProviderPicker({
 /**
  * One tile: the mark above the name, the tile itself the button.
  *
- * In the dark theme the hover goes to white, as KnightLoader's does; in the
- * light theme the card is already white, so it steps to surface3 instead. On
- * a white tile a dark-theme mark would vanish, so `brand-hover-light` switches
- * each mark to its light value (generated in brandGlyphs.css), as the caption
- * does with `dark:hover:text-[#161616]`. The keyboard focus ring is kept.
+ * The hover is GlimStone's tile hover, a light grey on the dark theme and
+ * surface3 on the light one, with its own dark ink. On the light grey a
+ * dark-theme mark would fade, so `brand-hover-light` switches each mark to its
+ * light value (generated in brandGlyphs.css). The keyboard focus ring is kept.
  */
 const TILE =
   'brand-hover-light flex h-full w-full flex-col items-center justify-center gap-2 ' +
   'rounded-[var(--radius-control)] bg-carbon-surface2 px-2 py-3 text-carbon-text ' +
   'transition-colors duration-150 ' +
-  'hover:bg-carbon-surface3 dark:hover:bg-white dark:hover:text-[#161616]'
+  'hover:bg-(--carbon-tile-hover) hover:text-(--carbon-tile-hover-ink)'

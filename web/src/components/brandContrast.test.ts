@@ -14,13 +14,14 @@ const themed = readFileSync(join(here, '..', 'brandGlyphs.css'), 'utf8')
 const picker = readFileSync(join(here, 'ProviderPicker.tsx'), 'utf8')
 
 /**
- * Every ground a mark can stand on, by theme. A dark tile hovers to white and
- * the mark switches to its light value there, so white is on the light list,
- * with --carbon-surface2 at rest and --carbon-surface3 under the pointer.
+ * Every ground a mark can stand on, by theme. A dark tile hovers to
+ * --carbon-tile-hover and the mark switches to its light value there, so that
+ * grey is on the light list with the white card, --carbon-surface2 at rest and
+ * --carbon-surface3 under the pointer.
  */
 const GROUNDS = {
   dunkel: ['#393939'],
-  hell: ['#ffffff', '#e8e8e8', '#d1d1d1'],
+  hell: ['#ffffff', '#e8e8e8', '#d1d1d1', '#a8a8a8'],
 }
 /** Below this a mark is not readable. Dropbox sits at 2.28 and reads fine. */
 const FLOOR = 2.0
@@ -98,8 +99,8 @@ function variables(): { name: string; dunkel: string; hell: string }[] {
 describe('brand contrast', () => {
   it('reads both generated files', () => {
     // An empty list would let every assertion below pass.
-    expect(marks().length).toBeGreaterThan(20)
-    expect(variables().length).toBeGreaterThan(5)
+    expect(marks().length).toBeGreaterThan(10)
+    expect(variables().length).toBeGreaterThan(30)
   })
 
   it('gives every themed colour enough contrast on every ground', () => {
@@ -128,11 +129,11 @@ describe('brand contrast', () => {
     expect(faint, `needs a per-theme variant: ${faint.join(', ')}`).toEqual([])
   })
 
-  // A tile that hovers to white must switch its marks to their light values,
-  // and the two halves live in different files.
-  it('gives every white hover the switch that goes with it', () => {
+  // A tile that hovers light must switch its marks to their light values, and
+  // the two halves live in different files.
+  it('gives every light hover the switch that goes with it', () => {
     expect(themed).toContain('[data-theme="dark"] .brand-hover-light:hover {')
-    expect(picker).toContain('dark:hover:bg-white')
+    expect(picker).toContain('hover:bg-(--carbon-tile-hover)')
     expect(picker).toContain('brand-hover-light')
   })
 

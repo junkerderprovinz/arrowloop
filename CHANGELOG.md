@@ -14,6 +14,9 @@ The full notes for each release are in
 
 - **Edit and Delete stay visible on every target.** They used to appear only while the pointer was on the row, so on a touch screen or at a glance they were not there at all.
 - **Cloud and storage logos are larger on the targets page.** The mark stands left of the target's name and settings, 32 pixels across instead of the size of the text beside it.
+- **Provider tiles hover to a light grey instead of white** on the dark theme, with dark text, the same as in the sibling apps. Logos that would fade on the grey switch to a deeper shade of their own colour while hovered.
+- **The name under the logo is one word in one colour**, bold and at the size every sibling app uses.
+- **The interface uses the same system font list as the sibling apps**, so on Windows it is Segoe UI Variable rather than plain Segoe UI.
 
 ## v0.7.6
 
