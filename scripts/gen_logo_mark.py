@@ -65,7 +65,13 @@ if order != ["ring"] * len(ring_lines) + ["arrow"] * len(arrow_lines):
         "two groups would change what covers what; group them in the SVG instead"
     )
 
-body = f'''import type {{ CSSProperties }} from 'react'
+# The drawing lists the upper arrow's ten shapes before the lower arrow's ten.
+# The morph walks the two in from opposite sides, so each needs a group.
+if len(arrow_lines) != 20:
+    sys.exit(f"expected two arrows of ten shapes each, got {len(arrow_lines)} arrow shapes")
+upper, lower = arrow_lines[:10], arrow_lines[10:]
+
+body = f'''import type {{ CSSProperties, ReactNode }} from 'react'
 
 /**
  * The rings' gold when they carry no status, taken from the drawing. Set as
@@ -80,20 +86,23 @@ export const LOGO_GOLD = '{[k for k, v in RING.items() if v == "currentColor"][0
  * edit by hand: change the drawing and run the script again.
  *
  * The rings are `currentColor` mixed in oklab to the drawing's four depths; the
- * arrow keeps its greys. `.al-logo-rings` and `.al-logo-arrow` are separate
- * groups so the arrow can leave the rings and fly back (`.al-logo-loose` in
- * index.css).
+ * arrow keeps its greys. The rings, the arrow and its two halves
+ * (`.al-logo-up`, `.al-logo-down`) are groups of their own so the morph can
+ * move them separately; `children` are drawn inside the arrow's group, which is
+ * where the morph puts the shapes it bends (LogoLoop.tsx).
  */
 export function LogoMark({{
   size = 28,
   className = '',
   style,
   title,
+  children,
 }}: {{
   size?: number
   className?: string
   style?: CSSProperties
   title?: string
+  children?: ReactNode
 }}) {{
   return (
     <svg
@@ -113,7 +122,13 @@ export function LogoMark({{
       </g>
       {{/* The arrow, in its own greys, in every state. */}}
       <g className="al-logo-arrow">
-{chr(10).join(arrow_lines)}
+        <g className="al-logo-up">
+{chr(10).join("  " + l for l in upper)}
+        </g>
+        <g className="al-logo-down">
+{chr(10).join("  " + l for l in lower)}
+        </g>
+        {{children}}
       </g>
     </svg>
   )

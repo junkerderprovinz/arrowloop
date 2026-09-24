@@ -23,6 +23,9 @@ The full notes for each release are in
 - **Provider tiles hover to a light grey instead of white** on the dark theme, with dark text, the same as in the sibling apps. Logos that would fade on the grey switch to a deeper shade of their own colour while hovered.
 - **The name under the logo is one word in one colour**, bold and at the size every sibling app uses.
 - **Noto Sans is the interface's font**, shipped with it, so it looks the same on Windows, a Mac, Android and a Linux desktop. Arabic, Hebrew and Thai use Noto's own cuts, and a page loads only the characters it shows. Chinese, Japanese and Korean use Noto where the system has it and the system font otherwise.
+- **The provider tiles fill the card's width.** There were two per row at any window size, and a wide window now shows six.
+- **The logo's easter egg bends the arrows.** Five quick presses on the logo, or a press and hold, run both arrows into the middle, where their shafts bend into one ring that spins faster and faster until it breaks and they shoot out straight. The motion setting sets its pace, Off leaves the logo still, and reduced motion gets a short fade instead.
+- **The look is GlimStone 2.8.0.** The hidden storm level now also plays for somebody whose system asks for reduced motion, since reaching it takes five deliberate taps.
 
 ## v0.7.6
 

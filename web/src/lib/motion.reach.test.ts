@@ -2,73 +2,87 @@ import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 
 /**
- * The easter egg's movement stays inside the element's own box.
+ * The logo's morph leaves its own box only where nobody is watching.
  *
- * An animation that runs can still be invisible: an ancestor's clip hides
- * anything that leaves the box, and `overflow: visible` on the element cannot
- * undo that. The stylesheet is read directly, because a unit test has no layout.
+ * The rail clips whatever leaves the box, and `overflow: visible` on the mark
+ * cannot undo that, so an arrow outside it has to be hidden or fading out. The
+ * stylesheet is read directly, because a unit test has no layout.
  */
 
 const css = readFileSync(new URL('../index.css', import.meta.url), 'utf8')
 
-/** The body of one @keyframes block. */
-function keyframes(name: string): string {
+/** Half the drawing's box, in its own units: past this the centre is outside. */
+const HALF_BOX = 205.87
+
+interface Step {
+  at: number[]
+  body: string
+}
+
+/** The steps of one @keyframes block, each with the percentages it names. */
+function keyframes(name: string): Step[] {
   const at = css.indexOf(`@keyframes ${name} {`)
   expect(at, `@keyframes ${name} is not in index.css`).toBeGreaterThan(-1)
-  const from = css.indexOf('{', at) + 1
-  // The block has one nesting level (the percentage steps), so the closing
-  // brace is the one after the last step's.
-  let depth = 1
-  let i = from
-  while (i < css.length && depth > 0) {
-    if (css[i] === '{') depth++
-    else if (css[i] === '}') depth--
-    i++
+  const steps: Step[] = []
+  let i = css.indexOf('{', at) + 1
+  for (;;) {
+    const open = css.indexOf('{', i)
+    const close = css.indexOf('}', i)
+    if (close < open || open === -1) break
+    const pct = [...css.slice(i, open).matchAll(/([\d.]+)%/g)].map((m) => Number(m[1]))
+    const end = css.indexOf('}', open)
+    steps.push({ at: pct, body: css.slice(open + 1, end) })
+    i = end + 1
   }
-  return css.slice(from, i - 1)
+  return steps
 }
 
-/** Every percentage passed to translate() in one keyframes block. */
-function travels(name: string): number[] {
-  const out: number[] = []
-  for (const m of keyframes(name).matchAll(/translate\(([^)]*)\)/g)) {
-    for (const part of (m[1] ?? '').split(',')) {
-      const pct = /(-?[\d.]+)%/.exec(part.trim())
-      if (pct) out.push(Math.abs(Number(pct[1])))
-    }
-  }
-  return out
+/** How far one step's translate() carries the element along either axis. */
+function reach(step: Step): number {
+  const m = /translate\(([^)]*)\)/.exec(step.body)
+  if (!m) return 0
+  return Math.max(...(m[1] ?? '').split(',').map((v) => Math.abs(parseFloat(v))))
 }
 
-describe('the easter egg stays where it can be seen', () => {
+const hidden = (step: Step) => /opacity:\s*0\s*;/.test(step.body)
+
+describe("the logo's morph stays where it can be seen", () => {
   it('reads the keyframes at all', () => {
     // Without this a broken parser reports perfect behaviour of nothing.
-    expect(travels('al-shoot').length).toBeGreaterThan(4)
+    expect(keyframes('al-logo-out-up').length).toBe(3)
+    expect(keyframes('al-logo-in-up').length).toBe(4)
+    expect(Math.max(...keyframes('al-logo-out-up').map(reach))).toBeGreaterThan(HALF_BOX)
   })
 
-  // At half its box the drawing's centre reaches the box edge.
-  it('never travels further than half its own box', () => {
-    const tooFar = travels('al-shoot').filter((p) => p > 50)
-    expect(
-      tooFar,
-      `these steps leave the drawing's own box, so whether they are visible ` +
-        `depends on an ancestor's overflow rather than on this file: ${tooFar.join('%, ')}%`,
-    ).toEqual([])
+  it('throws the drawn arrows out of the box only as they vanish', () => {
+    for (const name of ['al-logo-out-up', 'al-logo-out-down']) {
+      const visibleOutside = keyframes(name).filter((s) => reach(s) > HALF_BOX && !hidden(s))
+      expect(visibleOutside, `${name} leaves the box while still visible`).toEqual([])
+    }
   })
 
-  it('does not lean on overflow to be seen', () => {
-    // The class may still set overflow for a shadow that grazes the edge, but
-    // the movement must not depend on it.
-    const worst = Math.max(...travels('al-shoot'))
-    expect(worst).toBeLessThanOrEqual(50)
+  it('brings the real arrows in from outside only while they are hidden', () => {
+    const real = keyframes('al-logo-real').filter(hidden).flatMap((s) => s.at)
+    const from = Math.min(...real)
+    const to = Math.max(...real)
+    for (const name of ['al-logo-in-up', 'al-logo-in-down']) {
+      const outside = keyframes(name)
+        .filter((s) => reach(s) > HALF_BOX)
+        .flatMap((s) => s.at)
+      expect(outside.length, `${name} never leaves the box`).toBeGreaterThan(0)
+      expect(
+        outside.filter((p) => p < from || p > to),
+        `${name} is outside the box while al-logo-real shows it`,
+      ).toEqual([])
+    }
   })
 
   // A scale past the box clips just like a translate out of it.
-  it('does not grow the rings out of the box either', () => {
-    const scales = [...keyframes('al-rings-settle').matchAll(/scale\(([\d.]+)\)/g)].map((m) =>
-      Number(m[1]),
+  it('does not grow the rings far out of the box', () => {
+    const scales = keyframes('al-logo-rings').flatMap((s) =>
+      [...s.body.matchAll(/scale\(([\d.]+)\)/g)].map((m) => Number(m[1])),
     )
-    expect(scales.length).toBeGreaterThan(2)
+    expect(scales.length).toBeGreaterThan(1)
     expect(Math.max(...scales)).toBeLessThanOrEqual(1.1)
   })
 })

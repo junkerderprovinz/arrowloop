@@ -2,6 +2,7 @@ import { useRef, useState, type CSSProperties, type ReactNode } from 'react'
 
 import { hueVars, rainbowAt } from '../lib/appearance'
 import { hidesLabel, type LabelMode } from '../lib/controls'
+import { LogoLoop } from './LogoLoop'
 import { LOGO_GOLD, LogoMark } from './LogoMark'
 import { HOLD, NO_STREAK, press } from '../lib/tapStreak'
 import { useRainbow } from './Shell'
@@ -110,10 +111,11 @@ export function Sidebar<T extends string>({
 
   const narrow = mode === 'glyph'
 
-  // The easter egg: five quick presses on the logo, or a press and hold, send
-  // the arrow flying out of its rings and back. The logo still navigates on
-  // every press. The flight count remounts the mark, which replays the
-  // animation even when it is asked for again.
+  // The easter egg: five quick presses on the logo, or a press and hold, run
+  // the arrows into the middle, bend them into a ring that spins faster and
+  // faster, and shoot them out straight. The logo still navigates on every
+  // press. The flight count remounts the mark, which replays the animation even
+  // when it is asked for again.
   const [flight, setFlight] = useState(0)
   const streak = useRef(NO_STREAK)
 
@@ -176,8 +178,10 @@ export function Sidebar<T extends string>({
           key={flight}
           size={narrow ? 44 : 104}
           style={{ color: LOGO_GOLD }}
-          className={`shrink-0 ${flight > 0 ? 'al-logo-loose' : ''}`}
-        />
+          className={`shrink-0 ${flight > 0 ? 'al-logo-morph' : ''}`}
+        >
+          {flight > 0 && <LogoLoop />}
+        </LogoMark>
         {!narrow && (
           <span className="text-xl font-bold tracking-tight text-carbon-text">ArrowLoop</span>
         )}
