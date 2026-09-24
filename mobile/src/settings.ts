@@ -46,6 +46,8 @@ export interface Appearance {
    */
   rainbowRotate: boolean;
   rainbowSeed: number;
+  /** The palette walks while the rainbow is on; unlocked in eggs.tsx. */
+  disco: boolean;
   shape: Shape;
   labels: LabelMode;
   /** The bottom bar's label mode; "same" follows `labels`. */
@@ -65,6 +67,7 @@ export const DEFAULT_APPEARANCE: Appearance = {
   palette: [],
   rainbowRotate: false,
   rainbowSeed: 0,
+  disco: false,
   shape: "round",
   labels: "textGlyph",
   barLabels: "textGlyph",

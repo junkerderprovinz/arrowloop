@@ -31,6 +31,7 @@ import { TargetPick } from "./src/screens/TargetPick";
 import { Targets } from "./src/screens/Targets";
 import { Trash } from "./src/screens/Trash";
 import { askNotifications, notificationsGranted } from "./src/screens/Settings";
+import { useDiscoWalk } from "./src/disco";
 import { loadAppearance, useAppearance } from "./src/settings";
 import { contrastOn, space, text } from "./src/theme";
 import { Glyph } from "./src/glyphs";
@@ -72,6 +73,7 @@ function Shell() {
   const { t } = useT();
   const { state, log, retry } = useEngine(t);
   const look = useAppearance();
+  useDiscoWalk();
 
   // The optional lock gates the whole app, since the job list alone shows
   // every synced path. It closes again after AWAY_MS in the background.

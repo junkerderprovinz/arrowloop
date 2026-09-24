@@ -11,7 +11,7 @@
 // props because a QR code needs a library and a coin's mark is someone else's
 // brand; without them the window shows the address, a copy button and tickers.
 import type { CSSProperties, ReactNode, Ref } from "react";
-import { hueVars, rainbowAt } from "../appearance";
+import { hueVars } from "../appearance";
 import { Badge } from "./Badge";
 import { Button } from "./Button";
 import { useLabelMode } from "./useLabelMode";
@@ -135,7 +135,7 @@ export function CryptoDonateDialog({
                   role="option"
                   aria-selected={n.id === network.id}
                   onClick={() => onPick(coin, n)}
-                  style={hueVars(rainbowAt(i)) as CSSProperties}
+                  style={hueVars(i) as CSSProperties}
                   className={`glim-hue rounded-pill px-3 py-1 text-xs font-medium transition-colors ${
                     n.id === network.id
                       ? "glim-active bg-accent text-accentContrast"
@@ -174,7 +174,7 @@ export function CryptoDonateDialog({
                 aria-label={`${c.name} (${c.symbol})`}
                 title={c.name}
                 onClick={() => onPick(c, c.networks[0]!)}
-                style={hueVars(rainbowAt(i)) as CSSProperties}
+                style={hueVars(i) as CSSProperties}
                 className={`flex flex-col items-center gap-1 rounded-control px-2 py-3 transition-colors ${
                   showTicker ? "glim-hue glim-hue-icon" : "glim-hue"
                 } ${

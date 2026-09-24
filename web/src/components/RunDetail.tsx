@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react'
 import { Badge } from '../lib/glimstone/Badge'
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { api, type Resolution, type RunEntry } from '../lib/api'
-import { useT, type TranslationKey } from '../lib/i18n'
+import { entryLabel, usePlaces } from '../lib/entryLabel'
+import { useT } from '../lib/i18n'
 import { Choice } from './Field'
 import { Button } from '../lib/glimstone/Button'
 import { IconCopy, IconSave } from './glyphs'
@@ -15,16 +16,6 @@ import { download } from '../lib/download'
  * A scheduled run resolves every conflict by keeping both versions, since it
  * cannot choose for anybody; this is where that choice can be revisited.
  */
-
-const KIND_LABEL: Record<string, TranslationKey> = {
-  copy: 'entry.copy',
-  move: 'entry.move',
-  trash: 'entry.trash',
-  conflict: 'entry.conflict',
-  mkdir: 'entry.mkdir',
-  rmdir: 'entry.rmdir',
-  skip: 'entry.skip',
-}
 
 // Codepoints rather than escapes: a tab mangled into a space still looks right
 // but breaks the columns.
@@ -49,6 +40,8 @@ export function RunDetail({
   onResolved: () => void
 }) {
   const { t } = useT()
+  const { jobs, drives } = usePlaces()
+  const config = jobs.find((j) => j.name === job)
   const [entries, setEntries] = useState<RunEntry[] | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [choices, setChoices] = useState<Record<string, Resolution>>({})
@@ -96,7 +89,7 @@ export function RunDetail({
       <ul className="flex max-h-80 flex-col gap-1 overflow-y-auto">
         {entries.map((e, i) => (
           <li key={`${e.Path}-${i}`} className="flex items-start gap-2 text-xs">
-            <Badge tone={tone(e.Kind)}>{t(KIND_LABEL[e.Kind] ?? 'entry.other')}</Badge>
+            <Badge tone={tone(e.Kind)}>{entryLabel(t, e, config, drives)}</Badge>
             <span className="min-w-0 flex-1 break-all font-mono text-carbon-text" title={e.Path}>
               {e.Path}
             </span>

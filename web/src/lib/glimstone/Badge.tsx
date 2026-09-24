@@ -37,7 +37,7 @@
 // `absolute top-0 -translate-y-1/2` and lays the badges out with flexbox.
 
 import type { CSSProperties, ReactNode } from "react";
-import { hueVars, rainbowAt } from "../appearance";
+import { hueVars } from "../appearance";
 import { IconTipButton } from "./IconTipButton";
 
 export type BadgeTone = "ok" | "fail" | "warn" | "active" | "neutral" | "heading" | "muted";
@@ -234,8 +234,8 @@ export function Badge({
   inFlow,
 }: BadgeProps) {
   // No rainbow subscription: Badge holds no hooks so a test can call it as a
-  // plain function, and hueVars and rainbowAt read module state. The page that
-  // edits the rainbow re-renders its badges itself.
+  // plain function, and hueVars points at the root's colours, so a palette
+  // change reaches the badge without a render.
   //
   // In the light theme --accent-ink is a fixed value, so a hued active badge's
   // text keeps the gold-calibrated ink while its background follows the hue.
@@ -245,7 +245,7 @@ export function Badge({
   const isNotchHue = hueOn && size === "heading";
   const shared = badgeClassName({ tone, size, shape, wrap, className, iconOnly: tip !== undefined, inFlow, insetStart });
   const merged = hueOn ? `glim-hue ${isNotchHue ? "glim-notch-hue " : ""}${shared}` : shared;
-  const hueStyle = hueOn ? (hueVars(rainbowAt(hueIndex)) as CSSProperties) : undefined;
+  const hueStyle = hueOn ? (hueVars(hueIndex) as CSSProperties) : undefined;
 
   if (as === "button") {
     const buttonClassName = `appearance-none transition-opacity hover:opacity-80 disabled:opacity-50 disabled:hover:opacity-50 ${merged}`;

@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react'
 
-import { hueVars, rainbowAt } from '../lib/appearance'
+import { hueVars } from '../lib/appearance'
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { Toggle } from '../lib/glimstone/Toggle'
 import { useRainbow } from './Shell'
@@ -36,7 +36,7 @@ export function ToggleRow({
   return (
     <div
       className={`flex items-start justify-between gap-4${hued ? ' glim-hue' : ''}`}
-      style={hued ? (hueVars(rainbowAt(hueIndex)) as CSSProperties) : undefined}
+      style={hued ? (hueVars(hueIndex) as CSSProperties) : undefined}
     >
       <span
         className={`flex items-center gap-1.5 text-sm text-carbon-text${

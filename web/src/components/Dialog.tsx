@@ -1,7 +1,7 @@
 import { useEffect, useRef, type CSSProperties, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 
-import { hueVars, rainbowAt } from '../lib/appearance'
+import { hueVars } from '../lib/appearance'
 import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
 import { IconClose } from '../lib/glimstone/glyphs'
@@ -77,7 +77,7 @@ export function Dialog({
         className={`glim-modal-card relative flex max-h-[85vh] w-full max-w-3xl flex-col rounded-card bg-carbon-surface shadow-2xl outline-none${
           hueIndex !== undefined ? ' glim-hue' : ''
         }`}
-        style={hueIndex !== undefined ? (hueVars(rainbowAt(hueIndex)) as CSSProperties) : undefined}
+        style={hueIndex !== undefined ? (hueVars(hueIndex) as CSSProperties) : undefined}
       >
         <div className="flex items-start justify-between gap-4 px-5 py-4">
           <h2 className="flex items-center">

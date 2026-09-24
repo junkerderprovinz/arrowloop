@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { Stack } from './components/Shell'
 import { Card } from './lib/glimstone/Card'
@@ -18,8 +18,11 @@ import { History, Jobs } from './pages/Jobs'
 import { Preview } from './pages/Preview'
 import { Security } from './pages/Security'
 import { Targets } from './pages/Targets'
-import { api, type Job, type Run, type RunEvent, type WindowSettings } from './lib/api'
+import { api, type Job, type Run, type RunEvent, type Volume, type WindowSettings } from './lib/api'
+import { Places } from './lib/entryLabel'
 import { ACCENTS, applyAccent, applyRainbow, applyShape, cacheAppearance, RAINBOW, rainbowState, type RainbowState, type Shape } from './lib/appearance'
+import { applyDisco, discoTap } from './lib/disco'
+import { getDisco, setDisco } from './lib/discoSetting'
 import { CONTROL_AXES, getLabelMode, LABEL_MODES, setLabelMode, type ControlAxis, type LabelMode } from './lib/controls'
 import { useT } from './lib/i18n'
 import { getMotion, MOTION_INTENSITIES, setMotion, type MotionIntensity } from './lib/motion'
@@ -101,6 +104,10 @@ export function App() {
   const [accent, setAccent] = useState<string>(ACCENTS[0]?.hex ?? '#FCC419')
   const [rainbow, setRainbow] = useState<RainbowState>(rainbowState)
   const [motion, setMotionState] = useState<MotionIntensity>(getMotion)
+  const [disco, setDiscoState] = useState(getDisco)
+  // Only for naming a drive in the file log, so a failed fetch leaves the id.
+  const [drives, setDrives] = useState<Volume[]>([])
+  const places = useMemo(() => ({ jobs, drives }), [jobs, drives])
   // Null until asked, and always on a build with no window of its own.
   const [window_, setWindow] = useState<WindowSettings | null>(null)
   const [version, setVersion] = useState('dev')
@@ -125,6 +132,10 @@ export function App() {
   }, [])
 
   useEffect(() => {
+    void api
+      .volumes()
+      .then((v) => setDrives(v.volumes))
+      .catch(() => {})
     void api.capabilities().then((can) => {
       setVersion(can.version || 'dev')
       setCanSecure(can.security === true)
@@ -180,6 +191,11 @@ export function App() {
     applyRainbow(rainbow)
   }, [rainbow])
 
+  // After the rainbow, which writes the resting colours the walk starts from.
+  useEffect(() => {
+    applyDisco(disco)
+  }, [disco, rainbow])
+
   const running = jobs.filter((j) => j.running).length
 
   return (
@@ -201,6 +217,7 @@ export function App() {
         settings={{ value: 'settings', label: t('nav.settings'), icon: <IconSettings /> }}
       />
 
+      <Places.Provider value={places}>
       <main className="min-w-0 flex-1 overflow-y-auto">
         {/* Keyed on the tab, so the subtree remounts and GlimStone's entrance
             animation plays on every tab change. */}
@@ -241,6 +258,11 @@ export function App() {
           onAccent={setAccent}
           rainbow={rainbow}
           onRainbow={setRainbow}
+          disco={disco}
+          onDisco={(on) => {
+            setDisco(on)
+            setDiscoState(on)
+          }}
           motion={motion}
           onMotion={(next) => {
             setMotion(next)
@@ -265,6 +287,7 @@ export function App() {
           )}
         </div>
       </main>
+      </Places.Provider>
     </div>
   )
 }
@@ -431,6 +454,8 @@ interface LookProps {
   onAccent: (next: string) => void
   rainbow: RainbowState
   onRainbow: (next: RainbowState) => void
+  disco: boolean
+  onDisco: (on: boolean) => void
   motion: MotionIntensity
   onMotion: (next: MotionIntensity) => void
   labels: Record<ControlAxis, LabelMode>
@@ -476,6 +501,26 @@ function useStormUnlock(motion: MotionIntensity, onMotion: (next: MotionIntensit
   }
 }
 
+/**
+ * Disco, the colour engine's easter egg: turn Rainbow Mode on five times, each
+ * within three seconds of the last, and the palette starts to walk. Like the
+ * storm, the discovery is not stored; the switch shows while disco is on and
+ * otherwise only while this screen stays open. The phone runs the same rule in
+ * mobile/src/eggs.tsx.
+ */
+function useDiscoUnlock(disco: boolean, onDisco: (on: boolean) => void) {
+  const [found, setFound] = useState(false)
+  const taps = useRef({ taps: 0, last: 0 })
+  return {
+    offered: found || disco,
+    turned: (on: boolean) => {
+      if (!discoTap(taps.current, on, { now: performance.now() })) return
+      setFound(true)
+      onDisco(true)
+    },
+  }
+}
+
 /** The looks a person owns. */
 function Look({
   theme,
@@ -486,6 +531,8 @@ function Look({
   onAccent,
   rainbow,
   onRainbow,
+  disco,
+  onDisco,
   motion,
   onMotion,
   labels,
@@ -493,6 +540,7 @@ function Look({
 }: LookProps) {
   const { t } = useT()
   const storm = useStormUnlock(motion, onMotion)
+  const discoUnlock = useDiscoUnlock(disco, onDisco)
   return (
     <Stack>
       <Card title={t('look.theme')} hueIndex={0}>
@@ -579,7 +627,10 @@ function Look({
 
           <ToggleRow
             checked={rainbow.on}
-            onChange={(on) => onRainbow({ ...rainbow, on })}
+            onChange={(on) => {
+              onRainbow({ ...rainbow, on })
+              discoUnlock.turned(on)
+            }}
             label={t('look.rainbowOn')}
             hint={t('look.rainbowHint')}
             hueIndex={0}
@@ -605,6 +656,15 @@ function Look({
                 hint={t('look.rotateHint')}
                 hueIndex={2}
               />
+              {discoUnlock.offered && (
+                <ToggleRow
+                  checked={disco}
+                  onChange={onDisco}
+                  label={t('look.disco')}
+                  hint={t('look.discoHint')}
+                  hueIndex={3}
+                />
+              )}
             </>
           )}
 

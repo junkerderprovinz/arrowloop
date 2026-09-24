@@ -1,7 +1,8 @@
 import { useNavigation } from "@react-navigation/native";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FlatList, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
-import { api, failed, touched, type Run, type Touch } from "../api";
+import { entryLabel } from "../../../web/src/lib/entryLabel";
+import { api, failed, touched, type Job, type Run, type Touch } from "../api";
 import { isPerfectlyIdle } from "../eggs";
 import { Field } from "../fields";
 import { Glyph } from "../glyphs";
@@ -100,6 +101,8 @@ function FileLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "fil
 
   const [rows, setRows] = useState<Touch[] | null>(null);
   const [jobs, setJobs] = useState<string[]>([]);
+  const [configs, setConfigs] = useState<Job[]>([]);
+  const [drives, setDrives] = useState<{ id: string; label: string }[]>([]);
   const [job, setJob] = useState("");
   const [show, setShow] = useState<Show>("all");
   // The search is debounced, so the engine sees one query per pause rather
@@ -136,8 +139,16 @@ function FileLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "fil
   // lines, and a job that never ran has none.
   useEffect(() => {
     api.jobs().then(
-      (list) => setJobs(list.map((j) => j.name)),
+      (list) => {
+        setJobs(list.map((j) => j.name));
+        setConfigs(list);
+      },
       () => setJobs([]),
+    );
+    // Only for a drive's name in a badge; without it the badge shows the id.
+    api.volumes().then(
+      (v) => setDrives(v.volumes),
+      () => {},
     );
   }, []);
   const names = useMemo(() => {
@@ -232,7 +243,15 @@ function FileLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "fil
         >
           <Mono>{item.Path}</Mono>
           <View style={styles.meta}>
-            <Badge label={t(entryKey(item.Kind))} tone={tone(item.Kind)} />
+            <Badge
+              label={entryLabel(
+                t,
+                { Kind: item.Kind, Side: item.Side ?? "" },
+                configs.find((c) => c.name === item.Job),
+                drives,
+              )}
+              tone={tone(item.Kind)}
+            />
             {/* The arrow points at the side that was written to. */}
             {item.Side === "left" || item.Side === "right" ? (
               <Glyph

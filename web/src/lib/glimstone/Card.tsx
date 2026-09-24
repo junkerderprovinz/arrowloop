@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
-import { hueVars, rainbowAt } from "../appearance";
+import { hueVars } from "../appearance";
 import { Badge } from "./Badge";
 import { InfoBubble } from "./InfoBubble";
 
@@ -42,7 +42,7 @@ export function Card({
       className={`relative glim-notch-card flex flex-col gap-4 ${
         nested ? "pt-5" : "bg-carbon-surface rounded-card p-5"
       }${hueIndex !== undefined ? " glim-hue" : ""}`}
-      style={hueIndex !== undefined ? (hueVars(rainbowAt(hueIndex)) as CSSProperties) : undefined}
+      style={hueIndex !== undefined ? (hueVars(hueIndex) as CSSProperties) : undefined}
     >
       {(title || hint) && (
         <h2 className="flex items-center">

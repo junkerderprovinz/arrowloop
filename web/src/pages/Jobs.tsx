@@ -20,9 +20,10 @@ import { JobForm, useJobConfig } from './Editor'
 import { Choice, Day, Field, Text } from '../components/Field'
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { bytes } from '../lib/bytes'
+import { entryLabel, usePlaces } from '../lib/entryLabel'
 import { api } from '../lib/api'
 import type { HistoryShow, Job, Run, RunEvent, Touch } from '../lib/api'
-import { translateSide, useT, type TranslationKey } from '../lib/i18n'
+import { translateSide, useT } from '../lib/i18n'
 import { describeCadence, readCadence } from '../lib/cadence'
 import { since } from '../lib/since'
 
@@ -573,10 +574,14 @@ function JobActivity({ job }: { job: string }) {
  */
 function TouchRow({ touch: e, withJob }: { touch: Touch; withJob?: boolean }) {
   const { t } = useT()
+  const { jobs, drives } = usePlaces()
+  const label = entryLabel(t, e, jobs.find((j) => j.name === e.Job), drives)
   return (
     <li className="flex items-baseline gap-3 text-xs">
-      <span className="w-20 shrink-0">
-        <Badge tone={touchTone(e.Kind)}>{t(TOUCH_LABEL[e.Kind] ?? 'entry.other')}</Badge>
+      {/* Wide enough for "Uploaded to" and a target's name; a longer one is
+          cut, with the whole phrase in the title. */}
+      <span className="w-52 shrink-0 truncate" title={label}>
+        <Badge tone={touchTone(e.Kind)}>{label}</Badge>
       </span>
       {/* Wide enough for the longest phrase in any locale, so it never wraps. */}
       <span className="w-28 shrink-0 whitespace-nowrap text-carbon-textMuted">
@@ -657,17 +662,6 @@ function AllTouches({ job, kinds, query }: { job: string; kinds: string[]; query
       ))}
     </ul>
   )
-}
-
-/** The kinds, in this app's own words. The same table RunDetail uses. */
-const TOUCH_LABEL: Record<string, TranslationKey> = {
-  copy: 'entry.copy',
-  move: 'entry.move',
-  trash: 'entry.trash',
-  conflict: 'entry.conflict',
-  mkdir: 'entry.mkdir',
-  rmdir: 'entry.rmdir',
-  skip: 'entry.skip',
 }
 
 /**

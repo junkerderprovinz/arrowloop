@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { CSSProperties } from 'react'
 
-import { hueVars, rainbowAt } from '../lib/appearance'
+import { hueVars } from '../lib/appearance'
 
 import { Selector } from './Selector'
 import { Choice, NumberField, Text } from './Field'
@@ -200,7 +200,7 @@ export function ScheduleField({
                   onClick={() => toggleDay(day)}
                   style={{
                     borderRadius: 'var(--radius-control)',
-                    ...(hueVars(rainbowAt(i)) as CSSProperties),
+                    ...(hueVars(i) as CSSProperties),
                   }}
                   className={`glim-hue px-2.5 py-1 text-xs font-medium transition-colors ${
                     on

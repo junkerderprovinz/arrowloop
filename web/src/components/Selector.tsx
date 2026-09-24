@@ -1,7 +1,7 @@
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
 
-import { hueVars, rainbowAt } from '../lib/appearance'
+import { hueVars } from '../lib/appearance'
 import { groupStage } from '../lib/controls'
 import { useRainbow } from './Shell'
 
@@ -134,7 +134,7 @@ export function Selector<T extends string>({
               // Each segment takes its own palette position. It sits on the
               // segment because `.glim-hue` rebinds the accent for the fill,
               // the ink and the focus ring together.
-              ...(hueVars(rainbowAt(i)) as CSSProperties),
+              ...(hueVars(i) as CSSProperties),
               // The full control radius, as BombVault uses; subtracting the
               // well's padding left the strip looking square at the Soft stage.
               borderRadius: 'var(--radius-control)',

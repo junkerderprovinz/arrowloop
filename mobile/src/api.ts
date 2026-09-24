@@ -320,6 +320,8 @@ export const api = {
   },
 
   jobs: () => call<Job[]>("/api/jobs"),
+  /** The registered drives, for naming one in the log. */
+  volumes: () => call<{ volumes: { id: string; label: string }[] }>("/api/volumes"),
   run: (job: string) => call<void>(`/api/jobs/${name(job)}/run`, { method: "POST" }),
   stop: (job: string) => call<void>(`/api/jobs/${name(job)}/stop`, { method: "POST" }),
   /** A dry run: what would happen, without doing any of it. */

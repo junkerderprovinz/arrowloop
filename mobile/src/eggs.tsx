@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Animated, Easing, StyleSheet, View } from "react-native";
 
+import { discoTap } from "../../web/src/lib/disco";
 import { Glyph } from "./glyphs";
 import { setAppearance, useAppearance } from "./settings";
 import { RAINBOW } from "./theme";
@@ -125,6 +126,26 @@ export function useStormUnlock(): { offered: boolean; tap: (level: string) => vo
       taps.current = 0;
       setFound(true);
       void setAppearance({ motion: "storm" });
+    },
+  };
+}
+
+/**
+ * Disco: turn the rainbow on five times, each within three seconds of the
+ * last, and the palette starts to walk. The count and the discovery live here
+ * and are not stored; the switch itself is, in the appearance. The web runs
+ * the same rule in App.tsx.
+ */
+export function useDiscoUnlock(): { offered: boolean; turned: (on: boolean) => void } {
+  const look = useAppearance();
+  const [found, setFound] = useState(false);
+  const taps = useRef({ taps: 0, last: 0 });
+  return {
+    offered: found || look.disco,
+    turned: (on: boolean) => {
+      if (!discoTap(taps.current, on, { now: Date.now() })) return;
+      setFound(true);
+      setAppearance({ disco: true });
     },
   };
 }

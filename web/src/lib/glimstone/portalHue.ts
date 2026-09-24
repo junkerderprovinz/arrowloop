@@ -7,7 +7,7 @@ import { hueVars } from "../appearance";
 
 // Read off hueVars() so the list cannot drift from the properties it writes. Any
 // hex yields the same keys.
-const HUE_VARS = Object.keys(hueVars("#000000"));
+const HUE_VARS = Object.keys(hueVars(0));
 
 /** What a portalled panel needs to stand in its trigger's palette position. */
 export interface PortalHue {

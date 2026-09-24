@@ -4,6 +4,8 @@ import { createRoot } from 'react-dom/client'
 import { Gate } from './App'
 import { applyCachedAppearance } from './lib/appearance'
 import { applyStoredLabelModes } from './lib/controls'
+import { applyDisco } from './lib/disco'
+import { getDisco } from './lib/discoSetting'
 import { setGlyphResolver } from './lib/glimstone/glyphs'
 import { glyphFor } from './lib/glyphFor'
 import { applyStoredLanguage, I18nProvider } from './lib/i18n'
@@ -20,6 +22,8 @@ import 'flag-icons/css/flag-icons.min.css'
 // Applied before React renders, so the page never paints in the default colours
 // first and a right-to-left page never arrives the wrong way round.
 applyCachedAppearance()
+// Disco walks the rainbow's colours, so it starts once they are applied.
+applyDisco(getDisco())
 applyStoredLanguage()
 applyStoredMotion()
 applyStoredLabelModes()

@@ -29,7 +29,7 @@ import {
 } from "../../../web/src/lib/donate";
 import { nearestPreset } from "../../../web/src/lib/colorMath";
 import { flagEmoji } from "../../../web/src/lib/flagEmoji";
-import { useClosingLoop, useStormUnlock } from "../eggs";
+import { useClosingLoop, useDiscoUnlock, useStormUnlock } from "../eggs";
 import { animateNext, useMotion, type MotionIntensity } from "../motion";
 import { ColorPicker, EditableSwatch, ResetMark } from "../ColorPicker";
 import { CryptoDonate } from "../donate";
@@ -61,6 +61,7 @@ export function Settings() {
   const { scheme, accentInk, barLabels } = useTheme();
   const { intensity: motion } = useMotion();
   const storm = useStormUnlock();
+  const disco = useDiscoUnlock();
   const loop = useClosingLoop();
 
   const [granted, setGranted] = useState<boolean | null>(null);
@@ -274,6 +275,7 @@ export function Settings() {
           onChange={(rainbow) => {
             animateNext(motion);
             setAppearance({ rainbow });
+            disco.turned(rainbow);
           }}
         />
 
@@ -297,6 +299,16 @@ export function Settings() {
                 })
               }
             />
+
+            {disco.offered && (
+              <Toggle
+                label={t("look.disco")}
+                hint={t("look.discoHint")}
+                value={look.disco}
+                hue={2}
+                onChange={(on) => setAppearance({ disco: on })}
+              />
+            )}
 
             <View style={styles.axisRow}>
               <View style={styles.axisName}>

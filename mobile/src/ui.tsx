@@ -29,6 +29,7 @@ import {
   SCRIM,
 } from "./theme";
 import { useAppearance, type BarLabelMode, type LabelMode } from "./settings";
+import { useWalkedPalette } from "./disco";
 import { useMotion } from "./motion";
 
 // GlimStone's controls for React Native, with the design language's shapes
@@ -56,6 +57,7 @@ export interface Theme {
 export function useTheme(): Theme {
   const system = useColorScheme() === "light" ? "light" : "dark";
   const a = useAppearance();
+  const walked = useWalkedPalette();
   const scheme = a.theme === "system" ? system : a.theme;
   const base = palettes[scheme];
   return {
@@ -71,6 +73,8 @@ export function useTheme(): Theme {
     accentInk: inkFor(a.accent, scheme),
     hueAt: (index: number) => {
       if (!a.rainbow) return undefined;
+      // Disco's colours already carry the rotation.
+      if (walked) return walked[((Math.trunc(index) % walked.length) + walked.length) % walked.length];
       const set = a.palette.length ? a.palette : RAINBOW;
       // Zero unless rotation is on, so switching it off restores every colour.
       const off = a.rainbowRotate ? a.rainbowSeed : 0;

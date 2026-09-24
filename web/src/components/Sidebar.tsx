@@ -1,6 +1,6 @@
 import { useRef, useState, type CSSProperties, type ReactNode } from 'react'
 
-import { hueVars, rainbowAt } from '../lib/appearance'
+import { hueVars } from '../lib/appearance'
 import { hidesLabel, type LabelMode } from '../lib/controls'
 import { LogoLoop } from './LogoLoop'
 import { LOGO_GOLD, LogoMark } from './LogoMark'
@@ -66,7 +66,7 @@ function Item<T extends string>({
     <button
       type="button"
       onClick={() => onPick(item.value)}
-      style={hueVars(rainbowAt(hue)) as CSSProperties}
+      style={hueVars(hue) as CSSProperties}
       // Glyph mode has no visible text to take the accessible name from.
       title={centred ? item.label : undefined}
       aria-label={mode === 'glyph' ? item.label : undefined}

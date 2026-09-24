@@ -188,7 +188,8 @@ export function subscribeRainbow(fn: () => void): () => void {
 
 /**
  * Stores the new state, mirrors it onto the document root and wakes the
- * readers. The `--rb-N` properties are set even when the mode is off; the
+ * readers. The `--rb-N` and `--rb-ink-N` properties are set even when the mode
+ * is off, because hueVars() points every hued element at them; the
  * `data-rainbow` attribute is what turns the look on.
  */
 export function applyRainbow(next: Partial<RainbowState> | undefined): void {
@@ -200,6 +201,7 @@ export function applyRainbow(next: Partial<RainbowState> | undefined): void {
   const root = document.documentElement;
   for (let i = 0; i < RAINBOW.length; i++) {
     root.style.setProperty(`--rb-${i}`, rainbowAt(i));
+    root.style.setProperty(`--rb-ink-${i}`, contrastOn(rainbowAt(i)));
   }
   if (!merged.on) root.removeAttribute('data-rainbow');
   else root.setAttribute('data-rainbow', merged.reactive ? 'reactive' : 'on');
@@ -233,28 +235,32 @@ export function rainbowColor(i: number): string | undefined {
 }
 
 /**
- * The inline custom properties an element with a palette position sets on
+ * The inline custom properties an element at palette position `i` sets on
  * itself. The `.glim-hue` rules in tokens.css decide whether the hue shows at
- * rest or on hover, so a component names its colour and never the mode.
+ * rest or on hover, so a component names its position and never the mode.
+ *
+ * They point at the root's `--rb-*` properties rather than holding a colour,
+ * so a palette or rotation change lands on the root alone, and disco can walk
+ * the colours there without re-rendering a single component.
  *
  * The class and these properties travel together: `.glim-hue` with no
  * `--item-hue` under it resolves the accent to nothing.
  */
-export function hueVars(hex: string | undefined): Record<string, string> {
-  if (!valid(hex)) return {};
-  const { r, g, b } = parse(hex);
+export function hueVars(i: number): Record<string, string> {
+  const n = ((Math.trunc(i) % RAINBOW.length) + RAINBOW.length) % RAINBOW.length;
+  const hue = `var(--rb-${n})`;
   return {
-    '--item-hue': hex,
-    '--item-hue-ink': contrastOn(hex),
-    '--item-hue-soft': `rgba(${r}, ${g}, ${b}, 0.22)`,
+    '--item-hue': hue,
+    '--item-hue-ink': `var(--rb-ink-${n})`,
+    '--item-hue-soft': `color-mix(in srgb, ${hue} 22%, transparent)`,
     // The wash covers a whole row, so it sits below the soft tint. Below 16%
     // people could not tell the rows apart from the ground.
-    '--item-hue-wash': `rgba(${r}, ${g}, ${b}, 0.16)`,
+    '--item-hue-wash': `color-mix(in srgb, ${hue} 16%, transparent)`,
     // A small circular badge has no neighbouring rows to repeat its colour and
     // reads as grey at the wash's 16%, so it gets its own tier.
-    '--item-hue-badge': `rgba(${r}, ${g}, ${b}, 0.5)`,
+    '--item-hue-badge': `color-mix(in srgb, ${hue} 50%, transparent)`,
     // Without this a gold focus ring would sit around a teal tab.
-    '--item-hue-ring': `rgba(${r}, ${g}, ${b}, 0.55)`,
+    '--item-hue-ring': `color-mix(in srgb, ${hue} 55%, transparent)`,
   };
 }
 
@@ -352,87 +358,4 @@ export function applyCachedAppearance(): void {
     applyShape('round');
     applyRainbow(undefined);
   }
-}
-
-// Disco, the second easter egg, steps the rainbow's seed once a second so every
-// hued element moves to the next colour together. It animates nothing: a seed
-// change re-renders the colour engine's readers, which is a repaint and no
-// transform.
-
-/** One colour step a second, well under the 3Hz flicker threshold named in
- *  photosensitivity guidance. */
-export const DISCO_TICK_MS = 1000;
-
-/** Turn-ons needed to unlock, matching STORM_TAPS. */
-export const DISCO_UNLOCK_TURN_ONS = 5;
-
-/** How long a run of turn-ons may pause before it counts as a new run, so
- *  somebody comparing rainbow on and off over a minute does not unlock disco. */
-export const DISCO_UNLOCK_WINDOW_MS = 3000;
-
-let discoTimer: ReturnType<typeof setInterval> | null = null;
-
-/** Stops the walk, and does nothing when none is running. The caller decides
- *  whether the palette the last tick left behind stays. */
-export function stopDisco(): void {
-  if (discoTimer !== null) {
-    clearInterval(discoTimer);
-    discoTimer = null;
-  }
-}
-
-/**
- * Starts or stops the walk and stamps `data-disco` on the root. Call it at boot
- * and whenever the switch or the rainbow state changes; each call stops the
- * previous interval first. `stored` is the persisted rainbow state.
- *
- * The tick sets `rotate: true`, because rainbowAt ignores the seed without it.
- * The tick applies and never persists, so the user's stored seed and rotate
- * switch stay as chosen and stopping re-applies `stored`. With rainbow off the
- * walk does not run, and it starts again when rainbow comes back.
- *
- * A hue reaches an element as an inline style computed during render, so an
- * element only changes colour when its component re-renders. Subscribe to the
- * colour engine once above the routes, or parts of the screen stand still.
- */
-export function applyDisco(on: boolean, stored: RainbowState): void {
-  const wasWalking = discoTimer !== null;
-  stopDisco();
-
-  const root = document.documentElement;
-  if (on) root.setAttribute('data-disco', 'on');
-  else root.removeAttribute('data-disco');
-
-  if (!on || !rainbowState().on) {
-    if (wasWalking) applyRainbow(stored);
-    return;
-  }
-
-  const palette = rainbowState().palette.length || 1;
-  discoTimer = setInterval(() => {
-    const live = rainbowState();
-    applyRainbow({ ...live, rotate: true, seed: (live.seed + 1) % palette });
-  }, DISCO_TICK_MS);
-}
-
-/**
- * The unlock gesture: five turn-ons of Rainbow Mode, each within
- * DISCO_UNLOCK_WINDOW_MS of the last. Returns true on the fifth.
- *
- * Counting turn-ons rather than clicks leaves rainbow on, the only state where
- * disco has colours to walk. As with stormTap, the count lives in the caller
- * and is never persisted.
- */
-export function discoTap(
-  state: { taps: number; last: number },
-  turnedOn: boolean,
-  clock: { now: number },
-): boolean {
-  if (!turnedOn) return false;
-  const gap = clock.now - state.last;
-  state.last = clock.now;
-  state.taps = state.taps > 0 && gap <= DISCO_UNLOCK_WINDOW_MS ? state.taps + 1 : 1;
-  if (state.taps < DISCO_UNLOCK_TURN_ONS) return false;
-  state.taps = 0;
-  return true;
 }
