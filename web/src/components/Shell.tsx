@@ -34,15 +34,3 @@ export function Rule() {
 export function Empty({ children }: { children: ReactNode }) {
   return <p className="py-6 text-center text-xs text-carbon-textMuted">{children}</p>
 }
-
-/**
- * A row's secondary actions, revealed while the pointer is on the row or focus
- * is inside it. The row's primary action stays outside and always visible.
- */
-export function RowActions({ children }: { children: ReactNode }) {
-  return (
-    <div className="flex shrink-0 items-center gap-1.5 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100 motion-reduce:transition-none">
-      {children}
-    </div>
-  )
-}

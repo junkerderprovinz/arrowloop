@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
-import { Empty, Rule, RowActions, Stack } from '../components/Shell'
+import { Empty, Rule, Stack } from '../components/Shell'
 import { IconAction } from '../components/IconAction'
 import { ProviderPicker } from '../components/ProviderPicker'
 import { Card } from '../lib/glimstone/Card'
@@ -276,16 +276,17 @@ function RemoteRow({
     .join('  ')
 
   return (
-    <div className="group flex flex-wrap items-center gap-x-3 gap-y-2 py-3">
+    <div className="flex flex-wrap items-center gap-x-3 gap-y-2 py-3">
+      {/* The engine identifies the product and its mark from the saved
+          settings (internal/remotes/identify.go). The mark spans both lines,
+          since it is what the eye looks for in a list of targets. */}
+      {remote.mark && brandMark(remote.mark) ? (
+        <span className="flex size-10 shrink-0 items-center justify-center text-[32px]">
+          {brandMark(remote.mark)}
+        </span>
+      ) : null}
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          {/* The engine identifies the product and its mark from the saved
-              settings (internal/remotes/identify.go). */}
-          {remote.mark && brandMark(remote.mark) ? (
-            <span className="flex h-5 w-5 shrink-0 items-center justify-center">
-              {brandMark(remote.mark)}
-            </span>
-          ) : null}
           <span className="truncate text-sm font-medium">{remote.name}:</span>
           {/* The protocol only where no logo already says what this is. */}
           {remote.mark ? null : <Badge>{remote.type}</Badge>}
@@ -304,7 +305,6 @@ function RemoteRow({
         {usage && <Space usage={usage} />}
       </div>
       <div className="flex shrink-0 items-center gap-1.5">
-        {/* The check stays visible; the other actions appear on hover. */}
         <IconAction
           onClick={check}
           disabled={checking}
@@ -315,19 +315,17 @@ function RemoteRow({
         >
           <IconCheck />
         </IconAction>
-        <RowActions>
-          <IconAction onClick={onEdit} title={t('action.edit')} labelKey="action.edit" hueIndex={row + 2}>
-            <IconEdit />
-          </IconAction>
-          <IconAction
-            title={t('action.delete')}
-            labelKey="action.delete"
-            hueIndex={row + 3}
-            onClick={() => setConfirming(true)}
-          >
-            <IconDelete />
-          </IconAction>
-        </RowActions>
+        <IconAction onClick={onEdit} title={t('action.edit')} labelKey="action.edit" hueIndex={row + 2}>
+          <IconEdit />
+        </IconAction>
+        <IconAction
+          title={t('action.delete')}
+          labelKey="action.delete"
+          hueIndex={row + 3}
+          onClick={() => setConfirming(true)}
+        >
+          <IconDelete />
+        </IconAction>
       </div>
 
       {confirming && (
@@ -677,8 +675,6 @@ function DriveRow({
         >
           <IconCopy />
         </IconAction>
-        {/* Always visible rather than in RowActions: it is what somebody
-            comes to this row to do. */}
         <IconAction
           title={t('targets.deleteDrive')}
           labelKey="targets.deleteDrive"

@@ -8,6 +8,13 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## Unreleased
+
+## 🎨 Design
+
+- **Edit and Delete stay visible on every target.** They used to appear only while the pointer was on the row, so on a touch screen or at a glance they were not there at all.
+- **Cloud and storage logos are larger on the targets page.** The mark stands left of the target's name and settings, 32 pixels across instead of the size of the text beside it.
+
 ## v0.7.6
 
 The interface password gets a way to set it, every build moves to Go 1.27.1, and a release now goes public only once all its downloads are there.
