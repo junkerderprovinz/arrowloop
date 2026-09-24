@@ -16,9 +16,9 @@ Every other sync tool's main screen is a progress bar, which is a report on a de
 
 It keeps a per-file record of what both sides looked like the last time they agreed, which is what lets it tell "created over here" apart from "deleted over there" instead of guessing. Deletions go to a trash rather than away. A run that would delete an implausible share of your files stops and says so. A side that lists nothing at all is never believed, because a disk that failed to mount looks exactly like a folder somebody emptied.
 
-Local folders, Unraid shares, SMB, SFTP and S3-compatible storage, with rclone compiled in rather than shelled out to.
+Local folders, Unraid shares, SMB, SFTP, S3-compatible storage, WebDAV clouds such as Nextcloud and OpenCloud, and the rest of what rclone speaks, compiled in rather than shelled out to.
 
-The WebUI has no login of its own. Keep it on your LAN or put it behind a reverse proxy that asks who you are.</Overview>
+Set a password for the WebUI under Settings, Security, where two-factor authentication and passkeys live too. Until then anyone who can reach it can drive it, so keep it on your LAN.</Overview>
   <Category>Backup: Tools:Utilities</Category>
   <WebUI>http://[IP]:[PORT:8422]/</WebUI>
   <TemplateURL>https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/templates/my-ArrowLoop.xml</TemplateURL>
@@ -32,7 +32,7 @@ The WebUI has no login of its own. Keep it on your LAN or put it behind a revers
     Target="8422"
     Default="8422"
     Mode="tcp"
-    Description="The port the interface listens on. Without a password hash below, anyone who can reach it can start a sync that deletes files, so do not forward it from the internet."
+    Description="The port the interface listens on. Until a password is set under Settings, Security, anyone who can reach it can start a sync that deletes files, so do not forward it from the internet."
     Type="Port"
     Display="always"
     Required="true"
