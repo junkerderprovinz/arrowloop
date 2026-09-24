@@ -8,10 +8,12 @@ export type Drive = { id: string; label: string }
 type Entry = { Kind: string; Side: string }
 
 /**
- * What one side of a job is: this device, a registered drive, or a target
- * named before the colon, such as a cloud or a server.
+ * What one side of a job is: a folder on this device, a registered drive, or
+ * a target named before the colon, such as a cloud or a server. A folder is
+ * named by its last segment, which is what tells two folders on one device
+ * apart.
  */
-export type Place = { kind: 'device' } | { kind: 'drive' | 'target'; name: string }
+export type Place = { kind: 'device' | 'drive' | 'target'; name: string }
 
 const DRIVE = 'volume:'
 
@@ -24,7 +26,9 @@ export function placeOf(path: string, drives: Drive[]): Place {
     return { kind: 'drive', name: drives.find((d) => d.id === id)?.label || id }
   }
   const target = TARGET.exec(path)
-  return target ? { kind: 'target', name: target[1]! } : { kind: 'device' }
+  if (target) return { kind: 'target', name: target[1]! }
+  const trimmed = path.replace(/[\\/]+$/, '')
+  return { kind: 'device', name: trimmed.split(/[\\/]/).pop() || trimmed }
 }
 
 /** The kinds in their plain words, for an entry whose sides are not known. */
@@ -51,16 +55,16 @@ export function entryLabel(t: T, e: Entry, job: Job | undefined, drives: Drive[]
   if (!job || (e.Side !== 'left' && e.Side !== 'right')) return plain
   const to = placeOf(e.Side === 'left' ? job.left : job.right, drives)
   const from = placeOf(e.Side === 'left' ? job.right : job.left, drives)
+  // "Locally" only means something when the other side is somewhere else.
   const here = (local: TranslationKey, there: TranslationKey) =>
-    to.kind === 'device' ? t(local) : t(there, { place: to.name })
+    to.kind === 'device' && from.kind !== 'device' ? t(local) : t(there, { place: to.name })
 
   switch (e.Kind) {
     case 'copy':
       if (to.kind === 'target' && from.kind !== 'target') return t('entry.upload', { place: to.name })
       if (from.kind === 'target' && to.kind !== 'target') return t('entry.download', { place: from.name })
-      if (to.kind !== 'device') return t('entry.copyTo', { place: to.name })
-      if (from.kind !== 'device') return t('entry.copyFrom', { place: from.name })
-      return plain
+      if (from.kind === 'drive' && to.kind === 'device') return t('entry.copyFrom', { place: from.name })
+      return t('entry.copyTo', { place: to.name })
     case 'move':
       return here('entry.moveLocal', 'entry.moveIn')
     case 'trash':

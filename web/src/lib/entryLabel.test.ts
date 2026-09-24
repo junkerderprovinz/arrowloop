@@ -29,8 +29,8 @@ function job(left: string, right: string): Job {
 const entry = (Kind: string, Side: string): RunEntry => ({ Kind, Side, Path: 'a.jpg', Note: '', Size: 0 })
 
 describe('where a side is', () => {
-  it('keeps a Windows drive letter on this device', () => {
-    expect(placeOf('C:\\Users\\jdp\\Fotos', drives)).toEqual({ kind: 'device' })
+  it('keeps a Windows drive letter on this device, named by its folder', () => {
+    expect(placeOf('C:\\Users\\jdp\\Fotos', drives)).toEqual({ kind: 'device', name: 'Fotos' })
   })
 
   it('names a target by what comes before the colon', () => {
@@ -60,6 +60,18 @@ describe('what happened to a file', () => {
   it('copies between two drives by name', () => {
     expect(entryLabel(t, entry('copy', 'right'), job('/data', 'volume:a1b2/x'), drives)).toBe(
       'Nach Backup-Platte kopiert',
+    )
+  })
+
+  it('names the folder when both sides are on this device', () => {
+    const local = job('/mnt/user/testlinks', '/mnt/user/testrechts/')
+    expect(entryLabel(t, entry('copy', 'right'), local, drives)).toBe('Nach testrechts kopiert')
+    expect(entryLabel(t, entry('trash', 'left'), local, drives)).toBe('In testlinks gelöscht')
+  })
+
+  it("copies from a drive onto this device by the drive's name", () => {
+    expect(entryLabel(t, entry('copy', 'left'), job('/data', 'volume:a1b2/x'), drives)).toBe(
+      'Von Backup-Platte kopiert',
     )
   })
 

@@ -18,7 +18,7 @@ The full notes for each release are in
 
 ## 🎨 Design
 
-- **The log says what happened to each file**, in words that name the place: uploaded to a cloud, downloaded from it, deleted locally or in the cloud, copied to a drive, and upload or download failed. The file log, a run's own list and the phone's history all use them. A file that was only postponed, because another program had it open, keeps its plain word, since nothing failed.
+- **The log says what happened to each file**, in words that name the place: uploaded to a cloud, downloaded from it, deleted locally or in the cloud, copied to a drive or to another folder by its name, and upload or download failed. The file log, a run's own list and the phone's history all use them. A file that was only postponed, because another program had it open, keeps its plain word, since nothing failed.
 - **Disco.** Turn Rainbow Mode on five times, each within three seconds of the last, and a Disco switch appears: every coloured control then glides along the palette together, a full turn every 19 seconds. It works in the browser and on the phone, and with the motion off it steps a colour at a time instead of gliding.
 - **Edit and Delete stay visible on every target.** They used to appear only while the pointer was on the row, so on a touch screen or at a glance they were not there at all.
 - **Cloud and storage logos are larger on the targets page.** The mark stands left of the target's name and settings, 32 pixels across instead of the size of the text beside it.
