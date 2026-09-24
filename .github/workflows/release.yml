@@ -76,28 +76,23 @@ jobs:
           pattern: arrowloop-*
           path: bundles
 
-      # Each file carries the version, so a download still says what it is,
-      # and has a copy without it, because /releases/latest/download/ takes an
-      # exact name only. The README links the arm64 APK; x86_64 is for
-      # emulators. A branch ref such as fix/x holds a slash, which a file name
-      # cannot.
+      # One file per build, under a name without the version, because
+      # /releases/latest/download/ takes an exact name only. Each build says
+      # its version itself: the exe's properties, the About card,
+      # `arrowloop version` and Android's app info. The x86_64 APK stays a CI
+      # artifact, since only an emulator runs it.
       - name: Package
         run: |
           set -eu
-          v="${GITHUB_REF_NAME//\//-}"
           mkdir -p dist
-          cp bundles/arrowloop-windows-amd64/ArrowLoop.exe "dist/arrowloop-${v}-windows-amd64-portable.exe"
-          cp bundles/arrowloop-windows-amd64/*-installer.exe "dist/arrowloop-${v}-windows-amd64-installer.exe"
-          cp bundles/arrowloop-windows-arm64/ArrowLoop.exe "dist/arrowloop-${v}-windows-arm64-portable.exe"
-          cp bundles/arrowloop-windows-arm64/*-installer.exe "dist/arrowloop-${v}-windows-arm64-installer.exe"
-          cp bundles/arrowloop-macos-universal/ArrowLoop.dmg "dist/arrowloop-${v}-macos-universal.dmg"
-          cp bundles/arrowloop-linux-amd64/ArrowLoop "dist/arrowloop-${v}-linux-amd64"
-          chmod +x "dist/arrowloop-${v}-linux-amd64"
-          cp bundles/arrowloop-mobile/arrowloop-app-arm64-v8a-release.apk "dist/arrowloop-${v}-android-arm64.apk"
-          cp bundles/arrowloop-mobile/arrowloop-app-x86_64-release.apk "dist/arrowloop-${v}-android-x86_64.apk"
-          for f in dist/arrowloop-"${v}"-*; do
-            cp "$f" "dist/$(basename "$f" | sed "s/^arrowloop-${v}-/arrowloop-/")"
-          done
+          cp bundles/arrowloop-windows-amd64/ArrowLoop.exe dist/arrowloop-windows-amd64-portable.exe
+          cp bundles/arrowloop-windows-amd64/*-installer.exe dist/arrowloop-windows-amd64-installer.exe
+          cp bundles/arrowloop-windows-arm64/ArrowLoop.exe dist/arrowloop-windows-arm64-portable.exe
+          cp bundles/arrowloop-windows-arm64/*-installer.exe dist/arrowloop-windows-arm64-installer.exe
+          cp bundles/arrowloop-macos-universal/ArrowLoop.dmg dist/arrowloop-macos-universal.dmg
+          cp bundles/arrowloop-linux-amd64/ArrowLoop dist/arrowloop-linux-amd64
+          chmod +x dist/arrowloop-linux-amd64
+          cp bundles/arrowloop-mobile/arrowloop-app-arm64-v8a-release.apk dist/arrowloop-android-arm64.apk
           ls -lh dist
 
       # Only from a pushed tag; a dispatched run stops after packaging. The

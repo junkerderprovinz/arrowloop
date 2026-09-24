@@ -144,3 +144,30 @@ go build ./cmd/arrowloop
 
 The result needs nothing else installed. It carries the interface, the engine
 and every storage backend it supports.
+
+## Syncing between two places over the internet
+
+ArrowLoop connects to the other side itself, over SFTP, SMB, WebDAV or a
+cloud's own interface. It has no relay and no account of its own, so a laptop
+away from home reaches the server at home only if that server can be reached.
+Opening its SSH port to the internet is the way not to do that.
+
+Put both machines in one private network instead:
+
+- **Tailscale** is the quickest. Install it on both machines and they reach
+  each other by name, from anywhere, with no port forwarded. It needs a
+  Tailscale account, its coordination servers introduce the machines, and its
+  relays carry the traffic when no direct path exists. That is the same trade
+  Syncthing and Resilio make, taken once for every program rather than per
+  program. [Headscale](https://github.com/juanfont/headscale) runs the
+  coordination on your own server.
+- **WireGuard** on its own needs nobody else's server, but one UDP port
+  forwarded on the router at home.
+
+Then add the server in ArrowLoop as usual, under Targets, Add a server or
+share, with its name or address inside that network as the host: with
+Tailscale, the machine name it shows (`server` or
+`server.your-tailnet.ts.net`); with WireGuard, the address the tunnel gives it.
+A job between the laptop and that target then runs the same at home and away.
+While the laptop has no connection, its scheduled runs fail and say so, and
+the next one that gets through catches up.

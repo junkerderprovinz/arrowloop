@@ -18,6 +18,11 @@ The full notes for each release are in
 - **Two-factor authentication** with an authenticator app and eight single-use recovery codes. A code is accepted once, so one read over somebody's shoulder cannot be used again within its thirty seconds, and wrong codes count toward the same lockout as wrong passwords.
 - **Passkeys** sign in with a key on a phone, a laptop or a security stick instead of the password. A browser offers them only on a host name with a certificate it trusts, or on `localhost`, so they work behind a reverse proxy; opened on an IP address, the section says why it cannot offer one.
 
+## ⚡ Improved
+
+- **A release carries one file per build**, seven in all with Windows on ARM. Each file used to come twice, with and without the version in its name; the version is still in every build, in the Windows properties, the About card, `arrowloop version` and Android's app info. The `x86_64` APK, which only the Android emulator runs, stays in the artifacts of each CI run.
+- **The install guide says how to sync between two places over the internet** without opening a port: with Tailscale, Headscale or WireGuard, and what each of them costs.
+
 ## 🐛 Fixed
 
 - **Selectors keep their words when the labels are set to symbols.** A choice with no symbol of its own, such as every option on the appearance page, was hidden like a label beside a symbol and left an empty box.
