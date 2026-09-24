@@ -25,6 +25,8 @@ const LINUX_SVG =
 const DESKTOP = [
   { key: 'apps.windows', file: 'arrowloop-windows-amd64-installer.exe', mark: WINDOWS_SVG },
   { key: 'apps.windowsPortable', file: 'arrowloop-windows-amd64-portable.exe', mark: WINDOWS_SVG },
+  { key: 'apps.windowsArm', file: 'arrowloop-windows-arm64-installer.exe', mark: WINDOWS_SVG },
+  { key: 'apps.windowsArmPortable', file: 'arrowloop-windows-arm64-portable.exe', mark: WINDOWS_SVG },
   { key: 'apps.macos', file: 'arrowloop-macos-universal.dmg', mark: APPLE_SVG },
   { key: 'apps.linux', file: 'arrowloop-linux-amd64', mark: LINUX_SVG },
 ] as const

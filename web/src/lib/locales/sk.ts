@@ -629,6 +629,8 @@ const sk: Translations = {
   'apps.desktopTitle': 'Aplikácia pre počítač',
   'apps.desktopHint': 'ArrowLoop ako program v počítači, s týmto rozhraním vo vlastnom okne. Každé stiahnutie je najnovšia verzia.',
   'apps.windowsPortable': 'Windows prenosná',
+  'apps.windowsArm': 'Windows ARM',
+  'apps.windowsArmPortable': 'Windows ARM prenosná',
   'apps.android': 'Android',
   'apps.windows': 'Windows',
   'apps.macos': 'macOS',

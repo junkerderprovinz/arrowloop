@@ -629,6 +629,8 @@ const is: Translations = {
   'apps.desktopTitle': 'Tölvuforrit',
   'apps.desktopHint': 'ArrowLoop sem forrit á tölvunni, með þessu viðmóti í eigin glugga. Hvert niðurhal er nýjasta útgáfan.',
   'apps.windowsPortable': 'Windows ferðaútgáfa',
+  'apps.windowsArm': 'Windows ARM',
+  'apps.windowsArmPortable': 'Windows ARM ferðaútgáfa',
   'apps.android': 'Android',
   'apps.windows': 'Windows',
   'apps.macos': 'macOS',

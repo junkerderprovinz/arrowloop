@@ -629,6 +629,8 @@ const sv: Translations = {
   'apps.desktopTitle': 'Skrivbordsapp',
   'apps.desktopHint': 'ArrowLoop som program på datorn, med det här gränssnittet i ett eget fönster. Varje nedladdning är den senaste versionen.',
   'apps.windowsPortable': 'Windows portabel',
+  'apps.windowsArm': 'Windows ARM',
+  'apps.windowsArmPortable': 'Windows ARM portabel',
   'apps.android': 'Android',
   'apps.windows': 'Windows',
   'apps.macos': 'macOS',

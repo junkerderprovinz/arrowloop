@@ -629,6 +629,8 @@ const et: Translations = {
   'apps.desktopTitle': 'Arvutirakendus',
   'apps.desktopHint': 'ArrowLoop programmina arvutis, selle liidesega omaette aknas. Iga allalaadimine on uusim versioon.',
   'apps.windowsPortable': 'Windows kaasaskantav',
+  'apps.windowsArm': 'Windows ARM',
+  'apps.windowsArmPortable': 'Windows ARM kaasaskantav',
   'apps.android': 'Android',
   'apps.windows': 'Windows',
   'apps.macos': 'macOS',

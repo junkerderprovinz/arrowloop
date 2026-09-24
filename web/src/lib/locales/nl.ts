@@ -629,6 +629,8 @@ const nl: Translations = {
   'apps.desktopTitle': 'Desktopapp',
   'apps.desktopHint': 'ArrowLoop als programma op de computer, met deze interface in een eigen venster. Elke download is de nieuwste versie.',
   'apps.windowsPortable': 'Windows draagbaar',
+  'apps.windowsArm': 'Windows ARM',
+  'apps.windowsArmPortable': 'Windows ARM draagbaar',
   'apps.android': 'Android',
   'apps.windows': 'Windows',
   'apps.macos': 'macOS',

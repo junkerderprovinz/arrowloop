@@ -629,6 +629,8 @@ const ko: Translations = {
   'apps.desktopTitle': '데스크톱 앱',
   'apps.desktopHint': '컴퓨터의 프로그램으로 쓰는 ArrowLoop, 이 화면을 전용 창에서 사용합니다. 모든 다운로드는 최신 버전입니다.',
   'apps.windowsPortable': 'Windows 포터블',
+  'apps.windowsArm': 'Windows ARM',
+  'apps.windowsArmPortable': 'Windows ARM 포터블',
   'apps.android': 'Android',
   'apps.windows': 'Windows',
   'apps.macos': 'macOS',

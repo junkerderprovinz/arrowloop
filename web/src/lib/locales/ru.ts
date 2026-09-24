@@ -629,6 +629,8 @@ const ru: Translations = {
   'apps.desktopTitle': 'Приложение для компьютера',
   'apps.desktopHint': 'ArrowLoop как программа на компьютере, с этим интерфейсом в собственном окне. Каждая загрузка — самая новая версия.',
   'apps.windowsPortable': 'Windows портативная',
+  'apps.windowsArm': 'Windows ARM',
+  'apps.windowsArmPortable': 'Windows ARM портативная',
   'apps.android': 'Android',
   'apps.windows': 'Windows',
   'apps.macos': 'macOS',

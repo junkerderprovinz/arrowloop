@@ -629,6 +629,8 @@ const fi: Translations = {
   'apps.desktopTitle': 'Työpöytäsovellus',
   'apps.desktopHint': 'ArrowLoop ohjelmana tietokoneella, tämä käyttöliittymä omassa ikkunassaan. Jokainen lataus on uusin versio.',
   'apps.windowsPortable': 'Windows siirrettävä',
+  'apps.windowsArm': 'Windows ARM',
+  'apps.windowsArmPortable': 'Windows ARM siirrettävä',
   'apps.android': 'Android',
   'apps.windows': 'Windows',
   'apps.macos': 'macOS',

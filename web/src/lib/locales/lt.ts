@@ -629,6 +629,8 @@ const lt: Translations = {
   'apps.desktopTitle': 'Kompiuterio programa',
   'apps.desktopHint': 'ArrowLoop kaip programa kompiuteryje, su šia sąsaja atskirame lange. Kiekvienas atsisiuntimas yra naujausia versija.',
   'apps.windowsPortable': 'Windows nešiojama',
+  'apps.windowsArm': 'Windows ARM',
+  'apps.windowsArmPortable': 'Windows ARM nešiojama',
   'apps.android': 'Android',
   'apps.windows': 'Windows',
   'apps.macos': 'macOS',

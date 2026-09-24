@@ -629,6 +629,8 @@ const vi: Translations = {
   'apps.desktopTitle': 'Ứng dụng máy tính',
   'apps.desktopHint': 'ArrowLoop dưới dạng chương trình trên máy tính, với giao diện này trong cửa sổ riêng. Mỗi bản tải xuống là phiên bản mới nhất.',
   'apps.windowsPortable': 'Windows di động',
+  'apps.windowsArm': 'Windows ARM',
+  'apps.windowsArmPortable': 'Windows ARM di động',
   'apps.android': 'Android',
   'apps.windows': 'Windows',
   'apps.macos': 'macOS',

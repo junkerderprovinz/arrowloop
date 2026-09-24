@@ -629,6 +629,8 @@ const th: Translations = {
   'apps.desktopTitle': 'แอปเดสก์ท็อป',
   'apps.desktopHint': 'ArrowLoop เป็นโปรแกรมบนคอมพิวเตอร์ ใช้หน้าตานี้ในหน้าต่างของตัวเอง ทุกการดาวน์โหลดเป็นเวอร์ชันล่าสุด',
   'apps.windowsPortable': 'Windows แบบพกพา',
+  'apps.windowsArm': 'Windows ARM',
+  'apps.windowsArmPortable': 'Windows ARM แบบพกพา',
   'apps.android': 'Android',
   'apps.windows': 'Windows',
   'apps.macos': 'macOS',

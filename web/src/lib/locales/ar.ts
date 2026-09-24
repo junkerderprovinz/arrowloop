@@ -629,6 +629,8 @@ const ar: Translations = {
   'apps.desktopTitle': 'تطبيق سطح المكتب',
   'apps.desktopHint': 'ArrowLoop كبرنامج على الحاسوب، بهذه الواجهة في نافذة خاصة به. كل تنزيل هو أحدث إصدار.',
   'apps.windowsPortable': 'Windows محمول',
+  'apps.windowsArm': 'Windows ARM',
+  'apps.windowsArmPortable': 'Windows ARM محمول',
   'apps.android': 'Android',
   'apps.windows': 'Windows',
   'apps.macos': 'macOS',

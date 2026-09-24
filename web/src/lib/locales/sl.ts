@@ -629,6 +629,8 @@ const sl: Translations = {
   'apps.desktopTitle': 'Namizna aplikacija',
   'apps.desktopHint': 'ArrowLoop kot program na računalniku, s tem vmesnikom v lastnem oknu. Vsak prenos je najnovejša različica.',
   'apps.windowsPortable': 'Windows prenosna',
+  'apps.windowsArm': 'Windows ARM',
+  'apps.windowsArmPortable': 'Windows ARM prenosna',
   'apps.android': 'Android',
   'apps.windows': 'Windows',
   'apps.macos': 'macOS',

@@ -629,6 +629,8 @@ const el: Translations = {
   'apps.desktopTitle': 'Εφαρμογή υπολογιστή',
   'apps.desktopHint': 'Το ArrowLoop ως πρόγραμμα στον υπολογιστή, με αυτό το περιβάλλον σε δικό του παράθυρο. Κάθε λήψη είναι η νεότερη έκδοση.',
   'apps.windowsPortable': 'Windows φορητό',
+  'apps.windowsArm': 'Windows ARM',
+  'apps.windowsArmPortable': 'Windows ARM φορητό',
   'apps.android': 'Android',
   'apps.windows': 'Windows',
   'apps.macos': 'macOS',

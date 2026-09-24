@@ -629,6 +629,8 @@ const ro: Translations = {
   'apps.desktopTitle': 'Aplicație desktop',
   'apps.desktopHint': 'ArrowLoop ca program pe calculator, cu această interfață într-o fereastră proprie. Fiecare descărcare este cea mai nouă versiune.',
   'apps.windowsPortable': 'Windows portabil',
+  'apps.windowsArm': 'Windows ARM',
+  'apps.windowsArmPortable': 'Windows ARM portabil',
   'apps.android': 'Android',
   'apps.windows': 'Windows',
   'apps.macos': 'macOS',

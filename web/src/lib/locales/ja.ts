@@ -629,6 +629,8 @@ const ja: Translations = {
   'apps.desktopTitle': 'デスクトップアプリ',
   'apps.desktopHint': 'パソコン上のプログラムとしての ArrowLoop。この画面を専用のウィンドウで使えます。どのダウンロードも最新版です。',
   'apps.windowsPortable': 'Windows ポータブル',
+  'apps.windowsArm': 'Windows ARM',
+  'apps.windowsArmPortable': 'Windows ARM ポータブル',
   'apps.android': 'Android',
   'apps.windows': 'Windows',
   'apps.macos': 'macOS',

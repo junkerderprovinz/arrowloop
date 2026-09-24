@@ -629,6 +629,8 @@ const id: Translations = {
   'apps.desktopTitle': 'Aplikasi desktop',
   'apps.desktopHint': 'ArrowLoop sebagai program di komputer, dengan antarmuka ini di jendelanya sendiri. Setiap unduhan adalah versi terbaru.',
   'apps.windowsPortable': 'Windows portabel',
+  'apps.windowsArm': 'Windows ARM',
+  'apps.windowsArmPortable': 'Windows ARM portabel',
   'apps.android': 'Android',
   'apps.windows': 'Windows',
   'apps.macos': 'macOS',

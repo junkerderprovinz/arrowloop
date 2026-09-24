@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { AccessibilityInfo, LayoutAnimation, Platform, UIManager } from "react-native";
 
+import { NATIVE_MOTION, springOf } from "./motionNative";
 import { useAppearance, type MotionIntensity } from "./settings";
 
 /**
- * The motion levels of the web app's lib/motion.ts as a plain table: one
- * animation at every level, with only the numbers changing. Android's reduce
- * motion setting always wins. LayoutAnimation covers most movement here, since
- * nearly everything that moves is a layout change.
+ * The motion levels of the web app's lib/motion.ts: one animation at every
+ * level, with only the numbers changing. Android's reduce motion setting always
+ * wins. LayoutAnimation covers most movement here, since nearly everything that
+ * moves is a layout change.
  */
 
 export type { MotionIntensity };
@@ -17,62 +18,10 @@ export const MOTION_INTENSITIES: MotionIntensity[] = ["off", "subtle", "wild"];
 
 export const DEFAULT_MOTION: MotionIntensity = "wild";
 
-/**
- * Durations in milliseconds per level, the same as the web app's tokens. A
- * zero duration is an instant layout change, so callers need no branch for
- * `off`.
- */
-export const MOTION: Record<
-  MotionIntensity,
-  {
-    layout: number;
-    fade: number;
-    toast: number;
-    spring: boolean;
-    damping: number;
-    /** How far a card travels up into place as a page arrives, in points. */
-    travel: number;
-    /** How far it swings in from the side as well, alternating per card. */
-    sway: number;
-    /** The delay between one card's arrival and the next one's, in ms. */
-    stagger: number;
-    /** The scale a pressed button or card gives way to. */
-    press: number;
-    /** The damping ratio of the arrival and the press: below 1 overshoots. */
-    bounce: number;
-    /** How far a page runs on past its top or bottom before it swings back. */
-    edge: number;
-  }
-> = {
-  // Hidden behind a gesture in eggs.tsx.
-  storm: {
-    layout: 760, fade: 200, toast: 420, spring: true, damping: 0.34,
-    travel: 72, sway: 48, stagger: 85, press: 0.84, bounce: 0.3, edge: 64,
-  },
-  // The top two spring and overshoot; the lower levels ease. The top one is
-  // picked for its energy, so the cards fly in from both sides and bounce.
-  wild: {
-    layout: 420, fade: 140, toast: 300, spring: true, damping: 0.68,
-    travel: 44, sway: 28, stagger: 65, press: 0.9, bounce: 0.42, edge: 36,
-  },
-  subtle: {
-    layout: 140, fade: 70, toast: 120, spring: false, damping: 1,
-    travel: 10, sway: 0, stagger: 25, press: 0.97, bounce: 1, edge: 0,
-  },
-  off: {
-    layout: 0, fade: 0, toast: 0, spring: false, damping: 1,
-    travel: 0, sway: 0, stagger: 0, press: 1, bounce: 1, edge: 0,
-  },
-};
+/** The numbers per level, from GlimStone's reference as it is. */
+export const MOTION = NATIVE_MOTION;
 
-/**
- * A spring for Animated from a damping ratio, which reads the same at any
- * stiffness where React Native's own `damping` does not.
- */
-export function springOf(ratio: number): { stiffness: number; damping: number; mass: number } {
-  const stiffness = 180;
-  return { stiffness, damping: ratio * 2 * Math.sqrt(stiffness), mass: 1 };
-}
+export { springOf };
 
 // Without this, LayoutAnimation is a no-op on the old architecture. The new
 // architecture drops the method, so its absence is fine.

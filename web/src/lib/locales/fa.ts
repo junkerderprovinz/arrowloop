@@ -629,6 +629,8 @@ const fa: Translations = {
   'apps.desktopTitle': 'برنامه دسکتاپ',
   'apps.desktopHint': 'ArrowLoop به‌صورت برنامه روی رایانه، با همین رابط در پنجره‌ای جداگانه. هر بارگیری تازه‌ترین نسخه است.',
   'apps.windowsPortable': 'Windows قابل‌حمل',
+  'apps.windowsArm': 'Windows ARM',
+  'apps.windowsArmPortable': 'Windows ARM قابل‌حمل',
   'apps.android': 'Android',
   'apps.windows': 'Windows',
   'apps.macos': 'macOS',

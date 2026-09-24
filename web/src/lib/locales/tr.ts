@@ -629,6 +629,8 @@ const tr: Translations = {
   'apps.desktopTitle': 'Masaüstü uygulaması',
   'apps.desktopHint': 'Bilgisayarda program olarak ArrowLoop, bu arayüz kendi penceresinde. Her indirme en yeni sürümdür.',
   'apps.windowsPortable': 'Windows taşınabilir',
+  'apps.windowsArm': 'Windows ARM',
+  'apps.windowsArmPortable': 'Windows ARM taşınabilir',
   'apps.android': 'Android',
   'apps.windows': 'Windows',
   'apps.macos': 'macOS',

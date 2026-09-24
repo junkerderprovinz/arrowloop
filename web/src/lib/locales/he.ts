@@ -629,6 +629,8 @@ const he: Translations = {
   'apps.desktopTitle': 'אפליקציה למחשב',
   'apps.desktopHint': 'ArrowLoop כתוכנה במחשב, עם הממשק הזה בחלון משלו. כל הורדה היא הגרסה החדשה ביותר.',
   'apps.windowsPortable': 'Windows נייד',
+  'apps.windowsArm': 'Windows ARM',
+  'apps.windowsArmPortable': 'Windows ARM נייד',
   'apps.android': 'Android',
   'apps.windows': 'Windows',
   'apps.macos': 'macOS',

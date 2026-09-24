@@ -629,6 +629,8 @@ const ca: Translations = {
   'apps.desktopTitle': 'App d\'escriptori',
   'apps.desktopHint': 'ArrowLoop com a programa a l\'ordinador, amb aquesta interfície en una finestra pròpia. Cada baixada és la versió més nova.',
   'apps.windowsPortable': 'Windows portable',
+  'apps.windowsArm': 'Windows ARM',
+  'apps.windowsArmPortable': 'Windows ARM portable',
   'apps.android': 'Android',
   'apps.windows': 'Windows',
   'apps.macos': 'macOS',

@@ -629,6 +629,8 @@ const eu: Translations = {
   'apps.desktopTitle': 'Mahaigaineko aplikazioa',
   'apps.desktopHint': 'ArrowLoop ordenagailuko programa gisa, interfaze hau bere leihoan. Deskarga bakoitza bertsio berriena da.',
   'apps.windowsPortable': 'Windows eramangarria',
+  'apps.windowsArm': 'Windows ARM',
+  'apps.windowsArmPortable': 'Windows ARM eramangarria',
   'apps.android': 'Android',
   'apps.windows': 'Windows',
   'apps.macos': 'macOS',

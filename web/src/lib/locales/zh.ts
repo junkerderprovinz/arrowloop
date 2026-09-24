@@ -629,6 +629,8 @@ const zh: Translations = {
   'apps.desktopTitle': '桌面应用',
   'apps.desktopHint': '作为电脑上的程序运行的 ArrowLoop，这个界面在独立窗口中打开。每次下载都是最新版本。',
   'apps.windowsPortable': 'Windows 便携版',
+  'apps.windowsArm': 'Windows ARM',
+  'apps.windowsArmPortable': 'Windows ARM 便携版',
   'apps.android': 'Android',
   'apps.windows': 'Windows',
   'apps.macos': 'macOS',

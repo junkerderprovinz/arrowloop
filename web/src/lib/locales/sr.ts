@@ -629,6 +629,8 @@ const sr: Translations = {
   'apps.desktopTitle': 'Апликација за рачунар',
   'apps.desktopHint': 'ArrowLoop као програм на рачунару, са овим интерфејсом у сопственом прозору. Свако преузимање је најновија верзија.',
   'apps.windowsPortable': 'Windows преносива',
+  'apps.windowsArm': 'Windows ARM',
+  'apps.windowsArmPortable': 'Windows ARM преносива',
   'apps.android': 'Android',
   'apps.windows': 'Windows',
   'apps.macos': 'macOS',

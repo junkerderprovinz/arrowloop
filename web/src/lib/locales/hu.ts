@@ -629,6 +629,8 @@ const hu: Translations = {
   'apps.desktopTitle': 'Asztali alkalmazás',
   'apps.desktopHint': 'Az ArrowLoop programként a számítógépen, ezzel a felülettel saját ablakban. Minden letöltés a legújabb verzió.',
   'apps.windowsPortable': 'Windows hordozható',
+  'apps.windowsArm': 'Windows ARM',
+  'apps.windowsArmPortable': 'Windows ARM hordozható',
   'apps.android': 'Android',
   'apps.windows': 'Windows',
   'apps.macos': 'macOS',

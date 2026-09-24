@@ -629,6 +629,8 @@ const no: Translations = {
   'apps.desktopTitle': 'Skrivebordsapp',
   'apps.desktopHint': 'ArrowLoop som program på datamaskinen, med dette grensesnittet i et eget vindu. Hver nedlasting er den nyeste versjonen.',
   'apps.windowsPortable': 'Windows bærbar',
+  'apps.windowsArm': 'Windows ARM',
+  'apps.windowsArmPortable': 'Windows ARM bærbar',
   'apps.android': 'Android',
   'apps.windows': 'Windows',
   'apps.macos': 'macOS',

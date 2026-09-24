@@ -89,6 +89,9 @@ Windows, Linux and macOS builds are on the
 gets two files and they are the same program: an **installer** that puts it in
 the Start menu and gives it an entry under Apps, and a **portable** exe that runs
 from wherever you leave it. Take the installer unless you have a reason not to.
+A computer with an ARM processor, such as a Snapdragon laptop, takes the pair
+named `windows-arm64`; the `amd64` files would run there too, but through
+emulation and slower.
 
 It is not a client talking to a server. The scheduler, the run log and the API
 all live in the same process, and the window is a webview pointed at them.

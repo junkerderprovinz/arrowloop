@@ -629,6 +629,8 @@ const gl: Translations = {
   'apps.desktopTitle': 'App de escritorio',
   'apps.desktopHint': 'ArrowLoop como programa no ordenador, con esta interface nunha xanela propia. Cada descarga é a versión máis recente.',
   'apps.windowsPortable': 'Windows portable',
+  'apps.windowsArm': 'Windows ARM',
+  'apps.windowsArmPortable': 'Windows ARM portable',
   'apps.android': 'Android',
   'apps.windows': 'Windows',
   'apps.macos': 'macOS',

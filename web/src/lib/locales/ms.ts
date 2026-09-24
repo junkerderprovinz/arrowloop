@@ -629,6 +629,8 @@ const ms: Translations = {
   'apps.desktopTitle': 'Aplikasi desktop',
   'apps.desktopHint': 'ArrowLoop sebagai program pada komputer, dengan antara muka ini dalam tetingkapnya sendiri. Setiap muat turun ialah versi terbaharu.',
   'apps.windowsPortable': 'Windows mudah alih',
+  'apps.windowsArm': 'Windows ARM',
+  'apps.windowsArmPortable': 'Windows ARM mudah alih',
   'apps.android': 'Android',
   'apps.windows': 'Windows',
   'apps.macos': 'macOS',

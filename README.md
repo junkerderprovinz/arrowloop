@@ -74,7 +74,7 @@ If it has earned a place on your server or computer, toss a coin to your knight:
 <!-- /download-buttons -->
 
 <p align="center">
-  <sub>Always the newest release &nbsp;·&nbsp; <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest">release notes</a> &nbsp;·&nbsp; <a href="#9-installing-it">how to install each one</a></sub>
+  <sub>Always the newest release &nbsp;·&nbsp; Windows on ARM: <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-windows-arm64-installer.exe">installer</a>, <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-windows-arm64-portable.exe">portable</a> &nbsp;·&nbsp; <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest">release notes</a> &nbsp;·&nbsp; <a href="#9-installing-it">how to install each one</a></sub>
 </p>
 
 <br>
@@ -322,7 +322,7 @@ docker run -d --name arrowloop -p 8422:8422   -v /mnt/user/appdata/arrowloop:/co
 
 The image carries no second executable. rclone is compiled in as a library, so there is no version skew between the tool and the thing it drives, and nothing to keep separately up to date.
 
-**As a desktop application** on Windows, Linux or macOS, from the release page. Windows gets two files that are the same program: an installer that puts it in the Start menu and under Apps, and a portable exe that runs from wherever you leave it. It is not a client talking to a server: the scheduler, the run log and the API all live in the same process, and the window is a webview pointed at them. Nothing listens on the network at all, which is the difference between a desktop app and a server somebody did not ask to run. The schedules run for as long as the window is open; for a machine that should sync while nobody is looking, `arrowloop daemon` and `arrowloop service` are the right pair.
+**As a desktop application** on Windows, Linux or macOS, from the release page. Windows gets two files that are the same program: an installer that puts it in the Start menu and under Apps, and a portable exe that runs from wherever you leave it. A Windows computer with an ARM processor gets its own pair, marked `windows-arm64`. It is not a client talking to a server: the scheduler, the run log and the API all live in the same process, and the window is a webview pointed at them. Nothing listens on the network at all, which is the difference between a desktop app and a server somebody did not ask to run. The schedules run for as long as the window is open; for a machine that should sync while nobody is looking, `arrowloop daemon` and `arrowloop service` are the right pair.
 
 **Settings, General, Starting** registers it to start when you sign in. It is a per-user entry (`HKCU` on Windows, `~/.config/autostart` on Linux, a LaunchAgent on macOS), so it needs no administrator rights and touches nobody else on the machine. The switch reads its state back from the system rather than from a settings file, so removing the entry with the Task Manager's own startup tab turns the switch off too, instead of leaving it claiming something that is no longer true. Autostart alone only gets the program running: a job that should sync *because* the machine just came on wants `runAtStart` as well, or it sits there until its schedule is next due.
 

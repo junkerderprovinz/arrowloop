@@ -36,6 +36,7 @@ import {
 import { useAppearance, type BarLabelMode, type LabelMode } from "./settings";
 import { useWalkedPalette } from "./disco";
 import { springOf, useMotion } from "./motion";
+import { arrivalDelay, arrivalSide, edgeReach } from "./motionNative";
 
 // GlimStone's controls for React Native, with the design language's shapes
 // and sizes: a notch 22 tall overlapping its card by half, a well whose chosen
@@ -117,9 +118,6 @@ export function useHue(index: number): string {
 type Line = { take: () => number; round: number; scrolled: { current: boolean } };
 const Arrival = createContext<Line | null>(null);
 
-// Past this many a long page would still be arriving a second later.
-const ARRIVAL_CAP = 8;
-
 /** The moving style for one card on a page, or nothing outside a page. */
 function useArrival() {
   const line = useContext(Arrival);
@@ -144,18 +142,18 @@ function useArrival() {
     if (round < 0) return;
     const run = Animated.spring(v, {
       toValue: 1,
-      delay: Math.min(place.current ?? 0, ARRIVAL_CAP) * ms.stagger,
+      delay: arrivalDelay(place.current ?? 0, ms),
       useNativeDriver: true,
       ...springOf(ms.bounce),
     });
     run.start();
     return () => run.stop();
-  }, [round, ms.travel, ms.stagger, ms.bounce, v]);
+  }, [round, ms, v]);
 
   if (!line) return null;
   // Every other card comes from the other side. Translation only: a card
   // holds a meter and buttons that move on their own.
-  const side = (place.current ?? 0) % 2 === 0 ? -1 : 1;
+  const side = arrivalSide(place.current ?? 0);
   return {
     opacity: v.interpolate({ inputRange: [0, 0.35, 1], outputRange: [0, 1, 1], extrapolate: "clamp" }),
     transform: [
@@ -197,11 +195,9 @@ function useScrollMotion() {
 
   const shift = useRef(new Animated.Value(0)).current;
   const resting = useRef<"top" | "bottom" | null>("top");
-  const kick = (toward: number, speed: number) => {
-    // A fast flick hits the edge harder than a slow one.
-    const reach = toward * ms.edge * Math.min(1, 0.4 + Math.abs(speed) / 5);
+  const kick = (edge: "top" | "bottom", speed: number) => {
     Animated.sequence([
-      Animated.timing(shift, { toValue: reach, duration: 90, useNativeDriver: true }),
+      Animated.timing(shift, { toValue: edgeReach(edge, speed, ms), duration: 90, useNativeDriver: true }),
       Animated.spring(shift, { toValue: 0, useNativeDriver: true, ...springOf(ms.bounce) }),
     ]).start();
   };
@@ -214,7 +210,7 @@ function useScrollMotion() {
         : contentOffset.y + layoutMeasurement.height >= contentSize.height - 1
           ? "bottom"
           : null;
-    if (at && at !== resting.current && ms.edge > 0) kick(at === "top" ? 1 : -1, velocity?.y ?? 0);
+    if (at && at !== resting.current && ms.edge > 0) kick(at, velocity?.y ?? 0);
     resting.current = at;
   };
 

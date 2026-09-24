@@ -629,6 +629,8 @@ const bg: Translations = {
   'apps.desktopTitle': 'Настолно приложение',
   'apps.desktopHint': 'ArrowLoop като програма на компютъра, с този интерфейс в собствен прозорец. Всяко изтегляне е най-новата версия.',
   'apps.windowsPortable': 'Windows преносима',
+  'apps.windowsArm': 'Windows ARM',
+  'apps.windowsArmPortable': 'Windows ARM преносима',
   'apps.android': 'Android',
   'apps.windows': 'Windows',
   'apps.macos': 'macOS',

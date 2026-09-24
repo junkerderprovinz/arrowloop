@@ -629,6 +629,8 @@ const hi: Translations = {
   'apps.desktopTitle': 'डेस्कटॉप ऐप',
   'apps.desktopHint': 'कंप्यूटर पर प्रोग्राम के रूप में ArrowLoop, इसी इंटरफ़ेस के साथ अपनी अलग विंडो में। हर डाउनलोड सबसे नया संस्करण है।',
   'apps.windowsPortable': 'Windows पोर्टेबल',
+  'apps.windowsArm': 'Windows ARM',
+  'apps.windowsArmPortable': 'Windows ARM पोर्टेबल',
   'apps.android': 'Android',
   'apps.windows': 'Windows',
   'apps.macos': 'macOS',

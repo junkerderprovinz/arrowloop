@@ -629,6 +629,8 @@ const it: Translations = {
   'apps.desktopTitle': 'App desktop',
   'apps.desktopHint': 'ArrowLoop come programma sul computer, con questa interfaccia in una finestra tutta sua. Ogni download è la versione più recente.',
   'apps.windowsPortable': 'Windows portatile',
+  'apps.windowsArm': 'Windows ARM',
+  'apps.windowsArmPortable': 'Windows ARM portatile',
   'apps.android': 'Android',
   'apps.windows': 'Windows',
   'apps.macos': 'macOS',

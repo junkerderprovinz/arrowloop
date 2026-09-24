@@ -629,6 +629,8 @@ const lv: Translations = {
   'apps.desktopTitle': 'Datora lietotne',
   'apps.desktopHint': 'ArrowLoop kā programma datorā, ar šo saskarni savā logā. Katra lejupielāde ir jaunākā versija.',
   'apps.windowsPortable': 'Windows pārnēsājamā',
+  'apps.windowsArm': 'Windows ARM',
+  'apps.windowsArmPortable': 'Windows ARM pārnēsājamā',
   'apps.android': 'Android',
   'apps.windows': 'Windows',
   'apps.macos': 'macOS',
