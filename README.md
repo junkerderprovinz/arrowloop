@@ -122,7 +122,7 @@ Targets come from [rclone](https://rclone.org), embedded as a library rather tha
 | Copies files another program holds open | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ |
 | Built-in schedule | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ⚠️ | ✅ | ⚠️ |
 | Real-time watching | ✅ | ✅ | ⚠️ | ✅ | ✅ | ❌ | ✅ | ⚠️ | ✅ |
-| Scripts before and after a run | ❌ | ✅ | ⚠️ | ❌ | ❓ | ❌ | ❌ | ✅ | ✅ |
+| Scripts before and after a run | ✅ | ✅ | ⚠️ | ❌ | ❓ | ❌ | ❌ | ✅ | ✅ |
 | Notification when a run fails | ✅ | ✅ | ⚠️ | ⚠️ | ⚠️ | ❌ | ❌ | ✅ | ✅ |
 | Device to device over the internet, no port forwarding | ❌ | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
 | Official container image | ✅ | ❌ | ❌ | ✅ | ⚠️ | ✅ | ❌ | ❌ | ❌ |

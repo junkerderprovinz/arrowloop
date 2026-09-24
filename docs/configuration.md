@@ -59,6 +59,8 @@ manager happened to start the process in.
 | `reportOnly` | `false` | Compare on every automatic turn and apply nothing. A run somebody starts by hand still applies. |
 | `brakePercent` | `50` | Refuse a run deleting more than this share of known files. `0` switches the brake off. |
 | `brakeFloor` | `10` | Never trip the brake below this many deletions. |
+| `before` | none | A shell command run before every run. If it fails, the run does not start. See below. |
+| `after` | none | A shell command run after every run, successful or not. If it fails, the run is marked failed. |
 
 !!! warning "`noTrash` makes a deletion final"
     The trash is what makes the promise at the top of [Safety](safety.md) hold:
@@ -119,6 +121,51 @@ disabled has to mean disabled everywhere. And the runs go one after another in
 file order rather than all at once, for the same reason ordinary runs are
 serialised: they share one uplink and one disk, and a start-up burst is where
 that matters most.
+
+## Commands before and after a run
+
+```json
+{
+  "name": "database",
+  "left": "/srv/dump",
+  "right": "b2:backup/dump",
+  "state": "state/database.db",
+  "before": "pg_dump -U app app > /srv/dump/app.sql",
+  "after": "/usr/local/bin/report-backup.sh"
+}
+```
+
+`before` runs before the two sides are compared. It is the place to write a
+database dump, stop a service that holds files open, or mount a drive. If it
+exits with anything other than zero, the run does not start, and the run record
+carries the last lines the command printed, since that is usually where a
+script says why it gave up.
+
+`after` runs once the run is over, whether it went well or not, so it can
+restart what `before` stopped. It learns how the run went from its environment:
+
+| Variable | What it holds |
+|---|---|
+| `ARROWLOOP_JOB` | The job's name. Also set for `before`. |
+| `ARROWLOOP_LEFT`, `ARROWLOOP_RIGHT` | The two sides as written in the file. Also set for `before`. |
+| `ARROWLOOP_RESULT` | `ok` or `failed`. |
+| `ARROWLOOP_ERROR` | Why the run failed, empty otherwise. |
+| `ARROWLOOP_COPIED`, `ARROWLOOP_MOVED`, `ARROWLOOP_DELETED` | How many files the run copied, moved and deleted. |
+| `ARROWLOOP_CONFLICTS`, `ARROWLOOP_SKIPPED` | How many files were in conflict and how many were left for later. |
+
+A command that exits with an error after a successful run marks the run failed,
+so a notification goes out for it. The commands run through `sh -c`, or
+`cmd /C` on Windows, in the program's working directory. Each may take fifteen
+minutes; after that it is stopped, because a hanging command would hold its
+job's place and every job queued behind it.
+
+!!! warning "Only the file can set them"
+    Anybody who can reach the interface could otherwise run anything on this
+    machine, with the rights of the process. So the interface shows the
+    commands but cannot set or change them: every save from the interface puts
+    back what the file on disk says for a job of the same name. A job created or
+    renamed in the interface starts without commands. The jobs tab and the file
+    agree on everything else.
 
 ## Whole file
 

@@ -45,6 +45,7 @@ func newRunner(t *testing.T) (*Runner, string, string) {
 			Right: right,
 			State: filepath.Join(root, "state.db"),
 		}},
+		ParallelJobs: 1,
 	}
 	return New(cfg, hist, nil, func(string, ...any) {}), left, right
 }

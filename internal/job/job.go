@@ -244,6 +244,14 @@ type Job struct {
 	// FoldCase overrides the backends' answer about case sensitivity for this
 	// job. See Defaults.FoldCase.
 	FoldCase *bool `json:"foldCase,omitempty"`
+
+	// Before and After are shell commands run around every run of the job.
+	// Before failing cancels the run. They can only be written in the file
+	// itself: every save from the interface keeps what the file on disk says,
+	// since anybody who can reach the interface could otherwise run anything
+	// on this machine.
+	Before string `json:"before,omitempty"`
+	After  string `json:"after,omitempty"`
 }
 
 // Defaults fill in the per-job settings a job does not set for itself, so a
@@ -696,6 +704,7 @@ func (c *Config) save(edit func(map[string]any)) (*Config, error) {
 		doc = map[string]any{}
 	}
 	edit(doc)
+	keepCommands(c.raw, doc)
 
 	next, err := json.MarshalIndent(doc, "", "  ")
 	if err != nil {
@@ -728,4 +737,46 @@ func (c *Config) JobsAsMaps() ([]map[string]any, error) {
 		return nil, fmt.Errorf("re-read the configuration: %w", err)
 	}
 	return doc.Jobs, nil
+}
+
+// commandKeys are the job fields that run programs, which only the file on
+// disk may set.
+var commandKeys = []string{"before", "after"}
+
+// keepCommands gives every job in doc the commands its namesake has in the
+// file on disk, and none if it has no namesake, whatever the edit put there.
+// A job renamed in the interface therefore loses its commands.
+func keepCommands(onDisk []byte, doc map[string]any) {
+	var prev struct {
+		Jobs []map[string]any `json:"jobs"`
+	}
+	// save has parsed the same bytes a moment ago.
+	_ = json.Unmarshal(onDisk, &prev)
+	kept := map[string]map[string]any{}
+	for _, j := range prev.Jobs {
+		if name, ok := j["name"].(string); ok {
+			kept[name] = j
+		}
+	}
+	// SaveJobs hands the list over typed, a decoded file as []any.
+	var jobs []map[string]any
+	switch list := doc["jobs"].(type) {
+	case []map[string]any:
+		jobs = list
+	case []any:
+		for _, raw := range list {
+			if j, ok := raw.(map[string]any); ok {
+				jobs = append(jobs, j)
+			}
+		}
+	}
+	for _, j := range jobs {
+		name, _ := j["name"].(string)
+		for _, key := range commandKeys {
+			delete(j, key)
+			if v, ok := kept[name][key]; ok {
+				j[key] = v
+			}
+		}
+	}
 }

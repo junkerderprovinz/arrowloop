@@ -223,6 +223,9 @@ export type RawJob = {
    */
   noTrash?: boolean
   exclude?: string[]
+  /** Shell commands around every run. Only the file sets them; a save keeps them. */
+  before?: string
+  after?: string
   [key: string]: unknown
 }
 

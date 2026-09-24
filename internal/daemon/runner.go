@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"path/filepath"
 	"sort"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -20,6 +21,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/apply"
 	"github.com/junkerderprovinz/arrowloop/internal/engine"
 	"github.com/junkerderprovinz/arrowloop/internal/history"
+	"github.com/junkerderprovinz/arrowloop/internal/hook"
 	"github.com/junkerderprovinz/arrowloop/internal/job"
 	"github.com/junkerderprovinz/arrowloop/internal/notify"
 	"github.com/junkerderprovinz/arrowloop/internal/plan"
@@ -169,7 +171,14 @@ func (r *Runner) RunChosen(ctx context.Context, name string, only []string, reso
 
 	r.publish(Event{Job: name, Phase: "started"})
 	rec := history.Run{Job: name, Started: time.Now()}
-	res, p, err := r.execute(ctx, j, only, resolve)
+	var res apply.Result
+	var p *plan.Plan
+	err := hook.Run(ctx, j.Before, hookEnv(j, nil))
+	if err != nil {
+		err = fmt.Errorf("the command before the run failed, so the run did not start: %w", err)
+	} else {
+		res, p, err = r.execute(ctx, j, only, resolve)
+	}
 
 	// A drive that is not plugged in is not a run, so nothing is recorded.
 	if errors.Is(err, ErrVolumeMissing) {
@@ -188,6 +197,13 @@ func (r *Runner) RunChosen(ctx context.Context, name string, only []string, reso
 	rec.Conflicts, rec.DirsMade, rec.DirsRemoved = res.Conflicts, res.DirsMade, res.DirsRemoved
 	rec.Skipped = len(res.Skipped)
 
+	// Runs even when the run was stopped, since cleaning up after it is what
+	// the command is usually for.
+	if aErr := hook.Run(context.WithoutCancel(ctx), j.After, hookEnv(j, &rec)); aErr != nil && rec.Err == "" {
+		rec.Err = fmt.Sprintf("the command after the run failed: %v", aErr)
+		err = errors.New(rec.Err)
+	}
+
 	if r.hist != nil {
 		if hErr := r.hist.Record(ctx, rec, entriesOf(res)); hErr != nil {
 			r.log("could not write the run record for %s: %v", name, hErr)
@@ -200,6 +216,30 @@ func (r *Runner) RunChosen(ctx context.Context, name string, only []string, reso
 	}
 	r.publish(finished)
 	return rec, err
+}
+
+// hookEnv is what a job's commands learn about it: the job always, and the
+// outcome once there is a run to report.
+func hookEnv(j job.Job, rec *history.Run) map[string]string {
+	env := map[string]string{
+		"ARROWLOOP_JOB":   j.Name,
+		"ARROWLOOP_LEFT":  j.Left,
+		"ARROWLOOP_RIGHT": j.Right,
+	}
+	if rec == nil {
+		return env
+	}
+	env["ARROWLOOP_RESULT"] = "ok"
+	if rec.Failed() {
+		env["ARROWLOOP_RESULT"] = "failed"
+	}
+	env["ARROWLOOP_ERROR"] = rec.Err
+	env["ARROWLOOP_COPIED"] = strconv.Itoa(rec.Copied)
+	env["ARROWLOOP_MOVED"] = strconv.Itoa(rec.Moved)
+	env["ARROWLOOP_DELETED"] = strconv.Itoa(rec.Trashed)
+	env["ARROWLOOP_CONFLICTS"] = strconv.Itoa(rec.Conflicts)
+	env["ARROWLOOP_SKIPPED"] = strconv.Itoa(rec.Skipped)
+	return env
 }
 
 // entriesOf converts what a run did into log entries, so apply and history do

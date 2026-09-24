@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { Fragment, useCallback, useEffect, useState } from 'react'
 import { jobCopy, uniqueName } from '../lib/jobCopy.data'
 
 import { Field, Lines, Text, Choice } from '../components/Field'
@@ -198,6 +198,10 @@ export function useJobConfig(onSaved: () => void) {
         t('edit.copySuffix'),
         t('edit.newJob'),
       )
+      // The server gives a job under a new name no commands, so the draft
+      // should not show any either.
+      delete copy.before
+      delete copy.after
       setJobs([...current, copy])
       return current.length
     },
@@ -361,6 +365,30 @@ export function JobForm({
           />
         </Field>
       </div>
+
+      {/* Shown and never edited: the server keeps what the file says, since
+          a command set here would run with the rights of the process. */}
+      {(job.before || job.after) && (
+        <div className="mt-5">
+          <Field label={t('edit.commands')} hint={t('edit.commandsHint')}>
+            <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1.5 text-sm">
+              {(
+                [
+                  ['edit.before', job.before],
+                  ['edit.after', job.after],
+                ] as const
+              )
+                .filter(([, command]) => command)
+                .map(([key, command]) => (
+                  <Fragment key={key}>
+                    <dt className="text-carbon-textMuted">{t(key)}</dt>
+                    <dd className="min-w-0 break-all font-mono">{command}</dd>
+                  </Fragment>
+                ))}
+            </dl>
+          </Field>
+        </div>
+      )}
 
       <div className="mt-5 flex flex-col gap-3">
         <ToggleRow

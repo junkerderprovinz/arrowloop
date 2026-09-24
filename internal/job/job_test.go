@@ -203,3 +203,39 @@ func TestAConfigurationWithNoJobsIsAccepted(t *testing.T) {
 		t.Errorf("expected no jobs, got %d", len(cfg.Jobs))
 	}
 }
+
+func TestTheInterfaceCannotSetOrChangeACommand(t *testing.T) {
+	path := writeConfig(t, `{
+  "jobs": [
+    {"name": "photos", "left": "a", "right": "b", "state": "s.db", "before": "stop-db"}
+  ]
+}`)
+	cfg, err := Load(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	next, err := cfg.SaveJobs([]map[string]any{
+		{"name": "photos", "left": "a", "right": "b", "state": "s.db", "before": "rm -rf /", "after": "curl evil"},
+		{"name": "new", "left": "c", "right": "d", "state": "t.db", "before": "rm -rf /"},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	photos, _ := next.Find("photos")
+	if photos.Before != "stop-db" || photos.After != "" {
+		t.Errorf("photos has before %q and after %q, want the file's stop-db and nothing", photos.Before, photos.After)
+	}
+	added, _ := next.Find("new")
+	if added.Before != "" {
+		t.Errorf("a job added in the interface came with the command %q", added.Before)
+	}
+
+	restored, err := next.Replace([]byte(`{"jobs": [{"name": "photos", "left": "a", "right": "b", "state": "s.db", "before": "rm -rf /"}]}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	photos, _ = restored.Find("photos")
+	if photos.Before != "stop-db" {
+		t.Errorf("restoring a backup set the command to %q", photos.Before)
+	}
+}
