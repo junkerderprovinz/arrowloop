@@ -170,7 +170,7 @@ export function Button({
   const tip =
     (showText || reactive
       ? title
-      : [...new Set([label, title].filter(Boolean))].join(" — ")) || undefined;
+      : [...new Set([label, title].filter(Boolean))].join(" · ")) || undefined;
   // A disabled reactive button takes no hover, so its words never reveal and
   // the bubble is what explains it.
   const tooltip = useTipBubble(reactive && !disabled ? undefined : tip, disabled);

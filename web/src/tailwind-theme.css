@@ -1,17 +1,7 @@
-/* Copied verbatim from GlimStone 1.10.0, reference/tailwind-theme.css.
-   Do not edit here: change it in the design language repo and copy again.
-   https://github.com/junkerderprovinz/glimstone */
-/* ===========================================================================
-   GlimStone — optional Tailwind v4 theme layer
-   ---------------------------------------------------------------------------
-   Maps the custom properties in tokens.css onto Tailwind utility classes
-   (bg-carbon-surface, text-accent, bg-statusOk, …). Skip this file entirely
-   if the app isn't on Tailwind — every rule in tokens.css works with plain
-   CSS custom properties alone.
-
-   Import order matters: this file only maps names, it defines nothing itself.
-   Load tokens.css first (or alongside), then this.
-   =========================================================================== */
+/* GlimStone's optional Tailwind v4 theme layer. It maps the custom properties in
+   tokens.css onto utility classes (bg-carbon-surface, text-accent, bg-statusOk,
+   ...) and defines nothing itself, so load tokens.css first. An app without
+   Tailwind can skip this file. */
 
 @import 'tailwindcss';
 
@@ -33,12 +23,9 @@
   --color-accent: var(--accent);
   --color-accentContrast: var(--accent-contrast);
   --color-accentSoft: var(--accent-soft);
-  /* text-accentInk: the accent where the colour is READ rather than filled.
-     See tokens.css's own --accent-ink for why the two are separate tokens.
-     A rule of thumb that decides it without thinking: if the utility is
-     text-* or the colour lands on an SVG stroke sitting on the page's own
-     ground, it is ink; if it is bg-*, it is a fill and keeps text-accent's
-     partner --accent-contrast on top. */
+  /* The accent where the colour is read rather than filled (see --accent-ink in
+     tokens.css): text-* and strokes on the page's ground use ink, bg-* keeps
+     text-accent with --accent-contrast on top. */
   --color-accentInk: var(--accent-ink);
 
   --color-statusOk: var(--status-ok-text);
@@ -51,10 +38,11 @@
 
   --color-statusWarn: var(--status-warn-text);
   --color-statusWarnBg: var(--status-warn-bg);
-  /* bg-statusWarnBgStrong: the opaque warn wash, for a chip that sits on a row
-     which already carries a fill of its own. The translucent one above would
-     take that fill's colour through it. */
+  /* Opaque, for a chip on a row that already has a fill the translucent wash
+     would show through. */
   --color-statusWarnBgStrong: var(--status-warn-bg-strong);
+  /* The quiet end, for a paragraph that explains rather than warns. */
+  --color-statusWarnBgSoft: var(--status-warn-bg-soft);
   --color-statusWarnSolid: var(--status-warn-solid);
 
   --color-statusInfo: var(--status-info-text);
@@ -70,17 +58,10 @@
   --radius-pill: var(--radius-pill);
 }
 
-/* ---------------------------------------------------------------------------
-   Rainbow under Tailwind needs one extra step tokens.css alone can't cover:
-   `--color-accent: var(--accent)` above gets evaluated once at :root by
-   Tailwind's @theme resolver and frozen there. Every utility generated from
-   it (bg-accent, text-accent) then points at the global accent forever, and
-   a .glim-hue subtree redefining --accent for itself is never reached by
-   those utilities — only components reading var(--accent) directly pick up
-   the rainbow colour. Anything added to the @theme block above that a
-   rainbow position should own has to be repeated here under the same
-   selectors tokens.css uses for --accent itself.
-   --------------------------------------------------------------------------- */
+/* Tailwind resolves `--color-accent: var(--accent)` once at :root, so bg-accent
+   and text-accent never see a .glim-hue subtree's own --accent. Anything in the
+   @theme block that a rainbow position should own is repeated here under the
+   selectors tokens.css uses for --accent. */
 [data-rainbow] .glim-hue {
   --color-accent: var(--item-hue);
   --color-accentContrast: var(--item-hue-ink);
@@ -101,4 +82,3 @@
   --color-accentSoft: var(--item-hue-soft);
   --color-accentInk: var(--accent-ink);
 }
-

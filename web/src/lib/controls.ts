@@ -1,6 +1,3 @@
-// Copied verbatim from GlimStone 2.6.0, reference/controls.ts.
-// Do not edit here: change it in the design language repo and copy again.
-// https://github.com/junkerderprovinz/glimstone
 // The label engine: how much of a control's identity is shown, its text, its
 // glyph, or both. Like the shape and motion engines it turns one setting into
 // attributes on the document root, and components pick the answer up from CSS.

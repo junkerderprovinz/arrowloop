@@ -1,31 +1,10 @@
-// Copied verbatim from GlimStone 1.7.2, reference/colorPicker.ts.
-// Do not edit here: change it in the design language repo and copy again.
-// https://github.com/junkerderprovinz/glimstone
-// The colour picker engine (design-language.md, "The colour engine" →
-// picker section). A saturation/value square + hue bar, drawn entirely in
-// the page's own DOM - never a native `<input type="color">`. Extracted
-// from CannonadeCommand's own inlinePicker(), the reference an adopting
-// app should match rather than build its own variant of. Two ways to show
-// it: `colorPicker()` returns the bare, permanently-embeddable widget;
-// `openColorPickerPopover()` (below) wraps it in a floating panel anchored
-// to a trigger element - the recommended default for a compact settings
-// card, where embedding it permanently grows the card every time one is
-// added.
+// The colour picker (design-language.md, "The colour engine"): a
+// saturation/value square and a hue bar drawn in the page's own DOM.
+// `colorPicker()` returns the bare widget; `openColorPickerPopover()` wraps it
+// in a panel anchored to a trigger, the default for a compact settings card.
 //
-// Why this exists instead of `<input type="color">`: a native colour input
-// hands control to the browser/OS, which can (and on many setups does)
-// open its own top-level picker surface entirely outside the page - jdp,
-// building CC: "ich will das Farbwählfeld fest integriert" (I want the
-// colour field permanently embedded), and the same rejection recurred
-// nearly verbatim in an adopting app that tried the native-input shortcut
-// anyway ("es soll sich kein komplett neues Fenster öffnen"). A native
-// input is also functionally unverifiable in Playwright - its picker
-// surface is outside the page's own DOM, so no automated check can ever
-// prove it opens, let alone that it opens the RIGHT way. This component
-// has neither problem: it's real, styleable DOM either way.
-//
-// Framework-free, like appearance.ts/selectScroll.ts/tooltip.ts: talks
-// only to the elements it's given and returns plain DOM nodes.
+// A native `<input type="color">` can open the OS picker in a separate window,
+// outside the page, where no Playwright check can reach it either.
 
 // The arithmetic lives in colorMath.ts, because the phone mixes the same
 // colours and cannot load a file that builds DOM elements. A colour mixed
@@ -33,22 +12,18 @@
 import { hexToHsv, hsvToHex, normalizeHex, type Hsv } from './colorMath';
 
 export interface ColorPicker {
-  /** The root element - append this wherever the picker should render. */
+  /** The root element; append it wherever the picker should render. */
   el: HTMLDivElement;
-  /** Programmatically sync the picker to a hex value (no onChange firing). */
+  /** Sync the picker to a hex value without firing onChange. */
   setValue: (hex: string) => void;
   /** The picker's current value as a 6-digit lowercase hex string. */
   getValue: () => string;
 }
 
 /**
- * Builds an always-visible saturation/value square + hue bar. `onChange`
- * fires with a 6-digit lowercase hex string on every drag update (mouse and
- * touch both wired) - the caller decides whether to commit that
- * immediately or debounce it (CC's own header-colour row waits 700ms after
- * the picker settles before writing to disk, so a drag doesn't spam every
- * intermediate frame; a purely in-memory/localStorage write like an
- * accent or rainbow-palette colour can just apply every event).
+ * Builds an always-visible saturation/value square and hue bar. `onChange`
+ * fires with a 6-digit lowercase hex string on every mouse or touch drag
+ * update; a caller that writes to disk should debounce it.
  */
 export function colorPicker(initialHex: string, onChange: (hex: string) => void): ColorPicker {
   const el = document.createElement('div');
@@ -133,25 +108,17 @@ export function colorPicker(initialHex: string, onChange: (hex: string) => void)
 }
 
 export interface ColorPickerPopoverHandle {
-  /** Closes the popover programmatically (also happens automatically on
-   *  outside click, Escape, scroll, or resize). */
+  /** Closes the popover; an outside click, Escape, scroll or resize also does. */
   close: () => void;
 }
 
 let openPopover: { el: HTMLDivElement; close: () => void } | null = null;
 
 /**
- * Opens the picker as a floating popover anchored below `trigger` instead
- * of embedding it permanently in the layout - the default for a compact
- * settings panel, where a permanently-embedded picker grows the
- * surrounding card every time one is added (jdp, adopting this in a
- * compact settings card: "der Farbpicker soll per schwebendem Fenster
- * erscheinen, nicht fix in der card sein"). Reserve the bare
- * `colorPicker()` for a page with genuinely dedicated, permanent space for
- * exactly one control (CannonadeCommand's own settings PAGE, not a card).
- * Only ONE popover is ever open at a time - opening a new one closes
- * whichever was already open, matching how a native `<select>` only ever
- * has one open dropdown.
+ * Opens the picker as a popover anchored below `trigger`, so a settings card
+ * does not grow with every colour field. Reserve the bare `colorPicker()` for a
+ * page with permanent space for one control. Opening a popover closes the one
+ * already open.
  */
 export function openColorPickerPopover(
   trigger: HTMLElement,
@@ -164,12 +131,7 @@ export function openColorPickerPopover(
   const panel = document.createElement('div');
   panel.className = 'glim-picker-popover';
 
-  // The hex field beside the picker (jdp: "das hex feld fehlt im
-  // colorpicker") - CannonadeCommand's own `cc-set-hexin` pairs with
-  // `inlinePicker()` everywhere it appears; a picker with no way to type or
-  // read back an exact value is missing half of what "a colour field"
-  // means. Bidirectional: dragging the picker updates the hex text,
-  // typing a valid 6-digit hex re-syncs the picker's own dot positions.
+  // Dragging updates the hex text, and typing a valid hex moves the picker.
   const hexInput = document.createElement('input');
   hexInput.type = 'text';
   hexInput.className = 'glim-picker-hex';
@@ -217,20 +179,13 @@ export function openColorPickerPopover(
     window.removeEventListener('scroll', close, true);
     window.removeEventListener('resize', close);
     if (openPopover?.el === panel) openPopover = null;
-    // `onClose` exists for one specific, non-obvious constraint: while the
-    // popover is open, the row that owns the trigger must NOT be re-rendered.
-    // Replacing the trigger element strands this popover's own outside-click
-    // handler on a node that is no longer in the page, so a second click on
-    // the (new) trigger neither closes nor re-opens anything. A caller that
-    // redraws its row after a colour change therefore applies the colour live
-    // in `onChange` and does the redraw here, once, when the picker is gone.
-    // Found building KnightLoader's extension options page, where the reset
-    // badge and the diagnostic report both depend on that redraw.
+    // Re-rendering the trigger's row while the popover is open strands the
+    // outside-click handler on a detached node, so a caller that redraws the
+    // row applies the colour in `onChange` and redraws here.
     onClose?.();
   }
-  // Capture phase, and excludes the trigger itself - a second click on the
-  // trigger re-opens fresh (via the caller's own click handler) rather
-  // than being swallowed here first.
+  // The trigger is excluded so a second click on it reaches the caller's own
+  // click handler and reopens the picker.
   function onPointerDown(event: PointerEvent): void {
     const target = event.target;
     if (target instanceof Node && (panel.contains(target) || trigger.contains(target))) return;
@@ -241,8 +196,7 @@ export function openColorPickerPopover(
   }
   document.addEventListener('pointerdown', onPointerDown, true);
   document.addEventListener('keydown', onKeyDown);
-  // A fixed-position popover de-anchors from its trigger on scroll/resize -
-  // simplest correct behaviour is to close it, same as the tooltip bubble.
+  // A fixed-position popover loses its anchor on scroll or resize.
   window.addEventListener('scroll', close, true);
   window.addEventListener('resize', close);
 

@@ -1,6 +1,3 @@
-// Copied verbatim from GlimStone 2.6.0, reference/react/ConfirmDialog.tsx.
-// Do not edit here: change it in the design language repo and copy again.
-// https://github.com/junkerderprovinz/glimstone
 // The styled confirmation dialog that replaces window.confirm(): an anchored
 // header, a scrolling message and a footer with Cancel and Confirm. A backdrop
 // click, the header close button and Cancel all call onCancel.

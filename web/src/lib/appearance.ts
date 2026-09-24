@@ -1,42 +1,26 @@
-// Copied verbatim from GlimStone 1.10.0, reference/appearance.ts.
-// Do not edit here: change it in the design language repo and copy again.
-// https://github.com/junkerderprovinz/glimstone
 // Appearance is the set of looks the user owns: how rounded the interface is,
-// and what colour it uses for activity — one accent, or a palette handed out
-// by position. All of it is applied to the document root, so every component
-// picks it up through the tokens it already reads, and nothing has to be told
-// about the change.
+// how much it moves, and what colour it uses for activity, either one accent or
+// a palette handed out by position. All of it is applied to the document root,
+// so every component picks it up through the tokens it already reads.
 //
-// This file stays free of any UI framework on purpose: it's the piece an
-// adopting app copies wholesale, and a design language shouldn't arrive with
-// a framework attached. A React app wraps it in a small hook; anything else
-// calls the functions directly.
+// The file has no framework dependency, since an adopting app copies it whole;
+// a React app wraps it in a small hook.
 
 export type Shape = 'round' | 'soft' | 'square';
 
 export const SHAPES: Shape[] = ['round', 'soft', 'square'];
 
 /**
- * The built-in accent. Empty in settings means this.
- *
- * This is every adopting app's shared default, not a colour any one of them
- * owns: apps that share a design language but open in different colours by
- * default are a family only on paper.
+ * The built-in accent, shared by every adopting app so the family opens in one
+ * colour. Empty in settings means this.
  */
 export const DEFAULT_ACCENT = '#FCC419';
 
 /**
- * ACCENTS are the presets offered in the picker — the same EIGHT across every
- * adopting app, in the same order, so someone who set "Blue" in one app finds
- * the same blue in the next. Every one of them opens the picker, so the list is
- * a shortcut rather than a restriction.
- *
- * It was five here for as long as one adopting app had been shipping eight,
- * which is the drift a shared list exists to prevent: two accent rows sat at
- * visibly different lengths, and three colours somebody could pick in one app
- * were simply absent in the next. The last three are taken from the rainbow
- * palette by position, so the accent row and the palette row draw on one family
- * rather than two.
+ * The accent presets, the same eight in the same order in every adopting app,
+ * so "Blue" in one app is the same blue in the next. The picker allows any
+ * colour; this list is a shortcut. The last three come from the rainbow palette
+ * so both rows draw on one family.
  */
 export const ACCENTS: { name: string; hex: string }[] = [
   { name: 'Sunflower', hex: '#FCC419' },
@@ -50,17 +34,14 @@ export const ACCENTS: { name: string; hex: string }[] = [
 ];
 
 /**
- * RAINBOW is the default palette: a full turn of the wheel, but tuned to the
- * same warm, slightly dusty register as the accent presets, so switching the
- * mode on changes how much colour there is, not which family it belongs to.
- * The length is fixed — colours are handed out by position, so a palette
- * that could grow would re-colour every existing row the moment one was
- * added.
+ * The default palette: a full turn of the wheel in the same register as the
+ * accent presets. The length is fixed, because colours are handed out by
+ * position and a longer palette would recolour every existing row.
  */
 export const RAINBOW: string[] = [
   '#FF8389', // red 30
   '#FF832B', // orange 40
-  '#FCC419', // sunflower — the default accent, so one row always matches it
+  '#FCC419', // sunflower, the default accent, so one row always matches it
   '#6FDC8C', // green 30
   '#3DDBD9', // teal 30
   '#1D99F3', // blue
@@ -86,24 +67,94 @@ export const RAINBOW_OFF: RainbowState = {
   palette: RAINBOW,
 };
 
-/** applyShape sets the attribute the radius tokens key off. */
+/** Sets the attribute the radius tokens key off. */
 export function applyShape(shape: Shape | string | undefined): void {
   const s = SHAPES.includes(shape as Shape) ? (shape as Shape) : 'round';
   document.documentElement.setAttribute('data-shape', s);
 }
 
 /**
- * applyAccent overrides the accent tokens, or clears the override so the
- * theme's own gold comes back. The contrast colour is computed rather than
- * configured: a light accent with white text on it is unreadable, and asking
- * the user to pick a second colour to fix the first one is not a setting, it
- * is a trap.
+ * The motion levels, quietest first. The tokens in tokens.css key off
+ * `data-motion` on the root.
  *
- * `--accent-ink` is deliberately NOT set here. It is declared in tokens.css
- * as a color-mix over --accent, so it re-resolves on its own from whatever
- * this function writes AND follows a light/dark switch that happens later.
- * Computing it here would freeze it at the theme in force when the accent was
- * picked, which is exactly the bug the second token exists to avoid.
+ * These strings go into the attribute, the stylesheet selectors and storage, so
+ * renaming one makes a saved value fail validation and fall back to
+ * DEFAULT_MOTION. What the user reads comes from the translation table.
+ *
+ * `storm` is a real level (see `data-motion='storm'` in tokens.css) that no
+ * picker offers; `stormTap` reveals it.
+ */
+export type Motion = 'off' | 'subtle' | 'wild' | 'storm';
+
+/** The levels a picker shows. */
+export const MOTION_LEVELS: Motion[] = ['off', 'subtle', 'wild'];
+
+/**
+ * The levels a stored value may hold. Validate against this and populate a
+ * picker from MOTION_LEVELS, or a found storm forgets itself on reload.
+ */
+export const MOTION_STORED: Motion[] = [...MOTION_LEVELS, 'storm'];
+
+/**
+ * The default is the middle level, because the top one is a statement rather
+ * than polish. A changed default does not reach a stored choice, so an app that
+ * shipped another default needs a migration for any stored spelling that meant
+ * the top level.
+ */
+export const DEFAULT_MOTION: Motion = 'subtle';
+
+/** Sets the attribute the motion tokens key off. */
+export function applyMotion(motion: Motion | string | undefined): void {
+  // A storm somebody found must survive a reload, so the stored set is checked.
+  const m: Motion = MOTION_STORED.includes(motion as Motion) ? (motion as Motion) : DEFAULT_MOTION;
+  document.documentElement.setAttribute('data-motion', m);
+}
+
+/** How many taps on `wild`, once it is chosen, reveal the storm. */
+export const STORM_TAPS = 5;
+
+/**
+ * The gesture that reveals the storm: with motion at `wild`, tap `wild` five
+ * more times. Tapping any other level resets the count, since five taps on
+ * "off" mean somebody is annoyed rather than curious.
+ *
+ * An easter egg that changes behaviour must be switchable off and must not
+ * become a permanent settings entry. So the storm is offered while it is chosen,
+ * and otherwise only while the screen that found it stays open: keep `found`
+ * and the count in that screen's state, never in storage.
+ *
+ * Returns the level to switch to, or undefined when the tap was not the fifth.
+ */
+export function stormTap(state: { taps: number }, tapped: string, current: string): Motion | undefined {
+  if (tapped !== 'wild' || current !== 'wild') {
+    state.taps = 0;
+    return undefined;
+  }
+  state.taps += 1;
+  if (state.taps < STORM_TAPS) return undefined;
+  state.taps = 0;
+  return 'storm';
+}
+
+/*
+ * The storm is the one level that outranks the operating system's reduced
+ * motion setting. Somebody with reduced motion never chose `off`, `subtle` or
+ * `wild`; they got whatever the app booted at, so those levels live inside
+ * `@media (prefers-reduced-motion: no-preference)`. Five taps on a chosen option
+ * are a deliberate request, so tokens.css exempts the storm inside the (reduce)
+ * block, where the gentler substitutes live, and restores the full animation
+ * there; exempting it without restoring would leave it with none, or invisible
+ * where the resting state is `opacity: 0`. The exemption stops at infinite
+ * animations: `.glim-live`'s pulse keeps its stop at every level.
+ */
+
+/**
+ * Overrides the accent tokens, or clears the override so the theme's gold comes
+ * back. The contrast colour is computed, so a light accent never gets white
+ * text.
+ *
+ * `--accent-ink` is not set here: tokens.css derives it from --accent with
+ * color-mix, so it also follows a later light or dark switch.
  */
 export function applyAccent(hex: string | undefined): void {
   const root = document.documentElement.style;
@@ -119,20 +170,13 @@ export function applyAccent(hex: string | undefined): void {
   root.setProperty('--accent-soft', `rgba(${r}, ${g}, ${b}, 0.14)`);
 }
 
-// ---------------------------------------------------------------------------
-// Rainbow
-//
-// The live state is module-level because it is a property of the document,
-// not of any one component: the sidebar and the download list must agree on
-// which colour position three is, and they never meet in the tree. Readers
-// subscribe instead of being handed a prop through six intermediate
-// components.
-// ---------------------------------------------------------------------------
-
+// The rainbow state belongs to the document, not a component: the sidebar and a
+// list far away in the tree must agree on which colour position three is, so
+// readers subscribe.
 let state: RainbowState = RAINBOW_OFF;
 const listeners = new Set<() => void>();
 
-/** rainbowState is the current snapshot. Stable identity between changes. */
+/** The current snapshot, with a stable identity between changes. */
 export function rainbowState(): RainbowState {
   return state;
 }
@@ -143,10 +187,9 @@ export function subscribeRainbow(fn: () => void): () => void {
 }
 
 /**
- * applyRainbow stores the new state, mirrors it onto the document root and
- * wakes the readers. The custom properties are set even when the mode is off
- * so that a stylesheet can reference `--rb-3` without having to know; the
- * `data-rainbow` attribute is what actually turns the look on.
+ * Stores the new state, mirrors it onto the document root and wakes the
+ * readers. The `--rb-N` properties are set even when the mode is off; the
+ * `data-rainbow` attribute is what turns the look on.
  */
 export function applyRainbow(next: Partial<RainbowState> | undefined): void {
   const merged: RainbowState = { ...RAINBOW_OFF, ...next };
@@ -165,9 +208,8 @@ export function applyRainbow(next: Partial<RainbowState> | undefined): void {
 }
 
 /**
- * rainbowAt is the colour at a position, rotation applied. It answers even
- * when the mode is off, because a settings page has to show the palette it
- * is editing.
+ * The colour at a position, rotation applied. It answers even when the mode is
+ * off, because a settings page shows the palette it edits.
  */
 export function rainbowAt(i: number): string {
   const p = state.palette;
@@ -175,33 +217,28 @@ export function rainbowAt(i: number): string {
   const n = ((Math.trunc(i) % p.length) + p.length) % p.length;
   const color = p[(n + off) % p.length];
   if (color === undefined) {
-    // Unreachable in practice: usablePalette() never lets state.palette go
-    // empty, but the index is computed via modulo, which TS can't verify.
+    // usablePalette never leaves the palette empty; this narrows the type.
     throw new Error('rainbowAt: palette is empty');
   }
   return color;
 }
 
 /**
- * rainbowColor is what a component asks for: the colour this item should
- * use, or undefined when the mode is off and the single accent applies.
- * Returning undefined rather than the accent keeps the accent in CSS, where
- * a theme change still reaches it.
+ * The colour an item should use, or undefined when the mode is off. Undefined
+ * rather than the accent keeps the accent in CSS, where a theme change reaches
+ * it.
  */
 export function rainbowColor(i: number): string | undefined {
   return state.on ? rainbowAt(i) : undefined;
 }
 
 /**
- * hueVars are the inline custom properties an element carrying a palette
- * position sets on itself. The matching `.glim-hue` rules in tokens.css
- * decide whether the hue is shown at rest or held back until hover, so a
- * component only has to say which colour it owns, never which mode is
- * active.
+ * The inline custom properties an element with a palette position sets on
+ * itself. The `.glim-hue` rules in tokens.css decide whether the hue shows at
+ * rest or on hover, so a component names its colour and never the mode.
  *
- * The class and these properties always travel together: `.glim-hue` with no
- * `--item-hue` under it would resolve the accent to nothing. Hand out both
- * from one call in the adopting app's own component layer.
+ * The class and these properties travel together: `.glim-hue` with no
+ * `--item-hue` under it resolves the accent to nothing.
  */
 export function hueVars(hex: string | undefined): Record<string, string> {
   if (!valid(hex)) return {};
@@ -210,37 +247,20 @@ export function hueVars(hex: string | undefined): Record<string, string> {
     '--item-hue': hex,
     '--item-hue-ink': contrastOn(hex),
     '--item-hue-soft': `rgba(${r}, ${g}, ${b}, 0.22)`,
-    // The wash covers a whole row, so it sits below the soft tint - but not
-    // as far below as the original 7% figure: three independent adopting-app
-    // reports said the mode "does nothing" at that strength, and measuring
-    // the actual rendered colour confirmed the mechanism was wiring
-    // correctly (the values genuinely differed row to row) while staying
-    // under the threshold a person registers as "this changed." 16% is the
-    // new floor - still short of 22%'s "colour chart" territory, but no
-    // longer indistinguishable from the ground colour at a glance.
+    // The wash covers a whole row, so it sits below the soft tint. Below 16%
+    // people could not tell the rows apart from the ground.
     '--item-hue-wash': `rgba(${r}, ${g}, ${b}, 0.16)`,
-    // A compact circular badge (an icon toggle, an undo/redo/zoom action) has
-    // no neighbouring row to reinforce the colour by repetition the way a
-    // list does, and reads as barely-tinted grey at the wash's own 16% once
-    // shrunk to badge size (jdp, adopting app: "die ganzen icon badges sind
-    // immer noch schwach eingefärbt, die sollen normal kräftig eingefärbt
-    // sein"). This tier is deliberately separate from the wash above rather
-    // than just raising it - a list row's own 16% is calibrated for a
-    // DIFFERENT reason (rule above: dense/at-scale is exactly where subtlety
-    // matters) and must stay put.
+    // A small circular badge has no neighbouring rows to repeat its colour and
+    // reads as grey at the wash's 16%, so it gets its own tier.
     '--item-hue-badge': `rgba(${r}, ${g}, ${b}, 0.5)`,
-    // The focus ring follows the position too. A gold ring around a teal tab
-    // is the one place the single accent leaks back into the plural mode, and
-    // it is the most visible one, because it only ever appears on the element
-    // the keyboard is standing on.
+    // Without this a gold focus ring would sit around a teal tab.
     '--item-hue-ring': `rgba(${r}, ${g}, ${b}, 0.55)`,
   };
 }
 
 /**
- * rainbowFromSettings maps a server's flat fields onto the state this module
- * keeps. The parameter is structural rather than an imported type so this
- * file can be lifted into an adopting app unchanged.
+ * Maps a server's flat fields onto the state this module keeps. The parameter
+ * is structural so this file can be copied into an app unchanged.
  */
 export function rainbowFromSettings(s: {
   rainbow?: boolean;
@@ -258,18 +278,17 @@ export function rainbowFromSettings(s: {
   };
 }
 
-/** A palette is taken only in full — see the matching rule on the server. */
+/** A palette is taken only in full, matching the rule on the server. */
 function usablePalette(p: string[] | undefined): string[] {
   if (!p || p.length !== RAINBOW.length || !p.every(valid)) return RAINBOW;
   return p;
 }
 
-/** contrastOn is black or white, whichever is readable on the given colour. */
+/** Black or white, whichever is readable on the given colour. */
 export function contrastOn(hex: string): string {
   if (!valid(hex)) return '#FFFFFF';
   const { r, g, b } = parse(hex);
-  // Carbon's own ink, not a warm near-black: on a yellow accent a
-  // brown-tinted black reads as a smudge.
+  // Carbon's own ink: on a yellow accent a brown-tinted black reads as a smudge.
   return luminance(r, g, b) > 0.55 ? '#161616' : '#FFFFFF';
 }
 
@@ -283,10 +302,8 @@ function parse(hex: string): { r: number; g: number; b: number } {
 }
 
 /**
- * luminance is the perceptual brightness used to decide black or white on
- * top. The sRGB channels are linearised first, because the raw values
- * overstate how bright blue is and understate green, which is exactly the
- * case that produces unreadable buttons.
+ * Relative luminance, used to pick black or white on top. The channels are
+ * linearised first because raw sRGB overstates blue and understates green.
  */
 function luminance(r: number, g: number, b: number): number {
   const lin = (c: number) => {
@@ -296,13 +313,9 @@ function luminance(r: number, g: number, b: number): number {
   return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
 }
 
-/**
- * Appearance is mirrored into localStorage purely so the first paint after a
- * reload is already right. The server (or wherever settings actually live)
- * stays the source of truth; this only avoids a flash of the default look
- * while they are being fetched. Each adopting app should use its own cache
- * key — this default is just a starting point.
- */
+// Appearance is mirrored into localStorage only so the first paint after a
+// reload is right; wherever settings live stays the source of truth. Each app
+// should use its own key.
 const CACHE = 'glim-appearance';
 
 interface Cached {
@@ -313,13 +326,12 @@ interface Cached {
 
 export function cacheAppearance(shape: string, accent: string, rainbow?: RainbowState): void {
   try {
-    // Built with a conditional spread, not `{ shape, accent, rainbow }`, so
-    // that under exactOptionalPropertyTypes the key is omitted entirely
-    // when there's no rainbow state rather than present-but-undefined.
+    // The conditional spread omits the key under exactOptionalPropertyTypes
+    // instead of storing it as undefined.
     const payload: Cached = { shape, accent, ...(rainbow !== undefined ? { rainbow } : {}) };
     localStorage.setItem(CACHE, JSON.stringify(payload));
   } catch {
-    // A browser with storage disabled simply pays one flash per load.
+    // With storage disabled the default look flashes once per load.
   }
 }
 
@@ -340,4 +352,87 @@ export function applyCachedAppearance(): void {
     applyShape('round');
     applyRainbow(undefined);
   }
+}
+
+// Disco, the second easter egg, steps the rainbow's seed once a second so every
+// hued element moves to the next colour together. It animates nothing: a seed
+// change re-renders the colour engine's readers, which is a repaint and no
+// transform.
+
+/** One colour step a second, well under the 3Hz flicker threshold named in
+ *  photosensitivity guidance. */
+export const DISCO_TICK_MS = 1000;
+
+/** Turn-ons needed to unlock, matching STORM_TAPS. */
+export const DISCO_UNLOCK_TURN_ONS = 5;
+
+/** How long a run of turn-ons may pause before it counts as a new run, so
+ *  somebody comparing rainbow on and off over a minute does not unlock disco. */
+export const DISCO_UNLOCK_WINDOW_MS = 3000;
+
+let discoTimer: ReturnType<typeof setInterval> | null = null;
+
+/** Stops the walk, and does nothing when none is running. The caller decides
+ *  whether the palette the last tick left behind stays. */
+export function stopDisco(): void {
+  if (discoTimer !== null) {
+    clearInterval(discoTimer);
+    discoTimer = null;
+  }
+}
+
+/**
+ * Starts or stops the walk and stamps `data-disco` on the root. Call it at boot
+ * and whenever the switch or the rainbow state changes; each call stops the
+ * previous interval first. `stored` is the persisted rainbow state.
+ *
+ * The tick sets `rotate: true`, because rainbowAt ignores the seed without it.
+ * The tick applies and never persists, so the user's stored seed and rotate
+ * switch stay as chosen and stopping re-applies `stored`. With rainbow off the
+ * walk does not run, and it starts again when rainbow comes back.
+ *
+ * A hue reaches an element as an inline style computed during render, so an
+ * element only changes colour when its component re-renders. Subscribe to the
+ * colour engine once above the routes, or parts of the screen stand still.
+ */
+export function applyDisco(on: boolean, stored: RainbowState): void {
+  const wasWalking = discoTimer !== null;
+  stopDisco();
+
+  const root = document.documentElement;
+  if (on) root.setAttribute('data-disco', 'on');
+  else root.removeAttribute('data-disco');
+
+  if (!on || !rainbowState().on) {
+    if (wasWalking) applyRainbow(stored);
+    return;
+  }
+
+  const palette = rainbowState().palette.length || 1;
+  discoTimer = setInterval(() => {
+    const live = rainbowState();
+    applyRainbow({ ...live, rotate: true, seed: (live.seed + 1) % palette });
+  }, DISCO_TICK_MS);
+}
+
+/**
+ * The unlock gesture: five turn-ons of Rainbow Mode, each within
+ * DISCO_UNLOCK_WINDOW_MS of the last. Returns true on the fifth.
+ *
+ * Counting turn-ons rather than clicks leaves rainbow on, the only state where
+ * disco has colours to walk. As with stormTap, the count lives in the caller
+ * and is never persisted.
+ */
+export function discoTap(
+  state: { taps: number; last: number },
+  turnedOn: boolean,
+  clock: { now: number },
+): boolean {
+  if (!turnedOn) return false;
+  const gap = clock.now - state.last;
+  state.last = clock.now;
+  state.taps = state.taps > 0 && gap <= DISCO_UNLOCK_WINDOW_MS ? state.taps + 1 : 1;
+  if (state.taps < DISCO_UNLOCK_TURN_ONS) return false;
+  state.taps = 0;
+  return true;
 }
