@@ -86,9 +86,15 @@ export function Selector<T extends string>({
 
     // The floor is capped at this strip's share of the room it has, so a
     // narrow column shrinks the segments together instead of wrapping the
-    // last one. Measured off the parent, since the track is fit-content.
+    // last one. Measured off the parent, since the track is fit-content, and
+    // inside its padding: a card's padding counted as room wraps a fourth
+    // option.
     const parent = track.current.parentElement
-    const room = parent ? parent.getBoundingClientRect().width : 0
+    const pad = parent ? getComputedStyle(parent) : null
+    const room =
+      parent && pad
+        ? parent.clientWidth - parseFloat(pad.paddingLeft) - parseFloat(pad.paddingRight)
+        : 0
     const gaps = 0.2 * 16 * (options.length + 1)
     const share = room > 0 ? (room - gaps) / options.length : Number.POSITIVE_INFINITY
     setWidth(Math.min(Math.max(widest, MIN_SEGMENT), Math.max(widest, share)))

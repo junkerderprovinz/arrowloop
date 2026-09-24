@@ -281,7 +281,7 @@ function Settings(props: LookProps) {
     <Stack>
       {/* Chips rather than a groove: a settings strip is tabs, not a
           segmented control. */}
-      <div className="max-w-3xl">
+      <div className="max-w-4xl">
       <Selector<SettingsSection>
         label={t('settings.section')}
         value={section}
@@ -301,7 +301,7 @@ function Settings(props: LookProps) {
       </div>
       {/* A reading width that the strip above shares, so cards and tabs line
           up without the column depending on the length of the tab labels. */}
-      <div className="flex max-w-3xl flex-col gap-10">
+      <div className="flex max-w-4xl flex-col gap-10">
         {section === 'general' ? (
           <General {...props} />
         ) : section === 'engine' ? (
