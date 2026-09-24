@@ -43,6 +43,7 @@ export function Text({
   placeholder,
   mono,
   label,
+  code,
 }: {
   value: string
   onChange: (next: string) => void
@@ -50,6 +51,9 @@ export function Text({
   mono?: boolean
   /** The accessible name for a box that stands outside a Field. */
   label?: string
+  /** A one-time code: a number pad on a phone, and the browser may fill in a
+   *  code it received. */
+  code?: boolean
 }) {
   return (
     <input
@@ -57,6 +61,8 @@ export function Text({
       value={value}
       placeholder={placeholder}
       aria-label={label}
+      inputMode={code ? 'numeric' : undefined}
+      autoComplete={code ? 'one-time-code' : undefined}
       onChange={(e) => onChange(e.target.value)}
       className={`w-full ${CONTROL_H} bg-carbon-surface2 px-3 text-xs text-carbon-text outline-none transition placeholder:text-carbon-textMuted focus:brightness-125 ${
         mono ? 'font-mono' : ''
@@ -268,10 +274,14 @@ export function Secret({
   value,
   onChange,
   placeholder,
+  autoComplete,
 }: {
   value: string
   onChange: (next: string) => void
   placeholder?: string
+  /** "current-password" or "new-password", so a password manager offers the
+   *  right thing. */
+  autoComplete?: string
 }) {
   const [shown, setShown] = useState(false)
   const { t } = useT()
@@ -283,6 +293,7 @@ export function Secret({
         type={shown ? 'text' : 'password'}
         value={value}
         placeholder={placeholder}
+        autoComplete={autoComplete}
         onChange={(e) => onChange(e.target.value)}
         className={`w-full ${CONTROL_H} bg-carbon-surface2 pl-3 pr-9 font-mono text-xs text-carbon-text outline-none transition placeholder:font-sans placeholder:text-carbon-textMuted focus:brightness-125`}
         style={{ borderRadius: 'var(--radius-control)' }}

@@ -18,20 +18,26 @@ import (
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
+
+	"github.com/junkerderprovinz/arrowloop/internal/security"
 )
 
-// The optional password. Without a hash configured, Protect passes every
-// request straight through, so an upgrade never locks anybody out. With one,
-// everything under /api/ needs a session apart from the login, the logout and
-// the probe that says whether a password is required; the static files stay
-// open, since a browser refused index.html would have nowhere to type a
-// password. Sessions live in memory only, so a restart logs everybody out
-// rather than leaving a file of live credentials beside the configuration.
+// The optional password. Without one, Protect passes every request straight
+// through, so an upgrade never locks anybody out. With one, everything under
+// /api/ needs a session apart from the routes that sign somebody in; the static
+// files stay open, since a browser refused index.html would have nowhere to
+// type a password. Sessions live in memory only, so a restart logs everybody
+// out rather than leaving a file of live credentials beside the configuration.
+//
+// The password is set in the interface and kept in security.json, or it
+// arrives through PasswordHashEnv, which wins.
 
-// PasswordHashEnv names the environment variable the password hash arrives
-// through. It is not a key in arrowloop.json, because the API serves that
-// file, downloads it as a backup and replaces it wholesale, and restoring an
-// old backup would switch the protection off.
+// PasswordHashEnv names the environment variable a password hash can arrive
+// through. It overrides the password set in the interface, which makes it the
+// way back in for somebody who forgot that one. It is not a key in
+// arrowloop.json, because the API serves that file, downloads it as a backup
+// and replaces it wholesale, and restoring an old backup would switch the
+// protection off.
 const PasswordHashEnv = "ARROWLOOP_PASSWORD_HASH"
 
 // sessionCookieName is named for the application, since a cookie is scoped by
@@ -43,12 +49,12 @@ const (
 	// scanned on every protected request.
 	maxSessions = 32
 
-	// failedLoginDelay is charged to every wrong password. Parallel
+	// failedLoginDelay is charged to every wrong password or code. Parallel
 	// connections pay it in parallel, so the counter below is the real limit.
 	failedLoginDelay = 200 * time.Millisecond
 
-	// maxFailedLogins is how many wrong passwords one source address may try
-	// before the login route stops checking passwords from it.
+	// maxFailedLogins is how many wrong answers one source address may give
+	// before the login routes stop checking anything from it.
 	maxFailedLogins = 5
 
 	// lockoutWindow is how long that refusal lasts, measured from the most
@@ -79,14 +85,15 @@ type failureRecord struct {
 
 // authGate holds everything the password gate remembers for one server.
 type authGate struct {
-	// The hash is read once, so clearing the variable at run time cannot
-	// switch the protection off.
-	once sync.Once
-	hash []byte
+	// The variable is read once, so clearing it at run time cannot switch the
+	// protection off.
+	once    sync.Once
+	envHash []byte
 
-	mu       sync.Mutex
-	sessions []session
-	failures map[string]failureRecord
+	mu         sync.Mutex
+	sessions   []session
+	failures   map[string]failureRecord
+	ceremonies map[string]passkeyCeremony
 }
 
 // gates maps each server to its own gate, so two servers in one process never
@@ -103,29 +110,62 @@ func (s *Server) gate() *authGate {
 	return g.(*authGate)
 }
 
-// resolveHash works out, once, whether this install has a password.
-func (g *authGate) resolveHash() []byte {
+// fromEnv returns the hash from the environment, or nothing.
+func (g *authGate) fromEnv() []byte {
 	g.once.Do(func() {
 		if h := strings.TrimSpace(os.Getenv(PasswordHashEnv)); h != "" {
-			g.hash = []byte(h)
+			g.envHash = []byte(h)
 		}
 	})
-	return g.hash
+	return g.envHash
 }
 
-// passwordHash returns the configured hash, or nothing when no password is set.
+// passwordHash returns the hash in force, or nothing when no password is set.
 func (s *Server) passwordHash() []byte {
-	return s.gate().resolveHash()
+	if h := s.gate().fromEnv(); len(h) > 0 {
+		return h
+	}
+	if s.Security != nil {
+		if h := s.Security.Get().PasswordHash; h != "" {
+			return []byte(h)
+		}
+	}
+	return nil
 }
 
-// HashPassword turns a password into the string that belongs in
-// ARROWLOOP_PASSWORD_HASH, so nobody has to paste a password into a web page
-// to get one. bcrypt refuses more than 72 bytes rather than truncating.
+// Where the password in force comes from, as the interface is told.
+const (
+	passwordNone = "none"
+	passwordFile = "file"
+	passwordEnv  = "env"
+)
+
+func (s *Server) passwordSource() string {
+	if len(s.gate().fromEnv()) > 0 {
+		return passwordEnv
+	}
+	if s.Security != nil && s.Security.Get().PasswordHash != "" {
+		return passwordFile
+	}
+	return passwordNone
+}
+
+// twoFactorOn reports whether a login needs a code as well as the password.
+func (s *Server) twoFactorOn() bool {
+	return s.Security != nil && s.Security.Get().TOTP.Enabled
+}
+
+// HashPassword turns a password into a bcrypt hash, the form both the
+// interface and ARROWLOOP_PASSWORD_HASH keep. bcrypt refuses more than 72
+// bytes rather than truncating.
 func HashPassword(plain string) (string, error) {
 	if strings.TrimSpace(plain) == "" {
 		return "", errors.New("an empty password is the same as no password, which is what leaving the hash unset already does")
 	}
 	out, err := bcrypt.GenerateFromPassword([]byte(plain), bcrypt.DefaultCost)
+	if errors.Is(err, bcrypt.ErrPasswordTooLong) {
+		return "", errors.New("the password is longer than 72 bytes, which bcrypt cannot hash")
+	}
 	if err != nil {
 		return "", fmt.Errorf("hash the password: %w", err)
 	}
@@ -146,10 +186,12 @@ func needsSession(rawPath string) bool {
 		return false
 	}
 	switch p {
-	case "/api/login", "/api/logout", "/api/session":
+	case "/api/login", "/api/logout", "/api/session",
+		"/api/passkeys", "/api/passkeys/login/begin", "/api/passkeys/login/finish":
 		// The probe tells the interface whether to draw a login screen, and
 		// the logout can only destroy the caller's own token, which may just
-		// have expired.
+		// have expired. The passkey probe answers a stranger with counts only,
+		// and its two login halves are how a passkey signs somebody in.
 		return false
 	}
 	return true
@@ -247,6 +289,14 @@ func (g *authGate) forget(token string) {
 	g.sessions = kept
 }
 
+// forgetAll ends every session. Somebody changing a password because it may
+// have leaked expects the sessions opened with it to end too.
+func (g *authGate) forgetAll() {
+	g.mu.Lock()
+	defer g.mu.Unlock()
+	g.sessions = nil
+}
+
 // clientKey is the source address a failed login is counted against: the
 // socket's peer address, never X-Forwarded-For, which the caller writes and
 // could change to get a fresh rate-limit bucket each time.
@@ -275,7 +325,21 @@ func (g *authGate) lockedOut(key string) (time.Duration, bool) {
 	return 0, false
 }
 
-// recordFailure counts one wrong password against a source address.
+// refuseIfLockedOut answers 429 for an address that has used up its tries and
+// reports whether it did. It runs before any hash or code is checked, so a
+// locked-out caller spends none of this machine's processor.
+func (g *authGate) refuseIfLockedOut(w http.ResponseWriter, key string) bool {
+	wait, locked := g.lockedOut(key)
+	if !locked {
+		return false
+	}
+	seconds := int(wait.Seconds()) + 1
+	w.Header().Set("Retry-After", strconv.Itoa(seconds))
+	writeError(w, http.StatusTooManyRequests, fmt.Errorf("too many wrong attempts, try again in %d seconds", seconds))
+	return true
+}
+
+// recordFailure counts one wrong answer against a source address.
 func (g *authGate) recordFailure(key string) {
 	g.mu.Lock()
 	defer g.mu.Unlock()
@@ -301,6 +365,13 @@ func (g *authGate) recordFailure(key string) {
 	g.failures[key] = rec
 }
 
+// fail counts a wrong answer and charges the delay. The request's context is
+// ignored, so hanging up does not skip the delay.
+func (g *authGate) fail(key string) {
+	g.recordFailure(key)
+	time.Sleep(failedLoginDelay)
+}
+
 // clearFailures forgets a source address's failures once it gets the password
 // right, so somebody who mistypes twice and then succeeds is not left one slip
 // away from a lockout for the rest of the minute.
@@ -318,6 +389,10 @@ type sessionView struct {
 	// Authenticated says whether this request already has a session. It is
 	// true when no password is required.
 	Authenticated bool `json:"authenticated"`
+
+	// NeedCode answers a right password on an install with a second factor:
+	// the login screen asks for the code next.
+	NeedCode bool `json:"needCode,omitempty"`
 }
 
 // session answers whether a password is needed and whether the caller has one.
@@ -330,12 +405,27 @@ func (s *Server) session(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, sessionView{Required: true, Authenticated: s.gate().accepts(cookieToken(r))})
 }
 
-// loginRequest is the one field the login takes.
+// loginRequest is what the login takes. Code is the six digits from the
+// authenticator app or a recovery code, and is read only when the second
+// factor is on.
 type loginRequest struct {
 	Password string `json:"password"`
+	Code     string `json:"code,omitempty"`
 }
 
-// login checks a password and hands back a session cookie.
+// readBody decodes a small JSON body, capped, since anybody who can reach the
+// port can send one to the login routes. It answers 400 itself and reports
+// whether decoding worked.
+func readBody(w http.ResponseWriter, r *http.Request, into any) bool {
+	if err := json.NewDecoder(io.LimitReader(r.Body, 64<<10)).Decode(into); err != nil {
+		writeError(w, http.StatusBadRequest, fmt.Errorf("read the request: %w", err))
+		return false
+	}
+	return true
+}
+
+// login checks a password, and the code when a second factor is on, and hands
+// back a session cookie.
 func (s *Server) login(w http.ResponseWriter, r *http.Request) {
 	hash := s.passwordHash()
 	if len(hash) == 0 {
@@ -348,53 +438,105 @@ func (s *Server) login(w http.ResponseWriter, r *http.Request) {
 	key := clientKey(r)
 	// Checked before bcrypt, which is expensive on purpose and would otherwise
 	// let a locked-out caller spend this machine's processor.
-	if wait, locked := gate.lockedOut(key); locked {
-		seconds := int(wait.Seconds()) + 1
-		w.Header().Set("Retry-After", strconv.Itoa(seconds))
-		writeError(w, http.StatusTooManyRequests, fmt.Errorf("too many wrong passwords, try again in %d seconds", seconds))
+	if gate.refuseIfLockedOut(w, key) {
 		return
 	}
 
 	var req loginRequest
-	// Capped, since anybody who can reach the port can send this body.
-	if err := json.NewDecoder(io.LimitReader(r.Body, 64<<10)).Decode(&req); err != nil {
-		writeError(w, http.StatusBadRequest, fmt.Errorf("read the request: %w", err))
+	if !readBody(w, r, &req) {
 		return
 	}
 
 	if err := bcrypt.CompareHashAndPassword(hash, []byte(req.Password)); err != nil {
-		gate.recordFailure(key)
-		// The request's context is ignored, so hanging up does not skip the
-		// delay.
-		time.Sleep(failedLoginDelay)
+		gate.fail(key)
 		// The same words whatever went wrong, so a malformed hash cannot be told
 		// from a wrong password.
 		writeError(w, http.StatusUnauthorized, errors.New("wrong password"))
 		return
 	}
 
-	token, err := gate.remember()
-	if err != nil {
+	// With a second factor on, a right password alone grants nothing, and the
+	// failure count is not cleared either, so somebody who has the password
+	// still gets five tries a minute at the code.
+	if s.twoFactorOn() {
+		if strings.TrimSpace(req.Code) == "" {
+			// Not a failure: the answer tells the interface to show the code
+			// field.
+			writeJSON(w, http.StatusOK, sessionView{Required: true, NeedCode: true})
+			return
+		}
+		if !s.secondFactorOK(req.Code) {
+			gate.fail(key)
+			writeJSON(w, http.StatusUnauthorized, map[string]any{"error": "wrong code", "needCode": true})
+			return
+		}
+	}
+
+	if err := s.startSession(w, r); err != nil {
 		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
 	gate.clearFailures(key)
-	http.SetCookie(w, sessionCookie(r, token))
 	writeJSON(w, http.StatusOK, sessionView{Required: true, Authenticated: true})
+}
+
+// startSession mints a session and sets its cookie.
+func (s *Server) startSession(w http.ResponseWriter, r *http.Request) error {
+	token, err := s.gate().remember()
+	if err != nil {
+		return err
+	}
+	http.SetCookie(w, sessionCookie(r, token))
+	return nil
+}
+
+// errNoMatch ends an Update that found nothing to change.
+var errNoMatch = errors.New("no match")
+
+// secondFactorOK checks a code against the authenticator secret and then
+// against the recovery codes. An accepted code is spent in the same write that
+// checks it: a time step is recorded so the code cannot be replayed within its
+// window, and a recovery code is removed. When that write fails the login is
+// refused, because a recovery code that survives its own use is a permanent
+// second password.
+func (s *Server) secondFactorOK(code string) bool {
+	if s.Security == nil {
+		return false
+	}
+	err := s.Security.Update(func(st *security.State) error {
+		if step, ok := security.MatchTOTP(st.TOTP.Secret, code, time.Now()); ok && step > st.TOTP.LastStep {
+			st.TOTP.LastStep = step
+			return nil
+		}
+		i := security.MatchRecoveryCode(code, st.TOTP.Recovery)
+		if i < 0 {
+			return errNoMatch
+		}
+		st.TOTP.Recovery = append(st.TOTP.Recovery[:i], st.TOTP.Recovery[i+1:]...)
+		s.logf("a recovery code was used, %d left", len(st.TOTP.Recovery))
+		return nil
+	})
+	if err != nil && !errors.Is(err, errNoMatch) {
+		s.logf("could not record a used login code, so it was refused: %v", err)
+	}
+	return err == nil
 }
 
 // logout destroys the caller's session and clears the cookie.
 func (s *Server) logout(w http.ResponseWriter, r *http.Request) {
 	s.gate().forget(cookieToken(r))
+	clearSessionCookie(w, r)
+	writeJSON(w, http.StatusOK, sessionView{Required: len(s.passwordHash()) > 0, Authenticated: false})
+}
 
-	// A browser matches a deletion by name, path and domain, so the clearing
-	// cookie carries the original's attributes.
+// clearSessionCookie tells the browser to drop its session cookie. A browser
+// matches a deletion by name, path and domain, so the clearing cookie carries
+// the original's attributes.
+func clearSessionCookie(w http.ResponseWriter, r *http.Request) {
 	gone := sessionCookie(r, "")
 	gone.MaxAge = -1
 	gone.Expires = time.Unix(0, 0)
 	http.SetCookie(w, gone)
-
-	writeJSON(w, http.StatusOK, sessionView{Required: len(s.passwordHash()) > 0, Authenticated: false})
 }
 
 // sessionCookie builds the cookie a session travels in.

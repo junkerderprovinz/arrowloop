@@ -17,6 +17,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/daemon"
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/hold"
+	"github.com/junkerderprovinz/arrowloop/internal/security"
 	"github.com/junkerderprovinz/arrowloop/internal/web"
 	webui "github.com/junkerderprovinz/arrowloop/web"
 )
@@ -42,6 +43,12 @@ func cmdWeb(ctx context.Context, args []string) error {
 	}
 
 	cfg, err := load(ctx, *configPath)
+	if err != nil {
+		return err
+	}
+	// Read before anything listens, so a damaged file stops the start instead
+	// of serving an install whose password has gone missing.
+	secured, err := security.Open(*configPath)
 	if err != nil {
 		return err
 	}
@@ -71,6 +78,7 @@ func cmdWeb(ctx context.Context, args []string) error {
 		UI:          ui,
 		Placeholder: webui.Placeholder,
 		Hold:        held,
+		Security:    secured,
 		Log:         logf,
 	}
 

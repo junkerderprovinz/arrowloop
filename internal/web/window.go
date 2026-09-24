@@ -18,8 +18,11 @@ func (s *Server) capabilities(w http.ResponseWriter, r *http.Request) {
 		"window": s.Window != nil,
 		// Whether the device can report that now is a bad moment, as a phone
 		// on battery can.
-		"device":  s.Hold != nil,
-		"version": boot.Version,
+		"device": s.Hold != nil,
+		// Whether the interface can set a password, a second factor and
+		// passkeys here. The desktop window cannot, since nobody else reaches it.
+		"security": s.Security != nil,
+		"version":  boot.Version,
 	})
 }
 

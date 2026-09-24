@@ -10,6 +10,12 @@ The full notes for each release are in
 
 ## Unreleased
 
+## ✨ Added
+
+- **The password is set in the interface.** Settings has a Security section that sets, changes and removes it. A change or a removal asks for the current password, and a change signs out every other session. The hash is kept in `security.json` beside the configuration and never in `arrowloop.json`, so a settings backup does not carry it and restoring one cannot remove it. `ARROWLOOP_PASSWORD_HASH` keeps working and wins over the password set in the interface, which makes it the way back in after a forgotten one; an install that only uses the variable behaves as before.
+- **Two-factor authentication** with an authenticator app and eight single-use recovery codes. A code is accepted once, so one read over somebody's shoulder cannot be used again within its thirty seconds, and wrong codes count toward the same lockout as wrong passwords.
+- **Passkeys** sign in with a key on a phone, a laptop or a security stick instead of the password. A browser offers them only on a host name with a certificate it trusts, or on `localhost`, so they work behind a reverse proxy; opened on an IP address, the section says why it cannot offer one.
+
 ## 🎨 Design
 
 - **Edit and Delete stay visible on every target.** They used to appear only while the pointer was on the row, so on a touch screen or at a glance they were not there at all.

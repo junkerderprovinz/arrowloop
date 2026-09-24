@@ -35,6 +35,7 @@ out to. There is no second executable to keep in step.
 - [When something goes wrong](troubleshooting.md).
 
 !!! warning "Without a password, anyone who reaches the interface can drive it"
-    It asks for a password only when `ARROWLOOP_PASSWORD_HASH` is set. Otherwise
-    keep it on your own network, or put it behind something that asks who the
-    visitor is. It can start a job that deletes files.
+    It asks for a password once one is set under Settings, Security, or through
+    `ARROWLOOP_PASSWORD_HASH`. Until then keep it on your own network, or put it
+    behind something that asks who the visitor is. It can start a job that
+    deletes files.

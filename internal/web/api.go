@@ -22,6 +22,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/job"
 	"github.com/junkerderprovinz/arrowloop/internal/plan"
 	"github.com/junkerderprovinz/arrowloop/internal/scan"
+	"github.com/junkerderprovinz/arrowloop/internal/security"
 )
 
 // Server answers the browser. It holds no configuration of its own: the runner
@@ -46,6 +47,12 @@ type Server struct {
 	// and whether the connection is metered. A nil store leaves the routes
 	// unregistered.
 	Hold *hold.Store
+
+	// Security keeps the password, the second factor and the passkeys set up
+	// in the interface. A nil store leaves those routes unregistered and the
+	// password to ARROWLOOP_PASSWORD_HASH alone, which is how the desktop
+	// window runs: nobody else can reach it.
+	Security *security.Store
 
 	// Log reports what a status code cannot, such as a setting that saved but
 	// could not be applied to the running process. Nil means silence.
@@ -98,10 +105,27 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("POST /api/browse/mkdir", s.makeDir)
 	mux.HandleFunc("GET /api/capabilities", s.capabilities)
 
-	// The three routes an unauthenticated caller may reach; see Protect.
+	// The routes an unauthenticated caller may reach are listed in
+	// needsSession.
 	mux.HandleFunc("POST /api/login", s.login)
 	mux.HandleFunc("POST /api/logout", s.logout)
 	mux.HandleFunc("GET /api/session", s.session)
+	mux.HandleFunc("GET /api/security", s.securityStatus)
+
+	if s.Security != nil {
+		mux.HandleFunc("POST /api/security/password", s.setPassword)
+		mux.HandleFunc("POST /api/security/password/remove", s.removePassword)
+		mux.HandleFunc("POST /api/security/totp/setup", s.totpSetup)
+		mux.HandleFunc("POST /api/security/totp/confirm", s.totpConfirm)
+		mux.HandleFunc("POST /api/security/totp/disable", s.totpDisable)
+
+		mux.HandleFunc("GET /api/passkeys", s.passkeyStatus)
+		mux.HandleFunc("POST /api/passkeys/login/begin", s.passkeyLoginBegin)
+		mux.HandleFunc("POST /api/passkeys/login/finish", s.passkeyLoginFinish)
+		mux.HandleFunc("POST /api/passkeys/register/begin", s.passkeyRegisterBegin)
+		mux.HandleFunc("POST /api/passkeys/register/finish", s.passkeyRegisterFinish)
+		mux.HandleFunc("DELETE /api/passkeys/{id}", s.deletePasskey)
+	}
 
 	if s.Window != nil {
 		mux.HandleFunc("GET /api/window", s.readWindow)

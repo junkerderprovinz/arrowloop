@@ -8,7 +8,7 @@ import { InfoBubble } from './lib/glimstone/InfoBubble'
 import { ToggleRow } from './components/ToggleRow'
 import { Selector } from './components/Selector'
 import { Sidebar } from './components/Sidebar'
-import { IconHistory, IconJobs, IconLive, IconLook, IconReset, IconSettings, IconTargets } from './components/glyphs'
+import { IconHistory, IconJobs, IconLive, IconLock, IconLook, IconReset, IconSettings, IconTargets } from './components/glyphs'
 import { AccentSwatches, PaletteSwatches } from './components/Swatches'
 import { About } from './components/About'
 import { SettingsBackup } from './components/SettingsBackup'
@@ -16,6 +16,7 @@ import { Login } from './pages/Login'
 import { Engine } from './pages/Engine'
 import { History, Jobs } from './pages/Jobs'
 import { Preview } from './pages/Preview'
+import { Security } from './pages/Security'
 import { Targets } from './pages/Targets'
 import { api, type Job, type Run, type RunEvent, type WindowSettings } from './lib/api'
 import { ACCENTS, applyAccent, applyRainbow, applyShape, cacheAppearance, RAINBOW, rainbowState, type RainbowState, type Shape } from './lib/appearance'
@@ -28,7 +29,7 @@ import { wireTooltips } from './lib/tooltip'
 type Tab = 'jobs' | 'targets' | 'history' | 'settings'
 
 /** Settings is one tab with sections, the same shape BombVault uses. */
-type SettingsSection = 'general' | 'engine' | 'look'
+type SettingsSection = 'general' | 'engine' | 'look' | 'security'
 
 type Theme = 'dark' | 'light'
 
@@ -103,6 +104,7 @@ export function App() {
   // Null until asked, and always on a build with no window of its own.
   const [window_, setWindow] = useState<WindowSettings | null>(null)
   const [version, setVersion] = useState('dev')
+  const [canSecure, setCanSecure] = useState(false)
   const [labels, setLabels] = useState<Record<ControlAxis, LabelMode>>(() => ({
     buttons: getLabelMode('buttons'),
     sidebar: getLabelMode('sidebar'),
@@ -125,6 +127,7 @@ export function App() {
   useEffect(() => {
     void api.capabilities().then((can) => {
       setVersion(can.version || 'dev')
+      setCanSecure(can.security === true)
       if (can.window) void api.window().then(setWindow)
     })
   }, [])
@@ -249,6 +252,7 @@ export function App() {
             setLabels((prev) => ({ ...prev, [axis]: next }))
           }}
           version={version}
+          security={canSecure}
           window={window_}
           onWindow={(next) => {
             setWindow(next)
@@ -288,6 +292,10 @@ function Settings(props: LookProps) {
           { value: 'general', label: t('settings.general'), icon: <IconSettings /> },
           { value: 'engine', label: t('settings.engine'), icon: <IconLive /> },
           { value: 'look', label: t('settings.look'), icon: <IconLook /> },
+          // Left out where the interface cannot keep a password of its own.
+          ...(props.security
+            ? [{ value: 'security' as SettingsSection, label: t('settings.security'), icon: <IconLock /> }]
+            : []),
         ]}
       />
       </div>
@@ -298,6 +306,8 @@ function Settings(props: LookProps) {
           <General {...props} />
         ) : section === 'engine' ? (
           <Engine />
+        ) : section === 'security' ? (
+          <Security />
         ) : (
           <Look {...props} />
         )}
@@ -426,6 +436,8 @@ interface LookProps {
   labels: Record<ControlAxis, LabelMode>
   onLabels: (axis: ControlAxis, next: LabelMode) => void
   version: string
+  /** Whether this build keeps a password, a second factor and passkeys. */
+  security: boolean
   window: WindowSettings | null
   onWindow: (next: WindowSettings) => void
   lang: string

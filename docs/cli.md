@@ -54,8 +54,10 @@ state database is the sort of arrangement that works until the day both happen
 to run the same job.
 
 It listens on loopback unless told otherwise. The interface can start a job that
-deletes files and asks for no password unless `ARROWLOOP_PASSWORD_HASH` is set,
-so making it reachable has to be a decision somebody took on purpose.
+deletes files and asks for no password until one is set under Settings,
+Security, or through `ARROWLOOP_PASSWORD_HASH`, so making it reachable has to be
+a decision somebody took on purpose. What the interface sets is kept in
+`security.json` beside the configuration file.
 
 `daemon` is the same scheduler with no interface, for a machine where nobody is
 looking.
@@ -83,8 +85,13 @@ Three things it tells you that are otherwise found out the hard way:
 
 ## hash-password
 
-Prints the value `ARROWLOOP_PASSWORD_HASH` wants. At a terminal it asks for the
-password twice without echoing it; piped, it takes the first line.
+Prints the value `ARROWLOOP_PASSWORD_HASH` wants. The interface sets its own
+password without it; the variable is for a password managed from outside, such
+as in a container template, and it wins over the one set in the interface,
+which makes it the way back in after that one is forgotten.
+
+At a terminal it asks for the password twice without echoing it; piped, it
+takes the first line.
 
 ```bash
 arrowloop hash-password

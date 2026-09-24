@@ -25,8 +25,31 @@ crash-looping on a missing file.
 ### A password for the interface
 
 The container listens on every address, so anyone on the network who reaches
-port 8422 can start a job. To make the interface ask for a password, have the
-image hash one and hand the result back as `ARROWLOOP_PASSWORD_HASH`:
+port 8422 can start a job. Set a password under **Settings**, **Security**, and
+from then on every page but the login asks for it.
+
+The same section sets up a second factor: six digits from an authenticator app
+on top of the password. Setting it up shows eight recovery codes once, and each
+of them signs in a single time in place of a code.
+
+It also registers passkeys, a key on a phone, a laptop or a security stick used
+instead of typing the password. A browser offers one only on a host name over
+HTTPS with a certificate it trusts, or on `localhost`, so on
+`http://192.168.1.5:8422` the section explains why it cannot. Behind a reverse
+proxy with a real name they work, and each key belongs to the address it was
+registered on.
+
+All three are kept in `/config/security.json`, readable by its owner only, and
+never in `arrowloop.json`. That file is downloaded whole as a settings backup and
+replaced whole by a restore, so a hash in it would leave with every backup and
+restoring an old one would switch the password off.
+
+#### The environment variable
+
+`ARROWLOOP_PASSWORD_HASH` still works, and it wins over the password set in the
+interface, which then shows the password as set from outside and offers no form
+for it. That makes it the way back in after a forgotten password. Have the image
+hash one and hand the result back:
 
 ```bash
 docker run --rm -it ghcr.io/junkerderprovinz/arrowloop:latest hash-password
@@ -39,14 +62,21 @@ docker run -d --name arrowloop -p 8422:8422 \
 The single quotes matter: the hash is full of `$`, which a shell would otherwise
 read as variables. In a Compose file, write every `$` as `$$`.
 
+If the authenticator app and the recovery codes are both gone, stop the
+container and delete `/config/security.json`. That removes the password, the
+second factor and the passkeys together. A damaged `security.json` stops the
+container from starting rather than letting it come up without a password; the
+log names the file, and deleting it has the same effect.
+
 ### On Unraid
 
 The template is
 [`templates/my-ArrowLoop.xml`](https://github.com/junkerderprovinz/arrowloop/blob/main/templates/my-ArrowLoop.xml).
 Drop it into `/boot/config/plugins/dockerMan/templates-user/` and it appears in
-the Docker tab's Add Container list, with every field editable. The password
-hash has a field of its own there, masked; the template's text says how to fill
-it from the container's console.
+the Docker tab's Add Container list, with every field editable. Most installs
+set the password in the interface; the template's masked password hash field
+is the environment variable above, and its text says how to fill it from the
+container's console.
 
 Mount the data path read-write. A two-way job writes to both sides by
 definition, and a read-only mount produces a job that fails on every run for a

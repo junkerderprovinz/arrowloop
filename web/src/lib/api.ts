@@ -404,6 +404,16 @@ export type RunEvent = {
   side?: string
 }
 
+/** A refusal from the engine. The status tells a wrong password from a lockout
+ *  without reading the English message. */
+export class ApiError extends Error {
+  status: number
+  constructor(message: string, status: number) {
+    super(message)
+    this.status = status
+  }
+}
+
 // Checks the status before parsing, so a 500 with an HTML page does not turn
 // into a JSON error somewhere else.
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
@@ -416,9 +426,102 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     } catch {
       // The body was not the JSON error shape; the status line has to do.
     }
-    throw new Error(detail)
+    throw new ApiError(detail, res.status)
   }
   return (await res.json()) as T
+}
+
+/** A JSON POST, the shape every security route takes. */
+function post<T>(path: string, body: unknown = {}): Promise<T> {
+  return request<T>(path, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  })
+}
+
+/** What the security settings draw from. Never a hash, a secret or a code. */
+export type SecurityStatus = {
+  /** False on a build that keeps no login settings of its own, the desktop window. */
+  available: boolean
+  /** Where the password comes from: none, set here, or ARROWLOOP_PASSWORD_HASH. */
+  password: 'none' | 'file' | 'env'
+  minPasswordLen: number
+  twoFactor: boolean
+  recoveryCodesLeft: number
+}
+
+/** One registered passkey, as the list shows it. */
+export type PasskeyView = {
+  id: string
+  name: string
+  /** The address the key belongs to. A key registered through a proxy does not
+   *  exist under another name, which is why the list shows it. */
+  rpId: string
+  usableHere: boolean
+  /** Synced to a cloud keychain. One that is not dies with the device. */
+  backedUp: boolean
+  createdAt: number
+  lastUsedAt: number
+}
+
+export type PasskeyStatus = {
+  /** Whether this address can carry a passkey at all. */
+  supported: boolean
+  reason?: string
+  rpId: string
+  total: number
+  here: number
+  /** Only for somebody signed in, or while there is no password. */
+  passkeys?: PasskeyView[]
+}
+
+type Ceremony = { ceremonyId: string; options: Record<string, unknown> }
+
+// WebAuthn wants ArrayBuffers for the challenge, the user handle and every
+// credential id, and JSON has none, so the server sends base64url and these
+// convert at the boundary. A wrong encoding surfaces only as an unhelpful
+// NotAllowedError, so it lives in one place.
+function fromB64url(s: string): Uint8Array<ArrayBuffer> {
+  const pad = s.length % 4 === 0 ? '' : '='.repeat(4 - (s.length % 4))
+  const bin = atob(s.replace(/-/g, '+').replace(/_/g, '/') + pad)
+  const out = new Uint8Array(bin.length)
+  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i)
+  return out
+}
+
+function toB64url(buf: ArrayBuffer): string {
+  let bin = ''
+  for (const b of new Uint8Array(buf)) bin += String.fromCharCode(b)
+  return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+}
+
+/** Whether this browser can do WebAuthn at all. A page the browser does not
+ *  consider secure, such as plain HTTP on anything but localhost, has none. */
+export function passkeysAvailableInBrowser(): boolean {
+  return typeof window !== 'undefined' && 'PublicKeyCredential' in window
+}
+
+// Only the known binary fields are converted, so an extension the server adds
+// later rides through untouched.
+function creationOptions(o: Record<string, unknown>): PublicKeyCredentialCreationOptions {
+  const user = o.user as { id: string; name: string; displayName: string }
+  const exclude = o.excludeCredentials as { id: string }[] | undefined
+  return {
+    ...o,
+    challenge: fromB64url(o.challenge as string),
+    user: { ...user, id: fromB64url(user.id) },
+    ...(exclude ? { excludeCredentials: exclude.map((c) => ({ ...c, id: fromB64url(c.id) })) } : {}),
+  } as unknown as PublicKeyCredentialCreationOptions
+}
+
+function requestOptions(o: Record<string, unknown>): PublicKeyCredentialRequestOptions {
+  const allow = o.allowCredentials as { id: string }[] | undefined
+  return {
+    ...o,
+    challenge: fromB64url(o.challenge as string),
+    ...(allow ? { allowCredentials: allow.map((c) => ({ ...c, id: fromB64url(c.id) })) } : {}),
+  } as unknown as PublicKeyCredentialRequestOptions
 }
 
 /**
@@ -520,14 +623,89 @@ export const api = {
    */
   session: () => request<{ required: boolean; authenticated: boolean }>('/api/session'),
 
-  login: (password: string) =>
-    request<{ ok: boolean }>('/api/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password }),
-    }),
+  /**
+   * Sign in. With a second factor on, a right password alone answers
+   * `needCode`, and the code goes with the password on the next try.
+   */
+  login: (password: string, code?: string) =>
+    post<{ authenticated: boolean; needCode?: boolean }>('/api/login', code ? { password, code } : { password }),
 
   logout: () => request<{ ok: boolean }>('/api/logout', { method: 'POST' }),
+
+  security: () => request<SecurityStatus>('/api/security'),
+
+  /** Set the first password, or replace one with the current one. The caller
+   *  comes back signed in; every other session ends. */
+  setPassword: (password: string, current = '') =>
+    post<SecurityStatus>('/api/security/password', { current, password }),
+
+  /** Remove the password, and the second factor with it. */
+  removePassword: (current: string) => post<SecurityStatus>('/api/security/password/remove', { current }),
+
+  /** Draw a secret. The factor stays off until totpConfirm accepts a code. */
+  totpSetup: () => post<{ secret: string; uri: string }>('/api/security/totp/setup'),
+
+  /** Arm the factor. The recovery codes in the answer are never shown again. */
+  totpConfirm: (code: string) => post<{ recoveryCodes: string[] }>('/api/security/totp/confirm', { code }),
+
+  totpDisable: (code: string) => post<SecurityStatus>('/api/security/totp/disable', { code }),
+
+  /** Open like the session probe, so the login screen knows whether to offer
+   *  a passkey. */
+  passkeys: () => request<PasskeyStatus>('/api/passkeys'),
+
+  /** Begin, ask the authenticator, finish: one operation from the owner's side. */
+  registerPasskey: async (name: string): Promise<PasskeyView> => {
+    const begin = await post<Ceremony>('/api/passkeys/register/begin')
+    const cred = (await navigator.credentials.create({
+      publicKey: creationOptions(begin.options),
+    })) as PublicKeyCredential | null
+    if (!cred) throw new Error('no passkey was created')
+    const att = cred.response as AuthenticatorAttestationResponse
+    return post<PasskeyView>('/api/passkeys/register/finish', {
+      ceremonyId: begin.ceremonyId,
+      name,
+      credential: {
+        id: cred.id,
+        rawId: toB64url(cred.rawId),
+        type: cred.type,
+        // Handed back at login, so the browser raises the right prompt, a
+        // phone over Bluetooth rather than a USB key.
+        transports: att.getTransports ? att.getTransports() : [],
+        response: {
+          clientDataJSON: toB64url(att.clientDataJSON),
+          attestationObject: toB64url(att.attestationObject),
+        },
+      },
+    })
+  },
+
+  /** Sign in with a passkey. Sets the session cookie as the password login does. */
+  loginWithPasskey: async (): Promise<void> => {
+    const begin = await post<Ceremony>('/api/passkeys/login/begin')
+    const cred = (await navigator.credentials.get({
+      publicKey: requestOptions(begin.options),
+    })) as PublicKeyCredential | null
+    if (!cred) throw new Error('no passkey was used')
+    const asr = cred.response as AuthenticatorAssertionResponse
+    await post('/api/passkeys/login/finish', {
+      ceremonyId: begin.ceremonyId,
+      credential: {
+        id: cred.id,
+        rawId: toB64url(cred.rawId),
+        type: cred.type,
+        response: {
+          clientDataJSON: toB64url(asr.clientDataJSON),
+          authenticatorData: toB64url(asr.authenticatorData),
+          signature: toB64url(asr.signature),
+          userHandle: asr.userHandle ? toB64url(asr.userHandle) : null,
+        },
+      },
+    })
+  },
+
+  deletePasskey: (id: string) =>
+    request<{ deleted: string }>(`/api/passkeys/${encodeURIComponent(id)}`, { method: 'DELETE' }),
 
   settings: () => request<Settings>('/api/settings'),
 
@@ -612,7 +790,8 @@ export const api = {
     request<Usage>(`/api/remotes/${encodeURIComponent(name)}/about`),
 
   /** What this build can do. Every build answers, so asking never fails. */
-  capabilities: () => request<{ window: boolean; version: string }>('/api/capabilities'),
+  capabilities: () =>
+    request<{ window: boolean; security?: boolean; version: string }>('/api/capabilities'),
 
   /** The folders inside one folder. An empty path asks for the roots. */
   browse: (path?: string) =>

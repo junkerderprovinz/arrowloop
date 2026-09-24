@@ -374,7 +374,7 @@ func TestTooManyWrongPasswordsStopEvenTheRightOne(t *testing.T) {
 }
 
 // Includes paths dressed up to look like an open route or unlike an API path.
-func TestOnlyTheThreeOpenRoutesAreOpen(t *testing.T) {
+func TestOnlyTheLoginRoutesAreOpen(t *testing.T) {
 	protected := []string{
 		"/api/jobs",
 		"/api/jobs/photos/plan",
@@ -391,6 +391,16 @@ func TestOnlyTheThreeOpenRoutesAreOpen(t *testing.T) {
 		"/api/logins",
 		"/api/logout-everyone",
 		"/api/session/all",
+		"/api/passkeys/abc",
+		"/api/passkeys/login",
+		"/api/passkeys/login/begin/../../register/begin",
+
+		// Changing what signs somebody in is for somebody signed in.
+		"/api/security",
+		"/api/security/password",
+		"/api/security/totp/disable",
+		"/api/passkeys/register/begin",
+		"/api/passkeys/register/finish",
 	}
 	for _, p := range protected {
 		if !needsSession(p) {
@@ -406,6 +416,9 @@ func TestOnlyTheThreeOpenRoutesAreOpen(t *testing.T) {
 		"/api/login",
 		"/api/logout",
 		"/api/session",
+		"/api/passkeys",
+		"/api/passkeys/login/begin",
+		"/api/passkeys/login/finish",
 	}
 	for _, p := range open {
 		if needsSession(p) {
@@ -431,5 +444,20 @@ func TestHashPasswordRoundTrips(t *testing.T) {
 
 	if _, err := HashPassword("   "); err == nil {
 		t.Error("an empty password was accepted, which would look like protection and be none")
+	}
+	if _, err := HashPassword(strings.Repeat("x", 73)); err == nil || !strings.Contains(err.Error(), "72 bytes") {
+		t.Errorf("a password bcrypt cannot hash gave %v", err)
+	}
+}
+
+// Believing a forwarded-for header would let any caller pick a fresh lockout
+// bucket for every request.
+func TestTheLockoutKeyIgnoresForwardedHeaders(t *testing.T) {
+	r := httptest.NewRequest(http.MethodPost, "/api/login", nil)
+	r.RemoteAddr = "203.0.113.9:5555"
+	r.Header.Set("X-Forwarded-For", "10.9.9.9")
+	r.Header.Set("X-Real-IP", "10.9.9.8")
+	if got := clientKey(r); got != "203.0.113.9" {
+		t.Fatalf("key = %q, want the real peer 203.0.113.9", got)
 	}
 }
