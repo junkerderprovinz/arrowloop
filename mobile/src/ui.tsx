@@ -674,12 +674,14 @@ export function Choice<T extends string>({
   value,
   onChange,
   disabled,
+  style,
 }: {
   options: { value: T; label: string; colour?: string }[];
   value: T;
   onChange: (next: T) => void;
   /** Dimmed and inert, but still showing the value in force. */
   disabled?: boolean;
+  style?: StyleProp<ViewStyle>;
 }) {
   const { p, radius, accent, hueAt } = useTheme();
   return (
@@ -689,6 +691,7 @@ export function Choice<T extends string>({
         styles.well,
         { backgroundColor: p.surface2, borderRadius: radius.control },
         disabled ? styles.dimmed : null,
+        style,
       ]}
     >
       {options.map((option, i) => {

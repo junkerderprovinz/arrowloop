@@ -88,6 +88,7 @@ GLYPHS = [
     # One box with the arrow reversed, the same pair the sibling app uses.
     ("IconDownload", "interface-essential/download-box-1.svg", "Export the setup to a file"),
     ("IconPhone", "phone/phone-mobile-phone.svg", "The phone app"),
+    ("IconFilter", "interface-essential/filter-2.svg", "Narrow a list down"),
     ("IconUpload", "interface-essential/upload-box-1.svg", "Read a setup back in from a file"),
 
     # The buttons on GlimStone's AboutCard; main.tsx maps its label keys here.

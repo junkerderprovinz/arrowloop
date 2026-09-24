@@ -52,6 +52,7 @@ const RULES: Rule[] = [
   // Above `save`: exporting hands a copy to the person's disk rather than
   // writing the program's own file.
   [/export|download/i, 'IconDownload'],
+  [/^history\.filter$/i, 'IconFilter'],
   [/import|upload/i, 'IconUpload'],
 
   // A key is namespace and verb, and the verb decides. Cancel sits above save

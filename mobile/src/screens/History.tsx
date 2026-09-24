@@ -33,6 +33,8 @@ function Mode({ value, onChange }: { value: "files" | "runs"; onChange: (next: "
   const { t } = useT();
   return (
     <Choice
+      // Grows into what the filter button leaves, and stands as tall as it.
+      style={styles.filterMode}
       value={value}
       onChange={onChange}
       options={[
@@ -64,11 +66,10 @@ function FilterBar({
   const { t } = useT();
   return (
     <View style={styles.filterBar}>
-      <View style={styles.filterMode}>
-        <Mode value={mode} onChange={onMode} />
-      </View>
+      <Mode value={mode} onChange={onMode} />
       <Button
         label={active > 0 ? `${t("history.filter")} (${active})` : t("history.filter")}
+        labelKey="history.filter"
         onPress={() => onOpen(!open)}
         tone={active > 0 ? "accent" : "neutral"}
         wide={false}
