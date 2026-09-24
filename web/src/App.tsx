@@ -244,7 +244,11 @@ export function App() {
           ) : tab === 'targets' ? (
             <Targets />
           ) : tab === 'history' ? (
-            <History runs={runs} jobs={jobs} onChanged={refresh} />
+            // The log is the whole page, so its card reaches the bottom of the
+            // window however few lines it has.
+            <div className="flex flex-1 flex-col *:flex-1">
+              <History runs={runs} jobs={jobs} onChanged={refresh} />
+            </div>
           ) : (
             <Settings
           theme={theme}

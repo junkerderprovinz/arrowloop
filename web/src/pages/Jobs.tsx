@@ -627,9 +627,23 @@ function AllTouches({ job, kinds, query }: { job: string; kinds: string[]; query
   const [touches, setTouches] = useState<Touch[] | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [limit, setLimit] = useState(60)
+  const end = useRef<HTMLLIElement | null>(null)
 
   // A new question starts again at one screenful.
   useEffect(() => setLimit(60), [job, query, kinds.join(',')])
+
+  // The list runs with the page, so the next screenful comes when its end
+  // scrolls into view. Only a list that filled the limit can have more.
+  const more = touches !== null && touches.length >= limit
+  useEffect(() => {
+    const el = end.current
+    if (!el || !more) return
+    const watcher = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting)) setLimit((n) => n * 2)
+    })
+    watcher.observe(el)
+    return () => watcher.disconnect()
+  }, [more, touches])
 
   useEffect(() => {
     let live = true
@@ -649,18 +663,11 @@ function AllTouches({ job, kinds, query }: { job: string; kinds: string[]; query
     return <Empty>{query ? t('jobs.activityNoMatch', { q: query }) : t('history.logEmpty')}</Empty>
 
   return (
-    <ul
-      className="flex max-h-[32rem] flex-col gap-1 overflow-y-auto"
-      onScroll={(e) => {
-        const el = e.currentTarget
-        if (el.scrollHeight - el.scrollTop - el.clientHeight > 40) return
-        // A list shorter than the limit is the whole list.
-        if (touches.length >= limit) setLimit((n) => n * 2)
-      }}
-    >
+    <ul className="flex flex-col gap-1">
       {touches.map((e, i) => (
         <TouchRow key={`${e.Run}-${e.Path}-${i}`} touch={e} withJob={!job} />
       ))}
+      {more && <li ref={end} aria-hidden className="h-px" />}
     </ul>
   )
 }
