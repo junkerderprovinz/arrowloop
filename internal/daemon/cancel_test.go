@@ -3,6 +3,7 @@ package daemon
 import (
 	"context"
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
@@ -14,6 +15,10 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/job"
 )
 
+// files is how many the left side of a test job holds: enough that a stop lands
+// halfway through the run even on a fast machine.
+const files = 2000
+
 func newRunner(t *testing.T) (*Runner, string, string) {
 	t.Helper()
 	root := t.TempDir()
@@ -24,9 +29,8 @@ func newRunner(t *testing.T) (*Runner, string, string) {
 			t.Fatalf("mkdir: %v", err)
 		}
 	}
-	// Enough files that the run can be interrupted.
-	for i := 0; i < 400; i++ {
-		name := filepath.Join(left, "datei-"+string(rune('a'+i%26))+"-"+time.Now().Format("")+string(rune('0'+i/26%10))+".txt")
+	for i := 0; i < files; i++ {
+		name := filepath.Join(left, fmt.Sprintf("datei-%04d.txt", i))
 		if err := os.WriteFile(name, make([]byte, 4096), 0o644); err != nil {
 			t.Fatalf("write: %v", err)
 		}
@@ -97,7 +101,7 @@ func TestARunningJobStops(t *testing.T) {
 	if err != nil {
 		t.Fatalf("read the right side: %v", err)
 	}
-	if len(entries) >= 400 {
+	if len(entries) >= files {
 		t.Errorf("everything was copied anyway (%d files), so the stop did nothing", len(entries))
 	}
 }
