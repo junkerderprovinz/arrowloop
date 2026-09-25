@@ -1,7 +1,8 @@
-// Rule 14's mouse-wheel addendum: a closed <select> answers the wheel too,
-// stepping selectedIndex and firing change without opening the native dropdown.
-// Browsers only wire the wheel up once a <select> is open, and values such as a
-// font, a preset or a language should not cost a click first.
+// Rule 14's mouse-wheel addendum: a closed <select> with focus answers the
+// wheel, stepping selectedIndex and firing change without opening the native
+// dropdown. Browsers only wire the wheel up once a <select> is open. Focus is
+// the condition a number field has too: a list of rows with a dropdown each
+// would otherwise change whatever the page scrolls past.
 
 /** Attaches the behaviour to one <select>. Safe to call twice. */
 export function enableSelectScroll(select: HTMLSelectElement): void {
@@ -12,6 +13,7 @@ export function enableSelectScroll(select: HTMLSelectElement): void {
     'wheel',
     (event) => {
       if (select.disabled || select.options.length < 2) return;
+      if (select.ownerDocument.activeElement !== select) return;
       // The wheel steps the value, so the page must not scroll under it.
       event.preventDefault();
 
@@ -38,6 +40,8 @@ export function enableSelectScrollForAll(root: ParentNode = document): void {
 /**
  * The same behaviour for a custom picker that replaced a native <select> (rule
  * 18). Attach it to the button that opens the list; it returns the detach.
+ * It steps only while that button has focus, which it gets back when the list
+ * closes.
  * `step` receives 1 for a roll downwards and -1 for one upwards, and the caller
  * clamps at both ends rather than wrapping.
  *
@@ -47,7 +51,7 @@ export function enableSelectScrollForAll(root: ParentNode = document): void {
  */
 export function enableWheelStep(el: HTMLElement, step: (delta: 1 | -1) => void): () => void {
   function onWheel(event: WheelEvent) {
-    if (event.deltaY === 0) return;
+    if (event.deltaY === 0 || el.ownerDocument.activeElement !== el) return;
     event.preventDefault();
     step(event.deltaY > 0 ? 1 : -1);
   }

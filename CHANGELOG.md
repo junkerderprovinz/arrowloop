@@ -19,6 +19,7 @@ The full notes for each release are in
 
 ## 🐛 Fixed
 
+- **A dropdown answers the mouse wheel only after it has been clicked or reached with Tab.** Scrolling the page with the pointer over one no longer changes its value.
 - **Links out of the desktop app open in the default browser.** On macOS and Linux the GitHub and email buttons and the version numbers on the About card did nothing, and so did the downloads and the version link on the App tab, because the app's window cannot open a second one. On Windows they opened a bare window with no address bar. They now go to the default browser or mail program on every platform.
 
 ## 1.0.0 - 2026-09-25
