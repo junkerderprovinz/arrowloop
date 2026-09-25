@@ -248,7 +248,9 @@ jobs:
       # only the release build packages the bundle into the APK. Unless SIGNED,
       # it is signed with the stable, public android/debug.keystore. A signed
       # build also makes the app bundle Google Play takes, signed with the same
-      # key as its upload key.
+      # key as its upload key. The bundle is arm64 only: on x86_64 Android 15
+      # the engine's SQLite calls lstat, which the app sandbox kills with
+      # SIGSYS, and Play would hand that build to x86 Chromebooks.
       - name: Assemble
         working-directory: mobile/android
         env:
@@ -256,7 +258,12 @@ jobs:
           ARROWLOOP_ANDROID_STORE_PASSWORD: ${{ env.SIGNED == 'true' && secrets.ANDROID_KEYSTORE_PASSWORD || '' }}
           ARROWLOOP_ANDROID_KEY_ALIAS: ${{ env.SIGNED == 'true' && secrets.ANDROID_KEY_ALIAS || '' }}
           ARROWLOOP_ANDROID_KEY_PASSWORD: ${{ env.SIGNED == 'true' && secrets.ANDROID_KEY_PASSWORD || '' }}
-        run: ./gradlew assembleRelease ${{ env.SIGNED == 'true' && 'bundleRelease' || '' }} --no-daemon
+        run: |
+          ./gradlew assembleRelease --no-daemon
+          if [ "$SIGNED" = true ]; then
+            rm -rf app/src/main/jniLibs/x86_64
+            ./gradlew bundleRelease -PreactNativeArchitectures=arm64-v8a --no-daemon
+          fi
 
       - name: Name the outputs
         working-directory: mobile
@@ -301,6 +308,10 @@ jobs:
           # keytool prints the digest in upper case with colons.
           digest=$(keytool -printcert -jarfile out/arrowloop-play.aab | grep -m1 'SHA256:' | awk '{print $2}' | tr -d ':' | tr 'A-F' 'a-f')
           echo "out/arrowloop-play.aab $digest"
+          if unzip -l out/arrowloop-play.aab | grep -q 'lib/x86_64/'; then
+            echo "::error::the app bundle carries an x86_64 build."
+            exit 1
+          fi
           if [ "$digest" != "$RELEASE_CERT_SHA256" ]; then
             echo "::error::the app bundle is signed by $digest, not by the release certificate $RELEASE_CERT_SHA256."
             exit 1

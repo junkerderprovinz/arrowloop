@@ -12,7 +12,10 @@ in fastlane's layout, so a later upload can read them from here.
    `major * 10000 + minor * 100 + patch`, so 1.1.0 is 10100, and every upload
    needs a higher one than the last.
 2. **The bundle is signed with the release key**, the one the APKs on the
-   release page carry (SHA-256 `13477be4...10e6`, checked by the build).
+   release page carry (SHA-256 `13477be4...10e6`, checked by the build). It
+   holds the arm64 build only, so Play offers the app to arm64 devices, which is
+   every current phone. The x86_64 engine is killed by Android 15's app sandbox
+   (SIGSYS on `lstat`), and x86 Chromebooks would get it.
 3. **The privacy policy** is `PRIVACY.md` on `main`:
    <https://github.com/junkerderprovinz/arrowloop/blob/main/PRIVACY.md>
 
