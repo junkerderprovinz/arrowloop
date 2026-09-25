@@ -100,15 +100,17 @@ HEAD = '''import type { SVGProps } from 'react'
 SURFACE_DARK = "#393939"   # --carbon-surface2, dark theme: what a row is filled with
 SURFACE_LIGHT = "#e8e8e8"  # --carbon-surface2, light theme
 
-# A mark's light value lands on four grounds: the white card on the light
-# theme, a tile's own #e8e8e8, the light theme's hover at #d1d1d1, and
-# --carbon-tile-hover at #a8a8a8, where a hovered dark-theme tile switches its
-# marks to their light values (the last CSS block at the bottom of this file).
-GROUNDS_LIGHT = ("#ffffff", SURFACE_LIGHT, "#d1d1d1", "#a8a8a8")
+# A shifted light value lands on three grounds: the white card, a tile's own
+# #e8e8e8 and the light theme's row hover at #d1d1d1.
+GROUNDS_LIGHT = ("#ffffff", SURFACE_LIGHT, "#d1d1d1")
 
 # Below this contrast a mark is not readable against a ground: Dropbox's blue at
 # 2.28 reads well, Filen's black at 1.90 does not.
 FLOOR = 2.0
+# The light theme keeps a brand's own colour down to this ("Brand tiles" in
+# GlimStone): an orange still reads as orange on light grey, because the hue does
+# the recognising, and only white and near-white parts vanish.
+LIGHT_FLOOR = 1.35
 # What a flipped colour has to reach: the text threshold rather than the 3.0 for
 # graphics, since a mark this small is closer to a letterform.
 TARGET = 4.5
@@ -214,7 +216,8 @@ def _drop_plate(root, source, slug):
     rectangle, with everything else inside it; it need not fill the canvas
     (Linkbox's plate covers a fifth of a 367x70 canvas whose text was lost on
     export). A white mark left invisible on a light page is handled by
-    FORCE_THEMED.
+    FORCE_THEMED. Returns the plate's colour, which a mark painting only white
+    lights its tile up in.
     """
     if svgelements is None:
         raise SystemExit("the plate rule needs svgelements (pip install svgelements)")
@@ -254,15 +257,19 @@ def _drop_plate(root, source, slug):
             parents[el].remove(el)
             print("  %s: dropped the plate it was sitting on (%gx%g)"
                   % (slug, plate[2] - plate[0], plate[3] - plate[1]))
-            return
+            return _declared(el, "fill")
 
 
-def themed(colours, slug):
+def themed(colours, slug, ground=None):
     """Which of these colours need a per-theme variant, and under what names.
 
     Returns a map from the colour as written in the file to the `var(...)` that
-    replaces it, empty when the mark reads fine on both grounds. Judged per
-    mark rather than per colour, so a two-tone logo is not half flipped.
+    replaces it, empty when the mark reads fine on both grounds. The dark theme
+    is judged per mark, so a two-tone logo is not half flipped. The light theme
+    is judged per colour, and only for the colours in `ground` (as 0-255
+    triples), the ones painting straight onto the page somewhere in the mark: a
+    white that lies on another part, like the eyes on PikPak's face, is seen
+    against that part. None counts every colour.
     """
     usable = [c for c in colours if _rgb(c)]
     if not usable:
@@ -288,14 +295,17 @@ def themed(colours, slug):
     if not rest:
         return forced
 
-    dark_best = max(contrast(c, SURFACE_DARK) for c in rest)
-    light_best = max(on_light_grounds(c) for c in rest)
-    if dark_best >= FLOOR and light_best >= FLOOR:
+    lift = max(contrast(c, SURFACE_DARK) for c in rest) < FLOOR
+    fade = {
+        _rgb(c) for c in rest
+        if (ground is None or _rgb(c) in ground) and contrast(c, SURFACE_LIGHT) < LIGHT_FLOOR
+    }
+    if not lift and not fade:
         return forced
-    if dark_best < FLOOR and light_best < FLOOR:
+    if lift and len(fade) == len({_rgb(c) for c in rest}):
         raise SystemExit(
-            "%s cannot be read on either ground (%.2f dark, %.2f light): it needs a "
-            "different source file, not a lightness shift" % (slug, dark_best, light_best)
+            "%s cannot be read on either ground: it needs a different source file, "
+            "not a lightness shift" % slug
         )
     swap = dict(forced)
     minted = {}
@@ -303,17 +313,21 @@ def themed(colours, slug):
         # Keyed by value, since one file writes `#20434F` and `#20434f`.
         key = _rgb(colour)
         if key not in minted:
-            name = "--brand-%s-%d" % (slug, len(minted))
-            on_dark = shift(colour, SURFACE_DARK, upward=True) if dark_best < FLOOR else colour
+            on_dark = shift(colour, SURFACE_DARK, upward=True) if lift else colour
             on_light = (
                 shift(colour, SURFACE_LIGHT, upward=False,
-                      also=[(ground, FLOOR) for ground in GROUNDS_LIGHT])
-                if light_best < FLOOR
+                      also=[(g, FLOOR) for g in GROUNDS_LIGHT])
+                if key in fade
                 else colour
             )
-            VARIABLES.append((name, _hex(on_dark), _hex(on_light)))
-            minted[key] = name
-        swap[colour] = "var(%s)" % minted[key]
+            if on_dark == colour and on_light == colour:
+                minted[key] = None
+            else:
+                name = "--brand-%s-%d" % (slug, sum(1 for v in minted.values() if v))
+                VARIABLES.append((name, _hex(on_dark), _hex(on_light)))
+                minted[key] = name
+        if minted[key]:
+            swap[colour] = "var(%s)" % minted[key]
     return swap
 
 
@@ -337,9 +351,47 @@ def apply_swap(source, swap):
     source = re.sub(r"<mask\b.*?</mask>", park, source, flags=re.S)
     for colour, variable in swap.items():
         source = source.replace('"%s"' % colour, '"%s"' % variable)
+        # The fallback inside a hover role, `var(--mark-ink, #fff)`.
+        source = source.replace(", %s)" % colour, ", %s)" % variable)
     for index, block in enumerate(masks):
         source = source.replace("\0mask%d\0" % index, block)
     return source
+
+
+# What each mark's tile lights up in under the pointer, as (tile colour, ink),
+# by component name, written to brandGlyphs.tsx as BRAND_TILES.
+TILES = {}
+
+# Brands whose tile colour the mark does not say: the largest area misses it
+# (Huawei's gradient, OneDrive's blues), or the brand pairs its mark with an ink
+# of its own (OpenCloud's lavender on petrol). None takes the measured ink.
+TILE_COLOUR = {
+    "huaweicloud": ("#c7000b", None),
+    "microsoft-onedrive": ("#0078d4", None),
+    "protondrive": ("#6d4aff", None),
+    # SeaweedFS blue rather than the pale cyan it covers most with, so its
+    # bubbles stay white.
+    "seaweedfs": ("#0162bf", None),
+    "opencloud": ("#20434f", "#e2baff"),
+}
+
+
+def tile(name, slug, colour):
+    """Record the colour a mark's tile lights up in, and the ink on it: white
+    wherever white reaches 2:1, near-black below that."""
+    colour, ink = TILE_COLOUR.get(slug, (colour, None))
+    if not colour:
+        raise SystemExit("%s paints no colour its tile could take; add it to TILE_COLOUR" % slug)
+    colour = _hex(colour).lower()
+    if len(colour) == 4:
+        colour = "#" + "".join(c * 2 for c in colour[1:])
+    TILES[name] = (colour, ink or ("#ffffff" if contrast(colour, "#ffffff") >= 2 else "#161616"))
+
+
+# Marks whose layers do not survive one ink, lit with the brand's own
+# single-colour mark from Simple Icons instead: Proton Drive's two folders in
+# overlapping gradients come out as a fragment.
+HOVER = {"IconProtonDrive": "protondrive"}
 
 
 # The brands' own colours, keyed by slug, from the set's own data file.
@@ -372,12 +424,13 @@ def one(name: str, slug: str, note: str) -> str:
     swap = themed([colour], slug)
     painted = swap.get(colour, colour)
     aside = "" if not swap else ", flipped for the ground it cannot be read on"
+    tile(name, slug, colour)
     # crop_to_ink tightens the box later, off the finished markup.
     cropped = box.group(1)
     return f'''/** {note}. Simple Icons: {slug}, in its own {colour}{aside} */
 export function {name}(props: SVGProps<SVGSVGElement>) {{
   return (
-    <svg viewBox="{cropped}" width="1em" height="1em" fill="{painted}" aria-hidden {{...props}}>
+    <svg viewBox="{cropped}" width="1em" height="1em" fill="var(--mark-ink, {painted})" aria-hidden {{...props}}>
 {body}
     </svg>
   )
@@ -529,6 +582,9 @@ def _jsx(node, ids, slug, depth):
 BRAND_DIR = Path(__file__).parent / "brand-paths"
 
 SVG_NS = "{http://www.w3.org/2000/svg}"
+# So a mark written back out for measuring keeps its plain tag names.
+ET.register_namespace("", "http://www.w3.org/2000/svg")
+ET.register_namespace("xlink", "http://www.w3.org/1999/xlink")
 
 # Hand-set viewBoxes for a mark crop_to_ink measures wrongly, by component name.
 # An entry that only restates the measurement is refused.
@@ -617,6 +673,172 @@ def _measure_ink(component, name):
         raise SystemExit("%s paints nothing this can measure" % name)
     # Back into the box's own coordinates: the parse put its origin at 0,0.
     return box, (left + box[0], top + box[1], right - left, bottom - top)
+
+
+# What a lit tile does with a mark ("Brand tiles" in GlimStone): every part
+# turns the tile's ink, except a part lying on a part of another colour, which
+# becomes a cut-out in the tile colour, like the M on MEGA's disc or the eyes on
+# PikPak's face. A part at most this far from the colour under it is the same
+# surface drawn twice, not a detail on it (Euclidean distance in 0-255 RGB).
+SAME_SURFACE = 60
+# How much of a part's box has to lie on another part for it to count as lying
+# on it. Boxes, not shapes, so the margin covers a round part on a square box.
+ON_TOP = 0.8
+# Elements that paint nothing of their own.
+NOT_PAINT = ("defs", "mask", "clipPath", "pattern", "symbol", "linearGradient", "radialGradient", "marker")
+SHAPES = ("path", "circle", "rect", "ellipse", "polygon", "polyline", "line", "use")
+
+
+def _local_name(el):
+    return el.tag.split("}")[-1]
+
+
+def _declared(el, prop):
+    """A paint property as the element itself declares it, style over attribute."""
+    style = el.get("style") or ""
+    found = re.search(r"(?:^|;)\s*%s\s*:\s*([^;]+)" % prop, style)
+    return found.group(1).strip() if found else el.get(prop)
+
+
+def _gradient_colour(root, ref):
+    """The colour in the middle of a gradient, following `href` to the gradient
+    whose stops it borrows."""
+    by_id = {el.get("id"): el for el in root.iter() if el.get("id")}
+    grad = by_id.get(ref)
+    while grad is not None:
+        stops = [s for s in grad if _local_name(s) == "stop"]
+        if stops:
+            def offset(stop):
+                text = stop.get("offset", "0").strip()
+                return float(text[:-1]) / 100 if text.endswith("%") else float(text)
+            mid = min(stops, key=lambda s: abs(offset(s) - 0.5))
+            return _declared(mid, "stop-color")
+        href = grad.get("href") or grad.get("{http://www.w3.org/1999/xlink}href")
+        grad = by_id.get(href[1:]) if href else None
+    return None
+
+
+def roles(root, slug):
+    """Mark every painted part of a mark as ink or cut-out for a lit tile.
+
+    Each part's fill (and stroke) is rewritten to `var(--mark-ink, <own>)` or
+    `var(--mark-cut, <own>)`, keeping its own colour at rest. Returns the colours
+    that paint straight onto the page, which the light theme may have to deepen,
+    and the tile colour: the colour covering most of the mark, cut-outs and
+    near-white left out, the middle of a gradient for a gradient.
+    """
+    if svgelements is None:
+        raise SystemExit("roles needs the svgelements package (pip install svgelements)")
+    parents = {child: parent for parent in root.iter() for child in parent}
+
+    def hidden(el):
+        while el in parents:
+            el = parents[el]
+            if _local_name(el) in NOT_PAINT:
+                return True
+        return False
+
+    def inherited(el, prop):
+        while el is not None:
+            value = _declared(el, prop)
+            if value:
+                return value
+            el = parents.get(el)
+        return "#000000" if prop == "fill" else None
+
+    def colour_of(value):
+        if not value or value in ("none", "transparent"):
+            return None
+        ref = re.match(r"url\(#([^)]+)\)", value)
+        if ref:
+            value = _gradient_colour(root, ref.group(1))
+            return _rgb(value) if value else None
+        return _rgb(value)
+
+    parts = []
+    for index, el in enumerate(el for el in root.iter() if _local_name(el) in SHAPES and not hidden(el)):
+        el.set("data-part", str(index))
+        fill, stroke = inherited(el, "fill"), inherited(el, "stroke")
+        paint = colour_of(fill) or colour_of(stroke)
+        if paint:
+            parts.append({"el": el, "fill": fill, "stroke": stroke, "rgb": paint})
+
+    handle, path = tempfile.mkstemp(suffix=".svg")
+    os.close(handle)
+    try:
+        io.open(path, "w", encoding="utf-8").write(ET.tostring(root, encoding="unicode"))
+        drawing = svgelements.SVG.parse(path)
+    finally:
+        os.unlink(path)
+    boxes = {}
+    for element in drawing.elements():
+        key = element.values.get("data-part") if hasattr(element, "values") else None
+        if key is None or not isinstance(element, svgelements.Shape):
+            continue
+        try:
+            bounds = element.bbox(with_stroke=True)
+        except Exception:
+            bounds = None
+        if bounds:
+            boxes[key] = bounds
+    for part in parts:
+        part["box"] = boxes.get(part["el"].get("data-part"))
+    parts =[p for p in parts if p["box"] and (p["box"][2] - p["box"][0]) * (p["box"][3] - p["box"][1]) > 0]
+    for el in root.iter():
+        el.attrib.pop("data-part", None)
+
+    def area(box):
+        return (box[2] - box[0]) * (box[3] - box[1])
+
+    def lies_on(a, b):
+        w = min(a[2], b[2]) - max(a[0], b[0])
+        h = min(a[3], b[3]) - max(a[1], b[1])
+        return w > 0 and h > 0 and w * h / area(a) >= ON_TOP
+
+    def apart(a, b):
+        return sum((x - y) ** 2 for x, y in zip(a, b)) ** 0.5 > SAME_SURFACE
+
+    for i, part in enumerate(parts):
+        part["depth"] = 0
+        for below in reversed(parts[:i]):
+            if lies_on(part["box"], below["box"]):
+                part["depth"] = below["depth"] + (1 if apart(part["rgb"], below["rgb"]) else 0)
+                break
+    # A part under a larger one of another colour shows only through that
+    # one's holes, as MEGA's white disc shows through the M.
+    for i, part in enumerate(parts):
+        for above in parts[i + 1:]:
+            if lies_on(part["box"], above["box"]) and apart(part["rgb"], above["rgb"]):
+                if above["depth"] % 2 == part["depth"] % 2:
+                    part["depth"] = above["depth"] + 1
+                break
+
+    for part in parts:
+        role = "--mark-cut" if part["depth"] % 2 else "--mark-ink"
+        el = part["el"]
+        for prop in ("fill", "stroke"):
+            value = part[prop]
+            if not value or value in ("none", "transparent"):
+                continue
+            wrapped = "var(%s, %s)" % (role, value)
+            style = el.get("style") or ""
+            if re.search(r"(?:^|;)\s*%s\s*:" % prop, style):
+                el.set("style", re.sub(r"((?:^|;)\s*%s\s*:\s*)[^;]+" % prop, lambda m: m.group(1) + wrapped, style))
+            else:
+                el.set(prop, wrapped)
+
+    ground = {p["rgb"] for p in parts if p["depth"] == 0}
+    cover = {}
+    for p in parts:
+        if p["depth"] % 2 == 0 and min(p["rgb"]) <= 216:
+            cover[p["rgb"]] = cover.get(p["rgb"], 0) + area(p["box"])
+    # A white shape carrying its detail in colour, like Filen's disc and strokes.
+    if not cover:
+        for p in parts:
+            if min(p["rgb"]) <= 216:
+                cover[p["rgb"]] = cover.get(p["rgb"], 0) + area(p["box"])
+    tile = "#%02x%02x%02x" % max(cover, key=cover.get) if cover else None
+    return ground, tile
 
 
 def crop_to_ink(component, name):
@@ -719,6 +941,8 @@ def pair(name, slug, note, source, licence):
 
     variable = "--brand-%s-0" % slug
     VARIABLES.append((variable, light_ink, dark_ink))
+    # The ink drawn for a light ground is the brand's own.
+    tile(name, slug, dark_ink)
 
     # Every shape takes its fill from the root, so one geometry serves both inks.
     ids = {}
@@ -728,7 +952,7 @@ def pair(name, slug, note, source, licence):
     return f'''/** {note}. Source: {source} ({licence}), in both its inks */
 export function {name}(props: SVGProps<SVGSVGElement>) {{
   return (
-    <svg viewBox="{box}" width="1em" height="1em" fill="var({variable})" aria-hidden {{...props}}>
+    <svg viewBox="{box}" width="1em" height="1em" fill="var(--mark-ink, var({variable}))" aria-hidden {{...props}}>
 {body}
     </svg>
   )
@@ -751,7 +975,9 @@ def local(name, slug, note, source, licence):
             raise SystemExit("brand-paths/%s.svg has neither viewBox nor size" % slug)
         box = "0 0 %s %s" % (w, h)
 
-    _drop_plate(root, path, slug)
+    plate = _drop_plate(root, path, slug)
+    ground, largest = roles(root, slug)
+    tile(name, slug, largest or plate)
 
     ids = {}
     for el in root.iter():
@@ -778,6 +1004,9 @@ def local(name, slug, note, source, licence):
     found = re.findall(
         r'"(#[0-9a-fA-F]{3,8}|rgb\([^"]*\)|%s)"' % "|".join(KEYWORDS),
         painted_text,
+    ) + re.findall(
+        r'--mark-(?:ink|cut), (#[0-9a-fA-F]{3,8}|rgb\([^)]*\)|%s)\)' % "|".join(KEYWORDS),
+        painted_text,
     )
 
     # Any other word where a colour belongs would be skipped by the readability
@@ -798,7 +1027,7 @@ def local(name, slug, note, source, licence):
         root_attrs.append('fill="#000000"')
         found = ["#000000"]
 
-    swap = themed(found, slug)
+    swap = themed(found, slug, ground)
     body = apply_swap(body, swap)
     root_attrs = [apply_swap(a, swap) for a in root_attrs]
     painted = ("".join(" " + a for a in root_attrs))
@@ -820,22 +1049,32 @@ CSS_OUT = Path(__file__).parent.parent / "web" / "src" / "brandGlyphs.css"
 CSS_HEAD = """/* Brand marks that need a different lightness on one of the two grounds.
    GENERATED by scripts/gen_brand_glyphs.py, do not hand-edit.
 
-   A mark drawn in navy or black is invisible on a dark surface, one in
-   near-white on a light one. Such a mark carries its colour as a custom
-   property whose lightness is shifted on that ground only, keeping its hue
-   and saturation. The generator decides which marks need it by measurement.
+   A mark drawn in navy or black is invisible on a dark surface, a part in
+   near-white on a light one. Such a colour is a custom property whose
+   lightness is shifted on that ground only, keeping its hue and saturation.
+   The generator decides which colours need it by measurement.
 
-   The first three blocks mirror tokens.css: dark by default, light when the
-   OS asks and nothing overrides it, light when the app is set to it.
-
-   The fourth is for a picker tile, which lights up to --carbon-tile-hover under
-   the pointer in the dark theme. While hovered, its marks stand on a light
-   ground and wear their light values.
+   The three blocks mirror tokens.css: dark by default, light when the OS asks
+   and nothing overrides it, light when the app is set to it.
 */
 """
 
-# The class a control wears when its hover turns its ground light.
-HOVER_LIGHT_CLASS = "brand-hover-light"
+
+def with_hover(component, name, slug):
+    """A mark followed by the brand's single-colour mark, which a lit tile shows
+    in its place (.glim-mark-rest and .glim-mark-hover in tokens.css)."""
+    svg = io.open(SRC / (slug + ".svg"), encoding="utf-8").read()
+    box = re.search(r'viewBox="([^"]+)"', svg).group(1)
+    paths = "\n".join('      <path d="%s" />' % d for d in re.findall(r'<path d="([^"]+)"', svg))
+    hover = crop_to_ink(
+        '<svg viewBox="%s" width="1em" height="1em" fill="currentColor" aria-hidden {...props}>\n%s\n    </svg>'
+        % (box, paths), name + " (hover)")
+    rest = component[component.index("<svg"):component.rindex("</svg>") + 6]
+    both = "<>\n    %s\n    %s\n    </>" % (
+        rest.replace("<svg ", '<svg className="glim-mark-rest" ', 1),
+        hover.replace("<svg ", '<svg className="glim-mark-hover" ', 1),
+    )
+    return component.replace(rest, both)
 
 
 def css_block(selectors, index, indent=0):
@@ -867,7 +1106,18 @@ if REDUNDANT:
             "  %s: %r (measured %r)" % row for row in REDUNDANT
         )
     )
-parts = [HEAD] + components
+components = [
+    with_hover(c, m[0], HOVER[m[0]]) if m[0] in HOVER else c
+    for c, m in zip(components, MARKS + LOCAL)
+]
+tiles = "\n".join(
+    "  %s: { tile: '%s', ink: '%s' }," % (name, colour, ink) for name, (colour, ink) in TILES.items()
+)
+parts = [HEAD] + components + [
+    "/** What each mark's tile lights up in under the pointer: the brand's own colour\n"
+    " *  and the ink that holds on it (\"Brand tiles\" in GlimStone). */\n"
+    "export const BRAND_TILES: Record<string, { tile: string; ink: string }> = {\n%s\n}\n" % tiles
+]
 io.open(OUT, "w", encoding="utf-8", newline="\n").write("\n".join(parts))
 
 css = [CSS_HEAD]
@@ -879,8 +1129,6 @@ if VARIABLES:
         + "\n}"
     )
     css.append(css_block(['[data-theme="light"]'], 2))
-    # Only the dark theme needs it; GROUNDS_LIGHT covers the light theme's hover.
-    css.append(css_block(['[data-theme="dark"] .%s:hover' % HOVER_LIGHT_CLASS], 2))
 io.open(CSS_OUT, "w", encoding="utf-8", newline="\n").write("\n\n".join(css) + "\n")
 
 flipped = sorted({name.rsplit("-", 1)[0][8:] for name, _, _ in VARIABLES})

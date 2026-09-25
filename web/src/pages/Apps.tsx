@@ -23,10 +23,10 @@ const DOCKER_RUN =
   'docker run -d --name arrowloop -p 8422:8422 -v /path/to/config:/config -v /path/to/data:/data junkerderprovinz/arrowloop:latest'
 
 const DESKTOP = [
-  { key: 'apps.windows', file: 'arrowloop-windows-amd64-installer.exe', mark: WINDOWS_SVG, tint: 'glim-windows-mark' },
-  { key: 'apps.windowsArm', file: 'arrowloop-windows-arm64-installer.exe', mark: WINDOWS_SVG, tint: 'glim-windows-mark' },
-  { key: 'apps.macos', file: 'arrowloop-macos-universal.dmg', mark: APPLE_SVG, tint: '' },
-  { key: 'apps.linux', file: 'arrowloop-linux-amd64', mark: LINUX_SVG, tint: '' },
+  { key: 'apps.windows', file: 'arrowloop-windows-amd64-installer.exe', mark: WINDOWS_SVG, tint: 'glim-windows-mark', brand: 'windows' },
+  { key: 'apps.windowsArm', file: 'arrowloop-windows-arm64-installer.exe', mark: WINDOWS_SVG, tint: 'glim-windows-mark', brand: 'windows' },
+  { key: 'apps.macos', file: 'arrowloop-macos-universal.dmg', mark: APPLE_SVG, tint: '', brand: 'apple' },
+  { key: 'apps.linux', file: 'arrowloop-linux-amd64', mark: LINUX_SVG, tint: '', brand: 'linux' },
 ] as const
 
 /**
@@ -50,11 +50,12 @@ function PhoneCard({ version }: { version: string }) {
     <Card title={t('apps.phoneTitle')} hint={t('apps.phoneHint')} hueIndex={0}>
       <ReleaseVersion version={version} />
       <div className="flex flex-wrap items-center gap-3">
-        <AppTile soonLabel={t('apps.soon')} name={t('apps.playStore')} logo={<BrandMark svg={PLAY_SVG} />} href={PLAY_STORE} onLinkClick={followExternal} />
+        <AppTile soonLabel={t('apps.soon')} brand="play" name={t('apps.playStore')} logo={<BrandMark svg={PLAY_SVG} />} href={PLAY_STORE} onLinkClick={followExternal} />
         {/* The page is usually open on a computer, and the file is wanted on
             the phone, so the tile can turn into a code to scan. */}
         <AppTile
           soonLabel={t('apps.soon')}
+          brand="android"
           name={t('apps.apk')}
           logo={<BrandMark svg={ANDROID_SVG} className="glim-android-mark" />}
           href={APK}
@@ -82,7 +83,7 @@ function DesktopCard() {
     <Card title={t('apps.desktopTitle')} hint={t('apps.desktopHint')} hueIndex={1}>
       <div className="flex flex-wrap gap-3">
         {DESKTOP.map((d) => (
-          <AppTile soonLabel={t('apps.soon')} key={d.file} href={`${RELEASE}/${d.file}`} onLinkClick={followExternal} name={t(d.key)} logo={<BrandMark svg={d.mark} className={d.tint} />} />
+          <AppTile soonLabel={t('apps.soon')} key={d.file} brand={d.brand} href={`${RELEASE}/${d.file}`} onLinkClick={followExternal} name={t(d.key)} logo={<BrandMark svg={d.mark} className={d.tint} />} />
         ))}
       </div>
     </Card>
@@ -99,9 +100,10 @@ function ServerCard({ version }: { version: string }) {
   return (
     <Card title={t('apps.serverTitle')} hint={t('apps.serverHint')} hueIndex={1}>
       <div className="flex flex-wrap gap-3">
-        <AppTile soonLabel={t('apps.soon')} name={t('apps.unraid')} logo={<BrandMark svg={UNRAID_SVG} className="glim-unraid-mark" />} href={UNRAID_CA} onLinkClick={followExternal} />
+        <AppTile soonLabel={t('apps.soon')} brand="unraid" name={t('apps.unraid')} logo={<BrandMark svg={UNRAID_SVG} className="glim-unraid-mark" />} href={UNRAID_CA} onLinkClick={followExternal} />
         <AppTile
           soonLabel={t('apps.soon')}
+          brand="docker"
           name={copied ? t('apps.copied') : t('apps.docker')}
           logo={<BrandMark svg={DOCKER_SVG} className="glim-docker-mark" />}
           hint={t('apps.dockerHint') + ' ' + DOCKER_RUN}
@@ -112,7 +114,7 @@ function ServerCard({ version }: { version: string }) {
             })
           }}
         />
-        <AppTile soonLabel={t('apps.soon')} name={t('apps.zip')} logo={<BrandMark svg={ZIP_SVG} />} href={zip} onLinkClick={followExternal} />
+        <AppTile soonLabel={t('apps.soon')} brand="zip" name={t('apps.zip')} logo={<BrandMark svg={ZIP_SVG} />} href={zip} onLinkClick={followExternal} />
       </div>
     </Card>
   )

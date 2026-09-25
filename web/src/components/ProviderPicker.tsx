@@ -1,3 +1,5 @@
+import type { CSSProperties } from 'react'
+import { BRAND_TILES } from './brandGlyphs'
 import { brandMark } from './brandMarks'
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { useLabelMode } from '../lib/glimstone/useLabelMode'
@@ -42,38 +44,42 @@ export function ProviderPicker({
           box plus its padding; the mark box is wide because several marks are
           wordmarks (Linkbox is 5.3:1). The window scrolls the list. */}
       <ul className="grid w-full grid-cols-[repeat(auto-fill,minmax(8.5rem,1fr))] gap-3">
-        {providers.map((p) => (
-          <li key={p.id} className="relative">
-            <button
-              type="button"
-              onClick={() => onPick(p)}
-              title={p.hint || undefined}
-              className={TILE}
-            >
-              {/* Every mark carries width="1em", so a max-size cap never fires;
-                  full size lets the viewBox letterbox the mark into the box. */}
-              {showMark && (
-                <span className="flex h-12 w-24 shrink-0 items-center justify-center [&_svg]:h-full [&_svg]:w-full">
-                  {brandMark(p.mark)}
-                </span>
-              )}
-              {showName(p) && (
-                <span className="w-full px-1 text-center">
-                  <span className="block break-words text-dense font-medium leading-tight">
-                    {p.name}
+        {providers.map((p) => {
+          const lit = p.mark ? BRAND_TILES[p.mark] : undefined
+          return (
+            <li key={p.id} className="relative">
+              <button
+                type="button"
+                onClick={() => onPick(p)}
+                title={p.hint || undefined}
+                className={lit ? `${TILE} glim-brand-tile` : `${TILE} ${PLAIN}`}
+                style={lit && ({ '--tile': lit.tile, '--tile-ink': lit.ink } as CSSProperties)}
+              >
+                {/* Every mark carries width="1em", so a max-size cap never fires;
+                    full size lets the viewBox letterbox the mark into the box. */}
+                {showMark && (
+                  <span className="flex h-12 w-24 shrink-0 items-center justify-center [&_svg]:h-full [&_svg]:w-full">
+                    {brandMark(p.mark)}
                   </span>
+                )}
+                {showName(p) && (
+                  <span className="w-full px-1 text-center">
+                    <span className="block break-words text-dense font-medium leading-tight">
+                      {p.name}
+                    </span>
+                  </span>
+                )}
+              </button>
+              {/* A sibling of the button, so a click on the bubble does not also
+                  pick the provider. */}
+              {p.hint && showHint(p) && (
+                <span className="absolute end-1.5 top-1.5">
+                  <InfoBubble tip={p.hint} />
                 </span>
               )}
-            </button>
-            {/* A sibling of the button, so a click on the bubble does not also
-                pick the provider. */}
-            {p.hint && showHint(p) && (
-              <span className="absolute end-1.5 top-1.5">
-                <InfoBubble tip={p.hint} />
-              </span>
-            )}
-          </li>
-        ))}
+            </li>
+          )
+        })}
       </ul>
 
       {/* rclone backends with no provider entry, folded away but reachable. */}
@@ -103,15 +109,12 @@ export function ProviderPicker({
 }
 
 /**
- * One tile: the mark above the name, the tile itself the button.
- *
- * The hover is GlimStone's tile hover, a light grey on the dark theme and
- * surface3 on the light one, with its own dark ink. On the light grey a
- * dark-theme mark would fade, so `brand-hover-light` switches each mark to its
- * light value (generated in brandGlyphs.css). The keyboard focus ring is kept.
+ * One tile: the mark above the name, the tile itself the button. A provider
+ * with a brand mark lights up in the brand's colour (`glim-brand-tile`, with
+ * the colour and ink from BRAND_TILES); a protocol, which has none, takes the
+ * ordinary hover of a filled control. The keyboard focus ring is kept.
  */
 const TILE =
-  'brand-hover-light flex h-full w-full flex-col items-center justify-center gap-2 ' +
-  'rounded-[var(--radius-control)] bg-carbon-surface2 px-2 py-3 text-carbon-text ' +
-  'transition-colors duration-150 ' +
-  'hover:bg-(--carbon-tile-hover) hover:text-(--carbon-tile-hover-ink)'
+  'flex h-full w-full flex-col items-center justify-center gap-2 ' +
+  'rounded-[var(--radius-control)] bg-carbon-surface2 px-2 py-3 text-carbon-text'
+const PLAIN = 'transition-colors duration-150 hover:bg-carbon-surface3'
