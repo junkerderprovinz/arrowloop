@@ -18,7 +18,15 @@
 
 <br>
 
-<p align="center">A two-way file sync engine with a state database, a trash and a brake, plus the scheduler that keeps it running.</p>
+<p align="center">
+<b>Two-way file sync that shows you the plan before it moves anything.</b><br>
+<br>
+ArrowLoop keeps two folders in step: a local disk and a NAS share, a laptop and an SFTP server, a phone and a WebDAV cloud. It remembers what both sides last agreed on, so it can tell a new file from a deleted one, and before a run it lists every change with its direction and the reason for it. Untick what you don't want, press the button, and only the rest happens.<br>
+<br>
+Deletions go to a trash instead of disappearing. A run that would delete more than half of what it knows stops and says so, and a side that suddenly looks empty, the way an unmounted disk does, is refused outright. When a file was edited on both sides, both versions are kept.<br>
+<br>
+Targets come from <a href="https://rclone.org">rclone</a>, so a local folder, SMB, SFTP, S3, Nextcloud, OpenCloud and every other rclone backend work the same way. ArrowLoop runs as a Docker container with an Unraid template, as a desktop app for Windows, macOS and Linux, and as an Android app, with schedules, real-time watching and a message when a run fails. Think of it as a self-hosted GoodSync.
+</p>
 
 <!-- download-buttons: written by scripts/gen_download_buttons.py -->
 <p align="center">
@@ -63,22 +71,6 @@ If it has earned a place on your server or computer, toss a coin to your knight:
   <a href="https://junkerderprovinz.github.io/junkerderprovinz/"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(8163.8,0,841.9,245.3))" alt="Donate with crypto" width="160" height="46.618"></a>
 </p>
 <!-- /give-buttons -->
-
-> [!WARNING]
-> **This is not finished, and it is public early on purpose.**
->
-> The engine works and is tested hard, on Linux, Windows and macOS. What is not
-> yet true is everything a version number under 1.0 usually means: settings move
-> between releases, the interface changes shape from one week to the next, and a
-> configuration file written today may need a line changed tomorrow. Nothing here
-> deletes without a trash and two brakes in the way, and the whole plan is on
-> screen before anything moves, so the risk is inconvenience rather than loss.
-> Still: **point it at a copy first**, and keep a backup that ArrowLoop is not the
-> only guardian of.
->
-> It is public because a sync tool nobody can read the source of is a sync tool
-> nobody should trust with both sides of their files. Issues and questions are
-> welcome; a polished first impression is not the point yet.
 
 <br>
 
