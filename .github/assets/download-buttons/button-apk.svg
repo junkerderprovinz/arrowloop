@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720.0 245.3" width="720.0" height="245.3" role="img" aria-label="Download the Android app">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 245.3" width="720" height="245.3" role="img" aria-label="Download the Android app">
   <title>Download the Android app</title>
   <defs>
     <clipPath id="edge">
-      <rect x="0" y="0" width="720.0" height="245.3" rx="38.2" ry="38.2"/>
+      <path d="M38.2,0 H681.8 A38.2,38.2 0 0 1 720,38.2 V207.1 A38.2,38.2 0 0 1 681.8,245.3 H38.2 A38.2,38.2 0 0 1 0,207.1 V38.2 A38.2,38.2 0 0 1 38.2,0 Z"/>
     </clipPath>
     <linearGradient id="sheen" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0"    stop-color="#fff" stop-opacity="0"/>
@@ -15,15 +15,15 @@
   <style>
     @keyframes pass {
       0%       { transform: translateX(-226.6px); }
-      11.88%   { transform: translateX(946.6px); }
+      12.37%   { transform: translateX(946.6px); }
       100%     { transform: translateX(946.6px); }
     }
-    .band { animation: pass 10.694s linear 8.739s infinite backwards; }
+    .band { animation: pass 10.277s linear 6.244s infinite backwards; }
     @media (prefers-reduced-motion: reduce) {
       .band { animation: none; opacity: 0; }
     }
   </style>
-  <rect width="720.0" height="245.3" rx="38.2" ry="38.2" fill="#3ddc84"/>
+  <path d="M38.2,0 H681.8 A38.2,38.2 0 0 1 720,38.2 V207.1 A38.2,38.2 0 0 1 681.8,245.3 H38.2 A38.2,38.2 0 0 1 0,207.1 V38.2 A38.2,38.2 0 0 1 38.2,0 Z" fill="#3ddc84"/>
   <g transform="translate(71.0 66.65) scale(0.21875)" fill="#1b1b1b">
     <path d="M420.55,301.93a24,24,0,1,1,24-24,24,24,0,0,1-24,24m-265.1,0a24,24,0,1,1,24-24,24,24,0,0,1-24,24m273.7-144.48,47.94-83a10,10,0,1,0-17.27-10h0l-48.54,84.07a301.25,301.25,0,0,0-246.56,0L116.18,64.45a10,10,0,1,0-17.27,10h0l47.94,83C64.53,202.22,8.24,285.55,0,384H576c-8.24-98.45-64.54-181.78-146.85-226.55"/>
   </g>
