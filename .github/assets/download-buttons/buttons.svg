@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 8669.7 245.3">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 8958 245.3">
 <svg x="0" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 245.3" width="720" height="245.3" role="img" aria-label="Download for Windows">
   <title>Download for Windows</title>
   <defs>
@@ -37,7 +37,7 @@
     </g>
   </g>
 </svg>
-<svg x="720" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 245.3" width="384" height="245.3" role="img" aria-label="Download for Windows on ARM">
+<svg x="744" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 245.3" width="384" height="245.3" role="img" aria-label="Download for Windows on ARM">
   <title>Download for Windows on ARM</title>
   <defs>
     <clipPath id="b1-edge">
@@ -72,7 +72,7 @@
     </g>
   </g>
 </svg>
-<svg x="1104" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 245.3" width="720" height="245.3" role="img" aria-label="Download for macOS">
+<svg x="1152" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 245.3" width="720" height="245.3" role="img" aria-label="Download for macOS">
   <title>Download for macOS</title>
   <defs>
     <clipPath id="b2-edge">
@@ -109,7 +109,7 @@
     </g>
   </g>
 </svg>
-<svg x="1824" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 245.3" width="720" height="245.3" role="img" aria-label="Download for Linux">
+<svg x="1896" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 245.3" width="720" height="245.3" role="img" aria-label="Download for Linux">
   <title>Download for Linux</title>
   <defs>
     <clipPath id="b3-edge">
@@ -146,7 +146,7 @@
     </g>
   </g>
 </svg>
-<svg x="2544" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 245.3" width="720" height="245.3" role="img" aria-label="Run it with Docker">
+<svg x="2640" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 245.3" width="720" height="245.3" role="img" aria-label="Run it with Docker">
   <title>Run it with Docker</title>
   <defs>
     <clipPath id="b4-edge">
@@ -183,7 +183,7 @@
     </g>
   </g>
 </svg>
-<svg x="3264" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 245.3" width="720" height="245.3" role="img" aria-label="Download the source archive">
+<svg x="3384" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 245.3" width="720" height="245.3" role="img" aria-label="Download the source archive">
   <title>Download the source archive</title>
   <defs>
     <clipPath id="b5-edge">
@@ -220,7 +220,7 @@
     </g>
   </g>
 </svg>
-<svg x="3984" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 245.3" width="720" height="245.3" role="img" aria-label="Read the documentation">
+<svg x="4128" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 245.3" width="720" height="245.3" role="img" aria-label="Read the documentation">
   <title>Read the documentation</title>
   <defs>
     <clipPath id="b6-edge">
@@ -257,7 +257,7 @@
     </g>
   </g>
 </svg>
-<svg x="4704" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 245.3" width="720" height="245.3" role="img" aria-label="On Google Play soon">
+<svg x="4872" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 245.3" width="720" height="245.3" role="img" aria-label="On Google Play soon">
   <title>On Google Play soon</title>
   <defs>
     <clipPath id="b7-edge">
@@ -294,7 +294,7 @@
     </g>
   </g>
 </svg>
-<svg x="5424" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 245.3" width="720" height="245.3" role="img" aria-label="Download the Android app">
+<svg x="5616" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 245.3" width="720" height="245.3" role="img" aria-label="Download the Android app">
   <title>Download the Android app</title>
   <defs>
     <clipPath id="b8-edge">
@@ -331,7 +331,7 @@
     </g>
   </g>
 </svg>
-<svg x="6144" y="0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+<svg x="6360" y="0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
      version="1.1" viewBox="0 0 841.9 245.3" width="841.9" height="245.3">
   <defs>
     <clipPath id="b9-edge">
@@ -367,7 +367,7 @@
     </g>
   </g>
 </svg>
-<svg x="6985.9" y="0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+<svg x="7226" y="0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
      version="1.1" viewBox="0 0 841.9 245.3" width="841.9" height="245.3">
   <defs>
     <clipPath id="b10-edge">
@@ -403,7 +403,7 @@
     </g>
   </g>
 </svg>
-<svg x="7827.8" y="0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+<svg x="8092" y="0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
      version="1.1" viewBox="0 0 841.9 245.3" width="841.9" height="245.3">
   <defs>
     <clipPath id="b11-edge">
