@@ -123,8 +123,10 @@ STEP = (RENDER_PX + GAP_PX) / SPEED
 # where the button leads (see write_readme()). One list per row, top to bottom.
 RELEASE = "https://github.com/junkerderprovinz/arrowloop/releases/latest/download/"
 DESKTOP = [
-    ("windows-installer", "windows", "#0078d4", "#ffffff", "Windows", "Installer", "Download for Windows, installer",
+    ("windows-installer", "windows", "#0078d4", "#ffffff", "Windows", "x64", "Download for Windows",
      RELEASE + "arrowloop-windows-amd64-installer.exe"),
+    ("windows-arm", "windows", "#0078d4", "#ffffff", "Windows", "ARM", "Download for Windows on ARM",
+     RELEASE + "arrowloop-windows-arm64-installer.exe"),
     # Space grey, since black vanishes against GitHub's dark theme.
     ("macos", "apple", "#6e6e73", "#ffffff", "macOS", "Universal", "Download for macOS",
      RELEASE + "arrowloop-macos-universal.dmg"),
@@ -155,6 +157,12 @@ SERVER_AND_PHONE = [
      RELEASE + "arrowloop-android-arm64.apk"),
 ]
 ROWS = [DESKTOP, SERVER_AND_PHONE]
+
+# The line under the last row, inside its paragraph so it sits close to the
+# buttons rather than a paragraph's margin away.
+FOOTER = ('<sub>Always the latest release &nbsp;·&nbsp; '
+          '<a href="https://github.com/junkerderprovinz/arrowloop/releases/latest">release notes</a> &nbsp;·&nbsp; '
+          '<a href="#9-installing-it">how to install each one</a></sub>')
 BUTTONS = [button for buttons in ROWS for button in buttons]
 
 # The README rows are written here too, between markers: both download rows
@@ -310,7 +318,7 @@ def read_readme():
     return text
 
 
-def row(items, nl):
+def row(items, nl, footer=None):
     """One centred row: a link per button, the separator on its own line, two
     spaces in, because that is the gap GAP_PX was measured on."""
     lines = ['<p align="center">']
@@ -320,6 +328,8 @@ def row(items, nl):
         img = ('<img src="%s#svgView(viewBox(%s,0,%s,%s))" alt="%s" width="%s" height="%s">'
                % (SPRITE_URL, num(x), num(width), num(height), escape(alt), num(render), num(render * height / width)))
         lines.append('  <a href="%s">%s</a>' % (escape(href), img) if href else "  " + img)
+    if footer:
+        lines += ["  <br>", "  " + footer]
     lines.append("</p>")
     return nl.join(lines) + nl
 
@@ -339,7 +349,9 @@ def write_readme(text, xs, gives):
     for opener, closer, rows in ((ROW_OPEN, ROW_CLOSE, downloads), (GIVE_OPEN, GIVE_CLOSE, donations)):
         for start, end in reversed(blocks(text, opener, closer)):
             nl = "\r\n" if text[start:].split("\n", 1)[0].endswith("\r") else "\n"
-            text = text[:start] + opener + nl + "".join(row(items, nl) for items in rows) + text[end:]
+            last = len(rows) - 1
+            body = "".join(row(items, nl, FOOTER if opener == ROW_OPEN and i == last else None) for i, items in enumerate(rows))
+            text = text[:start] + opener + nl + body + text[end:]
     io.open(README, "w", encoding="utf-8", newline="").write(text)
     print("README.md  download rows of %s, donation rows of %d" % ("+".join(str(len(r)) for r in ROWS), len(GIVE)))
 
