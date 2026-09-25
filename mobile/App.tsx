@@ -260,7 +260,7 @@ function Shell() {
                 <SettingsNav.Screen
                   name="SettingsHome"
                   component={Settings}
-                  options={{ title: t("settings.section") }}
+                  options={{ title: t("nav.settings") }}
                 />
                 <SettingsNav.Screen
                   name="Language"
