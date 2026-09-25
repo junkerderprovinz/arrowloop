@@ -16,8 +16,8 @@ Two sets of files, read by two generators.
 
 **Font Awesome Free 6.7.2**, from <https://fontawesome.com> - the button paths.
 Windows, Apple, Linux, Docker, Android and Google Play come from the `brands`
-set. `zip.txt` is `file-zipper` from the `solid` set, a picture of an archive
-and nobody's mark, the same drawing BombVault's source button carries. Font Awesome splits its licence by asset type and only
+set. `zip.txt` is `file-zipper` and `book.txt` is `book`, both from the `solid`
+set and nobody's mark, the same drawings BombVault's source and docs buttons carry. Font Awesome splits its licence by asset type and only
 the ICONS are relevant here: they are **CC BY 4.0**, which asks for attribution
 and nothing else. The fonts (SIL OFL 1.1) and the code (MIT) are not used.
 Copyright 2024 Fonticons, Inc.
