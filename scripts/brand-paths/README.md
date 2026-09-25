@@ -2,11 +2,10 @@
 
 Two sets of files, read by two generators.
 
-- `<name>.txt` and `<name>.box.txt` - the path data of the Windows, Apple and
-  Linux marks, for `../gen_download_buttons.py`, which draws them into the
-  README's download buttons. The `.txt` is the path, the `.box.txt` is the
-  viewBox it was drawn in, which is what lets the generator scale three marks of
-  different widths to one optical size.
+- `<name>.txt` and `<name>.box.txt` - the path data of the marks on the
+  README's download buttons, for `../gen_download_buttons.py`. The `.txt` is the
+  path, the `.box.txt` is the viewBox it was drawn in, which is what lets the
+  generator scale marks of different widths to one optical size.
 - `<name>.svg` - whole SVG files, for `../gen_brand_glyphs.py`, which turns each
   into a React component in `web/src/components/brandGlyphs.tsx`. These are the
   provider marks Simple Icons does not carry. They are reproduced verbatim,
@@ -15,8 +14,10 @@ Two sets of files, read by two generators.
 
 ## Sources and licences
 
-**Font Awesome Free 6.7.2**, the `brands` set, from <https://fontawesome.com> -
-the three platform paths. Font Awesome splits its licence by asset type and only
+**Font Awesome Free 6.7.2**, from <https://fontawesome.com> - the button paths.
+Windows, Apple, Linux, Docker, Android and Google Play come from the `brands`
+set. `zip.txt` is `file-zipper` from the `solid` set, a picture of an archive
+and nobody's mark, the same drawing BombVault's source button carries. Font Awesome splits its licence by asset type and only
 the ICONS are relevant here: they are **CC BY 4.0**, which asks for attribution
 and nothing else. The fonts (SIL OFL 1.1) and the code (MIT) are not used.
 Copyright 2024 Fonticons, Inc.

@@ -15,20 +15,10 @@
   <style>
     @keyframes pass {
       0%       { transform: translateX(-226.6px); }
-      15.51%   { transform: translateX(946.6px); }
+      12.89%   { transform: translateX(946.6px); }
       100%     { transform: translateX(946.6px); }
     }
-    /* linear, not eased: an eased pass varies the speed inside each button, so
-       the hand-off at the seam arrives early or late and the row stops reading
-       as one band.
-
-       The fill mode is not decoration, it is the second half of the delay. An
-       animation that has not started yet leaves its element wherever the
-       document put it, which for this band is x=0 - INSIDE the button, against
-       its left edge. Without it the stagger that makes the row read as one band
-       also parks a motionless band on every button but the first, for as long
-       as that button's delay, every time the page loads. */
-    .band { animation: pass 8.196s linear 2.911s infinite backwards; }
+    .band { animation: pass 9.861s linear 2.911s infinite backwards; }
     @media (prefers-reduced-motion: reduce) {
       .band { animation: none; opacity: 0; }
     }
@@ -41,9 +31,6 @@
   <text x="240" y="180" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="50" font-weight="400" fill="#ffffff" fill-opacity="0.72">Portable</text>
   <g clip-path="url(#edge)">
     <g class="band">
-      <!-- Taller than the canvas and started off its left edge, so the tilt
-           never exposes a corner. skewX rather than rotate: the band stays
-           axis-aligned for the translate, so the motion is one transform. -->
       <rect x="0" y="-60" width="121.8" height="365.3"
             fill="url(#sheen)" transform="skewX(-16)"/>
     </g>

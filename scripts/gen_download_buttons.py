@@ -1,6 +1,6 @@
 """Generate the README's download buttons from one template.
 
-Two rows: the desktop builds, then the container and the Android app.
+Two rows: the desktop builds, then the container, the source and the phone app.
 
 Height and corner radius are the Buy Me a Coffee button's (245.3 tall, rx 38.2),
 so both stand the same height at the same width. The width is 720 rather than
@@ -13,7 +13,7 @@ The logos are the platforms' own marks from Font Awesome Free (CC BY 4.0 for the
 icons; see scripts/brand-paths/). Each is a trademark of its owner, used
 unmodified and only to name the platform a button downloads for, with no claim
 of endorsement by or affiliation with Microsoft, Apple, the Linux Foundation,
-Docker or Google.
+Docker or Google. The ZIP is Font Awesome's file-zipper, nobody's mark.
 
 Run from anywhere:  python scripts/gen_download_buttons.py
 Writes .github/assets/download-buttons/*.svg, which are committed, and the
@@ -134,13 +134,26 @@ DESKTOP = [
     ("linux", "linux", "#fcc624", "#1b1b1b", "Linux", "amd64", "Download for Linux",
      RELEASE + "arrowloop-linux-amd64"),
 ]
+# The app's Play Store listing, empty until it exists. Without it the Play
+# button is drawn without a link, as the App tab marks the listing "soon".
+PLAY_STORE = ""
 SERVER_AND_PHONE = [
     # The container has no file to download, so this one leads to the image's
     # own page, which carries the pull command and every tag.
     ("docker", "docker", "#1d63ed", "#ffffff", "Docker", "Container", "Run it with Docker",
      "https://github.com/junkerderprovinz/arrowloop/pkgs/container/arrowloop"),
+    # A release's "Source code (zip)" is the whole repository at that tag. GitHub
+    # gives the newest one no fixed address, so this leads to the release that
+    # lists it, as BombVault's button does. Slate, since GitHub's black vanishes
+    # in the dark theme.
+    ("source-zip", "zip", "#4d5562", "#ffffff", "Source", "zip archive", "Download the source archive for this release",
+     "https://github.com/junkerderprovinz/arrowloop/releases/latest"),
+    # The heading is the platform, since "Google Play" is too wide for it.
+    ("google-play", "google-play", "#01875f", "#ffffff", "Android",
+     "Google Play" if PLAY_STORE else "Google Play, soon",
+     "Get it on Google Play" if PLAY_STORE else "On Google Play soon", PLAY_STORE or None),
     # arm64 only; the x86_64 APK is for emulators and stays on the release page.
-    ("android", "android", "#3ddc84", "#1b1b1b", "Android", "App", "Download the Android app",
+    ("android", "android", "#3ddc84", "#1b1b1b", "Android", "APK", "Download the Android app",
      RELEASE + "arrowloop-android-arm64.apk"),
 ]
 ROWS = [DESKTOP, SERVER_AND_PHONE]
@@ -294,7 +307,7 @@ def read_readme():
     if not blocks(text, GIVE_OPEN, GIVE_CLOSE):
         raise SystemExit("README.md has no %s ... %s" % (GIVE_OPEN, GIVE_CLOSE))
     for slug, *_, href in BUTTONS:
-        if "/%s/" % REPO not in href:
+        if href and "play.google.com" not in href and "/%s/" % REPO not in href:
             raise SystemExit("REPO is %r, but %s leads to %s" % (REPO, slug, href))
     return text
 
@@ -306,8 +319,9 @@ def row(items, nl):
     for index, (href, alt, x, width, height, render) in enumerate(items):
         if index:
             lines.append("  &nbsp;")
-        lines.append('  <a href="%s"><img src="%s#svgView(viewBox(%s,0,%s,%s))" alt="%s" width="%s" height="%s"></a>'
-                     % (escape(href), SPRITE_URL, num(x), num(width), num(height), escape(alt), num(render), num(render * height / width)))
+        img = ('<img src="%s#svgView(viewBox(%s,0,%s,%s))" alt="%s" width="%s" height="%s">'
+               % (SPRITE_URL, num(x), num(width), num(height), escape(alt), num(render), num(render * height / width)))
+        lines.append('  <a href="%s">%s</a>' % (escape(href), img) if href else "  " + img)
     lines.append("</p>")
     return nl.join(lines) + nl
 
