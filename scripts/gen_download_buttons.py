@@ -1,7 +1,7 @@
 """Generate the README's download buttons from one template.
 
-Three rows: the manual and the Windows builds, then macOS, Linux and the
-container, then the source and the phone app.
+Three rows: the Windows and macOS builds, then Linux, the container and the
+source, then the manual and the phone app.
 
 Height and corner radius are the Buy Me a Coffee button's (245.3 tall, rx 38.2),
 so both stand the same height at the same width. The width is 720 rather than
@@ -145,7 +145,7 @@ DESKTOP = [
 # The app's Play Store listing, empty until it exists. Without it the Play
 # button is drawn without a link, as the App tab marks the listing "soon".
 PLAY_STORE = ""
-SERVER_AND_PHONE = [
+SERVER = [
     # The container has no file to download, so this one leads to the image's
     # own page, which carries the pull command and every tag.
     ("docker", "docker", "#1d63ed", "#ffffff", "Docker", "Container", "Run it with Docker",
@@ -156,6 +156,8 @@ SERVER_AND_PHONE = [
     # in the dark theme.
     ("source-zip", "zip", "#4d5562", "#ffffff", "Source", "zip archive", "Download the source archive for this release",
      "https://github.com/junkerderprovinz/arrowloop/releases/latest"),
+]
+PHONE = [
     # The heading is the platform, since "Google Play" is too wide for it.
     ("google-play", "google-play", "#01875f", "#ffffff", "Android",
      "Google Play" if PLAY_STORE else "Google Play, soon",
@@ -166,7 +168,7 @@ SERVER_AND_PHONE = [
 ]
 # Three to a row, since four at 195 wide is the most a row holds without
 # wrapping and nine does not split into fours.
-ALL = DOCS + DESKTOP + SERVER_AND_PHONE
+ALL = DESKTOP + SERVER + DOCS + PHONE
 ROWS = [ALL[0:3], ALL[3:6], ALL[6:9]]
 
 BUTTONS = [button for buttons in ROWS for button in buttons]

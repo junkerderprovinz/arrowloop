@@ -18,7 +18,7 @@
       11.88%   { transform: translateX(946.6px); }
       100%     { transform: translateX(946.6px); }
     }
-    .band { animation: pass 10.694s linear 5.408s infinite backwards; }
+    .band { animation: pass 10.694s linear 4.576s infinite backwards; }
     @media (prefers-reduced-motion: reduce) {
       .band { animation: none; opacity: 0; }
     }
