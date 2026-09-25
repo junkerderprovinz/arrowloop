@@ -247,6 +247,18 @@ function SyncNow({
 }
 
 /**
+ * A run's length as m:ss or h:mm:ss. A number with a unit word would need that
+ * word's plural forms in every language, and "1 seconds" is what a single form
+ * gives.
+ */
+function span(secs: number): string {
+  const h = Math.floor(secs / 3600);
+  const m = Math.floor((secs % 3600) / 60);
+  const s = String(secs % 60).padStart(2, "0");
+  return h > 0 ? `${h}:${String(m).padStart(2, "0")}:${s}` : `${m}:${s}`;
+}
+
+/**
  * Formats a moment as an absolute date and time in the app's language. The
  * relative "ago" helper cannot express a time in the future such as the next
  * run.
@@ -376,7 +388,7 @@ function SyncStatus({ jobs, run, tally }: { jobs: Job[]; run: Run | null | "none
       <Pair label={t("overview.lastSync")} value={clock(run.Started, lang)} />
       {finished ? <Pair label={t("overview.finishedAt")} value={clock(run.Finished as string, lang)} /> : null}
       {secs !== null ? (
-        <Pair label={t("overview.duration")} value={t("overview.seconds", { count: secs })} />
+        <Pair label={t("overview.duration")} value={span(secs)} />
       ) : null}
       <Pair
         label={t("overview.state")}
@@ -397,10 +409,10 @@ function LastChanges({ tally }: { tally: Tally | null }) {
   if (!tally) return <Caption>{t("history.working")}</Caption>;
   return (
     <>
-      <Pair label={t("overview.uploadedLabel")} value={t("overview.files", { count: tally.up })} />
-      <Pair label={t("overview.downloadedLabel")} value={t("overview.files", { count: tally.down })} />
-      <Pair label={t("overview.deletedHere")} value={t("overview.files", { count: tally.trashedLeft })} />
-      <Pair label={t("overview.deletedThere")} value={t("overview.files", { count: tally.trashedRight })} />
+      <Pair label={t("overview.uploadedLabel")} value={String(tally.up)} />
+      <Pair label={t("overview.downloadedLabel")} value={String(tally.down)} />
+      <Pair label={t("overview.deletedHere")} value={String(tally.trashedLeft)} />
+      <Pair label={t("overview.deletedThere")} value={String(tally.trashedRight)} />
     </>
   );
 }

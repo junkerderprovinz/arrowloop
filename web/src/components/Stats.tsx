@@ -69,7 +69,7 @@ export function Stats({ job }: { job?: string }) {
         {stats.rows.map((r) => (
           <div
             key={`${r.day}-${r.job}`}
-            data-tip={`${r.day}: ${t('stats.runs', { count: r.runs })}`}
+            data-tip={`${r.day}, ${t('stats.runs', { count: r.runs })}`}
             className="min-w-[3px] flex-1"
             style={{
               // A day with runs never rounds down to an empty column.
