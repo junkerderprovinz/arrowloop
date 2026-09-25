@@ -13,7 +13,7 @@ import { useRainbow } from './Shell'
  * label appears under the pointer.
  */
 const navBase =
-  'glim-nav-row relative flex w-full items-center rounded-[var(--radius-control)] px-3 py-2.5 text-[15px] font-medium transition duration-150 select-none'
+  'glim-nav-row relative flex w-full items-center rounded-[var(--radius-pill)] px-3 py-2.5 text-[15px] font-medium transition duration-150 select-none'
 const navActive = 'glim-active bg-accent text-accentContrast'
 const navInactive = 'text-[var(--sidebar-text)] hover:bg-carbon-hover hover:text-carbon-text'
 

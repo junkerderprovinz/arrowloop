@@ -51,6 +51,16 @@ describe('the stored look', () => {
     expect(storedLook()).toEqual({ shape: 'square', accent: '#123456' })
   })
 
+  it('keeps a found leaf, which no picker offers', () => {
+    localStorage.setItem('glim-appearance', JSON.stringify({ shape: 'leaf' }))
+    expect(storedLook().shape).toBe('leaf')
+  })
+
+  it('drops a shape it does not know, so the default applies', () => {
+    localStorage.setItem('glim-appearance', JSON.stringify({ shape: 'blob', accent: '#123456' }))
+    expect(storedLook()).toEqual({ accent: '#123456' })
+  })
+
   it('keeps each swatch colour and falls back to the preset for anything unreadable', () => {
     storeSlots(['#123456', 'not a colour'])
     expect(storedSlots(presets.map((p) => p.hex))).toEqual(['#123456', '#1D99F3', '#6FDC8C'])

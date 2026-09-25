@@ -201,7 +201,7 @@ const uk: Translations = {
   'look.round': 'Круглі',
   'look.soft': 'М\'які',
   'look.square': 'Прямі',
-  'look.leaf': 'Лист',
+  'look.leaf': 'Листок',
   'look.accent': 'Акцентний колір',
   'look.colors': 'Кольори',
   'look.rainbowOn': 'Режим веселки',

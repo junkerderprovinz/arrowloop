@@ -61,7 +61,7 @@ export function Field({
           <Pressable
             onPress={() => setHidden((h) => !h)}
             android_ripple={{ color: p.hover }}
-            style={[styles.eye, { backgroundColor: p.surface3, ...corners.control }]}
+            style={[styles.eye, { backgroundColor: p.surface3, ...corners.pill }]}
           >
             <Glyph name={hidden ? "IconVisible" : "IconHidden"} color={p.text} size={18} />
           </Pressable>

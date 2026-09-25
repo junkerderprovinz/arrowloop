@@ -2,6 +2,8 @@
 // web/src/tokens.css, which are CSS custom properties; the accent presets and
 // the rainbow are plain data and imported directly.
 
+import { I18nManager } from "react-native";
+
 import { DEFAULT_SHAPE, type Shape } from "../../web/src/lib/appearance";
 
 export { ACCENTS, DEFAULT_ACCENT, RAINBOW, contrastOn, rainbowAt } from "../../web/src/lib/appearance";
@@ -157,19 +159,27 @@ export function radiusFor(shape: string): Radii {
 
 export interface Corners {
   borderRadius: number;
+  borderTopLeftRadius?: number;
   borderTopRightRadius?: number;
   borderBottomLeftRadius?: number;
+  borderBottomRightRadius?: number;
 }
 
 /**
- * The corner style for each radius, to spread into a style. The leaf's sharp
- * corners are physical rather than start and end, so it leans the same way in
- * a right-to-left language.
+ * The corner style for each radius, to spread into a style. The leaf rounds
+ * the top left and bottom right corners on screen in every language. React
+ * Native mirrors left and right corner styles in a right-to-left layout, so
+ * there the other diagonal is the one set to zero.
  */
 export function cornersFor(shape: string): Record<keyof Radii, Corners> {
   const r = radiusFor(shape);
-  const round = (borderRadius: number): Corners =>
-    shape === "leaf" ? { borderRadius, borderTopRightRadius: 0, borderBottomLeftRadius: 0 } : { borderRadius };
+  const mirrored = I18nManager.isRTL && I18nManager.doLeftAndRightSwapInRTL;
+  const round = (borderRadius: number): Corners => {
+    if (shape !== "leaf") return { borderRadius };
+    return mirrored
+      ? { borderRadius, borderTopLeftRadius: 0, borderBottomRightRadius: 0 }
+      : { borderRadius, borderTopRightRadius: 0, borderBottomLeftRadius: 0 };
+  };
   return { card: round(r.card), control: round(r.control), pill: round(r.pill) };
 }
 
