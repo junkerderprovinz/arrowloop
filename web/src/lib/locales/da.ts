@@ -646,7 +646,7 @@ const da: Translations = {
   'apps.serverHint': 'ArrowLoop på en server, der holder den kørende døgnet rundt: fra Unraids Community Applications, som Docker-image eller bygget fra kildekoden.',
   'apps.dockerHint': 'Et klik kopierer kommandoen, der starter den:',
   'apps.copied': 'Kopieret',
-  'apps.zip': 'Kildekode',
+  'apps.zip': 'ZIP',
   'password.hint': 'Alle, der kan nå denne adresse, kan starte job, der sletter filer. Adgangskoden gemmes som hash i security.json ved siden af konfigurationen, så en sikkerhedskopi af indstillingerne indeholder den aldrig. Er ARROWLOOP_PASSWORD_HASH sat, går den forud for denne adgangskode og er vejen ind igen, hvis du glemmer den.',
   'password.on': 'Godkendelse er aktiveret.',
   'password.off': 'Godkendelse er slået fra. Alle LAN-brugere har fuld adgang.',

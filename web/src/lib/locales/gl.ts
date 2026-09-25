@@ -646,7 +646,7 @@ const gl: Translations = {
   'apps.serverHint': 'ArrowLoop nun servidor que o mantén en marcha todo o día: desde as Community Applications de Unraid, como imaxe de Docker ou compilado desde o código fonte.',
   'apps.dockerHint': 'Un clic copia a orde que o arrinca:',
   'apps.copied': 'Copiado',
-  'apps.zip': 'Código fonte',
+  'apps.zip': 'ZIP',
   'password.hint': 'Calquera que chegue a este enderezo pode iniciar tarefas que borran ficheiros. O contrasinal gárdase como hash en security.json, á beira da configuración, así que ningunha copia de seguranza dos axustes o contén. Se ARROWLOOP_PASSWORD_HASH está definida, ten prioridade sobre este contrasinal e é o xeito de volver entrar se o esqueces.',
   'password.on': 'A autenticación está activada.',
   'password.off': 'A autenticación está desactivada: todos os usuarios da LAN teñen acceso completo.',

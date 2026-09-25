@@ -90,7 +90,8 @@ GLYPHS = [
     ("IconPhone", "phone/phone-mobile-phone.svg", "The phone app"),
     ("IconFilter", "interface-essential/filter-2.svg", "Narrow a list down"),
     ("IconQr", "money-shopping/qr-code.svg", "Show a download as a code to scan with the phone"),
-    ("IconSource", "programming/file-code-1.svg", "The source code as an archive"),
+    ("IconArrowDown", "interface-essential/arrow-up-1.svg", "Download a file to this computer",
+     "rotate(180 7 7)"),
     ("IconUpload", "interface-essential/upload-box-1.svg", "Read a setup back in from a file"),
 
     # The buttons on GlimStone's AboutCard; main.tsx maps its label keys here.

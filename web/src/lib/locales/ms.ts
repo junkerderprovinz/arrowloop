@@ -646,7 +646,7 @@ const ms: Translations = {
   'apps.serverHint': 'ArrowLoop pada pelayan yang menjalankannya sepanjang masa: dari Community Applications Unraid, sebagai imej Docker, atau dibina daripada kod sumbernya.',
   'apps.dockerHint': 'Satu klik menyalin arahan yang memulakannya:',
   'apps.copied': 'Disalin',
-  'apps.zip': 'Kod sumber',
+  'apps.zip': 'ZIP',
   'password.hint': 'Sesiapa yang dapat mencapai alamat ini boleh memulakan tugasan yang memadam fail. Kata laluan disimpan sebagai cincangan dalam security.json di sebelah konfigurasi, jadi sandaran tetapan tidak pernah memuatkannya. Jika ARROWLOOP_PASSWORD_HASH ditetapkan, ia didahulukan daripada kata laluan ini dan menjadi jalan masuk semula jika anda terlupa.',
   'password.on': 'Pengesahan diaktifkan.',
   'password.off': 'Pengesahan dimatikan. Semua pengguna LAN mempunyai akses penuh.',

@@ -646,7 +646,7 @@ const he: Translations = {
   'apps.serverHint': 'ArrowLoop על שרת שמריץ אותו מסביב לשעון: מ־Community Applications של Unraid, כתמונת Docker או בנוי מקוד המקור.',
   'apps.dockerHint': 'לחיצה מעתיקה את הפקודה שמפעילה אותו:',
   'apps.copied': 'הועתק',
-  'apps.zip': 'קוד מקור',
+  'apps.zip': 'ZIP',
   'password.hint': 'כל מי שמגיע לכתובת הזו יכול להפעיל משימות שמוחקות קבצים. הסיסמה נשמרת כגיבוב (hash) בקובץ security.json לצד התצורה, ולכן אף גיבוי של ההגדרות אינו מכיל אותה. אם ARROWLOOP_PASSWORD_HASH מוגדר, הוא גובר על הסיסמה הזו והוא הדרך חזרה פנימה אם תשכח אותה.',
   'password.on': 'האימות מופעל.',
   'password.off': 'האימות מושבת: לכל משתמשי ה-LAN גישה מלאה.',

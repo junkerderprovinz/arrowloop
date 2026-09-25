@@ -646,7 +646,7 @@ const nl: Translations = {
   'apps.serverHint': 'ArrowLoop op een server die het dag en nacht laat draaien: uit de Community Applications van Unraid, als Docker-image of gebouwd uit de broncode.',
   'apps.dockerHint': 'Eén klik kopieert de opdracht die het start:',
   'apps.copied': 'Gekopieerd',
-  'apps.zip': 'Broncode',
+  'apps.zip': 'ZIP',
   'password.hint': 'Iedereen die dit adres bereikt, kan taken starten die bestanden verwijderen. Het wachtwoord wordt als hash bewaard in security.json naast de configuratie, dus geen enkele back-up van de instellingen bevat het. Is ARROWLOOP_PASSWORD_HASH ingesteld, dan gaat die voor dit wachtwoord en is het de weg terug naar binnen als je het vergeet.',
   'password.on': 'Verificatie is ingeschakeld.',
   'password.off': 'Verificatie is uitgeschakeld. Alle LAN-gebruikers hebben volledige toegang.',

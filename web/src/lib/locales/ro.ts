@@ -646,7 +646,7 @@ const ro: Translations = {
   'apps.serverHint': 'ArrowLoop pe un server care îl ține pornit zi și noapte: din Community Applications ale Unraid, ca imagine Docker sau compilat din codul sursă.',
   'apps.dockerHint': 'Un clic copiază comanda care îl pornește:',
   'apps.copied': 'Copiat',
-  'apps.zip': 'Cod sursă',
+  'apps.zip': 'ZIP',
   'password.hint': 'Oricine ajunge la această adresă poate porni sarcini care șterg fișiere. Parola este păstrată ca hash în security.json, lângă configurație, așa că nicio copie de rezervă a setărilor nu o conține. Dacă ARROWLOOP_PASSWORD_HASH este setată, are întâietate față de această parolă și e calea înapoi dacă o uiți.',
   'password.on': 'Autentificarea este activată.',
   'password.off': 'Autentificarea este dezactivată. Toți utilizatorii LAN au acces complet.',

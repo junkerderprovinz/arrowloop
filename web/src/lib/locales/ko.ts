@@ -646,7 +646,7 @@ const ko: Translations = {
   'apps.serverHint': '하루 종일 켜 두는 서버에서 ArrowLoop 사용하기: Unraid의 Community Applications에서, Docker 이미지로, 또는 소스 코드에서 빌드해서.',
   'apps.dockerHint': '클릭하면 실행 명령이 복사됩니다:',
   'apps.copied': '복사됨',
-  'apps.zip': '소스 코드',
+  'apps.zip': 'ZIP',
   'password.hint': '이 주소에 닿는 사람은 누구나 파일을 삭제하는 작업을 시작할 수 있습니다. 비밀번호는 구성 파일 옆의 security.json에 해시로 보관되므로 설정 백업에는 절대 들어가지 않습니다. ARROWLOOP_PASSWORD_HASH가 설정되어 있으면 이 비밀번호보다 우선하며, 비밀번호를 잊었을 때 다시 들어오는 길이 됩니다.',
   'password.on': '인증이 활성화되어 있습니다.',
   'password.off': '인증이 꺼져 있습니다. 모든 LAN 사용자가 전체 액세스 권한을 가집니다.',

@@ -646,7 +646,7 @@ const is: Translations = {
   'apps.serverHint': 'ArrowLoop á netþjóni sem heldur því gangandi allan sólarhringinn: úr Community Applications í Unraid, sem Docker-mynd eða smíðað úr frumkóðanum.',
   'apps.dockerHint': 'Einn smellur afritar skipunina sem ræsir það:',
   'apps.copied': 'Afritað',
-  'apps.zip': 'Frumkóði',
+  'apps.zip': 'ZIP',
   'password.hint': 'Hver sem nær í þetta vistfang getur ræst verk sem eyða skrám. Lykilorðið er geymt sem tætigildi í security.json við hlið grunnstillinganna, svo engin afritun stillinganna inniheldur það. Ef ARROWLOOP_PASSWORD_HASH er stillt gengur það fyrir þessu lykilorði og er leiðin aftur inn ef þú gleymir því.',
   'password.on': 'Auðkenning er virk.',
   'password.off': 'Auðkenning er slökkt. Allir notendur á staðarnetinu hafa fullan aðgang.',

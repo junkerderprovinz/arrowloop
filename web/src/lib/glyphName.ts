@@ -52,6 +52,7 @@ const RULES: Rule[] = [
   // Above `save`: exporting hands a copy to the person's disk rather than
   // writing the program's own file.
   [/^apps\.qr$/i, 'IconQr'],
+  [/^apps\.download$/i, 'IconArrowDown'],
   [/export|download/i, 'IconDownload'],
   [/^history\.filter$/i, 'IconFilter'],
   [/import|upload/i, 'IconUpload'],

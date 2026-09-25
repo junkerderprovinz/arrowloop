@@ -646,7 +646,7 @@ const hr: Translations = {
   'apps.serverHint': 'ArrowLoop na poslužitelju koji ga drži uključenim danonoćno: iz Unraidovih Community Applications, kao Docker slika ili izgrađen iz izvornog koda.',
   'apps.dockerHint': 'Klik kopira naredbu koja ga pokreće:',
   'apps.copied': 'Kopirano',
-  'apps.zip': 'Izvorni kod',
+  'apps.zip': 'ZIP',
   'password.hint': 'Svatko tko dođe do ove adrese može pokretati zadatke koji brišu datoteke. Lozinka se čuva kao hash u security.json pokraj konfiguracije, pa je nijedna sigurnosna kopija postavki ne sadrži. Ako je postavljen ARROWLOOP_PASSWORD_HASH, on ima prednost pred ovom lozinkom i put je natrag ako je zaboraviš.',
   'password.on': 'Autentifikacija je omogućena.',
   'password.off': 'Autentifikacija je isključena. Svi LAN korisnici imaju puni pristup.',

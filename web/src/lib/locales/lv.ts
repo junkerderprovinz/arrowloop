@@ -646,7 +646,7 @@ const lv: Translations = {
   'apps.serverHint': 'ArrowLoop serverī, kas to darbina diennakts garumā: no Unraid Community Applications, kā Docker attēlu vai būvētu no pirmkoda.',
   'apps.dockerHint': 'Klikšķis nokopē komandu, kas to palaiž:',
   'apps.copied': 'Nokopēts',
-  'apps.zip': 'Pirmkods',
+  'apps.zip': 'ZIP',
   'password.hint': 'Ikviens, kas sasniedz šo adresi, var palaist uzdevumus, kas dzēš failus. Parole tiek glabāta kā jaucējvērtība failā security.json blakus konfigurācijai, tāpēc neviena iestatījumu dublējumkopija to nesatur. Ja ir iestatīts ARROWLOOP_PASSWORD_HASH, tam ir priekšroka pār šo paroli, un tas ir ceļš atpakaļ, ja to aizmirsti.',
   'password.on': 'Autentifikācija ir iespējota.',
   'password.off': 'Autentifikācija ir izslēgta. Visiem LAN lietotājiem ir pilna piekļuve.',

@@ -13,7 +13,7 @@ The full notes for each release are in
 ## 🎨 Design
 
 - **The App tab offers each way to get ArrowLoop as a tile**, the same shape as in KnightLoader. The phone card has Google Play, marked "soon" until the listing is live, and the APK with the Android mark, with a Download button and a QR code button beside it that turns the tile into a code to scan. The app's version stands in the card's corner, linked to its release.
-- **The second card offers what you are not already running.** In the container it offers the desktop app for Windows, Windows on ARM, macOS and Linux; in the desktop app it offers a server instead: Unraid's Community Applications, marked "soon" until the listing is live, the Docker image, whose tile copies the command that starts it, and the source code as a zip.
+- **The second card offers what you are not already running.** In the container it offers the desktop app for Windows, Windows on ARM, macOS and Linux; in the desktop app it offers a server instead: Unraid's Community Applications, marked "soon" until the listing is live, the Docker image, whose tile copies the command that starts it, and the source code as a ZIP.
 
 ## 1.0.0 - 2026-09-25
 
