@@ -10,6 +10,7 @@
     "newArchEnabled": true,
     "android": {
       "versionCode": 1,
+      "allowBackup": false,
       "package": "design.halleluja.arrowloop",
       "adaptiveIcon": {
         "backgroundColor": "#ffffff",

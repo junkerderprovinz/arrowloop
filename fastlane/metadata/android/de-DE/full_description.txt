@@ -1,0 +1,21 @@
+ArrowLoop hält einen Ordner auf deinem Handy und einen Ordner woanders auf demselben Stand, in beide Richtungen. Änderst du eine Datei auf einer Seite, bringt der nächste Lauf sie hinüber. Löschst du eine, verschwindet sie auch auf der anderen Seite, allerdings in einen Papierkorb und nicht endgültig.
+
+Die andere Seite ist Speicher, den du schon hast: dein eigener Server über SFTP, SMB oder WebDAV, eine Nextcloud oder OpenCloud, ein S3-Bucket oder einer der vielen Cloud-Dienste, die rclone kennt. ArrowLoop lässt seine Sync-Engine auf dem Handy selbst laufen. Es steht also kein Server von uns dazwischen, und du brauchst kein Konto.
+
+Was es kann
+• Abgleich in beide Richtungen, oder nur in eine, wenn dir das lieber ist
+• Läuft nach Zeitplan, sobald sich Dateien ändern, oder wenn du einen Auftrag antippst
+• Wartet auf WLAN, aufs Laden oder auf genug Akku, wenn du das willst
+• Zeigt vorher, was ein Lauf kopieren und löschen würde
+• Führt über jeden Lauf Buch: was kopiert, gelöscht oder aufs nächste Mal verschoben wurde, und warum
+• Behält beide Fassungen, wenn eine Datei auf beiden Seiten geändert wurde
+
+Damit keine Datei verloren geht
+• Nichts wird sofort gelöscht: Eine Löschung verschiebt die Datei in den Papierkorb auf ihrer Seite
+• Ein Lauf, der mehr als die Hälfte deiner Dateien löschen würde, hält an und sagt es dir
+• Eine Seite, die plötzlich leer aussieht, etwa weil ein Laufwerk nicht eingehängt ist, gilt nie als „alles gelöscht“
+• Eine Datei, die sich nicht kopieren ließ, wird beim nächsten Lauf wieder versucht
+
+Kein Konto, keine Werbung, keine Statistik. Der Quellcode ist offen, und dieselbe Engine gibt es auch als Desktop-App für Windows, macOS und Linux und als Container für den Heimserver.
+
+ArrowLoop bittet um Zugriff auf alle Dateien, damit ein Auftrag jeden Ordner abgleichen kann, den du auswählst, etwa DCIM oder Dokumente. Es liest und schreibt nur die Ordner, die deine Aufträge nennen.

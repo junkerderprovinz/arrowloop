@@ -9,6 +9,10 @@
  *   favicon.png          : 256, transparent, for the web UI
  *   appicon.png          : 1024, transparent, for the Wails desktop shell
  *
+ * And for Google Play, in fastlane/metadata/android/<lang>/images/:
+ *   icon.png             : 512 on white, RGB
+ *   featureGraphic.png   : #0d1117 1024x500, logo, name and claim, RGB
+ *
  * The master reads on both grounds, so both themes embed the same file and only
  * the text colours flip. Banner layout: logo ink about 400px with its left edge
  * at x=165 and its centre at y=250, name 132, claim 44, logo-to-text gap 70,
@@ -24,6 +28,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createRequire } from 'node:module';
 import { execSync } from 'node:child_process';
+import zlib from 'node:zlib';
 
 const require = createRequire(import.meta.url);
 const gRoot = execSync('npm root -g').toString().trim();
@@ -138,5 +143,68 @@ const logoOnly = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="$
 writeFileSync(here('./banner-logo.svg'), logoOnly);
 writeFileSync(here('./banner-logo.png'), png(logoOnly, W, '#ffffff'));
 
+// Google Play: the listing icon on the adaptive icon's white, inset so the
+// store's rounded mask cannot clip the ring, and the 1024x500 feature graphic
+// in the dark banner's colours, without an alpha channel, which Play refuses.
+const PW = 1024, PH = 500, PINK = 300, pName = 92, pClaim = 31, pGap = 48;
+const pScale = PINK / Math.max(ink.width, ink.height);
+const pNameW = bree.getAdvanceWidth(NAME, pName), pClaimW = lato.getAdvanceWidth(CLAIM, pClaim);
+const pLeft = (PW - (ink.width * pScale + pGap + Math.max(pNameW, pClaimW))) / 2;
+const pTextX = pLeft + ink.width * pScale + pGap;
+const pNameAsc = bree.ascender * (pName / bree.unitsPerEm);
+const pNameDesc = -bree.descender * (pName / bree.unitsPerEm);
+const pClaimAsc = lato.ascender * (pClaim / lato.unitsPerEm);
+const pNameBase = PH / 2 - (pNameAsc + pNameDesc + lineGap + pClaimAsc) / 2 + pNameAsc;
+const dark = THEMES[1];
+const feature = `<svg xmlns="http://www.w3.org/2000/svg" width="${PW}" height="${PH}" viewBox="0 0 ${PW} ${PH}">
+  <rect width="${PW}" height="${PH}" fill="${dark.bg}"/>
+  ${embed(pLeft - (ink.x - vbX) * pScale, PH / 2 - ((ink.y - vbY) + ink.height / 2) * pScale, vbW * pScale, vbH * pScale)}
+  <g transform="translate(${pTextX.toFixed(2)},0)">
+    ${paint(glyphs(bree, NAME, pName), pNameBase, dark.name)}
+    ${paint(glyphs(lato, CLAIM, pClaim), pNameBase + pNameDesc + lineGap + pClaimAsc, dark.claim)}
+  </g>
+</svg>
+`;
+const iconInk = 400, iconScale = iconInk / Math.max(ink.width, ink.height);
+const playIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#ffffff"/>
+  ${embed(256 - ((ink.x - vbX) + ink.width / 2) * iconScale, 256 - ((ink.y - vbY) + ink.height / 2) * iconScale, vbW * iconScale, vbH * iconScale)}
+</svg>
+`;
+// resvg only writes RGBA, so the opaque files are encoded here as RGB.
+function rgbPng(svg, width, bg) {
+  const img = new Resvg(Buffer.from(svg), { fitTo: { mode: 'width', value: width }, background: bg }).render();
+  const { width: w, height: h, pixels } = img;
+  const raw = Buffer.alloc((w * 3 + 1) * h);
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      pixels.copy(raw, y * (w * 3 + 1) + 1 + x * 3, (y * w + x) * 4, (y * w + x) * 4 + 3);
+    }
+  }
+  const chunk = (type, data) => {
+    const len = Buffer.alloc(4);
+    len.writeUInt32BE(data.length);
+    const body = Buffer.concat([Buffer.from(type), data]);
+    const crc = Buffer.alloc(4);
+    crc.writeUInt32BE(zlib.crc32(body));
+    return Buffer.concat([len, body, crc]);
+  };
+  const ihdr = Buffer.alloc(13);
+  ihdr.writeUInt32BE(w, 0);
+  ihdr.writeUInt32BE(h, 4);
+  ihdr.set([8, 2, 0, 0, 0], 8);
+  return Buffer.concat([
+    Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
+    chunk('IHDR', ihdr),
+    chunk('IDAT', zlib.deflateSync(raw, { level: 9 })),
+    chunk('IEND', Buffer.alloc(0)),
+  ]);
+}
+for (const lang of ['en-US', 'de-DE']) {
+  const dir = new URL(`../../fastlane/metadata/android/${lang}/images/`, import.meta.url);
+  writeFileSync(new URL('featureGraphic.png', dir), rgbPng(feature, PW, dark.bg));
+  writeFileSync(new URL('icon.png', dir), rgbPng(playIcon, 512, '#ffffff'));
+}
+
 console.log(`ink ${ink.width.toFixed(1)}x${ink.height.toFixed(1)} in ${vbW}x${vbH}, right margin ${(W - rightEdge).toFixed(0)}px`);
-console.log('wrote icon.png, favicon.png, appicon.png, banner{,-dark,-logo}.{svg,png}');
+console.log('wrote icon.png, favicon.png, appicon.png, banner{,-dark,-logo}.{svg,png}, and the Play icon and feature graphic');

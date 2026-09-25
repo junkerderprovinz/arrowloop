@@ -336,7 +336,7 @@ The desktop builds are **not signed**. Windows shows its blue warning on first s
 
 Wails v2 has no tray of its own, so this is `energye/systray`, which is the fork that does not demand the main thread on macOS. The icon is built around the same PNG the window wears, at startup, rather than committed as a second file: two icon files are two things to remember when the logo changes, and the day one is forgotten is the day the window and the notification area wear different marks. **Verified by hand on Windows only**; the other two builds are compiled but untested.
 
-**On Android** it is an app that runs the engine on the phone itself, so the phone's own files can take part in a job. Every release carries the `arm64` APK, which is what phones run; an `x86_64` build for the Android emulator is in the artifacts of each CI run. The APK is signed with this project's own key, so a later release installs over an earlier one. A build from CI before that key existed carries the public debug key instead, and has to be uninstalled once first.
+**On Android** it is an app that runs the engine on the phone itself, so the phone's own files can take part in a job. Every release carries the `arm64` APK, which is what phones run; an `x86_64` build for the Android emulator is in the artifacts of each CI run. The APK is signed with this project's own key, so a later release installs over an earlier one. A build from CI before that key existed carries the public debug key instead, and has to be uninstalled once first. What the app keeps on the phone and what it sends where is in the [privacy policy](PRIVACY.md).
 
 <br>
 

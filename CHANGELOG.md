@@ -10,6 +10,11 @@ The full notes for each release are in
 
 ## Unreleased
 
+## ✨ Added
+
+- **A privacy policy**, `PRIVACY.md`: what ArrowLoop keeps on the device, what leaves it and where to, and what each Android permission is for.
+- **Everything a Google Play listing needs**, under `fastlane/`: the texts in English and German, the icon and the feature graphic, and the answers Play Console asks for. A release also builds the app bundle Play takes, signed with the release key.
+
 ## 🎨 Design
 
 - **Give without leaving the app.** In the web interface and the desktop app, the coffee and PayPal buttons on the About card open a window instead of a browser tab. The coffee window holds Buy Me a Coffee's own form; the PayPal window asks how often and how much, then offers PayPal's button and a card button for anyone without a PayPal account, and gives monthly and yearly donations as well as one-off ones. Nothing from either service loads until its window opens. The Android app keeps its links. On macOS and Linux the desktop app's PayPal button opens PayPal's donation page in the browser instead, because the window's login needs a popup the app cannot open there.
@@ -18,6 +23,11 @@ The full notes for each release are in
 - **Windows gets one download per processor, the installer.** The portable exe kept its settings under AppData like the installed program, so all it spared was the installation, and a Windows service belongs in a folder only administrators can change. `arrowloop service` says so too, since the service also runs the jobs' before and after commands as LocalSystem.
 - **The README's download rows gain Windows on ARM, a source button and a second one for the phone**: Google Play, drawn without a link until the listing is live, beside the APK.
 - **The look follows GlimStone 2.10.1**, whose App tab this is: the tiles and their marks come from the design language, so every app offers its downloads the same way. In the round shape every button, tab, badge and switch is a true pill, a fresh install starts on soft corners, and a fourth shape hides behind square for whoever keeps clicking it.
+
+## ⚡ Improved
+
+- **The Android app no longer asks for the one-tap battery exemption.** Its switch opens the battery optimisation list instead, where ArrowLoop is set to not optimised. The prompt needs a permission Google Play grants to few kinds of app.
+- **The Android app's data stays out of Android's cloud backup**, since it holds the access details of your storage targets. The settings backup in the app is the way to move a setup to another phone.
 
 ## 🐛 Fixed
 
