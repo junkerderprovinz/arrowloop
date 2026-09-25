@@ -580,7 +580,6 @@ const fi: Translations = {
   'phone.notify': 'Ilmoitukset',
   'phone.openNotifications': 'Androidin ilmoitusasetukset',
   'phone.doze': 'Taustatoiminta',
-  'phone.openBattery': 'Akun optimointi',
   'phone.dozeOff': 'Ota ArrowLoopin akun optimointi POIS käytöstä. Sen kanssa Android nukuttaa sovelluksen, kun näyttö on ollut hetken pimeänä, ja yöksi ajoitettu työ odottaa, kunnes otat puhelimen taas käteen.',
   'phone.charging': 'Vain latauksen aikana',
   'phone.chargingHint': 'Ajastettu ajo odottaa, kunnes puhelin on virrassa. Itse käynnistämäsi ajo lähtee joka tapauksessa: napin painaminen on päätös, ja ohjelma joka väittelisi siitä olisi väärässä.',

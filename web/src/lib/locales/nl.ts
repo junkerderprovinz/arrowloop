@@ -580,7 +580,6 @@ const nl: Translations = {
   'phone.notify': 'Meldingen',
   'phone.openNotifications': 'Android-meldingsinstellingen',
   'phone.doze': 'Achtergrondactiviteit',
-  'phone.openBattery': 'Batterijoptimalisatie',
   'phone.dozeOff': 'Zet batterijoptimalisatie UIT voor ArrowLoop. Met de optie aan laat Android de app slapen zodra het scherm even uit is, en een taak voor de nacht wacht tot je de telefoon weer oppakt.',
   'phone.charging': 'Alleen tijdens het opladen',
   'phone.chargingHint': 'Een geplande run wacht tot de telefoon aan de stroom ligt. Een run die je zelf start gaat hoe dan ook door: op de knop drukken is een beslissing, en een programma dat daartegenin gaat heeft ongelijk.',

@@ -246,7 +246,9 @@ jobs:
 
       # A React Native debug build loads its JavaScript from Metro at runtime;
       # only the release build packages the bundle into the APK. Unless SIGNED,
-      # it is signed with the stable, public android/debug.keystore.
+      # it is signed with the stable, public android/debug.keystore. A signed
+      # build also makes the app bundle Google Play takes, signed with the same
+      # key as its upload key.
       - name: Assemble
         working-directory: mobile/android
         env:
@@ -254,7 +256,7 @@ jobs:
           ARROWLOOP_ANDROID_STORE_PASSWORD: ${{ env.SIGNED == 'true' && secrets.ANDROID_KEYSTORE_PASSWORD || '' }}
           ARROWLOOP_ANDROID_KEY_ALIAS: ${{ env.SIGNED == 'true' && secrets.ANDROID_KEY_ALIAS || '' }}
           ARROWLOOP_ANDROID_KEY_PASSWORD: ${{ env.SIGNED == 'true' && secrets.ANDROID_KEY_PASSWORD || '' }}
-        run: ./gradlew assembleRelease --no-daemon
+        run: ./gradlew assembleRelease ${{ env.SIGNED == 'true' && 'bundleRelease' || '' }} --no-daemon
 
       - name: Name the outputs
         working-directory: mobile
@@ -264,6 +266,10 @@ jobs:
           for f in android/app/build/outputs/apk/release/*.apk; do
             [ -e "$f" ] || continue
             cp "$f" "out/arrowloop-$(basename "$f")"
+          done
+          for f in android/app/build/outputs/bundle/release/*.aab; do
+            [ -e "$f" ] || continue
+            cp "$f" out/arrowloop-play.aab
           done
           ls -la out/
 
@@ -292,6 +298,13 @@ jobs:
               exit 1
             fi
           done
+          # keytool prints the digest in upper case with colons.
+          digest=$(keytool -printcert -jarfile out/arrowloop-play.aab | grep -m1 'SHA256:' | awk '{print $2}' | tr -d ':' | tr 'A-F' 'a-f')
+          echo "out/arrowloop-play.aab $digest"
+          if [ "$digest" != "$RELEASE_CERT_SHA256" ]; then
+            echo "::error::the app bundle is signed by $digest, not by the release certificate $RELEASE_CERT_SHA256."
+            exit 1
+          fi
 
       # An APK carrying the release key leaves only through a release. A
       # release keeps its artifact as long as the desktop bundles, so re-running
@@ -303,3 +316,13 @@ jobs:
           path: mobile/out/*.apk
           if-no-files-found: error
           retention-days: ${{ env.RELEASE == 'true' && 90 || 14 }}
+
+      # Uploaded to Play Console by hand, so it stays an artifact of the
+      # release run rather than a file on the release page.
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        if: env.RELEASE == 'true'
+        with:
+          name: arrowloop-play
+          path: mobile/out/arrowloop-play.aab
+          if-no-files-found: error
+          retention-days: 90

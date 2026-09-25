@@ -580,7 +580,6 @@ const ko: Translations = {
   'phone.notify': '알림',
   'phone.openNotifications': 'Android 알림 설정',
   'phone.doze': '백그라운드 활동',
-  'phone.openBattery': '배터리 최적화',
   'phone.dozeOff': 'ArrowLoop의 배터리 최적화를 꺼주세요. 켜져 있으면 Android가 앱을 재우기 때문에 밤에 예약된 작업이 휴대폰을 다시 들 때까지 기다립니다.',
   'phone.charging': '충전 중일 때만',
   'phone.chargingHint': '예약된 실행은 전화기가 전원에 연결될 때까지 기다립니다. 직접 시작한 실행은 어느 쪽이든 진행됩니다. 버튼을 누른 것은 결정이고, 그것과 다투는 프로그램이 틀린 것입니다.',

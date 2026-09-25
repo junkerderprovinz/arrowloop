@@ -580,7 +580,6 @@ const ro: Translations = {
   'phone.notify': 'Notificări',
   'phone.openNotifications': 'Setările de notificare din Android',
   'phone.doze': 'Activitate în fundal',
-  'phone.openBattery': 'Optimizarea bateriei',
   'phone.dozeOff': 'Dezactivează optimizarea bateriei pentru ArrowLoop. Cu ea pornită, Android adoarme aplicația când ecranul stă stins un timp, iar o sarcină de noapte așteaptă până ridici din nou telefonul.',
   'phone.charging': 'Doar în timpul încărcării',
   'phone.chargingHint': 'O rulare programată așteaptă până când telefonul este la priză. O rulare pe care o pornești tu merge oricum: apăsarea butonului este o decizie, iar un program care s-ar contrazice cu ea ar greși.',

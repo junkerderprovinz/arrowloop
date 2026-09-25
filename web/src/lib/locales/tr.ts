@@ -580,7 +580,6 @@ const tr: Translations = {
   'phone.notify': 'Bildirimler',
   'phone.openNotifications': 'Android\'in bildirim ayarları',
   'phone.doze': 'Arka plan etkinliği',
-  'phone.openBattery': 'Pil optimizasyonu',
   'phone.dozeOff': 'ArrowLoop için pil optimizasyonunu KAPAT. Açıkken Android uygulamayı uyutur, böylece geceye kurulan bir iş telefonu tekrar elinize alana kadar bekler.',
   'phone.charging': 'Yalnızca şarj olurken',
   'phone.chargingHint': 'Zamanlanmış bir çalışma telefon prizde olana kadar bekler. Kendi başlattığın bir çalışma yine de gider: düğmeye basmak bir karardır ve bununla tartışan bir program haksız olurdu.',

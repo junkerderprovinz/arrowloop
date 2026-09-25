@@ -580,7 +580,6 @@ const lt: Translations = {
   'phone.notify': 'Pranešimai',
   'phone.openNotifications': 'Android pranešimų nustatymai',
   'phone.doze': 'Veikla fone',
-  'phone.openBattery': 'Akumuliatoriaus optimizavimas',
   'phone.dozeOff': 'Išjunkite ArrowLoop baterijos optimizavimą. Įjungtas jis leidžia Android užmigdyti programą, todėl naktį suplanuota užduotis laukia, kol telefoną vėl paimsite.',
   'phone.charging': 'Tik kraunant',
   'phone.chargingHint': 'Suplanuotas vykdymas laukia, kol telefonas bus prijungtas prie maitinimo. Vykdymas, kurį paleidi pats, vyksta bet kuriuo atveju: paspausti mygtuką yra sprendimas, ir programa, kuri su juo ginčytųsi, klystų.',

@@ -580,7 +580,6 @@ const hr: Translations = {
   'phone.notify': 'Obavijesti',
   'phone.openNotifications': 'Androidove postavke obavijesti',
   'phone.doze': 'Aktivnost u pozadini',
-  'phone.openBattery': 'Optimizacija baterije',
   'phone.dozeOff': 'Isključite optimizaciju baterije za ArrowLoop. S njom Android uspava aplikaciju kad je zaslon neko vrijeme ugašen, pa noćni zadatak čeka dok telefon opet ne uzmete.',
   'phone.charging': 'Samo dok se puni',
   'phone.chargingHint': 'Zakazano izvođenje čeka dok telefon ne bude na struji. Izvođenje koje sam pokreneš ide svejedno: pritisak na gumb je odluka, a program koji bi se s njom prepirao ne bi bio u pravu.',

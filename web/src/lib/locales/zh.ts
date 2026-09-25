@@ -580,7 +580,6 @@ const zh: Translations = {
   'phone.notify': '通知',
   'phone.openNotifications': 'Android 的通知设置',
   'phone.doze': '后台活动',
-  'phone.openBattery': '电池优化',
   'phone.dozeOff': '请为 ArrowLoop 关闭电池优化。开启时 Android 会让应用休眠，夜间的任务会一直等到你再次拿起手机。',
   'phone.charging': '仅在充电时',
   'phone.chargingHint': '定时运行会等到手机接上电源。你自己启动的运行照样进行：按下按钮是一个决定，跟它争辩的程序才是错的。',

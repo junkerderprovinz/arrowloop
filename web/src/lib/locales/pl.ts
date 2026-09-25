@@ -580,7 +580,6 @@ const pl: Translations = {
   'phone.notify': 'Powiadomienia',
   'phone.openNotifications': 'Ustawienia powiadomień Androida',
   'phone.doze': 'Aktywność w tle',
-  'phone.openBattery': 'Optymalizacja baterii',
   'phone.dozeOff': 'Wyłącz optymalizację baterii dla ArrowLoop. Gdy jest włączona, Android usypia aplikację, więc nocne zadanie czeka, aż znowu weźmiesz telefon do ręki.',
   'phone.charging': 'Tylko podczas ładowania',
   'phone.chargingHint': 'Zaplanowany przebieg czeka, aż telefon będzie pod prądem. Przebieg, który uruchomisz sam, ruszy i tak: naciśnięcie przycisku jest decyzją, a program, który by z nią dyskutował, nie miałby racji.',

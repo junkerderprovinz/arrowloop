@@ -459,17 +459,7 @@ export function Settings() {
           label={t("phone.permissionGranted")}
           off={t("phone.permissionDenied")}
           value={doze === true}
-          onChange={() => {
-            // The dialog shows once; revoking goes through the app's settings.
-            if (doze) engine.openAppSettings();
-            else engine.askBatteryExemption().catch(() => engine.openAppSettings());
-          }}
-        />
-        {/* Some OEM power managers keep their own setting in this list. */}
-        <Button
-          label={t("phone.openBattery")}
-          labelKey="phone.openBattery"
-          onPress={() => engine.openBatterySettings().catch(() => {})}
+          onChange={() => engine.openBatterySettings().catch(() => engine.openAppSettings())}
         />
       </Section>
 

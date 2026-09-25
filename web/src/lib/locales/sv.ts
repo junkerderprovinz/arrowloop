@@ -580,7 +580,6 @@ const sv: Translations = {
   'phone.notify': 'Aviseringar',
   'phone.openNotifications': 'Androids aviseringsinställningar',
   'phone.doze': 'Bakgrundsaktivitet',
-  'phone.openBattery': 'Batterioptimering',
   'phone.dozeOff': 'Stäng AV batterioptimering för ArrowLoop. Med den på sömnlägger Android appen när skärmen varit av en stund, och ett jobb satt till natten väntar tills du tar upp telefonen igen.',
   'phone.charging': 'Bara under laddning',
   'phone.chargingHint': 'En schemalagd körning väntar tills telefonen sitter i strömmen. En körning du startar själv går ändå: att trycka på knappen är ett beslut, och ett program som bråkade om det skulle ha fel.',

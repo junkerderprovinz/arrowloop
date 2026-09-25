@@ -580,7 +580,6 @@ const vi: Translations = {
   'phone.notify': 'Thông báo',
   'phone.openNotifications': 'Cài đặt thông báo của Android',
   'phone.doze': 'Hoạt động nền',
-  'phone.openBattery': 'Tối ưu hoá pin',
   'phone.dozeOff': 'Tắt tối ưu hóa pin cho ArrowLoop. Khi bật, Android sẽ cho ứng dụng ngủ và một tác vụ ban đêm phải chờ đến khi bạn cầm điện thoại lại.',
   'phone.charging': 'Chỉ khi đang sạc',
   'phone.chargingHint': 'Lượt chạy theo lịch đợi đến khi điện thoại cắm điện. Lượt chạy bạn tự khởi động thì vẫn đi: bấm nút là một quyết định, và một chương trình cãi lại nó thì sai.',

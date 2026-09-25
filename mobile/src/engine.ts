@@ -37,7 +37,6 @@ interface EngineNativeModule {
   /** Whether the engine answers over HTTP, not merely whether its process lives. */
   answering(): Promise<boolean>;
   batteryExempt(): Promise<boolean>;
-  askBatteryExemption(): Promise<void>;
   /** Copies to the clipboard; React Native's own Clipboard is deprecated. */
   copy(value: string): Promise<void>;
 }
@@ -119,7 +118,6 @@ export const engine = {
   setDevicePolicy: (policy: Partial<DeviceConditions>) =>
     native ? native.setDevicePolicy(policy) : missing(),
   batteryExempt: () => (native ? native.batteryExempt() : Promise.resolve(true)),
-  askBatteryExemption: () => (native ? native.askBatteryExemption() : missing()),
   copy: (value: string) => (native ? native.copy(value) : missing()),
   /** Whether this build has an engine at all. */
   available: Boolean(native),

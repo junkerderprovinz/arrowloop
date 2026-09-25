@@ -580,7 +580,6 @@ const is: Translations = {
   'phone.notify': 'Tilkynningar',
   'phone.openNotifications': 'Tilkynningastillingar Android',
   'phone.doze': 'Bakgrunnsvirkni',
-  'phone.openBattery': 'Rafhlöðubestun',
   'phone.dozeOff': 'Slökktu á rafhlöðuspörun fyrir ArrowLoop. Með henni sveæfir Android forritið þegar skjárinn hefur verið slökktur um stund og næturverk bíður þar til síminn er tekinn upp aftur.',
   'phone.charging': 'Aðeins í hleðslu',
   'phone.chargingHint': 'Tímasett keyrsla bíður þar til síminn er í straumi. Keyrsla sem þú byrjar sjálfur fer af stað hvort sem er: að ýta á hnappinn er ákvörðun og forrit sem þrætti um það hefði rangt fyrir sér.',

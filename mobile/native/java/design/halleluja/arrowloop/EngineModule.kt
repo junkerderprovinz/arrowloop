@@ -143,28 +143,6 @@ class EngineModule(private val context: ReactApplicationContext) :
     }
 
     /**
-     * Asks for the exemption with Android's one-button prompt, falling back to
-     * the optimisation list on builds that strip the prompt.
-     */
-    @ReactMethod
-    @android.annotation.SuppressLint("BatteryLife")
-    fun askBatteryExemption(promise: Promise) {
-        val direct = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
-            .setData(Uri.parse("package:${context.packageName}"))
-        val list = Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
-        for (intent in listOf(direct, list)) {
-            try {
-                context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
-                promise.resolve(null)
-                return
-            } catch (_: ActivityNotFoundException) {
-                // Try the list before giving up.
-            }
-        }
-        promise.reject("battery", "this phone has no page for that permission")
-    }
-
-    /**
      * Opens the settings page that grants file access; there is no dialog for
      * it. FLAG_ACTIVITY_NEW_TASK is required when starting from a module.
      */
@@ -223,8 +201,8 @@ class EngineModule(private val context: ReactApplicationContext) :
     }
 
     /**
-     * Opens the battery optimisation list, for phones whose OEM power manager
-     * overrides the exemption prompt.
+     * Opens the battery optimisation list. The one-tap exemption prompt needs a
+     * permission Google Play grants only to a few kinds of app.
      */
     @ReactMethod
     fun openBatterySettings(promise: Promise) {

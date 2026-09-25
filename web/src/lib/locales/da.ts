@@ -580,7 +580,6 @@ const da: Translations = {
   'phone.notify': 'Notifikationer',
   'phone.openNotifications': 'Androids notifikationsindstillinger',
   'phone.doze': 'Baggrundsaktivitet',
-  'phone.openBattery': 'Batterioptimering',
   'phone.dozeOff': 'Slå batterioptimering FRA for ArrowLoop. Med den sætter Android appen i dvale, når skærmen har været slukket et stykke tid, og et job til natten venter, til du tager telefonen op igen.',
   'phone.charging': 'Kun under opladning',
   'phone.chargingHint': 'En planlagt kørsel venter, indtil telefonen er i strøm. En kørsel, du selv starter, går alligevel: at trykke på knappen er en beslutning, og et program, der skændtes om det, ville tage fejl.',

@@ -580,7 +580,6 @@ const es: Translations = {
   'phone.notify': 'Notificaciones',
   'phone.openNotifications': 'Ajustes de notificación de Android',
   'phone.doze': 'Actividad en segundo plano',
-  'phone.openBattery': 'Optimización de la batería',
   'phone.dozeOff': 'Desactiva la optimización de batería para ArrowLoop. Con ella, Android duerme la aplicación cuando la pantalla lleva un rato apagada y una tarea nocturna espera hasta que vuelves a coger el teléfono.',
   'phone.charging': 'Solo mientras carga',
   'phone.chargingHint': 'Una ejecución programada espera a que el teléfono esté enchufado. Una que inicias tú sigue adelante igualmente: pulsar el botón es una decisión, y un programa que la discutiera se equivocaría.',

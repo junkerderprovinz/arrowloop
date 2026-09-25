@@ -580,7 +580,6 @@ const et: Translations = {
   'phone.notify': 'Teavitused',
   'phone.openNotifications': 'Androidi teavituste sätted',
   'phone.doze': 'Taustategevus',
-  'phone.openBattery': 'Aku optimeerimine',
   'phone.dozeOff': 'Lülita ArrowLoopi aku optimeerimine VÄLJA. Sellega paneb Android rakenduse magama, kui ekraan on olnud mõnda aega väljas, ja öötöö ootab, kuni telefoni jälle kätte võtad.',
   'phone.charging': 'Ainult laadimise ajal',
   'phone.chargingHint': 'Ajastatud käik ootab, kuni telefon on vooluvõrgus. Käik, mille sa ise käivitad, läheb igal juhul: nupule vajutamine on otsus ja programm, mis sellega vaidleks, eksiks.',

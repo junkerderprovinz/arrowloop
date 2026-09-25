@@ -580,7 +580,6 @@ const lv: Translations = {
   'phone.notify': 'Paziņojumi',
   'phone.openNotifications': 'Android paziņojumu iestatījumi',
   'phone.doze': 'Darbība fonā',
-  'phone.openBattery': 'Akumulatora optimizācija',
   'phone.dozeOff': 'Izslēdziet ArrowLoop akumulatora optimizāciju. Ar to Android iemidzina lietotni, un naktī ieplanots darbs gaida, līdz telefonu atkal paņemat rokās.',
   'phone.charging': 'Tikai uzlādes laikā',
   'phone.chargingHint': 'Ieplānota izpilde gaida, līdz telefons ir pieslēgts strāvai. Izpilde, ko sāc pats, notiek jebkurā gadījumā: nospiest pogu ir lēmums, un programma, kas ar to strīdētos, kļūdītos.',

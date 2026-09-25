@@ -580,7 +580,6 @@ const it: Translations = {
   'phone.notify': 'Notifiche',
   'phone.openNotifications': 'Impostazioni di notifica di Android',
   'phone.doze': 'Attività in background',
-  'phone.openBattery': 'Ottimizzazione della batteria',
   'phone.dozeOff': 'Disattiva l\'ottimizzazione della batteria per ArrowLoop. Con essa Android mette l\'app in pausa quando lo schermo è spento da un po\', e un lavoro notturno aspetta finché non riprendi il telefono.',
   'phone.charging': 'Solo sotto carica',
   'phone.chargingHint': 'Un\'esecuzione programmata aspetta che il telefono sia sotto carica. Una che avvii tu parte comunque: premere il pulsante è una decisione, e un programma che la contestasse avrebbe torto.',

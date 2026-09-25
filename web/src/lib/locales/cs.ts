@@ -580,7 +580,6 @@ const cs: Translations = {
   'phone.notify': 'Oznámení',
   'phone.openNotifications': 'Nastavení oznámení v Androidu',
   'phone.doze': 'Aktivita na pozadí',
-  'phone.openBattery': 'Optimalizace baterie',
   'phone.dozeOff': 'Vypněte optimalizaci baterie pro ArrowLoop. S ní Android aplikaci uspí, když je obrazovka delší dobu vypnutá, a noční úloha počká, než telefon zase vezmete do ruky.',
   'phone.charging': 'Jen při nabíjení',
   'phone.chargingHint': 'Naplánovaný běh počká, až bude telefon v zásuvce. Běh, který spustíš sám, půjde tak jako tak: stisknout tlačítko je rozhodnutí a program, který by se s ním přel, by neměl pravdu.',

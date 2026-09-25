@@ -580,7 +580,6 @@ const ja: Translations = {
   'phone.notify': '通知',
   'phone.openNotifications': 'Android の通知設定',
   'phone.doze': 'バックグラウンド動作',
-  'phone.openBattery': '電池の最適化',
   'phone.dozeOff': 'ArrowLoop のバッテリー最適化をオフにしてください。オンのままだと Android がアプリをスリープさせ、夜のジョブは次に端末を手に取るまで待ちます。',
   'phone.charging': '充電中のみ',
   'phone.chargingHint': '予定された実行は端末が電源につながるまで待ちます。自分で始めた実行はどちらにしても進みます。ボタンを押すのは決定であり、それに逆らうプログラムのほうが間違っています。',

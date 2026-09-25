@@ -580,7 +580,6 @@ const eu: Translations = {
   'phone.notify': 'Jakinarazpenak',
   'phone.openNotifications': 'Androiden jakinarazpen ezarpenak',
   'phone.doze': 'Bigarren planoko jarduera',
-  'phone.openBattery': 'Bateriaren optimizazioa',
   'phone.dozeOff': 'Itzali ArrowLoopen bateria-optimizazioa. Aktibatuta dagoenean, Androidek aplikazioa lokartzen du pantaila itzalita denbora bat daramanean, eta gaueko lan batek zain egoten da.',
   'phone.charging': 'Kargatzen ari denean bakarrik',
   'phone.chargingHint': 'Programatutako exekuzio batek telefonoa korrontean egon arte itxaroten du. Zuk zeuk abiatutakoa hala ere aurrera doa: botoia sakatzea erabaki bat da, eta horrekin eztabaidatuko lukeen programa oker legoke.',

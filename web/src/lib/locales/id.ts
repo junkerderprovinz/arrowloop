@@ -580,7 +580,6 @@ const id: Translations = {
   'phone.notify': 'Notifikasi',
   'phone.openNotifications': 'Pengaturan notifikasi Android',
   'phone.doze': 'Aktivitas latar belakang',
-  'phone.openBattery': 'Pengoptimalan baterai',
   'phone.dozeOff': 'Matikan optimasi baterai untuk ArrowLoop. Dengan itu aktif, Android menidurkan aplikasi saat layar mati beberapa saat, dan tugas malam menunggu sampai ponsel diambil lagi.',
   'phone.charging': 'Hanya saat mengisi daya',
   'phone.chargingHint': 'Jalan terjadwal menunggu sampai ponsel tersambung ke listrik. Jalan yang kamu mulai sendiri tetap berangkat: menekan tombol adalah keputusan, dan program yang membantahnya akan keliru.',

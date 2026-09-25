@@ -580,7 +580,6 @@ const hu: Translations = {
   'phone.notify': 'Értesítések',
   'phone.openNotifications': 'Az Android értesítési beállításai',
   'phone.doze': 'Háttértevékenység',
-  'phone.openBattery': 'Akkumulátoroptimalizálás',
   'phone.dozeOff': 'Kapcsold KI az ArrowLoop akkumulátor-optimalizálását. Bekapcsolva az Android alvó állapotba teszi az alkalmazást, így egy éjszakai feladat megvárja, amíg újra kezedbe veszed a telefont.',
   'phone.charging': 'Csak töltés közben',
   'phone.chargingHint': 'Az időzített futás megvárja, amíg a telefon áram alatt van. Az a futás, amelyet te indítasz, mindenképp elindul: a gomb megnyomása döntés, és az a program, amely vitatkozna vele, tévedne.',
