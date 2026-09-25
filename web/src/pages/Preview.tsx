@@ -7,6 +7,7 @@ import { Button } from '../lib/glimstone/Button'
 import { IconAction } from '../components/IconAction'
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { Selector } from '../components/Selector'
+import { actionName } from '../lib/actionName'
 import { api, type Action, type ActionKind, type Plan, type Resolution, type SideVersion } from '../lib/api'
 import { translateSide, useReason, useT, type TranslationKey } from '../lib/i18n'
 
@@ -249,8 +250,8 @@ function Row({
 
         <Badge tone={tone[action.kind] ?? 'neutral'}>{t(kindKey[action.kind])}</Badge>
 
-        <span className={`min-w-0 flex-1 truncate text-xs ${ticked ? '' : 'opacity-50'}`} title={action.path}>
-          {action.path}
+        <span className={`min-w-0 flex-1 truncate text-xs ${ticked ? '' : 'opacity-50'}`} title={actionName(action)}>
+          {actionName(action)}
         </span>
 
         <span className="hidden shrink-0 text-xs text-carbon-textMuted sm:inline">{label}</span>

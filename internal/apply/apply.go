@@ -147,6 +147,19 @@ func (t *tally) sized(kind, path, side string, size int64) {
 	}
 }
 
+// spelled is an action's file as a side that holds it spells it. The path is
+// the key both sides are matched on, folded to lower case wherever a side
+// ignores case, and the log is read by people.
+func spelled(act plan.Action) string {
+	if act.LeftNow != nil {
+		return act.LeftNow.Path
+	}
+	if act.RightNow != nil {
+		return act.RightNow.Path
+	}
+	return act.Path
+}
+
 // sizeOf is the size of whichever side an action is acting on, or zero when
 // there is nothing there to measure.
 func sizeOf(e *scan.Entry) int64 {
@@ -321,7 +334,7 @@ func RunVerified(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt
 		if agreed == nil {
 			agreed = act.RightNow
 		}
-		t.sized("record", act.Path, "", sizeOf(agreed))
+		t.sized("record", spelled(act), "", sizeOf(agreed))
 		if err := rec.settle(ctx, act.Path, left, right); err != nil {
 			var dis *DisagreementError
 			if errors.As(err, &dis) {
@@ -660,13 +673,13 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 			return err
 		}
 		t.count(func(r *Result) { r.Trashed++ })
-		t.sized("trash", act.Path, act.Dst.String(), live.Size)
+		t.sized("trash", live.Path, act.Dst.String(), live.Size)
 		return rec.db.Forget(ctx, act.Path)
 
 	case plan.Conflict:
 		t.count(func(r *Result) { r.Conflicts++ })
 		// Record what was decided, since on a scheduled run nobody chose.
-		t.note("conflict", act.Path, "", act.Resolve.String())
+		t.note("conflict", spelled(act), "", act.Resolve.String())
 		return resolveConflict(ctx, ends, rec, act, runID, opt)
 	}
 	return fmt.Errorf("unknown action kind %v", act.Kind)

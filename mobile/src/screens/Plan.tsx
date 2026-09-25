@@ -1,6 +1,7 @@
 import { useNavigation, useRoute, type RouteProp } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
+import { actionName } from "../../../web/src/lib/actionName";
 import { api, type Action, type Plan as PlanType } from "../api";
 import { useT } from "../i18n";
 import type { JobsStack, Nav } from "../nav";
@@ -61,7 +62,7 @@ export function Plan() {
             <InfoBubble tip={t("history.conflictHint")} />
           </View>
           {conflicts.slice(0, 30).map((action) => (
-            <Mono key={action.path}>{action.path}</Mono>
+            <Mono key={action.path}>{actionName(action)}</Mono>
           ))}
         </Card>
       ) : null}
@@ -74,7 +75,7 @@ export function Plan() {
           </View>
           {/* Capped, since hundreds of monospace rows stall the scroll. */}
           {list.slice(0, 30).map((action) => (
-            <Mono key={action.path}>{action.path}</Mono>
+            <Mono key={action.path}>{actionName(action)}</Mono>
           ))}
           {list.length > 30 ? <Caption>{t("trash.more", { total: list.length, shown: 30 })}</Caption> : null}
         </Card>

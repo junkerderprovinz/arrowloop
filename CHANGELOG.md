@@ -32,6 +32,7 @@ The full notes for each release are in
 
 ## 🐛 Fixed
 
+- **A file keeps its capitals in the preview and the history.** Where one side ignores case, as a phone's shared storage does, the preview listed "garden plan.pdf" and the history logged a deletion, a conflict or an unchanged file the same way. Both show the name as the side holding the file spells it.
 - **Counts and times no longer read "1 files" or "1 minutes ago".** The phone's overview shows how many files moved as a number and a run's length as minutes and seconds, and the phone shows when something happened as a date and time. In the web interface "5 minutes ago" comes from the browser, with the right plural in every language. The statistics' run count and the unhashed-file note put the number after a colon.
 - **With the theme on System, a light desktop shows the Sunflower accent**, as Light picked by hand does. It showed an olive one.
 - **A dropdown answers the mouse wheel only after it has been clicked or reached with Tab.** Scrolling the page with the pointer over one no longer changes its value.
