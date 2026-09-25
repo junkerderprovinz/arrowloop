@@ -5,6 +5,7 @@ import { Button } from '../lib/glimstone/Button'
 import { Card } from '../lib/glimstone/Card'
 import { AppTile, BrandMark } from '../lib/glimstone/AppTile'
 import { ANDROID_SVG, APPLE_SVG, DOCKER_SVG, LINUX_SVG, PLAY_SVG, UNRAID_SVG, WINDOWS_SVG, ZIP_SVG } from '../lib/appMarks'
+import { followExternal, openExternal } from '../lib/external'
 import { useT } from '../lib/i18n'
 
 const REPO = 'https://github.com/junkerderprovinz/arrowloop'
@@ -51,7 +52,7 @@ function PhoneCard({ version }: { version: string }) {
     <Card title={t('apps.phoneTitle')} hint={t('apps.phoneHint')} hueIndex={0}>
       <ReleaseVersion version={version} />
       <div className="flex flex-wrap items-center gap-3">
-        <AppTile soonLabel={t('apps.soon')} name={t('apps.playStore')} logo={<BrandMark svg={PLAY_SVG} />} href={PLAY_STORE} />
+        <AppTile soonLabel={t('apps.soon')} name={t('apps.playStore')} logo={<BrandMark svg={PLAY_SVG} />} href={PLAY_STORE} onLinkClick={followExternal} />
         {/* The page is usually open on a computer, and the file is wanted on
             the phone, so the tile can turn into a code to scan. */}
         <AppTile
@@ -59,6 +60,7 @@ function PhoneCard({ version }: { version: string }) {
           name={t('apps.apk')}
           logo={<BrandMark svg={ANDROID_SVG} className="glim-android-mark" />}
           href={APK}
+          onLinkClick={followExternal}
           face={
             qr ? (
               <span className="flex h-full w-full items-center justify-center rounded-control bg-white p-2">
@@ -68,7 +70,7 @@ function PhoneCard({ version }: { version: string }) {
           }
         />
         <div className="flex flex-col gap-2">
-          <Button label={t('apps.download')} labelKey="apps.download" onClick={() => window.open(APK, '_blank', 'noopener,noreferrer')} />
+          <Button label={t('apps.download')} labelKey="apps.download" onClick={() => openExternal(APK)} />
           <Button label={t('apps.qr')} labelKey="apps.qr" onClick={() => setQr((on) => !on)} />
         </div>
       </div>
@@ -82,7 +84,7 @@ function DesktopCard() {
     <Card title={t('apps.desktopTitle')} hint={t('apps.desktopHint')} hueIndex={1}>
       <div className="flex flex-wrap gap-3">
         {DESKTOP.map((d) => (
-          <AppTile soonLabel={t('apps.soon')} key={d.file} href={`${RELEASE}/${d.file}`} name={t(d.key)} logo={<BrandMark svg={d.mark} />} />
+          <AppTile soonLabel={t('apps.soon')} key={d.file} href={`${RELEASE}/${d.file}`} onLinkClick={followExternal} name={t(d.key)} logo={<BrandMark svg={d.mark} />} />
         ))}
       </div>
     </Card>
@@ -99,7 +101,7 @@ function ServerCard({ version }: { version: string }) {
   return (
     <Card title={t('apps.serverTitle')} hint={t('apps.serverHint')} hueIndex={1}>
       <div className="flex flex-wrap gap-3">
-        <AppTile soonLabel={t('apps.soon')} name={t('apps.unraid')} logo={<BrandMark svg={UNRAID_SVG} className="glim-unraid-mark" />} href={UNRAID_CA} />
+        <AppTile soonLabel={t('apps.soon')} name={t('apps.unraid')} logo={<BrandMark svg={UNRAID_SVG} className="glim-unraid-mark" />} href={UNRAID_CA} onLinkClick={followExternal} />
         <AppTile
           soonLabel={t('apps.soon')}
           name={copied ? t('apps.copied') : t('apps.docker')}
@@ -112,7 +114,7 @@ function ServerCard({ version }: { version: string }) {
             })
           }}
         />
-        <AppTile soonLabel={t('apps.soon')} name={t('apps.zip')} logo={<BrandMark svg={ZIP_SVG} />} href={zip} />
+        <AppTile soonLabel={t('apps.soon')} name={t('apps.zip')} logo={<BrandMark svg={ZIP_SVG} />} href={zip} onLinkClick={followExternal} />
       </div>
     </Card>
   )
@@ -128,6 +130,7 @@ function ReleaseVersion({ version }: { version: string }) {
       href={`${REPO}/releases/tag/${version}`}
       target="_blank"
       rel="noreferrer noopener"
+      onClick={followExternal}
       className={`${cls} no-underline hover:text-carbon-text`}
     >
       {version}

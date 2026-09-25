@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { MouseEvent, ReactNode } from "react";
 import { InfoBubble } from "./InfoBubble";
 
 // One way to get an app, on the App tab ("The App tab" in design-language.md):
@@ -13,6 +13,9 @@ export interface AppTileProps {
   logo: ReactNode;
   href?: string;
   onClick?: () => void;
+  /** Runs on a click on the tile's link, for an app whose webview has no
+   *  browser behind it to open the address in. */
+  onLinkClick?: (e: MouseEvent<HTMLAnchorElement>) => void;
   /** The "(i)" in the tile's corner, for what the name cannot say. */
   hint?: string;
   face?: ReactNode;
@@ -25,7 +28,7 @@ const tile =
 const live =
   "transition-colors duration-150 group-hover:bg-(--carbon-tile-hover) group-hover:text-(--carbon-tile-hover-ink)";
 
-export function AppTile({ name, logo, href, onClick, hint, face, soonLabel }: AppTileProps) {
+export function AppTile({ name, logo, href, onClick, onLinkClick, hint, face, soonLabel }: AppTileProps) {
   const body = face ?? (
     <>
       <span className="flex h-14 w-14 shrink-0 items-center justify-center">{logo}</span>
@@ -41,7 +44,14 @@ export function AppTile({ name, logo, href, onClick, hint, face, soonLabel }: Ap
           <span className="px-1 text-center text-xs font-medium leading-tight">{name}</span>
         </div>
       ) : href ? (
-        <a href={href} target="_blank" rel="noreferrer noopener" aria-label={name} className={`${tile} ${live}`}>
+        <a
+          href={href}
+          target="_blank"
+          rel="noreferrer noopener"
+          onClick={onLinkClick}
+          aria-label={name}
+          className={`${tile} ${live}`}
+        >
           {body}
         </a>
       ) : (

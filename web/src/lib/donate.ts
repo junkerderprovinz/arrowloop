@@ -6,9 +6,27 @@
 // Tron or Solana would send the money nowhere. donate.test.ts checks each
 // address as far as its format allows.
 
-/** The two routes that are a plain link, beside the coins below. */
+/**
+ * The two routes the phone opens as a plain link, beside the coins below. The
+ * PayPal page also stands in for the PayPal window wherever popups do not work.
+ */
 export const COFFEE = "https://buymeacoffee.com/junkerderprovinz";
 export const PAYPAL = "https://www.paypal.com/donate/?hosted_button_id=76FVV52TKXTUS";
+
+/** The one BMAC page that allows framing, for the coffee window in the browser. */
+export const COFFEE_WIDGET =
+  "https://buymeacoffee.com/widget/page/junkerderprovinz?description=&color=%23FFDD00";
+
+/**
+ * The live PayPal app behind the browser's PayPal window. Each plan costs 1 EUR
+ * a unit, and a recurring donation subscribes to it with the amount as the
+ * quantity.
+ */
+export const PAYPAL_GIVING = {
+  clientId: "BAAbFqgNYfuCIBT_gwVE64oqj-E-jmxFiLaoR1yMIF9KK-CW16x5Pt2bSjBloqbTF4TvjFYw3ZTLnRP8_U",
+  plans: { month: "P-2ND5083133959702RNK2375A", year: "P-2FN843952N550243RNK2375A" },
+  currency: "EUR",
+};
 
 export const REPO = "https://github.com/junkerderprovinz/arrowloop";
 export const GLIMSTONE_REPO = "https://github.com/junkerderprovinz/glimstone";

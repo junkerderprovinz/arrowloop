@@ -52,6 +52,7 @@ export function Selector<T extends string>({
   fill = false,
   hueOffset = 0,
   label,
+  labelledBy,
   disabled = false,
 }: {
   options: Option<T>[]
@@ -72,6 +73,8 @@ export function Selector<T extends string>({
   /** Where this selector starts in the palette; see HUE_OFFSET. */
   hueOffset?: number
   label?: string
+  /** The id of a visible label, used in place of `label`. */
+  labelledBy?: string
   /**
    * Dimmed and inert, for a control whose value comes from elsewhere. It still
    * shows that value, so the card keeps one shape.
@@ -155,6 +158,7 @@ export function Selector<T extends string>({
       ref={track}
       role="tablist"
       aria-label={label}
+      aria-labelledby={labelledBy}
       className={
         variant === 'well'
           ? 'glim-well inline-flex flex-wrap gap-[0.2rem] p-[0.2rem]'

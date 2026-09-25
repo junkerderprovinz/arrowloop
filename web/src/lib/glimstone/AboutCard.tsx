@@ -21,14 +21,15 @@ export function AboutCard({
   repoUrl,
   repoGlyph,
   glimstoneRepoUrl,
-  coffeeUrl,
+  onCoffee,
   coffeeGlyph,
   cryptoGlyph,
   paypalGlyph,
-  paypalUrl,
+  onPaypal,
   onCrypto,
   mailAddress,
   mailGlyph,
+  openUrl = (url) => window.open(url, "_blank", "noopener,noreferrer"),
   hueIndex,
 }: {
   /** The card's copy, in the app's own language. The mail button is drawn only
@@ -40,7 +41,7 @@ export function AboutCard({
     coffeeButton: string;
     /** The second give button. Only drawn together with `onCrypto`. */
     cryptoButton?: string;
-    /** The third. Only drawn together with `paypalUrl`. */
+    /** The third. Only drawn together with `onPaypal`. */
     paypalButton?: string;
     report: string;
     repoButton: string;
@@ -61,7 +62,8 @@ export function AboutCard({
    */
   repoGlyph?: ReactNode;
   glimstoneRepoUrl: string;
-  coffeeUrl: string;
+  /** Opens the coffee window (CoffeeDialog), which stays inside the app. */
+  onCoffee: () => void;
   /**
    * The marks on the give buttons, passed for the same reason as `repoGlyph`.
    * An app that passes nothing keeps whatever its own table resolves.
@@ -75,8 +77,9 @@ export function AboutCard({
    * missing image.
    */
   mailGlyph?: ReactNode;
-  /** A hosted payment page such as PayPal.Me. Omit it where none exists. */
-  paypalUrl?: string;
+  /** Opens the PayPal window (PaypalDialog). Omit it where the maker takes no
+   *  PayPal donations. */
+  onPaypal?: () => void;
   /**
    * Opens the crypto window (CryptoDonateDialog), which stays inside the app.
    * Omit it and the card offers no crypto button.
@@ -84,10 +87,14 @@ export function AboutCard({
   onCrypto?: () => void;
   /** The workshop's own mailbox. Omit it and the card offers no mail route. */
   mailAddress?: string;
+  /**
+   * Opens the repository, the mail program and the release pages. An app
+   * whose webview has no browser behind it passes its own way out.
+   */
+  openUrl?: (url: string) => void;
   hueIndex?: number;
 }) {
   const wantsMail = /e-?mail/i.test(text.report) && Boolean(mailAddress);
-  const open = (url: string) => window.open(url, "_blank", "noopener,noreferrer");
 
   return (
     <Card title={text.title} hueIndex={hueIndex}>
@@ -97,9 +104,9 @@ export function AboutCard({
 
       <p className="text-sm text-carbon-textSub">{text.coffee}</p>
       {/* Every way to give sits in one row under its sentence, the two hosted
-          payment pages first and the wallet, which needs no account, last. The
-          brand classes take their colours from the brand block in
-          reference/tokens.css. */}
+          payment routes first and the wallet, which needs no account, last. Each
+          opens its own window inside the app. The brand classes take their
+          colours from the brand block in reference/tokens.css. */}
       <div className="flex flex-wrap items-center gap-2">
         <Button
           label={text.coffeeButton}
@@ -107,16 +114,16 @@ export function AboutCard({
           glyph={coffeeGlyph}
           tone="neutral"
           className="glim-brand-btn glim-brand-coffee"
-          onClick={() => open(coffeeUrl)}
+          onClick={onCoffee}
         />
-        {paypalUrl && text.paypalButton && (
+        {onPaypal && text.paypalButton && (
           <Button
             label={text.paypalButton}
             labelKey="about.paypal"
             glyph={paypalGlyph}
             tone="neutral"
             className="glim-brand-btn glim-brand-paypal"
-            onClick={() => open(paypalUrl)}
+            onClick={onPaypal}
           />
         )}
         {onCrypto && text.cryptoButton && (
@@ -144,7 +151,7 @@ export function AboutCard({
           glyph={repoGlyph}
           tone="neutral"
           className="glim-brand-btn glim-brand-github"
-          onClick={() => open(repoUrl)}
+          onClick={() => openUrl(repoUrl)}
         />
         {wantsMail && (
           // Subject only: a prefilled body reads as a form to fill in. This
@@ -157,7 +164,7 @@ export function AboutCard({
             tone="neutral"
             className="glim-brand-btn glim-brand-house"
             onClick={() =>
-              open(`mailto:${mailAddress}?subject=${encodeURIComponent(text.mailSubject)}`)
+              openUrl(`mailto:${mailAddress}?subject=${encodeURIComponent(text.mailSubject)}`)
             }
           />
         )}
@@ -166,7 +173,13 @@ export function AboutCard({
       {/* One line with a middle dot: this is one fact about one build. */}
       <p className="glim-num flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-carbon-textMuted">
         {version && (
-          <VersionLink label={text.version} version={version} repo={repoUrl} unreleased={text.unreleased} />
+          <VersionLink
+            label={text.version}
+            version={version}
+            repo={repoUrl}
+            unreleased={text.unreleased}
+            openUrl={openUrl}
+          />
         )}
         {version && <span aria-hidden="true">·</span>}
         <VersionLink
@@ -174,6 +187,7 @@ export function AboutCard({
           version={glimstoneVersion}
           repo={glimstoneRepoUrl}
           unreleased={text.unreleased}
+          openUrl={openUrl}
         />
       </p>
     </Card>
@@ -199,11 +213,13 @@ function VersionLink({
   version,
   repo,
   unreleased,
+  openUrl,
 }: {
   label: string;
   version: string;
   repo: string;
   unreleased: (version: string) => string;
+  openUrl: (url: string) => void;
 }) {
   const tag = releaseTag(version);
   const released = /^v\d+\.\d+\.\d+$/.test(tag);
@@ -214,13 +230,18 @@ function VersionLink({
       </span>
     );
   }
+  const href = `${repo}/releases/tag/${encodeURIComponent(tag)}`;
   return (
     <span>
       {label}{" "}
       <a
-        href={`${repo}/releases/tag/${encodeURIComponent(tag)}`}
+        href={href}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={(e) => {
+          e.preventDefault();
+          openUrl(href);
+        }}
         className="font-mono tabular-nums text-carbon-textMuted no-underline hover:text-carbon-text"
       >
         {version}
