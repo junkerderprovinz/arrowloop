@@ -201,6 +201,7 @@ const no: Translations = {
   'look.round': 'Runde',
   'look.soft': 'Myke',
   'look.square': 'Rette',
+  'look.leaf': 'Blad',
   'look.accent': 'Aksentfarge',
   'look.colors': 'Farger',
   'look.rainbowOn': 'Regnbuemodus',

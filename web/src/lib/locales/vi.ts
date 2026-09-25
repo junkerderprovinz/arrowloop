@@ -201,6 +201,7 @@ const vi: Translations = {
   'look.round': 'Tròn',
   'look.soft': 'Mềm',
   'look.square': 'Vuông',
+  'look.leaf': 'Lá',
   'look.accent': 'Màu nhấn',
   'look.colors': 'Màu sắc',
   'look.rainbowOn': 'Chế độ cầu vồng',

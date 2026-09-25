@@ -1,4 +1,4 @@
-// Appearance is the set of looks the user owns: how rounded the interface is,
+// Appearance is the set of looks the user owns: what shape the corners take,
 // how much it moves, and what colour it uses for activity, either one accent or
 // a palette handed out by position. All of it is applied to the document root,
 // so every component picks it up through the tokens it already reads.
@@ -6,9 +6,27 @@
 // The file has no framework dependency, since an adopting app copies it whole;
 // a React app wraps it in a small hook.
 
-export type Shape = 'round' | 'soft' | 'square';
+/**
+ * The corner shapes. Like the motion levels these strings are a wire format:
+ * they go into `data-shape`, the stylesheet and storage, and what the user
+ * reads comes from the translation table.
+ *
+ * `leaf` is a real shape (see `data-shape='leaf'` in tokens.css) that no picker
+ * offers; `leafTap` reveals it.
+ */
+export type Shape = 'round' | 'soft' | 'square' | 'leaf';
 
+/** The shapes a picker shows. */
 export const SHAPES: Shape[] = ['round', 'soft', 'square'];
+
+/**
+ * The shapes a stored value may hold. Validate against this and populate a
+ * picker from SHAPES, or a found leaf forgets itself on reload.
+ */
+export const SHAPES_STORED: Shape[] = [...SHAPES, 'leaf'];
+
+/** Only reaches somebody with no stored shape; a stored choice stays. */
+export const DEFAULT_SHAPE: Shape = 'soft';
 
 /**
  * The built-in accent, shared by every adopting app so the family opens in one
@@ -69,8 +87,30 @@ export const RAINBOW_OFF: RainbowState = {
 
 /** Sets the attribute the radius tokens key off. */
 export function applyShape(shape: Shape | string | undefined): void {
-  const s = SHAPES.includes(shape as Shape) ? (shape as Shape) : 'round';
+  const s = SHAPES_STORED.includes(shape as Shape) ? (shape as Shape) : DEFAULT_SHAPE;
   document.documentElement.setAttribute('data-shape', s);
+}
+
+/** How many taps on `square`, once it is chosen, reveal the leaf. */
+export const LEAF_TAPS = 5;
+
+/**
+ * The gesture that reveals the leaf, the storm's gesture on the shape picker:
+ * with the shape at `square`, tap `square` five more times. Tapping another
+ * shape resets the count. As with the storm, keep `found` and the count in the
+ * state of the screen that found it, never in storage.
+ *
+ * Returns the shape to switch to, or undefined when the tap was not the fifth.
+ */
+export function leafTap(state: { taps: number }, tapped: string, current: string): Shape | undefined {
+  if (tapped !== 'square' || current !== 'square') {
+    state.taps = 0;
+    return undefined;
+  }
+  state.taps += 1;
+  if (state.taps < LEAF_TAPS) return undefined;
+  state.taps = 0;
+  return 'leaf';
 }
 
 /**
@@ -346,7 +386,7 @@ export function applyCachedAppearance(): void {
   try {
     const raw = localStorage.getItem(CACHE);
     if (!raw) {
-      applyShape('round');
+      applyShape(DEFAULT_SHAPE);
       applyRainbow(undefined);
       return;
     }
@@ -355,7 +395,7 @@ export function applyCachedAppearance(): void {
     applyAccent(accent);
     applyRainbow(rainbow);
   } catch {
-    applyShape('round');
+    applyShape(DEFAULT_SHAPE);
     applyRainbow(undefined);
   }
 }

@@ -2,6 +2,8 @@
 // web/src/tokens.css, which are CSS custom properties; the accent presets and
 // the rainbow are plain data and imported directly.
 
+import { DEFAULT_SHAPE, type Shape } from "../../web/src/lib/appearance";
+
 export { ACCENTS, DEFAULT_ACCENT, RAINBOW, contrastOn, rainbowAt } from "../../web/src/lib/appearance";
 
 export type Scheme = "dark" | "light";
@@ -140,15 +142,35 @@ export interface Radii {
 /**
  * Corner radii per shape setting, from tokens.css at a 16px root. `soft`
  * flattens pills as well, or switches and badges would ignore the setting.
+ * `leaf` rounds only two opposite corners, which cornersFor takes care of.
  */
-export const RADII: Record<string, Radii> = {
-  round: { card: 16, control: 10, pill: 9999 },
+export const RADII: Record<Shape, Radii> = {
+  round: { card: 20, control: 12, pill: 9999 },
   soft: { card: 8, control: 5, pill: 5 },
   square: { card: 0, control: 0, pill: 0 },
+  leaf: { card: 20, control: 12, pill: 18 },
 };
 
 export function radiusFor(shape: string): Radii {
-  return RADII[shape] ?? RADII.round!;
+  return RADII[shape as Shape] ?? RADII[DEFAULT_SHAPE];
+}
+
+export interface Corners {
+  borderRadius: number;
+  borderTopRightRadius?: number;
+  borderBottomLeftRadius?: number;
+}
+
+/**
+ * The corner style for each radius, to spread into a style. The leaf's sharp
+ * corners are physical rather than start and end, so it leans the same way in
+ * a right-to-left language.
+ */
+export function cornersFor(shape: string): Record<keyof Radii, Corners> {
+  const r = radiusFor(shape);
+  const round = (borderRadius: number): Corners =>
+    shape === "leaf" ? { borderRadius, borderTopRightRadius: 0, borderBottomLeftRadius: 0 } : { borderRadius };
+  return { card: round(r.card), control: round(r.control), pill: round(r.pill) };
 }
 
 /** Android's minimum touch target. */

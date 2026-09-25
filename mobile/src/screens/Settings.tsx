@@ -29,7 +29,7 @@ import {
 } from "../../../web/src/lib/donate";
 import { nearestPreset } from "../../../web/src/lib/colorMath";
 import { flagEmoji } from "../../../web/src/lib/flagEmoji";
-import { useClosingLoop, useDiscoUnlock, useStormUnlock } from "../eggs";
+import { useClosingLoop, useDiscoUnlock, useLeafUnlock, useStormUnlock } from "../eggs";
 import { animateNext, useMotion, type MotionIntensity } from "../motion";
 import { ColorPicker, EditableSwatch, ResetMark } from "../ColorPicker";
 import { CryptoDonate } from "../donate";
@@ -61,6 +61,7 @@ export function Settings() {
   const { scheme, accentInk, barLabels } = useTheme();
   const { intensity: motion } = useMotion();
   const storm = useStormUnlock();
+  const leaf = useLeafUnlock();
   const disco = useDiscoUnlock();
   const loop = useClosingLoop();
 
@@ -214,11 +215,15 @@ export function Settings() {
       <Section title={t("look.corners")} hint={t("look.cornersHint")} hue={1}>
         <Choice<Shape>
           value={look.shape}
-          onChange={(shape) => setAppearance({ shape })}
+          onChange={(shape) => {
+            setAppearance({ shape });
+            leaf.tap(shape);
+          }}
           options={[
             { value: "round", label: t("look.round") },
             { value: "soft", label: t("look.soft") },
             { value: "square", label: t("look.square") },
+            ...(leaf.offered ? [{ value: "leaf" as Shape, label: t("look.leaf") }] : []),
           ]}
         />
       </Section>

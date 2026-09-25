@@ -201,6 +201,7 @@ const cs: Translations = {
   'look.round': 'Kulaté',
   'look.soft': 'Měkké',
   'look.square': 'Rovné',
+  'look.leaf': 'List',
   'look.accent': 'Barva zvýraznění',
   'look.colors': 'Barvy',
   'look.rainbowOn': 'Duhový režim',

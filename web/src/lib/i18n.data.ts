@@ -435,6 +435,7 @@ export const en = {
   'look.round': 'Round',
   'look.soft': 'Soft',
   'look.square': 'Square',
+  'look.leaf': 'Leaf',
   'look.colors': 'Colours',
   'look.accent': 'Accent color',
   'look.rainbowOn': 'Rainbow Mode',
@@ -1183,8 +1184,9 @@ export const de: Translations = {
   'look.cornersHint':
     'Wie rund jede Ecke der App ist. Karten, Knoepfe, Felder und Schalter folgen alle dieser einen Einstellung.',
   'look.round': 'Rund',
-  'look.soft': 'Weich',
+  'look.soft': 'Abgerundet',
   'look.square': 'Eckig',
+  'look.leaf': 'Blatt',
   'look.colors': 'Farben',
   'look.accent': 'Akzentfarbe',
   'look.rainbowOn': 'Regenbogen-Modus',

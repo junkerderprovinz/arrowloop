@@ -201,6 +201,7 @@ const et: Translations = {
   'look.round': 'Ümarad',
   'look.soft': 'Pehmed',
   'look.square': 'Sirged',
+  'look.leaf': 'Leht',
   'look.accent': 'Aktsendivärv',
   'look.colors': 'Värvid',
   'look.rainbowOn': 'Vikerkaarerežiim',

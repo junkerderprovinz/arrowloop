@@ -5,9 +5,9 @@
 // Google Play's icon rather than its badge, whose artwork may not be altered.
 // Android, Docker, Unraid, Windows and Apple from Dashboard Icons, Linux from
 // Simple Icons (CC0), the ZIP from Font Awesome Free (CC BY 4.0). Android,
-// Docker and Unraid paint from the --brand-* pairs in tokens.css, since the
-// tile's hover grey carries none of their colours; Apple and Linux take the
-// tile's ink, since neither has a colour of its own.
+// Docker, Windows and Unraid paint from the --brand-* pairs in tokens.css,
+// since the tile's hover grey carries none of their colours; Apple and Linux
+// take the tile's ink, since neither has a colour of its own.
 
 export const PLAY_SVG =
   '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><linearGradient id="glim-play-a" x1="60.6" x2="276.6" y1="45.4" y2="261.4" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#00a0ff"/><stop offset=".01" stop-color="#00a1ff"/><stop offset=".26" stop-color="#00beff"/><stop offset=".51" stop-color="#00d2ff"/><stop offset=".76" stop-color="#00dfff"/><stop offset="1" stop-color="#00e3ff"/></linearGradient><linearGradient id="glim-play-b" x1="446.6" x2="34.3" y1="256" y2="256" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ffe000"/><stop offset=".41" stop-color="#ffbd00"/><stop offset=".78" stop-color="#ffa500"/><stop offset="1" stop-color="#ff9c00"/></linearGradient><linearGradient id="glim-play-c" x1="349.6" x2="6.9" y1="295.1" y2="637.8" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ff3a44"/><stop offset="1" stop-color="#c31162"/></linearGradient><linearGradient id="glim-play-d" x1="22.9" x2="176" y1="-38.1" y2="115" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#32a071"/><stop offset=".07" stop-color="#2da771"/><stop offset=".48" stop-color="#15cf74"/><stop offset=".8" stop-color="#06e775"/><stop offset="1" stop-color="#00f076"/></linearGradient><path fill="url(#glim-play-a)" d="M39.6 24.1c-5.6 5.9-8.9 15.1-8.9 27v409.8c0 11.9 3.3 21.1 8.9 27l1.4 1.3L270 259.7v-5.4L41 25.4z"/><path fill="url(#glim-play-b)" d="m346.3 336.3-76.3-76.6v-5.4l76.4-76.5 1.7 1L438.5 231c25.8 14.7 25.8 38.7 0 53.4l-90.4 51.4z"/><path fill="url(#glim-play-c)" d="M348 335.3 270 257 39.6 487.9c8.5 9 22.5 10.1 38.4 1.1z"/><path fill="url(#glim-play-d)" d="M348 178.7 78 25.1C62.1 16 48.1 17.2 39.6 26.2L270 257z"/></svg>';
@@ -25,7 +25,7 @@ export const ZIP_SVG =
   '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path fill="currentColor" d="M64 0C28.7 0 0 28.7 0 64L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-288-128 0c-17.7 0-32-14.3-32-32L224 0 64 0zM256 0l0 128 128 0L256 0zM96 48c0-8.8 7.2-16 16-16l32 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16zm0 64c0-8.8 7.2-16 16-16l32 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16zm0 64c0-8.8 7.2-16 16-16l32 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16zm-6.3 71.8c3.7-14 16.4-23.8 30.9-23.8l14.8 0c14.5 0 27.2 9.7 30.9 23.8l23.5 88.2c1.4 5.4 2.1 10.9 2.1 16.4c0 35.2-28.8 63.7-64 63.7s-64-28.5-64-63.7c0-5.5 .7-11.1 2.1-16.4l23.5-88.2zM112 336c-8.8 0-16 7.2-16 16s7.2 16 16 16l32 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-32 0z"/></svg>';
 
 export const WINDOWS_SVG =
-  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M0 0h242.7v242.6H0zm269.3 0H512v242.6H269.3zM0 269.3h242.7V512H0zm269.3 0H512V512H269.3" fill="#0078d4"/></svg>';
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M0 0h242.7v242.6H0zm269.3 0H512v242.6H269.3zM0 269.3h242.7V512H0zm269.3 0H512V512H269.3" fill="currentColor"/></svg>';
 
 export const APPLE_SVG =
   '<svg xmlns="http://www.w3.org/2000/svg" viewBox="47.6 0 416.8 512"><path d="M451.1 174.6c-3 2.3-55.4 31.8-55.4 97.5 0 76 66.7 102.9 68.7 103.5-.3 1.6-10.6 36.8-35.2 72.7-21.9 31.5-44.8 63-79.6 63s-43.8-20.2-84-20.2c-39.2 0-53.1 20.9-84.9 20.9s-54.1-29.2-79.6-65c-29.6-42.1-53.5-107.5-53.5-169.5 0-99.5 64.7-152.3 128.4-152.3 33.8 0 62.1 22.2 83.3 22.2 20.2 0 51.8-23.6 90.3-23.6 14.6 0 67 1.3 101.5 50.8m-119.8-93c15.9-18.9 27.2-45.1 27.2-71.3 0-3.6-.3-7.3-1-10.3-25.9 1-56.7 17.3-75.3 38.8-14.6 16.6-28.2 42.8-28.2 69.4 0 4 .7 8 1 9.3 1.6.3 4.3.7 7 .7 23.2-.1 52.4-15.6 69.3-36.6" fill="currentColor"/></svg>';

@@ -201,6 +201,7 @@ const sr: Translations = {
   'look.round': 'Округли',
   'look.soft': 'Меки',
   'look.square': 'Прави',
+  'look.leaf': 'Лист',
   'look.accent': 'Истакнута боја',
   'look.colors': 'Боје',
   'look.rainbowOn': 'Дугин режим',

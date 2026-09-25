@@ -201,6 +201,7 @@ const hr: Translations = {
   'look.round': 'Okrugli',
   'look.soft': 'Meki',
   'look.square': 'Ravni',
+  'look.leaf': 'List',
   'look.accent': 'Naglasna boja',
   'look.colors': 'Boje',
   'look.rainbowOn': 'Rainbow način',

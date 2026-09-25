@@ -21,7 +21,7 @@ export interface CardAction {
  * other way to float above the list.
  */
 export function CardMenu({ items }: { items: CardAction[] }) {
-  const { p, radius } = useTheme();
+  const { p, corners } = useTheme();
   const screen = useWindowDimensions();
   const button = useRef<View>(null);
   const [at, setAt] = useState<{ top: number; right: number } | null>(null);
@@ -48,7 +48,7 @@ export function CardMenu({ items }: { items: CardAction[] }) {
         // The card underneath is pressable too.
         hitSlop={6}
         android_ripple={{ color: p.hover }}
-        style={[styles.button, { backgroundColor: p.surface2, borderRadius: radius.control }]}
+        style={[styles.button, { backgroundColor: p.surface2, ...corners.pill }]}
       >
         {/* The icon set has no menu mark, so the three bars are plain Views. */}
         <View style={[styles.bar, { backgroundColor: p.text }]} />
@@ -65,7 +65,7 @@ export function CardMenu({ items }: { items: CardAction[] }) {
           <Pressable
             style={[
               styles.sheet,
-              { backgroundColor: p.surface, borderRadius: radius.card, top: at?.top, right: at?.right },
+              { backgroundColor: p.surface, ...corners.card, top: at?.top, right: at?.right },
             ]}
             onPress={() => {}}
           >
@@ -79,7 +79,7 @@ export function CardMenu({ items }: { items: CardAction[] }) {
                   setAt(null);
                   item.onPress();
                 }}
-                style={[styles.row, { backgroundColor: p.surface2, borderRadius: radius.control }]}
+                style={[styles.row, { backgroundColor: p.surface2, ...corners.control }]}
               >
                 <Glyph name={item.glyph} color={p.text} size={18} />
                 <Text style={[styles.rowText, { color: p.text }]} numberOfLines={1}>

@@ -201,6 +201,7 @@ const he: Translations = {
   'look.round': 'עגולות',
   'look.soft': 'רכות',
   'look.square': 'ישרות',
+  'look.leaf': 'עלה',
   'look.accent': 'צבע הדגשה',
   'look.colors': 'צבעים',
   'look.rainbowOn': 'מצב קשת',

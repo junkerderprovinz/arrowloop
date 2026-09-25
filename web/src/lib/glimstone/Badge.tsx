@@ -42,11 +42,11 @@ import { IconTipButton } from "./IconTipButton";
 
 export type BadgeTone = "ok" | "fail" | "warn" | "active" | "neutral" | "heading" | "muted";
 export type BadgeSize = "small" | "medium" | "large" | "heading" | "icon";
-// pill: fully round, for standalone chips and counts. rounded: the default,
-// following the shape engine's --radius-control. square: a square-aspect icon
-// tile on the same token. circle: pill radius with the width locked to the
-// height. Pill uses the plain length token, because a percentage radius
-// resolves per axis into an ellipse.
+// pill: for standalone chips and counts. rounded: the default. square: a
+// square-aspect icon tile. circle: the width locked to the height. All four
+// read --radius-pill, so in round every badge is a true pill or circle. The
+// plain length token, because a percentage radius resolves per axis into an
+// ellipse.
 export type BadgeShape = "pill" | "rounded" | "square" | "circle";
 
 // An explicit start offset for the heading notch. Without it the notch sits at
@@ -80,8 +80,8 @@ const TONE_CLASSES: Record<BadgeTone, string> = {
 
 const RADIUS_CLASSES: Record<BadgeShape, string> = {
   pill: "rounded-pill",
-  square: "rounded-control",
-  rounded: "rounded-control",
+  square: "rounded-pill",
+  rounded: "rounded-pill",
   circle: "rounded-pill",
 };
 

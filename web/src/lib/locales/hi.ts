@@ -201,6 +201,7 @@ const hi: Translations = {
   'look.round': 'गोल',
   'look.soft': 'मुलायम',
   'look.square': 'सीधे',
+  'look.leaf': 'पत्ता',
   'look.accent': 'एक्सेंट रंग',
   'look.colors': 'रंग',
   'look.rainbowOn': 'रेनबो मोड',

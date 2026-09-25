@@ -1,4 +1,4 @@
-import type { Shape } from './appearance'
+import { SHAPES_STORED, type Shape } from './appearance'
 
 /**
  * What appearance.ts cached for the first paint. The app starts from it too,
@@ -9,7 +9,7 @@ export function storedLook(): { shape?: Shape; accent?: string } {
     const raw = localStorage.getItem('glim-appearance')
     if (!raw) return {}
     const { shape, accent } = JSON.parse(raw) as { shape?: Shape; accent?: string }
-    return { shape, accent }
+    return { shape: shape && SHAPES_STORED.includes(shape) ? shape : undefined, accent }
   } catch {
     return {}
   }

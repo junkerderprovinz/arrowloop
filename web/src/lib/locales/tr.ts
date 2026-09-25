@@ -201,6 +201,7 @@ const tr: Translations = {
   'look.round': 'Yuvarlak',
   'look.soft': 'Yumuşak',
   'look.square': 'Düz',
+  'look.leaf': 'Yaprak',
   'look.accent': 'Vurgu rengi',
   'look.colors': 'Renkler',
   'look.rainbowOn': 'Gökkuşağı modu',

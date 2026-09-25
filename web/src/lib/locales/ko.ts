@@ -201,6 +201,7 @@ const ko: Translations = {
   'look.round': '둥글게',
   'look.soft': '부드럽게',
   'look.square': '각지게',
+  'look.leaf': '잎',
   'look.accent': '강조 색상',
   'look.colors': '색상',
   'look.rainbowOn': '무지개 모드',

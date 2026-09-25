@@ -201,6 +201,7 @@ const th: Translations = {
   'look.round': 'กลม',
   'look.soft': 'นุ่ม',
   'look.square': 'เหลี่ยม',
+  'look.leaf': 'ใบไม้',
   'look.accent': 'สีเน้น',
   'look.colors': 'สี',
   'look.rainbowOn': 'โหมดสายรุ้ง',

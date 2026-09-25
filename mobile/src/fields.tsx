@@ -24,7 +24,7 @@ export function Field({
   secret?: boolean;
   keyboard?: "default" | "numeric";
 }) {
-  const { p, radius } = useTheme();
+  const { p, corners } = useTheme();
   const [hidden, setHidden] = useState(Boolean(secret));
   return (
     <View style={styles.field}>
@@ -51,7 +51,7 @@ export function Field({
             {
               color: p.text,
               backgroundColor: p.surface2,
-              borderRadius: radius.control,
+              ...corners.control,
               minHeight: multiline ? TOUCH * 2 : TOUCH,
               textAlignVertical: multiline ? "top" : "center",
             },
@@ -61,7 +61,7 @@ export function Field({
           <Pressable
             onPress={() => setHidden((h) => !h)}
             android_ripple={{ color: p.hover }}
-            style={[styles.eye, { backgroundColor: p.surface3, borderRadius: radius.control }]}
+            style={[styles.eye, { backgroundColor: p.surface3, ...corners.control }]}
           >
             <Glyph name={hidden ? "IconVisible" : "IconHidden"} color={p.text} size={18} />
           </Pressable>
@@ -87,7 +87,7 @@ export function TimeField({
   value: string;
   onChange: (next: string) => void;
 }) {
-  const { p, radius } = useTheme();
+  const { p, corners } = useTheme();
   const [open, setOpen] = useState(false);
   const { hour, minute } = readTime(value);
 
@@ -103,7 +103,7 @@ export function TimeField({
         style={[
           styles.input,
           styles.timeBox,
-          { backgroundColor: p.surface2, borderRadius: radius.control, minHeight: TOUCH },
+          { backgroundColor: p.surface2, ...corners.control, minHeight: TOUCH },
         ]}
       >
         <Text style={[styles.timeText, { color: p.text }]}>{formatTime(hour, minute)}</Text>

@@ -89,7 +89,7 @@ export function ProviderPicker({
                   type="button"
                   onClick={() => onPick(b.name)}
                   title={b.description}
-                  className="w-full truncate rounded-[var(--radius-control)] bg-carbon-surface2 px-3 py-2 text-center text-dense text-carbon-text transition hover:bg-carbon-surface3"
+                  className="w-full truncate rounded-[var(--radius-pill)] bg-carbon-surface2 px-3 py-2 text-center text-dense text-carbon-text transition hover:bg-carbon-surface3"
                 >
                   {b.name}
                 </button>

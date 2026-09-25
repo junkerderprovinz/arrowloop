@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Animated, Easing, StyleSheet, View } from "react-native";
 
+import { leafTap } from "../../web/src/lib/appearance";
 import { discoTap } from "../../web/src/lib/disco";
 import { Glyph } from "./glyphs";
 import { setAppearance, useAppearance } from "./settings";
@@ -126,6 +127,24 @@ export function useStormUnlock(): { offered: boolean; tap: (level: string) => vo
       taps.current = 0;
       setFound(true);
       void setAppearance({ motion: "storm" });
+    },
+  };
+}
+
+/**
+ * Unlocks the hidden `leaf` shape after five more taps on an already chosen
+ * "square", the storm's gesture on the shape picker, offered by the same rule.
+ */
+export function useLeafUnlock(): { offered: boolean; tap: (shape: string) => void } {
+  const look = useAppearance();
+  const [found, setFound] = useState(false);
+  const taps = useRef({ taps: 0 });
+  return {
+    offered: found || look.shape === "leaf",
+    tap: (shape: string) => {
+      if (!leafTap(taps.current, shape, look.shape)) return;
+      setFound(true);
+      setAppearance({ shape: "leaf" });
     },
   };
 }

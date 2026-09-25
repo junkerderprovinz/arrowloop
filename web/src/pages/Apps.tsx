@@ -23,12 +23,12 @@ const DOCKER_RUN =
   'docker run -d --name arrowloop -p 8422:8422 -v /path/to/config:/config -v /path/to/data:/data ghcr.io/junkerderprovinz/arrowloop:latest'
 
 const DESKTOP = [
-  { key: 'apps.windows', file: 'arrowloop-windows-amd64-installer.exe', mark: WINDOWS_SVG },
-  { key: 'apps.windowsPortable', file: 'arrowloop-windows-amd64-portable.exe', mark: WINDOWS_SVG },
-  { key: 'apps.windowsArm', file: 'arrowloop-windows-arm64-installer.exe', mark: WINDOWS_SVG },
-  { key: 'apps.windowsArmPortable', file: 'arrowloop-windows-arm64-portable.exe', mark: WINDOWS_SVG },
-  { key: 'apps.macos', file: 'arrowloop-macos-universal.dmg', mark: APPLE_SVG },
-  { key: 'apps.linux', file: 'arrowloop-linux-amd64', mark: LINUX_SVG },
+  { key: 'apps.windows', file: 'arrowloop-windows-amd64-installer.exe', mark: WINDOWS_SVG, tint: 'glim-windows-mark' },
+  { key: 'apps.windowsPortable', file: 'arrowloop-windows-amd64-portable.exe', mark: WINDOWS_SVG, tint: 'glim-windows-mark' },
+  { key: 'apps.windowsArm', file: 'arrowloop-windows-arm64-installer.exe', mark: WINDOWS_SVG, tint: 'glim-windows-mark' },
+  { key: 'apps.windowsArmPortable', file: 'arrowloop-windows-arm64-portable.exe', mark: WINDOWS_SVG, tint: 'glim-windows-mark' },
+  { key: 'apps.macos', file: 'arrowloop-macos-universal.dmg', mark: APPLE_SVG, tint: '' },
+  { key: 'apps.linux', file: 'arrowloop-linux-amd64', mark: LINUX_SVG, tint: '' },
 ] as const
 
 /**
@@ -84,7 +84,7 @@ function DesktopCard() {
     <Card title={t('apps.desktopTitle')} hint={t('apps.desktopHint')} hueIndex={1}>
       <div className="flex flex-wrap gap-3">
         {DESKTOP.map((d) => (
-          <AppTile soonLabel={t('apps.soon')} key={d.file} href={`${RELEASE}/${d.file}`} onLinkClick={followExternal} name={t(d.key)} logo={<BrandMark svg={d.mark} />} />
+          <AppTile soonLabel={t('apps.soon')} key={d.file} href={`${RELEASE}/${d.file}`} onLinkClick={followExternal} name={t(d.key)} logo={<BrandMark svg={d.mark} className={d.tint} />} />
         ))}
       </div>
     </Card>

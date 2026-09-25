@@ -201,6 +201,7 @@ const gl: Translations = {
   'look.round': 'Redondos',
   'look.soft': 'Suaves',
   'look.square': 'Rectos',
+  'look.leaf': 'Folla',
   'look.accent': 'Cor de acento',
   'look.colors': 'Cores',
   'look.rainbowOn': 'Modo arco da vella',

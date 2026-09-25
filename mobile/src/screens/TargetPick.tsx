@@ -16,7 +16,7 @@ import { Caption, Empty, InfoBubble, Page, Title, useTheme } from "../ui";
 export function TargetPick() {
   const nav = useNavigation<Nav<TargetsStack>>();
   const { t } = useT();
-  const { p, radius, scheme } = useTheme();
+  const { p, corners, scheme } = useTheme();
   const [providers, setProviders] = useState<Provider[] | null>(null);
   const [error, setError] = useState("");
 
@@ -42,7 +42,7 @@ export function TargetPick() {
         android_ripple={{ color: p.hover }}
         style={[
           styles.tile,
-          { backgroundColor: p.surface2, borderRadius: radius.card },
+          { backgroundColor: p.surface2, ...corners.control },
         ]}
       >
         <View style={styles.markBox}>

@@ -201,6 +201,7 @@ const sk: Translations = {
   'look.round': 'Okrúhle',
   'look.soft': 'Mäkké',
   'look.square': 'Rovné',
+  'look.leaf': 'List',
   'look.accent': 'Zvýrazňujúca farba',
   'look.colors': 'Farby',
   'look.rainbowOn': 'Dúhový režim',

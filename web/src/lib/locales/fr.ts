@@ -201,6 +201,7 @@ const fr: Translations = {
   'look.round': 'Ronds',
   'look.soft': 'Doux',
   'look.square': 'Carrés',
+  'look.leaf': 'Feuille',
   'look.accent': 'Couleur d\'accentuation',
   'look.colors': 'Couleurs',
   'look.rainbowOn': 'Mode arc-en-ciel',

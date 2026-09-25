@@ -506,7 +506,7 @@ export function Schedule({ value, onChange }: { value: string; onChange: (next: 
 
 /** One weekday as a chip, since several days can be chosen at once. */
 function DayChip({ label, on, onPress }: { label: string; on: boolean; onPress: () => void }) {
-  const { p, radius, accent, hueAt } = useTheme();
+  const { p, corners, accent, hueAt } = useTheme();
   const fill = hueAt(0) ?? accent;
   return (
     <Pressable
@@ -516,7 +516,7 @@ function DayChip({ label, on, onPress }: { label: string; on: boolean; onPress: 
       onPress={onPress}
       style={[
         styles.day,
-        { borderRadius: radius.pill, backgroundColor: on ? fill : p.surface2 },
+        { ...corners.pill, backgroundColor: on ? fill : p.surface2 },
       ]}
     >
       <Text style={[styles.dayText, { color: on ? contrastOn(fill) : p.textSub }]}>{label}</Text>

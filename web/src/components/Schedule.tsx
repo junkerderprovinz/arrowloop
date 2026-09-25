@@ -186,7 +186,7 @@ export function ScheduleField({
           </span>
           <div
             className="glim-well inline-flex flex-wrap gap-[0.2rem] p-[0.2rem]"
-            style={{ borderRadius: 'var(--radius-control)' }}
+            style={{ borderRadius: 'var(--radius-pill)' }}
           >
             {/* Each day takes its own palette position, like every multi-part
                 control. */}
@@ -199,7 +199,7 @@ export function ScheduleField({
                   aria-pressed={on}
                   onClick={() => toggleDay(day)}
                   style={{
-                    borderRadius: 'var(--radius-control)',
+                    borderRadius: 'var(--radius-pill)',
                     ...(hueVars(i) as CSSProperties),
                   }}
                   className={`glim-hue px-2.5 py-1 text-xs font-medium transition-colors ${

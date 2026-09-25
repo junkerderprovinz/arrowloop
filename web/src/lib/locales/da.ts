@@ -201,6 +201,7 @@ const da: Translations = {
   'look.round': 'Runde',
   'look.soft': 'Bløde',
   'look.square': 'Lige',
+  'look.leaf': 'Blad',
   'look.accent': 'Accentfarve',
   'look.colors': 'Farver',
   'look.rainbowOn': 'Regnbuetilstand',

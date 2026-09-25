@@ -201,6 +201,7 @@ const ru: Translations = {
   'look.round': 'Круглые',
   'look.soft': 'Мягкие',
   'look.square': 'Прямые',
+  'look.leaf': 'Лист',
   'look.accent': 'Акцентный цвет',
   'look.colors': 'Цвета',
   'look.rainbowOn': 'Режим радуги',

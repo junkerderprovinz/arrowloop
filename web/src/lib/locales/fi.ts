@@ -201,6 +201,7 @@ const fi: Translations = {
   'look.round': 'Pyöreät',
   'look.soft': 'Pehmeät',
   'look.square': 'Suorat',
+  'look.leaf': 'Lehti',
   'look.accent': 'Korostusväri',
   'look.colors': 'Värit',
   'look.rainbowOn': 'Sateenkaaritila',

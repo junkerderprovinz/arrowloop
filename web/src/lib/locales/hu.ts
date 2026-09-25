@@ -201,6 +201,7 @@ const hu: Translations = {
   'look.round': 'Kerek',
   'look.soft': 'Lágy',
   'look.square': 'Szögletes',
+  'look.leaf': 'Levél',
   'look.accent': 'Kiemelőszín',
   'look.colors': 'Színek',
   'look.rainbowOn': 'Szivárvány mód',

@@ -201,6 +201,7 @@ const bg: Translations = {
   'look.round': 'Кръгли',
   'look.soft': 'Меки',
   'look.square': 'Прави',
+  'look.leaf': 'Лист',
   'look.accent': 'Акцентен цвят',
   'look.colors': 'Цветове',
   'look.rainbowOn': 'Дъгов режим',

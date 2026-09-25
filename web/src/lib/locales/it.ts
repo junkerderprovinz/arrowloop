@@ -201,6 +201,7 @@ const it: Translations = {
   'look.round': 'Tondi',
   'look.soft': 'Morbidi',
   'look.square': 'Squadrati',
+  'look.leaf': 'Foglia',
   'look.accent': 'Colore di accento',
   'look.colors': 'Colori',
   'look.rainbowOn': 'Modalità arcobaleno',

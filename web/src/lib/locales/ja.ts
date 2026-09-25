@@ -201,6 +201,7 @@ const ja: Translations = {
   'look.round': '丸い',
   'look.soft': 'やわらかい',
   'look.square': '四角い',
+  'look.leaf': '葉',
   'look.accent': 'アクセントカラー',
   'look.colors': '色',
   'look.rainbowOn': 'レインボーモード',

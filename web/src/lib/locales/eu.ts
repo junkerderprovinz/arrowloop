@@ -201,6 +201,7 @@ const eu: Translations = {
   'look.round': 'Biribilak',
   'look.soft': 'Leunak',
   'look.square': 'Zuzenak',
+  'look.leaf': 'Hostoa',
   'look.accent': 'Azentu-kolorea',
   'look.colors': 'Koloreak',
   'look.rainbowOn': 'Ostadar modua',

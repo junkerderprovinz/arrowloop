@@ -201,6 +201,7 @@ const lt: Translations = {
   'look.round': 'Apvalūs',
   'look.soft': 'Švelnūs',
   'look.square': 'Tiesūs',
+  'look.leaf': 'Lapas',
   'look.accent': 'Akcentinė spalva',
   'look.colors': 'Spalvos',
   'look.rainbowOn': 'Vaivorykštės režimas',

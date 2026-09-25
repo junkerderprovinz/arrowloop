@@ -201,6 +201,7 @@ const is: Translations = {
   'look.round': 'Kringlótt',
   'look.soft': 'Mjúk',
   'look.square': 'Bein',
+  'look.leaf': 'Lauf',
   'look.accent': 'Áherslulitur',
   'look.colors': 'Litir',
   'look.rainbowOn': 'Regnbogahamur',

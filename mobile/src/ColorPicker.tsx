@@ -30,7 +30,7 @@ export function ColorPicker({
   onPick: (hex: string) => void;
   onClose: () => void;
 }) {
-  const { p, radius } = useTheme();
+  const { p, corners } = useTheme();
   const { t } = useT();
   const start = hexToHsv(initial) ?? { h: 45, s: 1, v: 1 };
   const [hsv, setHsv] = useState(start);
@@ -107,13 +107,13 @@ export function ColorPicker({
       <Pressable style={styles.ground} onPress={onClose}>
         {/* Swallows presses so a drag inside does not close the picker. */}
         <Pressable
-          style={[styles.panel, { backgroundColor: p.surface, borderRadius: radius.card }]}
+          style={[styles.panel, { backgroundColor: p.surface, ...corners.card }]}
           onPress={() => {}}
         >
           {/* Saturation left to right, value bottom to top. */}
           <View
             ref={padRef}
-            style={[styles.pad, { borderRadius: radius.control }]}
+            style={[styles.pad, corners.control]}
             // measureInWindow, since the layout event's x/y are relative to the
             // parent and the gesture reports screen coordinates.
             onLayout={() => {
@@ -142,7 +142,7 @@ export function ColorPicker({
           </View>
 
           {/* The hue rail is tapped rather than dragged. */}
-          <View style={[styles.rail, { borderRadius: radius.control }]}>
+          <View style={[styles.rail, corners.pill]}>
             {Array.from({ length: HUES }, (_, i) => {
               const h = (i * 360) / HUES;
               return (
@@ -163,12 +163,12 @@ export function ColorPicker({
 
           <View style={styles.foot}>
             <View
-              style={[styles.preview, { backgroundColor: current, borderRadius: radius.pill }]}
+              style={[styles.preview, { backgroundColor: current, ...corners.pill }]}
             />
             <TextInput
               style={[
                 styles.hex,
-                { backgroundColor: p.surface2, color: p.text, borderRadius: radius.control },
+                { backgroundColor: p.surface2, color: p.text, ...corners.control },
               ]}
               value={current.toUpperCase()}
               autoCapitalize="characters"
@@ -213,7 +213,7 @@ export function EditableSwatch({
   selected: boolean;
   onPress: () => void;
 }) {
-  const { p, radius } = useTheme();
+  const { p, corners } = useTheme();
   return (
     <Pressable
       accessibilityLabel={label}
@@ -221,18 +221,18 @@ export function EditableSwatch({
       onPress={onPress}
       style={[
         styles.ring,
-        { borderRadius: radius.pill, backgroundColor: selected ? p.text : "transparent" },
+        { ...corners.pill, backgroundColor: selected ? p.text : "transparent" },
       ]}
     >
       <View
         style={[
           styles.gap,
-          { borderRadius: radius.pill, backgroundColor: selected ? p.surface : "transparent" },
+          { ...corners.pill, backgroundColor: selected ? p.surface : "transparent" },
         ]}
       >
         {/* The first press selects the colour; a press on the selected one
             opens the picker. */}
-        <View style={[styles.fill, { borderRadius: radius.pill, backgroundColor: hex }]} />
+        <View style={[styles.fill, { ...corners.pill, backgroundColor: hex }]} />
       </View>
     </Pressable>
   );
@@ -252,7 +252,7 @@ export function ResetMark({
   disabled?: boolean;
   onPress: () => void;
 }) {
-  const { p, radius } = useTheme();
+  const { p, corners } = useTheme();
   return (
     <Pressable
       accessibilityLabel={label}
@@ -265,7 +265,7 @@ export function ResetMark({
         styles.reset,
         {
           backgroundColor: p.surface2,
-          borderRadius: radius.control,
+          ...corners.pill,
           opacity: disabled ? 0.4 : 1,
         },
       ]}

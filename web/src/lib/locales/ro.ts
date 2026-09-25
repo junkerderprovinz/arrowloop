@@ -201,6 +201,7 @@ const ro: Translations = {
   'look.round': 'Rotunde',
   'look.soft': 'Blânde',
   'look.square': 'Drepte',
+  'look.leaf': 'Frunză',
   'look.accent': 'Culoare de accent',
   'look.colors': 'Culori',
   'look.rainbowOn': 'Mod curcubeu',

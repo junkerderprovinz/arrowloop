@@ -28,7 +28,7 @@ export function FolderPicker({
   onClose: () => void;
 }) {
   const { t } = useT();
-  const { p, radius } = useTheme();
+  const { p, corners } = useTheme();
   const [at, setAt] = useState("");
   const [parent, setParent] = useState("");
   const [entries, setEntries] = useState<{ name: string; path: string }[]>([]);
@@ -84,7 +84,7 @@ export function FolderPicker({
       key={label}
       onPress={onPress}
       android_ripple={{ color: p.hover }}
-      style={[styles.row, { backgroundColor: p.surface2, borderRadius: radius.control }]}
+      style={[styles.row, { backgroundColor: p.surface2, ...corners.control }]}
     >
       <Glyph name={glyph} color={p.text} size={18} />
       <Text style={[styles.rowText, { color: p.text }]} numberOfLines={1}>
@@ -98,7 +98,7 @@ export function FolderPicker({
       <Pressable style={styles.ground} onPress={onClose}>
         {/* Swallows presses so a tap inside does not close the dialog. */}
         <Pressable
-          style={[styles.card, { backgroundColor: p.surface, borderRadius: radius.card }]}
+          style={[styles.card, { backgroundColor: p.surface, ...corners.card }]}
           onPress={() => {}}
         >
           <Body>{t("pick.title")}</Body>
@@ -134,7 +134,7 @@ export function FolderPicker({
                 onSubmitEditing={() => void make()}
                 style={[
                   styles.name,
-                  { backgroundColor: p.surface2, borderRadius: radius.control, color: p.text },
+                  { backgroundColor: p.surface2, ...corners.control, color: p.text },
                 ]}
               />
               <Button

@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useCallback, useEffect, useState } from "react";
+import { DEFAULT_SHAPE, SHAPES_STORED, type Shape } from "../../web/src/lib/appearance";
 import { ORIGIN } from "./api";
 
 // Appearance belongs to the phone and lives in AsyncStorage. Behaviour, such
@@ -22,7 +23,7 @@ export const LABEL_MODES = ["text", "textGlyph", "glyph"] as const;
  */
 export type BarLabelMode = LabelMode | "same";
 
-export type Shape = "round" | "soft" | "square";
+export type { Shape };
 
 /**
  * How much the interface moves. Declared here rather than in motion.ts, which
@@ -68,7 +69,7 @@ export const DEFAULT_APPEARANCE: Appearance = {
   rainbowRotate: false,
   rainbowSeed: 0,
   disco: false,
-  shape: "round",
+  shape: DEFAULT_SHAPE,
   labels: "textGlyph",
   barLabels: "textGlyph",
   motion: "wild",
@@ -89,6 +90,9 @@ export async function loadAppearance(): Promise<Appearance> {
       // GlimStone 2.0.0 renamed the top motion level from `full` to `wild`,
       // and the motion table has no row for the old value.
       if ((stored.motion as string) === "full") stored.motion = "wild";
+      // Checked against the stored set rather than the picker's, so a found
+      // leaf survives a restart.
+      if (!SHAPES_STORED.includes(stored.shape as Shape)) delete stored.shape;
       cache = { ...DEFAULT_APPEARANCE, ...stored };
     }
   } catch {

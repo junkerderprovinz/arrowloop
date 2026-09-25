@@ -201,6 +201,7 @@ const el: Translations = {
   'look.round': 'Στρογγυλές',
   'look.soft': 'Απαλές',
   'look.square': 'Ίσιες',
+  'look.leaf': 'Φύλλο',
   'look.accent': 'Χρώμα επισήμανσης',
   'look.colors': 'Χρώματα',
   'look.rainbowOn': 'Λειτουργία ουράνιου τόξου',

@@ -17,14 +17,20 @@
 /* Every rounded corner reads one of these three tokens, so switching the shape
    changes cards, buttons, tabs, inputs, pills, badges and toggles together.
 
+   --radius-card is for cards, windows and menus, --radius-control for fields,
+   panels and tiles, and --radius-pill for everything somebody presses: buttons,
+   tabs, badges, selector segments and switches. Only round tells the last two
+   apart, and there the pressable things are true pills while a text field
+   keeps a corner a paragraph can sit in.
+
    Use the raw token even on a short or non-square element. The browser scales
    an oversized radius down with one factor for all four corners, so 9999px
    gives a circle on a square and a stadium on a rectangle. A cap such as
    min(var(--radius-pill), 50%) resolves per axis first and renders an
    ellipse. */
 :root {
-  --radius-card: 1rem;
-  --radius-control: 0.625rem;
+  --radius-card: 1.25rem;
+  --radius-control: 0.75rem;
   --radius-pill: 9999px;
 
   /* The distance from the window edge to everything on it, and between the
@@ -58,6 +64,24 @@
   --radius-card: 0;
   --radius-control: 0;
   --radius-pill: 0;
+}
+
+/* The hidden shape (leafTap in appearance.ts): two opposite corners rounded,
+   the other two sharp. The tokens stay single lengths, so a calc() on them and
+   a phone app's numbers keep working, and one rule takes the other diagonal
+   away from every element. It is physical rather than logical so the leaf
+   leans the same way in every language. */
+:root[data-shape="leaf"] {
+  --radius-card: 1.25rem;
+  --radius-control: 0.75rem;
+  --radius-pill: 1.125rem;
+}
+
+:root[data-shape="leaf"] *,
+:root[data-shape="leaf"] *::before,
+:root[data-shape="leaf"] *::after {
+  border-top-right-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
 }
 
 :root,
@@ -102,6 +126,8 @@
   --brand-unraid-to:         #ff8d30;
   --brand-unraid-from-hover: #9c1414;
   --brand-unraid-to-hover:   #a84b0c;
+  --brand-windows:           #2b88d8;
+  --brand-windows-hover:     #005a9e;
   --brand-github:  #ffffff;
 
   /* Text ramp: three steps, the last still legible at 11px. */
@@ -193,6 +219,8 @@
     --brand-unraid-to:         #c85d12;
     --brand-unraid-from-hover: #c21f1f;
     --brand-unraid-to-hover:   #c85d12;
+    --brand-windows:           #0078d4;
+    --brand-windows-hover:     #0078d4;
     --brand-github:  #181717;
 
     --carbon-text:       #161616;
@@ -261,6 +289,8 @@
   --brand-unraid-to:         #c85d12;
   --brand-unraid-from-hover: #c21f1f;
   --brand-unraid-to-hover:   #c85d12;
+  --brand-windows:           #0078d4;
+  --brand-windows-hover:     #0078d4;
   --brand-github:  #181717;
 
   --carbon-text:       #161616;
@@ -1013,7 +1043,7 @@ body {
   gap: var(--btn-gap);
   height: var(--btn-h);
   padding-inline: var(--btn-pad-x);
-  border-radius: var(--radius-control);
+  border-radius: var(--radius-pill);
   font-size: 0.875rem;
   font-weight: 500;
   line-height: 1;
@@ -1080,9 +1110,11 @@ body {
    pointer, or a tap on a touch screen would leave it on a resting tile. */
 .glim-android-mark { color: var(--brand-android); }
 .glim-docker-mark { color: var(--brand-docker); }
+.glim-windows-mark { color: var(--brand-windows); }
 @media (hover: hover) {
   .group:hover .glim-android-mark { color: var(--brand-android-hover); }
   .group:hover .glim-docker-mark { color: var(--brand-docker-hover); }
+  .group:hover .glim-windows-mark { color: var(--brand-windows-hover); }
   .group:hover .glim-unraid-mark {
     --brand-unraid-from: var(--brand-unraid-from-hover);
     --brand-unraid-to: var(--brand-unraid-to-hover);

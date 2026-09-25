@@ -126,7 +126,7 @@ export function ExcludeSetPicker({
             onClick={() =>
               onChange(on ? chosen.filter((c) => c !== name) : [...chosen, name])
             }
-            style={{ borderRadius: 'var(--radius-control)' }}
+            style={{ borderRadius: 'var(--radius-pill)' }}
             className={`inline-flex h-[var(--badge-md)] items-center px-3 font-mono text-xs transition-colors ${
               on
                 ? 'bg-accent text-accentContrast'

@@ -201,6 +201,7 @@ const ms: Translations = {
   'look.round': 'Bulat',
   'look.soft': 'Lembut',
   'look.square': 'Lurus',
+  'look.leaf': 'Daun',
   'look.accent': 'Warna aksen',
   'look.colors': 'Warna',
   'look.rainbowOn': 'Mod Pelangi',

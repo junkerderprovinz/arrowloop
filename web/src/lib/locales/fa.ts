@@ -201,6 +201,7 @@ const fa: Translations = {
   'look.round': 'گرد',
   'look.soft': 'نرم',
   'look.square': 'راست',
+  'look.leaf': 'برگ',
   'look.accent': 'رنگ تأکیدی',
   'look.colors': 'رنگ‌ها',
   'look.rainbowOn': 'حالت رنگین‌کمان',

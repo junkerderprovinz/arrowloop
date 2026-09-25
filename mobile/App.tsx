@@ -69,7 +69,7 @@ export default function App() {
 }
 
 function Shell() {
-  const { p, scheme, radius, accent } = useTheme();
+  const { p, scheme, corners, accent } = useTheme();
   const { t } = useT();
   const { state, log, retry } = useEngine(t);
   const look = useAppearance();
@@ -288,7 +288,7 @@ function Shell() {
  */
 function TabBar({ state, descriptors, navigation }: MaterialTopTabBarProps) {
   // The bar has its own label setting.
-  const { p, radius, barLabels, accent, hueAt } = useTheme();
+  const { p, corners, barLabels, accent, hueAt } = useTheme();
   const inset = useSafeAreaInsets();
   const showGlyph = barLabels !== "text";
   const showWord = barLabels !== "glyph";
@@ -303,7 +303,7 @@ function TabBar({ state, descriptors, navigation }: MaterialTopTabBarProps) {
           styles.bar,
           {
             backgroundColor: p.surface2,
-            borderRadius: radius.control,
+            ...corners.pill,
             // Clear of the gesture bar, with a floor for phones with buttons.
             marginBottom: Math.max(inset.bottom, space.sm),
           },
@@ -335,7 +335,7 @@ function TabBar({ state, descriptors, navigation }: MaterialTopTabBarProps) {
                 style={[
                   styles.segment,
                   {
-                    borderRadius: radius.control,
+                    ...corners.pill,
                     backgroundColor: on ? fill : "transparent",
                   },
                 ]}
@@ -418,7 +418,7 @@ const AWAY_MS = 60 * 1000;
  * answer.
  */
 function Waiting({ state, log, onRetry }: { state: string; log: string; onRetry: () => void }) {
-  const { p, radius } = useTheme();
+  const { p, corners } = useTheme();
   const { t } = useT();
   // This screen is outside the navigator, so it applies the insets itself.
   const inset = useSafeAreaInsets();
@@ -439,7 +439,7 @@ function Waiting({ state, log, onRetry }: { state: string; log: string; onRetry:
         <Text
           style={[
             styles.log,
-            { color: p.textSub, backgroundColor: p.surface, borderRadius: radius.card },
+            { color: p.textSub, backgroundColor: p.surface, ...corners.card },
           ]}
         >
           {log}

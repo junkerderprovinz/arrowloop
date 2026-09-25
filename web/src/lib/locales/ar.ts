@@ -201,6 +201,7 @@ const ar: Translations = {
   'look.round': 'دائرية',
   'look.soft': 'ناعمة',
   'look.square': 'قائمة',
+  'look.leaf': 'ورقة',
   'look.accent': 'لون التمييز',
   'look.colors': 'الألوان',
   'look.rainbowOn': 'وضع قوس قزح',

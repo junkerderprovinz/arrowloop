@@ -13,7 +13,7 @@ import { Caption, Page, Title, useTheme } from "../ui";
 export function Language() {
   const nav = useNavigation();
   const { t, lang, setLang } = useT();
-  const { p, radius, accent } = useTheme();
+  const { p, corners, accent } = useTheme();
 
   return (
     <Page>
@@ -33,7 +33,7 @@ export function Language() {
                 styles.row,
                 {
                   backgroundColor: on ? accent : p.surface,
-                  borderRadius: radius.control,
+                  ...corners.control,
                 },
               ]}
             >

@@ -201,6 +201,7 @@ const pl: Translations = {
   'look.round': 'Okrągłe',
   'look.soft': 'Miękkie',
   'look.square': 'Proste',
+  'look.leaf': 'Liść',
   'look.accent': 'Kolor akcentu',
   'look.colors': 'Kolory',
   'look.rainbowOn': 'Tryb tęczowy',

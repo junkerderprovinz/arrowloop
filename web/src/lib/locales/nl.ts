@@ -201,6 +201,7 @@ const nl: Translations = {
   'look.round': 'Rond',
   'look.soft': 'Zacht',
   'look.square': 'Recht',
+  'look.leaf': 'Blad',
   'look.accent': 'Accentkleur',
   'look.colors': 'Kleuren',
   'look.rainbowOn': 'Regenboogmodus',

@@ -15,7 +15,7 @@ import { bytes } from "../space";
 export function Trash() {
   const route = useRoute<RouteProp<JobsStack, "Trash">>();
   const { t } = useT();
-  const { p, radius, accent } = useTheme();
+  const { p, corners, accent } = useTheme();
   const { name: job, side } = route.params;
 
   const [bin, setBin] = useState<Bin | null>(null);
@@ -77,7 +77,7 @@ export function Trash() {
               {
                 backgroundColor: on ? p.surface2 : p.surface,
                 borderColor: on ? accent : p.border,
-                borderRadius: radius.control,
+                ...corners.control,
               },
             ]}
           >

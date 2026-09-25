@@ -201,6 +201,7 @@ const sl: Translations = {
   'look.round': 'Okrogli',
   'look.soft': 'Mehki',
   'look.square': 'Ravni',
+  'look.leaf': 'List',
   'look.accent': 'Poudarjena barva',
   'look.colors': 'Barve',
   'look.rainbowOn': 'Mavrični način',

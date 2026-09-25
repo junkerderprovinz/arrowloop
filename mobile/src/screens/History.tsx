@@ -98,7 +98,7 @@ type Show = keyof typeof SHOWS;
 function FileLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "files" | "runs") => void }) {
   const nav = useNavigation<Nav<HistoryStack>>();
   const { t } = useT();
-  const { p, radius, accent } = useTheme();
+  const { p, corners, accent } = useTheme();
 
   const [rows, setRows] = useState<Touch[] | null>(null);
   const [jobs, setJobs] = useState<string[]>([]);
@@ -241,7 +241,7 @@ function FileLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "fil
           <Pressable
             onPress={() => nav.navigate("RunDetail", { id: item.Run, job: item.Job })}
             android_ripple={{ color: p.hover }}
-            style={[styles.row, { backgroundColor: p.surface, borderRadius: radius.control }]}
+            style={[styles.row, { backgroundColor: p.surface, ...corners.control }]}
           >
             <Mono>{item.Path}</Mono>
             <View style={styles.meta}>
@@ -389,12 +389,12 @@ function RunLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "file
  * since badges only report.
  */
 function Chip({ label, on, onPress }: { label: string; on: boolean; onPress: () => void }) {
-  const { p, radius, accent } = useTheme();
+  const { p, corners, accent } = useTheme();
   return (
     <Pressable
       onPress={onPress}
       android_ripple={{ color: p.hover }}
-      style={[styles.chip, { backgroundColor: on ? accent : p.surface2, borderRadius: radius.pill }]}
+      style={[styles.chip, { backgroundColor: on ? accent : p.surface2, ...corners.pill }]}
     >
       <Text numberOfLines={1} style={[styles.chipText, { color: on ? contrastOn(accent) : p.textSub }]}>
         {label}

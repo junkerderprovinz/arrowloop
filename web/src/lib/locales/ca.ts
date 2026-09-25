@@ -201,6 +201,7 @@ const ca: Translations = {
   'look.round': 'Rodons',
   'look.soft': 'Suaus',
   'look.square': 'Rectes',
+  'look.leaf': 'Fulla',
   'look.accent': 'Color d\'accent',
   'look.colors': 'Colors',
   'look.rainbowOn': 'Mode arc de Sant Martí',

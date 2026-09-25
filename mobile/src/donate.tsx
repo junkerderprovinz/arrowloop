@@ -19,7 +19,7 @@ import { Button, useTheme } from "./ui";
  */
 export function CryptoDonate({ onClose }: { onClose: () => void }) {
   const { t } = useT();
-  const { p, radius, scheme, accent, hueAt } = useTheme();
+  const { p, corners, scheme, accent, hueAt } = useTheme();
   const { intensity: motion } = useMotion();
   const [coin, setCoin] = useState<CryptoCoin>(CRYPTO_COINS[0]!);
   const [network, setNetwork] = useState<CryptoNetwork>(CRYPTO_COINS[0]!.networks[0]!);
@@ -39,12 +39,12 @@ export function CryptoDonate({ onClose }: { onClose: () => void }) {
         {/* Swallows presses so a tap inside does not close the dialog. */}
         <Pressable
           onPress={() => {}}
-          style={[styles.card, { backgroundColor: p.surface, borderRadius: radius.card }]}
+          style={[styles.card, { backgroundColor: p.surface, ...corners.card }]}
         >
           {/* The title is a filled badge on the top edge, like a card's notch.
               No corner X, since the footer already closes. */}
           <View style={styles.titleRow}>
-            <View style={[styles.title, { backgroundColor: accent, borderRadius: radius.pill }]}>
+            <View style={[styles.title, { backgroundColor: accent, ...corners.pill }]}>
               <Text style={[styles.titleText, { color: contrastOn(accent) }]} numberOfLines={2}>
                 {t("about.cryptoTitle")}
               </Text>
@@ -59,7 +59,7 @@ export function CryptoDonate({ onClose }: { onClose: () => void }) {
           >
             <Text style={[styles.intro, { color: p.textSub }]}>{t("about.cryptoIntro")}</Text>
 
-            <View style={[styles.answer, { backgroundColor: p.surface2, borderRadius: radius.card }]}>
+            <View style={[styles.answer, { backgroundColor: p.surface2, ...corners.control }]}>
               <QR value={network.address} size={168} />
 
               {/* Never shortened: an address is checked by eye before sending. */}
@@ -91,7 +91,7 @@ export function CryptoDonate({ onClose }: { onClose: () => void }) {
                       style={[
                         styles.chain,
                         {
-                          borderRadius: radius.pill,
+                          ...corners.pill,
                           backgroundColor: on ? fill : p.surface3,
                         },
                       ]}
@@ -153,7 +153,7 @@ export function CryptoDonate({ onClose }: { onClose: () => void }) {
                     style={[
                       styles.tile,
                       {
-                        borderRadius: radius.control,
+                        ...corners.control,
                         backgroundColor: on ? fill : p.surface2,
                       },
                     ]}

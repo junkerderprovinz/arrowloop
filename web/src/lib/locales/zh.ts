@@ -201,6 +201,7 @@ const zh: Translations = {
   'look.round': '圆',
   'look.soft': '柔和',
   'look.square': '方',
+  'look.leaf': '叶',
   'look.accent': '强调色',
   'look.colors': '颜色',
   'look.rainbowOn': '彩虹模式',

@@ -201,6 +201,7 @@ const lv: Translations = {
   'look.round': 'Apaļi',
   'look.soft': 'Maigi',
   'look.square': 'Taisni',
+  'look.leaf': 'Lapa',
   'look.accent': 'Akcenta krāsa',
   'look.colors': 'Krāsas',
   'look.rainbowOn': 'Varavīksnes režīms',

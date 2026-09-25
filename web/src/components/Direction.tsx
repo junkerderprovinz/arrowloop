@@ -86,7 +86,7 @@ export function DirectionSwitch({
       data-tip={tip}
       aria-label={`${t('direction.label')}: ${name}`}
       className={`glim-btn glim-btn-key glim-hue inline-flex ${KEY_CONTROL_H} w-[var(--btn-h-key)] shrink-0 items-center justify-center bg-carbon-surface2 text-carbon-text transition-colors hover:bg-carbon-surface3`}
-      style={{ borderRadius: 'var(--radius-control)', ...(hueVars(0) as CSSProperties) }}
+      style={{ borderRadius: 'var(--radius-pill)', ...(hueVars(0) as CSSProperties) }}
     >
       {/* A glyph with no label sibling; index.css keeps it visible in text
           mode, where it is the label. */}

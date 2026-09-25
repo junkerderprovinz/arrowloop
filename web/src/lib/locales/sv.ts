@@ -201,6 +201,7 @@ const sv: Translations = {
   'look.round': 'Runda',
   'look.soft': 'Mjuka',
   'look.square': 'Raka',
+  'look.leaf': 'Blad',
   'look.accent': 'Accentfärg',
   'look.colors': 'Färger',
   'look.rainbowOn': 'Regnbågsläge',

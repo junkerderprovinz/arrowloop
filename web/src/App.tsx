@@ -21,7 +21,7 @@ import { Security } from './pages/Security'
 import { Targets } from './pages/Targets'
 import { api, type Job, type Run, type RunEvent, type Volume, type WindowSettings } from './lib/api'
 import { Places } from './lib/places'
-import { ACCENTS, applyAccent, applyRainbow, applyShape, cacheAppearance, RAINBOW, rainbowState, type RainbowState, type Shape } from './lib/appearance'
+import { ACCENTS, applyAccent, applyRainbow, applyShape, cacheAppearance, DEFAULT_SHAPE, leafTap, RAINBOW, rainbowState, type RainbowState, type Shape } from './lib/appearance'
 import { storedLook, storedSlots, storeSlots } from './lib/look'
 import { applyDisco, discoTap } from './lib/disco'
 import { getDisco, setDisco } from './lib/discoSetting'
@@ -103,7 +103,7 @@ export function App() {
   const [error, setError] = useState<string | null>(null)
 
   const [theme, setTheme] = useState<Theme>(currentTheme)
-  const [shape, setShape] = useState<Shape>(() => storedLook().shape ?? 'round')
+  const [shape, setShape] = useState<Shape>(() => storedLook().shape ?? DEFAULT_SHAPE)
   const [accent, setAccent] = useState<string>(() => storedLook().accent ?? DEFAULT_ACCENT)
   const [slots, setSlots] = useState(() => storedSlots(presetHexes))
   const [rainbow, setRainbow] = useState<RainbowState>(rainbowState)
@@ -522,6 +522,23 @@ function useStormUnlock(motion: MotionIntensity, onMotion: (next: MotionIntensit
 }
 
 /**
+ * The leaf, a hidden fourth shape found the storm's way: with the corners on
+ * "square", click "square" five more times. Offered by the same rule.
+ */
+function useLeafUnlock(shape: Shape, onShape: (next: Shape) => void) {
+  const [found, setFound] = useState(false)
+  const taps = useRef({ taps: 0 })
+  return {
+    offered: found || shape === 'leaf',
+    click: (tapped: Shape) => {
+      if (!leafTap(taps.current, tapped, shape)) return
+      setFound(true)
+      onShape('leaf')
+    },
+  }
+}
+
+/**
  * Disco, the colour engine's easter egg: turn Rainbow Mode on five times, each
  * within three seconds of the last, and the palette starts to walk. Like the
  * storm, the discovery is not stored; the switch shows while disco is on and
@@ -562,6 +579,7 @@ function Look({
 }: LookProps) {
   const { t } = useT()
   const storm = useStormUnlock(motion, onMotion)
+  const leaf = useLeafUnlock(shape, onShape)
   const discoUnlock = useDiscoUnlock(disco, onDisco)
   return (
     <Stack>
@@ -583,11 +601,15 @@ function Look({
           label={t('look.corners')}
           hueOffset={HUE_OFFSET.shape}
           value={shape}
-          onChange={onShape}
+          onChange={(next) => {
+            onShape(next)
+            leaf.click(next)
+          }}
           options={[
             { value: 'round', label: t('look.round') },
             { value: 'soft', label: t('look.soft') },
             { value: 'square', label: t('look.square') },
+            ...(leaf.offered ? [{ value: 'leaf' as Shape, label: t('look.leaf') }] : []),
           ]}
         />
       </Card>
@@ -750,7 +772,7 @@ function ResetBadge({
       // Built like a swatch, a border around a fill, so it reads the same size.
       className="inline-flex h-7 w-7 items-center justify-center bg-carbon-surface2 text-carbon-textSub transition disabled:cursor-not-allowed disabled:opacity-50"
       style={{
-        borderRadius: 'var(--radius-control)',
+        borderRadius: 'var(--radius-pill)',
         border: '2px solid var(--carbon-border)',
       }}
     >

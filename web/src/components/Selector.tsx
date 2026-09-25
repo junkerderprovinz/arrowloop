@@ -165,7 +165,7 @@ export function Selector<T extends string>({
           : 'inline-flex flex-wrap gap-1'
       }
       style={{
-        borderRadius: variant === 'well' ? 'var(--radius-control)' : undefined,
+        borderRadius: variant === 'well' ? 'var(--radius-pill)' : undefined,
         width: fill ? '100%' : 'fit-content',
         maxWidth: '100%',
         opacity: disabled ? 0.45 : undefined,
@@ -188,7 +188,7 @@ export function Selector<T extends string>({
               ...(hueVars(i + hueOffset) as CSSProperties),
               // The full control radius, as BombVault uses; subtracting the
               // well's padding left the strip looking square at the Soft stage.
-              borderRadius: 'var(--radius-control)',
+              borderRadius: 'var(--radius-pill)',
               ...(pinned !== null
                 ? {
                     // The basis leaves one gap of slack so rounding cannot

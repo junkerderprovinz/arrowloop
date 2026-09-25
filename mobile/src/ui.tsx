@@ -24,12 +24,13 @@ import {
   inkFor,
   palettes,
   RAINBOW,
-  radiusFor,
+  cornersFor,
   softOn,
   space,
   text,
   TOUCH,
   type Palette,
+  type Corners,
   type Radii,
   SCRIM,
 } from "./theme";
@@ -46,7 +47,7 @@ import { arrivalDelay, arrivalSide, edgeReach } from "./motionNative";
 
 export interface Theme {
   p: Palette;
-  radius: Radii;
+  corners: Record<keyof Radii, Corners>;
   labels: LabelMode;
   /** The bottom bar's label mode, resolved from its own setting. */
   barLabels: LabelMode;
@@ -69,7 +70,7 @@ export function useTheme(): Theme {
   return {
     scheme,
     p: base,
-    radius: radiusFor(a.shape),
+    corners: cornersFor(a.shape),
     // A stored `reactive` resolves to symbols; see settings.ts.
     labels: a.labels === "reactive" ? "glyph" : a.labels,
     barLabels: barMode(a.barLabels, a.labels),
@@ -268,11 +269,11 @@ export function Card({
   style?: StyleProp<ViewStyle>;
   hue?: string;
 }) {
-  const { p, radius } = useTheme();
+  const { p, corners } = useTheme();
   const arrival = useArrival();
   const press = usePress();
   const body = (
-    <View style={[styles.card, { backgroundColor: p.surface, borderRadius: radius.card }, style]}>
+    <View style={[styles.card, { backgroundColor: p.surface, ...corners.card }, style]}>
       {children}
     </View>
   );
@@ -284,7 +285,7 @@ export function Card({
         onPressIn={press.onPressIn}
         onPressOut={press.onPressOut}
         android_ripple={{ color: p.hover }}
-        style={{ borderRadius: radius.card }}
+        style={corners.card}
       >
         {body}
       </Pressable>
@@ -311,16 +312,16 @@ export function Section({
   onTitlePress?: () => void;
   children: ReactNode;
 }) {
-  const { p, radius, accent, accentContrast, hueAt } = useTheme();
+  const { p, corners, accent, accentContrast, hueAt } = useTheme();
   const fill = (hue !== undefined ? hueAt(hue) : undefined) ?? accent;
   const ink = contrastOn(fill) || accentContrast;
   const arrival = useArrival();
   return (
     <Animated.View style={[styles.notchWrap, arrival]}>
-      <View style={[styles.notchCard, { backgroundColor: p.surface, borderRadius: radius.card }]}>
+      <View style={[styles.notchCard, { backgroundColor: p.surface, ...corners.card }]}>
         {children}
       </View>
-      <View style={[styles.notch, { backgroundColor: fill, borderRadius: radius.pill }]}>
+      <View style={[styles.notch, { backgroundColor: fill, ...corners.pill }]}>
         <Text
           style={[styles.notchText, { color: ink }]}
           numberOfLines={1}
@@ -450,7 +451,7 @@ export type Tone = "accent" | "neutral" | "ok" | "fail" | "warn";
  * would read as an alarm.
  */
 export function Badge({ label, tone = "neutral" }: { label: string; tone?: Tone }) {
-  const { p, radius, accentInk } = useTheme();
+  const { p, corners, accentInk } = useTheme();
   const ink = {
     accent: accentInk,
     neutral: p.neutralInk,
@@ -459,7 +460,7 @@ export function Badge({ label, tone = "neutral" }: { label: string; tone?: Tone 
     warn: p.warnInk,
   }[tone];
   return (
-    <View style={[styles.badge, { backgroundColor: softOn(ink, 0.15), borderRadius: radius.pill }]}>
+    <View style={[styles.badge, { backgroundColor: softOn(ink, 0.15), ...corners.pill }]}>
       <Text style={[styles.badgeText, { color: ink }]}>{label}</Text>
     </View>
   );
@@ -470,7 +471,7 @@ export function Badge({ label, tone = "neutral" }: { label: string; tone?: Tone 
  * draws an empty track rather than a NaN width, which would render full.
  */
 export function Meter({ done, total, hue }: { done: number; total: number; hue?: string }) {
-  const { p, radius, accent } = useTheme();
+  const { p, corners, accent } = useTheme();
   const { intensity, ms } = useMotion();
   const fill = hue ?? accent;
   const part = total > 0 ? Math.max(0, Math.min(1, done / total)) : 0;
@@ -503,14 +504,14 @@ export function Meter({ done, total, hue }: { done: number; total: number; hue?:
     <View
       accessibilityRole="progressbar"
       accessibilityValue={{ min: 0, max: Math.max(total, 0), now: Math.max(0, Math.min(done, total)) }}
-      style={[styles.meter, { backgroundColor: p.surface2, borderRadius: radius.pill }]}
+      style={[styles.meter, { backgroundColor: p.surface2, ...corners.pill }]}
     >
       <Animated.View
         style={[
           styles.meterFill,
           {
             backgroundColor: fill,
-            borderRadius: radius.pill,
+            ...corners.pill,
             // Clamped again, since the spring overshoots past the track's end.
             width: width.interpolate({
               inputRange: [0, 1],
@@ -529,7 +530,7 @@ export function Meter({ done, total, hue }: { done: number; total: number; hue?:
  * has no hover and a tooltip inside a narrow tile would wrap badly.
  */
 export function InfoBubble({ tip, on }: { tip: string; on?: string }) {
-  const { p, radius, accentInk } = useTheme();
+  const { p, corners, accentInk } = useTheme();
   const { ms } = useMotion();
   const [open, setOpen] = useState(false);
   // `on` is the ink of the surface underneath, such as a notch filled with
@@ -541,7 +542,7 @@ export function InfoBubble({ tip, on }: { tip: string; on?: string }) {
         onPress={() => setOpen(true)}
         // Often sits on a pressable tile.
         hitSlop={8}
-        style={[styles.bubble, { backgroundColor: softOn(ink, on ? 0.22 : 0.15), borderRadius: radius.pill }]}
+        style={[styles.bubble, { backgroundColor: softOn(ink, on ? 0.22 : 0.15), ...corners.pill }]}
       >
         <Text style={[styles.bubbleMark, { color: ink }]}>i</Text>
       </Pressable>
@@ -554,7 +555,7 @@ export function InfoBubble({ tip, on }: { tip: string; on?: string }) {
         onRequestClose={() => setOpen(false)}
       >
         <Pressable style={styles.tipGround} onPress={() => setOpen(false)}>
-          <View style={[styles.tipCard, { backgroundColor: p.surface2, borderRadius: radius.card }]}>
+          <View style={[styles.tipCard, { backgroundColor: p.surface2, ...corners.card }]}>
             <Text style={[styles.tipText, { color: p.text }]}>{tip}</Text>
           </View>
         </Pressable>
@@ -608,7 +609,7 @@ export function Button({
   /** Increment to wobble once. */
   shake?: number;
 }) {
-  const { p, radius, labels, accent, hueAt } = useTheme();
+  const { p, corners, labels, accent, hueAt } = useTheme();
   const { ms } = useMotion();
   const fill = (hue !== undefined ? hueAt(hue) : undefined) ?? accent;
   const ground =
@@ -652,7 +653,7 @@ export function Button({
         styles.button,
         {
           backgroundColor: ground,
-          borderRadius: radius.control,
+          ...corners.pill,
           opacity: disabled || busy ? 0.45 : 1,
           flexGrow: wide === false ? 0 : 1,
           transform: [
@@ -691,7 +692,7 @@ export function Switcher({
   hue?: number;
   disabled?: boolean;
 }) {
-  const { p, radius, accent, hueAt } = useTheme();
+  const { p, corners, accent, hueAt } = useTheme();
   const on = (hue !== undefined ? hueAt(hue) : undefined) ?? accent;
   return (
     <TouchableOpacity
@@ -701,14 +702,14 @@ export function Switcher({
       onPress={() => onChange(!value)}
       style={[
         styles.track,
-        { borderRadius: radius.pill, backgroundColor: value ? on : p.surface3, opacity: disabled ? 0.45 : 1 },
+        { ...corners.pill, backgroundColor: value ? on : p.surface3, opacity: disabled ? 0.45 : 1 },
       ]}
     >
       {/* The knob takes the page's ground colour rather than a fixed white. */}
       <View
         style={[
           styles.knob,
-          { borderRadius: radius.pill, backgroundColor: p.background, alignSelf: value ? "flex-end" : "flex-start" },
+          { ...corners.pill, backgroundColor: p.background, alignSelf: value ? "flex-end" : "flex-start" },
         ]}
       />
     </TouchableOpacity>
@@ -767,13 +768,13 @@ export function Choice<T extends string>({
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
 }) {
-  const { p, radius, accent, hueAt } = useTheme();
+  const { p, corners, accent, hueAt } = useTheme();
   return (
     <View
       pointerEvents={disabled ? "none" : "auto"}
       style={[
         styles.well,
-        { backgroundColor: p.surface2, borderRadius: radius.control },
+        { backgroundColor: p.surface2, ...corners.pill },
         disabled ? styles.dimmed : null,
         style,
       ]}
@@ -785,7 +786,7 @@ export function Choice<T extends string>({
           <TouchableOpacity
             key={option.value}
             onPress={() => onChange(option.value)}
-            style={[styles.segment, { borderRadius: radius.control }, on ? { backgroundColor: fill } : null]}
+            style={[styles.segment, corners.pill, on ? { backgroundColor: fill } : null]}
           >
             <Text
               numberOfLines={1}
@@ -822,21 +823,21 @@ export function Swatch({
   onPress: () => void;
   label: string;
 }) {
-  const { p, radius } = useTheme();
+  const { p, corners } = useTheme();
   return (
     <TouchableOpacity
       accessibilityLabel={label}
       accessibilityRole="button"
       onPress={onPress}
-      style={[styles.swatchRing, { borderRadius: radius.pill, backgroundColor: selected ? p.text : "transparent" }]}
+      style={[styles.swatchRing, { ...corners.pill, backgroundColor: selected ? p.text : "transparent" }]}
     >
       <View
         style={[
           styles.swatchGap,
-          { borderRadius: radius.pill, backgroundColor: selected ? p.surface : "transparent" },
+          { ...corners.pill, backgroundColor: selected ? p.surface : "transparent" },
         ]}
       >
-        <View style={[styles.swatchFill, { borderRadius: radius.pill, backgroundColor: hex }]} />
+        <View style={[styles.swatchFill, { ...corners.pill, backgroundColor: hex }]} />
       </View>
     </TouchableOpacity>
   );
@@ -890,7 +891,7 @@ export function Fab({
   labelKey?: string;
   onPress: () => void;
 }) {
-  const { p, radius, labels, accent } = useTheme();
+  const { p, corners, labels, accent } = useTheme();
   const ink = contrastOn(accent);
   const name = labelKey ? glyphNameForKey(labelKey) : undefined;
   const glyph = name ? <Glyph name={name} color={ink} size={22} /> : null;
@@ -908,7 +909,7 @@ export function Fab({
         {
           backgroundColor: accent,
           // A pill radius on a square box is a circle.
-          borderRadius: radius.pill,
+          ...corners.pill,
           paddingHorizontal: showWord ? space.lg : 0,
           width: showWord ? undefined : TOUCH + space.sm,
         },
