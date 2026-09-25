@@ -38,7 +38,7 @@ Targets come from <a href="https://rclone.org">rclone</a>, so a local folder, SM
   <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-amd64"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(1824,0,720,245.3))" alt="Download for Linux" width="195" height="66.435"></a>
 </p>
 <p align="center">
-  <a href="https://github.com/junkerderprovinz/arrowloop/pkgs/container/arrowloop"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(2544,0,720,245.3))" alt="Run it with Docker" width="195" height="66.435"></a>
+  <a href="https://hub.docker.com/r/junkerderprovinz/arrowloop/"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(2544,0,720,245.3))" alt="Run it with Docker" width="195" height="66.435"></a>
   &nbsp;
   <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(3264,0,720,245.3))" alt="Download the source archive" width="195" height="66.435"></a>
   &nbsp;

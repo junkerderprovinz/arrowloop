@@ -13,9 +13,9 @@ BUTTONS = {
     "windows-arm": RELEASE + "arrowloop-windows-arm64-installer.exe",
     "macos": RELEASE + "arrowloop-macos-universal.dmg",
     "linux": RELEASE + "arrowloop-linux-amd64",
-    # A browser cannot download an image, so this opens the package page, which
-    # carries the pull command and every tag.
-    "docker": "https://github.com/junkerderprovinz/arrowloop/pkgs/container/arrowloop",
+    # A browser cannot download an image, so this opens its Docker Hub page,
+    # which carries the pull command and every tag.
+    "docker": "https://hub.docker.com/r/junkerderprovinz/arrowloop/",
     # A release's "Source code (zip)" is the whole repository at that tag, and
     # GitHub gives the newest one no fixed address, so this leads to the release
     # that lists it.
