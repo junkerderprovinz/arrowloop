@@ -122,12 +122,18 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - if: ${{ vars.DOCKERHUB_USERNAME != '' }}
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Move latest to this release
         env:
           # Written out rather than built from the repository name, which
           # imagetools would not lowercase for us.
           IMAGE: ghcr.io/junkerderprovinz/arrowloop
+          HUB: ${{ vars.DOCKERHUB_USERNAME != '' && format('docker.io/{0}/arrowloop', vars.DOCKERHUB_USERNAME) || '' }}
           LATEST: ${{ needs.publish.outputs.latest }}
         run: |
           set -eu
@@ -144,3 +150,7 @@ jobs:
           docker buildx imagetools inspect "${IMAGE}:${version}" > /dev/null
           docker buildx imagetools create --tag "${IMAGE}:latest" "${IMAGE}:${version}"
           echo "${IMAGE}:latest is ${version}"
+          if [ -n "$HUB" ]; then
+            docker buildx imagetools create --tag "${HUB}:latest" "${HUB}:${version}"
+            echo "${HUB}:latest is ${version}"
+          fi
