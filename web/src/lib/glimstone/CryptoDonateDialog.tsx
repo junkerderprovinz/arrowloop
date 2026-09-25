@@ -51,8 +51,10 @@ export interface CryptoDonateDialogProps {
   onPick: (coin: CryptoCoin, network: CryptoNetwork) => void;
   text: {
     title: string;
-    /** One sentence saying what to do: pick a coin and a network, then scan or
-     *  copy. */
+    /** The app's appeal, the same in every giving window. */
+    appeal: string;
+    /** One sentence saying what to do: pick a currency and a network, then scan
+     *  or copy. */
     intro: string;
     /** The label over the chain row ("Networks"). */
     networks: string;
@@ -113,6 +115,7 @@ export function CryptoDonateDialog({
         </div>
 
         <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-5 pb-5">
+          <p className="text-sm text-carbon-text">{text.appeal}</p>
           <p className="text-sm text-carbon-textSub">{text.intro}</p>
 
           <div className="flex flex-col items-center gap-3 rounded-card bg-carbon-surface2 p-4">

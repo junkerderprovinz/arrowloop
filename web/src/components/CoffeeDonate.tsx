@@ -23,6 +23,7 @@ export function CoffeeDonate({ onClose }: { onClose: () => void }) {
       widgetUrl={COFFEE_WIDGET}
       text={{
         title: 'Buy Me a Coffee',
+        appeal: t('about.donateAppeal'),
         intro: t('about.coffeeIntro'),
         closeLabel: t('common.close'),
       }}

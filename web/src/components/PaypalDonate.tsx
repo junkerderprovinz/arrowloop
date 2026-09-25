@@ -52,6 +52,7 @@ export function PaypalDonate({ onClose }: { onClose: () => void }) {
     <PaypalDialog
       text={{
         title: 'PayPal',
+        appeal: t('about.donateAppeal'),
         intro: t('about.paypalIntro'),
         frequencyLabel: t('about.paypalFrequency'),
         frequencies: {

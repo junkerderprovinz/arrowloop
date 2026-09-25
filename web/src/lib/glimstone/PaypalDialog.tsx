@@ -23,6 +23,8 @@ export interface SelectorProps {
 export interface PaypalDialogProps {
   text: {
     title: string;
+    /** The app's appeal, the same in every giving window. */
+    appeal: string;
     /** One sentence: the payment happens at PayPal, by account or by card. */
     intro: string;
     frequencyLabel: string;
@@ -99,6 +101,7 @@ export function PaypalDialog({
         </div>
 
         <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-5 pb-5">
+          <p className="text-sm text-carbon-text">{text.appeal}</p>
           <p className="text-sm text-carbon-textSub">{text.intro}</p>
 
           <div className="flex flex-col gap-1.5">

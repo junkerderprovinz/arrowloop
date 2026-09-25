@@ -57,6 +57,7 @@ export function CryptoDonate({ onClose }: { onClose: () => void }) {
             contentContainerStyle={styles.body}
             keyboardShouldPersistTaps="handled"
           >
+            <Text style={[styles.intro, { color: p.text }]}>{t("about.donateAppeal")}</Text>
             <Text style={[styles.intro, { color: p.textSub }]}>{t("about.cryptoIntro")}</Text>
 
             <View style={[styles.answer, { backgroundColor: p.surface2, ...corners.control }]}>

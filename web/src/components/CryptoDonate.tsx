@@ -50,6 +50,7 @@ export function CryptoDonate({ onClose }: { onClose: () => void }) {
       }}
       text={{
         title: t('about.cryptoTitle'),
+        appeal: t('about.donateAppeal'),
         intro: t('about.cryptoIntro'),
         networks: t('about.cryptoNetworks'),
         copyLabel: copied ? t('common.copied') : t('common.copy'),

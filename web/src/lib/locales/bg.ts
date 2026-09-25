@@ -287,6 +287,7 @@ const bg: Translations = {
   'about.crypto': 'Крипто',
   'about.paypal': 'PayPal',
   'about.cryptoTitle': 'Дарение с крипто',
+  'about.donateAppeal': 'Хвърли монета на своя рицар: тя покрива част от разходите и държи проекта жив. Всичко, което правя, е безплатно и без реклами.',
   'about.cryptoIntro': 'Избери валута и мрежа, после сканирай кода или копирай адреса.',
   'about.cryptoNetworks': 'Мрежи',
   'about.cryptoNoTag': 'Не са нужни destination tag или memo.',
