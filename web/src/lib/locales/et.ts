@@ -646,7 +646,7 @@ const et: Translations = {
   'apps.serverHint': 'ArrowLoop serveris, mis hoiab seda ööpäev läbi töös: Unraidi Community Applicationsist, Dockeri tõmmisena või lähtekoodist ehitatuna.',
   'apps.dockerHint': 'Klõps kopeerib käsu, mis selle käivitab:',
   'apps.copied': 'Kopeeritud',
-  'apps.zip': 'ZIP',
+  'apps.zip': 'Lähtekood.zip',
   'password.hint': 'Igaüks, kes selle aadressini jõuab, saab käivitada töid, mis kustutavad faile. Parool hoitakse räsina failis security.json seadistuse kõrval, nii et ükski seadete varukoopia seda ei sisalda. Kui ARROWLOOP_PASSWORD_HASH on määratud, on see selle parooli ees ülimuslik ja on tee tagasi, kui parool ununeb.',
   'password.on': 'Autentimine on sees.',
   'password.off': 'Autentimine on väljas: kõigil kohaliku võrgu kasutajatel on täielik ligipääs.',

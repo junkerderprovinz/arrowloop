@@ -646,7 +646,7 @@ const ca: Translations = {
   'apps.serverHint': 'ArrowLoop en un servidor que el manté en marxa tot el dia: des de les Community Applications d\'Unraid, com a imatge de Docker o compilat des del codi font.',
   'apps.dockerHint': 'Un clic copia l\'ordre que l\'engega:',
   'apps.copied': 'Copiat',
-  'apps.zip': 'ZIP',
+  'apps.zip': 'Codi font.zip',
   'password.hint': 'Qualsevol que arribi a aquesta adreça pot iniciar tasques que esborren fitxers. La contrasenya es desa com a hash a security.json, al costat de la configuració, de manera que cap còpia de seguretat dels paràmetres no la conté. Si ARROWLOOP_PASSWORD_HASH està definida, té prioritat sobre aquesta contrasenya i és la manera de tornar a entrar si l\'oblides.',
   'password.on': 'L\'autenticació està activada.',
   'password.off': 'L\'autenticació està desactivada. Tots els usuaris de la LAN tenen accés complet.',

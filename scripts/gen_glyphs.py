@@ -90,8 +90,6 @@ GLYPHS = [
     ("IconPhone", "phone/phone-mobile-phone.svg", "The phone app"),
     ("IconFilter", "interface-essential/filter-2.svg", "Narrow a list down"),
     ("IconQr", "money-shopping/qr-code.svg", "Show a download as a code to scan with the phone"),
-    ("IconArrowDown", "interface-essential/arrow-up-1.svg", "Download a file to this computer",
-     "rotate(180 7 7)"),
     ("IconUpload", "interface-essential/upload-box-1.svg", "Read a setup back in from a file"),
 
     # The buttons on GlimStone's AboutCard; main.tsx maps its label keys here.
@@ -180,6 +178,16 @@ LICENSED = [
          "M77.3,431.1h337.8c8.5,0,15.4-6.9,15.4-15.4V108.7l-46.3-46.3h-51.8v120.7h-172.5V62.4h-82.7c-8.5,"
          "0-15.4,6.9-15.4,15.4v337.8c0,8.5,6.9,15.4,15.4,15.4h0ZM152.1,265.2h188.4c7.8,0,14.1,6.4,14.1,"
          "14.1v108.4c0,7.8-6.4,14.1-14.1,14.1h-188.4c-7.8,0-14.1-6.4-14.1-14.1v-108.4c0-7.8,6.4-14.1,14.1-14.1Z",
+     ]),
+    # Streamline's arrows are thin, and a bare arrow on a button needs more
+    # weight to hold its own beside the words. Same 14-unit grid.
+    ("IconArrowDown",
+     "Download a file to this computer",
+     "Drawn for this app",
+     "0 0 14 14",
+     [
+         "M5.2 1.6c0-.9.8-1.6 1.8-1.6s1.8.7 1.8 1.6V6.4h3c.9 0 1.3 1 .7 1.7l-4.8 5.1c-.4.4-1 .4-1.4 0"
+         "L1.5 8.1c-.6-.7-.2-1.7.7-1.7h3V1.6z",
      ]),
 ]
 

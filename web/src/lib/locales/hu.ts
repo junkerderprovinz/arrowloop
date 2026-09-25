@@ -646,7 +646,7 @@ const hu: Translations = {
   'apps.serverHint': 'ArrowLoop egy szerveren, amely éjjel-nappal futtatja: az Unraid Community Applications kínálatából, Docker-képként vagy a forráskódból fordítva.',
   'apps.dockerHint': 'Egy kattintás kimásolja az indító parancsot:',
   'apps.copied': 'Másolva',
-  'apps.zip': 'ZIP',
+  'apps.zip': 'Forráskód.zip',
   'password.hint': 'Aki eléri ezt a címet, fájlokat törlő feladatokat indíthat. A jelszó hash-ként a konfiguráció melletti security.json fájlban van, így a beállítások egyetlen biztonsági mentése sem tartalmazza. Ha az ARROWLOOP_PASSWORD_HASH be van állítva, az elsőbbséget élvez ezzel a jelszóval szemben, és azzal jutsz vissza, ha elfelejted.',
   'password.on': 'A hitelesítés engedélyezett.',
   'password.off': 'A hitelesítés ki van kapcsolva. Minden LAN-felhasználónak teljes hozzáférése van.',

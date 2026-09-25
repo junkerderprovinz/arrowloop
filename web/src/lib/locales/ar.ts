@@ -646,7 +646,7 @@ const ar: Translations = {
   'apps.serverHint': 'ArrowLoop على خادم يبقيه يعمل على مدار الساعة: من Community Applications في Unraid، أو كصورة Docker، أو مبنياً من شيفرته المصدرية.',
   'apps.dockerHint': 'نقرة واحدة تنسخ الأمر الذي يشغّله:',
   'apps.copied': 'تم النسخ',
-  'apps.zip': 'ZIP',
+  'apps.zip': 'الشيفرة المصدرية.zip',
   'password.hint': 'كل من يصل إلى هذا العنوان يستطيع تشغيل مهام تحذف ملفات. تُحفظ كلمة المرور مجزّأة (hash) في security.json بجانب ملف الإعدادات، لذلك لا تحملها أي نسخة احتياطية من الإعدادات. وإذا كان ARROWLOOP_PASSWORD_HASH مضبوطًا فهو يتقدّم على كلمة المرور هذه، وبه تعود إلى الدخول إن نسيتها.',
   'password.on': 'المصادقة مفعّلة.',
   'password.off': 'المصادقة معطّلة. جميع مستخدمي LAN لديهم وصول كامل.',

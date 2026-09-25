@@ -646,7 +646,7 @@ const tr: Translations = {
   'apps.serverHint': 'ArrowLoop onu gece gündüz çalışır tutan bir sunucuda: Unraid\'in Community Applications bölümünden, Docker imajı olarak veya kaynak koddan derlenerek.',
   'apps.dockerHint': 'Bir tıklama onu başlatan komutu kopyalar:',
   'apps.copied': 'Kopyalandı',
-  'apps.zip': 'ZIP',
+  'apps.zip': 'Kaynak kod.zip',
   'password.hint': 'Bu adrese ulaşabilen herkes dosya silen işler başlatabilir. Parola, yapılandırmanın yanındaki security.json dosyasında özet (hash) olarak tutulur, bu yüzden ayarların hiçbir yedeği onu içermez. ARROWLOOP_PASSWORD_HASH ayarlıysa bu paroladan önce gelir ve parolayı unutursan içeri geri dönme yolun olur.',
   'password.on': 'Kimlik doğrulama etkin.',
   'password.off': 'Kimlik doğrulama kapalı. Tüm LAN kullanıcıları tam erişime sahip.',

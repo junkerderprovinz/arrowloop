@@ -646,7 +646,7 @@ const cs: Translations = {
   'apps.serverHint': 'ArrowLoop na serveru, který ho nechá běžet nepřetržitě: z Community Applications v Unraidu, jako obraz Dockeru nebo sestavený ze zdrojového kódu.',
   'apps.dockerHint': 'Kliknutím se zkopíruje příkaz, který ho spustí:',
   'apps.copied': 'Zkopírováno',
-  'apps.zip': 'ZIP',
+  'apps.zip': 'Zdrojový kód.zip',
   'password.hint': 'Kdo se dostane na tuto adresu, může spouštět úlohy, které mažou soubory. Heslo se ukládá jako hash do security.json vedle konfigurace, takže ho žádná záloha nastavení neobsahuje. Pokud je nastavena proměnná ARROWLOOP_PASSWORD_HASH, má přednost před tímto heslem a je cestou zpět, když ho zapomeneš.',
   'password.on': 'Ověřování je povoleno.',
   'password.off': 'Ověřování je vypnuto. Všichni uživatelé v LAN mají plný přístup.',

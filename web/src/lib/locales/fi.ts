@@ -646,7 +646,7 @@ const fi: Translations = {
   'apps.serverHint': 'ArrowLoop palvelimella, joka pitää sen käynnissä ympäri vuorokauden: Unraidin Community Applicationsista, Docker-kuvana tai lähdekoodista käännettynä.',
   'apps.dockerHint': 'Napsautus kopioi komennon, joka käynnistää sen:',
   'apps.copied': 'Kopioitu',
-  'apps.zip': 'ZIP',
+  'apps.zip': 'Lähdekoodi.zip',
   'password.hint': 'Kuka tahansa tähän osoitteeseen pääsevä voi käynnistää töitä, jotka poistavat tiedostoja. Salasana säilytetään tiivisteenä tiedostossa security.json asetustiedoston vieressä, joten mikään asetusten varmuuskopio ei sisällä sitä. Jos ARROWLOOP_PASSWORD_HASH on asetettu, se ohittaa tämän salasanan ja on tie takaisin sisään, jos unohdat sen.',
   'password.on': 'Todennus on käytössä.',
   'password.off': 'Todennus on pois: kaikilla LAN-käyttäjillä on täysi pääsy.',

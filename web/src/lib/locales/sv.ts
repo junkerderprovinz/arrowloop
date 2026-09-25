@@ -646,7 +646,7 @@ const sv: Translations = {
   'apps.serverHint': 'ArrowLoop på en server som håller den igång dygnet runt: från Unraids Community Applications, som Docker-avbild eller byggd från källkoden.',
   'apps.dockerHint': 'Ett klick kopierar kommandot som startar den:',
   'apps.copied': 'Kopierat',
-  'apps.zip': 'ZIP',
+  'apps.zip': 'Källkod.zip',
   'password.hint': 'Alla som når den här adressen kan starta jobb som raderar filer. Lösenordet sparas som hash i security.json bredvid konfigurationen, så ingen säkerhetskopia av inställningarna innehåller det. Är ARROWLOOP_PASSWORD_HASH satt går den före det här lösenordet och är vägen in igen om du glömmer det.',
   'password.on': 'Autentisering är aktiverad.',
   'password.off': 'Autentisering är av. Alla LAN-användare har full åtkomst.',

@@ -646,7 +646,7 @@ const eu: Translations = {
   'apps.serverHint': 'ArrowLoop egun osoan martxan mantentzen duen zerbitzari batean: Unraid-en Community Applications-etik, Docker irudi gisa edo iturburu-kodetik eraikita.',
   'apps.dockerHint': 'Klik batek abiarazten duen komandoa kopiatzen du:',
   'apps.copied': 'Kopiatuta',
-  'apps.zip': 'ZIP',
+  'apps.zip': 'Iturburu-kodea.zip',
   'password.hint': 'Helbide honetara iristen den edonork abiarazi ditzake fitxategiak ezabatzen dituzten lanak. Pasahitza hash gisa gordetzen da security.json fitxategian, konfigurazioaren ondoan, beraz ezarpenen babeskopiek ez dute inoiz jasotzen. ARROWLOOP_PASSWORD_HASH ezarrita badago, pasahitz honen gainetik dago, eta hura ahazten baduzu berriro sartzeko bidea da.',
   'password.on': 'Autentifikazioa gaituta dago.',
   'password.off': 'Autentifikazioa itzalita dago: LAN erabiltzaile guztiek sarbide osoa dute.',

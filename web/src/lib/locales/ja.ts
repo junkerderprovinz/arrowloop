@@ -646,7 +646,7 @@ const ja: Translations = {
   'apps.serverHint': '常時動かしておけるサーバーで ArrowLoop を使う方法: Unraid の Community Applications から、Docker イメージとして、またはソースコードからビルドして。',
   'apps.dockerHint': 'クリックすると起動コマンドをコピーします:',
   'apps.copied': 'コピーしました',
-  'apps.zip': 'ZIP',
+  'apps.zip': 'ソースコード.zip',
   'password.hint': 'このアドレスに届く人は誰でも、ファイルを削除するジョブを開始できます。パスワードは設定ファイルの隣の security.json にハッシュとして保存されるため、設定のバックアップに含まれることはありません。ARROWLOOP_PASSWORD_HASH が設定されている場合はこのパスワードより優先され、パスワードを忘れたときに再び入る手段になります。',
   'password.on': '認証が有効です。',
   'password.off': '認証が無効です。LAN ユーザー全員がフルアクセスを持っています。',

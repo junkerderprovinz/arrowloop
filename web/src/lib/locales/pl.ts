@@ -646,7 +646,7 @@ const pl: Translations = {
   'apps.serverHint': 'ArrowLoop na serwerze, który utrzymuje go w działaniu przez całą dobę: z Community Applications w Unraid, jako obraz Dockera lub zbudowany z kodu źródłowego.',
   'apps.dockerHint': 'Kliknięcie kopiuje polecenie, które go uruchamia:',
   'apps.copied': 'Skopiowano',
-  'apps.zip': 'ZIP',
+  'apps.zip': 'Kod źródłowy.zip',
   'password.hint': 'Każdy, kto dotrze do tego adresu, może uruchamiać zadania, które usuwają pliki. Hasło jest przechowywane jako skrót w security.json obok konfiguracji, więc żadna kopia zapasowa ustawień go nie zawiera. Jeśli ustawiono ARROWLOOP_PASSWORD_HASH, ma ono pierwszeństwo przed tym hasłem i jest drogą z powrotem, gdy je zapomnisz.',
   'password.on': 'Uwierzytelnianie jest włączone.',
   'password.off': 'Uwierzytelnianie jest wyłączone. Wszyscy użytkownicy sieci LAN mają pełny dostęp.',

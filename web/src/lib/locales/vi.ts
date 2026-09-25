@@ -646,7 +646,7 @@ const vi: Translations = {
   'apps.serverHint': 'ArrowLoop trên một máy chủ chạy suốt ngày đêm: từ Community Applications của Unraid, dưới dạng image Docker hoặc dựng từ mã nguồn.',
   'apps.dockerHint': 'Một cú nhấp sao chép lệnh khởi động nó:',
   'apps.copied': 'Đã sao chép',
-  'apps.zip': 'ZIP',
+  'apps.zip': 'Mã nguồn.zip',
   'password.hint': 'Bất kỳ ai truy cập được địa chỉ này đều có thể chạy các công việc xóa tệp. Mật khẩu được lưu dưới dạng băm trong security.json cạnh tệp cấu hình, nên không bản sao lưu cài đặt nào chứa nó. Nếu ARROWLOOP_PASSWORD_HASH được đặt, nó được ưu tiên hơn mật khẩu này và là lối quay lại nếu bạn quên mật khẩu.',
   'password.on': 'Xác thực đã bật.',
   'password.off': 'Xác thực đang tắt. Tất cả người dùng LAN có toàn quyền truy cập.',

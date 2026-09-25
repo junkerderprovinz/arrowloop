@@ -646,7 +646,7 @@ const lt: Translations = {
   'apps.serverHint': 'ArrowLoop serveryje, kuris jį laiko veikiantį visą parą: iš Unraid Community Applications, kaip Docker atvaizdą arba sukompiliuotą iš pradinio kodo.',
   'apps.dockerHint': 'Paspaudus nukopijuojama jį paleidžianti komanda:',
   'apps.copied': 'Nukopijuota',
-  'apps.zip': 'ZIP',
+  'apps.zip': 'Pradinis kodas.zip',
   'password.hint': 'Kiekvienas, pasiekiantis šį adresą, gali paleisti užduotis, kurios trina failus. Slaptažodis saugomas kaip maiša faile security.json šalia konfigūracijos, todėl jokia nustatymų atsarginė kopija jo neturi. Jei nustatytas ARROWLOOP_PASSWORD_HASH, jis turi pirmenybę prieš šį slaptažodį ir yra kelias atgal, jei jį pamirši.',
   'password.on': 'Autentifikavimas įjungtas.',
   'password.off': 'Autentifikavimas išjungtas. Visi vietinio tinklo naudotojai turi visą prieigą.',

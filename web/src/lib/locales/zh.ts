@@ -646,7 +646,7 @@ const zh: Translations = {
   'apps.serverHint': '在全天运行的服务器上使用 ArrowLoop：来自 Unraid 的 Community Applications、作为 Docker 镜像，或从源代码构建。',
   'apps.dockerHint': '点击即可复制启动它的命令：',
   'apps.copied': '已复制',
-  'apps.zip': 'ZIP',
+  'apps.zip': '源代码.zip',
   'password.hint': '能访问这个地址的任何人都可以启动会删除文件的任务。密码以哈希形式保存在配置文件旁边的 security.json 中，因此设置的备份里从来不包含它。如果设置了 ARROWLOOP_PASSWORD_HASH，它优先于这个密码，也是忘记密码后重新进入的办法。',
   'password.on': '身份验证已启用。',
   'password.off': '身份验证已关闭，所有 LAN 用户均有完全访问权限。',
