@@ -261,7 +261,8 @@ jobs:
         run: |
           ./gradlew assembleRelease --no-daemon
           if [ "$SIGNED" = true ]; then
-            ./gradlew bundleRelease -ParrowloopBundleAbi=arm64-v8a --no-daemon
+            # React Native adds its own architecture list to the same filter.
+            ./gradlew bundleRelease -ParrowloopBundleAbi=arm64-v8a -PreactNativeArchitectures=arm64-v8a --no-daemon
           fi
 
       - name: Name the outputs
