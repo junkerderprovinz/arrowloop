@@ -22,11 +22,7 @@
 <p align="center">
 <b>Two-way file sync that shows you the plan before it moves anything.</b><br>
 <br>
-ArrowLoop keeps two folders in step: a local disk and a NAS share, a laptop and an SFTP server, a phone and a WebDAV cloud. It remembers what both sides last agreed on, so it can tell a new file from a deleted one, and before a run it lists every change with its direction and the reason for it. Untick what you don't want, press the button, and only the rest happens.<br>
-<br>
-Deletions go to a trash instead of disappearing. A run that would delete more than half of what it knows stops and says so, and a side that suddenly looks empty, the way an unmounted disk does, is refused outright. When a file was edited on both sides, both versions are kept.<br>
-<br>
-Targets come from <a href="https://rclone.org">rclone</a>, so a local folder, SMB, SFTP, S3, Nextcloud, OpenCloud and every other rclone backend work the same way. ArrowLoop runs as a Docker container with an Unraid template, as a desktop app for Windows, macOS and Linux, and as an Android app, with schedules, real-time watching and a message when a run fails. Think of it as a self-hosted GoodSync.
+ArrowLoop keeps two folders in step, say a NAS share and a laptop, or a phone and a WebDAV cloud. It remembers what both sides last agreed on, so it can tell a new file from a deleted one. Every change is listed before a run, deletions go to a trash, and a run that would delete too much or finds a side suddenly empty stops instead. It runs as a Docker container, as a desktop app for Windows, macOS and Linux and as an Android app, and reaches every <a href="https://rclone.org">rclone</a> backend. Think of it as a self-hosted GoodSync.
 </p>
 
 <!-- download-buttons: written by scripts/gen_download_buttons.py -->
