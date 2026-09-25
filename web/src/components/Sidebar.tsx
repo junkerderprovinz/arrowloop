@@ -3,6 +3,7 @@ import { useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { hueVars } from '../lib/appearance'
 import { hidesLabel, type LabelMode } from '../lib/controls'
 import { LogoLoop } from './LogoLoop'
+import { shudder } from '../lib/logoFlight'
 import { LOGO_GOLD, LogoMark } from './LogoMark'
 import { HOLD, NO_STREAK, press } from '../lib/tapStreak'
 import { useRainbow } from './Shell'
@@ -112,12 +113,23 @@ export function Sidebar<T extends string>({
   const narrow = mode === 'glyph'
 
   // The easter egg: five quick presses on the logo, or a press and hold, run
-  // the arrows into the middle, bend them into a ring that spins faster and
-  // faster, and shoot them out straight. The logo still navigates on every
-  // press. The flight count remounts the mark, which replays the animation even
-  // when it is asked for again.
+  // the arrows along the rings' gap into the middle, curl them into a ring that
+  // spins up faster and faster, and shoot them out, and the rail shudders from
+  // top to bottom. The logo still navigates on every press. The flight count
+  // remounts the mark, which replays the animation even when it is asked for
+  // again.
   const [flight, setFlight] = useState(0)
   const streak = useRef(NO_STREAK)
+  const rail = useRef<HTMLElement>(null)
+
+  function shake() {
+    const amplitude = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--motion-logo-shake'))
+    if (!(amplitude > 0) || !rail.current) return
+    const frames = shudder(amplitude)
+    rail.current.querySelectorAll<HTMLElement>('.al-wordmark, .glim-nav-row').forEach((row, i) => {
+      row.animate(frames, { duration: 700, delay: i * 30 })
+    })
+  }
 
   // Cleared on release and on leaving, so a press that turns into a drag does
   // not fire.
@@ -153,6 +165,7 @@ export function Sidebar<T extends string>({
     // surface, one step apart from the content it navigates. A window shorter
     // than the rows scrolls the rail instead of cutting off Settings.
     <aside
+      ref={rail}
       className={`flex h-full shrink-0 flex-col overflow-x-hidden overflow-y-auto rounded-card bg-carbon-sidebar ${
         narrow ? 'w-(--rail-narrow)' : 'w-56'
       }`}
@@ -180,10 +193,10 @@ export function Sidebar<T extends string>({
           style={{ color: LOGO_GOLD }}
           className={`shrink-0 ${flight > 0 ? 'al-logo-morph' : ''}`}
         >
-          {flight > 0 && <LogoLoop />}
+          {flight > 0 && <LogoLoop onRelease={shake} />}
         </LogoMark>
         {!narrow && (
-          <span className="text-xl font-bold tracking-tight text-carbon-text">ArrowLoop</span>
+          <span className="al-wordmark text-xl font-bold tracking-tight text-carbon-text">ArrowLoop</span>
         )}
       </button>
 
