@@ -15,7 +15,7 @@ The full notes for each release are in
 ## ✨ Added
 
 - **A privacy policy**, `PRIVACY.md`: what ArrowLoop keeps on the device, what leaves it and where to, and what each Android permission is for.
-- **Everything a Google Play listing needs**, under `fastlane/`: the texts in English and German, the icon and the feature graphic, and the answers Play Console asks for. A release also builds the app bundle Play takes, signed with the release key.
+- **The Google Play listing**, under `fastlane/`: the texts in English and German, the icon, the feature graphic and the screenshots. A release also builds the app bundle Play takes, signed with the release key.
 
 ## 🎨 Design
 
