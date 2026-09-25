@@ -10,6 +10,8 @@ The full notes for each release are in
 
 ## Unreleased
 
+## 1.1.0 - 2026-09-25
+
 ## ✨ Added
 
 - **A privacy policy**, `PRIVACY.md`: what ArrowLoop keeps on the device, what leaves it and where to, and what each Android permission is for.
@@ -23,7 +25,7 @@ The full notes for each release are in
 - **Windows gets one download per processor, the installer.** The portable exe kept its settings under AppData like the installed program, so all it spared was the installation, and a Windows service belongs in a folder only administrators can change. `arrowloop service` says so too, since the service also runs the jobs' before and after commands as LocalSystem.
 - **The README's download buttons sit right under the description**, before the donation text, and start with a Docs button for the manual.
 - **The README's download rows gain Windows on ARM, a source button and a second one for the phone**: Google Play, drawn without a link until the listing is live, beside the APK.
-- **The look follows GlimStone 2.10.1**, whose App tab this is: the tiles and their marks come from the design language, so every app offers its downloads the same way. In the round shape every button, tab, badge and switch is a true pill, a fresh install starts on soft corners, and a fourth shape hides behind square for whoever keeps clicking it.
+- **The look follows GlimStone 2.11.0**, whose App tab this is: the tiles and their marks come from the design language, so every app offers its downloads the same way. The page behind a window is blurred and a little darker. In the round shape every button, tab, badge and switch is a true pill, a fresh install starts on soft corners, and a fourth shape hides behind square for whoever keeps clicking it.
 
 ## ⚡ Improved
 
