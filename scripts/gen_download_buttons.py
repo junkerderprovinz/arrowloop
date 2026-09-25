@@ -149,7 +149,7 @@ SERVER = [
     # The container has no file to download, so this one leads to the image's
     # own page, which carries the pull command and every tag.
     ("docker", "docker", "#1d63ed", "#ffffff", "Docker", "Container", "Run it with Docker",
-     "https://github.com/junkerderprovinz/arrowloop/pkgs/container/arrowloop"),
+     "https://hub.docker.com/r/junkerderprovinz/arrowloop"),
     # A release's "Source code (zip)" is the whole repository at that tag. GitHub
     # gives the newest one no fixed address, so this leads to the release that
     # lists it, as BombVault's button does. Slate, since GitHub's black vanishes
@@ -321,7 +321,7 @@ def read_readme():
     if not blocks(text, GIVE_OPEN, GIVE_CLOSE):
         raise SystemExit("README.md has no %s ... %s" % (GIVE_OPEN, GIVE_CLOSE))
     for slug, *_, href in BUTTONS:
-        if href and "play.google.com" not in href and "/%s/" % REPO not in href:
+        if href and "play.google.com" not in href and "/%s/" % REPO not in href + "/":
             raise SystemExit("REPO is %r, but %s leads to %s" % (REPO, slug, href))
     return text
 

@@ -20,7 +20,7 @@ const PLAY_STORE = ''
 const UNRAID_CA = ''
 
 const DOCKER_RUN =
-  'docker run -d --name arrowloop -p 8422:8422 -v /path/to/config:/config -v /path/to/data:/data ghcr.io/junkerderprovinz/arrowloop:latest'
+  'docker run -d --name arrowloop -p 8422:8422 -v /path/to/config:/config -v /path/to/data:/data junkerderprovinz/arrowloop:latest'
 
 const DESKTOP = [
   { key: 'apps.windows', file: 'arrowloop-windows-amd64-installer.exe', mark: WINDOWS_SVG, tint: 'glim-windows-mark' },

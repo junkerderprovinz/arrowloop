@@ -6,7 +6,7 @@
 docker run -d --name arrowloop -p 8422:8422 \
   -v /mnt/user/appdata/arrowloop:/config \
   -v /mnt/user:/data \
-  ghcr.io/junkerderprovinz/arrowloop:latest
+  junkerderprovinz/arrowloop:latest
 ```
 
 `/config` holds `arrowloop.json`, one state database per job, and the run log.
@@ -52,7 +52,7 @@ for it. That makes it the way back in after a forgotten password. Have the image
 hash one and hand the result back:
 
 ```bash
-docker run --rm -it ghcr.io/junkerderprovinz/arrowloop:latest hash-password
+docker run --rm -it junkerderprovinz/arrowloop:latest hash-password
 
 docker run -d --name arrowloop -p 8422:8422 \
   -e ARROWLOOP_PASSWORD_HASH='$2a$10$...' \

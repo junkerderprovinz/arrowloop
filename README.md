@@ -8,7 +8,8 @@
 <p align="center">
   <a href="https://github.com/junkerderprovinz/arrowloop/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/junkerderprovinz/arrowloop/ci.yml?branch=main&label=Build&style=for-the-badge&logo=githubactions&logoColor=white" alt="Build" height="36"></a>&nbsp;
   <a href="https://github.com/junkerderprovinz/arrowloop/actions/workflows/container.yml"><img src="https://img.shields.io/github/actions/workflow/status/junkerderprovinz/arrowloop/container.yml?branch=main&label=Container&style=for-the-badge&logo=githubactions&logoColor=white" alt="Container" height="36"></a>&nbsp;
-  <a href="https://github.com/junkerderprovinz/arrowloop/pkgs/container/arrowloop"><img src="https://img.shields.io/badge/Image-ghcr.io-1d99f3?style=for-the-badge&logo=docker&logoColor=white" alt="Image" height="36"></a>&nbsp;
+  <a href="https://hub.docker.com/r/junkerderprovinz/arrowloop"><img src="https://img.shields.io/docker/pulls/junkerderprovinz/arrowloop?style=for-the-badge&logo=docker&logoColor=white&label=Pulls&color=1d99f3" alt="Docker Pulls" height="36"></a>&nbsp;
+  <a href="https://hub.docker.com/r/junkerderprovinz/arrowloop"><img src="https://img.shields.io/docker/image-size/junkerderprovinz/arrowloop/latest?style=for-the-badge&logo=docker&logoColor=white&label=Size&color=1d99f3" alt="Image Size" height="36"></a>&nbsp;
   <a href="https://github.com/junkerderprovinz/arrowloop/pkgs/container/arrowloop"><img src="https://img.shields.io/badge/Arch-amd64%20%7C%20arm64-success?style=for-the-badge&logo=linux&logoColor=white" alt="Arch" height="36"></a>&nbsp;
   <a href="https://rclone.org"><img src="https://img.shields.io/badge/Backends-rclone-3f79b7?style=for-the-badge&logoColor=white" alt="rclone" height="36"></a>&nbsp;
   <a href="https://unraid.net"><img src="https://img.shields.io/badge/Unraid-Template-f15a2c?style=for-the-badge&logo=unraid&logoColor=white" alt="Unraid" height="36"></a>&nbsp;
@@ -39,7 +40,7 @@ Targets come from <a href="https://rclone.org">rclone</a>, so a local folder, SM
 <p align="center">
   <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-amd64"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(2160,0,720,245.3))" alt="Download for Linux" width="195" height="66.435"></a>
   &nbsp;
-  <a href="https://github.com/junkerderprovinz/arrowloop/pkgs/container/arrowloop"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(2880,0,720,245.3))" alt="Run it with Docker" width="195" height="66.435"></a>
+  <a href="https://hub.docker.com/r/junkerderprovinz/arrowloop"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(2880,0,720,245.3))" alt="Run it with Docker" width="195" height="66.435"></a>
   &nbsp;
   <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(3600,0,720,245.3))" alt="Download the source archive for this release" width="195" height="66.435"></a>
 </p>
@@ -310,7 +311,7 @@ Ticking is not decoration. The run re-plans and then keeps only the paths that w
 **As a container**, which is what an Unraid box wants:
 
 ```
-docker run -d --name arrowloop -p 8422:8422   -v /mnt/user/appdata/arrowloop:/config   -v /mnt/user:/data   ghcr.io/junkerderprovinz/arrowloop:latest
+docker run -d --name arrowloop -p 8422:8422   -v /mnt/user/appdata/arrowloop:/config   -v /mnt/user:/data   junkerderprovinz/arrowloop:latest
 ```
 
 `/config` holds `arrowloop.json`, one state database per job and the run log, and it is the directory that must survive the container: without those databases every job forgets what the two sides agreed on and treats every file as new. A first start on an empty `/config` writes a starter configuration with one disabled example job, so the interface comes up and can be edited rather than crash-looping on a missing file. The Unraid template is [templates/my-ArrowLoop.xml](templates/my-ArrowLoop.xml).
