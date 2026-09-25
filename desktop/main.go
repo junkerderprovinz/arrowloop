@@ -98,9 +98,8 @@ func run() error {
 		Log:         desktopLog,
 	}
 
-	// An autostart entry records a path, which goes stale when a portable copy
-	// is later installed properly. A failure only warns: opening the window
-	// matters more.
+	// An autostart entry records a path, which goes stale when the program
+	// moves. A failure only warns: opening the window matters more.
 	if err := autostart.Refresh(); err != nil {
 		log.Printf("could not re-point the autostart entry: %v", err)
 	}

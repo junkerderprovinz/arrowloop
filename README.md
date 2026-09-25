@@ -30,11 +30,11 @@ If it has earned a place on your server or computer, toss a coin to your knight:
 
 <!-- give-buttons: written by scripts/gen_download_buttons.py -->
 <p align="center">
-  <a href="https://buymeacoffee.com/junkerderprovinz"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(5760,0,841.9,245.3))" alt="Buy me a coffee" width="160" height="46.618"></a>
+  <a href="https://buymeacoffee.com/junkerderprovinz"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(5040,0,841.9,245.3))" alt="Buy me a coffee" width="160" height="46.618"></a>
   &nbsp;
-  <a href="https://www.paypal.com/donate/?hosted_button_id=76FVV52TKXTUS"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(6601.9,0,841.9,245.3))" alt="PayPal" width="160" height="46.618"></a>
+  <a href="https://www.paypal.com/donate/?hosted_button_id=76FVV52TKXTUS"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(5881.9,0,841.9,245.3))" alt="PayPal" width="160" height="46.618"></a>
   &nbsp;
-  <a href="https://junkerderprovinz.github.io/junkerderprovinz/"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(7443.8,0,841.9,245.3))" alt="Donate with crypto" width="160" height="46.618"></a>
+  <a href="https://junkerderprovinz.github.io/junkerderprovinz/"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(6723.8,0,841.9,245.3))" alt="Donate with crypto" width="160" height="46.618"></a>
 </p>
 <!-- /give-buttons -->
 
@@ -60,25 +60,23 @@ If it has earned a place on your server or computer, toss a coin to your knight:
 <p align="center">
   <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-windows-amd64-installer.exe"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(0,0,720,245.3))" alt="Download for Windows, installer" width="195" height="66.435"></a>
   &nbsp;
-  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-windows-amd64-portable.exe"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(720,0,720,245.3))" alt="Download for Windows, portable" width="195" height="66.435"></a>
+  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-macos-universal.dmg"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(720,0,720,245.3))" alt="Download for macOS" width="195" height="66.435"></a>
   &nbsp;
-  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-macos-universal.dmg"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(1440,0,720,245.3))" alt="Download for macOS" width="195" height="66.435"></a>
-  &nbsp;
-  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-amd64"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(2160,0,720,245.3))" alt="Download for Linux" width="195" height="66.435"></a>
+  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-amd64"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(1440,0,720,245.3))" alt="Download for Linux" width="195" height="66.435"></a>
 </p>
 <p align="center">
-  <a href="https://github.com/junkerderprovinz/arrowloop/pkgs/container/arrowloop"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(2880,0,720,245.3))" alt="Run it with Docker" width="195" height="66.435"></a>
+  <a href="https://github.com/junkerderprovinz/arrowloop/pkgs/container/arrowloop"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(2160,0,720,245.3))" alt="Run it with Docker" width="195" height="66.435"></a>
   &nbsp;
-  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(3600,0,720,245.3))" alt="Download the source archive for this release" width="195" height="66.435"></a>
+  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(2880,0,720,245.3))" alt="Download the source archive for this release" width="195" height="66.435"></a>
   &nbsp;
-  <img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(4320,0,720,245.3))" alt="On Google Play soon" width="195" height="66.435">
+  <img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(3600,0,720,245.3))" alt="On Google Play soon" width="195" height="66.435">
   &nbsp;
-  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-android-arm64.apk"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(5040,0,720,245.3))" alt="Download the Android app" width="195" height="66.435"></a>
+  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-android-arm64.apk"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(4320,0,720,245.3))" alt="Download the Android app" width="195" height="66.435"></a>
 </p>
 <!-- /download-buttons -->
 
 <p align="center">
-  <sub>Always the newest release &nbsp;·&nbsp; Windows on ARM: <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-windows-arm64-installer.exe">installer</a>, <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-windows-arm64-portable.exe">portable</a> &nbsp;·&nbsp; <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest">release notes</a> &nbsp;·&nbsp; <a href="#9-installing-it">how to install each one</a></sub>
+  <sub>Always the newest release &nbsp;·&nbsp; Windows on ARM: <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-windows-arm64-installer.exe">installer</a> &nbsp;·&nbsp; <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest">release notes</a> &nbsp;·&nbsp; <a href="#9-installing-it">how to install each one</a></sub>
 </p>
 
 <br>
@@ -326,7 +324,7 @@ docker run -d --name arrowloop -p 8422:8422   -v /mnt/user/appdata/arrowloop:/co
 
 The image carries no second executable. rclone is compiled in as a library, so there is no version skew between the tool and the thing it drives, and nothing to keep separately up to date.
 
-**As a desktop application** on Windows, Linux or macOS, from the release page. Windows gets two files that are the same program: an installer that puts it in the Start menu and under Apps, and a portable exe that runs from wherever you leave it. A Windows computer with an ARM processor gets its own pair, marked `windows-arm64`. It is not a client talking to a server: the scheduler, the run log and the API all live in the same process, and the window is a webview pointed at them. Nothing listens on the network at all, which is the difference between a desktop app and a server somebody did not ask to run. The schedules run for as long as the window is open; for a machine that should sync while nobody is looking, `arrowloop daemon` and `arrowloop service` are the right pair.
+**As a desktop application** on Windows, Linux or macOS, from the release page. Windows gets an installer that puts it in the Start menu and under Apps, and a Windows computer with an ARM processor gets its own, marked `windows-arm64`. The installer asks for administrator rights because it installs for everyone on the machine, into a folder only administrators can change, which is where a Windows service should run from. It is not a client talking to a server: the scheduler, the run log and the API all live in the same process, and the window is a webview pointed at them. Nothing listens on the network at all, which is the difference between a desktop app and a server somebody did not ask to run. The schedules run for as long as the window is open; for a machine that should sync while nobody is looking, `arrowloop daemon` and `arrowloop service` are the right pair.
 
 **Settings, General, Starting** registers it to start when you sign in. It is a per-user entry (`HKCU` on Windows, `~/.config/autostart` on Linux, a LaunchAgent on macOS), so it needs no administrator rights and touches nobody else on the machine. The switch reads its state back from the system rather than from a settings file, so removing the entry with the Task Manager's own startup tab turns the switch off too, instead of leaving it claiming something that is no longer true. Autostart alone only gets the program running: a job that should sync *because* the machine just came on wants `runAtStart` as well, or it sits there until its schedule is next due.
 
@@ -388,11 +386,11 @@ If it has earned a place on your server or computer, toss a coin to your knight:
 
 <!-- give-buttons: written by scripts/gen_download_buttons.py -->
 <p align="center">
-  <a href="https://buymeacoffee.com/junkerderprovinz"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(5760,0,841.9,245.3))" alt="Buy me a coffee" width="160" height="46.618"></a>
+  <a href="https://buymeacoffee.com/junkerderprovinz"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(5040,0,841.9,245.3))" alt="Buy me a coffee" width="160" height="46.618"></a>
   &nbsp;
-  <a href="https://www.paypal.com/donate/?hosted_button_id=76FVV52TKXTUS"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(6601.9,0,841.9,245.3))" alt="PayPal" width="160" height="46.618"></a>
+  <a href="https://www.paypal.com/donate/?hosted_button_id=76FVV52TKXTUS"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(5881.9,0,841.9,245.3))" alt="PayPal" width="160" height="46.618"></a>
   &nbsp;
-  <a href="https://junkerderprovinz.github.io/junkerderprovinz/"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(7443.8,0,841.9,245.3))" alt="Donate with crypto" width="160" height="46.618"></a>
+  <a href="https://junkerderprovinz.github.io/junkerderprovinz/"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(6723.8,0,841.9,245.3))" alt="Donate with crypto" width="160" height="46.618"></a>
 </p>
 <!-- /give-buttons -->
 

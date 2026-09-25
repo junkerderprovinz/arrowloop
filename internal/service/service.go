@@ -130,6 +130,7 @@ func windows(exe, config string) Definition {
 		Notes: []string{
 			"Run this in an elevated prompt; sc.exe cannot create a service without administrative rights.",
 			"A Windows service runs as LocalSystem by default, which has no mapped network drives and no user profile. A job pointing at a UNC path such as \\\\server\\share works; one pointing at Z:\\ does not.",
+			"LocalSystem also runs the jobs' before and after commands. Point the service at the installed program under Program Files and at a configuration file an administrator created, not one in a user's profile: whoever can change either file can run anything as LocalSystem.",
 			"Start it with: sc.exe start ArrowLoop, and remove it with: sc.exe delete ArrowLoop",
 			"This binary is not a native Windows service yet: it runs as an ordinary program under the service manager, so the Services panel will show it as running but stopping it is a kill rather than a clean shutdown.",
 		},

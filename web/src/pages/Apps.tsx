@@ -24,9 +24,7 @@ const DOCKER_RUN =
 
 const DESKTOP = [
   { key: 'apps.windows', file: 'arrowloop-windows-amd64-installer.exe', mark: WINDOWS_SVG, tint: 'glim-windows-mark' },
-  { key: 'apps.windowsPortable', file: 'arrowloop-windows-amd64-portable.exe', mark: WINDOWS_SVG, tint: 'glim-windows-mark' },
   { key: 'apps.windowsArm', file: 'arrowloop-windows-arm64-installer.exe', mark: WINDOWS_SVG, tint: 'glim-windows-mark' },
-  { key: 'apps.windowsArmPortable', file: 'arrowloop-windows-arm64-portable.exe', mark: WINDOWS_SVG, tint: 'glim-windows-mark' },
   { key: 'apps.macos', file: 'arrowloop-macos-universal.dmg', mark: APPLE_SVG, tint: '' },
   { key: 'apps.linux', file: 'arrowloop-linux-amd64', mark: LINUX_SVG, tint: '' },
 ] as const

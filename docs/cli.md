@@ -78,6 +78,10 @@ Three things it tells you that are otherwise found out the hard way:
 
 - A Windows service runs as LocalSystem, which has no mapped network drives. A
   job pointing at a UNC path works; one pointing at a drive letter does not.
+- LocalSystem also runs the jobs' before and after commands. Register the
+  installed program under Program Files and a configuration file an
+  administrator created, not one in a user's profile: whoever can change either
+  file can run anything as LocalSystem.
 - A Linux user service needs `loginctl enable-linger` to survive a logout.
 - macOS asks for permission the first time the agent touches Documents, and
   until that is granted the job fails with an ordinary permission error that

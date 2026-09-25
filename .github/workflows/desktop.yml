@@ -19,7 +19,7 @@ jobs:
           - os: windows-latest
             platform: windows/amd64
             slug: windows-amd64
-            # An installer alongside the portable exe.
+            # The installer is what a release ships for Windows.
             extra: "-nsis"
           # Built on an ARM runner rather than cross-compiled, so a build that
           # only breaks on ARM breaks here.

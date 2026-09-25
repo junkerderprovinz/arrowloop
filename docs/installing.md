@@ -86,11 +86,12 @@ reason that reads like a bug.
 
 Windows, Linux and macOS builds are on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases). Windows
-gets two files and they are the same program: an **installer** that puts it in
-the Start menu and gives it an entry under Apps, and a **portable** exe that runs
-from wherever you leave it. Take the installer unless you have a reason not to.
-A computer with an ARM processor, such as a Snapdragon laptop, takes the pair
-named `windows-arm64`; the `amd64` files would run there too, but through
+gets an **installer** that puts it in the Start menu and gives it an entry under
+Apps. It asks for administrator rights because it installs for everyone on the
+machine, under Program Files, where only administrators can change the program;
+that matters once it runs as a service (see [the command line](cli.md#service)).
+A computer with an ARM processor, such as a Snapdragon laptop, takes the one
+named `windows-arm64`; the `amd64` installer would run there too, but through
 emulation and slower.
 
 It is not a client talking to a server. The scheduler, the run log and the API

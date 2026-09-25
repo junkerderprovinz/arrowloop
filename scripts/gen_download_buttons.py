@@ -125,8 +125,6 @@ RELEASE = "https://github.com/junkerderprovinz/arrowloop/releases/latest/downloa
 DESKTOP = [
     ("windows-installer", "windows", "#0078d4", "#ffffff", "Windows", "Installer", "Download for Windows, installer",
      RELEASE + "arrowloop-windows-amd64-installer.exe"),
-    ("windows-portable", "windows", "#0078d4", "#ffffff", "Windows", "Portable", "Download for Windows, portable",
-     RELEASE + "arrowloop-windows-amd64-portable.exe"),
     # Space grey, since black vanishes against GitHub's dark theme.
     ("macos", "apple", "#6e6e73", "#ffffff", "macOS", "Universal", "Download for macOS",
      RELEASE + "arrowloop-macos-universal.dmg"),
