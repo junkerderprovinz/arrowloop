@@ -13,7 +13,8 @@ The full notes for each release are in
 ## 🎨 Design
 
 - **The App tab offers each way to get ArrowLoop as a tile**, the same shape as in KnightLoader. The phone card has Google Play, marked "soon" until the listing is live, and the APK with the Android mark, with a Download button and a QR code button beside it that turns the tile into a code to scan. The app's version stands in the card's corner, linked to its release.
-- **The second card offers what you are not already running.** In the container it offers the desktop app for Windows, Windows on ARM, macOS and Linux; in the desktop app it offers a server instead: Unraid's Community Applications, marked "soon" until the listing is live, the Docker image, whose tile copies the command that starts it, and the source code as a ZIP.
+- **The second card offers what you are not already running.** In the container it offers the desktop app for Windows, Windows on ARM, macOS and Linux; in the desktop app it offers a server instead: Unraid's Community Applications, marked "soon" until the listing is live, the Docker image, whose tile copies the command that starts it, and the source code as Source code.zip, named in the reader's language.
+- **The look is GlimStone 2.10.0**, whose App tab this is: the tiles and their marks come from the design language, so every app offers its downloads the same way.
 
 ## 1.0.0 - 2026-09-25
 

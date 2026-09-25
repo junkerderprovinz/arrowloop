@@ -90,6 +90,18 @@
   --brand-coffee:  #ffdd00;
   --brand-bitcoin: #f7931a;
   --brand-paypal:  #4fb5f0;
+
+  /* The marks on the app tiles that are one flat colour or one gradient, which
+     no hover grey carries: the brand value at rest, a deepened one while the
+     tile is lit ("The App tab"). */
+  --brand-android:           #32de84;
+  --brand-android-hover:     #155d37;
+  --brand-docker:            #2396ed;
+  --brand-docker-hover:      #0b5394;
+  --brand-unraid-from:       #e32929;
+  --brand-unraid-to:         #ff8d30;
+  --brand-unraid-from-hover: #9c1414;
+  --brand-unraid-to-hover:   #a84b0c;
   --brand-github:  #ffffff;
 
   /* Text ramp: three steps, the last still legible at 11px. */
@@ -173,6 +185,14 @@
     --brand-coffee:  #8a6d00;
     --brand-bitcoin: #a85d00;
     --brand-paypal:  #003087;
+    --brand-android:           #1c7c4a;
+    --brand-android-hover:     #1c7c4a;
+    --brand-docker:            #1d6fbf;
+    --brand-docker-hover:      #1d6fbf;
+    --brand-unraid-from:       #c21f1f;
+    --brand-unraid-to:         #c85d12;
+    --brand-unraid-from-hover: #c21f1f;
+    --brand-unraid-to-hover:   #c85d12;
     --brand-github:  #181717;
 
     --carbon-text:       #161616;
@@ -233,6 +253,14 @@
   --brand-coffee:  #8a6d00;
   --brand-bitcoin: #a85d00;
   --brand-paypal:  #003087;
+  --brand-android:           #1c7c4a;
+  --brand-android-hover:     #1c7c4a;
+  --brand-docker:            #1d6fbf;
+  --brand-docker-hover:      #1d6fbf;
+  --brand-unraid-from:       #c21f1f;
+  --brand-unraid-to:         #c85d12;
+  --brand-unraid-from-hover: #c21f1f;
+  --brand-unraid-to-hover:   #c85d12;
   --brand-github:  #181717;
 
   --carbon-text:       #161616;
@@ -1046,6 +1074,19 @@ body {
 .glim-brand-btn:hover:not(:disabled) .glim-btn-glyph svg,
 .glim-brand-btn:hover:not(:disabled) .glim-btn-glyph svg path {
   fill: currentColor;
+}
+
+/* The app tiles' single-colour marks. The deepened value only under a real
+   pointer, or a tap on a touch screen would leave it on a resting tile. */
+.glim-android-mark { color: var(--brand-android); }
+.glim-docker-mark { color: var(--brand-docker); }
+@media (hover: hover) {
+  .group:hover .glim-android-mark { color: var(--brand-android-hover); }
+  .group:hover .glim-docker-mark { color: var(--brand-docker-hover); }
+  .group:hover .glim-unraid-mark {
+    --brand-unraid-from: var(--brand-unraid-from-hover);
+    --brand-unraid-to: var(--brand-unraid-to-hover);
+  }
 }
 
 /* One block per brand: the adjusted resting mark (a token, because it changes
