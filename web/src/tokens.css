@@ -228,9 +228,10 @@
     --carbon-text-muted: #6f6f6f;
     --sidebar-text:      #393939;
 
-    --accent:            #8E6A00;
-    --accent-contrast:   #ffffff;
-    --accent-soft:       rgba(142, 106, 0, 0.12);
+    --accent:            #FCC419;
+    --accent-contrast:   #161616;
+    --accent-soft:       rgba(252, 196, 25, 0.14);
+    --ink-mix:           55%;
 
     --status-info-text:    #8E6A00;
     --status-info-bg:      rgba(142, 106, 0, 0.12);

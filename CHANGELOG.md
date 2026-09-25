@@ -17,10 +17,11 @@ The full notes for each release are in
 - **The second card offers what you are not already running.** In the container it offers the desktop app for Windows, Windows on ARM, macOS and Linux; in the desktop app it offers a server instead: Unraid's Community Applications, marked "soon" until the listing is live, the Docker image, whose tile copies the command that starts it, and the source code as Source code.zip, named in the reader's language.
 - **Windows gets one download per processor, the installer.** The portable exe kept its settings under AppData like the installed program, so all it spared was the installation, and a Windows service belongs in a folder only administrators can change. `arrowloop service` says so too, since the service also runs the jobs' before and after commands as LocalSystem.
 - **The README's download rows gain Windows on ARM, a source button and a second one for the phone**: Google Play, drawn without a link until the listing is live, beside the APK.
-- **The look follows GlimStone 2.10.0**, whose App tab this is: the tiles and their marks come from the design language, so every app offers its downloads the same way. In the round shape every button, tab, badge and switch is a true pill, a fresh install starts on soft corners, and a fourth shape hides behind square for whoever keeps clicking it.
+- **The look follows GlimStone 2.10.1**, whose App tab this is: the tiles and their marks come from the design language, so every app offers its downloads the same way. In the round shape every button, tab, badge and switch is a true pill, a fresh install starts on soft corners, and a fourth shape hides behind square for whoever keeps clicking it.
 
 ## 🐛 Fixed
 
+- **With the theme on System, a light desktop shows the Sunflower accent**, as Light picked by hand does. It showed an olive one.
 - **A dropdown answers the mouse wheel only after it has been clicked or reached with Tab.** Scrolling the page with the pointer over one no longer changes its value.
 - **Links out of the desktop app open in the default browser.** On macOS and Linux the GitHub and email buttons and the version numbers on the About card did nothing, and so did the downloads and the version link on the App tab, because the app's window cannot open a second one. On Windows they opened a bare window with no address bar. They now go to the default browser or mail program on every platform.
 
