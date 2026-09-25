@@ -89,6 +89,8 @@ GLYPHS = [
     ("IconDownload", "interface-essential/download-box-1.svg", "Export the setup to a file"),
     ("IconPhone", "phone/phone-mobile-phone.svg", "The phone app"),
     ("IconFilter", "interface-essential/filter-2.svg", "Narrow a list down"),
+    ("IconQr", "money-shopping/qr-code.svg", "Show a download as a code to scan with the phone"),
+    ("IconSource", "programming/file-code-1.svg", "The source code as an archive"),
     ("IconUpload", "interface-essential/upload-box-1.svg", "Read a setup back in from a file"),
 
     # The buttons on GlimStone's AboutCard; main.tsx maps its label keys here.

@@ -402,3 +402,60 @@ body {
 [data-labels-tabs='reactive'] .glim-tab[aria-selected='true'] {
   gap: 0.375rem;
 }
+
+/* Marks on the app tiles that are one flat colour or one gradient, which the
+   tile's hover grey does not carry: each is painted from a pair, its brand
+   value at rest and a deepened one while the tile is lit. The light theme's
+   resting ground is pale enough that the deepened value serves both. */
+:root {
+  --brand-android: #32de84;
+  --brand-android-hover: #155d37;
+  --brand-docker: #2396ed;
+  --brand-docker-hover: #0b5394;
+  --brand-unraid-from: #e32929;
+  --brand-unraid-to: #ff8d30;
+  --brand-unraid-from-hover: #9c1414;
+  --brand-unraid-to-hover: #a84b0c;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) {
+    --brand-android: #1c7c4a;
+    --brand-android-hover: #1c7c4a;
+    --brand-docker: #1d6fbf;
+    --brand-docker-hover: #1d6fbf;
+    --brand-unraid-from: #c21f1f;
+    --brand-unraid-to: #c85d12;
+    --brand-unraid-from-hover: #c21f1f;
+    --brand-unraid-to-hover: #c85d12;
+  }
+}
+[data-theme='light'] {
+  --brand-android: #1c7c4a;
+  --brand-android-hover: #1c7c4a;
+  --brand-docker: #1d6fbf;
+  --brand-docker-hover: #1d6fbf;
+  --brand-unraid-from: #c21f1f;
+  --brand-unraid-to: #c85d12;
+  --brand-unraid-from-hover: #c21f1f;
+  --brand-unraid-to-hover: #c85d12;
+}
+.glim-android-mark {
+  color: var(--brand-android);
+}
+.glim-docker-mark {
+  color: var(--brand-docker);
+}
+/* Behind the hover media query, so a tap on a touch screen does not leave the
+   deep colour on a resting tile. */
+@media (hover: hover) {
+  .group:hover .glim-android-mark {
+    color: var(--brand-android-hover);
+  }
+  .group:hover .glim-docker-mark {
+    color: var(--brand-docker-hover);
+  }
+  .group:hover .glim-unraid-mark {
+    --brand-unraid-from: var(--brand-unraid-from-hover);
+    --brand-unraid-to: var(--brand-unraid-to-hover);
+  }
+}

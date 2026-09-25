@@ -345,7 +345,7 @@ function Settings(props: LookProps) {
         ) : section === 'engine' ? (
           <Engine />
         ) : section === 'app' ? (
-          <Apps />
+          <Apps version={props.version} desktop={props.window !== null} />
         ) : section === 'security' ? (
           <Security />
         ) : (

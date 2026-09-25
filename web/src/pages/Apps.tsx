@@ -1,20 +1,43 @@
-import type { ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 
-import { LOGO_GOLD, LogoMark } from '../components/LogoMark'
 import { QRCode } from '../components/QRCode'
+import { Button } from '../lib/glimstone/Button'
 import { Card } from '../lib/glimstone/Card'
+import { InfoBubble } from '../lib/glimstone/InfoBubble'
+import { IconSource } from '../components/glyphs'
 import { useT } from '../lib/i18n'
 
-// Every link names a file of the newest published release, so the page never
-// needs to know which version that is.
-const RELEASE = 'https://github.com/junkerderprovinz/arrowloop/releases/latest/download'
+const REPO = 'https://github.com/junkerderprovinz/arrowloop'
 
+// Every download names a file of the newest published release, so the page
+// never needs to know which version that is.
+const RELEASE = `${REPO}/releases/latest/download`
 const APK = `${RELEASE}/arrowloop-android-arm64.apk`
 
-// Windows and Apple from Dashboard Icons (github.com/homarr-labs/dashboard-icons),
-// Linux from Simple Icons (CC0). Apple's mark is black or white by definition
-// and the single-colour Tux has no colour of its own, so both take the tile's
-// ink.
+// Empty until the listing is live; the tile then says it is coming.
+const PLAY_STORE = ''
+const UNRAID_CA = ''
+
+const DOCKER_RUN =
+  'docker run -d --name arrowloop -p 8422:8422 -v /path/to/config:/config -v /path/to/data:/data ghcr.io/junkerderprovinz/arrowloop:latest'
+
+// Google Play's icon rather than its badge, whose artwork may not be altered.
+const PLAY_SVG =
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><linearGradient id="al-play-a" x1="60.6" x2="276.6" y1="45.4" y2="261.4" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#00a0ff"/><stop offset=".01" stop-color="#00a1ff"/><stop offset=".26" stop-color="#00beff"/><stop offset=".51" stop-color="#00d2ff"/><stop offset=".76" stop-color="#00dfff"/><stop offset="1" stop-color="#00e3ff"/></linearGradient><linearGradient id="al-play-b" x1="446.6" x2="34.3" y1="256" y2="256" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ffe000"/><stop offset=".41" stop-color="#ffbd00"/><stop offset=".78" stop-color="#ffa500"/><stop offset="1" stop-color="#ff9c00"/></linearGradient><linearGradient id="al-play-c" x1="349.6" x2="6.9" y1="295.1" y2="637.8" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ff3a44"/><stop offset="1" stop-color="#c31162"/></linearGradient><linearGradient id="al-play-d" x1="22.9" x2="176" y1="-38.1" y2="115" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#32a071"/><stop offset=".07" stop-color="#2da771"/><stop offset=".48" stop-color="#15cf74"/><stop offset=".8" stop-color="#06e775"/><stop offset="1" stop-color="#00f076"/></linearGradient><path fill="url(#al-play-a)" d="M39.6 24.1c-5.6 5.9-8.9 15.1-8.9 27v409.8c0 11.9 3.3 21.1 8.9 27l1.4 1.3L270 259.7v-5.4L41 25.4z"/><path fill="url(#al-play-b)" d="m346.3 336.3-76.3-76.6v-5.4l76.4-76.5 1.7 1L438.5 231c25.8 14.7 25.8 38.7 0 53.4l-90.4 51.4z"/><path fill="url(#al-play-c)" d="M348 335.3 270 257 39.6 487.9c8.5 9 22.5 10.1 38.4 1.1z"/><path fill="url(#al-play-d)" d="M348 178.7 78 25.1C62.1 16 48.1 17.2 39.6 26.2L270 257z"/></svg>'
+
+// Android's head, Docker's whale and Unraid's bars from Dashboard Icons, painted
+// from custom properties: each is one flat colour or one gradient that the
+// tile's hover grey does not carry, so index.css gives it a deeper value there.
+const ANDROID_SVG =
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0.03 112.41 512 287.17"><path fill="currentColor" d="m447.9 460.9 42.5-73.6c2.4-4.1.9-9.4-3.1-11.8-4.1-2.4-9.4-1-11.7 3.1l-43 74.5c-32.8-15-69.8-23.4-109.5-23.4s-76.7 8.4-109.5 23.4l-43-74.5c-2.4-4.1-7.6-5.5-11.8-3.1-4.1 2.4-5.5 7.6-3.1 11.8l42.5 73.6C124.8 500.6 75.2 574.7 67 661.5h512c-8.2-86.8-57.8-160.9-131.1-200.6M205.4 589.6c-11.9 0-21.5-9.6-21.5-21.5s9.6-21.5 21.5-21.5 21.5 9.6 21.5 21.5c0 11.8-9.6 21.5-21.5 21.5m235.1 0c-11.9 0-21.5-9.6-21.5-21.5s9.6-21.5 21.5-21.5 21.5 9.6 21.5 21.5c0 11.8-9.7 21.5-21.5 21.5" transform="translate(-66.97 -261.92)"/></svg>'
+const DOCKER_SVG =
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="-0.07 71.3 511.97 369.5"><path fill="currentColor" d="M501.4 212.3c-11.5-8-38-11-58.6-7-2.4-20-13.5-37.5-32.7-53l-11-8-7.7 11.5c-9.6 15-14.4 36-13 56 .5 7 2.9 19.5 10.1 30.5-6.7 4-20.7 9-38.9 9H2.3l-1 4c-3.4 20-3.4 82.5 36 130.5 29.8 36.5 74 55 132.1 55 125.9 0 219.1-60.5 262.8-170 17.3.5 54.3 0 73-37.5.5-1 1.4-3 4.8-10.5l1.9-4zM280 71.3h-52.8v50H280zm0 60h-52.8v50H280zm-62.5 0h-52.8v50h52.8zm-62.4 0h-52.8v50h52.8zm-62.5 60H39.8v50h52.8zm62.5 0h-52.8v50h52.8zm62.4 0h-52.8v50h52.8zm62.5 0h-52.8v50H280zm62.4 0h-52.8v50h52.8z"/></svg>'
+const UNRAID_SVG =
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 108.3 512 295.4"><linearGradient id="al-unraid-a" x1="91.058" x2="420.942" y1="93.45" y2="423.333" gradientTransform="matrix(1 0 0 -1 0 514.2)" gradientUnits="userSpaceOnUse"><stop offset="0" style="stop-color:var(--brand-unraid-from)"/><stop offset="1" style="stop-color:var(--brand-unraid-to)"/></linearGradient><path fill="url(#al-unraid-a)" d="M243.3 181.9h24.9v147.8h-24.9zM24.9 329.7H0V181.9h24.9zm96.8 17.6h24.9v56.4h-24.9zM60.6 284h24.9v91.3H60.6zm121.7 0h24.9v91.3h-24.9zm304.8-102.1H512v147.8h-24.9zm-96.8-17.2h-24.9v-56.4h24.9zm61.1 62.9h-24.9v-91h24.9zm-122.1 0h-24.9v-91h24.9z"/></svg>'
+
+// Windows and Apple from Dashboard Icons, Linux from Simple Icons (CC0). Apple's
+// mark is black or white by definition and the single-colour Tux has no colour
+// of its own, so both take the tile's ink.
 const WINDOWS_SVG =
   '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M0 0h242.7v242.6H0zm269.3 0H512v242.6H269.3zM0 269.3h242.7V512H0zm269.3 0H512V512H269.3" fill="#0078d4"/></svg>'
 const APPLE_SVG =
@@ -31,62 +54,179 @@ const DESKTOP = [
   { key: 'apps.linux', file: 'arrowloop-linux-amd64', mark: LINUX_SVG },
 ] as const
 
-/** Where to get ArrowLoop outside this page: the phone app and the desktop builds. */
-export function Apps() {
-  const { t } = useT()
+/**
+ * Where to get ArrowLoop outside this page. The phone app is offered
+ * everywhere; the second card offers the forms this one is not, so the
+ * desktop app offers the server installs and a server offers the desktop app.
+ */
+export function Apps({ version, desktop }: { version: string; desktop: boolean }) {
   return (
     <div className="flex flex-col gap-10">
-      <Card title={t('apps.phoneTitle')} hint={t('apps.phoneHint')} hueIndex={0}>
-        <div className="flex flex-wrap items-center gap-6">
-          <Tile
-            href={APK}
-            name={t('apps.android')}
-            logo={<LogoMark size={56} style={{ color: LOGO_GOLD }} />}
-          />
-          {/* The page is usually open on a computer, and the file is wanted on
-              the phone. */}
-          <figure className="flex flex-col items-center gap-2">
-            <span className="rounded-[var(--radius-control)] bg-white p-2">
-              <QRCode value={APK} size={112} />
-            </span>
-            <figcaption className="text-xs text-carbon-textSub">{t('apps.scan')}</figcaption>
-          </figure>
-        </div>
-      </Card>
-
-      <Card title={t('apps.desktopTitle')} hint={t('apps.desktopHint')} hueIndex={1}>
-        <div className="flex flex-wrap gap-3">
-          {DESKTOP.map((d) => (
-            <Tile key={d.file} href={`${RELEASE}/${d.file}`} name={t(d.key)} logo={<Mark svg={d.mark} />} />
-          ))}
-        </div>
-      </Card>
+      <PhoneCard version={version} />
+      {desktop ? <ServerCard version={version} /> : <DesktopCard />}
     </div>
   )
 }
 
-/**
- * One download, shaped like the provider tiles: a mark above a name, hovering
- * to the tile grey. A link, since it leads to a file rather than doing
- * something here.
- */
-function Tile({ href, name, logo }: { href: string; name: string; logo: ReactNode }) {
+function PhoneCard({ version }: { version: string }) {
+  const { t } = useT()
+  const [qr, setQr] = useState(false)
+  return (
+    <Card title={t('apps.phoneTitle')} hint={t('apps.phoneHint')} hueIndex={0}>
+      <ReleaseVersion version={version} />
+      <div className="flex flex-wrap items-center gap-3">
+        <Tile name={t('apps.playStore')} logo={<Mark svg={PLAY_SVG} />} href={PLAY_STORE} />
+        {/* The page is usually open on a computer, and the file is wanted on
+            the phone, so the tile can turn into a code to scan. */}
+        <Tile
+          name={t('apps.apk')}
+          logo={<Mark svg={ANDROID_SVG} className="glim-android-mark" />}
+          href={APK}
+          face={
+            qr ? (
+              <span className="rounded-[var(--radius-control)] bg-white p-1.5">
+                <QRCode value={APK} size={84} />
+              </span>
+            ) : undefined
+          }
+        />
+        <div className="flex flex-col gap-2">
+          <Button label={t('apps.download')} labelKey="apps.download" onClick={() => window.open(APK, '_blank', 'noopener,noreferrer')} />
+          <Button label={t('apps.qr')} labelKey="apps.qr" onClick={() => setQr((on) => !on)} />
+        </div>
+      </div>
+    </Card>
+  )
+}
+
+function DesktopCard() {
+  const { t } = useT()
+  return (
+    <Card title={t('apps.desktopTitle')} hint={t('apps.desktopHint')} hueIndex={1}>
+      <div className="flex flex-wrap gap-3">
+        {DESKTOP.map((d) => (
+          <Tile key={d.file} href={`${RELEASE}/${d.file}`} name={t(d.key)} logo={<Mark svg={d.mark} />} />
+        ))}
+      </div>
+    </Card>
+  )
+}
+
+function ServerCard({ version }: { version: string }) {
+  const { t } = useT()
+  const [copied, setCopied] = useState(false)
+  // The source of this very version where it has a tag, the newest otherwise.
+  const zip = /^v\d+\.\d+\.\d+$/.test(version)
+    ? `${REPO}/archive/refs/tags/${version}.zip`
+    : `${REPO}/archive/refs/heads/main.zip`
+  return (
+    <Card title={t('apps.serverTitle')} hint={t('apps.serverHint')} hueIndex={1}>
+      <div className="flex flex-wrap gap-3">
+        <Tile name={t('apps.unraid')} logo={<Mark svg={UNRAID_SVG} className="glim-unraid-mark" />} href={UNRAID_CA} />
+        <Tile
+          name={copied ? t('apps.copied') : t('apps.docker')}
+          logo={<Mark svg={DOCKER_SVG} className="glim-docker-mark" />}
+          hint={t('apps.dockerHint') + ' ' + DOCKER_RUN}
+          onClick={() => {
+            void navigator.clipboard?.writeText(DOCKER_RUN).then(() => {
+              setCopied(true)
+              setTimeout(() => setCopied(false), 1800)
+            })
+          }}
+        />
+        <Tile name={t('apps.zip')} logo={<IconSource className="h-12 w-12" />} href={zip} />
+      </div>
+    </Card>
+  )
+}
+
+/** The version the tiles give, linked to its release where it is one. */
+function ReleaseVersion({ version }: { version: string }) {
+  const plain = /^v\d+\.\d+\.\d+$/.test(version)
+  const cls = 'glim-num absolute end-5 top-3 text-[11px] text-carbon-textMuted'
+  if (!plain) return <span className={cls}>{version}</span>
   return (
     <a
-      href={href}
-      className="flex h-28 w-28 flex-col items-center justify-center gap-2 rounded-[var(--radius-control)] bg-carbon-surface2 text-carbon-text no-underline transition-colors duration-150 hover:bg-(--carbon-tile-hover) hover:text-(--carbon-tile-hover-ink)"
+      href={`${REPO}/releases/tag/${version}`}
+      target="_blank"
+      rel="noreferrer noopener"
+      className={`${cls} no-underline hover:text-carbon-text`}
     >
-      <span className="flex h-14 w-14 shrink-0 items-center justify-center">{logo}</span>
-      <span className="text-xs font-medium">{name}</span>
+      {version}
     </a>
   )
 }
 
+const tileClass =
+  'flex h-28 w-28 flex-col items-center justify-center gap-2 rounded-[var(--radius-control)] bg-carbon-surface2 text-carbon-text no-underline'
+const liveClass =
+  'transition-colors duration-150 group-hover:bg-(--carbon-tile-hover) group-hover:text-(--carbon-tile-hover-ink)'
+
+/**
+ * One way to get the app, shaped like the provider tiles: a mark above a name,
+ * hovering to the tile grey. A link where it leads to a file or a listing, a
+ * button where it does something here, and a quiet tile with a "soon" badge
+ * where the listing does not exist yet. `face` replaces the mark and the name,
+ * as the APK tile does with its code.
+ */
+function Tile({
+  name,
+  logo,
+  href,
+  onClick,
+  hint,
+  face,
+}: {
+  name: string
+  logo: ReactNode
+  href?: string
+  onClick?: () => void
+  hint?: string
+  face?: ReactNode
+}) {
+  const { t } = useT()
+  const body = face ?? (
+    <>
+      <span className="flex h-14 w-14 shrink-0 items-center justify-center">{logo}</span>
+      <span className="px-1 text-center text-xs font-medium leading-tight">{name}</span>
+    </>
+  )
+  const soon = !href && !onClick
+  return (
+    <div className="group relative">
+      {soon ? (
+        <div className={`${tileClass} text-carbon-textMuted`} aria-disabled>
+          <span className="flex h-14 w-14 shrink-0 items-center justify-center opacity-45">{logo}</span>
+          <span className="px-1 text-center text-xs font-medium leading-tight">{name}</span>
+        </div>
+      ) : href ? (
+        <a href={href} target="_blank" rel="noreferrer noopener" aria-label={name} className={`${tileClass} ${liveClass}`}>
+          {body}
+        </a>
+      ) : (
+        <button type="button" onClick={onClick} aria-label={name} className={`${tileClass} ${liveClass}`}>
+          {body}
+        </button>
+      )}
+      {soon && (
+        <span className="absolute end-1.5 top-1.5 rounded-[var(--radius-pill)] bg-carbon-surface3 px-1.5 py-0.5 text-[10px] font-semibold text-carbon-textSub">
+          {t('apps.soon')}
+        </span>
+      )}
+      {hint && (
+        <span className="absolute end-1.5 top-1.5 text-carbon-textSub group-hover:text-(--carbon-tile-hover-ink)">
+          <InfoBubble tip={hint} />
+        </span>
+      )}
+    </div>
+  )
+}
+
 /** A vendor mark kept as its own markup, in its own colours or the tile's ink. */
-function Mark({ svg }: { svg: string }) {
+function Mark({ svg, className = '' }: { svg: string; className?: string }) {
   return (
     <span
-      className="block h-full w-full [&>svg]:block [&>svg]:h-full [&>svg]:w-full"
+      className={`block h-full w-full [&>svg]:block [&>svg]:h-full [&>svg]:w-full ${className}`}
       aria-hidden
       dangerouslySetInnerHTML={{ __html: svg }}
     />
