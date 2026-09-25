@@ -316,12 +316,23 @@ ${SYNC_END}
     splits {
         abi {
             ${SPLITS}
-            enable true
+            // A bundle is split by Play, and ABI splits and an ABI filter
+            // cannot be set together.
+            enable !project.hasProperty('arrowloopBundleAbi')
             reset()
             // arm64 for phones, x86_64 for emulators. The engine is 79 MB per
             // architecture, so 32-bit ARM and a universal APK are left out.
             include "arm64-v8a", "x86_64"
             universalApk false
+        }
+    }
+    // The Play bundle takes one architecture: React Native's prebuilt
+    // libraries would otherwise bring x86_64 along without an engine for it.
+    if (project.hasProperty('arrowloopBundleAbi')) {
+        defaultConfig {
+            ndk {
+                abiFilters project.property('arrowloopBundleAbi')
+            }
         }
     }
 $1`,

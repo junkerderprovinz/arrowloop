@@ -14,7 +14,7 @@ in fastlane's layout, so a later upload can read them from here.
 2. **The bundle is signed with the release key**, the one the APKs on the
    release page carry (SHA-256 `13477be4...10e6`, checked by the build). It
    holds the arm64 build only, so Play offers the app to arm64 devices, which is
-   every current phone. The x86_64 engine is killed by Android 15's app sandbox
+   every current phone. The x86_64 engine is killed by the app sandbox on x86_64 Android
    (SIGSYS on `lstat`), and x86 Chromebooks would get it.
 3. **The privacy policy** is `PRIVACY.md` on `main`:
    <https://github.com/junkerderprovinz/arrowloop/blob/main/PRIVACY.md>
