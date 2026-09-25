@@ -3,12 +3,12 @@ import { useCallback, useEffect, useState } from "react";
 import { Alert, RefreshControl, StyleSheet, View } from "react-native";
 import { api, type Job, type Remote } from "../api";
 import { CardMenu } from "../CardMenu";
+import { clock } from "../clock";
 import { Glyph, ProviderMark } from "../glyphs";
 import { directionKey, markForSide } from "../jobMark";
 import { jobCopy } from "../../../web/src/lib/jobCopy.data";
-import { useT, type T } from "../i18n";
+import { useT } from "../i18n";
 import { animateNext, useMotion } from "../motion";
-import { since } from "../../../web/src/lib/since";
 import type { Nav, JobsStack } from "../nav";
 import { space } from "../theme";
 import { useEngineEvents } from "../useEngine";
@@ -215,7 +215,7 @@ function JobCard({
   leftMark?: string;
   rightMark?: string;
 }) {
-  const { t } = useT();
+  const { t, lang } = useT();
   const hue = useHue(index);
   const { p, scheme } = useTheme();
   return (
@@ -254,7 +254,7 @@ function JobCard({
 
       <Caption>
         {job.lastSuccess
-          ? `${t("jobs.lastRun", { when: when(job.lastSuccess, t) })} ${t("jobs.ago")}`
+          ? t("jobs.lastRun", { when: clock(job.lastSuccess, lang) })
           : t("jobs.activityEmpty")}
       </Caption>
 
@@ -330,12 +330,6 @@ export function arrow(direction: string): string {
   if (direction === "toRight" || direction === "right") return "→";
   if (direction === "toLeft" || direction === "left") return "←";
   return "↔";
-}
-
-/** Formats how long ago a timestamp was, using lib/since.ts and the translated unit. */
-export function when(iso: string, t: T): string {
-  const { count, unit } = since(iso);
-  return `${count} ${t(unit)}`;
 }
 
 const styles = StyleSheet.create({

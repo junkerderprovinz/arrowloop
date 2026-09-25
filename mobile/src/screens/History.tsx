@@ -11,7 +11,7 @@ import type { HistoryStack, Nav } from "../nav";
 import { contrastOn, space, text } from "../theme";
 import { useEngineEvents } from "../useEngine";
 import { Arrive, Badge, Body, Button, Caption, Card, Choice, Empty, Mono, MovingList, Title, useTheme } from "../ui";
-import { when } from "./Jobs";
+import { clock } from "../clock";
 import { bytes } from "../space";
 
 /**
@@ -97,7 +97,7 @@ type Show = keyof typeof SHOWS;
  */
 function FileLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "files" | "runs") => void }) {
   const nav = useNavigation<Nav<HistoryStack>>();
-  const { t } = useT();
+  const { t, lang } = useT();
   const { p, corners, accent } = useTheme();
 
   const [rows, setRows] = useState<Touch[] | null>(null);
@@ -263,7 +263,7 @@ function FileLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "fil
                 />
               ) : null}
               {item.Job ? <Caption>{item.Job}</Caption> : null}
-              <Caption>{`${when(item.When, t)} ${t("jobs.ago")}`}</Caption>
+              <Caption>{clock(item.When, lang)}</Caption>
               {item.Size ? <Caption>{bytes(item.Size)}</Caption> : null}
             </View>
             {/* Why a path was skipped, or which way a conflict went. */}
@@ -281,7 +281,7 @@ function FileLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "fil
  */
 function RunLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "files" | "runs") => void }) {
   const nav = useNavigation<Nav<HistoryStack>>();
-  const { t } = useT();
+  const { t, lang } = useT();
   const { p, accent } = useTheme();
   const [runs, setRuns] = useState<Run[] | null>(null);
   const [show, setShow] = useState<"all" | "changed" | "failed">("all");
@@ -372,7 +372,7 @@ function RunLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "file
             ) : null}
             {/* An idle run gets no badge; the line below already says so. */}
           </View>
-          <Caption>{`${when(item.Started, t)} ${t("jobs.ago")}`}</Caption>
+          <Caption>{clock(item.Started, lang)}</Caption>
           {failed(item) ? (
             <Body>{item.Err}</Body>
           ) : (

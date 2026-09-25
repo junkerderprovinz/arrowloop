@@ -196,13 +196,8 @@ export const en = {
   'dupes.findOn': 'Duplicates on the {side} side',
   'check.more': '{found} findings in total, showing the first {shown}.',
   'jobs.schedule.onRequest': 'on request',
-  'jobs.ago': 'ago',
 
   // Written out, because abbreviations rarely carry over between languages.
-  'time.second': 'seconds',
-  'time.minute': 'minutes',
-  'time.hour': 'hours',
-  'time.day': 'days',
   'preview.title': 'Preview',
   'preview.for': 'Preview: {job}',
   'preview.working': 'Working out what would happen. Nothing has been touched.',
@@ -946,12 +941,6 @@ export const de: Translations = {
   'dupes.findOn': 'Doppelte auf der {side}n Seite',
   'check.more': 'Insgesamt {found} Funde, angezeigt werden die ersten {shown}.',
   'jobs.schedule.onRequest': 'auf Zuruf',
-  'jobs.ago': 'her',
-
-  'time.second': 'Sekunden',
-  'time.minute': 'Minuten',
-  'time.hour': 'Stunden',
-  'time.day': 'Tage',
   'preview.title': 'Vorschau',
   'preview.for': 'Vorschau: {job}',
   'preview.working': 'Es wird ermittelt, was passieren würde. Nichts wurde angefasst.',

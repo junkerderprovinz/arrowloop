@@ -9,7 +9,8 @@ import { space } from "../theme";
 import { useEngineEvents } from "../useEngine";
 import { Badge, Body, Button, Caption, Card, Section } from "../ui";
 import { counters } from "./History";
-import { arrow, when } from "./Jobs";
+import { clock } from "../clock";
+import { arrow } from "./Jobs";
 
 /**
  * The actions and recent runs of a saved job, shown above its fields in
@@ -17,7 +18,7 @@ import { arrow, when } from "./Jobs";
  */
 export function JobLive({ name }: { name: string }) {
   const nav = useNavigation<Nav<JobsStack>>();
-  const { t } = useT();
+  const { t, lang } = useT();
   const jobName = name;
 
   const [job, setJob] = useState<Job | null>(null);
@@ -95,7 +96,7 @@ export function JobLive({ name }: { name: string }) {
         {runs.map((run) => (
           <Card key={run.ID}>
             <View style={styles.head}>
-              <Caption>{`${when(run.Started, t)} ${t("jobs.ago")}`}</Caption>
+              <Caption>{clock(run.Started, lang)}</Caption>
               {failed(run) ? (
                 <Badge label={t("history.failed")} tone="fail" />
               ) : touched(run) > 0 ? (

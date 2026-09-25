@@ -430,16 +430,14 @@ function Progress({ event }: { event?: RunEvent }) {
   )
 }
 
-/**
- * A time as "two days ago", with the exact time on hover. The arithmetic lives
- * in lib/since.ts, which the phone shares.
- */
+/** A time as "2 days ago" in the reader's language, with the exact time on hover. */
 export function Since({ when }: { when: string }) {
-  const { t } = useT()
+  const { lang } = useT()
   const { count, unit } = since(when)
+  const parts = new Intl.RelativeTimeFormat(lang, { numeric: 'auto' }).formatToParts(-count, unit)
   return (
-    <span title={new Date(when).toLocaleString()}>
-      <Num>{count}</Num> {t(unit)} {t('jobs.ago')}
+    <span title={new Date(when).toLocaleString(lang)}>
+      {parts.map((part, i) => (part.type === 'integer' ? <Num key={i}>{part.value}</Num> : part.value))}
     </span>
   )
 }

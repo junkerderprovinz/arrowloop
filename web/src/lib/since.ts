@@ -1,36 +1,25 @@
-import type { TranslationKey } from './i18n.data'
-
-const UNITS: [number, TranslationKey][] = [
-  [60, 'time.second'],
-  [60, 'time.minute'],
-  [24, 'time.hour'],
-  [365, 'time.day'],
+const UNITS: [number, Intl.RelativeTimeFormatUnit][] = [
+  [60, 'second'],
+  [60, 'minute'],
+  [24, 'hour'],
+  [365, 'day'],
 ]
 
 export interface Since {
   /** Whole units, already floored. */
   count: number
-  unit: TranslationKey
+  unit: Intl.RelativeTimeFormatUnit
 }
 
 /**
- * How long ago something happened, as a count and a unit's translation key, so
- * both the browser and the phone can put it into a translated sentence.
- *
- * The unit is always the plural key: languages with "few" and "many" rules
- * would otherwise fall through to English at the commonest counts.
+ * How long ago something happened, in the largest unit it fills, for
+ * Intl.RelativeTimeFormat, which knows every language's plural forms.
  */
 export function since(when: string, now: number = Date.now()): Since {
-  const then = new Date(when).getTime()
-  let value = Math.max(0, (now - then) / 1000)
-  let unit: TranslationKey = 'time.second'
-  for (const [size, name] of UNITS) {
-    if (value < size) {
-      unit = name
-      break
-    }
+  let value = Math.max(0, (now - new Date(when).getTime()) / 1000)
+  for (const [size, unit] of UNITS) {
+    if (value < size) return { count: Math.floor(value), unit }
     value /= size
-    unit = name
   }
-  return { count: Math.floor(value), unit }
+  return { count: Math.floor(value), unit: 'year' }
 }

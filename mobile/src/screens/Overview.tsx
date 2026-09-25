@@ -18,7 +18,7 @@ import { bytes, isAccount, Room, unreachable, useRoom, type Room as Space } from
 import { space } from "../theme";
 import { useEngineStream } from "../useEngine";
 import { Badge, Body, Caption, CardHead, Empty, Fab, Floating, Meter, Mono, Page, Pair, Section, Title, useHue, useTheme } from "../ui";
-import { when } from "./Jobs";
+import { clock } from "../clock";
 
 // The overview: what is running now, drawn from the event stream rather than
 // polling, then the last run and how full each target is.
@@ -256,27 +256,6 @@ function span(secs: number): string {
   const m = Math.floor((secs % 3600) / 60);
   const s = String(secs % 60).padStart(2, "0");
   return h > 0 ? `${h}:${String(m).padStart(2, "0")}:${s}` : `${m}:${s}`;
-}
-
-/**
- * Formats a moment as an absolute date and time in the app's language. The
- * relative "ago" helper cannot express a time in the future such as the next
- * run.
- */
-function clock(iso: string, lang: string): string {
-  const at = new Date(iso);
-  if (Number.isNaN(at.getTime())) return "-";
-  try {
-    return at.toLocaleString(lang, {
-      day: "2-digit",
-      month: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  } catch {
-    // An unknown language tag falls back to the default locale.
-    return at.toLocaleString();
-  }
 }
 
 interface Progress {
