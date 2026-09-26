@@ -288,18 +288,20 @@ function Conflict({
         <Version side={t('side.left')} version={action.left} newer={leftNewer} />
         <Version side={t('side.right')} version={action.right} newer={!leftNewer && !!action.right} />
       </div>
-      <div className="flex flex-wrap items-center gap-2">
-        <Selector<Resolution>
-          scale="small"
-          label={t('conflict.title')}
-          value={resolution}
-          onChange={onResolve}
-          options={[
-            { value: 'both', label: t('conflict.keepBoth') },
-            { value: 'left', label: t('conflict.keepLeft') },
-            { value: 'right', label: t('conflict.keepRight') },
-          ]}
-        />
+      <div className="flex items-center gap-2">
+        <div className="min-w-0 flex-1">
+          <Selector<Resolution>
+            scale="small"
+            label={t('conflict.title')}
+            value={resolution}
+            onChange={onResolve}
+            options={[
+              { value: 'both', label: t('conflict.keepBoth') },
+              { value: 'left', label: t('conflict.keepLeft') },
+              { value: 'right', label: t('conflict.keepRight') },
+            ]}
+          />
+        </div>
         <InfoBubble tip={resolution === 'both' ? t('conflict.keepBothHint') : t('conflict.chosenHint')} />
       </div>
     </div>

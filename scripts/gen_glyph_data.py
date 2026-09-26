@@ -183,10 +183,12 @@ def brand_glyphs(colours: dict[str, dict[str, str]]) -> dict[str, dict]:
     text = io.open(BRANDS_TSX, encoding="utf-8").read()
     out: dict[str, dict] = {}
     for match in re.finditer(
-        r"export function (Icon\w+)\(props[^)]*\) \{\s*return \(\s*(<svg .*?</svg>)\s*\)\s*\}",
+        r"export function (Icon\w+)\(props[^)]*\) \{\s*return \(\s*(?:<>\s*)?(<svg .*?</svg>)\s*(?:<svg .*?</svg>\s*</>\s*)?\)\s*\}",
         text,
         re.S,
     ):
+        # A mark with a second drawing for the lit tile comes as a pair, the
+        # resting one first. The phone has no lit tiles and takes that one.
         name, svg = match.groups()
         box = re.search(r'viewBox="([^"]+)"', svg)
         if not box:
@@ -262,11 +264,16 @@ def link_marks() -> dict[str, dict]:
     return out
 
 
+# A lit tile in the browser repaints a mark through --mark-ink and --mark-cut.
+# The phone has no lit tiles, so each part keeps its own colour.
+LIT = re.compile(r"var\(--mark-(?:ink|cut),\s*((?:[^()]|\([^()]*\))*)\)")
+
+
 def resolve(match, colours) -> dict[str, str] | str | None:
     """A colour, as the phone needs it: a literal, or one per theme."""
     if not match:
         return None
-    value = match.group(1)
+    value = LIT.sub(r"\1", match.group(1))
     var = re.fullmatch(r"var\((--(?:brand|coin)-[\w-]+)\)", value)
     if not var:
         return value
@@ -332,6 +339,8 @@ def detokenise(body: str, colours) -> tuple[str, dict]:
     at draw time, when the theme is known.
     """
     used: dict[str, dict[str, str]] = {}
+
+    body = LIT.sub(r"\1", body)
 
     def one(match: re.Match) -> str:
         name = match.group(1)

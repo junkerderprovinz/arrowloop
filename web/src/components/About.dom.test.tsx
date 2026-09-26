@@ -62,7 +62,7 @@ async function mount() {
   // fresh copy of it.
   vi.resetModules()
   const { About } = await import('./About')
-  render(<About version="1.0.0" />)
+  render(<About version="1.0.0" hueIndex={0} />)
 }
 
 async function openPaypal() {

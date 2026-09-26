@@ -38,6 +38,9 @@ export interface CryptoCoin {
   name: string;
   /** Never empty, and every entry carries an address. */
   networks: CryptoNetwork[];
+  /** The coin's own colour and the ink that holds on it, which its tile lights
+   *  up in under the pointer ("Brand tiles"). The picked coin keeps the accent. */
+  tile?: { color: string; ink: string };
 }
 
 export interface CryptoDonateDialogProps {
@@ -168,28 +171,39 @@ export function CryptoDonateDialog({
               shown and is dropped in glyph mode, where only the fill of an
               icon-only tile carries colour. */}
           <div className="grid grid-cols-4 gap-2" role="listbox" aria-label={text.title}>
-            {coins.map((c, i) => (
-              <button
-                key={c.id}
-                type="button"
-                role="option"
-                aria-selected={c.id === coin.id}
-                aria-label={`${c.name} (${c.symbol})`}
-                title={c.name}
-                onClick={() => onPick(c, c.networks[0]!)}
-                style={hueVars(i) as CSSProperties}
-                className={`flex flex-col items-center gap-1 rounded-control px-2 py-3 transition-colors ${
-                  showTicker ? "glim-hue glim-hue-icon" : "glim-hue"
-                } ${
-                  c.id === coin.id
-                    ? "glim-active bg-accent text-accentContrast"
-                    : "bg-carbon-surface2 text-carbon-textSub hover:bg-carbon-surface3 hover:text-carbon-text"
-                }`}
-              >
-                {showMark && renderMark?.(c)}
-                {showTicker && <span className="text-xs font-medium">{c.symbol}</span>}
-              </button>
-            ))}
+            {coins.map((c, i) => {
+              const picked = c.id === coin.id;
+              const lit = !picked && c.tile;
+              return (
+                <button
+                  key={c.id}
+                  type="button"
+                  role="option"
+                  aria-selected={picked}
+                  aria-label={`${c.name} (${c.symbol})`}
+                  title={c.name}
+                  onClick={() => onPick(c, c.networks[0]!)}
+                  style={
+                    {
+                      ...hueVars(i),
+                      ...(lit && { "--tile": c.tile!.color, "--tile-ink": c.tile!.ink }),
+                    } as CSSProperties
+                  }
+                  className={`flex flex-col items-center gap-1 rounded-control px-2 py-3 ${
+                    showTicker ? "glim-hue glim-hue-icon" : "glim-hue"
+                  } ${
+                    picked
+                      ? "glim-active bg-accent text-accentContrast transition-colors"
+                      : lit
+                        ? "glim-brand-tile bg-carbon-surface2 text-carbon-textSub"
+                        : "bg-carbon-surface2 text-carbon-textSub transition-colors hover:bg-carbon-surface3 hover:text-carbon-text"
+                  }`}
+                >
+                  {showMark && renderMark?.(c)}
+                  {showTicker && <span className="text-xs font-medium">{c.symbol}</span>}
+                </button>
+              );
+            })}
           </div>
 
         </div>

@@ -184,8 +184,9 @@ export function ScheduleField({
           <span className="text-xs uppercase tracking-wider text-carbon-textMuted">
             {t('schedule.days')}
           </span>
+          {/* It takes the rest of the row, so it ends where the card does. */}
           <div
-            className="glim-well inline-flex flex-wrap gap-[0.2rem] p-[0.2rem]"
+            className="glim-well flex flex-1 flex-wrap gap-[0.2rem] p-[0.2rem]"
             style={{ borderRadius: 'var(--radius-pill)' }}
           >
             {/* Each day takes its own palette position, like every multi-part
@@ -202,7 +203,7 @@ export function ScheduleField({
                     borderRadius: 'var(--radius-pill)',
                     ...(hueVars(i) as CSSProperties),
                   }}
-                  className={`glim-hue px-2.5 py-1 text-xs font-medium transition-colors ${
+                  className={`glim-hue grow px-2.5 py-1 text-xs font-medium transition-colors ${
                     on
                       ? 'bg-accent text-accentContrast'
                       : 'bg-transparent text-carbon-textMuted hover:bg-carbon-hover hover:text-carbon-text'

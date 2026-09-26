@@ -10,7 +10,9 @@ import { useRainbow } from './Shell'
  *
  * The big scale pins every segment to the widest label or an app-wide floor,
  * so page-level pickers render equally wide; the small scale skips the
- * pinning, for strips that repeat down a page or sit in a narrow panel.
+ * pinning, for strips that repeat down a page or sit in a narrow panel. At
+ * both scales the strip spans the width of its box and the segments share it,
+ * since a strip that stops short leaves a ragged edge down a card of them.
  */
 export type Option<T extends string> = { value: T; label: string; icon?: ReactNode }
 
@@ -49,7 +51,6 @@ export function Selector<T extends string>({
   onChange,
   scale = 'big',
   variant = 'well',
-  fill = false,
   hueOffset = 0,
   label,
   labelledBy,
@@ -65,11 +66,6 @@ export function Selector<T extends string>({
    * carries its own fill, so the row reads as tabs on the page.
    */
   variant?: 'well' | 'chip'
-  /**
-   * Fill the given width with equal segments, for a strip that heads a column
-   * of cards and should not be narrower than what it introduces.
-   */
-  fill?: boolean
   /** Where this selector starts in the palette; see HUE_OFFSET. */
   hueOffset?: number
   label?: string
@@ -161,13 +157,11 @@ export function Selector<T extends string>({
       aria-labelledby={labelledBy}
       className={
         variant === 'well'
-          ? 'glim-well inline-flex flex-wrap gap-[0.2rem] p-[0.2rem]'
-          : 'inline-flex flex-wrap gap-1'
+          ? 'glim-well flex w-full flex-wrap gap-[0.2rem] p-[0.2rem]'
+          : 'flex w-full flex-wrap gap-1'
       }
       style={{
         borderRadius: variant === 'well' ? 'var(--radius-pill)' : undefined,
-        width: fill ? '100%' : 'fit-content',
-        maxWidth: '100%',
         opacity: disabled ? 0.45 : undefined,
         pointerEvents: disabled ? 'none' : undefined,
       }}

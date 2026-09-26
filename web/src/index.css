@@ -188,61 +188,6 @@ body {
   display: inline-flex;
 }
 
-/* A button carrying somebody else's mark: the About card's give routes and its
-   repository link. At rest the mark wears the theme-adjusted colour (--brand),
-   since a published brand colour dies on one of the two grounds. On hover the
-   true colour becomes the fill (--brand-fill) and label and mark take its
-   measured ink (--brand-ink).
-
-   The `svg path` selector is needed because a glyph that writes
-   fill="currentColor" on the path ignores a fill inherited from the svg.
-
-   Coin discs take none of these classes: they bring their own ground, and
-   flattening them to one ink would redraw the logo. */
-.glim-brand-btn .glim-btn-glyph svg,
-.glim-brand-btn .glim-btn-glyph svg path {
-  fill: var(--brand);
-  transition: fill 120ms;
-}
-.glim-brand-btn:hover:not(:disabled) {
-  background-color: var(--brand-fill);
-  color: var(--brand-ink);
-}
-.glim-brand-btn:hover:not(:disabled) .glim-btn-glyph svg,
-.glim-brand-btn:hover:not(:disabled) .glim-btn-glyph svg path {
-  fill: currentColor;
-}
-
-.glim-brand-coffee {
-  --brand: var(--brand-coffee);
-  --brand-fill: #ffdd00;
-  /* Buy Me a Coffee's own button ink. 13.8:1. */
-  --brand-ink: #0d0c22;
-}
-.glim-brand-bitcoin {
-  --brand: var(--brand-bitcoin);
-  --brand-fill: #f7931a;
-  --brand-ink: #161616; /* 7.9:1 */
-}
-.glim-brand-paypal {
-  --brand: var(--brand-paypal);
-  --brand-fill: #003087;
-  --brand-ink: #ffffff; /* 13.4:1 */
-}
-.glim-brand-github {
-  --brand: var(--brand-github);
-  --brand-fill: #181717;
-  --brand-ink: #ffffff; /* 18.3:1 */
-}
-
-/* The route to the app's own authors follows the user's accent and rainbow,
-   which a vendor's mark may not. */
-.glim-brand-house {
-  --brand: var(--accent-ink);
-  --brand-fill: var(--accent);
-  --brand-ink: var(--accent-contrast);
-}
-
 /* Reactive brings the words back under the pointer and the keyboard. */
 [data-labels-buttons='reactive'] .glim-btn:hover .glim-btn-label,
 [data-labels-buttons='reactive'] .glim-btn:focus-visible .glim-btn-label,

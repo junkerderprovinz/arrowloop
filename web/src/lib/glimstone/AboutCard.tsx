@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 
-import { Button } from "./Button";
 import { Card } from "./Card";
+import { ReadmeButton } from "./ReadmeButton";
 
 /**
  * The About card, in the order the design language lays down: what this is,
@@ -22,7 +22,7 @@ export function AboutCard({
   repoGlyph,
   glimstoneRepoUrl,
   onCoffee,
-  coffeeGlyph,
+  coffeeArt,
   cryptoGlyph,
   paypalGlyph,
   onPaypal,
@@ -38,6 +38,7 @@ export function AboutCard({
     title: string;
     body: string;
     coffee: string;
+    /** The coffee button's accessible name; its artwork carries the words. */
     coffeeButton: string;
     /** The second give button. Only drawn together with `onCrypto`. */
     cryptoButton?: string;
@@ -64,17 +65,15 @@ export function AboutCard({
   glimstoneRepoUrl: string;
   /** Opens the coffee window (CoffeeDialog), which stays inside the app. */
   onCoffee: () => void;
-  /**
-   * The marks on the give buttons, passed for the same reason as `repoGlyph`.
-   * An app that passes nothing keeps whatever its own table resolves.
-   */
-  coffeeGlyph?: ReactNode;
+  /** Buy Me a Coffee's own button artwork, `COFFEE_BUTTON_SVG` from appMarks.ts. */
+  coffeeArt: ReactNode;
+  /** The marks on the other give buttons, passed for the same reason as `repoGlyph`. */
   cryptoGlyph?: ReactNode;
   paypalGlyph?: ReactNode;
   /**
-   * The envelope on the mail button. It is not a brand, but every button in
-   * these rows carries a mark, and a row with one bare button reads as a
-   * missing image.
+   * The envelope on the mail button, `MAIL_SVG` from appMarks.ts, which opens
+   * under the pointer. It is not a brand, but every button in these rows
+   * carries a mark, and a row with one bare button reads as a missing image.
    */
   mailGlyph?: ReactNode;
   /** Opens the PayPal window (PaypalDialog). Omit it where the maker takes no
@@ -104,68 +103,54 @@ export function AboutCard({
 
       <p className="text-sm text-carbon-textSub">{text.coffee}</p>
       {/* Every way to give sits in one row under its sentence, the two hosted
-          payment routes first and the wallet, which needs no account, last. Each
-          opens its own window inside the app. The brand classes take their
-          colours from the brand block in reference/tokens.css. */}
-      <div className="flex flex-wrap items-center gap-2">
-        <Button
-          label={text.coffeeButton}
-          labelKey="about.coffeeButton"
-          glyph={coffeeGlyph}
-          tone="neutral"
-          className="glim-brand-btn glim-brand-coffee"
-          onClick={onCoffee}
-        />
+          payment routes first and the wallet, which needs no account, last,
+          with a blank line above and below. Each opens its own window inside
+          the app. One line per button, as on the README, so nothing moves up
+          under the pointer. */}
+      <div className="glim-readme-btn-rows glim-about-give">
+        <ReadmeButton brand="coffee" parts={[{ name: text.coffeeButton, onClick: onCoffee }]} art={coffeeArt} />
         {onPaypal && text.paypalButton && (
-          <Button
-            label={text.paypalButton}
-            labelKey="about.paypal"
-            glyph={paypalGlyph}
-            tone="neutral"
-            className="glim-brand-btn glim-brand-paypal"
-            onClick={onPaypal}
+          <ReadmeButton
+            brand="paypal"
+            parts={[{ name: text.paypalButton, onClick: onPaypal }]}
+            mark={paypalGlyph}
+            markClass="glim-paypal-mark"
           />
         )}
         {onCrypto && text.cryptoButton && (
-          <Button
-            label={text.cryptoButton}
-            labelKey="about.crypto"
-            glyph={cryptoGlyph}
-            tone="neutral"
-            // The mark here is the bare letterform without its disc: the brand
-            // class paints every path in one ink, and at 16px a disc reads as
-            // an orange dot. The coin tiles in the donation window keep it.
-            className="glim-brand-btn glim-brand-bitcoin"
-            onClick={onCrypto}
+          // The bare letterform without its disc: at button size a disc reads
+          // as an orange dot. The coin tiles in the donation window keep it.
+          <ReadmeButton
+            brand="bitcoin"
+            parts={[{ name: text.cryptoButton, onClick: onCrypto }]}
+            mark={cryptoGlyph}
+            markClass="glim-bitcoin-mark"
           />
         )}
       </div>
 
-      {/* Extra space above the second offer, so the give buttons do not pair
-          with the wrong sentence. */}
       <p className="mt-2 text-sm text-carbon-textSub">{text.report}</p>
-      <div className="flex flex-wrap items-center gap-2">
-        <Button
-          label={text.repoButton}
-          labelKey="about.repo"
-          glyph={repoGlyph}
-          tone="neutral"
-          className="glim-brand-btn glim-brand-github"
-          onClick={() => openUrl(repoUrl)}
+      <div className="glim-readme-btn-rows">
+        <ReadmeButton
+          brand="github"
+          parts={[{ name: text.repoButton, onClick: () => openUrl(repoUrl) }]}
+          mark={repoGlyph}
+          markClass="glim-github-mark"
         />
         {wantsMail && (
           // Subject only: a prefilled body reads as a form to fill in. This
           // button reaches the app's own authors rather than a third party, so
-          // `glim-brand-house` follows the user's accent and rainbow.
-          <Button
-            label={text.mailButton}
-            labelKey="about.mail"
-            glyph={mailGlyph}
-            tone="neutral"
-            className="glim-brand-btn glim-brand-house"
-            onClick={() =>
-              openUrl(`mailto:${mailAddress}?subject=${encodeURIComponent(text.mailSubject)}`)
-            }
+          // it follows the user's accent and rainbow.
+          <ReadmeButton
+            brand="house"
+            parts={[
+              {
+                name: text.mailButton,
+                onClick: () => openUrl(`mailto:${mailAddress}?subject=${encodeURIComponent(text.mailSubject)}`),
+              },
+            ]}
+            mark={mailGlyph}
+            markClass="glim-house-mark"
           />
         )}
       </div>
@@ -199,7 +184,7 @@ export function AboutCard({
  * it is the part before the semver build metadata.
  */
 export function releaseTag(version: string): string {
-  const bare = version.split("+")[0].trim();
+  const bare = (version.split("+")[0] ?? "").trim();
   if (!bare) return "";
   return bare.startsWith("v") ? bare : `v${bare}`;
 }

@@ -4,16 +4,17 @@ import { AboutCard } from '../lib/glimstone/AboutCard'
 import { CoffeeDonate } from './CoffeeDonate'
 import { CryptoDonate } from './CryptoDonate'
 import { PaypalDonate } from './PaypalDonate'
-import { IconBitcoin, IconBuyMeACoffee, IconPayPal } from './donateMarks'
+import { IconBitcoin, IconPayPal } from './donateMarks'
+import { BrandMark } from '../lib/glimstone/ReadmeButton'
+import { COFFEE_BUTTON_SVG, MAIL_SVG } from '../lib/appMarks'
 import { GLIMSTONE_VERSION } from '../lib/glimstone/version'
 import { IconGithub } from './brandGlyphs'
-import { IconMail } from './glyphs'
 import { GLIMSTONE_REPO, MAIL, PAYPAL, REPO } from '../lib/donate'
 import { openExternal, popupsWork } from '../lib/external'
 import { useT } from '../lib/i18n'
 
 /** GlimStone's About card, handed this app's strings, links and version. */
-export function About({ version }: { version: string | null }) {
+export function About({ version, hueIndex }: { version: string | null; hueIndex: number }) {
   const { t } = useT()
   const [open, setOpen] = useState<'coffee' | 'paypal' | 'crypto' | null>(null)
   const close = () => setOpen(null)
@@ -29,7 +30,7 @@ export function About({ version }: { version: string | null }) {
         repoGlyph={<IconGithub />}
         glimstoneRepoUrl={GLIMSTONE_REPO}
         onCoffee={() => setOpen('coffee')}
-        coffeeGlyph={<IconBuyMeACoffee />}
+        coffeeArt={<BrandMark svg={COFFEE_BUTTON_SVG} />}
         cryptoGlyph={<IconBitcoin />}
         onCrypto={() => setOpen('crypto')}
         // The window's wallet button logs in through a popup. Where the webview
@@ -40,9 +41,9 @@ export function About({ version }: { version: string | null }) {
         }}
         paypalGlyph={<IconPayPal />}
         mailAddress={MAIL}
-        mailGlyph={<IconMail />}
+        mailGlyph={<BrandMark svg={MAIL_SVG} />}
         openUrl={openExternal}
-        hueIndex={0}
+        hueIndex={hueIndex}
         text={{
           title: t('about.title'),
           body: t('about.body'),

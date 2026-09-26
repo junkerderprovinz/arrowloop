@@ -120,15 +120,18 @@ export function PaypalDialog({
             <span id="paypal-amount" className="glim-eyebrow text-carbon-textMuted">
               {text.amountLabel}
             </span>
-            {/* The free amount sits right of the presets, in the same row, and
-                a valid entry takes the selection away from them. */}
-            <div className="flex flex-wrap items-center gap-2">
-              {renderSelector({
-                labelledBy: "paypal-amount",
-                options: amounts.map((a) => ({ value: a, label: `${a} ${currencySymbol}` })),
-                value: preset,
-                onChange: onPreset,
-              })}
+            {/* The presets keep the window's width, and the free amount stands
+                at the end of the row under them. A valid entry takes the
+                selection away from the presets. */}
+            <div className="flex flex-col items-end gap-2">
+              <div className="self-stretch">
+                {renderSelector({
+                  labelledBy: "paypal-amount",
+                  options: amounts.map((a) => ({ value: a, label: `${a} ${currencySymbol}` })),
+                  value: preset,
+                  onChange: onPreset,
+                })}
+              </div>
               <input
                 type="text"
                 inputMode="decimal"

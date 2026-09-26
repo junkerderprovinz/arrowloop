@@ -3,12 +3,23 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Stack } from './components/Shell'
 import { Card } from './lib/glimstone/Card'
 import { Button } from './lib/glimstone/Button'
-import { Choice, Field } from './components/Field'
+import { Choice } from './components/Field'
 import { InfoBubble } from './lib/glimstone/InfoBubble'
 import { ToggleRow } from './components/ToggleRow'
 import { HUE_OFFSET, Selector } from './components/Selector'
 import { Sidebar } from './components/Sidebar'
-import { IconHistory, IconJobs, IconLive, IconLock, IconLook, IconPhone, IconReset, IconSettings, IconTargets } from './components/glyphs'
+import {
+  IconHistory,
+  IconJobs,
+  IconLive,
+  IconLock,
+  IconLook,
+  IconReset,
+  IconSettings,
+  IconTabApp,
+  IconTabGeneral,
+  IconTargets,
+} from './components/glyphs'
 import { AccentSwatches, PaletteSwatches } from './components/Swatches'
 import { About } from './components/About'
 import { SettingsBackup } from './components/SettingsBackup'
@@ -324,12 +335,11 @@ function Settings(props: LookProps) {
         value={section}
         onChange={setSection}
         variant="chip"
-        fill
         options={[
-          { value: 'general', label: t('settings.general'), icon: <IconSettings /> },
+          { value: 'general', label: t('settings.general'), icon: <IconTabGeneral /> },
           { value: 'engine', label: t('settings.engine'), icon: <IconLive /> },
           { value: 'look', label: t('settings.look'), icon: <IconLook /> },
-          { value: 'app', label: t('settings.app'), icon: <IconPhone /> },
+          { value: 'app', label: t('settings.app'), icon: <IconTabApp /> },
           // Left out where the interface cannot keep a password of its own.
           ...(props.security
             ? [{ value: 'security' as SettingsSection, label: t('settings.security'), icon: <IconLock /> }]
@@ -383,43 +393,18 @@ function LogOut() {
   )
 }
 
-/** The settings that are not about looks: language, backup, window, About. */
-function General({
-  lang,
-  onLang,
-  languages,
-  window: windowSettings,
-  onWindow,
-  version,
-}: LookProps) {
+/** The settings that concern the app as a whole: backup, window, About. */
+function General({ window: windowSettings, onWindow, version }: LookProps) {
   const { t } = useT()
   return (
     <Stack>
-      {/* Named for the section rather than the field, so the word does not
-          print twice. */}
-      <Card title={t('settings.general')} hueIndex={0}>
-        <Field label={t('look.language')}>
-          <Choice
-            value={lang}
-            onChange={onLang}
-            label={t('look.language')}
-            roomy
-            options={languages.map((l) => ({
-              value: l.code,
-              label: l.label,
-              flag: l.flag,
-            }))}
-          />
-        </Field>
-      </Card>
-
       <LogOut />
 
-      <SettingsBackup hueIndex={1} />
+      <SettingsBackup hueIndex={0} />
 
       {/* Left out rather than shown inert on a build with no window. */}
       {windowSettings && (
-        <Card title={t('window.title')} hueIndex={2}>
+        <Card title={t('window.title')} hueIndex={1}>
           <div className="flex flex-col gap-3">
             <ToggleRow
               label={t('window.tray')}
@@ -457,7 +442,7 @@ function General({
         </Card>
       )}
 
-      <About version={version} />
+      <About version={version} hueIndex={3} />
     </Stack>
   )
 }
@@ -576,6 +561,9 @@ function Look({
   onMotion,
   labels,
   onLabels,
+  lang,
+  onLang,
+  languages,
 }: LookProps) {
   const { t } = useT()
   const storm = useStormUnlock(motion, onMotion)
@@ -583,7 +571,24 @@ function Look({
   const discoUnlock = useDiscoUnlock(disco, onDisco)
   return (
     <Stack>
-      <Card title={t('look.theme')} hueIndex={0}>
+      {/* First, because somebody who cannot read the screen comes looking for
+          exactly this, and it decides how the app appears, like the axes
+          below it. */}
+      <Card title={t('look.language')} hueIndex={0}>
+        <Choice
+          value={lang}
+          onChange={onLang}
+          label={t('look.language')}
+          roomy
+          options={languages.map((l) => ({
+            value: l.code,
+            label: l.label,
+            flag: l.flag,
+          }))}
+        />
+      </Card>
+
+      <Card title={t('look.theme')} hueIndex={1}>
         <Selector<Theme>
           label={t('look.theme')}
           hueOffset={HUE_OFFSET.theme}
@@ -596,7 +601,7 @@ function Look({
         />
       </Card>
 
-      <Card title={t('look.corners')} hueIndex={1} hint={t('look.cornersHint')}>
+      <Card title={t('look.corners')} hueIndex={2} hint={t('look.cornersHint')}>
         <Selector<Shape>
           label={t('look.corners')}
           hueOffset={HUE_OFFSET.shape}
@@ -614,7 +619,7 @@ function Look({
         />
       </Card>
 
-      <Card title={t('look.motion')} hueIndex={2} hint={t('look.motionHint')}>
+      <Card title={t('look.motion')} hueIndex={3} hint={t('look.motionHint')}>
         <Selector<MotionIntensity>
           label={t('look.motion')}
           hueOffset={HUE_OFFSET.motion}
@@ -630,7 +635,7 @@ function Look({
         />
       </Card>
 
-      <Card title={t('look.labels')} hueIndex={3} hint={t('look.labelsHint')}>
+      <Card title={t('look.labels')} hueIndex={4} hint={t('look.labelsHint')}>
         <div className="flex flex-col gap-4">
           {CONTROL_AXES.map((axis, row) => (
             <div key={axis} className="flex flex-col gap-1">
@@ -649,7 +654,7 @@ function Look({
 
       {/* Accent and rainbow share one card, last, as in BombVault: the accent
           is the rainbow's position zero. */}
-      <Card title={t('look.colors')} hueIndex={4}>
+      <Card title={t('look.colors')} hueIndex={5}>
         <div className="flex flex-col gap-4">
           {/* The reset belongs to this row rather than to the card's action
               slot: it resets only the accent. */}

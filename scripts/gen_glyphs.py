@@ -33,7 +33,11 @@ GLYPHS = [
     ("IconTargets", "computer-devices/database-server-1.svg", "Storage targets and drives"),
     ("IconHistory", "interface-essential/bullet-list.svg", "What the runs did"),
     ("IconLook", "interface-essential/color-palette.svg", "Theme, shape, accent, language"),
+    # The cog is Settings itself and no tab inside it, so one drawing keeps
+    # one meaning. The General tab wears Material's tune, in LICENSED below.
     ("IconSettings", "interface-essential/cog.svg", "Settings, the last tab as in every other app here"),
+    ("IconTabApp", "computer-devices/computer-pc-desktop.svg",
+     "The App tab: every other way to get ArrowLoop"),
     ("IconAbout", "interface-essential/information-circle.svg",
      "The About section, on the settings tab strip"),
 
@@ -87,7 +91,6 @@ GLYPHS = [
 
     # One box with the arrow reversed, the same pair the sibling app uses.
     ("IconDownload", "interface-essential/download-box-1.svg", "Export the setup to a file"),
-    ("IconPhone", "phone/phone-mobile-phone.svg", "The phone app"),
     ("IconFilter", "interface-essential/filter-2.svg", "Narrow a list down"),
     ("IconQr", "money-shopping/qr-code.svg", "Show a download as a code to scan with the phone"),
     ("IconUpload", "interface-essential/upload-box-1.svg", "Read a setup back in from a file"),
@@ -189,6 +192,17 @@ LICENSED = [
          "M5.2 1.6c0-.9.8-1.6 1.8-1.6s1.8.7 1.8 1.6V6.4h3c.9 0 1.3 1 .7 1.7l-4.8 5.1c-.4.4-1 .4-1.4 0"
          "L1.5 8.1c-.6-.7-.2-1.7.7-1.7h3V1.6z",
      ]),
+    # The free Streamline set has no pair of sliders that reads at 20px
+    # (glyphs.md, "Settings tabs"). Declared on a 24-unit grid with a 3-unit
+    # margin all round.
+    ("IconTabGeneral",
+     "The General tab",
+     "Material Design Icons (https://pictogrammers.com/library/mdi/), tune, Apache 2.0",
+     "3.00 3.00 18.00 18.00",
+     [
+         "M3,17V19H9V17H3M3,5V7H13V5H3M13,21V19H21V17H13V15H11V21H13M7,9V11H3V13H7V15H9V9H7"
+         "M21,13V11H11V13H21M15,9H17V7H21V5H17V3H15V9Z",
+     ]),
 ]
 
 HEADER = '''// ArrowLoop's icon set.
@@ -201,9 +215,11 @@ HEADER = '''// ArrowLoop's icon set.
 //   The free 1000-icon Core Solid subset only:
 //   https://github.com/webalys-hq/streamline-vectors
 //   IconSave from Vecteezy, https://www.vecteezy.com
+//   IconTabGeneral from Material Design Icons,
+//   https://pictogrammers.com/library/mdi/ (Apache 2.0)
 //
 // The Streamline glyphs share one 14-unit grid, so they keep their own
-// viewBox; IconSave carries a measured crop.
+// viewBox; IconSave and IconTabGeneral carry a measured crop.
 
 import type { ReactNode, SVGProps } from 'react'
 

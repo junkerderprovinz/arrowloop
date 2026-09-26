@@ -8,9 +8,11 @@
 //   The free 1000-icon Core Solid subset only:
 //   https://github.com/webalys-hq/streamline-vectors
 //   IconSave from Vecteezy, https://www.vecteezy.com
+//   IconTabGeneral from Material Design Icons,
+//   https://pictogrammers.com/library/mdi/ (Apache 2.0)
 //
 // The Streamline glyphs share one 14-unit grid, so they keep their own
-// viewBox; IconSave carries a measured crop.
+// viewBox; IconSave and IconTabGeneral carry a measured crop.
 
 import type { ReactNode, SVGProps } from 'react'
 
@@ -103,6 +105,11 @@ export function IconLook(props: SVGProps<SVGSVGElement>) {
 /** Settings, the last tab as in every other app here. Streamline: interface-essential/cog.svg */
 export function IconSettings(props: SVGProps<SVGSVGElement>) {
   return <Glyph box="0 0 14 14" paths={['m5.557 0.69 -0.463 1.195 -1.594 0.904 -1.27 -0.194a1.077 1.077 0 0 0 -1.078 0.528l-0.43 0.754a1.077 1.077 0 0 0 0.086 1.217l0.807 1.001v1.81L0.83 8.906a1.077 1.077 0 0 0 -0.086 1.217l0.43 0.754a1.077 1.077 0 0 0 1.078 0.528l1.27 -0.194 1.573 0.904 0.463 1.196a1.076 1.076 0 0 0 1 0.689h0.905a1.076 1.076 0 0 0 1.002 -0.69l0.463 -1.195 1.572 -0.904 1.27 0.194a1.077 1.077 0 0 0 1.078 -0.528l0.43 -0.754a1.077 1.077 0 0 0 -0.086 -1.217l-0.807 -1.001v-1.81l0.786 -1.001a1.077 1.077 0 0 0 0.086 -1.217l-0.43 -0.754a1.076 1.076 0 0 0 -1.078 -0.528l-1.27 0.194 -1.573 -0.904L8.443 0.689A1.077 1.077 0 0 0 7.442 0h-0.884a1.077 1.077 0 0 0 -1.001 0.69ZM7 9.25a2.25 2.25 0 1 0 0 -4.5 2.25 2.25 0 0 0 0 4.5Z']} {...props} />
+}
+
+/** The App tab: every other way to get ArrowLoop. Streamline: computer-devices/computer-pc-desktop.svg */
+export function IconTabApp(props: SVGProps<SVGSVGElement>) {
+  return <Glyph box="0 0 14 14" paths={['M8 2c-0.55229 0 -1 0.44772 -1 1v0.46875h0.5c1.51878 0 2.75 1.23122 2.75 2.75V6.375l3.75 0V3c0 -0.55228 -0.4477 -1 -1 -1H8Zm-0.10887 11.8713C7.96169 13.6668 8 13.4472 8 13.2188c0 -0.0991 -0.0072 -0.1964 -0.0211 -0.2916 1.29049 -0.2266 2.2711 -1.353 2.2711 -2.7084V7.625l3.75 0V13c0 0.5523 -0.4477 1 -1 1H8.5c-0.21677 0 -0.4228 -0.046 -0.60887 -0.1287Zm4.78077 -9.6838c0 0.42284 -0.3428 0.76562 -0.7657 0.76562 -0.4228 0 -0.7656 -0.34278 -0.7656 -0.76562s0.3428 -0.76562 0.7656 -0.76562c0.4229 0 0.7657 0.34278 0.7657 0.76562ZM0 6.21875c0 -0.82843 0.671573 -1.5 1.5 -1.5h6c0.82843 0 1.5 0.67157 1.5 1.5v4.00005c0 0.8284 -0.67157 1.5 -1.5 1.5H5.25v0.75H6c0.41421 0 0.75 0.3357 0.75 0.75 0 0.4142 -0.33579 0.75 -0.75 0.75H3c-0.41421 0 -0.75 -0.3358 -0.75 -0.75 0 -0.4143 0.33579 -0.75 0.75 -0.75h0.75v-0.75H1.5c-0.828427 0 -1.5 -0.6716 -1.5 -1.5V6.21875Z']} {...props} />
 }
 
 /** The About section, on the settings tab strip. Streamline: interface-essential/information-circle.svg */
@@ -225,11 +232,6 @@ export function IconDownload(props: SVGProps<SVGSVGElement>) {
   return <Glyph box="0 0 14 14" paths={['M6.375 0H3.383A1.5 1.5 0 0 0 2.07 0.772L0.347 3.875h6.028V0ZM0 12.5V5.125h14V12.5a1.5 1.5 0 0 1 -1.5 1.5h-11A1.5 1.5 0 0 1 0 12.5Zm13.653 -8.625H7.625V0h2.992a1.5 1.5 0 0 1 1.312 0.772l1.724 3.103Zm-9.3 6.479 2.293 2.293a0.5 0.5 0 0 0 0.708 0l2.292 -2.293a0.5 0.5 0 0 0 -0.353 -0.854H8v-2a1 1 0 1 0 -2 0v2H4.707a0.5 0.5 0 0 0 -0.353 0.854Z']} {...props} />
 }
 
-/** The phone app. Streamline: phone/phone-mobile-phone.svg */
-export function IconPhone(props: SVGProps<SVGSVGElement>) {
-  return <Glyph box="0 0 14 14" paths={['M3.5 1.75c0 -0.13807 0.11193 -0.25 0.25 -0.25h6.5c0.1381 0 0.25 0.11193 0.25 0.25v10.5c0 0.1381 -0.1119 0.25 -0.25 0.25H3.80187c-0.00499 -0.0021 -0.01076 -0.0046 -0.01724 -0.0076 -0.04612 -0.0217 -0.10526 -0.0581 -0.16134 -0.106 -0.0566 -0.0482 -0.09333 -0.0937 -0.11253 -0.1264 -0.0059 -0.0101 -0.00911 -0.0171 -0.01076 -0.0212V1.75ZM3.75 0C2.7835 0 2 0.783502 2 1.75v10.5c0 0.5919 0.36126 1.0316 0.65 1.2778 0.15613 0.1331 0.32809 0.2431 0.49782 0.3227 0.15436 0.0724 0.36996 0.1495 0.60218 0.1495h6.5c0.9665 0 1.75 -0.7835 1.75 -1.75V1.75C12 0.783502 11.2165 0 10.25 0h-6.5ZM6.5 9.75c-0.41421 0 -0.75 0.3358 -0.75 0.75s0.33579 0.75 0.75 0.75h1c0.41421 0 0.75 -0.3358 0.75 -0.75s-0.33579 -0.75 -0.75 -0.75h-1Z']} {...props} />
-}
-
 /** Narrow a list down. Streamline: interface-essential/filter-2.svg */
 export function IconFilter(props: SVGProps<SVGSVGElement>) {
   return <Glyph box="0 0 14 14" paths={['M0.5 0C0.312706 0 0.141118 0.104674 0.0554162 0.271209 -0.030286 0.437745 -0.015729 0.638212 0.0931333 0.790619L5 7.66023V13.5c0 0.1844 0.10149 0.3538 0.26407 0.4408 0.16258 0.087 0.35985 0.0775 0.51328 -0.0248l3 -2C8.91645 11.8233 9 11.6672 9 11.5V7.66023L13.9069 0.790619c0.1088 -0.152407 0.1234 -0.352874 0.0377 -0.51941C13.8589 0.104674 13.6873 0 13.5 0H0.5Z']} {...props} />
@@ -296,4 +298,9 @@ export function IconSave(props: SVGProps<SVGSVGElement>) {
 /** Download a file to this computer. Drawn for this app */
 export function IconArrowDown(props: SVGProps<SVGSVGElement>) {
   return <Glyph box="0 0 14 14" paths={['M5.2 1.6c0-.9.8-1.6 1.8-1.6s1.8.7 1.8 1.6V6.4h3c.9 0 1.3 1 .7 1.7l-4.8 5.1c-.4.4-1 .4-1.4 0L1.5 8.1c-.6-.7-.2-1.7.7-1.7h3V1.6z']} {...props} />
+}
+
+/** The General tab. Material Design Icons (https://pictogrammers.com/library/mdi/), tune, Apache 2.0 */
+export function IconTabGeneral(props: SVGProps<SVGSVGElement>) {
+  return <Glyph box="3.00 3.00 18.00 18.00" paths={['M3,17V19H9V17H3M3,5V7H13V5H3M13,21V19H21V17H13V15H11V21H13M7,9V11H3V13H7V15H9V9H7M21,13V11H11V13H21M15,9H17V7H21V5H17V3H15V9Z']} {...props} />
 }
