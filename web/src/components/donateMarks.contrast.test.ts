@@ -62,10 +62,15 @@ function variable(name: string): { dunkel: string; hell: string } {
   return { dunkel: read('[data-theme="dark"]'), hell: read('[data-theme="light"]') }
 }
 
+/** The colour a part shows at rest, without the lit tile's --mark-ink or --mark-cut. */
+function resting(colour: string): string {
+  return colour.replace(/^var\(--mark-(?:ink|cut),\s*(.*)\)$/, '$1')
+}
+
 /** A colour in one theme: a hex as written, or the value behind its custom property. */
 function resolve(colour: string, theme: keyof typeof GROUNDS): string {
-  const named = colour.match(/var\((--[\w-]+)\)/)
-  return named ? variable(named[1])[theme] : colour
+  const named = resting(colour).match(/var\((--[\w-]+)\)/)
+  return named ? variable(named[1])[theme] : resting(colour)
 }
 
 describe('coin marks', () => {
@@ -89,7 +94,8 @@ describe('coin marks', () => {
       // Solana's gradient.
       const ink = [...coin.body.matchAll(/(?:fill|stopColor)="(#[0-9a-fA-F]{3,6}|var\([^"]+\))"/g)]
         .map((m) => m[1])
-        .filter((c) => c !== disc)
+        // A gradient's stops are read on their own.
+        .filter((c) => c !== disc && !resting(c).startsWith('url('))
       for (const theme of ['dunkel', 'hell'] as const) {
         const ground = resolve(disc, theme)
         const best = Math.max(...ink.map((c) => contrast(resolve(c, theme), ground)))
@@ -107,8 +113,8 @@ describe('coin marks', () => {
   it('keeps every themed disc off the tile it sits on', () => {
     const faint: string[] = []
     for (const coin of coins()) {
-      const disc = coin.body.match(/<circle[^>]*fill="(var\([^"]+\))"/)?.[1]
-      if (!disc) continue
+      const disc = resting(coin.body.match(/<circle[^>]*fill="([^"]+)"/)![1])
+      if (!disc.startsWith('var(')) continue
       for (const theme of ['dunkel', 'hell'] as const) {
         for (const ground of GROUNDS[theme]) {
           const seen = contrast(resolve(disc, theme), ground)
