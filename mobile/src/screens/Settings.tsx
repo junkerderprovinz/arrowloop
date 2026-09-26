@@ -7,7 +7,7 @@ import { heldKey } from "../deviceConditions";
 import { engine, type DeviceConditions, type DevicePolicy } from "../engine";
 import { useT } from "../i18n";
 import type { Nav, SettingsStack } from "../nav";
-import { ACCENTS, DEFAULT_ACCENT, RAINBOW, space } from "../theme";
+import { ACCENTS, BRAND, DEFAULT_ACCENT, RAINBOW, space, text, TILE } from "../theme";
 import {
   setAppearance,
   settings as settingsApi,
@@ -35,7 +35,7 @@ import { ColorPicker, EditableSwatch, ResetMark } from "../ColorPicker";
 import { CryptoDonate } from "../donate";
 import { Field } from "../fields";
 import { Schedule } from "./JobEdit";
-import { DonateMark, Glyph } from "../glyphs";
+import { CoffeeArt, DonateMark, MailMark } from "../glyphs";
 import {
   AxisLabel,
   Body,
@@ -44,6 +44,7 @@ import {
   Choice,
   Page,
   InfoBubble,
+  ReadmeButton,
   Section,
   Title,
   Toggle,
@@ -58,7 +59,7 @@ export function Settings() {
   const nav = useNavigation<Nav<SettingsStack>>();
   const { t, lang } = useT();
   const look = useAppearance();
-  const { scheme, accentInk, barLabels } = useTheme();
+  const { scheme, accent, accentContrast, accentInk, barLabels } = useTheme();
   const { intensity: motion } = useMotion();
   const storm = useStormUnlock();
   const leaf = useLeafUnlock();
@@ -199,8 +200,19 @@ export function Settings() {
 
   return (
     <Page>
-      {/* One card per appearance axis, each with its own palette position. */}
-      <Section title={t("look.theme")} hue={0}>
+      {/* One card per appearance axis, each with its own palette position. The
+          language comes first: somebody who cannot read the screen comes
+          looking for exactly this. */}
+      <Section title={t("look.language")} hue={0}>
+        {/* The flag is an emoji, not a glyph, so it is passed as the mark. */}
+        <Button
+          label={langName(lang)}
+          mark={() => <Text style={styles.flag}>{flagEmoji(langFlag(lang))}</Text>}
+          onPress={() => nav.navigate("Language")}
+        />
+      </Section>
+
+      <Section title={t("look.theme")} hue={1}>
         <Choice<ThemeChoice>
           value={look.theme}
           onChange={(theme) => setAppearance({ theme })}
@@ -212,7 +224,7 @@ export function Settings() {
         />
       </Section>
 
-      <Section title={t("look.corners")} hint={t("look.cornersHint")} hue={1}>
+      <Section title={t("look.corners")} hint={t("look.cornersHint")} hue={2}>
         <Choice<Shape>
           value={look.shape}
           onChange={(shape) => {
@@ -231,7 +243,7 @@ export function Settings() {
       {/* Every swatch chooses on the first press and opens the picker on a
           second. The web's reactive switch is left out, since a phone has no
           pointer. */}
-      <Section title={t("look.colors")} hue={2}>
+      <Section title={t("look.colors")} hue={3}>
         {/* Dimmed rather than hidden while the rainbow is on, so it still shows
             which accent returns when the rainbow is switched off. */}
         <View style={[styles.axisRow, look.rainbow ? styles.dimmed : null]} pointerEvents={look.rainbow ? "none" : "auto"}>
@@ -352,7 +364,7 @@ export function Settings() {
 
       {/* Three modes, without the web's pointer-based `reactive`. The bottom
           bar has its own setting, since it fits five words across the width. */}
-      <Section title={t("look.labels")} hint={t("look.labelsHint")} hue={3}>
+      <Section title={t("look.labels")} hint={t("look.labelsHint")} hue={4}>
         <AxisLabel>{t("look.labelsEverywhere")}</AxisLabel>
         <Choice<LabelMode>
           // A stored `reactive` shows as symbols, which is how it rendered.
@@ -379,7 +391,7 @@ export function Settings() {
       </Section>
 
       {/* Android's reduce motion setting still wins; see motion.ts. */}
-      <Section title={t("look.motion")} hint={t("look.motionHint")} hue={4}>
+      <Section title={t("look.motion")} hint={t("look.motionHint")} hue={5}>
         <Choice<MotionIntensity>
           value={look.motion}
           onChange={(motion) => {
@@ -395,15 +407,6 @@ export function Settings() {
             { value: "wild", label: t("look.motionWild") },
             ...(storm.offered ? [{ value: "storm" as MotionIntensity, label: t("look.motionStorm") }] : []),
           ]}
-        />
-      </Section>
-
-      <Section title={t("look.language")} hue={5}>
-        {/* The flag is an emoji, not a glyph, so it is passed as the mark. */}
-        <Button
-          label={langName(lang)}
-          mark={() => <Text style={styles.flag}>{flagEmoji(langFlag(lang))}</Text>}
-          onPress={() => nav.navigate("Language")}
         />
       </Section>
 
@@ -545,45 +548,45 @@ export function Settings() {
         <Body>{t("about.body")}</Body>
 
         <Body>{t("about.coffee")}</Body>
-        <View style={styles.actions}>
-          {/* Brand marks are passed explicitly, never matched from the label key. */}
-          <Button
+        {/* The README's give buttons, a blank line apart from the sentences
+            above and below, since they are the loudest row on the card. Brand
+            marks are passed explicitly, never matched from the label key. */}
+        <View style={[styles.readmeRow, styles.give]}>
+          <ReadmeButton
             label={t("about.coffeeButton")}
-            labelKey="about.coffeeButton"
-            mark={() => <DonateMark name="coffee" scheme={scheme} />}
+            art
+            tile={TILE.coffee}
+            mark={(lit, ink) => <CoffeeArt cup={lit ? ink : BRAND[scheme].coffee} ink={ink} />}
             onPress={() => Linking.openURL(COFFEE)}
           />
-          <Button
+          <ReadmeButton
             label={t("about.paypal")}
-            labelKey="about.paypal"
-            mark={() => <DonateMark name="paypal" scheme={scheme} />}
+            tile={TILE.paypal}
+            mark={(lit, ink) => <DonateMark name="paypal" scheme={scheme} ink={lit ? ink : undefined} />}
             onPress={() => Linking.openURL(PAYPAL)}
           />
-          <Button
+          <ReadmeButton
             label={t("about.crypto")}
-            labelKey="about.crypto"
-            mark={() => <DonateMark name="bitcoin" scheme={scheme} />}
+            tile={TILE.bitcoin}
+            mark={(lit, ink) => <DonateMark name="bitcoin" scheme={scheme} ink={lit ? ink : undefined} />}
             onPress={() => setCrypto(true)}
           />
         </View>
 
-        {/* Extra space above the sentence, so the buttons above pair with
-            their own sentence rather than this one. */}
-        <View style={styles.breath} />
         <Body>{t("about.report")}</Body>
-        <View style={styles.actions}>
-          <Button
+        <View style={styles.readmeRow}>
+          <ReadmeButton
             label={t("about.repo")}
-            labelKey="about.repo"
-            mark={() => <DonateMark name="github" scheme={scheme} />}
+            tile={TILE.github}
+            mark={(lit, ink) => <DonateMark name="github" scheme={scheme} ink={lit ? ink : undefined} />}
             onPress={() => Linking.openURL(REPO)}
           />
-          {/* Mail reaches the authors rather than a vendor, so its glyph takes
-              the accent. */}
-          <Button
+          {/* Mail reaches the authors rather than a vendor, so it takes the
+              accent at rest and lit. */}
+          <ReadmeButton
             label={t("about.mail")}
-            labelKey="about.mail"
-            mark={() => <Glyph name="IconMail" color={accentInk} />}
+            tile={{ color: accent, ink: accentContrast }}
+            mark={(lit, ink) => <MailMark open={lit} ink={lit ? ink : accentInk} />}
             onPress={() =>
               Linking.openURL(
                 `mailto:${MAIL}?subject=${encodeURIComponent(
@@ -709,7 +712,10 @@ const styles = StyleSheet.create({
   dimmed: { opacity: 0.4 },
   versionLink: { fontVariant: ["tabular-nums"] },
   flag: { fontSize: 18 },
-  breath: { height: space.sm },
+  // The README buttons' own gap, 13 on the README's 16.
+  readmeRow: { flexDirection: "row", flexWrap: "wrap", gap: 13 },
+  // A blank line of the card's text above and below.
+  give: { marginVertical: text.body * 1.5 },
   // Shares the width left after the label equally, so all swatches fit on
   // one line at any width.
   swatches: { flex: 1, flexDirection: "row", alignItems: "center", gap: 2, justifyContent: "flex-end" },

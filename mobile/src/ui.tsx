@@ -673,6 +673,68 @@ export function Button({
   );
 }
 
+/**
+ * A button in the shape of the README's, as GlimStone's About card has it: 160
+ * by 46.6, the brand's mark and the name on the quiet ground at rest, the
+ * brand's own colour and its ink while a finger is on it. A phone has no
+ * pointer to light it earlier.
+ */
+export function ReadmeButton({
+  label,
+  mark,
+  art,
+  tile,
+  onPress,
+}: {
+  label: string;
+  /** The mark in its resting colours, or in `ink` while lit. */
+  mark: (lit: boolean, ink: string) => ReactNode;
+  /** The mark is the vendor's own button artwork, words included. */
+  art?: boolean;
+  /** The lit fill and the ink that holds on it. */
+  tile: { color: string; ink: string };
+  onPress: () => void;
+}) {
+  const { p, corners } = useTheme();
+  const press = usePress();
+  const [lit, setLit] = useState(false);
+  const ink = lit ? tile.ink : p.text;
+  return (
+    <AnimatedPressable
+      onPress={onPress}
+      onPressIn={() => {
+        setLit(true);
+        press.onPressIn();
+      }}
+      onPressOut={() => {
+        setLit(false);
+        press.onPressOut();
+      }}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      style={[
+        styles.readme,
+        {
+          backgroundColor: lit ? tile.color : p.surface2,
+          ...corners.pill,
+          transform: [{ scale: press.scale }],
+        },
+      ]}
+    >
+      {art ? (
+        mark(lit, ink)
+      ) : (
+        <>
+          <View style={styles.readmeMark}>{mark(lit, ink)}</View>
+          <Text style={[styles.readmeName, { color: ink }]} numberOfLines={1} adjustsFontSizeToFit>
+            {label}
+          </Text>
+        </>
+      )}
+    </AnimatedPressable>
+  );
+}
+
 // Created at module level; inside a component it would be a new type on every
 // render and remount the button mid-animation.
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -1024,6 +1086,10 @@ const styles = StyleSheet.create({
     paddingVertical: space.md,
   },
   buttonText: { fontSize: text.body, fontWeight: "600", flexShrink: 1 },
+  // The README's proportions: the mark 24 in from the start, the name from 63.
+  readme: { width: 160, height: 46.6, overflow: "hidden", justifyContent: "center" },
+  readmeMark: { position: "absolute", start: 24, top: 10.8, width: 32, height: 25 },
+  readmeName: { marginStart: 63, marginEnd: 10, fontSize: text.body, fontWeight: "700" },
 
   track: { width: 36, height: 20, padding: 2, justifyContent: "center" },
   knob: { width: 16, height: 16 },

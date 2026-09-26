@@ -80,12 +80,22 @@ export const palettes: Record<Scheme, Palette> = { dark, light };
  * The About card's brand marks per theme, adjusted from the published brand
  * colours to reach the 3:1 a graphic needs: the published Buy Me a Coffee
  * yellow reads 1.14:1 on the light surface, PayPal's navy fails on the dark
- * one. Bitcoin keeps its own disc, which carries its own ground, and the mail
- * button takes the accent.
+ * one. The mail button takes the accent.
  */
-export const BRAND: Record<Scheme, Record<"coffee" | "paypal" | "github", string>> = {
-  dark: { coffee: "#ffdd00", paypal: "#4fb5f0", github: "#ffffff" },
-  light: { coffee: "#8a6d00", paypal: "#003087", github: "#181717" },
+export const BRAND: Record<Scheme, Record<"coffee" | "paypal" | "bitcoin" | "github", string>> = {
+  dark: { coffee: "#ffdd00", paypal: "#4fb5f0", bitcoin: "#f7931a", github: "#ffffff" },
+  light: { coffee: "#8a6d00", paypal: "#003087", bitcoin: "#a85d00", github: "#181717" },
+};
+
+/**
+ * The brands' own colours, which a README button fills with while pressed,
+ * and the ink that holds on each; the values of GlimStone's `.glim-tile-*`.
+ */
+export const TILE = {
+  coffee: { color: "#ffdd00", ink: "#0d0c22" },
+  paypal: { color: "#003087", ink: "#ffffff" },
+  bitcoin: { color: "#f7931a", ink: "#161616" },
+  github: { color: "#181717", ink: "#ffffff" },
 };
 
 /**

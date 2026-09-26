@@ -7,6 +7,7 @@ import {
   type BrandData,
   type GlyphData,
 } from "../../web/src/lib/glyphs.data";
+import { COFFEE_BUTTON_SVG, MAIL_SVG } from "../../web/src/lib/appMarks";
 import { glyphNameFor } from "../../web/src/lib/glyphName";
 import { BRAND } from "./theme";
 
@@ -173,21 +174,24 @@ export function CoinMark({
 }
 
 /**
- * A mark for the About card's donation and repository buttons, always passed
- * explicitly. The colours come from BRAND in theme.ts rather than the button's
- * ink; the Bitcoin disc keeps its own colours.
+ * A mark for the About card's give and repository buttons, always passed
+ * explicitly. At rest the colour comes from BRAND in theme.ts rather than the
+ * button's ink; a lit button hands its own ink in as `ink`.
  */
 export function DonateMark({
   name,
-  size = GLYPH,
+  width = 32,
+  height = 25,
   scheme,
+  ink,
 }: {
-  name: "coffee" | "paypal" | "bitcoin" | "github";
-  size?: number;
+  name: "paypal" | "bitcoin" | "github";
+  width?: number;
+  height?: number;
   scheme: "dark" | "light";
+  ink?: string;
 }) {
-  if (name === "bitcoin") return <CoinMark coin="btc" size={size} scheme={scheme} />;
-  const colour = BRAND[scheme][name];
+  const colour = ink ?? BRAND[scheme][name];
   if (name === "github") {
     const mark = BRANDS.IconGithub;
     if (!mark) return null;
@@ -196,14 +200,37 @@ export function DonateMark({
     return (
       <SvgXml
         xml={`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${mark.box}" fill="${colour}">${mark.svg}</svg>`}
-        width={size}
-        height={size}
+        width={width}
+        height={height}
       />
     );
   }
-  const glyph = DONATE_GLYPHS[name === "coffee" ? "IconBuyMeACoffee" : "IconPayPal"];
+  const glyph = DONATE_GLYPHS[name === "paypal" ? "IconPayPal" : "IconBitcoin"];
   if (!glyph) return null;
-  return <Drawn glyph={glyph} color={colour} width={size} height={size} />;
+  return <Drawn glyph={glyph} color={colour} width={width} height={height} />;
+}
+
+/**
+ * Buy Me a Coffee's own button artwork, which stands for the button's mark and
+ * words: the cup in `cup`, the lettering in `ink`. An SVG parser cannot read
+ * the browser's custom properties, so both are written in.
+ */
+export function CoffeeArt({ cup, ink }: { cup: string; ink: string }) {
+  const xml = COFFEE_BUTTON_SVG.split("var(--mark-ink, var(--brand-coffee))")
+    .join(cup)
+    .split("currentColor")
+    .join(ink);
+  return <SvgXml xml={xml} width={160} height={46.6} />;
+}
+
+/**
+ * The Email button's envelope, which opens while the button is pressed. Both
+ * drawings share one box, so the envelope does not jump.
+ */
+export function MailMark({ open, ink }: { open: boolean; ink: string }) {
+  const [closed, opened] = MAIL_SVG.split("</svg>");
+  const xml = `${open ? opened : closed}</svg>`.split("currentColor").join(ink);
+  return <SvgXml xml={xml} width={32} height={25} />;
 }
 
 export function hasBrandMark(name: string | undefined): boolean {

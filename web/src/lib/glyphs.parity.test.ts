@@ -48,9 +48,9 @@ describe.each([
 })
 
 describe('donateMarks.tsx', () => {
-  it('has the two link marks the donation buttons wear', () => {
-    // The crypto button wears the Bitcoin disc from the coins, not a third drawing.
-    expect(Object.keys(DONATE_GLYPHS).sort()).toEqual(['IconBuyMeACoffee', 'IconPayPal'])
+  it('has the marks the give buttons wear', () => {
+    // The crypto button wears Bitcoin's letter without the coin's disc.
+    expect(Object.keys(DONATE_GLYPHS).sort()).toEqual(['IconBitcoin', 'IconBuyMeACoffee', 'IconPayPal'])
     for (const [name, glyph] of Object.entries(DONATE_GLYPHS)) {
       expect(glyph.box, name).toMatch(/^[\d. -]+$/)
       expect(glyph.groups.flatMap((g) => g.parts).length, name).toBeGreaterThan(0)

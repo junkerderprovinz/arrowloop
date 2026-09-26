@@ -234,11 +234,11 @@ def coin_marks(colours: dict[str, dict[str, str]]) -> dict[str, dict]:
 
 
 def link_marks() -> dict[str, dict]:
-    """The two marks that are not coins: Buy Me a Coffee and PayPal.
+    """The give buttons' marks: Buy Me a Coffee, PayPal and Bitcoin's letter.
 
-    Each is one path on a 24 grid filled with `currentColor`, the app glyph
-    shape, since they take the ink of the button label beside them. The crypto
-    button wears the Bitcoin disc from the coins.
+    Each is one path filled with `currentColor`, the app glyph shape, since it
+    takes one ink at rest and another on a lit button. The crypto button wears
+    Bitcoin's letter without its disc, which at button size reads as a dot.
 
     They stay out of the app's own set and its rule table because they are
     brands: a rule keyed on "coffee" would put a company's cup on anything
@@ -259,7 +259,18 @@ def link_marks() -> dict[str, dict]:
         if not value:
             raise SystemExit("gen_glyph_data: no box constant %s for %s" % (box, name))
         out[name] = {"box": value.group(1), "groups": [{"parts": [{"d": d}]}]}
-    if len(out) < 2:
+    # A mark cut from a larger drawing names its box inline and its path by a
+    # constant.
+    for match in re.finditer(
+        r"export function (Icon\w+)\([^)]*\)[^{]*\{\s*return <Mark box=\"([^\"]+)\" d=\{(\w+)\} size=\{size\} />;\s*\}",
+        text,
+    ):
+        name, box, const = match.groups()
+        value = re.search(r'const %s =\s*"([^"]+)";' % re.escape(const), text)
+        if not value:
+            raise SystemExit("gen_glyph_data: no path constant %s for %s" % (const, name))
+        out[name] = {"box": box, "groups": [{"parts": [{"d": value.group(1)}]}]}
+    if len(out) < 3:
         raise SystemExit("gen_glyph_data: only %d link marks parsed" % len(out))
     return out
 
