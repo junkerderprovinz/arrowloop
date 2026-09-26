@@ -13,6 +13,18 @@ The full notes for each release are in
 ## 🎨 Design
 
 - **The logo's easter egg is drawn anew.** Five quick presses on the logo, or one long press, send the arrows along the gap in the rings into the middle, where they curl into a ring. The ring spins the way the heads point, faster and faster, tightens, and throws the arrows out through the gap they came in by. A shock wave runs over the rings, the whole rail shudders from top to bottom, and two new arrows strike home and quiver. Every frame is computed, so the shafts bend smoothly, and the desktop app on macOS and Linux shows the bend too. The motion setting sets its pace and how hard the rail shakes; with motion off, or with reduced motion outside the storm, it does not play.
+- **The look follows GlimStone 2.13.0.** The App tab and the About card use the README's download buttons, every selector spans its card, and cards, tabs and buttons get animations of their own.
+- **The App tab offers each download as a README button.** At rest it is grey with the brand's mark. Under the pointer it takes the brand's colour, and a second line such as "x64" or "Universal" appears under the name. Windows on ARM hangs on the Windows button, and the APK's QR code hangs on the APK button, where it opens in a small window over the button. The Docker button copies the command that starts the container and says "Copied" for a moment. The source archive reads "Source code" over "ZIP archive", and Google Play and Unraid say "Soon" until their listings exist.
+- **The About card gives and reports with the same buttons.** Buy Me a Coffee's button wears the vendor's own cup and lettering, the Email button's envelope opens under the pointer, and the give buttons stand a blank line apart from the sentences around them.
+- **Every selector spans the width of its card**, including the weekday strip and the exclude sets. In the PayPal window the free amount stands under the presets.
+- **The language picker opens the Look tab.** The General and App tabs have glyphs of their own, so the cog means Settings and nothing else.
+- **More of the interface moves when something happens.** A tab's cards and new rows arrive one after another, a settings tab slides in from its side, the corners morph to a new shape, and a change of the rainbow wipes across the page. A copy button draws a check and pulses, the export pulses as well, a refused import or login shakes its message, and a run's file list fades in once it has loaded. The motion setting decides how much of this plays.
+- **The crypto window's coin tiles light up in the coin's own colour** under the pointer, with the coin shown reversed.
+- **On the phone, the About card has the same README buttons**, lit in the brand's colour while pressed, and the language card comes first in the settings.
+
+## 🐛 Fixed
+
+- **The phone draws the storage providers' marks the way the web interface does.** Proton Drive's mark was missing, and on the light theme several marks were darkened that the web interface shows in their own colours.
 
 ## 1.1.0 - 2026-09-25
 
