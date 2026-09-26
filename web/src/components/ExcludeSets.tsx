@@ -88,7 +88,10 @@ export function ExcludeSetEditor({
   )
 }
 
-/** The picker, for a job. Chips, because a job can take several sets. */
+/**
+ * The picker, for a job. Chips, because a job can take several sets; they
+ * share the row, so the strip ends where the card does.
+ */
 export function ExcludeSetPicker({
   chosen,
   onChange,
@@ -127,7 +130,7 @@ export function ExcludeSetPicker({
               onChange(on ? chosen.filter((c) => c !== name) : [...chosen, name])
             }
             style={{ borderRadius: 'var(--radius-pill)' }}
-            className={`inline-flex h-[var(--badge-md)] items-center px-3 font-mono text-xs transition-colors ${
+            className={`inline-flex h-[var(--badge-md)] grow items-center justify-center px-3 font-mono text-xs transition-colors ${
               on
                 ? 'bg-accent text-accentContrast'
                 : 'bg-carbon-surface2 text-carbon-textSub hover:bg-carbon-surface3 hover:text-carbon-text'
