@@ -77,6 +77,9 @@ export function Settings() {
   const [backupFile, setBackupFile] = useState("");
   const [backupBusy, setBackupBusy] = useState(false);
   const [backupSaid, setBackupSaid] = useState("");
+  // Counters, so each export or import that lands swells its button again.
+  const [exported, setExported] = useState(0);
+  const [imported, setImported] = useState(0);
   const [crypto, setCrypto] = useState(false);
 
   // The swatch a second press would open. One slot for both rows, so only one
@@ -120,6 +123,7 @@ export function Settings() {
       );
       setBackupFile(where);
       setBackupSaid(t("settings.exported", { path: where }));
+      setExported((n) => n + 1);
     } catch (e) {
       setBackupSaid((e as Error).message);
     } finally {
@@ -145,6 +149,7 @@ export function Settings() {
       await settingsApi.write(backup.settings as EngineSettings);
       await api.writeConfig(backup.config as never);
       setBackupSaid(t("settings.imported"));
+      setImported((n) => n + 1);
       await refresh();
     } catch (e) {
       setBackupSaid((e as Error).message);
@@ -481,12 +486,14 @@ export function Settings() {
             labelKey="settings.export"
             tone="accent"
             busy={backupBusy}
+            confirm={exported}
             onPress={exportSettings}
           />
           <Button
             label={t("settings.import")}
             labelKey="settings.import"
             busy={backupBusy}
+            confirm={imported}
             onPress={importSettings}
           />
         </View>

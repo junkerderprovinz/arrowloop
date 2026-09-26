@@ -36,7 +36,7 @@ import {
 } from "./theme";
 import { useAppearance, type BarLabelMode, type LabelMode } from "./settings";
 import { useWalkedPalette } from "./disco";
-import { springOf, useMotion } from "./motion";
+import { springOf, useConfirm, useMotion } from "./motion";
 import { arrivalDelay, arrivalSide, edgeReach } from "./motionNative";
 
 // GlimStone's controls for React Native, with the design language's shapes
@@ -587,6 +587,7 @@ export function Button({
   disabled,
   wide,
   shake,
+  confirm,
   glyph: named,
 }: {
   label: string;
@@ -608,6 +609,8 @@ export function Button({
   wide?: boolean;
   /** Increment to wobble once. */
   shake?: number;
+  /** Increment to swell once, when what the button did has landed. */
+  confirm?: number;
 }) {
   const { p, corners, labels, accent, hueAt } = useTheme();
   const { ms } = useMotion();
@@ -625,6 +628,10 @@ export function Button({
   // re-renders with the result. At `off` its durations are zero.
   const wobble = useRef(new Animated.Value(0)).current;
   const press = usePress();
+  const swell = useConfirm();
+  useEffect(() => {
+    if (confirm) swell.confirm();
+  }, [confirm, swell.confirm]);
   useEffect(() => {
     if (!shake) return;
     const leg = Math.max(1, Math.round(ms.fade / 2));
@@ -659,6 +666,7 @@ export function Button({
           transform: [
             { translateX: wobble.interpolate({ inputRange: [-1, 1], outputRange: [-8, 8] }) },
             { scale: press.scale },
+            { scale: swell.scale },
           ],
         },
       ]}

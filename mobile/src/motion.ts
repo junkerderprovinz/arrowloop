@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
-import { AccessibilityInfo, LayoutAnimation, Platform, UIManager } from "react-native";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { AccessibilityInfo, Animated, Easing, LayoutAnimation, Platform, UIManager } from "react-native";
 
-import { NATIVE_MOTION, springOf } from "./motionNative";
+import { confirmPeak, NATIVE_MOTION, springOf } from "./motionNative";
 import { useAppearance, type MotionIntensity } from "./settings";
 
 /**
@@ -84,4 +84,28 @@ export function animateNext(intensity: MotionIntensity, kind: "layout" | "fade" 
       ? { type: LayoutAnimation.Types.easeInEaseOut, property: LayoutAnimation.Properties.opacity }
       : { type: LayoutAnimation.Types.easeInEaseOut, property: LayoutAnimation.Properties.opacity },
   });
+}
+
+/**
+ * The swell a control gives when what it did landed: a copy, an export or an
+ * import. It grows to confirmPeak() over the first 40 per cent of `confirm`
+ * and settles back over the rest, the web's `glim-confirm` without its ring,
+ * since a phone control has no room around it for one. At `off` nothing moves.
+ */
+export function useConfirm(): { scale: Animated.Value; confirm: () => void } {
+  const { ms } = useMotion();
+  const scale = useRef(new Animated.Value(1)).current;
+  // Read when the success lands, so a callback kept from an earlier render
+  // still plays at the level in force.
+  const level = useRef(ms);
+  level.current = ms;
+  const confirm = useCallback(() => {
+    const m = level.current;
+    if (!m.confirm || !m.confirmScale) return;
+    scale.setValue(1);
+    const leg = (toValue: number, duration: number) =>
+      Animated.timing(scale, { toValue, duration, easing: Easing.out(Easing.ease), useNativeDriver: true });
+    Animated.sequence([leg(confirmPeak(m), m.confirm * 0.4), leg(1, m.confirm * 0.6)]).start();
+  }, [scale]);
+  return { scale, confirm };
 }

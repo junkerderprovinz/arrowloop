@@ -24,6 +24,8 @@ export function CryptoDonate({ onClose }: { onClose: () => void }) {
   const [coin, setCoin] = useState<CryptoCoin>(CRYPTO_COINS[0]!);
   const [network, setNetwork] = useState<CryptoNetwork>(CRYPTO_COINS[0]!.networks[0]!);
   const [copied, setCopied] = useState(false);
+  // Counts the copies, so a second one swells the button again.
+  const [copies, setCopies] = useState(0);
 
   useEffect(() => {
     if (!copied) return;
@@ -119,9 +121,13 @@ export function CryptoDonate({ onClose }: { onClose: () => void }) {
                   labelKey="common.copy"
                   tone="accent"
                   hue={picked}
+                  confirm={copies}
                   onPress={() => {
                     try {
-                      void engine.copy(network.address).then(() => setCopied(true));
+                      void engine.copy(network.address).then(() => {
+                        setCopied(true);
+                        setCopies((n) => n + 1);
+                      });
                     } catch {
                       // No native module under `expo start`; the address stays
                       // selectable.
