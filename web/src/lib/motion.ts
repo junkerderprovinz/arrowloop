@@ -14,7 +14,8 @@ export const MOTION_INTENSITIES: MotionIntensity[] = ['off', 'subtle', 'wild']
 /** Every value a stored preference may hold, so a stored `storm` survives a reload. */
 export const MOTION_VALUES: MotionIntensity[] = ['off', 'subtle', 'wild', 'storm']
 
-export const DEFAULT_MOTION: MotionIntensity = 'wild'
+/** The middle level, GlimStone's default; a stored choice keeps its level. */
+export const DEFAULT_MOTION: MotionIntensity = 'subtle'
 
 const STORAGE_KEY = 'arrowloop.motion'
 const ATTRIBUTE = 'data-motion'

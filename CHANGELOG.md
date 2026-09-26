@@ -21,6 +21,8 @@ The full notes for each release are in
 - **More of the interface moves when something happens.** A tab's cards and new rows arrive one after another, a settings tab slides in from its side, the corners morph to a new shape, and a change of the rainbow wipes across the page. A copy button draws a check and pulses, the export pulses as well, a refused import or login shakes its message, and a run's file list fades in once it has loaded. The motion setting decides how much of this plays.
 - **The crypto window's coin tiles light up in the coin's own colour** under the pointer, with the coin shown reversed.
 - **On the phone, the About card has the same README buttons**, lit in the brand's colour while pressed, and the language card comes first in the settings.
+- **On the phone, a button swells once when its work lands**: the copy button in the crypto window, and Export and Import on the settings page. The motion setting decides how far and for how long; at Off nothing moves.
+- **A new install starts with motion at Gentle**, the middle level, as the other GlimStone apps do. Wild is one tap away, and a level somebody already chose stays as it is.
 
 ## 🐛 Fixed
 

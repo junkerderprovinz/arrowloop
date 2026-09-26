@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { AccessibilityInfo, Animated, Easing, LayoutAnimation, Platform, UIManager } from "react-native";
 
 import { confirmPeak, NATIVE_MOTION, springOf } from "./motionNative";
-import { useAppearance, type MotionIntensity } from "./settings";
+import { DEFAULT_APPEARANCE, useAppearance, type MotionIntensity } from "./settings";
 
 /**
  * The motion levels of the web app's lib/motion.ts: one animation at every
@@ -16,7 +16,11 @@ export type { MotionIntensity };
 /** The levels the picker offers. A stored value may also be the hidden `storm`. */
 export const MOTION_INTENSITIES: MotionIntensity[] = ["off", "subtle", "wild"];
 
-export const DEFAULT_MOTION: MotionIntensity = "wild";
+/**
+ * A fresh install starts at the middle level, GlimStone's default. A stored
+ * appearance keeps the level it holds.
+ */
+export const DEFAULT_MOTION: MotionIntensity = DEFAULT_APPEARANCE.motion;
 
 /** The numbers per level, from GlimStone's reference as it is. */
 export const MOTION = NATIVE_MOTION;

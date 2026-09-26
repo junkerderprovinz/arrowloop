@@ -72,7 +72,7 @@ export const DEFAULT_APPEARANCE: Appearance = {
   shape: DEFAULT_SHAPE,
   labels: "textGlyph",
   barLabels: "textGlyph",
-  motion: "wild",
+  motion: "subtle",
   lock: false,
 };
 
