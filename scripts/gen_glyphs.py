@@ -158,7 +158,8 @@ DRAWN = [
      # radius makes 6.94 against the round glyphs' 7.0. Stroked, so the bar
      # holds the cross's 2.2 thickness, with round caps for the same ends.
      "0 0 14 14",
-     '<path d="M2.4 7.4L5.6 10.9L11.6 3.4" fill="none" stroke="currentColor"'
+     # pathLength lets a copy button draw the check in with .glim-check-draw.
+     '<path d="M2.4 7.4L5.6 10.9L11.6 3.4" pathLength="1" fill="none" stroke="currentColor"'
      ' stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />'),
 ]
 

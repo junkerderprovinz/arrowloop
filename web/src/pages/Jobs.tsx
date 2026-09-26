@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 
-import { Empty, Num, Rule, Stack } from '../components/Shell'
+import { Empty, Num, Rows, Rule, Stack } from '../components/Shell'
 import { IconAction } from '../components/IconAction'
 import { ToggleRow } from '../components/ToggleRow'
 import { Card } from '../lib/glimstone/Card'
@@ -661,12 +661,12 @@ function AllTouches({ job, kinds, query }: { job: string; kinds: string[]; query
     return <Empty>{query ? t('jobs.activityNoMatch', { q: query }) : t('history.logEmpty')}</Empty>
 
   return (
-    <ul className="flex flex-col gap-1">
+    <Rows className="flex flex-col gap-1">
       {touches.map((e, i) => (
         <TouchRow key={`${e.Run}-${e.Path}-${i}`} touch={e} withJob={!job} />
       ))}
       {more && <li ref={end} aria-hidden className="h-px" />}
-    </ul>
+    </Rows>
   )
 }
 
@@ -920,9 +920,9 @@ export function History({
       <div className="mb-4">
         <Stats />
       </div>
-      <ul className="flex flex-col">
+      <Rows className="flex flex-col">
         {list.map((r, i) => (
-          <li key={`${r.Job}-${r.Started}-${i}`}>
+          <li key={r.ID}>
             {i > 0 && <Rule />}
             <button
               type="button"
@@ -959,7 +959,7 @@ export function History({
             )}
           </li>
         ))}
-      </ul>
+      </Rows>
       {/* Reaching the end loads more. An observed sentinel rather than scroll
           arithmetic, because here the window scrolls, not a box of the list's
           own. Only present when the answer filled the limit. */}

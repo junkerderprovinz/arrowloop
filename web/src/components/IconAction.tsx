@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import type { ReactNode, Ref } from 'react'
 
 import { Button } from '../lib/glimstone/Button'
 
@@ -19,6 +19,7 @@ export function IconAction({
   size = 'default',
   tone = 'accent',
   hueIndex,
+  ref,
 }: {
   /**
    * The mark. Usually left out, since the label key resolves one by meaning;
@@ -54,6 +55,8 @@ export function IconAction({
    * Inside one, the card already rebinds --accent for its subtree.
    */
   hueIndex?: number
+  /** The button itself, for an animation that plays on it. */
+  ref?: Ref<HTMLButtonElement>
 }) {
   return (
     <Button
@@ -68,6 +71,7 @@ export function IconAction({
       disabled={disabled}
       busy={busy}
       onClick={onClick}
+      ref={ref}
     />
   )
 }

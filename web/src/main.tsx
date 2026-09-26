@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 
 import { Gate } from './App'
+import { armShapeTransitions } from './lib/animate'
 import { applyCachedAppearance } from './lib/appearance'
 import { applyStoredLabelModes } from './lib/controls'
 import { applyDisco } from './lib/disco'
@@ -60,4 +61,5 @@ if (root) {
       </I18nProvider>
     </StrictMode>,
   )
+  armShapeTransitions()
 }

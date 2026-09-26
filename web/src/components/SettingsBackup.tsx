@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { Button } from '../lib/glimstone/Button'
 import { Card } from '../lib/glimstone/Card'
 import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
 import { IconDownload, IconUpload } from './glyphs'
+import { replay } from '../lib/animate'
 import { api } from '../lib/api'
 import { download, pickTextFile } from '../lib/download'
 import { useT } from '../lib/i18n'
@@ -15,6 +16,9 @@ export function SettingsBackup({ hueIndex }: { hueIndex: number }) {
   const [error, setError] = useState<string | null>(null)
   /** The picked file, waiting for confirmation. */
   const [picked, setPicked] = useState<{ name: string; text: string } | null>(null)
+  const exportButton = useRef<HTMLButtonElement>(null)
+  // Keys the error, so each refused import remounts it and shakes again.
+  const [refused, setRefused] = useState(0)
 
   function replace(file: { name: string; text: string }) {
     setRestoring(true)
@@ -23,7 +27,10 @@ export function SettingsBackup({ hueIndex }: { hueIndex: number }) {
       .replaceConfig(file.text)
       // Everything the page holds was read from the replaced configuration.
       .then(() => window.location.reload())
-      .catch((e: Error) => setError(e.message))
+      .catch((e: Error) => {
+        setError(e.message)
+        setRefused((n) => n + 1)
+      })
       .finally(() => setRestoring(false))
   }
 
@@ -35,10 +42,12 @@ export function SettingsBackup({ hueIndex }: { hueIndex: number }) {
           labelKey="backup.export"
           glyph={<IconDownload />}
           tone="accent"
+          ref={exportButton}
           onClick={() => {
             void api.rawConfig().then((doc) => {
               const day = new Date().toISOString().slice(0, 10)
               download(`arrowloop-${day}.json`, doc, 'application/json')
+              replay(exportButton.current, 'glim-confirm')
             })
           }}
         />
@@ -56,7 +65,11 @@ export function SettingsBackup({ hueIndex }: { hueIndex: number }) {
             })
           }}
         />
-        {error && <p className="text-xs text-statusFail">{error}</p>}
+        {error && (
+          <p key={refused} className="glim-shake text-xs text-statusFail">
+            {error}
+          </p>
+        )}
       </div>
 
       {picked && (

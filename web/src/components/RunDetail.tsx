@@ -73,7 +73,7 @@ export function RunDetail({
   const picked = Object.entries(choices).filter(([, v]) => v !== 'both')
 
   return (
-    <div className="flex flex-col gap-2 pb-3">
+    <div className="glim-content-fade flex flex-col gap-2 pb-3">
       {/* Tab-separated plain text, so a run that went wrong can be sent on. */}
       <div className="flex justify-end">
         <Button

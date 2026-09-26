@@ -101,8 +101,9 @@ export function Login({ onIn }: { onIn: () => void }) {
                 <Text value={code} onChange={setCode} placeholder="000000" code mono />
               </Field>
             )}
+            {/* Cleared at every attempt, so each refusal mounts it and shakes. */}
             {error && (
-              <p className="text-xs text-statusFail" role="alert">
+              <p className="glim-shake text-xs text-statusFail" role="alert">
                 {error}
               </p>
             )}

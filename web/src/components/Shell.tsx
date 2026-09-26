@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 
+import { useStagger } from '../lib/animate'
 import { subscribeRainbow } from '../lib/appearance'
 
 // The app's own small layout pieces. The controls themselves are GlimStone's,
@@ -16,9 +17,29 @@ export function useRainbow(): number {
   return version
 }
 
-/** Cards stack on one shared 40px rhythm, room for each card's title badge. */
+/**
+ * Cards stack on one shared 40px rhythm, room for each card's title badge. A
+ * tab's cards arrive one after another, and so does a card added later.
+ */
 export function Stack({ children }: { children: ReactNode }) {
-  return <div className="flex flex-col gap-10">{children}</div>
+  const box = useRef<HTMLDivElement>(null)
+  useStagger(box)
+  return (
+    <div ref={box} className="flex flex-col gap-10">
+      {children}
+    </div>
+  )
+}
+
+/** A list whose rows arrive one after another, and a row added later at once. */
+export function Rows({ className, children }: { className: string; children: ReactNode }) {
+  const box = useRef<HTMLUListElement>(null)
+  useStagger(box)
+  return (
+    <ul ref={box} className={className}>
+      {children}
+    </ul>
+  )
 }
 
 /** Tabular figures, so a changing count does not jitter sideways. */

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 
-import { Empty, Num, Rule, Stack } from '../components/Shell'
+import { Empty, Num, Rows, Rule, Stack } from '../components/Shell'
 import { Card } from '../lib/glimstone/Card'
 import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
@@ -138,7 +138,7 @@ export function Preview({ job, onDone }: { job: string; onDone: () => void }) {
             <p className="mb-2 flex items-center gap-1.5 text-xs text-carbon-textMuted">
               {t('preview.explain')}
             </p>
-            <ul className="flex flex-col">
+            <Rows className="flex flex-col">
               {everything.map((a, i) => (
                 <li key={`${a.kind}:${a.path}`}>
                   {i > 0 && <Rule />}
@@ -151,7 +151,7 @@ export function Preview({ job, onDone }: { job: string; onDone: () => void }) {
                   />
                 </li>
               ))}
-            </ul>
+            </Rows>
           </>
         )}
         <p className="mt-4 text-xs text-carbon-textMuted">

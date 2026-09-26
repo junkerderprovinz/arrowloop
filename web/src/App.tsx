@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import type { CSSProperties } from 'react'
 
 import { Stack } from './components/Shell'
 import { Card } from './lib/glimstone/Card'
@@ -37,6 +38,7 @@ import { storedLook, storedSlots, storeSlots } from './lib/look'
 import { applyDisco, discoTap } from './lib/disco'
 import { getDisco, setDisco } from './lib/discoSetting'
 import { CONTROL_AXES, getLabelMode, LABEL_MODES, setLabelMode, type ControlAxis, type LabelMode } from './lib/controls'
+import { wipeColours } from './lib/animate'
 import { useT } from './lib/i18n'
 import { getMotion, MOTION_INTENSITIES, setMotion, type MotionIntensity } from './lib/motion'
 import { wireTooltips } from './lib/tooltip'
@@ -46,6 +48,9 @@ type Tab = 'jobs' | 'targets' | 'history' | 'settings'
 
 /** Settings is one tab with sections, the same shape BombVault uses. */
 type SettingsSection = 'general' | 'engine' | 'look' | 'app' | 'security'
+
+/** The sections in the strip's order, which decides the side a tab slides in from. */
+const SECTIONS: SettingsSection[] = ['general', 'engine', 'look', 'app', 'security']
 
 type Theme = 'dark' | 'light'
 
@@ -323,9 +328,12 @@ export function App() {
 function Settings(props: LookProps) {
   const { t } = useT()
   const [section, setSection] = useState<SettingsSection>('general')
+  // The side a new tab's cards slide in from: 1 for a later tab, -1 for an
+  // earlier one, 0 on arrival, where the page's own entrance plays instead.
+  const [toward, setToward] = useState(0)
 
   return (
-    <Stack>
+    <div className="flex flex-col gap-10">
       {/* Chips rather than a groove: a settings strip is tabs, not a
           segmented control. */}
       <div className="max-w-4xl">
@@ -333,7 +341,10 @@ function Settings(props: LookProps) {
         label={t('settings.section')}
         hueOffset={HUE_OFFSET.tabs}
         value={section}
-        onChange={setSection}
+        onChange={(next) => {
+          setToward(SECTIONS.indexOf(next) > SECTIONS.indexOf(section) ? 1 : -1)
+          setSection(next)
+        }}
         variant="chip"
         options={[
           { value: 'general', label: t('settings.general'), icon: <IconTabGeneral /> },
@@ -348,8 +359,13 @@ function Settings(props: LookProps) {
       />
       </div>
       {/* A reading width that the strip above shares, so cards and tabs line
-          up without the column depending on the length of the tab labels. */}
-      <div className="flex max-w-4xl flex-col gap-10">
+          up without the column depending on the length of the tab labels.
+          Keyed on the tab, so the slide plays again on every change. */}
+      <div
+        key={section}
+        className={`flex max-w-4xl flex-col gap-10${toward ? ' glim-tab-slide' : ''}`}
+        style={{ '--tab-dir': toward } as CSSProperties}
+      >
         {section === 'general' ? (
           <General {...props} />
         ) : section === 'engine' ? (
@@ -362,7 +378,7 @@ function Settings(props: LookProps) {
           <Look {...props} />
         )}
       </div>
-    </Stack>
+    </div>
   )
 }
 
@@ -569,6 +585,12 @@ function Look({
   const storm = useStormUnlock(motion, onMotion)
   const leaf = useLeafUnlock(shape, onShape)
   const discoUnlock = useDiscoUnlock(disco, onDisco)
+  // A switch that changes the rainbow wipes across the page. A colour dragged
+  // in the picker does not, since it has to follow the pointer.
+  const switchRainbow = (next: RainbowState) => {
+    wipeColours()
+    onRainbow(next)
+  }
   return (
     <Stack>
       {/* First, because somebody who cannot read the screen comes looking for
@@ -686,7 +708,7 @@ function Look({
           <ToggleRow
             checked={rainbow.on}
             onChange={(on) => {
-              onRainbow({ ...rainbow, on })
+              switchRainbow({ ...rainbow, on })
               discoUnlock.turned(on)
             }}
             label={t('look.rainbowOn')}
@@ -700,7 +722,7 @@ function Look({
             <>
               <ToggleRow
                 checked={rainbow.reactive}
-                onChange={(reactive) => onRainbow({ ...rainbow, reactive })}
+                onChange={(reactive) => switchRainbow({ ...rainbow, reactive })}
                 label={t('look.rainbowReactive')}
                 hint={t('look.reactiveHint')}
                 hueIndex={1}
@@ -708,7 +730,7 @@ function Look({
               <ToggleRow
                 checked={rainbow.rotate}
                 onChange={(rotate) =>
-                  onRainbow({ ...rainbow, rotate, seed: rotate ? (rainbow.seed + 1) % 8 : 0 })
+                  switchRainbow({ ...rainbow, rotate, seed: rotate ? (rainbow.seed + 1) % 8 : 0 })
                 }
                 label={t('look.rainbowRotate')}
                 hint={t('look.rotateHint')}
@@ -740,7 +762,7 @@ function Look({
                 <ResetBadge
                   tip={t('look.paletteReset')}
                   disabled={rainbow.palette.join() === RAINBOW.join()}
-                  onClick={() => onRainbow({ ...rainbow, palette: [...RAINBOW] })}
+                  onClick={() => switchRainbow({ ...rainbow, palette: [...RAINBOW] })}
                 />
               </div>
             </div>

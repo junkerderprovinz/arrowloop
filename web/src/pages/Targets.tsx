@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
-import { Empty, Rule, Stack } from '../components/Shell'
+import { Empty, Rows, Rule, Stack } from '../components/Shell'
 import { Dialog } from '../components/Dialog'
 import { IconAction } from '../components/IconAction'
 import { ProviderPicker } from '../components/ProviderPicker'
@@ -9,10 +9,11 @@ import { Card } from '../lib/glimstone/Card'
 import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
 import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
-import { IconCheck, IconCopy, IconDelete, IconEdit } from '../components/glyphs'
+import { IconCheck, IconConfirm, IconCopy, IconDelete, IconEdit } from '../components/glyphs'
 import { brandMark } from '../components/brandMarks'
 import { Choice, Field, Secret, Text } from '../components/Field'
 import { ToggleRow } from '../components/ToggleRow'
+import { replay } from '../lib/animate'
 import { api, type Backend, type Provider, type Remote, type Usage, type Volume } from '../lib/api'
 import { bytes } from '../lib/bytes'
 import { useT } from '../lib/i18n'
@@ -202,7 +203,7 @@ function Storage({
       {rows.length === 0 ? (
         <Empty>{t(TEXT[group].empty)}</Empty>
       ) : (
-        <ul className="flex flex-col">
+        <Rows className="flex flex-col">
           {rows.map((r, i) => (
             <li key={r.name}>
               {i > 0 && <Rule />}
@@ -228,7 +229,7 @@ function Storage({
               )}
             </li>
           ))}
-        </ul>
+        </Rows>
       )}
     </Card>
   )
@@ -623,14 +624,14 @@ function Drives({ volumes, onChanged }: { volumes: Volume[]; onChanged: () => vo
       {volumes.length === 0 && !adding ? (
         <Empty>{t('targets.drivesEmpty')}</Empty>
       ) : (
-        <ul className="flex flex-col">
+        <Rows className="flex flex-col">
           {volumes.map((v, i) => (
             <li key={v.id}>
               {(i > 0 || adding) && <Rule />}
               <DriveRow volume={v} row={i} onChanged={onChanged} />
             </li>
           ))}
-        </ul>
+        </Rows>
       )}
     </Card>
   )
@@ -648,6 +649,10 @@ function DriveRow({
 }) {
   const { t } = useT()
   const [copied, setCopied] = useState(false)
+  const copyButton = useRef<HTMLButtonElement>(null)
+  useEffect(() => {
+    if (copied) replay(copyButton.current, 'glim-confirm')
+  }, [copied])
   // Asks first, since deleting removes the identity file from the volume itself.
   const [confirming, setConfirming] = useState(false)
 
@@ -674,6 +679,7 @@ function DriveRow({
 
       <div className="flex shrink-0 items-center gap-1.5">
         <IconAction
+          ref={copyButton}
           tone={copied ? 'accent' : 'subtle'}
           hueIndex={row + 1}
           title={copied ? t('targets.copied') : t('targets.copyPath')}
@@ -685,7 +691,7 @@ function DriveRow({
             })
           }}
         >
-          <IconCopy />
+          {copied ? <IconConfirm className="glim-check-draw" /> : <IconCopy />}
         </IconAction>
         <IconAction
           title={t('targets.deleteDrive')}

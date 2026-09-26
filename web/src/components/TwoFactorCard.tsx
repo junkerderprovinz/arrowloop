@@ -1,10 +1,12 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { Button } from '../lib/glimstone/Button'
 import { Card } from '../lib/glimstone/Card'
 import { Field, Text } from './Field'
+import { IconConfirm } from './glyphs'
 import { QRCode } from './QRCode'
 import { StateLine } from './Shell'
+import { replay } from '../lib/animate'
 import { ApiError, api } from '../lib/api'
 import { useT } from '../lib/i18n'
 
@@ -46,6 +48,11 @@ export function TwoFactorCard({
   const [disarming, setDisarming] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
+  // One of the two copy buttons, whichever step is showing.
+  const copyButton = useRef<HTMLButtonElement>(null)
+  useEffect(() => {
+    if (copied) replay(copyButton.current, 'glim-confirm')
+  }, [copied])
 
   function refusal(e: unknown): string {
     if (e instanceof ApiError && e.status === 429) return t('login.locked')
@@ -159,6 +166,8 @@ export function TwoFactorCard({
               <Button
                 label={copied ? t('common.copied') : t('common.copy')}
                 labelKey={copied ? 'common.copied' : 'common.copy'}
+                glyph={copied ? <IconConfirm className="glim-check-draw" /> : undefined}
+                ref={copyButton}
                 onClick={() => copy(step.secret)}
               />
             </div>
@@ -196,6 +205,8 @@ export function TwoFactorCard({
             <Button
               label={copied ? t('common.copied') : t('common.copy')}
               labelKey={copied ? 'common.copied' : 'common.copy'}
+              glyph={copied ? <IconConfirm className="glim-check-draw" /> : undefined}
+              ref={copyButton}
               onClick={() => copy(step.codes.join('\n'))}
             />
             <Button

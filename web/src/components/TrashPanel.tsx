@@ -74,7 +74,7 @@ export function TrashPanel({ job }: { job: string }) {
       )}
 
       {entries !== null && entries.length > 0 && (
-        <ul className="flex max-h-72 flex-col gap-1 overflow-y-auto">
+        <ul className="glim-content-fade flex max-h-72 flex-col gap-1 overflow-y-auto">
           {entries.map((e) => (
             <li key={e.remote} className="flex items-start gap-2 text-xs">
               <IconAction

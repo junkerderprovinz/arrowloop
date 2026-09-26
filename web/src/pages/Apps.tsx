@@ -3,6 +3,7 @@ import type { RefObject } from 'react'
 import { createPortal } from 'react-dom'
 
 import { QRCode } from '../components/QRCode'
+import { Stack } from '../components/Shell'
 import { Card } from '../lib/glimstone/Card'
 import { BrandMark, ReadmeButton } from '../lib/glimstone/ReadmeButton'
 import { ANDROID_SVG, APPLE_SVG, DOCKER_SVG, LINUX_SVG, PLAY_SVG, UNRAID_SVG, WINDOWS_SVG, ZIP_SVG } from '../lib/appMarks'
@@ -30,10 +31,10 @@ const DOCKER_RUN =
  */
 export function Apps({ version, desktop }: { version: string; desktop: boolean }) {
   return (
-    <div className="flex flex-col gap-10">
+    <Stack>
       <PhoneCard version={version} />
       {desktop ? <ServerCard version={version} /> : <DesktopCard />}
-    </div>
+    </Stack>
   )
 }
 

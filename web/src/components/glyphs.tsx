@@ -285,7 +285,7 @@ export function IconCancel(props: SVGProps<SVGSVGElement>) {
 export function IconConfirm(props: SVGProps<SVGSVGElement>) {
   return (
     <Drawn box="0 0 14 14" {...props}>
-      <path d="M2.4 7.4L5.6 10.9L11.6 3.4" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M2.4 7.4L5.6 10.9L11.6 3.4" pathLength="1" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
     </Drawn>
   )
 }
