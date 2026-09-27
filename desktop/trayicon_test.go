@@ -38,10 +38,43 @@ func TestBuildTraySetProducesEveryState(t *testing.T) {
 	}
 	for name, icon := range map[string][]byte{
 		"idle": set.Idle, "settled": set.Settled, "failed": set.Failed,
+		"paused": set.Paused, "turning": set.Working[3],
 	} {
-		if len(icon) < 32 {
-			t.Errorf("%s icon is too short to be an ICO: %d bytes", name, len(icon))
+		img, err := png.Decode(bytes.NewReader(icon))
+		if err != nil {
+			t.Errorf("%s icon is not a PNG: %v", name, err)
+			continue
 		}
+		if b := img.Bounds(); b.Dx() != traySize || b.Dy() != traySize {
+			t.Errorf("%s icon is %dx%d, not the %d pixels the tray is drawn from", name, b.Dx(), b.Dy(), traySize)
+		}
+	}
+}
+
+// The shipped logo, since a sample that decodes proves nothing about the file
+// the executable carries.
+func TestTheTrayIconIsBuiltFromTheOneLogo(t *testing.T) {
+	if _, err := BuildTraySet(appIcon); err != nil {
+		t.Fatalf("the shipped logo does not give a tray icon: %v", err)
+	}
+}
+
+func TestThePausedIconCarriesItsBadge(t *testing.T) {
+	set, err := BuildTraySet(sample(t))
+	if err != nil {
+		t.Fatalf("build: %v", err)
+	}
+	if bytes.Equal(set.Idle, set.Paused) {
+		t.Fatal("the paused icon is identical to the idle one, so a pause is invisible")
+	}
+	img, err := png.Decode(bytes.NewReader(set.Paused))
+	if err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	// The badge sits in the lower right corner, where the sample ring has no ink.
+	r, g, b, a := img.At(traySize-4, traySize-traySize/8).RGBA()
+	if a == 0 || (r == g && g == b) {
+		t.Errorf("no coloured badge in the corner: %d %d %d %d", r>>8, g>>8, b>>8, a>>8)
 	}
 }
 

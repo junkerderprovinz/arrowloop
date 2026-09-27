@@ -3,12 +3,15 @@ package main
 import (
 	"context"
 	"fmt"
+	"strconv"
+	"strings"
 	"sync"
 	"time"
 
-	"github.com/energye/systray"
+	"github.com/wailsapp/wails/v3/pkg/application"
 
 	"github.com/junkerderprovinz/arrowloop/internal/daemon"
+	"github.com/junkerderprovinz/arrowloop/internal/deskset"
 )
 
 // TrayLive owns the icon and the tooltip while the program runs. It follows the
@@ -19,50 +22,87 @@ type TrayLive struct {
 	set *TraySet
 
 	mu      sync.Mutex
+	tray    *application.SystemTray
 	state   TrayState
 	frame   int
 	working map[string]activity
-	last    string
+	last    outcome
+	paused  bool
+	words   deskset.Words
 }
 
-// activity is what one job is doing this second, as the tray tells it.
+// activity is how far one job has got, as the tooltip tells it.
 type activity struct {
-	path  string
-	side  string
 	done  int
 	total int
 }
 
+// outcome is the last run to finish, kept as facts so the tooltip can be
+// worded again when the language changes.
+type outcome struct {
+	job string
+	err string
+}
+
 func newTrayLive(set *TraySet) *TrayLive {
-	return &TrayLive{set: set, working: map[string]activity{}}
+	return &TrayLive{set: set, working: map[string]activity{}, words: deskset.DefaultWords()}
+}
+
+// attach hands over the icon to draw on, or nil while there is none.
+func (l *TrayLive) attach(tray *application.SystemTray) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	l.tray = tray
+	l.apply()
+}
+
+// show takes the pause and the words from the settings.
+func (l *TrayLive) show(paused bool, words deskset.Words) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	l.paused = paused
+	l.words = words
+	l.apply()
 }
 
 // apply sets the icon and the tooltip together. The caller holds the lock.
+// Work in progress outranks the pause, since a run started by hand still goes.
 func (l *TrayLive) apply() {
+	if l.tray == nil {
+		return
+	}
+	var icon []byte
 	switch {
 	case len(l.working) > 0:
-		l.state = TrayWorking
-		systray.SetIcon(l.set.Working[l.frame%len(l.set.Working)])
+		icon = l.set.Working[l.frame%len(l.set.Working)]
+	case l.paused:
+		icon = l.set.Paused
 	case l.state == TrayFailed:
-		systray.SetIcon(l.set.Failed)
+		icon = l.set.Failed
 	case l.state == TraySettled:
-		systray.SetIcon(l.set.Settled)
+		icon = l.set.Settled
 	default:
-		systray.SetIcon(l.set.Idle)
+		icon = l.set.Idle
 	}
-	systray.SetTooltip(l.tooltip())
+	l.tray.SetIcon(icon)
+	l.tray.SetTooltip(l.tooltip())
 }
 
 // tooltip is the one line the shell will show, built under the lock.
 func (l *TrayLive) tooltip() string {
-	if len(l.working) == 0 {
-		if l.last != "" {
-			return "ArrowLoop - " + l.last
+	switch len(l.working) {
+	case 0:
+		switch {
+		case l.paused:
+			return "ArrowLoop - " + l.words.Paused
+		case l.last.job == "":
+			return "ArrowLoop"
+		case l.last.err != "":
+			return "ArrowLoop - " + l.last.job + ": " + l.last.err
+		default:
+			return "ArrowLoop - " + l.last.job + ": " + l.words.Done
 		}
-		return "ArrowLoop"
-	}
-	// Several jobs get a count, since a tooltip is one line.
-	if len(l.working) == 1 {
+	case 1:
 		for job, a := range l.working {
 			if a.total > 0 {
 				return fmt.Sprintf("ArrowLoop - %s: %d/%d", job, a.done, a.total)
@@ -70,7 +110,8 @@ func (l *TrayLive) tooltip() string {
 			return "ArrowLoop - " + job
 		}
 	}
-	return fmt.Sprintf("ArrowLoop - %d jobs running", len(l.working))
+	// Several jobs get a count, since a tooltip is one line.
+	return "ArrowLoop - " + strings.ReplaceAll(l.words.Running, "{count}", strconv.Itoa(len(l.working)))
 }
 
 // Watch follows the runner's events for as long as the context lives. The spin
@@ -99,28 +140,7 @@ func (l *TrayLive) Watch(ctx context.Context, runner *daemon.Runner) {
 					return
 				}
 				l.mu.Lock()
-				switch ev.Phase {
-				case "started":
-					l.working[ev.Job] = activity{}
-				case "progress":
-					a := l.working[ev.Job]
-					if ev.Path != "" {
-						a.path, a.side = ev.Path, ev.Side
-					}
-					a.done, a.total = ev.Done, ev.Total
-					l.working[ev.Job] = a
-				case "finished":
-					delete(l.working, ev.Job)
-					// A failure outranks a success that arrives after it while
-					// other jobs are still running.
-					if ev.Error != "" {
-						l.state = TrayFailed
-						l.last = ev.Job + ": " + ev.Error
-					} else if l.state != TrayFailed || len(l.working) == 0 {
-						l.state = TraySettled
-						l.last = ev.Job + ": done"
-					}
-				}
+				l.follow(ev)
 				l.apply()
 				l.mu.Unlock()
 			}
@@ -128,30 +148,23 @@ func (l *TrayLive) Watch(ctx context.Context, runner *daemon.Runner) {
 	}()
 }
 
-// Activity returns one line per running job for the tray panel, copied so
-// nothing outside reads the map while an event is being applied.
-func (l *TrayLive) Activity() []string {
-	l.mu.Lock()
-	defer l.mu.Unlock()
-	if len(l.working) == 0 {
-		if l.last != "" {
-			return []string{l.last}
+// follow records one event. The caller holds the lock.
+func (l *TrayLive) follow(ev daemon.Event) {
+	switch ev.Phase {
+	case "started":
+		l.working[ev.Job] = activity{}
+	case "progress":
+		l.working[ev.Job] = activity{done: ev.Done, total: ev.Total}
+	case "finished":
+		delete(l.working, ev.Job)
+		// A failure outranks a success that arrives after it while other
+		// jobs are still running.
+		if ev.Error != "" {
+			l.state = TrayFailed
+			l.last = outcome{job: ev.Job, err: ev.Error}
+		} else if l.state != TrayFailed || len(l.working) == 0 {
+			l.state = TraySettled
+			l.last = outcome{job: ev.Job}
 		}
-		return nil
 	}
-	lines := make([]string, 0, len(l.working))
-	for job, a := range l.working {
-		line := job
-		if a.path != "" {
-			line += ": " + a.path
-			if a.side != "" {
-				line += " -> " + a.side
-			}
-		}
-		if a.total > 0 {
-			line += fmt.Sprintf(" (%d/%d)", a.done, a.total)
-		}
-		lines = append(lines, line)
-	}
-	return lines
 }

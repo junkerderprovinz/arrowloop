@@ -1,0 +1,12 @@
+# What `wails3 update build-assets` writes into the Windows manifest and version
+# resource, the macOS Info.plist and the installer. scripts/desktop.mjs runs it
+# on every build and passes the version, which comes from the git tag.
+version: '3'
+
+info:
+  companyName: "junkerderprovinz"
+  productName: "ArrowLoop"
+  productIdentifier: "com.junkerderprovinz.arrowloop"
+  description: "Two-way file synchronisation that shows you the plan before it moves anything."
+  copyright: "junkerderprovinz"
+  comments: "Two-way file synchronisation."

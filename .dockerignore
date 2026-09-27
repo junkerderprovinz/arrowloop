@@ -13,7 +13,6 @@ web/dist
 node_modules
 
 desktop/build/bin
-desktop/frontend/dist
 
 *.exe
 *.test

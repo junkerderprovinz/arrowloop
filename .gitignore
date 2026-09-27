@@ -25,24 +25,22 @@ web/node_modules/
 web/dist/*
 !web/dist/.gitkeep
 
-# The Wails shell embeds its own copy of the interface, built into place by CI.
-# The keep-file is what makes `//go:embed all:frontend/dist` compile before that.
-!desktop/frontend/dist/
-desktop/frontend/dist/*
-!desktop/frontend/dist/.gitkeep
-
-# Everything `wails build` generates for itself: the Windows manifest it writes
-# from wails.json and the JavaScript bindings, all regenerated on every build.
-# The application icon is the one exception and has to be committed: wails only
-# draws its own default when `build/appicon.png` is missing, so leaving the
-# whole folder out would ship the Wails logo as this product's.
+# Everything scripts/desktop.mjs has Wails generate on every build: the Windows
+# manifest, icon and version resource, the macOS Info.plist and icon, the
+# installer's helper macros and the WebView2 bootstrapper it carries, and the
+# build output. What is committed is what Wails cannot write for us: the logo,
+# the build configuration and the installer script with the shortcut page.
 desktop/build/*
 !desktop/build/appicon.png
-desktop/frontend/wailsjs/
+!desktop/build/config.yml
+!desktop/build/windows/
+desktop/build/windows/*
+!desktop/build/windows/nsis/
+desktop/build/windows/nsis/*
+!desktop/build/windows/nsis/project.nsi
+desktop/*.syso
 
-# Wails build output, and the stray binary a plain `go build ./...` drops in
-# the module directory.
-desktop/build/bin/
+# The stray binary a plain `go build ./...` drops in the module directory.
 desktop/desktop
 desktop/desktop.exe
 

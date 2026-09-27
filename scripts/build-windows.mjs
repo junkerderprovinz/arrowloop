@@ -12,13 +12,12 @@ import { copyFileSync, mkdirSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { stampWailsInfo, version } from './stamp.mjs'
+import { version } from './stamp.mjs'
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)))
 const stamp = version()
 
-// Pinned first: the installer stamp below edits a tracked file, and a later
-// `git describe` would then call a clean commit "-dirty".
+// Pinned first, so both files name the same build.
 process.env.ARROWLOOP_VERSION = stamp
 const ldflags = `-X github.com/junkerderprovinz/arrowloop/internal/boot.Version=${stamp}`
 
@@ -35,15 +34,8 @@ console.log(`building ${stamp}`)
 const cli = join(root, 'arrowloop-cli.exe')
 run(`go build -ldflags "-s -w ${ldflags}" -o "${cli}" ./cmd/arrowloop`, root)
 
-// The shell's frontend:build copies the interface in and writes the version
-// resource. The installer's version lives in the tracked wails.json, so it is
-// put back even when the build throws.
-const restore = stampWailsInfo()
-try {
-  run(`wails build -ldflags "${ldflags}" -o ArrowLoop.exe`, join(root, 'desktop'))
-} finally {
-  restore()
-}
+// The desktop script builds the interface and the version resource too.
+run('node scripts/desktop.mjs', root)
 const app = join(root, 'desktop', 'build', 'bin', 'ArrowLoop.exe')
 
 const out = process.argv[2]

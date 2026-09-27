@@ -5,7 +5,7 @@
 // generated and ignored by git, so stamping it leaves the tree clean.
 
 import { execFileSync } from 'node:child_process'
-import { appendFileSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { appendFileSync, mkdirSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -28,8 +28,8 @@ function git(...args) {
  * otherwise, and "-dirty" for a build from an edited tree.
  */
 export function version() {
-  // Decided once per build, since a later step edits a tracked file and would
-  // make a clean commit look dirty.
+  // Decided once per build and handed to every step, so every file of one
+  // build names the same version.
   if (process.env.ARROWLOOP_VERSION) return process.env.ARROWLOOP_VERSION
   return git('describe', '--tags', '--always', '--dirty') || 'dev'
 }
@@ -50,7 +50,8 @@ export function numericVersion() {
 
 /**
  * Writes the Windows version resource Wails compiles into the executable. It
- * runs from desktop-ui.mjs, so every build gets it.
+ * runs from desktop.mjs after Wails has written its own, whose strings sit
+ * under a language Windows does not read.
  */
 export function writeWindowsVersion() {
   const dir = join(root, 'desktop', 'build', 'windows')
@@ -77,43 +78,19 @@ export function writeWindowsVersion() {
 }
 
 /**
- * Stamps the NSIS installer's version, which Wails reads from wails.json's
- * `info.productVersion` and would otherwise leave at its default "1.0.0". NSIS
- * takes three numbers only, so an untagged build gets 0.0.0; the executable
- * inside still names the exact commit.
- *
- * wails.json is tracked, so this returns a function that puts it back, which
- * the caller runs even when the build fails.
+ * The version the installer, Apps and features and the macOS bundle show. NSIS
+ * and Info.plist take three numbers only, so an untagged build gets 0.0.0; the
+ * executable inside still names the exact commit.
  */
-export function stampWailsInfo({ restoreOnExit = true } = {}) {
-  const path = join(root, 'desktop', 'wails.json')
-  const before = readFileSync(path, 'utf8')
-  const config = JSON.parse(before)
+export function installerVersion() {
   const tag = (git('describe', '--tags', '--abbrev=0') || '').replace(/^v/, '')
-  config.info = { ...config.info, productVersion: /^\d+\.\d+\.\d+$/.test(tag) ? tag : '0.0.0' }
-  writeFileSync(path, JSON.stringify(config, null, 2) + '\n')
-
-  let done = false
-  const restore = () => {
-    if (done) return
-    done = true
-    writeFileSync(path, before)
-  }
-  // The caller's failure path calls process.exit, which skips a finally block.
-  // The workflow switches this off, because it stamps, builds and restores in
-  // separate steps.
-  if (restoreOnExit) process.on('exit', restore)
-  return restore
+  return /^\d+\.\d+\.\d+$/.test(tag) ? tag : '0.0.0'
 }
 
 // Run directly, it prints the version, and `--github-env` appends it to the
 // workflow environment itself, so the desktop matrix needs no separate redirect
 // for pwsh and sh.
 if (process.argv[1] && import.meta.url.endsWith(process.argv[1].replace(/\\/g, '/'))) {
-  // A later step in the same job puts the file back.
-  if (process.argv.includes('--stamp-installer')) {
-    stampWailsInfo({ restoreOnExit: false })
-  }
   const stamp = version()
   if (process.argv.includes('--github-env') && process.env.GITHUB_ENV) {
     appendFileSync(process.env.GITHUB_ENV, `ARROWLOOP_VERSION=${stamp}\n`)
