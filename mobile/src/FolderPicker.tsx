@@ -8,9 +8,9 @@ import { space, text, TOUCH } from "./theme";
 import { Body, Button, Caption, useTheme } from "./ui";
 
 /**
- * A dialog for choosing a folder on the phone instead of typing its path.
- * The engine's browse endpoint lists local directories only, so targets are
- * offered as entries that fill in `name:` and leave the folder to be typed.
+ * A dialog for choosing a folder on the phone or on a target instead of typing
+ * its path. Targets stand above the phone's folders at the top level and open
+ * like any folder.
  */
 export function FolderPicker({
   visible,
@@ -37,6 +37,7 @@ export function FolderPicker({
   /** The name of the folder being made, or null while none is. */
   const [naming, setNaming] = useState<string | null>(null);
 
+  /** Opens a folder and reports whether it could be read. */
   const go = useCallback(async (path: string) => {
     setBusy(true);
     setError("");
@@ -45,9 +46,11 @@ export function FolderPicker({
       setAt(answer.path ?? path);
       setParent(answer.parent ?? "");
       setEntries(answer.entries ?? []);
+      return true;
     } catch (e) {
       // The listing stays, so an unreadable folder does not jump back to the top.
       setError((e as Error).message);
+      return false;
     } finally {
       setBusy(false);
     }
@@ -60,9 +63,10 @@ export function FolderPicker({
     setBusy(true);
     setError("");
     try {
-      await api.makeDir(at, name);
+      // The engine says where the folder landed, on the phone or on a target.
+      const made = await api.makeDir(at, name);
       setNaming(null);
-      await go(`${at}/${name}`.replace(/\/{2,}/g, "/"));
+      await go(made.path);
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -70,13 +74,14 @@ export function FolderPicker({
     }
   };
 
-  // Every open starts from the field's own value; a target's name is not a
-  // path, so it starts at the top.
+  // Every open starts from the field's own value, on the phone or on a target,
+  // and at the top when that cannot be read.
   useEffect(() => {
     if (!visible) return;
     setNaming(null);
-    const from = start && !start.includes(":") ? start : "";
-    void go(from);
+    void go(start ?? "").then((read) => {
+      if (!read && start) void go("");
+    });
   }, [visible, start, go]);
 
   const row = (label: string, onPress: () => void, glyph: string) => (
@@ -109,7 +114,7 @@ export function FolderPicker({
             {/* Targets at the top level only, where they cannot pass for a subfolder. */}
             {!at
               ? targets.map((name) =>
-                  row(name, () => onPick(`${name}:`), "IconTargets"),
+                  row(name, () => void go(`${name}:`), "IconTargets"),
                 )
               : null}
             {entries.map((entry) => row(entry.name, () => void go(entry.path), "IconFolder"))}
@@ -117,7 +122,8 @@ export function FolderPicker({
             {error ? <Caption>{error}</Caption> : null}
           </ScrollView>
 
-          {/* The top level lists storage volumes, where no folder can be made. */}
+          {/* The top level lists storage volumes and targets, where no folder
+              can be made. */}
           {at && naming === null ? (
             <Button label={t("pick.newFolder")} labelKey="pick.newFolder" onPress={() => setNaming("")} />
           ) : null}
