@@ -418,6 +418,37 @@ export type TrashListing = {
   entries: TrashEntry[]
 }
 
+/** One side of one job in the listing across every job. */
+export type TrashSide = TrashListing & {
+  dir: string
+  /** What the side holds in bytes, counting entries beyond those listed. */
+  bytes: number
+  /** Why the side could not be read, such as a drive that is not attached. */
+  error?: string
+}
+
+/**
+ * A conflict a run kept both versions of that nobody has decided yet. `copy`
+ * is the set-aside version, and deciding names the conflict by it. `side` is
+ * the side that version came from; the plain name holds the other one.
+ */
+export type OpenConflict = {
+  job: string
+  copy: string
+  plain: string
+  side: 'left' | 'right'
+  /** When the run that kept both began. */
+  at: string
+  left: SideVersion
+  right: SideVersion
+}
+
+export type ConflictListing = {
+  conflicts: OpenConflict[]
+  /** Jobs whose conflicts could not be read right now, and why. */
+  unread: { job: string; error: string }[]
+}
+
 export type RunEvent = {
   job: string
   /** `moving` carries the files in the air and the speed; only the speed is
@@ -779,15 +810,35 @@ export const api = {
   verifyJob: (name: string) =>
     request<VerifyReport>(`/api/jobs/${encodeURIComponent(name)}/verify`),
 
-  trash: (job: string, side: string) =>
-    request<TrashListing>(`/api/jobs/${encodeURIComponent(job)}/trash/${side}`),
-
   restoreTrash: (job: string, side: string, path: string, runId: string) =>
     request<{ restored: string }>(`/api/jobs/${encodeURIComponent(job)}/trash/${side}/restore`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ path, runId }),
     }),
+
+  /** The trash of every job's two sides, or of the one job named. */
+  trashAll: (job?: string) =>
+    request<{ sides: TrashSide[] }>(`/api/trash${job ? `?job=${encodeURIComponent(job)}` : ''}`),
+
+  /** Removes one trashed file for good. */
+  deleteTrash: (job: string, side: string, path: string, runId: string) =>
+    post<{ deleted: string }>(`/api/jobs/${encodeURIComponent(job)}/trash/${side}/delete`, { path, runId }),
+
+  /** Removes everything in one side's trash. */
+  emptyTrash: (job: string, side: string) =>
+    post<{ entries: number; bytes: number }>(`/api/jobs/${encodeURIComponent(job)}/trash/${side}/empty`),
+
+  /** Every open conflict, or those of the one job named. */
+  conflicts: (job?: string) =>
+    request<ConflictListing>(`/api/conflicts${job ? `?job=${encodeURIComponent(job)}` : ''}`),
+
+  /**
+   * Carries out choices on one job's open conflicts and answers once they are
+   * done. A 409 means the job is running and the choices were not applied.
+   */
+  decide: (job: string, decisions: { copy: string; keep: Resolution }[]) =>
+    post<{ job: string; run: Run }>(`/api/jobs/${encodeURIComponent(job)}/conflicts`, { decisions }),
 
   pruneTrash: (job: string, side: string, olderThanDays: number) =>
     request<{ entries: number; bytes: number; unknown: number }>(

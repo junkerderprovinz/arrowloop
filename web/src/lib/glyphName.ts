@@ -34,7 +34,7 @@ const RULES: Rule[] = [
   [/pause|hold|stop/i, 'IconPause'],
 
   // Destructive and corrective.
-  [/\.(delete|remove|prune)$|removeJob|deleteDrive|discard/i, 'IconDelete'],
+  [/\.(delete|remove|prune)$|\.empty(All|Side)$|removeJob|deleteDrive|discard/i, 'IconDelete'],
   [/forget/i, 'IconForget'],
   [/restore|revert|undo|reset/i, 'IconReset'],
 

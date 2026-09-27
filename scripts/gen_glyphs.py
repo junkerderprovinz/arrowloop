@@ -32,6 +32,11 @@ GLYPHS = [
     ("IconEdit", "interface-essential/pencil.svg", "Edit"),
     ("IconTargets", "computer-devices/database-server-1.svg", "Storage targets and drives"),
     ("IconHistory", "interface-essential/bullet-list.svg", "What the runs did"),
+    # The Jobs circle's cousin with a mark in the middle, so the two read as
+    # related without one being taken for the other. The Trash tab wears the
+    # bin IconDelete already draws, since the trash is where deletions go.
+    ("IconConflict", "interface-essential/synchronize-warning.svg",
+     "Conflicts: a sync that waits for somebody to choose"),
     ("IconLook", "interface-essential/color-palette.svg", "Theme, shape, accent, language"),
     # The cog is Settings itself and no tab inside it, so one drawing keeps
     # one meaning. The General tab wears Material's tune, in LICENSED below.

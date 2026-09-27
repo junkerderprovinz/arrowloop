@@ -11,8 +11,12 @@ import { FolderPicker, PickButton, type Known } from '../components/FolderPicker
 import { ScheduleField } from '../components/Schedule'
 import { HUE_OFFSET, Selector } from '../components/Selector'
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
+import { Button } from '../lib/glimstone/Button'
+import { IconDelete } from '../components/glyphs'
 import { followPatch, followsDefaults } from '../lib/follows'
+import { useGoTo } from '../lib/goTo'
 import { MODES } from '../lib/modes'
+import { usePlaces } from '../lib/places'
 import { useT } from '../lib/i18n'
 
 /**
@@ -237,6 +241,8 @@ export function JobForm({
   patch: (next: Partial<RawJob>) => void
 }) {
   const { t } = useT()
+  const goTo = useGoTo()
+  const live = usePlaces().jobs.some((j) => j.name === job.name)
   const follows = followsDefaults(job)
   // While the job follows, the form shows what it runs with.
   const direction = (follows ? (defaults?.direction as Direction | undefined) : job.direction) ?? 'both'
@@ -419,6 +425,18 @@ export function JobForm({
           onChange={(v) => patch({ noTrash: !v })}
           hint={t('edit.trashHint')}
         />
+        {/* What the trash holds lives in its own tab, for every job at once;
+            a job the engine does not know yet has nothing there. */}
+        {live && (
+          <div className="flex justify-end">
+            <Button
+              label={t('edit.openTrash')}
+              labelKey="edit.openTrash"
+              glyph={<IconDelete />}
+              onClick={() => goTo({ tab: 'trash', job: job.name ?? '' })}
+            />
+          </div>
+        )}
       </div>
     </>
   )

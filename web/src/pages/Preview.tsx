@@ -308,7 +308,8 @@ function Conflict({
   )
 }
 
-function Version({ side, version, newer }: { side: string; version?: SideVersion; newer: boolean }) {
+/** One side's version of a file both sides changed, as the preview and the conflicts tab show it. */
+export function Version({ side, version, newer }: { side: string; version?: SideVersion; newer: boolean }) {
   const { t } = useT()
   if (!version) {
     return (

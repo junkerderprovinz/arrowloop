@@ -10,6 +10,8 @@ import { ToggleRow } from './components/ToggleRow'
 import { HUE_OFFSET, Selector } from './components/Selector'
 import { Sidebar } from './components/Sidebar'
 import {
+  IconConflict,
+  IconDelete,
   IconHistory,
   IconJobs,
   IconLive,
@@ -32,7 +34,21 @@ import { History, Jobs } from './pages/Jobs'
 import { Preview } from './pages/Preview'
 import { Security } from './pages/Security'
 import { Targets } from './pages/Targets'
-import { api, type Job, type Run, type RunEvent, type Volume, type WindowSettings } from './lib/api'
+import { Conflicts } from './pages/Conflicts'
+import { Trash } from './pages/Trash'
+import {
+  api,
+  type ConflictListing,
+  type Job,
+  type Run,
+  type RunEvent,
+  type TrashSide,
+  type Volume,
+  type WindowSettings,
+} from './lib/api'
+import { mergeConflicts } from './lib/conflicts'
+import { inJobOrder, mergeTrash, trashTotals } from './lib/trashView'
+import { GoTo, type Place } from './lib/goTo'
 import { Places } from './lib/places'
 import { ACCENTS, applyAccent, applyRainbow, applyShape, cacheAppearance, DEFAULT_SHAPE, leafTap, RAINBOW, rainbowState, type RainbowState, type Shape } from './lib/appearance'
 import { storedLook, storedSlots, storeSlots } from './lib/look'
@@ -46,8 +62,11 @@ import { wireTooltips } from './lib/tooltip'
 import { isActivityView, onUpdateReady, useTrayWords } from './lib/desk'
 import { ToastProvider, useToast } from './lib/toast'
 
-/** The app's places, in the order the sibling apps use, settings last. */
-type Tab = 'jobs' | 'targets' | 'history' | 'settings'
+/**
+ * The app's places, in the order the sibling apps use, settings last. The two
+ * that wait on somebody follow the history, where they used to live.
+ */
+type Tab = 'jobs' | 'targets' | 'history' | 'conflicts' | 'trash' | 'settings'
 
 /** Settings is one tab with sections, the same shape BombVault uses. */
 type SettingsSection = 'general' | 'engine' | 'look' | 'app' | 'security'
@@ -176,9 +195,37 @@ export function App() {
     })
   }, [])
 
+  // What waits on somebody, for the two tabs and their badges. Asked for in full
+  // at the start and after a save, and for one job whenever one of its runs
+  // ends, since a run is what sets a conflict aside or fills a trash.
+  const [conflicts, setConflicts] = useState<ConflictListing | null>(null)
+  const [trashSides, setTrashSides] = useState<TrashSide[] | null>(null)
+  const reloadWaiting = useCallback((job: string) => {
+    api
+      .conflicts(job || undefined)
+      .then((got) => setConflicts((prev) => mergeConflicts(prev, job, got)))
+      .catch(() => {})
+    api
+      .trashAll(job || undefined)
+      .then((got) => setTrashSides((prev) => mergeTrash(prev, job, got.sides)))
+      .catch(() => {})
+  }, [])
+  const orderedTrash = useMemo(
+    () => (trashSides ? inJobOrder(trashSides, jobs.map((j) => j.name)) : null),
+    [trashSides, jobs],
+  )
+  // The job a link from another screen narrowed the tab to.
+  const [focus, setFocus] = useState('')
+  const goTo = useCallback((place: Place) => {
+    setPreviewing(null)
+    setFocus(place.job)
+    setTab(place.tab)
+  }, [])
+
   useEffect(() => {
     wireTooltips()
     refresh()
+    reloadWaiting('')
     return api.watch((ev) => {
       // "moving" frames arrive twice a second during a run. Only their speed
       // is drawn here, and falling through would refetch the job list each
@@ -205,8 +252,9 @@ export function App() {
         return next
       })
       refresh()
+      if (ev.phase === 'finished') reloadWaiting(ev.job)
     })
-  }, [refresh])
+  }, [refresh, reloadWaiting])
 
   // The device setting applies until somebody picks a theme.
   useEffect(() => {
@@ -255,17 +303,26 @@ export function App() {
         mode={labels.sidebar}
         onChange={(next) => {
           setPreviewing(null)
+          setFocus('')
           setTab(next)
         }}
         items={[
           { value: 'jobs', label: t('nav.jobs'), icon: <IconJobs />, badge: running },
           { value: 'targets', label: t('nav.targets'), icon: <IconTargets /> },
           { value: 'history', label: t('nav.history'), icon: <IconHistory /> },
+          { value: 'conflicts', label: t('nav.conflicts'), icon: <IconConflict />, badge: conflicts?.conflicts.length },
+          {
+            value: 'trash',
+            label: t('nav.trash'),
+            icon: <IconDelete />,
+            badge: orderedTrash ? trashTotals(orderedTrash.filter((s) => !s.error)).entries : undefined,
+          },
         ]}
         settings={{ value: 'settings', label: t('nav.settings'), icon: <IconSettings /> }}
       />
 
       <Places.Provider value={places}>
+      <GoTo.Provider value={goTo}>
       <main className="min-w-0 flex-1 overflow-y-auto sm:-mb-[var(--page-gutter)]">
         {/* Keyed on the tab, so the subtree remounts and GlimStone's entrance
             animation plays on every tab change. */}
@@ -294,15 +351,22 @@ export function App() {
               progress={progress}
               speeds={speeds}
               onPreview={setPreviewing}
-              onSaved={refresh}
+              onSaved={() => {
+                refresh()
+                reloadWaiting('')
+              }}
             />
           ) : tab === 'targets' ? (
             <Targets />
+          ) : tab === 'conflicts' ? (
+            <Conflicts listing={conflicts} job={focus} onChanged={reloadWaiting} />
+          ) : tab === 'trash' ? (
+            <Trash sides={orderedTrash} job={focus} onChanged={reloadWaiting} />
           ) : tab === 'history' ? (
             // The log is the whole page, so its card reaches the bottom of the
             // window however few lines it has.
             <div className="flex flex-1 flex-col *:flex-1">
-              <History runs={runs} jobs={jobs} onChanged={refresh} />
+              <History runs={runs} jobs={jobs} />
             </div>
           ) : (
             <Settings
@@ -351,6 +415,7 @@ export function App() {
           )}
         </div>
       </main>
+      </GoTo.Provider>
       </Places.Provider>
     </div>
   )

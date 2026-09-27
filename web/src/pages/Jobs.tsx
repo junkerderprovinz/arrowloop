@@ -18,7 +18,6 @@ import { RunDetail } from '../components/RunDetail'
 import { Stats } from '../components/Stats'
 import { CheckPanel } from '../components/CheckPanel'
 import { DupesPanel } from '../components/DupesPanel'
-import { TrashPanel } from '../components/TrashPanel'
 import { ViewSwitch, type LogView } from '../components/ViewSwitch'
 import { JobForm, useJobConfig } from './Editor'
 import { Choice, Day, Field, Text } from '../components/Field'
@@ -232,7 +231,6 @@ export function Jobs({
                     <>
                       <CheckPanel job={j.name} />
                       <DupesPanel job={j.name} />
-                      <TrashPanel job={j.name} />
                     </>
                   )}
 
@@ -782,13 +780,11 @@ function touchTone(kind: string): 'ok' | 'warn' | 'fail' | 'neutral' {
 export function History({
   runs,
   jobs,
-  onChanged,
 }: {
   /** The page's own unfiltered copy, used until this tab's first answer lands. */
   runs: Run[]
   /** The job names to offer, including jobs with no runs yet. */
   jobs: Job[]
-  onChanged?: () => void
 }) {
   const { t } = useT()
   // Which run is open, one at a time. By job and start as well as by id,
@@ -1039,7 +1035,7 @@ export function History({
               {r.Conflicts > 0 && <Badge tone="warn">{r.Conflicts}</Badge>}
             </button>
             {isOpen(r) && (
-              <RunDetail run={r.ID} job={r.Job} tick={r.Running ? tick : 0} onResolved={() => onChanged?.()} />
+              <RunDetail run={r.ID} job={r.Job} tick={r.Running ? tick : 0} />
             )}
           </li>
         ))}
