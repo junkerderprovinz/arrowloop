@@ -104,15 +104,19 @@ SURFACE_LIGHT = "#e8e8e8"  # --carbon-surface2, light theme
 # #e8e8e8 and the light theme's row hover at #d1d1d1.
 GROUNDS_LIGHT = ("#ffffff", SURFACE_LIGHT, "#d1d1d1")
 
-# Below this contrast a mark is not readable against a ground: Dropbox's blue at
-# 2.28 reads well, Filen's black at 1.90 does not.
-FLOOR = 2.0
+# The dark theme lifts a mark whose colours all stay under this on the dark
+# tile ("Brand tiles" in GlimStone): the 3:1 a graphic needs, since a dark mark
+# on a dark tile reads as a hole rather than a colour. The lift goes no further
+# than that, so the colour stays as close to the brand's as it can.
+DARK_FLOOR = 3.0
+# The least a deepened light value keeps on every light ground.
+SHIFTED_FLOOR = 2.0
 # The light theme keeps a brand's own colour down to this ("Brand tiles" in
 # GlimStone): an orange still reads as orange on light grey, because the hue does
 # the recognising, and only white and near-white parts vanish.
 LIGHT_FLOOR = 1.35
-# What a flipped colour has to reach: the text threshold rather than the 3.0 for
-# graphics, since a mark this small is closer to a letterform.
+# What a deepened light colour has to reach. Only white and near-white parts are
+# deepened, and they carry no brand colour to stay close to.
 TARGET = 4.5
 
 
@@ -162,25 +166,26 @@ def on_light_grounds(colour):
     return min(contrast(colour, ground) for ground in GROUNDS_LIGHT)
 
 
-def shift(colour, surface, upward, also=()):
-    """The same colour, moved along lightness until it can be seen.
+def shift(colour, surface, upward, target, also=(), step=0.02):
+    """The same colour, moved along lightness until it reaches `target` on
+    `surface`.
 
     Hue and saturation are untouched; black and white have no hue and become
     their opposite end. `also` names further (ground, minimum) pairs the result
-    must satisfy on top of reaching TARGET on `surface`, since a colour tuned
-    against the resting #e8e8e8 can still fall under the floor on the hovered
-    #d1d1d1.
+    must satisfy, since a colour tuned against the resting #e8e8e8 can still
+    fall under the floor on the hovered #d1d1d1. A smaller `step` stops closer
+    to the target.
     """
     rgb = _rgb(colour)
     hue, light, sat = colorsys.rgb_to_hls(*(v / 255.0 for v in rgb))
-    step = 0.02 if upward else -0.02
+    step = step if upward else -step
     limit = 0.94 if upward else 0.10
     while (light < limit) if upward else (light > limit):
         light += step
         candidate = "#%02x%02x%02x" % tuple(
             round(v * 255) for v in colorsys.hls_to_rgb(hue, min(max(light, 0.0), 1.0), sat)
         )
-        if contrast(candidate, surface) >= TARGET and all(
+        if contrast(candidate, surface) >= target and all(
             contrast(candidate, ground) >= minimum for ground, minimum in also
         ):
             return candidate
@@ -192,6 +197,9 @@ def shift(colour, surface, upward, also=()):
 # Every custom property the marks need, in the order they were minted, as
 # (name, value on dark, value on light).
 VARIABLES = []
+# The brand's own colour behind each value the dark theme lifted, by name, so
+# the stylesheet can say what it replaced.
+LIFTED = {}
 
 # Colours that follow the theme even though the mark as a whole reads fine.
 #
@@ -280,7 +288,7 @@ def themed(colours, slug, ground=None):
         if colour not in usable:
             raise SystemExit("FORCE_THEMED names %s in %s, which does not paint with it" % (colour, slug))
         # A hand-picked pair is measured too.
-        if contrast(on_dark, SURFACE_DARK) < FLOOR or on_light_grounds(on_light) < FLOOR:
+        if contrast(on_dark, SURFACE_DARK) < DARK_FLOOR or on_light_grounds(on_light) < SHIFTED_FLOOR:
             raise SystemExit(
                 "FORCE_THEMED %s/%s is too faint: %.2f on the dark ground, %.2f on the "
                 "worst light one" % (slug, colour, contrast(on_dark, SURFACE_DARK),
@@ -295,7 +303,7 @@ def themed(colours, slug, ground=None):
     if not rest:
         return forced
 
-    lift = max(contrast(c, SURFACE_DARK) for c in rest) < FLOOR
+    lift = max(contrast(c, SURFACE_DARK) for c in rest) < DARK_FLOOR
     fade = {
         _rgb(c) for c in rest
         if (ground is None or _rgb(c) in ground) and contrast(c, SURFACE_LIGHT) < LIGHT_FLOOR
@@ -313,10 +321,10 @@ def themed(colours, slug, ground=None):
         # Keyed by value, since one file writes `#20434F` and `#20434f`.
         key = _rgb(colour)
         if key not in minted:
-            on_dark = shift(colour, SURFACE_DARK, upward=True) if lift else colour
+            on_dark = shift(colour, SURFACE_DARK, upward=True, target=DARK_FLOOR, step=0.002) if lift else colour
             on_light = (
-                shift(colour, SURFACE_LIGHT, upward=False,
-                      also=[(g, FLOOR) for g in GROUNDS_LIGHT])
+                shift(colour, SURFACE_LIGHT, upward=False, target=TARGET,
+                      also=[(g, SHIFTED_FLOOR) for g in GROUNDS_LIGHT])
                 if key in fade
                 else colour
             )
@@ -325,6 +333,8 @@ def themed(colours, slug, ground=None):
             else:
                 name = "--brand-%s-%d" % (slug, sum(1 for v in minted.values() if v))
                 VARIABLES.append((name, _hex(on_dark), _hex(on_light)))
+                if on_dark != colour:
+                    LIFTED[name] = colour
                 minted[key] = name
         if minted[key]:
             swap[colour] = "var(%s)" % minted[key]
@@ -1083,7 +1093,8 @@ def css_block(selectors, index, indent=0):
     lines = ["%s%s," % (pad, s) for s in selectors[:-1]]
     lines.append("%s%s {" % (pad, selectors[-1]))
     for name, on_dark, on_light in VARIABLES:
-        lines.append("%s  %s: %s;" % (pad, name, on_dark if index == 1 else on_light))
+        note = " /* lifted from %s */" % LIFTED[name] if index == 1 and name in LIFTED else ""
+        lines.append("%s  %s: %s;%s" % (pad, name, on_dark if index == 1 else on_light, note))
     lines.append("%s}" % pad)
     return "\n".join(lines)
 

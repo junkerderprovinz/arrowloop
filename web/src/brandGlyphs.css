@@ -13,11 +13,21 @@
 
 :root,
 [data-theme="dark"] {
-  --brand-github-0: #a8a4a4;
-  --brand-owncloud-0: #6da7f6;
-  --brand-citrix-0: #bb9ae1;
-  --brand-scaleway-0: #c48dfb;
-  --brand-ovh-0: #6eaae7;
+  --brand-github-0: #868181; /* lifted from #181717 */
+  --brand-nextcloud-0: #0089d3; /* lifted from #0082C9 */
+  --brand-owncloud-0: #2d80f2; /* lifted from #041E42 */
+  --brand-dropbox-0: #2d7dff; /* lifted from #0061FF */
+  --brand-box-0: #137fff; /* lifted from #0061D5 */
+  --brand-maildotru-0: #2d7dff; /* lifted from #005FF9 */
+  --brand-zoho-0: #e8484a; /* lifted from #E42527 */
+  --brand-citrix-0: #9b6cd4; /* lifted from #452170 */
+  --brand-backblaze-0: #e84952; /* lifted from #E21E29 */
+  --brand-openstack-0: #f03a5f; /* lifted from #ED1944 */
+  --brand-scaleway-0: #a958fa; /* lifted from #4F0599 */
+  --brand-hetzner-0: #f43453; /* lifted from #D50C2D */
+  --brand-ovh-0: #2e84dd; /* lifted from #123F6D */
+  --brand-minio-0: #d8566d; /* lifted from #C72E49 */
+  --brand-jottacloud-0: #896ee8; /* lifted from #7d5fe6 */
   --brand-opendrive-forced0: #ffffff;
   --brand-putio-0: #ffffff;
   --brand-putio-1: #FDCE45;
@@ -28,21 +38,42 @@
   --brand-quatrix-0: #ffd6b3;
   --brand-linkbox-0: #fff;
   --brand-gofile-0: #e5e6e7;
-  --brand-pixeldrain-0: #a3a3a3;
+  --brand-pixeldrain-0: #828282; /* lifted from #000000 */
+  --brand-azureblob-0: #0085e7; /* lifted from #0072c6 */
   --brand-filen-0: #fff;
-  --brand-hidrive-0: #66a7ff;
+  --brand-filescom-0: #f53542; /* lifted from #f42534 */
+  --brand-filescom-1: #e34c5e; /* lifted from #d82237 */
+  --brand-filescom-2: #ff144c; /* lifted from #c3002f */
+  --brand-filescom-3: #e05154; /* lifted from #911a1d */
+  --brand-filescom-4: #de5168; /* lifted from #a41f35 */
+  --brand-filescom-5: #e44c54; /* lifted from #d6202a */
+  --brand-filescom-6: #e7475e; /* lifted from #ac162c */
+  --brand-filescom-7: #ff1840; /* lifted from #eb0029 */
+  --brand-hidrive-0: #1e7eff; /* lifted from #003d8f */
+  --brand-storj-0: #3c7bff; /* lifted from #0052ff */
   --brand-cloudinary-0: #ffffff;
   --brand-internetarchive-0: #ffffff;
   --brand-opencloud-0: #e2baff;
+  --brand-oracle-cloud-0: #d15f4f; /* lifted from #C74634 */
 }
 
 @media (prefers-color-scheme: light) {
   :root:not([data-theme="dark"]) {
     --brand-github-0: #181717;
+    --brand-nextcloud-0: #0082C9;
     --brand-owncloud-0: #041E42;
+    --brand-dropbox-0: #0061FF;
+    --brand-box-0: #0061D5;
+    --brand-maildotru-0: #005FF9;
+    --brand-zoho-0: #E42527;
     --brand-citrix-0: #452170;
+    --brand-backblaze-0: #E21E29;
+    --brand-openstack-0: #ED1944;
     --brand-scaleway-0: #4F0599;
+    --brand-hetzner-0: #D50C2D;
     --brand-ovh-0: #123F6D;
+    --brand-minio-0: #C72E49;
+    --brand-jottacloud-0: #7d5fe6;
     --brand-opendrive-forced0: #2b2b2b;
     --brand-putio-0: #666666;
     --brand-putio-1: #7f5f01;
@@ -54,20 +85,41 @@
     --brand-linkbox-0: #666666;
     --brand-gofile-0: #62666b;
     --brand-pixeldrain-0: #000000;
+    --brand-azureblob-0: #0072c6;
     --brand-filen-0: #666666;
+    --brand-filescom-0: #f42534;
+    --brand-filescom-1: #d82237;
+    --brand-filescom-2: #c3002f;
+    --brand-filescom-3: #911a1d;
+    --brand-filescom-4: #a41f35;
+    --brand-filescom-5: #d6202a;
+    --brand-filescom-6: #ac162c;
+    --brand-filescom-7: #eb0029;
     --brand-hidrive-0: #003d8f;
+    --brand-storj-0: #0052ff;
     --brand-cloudinary-0: #000000;
     --brand-internetarchive-0: #000000;
     --brand-opencloud-0: #20434f;
+    --brand-oracle-cloud-0: #C74634;
   }
 }
 
 [data-theme="light"] {
   --brand-github-0: #181717;
+  --brand-nextcloud-0: #0082C9;
   --brand-owncloud-0: #041E42;
+  --brand-dropbox-0: #0061FF;
+  --brand-box-0: #0061D5;
+  --brand-maildotru-0: #005FF9;
+  --brand-zoho-0: #E42527;
   --brand-citrix-0: #452170;
+  --brand-backblaze-0: #E21E29;
+  --brand-openstack-0: #ED1944;
   --brand-scaleway-0: #4F0599;
+  --brand-hetzner-0: #D50C2D;
   --brand-ovh-0: #123F6D;
+  --brand-minio-0: #C72E49;
+  --brand-jottacloud-0: #7d5fe6;
   --brand-opendrive-forced0: #2b2b2b;
   --brand-putio-0: #666666;
   --brand-putio-1: #7f5f01;
@@ -79,9 +131,20 @@
   --brand-linkbox-0: #666666;
   --brand-gofile-0: #62666b;
   --brand-pixeldrain-0: #000000;
+  --brand-azureblob-0: #0072c6;
   --brand-filen-0: #666666;
+  --brand-filescom-0: #f42534;
+  --brand-filescom-1: #d82237;
+  --brand-filescom-2: #c3002f;
+  --brand-filescom-3: #911a1d;
+  --brand-filescom-4: #a41f35;
+  --brand-filescom-5: #d6202a;
+  --brand-filescom-6: #ac162c;
+  --brand-filescom-7: #eb0029;
   --brand-hidrive-0: #003d8f;
+  --brand-storj-0: #0052ff;
   --brand-cloudinary-0: #000000;
   --brand-internetarchive-0: #000000;
   --brand-opencloud-0: #20434f;
+  --brand-oracle-cloud-0: #C74634;
 }

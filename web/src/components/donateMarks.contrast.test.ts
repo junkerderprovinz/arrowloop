@@ -15,7 +15,11 @@ const GROUNDS = {
   dunkel: ['#393939', '#525252'],
   hell: ['#e8e8e8', '#d1d1d1'],
 }
-/** Below this a mark is not readable. Dropbox sits at 2.28 and reads fine. */
+/**
+ * Below this a symbol is lost in its disc, or a themed disc in its tile. A
+ * coin brings its own ground, so it stays out of the 3:1 the provider marks
+ * rest at on the dark tile ("Brand tiles" in GlimStone).
+ */
 const FLOOR = 2.0
 
 /**

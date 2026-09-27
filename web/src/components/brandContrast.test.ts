@@ -20,11 +20,12 @@ const GROUNDS = {
   hell: ['#e8e8e8'],
 }
 /**
- * Below this a mark is not readable. Dropbox sits at 2.28 on the dark tile and
- * reads fine. The light theme keeps a brand's own colour down to 1.35, since
- * an orange reads as orange on light grey ("Brand tiles" in GlimStone).
+ * Below this a mark is not readable ("Brand tiles" in GlimStone). The dark
+ * tile asks the 3:1 of a graphic, since a dark mark on it reads as a hole. The
+ * light theme keeps a brand's own colour down to 1.35, since an orange reads
+ * as orange on light grey.
  */
-const FLOOR = { dunkel: 2.0, hell: 1.35 }
+const FLOOR = { dunkel: 3.0, hell: 1.35 }
 
 function rgb(colour: string): [number, number, number] | null {
   const text = colour.trim()
@@ -115,6 +116,23 @@ describe('brand contrast', () => {
       return out
     })
     expect(faint, `too faint to see: ${faint.join(', ')}`).toEqual([])
+  })
+
+  // A lifted colour goes just far enough to be read, so it stays as close to
+  // the brand's own as the dark tile allows.
+  it('lifts a dark colour to 3:1 and no further', () => {
+    const dark = themed.slice(themed.indexOf('[data-theme="dark"] {'))
+    const lifted = [
+      ...dark
+        .slice(0, dark.indexOf('}'))
+        .matchAll(/(--brand-[\w-]+):\s*(#[0-9a-fA-F]{6});\s*\/\* lifted from (#[0-9a-fA-F]{3,6}) \*\//g),
+    ]
+    expect(lifted.length).toBeGreaterThan(10)
+    const off = lifted
+      .map(([, name, value, own]) => ({ name, own: worst(own, 'dunkel'), now: worst(value, 'dunkel') }))
+      .filter((l) => l.own >= FLOOR.dunkel || l.now < FLOOR.dunkel || l.now > FLOOR.dunkel + 0.05)
+      .map((l) => `${l.name} ${l.own.toFixed(2)} -> ${l.now.toFixed(2)}`)
+    expect(off, `lifted too far or not at all: ${off.join(', ')}`).toEqual([])
   })
 
   it('leaves no mark it cannot be seen in on either ground', () => {

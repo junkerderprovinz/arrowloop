@@ -14,6 +14,7 @@ The full notes for each release are in
 
 - **The look follows GlimStone 3.0.0.** The folder picker blurs and darkens the page behind it like every other window, and on the phone the page behind a window is a little darker on the dark theme than on the light one.
 - **Every tile in the target dialogs lights up, from the keyboard as well.** Tab through the providers when you add a target, and the focused tile fills with the brand's colour as it does under the pointer, its name and mark in white or near-black, whichever reads on that colour. A protocol such as SFTP or SMB has no brand and lights up in the accent instead of turning a darker grey. On the phone a tile fills the same way while your finger is on it, and so does a coin in the crypto window.
+- **Dark marks stand out on the dark theme.** A provider mark that reached less than 3:1 against its tile is drawn lighter in the same hue, just far enough to reach 3:1, as GlimStone asks of a graphic, so it stays close to the brand's colour: Dropbox's blue becomes #2d7dff, Zoho's red #e8484a, Nextcloud's blue #0089d3. That newly covers Azure Blob Storage, Backblaze B2, Box, Dropbox, Files.com, Hetzner Object Storage, Jottacloud, Mail.ru Cloud, MinIO, Nextcloud, OpenStack Swift, Oracle Object Storage, Storj and Zoho WorkDrive. The marks that were already drawn lighter, ownCloud, ShareFile, Scaleway, OVHcloud, IONOS HiDrive, Pixeldrain and GitHub on the About card, move back towards their own colour the same way. Under the pointer the tile still fills with the brand's own colour.
 
 ## 1.2.1 - 2026-09-27
 
