@@ -16,6 +16,16 @@ The full notes for each release are in
 - **A job can follow the global sync settings, or leave them.** The job editor has a switch for it. While it is on, direction and schedule show the global values, greyed out. Turning it off writes the values the job runs with at that moment, so nothing changes until you edit one.
 - **The folder picker walks your targets.** "Browse target" opens a configured cloud or server as a folder tree instead of taking its top level at once, and New folder creates the folder on the target.
 - **The SMB form offers the shares Windows is connected to.** One click fills in server, user and domain. The folder picker shows a mapped drive's share next to its letter, such as `W: \\server\backup`.
+- **A click on the icon in the notification area opens a small window at the icon**, the way OneDrive and the Nextcloud client do. It shows what is running now and the last five runs, with buttons to pause, to sync everything and to open ArrowLoop. A second click, a click elsewhere or Escape closes it, and a double click on the icon opens the main window.
+- **The icon's menu is Open, Force sync, Pause sync or Resume sync, and Quit**, in the language the interface shows. Force sync starts every job straight away as if you had started each one by hand, so neither a pause nor the battery setting holds it back.
+- **Sync can be paused from the notification area.** A pause holds every scheduled and watching run until you resume, stops the runs already going, and stays in place after a restart. The icon turns grey with a pause badge while it lasts.
+- **The Windows installer asks about the shortcuts.** A page offers a Start menu entry and a desktop shortcut, both ticked, in German or English depending on the system. The next install, silent or not, starts from the last choice and removes a shortcut you left out.
+- **The Windows installer installs for you alone**, under AppData\Local\Programs, so installing and updating need no administrator. An installation for all users from 1.1.0 or earlier is removed on the way; that step asks for an administrator once. Run with `/S /relaunch`, it installs silently and starts ArrowLoop again afterwards, which is what an updater needs.
+
+## ⚡ Improved
+
+- **The desktop app runs on Wails v3.** It brings the notification area icon of its own that the small window needs, and the icon no longer depends on a separate library. The downloads keep their names.
+- **Switching the icon off or on in Settings applies at once**, without a restart. On Windows and macOS the icon keeps its place in the notification area when it comes back.
 
 ## 🎨 Design
 
@@ -39,7 +49,8 @@ The full notes for each release are in
 ## 🐛 Fixed
 
 - **A job between two local folders or a mapped network drive no longer reads every file on every run.** The comparison asked each file for its checksum before looking at its size, and on a local disk that means reading the file to its end. The first run of a job over a full music library read both sides whole, the settled record read them again, and a run every few minutes started over before it finished, so it never did. A checksum that costs a full read is now fetched only where size and time cannot decide: a file whose time moved while its size did not, two edits of one file since the last run, or a job that insists on checksums. A copied file is still checked after the transfer.
-- **Minimising to the notification area works, and the icon answers reliably.** The icon was started so that it blocked the program's start: the watch that sends a minimised window to the notification area never began, and the icon's own window ran on no fixed thread, so clicks and redraws went missing now and then.
+- **Minimising and closing to the notification area work, and the icon answers reliably.** The icon was started so that it blocked the program's start: the watch that sends a minimised window to the notification area never began, and the icon's own window ran on no fixed thread, so clicks and redraws went missing now and then. The icon now belongs to Wails itself and stays in place however often the window hides and comes back.
+- **A stopped run shows up in the history.** Its record was written with the run's own stop signal still set, so it never arrived, and a run stopped from the Jobs page left no trace.
 - **A new install starts without an example job.** The desktop app and the server wrote a disabled job called "example" on their first start, which then had to be deleted before the list was your own.
 - **Stopping a run works while it compares files.** A checksum being read ignored the stop, so a stopped run went on reading the whole tree. The walk that looks for links on a local side ignored it too.
 - **The "Add server or share" dialog speaks your language.** Its tile hints and names such as "SMB / Windows share" were English in every language.

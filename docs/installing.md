@@ -86,11 +86,14 @@ reason that reads like a bug.
 
 Windows, Linux and macOS builds are on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases). Windows
-gets an **installer** that puts it in the Start menu and gives it an entry under
-Apps. It asks for administrator rights because it installs for everyone on the
-machine, under Program Files, where only administrators can change the program;
-that matters once it runs as a service (see [the command line](cli.md#service)).
-A computer with an ARM processor, such as a Snapdragon laptop, takes the one
+gets an **installer** that gives it an entry under Apps. It installs for you
+alone, under `AppData\Local\Programs`, so neither installing nor a later update
+asks for an administrator. A page asks whether you want a Start menu entry and a
+desktop shortcut, both ticked at first; the next install, silent or not, starts
+from your answer and removes a shortcut you left out. An installation for all
+users from 1.1.0 or earlier is removed on the way, which asks for an
+administrator once. Run as `installer.exe /S /relaunch`, it installs silently and
+starts ArrowLoop again when it is done. A computer with an ARM processor, such as a Snapdragon laptop, takes the one
 named `windows-arm64`; the `amd64` installer would run there too, but through
 emulation and slower.
 
@@ -120,12 +123,30 @@ Autostart on its own only gets the program running. A job that should sync
 there until its schedule is next due; see
 [the configuration reference](configuration.md#running-at-start).
 
-It puts an icon in the notification area, and Settings, General decides what
-the window buttons do: whether closing quits or hides, and whether minimising goes
-to the taskbar or to the notification area. Closing quits by default, because a
-close button that quietly leaves a program running is the kind of surprise
-somebody finds a week later. Both choices switch off together with the icon,
-since a window that hides with nothing left to bring it back is gone.
+### The notification area
+
+It puts an icon in the notification area. A click on it opens a small window
+beside the icon with what is running now, the last five runs, and buttons to
+pause, to sync everything and to open ArrowLoop. A second click or a click
+elsewhere closes it, and a double click opens the main window. The right-click
+menu has:
+
+- **Open**, which brings the main window back.
+- **Force sync**, which starts every job straight away, as if you had started
+  each one by hand, so no pause and no battery setting holds it.
+- **Pause sync** or **Resume sync**. A pause holds every scheduled and watching
+  run until you resume, stops the runs already going, and stays after a
+  restart. The icon turns grey with a pause badge while it lasts.
+- **Quit**.
+
+The menu and the small window speak the language the interface is set to.
+
+Settings, General decides what the window buttons do: whether closing quits or
+hides, and whether minimising goes to the taskbar or to the notification area.
+Closing quits by default, because a close button that quietly leaves a program
+running is the kind of surprise somebody finds a week later. Both choices switch
+off together with the icon, since a window that hides with nothing left to bring
+it back is gone. Switching the icon off or on applies at once.
 
 Starting it a second time does not start a second copy. It brings the running
 window back, which is what a second double-click means when the first one is
