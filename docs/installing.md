@@ -152,11 +152,43 @@ Starting it a second time does not start a second copy. It brings the running
 window back, which is what a second double-click means when the first one is
 sitting in the notification area.
 
+### Updates
+
+The desktop app updates itself. A minute after it starts and once a day after
+that, it asks GitHub for the newest release, downloads the file for your system
+in the background and checks it against the release's `checksums.txt`. The new
+version starts the next time you start ArrowLoop, so a sync that is running is
+never cut off, and a note in the corner of the window says when it is ready.
+Pre-releases are never installed. **Update automatically** under Settings,
+General, Updates turns this off; it is on from the start. The container and the
+phone do not show the switch: a container is updated the way it was deployed,
+and the phone through its store or a new APK.
+
+An update replaces the program where it is, so it has to be able to write to
+that folder. The installer puts ArrowLoop under `AppData\Local\Programs`, where
+it can, and the entry under Apps follows the new version. A portable copy, such
+as the `arrowloop-windows-amd64-portable.exe` from the releases page, updates in
+its own folder and stays portable. An installation for all users under Program
+Files, a read-only folder, or a macOS app your account cannot change stays as it
+is. On Windows the replaced program waits beside the new one as
+`ArrowLoop.exe.old` until the next start removes it. What the updater did, or
+why it did not, is in `update.log` beside the configuration file.
+
+A build from source is not a release and never updates itself. Only a build of a
+version tag, stamped by `scripts/desktop.mjs` as the release workflow makes it,
+does. Built with `-tags updatetest`, the app reads `ARROWLOOP_UPDATE_API`, a
+stand-in for `https://api.github.com`, and `ARROWLOOP_UPDATE_DELAY`, the wait
+before the first check (such as `15s`), so the whole path can be tried locally.
+Release builds leave the tag out, so no environment variable can change where an
+update comes from.
+
 !!! note "The builds are not signed"
     Windows shows its blue warning on first start (More info, then Run anyway),
     and macOS needs a right-click and Open the first time. That is a deliberate
     trade for now: a certificate is a recurring cost, and it is worth paying
-    once there are users to pay it for.
+    once there are users to pay it for. For the same reason an update is
+    checked only against the release's `checksums.txt`, which proves the file
+    is the one the release published, not who built it.
 
 ## As a single binary
 

@@ -21,6 +21,8 @@ The full notes for each release are in
 - **Sync can be paused from the notification area.** A pause holds every scheduled and watching run until you resume, stops the runs already going, and stays in place after a restart. The icon turns grey with a pause badge while it lasts.
 - **The Windows installer asks about the shortcuts.** A page offers a Start menu entry and a desktop shortcut, both ticked, in German or English depending on the system. The next install, silent or not, starts from the last choice and removes a shortcut you left out.
 - **The Windows installer installs for you alone**, under AppData\Local\Programs, so installing and updating need no administrator. An installation for all users from 1.1.0 or earlier is removed on the way; that step asks for an administrator once. Run with `/S /relaunch`, it installs silently and starts ArrowLoop again afterwards, which is what an updater needs.
+- **The desktop app keeps itself up to date.** Once a day it downloads a newer release in the background, checks it against the release's `checksums.txt` and starts it the next time you start ArrowLoop, with a note in the window once it is ready. An installed copy and a portable one both update where they are; Update automatically under Settings, General turns it off.
+- **Every release lists the SHA-256 of its files in `checksums.txt`.** Windows also gets a portable `.exe` and macOS a `.zip` of the app, the files the desktop app updates itself from.
 
 ## ⚡ Improved
 
