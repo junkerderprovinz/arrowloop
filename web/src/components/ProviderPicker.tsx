@@ -1,18 +1,19 @@
 import type { CSSProperties } from 'react'
 import { BRAND_TILES } from './brandGlyphs'
 import { brandMark } from './brandMarks'
-import { InfoBubble } from '../lib/glimstone/InfoBubble'
-import { useLabelMode } from '../lib/glimstone/useLabelMode'
+import { ReadmeButton } from '../lib/glimstone/ReadmeButton'
 import { useT } from '../lib/i18n'
 import { providerHint, providerName } from '../lib/optionHint'
 import type { Backend, Provider } from '../lib/api'
 
 /**
  * Picks what a target connects to by product name rather than by protocol, as
- * a grid of tiles in the style of KnightLoader's extension tiles.
- * Only the protocol tiles carry a hint, in an info bubble, since a cloud's name
- * already says what it is. The order is alphabetical by the name shown, which
- * for a few is translated.
+ * README buttons: the mark at the start, the name beside it. A provider with
+ * a brand lights up in the brand's colour from BRAND_TILES; a protocol wears
+ * one of the app's own glyphs and lights up in the accent. Only the protocols
+ * carry their hint in an info bubble, since a cloud's name already says what
+ * it is. The order is alphabetical by the name shown, which for a few is
+ * translated.
  */
 export function ProviderPicker({
   providers,
@@ -33,55 +34,28 @@ export function ProviderPicker({
     providerName(a, t).localeCompare(providerName(b, t), lang, { sensitivity: 'base' }),
   )
 
-  // The tiles follow the label setting, except that reactive shows names like
-  // text-and-glyph: hiding them until hovered would defeat a list somebody is
-  // searching by name.
-  const mode = useLabelMode('buttons')
-  const showMark = mode !== 'text'
-  // A provider with no logo keeps its name even in glyph mode, or its tile
-  // would be an empty box.
-  const showName = (p: Provider) => mode !== 'glyph' || !brandMark(p.mark)
-
   return (
     <div className="flex flex-col gap-4">
-      {/* As many across as the window is wide, each tile at least the mark
-          box plus its padding; the mark box is wide because several marks are
-          wordmarks (Linkbox is 5.3:1). The window scrolls the list. */}
-      <ul className="grid w-full grid-cols-[repeat(auto-fill,minmax(8.5rem,1fr))] gap-3">
+      {/* As many across as the window is wide, each at least the README
+          button's width. The window scrolls the list. */}
+      <ul className="glim-provider-pick">
         {sorted.map((p) => {
           const lit = p.mark ? BRAND_TILES[p.mark] : undefined
           const hint = providerHint(p.id, t)
+          const bubble = p.group === 'protocol' ? hint : undefined
           return (
-            <li key={p.id} className="relative">
-              <button
-                type="button"
-                onClick={() => onPick(p)}
-                title={hint}
-                className={`${TILE} glim-brand-tile${lit ? '' : ' glim-tile-house'}`}
-                style={lit && ({ '--tile': lit.tile, '--tile-ink': lit.ink } as CSSProperties)}
-              >
-                {/* Every mark carries width="1em", so a max-size cap never fires;
-                    full size lets the viewBox letterbox the mark into the box. */}
-                {showMark && (
-                  <span className="flex h-12 w-24 shrink-0 items-center justify-center [&_svg]:h-full [&_svg]:w-full">
-                    {brandMark(p.mark)}
-                  </span>
-                )}
-                {showName(p) && (
-                  <span className="w-full px-1 text-center">
-                    <span className="block break-words text-dense font-medium leading-tight">
-                      {providerName(p, t)}
-                    </span>
-                  </span>
-                )}
-              </button>
-              {/* A sibling of the button, so a click on the bubble does not also
-                  pick the provider. */}
-              {hint && p.group === 'protocol' && (
-                <span className="absolute end-1.5 top-1.5">
-                  <InfoBubble tip={hint} />
-                </span>
-              )}
+            <li
+              key={p.id}
+              title={bubble ? undefined : hint}
+              style={lit && ({ '--provider-tile': lit.tile, '--provider-ink': lit.ink } as CSSProperties)}
+            >
+              <ReadmeButton
+                brand="house"
+                parts={[{ name: providerName(p, t), onClick: () => onPick(p) }]}
+                mark={brandMark(p.mark)}
+                markClass="text-carbon-textSub"
+                hint={bubble}
+              />
             </li>
           )
         })}
@@ -111,15 +85,3 @@ export function ProviderPicker({
     </div>
   )
 }
-
-/**
- * One tile: the mark above the name, the tile itself the button. A provider
- * with a brand mark lights up in the brand's colour (`glim-brand-tile`, with
- * the colour and ink from BRAND_TILES). A protocol wears one of the app's own
- * glyphs and lights up in the accent, as GlimStone's house tile does, so no
- * tile in the grid answers the pointer with a plain grey. The keyboard focus
- * ring is kept.
- */
-const TILE =
-  'flex h-full w-full flex-col items-center justify-center gap-2 ' +
-  'rounded-[var(--radius-control)] bg-carbon-surface2 px-2 py-3 text-carbon-text'

@@ -680,6 +680,9 @@ export function Button({
   );
 }
 
+/** The width of the README's own buttons. */
+export const README_W = 160;
+
 /**
  * A button in the shape of the README's, as GlimStone's About card has it: 160
  * by 46.6, the brand's mark and the name on the quiet ground at rest, the
@@ -691,6 +694,8 @@ export function ReadmeButton({
   mark,
   art,
   tile,
+  hint,
+  width = README_W,
   onPress,
 }: {
   label: string;
@@ -700,13 +705,17 @@ export function ReadmeButton({
   art?: boolean;
   /** The lit fill and the ink that holds on it. */
   tile: { color: string; ink: string };
+  /** The "(i)" at the end of the button, for what the name cannot say. */
+  hint?: string;
+  /** Wider than the README's where a grid gives the button its row's share. */
+  width?: number;
   onPress: () => void;
 }) {
   const { p, corners } = useTheme();
   const press = usePress();
   const [lit, setLit] = useState(false);
   const ink = lit ? tile.ink : p.text;
-  return (
+  const button = (
     <AnimatedPressable
       onPress={onPress}
       onPressIn={() => {
@@ -722,6 +731,7 @@ export function ReadmeButton({
       style={[
         styles.readme,
         {
+          width,
           backgroundColor: lit ? tile.color : p.surface2,
           ...corners.pill,
           transform: [{ scale: press.scale }],
@@ -733,12 +743,27 @@ export function ReadmeButton({
       ) : (
         <>
           <View style={styles.readmeMark}>{mark(lit, ink)}</View>
-          <Text style={[styles.readmeName, { color: ink }]} numberOfLines={1} adjustsFontSizeToFit>
+          <Text
+            style={[styles.readmeName, hint ? styles.readmeNameHint : null, { color: ink }]}
+            numberOfLines={1}
+            adjustsFontSizeToFit
+          >
             {label}
           </Text>
         </>
       )}
     </AnimatedPressable>
+  );
+  if (!hint) return button;
+  // The (i) lies over the button's end as its sibling, so tapping it opens the
+  // bubble and not what the button does.
+  return (
+    <View style={{ width }}>
+      {button}
+      <View style={styles.readmeHint} pointerEvents="box-none">
+        <InfoBubble tip={hint} on={lit ? tile.ink : undefined} />
+      </View>
+    </View>
   );
 }
 
@@ -1096,9 +1121,11 @@ const styles = StyleSheet.create({
   },
   buttonText: { fontSize: text.body, fontWeight: "600", flexShrink: 1 },
   // The README's proportions: the mark 24 in from the start, the name from 63.
-  readme: { width: 160, height: 46.6, overflow: "hidden", justifyContent: "center" },
+  readme: { height: 46.6, overflow: "hidden", justifyContent: "center" },
   readmeMark: { position: "absolute", start: 24, top: 10.8, width: 32, height: 25 },
   readmeName: { marginStart: 63, marginEnd: 10, fontSize: text.body, fontWeight: "700" },
+  readmeNameHint: { marginEnd: 28 },
+  readmeHint: { position: "absolute", top: 0, bottom: 0, end: 10, justifyContent: "center" },
 
   track: { width: 36, height: 20, padding: 2, justifyContent: "center" },
   knob: { width: 16, height: 16 },

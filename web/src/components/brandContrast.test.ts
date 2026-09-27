@@ -13,6 +13,7 @@ const here = dirname(fileURLToPath(import.meta.url))
 const glyphs = readFileSync(join(here, 'brandGlyphs.tsx'), 'utf8')
 const themed = readFileSync(join(here, '..', 'brandGlyphs.css'), 'utf8')
 const picker = readFileSync(join(here, 'ProviderPicker.tsx'), 'utf8')
+const tokens = readFileSync(join(here, '..', 'tokens.css'), 'utf8')
 
 /** The resting tile, --carbon-surface2, by theme. */
 const GROUNDS = {
@@ -170,16 +171,16 @@ describe('brand contrast', () => {
       return ink !== (contrast(tile, '#ffffff') >= 2 ? '#ffffff' : '#161616')
     })
     expect(wrong.map(([name]) => name), 'tiles with the wrong ink').toEqual([])
-    expect(picker).toContain('glim-brand-tile')
     expect(picker).toContain('BRAND_TILES')
   })
 
-  // Every mark carries width="1em", so a max-size cap never fires and the mark
-  // stays a 16px square in a 48 by 96 box.
-  it('lets a mark fill the tile rather than capping it', () => {
-    expect(picker).toContain('[&_svg]:h-full')
-    expect(picker).toContain('[&_svg]:w-full')
-    expect(picker).not.toContain('[&_svg]:max-h-full')
+  // Every mark carries width="1em", so only a size set on the svg itself lets
+  // it fill the README button's mark box rather than stay a 16px square.
+  it('lets a mark fill its box rather than capping it', () => {
+    const rule = tokens.slice(tokens.indexOf('.glim-readme-btn-mark svg,'))
+    const body = rule.slice(rule.indexOf('{'), rule.indexOf('}'))
+    expect(body).toContain('width: 100%')
+    expect(body).toContain('height: 100%')
   })
 
   // A spot check that the generator crops viewBoxes to their ink: Synology is a

@@ -242,6 +242,25 @@ body {
   color: var(--tile-ink);
 }
 
+/* The provider picker's README buttons fill a grid as wide as the window.
+   The providers have no tile classes of their own, so each list item hands
+   its button the colour pair from BRAND_TILES; a protocol has none and keeps
+   the accent. */
+.glim-provider-pick {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+  gap: 0.8125rem;
+}
+.glim-provider-pick .glim-readme-btn-unit {
+  display: flex;
+  --tile: var(--provider-tile, var(--accent));
+  --tile-ink: var(--provider-ink, var(--accent-contrast));
+}
+.glim-provider-pick .glim-readme-btn {
+  flex: 1;
+  width: auto;
+}
+
 /* The one action a page exists for, floating in the window's bottom corner so
    it stays put while the list scrolls under it. A pill, and a circle where the
    label mode shows the glyph alone, as the phone's floating button. */

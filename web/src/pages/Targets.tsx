@@ -295,7 +295,7 @@ function RemoteRow({
           settings (internal/remotes/identify.go). The mark spans both lines,
           since it is what the eye looks for in a list of targets. */}
       {remote.mark && brandMark(remote.mark) ? (
-        <span className="flex size-10 shrink-0 items-center justify-center text-[32px]">
+        <span className="flex size-10 shrink-0 items-center justify-center text-[32px] text-carbon-textSub">
           {brandMark(remote.mark)}
         </span>
       ) : null}

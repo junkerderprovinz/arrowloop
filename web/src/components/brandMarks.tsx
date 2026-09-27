@@ -70,7 +70,8 @@ import {
 /**
  * Provider marks keyed by `remotes.Provider.Mark` from the Go table. Brands
  * keep their own drawings and colours; protocols such as SFTP, which have no
- * logo, get the app's own glyphs. An unknown key yields no mark.
+ * logo, get the app's own glyphs in the colour of the text around them, so a
+ * lit tile can turn them its ink. An unknown key yields no mark.
  */
 const MARKS: Record<string, () => ReactNode> = {
   IconNextcloud: () => <IconNextcloud />,
@@ -129,12 +130,12 @@ const MARKS: Record<string, () => ReactNode> = {
   IconOpencloud: () => <IconOpencloud />,
   IconOnedrive: () => <IconOnedrive />,
   IconOracleCloud: () => <IconOracleCloud />,
-  IconFolder: () => <IconFolder className="text-carbon-textSub" />,
-  IconLink: () => <IconLink className="text-carbon-textSub" />,
-  IconLock: () => <IconLock className="text-carbon-textSub" />,
-  IconServer: () => <IconServer className="text-carbon-textSub" />,
-  IconTransfer: () => <IconTransfer className="text-carbon-textSub" />,
-  IconBuckets: () => <IconBuckets className="text-carbon-textSub" />,
+  IconFolder: () => <IconFolder />,
+  IconLink: () => <IconLink />,
+  IconLock: () => <IconLock />,
+  IconServer: () => <IconServer />,
+  IconTransfer: () => <IconTransfer />,
+  IconBuckets: () => <IconBuckets />,
 }
 
 export function brandMark(name: string | undefined): ReactNode | undefined {
