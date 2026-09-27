@@ -150,6 +150,7 @@ func run() error {
 		}
 	}()
 	sh.live.Watch(ctx, runner)
+	newBridge().run(ctx, runner, app)
 
 	app.OnShutdown(stop)
 	return app.Run()

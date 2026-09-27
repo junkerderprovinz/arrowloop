@@ -26,6 +26,7 @@ export type Job = {
 
 export type { Reason } from './i18n'
 import type { Reason } from './i18n'
+import { inDesktopWindow, watchDesktop } from './desk'
 
 /** What one side holds: its name there, its size and when it changed. */
 export type SideVersion = { path: string; size: number; mod: string }
@@ -883,6 +884,7 @@ export const api = {
 
   /** Live run events. Returns the function that closes the stream. */
   watch: (onEvent: (ev: RunEvent) => void): (() => void) => {
+    if (inDesktopWindow()) return watchDesktop((data) => onEvent(data as RunEvent))
     const source = new EventSource('/api/events')
     source.onmessage = (e) => {
       try {
