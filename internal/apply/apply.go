@@ -335,7 +335,7 @@ func RunVerified(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt
 			agreed = act.RightNow
 		}
 		t.sized("record", spelled(act), "", sizeOf(agreed))
-		if err := rec.settle(ctx, act.Path, left, right); err != nil {
+		if err := rec.settle(ctx, act.Path, left, right, false); err != nil {
 			var dis *DisagreementError
 			if errors.As(err, &dis) {
 				return t.res, err
@@ -605,7 +605,7 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 		}
 		t.sized("copy", act.DstPath, act.Dst.String(), sizeOf(from))
 		left, right := act.Names()
-		return rec.settle(ctx, act.Path, left, right)
+		return rec.settle(ctx, act.Path, left, right, true)
 
 	case plan.Relocate:
 		// A copy, and then the source's own file goes. The removal is only
@@ -636,7 +636,7 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 			t.sized("move", act.SrcPath, act.Src.String(), sent.Size)
 		}
 		left, right := act.Names()
-		return rec.settle(ctx, act.Path, left, right)
+		return rec.settle(ctx, act.Path, left, right, true)
 
 	case plan.Move:
 		dst := ends.side(act.Dst)
@@ -655,7 +655,7 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 			return err
 		}
 		left, right := act.Names()
-		return rec.settle(ctx, act.Path, left, right)
+		return rec.settle(ctx, act.Path, left, right, false)
 
 	case plan.Delete:
 		// A path gone from both sides destroys nothing; only the record goes.
@@ -717,7 +717,7 @@ func resolveConflict(ctx context.Context, ends Ends, rec recorder, act plan.Acti
 	}
 
 	last := steps[len(steps)-1]
-	if err := rec.settle(ctx, act.Path, last.plainName, last.plainName); err != nil {
+	if err := rec.settle(ctx, act.Path, last.plainName, last.plainName, false); err != nil {
 		return err
 	}
 	if last.losingName == "" {
@@ -725,7 +725,7 @@ func resolveConflict(ctx context.Context, ends Ends, rec recorder, act plan.Acti
 		// there would read as a deletion on the next run.
 		return nil
 	}
-	return rec.settle(ctx, pathid.Key(last.losingName, opt.FoldCase), last.losingName, last.losingName)
+	return rec.settle(ctx, pathid.Key(last.losingName, opt.FoldCase), last.losingName, last.losingName, false)
 }
 
 // conflictStep is one filesystem operation of a conflict resolution, named so
@@ -857,7 +857,7 @@ func (r recorder) say(kind, path, side, note string) {
 // With a checksum from both sides the check compares content; without one it
 // falls back to size and modification time, which is weaker and is reported,
 // and a job can refuse it; see Verify.
-func (r recorder) settle(ctx context.Context, key, leftPath, rightPath string) error {
+func (r recorder) settle(ctx context.Context, key, leftPath, rightPath string, sent bool) error {
 	left, lErr := reread(ctx, r.ends.Left, leftPath)
 	right, rErr := reread(ctx, r.ends.Right, rightPath)
 
@@ -874,10 +874,19 @@ func (r recorder) settle(ctx context.Context, key, leftPath, rightPath string) e
 		return fmt.Errorf("re-read %q on the right: %w", rightPath, rErr)
 	}
 
-	leftSum, leftHashErr := hashOf(ctx, left)
-	rightSum, rightHashErr := hashOf(ctx, right)
+	// A checksum that means reading the whole file is fetched for a file that
+	// was just written, when the job insists on one, or when size and time
+	// alone disagree; on a pair nothing touched it would read a disk per run.
+	full := sent || r.verify.RequireChecksum
+	leftSum, leftHashErr := hashOf(ctx, left, full)
+	rightSum, rightHashErr := hashOf(ctx, right, full)
 	leftFacts := plan.Facts{Size: left.Size(), Mod: left.ModTime(ctx), Hash: leftSum}
 	rightFacts := plan.Facts{Size: right.Size(), Mod: right.ModTime(ctx), Hash: rightSum}
+	if !full && !plan.Same(leftFacts, rightFacts, r.window) {
+		leftSum, leftHashErr = hashOf(ctx, left, true)
+		rightSum, rightHashErr = hashOf(ctx, right, true)
+		leftFacts.Hash, rightFacts.Hash = leftSum, rightSum
+	}
 	if !plan.Same(leftFacts, rightFacts, r.window) {
 		// The checksums belong in the message: when they decide, the sizes and
 		// times match and would describe a disagreement that looks like
@@ -896,7 +905,7 @@ func (r recorder) settle(ctx context.Context, key, leftPath, rightPath string) e
 		}
 		// A backend without checksums is true of every file in the job and
 		// would bury the list; any other checksum failure is worth a line.
-		if !errors.Is(why, hash.ErrUnsupported) {
+		if !errors.Is(why, hash.ErrUnsupported) && !errors.Is(why, errNotRead) {
 			r.say("unverified", key, side.String(), fmt.Sprintf(
 				"no checksum from the %s side, so this pair was accepted on size and modification time alone: %v", side, why))
 		}
@@ -919,7 +928,13 @@ func (r recorder) settle(ctx context.Context, key, leftPath, rightPath string) e
 // hashOf asks an object for its MD5, and returns why it could not have one. It
 // is always MD5 because the scanner compares MD5 against the state row, and any
 // other algorithm stored here would look like a changed file on every run.
-func hashOf(ctx context.Context, obj fs.Object) (string, error) {
+func hashOf(ctx context.Context, obj fs.Object, slowToo bool) (string, error) {
+	if err := ctx.Err(); err != nil {
+		return "", err
+	}
+	if !slowToo && obj.Fs().Features().SlowHash {
+		return "", errNotRead
+	}
 	sum, err := obj.Hash(ctx, hash.MD5)
 	if err != nil {
 		return "", err
@@ -930,6 +945,10 @@ func hashOf(ctx context.Context, obj fs.Object) (string, error) {
 	}
 	return sum, nil
 }
+
+// errNotRead stands for a checksum left unread because the backend would have
+// to read the whole file for it.
+var errNotRead = errors.New("the checksum would mean reading the whole file")
 
 // unhashed names the side that could not produce a checksum, and why. When
 // neither side can, the left is named.

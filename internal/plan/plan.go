@@ -401,6 +401,9 @@ func Build(ctx context.Context, left, right *scan.Listing, prev map[string]state
 	sort.Strings(ordered)
 
 	for _, p := range ordered {
+		if err := ctx.Err(); err != nil {
+			return nil, err
+		}
 		l, hasL := left.Files[p]
 		r, hasR := right.Files[p]
 		s, hasPrev := prev[p]
@@ -442,7 +445,7 @@ func Build(ctx context.Context, left, right *scan.Listing, prev map[string]state
 
 		// Both sides produced the file independently.
 		case lState == created && rState == created:
-			if sameLive(ctx, l, r, opt) {
+			if sameLive(ctx, l, r, opt, false) {
 				act := base
 				act.Kind = Copy
 				act.Src, act.Dst = Left, Right
@@ -461,7 +464,7 @@ func Build(ctx context.Context, left, right *scan.Listing, prev map[string]state
 
 		// Both edited.
 		case lState == modified && rState == modified:
-			if sameLive(ctx, l, r, opt) {
+			if sameLive(ctx, l, r, opt, true) {
 				act := base
 				act.Kind = Copy
 				act.Src, act.Dst = Left, Right
@@ -524,14 +527,40 @@ func classify(ctx context.Context, cur *scan.Entry, present, hasPrev bool, prev 
 	case !hasPrev:
 		return created
 	}
-	if Same(Facts{cur.Size, cur.Mod, cur.Hash(ctx)}, prev, opt.ModWindow) {
+	window := opt.ModWindow
+	if p, ok := cur.TimePrecision(); ok {
+		window = p
+	}
+	if Same(Facts{cur.Size, cur.Mod, cur.CheapHash(ctx)}, prev, window) {
 		return unchanged
+	}
+	// Only a file whose time moved while its size did not is read for its
+	// checksum; reading every file on every run would read a whole disk.
+	if cur.Size == prev.Size && prev.Hash != "" {
+		if sum := cur.Hash(ctx); sum != "" && sum == prev.Hash {
+			return unchanged
+		}
 	}
 	return modified
 }
 
-func sameLive(ctx context.Context, l, r *scan.Entry, opt Options) bool {
-	return Same(Facts{l.Size, l.Mod, l.Hash(ctx)}, Facts{r.Size, r.Mod, r.Hash(ctx)}, opt.ModWindow)
+// sameLive compares the two sides as they are now. Careful is for two edits
+// since the last run, where a wrong "same" would lose one of them, so equal
+// sizes are always settled by checksum; the first meeting of two trees is
+// settled by size and time, or matching a full disk would read it twice.
+func sameLive(ctx context.Context, l, r *scan.Entry, opt Options, careful bool) bool {
+	if l.Size != r.Size {
+		return false
+	}
+	if !careful && Same(Facts{l.Size, l.Mod, l.CheapHash(ctx)}, Facts{r.Size, r.Mod, r.CheapHash(ctx)}, opt.ModWindow) {
+		return true
+	}
+	lsum, rsum := l.Hash(ctx), r.Hash(ctx)
+	if lsum == "" || rsum == "" {
+		// A backend without checksums leaves only size and time.
+		return Same(Facts{Size: l.Size, Mod: l.Mod}, Facts{Size: r.Size, Mod: r.Mod}, opt.ModWindow)
+	}
+	return lsum == rsum
 }
 
 func copyAction(base Action, from Side, reason Reason) Action {

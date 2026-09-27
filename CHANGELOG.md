@@ -26,6 +26,8 @@ The full notes for each release are in
 
 ## 🐛 Fixed
 
+- **A job between two local folders or a mapped network drive no longer reads every file on every run.** The comparison asked each file for its checksum before looking at its size, and on a local disk that means reading the file to its end. The first run of a job over a full music library read both sides whole, the settled record read them again, and a run every few minutes started over before it finished, so it never did. A checksum that costs a full read is now fetched only where size and time cannot decide: a file whose time moved while its size did not, two edits of one file since the last run, or a job that insists on checksums. A copied file is still checked after the transfer.
+- **Stopping a run works while it compares files.** A checksum being read ignored the stop, so a stopped run went on reading the whole tree.
 - **The phone draws the storage providers' marks the way the web interface does.** Proton Drive's mark was missing, and on the light theme several marks were darkened that the web interface shows in their own colours.
 
 ## 1.1.0 - 2026-09-25

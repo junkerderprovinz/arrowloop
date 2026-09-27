@@ -323,3 +323,13 @@ func TestAReasonPrintsItsSentence(t *testing.T) {
 		t.Errorf("a skip's reason printed as %q", got)
 	}
 }
+
+func TestBuildStopsWhenTheRunIsStopped(t *testing.T) {
+	ctx, stop := context.WithCancel(context.Background())
+	stop()
+	side := scan.Side{"a.txt": live("a.txt", 10, 0)}
+
+	if _, err := Build(ctx, listing(side), listing(side), nil, noQuiet()); err == nil {
+		t.Error("a stopped run went on comparing files")
+	}
+}

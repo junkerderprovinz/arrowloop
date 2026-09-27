@@ -182,6 +182,11 @@ func (e *Entry) Hash(ctx context.Context) string {
 	if e.hashed {
 		return e.hashsum
 	}
+	// The local backend reads a file to its end for its checksum without
+	// looking at the context, so a stopped run would read on.
+	if ctx.Err() != nil {
+		return ""
+	}
 	e.hashed = true
 	if e.obj == nil {
 		return ""
@@ -195,4 +200,29 @@ func (e *Entry) Hash(ctx context.Context) string {
 	}
 	e.hashsum = sum
 	return sum
+}
+
+// TimePrecision is how finely this side keeps modification times, reported
+// only where a checksum means reading the whole file. There the time stands in
+// for the checksum between two listings, so it is held to the backend's own
+// rounding rather than to a window meant for two different backends.
+func (e *Entry) TimePrecision() (time.Duration, bool) {
+	if e.obj == nil {
+		return 0, false
+	}
+	f := e.obj.Fs()
+	if !f.Features().SlowHash || f.Precision() == fs.ModTimeNotSupported {
+		return 0, false
+	}
+	return f.Precision(), true
+}
+
+// CheapHash is Hash where the backend keeps the checksum with the file, and an
+// empty string where producing one means reading the whole file, as on a local
+// disk or a mapped network drive.
+func (e *Entry) CheapHash(ctx context.Context) string {
+	if e.obj == nil || e.obj.Fs().Features().SlowHash {
+		return ""
+	}
+	return e.Hash(ctx)
 }

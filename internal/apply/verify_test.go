@@ -21,7 +21,7 @@ import (
 func TestAPairThatCannotBeChecksummedIsStillRecorded(t *testing.T) {
 	f := newFixture(t, hash.ErrUnsupported)
 
-	if err := f.rec.settle(context.Background(), "notes.txt", "notes.txt", "notes.txt"); err != nil {
+	if err := f.rec.settle(context.Background(), "notes.txt", "notes.txt", "notes.txt", true); err != nil {
 		t.Fatalf("a pair that agrees on size and time was refused: %v", err)
 	}
 	if !f.recorded(t, "notes.txt") {
@@ -38,7 +38,7 @@ func TestAPairThatCannotBeChecksummedIsStillRecorded(t *testing.T) {
 func TestAChecksumThatFailedForAnyOtherReasonIsSaidOutLoud(t *testing.T) {
 	f := newFixture(t, errors.New("the disk returned a read error"))
 
-	if err := f.rec.settle(context.Background(), "notes.txt", "notes.txt", "notes.txt"); err != nil {
+	if err := f.rec.settle(context.Background(), "notes.txt", "notes.txt", "notes.txt", true); err != nil {
 		t.Fatalf("settle refused a pair it should have accepted: %v", err)
 	}
 	if !f.recorded(t, "notes.txt") {
@@ -63,7 +63,7 @@ func TestRequireChecksumWithholdsTheRowRatherThanTheFile(t *testing.T) {
 	f := newFixture(t, hash.ErrUnsupported)
 	f.rec.verify.RequireChecksum = true
 
-	err := f.rec.settle(context.Background(), "notes.txt", "notes.txt", "notes.txt")
+	err := f.rec.settle(context.Background(), "notes.txt", "notes.txt", "notes.txt", true)
 	var unver *UnverifiedError
 	if !errors.As(err, &unver) {
 		t.Fatalf("a pair that could not be checksummed was accepted anyway: %v", err)
@@ -93,7 +93,7 @@ func TestADisagreementNamesTheChecksums(t *testing.T) {
 	// Same length and the same modification time.
 	writeAt(t, filepath.Join(f.right, "notes.txt"), "BBBB", f.stamp)
 
-	err := f.rec.settle(context.Background(), "notes.txt", "notes.txt", "notes.txt")
+	err := f.rec.settle(context.Background(), "notes.txt", "notes.txt", "notes.txt", true)
 	var dis *DisagreementError
 	if !errors.As(err, &dis) {
 		t.Fatalf("two different files of the same size and time were recorded as agreeing: %v", err)
@@ -107,21 +107,58 @@ func TestADisagreementNamesTheChecksums(t *testing.T) {
 	}
 }
 
+// Nothing was written, so a local pair that agrees on size and time is not read
+// again: on a settled tree that would read the whole disk on every run.
+func TestAnUntouchedPairIsRecordedWithoutReadingIt(t *testing.T) {
+	f := newFixture(t, nil)
+
+	if err := f.rec.settle(context.Background(), "notes.txt", "notes.txt", "notes.txt", false); err != nil {
+		t.Fatalf("a pair that agrees on size and time was refused: %v", err)
+	}
+	row := f.row(t, "notes.txt")
+	if row.LeftHash != "" || row.RightHash != "" {
+		t.Errorf("both files were read for checksums nobody needed: %q and %q", row.LeftHash, row.RightHash)
+	}
+	if got := f.saidAbout("notes.txt"); len(got) != 0 {
+		t.Errorf("a pair accepted on size and time as intended produced comment: %v", got)
+	}
+}
+
+// The same content under two modification times is settled by the checksums,
+// not reported as a disagreement.
+func TestAPairWhoseTimesDisagreeIsReadBeforeItIsRecorded(t *testing.T) {
+	f := newFixture(t, nil)
+	writeAt(t, filepath.Join(f.right, "notes.txt"), "AAAA", f.stamp.Add(-time.Hour))
+
+	if err := f.rec.settle(context.Background(), "notes.txt", "notes.txt", "notes.txt", false); err != nil {
+		t.Fatalf("two copies of the same content were refused: %v", err)
+	}
+	if row := f.row(t, "notes.txt"); row.LeftHash == "" || row.LeftHash != row.RightHash {
+		t.Errorf("the record does not show the checksums that settled it: %q and %q", row.LeftHash, row.RightHash)
+	}
+}
+
 func TestHashOfKeepsTheReasonItCouldNotHash(t *testing.T) {
 	ctx := context.Background()
 
-	if _, err := hashOf(ctx, brokenObject{err: hash.ErrUnsupported}); !errors.Is(err, hash.ErrUnsupported) {
+	if _, err := hashOf(ctx, brokenObject{err: hash.ErrUnsupported}, true); !errors.Is(err, hash.ErrUnsupported) {
 		t.Errorf("a backend with no checksums reported %v", err)
 	}
 
 	boom := errors.New("read error")
-	if _, err := hashOf(ctx, brokenObject{err: boom}); !errors.Is(err, boom) {
+	if _, err := hashOf(ctx, brokenObject{err: boom}, true); !errors.Is(err, boom) {
 		t.Errorf("a real read failure was reported as %v, losing the only useful part", err)
 	}
 
 	// An empty checksum without an error counts as unsupported.
-	if _, err := hashOf(ctx, brokenObject{}); !errors.Is(err, hash.ErrUnsupported) {
+	if _, err := hashOf(ctx, brokenObject{}, true); !errors.Is(err, hash.ErrUnsupported) {
 		t.Errorf("an empty checksum reported as a success: %v", err)
+	}
+
+	stopped, stop := context.WithCancel(ctx)
+	stop()
+	if _, err := hashOf(stopped, brokenObject{}, true); !errors.Is(err, context.Canceled) {
+		t.Errorf("a stopped run was reported as %v", err)
 	}
 }
 
@@ -225,6 +262,19 @@ func (f *fixture) saidAbout(path string) []Entry {
 		}
 	}
 	return out
+}
+
+func (f *fixture) row(t *testing.T, key string) state.Entry {
+	t.Helper()
+	all, err := f.db.All(context.Background())
+	if err != nil {
+		t.Fatalf("reading the record back: %v", err)
+	}
+	row, ok := all[key]
+	if !ok {
+		t.Fatalf("no row for %s", key)
+	}
+	return row
 }
 
 func (f *fixture) recorded(t *testing.T, key string) bool {
