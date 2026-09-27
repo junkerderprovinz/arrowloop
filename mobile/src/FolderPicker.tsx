@@ -4,7 +4,7 @@ import { Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 
 import { api } from "./api";
 import { useT } from "./i18n";
 import { Glyph } from "./glyphs";
-import { SCRIM, space, text, TOUCH } from "./theme";
+import { space, text, TOUCH } from "./theme";
 import { Body, Button, Caption, useTheme } from "./ui";
 
 /**
@@ -95,7 +95,7 @@ export function FolderPicker({
 
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
-      <Pressable style={styles.ground} onPress={onClose}>
+      <Pressable style={[styles.ground, { backgroundColor: p.scrim }]} onPress={onClose}>
         {/* Swallows presses so a tap inside does not close the dialog. */}
         <Pressable
           style={[styles.card, { backgroundColor: p.surface, ...corners.card }]}
@@ -169,7 +169,6 @@ export function FolderPicker({
 const styles = StyleSheet.create({
   ground: {
     flex: 1,
-    backgroundColor: SCRIM,
     justifyContent: "center",
     padding: space.md,
   },

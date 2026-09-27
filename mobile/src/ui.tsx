@@ -32,7 +32,6 @@ import {
   type Palette,
   type Corners,
   type Radii,
-  SCRIM,
 } from "./theme";
 import { useAppearance, type BarLabelMode, type LabelMode } from "./settings";
 import { useWalkedPalette } from "./disco";
@@ -554,7 +553,7 @@ export function InfoBubble({ tip, on }: { tip: string; on?: string }) {
         animationType={ms.fade ? "fade" : "none"}
         onRequestClose={() => setOpen(false)}
       >
-        <Pressable style={styles.tipGround} onPress={() => setOpen(false)}>
+        <Pressable style={[styles.tipGround, { backgroundColor: p.scrim }]} onPress={() => setOpen(false)}>
           <View style={[styles.tipCard, { backgroundColor: p.surface2, ...corners.card }]}>
             <Text style={[styles.tipText, { color: p.text }]}>{tip}</Text>
           </View>
@@ -1064,7 +1063,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: space.lg,
-    backgroundColor: SCRIM,
   },
   tipCard: { maxWidth: 320, padding: space.lg },
   tipText: { fontSize: text.body, lineHeight: text.body + 6 },

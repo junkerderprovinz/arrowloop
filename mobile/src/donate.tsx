@@ -8,7 +8,7 @@ import { CoinMark } from "./glyphs";
 import { useT } from "./i18n";
 import { engine } from "./engine";
 import { animateNext, useMotion } from "./motion";
-import { contrastOn, SCRIM, space, text, TOUCH } from "./theme";
+import { contrastOn, space, text, TOUCH } from "./theme";
 import { Button, useTheme } from "./ui";
 
 /**
@@ -37,7 +37,7 @@ export function CryptoDonate({ onClose }: { onClose: () => void }) {
 
   return (
     <Modal visible transparent animationType="fade" onRequestClose={onClose}>
-      <Pressable style={styles.ground} onPress={onClose}>
+      <Pressable style={[styles.ground, { backgroundColor: p.scrim }]} onPress={onClose}>
         {/* Swallows presses so a tap inside does not close the dialog. */}
         <Pressable
           onPress={() => {}}
@@ -204,7 +204,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: space.lg,
-    backgroundColor: SCRIM,
   },
   card: { width: "100%", maxWidth: 420, maxHeight: "88%", overflow: "hidden" },
   titleRow: { paddingHorizontal: space.lg, paddingTop: space.lg },

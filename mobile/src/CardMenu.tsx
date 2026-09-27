@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { Modal, Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 
 import { Glyph } from "./glyphs";
-import { SCRIM, space, text, TOUCH } from "./theme";
+import { space, text, TOUCH } from "./theme";
 import { useTheme } from "./ui";
 
 /**
@@ -61,7 +61,7 @@ export function CardMenu({ items }: { items: CardAction[] }) {
         animationType="fade"
         onRequestClose={() => setAt(null)}
       >
-        <Pressable style={styles.ground} onPress={() => setAt(null)}>
+        <Pressable style={[styles.ground, { backgroundColor: p.scrim }]} onPress={() => setAt(null)}>
           <Pressable
             style={[
               styles.sheet,
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
   bar: { width: 16, height: 2, borderRadius: 1 },
 
   // Fills the screen so a tap anywhere closes the menu.
-  ground: { flex: 1, backgroundColor: SCRIM },
+  ground: { flex: 1 },
   sheet: {
     position: "absolute",
     minWidth: 200,

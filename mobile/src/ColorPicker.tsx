@@ -3,7 +3,7 @@ import { Modal, PanResponder, Pressable, StyleSheet, TextInput, View } from "rea
 
 import { hexToHsv, hsvToHex, normalizeHex } from "../../web/src/lib/colorMath";
 import { useT } from "./i18n";
-import { SCRIM, space, text } from "./theme";
+import { space, text } from "./theme";
 import { Glyph } from "./glyphs";
 import { Button, useTheme } from "./ui";
 
@@ -104,7 +104,7 @@ export function ColorPicker({
 
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
-      <Pressable style={styles.ground} onPress={onClose}>
+      <Pressable style={[styles.ground, { backgroundColor: p.scrim }]} onPress={onClose}>
         {/* Swallows presses so a drag inside does not close the picker. */}
         <Pressable
           style={[styles.panel, { backgroundColor: p.surface, ...corners.card }]}
@@ -282,7 +282,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: space.xl,
-    backgroundColor: SCRIM,
   },
   panel: { width: "100%", maxWidth: 340, padding: space.lg, gap: space.md },
   pad: { width: "100%", aspectRatio: 1, overflow: "hidden" },

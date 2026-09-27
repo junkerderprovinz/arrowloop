@@ -10,6 +10,10 @@ The full notes for each release are in
 
 ## Unreleased
 
+## 🎨 Design
+
+- **The look follows GlimStone 3.0.0.** The folder picker blurs and darkens the page behind it like every other window, and on the phone the page behind a window is a little darker on the dark theme than on the light one.
+
 ## 1.2.1 - 2026-09-27
 
 ## ⚡ Improved

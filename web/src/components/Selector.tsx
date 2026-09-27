@@ -3,6 +3,7 @@ import type { CSSProperties, ReactNode } from 'react'
 
 import { hueVars } from '../lib/appearance'
 import { groupStage } from '../lib/controls'
+import { perRowFor } from '../lib/segmentLayout'
 import { useRainbow } from './Shell'
 
 /**
@@ -142,8 +143,7 @@ export function Selector<T extends string>({
   // Once it wraps, the segments share each row evenly and grow to fill it, so
   // no row ends in an empty strip: six that fit four to a row go three and
   // three.
-  const fit = pinned && inner > 0 ? Math.max(1, Math.floor((inner + gap) / (pinned + gap))) : n
-  const perRow = Math.ceil(n / Math.ceil(n / fit))
+  const perRow = pinned && inner > 0 ? perRowFor(n, inner, pinned, gap) : n
 
   // Every segment reads a rainbow position, so the strip repaints when the
   // mode changes.

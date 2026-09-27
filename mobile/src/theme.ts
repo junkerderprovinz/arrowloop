@@ -30,6 +30,9 @@ export interface Palette {
   warnSolid: string;
   neutralInk: string;
   neutralSolid: string;
+  /** The dimming behind a floating window, GlimStone's `--glim-scrim`. A phone
+   *  has no backdrop blur, so this carries the whole separation. */
+  scrim: string;
 }
 
 const dark: Palette = {
@@ -50,6 +53,7 @@ const dark: Palette = {
   warnSolid: "#f1c21b",
   neutralInk: "#a8a8a8",
   neutralSolid: "#8d8d8d",
+  scrim: "rgba(0, 0, 0, 0.72)",
 };
 
 const light: Palette = {
@@ -72,6 +76,7 @@ const light: Palette = {
   warnSolid: "#b28600",
   neutralInk: "#6f6f6f",
   neutralSolid: "#8d8d8d",
+  scrim: "rgba(0, 0, 0, 0.62)",
 };
 
 export const palettes: Record<Scheme, Palette> = { dark, light };
@@ -195,6 +200,3 @@ export function cornersFor(shape: string): Record<keyof Radii, Corners> {
 
 /** Android's minimum touch target. */
 export const TOUCH = 48;
-
-/** The dimming behind a floating window, matching GlimStone's `--glim-scrim`. */
-export const SCRIM = "rgba(0, 0, 0, 0.65)";

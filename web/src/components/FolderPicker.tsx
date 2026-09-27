@@ -112,7 +112,7 @@ export function FolderPicker({
   // would pin the fixed backdrop to itself instead of the window.
   return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(0,0,0,0.45)] p-6"
+      className="glim-modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-6"
       role="dialog"
       aria-modal="true"
       aria-label={t('pick.title')}
