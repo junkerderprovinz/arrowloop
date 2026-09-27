@@ -49,7 +49,7 @@ export function mergeConflicts<C extends Dated>(held: Listing<C> | null, job: st
   }
 }
 
-/** Drops selections whose conflict is no longer listed. */
+/** Drops selections whose conflict has left the list. */
 export function stillListed(selected: Set<string>, listed: Named[]): Set<string> {
   const live = new Set(listed.map(conflictKey))
   const out = new Set([...selected].filter((k) => live.has(k)))

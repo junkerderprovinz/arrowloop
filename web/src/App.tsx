@@ -64,7 +64,7 @@ import { ToastProvider, useToast } from './lib/toast'
 
 /**
  * The app's places, in the order the sibling apps use, settings last. The two
- * that wait on somebody follow the history, where they used to live.
+ * that wait on somebody follow the history, since that is where they come from.
  */
 type Tab = 'jobs' | 'targets' | 'history' | 'conflicts' | 'trash' | 'settings'
 
