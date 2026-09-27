@@ -47,7 +47,12 @@ func main() {
 
 func run() error {
 	custom := flag.String("config", "", "the configuration file to use instead of the one in the user's configuration directory")
+	scheduled := flag.Bool("update", false, "update the copy installed for all users and exit, as the installer's scheduled task does")
 	flag.Parse()
+
+	if *scheduled {
+		return updateInstalled()
+	}
 
 	configPath, err := configLocation(*custom)
 	if err != nil {
@@ -94,6 +99,12 @@ func run() error {
 	// Before the engine starts, which takes a moment, so a second launch in
 	// that moment finds a window to bring back.
 	window := deskset.Open(configPath)
+	installed := isInstalled()
+	if installed {
+		if dir, err := machineData(); err == nil {
+			window.KeepAutoUpdateIn(filepath.Join(dir, machineSettingsFile))
+		}
+	}
 	sh = newShell(ctx, app, window, trayIcons())
 
 	configfile.Install()
@@ -153,11 +164,19 @@ func run() error {
 	newBridge().run(ctx, runner, app)
 
 	// A newer release is downloaded in the background and starts next time;
-	// see updates.go.
-	up := newUpdater(window, openUpdateLog(configPath), func(version string) {
+	// see updates.go. The installed copy leaves that to the installer's
+	// scheduled task and only passes on the news.
+	announce := func(version string) {
 		app.Event.Emit(updateReadyEvent, version)
-	})
-	go up.run(ctx)
+	}
+	var up *updater
+	if installed {
+		up = newUpdater(window, log.Default(), announce)
+		go up.follow(ctx)
+	} else {
+		up = newUpdater(window, openUpdateLog(filepath.Join(filepath.Dir(configPath), "update.log")), announce)
+		go up.run(ctx)
+	}
 
 	app.OnShutdown(func() {
 		stop()

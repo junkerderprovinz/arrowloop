@@ -16,10 +16,12 @@ import (
 )
 
 // The first check waits for the window and the schedules to settle; one a day
-// follows.
+// follows. An installed copy looks every followEvery for a version the
+// scheduled task has put in place.
 var (
-	updateAPI  = "https://api.github.com"
-	firstCheck = time.Minute
+	updateAPI   = "https://api.github.com"
+	firstCheck  = time.Minute
+	followEvery = 10 * time.Minute
 )
 
 const checkEvery = 24 * time.Hour
@@ -29,7 +31,8 @@ const checkEvery = 24 * time.Hour
 const updateReadyEvent = "arrowloop:update-ready"
 
 // updater keeps the desktop app current. It is the only caller of
-// update.Updater, so there is never more than one update in flight.
+// update.Updater in its process, so there is never more than one update in
+// flight.
 type updater struct {
 	u        *update.Updater
 	settings *deskset.Store
@@ -50,9 +53,7 @@ func newUpdater(settings *deskset.Store, logger *log.Logger, announce func(versi
 			Repo:    update.Repo,
 			Version: boot.Version,
 			Assets:  update.Assets,
-			// UNINST_KEY_NAME in build/windows/nsis/project.nsi.
-			UninstallKey: "ArrowLoop",
-			API:          updateAPI,
+			API:     updateAPI,
 			// Long enough for the program on a slow line, short enough that a
 			// connection that stalls does not hold up every later check.
 			Client: &http.Client{Timeout: 30 * time.Minute},
@@ -61,14 +62,12 @@ func newUpdater(settings *deskset.Store, logger *log.Logger, announce func(versi
 	}
 }
 
-// openUpdateLog writes to update.log beside the configuration, since a
-// windowed program on Windows has no console to say why an update did not
-// happen. A log grown past 256 KiB starts over.
-func openUpdateLog(configPath string) *log.Logger {
+// openUpdateLog appends to the log at path, since a windowed program on
+// Windows has no console to say why an update did not happen. A log grown past
+// 256 KiB starts over.
+func openUpdateLog(path string) *log.Logger {
 	var w io.Writer = os.Stderr
-	dir := filepath.Dir(configPath)
-	if os.MkdirAll(dir, 0o755) == nil {
-		path := filepath.Join(dir, "update.log")
+	if os.MkdirAll(filepath.Dir(path), 0o755) == nil {
 		flags := os.O_CREATE | os.O_WRONLY | os.O_APPEND
 		if info, err := os.Stat(path); err == nil && info.Size() > 256<<10 {
 			flags |= os.O_TRUNC
@@ -102,6 +101,25 @@ func (up *updater) run(ctx context.Context) {
 			up.once(ctx)
 		}
 		timer.Reset(checkEvery)
+	}
+}
+
+// follow is run for the installed copy, which cannot replace itself. It waits
+// for the scheduled task to record a newer version in the uninstall entry and
+// says once that it starts next time.
+func (up *updater) follow(ctx context.Context) {
+	tick := time.NewTicker(followEvery)
+	defer tick.Stop()
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case <-tick.C:
+		}
+		if v := update.InstalledVersion(product); update.Newer(v, boot.Version) {
+			up.announce(v)
+			return
+		}
 	}
 }
 

@@ -53,7 +53,7 @@ type Updater struct {
 	// A platform without an entry is never updated.
 	Assets map[string]string
 	// UninstallKey names the entry under
-	// HKCU\Software\Microsoft\Windows\CurrentVersion\Uninstall whose
+	// HKLM\Software\Microsoft\Windows\CurrentVersion\Uninstall whose
 	// DisplayVersion follows an update of the installed copy.
 	UninstallKey string
 
@@ -92,6 +92,16 @@ type githubRelease struct {
 func IsRelease(version string) bool {
 	_, ok := parseVersion(version)
 	return ok
+}
+
+// Newer reports whether a and b are both release versions and a is the newer.
+func Newer(a, b string) bool {
+	va, ok := parseVersion(a)
+	if !ok {
+		return false
+	}
+	vb, ok := parseVersion(b)
+	return ok && compare(va, vb) > 0
 }
 
 // Check asks GitHub for the newest published release. It returns nil when that

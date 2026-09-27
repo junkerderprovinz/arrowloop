@@ -1,10 +1,14 @@
 // Builds the desktop app for the platform it runs on, the way CI does.
 //
-//     node scripts/desktop.mjs [--arch amd64|arm64] [--installer]
+//     node scripts/desktop.mjs [--arch amd64|arm64] [--installer] [--updatetest]
 //
 // Windows gets ArrowLoop.exe and, with --installer, the NSIS installer. macOS
 // gets ArrowLoop.app holding one binary for both architectures. Linux gets the
 // bare binary. Everything lands in desktop/build/bin.
+//
+// --updatetest builds with the updatetest tag (desktop/updatetest.go). Its
+// installer puts "ArrowLoop Test" beside a real installation, so the updates
+// can be tried against a local stand-in for GitHub.
 //
 // The interface is built first and embedded from web/dist, like the server
 // build. Wails' generated files (manifest, version resource, Info.plist, the
@@ -30,6 +34,8 @@ const option = (name) => {
 const hostArch = process.arch === 'arm64' ? 'arm64' : 'amd64'
 const arch = option('--arch') ?? hostArch
 const installer = args.includes('--installer')
+const updatetest = args.includes('--updatetest')
+const tags = (extra = '') => (updatetest ? 'production,updatetest' : 'production') + extra
 
 // Pinned for every step, the Go build and the installer alike.
 const stamp = version()
@@ -85,7 +91,7 @@ if (process.platform === 'win32') {
   ])
   const exe = join(bin, 'ArrowLoop.exe')
   try {
-    goBuild(exe, { goos: 'windows', goarch: arch, cgo: '0', tags: 'production', ldflags: '-H windowsgui' })
+    goBuild(exe, { goos: 'windows', goarch: arch, cgo: '0', tags: tags(), ldflags: '-H windowsgui' })
   } finally {
     // Go links every .syso in the package, and one left behind would end up in
     // the next build for the other architecture.
@@ -99,6 +105,7 @@ if (process.platform === 'win32') {
     // system code page, and the German shortcut names come out garbled.
     run('makensis', [
       '-INPUTCHARSET', 'UTF8',
+      ...(updatetest ? ['-DINFO_PRODUCTNAME=ArrowLoop Test', '-DINFO_PROJECTNAME=ArrowLoopTest'] : []),
       `-DARG_WAILS_${arch.toUpperCase()}_BINARY=${exe}`,
       join(nsis, 'project.nsi'),
     ])
@@ -108,7 +115,7 @@ if (process.platform === 'win32') {
   // deployment target matches what Wails' own template builds for.
   const mac = { MACOSX_DEPLOYMENT_TARGET: '12.0', CGO_CFLAGS: '-mmacosx-version-min=12.0', CGO_LDFLAGS: '-mmacosx-version-min=12.0' }
   for (const a of ['amd64', 'arm64']) {
-    goBuild(join(bin, `ArrowLoop-${a}`), { goos: 'darwin', goarch: a, cgo: '1', tags: 'production', env: mac })
+    goBuild(join(bin, `ArrowLoop-${a}`), { goos: 'darwin', goarch: a, cgo: '1', tags: tags(), env: mac })
   }
   const app = join(bin, 'ArrowLoop.app', 'Contents')
   mkdirSync(join(app, 'MacOS'), { recursive: true })
@@ -124,7 +131,7 @@ if (process.platform === 'win32') {
 } else {
   // GTK 3 and WebKitGTK 4.1, which every current distribution ships and which
   // the builds before this one already needed.
-  goBuild(join(bin, 'ArrowLoop'), { goos: 'linux', goarch: arch, cgo: '1', tags: 'production,gtk3' })
+  goBuild(join(bin, 'ArrowLoop'), { goos: 'linux', goarch: arch, cgo: '1', tags: tags(',gtk3') })
 }
 
 console.log(`done: ${stamp}`)
