@@ -10,6 +10,10 @@ The full notes for each release are in
 
 ## Unreleased
 
+## 🎨 Design
+
+- **The closed envelope on the About card's mail button sits in the middle of the button**, as GlimStone 3.0.1 draws it. It stood a little too low.
+
 ## 1.3.0 - 2026-09-27
 
 ## ✨ Added
