@@ -100,6 +100,11 @@ func TestTheLogSaysHowAFileWasChanged(t *testing.T) {
 	if got := noteOf(t, lines, "move", "photos/beach.jpg"); got != "photos/IMG_1.jpg" {
 		t.Errorf("a rename says %q rather than the name it had", got)
 	}
+	for _, e := range lines {
+		if e.Kind == "move" && e.Path == "photos/beach.jpg" && e.Size != int64(len("a photo")) {
+			t.Errorf("a rename logs %d bytes, want the file's %d", e.Size, len("a photo"))
+		}
+	}
 	if got := noteOf(t, lines, "trash", "old.txt"); got != apply.NoteBin {
 		t.Errorf("a file put in the bin says %q", got)
 	}

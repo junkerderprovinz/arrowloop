@@ -671,11 +671,13 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 			return err
 		}
 		t.count(func(r *Result) { r.Moved++ })
-		moved := act.LeftNow
+		// The file stands under its new name only on the side it was renamed
+		// on; here it was still under the old one until the move.
+		renamed := act.RightNow
 		if act.Dst == plan.Right {
-			moved = act.RightNow
+			renamed = act.LeftNow
 		}
-		t.sized("move", act.DstPath, act.Dst.String(), act.OldDstPath, sizeOf(moved))
+		t.sized("move", act.DstPath, act.Dst.String(), act.OldDstPath, sizeOf(renamed))
 		if err := rec.db.Forget(ctx, pathid.Key(act.OldDstPath, opt.FoldCase)); err != nil {
 			return err
 		}

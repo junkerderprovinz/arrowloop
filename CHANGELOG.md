@@ -30,6 +30,10 @@ The full notes for each release are in
 - **Each mode explains itself.** Copy only, Mirror and Move carry an (i) in their own segment, in the job editor, in the global sync settings and on the phone. Clicking it opens the explanation and leaves the mode as it is.
 - **"Transfer immediately" is called Real time**, in the schedule, on the job card and in the global sync settings.
 
+## 🐛 Fixed
+
+- **A renamed file's line in the history shows its size.** The size was read under the new name on the side still waiting for the rename, where there was nothing yet, so it came out as nothing.
+
 ## 1.2.1 - 2026-09-27
 
 ## ⚡ Improved
