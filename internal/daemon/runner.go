@@ -215,7 +215,7 @@ func (r *Runner) runAs(ctx context.Context, name string, do work) (history.Run, 
 		rec.Err = err.Error()
 	}
 	if p != nil {
-		rec.Unchanged = p.Unchanged
+		rec.Unchanged = p.Unchanged + len(p.Agreed)
 	}
 	rec.Copied, rec.Moved, rec.Trashed = res.Copied, res.Moved, res.Trashed
 	rec.Conflicts, rec.DirsMade, rec.DirsRemoved = res.Conflicts, res.DirsMade, res.DirsRemoved

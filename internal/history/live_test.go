@@ -15,7 +15,7 @@ func TestARunShowsInTheLogWhileItGoes(t *testing.T) {
 
 	live := db.Begin("photos", start)
 	live.Add(history.Entry{Kind: "copy", Side: "right", Path: "a.jpg", Size: 10})
-	live.Add(history.Entry{Kind: "record", Path: "b.jpg"})
+	live.Add(history.Entry{Kind: "mkdir", Side: "right", Path: "b.jpg"})
 
 	got, err := db.Log(ctx, history.Filter{Job: "photos"})
 	if err != nil {

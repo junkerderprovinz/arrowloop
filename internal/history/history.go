@@ -168,7 +168,7 @@ func (d *DB) Entries(ctx context.Context, run int64) ([]Entry, error) {
 		return d.liveEntries(run), nil
 	}
 	rows, err := d.sql.QueryContext(ctx,
-		`SELECT kind, side, path, note, size FROM entries WHERE run = ? ORDER BY seq`, run)
+		`SELECT kind, side, path, note, size FROM entries WHERE run = ? AND kind <> 'record' ORDER BY seq`, run)
 	if err != nil {
 		return nil, fmt.Errorf("read entries for run %d: %w", run, err)
 	}
@@ -232,7 +232,9 @@ func (d *DB) Log(ctx context.Context, f Filter) ([]Touch, error) {
 	if limit <= 0 {
 		limit = 50
 	}
-	where, args := "1 = 1", []any{}
+	// A stored run can still hold a line for a file both sides already had,
+	// which is nothing done to it; Entries leaves those out too.
+	where, args := "e.kind <> 'record'", []any{}
 	if f.Job != "" {
 		where += " AND r.job = ?"
 		args = append(args, f.Job)

@@ -39,23 +39,23 @@ func TestACopyRecordsHowManyBytesItMoved(t *testing.T) {
 	}
 }
 
-// On trees already in sync nearly every log line is a "record", so those need
-// a size too.
-func TestAnAgreedFileRecordsItsSizeToo(t *testing.T) {
+// A file both sides already hold is compared and recorded, but nothing is done
+// to it, so the run's list says nothing about it.
+func TestAnAgreedFileLeavesNoLine(t *testing.T) {
 	j := newJob(t, quick())
-	write(t, j.left, "beide.txt", string(make([]byte, 321)))
-	write(t, j.right, "beide.txt", string(make([]byte, 321)))
+	write(t, j.left, "beide.txt", "gleich")
+	write(t, j.right, "beide.txt", "gleich")
+	write(t, j.left, "neu.txt", "nur links")
 
 	_, res := j.sync(t)
 
-	var seen int64 = -1
 	for _, e := range res.Entries {
-		if e.Kind == "record" && e.Path == "beide.txt" {
-			seen = e.Size
+		if e.Path == "beide.txt" {
+			t.Errorf("the agreed file has a line in the run's list: %+v", e)
 		}
 	}
-	if seen != 321 {
-		t.Errorf("the agreed file was recorded as %d bytes, it is 321", seen)
+	if len(res.Entries) == 0 {
+		t.Fatal("the run listed nothing, not even the copy of neu.txt")
 	}
 }
 

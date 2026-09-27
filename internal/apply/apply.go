@@ -154,6 +154,18 @@ func (t *tally) step(kind, path, side string) {
 	t.note(kind, path, side, "")
 }
 
+// passed moves the progress past a file that needed no work. It leaves no line
+// in the run's list, which says what the run did to files.
+func (t *tally) passed(path string) {
+	t.mu.Lock()
+	t.done++
+	done, total, watcher := t.done, t.total, t.progress
+	t.mu.Unlock()
+	if watcher != nil {
+		watcher.Did("record", path, "", "", done, total)
+	}
+}
+
 // sized is note for a piece of work that moved a known number of bytes.
 func (t *tally) sized(kind, path, side, note string, size int64) {
 	t.mu.Lock()
@@ -360,14 +372,7 @@ func RunVerified(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt
 	// Files both sides created identically need no transfer, only a record.
 	for _, act := range p.Agreed {
 		left, right := act.Names()
-		// With its size although nothing was transferred, since on a settled
-		// pair of trees these are nearly all the rows. Both sides agree, so
-		// either will do.
-		agreed := act.LeftNow
-		if agreed == nil {
-			agreed = act.RightNow
-		}
-		t.sized("record", spelled(act), "", "", sizeOf(agreed))
+		t.passed(spelled(act))
 		if err := rec.settle(ctx, act.Path, left, right, false); err != nil {
 			var dis *DisagreementError
 			if errors.As(err, &dis) {

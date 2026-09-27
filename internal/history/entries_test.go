@@ -284,3 +284,36 @@ func TestAFailedRunIsNeverFilteredAway(t *testing.T) {
 		t.Fatalf("expected the one failure, got %+v", failed)
 	}
 }
+
+func TestAFileBothSidesAlreadyHadIsNotListed(t *testing.T) {
+	db := openTemp(t)
+	ctx := context.Background()
+	now := time.Date(2027, 3, 1, 12, 0, 0, 0, time.UTC)
+
+	entries := []history.Entry{
+		{Kind: "record", Path: "same.jpg", Size: 50},
+		{Kind: "copy", Side: "right", Path: "new.jpg", Size: 10},
+	}
+	if err := db.Record(ctx, history.Run{Job: "x", Started: now, Finished: now, Copied: 1}, entries); err != nil {
+		t.Fatalf("record: %v", err)
+	}
+
+	runs, err := db.Recent(ctx, "x", history.ShowAll, 10)
+	if err != nil || len(runs) != 1 {
+		t.Fatalf("recent: %v, %d runs", err, len(runs))
+	}
+	got, err := db.Entries(ctx, runs[0].ID)
+	if err != nil {
+		t.Fatalf("entries: %v", err)
+	}
+	if len(got) != 1 || got[0].Path != "new.jpg" {
+		t.Errorf("the run lists %+v, want only the copy", got)
+	}
+	log, err := db.Log(ctx, history.Filter{Job: "x"})
+	if err != nil {
+		t.Fatalf("log: %v", err)
+	}
+	if len(log) != 1 || log[0].Path != "new.jpg" {
+		t.Errorf("the file log lists %+v, want only the copy", log)
+	}
+}
