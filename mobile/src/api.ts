@@ -156,8 +156,32 @@ export interface Bin {
   store: string;
   dir: string;
   total: number;
+  /** What the side holds in bytes, counting entries beyond those listed. */
+  bytes: number;
   entries: TrashItem[];
 }
+
+/** One side in the listing across jobs, which says why a side could not be read. */
+export interface TrashSide extends Bin {
+  error?: string;
+}
+
+/**
+ * A conflict a run kept both versions of that nobody has decided. Deciding
+ * names it by `copy`, the set-aside version; `side` is where that version came
+ * from (internal/web/conflicts.go).
+ */
+export interface OpenConflict {
+  job: string;
+  copy: string;
+  plain: string;
+  side: "left" | "right";
+  at: string;
+  left: SideVersion;
+  right: SideVersion;
+}
+
+export type Keep = "left" | "right" | "both";
 
 export interface Remote {
   name: string;
@@ -340,6 +364,26 @@ export const api = {
       method: "POST",
       body: JSON.stringify({ path, runId }),
     }),
+  /** The trash of every job's two sides. */
+  trashAll: () => call<{ sides: TrashSide[] }>("/api/trash"),
+  /** Removes one trashed file for good. */
+  deleteTrash: (job: string, side: string, path: string, runId: string) =>
+    call<void>(`/api/jobs/${name(job)}/trash/${side}/delete`, {
+      method: "POST",
+      body: JSON.stringify({ path, runId }),
+    }),
+  /** Removes everything in one side's trash. */
+  emptyTrash: (job: string, side: string) =>
+    call<{ entries: number }>(`/api/jobs/${name(job)}/trash/${side}/empty`, { method: "POST", body: "{}" }),
+
+  conflicts: () => call<{ conflicts: OpenConflict[]; unread: { job: string; error: string }[] }>("/api/conflicts"),
+  /** Carries out choices on one job's conflicts; a 409 means the job is running. */
+  decide: (job: string, decisions: { copy: string; keep: Keep }[]) =>
+    call<{ run: Run }>(`/api/jobs/${name(job)}/conflicts`, {
+      method: "POST",
+      body: JSON.stringify({ decisions }),
+    }),
+
   versions: (job: string, side: string) => call<Bin>(`/api/jobs/${name(job)}/versions/${side}`),
   restoreVersion: (job: string, side: string, path: string, runId: string) =>
     call<void>(`/api/jobs/${name(job)}/versions/${side}/restore`, {

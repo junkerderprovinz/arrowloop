@@ -58,7 +58,7 @@ export function Trash() {
     <Page>
       <Card>
         <View style={styles.head}>
-          <Title>{`${t("phone.bin")} ${t(side === "left" ? "side.left" : "side.right")}`}</Title>
+          <Title>{`${t("nav.trash")} ${t(side === "left" ? "side.left" : "side.right")}`}</Title>
           <Badge label={String(held)} />
         </View>
         <Caption>{t("trash.holding", { count: held, size })}</Caption>

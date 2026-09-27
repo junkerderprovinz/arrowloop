@@ -18,12 +18,16 @@ import { animateNext, useMotion } from "../motion";
 import { bytes, isAccount, Room, unreachable, useRoom, type Room as Space } from "../space";
 import { space } from "../theme";
 import { useEngineStream } from "../useEngine";
-import { Badge, Body, Caption, CardHead, Empty, Fab, Floating, Meter, Mono, Page, Pair, Section, Title, useHue, useTheme } from "../ui";
+import { Badge, Body, Caption, CardHead, Empty, Fab, Floating, Meter, Mono, Page, Pair, Row, Section, Title, useHue, useTheme } from "../ui";
 import { clock } from "../clock";
 import { stageKey } from "../../../web/src/lib/readingStage";
+import { trashTotals } from "../../../web/src/lib/trashView";
+import { useNavigation } from "@react-navigation/native";
+import type { Nav, OverviewStack } from "../nav";
 
 // The overview: what is running now, drawn from the event stream rather than
-// polling, then the last run and how full each target is.
+// polling, then what waits for a decision, the last run and how full each
+// target is.
 
 /** How often stream updates reach the screen, in milliseconds. */
 const DRAW_MS = 120;
@@ -198,15 +202,19 @@ export function Overview() {
         )}
       </Section>
 
-      <Section title={t("overview.status")} hue={1}>
+      <Section title={t("overview.waiting")} hue={1}>
+        <Waiting />
+      </Section>
+
+      <Section title={t("overview.status")} hue={2}>
         <SyncStatus jobs={jobs} run={last.run} tally={last.tally} />
       </Section>
 
-      <Section title={t("overview.changes")} hue={2}>
+      <Section title={t("overview.changes")} hue={3}>
         <LastChanges tally={last.run === "none" ? null : last.tally} />
       </Section>
 
-      <Section title={t("overview.accounts")} hue={3}>
+      <Section title={t("overview.accounts")} hue={4}>
         <Accounts />
       </Section>
 
@@ -411,6 +419,50 @@ function SyncStatus({ jobs, run, tally }: { jobs: Job[]; run: Run | null | "none
       />
       <Pair label={t("overview.nextSync")} value={due ? clock(due, lang) : t("overview.byHand")} />
       {failed(run) ? <Body>{run.Err}</Body> : null}
+    </>
+  );
+}
+
+/**
+ * The open conflicts and the trash across every job, each opening its own list.
+ * Asked for again whenever a run finishes, since a run is what adds to either.
+ */
+function Waiting() {
+  const { t } = useT();
+  const nav = useNavigation<Nav<OverviewStack>>();
+  const [conflicts, setConflicts] = useState<number | null>(null);
+  const [trash, setTrash] = useState<{ entries: number; bytes: number } | null>(null);
+
+  const load = useCallback(() => {
+    api.conflicts().then(
+      (got) => setConflicts(got.conflicts.length),
+      () => {},
+    );
+    api.trashAll().then(
+      (got) => setTrash(trashTotals(got.sides.filter((s) => !s.error))),
+      () => {},
+    );
+  }, []);
+
+  useEffect(load, [load]);
+  useEngineStream(true, (event) => {
+    if (event.phase === "finished") load();
+  });
+
+  return (
+    <>
+      <Row
+        label={t("nav.conflicts")}
+        onPress={() => nav.navigate("Conflicts")}
+        control={<Badge label={conflicts === null ? "…" : String(conflicts)} tone={conflicts ? "warn" : "neutral"} />}
+      />
+      <Row
+        label={t("nav.trash")}
+        onPress={() => nav.navigate("TrashAll")}
+        control={
+          <Caption>{trash === null ? "…" : t("trash.holding", { count: trash.entries, size: bytes(trash.bytes) })}</Caption>
+        }
+      />
     </>
   );
 }

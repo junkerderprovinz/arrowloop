@@ -327,11 +327,11 @@ export function JobEdit() {
         {editing && !job.noTrash ? (
           <View style={styles.actions}>
             <Button
-              label={`${t("phone.bin")} ${t("side.left")}`}
+              label={`${t("nav.trash")} ${t("side.left")}`}
               onPress={() => nav.navigate("Trash", { name: editing, side: "left" })}
             />
             <Button
-              label={`${t("phone.bin")} ${t("side.right")}`}
+              label={`${t("nav.trash")} ${t("side.right")}`}
               onPress={() => nav.navigate("Trash", { name: editing, side: "right" })}
             />
           </View>

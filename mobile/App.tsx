@@ -30,6 +30,8 @@ import { TargetEdit } from "./src/screens/TargetEdit";
 import { TargetPick } from "./src/screens/TargetPick";
 import { Targets } from "./src/screens/Targets";
 import { Trash } from "./src/screens/Trash";
+import { TrashAll } from "./src/screens/TrashAll";
+import { Conflicts } from "./src/screens/Conflicts";
 import { askNotifications, notificationsGranted } from "./src/screens/Settings";
 import { useDiscoWalk } from "./src/disco";
 import { loadAppearance, useAppearance } from "./src/settings";
@@ -180,6 +182,8 @@ function Shell() {
                   component={Overview}
                   options={{ title: "ArrowLoop" }}
                 />
+                <OverviewNav.Screen name="Conflicts" component={Conflicts} options={{ title: t("nav.conflicts") }} />
+                <OverviewNav.Screen name="TrashAll" component={TrashAll} options={{ title: t("nav.trash") }} />
               </OverviewNav.Navigator>
             )}
           </Tabs.Screen>
@@ -201,7 +205,7 @@ function Shell() {
                   })}
                 />
                 <JobsNav.Screen name="Plan" component={Plan} options={{ title: t("preview.title") }} />
-                <JobsNav.Screen name="Trash" component={Trash} options={{ title: t("phone.bin") }} />
+                <JobsNav.Screen name="Trash" component={Trash} options={{ title: t("nav.trash") }} />
               </JobsNav.Navigator>
             )}
           </Tabs.Screen>

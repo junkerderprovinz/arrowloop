@@ -3,9 +3,14 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 // One stack per tab, so back from a detail returns to that tab's list and not
 // to whatever was open in another tab.
 
-/** A stack of one, so the overview tab is built like the others and has a header. */
+/**
+ * The overview, and the two lists it opens that wait on somebody. The bar has
+ * no room for a sixth and seventh tab, so they open from here.
+ */
 export type OverviewStack = {
   OverviewHome: undefined;
+  Conflicts: undefined;
+  TrashAll: undefined;
 };
 
 export type JobsStack = {
