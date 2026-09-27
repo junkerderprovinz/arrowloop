@@ -10,8 +10,18 @@ The full notes for each release are in
 
 ## Unreleased
 
+## ✨ Added
+
+- **A run shows how far it has got before the first file moves.** Reading a large share can take minutes, and until now the job card showed a bar that ran back and forth next to "Starting", which looked like a hang. The card names each stage: reading the left side, checking it for links, the same for the right side, then comparing. Next to the bar it counts the files. While a side is read, the count is measured against the last run's record and reads "of about", since this run may find more. Speed and time left start afresh for each stage.
+- **A job can follow the global sync settings, or leave them.** The job editor has a switch for it. While it is on, direction and schedule show the global values, greyed out. Turning it off writes the values the job runs with at that moment, so nothing changes until you edit one.
+- **The folder picker walks your targets.** "Browse target" opens a configured cloud or server as a folder tree instead of taking its top level at once, and New folder creates the folder on the target.
+- **The SMB form offers the shares Windows is connected to.** One click fills in server, user and domain. The folder picker shows a mapped drive's share next to its letter, such as `W: \\server\backup`.
+
 ## 🎨 Design
 
+- **The job card holds the full path and three buttons.** Pause, Run now and Options sit in one row with both sides' paths, which wrap instead of being cut short. Activity, Edit, Duplicate, Remove and Preview are in the Options menu. In a narrow window the buttons move under the path, and below 640 pixels the sidebar becomes a bar across the top.
+- **The job editor lines up.** Settle time, fallback schedule and quiet hours stand under each other with fields of one width. The name stands over the left side and the state file over the right, and the direction button is larger and says the direction in words.
+- **"What happens to the rest" is called Mode.** It is a selector in the job editor, as in the global sync settings, and its info bubble explains all three modes side by side, since two of them delete files.
 - **Every page starts on the sidebar's top line.** The Settings tabs, the Jobs page's buttons and the card that opens Targets and History stood lower than the sidebar beside them; a card's title badge now meets that line.
 - **The window options say what they do.** "Keep running in the notification area when closed" replaces "The close button hides the window", with a note on how to quit, and minimising reads "Minimised to the notification area".
 - **The logo's easter egg is drawn anew.** Five quick presses on the logo, or one long press, send the arrows along the gap in the rings into the middle, where they curl into a ring. The ring spins the way the heads point, faster and faster, tightens, and throws the arrows out through the gap they came in by. A shock wave runs over the rings, the whole rail shudders from top to bottom, and two new arrows strike home and quiver. Every frame is computed, so the shafts bend smoothly, and the desktop app on macOS and Linux shows the bend too. The motion setting sets its pace and how hard the rail shakes; with motion off, or with reduced motion outside the storm, it does not play.
@@ -31,7 +41,10 @@ The full notes for each release are in
 - **A job between two local folders or a mapped network drive no longer reads every file on every run.** The comparison asked each file for its checksum before looking at its size, and on a local disk that means reading the file to its end. The first run of a job over a full music library read both sides whole, the settled record read them again, and a run every few minutes started over before it finished, so it never did. A checksum that costs a full read is now fetched only where size and time cannot decide: a file whose time moved while its size did not, two edits of one file since the last run, or a job that insists on checksums. A copied file is still checked after the transfer.
 - **Minimising to the notification area works, and the icon answers reliably.** The icon was started so that it blocked the program's start: the watch that sends a minimised window to the notification area never began, and the icon's own window ran on no fixed thread, so clicks and redraws went missing now and then.
 - **A new install starts without an example job.** The desktop app and the server wrote a disabled job called "example" on their first start, which then had to be deleted before the list was your own.
-- **Stopping a run works while it compares files.** A checksum being read ignored the stop, so a stopped run went on reading the whole tree.
+- **Stopping a run works while it compares files.** A checksum being read ignored the stop, so a stopped run went on reading the whole tree. The walk that looks for links on a local side ignored it too.
+- **The "Add server or share" dialog speaks your language.** Its tile hints and names such as "SMB / Windows share" were English in every language.
+- **A two-way job starts when the global mode is mirror or move.** It inherited that mode, which needs a source side, and the engine refused to run it.
+- **The folder picker covers the whole window** instead of only the card it was opened from.
 - **The phone draws the storage providers' marks the way the web interface does.** Proton Drive's mark was missing, and on the light theme several marks were darkened that the web interface shows in their own colours.
 
 ## 1.1.0 - 2026-09-25
