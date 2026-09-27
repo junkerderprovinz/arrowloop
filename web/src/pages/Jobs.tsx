@@ -26,7 +26,8 @@ import { entryLabel } from '../lib/entryLabel'
 import { usePlaces } from '../lib/places'
 import { api } from '../lib/api'
 import type { Direction, HistoryShow, Job, Run, RunEvent, Touch } from '../lib/api'
-import { translateSide, useT, type TranslationKey } from '../lib/i18n'
+import { translateSide, useT } from '../lib/i18n'
+import { stageKey } from '../lib/readingStage'
 import { describeCadence, readCadence } from '../lib/cadence'
 import { since } from '../lib/since'
 
@@ -393,7 +394,7 @@ function Progress({ event }: { event?: RunEvent }) {
 
   return (
     <>
-      {event?.stage && <p className="text-xs text-carbon-textMuted">{t(stageKey(event))}</p>}
+      {event?.stage && <p className="text-xs text-carbon-textMuted">{t(stageKey(event.stage, event.side))}</p>}
       <div className="mt-1.5 flex items-center gap-2">
         <div
           className="h-1 min-w-0 flex-1 overflow-hidden bg-carbon-surface3"
@@ -412,13 +413,6 @@ function Progress({ event }: { event?: RunEvent }) {
       </div>
     </>
   )
-}
-
-function stageKey(event: RunEvent): TranslationKey {
-  if (event.stage === 'compare') return 'progress.compare'
-  const right = event.side === 'right'
-  if (event.stage === 'check') return right ? 'progress.checkRight' : 'progress.checkLeft'
-  return right ? 'progress.listRight' : 'progress.listLeft'
 }
 
 /** A time as "2 days ago" in the reader's language, with the exact time on hover. */

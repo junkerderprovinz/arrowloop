@@ -217,8 +217,8 @@ export interface TrashItem {
 
 /**
  * One event from the engine's stream, the same shape web/src/lib/api.ts
- * reads. The plan is built before the first byte moves, so `total` is known
- * from the first progress event.
+ * reads. While the job is still being read, progress carries a `stage`, and
+ * `total` is a guess or missing; once the plan exists it is exact.
  */
 export interface RunEvent {
   job: string;
@@ -228,8 +228,11 @@ export interface RunEvent {
   total?: number;
   kind?: string;
   path?: string;
-  /** The side the work lands on. */
+  /** The side the work lands on, or the side being read. */
   side?: string;
+  stage?: "list" | "check" | "compare";
+  /** The total is the last run's count, so this run may pass it. */
+  guess?: boolean;
   /**
    * The files in transfer on a "moving" event; the engine omits an empty list
    * (internal/daemon/runner.go).

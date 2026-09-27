@@ -19,6 +19,7 @@ import { space } from "../theme";
 import { useEngineStream } from "../useEngine";
 import { Badge, Body, Caption, CardHead, Empty, Fab, Floating, Meter, Mono, Page, Pair, Section, Title, useHue, useTheme } from "../ui";
 import { clock } from "../clock";
+import { stageKey } from "../../../web/src/lib/readingStage";
 
 // The overview: what is running now, drawn from the event stream rather than
 // polling, then the last run and how full each target is.
@@ -128,7 +129,13 @@ export function Overview() {
       return;
     }
     if (event.phase === "progress") {
-      heard.current.live[event.job] = { done: event.done ?? 0, total: event.total ?? 0 };
+      heard.current.live[event.job] = {
+        done: event.done ?? 0,
+        total: event.total ?? 0,
+        stage: event.stage,
+        side: event.side,
+        guess: event.guess,
+      };
       drawSoon();
       return;
     }
@@ -261,6 +268,9 @@ function span(secs: number): string {
 interface Progress {
   done: number;
   total: number;
+  stage?: RunEvent["stage"];
+  side?: string;
+  guess?: boolean;
 }
 
 /**
@@ -281,7 +291,7 @@ function Running({
   rate: number;
   index: number;
 }) {
-  const { t } = useT();
+  const { t, lang } = useT();
   const hue = useHue(index);
   return (
     <View style={styles.block}>
@@ -291,8 +301,9 @@ function Running({
       </View>
       {at ? (
         <>
-          <Meter done={at.done} total={at.total} hue={hue} />
-          <Caption>{t("progress.of", { done: at.done, total: at.total })}</Caption>
+          {at.stage ? <Caption>{t(stageKey(at.stage, at.side))}</Caption> : null}
+          <Meter done={at.guess ? Math.min(at.done, at.total * 0.99) : at.done} total={at.total} hue={hue} />
+          <Caption>{counted(at, t, lang)}</Caption>
         </>
       ) : (
         // No progress yet while the engine builds its plan.
@@ -310,6 +321,17 @@ function Running({
       ) : null}
     </View>
   );
+}
+
+/**
+ * How far a run has got, in words. A listing measured against the last run
+ * reads "of about", and one with nothing to measure against only counts.
+ */
+function counted(at: Progress, t: T, lang: string): string {
+  const format = new Intl.NumberFormat(lang);
+  const counts = { done: format.format(at.done), total: format.format(at.total) };
+  if (at.total > 0) return t(at.guess ? "progress.about" : "progress.of", counts);
+  return at.stage ? t("progress.found", counts) : t("progress.starting");
 }
 
 /**
