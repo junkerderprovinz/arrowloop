@@ -30,6 +30,7 @@ The full notes for each release are in
 - **Background activity on the phone is granted with one tap.** The switch opens Android's own prompt to let ArrowLoop run in the background, where it used to open the list of optimised apps. Some manufacturers have a background switch of their own that does not exempt the app from battery optimisation, which left the switch off although that one was on.
 - **A WebDAV address with nothing at it fails the connection check.** A login that worked against the wrong path, such as OpenCloud's /dav/ where its files are under /remote.php/webdav/, passed the check in the form and then showed as unreachable on the target's card. The check says the login works but nothing is at that address.
 - **The phone's folder picker opens a target.** Tapping a cloud or server in the list chose its top level at once, so no folder on it could be picked. It opens like any folder, you can go into its folders, make one there and choose it, and a job whose side already points into a target opens the picker in that folder.
+- **The phone's About card names the release it runs.** It read ArrowLoop dev, because the engine inside the app was built without its version; it carries the same version as the desktop and the container.
 
 ## 1.3.0 - 2026-09-27
 
