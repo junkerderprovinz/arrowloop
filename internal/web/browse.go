@@ -6,10 +6,13 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"path"
 	"path/filepath"
 	"runtime"
 	"sort"
 	"strings"
+
+	"github.com/junkerderprovinz/arrowloop/internal/remotes"
 )
 
 // The folder picker lets a job's sides be picked rather than typed, since a
@@ -32,10 +35,24 @@ type browseAnswer struct {
 	Entries []browseEntry `json:"entries"`
 }
 
-// browse lists the folders inside one folder. Files are left out, since a
-// job's side is always a folder.
+// browse lists the folders inside one folder, on this machine or on a
+// configured target. Files are left out, since a job's side is always a folder.
 func (s *Server) browse(w http.ResponseWriter, r *http.Request) {
 	at := r.URL.Query().Get("path")
+
+	if name, dir, ok := remotes.Split(at); ok {
+		folders, err := remotes.Folders(r.Context(), name, dir)
+		if err != nil {
+			http.Error(w, "cannot read "+at+": "+err.Error(), http.StatusBadRequest)
+			return
+		}
+		out := make([]browseEntry, 0, len(folders))
+		for _, f := range folders {
+			out = append(out, browseEntry{Name: f, Path: remotes.Join(name, path.Join(dir, f))})
+		}
+		writeJSON(w, http.StatusOK, browseAnswer{Path: remotes.Join(name, dir), Parent: remotes.Parent(name, dir), Entries: out})
+		return
+	}
 
 	if at == "" {
 		roots, err := browseRoots()
@@ -92,9 +109,10 @@ var androidRoots = []struct{ name, path string }{
 }
 
 // browseRoots is the top of the tree: the phone folders that exist followed by
-// "/", or on Windows one entry per drive letter that can be opened. The letters
-// are probed, because a mapped drive whose server is asleep exists but cannot
-// be opened.
+// "/", or on Windows one entry per drive letter that can be opened, followed
+// by the network shares connected without a letter. The letters are probed,
+// because a mapped drive whose server is asleep exists but cannot be opened.
+// A mapped letter carries its share's address, which is how Explorer names it.
 func browseRoots() ([]browseEntry, error) {
 	if runtime.GOOS != "windows" {
 		out := []browseEntry{}
@@ -105,12 +123,30 @@ func browseRoots() ([]browseEntry, error) {
 		}
 		return append(out, browseEntry{Name: "/", Path: "/"}), nil
 	}
+	// Without the shares the drives are still worth offering.
+	shares, _ := listShares()
+	mapped := map[string]string{}
+	for _, sh := range shares {
+		if sh.Letter != "" {
+			mapped[strings.ToUpper(sh.Letter)] = sh.Path
+		}
+	}
 	out := []browseEntry{}
 	for c := 'A'; c <= 'Z'; c++ {
-		path := string(c) + `:\`
-		if f, err := os.Open(path); err == nil {
+		letter := string(c) + ":"
+		root := letter + `\`
+		if f, err := os.Open(root); err == nil {
 			f.Close()
-			out = append(out, browseEntry{Name: string(c) + ":", Path: path})
+			name := letter
+			if unc := mapped[letter]; unc != "" {
+				name = letter + " " + unc
+			}
+			out = append(out, browseEntry{Name: name, Path: root})
+		}
+	}
+	for _, sh := range shares {
+		if sh.Letter == "" {
+			out = append(out, browseEntry{Name: sh.Path, Path: sh.Path + `\`})
 		}
 	}
 	return out, nil
@@ -140,11 +176,20 @@ func (s *Server) makeDir(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, fmt.Errorf("%q is a path, not a folder name", name))
 		return
 	}
-	parent := filepath.Clean(body.Parent)
 	if body.Parent == "" {
 		writeError(w, http.StatusBadRequest, errors.New("there is no folder open to create one in"))
 		return
 	}
+	if target, dir, ok := remotes.Split(body.Parent); ok {
+		made, err := remotes.MakeFolder(r.Context(), target, dir, name)
+		if err != nil {
+			writeError(w, http.StatusBadRequest, fmt.Errorf("create %s: %w", remotes.Join(target, path.Join(dir, name)), err))
+			return
+		}
+		writeJSON(w, http.StatusOK, map[string]any{"path": made})
+		return
+	}
+	parent := filepath.Clean(body.Parent)
 
 	made := filepath.Join(parent, name)
 	// 0777 is only a ceiling that the umask cuts down; inheritFrom sets the

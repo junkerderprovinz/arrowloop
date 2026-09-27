@@ -103,6 +103,7 @@ func (s *Server) Handler() http.Handler {
 
 	mux.HandleFunc("GET /api/browse", s.browse)
 	mux.HandleFunc("POST /api/browse/mkdir", s.makeDir)
+	mux.HandleFunc("GET /api/shares", s.listSharesHandler)
 	mux.HandleFunc("GET /api/capabilities", s.capabilities)
 
 	// The routes an unauthenticated caller may reach are listed in
