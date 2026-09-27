@@ -66,8 +66,10 @@ jobs:
 
       # Must match the version desktop/go.mod requires; Renovate cannot see a
       # version inside a shell string, so the two move together by hand.
+      # The CLI links the Linux webview too, and without the tag it wants GTK 4,
+      # which the runner does not have. Elsewhere the tag changes nothing.
       - name: Install the Wails CLI
-        run: go install github.com/wailsapp/wails/v3/cmd/wails3@v3.0.0-beta.26
+        run: go install -tags gtk3 github.com/wailsapp/wails/v3/cmd/wails3@v3.0.0-beta.26
 
       - name: Install the interface dependencies
         run: npm --prefix web ci --no-audit --no-fund
