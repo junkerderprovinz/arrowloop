@@ -3,7 +3,7 @@ import { BRAND_TILES } from './brandGlyphs'
 import { brandMark } from './brandMarks'
 import { ReadmeButton } from '../lib/glimstone/ReadmeButton'
 import { useT } from '../lib/i18n'
-import { providerHint, providerName } from '../lib/optionHint'
+import { nameAndKind, providerHint, providerName } from '../lib/optionHint'
 import type { Backend, Provider } from '../lib/api'
 
 /**
@@ -51,7 +51,7 @@ export function ProviderPicker({
             >
               <ReadmeButton
                 brand="house"
-                parts={[{ name: providerName(p, t), onClick: () => onPick(p) }]}
+                parts={[{ ...nameAndKind(providerName(p, t)), onClick: () => onPick(p) }]}
                 mark={brandMark(p.mark)}
                 markClass="text-carbon-textSub"
                 hint={bubble}

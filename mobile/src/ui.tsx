@@ -691,6 +691,7 @@ export const README_W = 160;
  */
 export function ReadmeButton({
   label,
+  sub,
   mark,
   art,
   tile,
@@ -699,6 +700,8 @@ export function ReadmeButton({
   onPress,
 }: {
   label: string;
+  /** A second, smaller line under the name. */
+  sub?: string;
   /** The mark in its resting colours, or in `ink` while lit. */
   mark: (lit: boolean, ink: string) => ReactNode;
   /** The mark is the vendor's own button artwork, words included. */
@@ -743,13 +746,16 @@ export function ReadmeButton({
       ) : (
         <>
           <View style={styles.readmeMark}>{mark(lit, ink)}</View>
-          <Text
-            style={[styles.readmeName, hint ? styles.readmeNameHint : null, { color: ink }]}
-            numberOfLines={1}
-            adjustsFontSizeToFit
-          >
-            {label}
-          </Text>
+          <View style={[styles.readmeName, hint ? styles.readmeNameHint : null]}>
+            <Text style={[styles.readmeNameText, { color: ink }]} numberOfLines={1} adjustsFontSizeToFit>
+              {label}
+            </Text>
+            {sub ? (
+              <Text style={[styles.caption, { color: ink }]} numberOfLines={1} adjustsFontSizeToFit>
+                {sub}
+              </Text>
+            ) : null}
+          </View>
         </>
       )}
     </AnimatedPressable>
@@ -1123,7 +1129,8 @@ const styles = StyleSheet.create({
   // The README's proportions: the mark 24 in from the start, the name from 63.
   readme: { height: 46.6, overflow: "hidden", justifyContent: "center" },
   readmeMark: { position: "absolute", start: 24, top: 10.8, width: 32, height: 25 },
-  readmeName: { marginStart: 63, marginEnd: 10, fontSize: text.body, fontWeight: "700" },
+  readmeName: { flex: 1, marginStart: 63, marginEnd: 10 },
+  readmeNameText: { fontSize: text.body, fontWeight: "700" },
   readmeNameHint: { marginEnd: 28 },
   readmeHint: { position: "absolute", top: 0, bottom: 0, end: 10, justifyContent: "center" },
 

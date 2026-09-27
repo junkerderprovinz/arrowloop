@@ -105,6 +105,15 @@ export function providerName(p: { id: string; name: string }, t: Translate): str
   return key ? t(key) : p.name
 }
 
+/**
+ * Splits a name such as "SMB / Windows share" into the name and what it is,
+ * for a button's two lines. On one line the pair shrinks until neither reads.
+ */
+export function nameAndKind(label: string): { name: string; sub?: string } {
+  const at = label.indexOf(' / ')
+  return at < 0 ? { name: label } : { name: label.slice(0, at), sub: label.slice(at + 3) }
+}
+
 /** Everything the bubble beside one field can say, joined. */
 export function optionHint(
   o: HintOption,

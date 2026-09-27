@@ -4,7 +4,7 @@ import { StyleSheet, View } from "react-native";
 import { api, type Provider } from "../api";
 import { useT } from "../i18n";
 import type { Nav, TargetsStack } from "../nav";
-import { providerHint, providerName } from "../../../web/src/lib/optionHint";
+import { nameAndKind, providerHint, providerName } from "../../../web/src/lib/optionHint";
 import { space } from "../theme";
 import { brandTile, ProviderMark } from "../glyphs";
 import { Caption, Empty, Page, README_W, ReadmeButton, Title, useTheme } from "../ui";
@@ -43,10 +43,12 @@ export function TargetPick() {
   const button = (provider: Provider) => {
     // A protocol wears one of the app's own glyphs and lights in the accent.
     const tile = brandTile(provider.mark) ?? { color: accent, ink: accentContrast };
+    const { name, sub } = nameAndKind(providerName(provider, t));
     return (
       <ReadmeButton
         key={provider.id}
-        label={providerName(provider, t)}
+        label={name}
+        sub={sub}
         tile={tile}
         width={width}
         hint={provider.group === "protocol" ? providerHint(provider.id, t) : undefined}
