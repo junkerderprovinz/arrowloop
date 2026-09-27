@@ -1129,7 +1129,7 @@ const styles = StyleSheet.create({
   // The README's proportions: the mark 24 in from the start, the name from 63.
   readme: { height: 46.6, overflow: "hidden", justifyContent: "center" },
   readmeMark: { position: "absolute", start: 24, top: 10.8, width: 32, height: 25 },
-  readmeName: { flex: 1, marginStart: 63, marginEnd: 10 },
+  readmeName: { flex: 1, justifyContent: "center", marginStart: 63, marginEnd: 10 },
   readmeNameText: { fontSize: text.body, fontWeight: "700" },
   readmeNameHint: { marginEnd: 28 },
   readmeHint: { position: "absolute", top: 0, bottom: 0, end: 10, justifyContent: "center" },
