@@ -10,6 +10,11 @@ The full notes for each release are in
 
 ## Unreleased
 
+## ⚡ Improved
+
+- **The Windows installer puts ArrowLoop under Program Files for everyone on the computer** and asks for an administrator once, while it installs. It removes a 1.2.0 installation under AppData\Local\Programs with its shortcuts and leaves your settings in `%APPDATA%\ArrowLoop` alone.
+- **The installed app updates in the background, open or not.** A scheduled task called ArrowLoop Update runs once a day and after each start of the computer, as the system account, since nobody else may write to Program Files. Update automatically under Settings, General still switches it off, its log is `%ProgramData%\ArrowLoop\update.log`, and uninstalling removes the task.
+
 ## 1.2.0 - 2026-09-27
 
 ## ✨ Added

@@ -86,16 +86,24 @@ reason that reads like a bug.
 
 Windows, Linux and macOS builds are on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases). Windows
-gets an **installer** that gives it an entry under Apps. It installs for you
-alone, under `AppData\Local\Programs`, so neither installing nor a later update
-asks for an administrator. A page asks whether you want a Start menu entry and a
-desktop shortcut, both ticked at first; the next install, silent or not, starts
-from your answer and removes a shortcut you left out. An installation for all
-users from 1.1.0 or earlier is removed on the way, which asks for an
-administrator once. Run as `installer.exe /S /relaunch`, it installs silently and
-starts ArrowLoop again when it is done. A computer with an ARM processor, such as a Snapdragon laptop, takes the one
-named `windows-arm64`; the `amd64` installer would run there too, but through
-emulation and slower.
+gets an **installer** that gives it an entry under Apps. It installs for all
+users under `C:\Program Files\ArrowLoop` and asks for an administrator once,
+while it installs; later updates ask nobody (see [Updates](#updates)). A page
+asks whether you want a Start menu entry and a desktop shortcut, both ticked at
+first, and both go to every user on the computer. The next install, silent or
+not, starts from your answer and removes a shortcut you left out.
+
+The installer also cleans up after older versions. The copy 1.2.0 installed for
+you alone under `AppData\Local\Programs` goes, with its shortcuts and its entry
+under Apps, and so does an installation for all users from 1.1.0 or earlier. It
+never touches your settings and jobs in `%APPDATA%\ArrowLoop`. A 1.2.0
+installation that you leave alone keeps updating itself where it is; running
+the new installer once moves it.
+
+Run as `installer.exe /S /relaunch`, it installs silently and starts ArrowLoop
+again, as the person signed in, when it is done. A computer with an ARM
+processor, such as a Snapdragon laptop, takes the one named `windows-arm64`; the
+`amd64` installer would run there too, but through emulation and slower.
 
 It is not a client talking to a server. The scheduler, the run log and the API
 all live in the same process, and the window is a webview pointed at them.
@@ -154,33 +162,72 @@ sitting in the notification area.
 
 ### Updates
 
-The desktop app updates itself. A minute after it starts and once a day after
-that, it asks GitHub for the newest release, downloads the file for your system
-in the background and checks it against the release's `checksums.txt`. The new
-version starts the next time you start ArrowLoop, so a sync that is running is
-never cut off, and a note in the corner of the window says when it is ready.
-Pre-releases are never installed. **Update automatically** under Settings,
-General, Updates turns this off; it is on from the start. The container and the
-phone do not show the switch: a container is updated the way it was deployed,
-and the phone through its store or a new APK.
+The desktop app updates itself from GitHub. It asks for the newest release,
+downloads the file for your system in the background and checks it against the
+release's `checksums.txt`. The new version starts the next time you start
+ArrowLoop, so a sync that is running is never cut off, and a note in the corner
+of the window says when it is ready. Pre-releases are never installed.
+**Update automatically** under Settings, General, Updates turns this off; it is
+on from the start. The container and the phone do not show the switch: a
+container is updated the way it was deployed, and the phone through its store
+or a new APK.
 
-An update replaces the program where it is, so it has to be able to write to
-that folder. The installer puts ArrowLoop under `AppData\Local\Programs`, where
-it can, and the entry under Apps follows the new version. A portable copy, such
-as the `arrowloop-windows-amd64-portable.exe` from the releases page, updates in
-its own folder and stays portable. An installation for all users under Program
-Files, a read-only folder, or a macOS app your account cannot change stays as it
-is. On Windows the replaced program waits beside the new one as
-`ArrowLoop.exe.old` until the next start removes it. What the updater did, or
-why it did not, is in `update.log` beside the configuration file.
+**The installed copy** under Program Files cannot replace itself, since no user
+may write there. A scheduled task named **ArrowLoop Update** does it instead,
+once a day and five minutes after the computer starts, whether ArrowLoop is
+open or not. It replaces `ArrowLoop.exe`, sets the version shown under Apps and
+writes what it did, or why it did not, to `%ProgramData%\ArrowLoop\update.log`.
+There is one installation, so the switch applies to everyone on the computer:
+it lives in `%ProgramData%\ArrowLoop\settings.json`, which every user may
+change, and the task skips its run while it is off. An open window notices
+within a few minutes when the task has put a new version in place and shows
+the note. The replaced program waits beside the new one as `ArrowLoop.exe.old`
+until a later run removes it.
+
+**A portable copy**, such as the `arrowloop-windows-amd64-portable.exe` from the
+releases page, updates itself while it runs: a minute after it starts and once
+a day after that, in its own folder, and it stays portable. The app on macOS
+and Linux does the same. A folder it cannot write to, or a macOS app your
+account cannot change, stays as it is. Its log is `update.log` beside the
+configuration file.
+
+#### Why the task runs as SYSTEM
+
+Program Files belongs to the administrators. A program that replaces itself
+there without asking anyone needs an account that may write there, and a
+scheduled task under the system account is how Windows provides one; Firefox's
+maintenance service and Chrome's updater task work the same way. The task
+writes to three places and nowhere else: the installation folder,
+`C:\Program Files\ArrowLoop`; the entry under Apps, in
+`HKLM\Software\Microsoft\Windows\CurrentVersion\Uninstall\ArrowLoop`; and
+`%ProgramData%\ArrowLoop`, for its log. It reads nothing from any user's
+profile. The folder under ProgramData belongs to the administrators, and only
+`settings.json` in it is open to other users. The installer has no page for
+choosing another folder. Together that leaves no file a user could swap for
+one the system account would run or write to. It downloads only from GitHub
+over HTTPS and installs a file only when it matches `checksums.txt`.
+
+#### Uninstalling
+
+Apps, ArrowLoop, Uninstall asks for an administrator and removes the program,
+its shortcuts and its entry, the scheduled task and `%ProgramData%\ArrowLoop`
+with the switch and the log. The webview cache of the person uninstalling goes
+as well. Every user's settings and jobs in `%APPDATA%\ArrowLoop` stay, so a
+later install picks them up.
+
+#### Trying it locally
 
 A build from source is not a release and never updates itself. Only a build of a
 version tag, stamped by `scripts/desktop.mjs` as the release workflow makes it,
 does. Built with `-tags updatetest`, the app reads `ARROWLOOP_UPDATE_API`, a
 stand-in for `https://api.github.com`, and `ARROWLOOP_UPDATE_DELAY`, the wait
 before the first check (such as `15s`), so the whole path can be tried locally.
-Release builds leave the tag out, so no environment variable can change where an
-update comes from.
+`node scripts/desktop.mjs --installer --updatetest` builds an installer for
+such a build. It installs as **ArrowLoop Test**, with a task and a folder under
+ProgramData of that name, beside a real installation. Its task starts without
+your environment and reads the stand-in's address from `updatetest-api` in
+`%ProgramData%\ArrowLoop Test`. Release builds leave the tag out, so nothing on
+the computer can change where an update comes from.
 
 !!! note "The builds are not signed"
     Windows shows its blue warning on first start (More info, then Run anyway),
