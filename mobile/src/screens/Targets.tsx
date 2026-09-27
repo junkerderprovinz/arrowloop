@@ -4,9 +4,9 @@ import { Alert, StyleSheet, View } from "react-native";
 import { api, type Remote, type Usage } from "../api";
 import { useT } from "../i18n";
 import type { Nav, TargetsStack } from "../nav";
-import { account, Room, unreachable, isAccount, useRoom, type Room as Space } from "../space";
+import { account, isAccount, ReachBadge, Room, useReach, useRoom, type Room as Space } from "../space";
 import { space } from "../theme";
-import { Badge, Body, Button, Caption, Card, CardHead, Empty, Fab, Floating, Page, useHue, useTheme } from "../ui";
+import { Body, Button, Caption, Card, CardHead, Empty, Fab, Floating, Page, useHue, useTheme } from "../ui";
 import { CardMenu } from "../CardMenu";
 
 /**
@@ -37,6 +37,7 @@ export function Targets() {
   // Each card fills in its size as its own answer lands, so the slowest
   // service does not hold up the list.
   const room = useRoom(remotes);
+  const reach = useReach(remotes);
 
   return (
     <Floating>
@@ -47,6 +48,7 @@ export function Targets() {
           key={remote.name}
           remote={remote}
           room={room[remote.name]}
+          reach={reach[remote.name]}
           index={index}
           onEdit={() => nav.navigate("TargetEdit", { name: remote.name })}
           onGone={load}
@@ -67,12 +69,14 @@ export function Targets() {
 function TargetCard({
   remote,
   room,
+  reach,
   index,
   onEdit,
   onGone,
 }: {
   remote: Remote;
   room: Space;
+  reach: boolean | undefined;
   index: number;
   onEdit: () => void;
   onGone: () => void;
@@ -106,9 +110,9 @@ function TargetCard({
   return (
     <Card hue={hue}>
       <CardHead mark={remote.mark} title={remote.name}>
-        {/* Unreachable belongs in the head, since it is about the target and
-            not its size. */}
-        {unreachable(room) ? <Badge label={t("targets.checkFailed")} tone="fail" /> : null}
+        {/* The connection belongs in the head, since it is about the target
+            and not its size. */}
+        <ReachBadge reach={reach} />
         <View style={styles.menuSlot}>
           <CardMenu
             items={[

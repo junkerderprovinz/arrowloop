@@ -15,7 +15,7 @@ import { isPerfectlyIdle } from "../eggs";
 import { Glyph } from "../glyphs";
 import { useT, type T } from "../i18n";
 import { animateNext, useMotion } from "../motion";
-import { bytes, isAccount, Room, unreachable, useRoom, type Room as Space } from "../space";
+import { bytes, isAccount, ReachBadge, Room, useReach, useRoom, type Room as Space } from "../space";
 import { space } from "../theme";
 import { useEngineStream } from "../useEngine";
 import { Badge, Body, Caption, CardHead, Empty, Fab, Floating, Meter, Mono, Page, Pair, Row, Section, Title, useHue, useTheme } from "../ui";
@@ -501,7 +501,7 @@ function summary(run: Run, tally: Tally | null, t: T): string {
   return parts.join(", ");
 }
 
-/** Every target and how full it is; an unreachable one says so. */
+/** Every target, whether it answers and how full it is. */
 function Accounts() {
   const { t } = useT();
   const [remotes, setRemotes] = useState<Remote[] | null>(null);
@@ -518,6 +518,7 @@ function Accounts() {
   }, []);
 
   const room = useRoom(remotes);
+  const reach = useReach(remotes);
 
   if (!remotes) return <Caption>{t("history.working")}</Caption>;
   if (remotes.length === 0) return <Body>{t("targets.storageEmpty")}</Body>;
@@ -525,24 +526,34 @@ function Accounts() {
   return (
     <>
       {remotes.map((remote, index) => (
-        <Account key={remote.name} remote={remote} room={room[remote.name]} index={index} />
+        <Account key={remote.name} remote={remote} room={room[remote.name]} reach={reach[remote.name]} index={index} />
       ))}
     </>
   );
 }
 
-function Account({ remote, room, index }: { remote: Remote; room: Space; index: number }) {
+function Account({
+  remote,
+  room,
+  reach,
+  index,
+}: {
+  remote: Remote;
+  room: Space;
+  reach: boolean | undefined;
+  index: number;
+}) {
   const { t } = useT();
   const hue = useHue(index);
   // Only the name and the space; the account details are on the targets tab.
   return (
     <View style={styles.block}>
       <CardHead mark={remote.mark} title={remote.name}>
-        {unreachable(room) ? (
+        {reach === undefined ? null : (
           <View style={styles.badgeSlot}>
-            <Badge label={t("targets.checkFailed")} tone="fail" />
+            <ReachBadge reach={reach} />
           </View>
-        ) : null}
+        )}
       </CardHead>
       <Room room={room} hue={hue} />
       {room === undefined ? <Caption>{t("history.working")}</Caption> : null}

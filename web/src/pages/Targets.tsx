@@ -282,6 +282,12 @@ function RemoteRow({
     }
   }
 
+  // Each row says whether its target is connected as soon as it shows.
+  useEffect(() => {
+    void check()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [remote.name])
+
   // Enough settings to tell two targets apart; secrets never leave the engine.
   const summary = remote.settings
     .filter((s) => !s.secret && s.value)

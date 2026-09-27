@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { api, type Remote, type Usage } from "./api";
 import { useT } from "./i18n";
-import { Caption, Meter } from "./ui";
+import { Badge, Caption, Meter } from "./ui";
 
 // How full a target is, fetched and drawn for both the overview and the
 // targets list.
@@ -88,6 +88,41 @@ export function useRoom(remotes: Remote[] | null): Record<string, Room> {
   }, [names]);
 
   return room;
+}
+
+/**
+ * Asks the engine to check every target, in parallel: true once one answers,
+ * false once it fails, absent while it is being asked. A target's size says
+ * nothing about this, since many backends report none without connecting.
+ */
+export function useReach(remotes: Remote[] | null): Record<string, boolean> {
+  const [reach, setReach] = useState<Record<string, boolean>>({});
+  const names = (remotes ?? []).map((r) => r.name).join("\n");
+
+  useEffect(() => {
+    if (!remotes) return;
+    let live = true;
+    const answer = (name: string, ok: boolean) => live && setReach((old) => ({ ...old, [name]: ok }));
+    for (const remote of remotes) {
+      api.checkRemote(remote.name).then(
+        (result) => answer(remote.name, result.ok),
+        () => answer(remote.name, false),
+      );
+    }
+    return () => {
+      live = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [names]);
+
+  return reach;
+}
+
+/** Connected or Not connected, once the check has answered. */
+export function ReachBadge({ reach }: { reach: boolean | undefined }) {
+  const { t } = useT();
+  if (reach === undefined) return null;
+  return <Badge label={t(reach ? "targets.checkOk" : "targets.checkFailed")} tone={reach ? "ok" : "fail"} />;
 }
 
 /**
