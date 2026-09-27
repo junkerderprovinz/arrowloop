@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { isLocalTarget } from "../../web/src/lib/localTarget";
 import { api, type Remote, type Usage } from "./api";
 import { useT } from "./i18n";
 import { Badge, Caption, Meter } from "./ui";
@@ -8,20 +9,10 @@ import { Badge, Caption, Meter } from "./ui";
 
 /**
  * Reports whether a target is storage elsewhere rather than the phone itself,
- * which the target lists leave out. An alias is judged by what it points at;
- * any other non-local backend counts, known to the app or not.
+ * which the target lists leave out.
  */
 export function isAccount(remote: Remote): boolean {
-  if (remote.type === "local") return false;
-  if (remote.type !== "alias") return true;
-  const points = remote.settings.find((s) => s.key === "remote")?.value ?? "";
-  return !isLocalPath(points);
-}
-
-/** Reports whether a value is a path on this device rather than a target reference. */
-function isLocalPath(value: string): boolean {
-  if (!value) return false;
-  return value.startsWith("/") || value.startsWith("\\") || /^[A-Za-z]:[\\/]/.test(value);
+  return !isLocalTarget(remote);
 }
 
 /**

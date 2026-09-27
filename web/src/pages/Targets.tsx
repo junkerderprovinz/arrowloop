@@ -18,6 +18,7 @@ import { DropdownListbox } from '../lib/glimstone/DropdownListbox'
 import { api, type Backend, type Provider, type Remote, type Share, type Usage, type Volume } from '../lib/api'
 import { bytes } from '../lib/bytes'
 import { groupStage } from '../lib/controls'
+import { isLocalTarget } from '../lib/localTarget'
 import { useT } from '../lib/i18n'
 import { optionHint } from '../lib/optionHint'
 import { optionLabel } from '../lib/optionNames'
@@ -283,11 +284,13 @@ function RemoteRow({
     }
   }
 
-  // Each row says whether its target is connected as soon as it shows.
+  // A folder on this device has nothing to connect to, so only a target
+  // elsewhere says whether it is connected, and does so as soon as it shows.
+  const local = isLocalTarget(remote)
   useEffect(() => {
-    void check()
+    if (!local) void check()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [remote.name])
+  }, [remote.name, local])
 
   // Enough settings to tell two targets apart; secrets never leave the engine.
   const summary = remote.settings
@@ -311,7 +314,7 @@ function RemoteRow({
           <span className="truncate text-sm font-medium">{remote.name}:</span>
           {/* The protocol only where no logo already says what this is. */}
           {remote.mark ? null : <Badge>{remote.type}</Badge>}
-          {result && (
+          {result && !local && (
             <Badge tone={result.ok ? 'ok' : 'fail'}>
               {result.ok ? t('targets.checkOk') : t('targets.checkFailed')}
             </Badge>
