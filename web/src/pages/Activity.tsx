@@ -13,11 +13,13 @@ import { useT } from '../lib/i18n'
 import { since } from '../lib/since'
 import { wireTooltips } from '../lib/tooltip'
 
-/** How many finished runs the small window lists. */
-const RECENT = 5
-
-/** How many file changes it lists, about what the window shows at once. */
-const CHANGES = 12
+/**
+ * How many finished runs and file changes the small window asks for at first,
+ * a little more than it shows at once. Scrolling to the end of a list asks for
+ * that many again.
+ */
+const RECENT = 10
+const CHANGES = 20
 
 /**
  * The kinds that change a file. An agreed file and a weak check are lines in
@@ -59,25 +61,42 @@ export function Activity() {
   const [view, setView] = useState<LogView>(storedView)
   const [changes, setChanges] = useState<Touch[] | null>(null)
   const [drives, setDrives] = useState<Volume[]>([])
+  const [pages, setPages] = useState(1)
+  const end = useRef<HTMLLIElement | null>(null)
   // Read by the event handler, which is set up once.
   const viewing = useRef(view)
   viewing.current = view
+  const paged = useRef(pages)
+  paged.current = pages
 
   const refresh = useCallback(() => {
     void api.jobs().then(setJobs).catch(() => {})
     void desk.paused().then(setPaused).catch(() => {})
     if (viewing.current === 'files') {
-      void api.log('', [], '', CHANGES).then(setChanges).catch(() => {})
+      void api.log('', [], '', CHANGES * paged.current).then(setChanges).catch(() => {})
       void api
         .volumes()
         .then((v) => setDrives(v.volumes))
         .catch(() => {})
     } else {
-      void api.history(undefined, 'all', RECENT).then(setRuns).catch(() => {})
+      void api.history(undefined, 'all', RECENT * paged.current).then(setRuns).catch(() => {})
     }
   }, [])
 
-  useEffect(refresh, [view, refresh])
+  useEffect(refresh, [view, pages, refresh])
+
+  // Only a list that filled what was asked for can have more.
+  const shown = view === 'files' ? (changes?.length ?? 0) : runs.length
+  const more = shown >= (view === 'files' ? CHANGES : RECENT) * pages
+  useEffect(() => {
+    const el = end.current
+    if (!el || !more) return
+    const watcher = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting)) setPages((n) => n + 1)
+    })
+    watcher.observe(el)
+    return () => watcher.disconnect()
+  }, [more, shown])
 
   useEffect(() => {
     wireTooltips()
@@ -105,7 +124,7 @@ export function Activity() {
             When: new Date().toISOString(),
             Seq: ev.done ?? 0,
           }
-          setChanges((prev) => [heard, ...(prev ?? [])].slice(0, CHANGES))
+          setChanges((prev) => [heard, ...(prev ?? [])].slice(0, CHANGES * paged.current))
         }
         return
       }
@@ -116,7 +135,9 @@ export function Activity() {
       })
       // The job list changes with a start or a finish, and so do the runs.
       void api.jobs().then(setJobs).catch(() => {})
-      if (viewing.current === 'runs') void api.history(undefined, 'all', RECENT).then(setRuns).catch(() => {})
+      if (viewing.current === 'runs') {
+        void api.history(undefined, 'all', RECENT * paged.current).then(setRuns).catch(() => {})
+      }
     })
     return () => {
       window.removeEventListener('focus', refresh)
@@ -151,6 +172,7 @@ export function Activity() {
         value={view}
         onChange={(next) => {
           setView(next)
+          setPages(1)
           storeView(next)
         }}
       />
@@ -177,6 +199,7 @@ export function Activity() {
                 {runs.map((r) => (
                   <RunRow key={r.ID} run={r} />
                 ))}
+                {more && <li ref={end} aria-hidden="true" className="h-px" />}
               </ul>
             )}
           </section>
@@ -189,6 +212,7 @@ export function Activity() {
                 {(changes ?? []).map((c) => (
                   <ChangeRow key={`${c.Job}\n${c.When}\n${c.Seq}\n${c.Path}`} change={c} jobs={jobs} drives={drives} />
                 ))}
+                {more && <li ref={end} aria-hidden="true" className="h-px" />}
               </ul>
             )}
           </section>

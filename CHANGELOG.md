@@ -37,6 +37,8 @@ The full notes for each release are in
 
 - **Deciding a conflict after the run changes the files.** The choices in an opened run in History started a new run, which found no conflict left, since the first run had already kept both versions, so nothing happened. The run now counts the conflicts it kept both versions of and links to Conflicts, where the choice takes effect.
 - **A job's trash can be reached in the browser again.** Its list sat in a part of the job card that never showed; the Trash tab replaces it.
+- **The history lists only what a run did to files.** A file both sides already held got a line of its own ("did" in 1.2.1), which on a first run over a full folder buried the few real copies under thousands of lines. Those files now count as unchanged in the run's numbers and leave no line, and runs stored before this version drop those lines from the history, the job card and the tray window too.
+- **Both lists in the tray window scroll.** It asked for only the last 5 runs or 12 files, so there was nothing to scroll to. It now starts with 10 runs or 20 files and loads more as you scroll to the end, like the History tab.
 - **Check this job and Find duplicates can be opened.** Both sat in the same hidden part of the card. They are in the card's Options menu now and open under the card with a close button, like its history.
 - **A renamed file's line in the history shows its size.** The size was read under the new name on the side still waiting for the rename, where there was nothing yet, so it came out as nothing.
 
