@@ -329,9 +329,10 @@ function Running({
  */
 function counted(at: Progress, t: T, lang: string): string {
   const format = new Intl.NumberFormat(lang);
-  const counts = { done: format.format(at.done), total: format.format(at.total) };
-  if (at.total > 0) return t(at.guess ? "progress.about" : "progress.of", counts);
-  return at.stage ? t("progress.found", counts) : t("progress.starting");
+  const done = format.format(at.done);
+  const total = format.format(at.total);
+  if (at.total > 0) return at.guess ? t("progress.about", { done, total }) : t("progress.of", { done, total });
+  return at.stage ? t("progress.found", { done }) : t("progress.starting");
 }
 
 /**
