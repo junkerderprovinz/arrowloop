@@ -37,36 +37,84 @@ type Settings struct {
 	// NotOnMetered does the same for a metered connection such as a phone
 	// hotspot.
 	NotOnMetered bool `json:"notOnMetered"`
+
+	// Paused holds every automatic run until the person resumes. Only the tray
+	// changes it, so saving an unrelated switch on the settings page cannot
+	// resume syncing behind somebody's back.
+	Paused bool `json:"paused"`
+}
+
+// Words are the tray's few lines in the language the interface shows. The
+// translations live in the interface, which sends them here, and they are kept
+// so the menu is right on the next start before the interface has loaded.
+type Words struct {
+	Open    string `json:"open"`
+	SyncNow string `json:"syncNow"`
+	Pause   string `json:"pause"`
+	Resume  string `json:"resume"`
+	Quit    string `json:"quit"`
+	Paused  string `json:"paused"`
+	// Running carries a {count} placeholder.
+	Running string `json:"running"`
+	Done    string `json:"done"`
+}
+
+// DefaultWords is English, for a first start before the interface has said
+// which language it shows.
+func DefaultWords() Words {
+	return Words{
+		Open:    "Open",
+		SyncNow: "Force sync",
+		Pause:   "Pause sync",
+		Resume:  "Resume sync",
+		Quit:    "Quit",
+		Paused:  "Sync is paused",
+		Running: "jobs running: {count}",
+		Done:    "done",
+	}
 }
 
 // Default is what a fresh install gets: an icon in the notification area and
 // both buttons doing what their labels say.
 func Default() Settings { return Settings{Tray: true} }
 
+// file is window.json. The settings stay at the top level, where every
+// earlier version wrote them.
+type file struct {
+	Settings
+	Words *Words `json:"words,omitempty"`
+}
+
 // Store is the settings file. The window reads it on close while the interface
 // writes it from another goroutine, hence the lock.
 type Store struct {
-	mu   sync.RWMutex
-	path string
-	now  Settings
+	mu      sync.RWMutex
+	path    string
+	now     Settings
+	words   Words
+	watches []func()
 }
 
 // Open reads the settings beside the given configuration file. A missing,
 // unreadable or corrupt file yields the defaults.
 func Open(configPath string) *Store {
 	s := &Store{
-		path: filepath.Join(filepath.Dir(configPath), "window.json"),
-		now:  Default(),
+		path:  filepath.Join(filepath.Dir(configPath), "window.json"),
+		now:   Default(),
+		words: DefaultWords(),
 	}
 	body, err := os.ReadFile(s.path)
 	if err != nil {
 		return s
 	}
-	var read Settings
+	var read file
 	if err := json.Unmarshal(body, &read); err != nil {
 		return s
 	}
-	s.now = read
+	s.now = read.Settings
+	if read.Words != nil {
+		s.words = *read.Words
+	}
 	return s
 }
 
@@ -77,19 +125,65 @@ func (s *Store) Get() Settings {
 	return s.now
 }
 
-// Set stores new settings and replaces the file in one step, so a crash leaves
-// the old settings rather than half of the new ones.
-func (s *Store) Set(next Settings) error {
+// Words returns the tray's lines.
+func (s *Store) Words() Words {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	return s.words
+}
+
+// Watch registers a function called after every change, from the goroutine
+// that made it. The desktop shell uses it to follow the settings page without
+// a restart.
+func (s *Store) Watch(f func()) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
+	s.watches = append(s.watches, f)
+}
 
-	if !next.Tray {
-		next.CloseToTray = false
-		next.MinimiseToTray = false
+// Set stores what the settings page decides. The pause belongs to the tray and
+// is carried over, whatever the page sent.
+func (s *Store) Set(next Settings) error {
+	return s.change(func() {
+		if !next.Tray {
+			next.CloseToTray = false
+			next.MinimiseToTray = false
+		}
+		next.Paused = s.now.Paused
+		s.now = next
+	})
+}
+
+// SetPaused holds or releases every automatic run.
+func (s *Store) SetPaused(on bool) error {
+	return s.change(func() { s.now.Paused = on })
+}
+
+// SetWords stores the tray's lines in the interface's language.
+func (s *Store) SetWords(w Words) error {
+	return s.change(func() { s.words = w })
+}
+
+// change applies one edit under the lock, writes the file, and tells the
+// watchers once the lock is released, so a watcher may read the store.
+func (s *Store) change(edit func()) error {
+	s.mu.Lock()
+	edit()
+	err := s.write()
+	watches := append([]func(){}, s.watches...)
+	s.mu.Unlock()
+
+	for _, f := range watches {
+		f()
 	}
-	s.now = next
+	return err
+}
 
-	body, err := json.MarshalIndent(next, "", "  ")
+// write replaces the file in one step, so a crash leaves the old settings
+// rather than half of the new ones. The caller holds the lock.
+func (s *Store) write() error {
+	words := s.words
+	body, err := json.MarshalIndent(file{Settings: s.now, Words: &words}, "", "  ")
 	if err != nil {
 		return err
 	}

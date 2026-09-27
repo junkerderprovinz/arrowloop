@@ -63,3 +63,86 @@ func TestSettingsSurviveARestart(t *testing.T) {
 		t.Errorf("a corrupt file did not fall back to the default: %+v", broken.Get())
 	}
 }
+
+func TestAPauseSurvivesARestart(t *testing.T) {
+	config := filepath.Join(t.TempDir(), "arrowloop.json")
+	if err := Open(config).SetPaused(true); err != nil {
+		t.Fatalf("pause: %v", err)
+	}
+	if !Open(config).Get().Paused {
+		t.Error("a paused app starts syncing again after a restart")
+	}
+}
+
+// The page sends back everything it read, and a pause set from the tray after
+// the page loaded would otherwise be undone by the next unrelated switch.
+func TestTheSettingsPageCannotResumeAPause(t *testing.T) {
+	s := Open(filepath.Join(t.TempDir(), "arrowloop.json"))
+	if err := s.SetPaused(true); err != nil {
+		t.Fatalf("pause: %v", err)
+	}
+	if err := s.Set(Settings{Tray: true, MinimiseToTray: true, Paused: false}); err != nil {
+		t.Fatalf("set: %v", err)
+	}
+	got := s.Get()
+	if !got.Paused {
+		t.Error("saving the settings page resumed a paused app")
+	}
+	if !got.MinimiseToTray {
+		t.Errorf("the page's own change was lost: %+v", got)
+	}
+
+	if err := s.SetPaused(false); err != nil {
+		t.Fatalf("resume: %v", err)
+	}
+	if err := s.Set(Settings{Tray: true, Paused: true}); err != nil {
+		t.Fatalf("set: %v", err)
+	}
+	if s.Get().Paused {
+		t.Error("saving the settings page paused the app")
+	}
+}
+
+func TestTheTrayWordsSurviveARestart(t *testing.T) {
+	config := filepath.Join(t.TempDir(), "arrowloop.json")
+	if got := Open(config).Words(); got != DefaultWords() {
+		t.Fatalf("a first start has no English words: %+v", got)
+	}
+
+	german := Words{Open: "Öffnen", SyncNow: "Sync erzwingen", Pause: "Sync pausieren",
+		Resume: "Sync fortsetzen", Quit: "Beenden", Paused: "Sync ist pausiert",
+		Running: "laufende Jobs: {count}", Done: "fertig"}
+	if err := Open(config).SetWords(german); err != nil {
+		t.Fatalf("set words: %v", err)
+	}
+	again := Open(config)
+	if again.Words() != german {
+		t.Errorf("the menu would start in English again: %+v", again.Words())
+	}
+	if again.Get() != Default() {
+		t.Errorf("storing the words changed the settings: %+v", again.Get())
+	}
+}
+
+func TestAWatcherHearsEveryChange(t *testing.T) {
+	s := Open(filepath.Join(t.TempDir(), "arrowloop.json"))
+	var seen []bool
+	// Reading the store from inside the watcher is what the desktop shell does.
+	s.Watch(func() { seen = append(seen, s.Get().Paused) })
+
+	if err := s.Set(Settings{Tray: true}); err != nil {
+		t.Fatalf("set: %v", err)
+	}
+	if err := s.SetPaused(true); err != nil {
+		t.Fatalf("pause: %v", err)
+	}
+	if err := s.SetWords(DefaultWords()); err != nil {
+		t.Fatalf("words: %v", err)
+	}
+	if len(seen) != 3 {
+		t.Fatalf("the watcher heard %d of 3 changes", len(seen))
+	}
+	if seen[0] || !seen[1] {
+		t.Errorf("the watcher saw a stale pause: %v", seen)
+	}
+}

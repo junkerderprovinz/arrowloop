@@ -89,10 +89,42 @@ func (s *Server) writeWindow(w http.ResponseWriter, r *http.Request) {
 
 	// Answered from the store and the system rather than the request, since
 	// both correct what they cannot honour.
-	v, err := s.view()
-	if err != nil {
+	s.readWindow(w, r)
+}
+
+// writePaused is the tray window's pause button. The desktop shell follows the
+// store and stops what is running.
+func (s *Server) writePaused(w http.ResponseWriter, r *http.Request) {
+	var req struct {
+		Paused bool `json:"paused"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		writeError(w, http.StatusBadRequest, fmt.Errorf("read the request: %w", err))
+		return
+	}
+	if err := s.Window.SetPaused(req.Paused); err != nil {
 		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
-	writeJSON(w, http.StatusOK, v)
+	s.readWindow(w, r)
+}
+
+// writeWords takes the tray's lines in the language the interface shows.
+func (s *Server) writeWords(w http.ResponseWriter, r *http.Request) {
+	var words deskset.Words
+	if err := json.NewDecoder(r.Body).Decode(&words); err != nil {
+		writeError(w, http.StatusBadRequest, fmt.Errorf("read the request: %w", err))
+		return
+	}
+	if err := s.Window.SetWords(words); err != nil {
+		writeError(w, http.StatusInternalServerError, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, s.Window.Words())
+}
+
+// openWindow brings the main window forward, for the tray window's button.
+func (s *Server) openWindow(w http.ResponseWriter, r *http.Request) {
+	s.OpenWindow()
+	writeJSON(w, http.StatusOK, map[string]bool{"opened": true})
 }

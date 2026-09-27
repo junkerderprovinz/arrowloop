@@ -42,6 +42,10 @@ type Server struct {
 	// routes unregistered, which tells the interface there is no window.
 	Window *deskset.Store
 
+	// OpenWindow brings the main window forward. Only the desktop shell sets
+	// it, for the small window at the tray icon.
+	OpenWindow func()
+
 	// Hold carries a reason, reported by the device the engine runs on, to stop
 	// automatic runs. Only the phone sets it, knowing whether it is charging
 	// and whether the connection is metered. A nil store leaves the routes
@@ -131,6 +135,11 @@ func (s *Server) Handler() http.Handler {
 	if s.Window != nil {
 		mux.HandleFunc("GET /api/window", s.readWindow)
 		mux.HandleFunc("PUT /api/window", s.writeWindow)
+		mux.HandleFunc("PUT /api/window/paused", s.writePaused)
+		mux.HandleFunc("PUT /api/window/words", s.writeWords)
+	}
+	if s.OpenWindow != nil {
+		mux.HandleFunc("POST /api/window/open", s.openWindow)
 	}
 
 	if s.Hold != nil {

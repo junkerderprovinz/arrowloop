@@ -115,6 +115,65 @@ func TestADesktopBuildAnswersAndRemembers(t *testing.T) {
 	}
 }
 
+func TestOnlyThePauseButtonPauses(t *testing.T) {
+	h := newHarness(t)
+	store := deskset.Open(filepath.Join(t.TempDir(), "arrowloop.json"))
+	srv := newServer(t, &web.Server{History: h.history, Runner: h.runner, Window: store})
+
+	if resp, said := putJSON(t, srv, "/api/window/paused", `{"paused":true}`); resp.StatusCode != http.StatusOK {
+		t.Fatalf("pausing: %s %s", resp.Status, said)
+	}
+	var got deskset.Settings
+	getJSON(t, srv, "/api/window", &got)
+	if !got.Paused {
+		t.Fatal("the pause button did not pause")
+	}
+
+	// What the settings page sends when somebody flips an unrelated switch.
+	on, err := autostart.Enabled()
+	if err != nil {
+		t.Fatalf("read the autostart entry: %v", err)
+	}
+	putJSON(t, srv, "/api/window", `{"tray":true,"minimiseToTray":true,"paused":false,`+
+		`"startWithSystem":`+strconv.FormatBool(on)+`}`)
+	getJSON(t, srv, "/api/window", &got)
+	if !got.Paused {
+		t.Error("saving the settings page resumed the sync")
+	}
+}
+
+func TestTheTrayWordsAreKept(t *testing.T) {
+	h := newHarness(t)
+	store := deskset.Open(filepath.Join(t.TempDir(), "arrowloop.json"))
+	srv := newServer(t, &web.Server{History: h.history, Runner: h.runner, Window: store})
+
+	body := `{"open":"Öffnen","syncNow":"Sync erzwingen","pause":"Sync pausieren",` +
+		`"resume":"Sync fortsetzen","quit":"Beenden","paused":"Sync ist pausiert",` +
+		`"running":"laufende Jobs: {count}","done":"fertig"}`
+	if resp, said := putJSON(t, srv, "/api/window/words", body); resp.StatusCode != http.StatusOK {
+		t.Fatalf("sending the words: %s %s", resp.Status, said)
+	}
+	if got := store.Words(); got.Open != "Öffnen" || got.Running != "laufende Jobs: {count}" {
+		t.Errorf("the words did not arrive: %+v", got)
+	}
+}
+
+func TestTheOpenButtonReachesTheShell(t *testing.T) {
+	h := newHarness(t)
+	store := deskset.Open(filepath.Join(t.TempDir(), "arrowloop.json"))
+	opened := 0
+	srv := newServer(t, &web.Server{
+		History: h.history, Runner: h.runner, Window: store,
+		OpenWindow: func() { opened++ },
+	})
+	if resp, said := doJSON(t, srv, http.MethodPost, "/api/window/open", ""); resp.StatusCode != http.StatusOK {
+		t.Fatalf("opening: %s %s", resp.Status, said)
+	}
+	if opened != 1 {
+		t.Errorf("the shell was asked %d times to open its window", opened)
+	}
+}
+
 // The interface's fallback is right for a reloaded page and wrong under /api,
 // where it would tell a client probing for a feature that it exists.
 func TestAnUnknownApiAddressIsNotThePage(t *testing.T) {
