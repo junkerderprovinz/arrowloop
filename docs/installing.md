@@ -18,8 +18,8 @@ docker run -d --name arrowloop -p 8422:8422 \
     copied, and a deletion made while the record was missing is propagated to
     nobody.
 
-A first start on an empty `/config` writes a starter configuration with one
-disabled example job, so the interface comes up and can be edited rather than
+A first start on an empty `/config` writes a starter configuration with no
+jobs, so the interface comes up and can be edited rather than
 crash-looping on a missing file.
 
 ### A password for the interface

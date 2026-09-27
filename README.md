@@ -309,7 +309,7 @@ Ticking is not decoration. The run re-plans and then keeps only the paths that w
 docker run -d --name arrowloop -p 8422:8422   -v /mnt/user/appdata/arrowloop:/config   -v /mnt/user:/data   junkerderprovinz/arrowloop:latest
 ```
 
-`/config` holds `arrowloop.json`, one state database per job and the run log, and it is the directory that must survive the container: without those databases every job forgets what the two sides agreed on and treats every file as new. A first start on an empty `/config` writes a starter configuration with one disabled example job, so the interface comes up and can be edited rather than crash-looping on a missing file. The Unraid template is [templates/my-ArrowLoop.xml](templates/my-ArrowLoop.xml).
+`/config` holds `arrowloop.json`, one state database per job and the run log, and it is the directory that must survive the container: without those databases every job forgets what the two sides agreed on and treats every file as new. A first start on an empty `/config` writes a starter configuration with no jobs, so the interface comes up and can be edited rather than crash-looping on a missing file. The Unraid template is [templates/my-ArrowLoop.xml](templates/my-ArrowLoop.xml).
 
 The image carries no second executable. rclone is compiled in as a library, so there is no version skew between the tool and the thing it drives, and nothing to keep separately up to date.
 

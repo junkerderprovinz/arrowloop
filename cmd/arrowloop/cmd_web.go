@@ -123,22 +123,10 @@ func cmdWeb(ctx context.Context, args []string) error {
 	return httpServer.Shutdown(shutdown)
 }
 
-// starterConfig is what a first run writes when there is no configuration yet.
-// Its one job is disabled and points nowhere real, so a new installation does
-// nothing until it is set up.
+// starterConfig is what a first run writes when there is no configuration yet:
+// no jobs, so a new installation does nothing until one is set up.
 const starterConfig = `{
-  "jobs": [
-    {
-      "name": "example",
-      "disabled": true,
-      "left": "/data/left",
-      "right": "/data/right",
-      "state": "state/example.db",
-      "schedule": "*/15 * * * *",
-      "exclude": [],
-      "emptyDirs": false
-    }
-  ]
+  "jobs": []
 }
 `
 

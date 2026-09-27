@@ -178,16 +178,7 @@ func configLocation() (string, error) {
 }
 
 const starterConfig = `{
-  "jobs": [
-    {
-      "name": "example",
-      "disabled": true,
-      "left": "",
-      "right": "",
-      "state": "state/example.db",
-      "schedule": "*/15 * * * *"
-    }
-  ]
+  "jobs": []
 }
 `
 
