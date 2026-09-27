@@ -10,6 +10,8 @@ The full notes for each release are in
 
 ## Unreleased
 
+## 1.4.0 - 2026-09-27
+
 ## 🎨 Design
 
 - **The providers you pick a new target from are README buttons**, on the web and on the phone: the logo at the start, the name beside it, several to a row where there is room and one per row on a narrow phone. A button lights up in its brand's colour under the pointer, on keyboard focus or under a finger, and a name too long for its button gets smaller instead of being cut off. On the dark theme the glyphs of SFTP, SMB and the other protocols turn dark on a lit button instead of staying light grey.
@@ -21,7 +23,6 @@ The full notes for each release are in
 ## 🐛 Fixed
 
 - **Background activity on the phone is granted with one tap.** The switch opens Android's own prompt to let ArrowLoop run in the background, where it used to open the list of optimised apps. Some manufacturers have a background switch of their own that does not exempt the app from battery optimisation, which left the switch off although that one was on.
-
 
 ## 1.3.0 - 2026-09-27
 
