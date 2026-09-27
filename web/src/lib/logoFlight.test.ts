@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { CENTRE, FLIGHT, PIECES, RELEASE, frame } from './logoFlight'
+import { CENTRE, FLIGHT, PIECES, RELEASE, frame, shudder } from './logoFlight'
 
 const times = (from: number, to: number, step: number) =>
   Array.from({ length: Math.floor((to - from) / step) + 1 }, (_, i) => from + i * step)
@@ -61,5 +61,24 @@ describe("the logo's flight", () => {
     const arriving = times(RELEASE, FLIGHT, 0.01).map((t) => frame(t).real.offset)
     expect(Math.max(...arriving)).toBeGreaterThan(400)
     expect(arriving[arriving.length - 1]).toBe(0)
+  })
+})
+
+describe("the rail's shudder", () => {
+  const sideways = (k: Keyframe) => Number(/translate\((-?[\d.]+)px/.exec(String(k.transform))![1])
+
+  it('shoves the full amplitude first and swings back smaller each time', () => {
+    const swings = shudder(7).map(sideways)
+    expect(swings[0]).toBe(0)
+    expect(swings[1]).toBe(7)
+    for (let i = 2; i < swings.length - 1; i++) {
+      expect(Math.sign(swings[i])).toBe(-Math.sign(swings[i - 1]))
+      expect(Math.abs(swings[i])).toBeLessThan(Math.abs(swings[i - 1]))
+    }
+    expect(swings.at(-1)).toBe(0)
+  })
+
+  it('stands still at the off level', () => {
+    expect(shudder(0).every((k) => sideways(k) === 0)).toBe(true)
   })
 })

@@ -133,7 +133,7 @@ export function Sidebar<T extends string>({
     if (!(amplitude > 0) || !rail.current) return
     const frames = shudder(amplitude)
     rail.current.querySelectorAll<HTMLElement>('.al-wordmark, .glim-nav-row').forEach((row, i) => {
-      row.animate(frames, { duration: 700, delay: i * 30 })
+      row.animate(frames, { duration: 400, delay: i * 45 })
     })
   }
 

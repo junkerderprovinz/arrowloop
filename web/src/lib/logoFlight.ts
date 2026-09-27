@@ -320,13 +320,21 @@ export function turnHalf(pose: Pose): Pose {
 }
 
 /**
- * The rail's shudder as keyframes for Element.animate: a sideways swing that
- * dies away, as a fraction of the level's amplitude.
+ * The rail's shudder as keyframes for Element.animate: a shove that swings back
+ * three times, smaller each time, the shape KnightLoader's rail takes after
+ * its blow. Every swing is a keyframe of its own, so none falls between two.
  */
 export function shudder(amplitude: number): Keyframe[] {
-  return Array.from({ length: 25 }, (_, i) => {
-    const tau = (i / 24) * 0.7
-    const x = amplitude * Math.exp(-7 * tau) * Math.sin(TAU * 12 * tau)
-    return { offset: i / 24, transform: `translateX(${x.toFixed(2)}px)` }
-  })
+  const swings: [number, number, number][] = [
+    [0, 0, 0],
+    [0.15, 1, 0.4],
+    [0.32, -0.6, 0],
+    [0.5, 0.4, 0],
+    [0.7, -0.2, 0],
+    [1, 0, 0],
+  ]
+  return swings.map(([offset, x, y]) => ({
+    offset,
+    transform: `translate(${(x * amplitude).toFixed(2)}px, ${(y * amplitude).toFixed(2)}px)`,
+  }))
 }
