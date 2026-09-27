@@ -1,11 +1,14 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { JobMark } from '../components/JobMark'
 import { LogoMark } from '../components/LogoMark'
 import { Num, Rule } from '../components/Shell'
+import { ViewSwitch, type LogView } from '../components/ViewSwitch'
+import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
-import { api, type Job, type Run, type RunEvent } from '../lib/api'
+import { api, type Job, type Run, type RunEvent, type Touch, type Volume } from '../lib/api'
 import { desk } from '../lib/desk'
+import { entryLabel } from '../lib/entryLabel'
 import { useT } from '../lib/i18n'
 import { since } from '../lib/since'
 import { wireTooltips } from '../lib/tooltip'
@@ -13,10 +16,39 @@ import { wireTooltips } from '../lib/tooltip'
 /** How many finished runs the small window lists. */
 const RECENT = 5
 
+/** How many file changes it lists, about what the window shows at once. */
+const CHANGES = 12
+
 /**
- * The small window at the tray icon: what is running, the last few runs, and the
- * pause, sync and open buttons. It lives as long as the program and is only
- * hidden between clicks, so it refreshes whenever it gains the focus.
+ * The kinds that change a file. An agreed file and a weak check are lines in
+ * the log but nothing happened to the file.
+ */
+const CHANGED = new Set(['copy', 'move', 'trash', 'mkdir', 'rmdir', 'conflict'])
+
+const VIEW_KEY = 'arrowloop.trayView'
+
+function storedView(): LogView {
+  try {
+    return localStorage.getItem(VIEW_KEY) === 'files' ? 'files' : 'runs'
+  } catch {
+    return 'runs'
+  }
+}
+
+function storeView(view: LogView) {
+  try {
+    localStorage.setItem(VIEW_KEY, view)
+  } catch {
+    // Without storage the window opens on the runs, as it always did.
+  }
+}
+
+/**
+ * The small window at the tray icon: what is running, and either the last few
+ * runs or the latest file changes, with the pause, sync and open buttons. It
+ * lives as long as the program and is only hidden between clicks, so it asks
+ * the engine again whenever it gains the focus and otherwise follows the run
+ * events alone, which keeps it light while it waits hidden.
  */
 export function Activity() {
   const { t } = useT()
@@ -24,16 +56,31 @@ export function Activity() {
   const [runs, setRuns] = useState<Run[]>([])
   const [paused, setPaused] = useState(false)
   const [progress, setProgress] = useState<Record<string, RunEvent>>({})
+  const [view, setView] = useState<LogView>(storedView)
+  const [changes, setChanges] = useState<Touch[] | null>(null)
+  const [drives, setDrives] = useState<Volume[]>([])
+  // Read by the event handler, which is set up once.
+  const viewing = useRef(view)
+  viewing.current = view
 
   const refresh = useCallback(() => {
     void api.jobs().then(setJobs).catch(() => {})
-    void api.history(undefined, 'all', RECENT).then(setRuns).catch(() => {})
     void desk.paused().then(setPaused).catch(() => {})
+    if (viewing.current === 'files') {
+      void api.log('', [], '', CHANGES).then(setChanges).catch(() => {})
+      void api
+        .volumes()
+        .then((v) => setDrives(v.volumes))
+        .catch(() => {})
+    } else {
+      void api.history(undefined, 'all', RECENT).then(setRuns).catch(() => {})
+    }
   }, [])
+
+  useEffect(refresh, [view, refresh])
 
   useEffect(() => {
     wireTooltips()
-    refresh()
     window.addEventListener('focus', refresh)
     // What the main window keeps in the browser is the language and the look,
     // and a reload takes a change over the same way a fresh start would.
@@ -43,6 +90,23 @@ export function Activity() {
       if (ev.phase === 'moving') return
       if (ev.phase === 'progress') {
         setProgress((prev) => ({ ...prev, [ev.job]: ev }))
+        // A change goes on top of the list the window last asked for. The
+        // desktop app thins these events out, so a busy run shows a sample
+        // of its files until the window is opened again.
+        if (viewing.current === 'files' && ev.kind && ev.path && CHANGED.has(ev.kind)) {
+          const heard: Touch = {
+            Kind: ev.kind,
+            Side: ev.side ?? '',
+            Path: ev.path,
+            Note: ev.note ?? '',
+            Size: 0,
+            Run: 0,
+            Job: ev.job,
+            When: new Date().toISOString(),
+            Seq: ev.done ?? 0,
+          }
+          setChanges((prev) => [heard, ...(prev ?? [])].slice(0, CHANGES))
+        }
         return
       }
       setProgress((prev) => {
@@ -50,7 +114,9 @@ export function Activity() {
         delete next[ev.job]
         return next
       })
-      refresh()
+      // The job list changes with a start or a finish, and so do the runs.
+      void api.jobs().then(setJobs).catch(() => {})
+      if (viewing.current === 'runs') void api.history(undefined, 'all', RECENT).then(setRuns).catch(() => {})
     })
     return () => {
       window.removeEventListener('focus', refresh)
@@ -81,7 +147,13 @@ export function Activity() {
         />
       </header>
 
-      <Rule />
+      <ViewSwitch
+        value={view}
+        onChange={(next) => {
+          setView(next)
+          storeView(next)
+        }}
+      />
 
       <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto">
         {running.length > 0 && (
@@ -95,18 +167,32 @@ export function Activity() {
           </section>
         )}
 
-        <section className="flex flex-col gap-2">
-          <h2 className="text-xs text-carbon-textSub">{t('activity.recent')}</h2>
-          {runs.length === 0 ? (
-            <p className="text-xs text-carbon-textMuted">{t('history.empty')}</p>
-          ) : (
-            <ul className="flex flex-col gap-2">
-              {runs.map((r) => (
-                <RunRow key={r.ID} run={r} />
-              ))}
-            </ul>
-          )}
-        </section>
+        {view === 'runs' ? (
+          <section className="flex flex-col gap-2">
+            <h2 className="text-xs text-carbon-textSub">{t('activity.recent')}</h2>
+            {runs.length === 0 ? (
+              <p className="text-xs text-carbon-textMuted">{t('history.empty')}</p>
+            ) : (
+              <ul className="flex flex-col gap-2">
+                {runs.map((r) => (
+                  <RunRow key={r.ID} run={r} />
+                ))}
+              </ul>
+            )}
+          </section>
+        ) : (
+          <section className="flex flex-col gap-2">
+            {changes !== null && changes.length === 0 ? (
+              <p className="text-xs text-carbon-textMuted">{t('history.logEmpty')}</p>
+            ) : (
+              <ul className="flex flex-col gap-2">
+                {(changes ?? []).map((c) => (
+                  <ChangeRow key={`${c.Job}\n${c.When}\n${c.Seq}\n${c.Path}`} change={c} jobs={jobs} drives={drives} />
+                ))}
+              </ul>
+            )}
+          </section>
+        )}
       </div>
 
       <Rule />
@@ -147,6 +233,26 @@ function RunningRow({ job, event }: { job: Job; event?: RunEvent }) {
         </div>
         {event?.path && <span className="truncate text-xs text-carbon-textMuted">{event.path}</span>}
       </div>
+    </li>
+  )
+}
+
+/** One file change: what happened to it, where, and in which job. */
+function ChangeRow({ change, jobs, drives }: { change: Touch; jobs: Job[]; drives: Volume[] }) {
+  const { t } = useT()
+  const label = entryLabel(t, change, jobs.find((j) => j.name === change.Job), drives)
+  const tone = change.Kind === 'conflict' ? 'warn' : 'neutral'
+  return (
+    <li className="flex min-w-0 flex-col gap-1">
+      <div className="flex min-w-0 items-center gap-2">
+        <span className="min-w-0 truncate" title={label}>
+          <Badge tone={tone}>{label}</Badge>
+        </span>
+        <span className="ms-auto shrink-0 truncate text-xs text-carbon-textMuted">{change.Job}</span>
+      </div>
+      <span className="truncate font-mono text-xs text-carbon-text" title={change.Path}>
+        {change.Path}
+      </span>
     </li>
   )
 }

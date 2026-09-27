@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { StyleSheet, View } from "react-native";
+import { speed as perSecond } from "../../../web/src/lib/speed";
 import {
   api,
   failed,
@@ -72,6 +73,8 @@ export function Overview() {
   const [moving, setMoving] = useState<Record<string, MovingFile[]>>({});
   // Files per second, sent instead of the rows when files are too many to name.
   const [rate, setRate] = useState<Record<string, number>>({});
+  // Bytes a second, read from rclone's accounting by the engine.
+  const [speed, setSpeed] = useState<Record<string, number>>({});
   const [error, setError] = useState("");
 
   const load = useCallback(async () => {
@@ -94,13 +97,15 @@ export function Overview() {
     live: Record<string, Progress>;
     moving: Record<string, MovingFile[]>;
     rate: Record<string, number>;
-  }>({ live: {}, moving: {}, rate: {} });
+    speed: Record<string, number>;
+  }>({ live: {}, moving: {}, rate: {}, speed: {} });
   const pending = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const draw = useCallback(() => {
     setLive({ ...heard.current.live });
     setMoving({ ...heard.current.moving });
     setRate({ ...heard.current.rate });
+    setSpeed({ ...heard.current.speed });
   }, []);
 
   const drawSoon = useCallback(() => {
@@ -125,6 +130,7 @@ export function Overview() {
       // The engine omits an empty list (internal/daemon/runner.go).
       heard.current.moving[event.job] = event.moving ?? [];
       heard.current.rate[event.job] = event.rate ?? 0;
+      heard.current.speed[event.job] = event.speed ?? 0;
       drawSoon();
       return;
     }
@@ -145,6 +151,7 @@ export function Overview() {
       delete heard.current.live[event.job];
       delete heard.current.moving[event.job];
       delete heard.current.rate[event.job];
+      delete heard.current.speed[event.job];
     }
     // Drawn at once, since the layout animation rides on this frame.
     if (pending.current) {
@@ -184,6 +191,7 @@ export function Overview() {
               at={live[job.name]}
               moving={moving[job.name] ?? []}
               rate={rate[job.name] ?? 0}
+              speed={speed[job.name] ?? 0}
               index={index}
             />
           ))
@@ -283,12 +291,15 @@ function Running({
   at,
   moving,
   rate,
+  speed,
   index,
 }: {
   job: Job;
   at?: Progress;
   moving: MovingFile[];
   rate: number;
+  /** Bytes a second; zero while nothing moves, and then nothing is shown. */
+  speed: number;
   index: number;
 }) {
   const { t, lang } = useT();
@@ -303,7 +314,9 @@ function Running({
         <>
           {at.stage ? <Caption>{t(stageKey(at.stage, at.side))}</Caption> : null}
           <Meter done={at.guess ? Math.min(at.done, at.total * 0.99) : at.done} total={at.total} hue={hue} />
-          <Caption>{counted(at, t, lang)}</Caption>
+          <Caption>
+            {speed > 0 ? `${counted(at, t, lang)} · ${perSecond(speed, lang)}` : counted(at, t, lang)}
+          </Caption>
         </>
       ) : (
         // No progress yet while the engine builds its plan.

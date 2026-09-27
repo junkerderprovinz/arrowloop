@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { Badge } from '../lib/glimstone/Badge'
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { api, type Resolution, type RunEntry } from '../lib/api'
-import { entryLabel } from '../lib/entryLabel'
+import { entryLabel, entryNote } from '../lib/entryLabel'
 import { usePlaces } from '../lib/places'
 import { useT } from '../lib/i18n'
 import { Choice } from './Field'
@@ -33,10 +33,13 @@ function tone(kind: string): 'ok' | 'warn' | 'fail' | 'neutral' {
 export function RunDetail({
   run,
   job,
+  tick = 0,
   onResolved,
 }: {
   run: number
   job: string
+  /** Changes while the run is still going, to read its lines again. */
+  tick?: number
   /** Called after conflict choices have started a new run. */
   onResolved: () => void
 }) {
@@ -48,10 +51,15 @@ export function RunDetail({
   const [choices, setChoices] = useState<Record<string, Resolution>>({})
   const [busy, setBusy] = useState(false)
 
+  // Emptied only for another run: a running run's lines are read again every
+  // second and stay on screen meanwhile.
   useEffect(() => {
-    let live = true
     setEntries(null)
     setError(null)
+  }, [run])
+
+  useEffect(() => {
+    let live = true
     api
       .runEntries(run)
       .then((got) => {
@@ -63,7 +71,7 @@ export function RunDetail({
     return () => {
       live = false
     }
-  }, [run])
+  }, [run, tick])
 
   if (error) return <p className="py-2 text-xs text-statusFail">{error}</p>
   if (entries === null) return <p className="py-2 text-xs text-carbon-textMuted">{t('history.loading')}</p>
@@ -88,19 +96,22 @@ export function RunDetail({
       </div>
 
       <ul className="flex max-h-80 flex-col gap-1 overflow-y-auto">
-        {entries.map((e, i) => (
-          <li key={`${e.Path}-${i}`} className="flex items-start gap-2 text-xs">
-            <Badge tone={tone(e.Kind)}>{entryLabel(t, e, config, drives)}</Badge>
-            <span className="min-w-0 flex-1 break-all font-mono text-carbon-text" title={e.Path}>
-              {e.Path}
-            </span>
-            {e.Note && (
-              <span className="min-w-0 max-w-[45%] shrink-0 text-carbon-textMuted" title={e.Note}>
-                {e.Note}
+        {entries.map((e, i) => {
+          const note = entryNote(t, e)
+          return (
+            <li key={`${e.Path}-${i}`} className="flex items-start gap-2 text-xs">
+              <Badge tone={tone(e.Kind)}>{entryLabel(t, e, config, drives)}</Badge>
+              <span className="min-w-0 flex-1 break-all font-mono text-carbon-text" title={e.Path}>
+                {e.Path}
               </span>
-            )}
-          </li>
-        ))}
+              {note && (
+                <span className="min-w-0 max-w-[45%] shrink-0 text-carbon-textMuted" title={note}>
+                  {note}
+                </span>
+              )}
+            </li>
+          )
+        })}
       </ul>
 
       {conflicts.length > 0 && (

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 
 import { Empty, Num, Rows, Rule, Stack } from '../components/Shell'
 import { IconAction } from '../components/IconAction'
@@ -18,11 +19,13 @@ import { Stats } from '../components/Stats'
 import { CheckPanel } from '../components/CheckPanel'
 import { DupesPanel } from '../components/DupesPanel'
 import { TrashPanel } from '../components/TrashPanel'
+import { ViewSwitch, type LogView } from '../components/ViewSwitch'
 import { JobForm, useJobConfig } from './Editor'
 import { Choice, Day, Field, Text } from '../components/Field'
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { bytes } from '../lib/bytes'
-import { entryLabel } from '../lib/entryLabel'
+import { entryLabel, entryNote } from '../lib/entryLabel'
+import { useLiveTick } from '../lib/liveTick'
 import { usePlaces } from '../lib/places'
 import { api } from '../lib/api'
 import type { Direction, HistoryShow, Job, Run, RunEvent, Touch } from '../lib/api'
@@ -40,6 +43,7 @@ export function Jobs({
   jobs,
   runs,
   progress,
+  speeds,
   onPreview,
   onSaved,
 }: {
@@ -50,6 +54,8 @@ export function Jobs({
    */
   runs: Run[]
   progress: Record<string, RunEvent>
+  /** Bytes a second per running job, from the engine's moving frames. */
+  speeds: Record<string, number>
   onPreview: (name: string) => void
   onSaved: () => void
 }) {
@@ -65,8 +71,8 @@ export function Jobs({
   // The job open in the form, by its position in the configuration file.
   const [editing, setEditing] = useState<number | null>(null)
   const [removing, setRemoving] = useState<number | null>(null)
-  // Whose activity fold is open, by job name; one at a time.
-  const [activity, setActivity] = useState<string | null>(null)
+  // Whose history fold is open, by job name; one at a time.
+  const [history, setHistory] = useState<string | null>(null)
   // A counter used as the error's key, so each refused save remounts it and
   // replays the shake.
   const [refused, setRefused] = useState(0)
@@ -92,30 +98,17 @@ export function Jobs({
 
   return (
     <Stack>
-      <div className="flex flex-wrap items-center justify-end gap-2">
-        {config.error && (
-          <p key={refused} className="glim-shake me-auto text-xs text-statusFail">
-            {config.error}
-          </p>
-        )}
-        {config.saved && !config.error && (
-          <p className="me-auto text-xs text-statusOk">{t('edit.savedNote')}</p>
-        )}
-        {/* The key size, since making a job is what this page is for. It
-            stands outside every card, so it needs its own hueIndex. */}
-        <IconAction
-          title={t('edit.add')}
-          labelKey="edit.add"
-          size="key"
-          hueIndex={0}
-          onClick={() => {
-            const at = config.add()
-            setEditing(at)
-          }}
-        >
-          <IconAdd />
-        </IconAction>
-      </div>
+      {(config.error || config.saved) && (
+        <div className="flex flex-wrap items-center gap-2">
+          {config.error ? (
+            <p key={refused} className="glim-shake text-xs text-statusFail">
+              {config.error}
+            </p>
+          ) : (
+            <p className="text-xs text-statusOk">{t('edit.savedNote')}</p>
+          )}
+        </div>
+      )}
 
       {jobs.length === 0 && (!raw || raw.length === 0) ? (
         <Card title={t('jobs.title')} hueIndex={0}>
@@ -202,9 +195,9 @@ export function Jobs({
                       hueIndex={i + 7}
                       items={[
                         {
-                          label: t('jobs.activity'),
-                          labelKey: 'jobs.activity',
-                          onSelect: () => setActivity(activity === j.name ? null : j.name),
+                          label: t('jobs.history'),
+                          labelKey: 'jobs.history',
+                          onSelect: () => setHistory(history === j.name ? null : j.name),
                         },
                         ...(at !== null
                           ? [
@@ -231,8 +224,8 @@ export function Jobs({
                   </JobRow>
                   <Cadence job={j} />
 
-                  {activity === j.name && (
-                    <JobActivity job={j.name} />
+                  {history === j.name && (
+                    <JobHistory job={j.name} running={j.running} onClose={() => setHistory(null)} />
                   )}
 
                   {at !== null && at === editing && (
@@ -263,7 +256,7 @@ export function Jobs({
                         </p>
                       )}
                       <Progress event={progress[j.name]} />
-                      <Pace event={progress[j.name]} />
+                      <Pace event={progress[j.name]} speed={speeds[j.name]} />
                     </>
                   )}
                 </div>
@@ -367,6 +360,32 @@ export function Jobs({
             setRemoving(null)
           }}
         />
+      )}
+
+      {/* Room under the last card, so the floating button never covers its
+          buttons once the list is scrolled to the end. */}
+      <div aria-hidden className="h-[var(--btn-h-key)] shrink-0" />
+
+      {/* Making a job is what this page is for, so its button floats at the
+          window's corner and stays while the list scrolls. Rendered into the
+          body: the page's entrance animation transforms the page, and a fixed
+          element inside a transformed one scrolls with it. It stands outside
+          every card, so it takes its own hueIndex. */}
+      {createPortal(
+        <Button
+          variant="icon"
+          label={t('edit.add')}
+          labelKey="edit.add"
+          glyph={<IconAdd />}
+          tone="accent"
+          hueIndex={0}
+          className="glim-btn-key glim-fab"
+          onClick={() => {
+            const at = config.add()
+            setEditing(at)
+          }}
+        />,
+        document.body,
       )}
     </Stack>
   )
@@ -491,10 +510,13 @@ function Cadence({ job }: { job: Job }) {
 /**
  * What this job has done to individual files, newest first, folded under its
  * card. The runs the page holds carry counts rather than paths, so this has
- * its own endpoint.
+ * its own endpoint. While the job runs it asks again every second, and the
+ * engine answers with the running run's lines among the stored ones, so they
+ * appear as they happen and read the same once the run is stored.
  */
-function JobActivity({ job }: { job: string }) {
+function JobHistory({ job, running, onClose }: { job: string; running: boolean; onClose: () => void }) {
   const { t } = useT()
+  const tick = useLiveTick(running)
   const [touches, setTouches] = useState<Touch[] | null>(null)
   const [error, setError] = useState<string | null>(null)
   // Doubles as the list is scrolled to its end, rather than paging.
@@ -515,24 +537,28 @@ function JobActivity({ job }: { job: string }) {
 
   useEffect(() => {
     let live = true
-    setError(null)
     api
       .jobTouches(job, limit, query)
-      .then((got) => live && setTouches(got))
+      .then((got) => {
+        if (!live) return
+        setError(null)
+        setTouches(got)
+      })
       .catch((e: Error) => live && setError(e.message))
     return () => {
       live = false
     }
-  }, [job, limit, query])
+  }, [job, limit, query, tick])
 
-  // The search box stays when nothing matches, so a typo can be corrected.
+  // The heading and the search box stay when nothing matches, so a typo can
+  // be corrected and the fold closed from where it is.
   const search = (
     <div className="mb-2 flex items-center gap-2">
       <Text
         value={typed}
         onChange={setTyped}
-        placeholder={t('jobs.activitySearch')}
-        label={t('jobs.activitySearch')}
+        placeholder={t('jobs.historySearch')}
+        label={t('jobs.historySearch')}
         mono
       />
       {typed && (
@@ -546,23 +572,45 @@ function JobActivity({ job }: { job: string }) {
     </div>
   )
 
+  const head = (
+    <div className="mb-2 flex items-center justify-between gap-2">
+      <h3 className="text-xs font-medium uppercase tracking-wider text-carbon-textMuted">{t('jobs.history')}</h3>
+      <IconAction title={t('jobs.historyClose')} labelKey="jobs.historyClose" tone="subtle" onClick={onClose} />
+    </div>
+  )
+
+  // Escape closes the fold from anywhere inside it, the search box included.
+  const fold = (body: ReactNode) => (
+    <section
+      className="mt-1 w-full"
+      aria-label={t('jobs.history')}
+      onKeyDown={(e) => {
+        if (e.key !== 'Escape' || e.defaultPrevented) return
+        e.stopPropagation()
+        onClose()
+      }}
+    >
+      {head}
+      {search}
+      {body}
+    </section>
+  )
+
   if (error || !touches || touches.length === 0)
-    return (
-      <div className="mt-1 w-full">
-        {search}
+    return fold(
+      <>
         {error ? (
           <p className="mt-1 text-xs text-statusFail">{error}</p>
         ) : !touches ? (
-          <Empty>{t('jobs.activityLoading')}</Empty>
+          <Empty>{t('jobs.historyLoading')}</Empty>
         ) : (
-          <Empty>{query ? t('jobs.activityNoMatch', { q: query }) : t('jobs.activityEmpty')}</Empty>
+          <Empty>{query ? t('jobs.historyNoMatch', { q: query }) : t('jobs.historyEmpty')}</Empty>
         )}
-      </div>
+      </>,
     )
 
-  return (
-    <div className="mt-1 w-full">
-      {search}
+  return fold(
+    <>
       {/* Loads more near the bottom; 40px rather than the exact end, which a
           trackpad stops a pixel or two short of. */}
       <ul
@@ -574,12 +622,20 @@ function JobActivity({ job }: { job: string }) {
           if (touches.length >= limit) setLimit((n) => n * 2)
         }}
       >
-        {touches.map((e, i) => (
-          <TouchRow key={`${e.Run}-${e.Path}-${i}`} touch={e} />
+        {touches.map((e) => (
+          <TouchRow key={touchKey(e)} touch={e} />
         ))}
       </ul>
-    </div>
+    </>,
   )
+}
+
+/**
+ * A line's key, the same while its run goes and once it is stored, when the
+ * run's id changes: a new key would remount every row once a second.
+ */
+function touchKey(e: Touch): string {
+  return `${e.Job}\n${e.When}\n${e.Seq}`
 }
 
 /**
@@ -590,6 +646,7 @@ function TouchRow({ touch: e, withJob }: { touch: Touch; withJob?: boolean }) {
   const { t } = useT()
   const { jobs, drives } = usePlaces()
   const label = entryLabel(t, e, jobs.find((j) => j.name === e.Job), drives)
+  const note = entryNote(t, e)
   return (
     <li className="flex items-baseline gap-3 text-xs">
       {/* Wide enough for "Uploaded to" and a target's name; a longer one is
@@ -621,9 +678,9 @@ function TouchRow({ touch: e, withJob }: { touch: Touch; withJob?: boolean }) {
       <span className="min-w-0 flex-1 break-all font-mono text-carbon-text" title={e.Path}>
         {e.Path}
       </span>
-      {e.Note && (
-        <span className="min-w-0 max-w-[30%] shrink-0 text-carbon-textMuted" title={e.Note}>
-          {e.Note}
+      {note && (
+        <span className="min-w-0 max-w-[30%] shrink-0 text-carbon-textMuted" title={note}>
+          {note}
         </span>
       )}
     </li>
@@ -635,7 +692,7 @@ function TouchRow({ touch: e, withJob }: { touch: Touch; withJob?: boolean }) {
  * the database, since the log runs to tens of thousands of rows and only a
  * screenful has arrived.
  */
-function AllTouches({ job, kinds, query }: { job: string; kinds: string[]; query: string }) {
+function AllTouches({ job, kinds, query, tick }: { job: string; kinds: string[]; query: string; tick: number }) {
   const { t } = useT()
   const [touches, setTouches] = useState<Touch[] | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -660,25 +717,28 @@ function AllTouches({ job, kinds, query }: { job: string; kinds: string[]; query
 
   useEffect(() => {
     let live = true
-    setError(null)
     api
       .log(job, kinds, query, limit)
-      .then((got) => live && setTouches(got))
+      .then((got) => {
+        if (!live) return
+        setError(null)
+        setTouches(got)
+      })
       .catch((e: Error) => live && setError(e.message))
     return () => {
       live = false
     }
-  }, [job, kinds.join(','), query, limit])
+  }, [job, kinds.join(','), query, limit, tick])
 
   if (error) return <p className="mt-1 text-xs text-statusFail">{error}</p>
   if (!touches) return <Empty>{t('history.working')}</Empty>
   if (touches.length === 0)
-    return <Empty>{query ? t('jobs.activityNoMatch', { q: query }) : t('history.logEmpty')}</Empty>
+    return <Empty>{query ? t('jobs.historyNoMatch', { q: query }) : t('history.logEmpty')}</Empty>
 
   return (
     <Rows className="flex flex-col gap-1">
-      {touches.map((e, i) => (
-        <TouchRow key={`${e.Run}-${e.Path}-${i}`} touch={e} withJob={!job} />
+      {touches.map((e) => (
+        <TouchRow key={touchKey(e)} touch={e} withJob={!job} />
       ))}
       {more && <li ref={end} aria-hidden className="h-px" />}
     </Rows>
@@ -713,6 +773,11 @@ function touchTone(kind: string): 'ok' | 'warn' | 'fail' | 'neutral' {
  * stay unfiltered for the job cards. Filters go to the server, since a job
  * watching a folder writes a run a minute and would push a daily job out of
  * any fixed window.
+ *
+ * While any job runs, both views ask again every second, and a running run is
+ * listed with what it has done so far. The engine keeps a running run's lines
+ * until it stores the run and then answers from the table, so the lists never
+ * hold a line twice and settle on exactly what a reload shows.
  */
 export function History({
   runs,
@@ -726,12 +791,16 @@ export function History({
   onChanged?: () => void
 }) {
   const { t } = useT()
-  // Which run is open, by its id; one at a time.
-  const [open, setOpen] = useState<number | null>(null)
+  // Which run is open, one at a time. By job and start as well as by id,
+  // since a running run's id changes when it is stored.
+  const [open, setOpen] = useState<{ id: number; job: string; started: string } | null>(null)
+  const isOpen = (r: Run) =>
+    !!open && (r.ID === open.id || (open.id < 0 && r.Job === open.job && Date.parse(r.Started) === Date.parse(open.started)))
+  const tick = useLiveTick(jobs.some((j) => j.running))
   const [job, setJob] = useState('')
   const [show, setShow] = useState<HistoryShow>('all')
   // Files first: where a file went is the usual question.
-  const [view, setView] = useState<'runs' | 'files'>('files')
+  const [view, setView] = useState<LogView>('files')
   const [kind, setKind] = useState<Show>('all')
   // The box answers every keystroke; the engine only gets the settled query.
   const [typed, setTyped] = useState('')
@@ -757,14 +826,14 @@ export function History({
     let live = true
     setLoading(true)
     api
-      .history(job || undefined, show, limit, since, until)
+      .history(job || undefined, show, limit, since, until, true)
       .then((got) => live && setOwn(got))
       .catch(() => live && setOwn([]))
       .finally(() => live && setLoading(false))
     return () => {
       live = false
     }
-  }, [view, job, show, limit, since, until, runs])
+  }, [view, job, show, limit, since, until, runs, tick])
 
   const list = own ?? runs
 
@@ -793,19 +862,6 @@ export function History({
 
   const controls = (
     <div className="mb-4 flex flex-wrap items-end gap-3">
-      {/* Both views stay: a run that fails before touching anything writes no
-          file lines at all. */}
-      <div className="w-40 shrink-0">
-        <Choice<'runs' | 'files'>
-          label={t('history.filterShow')}
-          value={view}
-          onChange={setView}
-          options={[
-            { value: 'files', label: t('history.files') },
-            { value: 'runs', label: t('history.runs') },
-          ]}
-        />
-      </div>
       <div className="w-56 shrink-0">
         <Choice
           label={t('history.filterJob')}
@@ -841,7 +897,7 @@ export function History({
               value={typed}
               onChange={setTyped}
               placeholder={t('history.pathHint')}
-              label={t('jobs.activitySearch')}
+              label={t('jobs.historySearch')}
               mono
             />
           </div>
@@ -910,42 +966,55 @@ export function History({
     </div>
   )
 
+  // The switch stands above the card, where a page's view selector stands,
+  // and the card below it reaches the bottom of the window however short its
+  // list. Both views stay: a run that fails before touching anything writes no
+  // file lines at all.
+  const page = (body: ReactNode) => (
+    <div className="flex flex-col gap-10">
+      <div className="w-full sm:max-w-xs">
+        <ViewSwitch value={view} onChange={setView} />
+      </div>
+      <div className="flex flex-1 flex-col *:flex-1">
+        <Card title={t('history.title')} hueIndex={0}>
+          {controls}
+          {body}
+        </Card>
+      </div>
+    </div>
+  )
+
   // The file log has its own paging and empty states.
-  if (view === 'files') {
-    return (
-      <Card title={t('history.title')} hueIndex={0}>
-        {controls}
-        <AllTouches job={job} kinds={SHOWS[kind]} query={query} />
-      </Card>
-    )
-  }
+  if (view === 'files') return page(<AllTouches job={job} kinds={SHOWS[kind]} query={query} tick={tick} />)
 
   if (list.length === 0) {
-    return (
-      <Card title={t('history.title')} hueIndex={0}>
-        {controls}
-        {/* With a filter on, empty means nothing matches, not no history. */}
-        <Empty>{loading ? t('history.working') : filtered ? t('history.noMatch') : t('history.empty')}</Empty>
-      </Card>
+    return page(
+      // With a filter on, empty means nothing matches, not no history.
+      <Empty>{loading ? t('history.working') : filtered ? t('history.noMatch') : t('history.empty')}</Empty>,
     )
   }
-  return (
-    <Card title={t('history.title')} hueIndex={0}>
-      {controls}
+  return page(
+    <>
       <div className="mb-4">
         <Stats />
       </div>
       <Rows className="flex flex-col">
         {list.map((r, i) => (
-          <li key={r.ID}>
+          <li key={`${r.Job}\n${r.Started}`}>
             {i > 0 && <Rule />}
             <button
               type="button"
-              aria-expanded={open === r.ID}
-              onClick={() => setOpen(open === r.ID ? null : r.ID)}
+              aria-expanded={isOpen(r)}
+              onClick={() => setOpen(isOpen(r) ? null : { id: r.ID, job: r.Job, started: r.Started })}
               className="flex w-full items-center gap-3 py-2.5 text-start text-xs transition-colors hover:bg-carbon-hover"
             >
-              <Badge tone={r.Err ? 'fail' : 'ok'}>{r.Err ? t('history.failed') : t('history.ok')}</Badge>
+              {r.Running ? (
+                <Badge tone="active" className="glim-live">
+                  {t('jobs.state.running')}
+                </Badge>
+              ) : (
+                <Badge tone={r.Err ? 'fail' : 'ok'}>{r.Err ? t('history.failed') : t('history.ok')}</Badge>
+              )}
               <span className="w-32 shrink-0 truncate font-medium">{r.Job}</span>
               <span className="shrink-0 text-xs text-carbon-textMuted">
                 <Since when={r.Started} />
@@ -969,8 +1038,8 @@ export function History({
               {/* Shows which closed run had conflicts without opening each. */}
               {r.Conflicts > 0 && <Badge tone="warn">{r.Conflicts}</Badge>}
             </button>
-            {open === r.ID && (
-              <RunDetail run={r.ID} job={r.Job} onResolved={() => onChanged?.()} />
+            {isOpen(r) && (
+              <RunDetail run={r.ID} job={r.Job} tick={r.Running ? tick : 0} onResolved={() => onChanged?.()} />
             )}
           </li>
         ))}
@@ -983,6 +1052,6 @@ export function History({
           {loading ? t('history.working') : ''}
         </div>
       )}
-    </Card>
+    </>,
   )
 }

@@ -125,6 +125,7 @@ export function App() {
   const [jobs, setJobs] = useState<Job[]>([])
   const [runs, setRuns] = useState<Run[]>([])
   const [progress, setProgress] = useState<Record<string, RunEvent>>({})
+  const [speeds, setSpeeds] = useState<Record<string, number>>({})
   const [previewing, setPreviewing] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 
@@ -179,15 +180,26 @@ export function App() {
     wireTooltips()
     refresh()
     return api.watch((ev) => {
-      // "moving" frames arrive twice a second during a run and change nothing
-      // drawn here; falling through would refetch the job list each time.
-      if (ev.phase === 'moving') return
+      // "moving" frames arrive twice a second during a run. Only their speed
+      // is drawn here, and falling through would refetch the job list each
+      // time.
+      if (ev.phase === 'moving') {
+        const speed = ev.speed ?? 0
+        setSpeeds((prev) => ((prev[ev.job] ?? 0) === speed ? prev : { ...prev, [ev.job]: speed }))
+        return
+      }
       if (ev.phase === 'progress') {
         // Progress does not change the job list, so it is not refetched.
         setProgress((prev) => ({ ...prev, [ev.job]: ev }))
         return
       }
       setProgress((prev) => {
+        const next = { ...prev }
+        delete next[ev.job]
+        return next
+      })
+      setSpeeds((prev) => {
+        if (!(ev.job in prev)) return prev
         const next = { ...prev }
         delete next[ev.job]
         return next
@@ -233,7 +245,10 @@ export function App() {
   return (
     // A fixed rail and a page that scrolls beside it, or below it where the
     // window is too narrow for both side by side. The gutter padding lets the
-    // rail float as a card on the ground.
+    // rail float as a card on the ground. Beside the rail the page reaches
+    // down through the gutter and pads its end by the same amount, so a page
+    // that fills the window, or one scrolled to its end, stops on the rail's
+    // bottom line with room for its cards' shadow.
     <div className="flex h-screen flex-col gap-4 overflow-hidden bg-carbon-background p-[var(--page-gutter)] sm:flex-row">
       <Sidebar<Tab>
         value={previewing ? 'jobs' : tab}
@@ -251,12 +266,12 @@ export function App() {
       />
 
       <Places.Provider value={places}>
-      <main className="min-w-0 flex-1 overflow-y-auto">
+      <main className="min-w-0 flex-1 overflow-y-auto sm:-mb-[var(--page-gutter)]">
         {/* Keyed on the tab, so the subtree remounts and GlimStone's entrance
             animation plays on every tab change. */}
         <div
           key={previewing ? `preview:${previewing}` : tab}
-          className="glim-page-enter flex min-h-full w-full flex-col gap-8 px-4 pb-4 pt-4 sm:px-6 sm:pb-6 sm:pt-0 md:px-8 md:pb-8"
+          className="glim-page-enter flex min-h-full w-full flex-col gap-8 px-4 pb-4 pt-4 sm:px-6 sm:pb-[var(--page-gutter)] sm:pt-0 md:px-8"
         >
           {error && (
             <Card title={t('error.unreachable')} hueIndex={0}>
@@ -273,7 +288,14 @@ export function App() {
               }}
             />
           ) : tab === 'jobs' ? (
-            <Jobs jobs={jobs} runs={runs} progress={progress} onPreview={setPreviewing} onSaved={refresh} />
+            <Jobs
+              jobs={jobs}
+              runs={runs}
+              progress={progress}
+              speeds={speeds}
+              onPreview={setPreviewing}
+              onSaved={refresh}
+            />
           ) : tab === 'targets' ? (
             <Targets />
           ) : tab === 'history' ? (

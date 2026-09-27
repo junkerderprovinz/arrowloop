@@ -830,7 +830,8 @@ export function Choice<T extends string>({
   disabled,
   style,
 }: {
-  options: { value: T; label: string; colour?: string }[];
+  /** `hint` puts an (i) in its segment that explains that one option. */
+  options: { value: T; label: string; colour?: string; hint?: string }[];
   value: T;
   onChange: (next: T) => void;
   /** Dimmed and inert, but still showing the value in force. */
@@ -855,7 +856,7 @@ export function Choice<T extends string>({
           <TouchableOpacity
             key={option.value}
             onPress={() => onChange(option.value)}
-            style={[styles.segment, corners.pill, on ? { backgroundColor: fill } : null]}
+            style={[styles.segment, option.hint ? styles.segmentRow : null, corners.pill, on ? { backgroundColor: fill } : null]}
           >
             <Text
               numberOfLines={1}
@@ -870,6 +871,8 @@ export function Choice<T extends string>({
             >
               {option.label}
             </Text>
+            {/* Its own press target, so reading it does not choose it. */}
+            {option.hint ? <InfoBubble tip={option.hint} on={on ? contrastOn(fill) : undefined} /> : null}
           </TouchableOpacity>
         );
       })}
@@ -1112,7 +1115,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  segmentText: { fontSize: text.dense, fontWeight: "500" },
+  segmentText: { fontSize: text.dense, fontWeight: "500", flexShrink: 1 },
+  segmentRow: { flexDirection: "row", gap: 4 },
 
   swatchRing: { flex: 1, maxWidth: 32, aspectRatio: 1, alignItems: "center", justifyContent: "center" },
   swatchGap: { width: "88%", height: "88%", alignItems: "center", justifyContent: "center" },

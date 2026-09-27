@@ -58,7 +58,7 @@ describe('one height, named once', () => {
       return Number((m as RegExpExecArray)[1])
     }
     const steps = (rem('--btn-h-key') - rem('--btn-h')) / 2 / 0.25
-    expect(read('../pages/Editor.tsx')).toContain(`@2xl:-mt-${steps}`)
+    expect(read('../pages/Editor.tsx')).toContain(`@4xl:-mt-${steps}`)
   })
 
   it('gives the direction button room for its longest name', () => {

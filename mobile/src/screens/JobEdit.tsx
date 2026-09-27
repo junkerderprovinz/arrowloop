@@ -191,7 +191,7 @@ export function JobEdit() {
     ]);
   };
 
-  if (!job) return <Empty title={t("jobs.activityLoading")} detail={error || undefined} />;
+  if (!job) return <Empty title={t("jobs.historyLoading")} detail={error || undefined} />;
 
   return (
     <Page>
@@ -267,16 +267,9 @@ export function JobEdit() {
       <>
       <Section
         title={t("mode.label")}
-        // Describes the chosen mode, since two of the three delete files.
-        hint={
-          (job.direction ?? "both") === "both"
-            ? t("mode.onlyOneWay")
-            : job.mode === "mirror"
-              ? t("mode.mirrorHint")
-              : job.mode === "move"
-                ? t("mode.moveHint")
-                : t("mode.syncHint")
-        }
+        // Each mode explains itself in its segment. An inert strip cannot be
+        // reached, so the heading says why.
+        hint={(job.direction ?? "both") === "both" ? t("mode.onlyOneWay") : undefined}
         hue={2}
       >
         {/* Inert on `sync` for a both-ways job, so the card keeps its shape. */}
@@ -285,9 +278,9 @@ export function JobEdit() {
           disabled={(job.direction ?? "both") === "both"}
           onChange={(mode) => set({ mode }, true)}
           options={[
-            { value: "sync", label: t("mode.sync") },
-            { value: "mirror", label: t("mode.mirror") },
-            { value: "move", label: t("mode.move") },
+            { value: "sync", label: t("mode.sync"), hint: t("mode.syncHint") },
+            { value: "mirror", label: t("mode.mirror"), hint: t("mode.mirrorHint") },
+            { value: "move", label: t("mode.move"), hint: t("mode.moveHint") },
           ]}
         />
       </Section>

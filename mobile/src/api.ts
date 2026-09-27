@@ -243,6 +243,8 @@ export interface RunEvent {
    * small files pass to name them.
    */
   rate?: number;
+  /** Bytes a second, on every "moving" event while anything moves at all. */
+  speed?: number;
 }
 
 /**

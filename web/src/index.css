@@ -241,3 +241,15 @@ body {
 .group:has(> .glim-brand-tile:focus-visible) .glim-readme-btn-hint {
   color: var(--tile-ink);
 }
+
+/* The one action a page exists for, floating in the window's bottom corner so
+   it stays put while the list scrolls under it. A pill, and a circle where the
+   label mode shows the glyph alone, as the phone's floating button. */
+.glim-btn.glim-fab {
+  position: fixed;
+  inset-block-end: calc(var(--page-gutter) + 1rem);
+  inset-inline-end: calc(var(--page-gutter) + 1rem);
+  z-index: 30;
+  border-radius: var(--radius-pill);
+  box-shadow: var(--elevation);
+}

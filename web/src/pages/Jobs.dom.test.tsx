@@ -15,6 +15,10 @@ vi.mock('../lib/api', () => ({
     remotes: () => Promise.resolve({ remotes: [], backends: [] }),
     run: vi.fn(),
     stopJob: vi.fn(),
+    jobTouches: () =>
+      Promise.resolve([
+        { Kind: 'copy', Side: 'right', Path: 'a.jpg', Note: '', Size: 10, Run: 1, Job: 'photos', When: '2027-03-01T12:00:00Z', Seq: 0 },
+      ]),
   },
 }))
 
@@ -36,7 +40,16 @@ function job(over: Partial<Job> = {}): Job {
 }
 
 function card(over: Partial<Job> = {}) {
-  render(<Jobs jobs={[job(over)]} runs={[]} progress={{}} onPreview={() => undefined} onSaved={() => undefined} />)
+  render(
+    <Jobs
+      jobs={[job(over)]}
+      runs={[]}
+      progress={{}}
+      speeds={{}}
+      onPreview={() => undefined}
+      onSaved={() => undefined}
+    />,
+  )
 }
 
 afterEach(cleanup)
@@ -76,7 +89,7 @@ describe('a job card', () => {
     const items = within(menu)
       .getAllByRole('menuitem')
       .map((b) => b.textContent?.trim())
-    expect(items).toEqual(['Activity', 'Edit', 'Duplicate', 'Remove', 'Preview'])
+    expect(items).toEqual(['History', 'Edit', 'Duplicate', 'Remove', 'Preview'])
   })
 
   it('closes the menu on Escape', async () => {
@@ -86,5 +99,29 @@ describe('a job card', () => {
     await screen.findByRole('menu')
     fireEvent.keyDown(document, { key: 'Escape' })
     expect(screen.queryByRole('menu')).toBeNull()
+  })
+
+  it('closes its history with the button on it and with Escape', async () => {
+    card()
+    const open = async () => {
+      fireEvent.click(await screen.findByRole('button', { name: 'Options' }))
+      fireEvent.click(within(await screen.findByRole('menu')).getByRole('menuitem', { name: 'History' }))
+      return screen.findByRole('region', { name: 'History' })
+    }
+
+    await open()
+    fireEvent.click(screen.getByRole('button', { name: 'Close the history' }))
+    expect(screen.queryByRole('region', { name: 'History' })).toBeNull()
+
+    const fold = await open()
+    fireEvent.keyDown(within(fold).getByRole('textbox'), { key: 'Escape' })
+    expect(screen.queryByRole('region', { name: 'History' })).toBeNull()
+  })
+
+  it('floats the button that adds a job outside the page', async () => {
+    card()
+    const add = await screen.findByRole('button', { name: 'Add a job' })
+    expect(add.className).toMatch(/glim-fab/)
+    expect(add.closest('.flex.flex-col.gap-10')).toBeNull()
   })
 })

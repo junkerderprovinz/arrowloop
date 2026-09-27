@@ -145,7 +145,7 @@ export function Jobs() {
     ]);
   };
 
-  if (jobs === null) return <Empty title={t("jobs.activityLoading")} detail={error || undefined} />;
+  if (jobs === null) return <Empty title={t("jobs.historyLoading")} detail={error || undefined} />;
 
   return (
     <Floating>
@@ -255,7 +255,7 @@ function JobCard({
       <Caption>
         {job.lastSuccess
           ? t("jobs.lastRun", { when: clock(job.lastSuccess, lang) })
-          : t("jobs.activityEmpty")}
+          : t("jobs.historyEmpty")}
       </Caption>
 
       {/* Two buttons, since a held job can still be started by hand. A

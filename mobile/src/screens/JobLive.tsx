@@ -92,7 +92,7 @@ export function JobLive({ name }: { name: string }) {
         </View>
       </Section>
 
-      <Section title={t("jobs.activity")} hint={runs.length ? undefined : t("jobs.activityEmpty")}>
+      <Section title={t("jobs.history")} hint={runs.length ? undefined : t("jobs.historyEmpty")}>
         {runs.map((run) => (
           <Card key={run.ID}>
             <View style={styles.head}>

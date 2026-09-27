@@ -3,6 +3,7 @@ import type { CSSProperties, ReactNode } from 'react'
 
 import { hueVars } from '../lib/appearance'
 import { groupStage } from '../lib/controls'
+import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { perRowFor } from '../lib/segmentLayout'
 import { useRainbow } from './Shell'
 
@@ -15,7 +16,16 @@ import { useRainbow } from './Shell'
  * both scales the strip spans the width of its box and the segments share it,
  * since a strip that stops short leaves a ragged edge down a card of them.
  */
-export type Option<T extends string> = { value: T; label: string; icon?: ReactNode }
+export type Option<T extends string> = {
+  value: T
+  label: string
+  icon?: ReactNode
+  /**
+   * What this one option does, behind an (i) inside its segment, for options
+   * that each need their own explanation.
+   */
+  hint?: string
+}
 
 /**
  * The floor for a big selector's segments, matching BombVault's
@@ -215,6 +225,21 @@ export function Selector<T extends string>({
               </span>
             )}
             <span className="glim-tab-label">{o.label}</span>
+            {o.hint && (
+              // Reading the explanation must not choose the option, by pointer
+              // or by key.
+              <span
+                className="inline-flex"
+                onClick={(e) => e.stopPropagation()}
+                onKeyDown={(e) => {
+                  if (e.key !== 'Enter' && e.key !== ' ') return
+                  e.preventDefault()
+                  e.stopPropagation()
+                }}
+              >
+                <InfoBubble tip={o.hint} onAccent={active} />
+              </span>
+            )}
           </button>
         )
       })}

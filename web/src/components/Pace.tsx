@@ -2,15 +2,18 @@ import { useEffect, useRef, useState } from 'react'
 
 import { useT } from '../lib/i18n'
 import type { RunEvent } from '../lib/api'
+import { speed as perSecond } from '../lib/speed'
 
 /**
  * How fast a run is going and how long it has left. The count itself is on
  * the progress bar.
  *
- * The rate is in files per second because progress events carry a count of
- * finished work, not bytes, so one enormous file looks stalled. It is measured
- * over a recent window, so an early slow stretch does not skew the estimate,
- * and afresh for each stage of reading the job, which go at different speeds.
+ * Two speeds: the bytes a second the engine reads from rclone's accounting and
+ * sends with its moving frames, and the finished files a second counted here
+ * from the progress events, which the estimate of the time left rests on. The
+ * files are measured over a recent window, so an early slow stretch does not
+ * skew the estimate, and afresh for each stage of reading the job, which go at
+ * different speeds.
  */
 
 /** How far back the rate looks: long enough to be steady, short enough to react. */
@@ -18,8 +21,8 @@ const WINDOW_MS = 15_000
 
 type Sample = { at: number; done: number }
 
-export function Pace({ event }: { event: RunEvent | undefined }) {
-  const { t } = useT()
+export function Pace({ event, speed = 0 }: { event: RunEvent | undefined; speed?: number }) {
+  const { t, lang } = useT()
   const samples = useRef<Sample[]>([])
   const stage = useRef('')
   const [, tick] = useState(0)
@@ -51,7 +54,9 @@ export function Pace({ event }: { event: RunEvent | undefined }) {
     return () => clearInterval(id)
   }, [])
 
-  if (!event || event.phase !== 'progress' || total <= 0) return null
+  if (!event || event.phase !== 'progress') return null
+  const moving = speed > 0
+  if (total <= 0 && !moving) return null
 
   const first = samples.current[0]
   const last = samples.current[samples.current.length - 1]
@@ -62,11 +67,18 @@ export function Pace({ event }: { event: RunEvent | undefined }) {
 
   const left = total - done
   const seconds = rate && left > 0 ? Math.round(left / rate) : null
-  if (rate === null) return null
+  if (rate === null && !moving) return null
+  const files = new Intl.NumberFormat(lang, { minimumFractionDigits: 1, maximumFractionDigits: 1 })
 
   return (
-    <p className="flex flex-wrap items-center gap-x-3 text-xs text-carbon-textMuted">
-      <span>{t('progress.rate', { rate: rate.toFixed(1) })}</span>
+    <p className="flex flex-wrap items-center gap-x-3 text-xs tabular-nums text-carbon-textMuted">
+      {moving && (
+        <span className="font-medium text-carbon-textSub" title={t('progress.speed')}>
+          <span className="sr-only">{t('progress.speed')} </span>
+          {perSecond(speed, lang)}
+        </span>
+      )}
+      {rate !== null && <span>{t('progress.rate', { rate: files.format(rate) })}</span>}
       {seconds !== null && <span>{t('progress.left', { time: humanTime(seconds) })}</span>}
     </p>
   )

@@ -6,7 +6,7 @@ import { useT } from "../i18n";
 import type { HistoryStack } from "../nav";
 import { space } from "../theme";
 import { Badge, Caption, Card, Empty, Mono, Page, Title } from "../ui";
-import { entryKey } from "./History";
+import { entryWord } from "./History";
 
 /**
  * What one run did, path by path. The entries are fetched only when a run is
@@ -41,7 +41,7 @@ export function RunDetail() {
       {[...groups.entries()].map(([kind, list]) => (
         <Card key={kind}>
           <View style={styles.head}>
-            <Title>{t(entryKey(kind))}</Title>
+            <Title>{entryWord(kind, t)}</Title>
             <Badge label={String(list.length)} />
           </View>
           {list.slice(0, 50).map((entry, i) => (

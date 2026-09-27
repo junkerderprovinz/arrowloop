@@ -190,15 +190,13 @@ export function Engine() {
             />
           </Field>
           {/* Inert and showing `sync` for a both-ways default rather than
-              vanishing, so the card keeps its shape, as on the phone. The
-              bubble explains all three modes either way. */}
+              vanishing, so the card keeps its shape, as on the phone. Each
+              mode explains itself in its own segment; while the strip is inert
+              and cannot be reached, the label's bubble says why and explains
+              all three. */}
           <Field
             label={t('mode.label')}
-            hint={
-              (defaults.direction ?? 'both') === 'both'
-                ? `${t('mode.onlyOneWay')} ${modesHint(t)}`
-                : modesHint(t)
-            }
+            hint={(defaults.direction ?? 'both') === 'both' ? `${t('mode.onlyOneWay')} ${modesHint(t)}` : undefined}
           >
             <Selector<'sync' | 'mirror' | 'move'>
               scale="small"
@@ -212,9 +210,9 @@ export function Engine() {
               }
               onChange={(mode) => setDefault({ mode })}
               options={[
-                { value: 'sync', label: t('mode.sync') },
-                { value: 'mirror', label: t('mode.mirror') },
-                { value: 'move', label: t('mode.move') },
+                { value: 'sync', label: t('mode.sync'), hint: t('mode.syncHint') },
+                { value: 'mirror', label: t('mode.mirror'), hint: t('mode.mirrorHint') },
+                { value: 'move', label: t('mode.move'), hint: t('mode.moveHint') },
               ]}
             />
           </Field>

@@ -39,6 +39,10 @@ const CARRIERS = new Set(['hint', 'tip', 'title', 'message', 'label', 'placehold
  * expression container, and what stands before it names the prop.
  */
 export function propAround(source: string, at: number): string | null {
+  // An option handed over as an object names its bubble by key, as in a
+  // selector's `{ value, label, hint: t('…') }`.
+  const field = /[{,]\s*([A-Za-z][A-Za-z0-9]*)\s*:\s*$/.exec(source.slice(Math.max(0, at - 80), at))
+  if (field) return field[1]
   let depth = 0
   for (let i = at; i >= 0; i--) {
     const c = source[i]

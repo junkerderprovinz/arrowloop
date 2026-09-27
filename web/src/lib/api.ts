@@ -195,6 +195,11 @@ export type Run = {
   Unchanged: number
   Skipped: number
   Err: string
+  /**
+   * A run still going, listed only when asked for with `going`. Its id is
+   * negative, its counts are what it has done so far and it has no end yet.
+   */
+  Running?: boolean
 }
 
 /** A connected network share, as Windows Explorer lists it under "This PC". */
@@ -251,7 +256,11 @@ export type RunEntry = {
   Kind: string
   Side: string
   Path: string
-  /** An error's own words, or which way a conflict went. Often empty. */
+  /**
+   * An error's own words, which way a conflict went, or one of the words the
+   * engine writes on ordinary work (internal/apply's Note constants). Often
+   * empty; entryNote in lib/entryLabel.ts says what is shown.
+   */
   Note: string
   /** How big the file was. Zero for a folder, a skip and an error. */
   Size: number
@@ -262,6 +271,8 @@ export type Touch = RunEntry & {
   Run: number
   Job: string
   When: string
+  /** The line's place in its run; with Job and When it names the line before and after the run is stored. */
+  Seq: number
 }
 
 /**
@@ -409,8 +420,9 @@ export type TrashListing = {
 
 export type RunEvent = {
   job: string
-  /** `moving` is not drawn here, but it has to be known so its frames do not
-   *  fall through to the generic handler. See App.tsx. */
+  /** `moving` carries the files in the air and the speed; only the speed is
+   *  drawn here, and the phase has to be known so its frames do not fall
+   *  through to the generic handler. See App.tsx. */
   phase: 'started' | 'progress' | 'finished' | 'moving'
   error?: string
   done?: number
@@ -419,10 +431,14 @@ export type RunEvent = {
   path?: string
   /** Which side the work lands on, or the side being read. */
   side?: string
+  /** What the step's log line says beyond its kind; see RunEntry.Note. */
+  note?: string
   /** Set while the job is still being read, before anything moves. */
   stage?: 'list' | 'check' | 'compare'
   /** The total is the last run's count, so this run may pass it. */
   guess?: boolean
+  /** Bytes a second, on a `moving` frame, while anything moves at all. */
+  speed?: number
 }
 
 /** A refusal from the engine. The status tells a wrong password from a lockout
@@ -557,10 +573,12 @@ export const api = {
   /**
    * The run log, newest first. `show` filters at the server: a watching job
    * writes a run a minute, so filtering the fetched page would miss most runs.
+   * `going` lists the runs still going among them.
    */
-  history: (job?: string, show: HistoryShow = 'all', limit = 50, since = '', until = '') =>
+  history: (job?: string, show: HistoryShow = 'all', limit = 50, since = '', until = '', going = false) =>
     request<Run[]>(
       `/api/history?limit=${limit}` +
+        (going ? '&going=1' : '') +
         (job ? `&job=${encodeURIComponent(job)}` : '') +
         (show !== 'all' ? `&show=${show}` : '') +
         // Plain dates, so the server decides in its own zone where a day begins.

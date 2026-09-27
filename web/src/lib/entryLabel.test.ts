@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import type { Job, RunEntry, Volume } from './api'
 import { de } from './i18n'
-import { entryLabel, placeOf } from './entryLabel'
+import { entryLabel, entryNote, placeOf } from './entryLabel'
 
 // The German table, so the test reads the phrases somebody asked for.
 const t = (key: string, vars?: Record<string, string | number>) =>
@@ -81,5 +81,37 @@ describe('what happened to a file', () => {
 
   it('keeps the plain word once the job is gone', () => {
     expect(entryLabel(t, entry('copy', 'right'), undefined, drives)).toBe(de['entry.copy'])
+  })
+})
+
+describe('what the note adds', () => {
+  const local = job('/mnt/user/testlinks', '/mnt/user/testrechts')
+  const noted = (Kind: string, Side: string, Note: string, Path = 'a.jpg'): RunEntry => ({ Kind, Side, Path, Note, Size: 0 })
+
+  it.each([
+    ['a copy over a file', noted('copy', 'right', 'replaced'), 'In testrechts ersetzt'],
+    ['a rename in one folder', noted('move', 'left', 'fotos/alt.jpg', 'fotos/neu.jpg'), 'In testlinks umbenannt'],
+    ['a move into another folder', noted('move', 'left', 'alt/a.jpg', 'neu/a.jpg'), 'In testlinks verschoben'],
+    ['a file that left for the other side', noted('move', 'left', 'relocated'), 'Nach testrechts verschoben'],
+    ['a deletion into the bin', noted('trash', 'right', 'bin'), 'In testrechts in den Papierkorb'],
+    ['a deletion from before the note', noted('trash', 'right', ''), 'In testrechts gelöscht'],
+    ['a conflict nobody decided', noted('conflict', '', 'keep both'), 'Konflikt, beide Fassungen behalten'],
+    ['a conflict decided for the left', noted('conflict', '', 'keep left'), 'Konflikt, Fassung aus testlinks behalten'],
+    ['a file both sides already had', noted('record', '', ''), 'Auf beiden Seiten schon gleich'],
+  ])('%s', (_, e, want) => {
+    expect(entryLabel(t, e, local, drives)).toBe(want)
+  })
+
+  it('never falls back to a word that says nothing', () => {
+    for (const kind of ['copy', 'move', 'trash', 'conflict', 'mkdir', 'rmdir', 'skip', 'record', 'unverified']) {
+      expect(entryLabel(t, entry(kind, ''), local, drives)).not.toBe('erledigt')
+    }
+  })
+
+  it('shows what the label cannot say and nothing it already does', () => {
+    expect(entryNote(t, noted('copy', 'right', 'replaced'))).toBeNull()
+    expect(entryNote(t, noted('conflict', '', 'keep both'))).toBeNull()
+    expect(entryNote(t, noted('move', 'left', 'fotos/alt.jpg'))).toBe('vorher fotos/alt.jpg')
+    expect(entryNote(t, noted('skip', '', 'the file was busy'))).toBe('the file was busy')
   })
 })

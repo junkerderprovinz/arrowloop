@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
-import { entryLabel } from "../../../web/src/lib/entryLabel";
+import { entryLabel, entryNote, plainKey } from "../../../web/src/lib/entryLabel";
 import { api, failed, touched, type Job, type Run, type Touch } from "../api";
 import { isPerfectlyIdle } from "../eggs";
 import { Field } from "../fields";
@@ -170,7 +170,7 @@ function FileLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "fil
       {open ? (
         <>
           <Field
-            label={t("jobs.activitySearch")}
+            label={t("jobs.historySearch")}
             value={typed}
             onChange={setTyped}
             placeholder={t("history.pathHint")}
@@ -226,7 +226,7 @@ function FileLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "fil
       ListHeaderComponent={header}
       ListEmptyComponent={
         <Empty
-          title={query ? t("jobs.activityNoMatch", { q: query }) : t("history.logEmpty")}
+          title={query ? t("jobs.historyNoMatch", { q: query }) : t("history.logEmpty")}
           detail={error || undefined}
         />
       }
@@ -248,7 +248,7 @@ function FileLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "fil
               <Badge
                 label={entryLabel(
                   t,
-                  { Kind: item.Kind, Side: item.Side ?? "" },
+                  { Kind: item.Kind, Side: item.Side ?? "", Note: item.Note, Path: item.Path },
                   configs.find((c) => c.name === item.Job),
                   drives,
                 )}
@@ -266,8 +266,8 @@ function FileLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "fil
               <Caption>{clock(item.When, lang)}</Caption>
               {item.Size ? <Caption>{bytes(item.Size)}</Caption> : null}
             </View>
-            {/* Why a path was skipped, or which way a conflict went. */}
-            {item.Note ? <Caption>{item.Note}</Caption> : null}
+            {/* Why a path was skipped, or the name a renamed file had. */}
+            {shownNote(t, item) ? <Caption>{shownNote(t, item)}</Caption> : null}
           </Pressable>
         </Arrive>
       )}
@@ -442,37 +442,15 @@ function tone(kind: string): "ok" | "warn" | "fail" | "neutral" {
   return "neutral";
 }
 
-/** Returns the translation key for an entry kind; RunDetail uses it too. */
-export function entryKey(
-  kind: string,
-):
-  | "entry.copy"
-  | "entry.move"
-  | "entry.trash"
-  | "entry.conflict"
-  | "entry.mkdir"
-  | "entry.rmdir"
-  | "entry.skip"
-  | "entry.other" {
-  switch (kind) {
-    case "copy":
-      return "entry.copy";
-    case "move":
-      return "entry.move";
-    case "trash":
-    case "delete":
-      return "entry.trash";
-    case "conflict":
-      return "entry.conflict";
-    case "mkdir":
-      return "entry.mkdir";
-    case "rmdir":
-      return "entry.rmdir";
-    case "skip":
-      return "entry.skip";
-    default:
-      return "entry.other";
-  }
+/** The note beside a file log line, or null when its label already says it. */
+function shownNote(t: T, item: Touch): string | null {
+  return entryNote(t, { Kind: item.Kind, Side: item.Side ?? "", Note: item.Note });
+}
+
+/** An entry kind in its plain word, or the kind itself for one this build does not know; RunDetail uses it too. */
+export function entryWord(kind: string, t: T): string {
+  const key = plainKey(kind);
+  return key ? t(key) : kind;
 }
 
 export function counters(run: Run, t: T): string {

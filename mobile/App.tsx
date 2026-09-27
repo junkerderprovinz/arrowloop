@@ -220,7 +220,7 @@ function Shell() {
                 <HistoryNav.Screen
                   name="RunDetail"
                   component={RunDetail}
-                  options={{ title: t("jobs.activity") }}
+                  options={{ title: t("jobs.history") }}
                 />
               </HistoryNav.Navigator>
             )}

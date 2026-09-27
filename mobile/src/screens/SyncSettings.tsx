@@ -64,7 +64,7 @@ export function SyncSettings() {
           const both = (defaults.direction ?? "both") === "both";
           return (
             <>
-              <AxisLabel hint={both ? t("mode.onlyOneWay") : modeHint(t)}>
+              <AxisLabel hint={both ? t("mode.onlyOneWay") : undefined}>
                 {t("mode.label")}
               </AxisLabel>
               <Choice
@@ -72,9 +72,9 @@ export function SyncSettings() {
                 value={both ? "sync" : String(defaults.mode ?? "sync")}
                 onChange={(mode) => saveDefaults({ mode })}
                 options={[
-                  { value: "sync", label: t("mode.sync") },
-                  { value: "mirror", label: t("mode.mirror") },
-                  { value: "move", label: t("mode.move") },
+                  { value: "sync", label: t("mode.sync"), hint: t("mode.syncHint") },
+                  { value: "mirror", label: t("mode.mirror"), hint: t("mode.mirrorHint") },
+                  { value: "move", label: t("mode.move"), hint: t("mode.moveHint") },
                 ]}
               />
             </>
@@ -199,18 +199,6 @@ export function SyncSettings() {
 
     </Page>
   );
-}
-
-/**
- * Explains all three modes in one bubble, built from the per-mode hints the
- * translations already carry.
- */
-function modeHint(t: ReturnType<typeof useT>["t"]): string {
-  return [
-    `${t("mode.sync")}: ${t("mode.syncHint")}`,
-    `${t("mode.mirror")}: ${t("mode.mirrorHint")}`,
-    `${t("mode.move")}: ${t("mode.moveHint")}`,
-  ].join("\n\n");
 }
 
 /**

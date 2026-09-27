@@ -12,7 +12,7 @@ import { ScheduleField } from '../components/Schedule'
 import { HUE_OFFSET, Selector } from '../components/Selector'
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { followPatch, followsDefaults } from '../lib/follows'
-import { MODES, modesHint } from '../lib/modes'
+import { MODES } from '../lib/modes'
 import { useT } from '../lib/i18n'
 
 /**
@@ -255,13 +255,14 @@ export function JobForm({
     <>
       {/* One grid for the name row and the sides row, so the name stands over
           the left side and the state file over the right, with the direction
-          switch between them. A narrow card stacks all five. */}
+          switch between them. A card too narrow for a path and its browse
+          button in each column stacks all five. */}
       <div className="flex flex-col gap-4 @container">
-        <div className="grid grid-cols-1 gap-4 @2xl:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] @2xl:gap-x-8">
+        <div className="grid grid-cols-1 gap-4 @4xl:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] @4xl:gap-x-8">
           <Field label={t('edit.name')} hint={t('edit.nameHint')}>
             <Text value={job.name ?? ''} onChange={(v) => patch(rename(v))} />
           </Field>
-          <div className="hidden @2xl:block" aria-hidden />
+          <div className="hidden @4xl:block" aria-hidden />
           <Field label={t('edit.state')} hint={t('edit.stateHint')}>
             <Text value={job.state ?? ''} onChange={(v) => patch({ state: v })} mono />
           </Field>
@@ -280,7 +281,7 @@ export function JobForm({
             </span>
             {/* Raised by half of what it is taller than the boxes beside it, so
                 it sits centred on them. */}
-            <div className="@2xl:-mt-1">
+            <div className="@4xl:-mt-1">
               <DirectionSwitch
                 direction={direction}
                 disabled={follows}
@@ -308,14 +309,14 @@ export function JobForm({
 
         {/* The mode exists only once one side is the source. */}
         {!follows && direction !== 'both' && (
-          <Field label={t('mode.label')} hint={modesHint(t)}>
+          <Field label={t('mode.label')}>
             <Selector<Mode>
               scale="small"
               label={t('mode.label')}
               hueOffset={HUE_OFFSET.mode}
               value={job.mode ?? 'sync'}
               onChange={(v) => patch({ mode: v })}
-              options={MODES.map((m) => ({ value: m, label: t(`mode.${m}`) }))}
+              options={MODES.map((m) => ({ value: m, label: t(`mode.${m}`), hint: t(`mode.${m}Hint`) }))}
             />
           </Field>
         )}
@@ -443,14 +444,17 @@ function Side({
   const [picking, setPicking] = useState(false)
   return (
     <div className="flex flex-col gap-2">
+      {/* The button at the box's end, the height of the box. Where the column
+          is too narrow for both it drops under the box, so a long path keeps
+          room to be read. */}
       <Field label={label} hint={hint}>
-        <Text value={value} onChange={onChange} mono />
+        <span className="flex flex-wrap items-center justify-end gap-2">
+          <span className="min-w-48 flex-1">
+            <Text value={value} onChange={onChange} mono />
+          </span>
+          <PickButton onClick={() => setPicking(true)} />
+        </span>
       </Field>
-      {/* Under the box rather than beside it, so a long path keeps the whole
-          width of its column. */}
-      <div className="flex justify-end">
-        <PickButton onClick={() => setPicking(true)} />
-      </div>
       <FolderPicker
         open={picking}
         known={known}
