@@ -54,6 +54,41 @@ func newRunner(t *testing.T) (*Runner, string, string) {
 	return New(cfg, hist, nil, func(string, ...any) {}), left, right
 }
 
+// The run log is where somebody looks to see that a run was stopped, and a
+// record written with the stopped run's own context never gets there.
+func TestAStoppedRunIsStillRecorded(t *testing.T) {
+	r, _, _ := newRunner(t)
+
+	done := make(chan error, 1)
+	go func() {
+		_, err := r.Run(context.Background(), "test")
+		done <- err
+	}()
+	deadline := time.Now().Add(10 * time.Second)
+	for !r.Cancel("test") {
+		if time.Now().After(deadline) {
+			t.Fatal("the run never became cancellable")
+		}
+		time.Sleep(5 * time.Millisecond)
+	}
+	select {
+	case <-done:
+	case <-time.After(30 * time.Second):
+		t.Fatal("the run did not stop")
+	}
+
+	runs, err := r.hist.Recent(context.Background(), "test", history.ShowAll, 10)
+	if err != nil {
+		t.Fatalf("read the log: %v", err)
+	}
+	if len(runs) != 1 {
+		t.Fatalf("the log holds %d runs for a run that was started and stopped", len(runs))
+	}
+	if runs[0].Err == "" {
+		t.Error("the stopped run is recorded as a success")
+	}
+}
+
 // Somebody pressing stop a second after the run finished should not be told it
 // was stopped.
 func TestStoppingSomethingThatIsNotRunningSaysSo(t *testing.T) {

@@ -206,8 +206,10 @@ func (r *Runner) RunChosen(ctx context.Context, name string, only []string, reso
 		err = errors.New(rec.Err)
 	}
 
+	// A stopped run is recorded too, so the write cannot use the run's own
+	// context, which the stop cancelled.
 	if r.hist != nil {
-		if hErr := r.hist.Record(ctx, rec, entriesOf(res)); hErr != nil {
+		if hErr := r.hist.Record(context.WithoutCancel(ctx), rec, entriesOf(res)); hErr != nil {
 			r.log("could not write the run record for %s: %v", name, hErr)
 		}
 	}
