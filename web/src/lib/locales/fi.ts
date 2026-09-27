@@ -309,9 +309,9 @@ const fi: Translations = {
   'window.title': 'Ikkuna',
   'window.tray': 'Kuvake ilmoitusalueella',
   'window.trayHint': 'Pitää ArrowLoopin ulottuvilla, kun ikkuna on poissa. Ilman sitä kahdella alla olevalla asetuksella ei ole mihin ikkunaa lähettää, joten ne sammuvat sen mukana.',
-  'window.close': 'Jää käyntiin ilmoitusalueelle suljettaessa',
+  'window.close': 'Sulje ilmoitusalueelle',
   'window.closeHint': 'Ikkunan kulmassa oleva X piilottaa silloin vain ikkunan, ja työsi jatkuvat aikataulujensa mukaan. Lopeta ArrowLoop valitsemalla kuvakkeen valikosta ”Lopeta”. Oletuksena pois, jolloin X sulkee ohjelman odotetusti.',
-  'window.minimise': 'Pienennetty ilmoitusalueelle',
+  'window.minimise': 'Pienennä ilmoitusalueelle',
   'window.minimiseHint': 'Pienentäminen vie ikkunan pois tehtäväpalkista ja jättää sen odottamaan ilmoitusalueelle. Kuvakkeen kaksoisnapsautus tai sen valikon ”Avaa” tuo sen takaisin.',
 
   'tray.open': 'Avaa',

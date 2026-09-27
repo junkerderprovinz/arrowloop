@@ -309,9 +309,9 @@ const fr: Translations = {
   'window.title': 'Fenêtre',
   'window.tray': 'Icône dans la zone de notification',
   'window.trayHint': 'Garde ArrowLoop joignable pendant que la fenêtre est absente. Sans elle, les deux réglages ci-dessous n\'ont nulle part où envoyer la fenêtre, ils s\'éteignent donc avec elle.',
-  'window.close': 'Continuer à tourner dans la zone de notification à la fermeture',
+  'window.close': 'Fermer dans la zone de notification',
   'window.closeHint': 'La croix dans le coin de la fenêtre ne fait alors que masquer la fenêtre, et tes tâches continuent selon leur planning. Pour quitter ArrowLoop, choisis « Quitter » dans le menu de l\'icône. Désactivé par défaut, la croix ferme donc le programme comme tu t\'y attends.',
-  'window.minimise': 'Réduite dans la zone de notification',
+  'window.minimise': 'Réduire dans la zone de notification',
   'window.minimiseHint': 'Réduire sort la fenêtre de la barre des tâches et la laisse attendre dans la zone de notification. Un double-clic sur l\'icône, ou « Ouvrir » dans son menu, la ramène.',
 
   'tray.open': 'Ouvrir',

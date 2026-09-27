@@ -309,9 +309,9 @@ const hr: Translations = {
   'window.title': 'Prozor',
   'window.tray': 'Ikona u području obavijesti',
   'window.trayHint': 'Drži ArrowLoop nadohvat dok prozora nema. Bez nje dvije postavke ispod nemaju kamo poslati prozor, pa se gase s njom.',
-  'window.close': 'Ostaje raditi u području obavijesti pri zatvaranju',
+  'window.close': 'Zatvori u područje obavijesti',
   'window.closeHint': 'X u kutu prozora tada samo sakriva prozor, a tvoji zadaci nastavljaju po rasporedu. Za izlazak iz ArrowLoopa odaberi „Izlaz“ u izborniku ikone. Zadano isključeno, pa X zatvara program kako i očekuješ.',
-  'window.minimise': 'Smanjeno u područje obavijesti',
+  'window.minimise': 'Smanji u područje obavijesti',
   'window.minimiseHint': 'Smanjivanje izbacuje prozor iz trake sa zadacima i ostavlja ga da čeka u području obavijesti. Dvoklik na ikonu ili „Otvori“ u njezinu izborniku ga vraća.',
 
   'tray.open': 'Otvori',

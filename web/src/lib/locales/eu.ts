@@ -309,9 +309,9 @@ const eu: Translations = {
   'window.title': 'Leihoa',
   'window.tray': 'Ikonoa jakinarazpen-eremuan',
   'window.trayHint': 'ArrowLoop eskura mantentzen du leihoa kanpoan dagoen bitartean. Hura gabe azpiko bi ezarpenek ez dute leihoa nora bidali, beraz harekin batera itzaltzen dira.',
-  'window.close': 'Itxitakoan jakinarazpen-eremuan martxan jarraitzen du',
+  'window.close': 'Itxi jakinarazpen-eremura',
   'window.closeHint': 'Leihoaren izkinako X-ak orduan leihoa bakarrik ezkutatzen du, eta zure lanek beren ordutegian jarraitzen dute. ArrowLoop amaitzeko, aukeratu «Irten» ikonoaren menuan. Lehenespenez itzalita, beraz X-ak programa amaitzen du espero bezala.',
-  'window.minimise': 'Jakinarazpen-eremura minimizatuta',
+  'window.minimise': 'Minimizatu jakinarazpen-eremura',
   'window.minimiseHint': 'Minimizatzeak leihoa ataza-barratik ateratzen du eta jakinarazpen-eremuan itxaroten uzten du. Ikonoan klik bikoitz batek, edo haren menuko «Ireki» aukerak, itzultzen du.',
 
   'tray.open': 'Ireki',

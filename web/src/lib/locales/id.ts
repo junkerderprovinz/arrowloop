@@ -309,9 +309,9 @@ const id: Translations = {
   'window.title': 'Jendela',
   'window.tray': 'Ikon di area notifikasi',
   'window.trayHint': 'Menjaga ArrowLoop tetap terjangkau selagi jendela tidak ada. Tanpa ikon itu, dua pengaturan di bawah tidak punya tujuan untuk jendela, jadi ikut mati.',
-  'window.close': 'Tetap berjalan di area notifikasi saat ditutup',
+  'window.close': 'Tutup ke area notifikasi',
   'window.closeHint': 'Tombol X di sudut jendela lalu hanya menyembunyikan jendela, dan tugasmu tetap berjalan sesuai jadwalnya. Untuk menutup ArrowLoop, pilih "Keluar" di menu ikon. Mati secara bawaan, jadi X menutup programnya seperti yang kamu harapkan.',
-  'window.minimise': 'Diminimalkan ke area notifikasi',
+  'window.minimise': 'Minimalkan ke area notifikasi',
   'window.minimiseHint': 'Meminimalkan mengeluarkan jendela dari bilah tugas dan membiarkannya menunggu di area notifikasi. Klik ganda pada ikon, atau "Buka" di menunya, membawanya kembali.',
 
   'tray.open': 'Buka',

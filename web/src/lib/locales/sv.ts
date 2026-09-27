@@ -309,9 +309,9 @@ const sv: Translations = {
   'window.title': 'Fönster',
   'window.tray': 'Ikon i meddelandefältet',
   'window.trayHint': 'Håller ArrowLoop nåbart medan fönstret är borta. Utan den har de två inställningarna nedan ingenstans att skicka fönstret, så de stängs av med den.',
-  'window.close': 'Fortsätter köra i meddelandefältet vid stängning',
+  'window.close': 'Stäng till meddelandefältet',
   'window.closeHint': 'Krysset i fönstrets hörn döljer då bara fönstret, och dina jobb fortsätter enligt schemat. För att avsluta ArrowLoop väljer du ”Avsluta” i ikonens meny. Av från början, så krysset avslutar programmet som du förväntar dig.',
-  'window.minimise': 'Minimerat till meddelandefältet',
+  'window.minimise': 'Minimera till meddelandefältet',
   'window.minimiseHint': 'Minimering tar bort fönstret från aktivitetsfältet och låter det vänta i meddelandefältet. Ett dubbelklick på ikonen, eller ”Öppna” i dess meny, tar tillbaka det.',
 
   'tray.open': 'Öppna',

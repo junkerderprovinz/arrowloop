@@ -309,9 +309,9 @@ const tr: Translations = {
   'window.title': 'Pencere',
   'window.tray': 'Bildirim alanında simge',
   'window.trayHint': 'Pencere yokken ArrowLoop\'u elinin altında tutar. Onsuz aşağıdaki iki ayarın pencereyi gönderecek yeri olmaz, bu yüzden onunla birlikte kapanırlar.',
-  'window.close': 'Kapatıldığında bildirim alanında çalışmaya devam eder',
+  'window.close': 'Bildirim alanına kapat',
   'window.closeHint': 'Pencerenin köşesindeki X artık yalnızca pencereyi gizler, işlerin ise zamanlamasına göre çalışmaya devam eder. ArrowLoop\'u kapatmak için simgenin menüsünden "Çıkış"ı seç. Varsayılan olarak kapalı, bu yüzden X programı beklediğin gibi kapatır.',
-  'window.minimise': 'Bildirim alanına küçültüldü',
+  'window.minimise': 'Bildirim alanına küçült',
   'window.minimiseHint': 'Küçültmek pencereyi görev çubuğundan çıkarır ve bildirim alanında beklemeye bırakır. Simgeye çift tıklamak ya da menüsündeki "Aç" onu geri getirir.',
 
   'tray.open': 'Aç',

@@ -309,9 +309,9 @@ const ca: Translations = {
   'window.title': 'Finestra',
   'window.tray': 'Icona a l\'àrea de notificació',
   'window.trayHint': 'Manté l\'ArrowLoop a l\'abast mentre la finestra no hi és. Sense ella els dos ajustos de sota no tenen on enviar la finestra, així que s\'apaguen amb ella.',
-  'window.close': 'Continua executant-se a l\'àrea de notificació en tancar',
+  'window.close': 'Tanca a l\'àrea de notificació',
   'window.closeHint': 'La X del cantó de la finestra llavors només amaga la finestra, i les teves tasques continuen segons el seu horari. Per tancar l\'ArrowLoop, tria «Surt» al menú de la icona. Desactivat per defecte, així la X tanca el programa tal com esperes.',
-  'window.minimise': 'Minimitzada a l\'àrea de notificació',
+  'window.minimise': 'Minimitza a l\'àrea de notificació',
   'window.minimiseHint': 'En minimitzar, la finestra surt de la barra de tasques i queda esperant a l\'àrea de notificació. Un doble clic a la icona, o «Obre» al seu menú, la torna a mostrar.',
 
   'tray.open': 'Obre',

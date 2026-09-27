@@ -309,9 +309,9 @@ const lt: Translations = {
   'window.title': 'Langas',
   'window.tray': 'Piktograma pranešimų srityje',
   'window.trayHint': 'Laiko ArrowLoop po ranka, kol lango nėra. Be jos dvi nuostatos žemiau neturi kur siųsti lango, todėl išsijungia kartu su ja.',
-  'window.close': 'Uždarius toliau veikia pranešimų srityje',
+  'window.close': 'Uždaryti į pranešimų sritį',
   'window.closeHint': 'Lango kampe esantis X tada tik paslepia langą, o tavo užduotys toliau vyksta pagal savo tvarkaraštį. Norėdamas užverti ArrowLoop, piktogramos meniu pasirink „Baigti“. Numatytai išjungta, tad X užbaigia programą, kaip ir tikiesi.',
-  'window.minimise': 'Sumažinta į pranešimų sritį',
+  'window.minimise': 'Sumažinti į pranešimų sritį',
   'window.minimiseHint': 'Sumažinus langas dingsta iš užduočių juostos ir laukia pranešimų srityje. Dukart spustelėjus piktogramą arba jos meniu pasirinkus „Atverti“, jis grįžta.',
 
   'tray.open': 'Atverti',

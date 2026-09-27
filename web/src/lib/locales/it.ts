@@ -309,9 +309,9 @@ const it: Translations = {
   'window.title': 'Finestra',
   'window.tray': 'Icona nell\'area di notifica',
   'window.trayHint': 'Tiene ArrowLoop raggiungibile mentre la finestra è via. Senza di essa le due impostazioni qui sotto non hanno dove mandare la finestra, quindi si spengono con lei.',
-  'window.close': 'Resta in esecuzione nell\'area di notifica alla chiusura',
+  'window.close': 'Chiudi nell\'area di notifica',
   'window.closeHint': 'La X nell\'angolo della finestra allora nasconde solo la finestra, e i tuoi lavori continuano secondo la loro pianificazione. Per chiudere ArrowLoop, scegli «Esci» dal menu dell\'icona. Disattivato di base, quindi la X chiude il programma come ti aspetti.',
-  'window.minimise': 'Ridotta a icona nell\'area di notifica',
+  'window.minimise': 'Riduci a icona nell\'area di notifica',
   'window.minimiseHint': 'Ridurre a icona porta la finestra fuori dalla barra delle applicazioni e la lascia in attesa nell\'area di notifica. Un doppio clic sull\'icona, o «Apri» nel suo menu, la riporta indietro.',
 
   'tray.open': 'Apri',

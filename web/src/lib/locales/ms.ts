@@ -309,9 +309,9 @@ const ms: Translations = {
   'window.title': 'Tetingkap',
   'window.tray': 'Ikon di kawasan pemberitahuan',
   'window.trayHint': 'Mengekalkan ArrowLoop dalam capaian semasa tetingkap tiada. Tanpa ikon itu, dua tetapan di bawah tiada tempat untuk menghantar tetingkap, jadi ia turut dimatikan.',
-  'window.close': 'Terus berjalan di kawasan pemberitahuan apabila ditutup',
+  'window.close': 'Tutup ke kawasan pemberitahuan',
   'window.closeHint': 'Butang X di sudut tetingkap kemudian hanya menyembunyikan tetingkap, dan tugas anda terus berjalan mengikut jadualnya. Untuk menutup ArrowLoop, pilih "Keluar" dalam menu ikon. Dimatikan secara lalai, jadi X menutup program seperti yang dijangka.',
-  'window.minimise': 'Diminimumkan ke kawasan pemberitahuan',
+  'window.minimise': 'Minimumkan ke kawasan pemberitahuan',
   'window.minimiseHint': 'Meminimumkan mengeluarkan tetingkap daripada bar tugas dan membiarkannya menunggu di kawasan pemberitahuan. Klik dua kali pada ikon, atau "Buka" dalam menunya, membawanya kembali.',
 
   'tray.open': 'Buka',

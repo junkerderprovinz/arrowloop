@@ -309,9 +309,9 @@ const pl: Translations = {
   'window.title': 'Okno',
   'window.tray': 'Ikona w obszarze powiadomień',
   'window.trayHint': 'Trzyma ArrowLoop w zasięgu, gdy okna nie ma. Bez niej dwa ustawienia poniżej nie mają dokąd wysłać okna, więc gasną razem z nią.',
-  'window.close': 'Po zamknięciu działa dalej w obszarze powiadomień',
+  'window.close': 'Zamykaj do obszaru powiadomień',
   'window.closeHint': 'X w rogu okna wtedy tylko ukrywa okno, a twoje zadania działają dalej według harmonogramu. Aby zamknąć ArrowLoop, wybierz „Zakończ” w menu ikony. Domyślnie wyłączone, więc X zamyka program tak, jak się tego spodziewasz.',
-  'window.minimise': 'Zminimalizowane do obszaru powiadomień',
+  'window.minimise': 'Minimalizuj do obszaru powiadomień',
   'window.minimiseHint': 'Minimalizacja usuwa okno z paska zadań i zostawia je czekające w obszarze powiadomień. Dwukrotne kliknięcie ikony lub „Otwórz” w jej menu przywraca je.',
 
   'tray.open': 'Otwórz',

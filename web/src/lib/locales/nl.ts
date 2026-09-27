@@ -309,9 +309,9 @@ const nl: Translations = {
   'window.title': 'Venster',
   'window.tray': 'Pictogram in het systeemvak',
   'window.trayHint': 'Houdt ArrowLoop bereikbaar terwijl het venster weg is. Zonder pictogram hebben de twee instellingen hieronder nergens om het venster heen te sturen, dus gaan ze mee uit.',
-  'window.close': 'Blijft draaien in het systeemvak bij sluiten',
+  'window.close': 'Sluiten naar het systeemvak',
   'window.closeHint': 'Het kruisje in de hoek van het venster verbergt dan alleen het venster, en je taken lopen gewoon door volgens hun schema. Om ArrowLoop af te sluiten, kies je "Afsluiten" in het menu van het pictogram. Standaard uit, dus het kruisje sluit het programma zoals je verwacht.',
-  'window.minimise': 'Geminimaliseerd naar het systeemvak',
+  'window.minimise': 'Minimaliseren naar het systeemvak',
   'window.minimiseHint': 'Minimaliseren haalt het venster van de taakbalk en laat het wachten in het systeemvak. Dubbelklikken op het pictogram, of "Openen" in het menu ervan, haalt het terug.',
 
   'tray.open': 'Openen',

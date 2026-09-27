@@ -309,9 +309,9 @@ const ro: Translations = {
   'window.title': 'Fereastră',
   'window.tray': 'Pictogramă în zona de notificare',
   'window.trayHint': 'Ține ArrowLoop la îndemână cât timp fereastra lipsește. Fără ea, cele două setări de mai jos nu au unde trimite fereastra, deci se sting odată cu ea.',
-  'window.close': 'Continuă să ruleze în zona de notificare la închidere',
+  'window.close': 'Închide în zona de notificare',
   'window.closeHint': 'X-ul din colțul ferestrei ascunde atunci doar fereastra, iar sarcinile tale continuă conform programării lor. Pentru a închide ArrowLoop, alege „Ieșire” din meniul pictogramei. Dezactivat implicit, deci X-ul închide programul așa cum te aștepți.',
-  'window.minimise': 'Minimizată în zona de notificare',
+  'window.minimise': 'Minimizează în zona de notificare',
   'window.minimiseHint': 'Minimizarea scoate fereastra din bara de activități și o lasă să aștepte în zona de notificare. Un dublu clic pe pictogramă sau „Deschide” din meniul ei o aduce înapoi.',
 
   'tray.open': 'Deschide',

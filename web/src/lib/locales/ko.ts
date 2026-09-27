@@ -309,7 +309,7 @@ const ko: Translations = {
   'window.title': '창',
   'window.tray': '알림 영역에 아이콘 두기',
   'window.trayHint': '창이 없는 동안에도 ArrowLoop에 손이 닿게 합니다. 이것이 없으면 아래 두 설정은 창을 보낼 곳이 없으므로 함께 꺼집니다.',
-  'window.close': '닫아도 알림 영역에서 계속 실행',
+  'window.close': '닫으면 알림 영역으로',
   'window.closeHint': '창 모서리의 닫기 단추(X)는 이제 창만 숨기고, 작업은 예정대로 계속 실행됩니다. ArrowLoop을 종료하려면 아이콘 메뉴에서 "종료"를 선택하세요. 기본은 꺼짐이므로 X를 누르면 예상대로 프로그램이 종료됩니다.',
   'window.minimise': '최소화하면 알림 영역으로',
   'window.minimiseHint': '최소화하면 창이 작업 표시줄에서 사라지고 알림 영역에서 대기합니다. 아이콘을 두 번 클릭하거나 메뉴에서 "열기"를 선택하면 다시 불러옵니다.',

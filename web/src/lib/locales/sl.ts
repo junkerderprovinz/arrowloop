@@ -309,9 +309,9 @@ const sl: Translations = {
   'window.title': 'Okno',
   'window.tray': 'Ikona v obvestilnem območju',
   'window.trayHint': 'Ohranja ArrowLoop dosegljiv, dokler okna ni. Brez nje nastavitvi spodaj nimata kam poslati okna, zato se ugasneta z njo.',
-  'window.close': 'Ob zapiranju ostane v teku v obvestilnem območju',
+  'window.close': 'Zapri v obvestilno območje',
   'window.closeHint': 'X v kotu okna takrat samo skrije okno, tvoja opravila pa se nadaljujejo po urniku. Za izhod iz ArrowLoopa izberi „Izhod“ v meniju ikone. Privzeto izklopljeno, zato X zapre program, kot pričakuješ.',
-  'window.minimise': 'Pomanjšano v obvestilno območje',
+  'window.minimise': 'Pomanjšaj v obvestilno območje',
   'window.minimiseHint': 'Pomanjšanje umakne okno iz opravilne vrstice in ga pusti čakati v obvestilnem območju. Dvoklik na ikono ali „Odpri“ v njenem meniju ga prikliče nazaj.',
 
   'tray.open': 'Odpri',

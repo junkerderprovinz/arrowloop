@@ -309,7 +309,7 @@ const zh: Translations = {
   'window.title': '窗口',
   'window.tray': '在通知区域放图标',
   'window.trayHint': '窗口不在时也能随手找到 ArrowLoop。没有它，下面两项设置就没有地方安放窗口，所以会跟着一起关掉。',
-  'window.close': '关闭后仍在通知区域运行',
+  'window.close': '关闭到通知区域',
   'window.closeHint': '这样窗口角上的关闭按钮就只会隐藏窗口，你的任务仍按计划继续运行。要退出 ArrowLoop，在图标菜单里选择「退出」。默认关闭，所以关闭按钮会像预期那样直接退出程序。',
   'window.minimise': '最小化到通知区域',
   'window.minimiseHint': '最小化会把窗口从任务栏移开，留在通知区域等待。双击图标，或在它的菜单里选择「打开」，可以把它找回来。',

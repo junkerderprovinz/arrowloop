@@ -309,9 +309,9 @@ const hu: Translations = {
   'window.title': 'Ablak',
   'window.tray': 'Ikon az értesítési területen',
   'window.trayHint': 'Elérhető tartja az ArrowLoopot, amíg az ablak nincs kint. Nélküle az alábbi két beállításnak nincs hová küldenie az ablakot, ezért vele együtt kapcsolnak ki.',
-  'window.close': 'Bezáráskor tovább fut az értesítési területen',
+  'window.close': 'Bezárás az értesítési területre',
   'window.closeHint': 'Az ablak sarkában lévő X ekkor csak elrejti az ablakot, a feladataid pedig a saját ütemezésük szerint futnak tovább. Az ArrowLoop bezárásához válaszd a „Kilépés” parancsot az ikon menüjében. Alapból ki, így az X a várt módon zárja be a programot.',
-  'window.minimise': 'Kicsinyítve az értesítési területre',
+  'window.minimise': 'Kicsinyítés az értesítési területre',
   'window.minimiseHint': 'A kicsinyítés kiveszi az ablakot a tálcáról, és az értesítési területen várakoztatja. Dupla kattintás az ikonra vagy a menüjében a „Megnyitás” visszahozza.',
 
   'tray.open': 'Megnyitás',

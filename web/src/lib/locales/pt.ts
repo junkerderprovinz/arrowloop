@@ -309,9 +309,9 @@ const pt: Translations = {
   'window.title': 'Janela',
   'window.tray': 'Ícone na área de notificação',
   'window.trayHint': 'Mantém o ArrowLoop ao alcance enquanto a janela está fora. Sem ele as duas definições abaixo não têm para onde enviar a janela, por isso desligam-se com ele.',
-  'window.close': 'Continua a correr na área de notificação ao fechar',
+  'window.close': 'Fechar para a área de notificação',
   'window.closeHint': 'O X no canto da janela passa a esconder apenas a janela, e as tuas tarefas continuam conforme previsto. Para fechar o ArrowLoop, escolhe «Sair» no menu do ícone. Desligado por omissão, por isso o X fecha o programa como esperarias.',
-  'window.minimise': 'Minimizada para a área de notificação',
+  'window.minimise': 'Minimizar para a área de notificação',
   'window.minimiseHint': 'Minimizar tira a janela da barra de tarefas e deixa-a à espera na área de notificação. Um duplo clique no ícone, ou «Abrir» no seu menu, traz-a de volta.',
 
   'tray.open': 'Abrir',

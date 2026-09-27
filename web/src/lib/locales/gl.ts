@@ -309,9 +309,9 @@ const gl: Translations = {
   'window.title': 'Xanela',
   'window.tray': 'Icona na área de notificación',
   'window.trayHint': 'Mantén ArrowLoop ao alcance mentres a xanela non está. Sen ela os dous axustes de abaixo non teñen a onde mandar a xanela, así que apáganse con ela.',
-  'window.close': 'Segue funcionando na área de notificación ao pechar',
+  'window.close': 'Pechar na área de notificación',
   'window.closeHint': 'O X do recuncho da xanela entón só agocha a xanela, e as túas tarefas seguen segundo o seu horario. Para pechar ArrowLoop, escolle «Saír» no menú da icona. Desactivado por defecto, así que o X pecha o programa como esperarías.',
-  'window.minimise': 'Minimizada á área de notificación',
+  'window.minimise': 'Minimizar na área de notificación',
   'window.minimiseHint': 'Minimizar saca a xanela da barra de tarefas e déixaa agardando na área de notificación. Un dobre clic na icona, ou «Abrir» no seu menú, tráea de volta.',
 
   'tray.open': 'Abrir',

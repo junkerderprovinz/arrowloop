@@ -309,9 +309,9 @@ const da: Translations = {
   'window.title': 'Vindue',
   'window.tray': 'Ikon i meddelelsesområdet',
   'window.trayHint': 'Holder ArrowLoop inden for rækkevidde, mens vinduet er væk. Uden det har de to indstillinger nedenfor ingen steder at sende vinduet hen, så de slukkes med det.',
-  'window.close': 'Bliv ved med at køre i meddelelsesområdet, når vinduet lukkes',
+  'window.close': 'Luk til meddelelsesområdet',
   'window.closeHint': 'X\'et i vinduets hjørne skjuler så kun vinduet, og dine job kører videre efter deres tidsplaner. For at afslutte ArrowLoop skal du vælge „Afslut“ i ikonets menu. Slået fra fra start, så X afslutter programmet, som du forventer.',
-  'window.minimise': 'Minimeret til meddelelsesområdet',
+  'window.minimise': 'Minimer til meddelelsesområdet',
   'window.minimiseHint': 'Minimering tager vinduet ud af proceslinjen og lader det vente i meddelelsesområdet. Et dobbeltklik på ikonet eller „Åbn“ i dets menu henter det tilbage.',
 
   'tray.open': 'Åbn',

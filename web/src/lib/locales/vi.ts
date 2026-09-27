@@ -309,7 +309,7 @@ const vi: Translations = {
   'window.title': 'Cửa sổ',
   'window.tray': 'Biểu tượng ở khu thông báo',
   'window.trayHint': 'Giữ ArrowLoop trong tầm với khi cửa sổ vắng mặt. Không có nó, hai thiết lập bên dưới chẳng có chỗ nào để gửi cửa sổ, nên tắt theo luôn.',
-  'window.close': 'Đóng lại vẫn tiếp tục chạy ở khu thông báo',
+  'window.close': 'Đóng vào khu thông báo',
   'window.closeHint': 'Nút X ở góc cửa sổ khi đó chỉ ẩn cửa sổ đi, còn các công việc của bạn vẫn chạy đúng lịch. Để thoát ArrowLoop, chọn “Thoát” trong menu của biểu tượng. Mặc định tắt, nên nút X sẽ thoát chương trình như bạn mong đợi.',
   'window.minimise': 'Thu nhỏ vào khu thông báo',
   'window.minimiseHint': 'Thu nhỏ đưa cửa sổ ra khỏi thanh tác vụ và để nó chờ ở khu thông báo. Nhấp đúp vào biểu tượng, hoặc chọn “Mở” trong menu của nó, sẽ gọi nó trở lại.',

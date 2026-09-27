@@ -309,9 +309,9 @@ const sk: Translations = {
   'window.title': 'Okno',
   'window.tray': 'Ikona v oblasti oznámení',
   'window.trayHint': 'Drží ArrowLoop poruke, kým je okno preč. Bez nej nemajú dve nastavenia nižšie kam okno poslať, takže sa s ňou vypnú.',
-  'window.close': 'Po zatvorení zostáva bežať v oblasti oznámení',
+  'window.close': 'Zatvárať do oblasti oznámení',
   'window.closeHint': 'Krížik v rohu okna potom iba skryje okno a tvoje úlohy pokračujú podľa plánu. Ak chceš ArrowLoop ukončiť, vyber „Ukončiť“ v ponuke ikony. Predvolene vypnuté, takže krížik ukončí program, ako očakávaš.',
-  'window.minimise': 'Minimalizované do oblasti oznámení',
+  'window.minimise': 'Minimalizovať do oblasti oznámení',
   'window.minimiseHint': 'Minimalizácia dostane okno z panela úloh a necháva ho čakať v oblasti oznámení. Dvojklik na ikonu alebo „Otvoriť“ v jej ponuke ho vráti späť.',
 
   'tray.open': 'Otvoriť',

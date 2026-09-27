@@ -309,9 +309,9 @@ const cs: Translations = {
   'window.title': 'Okno',
   'window.tray': 'Ikona v oznamovací oblasti',
   'window.trayHint': 'Drží ArrowLoop po ruce, dokud je okno pryč. Bez ní nemají dvě nastavení níže kam okno poslat, takže se s ní vypnou.',
-  'window.close': 'Po zavření zůstat běžet v oznamovací oblasti',
+  'window.close': 'Zavírat do oznamovací oblasti',
   'window.closeHint': 'Křížek v rohu okna pak jen skryje okno a tvé úlohy dál běží podle plánu. Chceš-li ArrowLoop ukončit, zvol „Ukončit“ v nabídce ikony. Ve výchozím stavu vypnuto, takže křížek ukončí program, jak očekáváš.',
-  'window.minimise': 'Minimalizováno do oznamovací oblasti',
+  'window.minimise': 'Minimalizovat do oznamovací oblasti',
   'window.minimiseHint': 'Minimalizace dostane okno z hlavního panelu a nechá ho čekat v oznamovací oblasti. Dvojklik na ikonu nebo „Otevřít“ v její nabídce ho vrátí zpět.',
 
   'tray.open': 'Otevřít',

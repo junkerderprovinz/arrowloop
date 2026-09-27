@@ -309,9 +309,9 @@ const es: Translations = {
   'window.title': 'Ventana',
   'window.tray': 'Icono en el área de notificación',
   'window.trayHint': 'Mantiene ArrowLoop a mano mientras la ventana no está. Sin él los dos ajustes de abajo no tienen adónde enviar la ventana, así que se apagan con él.',
-  'window.close': 'Seguir ejecutándose en el área de notificación al cerrar',
+  'window.close': 'Cerrar al área de notificación',
   'window.closeHint': 'La X de la esquina de la ventana entonces solo oculta la ventana, y tus tareas siguen su horario con normalidad. Para cerrar ArrowLoop, elige «Salir» en el menú del icono. Desactivado por omisión, así que la X cierra el programa como esperarías.',
-  'window.minimise': 'Minimizada al área de notificación',
+  'window.minimise': 'Minimizar al área de notificación',
   'window.minimiseHint': 'Minimizar saca la ventana de la barra de tareas y la deja esperando en el área de notificación. Un doble clic en el icono, o «Abrir» en su menú, la trae de vuelta.',
 
   'tray.open': 'Abrir',

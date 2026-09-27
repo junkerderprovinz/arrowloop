@@ -309,9 +309,9 @@ const lv: Translations = {
   'window.title': 'Logs',
   'window.tray': 'Ikona paziņojumu apgabalā',
   'window.trayHint': 'Tur ArrowLoop pa rokai, kamēr loga nav. Bez tās diviem zemāk esošajiem iestatījumiem nav kurp sūtīt logu, tāpēc tie izslēdzas kopā ar to.',
-  'window.close': 'Aizverot turpina darboties paziņojumu apgabalā',
+  'window.close': 'Aizvērt uz paziņojumu apgabalu',
   'window.closeHint': 'Loga stūrī esošais X tad tikai paslēpj logu, un tavi uzdevumi turpinās pēc sava grafika. Lai aizvērtu ArrowLoop, ikonas izvēlnē izvēlies „Iziet“. Pēc noklusējuma izslēgts, tāpēc X aizver programmu, kā gaidīts.',
-  'window.minimise': 'Minimizēts uz paziņojumu apgabalu',
+  'window.minimise': 'Minimizēt uz paziņojumu apgabalu',
   'window.minimiseHint': 'Minimizējot logs pazūd no uzdevumjoslas un gaida paziņojumu apgabalā. Dubultklikšķis uz ikonas vai „Atvērt“ tās izvēlnē to atgriež.',
 
   'tray.open': 'Atvērt',

@@ -309,9 +309,9 @@ const et: Translations = {
   'window.title': 'Aken',
   'window.tray': 'Ikoon teavitusalal',
   'window.trayHint': 'Hoiab ArrowLoopi käeulatuses, kui aken on ära. Ilma selleta pole kahel allpool oleval seadel akent kuhugi saata, seega lülituvad nad sellega koos välja.',
-  'window.close': 'Jääb sulgemisel tööle teavitusalasse',
+  'window.close': 'Sulge teavitusalasse',
   'window.closeHint': 'Akna nurgas olev X peidab siis ainult akna ja sinu tööd jätkuvad oma ajakava järgi. ArrowLoopi sulgemiseks vali ikooni menüüst „Välju“. Vaikimisi väljas, nii et X lõpetab programmi nagu ootad.',
-  'window.minimise': 'Minimeeritud teavitusalasse',
+  'window.minimise': 'Minimeeri teavitusalasse',
   'window.minimiseHint': 'Minimeerimine viib akna tegumiribalt ära ja jätab selle ootama teavitusalasse. Topeltklõps ikoonil või „Ava“ selle menüüs toob selle tagasi.',
 
   'tray.open': 'Ava',

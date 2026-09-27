@@ -309,9 +309,9 @@ const is: Translations = {
   'window.title': 'Gluggi',
   'window.tray': 'Tákn á tilkynningasvæði',
   'window.trayHint': 'Heldur ArrowLoop innan seilingar meðan glugginn er í burtu. Án þess hafa stillingarnar tvær hér að neðan hvergi að senda gluggann, svo þær slökkna með því.',
-  'window.close': 'Heldur áfram að keyra á tilkynningasvæðinu þegar lokað er',
+  'window.close': 'Loka á tilkynningasvæðið',
   'window.closeHint': 'Lokunarkrossinn í horni gluggans felur þá bara gluggann, og verkin þín halda áfram samkvæmt sinni áætlun. Til að hætta í ArrowLoop skaltu velja „Hætta“ í valmynd táknsins. Sjálfgefið af, svo krossinn hættir forritinu eins og búist er við.',
-  'window.minimise': 'Minnkað á tilkynningasvæðið',
+  'window.minimise': 'Minnka á tilkynningasvæðið',
   'window.minimiseHint': 'Þegar minnkað er fer glugginn af verkefnastikunni og bíður á tilkynningasvæðinu. Tvísmellur á táknið, eða „Opna“ í valmynd þess, sækir hann aftur.',
 
   'tray.open': 'Opna',

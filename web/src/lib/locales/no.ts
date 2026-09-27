@@ -309,9 +309,9 @@ const no: Translations = {
   'window.title': 'Vindu',
   'window.tray': 'Ikon i varslingsområdet',
   'window.trayHint': 'Holder ArrowLoop innen rekkevidde mens vinduet er borte. Uten det har de to innstillingene nedenfor ingen steder å sende vinduet, så de slås av med det.',
-  'window.close': 'Fortsetter å kjøre i varslingsområdet når det lukkes',
+  'window.close': 'Lukk til varslingsområdet',
   'window.closeHint': 'Krysset i hjørnet av vinduet skjuler da bare vinduet, og jobbene dine fortsetter etter planen. For å avslutte ArrowLoop velger du «Avslutt» i menyen til ikonet. Av fra start, så krysset avslutter programmet slik du forventer.',
-  'window.minimise': 'Minimert til varslingsområdet',
+  'window.minimise': 'Minimer til varslingsområdet',
   'window.minimiseHint': 'Minimering tar vinduet ut av oppgavelinjen og lar det vente i varslingsområdet. Et dobbeltklikk på ikonet, eller «Åpne» i menyen, henter det tilbake.',
 
   'tray.open': 'Åpne',
