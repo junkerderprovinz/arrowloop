@@ -10,6 +10,12 @@ The full notes for each release are in
 
 ## Unreleased
 
+## 1.4.1 - 2026-09-27
+
+## 🎨 Design
+
+- **The provider buttons are wider**, three to a row in the dialog, so every name stands at full size, Zoho WorkDrive and IONOS HiDrive included. The buttons keep the README's height and logo size.
+
 ## 1.4.0 - 2026-09-27
 
 ## 🎨 Design

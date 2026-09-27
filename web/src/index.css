@@ -242,13 +242,14 @@ body {
   color: var(--tile-ink);
 }
 
-/* The provider picker's README buttons fill a grid as wide as the window.
+/* The provider picker's README buttons fill a grid as wide as the window,
+   three to a row in the dialog so that no name has to shrink.
    The providers have no tile classes of their own, so each list item hands
    its button the colour pair from BRAND_TILES; a protocol has none and keeps
    the accent. */
 .glim-provider-pick {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
   gap: 0.8125rem;
 }
 .glim-provider-pick .glim-readme-btn-unit {
