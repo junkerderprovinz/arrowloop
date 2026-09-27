@@ -84,14 +84,16 @@ jobs:
       - name: Build
         run: node scripts/desktop.mjs ${{ matrix.args }}
 
-      # The .app is wrapped into a .dmg and the bare .app removed from the
-      # artifact.
+      # The .app is wrapped into a .dmg for a first install and into a zip for
+      # the app's own updates, and the bare .app removed from the artifact. The
+      # zip leaves out resource forks and extended attributes, which would land
+      # in the bundle as files its signature does not cover.
       #
       # The size is explicit because `hdiutil create -srcfolder` otherwise
       # estimates its scratch image, and a short estimate fails inside that
       # image with "No space left on device" however much the runner has free.
       # The app's own size plus 200 MB of slack follows the product as it grows.
-      - name: Package the macOS app into a dmg
+      - name: Package the macOS app into a dmg and a zip
         if: runner.os == 'macOS'
         working-directory: desktop
         run: |
@@ -108,6 +110,7 @@ jobs:
           echo "app is ${need} MB, asking hdiutil for $((need + 200)) MB"
           hdiutil create -volname "ArrowLoop" -srcfolder build/bin/ArrowLoop.app \
             -ov -format UDZO -size "$((need + 200))m" build/bin/ArrowLoop.dmg
+          ditto -c -k --norsrc --noextattr --keepParent build/bin/ArrowLoop.app build/bin/ArrowLoop.zip
           rm -rf build/bin/ArrowLoop.app
 
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7

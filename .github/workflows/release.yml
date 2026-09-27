@@ -78,22 +78,36 @@ jobs:
           pattern: arrowloop-*
           path: bundles
 
-      # One file per build, under a name without the version, because
+      # Every file under a name without the version, because
       # /releases/latest/download/ takes an exact name only. Each build says
       # its version itself: the exe's properties, the About card,
-      # `arrowloop version` and Android's app info. The x86_64 APK stays a CI
-      # artifact, since only an emulator runs it.
+      # `arrowloop version` and Android's app info. The portable exe and the
+      # macOS zip are what the desktop app updates itself from
+      # (desktop/update, whose tests hold it to these names). The x86_64 APK
+      # stays a CI artifact, since only an emulator runs it.
       - name: Package
         run: |
           set -eu
           mkdir -p dist
           cp bundles/arrowloop-windows-amd64/*-installer.exe dist/arrowloop-windows-amd64-installer.exe
+          cp bundles/arrowloop-windows-amd64/ArrowLoop.exe dist/arrowloop-windows-amd64-portable.exe
           cp bundles/arrowloop-windows-arm64/*-installer.exe dist/arrowloop-windows-arm64-installer.exe
+          cp bundles/arrowloop-windows-arm64/ArrowLoop.exe dist/arrowloop-windows-arm64-portable.exe
           cp bundles/arrowloop-macos-universal/ArrowLoop.dmg dist/arrowloop-macos-universal.dmg
+          cp bundles/arrowloop-macos-universal/ArrowLoop.zip dist/arrowloop-macos-universal.zip
           cp bundles/arrowloop-linux-amd64/ArrowLoop dist/arrowloop-linux-amd64
           chmod +x dist/arrowloop-linux-amd64
           cp bundles/arrowloop-mobile/arrowloop-app-arm64-v8a-release.apk dist/arrowloop-android-arm64.apk
           ls -lh dist
+
+      # The desktop app checks the file it updates to against this list. Run
+      # inside dist/ so the entries are bare file names, which is what both
+      # desktop/update and a manual `sha256sum -c` expect.
+      - name: Checksums
+        run: |
+          set -eu
+          (cd dist && sha256sum arrowloop-* > checksums.txt)
+          cat dist/checksums.txt
 
       # Only from a pushed tag; a dispatched run stops after packaging. The
       # checks before publishing, and the rule for "Latest", are in the script.
