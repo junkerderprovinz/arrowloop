@@ -20,6 +20,9 @@ The full notes for each release are in
 - **The small window at the tray icon can be resized.** Drag any edge or corner; it keeps the size you leave it at, also after a restart, and does not get smaller than 300 by 360.
 - **The closed envelope on the About card's mail button sits in the middle of the button**, as GlimStone 3.0.1 draws it. It stood a little too low.
 - **Every target says whether it is connected.** On the Targets page and on the phone's overview and Targets tab, each target shows Connected or Not connected as soon as it appears, from the same check as the Test connection button. The phone used to read it from the storage figures, which many services give without connecting.
+- **Test connection shows its answer on the button.** In the target form the button turns green with Connected and a check when the test passes, and red with Not connected and a cross when it fails, as on the phone; a failure also shakes it and names the reason above the buttons.
+- **Each target is a card on its group's card.** On the Targets page every cloud, bucket, server and drive stands on a surface of its own instead of in rows divided by lines.
+- **The small window at the tray icon keeps the logo in its gold.** Only the tray icon itself changes colour with what runs, and the two buttons at the bottom take the app's colours.
 
 ## 🐛 Fixed
 
