@@ -207,12 +207,11 @@ export function CoffeeDonate({ onClose }: { onClose: () => void }) {
 
   return (
     <Modal visible transparent animationType="fade" onRequestClose={onClose}>
-      <Pressable style={[styles.ground, { backgroundColor: p.scrim }]} onPress={onClose}>
-        {/* Swallows presses so a tap inside does not close the dialog. */}
-        <Pressable
-          onPress={() => {}}
-          style={[styles.card, styles.tall, { backgroundColor: p.surface, ...corners.card }]}
-        >
+      <View style={[styles.ground, { backgroundColor: p.scrim }]}>
+        {/* The scrim closes from behind the card rather than around it, since
+            a pressable around the web view would take its scroll gesture. */}
+        <Pressable style={styles.behind} onPress={onClose} accessible={false} />
+        <View style={[styles.card, styles.tall, { backgroundColor: p.surface, ...corners.card }]}>
           <View style={styles.titleRow}>
             <View style={[styles.title, { backgroundColor: accent, ...corners.pill }]}>
               <Text style={[styles.titleText, { color: contrastOn(accent) }]} numberOfLines={1}>
@@ -243,8 +242,8 @@ export function CoffeeDonate({ onClose }: { onClose: () => void }) {
           <View style={[styles.footer, styles.footerAfterWidget]}>
             <Button label={t("common.close")} labelKey="common.close" onPress={onClose} />
           </View>
-        </Pressable>
-      </Pressable>
+        </View>
+      </View>
     </Modal>
   );
 }
@@ -311,5 +310,6 @@ const styles = StyleSheet.create({
   tall: { height: "88%" },
   widget: { flex: 1, marginHorizontal: space.lg, overflow: "hidden", backgroundColor: "#ffffff" },
   loading: { position: "absolute", top: 0, right: 0, bottom: 0, left: 0, alignItems: "center", justifyContent: "center" },
+  behind: { position: "absolute", top: 0, right: 0, bottom: 0, left: 0 },
   footerAfterWidget: { paddingTop: space.lg },
 });
