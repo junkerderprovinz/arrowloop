@@ -92,6 +92,52 @@ func TestUpdatesAreOnUnlessTurnedOff(t *testing.T) {
 	}
 }
 
+func TestTheUpdateSwitchCanLiveInAFileOfItsOwn(t *testing.T) {
+	dir := t.TempDir()
+	config := filepath.Join(dir, "arrowloop.json")
+	shared := filepath.Join(dir, "settings.json")
+
+	s := Open(config)
+	s.KeepAutoUpdateIn(shared)
+	if !s.Get().AutoUpdate {
+		t.Error("a missing shared file does not read as on")
+	}
+	if err := s.Set(Settings{Tray: true, AutoUpdate: false}); err != nil {
+		t.Fatalf("set: %v", err)
+	}
+	if ReadAutoUpdate(shared) {
+		t.Error("turning updates off did not reach the shared file")
+	}
+
+	// The shared file wins over whatever window.json says.
+	again := Open(config)
+	if err := os.WriteFile(shared, []byte(`{"autoUpdate": true}`), 0o644); err != nil {
+		t.Fatalf("write: %v", err)
+	}
+	again.KeepAutoUpdateIn(shared)
+	if !again.Get().AutoUpdate {
+		t.Error("the shared file's switch was not read")
+	}
+}
+
+func TestASharedFileThatRefusesTheSwitchKeepsItsValue(t *testing.T) {
+	dir := t.TempDir()
+	s := Open(filepath.Join(dir, "arrowloop.json"))
+	// A folder where the file should be cannot be written as a file.
+	shared := filepath.Join(dir, "settings.json")
+	if err := os.Mkdir(shared, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	s.KeepAutoUpdateIn(shared)
+
+	if err := s.Set(Settings{Tray: true, AutoUpdate: false}); err == nil {
+		t.Error("a refused write reported no error")
+	}
+	if !s.Get().AutoUpdate {
+		t.Error("the page shows updates off although the file still says on")
+	}
+}
+
 func TestAPauseSurvivesARestart(t *testing.T) {
 	config := filepath.Join(t.TempDir(), "arrowloop.json")
 	if err := Open(config).SetPaused(true); err != nil {

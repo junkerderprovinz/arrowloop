@@ -98,6 +98,8 @@ type Store struct {
 	now     Settings
 	words   Words
 	watches []func()
+	// autoUpdatePath is the file set by KeepAutoUpdateIn, or "".
+	autoUpdatePath string
 }
 
 // Open reads the settings beside the given configuration file. A missing,
@@ -123,6 +125,49 @@ func Open(configPath string) *Store {
 		s.words = *read.Words
 	}
 	return s
+}
+
+// KeepAutoUpdateIn reads and writes the AutoUpdate switch in its own file at
+// path. An installed copy on Windows is updated by a task that runs as the
+// system rather than as any user, and reads the switch from there.
+func (s *Store) KeepAutoUpdateIn(path string) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.autoUpdatePath = path
+	s.now.AutoUpdate = ReadAutoUpdate(path)
+}
+
+// autoUpdateFile is the file KeepAutoUpdateIn names.
+type autoUpdateFile struct {
+	AutoUpdate bool `json:"autoUpdate"`
+}
+
+// ReadAutoUpdate reads the switch from a file KeepAutoUpdateIn named. A
+// missing, unreadable or corrupt file reads as on, like a fresh install.
+func ReadAutoUpdate(path string) bool {
+	body, err := os.ReadFile(path)
+	if err != nil {
+		return true
+	}
+	f := autoUpdateFile{AutoUpdate: true}
+	if json.Unmarshal(body, &f) != nil {
+		return true
+	}
+	return f.AutoUpdate
+}
+
+// writeAutoUpdate rewrites the file in place. Its folder belongs to the
+// administrators and only the file itself is open to every user, so there is
+// no folder to put a temporary file in.
+func writeAutoUpdate(path string, on bool) error {
+	body, err := json.Marshal(autoUpdateFile{AutoUpdate: on})
+	if err != nil {
+		return err
+	}
+	if err := os.WriteFile(path, append(body, '\n'), 0o644); err != nil {
+		return fmt.Errorf("write %s: %w", path, err)
+	}
+	return nil
 }
 
 // Get returns the current settings.
@@ -175,8 +220,19 @@ func (s *Store) SetWords(w Words) error {
 // watchers once the lock is released, so a watcher may read the store.
 func (s *Store) change(edit func()) error {
 	s.mu.Lock()
+	wasAuto := s.now.AutoUpdate
 	edit()
-	err := s.write()
+	var err error
+	if s.autoUpdatePath != "" && s.now.AutoUpdate != wasAuto {
+		// When the file refuses the change, the page goes on showing the
+		// switch as the updates see it.
+		if err = writeAutoUpdate(s.autoUpdatePath, s.now.AutoUpdate); err != nil {
+			s.now.AutoUpdate = wasAuto
+		}
+	}
+	if werr := s.write(); err == nil {
+		err = werr
+	}
 	watches := append([]func(){}, s.watches...)
 	s.mu.Unlock()
 
