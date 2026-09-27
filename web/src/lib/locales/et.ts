@@ -27,6 +27,7 @@ const et: Translations = {
   'jobs.cancelRun': 'Katkesta käivitus',
   'jobs.runNowHint': 'Käivita see töö kohe, ilma eelvaateta. Samad turvavõrgud jäävad: midagi ei kustutata jäädavalt ja käivitus, mis eemaldaks üle poole kõigest teadaolevast, peatub ja ütleb seda.',
   'jobs.check': 'Kontrolli tööd',
+  'jobs.dupes': 'Otsi duplikaate',
   'check.healthy': 'Teatada pole midagi. Mõlemad pooled on kättesaadavad ja salvestatud olek vastab sellele, mis seal on.',
   'dupes.unhashable': '{count} failil pole kontrollsummat, neid ei võrreldud.',
   'dupes.each': '{size} kumbki, {wasted} raisku',

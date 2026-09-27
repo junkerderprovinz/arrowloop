@@ -27,6 +27,7 @@ const ca: Translations = {
   'jobs.cancelRun': 'Cancel\'la l\'execució',
   'jobs.runNowHint': 'Inicia aquesta tasca ara mateix, sense previsualització. Les mateixes xarxes hi continuen: no s\'esborra res definitivament, i una execució que trauria més de la meitat de tot el que coneix s\'atura i ho diu.',
   'jobs.check': 'Comprova la tasca',
+  'jobs.dupes': 'Cerca duplicats',
   'check.healthy': 'Res a informar. Les dues bandes són accessibles i l\'estat desat coincideix amb el que hi ha.',
   'dupes.unhashable': '{count} fitxers no tenen suma de verificació i no s’han comparat.',
   'dupes.each': '{size} cadascun, {wasted} malgastats',

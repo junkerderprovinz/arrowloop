@@ -27,6 +27,7 @@ const pt: Translations = {
   'jobs.cancelRun': 'Cancelar a execução',
   'jobs.runNowHint': 'Iniciar esta tarefa já, sem pré-visualização. As mesmas redes continuam: nada é apagado definitivamente, e uma execução que removeria mais de metade de tudo o que conhece para e avisa.',
   'jobs.check': 'Verificar a tarefa',
+  'jobs.dupes': 'Procurar duplicados',
   'check.healthy': 'Nada a assinalar. Os dois lados estão acessíveis e o estado guardado corresponde ao que lá está.',
   'dupes.unhashable': '{count} ficheiros não têm soma de verificação e não foram comparados.',
   'dupes.each': '{size} cada, {wasted} desperdiçados',

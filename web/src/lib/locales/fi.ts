@@ -27,6 +27,7 @@ const fi: Translations = {
   'jobs.cancelRun': 'Peruuta ajo',
   'jobs.runNowHint': 'Käynnistä tämä työ heti, ilman esikatselua. Samat turvaverkot pysyvät: mitään ei poisteta lopullisesti, ja ajo, joka poistaisi yli puolet kaikesta tuntemastaan, pysähtyy ja kertoo siitä.',
   'jobs.check': 'Tarkista työ',
+  'jobs.dupes': 'Etsi kaksoiskappaleet',
   'check.healthy': 'Ei mitään ilmoitettavaa. Molemmat puolet ovat tavoitettavissa ja tallennettu tila vastaa sitä, mitä siellä on.',
   'dupes.unhashable': '{count} tiedostolle ei saatu tarkistussummaa, niitä ei verrattu.',
   'dupes.each': '{size} kukin, {wasted} hukkaan',

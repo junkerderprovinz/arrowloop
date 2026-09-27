@@ -27,6 +27,7 @@ const lt: Translations = {
   'jobs.cancelRun': 'Atšaukti paleidimą',
   'jobs.runNowHint': 'Paleisti šią užduotį iškart, be peržiūros. Lieka tie patys saugikliai: niekas nešalinama visam laikui, o paleidimas, kuris pašalintų daugiau nei pusę visų žinomų failų, sustoja ir tai praneša.',
   'jobs.check': 'Patikrinti užduotį',
+  'jobs.dupes': 'Ieškoti dublikatų',
   'check.healthy': 'Pranešti nėra ko. Abi pusės pasiekiamos, o įrašyta būsena sutampa su tuo, kas ten yra.',
   'dupes.unhashable': '{count} rinkmenų kontrolinės sumos nėra, jos nebuvo palygintos.',
   'dupes.each': 'po {size}, {wasted} švaistoma',

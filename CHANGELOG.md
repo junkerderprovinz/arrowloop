@@ -37,6 +37,7 @@ The full notes for each release are in
 
 - **Deciding a conflict after the run changes the files.** The choices in an opened run in History started a new run, which found no conflict left, since the first run had already kept both versions, so nothing happened. The run now counts the conflicts it kept both versions of and links to Conflicts, where the choice takes effect.
 - **A job's trash can be reached in the browser again.** Its list sat in a part of the job card that never showed; the Trash tab replaces it.
+- **Check this job and Find duplicates can be opened.** Both sat in the same hidden part of the card. They are in the card's Options menu now and open under the card with a close button, like its history.
 - **A renamed file's line in the history shows its size.** The size was read under the new name on the side still waiting for the rename, where there was nothing yet, so it came out as nothing.
 
 ## 1.2.1 - 2026-09-27

@@ -27,6 +27,7 @@ const id: Translations = {
   'jobs.cancelRun': 'Batalkan jalannya',
   'jobs.runNowHint': 'Mulai tugas ini sekarang juga, tanpa pratinjau. Jaring pengaman yang sama tetap berlaku: tidak ada yang dihapus permanen, dan proses yang akan menghapus lebih dari separuh semua yang diketahuinya akan berhenti dan mengatakannya.',
   'jobs.check': 'Periksa tugas ini',
+  'jobs.dupes': 'Cari duplikat',
   'check.healthy': 'Tidak ada yang perlu dilaporkan. Kedua sisi dapat dijangkau dan keadaan yang tersimpan cocok dengan apa yang ada di sana.',
   'dupes.unhashable': '{count} berkas tidak dapat di-hash, jadi tidak dibandingkan.',
   'dupes.each': '{size} masing-masing, {wasted} terbuang',

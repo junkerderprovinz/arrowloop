@@ -27,6 +27,7 @@ const vi: Translations = {
   'jobs.cancelRun': 'Hủy lần chạy',
   'jobs.runNowHint': 'Chạy công việc này ngay, không cần xem trước. Vẫn giữ nguyên các lưới an toàn: không xóa hẳn thứ gì, và lần chạy nào định gỡ quá nửa số tệp đã biết sẽ dừng lại và báo.',
   'jobs.check': 'Kiểm tra công việc',
+  'jobs.dupes': 'Tìm bản trùng',
   'check.healthy': 'Không có gì để báo. Cả hai bên đều truy cập được và trạng thái đã lưu khớp với những gì đang có ở đó.',
   'dupes.unhashable': '{count} tệp không lấy được mã băm nên không được so sánh.',
   'dupes.each': 'Mỗi bản {size}, lãng phí {wasted}',

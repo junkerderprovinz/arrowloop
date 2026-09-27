@@ -27,6 +27,7 @@ const ro: Translations = {
   'jobs.cancelRun': 'Anulează rularea',
   'jobs.runNowHint': 'Pornește această sarcină imediat, fără previzualizare. Aceleași plase rămân: nimic nu se șterge definitiv, iar o rulare care ar elimina mai mult de jumătate din tot ce cunoaște se oprește și o spune.',
   'jobs.check': 'Verifică sarcina',
+  'jobs.dupes': 'Caută duplicate',
   'check.healthy': 'Nimic de raportat. Ambele părți sunt accesibile, iar starea salvată se potrivește cu ce este acolo.',
   'dupes.unhashable': '{count} fișiere nu au sumă de control și nu au fost comparate.',
   'dupes.each': '{size} fiecare, {wasted} irosiți',

@@ -27,6 +27,7 @@ const is: Translations = {
   'jobs.cancelRun': 'Hætta við keyrslu',
   'jobs.runNowHint': 'Keyra þetta verk strax, án forskoðunar. Sömu öryggisnetin gilda: engu er eytt endanlega, og keyrsla sem myndi fjarlægja meira en helming alls sem hún þekkir stöðvast og segir frá því.',
   'jobs.check': 'Athuga verkið',
+  'jobs.dupes': 'Leita að tvítekningum',
   'check.healthy': 'Ekkert er að frétta. Báðar hliðar nást og vistaða staðan passar við það sem er þar.',
   'dupes.unhashable': '{count} skrár fá ekkert eftirlitssummu og voru ekki bornar saman.',
   'dupes.each': '{size} hvert, {wasted} ónýtt',

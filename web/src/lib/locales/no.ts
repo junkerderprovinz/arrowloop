@@ -27,6 +27,7 @@ const no: Translations = {
   'jobs.cancelRun': 'Avbryt kjøringen',
   'jobs.runNowHint': 'Start jobben med en gang, uten forhåndsvisning. De samme sikkerhetsnettene gjelder: ingenting slettes for godt, og en kjøring som ville fjerne mer enn halvparten av alt den kjenner til, stopper og sier fra.',
   'jobs.check': 'Sjekk jobben',
+  'jobs.dupes': 'Finn duplikater',
   'check.healthy': 'Ingenting å melde. Begge sider kan nås, og den lagrede tilstanden stemmer med det som er der.',
   'dupes.unhashable': '{count} filer fikk ingen kontrollsum og ble ikke sammenlignet.',
   'dupes.each': '{size} hver, {wasted} bortkastet',

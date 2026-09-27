@@ -27,6 +27,7 @@ const lv: Translations = {
   'jobs.cancelRun': 'Atcelt palaišanu',
   'jobs.runNowHint': 'Palaist šo uzdevumu uzreiz, bez priekšskatījuma. Paliek tie paši drošības tīkli: nekas netiek dzēsts galīgi, un palaišana, kas noņemtu vairāk nekā pusi no visa zināmā, apstājas un to pasaka.',
   'jobs.check': 'Pārbaudīt uzdevumu',
+  'jobs.dupes': 'Meklēt dublikātus',
   'check.healthy': 'Nav ko ziņot. Abas puses ir sasniedzamas, un saglabātais stāvoklis sakrīt ar to, kas tur ir.',
   'dupes.unhashable': '{count} datnēm nav kontrolsummas, tās netika salīdzinātas.',
   'dupes.each': 'pa {size}, {wasted} izniekoti',

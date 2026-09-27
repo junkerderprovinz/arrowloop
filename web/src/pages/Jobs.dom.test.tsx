@@ -89,7 +89,7 @@ describe('a job card', () => {
     const items = within(menu)
       .getAllByRole('menuitem')
       .map((b) => b.textContent?.trim())
-    expect(items).toEqual(['History', 'Edit', 'Duplicate', 'Remove', 'Preview'])
+    expect(items).toEqual(['History', 'Check this job', 'Find duplicates', 'Edit', 'Duplicate', 'Remove', 'Preview'])
   })
 
   it('closes the menu on Escape', async () => {
@@ -116,6 +116,28 @@ describe('a job card', () => {
     const fold = await open()
     fireEvent.keyDown(within(fold).getByRole('textbox'), { key: 'Escape' })
     expect(screen.queryByRole('region', { name: 'History' })).toBeNull()
+  })
+
+  it('opens the check and the duplicate search from the menu and closes them again', async () => {
+    card()
+    const pick = async (name: string) => {
+      fireEvent.click(await screen.findByRole('button', { name: 'Options' }))
+      fireEvent.click(within(await screen.findByRole('menu')).getByRole('menuitem', { name }))
+      return screen.findByRole('region', { name })
+    }
+
+    const check = await pick('Check this job')
+    expect(within(check).getByRole('button', { name: 'Check this job' })).toBeTruthy()
+    const dupes = await pick('Find duplicates')
+    expect(screen.queryByRole('region', { name: 'Check this job' })).toBeNull()
+    expect(within(dupes).getAllByRole('button', { name: /Duplicates on the/ })).toHaveLength(2)
+
+    fireEvent.click(within(dupes).getByRole('button', { name: 'Close' }))
+    expect(screen.queryByRole('region', { name: 'Find duplicates' })).toBeNull()
+
+    const again = await pick('Check this job')
+    fireEvent.keyDown(within(again).getByRole('button', { name: 'Check this job' }), { key: 'Escape' })
+    expect(screen.queryByRole('region', { name: 'Check this job' })).toBeNull()
   })
 
   it('floats the button that adds a job outside the page', async () => {

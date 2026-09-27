@@ -27,6 +27,7 @@ const ko: Translations = {
   'jobs.cancelRun': '실행 취소',
   'jobs.runNowHint': '미리 보기 없이 이 작업을 지금 시작합니다. 같은 안전장치가 그대로 적용됩니다. 완전히 지우지 않으며, 알고 있는 파일의 절반 이상을 없앨 실행은 중단하고 그 사실을 알립니다.',
   'jobs.check': '작업 점검',
+  'jobs.dupes': '중복 찾기',
   'check.healthy': '보고할 것이 없습니다. 양쪽 모두 접근할 수 있고 기록된 상태가 실제로 있는 것과 일치합니다.',
   'dupes.unhashable': '파일 {count}개는 해시를 구할 수 없어 비교하지 않았습니다.',
   'dupes.each': '개당 {size}, {wasted} 낭비',

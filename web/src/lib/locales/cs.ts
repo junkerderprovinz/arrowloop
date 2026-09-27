@@ -27,6 +27,7 @@ const cs: Translations = {
   'jobs.cancelRun': 'Zrušit běh',
   'jobs.runNowHint': 'Spustit tuto úlohu hned, bez náhledu. Stejné pojistky zůstávají: nic se nemaže natrvalo a běh, který by odstranil více než polovinu všeho známého, se zastaví a řekne to.',
   'jobs.check': 'Zkontrolovat úlohu',
+  'jobs.dupes': 'Hledat duplicity',
   'check.healthy': 'Není co hlásit. Obě strany jsou dostupné a uložený stav odpovídá tomu, co tam je.',
   'dupes.unhashable': 'U {count} souborů nelze získat kontrolní součet, nebyly porovnány.',
   'dupes.each': 'po {size}, {wasted} nazmar',

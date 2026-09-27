@@ -27,6 +27,7 @@ const fr: Translations = {
   'jobs.cancelRun': 'Annuler l\'exécution',
   'jobs.runNowHint': 'Lancer cette tâche tout de suite, sans aperçu. Les mêmes filets restent en place : rien n\'est supprimé définitivement, et une exécution qui retirerait plus de la moitié de ce qu\'elle connaît s\'arrête et le dit.',
   'jobs.check': 'Vérifier la tâche',
+  'jobs.dupes': 'Chercher les doublons',
   'check.healthy': 'Rien à signaler. Les deux côtés sont joignables et l\'état enregistré correspond à ce qui est réellement là.',
   'dupes.unhashable': '{count} fichiers n’ont pas de somme de contrôle et n’ont pas été comparés.',
   'dupes.each': '{size} chacun, {wasted} gaspillés',

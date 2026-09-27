@@ -27,6 +27,7 @@ const ms: Translations = {
   'jobs.cancelRun': 'Batalkan larian',
   'jobs.runNowHint': 'Mulakan tugas ini serta-merta, tanpa pratonton. Jaring keselamatan yang sama kekal: tiada apa-apa dipadam terus, dan larian yang akan membuang lebih separuh daripada segala yang diketahuinya akan berhenti dan memberitahunya.',
   'jobs.check': 'Semak tugas ini',
+  'jobs.dupes': 'Cari pendua',
   'check.healthy': 'Tiada apa untuk dilaporkan. Kedua-dua belah boleh dicapai dan keadaan yang disimpan sepadan dengan apa yang ada di sana.',
   'dupes.unhashable': '{count} fail tidak dapat di-hash, jadi tidak dibandingkan.',
   'dupes.each': '{size} setiap satu, {wasted} terbazir',

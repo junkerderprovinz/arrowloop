@@ -27,6 +27,7 @@ const ja: Translations = {
   'jobs.cancelRun': '実行を中止',
   'jobs.runNowHint': 'このジョブをプレビューなしで今すぐ開始します。安全策は同じです。完全な削除は行わず、把握しているファイルの半分以上を消すことになる実行は中止して、その旨を伝えます。',
   'jobs.check': 'ジョブを点検',
+  'jobs.dupes': '重複を探す',
   'check.healthy': '報告することはありません。両側とも到達でき、記録された状態は実際にあるものと一致しています。',
   'dupes.unhashable': '{count} 件はハッシュを得られず、比較していません。',
   'dupes.each': '各 {size}、{wasted} の無駄',

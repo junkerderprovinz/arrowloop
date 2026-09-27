@@ -27,6 +27,7 @@ const sv: Translations = {
   'jobs.cancelRun': 'Avbryt körningen',
   'jobs.runNowHint': 'Starta jobbet direkt, utan förhandsvisning. Samma skyddsnät gäller: inget raderas för gott, och en körning som skulle ta bort mer än hälften av allt den känner till stannar och säger till.',
   'jobs.check': 'Kontrollera jobbet',
+  'jobs.dupes': 'Hitta dubbletter',
   'check.healthy': 'Inget att rapportera. Båda sidor går att nå och det sparade tillståndet stämmer med det som finns där.',
   'dupes.unhashable': '{count} filer gick inte att kontrollsummera och jämfördes inte.',
   'dupes.each': '{size} styck, {wasted} bortkastat',

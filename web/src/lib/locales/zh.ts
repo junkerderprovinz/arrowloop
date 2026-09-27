@@ -27,6 +27,7 @@ const zh: Translations = {
   'jobs.cancelRun': '中止运行',
   'jobs.runNowHint': '立即运行此任务，不做预览。同样的保护仍在：不会彻底删除任何内容，若一次运行将移除已知文件的一半以上，它会中止并说明原因。',
   'jobs.check': '检查此任务',
+  'jobs.dupes': '查找重复文件',
   'check.healthy': '没有需要报告的。两侧都能连上，记录的状态与实际情况一致。',
   'dupes.unhashable': '{count} 个文件无法计算校验和，未参与比较。',
   'dupes.each': '每份 {size}，浪费 {wasted}',

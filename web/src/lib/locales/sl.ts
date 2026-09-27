@@ -27,6 +27,7 @@ const sl: Translations = {
   'jobs.cancelRun': 'Prekliči zagon',
   'jobs.runNowHint': 'Zaženi to opravilo takoj, brez predogleda. Iste varovalke ostanejo: nič se ne izbriše dokončno, zagon, ki bi odstranil več kot polovico vsega znanega, pa se ustavi in to pove.',
   'jobs.check': 'Preveri opravilo',
+  'jobs.dupes': 'Poišči podvojeno',
   'check.healthy': 'Ni kaj poročati. Obe strani sta dosegljivi, shranjeno stanje pa se ujema s tem, kar je tam.',
   'dupes.unhashable': 'Za {count} datotek ni kontrolne vsote, niso bile primerjane.',
   'dupes.each': 'po {size}, {wasted} zapravljeno',

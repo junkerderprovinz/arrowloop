@@ -27,6 +27,7 @@ const pl: Translations = {
   'jobs.cancelRun': 'Przerwij przebieg',
   'jobs.runNowHint': 'Uruchom to zadanie od razu, bez podglądu. Zabezpieczenia pozostają te same: nic nie jest kasowane bezpowrotnie, a przebieg, który usunąłby więcej niż połowę znanych plików, zatrzymuje się i mówi o tym.',
   'jobs.check': 'Sprawdź zadanie',
+  'jobs.dupes': 'Szukaj duplikatów',
   'check.healthy': 'Nie ma nic do zgłoszenia. Obie strony są osiągalne, a zapisany stan zgadza się z tym, co tam jest.',
   'dupes.unhashable': 'Dla {count} plików nie ma sumy kontrolnej, nie zostały porównane.',
   'dupes.each': 'po {size}, {wasted} zmarnowane',

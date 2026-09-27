@@ -27,6 +27,7 @@ const da: Translations = {
   'jobs.cancelRun': 'Afbryd kørslen',
   'jobs.runNowHint': 'Start jobbet med det samme, uden forhåndsvisning. De samme sikkerhedsnet gælder: intet slettes endeligt, og en kørsel, der ville fjerne mere end halvdelen af alt kendt, stopper og siger det.',
   'jobs.check': 'Tjek jobbet',
+  'jobs.dupes': 'Find dubletter',
   'check.healthy': 'Intet at melde. Begge sider kan nås, og den gemte tilstand passer med det, der er der.',
   'dupes.unhashable': '{count} filer kunne ikke få en kontrolsum og blev ikke sammenlignet.',
   'dupes.each': '{size} hver, {wasted} spildt',

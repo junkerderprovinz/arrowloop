@@ -27,6 +27,7 @@ const hu: Translations = {
   'jobs.cancelRun': 'Futás megszakítása',
   'jobs.runNowHint': 'Indítsd el ezt a feladatot azonnal, előnézet nélkül. Ugyanazok a védőhálók maradnak: semmi nem törlődik véglegesen, és az a futás, amely az összes ismert fájl több mint felét eltávolítaná, leáll és szól.',
   'jobs.check': 'Feladat ellenőrzése',
+  'jobs.dupes': 'Duplikátumok keresése',
   'check.healthy': 'Nincs jelentenivaló. Mindkét oldal elérhető, és a mentett állapot megegyezik azzal, ami tényleg ott van.',
   'dupes.unhashable': '{count} fájlhoz nincs ellenőrző összeg, ezeket nem hasonlítottuk össze.',
   'dupes.each': 'egyenként {size}, {wasted} elpazarolva',

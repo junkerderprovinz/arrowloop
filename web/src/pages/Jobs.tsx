@@ -72,6 +72,10 @@ export function Jobs({
   const [removing, setRemoving] = useState<number | null>(null)
   // Whose history fold is open, by job name; one at a time.
   const [history, setHistory] = useState<string | null>(null)
+  // The check or the duplicate search open on a card, one at a time.
+  const [tool, setTool] = useState<{ job: string; kind: 'check' | 'dupes' } | null>(null)
+  const toggleTool = (job: string, kind: 'check' | 'dupes') =>
+    setTool((open) => (open?.job === job && open.kind === kind ? null : { job, kind }))
   // A counter used as the error's key, so each refused save remounts it and
   // replays the shake.
   const [refused, setRefused] = useState(0)
@@ -198,6 +202,8 @@ export function Jobs({
                           labelKey: 'jobs.history',
                           onSelect: () => setHistory(history === j.name ? null : j.name),
                         },
+                        { label: t('jobs.check'), labelKey: 'jobs.check', onSelect: () => toggleTool(j.name, 'check') },
+                        { label: t('jobs.dupes'), labelKey: 'jobs.dupes', onSelect: () => toggleTool(j.name, 'dupes') },
                         ...(at !== null
                           ? [
                               {
@@ -227,11 +233,13 @@ export function Jobs({
                     <JobHistory job={j.name} running={j.running} onClose={() => setHistory(null)} />
                   )}
 
-                  {at !== null && at === editing && (
-                    <>
-                      <CheckPanel job={j.name} />
-                      <DupesPanel job={j.name} />
-                    </>
+                  {tool?.job === j.name && (
+                    <ToolFold
+                      title={t(tool.kind === 'check' ? 'jobs.check' : 'jobs.dupes')}
+                      onClose={() => setTool(null)}
+                    >
+                      {tool.kind === 'check' ? <CheckPanel job={j.name} /> : <DupesPanel job={j.name} />}
+                    </ToolFold>
                   )}
 
                   {j.running && (
@@ -512,6 +520,28 @@ function Cadence({ job }: { job: Job }) {
  * engine answers with the running run's lines among the stored ones, so they
  * appear as they happen and read the same once the run is stored.
  */
+/** A tool opened on a job's card, headed and closed the way the history fold is. */
+function ToolFold({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
+  const { t } = useT()
+  return (
+    <section
+      className="mt-1 w-full"
+      aria-label={title}
+      onKeyDown={(e) => {
+        if (e.key !== 'Escape' || e.defaultPrevented) return
+        e.stopPropagation()
+        onClose()
+      }}
+    >
+      <div className="mb-2 flex items-center justify-between gap-2">
+        <h3 className="text-xs font-medium uppercase tracking-wider text-carbon-textMuted">{title}</h3>
+        <IconAction title={t('common.close')} labelKey="common.close" tone="subtle" onClick={onClose} />
+      </div>
+      {children}
+    </section>
+  )
+}
+
 function JobHistory({ job, running, onClose }: { job: string; running: boolean; onClose: () => void }) {
   const { t } = useT()
   const tick = useLiveTick(running)

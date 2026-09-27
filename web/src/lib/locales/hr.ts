@@ -27,6 +27,7 @@ const hr: Translations = {
   'jobs.cancelRun': 'Otkaži pokretanje',
   'jobs.runNowHint': 'Pokreni ovaj zadatak odmah, bez pretpregleda. Iste zaštite ostaju: ništa se ne briše zauvijek, a izvođenje koje bi uklonilo više od polovice svega poznatog staje i to kaže.',
   'jobs.check': 'Provjeri zadatak',
+  'jobs.dupes': 'Traži duplikate',
   'check.healthy': 'Nema se što prijaviti. Obje strane su dostupne, a spremljeno stanje odgovara onome što je tamo.',
   'dupes.unhashable': 'Za {count} datoteka nema kontrolnog zbroja, nisu uspoređene.',
   'dupes.each': 'po {size}, {wasted} potrošeno',

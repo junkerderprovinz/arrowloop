@@ -27,6 +27,7 @@ const nl: Translations = {
   'jobs.cancelRun': 'Run afbreken',
   'jobs.runNowHint': 'Deze taak meteen starten, zonder voorbeeld. Dezelfde vangnetten blijven: niets wordt definitief verwijderd, en een run die meer dan de helft van alles wat hij kent zou weghalen stopt en zegt het.',
   'jobs.check': 'Taak controleren',
+  'jobs.dupes': 'Dubbele bestanden zoeken',
   'check.healthy': 'Niets te melden. Beide kanten zijn bereikbaar en de opgeslagen toestand komt overeen met wat er staat.',
   'dupes.unhashable': 'Van {count} bestanden is geen controlesom te krijgen, ze zijn niet vergeleken.',
   'dupes.each': '{size} elk, {wasted} verspild',
