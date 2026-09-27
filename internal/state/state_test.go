@@ -116,3 +116,55 @@ func TestOpenLeavesAnExistingFolderAlone(t *testing.T) {
 		t.Fatalf("the folder's mode changed from %v to %v", before.Mode(), after.Mode())
 	}
 }
+
+func TestAFragmentFindsOnlyTheRowsThatHoldIt(t *testing.T) {
+	db := openTemp(t)
+	ctx := context.Background()
+	for _, path := range []string{"a/notes.txt", "a/notes.conflict-left-20260101-000000.txt", "b_c/other.txt"} {
+		if err := db.Put(ctx, Entry{Path: path, LeftPath: path, RightPath: path}); err != nil {
+			t.Fatalf("put %s: %v", path, err)
+		}
+	}
+	got, err := db.Containing(ctx, ".conflict-")
+	if err != nil {
+		t.Fatalf("containing: %v", err)
+	}
+	if len(got) != 1 || got[0].Path != "a/notes.conflict-left-20260101-000000.txt" {
+		t.Fatalf("expected the one copy, got %+v", got)
+	}
+	// An underscore is a wildcard to LIKE and must be an ordinary character here.
+	if got, _ := db.Containing(ctx, "b_c"); len(got) != 1 {
+		t.Fatalf("the underscore did not match itself: %+v", got)
+	}
+	if got, _ := db.Containing(ctx, "a_n"); len(got) != 0 {
+		t.Fatalf("the underscore matched another character: %+v", got)
+	}
+}
+
+func TestAKeptFileIsForgottenWithItsRecord(t *testing.T) {
+	db := openTemp(t)
+	ctx := context.Background()
+	const path = "notes.conflict-right-20260101-000000.txt"
+	if err := db.Put(ctx, Entry{Path: path, LeftPath: path, RightPath: path}); err != nil {
+		t.Fatalf("put: %v", err)
+	}
+	if err := db.Keep(ctx, path, time.Now()); err != nil {
+		t.Fatalf("keep: %v", err)
+	}
+	if kept, err := db.Kept(ctx); err != nil || !kept[path] {
+		t.Fatalf("the decision was not recorded: %v %v", kept, err)
+	}
+	if _, found, err := db.Get(ctx, path); err != nil || !found {
+		t.Fatalf("get: found %v, %v", found, err)
+	}
+
+	if err := db.Forget(ctx, path); err != nil {
+		t.Fatalf("forget: %v", err)
+	}
+	if kept, _ := db.Kept(ctx); kept[path] {
+		t.Error("the decision outlived the file it was about")
+	}
+	if _, found, _ := db.Get(ctx, path); found {
+		t.Error("the record outlived Forget")
+	}
+}

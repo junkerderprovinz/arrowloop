@@ -68,6 +68,7 @@ var reasonText = map[string]string{
 	"unsupported":     "{kind} on the {side} side, which this engine does not carry",
 	"recordFailed":    "the record could not be written, leaving it for the next run: {error}",
 	"oneWay":          "this job only writes away from the {side}, so the {side} version is the one that stands",
+	"conflictGone":    "one of the two versions is gone, so there is nothing left to decide",
 }
 
 // String is the English sentence, so %s and %v print the sentence rather than

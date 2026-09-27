@@ -460,3 +460,70 @@ func TestPruningNeverTouchesAnEntryWhoseAgeIsUnknown(t *testing.T) {
 		t.Errorf("the prune reports removing %v", pruned.Runs)
 	}
 }
+
+func TestEmptyingRemovesEverythingIncludingEntriesOfUnknownAge(t *testing.T) {
+	s := newSide(t)
+	s.put(t, ".arrowloop/trash/20260907-101500/docs/notes.txt", "old notes", time.Time{})
+	s.put(t, ".arrowloop/trash/20260920-080000/photo.jpg", "a photo", time.Time{})
+	s.put(t, ".arrowloop/trash/dropped-by-hand.txt", "no run", time.Time{})
+	s.put(t, "docs/live.txt", "still in use", time.Time{})
+
+	emptied, err := Empty(context.Background(), s.fs, Trash)
+	if err != nil {
+		t.Fatalf("empty: %v", err)
+	}
+	if emptied.Entries != 3 || emptied.Bytes != int64(len("old notes")+len("a photo")+len("no run")) {
+		t.Errorf("the count says %+v", emptied)
+	}
+	if left, _ := List(context.Background(), s.fs, Trash); len(left) != 0 {
+		t.Errorf("the trash still holds %+v", left)
+	}
+	if !s.exists(t, "docs/live.txt") {
+		t.Error("emptying the trash touched a live file")
+	}
+}
+
+func TestEmptyingAnEmptyTrashIsNotAFailure(t *testing.T) {
+	s := newSide(t)
+	if emptied, err := Empty(context.Background(), s.fs, Trash); err != nil || emptied.Entries != 0 {
+		t.Fatalf("got %+v, %v", emptied, err)
+	}
+}
+
+func TestEmptyRefusesTheVersionsStore(t *testing.T) {
+	s := newSide(t)
+	if _, err := Empty(context.Background(), s.fs, Versions); err == nil {
+		t.Fatal("the versions store was emptied like a trash")
+	}
+}
+
+func TestDeletingOneEntryLeavesTheRest(t *testing.T) {
+	s := newSide(t)
+	s.put(t, ".arrowloop/trash/20260907-101500/docs/notes.txt", "old notes", time.Time{})
+	s.put(t, ".arrowloop/trash/20260907-101500/docs/other.txt", "other", time.Time{})
+
+	if err := Delete(context.Background(), s.fs, Trash, "docs/notes.txt", "20260907-101500"); err != nil {
+		t.Fatalf("delete: %v", err)
+	}
+	if s.exists(t, ".arrowloop/trash/20260907-101500/docs/notes.txt") {
+		t.Error("the entry is still there")
+	}
+	if !s.exists(t, ".arrowloop/trash/20260907-101500/docs/other.txt") {
+		t.Error("its neighbour went with it")
+	}
+	if s.exists(t, "docs/notes.txt") {
+		t.Error("deleting an entry restored it")
+	}
+}
+
+func TestDeleteRefusesAPathThatWalksOutOfTheTrash(t *testing.T) {
+	s := newSide(t)
+	s.put(t, "docs/live.txt", "still in use", time.Time{})
+	err := Delete(context.Background(), s.fs, Trash, "../../docs/live.txt", "20260907-101500")
+	if !errors.Is(err, ErrNotAName) {
+		t.Fatalf("expected a refusal, got %v", err)
+	}
+	if !s.exists(t, "docs/live.txt") {
+		t.Error("the live file is gone")
+	}
+}

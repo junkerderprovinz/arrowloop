@@ -211,6 +211,14 @@ func (t *tally) observe(kind, path, side, note string) {
 	t.record(Entry{Kind: kind, Side: side, Path: path, Note: note})
 }
 
+// logged records a line of work that belongs to a step counted elsewhere, so
+// progress moves once per step rather than once per file the step touched.
+func (t *tally) logged(e Entry) {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+	t.record(e)
+}
+
 // record appends one line to the run's list. The caller holds the mutex, so
 // that a count and its line are always taken together.
 func (t *tally) record(e Entry) {
@@ -301,7 +309,7 @@ func RunVerified(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt
 	if watcher != nil {
 		watcher.Starting(t.total)
 	}
-	runID := time.Now().UTC().Format("20060102-150405")
+	runID := time.Now().UTC().Format(runIDLayout)
 	rec := recorder{ends: ends, db: db, window: opt.ModWindow, verify: verify, observe: t.observe}
 
 	for _, d := range p.Dirs {

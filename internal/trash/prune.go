@@ -35,6 +35,46 @@ type Pruned struct {
 	Unknown int
 }
 
+// Empty removes everything a store holds on one side, entries of unknown age
+// included, since emptying means all of it.
+func Empty(ctx context.Context, f fs.Fs, store Store) (Pruned, error) {
+	var out Pruned
+	if store.layout != runFirst {
+		return out, fmt.Errorf("the %s store is pruned by how many versions are kept, not emptied", store.name)
+	}
+	entries, err := List(ctx, f, store)
+	if err != nil {
+		return out, err
+	}
+	for _, e := range entries {
+		out.Entries++
+		out.Bytes += e.Size
+	}
+	// Not purged when there is nothing in it: on Windows a purge of a folder
+	// that was never made fails with a path error rather than ErrorDirNotFound.
+	if out.Entries == 0 {
+		return out, nil
+	}
+	if err := operations.Purge(ctx, f, store.dir); err != nil && !errors.Is(err, fs.ErrorDirNotFound) {
+		return out, fmt.Errorf("empty %s: %w", store.dir, err)
+	}
+	return out, nil
+}
+
+// Delete removes one entry for good. Nothing is kept behind it, so a caller
+// asks first.
+func Delete(ctx context.Context, f fs.Fs, store Store, rel, runID string) error {
+	src, err := store.remote(rel, runID)
+	if err != nil {
+		return err
+	}
+	obj, err := f.NewObject(ctx, src)
+	if err != nil {
+		return fmt.Errorf("find %q in the %s: %w", rel, store.name, err)
+	}
+	return operations.DeleteFile(ctx, obj)
+}
+
 // PruneOlderThan removes whole runs that were filed before the cutoff. Every
 // file in a run directory shares the run's age, so this purges a few
 // directories rather than deleting file by file. Entries of unknown age are

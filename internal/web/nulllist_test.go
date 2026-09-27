@@ -47,6 +47,8 @@ func TestNoEndpointAnswersWithANullList(t *testing.T) {
 		"/api/volumes",
 		"/api/volumes/candidates",
 		"/api/browse",
+		"/api/trash",
+		"/api/conflicts",
 	} {
 		t.Run(path, func(t *testing.T) {
 			res, err := http.Get(h.srv.URL + path)

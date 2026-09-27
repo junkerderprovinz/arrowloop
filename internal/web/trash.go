@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"sync"
 	"time"
 
 	rclonefs "github.com/rclone/rclone/fs"
@@ -44,9 +45,10 @@ type keptAnswer struct {
 	Side  string `json:"side"`
 	Store string `json:"store"`
 	Dir   string `json:"dir"`
-	// Total is how many entries the side holds, which can be more than are
-	// listed.
+	// Total and Bytes are how many entries the side holds and their size,
+	// counting those beyond the ones listed.
 	Total   int         `json:"total"`
+	Bytes   int64       `json:"bytes"`
 	Entries []keptEntry `json:"entries"`
 }
 
@@ -77,10 +79,17 @@ func (s *Server) listKept(w http.ResponseWriter, r *http.Request, store trash.St
 		writeError(w, http.StatusBadGateway, err)
 		return
 	}
+	writeJSON(w, http.StatusOK, answerOf(name, side, store, entries, keptLimit(r)))
+}
 
+// answerOf renders a listing, sending at most limit entries.
+func answerOf(name, side string, store trash.Store, entries []trash.Entry, limit int) keptAnswer {
 	out := keptAnswer{Job: name, Side: side, Store: store.Name(), Dir: store.Dir(), Total: len(entries)}
+	for _, e := range entries {
+		out.Bytes += e.Size
+	}
 	// The cap is on what is sent, not on what is counted.
-	entries = entries[:min(len(entries), keptLimit(r))]
+	entries = entries[:min(len(entries), limit)]
 	out.Entries = make([]keptEntry, 0, len(entries))
 	for _, e := range entries {
 		view := keptEntry{
@@ -96,7 +105,98 @@ func (s *Server) listKept(w http.ResponseWriter, r *http.Request, store trash.St
 		}
 		out.Entries = append(out.Entries, view)
 	}
-	writeJSON(w, http.StatusOK, out)
+	return out
+}
+
+// sideTrash is one side of one job in the listing across every job. A side
+// that cannot be read carries the reason instead of failing the rest.
+type sideTrash struct {
+	keptAnswer
+	Error string `json:"error,omitempty"`
+}
+
+// listAllTrash reads the trash of every job's two sides, or of the one job
+// asked for. The sides are read at once, since each can be a remote that takes
+// its time to list.
+func (s *Server) listAllTrash(w http.ResponseWriter, r *http.Request) {
+	only, limit := r.URL.Query().Get("job"), keptLimit(r)
+	var out []sideTrash
+	for _, j := range s.Runner.Config().Jobs {
+		if only != "" && j.Name != only {
+			continue
+		}
+		for _, side := range []string{"left", "right"} {
+			if spec, _ := sideSpec(j, side); spec != "" {
+				out = append(out, sideTrash{keptAnswer: keptAnswer{Job: j.Name, Side: side, Store: trash.Trash.Name(), Dir: trash.Trash.Dir()}})
+			}
+		}
+	}
+
+	var wg sync.WaitGroup
+	for i := range out {
+		wg.Add(1)
+		go func(at *sideTrash) {
+			defer wg.Done()
+			f, _, err := s.sideOf(r.Context(), at.Job, at.Side)
+			if err != nil {
+				at.Error = err.Error()
+				return
+			}
+			entries, err := trash.List(r.Context(), f, trash.Trash)
+			if err != nil {
+				at.Error = err.Error()
+				return
+			}
+			at.keptAnswer = answerOf(at.Job, at.Side, trash.Trash, entries, limit)
+		}(&out[i])
+	}
+	wg.Wait()
+	if out == nil {
+		out = []sideTrash{}
+	}
+	writeJSON(w, http.StatusOK, map[string]any{"sides": out})
+}
+
+// deleteTrash removes one entry for good.
+func (s *Server) deleteTrash(w http.ResponseWriter, r *http.Request) {
+	store, ok := trashStore(w, r)
+	if !ok {
+		return
+	}
+	f, req, ok := s.entryRequest(w, r)
+	if !ok {
+		return
+	}
+	if err := trash.Delete(r.Context(), f, store, req.Path, req.RunID); err != nil {
+		writeError(w, restoreStatus(err), err)
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]any{
+		"job": r.PathValue("name"), "side": r.PathValue("side"), "store": store.Name(), "deleted": req.Path,
+	})
+}
+
+// emptyTrash removes everything in one side's trash.
+func (s *Server) emptyTrash(w http.ResponseWriter, r *http.Request) {
+	store, ok := trashStore(w, r)
+	if !ok {
+		return
+	}
+	name, side := r.PathValue("name"), r.PathValue("side")
+	f, code, err := s.sideOf(r.Context(), name, side)
+	if err != nil {
+		writeError(w, code, err)
+		return
+	}
+	emptied, err := trash.Empty(r.Context(), f, store)
+	status := http.StatusOK
+	body := map[string]any{"job": name, "side": side, "store": store.Name(), "entries": emptied.Entries, "bytes": emptied.Bytes}
+	if err != nil {
+		// The counts go out with the failure, as a prune's do.
+		status = http.StatusBadGateway
+		body["error"] = err.Error()
+	}
+	writeJSON(w, status, body)
 }
 
 // keptRequest names one entry by path and run, never by the remote from the

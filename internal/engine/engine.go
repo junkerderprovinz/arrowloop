@@ -284,6 +284,19 @@ func OnceWatched(ctx context.Context, ends apply.Ends, db *state.DB, opt Options
 	return p, res, err
 }
 
+// Conflicts lists the conflicts a run kept both versions of that are still
+// waiting for somebody to choose.
+func Conflicts(ctx context.Context, ends apply.Ends, db *state.DB, opt Options) ([]apply.Open, error) {
+	return apply.OpenConflicts(ctx, ends, db, foldCase(ends, opt))
+}
+
+// Decide carries out the choices somebody made on those conflicts.
+func Decide(ctx context.Context, ends apply.Ends, db *state.DB, decisions []apply.Decision, opt Options, watcher apply.Progress) (apply.Result, error) {
+	compare := opt.Compare
+	compare.FoldCase = foldCase(ends, opt)
+	return apply.Decide(ctx, ends, db, decisions, compare, watcher)
+}
+
 // NothingToSyncError says a job's sides do not exist, usually because of a
 // typo, an unmounted share or a detached drive.
 type NothingToSyncError struct {

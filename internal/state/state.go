@@ -63,6 +63,10 @@ CREATE TABLE IF NOT EXISTS dirs (
 	right_path  TEXT NOT NULL,
 	agreed_at   INTEGER NOT NULL
 );
+CREATE TABLE IF NOT EXISTS kept (
+	path        TEXT PRIMARY KEY,
+	decided_at  INTEGER NOT NULL
+);
 `
 
 // Open opens or creates the state database at path.
@@ -103,14 +107,10 @@ func (d *DB) All(ctx context.Context) (map[string]Entry, error) {
 
 	out := make(map[string]Entry)
 	for rows.Next() {
-		var e Entry
-		var leftMod, rightMod, agreed int64
-		if err := rows.Scan(&e.Path, &e.LeftPath, &e.RightPath, &e.LeftSize, &leftMod, &e.LeftHash, &e.RightSize, &rightMod, &e.RightHash, &agreed); err != nil {
-			return nil, fmt.Errorf("scan state row: %w", err)
+		e, err := scanEntry(rows)
+		if err != nil {
+			return nil, err
 		}
-		e.LeftMod = time.Unix(0, leftMod)
-		e.RightMod = time.Unix(0, rightMod)
-		e.AgreedAt = time.Unix(0, agreed)
 		out[e.Path] = e
 	}
 	return out, rows.Err()
@@ -136,12 +136,96 @@ func (d *DB) Put(ctx context.Context, e Entry) error {
 	return nil
 }
 
-// Forget drops a path, meaning both sides agree it is gone.
+// Forget drops a path, meaning both sides agree it is gone. A decision to keep
+// it goes with it, so a later file of the same name starts undecided.
 func (d *DB) Forget(ctx context.Context, path string) error {
 	if _, err := d.sql.ExecContext(ctx, `DELETE FROM entries WHERE path = ?`, path); err != nil {
 		return fmt.Errorf("forget state %q: %w", path, err)
 	}
+	if _, err := d.sql.ExecContext(ctx, `DELETE FROM kept WHERE path = ?`, path); err != nil {
+		return fmt.Errorf("forget the decision on %q: %w", path, err)
+	}
 	return nil
+}
+
+// Get returns the record of one path, and false when there is none.
+func (d *DB) Get(ctx context.Context, path string) (Entry, bool, error) {
+	rows, err := d.query(ctx, `WHERE path = ?`, path)
+	if err != nil || len(rows) == 0 {
+		return Entry{}, false, err
+	}
+	return rows[0], true, nil
+}
+
+// Containing returns the records whose path holds fragment, without reading
+// the whole record into memory.
+func (d *DB) Containing(ctx context.Context, fragment string) ([]Entry, error) {
+	// instr rather than LIKE, which would read an underscore in the fragment
+	// as a wildcard.
+	return d.query(ctx, `WHERE instr(path, ?) > 0`, fragment)
+}
+
+func (d *DB) query(ctx context.Context, where string, args ...any) ([]Entry, error) {
+	rows, err := d.sql.QueryContext(ctx, `SELECT path, left_path, right_path, left_size, left_mod, left_hash, right_size, right_mod, right_hash, agreed_at FROM entries `+where, args...)
+	if err != nil {
+		return nil, fmt.Errorf("read state: %w", err)
+	}
+	defer rows.Close()
+
+	var out []Entry
+	for rows.Next() {
+		e, err := scanEntry(rows)
+		if err != nil {
+			return nil, err
+		}
+		out = append(out, e)
+	}
+	return out, rows.Err()
+}
+
+func scanEntry(rows *sql.Rows) (Entry, error) {
+	var e Entry
+	var leftMod, rightMod, agreed int64
+	if err := rows.Scan(&e.Path, &e.LeftPath, &e.RightPath, &e.LeftSize, &leftMod, &e.LeftHash, &e.RightSize, &rightMod, &e.RightHash, &agreed); err != nil {
+		return Entry{}, fmt.Errorf("scan state row: %w", err)
+	}
+	e.LeftMod = time.Unix(0, leftMod)
+	e.RightMod = time.Unix(0, rightMod)
+	e.AgreedAt = time.Unix(0, agreed)
+	return e, nil
+}
+
+// Keep records that somebody looked at a file and chose to leave it where it
+// is. The engine asks for this about the version a conflict set aside, which
+// otherwise waits for a decision.
+func (d *DB) Keep(ctx context.Context, path string, at time.Time) error {
+	_, err := d.sql.ExecContext(ctx,
+		`INSERT INTO kept (path, decided_at) VALUES (?, ?)
+		 ON CONFLICT(path) DO UPDATE SET decided_at=excluded.decided_at`,
+		path, at.UnixNano())
+	if err != nil {
+		return fmt.Errorf("keep %q: %w", path, err)
+	}
+	return nil
+}
+
+// Kept returns every path somebody chose to keep.
+func (d *DB) Kept(ctx context.Context) (map[string]bool, error) {
+	rows, err := d.sql.QueryContext(ctx, `SELECT path FROM kept`)
+	if err != nil {
+		return nil, fmt.Errorf("read kept: %w", err)
+	}
+	defer rows.Close()
+
+	out := make(map[string]bool)
+	for rows.Next() {
+		var path string
+		if err := rows.Scan(&path); err != nil {
+			return nil, fmt.Errorf("scan kept row: %w", err)
+		}
+		out[path] = true
+	}
+	return out, rows.Err()
 }
 
 // Count returns how many files the last agreed state covers. The mass-delete

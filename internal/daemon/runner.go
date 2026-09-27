@@ -141,6 +141,19 @@ func (r *Runner) RunOnly(ctx context.Context, name string, only []string) (histo
 // they decided. A resolution only applies to a path that is still a conflict,
 // so a stale one from an older preview is ignored.
 func (r *Runner) RunChosen(ctx context.Context, name string, only []string, resolve map[string]plan.Resolution) (history.Run, error) {
+	return r.runAs(ctx, name, func(ctx context.Context, j job.Job, live *history.Live) (apply.Result, *plan.Plan, error) {
+		return r.execute(ctx, j, only, resolve, live)
+	})
+}
+
+// work is what a run does between claiming its job and recording the outcome.
+// The plan may be nil for work that does not plan.
+type work func(ctx context.Context, j job.Job, live *history.Live) (apply.Result, *plan.Plan, error)
+
+// runAs claims a job, runs its commands around the work and records the
+// outcome, so everything that touches a job's files is one run in its history
+// and never overlaps another.
+func (r *Runner) runAs(ctx context.Context, name string, do work) (history.Run, error) {
 	j, ok := r.config().Find(name)
 	if !ok {
 		return history.Run{}, fmt.Errorf("no job called %q", name)
@@ -185,7 +198,7 @@ func (r *Runner) RunChosen(ctx context.Context, name string, only []string, reso
 	if err != nil {
 		err = fmt.Errorf("the command before the run failed, so the run did not start: %w", err)
 	} else {
-		res, p, err = r.execute(ctx, j, only, resolve, live)
+		res, p, err = do(ctx, j, live)
 	}
 
 	// A drive that is not plugged in is not a run, so nothing is recorded.
