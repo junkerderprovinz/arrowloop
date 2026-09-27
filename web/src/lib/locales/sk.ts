@@ -316,6 +316,7 @@ const sk: Translations = {
 
   'tray.open': 'Otvoriť',
   'tray.syncNow': 'Vynútiť synchronizáciu',
+  'tray.runsToday': 'behov dnes: {count}',
   'tray.pause': 'Pozastaviť synchronizáciu',
   'tray.resume': 'Obnoviť synchronizáciu',
   'tray.quit': 'Ukončiť',

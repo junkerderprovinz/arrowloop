@@ -316,6 +316,7 @@ const el: Translations = {
 
   'tray.open': 'Άνοιγμα',
   'tray.syncNow': 'Αναγκαστικός συγχρονισμός',
+  'tray.runsToday': '{count} εκτελέσεις σήμερα',
   'tray.pause': 'Παύση συγχρονισμού',
   'tray.resume': 'Συνέχιση συγχρονισμού',
   'tray.quit': 'Έξοδος',

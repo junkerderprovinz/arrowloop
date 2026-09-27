@@ -316,6 +316,7 @@ const he: Translations = {
 
   'tray.open': 'פתיחה',
   'tray.syncNow': 'סנכרון מאולץ',
+  'tray.runsToday': '{count} הרצות היום',
   'tray.pause': 'השהיית הסנכרון',
   'tray.resume': 'המשך הסנכרון',
   'tray.quit': 'יציאה',

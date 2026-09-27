@@ -316,6 +316,7 @@ const fi: Translations = {
 
   'tray.open': 'Avaa',
   'tray.syncNow': 'Pakota synkronointi',
+  'tray.runsToday': 'tänään {count} ajoa',
   'tray.pause': 'Keskeytä synkronointi',
   'tray.resume': 'Jatka synkronointia',
   'tray.quit': 'Lopeta',

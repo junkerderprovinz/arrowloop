@@ -316,6 +316,7 @@ const eu: Translations = {
 
   'tray.open': 'Ireki',
   'tray.syncNow': 'Behartu sinkronizazioa',
+  'tray.runsToday': 'gaur {count} exekuzio',
   'tray.pause': 'Pausatu sinkronizazioa',
   'tray.resume': 'Berrekin sinkronizazioari',
   'tray.quit': 'Irten',

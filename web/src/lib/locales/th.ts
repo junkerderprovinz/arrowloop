@@ -316,6 +316,7 @@ const th: Translations = {
 
   'tray.open': 'เปิด',
   'tray.syncNow': 'บังคับซิงค์',
+  'tray.runsToday': 'วันนี้ทำงาน {count} ครั้ง',
   'tray.pause': 'หยุดซิงค์ชั่วคราว',
   'tray.resume': 'ซิงค์ต่อ',
   'tray.quit': 'ออกจากโปรแกรม',

@@ -316,6 +316,7 @@ const ja: Translations = {
 
   'tray.open': '開く',
   'tray.syncNow': '強制同期',
+  'tray.runsToday': '今日 {count} 回実行',
   'tray.pause': '同期を一時停止',
   'tray.resume': '同期を再開',
   'tray.quit': '終了',

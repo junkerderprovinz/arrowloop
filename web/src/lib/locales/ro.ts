@@ -316,6 +316,7 @@ const ro: Translations = {
 
   'tray.open': 'Deschide',
   'tray.syncNow': 'Forțează sincronizarea',
+  'tray.runsToday': 'rulări azi: {count}',
   'tray.pause': 'Pune sincronizarea pe pauză',
   'tray.resume': 'Reia sincronizarea',
   'tray.quit': 'Ieșire',

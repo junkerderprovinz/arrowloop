@@ -316,6 +316,7 @@ const hr: Translations = {
 
   'tray.open': 'Otvori',
   'tray.syncNow': 'Prisilna sinkronizacija',
+  'tray.runsToday': 'pokretanja danas: {count}',
   'tray.pause': 'Pauziraj sinkronizaciju',
   'tray.resume': 'Nastavi sinkronizaciju',
   'tray.quit': 'Izlaz',

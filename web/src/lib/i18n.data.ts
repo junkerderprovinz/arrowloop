@@ -549,6 +549,7 @@ export const en = {
 
   'tray.open': 'Open',
   'tray.syncNow': 'Force sync',
+  'tray.runsToday': '{count} runs today',
   'tray.pause': 'Pause sync',
   'tray.resume': 'Resume sync',
   'tray.quit': 'Quit',
@@ -1376,6 +1377,7 @@ export const de: Translations = {
 
   'tray.open': 'Öffnen',
   'tray.syncNow': 'Sync erzwingen',
+  'tray.runsToday': 'heute {count} Läufe',
   'tray.pause': 'Sync pausieren',
   'tray.resume': 'Sync fortsetzen',
   'tray.quit': 'Beenden',

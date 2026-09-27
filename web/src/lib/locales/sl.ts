@@ -316,6 +316,7 @@ const sl: Translations = {
 
   'tray.open': 'Odpri',
   'tray.syncNow': 'Vsili sinhronizacijo',
+  'tray.runsToday': 'zagonov danes: {count}',
   'tray.pause': 'Začasno ustavi sinhronizacijo',
   'tray.resume': 'Nadaljuj sinhronizacijo',
   'tray.quit': 'Izhod',

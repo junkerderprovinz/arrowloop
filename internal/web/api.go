@@ -91,6 +91,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /api/jobs/{name}/versions/{side}", s.listVersions)
 	mux.HandleFunc("POST /api/jobs/{name}/versions/{side}/restore", s.restoreVersion)
 	mux.HandleFunc("GET /api/history", s.listHistory)
+	mux.HandleFunc("GET /api/history/latest", s.latestRuns)
 	mux.HandleFunc("GET /api/history/{id}/entries", s.runEntries)
 	mux.HandleFunc("GET /api/history/{id}/summary", s.runSummary)
 	mux.HandleFunc("GET /api/log", s.fileLog)
@@ -446,6 +447,30 @@ func (s *Server) listHistory(w http.ResponseWriter, r *http.Request) {
 		runs = []history.Run{}
 	}
 	writeJSON(w, http.StatusOK, runs)
+}
+
+// latestRuns answers every job's newest run and how many runs it started since
+// `since`, an RFC 3339 time the screen sends as the start of its own day, since
+// the engine may sit in another time zone.
+func (s *Server) latestRuns(w http.ResponseWriter, r *http.Request) {
+	var since time.Time
+	if raw := r.URL.Query().Get("since"); raw != "" {
+		t, err := time.Parse(time.RFC3339, raw)
+		if err != nil {
+			writeError(w, http.StatusBadRequest, fmt.Errorf("not a time: %s", raw))
+			return
+		}
+		since = t
+	}
+	latest, err := s.History.Latest(r.Context(), since)
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, err)
+		return
+	}
+	if latest == nil {
+		latest = []history.Latest{}
+	}
+	writeJSON(w, http.StatusOK, latest)
 }
 
 // jobTouches lists what one job did to individual files, newest first, across

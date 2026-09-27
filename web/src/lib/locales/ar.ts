@@ -316,6 +316,7 @@ const ar: Translations = {
 
   'tray.open': 'فتح',
   'tray.syncNow': 'فرض المزامنة',
+  'tray.runsToday': 'مرات التشغيل اليوم: {count}',
   'tray.pause': 'إيقاف المزامنة مؤقتاً',
   'tray.resume': 'استئناف المزامنة',
   'tray.quit': 'إنهاء',

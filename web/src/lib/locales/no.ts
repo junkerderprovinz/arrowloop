@@ -316,6 +316,7 @@ const no: Translations = {
 
   'tray.open': 'Åpne',
   'tray.syncNow': 'Tving synkronisering',
+  'tray.runsToday': '{count} kjøringer i dag',
   'tray.pause': 'Sett synkronisering på pause',
   'tray.resume': 'Fortsett synkronisering',
   'tray.quit': 'Avslutt',

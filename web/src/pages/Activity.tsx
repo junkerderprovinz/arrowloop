@@ -6,20 +6,28 @@ import { Num, Rule } from '../components/Shell'
 import { ViewSwitch, type LogView } from '../components/ViewSwitch'
 import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
-import { api, type Job, type Run, type RunEvent, type Touch, type Volume } from '../lib/api'
+import { api, type Job, type LatestRun, type RunEvent, type Touch, type Volume } from '../lib/api'
 import { desk, inDesktopWindow, resizeFromEdges } from '../lib/desk'
-import { entryLabel } from '../lib/entryLabel'
+import { entryLabel, entryRoute } from '../lib/entryLabel'
 import { useT } from '../lib/i18n'
 import { since } from '../lib/since'
 import { wireTooltips } from '../lib/tooltip'
 
 /**
- * How many finished runs and file changes the small window asks for at first,
- * a little more than it shows at once. Scrolling to the end of a list asks for
- * that many again.
+ * How many file changes the small window asks for at first, a little more than
+ * it shows at once. Scrolling to the end of the list asks for that many again.
  */
-const RECENT = 10
 const CHANGES = 20
+
+/**
+ * Every job's newest run, counting its runs since this morning where the window
+ * is, rather than where the engine is.
+ */
+function latestRuns(): Promise<LatestRun[]> {
+  const morning = new Date()
+  morning.setHours(0, 0, 0, 0)
+  return api.latestRuns(morning.toISOString())
+}
 
 /**
  * The kinds that change a file. An agreed file and a weak check are lines in
@@ -46,8 +54,8 @@ function storeView(view: LogView) {
 }
 
 /**
- * The small window at the tray icon: what is running, and either the last few
- * runs or the latest file changes, with the pause, sync and open buttons. It
+ * The small window at the tray icon: what is running, and either every job's
+ * latest run or the latest file changes, with the pause, sync and open buttons. It
  * lives as long as the program and is only hidden between clicks, so it asks
  * the engine again whenever it gains the focus and otherwise follows the run
  * events alone, which keeps it light while it waits hidden.
@@ -55,7 +63,7 @@ function storeView(view: LogView) {
 export function Activity() {
   const { t } = useT()
   const [jobs, setJobs] = useState<Job[]>([])
-  const [runs, setRuns] = useState<Run[]>([])
+  const [runs, setRuns] = useState<LatestRun[]>([])
   const [paused, setPaused] = useState(false)
   const [progress, setProgress] = useState<Record<string, RunEvent>>({})
   const [view, setView] = useState<LogView>(storedView)
@@ -79,15 +87,16 @@ export function Activity() {
         .then((v) => setDrives(v.volumes))
         .catch(() => {})
     } else {
-      void api.history(undefined, 'all', RECENT * paged.current).then(setRuns).catch(() => {})
+      void latestRuns().then(setRuns).catch(() => {})
     }
   }, [])
 
   useEffect(refresh, [view, pages, refresh])
 
-  // Only a list that filled what was asked for can have more.
+  // Only a list that filled what was asked for can have more; the runs are one
+  // a job and come whole.
   const shown = view === 'files' ? (changes?.length ?? 0) : runs.length
-  const more = shown >= (view === 'files' ? CHANGES : RECENT) * pages
+  const more = view === 'files' && shown >= CHANGES * pages
   useEffect(() => {
     const el = end.current
     if (!el || !more) return
@@ -136,7 +145,7 @@ export function Activity() {
       // The job list changes with a start or a finish, and so do the runs.
       void api.jobs().then(setJobs).catch(() => {})
       if (viewing.current === 'runs') {
-        void api.history(undefined, 'all', RECENT * paged.current).then(setRuns).catch(() => {})
+        void latestRuns().then(setRuns).catch(() => {})
       }
     })
     return () => {
@@ -151,6 +160,10 @@ export function Activity() {
   const running = jobs.filter((j) => j.running)
   // Held jobs and drafts without both sides stay out, as on the phone.
   const ready = jobs.filter((j) => !j.disabled && !j.running && j.left && j.right)
+
+  // A job taken out of the configuration keeps its runs in the history, but
+  // not a row here.
+  const latest = runs.filter((r) => jobs.some((j) => j.name === r.Job))
 
   const state = paused ? t('tray.paused') : running.length > 0 ? t('overview.running') : t('overview.idle')
 
@@ -196,14 +209,13 @@ export function Activity() {
         {view === 'runs' ? (
           <section className="flex flex-col gap-2">
             <h2 className="text-xs text-carbon-textSub">{t('activity.recent')}</h2>
-            {runs.length === 0 ? (
+            {latest.length === 0 ? (
               <p className="text-xs text-carbon-textMuted">{t('history.empty')}</p>
             ) : (
               <ul className="flex flex-col gap-2">
-                {runs.map((r) => (
+                {latest.map((r) => (
                   <RunRow key={r.ID} run={r} />
                 ))}
-                {more && <li ref={end} aria-hidden="true" className="h-px" />}
               </ul>
             )}
           </section>
@@ -269,27 +281,56 @@ function RunningRow({ job, event }: { job: Job; event?: RunEvent }) {
   )
 }
 
-/** One file change: what happened to it, where, and in which job. */
+/**
+ * One file change: what happened to it and when, in which job, and the full
+ * path it came from and went to.
+ */
 function ChangeRow({ change, jobs, drives }: { change: Touch; jobs: Job[]; drives: Volume[] }) {
-  const { t } = useT()
-  const label = entryLabel(t, change, jobs.find((j) => j.name === change.Job), drives)
+  const { t, lang } = useT()
+  const job = jobs.find((j) => j.name === change.Job)
+  const label = entryLabel(t, change, job, drives)
+  const route = entryRoute(change, job, drives)
   const tone = change.Kind === 'conflict' ? 'warn' : 'neutral'
+  const when = new Date(change.When)
   return (
     <li className="flex min-w-0 flex-col gap-1">
       <div className="flex min-w-0 items-center gap-2">
         <span className="min-w-0 truncate" title={label}>
           <Badge tone={tone}>{label}</Badge>
         </span>
-        <span className="ms-auto shrink-0 truncate text-xs text-carbon-textMuted">{change.Job}</span>
+        <span className="ms-auto shrink-0 truncate text-xs text-carbon-textMuted" title={when.toLocaleString(lang)}>
+          {change.Job} · {clock(when, lang)}
+        </span>
       </div>
-      <span className="truncate font-mono text-xs text-carbon-text" title={change.Path}>
-        {change.Path}
-      </span>
+      {route ? (
+        <>
+          {route.from && (
+            <span className="truncate font-mono text-xs text-carbon-textMuted" title={route.from}>
+              {route.from}
+            </span>
+          )}
+          <span className="truncate font-mono text-xs text-carbon-text" title={route.to}>
+            {route.from ? (route.both ? '↔ ' : '→ ') : ''}
+            {route.to}
+          </span>
+        </>
+      ) : (
+        <span className="truncate font-mono text-xs text-carbon-text" title={change.Path}>
+          {change.Path}
+        </span>
+      )}
     </li>
   )
 }
 
-function RunRow({ run }: { run: Run }) {
+/** The time of day for today, and the date as well for anything older. */
+function clock(at: Date, lang: string): string {
+  const today = new Date()
+  const sameDay = at.toDateString() === today.toDateString()
+  return at.toLocaleString(lang, sameDay ? { hour: '2-digit', minute: '2-digit' } : { dateStyle: 'short', timeStyle: 'short' })
+}
+
+function RunRow({ run }: { run: LatestRun }) {
   const { t, lang } = useT()
   const failed = run.Err !== ''
   const { count, unit } = since(run.Finished || run.Started)
@@ -300,6 +341,10 @@ function RunRow({ run }: { run: Run }) {
     run.Trashed > 0 ? t('history.trashed', { count: run.Trashed }) : '',
     run.Conflicts > 0 ? t('history.conflicts', { count: run.Conflicts }) : '',
   ].filter(Boolean)
+  // A job that runs on every change says how busy it was instead of filling
+  // the list with its runs.
+  const today = run.Since > 1 ? t('tray.runsToday', { count: run.Since }) : ''
+  const said = failed ? run.Err : counts.length > 0 ? counts.join(' · ') : t('history.ok')
   return (
     <li className="flex items-start gap-2">
       <JobMark status={failed ? 'failed' : 'ok'} size={18} />
@@ -311,7 +356,7 @@ function RunRow({ run }: { run: Run }) {
           </span>
         </div>
         <span className={`truncate text-xs ${failed ? 'text-statusFail' : 'text-carbon-textMuted'}`}>
-          {failed ? run.Err : counts.length > 0 ? counts.join(' · ') : t('history.ok')}
+          {today ? `${said} · ${today}` : said}
         </span>
       </div>
     </li>

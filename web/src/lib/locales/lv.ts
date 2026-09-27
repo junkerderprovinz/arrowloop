@@ -316,6 +316,7 @@ const lv: Translations = {
 
   'tray.open': 'Atvērt',
   'tray.syncNow': 'Piespiedu sinhronizācija',
+  'tray.runsToday': 'šodien palaišanas: {count}',
   'tray.pause': 'Apturēt sinhronizāciju',
   'tray.resume': 'Atsākt sinhronizāciju',
   'tray.quit': 'Iziet',

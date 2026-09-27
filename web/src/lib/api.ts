@@ -202,6 +202,9 @@ export type Run = {
   Running?: boolean
 }
 
+/** A job's newest run, with how many runs the job started since the time asked for. */
+export type LatestRun = Run & { Since: number }
+
 /** A connected network share, as Windows Explorer lists it under "This PC". */
 export type Share = {
   /** The drive it is mapped to, such as "Z:", when it has one. */
@@ -616,6 +619,10 @@ export const api = {
         (since ? `&since=${since}` : '') +
         (until ? `&until=${until}` : ''),
     ),
+
+  /** Every job's newest run, counting its runs since `since`, a full RFC 3339 time. */
+  latestRuns: (since: string) =>
+    request<LatestRun[]>(`/api/history/latest?since=${encodeURIComponent(since)}`),
 
   /**
    * Start a run. `only` sends exactly the ticked paths, and an empty array

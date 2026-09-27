@@ -316,6 +316,7 @@ const ca: Translations = {
 
   'tray.open': 'Obre',
   'tray.syncNow': 'Força la sincronització',
+  'tray.runsToday': '{count} execucions avui',
   'tray.pause': 'Pausa la sincronització',
   'tray.resume': 'Reprèn la sincronització',
   'tray.quit': 'Surt',

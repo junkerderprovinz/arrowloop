@@ -316,6 +316,7 @@ const sr: Translations = {
 
   'tray.open': 'Отвори',
   'tray.syncNow': 'Принудна синхронизација',
+  'tray.runsToday': 'покретања данас: {count}',
   'tray.pause': 'Паузирај синхронизацију',
   'tray.resume': 'Настави синхронизацију',
   'tray.quit': 'Изађи',

@@ -316,6 +316,7 @@ const fa: Translations = {
 
   'tray.open': 'باز کردن',
   'tray.syncNow': 'همگام‌سازی اجباری',
+  'tray.runsToday': '{count} اجرا امروز',
   'tray.pause': 'توقف همگام‌سازی',
   'tray.resume': 'ادامهٔ همگام‌سازی',
   'tray.quit': 'خروج',

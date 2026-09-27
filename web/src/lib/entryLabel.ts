@@ -141,3 +141,49 @@ export function entryNote(t: T, e: Entry): string | null {
   if (e.Kind === 'move') return t('entry.was', { path: note })
   return note
 }
+
+/**
+ * Where a change took a file from and to, as full paths on the job's sides:
+ * a copy's source and destination, a rename's old and new name, both copies
+ * of a conflict. A change in one place, such as a deletion, has no `from`.
+ * Null without the job, which a removed job no longer has.
+ */
+export function entryRoute(
+  e: Entry,
+  job: Job | undefined,
+  drives: Drive[],
+): { from?: string; to: string; both?: boolean } | null {
+  const path = e.Path ?? ''
+  if (!job || !path) return null
+  const at = (root: string, p: string) => within(root, p, drives)
+  if (e.Kind === 'conflict') return { from: at(job.left, path), to: at(job.right, path), both: true }
+  if (e.Side !== 'left' && e.Side !== 'right') return null
+  const side = e.Side === 'left' ? job.left : job.right
+  const other = e.Side === 'left' ? job.right : job.left
+  const note = e.Note ?? ''
+  if (e.Kind === 'copy') return { from: at(other, path), to: at(side, path) }
+  if (e.Kind === 'move') {
+    // The side of a relocation is where the file left, as in entryLabel.
+    if (note === RELOCATED) return { from: at(side, path), to: at(other, path) }
+    if (note && !SAID.has(note)) return { from: at(side, note), to: at(side, path) }
+  }
+  return { to: at(side, path) }
+}
+
+/**
+ * A path inside one side, joined the way that side writes paths: backslashes
+ * on a Windows folder, the target's own form after its colon, and a drive by
+ * its label rather than its id.
+ */
+function within(root: string, path: string, drives: Drive[]): string {
+  if (root.startsWith(DRIVE)) {
+    const [id = '', ...rest] = root.slice(DRIVE.length).split('/')
+    const label = drives.find((d) => d.id === id)?.label || id
+    return [label, ...rest.filter(Boolean), path].join('/')
+  }
+  if (root.endsWith(':')) return root + path
+  if (/^[A-Za-z]:\\/.test(root) || (root.includes('\\') && !root.includes('/'))) {
+    return `${root.replace(/\\+$/, '')}\\${path.replaceAll('/', '\\')}`
+  }
+  return `${root.replace(/\/+$/, '')}/${path}`
+}

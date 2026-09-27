@@ -316,6 +316,7 @@ const uk: Translations = {
 
   'tray.open': 'Відкрити',
   'tray.syncNow': 'Примусова синхронізація',
+  'tray.runsToday': 'запусків сьогодні: {count}',
   'tray.pause': 'Призупинити синхронізацію',
   'tray.resume': 'Відновити синхронізацію',
   'tray.quit': 'Вихід',

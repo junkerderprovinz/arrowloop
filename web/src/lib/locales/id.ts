@@ -316,6 +316,7 @@ const id: Translations = {
 
   'tray.open': 'Buka',
   'tray.syncNow': 'Paksa penyegerakan',
+  'tray.runsToday': '{count} kali berjalan hari ini',
   'tray.pause': 'Jeda penyegerakan',
   'tray.resume': 'Lanjutkan penyegerakan',
   'tray.quit': 'Keluar',

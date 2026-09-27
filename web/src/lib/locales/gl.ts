@@ -316,6 +316,7 @@ const gl: Translations = {
 
   'tray.open': 'Abrir',
   'tray.syncNow': 'Forzar a sincronización',
+  'tray.runsToday': '{count} execucións hoxe',
   'tray.pause': 'Pausar a sincronización',
   'tray.resume': 'Retomar a sincronización',
   'tray.quit': 'Saír',

@@ -316,6 +316,7 @@ const et: Translations = {
 
   'tray.open': 'Ava',
   'tray.syncNow': 'Sunni sünkroonimine',
+  'tray.runsToday': 'täna {count} käivitust',
   'tray.pause': 'Peata sünkroonimine',
   'tray.resume': 'Jätka sünkroonimist',
   'tray.quit': 'Välju',

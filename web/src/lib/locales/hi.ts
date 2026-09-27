@@ -316,6 +316,7 @@ const hi: Translations = {
 
   'tray.open': 'खोलें',
   'tray.syncNow': 'तुरंत सिंक करें',
+  'tray.runsToday': 'आज {count} बार चला',
   'tray.pause': 'सिंक रोकें',
   'tray.resume': 'सिंक जारी रखें',
   'tray.quit': 'बाहर निकलें',

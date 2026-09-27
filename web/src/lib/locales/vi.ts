@@ -316,6 +316,7 @@ const vi: Translations = {
 
   'tray.open': 'Mở',
   'tray.syncNow': 'Buộc đồng bộ',
+  'tray.runsToday': '{count} lần chạy hôm nay',
   'tray.pause': 'Tạm dừng đồng bộ',
   'tray.resume': 'Tiếp tục đồng bộ',
   'tray.quit': 'Thoát',

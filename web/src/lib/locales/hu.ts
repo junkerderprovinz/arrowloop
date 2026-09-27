@@ -316,6 +316,7 @@ const hu: Translations = {
 
   'tray.open': 'Megnyitás',
   'tray.syncNow': 'Szinkronizálás kényszerítése',
+  'tray.runsToday': 'ma {count} futás',
   'tray.pause': 'Szinkronizálás szüneteltetése',
   'tray.resume': 'Szinkronizálás folytatása',
   'tray.quit': 'Kilépés',

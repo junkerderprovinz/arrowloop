@@ -316,6 +316,7 @@ const nl: Translations = {
 
   'tray.open': 'Openen',
   'tray.syncNow': 'Synchronisatie forceren',
+  'tray.runsToday': 'vandaag {count} keer gelopen',
   'tray.pause': 'Synchronisatie pauzeren',
   'tray.resume': 'Synchronisatie hervatten',
   'tray.quit': 'Afsluiten',

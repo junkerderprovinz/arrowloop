@@ -316,6 +316,7 @@ const sv: Translations = {
 
   'tray.open': 'Öppna',
   'tray.syncNow': 'Tvinga synkronisering',
+  'tray.runsToday': '{count} körningar i dag',
   'tray.pause': 'Pausa synkroniseringen',
   'tray.resume': 'Återuppta synkroniseringen',
   'tray.quit': 'Avsluta',

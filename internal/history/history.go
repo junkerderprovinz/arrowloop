@@ -386,6 +386,44 @@ func (d *DB) between(ctx context.Context, job string, show Show, since, until ti
 	return out, rows.Err()
 }
 
+// Latest is one job's newest stored run, with how many runs the job started
+// since a given moment.
+type Latest struct {
+	Run
+	Since int
+}
+
+// Latest returns every job's newest run, newest first, so a job that runs once
+// a day keeps its place beside one that runs every minute. since is usually the
+// start of the viewer's day.
+func (d *DB) Latest(ctx context.Context, since time.Time) ([]Latest, error) {
+	rows, err := d.sql.QueryContext(ctx, `
+		SELECT r.id, r.job, r.started, r.finished, r.copied, r.moved, r.trashed, r.conflicts,
+		       r.dirs_made, r.dirs_removed, r.unchanged, r.skipped, r.err,
+		       (SELECT COUNT(*) FROM runs c WHERE c.job = r.job AND c.started >= ?)
+		FROM runs r
+		WHERE r.id = (SELECT m.id FROM runs m WHERE m.job = r.job ORDER BY m.started DESC LIMIT 1)
+		ORDER BY r.started DESC`, since.UnixNano())
+	if err != nil {
+		return nil, fmt.Errorf("read the latest runs: %w", err)
+	}
+	defer rows.Close()
+
+	var out []Latest
+	for rows.Next() {
+		var l Latest
+		var started, finished int64
+		if err := rows.Scan(&l.ID, &l.Job, &started, &finished, &l.Copied, &l.Moved, &l.Trashed,
+			&l.Conflicts, &l.DirsMade, &l.DirsRemoved, &l.Unchanged, &l.Skipped, &l.Err, &l.Since); err != nil {
+			return nil, fmt.Errorf("scan run: %w", err)
+		}
+		l.Started = time.Unix(0, started)
+		l.Finished = time.Unix(0, finished)
+		out = append(out, l)
+	}
+	return out, rows.Err()
+}
+
 // LastSuccess returns when a job last finished without an error, and whether it
 // ever has.
 func (d *DB) LastSuccess(ctx context.Context, job string) (time.Time, bool, error) {

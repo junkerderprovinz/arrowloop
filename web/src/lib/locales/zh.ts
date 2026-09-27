@@ -316,6 +316,7 @@ const zh: Translations = {
 
   'tray.open': '打开',
   'tray.syncNow': '强制同步',
+  'tray.runsToday': '今天运行 {count} 次',
   'tray.pause': '暂停同步',
   'tray.resume': '恢复同步',
   'tray.quit': '退出',

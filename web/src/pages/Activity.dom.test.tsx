@@ -2,17 +2,37 @@
 import { act, cleanup, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { Run } from '../lib/api'
+import type { Job, LatestRun, Touch } from '../lib/api'
 
-const history = vi.fn((_job: unknown, _show: unknown, limit: number) =>
-  Promise.resolve(Array.from({ length: Math.min(limit, 25) }, (_, i) => run(i + 1))),
+const at = '2027-03-01T12:00:00Z'
+
+function run(id: number, job: string, since: number): LatestRun {
+  return {
+    ID: id, Job: job, Started: at, Finished: at, Copied: 1, Moved: 0, Trashed: 0, Conflicts: 0,
+    DirsMade: 0, DirsRemoved: 0, Unchanged: 0, Skipped: 0, Err: '', Since: since,
+  }
+}
+
+function job(name: string): Job {
+  return { name, left: 'D:\\Fotos', right: 'OpenCloud:bilder', running: false } as Job
+}
+
+function touch(n: number): Touch {
+  return { Kind: 'copy', Side: 'right', Path: `file ${n}.jpg`, Note: '', Size: 0, Run: 1, Job: 'watcher', When: at, Seq: n }
+}
+
+const latest = vi.fn((_since: string) =>
+  Promise.resolve([run(2, 'watcher', 37), run(1, 'daily', 1), run(3, 'gone', 4)]),
+)
+const log = vi.fn((_job: string, _kinds: string[], _q: string, limit: number) =>
+  Promise.resolve(Array.from({ length: Math.min(limit, 25) }, (_, i) => touch(i + 1))),
 )
 
 vi.mock('../lib/api', () => ({
   api: {
-    jobs: () => Promise.resolve([]),
-    history: (...args: [unknown, unknown, number]) => history(...args),
-    log: () => Promise.resolve([]),
+    jobs: () => Promise.resolve([job('watcher'), job('daily')]),
+    latestRuns: (since: string) => latest(since),
+    log: (...args: [string, string[], string, number]) => log(...args),
     volumes: () => Promise.resolve({ volumes: [] }),
     watch: () => () => undefined,
   },
@@ -24,14 +44,6 @@ vi.mock('../lib/desk', () => ({
 }))
 
 const { Activity } = await import('./Activity')
-
-function run(id: number): Run {
-  const at = '2027-03-01T12:00:00Z'
-  return {
-    ID: id, Job: `job ${id}`, Started: at, Finished: at, Copied: 1, Moved: 0, Trashed: 0, Conflicts: 0,
-    DirsMade: 0, DirsRemoved: 0, Unchanged: 0, Skipped: 0, Err: '',
-  } as Run
-}
 
 // jsdom has no ResizeObserver, which the view switch uses to measure its room.
 globalThis.ResizeObserver ??= class {
@@ -58,7 +70,8 @@ beforeEach(() => {
     },
   )
   localStorage.clear()
-  history.mockClear()
+  latest.mockClear()
+  log.mockClear()
 })
 afterEach(() => {
   cleanup()
@@ -66,17 +79,24 @@ afterEach(() => {
 })
 
 describe('the tray window', () => {
-  it('asks for more runs when its list is scrolled to the end', async () => {
+  it('keeps a daily job beside one that runs all day', async () => {
     render(<Activity />)
-    await screen.findByText('job 10')
-    expect(screen.queryByText('job 11')).toBeNull()
+    await screen.findByText('daily')
+    expect(screen.getByText('watcher')).toBeTruthy()
+    expect(screen.getByText(/37 runs today/)).toBeTruthy()
+    // A job no longer configured keeps its runs in the history only.
+    expect(screen.queryByText('gone')).toBeNull()
+  })
+
+  it('asks for more file changes when that list is scrolled to the end', async () => {
+    localStorage.setItem('arrowloop.trayView', 'files')
+    render(<Activity />)
+    await screen.findAllByText('file 20.jpg', { exact: false })
+    expect(screen.queryAllByText('file 21.jpg', { exact: false })).toHaveLength(0)
 
     act(() => seen?.())
-    await screen.findByText('job 20')
-    expect(history).toHaveBeenLastCalledWith(undefined, 'all', 20)
-
-    act(() => seen?.())
-    await screen.findByText('job 25')
+    await screen.findAllByText('file 25.jpg', { exact: false })
+    expect(log).toHaveBeenLastCalledWith('', [], '', 40)
     // All 25 are there, so the list stops asking.
     await waitFor(() => expect(seen).toBeNull())
   })

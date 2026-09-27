@@ -316,6 +316,7 @@ const ms: Translations = {
 
   'tray.open': 'Buka',
   'tray.syncNow': 'Paksa segerak',
+  'tray.runsToday': '{count} kali dijalankan hari ini',
   'tray.pause': 'Jeda penyegerakan',
   'tray.resume': 'Sambung penyegerakan',
   'tray.quit': 'Keluar',

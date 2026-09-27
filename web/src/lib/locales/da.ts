@@ -316,6 +316,7 @@ const da: Translations = {
 
   'tray.open': 'Åbn',
   'tray.syncNow': 'Gennemtving synkronisering',
+  'tray.runsToday': '{count} kørsler i dag',
   'tray.pause': 'Sæt synkronisering på pause',
   'tray.resume': 'Genoptag synkronisering',
   'tray.quit': 'Afslut',

@@ -316,6 +316,7 @@ const is: Translations = {
 
   'tray.open': 'Opna',
   'tray.syncNow': 'Þvinga samstillingu',
+  'tray.runsToday': '{count} keyrslur í dag',
   'tray.pause': 'Gera hlé á samstillingu',
   'tray.resume': 'Halda samstillingu áfram',
   'tray.quit': 'Hætta',

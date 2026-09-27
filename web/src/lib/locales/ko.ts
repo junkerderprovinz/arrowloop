@@ -316,6 +316,7 @@ const ko: Translations = {
 
   'tray.open': '열기',
   'tray.syncNow': '강제 동기화',
+  'tray.runsToday': '오늘 {count}회 실행',
   'tray.pause': '동기화 일시 정지',
   'tray.resume': '동기화 다시 시작',
   'tray.quit': '종료',

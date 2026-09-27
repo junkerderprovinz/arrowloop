@@ -316,6 +316,7 @@ const cs: Translations = {
 
   'tray.open': 'Otevřít',
   'tray.syncNow': 'Vynutit synchronizaci',
+  'tray.runsToday': 'běhů dnes: {count}',
   'tray.pause': 'Pozastavit synchronizaci',
   'tray.resume': 'Obnovit synchronizaci',
   'tray.quit': 'Ukončit',

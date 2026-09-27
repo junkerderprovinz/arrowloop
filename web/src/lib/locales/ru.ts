@@ -316,6 +316,7 @@ const ru: Translations = {
 
   'tray.open': 'Открыть',
   'tray.syncNow': 'Синхронизировать принудительно',
+  'tray.runsToday': 'запусков сегодня: {count}',
   'tray.pause': 'Приостановить синхронизацию',
   'tray.resume': 'Возобновить синхронизацию',
   'tray.quit': 'Выход',

@@ -316,6 +316,7 @@ const tr: Translations = {
 
   'tray.open': 'Aç',
   'tray.syncNow': 'Eşitlemeyi zorla',
+  'tray.runsToday': 'bugün {count} çalıştırma',
   'tray.pause': 'Eşitlemeyi duraklat',
   'tray.resume': 'Eşitlemeyi sürdür',
   'tray.quit': 'Çıkış',

@@ -316,6 +316,7 @@ const it: Translations = {
 
   'tray.open': 'Apri',
   'tray.syncNow': 'Forza la sincronizzazione',
+  'tray.runsToday': '{count} esecuzioni oggi',
   'tray.pause': 'Sospendi la sincronizzazione',
   'tray.resume': 'Riprendi la sincronizzazione',
   'tray.quit': 'Esci',

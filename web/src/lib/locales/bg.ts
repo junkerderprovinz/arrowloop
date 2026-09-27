@@ -316,6 +316,7 @@ const bg: Translations = {
 
   'tray.open': 'Отвори',
   'tray.syncNow': 'Принудителна синхронизация',
+  'tray.runsToday': 'изпълнения днес: {count}',
   'tray.pause': 'Пауза на синхронизацията',
   'tray.resume': 'Продължи синхронизацията',
   'tray.quit': 'Изход',

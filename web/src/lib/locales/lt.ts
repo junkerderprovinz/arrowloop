@@ -316,6 +316,7 @@ const lt: Translations = {
 
   'tray.open': 'Atverti',
   'tray.syncNow': 'Priverstinai sinchronizuoti',
+  'tray.runsToday': 'šiandien paleidimų: {count}',
   'tray.pause': 'Pristabdyti sinchronizavimą',
   'tray.resume': 'Tęsti sinchronizavimą',
   'tray.quit': 'Baigti',
