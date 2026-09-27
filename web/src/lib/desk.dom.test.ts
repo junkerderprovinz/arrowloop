@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it } from 'vitest'
 
-import { inDesktopWindow, watchDesktop } from './desk'
+import { inDesktopWindow, onUpdateReady, watchDesktop } from './desk'
 
 type Host = {
   _wails?: {
@@ -59,5 +59,23 @@ describe('run events in the desktop window', () => {
 
   it('are not expected in a browser, which keeps the stream', () => {
     expect(inDesktopWindow()).toBe(false)
+  })
+
+  it('leave out the news of a downloaded update', () => {
+    const got: unknown[] = []
+    stops.push(watchDesktop((d) => got.push(d)))
+    send('arrowloop:update-ready', '1.2.0')
+    expect(got).toEqual([])
+  })
+})
+
+describe('a downloaded update', () => {
+  // A container or a phone has no app that could replace itself.
+  it('is not listened for outside the desktop window', () => {
+    const got: string[] = []
+    const stop = onUpdateReady((v) => got.push(v))
+    send('arrowloop:update-ready', '1.2.0')
+    stop()
+    expect(got).toEqual([])
   })
 })

@@ -516,6 +516,11 @@ export const en = {
   'start.withSystemHint':
     'ArrowLoop starts when you sign in, so a scheduled job runs without anybody opening the window first. The entry is yours alone and asks for no administrator rights.',
 
+  'update.title': 'Updates',
+  'update.auto': 'Update automatically',
+  'update.autoHint': 'Once a day ArrowLoop looks for a new version, downloads it in the background and checks it against the checksums published with the release. The new version takes over the next time you start ArrowLoop, so a running sync is not interrupted. An installed copy and a portable copy both update in place.',
+  'update.ready': 'ArrowLoop {version} is downloaded and runs the next time you start the app.',
+
   'progress.of': '{done} of {total}',
   'progress.starting': 'Starting',
   'progress.rate': '{rate} files/s',
@@ -1290,6 +1295,11 @@ export const de: Translations = {
   'start.withSystem': 'Mit dem System starten',
   'start.withSystemHint':
     'ArrowLoop startet bei der Anmeldung, damit ein geplanter Auftrag läuft, ohne dass jemand vorher das Fenster öffnet. Der Eintrag gilt nur für dich und braucht keine Administratorrechte.',
+
+  'update.title': 'Updates',
+  'update.auto': 'Automatisch aktualisieren',
+  'update.autoHint': 'Einmal am Tag sucht ArrowLoop nach einer neuen Version, lädt sie im Hintergrund herunter und prüft sie mit den Prüfsummen, die zum Release gehören. Die neue Version läuft ab dem nächsten Start von ArrowLoop, ein laufender Sync wird also nicht unterbrochen. Eine installierte und eine portable Kopie aktualisieren sich jeweils dort, wo sie liegen.',
+  'update.ready': 'ArrowLoop {version} ist heruntergeladen und läuft ab dem nächsten Start.',
 
   'progress.of': '{done} von {total}',
   'progress.starting': 'Startet',

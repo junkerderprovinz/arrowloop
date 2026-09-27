@@ -43,7 +43,8 @@ import { wipeColours } from './lib/animate'
 import { useT } from './lib/i18n'
 import { getMotion, MOTION_INTENSITIES, setMotion, type MotionIntensity } from './lib/motion'
 import { wireTooltips } from './lib/tooltip'
-import { isActivityView, useTrayWords } from './lib/desk'
+import { isActivityView, onUpdateReady, useTrayWords } from './lib/desk'
+import { ToastProvider, useToast } from './lib/toast'
 
 /** The app's places, in the order the sibling apps use, settings last. */
 type Tab = 'jobs' | 'targets' | 'history' | 'settings'
@@ -109,7 +110,13 @@ export function Gate() {
   if (state === 'asking') return null
   if (state === 'out') return <Login onIn={ask} />
   // The desktop app's tray window loads the same page.
-  return isActivityView() ? <Activity /> : <App />
+  return isActivityView() ? (
+    <Activity />
+  ) : (
+    <ToastProvider>
+      <App />
+    </ToastProvider>
+  )
 }
 
 export function App() {
@@ -141,6 +148,7 @@ export function App() {
     tabs: getLabelMode('tabs'),
   }))
   useTrayWords(window_ !== null, t)
+  useUpdateReadyToast()
 
   const refresh = useCallback(() => {
     api
@@ -387,6 +395,33 @@ function Settings(props: LookProps) {
   )
 }
 
+/**
+ * Says once that the desktop app has downloaded a newer version for its next
+ * start. A window waiting in the notification area says it when it comes back
+ * rather than to nobody.
+ */
+function useUpdateReadyToast() {
+  const { t } = useT()
+  const push = useToast()
+  useEffect(
+    () =>
+      onUpdateReady((version) => {
+        const show = () => push(t('update.ready', { version }))
+        if (!document.hidden) {
+          show()
+          return
+        }
+        const onVisible = () => {
+          if (document.hidden) return
+          document.removeEventListener('visibilitychange', onVisible)
+          show()
+        }
+        document.addEventListener('visibilitychange', onVisible)
+      }),
+    [push, t],
+  )
+}
+
 /** The log-out row, drawn only on an install that has a password. */
 function LogOut() {
   const { t } = useT()
@@ -463,7 +498,20 @@ function General({ window: windowSettings, onWindow, version }: LookProps) {
         </Card>
       )}
 
-      <About version={version} hueIndex={3} />
+      {/* Only the desktop app replaces itself. A container is updated the way
+          it was deployed, and the phone through its store. */}
+      {windowSettings && (
+        <Card title={t('update.title')} hueIndex={3}>
+          <ToggleRow
+            label={t('update.auto')}
+            hint={t('update.autoHint')}
+            checked={windowSettings.autoUpdate}
+            onChange={(autoUpdate) => onWindow({ ...windowSettings, autoUpdate })}
+          />
+        </Card>
+      )}
+
+      <About version={version} hueIndex={4} />
     </Stack>
   )
 }

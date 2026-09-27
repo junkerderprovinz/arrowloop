@@ -30,6 +30,9 @@ export function inDesktopWindow(): boolean {
 /** The event the desktop app sends each run event as; runEvent in desktop/bridge.go. */
 const RUN_EVENT = 'arrowloop:run'
 
+/** The version the desktop app has put in place for its next start; updateReadyEvent in desktop/updates.go. */
+const UPDATE_READY_EVENT = 'arrowloop:update-ready'
+
 type WailsHost = {
   _wails?: {
     dispatchWailsEvent?: (ev: { name: string; data: unknown }) => void
@@ -37,7 +40,7 @@ type WailsHost = {
   }
 }
 
-const runListeners = new Set<(data: unknown) => void>()
+const listeners = new Map<string, Set<(data: unknown) => void>>()
 
 let announced = false
 
@@ -55,24 +58,41 @@ function announce(host: WailsHost) {
 }
 
 /**
- * Follows the run events the desktop app sends into its windows. On Windows the
- * window's asset server hands a response over only once it is complete, so the
- * /api/events stream never arrives and the app sends each event this way
- * instead. Wails delivers them to the dispatcher set here; its own runtime,
- * which would set one, is not loaded.
+ * Calls back with every Wails event of one name. Wails delivers them to the
+ * dispatcher set here; its own runtime, which would set one, is not loaded.
  */
-export function watchDesktop(onEvent: (data: unknown) => void): () => void {
+function listen(name: string, onEvent: (data: unknown) => void): () => void {
   const host = window as unknown as WailsHost
   host._wails = host._wails ?? {}
   host._wails.dispatchWailsEvent = (ev) => {
-    if (ev.name !== RUN_EVENT) return
-    for (const listener of runListeners) listener(ev.data)
+    for (const listener of listeners.get(ev.name) ?? []) listener(ev.data)
   }
   announce(host)
-  runListeners.add(onEvent)
+  const named = listeners.get(name) ?? new Set()
+  listeners.set(name, named)
+  named.add(onEvent)
   return () => {
-    runListeners.delete(onEvent)
+    named.delete(onEvent)
   }
+}
+
+/**
+ * Follows the run events the desktop app sends into its windows. On Windows the
+ * window's asset server hands a response over only once it is complete, so the
+ * /api/events stream never arrives and the app sends each event this way
+ * instead.
+ */
+export function watchDesktop(onEvent: (data: unknown) => void): () => void {
+  return listen(RUN_EVENT, onEvent)
+}
+
+/**
+ * Calls back with the version the desktop app has downloaded for its next
+ * start. Outside a desktop window nothing sends it, and nothing is set up.
+ */
+export function onUpdateReady(callback: (version: string) => void): () => void {
+  if (!inDesktopWindow()) return () => {}
+  return listen(UPDATE_READY_EVENT, (data) => callback(String(data)))
 }
 
 export function trayWords(t: Translate): TrayWords {

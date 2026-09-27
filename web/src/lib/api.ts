@@ -155,6 +155,9 @@ export type WindowSettings = {
   /** Whether this system has an autostart mechanism at all. False means the
    *  switch is left out rather than drawn and inert. */
   canStartWithSystem: boolean
+
+  /** Whether the app downloads a newer release in the background and starts it next time. */
+  autoUpdate: boolean
 }
 
 /** One registered drive, attached or not. */
