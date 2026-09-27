@@ -83,21 +83,30 @@ func DefaultWords() Words {
 // buttons doing what their labels say, and updates.
 func Default() Settings { return Settings{Tray: true, AutoUpdate: true} }
 
+// Size is a window's width and height.
+type Size struct {
+	Width  int `json:"width"`
+	Height int `json:"height"`
+}
+
 // file is window.json. The settings stay at the top level, where every
 // earlier version wrote them.
 type file struct {
 	Settings
 	Words *Words `json:"words,omitempty"`
+	// Activity is the size the small window at the tray icon was left at.
+	Activity *Size `json:"activity,omitempty"`
 }
 
 // Store is the settings file. The window reads it on close while the interface
 // writes it from another goroutine, hence the lock.
 type Store struct {
-	mu      sync.RWMutex
-	path    string
-	now     Settings
-	words   Words
-	watches []func()
+	mu       sync.RWMutex
+	path     string
+	now      Settings
+	words    Words
+	activity *Size
+	watches  []func()
 	// autoUpdatePath is the file set by KeepAutoUpdateIn, or "".
 	autoUpdatePath string
 }
@@ -124,6 +133,7 @@ func Open(configPath string) *Store {
 	if read.Words != nil {
 		s.words = *read.Words
 	}
+	s.activity = read.Activity
 	return s
 }
 
@@ -182,6 +192,26 @@ func (s *Store) Words() Words {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 	return s.words
+}
+
+// ActivitySize returns the size the small window at the tray icon was left
+// at, and false while nobody has resized it.
+func (s *Store) ActivitySize() (Size, bool) {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	if s.activity == nil {
+		return Size{}, false
+	}
+	return *s.activity, true
+}
+
+// SetActivitySize keeps the small window's size for the next start. No
+// setting depends on it, so the watchers are not told.
+func (s *Store) SetActivitySize(size Size) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.activity = &size
+	return s.write()
 }
 
 // Watch registers a function called after every change, from the goroutine
@@ -246,7 +276,7 @@ func (s *Store) change(edit func()) error {
 // rather than half of the new ones. The caller holds the lock.
 func (s *Store) write() error {
 	words := s.words
-	body, err := json.MarshalIndent(file{Settings: s.now, Words: &words}, "", "  ")
+	body, err := json.MarshalIndent(file{Settings: s.now, Words: &words, Activity: s.activity}, "", "  ")
 	if err != nil {
 		return err
 	}

@@ -17,7 +17,11 @@ vi.mock('../lib/api', () => ({
     watch: () => () => undefined,
   },
 }))
-vi.mock('../lib/desk', () => ({ desk: { paused: () => Promise.resolve(false) } }))
+vi.mock('../lib/desk', () => ({
+  desk: { paused: () => Promise.resolve(false) },
+  inDesktopWindow: () => false,
+  resizeFromEdges: () => () => undefined,
+}))
 
 const { Activity } = await import('./Activity')
 

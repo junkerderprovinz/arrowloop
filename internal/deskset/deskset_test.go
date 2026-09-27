@@ -220,3 +220,29 @@ func TestAWatcherHearsEveryChange(t *testing.T) {
 		t.Errorf("the watcher saw a stale pause: %v", seen)
 	}
 }
+
+func TestTheTrayWindowKeepsItsSizeAcrossARestart(t *testing.T) {
+	dir := t.TempDir()
+	config := filepath.Join(dir, "arrowloop.json")
+
+	fresh := Open(config)
+	if _, ok := fresh.ActivitySize(); ok {
+		t.Fatal("a window nobody resized reports a size of its own")
+	}
+	if err := fresh.SetActivitySize(Size{Width: 420, Height: 640}); err != nil {
+		t.Fatalf("set size: %v", err)
+	}
+	// A settings change rewrites the file and must not drop the size.
+	if err := fresh.Set(Settings{Tray: true, CloseToTray: true}); err != nil {
+		t.Fatalf("set: %v", err)
+	}
+
+	again := Open(config)
+	got, ok := again.ActivitySize()
+	if !ok || got != (Size{Width: 420, Height: 640}) {
+		t.Errorf("the size came back as %+v, %v", got, ok)
+	}
+	if !again.Get().CloseToTray {
+		t.Errorf("the size cost the settings: %+v", again.Get())
+	}
+}

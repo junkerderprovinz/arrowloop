@@ -12,6 +12,7 @@ The full notes for each release are in
 
 ## 🎨 Design
 
+- **The small window at the tray icon can be resized.** Drag any edge or corner; it keeps the size you leave it at, also after a restart, and does not get smaller than 300 by 360.
 - **The closed envelope on the About card's mail button sits in the middle of the button**, as GlimStone 3.0.1 draws it. It stood a little too low.
 
 ## 1.3.0 - 2026-09-27

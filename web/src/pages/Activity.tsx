@@ -7,7 +7,7 @@ import { ViewSwitch, type LogView } from '../components/ViewSwitch'
 import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
 import { api, type Job, type Run, type RunEvent, type Touch, type Volume } from '../lib/api'
-import { desk } from '../lib/desk'
+import { desk, inDesktopWindow, resizeFromEdges } from '../lib/desk'
 import { entryLabel } from '../lib/entryLabel'
 import { useT } from '../lib/i18n'
 import { since } from '../lib/since'
@@ -145,6 +145,8 @@ export function Activity() {
       stop()
     }
   }, [refresh])
+
+  useEffect(() => (inDesktopWindow() ? resizeFromEdges() : undefined), [])
 
   const running = jobs.filter((j) => j.running)
   // Held jobs and drafts without both sides stay out, as on the phone.

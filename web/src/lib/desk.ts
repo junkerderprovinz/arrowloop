@@ -95,6 +95,55 @@ export function onUpdateReady(callback: (version: string) => void): () => void {
   return listen(UPDATE_READY_EVENT, (data) => callback(String(data)))
 }
 
+/** How close to its edge, in CSS pixels, a press resizes the window. */
+const EDGE = 6
+
+const EDGE_CURSOR: Record<string, string> = {
+  n: 'ns-resize',
+  s: 'ns-resize',
+  e: 'ew-resize',
+  w: 'ew-resize',
+  ne: 'nesw-resize',
+  sw: 'nesw-resize',
+  nw: 'nwse-resize',
+  se: 'nwse-resize',
+}
+
+export function edgeAt(x: number, y: number, width: number, height: number): string {
+  const v = y < EDGE ? 'n' : y >= height - EDGE ? 's' : ''
+  const h = x < EDGE ? 'w' : x >= width - EDGE ? 'e' : ''
+  return v + h
+}
+
+/**
+ * Lets a frameless window be resized from its edges. Wails starts the native
+ * resize once it is told which edge was pressed, which its own runtime would
+ * do; that runtime is not loaded here.
+ */
+export function resizeFromEdges(): () => void {
+  const host = window as unknown as WailsHost
+  let edge = ''
+  const move = (e: PointerEvent) => {
+    const next = edgeAt(e.clientX, e.clientY, window.innerWidth, window.innerHeight)
+    if (next === edge) return
+    edge = next
+    document.body.style.cursor = edge ? EDGE_CURSOR[edge]! : ''
+  }
+  const press = (e: PointerEvent) => {
+    if (!edge || e.button !== 0) return
+    e.preventDefault()
+    e.stopPropagation()
+    host._wails?.invoke?.(`wails:resize:${edge}-resize`)
+  }
+  window.addEventListener('pointermove', move)
+  window.addEventListener('pointerdown', press, true)
+  return () => {
+    window.removeEventListener('pointermove', move)
+    window.removeEventListener('pointerdown', press, true)
+    document.body.style.cursor = ''
+  }
+}
+
 export function trayWords(t: Translate): TrayWords {
   return {
     open: t('tray.open'),

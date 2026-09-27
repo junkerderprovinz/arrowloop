@@ -69,18 +69,38 @@ func newShell(ctx context.Context, app *application.App, store *deskset.Store, i
 	})
 
 	// The interface reads the query and draws its compact view.
+	size := deskset.Size{Width: 360, Height: 480}
+	if kept, ok := store.ActivitySize(); ok {
+		size = kept
+	}
 	s.activity = app.Window.NewWithOptions(application.WebviewWindowOptions{
-		Name:          "activity",
-		Title:         "ArrowLoop",
-		Width:         360,
-		Height:        480,
-		URL:           "/?view=activity",
-		Frameless:     true,
-		AlwaysOnTop:   true,
-		Hidden:        true,
-		DisableResize: true,
-		HideOnEscape:  true,
-		Windows:       application.WindowsWindow{HiddenOnTaskbar: true},
+		Name:         "activity",
+		Title:        "ArrowLoop",
+		Width:        size.Width,
+		Height:       size.Height,
+		MinWidth:     300,
+		MinHeight:    360,
+		URL:          "/?view=activity",
+		Frameless:    true,
+		AlwaysOnTop:  true,
+		Hidden:       true,
+		HideOnEscape: true,
+		Windows:      application.WindowsWindow{HiddenOnTaskbar: true},
+	})
+	// Dragging an edge sends a stream of these, so the size is kept once they
+	// stop.
+	// Showing the window reports a resize too, which is not worth a write.
+	kept := size
+	keep := time.AfterFunc(time.Hour, func() {
+		w, h := s.activity.Size()
+		if now := (deskset.Size{Width: w, Height: h}); now != kept {
+			kept = now
+			_ = store.SetActivitySize(now)
+		}
+	})
+	keep.Stop()
+	s.activity.OnWindowEvent(events.Common.WindowDidResize, func(*application.WindowEvent) {
+		keep.Reset(time.Second)
 	})
 	// Alt+F4 on the small window would otherwise destroy it for good.
 	s.activity.RegisterHook(events.Common.WindowClosing, func(e *application.WindowEvent) {
