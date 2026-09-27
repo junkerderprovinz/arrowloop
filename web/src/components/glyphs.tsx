@@ -290,6 +290,15 @@ export function IconConfirm(props: SVGProps<SVGSVGElement>) {
   )
 }
 
+/** A menu of further actions, the three bars GlimStone reserves for a menu. The free subset has no plain one. Drawn here, see gen_glyphs.py's DRAWN table for why */
+export function IconMenu(props: SVGProps<SVGSVGElement>) {
+  return (
+    <Drawn box="0 0 14 14" {...props}>
+      <rect x="1.5" y="2.9" width="11" height="2.2" rx="1.1" /><rect x="1.5" y="5.9" width="11" height="2.2" rx="1.1" /><rect x="1.5" y="8.9" width="11" height="2.2" rx="1.1" />
+    </Drawn>
+  )
+}
+
 /** Save. Vecteezy (https://www.vecteezy.com), Free License, attribution required */
 export function IconSave(props: SVGProps<SVGSVGElement>) {
   return <Glyph box="61.80 62.40 368.70 368.70" paths={['M267.8,79.6v86.4c0,1.7.7,3.2,1.8,4.3,1.1,1.1,2.6,1.8,4.3,1.8h34.4c1.7,0,3.2-.7,4.3-1.8,1.1-1.1,1.8-2.6,1.8-4.3v-86.4c0-1.7-.7-3.2-1.8-4.3-1.1-1.1-2.6-1.8-4.3-1.8h-34.4c-1.7,0-3.2.7-4.3,1.8-1.1,1.1-1.8,2.6-1.8,4.3Z', 'M77.3,431.1h337.8c8.5,0,15.4-6.9,15.4-15.4V108.7l-46.3-46.3h-51.8v120.7h-172.5V62.4h-82.7c-8.5,0-15.4,6.9-15.4,15.4v337.8c0,8.5,6.9,15.4,15.4,15.4h0ZM152.1,265.2h188.4c7.8,0,14.1,6.4,14.1,14.1v108.4c0,7.8-6.4,14.1-14.1,14.1h-188.4c-7.8,0-14.1-6.4-14.1-14.1v-108.4c0-7.8,6.4-14.1,14.1-14.1Z']} {...props} />

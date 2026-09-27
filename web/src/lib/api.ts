@@ -103,7 +103,6 @@ export type Provider = {
   preset?: Record<string, string>
   /** The component name of its logo, absent where there is none. */
   mark?: string
-  hint?: string
   /** The pattern this product's address has to match, where that is not
    *  obvious. A shape rather than a sentence, so it needs no translation. */
   urlHint?: string
@@ -192,6 +191,17 @@ export type Run = {
   Unchanged: number
   Skipped: number
   Err: string
+}
+
+/** A connected network share, as Windows Explorer lists it under "This PC". */
+export type Share = {
+  /** The drive it is mapped to, such as "Z:", when it has one. */
+  letter?: string
+  path: string
+  host: string
+  share: string
+  user?: string
+  domain?: string
 }
 
 /**
@@ -801,6 +811,12 @@ export const api = {
     request<{ path: string; parent: string; entries: { name: string; path: string }[] }>(
       `/api/browse${path ? `?path=${encodeURIComponent(path)}` : ''}`,
     ),
+
+  /**
+   * The network shares this computer is already connected to, such as a
+   * mapped drive. Only Windows reports any.
+   */
+  shares: () => request<{ shares: Share[] }>('/api/shares'),
 
   /** Makes one folder inside `parent`. The server refuses a name that is a path. */
   makeDir: (parent: string, name: string) =>

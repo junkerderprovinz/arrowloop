@@ -74,6 +74,11 @@ const RULES: Rule[] = [
   // Above the settings rule, since the lock's keys live under `settings.`.
   [/lock/i, 'IconLock'],
 
+  // A button that opens a menu of further actions.
+  [/\.options$/i, 'IconMenu'],
+  // Picks one of the shares the computer is connected to, as a folder.
+  [/pickShare/i, 'IconFolder'],
+
   // Vaguest last.
   [/settings|config|engine|backup/i, 'IconSettings'],
 ]

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 
 import { IconAction } from './IconAction'
 import { Text } from './Field'
@@ -10,9 +11,16 @@ import { api } from '../lib/api'
 import { useT } from '../lib/i18n'
 
 /**
- * Picks a folder that really exists, where a typo in a typed path would only
- * show up as a run that copied nothing. It sits beside the path field rather
- * than replacing it, since a path can also be a target name no listing offers.
+ * A place the picker offers above the folders. A registered drive is taken as
+ * it is; a target opens, so a folder on it can be chosen or made.
+ */
+export type Known = { value: string; label: string; browse?: boolean }
+
+/**
+ * Picks a folder that really exists, on this machine or on a configured
+ * target, where a typo in a typed path would only show up as a run that copied
+ * nothing. It sits beside the path field rather than replacing it, since a
+ * path can also be typed by hand.
  */
 export function FolderPicker({
   open,
@@ -25,7 +33,7 @@ export function FolderPicker({
   /** Where to begin. An unusable value simply starts at the top. */
   start?: string
   /** Registered drives and configured targets, offered above the folders. */
-  known?: { value: string; label: string }[]
+  known?: Known[]
   onPick: (path: string) => void
   onClose: () => void
 }) {
@@ -43,6 +51,7 @@ export function FolderPicker({
   useEffect(() => {
     if (!open) return
     setError(null)
+    setEntries([])
     void go(start ?? '')
     // Listing go would re-run the effect on every keystroke in the field behind.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -99,7 +108,9 @@ export function FolderPicker({
 
   if (!open) return null
 
-  return (
+  // Portalled, since a card that animates in is a transformed ancestor and
+  // would pin the fixed backdrop to itself instead of the window.
+  return createPortal(
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(0,0,0,0.45)] p-6"
       role="dialog"
@@ -121,12 +132,16 @@ export function FolderPicker({
 
           <ul className="flex max-h-72 flex-col overflow-y-auto">
             {/* Drives and targets cannot be reached by walking the tree, so they
-                come first, and picking one is the answer. */}
+                come first. A drive is the answer; a target opens. */}
             {known.map((k) => (
               <li key={k.value}>
                 <button
                   type="button"
-                  onClick={() => onPick(k.value)}
+                  onClick={() => {
+                    if (!k.browse) return onPick(k.value)
+                    setEntries([])
+                    void go(k.value, false)
+                  }}
                   className="flex w-full items-center gap-2 px-2 py-1.5 text-start text-xs transition hover:bg-carbon-hover"
                   style={{ borderRadius: 'var(--radius-control)' }}
                 >
@@ -151,7 +166,11 @@ export function FolderPicker({
                 </button>
               </li>
             )}
-            {entries.length === 0 && !busy ? (
+            {/* A target can take a while to answer, and an empty list meanwhile
+                would read as a folder with nothing in it. */}
+            {busy && entries.length === 0 ? (
+              <li className="px-2 py-3 text-xs text-carbon-textMuted">{t('pick.loading')}</li>
+            ) : entries.length === 0 ? (
               <li className="px-2 py-3 text-xs text-carbon-textMuted">{t('pick.empty')}</li>
             ) : (
               entries.map((e) => (
@@ -226,7 +245,8 @@ export function FolderPicker({
           )}
         </Card>
       </div>
-    </div>
+    </div>,
+    document.body,
   )
 }
 

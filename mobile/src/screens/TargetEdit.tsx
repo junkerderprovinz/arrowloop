@@ -6,7 +6,7 @@ import { Field } from "../fields";
 import { useT, type T } from "../i18n";
 import type { TranslationKey } from "../i18n";
 import type { Nav, TargetsStack } from "../nav";
-import { optionHint } from "../../../web/src/lib/optionHint";
+import { optionHint, providerHint, providerName } from "../../../web/src/lib/optionHint";
 import { suggestTargetName } from "../../../web/src/lib/targetName";
 import { space } from "../theme";
 import { Body, Button, Caption, Empty, Page, Section, Title } from "../ui";
@@ -72,6 +72,7 @@ export function TargetEdit() {
       null,
     [providers, providerId, existing],
   );
+  const about = provider ? providerHint(provider.id, t) : undefined;
 
   const backendName = provider?.backend ?? existing?.type ?? "";
   const backend = useMemo(
@@ -144,8 +145,8 @@ export function TargetEdit() {
 
   return (
     <Page>
-      <Title>{provider?.name ?? backendName}</Title>
-      {provider?.hint ? <Caption>{provider.hint}</Caption> : null}
+      <Title>{provider ? providerName(provider, t) : backendName}</Title>
+      {about ? <Caption>{about}</Caption> : null}
 
       <Section title={t("targets.remoteName")} hint={t("targets.remoteNameHint")}>
         <Field

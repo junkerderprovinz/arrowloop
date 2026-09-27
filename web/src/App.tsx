@@ -219,9 +219,10 @@ export function App() {
   const running = jobs.filter((j) => j.running).length
 
   return (
-    // A fixed rail and a page that scrolls beside it. The gutter padding lets
-    // the rail float as a card on the ground.
-    <div className="flex h-screen gap-4 overflow-hidden bg-carbon-background p-[var(--page-gutter)]">
+    // A fixed rail and a page that scrolls beside it, or below it where the
+    // window is too narrow for both side by side. The gutter padding lets the
+    // rail float as a card on the ground.
+    <div className="flex h-screen flex-col gap-4 overflow-hidden bg-carbon-background p-[var(--page-gutter)] sm:flex-row">
       <Sidebar<Tab>
         value={previewing ? 'jobs' : tab}
         mode={labels.sidebar}
@@ -243,7 +244,7 @@ export function App() {
             animation plays on every tab change. */}
         <div
           key={previewing ? `preview:${previewing}` : tab}
-          className="glim-page-enter flex min-h-full w-full flex-col gap-8 px-6 pb-6 md:px-8 md:pb-8"
+          className="glim-page-enter flex min-h-full w-full flex-col gap-8 px-4 pb-4 pt-4 sm:px-6 sm:pb-6 sm:pt-0 md:px-8 md:pb-8"
         >
           {error && (
             <Card title={t('error.unreachable')} hueIndex={0}>

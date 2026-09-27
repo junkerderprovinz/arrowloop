@@ -9,12 +9,13 @@ import { Card } from '../lib/glimstone/Card'
 import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
 import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
-import { IconCheck, IconConfirm, IconCopy, IconDelete, IconEdit } from '../components/glyphs'
+import { IconCheck, IconConfirm, IconCopy, IconDelete, IconEdit, IconFolder } from '../components/glyphs'
 import { brandMark } from '../components/brandMarks'
 import { Choice, Field, Secret, Text } from '../components/Field'
 import { ToggleRow } from '../components/ToggleRow'
 import { replay } from '../lib/animate'
-import { api, type Backend, type Provider, type Remote, type Usage, type Volume } from '../lib/api'
+import { DropdownListbox } from '../lib/glimstone/DropdownListbox'
+import { api, type Backend, type Provider, type Remote, type Share, type Usage, type Volume } from '../lib/api'
 import { bytes } from '../lib/bytes'
 import { useT } from '../lib/i18n'
 import { optionHint } from '../lib/optionHint'
@@ -549,6 +550,22 @@ function RemoteForm({
                 onChange={(next) => setValues((prev) => ({ ...prev, [o.name]: next }))}
                 placeholder={values[o.name] ? t('targets.secretSet') : o.default}
               />
+            ) : kind === 'smb' && o.name === 'host' ? (
+              <ShareHost
+                value={values.host ?? ''}
+                onChange={(next) => setValues((prev) => ({ ...prev, host: next }))}
+                placeholder={o.default || o.examples?.[0]?.value}
+                // The account comes along where the field is still empty; the
+                // password cannot be read back from Windows.
+                onShare={(picked) =>
+                  setValues((prev) => ({
+                    ...prev,
+                    host: picked.host,
+                    ...(picked.user && !prev.user ? { user: picked.user } : {}),
+                    ...(picked.domain && !prev.domain ? { domain: picked.domain } : {}),
+                  }))
+                }
+              />
             ) : (
               <Text
                 value={values[o.name] ?? ''}
@@ -588,6 +605,86 @@ function RemoteForm({
           disabled={busy || checking || !name.trim() || !kind}
         />
       </div>
+    </div>
+  )
+}
+
+/**
+ * The server field of a share, with a button that lists the shares this
+ * computer is already connected to, such as a drive mapped in Explorer. Only a
+ * Windows machine reports any; elsewhere the list says there are none.
+ */
+function ShareHost({
+  value,
+  onChange,
+  placeholder,
+  onShare,
+}: {
+  value: string
+  onChange: (next: string) => void
+  placeholder?: string
+  onShare: (picked: Share) => void
+}) {
+  const { t } = useT()
+  const row = useRef<HTMLDivElement>(null)
+  const [open, setOpen] = useState(false)
+  const [shares, setShares] = useState<Share[] | null>(null)
+  const [error, setError] = useState<string | null>(null)
+
+  // Asked on every opening, since a share can be connected while the form is open.
+  function toggle() {
+    if (open) return setOpen(false)
+    setOpen(true)
+    setShares(null)
+    setError(null)
+    api
+      .shares()
+      .then((got) => setShares(got.shares))
+      .catch((e: Error) => setError(e.message))
+  }
+
+  return (
+    <div ref={row} className="flex items-center gap-2">
+      <div className="min-w-0 flex-1">
+        <Text value={value} onChange={onChange} placeholder={placeholder} mono />
+      </div>
+      <IconAction
+        title={t('targets.pickShare')}
+        labelKey="targets.pickShare"
+        hint={t('targets.pickShareHint')}
+        onClick={toggle}
+      />
+      <DropdownListbox open={open} onClose={() => setOpen(false)} triggerRef={row} label={t('targets.pickShare')}>
+        {error ? (
+          <p className="px-3 py-2 text-xs text-statusFail">{error}</p>
+        ) : !shares ? (
+          <p className="px-3 py-2 text-xs text-carbon-textMuted">{t('pick.loading')}</p>
+        ) : shares.length === 0 ? (
+          <p className="px-3 py-2 text-xs text-carbon-textMuted">{t('targets.noShares')}</p>
+        ) : (
+          shares.map((sh) => (
+            <button
+              key={sh.path}
+              type="button"
+              role="option"
+              aria-selected={sh.host === value}
+              onClick={() => {
+                onShare(sh)
+                setOpen(false)
+              }}
+              className="flex w-full items-center gap-2 px-3 py-2 text-start text-xs text-carbon-textSub transition-colors hover:bg-carbon-hover hover:text-carbon-text"
+            >
+              <span className="shrink-0 text-carbon-textMuted" aria-hidden>
+                <IconFolder />
+              </span>
+              {sh.letter && <span className="shrink-0 font-medium text-carbon-text">{sh.letter}</span>}
+              <span className="min-w-0 truncate font-mono" title={sh.path}>
+                {sh.path}
+              </span>
+            </button>
+          ))
+        )}
+      </DropdownListbox>
     </div>
   )
 }

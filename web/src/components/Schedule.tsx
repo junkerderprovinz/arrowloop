@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import type { CSSProperties } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 
 import { hueVars } from '../lib/appearance'
 
@@ -58,6 +58,9 @@ export function ScheduleField({
   onLive,
   settle,
   onSettle,
+  quiet,
+  onQuiet,
+  disabled = false,
 }: {
   value: string
   onChange: (next: string) => void
@@ -70,6 +73,18 @@ export function ScheduleField({
   /** How long the tree must go quiet before a change counts as finished. */
   settle?: string
   onSettle?: (next: string) => void
+  /**
+   * The job's quiet period. It is not part of the schedule, but it answers
+   * the same question of when, so it lines up under the schedule's own rows.
+   */
+  quiet?: string
+  onQuiet?: (next: string) => void
+  /**
+   * Showing a schedule that comes from the global sync settings. The quiet
+   * period stays editable, since the global settings do not decide it for a
+   * job.
+   */
+  disabled?: boolean
 }) {
   const { t } = useT()
   const derived = parseSchedule(value)
@@ -130,102 +145,125 @@ export function ScheduleField({
     update({ days: next })
   }
 
+  // Every labelled row shares one grid, so the boxes of the settle time, the
+  // backstop and the quiet period start at the same edge. A narrow card puts
+  // each label above its box instead.
+  const fixed = disabled ? { inert: true, className: 'opacity-45' } : { className: '' }
+
   return (
-    <div className="flex flex-col gap-3">
-      <Selector<ScheduleMode>
-        scale="small"
-        label={t('edit.schedule')}
-        value={state.mode}
-        onChange={pick}
-        options={SCHEDULE_MODES.map((m) => ({ value: m, label: t(`schedule.${m}` as const) }))}
-      />
+    <div className="flex flex-col gap-3 @container">
+      <div inert={disabled || undefined}>
+        <Selector<ScheduleMode>
+          scale="small"
+          label={t('edit.schedule')}
+          value={state.mode}
+          onChange={pick}
+          disabled={disabled}
+          options={SCHEDULE_MODES.map((m) => ({ value: m, label: t(`schedule.${m}` as const) }))}
+        />
+      </div>
 
-      {state.mode === 'live' && (
-        <div className="flex flex-col gap-3">
-          {onSettle && (
-            <div className="flex flex-wrap items-center gap-3">
-              <span className="flex items-center gap-1.5 text-xs uppercase tracking-wider text-carbon-textMuted">
-                {t('schedule.settle')}
-                <InfoBubble tip={t('schedule.settleHint')} />
-              </span>
-              <QuietPeriod value={settle ?? ''} onChange={onSettle} />
-            </div>
-          )}
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="flex items-center gap-1.5 text-xs uppercase tracking-wider text-carbon-textMuted">
-              {t('schedule.backstop')}
-              <InfoBubble tip={t('schedule.backstopHint')} />
-            </span>
+      <div className="grid grid-cols-1 gap-x-4 gap-y-1.5 @md:grid-cols-[max-content_minmax(0,1fr)] @md:items-center @md:gap-y-3">
+        {state.mode === 'live' && onSettle && (
+          <Row label={t('schedule.settle')} hint={t('schedule.settleHint')} {...fixed}>
+            <QuietPeriod value={settle ?? ''} onChange={onSettle} />
+          </Row>
+        )}
+        {state.mode === 'live' && (
+          <Row label={t('schedule.backstop')} hint={t('schedule.backstopHint')} {...fixed}>
             <EveryPicker state={state} update={update} />
-          </div>
-        </div>
-      )}
-
-      {state.mode === 'every' && (
-        <div className="flex flex-wrap items-center gap-3">
-          <span className="text-xs uppercase tracking-wider text-carbon-textMuted">
-            {t('schedule.everyLabel')}
-          </span>
-          <EveryPicker state={state} update={update} />
-        </div>
-      )}
-
-      {(state.mode === 'daily' || state.mode === 'weekly') && (
-        <div className="flex flex-wrap items-center gap-3">
-          <span className="text-xs uppercase tracking-wider text-carbon-textMuted">
-            {t('schedule.at')}
-          </span>
-          <TimePicker value={state.time} label={t('schedule.at')} onChange={(time) => update({ time })} />
-        </div>
-      )}
-
-      {state.mode === 'weekly' && (
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs uppercase tracking-wider text-carbon-textMuted">
-            {t('schedule.days')}
-          </span>
-          {/* It takes the rest of the row, so it ends where the card does. */}
-          <div
-            className="glim-well flex flex-1 flex-wrap gap-[0.2rem] p-[0.2rem]"
-            style={{ borderRadius: 'var(--radius-pill)' }}
-          >
-            {/* Each day takes its own palette position, like every multi-part
-                control. */}
-            {WEEKDAYS.map(({ day, key }, i) => {
-              const on = state.days.includes(day)
-              return (
-                <button
-                  key={day}
-                  type="button"
-                  aria-pressed={on}
-                  onClick={() => toggleDay(day)}
-                  style={{
-                    borderRadius: 'var(--radius-pill)',
-                    ...(hueVars(i) as CSSProperties),
-                  }}
-                  className={`glim-hue grow px-2.5 py-1 text-xs font-medium transition-colors ${
-                    on
-                      ? 'bg-accent text-accentContrast'
-                      : 'bg-transparent text-carbon-textMuted hover:bg-carbon-hover hover:text-carbon-text'
-                  }`}
-                >
-                  {t(`schedule.day.${key}` as const)}
-                </button>
-              )
-            })}
-          </div>
-        </div>
-      )}
+          </Row>
+        )}
+        {state.mode === 'every' && (
+          <Row label={t('schedule.everyLabel')} {...fixed}>
+            <EveryPicker state={state} update={update} />
+          </Row>
+        )}
+        {(state.mode === 'daily' || state.mode === 'weekly') && (
+          <Row label={t('schedule.at')} {...fixed}>
+            <TimePicker value={state.time} label={t('schedule.at')} onChange={(time) => update({ time })} />
+          </Row>
+        )}
+        {state.mode === 'weekly' && (
+          <Row label={t('schedule.days')} {...fixed}>
+            <div
+              className="glim-well flex flex-wrap gap-[0.2rem] p-[0.2rem]"
+              style={{ borderRadius: 'var(--radius-pill)' }}
+            >
+              {/* Each day takes its own palette position, like every multi-part
+                  control. */}
+              {WEEKDAYS.map(({ day, key }, i) => {
+                const on = state.days.includes(day)
+                return (
+                  <button
+                    key={day}
+                    type="button"
+                    aria-pressed={on}
+                    onClick={() => toggleDay(day)}
+                    style={{
+                      borderRadius: 'var(--radius-pill)',
+                      ...(hueVars(i) as CSSProperties),
+                    }}
+                    className={`glim-hue grow px-2.5 py-1 text-xs font-medium transition-colors ${
+                      on
+                        ? 'bg-accent text-accentContrast'
+                        : 'bg-transparent text-carbon-textMuted hover:bg-carbon-hover hover:text-carbon-text'
+                    }`}
+                  >
+                    {t(`schedule.day.${key}` as const)}
+                  </button>
+                )
+              })}
+            </div>
+          </Row>
+        )}
+        {onQuiet && (
+          <Row label={t('edit.quietPeriod')} hint={t('edit.quietHint')}>
+            <QuietPeriod value={quiet ?? ''} onChange={onQuiet} />
+          </Row>
+        )}
+      </div>
 
       {state.mode === 'cron' && (
-        <Text
-          value={state.cron}
-          onChange={(cron) => update({ cron })}
-          placeholder="0 */6 * * *"
-          mono
-        />
+        <div {...fixed}>
+          <Text
+            value={state.cron}
+            onChange={(cron) => update({ cron })}
+            placeholder="0 */6 * * *"
+            mono
+          />
+        </div>
       )}
     </div>
+  )
+}
+
+/** One labelled row of the schedule's grid: the label cell and the box cell. */
+function Row({
+  label,
+  hint,
+  inert,
+  className = '',
+  children,
+}: {
+  label: string
+  hint?: string
+  inert?: boolean
+  className?: string
+  children: ReactNode
+}) {
+  return (
+    <>
+      <span
+        className={`mt-1.5 flex items-center gap-1.5 text-xs uppercase tracking-wider text-carbon-textMuted first:mt-0 @md:mt-0 ${className}`}
+      >
+        {label}
+        {hint && <InfoBubble tip={hint} />}
+      </span>
+      <div inert={inert} className={`flex min-w-0 flex-wrap items-center gap-2 ${className}`}>
+        {children}
+      </div>
+    </>
   )
 }
 

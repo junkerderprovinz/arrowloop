@@ -4,13 +4,15 @@ import { brandMark } from './brandMarks'
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { useLabelMode } from '../lib/glimstone/useLabelMode'
 import { useT } from '../lib/i18n'
+import { providerHint, providerName } from '../lib/optionHint'
 import type { Backend, Provider } from '../lib/api'
 
 /**
  * Picks what a target connects to by product name rather than by protocol, as
  * a grid of tiles in the style of KnightLoader's extension tiles.
  * Only the protocol tiles carry a hint, in an info bubble, since a cloud's name
- * already says what it is. The order is alphabetical, set in the Go table.
+ * already says what it is. The order is alphabetical by the name shown, which
+ * for a few is translated.
  */
 export function ProviderPicker({
   providers,
@@ -26,8 +28,10 @@ export function ProviderPicker({
    */
   onPick: (picked: Provider | string) => void
 }) {
-  const { t } = useT()
-  const showHint = (p: Provider) => p.group === 'protocol' && Boolean(p.hint)
+  const { t, lang } = useT()
+  const sorted = [...providers].sort((a, b) =>
+    providerName(a, t).localeCompare(providerName(b, t), lang, { sensitivity: 'base' }),
+  )
 
   // The tiles follow the label setting, except that reactive shows names like
   // text-and-glyph: hiding them until hovered would defeat a list somebody is
@@ -44,14 +48,15 @@ export function ProviderPicker({
           box plus its padding; the mark box is wide because several marks are
           wordmarks (Linkbox is 5.3:1). The window scrolls the list. */}
       <ul className="grid w-full grid-cols-[repeat(auto-fill,minmax(8.5rem,1fr))] gap-3">
-        {providers.map((p) => {
+        {sorted.map((p) => {
           const lit = p.mark ? BRAND_TILES[p.mark] : undefined
+          const hint = providerHint(p.id, t)
           return (
             <li key={p.id} className="relative">
               <button
                 type="button"
                 onClick={() => onPick(p)}
-                title={p.hint || undefined}
+                title={hint}
                 className={lit ? `${TILE} glim-brand-tile` : `${TILE} ${PLAIN}`}
                 style={lit && ({ '--tile': lit.tile, '--tile-ink': lit.ink } as CSSProperties)}
               >
@@ -65,16 +70,16 @@ export function ProviderPicker({
                 {showName(p) && (
                   <span className="w-full px-1 text-center">
                     <span className="block break-words text-dense font-medium leading-tight">
-                      {p.name}
+                      {providerName(p, t)}
                     </span>
                   </span>
                 )}
               </button>
               {/* A sibling of the button, so a click on the bubble does not also
                   pick the provider. */}
-              {p.hint && showHint(p) && (
+              {hint && p.group === 'protocol' && (
                 <span className="absolute end-1.5 top-1.5">
-                  <InfoBubble tip={p.hint} />
+                  <InfoBubble tip={hint} />
                 </span>
               )}
             </li>
@@ -94,7 +99,6 @@ export function ProviderPicker({
                 <button
                   type="button"
                   onClick={() => onPick(b.name)}
-                  title={b.description}
                   className="w-full truncate rounded-[var(--radius-pill)] bg-carbon-surface2 px-3 py-2 text-center text-dense text-carbon-text transition hover:bg-carbon-surface3"
                 >
                   {b.name}

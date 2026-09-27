@@ -175,7 +175,6 @@ export interface Provider {
   backend: string;
   group: string;
   mark?: string;
-  hint?: string;
   auth?: string;
   authUrl?: string;
   urlHint?: string;

@@ -35,6 +35,7 @@ const NAMES: Record<string, TranslationKey> = {
   drive_type: 'opt.driveType',
   scope: 'opt.scope',
   '2fa': 'opt.twoFactor',
+  namenode: 'opt.namenode',
 }
 
 /** The label for one option: its translation where there is one, its rclone name otherwise. */

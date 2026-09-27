@@ -161,6 +161,16 @@ DRAWN = [
      # pathLength lets a copy button draw the check in with .glim-check-draw.
      '<path d="M2.4 7.4L5.6 10.9L11.6 3.4" pathLength="1" fill="none" stroke="currentColor"'
      ' stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />'),
+
+    ("IconMenu",
+     "A menu of further actions, the three bars GlimStone reserves for a menu. "
+     "The free subset has no plain one",
+     # The outer corners sit 6.86 from the centre, the round glyphs' reach, in
+     # the cross's 2.2 bar thickness.
+     "0 0 14 14",
+     '<rect x="1.5" y="2.9" width="11" height="2.2" rx="1.1" />'
+     '<rect x="1.5" y="5.9" width="11" height="2.2" rx="1.1" />'
+     '<rect x="1.5" y="8.9" width="11" height="2.2" rx="1.1" />'),
 ]
 
 # Glyphs from outside Streamline: name, note, source line, the measured box, and

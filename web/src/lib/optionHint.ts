@@ -50,6 +50,7 @@ const GENERAL: Record<string, TranslationKey> = {
   region: 'opt.regionHint',
   vendor: 'opt.vendorHelp',
   key_file: 'opt.keyFileHelp',
+  namenode: 'opt.namenodeHint',
 }
 
 /**
@@ -63,6 +64,45 @@ function general(o: HintOption, provider: HintProvider | null | undefined, t: Tr
   }
   const key = GENERAL[o.name]
   return key ? t(key) : undefined
+}
+
+/**
+ * One line about what a product is, for the ones whose name does not say it,
+ * by the provider's id in internal/remotes/providers.go.
+ */
+const PROVIDER_HINTS: Record<string, TranslationKey> = {
+  smb: 'provider.smbHint',
+  sftp: 'provider.sftpHint',
+  webdav: 'provider.webdavHint',
+  http: 'provider.httpHint',
+  crypt: 'provider.cryptHint',
+  s3: 'provider.s3Hint',
+  hidrive: 'provider.hidriveHint',
+  googlephotos: 'provider.googlephotosHint',
+  minio: 'provider.selfHostedHint',
+  seaweedfs: 'provider.selfHostedHint',
+  ceph: 'provider.selfHostedHint',
+  garage: 'provider.selfHostedHint',
+}
+
+export function providerHint(id: string, t: Translate): string | undefined {
+  const key = PROVIDER_HINTS[id]
+  return key ? t(key) : undefined
+}
+
+/**
+ * The few provider names that are words rather than a product's own name.
+ * The rest are brands and stay as the table spells them.
+ */
+const PROVIDER_NAMES: Record<string, TranslationKey> = {
+  smb: 'provider.smb',
+  s3: 'provider.s3',
+  crypt: 'provider.crypt',
+}
+
+export function providerName(p: { id: string; name: string }, t: Translate): string {
+  const key = PROVIDER_NAMES[p.id]
+  return key ? t(key) : p.name
 }
 
 /** Everything the bubble beside one field can say, joined. */

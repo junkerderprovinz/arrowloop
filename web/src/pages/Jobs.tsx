@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import type { ReactNode } from 'react'
 
 import { Empty, Num, Rows, Rule, Stack } from '../components/Shell'
 import { IconAction } from '../components/IconAction'
@@ -7,9 +8,10 @@ import { Card } from '../lib/glimstone/Card'
 import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
 import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
-import { IconAdd, IconCopy, IconDelete, IconEdit, IconPause, IconRun, IconSave, IconToLeft, IconToRight } from '../components/glyphs'
+import { IconAdd, IconDelete, IconEdit, IconPause, IconRun, IconSave, IconToLeft, IconToRight } from '../components/glyphs'
 import { DirectionMark } from '../components/Direction'
 import { JobMark, statusOf } from '../components/JobMark'
+import { Menu } from '../components/Menu'
 import { Pace } from '../components/Pace'
 import { RunDetail } from '../components/RunDetail'
 import { Stats } from '../components/Stats'
@@ -23,7 +25,7 @@ import { bytes } from '../lib/bytes'
 import { entryLabel } from '../lib/entryLabel'
 import { usePlaces } from '../lib/places'
 import { api } from '../lib/api'
-import type { HistoryShow, Job, Run, RunEvent, Touch } from '../lib/api'
+import type { Direction, HistoryShow, Job, Run, RunEvent, Touch } from '../lib/api'
 import { translateSide, useT } from '../lib/i18n'
 import { describeCadence, readCadence } from '../lib/cadence'
 import { since } from '../lib/since'
@@ -134,6 +136,7 @@ export function Jobs({
                     <JobForm
                       job={(raw ?? [])[at]}
                       known={config.known}
+                      defaults={config.defaults}
                       patch={(next) => config.patch(at, next)}
                     />
                     <div className="flex justify-end gap-2">
@@ -163,93 +166,69 @@ export function Jobs({
                   </div>
                 ) : (
                 <div className="flex flex-col gap-2">
-                  {/* The card's sentence (status mark, left side, direction,
-                      right side) is centred in the left column, which
-                      `items-stretch` makes as tall as the right one holding the
-                      cadence and the actions at the top. */}
-                  <div className="flex flex-wrap items-stretch gap-3">
-                    <div className="flex min-w-0 flex-1 items-center gap-3">
-                      <JobMark status={statusOf(j, lastFailed(j.name))} size={28} />
-                      <p className="flex min-w-0 flex-1 flex-wrap items-center gap-2.5 text-base text-carbon-text">
-                        <span className="max-w-[45%] shrink truncate" title={j.left}>
-                          {j.left}
-                        </span>
-                        <DirectionMark direction={j.direction} size={20} />
-                        <span className="max-w-[45%] shrink truncate" title={j.right}>
-                          {j.right}
-                        </span>
-                      </p>
-                    </div>
-                    <div className="flex shrink-0 flex-col items-end gap-2">
-                    <Cadence job={j} />
+                  <JobRow
+                    mark={<JobMark status={statusOf(j, lastFailed(j.name))} size={28} />}
+                    left={j.left}
+                    right={j.right}
+                    direction={j.direction}
+                  >
                     {/* Each action takes its own palette position at a fixed
                         offset from the card's index, so a button keeps its
                         colour when a neighbour is not rendered and each card
-                        starts its row on a different colour. */}
-                    <div className="flex flex-wrap items-center justify-end gap-2">
+                        starts its row on a different colour. Holding and
+                        starting are separate controls: a held job can still be
+                        started by hand, and stays held. */}
+                    {at !== null && (
                       <IconAction
-                        title={t('jobs.activity')}
-                        labelKey="jobs.activity"
-                        hueIndex={i + 1}
-                        onClick={() => setActivity(activity === j.name ? null : j.name)}
-                      />
-                      {at !== null && (
-                        <>
-                          <IconAction
-                            title={t('edit.editJob')}
-                            labelKey="edit.editJob"
-                            hueIndex={i + 2}
-                            onClick={() => setEditing(at === editing ? null : at)}
-                          >
-                            <IconEdit />
-                          </IconAction>
-                          <IconAction
-                            title={t('edit.duplicate')}
-                            labelKey="edit.duplicate"
-                            hueIndex={i + 3}
-                            onClick={() => setEditing(config.duplicate(at))}
-                          >
-                            <IconCopy />
-                          </IconAction>
-                          <IconAction
-                            title={t('edit.remove')}
-                            labelKey="edit.remove"
-                            hueIndex={i + 4}
-                            onClick={() => setRemoving(at)}
-                          >
-                            <IconDelete />
-                          </IconAction>
-                        </>
-                      )}
-                      {/* Holding and starting are separate controls: a held
-                          job can still be started by hand, and stays held. */}
-                      {at !== null && (
-                        <IconAction
-                          title={j.disabled ? t('jobs.resume') : t('jobs.pause')}
-                          labelKey={j.disabled ? 'jobs.resume' : 'jobs.pause'}
-                          hueIndex={i + 5}
-                          onClick={() => void config.setDisabled(at, !j.disabled)}
-                        >
-                          {j.disabled ? <IconRun /> : <IconPause />}
-                        </IconAction>
-                      )}
-                      <IconAction
-                        title={j.running ? t('jobs.cancelRun') : t('jobs.runNow')}
-                        labelKey={j.running ? 'jobs.cancelRun' : 'jobs.runNow'}
-                        hint={j.running ? undefined : t('jobs.runNowHint')}
-                        hueIndex={i + 6}
-                        onClick={() => void (j.running ? api.stopJob(j.name) : api.run(j.name))}
-                      />
-                      <IconAction
-                        title={t('jobs.preview')}
-                        labelKey="jobs.preview"
-                        hint={t('jobs.previewHint')}
-                        hueIndex={i + 7}
-                        onClick={() => onPreview(j.name)}
-                      />
-                    </div>
-                    </div>
-                  </div>
+                        title={j.disabled ? t('jobs.resume') : t('jobs.pause')}
+                        labelKey={j.disabled ? 'jobs.resume' : 'jobs.pause'}
+                        hueIndex={i + 5}
+                        onClick={() => void config.setDisabled(at, !j.disabled)}
+                      >
+                        {j.disabled ? <IconRun /> : <IconPause />}
+                      </IconAction>
+                    )}
+                    <IconAction
+                      title={j.running ? t('jobs.cancelRun') : t('jobs.runNow')}
+                      labelKey={j.running ? 'jobs.cancelRun' : 'jobs.runNow'}
+                      hint={j.running ? undefined : t('jobs.runNowHint')}
+                      hueIndex={i + 6}
+                      onClick={() => void (j.running ? api.stopJob(j.name) : api.run(j.name))}
+                    />
+                    <Menu
+                      label={t('jobs.options')}
+                      labelKey="jobs.options"
+                      hueIndex={i + 7}
+                      items={[
+                        {
+                          label: t('jobs.activity'),
+                          labelKey: 'jobs.activity',
+                          onSelect: () => setActivity(activity === j.name ? null : j.name),
+                        },
+                        ...(at !== null
+                          ? [
+                              {
+                                label: t('edit.editJob'),
+                                labelKey: 'edit.editJob' as const,
+                                onSelect: () => setEditing(at),
+                              },
+                              {
+                                label: t('edit.duplicate'),
+                                labelKey: 'edit.duplicate' as const,
+                                onSelect: () => setEditing(config.duplicate(at)),
+                              },
+                              {
+                                label: t('edit.remove'),
+                                labelKey: 'edit.remove' as const,
+                                onSelect: () => setRemoving(at),
+                              },
+                            ]
+                          : []),
+                        { label: t('jobs.preview'), labelKey: 'jobs.preview', onSelect: () => onPreview(j.name) },
+                      ]}
+                    />
+                  </JobRow>
+                  <Cadence job={j} />
 
                   {activity === j.name && (
                     <JobActivity job={j.name} />
@@ -303,6 +282,7 @@ export function Jobs({
                   <JobForm
                     job={p}
                     known={config.known}
+                    defaults={config.defaults}
                     patch={(next) => config.patch(at, next)}
                   />
                   {/* Delete beside save, so a draft can be dropped unsaved. */}
@@ -333,18 +313,9 @@ export function Jobs({
                 </div>
               ) : (
               <div className="flex flex-col gap-2">
-                {/* The same sentence, at the same size, as a saved card. */}
-                <p className="flex min-w-0 flex-wrap items-center gap-2.5 text-base text-carbon-text">
-                  <span className="max-w-[45%] shrink truncate">{p.left}</span>
-                  <DirectionMark direction={p.direction ?? 'both'} size={20} />
-                  <span className="max-w-[45%] shrink truncate">{p.right}</span>
-                </p>
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
-                  <Badge tone="neutral">{t('edit.unsaved')}</Badge>
-                </div>
-                {/* No preview until the engine knows the job. The offsets
-                    match the saved card's for the same two actions. */}
-                <div className="flex flex-wrap items-center justify-end gap-2">
+                {/* The same row as a saved card. No preview until the engine
+                    knows the job, and the offsets match the saved card's. */}
+                <JobRow left={p.left ?? ''} right={p.right ?? ''} direction={p.direction ?? 'both'}>
                   <IconAction
                     title={t('edit.editJob')}
                     labelKey="edit.editJob"
@@ -361,6 +332,9 @@ export function Jobs({
                   >
                     <IconDelete />
                   </IconAction>
+                </JobRow>
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
+                  <Badge tone="neutral">{t('edit.unsaved')}</Badge>
                 </div>
               </div>
               )}
@@ -443,6 +417,40 @@ export function Since({ when }: { when: string }) {
 }
 
 /**
+ * A job's two sides and the way between them, with the card's buttons at the
+ * end of the same row. The path is never cut: it wraps inside its own box, and
+ * once the box would be narrower than 16rem the buttons move under it, so
+ * nothing runs out of the card at any width.
+ */
+export function JobRow({
+  mark,
+  left,
+  right,
+  direction,
+  children,
+}: {
+  mark?: ReactNode
+  left: string
+  right: string
+  direction: Direction
+  children: ReactNode
+}) {
+  return (
+    <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
+      <div className="flex min-w-0 grow basis-64 items-center gap-3">
+        {mark}
+        <p className="flex min-w-0 flex-1 flex-wrap items-center gap-x-2.5 gap-y-1 text-base text-carbon-text">
+          <span className="min-w-0 [overflow-wrap:anywhere]">{left}</span>
+          <DirectionMark direction={direction} size={20} />
+          <span className="min-w-0 [overflow-wrap:anywhere]">{right}</span>
+        </p>
+      </div>
+      <div className="ms-auto flex max-w-full flex-wrap items-center justify-end gap-2">{children}</div>
+    </div>
+  )
+}
+
+/**
  * What the job does, in a sentence, and when it last succeeded; the state
  * itself is the mark. A running job also gets a live badge, since with motion
  * off the mark does not turn.
@@ -452,22 +460,18 @@ function Cadence({ job }: { job: Job }) {
   const words = describeCadence(readCadence(job.schedule ?? '', !!job.watch), t)
 
   return (
-    <div className="flex shrink-0 flex-col items-end gap-0.5 text-xs text-carbon-textMuted">
+    <div className="flex flex-wrap items-center gap-x-4 gap-y-0.5 text-xs text-carbon-textMuted">
       {job.running ? (
         <Badge tone="active" className="glim-live">
           {t('jobs.state.running')}
         </Badge>
       ) : (
-        <span className="text-end">
-          {job.disabled ? t('jobs.state.disabled') : t('jobs.runs', { cadence: words })}
-        </span>
+        <span>{job.disabled ? t('jobs.state.disabled') : t('jobs.runs', { cadence: words })}</span>
       )}
       {/* The absolute date and time, which "two days ago" cannot replace when
           somebody needs to know whether it was before or after a change. */}
       {job.lastSuccess && (
-        <span className="text-end">
-          {t('jobs.lastRun', { when: new Date(job.lastSuccess).toLocaleString() })}
-        </span>
+        <span>{t('jobs.lastRun', { when: new Date(job.lastSuccess).toLocaleString() })}</span>
       )}
     </div>
   )

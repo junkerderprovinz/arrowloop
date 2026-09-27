@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react'
 
 import { hueVars } from '../lib/appearance'
+import { groupStage } from '../lib/controls'
 import { KEY_CONTROL_H } from './Field'
 import { IconBothWays, IconToLeft, IconToRight } from './glyphs'
 import { useT, type TranslationKey } from '../lib/i18n'
@@ -50,27 +51,30 @@ export function nextDirection(current: Direction): Direction {
 
 /**
  * The editable direction, placed between the two sides it relates so the row
- * reads as one sentence. Clicking or an arrow key cycles through the three
- * answers, and the accessible name always says which one is current.
+ * reads as one sentence. It names the current answer in words beside the
+ * arrow, since an arrow alone is easy to pass over. Clicking or an arrow key
+ * cycles through the three answers.
  */
 export function DirectionSwitch({
   direction,
   onChange,
-  hint,
+  disabled,
 }: {
   direction: Direction
   onChange: (next: Direction) => void
-  /** What the three answers mean, shown in the same bubble as the current one. */
-  hint?: string
+  /** Showing the direction the job follows from the global sync settings. */
+  disabled?: boolean
 }) {
   const { t } = useT()
   const name = t(directionKey[direction])
-  // Two sentences, so neither half has to be translated to fit the other.
-  const tip = hint ? `${name}. ${hint}` : name
+  // At least as wide as the longest of the three names, so the sides beside
+  // it keep their width while it cycles.
+  const stage = groupStage(DIRECTIONS.map((d) => t(directionKey[d])))
 
   return (
     <button
       type="button"
+      disabled={disabled}
       onClick={() => onChange(nextDirection(direction))}
       onKeyDown={(e) => {
         if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
@@ -83,18 +87,20 @@ export function DirectionSwitch({
           onChange(nextDirection(nextDirection(direction)))
         }
       }}
-      data-tip={tip}
       aria-label={`${t('direction.label')}: ${name}`}
-      className={`glim-btn glim-btn-key glim-hue inline-flex ${KEY_CONTROL_H} w-[var(--btn-h-key)] shrink-0 items-center justify-center bg-carbon-surface2 text-carbon-text transition-colors hover:bg-carbon-surface3`}
-      style={{ borderRadius: 'var(--radius-pill)', ...(hueVars(0) as CSSProperties) }}
+      className={`glim-btn glim-btn-key glim-hue inline-flex ${KEY_CONTROL_H} shrink-0 items-center justify-center gap-2 bg-accent px-4 text-sm font-medium text-accentContrast transition hover:opacity-90 disabled:pointer-events-none disabled:opacity-45`}
+      style={{
+        borderRadius: 'var(--radius-pill)',
+        minWidth: `var(--btn-w-${stage})`,
+        ...(hueVars(0) as CSSProperties),
+      }}
     >
-      {/* A glyph with no label sibling; index.css keeps it visible in text
-          mode, where it is the label. */}
       <span className="glim-btn-glyph" aria-hidden>
         {/* No size prop: `.glim-btn-key` sizes the mark in CSS, which a width
             attribute on the svg would lose to anyway. */}
         <DirectionGlyph direction={direction} />
       </span>
+      <span>{name}</span>
     </button>
   )
 }

@@ -4,6 +4,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { api, type Provider } from "../api";
 import { useT } from "../i18n";
 import type { Nav, TargetsStack } from "../nav";
+import { providerHint, providerName } from "../../../web/src/lib/optionHint";
 import { space, text } from "../theme";
 import { ProviderMark } from "../glyphs";
 import { Caption, Empty, InfoBubble, Page, Title, useTheme } from "../ui";
@@ -33,33 +34,36 @@ export function TargetPick() {
   const storage = providers.filter((x) => x.group === "storage");
   const protocols = providers.filter((x) => x.group === "protocol");
 
-  const tile = (provider: Provider) => (
-    // The (i) sits beside the tile rather than inside it, so tapping it does
-    // not also open the form.
-    <View key={provider.id} style={styles.cell}>
-      <Pressable
-        onPress={() => nav.navigate("TargetEdit", { provider: provider.id })}
-        android_ripple={{ color: p.hover }}
-        style={[
-          styles.tile,
-          { backgroundColor: p.surface2, ...corners.control },
-        ]}
-      >
-        <View style={styles.markBox}>
-          <ProviderMark name={provider.mark} width={MARK_W} height={MARK_H} color={p.textSub} scheme={scheme} />
-        </View>
-        {/* Two lines, since a name cut to one can read as another product. */}
-        <Text style={[styles.name, { color: p.text }]} numberOfLines={2}>
-          {provider.name}
-        </Text>
-      </Pressable>
-      {provider.hint && provider.group === "protocol" ? (
-        <View style={styles.bubble} pointerEvents="box-none">
-          <InfoBubble tip={provider.hint} />
-        </View>
-      ) : null}
-    </View>
-  );
+  const tile = (provider: Provider) => {
+    const hint = providerHint(provider.id, t);
+    return (
+      // The (i) sits beside the tile rather than inside it, so tapping it does
+      // not also open the form.
+      <View key={provider.id} style={styles.cell}>
+        <Pressable
+          onPress={() => nav.navigate("TargetEdit", { provider: provider.id })}
+          android_ripple={{ color: p.hover }}
+          style={[
+            styles.tile,
+            { backgroundColor: p.surface2, ...corners.control },
+          ]}
+        >
+          <View style={styles.markBox}>
+            <ProviderMark name={provider.mark} width={MARK_W} height={MARK_H} color={p.textSub} scheme={scheme} />
+          </View>
+          {/* Two lines, since a name cut to one can read as another product. */}
+          <Text style={[styles.name, { color: p.text }]} numberOfLines={2}>
+            {providerName(provider, t)}
+          </Text>
+        </Pressable>
+        {hint && provider.group === "protocol" ? (
+          <View style={styles.bubble} pointerEvents="box-none">
+            <InfoBubble tip={hint} />
+          </View>
+        ) : null}
+      </View>
+    );
+  };
 
   return (
     <Page>

@@ -31,10 +31,6 @@ type Provider struct {
 	// is none. A mark naming the wrong service is worse than a generic glyph.
 	Mark string `json:"mark,omitempty"`
 
-	// Hint is one line about what this is, for the ones whose name does not say
-	// it.
-	Hint string `json:"hint,omitempty"`
-
 	// UrlHint is the shape this product's address takes, where it is not the
 	// address people already have in their browser. The WebDAV products share
 	// one backend and each has its own path.
@@ -134,8 +130,7 @@ var providers = []Provider{
 	{ID: "yandex", Name: "Yandex Disk", Backend: "yandex", Group: GroupCloud, Mark: "IconYandex"},
 	{ID: "mailru", Name: "Mail.ru Cloud", Backend: "mailru", Group: GroupCloud, Mark: "IconMailru"},
 	{ID: "zoho", Name: "Zoho WorkDrive", Backend: "zoho", Group: GroupCloud, Mark: "IconZoho"},
-	{ID: "hidrive", Name: "IONOS HiDrive", Backend: "hidrive", Group: GroupCloud, Mark: "IconIonos",
-		Hint: "IONOS's storage."},
+	{ID: "hidrive", Name: "IONOS HiDrive", Backend: "hidrive", Group: GroupCloud, Mark: "IconIonos"},
 	{ID: "sharefile", Name: "ShareFile", Backend: "sharefile", Group: GroupCloud, Mark: "IconCitrix"},
 	{ID: "sugarsync", Name: "SugarSync", Backend: "sugarsync", Group: GroupCloud, Mark: "IconSugarsync"},
 	{ID: "putio", Name: "put.io", Backend: "putio", Group: GroupCloud, Mark: "IconPutio"},
@@ -150,8 +145,7 @@ var providers = []Provider{
 	{ID: "linkbox", Name: "Linkbox", Backend: "linkbox", Group: GroupCloud, Mark: "IconLinkbox"},
 	{ID: "gofile", Name: "Gofile", Backend: "gofile", Group: GroupCloud, Mark: "IconGofile"},
 	{ID: "pixeldrain", Name: "Pixeldrain", Backend: "pixeldrain", Group: GroupCloud, Mark: "IconPixeldrain"},
-	{ID: "googlephotos", Name: "Google Photos", Backend: "google photos", Group: GroupCloud,
-		Mark: "IconGooglePhotos", Hint: "Photos only, and read-mostly."},
+	{ID: "googlephotos", Name: "Google Photos", Backend: "google photos", Group: GroupCloud, Mark: "IconGooglePhotos"},
 
 	{ID: "b2", Name: "Backblaze B2", Backend: "b2", Group: GroupStorage, Mark: "IconBackblaze"},
 	{ID: "azureblob", Name: "Azure Blob Storage", Backend: "azureblob", Group: GroupStorage, Mark: "IconAzure"},
@@ -195,34 +189,24 @@ var providers = []Provider{
 
 	// Bucket stores somebody runs themselves.
 	{ID: "minio", Name: "MinIO", Backend: "s3", Group: GroupStorage,
-		Preset: map[string]string{"provider": "Minio"}, Mark: "IconMinio",
-		Hint: "A bucket store you run yourself. Needs its endpoint address."},
+		Preset: map[string]string{"provider": "Minio"}, Mark: "IconMinio"},
 	{ID: "seaweedfs", Name: "SeaweedFS", Backend: "s3", Group: GroupStorage,
-		Preset: map[string]string{"provider": "SeaweedFS"}, Mark: "IconSeaweedfs",
-		Hint: "A bucket store you run yourself. Needs its endpoint address."},
+		Preset: map[string]string{"provider": "SeaweedFS"}, Mark: "IconSeaweedfs"},
 	{ID: "ceph", Name: "Ceph", Backend: "s3", Group: GroupStorage,
-		Preset: map[string]string{"provider": "Ceph"}, Mark: "IconCeph",
-		Hint: "A bucket store you run yourself. Needs its endpoint address."},
+		Preset: map[string]string{"provider": "Ceph"}, Mark: "IconCeph"},
 	{ID: "garage", Name: "Garage", Backend: "s3", Group: GroupStorage,
 		// rclone has no Garage preset, and Garage's own documentation
 		// configures it as a generic S3 service.
-		Preset: map[string]string{"provider": "Other"}, Mark: "IconGarage",
-		Hint: "A bucket store you run yourself. Needs its endpoint address."},
-	{ID: "smb", Name: "SMB / Windows share", Backend: "smb", Group: GroupProtocol,
-		Mark: "IconFolder", Hint: "A shared folder on a NAS or a Windows machine."},
-	{ID: "sftp", Name: "SFTP", Backend: "sftp", Group: GroupProtocol,
-		Mark: "IconServer", Hint: "A server reached over SSH."},
+		Preset: map[string]string{"provider": "Other"}, Mark: "IconGarage"},
+	{ID: "smb", Name: "SMB / Windows share", Backend: "smb", Group: GroupProtocol, Mark: "IconFolder"},
+	{ID: "sftp", Name: "SFTP", Backend: "sftp", Group: GroupProtocol, Mark: "IconServer"},
 	{ID: "webdav", Name: "WebDAV", Auth: AuthAppPassword, Backend: "webdav", Group: GroupProtocol,
-		Mark: "IconLink", Hint: "Any WebDAV server. Pick the product above if it has an entry.",
-		UrlHint: "https://server.example.com/remote.php/webdav/"},
+		Mark: "IconLink", UrlHint: "https://server.example.com/remote.php/webdav/"},
 	{ID: "ftp", Name: "FTP", Backend: "ftp", Group: GroupProtocol, Mark: "IconTransfer"},
-	{ID: "s3", Name: "S3 compatible", Backend: "s3", Group: GroupStorage,
-		Mark: "IconBuckets", Hint: "Amazon S3 and the thirty-odd services that speak its protocol."},
-	{ID: "http", Name: "HTTP", Backend: "http", Group: GroupProtocol,
-		Mark: "IconLink", Hint: "Read-only, over a plain web server."},
+	{ID: "s3", Name: "S3 compatible", Backend: "s3", Group: GroupStorage, Mark: "IconBuckets"},
+	{ID: "http", Name: "HTTP", Backend: "http", Group: GroupProtocol, Mark: "IconLink"},
 	{ID: "hdfs", Name: "HDFS", Backend: "hdfs", Group: GroupProtocol, Mark: "IconHadoop"},
-	{ID: "crypt", Name: "Encrypted", Backend: "crypt", Group: GroupProtocol,
-		Mark: "IconLock", Hint: "Wraps another target and encrypts what goes into it."},
+	{ID: "crypt", Name: "Encrypted", Backend: "crypt", Group: GroupProtocol, Mark: "IconLock"},
 }
 
 // groupOrder is the order the three cards appear in: clouds first, because

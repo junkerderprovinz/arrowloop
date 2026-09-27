@@ -48,28 +48,24 @@ describe('one height, named once', () => {
       .toHaveLength(0)
   })
 
-  it('reads the same token the editor lines its rows up with', () => {
-    // The editor's name row holds its middle column open with a spacer that
-    // stands in for the direction button below it, so both follow one token.
-    const token = /(?<!KEY_)CONTROL_H = '([^']+)'/.exec(read('./Field.tsx'))
-    expect(token).not.toBeNull()
-    expect((token as RegExpExecArray)[1]).toContain('--btn-h')
-
-    const key = /KEY_CONTROL_H = '(?:h-)?\[?([^'\]]+)\]?'/.exec(read('./Field.tsx'))
-    expect(key).not.toBeNull()
-    expect(read('../pages/Editor.tsx')).toContain((key as RegExpExecArray)[1])
+  it('centres the direction button on the boxes beside it', () => {
+    // The editor raises the button by half of what the key height adds to the
+    // field height, written as a spacing step of a quarter rem.
+    const tokens = read('../tokens.css')
+    const rem = (name: string) => {
+      const m = new RegExp(`${name}: ([0-9.]+)rem;`).exec(tokens)
+      expect(m, name).not.toBeNull()
+      return Number((m as RegExpExecArray)[1])
+    }
+    const steps = (rem('--btn-h-key') - rem('--btn-h')) / 2 / 0.25
+    expect(read('../pages/Editor.tsx')).toContain(`@2xl:-mt-${steps}`)
   })
 
-  it('gives the direction button a square footprint', () => {
-    // Otherwise it reads as a squashed square and misses the spacer's width.
-    const row = classAttributes(read('./Direction.tsx')).find((c) =>
-      c.includes('CONTROL_H'),
-    )
-    expect(row).toBeDefined()
-    const width = /(?:^|\s)w-\[?([^\s\]]+)\]?/.exec(row as string)
-    expect(width, 'the direction button needs an explicit width').not.toBeNull()
-    const height = /KEY_CONTROL_H = '(?:h-)?\[?([^'\]]+)\]?'/.exec(read('./Field.tsx'))
-    expect(height).not.toBeNull()
-    expect((width as RegExpExecArray)[1]).toBe((height as RegExpExecArray)[1])
+  it('gives the direction button room for its longest name', () => {
+    // The name changes as the button cycles, and the sides beside it must not
+    // move when it does.
+    const source = read('./Direction.tsx')
+    expect(source).toMatch(/groupStage\(DIRECTIONS\.map/)
+    expect(source).toContain('minWidth: `var(--btn-w-${stage})`')
   })
 })

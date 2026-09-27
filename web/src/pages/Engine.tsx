@@ -8,6 +8,7 @@ import { QuietPeriod } from '../components/QuietPeriod'
 import { ExcludeSetEditor, type Sets } from '../components/ExcludeSets'
 import { HUE_OFFSET, Selector } from '../components/Selector'
 import { api, type Settings } from '../lib/api'
+import { modesHint } from '../lib/modes'
 import { useT } from '../lib/i18n'
 
 /**
@@ -189,10 +190,15 @@ export function Engine() {
             />
           </Field>
           {/* Inert and showing `sync` for a both-ways default rather than
-              vanishing, so the card keeps its shape, as on the phone. */}
+              vanishing, so the card keeps its shape, as on the phone. The
+              bubble explains all three modes either way. */}
           <Field
             label={t('mode.label')}
-            hint={(defaults.direction ?? 'both') === 'both' ? t('mode.onlyOneWay') : undefined}
+            hint={
+              (defaults.direction ?? 'both') === 'both'
+                ? `${t('mode.onlyOneWay')} ${modesHint(t)}`
+                : modesHint(t)
+            }
           >
             <Selector<'sync' | 'mirror' | 'move'>
               scale="small"

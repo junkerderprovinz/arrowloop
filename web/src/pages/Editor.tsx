@@ -1,14 +1,18 @@
 import { Fragment, useCallback, useEffect, useState } from 'react'
 import { jobCopy, uniqueName } from '../lib/jobCopy.data'
 
-import { Field, Lines, Text, Choice } from '../components/Field'
+import { Field, Lines, Text } from '../components/Field'
 import { ToggleRow } from '../components/ToggleRow'
-import { api, type RawJob } from '../lib/api'
+import { api, type Direction, type Mode, type RawJob, type Settings } from '../lib/api'
 import { DirectionSwitch } from '../components/Direction'
-import { DEFAULT_QUIET, QuietPeriod } from '../components/QuietPeriod'
+import { DEFAULT_QUIET } from '../components/QuietPeriod'
 import { ExcludeSetPicker } from '../components/ExcludeSets'
-import { FolderPicker, PickButton } from '../components/FolderPicker'
+import { FolderPicker, PickButton, type Known } from '../components/FolderPicker'
 import { ScheduleField } from '../components/Schedule'
+import { HUE_OFFSET, Selector } from '../components/Selector'
+import { InfoBubble } from '../lib/glimstone/InfoBubble'
+import { followPatch, followsDefaults } from '../lib/follows'
+import { MODES, modesHint } from '../lib/modes'
 import { useT } from '../lib/i18n'
 
 /**
@@ -49,19 +53,27 @@ export function useJobConfig(onSaved: () => void) {
   const [error, setError] = useState<string | null>(null)
   const [saved, setSaved] = useState(false)
   const [busy, setBusy] = useState(false)
-  const [known, setKnown] = useState<{ value: string; label: string }[]>([])
+  const [known, setKnown] = useState<Known[]>([])
+  const [defaults, setDefaults] = useState<Settings['defaults']>(undefined)
 
   useEffect(() => {
     api
       .config()
       .then((c) => setJobs(c.jobs))
       .catch((e: Error) => setError(e.message))
+    // What a job that follows the global sync settings runs with. Without it
+    // the form shows the engine's own defaults, which is what then applies.
+    api
+      .settings()
+      .then((got) => setDefaults(got.defaults))
+      .catch(() => setDefaults(undefined))
   }, [])
 
   // Registered drives and configured targets, offered so nobody has to retype
-  // their exact spelling.
+  // their exact spelling. A target is opened in the picker rather than taken
+  // whole, so a folder on it can be chosen.
   useEffect(() => {
-    const offers: { value: string; label: string }[] = []
+    const offers: Known[] = []
     void Promise.allSettled([api.volumes(), api.remotes()]).then(([v, r]) => {
       if (v.status === 'fulfilled') {
         for (const drive of v.value.volumes) {
@@ -70,7 +82,7 @@ export function useJobConfig(onSaved: () => void) {
       }
       if (r.status === 'fulfilled') {
         for (const remote of r.value.remotes) {
-          offers.push({ value: `${remote.name}:`, label: `${t('edit.pickRemote')}: ${remote.name}` })
+          offers.push({ value: `${remote.name}:`, label: `${t('edit.pickRemote')}: ${remote.name}`, browse: true })
         }
       }
       setKnown(offers)
@@ -208,20 +220,27 @@ export function useJobConfig(onSaved: () => void) {
     [jobs, t],
   )
 
-  return { jobs, known, error, saved, busy, patch, save, add, remove, setDisabled, duplicate }
+  return { jobs, known, defaults, error, saved, busy, patch, save, add, remove, setDisabled, duplicate }
 }
 
 /** One job's fields, with the direction between the two sides it relates. */
 export function JobForm({
   job,
   known,
+  defaults,
   patch,
 }: {
   job: RawJob
-  known: { value: string; label: string }[]
+  known: Known[]
+  /** The global sync settings, shown while the job follows them. */
+  defaults?: Settings['defaults']
   patch: (next: Partial<RawJob>) => void
 }) {
   const { t } = useT()
+  const follows = followsDefaults(job)
+  // While the job follows, the form shows what it runs with.
+  const direction = (follows ? (defaults?.direction as Direction | undefined) : job.direction) ?? 'both'
+  const schedule = (follows ? defaults?.schedule : job.schedule) ?? ''
 
   // The state path follows the name while it still has the generated
   // `state/<name>.db` form; a path somebody typed is left alone.
@@ -234,110 +253,86 @@ export function JobForm({
 
   return (
     <>
-      {/* Rows use the same three parts as the two sides: field, a spacer as
-          wide as the direction switch, field, so the columns line up. */}
-      <div className="flex flex-col gap-4">
-        <div className="flex items-start gap-3">
-          <div className="min-w-0 flex-1">
-            <Field label={t('edit.name')} hint={t('edit.nameHint')}>
-              <Text value={job.name ?? ''} onChange={(v) => patch(rename(v))} />
-            </Field>
+      {/* One grid for the name row and the sides row, so the name stands over
+          the left side and the state file over the right, with the direction
+          switch between them. A narrow card stacks all five. */}
+      <div className="flex flex-col gap-4 @container">
+        <div className="grid grid-cols-1 gap-4 @2xl:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] @2xl:gap-x-8">
+          <Field label={t('edit.name')} hint={t('edit.nameHint')}>
+            <Text value={job.name ?? ''} onChange={(v) => patch(rename(v))} />
+          </Field>
+          <div className="hidden @2xl:block" aria-hidden />
+          <Field label={t('edit.state')} hint={t('edit.stateHint')}>
+            <Text value={job.state ?? ''} onChange={(v) => patch({ state: v })} mono />
+          </Field>
+
+          <Side
+            label={t('edit.left')}
+            hint={t('edit.sideHint')}
+            value={job.left ?? ''}
+            known={known}
+            onChange={(v) => patch({ left: v })}
+          />
+          <div className="flex flex-col gap-1.5">
+            <span className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-carbon-textMuted">
+              {t('direction.label')}
+              <InfoBubble tip={t('direction.hint')} />
+            </span>
+            {/* Raised by half of what it is taller than the boxes beside it, so
+                it sits centred on them. */}
+            <div className="@2xl:-mt-1">
+              <DirectionSwitch
+                direction={direction}
+                disabled={follows}
+                // Mirror and move need a source side. A two-way job says sync
+                // rather than nothing, or it would take a default mirror.
+                onChange={(v) => patch({ direction: v, mode: v === 'both' ? 'sync' : (job.mode ?? 'sync') })}
+              />
+            </div>
           </div>
-          <div className="shrink-0 pt-[1.55rem]" aria-hidden>
-            <div className="h-[var(--btn-h-key)] w-[var(--btn-h-key)]" />
-          </div>
-          <div className="min-w-0 flex-1">
-            <Field label={t('edit.state')} hint={t('edit.stateHint')}>
-              <Text value={job.state ?? ''} onChange={(v) => patch({ state: v })} mono />
-            </Field>
-          </div>
+          <Side
+            label={t('edit.right')}
+            hint={t('edit.sideHint')}
+            value={job.right ?? ''}
+            known={known}
+            onChange={(v) => patch({ right: v })}
+          />
         </div>
 
-        <div className="flex items-start gap-3">
-          <div className="min-w-0 flex-1">
-            <Side
-              label={t('edit.left')}
-              hint={t('edit.sideHint')}
-              value={job.left ?? ''}
-              known={known}
-              onChange={(v) => patch({ left: v })}
-            />
-          </div>
-          {/* 1.3rem rather than the spacers' 1.55rem: the switch is a key
-              control half a rem taller than the boxes, so this centres it
-              against them. */}
-          <div className="flex shrink-0 flex-col gap-1.5 pt-[1.3rem]">
-            <DirectionSwitch
-              direction={job.direction ?? 'both'}
-              // Mirror and move need a source side, and the engine refuses a
-              // two-way job that still stores one.
-              onChange={(v) => patch({ direction: v, mode: v === 'both' ? undefined : job.mode })}
-              hint={t('direction.hint')}
-            />
-          </div>
-          <div className="min-w-0 flex-1">
-            <Side
-              label={t('edit.right')}
-              hint={t('edit.sideHint')}
-              value={job.right ?? ''}
-              known={known}
-              onChange={(v) => patch({ right: v })}
-            />
-          </div>
-        </div>
+        <ToggleRow
+          label={t('defaults.follow')}
+          hint={t('defaults.followHint')}
+          checked={follows}
+          onChange={(on) => patch(followPatch(on, defaults))}
+        />
 
-        {/* The mode exists only once one side is the source. Two of the three
-            modes delete, so the bubble explains the one currently chosen. */}
-        {(job.direction ?? 'both') !== 'both' && (
-          <Field
-            label={t('mode.label')}
-            hint={
-              job.mode === 'mirror'
-                ? t('mode.mirrorHint')
-                : job.mode === 'move'
-                  ? t('mode.moveHint')
-                  : t('mode.syncHint')
-            }
-          >
-            <Choice
+        {/* The mode exists only once one side is the source. */}
+        {!follows && direction !== 'both' && (
+          <Field label={t('mode.label')} hint={modesHint(t)}>
+            <Selector<Mode>
+              scale="small"
+              label={t('mode.label')}
+              hueOffset={HUE_OFFSET.mode}
               value={job.mode ?? 'sync'}
               onChange={(v) => patch({ mode: v })}
-              options={[
-                { value: 'sync', label: t('mode.sync') },
-                { value: 'mirror', label: t('mode.mirror') },
-                { value: 'move', label: t('mode.move') },
-              ]}
+              options={MODES.map((m) => ({ value: m, label: t(`mode.${m}`) }))}
             />
           </Field>
         )}
 
-        {/* The quiet period sits beside the schedule, since both answer when
-            the job runs. */}
-        <div className="flex items-start gap-3">
-          <div className="min-w-0 flex-1">
-            <Field label={t('edit.schedule')} hint={t('edit.scheduleHint')}>
-              <ScheduleField
-                value={job.schedule ?? ''}
-                onChange={(v) => patch({ schedule: v })}
-                live={!!job.watch}
-                onLive={(v) => patch({ watch: v })}
-                settle={job.watchSettle ?? ''}
-                onSettle={(v) => patch({ watchSettle: v })}
-              />
-            </Field>
-          </div>
-          <div className="shrink-0 pt-[1.55rem]" aria-hidden>
-            <div className="h-[var(--btn-h-key)] w-[var(--btn-h-key)]" />
-          </div>
-          <div className="min-w-0 flex-1">
-            <Field label={t('edit.quietPeriod')} hint={t('edit.quietHint')}>
-              <QuietPeriod
-                value={job.quietPeriod ?? ''}
-                onChange={(v) => patch({ quietPeriod: v })}
-              />
-            </Field>
-          </div>
-        </div>
+        <Field label={t('edit.schedule')} hint={t('edit.scheduleHint')}>
+          <ScheduleField
+            value={schedule}
+            onChange={(v) => patch({ schedule: v })}
+            live={!!job.watch}
+            onLive={(v) => patch({ watch: v })}
+            settle={job.watchSettle ?? ''}
+            onSettle={(v) => patch({ watchSettle: v })}
+            quiet={job.quietPeriod ?? ''}
+            onQuiet={(v) => patch({ quietPeriod: v })}
+            disabled={follows}
+          />
+        </Field>
       </div>
 
       <div className="mt-5">
@@ -397,18 +392,24 @@ export function JobForm({
           onChange={(v) => patch({ runAtStart: v })}
           hint={t('edit.runAtStartHint')}
         />
-        <ToggleRow
-          label={t('edit.emptyDirs')}
-          checked={!!job.emptyDirs}
-          onChange={(v) => patch({ emptyDirs: v })}
-          hint={t('edit.emptyDirsHint')}
-        />
-        <ToggleRow
-          label={t('edit.metadata')}
-          checked={!!job.metadata}
-          onChange={(v) => patch({ metadata: v })}
-          hint={t('edit.metadataHint')}
-        />
+        {/* These two come from the global sync settings while the job
+            follows them, so they are only offered once it does not. */}
+        {!follows && (
+          <>
+            <ToggleRow
+              label={t('edit.emptyDirs')}
+              checked={!!job.emptyDirs}
+              onChange={(v) => patch({ emptyDirs: v })}
+              hint={t('edit.emptyDirsHint')}
+            />
+            <ToggleRow
+              label={t('edit.metadata')}
+              checked={!!job.metadata}
+              onChange={(v) => patch({ metadata: v })}
+              hint={t('edit.metadataHint')}
+            />
+          </>
+        )}
         {/* Inverted from the stored `noTrash`, since a switch labelled with a
             negative gets flipped the wrong way, and here that deletes files. */}
         <ToggleRow
@@ -423,8 +424,8 @@ export function JobForm({
 }
 
 /**
- * One side of a job: a path field and a folder picker, which also offers the
- * registered drives and targets.
+ * One side of a job: a path field and a picker that walks this machine's
+ * folders, the registered drives and the folders on every configured target.
  */
 function Side({
   label,
@@ -436,26 +437,24 @@ function Side({
   label: string
   hint: string
   value: string
-  known: { value: string; label: string }[]
+  known: Known[]
   onChange: (next: string) => void
 }) {
   const [picking, setPicking] = useState(false)
   return (
-    <div className="flex flex-col gap-1.5">
+    <div className="flex flex-col gap-2">
       <Field label={label} hint={hint}>
-        <div className="flex items-center gap-2">
-          <div className="min-w-0 flex-1">
-            <Text value={value} onChange={onChange} mono />
-          </div>
-          <PickButton onClick={() => setPicking(true)} />
-        </div>
+        <Text value={value} onChange={onChange} mono />
       </Field>
+      {/* Under the box rather than beside it, so a long path keeps the whole
+          width of its column. */}
+      <div className="flex justify-end">
+        <PickButton onClick={() => setPicking(true)} />
+      </div>
       <FolderPicker
         open={picking}
         known={known}
-        // A value with a colon is a target's name rather than a local folder
-        // (a Windows drive letter aside), so browsing starts at the top.
-        start={value.includes(':') && !/^[A-Za-z]:[\\/]/.test(value) ? undefined : value}
+        start={value}
         onClose={() => setPicking(false)}
         onPick={(path) => {
           onChange(path)
