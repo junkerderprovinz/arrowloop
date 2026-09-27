@@ -304,22 +304,31 @@ function ChangeRow({ change, jobs, drives }: { change: Touch; jobs: Job[]; drive
       </div>
       {route ? (
         <>
-          {route.from && (
-            <span className="truncate font-mono text-xs text-carbon-textMuted" title={route.from}>
-              {route.from}
-            </span>
-          )}
-          <span className="truncate font-mono text-xs text-carbon-text" title={route.to}>
-            {route.from ? (route.both ? '↔ ' : '→ ') : ''}
-            {route.to}
-          </span>
+          {route.from && <PathLine path={route.from} muted />}
+          <PathLine path={route.to} lead={route.from ? (route.both ? '↔' : '→') : undefined} />
         </>
       ) : (
-        <span className="truncate font-mono text-xs text-carbon-text" title={change.Path}>
-          {change.Path}
-        </span>
+        <PathLine path={change.Path ?? ''} />
       )}
     </li>
+  )
+}
+
+/**
+ * A full path on one line, cut at its start when it does not fit, since the
+ * file's name at the end is what tells two lines apart.
+ */
+function PathLine({ path, lead, muted = false }: { path: string; lead?: string; muted?: boolean }) {
+  return (
+    <span className={`flex min-w-0 gap-1 font-mono text-xs ${muted ? 'text-carbon-textMuted' : 'text-carbon-text'}`}>
+      {lead && <span aria-hidden="true">{lead}</span>}
+      {/* Right to left moves the ellipsis to the start; the mark keeps the
+          path itself reading left to right. */}
+      <span className="min-w-0 truncate text-left [direction:rtl]" title={path}>
+        {'‎'}
+        {path}
+      </span>
+    </span>
   )
 }
 
