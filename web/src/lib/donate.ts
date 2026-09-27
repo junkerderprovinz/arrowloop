@@ -7,13 +7,13 @@
 // address as far as its format allows.
 
 /**
- * The two routes the phone opens as a plain link, beside the coins below. The
- * PayPal page also stands in for the PayPal window wherever popups do not work.
+ * PayPal's donation page, which the phone opens in the browser, since PayPal's
+ * wallet login needs a popup an embedded page does not open reliably. It also
+ * stands in for the PayPal window wherever popups do not work.
  */
-export const COFFEE = "https://buymeacoffee.com/junkerderprovinz";
 export const PAYPAL = "https://www.paypal.com/donate/?hosted_button_id=76FVV52TKXTUS";
 
-/** The one BMAC page that allows framing, for the coffee window in the browser. */
+/** The one BMAC page that allows framing, for the coffee window on every platform. */
 export const COFFEE_WIDGET =
   "https://buymeacoffee.com/widget/page/junkerderprovinz?description=&color=%23FFDD00";
 
