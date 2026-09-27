@@ -17,6 +17,11 @@ The full notes for each release are in
 - **The small window at the tray icon can be resized.** Drag any edge or corner; it keeps the size you leave it at, also after a restart, and does not get smaller than 300 by 360.
 - **The closed envelope on the About card's mail button sits in the middle of the button**, as GlimStone 3.0.1 draws it. It stood a little too low.
 
+## 🐛 Fixed
+
+- **Background activity on the phone is granted with one tap.** The switch opens Android's own prompt to let ArrowLoop run in the background, where it used to open the list of optimised apps. Some manufacturers have a background switch of their own that does not exempt the app from battery optimisation, which left the switch off although that one was on.
+
+
 ## 1.3.0 - 2026-09-27
 
 ## ✨ Added

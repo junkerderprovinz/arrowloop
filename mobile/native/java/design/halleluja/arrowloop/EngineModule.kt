@@ -201,12 +201,19 @@ class EngineModule(private val context: ReactApplicationContext) :
     }
 
     /**
-     * Opens the battery optimisation list. The one-tap exemption prompt needs a
-     * permission Google Play grants only to a few kinds of app.
+     * Asks for the battery exemption in Android's own one-tap prompt, or opens
+     * the optimisation list once the app is exempt, where it can be taken back.
+     * Some manufacturers add a background switch of their own that does not
+     * grant the exemption; the prompt cannot be mistaken for it.
      */
     @ReactMethod
     fun openBatterySettings(promise: Promise) {
-        val pages = listOf(
+        val manager = context.getSystemService(PowerManager::class.java)
+        val exempt = manager?.isIgnoringBatteryOptimizations(context.packageName) ?: true
+        val prompt = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
+            .setData(Uri.fromParts("package", context.packageName, null))
+        val pages = listOfNotNull(
+            prompt.takeUnless { exempt },
             Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS),
             Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                 .setData(Uri.fromParts("package", context.packageName, null)),
