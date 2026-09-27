@@ -62,10 +62,7 @@ func CheckSettings(ctx context.Context, backend string, settings map[string]stri
 	if err != nil {
 		return checkErr(ctx, err)
 	}
-	if _, err := f.List(ctx, ""); err != nil && !isEmptyTarget(err) {
-		return checkErr(ctx, err)
-	}
-	return nil
+	return listRoot(ctx, f, backend)
 }
 
 // connectionString renders settings as rclone's inline-remote syntax,

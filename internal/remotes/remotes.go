@@ -197,11 +197,8 @@ func Check(ctx context.Context, name string) error {
 	if err != nil {
 		return checkErr(ctx, err)
 	}
-	// One listing of the root proves the credentials and the address.
-	if _, err := f.List(ctx, ""); err != nil && !isEmptyTarget(err) {
-		return checkErr(ctx, err)
-	}
-	return nil
+	backend, _ := config.LoadedData().GetValue(name, "type")
+	return listRoot(ctx, f, backend)
 }
 
 // CheckWait is how long a target gets to answer before it counts as
@@ -265,9 +262,26 @@ func About(ctx context.Context, name string) (Usage, error) {
 }
 
 // isEmptyTarget reports whether an error only means the target does not exist
-// yet, which is fine for a remote that was just set up.
-func isEmptyTarget(err error) bool {
+// yet, which is fine for a remote that was just set up. A WebDAV or HTTP
+// remote's root is the address itself, so there it means a wrong address.
+func isEmptyTarget(backend string, err error) bool {
+	if backend == "webdav" || backend == "http" {
+		return false
+	}
 	return err == rclonefs.ErrorDirNotFound || err == rclonefs.ErrorObjectNotFound
+}
+
+// listRoot lists a remote's root once, which proves the credentials and the
+// address.
+func listRoot(ctx context.Context, f rclonefs.Fs, backend string) error {
+	_, err := f.List(ctx, "")
+	if err == nil || isEmptyTarget(backend, err) {
+		return nil
+	}
+	if errors.Is(err, rclonefs.ErrorDirNotFound) {
+		err = fmt.Errorf("the login works, but there is nothing at this address: %w", err)
+	}
+	return checkErr(ctx, err)
 }
 
 // validName keeps a remote name to what rclone itself will accept, and refuses
