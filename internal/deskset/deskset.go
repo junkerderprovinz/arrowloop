@@ -42,6 +42,11 @@ type Settings struct {
 	// changes it, so saving an unrelated switch on the settings page cannot
 	// resume syncing behind somebody's back.
 	Paused bool `json:"paused"`
+
+	// AutoUpdate lets the desktop app download a newer release in the
+	// background and start it next time. A file that does not name it reads
+	// as on, like a fresh install.
+	AutoUpdate bool `json:"autoUpdate"`
 }
 
 // Words are the tray's few lines in the language the interface shows. The
@@ -74,9 +79,9 @@ func DefaultWords() Words {
 	}
 }
 
-// Default is what a fresh install gets: an icon in the notification area and
-// both buttons doing what their labels say.
-func Default() Settings { return Settings{Tray: true} }
+// Default is what a fresh install gets: an icon in the notification area, both
+// buttons doing what their labels say, and updates.
+func Default() Settings { return Settings{Tray: true, AutoUpdate: true} }
 
 // file is window.json. The settings stay at the top level, where every
 // earlier version wrote them.
@@ -107,7 +112,9 @@ func Open(configPath string) *Store {
 	if err != nil {
 		return s
 	}
-	var read file
+	// Decoded over the defaults, so a setting added after the file was written
+	// keeps its default. Every version wrote the three window switches.
+	read := file{Settings: Default()}
 	if err := json.Unmarshal(body, &read); err != nil {
 		return s
 	}

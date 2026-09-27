@@ -64,6 +64,34 @@ func TestSettingsSurviveARestart(t *testing.T) {
 	}
 }
 
+func TestUpdatesAreOnUnlessTurnedOff(t *testing.T) {
+	dir := t.TempDir()
+	config := filepath.Join(dir, "arrowloop.json")
+	if !Open(config).Get().AutoUpdate {
+		t.Error("a fresh install does not update itself")
+	}
+
+	// A window.json that does not name the switch.
+	old := `{"tray": true, "closeToTray": true, "minimiseToTray": false, "notOnBattery": false, "notOnMetered": false, "paused": false}`
+	if err := os.WriteFile(filepath.Join(dir, "window.json"), []byte(old), 0o644); err != nil {
+		t.Fatalf("write: %v", err)
+	}
+	got := Open(config).Get()
+	if !got.AutoUpdate {
+		t.Error("an existing install does not update itself")
+	}
+	if !got.CloseToTray {
+		t.Errorf("the file's own settings were lost: %+v", got)
+	}
+
+	if err := Open(config).Set(Settings{Tray: true, AutoUpdate: false}); err != nil {
+		t.Fatalf("set: %v", err)
+	}
+	if Open(config).Get().AutoUpdate {
+		t.Error("turning updates off did not survive a restart")
+	}
+}
+
 func TestAPauseSurvivesARestart(t *testing.T) {
 	config := filepath.Join(t.TempDir(), "arrowloop.json")
 	if err := Open(config).SetPaused(true); err != nil {

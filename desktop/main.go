@@ -152,7 +152,17 @@ func run() error {
 	sh.live.Watch(ctx, runner)
 	newBridge().run(ctx, runner, app)
 
-	app.OnShutdown(stop)
+	// A newer release is downloaded in the background and starts next time;
+	// see updates.go.
+	up := newUpdater(window, openUpdateLog(configPath), func(version string) {
+		app.Event.Emit(updateReadyEvent, version)
+	})
+	go up.run(ctx)
+
+	app.OnShutdown(func() {
+		stop()
+		up.stop()
+	})
 	return app.Run()
 }
 
