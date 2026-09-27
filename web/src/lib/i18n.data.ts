@@ -495,11 +495,11 @@ export const en = {
   'window.tray': 'Icon in the notification area',
   'window.trayHint':
     'Keeps ArrowLoop reachable while the window is away. Without it there is nowhere for the two settings below to send the window, so they turn off with it.',
-  'window.close': 'The close button hides the window',
+  'window.close': 'Keep running in the notification area when closed',
   'window.closeHint':
-    'Off by default, because a close button that does not close is a surprise, and one that hides a running program is the kind somebody finds a week later wondering why a job keeps running.',
-  'window.minimise': 'Minimising goes to the notification area',
-  'window.minimiseHint': 'Instead of the taskbar. The window comes back from the icon either way.',
+    'The X in the corner of the window then only hides the window, and your jobs keep running on their schedules. To end ArrowLoop, choose Quit in the icon\'s menu. Off by default, so the X ends the program as you would expect.',
+  'window.minimise': 'Minimised to the notification area',
+  'window.minimiseHint': 'Minimising takes the window out of the taskbar and leaves it waiting in the notification area. A click on the icon brings it back.',
 
   'start.title': 'Starting',
   'start.withSystem': 'Start with the system',
@@ -1235,11 +1235,11 @@ export const de: Translations = {
   'window.tray': 'Symbol im Infobereich',
   'window.trayHint':
     'Hält ArrowLoop erreichbar, während das Fenster weg ist. Ohne das Symbol hätten die beiden Einstellungen darunter kein Ziel, deshalb gehen sie mit aus.',
-  'window.close': 'Der Schließen-Knopf versteckt das Fenster',
+  'window.close': 'Beim Schließen im Infobereich weiterlaufen',
   'window.closeHint':
-    'Standardmäßig aus, denn ein Schließen-Knopf, der nicht schließt, ist eine Überraschung, und einer, der ein laufendes Programm versteckt, ist die Sorte, die man eine Woche später findet und sich fragt, warum ein Auftrag immer noch läuft.',
-  'window.minimise': 'Minimieren geht in den Infobereich',
-  'window.minimiseHint': 'Statt in die Taskleiste. Zurück kommt das Fenster so oder so über das Symbol.',
+    'Das X in der Fensterecke blendet dann nur das Fenster aus, und deine Aufträge laufen nach ihren Zeitplänen weiter. Beenden kannst du ArrowLoop dann über „Beenden“ im Menü des Symbols. Standardmäßig aus, dann beendet das X das Programm wie gewohnt.',
+  'window.minimise': 'Minimiert in den Infobereich',
+  'window.minimiseHint': 'Beim Minimieren verschwindet das Fenster aus der Taskleiste und wartet im Infobereich. Ein Klick auf das Symbol holt es zurück.',
 
   'start.title': 'Programmstart',
   'start.withSystem': 'Mit dem System starten',

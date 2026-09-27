@@ -10,6 +10,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"runtime"
 	"sync"
 	"time"
 
@@ -240,7 +241,17 @@ func startTray(ctx context.Context, window *deskset.Store, live *TrayLive, runne
 		return
 	}
 
-	systray.Run(func() {
+	// systray.Run blocks, and the icon's window and message loop belong to the
+	// thread that creates them; the library locks only the main goroutine's.
+	go func() {
+		runtime.LockOSThread()
+		systray.Run(trayReady(ctx, live, runner), nil)
+	}()
+}
+
+// trayReady builds the notification area's menu once the icon exists.
+func trayReady(ctx context.Context, live *TrayLive, runner *daemon.Runner) func() {
+	return func() {
 		systray.SetTitle("ArrowLoop")
 		systray.SetTooltip("ArrowLoop")
 		systray.SetIcon(live.set.Idle)
@@ -337,7 +348,7 @@ func startTray(ctx context.Context, window *deskset.Store, live *TrayLive, runne
 			systray.Quit()
 			wruntime.Quit(ctx)
 		})
-	}, nil)
+	}
 }
 
 func show(ctx context.Context) {

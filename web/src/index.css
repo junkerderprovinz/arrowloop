@@ -208,3 +208,10 @@ body {
 [data-labels-tabs='reactive'] .glim-tab[aria-selected='true'] {
   gap: 0.375rem;
 }
+
+/* A page starts on the rail's top line. One that opens with a card starts at
+   the card's badge, which stands half its 22px above the card. */
+.glim-page-enter > .glim-notch-card:first-child,
+.glim-page-enter > :first-child > .glim-notch-card:first-child {
+  margin-top: 11px;
+}

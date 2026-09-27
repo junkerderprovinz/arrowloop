@@ -243,7 +243,7 @@ export function App() {
             animation plays on every tab change. */}
         <div
           key={previewing ? `preview:${previewing}` : tab}
-          className="glim-page-enter flex min-h-full w-full flex-col gap-8 p-6 md:p-8"
+          className="glim-page-enter flex min-h-full w-full flex-col gap-8 px-6 pb-6 md:px-8 md:pb-8"
         >
           {error && (
             <Card title={t('error.unreachable')} hueIndex={0}>
