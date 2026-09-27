@@ -10,12 +10,6 @@ The full notes for each release are in
 
 ## Unreleased
 
-## 1.4.1 - 2026-09-27
-
-## 🐛 Fixed
-
-- **The names on the phone's README buttons stand in the middle of the button.** Since a provider's kind got a second line, every name sat at the button's top edge, in the list you pick a target from and on the About card alike.
-
 ## 1.4.0 - 2026-09-27
 
 ## 🎨 Design
