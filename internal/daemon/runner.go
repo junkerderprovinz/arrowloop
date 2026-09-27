@@ -171,19 +171,28 @@ func (r *Runner) RunChosen(ctx context.Context, name string, only []string, reso
 	r.muteWatcher(name)
 	defer r.muteWatcher(name)
 
-	r.publish(Event{Job: name, Phase: "started"})
 	rec := history.Run{Job: name, Started: time.Now()}
+	// Begun before the start is announced, so a screen that looks at the log
+	// on hearing it finds the run there.
+	var live *history.Live
+	if r.hist != nil {
+		live = r.hist.Begin(name, rec.Started)
+	}
+	r.publish(Event{Job: name, Phase: "started"})
 	var res apply.Result
 	var p *plan.Plan
 	err := hook.Run(ctx, j.Before, hookEnv(j, nil))
 	if err != nil {
 		err = fmt.Errorf("the command before the run failed, so the run did not start: %w", err)
 	} else {
-		res, p, err = r.execute(ctx, j, only, resolve)
+		res, p, err = r.execute(ctx, j, only, resolve, live)
 	}
 
 	// A drive that is not plugged in is not a run, so nothing is recorded.
 	if errors.Is(err, ErrVolumeMissing) {
+		if live != nil {
+			live.Drop()
+		}
 		r.publish(Event{Job: name, Phase: "finished", Error: err.Error()})
 		return history.Run{}, err
 	}
@@ -207,9 +216,10 @@ func (r *Runner) RunChosen(ctx context.Context, name string, only []string, reso
 	}
 
 	// A stopped run is recorded too, so the write cannot use the run's own
-	// context, which the stop cancelled.
-	if r.hist != nil {
-		if hErr := r.hist.Record(context.WithoutCancel(ctx), rec, entriesOf(res)); hErr != nil {
+	// context, which the stop cancelled. The lines are the ones the run wrote
+	// into live as it went, which are res.Entries.
+	if live != nil {
+		if hErr := live.Record(context.WithoutCancel(ctx), rec); hErr != nil {
 			r.log("could not write the run record for %s: %v", name, hErr)
 		}
 	}
@@ -246,19 +256,6 @@ func hookEnv(j job.Job, rec *history.Run) map[string]string {
 	return env
 }
 
-// entriesOf converts what a run did into log entries, so apply and history do
-// not have to import each other.
-func entriesOf(res apply.Result) []history.Entry {
-	if len(res.Entries) == 0 {
-		return nil
-	}
-	out := make([]history.Entry, 0, len(res.Entries))
-	for _, e := range res.Entries {
-		out = append(out, history.Entry{Kind: e.Kind, Side: e.Side, Path: e.Path, Note: e.Note, Size: e.Size})
-	}
-	return out
-}
-
 // open builds the two ends and the record for one job. Both sides are resolved
 // before either is opened, because a drive letter since given to another disk
 // would not look empty and the engine would reconcile against the wrong volume.
@@ -288,7 +285,8 @@ func (r *Runner) open(ctx context.Context, j job.Job) (apply.Ends, *state.DB, er
 }
 
 // execute does the actual sync for one job, optionally limited to some paths.
-func (r *Runner) execute(ctx context.Context, j job.Job, only []string, resolve map[string]plan.Resolution) (apply.Result, *plan.Plan, error) {
+// Every line the run writes also goes to live, which may be nil.
+func (r *Runner) execute(ctx context.Context, j job.Job, only []string, resolve map[string]plan.Resolution, live *history.Live) (apply.Result, *plan.Plan, error) {
 	opt, err := j.Options()
 	if err != nil {
 		return apply.Result{}, nil, err
@@ -321,7 +319,7 @@ func (r *Runner) execute(ctx context.Context, j job.Job, only []string, resolve 
 	steps := &stepCount{}
 	defer r.watchMoving(ctx, j.Name, ends.Right, steps)()
 
-	watcher := progressFor{runner: r, job: j.Name, steps: steps}
+	watcher := progressFor{runner: r, job: j.Name, steps: steps, live: live}
 	if only == nil && len(resolve) == 0 {
 		p, res, err := engine.OnceWatched(ctx, ends, db, opt, watcher)
 		return res, p, err
@@ -650,19 +648,22 @@ func (r *Runner) watchMoving(ctx context.Context, name string, right rclonefs.Fs
 		defer tick.Stop()
 		var last []engine.Moving
 		lastRate := 0
-		send := func(now []engine.Moving, rate int) {
-			if sameMoving(last, now) && rate == lastRate {
+		var lastSpeed int64
+		send := func(now []engine.Moving, rate int, speed int64) {
+			if sameMoving(last, now) && rate == lastRate && speed == lastSpeed {
 				return
 			}
-			last, lastRate = now, rate
-			r.publish(Event{Job: name, Phase: "moving", Moving: now, Rate: rate})
+			last, lastRate, lastSpeed = now, rate, speed
+			r.publish(Event{Job: name, Phase: "moving", Moving: now, Rate: rate, Speed: speed})
 		}
 		since := time.Now()
+		var gauge speedometer
+		gauge.read(since, engine.Transferred(ctx))
 		for {
 			select {
 			case <-done:
 				// One last empty frame clears the rows on the screen.
-				if len(last) > 0 || lastRate > 0 {
+				if len(last) > 0 || lastRate > 0 || lastSpeed > 0 {
 					r.publish(Event{Job: name, Phase: "moving", Moving: []engine.Moving{}})
 				}
 				return
@@ -672,14 +673,15 @@ func (r *Runner) watchMoving(ctx context.Context, name string, right rclonefs.Fs
 				now := time.Now()
 				elapsed := now.Sub(since)
 				since = now
+				speed := gauge.read(now, engine.Transferred(ctx))
 				count, files := steps.takeAndReset()
 				if count >= MovingBusy {
 					// The rows are cleared and the rate goes out instead, so
 					// the empty space does not read as a stall.
-					send(nil, perSecond(files, elapsed))
+					send(nil, perSecond(files, elapsed), speed)
 					continue
 				}
-				send(engine.InFlight(ctx, right), 0)
+				send(engine.InFlight(ctx, right), 0, speed)
 			}
 		}
 	}()
@@ -726,6 +728,46 @@ func perSecond(count int, over time.Duration) int {
 	return int(float64(count)/over.Seconds() + 0.5)
 }
 
+// speedSpan is how far back the transfer speed looks: long enough that the
+// files finishing between two ticks do not make it jump, short enough to
+// follow the line when it changes.
+const speedSpan = 3 * time.Second
+
+// speedometer turns rclone's running count of bytes into bytes a second over
+// the last speedSpan. The count includes the files still in the air and never
+// misses one that finished between two readings, which adding up the rows of
+// each frame would.
+type speedometer struct {
+	seen []byteCount
+}
+
+type byteCount struct {
+	at    time.Time
+	bytes int64
+}
+
+// read takes the count at one moment and returns the speed up to it.
+func (s *speedometer) read(at time.Time, bytes int64) int64 {
+	// A count that went down was reset, and the readings before it measure
+	// something else.
+	if n := len(s.seen); n > 0 && bytes < s.seen[n-1].bytes {
+		s.seen = s.seen[:0]
+	}
+	s.seen = append(s.seen, byteCount{at, bytes})
+	// The oldest reading kept is the last one at or before the span's start,
+	// so the whole span is measured.
+	for len(s.seen) > 2 && at.Sub(s.seen[1].at) >= speedSpan {
+		s.seen = s.seen[1:]
+	}
+	first := s.seen[0]
+	over := at.Sub(first.at)
+	moved := bytes - first.bytes
+	if over <= 0 || moved <= 0 {
+		return 0
+	}
+	return int64(float64(moved)/over.Seconds() + 0.5)
+}
+
 // sameMoving says whether two readings, byte counts included, would draw the
 // same rows.
 func sameMoving(a, b []engine.Moving) bool {
@@ -756,6 +798,9 @@ type Event struct {
 	// Side is where the work lands, or the side being read. Empty for a step
 	// that touches neither side, such as writing a record.
 	Side string `json:"side,omitempty"`
+	// Note is what the step's line in the log says beyond its kind, such as a
+	// copy that replaced a file; see apply.Entry.Note.
+	Note string `json:"note,omitempty"`
 
 	// Stage is set on progress while the job is still being read and no plan
 	// exists; a client that does not know it shows the counts alone. Guess
@@ -773,6 +818,11 @@ type Event struct {
 	// rows because too much is moving to read. It tells that apart from
 	// nothing moving.
 	Rate int `json:"rate,omitempty"`
+
+	// Speed is the bytes a second the run moves, on every "moving" frame,
+	// read from rclone's accounting. It is zero, and left out, while nothing
+	// moves.
+	Speed int64 `json:"speed,omitempty"`
 }
 
 // progressFor turns the apply stage's reports into events on the stream. Every
@@ -782,17 +832,27 @@ type progressFor struct {
 	job    string
 	// steps counts what finishes, for the in-flight ticker. It may be nil.
 	steps *stepCount
+	// live takes every line the run writes, so the log shows it at once. It
+	// may be nil.
+	live *history.Live
 }
 
 func (p progressFor) Starting(total int) {
 	p.runner.publish(Event{Job: p.job, Phase: "progress", Done: 0, Total: total})
 }
 
-func (p progressFor) Did(kind, path, side string, done, total int) {
+func (p progressFor) Did(kind, path, side, note string, done, total int) {
 	if p.steps != nil {
 		p.steps.add(kind)
 	}
-	p.runner.publish(Event{Job: p.job, Phase: "progress", Done: done, Total: total, Kind: kind, Path: path, Side: side})
+	p.runner.publish(Event{Job: p.job, Phase: "progress", Done: done, Total: total, Kind: kind, Path: path, Side: side, Note: note})
+}
+
+// Logged hands one line of the run's list to the log of runs still going.
+func (p progressFor) Logged(e apply.Entry) {
+	if p.live != nil {
+		p.live.Add(history.Entry{Kind: e.Kind, Side: e.Side, Path: e.Path, Note: e.Note, Size: e.Size})
+	}
 }
 
 // readingEvery is how often a reading stage may report. A local listing

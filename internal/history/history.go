@@ -30,6 +30,9 @@ type Run struct {
 	Unchanged   int
 	Skipped     int
 	Err         string
+	// Running marks a run that has not finished. Its counts are what it has
+	// done so far and Finished is zero; see Live.
+	Running bool
 }
 
 // Failed reports whether the run ended badly.
@@ -56,7 +59,10 @@ type Entry struct {
 }
 
 // DB is the run log.
-type DB struct{ sql *sql.DB }
+type DB struct {
+	sql *sql.DB
+	live
+}
 
 const schema = `
 CREATE TABLE IF NOT EXISTS runs (
@@ -156,8 +162,11 @@ func (d *DB) Record(ctx context.Context, r Run, entries []Entry) error {
 }
 
 // Entries returns what one run did, in the order it did it, so a failed run
-// shows how far it got.
+// shows how far it got. A negative id is a run still going.
 func (d *DB) Entries(ctx context.Context, run int64) ([]Entry, error) {
+	if run < 0 {
+		return d.liveEntries(run), nil
+	}
 	rows, err := d.sql.QueryContext(ctx,
 		`SELECT kind, side, path, note, size FROM entries WHERE run = ? ORDER BY seq`, run)
 	if err != nil {
@@ -183,6 +192,9 @@ type Touch struct {
 	Run  int64
 	Job  string
 	When time.Time
+	// Seq is the line's place in its run, which with Job and When names it
+	// the same way while the run goes and once it is stored.
+	Seq int
 }
 
 // Touches returns what one job did to files, newest first, across all of its
@@ -209,10 +221,13 @@ type Filter struct {
 	Limit int
 }
 
-// Log is every file this engine has touched, newest first. It narrows in the
-// database, since the log runs to tens of thousands of rows and filtering the
-// newest page would not find which run touched an older file.
+// Log is every file this engine has touched, newest first, the runs still
+// going included. It narrows in the database, since the log runs to tens of
+// thousands of rows and filtering the newest page would not find which run
+// touched an older file.
 func (d *DB) Log(ctx context.Context, f Filter) ([]Touch, error) {
+	d.settle.RLock()
+	defer d.settle.RUnlock()
 	limit := f.Limit
 	if limit <= 0 {
 		limit = 50
@@ -237,7 +252,7 @@ func (d *DB) Log(ctx context.Context, f Filter) ([]Touch, error) {
 	}
 	args = append(args, limit)
 	rows, err := d.sql.QueryContext(ctx,
-		`SELECT e.run, r.job, r.started, e.kind, e.side, e.path, e.note, e.size
+		`SELECT e.run, r.job, r.started, e.seq, e.kind, e.side, e.path, e.note, e.size
 		 FROM entries e JOIN runs r ON r.id = e.run
 		 WHERE `+where+`
 		 ORDER BY r.started DESC, e.seq DESC
@@ -251,13 +266,16 @@ func (d *DB) Log(ctx context.Context, f Filter) ([]Touch, error) {
 	for rows.Next() {
 		var t Touch
 		var started int64
-		if err := rows.Scan(&t.Run, &t.Job, &started, &t.Kind, &t.Side, &t.Path, &t.Note, &t.Size); err != nil {
+		if err := rows.Scan(&t.Run, &t.Job, &started, &t.Seq, &t.Kind, &t.Side, &t.Path, &t.Note, &t.Size); err != nil {
 			return nil, fmt.Errorf("scan touch: %w", err)
 		}
 		t.When = time.Unix(0, started)
 		out = append(out, t)
 	}
-	return out, rows.Err()
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return d.liveTouches(out, f, limit), nil
 }
 
 // Show says which runs a listing is asking for. A watching job writes a run
@@ -297,6 +315,26 @@ func (d *DB) Recent(ctx context.Context, job string, show Show, limit int) ([]Ru
 // Between is Recent, narrowed to a stretch of time. A zero end means no bound
 // that way.
 func (d *DB) Between(ctx context.Context, job string, show Show, since, until time.Time, limit int) ([]Run, error) {
+	return d.between(ctx, job, show, since, until, limit)
+}
+
+// Following is Between with the runs still going among them, for a screen
+// that follows the log while it grows. Only such a screen asks for them: a run
+// with no end would read as the last run anywhere else.
+func (d *DB) Following(ctx context.Context, job string, show Show, since, until time.Time, limit int) ([]Run, error) {
+	d.settle.RLock()
+	defer d.settle.RUnlock()
+	if limit <= 0 {
+		limit = 20
+	}
+	stored, err := d.between(ctx, job, show, since, until, limit)
+	if err != nil {
+		return nil, err
+	}
+	return d.liveRuns(stored, job, show, since, until, limit), nil
+}
+
+func (d *DB) between(ctx context.Context, job string, show Show, since, until time.Time, limit int) ([]Run, error) {
 	if limit <= 0 {
 		limit = 20
 	}

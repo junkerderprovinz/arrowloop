@@ -69,6 +69,17 @@ func InFlight(ctx context.Context, right fs.Fs) []Moving {
 	return out
 }
 
+// Transferred returns how many bytes rclone has moved for the run in this
+// context, the files still in the air included. It takes one read lock, unlike
+// InFlight, so it can be read on every tick however busy the run is.
+func Transferred(ctx context.Context) int64 {
+	stats := accounting.Stats(ctx)
+	if stats == nil {
+		return 0
+	}
+	return stats.GetBytes()
+}
+
 // whole reads a number that is an int64 from rclone or a float64 after a trip
 // through JSON.
 func whole(v any) int64 {

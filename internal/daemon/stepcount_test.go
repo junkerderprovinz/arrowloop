@@ -91,5 +91,5 @@ func TestAProgressWatcherWithoutACounterStillWorks(t *testing.T) {
 	// Built directly, since New wants a configuration on disk.
 	watcher := progressFor{runner: &Runner{}, job: "Fotos"}
 	watcher.Starting(3)
-	watcher.Did("copy", "a.jpg", "right", 1, 3)
+	watcher.Did("copy", "a.jpg", "right", "", 1, 3)
 }

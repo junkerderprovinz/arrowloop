@@ -424,8 +424,12 @@ func (s *Server) listHistory(w http.ResponseWriter, r *http.Request) {
 		show = history.ShowAll
 	}
 	// Either end is optional, and a date that does not parse is ignored for
-	// the same reason.
-	runs, err := s.History.Between(r.Context(), r.URL.Query().Get("job"), show,
+	// the same reason. Runs still going come only to a screen that asks.
+	list := s.History.Between
+	if r.URL.Query().Get("going") == "1" {
+		list = s.History.Following
+	}
+	runs, err := list(r.Context(), r.URL.Query().Get("job"), show,
 		parseDay(r.URL.Query().Get("since"), false),
 		parseDay(r.URL.Query().Get("until"), true),
 		limit)

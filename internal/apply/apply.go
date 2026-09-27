@@ -32,7 +32,16 @@ import (
 // called from several workers at once. A nil Progress means nobody is watching.
 type Progress interface {
 	Starting(total int)
-	Did(kind, path, side string, done, total int)
+	// Did gets each finished step with the note its line carries; see
+	// Entry.Note.
+	Did(kind, path, side, note string, done, total int)
+}
+
+// Logger is a Progress that also takes every line of the run's list as it is
+// written, skips and observations included, so the list can be shown while
+// the run goes. The lines arrive in the order Result.Entries holds them.
+type Logger interface {
+	Logged(e Entry)
 }
 
 // Ends holds the two filesystems a job runs against.
@@ -69,13 +78,22 @@ type Entry struct {
 	Kind string
 	Side string
 	Path string
-	// Note is an error's own words, or which way a conflict went. Empty for
-	// the ordinary case.
+	// Note is an error's own words, or which way a conflict went. On a copy
+	// it is NoteReplaced when a file was overwritten, on a move the name the
+	// file had before, or NoteRelocated when it left for the other side, and
+	// on a trash NoteBin when it went into the bin. Empty otherwise.
 	Note string
 	// Size is how big the file was, in bytes. Zero for a folder, a skip and an
 	// error, where it does not apply.
 	Size int64
 }
+
+// The notes an ordinary piece of work can carry; see Entry.Note.
+const (
+	NoteReplaced  = "replaced"
+	NoteRelocated = "relocated"
+	NoteBin       = "bin"
+)
 
 // DisagreementError means an operation reported success and the two sides still
 // do not hold the same file. It is fatal for the run, unlike an ordinary
@@ -126,6 +144,7 @@ type tally struct {
 	fatal error
 
 	progress Progress
+	logger   Logger
 	total    int
 	done     int
 }
@@ -135,15 +154,15 @@ func (t *tally) step(kind, path, side string) {
 	t.note(kind, path, side, "")
 }
 
-// sized is step for a piece of work that moved a known number of bytes.
-func (t *tally) sized(kind, path, side string, size int64) {
+// sized is note for a piece of work that moved a known number of bytes.
+func (t *tally) sized(kind, path, side, note string, size int64) {
 	t.mu.Lock()
 	t.done++
-	t.record(Entry{Kind: kind, Side: side, Path: path, Size: size})
+	t.record(Entry{Kind: kind, Side: side, Path: path, Note: note, Size: size})
 	done, total, watcher := t.done, t.total, t.progress
 	t.mu.Unlock()
 	if watcher != nil {
-		watcher.Did(kind, path, side, done, total)
+		watcher.Did(kind, path, side, note, done, total)
 	}
 }
 
@@ -179,7 +198,7 @@ func (t *tally) note(kind, path, side, note string) {
 	done, total, watcher := t.done, t.total, t.progress
 	t.mu.Unlock()
 	if watcher != nil {
-		watcher.Did(kind, path, side, done, total)
+		watcher.Did(kind, path, side, note, done, total)
 	}
 }
 
@@ -194,7 +213,12 @@ func (t *tally) observe(kind, path, side, note string) {
 
 // record appends one line to the run's list. The caller holds the mutex, so
 // that a count and its line are always taken together.
-func (t *tally) record(e Entry) { t.res.Entries = append(t.res.Entries, e) }
+func (t *tally) record(e Entry) {
+	t.res.Entries = append(t.res.Entries, e)
+	if t.logger != nil {
+		t.logger.Logged(e)
+	}
+}
 
 // countWork is what the plan is going to touch, worked out before anything
 // moves so the progress total does not grow.
@@ -272,6 +296,7 @@ func RunWatched(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt 
 // it.
 func RunVerified(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt plan.Options, watcher Progress, verify Verify) (Result, error) {
 	t := &tally{res: Result{Skipped: append([]plan.Skip(nil), p.Skipped...)}, progress: watcher}
+	t.logger, _ = watcher.(Logger)
 	t.total = countWork(p)
 	if watcher != nil {
 		watcher.Starting(t.total)
@@ -334,7 +359,7 @@ func RunVerified(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt
 		if agreed == nil {
 			agreed = act.RightNow
 		}
-		t.sized("record", spelled(act), "", sizeOf(agreed))
+		t.sized("record", spelled(act), "", "", sizeOf(agreed))
 		if err := rec.settle(ctx, act.Path, left, right, false); err != nil {
 			var dis *DisagreementError
 			if errors.As(err, &dis) {
@@ -599,11 +624,11 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 		}
 		t.count(func(r *Result) { r.Copied++ })
 		// The source's size is what was just written.
-		from := act.RightNow
+		from, over := act.RightNow, act.LeftNow
 		if act.Dst == plan.Right {
-			from = act.LeftNow
+			from, over = act.LeftNow, act.RightNow
 		}
-		t.sized("copy", act.DstPath, act.Dst.String(), sizeOf(from))
+		t.sized("copy", act.DstPath, act.Dst.String(), replacing(over), sizeOf(from))
 		left, right := act.Names()
 		return rec.settle(ctx, act.Path, left, right, true)
 
@@ -621,11 +646,11 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 			return err
 		}
 		t.count(func(r *Result) { r.Copied++ })
-		sent := act.RightNow
+		sent, over := act.RightNow, act.LeftNow
 		if act.Dst == plan.Right {
-			sent = act.LeftNow
+			sent, over = act.LeftNow, act.RightNow
 		}
-		t.sized("copy", act.DstPath, act.Dst.String(), sizeOf(sent))
+		t.sized("copy", act.DstPath, act.Dst.String(), replacing(over), sizeOf(sent))
 
 		// Into the source side's own bin, like every other removal.
 		if sent != nil {
@@ -633,7 +658,7 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 				return err
 			}
 			t.count(func(r *Result) { r.Moved++ })
-			t.sized("move", act.SrcPath, act.Src.String(), sent.Size)
+			t.sized("move", act.SrcPath, act.Src.String(), NoteRelocated, sent.Size)
 		}
 		left, right := act.Names()
 		return rec.settle(ctx, act.Path, left, right, true)
@@ -650,7 +675,7 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 		if act.Dst == plan.Right {
 			moved = act.RightNow
 		}
-		t.sized("move", act.DstPath, act.Dst.String(), sizeOf(moved))
+		t.sized("move", act.DstPath, act.Dst.String(), act.OldDstPath, sizeOf(moved))
 		if err := rec.db.Forget(ctx, pathid.Key(act.OldDstPath, opt.FoldCase)); err != nil {
 			return err
 		}
@@ -673,7 +698,11 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 			return err
 		}
 		t.count(func(r *Result) { r.Trashed++ })
-		t.sized("trash", live.Path, act.Dst.String(), live.Size)
+		binned := ""
+		if trashKept(ctx) {
+			binned = NoteBin
+		}
+		t.sized("trash", live.Path, act.Dst.String(), binned, live.Size)
 		return rec.db.Forget(ctx, act.Path)
 
 	case plan.Conflict:
@@ -683,6 +712,14 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 		return resolveConflict(ctx, ends, rec, act, runID, opt)
 	}
 	return fmt.Errorf("unknown action kind %v", act.Kind)
+}
+
+// replacing is the note for a copy onto a side that already held the file.
+func replacing(there *scan.Entry) string {
+	if there == nil {
+		return ""
+	}
+	return NoteReplaced
 }
 
 // discard gets rid of an object: into the side's own trash, or outright when
