@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { JobMark } from '../components/JobMark'
-import { LogoMark } from '../components/LogoMark'
+import { LOGO_GOLD, LogoMark } from '../components/LogoMark'
 import { Num, Rule } from '../components/Shell'
 import { ViewSwitch, type LogView } from '../components/ViewSwitch'
 import { Badge } from '../lib/glimstone/Badge'
@@ -157,7 +157,9 @@ export function Activity() {
   return (
     <div className="flex h-screen flex-col gap-3 overflow-hidden bg-carbon-background p-4 text-carbon-text">
       <header className="flex items-center gap-3">
-        <LogoMark size={28} className="shrink-0" />
+        {/* The logo in its own gold whatever runs; the tray icon carries the
+            status. */}
+        <LogoMark size={28} className="shrink-0" style={{ color: LOGO_GOLD }} />
         <div className="flex min-w-0 flex-1 flex-col">
           <span className="text-sm font-semibold">ArrowLoop</span>
           <span className={`truncate text-xs ${paused ? 'text-statusWarn' : 'text-carbon-textSub'}`}>{state}</span>
@@ -229,12 +231,16 @@ export function Activity() {
         <Button
           label={paused ? t('tray.resume') : t('tray.pause')}
           labelKey={paused ? 'tray.resume' : 'tray.pause'}
+          tone="accent"
+          hueIndex={1}
           className="w-full"
           onClick={() => void desk.setPaused(!paused).then(setPaused).catch(() => {})}
         />
         <Button
           label={t('tray.syncNow')}
           labelKey="tray.syncNow"
+          tone="accent"
+          hueIndex={2}
           className="w-full"
           disabled={ready.length === 0}
           onClick={() => void Promise.allSettled(ready.map((j) => api.run(j.name))).finally(refresh)}
