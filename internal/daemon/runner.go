@@ -25,6 +25,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/job"
 	"github.com/junkerderprovinz/arrowloop/internal/notify"
 	"github.com/junkerderprovinz/arrowloop/internal/plan"
+	"github.com/junkerderprovinz/arrowloop/internal/scan"
 	"github.com/junkerderprovinz/arrowloop/internal/shadow"
 	"github.com/junkerderprovinz/arrowloop/internal/state"
 	"github.com/junkerderprovinz/arrowloop/internal/volume"
@@ -295,6 +296,7 @@ func (r *Runner) execute(ctx context.Context, j job.Job, only []string, resolve 
 	ctx = engine.Configure(ctx, opt)
 	ctx = apply.WithVersions(ctx, j.KeepVersions)
 	ctx = apply.WithTrash(ctx, !j.NoTrash)
+	ctx = scan.WithWatch(ctx, (&readingFor{runner: r, job: j.Name}).report)
 	// A shadow copy is taken only once a file is found held open, and removed
 	// with the run, since it holds space on its volume.
 	if shots := shadow.New(); shots != nil {
@@ -739,7 +741,7 @@ func sameMoving(a, b []engine.Moving) bool {
 // Event is something worth telling a watching screen about.
 type Event struct {
 	Job   string       `json:"job"`
-	Phase string       `json:"phase"` // "started", "progress" or "finished"
+	Phase string       `json:"phase"` // "started", "progress", "moving" or "finished"
 	Run   *history.Run `json:"run,omitempty"`
 	Error string       `json:"error,omitempty"`
 
@@ -749,9 +751,15 @@ type Event struct {
 	Total int    `json:"total,omitempty"`
 	Kind  string `json:"kind,omitempty"`
 	Path  string `json:"path,omitempty"`
-	// Side is where the work lands. Empty for a step that touches neither
-	// side, such as writing a record.
+	// Side is where the work lands, or the side being read. Empty for a step
+	// that touches neither side, such as writing a record.
 	Side string `json:"side,omitempty"`
+
+	// Stage is set on progress while the job is still being read and no plan
+	// exists; a client that does not know it shows the counts alone. Guess
+	// says Total is the last run's count rather than this run's.
+	Stage string `json:"stage,omitempty"`
+	Guess bool   `json:"guess,omitempty"`
 
 	// Moving is what is in the air right now, on a "moving" event; rclone runs
 	// several transfers at once. An empty list means the rows are gone, and
@@ -783,6 +791,34 @@ func (p progressFor) Did(kind, path, side string, done, total int) {
 		p.steps.add(kind)
 	}
 	p.runner.publish(Event{Job: p.job, Phase: "progress", Done: done, Total: total, Kind: kind, Path: path, Side: side})
+}
+
+// readingEvery is how often a reading stage may report. A local listing
+// reports every directory and a comparison every file.
+const readingEvery = 250 * time.Millisecond
+
+// readingFor passes the reading stages on to the stream, before the plan
+// exists and the apply stage takes over.
+type readingFor struct {
+	runner *Runner
+	job    string
+
+	mu    sync.Mutex
+	last  time.Time
+	stage scan.Reading
+}
+
+func (w *readingFor) report(r scan.Reading) {
+	w.mu.Lock()
+	now := time.Now()
+	same := r.Stage == w.stage.Stage && r.Side == w.stage.Side
+	if same && now.Sub(w.last) < readingEvery {
+		w.mu.Unlock()
+		return
+	}
+	w.last, w.stage = now, r
+	w.mu.Unlock()
+	w.runner.publish(Event{Job: w.job, Phase: "progress", Stage: string(r.Stage), Side: r.Side, Done: r.Done, Total: r.Total, Guess: r.Guess})
 }
 
 // Subscribe returns a channel of events and the function that stops it. A send

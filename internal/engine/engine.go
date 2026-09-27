@@ -153,11 +153,17 @@ func Prepare(ctx context.Context, ends apply.Ends, db *state.DB, opt Options) (*
 
 	withDirs := opt.EmptyDirs && canHoldEmptyDirs(ends, opt)
 	scanOpt := scan.Options{FoldCase: compare.FoldCase, Exclude: opt.Exclude, Dirs: withDirs}
-	left, err := scan.List(ctx, ends.Left, scanOpt)
+	left, leftOdd, err := readSide(ctx, plan.Left, ends.Left, scanOpt, len(visible))
 	if err != nil {
 		return nil, compare, err
 	}
-	right, err := scan.List(ctx, ends.Right, scanOpt)
+	// On a first run there is no record to measure against, and the left side
+	// is the best guess at what the right one holds.
+	expect := len(visible)
+	if expect == 0 {
+		expect = len(left.Files)
+	}
+	right, rightOdd, err := readSide(ctx, plan.Right, ends.Right, scanOpt, expect)
 	if err != nil {
 		return nil, compare, err
 	}
@@ -190,21 +196,32 @@ func Prepare(ctx context.Context, ends apply.Ends, db *state.DB, opt Options) (*
 	// protected side too, and before the unsupported report, which covers both
 	// sides.
 	plan.Enforce(p, compare.Direction, compare.Mode)
-
-	for side, f := range map[plan.Side]fs.Fs{plan.Left: ends.Left, plan.Right: ends.Right} {
-		odd, err := scan.FindUnsupported(ctx, f, scanOpt)
-		if err != nil {
-			return nil, compare, err
-		}
-		for _, u := range odd {
-			p.Skipped = append(p.Skipped, plan.Skip{
-				Path:   u.Path,
-				Reason: plan.Because("unsupported", "kind", u.Kind, "side", side.String()),
-			})
-		}
-	}
+	p.Skipped = append(p.Skipped, leftOdd...)
+	p.Skipped = append(p.Skipped, rightOdd...)
 
 	return p, compare, nil
+}
+
+// readSide lists one side and names what it holds that cannot be synced. A
+// listing cannot know its own length, so it reports against expect, the number
+// of files the side is thought to hold.
+func readSide(ctx context.Context, side plan.Side, f fs.Fs, opt scan.Options, expect int) (*scan.Listing, []plan.Skip, error) {
+	listing, err := scan.List(scan.ForSide(ctx, side.String(), expect, true), f, opt)
+	if err != nil {
+		return nil, nil, err
+	}
+	odd, err := scan.FindUnsupported(scan.ForSide(ctx, side.String(), len(listing.Files), false), f, opt)
+	if err != nil {
+		return nil, nil, err
+	}
+	var skips []plan.Skip
+	for _, u := range odd {
+		skips = append(skips, plan.Skip{
+			Path:   u.Path,
+			Reason: plan.Because("unsupported", "kind", u.Kind, "side", side.String()),
+		})
+	}
+	return listing, skips, nil
 }
 
 // foldCase decides whether names are matched case-insensitively, one answer

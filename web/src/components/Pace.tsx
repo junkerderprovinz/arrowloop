@@ -4,11 +4,13 @@ import { useT } from '../lib/i18n'
 import type { RunEvent } from '../lib/api'
 
 /**
- * How fast a run is going and how long it has left.
+ * How fast a run is going and how long it has left. The count itself is on
+ * the progress bar.
  *
  * The rate is in files per second because progress events carry a count of
  * finished work, not bytes, so one enormous file looks stalled. It is measured
- * over a recent window, so an early slow stretch does not skew the estimate.
+ * over a recent window, so an early slow stretch does not skew the estimate,
+ * and afresh for each stage of reading the job, which go at different speeds.
  */
 
 /** How far back the rate looks: long enough to be steady, short enough to react. */
@@ -19,6 +21,7 @@ type Sample = { at: number; done: number }
 export function Pace({ event }: { event: RunEvent | undefined }) {
   const { t } = useT()
   const samples = useRef<Sample[]>([])
+  const stage = useRef('')
   const [, tick] = useState(0)
 
   const done = event?.done ?? 0
@@ -29,6 +32,13 @@ export function Pace({ event }: { event: RunEvent | undefined }) {
       // A finished or restarted run starts its own measurement.
       samples.current = []
       return
+    }
+    // The side changes with every file once work moves, so it only marks a
+    // stage while the job is being read.
+    const current = event.stage ? `${event.stage} ${event.side ?? ''}` : ''
+    if (current !== stage.current) {
+      stage.current = current
+      samples.current = []
     }
     const now = Date.now()
     samples.current.push({ at: now, done })
@@ -52,11 +62,11 @@ export function Pace({ event }: { event: RunEvent | undefined }) {
 
   const left = total - done
   const seconds = rate && left > 0 ? Math.round(left / rate) : null
+  if (rate === null) return null
 
   return (
     <p className="flex flex-wrap items-center gap-x-3 text-xs text-carbon-textMuted">
-      <span>{t('progress.of', { done, total })}</span>
-      {rate !== null && <span>{t('progress.rate', { rate: rate.toFixed(1) })}</span>}
+      <span>{t('progress.rate', { rate: rate.toFixed(1) })}</span>
       {seconds !== null && <span>{t('progress.left', { time: humanTime(seconds) })}</span>}
     </p>
   )

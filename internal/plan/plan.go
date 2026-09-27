@@ -400,10 +400,11 @@ func Build(ctx context.Context, left, right *scan.Listing, prev map[string]state
 	}
 	sort.Strings(ordered)
 
-	for _, p := range ordered {
+	for i, p := range ordered {
 		if err := ctx.Err(); err != nil {
 			return nil, err
 		}
+		scan.Report(ctx, scan.Reading{Stage: scan.StageCompare, Done: i, Total: len(ordered)})
 		l, hasL := left.Files[p]
 		r, hasR := right.Files[p]
 		s, hasPrev := prev[p]

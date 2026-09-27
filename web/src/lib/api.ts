@@ -413,8 +413,12 @@ export type RunEvent = {
   total?: number
   kind?: string
   path?: string
-  /** Which side the work lands on. */
+  /** Which side the work lands on, or the side being read. */
   side?: string
+  /** Set while the job is still being read, before anything moves. */
+  stage?: 'list' | 'check' | 'compare'
+  /** The total is the last run's count, so this run may pass it. */
+  guess?: boolean
 }
 
 /** A refusal from the engine. The status tells a wrong password from a lockout

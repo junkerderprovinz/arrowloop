@@ -35,7 +35,12 @@ func FindUnsupported(ctx context.Context, f rclonefs.Fs, opt Options) ([]Unsuppo
 	}
 
 	var out []Unsupported
+	seen := 0
+	Report(ctx, Reading{Stage: StageCheck})
 	err := filepath.WalkDir(root, func(p string, d fs.DirEntry, err error) error {
+		if ctxErr := ctx.Err(); ctxErr != nil {
+			return ctxErr
+		}
 		if err != nil {
 			// An unreadable directory is left to the listing, which fails on
 			// it with a better message, and a missing root is a new job's
@@ -64,6 +69,10 @@ func FindUnsupported(ctx context.Context, f rclonefs.Fs, opt Options) ([]Unsuppo
 				return filepath.SkipDir
 			}
 			return nil
+		}
+		if !d.IsDir() {
+			seen++
+			Report(ctx, Reading{Stage: StageCheck, Done: seen})
 		}
 		if kind := unsupportedKind(d.Type()); kind != "" {
 			out = append(out, Unsupported{Path: rel, Kind: kind})

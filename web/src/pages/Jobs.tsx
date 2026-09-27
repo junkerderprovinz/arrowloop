@@ -26,7 +26,7 @@ import { entryLabel } from '../lib/entryLabel'
 import { usePlaces } from '../lib/places'
 import { api } from '../lib/api'
 import type { Direction, HistoryShow, Job, Run, RunEvent, Touch } from '../lib/api'
-import { translateSide, useT } from '../lib/i18n'
+import { translateSide, useT, type TranslationKey } from '../lib/i18n'
 import { describeCadence, readCadence } from '../lib/cadence'
 import { since } from '../lib/since'
 
@@ -372,36 +372,53 @@ export function Jobs({
 }
 
 /**
- * A running job's progress bar, in the accent because it is activity. Until
- * the first step arrives it is indeterminate, since a bar stuck at zero reads
- * as a job failing to start rather than one still listing its sides.
+ * A running job's progress bar, in the accent because it is activity. While
+ * the job is still being read it names the stage, since listing a large share
+ * takes minutes. A listing measured against the last run stops short of full,
+ * because this run may hold more; with nothing to measure against the bar is
+ * indeterminate.
  */
 function Progress({ event }: { event?: RunEvent }) {
-  const { t } = useT()
+  const { t, lang } = useT()
   const total = event?.total ?? 0
   const done = event?.done ?? 0
   const known = total > 0
+  const share = known ? Math.min(event?.guess ? 0.99 : 1, done / total) : 0
+  const format = new Intl.NumberFormat(lang)
+  const counts = { done: format.format(done), total: format.format(total) }
+
+  let words = t('progress.starting')
+  if (known) words = t(event?.guess ? 'progress.about' : 'progress.of', counts)
+  else if (event?.stage) words = t('progress.found', counts)
 
   return (
-    <div className="mt-1.5 flex items-center gap-2">
-      <div
-        className="h-1 min-w-0 flex-1 overflow-hidden bg-carbon-surface3"
-        style={{ borderRadius: 'var(--radius-pill)' }}
-        role="progressbar"
-        aria-valuemin={0}
-        aria-valuemax={known ? total : undefined}
-        aria-valuenow={known ? done : undefined}
-      >
+    <>
+      {event?.stage && <p className="text-xs text-carbon-textMuted">{t(stageKey(event))}</p>}
+      <div className="mt-1.5 flex items-center gap-2">
         <div
-          className={`h-full bg-accent transition-[width] ${known ? '' : 'glim-indeterminate'}`}
-          style={{ width: known ? `${Math.min(100, (done / total) * 100)}%` : '35%' }}
-        />
+          className="h-1 min-w-0 flex-1 overflow-hidden bg-carbon-surface3"
+          style={{ borderRadius: 'var(--radius-pill)' }}
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={known ? total : undefined}
+          aria-valuenow={known ? done : undefined}
+        >
+          <div
+            className={`h-full bg-accent transition-[width] ${known ? '' : 'glim-indeterminate'}`}
+            style={{ width: known ? `${share * 100}%` : '35%' }}
+          />
+        </div>
+        <span className="shrink-0 text-xs tabular-nums text-carbon-textMuted">{words}</span>
       </div>
-      <span className="shrink-0 text-xs text-carbon-textMuted">
-        {known ? t('progress.of', { done, total }) : t('progress.starting')}
-      </span>
-    </div>
+    </>
   )
+}
+
+function stageKey(event: RunEvent): TranslationKey {
+  if (event.stage === 'compare') return 'progress.compare'
+  const right = event.side === 'right'
+  if (event.stage === 'check') return right ? 'progress.checkRight' : 'progress.checkLeft'
+  return right ? 'progress.listRight' : 'progress.listLeft'
 }
 
 /** A time as "2 days ago" in the reader's language, with the exact time on hover. */

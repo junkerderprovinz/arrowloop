@@ -112,7 +112,10 @@ func List(ctx context.Context, f fs.Fs, opt Options) (*Listing, error) {
 		listType = walk.ListAll
 	}
 
+	found := 0
+	Report(ctx, Reading{Stage: StageList})
 	err := walk.ListR(ctx, f, "", true, -1, listType, func(entries fs.DirEntries) error {
+		defer func() { Report(ctx, Reading{Stage: StageList, Done: found}) }()
 		for _, entry := range entries {
 			if dir, isDir := entry.(fs.Directory); isDir {
 				if !opt.Dirs {
@@ -137,6 +140,7 @@ func List(ctx context.Context, f fs.Fs, opt Options) (*Listing, error) {
 				out.Excluded++
 				continue
 			}
+			found++
 			key := pathid.Key(rel, opt.FoldCase)
 			if first, seen := out.Files[key]; seen {
 				clashes[key] = append(clashes[key], first.Path, rel)
