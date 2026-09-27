@@ -29,7 +29,7 @@ const STAGE_CLASS: Record<WidthStage, string> = {
  * tone wins or loses by stylesheet order, so a control that needs a surface
  * the table lacks gets a new tone here instead.
  */
-export type ButtonTone = "accent" | "neutral" | "subtle" | "danger" | "warn";
+export type ButtonTone = "accent" | "neutral" | "subtle" | "ok" | "danger" | "warn";
 
 /**
  * "default" the ordinary action button.
@@ -45,7 +45,7 @@ export type ButtonTone = "accent" | "neutral" | "subtle" | "danger" | "warn";
  */
 export type ButtonVariant = "default" | "chip" | "icon";
 
-// `danger` and `warn` put the solid status tokens under `carbon-background`
+// `ok`, `danger` and `warn` put the solid status tokens under `carbon-background`
 // ink: in both themes the solid values sit at the opposite lightness to the
 // background, so one ink reads on both.
 const TONE_CLASS: Record<ButtonTone, string> = {
@@ -54,6 +54,7 @@ const TONE_CLASS: Record<ButtonTone, string> = {
   // controls with no fill, and on the dark ramp it is darker than surface2.
   neutral: "bg-carbon-surface3 text-carbon-text hover:bg-carbon-hoverRaised",
   subtle: "bg-carbon-surface2 text-carbon-text hover:bg-carbon-surface3",
+  ok: "bg-statusOkSolid text-carbon-background hover:opacity-90",
   danger: "bg-statusFailSolid text-carbon-background hover:opacity-90",
   warn: "bg-statusWarnSolid text-carbon-background hover:opacity-90",
 };

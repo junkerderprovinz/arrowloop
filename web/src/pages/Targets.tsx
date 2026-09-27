@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
-import { Empty, Rows, Rule, Stack } from '../components/Shell'
+import { Empty, Rows, Stack } from '../components/Shell'
 import { Dialog } from '../components/Dialog'
 import { IconAction } from '../components/IconAction'
 import { ProviderPicker } from '../components/ProviderPicker'
@@ -9,7 +9,7 @@ import { Card } from '../lib/glimstone/Card'
 import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
 import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
-import { IconCheck, IconConfirm, IconCopy, IconDelete, IconEdit, IconFolder } from '../components/glyphs'
+import { IconCancel, IconCheck, IconConfirm, IconCopy, IconDelete, IconEdit, IconFolder } from '../components/glyphs'
 import { brandMark } from '../components/brandMarks'
 import { Choice, Field, Secret, Text } from '../components/Field'
 import { ToggleRow } from '../components/ToggleRow'
@@ -17,6 +17,7 @@ import { replay } from '../lib/animate'
 import { DropdownListbox } from '../lib/glimstone/DropdownListbox'
 import { api, type Backend, type Provider, type Remote, type Share, type Usage, type Volume } from '../lib/api'
 import { bytes } from '../lib/bytes'
+import { groupStage } from '../lib/controls'
 import { useT } from '../lib/i18n'
 import { optionHint } from '../lib/optionHint'
 import { optionLabel } from '../lib/optionNames'
@@ -204,10 +205,10 @@ function Storage({
       {rows.length === 0 ? (
         <Empty>{t(TEXT[group].empty)}</Empty>
       ) : (
-        <Rows className="flex flex-col">
+        // Each target is a card of its own on the group's card.
+        <Rows className="flex flex-col gap-2">
           {rows.map((r, i) => (
-            <li key={r.name}>
-              {i > 0 && <Rule />}
+            <li key={r.name} className="rounded-control bg-carbon-surface2 px-4">
               {editing === r.name ? (
                 <RemoteForm
                   backends={backends}
@@ -459,6 +460,8 @@ function RemoteForm({
   const [trying, setTrying] = useState(false)
   /** The result of a test run before saving. */
   const [tried, setTried] = useState<{ ok: boolean; reason?: string } | null>(null)
+  // Counts failed tests, so each one remounts the button and shakes it again.
+  const [refused, setRefused] = useState(0)
 
   const backend = useMemo(() => backends.find((b) => b.name === kind), [backends, kind])
   // Only rclone's required and essential options until the advanced switch
@@ -484,9 +487,12 @@ function RemoteForm({
       const filled = Object.fromEntries(Object.entries(values).filter(([, value]) => value !== ''))
       // The name lets the engine fill in the saved secrets this form never
       // received.
-      setTried(await api.tryRemote(kind, { ...(preset ?? {}), ...filled }, existing?.name))
+      const answer = await api.tryRemote(kind, { ...(preset ?? {}), ...filled }, existing?.name)
+      setTried(answer)
+      if (!answer.ok) setRefused((n) => n + 1)
     } catch (e) {
       setTried({ ok: false, reason: (e as Error).message })
+      setRefused((n) => n + 1)
     } finally {
       setTrying(false)
     }
@@ -588,18 +594,31 @@ function RemoteForm({
         {error && <p className="text-xs text-statusFail">{error}</p>}
       </div>
 
-      {tried && (
-        <p className={`text-xs ${tried.ok ? 'text-statusOk' : 'text-statusFail'}`}>
-          {tried.ok ? t('targets.checkOk') : `${t('targets.checkFailed')}: ${tried.reason ?? ''}`}
-        </p>
-      )}
+      {/* Only the reason: the button itself shows the verdict. */}
+      {tried && !tried.ok && tried.reason && <p className="text-xs text-statusFail">{tried.reason}</p>}
 
       <div className="flex items-center justify-end gap-2">
         <Button label={t('targets.cancel')} labelKey="targets.cancel" onClick={() => onDone(false)} />
-        {/* Tests before anything is written; saving checks again afterwards. */}
+        {/* Tests before anything is written; saving checks again afterwards.
+            Colour, word and glyph all carry the last verdict, so colour is
+            never the only signal. */}
         <Button
-          label={trying ? t('targets.checking') : t('targets.check')}
+          key={refused}
+          label={
+            trying
+              ? t('targets.checking')
+              : !tried
+                ? t('targets.check')
+                : tried.ok
+                  ? t('targets.checkOk')
+                  : t('targets.checkFailed')
+          }
           labelKey="targets.check"
+          glyph={trying || !tried ? undefined : tried.ok ? <IconConfirm /> : <IconCancel />}
+          tone={trying || !tried ? 'neutral' : tried.ok ? 'ok' : 'danger'}
+          className={tried && !tried.ok && !trying ? 'glim-shake' : ''}
+          busy={trying}
+          stage={groupStage([t('targets.check'), t('targets.checking'), t('targets.checkOk'), t('targets.checkFailed')])}
           onClick={() => void tryIt()}
           disabled={busy || trying || !kind}
         />
@@ -727,10 +746,9 @@ function Drives({ volumes, onChanged }: { volumes: Volume[]; onChanged: () => vo
       {volumes.length === 0 && !adding ? (
         <Empty>{t('targets.drivesEmpty')}</Empty>
       ) : (
-        <Rows className="flex flex-col">
+        <Rows className="flex flex-col gap-2">
           {volumes.map((v, i) => (
-            <li key={v.id}>
-              {(i > 0 || adding) && <Rule />}
+            <li key={v.id} className="rounded-control bg-carbon-surface2 px-4">
               <DriveRow volume={v} row={i} onChanged={onChanged} />
             </li>
           ))}
