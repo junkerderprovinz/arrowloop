@@ -215,3 +215,29 @@ body {
 .glim-page-enter > :first-child > .glim-notch-card:first-child {
   margin-top: 11px;
 }
+
+/* Keyboard focus lights a brand tile as the pointer does, so Tab through the
+   provider grid shows which brand it has reached. GlimStone lights it under
+   the pointer only. */
+.glim-brand-tile:focus-visible,
+.group:has(> .glim-brand-tile:focus-visible) > .glim-brand-tile {
+  background-color: var(--tile);
+  color: var(--tile-ink);
+  --mark-ink: var(--tile-ink);
+  --mark-cut: var(--tile);
+  --brand-android: var(--tile-ink);
+  --brand-docker: var(--tile-ink);
+  --brand-windows: var(--tile-ink);
+  --brand-unraid-from: var(--tile-ink);
+  --brand-unraid-to: var(--tile-ink);
+}
+:is(.glim-brand-tile:focus-visible, .group:has(> .glim-brand-tile:focus-visible) > .glim-brand-tile) .glim-mark-rest {
+  display: none;
+}
+:is(.glim-brand-tile:focus-visible, .group:has(> .glim-brand-tile:focus-visible) > .glim-brand-tile) .glim-mark-hover {
+  display: block;
+}
+.group:has(> .glim-brand-tile:focus-visible) > .glim-brand-tile .glim-readme-btn-mark,
+.group:has(> .glim-brand-tile:focus-visible) .glim-readme-btn-hint {
+  color: var(--tile-ink);
+}

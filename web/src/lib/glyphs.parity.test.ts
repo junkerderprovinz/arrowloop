@@ -125,3 +125,35 @@ describe('the drawings survived the lift', () => {
     expect(swapped.length).toBeGreaterThan(5)
   })
 })
+
+describe('a lit tile on the phone', () => {
+  it('fills with the colour the web tile lights up in', () => {
+    const source = component('brandGlyphs.tsx')
+    const table = source.slice(source.indexOf('export const BRAND_TILES'))
+    const web = Object.fromEntries(
+      [...table.matchAll(/(Icon\w+): \{ tile: '(#[0-9a-f]{6})', ink: '(#[0-9a-f]{6})' \}/g)].map((m) => [
+        m[1]!,
+        { color: m[2]!, ink: m[3]! },
+      ]),
+    )
+    expect(Object.keys(web).length).toBeGreaterThan(40)
+    for (const [name, brand] of Object.entries(BRANDS)) {
+      expect(brand.tile, name).toEqual(web[name])
+    }
+  })
+
+  it('keeps every cut-out a cut-out', () => {
+    // A part that lies on another part turns into a hole on a lit tile; lost
+    // on the way, it would merge into the ink as a blot.
+    const source = component('brandGlyphs.tsx')
+    for (const [name, brand] of Object.entries(BRANDS)) {
+      // The generator drops OneDrive's translucent shades, which the phone
+      // draws black, and some of them are cut-outs.
+      if (name === 'IconOnedrive') continue
+      const start = source.indexOf(`export function ${name}(`)
+      const body = source.slice(start, source.indexOf('\n}', start))
+      const cuts = body.match(/var\(--mark-cut,/g)?.length ?? 0
+      expect(brand.svg.match(/\[\[cut\|/g)?.length ?? 0, name).toBe(cuts)
+    }
+  })
+})

@@ -13,6 +13,7 @@ The full notes for each release are in
 ## 🎨 Design
 
 - **The look follows GlimStone 3.0.0.** The folder picker blurs and darkens the page behind it like every other window, and on the phone the page behind a window is a little darker on the dark theme than on the light one.
+- **Every tile in the target dialogs lights up, from the keyboard as well.** Tab through the providers when you add a target, and the focused tile fills with the brand's colour as it does under the pointer, its name and mark in white or near-black, whichever reads on that colour. A protocol such as SFTP or SMB has no brand and lights up in the accent instead of turning a darker grey. On the phone a tile fills the same way while your finger is on it, and so does a coin in the crypto window.
 
 ## 1.2.1 - 2026-09-27
 

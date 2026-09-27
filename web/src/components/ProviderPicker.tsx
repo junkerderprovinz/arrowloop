@@ -57,7 +57,7 @@ export function ProviderPicker({
                 type="button"
                 onClick={() => onPick(p)}
                 title={hint}
-                className={lit ? `${TILE} glim-brand-tile` : `${TILE} ${PLAIN}`}
+                className={`${TILE} glim-brand-tile${lit ? '' : ' glim-tile-house'}`}
                 style={lit && ({ '--tile': lit.tile, '--tile-ink': lit.ink } as CSSProperties)}
               >
                 {/* Every mark carries width="1em", so a max-size cap never fires;
@@ -115,10 +115,11 @@ export function ProviderPicker({
 /**
  * One tile: the mark above the name, the tile itself the button. A provider
  * with a brand mark lights up in the brand's colour (`glim-brand-tile`, with
- * the colour and ink from BRAND_TILES); a protocol, which has none, takes the
- * ordinary hover of a filled control. The keyboard focus ring is kept.
+ * the colour and ink from BRAND_TILES). A protocol wears one of the app's own
+ * glyphs and lights up in the accent, as GlimStone's house tile does, so no
+ * tile in the grid answers the pointer with a plain grey. The keyboard focus
+ * ring is kept.
  */
 const TILE =
   'flex h-full w-full flex-col items-center justify-center gap-2 ' +
   'rounded-[var(--radius-control)] bg-carbon-surface2 px-2 py-3 text-carbon-text'
-const PLAIN = 'transition-colors duration-150 hover:bg-carbon-surface3'

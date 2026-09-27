@@ -157,18 +157,29 @@ export function CryptoDonate({ onClose }: { onClose: () => void }) {
                       setNetwork(c.networks[0]!);
                       setCopied(false);
                     }}
-                    style={[
+                    // A finger on a coin lights it in the coin's own colour;
+                    // the picked coin keeps the accent.
+                    style={({ pressed }) => [
                       styles.tile,
                       {
                         ...corners.control,
-                        backgroundColor: on ? fill : p.surface2,
+                        backgroundColor: on ? fill : pressed ? c.tile.color : p.surface2,
                       },
                     ]}
                   >
-                    <CoinMark coin={c.id} size={22} scheme={scheme} />
-                    <Text style={[styles.ticker, { color: on ? contrastOn(fill) : p.textSub }]}>
-                      {c.symbol}
-                    </Text>
+                    {({ pressed }) => {
+                      const lit = !on && pressed ? { ink: c.tile.ink, cut: c.tile.color } : undefined;
+                      return (
+                        <>
+                          <CoinMark coin={c.id} size={22} scheme={scheme} lit={lit} />
+                          <Text
+                            style={[styles.ticker, { color: on ? contrastOn(fill) : lit ? lit.ink : p.textSub }]}
+                          >
+                            {c.symbol}
+                          </Text>
+                        </>
+                      );
+                    }}
                   </Pressable>
                 );
               })}

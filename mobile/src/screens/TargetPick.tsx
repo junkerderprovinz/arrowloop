@@ -6,7 +6,7 @@ import { useT } from "../i18n";
 import type { Nav, TargetsStack } from "../nav";
 import { providerHint, providerName } from "../../../web/src/lib/optionHint";
 import { space, text } from "../theme";
-import { ProviderMark } from "../glyphs";
+import { brandTile, ProviderMark } from "../glyphs";
 import { Caption, Empty, InfoBubble, Page, Title, useTheme } from "../ui";
 
 /**
@@ -17,7 +17,7 @@ import { Caption, Empty, InfoBubble, Page, Title, useTheme } from "../ui";
 export function TargetPick() {
   const nav = useNavigation<Nav<TargetsStack>>();
   const { t } = useT();
-  const { p, corners, scheme } = useTheme();
+  const { p, corners, scheme, accent, accentContrast } = useTheme();
   const [providers, setProviders] = useState<Provider[] | null>(null);
   const [error, setError] = useState("");
 
@@ -36,25 +36,42 @@ export function TargetPick() {
 
   const tile = (provider: Provider) => {
     const hint = providerHint(provider.id, t);
+    // A tile fills with its brand's colour while a finger is on it, as the
+    // web's does under the pointer. A protocol wears one of the app's own
+    // glyphs and takes the accent.
+    const fill = brandTile(provider.mark) ?? { color: accent, ink: accentContrast };
     return (
       // The (i) sits beside the tile rather than inside it, so tapping it does
       // not also open the form.
       <View key={provider.id} style={styles.cell}>
         <Pressable
           onPress={() => nav.navigate("TargetEdit", { provider: provider.id })}
-          android_ripple={{ color: p.hover }}
-          style={[
+          style={({ pressed }) => [
             styles.tile,
-            { backgroundColor: p.surface2, ...corners.control },
+            { backgroundColor: pressed ? fill.color : p.surface2, ...corners.control },
           ]}
         >
-          <View style={styles.markBox}>
-            <ProviderMark name={provider.mark} width={MARK_W} height={MARK_H} color={p.textSub} scheme={scheme} />
-          </View>
-          {/* Two lines, since a name cut to one can read as another product. */}
-          <Text style={[styles.name, { color: p.text }]} numberOfLines={2}>
-            {providerName(provider, t)}
-          </Text>
+          {({ pressed }) => {
+            const lit = pressed ? { ink: fill.ink, cut: fill.color } : undefined;
+            return (
+              <>
+                <View style={styles.markBox}>
+                  <ProviderMark
+                    name={provider.mark}
+                    width={MARK_W}
+                    height={MARK_H}
+                    color={lit ? lit.ink : p.textSub}
+                    scheme={scheme}
+                    lit={lit}
+                  />
+                </View>
+                {/* Two lines, since a name cut to one can read as another product. */}
+                <Text style={[styles.name, { color: lit ? lit.ink : p.text }]} numberOfLines={2}>
+                  {providerName(provider, t)}
+                </Text>
+              </>
+            );
+          }}
         </Pressable>
         {hint && provider.group === "protocol" ? (
           <View style={styles.bubble} pointerEvents="box-none">

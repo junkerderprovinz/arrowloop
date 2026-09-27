@@ -181,25 +181,38 @@ def brand_glyphs(colours: dict[str, dict[str, str]]) -> dict[str, dict]:
     """The brand marks: somebody else's drawings, with gradients and theme
     colours."""
     text = io.open(BRANDS_TSX, encoding="utf-8").read()
+    tiles = {name: {"color": tile, "ink": ink} for name, tile, ink in TILE_ROW.findall(text)}
     out: dict[str, dict] = {}
     for match in re.finditer(
-        r"export function (Icon\w+)\(props[^)]*\) \{\s*return \(\s*(?:<>\s*)?(<svg .*?</svg>)\s*(?:<svg .*?</svg>\s*</>\s*)?\)\s*\}",
+        r"export function (Icon\w+)\(props[^)]*\) \{\s*return \(\s*(?:<>\s*)?(<svg .*?</svg>)\s*(?:(<svg .*?</svg>)\s*</>\s*)?\)\s*\}",
         text,
         re.S,
     ):
         # A mark with a second drawing for the lit tile comes as a pair, the
-        # resting one first. The phone has no lit tiles and takes that one.
-        name, svg = match.groups()
+        # resting one first.
+        name, svg, hover = match.groups()
         box = re.search(r'viewBox="([^"]+)"', svg)
         if not box:
             raise SystemExit("gen_glyph_data: %s has no viewBox" % name)
+        if name not in tiles:
+            raise SystemExit("gen_glyph_data: %s has no row in BRAND_TILES" % name)
         body, used = detokenise(inner(svg, name), colours)
         out[name] = {
             "box": box.group(1),
             "fill": resolve(re.search(r'<svg[^>]*\bfill="([^"]+)"', svg), colours),
             "svg": body,
             "vars": used,
+            "tile": tiles[name],
         }
+        if hover:
+            # The renderer paints a lit drawing's root in the tile's ink, which
+            # is what currentColor means on the web's lit tile.
+            if not re.search(r'<svg[^>]*\bfill="currentColor"', hover):
+                raise SystemExit("gen_glyph_data: %s's lit drawing does not paint in currentColor" % name)
+            lit, lit_used = detokenise(inner(hover, name), colours)
+            if lit_used:
+                raise SystemExit("gen_glyph_data: %s's lit drawing carries a theme colour" % name)
+            out[name]["lit"] = {"box": re.search(r'viewBox="([^"]+)"', hover).group(1), "svg": lit}
     return out
 
 
@@ -276,15 +289,21 @@ def link_marks() -> dict[str, dict]:
 
 
 # A lit tile in the browser repaints a mark through --mark-ink and --mark-cut.
-# The phone has no lit tiles, so each part keeps its own colour.
-LIT = re.compile(r"var\(--mark-(?:ink|cut),\s*((?:[^()]|\([^()]*\))*)\)")
+# The phone lights a tile while it is pressed and cannot read custom
+# properties, so each part travels as `[[ink|<own colour>]]` or
+# `[[cut|<own colour>]]` and the renderer picks one side.
+LIT = re.compile(r"var\(--mark-(ink|cut),\s*((?:[^()]|\([^()]*\))*)\)")
+
+# BRAND_TILES in brandGlyphs.tsx: what each mark's tile lights up in.
+TILE_ROW = re.compile(r"(Icon\w+): \{ tile: '(#[0-9a-f]{6})', ink: '(#[0-9a-f]{6})' \}")
 
 
 def resolve(match, colours) -> dict[str, str] | str | None:
-    """A colour, as the phone needs it: a literal, or one per theme."""
+    """A colour, as the phone needs it: a literal, or one per theme. A lit tile
+    paints the root in its ink, so only the resting colour is kept."""
     if not match:
         return None
-    value = LIT.sub(r"\1", match.group(1))
+    value = LIT.sub(r"\2", match.group(1))
     var = re.fullmatch(r"var\((--(?:brand|coin)-[\w-]+)\)", value)
     if not var:
         return value
@@ -351,7 +370,7 @@ def detokenise(body: str, colours) -> tuple[str, dict]:
     """
     used: dict[str, dict[str, str]] = {}
 
-    body = LIT.sub(r"\1", body)
+    body = LIT.sub(r"[[\1|\2]]", body)
 
     def one(match: re.Match) -> str:
         name = match.group(1)
@@ -583,11 +602,18 @@ export interface BrandData {
   fill: string | { light: string; dark: string } | null
   /**
    * The markup inside the `<svg>`, with any theme colour left as `{{name}}`
-   * until the mark is drawn and the theme is known.
+   * until the mark is drawn and the theme is known. Each painted part reads
+   * `[[ink|colour]]` or `[[cut|colour]]`: its own colour at rest, and on a lit
+   * tile the tile's ink or, for a part lying on another part, the tile colour.
    */
   svg: string
   /** What each `{{name}}` in `svg` resolves to, per theme. */
   vars: Record<string, { light: string; dark: string }>
+  /** The brand's own colour a pressed tile fills with, and the ink on it. */
+  tile?: { color: string; ink: string }
+  /** The single-colour mark a lit tile shows where the layers of `svg` do not
+   *  survive one ink, painted in the tile's ink. */
+  lit?: { box: string; svg: string }
 }
 
 """

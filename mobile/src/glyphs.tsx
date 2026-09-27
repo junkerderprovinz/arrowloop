@@ -106,6 +106,7 @@ export function BrandMark({
   height,
   scheme,
   mono,
+  lit,
 }: {
   name: string;
   size?: number;
@@ -115,12 +116,14 @@ export function BrandMark({
   scheme: "dark" | "light";
   /** An ink to draw the mark in, where it stands in for a glyph. */
   mono?: string;
+  /** Painted for a lit tile rather than in its own colours. */
+  lit?: Lit;
 }) {
   const brand = BRANDS[name];
   if (!brand) return null;
   return (
     <SvgXml
-      xml={mono ? oneInk(whole(brand, scheme), mono) : whole(brand, scheme)}
+      xml={mono ? oneInk(whole(brand, scheme), mono) : whole(brand, scheme, lit)}
       width={width ?? size}
       height={height ?? size}
     />
@@ -138,18 +141,39 @@ function oneInk(svg: string, ink: string): string {
 }
 
 /**
- * Wraps a mark's markup in an svg element and fills in its themed colour
- * slots, which an SVG parser cannot resolve the way a browser resolves CSS
- * variables.
+ * How a lit tile paints a mark, as GlimStone's `--mark-ink` and `--mark-cut`:
+ * every part in the tile's ink, a part lying on another part in the tile's
+ * own colour, so it reads as a hole.
  */
-function whole(mark: BrandData, scheme: "dark" | "light"): string {
-  const fill =
+export interface Lit {
+  ink: string;
+  cut: string;
+}
+
+/** The colour a brand's tile fills with while pressed, and the ink on it. */
+export function brandTile(name: string | undefined): { color: string; ink: string } | undefined {
+  return name ? BRANDS[name]?.tile : undefined;
+}
+
+/**
+ * Wraps a mark's markup in an svg element and fills in its themed colour
+ * slots and the roles its parts take on a lit tile, neither of which an SVG
+ * parser can resolve the way a browser resolves CSS variables.
+ */
+function whole(mark: BrandData, scheme: "dark" | "light", lit?: Lit): string {
+  const drawing = lit && mark.lit ? mark.lit : mark;
+  const rest =
     mark.fill === null ? undefined : typeof mark.fill === "string" ? mark.fill : mark.fill[scheme];
-  let body = mark.svg;
+  // `none` on the root cuts the holes of an outlined mark and stays on a lit
+  // tile too.
+  const fill = lit && (drawing !== mark || (rest && rest !== "none")) ? lit.ink : rest;
+  let body = drawing.svg.replace(/\[\[(ink|cut)\|([^\]]*)\]\]/g, (_, role: string, own: string) =>
+    !lit ? own : role === "ink" ? lit.ink : lit.cut,
+  );
   for (const [slot, pair] of Object.entries(mark.vars)) {
     body = body.split(`{{${slot}}}`).join(pair[scheme]);
   }
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${mark.box}"${
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${drawing.box}"${
     fill ? ` fill="${fill}"` : ""
   }>${body}</svg>`;
 }
@@ -163,14 +187,17 @@ export function CoinMark({
   coin,
   size = 22,
   scheme,
+  lit,
 }: {
   coin: string;
   size?: number;
   scheme: "dark" | "light";
+  /** Painted for a lit tile: the disc in the ink, the symbol cut out of it. */
+  lit?: Lit;
 }) {
   const mark = COINS[coin];
   if (!mark) return null;
-  return <SvgXml xml={whole(mark, scheme)} width={size} height={size} />;
+  return <SvgXml xml={whole(mark, scheme, lit)} width={size} height={size} />;
 }
 
 /**
@@ -250,6 +277,7 @@ export function ProviderMark({
   color,
   scheme,
   mono,
+  lit,
 }: {
   name: string | undefined;
   size?: number;
@@ -261,6 +289,8 @@ export function ProviderMark({
   scheme: "dark" | "light";
   /** Draws a brand in `color` rather than its own colours. */
   mono?: boolean;
+  /** Draws a brand for a lit tile. */
+  lit?: Lit;
 }) {
   if (!name) return null;
   if (name in BRANDS)
@@ -272,6 +302,7 @@ export function ProviderMark({
         height={height}
         scheme={scheme}
         mono={mono ? color : undefined}
+        lit={lit}
       />
     );
   if (name in GLYPHS)
