@@ -273,7 +273,17 @@ const sv: Translations = {
   'window.close': 'Fortsätter köra i meddelandefältet vid stängning',
   'window.closeHint': 'Krysset i fönstrets hörn döljer då bara fönstret, och dina jobb fortsätter enligt schemat. För att avsluta ArrowLoop väljer du ”Avsluta” i ikonens meny. Av från början, så krysset avslutar programmet som du förväntar dig.',
   'window.minimise': 'Minimerat till meddelandefältet',
-  'window.minimiseHint': 'Minimering tar bort fönstret från aktivitetsfältet och låter det vänta i meddelandefältet. Ett klick på ikonen tar tillbaka det.',
+  'window.minimiseHint': 'Minimering tar bort fönstret från aktivitetsfältet och låter det vänta i meddelandefältet. Ett dubbelklick på ikonen, eller ”Öppna” i dess meny, tar tillbaka det.',
+
+  'tray.open': 'Öppna',
+  'tray.syncNow': 'Tvinga synkronisering',
+  'tray.pause': 'Pausa synkroniseringen',
+  'tray.resume': 'Återuppta synkroniseringen',
+  'tray.quit': 'Avsluta',
+  'tray.paused': 'Synkroniseringen är pausad',
+  'tray.running': 'jobb som körs: {count}',
+  'tray.done': 'klart',
+  'activity.recent': 'Senaste körningar',
 
   'start.title': 'Uppstart',
   'start.withSystem': 'Starta med systemet',

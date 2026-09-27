@@ -25,7 +25,7 @@ const RULES: Rule[] = [
   [/preview|dryRun/i, 'IconPreview'],
   // Syncing is the circle the jobs tab wears, and sits above the run rule
   // because `syncNow` contains its word.
-  [/^overview\.syncNow$/i, 'IconJobs'],
+  [/^(overview|tray)\.syncNow$/i, 'IconJobs'],
   [/runNow|\.run$|start|resume/i, 'IconRun'],
   // Cancelling a run throws its work away, which is not the same as pausing.
   [/cancelRun|abort/i, 'IconCancel'],
@@ -40,6 +40,8 @@ const RULES: Rule[] = [
 
   // Creation and editing.
   [/newFolder|addSet|createFolder/i, 'IconNewFolder'],
+  // The desktop app's main window, which is no folder.
+  [/^tray\.open$/i, 'IconTabApp'],
   // Above `\.add`, so an "open and add" key cannot be claimed by the wrong half.
   [/\.open$|openFolder/i, 'IconFolder'],
   // Registering a drive adds it to the list, like the control beside it.

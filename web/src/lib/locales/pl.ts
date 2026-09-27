@@ -273,7 +273,17 @@ const pl: Translations = {
   'window.close': 'Po zamknięciu działa dalej w obszarze powiadomień',
   'window.closeHint': 'X w rogu okna wtedy tylko ukrywa okno, a twoje zadania działają dalej według harmonogramu. Aby zamknąć ArrowLoop, wybierz „Zakończ” w menu ikony. Domyślnie wyłączone, więc X zamyka program tak, jak się tego spodziewasz.',
   'window.minimise': 'Zminimalizowane do obszaru powiadomień',
-  'window.minimiseHint': 'Minimalizacja usuwa okno z paska zadań i zostawia je czekające w obszarze powiadomień. Kliknięcie ikony przywraca je.',
+  'window.minimiseHint': 'Minimalizacja usuwa okno z paska zadań i zostawia je czekające w obszarze powiadomień. Dwukrotne kliknięcie ikony lub „Otwórz” w jej menu przywraca je.',
+
+  'tray.open': 'Otwórz',
+  'tray.syncNow': 'Wymuś synchronizację',
+  'tray.pause': 'Wstrzymaj synchronizację',
+  'tray.resume': 'Wznów synchronizację',
+  'tray.quit': 'Zakończ',
+  'tray.paused': 'Synchronizacja jest wstrzymana',
+  'tray.running': 'trwające zadania: {count}',
+  'tray.done': 'gotowe',
+  'activity.recent': 'Ostatnie przebiegi',
 
   'start.title': 'Uruchamianie',
   'start.withSystem': 'Uruchamiaj razem z systemem',

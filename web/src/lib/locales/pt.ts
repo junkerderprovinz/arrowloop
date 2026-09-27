@@ -273,7 +273,17 @@ const pt: Translations = {
   'window.close': 'Continua a correr na área de notificação ao fechar',
   'window.closeHint': 'O X no canto da janela passa a esconder apenas a janela, e as tuas tarefas continuam conforme previsto. Para fechar o ArrowLoop, escolhe «Sair» no menu do ícone. Desligado por omissão, por isso o X fecha o programa como esperarias.',
   'window.minimise': 'Minimizada para a área de notificação',
-  'window.minimiseHint': 'Minimizar tira a janela da barra de tarefas e deixa-a à espera na área de notificação. Um clique no ícone traz-a de volta.',
+  'window.minimiseHint': 'Minimizar tira a janela da barra de tarefas e deixa-a à espera na área de notificação. Um duplo clique no ícone, ou «Abrir» no seu menu, traz-a de volta.',
+
+  'tray.open': 'Abrir',
+  'tray.syncNow': 'Forçar sincronização',
+  'tray.pause': 'Pausar sincronização',
+  'tray.resume': 'Retomar sincronização',
+  'tray.quit': 'Sair',
+  'tray.paused': 'A sincronização está em pausa',
+  'tray.running': 'tarefas a decorrer: {count}',
+  'tray.done': 'concluído',
+  'activity.recent': 'Últimas execuções',
 
   'start.title': 'Arranque',
   'start.withSystem': 'Iniciar com o sistema',

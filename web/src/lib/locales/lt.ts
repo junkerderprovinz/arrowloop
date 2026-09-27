@@ -273,7 +273,17 @@ const lt: Translations = {
   'window.close': 'Uždarius toliau veikia pranešimų srityje',
   'window.closeHint': 'Lango kampe esantis X tada tik paslepia langą, o tavo darbai toliau vyksta pagal savo tvarkaraštį. Norėdamas užverti ArrowLoop, piktogramos meniu pasirink „Baigti“. Numatytai išjungta, tad X užbaigia programą, kaip ir tikiesi.',
   'window.minimise': 'Sumažinta į pranešimų sritį',
-  'window.minimiseHint': 'Sumažinus langas dingsta iš užduočių juostos ir laukia pranešimų srityje. Spustelėjus piktogramą jis grįžta.',
+  'window.minimiseHint': 'Sumažinus langas dingsta iš užduočių juostos ir laukia pranešimų srityje. Dukart spustelėjus piktogramą arba jos meniu pasirinkus „Atverti“, jis grįžta.',
+
+  'tray.open': 'Atverti',
+  'tray.syncNow': 'Priverstinai sinchronizuoti',
+  'tray.pause': 'Pristabdyti sinchronizavimą',
+  'tray.resume': 'Tęsti sinchronizavimą',
+  'tray.quit': 'Baigti',
+  'tray.paused': 'Sinchronizavimas pristabdytas',
+  'tray.running': 'vykdomos užduotys: {count}',
+  'tray.done': 'atlikta',
+  'activity.recent': 'Paskutiniai paleidimai',
 
   'start.title': 'Paleidimas',
   'start.withSystem': 'Paleisti kartu su sistema',

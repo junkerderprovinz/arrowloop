@@ -273,7 +273,17 @@ const eu: Translations = {
   'window.close': 'Itxitakoan jakinarazpen-eremuan martxan jarraitzen du',
   'window.closeHint': 'Leihoaren izkinako X-ak orduan leihoa bakarrik ezkutatzen du, eta zure lanek beren ordutegian jarraitzen dute. ArrowLoop amaitzeko, aukeratu «Irten» ikonoaren menuan. Lehenespenez itzalita, beraz X-ak programa amaitzen du espero bezala.',
   'window.minimise': 'Jakinarazpen-eremura minimizatuta',
-  'window.minimiseHint': 'Minimizatzeak leihoa ataza-barratik ateratzen du eta jakinarazpen-eremuan itxaroten uzten du. Ikonoan klik batek itzultzen du.',
+  'window.minimiseHint': 'Minimizatzeak leihoa ataza-barratik ateratzen du eta jakinarazpen-eremuan itxaroten uzten du. Ikonoan klik bikoitz batek, edo haren menuko «Ireki» aukerak, itzultzen du.',
+
+  'tray.open': 'Ireki',
+  'tray.syncNow': 'Behartu sinkronizazioa',
+  'tray.pause': 'Pausatu sinkronizazioa',
+  'tray.resume': 'Berrekin sinkronizazioari',
+  'tray.quit': 'Irten',
+  'tray.paused': 'Sinkronizazioa pausatuta dago',
+  'tray.running': 'martxan dauden lanak: {count}',
+  'tray.done': 'eginda',
+  'activity.recent': 'Azken exekuzioak',
 
   'start.title': 'Abioa',
   'start.withSystem': 'Hasi sistemarekin',

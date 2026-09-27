@@ -273,7 +273,17 @@ const es: Translations = {
   'window.close': 'Seguir ejecutándose en el área de notificación al cerrar',
   'window.closeHint': 'La X de la esquina de la ventana entonces solo oculta la ventana, y tus tareas siguen su horario con normalidad. Para cerrar ArrowLoop, elige «Salir» en el menú del icono. Desactivado por omisión, así que la X cierra el programa como esperarías.',
   'window.minimise': 'Minimizada al área de notificación',
-  'window.minimiseHint': 'Minimizar saca la ventana de la barra de tareas y la deja esperando en el área de notificación. Un clic en el icono la trae de vuelta.',
+  'window.minimiseHint': 'Minimizar saca la ventana de la barra de tareas y la deja esperando en el área de notificación. Un doble clic en el icono, o «Abrir» en su menú, la trae de vuelta.',
+
+  'tray.open': 'Abrir',
+  'tray.syncNow': 'Forzar sincronización',
+  'tray.pause': 'Pausar sincronización',
+  'tray.resume': 'Reanudar sincronización',
+  'tray.quit': 'Salir',
+  'tray.paused': 'La sincronización está en pausa',
+  'tray.running': 'trabajos en curso: {count}',
+  'tray.done': 'hecho',
+  'activity.recent': 'Últimas ejecuciones',
 
   'start.title': 'Inicio',
   'start.withSystem': 'Iniciar con el sistema',

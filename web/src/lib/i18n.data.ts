@@ -499,7 +499,17 @@ export const en = {
   'window.closeHint':
     'The X in the corner of the window then only hides the window, and your jobs keep running on their schedules. To end ArrowLoop, choose Quit in the icon\'s menu. Off by default, so the X ends the program as you would expect.',
   'window.minimise': 'Minimised to the notification area',
-  'window.minimiseHint': 'Minimising takes the window out of the taskbar and leaves it waiting in the notification area. A click on the icon brings it back.',
+  'window.minimiseHint': 'Minimising takes the window out of the taskbar and leaves it waiting in the notification area. A double click on the icon, or Open in its menu, brings it back.',
+
+  'tray.open': 'Open',
+  'tray.syncNow': 'Force sync',
+  'tray.pause': 'Pause sync',
+  'tray.resume': 'Resume sync',
+  'tray.quit': 'Quit',
+  'tray.paused': 'Sync is paused',
+  'tray.running': 'jobs running: {count}',
+  'tray.done': 'done',
+  'activity.recent': 'Last runs',
 
   'start.title': 'Starting',
   'start.withSystem': 'Start with the system',
@@ -1264,7 +1274,17 @@ export const de: Translations = {
   'window.closeHint':
     'Das X in der Fensterecke blendet dann nur das Fenster aus, und deine Aufträge laufen nach ihren Zeitplänen weiter. Beenden kannst du ArrowLoop dann über „Beenden“ im Menü des Symbols. Standardmäßig aus, dann beendet das X das Programm wie gewohnt.',
   'window.minimise': 'Minimiert in den Infobereich',
-  'window.minimiseHint': 'Beim Minimieren verschwindet das Fenster aus der Taskleiste und wartet im Infobereich. Ein Klick auf das Symbol holt es zurück.',
+  'window.minimiseHint': 'Beim Minimieren verschwindet das Fenster aus der Taskleiste und wartet im Infobereich. Ein Doppelklick auf das Symbol oder „Öffnen“ in seinem Menü holt es zurück.',
+
+  'tray.open': 'Öffnen',
+  'tray.syncNow': 'Sync erzwingen',
+  'tray.pause': 'Sync pausieren',
+  'tray.resume': 'Sync fortsetzen',
+  'tray.quit': 'Beenden',
+  'tray.paused': 'Sync ist pausiert',
+  'tray.running': 'laufende Aufträge: {count}',
+  'tray.done': 'fertig',
+  'activity.recent': 'Letzte Läufe',
 
   'start.title': 'Programmstart',
   'start.withSystem': 'Mit dem System starten',

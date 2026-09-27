@@ -273,7 +273,17 @@ const vi: Translations = {
   'window.close': 'Đóng lại vẫn tiếp tục chạy ở khu thông báo',
   'window.closeHint': 'Nút X ở góc cửa sổ khi đó chỉ ẩn cửa sổ đi, còn các công việc của bạn vẫn chạy đúng lịch. Để thoát ArrowLoop, chọn “Thoát” trong menu của biểu tượng. Mặc định tắt, nên nút X sẽ thoát chương trình như bạn mong đợi.',
   'window.minimise': 'Thu nhỏ vào khu thông báo',
-  'window.minimiseHint': 'Thu nhỏ đưa cửa sổ ra khỏi thanh tác vụ và để nó chờ ở khu thông báo. Nhấp vào biểu tượng sẽ gọi nó trở lại.',
+  'window.minimiseHint': 'Thu nhỏ đưa cửa sổ ra khỏi thanh tác vụ và để nó chờ ở khu thông báo. Nhấp đúp vào biểu tượng, hoặc chọn “Mở” trong menu của nó, sẽ gọi nó trở lại.',
+
+  'tray.open': 'Mở',
+  'tray.syncNow': 'Buộc đồng bộ',
+  'tray.pause': 'Tạm dừng đồng bộ',
+  'tray.resume': 'Tiếp tục đồng bộ',
+  'tray.quit': 'Thoát',
+  'tray.paused': 'Đồng bộ đang tạm dừng',
+  'tray.running': 'công việc đang chạy: {count}',
+  'tray.done': 'xong',
+  'activity.recent': 'Lần chạy gần đây',
 
   'start.title': 'Khởi động',
   'start.withSystem': 'Khởi động cùng hệ thống',

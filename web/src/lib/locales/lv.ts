@@ -273,7 +273,17 @@ const lv: Translations = {
   'window.close': 'Aizverot turpina darboties paziņojumu apgabalā',
   'window.closeHint': 'Loga stūrī esošais X tad tikai paslēpj logu, un tavi darbi turpinās pēc sava grafika. Lai aizvērtu ArrowLoop, ikonas izvēlnē izvēlies „Iziet“. Pēc noklusējuma izslēgts, tāpēc X aizver programmu, kā gaidīts.',
   'window.minimise': 'Minimizēts uz paziņojumu apgabalu',
-  'window.minimiseHint': 'Minimizējot logs pazūd no uzdevumjoslas un gaida paziņojumu apgabalā. Klikšķis uz ikonas to atgriež.',
+  'window.minimiseHint': 'Minimizējot logs pazūd no uzdevumjoslas un gaida paziņojumu apgabalā. Dubultklikšķis uz ikonas vai „Atvērt“ tās izvēlnē to atgriež.',
+
+  'tray.open': 'Atvērt',
+  'tray.syncNow': 'Piespiedu sinhronizācija',
+  'tray.pause': 'Apturēt sinhronizāciju',
+  'tray.resume': 'Atsākt sinhronizāciju',
+  'tray.quit': 'Iziet',
+  'tray.paused': 'Sinhronizācija ir apturēta',
+  'tray.running': 'aktīvie uzdevumi: {count}',
+  'tray.done': 'gatavs',
+  'activity.recent': 'Pēdējās palaišanas',
 
   'start.title': 'Palaišana',
   'start.withSystem': 'Palaist kopā ar sistēmu',

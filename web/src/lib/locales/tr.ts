@@ -273,7 +273,17 @@ const tr: Translations = {
   'window.close': 'Kapatıldığında bildirim alanında çalışmaya devam eder',
   'window.closeHint': 'Pencerenin köşesindeki X artık yalnızca pencereyi gizler, işlerin ise zamanlamasına göre çalışmaya devam eder. ArrowLoop\'u kapatmak için simgenin menüsünden "Çıkış"ı seç. Varsayılan olarak kapalı, bu yüzden X programı beklediğin gibi kapatır.',
   'window.minimise': 'Bildirim alanına küçültüldü',
-  'window.minimiseHint': 'Küçültmek pencereyi görev çubuğundan çıkarır ve bildirim alanında beklemeye bırakır. Simgeye tıklamak onu geri getirir.',
+  'window.minimiseHint': 'Küçültmek pencereyi görev çubuğundan çıkarır ve bildirim alanında beklemeye bırakır. Simgeye çift tıklamak ya da menüsündeki "Aç" onu geri getirir.',
+
+  'tray.open': 'Aç',
+  'tray.syncNow': 'Eşitlemeyi zorla',
+  'tray.pause': 'Eşitlemeyi duraklat',
+  'tray.resume': 'Eşitlemeyi sürdür',
+  'tray.quit': 'Çıkış',
+  'tray.paused': 'Eşitleme duraklatıldı',
+  'tray.running': 'çalışan işler: {count}',
+  'tray.done': 'tamam',
+  'activity.recent': 'Son çalışmalar',
 
   'start.title': 'Başlatma',
   'start.withSystem': 'Sistemle birlikte başlat',

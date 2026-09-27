@@ -273,7 +273,17 @@ const ro: Translations = {
   'window.close': 'Continuă să ruleze în zona de notificare la închidere',
   'window.closeHint': 'X-ul din colțul ferestrei ascunde atunci doar fereastra, iar sarcinile tale continuă conform programării lor. Pentru a închide ArrowLoop, alege „Ieșire” din meniul pictogramei. Dezactivat implicit, deci X-ul închide programul așa cum te aștepți.',
   'window.minimise': 'Minimizată în zona de notificare',
-  'window.minimiseHint': 'Minimizarea scoate fereastra din bara de activități și o lasă să aștepte în zona de notificare. Un clic pe pictogramă o aduce înapoi.',
+  'window.minimiseHint': 'Minimizarea scoate fereastra din bara de activități și o lasă să aștepte în zona de notificare. Un dublu clic pe pictogramă sau „Deschide” din meniul ei o aduce înapoi.',
+
+  'tray.open': 'Deschide',
+  'tray.syncNow': 'Forțează sincronizarea',
+  'tray.pause': 'Pune sincronizarea pe pauză',
+  'tray.resume': 'Reia sincronizarea',
+  'tray.quit': 'Ieșire',
+  'tray.paused': 'Sincronizarea este pe pauză',
+  'tray.running': 'sarcini în desfășurare: {count}',
+  'tray.done': 'gata',
+  'activity.recent': 'Ultimele rulări',
 
   'start.title': 'Pornire',
   'start.withSystem': 'Pornește odată cu sistemul',

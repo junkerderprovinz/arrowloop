@@ -273,7 +273,17 @@ const ms: Translations = {
   'window.close': 'Terus berjalan di kawasan pemberitahuan apabila ditutup',
   'window.closeHint': 'Butang X di sudut tetingkap kemudian hanya menyembunyikan tetingkap, dan tugasan anda terus berjalan mengikut jadualnya. Untuk menutup ArrowLoop, pilih "Keluar" dalam menu ikon. Dimatikan secara lalai, jadi X menutup program seperti yang dijangka.',
   'window.minimise': 'Diminimumkan ke kawasan pemberitahuan',
-  'window.minimiseHint': 'Meminimumkan mengeluarkan tetingkap daripada bar tugas dan membiarkannya menunggu di kawasan pemberitahuan. Klik pada ikon membawanya kembali.',
+  'window.minimiseHint': 'Meminimumkan mengeluarkan tetingkap daripada bar tugas dan membiarkannya menunggu di kawasan pemberitahuan. Klik dua kali pada ikon, atau "Buka" dalam menunya, membawanya kembali.',
+
+  'tray.open': 'Buka',
+  'tray.syncNow': 'Paksa segerak',
+  'tray.pause': 'Jeda penyegerakan',
+  'tray.resume': 'Sambung penyegerakan',
+  'tray.quit': 'Keluar',
+  'tray.paused': 'Penyegerakan dijeda',
+  'tray.running': 'tugasan berjalan: {count}',
+  'tray.done': 'selesai',
+  'activity.recent': 'Larian terakhir',
 
   'start.title': 'Permulaan',
   'start.withSystem': 'Mula bersama sistem',

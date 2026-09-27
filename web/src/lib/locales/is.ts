@@ -273,7 +273,17 @@ const is: Translations = {
   'window.close': 'Heldur áfram að keyra á tilkynningasvæðinu þegar lokað er',
   'window.closeHint': 'Lokunarkrossinn í horni gluggans felur þá bara gluggann, og verkin þín halda áfram samkvæmt sinni áætlun. Til að hætta í ArrowLoop skaltu velja „Hætta“ í valmynd táknsins. Sjálfgefið af, svo krossinn hættir forritinu eins og búist er við.',
   'window.minimise': 'Minnkað á tilkynningasvæðið',
-  'window.minimiseHint': 'Þegar minnkað er fer glugginn af verkefnastikunni og bíður á tilkynningasvæðinu. Smellur á táknið sækir hann aftur.',
+  'window.minimiseHint': 'Þegar minnkað er fer glugginn af verkefnastikunni og bíður á tilkynningasvæðinu. Tvísmellur á táknið, eða „Opna“ í valmynd þess, sækir hann aftur.',
+
+  'tray.open': 'Opna',
+  'tray.syncNow': 'Þvinga samstillingu',
+  'tray.pause': 'Gera hlé á samstillingu',
+  'tray.resume': 'Halda samstillingu áfram',
+  'tray.quit': 'Hætta',
+  'tray.paused': 'Hlé er á samstillingu',
+  'tray.running': 'verk í gangi: {count}',
+  'tray.done': 'lokið',
+  'activity.recent': 'Síðustu keyrslur',
 
   'start.title': 'Ræsing',
   'start.withSystem': 'Ræsa með kerfinu',

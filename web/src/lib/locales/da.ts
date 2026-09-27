@@ -273,7 +273,17 @@ const da: Translations = {
   'window.close': 'Bliv ved med at køre i meddelelsesområdet, når vinduet lukkes',
   'window.closeHint': 'X\'et i vinduets hjørne skjuler så kun vinduet, og dine job kører videre efter deres tidsplaner. For at afslutte ArrowLoop skal du vælge „Afslut“ i ikonets menu. Slået fra fra start, så X afslutter programmet, som du forventer.',
   'window.minimise': 'Minimeret til meddelelsesområdet',
-  'window.minimiseHint': 'Minimering tager vinduet ud af proceslinjen og lader det vente i meddelelsesområdet. Et klik på ikonet henter det tilbage.',
+  'window.minimiseHint': 'Minimering tager vinduet ud af proceslinjen og lader det vente i meddelelsesområdet. Et dobbeltklik på ikonet eller „Åbn“ i dets menu henter det tilbage.',
+
+  'tray.open': 'Åbn',
+  'tray.syncNow': 'Gennemtving synkronisering',
+  'tray.pause': 'Sæt synkronisering på pause',
+  'tray.resume': 'Genoptag synkronisering',
+  'tray.quit': 'Afslut',
+  'tray.paused': 'Synkronisering er sat på pause',
+  'tray.running': 'job i gang: {count}',
+  'tray.done': 'færdig',
+  'activity.recent': 'Seneste kørsler',
 
   'start.title': 'Opstart',
   'start.withSystem': 'Start med systemet',

@@ -273,7 +273,17 @@ const zh: Translations = {
   'window.close': '关闭后仍在通知区域运行',
   'window.closeHint': '这样窗口角上的关闭按钮就只会隐藏窗口，你的任务仍按计划继续运行。要退出 ArrowLoop，在图标菜单里选择「退出」。默认关闭，所以关闭按钮会像预期那样直接退出程序。',
   'window.minimise': '最小化到通知区域',
-  'window.minimiseHint': '最小化会把窗口从任务栏移开，留在通知区域等待。点击图标可以把它找回来。',
+  'window.minimiseHint': '最小化会把窗口从任务栏移开，留在通知区域等待。双击图标，或在它的菜单里选择「打开」，可以把它找回来。',
+
+  'tray.open': '打开',
+  'tray.syncNow': '强制同步',
+  'tray.pause': '暂停同步',
+  'tray.resume': '恢复同步',
+  'tray.quit': '退出',
+  'tray.paused': '同步已暂停',
+  'tray.running': '正在运行的任务：{count}',
+  'tray.done': '完成',
+  'activity.recent': '最近运行',
 
   'start.title': '启动',
   'start.withSystem': '随系统一起启动',

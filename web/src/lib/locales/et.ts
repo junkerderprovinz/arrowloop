@@ -273,7 +273,17 @@ const et: Translations = {
   'window.close': 'Jääb sulgemisel tööle teavitusalasse',
   'window.closeHint': 'Akna nurgas olev X peidab siis ainult akna ja sinu tööd jätkuvad oma ajakava järgi. ArrowLoopi sulgemiseks vali ikooni menüüst „Välju“. Vaikimisi väljas, nii et X lõpetab programmi nagu ootad.',
   'window.minimise': 'Minimeeritud teavitusalasse',
-  'window.minimiseHint': 'Minimeerimine viib akna tegumiribalt ära ja jätab selle ootama teavitusalasse. Klõps ikoonil toob selle tagasi.',
+  'window.minimiseHint': 'Minimeerimine viib akna tegumiribalt ära ja jätab selle ootama teavitusalasse. Topeltklõps ikoonil või „Ava“ selle menüüs toob selle tagasi.',
+
+  'tray.open': 'Ava',
+  'tray.syncNow': 'Sunni sünkroonimine',
+  'tray.pause': 'Peata sünkroonimine',
+  'tray.resume': 'Jätka sünkroonimist',
+  'tray.quit': 'Välju',
+  'tray.paused': 'Sünkroonimine on peatatud',
+  'tray.running': 'töötavad tööd: {count}',
+  'tray.done': 'valmis',
+  'activity.recent': 'Viimased käivitused',
 
   'start.title': 'Käivitamine',
   'start.withSystem': 'Käivitu koos süsteemiga',

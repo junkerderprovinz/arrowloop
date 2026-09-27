@@ -273,7 +273,17 @@ const no: Translations = {
   'window.close': 'Fortsetter å kjøre i varslingsområdet når det lukkes',
   'window.closeHint': 'Krysset i hjørnet av vinduet skjuler da bare vinduet, og jobbene dine fortsetter etter planen. For å avslutte ArrowLoop velger du «Avslutt» i menyen til ikonet. Av fra start, så krysset avslutter programmet slik du forventer.',
   'window.minimise': 'Minimert til varslingsområdet',
-  'window.minimiseHint': 'Minimering tar vinduet ut av oppgavelinjen og lar det vente i varslingsområdet. Et klikk på ikonet henter det tilbake.',
+  'window.minimiseHint': 'Minimering tar vinduet ut av oppgavelinjen og lar det vente i varslingsområdet. Et dobbeltklikk på ikonet, eller «Åpne» i menyen, henter det tilbake.',
+
+  'tray.open': 'Åpne',
+  'tray.syncNow': 'Tving synkronisering',
+  'tray.pause': 'Sett synkronisering på pause',
+  'tray.resume': 'Fortsett synkronisering',
+  'tray.quit': 'Avslutt',
+  'tray.paused': 'Synkroniseringen er satt på pause',
+  'tray.running': 'jobber som kjører: {count}',
+  'tray.done': 'ferdig',
+  'activity.recent': 'Siste kjøringer',
 
   'start.title': 'Oppstart',
   'start.withSystem': 'Start med systemet',

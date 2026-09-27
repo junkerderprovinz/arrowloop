@@ -273,7 +273,17 @@ const id: Translations = {
   'window.close': 'Tetap berjalan di area notifikasi saat ditutup',
   'window.closeHint': 'Tombol X di sudut jendela lalu hanya menyembunyikan jendela, dan tugasmu tetap berjalan sesuai jadwalnya. Untuk menutup ArrowLoop, pilih "Keluar" di menu ikon. Mati secara bawaan, jadi X menutup programnya seperti yang kamu harapkan.',
   'window.minimise': 'Diminimalkan ke area notifikasi',
-  'window.minimiseHint': 'Meminimalkan mengeluarkan jendela dari bilah tugas dan membiarkannya menunggu di area notifikasi. Klik pada ikon membawanya kembali.',
+  'window.minimiseHint': 'Meminimalkan mengeluarkan jendela dari bilah tugas dan membiarkannya menunggu di area notifikasi. Klik ganda pada ikon, atau "Buka" di menunya, membawanya kembali.',
+
+  'tray.open': 'Buka',
+  'tray.syncNow': 'Paksa penyegerakan',
+  'tray.pause': 'Jeda penyegerakan',
+  'tray.resume': 'Lanjutkan penyegerakan',
+  'tray.quit': 'Keluar',
+  'tray.paused': 'Penyegerakan dijeda',
+  'tray.running': 'tugas berjalan: {count}',
+  'tray.done': 'selesai',
+  'activity.recent': 'Proses terakhir',
 
   'start.title': 'Mulai',
   'start.withSystem': 'Jalankan bersama sistem',

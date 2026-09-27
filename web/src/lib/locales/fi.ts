@@ -273,7 +273,17 @@ const fi: Translations = {
   'window.close': 'Jää käyntiin ilmoitusalueelle suljettaessa',
   'window.closeHint': 'Ikkunan kulmassa oleva X piilottaa silloin vain ikkunan, ja työsi jatkuvat aikataulujensa mukaan. Lopeta ArrowLoop valitsemalla kuvakkeen valikosta ”Lopeta”. Oletuksena pois, jolloin X sulkee ohjelman odotetusti.',
   'window.minimise': 'Pienennetty ilmoitusalueelle',
-  'window.minimiseHint': 'Pienentäminen vie ikkunan pois tehtäväpalkista ja jättää sen odottamaan ilmoitusalueelle. Kuvakkeen napsautus tuo sen takaisin.',
+  'window.minimiseHint': 'Pienentäminen vie ikkunan pois tehtäväpalkista ja jättää sen odottamaan ilmoitusalueelle. Kuvakkeen kaksoisnapsautus tai sen valikon ”Avaa” tuo sen takaisin.',
+
+  'tray.open': 'Avaa',
+  'tray.syncNow': 'Pakota synkronointi',
+  'tray.pause': 'Keskeytä synkronointi',
+  'tray.resume': 'Jatka synkronointia',
+  'tray.quit': 'Lopeta',
+  'tray.paused': 'Synkronointi on keskeytetty',
+  'tray.running': 'käynnissä olevia töitä: {count}',
+  'tray.done': 'valmis',
+  'activity.recent': 'Viimeisimmät ajot',
 
   'start.title': 'Käynnistys',
   'start.withSystem': 'Käynnisty järjestelmän mukana',

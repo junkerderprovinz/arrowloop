@@ -273,7 +273,17 @@ const nl: Translations = {
   'window.close': 'Blijft draaien in het systeemvak bij sluiten',
   'window.closeHint': 'Het kruisje in de hoek van het venster verbergt dan alleen het venster, en je taken lopen gewoon door volgens hun schema. Om ArrowLoop af te sluiten, kies je "Afsluiten" in het menu van het pictogram. Standaard uit, dus het kruisje sluit het programma zoals je verwacht.',
   'window.minimise': 'Geminimaliseerd naar het systeemvak',
-  'window.minimiseHint': 'Minimaliseren haalt het venster van de taakbalk en laat het wachten in het systeemvak. Een klik op het pictogram haalt het terug.',
+  'window.minimiseHint': 'Minimaliseren haalt het venster van de taakbalk en laat het wachten in het systeemvak. Dubbelklikken op het pictogram, of "Openen" in het menu ervan, haalt het terug.',
+
+  'tray.open': 'Openen',
+  'tray.syncNow': 'Synchronisatie forceren',
+  'tray.pause': 'Synchronisatie pauzeren',
+  'tray.resume': 'Synchronisatie hervatten',
+  'tray.quit': 'Afsluiten',
+  'tray.paused': 'Synchronisatie is gepauzeerd',
+  'tray.running': 'lopende taken: {count}',
+  'tray.done': 'klaar',
+  'activity.recent': 'Laatste runs',
 
   'start.title': 'Opstarten',
   'start.withSystem': 'Starten met het systeem',

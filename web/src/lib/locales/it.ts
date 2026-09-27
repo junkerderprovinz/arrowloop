@@ -273,7 +273,17 @@ const it: Translations = {
   'window.close': 'Resta in esecuzione nell\'area di notifica alla chiusura',
   'window.closeHint': 'La X nell\'angolo della finestra allora nasconde solo la finestra, e i tuoi lavori continuano secondo la loro pianificazione. Per chiudere ArrowLoop, scegli «Esci» dal menu dell\'icona. Disattivato di base, quindi la X chiude il programma come ti aspetti.',
   'window.minimise': 'Ridotta a icona nell\'area di notifica',
-  'window.minimiseHint': 'Ridurre a icona porta la finestra fuori dalla barra delle applicazioni e la lascia in attesa nell\'area di notifica. Un clic sull\'icona la riporta indietro.',
+  'window.minimiseHint': 'Ridurre a icona porta la finestra fuori dalla barra delle applicazioni e la lascia in attesa nell\'area di notifica. Un doppio clic sull\'icona, o «Apri» nel suo menu, la riporta indietro.',
+
+  'tray.open': 'Apri',
+  'tray.syncNow': 'Forza la sincronizzazione',
+  'tray.pause': 'Sospendi la sincronizzazione',
+  'tray.resume': 'Riprendi la sincronizzazione',
+  'tray.quit': 'Esci',
+  'tray.paused': 'La sincronizzazione è in pausa',
+  'tray.running': 'lavori in corso: {count}',
+  'tray.done': 'fatto',
+  'activity.recent': 'Ultime esecuzioni',
 
   'start.title': 'Avvio',
   'start.withSystem': 'Avvia con il sistema',

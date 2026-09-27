@@ -273,7 +273,17 @@ const ja: Translations = {
   'window.close': '閉じても通知領域で動作を続ける',
   'window.closeHint': 'ウィンドウ右上の閉じるボタン(X)はウィンドウを隠すだけになり、ジョブは予定どおり動き続けます。ArrowLoopを終了するには、アイコンのメニューから「終了」を選んでください。既定では切ってあるので、Xを押すと期待どおりプログラムが終了します。',
   'window.minimise': '最小化で通知領域へ',
-  'window.minimiseHint': '最小化するとウィンドウはタスクバーから消え、通知領域で待機します。アイコンをクリックすると元に戻ります。',
+  'window.minimiseHint': '最小化するとウィンドウはタスクバーから消え、通知領域で待機します。アイコンをダブルクリックするか、メニューの「開く」を選ぶと元に戻ります。',
+
+  'tray.open': '開く',
+  'tray.syncNow': '強制同期',
+  'tray.pause': '同期を一時停止',
+  'tray.resume': '同期を再開',
+  'tray.quit': '終了',
+  'tray.paused': '同期は一時停止中です',
+  'tray.running': '実行中のジョブ: {count}',
+  'tray.done': '完了',
+  'activity.recent': '最近の実行',
 
   'start.title': '起動',
   'start.withSystem': 'システムと一緒に起動する',

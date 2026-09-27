@@ -273,7 +273,17 @@ const gl: Translations = {
   'window.close': 'Segue funcionando na área de notificación ao pechar',
   'window.closeHint': 'O X do recuncho da xanela entón só agocha a xanela, e as túas tarefas seguen segundo o seu horario. Para pechar ArrowLoop, escolle «Saír» no menú da icona. Desactivado por defecto, así que o X pecha o programa como esperarías.',
   'window.minimise': 'Minimizada á área de notificación',
-  'window.minimiseHint': 'Minimizar saca a xanela da barra de tarefas e déixaa agardando na área de notificación. Un clic na icona tráea de volta.',
+  'window.minimiseHint': 'Minimizar saca a xanela da barra de tarefas e déixaa agardando na área de notificación. Un dobre clic na icona, ou «Abrir» no seu menú, tráea de volta.',
+
+  'tray.open': 'Abrir',
+  'tray.syncNow': 'Forzar a sincronización',
+  'tray.pause': 'Pausar a sincronización',
+  'tray.resume': 'Retomar a sincronización',
+  'tray.quit': 'Saír',
+  'tray.paused': 'A sincronización está en pausa',
+  'tray.running': 'tarefas en execución: {count}',
+  'tray.done': 'feito',
+  'activity.recent': 'Últimas execucións',
 
   'start.title': 'Inicio',
   'start.withSystem': 'Iniciar co sistema',

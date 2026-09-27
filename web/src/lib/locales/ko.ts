@@ -273,7 +273,17 @@ const ko: Translations = {
   'window.close': '닫아도 알림 영역에서 계속 실행',
   'window.closeHint': '창 모서리의 닫기 단추(X)는 이제 창만 숨기고, 작업은 예정대로 계속 실행됩니다. ArrowLoop을 종료하려면 아이콘 메뉴에서 "종료"를 선택하세요. 기본은 꺼짐이므로 X를 누르면 예상대로 프로그램이 종료됩니다.',
   'window.minimise': '최소화하면 알림 영역으로',
-  'window.minimiseHint': '최소화하면 창이 작업 표시줄에서 사라지고 알림 영역에서 대기합니다. 아이콘을 클릭하면 다시 불러옵니다.',
+  'window.minimiseHint': '최소화하면 창이 작업 표시줄에서 사라지고 알림 영역에서 대기합니다. 아이콘을 두 번 클릭하거나 메뉴에서 "열기"를 선택하면 다시 불러옵니다.',
+
+  'tray.open': '열기',
+  'tray.syncNow': '강제 동기화',
+  'tray.pause': '동기화 일시 정지',
+  'tray.resume': '동기화 다시 시작',
+  'tray.quit': '종료',
+  'tray.paused': '동기화가 일시 정지됨',
+  'tray.running': '실행 중인 작업: {count}',
+  'tray.done': '완료',
+  'activity.recent': '최근 실행',
 
   'start.title': '시작',
   'start.withSystem': '시스템과 함께 시작',

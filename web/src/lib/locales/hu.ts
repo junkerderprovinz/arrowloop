@@ -273,7 +273,17 @@ const hu: Translations = {
   'window.close': 'Bezáráskor tovább fut az értesítési területen',
   'window.closeHint': 'Az ablak sarkában lévő X ekkor csak elrejti az ablakot, a feladataid pedig a saját ütemezésük szerint futnak tovább. Az ArrowLoop bezárásához válaszd a „Kilépés” parancsot az ikon menüjében. Alapból ki, így az X a várt módon zárja be a programot.',
   'window.minimise': 'Kicsinyítve az értesítési területre',
-  'window.minimiseHint': 'A kicsinyítés kiveszi az ablakot a tálcáról, és az értesítési területen várakoztatja. Az ikonra kattintva visszahozható.',
+  'window.minimiseHint': 'A kicsinyítés kiveszi az ablakot a tálcáról, és az értesítési területen várakoztatja. Dupla kattintás az ikonra vagy a menüjében a „Megnyitás” visszahozza.',
+
+  'tray.open': 'Megnyitás',
+  'tray.syncNow': 'Szinkronizálás kényszerítése',
+  'tray.pause': 'Szinkronizálás szüneteltetése',
+  'tray.resume': 'Szinkronizálás folytatása',
+  'tray.quit': 'Kilépés',
+  'tray.paused': 'A szinkronizálás szünetel',
+  'tray.running': 'futó feladatok: {count}',
+  'tray.done': 'kész',
+  'activity.recent': 'Legutóbbi futások',
 
   'start.title': 'Indítás',
   'start.withSystem': 'Indítás a rendszerrel',

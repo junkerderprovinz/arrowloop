@@ -273,7 +273,17 @@ const ca: Translations = {
   'window.close': 'Continua executant-se a l\'àrea de notificació en tancar',
   'window.closeHint': 'La X del cantó de la finestra llavors només amaga la finestra, i les teves tasques continuen segons el seu horari. Per tancar l\'ArrowLoop, tria «Surt» al menú de la icona. Desactivat per defecte, així la X tanca el programa tal com esperes.',
   'window.minimise': 'Minimitzada a l\'àrea de notificació',
-  'window.minimiseHint': 'En minimitzar, la finestra surt de la barra de tasques i queda esperant a l\'àrea de notificació. Un clic a la icona la torna a mostrar.',
+  'window.minimiseHint': 'En minimitzar, la finestra surt de la barra de tasques i queda esperant a l\'àrea de notificació. Un doble clic a la icona, o «Obre» al seu menú, la torna a mostrar.',
+
+  'tray.open': 'Obre',
+  'tray.syncNow': 'Força la sincronització',
+  'tray.pause': 'Pausa la sincronització',
+  'tray.resume': 'Reprèn la sincronització',
+  'tray.quit': 'Surt',
+  'tray.paused': 'La sincronització està en pausa',
+  'tray.running': 'tasques en execució: {count}',
+  'tray.done': 'fet',
+  'activity.recent': 'Últimes execucions',
 
   'start.title': 'Inici',
   'start.withSystem': 'Inicia amb el sistema',

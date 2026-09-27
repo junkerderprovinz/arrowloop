@@ -273,7 +273,17 @@ const hr: Translations = {
   'window.close': 'Ostaje raditi u području obavijesti pri zatvaranju',
   'window.closeHint': 'X u kutu prozora tada samo sakriva prozor, a tvoji zadaci nastavljaju po rasporedu. Za izlazak iz ArrowLoopa odaberi „Izlaz“ u izborniku ikone. Zadano isključeno, pa X zatvara program kako i očekuješ.',
   'window.minimise': 'Smanjeno u područje obavijesti',
-  'window.minimiseHint': 'Smanjivanje izbacuje prozor iz trake sa zadacima i ostavlja ga da čeka u području obavijesti. Klik na ikonu ga vraća.',
+  'window.minimiseHint': 'Smanjivanje izbacuje prozor iz trake sa zadacima i ostavlja ga da čeka u području obavijesti. Dvoklik na ikonu ili „Otvori“ u njezinu izborniku ga vraća.',
+
+  'tray.open': 'Otvori',
+  'tray.syncNow': 'Prisilna sinkronizacija',
+  'tray.pause': 'Pauziraj sinkronizaciju',
+  'tray.resume': 'Nastavi sinkronizaciju',
+  'tray.quit': 'Izlaz',
+  'tray.paused': 'Sinkronizacija je pauzirana',
+  'tray.running': 'aktivni zadaci: {count}',
+  'tray.done': 'gotovo',
+  'activity.recent': 'Zadnja pokretanja',
 
   'start.title': 'Pokretanje',
   'start.withSystem': 'Pokreni sa sustavom',

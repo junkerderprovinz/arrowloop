@@ -273,7 +273,17 @@ const cs: Translations = {
   'window.close': 'Po zavření zůstat běžet v oznamovací oblasti',
   'window.closeHint': 'Křížek v rohu okna pak jen skryje okno a tvé úlohy dál běží podle plánu. Chceš-li ArrowLoop ukončit, zvol „Ukončit“ v nabídce ikony. Ve výchozím stavu vypnuto, takže křížek ukončí program, jak očekáváš.',
   'window.minimise': 'Minimalizováno do oznamovací oblasti',
-  'window.minimiseHint': 'Minimalizace dostane okno z hlavního panelu a nechá ho čekat v oznamovací oblasti. Klik na ikonu ho vrátí zpět.',
+  'window.minimiseHint': 'Minimalizace dostane okno z hlavního panelu a nechá ho čekat v oznamovací oblasti. Dvojklik na ikonu nebo „Otevřít“ v její nabídce ho vrátí zpět.',
+
+  'tray.open': 'Otevřít',
+  'tray.syncNow': 'Vynutit synchronizaci',
+  'tray.pause': 'Pozastavit synchronizaci',
+  'tray.resume': 'Obnovit synchronizaci',
+  'tray.quit': 'Ukončit',
+  'tray.paused': 'Synchronizace je pozastavena',
+  'tray.running': 'běžící úlohy: {count}',
+  'tray.done': 'hotovo',
+  'activity.recent': 'Poslední běhy',
 
   'start.title': 'Spuštění',
   'start.withSystem': 'Spustit se systémem',

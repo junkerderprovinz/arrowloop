@@ -25,6 +25,7 @@ import { AccentSwatches, PaletteSwatches } from './components/Swatches'
 import { About } from './components/About'
 import { SettingsBackup } from './components/SettingsBackup'
 import { Login } from './pages/Login'
+import { Activity } from './pages/Activity'
 import { Apps } from './pages/Apps'
 import { Engine } from './pages/Engine'
 import { History, Jobs } from './pages/Jobs'
@@ -42,6 +43,7 @@ import { wipeColours } from './lib/animate'
 import { useT } from './lib/i18n'
 import { getMotion, MOTION_INTENSITIES, setMotion, type MotionIntensity } from './lib/motion'
 import { wireTooltips } from './lib/tooltip'
+import { isActivityView, useTrayWords } from './lib/desk'
 
 /** The app's places, in the order the sibling apps use, settings last. */
 type Tab = 'jobs' | 'targets' | 'history' | 'settings'
@@ -106,7 +108,8 @@ export function Gate() {
 
   if (state === 'asking') return null
   if (state === 'out') return <Login onIn={ask} />
-  return <App />
+  // The desktop app's tray window loads the same page.
+  return isActivityView() ? <Activity /> : <App />
 }
 
 export function App() {
@@ -137,6 +140,7 @@ export function App() {
     sidebar: getLabelMode('sidebar'),
     tabs: getLabelMode('tabs'),
   }))
+  useTrayWords(window_ !== null, t)
 
   const refresh = useCallback(() => {
     api
