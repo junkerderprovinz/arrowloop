@@ -57,6 +57,9 @@ jobs:
       RELEASE_CERT_SHA256: 13477be473caf942e1c6d0fabee878776f32c849c2341c2541893a3474ab10e6
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          # The engine's version comes from git describe, which needs the tags.
+          fetch-depth: 0
 
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
@@ -105,12 +108,15 @@ jobs:
           CGO_ENABLED: "0"
         run: |
           set -eux
+          # The same stamp as the desktop and the container, so the About card
+          # names the release rather than "dev".
+          stamp="$(node --input-type=module -e "import { version } from './scripts/stamp.mjs'; console.log(version())")"
           for pair in "arm64:arm64-v8a" "amd64:x86_64"; do
             goarch="${pair%%:*}"
             abi="${pair##*:}"
             mkdir -p "mobile/native/jniLibs/${abi}"
             GOOS=linux GOARCH="${goarch}" go build \
-              -trimpath -ldflags="-s -w" \
+              -trimpath -ldflags="-s -w -X github.com/junkerderprovinz/arrowloop/internal/boot.Version=${stamp}" \
               -o "mobile/native/jniLibs/${abi}/libarrowloop.so" \
               ./cmd/arrowloop
           done
