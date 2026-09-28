@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { AppState, StyleSheet, View } from "react-native";
 import { speed as perSecond } from "../../../web/src/lib/speed";
 import {
   api,
@@ -17,6 +17,7 @@ import { useT, type T } from "../i18n";
 import { animateNext, useMotion } from "../motion";
 import { bytes, isAccount, ReachBadge, Room, useReach, useRoom, type Room as Space } from "../space";
 import { space } from "../theme";
+import { engine } from "../engine";
 import { useEngineStream } from "../useEngine";
 import { Badge, Body, Caption, CardHead, Empty, Fab, Floating, Meter, Mono, Page, Pair, Row, Section, Title, useHue, useTheme } from "../ui";
 import { clock } from "../clock";
@@ -426,12 +427,27 @@ function SyncStatus({ jobs, run, tally }: { jobs: Job[]; run: Run | null | "none
 /**
  * The open conflicts and the trash across every job, each opening its own list.
  * Asked for again whenever a run finishes, since a run is what adds to either.
+ * Missing file access comes first: Android grants it on a settings page, not in
+ * a dialog, and without it every job with a folder on the phone reads nothing.
  */
 function Waiting() {
   const { t } = useT();
   const nav = useNavigation<Nav<OverviewStack>>();
   const [conflicts, setConflicts] = useState<number | null>(null);
   const [trash, setTrash] = useState<{ entries: number; bytes: number } | null>(null);
+  const [access, setAccess] = useState<boolean | null>(null);
+
+  // Read again on return, since the settings page reports nothing back.
+  useEffect(() => {
+    const read = () =>
+      Promise.all([engine.storageGranted(), engine.storagePossible()]).then(
+        ([granted, possible]) => setAccess(granted || !possible),
+        () => {},
+      );
+    read();
+    const sub = AppState.addEventListener("change", (s) => s === "active" && read());
+    return () => sub.remove();
+  }, []);
 
   const load = useCallback(() => {
     api.conflicts().then(
@@ -451,6 +467,13 @@ function Waiting() {
 
   return (
     <>
+      {access === false ? (
+        <Row
+          label={t("phone.access")}
+          onPress={() => void engine.openStorageSettings().catch(() => {})}
+          control={<Badge label={t("phone.permissionDenied")} tone="warn" />}
+        />
+      ) : null}
       <Row
         label={t("nav.conflicts")}
         onPress={() => nav.navigate("Conflicts")}

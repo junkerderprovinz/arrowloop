@@ -44,13 +44,22 @@ class EngineService : Service() {
 
         // Before any work: a foreground service that does not call
         // startForeground within a few seconds is killed.
-        startForeground(
-            NOTIFICATION_ID,
-            notification(),
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-                ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
-            else 0,
-        )
+        try {
+            startForeground(
+                NOTIFICATION_ID,
+                notification(),
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+                    ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
+                else 0,
+            )
+        } catch (e: IllegalStateException) {
+            // Android 15 refuses once the day's six hours of dataSync are used
+            // up, until the app is opened again. The wake-up is skipped; the
+            // next one after that runs whatever is due.
+            Log.w(TAG, "woke and could not start: ${e.message}")
+            stopSelf()
+            return START_NOT_STICKY
+        }
 
         // Only the service that started the engine stops it; with the app open
         // the engine belongs to the screens, and stopping it would blank them.
@@ -194,6 +203,16 @@ class EngineService : Service() {
         }
         stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
+    }
+
+    /**
+     * Called by Android 15 when the dataSync time runs out mid-run. The service
+     * has to stop within seconds or the app is killed; stopping the engine ends
+     * the blocking call in work(), which reports the run as failed.
+     */
+    override fun onTimeout(startId: Int, fgsType: Int) {
+        Log.w(TAG, "Android ended the run: the day's time for background sync is used up")
+        finish()
     }
 
     override fun onDestroy() {

@@ -1,4 +1,4 @@
-import { useEffect, useSyncExternalStore } from "react";
+import { startTransition, useEffect, useState } from "react";
 
 import { DISCO_TICK_MS } from "../../web/src/lib/disco";
 import { buildLoop, colourAt } from "../../web/src/lib/discoLoop";
@@ -28,9 +28,20 @@ function subscribe(fn: () => void): () => void {
   return () => listeners.delete(fn);
 }
 
-/** The walked colours by position, rotation included, or null at rest. */
+/**
+ * The walked colours by position, rotation included, or null at rest. Frames
+ * arrive as transitions, which the next frame replaces; a store subscription
+ * renders synchronously, and frames faster than a full screen renders pile up
+ * until React stops with "Maximum update depth exceeded".
+ */
 export function useWalkedPalette(): string[] | null {
-  return useSyncExternalStore(subscribe, () => walked);
+  const [palette, setPalette] = useState(walked);
+  useEffect(() => {
+    const update = () => startTransition(() => setPalette(walked));
+    update();
+    return subscribe(update);
+  }, []);
+  return palette;
 }
 
 /**
