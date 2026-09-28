@@ -373,6 +373,8 @@ You do not have to take my word for it. The code is open and every release note 
 
 ## 13. Support this project
 
+Questions? Check the [support thread](https://forums.unraid.net/topic/200733-support-junkerderprovinz-arrowloop/). Bugs, ideas or feature requests? Please [open a GitHub issue](https://github.com/junkerderprovinz/arrowloop/issues).
+
 A one-knight job: I build it, keep it running, work through the issues and add what people ask for, until nothing is missing. It is free, with no accounts, no telemetry, no ads and no paid tier. No asterisk anywhere. Nothing readable ever leaves your own walls. Forged on evenings and weekends, with heart and stubbornness.
 
 If it has earned a place on your server or computer, toss a coin to your knight: it helps cover the costs and keeps the project alive. It also makes this knight's heart beat a little faster. Three ways below, whichever suits you.
