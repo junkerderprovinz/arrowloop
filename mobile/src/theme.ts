@@ -101,6 +101,20 @@ export const TILE = {
   paypal: { color: "#003087", ink: "#ffffff" },
   bitcoin: { color: "#f7931a", ink: "#161616" },
   github: { color: "#181717", ink: "#ffffff" },
+  windows: { color: "#0078d4", ink: "#ffffff" },
+  apple: { color: "#6e6e73", ink: "#ffffff" },
+  linux: { color: "#fcc624", ink: "#161616" },
+  docker: { color: "#1d63ed", ink: "#ffffff" },
+  zip: { color: "#4d5562", ink: "#ffffff" },
+};
+
+/**
+ * The platform marks' colours at rest, GlimStone's `--brand-*`: the dark theme
+ * lifts the Windows blue a dark tile would swallow.
+ */
+export const PLATFORM: Record<Scheme, { windows: string; docker: string }> = {
+  dark: { windows: "#2b88d8", docker: "#2396ed" },
+  light: { windows: "#0078d4", docker: "#2396ed" },
 };
 
 /**

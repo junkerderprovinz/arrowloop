@@ -7,22 +7,17 @@ import { Stack } from '../components/Shell'
 import { Card } from '../lib/glimstone/Card'
 import { BrandMark, ReadmeButton } from '../lib/glimstone/ReadmeButton'
 import { ANDROID_SVG, APPLE_SVG, DOCKER_SVG, LINUX_SVG, PLAY_SVG, UNRAID_SVG, WINDOWS_SVG, ZIP_SVG } from '../lib/appMarks'
+import { DOCKER_RUN, DOWNLOADS, sourceZip } from '../lib/downloads'
 import { followExternal } from '../lib/external'
 import { useT } from '../lib/i18n'
 
 const REPO = 'https://github.com/junkerderprovinz/arrowloop'
 
-// Every download names a file of the newest published release, so the page
-// never needs to know which version that is.
-const RELEASE = `${REPO}/releases/latest/download`
-const APK = `${RELEASE}/arrowloop-android-arm64.apk`
+const APK = DOWNLOADS.apk
 
 // Empty until the listing is live; the button then says it is coming.
 const PLAY_STORE = ''
 const UNRAID_CA = ''
-
-const DOCKER_RUN =
-  'docker run -d --name arrowloop -p 8422:8422 -v /path/to/config:/config -v /path/to/data:/data junkerderprovinz/arrowloop:latest'
 
 /**
  * Where to get ArrowLoop outside this page. The phone app is offered
@@ -166,8 +161,8 @@ function DesktopCard() {
         <ReadmeButton
           brand="windows"
           parts={[
-            { name: t('apps.windows'), sub: 'x64', href: `${RELEASE}/arrowloop-windows-amd64-installer.exe` },
-            { name: 'ARM64', sub: t('apps.windows'), href: `${RELEASE}/arrowloop-windows-arm64-installer.exe` },
+            { name: t('apps.windows'), sub: 'x64', href: DOWNLOADS.windows },
+            { name: 'ARM64', sub: t('apps.windows'), href: DOWNLOADS.windowsArm },
           ]}
           mark={<BrandMark svg={WINDOWS_SVG} />}
           markClass="glim-windows-mark"
@@ -175,13 +170,13 @@ function DesktopCard() {
         />
         <ReadmeButton
           brand="apple"
-          parts={[{ name: t('apps.macos'), sub: 'Universal', href: `${RELEASE}/arrowloop-macos-universal.dmg` }]}
+          parts={[{ name: t('apps.macos'), sub: 'Universal', href: DOWNLOADS.macos }]}
           mark={<BrandMark svg={APPLE_SVG} />}
           onLinkClick={followExternal}
         />
         <ReadmeButton
           brand="linux"
-          parts={[{ name: t('apps.linux'), sub: 'x64', href: `${RELEASE}/arrowloop-linux-amd64` }]}
+          parts={[{ name: t('apps.linux'), sub: 'x64', href: DOWNLOADS.linux }]}
           mark={<BrandMark svg={LINUX_SVG} />}
           onLinkClick={followExternal}
         />
@@ -193,10 +188,7 @@ function DesktopCard() {
 function ServerCard({ version }: { version: string }) {
   const { t } = useT()
   const [copied, setCopied] = useState(false)
-  // The source of this very version where it has a tag, the newest otherwise.
-  const zip = /^v\d+\.\d+\.\d+$/.test(version)
-    ? `${REPO}/archive/refs/tags/${version}.zip`
-    : `${REPO}/archive/refs/heads/main.zip`
+  const zip = sourceZip(version)
   return (
     <Card title={t('apps.serverTitle')} hint={t('apps.serverHint')} hueIndex={1}>
       <div className="glim-readme-btn-rows">

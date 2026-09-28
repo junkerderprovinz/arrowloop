@@ -7,7 +7,7 @@ import { heldKey } from "../deviceConditions";
 import { engine, type DeviceConditions, type DevicePolicy } from "../engine";
 import { useT } from "../i18n";
 import type { Nav, SettingsStack } from "../nav";
-import { ACCENTS, BRAND, DEFAULT_ACCENT, RAINBOW, space, text, TILE } from "../theme";
+import { ACCENTS, BRAND, DEFAULT_ACCENT, PLATFORM, RAINBOW, space, text, TILE } from "../theme";
 import {
   setAppearance,
   settings as settingsApi,
@@ -34,7 +34,9 @@ import { ColorPicker, EditableSwatch, ResetMark } from "../ColorPicker";
 import { CoffeeDonate, CryptoDonate } from "../donate";
 import { Field } from "../fields";
 import { Schedule } from "./JobEdit";
-import { CoffeeArt, DonateMark, MailMark } from "../glyphs";
+import { AppMark, CoffeeArt, DonateMark, MailMark } from "../glyphs";
+import { APPLE_SVG, DOCKER_SVG, LINUX_SVG, WINDOWS_SVG, ZIP_SVG } from "../../../web/src/lib/appMarks";
+import { DOCKER_RUN, DOWNLOADS, sourceZip } from "../../../web/src/lib/downloads";
 import {
   AxisLabel,
   Body,
@@ -58,7 +60,7 @@ export function Settings() {
   const nav = useNavigation<Nav<SettingsStack>>();
   const { t, lang } = useT();
   const look = useAppearance();
-  const { scheme, accent, accentContrast, accentInk, barLabels } = useTheme();
+  const { p, scheme, accent, accentContrast, accentInk, barLabels } = useTheme();
   const { intensity: motion } = useMotion();
   const storm = useStormUnlock();
   const leaf = useLeafUnlock();
@@ -81,6 +83,12 @@ export function Settings() {
   const [imported, setImported] = useState(0);
   const [crypto, setCrypto] = useState(false);
   const [coffee, setCoffee] = useState(false);
+  const [dockerCopied, setDockerCopied] = useState(false);
+  useEffect(() => {
+    if (!dockerCopied) return;
+    const id = setTimeout(() => setDockerCopied(false), 1800);
+    return () => clearTimeout(id);
+  }, [dockerCopied]);
 
   // The swatch a second press would open. One slot for both rows, so only one
   // ring shows at a time.
@@ -550,6 +558,64 @@ export function Settings() {
           buttons, and the versions as a footer. The links come from
           lib/donate.ts, shared with the web app. The title counts the taps for
           the loop egg, being the only part of the card with no other action. */}
+      {/* The forms of ArrowLoop a phone is not, with the web's Apps page's
+          buttons. Every download is the newest release; Unraid joins once
+          it is listed. */}
+      <Section title={t("apps.desktopTitle")} hint={t("apps.desktopHint")} hue={3}>
+        <View style={styles.readmeRow}>
+          <ReadmeButton
+            label={t("apps.windows")}
+            sub="x64"
+            tile={TILE.windows}
+            mark={(lit, ink) => <AppMark svg={WINDOWS_SVG} ink={lit ? ink : PLATFORM[scheme].windows} />}
+            onPress={() => Linking.openURL(DOWNLOADS.windows)}
+          />
+          <ReadmeButton
+            label="ARM64"
+            sub={t("apps.windows")}
+            tile={TILE.windows}
+            mark={(lit, ink) => <AppMark svg={WINDOWS_SVG} ink={lit ? ink : PLATFORM[scheme].windows} />}
+            onPress={() => Linking.openURL(DOWNLOADS.windowsArm)}
+          />
+          <ReadmeButton
+            label={t("apps.macos")}
+            sub="Universal"
+            tile={TILE.apple}
+            mark={(lit, ink) => <AppMark svg={APPLE_SVG} ink={lit ? ink : p.text} />}
+            onPress={() => Linking.openURL(DOWNLOADS.macos)}
+          />
+          <ReadmeButton
+            label={t("apps.linux")}
+            sub="x64"
+            tile={TILE.linux}
+            // Tux's beak and feet sit on the mark, so on the lit tile they
+            // take the tile's own yellow and read as holes.
+            mark={(lit, ink) => <AppMark svg={LINUX_SVG} ink={lit ? ink : p.text} cut={lit ? TILE.linux.color : undefined} />}
+            onPress={() => Linking.openURL(DOWNLOADS.linux)}
+          />
+        </View>
+      </Section>
+
+      <Section title={t("apps.serverTitle")} hint={t("apps.serverHint")} hue={4}>
+        <View style={styles.readmeRow}>
+          <ReadmeButton
+            label={t("apps.docker")}
+            sub={dockerCopied ? t("apps.copied") : t("apps.dockerSub")}
+            tile={TILE.docker}
+            hint={`${t("apps.dockerHint")} ${DOCKER_RUN}`}
+            mark={(lit, ink) => <AppMark svg={DOCKER_SVG} ink={lit ? ink : PLATFORM[scheme].docker} />}
+            onPress={() => void engine.copy(DOCKER_RUN).then(() => setDockerCopied(true))}
+          />
+          <ReadmeButton
+            label={t("apps.source")}
+            sub={t("apps.zipSub")}
+            tile={TILE.zip}
+            mark={(lit, ink) => <AppMark svg={ZIP_SVG} ink={lit ? ink : p.textSub} />}
+            onPress={() => Linking.openURL(sourceZip(version ?? ""))}
+          />
+        </View>
+      </Section>
+
       <Section title={t("about.title")} hue={2} onTitlePress={loop.tap}>
         {loop.mark}
         <Body>{t("about.body")}</Body>

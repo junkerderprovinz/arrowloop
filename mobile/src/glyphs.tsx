@@ -95,6 +95,31 @@ export function glyphNameForKey(key: string): string | undefined {
 }
 
 /**
+ * A platform mark from the web's appMarks, which are written for CSS:
+ * `currentColor`, the cut-out variable and the Unraid gradient's variables
+ * take plain colours here, since react-native-svg reads no stylesheet.
+ */
+export function AppMark({
+  svg,
+  ink,
+  cut,
+  width = 32,
+  height = 25,
+}: {
+  svg: string;
+  ink: string;
+  /** The colour of the parts that sit on the mark, such as Tux's beak. */
+  cut?: string;
+  width?: number;
+  height?: number;
+}) {
+  const xml = svg
+    .replaceAll("currentColor", ink)
+    .replace(/var\(--mark-cut, (#[0-9a-fA-F]{6})\)/g, (_, own: string) => cut ?? own);
+  return <SvgXml xml={xml} width={width} height={height} />;
+}
+
+/**
  * A brand mark, rendered whole through SvgXml since the marks use gradients,
  * clip paths and nested groups. `scheme` picks the second colour some marks
  * carry for the theme they would vanish on.
