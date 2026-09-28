@@ -698,6 +698,7 @@ export function ReadmeButton({
   hint,
   width = README_W,
   onPress,
+  soon,
 }: {
   label: string;
   /** A second, smaller line under the name. */
@@ -712,15 +713,20 @@ export function ReadmeButton({
   hint?: string;
   /** Wider than the README's where a grid gives the button its row's share. */
   width?: number;
-  onPress: () => void;
+  /** Where the route leads. Without one it is not open yet: the second line
+   *  says `soon`, the button stays unlit and the mark pales, as on the web. */
+  onPress?: () => void;
+  soon?: string;
 }) {
   const { p, corners } = useTheme();
   const press = usePress();
   const [lit, setLit] = useState(false);
-  const ink = lit ? tile.ink : p.text;
+  const shut = !onPress;
+  const ink = lit ? tile.ink : shut ? p.textSub : p.text;
   const button = (
     <AnimatedPressable
       onPress={onPress}
+      disabled={shut}
       onPressIn={() => {
         setLit(true);
         press.onPressIn();
@@ -730,7 +736,8 @@ export function ReadmeButton({
         press.onPressOut();
       }}
       accessibilityRole="button"
-      accessibilityLabel={label}
+      accessibilityLabel={shut && soon ? `${label}, ${soon}` : label}
+      accessibilityState={{ disabled: shut }}
       style={[
         styles.readme,
         {
@@ -745,14 +752,14 @@ export function ReadmeButton({
         mark(lit, ink)
       ) : (
         <>
-          <View style={styles.readmeMark}>{mark(lit, ink)}</View>
+          <View style={[styles.readmeMark, shut ? styles.readmeMarkShut : null]}>{mark(lit, ink)}</View>
           <View style={[styles.readmeName, hint ? styles.readmeNameHint : null]}>
             <Text style={[styles.readmeNameText, { color: ink }]} numberOfLines={1} adjustsFontSizeToFit>
               {label}
             </Text>
-            {sub ? (
+            {(shut ? soon : sub) ? (
               <Text style={[styles.caption, { color: ink }]} numberOfLines={1} adjustsFontSizeToFit>
-                {sub}
+                {shut ? soon : sub}
               </Text>
             ) : null}
           </View>
@@ -1132,6 +1139,7 @@ const styles = StyleSheet.create({
   readmeName: { flex: 1, justifyContent: "center", marginStart: 63, marginEnd: 10 },
   readmeNameText: { fontSize: text.body, fontWeight: "700" },
   readmeNameHint: { marginEnd: 28 },
+  readmeMarkShut: { opacity: 0.45 },
   readmeHint: { position: "absolute", top: 0, bottom: 0, end: 10, justifyContent: "center" },
 
   track: { width: 36, height: 20, padding: 2, justifyContent: "center" },

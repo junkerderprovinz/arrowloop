@@ -113,9 +113,13 @@ export function AppMark({
   width?: number;
   height?: number;
 }) {
+  // Unraid's gradient reads GlimStone's --brand-unraid-from and -to, which
+  // are the same on both themes.
   const xml = svg
     .replaceAll("currentColor", ink)
-    .replace(/var\(--mark-cut, (#[0-9a-fA-F]{6})\)/g, (_, own: string) => cut ?? own);
+    .replace(/var\(--mark-cut, (#[0-9a-fA-F]{6})\)/g, (_, own: string) => cut ?? own)
+    .replaceAll("var(--brand-unraid-from)", "#e32929")
+    .replaceAll("var(--brand-unraid-to)", "#ff8d30");
   return <SvgXml xml={xml} width={width} height={height} />;
 }
 

@@ -106,6 +106,7 @@ export const TILE = {
   linux: { color: "#fcc624", ink: "#161616" },
   docker: { color: "#1d63ed", ink: "#ffffff" },
   zip: { color: "#4d5562", ink: "#ffffff" },
+  unraid: { color: "#f15a2c", ink: "#ffffff" },
 };
 
 /**

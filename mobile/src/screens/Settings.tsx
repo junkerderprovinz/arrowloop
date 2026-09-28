@@ -35,7 +35,7 @@ import { CoffeeDonate, CryptoDonate } from "../donate";
 import { Field } from "../fields";
 import { Schedule } from "./JobEdit";
 import { AppMark, CoffeeArt, DonateMark, MailMark } from "../glyphs";
-import { APPLE_SVG, DOCKER_SVG, LINUX_SVG, WINDOWS_SVG, ZIP_SVG } from "../../../web/src/lib/appMarks";
+import { APPLE_SVG, DOCKER_SVG, LINUX_SVG, UNRAID_SVG, WINDOWS_SVG, ZIP_SVG } from "../../../web/src/lib/appMarks";
 import { DOCKER_RUN, DOWNLOADS, sourceZip } from "../../../web/src/lib/downloads";
 import {
   AxisLabel,
@@ -559,8 +559,7 @@ export function Settings() {
           lib/donate.ts, shared with the web app. The title counts the taps for
           the loop egg, being the only part of the card with no other action. */}
       {/* The forms of ArrowLoop a phone is not, with the web's Apps page's
-          buttons. Every download is the newest release; Unraid joins once
-          it is listed. */}
+          buttons. Every download is the newest release. */}
       <Section title={t("apps.desktopTitle")} hint={t("apps.desktopHint")} hue={3}>
         <View style={styles.readmeRow}>
           <ReadmeButton
@@ -598,6 +597,14 @@ export function Settings() {
 
       <Section title={t("apps.serverTitle")} hint={t("apps.serverHint")} hue={4}>
         <View style={styles.readmeRow}>
+          {/* Shown before its Community Applications entry is live, as the
+              README and the web show it, and left without a link till then. */}
+          <ReadmeButton
+            label={t("apps.unraid")}
+            tile={TILE.unraid}
+            soon={t("apps.soon")}
+            mark={() => <AppMark svg={UNRAID_SVG} ink={p.text} />}
+          />
           <ReadmeButton
             label={t("apps.docker")}
             sub={dockerCopied ? t("apps.copied") : t("apps.dockerSub")}
