@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <!--
   Unraid Community Applications support thread for ArrowLoop.
-  Structure follows the other own-app threads (featherdrop, BombVault):
-  title -> subtitle -> banner -> buttons -> What is this? -> Highlights ->
+  Structure: the app's name as the only heading -> banner -> buttons -> a
+  friendly pointer to GitHub issues -> What is this? -> Highlights ->
   Requirements -> Posting a bug report -> Credits -> disclaimer.
   The forum drops <style> and class attributes, so sizes are attributes and the
   buttons sit in a one-row table to stay side by side.
@@ -17,8 +17,7 @@
 </head>
 <body>
 
-<h1 style="text-align:center">ArrowLoop: two-way sync that shows you the plan first</h1>
-<p style="text-align:center"><em>Two folders kept in step: every change is listed before it happens, and deletions go to a trash.</em></p>
+<h1 style="text-align:center">ArrowLoop</h1>
 
 <p style="text-align:center">
   <a href="https://github.com/junkerderprovinz/arrowloop">
@@ -35,6 +34,10 @@
     </tr>
   </tbody>
 </table>
+
+<p style="text-align:center"><em>Something not working, a question or an idea? The best place for it is an issue on GitHub:
+<a href="https://github.com/junkerderprovinz/arrowloop/issues">github.com/junkerderprovinz/arrowloop/issues</a>.
+Everything stays in one place there, and nothing gets lost in a long thread.</em></p>
 
 <h2>What is this?</h2>
 <p>ArrowLoop keeps two folders in step: an Unraid share and a laptop, a share and a cloud, or two
@@ -67,7 +70,9 @@ app for Windows, macOS and Linux, and as an Android app.</p>
 </ul>
 
 <h2>Posting a bug report</h2>
-<p>Please post:</p>
+<p>A GitHub issue is the quickest way to get a problem looked at:
+<a href="https://github.com/junkerderprovinz/arrowloop/issues/new">open one here</a>. Whether you post there or
+here, these help:</p>
 <ul>
   <li>Unraid version (Settings → System Information)</li>
   <li>Image tag (<code>latest</code> or a pinned version)</li>
@@ -75,8 +80,6 @@ app for Windows, macOS and Linux, and as an Android app.</p>
   <li>The job's two sides (a local path, an SMB share, a cloud and so on), and what you expected against what happened</li>
   <li>Whether the run stopped with a message, and its text</li>
 </ul>
-<p>GitHub issues with the same info are also welcome:
-<a href="https://github.com/junkerderprovinz/arrowloop/issues">github.com/junkerderprovinz/arrowloop/issues</a></p>
 
 <h2>Credits</h2>
 <p>Built on <a href="https://rclone.org">rclone</a>, embedded as a library, which is what lets one
