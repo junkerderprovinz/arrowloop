@@ -25,6 +25,10 @@
 ArrowLoop keeps two folders in step, say a NAS share and a laptop, or a phone and a WebDAV cloud. It remembers what both sides last agreed on, so it can tell a new file from a deleted one. Every change is listed before a run, deletions go to a trash, and a run that would delete too much or finds a side suddenly empty stops instead. It runs as a Docker container, as a desktop app for Windows, macOS and Linux and as an Android app, and reaches every <a href="https://rclone.org">rclone</a> backend. Think of it as a self-hosted GoodSync.
 </p>
 
+<p align="center">
+<b>Android testers wanted.</b> ArrowLoop is on its way to Google Play, and a new developer account has to run a closed test with at least 12 testers for 14 days before an app can go public. If you have an Android phone, join <a href="https://groups.google.com/g/arrowloop-testers">the tester group</a>, then open <a href="https://play.google.com/apps/testing/design.halleluja.arrowloop">the test page</a>, tap Become a tester and install ArrowLoop from Google Play. Please keep it installed for those 14 days. Using it for real helps most, and anything that goes wrong is welcome as an <a href="https://github.com/junkerderprovinz/arrowloop/issues">issue</a>.
+</p>
+
 <!-- download-buttons: written by scripts/gen_download_buttons.py -->
 <p align="center">
   <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-windows-amd64-installer.exe"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(0,0,841.9,245.3))" alt="Download for Windows" width="160" height="46.618"></a><a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-windows-arm64-installer.exe"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg#svgView(viewBox(866,0,457.783,245.3))" alt="Download for Windows on ARM" width="87" height="46.618"></a>
