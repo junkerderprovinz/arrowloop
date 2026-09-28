@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<!--
+  Unraid Community Applications support thread for ArrowLoop.
+  Structure follows the other own-app threads (featherdrop, BombVault):
+  title -> subtitle -> banner -> buttons -> What is this? -> Highlights ->
+  Requirements -> Posting a bug report -> Credits -> disclaimer.
+  The forum drops <style> and class attributes, so sizes are attributes and the
+  buttons sit in a one-row table to stay side by side.
+  Paste into the Unraid forum editor's source view.
+  Title: [Support] junkerderprovinz - ArrowLoop
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>[Support] junkerderprovinz - ArrowLoop</title>
+</head>
+<body>
+
+<h1 style="text-align:center">ArrowLoop: two-way sync that shows you the plan first</h1>
+<p style="text-align:center"><em>Two folders kept in step: every change is listed before it happens, and deletions go to a trash.</em></p>
+
+<p style="text-align:center">
+  <a href="https://github.com/junkerderprovinz/arrowloop">
+    <img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/banner-logo.png" alt="ArrowLoop" width="100%">
+  </a>
+</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td><p><a href="https://ca.unraid.net/apps?q=arrowloop"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/support-buttons/install-on-unraid.svg" alt="Install on Unraid" width="240"></a></p></td>
+      <td><p><a href="https://github.com/junkerderprovinz/arrowloop"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/support-buttons/view-on-github.svg" alt="View on GitHub" width="240"></a></p></td>
+      <td><p><a href="https://buymeacoffee.com/junkerderprovinz"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/support-buttons/buy-me-a-coffee.svg" alt="Buy me a coffee" width="240"></a></p></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>What is this?</h2>
+<p>ArrowLoop keeps two folders in step: an Unraid share and a laptop, a share and a cloud, or two
+servers. It remembers what both sides last agreed on, so it can tell a file that is new on one
+side from one that was deleted on the other. Before a run it lists every change with its
+direction and its reason; untick what you disagree with, and nothing is touched until you start
+it. It reaches every <a href="https://rclone.org">rclone</a> backend, compiled in rather than
+shelled out to: local folders and shares, SMB, SFTP, S3-compatible storage, WebDAV clouds such
+as Nextcloud and OpenCloud, and the rest. The same engine runs as this container, as a desktop
+app for Windows, macOS and Linux, and as an Android app.</p>
+
+<h2>Highlights</h2>
+<ul>
+  <li>Every change is listed before a run, and single ones can be dropped</li>
+  <li>Deletions go to a trash on the side that loses the file, never straight away</li>
+  <li>A run that would delete more than half the known files stops and says so, and a side that suddenly lists nothing is refused, because an unmounted disk looks exactly like an emptied folder</li>
+  <li>An edit on both sides keeps both versions, and an edit beats a deletion</li>
+  <li>Schedules, real-time watching, scripts before and after a run, and a notification when a run fails</li>
+  <li>Encryption at the destination through rclone's crypt</li>
+  <li>A password, two-factor authentication and passkeys for the WebUI, under Settings, Security</li>
+  <li>42 languages, light and dark themes</li>
+  <li>Images: <code>junkerderprovinz/arrowloop:latest</code> on Docker Hub and <code>ghcr.io/junkerderprovinz/arrowloop:latest</code>, for amd64 and arm64</li>
+</ul>
+
+<h2>Requirements</h2>
+<ul>
+  <li>Unraid 6.10+</li>
+  <li>Keep the WebUI on your LAN until you set a password under Settings, Security: until then anyone who can reach it can start a sync that deletes files</li>
+  <li>The Data path is mounted read-write, because a two-way job writes to both sides</li>
+</ul>
+
+<h2>Posting a bug report</h2>
+<p>Please post:</p>
+<ul>
+  <li>Unraid version (Settings → System Information)</li>
+  <li>Image tag (<code>latest</code> or a pinned version)</li>
+  <li>Output of <code>docker logs --tail 200 ArrowLoop</code></li>
+  <li>The job's two sides (a local path, an SMB share, a cloud and so on), and what you expected against what happened</li>
+  <li>Whether the run stopped with a message, and its text</li>
+</ul>
+<p>GitHub issues with the same info are also welcome:
+<a href="https://github.com/junkerderprovinz/arrowloop/issues">github.com/junkerderprovinz/arrowloop/issues</a></p>
+
+<h2>Credits</h2>
+<p>Built on <a href="https://rclone.org">rclone</a>, embedded as a library, which is what lets one
+engine reach every backend. If ArrowLoop keeps your files where they belong, you can
+<a href="https://buymeacoffee.com/junkerderprovinz">buy me a coffee</a>.</p>
+
+<hr>
+
+<p style="text-align:center"><em>Self-hosted, AGPL-3.0 licensed: you run it, you own your data and the responsibility.</em></p>
+
+</body>
+</html>
