@@ -1,0 +1,3 @@
+• Disco mode no longer closes the app a few seconds after opening.
+• A scheduled sync no longer crashes the app when Android's daily limit for background sync is used up; the wake-up is skipped instead.
+• A fresh install points out missing file access on the overview, and a tap opens Android's page for it.
