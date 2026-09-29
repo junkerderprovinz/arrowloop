@@ -41,6 +41,13 @@ function withNativeSources(config) {
       const res = path.join(root, "app", "src", "main", "res");
       copyTree(path.join(from, "res"), res);
 
+      // F-Droid scans the tree after prebuild and rejects any binary it finds,
+      // so its recipe compiles the engine afterwards and puts it into android/
+      // itself.
+      if (process.env.ARROWLOOP_ENGINE_AFTER_PREBUILD) {
+        return cfg;
+      }
+
       // The engine binary is gitignored and comes from `go build` or a CI
       // artefact. Gradle packages an empty jniLibs without complaint, so a
       // missing engine has to fail here.
@@ -423,7 +430,22 @@ function withLegacyPackaging(config) {
   });
 }
 
+/**
+ * Puts back android/app/.gitkeep, the one committed file under android/:
+ * F-Droid checks that the build directory exists before it runs prebuild.
+ */
+function withKeptAppDir(config) {
+  return withDangerousMod(config, [
+    "android",
+    (cfg) => {
+      fs.writeFileSync(path.join(cfg.modRequest.platformProjectRoot, "app", ".gitkeep"), "");
+      return cfg;
+    },
+  ]);
+}
+
 module.exports = function withEngine(config) {
+  config = withKeptAppDir(config);
   config = withNativeSources(config);
   config = withPackageRegistered(config);
   config = withEngineManifest(config);
