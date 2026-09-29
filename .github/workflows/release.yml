@@ -118,6 +118,28 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: bash .github/scripts/publish-release.sh dist/*
 
+  # Every released bundle goes to the closed test. Production stays a separate
+  # step, taken in the Play Console or by hand with the same script.
+  play:
+    needs: publish
+    if: github.event_name == 'push' && github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: arrowloop-play
+          path: play
+
+      - name: Upload to the closed test
+        env:
+          PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+        run: node .github/scripts/play-upload.mjs play/arrowloop-play.aab alpha
+
   # `latest` on the image means the newest released version. It follows the
   # answer publish-release.sh gave for the "Latest" badge, so a version whose
   # release never came out cannot take it and re-cutting an older one cannot
