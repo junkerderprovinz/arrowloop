@@ -41,6 +41,13 @@ function withNativeSources(config) {
       const res = path.join(root, "app", "src", "main", "res");
       copyTree(path.join(from, "res"), res);
 
+      // F-Droid scans the tree after prebuild and rejects any binary it finds,
+      // so its recipe compiles the engine afterwards and puts it into android/
+      // itself.
+      if (process.env.ARROWLOOP_ENGINE_AFTER_PREBUILD) {
+        return cfg;
+      }
+
       // The engine binary is gitignored and comes from `go build` or a CI
       // artefact. Gradle packages an empty jniLibs without complaint, so a
       // missing engine has to fail here.
