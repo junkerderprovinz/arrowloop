@@ -1,4 +1,4 @@
-package design.halleluja.arrowloop
+package arrowloop.halleluja.design
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -281,7 +281,7 @@ class EngineService : Service() {
         /** Fixed ids, so the latest run replaces the previous notification. */
         const val DONE_ID = 2
         const val FAILED_ID = 3
-        const val ACTION_STOP = "design.halleluja.arrowloop.STOP"
+        const val ACTION_STOP = "arrowloop.halleluja.design.STOP"
 
         /** Starts the service to run whatever is due. Only a wake-up calls this. */
         fun runDue(context: Context) {

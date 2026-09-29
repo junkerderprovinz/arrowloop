@@ -14,7 +14,7 @@ const {
 // package registration, the manifest entries, uncompressed packaging for the
 // engine binary, and the signing keys.
 
-const PACKAGE = "design.halleluja.arrowloop";
+const PACKAGE = "arrowloop.halleluja.design";
 
 /**
  * The engine's filename. Android 10 and later only execute files from the

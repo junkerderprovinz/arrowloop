@@ -1,4 +1,4 @@
-package design.halleluja.arrowloop
+package arrowloop.halleluja.design
 
 import android.content.Context
 import android.net.ConnectivityManager

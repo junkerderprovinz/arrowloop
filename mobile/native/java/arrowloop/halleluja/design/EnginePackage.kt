@@ -1,4 +1,4 @@
-package design.halleluja.arrowloop
+package arrowloop.halleluja.design
 
 import android.view.View
 import com.facebook.react.ReactPackage

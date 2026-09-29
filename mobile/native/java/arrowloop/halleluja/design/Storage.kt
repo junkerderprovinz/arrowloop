@@ -1,4 +1,4 @@
-package design.halleluja.arrowloop
+package arrowloop.halleluja.design
 
 import android.Manifest
 import android.content.Context

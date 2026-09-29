@@ -26,7 +26,7 @@ ArrowLoop keeps two folders in step, say a NAS share and a laptop, or a phone an
 </p>
 
 <p align="center">
-<b>Android testers wanted.</b> ArrowLoop is on its way to Google Play, and a new developer account has to run a closed test with at least 12 testers for 14 days before an app can go public. If you have an Android phone, join <a href="https://groups.google.com/g/arrowloop-testers">the tester group</a>, then open <a href="https://play.google.com/apps/testing/design.halleluja.arrowloop">the test page</a>, tap Become a tester and install ArrowLoop from Google Play. Please keep it installed for those 14 days. Using it for real helps most, and anything that goes wrong is welcome as an <a href="https://github.com/junkerderprovinz/arrowloop/issues">issue</a>.
+<b>Android testers wanted.</b> ArrowLoop is on its way to Google Play, and a new developer account has to run a closed test with at least 12 testers for 14 days before an app can go public. If you have an Android phone, join <a href="https://groups.google.com/g/arrowloop-testers">the tester group</a>, then open <a href="https://play.google.com/apps/testing/arrowloop.halleluja.design">the test page</a>, tap Become a tester and install ArrowLoop from Google Play. Please keep it installed for those 14 days. Using it for real helps most, and anything that goes wrong is welcome as an <a href="https://github.com/junkerderprovinz/arrowloop/issues">issue</a>.
 </p>
 
 <!-- download-buttons: written by scripts/gen_download_buttons.py -->

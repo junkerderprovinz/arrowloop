@@ -1,4 +1,4 @@
-package design.halleluja.arrowloop
+package arrowloop.halleluja.design
 
 import android.app.job.JobInfo
 import android.app.job.JobScheduler

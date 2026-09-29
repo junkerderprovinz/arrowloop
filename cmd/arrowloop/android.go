@@ -18,7 +18,7 @@ import (
 // paths; both sit behind framework APIs only Java can call. Without a resolver
 // Go asks one on localhost and every lookup fails with "connection refused".
 // The app passes what it found in environment variables (see
-// mobile/native/java/design/halleluja/arrowloop/Engine.kt), and this file
+// mobile/native/java/arrowloop/halleluja/design/Engine.kt), and this file
 // turns them into settings the runtime honours.
 
 // dnsVar holds the nameservers the app found, comma-separated, IP only.
