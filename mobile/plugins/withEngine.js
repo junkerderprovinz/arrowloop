@@ -423,7 +423,22 @@ function withLegacyPackaging(config) {
   });
 }
 
+/**
+ * Puts back android/app/.gitkeep, the one committed file under android/:
+ * F-Droid checks that the build directory exists before it runs prebuild.
+ */
+function withKeptAppDir(config) {
+  return withDangerousMod(config, [
+    "android",
+    (cfg) => {
+      fs.writeFileSync(path.join(cfg.modRequest.platformProjectRoot, "app", ".gitkeep"), "");
+      return cfg;
+    },
+  ]);
+}
+
 module.exports = function withEngine(config) {
+  config = withKeptAppDir(config);
   config = withNativeSources(config);
   config = withPackageRegistered(config);
   config = withEngineManifest(config);
