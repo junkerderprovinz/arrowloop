@@ -10,6 +10,13 @@ The full notes for each release are in
 
 ## Unreleased
 
+## 1.5.1 - 2026-09-30
+
+## ⚡ Improved
+
+- **F-Droid can build ArrowLoop from source.** F-Droid builds every app itself and refuses a source tree with prebuilt binaries in it. The Android project keeps its release version in `mobile/app.json`, where F-Droid reads it, and the engine can be compiled after the Android project is generated.
+- **The store listings call the app just ArrowLoop.**
+
 ## 1.5.0 - 2026-09-29
 
 ## ⚡ Improved
