@@ -10,7 +10,11 @@ The full notes for each release are in
 
 ## Unreleased
 
-## 1.4.1 - 2026-09-28
+## 1.5.0 - 2026-09-29
+
+## ⚡ Improved
+
+- **The Android app is `arrowloop.halleluja.design`.** The same pattern as the other apps. Android treats a new package name as a different app, so this version installs next to an older one instead of replacing it. To keep your jobs and targets, export them under Settings, Back up and restore settings in the old app, import the file in the new one, then uninstall the old app.
 
 ## 🐛 Fixed
 

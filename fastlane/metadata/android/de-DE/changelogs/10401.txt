@@ -1,3 +1,0 @@
-• Mit Disco schließt sich die App nicht mehr nach ein paar Sekunden.
-• Ein geplanter Abgleich bringt die App nicht mehr zum Absturz, wenn Androids Tageslimit für Hintergrund-Sync verbraucht ist; der Weckruf wird dann übersprungen.
-• Nach einer frischen Installation zeigt die Übersicht an, dass der Dateizugriff fehlt, und ein Tippen öffnet die Android-Seite dafür.

@@ -119,10 +119,12 @@ jobs:
         run: bash .github/scripts/publish-release.sh dist/*
 
   # Every released bundle goes to the closed test. Production stays a separate
-  # step, taken in the Play Console or by hand with the same script.
+  # step, taken in the Play Console or by hand with the same script. The first
+  # bundle of a new Play entry has to go through the Console, since only its
+  # dialog takes over the release key, so the step waits for PLAY_UPLOAD.
   play:
     needs: publish
-    if: github.event_name == 'push' && github.ref_type == 'tag'
+    if: github.event_name == 'push' && github.ref_type == 'tag' && vars.PLAY_UPLOAD == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:

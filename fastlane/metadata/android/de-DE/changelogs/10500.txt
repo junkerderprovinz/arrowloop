@@ -1,0 +1,4 @@
+• Neuer Paketname arrowloop.halleluja.design. Die App installiert sich neben einer älteren ArrowLoop: Einstellungen in der alten App exportieren, in der neuen importieren, dann die alte deinstallieren.
+• Mit Disco schließt sich die App nicht mehr nach ein paar Sekunden.
+• Ein geplanter Abgleich bringt die App nicht mehr zum Absturz, wenn Androids Tageslimit für Hintergrund-Sync verbraucht ist.
+• Nach einer frischen Installation zeigt die Übersicht an, dass der Dateizugriff fehlt.
