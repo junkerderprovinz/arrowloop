@@ -10,6 +10,16 @@ The full notes for each release are in
 
 ## Unreleased
 
+## 1.5.4 - 2026-09-30
+
+## 🎨 Design
+
+- **New pictures on Google Play and F-Droid.** The listing shows five dark screenshots of the app in a drawn phone, each under a short caption, and a new feature graphic, in German and English. `store/render.mjs` builds them from captures of the running app.
+
+## 🐛 Fixed
+
+- **Targets go where RCLONE_CONFIG points.** The engine is meant to follow rclone's `RCLONE_CONFIG` variable, but kept its targets in rclone's default file instead, which on a computer is the user's own `rclone.conf`. It now uses the file the variable names.
+
 ## 1.5.3 - 2026-09-30
 
 ## 🐛 Fixed
