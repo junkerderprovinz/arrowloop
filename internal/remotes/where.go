@@ -10,10 +10,11 @@ import (
 // Use puts rclone's configuration in an rclone.conf beside the engine's own
 // configuration file. rclone's default path inside a container is not on the
 // mounted volume, so every target would vanish with the next update.
-// RCLONE_CONFIG, rclone's documented override, wins.
+// RCLONE_CONFIG, rclone's documented override, wins. rclone applies it only
+// through its command line flags, so a library user has to set it itself.
 func Use(beside string) error {
-	if os.Getenv("RCLONE_CONFIG") != "" {
-		return nil
+	if env := os.Getenv("RCLONE_CONFIG"); env != "" {
+		return config.SetConfigPath(env)
 	}
 
 	dir := filepath.Dir(beside)

@@ -89,13 +89,13 @@ func TestRcloneConfigEnvWins(t *testing.T) {
 	restore := keepConfigPath(t)
 	defer restore()
 
-	t.Setenv("RCLONE_CONFIG", filepath.Join(t.TempDir(), "elsewhere.conf"))
-	before := config.GetConfigPath()
+	elsewhere := filepath.Join(t.TempDir(), "elsewhere.conf")
+	t.Setenv("RCLONE_CONFIG", elsewhere)
 	if err := Use(filepath.Join(t.TempDir(), "arrowloop.json")); err != nil {
 		t.Fatalf("Use: %v", err)
 	}
-	if config.GetConfigPath() != before {
-		t.Fatal("RCLONE_CONFIG was overridden")
+	if got := config.GetConfigPath(); got != elsewhere {
+		t.Fatalf("targets would be kept at %q, want %q from RCLONE_CONFIG", got, elsewhere)
 	}
 }
 
