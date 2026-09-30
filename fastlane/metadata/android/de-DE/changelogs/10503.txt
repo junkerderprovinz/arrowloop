@@ -1,0 +1,1 @@
+Die Engine startet auf x86_64-Geräten wie Emulatoren und Chromebooks.

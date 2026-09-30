@@ -10,6 +10,12 @@ The full notes for each release are in
 
 ## Unreleased
 
+## 1.5.3 - 2026-09-30
+
+## 🐛 Fixed
+
+- **The Android app starts on x86_64 devices.** On emulators and Chromebooks the engine stopped the moment it opened its first database, and the app only showed its error screen. The SQLite library makes file system calls that Android forbids on x86_64 and kills the process for; the engine now hands SQLite versions of those calls that Android allows. Phones with arm64 were never affected.
+
 ## 1.5.2 - 2026-09-30
 
 ## ⚡ Improved
