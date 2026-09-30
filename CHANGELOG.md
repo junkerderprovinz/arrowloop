@@ -10,6 +10,12 @@ The full notes for each release are in
 
 ## Unreleased
 
+## 1.5.2 - 2026-09-30
+
+## ⚡ Improved
+
+- **The Android app is about 5 MB smaller.** The release build runs R8, which drops the code and resources the app never uses. The arm64 APK is down to 45.7 MB.
+
 ## 1.5.1 - 2026-09-30
 
 ## ⚡ Improved
