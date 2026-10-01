@@ -2,6 +2,10 @@ package scenario
 
 import (
 	"context"
+	"crypto/md5"
+	"encoding/hex"
+	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
@@ -50,16 +54,72 @@ func TestOneWayNeverWritesToItsSource(t *testing.T) {
 		t.Errorf("the file was removed from the source: %v", err)
 	}
 
-	// A deletion on the source propagates.
+	// A deletion on the source leaves the destination's copy alone.
 	if err := os.Remove(filepath.Join(j.left, "from-the-source.txt")); err != nil {
 		t.Fatalf("remove: %v", err)
 	}
-	if _, res := j.run(t); res.Trashed != 1 {
-		t.Fatalf("a deletion on the source did not propagate: %d trashed", res.Trashed)
+	if _, res := j.run(t); res.Trashed != 0 {
+		t.Fatalf("a deletion on the source removed the destination's copy: %d trashed", res.Trashed)
+	}
+	if got := readFile(t, j.right, "from-the-source.txt"); got != "written on the left" {
+		t.Errorf("the destination's copy changed: %q", got)
 	}
 
 	if p, res := j.run(t); len(p.Actions) != 0 || res.Copied != 0 {
 		t.Fatalf("the one-way job did not settle: %d actions, %d copied", len(p.Actions), res.Copied)
+	}
+}
+
+// Move mode archives: a file deleted on the source afterwards stays on the
+// destination, which may hold its only copy.
+func TestMoveKeepsTheArchiveWhenTheSourceDeletes(t *testing.T) {
+	j := oneWay(t, plan.LeftToRight)
+	write(t, j.left, "photo.jpg", "taken before the job was switched to move")
+	write(t, j.left, "other.jpg", "keeps the side populated")
+	j.run(t)
+
+	j.opt.Compare.Mode = plan.ModeMove
+	if err := os.Remove(filepath.Join(j.left, "photo.jpg")); err != nil {
+		t.Fatalf("remove: %v", err)
+	}
+	if _, res := j.run(t); res.Trashed != 0 {
+		t.Fatalf("a deletion on the source removed the archived copy: %d trashed", res.Trashed)
+	}
+	if got := readFile(t, j.right, "photo.jpg"); got != "taken before the job was switched to move" {
+		t.Errorf("the archived copy changed: %q", got)
+	}
+}
+
+// Copy only removes nothing for a file the source deleted and the destination
+// edited either, and it stops reporting the pair once it has let go.
+func TestCopyOnlyLetsGoOfAFileTheSourceDeleted(t *testing.T) {
+	j := oneWay(t, plan.LeftToRight)
+	write(t, j.left, "notes.txt", "first")
+	write(t, j.left, "other.txt", "keeps the side populated")
+	j.run(t)
+
+	if err := os.Remove(filepath.Join(j.left, "notes.txt")); err != nil {
+		t.Fatalf("remove: %v", err)
+	}
+	write(t, j.right, "notes.txt", "edited on the destination")
+	j.run(t)
+
+	p, res := j.run(t)
+	if len(p.Actions) != 0 || res.Trashed != 0 {
+		t.Fatalf("the job did not let go of the file: %+v", p.Actions)
+	}
+	if got := readFile(t, j.right, "notes.txt"); got != "edited on the destination" {
+		t.Errorf("the destination's edit is gone: %q", got)
+	}
+	if _, err := os.Stat(filepath.Join(j.left, "notes.txt")); err == nil {
+		t.Error("the file came back onto the source")
+	}
+	rows, err := j.db.All(context.Background())
+	if err != nil {
+		t.Fatalf("state: %v", err)
+	}
+	if _, kept := rows["notes.txt"]; kept {
+		t.Error("the record of a file the source deleted is still there")
 	}
 }
 
@@ -177,4 +237,224 @@ func readFile(t *testing.T, dir, name string) string {
 		t.Fatalf("read %s: %v", name, err)
 	}
 	return string(body)
+}
+
+// A file gone from both sides is forgotten in either direction, so the same
+// file put back on the destination later is left there like any other file the
+// source does not have.
+func TestOneWayForgetsAFileGoneFromBothSides(t *testing.T) {
+	for _, dir := range []plan.Direction{plan.LeftToRight, plan.RightToLeft} {
+		t.Run(dir.String(), func(t *testing.T) {
+			j := oneWay(t, dir)
+			src, dst := j.left, j.right
+			if dir == plan.RightToLeft {
+				src, dst = j.right, j.left
+			}
+			write(t, src, "gone.txt", "deleted on both sides")
+			write(t, src, "other.txt", "keeps the sides populated")
+			j.run(t)
+
+			kept := filepath.Join(dst, "gone.txt")
+			info, err := os.Stat(kept)
+			if err != nil {
+				t.Fatalf("stat: %v", err)
+			}
+			for _, root := range []string{src, dst} {
+				if err := os.Remove(filepath.Join(root, "gone.txt")); err != nil {
+					t.Fatalf("remove: %v", err)
+				}
+			}
+			j.run(t)
+
+			rows, err := j.db.All(context.Background())
+			if err != nil {
+				t.Fatalf("state: %v", err)
+			}
+			if _, stale := rows["gone.txt"]; stale {
+				t.Fatal("the record of a file gone from both sides was kept")
+			}
+
+			write(t, dst, "gone.txt", "deleted on both sides")
+			if err := os.Chtimes(kept, info.ModTime(), info.ModTime()); err != nil {
+				t.Fatalf("chtimes: %v", err)
+			}
+			if _, res := j.run(t); res.Trashed != 0 {
+				t.Fatalf("the file put back on the destination was deleted: %d trashed", res.Trashed)
+			}
+			if _, err := os.Stat(kept); err != nil {
+				t.Errorf("the file put back on the destination is gone: %v", err)
+			}
+		})
+	}
+}
+
+// A rename on the destination is undone the way a deletion there is: the source
+// file comes back under its own name, and the job then has nothing left to do.
+func TestOneWayRestoresAFileRenamedOnTheDestination(t *testing.T) {
+	for _, mode := range []plan.Mode{plan.ModeSync, plan.ModeMirror} {
+		t.Run(mode.String(), func(t *testing.T) {
+			j := oneWay(t, plan.LeftToRight)
+			j.opt.Compare.Mode = mode
+			write(t, j.left, "report.txt", "the source's report")
+			write(t, j.left, "other.txt", "keeps the side populated")
+			j.run(t)
+
+			if err := os.Rename(filepath.Join(j.right, "report.txt"), filepath.Join(j.right, "renamed.txt")); err != nil {
+				t.Fatalf("rename: %v", err)
+			}
+			j.run(t)
+
+			if got := readFile(t, j.right, "report.txt"); got != "the source's report" {
+				t.Errorf("the destination holds %q under the source's name", got)
+			}
+			if _, err := os.Stat(filepath.Join(j.left, "renamed.txt")); err == nil {
+				t.Error("the destination's rename reached the source")
+			}
+			if p, _ := j.run(t); len(p.Actions) != 0 {
+				t.Fatalf("the job did not settle: %+v", p.Actions)
+			}
+		})
+	}
+}
+
+// mirrorGuarded turns a one-way job into a mirror with the real brake.
+func mirrorGuarded(j *directed) {
+	c := plan.DefaultOptions()
+	c.QuietPeriod = 0
+	c.Direction = j.opt.Compare.Direction
+	c.Mode = plan.ModeMirror
+	j.opt.Compare = c
+}
+
+// Switching a job to mirror deletes whatever the destination gathered that the
+// source never had, and the brake weighs those deletions like any other.
+func TestMirrorDeletionsCountTowardsTheBrake(t *testing.T) {
+	j := oneWay(t, plan.LeftToRight)
+	for i := range 20 {
+		write(t, j.left, fmt.Sprintf("kept%02d.txt", i), "from the source")
+	}
+	j.run(t)
+	for i := range 30 {
+		write(t, j.right, fmt.Sprintf("extra%02d.txt", i), "only on the destination")
+	}
+	j.run(t)
+
+	mirrorGuarded(j)
+	_, _, err := engine.Once(context.Background(), j.ends, j.db, j.opt)
+	var brake *plan.BrakeError
+	if !errors.As(err, &brake) {
+		t.Fatalf("got %v, want the mass-delete brake", err)
+	}
+	if n := len(tree(t, j.right)); n != 50 {
+		t.Fatalf("the destination was damaged anyway, %d of 50 files left", n)
+	}
+}
+
+// On a first run there is no record to weigh deletions against, so a mirror
+// weighs them against what the destination holds.
+func TestFirstMirrorRunIsBraked(t *testing.T) {
+	j := oneWay(t, plan.LeftToRight)
+	mirrorGuarded(j)
+	write(t, j.left, "new.txt", "the only file on the source")
+	for i := range 30 {
+		write(t, j.right, fmt.Sprintf("old%02d.txt", i), "only on the destination")
+	}
+
+	_, _, err := engine.Once(context.Background(), j.ends, j.db, j.opt)
+	var brake *plan.BrakeError
+	if !errors.As(err, &brake) {
+		t.Fatalf("got %v, want the mass-delete brake", err)
+	}
+	if n := len(tree(t, j.right)); n != 30 {
+		t.Fatalf("the destination was damaged anyway, %d of 30 files left", n)
+	}
+}
+
+// A source that lists nothing, such as a drive that did not mount over an
+// existing folder, would have a mirror empty the destination. Five files are
+// below the brake's floor, so only the empty-side refusal protects them.
+func TestMirrorRefusesAnEmptySource(t *testing.T) {
+	j := oneWay(t, plan.LeftToRight)
+	mirrorGuarded(j)
+	for i := range 5 {
+		write(t, j.right, fmt.Sprintf("held%d.txt", i), "only on the destination")
+	}
+
+	_, _, err := engine.Once(context.Background(), j.ends, j.db, j.opt)
+	var empty *plan.EmptySideError
+	if !errors.As(err, &empty) {
+		t.Fatalf("got %v, want the empty-side refusal", err)
+	}
+	if empty.Side != plan.Left {
+		t.Errorf("blamed the %v side, want the source", empty.Side)
+	}
+	if n := len(tree(t, j.right)); n != 5 {
+		t.Fatalf("the destination was damaged anyway, %d of 5 files left", n)
+	}
+}
+
+// moving turns a one-way job into Move mode.
+func moving(t *testing.T) *directed {
+	j := oneWay(t, plan.LeftToRight)
+	j.opt.Compare.Mode = plan.ModeMove
+	return j
+}
+
+// holding lists the files on a side that hold content, wherever they sit
+// outside the trash.
+func holding(t *testing.T, root, content string) []string {
+	t.Helper()
+	sum := md5.Sum([]byte(content))
+	want := hex.EncodeToString(sum[:])
+	var out []string
+	for p, got := range tree(t, root) {
+		if got == want {
+			out = append(out, p)
+		}
+	}
+	return out
+}
+
+// A camera that starts counting again reuses a name the archive already holds.
+// The archived photo has nowhere else to live, so it is set aside rather than
+// overwritten, and the new photo still leaves the source.
+func TestMoveKeepsTheArchivedFileWhenANameComesBack(t *testing.T) {
+	j := moving(t)
+	write(t, j.left, "DCIM/IMG_0001.JPG", "the first photo")
+	j.run(t)
+	if _, err := os.Stat(filepath.Join(j.left, "DCIM", "IMG_0001.JPG")); err == nil {
+		t.Fatal("the first photo did not leave the source")
+	}
+
+	write(t, j.left, "DCIM/IMG_0001.JPG", "the second photo, after the counter reset")
+	j.run(t)
+
+	if got := readFile(t, j.right, "DCIM/IMG_0001.JPG"); got != "the second photo, after the counter reset" {
+		t.Errorf("the archive holds %q under the name", got)
+	}
+	if kept := holding(t, j.right, "the first photo"); len(kept) != 1 {
+		t.Errorf("the first photo is not kept in the archive: %v", kept)
+	}
+	if _, err := os.Stat(filepath.Join(j.left, "DCIM", "IMG_0001.JPG")); err == nil {
+		t.Error("the second photo did not leave the source")
+	}
+	if p, _ := j.run(t); len(p.Actions) != 0 {
+		t.Fatalf("the job did not settle: %+v", p.Actions)
+	}
+}
+
+// A file the destination already holds identically still leaves the source,
+// which is what Move mode is for.
+func TestMoveTakesAFileTheDestinationAlreadyHolds(t *testing.T) {
+	j := moving(t)
+	write(t, j.left, "scan.pdf", "the same scan on both sides")
+	write(t, j.right, "scan.pdf", "the same scan on both sides")
+	j.run(t)
+
+	if _, err := os.Stat(filepath.Join(j.left, "scan.pdf")); err == nil {
+		t.Error("the file stayed on the source")
+	}
+	if got := readFile(t, j.right, "scan.pdf"); got != "the same scan on both sides" {
+		t.Errorf("the destination holds %q", got)
+	}
 }

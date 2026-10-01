@@ -52,6 +52,45 @@ func TestUnicodeSpellingIsOneFile(t *testing.T) {
 	}
 }
 
+// An edit is written over the file the far side already holds, under the name
+// it has there. Written under the source's spelling, it would sit beside the
+// old one, and the two would collide on every later run.
+func TestAnEditKeepsTheFarSidesSpelling(t *testing.T) {
+	for _, dir := range []plan.Direction{plan.Both, plan.LeftToRight} {
+		t.Run(dir.String(), func(t *testing.T) {
+			j := newJob(t, quick())
+			j.opt.Compare.Direction = dir
+			write(t, j.left, composed, "the same content")
+			write(t, j.right, decomposed, "the same content")
+			write(t, j.left, "other.txt", "keeps the side populated")
+			j.sync(t)
+
+			write(t, j.left, composed, "edited on the left, and longer")
+			j.sync(t)
+
+			if got := tree(t, j.right); len(got) != 2 {
+				t.Fatalf("the right side holds %v, want the edited file under one name", keys(got))
+			}
+			if got := readFile(t, j.right, decomposed); got != "edited on the left, and longer" {
+				t.Errorf("the right side holds %q", got)
+			}
+
+			// Both ways this is carried to the left; one way it is undone.
+			write(t, j.right, decomposed, "edited on the right, longer still")
+			j.sync(t)
+			for _, side := range []string{j.left, j.right} {
+				if got := tree(t, side); len(got) != 2 {
+					t.Fatalf("a side holds %v, want the edited file under one name", keys(got))
+				}
+			}
+			p, _ := j.sync(t)
+			if len(p.Actions) != 0 || len(p.Skipped) != 0 {
+				t.Fatalf("the job did not settle: %+v, skipped %+v", p.Actions, p.Skipped)
+			}
+		})
+	}
+}
+
 // A newly excluded path must not read as a deletion.
 func TestExcludingDoesNotDelete(t *testing.T) {
 	j := newJob(t, quick())
@@ -128,6 +167,55 @@ func TestQuietPeriodPostponesAFreshFile(t *testing.T) {
 		t.Fatalf("once settled the file should copy exactly once, got %d", res.Copied)
 	}
 	requireConverged(t, j, "after the file settled")
+}
+
+// A pattern is matched against the names as the sides spell them, for the
+// record as for the listing. Matched against the folded key instead, it would
+// hide the record of a file the listing still carries, and a deletion of that
+// file would read as a new file on the other side and come back.
+func TestAPatternMatchesTheRecordAsItMatchesTheListing(t *testing.T) {
+	opt := quick()
+	fold := true
+	opt.ForceFoldCase = &fold
+	j := newJob(t, opt)
+	write(t, j.left, "IMG_1.JPG", "a photo")
+	write(t, j.left, "notes.txt", "keeps the side populated")
+	j.sync(t)
+
+	excl, err := filter.New([]string{"*.jpg"})
+	if err != nil {
+		t.Fatalf("filter: %v", err)
+	}
+	j.opt.Exclude = excl
+	if err := os.Remove(filepath.Join(j.left, "IMG_1.JPG")); err != nil {
+		t.Fatalf("remove: %v", err)
+	}
+	j.sync(t)
+
+	if _, err := os.Stat(filepath.Join(j.left, "IMG_1.JPG")); err == nil {
+		t.Fatal("the deleted file came back")
+	}
+	requireConverged(t, j, "after the deletion")
+}
+
+// A modification time years ahead comes from a wrong clock, not from a file
+// still being written, and waiting for it would postpone the file for years.
+func TestAFileStampedInTheFutureIsNotPostponed(t *testing.T) {
+	opt := quick()
+	opt.Compare.QuietPeriod = 30 * time.Second
+	j := newJob(t, opt)
+
+	write(t, j.left, "from-a-camera.jpg", "taken with the clock set to 2031")
+	future := time.Now().AddDate(5, 0, 0)
+	if err := os.Chtimes(filepath.Join(j.left, "from-a-camera.jpg"), future, future); err != nil {
+		t.Fatalf("chtimes: %v", err)
+	}
+
+	p, res := j.sync(t)
+	if res.Copied != 1 {
+		t.Fatalf("the file was not copied: %d copied, skipped %+v", res.Copied, p.Skipped)
+	}
+	requireConverged(t, j, "after the run")
 }
 
 // On a case-insensitive side one of the two files would silently overwrite

@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/rclone/rclone/fs"
+	"github.com/rclone/rclone/fs/accounting"
 	"github.com/rclone/rclone/fs/hash"
 	"github.com/rclone/rclone/fs/walk"
 
@@ -114,6 +115,8 @@ func List(ctx context.Context, f fs.Fs, opt Options) (*Listing, error) {
 
 	found := 0
 	Report(ctx, Reading{Stage: StageList})
+	stats := accounting.Stats(ctx)
+	errorsBefore := stats.GetErrors()
 	err := walk.ListR(ctx, f, "", true, -1, listType, func(entries fs.DirEntries) error {
 		defer func() { Report(ctx, Reading{Stage: StageList, Done: found}) }()
 		for _, entry := range entries {
@@ -154,10 +157,18 @@ func List(ctx context.Context, f fs.Fs, opt Options) (*Listing, error) {
 		// A side that does not exist yet is empty: the target of a new job is
 		// often a bucket or directory nobody has created. The guard against
 		// an empty side compares with the record, so it still catches a side
-		// that used to hold files.
-		if !errors.Is(err, fs.ErrorDirNotFound) {
+		// that used to hold files. The walk reports a missing folder below
+		// the root the same way, and that one is a failed listing whose files
+		// would read as deleted.
+		if !errors.Is(err, fs.ErrorDirNotFound) || exists(ctx, f) {
 			return nil, fmt.Errorf("list %s: %w", f.Name(), err)
 		}
+		return out, nil
+	}
+	// The local backend lists a folder it may not open as empty and only
+	// counts the error.
+	if stats.GetErrors() > errorsBefore {
+		return nil, fmt.Errorf("list %s: a folder could not be read: %w", f.Name(), stats.GetLastError())
 	}
 
 	for key, paths := range clashes {
@@ -177,6 +188,13 @@ func List(ctx context.Context, f fs.Fs, opt Options) (*Listing, error) {
 	}
 	sort.Slice(out.Collisions, func(i, j int) bool { return out.Collisions[i].Key < out.Collisions[j].Key })
 	return out, nil
+}
+
+// exists reports whether a side's root is there. Any answer other than "not
+// found" counts as there, so a failing backend is not taken for an empty side.
+func exists(ctx context.Context, f fs.Fs) bool {
+	_, err := f.List(ctx, "")
+	return !errors.Is(err, fs.ErrorDirNotFound)
 }
 
 // Hash returns the file's MD5, or an empty string when the backend cannot

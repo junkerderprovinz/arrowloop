@@ -1,5 +1,7 @@
 package plan
 
+import "context"
+
 // Direction is which way a job is allowed to write.
 //
 // Both sides are always compared. A one-way direction makes one side the
@@ -49,18 +51,24 @@ func (d Direction) source() Side {
 	return Left
 }
 
-// Enforce rewrites a plan so that it only writes to one side, treating the
-// source as right:
+// enforce rewrites a plan's files so that it only writes to one side, treating
+// the source as right:
 //
 //   - A copy towards the source means the destination changed; the source's
 //     version is copied back over it.
 //   - A delete on the source means the destination deleted something; it is
 //     restored from the source.
-//   - A conflict is won by the source, with nothing kept beside it.
+//   - A delete on the destination means the source deleted something. Only
+//     ModeMirror carries it over; otherwise the destination keeps its copy and
+//     the record lets go of the file.
+//   - A conflict is won by the source, with nothing kept beside it, except in
+//     ModeMove: the destination is an archive there, and its version is set
+//     aside rather than overwritten.
+//   - In ModeMove a file both sides already hold is taken off the source.
 //   - A rename on the source is dropped; the copy the same plan proposes
 //     restores the source's naming.
-//   - A file the source has never had stays, unless the mode is ModeMirror.
-func Enforce(p *Plan, dir Direction, mode Mode) {
+//   - A file the source does not have stays, unless the mode is ModeMirror.
+func enforce(ctx context.Context, p *Plan, dir Direction, mode Mode) {
 	if dir == Both {
 		return
 	}
@@ -82,19 +90,35 @@ func Enforce(p *Plan, dir Direction, mode Mode) {
 				kept = append(kept, rebuilt)
 				continue
 			}
-			// A file the source has never had.
+			// A file the source does not have.
 			if mode == ModeMirror {
 				if gone, ok := sweep(a, dst); ok {
 					kept = append(kept, gone)
 				}
+			} else if a.Prev != nil {
+				p.Forget = append(p.Forget, a.Path)
 			}
 		case Conflict:
 			if rebuilt, ok := restore(a, src, dst); ok {
+				if mode == ModeMove {
+					rebuilt.Kind = Relocate
+					rebuilt.Aside = true
+				}
 				kept = append(kept, rebuilt)
 			}
 		case Delete:
-			if a.Dst == dst {
+			// A path gone from both sides only has its record cleared, which
+			// writes to neither side.
+			if a.LeftNow == nil && a.RightNow == nil {
 				kept = append(kept, a)
+				continue
+			}
+			if a.Dst == dst {
+				if mode == ModeMirror {
+					kept = append(kept, a)
+				} else {
+					p.Forget = append(p.Forget, a.Path)
+				}
 				continue
 			}
 			if rebuilt, ok := restore(a, src, dst); ok {
@@ -114,16 +138,55 @@ func Enforce(p *Plan, dir Direction, mode Mode) {
 			}
 		}
 	}
+	if mode == ModeMove {
+		agreed := p.Agreed[:0]
+		for _, a := range p.Agreed {
+			if moved, ok := takeOff(ctx, a, src); ok {
+				kept = append(kept, moved)
+				continue
+			}
+			agreed = append(agreed, a)
+		}
+		p.Agreed = agreed
+	}
 	p.Actions = kept
+}
 
-	dirs := p.Dirs[:0]
-	for _, d := range p.Dirs {
+// takeOff rebuilds a pair both sides already hold as a Relocate from the
+// source. Only checksums that match qualify it: size and time alone could pair
+// two different files, and the copy before the removal would then overwrite
+// the destination's.
+func takeOff(ctx context.Context, a Action, src Side) (Action, bool) {
+	have, there := a.LeftNow, a.RightNow
+	if src == Right {
+		have, there = a.RightNow, a.LeftNow
+	}
+	sum := have.Hash(ctx)
+	if sum == "" || sum != there.Hash(ctx) {
+		return Action{}, false
+	}
+	a.Kind = Relocate
+	a.Src = src
+	a.Dst = src.Other()
+	a.SrcPath = have.Path
+	a.DstPath = there.Path
+	return a, true
+}
+
+// EnforceDirs drops the folder work a one-way job would do on its source.
+func EnforceDirs(dirs []DirAction, dir Direction) []DirAction {
+	if dir == Both {
+		return dirs
+	}
+	dst := dir.source().Other()
+	kept := dirs[:0]
+	for _, d := range dirs {
 		// A record refresh writes to neither side and always survives.
 		if d.Kind == RecordDir || d.Dst == dst {
-			dirs = append(dirs, d)
+			kept = append(kept, d)
 		}
 	}
-	p.Dirs = dirs
+	return kept
 }
 
 // sweep rebuilds an action as a deletion on the destination side, for a file
@@ -151,9 +214,9 @@ func sweep(a Action, dst Side) (Action, bool) {
 // restore rebuilds an action as a copy from the source side, or reports that
 // there is nothing on the source side to copy.
 func restore(a Action, src, dst Side) (Action, bool) {
-	have := a.LeftNow
+	have, there := a.LeftNow, a.RightNow
 	if src == Right {
-		have = a.RightNow
+		have, there = a.RightNow, a.LeftNow
 	}
 	if have == nil {
 		return Action{}, false
@@ -162,7 +225,7 @@ func restore(a Action, src, dst Side) (Action, bool) {
 	a.Src = src
 	a.Dst = dst
 	a.SrcPath = have.Path
-	a.DstPath = have.Path
+	a.DstPath = target(have, there)
 	a.OldDstPath = ""
 	a.Resolve = KeepBoth
 	a.Reason = because("oneWay", "side", src.String())

@@ -18,7 +18,7 @@ func TestEveryReasonThisPackageGivesIsWorded(t *testing.T) {
 	codes := []string{
 		// Given while a run is running.
 		"stepFailed", "removeDirFailed", "recordFailed",
-		"heldOpen", "heldOpenDuring", "unverified",
+		"heldOpen", "heldOpenDuring", "unverified", "changedDuring",
 		// Given while a run is deciding.
 		"goneBoth", "appearedSame", "appearedDiffer",
 	}

@@ -389,3 +389,91 @@ func TestSmallSideVanishing(t *testing.T) {
 		t.Fatalf("the right side was damaged anyway, %d files left", len(tree(t, j.right)))
 	}
 }
+
+// planned prepares a run without carrying it out, so a test can change a side
+// between the scan and the work, as a person can during a long run.
+func (j *job) planned(t *testing.T) (*plan.Plan, plan.Options) {
+	t.Helper()
+	p, compare, err := engine.Prepare(context.Background(), j.ends, j.db, j.opt)
+	if err != nil {
+		t.Fatalf("prepare: %v", err)
+	}
+	return p, compare
+}
+
+// An edit made on the far side while the run is going is not overwritten. The
+// next run sees both edits and keeps both.
+func TestAnEditDuringTheRunIsNotOverwritten(t *testing.T) {
+	j := newJob(t, quick())
+	write(t, j.left, "report.txt", "first draft")
+	j.sync(t)
+
+	write(t, j.left, "report.txt", "edited on the left before the run")
+	p, compare := j.planned(t)
+	write(t, j.right, "report.txt", "edited on the right while the run was going")
+	res, err := engine.Execute(context.Background(), j.ends, j.db, p, compare)
+	if err != nil {
+		t.Fatalf("execute: %v", err)
+	}
+	if res.Copied != 0 {
+		t.Fatalf("the copy went ahead over the new edit: %d copied", res.Copied)
+	}
+	if got := tree(t, j.right)["report.txt"]; got == tree(t, j.left)["report.txt"] {
+		t.Fatal("the edit made during the run was overwritten")
+	}
+
+	_, res = j.sync(t)
+	if res.Conflicts != 1 {
+		t.Fatalf("the next run did not see two edits: %d conflicts", res.Conflicts)
+	}
+	requireConverged(t, j, "after the conflict")
+	if n := len(tree(t, j.left)); n != 2 {
+		t.Fatalf("expected both versions kept, the left holds %d files", n)
+	}
+}
+
+// A file edited on the far side while the run is going is not thrown away for
+// a deletion planned before the edit.
+func TestAnEditDuringTheRunIsNotTrashed(t *testing.T) {
+	j := newJob(t, quick())
+	write(t, j.left, "report.txt", "first draft")
+	write(t, j.left, "other.txt", "keeps the side populated")
+	j.sync(t)
+
+	if err := os.Remove(filepath.Join(j.left, "report.txt")); err != nil {
+		t.Fatalf("remove: %v", err)
+	}
+	p, compare := j.planned(t)
+	write(t, j.right, "report.txt", "edited on the right while the run was going")
+	res, err := engine.Execute(context.Background(), j.ends, j.db, p, compare)
+	if err != nil {
+		t.Fatalf("execute: %v", err)
+	}
+	if res.Trashed != 0 {
+		t.Fatalf("the edited file was thrown away: %d trashed", res.Trashed)
+	}
+
+	j.sync(t)
+	requireConverged(t, j, "after the next run")
+	if _, ok := tree(t, j.left)["report.txt"]; !ok {
+		t.Fatal("the edit was not carried back")
+	}
+}
+
+// A file that appears on the far side under the same name while the run is
+// going is not overwritten by a copy planned before it was there.
+func TestAFileThatAppearsDuringTheRunIsNotOverwritten(t *testing.T) {
+	j := newJob(t, quick())
+	write(t, j.left, "other.txt", "keeps the side populated")
+	j.sync(t)
+
+	write(t, j.left, "new.txt", "new on the left")
+	p, compare := j.planned(t)
+	write(t, j.right, "new.txt", "new on the right while the run was going")
+	if _, err := engine.Execute(context.Background(), j.ends, j.db, p, compare); err != nil {
+		t.Fatalf("execute: %v", err)
+	}
+	if got := readFile(t, j.right, "new.txt"); got != "new on the right while the run was going" {
+		t.Fatalf("the file that appeared during the run was overwritten: %q", got)
+	}
+}

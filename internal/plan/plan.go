@@ -65,6 +65,7 @@ var reasonText = map[string]string{
 	"heldOpenAdmin":   "held open by another program on the {side} side; running with administrator rights, as a service, ArrowLoop would copy it from a shadow copy",
 	"snapshotFailed":  "held open by another program on the {side} side, and no shadow copy could be taken to read it from: {error}",
 	"unverified":      "{what} finished, but the {side} side could not produce a checksum and this job insists on one; leaving it for the next run",
+	"changedDuring":   "changed on the {side} side while this run was going, leaving it for the next run",
 	"unsupported":     "{kind} on the {side} side, which this engine does not carry",
 	"recordFailed":    "the record could not be written, leaving it for the next run: {error}",
 	"oneWay":          "this job only writes away from the {side}, so the {side} version is the one that stands",
@@ -173,6 +174,10 @@ type Action struct {
 	// Resolve applies only to a conflict. Its zero value is KeepBoth, which is
 	// what an unattended run always does.
 	Resolve Resolution
+
+	// Aside applies only to a Relocate: the destination's version is moved to
+	// a conflict name before the copy lands, because it lives nowhere else.
+	Aside bool
 }
 
 // Resolution is what to do with the two versions of a file that disagree.
@@ -233,7 +238,11 @@ type Plan struct {
 	Unchanged int
 	// Agreed lists paths that need no work but whose state row should be
 	// written, because both sides produced the same file independently.
-	Agreed  []Action
+	Agreed []Action
+	// Forget lists keys whose state row goes while both sides stay as they
+	// are, such as a file a one-way job leaves on the destination after the
+	// source deleted it.
+	Forget  []string
 	Skipped []Skip
 	// Dirs is empty unless the job syncs empty directories, which needs both
 	// sides to be able to hold one.
@@ -310,14 +319,21 @@ func (e *BrakeError) Error() string {
 }
 
 // EmptySideError is returned when a side lists nothing while the state says it
-// used to hold files. A disk that failed to mount lists empty, and believing it
-// would delete everything on the other side.
+// used to hold files, or while it is the source of a mirror whose destination
+// holds some. A disk that failed to mount lists empty, and believing it would
+// delete everything on the other side.
 type EmptySideError struct {
 	Side  Side
 	Known int
+	// Held is what the other side holds, given when there is no record.
+	Held int
 }
 
 func (e *EmptySideError) Error() string {
+	if e.Known == 0 {
+		return fmt.Sprintf("the %s side lists no files at all, and mirroring it would delete the %d files on the %s side; refusing (is it mounted?)",
+			e.Side, e.Held, e.Side.Other())
+	}
 	return fmt.Sprintf("the %s side lists no files at all, but %d were known there last time; refusing to treat this as a deletion (is it mounted?)",
 		e.Side, e.Known)
 }
@@ -358,7 +374,8 @@ func Same(a, b Facts, window time.Duration) bool {
 	return diff <= window
 }
 
-// Build compares both sides against the last agreed state.
+// Build compares both sides against the last agreed state. For a one-way job it
+// rewrites the result to write only away from the source.
 func Build(ctx context.Context, left, right *scan.Listing, prev map[string]state.Entry, opt Options) (*Plan, error) {
 	if len(prev) > 0 {
 		if len(left.Files) == 0 {
@@ -367,6 +384,14 @@ func Build(ctx context.Context, left, right *scan.Listing, prev map[string]state
 		if len(right.Files) == 0 {
 			return nil, &EmptySideError{Side: Right, Known: len(prev)}
 		}
+	}
+	mirror := opt.Direction != Both && opt.Mode == ModeMirror
+	from, to := left, right
+	if opt.Direction.source() == Right {
+		from, to = right, left
+	}
+	if mirror && len(from.Files) == 0 && len(to.Files) > 0 {
+		return nil, &EmptySideError{Side: opt.Direction.source(), Held: len(to.Files)}
 	}
 
 	out := &Plan{}
@@ -496,9 +521,17 @@ func Build(ctx context.Context, left, right *scan.Listing, prev map[string]state
 		}
 	}
 
-	detectRenames(ctx, out)
+	detectRenames(ctx, out, opt.Direction)
+	enforce(ctx, out, opt.Direction, opt.Mode)
 
-	if err := checkBrake(out, len(prev), opt); err != nil {
+	// The brake weighs the plan after enforce, which adds a mirror's
+	// deletions. With no record yet, a mirror weighs them against what the
+	// destination holds.
+	known := len(prev)
+	if known == 0 && mirror {
+		known = len(to.Files)
+	}
+	if err := checkBrake(out, known, opt); err != nil {
 		return nil, err
 	}
 	return out, nil
@@ -510,9 +543,13 @@ func settling(l, r *scan.Entry, opt Options) (Reason, bool) {
 	if opt.QuietPeriod <= 0 {
 		return Reason{}, false
 	}
-	cutoff := opt.now().Add(-opt.QuietPeriod)
+	now := opt.now()
+	cutoff := now.Add(-opt.QuietPeriod)
+	// A time further ahead than a clock a little fast would put it comes from
+	// a wrong clock, and waiting for it would postpone the file until then.
+	horizon := now.Add(opt.QuietPeriod)
 	for side, e := range map[Side]*scan.Entry{Left: l, Right: r} {
-		if e == nil || !e.Mod.After(cutoff) {
+		if e == nil || !e.Mod.After(cutoff) || e.Mod.After(horizon) {
 			continue
 		}
 		return because("settling", "side", side.String(), "period", opt.QuietPeriod.String()), true
@@ -570,15 +607,24 @@ func copyAction(base Action, from Side, reason Reason) Action {
 	base.Src = from
 	base.Dst = from.Other()
 	base.Reason = reason
-	src := base.LeftNow
+	src, there := base.LeftNow, base.RightNow
 	if from == Right {
-		src = base.RightNow
+		src, there = base.RightNow, base.LeftNow
 	}
-	// The destination gets the source's spelling, so both sides converge on
-	// one Unicode form.
 	base.SrcPath = src.Path
-	base.DstPath = src.Path
+	base.DstPath = target(src, there)
 	return base
+}
+
+// target is the name a copy writes to. A new file takes the source's spelling,
+// so both sides converge on one Unicode form. A file the destination already
+// holds keeps its name there: written under another spelling it would sit
+// beside the old one, and the two would collide on the next scan.
+func target(src, there *scan.Entry) string {
+	if there != nil {
+		return there.Path
+	}
+	return src.Path
 }
 
 func deleteAction(base Action, on Side, reason Reason) Action {
@@ -605,7 +651,11 @@ func conflictAction(base Action, reason Reason) Action {
 // move, so a renamed folder is renamed on the far side instead of uploaded
 // again. It needs a hash on both the record and the new file, since equal
 // sizes alone would pair up unrelated files.
-func detectRenames(ctx context.Context, p *Plan) {
+//
+// A rename on the destination of a one-way job is not folded: Enforce restores
+// the deleted name from the source, which it cannot do once the deletion has
+// become part of a move towards the source.
+func detectRenames(ctx context.Context, p *Plan, dir Direction) {
 	type key struct {
 		size int64
 		hash string
@@ -614,6 +664,9 @@ func detectRenames(ctx context.Context, p *Plan) {
 	for i, a := range p.Actions {
 		// A record cleanup for a path gone on both sides has no file to move.
 		if a.Kind != Delete || a.Prev == nil || (a.LeftNow == nil && a.RightNow == nil) {
+			continue
+		}
+		if dir != Both && a.Dst == dir.source() {
 			continue
 		}
 		// The recorded hash comes from the side where the rename happened,
