@@ -169,6 +169,7 @@ export function App() {
   }))
   useTrayWords(window_ !== null, t)
   useUpdateReadyToast()
+  const push = useToast()
 
   const refresh = useCallback(() => {
     api
@@ -408,8 +409,15 @@ export function App() {
           security={canSecure}
           window={window_}
           onWindow={(next) => {
+            const before = window_
             setWindow(next)
-            void api.saveWindow(next).then(setWindow)
+            api
+              .saveWindow(next)
+              .then(setWindow)
+              .catch((e: Error) => {
+                setWindow(before)
+                push(e.message, 'fail')
+              })
           }}
               lang={lang}
               onLang={setLanguage}

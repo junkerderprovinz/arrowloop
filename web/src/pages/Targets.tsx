@@ -20,6 +20,7 @@ import { bytes } from '../lib/bytes'
 import { groupStage } from '../lib/controls'
 import { isLocalTarget } from '../lib/localTarget'
 import { useT } from '../lib/i18n'
+import { useToast } from '../lib/toast'
 import { optionHint } from '../lib/optionHint'
 import { optionLabel } from '../lib/optionNames'
 import { suggestTargetName } from '../lib/targetName'
@@ -251,6 +252,7 @@ function RemoteRow({
   onChanged: () => void
 }) {
   const { t } = useT()
+  const push = useToast()
   const [checking, setChecking] = useState(false)
   const [result, setResult] = useState<{ ok: boolean; reason?: string } | null>(null)
   // How full the target is, fetched on the same press once the check has
@@ -359,7 +361,10 @@ function RemoteRow({
           onCancel={() => setConfirming(false)}
           onConfirm={() => {
             setConfirming(false)
-            void api.deleteRemote(remote.name).then(onChanged)
+            api
+              .deleteRemote(remote.name)
+              .then(onChanged)
+              .catch((e: Error) => push(e.message, 'fail'))
           }}
         />
       )}
@@ -769,6 +774,7 @@ function DriveRow({
   onChanged: () => void
 }) {
   const { t } = useT()
+  const push = useToast()
   const [copied, setCopied] = useState(false)
   const copyButton = useRef<HTMLButtonElement>(null)
   useEffect(() => {
@@ -835,7 +841,10 @@ function DriveRow({
           onCancel={() => setConfirming(false)}
           onConfirm={() => {
             setConfirming(false)
-            void api.forgetVolume(volume.id).then(onChanged)
+            api
+              .forgetVolume(volume.id)
+              .then(onChanged)
+              .catch((e: Error) => push(e.message, 'fail'))
           }}
         />
       )}

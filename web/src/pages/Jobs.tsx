@@ -26,6 +26,7 @@ import { bytes } from '../lib/bytes'
 import { entryLabel, entryNote } from '../lib/entryLabel'
 import { useLiveTick } from '../lib/liveTick'
 import { usePlaces } from '../lib/places'
+import { useToast } from '../lib/toast'
 import { api } from '../lib/api'
 import type { Direction, HistoryShow, Job, Run, RunEvent, Touch } from '../lib/api'
 import { translateSide, useT } from '../lib/i18n'
@@ -59,6 +60,7 @@ export function Jobs({
   onSaved: () => void
 }) {
   const { t } = useT()
+  const push = useToast()
 
   // Only the most recent run counts: a job that failed last week and has worked
   // since is not in trouble.
@@ -190,7 +192,10 @@ export function Jobs({
                       labelKey={j.running ? 'jobs.cancelRun' : 'jobs.runNow'}
                       hint={j.running ? undefined : t('jobs.runNowHint')}
                       hueIndex={i + 6}
-                      onClick={() => void (j.running ? api.stopJob(j.name) : api.run(j.name))}
+                      onClick={() => {
+                        const asked = j.running ? api.stopJob(j.name) : api.run(j.name)
+                        asked.catch((e: Error) => push(e.message, 'fail'))
+                      }}
                     />
                     <Menu
                       label={t('jobs.options')}

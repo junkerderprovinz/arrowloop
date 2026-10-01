@@ -3,9 +3,13 @@ import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-li
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import type { Job } from '../lib/api'
+import { ToastProvider } from '../lib/toast'
 
 const LEFT = 'C:\\Users\\somebody\\Pictures\\Camera Roll\\2024\\Holidays in the mountains\\Day three'
 const RIGHT = 'nextcloud:Photos/Archive/2024/Holidays in the mountains/Day three/Originals'
+
+const run = vi.fn((name: string) => Promise.resolve({ job: name, status: 'started' }))
+const stopJob = vi.fn((_name: string) => Promise.resolve({ stopped: true }))
 
 vi.mock('../lib/api', () => ({
   api: {
@@ -13,8 +17,8 @@ vi.mock('../lib/api', () => ({
     settings: () => Promise.resolve({}),
     volumes: () => Promise.resolve({ volumes: [] }),
     remotes: () => Promise.resolve({ remotes: [], backends: [] }),
-    run: vi.fn(),
-    stopJob: vi.fn(),
+    run: (name: string) => run(name),
+    stopJob: (name: string) => stopJob(name),
     jobTouches: () =>
       Promise.resolve([
         { Kind: 'copy', Side: 'right', Path: 'a.jpg', Note: '', Size: 10, Run: 1, Job: 'photos', When: '2027-03-01T12:00:00Z', Seq: 0 },
@@ -41,14 +45,16 @@ function job(over: Partial<Job> = {}): Job {
 
 function card(over: Partial<Job> = {}) {
   render(
-    <Jobs
-      jobs={[job(over)]}
-      runs={[]}
-      progress={{}}
-      speeds={{}}
-      onPreview={() => undefined}
-      onSaved={() => undefined}
-    />,
+    <ToastProvider>
+      <Jobs
+        jobs={[job(over)]}
+        runs={[]}
+        progress={{}}
+        speeds={{}}
+        onPreview={() => undefined}
+        onSaved={() => undefined}
+      />
+    </ToastProvider>,
   )
 }
 
@@ -138,6 +144,20 @@ describe('a job card', () => {
     const again = await pick('Check this job')
     fireEvent.keyDown(within(again).getByRole('button', { name: 'Check this job' }), { key: 'Escape' })
     expect(screen.queryByRole('region', { name: 'Check this job' })).toBeNull()
+  })
+
+  it('says why a run could not be started', async () => {
+    run.mockImplementationOnce(() => Promise.reject(new Error('this interface is password protected, log in first')))
+    card()
+    fireEvent.click(await screen.findByRole('button', { name: 'Run now' }))
+    expect(await screen.findByText('this interface is password protected, log in first')).toBeTruthy()
+  })
+
+  it('says why a run could not be cancelled', async () => {
+    stopJob.mockImplementationOnce(() => Promise.reject(new Error('Failed to fetch')))
+    card({ running: true })
+    fireEvent.click(await screen.findByRole('button', { name: 'Cancel the run' }))
+    expect(await screen.findByText('Failed to fetch')).toBeTruthy()
   })
 
   it('floats the button that adds a job outside the page', async () => {
