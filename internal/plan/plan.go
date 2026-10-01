@@ -314,14 +314,21 @@ func (e *BrakeError) Error() string {
 }
 
 // EmptySideError is returned when a side lists nothing while the state says it
-// used to hold files. A disk that failed to mount lists empty, and believing it
-// would delete everything on the other side.
+// used to hold files, or while it is the source of a mirror whose destination
+// holds some. A disk that failed to mount lists empty, and believing it would
+// delete everything on the other side.
 type EmptySideError struct {
 	Side  Side
 	Known int
+	// Held is what the other side holds, given when there is no record.
+	Held int
 }
 
 func (e *EmptySideError) Error() string {
+	if e.Known == 0 {
+		return fmt.Sprintf("the %s side lists no files at all, and mirroring it would delete the %d files on the %s side; refusing (is it mounted?)",
+			e.Side, e.Held, e.Side.Other())
+	}
 	return fmt.Sprintf("the %s side lists no files at all, but %d were known there last time; refusing to treat this as a deletion (is it mounted?)",
 		e.Side, e.Known)
 }
@@ -362,7 +369,8 @@ func Same(a, b Facts, window time.Duration) bool {
 	return diff <= window
 }
 
-// Build compares both sides against the last agreed state.
+// Build compares both sides against the last agreed state. For a one-way job it
+// rewrites the result to write only away from the source.
 func Build(ctx context.Context, left, right *scan.Listing, prev map[string]state.Entry, opt Options) (*Plan, error) {
 	if len(prev) > 0 {
 		if len(left.Files) == 0 {
@@ -371,6 +379,14 @@ func Build(ctx context.Context, left, right *scan.Listing, prev map[string]state
 		if len(right.Files) == 0 {
 			return nil, &EmptySideError{Side: Right, Known: len(prev)}
 		}
+	}
+	mirror := opt.Direction != Both && opt.Mode == ModeMirror
+	from, to := left, right
+	if opt.Direction.source() == Right {
+		from, to = right, left
+	}
+	if mirror && len(from.Files) == 0 && len(to.Files) > 0 {
+		return nil, &EmptySideError{Side: opt.Direction.source(), Held: len(to.Files)}
 	}
 
 	out := &Plan{}
@@ -501,8 +517,16 @@ func Build(ctx context.Context, left, right *scan.Listing, prev map[string]state
 	}
 
 	detectRenames(ctx, out, opt.Direction)
+	enforce(out, opt.Direction, opt.Mode)
 
-	if err := checkBrake(out, len(prev), opt); err != nil {
+	// The brake weighs the plan after enforce, which adds a mirror's
+	// deletions. With no record yet, a mirror weighs them against what the
+	// destination holds.
+	known := len(prev)
+	if known == 0 && mirror {
+		known = len(to.Files)
+	}
+	if err := checkBrake(out, known, opt); err != nil {
 		return nil, err
 	}
 	return out, nil

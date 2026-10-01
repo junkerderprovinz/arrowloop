@@ -2,6 +2,8 @@ package scenario
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
@@ -310,5 +312,81 @@ func TestOneWayRestoresAFileRenamedOnTheDestination(t *testing.T) {
 				t.Fatalf("the job did not settle: %+v", p.Actions)
 			}
 		})
+	}
+}
+
+// mirrorGuarded turns a one-way job into a mirror with the real brake.
+func mirrorGuarded(j *directed) {
+	c := plan.DefaultOptions()
+	c.QuietPeriod = 0
+	c.Direction = j.opt.Compare.Direction
+	c.Mode = plan.ModeMirror
+	j.opt.Compare = c
+}
+
+// Switching a job to mirror deletes whatever the destination gathered that the
+// source never had, and the brake weighs those deletions like any other.
+func TestMirrorDeletionsCountTowardsTheBrake(t *testing.T) {
+	j := oneWay(t, plan.LeftToRight)
+	for i := range 20 {
+		write(t, j.left, fmt.Sprintf("kept%02d.txt", i), "from the source")
+	}
+	j.run(t)
+	for i := range 30 {
+		write(t, j.right, fmt.Sprintf("extra%02d.txt", i), "only on the destination")
+	}
+	j.run(t)
+
+	mirrorGuarded(j)
+	_, _, err := engine.Once(context.Background(), j.ends, j.db, j.opt)
+	var brake *plan.BrakeError
+	if !errors.As(err, &brake) {
+		t.Fatalf("got %v, want the mass-delete brake", err)
+	}
+	if n := len(tree(t, j.right)); n != 50 {
+		t.Fatalf("the destination was damaged anyway, %d of 50 files left", n)
+	}
+}
+
+// On a first run there is no record to weigh deletions against, so a mirror
+// weighs them against what the destination holds.
+func TestFirstMirrorRunIsBraked(t *testing.T) {
+	j := oneWay(t, plan.LeftToRight)
+	mirrorGuarded(j)
+	write(t, j.left, "new.txt", "the only file on the source")
+	for i := range 30 {
+		write(t, j.right, fmt.Sprintf("old%02d.txt", i), "only on the destination")
+	}
+
+	_, _, err := engine.Once(context.Background(), j.ends, j.db, j.opt)
+	var brake *plan.BrakeError
+	if !errors.As(err, &brake) {
+		t.Fatalf("got %v, want the mass-delete brake", err)
+	}
+	if n := len(tree(t, j.right)); n != 30 {
+		t.Fatalf("the destination was damaged anyway, %d of 30 files left", n)
+	}
+}
+
+// A source that lists nothing, such as a drive that did not mount over an
+// existing folder, would have a mirror empty the destination. Five files are
+// below the brake's floor, so only the empty-side refusal protects them.
+func TestMirrorRefusesAnEmptySource(t *testing.T) {
+	j := oneWay(t, plan.LeftToRight)
+	mirrorGuarded(j)
+	for i := range 5 {
+		write(t, j.right, fmt.Sprintf("held%d.txt", i), "only on the destination")
+	}
+
+	_, _, err := engine.Once(context.Background(), j.ends, j.db, j.opt)
+	var empty *plan.EmptySideError
+	if !errors.As(err, &empty) {
+		t.Fatalf("got %v, want the empty-side refusal", err)
+	}
+	if empty.Side != plan.Left {
+		t.Errorf("blamed the %v side, want the source", empty.Side)
+	}
+	if n := len(tree(t, j.right)); n != 5 {
+		t.Fatalf("the destination was damaged anyway, %d of 5 files left", n)
 	}
 }

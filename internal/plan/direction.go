@@ -49,8 +49,8 @@ func (d Direction) source() Side {
 	return Left
 }
 
-// Enforce rewrites a plan so that it only writes to one side, treating the
-// source as right:
+// enforce rewrites a plan's files so that it only writes to one side, treating
+// the source as right:
 //
 //   - A copy towards the source means the destination changed; the source's
 //     version is copied back over it.
@@ -63,7 +63,7 @@ func (d Direction) source() Side {
 //   - A rename on the source is dropped; the copy the same plan proposes
 //     restores the source's naming.
 //   - A file the source does not have stays, unless the mode is ModeMirror.
-func Enforce(p *Plan, dir Direction, mode Mode) {
+func enforce(p *Plan, dir Direction, mode Mode) {
 	if dir == Both {
 		return
 	}
@@ -130,15 +130,22 @@ func Enforce(p *Plan, dir Direction, mode Mode) {
 		}
 	}
 	p.Actions = kept
+}
 
-	dirs := p.Dirs[:0]
-	for _, d := range p.Dirs {
+// EnforceDirs drops the folder work a one-way job would do on its source.
+func EnforceDirs(dirs []DirAction, dir Direction) []DirAction {
+	if dir == Both {
+		return dirs
+	}
+	dst := dir.source().Other()
+	kept := dirs[:0]
+	for _, d := range dirs {
 		// A record refresh writes to neither side and always survives.
 		if d.Kind == RecordDir || d.Dst == dst {
-			dirs = append(dirs, d)
+			kept = append(kept, d)
 		}
 	}
-	p.Dirs = dirs
+	return kept
 }
 
 // sweep rebuilds an action as a deletion on the destination side, for a file
