@@ -35,13 +35,18 @@
     <string name="notify_done_what">%1$d copied, %2$d moved, %3$d binned, %4$d conflicts</string>
     <string name="notify_failed">Sync failed</string>
     <!--
-      The one failure this app authors itself, and so the one it can say in
-      the phone's language; every other reason under a failed sync is a
-      sentence the engine composed in Go and arrives in English.
+      A failure this app authors itself, and so one it can say in the phone's
+      language; every reason the engine gives under a failed sync is a
+      sentence composed in Go and arrives in English.
 
       Said plainly rather than as a timeout: after thirty seconds "it was
       slow" is not the explanation, and either the engine is missing from this
       build or it could not start.
     -->
     <string name="notify_failed_no_engine">The engine did not start. Open ArrowLoop once and check the engine card.</string>
+    <!--
+      Android runs a wake-up inside its job, which it ends after minutes, when
+      the app may not start its foreground service from the background.
+    -->
+    <string name="notify_failed_cut">Android stopped the run before it was done. Switch battery optimisation off for ArrowLoop to give background runs more time.</string>
 </resources>
