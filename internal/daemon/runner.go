@@ -473,16 +473,19 @@ func (r *Runner) announce(ctx context.Context, rec history.Run, res apply.Result
 // itself whenever the configuration changes. A job still running when its next
 // turn comes is skipped rather than queued, so a slow job cannot build a
 // backlog of itself.
+//
+// Runs are started under ctx and not under the round, so a reload, which
+// every save in the interface causes, lets them finish.
 func (r *Runner) Serve(ctx context.Context) error {
 	first := true
 	for {
 		round, endRound := context.WithCancel(ctx)
-		c := r.schedule(round)
+		c := r.schedule(ctx, round)
 		c.Start()
 
 		// Never on a reload, which happens every time a job is saved.
 		if first {
-			r.runAtStart(round)
+			r.runAtStart(ctx)
 			first = false
 		}
 
@@ -493,9 +496,11 @@ func (r *Runner) Serve(ctx context.Context) error {
 			return nil
 		case <-r.reload:
 			// Cancelling the round closes its watchers. Rebuilding from
-			// scratch keeps one code path for start and restart.
+			// scratch keeps one code path for start and restart. The claim
+			// keeps a run the old schedule started from overlapping one the
+			// new schedule starts, so there is nothing to wait for.
 			endRound()
-			r.stopCron(c)
+			c.Stop()
 			r.mu.Lock()
 			r.watchers = map[string]*watch.Watcher{}
 			r.mu.Unlock()
@@ -505,8 +510,8 @@ func (r *Runner) Serve(ctx context.Context) error {
 }
 
 // schedule builds the cron entries and the watchers for the current
-// configuration.
-func (r *Runner) schedule(ctx context.Context) *cron.Cron {
+// configuration. Runs are started under ctx; the watchers stop with round.
+func (r *Runner) schedule(ctx, round context.Context) *cron.Cron {
 	cfg := r.config()
 	c := cron.New()
 	var scheduled []string
@@ -530,7 +535,7 @@ func (r *Runner) schedule(ctx context.Context) *cron.Cron {
 		if j.Disabled || !j.Watch {
 			continue
 		}
-		r.startWatcher(ctx, j)
+		r.startWatcher(ctx, round, j)
 	}
 
 	// Pruned daily, since a container stays up for months while a watching
@@ -607,7 +612,8 @@ func (r *Runner) runAtStart(ctx context.Context) {
 	}()
 }
 
-// stopCron waits for whatever is running to finish rather than cutting it off.
+// stopCron waits for the runs the clock started to wind down after a shutdown
+// cancelled them, so each one is still recorded.
 func (r *Runner) stopCron(c *cron.Cron) {
 	stopped := c.Stop()
 	select {
@@ -965,8 +971,9 @@ func localRoots(j job.Job) []string {
 }
 
 // startWatcher makes one job react to changes as well as to the clock. Only a
-// local side can be watched, and the schedule stays behind it.
-func (r *Runner) startWatcher(ctx context.Context, j job.Job) {
+// local side can be watched, and the schedule stays behind it. The watcher
+// lives as long as round; the runs it starts live under ctx.
+func (r *Runner) startWatcher(ctx, round context.Context, j job.Job) {
 	roots := localRoots(j)
 	if len(roots) == 0 {
 		r.log("%s asks to be watched but has no local side; the schedule alone will have to do", j.Name)
@@ -1011,7 +1018,7 @@ func (r *Runner) startWatcher(ctx context.Context, j job.Job) {
 	r.log("%s: watching %d folder(s) across %d local side(s)", name, w.Watching(), len(roots))
 	go func() {
 		defer w.Close()
-		if err := w.Run(ctx); err != nil {
+		if err := w.Run(round); err != nil {
 			r.log("%s: watching stopped: %v", name, err)
 		}
 	}()

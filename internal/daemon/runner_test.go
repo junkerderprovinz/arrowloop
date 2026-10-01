@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"sync"
 	"testing"
@@ -371,6 +372,58 @@ func TestRunAtStartFiresOnceAndNotOnReload(t *testing.T) {
 	}
 	if len(runs) != 1 {
 		t.Fatalf("a reload started the job again: %d runs, expected 1", len(runs))
+	}
+
+	stop()
+	if err := <-served; err != nil {
+		t.Fatalf("serve: %v", err)
+	}
+}
+
+// Saving anything in the interface reloads the configuration, and a run that
+// was already going must carry on through it.
+func TestAReloadLeavesRunningJobsAlone(t *testing.T) {
+	pause := "sleep 3"
+	if runtime.GOOS == "windows" {
+		pause = "ping -n 4 127.0.0.1 > nul"
+	}
+	cfg, hist, _, _ := fixture(t, func(dir, left, right string) string {
+		return fmt.Sprintf(
+			`{"jobs":[`+
+				`{"name":"first","left":"%s","right":"%s","state":"%s","quietPeriod":"0s","runAtStart":true,"before":"%s"},`+
+				`{"name":"second","left":"%s","right":"%s","state":"%s","quietPeriod":"0s","runAtStart":true}]}`,
+			jsonPath(left), jsonPath(right), jsonPath(filepath.Join(dir, "first.db")), pause,
+			jsonPath(left), jsonPath(right), jsonPath(filepath.Join(dir, "second.db")))
+	})
+
+	r := daemon.New(cfg, hist, nil, nil)
+	events, unsubscribe := r.Subscribe()
+	defer unsubscribe()
+	ctx, stop := context.WithCancel(context.Background())
+	defer stop()
+	served := make(chan error, 1)
+	go func() { served <- r.Serve(ctx) }()
+
+	for ev := range events {
+		if ev.Job == "first" && ev.Phase == "started" {
+			break
+		}
+	}
+	r.Reload(cfg)
+
+	waitFor(t, func() bool {
+		runs, err := hist.Recent(context.Background(), "", history.ShowAll, 10)
+		return err == nil && len(runs) >= 2
+	}, "the start-up runs did not both finish after a reload")
+
+	runs, err := hist.Recent(context.Background(), "", history.ShowAll, 10)
+	if err != nil {
+		t.Fatalf("history: %v", err)
+	}
+	for _, run := range runs {
+		if run.Failed() {
+			t.Errorf("%s failed because the configuration was saved while it ran: %s", run.Job, run.Err)
+		}
 	}
 
 	stop()
