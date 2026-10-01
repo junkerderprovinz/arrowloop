@@ -83,11 +83,17 @@ read as variables. In a Compose file, write every `$` as `$$`.
 Five wrong passwords from one address lock that address out for a minute.
 Behind a reverse proxy every request comes from the proxy, so one stranger
 guessing would lock out everybody, you included. Set
-`ARROWLOOP_TRUSTED_PROXIES` to the proxy's address, or to a range such as
-`172.17.0.0/16` when the proxy runs in another container, and the count goes
-against the address the proxy reports in `X-Forwarded-For` instead. Several
-entries are separated by commas. List only proxies you run: a machine on that
-list could claim a new address for every guess.
+`ARROWLOOP_TRUSTED_PROXIES` to the proxy's address, and the count goes against
+the address the proxy reports in `X-Forwarded-For` instead. Several entries are
+separated by commas. List only proxies you run: a machine on that list could
+claim a new address for every guess.
+
+When the proxy runs in another container, put the two on a Docker network of
+their own, give the proxy a fixed address there, and list that one address.
+Do not list a range such as `172.17.0.0/16` for Docker's default bridge. It
+includes the bridge's gateway, `172.17.0.1`, and connections that Docker's own
+proxy relays to a published port arrive from that address, so anybody reaching
+the port that way could choose the address their guesses count against.
 
 If the authenticator app and the recovery codes are both gone, stop the
 container and delete `/config/security.json`. That removes the password, the
