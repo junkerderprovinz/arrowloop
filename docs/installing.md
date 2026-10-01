@@ -28,6 +28,14 @@ The container listens on every address, so anyone on the network who reaches
 port 8422 can start a job. Set a password under **Settings**, **Security**, and
 from then on every page but the login asks for it.
 
+Until a password is set, the interface only answers when it is opened on an IP
+address, `localhost`, a name without a dot such as `tower`, or a name ending in
+`.local`, `.lan`, `.home.arpa` or `.internal`. Otherwise a web page anywhere
+could point a name of its own at this machine and use your browser to drive the
+interface. Reaching it through any other name, such as a reverse proxy's, needs
+the password. With or without one, the interface refuses a change that a page
+from another site started.
+
 The same section sets up a second factor: six digits from an authenticator app
 on top of the password. Setting it up shows eight recovery codes once, and each
 of them signs in a single time in place of a code.

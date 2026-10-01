@@ -57,7 +57,9 @@ It listens on loopback unless told otherwise. The interface can start a job that
 deletes files and asks for no password until one is set under Settings,
 Security, or through `ARROWLOOP_PASSWORD_HASH`, so making it reachable has to be
 a decision somebody took on purpose. What the interface sets is kept in
-`security.json` beside the configuration file.
+`security.json` beside the configuration file. Until there is a password it
+answers only on an IP address or a local name, so a web page elsewhere cannot
+point a name of its own at it; [installing](installing.md) lists the names.
 
 `daemon` is the same scheduler with no interface, for a machine where nobody is
 looking.
