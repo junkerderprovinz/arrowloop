@@ -98,6 +98,12 @@ func Enforce(p *Plan, dir Direction, mode Mode) {
 				kept = append(kept, rebuilt)
 			}
 		case Delete:
+			// A path gone from both sides only has its record cleared, which
+			// writes to neither side.
+			if a.LeftNow == nil && a.RightNow == nil {
+				kept = append(kept, a)
+				continue
+			}
 			if a.Dst == dst {
 				if mode == ModeMirror {
 					kept = append(kept, a)

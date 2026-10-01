@@ -234,3 +234,52 @@ func readFile(t *testing.T, dir, name string) string {
 	}
 	return string(body)
 }
+
+// A file gone from both sides is forgotten in either direction, so the same
+// file put back on the destination later is left there like any other file the
+// source does not have.
+func TestOneWayForgetsAFileGoneFromBothSides(t *testing.T) {
+	for _, dir := range []plan.Direction{plan.LeftToRight, plan.RightToLeft} {
+		t.Run(dir.String(), func(t *testing.T) {
+			j := oneWay(t, dir)
+			src, dst := j.left, j.right
+			if dir == plan.RightToLeft {
+				src, dst = j.right, j.left
+			}
+			write(t, src, "gone.txt", "deleted on both sides")
+			write(t, src, "other.txt", "keeps the sides populated")
+			j.run(t)
+
+			kept := filepath.Join(dst, "gone.txt")
+			info, err := os.Stat(kept)
+			if err != nil {
+				t.Fatalf("stat: %v", err)
+			}
+			for _, root := range []string{src, dst} {
+				if err := os.Remove(filepath.Join(root, "gone.txt")); err != nil {
+					t.Fatalf("remove: %v", err)
+				}
+			}
+			j.run(t)
+
+			rows, err := j.db.All(context.Background())
+			if err != nil {
+				t.Fatalf("state: %v", err)
+			}
+			if _, stale := rows["gone.txt"]; stale {
+				t.Fatal("the record of a file gone from both sides was kept")
+			}
+
+			write(t, dst, "gone.txt", "deleted on both sides")
+			if err := os.Chtimes(kept, info.ModTime(), info.ModTime()); err != nil {
+				t.Fatalf("chtimes: %v", err)
+			}
+			if _, res := j.run(t); res.Trashed != 0 {
+				t.Fatalf("the file put back on the destination was deleted: %d trashed", res.Trashed)
+			}
+			if _, err := os.Stat(kept); err != nil {
+				t.Errorf("the file put back on the destination is gone: %v", err)
+			}
+		})
+	}
+}
