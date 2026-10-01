@@ -283,3 +283,32 @@ func TestOneWayForgetsAFileGoneFromBothSides(t *testing.T) {
 		})
 	}
 }
+
+// A rename on the destination is undone the way a deletion there is: the source
+// file comes back under its own name, and the job then has nothing left to do.
+func TestOneWayRestoresAFileRenamedOnTheDestination(t *testing.T) {
+	for _, mode := range []plan.Mode{plan.ModeSync, plan.ModeMirror} {
+		t.Run(mode.String(), func(t *testing.T) {
+			j := oneWay(t, plan.LeftToRight)
+			j.opt.Compare.Mode = mode
+			write(t, j.left, "report.txt", "the source's report")
+			write(t, j.left, "other.txt", "keeps the side populated")
+			j.run(t)
+
+			if err := os.Rename(filepath.Join(j.right, "report.txt"), filepath.Join(j.right, "renamed.txt")); err != nil {
+				t.Fatalf("rename: %v", err)
+			}
+			j.run(t)
+
+			if got := readFile(t, j.right, "report.txt"); got != "the source's report" {
+				t.Errorf("the destination holds %q under the source's name", got)
+			}
+			if _, err := os.Stat(filepath.Join(j.left, "renamed.txt")); err == nil {
+				t.Error("the destination's rename reached the source")
+			}
+			if p, _ := j.run(t); len(p.Actions) != 0 {
+				t.Fatalf("the job did not settle: %+v", p.Actions)
+			}
+		})
+	}
+}

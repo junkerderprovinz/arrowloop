@@ -500,7 +500,7 @@ func Build(ctx context.Context, left, right *scan.Listing, prev map[string]state
 		}
 	}
 
-	detectRenames(ctx, out)
+	detectRenames(ctx, out, opt.Direction)
 
 	if err := checkBrake(out, len(prev), opt); err != nil {
 		return nil, err
@@ -609,7 +609,11 @@ func conflictAction(base Action, reason Reason) Action {
 // move, so a renamed folder is renamed on the far side instead of uploaded
 // again. It needs a hash on both the record and the new file, since equal
 // sizes alone would pair up unrelated files.
-func detectRenames(ctx context.Context, p *Plan) {
+//
+// A rename on the destination of a one-way job is not folded: Enforce restores
+// the deleted name from the source, which it cannot do once the deletion has
+// become part of a move towards the source.
+func detectRenames(ctx context.Context, p *Plan, dir Direction) {
 	type key struct {
 		size int64
 		hash string
@@ -618,6 +622,9 @@ func detectRenames(ctx context.Context, p *Plan) {
 	for i, a := range p.Actions {
 		// A record cleanup for a path gone on both sides has no file to move.
 		if a.Kind != Delete || a.Prev == nil || (a.LeftNow == nil && a.RightNow == nil) {
+			continue
+		}
+		if dir != Both && a.Dst == dir.source() {
 			continue
 		}
 		// The recorded hash comes from the side where the rename happened,
