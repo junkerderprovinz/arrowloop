@@ -122,6 +122,12 @@ you sign in. It is a **per-user** entry (a value under `HKCU` on Windows, a
 Library on macOS), so it needs no administrator rights and affects nobody else on
 the machine.
 
+Started this way, ArrowLoop stays in the notification area, because nobody is
+waiting for a window when the session starts. It also comes back there after
+something outside ended it while its window was in the notification area, as an
+update does. Starting it by hand opens the window, and so does every start after
+you quit it.
+
 The switch reads its state back from the system rather than from a settings file,
 so removing the entry with the Task Manager's own Startup tab turns the switch
 off too, instead of leaving it claiming something that is no longer true.
