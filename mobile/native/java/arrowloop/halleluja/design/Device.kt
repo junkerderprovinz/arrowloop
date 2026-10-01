@@ -208,7 +208,9 @@ object Device {
     private fun send(context: Context, now: String): Boolean {
         val body = """{"reason":${quote(now)}}"""
         return try {
-            Engine.connect(context, "/api/device").run {
+            // The token goes only to a listener that proves it is our engine,
+            // since another app can hold the port while ours is still starting.
+            Engine.answers(context) && Engine.connect(context, "/api/device").run {
                 requestMethod = "PUT"
                 doOutput = true
                 connectTimeout = 2000
