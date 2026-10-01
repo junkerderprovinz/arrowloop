@@ -290,3 +290,18 @@ describe('pausing and removing a job', () => {
     expect(saveConfig.mock.calls[0][0]).toEqual([pair()[0]])
   })
 })
+
+describe('renaming a job', () => {
+  it('keeps the form in the job\'s own card while the name is typed', async () => {
+    card()
+    fireEvent.click(await screen.findByRole('button', { name: 'Options' }))
+    fireEvent.click(within(await screen.findByRole('menu')).getByRole('menuitem', { name: 'Edit' }))
+    const name = (await screen.findByDisplayValue('photos')) as HTMLInputElement
+
+    fireEvent.change(name, { target: { value: 'photosx' } })
+    expect(name.isConnected).toBe(true)
+    expect(name.value).toBe('photosx')
+    expect(screen.queryByText('not saved yet')).toBeNull()
+    expect(screen.getAllByDisplayValue('photosx')).toHaveLength(1)
+  })
+})

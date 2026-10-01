@@ -69,8 +69,12 @@ export function Jobs({
     return !!last && last.Err !== ''
   }
   const config = useJobConfig(onSaved)
-  // The job open in the form, by its position in the configuration file.
-  const [editing, setEditing] = useState<number | null>(null)
+  // The job open in the form, by its position in the configuration file, and
+  // for a saved job the name the engine knows it by. The name in the form can
+  // change with every keystroke, so it cannot tie the form to its card.
+  const [open, setOpen] = useState<{ at: number; live?: string } | null>(null)
+  const editing = open?.at ?? null
+  const setEditing = (at: number | null, live?: string) => setOpen(at === null ? null : { at, live })
   // The entry by its place in the file, and the name the engine knows it by
   // unless it is a draft.
   const [removing, setRemoving] = useState<{ at: number; saved?: string } | null>(null)
@@ -93,15 +97,19 @@ export function Jobs({
   // configuration file, so a row is matched to its record by name.
   function indexOf(name: string): number | null {
     if (!raw) return null
+    if (open?.live === name) return open.at
     const at = raw.findIndex((j) => j.name === name)
     return at === -1 ? null : at
   }
+
+  // The entry open in a saved job's own card, whatever its name reads now.
+  const held = open?.live !== undefined && jobs.some((j) => j.name === open.live) ? open.at : null
 
   // Jobs in the configuration that the engine only learns about on save still
   // get a card, marked unsaved.
   const pending = (raw ?? [])
     .map((j, at) => ({ job: j, at }))
-    .filter(({ job }) => !jobs.some((live) => live.name === job.name))
+    .filter(({ job, at }) => !jobs.some((live) => live.name === job.name) && at !== held)
 
   return (
     <Stack>
@@ -217,7 +225,7 @@ export function Jobs({
                               {
                                 label: t('edit.editJob'),
                                 labelKey: 'edit.editJob' as const,
-                                onSelect: () => setEditing(at),
+                                onSelect: () => setEditing(at, j.name),
                               },
                               {
                                 label: t('edit.duplicate'),
