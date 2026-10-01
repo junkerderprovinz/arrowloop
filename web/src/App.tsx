@@ -38,6 +38,7 @@ import { Conflicts } from './pages/Conflicts'
 import { Trash } from './pages/Trash'
 import {
   api,
+  whenSignedOut,
   type ConflictListing,
   type Job,
   type Run,
@@ -125,6 +126,7 @@ export function Gate() {
   }, [])
 
   useEffect(ask, [ask])
+  useEffect(() => whenSignedOut(() => setState('out')), [])
 
   if (state === 'asking') return null
   if (state === 'out') return <Login onIn={ask} />

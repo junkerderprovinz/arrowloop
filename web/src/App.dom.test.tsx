@@ -19,6 +19,7 @@ const settled: WindowSettings = {
   canStartWithSystem: false,
   autoUpdate: false,
 }
+const session = vi.fn(() => Promise.resolve({ required: false, authenticated: false }))
 const saveWindow = vi.fn((_next: WindowSettings) => Promise.resolve(settled))
 
 vi.mock('./lib/api', async (actual) => ({
@@ -31,7 +32,8 @@ vi.mock('./lib/api', async (actual) => ({
     capabilities: () => Promise.resolve({ window: desktop(), version: 'test' }),
     window: () => Promise.resolve(settled),
     saveWindow: (next: WindowSettings) => saveWindow(next),
-    session: () => Promise.resolve({ required: false, authenticated: false }),
+    session: () => session(),
+    passkeys: () => Promise.resolve({ supported: false, rpId: '', total: 0, here: 0 }),
     conflicts: () => Promise.resolve({ conflicts: [], unread: [] }),
     trashAll: () => Promise.resolve({ sides: [] }),
     config: () => Promise.resolve({ jobs: [] }),
@@ -44,7 +46,8 @@ vi.mock('./lib/api', async (actual) => ({
   },
 }))
 
-const { App } = await import('./App')
+const { App, Gate } = await import('./App')
+const real = await vi.importActual<typeof import('./lib/api')>('./lib/api')
 
 // jsdom has neither media queries nor element measuring.
 window.matchMedia ??= ((query: string) => ({
@@ -66,10 +69,15 @@ beforeEach(() => {
   history.mockImplementation(() => Promise.resolve([]))
   latestRuns.mockReset()
   latestRuns.mockImplementation(() => Promise.resolve([]))
+  session.mockReset()
+  session.mockImplementation(() => Promise.resolve({ required: false, authenticated: false }))
   desktop.mockReset()
   desktop.mockImplementation(() => false)
 })
-afterEach(cleanup)
+afterEach(() => {
+  cleanup()
+  vi.unstubAllGlobals()
+})
 
 function run(id: number, job: string, err = ''): Run {
   const at = new Date(Date.UTC(2027, 2, 1, 3, 0, id)).toISOString()
@@ -120,5 +128,16 @@ describe('the app', () => {
     show()
     expect(await screen.findByRole('img', { name: 'last run failed' })).toBeTruthy()
     expect(screen.getAllByRole('img', { name: 'ready' })).toHaveLength(1)
+  })
+
+  it('goes back to the login once the session has ended', async () => {
+    session.mockImplementation(() => Promise.resolve({ required: true, authenticated: true }))
+    vi.stubGlobal('fetch', () =>
+      Promise.resolve(new Response(JSON.stringify({ error: 'this interface is password protected, log in first' }), { status: 401 })),
+    )
+    jobs.mockImplementation(() => real.api.jobs())
+    render(<Gate />)
+
+    expect(await screen.findByText('This interface is protected')).toBeTruthy()
   })
 })

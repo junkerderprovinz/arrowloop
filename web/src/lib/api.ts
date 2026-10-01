@@ -485,10 +485,30 @@ export class ApiError extends Error {
   }
 }
 
+const signedOut = new Set<() => void>()
+
+/**
+ * Calls `fn` whenever the engine turns this browser away for want of a
+ * session, which happens when the session runs out or the password changes
+ * elsewhere. Returns the function that stops the calls.
+ */
+export function whenSignedOut(fn: () => void): () => void {
+  signedOut.add(fn)
+  return () => {
+    signedOut.delete(fn)
+  }
+}
+
+// A refused login is a wrong password or code, not an ended session.
+function endsSession(path: string, status: number): boolean {
+  return status === 401 && !path.startsWith('/api/login') && !path.startsWith('/api/passkeys/login')
+}
+
 // Checks the status before parsing, so a 500 with an HTML page does not turn
 // into a JSON error somewhere else.
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(path, init)
+  if (endsSession(path, res.status)) signedOut.forEach((fn) => fn())
   if (!res.ok) {
     let detail = res.statusText
     try {
@@ -965,6 +985,17 @@ export const api = {
   watch: (onEvent: (ev: RunEvent) => void): (() => void) => {
     if (inDesktopWindow()) return watchDesktop((data) => onEvent(data as RunEvent))
     const source = new EventSource('/api/events')
+    // A browser gives up on a stream that is refused rather than dropped, and
+    // the refusal it saw says nothing, so the session is asked.
+    source.onerror = () => {
+      if (source.readyState !== EventSource.CLOSED) return
+      api
+        .session()
+        .then((s) => {
+          if (s.required && !s.authenticated) signedOut.forEach((fn) => fn())
+        })
+        .catch(() => {})
+    }
     source.onmessage = (e) => {
       try {
         onEvent(JSON.parse(e.data) as RunEvent)
