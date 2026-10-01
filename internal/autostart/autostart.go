@@ -13,6 +13,13 @@ import "os"
 // same name keeps repeated toggles from piling up duplicates.
 const name = "ArrowLoop"
 
+// Flag names the option every entry starts the program with. Nobody is at the
+// screen waiting for a window when the session starts, so the desktop app
+// stays in the notification area.
+const Flag = "tray"
+
+const arg = "--" + Flag
+
 // Supported reports whether this platform has an implementation, so the
 // interface can leave out a switch that would do nothing.
 func Supported() bool { return supported }

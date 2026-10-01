@@ -72,3 +72,17 @@ func TestAFailureOutlastsASuccessWhileOthersRun(t *testing.T) {
 		t.Errorf("the last job to finish, cleanly, left state %d", l.state)
 	}
 }
+
+func TestTheAutostartFlagKeepsASecondStartInTheTray(t *testing.T) {
+	for _, args := range [][]string{
+		{`C:\Program Files\ArrowLoop\ArrowLoop.exe`, "--tray"},
+		{"/usr/bin/arrowloop", "-tray"},
+	} {
+		if !askedForTray(args) {
+			t.Errorf("%v brought the window forward", args)
+		}
+	}
+	if askedForTray([]string{`C:\Program Files\ArrowLoop\ArrowLoop.exe`}) {
+		t.Error("a second start by hand stayed in the tray")
+	}
+}

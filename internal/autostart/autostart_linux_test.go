@@ -29,11 +29,8 @@ func TestTheExecLineIsQuoted(t *testing.T) {
 	if exec == "" {
 		t.Fatalf("the entry has no Exec line:\n%s", body)
 	}
-	if !strings.HasPrefix(exec, `"`) || !strings.HasSuffix(exec, `"`) {
-		t.Fatalf("the path is not quoted, so it breaks at its first space: %s", exec)
-	}
-	if !strings.Contains(exec, exe) {
-		t.Fatalf("the quoted Exec lost the path: %s", exec)
+	if want := `"` + exe + `" --tray`; exec != want {
+		t.Fatalf("the Exec line is %s, expected the quoted path and the tray flag: %s", exec, want)
 	}
 }
 

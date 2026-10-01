@@ -84,4 +84,4 @@ func disable() error {
 
 // command is the string Windows executes on sign-in. Windows splits the value
 // like a command line, so the path is quoted for profile folders with spaces.
-func command(exe string) string { return `"` + exe + `"` }
+func command(exe string) string { return `"` + exe + `" ` + arg }

@@ -13,6 +13,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"slices"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
 
@@ -48,6 +49,7 @@ func main() {
 func run() error {
 	custom := flag.String("config", "", "the configuration file to use instead of the one in the user's configuration directory")
 	scheduled := flag.Bool("update", false, "update the copy installed for all users and exit, as the installer's scheduled task does")
+	startInTray := flag.Bool(autostart.Flag, false, "start in the notification area, as the program does when it starts with the session")
 	flag.Parse()
 
 	if *scheduled {
@@ -73,7 +75,11 @@ func run() error {
 		// database.
 		SingleInstance: &application.SingleInstanceOptions{
 			UniqueID: instanceID(*custom, configPath),
-			OnSecondInstanceLaunch: func(application.SecondInstanceData) {
+			OnSecondInstanceLaunch: func(second application.SecondInstanceData) {
+				// The session starting the program finds it already running.
+				if askedForTray(second.Args) {
+					return
+				}
 				sh.showMain()
 			},
 		},
@@ -105,7 +111,9 @@ func run() error {
 			window.KeepAutoUpdateIn(filepath.Join(dir, machineSettingsFile))
 		}
 	}
-	sh = newShell(ctx, app, window, trayIcons())
+	// Without the icon a hidden window would have no way back.
+	inTray := window.Get().Tray && (*startInTray || window.InTray())
+	sh = newShell(ctx, app, window, trayIcons(), inTray)
 
 	configfile.Install()
 
@@ -178,11 +186,20 @@ func run() error {
 		go up.run(ctx)
 	}
 
+	// Quitting is a decision, and the next start shows the window again. Only a
+	// program ended without the chance to get here comes back in the tray.
 	app.OnShutdown(func() {
 		stop()
 		up.stop()
+		sh.remember(false)
 	})
 	return app.Run()
+}
+
+// askedForTray reports whether a command line carries the flag the autostart
+// entry adds, in either of the forms the flag package reads.
+func askedForTray(args []string) bool {
+	return slices.Contains(args, "--"+autostart.Flag) || slices.Contains(args, "-"+autostart.Flag)
 }
 
 // trayIcons builds every state of the tray icon. A failure costs the spin and

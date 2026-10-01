@@ -96,6 +96,8 @@ type file struct {
 	Words *Words `json:"words,omitempty"`
 	// Activity is the size the small window at the tray icon was left at.
 	Activity *Size `json:"activity,omitempty"`
+	// InTray says the main window was in the notification area.
+	InTray bool `json:"inTray,omitempty"`
 }
 
 // Store is the settings file. The window reads it on close while the interface
@@ -106,6 +108,7 @@ type Store struct {
 	now      Settings
 	words    Words
 	activity *Size
+	inTray   bool
 	watches  []func()
 	// autoUpdatePath is the file set by KeepAutoUpdateIn, or "".
 	autoUpdatePath string
@@ -134,6 +137,7 @@ func Open(configPath string) *Store {
 		s.words = *read.Words
 	}
 	s.activity = read.Activity
+	s.inTray = read.InTray
 	return s
 }
 
@@ -214,6 +218,27 @@ func (s *Store) SetActivitySize(size Size) error {
 	return s.write()
 }
 
+// InTray reports whether the main window was in the notification area when
+// the program last said where it was.
+func (s *Store) InTray() bool {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	return s.inTray
+}
+
+// SetInTray records where the main window is. A program ended from outside
+// cannot say so on its way out, so every move is written. No setting depends
+// on it, so the watchers are not told.
+func (s *Store) SetInTray(on bool) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if s.inTray == on {
+		return nil
+	}
+	s.inTray = on
+	return s.write()
+}
+
 // Watch registers a function called after every change, from the goroutine
 // that made it. The desktop shell uses it to follow the settings page without
 // a restart.
@@ -276,7 +301,7 @@ func (s *Store) change(edit func()) error {
 // rather than half of the new ones. The caller holds the lock.
 func (s *Store) write() error {
 	words := s.words
-	body, err := json.MarshalIndent(file{Settings: s.now, Words: &words, Activity: s.activity}, "", "  ")
+	body, err := json.MarshalIndent(file{Settings: s.now, Words: &words, Activity: s.activity, InTray: s.inTray}, "", "  ")
 	if err != nil {
 		return err
 	}

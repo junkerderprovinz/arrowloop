@@ -246,3 +246,31 @@ func TestTheTrayWindowKeepsItsSizeAcrossARestart(t *testing.T) {
 		t.Errorf("the size cost the settings: %+v", again.Get())
 	}
 }
+
+// An update ends the program without asking it, so where the main window was
+// has to be on disk before that.
+func TestAWindowInTheTrayIsStillThereAfterARestart(t *testing.T) {
+	dir := t.TempDir()
+	config := filepath.Join(dir, "arrowloop.json")
+
+	fresh := Open(config)
+	if fresh.InTray() {
+		t.Fatal("a fresh install starts with its window in the tray")
+	}
+	if err := fresh.SetInTray(true); err != nil {
+		t.Fatalf("to the tray: %v", err)
+	}
+	if err := fresh.Set(Settings{Tray: true, MinimiseToTray: true}); err != nil {
+		t.Fatalf("set: %v", err)
+	}
+	if !Open(config).InTray() {
+		t.Fatal("the window was in the tray, and the next start does not know")
+	}
+
+	if err := fresh.SetInTray(false); err != nil {
+		t.Fatalf("back out: %v", err)
+	}
+	if Open(config).InTray() {
+		t.Error("the window came back out, and the next start still hides it")
+	}
+}

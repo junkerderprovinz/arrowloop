@@ -51,7 +51,9 @@ type trayItems struct {
 	open, syncNow, quit *application.MenuItem
 }
 
-func newShell(ctx context.Context, app *application.App, store *deskset.Store, icons *TraySet) *shell {
+// newShell builds the windows. With inTray the main window starts hidden, its
+// way back being the icon.
+func newShell(ctx context.Context, app *application.App, store *deskset.Store, icons *TraySet, inTray bool) *shell {
 	s := &shell{ctx: ctx, app: app, store: store, live: newTrayLive(icons)}
 
 	s.main = app.Window.NewWithOptions(application.WebviewWindowOptions{
@@ -60,11 +62,13 @@ func newShell(ctx context.Context, app *application.App, store *deskset.Store, i
 		Width:  1100,
 		Height: 760,
 		URL:    "/",
+		Hidden: inTray,
 	})
+	s.remember(inTray)
 	s.main.RegisterHook(events.Common.WindowClosing, s.closing)
 	s.main.OnWindowEvent(events.Common.WindowMinimise, func(*application.WindowEvent) {
 		if set := s.store.Get(); set.Tray && set.MinimiseToTray {
-			s.main.Hide()
+			s.toTray()
 		}
 	})
 
@@ -138,10 +142,16 @@ func (s *shell) closing(e *application.WindowEvent) {
 	}
 	e.Cancel()
 	if set := s.store.Get(); set.Tray && set.CloseToTray {
-		s.main.Hide()
+		s.toTray()
 		return
 	}
 	s.app.Quit()
+}
+
+// toTray hides the main window behind the icon.
+func (s *shell) toTray() {
+	s.main.Hide()
+	s.remember(true)
 }
 
 // showMain brings the main window back from the tray, the taskbar or behind
@@ -150,6 +160,15 @@ func (s *shell) showMain() {
 	s.activity.Hide()
 	s.main.Show()
 	s.main.Focus()
+	s.remember(false)
+}
+
+// remember keeps where the main window is, so a program ended from outside
+// while it sat in the tray, as an update ends it, starts there again.
+func (s *shell) remember(inTray bool) {
+	if err := s.store.SetInTray(inTray); err != nil {
+		log.Printf("window: %v", err)
+	}
 }
 
 // follow brings the icon, the menu and the runs in line with the settings. It

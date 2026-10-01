@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
 )
 
 const supported = true
@@ -37,7 +36,8 @@ func enabled() (bool, error) {
 	return true, nil
 }
 
-// pointsAt reports whether the existing agent already names this executable.
+// pointsAt reports whether the existing agent is the one enable would write
+// for this executable.
 func pointsAt(exe string) (bool, error) {
 	path, err := entryPath()
 	if err != nil {
@@ -50,7 +50,7 @@ func pointsAt(exe string) (bool, error) {
 		}
 		return false, fmt.Errorf("read %s: %w", path, err)
 	}
-	return strings.Contains(string(body), "<string>"+exe+"</string>"), nil
+	return string(body) == plist(exe), nil
 }
 
 func enable(exe string) error {
@@ -88,6 +88,7 @@ func plist(exe string) string {
 	<key>ProgramArguments</key>
 	<array>
 		<string>` + exe + `</string>
+		<string>` + arg + `</string>
 	</array>
 	<key>RunAtLoad</key>
 	<true/>

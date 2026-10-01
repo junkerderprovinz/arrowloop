@@ -58,7 +58,7 @@ func pointsAt(exe string) (bool, error) {
 	}
 	for line := range strings.SplitSeq(string(body), "\n") {
 		if after, ok := strings.CutPrefix(strings.TrimRight(line, "\r"), "Exec="); ok {
-			return after == `"`+exe+`"`, nil
+			return after == execLine(exe), nil
 		}
 	}
 	return false, nil
@@ -86,14 +86,17 @@ func disable() error {
 	return nil
 }
 
-// entry is the desktop file. Exec is quoted because the desktop entry
-// specification splits the field on spaces.
+// execLine is the desktop file's Exec value. The path is quoted because the
+// desktop entry specification splits the field on spaces.
+func execLine(exe string) string { return `"` + exe + `" ` + arg }
+
+// entry is the desktop file.
 func entry(exe string) string {
 	return "[Desktop Entry]\n" +
 		"Type=Application\n" +
 		"Name=" + name + "\n" +
 		"Comment=Two-way file synchronisation\n" +
-		"Exec=\"" + exe + "\"\n" +
+		"Exec=" + execLine(exe) + "\n" +
 		"Terminal=false\n" +
 		"X-GNOME-Autostart-enabled=true\n"
 }
