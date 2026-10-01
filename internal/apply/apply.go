@@ -719,18 +719,25 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 
 	case plan.Move:
 		dst := ends.side(act.Dst)
+		// The file stands under its new name only on the side it was renamed
+		// on; here it was still under the old one until the move.
+		renamed, there := act.RightNow, act.LeftNow
+		if act.Dst == plan.Right {
+			renamed, there = act.LeftNow, act.RightNow
+		}
+		// MoveFile replaces whatever holds the new name. A side that ignores
+		// case finds the file itself there when only the case changes.
+		if !strings.EqualFold(act.DstPath, act.OldDstPath) {
+			if _, err := asScanned(ctx, dst, act.Dst, act.DstPath, there, opt.ModWindow); err != nil {
+				return err
+			}
+		}
 		if err := retrying(ctx, func() error {
 			return operations.MoveFile(ctx, dst, dst, act.DstPath, act.OldDstPath)
 		}); err != nil {
 			return err
 		}
 		t.count(func(r *Result) { r.Moved++ })
-		// The file stands under its new name only on the side it was renamed
-		// on; here it was still under the old one until the move.
-		renamed := act.RightNow
-		if act.Dst == plan.Right {
-			renamed = act.LeftNow
-		}
 		t.sized("move", act.DstPath, act.Dst.String(), act.OldDstPath, sizeOf(renamed))
 		if err := rec.db.Forget(ctx, pathid.Key(act.OldDstPath, opt.FoldCase)); err != nil {
 			return err
@@ -840,7 +847,7 @@ func discard(ctx context.Context, f fs.Fs, obj fs.Object, runID string) error {
 // destroys nothing and converges, where refusing to resolve would report the
 // same conflict for ever.
 func resolveConflict(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID string, opt plan.Options) error {
-	steps, err := conflictSteps(ends, act, runID)
+	steps, err := conflictSteps(ends, act, runID, opt.ModWindow)
 	if err != nil {
 		return err
 	}
@@ -880,13 +887,13 @@ type conflictStep struct {
 // leaves "deleted on one side, edited on the other", which restores the file.
 // Copying the losing version across before setting it aside would leave the
 // plain name contested and cost an extra round to converge.
-func conflictSteps(ends Ends, act plan.Action, runID string) ([]conflictStep, error) {
+func conflictSteps(ends Ends, act plan.Action, runID string, window time.Duration) ([]conflictStep, error) {
 	if act.LeftNow == nil || act.RightNow == nil {
 		return nil, fmt.Errorf("conflict without both sides present")
 	}
 
 	if act.Resolve != plan.KeepBoth {
-		return chosenSteps(ends, act, runID)
+		return chosenSteps(ends, act, runID, window)
 	}
 
 	winner, loser := plan.Left, plan.Right
@@ -925,7 +932,7 @@ func conflictSteps(ends Ends, act plan.Action, runID string) ([]conflictStep, er
 // modification time. The losing version goes to the trash, so a click on the
 // wrong row can be undone. The order is safe for the same reason as in
 // conflictSteps.
-func chosenSteps(ends Ends, act plan.Action, runID string) ([]conflictStep, error) {
+func chosenSteps(ends Ends, act plan.Action, runID string, window time.Duration) ([]conflictStep, error) {
 	winner, loser := plan.Left, plan.Right
 	if act.Resolve == plan.KeepRight {
 		winner, loser = plan.Right, plan.Left
@@ -944,7 +951,13 @@ func chosenSteps(ends Ends, act plan.Action, runID string) ([]conflictStep, erro
 
 	return []conflictStep{
 		step(fmt.Sprintf("get rid of the %s version", loser), func(ctx context.Context) error {
-			return discard(ctx, loserFs, loserNow.Object(), runID)
+			// The person decided about the version they were shown, not
+			// about an edit made since.
+			obj, err := asScanned(ctx, loserFs, loser, loserNow.Path, loserNow, window)
+			if err != nil {
+				return err
+			}
+			return discard(ctx, loserFs, obj, runID)
 		}),
 		step(fmt.Sprintf("copy the %s version over", winner), func(ctx context.Context) error {
 			return operations.CopyFile(ctx, loserFs, winnerFs, winnerNow.Path, winnerNow.Path)
