@@ -97,7 +97,7 @@ func cmdSync(ctx context.Context, args []string) error {
 	}
 
 	report(p)
-	if len(p.Actions) == 0 && len(p.Agreed) == 0 && !hasDirWork(p) {
+	if len(p.Actions) == 0 && len(p.Agreed) == 0 && len(p.Forget) == 0 && !hasDirWork(p) {
 		return nil
 	}
 	if *dryRun {

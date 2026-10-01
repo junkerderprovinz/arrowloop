@@ -50,16 +50,72 @@ func TestOneWayNeverWritesToItsSource(t *testing.T) {
 		t.Errorf("the file was removed from the source: %v", err)
 	}
 
-	// A deletion on the source propagates.
+	// A deletion on the source leaves the destination's copy alone.
 	if err := os.Remove(filepath.Join(j.left, "from-the-source.txt")); err != nil {
 		t.Fatalf("remove: %v", err)
 	}
-	if _, res := j.run(t); res.Trashed != 1 {
-		t.Fatalf("a deletion on the source did not propagate: %d trashed", res.Trashed)
+	if _, res := j.run(t); res.Trashed != 0 {
+		t.Fatalf("a deletion on the source removed the destination's copy: %d trashed", res.Trashed)
+	}
+	if got := readFile(t, j.right, "from-the-source.txt"); got != "written on the left" {
+		t.Errorf("the destination's copy changed: %q", got)
 	}
 
 	if p, res := j.run(t); len(p.Actions) != 0 || res.Copied != 0 {
 		t.Fatalf("the one-way job did not settle: %d actions, %d copied", len(p.Actions), res.Copied)
+	}
+}
+
+// Move mode archives: a file deleted on the source afterwards stays on the
+// destination, which may hold its only copy.
+func TestMoveKeepsTheArchiveWhenTheSourceDeletes(t *testing.T) {
+	j := oneWay(t, plan.LeftToRight)
+	write(t, j.left, "photo.jpg", "taken before the job was switched to move")
+	write(t, j.left, "other.jpg", "keeps the side populated")
+	j.run(t)
+
+	j.opt.Compare.Mode = plan.ModeMove
+	if err := os.Remove(filepath.Join(j.left, "photo.jpg")); err != nil {
+		t.Fatalf("remove: %v", err)
+	}
+	if _, res := j.run(t); res.Trashed != 0 {
+		t.Fatalf("a deletion on the source removed the archived copy: %d trashed", res.Trashed)
+	}
+	if got := readFile(t, j.right, "photo.jpg"); got != "taken before the job was switched to move" {
+		t.Errorf("the archived copy changed: %q", got)
+	}
+}
+
+// Copy only removes nothing for a file the source deleted and the destination
+// edited either, and it stops reporting the pair once it has let go.
+func TestCopyOnlyLetsGoOfAFileTheSourceDeleted(t *testing.T) {
+	j := oneWay(t, plan.LeftToRight)
+	write(t, j.left, "notes.txt", "first")
+	write(t, j.left, "other.txt", "keeps the side populated")
+	j.run(t)
+
+	if err := os.Remove(filepath.Join(j.left, "notes.txt")); err != nil {
+		t.Fatalf("remove: %v", err)
+	}
+	write(t, j.right, "notes.txt", "edited on the destination")
+	j.run(t)
+
+	p, res := j.run(t)
+	if len(p.Actions) != 0 || res.Trashed != 0 {
+		t.Fatalf("the job did not let go of the file: %+v", p.Actions)
+	}
+	if got := readFile(t, j.right, "notes.txt"); got != "edited on the destination" {
+		t.Errorf("the destination's edit is gone: %q", got)
+	}
+	if _, err := os.Stat(filepath.Join(j.left, "notes.txt")); err == nil {
+		t.Error("the file came back onto the source")
+	}
+	rows, err := j.db.All(context.Background())
+	if err != nil {
+		t.Fatalf("state: %v", err)
+	}
+	if _, kept := rows["notes.txt"]; kept {
+		t.Error("the record of a file the source deleted is still there")
 	}
 }
 

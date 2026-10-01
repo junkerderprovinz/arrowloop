@@ -56,10 +56,13 @@ func (d Direction) source() Side {
 //     version is copied back over it.
 //   - A delete on the source means the destination deleted something; it is
 //     restored from the source.
+//   - A delete on the destination means the source deleted something. Only
+//     ModeMirror carries it over; otherwise the destination keeps its copy and
+//     the record lets go of the file.
 //   - A conflict is won by the source, with nothing kept beside it.
 //   - A rename on the source is dropped; the copy the same plan proposes
 //     restores the source's naming.
-//   - A file the source has never had stays, unless the mode is ModeMirror.
+//   - A file the source does not have stays, unless the mode is ModeMirror.
 func Enforce(p *Plan, dir Direction, mode Mode) {
 	if dir == Both {
 		return
@@ -82,11 +85,13 @@ func Enforce(p *Plan, dir Direction, mode Mode) {
 				kept = append(kept, rebuilt)
 				continue
 			}
-			// A file the source has never had.
+			// A file the source does not have.
 			if mode == ModeMirror {
 				if gone, ok := sweep(a, dst); ok {
 					kept = append(kept, gone)
 				}
+			} else if a.Prev != nil {
+				p.Forget = append(p.Forget, a.Path)
 			}
 		case Conflict:
 			if rebuilt, ok := restore(a, src, dst); ok {
@@ -94,7 +99,11 @@ func Enforce(p *Plan, dir Direction, mode Mode) {
 			}
 		case Delete:
 			if a.Dst == dst {
-				kept = append(kept, a)
+				if mode == ModeMirror {
+					kept = append(kept, a)
+				} else {
+					p.Forget = append(p.Forget, a.Path)
+				}
 				continue
 			}
 			if rebuilt, ok := restore(a, src, dst); ok {

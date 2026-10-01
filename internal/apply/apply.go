@@ -382,6 +382,12 @@ func RunVerified(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt
 		}
 	}
 
+	for _, key := range p.Forget {
+		if err := db.Forget(ctx, key); err != nil {
+			t.skip(key, "", whyFailed(ends, nil, "record", "recordFailed", err))
+		}
+	}
+
 	// Removals last, deepest first, so a parent is only tried once its children
 	// are gone.
 	for _, d := range p.Dirs {

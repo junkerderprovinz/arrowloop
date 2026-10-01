@@ -233,7 +233,11 @@ type Plan struct {
 	Unchanged int
 	// Agreed lists paths that need no work but whose state row should be
 	// written, because both sides produced the same file independently.
-	Agreed  []Action
+	Agreed []Action
+	// Forget lists keys whose state row goes while both sides stay as they
+	// are, such as a file a one-way job leaves on the destination after the
+	// source deleted it.
+	Forget  []string
 	Skipped []Skip
 	// Dirs is empty unless the job syncs empty directories, which needs both
 	// sides to be able to hold one.
