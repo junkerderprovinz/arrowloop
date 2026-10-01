@@ -348,15 +348,43 @@ func stickJob(t *testing.T, plugged func(drive, ran string) bool) (r *daemon.Run
 	return daemon.New(cfg, hist, nil), beforeRan, afterRan
 }
 
-// Nothing has been stopped yet, so nothing needs starting again.
-func TestAMissingDriveKeepsTheBeforeCommandFromRunning(t *testing.T) {
-	r, beforeRan, _ := stickJob(t, func(string, string) bool { return false })
+// mountedByBefore attaches the drive once the before command has run, the way
+// a mount command would.
+func mountedByBefore(drive, ran string) bool {
+	if _, err := os.Stat(ran); err != nil {
+		return false
+	}
+	return os.MkdirAll(filepath.Join(drive, "photos"), 0o755) == nil
+}
+
+// Mounting the drive is one of the things a before command is for.
+func TestABeforeCommandCanMountTheDrive(t *testing.T) {
+	r, _, _ := stickJob(t, mountedByBefore)
+
+	if _, err := r.Run(t.Context(), "onstick"); err != nil {
+		t.Fatalf("the drive the before command attached was not used: %v", err)
+	}
+}
+
+func TestABeforeCommandCanMountTheDriveForAScheduledRun(t *testing.T) {
+	r, _, _ := stickJob(t, mountedByBefore)
+
+	if _, err := r.RunAutomatically(t.Context(), "onstick"); err != nil {
+		t.Fatalf("the drive the before command attached was not used: %v", err)
+	}
+}
+
+func TestADriveTheBeforeCommandCouldNotMountStillGetsTheAfterCommand(t *testing.T) {
+	r, beforeRan, afterRan := stickJob(t, func(string, string) bool { return false })
 
 	if _, err := r.Run(t.Context(), "onstick"); !errors.Is(err, daemon.ErrVolumeMissing) {
 		t.Fatalf("an unplugged drive reported %v", err)
 	}
-	if _, err := os.Stat(beforeRan); err == nil {
-		t.Error("the before command ran for a drive that was not there")
+	if _, err := os.Stat(beforeRan); err != nil {
+		t.Fatalf("the before command never got the chance to mount the drive: %v", err)
+	}
+	if _, err := os.Stat(afterRan); err != nil {
+		t.Errorf("the after command did not run after the before command: %v", err)
 	}
 }
 

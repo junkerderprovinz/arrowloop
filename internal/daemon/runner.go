@@ -221,8 +221,12 @@ func (r *Runner) runAs(ctx context.Context, name string, auto bool, do work) (hi
 	var res apply.Result
 	var p *plan.Plan
 	// A drive that is missing before anything has run leaves nothing for the
-	// after command to undo.
-	_, _, err := resolve(j)
+	// after command to undo. A before command may be what mounts it, so a job
+	// with one finds out once the command has run.
+	var err error
+	if j.Before == "" {
+		_, _, err = resolve(j)
+	}
 	ranBefore := false
 	if err == nil {
 		err = hook.Run(ctx, j.Before, hookEnv(j, nil))
