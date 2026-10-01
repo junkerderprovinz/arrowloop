@@ -43,6 +43,9 @@ export type Action = {
   right?: SideVersion
 }
 
+/** A row as the preview listed it, which a run of ticked rows holds the fresh plan to. */
+export type Shown = Pick<Action, 'kind' | 'from' | 'to'>
+
 /** What to do with two versions of a file that disagree. */
 export type Resolution = 'both' | 'left' | 'right'
 
@@ -646,15 +649,18 @@ export const api = {
 
   /**
    * Start a run. `only` sends exactly the ticked paths, and an empty array
-   * means nothing rather than everything.
+   * means nothing rather than everything. `shown` says what each of them was
+   * listed as doing; the engine plans afresh and leaves a path alone whose
+   * action has changed since.
    */
-  run: (name: string, only?: string[], resolve?: Record<string, Resolution>) =>
+  run: (name: string, only?: string[], resolve?: Record<string, Resolution>, shown?: Record<string, Shown>) =>
     request<{ job: string; status: string }>(`/api/jobs/${encodeURIComponent(name)}/run`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         ...(only === undefined ? {} : { only }),
         ...(resolve && Object.keys(resolve).length > 0 ? { resolve } : {}),
+        ...(shown ? { shown } : {}),
       }),
     }),
 
