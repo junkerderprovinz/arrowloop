@@ -129,18 +129,20 @@ export function useJobConfig(onSaved: () => void) {
   }, [jobs, persist])
 
   /**
-   * Adds a draft job and returns its index, so the caller can open it.
+   * Adds a draft job and returns its index, so the caller can open it, or null
+   * while the job list has not loaded: a save would write the draft alone over
+   * every job in the file.
    *
    * The index comes from the current jobs rather than from inside a state
    * updater, which React runs later. A new job is enabled: with neither side
    * set the validator treats it as a draft, and it has no schedule yet. The
    * quiet period is seeded to DEFAULT_QUIET.
    */
-  const add = useCallback((): number => {
+  const add = useCallback((): number | null => {
+    if (!jobs) return null
     setSaved(false)
-    const current = jobs ?? []
     // Two jobs with one name would be one job to every list, log and record.
-    const name = uniqueName(t('edit.newJob'), current.map((j) => j.name ?? ''))
+    const name = uniqueName(t('edit.newJob'), jobs.map((j) => j.name ?? ''))
     const next: RawJob = {
       name,
       left: '',
@@ -149,8 +151,8 @@ export function useJobConfig(onSaved: () => void) {
       quietPeriod: DEFAULT_QUIET,
       exclude: [...DEFAULT_EXCLUDES],
     }
-    setJobs([...current, next])
-    return current.length
+    setJobs([...jobs, next])
+    return jobs.length
   }, [jobs, t])
 
   /**

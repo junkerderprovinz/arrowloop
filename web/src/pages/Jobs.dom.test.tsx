@@ -1,19 +1,23 @@
 // @vitest-environment jsdom
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { Job } from '../lib/api'
+import type { Job, RawJob } from '../lib/api'
 import { ToastProvider } from '../lib/toast'
 
 const LEFT = 'C:\\Users\\somebody\\Pictures\\Camera Roll\\2024\\Holidays in the mountains\\Day three'
 const RIGHT = 'nextcloud:Photos/Archive/2024/Holidays in the mountains/Day three/Originals'
 
+const stored = (): RawJob[] => [{ name: 'photos', left: LEFT, right: RIGHT, state: 'state/photos.db' }]
+const config = vi.fn(() => Promise.resolve({ jobs: stored() }))
+const saveConfig = vi.fn((jobs: RawJob[]) => Promise.resolve({ jobs }))
 const run = vi.fn((name: string) => Promise.resolve({ job: name, status: 'started' }))
 const stopJob = vi.fn((_name: string) => Promise.resolve({ stopped: true }))
 
 vi.mock('../lib/api', () => ({
   api: {
-    config: () => Promise.resolve({ jobs: [{ name: 'photos', left: LEFT, right: RIGHT, state: 'state/photos.db' }] }),
+    config: () => config(),
+    saveConfig: (jobs: RawJob[]) => saveConfig(jobs),
     settings: () => Promise.resolve({}),
     volumes: () => Promise.resolve({ volumes: [] }),
     remotes: () => Promise.resolve({ remotes: [], backends: [] }),
@@ -27,6 +31,13 @@ vi.mock('../lib/api', () => ({
 }))
 
 const { Jobs } = await import('./Jobs')
+
+// jsdom cannot measure elements, which the form's switches ask for.
+globalThis.ResizeObserver ??= class {
+  observe() {}
+  disconnect() {}
+  unobserve() {}
+} as unknown as typeof ResizeObserver
 
 function job(over: Partial<Job> = {}): Job {
   return {
@@ -58,6 +69,12 @@ function card(over: Partial<Job> = {}) {
   )
 }
 
+beforeEach(() => {
+  config.mockReset()
+  config.mockImplementation(() => Promise.resolve({ jobs: stored() }))
+  saveConfig.mockReset()
+  saveConfig.mockImplementation((jobs: RawJob[]) => Promise.resolve({ jobs }))
+})
 afterEach(cleanup)
 
 describe('a job card', () => {
@@ -165,5 +182,24 @@ describe('a job card', () => {
     const add = await screen.findByRole('button', { name: 'Add a job' })
     expect(add.className).toMatch(/glim-fab/)
     expect(add.closest('.flex.flex-col.gap-10')).toBeNull()
+  })
+})
+
+describe('adding a job', () => {
+  it('waits until the job list has loaded', async () => {
+    config.mockImplementation(() => new Promise(() => undefined))
+    card()
+    const add = await screen.findByRole('button', { name: 'Add a job' })
+    fireEvent.click(add)
+    expect(screen.queryByDisplayValue('new-job')).toBeNull()
+  })
+
+  it('is refused while the job list could not be read', async () => {
+    config.mockImplementation(() => Promise.reject(new Error('Failed to fetch')))
+    card()
+    await screen.findByText('Failed to fetch')
+    fireEvent.click(screen.getByRole('button', { name: 'Add a job' }))
+    expect(screen.queryByRole('button', { name: 'Save' })).toBeNull()
+    expect(saveConfig).not.toHaveBeenCalled()
   })
 })

@@ -391,9 +391,10 @@ export function Jobs({
           tone="accent"
           hueIndex={0}
           className="glim-btn-key glim-fab"
+          disabled={!raw}
           onClick={() => {
             const at = config.add()
-            setEditing(at)
+            if (at !== null) setEditing(at)
           }}
         />,
         document.body,
