@@ -45,6 +45,6 @@ func (r *Runner) RunAutomatically(ctx context.Context, name string) (history.Run
 			// action away.
 			only = []string{}
 		}
-		return r.execute(ctx, j, only, nil, live)
+		return r.execute(ctx, j, only, nil, nil, live)
 	})
 }

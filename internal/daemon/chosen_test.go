@@ -23,7 +23,7 @@ func TestATickedRowThatChangedSinceThePreviewIsLeftAlone(t *testing.T) {
 			t.Fatalf("write: %v", err)
 		}
 	}
-	r := daemon.New(cfg, hist, nil, nil)
+	r := daemon.New(cfg, hist, nil)
 	ctx := context.Background()
 	if _, err := r.Run(ctx, "docs"); err != nil {
 		t.Fatalf("first run: %v", err)
