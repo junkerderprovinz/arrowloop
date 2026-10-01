@@ -8,7 +8,7 @@ import { IconAction } from '../components/IconAction'
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { Selector } from '../components/Selector'
 import { actionName } from '../lib/actionName'
-import { api, type Action, type ActionKind, type Plan, type Resolution, type SideVersion } from '../lib/api'
+import { api, type Action, type ActionKind, type Plan, type Resolution, type Shown, type SideVersion } from '../lib/api'
 import { translateSide, useReason, useT, type TranslationKey } from '../lib/i18n'
 
 /**
@@ -50,10 +50,8 @@ export function Preview({ job, onDone }: { job: string; onDone: () => void }) {
   }, [job])
 
   const everything = useMemo(() => (plan ? [...plan.actions, ...plan.dirs] : []), [plan])
-  const chosen = useMemo(
-    () => everything.filter((a) => !unticked.has(a.path)).map((a) => a.path),
-    [everything, unticked],
-  )
+  const ticked = useMemo(() => everything.filter((a) => !unticked.has(a.path)), [everything, unticked])
+  const chosen = useMemo(() => ticked.map((a) => a.path), [ticked])
 
   function toggle(path: string) {
     setUnticked((prev) => {
@@ -67,9 +65,13 @@ export function Preview({ job, onDone }: { job: string; onDone: () => void }) {
   async function start() {
     setBusy(true)
     try {
-      // An explicit list even when everything is ticked, so what runs is
-      // exactly what was on screen rather than a fresh plan.
-      await api.run(job, chosen, resolutions)
+      // An explicit list even when everything is ticked. The engine plans
+      // afresh and holds each path to what its row showed, so a file that
+      // changed in the meantime is left for the next run rather than done
+      // differently.
+      const shown: Record<string, Shown> = {}
+      for (const a of ticked) shown[a.path] = { kind: a.kind, from: a.from, to: a.to }
+      await api.run(job, chosen, resolutions, shown)
       onDone()
     } catch (e) {
       setError((e as Error).message)

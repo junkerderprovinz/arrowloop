@@ -221,6 +221,37 @@ func TestASecretNeverLeavesTheProcess(t *testing.T) {
 	}
 }
 
+// Adding a target under a name already in use would turn the existing one into
+// a mix of both and point every job that uses it at the new server.
+func TestAddingATargetRefusesANameInUse(t *testing.T) {
+	h := newHarness(t)
+	withRcloneConfig(t)
+
+	first := `{"type":"s3","settings":{"provider":"AWS","region":"eu-central-1"}}`
+	if resp, said := h.put(t, "/api/remotes/backup?new=1", first); resp.StatusCode != http.StatusOK {
+		t.Fatalf("adding a target: %s %s", resp.Status, said)
+	}
+
+	second := `{"type":"sftp","settings":{"host":"backup.example"}}`
+	resp, said := h.put(t, "/api/remotes/backup?new=1", second)
+	if resp.StatusCode != http.StatusConflict {
+		t.Fatalf("a second target under the same name answered %s %s", resp.Status, said)
+	}
+	raw := readRcloneConfig(t)
+	if !strings.Contains(raw, "type = s3") || strings.Contains(raw, "backup.example") {
+		t.Fatalf("the refused target changed the existing one:\n%s", raw)
+	}
+
+	// Editing the target keeps its name, and goes through.
+	edit := `{"type":"s3","settings":{"provider":"AWS","region":"eu-west-1"}}`
+	if resp, said := h.put(t, "/api/remotes/backup", edit); resp.StatusCode != http.StatusOK {
+		t.Fatalf("editing the target: %s %s", resp.Status, said)
+	}
+	if !strings.Contains(readRcloneConfig(t), "eu-west-1") {
+		t.Error("the edit did not take")
+	}
+}
+
 func quote(s string) string {
 	out, err := json.Marshal(s)
 	if err != nil {

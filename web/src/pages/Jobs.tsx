@@ -26,6 +26,7 @@ import { bytes } from '../lib/bytes'
 import { entryLabel, entryNote } from '../lib/entryLabel'
 import { useLiveTick } from '../lib/liveTick'
 import { usePlaces } from '../lib/places'
+import { useToast } from '../lib/toast'
 import { api } from '../lib/api'
 import type { Direction, HistoryShow, Job, Run, RunEvent, Touch } from '../lib/api'
 import { translateSide, useT } from '../lib/i18n'
@@ -40,7 +41,7 @@ import { since } from '../lib/since'
  */
 export function Jobs({
   jobs,
-  runs,
+  latest,
   progress,
   speeds,
   onPreview,
@@ -48,10 +49,11 @@ export function Jobs({
 }: {
   jobs: Job[]
   /**
-   * The recent runs, newest first. The live job list only carries the last
-   * success, which cannot say whether the last attempt failed.
+   * Each job's newest run. The live job list only carries the last success,
+   * which cannot say whether the last attempt failed, and a page of the newest
+   * runs across all jobs loses a daily job behind one that watches a folder.
    */
-  runs: Run[]
+  latest: Run[]
   progress: Record<string, RunEvent>
   /** Bytes a second per running job, from the engine's moving frames. */
   speeds: Record<string, number>
@@ -59,17 +61,24 @@ export function Jobs({
   onSaved: () => void
 }) {
   const { t } = useT()
+  const push = useToast()
 
   // Only the most recent run counts: a job that failed last week and has worked
   // since is not in trouble.
   function lastFailed(name: string): boolean {
-    const last = runs.find((r) => r.Job === name)
+    const last = latest.find((r) => r.Job === name)
     return !!last && last.Err !== ''
   }
   const config = useJobConfig(onSaved)
-  // The job open in the form, by its position in the configuration file.
-  const [editing, setEditing] = useState<number | null>(null)
-  const [removing, setRemoving] = useState<number | null>(null)
+  // The job open in the form, by its position in the configuration file, and
+  // for a saved job the name the engine knows it by. The name in the form can
+  // change with every keystroke, so it cannot tie the form to its card.
+  const [open, setOpen] = useState<{ at: number; live?: string } | null>(null)
+  const editing = open?.at ?? null
+  const setEditing = (at: number | null, live?: string) => setOpen(at === null ? null : { at, live })
+  // The entry by its place in the file, and the name the engine knows it by
+  // unless it is a draft.
+  const [removing, setRemoving] = useState<{ at: number; saved?: string } | null>(null)
   // Whose history fold is open, by job name; one at a time.
   const [history, setHistory] = useState<string | null>(null)
   // The check or the duplicate search open on a card, one at a time.
@@ -89,15 +98,19 @@ export function Jobs({
   // configuration file, so a row is matched to its record by name.
   function indexOf(name: string): number | null {
     if (!raw) return null
+    if (open?.live === name) return open.at
     const at = raw.findIndex((j) => j.name === name)
     return at === -1 ? null : at
   }
+
+  // The entry open in a saved job's own card, whatever its name reads now.
+  const held = open?.live !== undefined && jobs.some((j) => j.name === open.live) ? open.at : null
 
   // Jobs in the configuration that the engine only learns about on save still
   // get a card, marked unsaved.
   const pending = (raw ?? [])
     .map((j, at) => ({ job: j, at }))
-    .filter(({ job }) => !jobs.some((live) => live.name === job.name))
+    .filter(({ job, at }) => !jobs.some((live) => live.name === job.name) && at !== held)
 
   return (
     <Stack>
@@ -141,7 +154,7 @@ export function Jobs({
                         title={t('edit.remove')}
                         labelKey="edit.remove"
                         hueIndex={i + 4}
-                        onClick={() => setRemoving(at)}
+                        onClick={() => setRemoving({ at, saved: j.name })}
                       >
                         <IconDelete />
                       </IconAction>
@@ -180,7 +193,8 @@ export function Jobs({
                         title={j.disabled ? t('jobs.resume') : t('jobs.pause')}
                         labelKey={j.disabled ? 'jobs.resume' : 'jobs.pause'}
                         hueIndex={i + 5}
-                        onClick={() => void config.setDisabled(at, !j.disabled)}
+                        disabled={config.busy}
+                        onClick={() => void config.setDisabled(j.name, !j.disabled)}
                       >
                         {j.disabled ? <IconRun /> : <IconPause />}
                       </IconAction>
@@ -190,7 +204,10 @@ export function Jobs({
                       labelKey={j.running ? 'jobs.cancelRun' : 'jobs.runNow'}
                       hint={j.running ? undefined : t('jobs.runNowHint')}
                       hueIndex={i + 6}
-                      onClick={() => void (j.running ? api.stopJob(j.name) : api.run(j.name))}
+                      onClick={() => {
+                        const asked = j.running ? api.stopJob(j.name) : api.run(j.name)
+                        asked.catch((e: Error) => push(e.message, 'fail'))
+                      }}
                     />
                     <Menu
                       label={t('jobs.options')}
@@ -209,7 +226,7 @@ export function Jobs({
                               {
                                 label: t('edit.editJob'),
                                 labelKey: 'edit.editJob' as const,
-                                onSelect: () => setEditing(at),
+                                onSelect: () => setEditing(at, j.name),
                               },
                               {
                                 label: t('edit.duplicate'),
@@ -219,7 +236,7 @@ export function Jobs({
                               {
                                 label: t('edit.remove'),
                                 labelKey: 'edit.remove' as const,
-                                onSelect: () => setRemoving(at),
+                                onSelect: () => setRemoving({ at, saved: j.name }),
                               },
                             ]
                           : []),
@@ -291,7 +308,7 @@ export function Jobs({
                       title={t('edit.remove')}
                       labelKey="edit.remove"
                       hueIndex={jobs.length + at + 4}
-                      onClick={() => setRemoving(at)}
+                      onClick={() => setRemoving({ at })}
                     >
                       <IconDelete />
                     </IconAction>
@@ -328,7 +345,7 @@ export function Jobs({
                     title={t('edit.remove')}
                     labelKey="edit.remove"
                     hueIndex={jobs.length + at + 4}
-                    onClick={() => setRemoving(at)}
+                    onClick={() => setRemoving({ at })}
                   >
                     <IconDelete />
                   </IconAction>
@@ -343,10 +360,10 @@ export function Jobs({
         </>
       )}
 
-      {removing !== null && raw && raw[removing] && (
+      {removing !== null && raw && raw[removing.at] && (
         <ConfirmDialog
           title={t('edit.removeJob')}
-          message={t('edit.removeStakes', { name: raw[removing].name || t('edit.unnamed') })}
+          message={t('edit.removeStakes', { name: raw[removing.at].name || t('edit.unnamed') })}
           confirmLabel={t('confirm.delete')}
           confirmGlyph={<IconDelete />}
           cancelLabel={t('confirm.cancel')}
@@ -361,8 +378,8 @@ export function Jobs({
           }
           onCancel={() => setRemoving(null)}
           onConfirm={() => {
-            void config.remove(removing, dropState)
-            if (editing === removing) setEditing(null)
+            void config.remove(removing.at, dropState, removing.saved)
+            if (editing === removing.at) setEditing(null)
             setRemoving(null)
           }}
         />
@@ -386,9 +403,10 @@ export function Jobs({
           tone="accent"
           hueIndex={0}
           className="glim-btn-key glim-fab"
+          disabled={!raw}
           onClick={() => {
             const at = config.add()
-            setEditing(at)
+            if (at !== null) setEditing(at)
           }}
         />,
         document.body,

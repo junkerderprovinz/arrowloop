@@ -145,15 +145,17 @@ func (r *Runner) Run(ctx context.Context, name string) (history.Run, error) {
 // them. It plans afresh and then filters rather than replaying the plan the
 // caller was shown, since a file can change between the preview and the run.
 func (r *Runner) RunOnly(ctx context.Context, name string, only []string) (history.Run, error) {
-	return r.RunChosen(ctx, name, only, nil)
+	return r.RunChosen(ctx, name, only, nil, nil)
 }
 
 // RunChosen executes a job with the paths somebody ticked and the conflicts
-// they decided. A resolution only applies to a path that is still a conflict,
-// so a stale one from an older preview is ignored.
-func (r *Runner) RunChosen(ctx context.Context, name string, only []string, resolve map[string]plan.Resolution) (history.Run, error) {
+// they decided. shown holds what the preview said each ticked path would do,
+// and a path whose fresh action no longer matches is left for the next run. A
+// resolution only applies to a path that is still a conflict, so a stale one
+// from an older preview is ignored.
+func (r *Runner) RunChosen(ctx context.Context, name string, only []string, shown map[string]plan.Shown, resolve map[string]plan.Resolution) (history.Run, error) {
 	return r.runAs(ctx, name, func(ctx context.Context, j job.Job, live *history.Live) (apply.Result, *plan.Plan, error) {
-		return r.execute(ctx, j, only, resolve, live)
+		return r.execute(ctx, j, only, shown, resolve, live)
 	})
 }
 
@@ -333,7 +335,7 @@ func resolve(j job.Job) (left, right string, err error) {
 
 // execute does the actual sync for one job, optionally limited to some paths.
 // Every line the run writes also goes to live, which may be nil.
-func (r *Runner) execute(ctx context.Context, j job.Job, only []string, resolve map[string]plan.Resolution, live *history.Live) (apply.Result, *plan.Plan, error) {
+func (r *Runner) execute(ctx context.Context, j job.Job, only []string, shown map[string]plan.Shown, resolve map[string]plan.Resolution, live *history.Live) (apply.Result, *plan.Plan, error) {
 	opt, err := j.Options()
 	if err != nil {
 		return apply.Result{}, nil, err
@@ -378,7 +380,9 @@ func (r *Runner) execute(ctx context.Context, j job.Job, only []string, resolve 
 	}
 	if only != nil {
 		full := len(p.Actions)
-		keep(p, only)
+		for _, path := range keep(p, only, shown) {
+			r.log("%s: %s changed since the preview and is left for the next run", j.Name, path)
+		}
 		r.log("%s: running %d of %d proposed changes, as chosen", j.Name, len(p.Actions), full)
 	}
 	applyResolutions(p, resolve, r.log, j.Name)
@@ -387,16 +391,28 @@ func (r *Runner) execute(ctx context.Context, j job.Job, only []string, resolve 
 	return res, p, err
 }
 
-// keep narrows a plan's actions to the paths somebody picked. The skips stay,
-// because they report why a file was postponed rather than describe work.
-func keep(p *plan.Plan, only []string) {
+// keep narrows a plan's actions to the paths somebody picked, and drops a
+// picked path whose action is no longer the one the preview showed. It returns
+// the paths it dropped that way. The skips stay, because they report why a file
+// was postponed rather than describe work.
+func keep(p *plan.Plan, only []string, shown map[string]plan.Shown) (changed []string) {
 	wanted := make(map[string]bool, len(only))
 	for _, path := range only {
 		wanted[path] = true
 	}
+	// A caller that sent no description of a path is taken at its word.
+	same := func(path string, now plan.Shown) bool {
+		was, ok := shown[path]
+		if ok && was != now {
+			changed = append(changed, path)
+			return false
+		}
+		return true
+	}
+
 	kept := p.Actions[:0]
 	for _, a := range p.Actions {
-		if wanted[a.Path] {
+		if wanted[a.Path] && same(a.Path, a.Show()) {
 			kept = append(kept, a)
 		}
 	}
@@ -405,11 +421,12 @@ func keep(p *plan.Plan, only []string) {
 	var dirs []plan.DirAction
 	for _, d := range p.Dirs {
 		// A record refresh moves nothing and keeps the directory state right.
-		if d.Kind == plan.RecordDir || wanted[d.Path] {
+		if d.Kind == plan.RecordDir || wanted[d.Path] && same(d.Path, d.Show()) {
 			dirs = append(dirs, d)
 		}
 	}
 	p.Dirs = dirs
+	return changed
 }
 
 // applyResolutions marks the conflicts a person decided. A resolution for a

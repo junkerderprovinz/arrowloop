@@ -44,11 +44,13 @@ export function Text({
   mono,
   label,
   code,
+  readOnly,
 }: {
   value: string
   onChange: (next: string) => void
   placeholder?: string
   mono?: boolean
+  readOnly?: boolean
   /** The accessible name for a box that stands outside a Field. */
   label?: string
   /** A one-time code: a number pad on a phone, and the browser may fill in a
@@ -61,12 +63,13 @@ export function Text({
       value={value}
       placeholder={placeholder}
       aria-label={label}
+      readOnly={readOnly}
       inputMode={code ? 'numeric' : undefined}
       autoComplete={code ? 'one-time-code' : undefined}
       onChange={(e) => onChange(e.target.value)}
-      className={`w-full ${CONTROL_H} bg-carbon-surface2 px-3 text-xs text-carbon-text outline-none transition placeholder:text-carbon-textMuted focus:brightness-125 ${
-        mono ? 'font-mono' : ''
-      }`}
+      className={`w-full ${CONTROL_H} bg-carbon-surface2 px-3 text-xs outline-none transition placeholder:text-carbon-textMuted focus:brightness-125 ${
+        readOnly ? 'text-carbon-textMuted' : 'text-carbon-text'
+      } ${mono ? 'font-mono' : ''}`}
       style={{ borderRadius: 'var(--radius-control)' }}
     />
   )

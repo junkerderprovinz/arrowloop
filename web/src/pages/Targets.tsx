@@ -20,6 +20,7 @@ import { bytes } from '../lib/bytes'
 import { groupStage } from '../lib/controls'
 import { isLocalTarget } from '../lib/localTarget'
 import { useT } from '../lib/i18n'
+import { useToast } from '../lib/toast'
 import { optionHint } from '../lib/optionHint'
 import { optionLabel } from '../lib/optionNames'
 import { suggestTargetName } from '../lib/targetName'
@@ -36,18 +37,15 @@ export function Targets() {
   const [error, setError] = useState<string | null>(null)
 
   const refresh = useCallback(() => {
-    api
-      .remotes()
-      .then((r) => {
-        setRemotes(r.remotes)
-        setBackends(r.backends)
-        setProviders(r.providers ?? [])
-        setUnlisted(r.unlisted ?? [])
-      })
-      .catch((e: Error) => setError(e.message))
-    api
-      .volumes()
-      .then((v) => setVolumes(v.volumes))
+    const targets = api.remotes().then((r) => {
+      setRemotes(r.remotes)
+      setBackends(r.backends)
+      setProviders(r.providers ?? [])
+      setUnlisted(r.unlisted ?? [])
+    })
+    const drives = api.volumes().then((v) => setVolumes(v.volumes))
+    Promise.all([targets, drives])
+      .then(() => setError(null))
       .catch((e: Error) => setError(e.message))
   }, [])
 
@@ -254,6 +252,7 @@ function RemoteRow({
   onChanged: () => void
 }) {
   const { t } = useT()
+  const push = useToast()
   const [checking, setChecking] = useState(false)
   const [result, setResult] = useState<{ ok: boolean; reason?: string } | null>(null)
   // How full the target is, fetched on the same press once the check has
@@ -362,7 +361,10 @@ function RemoteRow({
           onCancel={() => setConfirming(false)}
           onConfirm={() => {
             setConfirming(false)
-            void api.deleteRemote(remote.name).then(onChanged)
+            api
+              .deleteRemote(remote.name)
+              .then(onChanged)
+              .catch((e: Error) => push(e.message, 'fail'))
           }}
         />
       )}
@@ -511,7 +513,7 @@ function RemoteForm({
         Object.entries(values).filter(([key, value]) => value !== '' || existing?.settings.some((s) => s.key === key)),
       )
       const saved = name.trim()
-      await api.saveRemote(saved, kind, filled)
+      await api.saveRemote(saved, kind, filled, !existing)
       // Checked after saving, so a typo shows at once rather than as a failed
       // run. The answer never blocks, since the server may simply be off.
       setBusy(false)
@@ -550,7 +552,9 @@ function RemoteForm({
           products. */}
       <div className="mx-auto flex w-full max-w-md flex-col gap-4">
         <Field label={t('targets.remoteName')} hint={t('targets.remoteNameHint')}>
-          <Text value={name} onChange={setName} placeholder="backup" mono />
+          {/* Fixed once saved: the jobs that use the target name it, and its
+              secrets never reach this form to be written under a new name. */}
+          <Text value={name} onChange={setName} placeholder="backup" mono readOnly={!!existing} />
         </Field>
 
         {shown.map((o) => (
@@ -772,6 +776,7 @@ function DriveRow({
   onChanged: () => void
 }) {
   const { t } = useT()
+  const push = useToast()
   const [copied, setCopied] = useState(false)
   const copyButton = useRef<HTMLButtonElement>(null)
   useEffect(() => {
@@ -838,7 +843,10 @@ function DriveRow({
           onCancel={() => setConfirming(false)}
           onConfirm={() => {
             setConfirming(false)
-            void api.forgetVolume(volume.id).then(onChanged)
+            api
+              .forgetVolume(volume.id)
+              .then(onChanged)
+              .catch((e: Error) => push(e.message, 'fail'))
           }}
         />
       )}

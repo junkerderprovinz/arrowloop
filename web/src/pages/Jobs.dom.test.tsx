@@ -1,20 +1,28 @@
 // @vitest-environment jsdom
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { Job } from '../lib/api'
+import type { Job, RawJob } from '../lib/api'
+import { ToastProvider } from '../lib/toast'
 
 const LEFT = 'C:\\Users\\somebody\\Pictures\\Camera Roll\\2024\\Holidays in the mountains\\Day three'
 const RIGHT = 'nextcloud:Photos/Archive/2024/Holidays in the mountains/Day three/Originals'
 
+const stored = (): RawJob[] => [{ name: 'photos', left: LEFT, right: RIGHT, state: 'state/photos.db' }]
+const config = vi.fn(() => Promise.resolve({ jobs: stored() }))
+const saveConfig = vi.fn((jobs: RawJob[]) => Promise.resolve({ jobs }))
+const run = vi.fn((name: string) => Promise.resolve({ job: name, status: 'started' }))
+const stopJob = vi.fn((_name: string) => Promise.resolve({ stopped: true }))
+
 vi.mock('../lib/api', () => ({
   api: {
-    config: () => Promise.resolve({ jobs: [{ name: 'photos', left: LEFT, right: RIGHT, state: 'state/photos.db' }] }),
+    config: () => config(),
+    saveConfig: (jobs: RawJob[]) => saveConfig(jobs),
     settings: () => Promise.resolve({}),
     volumes: () => Promise.resolve({ volumes: [] }),
     remotes: () => Promise.resolve({ remotes: [], backends: [] }),
-    run: vi.fn(),
-    stopJob: vi.fn(),
+    run: (name: string) => run(name),
+    stopJob: (name: string) => stopJob(name),
     jobTouches: () =>
       Promise.resolve([
         { Kind: 'copy', Side: 'right', Path: 'a.jpg', Note: '', Size: 10, Run: 1, Job: 'photos', When: '2027-03-01T12:00:00Z', Seq: 0 },
@@ -23,6 +31,13 @@ vi.mock('../lib/api', () => ({
 }))
 
 const { Jobs } = await import('./Jobs')
+
+// jsdom cannot measure elements, which the form's switches ask for.
+globalThis.ResizeObserver ??= class {
+  observe() {}
+  disconnect() {}
+  unobserve() {}
+} as unknown as typeof ResizeObserver
 
 function job(over: Partial<Job> = {}): Job {
   return {
@@ -41,17 +56,25 @@ function job(over: Partial<Job> = {}): Job {
 
 function card(over: Partial<Job> = {}) {
   render(
-    <Jobs
-      jobs={[job(over)]}
-      runs={[]}
-      progress={{}}
-      speeds={{}}
-      onPreview={() => undefined}
-      onSaved={() => undefined}
-    />,
+    <ToastProvider>
+      <Jobs
+        jobs={[job(over)]}
+        latest={[]}
+        progress={{}}
+        speeds={{}}
+        onPreview={() => undefined}
+        onSaved={() => undefined}
+      />
+    </ToastProvider>,
   )
 }
 
+beforeEach(() => {
+  config.mockReset()
+  config.mockImplementation(() => Promise.resolve({ jobs: stored() }))
+  saveConfig.mockReset()
+  saveConfig.mockImplementation((jobs: RawJob[]) => Promise.resolve({ jobs }))
+})
 afterEach(cleanup)
 
 describe('a job card', () => {
@@ -140,10 +163,145 @@ describe('a job card', () => {
     expect(screen.queryByRole('region', { name: 'Check this job' })).toBeNull()
   })
 
+  it('says why a run could not be started', async () => {
+    run.mockImplementationOnce(() => Promise.reject(new Error('this interface is password protected, log in first')))
+    card()
+    fireEvent.click(await screen.findByRole('button', { name: 'Run now' }))
+    expect(await screen.findByText('this interface is password protected, log in first')).toBeTruthy()
+  })
+
+  it('says why a run could not be cancelled', async () => {
+    stopJob.mockImplementationOnce(() => Promise.reject(new Error('Failed to fetch')))
+    card({ running: true })
+    fireEvent.click(await screen.findByRole('button', { name: 'Cancel the run' }))
+    expect(await screen.findByText('Failed to fetch')).toBeTruthy()
+  })
+
   it('floats the button that adds a job outside the page', async () => {
     card()
     const add = await screen.findByRole('button', { name: 'Add a job' })
     expect(add.className).toMatch(/glim-fab/)
     expect(add.closest('.flex.flex-col.gap-10')).toBeNull()
+  })
+})
+
+describe('adding a job', () => {
+  it('waits until the job list has loaded', async () => {
+    config.mockImplementation(() => new Promise(() => undefined))
+    card()
+    const add = await screen.findByRole('button', { name: 'Add a job' })
+    fireEvent.click(add)
+    expect(screen.queryByDisplayValue('new-job')).toBeNull()
+  })
+
+  it('is refused while the job list could not be read', async () => {
+    config.mockImplementation(() => Promise.reject(new Error('Failed to fetch')))
+    card()
+    await screen.findByText('Failed to fetch')
+    fireEvent.click(screen.getByRole('button', { name: 'Add a job' }))
+    expect(screen.queryByRole('button', { name: 'Save' })).toBeNull()
+    expect(saveConfig).not.toHaveBeenCalled()
+  })
+})
+
+describe('pausing and removing a job', () => {
+  const pair = (): RawJob[] => [
+    { name: 'photos', left: 'D:/Photos', right: 'nas:photos', state: 'state/photos.db' },
+    { name: 'music', left: 'D:/Music', right: 'nas:music', state: 'state/music.db' },
+  ]
+  const live = (r: RawJob): Job => job({ name: r.name, left: r.left, right: r.right })
+
+  function cards(list: RawJob[] = pair()) {
+    render(
+      <ToastProvider>
+        <Jobs
+          jobs={list.map(live)}
+          latest={[]}
+          progress={{}}
+          speeds={{}}
+          onPreview={() => undefined}
+          onSaved={() => undefined}
+        />
+      </ToastProvider>,
+    )
+  }
+
+  // The row that draws a job's two sides also holds its buttons.
+  async function pause(name: string) {
+    const side = pair().find((j) => j.name === name)?.left ?? ''
+    const row = (await screen.findByText(side)).closest('div.flex-wrap') as HTMLElement
+    fireEvent.click(within(row).getByRole('button', { name: 'Pause' }))
+  }
+
+  beforeEach(() => {
+    config.mockImplementation(() => Promise.resolve({ jobs: pair() }))
+  })
+
+  it('writes only the paused job, not another card\'s unsaved edit', async () => {
+    cards()
+    await screen.findAllByRole('button', { name: 'Pause' })
+    fireEvent.click(screen.getAllByRole('button', { name: 'Options' })[0])
+    fireEvent.click(within(await screen.findByRole('menu')).getByRole('menuitem', { name: 'Edit' }))
+    fireEvent.change(await screen.findByDisplayValue('nas:photos'), { target: { value: 'nas:elsewhere' } })
+
+    await pause('music')
+    await waitFor(() => expect(saveConfig).toHaveBeenCalled())
+    const written = saveConfig.mock.calls[0][0]
+    expect(written.find((j) => j.name === 'photos')?.right).toBe('nas:photos')
+    expect(written.find((j) => j.name === 'music')?.disabled).toBe(true)
+  })
+
+  it('keeps a job another window added since the page loaded', async () => {
+    cards()
+    await screen.findAllByRole('button', { name: 'Pause' })
+    config.mockImplementation(() =>
+      Promise.resolve({ jobs: [...pair(), { name: 'films', left: 'D:/Films', right: 'nas:films', state: 'state/films.db' }] }),
+    )
+
+    await pause('photos')
+    await waitFor(() => expect(saveConfig).toHaveBeenCalled())
+    expect(saveConfig.mock.calls[0][0].map((j) => j.name)).toEqual(['photos', 'music', 'films'])
+  })
+
+  it('holds the pause buttons while a write is under way', async () => {
+    saveConfig.mockImplementation(() => new Promise(() => undefined))
+    cards()
+    await pause('photos')
+    await waitFor(() => expect(saveConfig).toHaveBeenCalled())
+    for (const button of screen.getAllByRole('button', { name: 'Pause' })) {
+      expect((button as HTMLButtonElement).disabled).toBe(true)
+    }
+  })
+
+  it('removes one job without writing another card\'s unsaved edit', async () => {
+    cards()
+    await screen.findAllByRole('button', { name: 'Pause' })
+    fireEvent.click(screen.getAllByRole('button', { name: 'Options' })[0])
+    fireEvent.click(within(await screen.findByRole('menu')).getByRole('menuitem', { name: 'Edit' }))
+    fireEvent.change(await screen.findByDisplayValue('nas:photos'), { target: { value: 'nas:elsewhere' } })
+
+    fireEvent.click(screen.getAllByRole('button', { name: 'Options' })[0])
+    fireEvent.click(within(await screen.findByRole('menu')).getByRole('menuitem', { name: 'Remove' }))
+    const dialog = await screen.findByRole('dialog')
+    fireEvent.click(within(dialog).getByRole('switch'))
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Delete it' }))
+
+    await waitFor(() => expect(saveConfig).toHaveBeenCalled())
+    expect(saveConfig.mock.calls[0][0]).toEqual([pair()[0]])
+  })
+})
+
+describe('renaming a job', () => {
+  it('keeps the form in the job\'s own card while the name is typed', async () => {
+    card()
+    fireEvent.click(await screen.findByRole('button', { name: 'Options' }))
+    fireEvent.click(within(await screen.findByRole('menu')).getByRole('menuitem', { name: 'Edit' }))
+    const name = (await screen.findByDisplayValue('photos')) as HTMLInputElement
+
+    fireEvent.change(name, { target: { value: 'photosx' } })
+    expect(name.isConnected).toBe(true)
+    expect(name.value).toBe('photosx')
+    expect(screen.queryByText('not saved yet')).toBeNull()
+    expect(screen.getAllByDisplayValue('photosx')).toHaveLength(1)
   })
 })

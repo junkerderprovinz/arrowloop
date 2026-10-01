@@ -312,25 +312,18 @@ func viewOf(p *plan.Plan) planView {
 		Agreed:    len(p.Agreed),
 	}
 	for _, a := range p.Actions {
-		v := actionView{Path: a.Path, Kind: a.Kind.String(), Reason: a.Reason}
+		// The same description a run compares the ticked rows with.
+		shown := a.Show()
+		v := actionView{Path: a.Path, Kind: shown.Kind, From: shown.From, To: shown.To, Reason: a.Reason}
 		v.Left, v.Right = sideOf(a.LeftNow), sideOf(a.RightNow)
-		switch a.Kind {
-		case plan.Copy, plan.Relocate:
-			v.From, v.To = a.Src.String(), a.Dst.String()
-		case plan.Move:
-			v.From, v.To = a.OldDstPath, a.DstPath
-		case plan.Delete:
-			v.To = a.Dst.String()
-		}
 		out.Actions = append(out.Actions, v)
 	}
 	for _, d := range p.Dirs {
 		if d.Kind == plan.RecordDir || d.DstPath == "" {
 			continue
 		}
-		out.Dirs = append(out.Dirs, actionView{
-			Path: d.Path, Kind: d.Kind.String(), To: d.Dst.String(), Reason: d.Reason,
-		})
+		shown := d.Show()
+		out.Dirs = append(out.Dirs, actionView{Path: d.Path, Kind: shown.Kind, To: shown.To, Reason: d.Reason})
 	}
 	for _, sk := range p.Skipped {
 		out.Skipped = append(out.Skipped, skipView{Path: sk.Path, Reason: sk.Reason})
@@ -343,6 +336,11 @@ func viewOf(p *plan.Plan) planView {
 // every row would run the whole plan.
 type runRequest struct {
 	Only *[]string `json:"only"`
+
+	// Shown is what the preview said each ticked path would do, as it listed
+	// the row. A path whose fresh action differs is left alone; an absent
+	// entry is not checked.
+	Shown map[string]plan.Shown `json:"shown"`
 
 	// Resolve carries the decisions somebody made on the conflict rows, keyed
 	// by path. An absent entry means the default, which keeps both versions.
@@ -390,7 +388,7 @@ func (s *Server) runJob(w http.ResponseWriter, r *http.Request) {
 	name := r.PathValue("name")
 	go func() {
 		// A failure is already in the run log and goes to the notifier.
-		_, _ = s.Runner.RunChosen(context.Background(), name, only, resolve)
+		_, _ = s.Runner.RunChosen(context.Background(), name, only, req.Shown, resolve)
 	}()
 	writeJSON(w, http.StatusAccepted, map[string]string{"job": name, "status": "started"})
 }

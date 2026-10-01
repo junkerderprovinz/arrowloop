@@ -38,6 +38,7 @@ import { Conflicts } from './pages/Conflicts'
 import { Trash } from './pages/Trash'
 import {
   api,
+  whenSignedOut,
   type ConflictListing,
   type Job,
   type Run,
@@ -125,6 +126,7 @@ export function Gate() {
   }, [])
 
   useEffect(ask, [ask])
+  useEffect(() => whenSignedOut(() => setState('out')), [])
 
   if (state === 'asking') return null
   if (state === 'out') return <Login onIn={ask} />
@@ -143,6 +145,7 @@ export function App() {
   const [tab, setTab] = useState<Tab>('jobs')
   const [jobs, setJobs] = useState<Job[]>([])
   const [runs, setRuns] = useState<Run[]>([])
+  const [latest, setLatest] = useState<Run[]>([])
   const [progress, setProgress] = useState<Record<string, RunEvent>>({})
   const [speeds, setSpeeds] = useState<Record<string, number>>({})
   const [previewing, setPreviewing] = useState<string | null>(null)
@@ -169,11 +172,15 @@ export function App() {
   }))
   useTrayWords(window_ !== null, t)
   useUpdateReadyToast()
+  const push = useToast()
 
   const refresh = useCallback(() => {
     api
       .jobs()
-      .then(setJobs)
+      .then((got) => {
+        setJobs(got)
+        setError(null)
+      })
       .catch((e: Error) => setError(e.message))
     api
       .history(undefined, 'all', 50)
@@ -181,6 +188,10 @@ export function App() {
       .catch(() => {
         // The job list is still useful without the history.
       })
+    api
+      .latestRuns(new Date().toISOString())
+      .then(setLatest)
+      .catch(() => {})
   }, [])
 
   useEffect(() => {
@@ -347,7 +358,7 @@ export function App() {
           ) : tab === 'jobs' ? (
             <Jobs
               jobs={jobs}
-              runs={runs}
+              latest={latest}
               progress={progress}
               speeds={speeds}
               onPreview={setPreviewing}
@@ -405,8 +416,15 @@ export function App() {
           security={canSecure}
           window={window_}
           onWindow={(next) => {
+            const before = window_
             setWindow(next)
-            void api.saveWindow(next).then(setWindow)
+            api
+              .saveWindow(next)
+              .then(setWindow)
+              .catch((e: Error) => {
+                setWindow(before)
+                push(e.message, 'fail')
+              })
           }}
               lang={lang}
               onLang={setLanguage}
