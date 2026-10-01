@@ -116,7 +116,7 @@ func TestALockedSourceIsCopiedFromARealShadowCopy(t *testing.T) {
 	writeTo(t, j.left, "notes.txt", "an edit made while the document is open")
 	defer lockFile(t, filepath.Join(j.left, "notes.txt"))()
 
-	shots := shadow.New()
+	shots := shadow.New(filepath.Join(t.TempDir(), "shadow-copies.json"))
 	defer shots.Close(context.Background())
 	res := runWith(t, j, shots)
 	for _, s := range res.Skipped {

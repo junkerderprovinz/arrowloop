@@ -60,6 +60,9 @@ type Runner struct {
 	hist *history.DB
 	log  func(format string, args ...any)
 
+	// shadows lists the shadow copies runs have taken and not yet removed.
+	shadows string
+
 	slots slots
 
 	// reload carries one pending rebuild. Buffered by one and dropped when
@@ -88,11 +91,19 @@ func New(cfg *job.Config, hist *history.DB, log func(string, ...any)) *Runner {
 	// and so is the runner.
 	volume.SetRegistry(filepath.Join(filepath.Dir(cfg.Path()), "volumes.json"))
 
+	// A shadow copy a killed run left behind holds space on its volume until
+	// somebody removes it, and nothing has started a run here yet.
+	shadows := filepath.Join(filepath.Dir(cfg.Path()), "shadow-copies.json")
+	if err := shadow.Sweep(context.Background(), shadows); err != nil {
+		log("%v", err)
+	}
+
 	return &Runner{
 		cfg:      cfg,
 		hist:     hist,
 		note:     Notifier(cfg),
 		log:      log,
+		shadows:  shadows,
 		inflight: map[string]context.CancelFunc{},
 		reload:   make(chan struct{}, 1),
 	}
@@ -335,7 +346,7 @@ func (r *Runner) execute(ctx context.Context, j job.Job, only []string, resolve 
 	ctx = scan.WithWatch(ctx, (&readingFor{runner: r, job: j.Name}).report)
 	// A shadow copy is taken only once a file is found held open, and removed
 	// with the run, since it holds space on its volume.
-	if shots := shadow.New(); shots != nil {
+	if shots := shadow.New(r.shadows); shots != nil {
 		ctx = apply.WithSnapshots(ctx, shots)
 		defer func() {
 			if err := shots.Close(context.WithoutCancel(ctx)); err != nil {

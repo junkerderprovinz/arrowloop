@@ -11,6 +11,8 @@ const supported = false
 
 var errUnsupported = errors.New("shadow copies exist only on Windows")
 
-func create(context.Context, string) (string, string, error) { return "", "", errUnsupported }
+func takeCopy(context.Context, string) (string, string, error) { return "", "", errUnsupported }
 
-func remove(context.Context, string) error { return errUnsupported }
+func dropCopy(context.Context, string) error { return errUnsupported }
+
+func alive(int) bool { return false }
