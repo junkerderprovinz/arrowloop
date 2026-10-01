@@ -103,7 +103,15 @@ Section "-${INFO_PRODUCTNAME}"
 
     Call RemoveUserInstall
     Call PrepareData
-    Call CreateTask
+    Pop $0
+    ${If} $0 == "ok"
+        Call CreateTask
+    ${Else}
+        # A task from an earlier install would use the folder all the same.
+        nsExec::ExecToLog 'schtasks /Delete /TN "${TASK_NAME}" /F'
+        Pop $0
+        DetailPrint "$(TaskFailed)"
+    ${EndIf}
 SectionEnd
 
 Section "$(StartMenuShortcut)" SecStartMenu
@@ -167,7 +175,8 @@ FunctionEnd
 # settings.json is open to every user, so the settings page can change the
 # switch. Anything else a user could write there, the task running as the
 # system account could be tricked into writing somewhere else. What an earlier
-# folder held is cleared, keeping only the switch.
+# folder held is cleared, keeping only the switch. Pushes "ok" when the folder
+# is safe for the task.
 Function PrepareData
     StrCpy $3 "true"
     ClearErrors
@@ -190,18 +199,54 @@ Function PrepareData
         ${EndIf}
     ${EndIf}
 
-    Delete "${DATA_DIR}\*.*"
+    # A user may have made the folder before the first install and given
+    # themselves rights on it, or turned a new one into a junction before its
+    # rights are set. Whatever is at the path, a junction itself and not where
+    # it leads, goes to the administrators with its whole access list replaced.
+    # No user can change it after that, so it is cleared only then.
     CreateDirectory "${DATA_DIR}"
-    nsExec::ExecToLog 'icacls "${DATA_DIR}" /setowner *S-1-5-32-544'
+    nsExec::ExecToLog 'icacls "${DATA_DIR}" /setowner *S-1-5-32-544 /L'
     Pop $0
-    nsExec::ExecToLog 'icacls "${DATA_DIR}" /inheritance:r /grant:r *S-1-5-18:(OI)(CI)F *S-1-5-32-544:(OI)(CI)F *S-1-5-32-545:(OI)(CI)RX'
-    Pop $0
+    nsExec::ExecToLog 'icacls "${DATA_DIR}" /reset /L'
+    Pop $1
+    nsExec::ExecToLog 'icacls "${DATA_DIR}" /inheritance:r /grant:r *S-1-5-18:(OI)(CI)F *S-1-5-32-544:(OI)(CI)F *S-1-5-32-545:(OI)(CI)RX /L'
+    Pop $2
+    # 0x10 marks a folder, 0x400 a reparse point.
+    System::Call 'kernel32::GetFileAttributesW(w "${DATA_DIR}") i .r4'
+    IntOp $4 $4 & 0x410
+    ${If} $0 != 0
+    ${OrIf} $1 != 0
+    ${OrIf} $2 != 0
+    ${OrIf} $4 <> 0x10
+        Push "unsafe"
+        Return
+    ${EndIf}
+
+    # A subfolder goes only when it is empty or a junction, which RMDir unlinks
+    # instead of following. A full one a user left there stays, which is
+    # harmless unless it holds the name of the task's log: the user could
+    # empty it later and turn it into a junction.
+    Delete "${DATA_DIR}\*.*"
+    FindFirst $0 $1 "${DATA_DIR}\*"
+    ${DoWhile} $1 != ""
+        ${If} $1 != "."
+        ${AndIf} $1 != ".."
+            RMDir "${DATA_DIR}\$1"
+        ${EndIf}
+        FindNext $0 $1
+    ${Loop}
+    FindClose $0
+    ${If} ${FileExists} "${DATA_DIR}\update.log\*.*"
+        Push "unsafe"
+        Return
+    ${EndIf}
 
     FileOpen $0 "${DATA_DIR}\settings.json" w
     FileWrite $0 '{"autoUpdate":$3}$\r$\n'
     FileClose $0
     nsExec::ExecToLog 'icacls "${DATA_DIR}\settings.json" /grant *S-1-5-32-545:(R,W)'
     Pop $0
+    Push "ok"
 FunctionEnd
 
 # Once a day and five minutes after the computer starts, as the system
@@ -324,7 +369,12 @@ Section "uninstall"
 
     nsExec::ExecToLog 'schtasks /Delete /TN "${TASK_NAME}" /F'
     Pop $0
-    RMDir /r "${DATA_DIR}"
+    # Only what the program writes there. RMDir /r would follow a junction
+    # inside the folder and delete, as an administrator, wherever it leads.
+    Delete "${DATA_DIR}\settings.json"
+    Delete "${DATA_DIR}\update.log"
+    Delete "${DATA_DIR}\updatetest-api"
+    RMDir "${DATA_DIR}"
 
     # The webview's cache of the person uninstalling. Their settings stay.
     SetShellVarContext current

@@ -1,10 +1,12 @@
 package autostart
 
 import (
+	"encoding/xml"
 	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 const supported = true
@@ -76,9 +78,12 @@ func disable() error {
 }
 
 // plist is the LaunchAgent launchd reads at login. ProgramArguments passes the
-// path as one element, so a space in it needs no quoting. There is no KeepAlive
-// because that would restart the program every time somebody quits it.
+// path as one element, so a space in it needs no quoting, but an & or < in a
+// folder name has to be escaped. There is no KeepAlive because that would
+// restart the program every time somebody quits it.
 func plist(exe string) string {
+	var path strings.Builder
+	xml.EscapeText(&path, []byte(exe))
 	return `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -87,7 +92,7 @@ func plist(exe string) string {
 	<string>` + label + `</string>
 	<key>ProgramArguments</key>
 	<array>
-		<string>` + exe + `</string>
+		<string>` + path.String() + `</string>
 		<string>` + arg + `</string>
 	</array>
 	<key>RunAtLoad</key>
