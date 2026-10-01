@@ -1,5 +1,7 @@
 package plan
 
+import "context"
+
 // Direction is which way a job is allowed to write.
 //
 // Both sides are always compared. A one-way direction makes one side the
@@ -59,11 +61,14 @@ func (d Direction) source() Side {
 //   - A delete on the destination means the source deleted something. Only
 //     ModeMirror carries it over; otherwise the destination keeps its copy and
 //     the record lets go of the file.
-//   - A conflict is won by the source, with nothing kept beside it.
+//   - A conflict is won by the source, with nothing kept beside it, except in
+//     ModeMove: the destination is an archive there, and its version is set
+//     aside rather than overwritten.
+//   - In ModeMove a file both sides already hold is taken off the source.
 //   - A rename on the source is dropped; the copy the same plan proposes
 //     restores the source's naming.
 //   - A file the source does not have stays, unless the mode is ModeMirror.
-func enforce(p *Plan, dir Direction, mode Mode) {
+func enforce(ctx context.Context, p *Plan, dir Direction, mode Mode) {
 	if dir == Both {
 		return
 	}
@@ -95,6 +100,10 @@ func enforce(p *Plan, dir Direction, mode Mode) {
 			}
 		case Conflict:
 			if rebuilt, ok := restore(a, src, dst); ok {
+				if mode == ModeMove {
+					rebuilt.Kind = Relocate
+					rebuilt.Aside = true
+				}
 				kept = append(kept, rebuilt)
 			}
 		case Delete:
@@ -129,7 +138,39 @@ func enforce(p *Plan, dir Direction, mode Mode) {
 			}
 		}
 	}
+	if mode == ModeMove {
+		agreed := p.Agreed[:0]
+		for _, a := range p.Agreed {
+			if moved, ok := takeOff(ctx, a, src); ok {
+				kept = append(kept, moved)
+				continue
+			}
+			agreed = append(agreed, a)
+		}
+		p.Agreed = agreed
+	}
 	p.Actions = kept
+}
+
+// takeOff rebuilds a pair both sides already hold as a Relocate from the
+// source. Only checksums that match qualify it: size and time alone could pair
+// two different files, and the copy before the removal would then overwrite
+// the destination's.
+func takeOff(ctx context.Context, a Action, src Side) (Action, bool) {
+	have, there := a.LeftNow, a.RightNow
+	if src == Right {
+		have, there = a.RightNow, a.LeftNow
+	}
+	sum := have.Hash(ctx)
+	if sum == "" || sum != there.Hash(ctx) {
+		return Action{}, false
+	}
+	a.Kind = Relocate
+	a.Src = src
+	a.Dst = src.Other()
+	a.SrcPath = have.Path
+	a.DstPath = there.Path
+	return a, true
 }
 
 // EnforceDirs drops the folder work a one-way job would do on its source.

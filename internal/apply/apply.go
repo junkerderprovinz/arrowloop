@@ -656,7 +656,18 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 		// reached after the copy succeeded, which a Copy followed by a Delete
 		// in the action list could not guarantee.
 		src, dst := ends.side(act.Src), ends.side(act.Dst)
-		if err := keepVersion(ctx, dst, act.DstPath, runID); err != nil {
+		sent, over := act.RightNow, act.LeftNow
+		if act.Dst == plan.Right {
+			sent, over = act.LeftNow, act.RightNow
+		}
+		if act.Aside && over != nil {
+			aside := conflictName(over.Path, act.Dst, runID)
+			if err := operations.MoveFile(ctx, dst, dst, aside, over.Path); err != nil {
+				return err
+			}
+			t.logged(Entry{Kind: "move", Side: act.Dst.String(), Path: aside, Note: over.Path, Size: over.Size})
+			over = nil
+		} else if err := keepVersion(ctx, dst, act.DstPath, runID); err != nil {
 			return err
 		}
 		if err := retrying(ctx, func() error {
@@ -665,10 +676,6 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 			return err
 		}
 		t.count(func(r *Result) { r.Copied++ })
-		sent, over := act.RightNow, act.LeftNow
-		if act.Dst == plan.Right {
-			sent, over = act.LeftNow, act.RightNow
-		}
 		t.sized("copy", act.DstPath, act.Dst.String(), replacing(over), sizeOf(sent))
 
 		// Into the source side's own bin, like every other removal.

@@ -2,6 +2,8 @@ package scenario
 
 import (
 	"context"
+	"crypto/md5"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"os"
@@ -388,5 +390,71 @@ func TestMirrorRefusesAnEmptySource(t *testing.T) {
 	}
 	if n := len(tree(t, j.right)); n != 5 {
 		t.Fatalf("the destination was damaged anyway, %d of 5 files left", n)
+	}
+}
+
+// moving turns a one-way job into Move mode.
+func moving(t *testing.T) *directed {
+	j := oneWay(t, plan.LeftToRight)
+	j.opt.Compare.Mode = plan.ModeMove
+	return j
+}
+
+// holding lists the files on a side that hold content, wherever they sit
+// outside the trash.
+func holding(t *testing.T, root, content string) []string {
+	t.Helper()
+	sum := md5.Sum([]byte(content))
+	want := hex.EncodeToString(sum[:])
+	var out []string
+	for p, got := range tree(t, root) {
+		if got == want {
+			out = append(out, p)
+		}
+	}
+	return out
+}
+
+// A camera that starts counting again reuses a name the archive already holds.
+// The archived photo has nowhere else to live, so it is set aside rather than
+// overwritten, and the new photo still leaves the source.
+func TestMoveKeepsTheArchivedFileWhenANameComesBack(t *testing.T) {
+	j := moving(t)
+	write(t, j.left, "DCIM/IMG_0001.JPG", "the first photo")
+	j.run(t)
+	if _, err := os.Stat(filepath.Join(j.left, "DCIM", "IMG_0001.JPG")); err == nil {
+		t.Fatal("the first photo did not leave the source")
+	}
+
+	write(t, j.left, "DCIM/IMG_0001.JPG", "the second photo, after the counter reset")
+	j.run(t)
+
+	if got := readFile(t, j.right, "DCIM/IMG_0001.JPG"); got != "the second photo, after the counter reset" {
+		t.Errorf("the archive holds %q under the name", got)
+	}
+	if kept := holding(t, j.right, "the first photo"); len(kept) != 1 {
+		t.Errorf("the first photo is not kept in the archive: %v", kept)
+	}
+	if _, err := os.Stat(filepath.Join(j.left, "DCIM", "IMG_0001.JPG")); err == nil {
+		t.Error("the second photo did not leave the source")
+	}
+	if p, _ := j.run(t); len(p.Actions) != 0 {
+		t.Fatalf("the job did not settle: %+v", p.Actions)
+	}
+}
+
+// A file the destination already holds identically still leaves the source,
+// which is what Move mode is for.
+func TestMoveTakesAFileTheDestinationAlreadyHolds(t *testing.T) {
+	j := moving(t)
+	write(t, j.left, "scan.pdf", "the same scan on both sides")
+	write(t, j.right, "scan.pdf", "the same scan on both sides")
+	j.run(t)
+
+	if _, err := os.Stat(filepath.Join(j.left, "scan.pdf")); err == nil {
+		t.Error("the file stayed on the source")
+	}
+	if got := readFile(t, j.right, "scan.pdf"); got != "the same scan on both sides" {
+		t.Errorf("the destination holds %q", got)
 	}
 }

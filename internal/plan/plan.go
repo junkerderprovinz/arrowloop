@@ -173,6 +173,10 @@ type Action struct {
 	// Resolve applies only to a conflict. Its zero value is KeepBoth, which is
 	// what an unattended run always does.
 	Resolve Resolution
+
+	// Aside applies only to a Relocate: the destination's version is moved to
+	// a conflict name before the copy lands, because it lives nowhere else.
+	Aside bool
 }
 
 // Resolution is what to do with the two versions of a file that disagree.
@@ -517,7 +521,7 @@ func Build(ctx context.Context, left, right *scan.Listing, prev map[string]state
 	}
 
 	detectRenames(ctx, out, opt.Direction)
-	enforce(out, opt.Direction, opt.Mode)
+	enforce(ctx, out, opt.Direction, opt.Mode)
 
 	// The brake weighs the plan after enforce, which adds a mirror's
 	// deletions. With no record yet, a mirror weighs them against what the

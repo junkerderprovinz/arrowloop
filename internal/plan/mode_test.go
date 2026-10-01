@@ -23,7 +23,7 @@ func bothWays(t *testing.T, dir Direction, mode Mode) *Plan {
 	if err != nil {
 		t.Fatalf("build: %v", err)
 	}
-	enforce(p, dir, mode)
+	enforce(context.Background(), p, dir, mode)
 	return p
 }
 
