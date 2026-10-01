@@ -98,9 +98,16 @@ func replaceFile(target, download string) error {
 	// renamed, so it steps aside as .old until the next start removes it.
 	old := target + ".old"
 	if err := os.Remove(old); err != nil && !errors.Is(err, fs.ErrNotExist) {
-		// The .old is the running program, left by an earlier update in this
-		// run, so target is a file nothing runs and can simply be replaced.
-		return rename(download, target)
+		// A program still runs from .old, and target may be running too: the
+		// scheduled task runs from target while a window opened before the
+		// last update still runs from .old. So target steps aside under a
+		// name Cleanup removes as well.
+		aside, err := os.CreateTemp(filepath.Dir(target), downloadPrefix(target)+"*")
+		if err != nil {
+			return err
+		}
+		aside.Close()
+		old = aside.Name()
 	}
 	if err := rename(target, old); err != nil {
 		return err

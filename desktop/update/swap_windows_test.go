@@ -28,17 +28,23 @@ func TestMain(m *testing.M) {
 // path and a function that stops it.
 func startCopy(t *testing.T, dir string) (string, func()) {
 	t.Helper()
+	prog := filepath.Join(dir, "prog.exe")
+	copySelf(t, prog)
+	return prog, start(t, prog)
+}
+
+func copySelf(t *testing.T, to string) {
+	t.Helper()
 	self, err := os.Executable()
 	if err != nil {
 		t.Fatal(err)
 	}
-	prog := filepath.Join(dir, "prog.exe")
 	src, err := os.Open(self)
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer src.Close()
-	dst, err := os.Create(prog)
+	dst, err := os.Create(to)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -46,7 +52,10 @@ func startCopy(t *testing.T, dir string) (string, func()) {
 		t.Fatal(err)
 	}
 	dst.Close()
+}
 
+func start(t *testing.T, prog string) func() {
+	t.Helper()
 	cmd := exec.Command(prog)
 	cmd.Env = append(os.Environ(), idleEnv+"=1")
 	if err := cmd.Start(); err != nil {
@@ -57,7 +66,7 @@ func startCopy(t *testing.T, dir string) (string, func()) {
 		cmd.Wait()
 	}
 	t.Cleanup(stop)
-	return prog, stop
+	return stop
 }
 
 func writeDownload(t *testing.T, prog, body string) string {
@@ -101,6 +110,33 @@ func TestReplaceFileMovesTheRunningProgramAside(t *testing.T) {
 	u.Cleanup()
 	if _, err := os.Stat(prog + ".old"); err != nil {
 		t.Error("cleanup removed the .old of a program that still runs")
+	}
+}
+
+// The scheduled task runs from the program it replaces, while a window opened
+// before the last update still runs from .old.
+func TestReplaceFileWhileTwoVersionsRun(t *testing.T) {
+	dir := t.TempDir()
+	prog, stopWindow := startCopy(t, dir)
+	next := writeDownload(t, prog, "")
+	copySelf(t, next)
+	if err := replaceFile(prog, next); err != nil {
+		t.Fatal(err)
+	}
+	stopTask := start(t, prog)
+
+	if err := replaceFile(prog, writeDownload(t, prog, "third")); err != nil {
+		t.Fatal(err)
+	}
+	if got := readFile(t, prog); got != "third" {
+		t.Errorf("program holds %q", got)
+	}
+
+	stopWindow()
+	stopTask()
+	(&Updater{Path: prog, Logf: t.Logf}).Cleanup()
+	if got := dirEntries(t, dir); len(got) != 1 || got[0] != "prog.exe" {
+		t.Errorf("after cleanup the folder holds %v", got)
 	}
 }
 
