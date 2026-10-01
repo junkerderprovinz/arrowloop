@@ -15,8 +15,10 @@ class SyncJobService : JobService() {
     override fun onStartJob(params: JobParameters?): Boolean {
         Log.i("ArrowLoop", "woken by Android, handing over to the engine")
         EngineService.runDue(this)
-        // No retry: the periodic job and the content trigger already reschedule.
+        // No retry: the periodic job comes round again, and the content
+        // trigger is scheduled anew.
         jobFinished(params, false)
+        if (params?.jobId == Waker.WATCH) Waker.watch(this)
         return false
     }
 
