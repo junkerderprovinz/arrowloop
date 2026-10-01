@@ -16,6 +16,7 @@ import androidx.core.app.NotificationCompat
 import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
 import java.net.URL
+import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * Runs the engine for one scheduled wake-up and stops when the run is over, so
@@ -27,7 +28,11 @@ import java.net.URL
 class EngineService : Service() {
 
     /** Whether this service is the one that started the engine process. */
+    @Volatile
     private var ours = false
+
+    /** Whether a run is under way. Only the thread doing it clears this. */
+    private val running = AtomicBoolean(false)
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -61,9 +66,16 @@ class EngineService : Service() {
             return START_NOT_STICKY
         }
 
+        // The jobs keep firing while a long run copies, and a second run would
+        // only find every job claimed and stop the service under the first.
+        if (!running.compareAndSet(false, true)) {
+            Log.i(TAG, "woke during a run, leaving it to finish")
+            return START_NOT_STICKY
+        }
+
         // Only the service that started the engine stops it; with the app open
         // the engine belongs to the screens, and stopping it would blank them.
-        ours = Engine.start(this)
+        if (Engine.start(this)) ours = true
 
         // The run conditions matter most when no screen is open.
         Device.watch(this)
@@ -92,6 +104,9 @@ class EngineService : Service() {
             tell(CHANNEL_FAILED, FAILED_ID, getString(R.string.notify_failed), why)
         } finally {
             finish()
+            // After stopSelf, so a wake-up arriving in between cannot start a
+            // run in a service that is about to stop.
+            running.set(false)
         }
     }
 
@@ -197,12 +212,17 @@ class EngineService : Service() {
     }
 
     private fun finish() {
-        if (ours) {
-            Device.forget(this)
-            Engine.stop()
-        }
+        release()
         stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
+    }
+
+    /** Stops the engine once, if this service started it. */
+    private fun release() {
+        if (!ours) return
+        ours = false
+        Device.forget(this)
+        Engine.stop()
     }
 
     /**
@@ -216,10 +236,7 @@ class EngineService : Service() {
     }
 
     override fun onDestroy() {
-        if (ours) {
-            Device.forget(this)
-            Engine.stop()
-        }
+        release()
         super.onDestroy()
     }
 
