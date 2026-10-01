@@ -191,6 +191,38 @@ func TestRestoringAVersionKeepsWhatItReplaces(t *testing.T) {
 	}
 }
 
+// The second restore sets aside what the first restored, and must not take the
+// name the first gave to the only copy of the file that was live before.
+func TestTwoRestoresInOneSecondKeepWhatEachReplaced(t *testing.T) {
+	s := newSide(t)
+	ctx := context.Background()
+	s.put(t, ".arrowloop/versions/docs/notes.txt/20260901-000000.txt", "first", time.Time{})
+	s.put(t, ".arrowloop/versions/docs/notes.txt/20260902-000000.txt", "second", time.Time{})
+	s.put(t, "docs/notes.txt", "today, which nobody has another copy of", time.Time{})
+
+	now := time.Date(2026, 9, 7, 10, 15, 0, 0, time.UTC)
+	for _, run := range []string{"20260901-000000", "20260902-000000"} {
+		if err := RestoreVersion(ctx, s.fs, "docs/notes.txt", run, now); err != nil {
+			t.Fatalf("restore %s: %v", run, err)
+		}
+	}
+
+	entries, err := List(ctx, s.fs, Versions)
+	if err != nil {
+		t.Fatalf("list: %v", err)
+	}
+	kept := map[string]bool{}
+	for _, e := range entries {
+		body, _ := s.read(t, e.Remote)
+		kept[body] = true
+	}
+	for _, body := range []string{"today, which nobody has another copy of", "first", "second"} {
+		if !kept[body] {
+			t.Errorf("%q is no longer in the history: %v", body, kept)
+		}
+	}
+}
+
 func TestRestoringAVersionOntoNothingKeepsNothing(t *testing.T) {
 	s := newSide(t)
 	s.put(t, ".arrowloop/versions/docs/notes.txt/20260901-000000.txt", "yesterday", time.Time{})
