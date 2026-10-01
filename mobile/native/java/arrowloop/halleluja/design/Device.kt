@@ -11,8 +11,6 @@ import android.net.NetworkRequest
 import android.os.BatteryManager
 import android.os.Handler
 import android.os.Looper
-import java.net.HttpURLConnection
-import java.net.URL
 
 /**
  * Watches power and network and tells the engine whether a condition holds
@@ -198,20 +196,19 @@ object Device {
         // several broadcasts a second.
         inFlight = now
         android.util.Log.i("ArrowLoop", if (now.isEmpty()) "nothing holds automatic runs" else "holding automatic runs: $now")
-        Thread { send(now) }.start()
+        Thread { send(context, now) }.start()
     }
 
     /**
      * Sends the verdict on the calling thread and reports whether the engine
      * took it, for a caller that must not go on before it has.
      */
-    fun reportNow(context: Context): Boolean = send(reason(context))
+    fun reportNow(context: Context): Boolean = send(context, reason(context))
 
-    private fun send(now: String): Boolean {
+    private fun send(context: Context, now: String): Boolean {
         val body = """{"reason":${quote(now)}}"""
         return try {
-            val url = URL("http://${Engine.ADDRESS}/api/device")
-            (url.openConnection() as HttpURLConnection).run {
+            Engine.connect(context, "/api/device").run {
                 requestMethod = "PUT"
                 doOutput = true
                 connectTimeout = 2000

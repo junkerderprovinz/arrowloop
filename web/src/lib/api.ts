@@ -757,9 +757,10 @@ export const api = {
    *  a passkey. */
   passkeys: () => request<PasskeyStatus>('/api/passkeys'),
 
-  /** Begin, ask the authenticator, finish: one operation from the owner's side. */
-  registerPasskey: async (name: string): Promise<PasskeyView> => {
-    const begin = await post<Ceremony>('/api/passkeys/register/begin')
+  /** Begin, ask the authenticator, finish: one operation from the owner's side.
+   *  The code is needed only while the second factor is on. */
+  registerPasskey: async (name: string, current: string, code = ''): Promise<PasskeyView> => {
+    const begin = await post<Ceremony>('/api/passkeys/register/begin', code ? { current, code } : { current })
     const cred = (await navigator.credentials.create({
       publicKey: creationOptions(begin.options),
     })) as PublicKeyCredential | null

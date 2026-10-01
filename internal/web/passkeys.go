@@ -281,16 +281,30 @@ func (s *Server) passkeyStatus(w http.ResponseWriter, r *http.Request) {
 
 var errPasskeyNeedsPassword = errors.New("set a password first, a passkey is an extra way in and never the only one")
 
-// passkeyRegisterBegin sits behind the lock: enrolling a key is something only
-// somebody signed in does.
+// passkeyRegisterBegin sits behind the lock and also wants the password, and
+// the code when the second factor is on. A key signs in by itself, so a
+// session somebody walked away from must not be able to add one.
 func (s *Server) passkeyRegisterBegin(w http.ResponseWriter, r *http.Request) {
 	if len(s.passwordHash()) == 0 {
 		writeError(w, http.StatusConflict, errPasskeyNeedsPassword)
 		return
 	}
+	var body struct {
+		Current string `json:"current"`
+		Code    string `json:"code"`
+	}
+	if !readBody(w, r, &body) {
+		return
+	}
 	wa, rpID, err := webAuthnFor(r)
 	if err != nil {
 		writeError(w, http.StatusBadRequest, err)
+		return
+	}
+	if !s.checkCurrentPassword(w, r, body.Current) {
+		return
+	}
+	if s.twoFactorOn() && !s.checkCurrentCode(w, r, body.Code) {
 		return
 	}
 	user, _, err := s.passkeyUserFor(rpID)
@@ -438,10 +452,11 @@ func (s *Server) passkeyLoginFinish(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	gate := s.gate()
-	key := clientKey(r)
-	if gate.refuseIfLockedOut(w, key) {
+	try, ok := gate.admit(w, s.lockoutKey(r))
+	if !ok {
 		return
 	}
+	defer try.done()
 	var body struct {
 		CeremonyID string          `json:"ceremonyId"`
 		Credential json.RawMessage `json:"credential"`
@@ -450,7 +465,7 @@ func (s *Server) passkeyLoginFinish(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	refuse := func(why string) {
-		gate.fail(key)
+		try.fail()
 		writeError(w, http.StatusUnauthorized, errors.New(why))
 	}
 
@@ -506,7 +521,7 @@ func (s *Server) passkeyLoginFinish(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
-	gate.clearFailures(key)
+	try.succeed()
 	writeJSON(w, http.StatusOK, sessionView{Required: true, Authenticated: true})
 }
 

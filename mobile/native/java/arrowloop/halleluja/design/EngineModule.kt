@@ -96,7 +96,13 @@ class EngineModule(private val context: ReactApplicationContext) :
      */
     @ReactMethod
     fun answering(promise: Promise) {
-        Thread { promise.resolve(Engine.answers()) }.start()
+        Thread { promise.resolve(Engine.answers(context)) }.start()
+    }
+
+    /** The token every request to the engine carries; see Engine.token. */
+    @ReactMethod
+    fun token(promise: Promise) {
+        Thread { promise.resolve(Engine.token(context)) }.start()
     }
 
     @ReactMethod

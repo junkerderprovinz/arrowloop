@@ -15,8 +15,6 @@ import android.util.Log
 import org.json.JSONObject
 import androidx.core.app.NotificationCompat
 import java.io.OutputStreamWriter
-import java.net.HttpURLConnection
-import java.net.URL
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**
@@ -189,19 +187,10 @@ class EngineService : Service() {
         }
     }
 
-    /** Waits up to thirty seconds for the engine to answer. */
+    /** Waits up to thirty seconds for our engine to answer. */
     private fun waitForEngine() {
         repeat(60) {
-            try {
-                val probe = URL("${Engine.ORIGIN}/api/capabilities").openConnection() as HttpURLConnection
-                probe.connectTimeout = 1000
-                probe.readTimeout = 1000
-                val code = probe.responseCode
-                probe.disconnect()
-                if (code in 200..299) return
-            } catch (_: Exception) {
-                // Not up yet.
-            }
+            if (Engine.answers(this, 1000)) return
             Thread.sleep(500)
         }
         throw Silent(R.string.notify_failed_no_engine)
@@ -228,7 +217,7 @@ class EngineService : Service() {
     }
 
     private fun runDueNow(): Due {
-        val call = URL("${Engine.ORIGIN}/api/run-due").openConnection() as HttpURLConnection
+        val call = Engine.connect(this, "/api/run-due")
         call.requestMethod = "POST"
         call.doOutput = true
         call.connectTimeout = 5000

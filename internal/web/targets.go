@@ -162,7 +162,7 @@ func (s *Server) tryRemote(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, fmt.Errorf("read the request: %w", err))
 		return
 	}
-	if err := remotes.CheckSettings(r.Context(), body.Type, remotes.WithSavedSecrets(body.Name, body.Settings)); err != nil {
+	if err := remotes.CheckSettings(r.Context(), body.Type, remotes.WithSavedSecrets(body.Name, body.Type, body.Settings)); err != nil {
 		writeJSON(w, http.StatusOK, map[string]any{"ok": false, "reason": err.Error()})
 		return
 	}

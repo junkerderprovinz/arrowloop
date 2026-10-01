@@ -15,8 +15,10 @@ import (
 // placeholder, since secrets are withheld on their way to the screen. It reads
 // the form the way Save does, and anything typed wins, so a changed credential
 // is the one tested. A stored password comes back revealed, as if typed, since
-// connectionString obscures every password.
-func WithSavedSecrets(name string, settings map[string]string) map[string]string {
+// connectionString obscures every password. Nothing is filled in unless the
+// backend and every address setting match the saved target, so a saved
+// password never travels to a server the form names instead.
+func WithSavedSecrets(name, backend string, settings map[string]string) map[string]string {
 	if strings.TrimSpace(name) == "" {
 		return settings
 	}
@@ -24,13 +26,20 @@ func WithSavedSecrets(name string, settings map[string]string) map[string]string
 	if !data.HasSection(name) {
 		return settings
 	}
+	if stored, _ := data.GetValue(name, "type"); stored != backend {
+		return settings
+	}
+	for _, key := range addressKeys {
+		if stored, _ := data.GetValue(name, key); settings[key] != stored {
+			return settings
+		}
+	}
 
 	// The caller's map came off a request body.
 	out := make(map[string]string, len(settings)+2)
 	for key, value := range settings {
 		out[key] = value
 	}
-	backend, _ := data.GetValue(name, "type")
 	for _, key := range data.GetKeyList(name) {
 		if key == "type" || !IsSecret(backend, key) {
 			continue
@@ -44,6 +53,10 @@ func WithSavedSecrets(name string, settings map[string]string) map[string]string
 	}
 	return out
 }
+
+// addressKeys are the settings, across the backends, that decide which server
+// a connection reaches and as whom.
+var addressKeys = []string{"host", "port", "user", "url", "endpoint", "auth", "auth_url", "token_url"}
 
 // typedForm undoes what Save did to a value. One rclone cannot reveal is passed
 // on as stored.

@@ -7,6 +7,7 @@ import (
 	"net/http/cookiejar"
 	"net/http/httptest"
 	"strings"
+	"sync"
 	"testing"
 	"testing/fstest"
 	"time"
@@ -457,7 +458,111 @@ func TestTheLockoutKeyIgnoresForwardedHeaders(t *testing.T) {
 	r.RemoteAddr = "203.0.113.9:5555"
 	r.Header.Set("X-Forwarded-For", "10.9.9.9")
 	r.Header.Set("X-Real-IP", "10.9.9.8")
-	if got := clientKey(r); got != "203.0.113.9" {
+	if got := clientKey(r, nil); got != "203.0.113.9" {
 		t.Fatalf("key = %q, want the real peer 203.0.113.9", got)
+	}
+}
+
+// Requests sent at once all pass a check that only reads the count, so each
+// try is counted before the password is looked at.
+func TestABurstOfLoginsGetsNoMoreTriesThanTheLimit(t *testing.T) {
+	hash, err := bcrypt.GenerateFromPassword([]byte(guardedPassword), bcrypt.DefaultCost)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Setenv(PasswordHashEnv, string(hash))
+	_, srv := newGuarded(t)
+
+	const burst = 30
+	start := make(chan struct{})
+	codes := make(chan int, burst)
+	var wg sync.WaitGroup
+	for range burst {
+		wg.Go(func() {
+			<-start
+			resp, err := http.Post(srv.URL+"/api/login", "application/json", strings.NewReader(`{"password":"not the password"}`))
+			if err != nil {
+				t.Error(err)
+				return
+			}
+			resp.Body.Close()
+			codes <- resp.StatusCode
+		})
+	}
+	close(start)
+	wg.Wait()
+	close(codes)
+
+	checked := 0
+	for code := range codes {
+		if code == http.StatusUnauthorized {
+			checked++
+		}
+	}
+	if checked > maxFailedLogins {
+		t.Errorf("%d of %d parallel wrong passwords were checked, the limit is %d", checked, burst, maxFailedLogins)
+	}
+}
+
+// loginVia sends one login as a reverse proxy forwards it.
+func loginVia(t *testing.T, srv *httptest.Server, forwardedFor, password string) int {
+	t.Helper()
+	body, _ := json.Marshal(loginRequest{Password: password})
+	req, err := http.NewRequest(http.MethodPost, srv.URL+"/api/login", strings.NewReader(string(body)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("X-Forwarded-For", forwardedFor)
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	resp.Body.Close()
+	return resp.StatusCode
+}
+
+// Behind a reverse proxy every request comes from the proxy, so without
+// knowing it a stranger's wrong passwords would lock out the owner as well.
+func TestBehindATrustedProxyAStrangerLocksOutOnlyHimself(t *testing.T) {
+	t.Setenv(PasswordHashEnv, testHash(t, guardedPassword))
+	t.Setenv(TrustedProxiesEnv, "127.0.0.1, ::1")
+	_, srv := newGuarded(t)
+
+	for range maxFailedLogins {
+		loginVia(t, srv, "203.0.113.9", "not the password")
+	}
+	if code := loginVia(t, srv, "203.0.113.9", guardedPassword); code != http.StatusTooManyRequests {
+		t.Errorf("the stranger was not locked out, answering %d", code)
+	}
+	// What a client writes in front of the proxy's own entry is not believed.
+	if code := loginVia(t, srv, "198.51.100.7, 203.0.113.9", guardedPassword); code != http.StatusTooManyRequests {
+		t.Errorf("a made-up first entry gave the stranger a fresh count, answering %d", code)
+	}
+	if code := loginVia(t, srv, "198.51.100.7", guardedPassword); code != http.StatusOK {
+		t.Errorf("the owner was locked out by somebody else's failures, answering %d", code)
+	}
+}
+
+func TestTheLockoutKeyFollowsOnlyTrustedProxies(t *testing.T) {
+	proxies, _ := parseTrustedProxies("10.0.0.0/8, 192.0.2.1")
+	cases := []struct {
+		peer, forwarded, want string
+	}{
+		{"203.0.113.9:5555", "10.9.9.9", "203.0.113.9"},
+		{"192.0.2.1:5555", "198.51.100.7", "198.51.100.7"},
+		{"192.0.2.1:5555", "6.6.6.6, 198.51.100.7, 10.1.1.1", "198.51.100.7"},
+		{"192.0.2.1:5555", "", "192.0.2.1"},
+		{"192.0.2.1:5555", "not an address", "192.0.2.1"},
+	}
+	for _, c := range cases {
+		r := httptest.NewRequest(http.MethodPost, "/api/login", nil)
+		r.RemoteAddr = c.peer
+		if c.forwarded != "" {
+			r.Header.Set("X-Forwarded-For", c.forwarded)
+		}
+		if got := clientKey(r, proxies); got != c.want {
+			t.Errorf("peer %s forwarding %q: key = %q, want %q", c.peer, c.forwarded, got, c.want)
+		}
 	}
 }

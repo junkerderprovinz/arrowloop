@@ -2,15 +2,16 @@
 // Most installs are opened on an IP address, where WebAuthn cannot work, so
 // the case this card meets most often is explaining why there is nothing to
 // click.
-import { cleanup, render, screen, waitFor } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 const passkeys = vi.fn()
+const registerPasskey = vi.fn()
 vi.mock('../lib/api', async (original) => ({
   ...(await original<typeof import('../lib/api')>()),
   api: {
     passkeys: () => passkeys(),
-    registerPasskey: vi.fn(),
+    registerPasskey: (name: string, current: string, code: string) => registerPasskey(name, current, code),
     deletePasskey: vi.fn(),
   },
   passkeysAvailableInBrowser: () => true,
@@ -18,7 +19,10 @@ vi.mock('../lib/api', async (original) => ({
 
 import { PasskeyCard } from './PasskeyCard'
 
-beforeEach(() => passkeys.mockReset())
+beforeEach(() => {
+  passkeys.mockReset()
+  registerPasskey.mockReset()
+})
 afterEach(cleanup)
 
 describe('PasskeyCard', () => {
@@ -78,5 +82,32 @@ describe('PasskeyCard', () => {
     render(<PasskeyCard passwordSet={false} />)
     await waitFor(() => expect(screen.getByText(/set a login password first/i)).toBeTruthy())
     expect(screen.queryByRole('button', { name: /set up/i })).toBeNull()
+  })
+
+  // A key signs in by itself, so a session somebody walked away from must not
+  // be enough to add one.
+  it('asks for the current password, and the code with a second factor on, before adding a key', async () => {
+    passkeys.mockResolvedValue({ supported: true, rpId: 'localhost', total: 0, here: 0, passkeys: [] })
+    registerPasskey.mockResolvedValue({})
+    render(<PasskeyCard passwordSet twoFactor />)
+    await waitFor(() => expect(screen.getByRole('button', { name: /set up/i })).toBeTruthy())
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /set up/i }))
+    })
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /create/i }))
+    })
+    expect(registerPasskey).not.toHaveBeenCalled()
+    expect(screen.getByRole('alert').textContent).toMatch(/current password/i)
+
+    fireEvent.change(document.querySelector<HTMLInputElement>('input[type="password"]')!, {
+      target: { value: 'the password' },
+    })
+    fireEvent.change(screen.getByPlaceholderText('000000'), { target: { value: '123456' } })
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /create/i }))
+    })
+    expect(registerPasskey).toHaveBeenCalledWith('Passkey', 'the password', '123456')
   })
 })

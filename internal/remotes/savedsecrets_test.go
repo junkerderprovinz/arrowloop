@@ -21,7 +21,7 @@ func TestAnAbsentSecretComesFromTheSavedTarget(t *testing.T) {
 	})
 
 	// What the form sends while editing: empty values are pruned.
-	got := WithSavedSecrets("cloud", map[string]string{
+	got := WithSavedSecrets("cloud", "webdav", map[string]string{
 		"url":  "https://example.invalid/remote.php/webdav",
 		"user": "someone",
 	})
@@ -35,7 +35,7 @@ func TestAnAbsentSecretComesFromTheSavedTarget(t *testing.T) {
 func TestThePlaceholderMeansTheSavedSecretToo(t *testing.T) {
 	saved(t, "cloud", "webdav", map[string]string{"url": "https://example.invalid/", "pass": "letmein"})
 
-	got := WithSavedSecrets("cloud", map[string]string{"url": "https://example.invalid/", "pass": Placeholder})
+	got := WithSavedSecrets("cloud", "webdav", map[string]string{"url": "https://example.invalid/", "pass": Placeholder})
 	if got["pass"] != "letmein" {
 		t.Fatalf("pass = %q, want the saved password", got["pass"])
 	}
@@ -45,7 +45,7 @@ func TestThePlaceholderMeansTheSavedSecretToo(t *testing.T) {
 func TestATypedSecretIsNotOverwritten(t *testing.T) {
 	saved(t, "cloud", "webdav", map[string]string{"url": "https://example.invalid/", "pass": "letmein"})
 
-	got := WithSavedSecrets("cloud", map[string]string{"url": "https://example.invalid/", "pass": "the-new-one"})
+	got := WithSavedSecrets("cloud", "webdav", map[string]string{"url": "https://example.invalid/", "pass": "the-new-one"})
 	if got["pass"] != "the-new-one" {
 		t.Fatalf("pass = %q, want the one that was typed", got["pass"])
 	}
@@ -59,7 +59,7 @@ func TestAVisibleFieldIsNeverFilledIn(t *testing.T) {
 		"pass": "letmein",
 	})
 
-	got := WithSavedSecrets("cloud", map[string]string{"url": "https://example.invalid/", "user": ""})
+	got := WithSavedSecrets("cloud", "webdav", map[string]string{"url": "https://example.invalid/", "user": ""})
 	if got["user"] != "" {
 		t.Fatalf("user = %q, want the empty value the form sent", got["user"])
 	}
@@ -71,7 +71,7 @@ func TestAnUnsavedTargetPassesStraightThrough(t *testing.T) {
 
 	for _, name := range []string{"", "   ", "not-a-target"} {
 		in := map[string]string{"url": "https://example.invalid/"}
-		got := WithSavedSecrets(name, in)
+		got := WithSavedSecrets(name, "webdav", in)
 		if _, filled := got["pass"]; filled {
 			t.Errorf("%q invented a password", name)
 		}
@@ -83,8 +83,33 @@ func TestTheCallersMapIsLeftAlone(t *testing.T) {
 	saved(t, "cloud", "webdav", map[string]string{"url": "https://example.invalid/", "pass": "letmein"})
 
 	in := map[string]string{"url": "https://example.invalid/"}
-	_ = WithSavedSecrets("cloud", in)
+	_ = WithSavedSecrets("cloud", "webdav", in)
 	if _, grew := in["pass"]; grew {
 		t.Fatal("the map that was passed in gained a password")
+	}
+}
+
+// A saved password goes only where it was saved for. Otherwise a check with
+// the target's name and somebody else's address would send it there.
+func TestASavedSecretDoesNotFollowAnotherAddress(t *testing.T) {
+	saved(t, "cloud", "webdav", map[string]string{
+		"url":  "https://example.invalid/remote.php/webdav",
+		"user": "someone",
+		"pass": "letmein",
+	})
+
+	forms := map[string]struct {
+		backend  string
+		settings map[string]string
+	}{
+		"another url":  {"webdav", map[string]string{"url": "https://attacker.invalid/", "user": "someone"}},
+		"another user": {"webdav", map[string]string{"url": "https://example.invalid/remote.php/webdav", "user": "else"}},
+		"another type": {"sftp", map[string]string{"host": "attacker.invalid", "url": "https://example.invalid/remote.php/webdav", "user": "someone"}},
+	}
+	for what, form := range forms {
+		got := WithSavedSecrets("cloud", form.backend, form.settings)
+		if _, filled := got["pass"]; filled {
+			t.Errorf("%s got the saved password", what)
+		}
 	}
 }

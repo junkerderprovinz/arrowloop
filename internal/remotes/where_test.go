@@ -99,8 +99,13 @@ func TestRcloneConfigEnvWins(t *testing.T) {
 	}
 }
 
+// keepConfigPath returns a function that points rclone back at the package's
+// own file, never at whatever was set before, which could be the default path.
 func keepConfigPath(t *testing.T) func() {
 	t.Helper()
-	previous := config.GetConfigPath()
-	return func() { _ = config.SetConfigPath(previous) }
+	return func() {
+		if err := useRcloneConfig(testRcloneConf); err != nil {
+			t.Error(err)
+		}
+	}
 }

@@ -65,9 +65,8 @@ func TestATypedPasswordThatLooksObscuredIsStillObscured(t *testing.T) {
 func TestASavedPasswordReachesTheConnectionAsSaved(t *testing.T) {
 	saved(t, "cloud", "webdav", map[string]string{"url": "https://example.invalid/", "pass": "letmein"})
 
-	got := connectionString("webdav", WithSavedSecrets("cloud", map[string]string{"pass": Placeholder}))
-	inside := got[len(":webdav,pass=") : len(got)-1]
-	if back, err := obscure.Reveal(inside); err != nil || back != "letmein" {
+	got := connectionString("webdav", WithSavedSecrets("cloud", "webdav", map[string]string{"url": "https://example.invalid/", "pass": Placeholder}))
+	if back, err := obscure.Reveal(valueIn(got, "pass")); err != nil || back != "letmein" {
 		t.Fatalf("rclone would log in with %q (%v), not the saved password", back, err)
 	}
 }

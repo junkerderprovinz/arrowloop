@@ -64,14 +64,30 @@ var errPasswordFromEnv = errors.New("the password comes from " + PasswordHashEnv
 // over. A wrong answer counts against the address like a wrong login. It
 // answers the request itself when it refuses.
 func (s *Server) checkCurrentPassword(w http.ResponseWriter, r *http.Request, current string) bool {
-	gate := s.gate()
-	key := clientKey(r)
-	if gate.refuseIfLockedOut(w, key) {
+	try, ok := s.gate().admit(w, s.lockoutKey(r))
+	if !ok {
 		return false
 	}
+	defer try.done()
 	if err := bcrypt.CompareHashAndPassword(s.passwordHash(), []byte(current)); err != nil {
-		gate.fail(key)
+		try.fail()
 		writeError(w, http.StatusForbidden, errors.New("the current password is not right"))
+		return false
+	}
+	return true
+}
+
+// checkCurrentCode is checkCurrentPassword for the second factor. The code is
+// spent like one used to sign in.
+func (s *Server) checkCurrentCode(w http.ResponseWriter, r *http.Request, code string) bool {
+	try, ok := s.gate().admit(w, s.lockoutKey(r))
+	if !ok {
+		return false
+	}
+	defer try.done()
+	if !s.secondFactorOK(code) {
+		try.fail()
+		writeError(w, http.StatusForbidden, errors.New("that code is not valid"))
 		return false
 	}
 	return true
@@ -81,7 +97,8 @@ func (s *Server) checkCurrentPassword(w http.ResponseWriter, r *http.Request, cu
 // caller comes out signed in and every other session ends: on the first set
 // there is no session yet, and every request after this one would answer 401;
 // on a change, the sessions opened with a password that may have leaked are
-// exactly what the change is for.
+// exactly what the change is for. The passkeys go too, since one registered
+// under the old password would let its holder back in.
 func (s *Server) setPassword(w http.ResponseWriter, r *http.Request) {
 	var body struct {
 		Current  string `json:"current"`
@@ -114,6 +131,7 @@ func (s *Server) setPassword(w http.ResponseWriter, r *http.Request) {
 	}
 	if err := s.Security.Update(func(st *security.State) error {
 		st.PasswordHash = hash
+		st.Passkeys = nil
 		return nil
 	}); err != nil {
 		writeError(w, http.StatusInternalServerError, err)
@@ -125,13 +143,14 @@ func (s *Server) setPassword(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
-	s.gate().clearFailures(clientKey(r))
+	s.gate().clearFailures(s.lockoutKey(r))
 	writeJSON(w, http.StatusOK, s.securityView())
 }
 
 // removePassword opens the interface to everybody who can reach it again. The
 // second factor goes with the password: left armed, a password set months
-// later would demand a code from an app that may be long gone.
+// later would demand a code from an app that may be long gone. The passkeys
+// go too, or they would sign in again once a new password is set.
 func (s *Server) removePassword(w http.ResponseWriter, r *http.Request) {
 	var body struct {
 		Current string `json:"current"`
@@ -153,6 +172,7 @@ func (s *Server) removePassword(w http.ResponseWriter, r *http.Request) {
 	if err := s.Security.Update(func(st *security.State) error {
 		st.PasswordHash = ""
 		st.TOTP = security.TOTP{}
+		st.Passkeys = nil
 		return nil
 	}); err != nil {
 		writeError(w, http.StatusInternalServerError, err)
@@ -269,14 +289,7 @@ func (s *Server) totpDisable(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, http.StatusOK, s.securityView())
 		return
 	}
-	gate := s.gate()
-	key := clientKey(r)
-	if gate.refuseIfLockedOut(w, key) {
-		return
-	}
-	if !s.secondFactorOK(body.Code) {
-		gate.fail(key)
-		writeError(w, http.StatusForbidden, errors.New("that code is not valid"))
+	if !s.checkCurrentCode(w, r, body.Code) {
 		return
 	}
 	if err := s.Security.Update(func(st *security.State) error {

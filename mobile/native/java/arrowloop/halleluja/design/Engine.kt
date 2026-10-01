@@ -7,7 +7,11 @@ import android.util.Log
 import java.io.File
 import java.net.HttpURLConnection
 import java.net.URL
+import java.security.MessageDigest
+import java.security.SecureRandom
 import java.util.TimeZone
+import javax.crypto.Mac
+import javax.crypto.spec.SecretKeySpec
 
 /**
  * Starts, probes and stops the engine process, the same binary the container
@@ -18,14 +22,60 @@ object Engine {
     private const val TAG = "ArrowLoop"
 
     /**
-     * Loopback only: the engine has no login of its own, so it must not be
-     * reachable from the network the phone is on.
+     * Loopback only, so the engine is not reachable from the network the phone
+     * is on. Every other app on the phone can still reach loopback, which is
+     * what the token is for.
      */
     const val ADDRESS = "127.0.0.1:8422"
     const val ORIGIN = "http://$ADDRESS"
 
+    /** The headers the engine checks; see internal/web/guard.go. */
+    private const val TOKEN_HEADER = "X-ArrowLoop-Token"
+    private const val CHALLENGE_HEADER = "X-ArrowLoop-Challenge"
+    private const val PROOF_HEADER = "X-ArrowLoop-Proof"
+
     @Volatile
     private var process: Process? = null
+
+    @Volatile
+    private var token: String? = null
+
+    private fun randomHex(bytes: Int): String =
+        ByteArray(bytes).also { SecureRandom().nextBytes(it) }.joinToString("") { "%02x".format(it) }
+
+    private fun tokenFile(context: Context) = File(context.filesDir, "engine.token")
+
+    /**
+     * The secret the engine wants on every request, so that no other app can
+     * drive it. It is kept in the app's private files, because an engine left
+     * running by an earlier process of this app still holds the one it was
+     * started with.
+     */
+    @Synchronized
+    fun token(context: Context): String {
+        token?.let { return it }
+        val kept = try {
+            tokenFile(context).readText().trim()
+        } catch (_: Exception) {
+            ""
+        }
+        return kept.ifEmpty { renewToken(context) }
+    }
+
+    /** Draws a new token, so one that leaked dies with the engine it was drawn for. */
+    @Synchronized
+    private fun renewToken(context: Context): String {
+        val value = randomHex(32)
+        tokenFile(context).writeText(value)
+        token = value
+        return value
+    }
+
+    /** Opens a connection to the engine that carries the token. */
+    fun connect(context: Context, path: String): HttpURLConnection =
+        (URL("$ORIGIN$path").openConnection() as HttpURLConnection).apply {
+            setRequestProperty(TOKEN_HEADER, token(context))
+        }
 
     /**
      * Returns the active network's nameservers, comma-separated, or null when
@@ -74,17 +124,31 @@ object Engine {
      */
     fun alive(): Boolean = process?.isAlive == true
 
-    /** Reports whether the engine answers over HTTP, rather than merely being spawned. */
-    fun answers(timeoutMs: Int = 1500): Boolean = try {
+    /**
+     * Reports whether our engine answers over HTTP, rather than merely being
+     * spawned. Another app could have taken the port first, so the answer has
+     * to prove it knows the token, and the probe does not send the token to
+     * whoever is listening.
+     */
+    fun answers(context: Context, timeoutMs: Int = 1500): Boolean = try {
+        val challenge = randomHex(16)
         val connection = URL("$ORIGIN/api/capabilities").openConnection() as HttpURLConnection
         connection.connectTimeout = timeoutMs
         connection.readTimeout = timeoutMs
         connection.requestMethod = "GET"
-        val code = connection.responseCode
+        connection.setRequestProperty(CHALLENGE_HEADER, challenge)
+        connection.responseCode
+        val proof = connection.getHeaderField(PROOF_HEADER)
         connection.disconnect()
-        code in 200..499
+        proof != null && MessageDigest.isEqual(proof.toByteArray(), proofOf(token(context), challenge).toByteArray())
     } catch (_: Exception) {
         false
+    }
+
+    private fun proofOf(token: String, challenge: String): String {
+        val mac = Mac.getInstance("HmacSHA256")
+        mac.init(SecretKeySpec(token.toByteArray(), "HmacSHA256"))
+        return mac.doFinal(challenge.toByteArray()).joinToString("") { "%02x".format(it) }
     }
 
     /**
@@ -118,7 +182,7 @@ object Engine {
                 return false
             }
         }
-        if (answers()) {
+        if (answers(context)) {
             Log.i(TAG, "engine already answering on $ADDRESS")
             return false
         }
@@ -147,6 +211,7 @@ object Engine {
         )
         builder.directory(home(context))
         builder.environment()["ARROWLOOP_ADDR"] = ADDRESS
+        builder.environment()["ARROWLOOP_APP_TOKEN"] = renewToken(context)
         // HOME is where rclone looks for its own configuration, and without it
         // the engine would write the remotes somewhere that is not this app's.
         builder.environment()["HOME"] = home(context).absolutePath

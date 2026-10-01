@@ -89,7 +89,7 @@ func cmdWeb(ctx context.Context, args []string) error {
 	boot.Banner()
 
 	httpServer := &http.Server{
-		Handler:           server.Handler(),
+		Handler:           server.Guard(server.Handler()),
 		ReadHeaderTimeout: 10 * time.Second,
 		// No write timeout: the events endpoint is a stream that stays open for
 		// as long as somebody is watching, and a write deadline would cut it.
