@@ -203,3 +203,90 @@ describe('adding a job', () => {
     expect(saveConfig).not.toHaveBeenCalled()
   })
 })
+
+describe('pausing and removing a job', () => {
+  const pair = (): RawJob[] => [
+    { name: 'photos', left: 'D:/Photos', right: 'nas:photos', state: 'state/photos.db' },
+    { name: 'music', left: 'D:/Music', right: 'nas:music', state: 'state/music.db' },
+  ]
+  const live = (r: RawJob): Job => job({ name: r.name, left: r.left, right: r.right })
+
+  function cards(list: RawJob[] = pair()) {
+    render(
+      <ToastProvider>
+        <Jobs
+          jobs={list.map(live)}
+          runs={[]}
+          progress={{}}
+          speeds={{}}
+          onPreview={() => undefined}
+          onSaved={() => undefined}
+        />
+      </ToastProvider>,
+    )
+  }
+
+  // The row that draws a job's two sides also holds its buttons.
+  async function pause(name: string) {
+    const side = pair().find((j) => j.name === name)?.left ?? ''
+    const row = (await screen.findByText(side)).closest('div.flex-wrap') as HTMLElement
+    fireEvent.click(within(row).getByRole('button', { name: 'Pause' }))
+  }
+
+  beforeEach(() => {
+    config.mockImplementation(() => Promise.resolve({ jobs: pair() }))
+  })
+
+  it('writes only the paused job, not another card\'s unsaved edit', async () => {
+    cards()
+    await screen.findAllByRole('button', { name: 'Pause' })
+    fireEvent.click(screen.getAllByRole('button', { name: 'Options' })[0])
+    fireEvent.click(within(await screen.findByRole('menu')).getByRole('menuitem', { name: 'Edit' }))
+    fireEvent.change(await screen.findByDisplayValue('nas:photos'), { target: { value: 'nas:elsewhere' } })
+
+    await pause('music')
+    await waitFor(() => expect(saveConfig).toHaveBeenCalled())
+    const written = saveConfig.mock.calls[0][0]
+    expect(written.find((j) => j.name === 'photos')?.right).toBe('nas:photos')
+    expect(written.find((j) => j.name === 'music')?.disabled).toBe(true)
+  })
+
+  it('keeps a job another window added since the page loaded', async () => {
+    cards()
+    await screen.findAllByRole('button', { name: 'Pause' })
+    config.mockImplementation(() =>
+      Promise.resolve({ jobs: [...pair(), { name: 'films', left: 'D:/Films', right: 'nas:films', state: 'state/films.db' }] }),
+    )
+
+    await pause('photos')
+    await waitFor(() => expect(saveConfig).toHaveBeenCalled())
+    expect(saveConfig.mock.calls[0][0].map((j) => j.name)).toEqual(['photos', 'music', 'films'])
+  })
+
+  it('holds the pause buttons while a write is under way', async () => {
+    saveConfig.mockImplementation(() => new Promise(() => undefined))
+    cards()
+    await pause('photos')
+    await waitFor(() => expect(saveConfig).toHaveBeenCalled())
+    for (const button of screen.getAllByRole('button', { name: 'Pause' })) {
+      expect((button as HTMLButtonElement).disabled).toBe(true)
+    }
+  })
+
+  it('removes one job without writing another card\'s unsaved edit', async () => {
+    cards()
+    await screen.findAllByRole('button', { name: 'Pause' })
+    fireEvent.click(screen.getAllByRole('button', { name: 'Options' })[0])
+    fireEvent.click(within(await screen.findByRole('menu')).getByRole('menuitem', { name: 'Edit' }))
+    fireEvent.change(await screen.findByDisplayValue('nas:photos'), { target: { value: 'nas:elsewhere' } })
+
+    fireEvent.click(screen.getAllByRole('button', { name: 'Options' })[0])
+    fireEvent.click(within(await screen.findByRole('menu')).getByRole('menuitem', { name: 'Remove' }))
+    const dialog = await screen.findByRole('dialog')
+    fireEvent.click(within(dialog).getByRole('switch'))
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Delete it' }))
+
+    await waitFor(() => expect(saveConfig).toHaveBeenCalled())
+    expect(saveConfig.mock.calls[0][0]).toEqual([pair()[0]])
+  })
+})

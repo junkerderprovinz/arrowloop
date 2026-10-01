@@ -71,7 +71,9 @@ export function Jobs({
   const config = useJobConfig(onSaved)
   // The job open in the form, by its position in the configuration file.
   const [editing, setEditing] = useState<number | null>(null)
-  const [removing, setRemoving] = useState<number | null>(null)
+  // The entry by its place in the file, and the name the engine knows it by
+  // unless it is a draft.
+  const [removing, setRemoving] = useState<{ at: number; saved?: string } | null>(null)
   // Whose history fold is open, by job name; one at a time.
   const [history, setHistory] = useState<string | null>(null)
   // The check or the duplicate search open on a card, one at a time.
@@ -143,7 +145,7 @@ export function Jobs({
                         title={t('edit.remove')}
                         labelKey="edit.remove"
                         hueIndex={i + 4}
-                        onClick={() => setRemoving(at)}
+                        onClick={() => setRemoving({ at, saved: j.name })}
                       >
                         <IconDelete />
                       </IconAction>
@@ -182,7 +184,8 @@ export function Jobs({
                         title={j.disabled ? t('jobs.resume') : t('jobs.pause')}
                         labelKey={j.disabled ? 'jobs.resume' : 'jobs.pause'}
                         hueIndex={i + 5}
-                        onClick={() => void config.setDisabled(at, !j.disabled)}
+                        disabled={config.busy}
+                        onClick={() => void config.setDisabled(j.name, !j.disabled)}
                       >
                         {j.disabled ? <IconRun /> : <IconPause />}
                       </IconAction>
@@ -224,7 +227,7 @@ export function Jobs({
                               {
                                 label: t('edit.remove'),
                                 labelKey: 'edit.remove' as const,
-                                onSelect: () => setRemoving(at),
+                                onSelect: () => setRemoving({ at, saved: j.name }),
                               },
                             ]
                           : []),
@@ -296,7 +299,7 @@ export function Jobs({
                       title={t('edit.remove')}
                       labelKey="edit.remove"
                       hueIndex={jobs.length + at + 4}
-                      onClick={() => setRemoving(at)}
+                      onClick={() => setRemoving({ at })}
                     >
                       <IconDelete />
                     </IconAction>
@@ -333,7 +336,7 @@ export function Jobs({
                     title={t('edit.remove')}
                     labelKey="edit.remove"
                     hueIndex={jobs.length + at + 4}
-                    onClick={() => setRemoving(at)}
+                    onClick={() => setRemoving({ at })}
                   >
                     <IconDelete />
                   </IconAction>
@@ -348,10 +351,10 @@ export function Jobs({
         </>
       )}
 
-      {removing !== null && raw && raw[removing] && (
+      {removing !== null && raw && raw[removing.at] && (
         <ConfirmDialog
           title={t('edit.removeJob')}
-          message={t('edit.removeStakes', { name: raw[removing].name || t('edit.unnamed') })}
+          message={t('edit.removeStakes', { name: raw[removing.at].name || t('edit.unnamed') })}
           confirmLabel={t('confirm.delete')}
           confirmGlyph={<IconDelete />}
           cancelLabel={t('confirm.cancel')}
@@ -366,8 +369,8 @@ export function Jobs({
           }
           onCancel={() => setRemoving(null)}
           onConfirm={() => {
-            void config.remove(removing, dropState)
-            if (editing === removing) setEditing(null)
+            void config.remove(removing.at, dropState, removing.saved)
+            if (editing === removing.at) setEditing(null)
             setRemoving(null)
           }}
         />

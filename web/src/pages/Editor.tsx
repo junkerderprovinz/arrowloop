@@ -98,18 +98,37 @@ export function useJobConfig(onSaved: () => void) {
     setJobs((prev) => prev && prev.map((j, i) => (i === at ? { ...j, ...next } : j)))
   }, [])
 
+  /** Writes this tab's whole list and takes back what the server made of it. */
+  const save = useCallback(async () => {
+    if (!jobs) return false
+    setBusy(true)
+    setError(null)
+    try {
+      const result = await api.saveConfig(jobs)
+      setJobs(result.jobs)
+      setSaved(true)
+      onSaved()
+      return true
+    } catch (e) {
+      setError((e as Error).message)
+      return false
+    } finally {
+      setBusy(false)
+    }
+  }, [jobs, onSaved])
+
   /**
-   * Writes a list to the file and takes back what the server made of it. It
-   * takes the list as an argument, since a removal writes one that `jobs` does
-   * not hold yet.
+   * Changes one saved job in the file as it stands now, read again first, so
+   * neither the unsaved edits on other cards nor a change made in another
+   * window since this page loaded go with it.
    */
-  const persist = useCallback(
-    async (list: RawJob[]) => {
+  const writeOne = useCallback(
+    async (change: (file: RawJob[]) => RawJob[]) => {
       setBusy(true)
       setError(null)
       try {
-        const result = await api.saveConfig(list)
-        setJobs(result.jobs)
+        const { jobs: file } = await api.config()
+        await api.saveConfig(change(file))
         setSaved(true)
         onSaved()
         return true
@@ -122,11 +141,6 @@ export function useJobConfig(onSaved: () => void) {
     },
     [onSaved],
   )
-
-  const save = useCallback(async () => {
-    if (!jobs) return false
-    return persist(jobs)
-  }, [jobs, persist])
 
   /**
    * Adds a draft job and returns its index, so the caller can open it, or null
@@ -156,8 +170,9 @@ export function useJobConfig(onSaved: () => void) {
   }, [jobs, t])
 
   /**
-   * Removes a job and writes the file straight away, since the removal was
-   * already confirmed.
+   * Removes the entry at `at` from this tab's list. A saved job, named by
+   * `saved`, also leaves the file straight away, since the removal was already
+   * confirmed; a draft only ever lived here.
    *
    * `alsoState` deletes the job's state database first, while the job is still
    * in the configuration: the server resolves the path from the job's entry, so
@@ -165,38 +180,35 @@ export function useJobConfig(onSaved: () => void) {
    * not stop the removal, since the database is only a cache.
    */
   const remove = useCallback(
-    async (at: number, alsoState: boolean) => {
-      const current = jobs ?? []
-      const job = current[at]
-      if (!job) return
+    async (at: number, alsoState: boolean, saved?: string) => {
       setSaved(false)
-      // A job with no name was never saved and has no state database.
-      if (alsoState && job.name) {
-        try {
-          await api.forgetJobState(job.name)
-        } catch (e) {
-          setError((e as Error).message)
+      if (saved !== undefined) {
+        if (alsoState) {
+          try {
+            await api.forgetJobState(saved)
+          } catch (e) {
+            setError((e as Error).message)
+          }
         }
+        if (!(await writeOne((file) => file.filter((j) => j.name !== saved)))) return
       }
-      await persist(current.filter((_, i) => i !== at))
+      setJobs((prev) => prev && prev.filter((_, i) => i !== at))
     },
-    [jobs, persist],
+    [writeOne],
   )
 
   /**
-   * Holds or releases a job's schedule and writes it straight away, unlike
-   * `patch`, because it is pressed on a card with no form open and no save
-   * button. A held job can still be started by hand.
+   * Holds or releases a saved job's schedule and writes it straight away,
+   * unlike `patch`, because it is pressed on a card with no form open and no
+   * save button. A held job can still be started by hand.
    */
   const setDisabled = useCallback(
-    async (at: number, disabled: boolean) => {
-      const current = jobs ?? []
-      const job = current[at]
-      if (!job) return
+    async (name: string, disabled: boolean) => {
       setSaved(false)
-      await persist(current.map((j, i) => (i === at ? { ...j, disabled } : j)))
+      const hold = (list: RawJob[]) => list.map((j) => (j.name === name ? { ...j, disabled } : j))
+      if (await writeOne(hold)) setJobs((prev) => prev && hold(prev))
     },
-    [jobs, persist],
+    [writeOne],
   )
 
   /**
