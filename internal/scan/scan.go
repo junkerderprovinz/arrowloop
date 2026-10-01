@@ -10,11 +10,13 @@ import (
 	"path"
 	"sort"
 	"strings"
+	"sync/atomic"
 	"time"
 
 	"github.com/rclone/rclone/fs"
 	"github.com/rclone/rclone/fs/accounting"
 	"github.com/rclone/rclone/fs/hash"
+	"github.com/rclone/rclone/fs/rc"
 	"github.com/rclone/rclone/fs/walk"
 
 	"github.com/junkerderprovinz/arrowloop/internal/filter"
@@ -115,9 +117,13 @@ func List(ctx context.Context, f fs.Fs, opt Options) (*Listing, error) {
 
 	found := 0
 	Report(ctx, Reading{Stage: StageList})
+	// The global group and a run's group also count what other work fails
+	// meanwhile, so the walk counts its errors in a group of its own.
+	group := fmt.Sprintf("scan/%d", scans.Add(1))
+	defer dropStats(group)
+	ctx = accounting.WithStatsGroup(ctx, group)
 	stats := accounting.Stats(ctx)
-	errorsBefore := stats.GetErrors()
-	err := walk.ListR(ctx, f, "", true, -1, listType, func(entries fs.DirEntries) error {
+	err := walk.ListR(ctx, pruned{Fs: f, exclude: opt.Exclude}, "", true, -1, listType, func(entries fs.DirEntries) error {
 		defer func() { Report(ctx, Reading{Stage: StageList, Done: found}) }()
 		for _, entry := range entries {
 			if dir, isDir := entry.(fs.Directory); isDir {
@@ -167,7 +173,7 @@ func List(ctx context.Context, f fs.Fs, opt Options) (*Listing, error) {
 	}
 	// The local backend lists a folder it may not open as empty and only
 	// counts the error.
-	if stats.GetErrors() > errorsBefore {
+	if stats.GetErrors() > 0 {
 		return nil, fmt.Errorf("list %s: a folder could not be read: %w", f.Name(), stats.GetLastError())
 	}
 
@@ -188,6 +194,33 @@ func List(ctx context.Context, f fs.Fs, opt Options) (*Listing, error) {
 	}
 	sort.Slice(out.Collisions, func(i, j int) bool { return out.Collisions[i].Key < out.Collisions[j].Key })
 	return out, nil
+}
+
+// scans numbers the stats groups of listings running at the same time.
+var scans atomic.Int64
+
+// dropStats removes a listing's stats group, which rclone offers only as a
+// remote control call. rclone keeps at most max_stats_groups and drops the
+// oldest first, which in a long-running daemon would be a job's own group in
+// the middle of its run.
+func dropStats(group string) {
+	_, _ = rc.Calls.Get("core/stats-delete").Fn(context.Background(), rc.Params{"group": group})
+}
+
+// pruned lists a folder the job never looks into as empty, without opening it.
+// The local backend opens every folder the walk reaches, and a drive root holds
+// several, such as System Volume Information, that the process may not open;
+// each would fail the scan.
+type pruned struct {
+	fs.Fs
+	exclude *filter.Set
+}
+
+func (p pruned) List(ctx context.Context, dir string) (fs.DirEntries, error) {
+	if dir != "" && (IsReserved(dir) || p.exclude.ExcludesTree(dir)) {
+		return nil, nil
+	}
+	return p.Fs.List(ctx, dir)
 }
 
 // exists reports whether a side's root is there. Any answer other than "not

@@ -174,15 +174,20 @@ func takeOff(ctx context.Context, a Action, src Side) (Action, bool) {
 }
 
 // EnforceDirs drops the folder work a one-way job would do on its source.
-func EnforceDirs(dirs []DirAction, dir Direction) []DirAction {
+// Outside ModeMirror a folder gone from the source is only forgotten, as its
+// files are, and stays on the destination.
+func EnforceDirs(dirs []DirAction, dir Direction, mode Mode) []DirAction {
 	if dir == Both {
 		return dirs
 	}
 	dst := dir.source().Other()
 	kept := dirs[:0]
 	for _, d := range dirs {
-		// A record refresh writes to neither side and always survives.
-		if d.Kind == RecordDir || d.Dst == dst {
+		if d.Kind == RemoveDir && d.Dst == dst && mode != ModeMirror {
+			d.DstPath = ""
+		}
+		// Record work writes to neither side and always survives.
+		if d.Kind == RecordDir || d.Dst == dst || d.DstPath == "" {
 			kept = append(kept, d)
 		}
 	}

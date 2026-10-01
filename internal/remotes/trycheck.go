@@ -16,8 +16,8 @@ import (
 // the form the way Save does, and anything typed wins, so a changed credential
 // is the one tested. A stored password comes back revealed, as if typed, since
 // connectionString obscures every password. Nothing is filled in unless the
-// backend and every address setting match the saved target, so a saved
-// password never travels to a server the form names instead.
+// backend and every setting apart from the secrets match the saved target, so
+// a saved password never travels to a server the form names instead.
 func WithSavedSecrets(name, backend string, settings map[string]string) map[string]string {
 	if strings.TrimSpace(name) == "" {
 		return settings
@@ -29,10 +29,8 @@ func WithSavedSecrets(name, backend string, settings map[string]string) map[stri
 	if stored, _ := data.GetValue(name, "type"); stored != backend {
 		return settings
 	}
-	for _, key := range addressKeys {
-		if stored, _ := data.GetValue(name, key); settings[key] != stored {
-			return settings
-		}
+	if !sameTarget(data, name, backend, settings) {
+		return settings
 	}
 
 	// The caller's map came off a request body.
@@ -54,9 +52,33 @@ func WithSavedSecrets(name, backend string, settings map[string]string) map[stri
 	return out
 }
 
+// sameTarget reports whether a form holds the saved target's settings, secrets
+// aside, with nothing added or left out. Far more than the address decides
+// where a connection goes: an SFTP socks_proxy, a known_hosts_file of none, a
+// backend's own api_url. An empty value counts as no value, as Save stores it.
+func sameTarget(data config.Storage, name, backend string, settings map[string]string) bool {
+	keys := data.GetKeyList(name)
+	for key := range settings {
+		keys = append(keys, key)
+	}
+	for _, key := range keys {
+		if key == "type" || (IsSecret(backend, key) && !addressKeys[key]) {
+			continue
+		}
+		if stored, _ := data.GetValue(name, key); settings[key] != stored {
+			return false
+		}
+	}
+	return true
+}
+
 // addressKeys are the settings, across the backends, that decide which server
-// a connection reaches and as whom.
-var addressKeys = []string{"host", "port", "user", "url", "endpoint", "auth", "auth_url", "token_url"}
+// a connection reaches and as whom. They are compared even where a backend
+// counts one as secret.
+var addressKeys = map[string]bool{
+	"host": true, "port": true, "user": true, "url": true, "endpoint": true,
+	"auth": true, "auth_url": true, "token_url": true,
+}
 
 // typedForm undoes what Save did to a value. One rclone cannot reveal is passed
 // on as stored.

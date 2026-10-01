@@ -477,3 +477,63 @@ func TestAFileThatAppearsDuringTheRunIsNotOverwritten(t *testing.T) {
 		t.Fatalf("the file that appeared during the run was overwritten: %q", got)
 	}
 }
+
+// A conflict somebody decided gets rid of the losing version, and without a
+// trash that is for good. An edit made to it after the decision is not what
+// was decided about.
+func TestAnEditToTheLosingVersionDuringTheRunIsKept(t *testing.T) {
+	j := newJob(t, quick())
+	write(t, j.left, "notes.txt", "the original")
+	write(t, j.left, "other.txt", "keeps the side populated")
+	j.sync(t)
+
+	write(t, j.left, "notes.txt", "the version I want")
+	write(t, j.right, "notes.txt", "the version I turned down")
+	p, compare := j.planned(t)
+	for i := range p.Actions {
+		if p.Actions[i].Kind == plan.Conflict {
+			p.Actions[i].Resolve = plan.KeepLeft
+		}
+	}
+	write(t, j.right, "notes.txt", "edited on the right after the decision")
+	ctx := apply.WithTrash(context.Background(), false)
+	if _, err := engine.Execute(ctx, j.ends, j.db, p, compare); err != nil {
+		t.Fatalf("execute: %v", err)
+	}
+	if got := readFile(t, j.right, "notes.txt"); got != "edited on the right after the decision" {
+		t.Fatalf("the edit made after the decision is gone, the right holds %q", got)
+	}
+}
+
+// A rename is planned against the name being free on the far side. A file
+// that takes the name while the run is going is not replaced by the rename.
+func TestAFileThatTakesARenamedNameDuringTheRunIsKept(t *testing.T) {
+	j := newJob(t, quick())
+	write(t, j.left, "draft.txt", "the report")
+	write(t, j.left, "other.txt", "keeps the side populated")
+	j.sync(t)
+
+	if err := os.Rename(filepath.Join(j.left, "draft.txt"), filepath.Join(j.left, "final.txt")); err != nil {
+		t.Fatalf("rename: %v", err)
+	}
+	p, compare := j.planned(t)
+	var renames int
+	for _, a := range p.Actions {
+		if a.Kind == plan.Move {
+			renames++
+		}
+	}
+	if renames != 1 {
+		t.Fatalf("expected the rename to be planned as one, got %d", renames)
+	}
+	write(t, j.right, "final.txt", "written on the right while the run was going")
+	if _, err := engine.Execute(context.Background(), j.ends, j.db, p, compare); err != nil {
+		t.Fatalf("execute: %v", err)
+	}
+	if got := readFile(t, j.right, "final.txt"); got != "written on the right while the run was going" {
+		t.Fatalf("the file that took the name was replaced: %q", got)
+	}
+	if got := readFile(t, j.right, "draft.txt"); got != "the report" {
+		t.Fatalf("the file still waiting for its rename holds %q", got)
+	}
+}

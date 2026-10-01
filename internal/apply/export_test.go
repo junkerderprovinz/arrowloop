@@ -9,7 +9,7 @@ import (
 // RunConflictPrefix executes only the first n steps of a conflict resolution,
 // so a test can reproduce a crash in the middle with the engine's own steps.
 func RunConflictPrefix(ctx context.Context, ends Ends, act plan.Action, runID string, n int) error {
-	steps, err := conflictSteps(ends, act, runID)
+	steps, err := conflictSteps(ends, act, runID, 0)
 	if err != nil {
 		return err
 	}

@@ -69,3 +69,49 @@ func TestNilSetExcludesNothing(t *testing.T) {
 		t.Error("a nil set reported patterns")
 	}
 }
+
+// The app's own defaults name system folders as "**/name/**", and on a drive
+// root those folders sit at the top.
+func TestALeadingDoubleStarAlsoMatchesTheTop(t *testing.T) {
+	s, err := New([]string{"**/System Volume Information/**", "docs/**/draft.txt"})
+	if err != nil {
+		t.Fatalf("compile: %v", err)
+	}
+	for _, path := range []string{
+		"System Volume Information/tracking.log",
+		"D/System Volume Information/tracking.log",
+		"docs/draft.txt",
+		"docs/a/b/draft.txt",
+	} {
+		if !s.Excluded(path) {
+			t.Errorf("%q should be excluded", path)
+		}
+	}
+	if s.Excluded("System Volume Information") {
+		t.Error("the folder itself was excluded, only what is inside it is")
+	}
+}
+
+func TestExcludesTree(t *testing.T) {
+	s, err := New([]string{"**/node_modules/**", "cache", "build/*", "*.tmp", "logs/**.log"})
+	if err != nil {
+		t.Fatalf("compile: %v", err)
+	}
+	whole := []string{"node_modules", "web/node_modules", "cache", "cache/sub"}
+	for _, dir := range whole {
+		if !s.ExcludesTree(dir) {
+			t.Errorf("everything below %q is excluded, so it need not be opened", dir)
+		}
+	}
+	// Each of these still holds a path the job sees.
+	partly := []string{"build", "scratch.tmp", "logs", "web", "node_modules_old", "cached"}
+	for _, dir := range partly {
+		if s.ExcludesTree(dir) {
+			t.Errorf("%q holds files the job syncs and must be opened", dir)
+		}
+	}
+	var none *Set
+	if none.ExcludesTree("anything") {
+		t.Error("a nil set excluded a folder")
+	}
+}
