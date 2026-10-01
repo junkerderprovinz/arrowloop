@@ -633,8 +633,8 @@ func (s spa) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	name := path[1:]
 
-	f, err := s.fs.Open(name)
-	if err != nil {
+	f, ok := s.open(name)
+	if !ok {
 		// A browser holding a stale index.html asks for a bundle that no
 		// longer exists, and must get a 404 rather than HTML where it
 		// expected a script.
@@ -642,8 +642,8 @@ func (s spa) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			http.NotFound(w, r)
 			return
 		}
-		index, iErr := s.fs.Open("index.html")
-		if iErr != nil {
+		index, ok := s.open("index.html")
+		if !ok {
 			s.explain(w)
 			return
 		}
@@ -651,13 +651,28 @@ func (s spa) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		info, found := s.assets.info(s.fs, "index.html")
 		setCacheHeaders(w, "index.html", info, found)
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		http.ServeContent(w, r, "index.html", time.Time{}, index.(readSeeker))
+		http.ServeContent(w, r, "index.html", time.Time{}, index)
 		return
 	}
 	defer f.Close()
 	info, found := s.assets.info(s.fs, name)
 	setCacheHeaders(w, name, info, found)
-	http.ServeContent(w, r, name, time.Time{}, f.(readSeeker))
+	http.ServeContent(w, r, name, time.Time{}, f)
+}
+
+// open opens one file to serve. A folder opens without error on an embedded
+// tree but cannot seek, so it counts as missing.
+func (s spa) open(name string) (seekableFile, bool) {
+	f, err := s.fs.Open(name)
+	if err != nil {
+		return nil, false
+	}
+	sf, ok := f.(seekableFile)
+	if info, err := f.Stat(); !ok || err != nil || info.IsDir() {
+		f.Close()
+		return nil, false
+	}
+	return sf, true
 }
 
 func (s spa) explain(w http.ResponseWriter) {
@@ -671,9 +686,9 @@ func (s spa) explain(w http.ResponseWriter) {
 	w.Write(s.placeholder)
 }
 
-type readSeeker interface {
-	Read([]byte) (int, error)
-	Seek(int64, int) (int64, error)
+type seekableFile interface {
+	fs.File
+	io.Seeker
 }
 
 // readConfig hands the editor the jobs exactly as they stand in the file, not

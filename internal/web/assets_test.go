@@ -138,3 +138,22 @@ func TestAMissingBundleIsNotThePage(t *testing.T) {
 		t.Errorf("a reloaded sub-page answered %s", page.Status)
 	}
 }
+
+// Opening a folder succeeds on an embedded tree, and a folder cannot seek, so
+// the bare folder name has to be answered like any other route.
+func TestTheAssetsFolderIsAnsweredLikeARoute(t *testing.T) {
+	h := newHarness(t)
+	srv := newServer(t, &web.Server{History: h.history, Runner: h.runner, UI: uiFS()})
+
+	resp, err := srv.Client().Get(srv.URL + "/assets")
+	if err != nil {
+		t.Fatalf("GET /assets dropped the connection: %v", err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		t.Errorf("GET /assets answered %s rather than the page", resp.Status)
+	}
+	if got := resp.Header.Get("Content-Type"); got != "text/html; charset=utf-8" {
+		t.Errorf("GET /assets came back as %q rather than the page", got)
+	}
+}
