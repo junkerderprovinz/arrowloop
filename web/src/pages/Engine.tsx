@@ -40,8 +40,12 @@ function useSettings() {
   // would otherwise send a stale draft.
   const latest = useRef<Settings>({})
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  // Leaving the section unmounts it, and a change still waiting to settle is
+  // sent then rather than lost. Nothing is left on screen to take the answer.
   useEffect(() => () => {
-    if (timer.current) clearTimeout(timer.current)
+    if (!timer.current) return
+    clearTimeout(timer.current)
+    void api.saveSettings(latest.current).catch(() => {})
   }, [])
 
   const commit = useCallback(async () => {
@@ -71,7 +75,10 @@ function useSettings() {
         return merged
       })
       if (timer.current) clearTimeout(timer.current)
-      timer.current = setTimeout(() => void commit(), SETTLE_MS)
+      timer.current = setTimeout(() => {
+        timer.current = null
+        void commit()
+      }, SETTLE_MS)
     },
     [commit],
   )
