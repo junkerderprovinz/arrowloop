@@ -75,17 +75,23 @@ export function useEngine(t: T) {
     if (alive) keepKnocking();
   }, [keepKnocking, t]);
 
+  // Starting an engine that runs already does nothing, so the button on the
+  // trouble screen can call this too.
+  const start = useCallback(() => {
+    // The deadline starts now rather than when start() resolves, since that
+    // native call can hang; its result matters only when it fails.
+    void wait();
+    engine.start().catch((e: Error) => setLog((old) => `${e.message}\n\n${old}`));
+  }, [wait]);
+
   useEffect(() => {
     if (!engine.available) {
       setLog(t("phone.engineNoModule"));
       setState("trouble");
       return;
     }
-    // The deadline starts now rather than when start() resolves, since that
-    // native call can hang; its result matters only when it fails.
-    void wait();
-    engine.start().catch((e: Error) => setLog((old) => `${e.message}\n\n${old}`));
-  }, [wait, t]);
+    start();
+  }, [start, t]);
 
   // Android may have reclaimed the service while the app was in the background.
   useEffect(() => {
@@ -99,7 +105,7 @@ export function useEngine(t: T) {
     return () => sub.remove();
   }, [state, wait]);
 
-  return { state, log, retry: wait };
+  return { state, log, retry: start };
 }
 
 /**

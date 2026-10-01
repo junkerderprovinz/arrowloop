@@ -9,6 +9,8 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.os.BatteryManager
+import android.os.Handler
+import android.os.Looper
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -38,6 +40,16 @@ object Device {
 
     private var power: BroadcastReceiver? = null
     private var network: ConnectivityManager.NetworkCallback? = null
+
+    /**
+     * How often an unchanged verdict is sent again. The engine stops believing
+     * a report after ten minutes (hold.Stale), and a verdict that never
+     * changes is otherwise sent only once.
+     */
+    private const val RENEW_MS = 4L * 60L * 1000L
+
+    private val main = Handler(Looper.getMainLooper())
+    private var renew: Runnable? = null
 
     fun onlyCharging(context: Context): Boolean = prefs(context).getBoolean(ONLY_CHARGING, false)
 
@@ -186,34 +198,48 @@ object Device {
         // several broadcasts a second.
         inFlight = now
         android.util.Log.i("ArrowLoop", if (now.isEmpty()) "nothing holds automatic runs" else "holding automatic runs: $now")
+        Thread { send(now) }.start()
+    }
+
+    /**
+     * Sends the verdict on the calling thread and reports whether the engine
+     * took it, for a caller that must not go on before it has.
+     */
+    fun reportNow(context: Context): Boolean = send(reason(context))
+
+    private fun send(now: String): Boolean {
         val body = """{"reason":${quote(now)}}"""
-        Thread {
-            try {
-                val url = URL("http://${Engine.ADDRESS}/api/device")
-                (url.openConnection() as HttpURLConnection).run {
-                    requestMethod = "PUT"
-                    doOutput = true
-                    connectTimeout = 2000
-                    readTimeout = 2000
-                    setRequestProperty("Content-Type", "application/json")
-                    outputStream.use { it.write(body.toByteArray()) }
-                    if (responseCode in 200..299) sent = now
-                    disconnect()
-                }
-            } catch (_: Exception) {
-                // The engine is not up; `sent` stays unchanged so the next
-                // broadcast tries again.
-            } finally {
-                synchronized(Device) { if (inFlight == now) inFlight = null }
+        return try {
+            val url = URL("http://${Engine.ADDRESS}/api/device")
+            (url.openConnection() as HttpURLConnection).run {
+                requestMethod = "PUT"
+                doOutput = true
+                connectTimeout = 2000
+                readTimeout = 2000
+                setRequestProperty("Content-Type", "application/json")
+                outputStream.use { it.write(body.toByteArray()) }
+                val took = responseCode in 200..299
+                disconnect()
+                if (took) synchronized(Device) { sent = now }
+                took
             }
-        }.start()
+        } catch (_: Exception) {
+            // The engine is not up; `sent` stays unchanged so the next
+            // broadcast tries again.
+            false
+        } finally {
+            synchronized(Device) { if (inFlight == now) inFlight = null }
+        }
     }
 
     /**
      * Starts listening and reports straight away, since a phone already on
      * the charger sends no broadcast.
      */
-    fun watch(context: Context) {
+    fun watch(caller: Context) {
+        // Android drops a receiver along with the service that registered it,
+        // and the screens may still need it after a wake-up's service is gone.
+        val context = caller.applicationContext
         if (power == null) {
             power = object : BroadcastReceiver() {
                 override fun onReceive(c: Context, i: Intent) = report(context)
@@ -239,11 +265,21 @@ object Device {
                 network = callback
             }
         }
+        if (renew == null) {
+            renew = object : Runnable {
+                override fun run() {
+                    synchronized(Device) { sent = null }
+                    report(context)
+                    main.postDelayed(this, RENEW_MS)
+                }
+            }.also { main.postDelayed(it, RENEW_MS) }
+        }
         report(context)
     }
 
     /** Stops listening when the service goes down. */
-    fun forget(context: Context) {
+    fun forget(caller: Context) {
+        val context = caller.applicationContext
         power?.let {
             try {
                 context.unregisterReceiver(it)
@@ -259,6 +295,8 @@ object Device {
             }
         }
         network = null
+        renew?.let { main.removeCallbacks(it) }
+        renew = null
         sent = null
         inFlight = null
     }

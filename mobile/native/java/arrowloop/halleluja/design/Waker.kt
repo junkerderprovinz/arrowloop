@@ -20,7 +20,7 @@ object Waker {
 
     /** Fixed ids, so re-arming replaces the jobs rather than adding more. */
     private const val TIMER = 1
-    private const val WATCH = 2
+    const val WATCH = 2
 
     /** Android's minimum period; a shorter one is rounded up to this. */
     private const val EVERY_MS = 15L * 60L * 1000L
@@ -45,7 +45,17 @@ object Waker {
                 .setPersisted(true)
                 .build(),
         )
+        watch(context)
+        Log.i(TAG, "waking armed: every ${EVERY_MS / 60000} minutes, and when the camera writes")
+    }
 
+    /**
+     * Schedules the content trigger. It fires once, so SyncJobService calls
+     * this again each time it does.
+     */
+    fun watch(context: Context) {
+        val scheduler = context.getSystemService(JobScheduler::class.java) ?: return
+        val service = ComponentName(context, SyncJobService::class.java)
         scheduler.schedule(
             JobInfo.Builder(WATCH, service)
                 .addTriggerContentUri(
@@ -66,7 +76,6 @@ object Waker {
                 // BootReceiver arms it again after a reboot.
                 .build(),
         )
-        Log.i(TAG, "waking armed: every ${EVERY_MS / 60000} minutes, and when the camera writes")
     }
 
     fun disarm(context: Context) {

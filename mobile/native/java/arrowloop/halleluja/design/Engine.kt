@@ -195,4 +195,11 @@ object Engine {
         process?.destroy()
         process = null
     }
+
+    /**
+     * Set while the screens use the engine, so a wake-up that started it
+     * leaves it running for them when its run is over.
+     */
+    @Volatile
+    var screens = false
 }

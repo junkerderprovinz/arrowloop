@@ -18,4 +18,5 @@
     <string name="notify_done_what">%1$d kopiert, %2$d verschoben, %3$d in den Papierkorb, %4$d Konflikte</string>
     <string name="notify_failed">Abgleich fehlgeschlagen</string>
     <string name="notify_failed_no_engine">Der Motor ist nicht gestartet. Öffne ArrowLoop einmal und sieh auf der Motor-Karte nach.</string>
+    <string name="notify_failed_cut">Android hat den Lauf abgebrochen, bevor er fertig war. Schalte die Akkuoptimierung für ArrowLoop aus, dann bekommen Läufe im Hintergrund mehr Zeit.</string>
 </resources>

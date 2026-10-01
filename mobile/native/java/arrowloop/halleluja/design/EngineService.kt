@@ -8,6 +8,7 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
+import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
@@ -16,6 +17,7 @@ import androidx.core.app.NotificationCompat
 import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
 import java.net.URL
+import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * Runs the engine for one scheduled wake-up and stops when the run is over, so
@@ -27,9 +29,17 @@ import java.net.URL
 class EngineService : Service() {
 
     /** Whether this service is the one that started the engine process. */
+    @Volatile
     private var ours = false
 
-    override fun onBind(intent: Intent?): IBinder? = null
+    /** Whether a run is under way. Only the thread doing it clears this. */
+    private val running = AtomicBoolean(false)
+
+    /** Whether Android stopped the job this run was going on in. */
+    @Volatile
+    private var cut = false
+
+    override fun onBind(intent: Intent?): IBinder = Run()
 
     override fun onCreate() {
         super.onCreate()
@@ -61,17 +71,51 @@ class EngineService : Service() {
             return START_NOT_STICKY
         }
 
-        // Only the service that started the engine stops it; with the app open
-        // the engine belongs to the screens, and stopping it would blank them.
-        ours = Engine.start(this)
-
-        // The run conditions matter most when no screen is open.
-        Device.watch(this)
-        Thread { work() }.start()
+        if (!begin()) Log.i(TAG, "woke during a run, leaving it to finish")
 
         // Waker brings the service back; restarting itself would only bring
         // back the notification.
         return START_NOT_STICKY
+    }
+
+    /**
+     * Starts a run on its own thread and calls then when it is over. While a
+     * run is under way it starts nothing and returns false: the jobs keep
+     * firing while a long run copies, and a second run would only find every
+     * job claimed and stop the service under the first.
+     */
+    private fun begin(then: () -> Unit = {}): Boolean {
+        if (!running.compareAndSet(false, true)) return false
+
+        // Only the service that started the engine stops it; with the app open
+        // the engine belongs to the screens, and stopping it would blank them.
+        if (Engine.start(this)) ours = true
+
+        // The run conditions matter most when no screen is open.
+        Device.watch(this)
+        Thread {
+            work()
+            then()
+        }.start()
+        return true
+    }
+
+    /**
+     * Lets SyncJobService run a wake-up inside its job when Android will not
+     * start this service in the foreground. Such a run has no notification and
+     * ends when Android stops the job.
+     */
+    inner class Run : Binder() {
+        /** Calls done when the run is over, or at once while another is under way. */
+        fun start(done: () -> Unit) {
+            if (!begin(done)) done()
+        }
+
+        /** Ends the run because Android is stopping the job. */
+        fun stop() {
+            cut = true
+            release()
+        }
     }
 
     /**
@@ -81,6 +125,9 @@ class EngineService : Service() {
     private fun work() {
         try {
             waitForEngine()
+            // An engine this wake-up started holds nothing yet, and every
+            // report sent while it was starting found nobody listening.
+            check(Device.reportNow(this)) { "the engine did not take the run conditions" }
             val due = runDueNow()
             Log.i(TAG, "woke, ran ${due.ran} job(s), ${due.failed} failed")
             report(due)
@@ -88,10 +135,17 @@ class EngineService : Service() {
             Log.w(TAG, "woke and could not run: ${e.javaClass.simpleName} ${e.message}")
             // A reason this app authored is shown translated, anything else as
             // the raw message.
-            val why = if (e is Silent) getString(e.said) else e.message ?: ""
+            val why = when {
+                cut -> getString(R.string.notify_failed_cut)
+                e is Silent -> getString(e.said)
+                else -> e.message ?: ""
+            }
             tell(CHANNEL_FAILED, FAILED_ID, getString(R.string.notify_failed), why)
         } finally {
             finish()
+            // After stopSelf, so a wake-up arriving in between cannot start a
+            // run in a service that is about to stop.
+            running.set(false)
         }
     }
 
@@ -197,12 +251,21 @@ class EngineService : Service() {
     }
 
     private fun finish() {
-        if (ours) {
-            Device.forget(this)
-            Engine.stop()
-        }
+        release()
         stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
+    }
+
+    /**
+     * Stops the engine once, if this service started it and the screens have
+     * not taken it over.
+     */
+    private fun release() {
+        if (!ours) return
+        ours = false
+        if (Engine.screens) return
+        Device.forget(this)
+        Engine.stop()
     }
 
     /**
@@ -216,10 +279,7 @@ class EngineService : Service() {
     }
 
     override fun onDestroy() {
-        if (ours) {
-            Device.forget(this)
-            Engine.stop()
-        }
+        release()
         super.onDestroy()
     }
 
