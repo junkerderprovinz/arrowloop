@@ -11,6 +11,7 @@ import (
 // The address is in TEST-NET-1 (RFC 5737), reserved for documentation, so
 // nothing answers it.
 func TestAnUnreachableTargetGivesUpAndSaysWhy(t *testing.T) {
+	ownConfig(t)
 	const name = "arrowloop-test-unreachable"
 	if err := Save(name, "webdav", map[string]string{
 		"url":  "http://192.0.2.1:9999/",

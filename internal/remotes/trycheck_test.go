@@ -87,6 +87,7 @@ func TestAPlainValueStaysBare(t *testing.T) {
 }
 
 func TestCheckingUnsavedSettingsWritesNothing(t *testing.T) {
+	ownConfig(t)
 	before := config.LoadedData().GetSectionList()
 
 	// TEST-NET-1 (RFC 5737) is reserved for documentation, so nothing answers

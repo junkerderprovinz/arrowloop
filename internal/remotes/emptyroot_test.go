@@ -31,6 +31,7 @@ func TestAWebdavAddressWithNothingThereFailsTheCheck(t *testing.T) {
 }
 
 func TestASavedWebdavAddressWithNothingThereFailsTheCheck(t *testing.T) {
+	ownConfig(t)
 	const name = "arrowloop-test-nothing-here"
 	if err := Save(name, "webdav", map[string]string{"url": nothingHere(t), "user": "someone", "pass": "secret"}); err != nil {
 		t.Fatalf("save: %v", err)
@@ -43,6 +44,7 @@ func TestASavedWebdavAddressWithNothingThereFailsTheCheck(t *testing.T) {
 }
 
 func TestAFolderNotMadeYetStillPassesTheCheck(t *testing.T) {
+	ownConfig(t)
 	const name = "arrowloop-test-not-made-yet"
 	if err := Save(name, "alias", map[string]string{"remote": filepath.Join(t.TempDir(), "later")}); err != nil {
 		t.Fatalf("save: %v", err)
