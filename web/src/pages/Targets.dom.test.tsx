@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
-import { cleanup, render, screen } from '@testing-library/react'
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { Remote } from '../lib/api'
 
@@ -11,6 +11,8 @@ const target = (name: string): Remote => ({
 })
 
 const checked = vi.fn((name: string) => Promise.resolve(name === 'home' ? { ok: true } : { ok: false, reason: '404' }))
+const volumes = vi.fn(() => Promise.resolve({ volumes: [] }))
+const deleteRemote = vi.fn((name: string) => Promise.resolve({ deleted: name }))
 
 vi.mock('../lib/api', () => ({
   api: {
@@ -25,15 +27,29 @@ vi.mock('../lib/api', () => ({
         providers: [],
         unlisted: [],
       }),
-    volumes: () => Promise.resolve({ volumes: [] }),
+    volumes: () => volumes(),
     checkRemote: (name: string) => checked(name),
     aboutRemote: () => Promise.resolve({ supported: false }),
+    deleteRemote: (name: string) => deleteRemote(name),
   },
 }))
 
 const { Targets } = await import('./Targets')
 
+beforeEach(() => {
+  volumes.mockReset()
+  volumes.mockImplementation(() => Promise.resolve({ volumes: [] }))
+  deleteRemote.mockReset()
+  deleteRemote.mockImplementation((name: string) => Promise.resolve({ deleted: name }))
+})
 afterEach(cleanup)
+
+async function deleteFirst() {
+  await screen.findByText('home:')
+  fireEvent.click(screen.getAllByRole('button', { name: 'Delete' })[0])
+  const dialog = await screen.findByRole('dialog')
+  fireEvent.click(within(dialog).getByRole('button', { name: 'Delete it' }))
+}
 
 describe('Targets', () => {
   it('says whether each target is connected without being asked', async () => {
@@ -52,5 +68,14 @@ describe('Targets', () => {
     await screen.findByText('Not connected')
     expect(checked).not.toHaveBeenCalledWith('here')
     expect(screen.getAllByText(/^(Connected|Not connected)$/)).toHaveLength(2)
+  })
+
+  it('drops the unreachable banner once both lists load again', async () => {
+    volumes.mockImplementationOnce(() => Promise.reject(new Error('Failed to fetch')))
+    render(<Targets />)
+    await screen.findByText('Cannot reach the engine')
+
+    await deleteFirst()
+    await waitFor(() => expect(screen.queryByText('Cannot reach the engine')).toBeNull())
   })
 })

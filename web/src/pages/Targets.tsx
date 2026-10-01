@@ -36,18 +36,15 @@ export function Targets() {
   const [error, setError] = useState<string | null>(null)
 
   const refresh = useCallback(() => {
-    api
-      .remotes()
-      .then((r) => {
-        setRemotes(r.remotes)
-        setBackends(r.backends)
-        setProviders(r.providers ?? [])
-        setUnlisted(r.unlisted ?? [])
-      })
-      .catch((e: Error) => setError(e.message))
-    api
-      .volumes()
-      .then((v) => setVolumes(v.volumes))
+    const targets = api.remotes().then((r) => {
+      setRemotes(r.remotes)
+      setBackends(r.backends)
+      setProviders(r.providers ?? [])
+      setUnlisted(r.unlisted ?? [])
+    })
+    const drives = api.volumes().then((v) => setVolumes(v.volumes))
+    Promise.all([targets, drives])
+      .then(() => setError(null))
       .catch((e: Error) => setError(e.message))
   }, [])
 

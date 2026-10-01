@@ -173,7 +173,10 @@ export function App() {
   const refresh = useCallback(() => {
     api
       .jobs()
-      .then(setJobs)
+      .then((got) => {
+        setJobs(got)
+        setError(null)
+      })
       .catch((e: Error) => setError(e.message))
     api
       .history(undefined, 'all', 50)
