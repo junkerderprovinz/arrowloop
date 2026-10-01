@@ -113,3 +113,51 @@ func TestASavedSecretDoesNotFollowAnotherAddress(t *testing.T) {
 		}
 	}
 }
+
+// Settings other than the address also decide where a connection goes: a
+// proxy, a host key check turned off, an API endpoint of the backend's own.
+func TestASavedSecretDoesNotFollowAnyChangedSetting(t *testing.T) {
+	saved(t, "box", "sftp", map[string]string{
+		"host":             "files.example.invalid",
+		"user":             "someone",
+		"known_hosts_file": "/home/someone/.ssh/known_hosts",
+		"pass":             "letmein",
+	})
+	same := map[string]string{
+		"host":             "files.example.invalid",
+		"user":             "someone",
+		"known_hosts_file": "/home/someone/.ssh/known_hosts",
+	}
+
+	forms := map[string]map[string]string{
+		"a proxy added":            {"socks_proxy": "attacker.invalid:1080"},
+		"an http proxy added":      {"http_proxy": "http://attacker.invalid:8080"},
+		"host keys left unchecked": {"known_hosts_file": "none"},
+		"host key file dropped":    {"known_hosts_file": ""},
+	}
+	for what, change := range forms {
+		form := map[string]string{}
+		for key, value := range same {
+			form[key] = value
+		}
+		for key, value := range change {
+			form[key] = value
+		}
+		got := WithSavedSecrets("box", "sftp", form)
+		if _, filled := got["pass"]; filled {
+			t.Errorf("%s got the saved password", what)
+		}
+	}
+
+	// What the edit form sends back unchanged still gets the password, with the
+	// secret empty or at the placeholder.
+	for _, pass := range []string{"", Placeholder} {
+		form := map[string]string{"pass": pass}
+		for key, value := range same {
+			form[key] = value
+		}
+		if got := WithSavedSecrets("box", "sftp", form); got["pass"] != "letmein" {
+			t.Errorf("the unchanged form with pass %q got %q, want the saved password", pass, got["pass"])
+		}
+	}
+}

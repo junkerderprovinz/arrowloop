@@ -162,7 +162,7 @@ func TestASaltStoredAsTypedIsTestedAsCryptReadsIt(t *testing.T) {
 		t.Fatalf("the example no longer decodes, so it shows nothing: %v", err)
 	}
 
-	got := connectionString("crypt", WithSavedSecrets("vault", "crypt", map[string]string{"password2": Placeholder}))
+	got := connectionString("crypt", WithSavedSecrets("vault", "crypt", map[string]string{"remote": "/somewhere", "password2": Placeholder}))
 	if back, err := obscure.Reveal(valueIn(got, "password2")); err != nil || back != want {
 		t.Fatalf("the test would salt with %q (%v), the saved target with %q", back, err, want)
 	}
