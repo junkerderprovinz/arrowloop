@@ -34,7 +34,7 @@ func (r *Runner) RunAutomatically(ctx context.Context, name string) (history.Run
 
 	// The space check lists both sides, so it waits for the job's claim, and
 	// a refusal is recorded like any failure so the retry policy sees it.
-	return r.runAs(ctx, name, func(ctx context.Context, j job.Job, live *history.Live) (apply.Result, *plan.Plan, error) {
+	return r.runAs(ctx, name, true, func(ctx context.Context, j job.Job, live *history.Live) (apply.Result, *plan.Plan, error) {
 		if err := r.roomFor(ctx, j); err != nil {
 			return apply.Result{}, nil, err
 		}

@@ -42,6 +42,10 @@ var ErrAlreadyRunning = errors.New("this job is still running from last time")
 // because a disk in somebody's bag has not gone wrong.
 var ErrVolumeMissing = errors.New("the volume this job points at is not attached")
 
+// ErrWithdrawn is returned when a job waiting for its turn was removed, or
+// paused before an automatic run, by the time the turn came.
+var ErrWithdrawn = errors.New("the job was removed or paused while it waited for its turn")
+
 // ErrHalfWritten is returned when a job without both sides is asked to run.
 var ErrHalfWritten = errors.New("this job has not been given both sides yet")
 
@@ -154,7 +158,7 @@ func (r *Runner) RunOnly(ctx context.Context, name string, only []string) (histo
 // resolution only applies to a path that is still a conflict, so a stale one
 // from an older preview is ignored.
 func (r *Runner) RunChosen(ctx context.Context, name string, only []string, shown map[string]plan.Shown, resolve map[string]plan.Resolution) (history.Run, error) {
-	return r.runAs(ctx, name, func(ctx context.Context, j job.Job, live *history.Live) (apply.Result, *plan.Plan, error) {
+	return r.runAs(ctx, name, false, func(ctx context.Context, j job.Job, live *history.Live) (apply.Result, *plan.Plan, error) {
 		return r.execute(ctx, j, only, shown, resolve, live)
 	})
 }
@@ -165,8 +169,9 @@ type work func(ctx context.Context, j job.Job, live *history.Live) (apply.Result
 
 // runAs claims a job, runs its commands around the work and records the
 // outcome, so everything that touches a job's files is one run in its history
-// and never overlaps another.
-func (r *Runner) runAs(ctx context.Context, name string, do work) (history.Run, error) {
+// and never overlaps another. auto is set for a run nobody asked for, which a
+// paused job does not get.
+func (r *Runner) runAs(ctx context.Context, name string, auto bool, do work) (history.Run, error) {
 	j, ok := r.config().Find(name)
 	if !ok {
 		return history.Run{}, fmt.Errorf("no job called %q", name)
@@ -190,6 +195,16 @@ func (r *Runner) runAs(ctx context.Context, name string, do work) (history.Run, 
 		return history.Run{}, err
 	}
 	defer r.slots.give()
+
+	// The turn can come long after the job was asked for, and the job may have
+	// been edited, paused or removed meanwhile.
+	j, ok = r.config().Find(name)
+	if !ok || auto && j.Disabled {
+		return history.Run{}, ErrWithdrawn
+	}
+	if j.Left == "" || j.Right == "" {
+		return history.Run{}, fmt.Errorf("%w: %s", ErrHalfWritten, name)
+	}
 
 	// The engine's own writes must not come back as a change.
 	r.muteWatcher(name)
@@ -626,7 +641,7 @@ func (r *Runner) runAndReport(ctx context.Context, name string) (history.Run, er
 		r.log("%s: %v", name, err)
 	case errors.Is(err, ErrNotEnoughSpace):
 		r.log("%s did not start: %v", name, err)
-	case errors.Is(err, ErrVolumeMissing):
+	case errors.Is(err, ErrVolumeMissing), errors.Is(err, ErrWithdrawn):
 		r.log("%s: %v", name, err)
 	case errors.Is(err, ErrAlreadyRunning):
 		r.log("%s is still running from last time, skipping this turn", name)
@@ -680,12 +695,23 @@ func (r *Runner) stopCron(c *cron.Cron) {
 // Reload swaps in a new configuration and rebuilds the schedules and watchers.
 // When a rebuild is already pending the signal is dropped, since that rebuild
 // reads the new configuration anyway. The run log stays where it was opened
-// until the next start.
+// until the next start. A run whose job is gone from the new configuration is
+// stopped, since nothing would list it any more to stop it by hand.
 func (r *Runner) Reload(cfg *job.Config) {
 	r.mu.Lock()
 	r.cfg = cfg
 	r.note = Notifier(cfg)
+	gone := map[string]context.CancelFunc{}
+	for name, stop := range r.inflight {
+		if _, ok := cfg.Find(name); !ok {
+			gone[name] = stop
+		}
+	}
 	r.mu.Unlock()
+	for name, stop := range gone {
+		r.log("%s: stopping, the job was removed", name)
+		stop()
+	}
 	// A raised limit lets waiting runs start.
 	r.slots.wake()
 	select {
@@ -1071,6 +1097,8 @@ func (r *Runner) startWatcher(ctx, round context.Context, j job.Job) {
 		switch {
 		case errors.Is(err, ErrAlreadyRunning):
 			// The change arrived while the job was already working on it.
+		case errors.Is(err, ErrWithdrawn):
+			r.log("%s: %v", name, err)
 		case err != nil:
 			r.log("%s failed after a change: %v", name, err)
 		case rec.Changed():
