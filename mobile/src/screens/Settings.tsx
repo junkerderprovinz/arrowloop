@@ -21,6 +21,7 @@ import {
 } from "../settings";
 import { GLIMSTONE_VERSION } from "../../../web/src/lib/glimstone/version";
 import {
+  COFFEE,
   glimstoneRelease,
   MAIL,
   PAYPAL,
@@ -31,7 +32,7 @@ import { flagEmoji } from "../../../web/src/lib/flagEmoji";
 import { useClosingLoop, useDiscoUnlock, useLeafUnlock, useStormUnlock } from "../eggs";
 import { animateNext, useMotion, type MotionIntensity } from "../motion";
 import { ColorPicker, EditableSwatch, ResetMark } from "../ColorPicker";
-import { CoffeeDonate, CryptoDonate } from "../donate";
+import { CryptoDonate } from "../donate";
 import { Field } from "../fields";
 import { Schedule } from "./JobEdit";
 import { AppMark, CoffeeArt, DonateMark, MailMark } from "../glyphs";
@@ -82,7 +83,6 @@ export function Settings() {
   const [exported, setExported] = useState(0);
   const [imported, setImported] = useState(0);
   const [crypto, setCrypto] = useState(false);
-  const [coffee, setCoffee] = useState(false);
   const [dockerCopied, setDockerCopied] = useState(false);
   useEffect(() => {
     if (!dockerCopied) return;
@@ -637,7 +637,7 @@ export function Settings() {
             art
             tile={TILE.coffee}
             mark={(lit, ink) => <CoffeeArt cup={lit ? ink : BRAND[scheme].coffee} ink={ink} />}
-            onPress={() => setCoffee(true)}
+            onPress={() => Linking.openURL(COFFEE)}
           />
           <ReadmeButton
             label={t("about.paypal")}
@@ -698,7 +698,6 @@ export function Settings() {
       </Section>
 
       {crypto ? <CryptoDonate onClose={() => setCrypto(false)} /> : null}
-      {coffee ? <CoffeeDonate onClose={() => setCoffee(false)} /> : null}
 
       {/* One picker for both rows, applying the colour live during the drag. */}
       {editing ? (

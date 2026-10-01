@@ -13,7 +13,10 @@
  */
 export const PAYPAL = "https://www.paypal.com/donate/?hosted_button_id=76FVV52TKXTUS";
 
-/** The one BMAC page that allows framing, for the coffee window on every platform. */
+/** The coffee page itself, which the phone opens in the browser. */
+export const COFFEE = "https://buymeacoffee.com/junkerderprovinz";
+
+/** The one BMAC page that allows framing, for the coffee window in the web UI. */
 export const COFFEE_WIDGET =
   "https://buymeacoffee.com/widget/page/junkerderprovinz?description=&color=%23FFDD00";
 

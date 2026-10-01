@@ -1,9 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import Svg, { Path, Rect } from "react-native-svg";
-import { WebView } from "react-native-webview";
 
-import { COFFEE_WIDGET, CRYPTO_COINS, type CryptoCoin, type CryptoNetwork } from "../../web/src/lib/donate";
+import { CRYPTO_COINS, type CryptoCoin, type CryptoNetwork } from "../../web/src/lib/donate";
 import { buildQR } from "../../web/src/lib/qr";
 import { CoinMark } from "./glyphs";
 import { useT } from "./i18n";
@@ -197,58 +196,6 @@ export function CryptoDonate({ onClose }: { onClose: () => void }) {
 }
 
 /**
- * The Buy Me a Coffee window: the appeal, where the payment runs, and BMAC's
- * own widget page, the one that allows framing, so a donor pays without
- * leaving the app. Nothing from BMAC loads before the window opens.
- */
-export function CoffeeDonate({ onClose }: { onClose: () => void }) {
-  const { t } = useT();
-  const { p, corners, accent } = useTheme();
-
-  return (
-    <Modal visible transparent animationType="fade" onRequestClose={onClose}>
-      <View style={[styles.ground, { backgroundColor: p.scrim }]}>
-        {/* The scrim closes from behind the card rather than around it, since
-            a pressable around the web view would take its scroll gesture. */}
-        <Pressable style={styles.behind} onPress={onClose} accessible={false} />
-        <View style={[styles.card, styles.tall, { backgroundColor: p.surface, ...corners.card }]}>
-          <View style={styles.titleRow}>
-            <View style={[styles.title, { backgroundColor: accent, ...corners.pill }]}>
-              <Text style={[styles.titleText, { color: contrastOn(accent) }]} numberOfLines={1}>
-                Buy Me a Coffee
-              </Text>
-            </View>
-          </View>
-
-          <View style={styles.body}>
-            <Text style={[styles.intro, { color: p.text }]}>{t("about.donateAppeal")}</Text>
-            <Text style={[styles.intro, { color: p.textSub }]}>{t("about.coffeeIntro")}</Text>
-          </View>
-
-          {/* The widget scrolls itself, so it takes the room left rather than
-              sitting in a scroll view that would fight it for the gesture. */}
-          <View style={[styles.widget, corners.control]}>
-            <WebView
-              source={{ uri: COFFEE_WIDGET }}
-              startInLoadingState
-              renderLoading={() => (
-                <View style={styles.loading}>
-                  <ActivityIndicator color={accent} />
-                </View>
-              )}
-            />
-          </View>
-
-          <View style={[styles.footer, styles.footerAfterWidget]}>
-            <Button label={t("common.close")} labelKey="common.close" onPress={onClose} />
-          </View>
-        </View>
-      </View>
-    </Modal>
-  );
-}
-
-/**
  * The address as a QR code, black on white in every theme: many scanners
  * cannot read an inverted code.
  */
@@ -305,11 +252,4 @@ const styles = StyleSheet.create({
   ticker: { fontSize: text.caption, fontWeight: "500" },
 
   footer: { flexDirection: "row", justifyContent: "flex-end", padding: space.lg, paddingTop: 0 },
-
-  // The coffee window takes its full height, which the widget fills.
-  tall: { height: "88%" },
-  widget: { flex: 1, marginHorizontal: space.lg, overflow: "hidden", backgroundColor: "#ffffff" },
-  loading: { position: "absolute", top: 0, right: 0, bottom: 0, left: 0, alignItems: "center", justifyContent: "center" },
-  behind: { position: "absolute", top: 0, right: 0, bottom: 0, left: 0 },
-  footerAfterWidget: { paddingTop: space.lg },
 });
