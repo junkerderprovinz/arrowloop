@@ -1,0 +1,1 @@
+Other apps on the phone can no longer reach the engine. Background syncs no longer crash on Android 12 and later, Wi-Fi and charging conditions are checked before a run, and new photos keep triggering a sync.
