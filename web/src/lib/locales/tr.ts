@@ -411,7 +411,7 @@ const tr: Translations = {
   'engine.parallelHint': 'Varsayılan olarak teker teker, ve bu bir sınır değil bir karardır: aynı anda çalışan iki iş tek bir hattı ve tek bir diski paylaşır, yani çoğunlukla birbirlerini yavaşlatır ve günlüğü okunmaz hale getirir.',
   'engine.memory': 'Neyi hatırlar',
   'engine.history': 'Çalıştırma günlüğü dosyası',
-  'engine.historyHint': 'Her çalıştırmanın nereye yazıldığı, hangi dosyaya ne yaptığıyla birlikte. Boş bırakmak yapılandırma dosyasının yanı demektir. Göreli bir ad aynı klasöre görelidir.',
+  'engine.historyHint': 'Her çalıştırmanın nereye yazıldığı, hangi dosyaya ne yaptığıyla birlikte. Boş bırakmak yapılandırma dosyasının yanı demektir. Göreli bir ad aynı klasöre görelidir. Değişiklik programın bir sonraki başlatılışında geçerli olur.',
   'engine.telling': 'Kime haber verilir',
   'engine.defaults': 'Genel eşitleme ayarı',
   'settings.syncHint': 'Yeni bir işin başlangıç noktası. Bir ayar hakkında bir şey söylemeyen iş, değeri buradan alır.',

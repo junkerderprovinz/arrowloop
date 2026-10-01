@@ -61,7 +61,7 @@ func cmdWeb(ctx context.Context, args []string) error {
 	ctx, stop := signal.NotifyContext(ctx, os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
-	runner := daemon.New(cfg, hist, notifier(cfg), logf)
+	runner := daemon.New(cfg, hist, logf)
 
 	ui, err := webui.Files()
 	if err != nil {

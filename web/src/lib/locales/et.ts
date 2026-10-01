@@ -411,7 +411,7 @@ const et: Translations = {
   'engine.parallelHint': 'Vaikimisi ükshaaval, ja see on otsus, mitte piirang: kaks korraga jooksvat tööd jagavad üht ühendust ja üht ketast, nii et enamasti aeglustavad teineteist ja muudavad logi raskemini loetavaks.',
   'engine.memory': 'Mida ta mäletab',
   'engine.history': 'Käivituste logifail',
-  'engine.historyHint': 'Kuhu iga käivitus kirja pannakse koos sellega, mida ta millise failiga tegi. Tühi tähendab seadistusfaili kõrvale. Suhteline nimi on sama kausta suhtes.',
+  'engine.historyHint': 'Kuhu iga käivitus kirja pannakse koos sellega, mida ta millise failiga tegi. Tühi tähendab seadistusfaili kõrvale. Suhteline nimi on sama kausta suhtes. Muudatus jõustub programmi järgmisel käivitamisel.',
   'engine.telling': 'Kellele teatatakse',
   'engine.defaults': 'Üldine sünkroonimise säte',
   'settings.syncHint': 'Millest uus töö alustab. Töö, mis seadet ei määra, võtab väärtuse siit.',

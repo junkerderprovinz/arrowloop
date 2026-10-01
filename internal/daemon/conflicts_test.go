@@ -66,7 +66,7 @@ func twoJobs(t *testing.T, oneWay bool) (*daemon.Runner, *history.DB, [2][2]stri
 			jsonPath(sides[0][0]), jsonPath(sides[0][1]), jsonPath(filepath.Join(dir, "docs.db")),
 			jsonPath(sides[1][0]), jsonPath(sides[1][1]), jsonPath(filepath.Join(dir, "photos.db")), direction)
 	})
-	return daemon.New(cfg, hist, nil, nil), hist, sides
+	return daemon.New(cfg, hist, nil), hist, sides
 }
 
 func TestConflictsAreListedAcrossEveryJob(t *testing.T) {

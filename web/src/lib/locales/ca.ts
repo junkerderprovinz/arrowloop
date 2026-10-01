@@ -411,7 +411,7 @@ const ca: Translations = {
   'engine.parallelHint': 'D\'una en una per defecte, i és una decisió i no una limitació: dues tasques alhora comparteixen una línia i un disc, així que sobretot es frenen l\'una a l\'altra i embruten el registre.',
   'engine.memory': 'Què recorda',
   'engine.history': 'Fitxer del registre d\'execucions',
-  'engine.historyHint': 'On s\'anota cada execució, amb què va fer i a quin fitxer. Buit vol dir al costat del fitxer de configuració. Un nom relatiu ho és respecte d\'aquesta mateixa carpeta.',
+  'engine.historyHint': 'On s\'anota cada execució, amb què va fer i a quin fitxer. Buit vol dir al costat del fitxer de configuració. Un nom relatiu ho és respecte d\'aquesta mateixa carpeta. Un canvi s\'aplica la propera vegada que s\'inicia el programa.',
   'engine.telling': 'A qui s\'avisa',
   'engine.defaults': 'Configuració global de sincronització',
   'settings.syncHint': 'D\'on parteix una tasca nova. Una tasca que no diu res sobre un ajust n\'agafa el valor d\'aquí.',

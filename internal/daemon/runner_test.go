@@ -60,7 +60,7 @@ func TestRunSyncsAndRecords(t *testing.T) {
 		t.Fatalf("write: %v", err)
 	}
 
-	r := daemon.New(cfg, hist, nil, nil)
+	r := daemon.New(cfg, hist, nil)
 	rec, err := r.Run(context.Background(), "photos")
 	if err != nil {
 		t.Fatalf("run: %v", err)
@@ -88,7 +88,7 @@ func TestAFailedRunIsStillRecorded(t *testing.T) {
 			jsonPath(missing), jsonPath(right), jsonPath(filepath.Join(dir, "broken.db")))
 	})
 
-	r := daemon.New(cfg, hist, nil, nil)
+	r := daemon.New(cfg, hist, nil)
 	if _, err := r.Run(context.Background(), "broken"); err == nil {
 		t.Log("the run did not fail, which is fine as long as it was recorded")
 	}
@@ -119,7 +119,7 @@ func TestAJobDoesNotOverlapItself(t *testing.T) {
 		}
 	}
 
-	r := daemon.New(cfg, hist, nil, nil)
+	r := daemon.New(cfg, hist, nil)
 	var wg sync.WaitGroup
 	var mu sync.Mutex
 	var refused, ran int
@@ -156,7 +156,7 @@ func TestAnUnknownJobIsNamed(t *testing.T) {
 		return fmt.Sprintf(`{"jobs":[{"name":"real","left":"%s","right":"%s","state":"%s"}]}`,
 			jsonPath(left), jsonPath(right), jsonPath(filepath.Join(dir, "real.db")))
 	})
-	r := daemon.New(cfg, hist, nil, nil)
+	r := daemon.New(cfg, hist, nil)
 	_, err := r.Run(context.Background(), "typo")
 	if err == nil || !strings.Contains(err.Error(), "typo") {
 		t.Fatalf("the error does not name the job that was asked for: %v", err)
@@ -226,7 +226,7 @@ func TestAnUnpluggedVolumeIsNotARun(t *testing.T) {
 	t.Cleanup(func() { volume.Candidates = realCandidates })
 
 	attached(drive)
-	r := daemon.New(cfg, hist, nil, nil)
+	r := daemon.New(cfg, hist, nil)
 	if _, err := r.Run(t.Context(), "onstick"); err != nil {
 		t.Fatalf("the run failed with the drive attached: %v", err)
 	}
@@ -345,7 +345,7 @@ func stickJob(t *testing.T, plugged func(drive, ran string) bool) (r *daemon.Run
 		}
 		return nil
 	}
-	return daemon.New(cfg, hist, nil, nil), beforeRan, afterRan
+	return daemon.New(cfg, hist, nil), beforeRan, afterRan
 }
 
 // Nothing has been stopped yet, so nothing needs starting again.
@@ -391,7 +391,7 @@ func TestAHalfWrittenJobIsRefusedByName(t *testing.T) {
 			jsonPath(filepath.Join(dir, "unfinished.db")))
 	})
 
-	r := daemon.New(cfg, hist, nil, nil)
+	r := daemon.New(cfg, hist, nil)
 	if _, err := r.Run(t.Context(), "unfinished"); !errors.Is(err, daemon.ErrHalfWritten) {
 		t.Fatalf("running a job with no sides reported %v", err)
 	}
@@ -420,7 +420,7 @@ func TestRunAtStartFiresOnceAndNotOnReload(t *testing.T) {
 		t.Fatalf("write: %v", err)
 	}
 
-	r := daemon.New(cfg, hist, nil, nil)
+	r := daemon.New(cfg, hist, nil)
 	ctx, stop := context.WithCancel(context.Background())
 	defer stop()
 
@@ -480,7 +480,7 @@ func TestAReloadLeavesRunningJobsAlone(t *testing.T) {
 			jsonPath(left), jsonPath(right), jsonPath(filepath.Join(dir, "second.db")))
 	})
 
-	r := daemon.New(cfg, hist, nil, nil)
+	r := daemon.New(cfg, hist, nil)
 	events, unsubscribe := r.Subscribe()
 	defer unsubscribe()
 	ctx, stop := context.WithCancel(context.Background())
@@ -526,7 +526,7 @@ func TestADisabledJobDoesNotRunAtStart(t *testing.T) {
 		t.Fatalf("write: %v", err)
 	}
 
-	r := daemon.New(cfg, hist, nil, nil)
+	r := daemon.New(cfg, hist, nil)
 	ctx, stop := context.WithCancel(context.Background())
 	defer stop()
 
@@ -583,7 +583,7 @@ func TestAJobWhoseStateFolderDoesNotExistStillRuns(t *testing.T) {
 		t.Fatalf("write: %v", err)
 	}
 
-	r := daemon.New(cfg, hist, nil, nil)
+	r := daemon.New(cfg, hist, nil)
 	rec, err := r.Run(context.Background(), "photos")
 	if err != nil {
 		t.Fatalf("a job whose state folder does not exist yet could not run: %v", err)
@@ -625,7 +625,7 @@ func TestATrashlessJobDeletesOutrightAndLeavesNoReservedFolder(t *testing.T) {
 				}
 			}
 
-			r := daemon.New(cfg, hist, nil, nil)
+			r := daemon.New(cfg, hist, nil)
 			// The first run's record makes the second one a deletion.
 			if _, err := r.Run(context.Background(), "photos"); err != nil {
 				t.Fatalf("first run: %v", err)
@@ -670,7 +670,7 @@ func TestAReportOnlyJobPlansOnTheClockAndMovesNothing(t *testing.T) {
 		t.Fatalf("write: %v", err)
 	}
 
-	r := daemon.New(cfg, hist, nil, nil)
+	r := daemon.New(cfg, hist, nil)
 	if _, err := r.RunAutomatically(context.Background(), "watchonly"); err != nil {
 		t.Fatalf("automatic run: %v", err)
 	}

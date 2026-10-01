@@ -41,7 +41,7 @@ func condSandbox(t *testing.T) (*daemon.Runner, string) {
 		t.Fatalf("history: %v", err)
 	}
 	t.Cleanup(func() { hist.Close() })
-	return daemon.New(cfg, hist, nil, nil), right
+	return daemon.New(cfg, hist, nil), right
 }
 
 func TestAConditionHoldsAScheduledRun(t *testing.T) {

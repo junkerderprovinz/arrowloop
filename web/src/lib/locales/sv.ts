@@ -411,7 +411,7 @@ const sv: Translations = {
   'engine.parallelHint': 'Ett i taget som standard, och det är ett beslut snarare än en begränsning: två jobb samtidigt delar en förbindelse och en disk, så de bromsar mest varandra och gör loggen svårare att läsa.',
   'engine.memory': 'Vad den minns',
   'engine.history': 'Fil för körloggen',
-  'engine.historyHint': 'Var varje körning skrivs ner, med vad den gjorde med vilken fil. Tomt betyder bredvid konfigurationsfilen. Ett relativt namn är relativt samma mapp.',
+  'engine.historyHint': 'Var varje körning skrivs ner, med vad den gjorde med vilken fil. Tomt betyder bredvid konfigurationsfilen. Ett relativt namn är relativt samma mapp. En ändring gäller från nästa gång programmet startar.',
   'engine.telling': 'Vem som får veta',
   'engine.defaults': 'Global synkroniseringsinställning',
   'settings.syncHint': 'Vad ett nytt jobb utgår från. Ett jobb som inte säger något om en inställning tar värdet härifrån.',

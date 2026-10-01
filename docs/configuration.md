@@ -173,7 +173,7 @@ job's place and every job queued behind it.
 |---|---|---|
 | `bwlimit` | none | rclone syntax, `1M` or a timetable like `08:00,512k 19:00,off`. |
 | `parallelJobs` | `1` | How many jobs may run at once. |
-| `history` | beside the file | Where run records go. |
+| `history` | beside the file | Where run records go. A change takes effect the next time the program starts. |
 | `notify.matrix` | none | A room to post into: homeserver, room id, access token. |
 | `notify.webhook` | none | A URL that receives a small JSON document. |
 | `notify.onSuccess` | `false` | Report every run rather than only the failures. |

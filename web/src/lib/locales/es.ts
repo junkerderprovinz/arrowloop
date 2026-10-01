@@ -411,7 +411,7 @@ const es: Translations = {
   'engine.parallelHint': 'De una en una por defecto, y es una decisión, no una limitación: dos tareas a la vez comparten una línea y un disco, así que sobre todo se frenan entre sí y ensucian el registro.',
   'engine.memory': 'Lo que recuerda',
   'engine.history': 'Archivo del registro de ejecuciones',
-  'engine.historyHint': 'Dónde se anota cada ejecución, con lo que hizo y a qué archivo. Vacío significa junto al archivo de configuración. Un nombre relativo lo es respecto a esa misma carpeta.',
+  'engine.historyHint': 'Dónde se anota cada ejecución, con lo que hizo y a qué archivo. Vacío significa junto al archivo de configuración. Un nombre relativo lo es respecto a esa misma carpeta. Un cambio se aplica la próxima vez que se inicia el programa.',
   'engine.telling': 'A quién se avisa',
   'engine.defaults': 'Ajuste de sincronización global',
   'settings.syncHint': 'De dónde parte una tarea nueva. Una tarea que no dice nada sobre un ajuste toma el valor de aquí.',

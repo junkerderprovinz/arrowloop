@@ -45,7 +45,7 @@ func versionSandbox(t *testing.T, keep int) (*daemon.Runner, string, string) {
 		t.Fatalf("history: %v", err)
 	}
 	t.Cleanup(func() { hist.Close() })
-	return daemon.New(cfg, hist, nil, nil), left, right
+	return daemon.New(cfg, hist, nil), left, right
 }
 
 func itoa(n int) string {

@@ -411,7 +411,7 @@ const fr: Translations = {
   'engine.parallelHint': 'Une à la fois par défaut, et c\'est un choix plutôt qu\'une limite : deux tâches simultanées partagent une ligne et un disque, elles se ralentissent donc surtout l\'une l\'autre tout en rendant le journal moins lisible.',
   'engine.memory': 'Ce dont il se souvient',
   'engine.history': 'Fichier du journal d\'exécution',
-  'engine.historyHint': 'Où chaque exécution est consignée, avec ce qu\'elle a fait et à quel fichier. Vide signifie à côté du fichier de configuration. Un nom relatif l\'est par rapport à ce même dossier.',
+  'engine.historyHint': 'Où chaque exécution est consignée, avec ce qu\'elle a fait et à quel fichier. Vide signifie à côté du fichier de configuration. Un nom relatif l\'est par rapport à ce même dossier. Un changement prend effet au prochain démarrage du programme.',
   'engine.telling': 'Qui est prévenu',
   'engine.defaults': 'Réglage de synchronisation global',
   'settings.syncHint': 'Le point de départ d\'une nouvelle tâche. Une tâche qui ne dit rien d\'un réglage en prend la valeur ici.',

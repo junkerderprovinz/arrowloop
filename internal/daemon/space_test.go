@@ -100,7 +100,7 @@ func spaceSandbox(t *testing.T, answer func() precheck.Report) *Runner {
 	was := checkSpace
 	t.Cleanup(func() { checkSpace = was })
 	checkSpace = func(context.Context, job.Job, precheck.Opts) precheck.Report { return answer() }
-	return New(cfg, hist, nil, nil)
+	return New(cfg, hist, nil)
 }
 
 // The check lists both sides in full, and a watched job's own writes ask for

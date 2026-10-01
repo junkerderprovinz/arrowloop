@@ -411,7 +411,7 @@ const ro: Translations = {
   'engine.parallelHint': 'Implicit câte una, și aceasta este o decizie, nu o limitare: două sarcini deodată împart aceeași linie și același disc, deci mai ales se încetinesc reciproc și îngreunează citirea jurnalului.',
   'engine.memory': 'Ce ține minte',
   'engine.history': 'Fișierul jurnalului de rulări',
-  'engine.historyHint': 'Unde se notează fiecare rulare, cu ce a făcut și cărui fișier. Gol înseamnă lângă fișierul de configurare. Un nume relativ este raportat la același dosar.',
+  'engine.historyHint': 'Unde se notează fiecare rulare, cu ce a făcut și cărui fișier. Gol înseamnă lângă fișierul de configurare. Un nume relativ este raportat la același dosar. O modificare se aplică la următoarea pornire a programului.',
   'engine.telling': 'Cine este anunțat',
   'engine.defaults': 'Setare globală de sincronizare',
   'settings.syncHint': 'De unde pornește o sarcină nouă. O sarcină care nu spune nimic despre o setări ia valoarea de aici.',

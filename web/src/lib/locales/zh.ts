@@ -411,7 +411,7 @@ const zh: Translations = {
   'engine.parallelHint': '默认一次一个，这是取舍而非限制：同时运行的两个任务共享一条链路和一块磁盘，多半只会互相拖慢，还让日志更难读。',
   'engine.memory': '它记住什么',
   'engine.history': '运行日志文件',
-  'engine.historyHint': '每次运行记录在哪里，连同它对哪个文件做了什么。留空表示放在配置文件旁边。相对名称相对于同一个文件夹。',
+  'engine.historyHint': '每次运行记录在哪里，连同它对哪个文件做了什么。留空表示放在配置文件旁边。相对名称相对于同一个文件夹。更改在程序下次启动时生效。',
   'engine.telling': '通知谁',
   'engine.defaults': '全局同步设置',
   'settings.syncHint': '新任务的起点。未指定某项设置的任务会采用这里的值。',

@@ -44,7 +44,7 @@ func sandbox(t *testing.T) (*daemon.Runner, *deskset.Store, string) {
 		t.Fatalf("history: %v", err)
 	}
 	t.Cleanup(func() { hist.Close() })
-	return daemon.New(cfg, hist, nil, nil), deskset.Open(cfgPath), right
+	return daemon.New(cfg, hist, nil), deskset.Open(cfgPath), right
 }
 
 func TestAPauseHoldsAScheduledRun(t *testing.T) {

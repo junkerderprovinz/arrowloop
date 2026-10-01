@@ -57,27 +57,28 @@ type Runner struct {
 	// can say "waiting for a drive".
 	waiting waiting
 
-	cfg  *job.Config
 	hist *history.DB
-	note notify.Notifier
 	log  func(format string, args ...any)
 
-	slots chan struct{}
+	slots slots
 
 	// reload carries one pending rebuild. Buffered by one and dropped when
 	// full: two edits in quick succession need one rebuild, not two.
 	reload chan struct{}
 
 	mu sync.Mutex
+	// cfg and note change together on a reload.
+	cfg  *job.Config
+	note notify.Notifier
 	// inflight holds, per running job, the way to stop it.
 	inflight map[string]context.CancelFunc
 	subs     map[chan Event]struct{}
 	watchers map[string]*watch.Watcher
 }
 
-// New builds a runner. hist and note may be nil, which turns off the run log
-// and the notifications respectively.
-func New(cfg *job.Config, hist *history.DB, note notify.Notifier, log func(string, ...any)) *Runner {
+// New builds a runner. hist may be nil, which turns off the run log. The
+// notifications go where the configuration says, and follow it on a reload.
+func New(cfg *job.Config, hist *history.DB, log func(string, ...any)) *Runner {
 	if log == nil {
 		log = func(string, ...any) {}
 	}
@@ -90,9 +91,8 @@ func New(cfg *job.Config, hist *history.DB, note notify.Notifier, log func(strin
 	return &Runner{
 		cfg:      cfg,
 		hist:     hist,
-		note:     note,
+		note:     Notifier(cfg),
 		log:      log,
-		slots:    make(chan struct{}, cfg.ParallelJobs),
 		inflight: map[string]context.CancelFunc{},
 		reload:   make(chan struct{}, 1),
 	}
@@ -173,12 +173,10 @@ func (r *Runner) runAs(ctx context.Context, name string, do work) (history.Run, 
 	}
 	defer r.release(name)
 
-	select {
-	case r.slots <- struct{}{}:
-		defer func() { <-r.slots }()
-	case <-ctx.Done():
-		return history.Run{}, ctx.Err()
+	if err := r.slots.take(ctx, func() int { return r.config().ParallelJobs }); err != nil {
+		return history.Run{}, err
 	}
+	defer r.slots.give()
 
 	// The engine's own writes must not come back as a change.
 	r.muteWatcher(name)
@@ -456,10 +454,13 @@ func (r *Runner) release(name string) {
 
 // announce tells whoever is watching, if there is anything worth telling.
 func (r *Runner) announce(ctx context.Context, rec history.Run, res apply.Result) {
-	if r.note == nil {
+	r.mu.Lock()
+	cfg, note := r.cfg, r.note
+	r.mu.Unlock()
+	if note == nil {
 		return
 	}
-	if !rec.Failed() && !r.config().Notify.OnSuccess {
+	if !rec.Failed() && !cfg.Notify.OnSuccess {
 		return
 	}
 
@@ -489,7 +490,7 @@ func (r *Runner) announce(ctx context.Context, rec history.Run, res apply.Result
 		}
 	}
 
-	if err := r.note.Send(ctx, subject, b.String()); err != nil {
+	if err := note.Send(ctx, subject, b.String()); err != nil {
 		r.log("could not send the notification for %s: %v", rec.Job, err)
 	}
 }
@@ -650,15 +651,35 @@ func (r *Runner) stopCron(c *cron.Cron) {
 
 // Reload swaps in a new configuration and rebuilds the schedules and watchers.
 // When a rebuild is already pending the signal is dropped, since that rebuild
-// reads the new configuration anyway.
+// reads the new configuration anyway. The run log stays where it was opened
+// until the next start.
 func (r *Runner) Reload(cfg *job.Config) {
 	r.mu.Lock()
 	r.cfg = cfg
+	r.note = Notifier(cfg)
 	r.mu.Unlock()
+	// A raised limit lets waiting runs start.
+	r.slots.wake()
 	select {
 	case r.reload <- struct{}{}:
 	default:
 	}
+}
+
+// Notifier builds the destination list from the configuration. A
+// configuration with nothing in it returns nil, which means say nothing.
+func Notifier(cfg *job.Config) notify.Notifier {
+	var out notify.Multi
+	if m := cfg.Notify.Matrix; m != nil {
+		out = append(out, &notify.Matrix{Homeserver: m.Homeserver, Room: m.Room, Token: m.Token})
+	}
+	if cfg.Notify.Webhook != "" {
+		out = append(out, &notify.Webhook{URL: cfg.Notify.Webhook})
+	}
+	if len(out) == 0 {
+		return nil
+	}
+	return out
 }
 
 // Config returns the configuration currently in force.
