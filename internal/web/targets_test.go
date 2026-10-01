@@ -12,7 +12,6 @@ import (
 	_ "github.com/rclone/rclone/backend/sftp"
 	_ "github.com/rclone/rclone/backend/smb"
 	"github.com/rclone/rclone/fs/config"
-	"github.com/rclone/rclone/fs/config/configfile"
 
 	"github.com/junkerderprovinz/arrowloop/internal/remotes"
 	"github.com/junkerderprovinz/arrowloop/internal/volume"
@@ -234,17 +233,15 @@ func quote(s string) string {
 func withRcloneConfig(t *testing.T) string {
 	t.Helper()
 	path := filepath.Join(t.TempDir(), "rclone.conf")
-	if err := os.WriteFile(path, nil, 0o600); err != nil {
-		t.Fatalf("create a configuration file: %v", err)
+	if err := useRcloneConfig(path); err != nil {
+		t.Fatal(err)
 	}
-	previous := config.GetConfigPath()
-	if err := config.SetConfigPath(path); err != nil {
-		t.Fatalf("point rclone at it: %v", err)
-	}
-	configfile.Install()
+	// Back to the package's own file, never to whatever was set before, which
+	// could be the default path.
 	t.Cleanup(func() {
-		_ = config.SetConfigPath(previous)
-		configfile.Install()
+		if err := useRcloneConfig(testRcloneConf); err != nil {
+			t.Error(err)
+		}
 	})
 	return path
 }
