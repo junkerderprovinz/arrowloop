@@ -52,6 +52,45 @@ func TestUnicodeSpellingIsOneFile(t *testing.T) {
 	}
 }
 
+// An edit is written over the file the far side already holds, under the name
+// it has there. Written under the source's spelling, it would sit beside the
+// old one, and the two would collide on every later run.
+func TestAnEditKeepsTheFarSidesSpelling(t *testing.T) {
+	for _, dir := range []plan.Direction{plan.Both, plan.LeftToRight} {
+		t.Run(dir.String(), func(t *testing.T) {
+			j := newJob(t, quick())
+			j.opt.Compare.Direction = dir
+			write(t, j.left, composed, "the same content")
+			write(t, j.right, decomposed, "the same content")
+			write(t, j.left, "other.txt", "keeps the side populated")
+			j.sync(t)
+
+			write(t, j.left, composed, "edited on the left, and longer")
+			j.sync(t)
+
+			if got := tree(t, j.right); len(got) != 2 {
+				t.Fatalf("the right side holds %v, want the edited file under one name", keys(got))
+			}
+			if got := readFile(t, j.right, decomposed); got != "edited on the left, and longer" {
+				t.Errorf("the right side holds %q", got)
+			}
+
+			// Both ways this is carried to the left; one way it is undone.
+			write(t, j.right, decomposed, "edited on the right, longer still")
+			j.sync(t)
+			for _, side := range []string{j.left, j.right} {
+				if got := tree(t, side); len(got) != 2 {
+					t.Fatalf("a side holds %v, want the edited file under one name", keys(got))
+				}
+			}
+			p, _ := j.sync(t)
+			if len(p.Actions) != 0 || len(p.Skipped) != 0 {
+				t.Fatalf("the job did not settle: %+v, skipped %+v", p.Actions, p.Skipped)
+			}
+		})
+	}
+}
+
 // A newly excluded path must not read as a deletion.
 func TestExcludingDoesNotDelete(t *testing.T) {
 	j := newJob(t, quick())

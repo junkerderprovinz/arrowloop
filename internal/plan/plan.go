@@ -606,15 +606,24 @@ func copyAction(base Action, from Side, reason Reason) Action {
 	base.Src = from
 	base.Dst = from.Other()
 	base.Reason = reason
-	src := base.LeftNow
+	src, there := base.LeftNow, base.RightNow
 	if from == Right {
-		src = base.RightNow
+		src, there = base.RightNow, base.LeftNow
 	}
-	// The destination gets the source's spelling, so both sides converge on
-	// one Unicode form.
 	base.SrcPath = src.Path
-	base.DstPath = src.Path
+	base.DstPath = target(src, there)
 	return base
+}
+
+// target is the name a copy writes to. A new file takes the source's spelling,
+// so both sides converge on one Unicode form. A file the destination already
+// holds keeps its name there: written under another spelling it would sit
+// beside the old one, and the two would collide on the next scan.
+func target(src, there *scan.Entry) string {
+	if there != nil {
+		return there.Path
+	}
+	return src.Path
 }
 
 func deleteAction(base Action, on Side, reason Reason) Action {

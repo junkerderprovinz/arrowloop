@@ -214,9 +214,9 @@ func sweep(a Action, dst Side) (Action, bool) {
 // restore rebuilds an action as a copy from the source side, or reports that
 // there is nothing on the source side to copy.
 func restore(a Action, src, dst Side) (Action, bool) {
-	have := a.LeftNow
+	have, there := a.LeftNow, a.RightNow
 	if src == Right {
-		have = a.RightNow
+		have, there = a.RightNow, a.LeftNow
 	}
 	if have == nil {
 		return Action{}, false
@@ -225,7 +225,7 @@ func restore(a Action, src, dst Side) (Action, bool) {
 	a.Src = src
 	a.Dst = dst
 	a.SrcPath = have.Path
-	a.DstPath = have.Path
+	a.DstPath = target(have, there)
 	a.OldDstPath = ""
 	a.Resolve = KeepBoth
 	a.Reason = because("oneWay", "side", src.String())
