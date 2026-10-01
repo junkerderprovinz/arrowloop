@@ -136,18 +136,23 @@ func TestWantsToTouchCoversEveryKindOfWork(t *testing.T) {
 		{
 			name: "a copy reads its source",
 			act:  plan.Action{Kind: plan.Copy, Src: plan.Left, Dst: plan.Right, SrcPath: "notes.txt", DstPath: "notes.txt"},
-			want: []touch{{plan.Left, "notes.txt"}},
+			want: []touch{{side: plan.Left, path: "notes.txt"}},
+		},
+		{
+			name: "a relocation reads its source and then removes it",
+			act:  plan.Action{Kind: plan.Relocate, Src: plan.Left, Dst: plan.Right, SrcPath: "notes.txt", DstPath: "notes.txt"},
+			want: []touch{{side: plan.Left, path: "notes.txt", removes: true}},
 		},
 		{
 			// A rename is applied on the far side, to the old name.
 			name: "a rename touches the far side's old name",
 			act:  plan.Action{Kind: plan.Move, Src: plan.Left, Dst: plan.Right, DstPath: "new.txt", OldDstPath: "old.txt"},
-			want: []touch{{plan.Right, "old.txt"}},
+			want: []touch{{side: plan.Right, path: "old.txt", removes: true}},
 		},
 		{
 			name: "a deletion touches the file it is about to bin",
 			act:  plan.Action{Kind: plan.Delete, Dst: plan.Right, DstPath: "notes.txt", RightNow: right},
-			want: []touch{{plan.Right, "notes.txt"}},
+			want: []touch{{side: plan.Right, path: "notes.txt", removes: true}},
 		},
 		{
 			// Nothing is on either side; only a state row is cleared.
@@ -158,7 +163,7 @@ func TestWantsToTouchCoversEveryKindOfWork(t *testing.T) {
 		{
 			name: "a conflict touches a real file on each side",
 			act:  plan.Action{Kind: plan.Conflict, LeftNow: left, RightNow: right},
-			want: []touch{{plan.Left, "notes.txt"}, {plan.Right, "Notes.txt"}},
+			want: []touch{{side: plan.Left, path: "notes.txt"}, {side: plan.Right, path: "Notes.txt"}},
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
@@ -187,7 +192,7 @@ func TestTheDestinationIsOnlySuspectedAfterAFailure(t *testing.T) {
 
 	var sawDestination bool
 	for _, w := range couldHaveLocked(act) {
-		if w.side == plan.Right && w.path == "notes.txt" {
+		if w.side == plan.Right && w.path == "notes.txt" && w.removes {
 			sawDestination = true
 		}
 	}

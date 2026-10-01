@@ -65,3 +65,34 @@ func TestWasBusyLeavesOtherFailuresAlone(t *testing.T) {
 		t.Error("no error at all was reported as held open")
 	}
 }
+
+// A program appending to a log shares it with readers, as Go's own OpenFile
+// does, so the file can be copied while it stays open.
+func TestAFileOpenForWritingCanStillBeRead(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "app.log")
+	if err := os.WriteFile(path, []byte("hello"), 0o644); err != nil {
+		t.Fatalf("write: %v", err)
+	}
+	writer, err := os.OpenFile(path, os.O_WRONLY|os.O_APPEND, 0)
+	if err != nil {
+		t.Fatalf("open for writing: %v", err)
+	}
+	defer writer.Close()
+
+	if Busy(path) {
+		t.Error("a file another program writes to with readers allowed was reported as unreadable")
+	}
+	if !Pinned(path) {
+		t.Error("a file held without delete sharing was reported as free to rename")
+	}
+}
+
+func TestAFileNobodyHoldsIsNotPinned(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "notes.txt")
+	if err := os.WriteFile(path, []byte("x"), 0o644); err != nil {
+		t.Fatalf("write: %v", err)
+	}
+	if Pinned(path) {
+		t.Error("a file nobody holds was reported as pinned")
+	}
+}
