@@ -3,10 +3,10 @@ import { useCallback, useEffect, useState } from 'react'
 import { Button } from '../lib/glimstone/Button'
 import { Card } from '../lib/glimstone/Card'
 import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
-import { Field, Text } from './Field'
+import { Field, Secret, Text } from './Field'
 import { IconAction } from './IconAction'
 import { StateLine } from './Shell'
-import { api, passkeysAvailableInBrowser, type PasskeyStatus, type PasskeyView } from '../lib/api'
+import { ApiError, api, passkeysAvailableInBrowser, type PasskeyStatus, type PasskeyView } from '../lib/api'
 import { useT } from '../lib/i18n'
 
 /**
@@ -20,12 +20,25 @@ import { useT } from '../lib/i18n'
  *
  * The password stays: a lost phone must not lock anybody out. A key also
  * belongs to one address, so the list says which one each key is for.
+ *
+ * A key signs in by itself, so adding one asks for the password, and for the
+ * code when the second factor is on, as a login would.
  */
-export function PasskeyCard({ passwordSet, hueIndex }: { passwordSet: boolean; hueIndex?: number }) {
+export function PasskeyCard({
+  passwordSet,
+  twoFactor = false,
+  hueIndex,
+}: {
+  passwordSet: boolean
+  twoFactor?: boolean
+  hueIndex?: number
+}) {
   const { t } = useT()
   const [status, setStatus] = useState<PasskeyStatus | null>(null)
   const [busy, setBusy] = useState(false)
   const [name, setName] = useState('')
+  const [current, setCurrent] = useState('')
+  const [code, setCode] = useState('')
   const [adding, setAdding] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [pendingDelete, setPendingDelete] = useState<PasskeyView | null>(null)
@@ -48,18 +61,34 @@ export function PasskeyCard({ passwordSet, hueIndex }: { passwordSet: boolean; h
   const addressOK = status?.supported === true
   const keys = status?.passkeys ?? []
 
+  function close() {
+    setAdding(false)
+    setName('')
+    setCurrent('')
+    setCode('')
+  }
+
   async function add() {
+    if (current === '') {
+      setError(t('password.currentNeeded'))
+      return
+    }
     setBusy(true)
     setError(null)
     try {
-      await api.registerPasskey(name.trim() || t('passkey.defaultName'))
-      setName('')
-      setAdding(false)
+      await api.registerPasskey(name.trim() || t('passkey.defaultName'), current, code.trim())
+      close()
       await reload()
     } catch (e) {
-      // A cancelled prompt, a timeout or an authenticator that declined all
-      // land here, and the browser's own message says more than a generic one.
-      setError(e instanceof Error && e.message ? e.message : t('passkey.failed'))
+      if (e instanceof ApiError && e.status === 403) {
+        setError(twoFactor ? t('passkey.wrongProof') : t('login.wrong'))
+      } else if (e instanceof ApiError && e.status === 429) {
+        setError(t('login.locked'))
+      } else {
+        // A cancelled prompt, a timeout or an authenticator that declined all
+        // land here, and the browser's own message says more than a generic one.
+        setError(e instanceof Error && e.message ? e.message : t('passkey.failed'))
+      }
     } finally {
       setBusy(false)
     }
@@ -155,15 +184,16 @@ export function PasskeyCard({ passwordSet, hueIndex }: { passwordSet: boolean; h
           <Field label={t('passkey.nameLabel')}>
             <Text value={name} onChange={setName} placeholder={t('passkey.namePlaceholder')} />
           </Field>
+          <Field label={t('password.current')}>
+            <Secret value={current} onChange={setCurrent} autoComplete="current-password" />
+          </Field>
+          {twoFactor && (
+            <Field label={t('login.code')} hint={t('login.codeHint')}>
+              <Text value={code} onChange={setCode} placeholder="000000" code mono />
+            </Field>
+          )}
           <div className="flex justify-end gap-2">
-            <Button
-              label={t('confirm.cancel')}
-              labelKey="confirm.cancel"
-              onClick={() => {
-                setAdding(false)
-                setName('')
-              }}
-            />
+            <Button label={t('confirm.cancel')} labelKey="confirm.cancel" onClick={close} />
             <Button
               label={t('passkey.create')}
               labelKey="passkey.create"

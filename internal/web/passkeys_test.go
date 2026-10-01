@@ -7,6 +7,7 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/go-webauthn/webauthn/webauthn"
 
@@ -206,5 +207,78 @@ func TestFailedPasskeyLoginsCountTowardsTheLockout(t *testing.T) {
 	}
 	if resp, _ := attemptLogin(t, srv, c, uiPassword); resp.StatusCode != http.StatusTooManyRequests {
 		t.Errorf("the password login still listened after %d failed passkey logins, answering %s", maxFailedLogins, resp.Status)
+	}
+}
+
+// beginRegistration starts a registration as a browser on localhost would,
+// the one address an httptest server can carry a passkey on.
+func beginRegistration(t *testing.T, c *http.Client, srv *httptest.Server, body map[string]string) int {
+	t.Helper()
+	raw, _ := json.Marshal(body)
+	req, err := http.NewRequest(http.MethodPost, srv.URL+"/api/passkeys/register/begin", strings.NewReader(string(raw)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	// The jar files cookies under the Host header, so the session is carried
+	// over by hand.
+	for _, cookie := range c.Jar.Cookies(req.URL) {
+		req.AddCookie(cookie)
+	}
+	req.Host = "localhost" + srv.URL[strings.LastIndex(srv.URL, ":"):]
+	req.Header.Set("Content-Type", "application/json")
+	resp, err := c.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	resp.Body.Close()
+	return resp.StatusCode
+}
+
+// A passkey signs in on its own, so adding one asks for everything a login
+// asks for. A session somebody walked away from is not enough.
+func TestRegisteringAPasskeyNeedsThePasswordAndTheCode(t *testing.T) {
+	_, srv, store := newSecured(t)
+	storePassword(t, store)
+	c := browser(t)
+	attemptLogin(t, srv, c, uiPassword)
+
+	if code := beginRegistration(t, c, srv, map[string]string{}); code != http.StatusForbidden {
+		t.Errorf("a registration without the password answered %d", code)
+	}
+	if code := beginRegistration(t, c, srv, map[string]string{"current": "not it"}); code != http.StatusForbidden {
+		t.Errorf("a registration with a wrong password answered %d", code)
+	}
+	if code := beginRegistration(t, c, srv, map[string]string{"current": uiPassword}); code != http.StatusOK {
+		t.Fatalf("a registration with the password answered %d", code)
+	}
+
+	storeTOTP(t, store, nil)
+	if code := beginRegistration(t, c, srv, map[string]string{"current": uiPassword}); code != http.StatusForbidden {
+		t.Errorf("with a second factor on, a registration without the code answered %d", code)
+	}
+	if code := beginRegistration(t, c, srv, map[string]string{"current": uiPassword, "code": codeAt(t, time.Now())}); code != http.StatusOK {
+		t.Errorf("a registration with the password and the code answered %d", code)
+	}
+}
+
+// Changing a password that may have leaked has to evict everybody who got in
+// with it, including through a key they registered meanwhile.
+func TestChangingOrRemovingThePasswordRemovesThePasskeys(t *testing.T) {
+	for _, route := range []string{"/api/security/password", "/api/security/password/remove"} {
+		_, srv, store := newSecured(t)
+		storePassword(t, store)
+		if _, err := store.AddPasskey(security.Passkey{Name: "Planted", CredentialID: []byte{1}, PublicKey: []byte{1}, RPID: "localhost"}); err != nil {
+			t.Fatal(err)
+		}
+		c := browser(t)
+		attemptLogin(t, srv, c, uiPassword)
+
+		resp, said := postAs(t, c, srv.URL+route, map[string]string{"current": uiPassword, "password": uiPassword + " and more"})
+		if resp.StatusCode != http.StatusOK {
+			t.Fatalf("%s answered %s: %v", route, resp.Status, said)
+		}
+		if n := len(store.Get().Passkeys); n != 0 {
+			t.Errorf("%s left %d passkeys behind", route, n)
+		}
 	}
 }

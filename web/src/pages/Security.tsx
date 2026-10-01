@@ -49,7 +49,7 @@ export function Security() {
         onChanged={reload}
         hueIndex={1}
       />
-      <PasskeyCard passwordSet={passwordSet} hueIndex={2} />
+      <PasskeyCard passwordSet={passwordSet} twoFactor={status.twoFactor} hueIndex={2} />
     </Stack>
   )
 }

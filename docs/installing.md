@@ -37,7 +37,9 @@ instead of typing the password. A browser offers one only on a host name over
 HTTPS with a certificate it trusts, or on `localhost`, so on
 `http://192.168.1.5:8422` the section explains why it cannot. Behind a reverse
 proxy with a real name they work, and each key belongs to the address it was
-registered on.
+registered on. A key signs in by itself, so adding one asks for the password,
+and for a code when the second factor is on. Changing or removing the password
+removes every passkey.
 
 All three are kept in `/config/security.json`, readable by its owner only, and
 never in `arrowloop.json`. That file is downloaded whole as a settings backup and
