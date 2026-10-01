@@ -5,11 +5,13 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/rclone/rclone/fs"
 	"github.com/rclone/rclone/fs/accounting"
 	"github.com/rclone/rclone/fs/fserrors"
+	"github.com/rclone/rclone/fs/rc"
 
 	"github.com/junkerderprovinz/arrowloop/internal/filter"
 )
@@ -112,5 +114,42 @@ func TestAnExcludedFolderThatMayNotBeOpenedIsSkipped(t *testing.T) {
 				t.Fatalf("listed %d files, want 2", len(l.Files))
 			}
 		})
+	}
+}
+
+// A preview or a precheck lists a side without a stats group of its own, while
+// a run elsewhere in the process may fail a transfer.
+func TestAnotherOperationsErrorDoesNotFailTheScan(t *testing.T) {
+	side := sideWithSubfolder(t)
+	f := failing{Fs: side, dir: "Projects", fail: func(ctx context.Context) (fs.DirEntries, error) {
+		_ = accounting.GlobalStats().Error(errors.New("a transfer elsewhere failed"))
+		_ = accounting.StatsGroup(ctx, "job/other").Error(errors.New("a transfer elsewhere failed"))
+		return side.List(ctx, "Projects")
+	}}
+	for _, ctx := range []context.Context{context.Background(), accounting.WithStatsGroup(context.Background(), "job/other")} {
+		l, err := List(ctx, f, Options{})
+		if err != nil {
+			t.Fatalf("the scan failed on someone else's error: %v", err)
+		}
+		if len(l.Files) != 2 {
+			t.Fatalf("listed %d files, want 2", len(l.Files))
+		}
+	}
+}
+
+// rclone keeps a limited number of stats groups and drops the oldest, which
+// could be a running job's.
+func TestAListingLeavesNoStatsGroupBehind(t *testing.T) {
+	if _, err := List(context.Background(), sideWithSubfolder(t), Options{}); err != nil {
+		t.Fatalf("list: %v", err)
+	}
+	out, err := rc.Calls.Get("core/group-list").Fn(context.Background(), rc.Params{})
+	if err != nil {
+		t.Fatalf("group list: %v", err)
+	}
+	for _, group := range out["groups"].([]string) {
+		if strings.HasPrefix(group, "scan/") {
+			t.Errorf("group %q is still there", group)
+		}
 	}
 }
