@@ -179,11 +179,10 @@ func Backends() []Backend {
 		}
 		for _, o := range info.Options {
 			b.Options = append(b.Options, Option{
-				Name:     o.Name,
-				Help:     firstLine(o.Help),
-				Required: o.Required,
-				// Either test is enough to withhold a value.
-				Secret:    o.IsPassword || IsSecret(o.Name),
+				Name:      o.Name,
+				Help:      firstLine(o.Help),
+				Required:  o.Required,
+				Secret:    secretOption(o),
 				Advanced:  o.Advanced,
 				Essential: essential[info.Name][o.Name],
 				Default:   defaultText(o.Default),
@@ -236,7 +235,7 @@ func defaultText(value any) string {
 }
 
 func examples(o rclonefs.Option) []Example {
-	if o.IsPassword || IsSecret(o.Name) {
+	if secretOption(o) {
 		// Somebody might use an example password literally.
 		return nil
 	}

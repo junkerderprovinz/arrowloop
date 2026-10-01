@@ -18,10 +18,10 @@ import (
 	"github.com/rclone/rclone/fs/config/obscure"
 )
 
-// secretWords decide by rule which settings are credentials that must never
-// leave this process, since rclone's seventy backends each name them their own
-// way. A setting is secret when its name is or ends in one of these words,
-// which leaves out access_key_id, the public half of an S3 key pair.
+// secretWords catch by name the credentials rclone does not declare a password,
+// such as S3's secret_access_key, and those of a backend this build lacks. A
+// setting is secret when its name is or ends in one of these words, which
+// leaves out access_key_id, the public half of an S3 key pair.
 var secretWords = []string{"pass", "password", "secret", "key", "token", "credentials", "passphrase"}
 
 // alwaysSecret are the ones the rule misses. key_pem is an SSH private key
@@ -32,8 +32,22 @@ var alwaysSecret = map[string]bool{
 	"auth_token": true,
 }
 
-// IsSecret reports whether a setting's value must be withheld.
-func IsSecret(key string) bool {
+// IsSecret reports whether a setting of a backend must never leave this
+// process.
+func IsSecret(backend, key string) bool {
+	if option, ok := optionOf(backend, key); ok {
+		return secretOption(option)
+	}
+	return secretName(key)
+}
+
+// secretOption is IsSecret for an option rclone describes. Every password
+// rclone declares counts, whatever its name: crypt's password2 matches no word.
+func secretOption(option rclonefs.Option) bool {
+	return option.IsPassword || secretName(option.Name)
+}
+
+func secretName(key string) bool {
 	if alwaysSecret[key] {
 		return true
 	}
@@ -84,7 +98,7 @@ func List() []Remote {
 				continue
 			}
 			value, _ := data.GetValue(name, key)
-			if IsSecret(key) {
+			if IsSecret(r.Type, key) {
 				r.Settings = append(r.Settings, Setting{Key: key, Secret: true, Value: placeholderFor(value)})
 				continue
 			}
@@ -137,7 +151,7 @@ func Save(name, backend string, settings map[string]string) error {
 		// Withholding and obscuring are separate questions: a value is obscured
 		// only if rclone unobscures it on reading. S3's secret_access_key is
 		// withheld but stored plain. See obscuring.go.
-		if IsSecret(key) {
+		if IsSecret(backend, key) {
 			if value == Placeholder {
 				continue // came back untouched from the screen, so leave it be
 			}

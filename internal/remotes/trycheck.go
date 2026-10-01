@@ -30,8 +30,9 @@ func WithSavedSecrets(name string, settings map[string]string) map[string]string
 	for key, value := range settings {
 		out[key] = value
 	}
+	backend, _ := data.GetValue(name, "type")
 	for _, key := range data.GetKeyList(name) {
-		if key == "type" || !IsSecret(key) {
+		if key == "type" || !IsSecret(backend, key) {
 			continue
 		}
 		if given, ok := out[key]; ok && given != "" && given != Placeholder {
