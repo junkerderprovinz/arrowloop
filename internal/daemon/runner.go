@@ -194,15 +194,30 @@ func (r *Runner) runAs(ctx context.Context, name string, do work) (history.Run, 
 	r.publish(Event{Job: name, Phase: "started"})
 	var res apply.Result
 	var p *plan.Plan
-	err := hook.Run(ctx, j.Before, hookEnv(j, nil))
-	if err != nil {
-		err = fmt.Errorf("the command before the run failed, so the run did not start: %w", err)
-	} else {
-		res, p, err = do(ctx, j, live)
+	// A drive that is missing before anything has run leaves nothing for the
+	// after command to undo.
+	_, _, err := resolve(j)
+	ranBefore := false
+	if err == nil {
+		err = hook.Run(ctx, j.Before, hookEnv(j, nil))
+		if err != nil {
+			err = fmt.Errorf("the command before the run failed, so the run did not start: %w", err)
+		} else {
+			ranBefore = true
+			res, p, err = do(ctx, j, live)
+		}
 	}
 
 	// A drive that is not plugged in is not a run, so nothing is recorded.
 	if errors.Is(err, ErrVolumeMissing) {
+		// The drive went between the check and the work. Whatever the before
+		// command stopped still has to be started again.
+		if ranBefore {
+			gone := history.Run{Job: name, Started: rec.Started, Finished: time.Now(), Err: err.Error()}
+			if aErr := hook.Run(context.WithoutCancel(ctx), j.After, hookEnv(j, &gone)); aErr != nil {
+				r.log("%s: the command after the run failed: %v", name, aErr)
+			}
+		}
 		if live != nil {
 			live.Drop()
 		}
@@ -273,13 +288,9 @@ func hookEnv(j job.Job, rec *history.Run) map[string]string {
 // before either is opened, because a drive letter since given to another disk
 // would not look empty and the engine would reconcile against the wrong volume.
 func (r *Runner) open(ctx context.Context, j job.Job) (apply.Ends, *state.DB, error) {
-	leftPath, err := volume.Resolve(j.Left)
+	leftPath, rightPath, err := resolve(j)
 	if err != nil {
-		return apply.Ends{}, nil, fmt.Errorf("%w: left side %s", ErrVolumeMissing, volume.Describe(j.Left))
-	}
-	rightPath, err := volume.Resolve(j.Right)
-	if err != nil {
-		return apply.Ends{}, nil, fmt.Errorf("%w: right side %s", ErrVolumeMissing, volume.Describe(j.Right))
+		return apply.Ends{}, nil, err
 	}
 
 	left, err := rclonefs.NewFs(ctx, leftPath)
@@ -295,6 +306,20 @@ func (r *Runner) open(ctx context.Context, j job.Job) (apply.Ends, *state.DB, er
 		return apply.Ends{}, nil, err
 	}
 	return apply.Ends{Left: left, Right: right}, db, nil
+}
+
+// resolve finds where both sides of a job are right now, or names the drive
+// that is missing.
+func resolve(j job.Job) (left, right string, err error) {
+	left, err = volume.Resolve(j.Left)
+	if err != nil {
+		return "", "", fmt.Errorf("%w: left side %s", ErrVolumeMissing, volume.Describe(j.Left))
+	}
+	right, err = volume.Resolve(j.Right)
+	if err != nil {
+		return "", "", fmt.Errorf("%w: right side %s", ErrVolumeMissing, volume.Describe(j.Right))
+	}
+	return left, right, nil
 }
 
 // execute does the actual sync for one job, optionally limited to some paths.

@@ -2,6 +2,7 @@ package daemon_test
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
@@ -296,6 +297,89 @@ func TestAnUnpluggedVolumeIsNotARun(t *testing.T) {
 	// Only one copy and no deletion: the record survived the move.
 	if rec.Trashed != 0 {
 		t.Errorf("%d files were deleted after the drive moved", rec.Trashed)
+	}
+}
+
+// stickJob is a job onto a marked drive whose before and after commands each
+// leave a file behind, so a test can tell which of them ran. The drive counts
+// as attached while plugged says so.
+func stickJob(t *testing.T, plugged func(drive, ran string) bool) (r *daemon.Runner, beforeRan, afterRan string) {
+	t.Helper()
+	drive := t.TempDir()
+	marker, err := volume.Mark(drive, "Backup drive")
+	if err != nil {
+		t.Fatalf("mark the drive: %v", err)
+	}
+	marks := t.TempDir()
+	beforeRan = filepath.Join(marks, "before")
+	afterRan = filepath.Join(marks, "after")
+	leave := func(path, what string) string {
+		if runtime.GOOS == "windows" {
+			return `> "` + path + `" echo ` + what
+		}
+		return `echo ` + what + ` > "` + path + `"`
+	}
+	result := "$ARROWLOOP_RESULT"
+	if runtime.GOOS == "windows" {
+		result = "%ARROWLOOP_RESULT%"
+	}
+	quoted := func(s string) string {
+		b, err := json.Marshal(s)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return string(b)
+	}
+
+	cfg, hist, _, _ := fixture(t, func(dir, left, right string) string {
+		return fmt.Sprintf(`{"jobs":[{"name":"onstick","left":"%s","right":"volume:%s/photos","state":"%s","quietPeriod":"0s","before":%s,"after":%s}]}`,
+			jsonPath(left), marker.ID, jsonPath(filepath.Join(dir, "onstick.db")),
+			quoted(leave(beforeRan, "ran")), quoted(leave(afterRan, result)))
+	})
+
+	realCandidates := volume.Candidates
+	t.Cleanup(func() { volume.Candidates = realCandidates })
+	volume.Candidates = func() []string {
+		if plugged(drive, beforeRan) {
+			return []string{drive}
+		}
+		return nil
+	}
+	return daemon.New(cfg, hist, nil, nil), beforeRan, afterRan
+}
+
+// Nothing has been stopped yet, so nothing needs starting again.
+func TestAMissingDriveKeepsTheBeforeCommandFromRunning(t *testing.T) {
+	r, beforeRan, _ := stickJob(t, func(string, string) bool { return false })
+
+	if _, err := r.Run(t.Context(), "onstick"); !errors.Is(err, daemon.ErrVolumeMissing) {
+		t.Fatalf("an unplugged drive reported %v", err)
+	}
+	if _, err := os.Stat(beforeRan); err == nil {
+		t.Error("the before command ran for a drive that was not there")
+	}
+}
+
+// A before command that stops a service relies on the after command to start
+// it again, even when the drive went away in between.
+func TestTheAfterCommandRunsWhenTheDriveGoesAwayAfterTheBeforeCommand(t *testing.T) {
+	r, beforeRan, afterRan := stickJob(t, func(_, ran string) bool {
+		_, err := os.Stat(ran)
+		return err != nil
+	})
+
+	if _, err := r.Run(t.Context(), "onstick"); !errors.Is(err, daemon.ErrVolumeMissing) {
+		t.Fatalf("a drive unplugged during the run reported %v", err)
+	}
+	if _, err := os.Stat(beforeRan); err != nil {
+		t.Fatalf("the before command did not run, so this test proves nothing: %v", err)
+	}
+	got, err := os.ReadFile(afterRan)
+	if err != nil {
+		t.Fatalf("the after command never ran, so whatever the before command stopped stays stopped: %v", err)
+	}
+	if strings.TrimSpace(string(got)) != "failed" {
+		t.Errorf("the after command was told %q, want failed", got)
 	}
 }
 
