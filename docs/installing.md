@@ -53,7 +53,8 @@ HTTPS with a certificate it trusts, or on `localhost`, so on
 proxy with a real name they work, and each key belongs to the address it was
 registered on. A key signs in by itself, so adding one asks for the password,
 and for a code when the second factor is on. Changing or removing the password
-removes every passkey.
+removes every passkey, and so does a container that comes back with another
+`ARROWLOOP_PASSWORD_HASH`.
 
 All three are kept in `/config/security.json`, readable by its owner only, and
 never in `arrowloop.json`. That file is downloaded whole as a settings backup and

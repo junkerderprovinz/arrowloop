@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"path/filepath"
 	"strings"
 	"testing"
 	"time"
@@ -138,7 +139,7 @@ func TestCeremoniesAreBounded(t *testing.T) {
 func TestAStrangerSeesCountsButNotTheKeys(t *testing.T) {
 	_, srv, store := newSecured(t)
 	storePassword(t, store)
-	if _, err := store.AddPasskey(security.Passkey{Name: "Phone", CredentialID: []byte{1}, PublicKey: []byte{1}, RPID: "localhost"}); err != nil {
+	if _, err := store.AddPasskey(security.Passkey{Name: "Phone", CredentialID: []byte{1}, PublicKey: []byte{1}, RPID: "localhost"}, ""); err != nil {
 		t.Fatal(err)
 	}
 
@@ -267,7 +268,7 @@ func TestChangingOrRemovingThePasswordRemovesThePasskeys(t *testing.T) {
 	for _, route := range []string{"/api/security/password", "/api/security/password/remove"} {
 		_, srv, store := newSecured(t)
 		storePassword(t, store)
-		if _, err := store.AddPasskey(security.Passkey{Name: "Planted", CredentialID: []byte{1}, PublicKey: []byte{1}, RPID: "localhost"}); err != nil {
+		if _, err := store.AddPasskey(security.Passkey{Name: "Planted", CredentialID: []byte{1}, PublicKey: []byte{1}, RPID: "localhost"}, ""); err != nil {
 			t.Fatal(err)
 		}
 		c := browser(t)
@@ -280,5 +281,61 @@ func TestChangingOrRemovingThePasswordRemovesThePasskeys(t *testing.T) {
 		if n := len(store.Get().Passkeys); n != 0 {
 			t.Errorf("%s left %d passkeys behind", route, n)
 		}
+	}
+}
+
+// A password set through the environment changes where the interface cannot
+// see it, and a key registered under the old one must not outlive it.
+func TestChangingThePasswordInTheEnvironmentRemovesThePasskeys(t *testing.T) {
+	config := filepath.Join(t.TempDir(), "arrowloop.json")
+	start := func(hash string) *security.Store {
+		t.Helper()
+		t.Setenv(PasswordHashEnv, hash)
+		store, err := security.Open(config)
+		if err != nil {
+			t.Fatal(err)
+		}
+		srv := httptest.NewServer((&Server{Security: store}).Handler())
+		t.Cleanup(srv.Close)
+		resp, err := http.Get(srv.URL + "/api/passkeys")
+		if err != nil {
+			t.Fatal(err)
+		}
+		resp.Body.Close()
+		return store
+	}
+
+	first := testHash(t, uiPassword)
+	store := start(first)
+	if _, err := store.AddPasskey(security.Passkey{Name: "Phone", CredentialID: []byte{1}, PublicKey: []byte{1}, RPID: "localhost"}, ""); err != nil {
+		t.Fatal(err)
+	}
+
+	if n := len(start(first).Get().Passkeys); n != 1 {
+		t.Fatalf("a restart with the same password left %d passkeys, want 1", n)
+	}
+	if n := len(start(testHash(t, uiPassword+" and more")).Get().Passkeys); n != 0 {
+		t.Errorf("a new password in the environment left %d passkeys behind", n)
+	}
+}
+
+// A file written before the keys carried their password's fingerprint keeps
+// its keys.
+func TestPasskeysFromAnOlderFileAreKept(t *testing.T) {
+	_, srv, store := newSecured(t)
+	storePassword(t, store)
+	if err := store.Update(func(st *security.State) error {
+		st.Passkeys = []security.Passkey{{ID: "old", Name: "Phone", CredentialID: []byte{1}, PublicKey: []byte{1}, RPID: "localhost"}}
+		return nil
+	}); err != nil {
+		t.Fatal(err)
+	}
+	resp, err := http.Get(srv.URL + "/api/passkeys")
+	if err != nil {
+		t.Fatal(err)
+	}
+	resp.Body.Close()
+	if n := len(store.Get().Passkeys); n != 1 {
+		t.Errorf("an older file lost its passkeys: %d left", n)
 	}
 }
