@@ -213,7 +213,10 @@ object Device {
      * Starts listening and reports straight away, since a phone already on
      * the charger sends no broadcast.
      */
-    fun watch(context: Context) {
+    fun watch(caller: Context) {
+        // Android drops a receiver along with the service that registered it,
+        // and the screens may still need it after a wake-up's service is gone.
+        val context = caller.applicationContext
         if (power == null) {
             power = object : BroadcastReceiver() {
                 override fun onReceive(c: Context, i: Intent) = report(context)
@@ -243,7 +246,8 @@ object Device {
     }
 
     /** Stops listening when the service goes down. */
-    fun forget(context: Context) {
+    fun forget(caller: Context) {
+        val context = caller.applicationContext
         power?.let {
             try {
                 context.unregisterReceiver(it)

@@ -45,6 +45,9 @@ class EngineModule(private val context: ReactApplicationContext) :
     @ReactMethod
     fun start(promise: Promise) {
         try {
+            // Set first, or a wake-up finishing in the meantime could stop the
+            // engine this start has just found running.
+            Engine.screens = true
             Engine.start(context)
             Device.watch(context)
             Waker.arm(context)
@@ -58,6 +61,7 @@ class EngineModule(private val context: ReactApplicationContext) :
     @ReactMethod
     fun stop(promise: Promise) {
         try {
+            Engine.screens = false
             Device.forget(context)
             Engine.stop()
             context.startService(

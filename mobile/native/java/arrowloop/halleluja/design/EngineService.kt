@@ -217,10 +217,14 @@ class EngineService : Service() {
         stopSelf()
     }
 
-    /** Stops the engine once, if this service started it. */
+    /**
+     * Stops the engine once, if this service started it and the screens have
+     * not taken it over.
+     */
     private fun release() {
         if (!ours) return
         ours = false
+        if (Engine.screens) return
         Device.forget(this)
         Engine.stop()
     }
