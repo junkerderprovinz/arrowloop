@@ -41,7 +41,7 @@ import { since } from '../lib/since'
  */
 export function Jobs({
   jobs,
-  runs,
+  latest,
   progress,
   speeds,
   onPreview,
@@ -49,10 +49,11 @@ export function Jobs({
 }: {
   jobs: Job[]
   /**
-   * The recent runs, newest first. The live job list only carries the last
-   * success, which cannot say whether the last attempt failed.
+   * Each job's newest run. The live job list only carries the last success,
+   * which cannot say whether the last attempt failed, and a page of the newest
+   * runs across all jobs loses a daily job behind one that watches a folder.
    */
-  runs: Run[]
+  latest: Run[]
   progress: Record<string, RunEvent>
   /** Bytes a second per running job, from the engine's moving frames. */
   speeds: Record<string, number>
@@ -65,7 +66,7 @@ export function Jobs({
   // Only the most recent run counts: a job that failed last week and has worked
   // since is not in trouble.
   function lastFailed(name: string): boolean {
-    const last = runs.find((r) => r.Job === name)
+    const last = latest.find((r) => r.Job === name)
     return !!last && last.Err !== ''
   }
   const config = useJobConfig(onSaved)

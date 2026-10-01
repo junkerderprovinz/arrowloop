@@ -59,7 +59,7 @@ function card(over: Partial<Job> = {}) {
     <ToastProvider>
       <Jobs
         jobs={[job(over)]}
-        runs={[]}
+        latest={[]}
         progress={{}}
         speeds={{}}
         onPreview={() => undefined}
@@ -216,7 +216,7 @@ describe('pausing and removing a job', () => {
       <ToastProvider>
         <Jobs
           jobs={list.map(live)}
-          runs={[]}
+          latest={[]}
           progress={{}}
           speeds={{}}
           onPreview={() => undefined}

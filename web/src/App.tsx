@@ -143,6 +143,7 @@ export function App() {
   const [tab, setTab] = useState<Tab>('jobs')
   const [jobs, setJobs] = useState<Job[]>([])
   const [runs, setRuns] = useState<Run[]>([])
+  const [latest, setLatest] = useState<Run[]>([])
   const [progress, setProgress] = useState<Record<string, RunEvent>>({})
   const [speeds, setSpeeds] = useState<Record<string, number>>({})
   const [previewing, setPreviewing] = useState<string | null>(null)
@@ -185,6 +186,10 @@ export function App() {
       .catch(() => {
         // The job list is still useful without the history.
       })
+    api
+      .latestRuns(new Date().toISOString())
+      .then(setLatest)
+      .catch(() => {})
   }, [])
 
   useEffect(() => {
@@ -351,7 +356,7 @@ export function App() {
           ) : tab === 'jobs' ? (
             <Jobs
               jobs={jobs}
-              runs={runs}
+              latest={latest}
               progress={progress}
               speeds={speeds}
               onPreview={setPreviewing}
