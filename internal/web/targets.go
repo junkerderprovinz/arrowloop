@@ -2,6 +2,7 @@ package web
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -111,8 +112,18 @@ func (s *Server) saveRemote(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, fmt.Errorf("read the request: %w", err))
 		return
 	}
-	if err := remotes.Save(r.PathValue("name"), body.Type, body.Settings); err != nil {
-		writeError(w, http.StatusBadRequest, err)
+	// A form adding a target asks with ?new, so a name already in use is
+	// refused rather than written over; an edit, and the phone, leave it off.
+	save := remotes.Save
+	if r.URL.Query().Has("new") {
+		save = remotes.Create
+	}
+	if err := save(r.PathValue("name"), body.Type, body.Settings); err != nil {
+		status := http.StatusBadRequest
+		if errors.Is(err, remotes.ErrExists) {
+			status = http.StatusConflict
+		}
+		writeError(w, status, err)
 		return
 	}
 	writeJSON(w, http.StatusOK, map[string]any{"saved": r.PathValue("name")})

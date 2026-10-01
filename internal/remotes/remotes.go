@@ -172,6 +172,18 @@ func Save(name, backend string, settings map[string]string) error {
 	return nil
 }
 
+// ErrExists is what Create answers for a name that is already a remote.
+var ErrExists = errors.New("a target by this name already exists")
+
+// Create writes a new remote like Save but refuses a name already in use, which
+// Save would merge into, keeping the old remote's keys beside the new ones.
+func Create(name, backend string, settings map[string]string) error {
+	if config.LoadedData().HasSection(name) {
+		return fmt.Errorf("%w: %s", ErrExists, name)
+	}
+	return Save(name, backend, settings)
+}
+
 // Delete removes a remote.
 func Delete(name string) error {
 	data := config.LoadedData()

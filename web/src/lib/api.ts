@@ -886,8 +886,12 @@ export const api = {
       unlisted: Backend[] | null
     }>('/api/remotes'),
 
-  saveRemote: (name: string, type: string, settings: Record<string, string>) =>
-    request<{ saved: string }>(`/api/remotes/${encodeURIComponent(name)}`, {
+  /**
+   * Writes one target. `create` makes the engine refuse a name that is
+   * already a target with a 409, where an edit would merge into it.
+   */
+  saveRemote: (name: string, type: string, settings: Record<string, string>, create = false) =>
+    request<{ saved: string }>(`/api/remotes/${encodeURIComponent(name)}${create ? '?new=1' : ''}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ type, settings }),

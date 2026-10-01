@@ -513,7 +513,7 @@ function RemoteForm({
         Object.entries(values).filter(([key, value]) => value !== '' || existing?.settings.some((s) => s.key === key)),
       )
       const saved = name.trim()
-      await api.saveRemote(saved, kind, filled)
+      await api.saveRemote(saved, kind, filled, !existing)
       // Checked after saving, so a typo shows at once rather than as a failed
       // run. The answer never blocks, since the server may simply be off.
       setBusy(false)
@@ -552,7 +552,9 @@ function RemoteForm({
           products. */}
       <div className="mx-auto flex w-full max-w-md flex-col gap-4">
         <Field label={t('targets.remoteName')} hint={t('targets.remoteNameHint')}>
-          <Text value={name} onChange={setName} placeholder="backup" mono />
+          {/* Fixed once saved: the jobs that use the target name it, and its
+              secrets never reach this form to be written under a new name. */}
+          <Text value={name} onChange={setName} placeholder="backup" mono readOnly={!!existing} />
         </Field>
 
         {shown.map((o) => (

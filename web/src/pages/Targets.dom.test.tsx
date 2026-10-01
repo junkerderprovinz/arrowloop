@@ -109,4 +109,12 @@ describe('Targets', () => {
     fireEvent.click(within(dialog).getByRole('button', { name: 'Delete it' }))
     expect(await screen.findByText('Failed to fetch')).toBeTruthy()
   })
+
+  it('keeps the name of a target being edited', async () => {
+    show()
+    await screen.findByText('home:')
+    fireEvent.click(screen.getAllByRole('button', { name: 'Edit' })[0])
+    const name = (await screen.findByDisplayValue('home')) as HTMLInputElement
+    expect(name.readOnly).toBe(true)
+  })
 })
