@@ -452,7 +452,7 @@ func (s *Server) passkeyLoginFinish(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	gate := s.gate()
-	try, ok := gate.admit(w, clientKey(r))
+	try, ok := gate.admit(w, s.lockoutKey(r))
 	if !ok {
 		return
 	}

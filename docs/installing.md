@@ -64,6 +64,17 @@ docker run -d --name arrowloop -p 8422:8422 \
 The single quotes matter: the hash is full of `$`, which a shell would otherwise
 read as variables. In a Compose file, write every `$` as `$$`.
 
+#### Behind a reverse proxy
+
+Five wrong passwords from one address lock that address out for a minute.
+Behind a reverse proxy every request comes from the proxy, so one stranger
+guessing would lock out everybody, you included. Set
+`ARROWLOOP_TRUSTED_PROXIES` to the proxy's address, or to a range such as
+`172.17.0.0/16` when the proxy runs in another container, and the count goes
+against the address the proxy reports in `X-Forwarded-For` instead. Several
+entries are separated by commas. List only proxies you run: a machine on that
+list could claim a new address for every guess.
+
 If the authenticator app and the recovery codes are both gone, stop the
 container and delete `/config/security.json`. That removes the password, the
 second factor and the passkeys together. A damaged `security.json` stops the

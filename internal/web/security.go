@@ -64,7 +64,7 @@ var errPasswordFromEnv = errors.New("the password comes from " + PasswordHashEnv
 // over. A wrong answer counts against the address like a wrong login. It
 // answers the request itself when it refuses.
 func (s *Server) checkCurrentPassword(w http.ResponseWriter, r *http.Request, current string) bool {
-	try, ok := s.gate().admit(w, clientKey(r))
+	try, ok := s.gate().admit(w, s.lockoutKey(r))
 	if !ok {
 		return false
 	}
@@ -80,7 +80,7 @@ func (s *Server) checkCurrentPassword(w http.ResponseWriter, r *http.Request, cu
 // checkCurrentCode is checkCurrentPassword for the second factor. The code is
 // spent like one used to sign in.
 func (s *Server) checkCurrentCode(w http.ResponseWriter, r *http.Request, code string) bool {
-	try, ok := s.gate().admit(w, clientKey(r))
+	try, ok := s.gate().admit(w, s.lockoutKey(r))
 	if !ok {
 		return false
 	}
@@ -143,7 +143,7 @@ func (s *Server) setPassword(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
-	s.gate().clearFailures(clientKey(r))
+	s.gate().clearFailures(s.lockoutKey(r))
 	writeJSON(w, http.StatusOK, s.securityView())
 }
 

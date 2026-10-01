@@ -10,6 +10,7 @@ import (
 	"io"
 	"net"
 	"net/http"
+	"net/netip"
 	"os"
 	"path"
 	"strconv"
@@ -39,6 +40,12 @@ import (
 // and replaces it wholesale, and restoring an old backup would switch the
 // protection off.
 const PasswordHashEnv = "ARROWLOOP_PASSWORD_HASH"
+
+// TrustedProxiesEnv names the environment variable that lists the reverse
+// proxies in front of the server, as addresses or CIDR ranges separated by
+// commas. Without it every login through a proxy counts against the proxy's
+// address, so a stranger's wrong passwords lock the owner out as well.
+const TrustedProxiesEnv = "ARROWLOOP_TRUSTED_PROXIES"
 
 // sessionCookieName is named for the application, since a cookie is scoped by
 // host and path but not by port.
@@ -90,6 +97,9 @@ type authGate struct {
 	// protection off.
 	once    sync.Once
 	envHash []byte
+
+	proxiesOnce sync.Once
+	proxies     []netip.Prefix
 
 	mu         sync.Mutex
 	sessions   []session
@@ -298,15 +308,76 @@ func (g *authGate) forgetAll() {
 	g.sessions = nil
 }
 
-// clientKey is the source address a failed login is counted against: the
-// socket's peer address, never X-Forwarded-For, which the caller writes and
-// could change to get a fresh rate-limit bucket each time.
-func clientKey(r *http.Request) string {
+// lockoutKey is the source address a failed login from r is counted against.
+func (s *Server) lockoutKey(r *http.Request) string {
+	g := s.gate()
+	g.proxiesOnce.Do(func() {
+		var bad []string
+		g.proxies, bad = parseTrustedProxies(os.Getenv(TrustedProxiesEnv))
+		for _, entry := range bad {
+			s.logf("%s: %q is neither an address nor a range, so it is ignored", TrustedProxiesEnv, entry)
+		}
+	})
+	return clientKey(r, g.proxies)
+}
+
+// clientKey is the socket's peer address, unless the peer is one of the
+// trusted proxies. Then it is the last address in X-Forwarded-For that is not
+// a trusted proxy itself: each proxy appends the address it heard from, while
+// everything to the left of that came from the client and could be changed
+// for a fresh count each time.
+func clientKey(r *http.Request, proxies []netip.Prefix) string {
 	host, _, err := net.SplitHostPort(r.RemoteAddr)
 	if err != nil {
-		return r.RemoteAddr
+		host = r.RemoteAddr
+	}
+	peer, err := netip.ParseAddr(host)
+	if err != nil || !trusted(peer, proxies) {
+		return host
+	}
+	hops := strings.Split(strings.Join(r.Header.Values("X-Forwarded-For"), ","), ",")
+	for i := len(hops) - 1; i >= 0; i-- {
+		hop, err := netip.ParseAddr(strings.TrimSpace(hops[i]))
+		if err != nil {
+			break
+		}
+		if !trusted(hop, proxies) {
+			return hop.Unmap().String()
+		}
 	}
 	return host
+}
+
+func trusted(addr netip.Addr, proxies []netip.Prefix) bool {
+	addr = addr.Unmap()
+	for _, p := range proxies {
+		if p.Contains(addr) {
+			return true
+		}
+	}
+	return false
+}
+
+// parseTrustedProxies reads a comma-separated list of addresses and CIDR
+// ranges, and returns the entries it could not read apart.
+func parseTrustedProxies(list string) (proxies []netip.Prefix, bad []string) {
+	for _, entry := range strings.Split(list, ",") {
+		entry = strings.TrimSpace(entry)
+		if entry == "" {
+			continue
+		}
+		if p, err := netip.ParsePrefix(entry); err == nil {
+			proxies = append(proxies, p.Masked())
+			continue
+		}
+		if a, err := netip.ParseAddr(entry); err == nil {
+			a = a.Unmap()
+			proxies = append(proxies, netip.PrefixFrom(a, a.BitLen()))
+			continue
+		}
+		bad = append(bad, entry)
+	}
+	return proxies, bad
 }
 
 // lockedOut reports how much longer this source address has to wait. It is
@@ -475,7 +546,7 @@ func (s *Server) login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	gate := s.gate()
-	key := clientKey(r)
+	key := s.lockoutKey(r)
 	// Checked before bcrypt, which is expensive on purpose and would otherwise
 	// let a locked-out caller spend this machine's processor.
 	try, ok := gate.admit(w, key)
