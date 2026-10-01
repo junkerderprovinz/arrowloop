@@ -208,9 +208,10 @@ writes to three places and nowhere else: the installation folder,
 `HKLM\Software\Microsoft\Windows\CurrentVersion\Uninstall\ArrowLoop`; and
 `%ProgramData%\ArrowLoop`, for its log. It reads nothing from any user's
 profile. The folder under ProgramData belongs to the administrators, and only
-`settings.json` in it is open to other users. The installer has no page for
-choosing another folder. Together that leaves no file a user could swap for
-one the system account would run or write to. It downloads only from GitHub
+`settings.json` in it is open to other users. If the installer cannot set the
+folder up that way, it sets up no task and says so. The installer has no page
+for choosing another folder. Together that leaves no file a user could swap
+for one the system account would run or write to. It downloads only from GitHub
 over HTTPS and installs a file only when it matches `checksums.txt`.
 
 #### Uninstalling
