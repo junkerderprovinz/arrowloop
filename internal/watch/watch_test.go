@@ -64,17 +64,27 @@ func waitFor(t *testing.T, fired *atomic.Int64, want int64, why string) {
 }
 
 func TestManyFilesAreOneChange(t *testing.T) {
-	root, fired := harness(t, watch.Options{Settle: 150 * time.Millisecond})
+	const settle = 150 * time.Millisecond
+	root, fired := harness(t, watch.Options{Settle: settle})
 
+	// A loaded runner can stall a single write past the settle window, and
+	// each such pause rightly ends one report, so those are allowed for.
+	var stalls int64
+	last := time.Now()
 	for i := range 40 {
 		write(t, filepath.Join(root, "batch", "f"+string(rune('a'+i%26))+string(rune('a'+i/26))+".txt"), "x")
+		now := time.Now()
+		if now.Sub(last) > settle {
+			stalls++
+		}
+		last = now
 		time.Sleep(2 * time.Millisecond)
 	}
 	waitFor(t, fired, 1, "a batch of files")
 
 	time.Sleep(400 * time.Millisecond)
-	if n := fired.Load(); n > 2 {
-		t.Errorf("forty files produced %d reports; the settle window is not collecting them", n)
+	if n := fired.Load(); n > 2+stalls {
+		t.Errorf("forty files produced %d reports with %d stalls; the settle window is not collecting them", n, stalls)
 	}
 }
 
