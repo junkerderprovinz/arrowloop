@@ -1,10 +1,6 @@
 package remotes
 
-import (
-	"testing"
-
-	"github.com/rclone/rclone/fs/config/obscure"
-)
+import "testing"
 
 // saved writes one target into a config of this test's own.
 func saved(t *testing.T, name, backend string, settings map[string]string) {
@@ -30,9 +26,8 @@ func TestAnAbsentSecretComesFromTheSavedTarget(t *testing.T) {
 		"user": "someone",
 	})
 
-	back, err := obscure.Reveal(got["pass"])
-	if err != nil || back != "letmein" {
-		t.Fatalf("pass = %q (reveal %q, %v), want the saved password", got["pass"], back, err)
+	if got["pass"] != "letmein" {
+		t.Fatalf("pass = %q, want the saved password", got["pass"])
 	}
 }
 
@@ -41,11 +36,8 @@ func TestThePlaceholderMeansTheSavedSecretToo(t *testing.T) {
 	saved(t, "cloud", "webdav", map[string]string{"url": "https://example.invalid/", "pass": "letmein"})
 
 	got := WithSavedSecrets("cloud", map[string]string{"url": "https://example.invalid/", "pass": Placeholder})
-	if got["pass"] == Placeholder {
-		t.Fatal("the placeholder was sent on as the password")
-	}
-	if back, err := obscure.Reveal(got["pass"]); err != nil || back != "letmein" {
-		t.Fatalf("pass revealed to %q, %v; want the saved password", back, err)
+	if got["pass"] != "letmein" {
+		t.Fatalf("pass = %q, want the saved password", got["pass"])
 	}
 }
 

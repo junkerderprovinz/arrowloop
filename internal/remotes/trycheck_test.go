@@ -46,17 +46,29 @@ func TestAPasswordIsObscuredForTheConnection(t *testing.T) {
 	}
 }
 
-// A saved secret is already obscured.
-func TestAnAlreadyObscuredSecretIsLeftAlone(t *testing.T) {
-	hidden, err := obscure.Obscure("demo")
-	if err != nil {
-		t.Fatal(err)
+// A long alphanumeric password decodes as base64, which is all rclone asks of
+// an obscured value, so it looks obscured without being so.
+func TestATypedPasswordThatLooksObscuredIsStillObscured(t *testing.T) {
+	const typed = "Sommer2026Sommer2026Abc"
+	if _, err := obscure.Reveal(typed); err != nil {
+		t.Fatalf("the example no longer decodes, so it shows nothing: %v", err)
 	}
-	got := connectionString("webdav", map[string]string{"pass": hidden})
+	got := connectionString("webdav", map[string]string{"pass": typed})
 	inside := got[len(":webdav,pass=") : len(got)-1]
-	back, err := obscure.Reveal(inside)
-	if err != nil || back != "demo" {
-		t.Fatalf("reveal(%q) = %q, %v; want demo", inside, back, err)
+	if back, err := obscure.Reveal(inside); err != nil || back != typed {
+		t.Fatalf("rclone would log in with %q (%v), not the password typed", back, err)
+	}
+}
+
+// A saved password stands in for one the form never received, and has to
+// reach rclone as the password that was saved.
+func TestASavedPasswordReachesTheConnectionAsSaved(t *testing.T) {
+	saved(t, "cloud", "webdav", map[string]string{"url": "https://example.invalid/", "pass": "letmein"})
+
+	got := connectionString("webdav", WithSavedSecrets("cloud", map[string]string{"pass": Placeholder}))
+	inside := got[len(":webdav,pass=") : len(got)-1]
+	if back, err := obscure.Reveal(inside); err != nil || back != "letmein" {
+		t.Fatalf("rclone would log in with %q (%v), not the saved password", back, err)
 	}
 }
 

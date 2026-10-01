@@ -14,8 +14,8 @@ import (
 // WithSavedSecrets fills in the saved credentials a form left empty or at the
 // placeholder, since secrets are withheld on their way to the screen. It reads
 // the form the way Save does, and anything typed wins, so a changed credential
-// is the one tested. The stored value comes back obscured as rclone keeps it,
-// and connectionString leaves an obscured value alone.
+// is the one tested. A stored password comes back revealed, as if typed, since
+// connectionString obscures every password.
 func WithSavedSecrets(name string, settings map[string]string) map[string]string {
 	if strings.TrimSpace(name) == "" {
 		return settings
@@ -39,10 +39,22 @@ func WithSavedSecrets(name string, settings map[string]string) map[string]string
 			continue
 		}
 		if stored, ok := data.GetValue(name, key); ok && stored != "" {
-			out[key] = stored
+			out[key] = typedForm(backend, key, stored)
 		}
 	}
 	return out
+}
+
+// typedForm undoes what Save did to a value. One rclone cannot reveal is passed
+// on as stored.
+func typedForm(backend, key, stored string) string {
+	if !needsObscure(backend, key) {
+		return stored
+	}
+	if plain, err := obscure.Reveal(stored); err == nil {
+		return plain
+	}
+	return stored
 }
 
 // CheckSettings reports whether a target built from settings that have not
@@ -93,12 +105,10 @@ func connectionString(backend string, settings map[string]string) string {
 
 // forConnection obscures what rclone will reveal: it reads a connection string
 // the same way it reads the config file, so the rule in needsObscure applies.
-// A value that is already obscured, such as a saved secret, is left alone.
+// Every value is taken as typed, because a plain password can decode as
+// readily as an obscured one.
 func forConnection(backend, key, value string) string {
 	if value == "" || !needsObscure(backend, key) {
-		return value
-	}
-	if _, err := obscure.Reveal(value); err == nil {
 		return value
 	}
 	hidden, err := obscure.Obscure(value)

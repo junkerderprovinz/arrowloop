@@ -1,6 +1,7 @@
 package remotes
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/rclone/rclone/fs/config"
@@ -83,6 +84,16 @@ func listed(t *testing.T, name string) Remote {
 	return Remote{}
 }
 
+// valueIn picks one bare value out of a connection string.
+func valueIn(connection, key string) string {
+	for _, part := range strings.Split(strings.Trim(connection, ":"), ",") {
+		if k, v, ok := strings.Cut(part, "="); ok && k == key {
+			return v
+		}
+	}
+	return ""
+}
+
 // formFor is what the edit form sends back for r with one field changed.
 func formFor(r Remote, key, value string) map[string]string {
 	form := map[string]string{key: value}
@@ -137,5 +148,22 @@ func TestTheFormAndTheListingWithholdTheSameFields(t *testing.T) {
 				t.Errorf("%s/%s: form secret %v, listing secret %v", b.Name, o.Name, o.Secret, IsSecret(b.Name, o.Name))
 			}
 		}
+	}
+}
+
+// Testing a target with a salt stored as typed has to use what crypt makes of
+// that value, or the test and the saved target would disagree.
+func TestASaltStoredAsTypedIsTestedAsCryptReadsIt(t *testing.T) {
+	const raw = "k9XvQ2mL7pR4tY8wZ1nB3cD6"
+	saved(t, "vault", "crypt", map[string]string{"remote": "/somewhere", "password": "the password"})
+	config.LoadedData().SetValue("vault", "password2", raw)
+	want, err := obscure.Reveal(raw)
+	if err != nil {
+		t.Fatalf("the example no longer decodes, so it shows nothing: %v", err)
+	}
+
+	got := connectionString("crypt", WithSavedSecrets("vault", map[string]string{"password2": Placeholder}))
+	if back, err := obscure.Reveal(valueIn(got, "password2")); err != nil || back != want {
+		t.Fatalf("the test would salt with %q (%v), the saved target with %q", back, err, want)
 	}
 }
