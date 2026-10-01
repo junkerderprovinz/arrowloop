@@ -117,7 +117,7 @@ func List(ctx context.Context, f fs.Fs, opt Options) (*Listing, error) {
 	Report(ctx, Reading{Stage: StageList})
 	stats := accounting.Stats(ctx)
 	errorsBefore := stats.GetErrors()
-	err := walk.ListR(ctx, f, "", true, -1, listType, func(entries fs.DirEntries) error {
+	err := walk.ListR(ctx, pruned{Fs: f, exclude: opt.Exclude}, "", true, -1, listType, func(entries fs.DirEntries) error {
 		defer func() { Report(ctx, Reading{Stage: StageList, Done: found}) }()
 		for _, entry := range entries {
 			if dir, isDir := entry.(fs.Directory); isDir {
@@ -188,6 +188,22 @@ func List(ctx context.Context, f fs.Fs, opt Options) (*Listing, error) {
 	}
 	sort.Slice(out.Collisions, func(i, j int) bool { return out.Collisions[i].Key < out.Collisions[j].Key })
 	return out, nil
+}
+
+// pruned lists a folder the job never looks into as empty, without opening it.
+// The local backend opens every folder the walk reaches, and a drive root holds
+// several, such as System Volume Information, that the process may not open;
+// each would fail the scan.
+type pruned struct {
+	fs.Fs
+	exclude *filter.Set
+}
+
+func (p pruned) List(ctx context.Context, dir string) (fs.DirEntries, error) {
+	if dir != "" && (IsReserved(dir) || p.exclude.ExcludesTree(dir)) {
+		return nil, nil
+	}
+	return p.Fs.List(ctx, dir)
 }
 
 // exists reports whether a side's root is there. Any answer other than "not

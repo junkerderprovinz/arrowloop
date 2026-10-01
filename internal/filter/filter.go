@@ -30,6 +30,10 @@ var InProgress = []string{
 type Set struct {
 	patterns []string
 	res      []*regexp.Regexp
+	// trees holds, for a pattern ending in "/**", the part before it, which
+	// names directories whose whole contents are excluded. It is nil for any
+	// other pattern.
+	trees []*regexp.Regexp
 }
 
 // New compiles a set of glob patterns.
@@ -37,7 +41,7 @@ type Set struct {
 // A pattern without a slash matches the file name anywhere in the tree, the way
 // .gitignore behaves, so "*.tmp" catches "a/b/c.tmp". A pattern with a slash is
 // matched against the whole relative path. "**" spans directory separators,
-// "*" and "?" do not.
+// "*" and "?" do not, and "**/" also matches no directory at all.
 func New(patterns []string) (*Set, error) {
 	s := &Set{patterns: append([]string(nil), patterns...)}
 	for _, p := range patterns {
@@ -46,6 +50,14 @@ func New(patterns []string) (*Set, error) {
 			return nil, fmt.Errorf("exclude pattern %q: %w", p, err)
 		}
 		s.res = append(s.res, re)
+
+		var tree *regexp.Regexp
+		if head, ok := strings.CutSuffix(p, "/**"); ok && head != "" {
+			if tree, err = compile(head); err != nil {
+				return nil, fmt.Errorf("exclude pattern %q: %w", p, err)
+			}
+		}
+		s.trees = append(s.trees, tree)
 	}
 	return s, nil
 }
@@ -83,6 +95,23 @@ func (s *Set) Excluded(rel string) bool {
 	return false
 }
 
+// ExcludesTree reports whether every path below the directory dir is
+// excluded, so a listing need not open it at all.
+func (s *Set) ExcludesTree(dir string) bool {
+	if s == nil {
+		return false
+	}
+	for i, p := range s.patterns {
+		if dir == p || strings.HasPrefix(dir, p+"/") {
+			return true
+		}
+		if s.trees[i] != nil && s.trees[i].MatchString(dir) {
+			return true
+		}
+	}
+	return false
+}
+
 // compile turns one glob into an anchored regular expression. path.Match has
 // no pattern that spans directory separators, so it cannot express "**".
 func compile(pattern string) (*regexp.Regexp, error) {
@@ -93,8 +122,14 @@ func compile(pattern string) (*regexp.Regexp, error) {
 		switch c {
 		case '*':
 			if i+1 < len(pattern) && pattern[i+1] == '*' {
-				b.WriteString(".*")
+				wholeName := i == 0 || pattern[i-1] == '/'
 				i++
+				if wholeName && i+1 < len(pattern) && pattern[i+1] == '/' {
+					b.WriteString("(?:.*/)?")
+					i++
+					continue
+				}
+				b.WriteString(".*")
 				continue
 			}
 			b.WriteString("[^/]*")
