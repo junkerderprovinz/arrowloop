@@ -398,6 +398,10 @@ func RunVerified(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt
 			t.skip(d.Path, d.Dst.String(), whyFailed(ends, nil, "removing the folder", "removeDirFailed", err))
 			continue
 		}
+		// Forgetting a folder removes nothing.
+		if d.DstPath == "" {
+			continue
+		}
 		t.count(func(r *Result) { r.DirsRemoved++ })
 		t.step("rmdir", d.DstPath, d.Dst.String())
 	}

@@ -189,7 +189,7 @@ func Prepare(ctx context.Context, ends apply.Ends, db *state.DB, opt Options) (*
 			}
 			visibleDirs[key] = entry
 		}
-		p.Dirs = plan.EnforceDirs(plan.BuildDirs(left, right, visibleDirs), compare.Direction)
+		p.Dirs = plan.EnforceDirs(plan.BuildDirs(left, right, visibleDirs), compare.Direction, compare.Mode)
 	}
 
 	p.Skipped = append(p.Skipped, leftOdd...)

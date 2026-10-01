@@ -458,3 +458,64 @@ func TestMoveTakesAFileTheDestinationAlreadyHolds(t *testing.T) {
 		t.Errorf("the destination holds %q", got)
 	}
 }
+
+// Outside a mirror a one-way job removes nothing from its destination, and a
+// folder that goes from the source is no exception: neither an empty one nor
+// one whose files were only forgotten.
+func TestOneWayKeepsAFolderTheSourceRemoved(t *testing.T) {
+	for _, mode := range []plan.Mode{plan.ModeSync, plan.ModeMove} {
+		t.Run(mode.String(), func(t *testing.T) {
+			j := oneWay(t, plan.LeftToRight)
+			j.opt.Compare.Mode = mode
+			j.opt.EmptyDirs = true
+			for _, dir := range []string{"stays", "empty"} {
+				if err := os.MkdirAll(filepath.Join(j.left, dir), 0o755); err != nil {
+					t.Fatalf("mkdir: %v", err)
+				}
+			}
+			write(t, j.left, "stays/keep.txt", "keeps the side populated")
+			write(t, j.left, "full/report.txt", "the source's report")
+			j.run(t)
+
+			for _, dir := range []string{"empty", "full"} {
+				if err := os.RemoveAll(filepath.Join(j.left, dir)); err != nil {
+					t.Fatalf("remove: %v", err)
+				}
+			}
+			for run := 0; run < 2; run++ {
+				_, res := j.run(t)
+				if len(res.Skipped) != 0 || res.DirsRemoved != 0 {
+					t.Fatalf("run %d: %d folders removed, skipped %+v", run, res.DirsRemoved, res.Skipped)
+				}
+			}
+			if _, err := os.Stat(filepath.Join(j.right, "empty")); err != nil {
+				t.Errorf("the empty folder went from the destination: %v", err)
+			}
+			if got := readFile(t, j.right, "full/report.txt"); got != "the source's report" {
+				t.Errorf("the destination holds %q", got)
+			}
+		})
+	}
+}
+
+// A mirror is the one-way job that does remove, folders included.
+func TestMirrorRemovesAFolderTheSourceRemoved(t *testing.T) {
+	j := oneWay(t, plan.LeftToRight)
+	j.opt.Compare.Mode = plan.ModeMirror
+	j.opt.EmptyDirs = true
+	if err := os.MkdirAll(filepath.Join(j.left, "empty"), 0o755); err != nil {
+		t.Fatalf("mkdir: %v", err)
+	}
+	write(t, j.left, "keep.txt", "keeps the side populated")
+	j.run(t)
+
+	if err := os.Remove(filepath.Join(j.left, "empty")); err != nil {
+		t.Fatalf("rmdir: %v", err)
+	}
+	if _, res := j.run(t); res.DirsRemoved != 1 {
+		t.Fatalf("%d folders removed, want 1", res.DirsRemoved)
+	}
+	if _, err := os.Stat(filepath.Join(j.right, "empty")); !os.IsNotExist(err) {
+		t.Errorf("the folder is still on the destination: %v", err)
+	}
+}
