@@ -157,7 +157,10 @@ A command that exits with an error after a successful run marks the run failed,
 so a notification goes out for it. The commands run through `sh -c`, or
 `cmd /C` on Windows, in the program's working directory. Each may take fifteen
 minutes; after that it is stopped, because a hanging command would hold its
-job's place and every job queued behind it.
+job's place and every job queued behind it. A command that is stopped, at that
+limit or because the run was stopped, takes every program it started with it.
+A program that a command which finished cleanly left running in the background,
+such as an SSH tunnel, keeps running.
 
 !!! warning "Only the file can set them"
     Anybody who can reach the interface could otherwise run anything on this
