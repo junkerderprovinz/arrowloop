@@ -30,11 +30,17 @@ from then on every page but the login asks for it.
 
 Until a password is set, the interface only answers when it is opened on an IP
 address, `localhost`, a name without a dot such as `tower`, or a name ending in
-`.local`, `.lan`, `.home.arpa` or `.internal`. Otherwise a web page anywhere
-could point a name of its own at this machine and use your browser to drive the
-interface. Reaching it through any other name, such as a reverse proxy's, needs
-the password. With or without one, the interface refuses a change that a page
-from another site started.
+`.local`, `.lan`, `.home`, `.home.arpa`, `.internal`, `.localdomain` or
+`.fritz.box`. Otherwise a web page anywhere could point a name of its own at
+this machine and use your browser to drive the interface. Any other name needs
+the password, or has to be listed in `ARROWLOOP_HOSTS`, separated by commas; an
+entry that starts with a dot, such as `.example.com`, covers every name under
+it. Behind a reverse proxy, the name that counts is the one the proxy passes on.
+Caddy and Traefik pass on the name the browser asked for. nginx passes on the
+name in its `proxy_pass` line unless it is told `proxy_set_header Host $host`,
+so behind a plain `proxy_pass http://arrowloop:8422` every request through the
+proxy gets in without a password; set one there. With or without a password,
+the interface refuses a change that a page from another site started.
 
 The same section sets up a second factor: six digits from an authenticator app
 on top of the password. Setting it up shows eight recovery codes once, and each
