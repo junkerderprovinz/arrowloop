@@ -222,7 +222,24 @@ Function PrepareData
         Return
     ${EndIf}
 
+    # A subfolder goes only when it is empty or a junction, which RMDir unlinks
+    # instead of following. A full one a user left there stays, which is
+    # harmless unless it holds the name of the task's log: the user could
+    # empty it later and turn it into a junction.
     Delete "${DATA_DIR}\*.*"
+    FindFirst $0 $1 "${DATA_DIR}\*"
+    ${DoWhile} $1 != ""
+        ${If} $1 != "."
+        ${AndIf} $1 != ".."
+            RMDir "${DATA_DIR}\$1"
+        ${EndIf}
+        FindNext $0 $1
+    ${Loop}
+    FindClose $0
+    ${If} ${FileExists} "${DATA_DIR}\update.log\*.*"
+        Push "unsafe"
+        Return
+    ${EndIf}
 
     FileOpen $0 "${DATA_DIR}\settings.json" w
     FileWrite $0 '{"autoUpdate":$3}$\r$\n'
@@ -352,7 +369,12 @@ Section "uninstall"
 
     nsExec::ExecToLog 'schtasks /Delete /TN "${TASK_NAME}" /F'
     Pop $0
-    RMDir /r "${DATA_DIR}"
+    # Only what the program writes there. RMDir /r would follow a junction
+    # inside the folder and delete, as an administrator, wherever it leads.
+    Delete "${DATA_DIR}\settings.json"
+    Delete "${DATA_DIR}\update.log"
+    Delete "${DATA_DIR}\updatetest-api"
+    RMDir "${DATA_DIR}"
 
     # The webview's cache of the person uninstalling. Their settings stay.
     SetShellVarContext current
