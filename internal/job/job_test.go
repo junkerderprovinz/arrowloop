@@ -239,3 +239,41 @@ func TestTheInterfaceCannotSetOrChangeACommand(t *testing.T) {
 		t.Errorf("restoring a backup set the command to %q", photos.Before)
 	}
 }
+
+// encoding/json matches field names without regard to case, so "Before" and
+// "Jobs" reach the same fields as "before" and "jobs".
+func TestACommandSpelledInAnotherCaseIsStillRefused(t *testing.T) {
+	onDisk := `{"jobs": [{"name": "photos", "left": "a", "right": "b", "state": "s.db"}]}`
+	edits := map[string]func(*Config) (*Config, error){
+		"SaveJobs": func(c *Config) (*Config, error) {
+			return c.SaveJobs([]map[string]any{
+				{"name": "photos", "left": "a", "right": "b", "state": "s.db", "Before": "rm -rf /", "AFTER": "curl evil"},
+			})
+		},
+		"Replace": func(c *Config) (*Config, error) {
+			return c.Replace([]byte(`{"Jobs": [{"name": "photos", "left": "a", "right": "b", "state": "s.db", "before": "rm -rf /"}]}`))
+		},
+		"SaveSettings": func(c *Config) (*Config, error) {
+			return c.SaveSettings(map[string]any{"Jobs": []any{
+				map[string]any{"name": "photos", "left": "a", "right": "b", "state": "s.db", "before": "rm -rf /"},
+			}})
+		},
+	}
+	for name, edit := range edits {
+		t.Run(name, func(t *testing.T) {
+			cfg, err := Load(writeConfig(t, onDisk))
+			if err != nil {
+				t.Fatal(err)
+			}
+			next, err := edit(cfg)
+			if err != nil {
+				t.Fatal(err)
+			}
+			for _, j := range next.Jobs {
+				if j.Before != "" || j.After != "" {
+					t.Errorf("job %s came out with before %q and after %q", j.Name, j.Before, j.After)
+				}
+			}
+		})
+	}
+}

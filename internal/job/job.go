@@ -631,7 +631,7 @@ func (c *Config) SaveJobs(jobs []map[string]any) (*Config, error) {
 func (c *Config) SaveSettings(settings map[string]any) (*Config, error) {
 	return c.save(func(doc map[string]any) {
 		for k, v := range settings {
-			if k == "jobs" {
+			if strings.EqualFold(k, "jobs") {
 				// A caller handing back the whole document would otherwise
 				// drop a job added in another window.
 				continue
@@ -745,7 +745,9 @@ var commandKeys = []string{"before", "after"}
 
 // keepCommands gives every job in doc the commands its namesake has in the
 // file on disk, and none if it has no namesake, whatever the edit put there.
-// A job renamed in the interface therefore loses its commands.
+// A job renamed in the interface therefore loses its commands. Keys are
+// compared without regard to case, because Load's decoder matches them that
+// way.
 func keepCommands(onDisk []byte, doc map[string]any) {
 	var prev struct {
 		Jobs []map[string]any `json:"jobs"`
@@ -758,25 +760,49 @@ func keepCommands(onDisk []byte, doc map[string]any) {
 			kept[name] = j
 		}
 	}
-	// SaveJobs hands the list over typed, a decoded file as []any.
-	var jobs []map[string]any
-	switch list := doc["jobs"].(type) {
+	for top, list := range doc {
+		if !strings.EqualFold(top, "jobs") {
+			continue
+		}
+		for _, j := range jobMaps(list) {
+			name, _ := j["name"].(string)
+			for key := range j {
+				if isCommandKey(key) {
+					delete(j, key)
+				}
+			}
+			for _, key := range commandKeys {
+				if v, ok := kept[name][key]; ok {
+					j[key] = v
+				}
+			}
+		}
+	}
+}
+
+// jobMaps returns the jobs in a list as SaveJobs hands it over, typed, or as a
+// decoded file holds it, as []any.
+func jobMaps(list any) []map[string]any {
+	switch list := list.(type) {
 	case []map[string]any:
-		jobs = list
+		return list
 	case []any:
+		var jobs []map[string]any
 		for _, raw := range list {
 			if j, ok := raw.(map[string]any); ok {
 				jobs = append(jobs, j)
 			}
 		}
+		return jobs
 	}
-	for _, j := range jobs {
-		name, _ := j["name"].(string)
-		for _, key := range commandKeys {
-			delete(j, key)
-			if v, ok := kept[name][key]; ok {
-				j[key] = v
-			}
+	return nil
+}
+
+func isCommandKey(key string) bool {
+	for _, k := range commandKeys {
+		if strings.EqualFold(key, k) {
+			return true
 		}
 	}
+	return false
 }
