@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useCallback, useEffect, useState } from "react";
 import { DEFAULT_SHAPE, SHAPES_STORED, type Shape } from "../../web/src/lib/appearance";
-import { ORIGIN } from "./api";
+import { engineHeaders, ORIGIN } from "./api";
 
 // Appearance belongs to the phone and lives in AsyncStorage. Behaviour, such
 // as the language and the run conditions, belongs to the engine and goes
@@ -139,7 +139,7 @@ export interface EngineSettings {
 
 export const settings = {
   async read(): Promise<EngineSettings> {
-    const response = await fetch(ORIGIN + "/api/settings");
+    const response = await fetch(ORIGIN + "/api/settings", { headers: await engineHeaders() });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     return (await response.json()) as EngineSettings;
   },
@@ -148,7 +148,7 @@ export const settings = {
   async write(patch: EngineSettings): Promise<void> {
     const response = await fetch(ORIGIN + "/api/settings", {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...(await engineHeaders()) },
       body: JSON.stringify(patch),
     });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);

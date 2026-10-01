@@ -36,6 +36,8 @@ interface EngineNativeModule {
   setDevicePolicy(policy: Partial<DeviceConditions>): Promise<void>;
   /** Whether the engine answers over HTTP, not merely whether its process lives. */
   answering(): Promise<boolean>;
+  /** The secret every request to the engine carries, so no other app can drive it. */
+  token(): Promise<string>;
   batteryExempt(): Promise<boolean>;
   /** Copies to the clipboard; React Native's own Clipboard is deprecated. */
   copy(value: string): Promise<void>;
@@ -106,6 +108,7 @@ export const engine = {
   openStorageSettings: () => (native ? native.openStorageSettings() : missing()),
   openAppSettings: () => (native ? native.openAppSettings() : missing()),
   answering: () => (native ? native.answering() : Promise.resolve(false)),
+  token: () => (native ? native.token() : Promise.resolve("")),
   openNotificationSettings: () => (native ? native.openNotificationSettings() : missing()),
   openBatterySettings: () => (native ? native.openBatterySettings() : missing()),
   exportSettings: (json: string) => (native ? native.exportSettings(json) : missing()),

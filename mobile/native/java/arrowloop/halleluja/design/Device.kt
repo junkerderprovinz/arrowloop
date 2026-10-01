@@ -9,8 +9,6 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.os.BatteryManager
-import java.net.HttpURLConnection
-import java.net.URL
 
 /**
  * Watches power and network and tells the engine whether a condition holds
@@ -189,8 +187,7 @@ object Device {
         val body = """{"reason":${quote(now)}}"""
         Thread {
             try {
-                val url = URL("http://${Engine.ADDRESS}/api/device")
-                (url.openConnection() as HttpURLConnection).run {
+                Engine.connect(context, "/api/device").run {
                     requestMethod = "PUT"
                     doOutput = true
                     connectTimeout = 2000

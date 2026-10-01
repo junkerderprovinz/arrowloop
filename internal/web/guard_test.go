@@ -1,6 +1,9 @@
 package web_test
 
 import (
+	"crypto/hmac"
+	"crypto/sha256"
+	"encoding/hex"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -100,5 +103,59 @@ func TestWithAPasswordAnyNameIsServed(t *testing.T) {
 
 	if code := send(t, srv, http.MethodGet, "/api/session", nil, "arrowloop.example.com"); code != http.StatusOK {
 		t.Errorf("a proxy's host name answered %d", code)
+	}
+}
+
+// Loopback on a phone is open to every app on it, so the engine the app starts
+// answers only requests that carry the token the app handed it.
+func TestWithAnAppTokenOnlyTheAppGetsIn(t *testing.T) {
+	t.Setenv(web.PasswordHashEnv, "")
+	t.Setenv(web.AppTokenEnv, "the-apps-secret")
+	srv := newGuardedServer(t)
+
+	for _, path := range []string{"/api/jobs", "/api/events", "/api/capabilities", "/"} {
+		if code := send(t, srv, http.MethodGet, path, nil, ""); code != http.StatusUnauthorized {
+			t.Errorf("GET %s without the token answered %d", path, code)
+		}
+		if code := send(t, srv, http.MethodGet, path, map[string]string{"X-ArrowLoop-Token": "a guess"}, ""); code != http.StatusUnauthorized {
+			t.Errorf("GET %s with a wrong token answered %d", path, code)
+		}
+	}
+	if code := send(t, srv, http.MethodGet, "/api/jobs", map[string]string{"X-ArrowLoop-Token": "the-apps-secret"}, ""); code != http.StatusOK {
+		t.Errorf("GET /api/jobs with the token answered %d", code)
+	}
+}
+
+// Another app could take the port before the engine does, so the app asks
+// the engine to prove it knows the token instead of sending it.
+func TestTheEngineProvesItKnowsTheToken(t *testing.T) {
+	t.Setenv(web.AppTokenEnv, "the-apps-secret")
+	srv := newGuardedServer(t)
+
+	req, err := http.NewRequest(http.MethodGet, srv.URL+"/api/capabilities", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.Header.Set("X-ArrowLoop-Challenge", "abc123")
+	resp, err := srv.Client().Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	resp.Body.Close()
+
+	mac := hmac.New(sha256.New, []byte("the-apps-secret"))
+	mac.Write([]byte("abc123"))
+	if got, want := resp.Header.Get("X-ArrowLoop-Proof"), hex.EncodeToString(mac.Sum(nil)); got != want {
+		t.Errorf("proof = %q, want %q", got, want)
+	}
+}
+
+// The container and the command line set no token and carry on as before.
+func TestWithoutAnAppTokenNothingIsAsked(t *testing.T) {
+	t.Setenv(web.PasswordHashEnv, "")
+	t.Setenv(web.AppTokenEnv, "")
+	srv := newGuardedServer(t)
+	if code := send(t, srv, http.MethodGet, "/api/jobs", nil, ""); code != http.StatusOK {
+		t.Errorf("GET /api/jobs answered %d", code)
 	}
 }

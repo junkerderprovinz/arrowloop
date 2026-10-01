@@ -1,8 +1,20 @@
 // The engine's REST API over loopback, the same one the web app uses
-// (internal/web/api.go). The engine has no login, so it listens on 127.0.0.1
-// only.
+// (internal/web/api.go). Every other app on the phone can reach loopback too,
+// so the engine answers only requests that carry the token the app started it
+// with (internal/web/guard.go).
+
+import { engine } from "./engine";
 
 export const ORIGIN = "http://127.0.0.1:8422";
+
+/**
+ * The header that lets a request through to the engine. The token is asked for
+ * every time rather than kept, since the app draws a new one whenever it starts
+ * the engine.
+ */
+export async function engineHeaders(): Promise<Record<string, string>> {
+  return { "X-ArrowLoop-Token": await engine.token() };
+}
 
 /** A job as the list shows it: resolved, with its live state. */
 export interface Job {
@@ -304,7 +316,7 @@ async function call<T>(path: string, init?: RequestInit): Promise<T> {
   try {
     response = await fetch(ORIGIN + path, {
       ...init,
-      headers: { "Content-Type": "application/json", ...(init?.headers ?? {}) },
+      headers: { "Content-Type": "application/json", ...(await engineHeaders()), ...(init?.headers ?? {}) },
     });
   } catch (cause) {
     // Status 0: no connection, usually an engine that is still starting.
@@ -331,21 +343,12 @@ const name = encodeURIComponent;
 
 export const api = {
   /**
-   * Reports whether the engine answers. It has its own timeout, or a hanging
-   * request would keep a polling caller from ever reaching its deadline.
+   * Reports whether our engine answers. The native probe has the engine prove
+   * it knows the token without sending it, since another app could have taken
+   * the port, and it has its own timeout, so a polling caller still reaches
+   * its deadline.
    */
-  async alive(): Promise<boolean> {
-    const abort = new AbortController();
-    const timer = setTimeout(() => abort.abort(), 2000);
-    try {
-      await call("/api/capabilities", { signal: abort.signal });
-      return true;
-    } catch {
-      return false;
-    } finally {
-      clearTimeout(timer);
-    }
-  },
+  alive: () => engine.answering(),
 
   jobs: () => call<Job[]>("/api/jobs"),
   /** The registered drives, for naming one in the log. */
@@ -455,7 +458,7 @@ export const api = {
  * since React Native has no EventSource. It reads until the signal aborts.
  */
 export async function* events(signal: AbortSignal): AsyncGenerator<string> {
-  const response = await fetch(ORIGIN + "/api/events", { signal });
+  const response = await fetch(ORIGIN + "/api/events", { signal, headers: await engineHeaders() });
   if (!response.body) return;
   const reader = response.body.getReader();
   const decoder = new TextDecoder();
