@@ -64,13 +64,13 @@ var errPasswordFromEnv = errors.New("the password comes from " + PasswordHashEnv
 // over. A wrong answer counts against the address like a wrong login. It
 // answers the request itself when it refuses.
 func (s *Server) checkCurrentPassword(w http.ResponseWriter, r *http.Request, current string) bool {
-	gate := s.gate()
-	key := clientKey(r)
-	if gate.refuseIfLockedOut(w, key) {
+	try, ok := s.gate().admit(w, clientKey(r))
+	if !ok {
 		return false
 	}
+	defer try.done()
 	if err := bcrypt.CompareHashAndPassword(s.passwordHash(), []byte(current)); err != nil {
-		gate.fail(key)
+		try.fail()
 		writeError(w, http.StatusForbidden, errors.New("the current password is not right"))
 		return false
 	}
@@ -269,13 +269,13 @@ func (s *Server) totpDisable(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, http.StatusOK, s.securityView())
 		return
 	}
-	gate := s.gate()
-	key := clientKey(r)
-	if gate.refuseIfLockedOut(w, key) {
+	try, ok := s.gate().admit(w, clientKey(r))
+	if !ok {
 		return
 	}
+	defer try.done()
 	if !s.secondFactorOK(body.Code) {
-		gate.fail(key)
+		try.fail()
 		writeError(w, http.StatusForbidden, errors.New("that code is not valid"))
 		return
 	}

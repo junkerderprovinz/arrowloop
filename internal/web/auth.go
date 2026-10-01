@@ -57,8 +57,9 @@ const (
 	// before the login routes stop checking anything from it.
 	maxFailedLogins = 5
 
-	// lockoutWindow is how long that refusal lasts, measured from the most
-	// recent failure, so hammering extends it.
+	// lockoutWindow is how long that refusal lasts, measured from the last
+	// try that was counted. A refused try is not counted, so it does not
+	// extend the wait.
 	lockoutWindow = time.Minute
 
 	// maxTrackedClients bounds the failure table, which anybody who can reach
@@ -310,10 +311,8 @@ func clientKey(r *http.Request) string {
 
 // lockedOut reports how much longer this source address has to wait. It is
 // counted per address, so somebody failing on purpose locks out only himself
-// and not the owner.
+// and not the owner. The caller holds g.mu.
 func (g *authGate) lockedOut(key string) (time.Duration, bool) {
-	g.mu.Lock()
-	defer g.mu.Unlock()
 	rec, ok := g.failures[key]
 	if !ok || rec.count < maxFailedLogins {
 		return 0, false
@@ -325,24 +324,74 @@ func (g *authGate) lockedOut(key string) (time.Duration, bool) {
 	return 0, false
 }
 
-// refuseIfLockedOut answers 429 for an address that has used up its tries and
-// reports whether it did. It runs before any hash or code is checked, so a
-// locked-out caller spends none of this machine's processor.
-func (g *authGate) refuseIfLockedOut(w http.ResponseWriter, key string) bool {
-	wait, locked := g.lockedOut(key)
-	if !locked {
-		return false
-	}
-	seconds := int(wait.Seconds()) + 1
-	w.Header().Set("Retry-After", strconv.Itoa(seconds))
-	writeError(w, http.StatusTooManyRequests, fmt.Errorf("too many wrong attempts, try again in %d seconds", seconds))
-	return true
+// attempt is one try at a password or code. It counts as a failure from the
+// moment it is admitted, because requests sent at once would otherwise all
+// pass the check before the first wrong answer is recorded.
+type attempt struct {
+	gate    *authGate
+	key     string
+	settled bool
 }
 
-// recordFailure counts one wrong answer against a source address.
-func (g *authGate) recordFailure(key string) {
+// admit counts one try against a source address, or answers 429 and reports
+// false when the address has used up its tries. It runs before any hash or
+// code is checked, so a locked-out caller spends none of this machine's
+// processor. The caller defers done.
+func (g *authGate) admit(w http.ResponseWriter, key string) (*attempt, bool) {
 	g.mu.Lock()
-	defer g.mu.Unlock()
+	wait, locked := g.lockedOut(key)
+	if !locked {
+		g.recordFailure(key)
+	}
+	g.mu.Unlock()
+
+	if locked {
+		seconds := int(wait.Seconds()) + 1
+		w.Header().Set("Retry-After", strconv.Itoa(seconds))
+		writeError(w, http.StatusTooManyRequests, fmt.Errorf("too many wrong attempts, try again in %d seconds", seconds))
+		return nil, false
+	}
+	return &attempt{gate: g, key: key}, true
+}
+
+// fail keeps the try counted and charges the delay. The request's context is
+// ignored, so hanging up does not skip the delay.
+func (a *attempt) fail() {
+	a.settled = true
+	time.Sleep(failedLoginDelay)
+}
+
+// succeed forgets the address's failures, so somebody who mistypes twice and
+// then gets it right is not left one slip away from a lockout for the rest of
+// the minute.
+func (a *attempt) succeed() {
+	a.settled = true
+	a.gate.clearFailures(a.key)
+}
+
+// done takes back a try that was neither failed nor succeeded, such as one
+// whose body could not be read or a right password that still needs its code.
+func (a *attempt) done() {
+	if a.settled {
+		return
+	}
+	a.gate.mu.Lock()
+	defer a.gate.mu.Unlock()
+	rec, ok := a.gate.failures[a.key]
+	if !ok {
+		return
+	}
+	rec.count--
+	if rec.count <= 0 {
+		delete(a.gate.failures, a.key)
+		return
+	}
+	a.gate.failures[a.key] = rec
+}
+
+// recordFailure counts one wrong answer against a source address. The caller
+// holds g.mu.
+func (g *authGate) recordFailure(key string) {
 	if g.failures == nil {
 		g.failures = map[string]failureRecord{}
 	}
@@ -365,16 +414,7 @@ func (g *authGate) recordFailure(key string) {
 	g.failures[key] = rec
 }
 
-// fail counts a wrong answer and charges the delay. The request's context is
-// ignored, so hanging up does not skip the delay.
-func (g *authGate) fail(key string) {
-	g.recordFailure(key)
-	time.Sleep(failedLoginDelay)
-}
-
-// clearFailures forgets a source address's failures once it gets the password
-// right, so somebody who mistypes twice and then succeeds is not left one slip
-// away from a lockout for the rest of the minute.
+// clearFailures forgets a source address's failures.
 func (g *authGate) clearFailures(key string) {
 	g.mu.Lock()
 	defer g.mu.Unlock()
@@ -438,9 +478,11 @@ func (s *Server) login(w http.ResponseWriter, r *http.Request) {
 	key := clientKey(r)
 	// Checked before bcrypt, which is expensive on purpose and would otherwise
 	// let a locked-out caller spend this machine's processor.
-	if gate.refuseIfLockedOut(w, key) {
+	try, ok := gate.admit(w, key)
+	if !ok {
 		return
 	}
+	defer try.done()
 
 	var req loginRequest
 	if !readBody(w, r, &req) {
@@ -448,7 +490,7 @@ func (s *Server) login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := bcrypt.CompareHashAndPassword(hash, []byte(req.Password)); err != nil {
-		gate.fail(key)
+		try.fail()
 		// The same words whatever went wrong, so a malformed hash cannot be told
 		// from a wrong password.
 		writeError(w, http.StatusUnauthorized, errors.New("wrong password"))
@@ -466,7 +508,7 @@ func (s *Server) login(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		if !s.secondFactorOK(req.Code) {
-			gate.fail(key)
+			try.fail()
 			writeJSON(w, http.StatusUnauthorized, map[string]any{"error": "wrong code", "needCode": true})
 			return
 		}
@@ -476,7 +518,7 @@ func (s *Server) login(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
-	gate.clearFailures(key)
+	try.succeed()
 	writeJSON(w, http.StatusOK, sessionView{Required: true, Authenticated: true})
 }
 

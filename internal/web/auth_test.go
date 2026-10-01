@@ -7,6 +7,7 @@ import (
 	"net/http/cookiejar"
 	"net/http/httptest"
 	"strings"
+	"sync"
 	"testing"
 	"testing/fstest"
 	"time"
@@ -459,5 +460,46 @@ func TestTheLockoutKeyIgnoresForwardedHeaders(t *testing.T) {
 	r.Header.Set("X-Real-IP", "10.9.9.8")
 	if got := clientKey(r); got != "203.0.113.9" {
 		t.Fatalf("key = %q, want the real peer 203.0.113.9", got)
+	}
+}
+
+// Requests sent at once all pass a check that only reads the count, so each
+// try is counted before the password is looked at.
+func TestABurstOfLoginsGetsNoMoreTriesThanTheLimit(t *testing.T) {
+	hash, err := bcrypt.GenerateFromPassword([]byte(guardedPassword), bcrypt.DefaultCost)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Setenv(PasswordHashEnv, string(hash))
+	_, srv := newGuarded(t)
+
+	const burst = 30
+	start := make(chan struct{})
+	codes := make(chan int, burst)
+	var wg sync.WaitGroup
+	for range burst {
+		wg.Go(func() {
+			<-start
+			resp, err := http.Post(srv.URL+"/api/login", "application/json", strings.NewReader(`{"password":"not the password"}`))
+			if err != nil {
+				t.Error(err)
+				return
+			}
+			resp.Body.Close()
+			codes <- resp.StatusCode
+		})
+	}
+	close(start)
+	wg.Wait()
+	close(codes)
+
+	checked := 0
+	for code := range codes {
+		if code == http.StatusUnauthorized {
+			checked++
+		}
+	}
+	if checked > maxFailedLogins {
+		t.Errorf("%d of %d parallel wrong passwords were checked, the limit is %d", checked, burst, maxFailedLogins)
 	}
 }

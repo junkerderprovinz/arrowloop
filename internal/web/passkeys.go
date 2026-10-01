@@ -438,10 +438,11 @@ func (s *Server) passkeyLoginFinish(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	gate := s.gate()
-	key := clientKey(r)
-	if gate.refuseIfLockedOut(w, key) {
+	try, ok := gate.admit(w, clientKey(r))
+	if !ok {
 		return
 	}
+	defer try.done()
 	var body struct {
 		CeremonyID string          `json:"ceremonyId"`
 		Credential json.RawMessage `json:"credential"`
@@ -450,7 +451,7 @@ func (s *Server) passkeyLoginFinish(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	refuse := func(why string) {
-		gate.fail(key)
+		try.fail()
 		writeError(w, http.StatusUnauthorized, errors.New(why))
 	}
 
@@ -506,7 +507,7 @@ func (s *Server) passkeyLoginFinish(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
-	gate.clearFailures(key)
+	try.succeed()
 	writeJSON(w, http.StatusOK, sessionView{Required: true, Authenticated: true})
 }
 
