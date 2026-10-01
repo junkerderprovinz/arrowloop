@@ -130,6 +130,26 @@ func TestQuietPeriodPostponesAFreshFile(t *testing.T) {
 	requireConverged(t, j, "after the file settled")
 }
 
+// A modification time years ahead comes from a wrong clock, not from a file
+// still being written, and waiting for it would postpone the file for years.
+func TestAFileStampedInTheFutureIsNotPostponed(t *testing.T) {
+	opt := quick()
+	opt.Compare.QuietPeriod = 30 * time.Second
+	j := newJob(t, opt)
+
+	write(t, j.left, "from-a-camera.jpg", "taken with the clock set to 2031")
+	future := time.Now().AddDate(5, 0, 0)
+	if err := os.Chtimes(filepath.Join(j.left, "from-a-camera.jpg"), future, future); err != nil {
+		t.Fatalf("chtimes: %v", err)
+	}
+
+	p, res := j.sync(t)
+	if res.Copied != 1 {
+		t.Fatalf("the file was not copied: %d copied, skipped %+v", res.Copied, p.Skipped)
+	}
+	requireConverged(t, j, "after the run")
+}
+
 // On a case-insensitive side one of the two files would silently overwrite
 // the other.
 func TestCaseCollisionIsRefused(t *testing.T) {

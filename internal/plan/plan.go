@@ -542,9 +542,13 @@ func settling(l, r *scan.Entry, opt Options) (Reason, bool) {
 	if opt.QuietPeriod <= 0 {
 		return Reason{}, false
 	}
-	cutoff := opt.now().Add(-opt.QuietPeriod)
+	now := opt.now()
+	cutoff := now.Add(-opt.QuietPeriod)
+	// A time further ahead than a clock a little fast would put it comes from
+	// a wrong clock, and waiting for it would postpone the file until then.
+	horizon := now.Add(opt.QuietPeriod)
 	for side, e := range map[Side]*scan.Entry{Left: l, Right: r} {
-		if e == nil || !e.Mod.After(cutoff) {
+		if e == nil || !e.Mod.After(cutoff) || e.Mod.After(horizon) {
 			continue
 		}
 		return because("settling", "side", side.String(), "period", opt.QuietPeriod.String()), true
