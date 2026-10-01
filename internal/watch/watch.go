@@ -46,7 +46,7 @@ type Options struct {
 // Watcher reports that something under its roots changed.
 type Watcher struct {
 	opt     Options
-	fsw     *fsnotify.Watcher
+	src     *source
 	onEvent func()
 
 	mu      sync.Mutex
@@ -70,22 +70,33 @@ func New(opt Options, onEvent func()) (*Watcher, error) {
 		opt.Log = func(string, ...any) {}
 	}
 
-	fsw, err := fsnotify.NewWatcher()
+	src, err := newSource()
 	if err != nil {
 		return nil, fmt.Errorf("start watching: %w", err)
 	}
-	w := &Watcher{opt: opt, fsw: fsw, onEvent: onEvent, watched: map[string]bool{}}
+	w := &Watcher{opt: opt, src: src, onEvent: onEvent, watched: map[string]bool{}}
 	for _, root := range opt.Roots {
 		if err := w.addTree(root); err != nil {
-			fsw.Close()
+			src.close()
 			return nil, err
 		}
 	}
 	return w, nil
 }
 
+// source is where the events come from. A recursive source covers a root's
+// whole subtree with one watch; any other needs a watch per directory.
+type source struct {
+	events    <-chan fsnotify.Event
+	errors    <-chan error
+	add       func(dir string) error
+	remove    func(dir string) error
+	close     func() error
+	recursive bool
+}
+
 // Close releases the underlying watches.
-func (w *Watcher) Close() error { return w.fsw.Close() }
+func (w *Watcher) Close() error { return w.src.close() }
 
 // Mute stops events being reported for the cooldown period, starting now. The
 // runner calls it around its own runs.
@@ -112,7 +123,7 @@ func (w *Watcher) Run(ctx context.Context) error {
 		case <-ctx.Done():
 			return nil
 
-		case ev, open := <-w.fsw.Events:
+		case ev, open := <-w.src.events:
 			if !open {
 				return nil
 			}
@@ -124,7 +135,7 @@ func (w *Watcher) Run(ctx context.Context) error {
 				w.forget(ev.Name)
 			}
 			// Watches do not cover subtrees, so a new directory needs its own.
-			if ev.Has(fsnotify.Create) {
+			if ev.Has(fsnotify.Create) && !w.src.recursive {
 				if info, err := os.Stat(ev.Name); err == nil && info.IsDir() {
 					if err := w.addTree(ev.Name); err != nil {
 						w.opt.Log("could not watch the new folder %s: %v", ev.Name, err)
@@ -145,7 +156,7 @@ func (w *Watcher) Run(ctx context.Context) error {
 			}
 			w.onEvent()
 
-		case err, open := <-w.fsw.Errors:
+		case err, open := <-w.src.errors:
 			if !open {
 				return nil
 			}
@@ -180,6 +191,15 @@ func (w *Watcher) interesting(ev fsnotify.Event) bool {
 
 // addTree watches a directory and everything already under it.
 func (w *Watcher) addTree(root string) error {
+	if w.src.recursive {
+		if err := w.src.add(root); err != nil {
+			return fmt.Errorf("watch %s: %w", root, err)
+		}
+		w.mu.Lock()
+		w.watched[root] = true
+		w.mu.Unlock()
+		return nil
+	}
 	return filepath.WalkDir(root, func(p string, d fs.DirEntry, err error) error {
 		if err != nil {
 			// An unreadable subdirectory is left to the listing to report.
@@ -204,7 +224,7 @@ func (w *Watcher) addTree(root string) error {
 		if already {
 			return nil
 		}
-		if err := w.fsw.Add(p); err != nil {
+		if err := w.src.add(p); err != nil {
 			w.opt.Log("could not watch %s: %v", p, err)
 			return nil
 		}
@@ -230,11 +250,12 @@ func (w *Watcher) forget(dir string) {
 	}
 	w.mu.Unlock()
 	for _, p := range gone {
-		w.fsw.Remove(p)
+		w.src.remove(p)
 	}
 }
 
-// Watching reports how many directories are being watched.
+// Watching reports how many watches are open: one per root where a watch
+// covers its subtree, one per directory elsewhere.
 func (w *Watcher) Watching() int {
 	w.mu.Lock()
 	defer w.mu.Unlock()
