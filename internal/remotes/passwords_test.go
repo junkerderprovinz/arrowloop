@@ -93,3 +93,49 @@ func formFor(r Remote, key, value string) map[string]string {
 	}
 	return form
 }
+
+// rclone marks these Sensitive rather than a password, and each one unlocks
+// the account on its own while matching no secret word.
+func TestCredentialsRcloneCallsSensitiveAreWithheld(t *testing.T) {
+	for _, c := range []struct{ backend, key string }{
+		{"storj", "access_grant"},
+		{"azureblob", "sas_url"},
+		{"azurefiles", "connection_string"},
+		{"internxt", "mnemonic"},
+		{"filen", "master_keys"},
+		{"s3", "sse_customer_key_base64"},
+		{"iclouddrive", "cookies"},
+		{"mega", "session_id"},
+	} {
+		saved(t, "target", c.backend, map[string]string{c.key: "the credential"})
+		for _, s := range listed(t, "target").Settings {
+			if s.Key == c.key && (!s.Secret || s.Value != Placeholder) {
+				t.Errorf("%s/%s was listed as %+v", c.backend, c.key, s)
+			}
+		}
+	}
+}
+
+// rclone also marks the host and the user Sensitive, but somebody looking at
+// a target needs to see which server and which account it is.
+func TestWhoAndWhereStayVisible(t *testing.T) {
+	saved(t, "box", "sftp", map[string]string{"host": "nas.example.invalid", "user": "someone"})
+
+	for _, s := range listed(t, "box").Settings {
+		if s.Secret {
+			t.Errorf("%s was withheld", s.Key)
+		}
+	}
+}
+
+// The form takes a secret's placeholder back, which only works when it marks
+// the same fields secret as the listing.
+func TestTheFormAndTheListingWithholdTheSameFields(t *testing.T) {
+	for _, b := range Backends() {
+		for _, o := range b.Options {
+			if o.Secret != IsSecret(b.Name, o.Name) {
+				t.Errorf("%s/%s: form secret %v, listing secret %v", b.Name, o.Name, o.Secret, IsSecret(b.Name, o.Name))
+			}
+		}
+	}
+}

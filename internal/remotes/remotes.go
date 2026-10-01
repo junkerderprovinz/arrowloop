@@ -32,6 +32,19 @@ var alwaysSecret = map[string]bool{
 	"auth_token": true,
 }
 
+// sensitiveButShown are options rclone marks Sensitive, which it redacts from a
+// config somebody shares, that only say which server or which account a target
+// is. Every other Sensitive option is withheld, so a credential rclone adds
+// later stays off the screen without anybody adding it here.
+var sensitiveButShown = map[string]bool{
+	"host": true, "url": true, "api_url": true, "namenode": true,
+	"user": true, "username": true, "email": true, "apple_id": true,
+	"account": true, "access_key_id": true, "client_id": true, "app_id": true, "drive_id": true,
+	"tenant": true, "tenant_id": true, "tenant_domain": true, "domain": true, "user_id": true,
+	"namespace": true, "compartment": true, "project_number": true, "user_project": true,
+	"cloud_name": true,
+}
+
 // IsSecret reports whether a setting of a backend must never leave this
 // process.
 func IsSecret(backend, key string) bool {
@@ -41,10 +54,14 @@ func IsSecret(backend, key string) bool {
 	return secretName(key)
 }
 
-// secretOption is IsSecret for an option rclone describes. Every password
-// rclone declares counts, whatever its name: crypt's password2 matches no word.
+// secretOption is IsSecret for an option rclone describes. What rclone declares
+// a password or Sensitive counts whatever its name: crypt's password2 and
+// azureblob's sas_url match no word.
 func secretOption(option rclonefs.Option) bool {
-	return option.IsPassword || secretName(option.Name)
+	if option.IsPassword || secretName(option.Name) {
+		return true
+	}
+	return option.Sensitive && !sensitiveButShown[option.Name]
 }
 
 func secretName(key string) bool {
