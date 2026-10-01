@@ -50,7 +50,12 @@ class SyncJobService : JobService() {
     }
 
     override fun onStopJob(params: JobParameters): Boolean {
-        inside.remove(params.jobId)?.stop()
+        // done() skips a run that is no longer listed, so the trigger is
+        // scheduled again here.
+        inside.remove(params.jobId)?.let {
+            it.stop()
+            rearm(params)
+        }
         return false
     }
 
