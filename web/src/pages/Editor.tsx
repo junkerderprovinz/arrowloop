@@ -178,9 +178,12 @@ export function useJobConfig(onSaved: () => void) {
    * in the configuration: the server resolves the path from the job's entry, so
    * nothing here can name a file outside it. A failure there is shown but does
    * not stop the removal, since the database is only a cache.
+   *
+   * `gone` runs in the same render as the shorter list, for state that points
+   * into it by position.
    */
   const remove = useCallback(
-    async (at: number, alsoState: boolean, saved?: string) => {
+    async (at: number, alsoState: boolean, saved?: string, gone?: () => void) => {
       setSaved(false)
       if (saved !== undefined) {
         if (alsoState) {
@@ -193,6 +196,7 @@ export function useJobConfig(onSaved: () => void) {
         if (!(await writeOne((file) => file.filter((j) => j.name !== saved)))) return
       }
       setJobs((prev) => prev && prev.filter((_, i) => i !== at))
+      gone?.()
     },
     [writeOne],
   )

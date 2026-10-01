@@ -378,8 +378,11 @@ export function Jobs({
           }
           onCancel={() => setRemoving(null)}
           onConfirm={() => {
-            void config.remove(removing.at, dropState, removing.saved)
-            if (editing === removing.at) setEditing(null)
+            const at = removing.at
+            // The form follows its entry, which moves up when one above it goes.
+            void config.remove(at, dropState, removing.saved, () =>
+              setOpen((o) => (o === null || o.at < at ? o : o.at === at ? null : { ...o, at: o.at - 1 })),
+            )
             setRemoving(null)
           }}
         />

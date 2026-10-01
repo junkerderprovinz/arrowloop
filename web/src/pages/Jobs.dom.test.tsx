@@ -289,6 +289,25 @@ describe('pausing and removing a job', () => {
     await waitFor(() => expect(saveConfig).toHaveBeenCalled())
     expect(saveConfig.mock.calls[0][0]).toEqual([pair()[0]])
   })
+
+  it('keeps an open form on its job when a job above it is removed', async () => {
+    cards()
+    await screen.findAllByRole('button', { name: 'Pause' })
+    fireEvent.click(screen.getAllByRole('button', { name: 'Options' })[1])
+    fireEvent.click(within(await screen.findByRole('menu')).getByRole('menuitem', { name: 'Edit' }))
+    fireEvent.change(await screen.findByDisplayValue('nas:music'), { target: { value: 'nas:elsewhere' } })
+
+    fireEvent.click(screen.getAllByRole('button', { name: 'Options' })[0])
+    fireEvent.click(within(await screen.findByRole('menu')).getByRole('menuitem', { name: 'Remove' }))
+    const dialog = await screen.findByRole('dialog')
+    fireEvent.click(within(dialog).getByRole('switch'))
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Delete it' }))
+
+    await waitFor(() => expect(saveConfig).toHaveBeenCalled())
+    expect(saveConfig.mock.calls[0][0]).toEqual([pair()[1]])
+    expect(await screen.findByDisplayValue('nas:elsewhere')).toBeTruthy()
+    expect(screen.getByDisplayValue('music')).toBeTruthy()
+  })
 })
 
 describe('renaming a job', () => {
