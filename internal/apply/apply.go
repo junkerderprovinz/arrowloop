@@ -574,6 +574,10 @@ func whyFailed(ends Ends, suspects []touch, what, ordinary string, err error) pl
 	if errors.As(err, &unver) {
 		return plan.Because("unverified", "what", what, "side", unver.Side.String())
 	}
+	var changed *changedError
+	if errors.As(err, &changed) {
+		return plan.Because("changedDuring", "side", changed.Side.String())
+	}
 	for _, s := range suspects {
 		full, ok := localPath(ends.side(s.side), s.path)
 		if ok && lockprobe.Busy(full) {
@@ -631,6 +635,13 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 	switch act.Kind {
 	case plan.Copy:
 		src, dst := ends.side(act.Src), ends.side(act.Dst)
+		from, over := act.RightNow, act.LeftNow
+		if act.Dst == plan.Right {
+			from, over = act.LeftNow, act.RightNow
+		}
+		if _, err := asScanned(ctx, dst, act.Dst, act.DstPath, over, opt.ModWindow); err != nil {
+			return err
+		}
 		// A failure to keep the old version stops the copy, since the promise
 		// is that the old content is kept before the new content lands.
 		if err := keepVersion(ctx, dst, act.DstPath, runID); err != nil {
@@ -643,10 +654,6 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 		}
 		t.count(func(r *Result) { r.Copied++ })
 		// The source's size is what was just written.
-		from, over := act.RightNow, act.LeftNow
-		if act.Dst == plan.Right {
-			from, over = act.LeftNow, act.RightNow
-		}
 		t.sized("copy", act.DstPath, act.Dst.String(), replacing(over), sizeOf(from))
 		left, right := act.Names()
 		return rec.settle(ctx, act.Path, left, right, true)
@@ -659,6 +666,9 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 		sent, over := act.RightNow, act.LeftNow
 		if act.Dst == plan.Right {
 			sent, over = act.LeftNow, act.RightNow
+		}
+		if _, err := asScanned(ctx, dst, act.Dst, act.DstPath, over, opt.ModWindow); err != nil {
+			return err
 		}
 		if act.Aside && over != nil {
 			aside := conflictName(over.Path, act.Dst, runID)
@@ -722,7 +732,11 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 		if live == nil {
 			return rec.db.Forget(ctx, act.Path)
 		}
-		if err := discard(ctx, ends.side(act.Dst), live.Object(), runID); err != nil {
+		obj, err := asScanned(ctx, ends.side(act.Dst), act.Dst, live.Path, live, opt.ModWindow)
+		if err != nil {
+			return err
+		}
+		if err := discard(ctx, ends.side(act.Dst), obj, runID); err != nil {
 			return err
 		}
 		t.count(func(r *Result) { r.Trashed++ })
@@ -740,6 +754,43 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 		return resolveConflict(ctx, ends, rec, act, runID, opt)
 	}
 	return fmt.Errorf("unknown action kind %v", act.Kind)
+}
+
+// changedError means a side no longer holds what the scan found there. Acting
+// on the scan would overwrite or throw away a change made while the run was
+// going, so the file is left for the next run, which sees the change.
+type changedError struct {
+	Path string
+	Side plan.Side
+}
+
+func (e *changedError) Error() string {
+	return fmt.Sprintf("%q changed on the %s side since the scan", e.Path, e.Side)
+}
+
+// asScanned returns the object a side holds at remote, or a changedError when
+// that is not what the scan saw: a different size or time, a file that has
+// gone, or one that appeared where the scan found none. window is the job's
+// tolerance for modification times, widened to what the backend can keep.
+func asScanned(ctx context.Context, f fs.Fs, side plan.Side, remote string, seen *scan.Entry, window time.Duration) (fs.Object, error) {
+	obj, err := f.NewObject(ctx, remote)
+	if errors.Is(err, fs.ErrorObjectNotFound) {
+		if seen == nil {
+			return nil, nil
+		}
+		return nil, &changedError{Path: remote, Side: side}
+	}
+	if err != nil {
+		return nil, err
+	}
+	if seen == nil {
+		return nil, &changedError{Path: remote, Side: side}
+	}
+	there := plan.Facts{Size: obj.Size(), Mod: obj.ModTime(ctx)}
+	if !plan.Same(there, plan.Facts{Size: seen.Size, Mod: seen.Mod}, max(window, f.Precision())) {
+		return nil, &changedError{Path: remote, Side: side}
+	}
+	return obj, nil
 }
 
 // replacing is the note for a copy onto a side that already held the file.
