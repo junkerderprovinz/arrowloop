@@ -181,7 +181,7 @@ func Check(ctx context.Context, j job.Job, opt Opts) (Report, error) {
 	// be reported as on neither side.
 	visible := make(map[string]state.Entry, len(prev))
 	for key, entry := range prev {
-		if settings.Exclude.Excluded(entry.LeftPath) || settings.Exclude.Excluded(entry.RightPath) || settings.Exclude.Excluded(key) {
+		if settings.Exclude.Excluded(entry.LeftPath) || settings.Exclude.Excluded(entry.RightPath) {
 			continue
 		}
 		visible[key] = entry

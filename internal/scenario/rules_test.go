@@ -130,6 +130,35 @@ func TestQuietPeriodPostponesAFreshFile(t *testing.T) {
 	requireConverged(t, j, "after the file settled")
 }
 
+// A pattern is matched against the names as the sides spell them, for the
+// record as for the listing. Matched against the folded key instead, it would
+// hide the record of a file the listing still carries, and a deletion of that
+// file would read as a new file on the other side and come back.
+func TestAPatternMatchesTheRecordAsItMatchesTheListing(t *testing.T) {
+	opt := quick()
+	fold := true
+	opt.ForceFoldCase = &fold
+	j := newJob(t, opt)
+	write(t, j.left, "IMG_1.JPG", "a photo")
+	write(t, j.left, "notes.txt", "keeps the side populated")
+	j.sync(t)
+
+	excl, err := filter.New([]string{"*.jpg"})
+	if err != nil {
+		t.Fatalf("filter: %v", err)
+	}
+	j.opt.Exclude = excl
+	if err := os.Remove(filepath.Join(j.left, "IMG_1.JPG")); err != nil {
+		t.Fatalf("remove: %v", err)
+	}
+	j.sync(t)
+
+	if _, err := os.Stat(filepath.Join(j.left, "IMG_1.JPG")); err == nil {
+		t.Fatal("the deleted file came back")
+	}
+	requireConverged(t, j, "after the deletion")
+}
+
 // A modification time years ahead comes from a wrong clock, not from a file
 // still being written, and waiting for it would postpone the file for years.
 func TestAFileStampedInTheFutureIsNotPostponed(t *testing.T) {

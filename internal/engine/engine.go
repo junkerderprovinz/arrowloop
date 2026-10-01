@@ -145,7 +145,7 @@ func Prepare(ctx context.Context, ends apply.Ends, db *state.DB, opt Options) (*
 	// path would read as a deletion.
 	visible := make(map[string]state.Entry, len(prev))
 	for key, entry := range prev {
-		if opt.Exclude.Excluded(entry.LeftPath) || opt.Exclude.Excluded(entry.RightPath) || opt.Exclude.Excluded(key) {
+		if opt.Exclude.Excluded(entry.LeftPath) || opt.Exclude.Excluded(entry.RightPath) {
 			continue
 		}
 		visible[key] = entry
@@ -184,7 +184,7 @@ func Prepare(ctx context.Context, ends apply.Ends, db *state.DB, opt Options) (*
 		}
 		visibleDirs := make(map[string]state.Dir, len(prevDirs))
 		for key, entry := range prevDirs {
-			if opt.Exclude.Excluded(entry.LeftPath) || opt.Exclude.Excluded(entry.RightPath) || opt.Exclude.Excluded(key) {
+			if opt.Exclude.Excluded(entry.LeftPath) || opt.Exclude.Excluded(entry.RightPath) {
 				continue
 			}
 			visibleDirs[key] = entry
