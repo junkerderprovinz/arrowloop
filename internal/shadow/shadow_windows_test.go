@@ -22,7 +22,7 @@ func TestAShadowCopyShowsAFileAsItWasAndIsRemovedAgain(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	s := New()
+	s := New(filepath.Join(t.TempDir(), "shadow-copies.json"))
 	frozen, err := s.Root(ctx, dir)
 	if err != nil {
 		t.Fatal(err)
@@ -55,7 +55,7 @@ func TestWithoutAdministratorRightsNoCopyIsTried(t *testing.T) {
 	if windows.GetCurrentProcessToken().IsElevated() {
 		t.Skip("this process has administrator rights")
 	}
-	_, err := New().Root(context.Background(), t.TempDir())
+	_, err := New(filepath.Join(t.TempDir(), "shadow-copies.json")).Root(context.Background(), t.TempDir())
 	if !errors.Is(err, ErrNeedsAdmin) {
 		t.Errorf("got %v, want ErrNeedsAdmin", err)
 	}

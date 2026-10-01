@@ -51,7 +51,7 @@ func newRunner(t *testing.T) (*Runner, string, string) {
 		}},
 		ParallelJobs: 1,
 	}
-	return New(cfg, hist, nil, func(string, ...any) {}), left, right
+	return New(cfg, hist, func(string, ...any) {}), left, right
 }
 
 // The run log is where somebody looks to see that a run was stopped, and a

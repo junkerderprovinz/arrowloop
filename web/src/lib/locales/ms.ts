@@ -411,7 +411,7 @@ const ms: Translations = {
   'engine.parallelHint': 'Lalainya satu demi satu, dan itu satu keputusan bukan had: dua tugas yang berjalan serentak berkongsi satu talian dan satu cakera, jadi kebanyakannya saling memperlahankan dan menjadikan log lebih sukar dibaca.',
   'engine.memory': 'Apa yang diingatinya',
   'engine.history': 'Fail log larian',
-  'engine.historyHint': 'Tempat setiap larian dicatat, berserta apa yang dilakukannya pada fail mana. Kosong bermaksud di sebelah fail konfigurasi. Nama relatif adalah relatif kepada folder yang sama.',
+  'engine.historyHint': 'Tempat setiap larian dicatat, berserta apa yang dilakukannya pada fail mana. Kosong bermaksud di sebelah fail konfigurasi. Nama relatif adalah relatif kepada folder yang sama. Perubahan berkuat kuasa apabila program dimulakan pada kali seterusnya.',
   'engine.telling': 'Siapa diberitahu',
   'engine.defaults': 'Tetapan penyegerakan global',
   'settings.syncHint': 'Dari mana tugas baharu bermula. Tugas yang tidak menyatakan tetapan mengambil nilainya dari sini.',

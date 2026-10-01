@@ -157,7 +157,10 @@ A command that exits with an error after a successful run marks the run failed,
 so a notification goes out for it. The commands run through `sh -c`, or
 `cmd /C` on Windows, in the program's working directory. Each may take fifteen
 minutes; after that it is stopped, because a hanging command would hold its
-job's place and every job queued behind it.
+job's place and every job queued behind it. A command that is stopped, at that
+limit or because the run was stopped, takes every program it started with it.
+A program that a command which finished cleanly left running in the background,
+such as an SSH tunnel, keeps running.
 
 !!! warning "Only the file can set them"
     Anybody who can reach the interface could otherwise run anything on this
@@ -173,7 +176,7 @@ job's place and every job queued behind it.
 |---|---|---|
 | `bwlimit` | none | rclone syntax, `1M` or a timetable like `08:00,512k 19:00,off`. |
 | `parallelJobs` | `1` | How many jobs may run at once. |
-| `history` | beside the file | Where run records go. |
+| `history` | beside the file | Where run records go. A change takes effect the next time the program starts. |
 | `notify.matrix` | none | A room to post into: homeserver, room id, access token. |
 | `notify.webhook` | none | A URL that receives a small JSON document. |
 | `notify.onSuccess` | `false` | Report every run rather than only the failures. |

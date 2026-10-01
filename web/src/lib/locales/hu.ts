@@ -411,7 +411,7 @@ const hu: Translations = {
   'engine.parallelHint': 'Alapból egyszerre egy, és ez döntés, nem korlát: két egyszerre futó feladat egy vonalon és egy lemezen osztozik, tehát főleg egymást lassítják, a naplót pedig nehezebben olvashatóvá teszik.',
   'engine.memory': 'Mire emlékszik',
   'engine.history': 'A futásnapló fájlja',
-  'engine.historyHint': 'Hová kerül minden futás, azzal együtt, hogy mit tett melyik fájllal. Az üres érték a beállítófájl mellé jelenti. A relatív név ugyanahhoz a mappához képest értendő.',
+  'engine.historyHint': 'Hová kerül minden futás, azzal együtt, hogy mit tett melyik fájllal. Az üres érték a beállítófájl mellé jelenti. A relatív név ugyanahhoz a mappához képest értendő. A módosítás a program következő indításakor lép életbe.',
   'engine.telling': 'Ki kap értesítést',
   'engine.defaults': 'Globális szinkronizálási beállítás',
   'settings.syncHint': 'Miből indul ki egy új feladat. Az a feladat, amely egy beállításról nem mond semmit, innen veszi az értéket.',

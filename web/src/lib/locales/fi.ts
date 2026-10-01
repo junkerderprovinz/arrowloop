@@ -411,7 +411,7 @@ const fi: Translations = {
   'engine.parallelHint': 'Oletuksena yksi kerrallaan, ja se on päätös eikä rajoitus: kaksi yhtaikaista työtä jakavat yhden yhteyden ja yhden levyn, joten ne lähinnä hidastavat toisiaan ja sotkevat lokin.',
   'engine.memory': 'Mitä se muistaa',
   'engine.history': 'Ajolokin tiedosto',
-  'engine.historyHint': 'Minne jokainen ajo kirjataan, ja mitä se teki millekin tiedostolle. Tyhjä tarkoittaa asetustiedoston viereen. Suhteellinen nimi on suhteessa samaan kansioon.',
+  'engine.historyHint': 'Minne jokainen ajo kirjataan, ja mitä se teki millekin tiedostolle. Tyhjä tarkoittaa asetustiedoston viereen. Suhteellinen nimi on suhteessa samaan kansioon. Muutos tulee voimaan, kun ohjelma käynnistetään seuraavan kerran.',
   'engine.telling': 'Kuka saa tiedon',
   'engine.defaults': 'Yleinen synkronointiasetus',
   'settings.syncHint': 'Mistä uusi työ lähtee. Työ, joka ei määritä asetusta, ottaa arvon täältä.',

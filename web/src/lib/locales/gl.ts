@@ -411,7 +411,7 @@ const gl: Translations = {
   'engine.parallelHint': 'Dunha en unha por defecto, e é unha decisión e non unha limitación: dúas tarefas á vez comparten unha liña e un disco, así que sobre todo se frean entre elas e enguedellan o rexistro.',
   'engine.memory': 'Que lembra',
   'engine.history': 'Ficheiro do rexistro de execucións',
-  'engine.historyHint': 'Onde se anota cada execución, co que fixo e a que ficheiro. Baleiro significa a carón do ficheiro de configuración. Un nome relativo éo respecto do mesmo cartafol.',
+  'engine.historyHint': 'Onde se anota cada execución, co que fixo e a que ficheiro. Baleiro significa a carón do ficheiro de configuración. Un nome relativo éo respecto do mesmo cartafol. Un cambio aplícase a próxima vez que se inicia o programa.',
   'engine.telling': 'A quen se avisa',
   'engine.defaults': 'Configuración global de sincronización',
   'settings.syncHint': 'De onde parte unha tarefa nova. Unha tarefa que non di nada sobre un axuste toma o valor de aquí.',

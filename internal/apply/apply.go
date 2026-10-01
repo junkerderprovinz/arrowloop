@@ -491,8 +491,7 @@ func applyDir(ctx context.Context, ends Ends, db *state.DB, d plan.DirAction) er
 // probed after a failure; see couldHaveLocked.
 func heldOpen(ends Ends, act plan.Action) (plan.Reason, bool) {
 	for _, w := range wantsToTouch(act) {
-		full, ok := localPath(ends.side(w.side), w.path)
-		if ok && lockprobe.Busy(full) {
+		if w.held(ends) {
 			return plan.Because("heldOpen", "side", w.side.String()), true
 		}
 	}
@@ -500,10 +499,25 @@ func heldOpen(ends Ends, act plan.Action) (plan.Reason, bool) {
 }
 
 // touch is one existing file an action has to read, rename or overwrite, on one
-// named side.
+// named side. removes says the action renames or deletes the file, which
+// Windows refuses for far more holders than a read.
 type touch struct {
-	side plan.Side
-	path string
+	side    plan.Side
+	path    string
+	removes bool
+}
+
+// held asks whether another program holds the file in a way that stops what
+// the action does to it.
+func (w touch) held(ends Ends) bool {
+	full, ok := localPath(ends.side(w.side), w.path)
+	if !ok {
+		return false
+	}
+	if w.removes {
+		return lockprobe.Pinned(full)
+	}
+	return lockprobe.Busy(full)
 }
 
 // wantsToTouch lists the existing files an action needs to get at, so a lock on
@@ -515,29 +529,30 @@ func wantsToTouch(act plan.Action) []touch {
 		if act.SrcPath == "" {
 			return nil
 		}
-		return []touch{{act.Src, act.SrcPath}}
+		// A relocation removes its source once the copy has landed.
+		return []touch{{act.Src, act.SrcPath, act.Kind == plan.Relocate}}
 
 	case plan.Move:
 		// A rename is applied on the destination side, to the old name.
 		if act.OldDstPath == "" {
 			return nil
 		}
-		return []touch{{act.Dst, act.OldDstPath}}
+		return []touch{{act.Dst, act.OldDstPath, true}}
 
 	case plan.Delete:
 		// A path gone from both sides only has its record cleared.
 		if act.DstPath == "" || (act.LeftNow == nil && act.RightNow == nil) {
 			return nil
 		}
-		return []touch{{act.Dst, act.DstPath}}
+		return []touch{{act.Dst, act.DstPath, true}}
 
 	case plan.Conflict:
 		var out []touch
 		if act.LeftNow != nil {
-			out = append(out, touch{plan.Left, act.LeftNow.Path})
+			out = append(out, touch{side: plan.Left, path: act.LeftNow.Path})
 		}
 		if act.RightNow != nil {
-			out = append(out, touch{plan.Right, act.RightNow.Path})
+			out = append(out, touch{side: plan.Right, path: act.RightNow.Path})
 		}
 		return out
 	}
@@ -556,7 +571,7 @@ func couldHaveLocked(act plan.Action) []touch {
 	}
 	switch act.Kind {
 	case plan.Copy, plan.Move, plan.Relocate:
-		return append(out, touch{act.Dst, act.DstPath})
+		return append(out, touch{act.Dst, act.DstPath, true})
 	}
 	return out
 }
@@ -579,8 +594,7 @@ func whyFailed(ends Ends, suspects []touch, what, ordinary string, err error) pl
 		return plan.Because("changedDuring", "side", changed.Side.String())
 	}
 	for _, s := range suspects {
-		full, ok := localPath(ends.side(s.side), s.path)
-		if ok && lockprobe.Busy(full) {
+		if s.held(ends) {
 			return plan.Because("heldOpenDuring", "what", what, "side", s.side.String(), "error", err.Error())
 		}
 	}

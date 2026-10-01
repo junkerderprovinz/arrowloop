@@ -411,7 +411,7 @@ const hr: Translations = {
   'engine.parallelHint': 'Zadano jedan po jedan, i to je odluka, a ne ograničenje: dva istodobna zadatka dijele jednu vezu i jedan disk, pa se uglavnom međusobno usporavaju i otežavaju čitanje zapisa.',
   'engine.memory': 'Čega se sjeća',
   'engine.history': 'Datoteka zapisa izvođenja',
-  'engine.historyHint': 'Gdje se zapisuje svako izvođenje, uz to što je učinilo s kojom datotekom. Prazno znači uz konfiguracijsku datoteku. Relativno ime odnosi se na istu mapu.',
+  'engine.historyHint': 'Gdje se zapisuje svako izvođenje, uz to što je učinilo s kojom datotekom. Prazno znači uz konfiguracijsku datoteku. Relativno ime odnosi se na istu mapu. Promjena vrijedi od sljedećeg pokretanja programa.',
   'engine.telling': 'Tko dobiva obavijest',
   'engine.defaults': 'Globalna postavka sinkronizacije',
   'settings.syncHint': 'Od čega kreće novi zadatak. Zadatak koji o postavci ništa ne kaže uzima vrijednost odavde.',

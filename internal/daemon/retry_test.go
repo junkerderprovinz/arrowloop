@@ -42,7 +42,7 @@ func retrySandbox(t *testing.T, attempts int, wait string) (*daemon.Runner, *his
 		t.Fatalf("history: %v", err)
 	}
 	t.Cleanup(func() { hist.Close() })
-	return daemon.New(cfg, hist, nil, nil), hist
+	return daemon.New(cfg, hist, nil), hist
 }
 
 // record writes one run into the log: an error means it failed.

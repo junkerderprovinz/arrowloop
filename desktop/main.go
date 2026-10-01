@@ -29,7 +29,6 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/engine"
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/job"
-	"github.com/junkerderprovinz/arrowloop/internal/notify"
 	"github.com/junkerderprovinz/arrowloop/internal/web"
 	webui "github.com/junkerderprovinz/arrowloop/web"
 )
@@ -136,7 +135,7 @@ func run() error {
 	desktopLog := func(format string, args ...any) {
 		log.Printf(format, args...)
 	}
-	runner := daemon.New(cfg, hist, notifier(cfg), desktopLog)
+	runner := daemon.New(cfg, hist, desktopLog)
 	sh.runner = runner
 
 	ui, err := webui.Files()
@@ -251,18 +250,4 @@ func writeStarterConfig(path string) error {
 		return err
 	}
 	return os.WriteFile(path, []byte(starterConfig), 0o644)
-}
-
-func notifier(cfg *job.Config) notify.Notifier {
-	var out notify.Multi
-	if m := cfg.Notify.Matrix; m != nil {
-		out = append(out, &notify.Matrix{Homeserver: m.Homeserver, Room: m.Room, Token: m.Token})
-	}
-	if cfg.Notify.Webhook != "" {
-		out = append(out, &notify.Webhook{URL: cfg.Notify.Webhook})
-	}
-	if len(out) == 0 {
-		return nil
-	}
-	return out
 }

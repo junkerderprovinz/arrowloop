@@ -8,6 +8,10 @@ package lockprobe
 // advisory and do not stop a reader.
 func Busy(path string) bool { return false }
 
+// Pinned always reports false away from Windows, where a file that is open
+// can still be renamed or deleted.
+func Pinned(path string) bool { return false }
+
 // WasBusy always reports false away from Windows. It exists so callers have the
 // same shape on every platform without build tags.
 func WasBusy(err error) bool { return false }

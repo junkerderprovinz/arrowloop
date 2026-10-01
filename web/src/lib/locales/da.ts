@@ -411,7 +411,7 @@ const da: Translations = {
   'engine.parallelHint': 'Ét ad gangen som standard, og det er en beslutning frem for en begrænsning: to job samtidig deler én forbindelse og én disk, så de bremser mest hinanden og gør loggen sværere at læse.',
   'engine.memory': 'Hvad den husker',
   'engine.history': 'Fil til kørselsloggen',
-  'engine.historyHint': 'Hvor hver kørsel skrives ned, med hvad den gjorde ved hvilken fil. Tomt betyder ved siden af konfigurationsfilen. Et relativt navn er relativt til samme mappe.',
+  'engine.historyHint': 'Hvor hver kørsel skrives ned, med hvad den gjorde ved hvilken fil. Tomt betyder ved siden af konfigurationsfilen. Et relativt navn er relativt til samme mappe. En ændring træder i kraft, næste gang programmet starter.',
   'engine.telling': 'Hvem der får besked',
   'engine.defaults': 'Global synkroniseringsindstilling',
   'settings.syncHint': 'Hvad et nyt job starter fra. Et job, der ikke siger noget om en indstilling, tager værdien herfra.',

@@ -411,7 +411,7 @@ const pt: Translations = {
   'engine.parallelHint': 'Uma de cada vez por omissão, e isso é uma decisão e não uma limitação: duas tarefas ao mesmo tempo partilham uma linha e um disco, por isso atrasam-se sobretudo uma à outra e tornam o registo mais difícil de ler.',
   'engine.memory': 'O que recorda',
   'engine.history': 'Ficheiro do registo de execuções',
-  'engine.historyHint': 'Onde cada execução é registada, com o que fez e a que ficheiro. Vazio significa ao lado do ficheiro de configuração. Um nome relativo é-o em relação a essa mesma pasta.',
+  'engine.historyHint': 'Onde cada execução é registada, com o que fez e a que ficheiro. Vazio significa ao lado do ficheiro de configuração. Um nome relativo é-o em relação a essa mesma pasta. Uma alteração passa a valer na próxima vez que o programa iniciar.',
   'engine.telling': 'Quem é avisado',
   'engine.defaults': 'Definição global de sincronização',
   'settings.syncHint': 'De onde parte uma nova tarefa. Uma tarefa que nada diz sobre uma definição toma o valor daqui.',

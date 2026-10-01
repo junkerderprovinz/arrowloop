@@ -411,7 +411,7 @@ const is: Translations = {
   'engine.parallelHint': 'Sjálfgefið eitt í einu, og það er ákvörðun frekar en takmörkun: tvö verk sem keyra samtímis deila einni tengingu og einum diski, svo þau hægja aðallega hvort á öðru og gera skrána torlesnari.',
   'engine.memory': 'Hvað hún man',
   'engine.history': 'Skrá fyrir keyrsluskrána',
-  'engine.historyHint': 'Hvar hver keyrsla er skráð, ásamt því hvað hún gerði við hvaða skrá. Autt þýðir við hliðina á stillingaskránni. Afstætt heiti miðast við sömu möppu.',
+  'engine.historyHint': 'Hvar hver keyrsla er skráð, ásamt því hvað hún gerði við hvaða skrá. Autt þýðir við hliðina á stillingaskránni. Afstætt heiti miðast við sömu möppu. Breyting tekur gildi næst þegar forritið ræsist.',
   'engine.telling': 'Hverjum er sagt frá',
   'engine.defaults': 'Almenn samstillingarstilling',
   'settings.syncHint': 'Hvað nýtt verk byrjar á. Verk sem segir ekkert um stillingu tekur gildið héðan.',

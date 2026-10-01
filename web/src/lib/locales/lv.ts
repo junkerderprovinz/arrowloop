@@ -411,7 +411,7 @@ const lv: Translations = {
   'engine.parallelHint': 'Pēc noklusējuma pa vienam, un tas ir lēmums, nevis ierobežojums: divi vienlaikus strādājoši uzdevumi dala vienu līniju un vienu disku, tāpēc galvenokārt bremzē viens otru un apgrūtina žurnāla lasīšanu.',
   'engine.memory': 'Ko tas atceras',
   'engine.history': 'Palaišanu žurnāla fails',
-  'engine.historyHint': 'Kur tiek pierakstīta katra palaišana kopā ar to, ko tā izdarīja ar kuru failu. Tukšs nozīmē blakus konfigurācijas failam. Relatīvs nosaukums attiecas uz to pašu mapi.',
+  'engine.historyHint': 'Kur tiek pierakstīta katra palaišana kopā ar to, ko tā izdarīja ar kuru failu. Tukšs nozīmē blakus konfigurācijas failam. Relatīvs nosaukums attiecas uz to pašu mapi. Izmaiņas stājas spēkā nākamajā programmas palaišanas reizē.',
   'engine.telling': 'Kam paziņo',
   'engine.defaults': 'Globālais sinhronizācijas iestatījums',
   'settings.syncHint': 'No kā sākas jauns uzdevums. Uzdevums, kas par iestatījumu neko nesaka, ņem vērtību no šejienes.',

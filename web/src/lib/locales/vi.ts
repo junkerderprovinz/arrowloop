@@ -411,7 +411,7 @@ const vi: Translations = {
   'engine.parallelHint': 'Mặc định chạy từng công việc một, và đó là một lựa chọn chứ không phải giới hạn: hai công việc chạy cùng lúc dùng chung một đường truyền và một ổ đĩa, nên chủ yếu làm chậm lẫn nhau và khiến nhật ký khó đọc hơn.',
   'engine.memory': 'Nó ghi nhớ những gì',
   'engine.history': 'Tệp nhật ký chạy',
-  'engine.historyHint': 'Nơi ghi lại từng lần chạy, kèm theo đã làm gì với tệp nào. Để trống nghĩa là đặt cạnh tệp cấu hình. Tên tương đối được tính từ chính thư mục đó.',
+  'engine.historyHint': 'Nơi ghi lại từng lần chạy, kèm theo đã làm gì với tệp nào. Để trống nghĩa là đặt cạnh tệp cấu hình. Tên tương đối được tính từ chính thư mục đó. Thay đổi có hiệu lực từ lần khởi động chương trình tiếp theo.',
   'engine.telling': 'Ai được báo',
   'engine.defaults': 'Thiết lập đồng bộ toàn cục',
   'settings.syncHint': 'Điểm xuất phát của một công việc mới. Công việc không nói gì về một thiết lập sẽ lấy giá trị từ đây.',

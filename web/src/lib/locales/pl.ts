@@ -411,7 +411,7 @@ const pl: Translations = {
   'engine.parallelHint': 'Domyślnie po jednym, i to decyzja, a nie ograniczenie: dwa zadania naraz dzielą jedno łącze i jeden dysk, więc głównie spowalniają się nawzajem i zaciemniają dziennik.',
   'engine.memory': 'Co pamięta',
   'engine.history': 'Plik dziennika przebiegów',
-  'engine.historyHint': 'Gdzie zapisywany jest każdy przebieg, wraz z tym, co zrobił i z jakim plikiem. Puste oznacza obok pliku konfiguracyjnego. Nazwa względna odnosi się do tego samego folderu.',
+  'engine.historyHint': 'Gdzie zapisywany jest każdy przebieg, wraz z tym, co zrobił i z jakim plikiem. Puste oznacza obok pliku konfiguracyjnego. Nazwa względna odnosi się do tego samego folderu. Zmiana obowiązuje od następnego uruchomienia programu.',
   'engine.telling': 'Kto dostaje wiadomość',
   'engine.defaults': 'Globalne ustawienie synchronizacji',
   'settings.syncHint': 'Od czego zaczyna nowe zadanie. Zadanie, które nic nie mówi o ustawieniu, bierze wartość stąd.',

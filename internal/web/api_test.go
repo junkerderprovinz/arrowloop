@@ -67,7 +67,7 @@ func newHarness(t *testing.T) *harness {
 	}
 	t.Cleanup(func() { hist.Close() })
 
-	runner := daemon.New(cfg, hist, nil, nil)
+	runner := daemon.New(cfg, hist, nil)
 	s := &web.Server{History: hist, Runner: runner}
 	srv := httptest.NewServer(s.Handler())
 	t.Cleanup(srv.Close)

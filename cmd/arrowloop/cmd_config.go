@@ -17,7 +17,6 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/engine"
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/job"
-	"github.com/junkerderprovinz/arrowloop/internal/notify"
 	"github.com/junkerderprovinz/arrowloop/internal/remotes"
 	"github.com/junkerderprovinz/arrowloop/internal/service"
 )
@@ -51,22 +50,6 @@ func load(ctx context.Context, path string) (*job.Config, error) {
 	return cfg, nil
 }
 
-// notifier builds the destination list from the configuration. A configuration
-// with nothing in it returns nil, which the runner reads as "say nothing".
-func notifier(cfg *job.Config) notify.Notifier {
-	var out notify.Multi
-	if m := cfg.Notify.Matrix; m != nil {
-		out = append(out, &notify.Matrix{Homeserver: m.Homeserver, Room: m.Room, Token: m.Token})
-	}
-	if cfg.Notify.Webhook != "" {
-		out = append(out, &notify.Webhook{URL: cfg.Notify.Webhook})
-	}
-	if len(out) == 0 {
-		return nil
-	}
-	return out
-}
-
 func logf(format string, args ...any) {
 	fmt.Printf("%s  %s\n", time.Now().Format("15:04:05"), fmt.Sprintf(format, args...))
 }
@@ -94,7 +77,7 @@ func cmdRun(ctx context.Context, args []string) error {
 	}
 	defer hist.Close()
 
-	runner := daemon.New(cfg, hist, notifier(cfg), logf)
+	runner := daemon.New(cfg, hist, logf)
 	rec, err := runner.Run(ctx, fset.Arg(0))
 	if err != nil {
 		return err
@@ -135,8 +118,8 @@ func cmdDaemon(ctx context.Context, args []string) error {
 	ctx, stop := signal.NotifyContext(ctx, os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
-	runner := daemon.New(cfg, hist, notifier(cfg), logf)
-	if n := notifier(cfg); n != nil {
+	runner := daemon.New(cfg, hist, logf)
+	if n := daemon.Notifier(cfg); n != nil {
 		logf("reporting to %s", n.Describe())
 	}
 	logf("watching %d job(s), %d at a time", len(cfg.Jobs), cfg.ParallelJobs)

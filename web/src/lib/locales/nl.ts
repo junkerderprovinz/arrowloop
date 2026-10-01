@@ -411,7 +411,7 @@ const nl: Translations = {
   'engine.parallelHint': 'Standaard één tegelijk, en dat is een keuze en geen beperking: twee taken tegelijk delen één lijn en één schijf, dus ze remmen vooral elkaar af en maken het logboek onoverzichtelijker.',
   'engine.memory': 'Wat hij onthoudt',
   'engine.history': 'Bestand voor het uitvoeringslogboek',
-  'engine.historyHint': 'Waar elke run wordt opgeschreven, met wat hij met welk bestand deed. Leeg betekent naast het configuratiebestand. Een relatieve naam is relatief aan diezelfde map.',
+  'engine.historyHint': 'Waar elke run wordt opgeschreven, met wat hij met welk bestand deed. Leeg betekent naast het configuratiebestand. Een relatieve naam is relatief aan diezelfde map. Een wijziging geldt vanaf de volgende start van het programma.',
   'engine.telling': 'Wie bericht krijgt',
   'engine.defaults': 'Globale synchronisatie-instelling',
   'settings.syncHint': 'Waar een nieuwe taak van uitgaat. Een taak die niets over een instelling zegt, neemt de waarde hiervandaan.',

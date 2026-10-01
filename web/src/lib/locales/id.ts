@@ -411,7 +411,7 @@ const id: Translations = {
   'engine.parallelHint': 'Bawaannya satu per satu, dan itu keputusan, bukan keterbatasan: dua tugas yang berjalan bersamaan berbagi satu sambungan dan satu diska, jadi kebanyakan saling memperlambat dan membuat catatan lebih sulit dibaca.',
   'engine.memory': 'Apa yang diingatnya',
   'engine.history': 'Berkas catatan proses',
-  'engine.historyHint': 'Tempat setiap proses dicatat, beserta apa yang dilakukannya pada berkas mana. Kosong berarti di samping berkas konfigurasi. Nama relatif dihitung dari folder yang sama.',
+  'engine.historyHint': 'Tempat setiap proses dicatat, beserta apa yang dilakukannya pada berkas mana. Kosong berarti di samping berkas konfigurasi. Nama relatif dihitung dari folder yang sama. Perubahan berlaku saat program dijalankan berikutnya.',
   'engine.telling': 'Siapa yang diberi tahu',
   'engine.defaults': 'Pengaturan sinkronisasi global',
   'settings.syncHint': 'Dari mana tugas baru dimulai. Tugas yang tidak menyebut suatu pengaturan mengambil nilainya dari sini.',

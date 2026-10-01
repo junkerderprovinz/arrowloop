@@ -411,7 +411,7 @@ const eu: Translations = {
   'engine.parallelHint': 'Lehenetsita banaka, eta hori erabaki bat da, ez muga bat: aldi berean doazen bi lanek lotura bat eta disko bat partekatzen dituzte, beraz elkar moteltzen dute batez ere eta erregistroa irakurgaitzago egiten.',
   'engine.memory': 'Zer gogoratzen duen',
   'engine.history': 'Exekuzio-erregistroaren fitxategia',
-  'engine.historyHint': 'Non idazten den exekuzio bakoitza, zer egin zuen eta zein fitxategirekin. Hutsik uzteak konfigurazio-fitxategiaren ondoan esan nahi du. Izen erlatibo bat karpeta beraren araberakoa da.',
+  'engine.historyHint': 'Non idazten den exekuzio bakoitza, zer egin zuen eta zein fitxategirekin. Hutsik uzteak konfigurazio-fitxategiaren ondoan esan nahi du. Izen erlatibo bat karpeta beraren araberakoa da. Aldaketak programa hurrengoan abiarazten denean du eragina.',
   'engine.telling': 'Nori jakinarazten zaion',
   'engine.defaults': 'Sinkronizazio ezarpen orokorra',
   'settings.syncHint': 'Lan berri bat nondik abiatzen den. Ezarpen bati buruz ezer esaten ez duen lanak hemengo balioa hartzen du.',

@@ -411,7 +411,7 @@ const it: Translations = {
   'engine.parallelHint': 'Una alla volta per impostazione predefinita, ed è una scelta, non un limite: due lavori insieme condividono una linea e un disco, quindi si rallentano a vicenda e rendono il registro più difficile da leggere.',
   'engine.memory': 'Ciò che ricorda',
   'engine.history': 'File del registro delle esecuzioni',
-  'engine.historyHint': 'Dove viene annotata ogni esecuzione, con ciò che ha fatto e a quale file. Vuoto significa accanto al file di configurazione. Un nome relativo lo è rispetto a quella stessa cartella.',
+  'engine.historyHint': 'Dove viene annotata ogni esecuzione, con ciò che ha fatto e a quale file. Vuoto significa accanto al file di configurazione. Un nome relativo lo è rispetto a quella stessa cartella. Una modifica vale dal prossimo avvio del programma.',
   'engine.telling': 'Chi viene avvisato',
   'engine.defaults': 'Impostazione di sincronizzazione globale',
   'settings.syncHint': 'Da cosa parte un nuovo lavoro. Un lavoro che non dice nulla su un\'impostazione ne prende il valore da qui.',

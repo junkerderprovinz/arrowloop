@@ -19,8 +19,12 @@ var ErrNotEnoughSpace = errors.New("not enough room on the destination")
 // disk. A job started by hand is not checked: the estimate can be wrong either
 // way, and a person will read the error.
 func (r *Runner) roomFor(ctx context.Context, j job.Job) error {
-	return refusalFrom(precheck.Check(ctx, j, precheck.Opts{}))
+	return refusalFrom(checkSpace(ctx, j, precheck.Opts{}))
 }
+
+// checkSpace is a variable so tests can make a destination look full, which
+// cannot be staged on a real disk.
+var checkSpace = precheck.Check
 
 // refusalFrom decides which of a report's findings stops a run: only the space
 // finding. The run reports an unreachable side better itself, and creates a

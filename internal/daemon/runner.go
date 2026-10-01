@@ -57,27 +57,31 @@ type Runner struct {
 	// can say "waiting for a drive".
 	waiting waiting
 
-	cfg  *job.Config
 	hist *history.DB
-	note notify.Notifier
 	log  func(format string, args ...any)
 
-	slots chan struct{}
+	// shadows lists the shadow copies runs have taken and not yet removed.
+	shadows string
+
+	slots slots
 
 	// reload carries one pending rebuild. Buffered by one and dropped when
 	// full: two edits in quick succession need one rebuild, not two.
 	reload chan struct{}
 
 	mu sync.Mutex
+	// cfg and note change together on a reload.
+	cfg  *job.Config
+	note notify.Notifier
 	// inflight holds, per running job, the way to stop it.
 	inflight map[string]context.CancelFunc
 	subs     map[chan Event]struct{}
 	watchers map[string]*watch.Watcher
 }
 
-// New builds a runner. hist and note may be nil, which turns off the run log
-// and the notifications respectively.
-func New(cfg *job.Config, hist *history.DB, note notify.Notifier, log func(string, ...any)) *Runner {
+// New builds a runner. hist may be nil, which turns off the run log. The
+// notifications go where the configuration says, and follow it on a reload.
+func New(cfg *job.Config, hist *history.DB, log func(string, ...any)) *Runner {
 	if log == nil {
 		log = func(string, ...any) {}
 	}
@@ -87,12 +91,19 @@ func New(cfg *job.Config, hist *history.DB, note notify.Notifier, log func(strin
 	// and so is the runner.
 	volume.SetRegistry(filepath.Join(filepath.Dir(cfg.Path()), "volumes.json"))
 
+	// A shadow copy a killed run left behind holds space on its volume until
+	// somebody removes it, and nothing has started a run here yet.
+	shadows := filepath.Join(filepath.Dir(cfg.Path()), "shadow-copies.json")
+	if err := shadow.Sweep(context.Background(), shadows); err != nil {
+		log("%v", err)
+	}
+
 	return &Runner{
 		cfg:      cfg,
 		hist:     hist,
-		note:     note,
+		note:     Notifier(cfg),
 		log:      log,
-		slots:    make(chan struct{}, cfg.ParallelJobs),
+		shadows:  shadows,
 		inflight: map[string]context.CancelFunc{},
 		reload:   make(chan struct{}, 1),
 	}
@@ -173,12 +184,10 @@ func (r *Runner) runAs(ctx context.Context, name string, do work) (history.Run, 
 	}
 	defer r.release(name)
 
-	select {
-	case r.slots <- struct{}{}:
-		defer func() { <-r.slots }()
-	case <-ctx.Done():
-		return history.Run{}, ctx.Err()
+	if err := r.slots.take(ctx, func() int { return r.config().ParallelJobs }); err != nil {
+		return history.Run{}, err
 	}
+	defer r.slots.give()
 
 	// The engine's own writes must not come back as a change.
 	r.muteWatcher(name)
@@ -194,15 +203,30 @@ func (r *Runner) runAs(ctx context.Context, name string, do work) (history.Run, 
 	r.publish(Event{Job: name, Phase: "started"})
 	var res apply.Result
 	var p *plan.Plan
-	err := hook.Run(ctx, j.Before, hookEnv(j, nil))
-	if err != nil {
-		err = fmt.Errorf("the command before the run failed, so the run did not start: %w", err)
-	} else {
-		res, p, err = do(ctx, j, live)
+	// A drive that is missing before anything has run leaves nothing for the
+	// after command to undo.
+	_, _, err := resolve(j)
+	ranBefore := false
+	if err == nil {
+		err = hook.Run(ctx, j.Before, hookEnv(j, nil))
+		if err != nil {
+			err = fmt.Errorf("the command before the run failed, so the run did not start: %w", err)
+		} else {
+			ranBefore = true
+			res, p, err = do(ctx, j, live)
+		}
 	}
 
 	// A drive that is not plugged in is not a run, so nothing is recorded.
 	if errors.Is(err, ErrVolumeMissing) {
+		// The drive went between the check and the work. Whatever the before
+		// command stopped still has to be started again.
+		if ranBefore {
+			gone := history.Run{Job: name, Started: rec.Started, Finished: time.Now(), Err: err.Error()}
+			if aErr := hook.Run(context.WithoutCancel(ctx), j.After, hookEnv(j, &gone)); aErr != nil {
+				r.log("%s: the command after the run failed: %v", name, aErr)
+			}
+		}
 		if live != nil {
 			live.Drop()
 		}
@@ -273,13 +297,9 @@ func hookEnv(j job.Job, rec *history.Run) map[string]string {
 // before either is opened, because a drive letter since given to another disk
 // would not look empty and the engine would reconcile against the wrong volume.
 func (r *Runner) open(ctx context.Context, j job.Job) (apply.Ends, *state.DB, error) {
-	leftPath, err := volume.Resolve(j.Left)
+	leftPath, rightPath, err := resolve(j)
 	if err != nil {
-		return apply.Ends{}, nil, fmt.Errorf("%w: left side %s", ErrVolumeMissing, volume.Describe(j.Left))
-	}
-	rightPath, err := volume.Resolve(j.Right)
-	if err != nil {
-		return apply.Ends{}, nil, fmt.Errorf("%w: right side %s", ErrVolumeMissing, volume.Describe(j.Right))
+		return apply.Ends{}, nil, err
 	}
 
 	left, err := rclonefs.NewFs(ctx, leftPath)
@@ -297,6 +317,20 @@ func (r *Runner) open(ctx context.Context, j job.Job) (apply.Ends, *state.DB, er
 	return apply.Ends{Left: left, Right: right}, db, nil
 }
 
+// resolve finds where both sides of a job are right now, or names the drive
+// that is missing.
+func resolve(j job.Job) (left, right string, err error) {
+	left, err = volume.Resolve(j.Left)
+	if err != nil {
+		return "", "", fmt.Errorf("%w: left side %s", ErrVolumeMissing, volume.Describe(j.Left))
+	}
+	right, err = volume.Resolve(j.Right)
+	if err != nil {
+		return "", "", fmt.Errorf("%w: right side %s", ErrVolumeMissing, volume.Describe(j.Right))
+	}
+	return left, right, nil
+}
+
 // execute does the actual sync for one job, optionally limited to some paths.
 // Every line the run writes also goes to live, which may be nil.
 func (r *Runner) execute(ctx context.Context, j job.Job, only []string, resolve map[string]plan.Resolution, live *history.Live) (apply.Result, *plan.Plan, error) {
@@ -312,7 +346,7 @@ func (r *Runner) execute(ctx context.Context, j job.Job, only []string, resolve 
 	ctx = scan.WithWatch(ctx, (&readingFor{runner: r, job: j.Name}).report)
 	// A shadow copy is taken only once a file is found held open, and removed
 	// with the run, since it holds space on its volume.
-	if shots := shadow.New(); shots != nil {
+	if shots := shadow.New(r.shadows); shots != nil {
 		ctx = apply.WithSnapshots(ctx, shots)
 		defer func() {
 			if err := shots.Close(context.WithoutCancel(ctx)); err != nil {
@@ -431,10 +465,13 @@ func (r *Runner) release(name string) {
 
 // announce tells whoever is watching, if there is anything worth telling.
 func (r *Runner) announce(ctx context.Context, rec history.Run, res apply.Result) {
-	if r.note == nil {
+	r.mu.Lock()
+	cfg, note := r.cfg, r.note
+	r.mu.Unlock()
+	if note == nil {
 		return
 	}
-	if !rec.Failed() && !r.config().Notify.OnSuccess {
+	if !rec.Failed() && !cfg.Notify.OnSuccess {
 		return
 	}
 
@@ -464,7 +501,7 @@ func (r *Runner) announce(ctx context.Context, rec history.Run, res apply.Result
 		}
 	}
 
-	if err := r.note.Send(ctx, subject, b.String()); err != nil {
+	if err := note.Send(ctx, subject, b.String()); err != nil {
 		r.log("could not send the notification for %s: %v", rec.Job, err)
 	}
 }
@@ -473,16 +510,19 @@ func (r *Runner) announce(ctx context.Context, rec history.Run, res apply.Result
 // itself whenever the configuration changes. A job still running when its next
 // turn comes is skipped rather than queued, so a slow job cannot build a
 // backlog of itself.
+//
+// Runs are started under ctx and not under the round, so a reload, which
+// every save in the interface causes, lets them finish.
 func (r *Runner) Serve(ctx context.Context) error {
 	first := true
 	for {
 		round, endRound := context.WithCancel(ctx)
-		c := r.schedule(round)
+		c := r.schedule(ctx, round)
 		c.Start()
 
 		// Never on a reload, which happens every time a job is saved.
 		if first {
-			r.runAtStart(round)
+			r.runAtStart(ctx)
 			first = false
 		}
 
@@ -493,9 +533,11 @@ func (r *Runner) Serve(ctx context.Context) error {
 			return nil
 		case <-r.reload:
 			// Cancelling the round closes its watchers. Rebuilding from
-			// scratch keeps one code path for start and restart.
+			// scratch keeps one code path for start and restart. The claim
+			// keeps a run the old schedule started from overlapping one the
+			// new schedule starts, so there is nothing to wait for.
 			endRound()
-			r.stopCron(c)
+			c.Stop()
 			r.mu.Lock()
 			r.watchers = map[string]*watch.Watcher{}
 			r.mu.Unlock()
@@ -505,8 +547,8 @@ func (r *Runner) Serve(ctx context.Context) error {
 }
 
 // schedule builds the cron entries and the watchers for the current
-// configuration.
-func (r *Runner) schedule(ctx context.Context) *cron.Cron {
+// configuration. Runs are started under ctx; the watchers stop with round.
+func (r *Runner) schedule(ctx, round context.Context) *cron.Cron {
 	cfg := r.config()
 	c := cron.New()
 	var scheduled []string
@@ -530,7 +572,7 @@ func (r *Runner) schedule(ctx context.Context) *cron.Cron {
 		if j.Disabled || !j.Watch {
 			continue
 		}
-		r.startWatcher(ctx, j)
+		r.startWatcher(ctx, round, j)
 	}
 
 	// Pruned daily, since a container stays up for months while a watching
@@ -607,7 +649,8 @@ func (r *Runner) runAtStart(ctx context.Context) {
 	}()
 }
 
-// stopCron waits for whatever is running to finish rather than cutting it off.
+// stopCron waits for the runs the clock started to wind down after a shutdown
+// cancelled them, so each one is still recorded.
 func (r *Runner) stopCron(c *cron.Cron) {
 	stopped := c.Stop()
 	select {
@@ -619,15 +662,35 @@ func (r *Runner) stopCron(c *cron.Cron) {
 
 // Reload swaps in a new configuration and rebuilds the schedules and watchers.
 // When a rebuild is already pending the signal is dropped, since that rebuild
-// reads the new configuration anyway.
+// reads the new configuration anyway. The run log stays where it was opened
+// until the next start.
 func (r *Runner) Reload(cfg *job.Config) {
 	r.mu.Lock()
 	r.cfg = cfg
+	r.note = Notifier(cfg)
 	r.mu.Unlock()
+	// A raised limit lets waiting runs start.
+	r.slots.wake()
 	select {
 	case r.reload <- struct{}{}:
 	default:
 	}
+}
+
+// Notifier builds the destination list from the configuration. A
+// configuration with nothing in it returns nil, which means say nothing.
+func Notifier(cfg *job.Config) notify.Notifier {
+	var out notify.Multi
+	if m := cfg.Notify.Matrix; m != nil {
+		out = append(out, &notify.Matrix{Homeserver: m.Homeserver, Room: m.Room, Token: m.Token})
+	}
+	if cfg.Notify.Webhook != "" {
+		out = append(out, &notify.Webhook{URL: cfg.Notify.Webhook})
+	}
+	if len(out) == 0 {
+		return nil
+	}
+	return out
 }
 
 // Config returns the configuration currently in force.
@@ -965,8 +1028,9 @@ func localRoots(j job.Job) []string {
 }
 
 // startWatcher makes one job react to changes as well as to the clock. Only a
-// local side can be watched, and the schedule stays behind it.
-func (r *Runner) startWatcher(ctx context.Context, j job.Job) {
+// local side can be watched, and the schedule stays behind it. The watcher
+// lives as long as round; the runs it starts live under ctx.
+func (r *Runner) startWatcher(ctx, round context.Context, j job.Job) {
 	roots := localRoots(j)
 	if len(roots) == 0 {
 		r.log("%s asks to be watched but has no local side; the schedule alone will have to do", j.Name)
@@ -1011,7 +1075,7 @@ func (r *Runner) startWatcher(ctx context.Context, j job.Job) {
 	r.log("%s: watching %d folder(s) across %d local side(s)", name, w.Watching(), len(roots))
 	go func() {
 		defer w.Close()
-		if err := w.Run(ctx); err != nil {
+		if err := w.Run(round); err != nil {
 			r.log("%s: watching stopped: %v", name, err)
 		}
 	}()

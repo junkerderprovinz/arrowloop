@@ -411,7 +411,7 @@ const cs: Translations = {
   'engine.parallelHint': 'Ve výchozím stavu po jedné, a je to rozhodnutí, ne omezení: dvě úlohy najednou sdílejí jednu linku a jeden disk, takže se hlavně navzájem zdržují a znepřehledňují záznam.',
   'engine.memory': 'Co si pamatuje',
   'engine.history': 'Soubor se záznamem běhů',
-  'engine.historyHint': 'Kam se zapisuje každý běh a co udělal s kterým souborem. Prázdné znamená vedle konfiguračního souboru. Relativní název je vztažen ke stejné složce.',
+  'engine.historyHint': 'Kam se zapisuje každý běh a co udělal s kterým souborem. Prázdné znamená vedle konfiguračního souboru. Relativní název je vztažen ke stejné složce. Změna platí od příštího spuštění programu.',
   'engine.telling': 'Kdo se to dozví',
   'engine.defaults': 'Globální nastavení synchronizace',
   'settings.syncHint': 'Z čeho vychází nová úloha. Úloha, která k nastavení nic neříká, převezme hodnotu odsud.',

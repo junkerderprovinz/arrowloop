@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"os/exec"
 	"strings"
 	"time"
 )
@@ -15,10 +16,16 @@ import (
 // the job's slot, and with it every job queued behind it.
 const Timeout = 15 * time.Minute
 
+// outputGrace is how long the output is read after the shell has exited. A
+// program the command started in the background keeps the output open for as
+// long as it runs, and the run must not wait for it.
+const outputGrace = 2 * time.Second
+
 // Run runs command through the system's shell with env added to this
 // process's environment. An empty command does nothing. The error carries the
 // last lines the command wrote, since that is where a script says why it gave
-// up.
+// up. A timeout or a cancelled context stops the command together with
+// everything it started.
 func Run(ctx context.Context, command string, env map[string]string) error {
 	if strings.TrimSpace(command) == "" {
 		return nil
@@ -34,8 +41,14 @@ func Run(ctx context.Context, command string, env map[string]string) error {
 	var out bytes.Buffer
 	cmd.Stdout = &out
 	cmd.Stderr = &out
+	cmd.WaitDelay = outputGrace
 
-	err := cmd.Run()
+	err := run(cmd)
+	if errors.Is(err, exec.ErrWaitDelay) && ctx.Err() == nil {
+		// The shell succeeded and left something running that still holds
+		// its output, such as a tunnel the before command opened.
+		return nil
+	}
 	if err == nil {
 		return nil
 	}

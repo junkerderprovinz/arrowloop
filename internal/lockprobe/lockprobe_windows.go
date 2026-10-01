@@ -17,19 +17,31 @@ import (
 )
 
 // Busy reports whether the file at path cannot currently be opened for reading
-// because another program holds it exclusively. Any other failure to open it
-// is reported as not busy and left to the real operation.
+// because another program refused readers. Any other failure to open it is
+// reported as not busy and left to the real operation.
 func Busy(path string) bool {
+	return refused(path, windows.GENERIC_READ)
+}
+
+// Pinned reports whether the file at path cannot currently be renamed or
+// deleted because another program holds it open without allowing that, which
+// most programs do for as long as they have a file open.
+func Pinned(path string) bool {
+	return refused(path, windows.DELETE)
+}
+
+// refused opens the file the way rclone's local backend does, sharing
+// everything, so the open fails only on a sharing conflict the real operation
+// would also run into.
+func refused(path string, access uint32) bool {
 	p, err := windows.UTF16PtrFromString(path)
 	if err != nil {
 		return false
 	}
-	// FILE_SHARE_READ is what a reader needs, so this fails exactly when the
-	// holder refused further readers.
 	h, err := windows.CreateFile(
 		p,
-		windows.GENERIC_READ,
-		windows.FILE_SHARE_READ,
+		access,
+		windows.FILE_SHARE_READ|windows.FILE_SHARE_WRITE|windows.FILE_SHARE_DELETE,
 		nil,
 		windows.OPEN_EXISTING,
 		windows.FILE_ATTRIBUTE_NORMAL,

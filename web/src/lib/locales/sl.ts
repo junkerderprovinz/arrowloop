@@ -411,7 +411,7 @@ const sl: Translations = {
   'engine.parallelHint': 'Privzeto eno naenkrat, in to je odločitev, ne omejitev: dve hkratni opravili si delita eno povezavo in en disk, zato se večinoma zavirata in otežujeta branje dnevnika.',
   'engine.memory': 'Česa se spominja',
   'engine.history': 'Datoteka dnevnika zagonov',
-  'engine.historyHint': 'Kam se zapiše vsak zagon, skupaj s tem, kaj je naredil s katero datoteko. Prazno pomeni poleg nastavitvene datoteke. Relativno ime je relativno na isto mapo.',
+  'engine.historyHint': 'Kam se zapiše vsak zagon, skupaj s tem, kaj je naredil s katero datoteko. Prazno pomeni poleg nastavitvene datoteke. Relativno ime je relativno na isto mapo. Sprememba začne veljati ob naslednjem zagonu programa.',
   'engine.telling': 'Kdo je obveščen',
   'engine.defaults': 'Globalna nastavitev sinhronizacije',
   'settings.syncHint': 'Iz česa izhaja novo opravilo. Opravilo, ki o nastavitvi nič ne pove, vzame vrednost od tu.',

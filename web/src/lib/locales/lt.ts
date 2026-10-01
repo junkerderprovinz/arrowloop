@@ -411,7 +411,7 @@ const lt: Translations = {
   'engine.parallelHint': 'Pagal numatytuosius nustatymus po vieną, ir tai sprendimas, o ne apribojimas: dvi vienu metu vykdomos užduotys dalijasi vienu ryšiu ir vienu disku, tad daugiausia lėtina viena kitą ir apsunkina žurnalo skaitymą.',
   'engine.memory': 'Ką jis prisimena',
   'engine.history': 'Paleidimų žurnalo failas',
-  'engine.historyHint': 'Kur užrašomas kiekvienas paleidimas kartu su tuo, ką jis padarė kuriam failui. Tuščia reiškia šalia konfigūracijos failo. Santykinis pavadinimas skaičiuojamas nuo to paties aplanko.',
+  'engine.historyHint': 'Kur užrašomas kiekvienas paleidimas kartu su tuo, ką jis padarė kuriam failui. Tuščia reiškia šalia konfigūracijos failo. Santykinis pavadinimas skaičiuojamas nuo to paties aplanko. Pakeitimas įsigalioja kitą kartą paleidus programą.',
   'engine.telling': 'Kam pranešama',
   'engine.defaults': 'Bendrasis sinchronizavimo nustatymas',
   'settings.syncHint': 'Nuo ko prasideda nauja užduotis. Užduotis, kuri apie nustatymą nieko nesako, ima reikšmę iš čia.',

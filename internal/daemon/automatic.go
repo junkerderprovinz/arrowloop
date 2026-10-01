@@ -5,7 +5,10 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/junkerderprovinz/arrowloop/internal/apply"
 	"github.com/junkerderprovinz/arrowloop/internal/history"
+	"github.com/junkerderprovinz/arrowloop/internal/job"
+	"github.com/junkerderprovinz/arrowloop/internal/plan"
 )
 
 // RunAutomatically is what the clock and the watcher call. Everything in it is
@@ -29,14 +32,19 @@ func (r *Runner) RunAutomatically(ctx context.Context, name string) (history.Run
 	}
 	r.waiting.clear(name)
 
-	if err := r.roomFor(ctx, j); err != nil {
-		r.publish(Event{Job: name, Phase: "finished", Error: err.Error()})
-		return history.Run{}, err
-	}
-	if j.ReportOnly {
-		// An empty selection, not nil: nil means everything, while an empty
-		// list plans in full, records the run and filters every action away.
-		return r.RunOnly(ctx, name, []string{})
-	}
-	return r.Run(ctx, name)
+	// The space check lists both sides, so it waits for the job's claim, and
+	// a refusal is recorded like any failure so the retry policy sees it.
+	return r.runAs(ctx, name, func(ctx context.Context, j job.Job, live *history.Live) (apply.Result, *plan.Plan, error) {
+		if err := r.roomFor(ctx, j); err != nil {
+			return apply.Result{}, nil, err
+		}
+		var only []string
+		if j.ReportOnly {
+			// An empty selection, not nil: nil means everything, while an
+			// empty list plans in full, records the run and filters every
+			// action away.
+			only = []string{}
+		}
+		return r.execute(ctx, j, only, nil, live)
+	})
 }

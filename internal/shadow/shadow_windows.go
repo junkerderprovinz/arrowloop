@@ -11,10 +11,10 @@ import (
 
 const supported = true
 
-// create takes a shadow copy of a volume through WMI's Win32_ShadowCopy, which
+// takeCopy takes a shadow copy of a volume through WMI's Win32_ShadowCopy, which
 // unlike vssadmin also exists on the client editions of Windows. It returns
 // the copy's id and the device path its files are read through.
-func create(ctx context.Context, volume string) (id, device string, err error) {
+func takeCopy(ctx context.Context, volume string) (id, device string, err error) {
 	if !windows.GetCurrentProcessToken().IsElevated() {
 		return "", "", ErrNeedsAdmin
 	}
@@ -33,10 +33,26 @@ $s = Get-CimInstance Win32_ShadowCopy -Filter "ID='$($r.ShadowID)'"
 	return id, device, nil
 }
 
-func remove(ctx context.Context, id string) error {
+func dropCopy(ctx context.Context, id string) error {
 	_, err := powershell(ctx, fmt.Sprintf(
 		`Get-CimInstance Win32_ShadowCopy -Filter "ID='%s'" | Remove-CimInstance`, id))
 	return err
+}
+
+// alive reports whether a process with this id is running.
+func alive(pid int) bool {
+	h, err := windows.OpenProcess(windows.PROCESS_QUERY_LIMITED_INFORMATION, false, uint32(pid))
+	if err != nil {
+		// Only a process that exists can refuse to be opened.
+		return err == windows.ERROR_ACCESS_DENIED
+	}
+	defer windows.CloseHandle(h)
+	var code uint32
+	if err := windows.GetExitCodeProcess(h, &code); err != nil {
+		return false
+	}
+	const stillActive = 259
+	return code == stillActive
 }
 
 // powershell runs a script and returns what it printed, or its error output
