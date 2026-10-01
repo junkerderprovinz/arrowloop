@@ -119,6 +119,10 @@ func (w *Watcher) Run(ctx context.Context) error {
 			if !w.interesting(ev) {
 				continue
 			}
+			// A folder created again under the same name needs a new watch.
+			if ev.Has(fsnotify.Remove) || ev.Has(fsnotify.Rename) {
+				w.forget(ev.Name)
+			}
 			// Watches do not cover subtrees, so a new directory needs its own.
 			if ev.Has(fsnotify.Create) {
 				if info, err := os.Stat(ev.Name); err == nil && info.IsDir() {
@@ -209,6 +213,25 @@ func (w *Watcher) addTree(root string) error {
 		w.mu.Unlock()
 		return nil
 	})
+}
+
+// forget drops a directory that went away and everything that was under it.
+// A watch on a deleted directory is already gone, so only a renamed one has a
+// watch left to remove, and the error for the others means nothing.
+func (w *Watcher) forget(dir string) {
+	prefix := dir + string(filepath.Separator)
+	w.mu.Lock()
+	var gone []string
+	for p := range w.watched {
+		if p == dir || strings.HasPrefix(p, prefix) {
+			gone = append(gone, p)
+			delete(w.watched, p)
+		}
+	}
+	w.mu.Unlock()
+	for _, p := range gone {
+		w.fsw.Remove(p)
+	}
 }
 
 // Watching reports how many directories are being watched.

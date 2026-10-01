@@ -111,6 +111,36 @@ func TestANewFolderIsWatchedToo(t *testing.T) {
 	t.Fatal("a file written inside a newly created folder was never noticed")
 }
 
+// Replacing a folder with a fresh copy deletes it and creates it again under
+// the same name.
+func TestAFolderDeletedAndCreatedAgainIsStillWatched(t *testing.T) {
+	root, fired := harness(t, watch.Options{})
+
+	report := filepath.Join(root, "Report")
+	write(t, filepath.Join(report, "a.txt"), "first")
+	waitFor(t, fired, 1, "the first copy of the folder")
+
+	if err := os.RemoveAll(report); err != nil {
+		t.Fatalf("remove: %v", err)
+	}
+	if err := os.Mkdir(report, 0o755); err != nil {
+		t.Fatalf("mkdir: %v", err)
+	}
+	waitFor(t, fired, 2, "replacing the folder")
+
+	before := fired.Load()
+	time.Sleep(200 * time.Millisecond)
+	write(t, filepath.Join(report, "b.txt"), "second")
+	deadline := time.Now().Add(3 * time.Second)
+	for time.Now().Before(deadline) {
+		if fired.Load() > before {
+			return
+		}
+		time.Sleep(10 * time.Millisecond)
+	}
+	t.Fatal("a file written inside a folder that was deleted and created again was never noticed")
+}
+
 // A deletion moves the file into the trash inside the tree, which must not
 // wake the job again.
 func TestTheToolsOwnFolderIsIgnored(t *testing.T) {
