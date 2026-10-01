@@ -85,13 +85,15 @@ class EngineService : Service() {
     private fun begin(then: () -> Unit = {}): Boolean {
         if (!running.compareAndSet(false, true)) return false
 
-        // Only the service that started the engine stops it; with the app open
-        // the engine belongs to the screens, and stopping it would blank them.
-        if (Engine.start(this)) ours = true
-
         // The run conditions matter most when no screen is open.
         Device.watch(this)
+        // Engine.start probes the port, which Android refuses on the main
+        // thread, and a failed probe would start a second engine.
         Thread {
+            // Only the service that started the engine stops it; with the app
+            // open the engine belongs to the screens, and stopping it would
+            // blank them.
+            if (Engine.start(this)) ours = true
             work()
             then()
         }.start()
