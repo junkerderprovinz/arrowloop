@@ -15,14 +15,24 @@ import (
 // placeholder, since secrets are withheld on their way to the screen. It reads
 // the form the way Save does, and anything typed wins, so a changed credential
 // is the one tested. The stored value comes back obscured as rclone keeps it,
-// and connectionString leaves an obscured value alone.
-func WithSavedSecrets(name string, settings map[string]string) map[string]string {
+// and connectionString leaves an obscured value alone. Nothing is filled in
+// unless the backend and every address setting match the saved target, so a
+// saved password never travels to a server the form names instead.
+func WithSavedSecrets(name, backend string, settings map[string]string) map[string]string {
 	if strings.TrimSpace(name) == "" {
 		return settings
 	}
 	data := config.LoadedData()
 	if !data.HasSection(name) {
 		return settings
+	}
+	if stored, _ := data.GetValue(name, "type"); stored != backend {
+		return settings
+	}
+	for _, key := range addressKeys {
+		if stored, _ := data.GetValue(name, key); settings[key] != stored {
+			return settings
+		}
 	}
 
 	// The caller's map came off a request body.
@@ -43,6 +53,10 @@ func WithSavedSecrets(name string, settings map[string]string) map[string]string
 	}
 	return out
 }
+
+// addressKeys are the settings, across the backends, that decide which server
+// a connection reaches and as whom.
+var addressKeys = []string{"host", "port", "user", "url", "endpoint", "auth", "auth_url", "token_url"}
 
 // CheckSettings reports whether a target built from settings that have not
 // been saved answers. It goes through an inline connection string, so no
