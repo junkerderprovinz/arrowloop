@@ -10,6 +10,12 @@ The full notes for each release are in
 
 ## Unreleased
 
+## 1.5.5 - 2026-10-01
+
+## 🐛 Fixed
+
+- **The desktop window no longer opens by itself while ArrowLoop sits in the notification area.** Every start opened the main window, including the one after an update and the one at sign-in. Starting with the session now keeps ArrowLoop in the notification area. So does a start after something outside ended it while the window was there, as an update does. Starting it by hand still opens the window.
+
 ## 1.5.4 - 2026-09-30
 
 ## 🎨 Design
