@@ -4,8 +4,10 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
+	"io"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/junkerderprovinz/arrowloop/internal/web"
@@ -84,9 +86,51 @@ func TestWithoutAPasswordOnlyLocalNamesAreServed(t *testing.T) {
 	for _, host := range []string{
 		"127.0.0.1:8422", "[::1]:8422", "192.168.1.5:8422", "localhost:8422",
 		"tower:8422", "nas.local", "arrowloop.home.arpa", "box.lan", "wails.localhost",
+		"nas.fritz.box", "tower.localdomain", "nas.home",
 	} {
 		if code := send(t, srv, http.MethodGet, "/api/jobs", nil, host); code != http.StatusOK {
 			t.Errorf("host %s answered %d", host, code)
+		}
+	}
+}
+
+// A reverse proxy with a public name can be let in without a password, by
+// whoever runs it.
+func TestNamesListedInTheEnvironmentAreServed(t *testing.T) {
+	t.Setenv(web.PasswordHashEnv, "")
+	t.Setenv(web.HostsEnv, "Sync.Example.com, .mine.example")
+	srv := newGuardedServer(t)
+
+	for _, host := range []string{"sync.example.com", "sync.example.com:443", "nas.mine.example"} {
+		if code := send(t, srv, http.MethodGet, "/api/jobs", nil, host); code != http.StatusOK {
+			t.Errorf("listed host %s answered %d", host, code)
+		}
+	}
+	for _, host := range []string{"example.com", "other.example.com", "mine.example.attacker.example"} {
+		if code := send(t, srv, http.MethodGet, "/api/jobs", nil, host); code != http.StatusMisdirectedRequest {
+			t.Errorf("unlisted host %s answered %d", host, code)
+		}
+	}
+}
+
+func TestARefusedNameIsToldHowToGetIn(t *testing.T) {
+	t.Setenv(web.PasswordHashEnv, "")
+	srv := newGuardedServer(t)
+
+	req, err := http.NewRequest(http.MethodGet, srv.URL+"/api/jobs", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.Host = "arrowloop.example.com"
+	resp, err := srv.Client().Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	for _, want := range []string{"arrowloop.example.com", web.HostsEnv} {
+		if !strings.Contains(string(body), want) {
+			t.Errorf("the refusal %s does not mention %s", body, want)
 		}
 	}
 }

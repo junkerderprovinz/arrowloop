@@ -85,7 +85,7 @@ func (r *Runner) Decide(ctx context.Context, name string, decisions []apply.Deci
 	if j, ok := r.config().Find(name); ok && plan.ParseDirection(j.Direction) != plan.Both {
 		return history.Run{}, fmt.Errorf("%w: %s", ErrOneWay, name)
 	}
-	return r.runAs(ctx, name, func(ctx context.Context, j job.Job, live *history.Live) (apply.Result, *plan.Plan, error) {
+	return r.runAs(ctx, name, false, func(ctx context.Context, j job.Job, live *history.Live) (apply.Result, *plan.Plan, error) {
 		res, err := r.decide(ctx, j, decisions, live)
 		return res, nil, err
 	})

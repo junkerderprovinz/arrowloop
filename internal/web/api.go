@@ -349,14 +349,19 @@ type runRequest struct {
 
 // stopJob asks a run that is going right now to stop. The answer says whether
 // there was anything to stop, so the interface can tell "stopped it" from "it
-// had already finished".
+// had already finished". A run is stopped before the configuration is asked,
+// because a job removed while it ran is no longer in it.
 func (s *Server) stopJob(w http.ResponseWriter, r *http.Request) {
 	name := r.PathValue("name")
+	if s.Runner.Cancel(name) {
+		writeJSON(w, http.StatusOK, map[string]any{"stopped": true})
+		return
+	}
 	if _, ok := s.Runner.Config().Find(name); !ok {
 		writeError(w, http.StatusNotFound, fmt.Errorf("no job called %q", name))
 		return
 	}
-	writeJSON(w, http.StatusOK, map[string]any{"stopped": s.Runner.Cancel(name)})
+	writeJSON(w, http.StatusOK, map[string]any{"stopped": false})
 }
 
 func (s *Server) runJob(w http.ResponseWriter, r *http.Request) {

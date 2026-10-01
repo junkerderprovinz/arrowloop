@@ -2,6 +2,7 @@ package web
 
 import (
 	"crypto/rand"
+	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
@@ -181,11 +182,15 @@ func (u passkeyUser) WebAuthnCredentials() []webauthn.Credential { return u.cred
 // browser refuses a key bound to another id, so offering those would raise a
 // prompt that cannot succeed.
 func (s *Server) passkeyUserFor(rpID string) (passkeyUser, []security.Passkey, error) {
+	st, err := s.passkeyState()
+	if err != nil {
+		return passkeyUser{}, nil, err
+	}
 	id, err := s.Security.PasskeyUser()
 	if err != nil {
 		return passkeyUser{}, nil, err
 	}
-	rows := s.Security.Get().PasskeysFor(rpID)
+	rows := st.PasskeysFor(rpID)
 	u := passkeyUser{id: id}
 	for _, p := range rows {
 		u.creds = append(u.creds, webauthn.Credential{
@@ -200,6 +205,23 @@ func (s *Server) passkeyUserFor(rpID string) (passkeyUser, []security.Passkey, e
 		})
 	}
 	return u, rows, nil
+}
+
+// passkeyState reads the login settings once the passkeys have been checked
+// against the password in force. setPassword drops them itself, but
+// ARROWLOOP_PASSWORD_HASH changes where this server cannot see it.
+func (s *Server) passkeyState() (security.State, error) {
+	if err := s.Security.KeepPasskeysUnder(s.passwordFingerprint()); err != nil {
+		return security.State{}, err
+	}
+	return s.Security.Get(), nil
+}
+
+// passwordFingerprint tells one password hash from another without storing
+// the hash from the environment beside the passkeys.
+func (s *Server) passwordFingerprint() string {
+	sum := sha256.Sum256(s.passwordHash())
+	return hex.EncodeToString(sum[:])
 }
 
 func parseTransports(s string) []protocol.AuthenticatorTransport {
@@ -256,8 +278,13 @@ func passkeyViews(rows []security.Passkey, here string) []passkeyView {
 // gets counts; the list is for somebody signed in, or anybody while there is
 // no password.
 func (s *Server) passkeyStatus(w http.ResponseWriter, r *http.Request) {
+	st, err := s.passkeyState()
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, err)
+		return
+	}
 	rpID, rpErr := rpIDFor(r)
-	all := s.Security.Get().Passkeys
+	all := st.Passkeys
 	here := 0
 	for _, p := range all {
 		if rpErr == nil && p.RPID == rpID {
@@ -397,7 +424,7 @@ func (s *Server) passkeyRegisterFinish(w http.ResponseWriter, r *http.Request) {
 		RPID:         rpID,
 		BackedUp:     cred.Flags.BackupEligible,
 		CreatedAt:    time.Now().Unix(),
-	})
+	}, s.passwordFingerprint())
 	if errors.Is(err, security.ErrPasskeyExists) {
 		writeError(w, http.StatusConflict, err)
 		return

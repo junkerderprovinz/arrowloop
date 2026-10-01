@@ -2,6 +2,7 @@ package daemon
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
@@ -25,16 +26,19 @@ func (r *Runner) RunAutomatically(ctx context.Context, name string) (history.Run
 		}
 	}
 	// A drive in a drawer is remembered rather than logged as a failure, so
-	// the interface can say it is waiting.
-	if err := attached(j); err != nil {
-		r.waiting.note(name, time.Now())
-		return history.Run{}, fmt.Errorf("%w: %w", ErrVolumeMissing, err)
+	// the interface can say it is waiting. A before command may be what
+	// mounts it, so such a job finds out from the run.
+	if j.Before == "" {
+		if err := attached(j); err != nil {
+			r.waiting.note(name, time.Now())
+			return history.Run{}, fmt.Errorf("%w: %w", ErrVolumeMissing, err)
+		}
 	}
 	r.waiting.clear(name)
 
 	// The space check lists both sides, so it waits for the job's claim, and
 	// a refusal is recorded like any failure so the retry policy sees it.
-	return r.runAs(ctx, name, func(ctx context.Context, j job.Job, live *history.Live) (apply.Result, *plan.Plan, error) {
+	rec, err := r.runAs(ctx, name, true, func(ctx context.Context, j job.Job, live *history.Live) (apply.Result, *plan.Plan, error) {
 		if err := r.roomFor(ctx, j); err != nil {
 			return apply.Result{}, nil, err
 		}
@@ -47,4 +51,8 @@ func (r *Runner) RunAutomatically(ctx context.Context, name string) (history.Run
 		}
 		return r.execute(ctx, j, only, nil, nil, live)
 	})
+	if errors.Is(err, ErrVolumeMissing) {
+		r.waiting.note(name, time.Now())
+	}
+	return rec, err
 }

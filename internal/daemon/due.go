@@ -99,6 +99,8 @@ func (r *Runner) RunDue(ctx context.Context) Due {
 			errors.Is(err, ErrAlreadyRunning):
 			// None of these is a failure.
 			out.Held++
+		case errors.Is(err, ErrWithdrawn):
+			// Removed or paused while it waited, so nothing ran.
 		case err != nil:
 			out.Failed++
 			if out.Reason == "" {

@@ -82,6 +82,11 @@ type State struct {
 
 	Passkeys []Passkey `json:"passkeys,omitempty"`
 
+	// PasskeysUnder fingerprints the password the passkeys were registered
+	// under, which may have come from outside this file. Empty in a file
+	// written before it was kept.
+	PasskeysUnder string `json:"passkeysUnder,omitempty"`
+
 	// PasskeyUser is the account id every passkey is registered under. It has
 	// to stay the same for the keys to keep working, so it is drawn once.
 	PasskeyUser []byte `json:"passkeyUser,omitempty"`
@@ -184,9 +189,9 @@ func (s State) PasskeysFor(rpID string) []Passkey {
 	return out
 }
 
-// AddPasskey stores a freshly registered key and returns it with its id and
-// time filled in.
-func (s *Store) AddPasskey(p Passkey) (Passkey, error) {
+// AddPasskey stores a freshly registered key under the fingerprint of the
+// password in force, and returns it with its id filled in.
+func (s *Store) AddPasskey(p Passkey, under string) (Passkey, error) {
 	if len(p.CredentialID) == 0 || len(p.PublicKey) == 0 {
 		return Passkey{}, errors.New("a passkey needs a credential id and a public key")
 	}
@@ -202,12 +207,30 @@ func (s *Store) AddPasskey(p Passkey) (Passkey, error) {
 			}
 		}
 		st.Passkeys = append(st.Passkeys, p)
+		st.PasskeysUnder = under
 		return nil
 	})
 	if err != nil {
 		return Passkey{}, err
 	}
 	return p, nil
+}
+
+// KeepPasskeysUnder drops the passkeys when they were registered under
+// another password than the one fingerprinted, since a key would otherwise let
+// in whoever held the old password. Keys from a file without a fingerprint are
+// taken to belong to the password in force.
+func (s *Store) KeepPasskeysUnder(fingerprint string) error {
+	if st := s.Get(); len(st.Passkeys) == 0 || st.PasskeysUnder == fingerprint {
+		return nil
+	}
+	return s.Update(func(st *State) error {
+		if st.PasskeysUnder != "" && st.PasskeysUnder != fingerprint {
+			st.Passkeys = nil
+		}
+		st.PasskeysUnder = fingerprint
+		return nil
+	})
 }
 
 // TouchPasskey records a successful login with a key: its new counter and when.

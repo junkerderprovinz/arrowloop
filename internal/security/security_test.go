@@ -127,7 +127,7 @@ func TestPasskeyRoundTrip(t *testing.T) {
 		RPID:         "arrowloop.example.com",
 		BackedUp:     true,
 		CreatedAt:    1700000000,
-	})
+	}, "")
 	if err != nil {
 		t.Fatalf("AddPasskey: %v", err)
 	}
@@ -159,11 +159,11 @@ func TestPasskeyRoundTrip(t *testing.T) {
 func TestTheSameCredentialIsRegisteredOnce(t *testing.T) {
 	s := openIn(t, t.TempDir())
 	p := Passkey{Name: "A", CredentialID: []byte{5}, PublicKey: []byte{1}, RPID: "a.example.com"}
-	if _, err := s.AddPasskey(p); err != nil {
+	if _, err := s.AddPasskey(p, ""); err != nil {
 		t.Fatal(err)
 	}
 	p.Name = "B"
-	if _, err := s.AddPasskey(p); !errors.Is(err, ErrPasskeyExists) {
+	if _, err := s.AddPasskey(p, ""); !errors.Is(err, ErrPasskeyExists) {
 		t.Errorf("the second registration gave %v, want ErrPasskeyExists", err)
 	}
 }
@@ -172,7 +172,7 @@ func TestTheSameCredentialIsRegisteredOnce(t *testing.T) {
 func TestPasskeysForFiltersByAddress(t *testing.T) {
 	s := openIn(t, t.TempDir())
 	for i, rp := range []string{"al.example.com", "localhost"} {
-		if _, err := s.AddPasskey(Passkey{Name: rp, CredentialID: []byte{byte(i + 1)}, PublicKey: []byte{1}, RPID: rp}); err != nil {
+		if _, err := s.AddPasskey(Passkey{Name: rp, CredentialID: []byte{byte(i + 1)}, PublicKey: []byte{1}, RPID: rp}, ""); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -202,5 +202,27 @@ func TestThePasskeyAccountStaysTheSame(t *testing.T) {
 	}
 	if string(first) != string(again) {
 		t.Error("the passkey account id changed between two opens")
+	}
+}
+
+func TestPasskeysGoWithThePasswordTheyWereAddedUnder(t *testing.T) {
+	dir := t.TempDir()
+	s := openIn(t, dir)
+	if _, err := s.AddPasskey(Passkey{Name: "Phone", CredentialID: []byte{1}, PublicKey: []byte{1}, RPID: "localhost"}, "first"); err != nil {
+		t.Fatal(err)
+	}
+
+	s = openIn(t, dir)
+	if err := s.KeepPasskeysUnder("first"); err != nil {
+		t.Fatal(err)
+	}
+	if n := len(s.Get().Passkeys); n != 1 {
+		t.Fatalf("the same password left %d passkeys, want 1", n)
+	}
+	if err := s.KeepPasskeysUnder("second"); err != nil {
+		t.Fatal(err)
+	}
+	if n := len(openIn(t, dir).Get().Passkeys); n != 0 {
+		t.Errorf("another password left %d passkeys in the file", n)
 	}
 }
