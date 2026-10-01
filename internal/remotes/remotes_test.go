@@ -2,14 +2,15 @@ package remotes
 
 import "testing"
 
-func TestIsSecret(t *testing.T) {
+// The name rule alone decides for a backend this build lacks.
+func TestSecretNames(t *testing.T) {
 	secret := []string{
 		"pass", "password", "secret", "client_secret", "secret_access_key",
 		"token", "auth_token", "service_account_credentials", "key", "key_pem",
 		"sa_credentials", "passphrase",
 	}
 	for _, key := range secret {
-		if !IsSecret(key) {
+		if !IsSecret("not-a-backend", key) {
 			t.Errorf("%q would be sent to the browser in clear", key)
 		}
 	}
@@ -17,7 +18,7 @@ func TestIsSecret(t *testing.T) {
 	// access_key_id is the public half of an S3 key pair.
 	open := []string{"access_key_id", "endpoint", "region", "host", "port", "user", "type", "provider"}
 	for _, key := range open {
-		if IsSecret(key) {
+		if IsSecret("not-a-backend", key) {
 			t.Errorf("%q was withheld, which leaves the screen unable to show a setting somebody has to check", key)
 		}
 	}

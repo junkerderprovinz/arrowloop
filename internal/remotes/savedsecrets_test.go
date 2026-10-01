@@ -1,26 +1,11 @@
 package remotes
 
-import (
-	"os"
-	"path/filepath"
-	"testing"
-
-	"github.com/rclone/rclone/fs/config"
-	"github.com/rclone/rclone/fs/config/configfile"
-	"github.com/rclone/rclone/fs/config/obscure"
-)
+import "testing"
 
 // saved writes one target into a config of this test's own.
 func saved(t *testing.T, name, backend string, settings map[string]string) {
 	t.Helper()
-	path := filepath.Join(t.TempDir(), "rclone.conf")
-	if err := os.WriteFile(path, nil, 0o600); err != nil {
-		t.Fatalf("write config: %v", err)
-	}
-	if err := config.SetConfigPath(path); err != nil {
-		t.Fatalf("point at the config: %v", err)
-	}
-	configfile.Install()
+	ownConfig(t)
 	if err := Save(name, backend, settings); err != nil {
 		t.Fatalf("save %s: %v", name, err)
 	}
@@ -41,9 +26,8 @@ func TestAnAbsentSecretComesFromTheSavedTarget(t *testing.T) {
 		"user": "someone",
 	})
 
-	back, err := obscure.Reveal(got["pass"])
-	if err != nil || back != "letmein" {
-		t.Fatalf("pass = %q (reveal %q, %v), want the saved password", got["pass"], back, err)
+	if got["pass"] != "letmein" {
+		t.Fatalf("pass = %q, want the saved password", got["pass"])
 	}
 }
 
@@ -52,11 +36,8 @@ func TestThePlaceholderMeansTheSavedSecretToo(t *testing.T) {
 	saved(t, "cloud", "webdav", map[string]string{"url": "https://example.invalid/", "pass": "letmein"})
 
 	got := WithSavedSecrets("cloud", map[string]string{"url": "https://example.invalid/", "pass": Placeholder})
-	if got["pass"] == Placeholder {
-		t.Fatal("the placeholder was sent on as the password")
-	}
-	if back, err := obscure.Reveal(got["pass"]); err != nil || back != "letmein" {
-		t.Fatalf("pass revealed to %q, %v; want the saved password", back, err)
+	if got["pass"] != "letmein" {
+		t.Fatalf("pass = %q, want the saved password", got["pass"])
 	}
 }
 

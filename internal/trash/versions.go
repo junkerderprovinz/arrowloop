@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"sort"
+	"sync"
 	"time"
 
 	"github.com/rclone/rclone/fs"
@@ -81,6 +82,10 @@ func pruneVersions(ctx context.Context, f fs.Fs, rel string, keep int) error {
 	return nil
 }
 
+// restoring keeps two restores from picking the same free name before either
+// has copied anything under it.
+var restoring sync.Mutex
+
 // RestoreVersion puts a kept version back as the live file. Unlike Restore it
 // may replace an existing file, because it first copies that file into the
 // history. It copies rather than moves, so the live file stays in place if
@@ -99,6 +104,9 @@ func RestoreVersion(ctx context.Context, f fs.Fs, rel, runID string, now time.Ti
 		return fmt.Errorf("%w: %q is its own version", ErrNotAName, dest)
 	}
 
+	restoring.Lock()
+	defer restoring.Unlock()
+
 	// Looked up first, so a wrong run identifier does not leave a copy of the
 	// live file in the history.
 	if _, err := f.NewObject(ctx, src); err != nil {
@@ -110,7 +118,7 @@ func RestoreVersion(ctx context.Context, f fs.Fs, rel, runID string, now time.Ti
 	case err != nil:
 		return fmt.Errorf("could not look at %q before replacing it: %w", dest, err)
 	default:
-		aside, err := Versions.at(dest, now.UTC().Format(RunIDLayout))
+		aside, err := freeAside(ctx, f, dest, now)
 		if err != nil {
 			return err
 		}
@@ -120,4 +128,22 @@ func RestoreVersion(ctx context.Context, f fs.Fs, rel, runID string, now time.Ti
 	}
 
 	return operations.CopyFile(ctx, f, f, dest, src)
+}
+
+// freeAside names the version that keeps the live file at dest, stamped now or
+// the first free second after it. A name only resolves to the second, and a
+// copy onto a taken one would replace that version.
+func freeAside(ctx context.Context, f fs.Fs, dest string, now time.Time) (string, error) {
+	for at := now.UTC(); ; at = at.Add(time.Second) {
+		aside, err := Versions.at(dest, at.Format(RunIDLayout))
+		if err != nil {
+			return "", err
+		}
+		switch _, err := f.NewObject(ctx, aside); {
+		case errors.Is(err, fs.ErrorObjectNotFound):
+			return aside, nil
+		case err != nil && !errors.Is(err, fs.ErrorIsDir):
+			return "", fmt.Errorf("look for a free name to keep %q under: %w", dest, err)
+		}
+	}
 }

@@ -3,27 +3,15 @@ package remotes
 import (
 	"context"
 	"encoding/json"
-	"os"
-	"path/filepath"
 	"testing"
 
 	_ "github.com/rclone/rclone/backend/local"
 	_ "github.com/rclone/rclone/backend/s3"
-	"github.com/rclone/rclone/fs/config"
-	"github.com/rclone/rclone/fs/config/configfile"
 )
 
 func configured(t *testing.T, name, backend string, settings map[string]string) {
 	t.Helper()
-	dir := t.TempDir()
-	path := filepath.Join(dir, "rclone.conf")
-	if err := os.WriteFile(path, nil, 0o600); err != nil {
-		t.Fatalf("write config: %v", err)
-	}
-	if err := config.SetConfigPath(path); err != nil {
-		t.Fatalf("point at the config: %v", err)
-	}
-	configfile.Install()
+	ownConfig(t)
 	if err := Save(name, backend, settings); err != nil {
 		t.Fatalf("save %s: %v", name, err)
 	}
