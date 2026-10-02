@@ -96,7 +96,8 @@ jobs:
           cp bundles/arrowloop-macos-universal/ArrowLoop.dmg dist/arrowloop-macos-universal.dmg
           cp bundles/arrowloop-macos-universal/ArrowLoop.zip dist/arrowloop-macos-universal.zip
           cp bundles/arrowloop-linux-amd64/ArrowLoop dist/arrowloop-linux-amd64
-          chmod +x dist/arrowloop-linux-amd64
+          cp bundles/arrowloop-linux-arm64/ArrowLoop dist/arrowloop-linux-arm64
+          chmod +x dist/arrowloop-linux-amd64 dist/arrowloop-linux-arm64
           cp bundles/arrowloop-mobile/arrowloop-app-arm64-v8a-release.apk dist/arrowloop-android-arm64.apk
           ls -lh dist
 

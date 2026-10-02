@@ -14,6 +14,7 @@ export const DOWNLOADS = {
   windowsArm: `${RELEASE}/arrowloop-windows-arm64-installer.exe`,
   macos: `${RELEASE}/arrowloop-macos-universal.dmg`,
   linux: `${RELEASE}/arrowloop-linux-amd64`,
+  linuxArm: `${RELEASE}/arrowloop-linux-arm64`,
   apk: `${RELEASE}/arrowloop-android-arm64.apk`,
 }
 

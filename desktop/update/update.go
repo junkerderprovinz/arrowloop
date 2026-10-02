@@ -40,6 +40,7 @@ var Assets = map[string]string{
 	"darwin/amd64":  "arrowloop-macos-universal.zip",
 	"darwin/arm64":  "arrowloop-macos-universal.zip",
 	"linux/amd64":   "arrowloop-linux-amd64",
+	"linux/arm64":   "arrowloop-linux-arm64",
 }
 
 // Updater holds what an update needs to know about the program. API, Client

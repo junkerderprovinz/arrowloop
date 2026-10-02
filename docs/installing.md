@@ -139,6 +139,10 @@ again, as the person signed in, when it is done. A computer with an ARM
 processor, such as a Snapdragon laptop, takes the one named `windows-arm64`; the
 `amd64` installer would run there too, but through emulation and slower.
 
+Linux gets the program as a single file, `linux-amd64` for an Intel or AMD
+processor and `linux-arm64` for a 64-bit ARM one. It needs WebKitGTK 4.1
+(`libwebkit2gtk-4.1-0` on Debian and Ubuntu) for its window.
+
 It is not a client talking to a server. The scheduler, the run log and the API
 all live in the same process, and the window is a webview pointed at them.
 Nothing listens on the network at all, which is the difference between a desktop

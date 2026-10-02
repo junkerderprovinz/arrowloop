@@ -176,7 +176,10 @@ function DesktopCard() {
         />
         <ReadmeButton
           brand="linux"
-          parts={[{ name: t('apps.linux'), sub: 'x64', href: DOWNLOADS.linux }]}
+          parts={[
+            { name: t('apps.linux'), sub: 'x64', href: DOWNLOADS.linux },
+            { name: 'ARM64', sub: t('apps.linux'), href: DOWNLOADS.linuxArm },
+          ]}
           mark={<BrandMark svg={LINUX_SVG} />}
           onLinkClick={followExternal}
         />
