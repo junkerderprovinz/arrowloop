@@ -10,6 +10,21 @@ The full notes for each release are in
 
 ## Unreleased
 
+## 1.5.7 - 2026-10-03
+
+## ✨ Added
+
+- **The desktop app for Linux on ARM64.** The release has `arrowloop-linux-arm64` next to `arrowloop-linux-amd64`, the README and the App tab link to it, and it updates itself like the other builds. It needs WebKitGTK 4.1, as the amd64 build does.
+
+## 🎨 Design
+
+- **The buttons in the phone's settings fill their card.** They had the README's fixed width and left a strip free at the right edge. Each row now shares the card's width between its buttons, and the desktop card has one row per system, so each ARM64 build sits next to its own.
+- **The open envelope on the phone's Email button keeps its tip.** Pressing the button cut off the top of the flap.
+
+## ⚡ Improved
+
+- Wails is updated to 3.0.0-beta.27 and the SQLite driver to 1.60.1.
+
 ## 1.5.6 - 2026-10-02
 
 ## ✨ Added
