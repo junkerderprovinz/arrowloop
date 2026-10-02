@@ -14,6 +14,7 @@ require (
 	golang.org/x/term v0.46.0
 	golang.org/x/text v0.42.0
 	modernc.org/libc v1.75.7
+	modernc.org/libc/v2 v2.1.30
 	modernc.org/sqlite v1.59.0
 )
 
