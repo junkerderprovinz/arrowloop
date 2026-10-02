@@ -7,7 +7,7 @@ import type { Nav, TargetsStack } from "../nav";
 import { nameAndKind, providerHint, providerName } from "../../../web/src/lib/optionHint";
 import { space } from "../theme";
 import { brandTile, ProviderMark } from "../glyphs";
-import { Caption, Empty, Page, README_W, ReadmeButton, Title, useTheme } from "../ui";
+import { Caption, Empty, Page, ReadmeButton, ReadmeRow, Title, useTheme } from "../ui";
 
 /**
  * Picks the kind of storage for a new target, as README buttons matching the
@@ -20,7 +20,6 @@ export function TargetPick() {
   const { p, scheme, accent, accentContrast } = useTheme();
   const [providers, setProviders] = useState<Provider[] | null>(null);
   const [error, setError] = useState("");
-  const [room, setRoom] = useState(0);
 
   useEffect(() => {
     api.storage().then(
@@ -35,11 +34,6 @@ export function TargetPick() {
   const storage = providers.filter((x) => x.group === "storage");
   const protocols = providers.filter((x) => x.group === "protocol");
 
-  // As many across as fit at the README's width, sharing the row between them,
-  // so a narrow phone shows one per row and a wide one several.
-  const across = Math.max(1, Math.floor((room + GAP) / (README_W + GAP)));
-  const width = room ? Math.floor((room - GAP * (across - 1)) / across) : README_W;
-
   const button = (provider: Provider) => {
     // A protocol wears one of the app's own glyphs and lights in the accent.
     const tile = brandTile(provider.mark) ?? { color: accent, ink: accentContrast };
@@ -50,7 +44,6 @@ export function TargetPick() {
         label={name}
         sub={sub}
         tile={tile}
-        width={width}
         hint={provider.group === "protocol" ? providerHint(provider.id, t) : undefined}
         mark={(lit, ink) => (
           <ProviderMark
@@ -69,25 +62,23 @@ export function TargetPick() {
 
   return (
     <Page>
-      <View style={styles.sections} onLayout={(e) => setRoom(e.nativeEvent.layout.width)}>
+      <View style={styles.sections}>
         <Title>{t("targets.cloud")}</Title>
-        <View style={styles.grid}>{clouds.map(button)}</View>
+        <ReadmeRow>{clouds.map(button)}</ReadmeRow>
         <Title>{t("targets.storage")}</Title>
-        <View style={styles.grid}>{storage.map(button)}</View>
+        <ReadmeRow>{storage.map(button)}</ReadmeRow>
         <Title>{t("targets.connections")}</Title>
-        <View style={styles.grid}>{protocols.map(button)}</View>
+        <ReadmeRow>{protocols.map(button)}</ReadmeRow>
       </View>
       {error ? <Caption>{error}</Caption> : null}
     </Page>
   );
 }
 
-// The README's mark box and the gap between its buttons.
+// The README's mark box.
 const MARK_W = 32;
 const MARK_H = 25;
-const GAP = 13;
 
 const styles = StyleSheet.create({
   sections: { gap: space.md },
-  grid: { flexDirection: "row", flexWrap: "wrap", gap: GAP },
 });

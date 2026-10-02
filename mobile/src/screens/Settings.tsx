@@ -46,7 +46,9 @@ import {
   Choice,
   Page,
   InfoBubble,
+  README_GAP,
   ReadmeButton,
+  ReadmeRow,
   Section,
   Title,
   Toggle,
@@ -67,6 +69,15 @@ export function Settings() {
   const leaf = useLeafUnlock();
   const disco = useDiscoUnlock();
   const loop = useClosingLoop();
+
+  const windowsMark = (lit: boolean, ink: string) => (
+    <AppMark svg={WINDOWS_SVG} ink={lit ? ink : PLATFORM[scheme].windows} />
+  );
+  // Tux's beak and feet sit on the mark, so on the lit tile they take the
+  // tile's own yellow and read as holes.
+  const linuxMark = (lit: boolean, ink: string) => (
+    <AppMark svg={LINUX_SVG} ink={lit ? ink : p.text} cut={lit ? TILE.linux.color : undefined} />
+  );
 
   const [granted, setGranted] = useState<boolean | null>(null);
   const [possible, setPossible] = useState(true);
@@ -554,49 +565,57 @@ export function Settings() {
         </View>
       </Section>
 
-      {/* GlimStone's About card: who made it, the donation buttons, the report
-          buttons, and the versions as a footer. The links come from
-          lib/donate.ts, shared with the web app. The title counts the taps for
-          the loop egg, being the only part of the card with no other action. */}
       {/* The forms of ArrowLoop a phone is not, with the web's Apps page's
-          buttons. Every download is the newest release. */}
+          buttons. Every download is the newest release. A row per system, in
+          the README's order, keeps each ARM64 build beside its own. */}
       <Section title={t("apps.desktopTitle")} hint={t("apps.desktopHint")} hue={3}>
-        <View style={styles.readmeRow}>
-          <ReadmeButton
-            label={t("apps.windows")}
-            sub="x64"
-            tile={TILE.windows}
-            mark={(lit, ink) => <AppMark svg={WINDOWS_SVG} ink={lit ? ink : PLATFORM[scheme].windows} />}
-            onPress={() => Linking.openURL(DOWNLOADS.windows)}
-          />
-          <ReadmeButton
-            label="ARM64"
-            sub={t("apps.windows")}
-            tile={TILE.windows}
-            mark={(lit, ink) => <AppMark svg={WINDOWS_SVG} ink={lit ? ink : PLATFORM[scheme].windows} />}
-            onPress={() => Linking.openURL(DOWNLOADS.windowsArm)}
-          />
-          <ReadmeButton
-            label={t("apps.macos")}
-            sub="Universal"
-            tile={TILE.apple}
-            mark={(lit, ink) => <AppMark svg={APPLE_SVG} ink={lit ? ink : p.text} />}
-            onPress={() => Linking.openURL(DOWNLOADS.macos)}
-          />
-          <ReadmeButton
-            label={t("apps.linux")}
-            sub="x64"
-            tile={TILE.linux}
-            // Tux's beak and feet sit on the mark, so on the lit tile they
-            // take the tile's own yellow and read as holes.
-            mark={(lit, ink) => <AppMark svg={LINUX_SVG} ink={lit ? ink : p.text} cut={lit ? TILE.linux.color : undefined} />}
-            onPress={() => Linking.openURL(DOWNLOADS.linux)}
-          />
+        <View style={styles.readmeRows}>
+          <ReadmeRow>
+            <ReadmeButton
+              label={t("apps.windows")}
+              sub="x64"
+              tile={TILE.windows}
+              mark={windowsMark}
+              onPress={() => Linking.openURL(DOWNLOADS.windows)}
+            />
+            <ReadmeButton
+              label="ARM64"
+              sub={t("apps.windows")}
+              tile={TILE.windows}
+              mark={windowsMark}
+              onPress={() => Linking.openURL(DOWNLOADS.windowsArm)}
+            />
+          </ReadmeRow>
+          <ReadmeRow>
+            <ReadmeButton
+              label={t("apps.macos")}
+              sub="Universal"
+              tile={TILE.apple}
+              mark={(lit, ink) => <AppMark svg={APPLE_SVG} ink={lit ? ink : p.text} />}
+              onPress={() => Linking.openURL(DOWNLOADS.macos)}
+            />
+          </ReadmeRow>
+          <ReadmeRow>
+            <ReadmeButton
+              label={t("apps.linux")}
+              sub="x64"
+              tile={TILE.linux}
+              mark={linuxMark}
+              onPress={() => Linking.openURL(DOWNLOADS.linux)}
+            />
+            <ReadmeButton
+              label="ARM64"
+              sub={t("apps.linux")}
+              tile={TILE.linux}
+              mark={linuxMark}
+              onPress={() => Linking.openURL(DOWNLOADS.linuxArm)}
+            />
+          </ReadmeRow>
         </View>
       </Section>
 
       <Section title={t("apps.serverTitle")} hint={t("apps.serverHint")} hue={4}>
-        <View style={styles.readmeRow}>
+        <ReadmeRow>
           {/* Shown before its Community Applications entry is live, as the
               README and the web show it, and left without a link till then. */}
           <ReadmeButton
@@ -620,9 +639,13 @@ export function Settings() {
             mark={(lit, ink) => <AppMark svg={ZIP_SVG} ink={lit ? ink : p.textSub} />}
             onPress={() => Linking.openURL(sourceZip(version ?? ""))}
           />
-        </View>
+        </ReadmeRow>
       </Section>
 
+      {/* GlimStone's About card: who made it, the donation buttons, the report
+          buttons, and the versions as a footer. The links come from
+          lib/donate.ts, shared with the web app. The title counts the taps for
+          the loop egg, being the only part of the card with no other action. */}
       <Section title={t("about.title")} hue={2} onTitlePress={loop.tap}>
         {loop.mark}
         <Body>{t("about.body")}</Body>
@@ -631,7 +654,7 @@ export function Settings() {
         {/* The README's give buttons, a blank line apart from the sentences
             above and below, since they are the loudest row on the card. Brand
             marks are passed explicitly, never matched from the label key. */}
-        <View style={[styles.readmeRow, styles.give]}>
+        <ReadmeRow style={styles.give}>
           <ReadmeButton
             label={t("about.coffeeButton")}
             art
@@ -651,10 +674,10 @@ export function Settings() {
             mark={(lit, ink) => <DonateMark name="bitcoin" scheme={scheme} ink={lit ? ink : undefined} />}
             onPress={() => setCrypto(true)}
           />
-        </View>
+        </ReadmeRow>
 
         <Body>{t("about.report")}</Body>
-        <View style={styles.readmeRow}>
+        <ReadmeRow>
           <ReadmeButton
             label={t("about.repo")}
             tile={TILE.github}
@@ -675,7 +698,7 @@ export function Settings() {
               )
             }
           />
-        </View>
+        </ReadmeRow>
 
         {/* The engine reports its own version; the app manifest's is only the
             fallback when there is no engine to ask. */}
@@ -793,7 +816,7 @@ const styles = StyleSheet.create({
   versionLink: { fontVariant: ["tabular-nums"] },
   flag: { fontSize: 18 },
   // The README buttons' own gap, 13 on the README's 16.
-  readmeRow: { flexDirection: "row", flexWrap: "wrap", gap: 13 },
+  readmeRows: { gap: README_GAP },
   // A blank line of the card's text above and below.
   give: { marginVertical: text.body * 1.5 },
   // Shares the width left after the label equally, so all swatches fit on

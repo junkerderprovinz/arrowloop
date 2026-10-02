@@ -279,6 +279,14 @@ export function CoffeeArt({ cup, ink }: { cup: string; ink: string }) {
   return <SvgXml xml={xml} width={160} height={46.6} />;
 }
 
+// The box both drawings share in MAIL_SVG, and the same box raised to the tip
+// of the open flap, which the web lets overflow. An SVG here is clipped to its
+// own box, so the open envelope is drawn in the raised one, at the same scale
+// and moved up by the difference.
+const MAIL_BOX = 'viewBox="2 2.32 20 19.36"';
+const OPEN_BOX = 'viewBox="2 0.64 20 21.04"';
+const RISE = (25 * (2.32 - 0.64)) / 19.36;
+
 /**
  * The Email button's envelope, which opens while the button is pressed. Both
  * drawings share one box, so the envelope does not jump.
@@ -286,7 +294,8 @@ export function CoffeeArt({ cup, ink }: { cup: string; ink: string }) {
 export function MailMark({ open, ink }: { open: boolean; ink: string }) {
   const [closed, opened] = MAIL_SVG.split("</svg>");
   const xml = `${open ? opened : closed}</svg>`.split("currentColor").join(ink);
-  return <SvgXml xml={xml} width={32} height={25} />;
+  if (!open) return <SvgXml xml={xml} width={32} height={25} />;
+  return <SvgXml xml={xml.replace(MAIL_BOX, OPEN_BOX)} width={32} height={25 + RISE} style={{ marginTop: -RISE }} />;
 }
 
 export function hasBrandMark(name: string | undefined): boolean {

@@ -683,11 +683,30 @@ export function Button({
 /** The width of the README's own buttons. */
 export const README_W = 160;
 
+export const README_GAP = 13;
+
+const ReadmeWidth = createContext<number | undefined>(undefined);
+
 /**
- * A button in the shape of the README's, as GlimStone's About card has it: 160
- * by 46.6, the brand's mark and the name on the quiet ground at rest, the
- * brand's own colour and its ink while a finger is on it. A phone has no
- * pointer to light it earlier.
+ * README buttons side by side, as many across as fit at the README's width and
+ * sharing the row between them, so the row reaches the card's edge on any phone.
+ */
+export function ReadmeRow({ children, style }: { children: ReactNode; style?: StyleProp<ViewStyle> }) {
+  const [room, setRoom] = useState(0);
+  const across = Math.max(1, Math.floor((room + README_GAP) / (README_W + README_GAP)));
+  const width = room ? Math.floor((room - README_GAP * (across - 1)) / across) : undefined;
+  return (
+    <View style={[styles.readmeRow, style]} onLayout={(e) => setRoom(e.nativeEvent.layout.width)}>
+      <ReadmeWidth.Provider value={width}>{children}</ReadmeWidth.Provider>
+    </View>
+  );
+}
+
+/**
+ * A button in the shape of the README's, as GlimStone's About card has it: 46.6
+ * high and 160 wide, or its share of a ReadmeRow, the brand's mark and the name
+ * on the quiet ground at rest, the brand's own colour and its ink while a
+ * finger is on it. A phone has no pointer to light it earlier.
  */
 export function ReadmeButton({
   label,
@@ -696,7 +715,6 @@ export function ReadmeButton({
   art,
   tile,
   hint,
-  width = README_W,
   onPress,
   soon,
 }: {
@@ -711,14 +729,13 @@ export function ReadmeButton({
   tile: { color: string; ink: string };
   /** The "(i)" at the end of the button, for what the name cannot say. */
   hint?: string;
-  /** Wider than the README's where a grid gives the button its row's share. */
-  width?: number;
   /** Where the route leads. Without one it is not open yet: the second line
    *  says `soon`, the button stays unlit and the mark pales, as on the web. */
   onPress?: () => void;
   soon?: string;
 }) {
   const { p, corners } = useTheme();
+  const width = useContext(ReadmeWidth) ?? README_W;
   const press = usePress();
   const [lit, setLit] = useState(false);
   const shut = !onPress;
@@ -740,6 +757,7 @@ export function ReadmeButton({
       accessibilityState={{ disabled: shut }}
       style={[
         styles.readme,
+        art ? styles.readmeArt : null,
         {
           width,
           backgroundColor: lit ? tile.color : p.surface2,
@@ -1134,7 +1152,10 @@ const styles = StyleSheet.create({
   },
   buttonText: { fontSize: text.body, fontWeight: "600", flexShrink: 1 },
   // The README's proportions: the mark 24 in from the start, the name from 63.
+  readmeRow: { flexDirection: "row", flexWrap: "wrap", gap: README_GAP },
   readme: { height: 46.6, overflow: "hidden", justifyContent: "center" },
+  // Vendor artwork keeps the README's width inside a wider button.
+  readmeArt: { alignItems: "center" },
   readmeMark: { position: "absolute", start: 24, top: 10.8, width: 32, height: 25 },
   readmeName: { flex: 1, justifyContent: "center", marginStart: 63, marginEnd: 10 },
   readmeNameText: { fontSize: text.body, fontWeight: "700" },
