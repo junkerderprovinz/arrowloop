@@ -8,9 +8,9 @@ go 1.27.1
 replace github.com/junkerderprovinz/arrowloop => ../
 
 require (
-	github.com/junkerderprovinz/arrowloop v1.1.0
+	github.com/junkerderprovinz/arrowloop v1.5.6
 	github.com/rclone/rclone v1.75.1
-	github.com/wailsapp/wails/v3 v3.0.0-beta.26
+	github.com/wailsapp/wails/v3 v3.0.0-beta.27
 	golang.org/x/image v0.46.0
 	golang.org/x/sys v0.48.0
 )
