@@ -11,7 +11,6 @@
  *
  * And for Google Play, in fastlane/metadata/android/<lang>/images/:
  *   icon.png             : 512 on white, RGB
- *   featureGraphic.png   : #0d1117 1024x500, logo, name and claim, RGB
  *
  * The master reads on both grounds, so both themes embed the same file and only
  * the text colours flip. Banner layout: logo ink about 400px with its left edge
@@ -37,7 +36,7 @@ const opentype = require(`${gRoot}/opentype.js`);
 const here = (p) => new URL(p, import.meta.url);
 
 const NAME = 'ArrowLoop';
-const CLAIM = 'Fires both ways. Loses nothing.';
+const CLAIM = 'Sync it everywhere.';
 const W = 1600, H = 500;
 const INK = 400;                                   // largest ink dimension
 const nameSize = 132, claimSize = 44, gap = 70, lineGap = 8;
@@ -97,7 +96,7 @@ const nameBaseline = H / 2 - blockH / 2 + nameAsc;
 const claimBaseline = nameBaseline + nameDesc + lineGap + claimAsc;
 
 // opentype.js emits a NaN control point for some glyphs at a large absolute x
-// (Lato's "e" in "Loses"), so every glyph is built at x=0 and moved into place by
+// (Lato's "e" far along a line), so every glyph is built at x=0 and moved into place by
 // a transform, with advance plus kerning stepped by hand as getPath would. This
 // also avoids resvg dropping the tail of a long merged path.
 function glyphs(font, text, size) {
@@ -143,28 +142,9 @@ const logoOnly = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="$
 writeFileSync(here('./banner-logo.svg'), logoOnly);
 writeFileSync(here('./banner-logo.png'), png(logoOnly, W, '#ffffff'));
 
-// Google Play: the listing icon on the adaptive icon's white, inset so the
-// store's rounded mask cannot clip the ring, and the 1024x500 feature graphic
-// in the dark banner's colours, without an alpha channel, which Play refuses.
-const PW = 1024, PH = 500, PINK = 300, pName = 92, pClaim = 31, pGap = 48;
-const pScale = PINK / Math.max(ink.width, ink.height);
-const pNameW = bree.getAdvanceWidth(NAME, pName), pClaimW = lato.getAdvanceWidth(CLAIM, pClaim);
-const pLeft = (PW - (ink.width * pScale + pGap + Math.max(pNameW, pClaimW))) / 2;
-const pTextX = pLeft + ink.width * pScale + pGap;
-const pNameAsc = bree.ascender * (pName / bree.unitsPerEm);
-const pNameDesc = -bree.descender * (pName / bree.unitsPerEm);
-const pClaimAsc = lato.ascender * (pClaim / lato.unitsPerEm);
-const pNameBase = PH / 2 - (pNameAsc + pNameDesc + lineGap + pClaimAsc) / 2 + pNameAsc;
-const dark = THEMES[1];
-const feature = `<svg xmlns="http://www.w3.org/2000/svg" width="${PW}" height="${PH}" viewBox="0 0 ${PW} ${PH}">
-  <rect width="${PW}" height="${PH}" fill="${dark.bg}"/>
-  ${embed(pLeft - (ink.x - vbX) * pScale, PH / 2 - ((ink.y - vbY) + ink.height / 2) * pScale, vbW * pScale, vbH * pScale)}
-  <g transform="translate(${pTextX.toFixed(2)},0)">
-    ${paint(glyphs(bree, NAME, pName), pNameBase, dark.name)}
-    ${paint(glyphs(lato, CLAIM, pClaim), pNameBase + pNameDesc + lineGap + pClaimAsc, dark.claim)}
-  </g>
-</svg>
-`;
+// Google Play's listing icon on the adaptive icon's white, inset so the store's
+// rounded mask cannot clip the ring, without an alpha channel, which Play
+// refuses. The feature graphic comes from store/render.mjs.
 const iconInk = 400, iconScale = iconInk / Math.max(ink.width, ink.height);
 const playIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
   <rect width="512" height="512" fill="#ffffff"/>
@@ -202,9 +182,8 @@ function rgbPng(svg, width, bg) {
 }
 for (const lang of ['en-US', 'de-DE']) {
   const dir = new URL(`../../fastlane/metadata/android/${lang}/images/`, import.meta.url);
-  writeFileSync(new URL('featureGraphic.png', dir), rgbPng(feature, PW, dark.bg));
   writeFileSync(new URL('icon.png', dir), rgbPng(playIcon, 512, '#ffffff'));
 }
 
 console.log(`ink ${ink.width.toFixed(1)}x${ink.height.toFixed(1)} in ${vbW}x${vbH}, right margin ${(W - rightEdge).toFixed(0)}px`);
-console.log('wrote icon.png, favicon.png, appicon.png, banner{,-dark,-logo}.{svg,png}, and the Play icon and feature graphic');
+console.log('wrote icon.png, favicon.png, appicon.png, banner{,-dark,-logo}.{svg,png} and the Play icon');

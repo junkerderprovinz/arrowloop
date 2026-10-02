@@ -32,8 +32,8 @@ const metadata = join(root, 'fastlane', 'metadata', 'android')
 const CAPTIONS = {
   'de-DE': {
     sub: 'ArrowLoop für Android',
-    tagline: 'Schießt in beide Richtungen.<br>Verliert nichts.',
-    everywhere: 'Sync it<br><em>to everywhere</em>',
+    tagline: 'Synchronisiere alles überallhin.<br>Über 60 Clouds und Server.',
+    everywhere: 'Synchronisiere alles <em>überallhin</em>',
     everywhereSub: 'Zwei-Wege-Sync mit über 60 Clouds und Servern',
     smb: 'Windows-Freigabe',
     s3: 'S3-kompatibel',
@@ -45,8 +45,8 @@ const CAPTIONS = {
   },
   'en-US': {
     sub: 'ArrowLoop for Android',
-    tagline: 'Fires both ways.<br>Loses nothing.',
-    everywhere: 'Sync it<br><em>to everywhere</em>',
+    tagline: 'Sync it everywhere.<br>Over 60 clouds and servers.',
+    everywhere: 'Sync it<br><em>everywhere</em>',
     everywhereSub: 'Two-way sync with over 60 clouds and servers',
     smb: 'Windows share',
     s3: 'S3 compatible',
