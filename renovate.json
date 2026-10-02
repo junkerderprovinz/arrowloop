@@ -60,6 +60,12 @@
       "matchFileNames": [".github/workflows/mobile.yml"],
       "matchDepNames": ["java-jdk"],
       "allowedVersions": "17"
+    },
+    {
+      "description": "modernc.org/libc moves in step with modernc.org/sqlite, which still requires v1; a v2 requirement would only sit unused next to it",
+      "matchManagers": ["gomod"],
+      "matchPackageNames": ["modernc.org/libc"],
+      "allowedVersions": "<2"
     }
   ]
 }
