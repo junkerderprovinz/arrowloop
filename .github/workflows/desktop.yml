@@ -64,12 +64,21 @@ jobs:
           # already-running job process.
           echo "C:\Program Files (x86)\NSIS" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
-      # Must match the version desktop/go.mod requires; Renovate cannot see a
-      # version inside a shell string, so the two move together by hand.
-      # The CLI links the Linux webview too, and without the tag it wants GTK 4,
-      # which the runner does not have. Elsewhere the tag changes nothing.
+      # The CLI writes the build assets for the library, so its version is read
+      # from desktop/go.mod, which Renovate keeps current. sed rather than
+      # grep -P, which BSD grep on macOS lacks. The CLI links the Linux webview
+      # too, and without the tag it wants GTK 4, which the runner does not
+      # have. Elsewhere the tag changes nothing.
       - name: Install the Wails CLI
-        run: go install -tags gtk3 github.com/wailsapp/wails/v3/cmd/wails3@v3.0.0-beta.26
+        working-directory: desktop
+        shell: bash
+        run: |
+          version=$(sed -n 's|.*github\.com/wailsapp/wails/v3 \(v[0-9][0-9A-Za-z.-]*\).*|\1|p' go.mod | head -1)
+          if [ -z "$version" ]; then
+            echo "could not read the wails version out of desktop/go.mod" >&2
+            exit 1
+          fi
+          go install -tags gtk3 github.com/wailsapp/wails/v3/cmd/wails3@"$version"
 
       - name: Install the interface dependencies
         run: npm --prefix web ci --no-audit --no-fund
