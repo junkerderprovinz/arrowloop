@@ -2,14 +2,14 @@
   "expo": {
     "name": "ArrowLoop",
     "slug": "arrowloop-mobile",
-    "version": "1.5.7",
+    "version": "1.5.8",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
     "scheme": "arrowloop",
     "newArchEnabled": true,
     "android": {
-      "versionCode": 10507,
+      "versionCode": 10508,
       "allowBackup": false,
       "package": "arrowloop.halleluja.design",
       "adaptiveIcon": {

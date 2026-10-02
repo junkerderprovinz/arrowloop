@@ -10,6 +10,12 @@ The full notes for each release are in
 
 ## Unreleased
 
+## 1.5.8 - 2026-10-03
+
+## 🎨 Design
+
+- **New store pictures.** The first one shows the clouds and servers ArrowLoop syncs with, under the line "Sync it everywhere." The feature graphic and the README banner use the same line.
+
 ## 1.5.7 - 2026-10-03
 
 ## ✨ Added
