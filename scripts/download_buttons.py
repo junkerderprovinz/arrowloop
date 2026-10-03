@@ -14,6 +14,7 @@ BUTTONS = {
     "macos": RELEASE + "arrowloop-macos-universal.dmg",
     "linux": RELEASE + "arrowloop-linux-amd64",
     "linux-arm": RELEASE + "arrowloop-linux-arm64",
+    "unraid": "https://ca.unraid.net/apps/arrowloop-04rvnbl1yv3wn1",
     # A browser cannot download an image, so this opens its Docker Hub page,
     # which carries the pull command and every tag.
     "docker": "https://hub.docker.com/r/junkerderprovinz/arrowloop/",

@@ -37,7 +37,7 @@ import { Field } from "../fields";
 import { Schedule } from "./JobEdit";
 import { AppMark, CoffeeArt, DonateMark, MailMark } from "../glyphs";
 import { APPLE_SVG, DOCKER_SVG, LINUX_SVG, UNRAID_SVG, WINDOWS_SVG, ZIP_SVG } from "../../../web/src/lib/appMarks";
-import { DOCKER_RUN, DOWNLOADS, sourceZip } from "../../../web/src/lib/downloads";
+import { DOCKER_RUN, DOWNLOADS, UNRAID_CA, sourceZip } from "../../../web/src/lib/downloads";
 import {
   AxisLabel,
   Body,
@@ -616,13 +616,12 @@ export function Settings() {
 
       <Section title={t("apps.serverTitle")} hint={t("apps.serverHint")} hue={4}>
         <ReadmeRow>
-          {/* Shown before its Community Applications entry is live, as the
-              README and the web show it, and left without a link till then. */}
           <ReadmeButton
             label={t("apps.unraid")}
+            sub={t("apps.unraidSub")}
             tile={TILE.unraid}
-            soon={t("apps.soon")}
-            mark={() => <AppMark svg={UNRAID_SVG} ink={p.text} />}
+            mark={(lit, ink) => <AppMark svg={UNRAID_SVG} ink={lit ? ink : p.text} />}
+            onPress={() => Linking.openURL(UNRAID_CA)}
           />
           <ReadmeButton
             label={t("apps.docker")}

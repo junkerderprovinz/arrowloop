@@ -7,7 +7,7 @@ import { Stack } from '../components/Shell'
 import { Card } from '../lib/glimstone/Card'
 import { BrandMark, ReadmeButton } from '../lib/glimstone/ReadmeButton'
 import { ANDROID_SVG, APPLE_SVG, DOCKER_SVG, LINUX_SVG, PLAY_SVG, UNRAID_SVG, WINDOWS_SVG, ZIP_SVG } from '../lib/appMarks'
-import { DOCKER_RUN, DOWNLOADS, sourceZip } from '../lib/downloads'
+import { DOCKER_RUN, DOWNLOADS, UNRAID_CA, sourceZip } from '../lib/downloads'
 import { followExternal } from '../lib/external'
 import { useT } from '../lib/i18n'
 
@@ -17,7 +17,6 @@ const APK = DOWNLOADS.apk
 
 // Empty until the listing is live; the button then says it is coming.
 const PLAY_STORE = ''
-const UNRAID_CA = ''
 
 /**
  * Where to get ArrowLoop outside this page. The phone app is offered
@@ -200,7 +199,6 @@ function ServerCard({ version }: { version: string }) {
           parts={[{ name: t('apps.unraid'), sub: t('apps.unraidSub'), href: UNRAID_CA }]}
           mark={<BrandMark svg={UNRAID_SVG} />}
           markClass="glim-unraid-mark"
-          soonLabel={t('apps.soon')}
           onLinkClick={followExternal}
         />
         <ReadmeButton

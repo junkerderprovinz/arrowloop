@@ -18,6 +18,9 @@ export const DOWNLOADS = {
   apk: `${RELEASE}/arrowloop-android-arm64.apk`,
 }
 
+/** ArrowLoop's entry in Unraid's Community Applications. */
+export const UNRAID_CA = 'https://ca.unraid.net/apps/arrowloop-04rvnbl1yv3wn1'
+
 export const DOCKER_RUN =
   'docker run -d --name arrowloop -p 8422:8422 -v /path/to/config:/config -v /path/to/data:/data junkerderprovinz/arrowloop:latest'
 

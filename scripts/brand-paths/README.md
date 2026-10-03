@@ -39,7 +39,9 @@ computed from the first.
 
 **Dashboard Icons** (`homarr-labs/dashboard-icons`, <https://dashboardicons.com>)
 - `microsoft-onedrive.svg`, `oracle-cloud.svg`, `premiumize.svg`, the three
-nobody has supplied. **Apache-2.0**, whose licence text is beside this file as
+nobody has supplied, and the Unraid button's `unraid.txt`, its `unraid.svg`
+with the gradient left out, since the button draws it in one ink.
+**Apache-2.0**, whose licence text is beside this file as
 `LICENSE-dashboard-icons.txt`. Copyright the Homarr Labs team and contributors.
 Unlike CC0 this one asks for attribution, which is why it is named here, in the
 generator, and in the header of every component built from it.

@@ -106,10 +106,12 @@ log names the file, and deleting it has the same effect.
 
 ### On Unraid
 
-The template is
-[`templates/my-ArrowLoop.xml`](https://github.com/junkerderprovinz/arrowloop/blob/main/templates/my-ArrowLoop.xml).
-Drop it into `/boot/config/plugins/dockerMan/templates-user/` and it appears in
-the Docker tab's Add Container list, with every field editable. Most installs
+ArrowLoop is in [Community Applications](https://ca.unraid.net/apps/arrowloop-04rvnbl1yv3wn1):
+search for ArrowLoop in the Apps tab and install it from there. The same
+template is
+[`templates/my-ArrowLoop.xml`](https://github.com/junkerderprovinz/arrowloop/blob/main/templates/my-ArrowLoop.xml);
+dropped into `/boot/config/plugins/dockerMan/templates-user/` it appears in the
+Docker tab's Add Container list, with every field editable. Most installs
 set the password in the interface; the template's masked password hash field
 is the environment variable above, and its text says how to fill it from the
 container's console.
