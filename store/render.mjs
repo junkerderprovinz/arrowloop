@@ -253,9 +253,27 @@ function tile({ name, key, sub, mark, lit }, text) {
   return `<div class="tile" style="${look}">${markSvg(mark, own && { ink: own.ink, cut: own.color })}<div class="name"><b data-fit>${key ? text[key] : name}</b>${second}</div></div>`
 }
 
+// The provider tiles, shared by the store's wall and the README's Android picture.
+const WALL_STYLE = `
+.row { display: flex; gap: 23px; }
+.row:nth-child(even) { margin-left: 156px; }
+/* mobile/src/ui.tsx's ReadmeButton, 160 by 46.6 there, at 1.8 times. */
+.tile { position: relative; flex: none; width: 288px; height: 84px; border-radius: 42px; background: #393939; color: #f4f4f4;
+  box-shadow: 0 2px 4px rgba(0,0,0,.3), 0 12px 26px rgba(0,0,0,.45); }
+.tile svg { position: absolute; left: 43px; top: 19.5px; width: 58px; height: 45px; }
+.tile .name { position: absolute; left: 113px; right: 18px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; white-space: nowrap; }
+.tile b { font: 700 25px/1.2 Roboto, sans-serif; }
+.tile small { font: 400 20px/1.4 Roboto, sans-serif; }
+`
+
+// `wide` puts a second row of the wall beside each one, for a landscape picture.
+const wallRows = (text, wide = false) =>
+  WALL.map((row, i) => (wide ? [...row, ...WALL[(i + WALL.length / 2) % WALL.length]] : row))
+    .map((row) => `<div class="row">${row.map((p) => tile(p, text)).join('')}</div>`)
+    .join('')
+
 function wallShot(text) {
-  const rows = WALL.map((row) => `<div class="row">${row.map((p) => tile(p, text)).join('')}</div>`).join('')
-  return `<!doctype html><html><head><meta charset="utf-8"><style>${STYLE}
+  return `<!doctype html><html><head><meta charset="utf-8"><style>${STYLE}${WALL_STYLE}
 body { width: 1080px; height: 1920px; }
 .copy { position: absolute; left: 88px; right: 88px; top: 110px; display: flex; flex-direction: column; gap: 30px; }
 .copy img { width: 92px; }
@@ -267,19 +285,10 @@ h1 { font-size: 78px; line-height: 1.12; }
 .fade { position: absolute; inset: 0; -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 4%, #000 80%, transparent 99%); }
 .plane { position: absolute; left: 88px; top: 46px; display: flex; flex-direction: column; gap: 23px;
   transform-origin: 0 0; transform: rotateY(-16deg) rotateX(4deg); }
-.row { display: flex; gap: 23px; }
-.row:nth-child(even) { margin-left: 156px; }
-/* mobile/src/ui.tsx's ReadmeButton, 160 by 46.6 there, at 1.8 times. */
-.tile { position: relative; flex: none; width: 288px; height: 84px; border-radius: 42px; background: #393939; color: #f4f4f4;
-  box-shadow: 0 2px 4px rgba(0,0,0,.3), 0 12px 26px rgba(0,0,0,.45); }
-.tile svg { position: absolute; left: 43px; top: 19.5px; width: 58px; height: 45px; }
-.tile .name { position: absolute; left: 113px; right: 18px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; white-space: nowrap; }
-.tile b { font: 700 25px/1.2 Roboto, sans-serif; }
-.tile small { font: 400 20px/1.4 Roboto, sans-serif; }
 </style></head><body>
 ${backdrop('78%', '-16%', '-5%')}
 <div class="copy"><img src="${logo}"><h1>${text.everywhere}</h1><p class="sub">${text.everywhereSub}</p></div>
-<div class="wallstage"><div class="fade"><div class="plane">${rows}</div></div></div>
+<div class="wallstage"><div class="fade"><div class="plane">${wallRows(text)}</div></div></div>
 </body></html>`
 }
 
@@ -352,17 +361,26 @@ ${windowed(capture, frame, { x: 600, y: frame === 'browser' ? 148 : 170, w: 1270
 </body></html>`
 }
 
-/** The README's Android picture, three phones beside the caption, as wide as the other two. */
+/**
+ * The README's Android picture, as wide as the other two: three phones in
+ * front of the provider wall, dimmed so the phones stay the subject.
+ */
 function androidShot(left, middle, right, lift) {
-  return `<!doctype html><html><head><meta charset="utf-8"><style>${STYLE}
+  return `<!doctype html><html><head><meta charset="utf-8"><style>${STYLE}${WALL_STYLE}
 body { width: 1920px; height: 1000px; }
 .copy { position: absolute; left: 84px; top: 0; bottom: 0; width: 470px; display: flex; flex-direction: column; justify-content: center; gap: 28px; }
 .copy img { width: 92px; }
 h1 { font-size: 64px; line-height: 1.12; }
 .sub { font-size: 28px; line-height: 1.35; }
+.wallstage { position: absolute; left: 560px; right: 0; top: 0; bottom: 0; perspective: 2400px; perspective-origin: 0 40%; opacity: .5;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 14%, #000 82%, transparent 100%); }
+.fade { position: absolute; inset: 0; -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 12%, #000 86%, transparent 100%); }
+.plane { position: absolute; left: 20px; top: -20px; display: flex; flex-direction: column; gap: 23px;
+  transform-origin: 0 0; transform: rotateY(-16deg) rotateX(4deg) scale(.8); }
 </style></head><body>
 ${backdrop('50%', '-9%', '-6%')}
-<div class="copy"><img src="${logo}"><h1>Phone to cloud <em>and back again</em></h1><p class="sub">ArrowLoop for Android, with the engine on the phone</p></div>
+<div class="copy"><img src="${logo}"><h1>Phone to cloud <em>and back again</em></h1><p class="sub">ArrowLoop for Android, with over 60 clouds and servers</p></div>
+<div class="wallstage"><div class="fade"><div class="plane">${wallRows(CAPTIONS['en-US'], true)}</div></div></div>
 ${phone(left, { x: 640, y: 230, sw: 330 })}
 ${phone(right, { x: 1490, y: 230, sw: 330 })}
 ${phone(middle, { x: 1040, y: 150, sw: 380, lift })}
