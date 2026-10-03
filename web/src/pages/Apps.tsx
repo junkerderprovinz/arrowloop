@@ -162,7 +162,7 @@ function DesktopCard() {
           brand="windows"
           parts={[
             { name: t('apps.windows'), sub: 'x64', href: DOWNLOADS.windows },
-            { name: 'ARM64', sub: t('apps.windows'), href: DOWNLOADS.windowsArm },
+            { name: t('apps.windows'), sub: 'ARM64', href: DOWNLOADS.windowsArm },
           ]}
           mark={<BrandMark svg={WINDOWS_SVG} />}
           markClass="glim-windows-mark"
@@ -178,7 +178,7 @@ function DesktopCard() {
           brand="linux"
           parts={[
             { name: t('apps.linux'), sub: 'x64', href: DOWNLOADS.linux },
-            { name: 'ARM64', sub: t('apps.linux'), href: DOWNLOADS.linuxArm },
+            { name: t('apps.linux'), sub: 'ARM64', href: DOWNLOADS.linuxArm },
           ]}
           mark={<BrandMark svg={LINUX_SVG} />}
           onLinkClick={followExternal}

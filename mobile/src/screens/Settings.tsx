@@ -579,8 +579,8 @@ export function Settings() {
               onPress={() => Linking.openURL(DOWNLOADS.windows)}
             />
             <ReadmeButton
-              label="ARM64"
-              sub={t("apps.windows")}
+              label={t("apps.windows")}
+              sub="ARM64"
               tile={TILE.windows}
               mark={windowsMark}
               onPress={() => Linking.openURL(DOWNLOADS.windowsArm)}
@@ -604,8 +604,8 @@ export function Settings() {
               onPress={() => Linking.openURL(DOWNLOADS.linux)}
             />
             <ReadmeButton
-              label="ARM64"
-              sub={t("apps.linux")}
+              label={t("apps.linux")}
+              sub="ARM64"
               tile={TILE.linux}
               mark={linuxMark}
               onPress={() => Linking.openURL(DOWNLOADS.linuxArm)}
