@@ -69,7 +69,9 @@ answers only on an IP address or a local name, so a web page elsewhere cannot
 point a name of its own at it; [installing](installing.md) lists the names.
 
 `daemon` is the same scheduler with no interface, for a machine where nobody is
-looking.
+looking. It trims the run log once as it starts, keeping what `historyKeep` in
+the configuration asks for; `-keep-history` sets another age for that start,
+and `0` keeps every record.
 
 ## service
 

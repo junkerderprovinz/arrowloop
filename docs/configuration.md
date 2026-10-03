@@ -287,11 +287,10 @@ to be after a failure depends on the machine, not on a folder pair. In the
 interface it sits under **Settings**, **Engine**, **After a failure**, with the
 wait in minutes.
 
-The limit applies when the Android app wakes the engine to run whatever is due.
-Without it a failed job would run at every wake-up, and a phone would spend a
-night's battery on a remote that is still down. A computer or a container that
-stays up runs a job at every tick of its schedule, and a run that failed there
-is tried again at the next tick.
+On a computer or in a container the scheduler looks once a minute for a failed
+job whose wait is over. On Android the same rule decides what runs when the app
+wakes the engine, and without the limit a failed job would run at every
+wake-up, spending a night's battery on a remote that is still down.
 
 ## Commands before and after a run
 
@@ -354,7 +353,8 @@ per change, so the program trims the log once a day while it runs. A record is
 kept for ninety days unless `historyKeep` says otherwise, as a duration in hours
 such as `"720h"` for thirty days, since there is no unit for days. `"0"` keeps
 every record. A value that cannot be read counts as ninety days, so a typo never
-switches trimming off.
+switches trimming off. `arrowloop daemon` also trims once as it starts, by the
+same value unless its `-keep-history` flag gives another.
 
 ## Whole file
 

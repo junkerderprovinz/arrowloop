@@ -1,0 +1,1 @@
+Fixes for the desktop and server versions and a new README. The Android app works as before.
