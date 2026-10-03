@@ -611,6 +611,13 @@ func (r *Runner) schedule(ctx, round context.Context) *cron.Cron {
 		r.startWatcher(ctx, round, j)
 	}
 
+	c.Schedule(cron.Every(time.Minute), cron.FuncJob(func() {
+		for _, name := range r.Retrying(ctx, time.Now()) {
+			r.log("%s: trying again after a failure", name)
+			r.runAndReport(ctx, name)
+		}
+	}))
+
 	// Pruned daily, since a container stays up for months while a watching
 	// job writes a record per change.
 	if keep, on := cfg.KeepHistoryFor(); on && r.hist != nil {

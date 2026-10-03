@@ -141,3 +141,48 @@ func TestASuccessClearsTheFailures(t *testing.T) {
 		t.Error("yesterday's failures were still being counted after a success")
 	}
 }
+
+func isRetrying(t *testing.T, r *daemon.Runner, now time.Time) bool {
+	t.Helper()
+	for _, name := range r.Retrying(context.Background(), now) {
+		if name == "x" {
+			return true
+		}
+	}
+	return false
+}
+
+func TestAComputerTriesAFailedRunAgainBetweenItsTurns(t *testing.T) {
+	r, hist := retrySandbox(t, 3, "5m")
+	failed := time.Date(2026, 9, 12, 3, 0, 0, 0, time.Local)
+	record(t, hist, failed, "the remote refused the connection")
+
+	if isRetrying(t, r, failed.Add(time.Minute)) {
+		t.Error("it tried again before the wait was over")
+	}
+	if !isRetrying(t, r, failed.Add(6*time.Minute)) {
+		t.Error("a computer that stays up left the failed run until the next night")
+	}
+}
+
+func TestAComputerLeavesAJobOutOfTriesToItsNextTurn(t *testing.T) {
+	r, hist := retrySandbox(t, 1, "5m")
+	at := time.Date(2026, 9, 12, 3, 0, 0, 0, time.Local)
+	record(t, hist, at, "down")
+	record(t, hist, at.Add(10*time.Minute), "down")
+
+	if isRetrying(t, r, at.Add(5*time.Hour)) {
+		t.Error("it kept trying past its last attempt")
+	}
+}
+
+func TestAComputerDoesNotRetryAJobThatWorked(t *testing.T) {
+	r, hist := retrySandbox(t, 3, "5m")
+	at := time.Date(2026, 9, 12, 3, 0, 0, 0, time.Local)
+	record(t, hist, at, "down")
+	record(t, hist, at.Add(6*time.Minute), "")
+
+	if isRetrying(t, r, at.Add(time.Hour)) {
+		t.Error("a failure that a later success cleared was tried again")
+	}
+}

@@ -78,6 +78,39 @@ func (r *Runner) backingOff(ctx context.Context, name string, since time.Time, p
 	return lastFail.Add(policy.WaitFor(fails)).After(now)
 }
 
+// Retrying is the scheduled jobs whose last run failed, that have tries left
+// and whose wait after the failure is over. A computer or a container that
+// stays up has no wake-up asking Due and its clock fires only on each job's own
+// turns, so the scheduler asks this every minute.
+func (r *Runner) Retrying(ctx context.Context, now time.Time) []string {
+	if r.hist == nil {
+		return nil
+	}
+	policy := r.config().Retry
+	running := r.Running()
+	var due []string
+	for _, j := range r.config().Jobs {
+		if j.Disabled || j.Schedule == "" || running[j.Name] {
+			continue
+		}
+		// An unreadable log is no reason to run, and the scheduled turns
+		// report it.
+		last, _, err := r.lastSuccess(ctx, j.Name)
+		if err != nil {
+			continue
+		}
+		fails, lastFail, err := r.hist.FailuresSince(ctx, j.Name, last)
+		if err != nil || fails == 0 || fails > policy.AttemptCount() {
+			continue
+		}
+		if lastFail.Add(policy.WaitFor(fails)).After(now) {
+			continue
+		}
+		due = append(due, j.Name)
+	}
+	return due
+}
+
 // RunDue runs the due jobs one at a time and reports what happened. It blocks,
 // because the wake-up calling it has to know when the phone may sleep again.
 func (r *Runner) RunDue(ctx context.Context) Due {
