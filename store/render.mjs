@@ -10,7 +10,8 @@
 // `node store/render.mjs readme` builds the README's pictures instead, in
 // .github/assets/screenshots: the web interface from store/captures/web/,
 // 1440x700 at twice the pixels, in a desktop window and in a browser beside a
-// caption in the same style, and the call for Android testers.
+// caption in the same style, the Android app as wide as those two, and the
+// call for Android testers.
 //
 // Every page is rendered at twice the size and scaled down in a second page,
 // which keeps the text sharp through the phone's tilt.
@@ -351,6 +352,23 @@ ${windowed(capture, frame, { x: 600, y: frame === 'browser' ? 148 : 170, w: 1270
 </body></html>`
 }
 
+/** The README's Android picture, three phones beside the caption, as wide as the other two. */
+function androidShot(left, middle, right, lift) {
+  return `<!doctype html><html><head><meta charset="utf-8"><style>${STYLE}
+body { width: 1920px; height: 1000px; }
+.copy { position: absolute; left: 84px; top: 0; bottom: 0; width: 470px; display: flex; flex-direction: column; justify-content: center; gap: 28px; }
+.copy img { width: 92px; }
+h1 { font-size: 64px; line-height: 1.12; }
+.sub { font-size: 28px; line-height: 1.35; }
+</style></head><body>
+${backdrop('50%', '-9%', '-6%')}
+<div class="copy"><img src="${logo}"><h1>Phone to cloud <em>and back again</em></h1><p class="sub">ArrowLoop for Android, with the engine on the phone</p></div>
+${phone(left, { x: 640, y: 230, sw: 330 })}
+${phone(right, { x: 1490, y: 230, sw: 330 })}
+${phone(middle, { x: 1040, y: 150, sw: 380, lift })}
+</body></html>`
+}
+
 /** The README's call for Android testers, two phones beside a button-shaped call. */
 function testersShot(back, front) {
   return `<!doctype html><html><head><meta charset="utf-8"><style>${STYLE}
@@ -406,6 +424,9 @@ async function readme(browser) {
     console.log(`wrote .github/assets/screenshots/${name}.png`)
   }
   const phoneShot = (name) => dataUrl(readFileSync(join(here, 'captures', 'en-US', `${name}.png`)), 'image/png')
+  const lift = SHOTS.find((s) => s.name === 'plan').lift
+  await render(browser, androidShot(phoneShot('jobs'), phoneShot('plan'), phoneShot('targets'), lift), 1920, 1000, join(out, 'android.png'))
+  console.log('wrote .github/assets/screenshots/android.png')
   await render(browser, testersShot(phoneShot('jobs'), phoneShot('plan')), 1920, 640, join(out, 'testers.png'))
   console.log('wrote .github/assets/screenshots/testers.png')
 }

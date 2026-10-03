@@ -106,9 +106,7 @@ If it has earned a place on your server or computer, toss a coin to your knight:
 </p>
 
 <p align="center">
-  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" alt="Sync it everywhere: over 60 clouds and servers" width="36%">
-  &nbsp;
-  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/2.png" alt="The Android app showing the preview of a run" width="36%">
+  <img src=".github/assets/screenshots/android.png" alt="The Android app showing its jobs, the preview of a run and the storage targets" width="100%">
   <br><em>The Android app, with the engine running on the phone</em>
 </p>
 
