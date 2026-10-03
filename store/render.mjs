@@ -7,14 +7,19 @@
 // The captures are plain screenshots of the app in dark mode, 1080x1920, with
 // the status bar in demo mode. Name them after the SHOTS below.
 //
+// `node store/render.mjs readme` builds the README's pictures instead, in
+// .github/assets/screenshots: the web interface from store/captures/web/,
+// 1440x700 at twice the pixels, in a desktop window and in a browser beside a
+// caption in the same style, and the call for Android testers.
+//
 // Every page is rendered at twice the size and scaled down in a second page,
 // which keeps the text sharp through the phone's tilt.
 //
 // Deps (global): playwright-core with its Chromium installed.
-// Run: node store/render.mjs
+// Run: node store/render.mjs [readme]
 
 import { execSync } from 'node:child_process'
-import { existsSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
@@ -57,6 +62,12 @@ const CAPTIONS = {
     trash: 'Deleted? <em>Just moved out.</em>',
   },
 }
+
+// The README's wide pictures, in English like the README.
+const WIDE = [
+  { name: 'desktop', capture: 'plan', frame: 'window', caption: 'See every arrow <em>before it flies</em>', sub: 'ArrowLoop for Windows, macOS and Linux' },
+  { name: 'container', capture: 'jobs', frame: 'browser', caption: 'On your server, <em>day and night</em>', sub: 'ArrowLoop in Docker, on Unraid or any other host' },
+]
 
 // The order on the store page. `lift` is a card of the capture, in capture
 // pixels, drawn floating in front of the phone.
@@ -286,6 +297,83 @@ ${phone(front, { x: 758, y: 40, sw: 220 })}
 </body></html>`
 }
 
+const WINDOW_STYLE = `
+.win { position: absolute; inset: 0; transform: rotateY(-8deg) rotateX(2deg); border-radius: 14px; overflow: hidden; background: #161616;
+  box-shadow: 0 0 0 1px #3c3c3c, 0 2px 4px rgba(0,0,0,.35), 0 18px 36px rgba(0,0,0,.45), 0 52px 100px rgba(0,0,0,.55); }
+.win > img { display: block; }
+.bar { position: relative; display: flex; align-items: center; background: #242424; color: #d6d6d6; font: 400 17px/1 Lato, sans-serif; }
+.bar img { width: 22px; height: 22px; }
+.app { height: 44px; gap: 10px; padding-left: 16px; border-bottom: 1px solid #111; }
+.ctl { position: absolute; top: 0; width: 46px; height: 44px; }
+.ctl::before { content: ""; position: absolute; left: 17px; top: 21px; width: 12px; height: 1.5px; background: #bdbdbd; }
+.ctl.min { right: 92px; }
+.ctl.max { right: 46px; }
+.ctl.max::before { top: 16px; height: 12px; background: none; border: 1.5px solid #bdbdbd; box-sizing: border-box; }
+.ctl.close { right: 0; }
+.ctl.close::before, .ctl.close::after { content: ""; position: absolute; left: 16px; top: 21px; width: 14px; height: 1.5px; background: #bdbdbd; }
+.ctl.close::before { transform: rotate(45deg); }
+.ctl.close::after { transform: rotate(-45deg); }
+.tabs { height: 42px; padding: 7px 0 0 12px; background: #1c1c1c; align-items: flex-end; }
+.tab { display: flex; align-items: center; gap: 10px; height: 35px; padding: 0 70px 0 14px; border-radius: 10px 10px 0 0; background: #2c2c2c; font-size: 15px; }
+.tab img { width: 18px; height: 18px; }
+.address { height: 46px; gap: 14px; padding: 0 14px; background: #2c2c2c; border-bottom: 1px solid #111; }
+.nav { width: 10px; height: 10px; border-left: 2px solid #9a9a9a; border-bottom: 2px solid #9a9a9a; transform: rotate(45deg); margin: 0 4px; }
+.nav.fwd { transform: rotate(-135deg); border-color: #5a5a5a; }
+.url { flex: 1; height: 32px; border-radius: 16px; background: #1a1a1a; padding-left: 18px; display: flex; align-items: center; font-size: 15px; color: #c9c9c9; }
+`
+
+/** The web interface in a desktop window or a browser `w` wide, its top left corner at (x, y). */
+function windowed(capture, frame, { x, y, w }) {
+  const h = Math.round(700 * (w / 1440))
+  const chrome =
+    frame === 'browser'
+      ? `<div class="bar tabs"><div class="tab"><img src="${logo}"><span>ArrowLoop</span></div></div>
+         <div class="bar address"><i class="nav"></i><i class="nav fwd"></i><div class="url">nas.local:8422</div></div>`
+      : `<div class="bar app"><img src="${logo}"><span>ArrowLoop</span><i class="ctl min"></i><i class="ctl max"></i><i class="ctl close"></i></div>`
+  const bar = frame === 'browser' ? 89 : 45
+  return `<div class="stage" style="left:${x}px;top:${y}px;width:${w}px;height:${h + bar}px">
+  <div class="floor"></div>
+  <div class="win">${chrome}<img src="${capture}" style="width:${w}px;height:${h}px"><div class="glare"></div></div>
+</div>`
+}
+
+function wideShot(capture, frame, caption, sub) {
+  return `<!doctype html><html><head><meta charset="utf-8"><style>${STYLE}${WINDOW_STYLE}
+body { width: 1920px; height: 1000px; }
+.copy { position: absolute; left: 84px; top: 0; bottom: 0; width: 470px; display: flex; flex-direction: column; justify-content: center; gap: 28px; }
+.copy img { width: 92px; }
+h1 { font-size: 64px; line-height: 1.12; }
+.sub { font-size: 28px; line-height: 1.35; }
+</style></head><body>
+${backdrop('50%', '-9%', '-6%')}
+<div class="copy"><img src="${logo}"><h1>${caption}</h1><p class="sub">${sub}</p></div>
+${windowed(capture, frame, { x: 600, y: frame === 'browser' ? 148 : 170, w: 1270 })}
+</body></html>`
+}
+
+/** The README's call for Android testers, two phones beside a button-shaped call. */
+function testersShot(back, front) {
+  return `<!doctype html><html><head><meta charset="utf-8"><style>${STYLE}
+body { width: 1920px; height: 640px; }
+.copy { position: absolute; left: 96px; top: 0; bottom: 0; width: 1060px; display: flex; flex-direction: column; justify-content: center; gap: 26px; }
+.label { align-self: flex-start; padding: 8px 18px; border-radius: 8px; background: #FCC419; color: #141414; font: 700 22px/1 Lato, sans-serif; letter-spacing: .12em; text-transform: uppercase; }
+h1 { font-size: 92px; line-height: 1.05; }
+.sub { font-size: 34px; line-height: 1.35; color: #c9bfa9; }
+.go { align-self: flex-start; margin-top: 8px; padding: 22px 40px; border-radius: 18px; background: #FCC419; color: #141414; font: 700 34px/1 Lato, sans-serif;
+  box-shadow: 0 0 0 6px rgba(252,196,25,.18), 0 18px 40px rgba(0,0,0,.5); }
+</style></head><body>
+${backdrop('40%', '58%', '-30%')}
+<div class="copy">
+  <span class="label">Google Play closed test</span>
+  <h1>Android testers <em>wanted</em></h1>
+  <p class="sub">Keep ArrowLoop installed for 14 days and help it go public.</p>
+  <span class="go">Become a tester &rarr;</span>
+</div>
+${phone(back, { x: 1290, y: 92, sw: 250 })}
+${phone(front, { x: 1530, y: 58, sw: 282 })}
+</body></html>`
+}
+
 /** Renders `html` at twice `width` x `height` and writes it scaled down to `file`. */
 async function render(browser, html, width, height, file) {
   const page = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: 2 })
@@ -309,8 +397,20 @@ async function render(browser, html, width, height, file) {
   await small.close()
 }
 
-const browser = await chromium.launch()
-try {
+async function readme(browser) {
+  const out = join(root, '.github', 'assets', 'screenshots')
+  mkdirSync(out, { recursive: true })
+  for (const { name, capture, frame, caption, sub } of WIDE) {
+    const shot = dataUrl(readFileSync(join(here, 'captures', 'web', `${capture}.png`)), 'image/png')
+    await render(browser, wideShot(shot, frame, caption, sub), 1920, 1000, join(out, `${name}.png`))
+    console.log(`wrote .github/assets/screenshots/${name}.png`)
+  }
+  const phoneShot = (name) => dataUrl(readFileSync(join(here, 'captures', 'en-US', `${name}.png`)), 'image/png')
+  await render(browser, testersShot(phoneShot('jobs'), phoneShot('plan')), 1920, 640, join(out, 'testers.png'))
+  console.log('wrote .github/assets/screenshots/testers.png')
+}
+
+async function store(browser) {
   for (const [locale, text] of Object.entries(CAPTIONS)) {
     const capture = (name) => dataUrl(readFileSync(join(here, 'captures', locale, `${name}.png`)), 'image/png')
     const images = join(metadata, locale, 'images')
@@ -322,6 +422,11 @@ try {
     await render(browser, featureGraphic(capture('jobs'), capture('plan'), text.tagline), 1024, 500, join(images, 'featureGraphic.png'))
     console.log(`wrote ${locale}/images/featureGraphic.png`)
   }
+}
+
+const browser = await chromium.launch()
+try {
+  await (process.argv[2] === 'readme' ? readme : store)(browser)
 } finally {
   await browser.close()
 }
