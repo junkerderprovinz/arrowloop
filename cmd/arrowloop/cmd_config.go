@@ -92,7 +92,7 @@ func cmdRun(ctx context.Context, args []string) error {
 func cmdDaemon(ctx context.Context, args []string) error {
 	fset := flag.NewFlagSet("daemon", flag.ExitOnError)
 	configPath := fset.String("config", defaultConfig, "the configuration file")
-	keep := fset.Duration("keep-history", 90*24*time.Hour, "how long to keep run records, 0 keeps them forever")
+	keepFlag := fset.Duration("keep-history", 0, "how long to keep run records instead of historyKeep, 0 keeps them forever")
 	verbose := fset.Bool("v", false, "let rclone report what it is doing underneath")
 	if err := fset.Parse(args); err != nil {
 		return err
@@ -108,10 +108,18 @@ func cmdDaemon(ctx context.Context, args []string) error {
 		return err
 	}
 	defer hist.Close()
-	if n, err := hist.Prune(ctx, *keep, time.Now()); err != nil {
-		logf("could not prune the run log: %v", err)
-	} else if n > 0 {
-		logf("dropped %d run records older than %s", n, *keep)
+	keep, prune := cfg.KeepHistoryFor()
+	fset.Visit(func(f *flag.Flag) {
+		if f.Name == "keep-history" {
+			keep, prune = *keepFlag, *keepFlag > 0
+		}
+	})
+	if prune {
+		if n, err := hist.Prune(ctx, keep, time.Now()); err != nil {
+			logf("could not prune the run log: %v", err)
+		} else if n > 0 {
+			logf("dropped %d run records older than %s", n, keep)
+		}
 	}
 
 	// Stopping on a signal keeps a shutdown from killing a transfer halfway.
