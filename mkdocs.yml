@@ -58,7 +58,10 @@ nav:
   - Start here: index.md
   - Installing: installing.md
   - Configuring a job: configuration.md
+  - The interface: interface.md
+  - Command line: cli.md
   - How it decides: decisions.md
   - Safety: safety.md
-  - Command line: cli.md
+  - How it compares: comparison.md
+  - How it is tested: testing.md
   - When something goes wrong: troubleshooting.md

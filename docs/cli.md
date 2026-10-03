@@ -22,21 +22,28 @@ to see what would happen before anything does.
 arrowloop sync -left /data/Photos -right sftp:backup/photos -state photos.db -dry-run
 ```
 
-Both sides accept anything rclone accepts.
+`-dry-run` prints the plan and changes nothing. Both sides accept anything
+rclone accepts, so `sftp:backup/photos` and `s3:bucket/photos` work alongside
+plain paths.
 
 | flag | default | meaning |
 |---|---|---|
-| `-quiet-period` | 5s | how long a file must sit unchanged before it is touched |
-| `-exclude` | - | glob to leave alone entirely, repeatable |
-| `-no-default-excludes` | off | also sync half-written files |
-| `-transfers` | 4 | files copied at the same time |
-| `-bwlimit` | - | rclone syntax, `1M` or a timetable |
-| `-empty-dirs` | off | carry folders that hold no files |
-| `-metadata` | off | carry permissions and extended attributes |
-| `-brake-percent` | 50 | refuse a run deleting more than this share, 0 disables |
+| `-quiet-period` | 5s | how long a file must sit unchanged before it is touched, 0 disables |
+| `-exclude` | - | glob of paths to leave alone entirely, repeatable |
+| `-no-default-excludes` | off | also sync half-written files such as `*.part` and Office owner files |
+| `-transfers` | 4 | how many files may be copied at the same time |
+| `-bwlimit` | - | bandwidth limit in rclone syntax, `1M` or a timetable like `08:00,512k 19:00,off` |
+| `-empty-dirs` | off | also carry folders that hold no files |
+| `-metadata` | off | carry permissions, ownership and extended attributes where both sides can |
+| `-brake-percent` | 50 | refuse a run deleting more than this share of known files, 0 disables |
 | `-brake-floor` | 10 | never trip the brake below this many deletions |
 | `-mod-window` | 2s | how far modification times may differ and still count as equal |
 | `-v` | off | let rclone report what it is doing underneath |
+
+The modification window only ever applies when a side cannot produce a hash.
+Where hashes exist the comparison is exact, because with a two-second window a
+file edited twice within two seconds and left at the same length would count as
+unchanged.
 
 ## jobs
 
@@ -67,16 +74,17 @@ looking.
 ## service
 
 Prints the file this operating system wants in order to keep the daemon alive,
-and the one command that switches it on. It prints rather than installs:
-registering a service means writing outside your own files and, on two of the
-three systems, asking for administrative rights.
+and the one command that switches it on: a systemd unit file on Linux, a
+LaunchAgent plist on macOS, and an `sc.exe` line on Windows. It prints rather
+than installs: registering a service means writing outside your own files and,
+on two of the three systems, asking for administrative rights.
 
 ```bash
 arrowloop service -config /etc/arrowloop/arrowloop.json
 arrowloop service -os windows
 ```
 
-Three things it tells you that are otherwise found out the hard way:
+What it tells you that is otherwise found out the hard way:
 
 - A Windows service runs as LocalSystem, which has no mapped network drives. A
   job pointing at a UNC path works; one pointing at a drive letter does not.
@@ -120,7 +128,8 @@ A release build prints its tag, a build from a commit prints the commit, and a
 build from an edited tree adds `-dirty`, because a binary from uncommitted
 changes is not the commit it names. An unstamped local `go build` prints `dev`.
 
-The desktop application answers the same question through the Windows file
-properties dialog and on its About card. This command exists because a Go binary
-carries no version resource, so the properties dialog has nothing to show for
-this one.
+The desktop application answers the same question in two more places: under
+**Product version** in the Windows file properties dialog, and on its About
+card. All three read one stamp, so they cannot disagree. This command exists
+because a Go binary carries no version resource, so the properties dialog has
+nothing to show for this one.

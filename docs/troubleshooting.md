@@ -21,9 +21,9 @@ That is fine. A bucket nobody has created, or a directory nobody has made, is
 treated as an empty side and the first run creates what it needs.
 
 This does not weaken the refusal to believe an empty side. That check compares
-against the record: a side that used to hold files and now reports nothing is
-still refused, whether it reports nothing by listing zero objects or by not
-being there at all.
+against the record: a side that reports nothing while the record says it held
+files is still refused, whether it reports nothing by listing zero objects or by
+not being there at all.
 
 ## Files keep copying back and forth
 

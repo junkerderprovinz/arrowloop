@@ -26,7 +26,9 @@ crash-looping on a missing file.
 
 The container listens on every address, so anyone on the network who reaches
 port 8422 can start a job. Set a password under **Settings**, **Security**, and
-from then on every page but the login asks for it.
+from then on every page but the login asks for it. Over plain HTTP the session
+cookie crosses the wire in clear, so a machine reachable from outside wants TLS
+in front of it either way; see [The interface](interface.md#who-can-reach-it).
 
 Until a password is set, the interface only answers when it is opened on an IP
 address, `localhost`, a name without a dot such as `tower`, or a name ending in
@@ -168,7 +170,7 @@ you quit it.
 
 The switch reads its state back from the system rather than from a settings file,
 so removing the entry with the Task Manager's own Startup tab turns the switch
-off too, instead of leaving it claiming something that is no longer true.
+off too, instead of leaving it claiming something that has stopped being true.
 
 Autostart on its own only gets the program running. A job that should sync
 *because* the machine just came on wants `runAtStart` as well, or it will sit
@@ -203,6 +205,15 @@ it back is gone. Switching the icon off or on applies at once.
 Starting it a second time does not start a second copy. It brings the running
 window back, which is what a second double-click means when the first one is
 sitting in the notification area.
+
+The shell is Wails v3, whose own notification area icon can carry a window. The
+icon is built at startup around the same PNG the window uses rather than
+committed as a second file, because a second file is one more thing to update
+when the logo changes, and forgetting it leaves the window and the notification
+area with different marks.
+
+Of the three desktop builds, only the Windows one is tested by hand; the macOS
+and Linux builds are compiled but untested.
 
 ### Updates
 
@@ -281,6 +292,21 @@ the computer can change where an update comes from.
     once there are users to pay it for. For the same reason an update is
     checked only against the release's `checksums.txt`, which proves the file
     is the one the release published, not who built it.
+
+## On Android
+
+The Android app runs the engine on the phone itself, so the phone's own files
+can take part in a job. Every release carries the `arm64` APK,
+[`arrowloop-android-arm64.apk`](https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-android-arm64.apk),
+which is what phones run; an `x86_64` build for the Android emulator is in the
+artifacts of each CI run.
+
+The APK is signed with the project's own key, so a later release installs over
+an earlier one. An APK from an ordinary CI run carries the public debug key
+instead, and has to be uninstalled before a release can be installed over it.
+
+What the app keeps on the phone and what it sends where is in the
+[privacy policy](https://github.com/junkerderprovinz/arrowloop/blob/main/PRIVACY.md).
 
 ## As a single binary
 
