@@ -1,1 +1,0 @@
-Fehlerbehebungen für die Desktop- und Server-Version und ein neues README. Die Android-App arbeitet wie bisher.

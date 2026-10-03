@@ -1,1 +1,0 @@
-New store pictures. The engine keeps targets where RCLONE_CONFIG points.

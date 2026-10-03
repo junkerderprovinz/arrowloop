@@ -1,1 +1,0 @@
-Andere Apps auf dem Handy erreichen die Engine nicht mehr. Hintergrund-Syncs stürzen ab Android 12 nicht mehr ab, WLAN- und Ladebedingungen werden vor einem Lauf geprüft, und neue Fotos lösen weiter einen Sync aus.

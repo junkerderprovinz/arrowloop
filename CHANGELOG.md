@@ -10,48 +10,38 @@ The full notes for each release are in
 
 ## Unreleased
 
-## 1.5.9 - 2026-10-03
+## 1.6.0 - 2026-10-03
 
 ## 🎨 Design
 
-- **A shorter README with pictures.** It shows the desktop app, the container and the Android app in the style of the store pictures, and the call for Android testers sits at the top where nobody can miss it. The long explanations are in the documentation.
+- **The download buttons name the system first.** The ARM64 builds read Windows or Linux over ARM64, in the App tab and in the phone app, like the x64 builds beside them.
+- **The README shows the Android app as wide as the desktop app and the container,** with three phones in front of the clouds and servers ArrowLoop syncs with.
 
 ## ⚡ Improved
 
-- **The documentation covers everything the README explained.** New pages describe the interface, the comparison with other tools and the tests, and the fields `mode`, `retry` and `historyKeep` are documented for the first time.
+- **The Unraid buttons lead to ArrowLoop's entry in Community Applications.** In the App tab and in the phone app they said it was coming; the README has an Unraid button of its own, and the installation guide starts with the entry.
 
-## 🐛 Fixed
-
-- **A failed run is tried again on a computer and in a container.** The **After a failure** setting under Settings, Engine only took effect in the Android app. Elsewhere a failed job waited for its next scheduled time.
-- **`arrowloop daemon` keeps run records as long as `historyKeep` says.** At start it trimmed the log to ninety days whatever the configuration asked for, even with `"0"`, which keeps every record.
-
-## 1.5.8 - 2026-10-03
-
-## 🎨 Design
-
-- **New store pictures.** The first one shows the clouds and servers ArrowLoop syncs with, under the line "Sync it everywhere." The feature graphic and the README banner use the same line.
-
-## 1.5.7 - 2026-10-03
+## 1.5.0 - 2026-09-29
 
 ## ✨ Added
 
 - **The desktop app for Linux on ARM64.** The release has `arrowloop-linux-arm64` next to `arrowloop-linux-amd64`, the README and the App tab link to it, and it updates itself like the other builds. It needs WebKitGTK 4.1, as the amd64 build does.
+- **`ARROWLOOP_TRUSTED_PROXIES`** names the reverse proxies whose `X-Forwarded-For` the login lockout may believe, so one stranger behind the proxy can no longer lock everybody out. See "Behind a reverse proxy" in the installation guide.
+- **`ARROWLOOP_HOSTS`** adds names an installation without a password answers on, besides IP addresses and local names such as `nas.fritz.box`.
 
 ## 🎨 Design
 
-- **The buttons in the phone's settings fill their card.** They had the README's fixed width and left a strip free at the right edge. Each row now shares the card's width between its buttons, and the desktop card has one row per system, so each ARM64 build sits next to its own.
-- **The open envelope on the phone's Email button keeps its tip.** Pressing the button cut off the top of the flap.
+- **New pictures on Google Play and F-Droid.** The first one shows the clouds and servers ArrowLoop syncs with, under the line "Sync it everywhere."; five dark screenshots of the app in a drawn phone follow, each under a short caption, in German and English. The feature graphic and the README banner use the same line.
+- **A shorter README with pictures.** It shows the desktop app, the container and the Android app in the style of the store pictures, and the call for Android testers sits at the top where nobody can miss it. The long explanations are in the documentation.
+- **The buttons in the phone's settings fill their card.** Each row shares the card's width between its buttons, and the desktop card has one row per system, so each ARM64 build sits next to its own.
 
 ## ⚡ Improved
 
+- **The Android app is `arrowloop.halleluja.design`.** The same pattern as the other apps. Android treats a new package name as a different app, so this version installs next to an older one instead of replacing it. To keep your jobs and targets, export them under Settings, Back up and restore settings in the old app, import the file in the new one, then uninstall the old app.
+- **The documentation covers everything the README explained.** New pages describe the interface, the comparison with other tools and the tests, and the fields `mode`, `retry` and `historyKeep` are documented for the first time.
+- **F-Droid can build ArrowLoop from source.** F-Droid builds every app itself and refuses a source tree with prebuilt binaries in it. The Android project keeps its release version in `mobile/app.json`, where F-Droid reads it, and the engine can be compiled after the Android project is generated. The store listings call the app just ArrowLoop.
+- **The Android app is about 5 MB smaller.** The release build runs R8, which drops the code and resources the app never uses, and the app carries no web view: Buy Me a Coffee opens in the browser, like PayPal.
 - Wails is updated to 3.0.0-beta.27 and the SQLite driver to 1.60.1.
-
-## 1.5.6 - 2026-10-02
-
-## ✨ Added
-
-- **`ARROWLOOP_TRUSTED_PROXIES`** names the reverse proxies whose `X-Forwarded-For` the login lockout may believe, so one stranger behind the proxy can no longer lock everybody out. See "Behind a reverse proxy" in the installation guide.
-- **`ARROWLOOP_HOSTS`** adds names an installation without a password answers on, besides IP addresses and local names such as `nas.fritz.box`.
 
 ## 🐛 Fixed
 
@@ -78,12 +68,18 @@ The full notes for each release are in
 - **Before and after commands can only be set in `arrowloop.json`**, however the interface spells the keys.
 - **Saved targets no longer show their secrets in the interface.** What counts as secret comes from rclone's own marking of each option.
 
+### Targets
+
+- **Targets go where `RCLONE_CONFIG` points.** The engine is meant to follow rclone's `RCLONE_CONFIG` variable, but kept its targets in rclone's default file instead, which on a computer is the user's own `rclone.conf`. It uses the file the variable names.
+
 ### Encrypted targets
 
 - **The second crypt password (the salt) is stored the way rclone expects.** Targets saved by an earlier version keep working as they are. Typing the salt in again changes it, so copy the old `password2` line from `rclone.conf` first if files depend on it.
 
 ### Running jobs
 
+- **A failed run is tried again on a computer and in a container.** The **After a failure** setting under Settings, Engine only took effect in the Android app. Elsewhere a failed job waited for its next scheduled time.
+- **`arrowloop daemon` keeps run records as long as `historyKeep` says.** At start it trimmed the log to ninety days whatever the configuration asked for, even with `"0"`, which keeps every record.
 - **Saving a job no longer stops the runs of other jobs.** Removing or pausing a job stops or skips its own waiting run, and an edited job runs as edited.
 - **Folders under a watched job can be renamed on Windows again.**
 - **A before or after command that leaves a process behind** no longer holds the run past its timeout or Cancel.
@@ -94,6 +90,7 @@ The full notes for each release are in
 
 ### Desktop
 
+- **The desktop window no longer opens by itself while ArrowLoop sits in the notification area.** Every start opened the main window, including the one after an update and the one at sign-in. Starting with the session keeps ArrowLoop in the notification area, and so does a start after something outside ended it while the window was there, as an update does. Starting it by hand still opens the window.
 - **The update folder under ProgramData belongs to administrators only**, and uninstalling deletes only the files the installer put there.
 - **The scheduled update no longer fails** while an older copy is still running.
 - **macOS:** a program path with `&` or `<` no longer breaks start at login.
@@ -107,6 +104,11 @@ The full notes for each release are in
 
 ### Android
 
+- **The Android app no longer closes itself a few seconds after opening when disco is on.** The walking rainbow redrew the whole app ten times a second at the highest priority, and once a screen took longer than that to draw, the redraws piled up until the app stopped. A full overview after a large run was enough. The colours now move at a priority that a slow screen can skip.
+- **A scheduled sync no longer crashes the Android app when Android's daily limit for background sync is used up.** Android 15 allows six hours of it a day and refuses more until the app is opened again. The wake-up is now skipped quietly, and a run that reaches the limit halfway stops cleanly and reports itself as failed.
+- **A fresh install on Android points out missing file access.** Nothing asked for the permission before, so a job with a folder on the phone found nothing to read. The overview lists File access under Waiting for you until it is granted, and a tap opens Android's page for it.
+- **The Android app starts on x86_64 devices.** On emulators and Chromebooks the engine stopped the moment it opened its first database, and the app only showed its error screen. The SQLite library makes file system calls that Android forbids on x86_64 and kills the process for; the engine hands SQLite versions of those calls that Android allows. Phones with arm64 were never affected.
+- **The open envelope on the Email button keeps its tip.** Pressing the button cut off the top of the flap.
 - **Background syncs no longer crash on Android 12 and later** without the battery exemption.
 - **Only on Wi-Fi, only while charging and the battery floor are checked before a run starts.**
 - **A second wake-up no longer stops a long run**, and a wake-up no longer stops the engine under the open app.
@@ -115,57 +117,6 @@ The full notes for each release are in
 ### Container
 
 - **The arm64 image is started and health-checked** before a release is published, like the amd64 one.
-
-## 1.5.5 - 2026-10-01
-
-## 🐛 Fixed
-
-- **The desktop window no longer opens by itself while ArrowLoop sits in the notification area.** Every start opened the main window, including the one after an update and the one at sign-in. Starting with the session now keeps ArrowLoop in the notification area. So does a start after something outside ended it while the window was there, as an update does. Starting it by hand still opens the window.
-
-## 1.5.4 - 2026-09-30
-
-## 🎨 Design
-
-- **New pictures on Google Play and F-Droid.** The listing shows five dark screenshots of the app in a drawn phone, each under a short caption, and a new feature graphic, in German and English. `store/render.mjs` builds them from captures of the running app.
-
-## ⚡ Improved
-
-- **Buy Me a Coffee opens in the browser on the phone,** like PayPal. The Android app carries no web view any more, which also makes it smaller.
-
-## 🐛 Fixed
-
-- **Targets go where RCLONE_CONFIG points.** The engine is meant to follow rclone's `RCLONE_CONFIG` variable, but kept its targets in rclone's default file instead, which on a computer is the user's own `rclone.conf`. It now uses the file the variable names.
-
-## 1.5.3 - 2026-09-30
-
-## 🐛 Fixed
-
-- **The Android app starts on x86_64 devices.** On emulators and Chromebooks the engine stopped the moment it opened its first database, and the app only showed its error screen. The SQLite library makes file system calls that Android forbids on x86_64 and kills the process for; the engine now hands SQLite versions of those calls that Android allows. Phones with arm64 were never affected.
-
-## 1.5.2 - 2026-09-30
-
-## ⚡ Improved
-
-- **The Android app is about 5 MB smaller.** The release build runs R8, which drops the code and resources the app never uses. The arm64 APK is down to 45.7 MB.
-
-## 1.5.1 - 2026-09-30
-
-## ⚡ Improved
-
-- **F-Droid can build ArrowLoop from source.** F-Droid builds every app itself and refuses a source tree with prebuilt binaries in it. The Android project keeps its release version in `mobile/app.json`, where F-Droid reads it, and the engine can be compiled after the Android project is generated.
-- **The store listings call the app just ArrowLoop.**
-
-## 1.5.0 - 2026-09-29
-
-## ⚡ Improved
-
-- **The Android app is `arrowloop.halleluja.design`.** The same pattern as the other apps. Android treats a new package name as a different app, so this version installs next to an older one instead of replacing it. To keep your jobs and targets, export them under Settings, Back up and restore settings in the old app, import the file in the new one, then uninstall the old app.
-
-## 🐛 Fixed
-
-- **The Android app no longer closes itself a few seconds after opening when disco is on.** The walking rainbow redrew the whole app ten times a second at the highest priority, and once a screen took longer than that to draw, the redraws piled up until the app stopped. A full overview after a large run was enough. The colours now move at a priority that a slow screen can skip.
-- **A scheduled sync no longer crashes the Android app when Android's daily limit for background sync is used up.** Android 15 allows six hours of it a day and refuses more until the app is opened again. The wake-up is now skipped quietly, and a run that reaches the limit halfway stops cleanly and reports itself as failed.
-- **A fresh install on Android points out missing file access.** Nothing asked for the permission before, so a job with a folder on the phone found nothing to read. The overview lists File access under Waiting for you until it is granted, and a tap opens Android's page for it.
 
 ## 1.4.0 - 2026-09-27
 

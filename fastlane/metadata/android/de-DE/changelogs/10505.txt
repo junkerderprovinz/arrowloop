@@ -1,1 +1,0 @@
-Die App ist dieselbe wie in der Version davor. Die Desktop-App öffnet ihr Fenster nach einem Update nicht mehr von selbst.

@@ -1,1 +1,0 @@
-Erste Version bei F-Droid. Die App ist rund 5 MB kleiner als die Version davor.
