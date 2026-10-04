@@ -181,22 +181,18 @@ DRAWN = [
 # Glyphs from outside Streamline: name, note, source line, the measured box, and
 # the paths verbatim.
 #
-# The box is the drawing's own ink, squared off and centred. The source declares
-# `0 0 492 492` and the ink occupies 368.7 of it, so the declared box would
-# render the mark at three quarters the size of its neighbours. Re-measure with
-# scripts/measure_ink.py if the artwork is replaced.
+# The box is the drawing's own ink, squared off and centred. MDI draws on a
+# 24-unit grid with a 3-unit margin, so the declared box would render the mark
+# at three quarters the size of its neighbours. IconSave is the drawing in
+# GlimStone's reference/glyphs.json.
 LICENSED = [
     ("IconSave",
      "Save",
-     "Vecteezy (https://www.vecteezy.com), Free License, attribution required",
-     "61.80 62.40 368.70 368.70",
+     "Material Design Icons (https://pictogrammers.com/library/mdi/), content-save, Apache 2.0",
+     "3.00 3.00 18.00 18.00",
      [
-         "M267.8,79.6v86.4c0,1.7.7,3.2,1.8,4.3,1.1,1.1,2.6,1.8,4.3,1.8h34.4c1.7,0,3.2-.7,4.3-1.8,"
-         "1.1-1.1,1.8-2.6,1.8-4.3v-86.4c0-1.7-.7-3.2-1.8-4.3-1.1-1.1-2.6-1.8-4.3-1.8h-34.4c-1.7,0-3.2.7-4.3,"
-         "1.8-1.1,1.1-1.8,2.6-1.8,4.3Z",
-         "M77.3,431.1h337.8c8.5,0,15.4-6.9,15.4-15.4V108.7l-46.3-46.3h-51.8v120.7h-172.5V62.4h-82.7c-8.5,"
-         "0-15.4,6.9-15.4,15.4v337.8c0,8.5,6.9,15.4,15.4,15.4h0ZM152.1,265.2h188.4c7.8,0,14.1,6.4,14.1,"
-         "14.1v108.4c0,7.8-6.4,14.1-14.1,14.1h-188.4c-7.8,0-14.1-6.4-14.1-14.1v-108.4c0-7.8,6.4-14.1,14.1-14.1Z",
+         "M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19"
+         "M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z",
      ]),
     # Streamline's arrows are thin, and a bare arrow on a button needs more
     # weight to hold its own beside the words. Same 14-unit grid.
@@ -230,8 +226,7 @@ HEADER = '''// ArrowLoop's icon set.
 //   Free icons from Streamline, https://streamlinehq.com (CC BY 4.0)
 //   The free 1000-icon Core Solid subset only:
 //   https://github.com/webalys-hq/streamline-vectors
-//   IconSave from Vecteezy, https://www.vecteezy.com
-//   IconTabGeneral from Material Design Icons,
+//   IconSave and IconTabGeneral from Material Design Icons,
 //   https://pictogrammers.com/library/mdi/ (Apache 2.0)
 //
 // The Streamline glyphs share one 14-unit grid, so they keep their own
