@@ -10,6 +10,12 @@ The full notes for each release are in
 
 ## Unreleased
 
+## 1.6.1 - 2026-10-04
+
+## 🎨 Design
+
+- **The Save button has a new floppy.** It is Material Design Icons' `content-save` (Apache 2.0), the same drawing GlimStone 3.1.6 uses. The old one came from Vecteezy under a licence that is not open, which F-Droid counts as a non-free asset.
+
 ## 1.6.0 - 2026-10-03
 
 ## 🎨 Design
