@@ -15,6 +15,7 @@ The full notes for each release are in
 ## 🎨 Design
 
 - **The README's download buttons come in groups.** The server comes first, then the desktop apps, then the Android app, with more room between the groups. The screenshots are in the same order.
+- **How it compares is back in the README.** The table that sets ArrowLoop against GoodSync, FreeFileSync, Syncthing and five other tools sits between What it does and Getting started.
 
 ## 1.6.1 - 2026-10-04
 

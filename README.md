@@ -90,10 +90,11 @@ If it has earned a place on your server or computer, toss a coin to your knight:
 
 1. [What it looks like](#1-what-it-looks-like)
 2. [What it does](#2-what-it-does)
-3. [Getting started](#3-getting-started)
-4. [Documentation](#4-documentation)
-5. [How AI is used here](#5-how-ai-is-used-here)
-6. [Support this project](#6-support-this-project)
+3. [How it compares](#3-how-it-compares)
+4. [Getting started](#4-getting-started)
+5. [Documentation](#5-documentation)
+6. [How AI is used here](#6-how-ai-is-used-here)
+7. [Support this project](#7-support-this-project)
 
 <br>
 
@@ -127,7 +128,44 @@ If it has earned a place on your server or computer, toss a coin to your knight:
 
 <br>
 
-## 3. Getting started
+## 3. How it compares
+
+[GoodSync](https://www.goodsync.com) is the tool ArrowLoop was built to replace. [FreeFileSync](https://freefilesync.org), [Syncovery](https://www.syncovery.com) and [SyncBack](https://www.2brightsparks.com/syncback/) work the same way, a job you run or schedule, and are desktop programs first. [Syncthing](https://syncthing.net) and [Resilio Sync](https://www.resilio.com/sync/) keep folders identical between devices in real time, with nothing to review before it happens. [Unison](https://github.com/bcpierce00/unison) and [rclone bisync](https://rclone.org/bisync/) are two-way sync for the command line. ArrowLoop takes GoodSync's way of working and rclone's reach, runs as a container or a desktop app, and keeps a record of what both sides last agreed on.
+
+| | **ArrowLoop** | GoodSync | FreeFileSync | Syncthing | Resilio | bisync | Unison | Syncovery | SyncBack |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| Every change shown before the run, single ones can be dropped | ✅ | ✅ | ✅ | ❌ | ❓ | ❌ | ✅ | ✅ | ✅ |
+| Brake on a run that deletes too much | ✅ | ⚠️ | ⚠️ | ❌ | ❓ | ✅ | ⚠️ | ✅ | ⚠️ |
+| An empty or unmounted side is refused | ✅ | ⚠️ | ⚠️ | ✅ | ⚠️ | ✅ | ✅ | ✅ | ⚠️ |
+| Deletions go to a trash by default | ✅ | ✅ | ✅ | ⚠️ | ✅ | ⚠️ | ⚠️ | ✅ | ⚠️ |
+| An edit on both sides keeps both versions by itself | ✅ | ⚠️ | ⚠️ | ✅ | ⚠️ | ✅ | ⚠️ | ⚠️ | ❌ |
+| Cloud and server targets without a mount | ✅ | ✅ | ⚠️ | ❌ | ❌ | ✅ | ⚠️ | ✅ | ✅ |
+| Encryption at the destination | ✅ | ⚠️ | ❌ | ⚠️ | ✅ | ✅ | ❌ | ✅ | ✅ |
+| Sends only the changed part of a file | ❌ | ⚠️ | ❌ | ✅ | ✅ | ❌ | ✅ | ✅ | ⚠️ |
+| Copies files another program holds open | ⚠️ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ |
+| Built-in schedule | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ⚠️ | ✅ | ⚠️ |
+| Real-time watching | ✅ | ✅ | ⚠️ | ✅ | ✅ | ❌ | ✅ | ⚠️ | ✅ |
+| Scripts before and after a run | ✅ | ✅ | ⚠️ | ❌ | ❓ | ❌ | ❌ | ✅ | ✅ |
+| Notification when a run fails | ✅ | ✅ | ⚠️ | ⚠️ | ⚠️ | ❌ | ❌ | ✅ | ✅ |
+| Device to device over the internet, no port forwarding | ❌ | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Official container image | ✅ | ❌ | ❌ | ✅ | ⚠️ | ✅ | ❌ | ❌ | ❌ |
+| Web interface | ✅ | ⚠️ | ❌ | ✅ | ⚠️ | ❌ | ❌ | ⚠️ | ❌ |
+| Desktop app | ✅ | ✅ | ✅ | ⚠️ | ✅ | ❌ | ✅ | ✅ | ✅ |
+| Windows, macOS and Linux | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
+| Android | ✅ | ✅ | ❌ | ⚠️ | ✅ | ⚠️ | ❌ | ❌ | ⚠️ |
+| iOS | ❌ | ✅ | ❌ | ⚠️ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| No account and no vendor relay | ✅ | ❌ | ✅ | ⚠️ | ⚠️ | ✅ | ✅ | ✅ | ✅ |
+| Open source | ✅ | ❌ | ⚠️ | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ |
+| Free, with every feature | ✅ | ❌ | ⚠️ | ✅ | ⚠️ | ✅ | ✅ | ❌ | ⚠️ |
+| Past 1.0 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+
+✅ yes · ⚠️ with a catch: off by default, a paid edition, one platform only or a community build · ❌ no · ❓ undocumented. Checked against each project's own documentation in September 2026.
+
+ArrowLoop has no relay of its own. To sync between two places over the internet, put both machines in one private network, as [Installing](https://junkerderprovinz.github.io/arrowloop/installing/#syncing-between-two-places-over-the-internet) describes.
+
+<br>
+
+## 4. Getting started
 
 On a server, one container is enough:
 
@@ -142,7 +180,7 @@ Then open port 8422 in a browser and add your first job. On Unraid, install it f
 
 <br>
 
-## 4. Documentation
+## 5. Documentation
 
 The [documentation](https://junkerderprovinz.github.io/arrowloop/) has the details this page leaves out:
 
@@ -155,9 +193,10 @@ The [documentation](https://junkerderprovinz.github.io/arrowloop/) has the detai
 - [How it compares](https://junkerderprovinz.github.io/arrowloop/comparison/): against GoodSync, FreeFileSync, Syncthing, rclone bisync and others
 - [How it is tested](https://junkerderprovinz.github.io/arrowloop/testing/): the convergence test, broken guards and CI on three systems
 - [When something goes wrong](https://junkerderprovinz.github.io/arrowloop/troubleshooting/): refused runs, files that keep copying and a container that restarts
+
 <br>
 
-## 5. How AI is used here
+## 6. How AI is used here
 
 One knight builds this, and AI is one of the tools I work with, the same way I work with an editor or a compiler. It helps me write code and documentation and it checks my work, and that saves me a good many evenings. It does not make the decisions, though. I read and understand everything before it ships, and if something here breaks, that is on me and not on the tool.
 
@@ -165,7 +204,7 @@ You do not have to take my word for it. The code is open and every release note 
 
 <br>
 
-## 6. Support this project
+## 7. Support this project
 
 Questions? Check the [support thread](https://forums.unraid.net/topic/200733-support-junkerderprovinz-arrowloop/). Bugs, ideas or feature requests? Please [open a GitHub issue](https://github.com/junkerderprovinz/arrowloop/issues).
 
