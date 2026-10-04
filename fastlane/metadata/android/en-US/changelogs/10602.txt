@@ -1,0 +1,1 @@
+The README groups its download buttons by platform. The app itself has not changed.

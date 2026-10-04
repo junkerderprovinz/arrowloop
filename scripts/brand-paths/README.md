@@ -14,17 +14,20 @@ Two sets of files, read by two generators.
 
 ## Sources and licences
 
-**Font Awesome Free 6.7.2**, from <https://fontawesome.com> - the button paths.
-Windows, Apple, Linux, Docker, Android and Google Play come from the `brands`
-set. `zip.txt` is `file-zipper` and `book.txt` is `book`, both from the `solid`
-set and nobody's mark, the same drawings BombVault's source and docs buttons carry. Font Awesome splits its licence by asset type and only
-the ICONS are relevant here: they are **CC BY 4.0**, which asks for attribution
-and nothing else. The fonts (SIL OFL 1.1) and the code (MIT) are not used.
-Copyright 2024 Fonticons, Inc.
+**Font Awesome Free 6.7.2**, from <https://fontawesome.com>, for every button
+mark but Unraid's. Windows, Apple, Linux, Docker, Android and Google Play come
+from the `brands` set. `zip.txt` is `file-zipper` and `book.txt` is `book`, both
+from the `solid` set and nobody's mark. Font Awesome splits its licence by asset
+type, and only the icons are used here: they are **CC BY 4.0**, which asks for
+attribution and nothing else. The fonts (SIL OFL 1.1) and the code (MIT) are not
+used. Copyright 2024 Fonticons, Inc.
 
-Simple Icons would have been the obvious first stop and does not carry Windows
-any more, so all three come from one set instead of two - which also means they
-were drawn to one convention and sit at one weight beside each other.
+Simple Icons does not carry Windows any more, so the platform marks all come from
+Font Awesome, drawn to one convention and at one weight.
+
+The shared set these files are copied from also has F-Droid's mark (CC0 1.0) and
+Vivaldi's, both from Simple Icons. ArrowLoop has no button for either, so they
+are not here.
 
 **Each brand's own material**, collected by hand - everything else here. These
 are the real drawings rather than a one-colour silhouette of one, and several of
@@ -38,9 +41,9 @@ own lightness calculation entirely - the owner's second drawing beats anything
 computed from the first.
 
 **Dashboard Icons** (`homarr-labs/dashboard-icons`, <https://dashboardicons.com>)
-- `microsoft-onedrive.svg`, `oracle-cloud.svg`, `premiumize.svg`, the three
-nobody has supplied, and the Unraid button's `unraid.txt`, its `unraid.svg`
-with the gradient left out, since the button draws it in one ink.
+- `microsoft-onedrive.svg` and `oracle-cloud.svg`, the two nobody has supplied,
+and the Unraid button's `unraid.txt`, its `unraid.svg` with the gradient left
+out, since the button draws it in one ink.
 **Apache-2.0**, whose licence text is beside this file as
 `LICENSE-dashboard-icons.txt`. Copyright the Homarr Labs team and contributors.
 Unlike CC0 this one asks for attribution, which is why it is named here, in the
@@ -83,10 +86,9 @@ the second was available, the provider gets no mark at all.
 ## Adding one
 
 For a platform path: take the SVG, keep its `viewBox` verbatim in
-`<name>.box.txt`, and put the `d` attribute of its single path in `<name>.txt`. A
-mark needing more than one path needs a change to the generator's template as
-well, which is deliberate: two paths usually means two colours, and these buttons
-draw their marks in one ink.
+`<name>.box.txt`, and put the `d` attribute of each path on a line of its own in
+`<name>.txt`. The generator draws every path in the button's one ink, so a mark
+of several colours becomes one shape per colour, all in that ink.
 
 For a provider mark: drop the SVG in here unchanged, add a line to `LOCAL` in
 `../gen_brand_glyphs.py` naming its component, its source and its licence, add
