@@ -10,6 +10,10 @@ The full notes for each release are in
 
 ## Unreleased
 
+## ⚡ Improved
+
+- **The first Android app is gone from the repository.** It showed the desktop interface in a WebView under the old package name `design.halleluja.arrowloop`. The React Native app replaced it in 1.5.0, but it was still built on every change without ever being shipped. Its debug key and the translation check moved into `mobile/`, so Android builds sign with the same key as before.
+
 ## 1.6.2 - 2026-10-04
 
 ## 🎨 Design

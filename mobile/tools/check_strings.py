@@ -15,9 +15,7 @@ import sys
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-# The WebView shell's resources; the mobile workflow passes the React Native
-# app's mobile/native/res instead.
-DEFAULT_RES = Path(__file__).parent.parent / "app" / "src" / "main" / "res"
+DEFAULT_RES = Path(__file__).parent.parent / "native" / "res"
 
 # `%1$s`, `%2$d`, and the bare `%s` Android also accepts.
 PLACEHOLDER = re.compile(r"%(\d+\$)?[a-zA-Z]")
@@ -37,9 +35,8 @@ def marks(text):
 
 def main():
     res = Path(sys.argv[1]) if len(sys.argv) > 1 else DEFAULT_RES
-    # The shell has values/strings.xml; the config plugin writes
-    # values/strings_engine.xml so it cannot collide with the one prebuild
-    # generates.
+    # strings_engine.xml rather than strings.xml, so it cannot collide with
+    # the one prebuild generates.
     base = next(iter(sorted(res.glob("values/strings*.xml"))), None)
     if base is None or not base.is_file():
         raise SystemExit("no values/strings*.xml under %s" % res)

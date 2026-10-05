@@ -75,7 +75,7 @@ mobile.yml` does all of this.
 ## Signing
 
 Two keys. Every build that is not a release signs with the debug key at
-`../android/debug.keystore`, pointed at by the plugin. Stable
+`debug.keystore` in this folder, pointed at by the plugin. Stable
 across builds, which is what makes an update an update: Gradle otherwise signs
 with whatever debug keystore it finds in the builder's home directory and
 creates one if there is none, so every CI build carried a different key - and
