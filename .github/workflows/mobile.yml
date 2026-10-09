@@ -328,7 +328,7 @@ jobs:
       # An APK carrying the release key leaves only through a release. A
       # release keeps its artifact as long as the desktop bundles, so re-running
       # a failed publish later still finds both.
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         if: env.RELEASE == 'true' || env.SIGNED != 'true'
         with:
           name: arrowloop-mobile
@@ -338,7 +338,7 @@ jobs:
 
       # Uploaded to Play Console by hand, so it stays an artifact of the
       # release run rather than a file on the release page.
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         if: env.RELEASE == 'true'
         with:
           name: arrowloop-play
