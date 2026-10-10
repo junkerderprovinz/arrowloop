@@ -10,6 +10,10 @@ The full notes for each release are in
 
 ## Unreleased
 
+## 🐛 Fixed
+
+- **A timed run on the phone waits when Android has cut the app off the network.** Android 16 takes the network from an app without the battery exemption a few seconds after it leaves the screen, while the engine keeps running for a while. A run its clock started in that time failed on the first lookup with "operation not permitted". Such a run is held and goes with the next wake-up, at most fifteen minutes later, when Android lets the app onto the network again. With battery optimisation switched off for ArrowLoop, as the settings suggest, runs stay on time.
+
 ## 1.6.4 - 2026-10-10
 
 ## 🎨 Design

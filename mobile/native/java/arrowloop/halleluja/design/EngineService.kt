@@ -125,6 +125,7 @@ class EngineService : Service() {
     private fun work() {
         try {
             waitForEngine()
+            Device.awaitUnblocked(this)
             // An engine this wake-up started holds nothing yet, and every
             // report sent while it was starting found nobody listening.
             check(Device.reportNow(this)) { "the engine did not take the run conditions" }

@@ -7,6 +7,7 @@ import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
+import android.net.NetworkInfo
 import android.net.NetworkRequest
 import android.os.BatteryManager
 import android.os.Handler
@@ -155,9 +156,36 @@ object Device {
     }
 
     /**
+     * Reports whether Android is keeping this app off a network that is there.
+     * Android 16 cuts an app without the battery exemption off the network a
+     * few seconds after it leaves the screen, while the engine and its clock
+     * live on. A run the clock starts then fails on its first lookup.
+     *
+     * The deprecated call is the one that answers at once and tells a blocked
+     * network from none; `activeNetwork` is null for both.
+     */
+    @Suppress("DEPRECATION")
+    fun blocked(context: Context): Boolean {
+        val manager = context.getSystemService(ConnectivityManager::class.java) ?: return false
+        return manager.activeNetworkInfo?.detailedState == NetworkInfo.DetailedState.BLOCKED
+    }
+
+    /**
+     * Waits up to three seconds for Android to let the app onto the network. A
+     * wake-up lifts the block as it starts, and the news can arrive a moment
+     * after the run's first line.
+     */
+    fun awaitUnblocked(context: Context) {
+        repeat(30) {
+            if (!blocked(context)) return
+            Thread.sleep(100)
+        }
+    }
+
+    /**
      * Returns the first condition holding automatic runs, as a sentence for the
      * engine's log, or an empty string. deviceConditions.ts checks in the same
-     * order.
+     * order, without the block: a screen that is showing is never blocked.
      */
     fun reason(context: Context): String {
         if (onlyCharging(context) && !charging(context)) {
@@ -170,6 +198,12 @@ object Device {
             if (level in 0 until floor) {
                 return "this phone is below $floor percent"
             }
+        }
+        // Before the network conditions, which cannot see a network Android
+        // keeps from the app and would name the wrong reason. The held run
+        // goes with the next wake-up, which Android lets onto the network.
+        if (blocked(context)) {
+            return "Android keeps this app off the network in the background"
         }
         if (onlyWifi(context) && !onWifi(context)) {
             return "this phone is not on wifi"
@@ -258,6 +292,8 @@ object Device {
                     override fun onAvailable(n: Network) = report(context)
                     override fun onLost(n: Network) = report(context)
                     override fun onCapabilitiesChanged(n: Network, c: NetworkCapabilities) =
+                        report(context)
+                    override fun onBlockedStatusChanged(n: Network, blocked: Boolean) =
                         report(context)
                 }
                 manager.registerNetworkCallback(NetworkRequest.Builder().build(), callback)
