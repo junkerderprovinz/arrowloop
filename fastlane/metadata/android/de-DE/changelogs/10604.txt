@@ -1,0 +1,1 @@
+Die Richtung steht jetzt als Pfeile zwischen den zwei Ordnern eines Auftrags. Papierkorb und Konflikte nennen jede Seite beim Namen, nicht mehr links und rechts.
