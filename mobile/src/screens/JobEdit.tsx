@@ -9,9 +9,11 @@ import { Glyph } from "../glyphs";
 import { useT } from "../i18n";
 import type { JobsStack, Nav } from "../nav";
 import { contrastOn, space, text } from "../theme";
-import { sideName } from "../sides";
+import { useEngineSettings } from "../settings";
+import { sideName, sidePair } from "../sides";
 import { animateNext, useMotion } from "../motion";
 import { AxisLabel, Body, Button, Caption, Choice, Empty, Page, Section, Toggle, useTheme } from "../ui";
+import { WaySwitch, wayOf } from "../way";
 import {
   buildSchedule,
   EVERY_UNITS,
@@ -66,9 +68,15 @@ export function JobEdit() {
   const OWNED = ["direction", "mode", "schedule", "emptyDirs", "metadata"] as const;
   const follows = OWNED.every((key) => job?.[key] === undefined);
 
+  // What a job that follows runs with, so its direction can be shown.
+  const { settings: engineSettings } = useEngineSettings(true);
+  const defaults = (engineSettings?.defaults ?? {}) as Record<string, unknown>;
+  const defaultWay = wayOf(defaults.direction as string | undefined);
+
   /**
-   * Switching off writes the values currently shown, so nothing jumps;
-   * switching on clears all five, since an absent field means "follow".
+   * Switching off writes what the job runs with at that moment, so nothing
+   * about it changes; switching on clears all five, since an absent field
+   * means "follow".
    */
   const setFollows = (on: boolean) => {
     if (on) {
@@ -82,11 +90,13 @@ export function JobEdit() {
       return;
     }
     set({
-      direction: job?.direction ?? "both",
-      mode: job?.mode ?? "sync",
-      schedule: job?.schedule ?? "",
-      emptyDirs: job?.emptyDirs ?? false,
-      metadata: job?.metadata ?? false,
+      direction: defaultWay,
+      // Written even for a two-way job, which would otherwise inherit a
+      // default mirror or move and be refused, since those need a source side.
+      mode: defaultWay === "both" ? "sync" : String(defaults.mode ?? "sync"),
+      schedule: String(defaults.schedule ?? ""),
+      emptyDirs: Boolean(defaults.emptyDirs),
+      metadata: Boolean(defaults.metadata),
     });
   };
 
@@ -203,6 +213,8 @@ export function JobEdit() {
 
   if (!job) return <Empty title={t("jobs.historyLoading")} detail={error || undefined} />;
 
+  const [upper, lower] = sidePair(job.left, job.right, t);
+
   const create = async () => {
     setSaving(true);
     const written = await persist(job);
@@ -237,6 +249,16 @@ export function JobEdit() {
             onPress={() => setPicking("left")}
           />
         </View>
+        {/* Between the two sides it relates. A job that follows the global
+            settings shows the direction it runs with, dimmed. */}
+        <AxisLabel hint={t("direction.hint")}>{t("direction.label")}</AxisLabel>
+        <WaySwitch
+          value={follows ? defaultWay : job.direction}
+          disabled={follows}
+          upper={upper}
+          lower={lower}
+          onChange={(direction) => set({ direction, mode: direction === "both" ? "sync" : job.mode }, true)}
+        />
         <View style={styles.pickRow}>
           <View style={styles.pickField}>
             <Field
@@ -255,8 +277,8 @@ export function JobEdit() {
         </View>
       </Section>
 
-      {/* While the job follows the global settings, the options it would
-          override are hidden rather than greyed. */}
+      {/* While the job follows the global settings, the other options it
+          would override are hidden rather than greyed. */}
       <Section title={t("engine.defaults")} hint={t("defaults.followHint")} hue={0}>
         <Toggle
           label={t("defaults.follow")}
@@ -265,21 +287,6 @@ export function JobEdit() {
           onChange={setFollows}
         />
       </Section>
-
-      {!follows ? (
-        <Section title={t("direction.label")} hint={t("direction.hint")} hue={2}>
-          <Choice
-            value={job.direction ?? "both"}
-            onChange={(direction) => set({ direction, mode: direction === "both" ? "sync" : job.mode }, true)}
-            options={[
-              // The spellings the engine's ParseDirection accepts.
-              { value: "both", label: t("direction.both") },
-              { value: "leftToRight", label: t("direction.toRight") },
-              { value: "rightToLeft", label: t("direction.toLeft") },
-            ]}
-          />
-        </Section>
-      ) : null}
 
       {!follows ? (
       <>

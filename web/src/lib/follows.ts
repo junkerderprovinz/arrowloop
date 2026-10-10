@@ -2,8 +2,8 @@ import type { RawJob, Settings } from './api'
 
 /**
  * The fields a job leaves to the global sync settings by not setting them, the
- * ones `applyTo` in internal/job/job.go fills in and the phone's editor hides
- * while a job follows. A job follows while it sets none of them.
+ * ones `applyTo` in internal/job/job.go fills in. A job follows while it sets
+ * none of them.
  */
 export const FOLLOWED = ['direction', 'mode', 'schedule', 'emptyDirs', 'metadata'] as const
 

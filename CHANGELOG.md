@@ -10,6 +10,14 @@ The full notes for each release are in
 
 ## Unreleased
 
+## 🎨 Design
+
+- **The phone app draws a job's direction as arrows between its two folders.** The job form stacks the two sides, so "only to the right" and "only to the left" meant nothing there. The switch sits between the two folder fields with an arrow down, an arrow up and one for both ways, and a line under it names the side files come from and the side they go to. The job list and the global sync settings use the same arrows.
+
+## 🐛 Fixed
+
+- **Taking a job off the global sync settings on the phone keeps what it ran with.** The form used to reset it to both ways, sync and no schedule instead of starting from the global values.
+
 ## 1.6.3 - 2026-10-10
 
 ## ⚡ Improved

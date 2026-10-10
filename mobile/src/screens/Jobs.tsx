@@ -5,13 +5,15 @@ import { api, type Job, type Remote } from "../api";
 import { CardMenu } from "../CardMenu";
 import { clock } from "../clock";
 import { Glyph, ProviderMark } from "../glyphs";
-import { directionKey, markForSide } from "../jobMark";
+import { markForSide } from "../jobMark";
 import { jobCopy } from "../../../web/src/lib/jobCopy.data";
 import { useT } from "../i18n";
 import { animateNext, useMotion } from "../motion";
 import type { Nav, JobsStack } from "../nav";
+import { sidePair } from "../sides";
 import { space } from "../theme";
 import { useEngineEvents } from "../useEngine";
+import { WayGlyph, wayLabel, wayOf } from "../way";
 import {
   Badge,
   Body,
@@ -246,9 +248,12 @@ function JobCard({
       {/* Paths wrap rather than truncate, since the cut part is what tells
           two similar jobs apart. */}
       <Side path={job.left} mark={leftMark} />
-      <View style={styles.way}>
-        <Glyph name={directionGlyph(job.direction)} color={p.textSub} size={22} />
-        <Caption>{t(directionKey(job.direction))}</Caption>
+      <View
+        style={styles.way}
+        accessible
+        accessibilityLabel={wayLabel(wayOf(job.direction), ...sidePair(job.left, job.right, t), t("direction.both"))}
+      >
+        <WayGlyph way={wayOf(job.direction)} color={p.textSub} />
       </View>
       <Side path={job.right} mark={rightMark} />
 
@@ -310,20 +315,6 @@ const DEVICE = "__device__";
 function sideMark(side: string, remotes: Remote[]): string | undefined {
   if (side.indexOf(":") < 2) return side ? DEVICE : undefined;
   return markForSide(side, remotes);
-}
-
-/**
- * Returns the glyph for a job's direction, accepting the older spellings as
- * directionKey does.
- */
-export function directionGlyph(direction: string | undefined): string {
-  if (direction === "leftToRight" || direction === "toRight" || direction === "right") {
-    return "IconToRight";
-  }
-  if (direction === "rightToLeft" || direction === "toLeft" || direction === "left") {
-    return "IconToLeft";
-  }
-  return "IconBothWays";
 }
 
 export function arrow(direction: string): string {

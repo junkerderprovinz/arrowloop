@@ -15,6 +15,24 @@ export function sideName(side: string | undefined, t: T, expect: "device" | "tar
 }
 
 /**
+ * Names both sides for a line that sets one against the other. Two sides that
+ * would carry one name, such as two folders on the device, go by their last
+ * folder.
+ */
+export function sidePair(left: string | undefined, right: string | undefined, t: T): [string, string] {
+  const a = sideName(left, t);
+  const b = sideName(right, t, "target");
+  if (a !== b) return [a, b];
+  return [leaf(left) || a, leaf(right) || b];
+}
+
+function leaf(side: string | undefined): string {
+  const remote = remoteOf(side);
+  const path = (side ?? "").slice(remote ? remote.length + 1 : 0);
+  return path.split(/[/\\]/).filter(Boolean).pop() ?? "";
+}
+
+/**
  * Returns the target's name in `name:path`, or undefined for a plain path. The
  * colon has to come before any slash, which is rclone's own rule.
  */

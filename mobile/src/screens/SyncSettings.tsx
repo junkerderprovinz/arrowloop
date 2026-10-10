@@ -8,6 +8,7 @@ import { useEngineSettings } from "../settings";
 import { Field } from "../fields";
 import { Schedule } from "./JobEdit";
 import { AxisLabel, Body, Choice, Page, Section, Toggle } from "../ui";
+import { WaySwitch } from "../way";
 
 /**
  * The defaults every job starts from, and the phone's run conditions. A job
@@ -47,16 +48,15 @@ export function SyncSettings() {
     <Page>
       <Section title={t("engine.defaults")} hint={t("defaults.followHint")} hue={0}>
         <AxisLabel>{t("direction.label")}</AxisLabel>
-        <Choice
-          value={String(defaults.direction ?? "both")}
+        {/* No job is in sight here, so the sides go by what the job form
+            calls them while they are empty. */}
+        <WaySwitch
+          value={defaults.direction as string | undefined}
+          upper={t("side.onDevice")}
+          lower={t("side.target")}
           onChange={(direction) =>
             saveDefaults({ direction, mode: direction === "both" ? "sync" : defaults.mode })
           }
-          options={[
-            { value: "both", label: t("direction.both") },
-            { value: "leftToRight", label: t("direction.toRight") },
-            { value: "rightToLeft", label: t("direction.toLeft") },
-          ]}
         />
         {/* Both ways has only one mode, so the selector goes inert on `sync`
             instead of vanishing and changing the card's shape. */}

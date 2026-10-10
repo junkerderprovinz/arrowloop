@@ -886,8 +886,17 @@ export function Choice<T extends string>({
   disabled,
   style,
 }: {
-  /** `hint` puts an (i) in its segment that explains that one option. */
-  options: { value: T; label: string; colour?: string; hint?: string }[];
+  /**
+   * `hint` puts an (i) in its segment that explains that one option. `mark`
+   * is drawn in place of the label, which is then only read out.
+   */
+  options: {
+    value: T;
+    label: string;
+    colour?: string;
+    hint?: string;
+    mark?: (ink: string) => ReactNode;
+  }[];
   value: T;
   onChange: (next: T) => void;
   /** Dimmed and inert, but still showing the value in force. */
@@ -908,25 +917,28 @@ export function Choice<T extends string>({
       {options.map((option, i) => {
         const on = option.value === value;
         const fill = option.colour ?? hueAt(i) ?? accent;
+        const ink = on ? contrastOn(fill) : p.textSub;
         return (
           <TouchableOpacity
             key={option.value}
             onPress={() => onChange(option.value)}
+            accessibilityLabel={option.mark ? option.label : undefined}
             style={[styles.segment, option.hint ? styles.segmentRow : null, corners.pill, on ? { backgroundColor: fill } : null]}
           >
-            <Text
-              numberOfLines={1}
-              // Shrinks rather than truncates with an ellipsis, down to 0.7;
-              // below that the strip has too many segments.
-              adjustsFontSizeToFit
-              minimumFontScale={0.7}
-              style={[
-                styles.segmentText,
-                { color: on ? contrastOn(fill) : p.textSub },
-              ]}
-            >
-              {option.label}
-            </Text>
+            {option.mark ? (
+              option.mark(ink)
+            ) : (
+              <Text
+                numberOfLines={1}
+                // Shrinks rather than truncates with an ellipsis, down to 0.7;
+                // below that the strip has too many segments.
+                adjustsFontSizeToFit
+                minimumFontScale={0.7}
+                style={[styles.segmentText, { color: ink }]}
+              >
+                {option.label}
+              </Text>
+            )}
             {/* Its own press target, so reading it does not choose it. */}
             {option.hint ? <InfoBubble tip={option.hint} on={on ? contrastOn(fill) : undefined} /> : null}
           </TouchableOpacity>
