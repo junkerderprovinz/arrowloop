@@ -79,8 +79,9 @@ export function WaySwitch({
         }))}
       />
       {/* A row runs from the right in a right-to-left language, so the arrow
-          between the two names turns with it. */}
-      <View style={[styles.line, disabled ? styles.dimmed : null]}>
+          between the two names turns with it. The line stays at full strength
+          under a dimmed switch, since it is the only words for the direction. */}
+      <View style={styles.line}>
         <Caption>{from}</Caption>
         <Glyph
           name={way === "both" ? "IconBothWays" : rtl ? "IconToLeft" : "IconToRight"}
@@ -103,5 +104,4 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: space.xs,
   },
-  dimmed: { opacity: 0.4 },
 });
