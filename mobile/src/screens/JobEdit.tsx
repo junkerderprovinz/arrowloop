@@ -110,17 +110,17 @@ export function JobEdit() {
 
   /**
    * Writes the job into a freshly read configuration, so a change made
-   * elsewhere in between is not undone.
+   * elsewhere in between is not undone. Reports whether it was written.
    */
   const persist = useCallback(
-    async (next: JobConfig) => {
+    async (next: JobConfig): Promise<boolean> => {
       const name = next.name.trim();
-      if (!name || !next.left.trim() || !next.right.trim()) return;
+      if (!name || !next.left.trim() || !next.right.trim()) return false;
       // Not sent while both sides name one place: the engine would refuse it
       // with an English error, and the form already says so itself.
       if (bothSidesOnePlace(next.left, next.right)) {
         setError("");
-        return;
+        return false;
       }
       try {
         const current = await api.config();
@@ -136,30 +136,39 @@ export function JobEdit() {
         await api.writeConfig({ ...current, jobs });
         savedAs.current = name;
         setError("");
+        return true;
       } catch (e) {
         setError((e as Error).message);
+        return false;
       }
     },
     [],
   );
 
   /**
-   * Changes a field and saves it; there is no Save button. `now` writes at
-   * once, for switches and choices; typed fields wait WRITE_AFTER.
+   * Changes a field. A saved job writes itself: `now` at once, for switches
+   * and choices; typed fields wait WRITE_AFTER. A new job waits for its Save
+   * button, since the engine would start running it on the global schedule as
+   * soon as it had a name and both sides.
    */
   const set = useCallback(
     (patch: Partial<JobConfig>, now = false) => {
       setJob((old) => {
         if (!old) return old;
         const next = { ...old, ...patch };
+        if (!editing) return next;
         if (pending.current) clearTimeout(pending.current);
         if (now) void persist(next);
         else pending.current = setTimeout(() => void persist(next), WRITE_AFTER);
         return next;
       });
     },
-    [persist],
+    [persist, editing],
   );
+
+  const [saving, setSaving] = useState(false);
+  // A counter rather than a flag, so every refused attempt shakes the button.
+  const [refused, setRefused] = useState(0);
 
   useEffect(
     () => () => {
@@ -170,7 +179,8 @@ export function JobEdit() {
 
   // `persist` silently skips a job without a name and both sides, so the
   // page says what is missing.
-  const incomplete = !job?.name.trim() || !job?.left.trim() || !job?.right.trim();
+  const unnamed = !job?.name.trim();
+  const oneSided = !job?.left.trim() || !job?.right.trim();
 
   const remove = () => {
     if (!config || !editing) return;
@@ -192,6 +202,14 @@ export function JobEdit() {
   };
 
   if (!job) return <Empty title={t("jobs.historyLoading")} detail={error || undefined} />;
+
+  const create = async () => {
+    setSaving(true);
+    const written = await persist(job);
+    setSaving(false);
+    if (written) nav.goBack();
+    else setRefused((n) => n + 1);
+  };
 
   return (
     <Page>
@@ -357,7 +375,8 @@ export function JobEdit() {
       ) : null}
 
       {error ? <Body>{error}</Body> : null}
-      {incomplete ? <Body muted>{t("edit.nameHint")}</Body> : null}
+      {unnamed ? <Body muted>{t("edit.nameHint")}</Body> : null}
+      {oneSided ? <Body muted>{t("edit.sideHint")}</Body> : null}
       {/* Said by the form in the reader's language; the engine still refuses
           such a job, since a configuration can also arrive by backup. */}
       {bothSidesOnePlace(job.left, job.right) ? <Body muted>{t("edit.sameSides")}</Body> : null}
@@ -366,7 +385,20 @@ export function JobEdit() {
         <View style={styles.actions}>
           <Button label={t("action.delete")} labelKey="action.delete" onPress={remove} />
         </View>
-      ) : null}
+      ) : (
+        // The control that goes ahead sits on the right.
+        <View style={styles.actions}>
+          <Button label={t("confirm.cancel")} onPress={() => nav.goBack()} />
+          <Button
+            label={t("edit.save")}
+            labelKey="edit.save"
+            tone="accent"
+            busy={saving}
+            shake={refused}
+            onPress={create}
+          />
+        </View>
+      )}
       <FolderPicker
         visible={picking !== null}
         start={picking === "left" ? job.left : job.right}
