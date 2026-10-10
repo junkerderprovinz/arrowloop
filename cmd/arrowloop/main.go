@@ -33,6 +33,7 @@ const usage = `arrowloop synchronises two folders in both directions.
   arrowloop history  -config <file> [-job <name>]             what the runs did
   arrowloop service  [-config <file>] [-os <goos>]            the service file for this system
   arrowloop hash-password                                     the value for ARROWLOOP_PASSWORD_HASH
+  arrowloop serve-data [-read-only] [-adopt]                  serve Android/data to the phone app's engine
   arrowloop version                                           which build this is
 
 Every command takes -h for its own flags.
@@ -81,6 +82,8 @@ func main() {
 		err = cmdHealth(ctx, args)
 	case "hash-password":
 		err = cmdHashPassword(args)
+	case "serve-data":
+		err = cmdServeData(args)
 	case "version", "-version", "--version":
 		// The binary has no Windows version resource, and the banner only
 		// prints on `web`.

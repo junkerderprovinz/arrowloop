@@ -46,6 +46,7 @@ func cmdWeb(ctx context.Context, args []string) error {
 	if err != nil {
 		return err
 	}
+	linkAppData(filepath.Dir(*configPath))
 	// Read before anything listens, so a damaged file stops the start instead
 	// of serving an install whose password has gone missing.
 	secured, err := security.Open(*configPath)
