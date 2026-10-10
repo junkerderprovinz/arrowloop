@@ -582,6 +582,7 @@ func (j Job) Options() (engine.Options, error) {
 	patterns := append([]string(nil), j.Exclude...)
 	if !j.NoDefaultExcludes {
 		patterns = append(patterns, filter.InProgress...)
+		patterns = append(patterns, filter.Binned...)
 	}
 	excl, err := filter.New(patterns)
 	if err != nil {

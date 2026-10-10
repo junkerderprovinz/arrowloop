@@ -50,6 +50,7 @@ func cmdSync(ctx context.Context, args []string) error {
 	patterns := append([]string(nil), excludes...)
 	if !*noDefaults {
 		patterns = append(patterns, filter.InProgress...)
+		patterns = append(patterns, filter.Binned...)
 	}
 	exclude, err := filter.New(patterns)
 	if err != nil {

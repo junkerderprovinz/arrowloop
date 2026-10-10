@@ -81,13 +81,19 @@ the file to be closed, because they change the file itself.
 The names programs use while still writing never travel at all:
 
 ```
-~$*  .~lock.*#  *.tmp  *.temp  *.part  *.partial  *.crdownload  *.download
+~$*  .~lock.*#  *.tmp  *.temp  *.part  *.partial  *.crdownload  *.download  .pending-*
 ```
 
-That is Office owner files, LibreOffice lock files, and the usual half-download
-suffixes. They exist for seconds and mean nothing on another machine.
-`-no-default-excludes` on the
-command line, or `"noDefaultExcludes": true` on a job, turns that off.
+That is Office owner files, LibreOffice lock files, the usual half-download
+suffixes and the name Android gives a file it is still writing. They exist for
+seconds and mean nothing on another machine.
+
+Android's bin stays behind as well. A file deleted in its file manager remains
+in the same folder for thirty days as `.trashed-*`; synced, the bin would be
+copied to the other side, and emptying it would read as a mass deletion.
+
+`-no-default-excludes` on the command line, or `"noDefaultExcludes": true` on a
+job, turns both off.
 
 ## Excluding never deletes
 

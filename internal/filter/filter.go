@@ -24,6 +24,14 @@ var InProgress = []string{
 	"*.part",       // wget, curl and most download managers
 	"*.crdownload", // Chrome
 	"*.download",   // Safari
+	".pending-*",   // Android's media store
+}
+
+// Binned are the names a system gives a file it holds for deletion inside the
+// folder the file was in. They are excluded by default: a sync would copy the
+// bin to the other side, and emptying it would then read as a mass deletion.
+var Binned = []string{
+	".trashed-*", // Android's media store, which keeps them thirty days
 }
 
 // Set is a compiled list of exclude patterns.

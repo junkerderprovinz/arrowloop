@@ -34,17 +34,35 @@ func TestExcluded(t *testing.T) {
 	}
 }
 
+func TestBinnedCatchesAndroidsTrash(t *testing.T) {
+	s, err := New(Binned)
+	if err != nil {
+		t.Fatalf("compile: %v", err)
+	}
+	for _, path := range []string{".trashed-1792824403-IMG_0001.jpg", "DCIM/Camera/.trashed-1793114567-clip.mp4"} {
+		if !s.Excluded(path) {
+			t.Errorf("%q is in Android's bin and should be excluded", path)
+		}
+	}
+	for _, path := range []string{"trashed-notes.txt", "DCIM/.trashed/readme.txt", "IMG_0001.jpg"} {
+		if s.Excluded(path) {
+			t.Errorf("%q is a real file and must still sync", path)
+		}
+	}
+}
+
 func TestInProgressCatchesTheUsualSuspects(t *testing.T) {
 	s, err := New(InProgress)
 	if err != nil {
 		t.Fatalf("compile: %v", err)
 	}
 	busy := map[string]string{
-		"~$quarterly.docx":      "Word owner file, exists only while the document is open",
-		"docs/.~lock.notes#":    "LibreOffice lock file",
-		"movie.mkv.part":        "a download still in flight",
-		"iso/ubuntu.crdownload": "Chrome's half-finished download",
-		"build/out.tmp":         "a program's scratch file",
+		"~$quarterly.docx":                       "Word owner file, exists only while the document is open",
+		"docs/.~lock.notes#":                     "LibreOffice lock file",
+		"movie.mkv.part":                         "a download still in flight",
+		"iso/ubuntu.crdownload":                  "Chrome's half-finished download",
+		"build/out.tmp":                          "a program's scratch file",
+		"Download/.pending-1792824403-setup.apk": "a download Android has not finished",
 	}
 	for path, why := range busy {
 		if !s.Excluded(path) {
