@@ -9,23 +9,23 @@ replace github.com/junkerderprovinz/arrowloop => ../
 
 require (
 	github.com/junkerderprovinz/arrowloop v1.6.2
-	github.com/rclone/rclone v1.75.1
+	github.com/rclone/rclone v1.75.2
 	github.com/wailsapp/wails/v3 v3.0.0-beta.28
-	golang.org/x/image v0.46.0
-	golang.org/x/sys v0.48.0
+	golang.org/x/image v0.47.0
+	golang.org/x/sys v0.49.0
 )
 
 require (
 	cloud.google.com/go/auth v0.23.1 // indirect
 	cloud.google.com/go/auth/oauth2adapt v0.2.8 // indirect
 	cloud.google.com/go/compute/metadata v0.9.0 // indirect
-	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.22.0 // indirect
+	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.23.1 // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.14.0 // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/internal v1.12.0 // indirect
-	github.com/Azure/azure-sdk-for-go/sdk/storage/azblob v1.8.0 // indirect
+	github.com/Azure/azure-sdk-for-go/sdk/storage/azblob v1.8.1 // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/storage/azfile v1.7.0 // indirect
 	github.com/Azure/go-ntlmssp v0.1.1 // indirect
-	github.com/AzureAD/microsoft-authentication-library-for-go v1.7.2 // indirect
+	github.com/AzureAD/microsoft-authentication-library-for-go v1.8.0 // indirect
 	github.com/FilenCloudDienste/filen-sdk-go v0.0.39 // indirect
 	github.com/Files-com/files-sdk-go/v3 v3.3.194 // indirect
 	github.com/IBM/go-sdk-core/v5 v5.23.1 // indirect
@@ -130,7 +130,7 @@ require (
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/hashicorp/go-retryablehttp v0.7.8 // indirect
 	github.com/hashicorp/go-uuid v1.0.3 // indirect
-	github.com/internxt/rclone-adapter v0.0.0-20260708165336-dd6561bacfa2 // indirect
+	github.com/internxt/rclone-adapter v0.0.0-20260904121407-404a75f3d031 // indirect
 	github.com/jcmturner/aescts/v2 v2.0.0 // indirect
 	github.com/jcmturner/dnsutils/v2 v2.0.0 // indirect
 	github.com/jcmturner/gofork v1.7.6 // indirect
@@ -140,7 +140,7 @@ require (
 	github.com/jlaffaye/ftp v0.2.1-0.20251026020404-6602e981a1bb // indirect
 	github.com/jtolio/noiseconn v0.0.0-20231127013910-f6d9ecbf1de7 // indirect
 	github.com/jzelinskie/whirlpool v0.0.0-20201016144138-0675e54bb004 // indirect
-	github.com/klauspost/compress v1.19.0 // indirect
+	github.com/klauspost/compress v1.19.2 // indirect
 	github.com/klauspost/cpuid/v2 v2.4.0 // indirect
 	github.com/koofr/go-httpclient v0.0.0-20240520111329-e20f8f203988 // indirect
 	github.com/koofr/go-koofrclient v0.0.0-20221207135200-cbd7fc9ad6a6 // indirect
@@ -165,7 +165,7 @@ require (
 	github.com/pengsrc/go-shared v0.2.1-0.20190131101655-1999055a4a14 // indirect
 	github.com/peterh/liner v1.2.2 // indirect
 	github.com/philhofer/fwd v1.2.0 // indirect
-	github.com/pierrec/lz4/v4 v4.1.27 // indirect
+	github.com/pierrec/lz4/v4 v4.1.28 // indirect
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pkg/sftp v1.13.11 // indirect
@@ -216,13 +216,13 @@ require (
 	go.opentelemetry.io/otel/trace v1.45.0 // indirect
 	go.yaml.in/yaml/v2 v2.4.4 // indirect
 	go.yaml.in/yaml/v3 v3.0.5 // indirect
-	golang.org/x/crypto v0.57.0 // indirect
-	golang.org/x/exp v0.0.0-20260709172345-9ea1abe57597 // indirect
-	golang.org/x/net v0.59.0 // indirect
+	golang.org/x/crypto v0.58.0 // indirect
+	golang.org/x/exp v0.0.0-20260813180055-c1d0aacb2297 // indirect
+	golang.org/x/net v0.60.0 // indirect
 	golang.org/x/oauth2 v0.36.0 // indirect
-	golang.org/x/sync v0.23.0 // indirect
-	golang.org/x/term v0.46.0 // indirect
-	golang.org/x/text v0.42.0 // indirect
+	golang.org/x/sync v0.24.0 // indirect
+	golang.org/x/term v0.47.0 // indirect
+	golang.org/x/text v0.43.0 // indirect
 	golang.org/x/time v0.15.0 // indirect
 	google.golang.org/api v0.293.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20260817212433-ac3dfec99bb1 // indirect
