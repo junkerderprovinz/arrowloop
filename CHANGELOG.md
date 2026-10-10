@@ -10,6 +10,12 @@ The full notes for each release are in
 
 ## Unreleased
 
+## 1.6.3 - 2026-10-10
+
+## ⚡ Improved
+
+- **The phone app has a Save button for a new job.** Before, the form wrote the job as soon as it had a name and both sides, so it could start running before you had set its direction and schedule. A new job is written when you press Save, and Cancel leaves without one. An existing job still saves each change as you make it.
+
 ## 1.6.2 - 2026-10-04
 
 ## 🎨 Design

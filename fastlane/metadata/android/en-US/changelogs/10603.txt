@@ -1,0 +1,1 @@
+A new job has a Save button and no longer saves itself while you fill in the form.
