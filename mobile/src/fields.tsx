@@ -14,6 +14,7 @@ export function Field({
   multiline,
   secret,
   keyboard,
+  onBlur,
 }: {
   label: string;
   hint?: string;
@@ -23,6 +24,7 @@ export function Field({
   multiline?: boolean;
   secret?: boolean;
   keyboard?: "default" | "numeric";
+  onBlur?: () => void;
 }) {
   const { p, corners } = useTheme();
   const [hidden, setHidden] = useState(Boolean(secret));
@@ -36,6 +38,7 @@ export function Field({
         <TextInput
           value={value}
           onChangeText={onChange}
+          onBlur={onBlur}
           placeholder={placeholder}
           placeholderTextColor={p.textMuted}
           secureTextEntry={hidden}
@@ -68,6 +71,39 @@ export function Field({
         ) : null}
       </View>
     </View>
+  );
+}
+
+/**
+ * A field for a number that is written through as it is typed. The text being
+ * typed is kept here: shown from the stored value, the box would refill itself
+ * the moment it was emptied to type another number. An empty box writes
+ * nothing, and shows the stored value again once it is left.
+ */
+export function NumberField({
+  label,
+  hint,
+  value,
+  onChange,
+}: {
+  label: string;
+  hint?: string;
+  value: string;
+  onChange: (next: string) => void;
+}) {
+  const [typed, setTyped] = useState<string | null>(null);
+  return (
+    <Field
+      label={label}
+      hint={hint}
+      keyboard="numeric"
+      value={typed ?? value}
+      onChange={(next) => {
+        setTyped(next);
+        if (next.trim()) onChange(next);
+      }}
+      onBlur={() => setTyped(null)}
+    />
   );
 }
 

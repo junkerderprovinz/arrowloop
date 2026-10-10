@@ -5,7 +5,7 @@ import { heldKey } from "../deviceConditions";
 import { engine, type DeviceConditions, type DevicePolicy } from "../engine";
 import { useT } from "../i18n";
 import { useEngineSettings } from "../settings";
-import { Field } from "../fields";
+import { Field, NumberField } from "../fields";
 import { Schedule } from "./JobEdit";
 import { AxisLabel, Body, Choice, Page, Section, Toggle } from "../ui";
 import { WaySwitch } from "../way";
@@ -88,10 +88,9 @@ export function SyncSettings() {
       </Section>
 
       <Section title={t("settings.transfer")} hue={1}>
-        <Field
+        <NumberField
           label={t("engine.transfers")}
           hint={t("engine.transfersHint")}
-          keyboard="numeric"
           value={String(defaults.transfers ?? 4)}
           onChange={(v) => saveDefaults({ transfers: Number(v) || undefined })}
         />
@@ -120,17 +119,15 @@ export function SyncSettings() {
       </Section>
 
       <Section title={t("settings.safetyNet")} hue={3}>
-        <Field
+        <NumberField
           label={t("engine.brakePercent")}
           hint={t("engine.brakePercentHint")}
-          keyboard="numeric"
           value={String(defaults.brakePercent ?? 50)}
           onChange={(v) => saveDefaults({ brakePercent: clamp(v, 0, 100) })}
         />
-        <Field
+        <NumberField
           label={t("engine.brakeFloor")}
           hint={t("engine.brakeFloorHint")}
-          keyboard="numeric"
           value={String(defaults.brakeFloor ?? 10)}
           onChange={(v) => saveDefaults({ brakeFloor: clamp(v, 0, 100000) })}
         />
@@ -180,18 +177,16 @@ export function SyncSettings() {
       </Section>
 
       <Section title={t("settings.retry")} hint={t("retry.hint")} hue={6}>
-        <Field
+        <NumberField
           label={t("retry.attempts")}
           hint={t("retry.attemptsHint")}
-          keyboard="numeric"
           value={retry.attempts === undefined ? "3" : String(retry.attempts)}
           onChange={(v) => saveRetry({ attempts: clamp(v, 0, 10) ?? 0 })}
         />
         {/* Minutes as a number, which needs no plural forms in translation. */}
-        <Field
+        <NumberField
           label={`${t("retry.wait")} (${t("schedule.unit.minute")})`}
           hint={t("retry.waitHint")}
-          keyboard="numeric"
           value={String(waitMinutes(retry.wait))}
           onChange={(v) => saveRetry({ wait: `${clamp(v, 1, 1440) ?? 5}m` })}
         />

@@ -13,6 +13,8 @@ The full notes for each release are in
 ## 🐛 Fixed
 
 - **A run started by hand on the phone keeps its network after the app is left.** Android 16 blocks an app without the battery exemption a few seconds after it leaves the screen, so a run that took longer than that lost its connection. A run in progress moves into the foreground service as the app goes away, shown by the ArrowLoop notification, and the service ends with the run.
+- **Android's own bin is left out of a sync.** A file deleted in Android's file manager stays in its folder for thirty days under a name starting with `.trashed-`, and a download still being written starts with `.pending-`. Both were synced like any file, so emptying the bin on the phone looked like a mass deletion and tripped the brake. They are excluded by default, like the half-written files of other programs.
+- **The number fields of the phone's sync settings can be emptied to type a new value.** The mass-delete brake, the files at once and the retry fields refilled themselves with the default the moment the last digit was deleted.
 
 ## 1.6.5 - 2026-10-10
 
