@@ -350,14 +350,15 @@ export function JobEdit() {
           onChange={(on) => set({ noTrash: !on }, true)}
         />
         {editing && !job.noTrash ? (
-          <View style={styles.actions}>
+          // One under the other, since a side's name needs the full width.
+          <View style={styles.stack}>
             <Button
-              label={`${t("nav.trash")} ${t("side.left")}`}
-              onPress={() => nav.navigate("Trash", { name: editing, side: "left" })}
+              label={`${t("nav.trash")} · ${upper}`}
+              onPress={() => nav.navigate("Trash", { name: editing, side: "left", place: upper })}
             />
             <Button
-              label={`${t("nav.trash")} ${t("side.right")}`}
-              onPress={() => nav.navigate("Trash", { name: editing, side: "right" })}
+              label={`${t("nav.trash")} · ${lower}`}
+              onPress={() => nav.navigate("Trash", { name: editing, side: "right", place: lower })}
             />
           </View>
         ) : null}

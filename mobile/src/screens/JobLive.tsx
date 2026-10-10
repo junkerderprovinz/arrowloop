@@ -115,12 +115,6 @@ export function JobLive({ name }: { name: string }) {
   );
 }
 
-export function directionKey(direction: string): "direction.toRight" | "direction.toLeft" | "direction.both" {
-  if (direction === "toRight" || direction === "right") return "direction.toRight";
-  if (direction === "toLeft" || direction === "left") return "direction.toLeft";
-  return "direction.both";
-}
-
 const styles = StyleSheet.create({
   head: {
     flexDirection: "row",

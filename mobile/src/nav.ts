@@ -19,7 +19,8 @@ export type JobsStack = {
   /** No name means a new job. */
   JobEdit: { name?: string };
   Plan: { name: string };
-  Trash: { name: string; side: "left" | "right" };
+  /** `place` is the side's name, for the title. */
+  Trash: { name: string; side: "left" | "right"; place: string };
 };
 
 export type HistoryStack = {

@@ -16,7 +16,7 @@ export function Trash() {
   const route = useRoute<RouteProp<JobsStack, "Trash">>();
   const { t } = useT();
   const { p, corners, accent } = useTheme();
-  const { name: job, side } = route.params;
+  const { name: job, side, place } = route.params;
 
   const [bin, setBin] = useState<Bin | null>(null);
   const [chosen, setChosen] = useState<Set<string>>(new Set());
@@ -58,7 +58,7 @@ export function Trash() {
     <Page>
       <Card>
         <View style={styles.head}>
-          <Title>{`${t("nav.trash")} ${t(side === "left" ? "side.left" : "side.right")}`}</Title>
+          <Title>{`${t("nav.trash")} · ${place}`}</Title>
           <Badge label={String(held)} />
         </View>
         <Caption>{t("trash.holding", { count: held, size })}</Caption>

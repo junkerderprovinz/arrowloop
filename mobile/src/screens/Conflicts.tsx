@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
-import { api, EngineError, type Keep, type OpenConflict } from "../api";
-import { useT, type TranslationKey } from "../i18n";
+import { api, EngineError, type Job, type Keep, type OpenConflict } from "../api";
+import { useT, type T } from "../i18n";
 import { clock } from "../clock";
+import { jobSides } from "../sides";
 import { bytes } from "../space";
 import { space } from "../theme";
 import { useEngineStream } from "../useEngine";
@@ -10,11 +11,16 @@ import { conflictKey, decisionsByJob, newerSide } from "../../../web/src/lib/con
 import { Badge, Body, Button, Caption, Card, Empty, Mono, Page, Pair, Toggle } from "../ui";
 
 /** The same three answers, in the same order, as the web's conflicts tab. */
-const CHOICES: { keep: Keep; key: TranslationKey }[] = [
-  { keep: "both", key: "conflict.keepBoth" },
-  { keep: "left", key: "conflict.keepLeft" },
-  { keep: "right", key: "conflict.keepRight" },
-];
+const CHOICES: Keep[] = ["both", "left", "right"];
+
+/**
+ * An answer's words. The web says left and right, which name nothing on a
+ * screen that shows the two sides under each other, so a side goes by its name.
+ */
+function keepLabel(keep: Keep, [left, right]: [string, string], t: T): string {
+  if (keep === "both") return t("conflict.keepBoth");
+  return t("conflict.keepPlace", { place: keep === "left" ? left : right });
+}
 
 /**
  * Every open conflict across the jobs, each with both versions and the three
@@ -23,6 +29,7 @@ const CHOICES: { keep: Keep; key: TranslationKey }[] = [
 export function Conflicts() {
   const { t, lang } = useT();
   const [list, setList] = useState<OpenConflict[] | null>(null);
+  const [jobs, setJobs] = useState<Job[]>([]);
   const [unread, setUnread] = useState<{ job: string; error: string }[]>([]);
   const [chosen, setChosen] = useState<Set<string>>(new Set());
   const [busy, setBusy] = useState(false);
@@ -30,7 +37,8 @@ export function Conflicts() {
 
   const load = useCallback(async () => {
     try {
-      const got = await api.conflicts();
+      const [got, known] = await Promise.all([api.conflicts(), api.jobs()]);
+      setJobs(known);
       setList(got.conflicts);
       setUnread(got.unread);
       const live = new Set(got.conflicts.map(conflictKey));
@@ -66,6 +74,11 @@ export function Conflicts() {
 
   const picked = list.filter((c) => chosen.has(conflictKey(c)));
 
+  // The answer for all the chosen ones can only name a side they share. Jobs
+  // with different sides leave "keep both", and the rest is decided per card.
+  const pairs = (picked.length > 0 ? picked : list).map((c) => jobSides(jobs, c.job, t));
+  const shared = pairs.every(([l, r]) => l === pairs[0]?.[0] && r === pairs[0]?.[1]) ? pairs[0] : undefined;
+
   return (
     <Page>
       {list.length === 0 ? <Empty title={t("conflicts.none")} /> : null}
@@ -73,6 +86,7 @@ export function Conflicts() {
       {list.map((c) => {
         const key = conflictKey(c);
         const newer = newerSide(c);
+        const sides = jobSides(jobs, c.job, t);
         return (
           <Card key={key}>
             <Mono>{c.plain}</Mono>
@@ -80,18 +94,17 @@ export function Conflicts() {
             {(["left", "right"] as const).map((side) => (
               <View key={side} style={styles.version}>
                 <Pair
-                  label={t(side === "left" ? "edit.left" : "edit.right")}
+                  label={sides[side === "left" ? 0 : 1]}
                   value={`${bytes(c[side].size)} · ${clock(c[side].mod, lang)}`}
                 />
                 {newer === side ? <Badge label={t("conflict.newer")} tone="ok" /> : null}
               </View>
             ))}
             <View style={styles.choices}>
-              {CHOICES.map(({ keep, key: label }) => (
+              {CHOICES.map((keep) => (
                 <Button
                   key={keep}
-                  label={t(label)}
-                  labelKey={label}
+                  label={keepLabel(keep, sides, t)}
                   disabled={busy}
                   onPress={() => void decide([c], keep)}
                 />
@@ -122,11 +135,10 @@ export function Conflicts() {
         <Card>
           <Caption>{t("conflicts.chosen", { count: picked.length })}</Caption>
           <View style={styles.choices}>
-            {CHOICES.map(({ keep, key }) => (
+            {CHOICES.filter((keep) => keep === "both" || shared).map((keep) => (
               <Button
                 key={keep}
-                label={t(key)}
-                labelKey={key}
+                label={shared ? keepLabel(keep, shared, t) : t("conflict.keepBoth")}
                 busy={busy}
                 disabled={picked.length === 0}
                 onPress={() => void decide(picked, keep)}

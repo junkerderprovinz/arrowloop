@@ -21,7 +21,7 @@ import { engine } from "../engine";
 import { useEngineStream } from "../useEngine";
 import { Badge, Body, Caption, CardHead, Empty, Fab, Floating, Meter, Mono, Page, Pair, Row, Section, Title, useHue, useTheme } from "../ui";
 import { clock } from "../clock";
-import { stageKey } from "../../../web/src/lib/readingStage";
+import { remoteOf, sidePair } from "../sides";
 import { trashTotals } from "../../../web/src/lib/trashView";
 import { useNavigation } from "@react-navigation/native";
 import type { Nav, OverviewStack } from "../nav";
@@ -321,7 +321,7 @@ function Running({
       </View>
       {at ? (
         <>
-          {at.stage ? <Caption>{t(stageKey(at.stage, at.side))}</Caption> : null}
+          {at.stage ? <Caption>{stageLine(at.stage, at.side, job, t)}</Caption> : null}
           <Meter done={at.guess ? Math.min(at.done, at.total * 0.99) : at.done} total={at.total} hue={hue} />
           <Caption>
             {speed > 0 ? `${counted(at, t, lang)} · ${perSecond(speed, lang)}` : counted(at, t, lang)}
@@ -333,7 +333,7 @@ function Running({
       )}
 
       {moving.map((file) => (
-        <InFlight key={file.path} file={file} hue={hue} />
+        <InFlight key={file.path} file={file} glyph={landingGlyph(file.side, job)} hue={hue} />
       ))}
 
       {/* Too many small files to name: the engine sends a rate instead of
@@ -358,19 +358,39 @@ function counted(at: Progress, t: T, lang: string): string {
 }
 
 /**
+ * The line that names a stage of reading a job. The web says which side by
+ * left and right; here the side goes by its name.
+ */
+function stageLine(stage: NonNullable<RunEvent["stage"]>, side: string | undefined, job: Job, t: T): string {
+  if (stage === "compare") return t("progress.compare");
+  const place = sidePair(job.left, job.right, t)[side === "right" ? 1 : 0];
+  return stage === "check" ? t("progress.checkPlace", { place }) : t("progress.listPlace", { place });
+}
+
+/**
+ * The mark for a file in transfer: up when it lands on a target and comes from
+ * the device, down the other way round. Between two folders or two targets
+ * neither word fits, and there is no mark.
+ */
+function landingGlyph(side: string | undefined, job: Job): string | undefined {
+  if (side !== "left" && side !== "right") return undefined;
+  const [to, from] = side === "left" ? [job.left, job.right] : [job.right, job.left];
+  const up = Boolean(remoteOf(to));
+  if (up === Boolean(remoteOf(from))) return undefined;
+  return up ? "IconUpload" : "IconDownload";
+}
+
+/**
  * One file in transfer. The bar is drawn only when the service reported the
  * file's size, which some clouds do not.
  */
-function InFlight({ file, hue }: { file: MovingFile; hue: string }) {
+function InFlight({ file, glyph, hue }: { file: MovingFile; glyph?: string; hue: string }) {
   const { p } = useTheme();
   const known = file.size > 0;
   return (
     <View style={styles.file}>
       <View style={styles.line}>
-        {/* The arrow points at the side the file lands on. */}
-        {file.side === "left" || file.side === "right" ? (
-          <Glyph name={file.side === "left" ? "IconToLeft" : "IconToRight"} color={p.textSub} size={16} />
-        ) : null}
+        {glyph ? <Glyph name={glyph} color={p.textSub} size={16} /> : null}
         <View style={styles.fileName}>
           <Mono>{file.path}</Mono>
         </View>

@@ -235,6 +235,7 @@ export const en = {
   'conflict.keepBoth': 'Keep both',
   'conflict.keepLeft': 'Keep left',
   'conflict.keepRight': 'Keep right',
+  'conflict.keepPlace': 'Keep: {place}',
   'conflict.keepBothHint':
     'The newer version keeps the plain name on both sides and the older one is preserved next to it. Nothing is lost.',
   'conflict.chosenHint':
@@ -579,6 +580,8 @@ export const en = {
   'progress.listRight': 'Reading the right side',
   'progress.checkLeft': 'Checking the left side for links',
   'progress.checkRight': 'Checking the right side for links',
+  'progress.listPlace': 'Reading: {place}',
+  'progress.checkPlace': 'Checking for links: {place}',
   'progress.compare': 'Comparing both sides',
   'preview.back': 'Back',
   'preview.backHint': 'Leave the preview without running anything. Escape does the same.',
@@ -1068,6 +1071,7 @@ export const de: Translations = {
   'conflict.keepBoth': 'Beide behalten',
   'conflict.keepLeft': 'Links behalten',
   'conflict.keepRight': 'Rechts behalten',
+  'conflict.keepPlace': 'Behalten: {place}',
   'conflict.keepBothHint':
     'Die neuere Fassung behält auf beiden Seiten den schlichten Namen, die ältere bleibt daneben erhalten. Es geht nichts verloren.',
   'conflict.chosenHint':
@@ -1408,6 +1412,8 @@ export const de: Translations = {
   'progress.listRight': 'Rechte Seite wird eingelesen',
   'progress.checkLeft': 'Linke Seite wird auf Verknüpfungen geprüft',
   'progress.checkRight': 'Rechte Seite wird auf Verknüpfungen geprüft',
+  'progress.listPlace': 'Wird eingelesen: {place}',
+  'progress.checkPlace': 'Prüfung auf Verknüpfungen: {place}',
   'progress.compare': 'Beide Seiten werden verglichen',
   'preview.back': 'Zurück',
   'preview.backHint': 'Verlässt die Vorschau, ohne etwas auszuführen. Escape tut dasselbe.',

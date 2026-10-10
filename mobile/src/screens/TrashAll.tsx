@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { Alert, Pressable, StyleSheet, View } from "react-native";
-import { api, type TrashItem, type TrashSide } from "../api";
+import { api, type Job, type TrashItem, type TrashSide } from "../api";
 import { useT } from "../i18n";
+import { jobSides } from "../sides";
 import { bytes } from "../space";
 import { space } from "../theme";
 import { useEngineStream } from "../useEngine";
@@ -21,13 +22,17 @@ export function TrashAll() {
   const { t } = useT();
   const { p, corners, accent } = useTheme();
   const [bins, setBins] = useState<TrashSide[] | null>(null);
+  // For the name of each side, which a bin only knows as left or right.
+  const [jobs, setJobs] = useState<Job[]>([]);
   const [chosen, setChosen] = useState<Set<string>>(new Set());
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
   const load = useCallback(async () => {
     try {
-      setBins((await api.trashAll()).sides);
+      const [trash, known] = await Promise.all([api.trashAll(), api.jobs()]);
+      setBins(trash.sides);
+      setJobs(known);
       setChosen(new Set());
     } catch (e) {
       setError((e as Error).message);
@@ -77,9 +82,11 @@ export function TrashAll() {
 
       {bins
         .filter((b) => b.total > 0 || b.error)
-        .map((bin) => (
+        .map((bin) => {
+          const place = jobSides(jobs, bin.job, t)[bin.side === "left" ? 0 : 1];
+          return (
           <Card key={`${bin.job}/${bin.side}`}>
-            <Title>{`${bin.job} · ${t(bin.side === "left" ? "edit.left" : "edit.right")}`}</Title>
+            <Title>{`${bin.job} · ${place}`}</Title>
             {bin.error ? (
               <Caption>{t("trash.unread", { error: bin.error })}</Caption>
             ) : (
@@ -130,7 +137,7 @@ export function TrashAll() {
                         t("trash.emptyAll"),
                         t("trash.emptySideConfirm", {
                           job: bin.job,
-                          side: t(bin.side === "left" ? "side.left" : "side.right"),
+                          side: place,
                           count: bin.total,
                           size: bytes(bin.bytes),
                         }),
@@ -143,7 +150,8 @@ export function TrashAll() {
               </>
             )}
           </Card>
-        ))}
+          );
+        })}
 
       {error ? <Body>{error}</Body> : null}
 

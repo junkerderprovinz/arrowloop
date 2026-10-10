@@ -5,7 +5,6 @@ import { entryLabel, entryNote, plainKey } from "../../../web/src/lib/entryLabel
 import { api, failed, touched, type Job, type Run, type Touch } from "../api";
 import { isPerfectlyIdle } from "../eggs";
 import { Field } from "../fields";
-import { Glyph } from "../glyphs";
 import { useT, type T } from "../i18n";
 import type { HistoryStack, Nav } from "../nav";
 import { contrastOn, space, text } from "../theme";
@@ -254,14 +253,6 @@ function FileLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "fil
                 )}
                 tone={tone(item.Kind)}
               />
-              {/* The arrow points at the side that was written to. */}
-              {item.Side === "left" || item.Side === "right" ? (
-                <Glyph
-                  name={item.Side === "left" ? "IconToLeft" : "IconToRight"}
-                  color={p.textSub}
-                  size={16}
-                />
-              ) : null}
               {item.Job ? <Caption>{item.Job}</Caption> : null}
               <Caption>{clock(item.When, lang)}</Caption>
               {item.Size ? <Caption>{bytes(item.Size)}</Caption> : null}

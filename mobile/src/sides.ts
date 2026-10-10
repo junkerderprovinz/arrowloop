@@ -26,6 +26,19 @@ export function sidePair(left: string | undefined, right: string | undefined, t:
   return [leaf(left) || a, leaf(right) || b];
 }
 
+/**
+ * Names the two sides of the job called `name`. A job the list does not hold
+ * gets the names of two empty sides.
+ */
+export function jobSides(
+  jobs: { name: string; left: string; right: string }[],
+  name: string,
+  t: T,
+): [string, string] {
+  const job = jobs.find((j) => j.name === name);
+  return sidePair(job?.left, job?.right, t);
+}
+
 function leaf(side: string | undefined): string {
   const remote = remoteOf(side);
   const path = (side ?? "").slice(remote ? remote.length + 1 : 0);
