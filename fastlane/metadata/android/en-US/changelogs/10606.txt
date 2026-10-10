@@ -1,0 +1,1 @@
+A run started by hand keeps going after you leave the app. Android's own bin is no longer synced. The number fields in the sync settings can be emptied to type a new value.

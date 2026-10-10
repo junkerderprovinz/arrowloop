@@ -1,0 +1,1 @@
+Ein von Hand gestarteter Lauf läuft weiter, wenn du die App verlässt. Androids eigener Papierkorb wird nicht mehr synchronisiert. Die Zahlenfelder der Synceinstellungen lassen sich leeren, um einen neuen Wert zu tippen.
