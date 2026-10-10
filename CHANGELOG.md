@@ -10,6 +10,10 @@ The full notes for each release are in
 
 ## Unreleased
 
+## 🐛 Fixed
+
+- **A run started by hand on the phone keeps its network after the app is left.** Android 16 blocks an app without the battery exemption a few seconds after it leaves the screen, so a run that took longer than that lost its connection. A run in progress moves into the foreground service as the app goes away, shown by the ArrowLoop notification, and the service ends with the run.
+
 ## 1.6.5 - 2026-10-10
 
 ## 🐛 Fixed

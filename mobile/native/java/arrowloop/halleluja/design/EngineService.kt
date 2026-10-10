@@ -12,6 +12,7 @@ import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
+import org.json.JSONArray
 import org.json.JSONObject
 import androidx.core.app.NotificationCompat
 import java.io.OutputStreamWriter
@@ -19,9 +20,10 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * Runs the engine for one scheduled wake-up and stops when the run is over, so
- * its required foreground notification lasts only as long as the copying. The
- * screens do not use it: while the app is visible the engine runs as its plain
- * child process (see EngineModule.start). The service type is dataSync, which
+ * its required foreground notification lasts only as long as the copying. While
+ * the app is visible the engine runs as its plain child process (see
+ * EngineModule.start), and the screens use this service only to keep a run they
+ * started going after they are left. The service type is dataSync, which
  * Android 14 caps at six hours a day.
  */
 class EngineService : Service() {
@@ -37,6 +39,9 @@ class EngineService : Service() {
     @Volatile
     private var cut = false
 
+    /** Whether the service is up to keep a run the screens started on the network. */
+    private val guarding = AtomicBoolean(false)
+
     override fun onBind(intent: Intent?): IBinder = Run()
 
     override fun onCreate() {
@@ -45,17 +50,25 @@ class EngineService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if (intent?.action == ACTION_STOP) {
-            finish()
-            return START_NOT_STICKY
+        when (intent?.action) {
+            ACTION_STOP -> {
+                guarding.set(false)
+                finish()
+                return START_NOT_STICKY
+            }
+            ACTION_RELEASE -> {
+                unguard()
+                return START_NOT_STICKY
+            }
         }
+        val forScreens = intent?.action == ACTION_GUARD
 
         // Before any work: a foreground service that does not call
         // startForeground within a few seconds is killed.
         try {
             startForeground(
                 NOTIFICATION_ID,
-                notification(),
+                notification(stoppable = !forScreens && !guarding.get()),
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
                     ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
                 else 0,
@@ -66,6 +79,11 @@ class EngineService : Service() {
             // next one after that runs whatever is due.
             Log.w(TAG, "woke and could not start: ${e.message}")
             stopSelf()
+            return START_NOT_STICKY
+        }
+
+        if (forScreens) {
+            guard()
             return START_NOT_STICKY
         }
 
@@ -98,6 +116,29 @@ class EngineService : Service() {
             then()
         }.start()
         return true
+    }
+
+    /**
+     * Stays in the foreground for as long as the engine is in a run. Android 16
+     * takes the network from an app a few seconds after it leaves the screen
+     * unless it holds a foreground service, which would end a run started by
+     * hand in the middle.
+     */
+    private fun guard() {
+        if (!guarding.compareAndSet(false, true)) return
+        Log.i(TAG, "keeping the run from the screens in the foreground")
+        Thread {
+            while (guarding.get() && busy(this)) Thread.sleep(GUARD_EVERY_MS)
+            unguard()
+        }.start()
+    }
+
+    /** Ends the guard, and the service with it unless a wake-up's run is under way. */
+    private fun unguard() {
+        if (guarding.getAndSet(false)) Log.i(TAG, "done keeping the run in the foreground")
+        if (running.get()) return
+        stopForeground(STOP_FOREGROUND_REMOVE)
+        stopSelf()
     }
 
     /**
@@ -244,6 +285,9 @@ class EngineService : Service() {
 
     private fun finish() {
         release()
+        // A run from the screens still needs the service's place in the
+        // foreground; its guard stops the service when that run is over.
+        if (guarding.get()) return
         stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
     }
@@ -267,10 +311,12 @@ class EngineService : Service() {
      */
     override fun onTimeout(startId: Int, fgsType: Int) {
         Log.w(TAG, "Android ended the run: the day's time for background sync is used up")
+        guarding.set(false)
         finish()
     }
 
     override fun onDestroy() {
+        guarding.set(false)
         release()
         super.onDestroy()
     }
@@ -302,26 +348,33 @@ class EngineService : Service() {
         }
     }
 
-    private fun notification(): Notification {
+    /**
+     * The notification the foreground service has to show. A guard gets no
+     * Stop action: stopping the service would not stop a run the screens
+     * started, only take its network.
+     */
+    private fun notification(stoppable: Boolean): Notification {
         val open = PendingIntent.getActivity(
             this, 0,
             Intent(this, MainActivity::class.java),
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
         )
-        val stop = PendingIntent.getService(
-            this, 1,
-            Intent(this, EngineService::class.java).setAction(ACTION_STOP),
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
-        )
-        return NotificationCompat.Builder(this, CHANNEL)
+        val note = NotificationCompat.Builder(this, CHANNEL)
             .setContentTitle(getString(R.string.notify_running))
             .setContentText(getString(R.string.notify_running_why))
             .setSmallIcon(R.drawable.ic_notification)
             .setContentIntent(open)
-            .addAction(0, getString(R.string.notify_stop), stop)
             .setOngoing(true)
             .setSilent(true)
-            .build()
+        if (stoppable) {
+            val stop = PendingIntent.getService(
+                this, 1,
+                Intent(this, EngineService::class.java).setAction(ACTION_STOP),
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+            )
+            note.addAction(0, getString(R.string.notify_stop), stop)
+        }
+        return note.build()
     }
 
     companion object {
@@ -334,6 +387,19 @@ class EngineService : Service() {
         const val DONE_ID = 2
         const val FAILED_ID = 3
         const val ACTION_STOP = "arrowloop.halleluja.design.STOP"
+        private const val ACTION_GUARD = "arrowloop.halleluja.design.GUARD"
+        private const val ACTION_RELEASE = "arrowloop.halleluja.design.RELEASE"
+
+        /** How often a guard asks the engine whether its run is over. */
+        private const val GUARD_EVERY_MS = 3000L
+
+        /** Whether the screens are away, so a guard asked for late is not started over them. */
+        @Volatile
+        private var away = false
+
+        /** Whether a guard was started that the returning screens have to release. */
+        @Volatile
+        private var guarded = false
 
         /** Starts the service to run whatever is due. Only a wake-up calls this. */
         fun runDue(context: Context) {
@@ -343,6 +409,48 @@ class EngineService : Service() {
             } else {
                 context.startService(intent)
             }
+        }
+
+        /**
+         * Hands a run in progress to the service as the screens go away.
+         * Android lets an app that was just visible start a foreground service
+         * and refuses it a few seconds later. It asks the engine over HTTP, so
+         * it must not be called on the main thread.
+         */
+        fun leave(context: Context) {
+            away = true
+            if (!busy(context) || !away) return
+            try {
+                val intent = Intent(context, EngineService::class.java).setAction(ACTION_GUARD)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    context.startForegroundService(intent)
+                } else {
+                    context.startService(intent)
+                }
+                guarded = true
+            } catch (e: IllegalStateException) {
+                Log.w(TAG, "could not keep the run in the foreground: ${e.message}")
+            }
+        }
+
+        /** Releases the guard as the screens come back, which hold the network themselves. */
+        fun back(context: Context) {
+            away = false
+            if (!guarded) return
+            guarded = false
+            context.startService(Intent(context, EngineService::class.java).setAction(ACTION_RELEASE))
+        }
+
+        /** Reports whether the engine is in a run. One that does not answer is not. */
+        private fun busy(context: Context): Boolean = try {
+            val call = Engine.connect(context, "/api/jobs")
+            call.connectTimeout = 2000
+            call.readTimeout = 2000
+            val jobs = JSONArray(call.inputStream.bufferedReader().readText())
+            call.disconnect()
+            (0 until jobs.length()).any { jobs.getJSONObject(it).optBoolean("running") }
+        } catch (_: Exception) {
+            false
         }
     }
 }

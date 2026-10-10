@@ -13,6 +13,7 @@ import android.os.PowerManager
 import android.provider.Settings
 import com.facebook.react.bridge.ActivityEventListener
 import com.facebook.react.bridge.Arguments
+import com.facebook.react.bridge.LifecycleEventListener
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
@@ -27,14 +28,27 @@ import java.io.File
  * never becomes a second API.
  */
 class EngineModule(private val context: ReactApplicationContext) :
-    ReactContextBaseJavaModule(context), ActivityEventListener {
+    ReactContextBaseJavaModule(context), ActivityEventListener, LifecycleEventListener {
 
     init {
         // confirmDeviceLock gets its answer through onActivityResult.
         context.addActivityEventListener(this)
+        context.addLifecycleEventListener(this)
     }
 
     override fun getName() = "ArrowLoopEngine"
+
+    /**
+     * A run started from the screens has to outlive them, and Android lets
+     * the service take it over only while the app is still in front.
+     */
+    override fun onHostPause() {
+        Thread { EngineService.leave(context) }.start()
+    }
+
+    override fun onHostResume() = EngineService.back(context)
+
+    override fun onHostDestroy() {}
 
     /**
      * Starts the engine for the screens as a plain child process, which a
