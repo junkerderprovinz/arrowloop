@@ -1,0 +1,1 @@
+Nimmt Android der App im Hintergrund das Netz, wartet ein zeitgesteuerter Lauf jetzt auf den nächsten Weckruf und schlägt nicht mehr fehl.
