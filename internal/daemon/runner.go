@@ -18,6 +18,7 @@ import (
 	"github.com/rclone/rclone/fs/fspath"
 	"github.com/robfig/cron/v3"
 
+	"github.com/junkerderprovinz/arrowloop/internal/anomaly"
 	"github.com/junkerderprovinz/arrowloop/internal/apply"
 	"github.com/junkerderprovinz/arrowloop/internal/engine"
 	"github.com/junkerderprovinz/arrowloop/internal/history"
@@ -64,6 +65,10 @@ type Runner struct {
 	hist *history.DB
 	log  func(format string, args ...any)
 
+	// anomalies keeps what a brake refused and what else was found about a
+	// job. It is never nil.
+	anomalies *anomaly.Store
+
 	// shadows lists the shadow copies runs have taken and not yet removed.
 	shadows string
 
@@ -102,14 +107,26 @@ func New(cfg *job.Config, hist *history.DB, log func(string, ...any)) *Runner {
 		log("%v", err)
 	}
 
+	// A configuration that was never read from a file has no place to keep
+	// findings, so they live as long as the runner.
+	kept := ""
+	if cfg.Path() != "" {
+		kept = filepath.Join(filepath.Dir(cfg.Path()), "anomalies.json")
+	}
+	found, err := anomaly.Open(kept)
+	if err != nil {
+		log("%v", err)
+	}
+
 	return &Runner{
-		cfg:      cfg,
-		hist:     hist,
-		note:     Notifier(cfg),
-		log:      log,
-		shadows:  shadows,
-		inflight: map[string]context.CancelFunc{},
-		reload:   make(chan struct{}, 1),
+		cfg:       cfg,
+		hist:      hist,
+		note:      Notifier(cfg),
+		log:       log,
+		shadows:   shadows,
+		anomalies: found,
+		inflight:  map[string]context.CancelFunc{},
+		reload:    make(chan struct{}, 1),
 	}
 }
 
@@ -172,6 +189,12 @@ type work func(ctx context.Context, j job.Job, live *history.Live) (apply.Result
 // and never overlaps another. auto is set for a run nobody asked for, which a
 // paused job does not get.
 func (r *Runner) runAs(ctx context.Context, name string, auto bool, do work) (history.Run, error) {
+	return r.runAnswering(ctx, name, auto, passed, do)
+}
+
+// runAnswering is runAs for a run that answers a finding: once its plan is
+// past the brakes, the job's findings of these kinds close with this outcome.
+func (r *Runner) runAnswering(ctx context.Context, name string, auto bool, ans answer, do work) (history.Run, error) {
 	j, ok := r.config().Find(name)
 	if !ok {
 		return history.Run{}, fmt.Errorf("no job called %q", name)
@@ -238,10 +261,21 @@ func (r *Runner) runAs(ctx context.Context, name string, auto bool, do work) (hi
 		}
 	}
 
-	// A drive that is not plugged in is not a run, so nothing is recorded.
-	if errors.Is(err, ErrVolumeMissing) {
-		// The drive went between the check and the work. Whatever the before
-		// command stopped still has to be started again.
+	// A plan a brake refused holds the job. It is not a failure, or the retries
+	// would run it again within minutes and the note about failing runs would
+	// count it.
+	if found, braked := refusal(name, err); braked {
+		r.hold(ctx, found)
+		err = fmt.Errorf("%w: %w", ErrHeld, err)
+	} else if p != nil {
+		r.settle(name, ans.outcome, ans.kinds...)
+	}
+
+	// Neither a drive that is not plugged in nor a held job is a run, so
+	// nothing is recorded.
+	if errors.Is(err, ErrVolumeMissing) || errors.Is(err, ErrHeld) {
+		// The drive may have gone between the check and the work. Whatever
+		// the before command stopped still has to be started again.
 		if ranBefore {
 			gone := history.Run{Job: name, Started: rec.Started, Finished: time.Now(), Err: err.Error()}
 			if aErr := hook.Run(context.WithoutCancel(ctx), j.After, hookEnv(j, &gone)); aErr != nil {
@@ -251,7 +285,7 @@ func (r *Runner) runAs(ctx context.Context, name string, auto bool, do work) (hi
 		if live != nil {
 			live.Drop()
 		}
-		r.publish(Event{Job: name, Phase: "finished", Error: err.Error()})
+		r.publish(Event{Job: name, Phase: "finished", Error: err.Error(), Held: errors.Is(err, ErrHeld)})
 		return history.Run{}, err
 	}
 
@@ -282,6 +316,7 @@ func (r *Runner) runAs(ctx context.Context, name string, auto bool, do work) (hi
 		}
 	}
 	r.announce(ctx, rec, res)
+	r.review(ctx, rec)
 	finished := Event{Job: name, Phase: "finished", Run: &rec}
 	if err != nil {
 		finished.Error = err.Error()
@@ -355,14 +390,36 @@ func resolve(j job.Job) (left, right string, err error) {
 // execute does the actual sync for one job, optionally limited to some paths.
 // Every line the run writes also goes to live, which may be nil.
 func (r *Runner) execute(ctx context.Context, j job.Job, only []string, shown map[string]plan.Shown, resolve map[string]plan.Resolution, live *history.Live) (apply.Result, *plan.Plan, error) {
+	return r.executeAs(ctx, j, only, shown, resolve, decided{}, live)
+}
+
+// decided is what somebody answered a held job with: the refused changes they
+// allow, or the brake whose refused change they take back.
+type decided struct {
+	approved []string
+	back     plan.Brake
+
+	// keepOne keeps the content a copy replaces even on a job that keeps no
+	// versions, for a run that overwrites in bulk on somebody's word.
+	keepOne bool
+}
+
+// executeAs is execute for a run that answers a finding.
+func (r *Runner) executeAs(ctx context.Context, j job.Job, only []string, shown map[string]plan.Shown, resolve map[string]plan.Resolution, how decided, live *history.Live) (apply.Result, *plan.Plan, error) {
 	opt, err := j.Options()
 	if err != nil {
 		return apply.Result{}, nil, err
 	}
+	opt.Compare.Approved = how.approved
+	opt.Compare.Unbraked = how.back != ""
+	versions := j.KeepVersions
+	if how.keepOne {
+		versions = max(versions, 1)
+	}
 	// Per-job settings travel in the context, so two jobs running at once under
 	// parallelJobs do not share them.
 	ctx = engine.Configure(ctx, opt)
-	ctx = apply.WithVersions(ctx, j.KeepVersions)
+	ctx = apply.WithVersions(ctx, versions)
 	ctx = apply.WithTrash(ctx, !j.NoTrash)
 	ctx = scan.WithWatch(ctx, (&readingFor{runner: r, job: j.Name}).report)
 	// A shadow copy is taken only once a file is found held open, and removed
@@ -388,6 +445,16 @@ func (r *Runner) execute(ctx context.Context, j job.Job, only []string, shown ma
 	defer r.watchMoving(ctx, j.Name, ends.Right, steps)()
 
 	watcher := progressFor{runner: r, job: j.Name, steps: steps, live: live}
+	if how.back != "" {
+		p, compare, err := engine.Prepare(ctx, ends, db, opt)
+		if err != nil {
+			return apply.Result{}, nil, err
+		}
+		p = plan.TakeBack(p, how.back)
+		r.log("%s: taking back %d files a safety brake refused to change", j.Name, len(p.Actions))
+		res, err := engine.ExecuteWatched(ctx, ends, db, p, compare, watcher)
+		return res, p, err
+	}
 	if only == nil && len(resolve) == 0 {
 		p, res, err := engine.OnceWatched(ctx, ends, db, opt, watcher)
 		return res, p, err
@@ -612,6 +679,7 @@ func (r *Runner) schedule(ctx, round context.Context) *cron.Cron {
 	}
 
 	c.Schedule(cron.Every(time.Minute), cron.FuncJob(func() {
+		r.overdue(ctx, time.Now())
 		for _, name := range r.Retrying(ctx, time.Now()) {
 			r.log("%s: trying again after a failure", name)
 			r.runAndReport(ctx, name)
@@ -648,7 +716,7 @@ func (r *Runner) schedule(ctx, round context.Context) *cron.Cron {
 func (r *Runner) runAndReport(ctx context.Context, name string) (history.Run, error) {
 	rec, err := r.RunAutomatically(ctx, name)
 	switch {
-	case errors.Is(err, ErrHeldBack):
+	case errors.Is(err, ErrHeldBack), errors.Is(err, ErrHeld):
 		r.log("%s: %v", name, err)
 	case errors.Is(err, ErrNotEnoughSpace):
 		r.log("%s did not start: %v", name, err)
@@ -915,9 +983,16 @@ func sameMoving(a, b []engine.Moving) bool {
 // Event is something worth telling a watching screen about.
 type Event struct {
 	Job   string       `json:"job"`
-	Phase string       `json:"phase"` // "started", "progress", "moving" or "finished"
+	Phase string       `json:"phase"` // "started", "progress", "moving", "finished" or "anomaly"
 	Run   *history.Run `json:"run,omitempty"`
 	Error string       `json:"error,omitempty"`
+
+	// Held is set on a "finished" event whose run a safety brake refused,
+	// which a screen shows as a finding and not as a failure. An "anomaly"
+	// event says the findings changed; Told is the id of one that is new and
+	// worth a notification.
+	Held bool   `json:"held,omitempty"`
+	Told string `json:"told,omitempty"`
 
 	// Filled on a progress event. Total is known before the first byte moves,
 	// because the plan is built first.

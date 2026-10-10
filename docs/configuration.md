@@ -73,8 +73,9 @@ manager happened to start the process in.
 | `foldCase` | ask the backends | `true` treats names that differ only in case as one file, `false` as two; see [Upper and lower case](#upper-and-lower-case). |
 | `noTrash` | `false` | Delete outright instead of moving into the side's own trash. See the note below before switching it on. |
 | `reportOnly` | `false` | Compare on every automatic turn and apply nothing. A run somebody starts by hand still applies. |
-| `brakePercent` | `50` | Refuse a run deleting more than this share of known files. `0` switches the brake off. |
-| `brakeFloor` | `10` | Never trip the brake below this many deletions. |
+| `brakePercent` | `50` | Hold a run deleting more than this share of known files. `0` switches the brake off. |
+| `changePercent` | `50` | Hold a run overwriting more than this share of known files. `0` switches the brake off. |
+| `brakeFloor` | `10` | Never trip either brake below this many deletions or overwrites. |
 | `before` | none | A shell command run before every run. If it fails, the run does not start. See below. |
 | `after` | none | A shell command run after every run, successful or not. If it fails, the run is marked failed. |
 
@@ -93,8 +94,8 @@ manager happened to start the process in.
     a switch labelled with a negative is one people set backwards.
 
 !!! tip "Zero is not the same as leaving it out"
-    `brakePercent` and `brakeFloor` distinguish an explicit `0` from an absent
-    field on purpose. Switching off the mass-delete brake has to be something
+    `brakePercent`, `changePercent` and `brakeFloor` distinguish an explicit `0`
+    from an absent field on purpose. Switching off a brake has to be something
     you typed, never something you got by forgetting a line.
 
 !!! note "A one-way job restores, it does not skip"
@@ -292,6 +293,27 @@ job whose wait is over. On Android the same rule decides what runs when the app
 wakes the engine, and without the limit a failed job would run at every
 wake-up, spending a night's battery on a remote that is still down.
 
+## Anomalies
+
+```json
+"anomalies": { "failingAfter": 3, "overdueDays": 2, "notifyNotes": false }
+```
+
+A run a brake refuses holds its job until somebody answers it; see
+[A refused run holds the job](safety.md#a-refused-run-holds-the-job). The brakes
+themselves are set per job, with `brakePercent`, `changePercent` and
+`brakeFloor`, because what is implausible depends on the folder: a download
+folder is emptied on purpose, a photo archive is not.
+
+`anomalies` sets the two notes that hold nothing. `failingAfter` is how many
+failed runs in a row make one, and `overdueDays` how many days a scheduled job
+may miss its turn. `0` switches either off. `notifyHeld` and `notifyNotes`
+say whether a held job and a note are sent where runs report to; a held job is
+by default and a note is not.
+
+The findings are kept in `anomalies.json` beside the configuration, a closed
+one for thirty days. In the interface they have a page of their own.
+
 ## Commands before and after a run
 
 ```json
@@ -369,6 +391,10 @@ same value unless its `-keep-history` flag gives another.
 | `notify.onSuccess` | `false` | Report every run rather than only the failures. |
 | `retry.attempts` | `3` | How many further tries a failed scheduled run gets before the job waits for its next scheduled time. `0` means none; see [After a failure](#after-a-failure). |
 | `retry.wait` | `5m` | How long to wait before the first further try. Each try after that waits twice as long, up to six hours. |
+| `anomalies.failingAfter` | `3` | How many failed runs in a row make a note. `0` means never; see [Anomalies](#anomalies). |
+| `anomalies.overdueDays` | `2` | How many days a scheduled job may miss its turn before it makes a note. `0` means never. |
+| `anomalies.notifyHeld` | `true` | Report a job a brake holds where runs report to. |
+| `anomalies.notifyNotes` | `false` | Report the two notes there as well. |
 | `defaults` | none | Values for every job that does not set its own; see [below](#defaults-and-the-settings-tab). |
 | `excludeSets` | none | Named lists of exclude patterns; see [Shared exclude lists](#shared-exclude-lists). |
 
@@ -409,7 +435,7 @@ what makes it different, so the job form stays short:
 ```
 
 `defaults` takes `direction`, `mode`, `schedule`, `quietPeriod`, `modWindow`,
-`transfers`, `emptyDirs`, `metadata`, `brakePercent`, `brakeFloor`,
+`transfers`, `emptyDirs`, `metadata`, `brakePercent`, `changePercent`, `brakeFloor`,
 `keepVersions` and `foldCase`, with the meaning they have on a job. They are
 filled in when the file is read and before it is checked, so a value from the
 defaults goes through the same rules as one written on the job.

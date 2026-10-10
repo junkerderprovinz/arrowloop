@@ -7,7 +7,10 @@ package plan
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
+	"slices"
 	"sort"
 	"strings"
 	"time"
@@ -70,6 +73,7 @@ var reasonText = map[string]string{
 	"recordFailed":    "the record could not be written, leaving it for the next run: {error}",
 	"oneWay":          "this job only writes away from the {side}, so the {side} version is the one that stands",
 	"conflictGone":    "one of the two versions is gone, so there is nothing left to decide",
+	"takenBack":       "taken back from the {side}, after a safety brake refused the change",
 }
 
 // String is the English sentence, so %s and %v print the sentence rather than
@@ -281,19 +285,34 @@ type Options struct {
 	// more than this share of the known files. Zero disables the brake.
 	BrakePercent int
 
-	// BrakeFloor is a number of deletions at or below which the brake never
-	// trips, so a tiny job is not blocked by its own arithmetic.
+	// ChangePercent trips the mass-change brake when a single run would
+	// overwrite more than this share of the known files, which is what a tree
+	// encrypted in place looks like. Zero disables the brake.
+	ChangePercent int
+
+	// BrakeFloor is a number of deletions, or of overwrites, at or below which
+	// neither brake trips, so a tiny job is not blocked by its own arithmetic.
 	BrakeFloor int
+
+	// Approved holds the marks of changes a brake refused and somebody then
+	// allowed. A brake lets a plan with one of these marks through, so the
+	// approval covers what was shown and nothing that happened since.
+	Approved []string
+
+	// Unbraked plans past every brake, for the run that takes a refused
+	// change back. It destroys nothing, so there is nothing to brake.
+	Unbraked bool
 }
 
 // DefaultOptions is what the command line uses when nothing is given.
 func DefaultOptions() Options {
 	return Options{
-		Transfers:    4,
-		ModWindow:    2 * time.Second,
-		QuietPeriod:  5 * time.Second,
-		BrakePercent: 50,
-		BrakeFloor:   10,
+		Transfers:     4,
+		ModWindow:     2 * time.Second,
+		QuietPeriod:   5 * time.Second,
+		BrakePercent:  50,
+		ChangePercent: 50,
+		BrakeFloor:    10,
 	}
 }
 
@@ -304,18 +323,46 @@ func (o Options) now() time.Time {
 	return o.Now
 }
 
-// BrakeError is returned when a run would delete an implausible share of the
-// tree. It carries enough detail for the user to judge the refusal.
+// Brake names the safety brake that refused a run.
+type Brake string
+
+// The three brakes. An emptied side is its own brake because nothing can be
+// planned against it.
+const (
+	BrakeDelete Brake = "delete"
+	BrakeChange Brake = "change"
+	BrakeEmpty  Brake = "empty"
+)
+
+// BrakeError is returned when a run would delete or overwrite an implausible
+// share of the tree. It carries enough detail for the user to judge the
+// refusal.
 type BrakeError struct {
-	Deletes int
+	Kind    Brake
+	Count   int
 	Known   int
 	Percent int
 	Sample  []string
+
+	// Paths names every file the brake counted, as the side about to be
+	// written calls it. OnLeft and OnRight say how many of them each side
+	// would lose or have overwritten.
+	Paths   []string
+	OnLeft  int
+	OnRight int
+
+	// Mark identifies exactly this set of changes; see Options.Approved.
+	Mark string
 }
 
 func (e *BrakeError) Error() string {
+	share := e.Count * 100 / max(e.Known, 1)
+	if e.Kind == BrakeChange {
+		return fmt.Sprintf("mass-change brake: this run would overwrite %d of %d known files (%d%%, limit %d%%); first paths: %v",
+			e.Count, e.Known, share, e.Percent, e.Sample)
+	}
 	return fmt.Sprintf("mass-delete brake: this run would delete %d of %d known files (%d%%, limit %d%%); first paths: %v",
-		e.Deletes, e.Known, e.Deletes*100/max(e.Known, 1), e.Percent, e.Sample)
+		e.Count, e.Known, share, e.Percent, e.Sample)
 }
 
 // EmptySideError is returned when a side lists nothing while the state says it
@@ -336,6 +383,11 @@ func (e *EmptySideError) Error() string {
 	}
 	return fmt.Sprintf("the %s side lists no files at all, but %d were known there last time; refusing to treat this as a deletion (is it mounted?)",
 		e.Side, e.Known)
+}
+
+// Mark identifies this refusal; see Options.Approved.
+func (e *EmptySideError) Mark() string {
+	return fmt.Sprintf("empty:%s:%d:%d", e.Side, e.Known, e.Held)
 }
 
 // status is how one side changed since the last agreement.
@@ -377,21 +429,19 @@ func Same(a, b Facts, window time.Duration) bool {
 // Build compares both sides against the last agreed state. For a one-way job it
 // rewrites the result to write only away from the source.
 func Build(ctx context.Context, left, right *scan.Listing, prev map[string]state.Entry, opt Options) (*Plan, error) {
-	if len(prev) > 0 {
-		if len(left.Files) == 0 {
-			return nil, &EmptySideError{Side: Left, Known: len(prev)}
-		}
-		if len(right.Files) == 0 {
-			return nil, &EmptySideError{Side: Right, Known: len(prev)}
-		}
-	}
 	mirror := opt.Direction != Both && opt.Mode == ModeMirror
 	from, to := left, right
 	if opt.Direction.source() == Right {
 		from, to = right, left
 	}
-	if mirror && len(from.Files) == 0 && len(to.Files) > 0 {
-		return nil, &EmptySideError{Side: opt.Direction.source(), Held: len(to.Files)}
+	// An emptied side somebody accepted deletes everything on the other one,
+	// which is what they were shown, so the brakes stay out of that run too.
+	emptied := emptySide(left, right, from, to, len(prev), mirror, opt.Direction)
+	if emptied != nil && !opt.Unbraked {
+		if !slices.Contains(opt.Approved, emptied.Mark()) {
+			return nil, emptied
+		}
+		opt.Unbraked = true
 	}
 
 	out := &Plan{}
@@ -531,10 +581,26 @@ func Build(ctx context.Context, left, right *scan.Listing, prev map[string]state
 	if known == 0 && mirror {
 		known = len(to.Files)
 	}
-	if err := checkBrake(out, known, opt); err != nil {
+	if err := checkBrakes(out, known, opt); err != nil {
 		return nil, err
 	}
 	return out, nil
+}
+
+// emptySide reports a side that lists nothing where files are expected, or nil.
+func emptySide(left, right, from, to *scan.Listing, known int, mirror bool, dir Direction) *EmptySideError {
+	if known > 0 {
+		if len(left.Files) == 0 {
+			return &EmptySideError{Side: Left, Known: known}
+		}
+		if len(right.Files) == 0 {
+			return &EmptySideError{Side: Right, Known: known}
+		}
+	}
+	if mirror && len(from.Files) == 0 && len(to.Files) > 0 {
+		return &EmptySideError{Side: dir.source(), Held: len(to.Files)}
+	}
+	return nil
 }
 
 // settling reports whether a file is still being written to, and should
@@ -736,29 +802,116 @@ func detectRenames(ctx context.Context, p *Plan, dir Direction) {
 	p.Actions = kept
 }
 
-func checkBrake(p *Plan, known int, opt Options) error {
-	if opt.BrakePercent <= 0 || known == 0 {
+// checkBrakes weighs the plan against both brakes, deletions first, since they
+// are the ones a trash has to catch.
+func checkBrakes(p *Plan, known int, opt Options) error {
+	if opt.Unbraked || known == 0 {
 		return nil
 	}
-	var deletes int
-	var sample []string
-	for _, a := range p.Actions {
-		// A record cleanup for a file gone on both sides destroys nothing.
-		if a.Kind != Delete || (a.LeftNow == nil && a.RightNow == nil) {
+	for _, brake := range []struct {
+		kind    Brake
+		percent int
+	}{{BrakeDelete, opt.BrakePercent}, {BrakeChange, opt.ChangePercent}} {
+		if brake.percent <= 0 {
 			continue
 		}
-		deletes++
-		if len(sample) < 5 {
-			sample = append(sample, a.Path)
+		e := weigh(p, brake.kind)
+		if e.Count <= opt.BrakeFloor || e.Count*100 <= known*brake.percent || slices.Contains(opt.Approved, e.Mark) {
+			continue
 		}
+		e.Known, e.Percent = known, brake.percent
+		return e
 	}
-	if deletes <= opt.BrakeFloor {
-		return nil
+	return nil
+}
+
+// counts reports whether a brake counts an action. A record cleanup for a file
+// gone on both sides destroys nothing, and a rename loses no content, so only
+// a copy onto a file the destination already holds counts as a change.
+func counts(a Action, kind Brake) bool {
+	switch kind {
+	case BrakeDelete:
+		return a.Kind == Delete && (a.LeftNow != nil || a.RightNow != nil)
+	case BrakeChange:
+		return a.Kind == Copy && a.there() != nil
 	}
-	if deletes*100 <= known*opt.BrakePercent {
-		return nil
+	return false
+}
+
+// there is what the side an action writes to holds right now.
+func (a Action) there() *scan.Entry {
+	if a.Dst == Left {
+		return a.LeftNow
 	}
-	return &BrakeError{Deletes: deletes, Known: known, Percent: opt.BrakePercent, Sample: sample}
+	return a.RightNow
+}
+
+// weigh collects what one brake counts in a plan.
+func weigh(p *Plan, kind Brake) *BrakeError {
+	e := &BrakeError{Kind: kind}
+	sum := sha256.New()
+	fmt.Fprintf(sum, "%s\n", kind)
+	for _, a := range p.Actions {
+		if !counts(a, kind) {
+			continue
+		}
+		e.Count++
+		if a.Dst == Left {
+			e.OnLeft++
+		} else {
+			e.OnRight++
+		}
+		if len(e.Sample) < 5 {
+			e.Sample = append(e.Sample, a.Path)
+		}
+		e.Paths = append(e.Paths, a.DstPath)
+		// Actions come in path order, so the same set always sums the same.
+		fmt.Fprintf(sum, "%s\x00%s\n", a.Dst, a.Path)
+	}
+	e.Mark = hex.EncodeToString(sum.Sum(nil)[:12])
+	return e
+}
+
+// TakeBack turns what a brake refused into its opposite and drops everything
+// else: a file one side lost is copied back from the other, and a file one side
+// changed gets the other side's version again. The rest of the run is left to
+// the next one, which finds nothing of this left to do.
+func TakeBack(p *Plan, kind Brake) *Plan {
+	if kind == BrakeEmpty {
+		// An emptied side reads as every file deleted there.
+		kind = BrakeDelete
+	}
+	out := &Plan{}
+	for _, a := range p.Actions {
+		if !counts(a, kind) {
+			continue
+		}
+		had, lost := a.Dst, a.Dst.Other()
+		back := Action{
+			Kind:     Copy,
+			Path:     a.Path,
+			Src:      had,
+			Dst:      lost,
+			SrcPath:  a.DstPath,
+			DstPath:  a.DstPath,
+			Reason:   because("takenBack", "side", had.String()),
+			LeftNow:  a.LeftNow,
+			RightNow: a.RightNow,
+			Prev:     a.Prev,
+		}
+		// Where the other side still holds the file, or last called it
+		// something else, it keeps that name.
+		switch {
+		case back.there() != nil:
+			back.DstPath = back.there().Path
+		case a.Prev != nil && lost == Left && a.Prev.LeftPath != "":
+			back.DstPath = a.Prev.LeftPath
+		case a.Prev != nil && lost == Right && a.Prev.RightPath != "":
+			back.DstPath = a.Prev.RightPath
+		}
+		out.Actions = append(out.Actions, back)
+	}
+	return out
 }
 
 // DirKind is what a directory action does.

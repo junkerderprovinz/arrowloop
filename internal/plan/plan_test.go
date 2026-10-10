@@ -241,8 +241,8 @@ func TestBrakeTrips(t *testing.T) {
 	if !asBrake(err, &brake) {
 		t.Fatalf("got %v, want a BrakeError", err)
 	}
-	if brake.Deletes != 30 {
-		t.Errorf("brake counted %d deletions, want 30", brake.Deletes)
+	if brake.Kind != BrakeDelete || brake.Count != 30 {
+		t.Errorf("the %s brake counted %d, want 30 deletions", brake.Kind, brake.Count)
 	}
 }
 

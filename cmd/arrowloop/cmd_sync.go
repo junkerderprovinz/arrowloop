@@ -27,7 +27,8 @@ func cmdSync(ctx context.Context, args []string) error {
 		statePath  = fset.String("state", "", "path to the job's state database")
 		dryRun     = fset.Bool("dry-run", false, "show the plan and change nothing")
 		brakePct   = fset.Int("brake-percent", defaults.BrakePercent, "refuse a run that would delete more than this share of known files, 0 disables")
-		brakeMin   = fset.Int("brake-floor", defaults.BrakeFloor, "never trip the brake below this many deletions")
+		changePct  = fset.Int("change-percent", defaults.ChangePercent, "refuse a run that would overwrite more than this share of known files, 0 disables")
+		brakeMin   = fset.Int("brake-floor", defaults.BrakeFloor, "never trip a brake below this many deletions or overwrites")
 		modWindow  = fset.Duration("mod-window", defaults.ModWindow, "how far modification times may differ and still count as equal")
 		quiet      = fset.Duration("quiet-period", defaults.QuietPeriod, "how long a file must sit unchanged before it is touched, 0 disables")
 		noDefaults = fset.Bool("no-default-excludes", false, "also sync half-written files such as *.part and Office owner files")
@@ -77,11 +78,12 @@ func cmdSync(ctx context.Context, args []string) error {
 	ends := apply.Ends{Left: left, Right: right}
 	opt := engine.Options{
 		Compare: plan.Options{
-			ModWindow:    *modWindow,
-			QuietPeriod:  *quiet,
-			BrakePercent: *brakePct,
-			BrakeFloor:   *brakeMin,
-			Transfers:    *transfers,
+			ModWindow:     *modWindow,
+			QuietPeriod:   *quiet,
+			BrakePercent:  *brakePct,
+			ChangePercent: *changePct,
+			BrakeFloor:    *brakeMin,
+			Transfers:     *transfers,
 		},
 		Exclude:   exclude,
 		EmptyDirs: *emptyDirs,

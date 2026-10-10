@@ -36,7 +36,8 @@ plain paths.
 | `-empty-dirs` | off | also carry folders that hold no files |
 | `-metadata` | off | carry permissions, ownership and extended attributes where both sides can |
 | `-brake-percent` | 50 | refuse a run deleting more than this share of known files, 0 disables |
-| `-brake-floor` | 10 | never trip the brake below this many deletions |
+| `-change-percent` | 50 | refuse a run overwriting more than this share of known files, 0 disables |
+| `-brake-floor` | 10 | never trip a brake below this many deletions or overwrites |
 | `-mod-window` | 2s | how far modification times may differ and still count as equal |
 | `-v` | off | let rclone report what it is doing underneath |
 

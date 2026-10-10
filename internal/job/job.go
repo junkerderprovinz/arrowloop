@@ -42,6 +42,9 @@ type Config struct {
 	// Retry is what happens after a scheduled run fails.
 	Retry Retry `json:"retry,omitempty"`
 
+	// Anomalies is what the engine reports about a job beyond a failed run.
+	Anomalies Anomalies `json:"anomalies,omitempty"`
+
 	// Defaults fill in per-job settings that a job does not set for itself.
 	// They are applied once at load, so everything downstream sees resolved
 	// jobs.
@@ -123,6 +126,59 @@ func (r Retry) WaitFor(n int) time.Duration {
 		}
 	}
 	return wait
+}
+
+// Anomalies sets the two notes that hold nothing, and who is told about a
+// finding. The brakes that hold a job are settings of the job itself, since
+// what is implausible depends on the folder.
+type Anomalies struct {
+	// FailingAfter is how many failed runs in a row make a note. Zero means
+	// never; nil means the default.
+	FailingAfter *int `json:"failingAfter,omitempty"`
+
+	// OverdueDays is how many days a scheduled job may miss its turn before
+	// it makes a note. Zero means never; nil means the default.
+	OverdueDays *int `json:"overdueDays,omitempty"`
+
+	// NotifyHeld and NotifyNotes say whether a held job and a note are sent
+	// where runs report to. Nil means the default, which tells about a held
+	// job and stays quiet about a note.
+	NotifyHeld  *bool `json:"notifyHeld,omitempty"`
+	NotifyNotes *bool `json:"notifyNotes,omitempty"`
+}
+
+// Defaults for the notes. Three failures in a row are past the retries of one
+// scheduled turn, and two days cover a weekend the machine spent switched off.
+const (
+	DefaultFailingAfter = 3
+	DefaultOverdueDays  = 2
+)
+
+// FailingCount is FailingAfter with the default applied.
+func (a Anomalies) FailingCount() int {
+	if a.FailingAfter == nil {
+		return DefaultFailingAfter
+	}
+	return max(*a.FailingAfter, 0)
+}
+
+// OverdueAfter is OverdueDays as a duration with the default applied. Zero
+// means the note is off.
+func (a Anomalies) OverdueAfter() time.Duration {
+	days := DefaultOverdueDays
+	if a.OverdueDays != nil {
+		days = max(*a.OverdueDays, 0)
+	}
+	return time.Duration(days) * 24 * time.Hour
+}
+
+// Tells reports whether a finding is worth a message: a held job unless that
+// was switched off, a note only when it was switched on.
+func (a Anomalies) Tells(held bool) bool {
+	if held {
+		return a.NotifyHeld == nil || *a.NotifyHeld
+	}
+	return a.NotifyNotes != nil && *a.NotifyNotes
 }
 
 // KeepHistoryFor is HistoryKeep as a duration, with the default applied. The
@@ -236,10 +292,11 @@ type Job struct {
 	EmptyDirs *bool `json:"emptyDirs,omitempty"`
 	Metadata  *bool `json:"metadata,omitempty"`
 
-	// BrakePercent and BrakeFloor are pointers because "0" switches the
-	// mass-delete brake off, and that has to be typed on purpose.
-	BrakePercent *int `json:"brakePercent,omitempty"`
-	BrakeFloor   *int `json:"brakeFloor,omitempty"`
+	// BrakePercent, ChangePercent and BrakeFloor are pointers because "0"
+	// switches a brake off, and that has to be typed on purpose.
+	BrakePercent  *int `json:"brakePercent,omitempty"`
+	ChangePercent *int `json:"changePercent,omitempty"`
+	BrakeFloor    *int `json:"brakeFloor,omitempty"`
 
 	// FoldCase overrides the backends' answer about case sensitivity for this
 	// job. See Defaults.FoldCase.
@@ -265,13 +322,14 @@ type Defaults struct {
 	// default that switched one on could not be switched off for a single job.
 	Schedule string `json:"schedule,omitempty"`
 
-	ModWindow    string `json:"modWindow,omitempty"`
-	Transfers    int    `json:"transfers,omitempty"`
-	EmptyDirs    *bool  `json:"emptyDirs,omitempty"`
-	Metadata     *bool  `json:"metadata,omitempty"`
-	BrakePercent *int   `json:"brakePercent,omitempty"`
-	BrakeFloor   *int   `json:"brakeFloor,omitempty"`
-	QuietPeriod  string `json:"quietPeriod,omitempty"`
+	ModWindow     string `json:"modWindow,omitempty"`
+	Transfers     int    `json:"transfers,omitempty"`
+	EmptyDirs     *bool  `json:"emptyDirs,omitempty"`
+	Metadata      *bool  `json:"metadata,omitempty"`
+	BrakePercent  *int   `json:"brakePercent,omitempty"`
+	ChangePercent *int   `json:"changePercent,omitempty"`
+	BrakeFloor    *int   `json:"brakeFloor,omitempty"`
+	QuietPeriod   string `json:"quietPeriod,omitempty"`
 
 	// KeepVersions applies to every job that leaves it at zero. See applyTo
 	// for why a job cannot turn it off.
@@ -315,6 +373,9 @@ func (d Defaults) applyTo(j *Job) {
 	}
 	if j.BrakePercent == nil {
 		j.BrakePercent = d.BrakePercent
+	}
+	if j.ChangePercent == nil {
+		j.ChangePercent = d.ChangePercent
 	}
 	if j.BrakeFloor == nil {
 		j.BrakeFloor = d.BrakeFloor
@@ -572,6 +633,9 @@ func (j Job) Options() (engine.Options, error) {
 	}
 	if j.BrakePercent != nil {
 		compare.BrakePercent = *j.BrakePercent
+	}
+	if j.ChangePercent != nil {
+		compare.ChangePercent = *j.ChangePercent
 	}
 	if j.BrakeFloor != nil {
 		compare.BrakeFloor = *j.BrakeFloor

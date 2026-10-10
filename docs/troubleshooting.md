@@ -9,8 +9,11 @@ mounted, a path changed, or a credential expired. The engine will not treat an
 empty side as a deletion, which is the point.
 
 **"mass-delete brake"** means the run would have removed more than half of what
-it knows about. If that is genuinely what you wanted, run it once with
-`-brake-percent 0`, or set `brakePercent` to `0` on the job.
+it knows about, and **"mass-change brake"** that it would have overwritten that
+much. The job is held and listed under Anomalies, where you let the change run
+or take it back. The `sync` command has nobody to ask, so it stops; run it
+once with `-brake-percent 0` or `-change-percent 0` if the change is genuinely
+what you wanted.
 
 **A naming collision** means one side holds two files whose names differ only in
 case, and the other side cannot tell them apart. Rename one of them.

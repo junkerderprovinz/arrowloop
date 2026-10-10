@@ -47,6 +47,12 @@ func (r *Runner) Due(ctx context.Context, now time.Time) []string {
 		if r.backingOff(ctx, j.Name, last, parsed, now) {
 			continue
 		}
+		// A held job is looked at once per scheduled turn, to see whether
+		// what held it has gone. It never succeeds while held, and without
+		// this a phone would list both sides at every wake-up.
+		if seen, held := r.Held(j.Name); held && parsed.Next(seen).After(now) {
+			continue
+		}
 		due = append(due, j.Name)
 	}
 	return due
@@ -129,7 +135,7 @@ func (r *Runner) RunDue(ctx context.Context) Due {
 		out.Ran++
 		switch {
 		case errors.Is(err, ErrHeldBack), errors.Is(err, ErrVolumeMissing),
-			errors.Is(err, ErrAlreadyRunning):
+			errors.Is(err, ErrAlreadyRunning), errors.Is(err, ErrHeld):
 			// None of these is a failure.
 			out.Held++
 		case errors.Is(err, ErrWithdrawn):

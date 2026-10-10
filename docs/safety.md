@@ -24,6 +24,14 @@ the first paths it would have touched. Below ten deletions it never fires,
 because deleting three of four files is proportionate and almost certainly what
 you meant.
 
+## The mass-change brake
+
+A run that would overwrite more than half the known files stops the same way.
+That is what a tree looks like after something encrypted it in place: every
+name still there, every content different. A new file is no change and neither
+is a rename, since neither replaces anything. Both brakes share the floor of
+ten.
+
 ## An empty side is never believed
 
 If a side lists no files at all while the record says it held some, the run is
@@ -41,6 +49,40 @@ The two brakes cover different ground and both are needed. The percentage brake
 does nothing for a job with five files in it, because five deletions is below
 its floor; that case is caught only by the refusal above. There is a test that
 fails if either one is removed.
+
+## A refused run holds the job
+
+A brake does not fail the run. It holds the job and lists it under Anomalies,
+with the figures and the files it counted. Every later run of that job, on its
+schedule or by hand, stops at the same place until one of three things happens:
+
+**Run anyway** lets the change run now. The permission covers the change as it
+was shown: if more files have gone since, the brake refuses again with the new
+figures. A run that overwrites in bulk keeps the content it replaces as a
+version, even on a job that keeps none.
+
+**Take back** undoes the change where it was made. Files one side lost are
+copied back from the other, and files one side rewrote get the other side's
+content again, with the rewritten content kept as a version. Nothing is
+deleted. For an emptied side that means copying everything back onto it, so
+check first that it is the right, mounted place.
+
+The third is that the cause goes away. Once a run finds nothing left to refuse,
+the finding closes by itself, so a share that was not mounted needs no answer,
+only the mount.
+
+A held job is not a failed one: it is not retried every few minutes, it does
+not count towards the note below, and nothing is written to the run log until
+it runs again.
+
+Two more findings hold nothing. One says a job has failed several times in a
+row, three unless set otherwise. The other says a scheduled job has missed its
+turn for more than two days. Either can be acknowledged, and then stays away
+until its cause has gone and come back.
+
+A held job is reported where runs report to. The notes are not, unless
+`anomalies.notifyNotes` is switched on; see
+[Configuration](configuration.md#anomalies).
 
 ## Half-written files
 
