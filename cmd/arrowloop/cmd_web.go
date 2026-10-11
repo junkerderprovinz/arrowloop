@@ -117,9 +117,9 @@ func cmdWeb(ctx context.Context, args []string) error {
 
 	boot.Ready(fmt.Sprintf("http://%s", listener.Addr()))
 
+	var served error
 	select {
-	case err := <-errs:
-		return err
+	case served = <-errs:
 	case <-ctx.Done():
 	}
 
@@ -128,6 +128,9 @@ func cmdWeb(ctx context.Context, args []string) error {
 	stopping, cancelStop := context.WithTimeout(context.Background(), shutdownGrace)
 	defer cancelStop()
 	runner.StopAll(stopping)
+	if served != nil {
+		return served
+	}
 	shutdown, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	return httpServer.Shutdown(shutdown)

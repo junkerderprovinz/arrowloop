@@ -155,10 +155,9 @@ func Open(ctx context.Context, path string) (*DB, error) {
 		_, _ = handle.ExecContext(ctx, m)
 	}
 	d := &DB{sql: handle, beat: beat{owner: newOwner(), stop: make(chan struct{}), done: make(chan struct{})}}
-	if err := d.recordAbandoned(ctx, time.Now()); err != nil {
-		handle.Close()
-		return nil, err
-	}
+	// A failure here is retried on every beat, and must not keep the program
+	// from starting.
+	_ = d.recordAbandoned(ctx, time.Now())
 	go d.keepBeat()
 	return d, nil
 }
@@ -210,6 +209,9 @@ func (d *DB) record(ctx context.Context, r Run, entries []Entry, key string) err
 		}
 	}
 	if key != "" {
+		if err := dropInterrupted(ctx, tx, r.Job, r.Started.UnixNano()); err != nil {
+			return fmt.Errorf("record run for %q: %w", r.Job, err)
+		}
 		if err := forget(ctx, tx, key); err != nil {
 			return fmt.Errorf("record run for %q: %w", r.Job, err)
 		}

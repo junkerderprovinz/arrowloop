@@ -578,16 +578,21 @@ func (r *Runner) Cancel(name string) bool {
 
 // StopAll stops every run in progress and waits, until ctx ends, for each to
 // write its record. A run started by hand does not end with the scheduler, so
-// without this the program would quit in the middle of it.
+// without this the program would quit in the middle of it. A run that starts
+// meanwhile is stopped too.
 func (r *Runner) StopAll(ctx context.Context) {
-	r.mu.Lock()
-	for _, stop := range r.inflight {
-		stop()
-	}
-	r.mu.Unlock()
 	tick := time.NewTicker(50 * time.Millisecond)
 	defer tick.Stop()
-	for len(r.Running()) > 0 {
+	for {
+		r.mu.Lock()
+		for _, stop := range r.inflight {
+			stop()
+		}
+		left := len(r.inflight)
+		r.mu.Unlock()
+		if left == 0 {
+			return
+		}
 		select {
 		case <-ctx.Done():
 			return

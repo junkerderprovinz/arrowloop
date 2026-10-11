@@ -107,6 +107,45 @@ func TestARunThatStillBeatsIsLeftToItsOwnProgram(t *testing.T) {
 	}
 }
 
+// A program that slept looks abandoned to another one on the same file, and
+// its run comes back once it wakes.
+func TestARunTakenForAbandonedWhileItsProgramSleptIsRecordedOnce(t *testing.T) {
+	ctx := context.Background()
+	path := filepath.Join(t.TempDir(), "runs.db")
+	sleeper := openAt(t, path)
+	defer sleeper.Close()
+	now := time.Now()
+
+	live := sleeper.Begin("photos", now.Add(-time.Hour))
+	live.Add(Entry{Kind: "copy", Path: "a.jpg"})
+	if err := sleeper.checkpoint(ctx, now.Add(-time.Hour)); err != nil {
+		t.Fatal(err)
+	}
+	other := openAt(t, path)
+	defer other.Close()
+	if n := count(t, other, "runs"); n != 1 {
+		t.Fatalf("the other program recorded %d runs, want the one it took for abandoned", n)
+	}
+
+	live.Add(Entry{Kind: "copy", Path: "b.jpg"})
+	if err := sleeper.checkpoint(ctx, now); err != nil {
+		t.Fatal(err)
+	}
+	if err := live.Record(ctx, Run{Job: "photos", Started: now.Add(-time.Hour), Finished: now, Copied: 2}); err != nil {
+		t.Fatal(err)
+	}
+	runs, err := other.Recent(ctx, "photos", ShowAll, 10)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(runs) != 1 || runs[0].Err != "" || runs[0].Copied != 2 {
+		t.Fatalf("the runs read %+v, want the finished run alone", runs)
+	}
+	if n := count(t, other, "entries"); n != 2 {
+		t.Errorf("%d lines are stored, want the finished run's two", n)
+	}
+}
+
 // A laptop that slept leaves its own beat old, and its run is still going.
 func TestAProgramNeverRecordsItsOwnRunAsInterrupted(t *testing.T) {
 	ctx := context.Background()

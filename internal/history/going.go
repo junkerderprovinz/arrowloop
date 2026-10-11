@@ -122,9 +122,10 @@ func (d *DB) checkpoint(ctx context.Context, now time.Time) error {
 // recordAbandoned turns every run another start left behind into a stored run
 // that ended with Interrupted, with what it had done by its last beat.
 func (d *DB) recordAbandoned(ctx context.Context, now time.Time) error {
+	cut := now.Add(-staleAfter).UnixNano()
 	rows, err := d.sql.QueryContext(ctx,
 		`SELECT key FROM going WHERE beat < ? AND key NOT LIKE ?`,
-		now.Add(-staleAfter).UnixNano(), d.owner+":%")
+		cut, d.owner+":%")
 	if err != nil {
 		return err
 	}
@@ -142,14 +143,14 @@ func (d *DB) recordAbandoned(ctx context.Context, now time.Time) error {
 		return err
 	}
 	for _, k := range keys {
-		if err := d.recordOne(ctx, k); err != nil {
+		if err := d.recordOne(ctx, k, cut); err != nil {
 			return fmt.Errorf("record the run left behind as %s: %w", k, err)
 		}
 	}
 	return nil
 }
 
-func (d *DB) recordOne(ctx context.Context, key string) error {
+func (d *DB) recordOne(ctx context.Context, key string, cut int64) error {
 	tx, err := d.sql.BeginTx(ctx, nil)
 	if err != nil {
 		return err
@@ -157,16 +158,19 @@ func (d *DB) recordOne(ctx context.Context, key string) error {
 	defer tx.Rollback() //nolint:errcheck // a committed transaction rolls back to nothing
 
 	// Read inside the transaction, since another program on the same file may
-	// have recorded it first.
+	// have recorded it first, or its own program may have beaten since.
 	var r Run
 	var started, last int64
 	err = tx.QueryRowContext(ctx,
-		`SELECT job, started, beat, copied, moved, trashed, conflicts, dirs_made, dirs_removed, skipped FROM going WHERE key = ?`, key).
+		`SELECT job, started, beat, copied, moved, trashed, conflicts, dirs_made, dirs_removed, skipped FROM going WHERE key = ? AND beat < ?`, key, cut).
 		Scan(&r.Job, &started, &last, &r.Copied, &r.Moved, &r.Trashed, &r.Conflicts, &r.DirsMade, &r.DirsRemoved, &r.Skipped)
 	if err == sql.ErrNoRows {
 		return nil
 	}
 	if err != nil {
+		return err
+	}
+	if err := dropInterrupted(ctx, tx, r.Job, started); err != nil {
 		return err
 	}
 	res, err := tx.ExecContext(ctx,
@@ -197,5 +201,17 @@ func forget(ctx context.Context, tx *sql.Tx, key string) error {
 		return err
 	}
 	_, err := tx.ExecContext(ctx, `DELETE FROM going WHERE key = ?`, key)
+	return err
+}
+
+// dropInterrupted removes the record of a run taken for abandoned whose own
+// program was only asleep, so the run it goes on to record is the only one.
+// A job and a start to the nanosecond name one run.
+func dropInterrupted(ctx context.Context, tx *sql.Tx, job string, started int64) error {
+	const which = `SELECT id FROM runs WHERE job = ? AND started = ? AND err = ?`
+	if _, err := tx.ExecContext(ctx, `DELETE FROM entries WHERE run IN (`+which+`)`, job, started, Interrupted); err != nil {
+		return err
+	}
+	_, err := tx.ExecContext(ctx, `DELETE FROM runs WHERE id IN (`+which+`)`, job, started, Interrupted)
 	return err
 }
