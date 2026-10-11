@@ -1,0 +1,1 @@
+The desktop app's notification has a sound of its own. The Android app itself has not changed.

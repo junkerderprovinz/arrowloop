@@ -8,11 +8,11 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
-## Unreleased
+## 1.7.1 - 2026-10-11
 
 ## 🎨 Design
 
-- **The desktop app's notification has a sound of its own.** Two short bell notes, made for ArrowLoop. Windows lets an installed program's notification play only its built-in sounds, so there the notification stays silent and ArrowLoop plays the sound itself, unless do not disturb is on or its notifications are switched off. On Linux the notification asks for the warning sound of the desktop's sound theme.
+- **The desktop app's notification has a sound of its own.** An arrow that whizzes in and hits a metal shield, made for ArrowLoop. Windows lets an installed program's notification play only its built-in sounds, so there the notification stays silent and ArrowLoop plays the sound itself, unless do not disturb is on or its notifications are switched off. On Linux the notification asks for the warning sound of the desktop's sound theme.
 
 ## 1.7.0 - 2026-10-11
 
