@@ -1,0 +1,1 @@
+When a safety brake stops a run, the job is held and the run no longer fails. The new Anomalies page shows what the brake counted, and you can run the change anyway or take it back. A second brake stops a run that would overwrite most of the files. A held job is reported by a notification. The overview card for what waits is called Action centre.

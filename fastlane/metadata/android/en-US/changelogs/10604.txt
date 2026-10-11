@@ -1,1 +1,0 @@
-The sync direction is drawn as arrows between a job's two folders. Trash and conflicts name each side instead of saying left and right.

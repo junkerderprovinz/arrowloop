@@ -8,7 +8,7 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
-## Unreleased
+## 1.7.0 - 2026-10-11
 
 ## ✨ Added
 
@@ -22,61 +22,31 @@ The full notes for each release are in
 
 - **The phone's overview card for what waits is called Action centre** and lists the anomalies beside the conflicts and the bin.
 
-## 1.6.6 - 2026-10-10
-
-## 🐛 Fixed
-
-- **A run started by hand on the phone keeps its network after the app is left.** Android 16 blocks an app without the battery exemption a few seconds after it leaves the screen, so a run that took longer than that lost its connection. A run in progress moves into the foreground service as the app goes away, shown by the ArrowLoop notification, and the service ends with the run.
-- **Android's own bin is left out of a sync.** A file deleted in Android's file manager stays in its folder for thirty days under a name starting with `.trashed-`, and a download still being written starts with `.pending-`. Both were synced like any file, so emptying the bin on the phone looked like a mass deletion and tripped the brake. They are excluded by default, like the half-written files of other programs.
-- **The number fields of the phone's sync settings can be emptied to type a new value.** The mass-delete brake, the files at once and the retry fields refilled themselves with the default the moment the last digit was deleted.
-
-## 1.6.5 - 2026-10-10
-
-## 🐛 Fixed
-
-- **A timed run on the phone waits when Android has cut the app off the network.** Android 16 takes the network from an app without the battery exemption a few seconds after it leaves the screen, while the engine keeps running for a while. A run its clock started in that time failed on the first lookup with "operation not permitted". Such a run is held and goes with the next wake-up, at most fifteen minutes later, when Android lets the app onto the network again. With battery optimisation switched off for ArrowLoop, as the settings suggest, runs stay on time.
-
-## 1.6.4 - 2026-10-10
-
-## 🎨 Design
-
-- **The phone app draws a job's direction as arrows between its two folders.** The job form stacks the two sides, so "only to the right" and "only to the left" meant nothing there. The switch sits between the two folder fields with an arrow down, an arrow up and one for both ways, and a line under it names the side files come from and the side they go to. The job list and the global sync settings use the same arrows.
-- **The phone app calls a side by its name.** The trash, the conflicts and the reading stage on the overview said left and right, like the direction did. They now say "On the device" or the target's name, and two folders on the device go by their last folder. A file in transfer shows an upload or a download mark instead of an arrow to the side, and the history drops the arrow, since each row already names the place.
-- **One answer for several conflicts names a side only when they share it.** If the chosen conflicts come from jobs with different sides, the phone offers "Keep both" for all of them and leaves the rest to each card.
-
-## 🐛 Fixed
-
-- **Taking a job off the global sync settings on the phone keeps what it ran with.** The form used to reset it to both ways, sync and no schedule instead of starting from the global values.
-
-## 1.6.3 - 2026-10-10
-
-## ⚡ Improved
-
-- **The phone app has a Save button for a new job.** Before, the form wrote the job as soon as it had a name and both sides, so it could start running before you had set its direction and schedule. A new job is written when you press Save, and Cancel leaves without one. An existing job still saves each change as you make it.
-
-## 1.6.2 - 2026-10-04
-
-## 🎨 Design
-
-- **The README's download buttons come in groups.** The server comes first, then the desktop apps, then the Android app, with more room between the groups. The screenshots are in the same order.
-- **How it compares is back in the README.** The table that sets ArrowLoop against GoodSync, FreeFileSync, Syncthing and five other tools sits between What it does and Getting started.
-
-## 1.6.1 - 2026-10-04
-
-## 🎨 Design
-
-- **The Save button has a new floppy.** It is Material Design Icons' `content-save` (Apache 2.0), the same drawing GlimStone 3.1.6 uses. The old one came from Vecteezy under a licence that is not open, which F-Droid counts as a non-free asset.
-
 ## 1.6.0 - 2026-10-03
 
 ## 🎨 Design
 
 - **The download buttons name the system first.** The ARM64 builds read Windows or Linux over ARM64, in the App tab and in the phone app, like the x64 builds beside them.
 - **The README shows the Android app as wide as the desktop app and the container,** with three phones in front of the clouds and servers ArrowLoop syncs with.
+- **The Save button has a new floppy.** It is Material Design Icons' `content-save` (Apache 2.0), the same drawing GlimStone 3.1.6 uses. The old one came from Vecteezy under a licence that is not open, which F-Droid counts as a non-free asset.
+- **The README's download buttons come in groups.** The server comes first, then the desktop apps, then the Android app, with more room between the groups. The screenshots are in the same order.
+- **How it compares is back in the README.** The table that sets ArrowLoop against GoodSync, FreeFileSync, Syncthing and five other tools sits between What it does and Getting started.
+- **The phone app draws a job's direction as arrows between its two folders.** The job form stacks the two sides, so "only to the right" and "only to the left" meant nothing there. The switch sits between the two folder fields with an arrow down, an arrow up and one for both ways, and a line under it names the side files come from and the side they go to. The job list and the global sync settings use the same arrows.
+- **The phone app calls a side by its name.** The trash, the conflicts and the reading stage on the overview said left and right, like the direction did. They now say "On the device" or the target's name, and two folders on the device go by their last folder. A file in transfer shows an upload or a download mark instead of an arrow to the side, and the history drops the arrow, since each row already names the place.
+- **One answer for several conflicts names a side only when they share it.** If the chosen conflicts come from jobs with different sides, the phone offers "Keep both" for all of them and leaves the rest to each card.
 
 ## ⚡ Improved
 
 - **The Unraid buttons lead to ArrowLoop's entry in Community Applications.** In the App tab and in the phone app they said it was coming; the README has an Unraid button of its own, and the installation guide starts with the entry.
+- **The phone app has a Save button for a new job.** Before, the form wrote the job as soon as it had a name and both sides, so it could start running before you had set its direction and schedule. A new job is written when you press Save, and Cancel leaves without one. An existing job still saves each change as you make it.
+
+## 🐛 Fixed
+
+- **Taking a job off the global sync settings on the phone keeps what it ran with.** The form used to reset it to both ways, sync and no schedule instead of starting from the global values.
+- **A timed run on the phone waits when Android has cut the app off the network.** Android 16 takes the network from an app without the battery exemption a few seconds after it leaves the screen, while the engine keeps running for a while. A run its clock started in that time failed on the first lookup with "operation not permitted". Such a run is held and goes with the next wake-up, at most fifteen minutes later, when Android lets the app onto the network again. With battery optimisation switched off for ArrowLoop, as the settings suggest, runs stay on time.
+- **A run started by hand on the phone keeps its network after the app is left.** Android 16 blocks an app without the battery exemption a few seconds after it leaves the screen, so a run that took longer than that lost its connection. A run in progress moves into the foreground service as the app goes away, shown by the ArrowLoop notification, and the service ends with the run.
+- **Android's own bin is left out of a sync.** A file deleted in Android's file manager stays in its folder for thirty days under a name starting with `.trashed-`, and a download still being written starts with `.pending-`. Both were synced like any file, so emptying the bin on the phone looked like a mass deletion and tripped the brake. They are excluded by default, like the half-written files of other programs.
+- **The number fields of the phone's sync settings can be emptied to type a new value.** The mass-delete brake, the files at once and the retry fields refilled themselves with the default the moment the last digit was deleted.
 
 ## 1.5.0 - 2026-09-29
 
