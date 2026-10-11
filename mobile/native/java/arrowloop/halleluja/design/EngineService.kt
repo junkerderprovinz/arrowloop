@@ -194,7 +194,8 @@ class EngineService : Service() {
     /**
      * Posts the outcome on the matching channel. A run that changed nothing, or
      * one a run condition held back, posts nothing: the phone wakes every
-     * fifteen minutes. A finding is posted once, when the engine first makes it.
+     * fifteen minutes. A finding is posted once, by the first wake-up after the
+     * engine made it.
      */
     private fun report(due: Due) {
         due.found.forEach(::tellFound)
@@ -469,9 +470,16 @@ class EngineService : Service() {
         /** Releases the guard as the screens come back, which hold the network themselves. */
         fun back(context: Context) {
             away = false
+            seen(context)
             if (!guarded) return
             guarded = false
             context.startService(Intent(context, EngineService::class.java).setAction(ACTION_RELEASE))
+        }
+
+        /** Takes down what was posted about findings, which the screens show from here on. */
+        private fun seen(context: Context) {
+            val notes = context.getSystemService(NotificationManager::class.java)
+            notes.activeNotifications.filter { it.id >= ANOMALY_ID }.forEach { notes.cancel(it.id) }
         }
 
         /** Reports whether the engine is in a run. One that does not answer is not. */

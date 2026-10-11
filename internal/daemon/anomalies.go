@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"slices"
 	"time"
 
 	"github.com/junkerderprovinz/arrowloop/internal/anomaly"
@@ -73,8 +74,9 @@ func (r *Runner) noted(ctx context.Context, f anomaly.Finding, fresh bool) {
 	ev := Event{Job: f.Job, Phase: "anomaly"}
 	if tells {
 		ev.Told = f.ID
+		found := Found{Job: f.Job, Kind: string(f.Kind), Held: f.Held}
 		r.mu.Lock()
-		r.told = append(r.told, Found{Job: f.Job, Kind: string(f.Kind), Held: f.Held})
+		r.told = append(slices.DeleteFunc(r.told, func(o Found) bool { return o == found }), found)
 		r.mu.Unlock()
 	}
 	r.publish(ev)
@@ -97,13 +99,16 @@ type Found struct {
 	Held bool   `json:"held"`
 }
 
-// drainTold hands over the findings collected since the last call.
+// drainTold hands over the findings made since the last call that are still
+// open. One answered in the meantime needs no telling.
 func (r *Runner) drainTold() []Found {
 	r.mu.Lock()
-	defer r.mu.Unlock()
-	out := r.told
+	told := r.told
 	r.told = nil
-	return out
+	r.mu.Unlock()
+	return slices.DeleteFunc(told, func(f Found) bool {
+		return !r.anomalies.Has(f.Job, anomaly.Kind(f.Kind))
+	})
 }
 
 // settle closes a job's findings of the given kinds and says so.

@@ -120,8 +120,6 @@ func (r *Runner) Retrying(ctx context.Context, now time.Time) []string {
 // RunDue runs the due jobs one at a time and reports what happened. It blocks,
 // because the wake-up calling it has to know when the phone may sleep again.
 func (r *Runner) RunDue(ctx context.Context) Due {
-	// What was found while a screen was listening has been shown there.
-	r.drainTold()
 	// A phone's engine has no clock ticking between wake-ups, so the look at
 	// the schedules happens here.
 	r.overdue(ctx, time.Now())

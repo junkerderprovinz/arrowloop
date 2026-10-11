@@ -308,3 +308,30 @@ func TestANewFindingIsHandedToTheNextWakeUpOnce(t *testing.T) {
 		t.Errorf("the same finding would be told twice: %+v", again)
 	}
 }
+
+func TestAFindingMadeBetweenWakeUpsReachesTheNextOne(t *testing.T) {
+	r, left, _ := syncedPair(t)
+	emptyOut(t, left, 30)
+	held(t, r)
+
+	due := r.RunDue(context.Background())
+	if len(due.Found) != 1 || due.Found[0].Job != "test" || !due.Found[0].Held {
+		t.Fatalf("the wake-up heard %+v, want the job held before it", due.Found)
+	}
+	if again := r.RunDue(context.Background()); len(again.Found) != 0 {
+		t.Errorf("the next wake-up heard it again: %+v", again.Found)
+	}
+}
+
+func TestAFindingAnsweredBeforeTheWakeUpIsNotTold(t *testing.T) {
+	r, left, _ := syncedPair(t)
+	emptyOut(t, left, 30)
+	f := held(t, r)
+	if _, err := r.TakeBack(context.Background(), f.ID); err != nil {
+		t.Fatalf("take back: %v", err)
+	}
+
+	if found := r.drainTold(); len(found) != 0 {
+		t.Errorf("the wake-up would hear of a job nobody holds any more: %+v", found)
+	}
+}
