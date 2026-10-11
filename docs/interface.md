@@ -7,7 +7,7 @@ arrowloop web -config arrowloop.json
 serves it on `http://127.0.0.1:8422`, with the schedules running in the same
 process. The container serves the same interface on port 8422, and the desktop
 app shows it in a window of its own. It has a tab each for Jobs, Targets,
-History, Conflicts, Trash and Settings.
+History, Conflicts, Anomalies, Trash and Settings.
 
 `arrowloop daemon` is the same scheduler without the interface, for a machine
 where nobody is looking; see [the command line](cli.md#web-and-daemon).
@@ -152,6 +152,24 @@ A choice made there is carried out by a fresh run of that job rather than by
 rewriting what the first run did, so it cannot overlap another run and lands in
 the history like any other. The version that loses goes to the trash, unless
 the job has `noTrash`, so a wrong click can be undone from there.
+
+## Anomalies
+
+**Anomalies** lists what the engine found about a job: a run a safety brake
+refused, a job that keeps failing, a schedule that is not kept. Three tiles
+count the findings by severity, and a click on one hides that severity.
+
+Each job with a finding has a card. A line opens to the whole sentence, the
+figures and the files the brake counted. A held job offers **Run anyway** and
+**Take back**; what each does is in
+[A refused run holds the job](safety.md#a-refused-run-holds-the-job). A note
+offers **Acknowledge** and **Run now**. **Monitoring** on a card gives that job
+brakes of its own, and the jobs with nothing open are listed below with the
+same switch. What was closed in the last thirty days is in the row at the end,
+with how it ended.
+
+A job with a finding says so on its own card on the Jobs tab, and the line
+leads here.
 
 ## Trash
 
