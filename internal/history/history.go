@@ -95,12 +95,15 @@ CREATE TABLE IF NOT EXISTS entries (
 `
 
 // migrations are the ALTERs an existing database needs, since the schema
-// leaves a table that already exists alone. There is no version number, so
-// each must be harmless when it has already run; they are separate so that one
-// failing does not stop the rest.
+// leaves a table that already exists alone. Each must be harmless when it has
+// already run; they are separate so that one failing does not stop the rest.
 var migrations = []string{
 	`ALTER TABLE entries ADD COLUMN size INTEGER NOT NULL DEFAULT 0`,
 }
+
+// version is the history's layout. It goes up when a newer layout would be
+// misread by this build.
+const version = 1
 
 // Open opens or creates the history database.
 func Open(ctx context.Context, path string) (*DB, error) {
@@ -111,6 +114,10 @@ func Open(ctx context.Context, path string) (*DB, error) {
 	handle, err := sql.Open("sqlite", path+"?_pragma=busy_timeout(5000)&_pragma=journal_mode(WAL)&_txlock=immediate")
 	if err != nil {
 		return nil, fmt.Errorf("open history: %w", err)
+	}
+	if err := dbfile.Stamp(ctx, handle, path, version); err != nil {
+		handle.Close()
+		return nil, err
 	}
 	if _, err := handle.ExecContext(ctx, schema); err != nil {
 		handle.Close()

@@ -69,6 +69,10 @@ CREATE TABLE IF NOT EXISTS kept (
 );
 `
 
+// version is the state database's layout. It goes up when a newer layout
+// would be misread by this build.
+const version = 1
+
 // Open opens or creates the state database at path.
 func Open(ctx context.Context, path string) (*DB, error) {
 	if err := dbfile.EnsureDir(path); err != nil {
@@ -87,6 +91,10 @@ func Open(ctx context.Context, path string) (*DB, error) {
 	// are tiny, so one connection costs nothing.
 	handle.SetMaxOpenConns(1)
 
+	if err := dbfile.Stamp(ctx, handle, path, version); err != nil {
+		handle.Close()
+		return nil, err
+	}
 	if _, err := handle.ExecContext(ctx, schema); err != nil {
 		handle.Close()
 		return nil, fmt.Errorf("create schema: %w", err)
