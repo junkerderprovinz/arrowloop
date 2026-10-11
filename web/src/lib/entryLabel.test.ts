@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import type { Job, RunEntry, Volume } from './api'
 import { de } from './i18n'
-import { entryLabel, entryNote, placeOf } from './entryLabel'
+import { entryAction, entryLabel, entryNote, placeOf } from './entryLabel'
 
 // The German table, so the test reads the phrases somebody asked for.
 const t = (key: string, vars?: Record<string, string | number>) =>
@@ -113,5 +113,30 @@ describe('what the note adds', () => {
     expect(entryNote(t, noted('conflict', '', 'keep both'))).toBeNull()
     expect(entryNote(t, noted('move', 'left', 'fotos/alt.jpg'))).toBe('vorher fotos/alt.jpg')
     expect(entryNote(t, noted('skip', '', 'the file was busy'))).toBe('the file was busy')
+  })
+})
+
+describe('what happened, without where', () => {
+  // Two music folders, where the place in the label says nothing the paths
+  // underneath do not.
+  const music = job('D:\opencloud\musik', 'Z:\musik')
+  const noted = (Kind: string, Note: string, Path = 'album/song.mp3'): RunEntry => ({ Kind, Side: 'right', Path, Note, Size: 0 })
+
+  it('names only the action', () => {
+    expect(entryAction(t, noted('copy', 'replaced'), music, drives)).toBe('Ersetzt')
+    expect(entryAction(t, noted('copy', ''), music, drives)).toBe('Kopiert')
+    expect(entryAction(t, noted('trash', ''), music, drives)).toBe('Gelöscht')
+    expect(entryAction(t, noted('trash', 'bin'), music, drives)).toBe('In den Papierkorb')
+    expect(entryAction(t, noted('mkdir', ''), music, drives)).toBe('Ordner angelegt')
+  })
+
+  it('tells a rename from a move by the folder', () => {
+    expect(entryAction(t, noted('move', 'album/old.mp3'), music, drives)).toBe('Umbenannt')
+    expect(entryAction(t, noted('move', 'other/song.mp3'), music, drives)).toBe('Verschoben')
+    expect(entryAction(t, noted('move', 'relocated', 'song.mp3'), music, drives)).toBe('Verschoben')
+  })
+
+  it('keeps the full label where there is no single word', () => {
+    expect(entryAction(t, noted('conflict', 'keep both'), music, drives)).toBe(de['entry.conflictBoth'])
   })
 })

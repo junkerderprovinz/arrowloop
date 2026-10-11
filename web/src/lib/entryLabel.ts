@@ -131,6 +131,34 @@ export function entryLabel(t: T, e: Entry, job: Job | undefined, drives: Drive[]
 }
 
 /**
+ * What happened to one file, in a word and without where: for a list that
+ * shows the full paths underneath, where naming the place again only gets in
+ * the way. Kinds without such a word are labelled as entryLabel does.
+ */
+export function entryAction(t: T, e: Entry, job: Job | undefined, drives: Drive[]): string {
+  const note = e.Note ?? ''
+  switch (e.Kind) {
+    case 'copy':
+      if (note === REPLACED) return t('entry.replaced')
+      return t('entry.copied')
+    case 'move':
+      if (note && note !== RELOCATED && e.Path !== undefined && folderOf(note) === folderOf(e.Path))
+        return t('entry.renamed')
+      return t('entry.moved')
+    case 'trash':
+    case 'delete':
+      if (note === BIN) return t('entry.binned')
+      return t('entry.deleted')
+    case 'mkdir':
+      return t('entry.folderMade')
+    case 'rmdir':
+      return t('entry.folderDeleted')
+    default:
+      return entryLabel(t, e, job, drives)
+  }
+}
+
+/**
  * The note to show beside an entry, or null when the label has said it: an
  * error's words and a skip's reason as the engine wrote them, and the name a
  * renamed file had before.

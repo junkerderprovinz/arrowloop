@@ -17,6 +17,7 @@ The full notes for each release are in
 ## 🎨 Design
 
 - **Adding a drive shows the name the system gives it.** The list reads "F:\ · Samsung T7" instead of just the letter, and that name fills the name field until you type your own.
+- **The activity window's badge says only what happened to a file.** Replaced, Copied, Moved, Deleted and the like, without the folder: the paths underneath say where, and with a music folder synced into another music folder the folder's name told nothing.
 - **ArrowLoop's own folder is hidden on Windows.** The `.arrowloop` folder that holds the bin and the kept versions gets the hidden attribute on every side that is a folder, a drive or a share, also where it is already there. On macOS and Linux its leading dot already hides it.
 
 ## 1.7.1 - 2026-10-11

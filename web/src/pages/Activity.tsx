@@ -8,7 +8,7 @@ import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
 import { api, type Job, type LatestRun, type RunEvent, type Touch, type Volume } from '../lib/api'
 import { desk, inDesktopWindow, resizeFromEdges } from '../lib/desk'
-import { entryLabel, entryRoute } from '../lib/entryLabel'
+import { entryAction, entryLabel, entryRoute } from '../lib/entryLabel'
 import { useT } from '../lib/i18n'
 import { since } from '../lib/since'
 import { wireTooltips } from '../lib/tooltip'
@@ -288,8 +288,9 @@ function RunningRow({ job, event }: { job: Job; event?: RunEvent }) {
 function ChangeRow({ change, jobs, drives }: { change: Touch; jobs: Job[]; drives: Volume[] }) {
   const { t, lang } = useT()
   const job = jobs.find((j) => j.name === change.Job)
-  const label = entryLabel(t, change, job, drives)
   const route = entryRoute(change, job, drives)
+  // The paths underneath say where, so the badge only says what.
+  const label = route ? entryAction(t, change, job, drives) : entryLabel(t, change, job, drives)
   const tone = change.Kind === 'conflict' ? 'warn' : 'neutral'
   const when = new Date(change.When)
   return (
