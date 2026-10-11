@@ -1,0 +1,1 @@
+Die Desktop-App zeigt einen Datenträger auf der Auftragskarte mit seinem Namen an. An der Android-App selbst hat sich nichts geändert.
