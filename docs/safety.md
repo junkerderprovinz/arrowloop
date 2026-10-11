@@ -11,7 +11,10 @@ never travels to the other side.
 
 Inside the tree rather than beside it, because on an S3 bucket or an SFTP export
 there is often no "beside it". The visible cost is that the folder appears in
-the synced tree, where everyone using that share can see it.
+the synced tree, where everyone using that share can see it. On Windows
+ArrowLoop sets the hidden attribute on it on every side that is a folder, a
+drive or a share, and on macOS and Linux the leading dot hides it. A cloud
+target has no such attribute, so there it shows.
 
 A job can be configured with `noTrash` to delete outright, and then the folder
 is never created. That is a decision about one job's files, not a default: with

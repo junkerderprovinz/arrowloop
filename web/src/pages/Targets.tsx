@@ -15,7 +15,7 @@ import { Choice, Field, Secret, Text } from '../components/Field'
 import { ToggleRow } from '../components/ToggleRow'
 import { replay } from '../lib/animate'
 import { DropdownListbox } from '../lib/glimstone/DropdownListbox'
-import { api, type Backend, type Provider, type Remote, type Share, type Usage, type Volume } from '../lib/api'
+import { api, type Backend, type Provider, type Remote, type Share, type Usage, type Volume, type DriveCandidate } from '../lib/api'
 import { bytes } from '../lib/bytes'
 import { groupStage } from '../lib/controls'
 import { isLocalTarget } from '../lib/localTarget'
@@ -856,9 +856,11 @@ function DriveRow({
 
 function DriveForm({ onDone }: { onDone: (saved: boolean) => void }) {
   const { t } = useT()
-  const [candidates, setCandidates] = useState<{ mount: string; marked: boolean }[]>([])
+  const [candidates, setCandidates] = useState<DriveCandidate[]>([])
   const [mount, setMount] = useState('')
   const [label, setLabel] = useState('')
+  // The drive's own name fills the field until somebody types one.
+  const [typed, setTyped] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
 
@@ -869,6 +871,7 @@ function DriveForm({ onDone }: { onDone: (saved: boolean) => void }) {
         const fresh = c.candidates.filter((x) => !x.marked)
         setCandidates(fresh)
         setMount((current) => current || fresh[0]?.mount || '')
+        setLabel((current) => current || fresh[0]?.name || '')
       })
       .catch((e: Error) => setError(e.message))
   }, [])
@@ -903,13 +906,23 @@ function DriveForm({ onDone }: { onDone: (saved: boolean) => void }) {
         <Field label={t('targets.driveMount')}>
           <Choice
             value={mount}
-            onChange={setMount}
+            onChange={(next) => {
+              setMount(next)
+              if (!typed) setLabel(candidates.find((c) => c.mount === next)?.name ?? '')
+            }}
             label={t('targets.driveMount')}
-            options={candidates.map((c) => ({ value: c.mount, label: c.mount }))}
+            options={candidates.map((c) => ({ value: c.mount, label: c.name ? `${c.mount} · ${c.name}` : c.mount }))}
           />
         </Field>
         <Field label={t('targets.driveLabel')} hint={t('targets.driveLabelHint')}>
-          <Text value={label} onChange={setLabel} placeholder="Backup drive" />
+          <Text
+            value={label}
+            onChange={(next) => {
+              setLabel(next)
+              setTyped(true)
+            }}
+            placeholder="Backup drive"
+          />
         </Field>
       </div>
 

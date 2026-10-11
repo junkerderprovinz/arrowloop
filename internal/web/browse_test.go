@@ -11,6 +11,7 @@ import (
 	_ "github.com/rclone/rclone/backend/alias"
 
 	"github.com/junkerderprovinz/arrowloop/internal/remotes"
+	"github.com/junkerderprovinz/arrowloop/internal/volume"
 )
 
 type browseAnswer struct {
@@ -119,5 +120,80 @@ func TestTheSharesListIsAListEvenWhenEmpty(t *testing.T) {
 	h.get(t, "/api/shares", &got)
 	if got.Shares == nil {
 		t.Error("the shares arrived as null, which the page would have to guard against")
+	}
+}
+
+// markedDrive marks a folder as a drive called Backup and returns its mount
+// and the path a job stores for it.
+func markedDrive(t *testing.T) (mount, at string) {
+	t.Helper()
+	mount = t.TempDir()
+	previous := volume.Candidates
+	volume.Candidates = func() []string { return []string{mount} }
+	t.Cleanup(func() { volume.Candidates = previous })
+	m, err := volume.Mark(mount, "Backup")
+	if err != nil {
+		t.Fatalf("mark the drive: %v", err)
+	}
+	return mount, volume.Prefix + m.ID
+}
+
+func TestThePickerWalksADriveByItsIdentity(t *testing.T) {
+	h := newHarness(t)
+	mount, at := markedDrive(t)
+	if err := os.MkdirAll(filepath.Join(mount, "Music", "Live"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+
+	var top struct {
+		browseAnswer
+		Shown string `json:"shown"`
+	}
+	h.get(t, "/api/browse?path="+url.QueryEscape(at+"/"), &top)
+	if top.Shown != "Backup" || top.Parent != "" {
+		t.Errorf("the top of the drive reads %q with parent %q", top.Shown, top.Parent)
+	}
+	// The marker folder stays out of the list.
+	if len(top.Entries) != 1 || top.Entries[0].Path != at+"/Music" {
+		t.Fatalf("the top of the drive lists %+v", top.Entries)
+	}
+
+	var inner browseAnswer
+	h.get(t, "/api/browse?path="+url.QueryEscape(top.Entries[0].Path), &inner)
+	if inner.Parent != at+"/" {
+		t.Errorf("one level down, up leads to %q", inner.Parent)
+	}
+	if len(inner.Entries) != 1 || inner.Entries[0].Path != at+"/Music/Live" {
+		t.Errorf("Music lists %+v", inner.Entries)
+	}
+
+	var climbed browseAnswer
+	h.get(t, "/api/browse?path="+url.QueryEscape(at+"/../.."), &climbed)
+	if climbed.Path != at+"/" {
+		t.Errorf("a path climbing off the drive answered %q", climbed.Path)
+	}
+}
+
+func TestANewFolderLandsOnTheDrive(t *testing.T) {
+	h := newHarness(t)
+	mount, at := markedDrive(t)
+
+	body, _ := json.Marshal(map[string]string{"parent": at + "/", "name": "Music"})
+	resp := h.post(t, "/api/browse/mkdir", string(body))
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		t.Fatalf("making a folder on a drive answered %s", resp.Status)
+	}
+	var made struct {
+		Path string `json:"path"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&made); err != nil {
+		t.Fatal(err)
+	}
+	if made.Path != at+"/Music" {
+		t.Errorf("the new folder is reported as %q", made.Path)
+	}
+	if info, err := os.Stat(filepath.Join(mount, "Music")); err != nil || !info.IsDir() {
+		t.Errorf("no folder arrived on the drive: %v", err)
 	}
 }

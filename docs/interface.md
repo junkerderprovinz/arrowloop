@@ -46,6 +46,19 @@ The `before` and `after` commands are the exception: the interface shows them
 and cannot change them. [Configuring a job](configuration.md#commands-before-and-after-a-run)
 says why.
 
+## Drives
+
+A USB disk or a share is added under **Targets**, **Drives**. The list offers
+each drive by its letter and the name the system shows for it, and that name
+fills the **Name** field until you type your own. ArrowLoop writes a small
+identity file onto the drive, so a job keeps finding it after it comes back
+under another letter.
+
+In a job's form, **Choose a folder** lists the drives first. A drive that is
+plugged in opens like any folder, so a job can sync into one folder on it; one
+that is not plugged in can only be taken whole. The job stores the drive's
+identity and the folder, such as `volume:<id>/Music`, and not the letter.
+
 ## New jobs, drafts and held jobs
 
 A new job arrives switched on, and the form has no switch for it.

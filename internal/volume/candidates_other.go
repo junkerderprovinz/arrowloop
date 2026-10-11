@@ -43,3 +43,9 @@ func platformCandidates() []string {
 	}
 	return out
 }
+
+// Name returns the name a mount point goes by, which outside Windows is its
+// folder: /Volumes/Backup is called Backup.
+func Name(mount string) string {
+	return filepath.Base(mount)
+}

@@ -8,6 +8,17 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## Unreleased
+
+## ✨ Added
+
+- **A job can sync into one folder on a drive, picked rather than typed.** In the folder picker a plugged-in drive opens like any folder, and a new folder can be made on it. The job keeps the drive's identity, so it finds the folder again after the drive comes back under another letter.
+
+## 🎨 Design
+
+- **Adding a drive shows the name the system gives it.** The list reads "F:\ · Samsung T7" instead of just the letter, and that name fills the name field until you type your own.
+- **ArrowLoop's own folder is hidden on Windows.** The `.arrowloop` folder that holds the bin and the kept versions gets the hidden attribute on every side that is a folder, a drive or a share, also where it is already there. On macOS and Linux its leading dot already hides it.
+
 ## 1.7.1 - 2026-10-11
 
 ## 🎨 Design

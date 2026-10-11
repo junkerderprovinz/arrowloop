@@ -74,14 +74,15 @@ export function useJobConfig(onSaved: () => void) {
   }, [])
 
   // Registered drives and configured targets, offered so nobody has to retype
-  // their exact spelling. A target is opened in the picker rather than taken
-  // whole, so a folder on it can be chosen.
+  // their exact spelling. Both open in the picker rather than being taken
+  // whole, so a folder on them can be chosen; a drive that is not plugged in
+  // cannot be opened and is taken whole.
   useEffect(() => {
     const offers: Known[] = []
     void Promise.allSettled([api.volumes(), api.remotes()]).then(([v, r]) => {
       if (v.status === 'fulfilled') {
         for (const drive of v.value.volumes) {
-          offers.push({ value: `${drive.path}/`, label: `${t('edit.pickDrive')}: ${drive.label}` })
+          offers.push({ value: `${drive.path}/`, label: `${t('edit.pickDrive')}: ${drive.label}`, browse: drive.attached })
         }
       }
       if (r.status === 'fulfilled') {

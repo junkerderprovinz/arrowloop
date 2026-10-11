@@ -19,6 +19,8 @@ import (
 	"sort"
 	"strings"
 	"time"
+
+	"github.com/junkerderprovinz/arrowloop/internal/hidden"
 )
 
 // Prefix is what a job path starts with to mean "on this volume, wherever it
@@ -91,6 +93,7 @@ func writeMarker(mount string, m Marker) error {
 	if err := os.MkdirAll(filepath.Dir(full), 0o755); err != nil {
 		return fmt.Errorf("prepare %s: %w", filepath.Dir(full), err)
 	}
+	hidden.Folder(filepath.Dir(full))
 	body, err := json.MarshalIndent(m, "", "  ")
 	if err != nil {
 		return err

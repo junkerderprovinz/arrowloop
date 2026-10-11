@@ -21,6 +21,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/anomaly"
 	"github.com/junkerderprovinz/arrowloop/internal/apply"
 	"github.com/junkerderprovinz/arrowloop/internal/engine"
+	"github.com/junkerderprovinz/arrowloop/internal/hidden"
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/hook"
 	"github.com/junkerderprovinz/arrowloop/internal/job"
@@ -376,6 +377,16 @@ func (r *Runner) open(ctx context.Context, j job.Job) (apply.Ends, *state.DB, er
 	return apply.Ends{Left: left, Right: right}, db, nil
 }
 
+// hideMeta hides ArrowLoop's own folder on each side that is a folder this
+// machine reaches as a path, a drive or a share among them.
+func hideMeta(ends apply.Ends) {
+	for _, f := range []rclonefs.Fs{ends.Left, ends.Right} {
+		if f.Features().IsLocal {
+			hidden.Folder(filepath.Join(filepath.FromSlash(f.Root()), scan.MetaDir))
+		}
+	}
+}
+
 // resolve finds where both sides of a job are right now, or names the drive
 // that is missing.
 func resolve(j job.Job) (left, right string, err error) {
@@ -441,6 +452,8 @@ func (r *Runner) executeAs(ctx context.Context, j job.Job, only []string, shown 
 		return apply.Result{}, nil, err
 	}
 	defer db.Close()
+	// Afterwards, because the run may be what creates the folder.
+	defer hideMeta(ends)
 
 	// Started here because the right side has to be open to say which way a
 	// file is going. The step counter is shared with the progress watcher.

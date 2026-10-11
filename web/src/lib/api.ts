@@ -166,6 +166,9 @@ export type WindowSettings = {
 }
 
 /** One registered drive, attached or not. */
+/** A drive that could be marked, with the name the system shows for it. */
+export type DriveCandidate = { mount: string; name?: string; marked: boolean }
+
 export type Volume = {
   id: string
   label: string
@@ -958,7 +961,7 @@ export const api = {
 
   /** The folders inside one folder. An empty path asks for the roots. */
   browse: (path?: string) =>
-    request<{ path: string; parent: string; entries: { name: string; path: string }[] }>(
+    request<{ path: string; parent: string; shown?: string; entries: { name: string; path: string }[] }>(
       `/api/browse${path ? `?path=${encodeURIComponent(path)}` : ''}`,
     ),
 
@@ -996,7 +999,7 @@ export const api = {
   volumes: () => request<{ volumes: Volume[] }>('/api/volumes'),
 
   volumeCandidates: () =>
-    request<{ candidates: { mount: string; marked: boolean }[] }>('/api/volumes/candidates'),
+    request<{ candidates: DriveCandidate[] }>('/api/volumes/candidates'),
 
   markVolume: (mount: string, label: string) =>
     request<Volume>('/api/volumes', {

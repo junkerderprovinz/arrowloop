@@ -13,6 +13,7 @@ import (
 	"strings"
 
 	"github.com/junkerderprovinz/arrowloop/internal/remotes"
+	"github.com/junkerderprovinz/arrowloop/internal/volume"
 )
 
 // The folder picker lets a job's sides be picked rather than typed, since a
@@ -33,12 +34,20 @@ type browseAnswer struct {
 	// server gives it because the answer differs between systems.
 	Parent  string        `json:"parent"`
 	Entries []browseEntry `json:"entries"`
+	// Shown is how Path reads for a person, where the two differ: a drive is
+	// stored by an identity nobody can read.
+	Shown string `json:"shown,omitempty"`
 }
 
 // browse lists the folders inside one folder, on this machine or on a
 // configured target. Files are left out, since a job's side is always a folder.
 func (s *Server) browse(w http.ResponseWriter, r *http.Request) {
 	at := r.URL.Query().Get("path")
+
+	if strings.HasPrefix(at, volume.Prefix) {
+		browseVolume(w, at)
+		return
+	}
 
 	if name, dir, ok := remotes.Split(at); ok {
 		folders, err := remotes.Folders(r.Context(), name, dir)
@@ -68,22 +77,66 @@ func (s *Server) browse(w http.ResponseWriter, r *http.Request) {
 	// than it reads.
 	at = filepath.Clean(at)
 
-	entries, err := os.ReadDir(at)
+	names, err := subfolders(at)
 	if err != nil {
 		http.Error(w, "cannot read "+at+": "+err.Error(), http.StatusBadRequest)
 		return
 	}
-
-	out := make([]browseEntry, 0, len(entries))
-	for _, e := range entries {
-		if !e.IsDir() || strings.HasPrefix(e.Name(), ".") {
-			continue
-		}
-		out = append(out, browseEntry{Name: e.Name(), Path: filepath.Join(at, e.Name())})
+	out := make([]browseEntry, 0, len(names))
+	for _, name := range names {
+		out = append(out, browseEntry{Name: name, Path: filepath.Join(at, name)})
 	}
-	sort.Slice(out, func(i, j int) bool { return strings.ToLower(out[i].Name) < strings.ToLower(out[j].Name) })
-
 	writeJSON(w, http.StatusOK, browseAnswer{Path: at, Parent: parentOf(at), Entries: out})
+}
+
+// browseVolume lists a folder on a marked drive and answers in drive paths, so
+// a job keeps finding the folder after the drive has changed its letter.
+func browseVolume(w http.ResponseWriter, at string) {
+	id, sub := splitVolume(at)
+	dir, err := volume.Resolve(volume.Prefix + id + "/" + sub)
+	if err != nil {
+		http.Error(w, "cannot read "+volume.Describe(at)+": "+err.Error(), http.StatusBadRequest)
+		return
+	}
+	names, err := subfolders(dir)
+	if err != nil {
+		http.Error(w, "cannot read "+volume.Describe(at)+": "+err.Error(), http.StatusBadRequest)
+		return
+	}
+	here := volume.Prefix + id + "/" + sub
+	out := make([]browseEntry, 0, len(names))
+	for _, name := range names {
+		out = append(out, browseEntry{Name: name, Path: volume.Prefix + id + "/" + path.Join(sub, name)})
+	}
+	// The top of the drive leads up to the list of drives.
+	parent := ""
+	if sub != "" {
+		parent = volume.Prefix + id + "/" + strings.TrimPrefix(path.Dir("/"+sub), "/")
+	}
+	writeJSON(w, http.StatusOK, browseAnswer{Path: here, Parent: parent, Entries: out, Shown: volume.Describe(here)})
+}
+
+// splitVolume parts a drive path into the drive's identity and a folder on
+// it. The folder is cleaned, so ".." cannot lead off the drive.
+func splitVolume(at string) (id, sub string) {
+	id, sub, _ = strings.Cut(strings.TrimPrefix(at, volume.Prefix), "/")
+	return id, strings.Trim(path.Clean("/"+sub), "/")
+}
+
+// subfolders lists the folders in dir by name, without the hidden ones.
+func subfolders(dir string) ([]string, error) {
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		return nil, err
+	}
+	var out []string
+	for _, e := range entries {
+		if e.IsDir() && !strings.HasPrefix(e.Name(), ".") {
+			out = append(out, e.Name())
+		}
+	}
+	sort.Slice(out, func(i, j int) bool { return strings.ToLower(out[i]) < strings.ToLower(out[j]) })
+	return out, nil
 }
 
 // parentOf is the folder above, or empty at the top. filepath.Dir returns a
@@ -178,6 +231,21 @@ func (s *Server) makeDir(w http.ResponseWriter, r *http.Request) {
 	}
 	if body.Parent == "" {
 		writeError(w, http.StatusBadRequest, errors.New("there is no folder open to create one in"))
+		return
+	}
+	if strings.HasPrefix(body.Parent, volume.Prefix) {
+		id, sub := splitVolume(body.Parent)
+		dir, err := volume.Resolve(volume.Prefix + id + "/" + sub)
+		if err != nil {
+			writeError(w, http.StatusBadRequest, err)
+			return
+		}
+		if err := os.Mkdir(filepath.Join(dir, name), 0o777); err != nil {
+			writeError(w, http.StatusBadRequest, fmt.Errorf("create %s: %w", volume.Describe(body.Parent)+"/"+name, err))
+			return
+		}
+		inheritFrom(dir, filepath.Join(dir, name))
+		writeJSON(w, http.StatusOK, map[string]any{"path": volume.Prefix + id + "/" + path.Join(sub, name)})
 		return
 	}
 	if target, dir, ok := remotes.Split(body.Parent); ok {

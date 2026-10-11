@@ -35,3 +35,17 @@ func platformCandidates() []string {
 	}
 	return out
 }
+
+// Name returns the name Windows shows for the drive at mount, or "" when it
+// has none.
+func Name(mount string) string {
+	root, err := windows.UTF16PtrFromString(mount)
+	if err != nil {
+		return ""
+	}
+	label := make([]uint16, windows.MAX_PATH+1)
+	if err := windows.GetVolumeInformation(root, &label[0], uint32(len(label)), nil, nil, nil, nil, 0); err != nil {
+		return ""
+	}
+	return windows.UTF16ToString(label)
+}

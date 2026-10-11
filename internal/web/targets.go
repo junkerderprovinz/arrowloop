@@ -82,12 +82,13 @@ func (s *Server) volumeCandidates(w http.ResponseWriter, r *http.Request) {
 	}
 	type candidate struct {
 		Mount  string `json:"mount"`
+		Name   string `json:"name,omitempty"`
 		Marked bool   `json:"marked"`
 	}
 	all := volume.Candidates()
 	out := make([]candidate, 0, len(all))
 	for _, mount := range all {
-		out = append(out, candidate{Mount: mount, Marked: marked[mount]})
+		out = append(out, candidate{Mount: mount, Name: volume.Name(mount), Marked: marked[mount]})
 	}
 	writeJSON(w, http.StatusOK, map[string]any{"candidates": out})
 }

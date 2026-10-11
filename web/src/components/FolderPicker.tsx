@@ -39,6 +39,7 @@ export function FolderPicker({
 }) {
   const { t } = useT()
   const [at, setAt] = useState('')
+  const [shown, setShown] = useState('')
   const [parent, setParent] = useState('')
   const [entries, setEntries] = useState<{ name: string; path: string }[]>([])
   const [error, setError] = useState<string | null>(null)
@@ -76,6 +77,7 @@ export function FolderPicker({
     try {
       const answer = await api.browse(path || undefined)
       setAt(answer.path)
+      setShown(answer.shown ?? '')
       setParent(answer.parent)
       setEntries(answer.entries)
       setError(null)
@@ -124,15 +126,15 @@ export function FolderPicker({
         <Card
           title={t('pick.title')}
         >
-          <p className="mb-3 truncate font-mono text-xs text-carbon-text" title={at}>
-            {at || t('pick.roots')}
+          <p className="mb-3 truncate font-mono text-xs text-carbon-text" title={shown || at}>
+            {shown || at || t('pick.roots')}
           </p>
 
           {error && <p className="mb-3 text-xs text-statusFail">{error}</p>}
 
           <ul className="flex max-h-72 flex-col overflow-y-auto">
             {/* Drives and targets cannot be reached by walking the tree, so they
-                come first. A drive is the answer; a target opens. */}
+                come first and open like any folder. */}
             {known.map((k) => (
               <li key={k.value}>
                 <button
