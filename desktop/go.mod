@@ -2,6 +2,13 @@ module github.com/junkerderprovinz/arrowloop/desktop
 
 go 1.27.1
 
+// Windows marks the folders of a cloud client that fetches files on demand
+// (OpenCloud, OneDrive, Nextcloud) as reparse points. Since Go 1.23 they read
+// as irregular, which rclone takes for a junction and leaves out of the
+// listing, so nothing inside them would be synced. The older reading keeps them
+// folders and still reports a real junction as a link.
+godebug winsymlink=0
+
 // The engine is the module next door rather than a published dependency: the
 // desktop shell and the command line binary must never be able to drift onto
 // two different versions of the thing that decides what happens to a file.

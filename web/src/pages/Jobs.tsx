@@ -24,7 +24,7 @@ import { Choice, Day, Field, Text } from '../components/Field'
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { groupFindings, shortLine, type Finding } from '../lib/anomalies'
 import { bytes } from '../lib/bytes'
-import { entryLabel, entryNote } from '../lib/entryLabel'
+import { entryAction, entryNote } from '../lib/entryLabel'
 import { useLiveTick } from '../lib/liveTick'
 import { useGoTo } from '../lib/goTo'
 import { usePlaces } from '../lib/places'
@@ -728,12 +728,13 @@ function touchKey(e: Touch): string {
 function TouchRow({ touch: e, withJob }: { touch: Touch; withJob?: boolean }) {
   const { t } = useT()
   const { jobs, drives } = usePlaces()
-  const label = entryLabel(t, e, jobs.find((j) => j.name === e.Job), drives)
+  // The path and the arrow beside it say where, so the badge only says what.
+  const label = entryAction(t, e, jobs.find((j) => j.name === e.Job), drives)
   const note = entryNote(t, e)
   return (
     <li className="flex items-baseline gap-3 text-xs">
-      {/* Wide enough for "Uploaded to" and a target's name; a longer one is
-          cut, with the whole phrase in the title. */}
+      {/* Wide enough for a conflict's phrase and a target's name; a longer one
+          is cut, with the whole phrase in the title. */}
       <span className="w-52 shrink-0 truncate" title={label}>
         <Badge tone={touchTone(e.Kind)}>{label}</Badge>
       </span>
