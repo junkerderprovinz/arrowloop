@@ -1,6 +1,7 @@
 // Writes desktop/build/sounds/ArrowLoop.wav, the sound of a desktop
-// notification: two soft bell notes, a fourth apart. It is made here rather
-// than taken from a sound library so that its licence is the project's own.
+// notification: an arrow that whizzes in and hits a metal shield. It is
+// synthesised here rather than taken from a sound library so that its licence
+// is the project's own.
 //
 // Run with: node scripts/gen_sound.mjs
 import { mkdirSync, writeFileSync } from 'node:fs'
@@ -8,25 +9,53 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const rate = 44100
-const length = 0.9
-const notes = [
-  { at: 0, hz: 987.77 },
-  { at: 0.14, hz: 1318.51 },
+const length = 1.2
+const hit = 0.15
+
+// A fixed seed, so every run writes the same file.
+let seed = 7
+const noise = () => ((seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296) * 2 - 1
+
+// A band-pass biquad whose centre may move from one sample to the next.
+let x1 = 0, x2 = 0, y1 = 0, y2 = 0
+function bandpass(x, f, q) {
+  const w = (2 * Math.PI * f) / rate
+  const a = Math.sin(w) / (2 * q)
+  const c = Math.cos(w)
+  const y = (a * x - a * x2 + 2 * c * y1 - (1 - a) * y2) / (1 + a)
+  x2 = x1; x1 = x; y2 = y1; y1 = y
+  return y
+}
+
+// The shield's partials are not a chord, which is what makes it sound like
+// metal rather than a bell: [frequency, level, decay per second].
+const ring = [
+  [925, 0.35, 5],
+  [1250, 0.45, 4.2],
+  [1630, 0.6, 3.6],
+  [2650, 0.25, 7],
 ]
 
 const samples = new Float64Array(Math.round(rate * length))
-for (const { at, hz } of notes) {
-  const start = Math.round(at * rate)
-  for (let i = start; i < samples.length; i++) {
-    const t = (i - start) / rate
-    // A few milliseconds of attack keep the start from clicking.
-    const env = Math.min(1, t / 0.004) * Math.exp(-t * 6)
-    samples[i] += env * (Math.sin(2 * Math.PI * hz * t) + 0.25 * Math.sin(4 * Math.PI * hz * t))
+for (let i = 0; i < samples.length; i++) {
+  const t = i / rate
+  if (t < hit) {
+    // The whizz rises in pitch as the arrow comes closer and stops just
+    // before it lands.
+    const p = t / hit
+    const env = p < 0.75 ? Math.sin((Math.PI * p) / 0.75) ** 2 : 0
+    samples[i] += 2.2 * env * bandpass(noise(), 450 + 400 * p, 2.5) * 6
+  }
+  const d = t - hit
+  if (d >= 0) {
+    samples[i] += 0.6 * Math.exp(-d * 90) * (noise() * 0.6 + Math.sin(2 * Math.PI * 240 * d))
+    for (const [hz, level, decay] of ring) {
+      samples[i] += level * Math.min(1, d / 0.0015) * Math.exp(-d * decay) * Math.sin(2 * Math.PI * hz * d)
+    }
   }
 }
 
-// Fades the last 50 ms to silence, so the end does not click either.
-const fade = Math.round(rate * 0.05)
+const fade = Math.round(rate * 0.04)
 for (let i = 0; i < fade; i++) samples[samples.length - 1 - i] *= i / fade
 
 let peak = 0
