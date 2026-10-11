@@ -14,6 +14,7 @@ import (
 	"os"
 	"path/filepath"
 	"slices"
+	"time"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
 
@@ -202,8 +203,16 @@ func run() error {
 		up.stop()
 		sh.remember(false)
 	})
-	return app.Run()
+	err = app.Run()
+	stopping, cancel := context.WithTimeout(context.Background(), shutdownGrace)
+	defer cancel()
+	runner.StopAll(stopping)
+	return err
 }
+
+// shutdownGrace is how long quitting waits for a stopped run to record itself.
+// A run that takes longer is recorded as interrupted at the next start.
+const shutdownGrace = 15 * time.Second
 
 // askedForTray reports whether a command line carries the flag the autostart
 // entry adds, in either of the forms the flag package reads.

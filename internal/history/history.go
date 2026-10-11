@@ -62,6 +62,7 @@ type Entry struct {
 type DB struct {
 	sql *sql.DB
 	live
+	beat
 }
 
 const schema = `
@@ -91,6 +92,31 @@ CREATE TABLE IF NOT EXISTS entries (
 	note TEXT    NOT NULL,
 	size INTEGER NOT NULL DEFAULT 0,
 	PRIMARY KEY (run, seq)
+);
+
+CREATE TABLE IF NOT EXISTS going (
+	key          TEXT    PRIMARY KEY,
+	job          TEXT    NOT NULL,
+	started      INTEGER NOT NULL,
+	beat         INTEGER NOT NULL,
+	copied       INTEGER NOT NULL,
+	moved        INTEGER NOT NULL,
+	trashed      INTEGER NOT NULL,
+	conflicts    INTEGER NOT NULL,
+	dirs_made    INTEGER NOT NULL,
+	dirs_removed INTEGER NOT NULL,
+	skipped      INTEGER NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS going_entries (
+	key  TEXT    NOT NULL,
+	seq  INTEGER NOT NULL,
+	kind TEXT    NOT NULL,
+	side TEXT    NOT NULL,
+	path TEXT    NOT NULL,
+	note TEXT    NOT NULL,
+	size INTEGER NOT NULL,
+	PRIMARY KEY (key, seq)
 );
 `
 
@@ -128,17 +154,35 @@ func Open(ctx context.Context, path string) (*DB, error) {
 		// already run. A real failure shows up on the next read.
 		_, _ = handle.ExecContext(ctx, m)
 	}
-	return &DB{sql: handle}, nil
+	d := &DB{sql: handle, beat: beat{owner: newOwner(), stop: make(chan struct{}), done: make(chan struct{})}}
+	if err := d.recordAbandoned(ctx, time.Now()); err != nil {
+		handle.Close()
+		return nil, err
+	}
+	go d.keepBeat()
+	return d, nil
 }
 
-// Close releases the handle.
-func (d *DB) Close() error { return d.sql.Close() }
+// Close writes down the runs still going, which the next start records as
+// interrupted, and releases the handle.
+func (d *DB) Close() error {
+	close(d.stop)
+	<-d.done
+	_ = d.checkpoint(context.Background(), time.Now())
+	return d.sql.Close()
+}
 
 // Record stores one finished run and everything it did in one transaction,
 // because a run row without its entries would read as a run that touched
 // nothing. The atomicity itself has no test, since staging a crash between the
 // two writes would need a hook that exists only for the test.
 func (d *DB) Record(ctx context.Context, r Run, entries []Entry) error {
+	return d.record(ctx, r, entries, "")
+}
+
+// record is Record for a run that went live under key, whose notes it removes
+// in the same transaction.
+func (d *DB) record(ctx context.Context, r Run, entries []Entry, key string) error {
 	tx, err := d.sql.BeginTx(ctx, nil)
 	if err != nil {
 		return fmt.Errorf("record run for %q: %w", r.Job, err)
@@ -163,6 +207,11 @@ func (d *DB) Record(ctx context.Context, r Run, entries []Entry) error {
 			`INSERT INTO entries (run, seq, kind, side, path, note, size) VALUES (?, ?, ?, ?, ?, ?, ?)`,
 			id, i, e.Kind, e.Side, e.Path, e.Note, e.Size); err != nil {
 			return fmt.Errorf("record entry %d for %q: %w", i, r.Job, err)
+		}
+	}
+	if key != "" {
+		if err := forget(ctx, tx, key); err != nil {
+			return fmt.Errorf("record run for %q: %w", r.Job, err)
 		}
 	}
 	return tx.Commit()

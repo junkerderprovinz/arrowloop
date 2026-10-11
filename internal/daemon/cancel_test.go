@@ -89,6 +89,32 @@ func TestAStoppedRunIsStillRecorded(t *testing.T) {
 	}
 }
 
+// A run started by hand does not end with the scheduler, so quitting has to
+// stop it and wait for its record before the log closes.
+func TestQuittingStopsARunAndWaitsForItsRecord(t *testing.T) {
+	r, _, _ := newRunner(t)
+
+	go func() { _, _ = r.Run(context.Background(), "test") }()
+	deadline := time.Now().Add(10 * time.Second)
+	for !r.Running()["test"] {
+		if time.Now().After(deadline) {
+			t.Fatal("the run never started")
+		}
+		time.Sleep(5 * time.Millisecond)
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	r.StopAll(ctx)
+
+	runs, err := r.hist.Recent(context.Background(), "test", history.ShowAll, 10)
+	if err != nil {
+		t.Fatalf("read the log: %v", err)
+	}
+	if len(runs) != 1 || runs[0].Err == "" {
+		t.Errorf("after quitting the log holds %+v, want the one stopped run", runs)
+	}
+}
+
 // Somebody pressing stop a second after the run finished should not be told it
 // was stopped.
 func TestStoppingSomethingThatIsNotRunningSaysSo(t *testing.T) {

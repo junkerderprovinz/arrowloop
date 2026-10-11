@@ -13,12 +13,14 @@ import (
 // include it, so a run can be followed while it runs and reads the same
 // afterwards.
 type Live struct {
-	db *DB
-	id int64
+	db  *DB
+	id  int64
+	key string
 
-	// Guarded by db.liveMu.
+	// Guarded by db.liveMu. flushed counts the entries already written down.
 	run     Run
 	entries []Entry
+	flushed int
 }
 
 // live is the state behind the runs still going. settle keeps a run from
@@ -40,7 +42,7 @@ func (d *DB) Begin(job string, started time.Time) *Live {
 		d.runs = map[int64]*Live{}
 	}
 	d.last--
-	l := &Live{db: d, id: d.last, run: Run{ID: d.last, Job: job, Started: started, Running: true}}
+	l := &Live{db: d, id: d.last, key: d.keyFor(d.last), run: Run{ID: d.last, Job: job, Started: started, Running: true}}
 	d.runs[l.id] = l
 	return l
 }
@@ -72,18 +74,34 @@ func (l *Live) Add(e Entry) {
 // showing it from memory in the same step.
 func (l *Live) Record(ctx context.Context, r Run) error {
 	d := l.db
+	d.flushMu.Lock()
+	defer d.flushMu.Unlock()
 	d.settle.Lock()
 	defer d.settle.Unlock()
 	d.liveMu.Lock()
 	entries := l.entries
 	d.liveMu.Unlock()
-	err := d.Record(ctx, r, entries)
-	l.Drop()
+	err := d.record(ctx, r, entries, l.key)
+	l.unlist()
 	return err
 }
 
 // Drop forgets a run that is not going to be recorded.
 func (l *Live) Drop() {
+	d := l.db
+	d.flushMu.Lock()
+	defer d.flushMu.Unlock()
+	if tx, err := d.sql.Begin(); err == nil {
+		if forget(context.Background(), tx, l.key) == nil {
+			_ = tx.Commit()
+		} else {
+			_ = tx.Rollback()
+		}
+	}
+	l.unlist()
+}
+
+func (l *Live) unlist() {
 	l.db.liveMu.Lock()
 	defer l.db.liveMu.Unlock()
 	delete(l.db.runs, l.id)

@@ -123,10 +123,20 @@ func cmdWeb(ctx context.Context, args []string) error {
 	case <-ctx.Done():
 	}
 
+	// The runs first: their records are what a container's short notice
+	// before the kill is worth spending on.
+	stopping, cancelStop := context.WithTimeout(context.Background(), shutdownGrace)
+	defer cancelStop()
+	runner.StopAll(stopping)
 	shutdown, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	return httpServer.Shutdown(shutdown)
 }
+
+// shutdownGrace is how long a shutdown waits for a stopped run to record
+// itself. Docker allows ten seconds before it kills; a run that takes longer
+// is recorded as interrupted at the next start.
+const shutdownGrace = 8 * time.Second
 
 // starterConfig is what a first run writes when there is no configuration yet:
 // no jobs, so a new installation does nothing until one is set up.

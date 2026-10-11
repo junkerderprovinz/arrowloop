@@ -131,7 +131,11 @@ func cmdDaemon(ctx context.Context, args []string) error {
 		logf("reporting to %s", n.Describe())
 	}
 	logf("watching %d job(s), %d at a time", len(cfg.Jobs), cfg.ParallelJobs)
-	return runner.Serve(ctx)
+	err = runner.Serve(ctx)
+	stopping, cancel := context.WithTimeout(context.Background(), shutdownGrace)
+	defer cancel()
+	runner.StopAll(stopping)
+	return err
 }
 
 // cmdJobs lists what the configuration defines and when each job last
