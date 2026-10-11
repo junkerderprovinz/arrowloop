@@ -1,0 +1,1 @@
+Die Desktop-App synchronisiert die Ordner von OpenCloud, OneDrive und Nextcloud, die Dateien erst bei Bedarf herunterladen. An der Android-App selbst hat sich nichts geändert.
