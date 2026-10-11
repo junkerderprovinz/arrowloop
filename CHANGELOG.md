@@ -8,7 +8,7 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
-## Unreleased
+## 1.8.0 - 2026-10-11
 
 ## ✨ Added
 
@@ -25,44 +25,11 @@ The full notes for each release are in
 
 ## 🐛 Fixed
 
+- **A run cut off by quitting, a restart or a crash no longer vanishes from the history.** Quitting ArrowLoop stops a running job and waits until the run is recorded. When the program is killed instead, the run shows up at the next start as interrupted, with everything it had done. The files it finished stay settled, so the next run picks up where it ended.
 - **Two changes to the password at once can no longer both win.** A change is written only if the password is still the one that was checked.
 - **A flood of addresses can no longer lift a login lockout.** When the table of failed logins is full, the addresses that are not locked out go first.
 - **A job whose two sides are one folder is refused also when the folder is reached through a symlink or spelled in another case.** Forgetting a job's state is refused when another job keeps its record in the same file.
 - **`arrowloop hash-password` takes `-config`**, since the hash is made under that install's key, and refuses where no configuration is found.
-
-## 1.7.4 - 2026-10-11
-
-## 🎨 Design
-
-- **A job's card names a drive by its label.** A side on a registered drive read as `volume:` and a long identity; it reads as the drive's name and the folder on it, such as "externe_festplatte/opencloud".
-
-## 1.7.3 - 2026-10-11
-
-## 🎨 Design
-
-- **The file list under History says only what happened, too.** Replaced, Copied, Deleted and the like, as in the activity window; the arrow and the path beside it say where.
-
-## 🐛 Fixed
-
-- **A folder kept by a cloud client that fetches files on demand is synced on Windows.** OpenCloud, OneDrive and Nextcloud mark such folders in a way that the engine took for a junction, so a job over them copied nothing from inside them and reported them as left out. They are ordinary folders again, and a real junction is still left alone and reported as a link. Files the client has not downloaded yet are fetched by it while the job reads them.
-
-## 1.7.2 - 2026-10-11
-
-## ✨ Added
-
-- **A job can sync into one folder on a drive, picked rather than typed.** In the folder picker a plugged-in drive opens like any folder, and a new folder can be made on it. The job keeps the drive's identity, so it finds the folder again after the drive comes back under another letter.
-
-## 🎨 Design
-
-- **Adding a drive shows the name the system gives it.** The list reads "F:\ · Samsung T7" instead of just the letter, and that name fills the name field until you type your own.
-- **The activity window's badge says only what happened to a file.** Replaced, Copied, Moved, Deleted and the like, without the folder: the paths underneath say where, and with a music folder synced into another music folder the folder's name told nothing.
-- **ArrowLoop's own folder is hidden on Windows.** The `.arrowloop` folder that holds the bin and the kept versions gets the hidden attribute on every side that is a folder, a drive or a share, also where it is already there. On macOS and Linux its leading dot already hides it.
-
-## 1.7.1 - 2026-10-11
-
-## 🎨 Design
-
-- **The desktop app's notification has a sound of its own.** An arrow that whizzes in and hits a metal shield, made for ArrowLoop. Windows lets an installed program's notification play only its built-in sounds, so there the notification stays silent and ArrowLoop plays the sound itself, unless do not disturb is on or its notifications are switched off. On Linux the notification asks for the warning sound of the desktop's sound theme.
 
 ## 1.7.0 - 2026-10-11
 
@@ -73,10 +40,21 @@ The full notes for each release are in
 - **Two notes say a job keeps failing or has missed its schedule.** Three failed runs in a row make the first, two days without a scheduled run the second. Neither holds anything, and an acknowledged note stays away until its cause has gone and come back.
 - **A held job is reported.** The desktop app shows a notification of the system, the phone posts one on a channel of its own, and Matrix and the webhook get the message where they are set up. The notes are reported only when that is switched on.
 - **Each job can have its own brakes.** They are set under Monitoring on the job's card on the Anomalies page, for a download folder that is emptied often or an archive where nothing should ever go.
+- **A job can sync into one folder on a drive, picked rather than typed.** In the folder picker a plugged-in drive opens like any folder, and a new folder can be made on it. The job keeps the drive's identity, so it finds the folder again after the drive comes back under another letter.
 
 ## 🎨 Design
 
 - **The phone's overview card for what waits is called Action centre** and lists the anomalies beside the conflicts and the bin.
+- **The desktop app's notification has a sound of its own.** An arrow that whizzes in and hits a metal shield, made for ArrowLoop. Windows lets an installed program's notification play only its built-in sounds, so there the notification stays silent and ArrowLoop plays the sound itself, unless do not disturb is on or its notifications are switched off. On Linux the notification asks for the warning sound of the desktop's sound theme.
+- **Adding a drive shows the name the system gives it.** The list reads "F:\ · Samsung T7" instead of just the letter, and that name fills the name field until you type your own.
+- **The activity window's badge says only what happened to a file.** Replaced, Copied, Moved, Deleted and the like, without the folder: the paths underneath say where, and with a music folder synced into another music folder the folder's name told nothing.
+- **ArrowLoop's own folder is hidden on Windows.** The `.arrowloop` folder that holds the bin and the kept versions gets the hidden attribute on every side that is a folder, a drive or a share, also where it is already there. On macOS and Linux its leading dot already hides it.
+- **The file list under History says only what happened, too.** Replaced, Copied, Deleted and the like, as in the activity window; the arrow and the path beside it say where.
+- **A job's card names a drive by its label.** A side on a registered drive read as `volume:` and a long identity; it reads as the drive's name and the folder on it, such as "externe_festplatte/opencloud".
+
+## 🐛 Fixed
+
+- **A folder kept by a cloud client that fetches files on demand is synced on Windows.** OpenCloud, OneDrive and Nextcloud mark such folders in a way that the engine took for a junction, so a job over them copied nothing from inside them and reported them as left out. They are ordinary folders again, and a real junction is still left alone and reported as a link. Files the client has not downloaded yet are fetched by it while the job reads them.
 
 ## 1.6.0 - 2026-10-03
 

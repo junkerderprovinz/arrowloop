@@ -1,1 +1,0 @@
-Die Meldung der Desktop-App hat einen eigenen Klang. An der Android-App selbst hat sich nichts geändert.

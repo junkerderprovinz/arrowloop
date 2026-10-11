@@ -1,1 +1,0 @@
-The desktop app syncs the folders of OpenCloud, OneDrive and Nextcloud that fetch files on demand. The Android app itself has not changed.

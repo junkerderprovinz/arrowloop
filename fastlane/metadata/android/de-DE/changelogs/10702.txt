@@ -1,1 +1,0 @@
-In der Desktop-App kann ein Auftrag in einen Ordner auf einem Datenträger synchronisieren, der sich jetzt anklicken lässt statt getippt zu werden. An der Android-App selbst hat sich nichts geändert.

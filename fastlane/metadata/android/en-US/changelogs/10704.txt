@@ -1,1 +1,0 @@
-The desktop app names a drive by its label on a job's card. The Android app itself has not changed.

@@ -1,1 +1,0 @@
-In the desktop app a job can sync into one folder on a drive, picked rather than typed. The Android app itself has not changed.
