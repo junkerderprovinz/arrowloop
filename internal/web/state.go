@@ -6,6 +6,8 @@ import (
 	"io/fs"
 	"net/http"
 	"os"
+
+	jobpkg "github.com/junkerderprovinz/arrowloop/internal/job"
 )
 
 // forgetJobState deletes a job's own state database, for a job being deleted
@@ -22,6 +24,15 @@ func (s *Server) forgetJobState(w http.ResponseWriter, r *http.Request) {
 	if job.State == "" {
 		writeError(w, http.StatusBadRequest, fmt.Errorf("job %q has no state database", name))
 		return
+	}
+
+	// Two jobs can keep their record in one file, under the same name or
+	// another spelling of it, and deleting it would cost the other job too.
+	for _, other := range s.Runner.Config().Jobs {
+		if other.Name != name && (other.State == job.State || jobpkg.SamePlace(other.State, job.State)) {
+			writeError(w, http.StatusConflict, fmt.Errorf("job %q keeps its record in the same file, so it stays", other.Name))
+			return
+		}
 	}
 
 	// A leftover -wal could be opened against the next database created under

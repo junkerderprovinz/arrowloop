@@ -154,3 +154,31 @@ func TestDeletingTheLastJobReachesTheFile(t *testing.T) {
 		t.Errorf("the job came back: %+v", after.Jobs)
 	}
 }
+
+// Two jobs can keep their record in one file, and forgetting one job's state
+// must not take the other's with it.
+func TestForgettingAStateAnotherJobSharesIsRefused(t *testing.T) {
+	h := newHarness(t)
+	cfg := *h.runner.Config()
+	first := cfg.Jobs[0]
+	state := first.State
+	if err := os.MkdirAll(filepath.Dir(state), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(state, []byte("x"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	other := first
+	other.Name = "zweiter"
+	other.State = filepath.Join(filepath.Dir(state), "x", "..", filepath.Base(state))
+	cfg.Jobs = append(cfg.Jobs, other)
+	h.runner.Reload(&cfg)
+
+	resp, body := doJSON(t, h.srv, http.MethodDelete, "/api/jobs/"+first.Name+"/state", "")
+	if resp.StatusCode != http.StatusConflict || !strings.Contains(body, "zweiter") {
+		t.Fatalf("forgetting a shared state answered %s %s", resp.Status, body)
+	}
+	if _, err := os.Stat(state); err != nil {
+		t.Errorf("the shared record is gone: %v", err)
+	}
+}

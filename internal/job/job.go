@@ -527,11 +527,12 @@ func Load(path string) (*Config, error) {
 			return nil, fmt.Errorf("job %q needs both a left and a right side", j.Name)
 		}
 		// Both sides naming the same place would scan one tree as two, and a
-		// mirror or move job would act on its own source. Only the same
-		// spelling is caught: a side nested in the other, or one place spelled
-		// two ways by different remotes, cannot be settled by comparing
-		// strings.
-		if !draft && sameSide(j.Left, j.Right) {
+		// mirror or move job would act on its own source. Two folders on this
+		// machine are compared by what the disk says, so a symlink or a second
+		// spelling is caught as well. A side nested in the other is left alone,
+		// since excluding the inner folder makes it a working job, and one place
+		// spelled two ways by different remotes cannot be settled from here.
+		if !draft && (sameSide(j.Left, j.Right) || SamePlace(j.Left, j.Right)) {
 			return nil, fmt.Errorf(
 				"job %q has both sides pointing at %s, so it would be a snake eating its own tail: every file would be its own copy, and in mirror or move mode the job would act on the very place it read from",
 				j.Name, j.Left)
