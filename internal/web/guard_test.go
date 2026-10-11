@@ -16,7 +16,7 @@ import (
 func newGuardedServer(t *testing.T) *httptest.Server {
 	t.Helper()
 	h := newHarness(t)
-	s := &web.Server{History: h.history, Runner: h.runner}
+	s := &web.Server{History: h.history, Runner: h.runner, Key: testKey}
 	srv := httptest.NewServer(s.Guard(s.Handler()))
 	t.Cleanup(srv.Close)
 	return srv
@@ -137,7 +137,7 @@ func TestARefusedNameIsToldHowToGetIn(t *testing.T) {
 // With a password the cookie belongs to the name it was set on, so a
 // re-pointed name gets nothing, and a reverse proxy's name has to work.
 func TestWithAPasswordAnyNameIsServed(t *testing.T) {
-	hash, err := web.HashPassword("correct horse battery staple")
+	hash, err := web.HashPassword(testKey, "correct horse battery staple")
 	if err != nil {
 		t.Fatal(err)
 	}

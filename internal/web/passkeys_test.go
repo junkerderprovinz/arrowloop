@@ -291,7 +291,7 @@ func TestChangingThePasswordInTheEnvironmentRemovesThePasskeys(t *testing.T) {
 	start := func(hash string) *security.Store {
 		t.Helper()
 		t.Setenv(PasswordHashEnv, hash)
-		store, err := security.Open(config)
+		store, err := security.Open(config, nil)
 		if err != nil {
 			t.Fatal(err)
 		}

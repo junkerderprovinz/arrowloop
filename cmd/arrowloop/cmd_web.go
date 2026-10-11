@@ -48,7 +48,11 @@ func cmdWeb(ctx context.Context, args []string) error {
 	}
 	// Read before anything listens, so a damaged file stops the start instead
 	// of serving an install whose password has gone missing.
-	secured, err := security.Open(*configPath)
+	key, err := security.LoadKey(*configPath)
+	if err != nil {
+		return err
+	}
+	secured, err := security.Open(*configPath, key)
 	if err != nil {
 		return err
 	}
@@ -79,6 +83,7 @@ func cmdWeb(ctx context.Context, args []string) error {
 		Placeholder: webui.Placeholder,
 		Hold:        held,
 		Security:    secured,
+		Key:         key,
 		Log:         logf,
 	}
 

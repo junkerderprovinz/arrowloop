@@ -18,8 +18,6 @@ import (
 	"sync"
 	"time"
 
-	"golang.org/x/crypto/bcrypt"
-
 	"github.com/junkerderprovinz/arrowloop/internal/security"
 )
 
@@ -101,6 +99,9 @@ type authGate struct {
 	proxiesOnce sync.Once
 	proxies     []netip.Prefix
 
+	keyOnce sync.Once
+	key     []byte
+
 	mu         sync.Mutex
 	sessions   []session
 	failures   map[string]failureRecord
@@ -166,21 +167,61 @@ func (s *Server) twoFactorOn() bool {
 	return s.Security != nil && s.Security.Get().TOTP.Enabled
 }
 
-// HashPassword turns a password into a bcrypt hash, the form both the
-// interface and ARROWLOOP_PASSWORD_HASH keep. bcrypt refuses more than 72
-// bytes rather than truncating.
-func HashPassword(plain string) (string, error) {
+// HashPassword turns a password into the form both the interface and
+// ARROWLOOP_PASSWORD_HASH keep, under the install's key.
+func HashPassword(key []byte, plain string) (string, error) {
 	if strings.TrimSpace(plain) == "" {
 		return "", errors.New("an empty password is the same as no password, which is what leaving the hash unset already does")
 	}
-	out, err := bcrypt.GenerateFromPassword([]byte(plain), bcrypt.DefaultCost)
-	if errors.Is(err, bcrypt.ErrPasswordTooLong) {
-		return "", errors.New("the password is longer than 72 bytes, which bcrypt cannot hash")
+	return security.HashPassword(key, plain)
+}
+
+// key is the install's key, or one drawn for this server's lifetime.
+func (s *Server) key() []byte {
+	if s.Key != nil {
+		return s.Key
 	}
+	g := s.gate()
+	g.keyOnce.Do(func() {
+		g.key = make([]byte, 32)
+		if _, err := rand.Read(g.key); err != nil {
+			panic(fmt.Sprintf("draw a key: %v", err))
+		}
+	})
+	return g.key
+}
+
+// passwordMatches reports whether plain is the password in force.
+func (s *Server) passwordMatches(plain string) bool {
+	return security.VerifyPassword(s.key(), plain, string(s.passwordHash()))
+}
+
+// upgradeHash stores a password that was just entered right again in the
+// current form, when the interface keeps it in an older one. The passkeys
+// registered under the old form stay with the new one.
+func (s *Server) upgradeHash(plain string) {
+	old := s.passwordHash()
+	if s.passwordSource() != passwordFile || !security.NeedsRehash(string(old)) {
+		return
+	}
+	fresh, err := security.HashPassword(s.key(), plain)
 	if err != nil {
-		return "", fmt.Errorf("hash the password: %w", err)
+		s.logf("could not store the password in its new form: %v", err)
+		return
 	}
-	return string(out), nil
+	err = s.Security.Update(func(st *security.State) error {
+		if st.PasswordHash != string(old) {
+			return errNoMatch
+		}
+		st.PasswordHash = fresh
+		if st.PasskeysUnder == fingerprint(old) {
+			st.PasskeysUnder = fingerprint([]byte(fresh))
+		}
+		return nil
+	})
+	if err != nil && !errors.Is(err, errNoMatch) {
+		s.logf("could not store the password in its new form: %v", err)
+	}
 }
 
 // needsSession decides whether one address is behind the lock. The path is
@@ -558,8 +599,7 @@ func readBody(w http.ResponseWriter, r *http.Request, into any) bool {
 // login checks a password, and the code when a second factor is on, and hands
 // back a session cookie.
 func (s *Server) login(w http.ResponseWriter, r *http.Request) {
-	hash := s.passwordHash()
-	if len(hash) == 0 {
+	if len(s.passwordHash()) == 0 {
 		// Nothing to log in to, answered rather than refused.
 		writeJSON(w, http.StatusOK, sessionView{Required: false, Authenticated: true})
 		return
@@ -580,13 +620,14 @@ func (s *Server) login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := bcrypt.CompareHashAndPassword(hash, []byte(req.Password)); err != nil {
+	if !s.passwordMatches(req.Password) {
 		try.fail()
 		// The same words whatever went wrong, so a malformed hash cannot be told
 		// from a wrong password.
 		writeError(w, http.StatusUnauthorized, errors.New("wrong password"))
 		return
 	}
+	s.upgradeHash(req.Password)
 
 	// With a second factor on, a right password alone grants nothing, and the
 	// failure count is not cleared either, so somebody who has the password

@@ -59,6 +59,11 @@ type Server struct {
 	// window runs: nobody else can reach it.
 	Security *security.Store
 
+	// Key is the install's key from security.LoadKey, which peppers the
+	// password hash. A server without one draws a key for its own lifetime,
+	// so a password it hashes does not outlive it.
+	Key []byte
+
 	// Log reports what a status code cannot, such as a setting that saved but
 	// could not be applied to the running process. Nil means silence.
 	Log func(format string, args ...any)

@@ -19,7 +19,7 @@ import (
 func TestTheBackupNeitherCarriesNorRemovesThePassword(t *testing.T) {
 	t.Setenv(web.PasswordHashEnv, "")
 	h := newHarness(t)
-	store, err := security.Open(h.configPath)
+	store, err := security.Open(h.configPath, nil)
 	if err != nil {
 		t.Fatal(err)
 	}

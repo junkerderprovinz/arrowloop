@@ -9,8 +9,6 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"golang.org/x/crypto/bcrypt"
-
 	"github.com/junkerderprovinz/arrowloop/internal/security"
 )
 
@@ -69,9 +67,37 @@ func (s *Server) checkCurrentPassword(w http.ResponseWriter, r *http.Request, cu
 		return false
 	}
 	defer try.done()
-	if err := bcrypt.CompareHashAndPassword(s.passwordHash(), []byte(current)); err != nil {
+	if !s.passwordMatches(current) {
 		try.fail()
 		writeError(w, http.StatusForbidden, errors.New("the current password is not right"))
+		return false
+	}
+	return true
+}
+
+// errChangedMeanwhile refuses a change checked against a password that
+// another change replaced before this one could be written.
+var errChangedMeanwhile = errors.New("the password was changed in the meantime; reload the page and try again")
+
+// changePassword applies a change to the password, counting it in the epoch,
+// but only while the password and the epoch are still the ones read before
+// the current password was checked. It answers the request itself when it
+// refuses.
+func (s *Server) changePassword(w http.ResponseWriter, before security.State, change func(*security.State)) bool {
+	err := s.Security.Update(func(st *security.State) error {
+		if st.PasswordHash != before.PasswordHash || st.Epoch != before.Epoch {
+			return errChangedMeanwhile
+		}
+		change(st)
+		st.Epoch++
+		return nil
+	})
+	switch {
+	case errors.Is(err, errChangedMeanwhile):
+		writeError(w, http.StatusConflict, err)
+		return false
+	case err != nil:
+		writeError(w, http.StatusInternalServerError, err)
 		return false
 	}
 	return true
@@ -108,6 +134,7 @@ func (s *Server) setPassword(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	before := s.Security.Get()
 	switch s.passwordSource() {
 	case passwordEnv:
 		writeError(w, http.StatusConflict, errPasswordFromEnv)
@@ -124,17 +151,15 @@ func (s *Server) setPassword(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, fmt.Errorf("the password needs at least %d characters", MinPasswordLen))
 		return
 	}
-	hash, err := HashPassword(body.Password)
+	hash, err := HashPassword(s.key(), body.Password)
 	if err != nil {
 		writeError(w, http.StatusBadRequest, err)
 		return
 	}
-	if err := s.Security.Update(func(st *security.State) error {
+	if !s.changePassword(w, before, func(st *security.State) {
 		st.PasswordHash = hash
 		st.Passkeys = nil
-		return nil
-	}); err != nil {
-		writeError(w, http.StatusInternalServerError, err)
+	}) {
 		return
 	}
 
@@ -166,16 +191,15 @@ func (s *Server) removePassword(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, http.StatusOK, s.securityView())
 		return
 	}
+	before := s.Security.Get()
 	if !s.checkCurrentPassword(w, r, body.Current) {
 		return
 	}
-	if err := s.Security.Update(func(st *security.State) error {
+	if !s.changePassword(w, before, func(st *security.State) {
 		st.PasswordHash = ""
 		st.TOTP = security.TOTP{}
 		st.Passkeys = nil
-		return nil
-	}); err != nil {
-		writeError(w, http.StatusInternalServerError, err)
+	}) {
 		return
 	}
 	// A session signed in under a password that is gone means nothing.

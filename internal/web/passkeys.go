@@ -220,7 +220,12 @@ func (s *Server) passkeyState() (security.State, error) {
 // passwordFingerprint tells one password hash from another without storing
 // the hash from the environment beside the passkeys.
 func (s *Server) passwordFingerprint() string {
-	sum := sha256.Sum256(s.passwordHash())
+	return fingerprint(s.passwordHash())
+}
+
+// fingerprint is the hex SHA-256 of a password hash.
+func fingerprint(hash []byte) string {
+	sum := sha256.Sum256(hash)
 	return hex.EncodeToString(sum[:])
 }
 

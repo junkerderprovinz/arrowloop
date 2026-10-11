@@ -487,3 +487,7 @@ func doJSON(t *testing.T, srv *httptest.Server, method, path, body string) (*htt
 	io.Copy(&buf, resp.Body)
 	return resp, buf.String()
 }
+
+// testKey stands in for the install's key, which peppers a password hash: a
+// hash made for a test server has to be made under that server's key.
+var testKey = []byte("0123456789abcdef0123456789abcdef")

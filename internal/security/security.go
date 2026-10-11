@@ -16,6 +16,7 @@ import (
 	"os"
 	"path/filepath"
 	"slices"
+	"strings"
 	"sync"
 )
 
@@ -73,10 +74,23 @@ type Passkey struct {
 	LastUsedAt int64 `json:"lastUsedAt,omitempty"`
 }
 
+// version is the layout this build writes. A file from a newer build is
+// refused rather than read with wrong assumptions and written back without
+// what this build does not know.
+const version = 1
+
 // State is the whole file.
 type State struct {
-	// PasswordHash is a bcrypt hash, or empty when the interface set none.
+	Version int `json:"version,omitempty"`
+
+	// PasswordHash is an Argon2id hash, or a bcrypt one an older build wrote,
+	// or empty when the interface set none.
 	PasswordHash string `json:"passwordHash,omitempty"`
+
+	// Epoch counts the changes of the password. A change checked against one
+	// password writes only while the epoch is still the one it read, so two
+	// changes at once cannot both win.
+	Epoch uint64 `json:"epoch,omitempty"`
 
 	TOTP TOTP `json:"totp"`
 
@@ -102,18 +116,21 @@ func (s State) clone() State {
 	return out
 }
 
-// Store is security.json, read once and written through.
+// Store is security.json, read once and written through. The second
+// factor's secret is in clear in memory and sealed with the key on disk.
 type Store struct {
 	mu   sync.Mutex
 	path string
+	key  []byte
 	now  State
 }
 
 // Open reads the file beside the given configuration file. A missing file is
 // an empty state. A file that cannot be read or parsed is an error rather than
 // an empty state, because an empty state is an install without a password.
-func Open(configPath string) (*Store, error) {
-	s := &Store{path: filepath.Join(filepath.Dir(configPath), FileName)}
+// A secret a build before sealing wrote in clear is sealed right away.
+func Open(configPath string, key []byte) (*Store, error) {
+	s := &Store{path: filepath.Join(filepath.Dir(configPath), FileName), key: key}
 	body, err := os.ReadFile(s.path)
 	if errors.Is(err, os.ErrNotExist) {
 		return s, nil
@@ -121,8 +138,22 @@ func Open(configPath string) (*Store, error) {
 	if err != nil {
 		return nil, fmt.Errorf("read %s: %w", s.path, err)
 	}
-	if err := json.Unmarshal(body, &s.now); err != nil {
+	var st State
+	if err := json.Unmarshal(body, &st); err != nil {
 		return nil, fmt.Errorf("%s is damaged (%v); delete it to start without a password, a second factor or passkeys", s.path, err)
+	}
+	if st.Version > version {
+		return nil, fmt.Errorf("%s was written by a newer ArrowLoop; update this one, or delete the file to start without a password, a second factor or passkeys", s.path)
+	}
+	inClear := st.TOTP.Secret != "" && !strings.HasPrefix(st.TOTP.Secret, sealedPrefix)
+	if st.TOTP.Secret, err = Unseal(key, st.TOTP.Secret); err != nil {
+		return nil, fmt.Errorf("the second factor in %s does not open: %w. Set %s to the key it was written with, or delete the file to start without a password, a second factor or passkeys", s.path, err, KeyEnv)
+	}
+	s.now = st
+	if inClear {
+		if err := s.write(st); err != nil {
+			return nil, err
+		}
 	}
 	return s, nil
 }
@@ -156,6 +187,14 @@ func (s *Store) Update(fn func(*State) error) error {
 
 // write replaces the file in one step, readable by the owner only.
 func (s *Store) write(st State) error {
+	st.Version = version
+	if st.TOTP.Secret != "" {
+		sealed, err := Seal(s.key, st.TOTP.Secret)
+		if err != nil {
+			return fmt.Errorf("seal the second factor: %w", err)
+		}
+		st.TOTP.Secret = sealed
+	}
 	body, err := json.MarshalIndent(st, "", "  ")
 	if err != nil {
 		return err

@@ -12,8 +12,6 @@ import (
 	"testing/fstest"
 	"time"
 
-	"golang.org/x/crypto/bcrypt"
-
 	"github.com/junkerderprovinz/arrowloop/internal/security"
 )
 
@@ -25,7 +23,7 @@ const uiPassword = "a long enough passphrase"
 func newSecured(t *testing.T) (*Server, *httptest.Server, *security.Store) {
 	t.Helper()
 	t.Setenv(PasswordHashEnv, "")
-	store, err := security.Open(filepath.Join(t.TempDir(), "arrowloop.json"))
+	store, err := security.Open(filepath.Join(t.TempDir(), "arrowloop.json"), nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -88,7 +86,7 @@ func codeAt(t *testing.T, at time.Time) string {
 // the lock on is the last one this browser could make without a session. It
 // has to come back signed in, or every control answers 401 until a reload.
 func TestSettingTheFirstPasswordSignsTheCallerIn(t *testing.T) {
-	_, srv, store := newSecured(t)
+	s, srv, store := newSecured(t)
 	c := browser(t)
 
 	resp, said := postAs(t, c, srv.URL+"/api/security/password", map[string]string{"password": uiPassword})
@@ -98,7 +96,7 @@ func TestSettingTheFirstPasswordSignsTheCallerIn(t *testing.T) {
 	if said["password"] != passwordFile {
 		t.Errorf("the answer says the password comes from %v, want %q", said["password"], passwordFile)
 	}
-	if bcrypt.CompareHashAndPassword([]byte(store.Get().PasswordHash), []byte(uiPassword)) != nil {
+	if !security.VerifyPassword(s.key(), uiPassword, store.Get().PasswordHash) {
 		t.Fatal("the stored hash does not verify the password that was set")
 	}
 
@@ -140,7 +138,7 @@ func TestNoAnswerCarriesTheHash(t *testing.T) {
 }
 
 func TestChangingThePasswordNeedsTheCurrentOne(t *testing.T) {
-	_, srv, store := newSecured(t)
+	s, srv, store := newSecured(t)
 	storePassword(t, store)
 	c := browser(t)
 	if resp, said := attemptLogin(t, srv, c, uiPassword); resp.StatusCode != http.StatusOK {
@@ -152,7 +150,7 @@ func TestChangingThePasswordNeedsTheCurrentOne(t *testing.T) {
 	if resp.StatusCode != http.StatusForbidden {
 		t.Fatalf("a wrong current password answered %s", resp.Status)
 	}
-	if bcrypt.CompareHashAndPassword([]byte(store.Get().PasswordHash), []byte(uiPassword)) != nil {
+	if !security.VerifyPassword(s.key(), uiPassword, store.Get().PasswordHash) {
 		t.Fatal("the password changed although the current one was wrong")
 	}
 
@@ -160,7 +158,7 @@ func TestChangingThePasswordNeedsTheCurrentOne(t *testing.T) {
 	if resp.StatusCode != http.StatusOK {
 		t.Fatalf("the change answered %s: %v", resp.Status, said)
 	}
-	if bcrypt.CompareHashAndPassword([]byte(store.Get().PasswordHash), []byte(next)) != nil {
+	if !security.VerifyPassword(s.key(), next, store.Get().PasswordHash) {
 		t.Fatal("the new password is not the one stored")
 	}
 }
@@ -489,5 +487,61 @@ func TestThePasswordLandsInItsOwnFile(t *testing.T) {
 	}
 	if strings.Contains(string(body), uiPassword) {
 		t.Error("security.json holds the password itself")
+	}
+}
+
+// A password an older build stored as bcrypt is stored again as Argon2id the
+// next time it is typed, and the passkeys registered under it stay.
+func TestALoginStoresAnOlderHashAgainAndKeepsThePasskeys(t *testing.T) {
+	s, srv, store := newSecured(t)
+	storePassword(t, store)
+	old := store.Get().PasswordHash
+	if err := store.Update(func(st *security.State) error {
+		st.Passkeys = []security.Passkey{{ID: "k", CredentialID: []byte("c"), PublicKey: []byte("p"), RPID: "localhost"}}
+		st.PasskeysUnder = fingerprint([]byte(old))
+		return nil
+	}); err != nil {
+		t.Fatal(err)
+	}
+
+	if resp, said := attemptLogin(t, srv, browser(t), uiPassword); resp.StatusCode != http.StatusOK {
+		t.Fatalf("logging in: %s %s", resp.Status, said)
+	}
+	st := store.Get()
+	if !strings.HasPrefix(st.PasswordHash, "argon2id$") || !security.VerifyPassword(s.key(), uiPassword, st.PasswordHash) {
+		t.Fatalf("the password was not stored again as Argon2id: %s", st.PasswordHash)
+	}
+	if len(st.Passkeys) != 1 || st.PasskeysUnder != fingerprint([]byte(st.PasswordHash)) {
+		t.Errorf("the passkeys did not follow the new hash: %d keys under %s", len(st.Passkeys), st.PasskeysUnder)
+	}
+}
+
+// A change checked against one password must not land over another change
+// that won the race, such as a second tab setting a different password.
+func TestAChangeCheckedAgainstAPasswordThatMovedOnIsRefused(t *testing.T) {
+	s, _, store := newSecured(t)
+	storePassword(t, store)
+	stale := store.Get()
+	if err := store.Update(func(st *security.State) error { st.PasswordHash = "replaced"; st.Epoch++; return nil }); err != nil {
+		t.Fatal(err)
+	}
+
+	rec := httptest.NewRecorder()
+	if s.changePassword(rec, stale, func(st *security.State) { st.PasswordHash = "" }) {
+		t.Fatal("a change checked against the old password went through")
+	}
+	if rec.Code != http.StatusConflict {
+		t.Errorf("it answered %d", rec.Code)
+	}
+	if store.Get().PasswordHash != "replaced" {
+		t.Error("the winning change was overwritten")
+	}
+
+	fresh := store.Get()
+	if !s.changePassword(httptest.NewRecorder(), fresh, func(st *security.State) { st.PasswordHash = "" }) {
+		t.Fatal("a change checked against the password in force was refused")
+	}
+	if store.Get().Epoch != fresh.Epoch+1 {
+		t.Errorf("the change was not counted in the epoch: %d", store.Get().Epoch)
 	}
 }

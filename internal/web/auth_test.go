@@ -16,6 +16,8 @@ import (
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
+
+	"github.com/junkerderprovinz/arrowloop/internal/security"
 )
 
 // These tests are in the package so they can shorten the session lifetime and
@@ -432,25 +434,23 @@ func TestOnlyTheLoginRoutesAreOpen(t *testing.T) {
 }
 
 func TestHashPasswordRoundTrips(t *testing.T) {
-	hash, err := HashPassword(guardedPassword)
+	key := []byte("0123456789abcdef0123456789abcdef")
+	hash, err := HashPassword(key, guardedPassword)
 	if err != nil {
 		t.Fatalf("hash a password: %v", err)
 	}
 	if strings.Contains(hash, guardedPassword) {
 		t.Fatal("the hash contains the password itself")
 	}
-	if err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(guardedPassword)); err != nil {
-		t.Errorf("the hash does not verify its own password: %v", err)
+	if !security.VerifyPassword(key, guardedPassword, hash) {
+		t.Error("the hash does not verify its own password")
 	}
-	if err := bcrypt.CompareHashAndPassword([]byte(hash), []byte("something else")); err == nil {
+	if security.VerifyPassword(key, "something else", hash) {
 		t.Error("the hash verifies a password it was not made from")
 	}
 
-	if _, err := HashPassword("   "); err == nil {
+	if _, err := HashPassword(key, "   "); err == nil {
 		t.Error("an empty password was accepted, which would look like protection and be none")
-	}
-	if _, err := HashPassword(strings.Repeat("x", 73)); err == nil || !strings.Contains(err.Error(), "72 bytes") {
-		t.Errorf("a password bcrypt cannot hash gave %v", err)
 	}
 }
 

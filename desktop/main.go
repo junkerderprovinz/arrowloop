@@ -29,6 +29,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/engine"
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/job"
+	"github.com/junkerderprovinz/arrowloop/internal/security"
 	"github.com/junkerderprovinz/arrowloop/internal/web"
 	webui "github.com/junkerderprovinz/arrowloop/web"
 )
@@ -125,6 +126,11 @@ func run() error {
 	if err != nil {
 		return err
 	}
+	// Checks a password that ARROWLOOP_PASSWORD_HASH sets for this window.
+	key, err := security.LoadKey(configPath)
+	if err != nil {
+		return err
+	}
 	if err := engine.StartAccounting(ctx, cfg.BwLimit); err != nil {
 		return err
 	}
@@ -149,6 +155,7 @@ func run() error {
 		Placeholder: webui.Placeholder,
 		Window:      window,
 		OpenWindow:  sh.showMain,
+		Key:         key,
 		Log:         desktopLog,
 	}).Handler()
 

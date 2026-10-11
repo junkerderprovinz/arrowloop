@@ -11,18 +11,25 @@ import (
 
 	"golang.org/x/term"
 
+	"github.com/junkerderprovinz/arrowloop/internal/security"
 	"github.com/junkerderprovinz/arrowloop/internal/web"
 )
 
 // cmdHashPassword prints the value ARROWLOOP_PASSWORD_HASH wants. The password
 // comes from standard input rather than a flag, so it never lands in a shell
-// history or a process list.
+// history or a process list. The hash is peppered with the key of the install
+// whose configuration -config names, so it is made where that install runs.
 func cmdHashPassword(args []string) error {
 	fset := flag.NewFlagSet("hash-password", flag.ExitOnError)
+	configPath := fset.String("config", defaultConfig, "the configuration file of the install the password is for")
 	fset.Usage = func() {
-		fmt.Fprintln(fset.Output(), "usage: arrowloop hash-password, then type the password, or pipe it in on one line")
+		fmt.Fprintln(fset.Output(), "usage: arrowloop hash-password [-config file], then type the password, or pipe it in on one line")
 	}
 	if err := fset.Parse(args); err != nil {
+		return err
+	}
+	key, err := security.LoadKey(*configPath)
+	if err != nil {
 		return err
 	}
 
@@ -30,7 +37,7 @@ func cmdHashPassword(args []string) error {
 	if err != nil {
 		return err
 	}
-	hash, err := web.HashPassword(plain)
+	hash, err := web.HashPassword(key, plain)
 	if err != nil {
 		return err
 	}

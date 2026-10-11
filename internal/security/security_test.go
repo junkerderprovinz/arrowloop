@@ -11,7 +11,7 @@ import (
 
 func openIn(t *testing.T, dir string) *Store {
 	t.Helper()
-	s, err := Open(filepath.Join(dir, "arrowloop.json"))
+	s, err := Open(filepath.Join(dir, "arrowloop.json"), testKey)
 	if err != nil {
 		t.Fatalf("Open: %v", err)
 	}
@@ -54,7 +54,7 @@ func TestADamagedFileIsRefusedRatherThanIgnored(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(dir, FileName), []byte("{not json"), 0o600); err != nil {
 		t.Fatal(err)
 	}
-	_, err := Open(filepath.Join(dir, "arrowloop.json"))
+	_, err := Open(filepath.Join(dir, "arrowloop.json"), testKey)
 	if err == nil {
 		t.Fatal("a damaged security file was read as an install without a password")
 	}
@@ -224,5 +224,71 @@ func TestPasskeysGoWithThePasswordTheyWereAddedUnder(t *testing.T) {
 	}
 	if n := len(openIn(t, dir).Get().Passkeys); n != 0 {
 		t.Errorf("another password left %d passkeys in the file", n)
+	}
+}
+
+// testKey stands in for an install's key.
+var testKey = []byte("0123456789abcdef0123456789abcdef")
+
+// sampleSecret is the RFC 6238 test secret, nobody's real one.
+const sampleSecret = "GEZDGNBVGY3TQOJQ" // gitleaks:allow
+
+// The second factor's secret is what a stolen file would need to make codes.
+func TestTheSecondFactorIsSealedOnDisk(t *testing.T) {
+	dir := t.TempDir()
+	config := filepath.Join(dir, "arrowloop.json")
+	s, err := Open(config, testKey)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := s.Update(func(st *State) error { st.TOTP.Secret = sampleSecret; return nil }); err != nil {
+		t.Fatal(err)
+	}
+	body, err := os.ReadFile(filepath.Join(dir, FileName))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Contains(string(body), sampleSecret) || !strings.Contains(string(body), sealedPrefix) {
+		t.Fatalf("the secret is in the file in clear:\n%s", body)
+	}
+
+	again, err := Open(config, testKey)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if again.Get().TOTP.Secret != sampleSecret {
+		t.Errorf("the secret came back as %q", again.Get().TOTP.Secret)
+	}
+	if _, err := Open(config, []byte("another key, thirty-two bytes..")); err == nil {
+		t.Error("the file opened under another key")
+	}
+}
+
+func TestASecretAnOlderBuildLeftInClearIsSealed(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, FileName)
+	if err := os.WriteFile(path, []byte(`{"passwordHash":"x","totp":{"secret":"`+sampleSecret+`","enabled":true}}`), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	s, err := Open(filepath.Join(dir, "arrowloop.json"), testKey)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if s.Get().TOTP.Secret != sampleSecret {
+		t.Fatalf("the secret read as %q", s.Get().TOTP.Secret)
+	}
+	body, _ := os.ReadFile(path)
+	if strings.Contains(string(body), sampleSecret) {
+		t.Errorf("the secret is still in clear:\n%s", body)
+	}
+}
+
+func TestAFileFromANewerBuildIsRefused(t *testing.T) {
+	dir := t.TempDir()
+	if err := os.WriteFile(filepath.Join(dir, FileName), []byte(`{"version":99,"passwordHash":"x"}`), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := Open(filepath.Join(dir, "arrowloop.json"), testKey); err == nil || !strings.Contains(err.Error(), "newer") {
+		t.Errorf("a file from a newer build gave %v", err)
 	}
 }
