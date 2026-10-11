@@ -224,6 +224,7 @@ const ar: Translations = {
   'entry.binned': 'نُقل إلى سلة المهملات',
   'entry.folderMade': 'أُنشئ مجلد',
   'entry.folderDeleted': 'حُذف مجلد',
+  'error.passwordNotSet': 'عيّن أولاً كلمة مرور في الإعدادات، الأمان. من دونها يستطيع كل من يصل إلى هذا العنوان قراءة الإعدادات المحفوظة أو الحذف نهائياً.',
   'history.ok': 'اكتمل',
   'history.failed': 'خطأ',
   'history.copied': 'منسوخة: {count}',

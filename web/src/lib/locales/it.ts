@@ -224,6 +224,7 @@ const it: Translations = {
   'entry.binned': 'Spostato nel cestino',
   'entry.folderMade': 'Cartella creata',
   'entry.folderDeleted': 'Cartella eliminata',
+  'error.passwordNotSet': 'Imposta prima una password in Impostazioni, Sicurezza. Senza, chiunque raggiunga questo indirizzo potrebbe leggere le impostazioni salvate o eliminare per sempre.',
   'history.ok': 'Completato',
   'history.failed': 'Errore',
   'history.copied': 'copiati: {count}',

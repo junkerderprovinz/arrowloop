@@ -224,6 +224,7 @@ const id: Translations = {
   'entry.binned': 'Dipindah ke tempat sampah',
   'entry.folderMade': 'Folder dibuat',
   'entry.folderDeleted': 'Folder dihapus',
+  'error.passwordNotSet': 'Atur dulu kata sandi di Pengaturan, Keamanan. Tanpa itu, siapa pun yang mencapai alamat ini bisa membaca pengaturan yang tersimpan atau menghapus untuk selamanya.',
   'history.ok': 'Selesai',
   'history.failed': 'Galat',
   'history.copied': 'disalin: {count}',

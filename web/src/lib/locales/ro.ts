@@ -224,6 +224,7 @@ const ro: Translations = {
   'entry.binned': 'Mutat la coș',
   'entry.folderMade': 'Dosar creat',
   'entry.folderDeleted': 'Dosar șters',
+  'error.passwordNotSet': 'Setează mai întâi o parolă în Setări, Securitate. Fără ea, oricine ajunge la această adresă ar putea citi setările salvate sau șterge definitiv.',
   'history.ok': 'Finalizat',
   'history.failed': 'Eroare',
   'history.copied': 'copiate: {count}',

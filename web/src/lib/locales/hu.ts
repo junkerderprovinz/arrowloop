@@ -224,6 +224,7 @@ const hu: Translations = {
   'entry.binned': 'A kukába került',
   'entry.folderMade': 'Mappa létrehozva',
   'entry.folderDeleted': 'Mappa törölve',
+  'error.passwordNotSet': 'Előbb állíts be jelszót a Beállítások, Biztonság alatt. Nélküle bárki, aki eléri ezt a címet, elolvashatná a mentett beállításokat vagy végleg törölhetne.',
   'history.ok': 'Befejezve',
   'history.failed': 'Hiba',
   'history.copied': 'másolva: {count}',

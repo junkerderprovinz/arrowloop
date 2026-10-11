@@ -225,3 +225,41 @@ func TestAChangeHasToBeSentAsJSON(t *testing.T) {
 		t.Errorf("a GET without a type answered %d", code)
 	}
 }
+
+// Without a password the open port is all that stands between a stranger on
+// the network and the saved secrets or a lasting deletion.
+func TestWithoutAPasswordTheSecretsAndLastingDeletionsAreRefused(t *testing.T) {
+	t.Setenv(web.PasswordHashEnv, "")
+	srv := newGuardedServer(t)
+	json := map[string]string{"Content-Type": "application/json"}
+
+	refused := []struct{ method, path string }{
+		{http.MethodGet, "/api/config/raw"},
+		{http.MethodPut, "/api/config/raw"},
+		{http.MethodDelete, "/api/jobs/photos/state"},
+		{http.MethodDelete, "/api/remotes/cloud"},
+		{http.MethodPost, "/api/jobs/photos/trash/left/empty"},
+		{http.MethodPost, "/api/jobs/photos/trash/right/delete"},
+		{http.MethodPost, "/api/jobs/photos/trash/left/prune"},
+		{http.MethodPost, "/api/jobs/x/../photos/trash/left/empty"},
+	}
+	for _, c := range refused {
+		if code := send(t, srv, c.method, c.path, json, ""); code != http.StatusForbidden {
+			t.Errorf("%s %s answered %d without a password", c.method, c.path, code)
+		}
+	}
+	if code := send(t, srv, http.MethodPost, "/api/jobs/photos/trash/left/restore", json, ""); code == http.StatusForbidden {
+		t.Error("putting a file back out of the trash was refused, though it deletes nothing")
+	}
+}
+
+// The phone app's engine has no password and is reached only by the app.
+func TestTheAppMayDoWithoutAPassword(t *testing.T) {
+	t.Setenv(web.PasswordHashEnv, "")
+	t.Setenv(web.AppTokenEnv, "the-apps-secret")
+	srv := newGuardedServer(t)
+	header := map[string]string{"X-ArrowLoop-Token": "the-apps-secret"}
+	if code := send(t, srv, http.MethodGet, "/api/config/raw", header, ""); code != http.StatusOK {
+		t.Errorf("the app's backup answered %d", code)
+	}
+}

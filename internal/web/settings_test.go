@@ -153,3 +153,49 @@ func TestReadingBackGivesTheSettingsAndNotTheJobs(t *testing.T) {
 		t.Error("the settings came back carrying the whole job list")
 	}
 }
+
+// The Matrix token posts as the account and a webhook's address is its own
+// key, so neither goes back to the screen, and the placeholder the screen
+// sends back keeps them.
+func TestTheNotificationSecretsStayOnTheServer(t *testing.T) {
+	h := newHarness(t)
+	srv := newServer(t, &web.Server{History: h.history, Runner: h.runner})
+
+	put := func(notify map[string]any) map[string]any {
+		t.Helper()
+		body, _ := json.Marshal(map[string]any{"notify": notify})
+		req, _ := http.NewRequest(http.MethodPut, srv.URL+"/api/settings", bytes.NewReader(body))
+		req.Header.Set("Content-Type", "application/json")
+		resp, err := srv.Client().Do(req)
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer resp.Body.Close()
+		var got map[string]any
+		if err := json.NewDecoder(resp.Body).Decode(&got); err != nil {
+			t.Fatal(err)
+		}
+		return got
+	}
+	matrix := map[string]any{"homeserver": "https://matrix.example.org", "room": "!a:example.org", "token": "syt_secret"}
+	got := put(map[string]any{"matrix": matrix, "webhook": "https://hooks.example/abc"})
+	if bytes.Contains(mustJSON(t, got), []byte("syt_secret")) || bytes.Contains(mustJSON(t, got), []byte("hooks.example")) {
+		t.Fatalf("the answer carries a secret: %v", got)
+	}
+
+	matrix["token"] = "********"
+	put(map[string]any{"matrix": matrix, "webhook": "********"})
+	n := h.runner.Config().Notify
+	if n.Matrix == nil || n.Matrix.Token != "syt_secret" || n.Webhook != "https://hooks.example/abc" {
+		t.Errorf("the placeholder replaced what was stored: %+v %+v", n, n.Matrix)
+	}
+}
+
+func mustJSON(t *testing.T, v any) []byte {
+	t.Helper()
+	b, err := json.Marshal(v)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return b
+}

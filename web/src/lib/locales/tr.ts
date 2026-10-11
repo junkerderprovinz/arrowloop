@@ -224,6 +224,7 @@ const tr: Translations = {
   'entry.binned': 'Çöp kutusuna taşındı',
   'entry.folderMade': 'Klasör oluşturuldu',
   'entry.folderDeleted': 'Klasör silindi',
+  'error.passwordNotSet': 'Önce Ayarlar, Güvenlik altında bir parola belirle. Parola olmadan bu adrese ulaşan herkes kayıtlı ayarları okuyabilir ya da kalıcı olarak silebilir.',
   'history.ok': 'Tamamlandı',
   'history.failed': 'Hata',
   'history.copied': 'kopyalanan: {count}',

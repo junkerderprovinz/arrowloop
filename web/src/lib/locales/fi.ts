@@ -224,6 +224,7 @@ const fi: Translations = {
   'entry.binned': 'Siirretty roskakoriin',
   'entry.folderMade': 'Kansio luotu',
   'entry.folderDeleted': 'Kansio poistettu',
+  'error.passwordNotSet': 'Aseta ensin salasana kohdassa Asetukset, Turvallisuus. Ilman sitä kuka tahansa tähän osoitteeseen pääsevä voisi lukea tallennetut asetukset tai poistaa pysyvästi.',
   'history.ok': 'Valmis',
   'history.failed': 'Virhe',
   'history.copied': 'kopioitu: {count}',

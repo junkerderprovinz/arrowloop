@@ -224,6 +224,7 @@ const pt: Translations = {
   'entry.binned': 'Movido para a reciclagem',
   'entry.folderMade': 'Pasta criada',
   'entry.folderDeleted': 'Pasta apagada',
+  'error.passwordNotSet': 'Define primeiro uma palavra-passe em Definições, Segurança. Sem ela, qualquer pessoa que chegue a este endereço poderia ler as definições guardadas ou apagar de vez.',
   'history.ok': 'Concluído',
   'history.failed': 'Erro',
   'history.copied': 'copiados: {count}',

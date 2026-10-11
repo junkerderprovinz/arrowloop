@@ -224,6 +224,7 @@ const he: Translations = {
   'entry.binned': 'הועבר לסל האשפה',
   'entry.folderMade': 'תיקייה נוצרה',
   'entry.folderDeleted': 'תיקייה נמחקה',
+  'error.passwordNotSet': 'קודם הגדר סיסמה בהגדרות, אבטחה. בלעדיה כל מי שמגיע לכתובת הזו יכול לקרוא את ההגדרות השמורות או למחוק לצמיתות.',
   'history.ok': 'הושלם',
   'history.failed': 'שגיאה',
   'history.copied': 'הועתקו: {count}',

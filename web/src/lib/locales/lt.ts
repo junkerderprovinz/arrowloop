@@ -224,6 +224,7 @@ const lt: Translations = {
   'entry.binned': 'Perkelta į šiukšlinę',
   'entry.folderMade': 'Aplankas sukurtas',
   'entry.folderDeleted': 'Aplankas ištrintas',
+  'error.passwordNotSet': 'Pirmiausia nustatyk slaptažodį skiltyje Nustatymai, Saugumas. Be jo bet kas, pasiekęs šį adresą, galėtų skaityti išsaugotus nustatymus arba ištrinti visam laikui.',
   'history.ok': 'Baigta',
   'history.failed': 'Klaida',
   'history.copied': 'nukopijuota: {count}',

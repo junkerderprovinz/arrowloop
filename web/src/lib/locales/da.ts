@@ -224,6 +224,7 @@ const da: Translations = {
   'entry.binned': 'Flyttet til papirkurven',
   'entry.folderMade': 'Mappe oprettet',
   'entry.folderDeleted': 'Mappe slettet',
+  'error.passwordNotSet': 'Angiv først en adgangskode under Indstillinger, Sikkerhed. Uden en kan alle, der når denne adresse, læse de gemte indstillinger eller slette for altid.',
   'history.ok': 'Fuldført',
   'history.failed': 'Fejl',
   'history.copied': 'kopieret: {count}',

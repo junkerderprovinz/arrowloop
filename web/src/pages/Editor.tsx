@@ -17,6 +17,7 @@ import { followPatch, followsDefaults } from '../lib/follows'
 import { useGoTo } from '../lib/goTo'
 import { MODES } from '../lib/modes'
 import { usePlaces } from '../lib/places'
+import { errorText } from '../lib/errorText'
 import { useT } from '../lib/i18n'
 
 /**
@@ -191,7 +192,7 @@ export function useJobConfig(onSaved: () => void) {
           try {
             await api.forgetJobState(saved)
           } catch (e) {
-            setError((e as Error).message)
+            setError(errorText(t, e))
           }
         }
         if (!(await writeOne((file) => file.filter((j) => j.name !== saved)))) return

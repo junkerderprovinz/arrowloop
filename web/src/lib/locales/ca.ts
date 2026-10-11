@@ -224,6 +224,7 @@ const ca: Translations = {
   'entry.binned': 'Mogut a la paperera',
   'entry.folderMade': 'Carpeta creada',
   'entry.folderDeleted': 'Carpeta suprimida',
+  'error.passwordNotSet': 'Primer posa una contrasenya a Configuració, Seguretat. Sense, qualsevol que arribi a aquesta adreça podria llegir la configuració desada o esborrar per sempre.',
   'history.ok': 'Completat',
   'history.failed': 'Error',
   'history.copied': 'copiats: {count}',

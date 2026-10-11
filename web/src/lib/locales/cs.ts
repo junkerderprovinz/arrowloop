@@ -224,6 +224,7 @@ const cs: Translations = {
   'entry.binned': 'Přesunuto do koše',
   'entry.folderMade': 'Složka vytvořena',
   'entry.folderDeleted': 'Složka smazána',
+  'error.passwordNotSet': 'Nejdřív nastav heslo v Nastavení, Zabezpečení. Bez něj by kdokoli, kdo se dostane na tuto adresu, mohl číst uložená nastavení nebo natrvalo mazat.',
   'history.ok': 'Dokončeno',
   'history.failed': 'Chyba',
   'history.copied': 'zkopírováno: {count}',

@@ -24,6 +24,7 @@ import { useToast } from '../lib/toast'
 import { optionHint } from '../lib/optionHint'
 import { optionLabel } from '../lib/optionNames'
 import { suggestTargetName } from '../lib/targetName'
+import { errorText } from '../lib/errorText'
 import { Since } from './Jobs'
 
 /** The storage targets and registered drives a job's sides can point at. */
@@ -364,7 +365,7 @@ function RemoteRow({
             api
               .deleteRemote(remote.name)
               .then(onChanged)
-              .catch((e: Error) => push(e.message, 'fail'))
+              .catch((e: Error) => push(errorText(t, e), 'fail'))
           }}
         />
       )}

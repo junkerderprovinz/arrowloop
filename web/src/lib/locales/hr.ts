@@ -224,6 +224,7 @@ const hr: Translations = {
   'entry.binned': 'Premješteno u smeće',
   'entry.folderMade': 'Mapa stvorena',
   'entry.folderDeleted': 'Mapa izbrisana',
+  'error.passwordNotSet': 'Najprije postavi lozinku u Postavkama, Sigurnost. Bez nje bi svatko tko dođe do ove adrese mogao čitati spremljene postavke ili trajno brisati.',
   'history.ok': 'Dovršeno',
   'history.failed': 'Greška',
   'history.copied': 'kopirano: {count}',

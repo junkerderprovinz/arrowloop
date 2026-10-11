@@ -224,6 +224,7 @@ const vi: Translations = {
   'entry.binned': 'Đã chuyển vào thùng rác',
   'entry.folderMade': 'Đã tạo thư mục',
   'entry.folderDeleted': 'Đã xóa thư mục',
+  'error.passwordNotSet': 'Hãy đặt mật khẩu trước trong Cài đặt, Bảo mật. Không có mật khẩu, bất kỳ ai tới được địa chỉ này đều có thể đọc cài đặt đã lưu hoặc xóa vĩnh viễn.',
   'history.ok': 'Hoàn tất',
   'history.failed': 'Lỗi',
   'history.copied': 'đã sao chép: {count}',

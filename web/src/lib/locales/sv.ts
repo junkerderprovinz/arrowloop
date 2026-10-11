@@ -224,6 +224,7 @@ const sv: Translations = {
   'entry.binned': 'Flyttad till papperskorgen',
   'entry.folderMade': 'Mapp skapad',
   'entry.folderDeleted': 'Mapp raderad',
+  'error.passwordNotSet': 'Ange först ett lösenord under Inställningar, Säkerhet. Utan det kan alla som når den här adressen läsa de sparade inställningarna eller radera för gott.',
   'history.ok': 'Slutförd',
   'history.failed': 'Fel',
   'history.copied': 'kopierade: {count}',

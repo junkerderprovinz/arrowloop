@@ -224,6 +224,7 @@ const sr: Translations = {
   'entry.binned': 'Премештено у корпу',
   'entry.folderMade': 'Фасцикла направљена',
   'entry.folderDeleted': 'Фасцикла обрисана',
+  'error.passwordNotSet': 'Прво постави лозинку у Подешавањима, Безбедност. Без ње би свако ко стигне до ове адресе могао да чита сачувана подешавања или трајно брише.',
   'history.ok': 'Завршено',
   'history.failed': 'Грешка',
   'history.copied': 'копирано: {count}',

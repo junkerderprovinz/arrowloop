@@ -224,6 +224,7 @@ const fr: Translations = {
   'entry.binned': 'Mis à la corbeille',
   'entry.folderMade': 'Dossier créé',
   'entry.folderDeleted': 'Dossier supprimé',
+  'error.passwordNotSet': 'Définis d’abord un mot de passe dans Réglages, Sécurité. Sans lui, quiconque atteint cette adresse pourrait lire les réglages enregistrés ou supprimer définitivement.',
   'history.ok': 'Terminé',
   'history.failed': 'Erreur',
   'history.copied': 'copiés : {count}',

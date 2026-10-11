@@ -224,6 +224,7 @@ const et: Translations = {
   'entry.binned': 'Prügikasti teisaldatud',
   'entry.folderMade': 'Kaust loodud',
   'entry.folderDeleted': 'Kaust kustutatud',
+  'error.passwordNotSet': 'Määra kõigepealt parool jaotises Seaded, Turvalisus. Ilma selleta võiks igaüks, kes selle aadressini jõuab, salvestatud seadeid lugeda või jäädavalt kustutada.',
   'history.ok': 'Lõpetatud',
   'history.failed': 'Viga',
   'history.copied': 'kopeeritud: {count}',

@@ -224,6 +224,7 @@ const th: Translations = {
   'entry.binned': 'ย้ายไปถังขยะแล้ว',
   'entry.folderMade': 'สร้างโฟลเดอร์แล้ว',
   'entry.folderDeleted': 'ลบโฟลเดอร์แล้ว',
+  'error.passwordNotSet': 'ตั้งรหัสผ่านก่อนที่การตั้งค่า ความปลอดภัย หากไม่มีรหัสผ่าน ใครก็ตามที่เข้าถึงที่อยู่นี้ได้จะอ่านการตั้งค่าที่บันทึกไว้หรือลบถาวรได้',
   'history.ok': 'เสร็จสิ้น',
   'history.failed': 'ข้อผิดพลาด',
   'history.copied': 'คัดลอก: {count}',

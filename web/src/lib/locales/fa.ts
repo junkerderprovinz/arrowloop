@@ -224,6 +224,7 @@ const fa: Translations = {
   'entry.binned': 'به سطل زباله جابه‌جا شد',
   'entry.folderMade': 'پوشه ساخته شد',
   'entry.folderDeleted': 'پوشه حذف شد',
+  'error.passwordNotSet': 'اول در تنظیمات، امنیت یک گذرواژه بگذار. بدون آن هر کسی که به این نشانی برسد می‌تواند تنظیمات ذخیره‌شده را بخواند یا برای همیشه حذف کند.',
   'history.ok': 'تکمیل شد',
   'history.failed': 'خطا',
   'history.copied': 'رونوشت‌شده: {count}',

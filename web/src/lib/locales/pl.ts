@@ -224,6 +224,7 @@ const pl: Translations = {
   'entry.binned': 'Przeniesiono do kosza',
   'entry.folderMade': 'Folder utworzony',
   'entry.folderDeleted': 'Folder usunięty',
+  'error.passwordNotSet': 'Najpierw ustaw hasło w Ustawieniach, Bezpieczeństwo. Bez niego każdy, kto dotrze do tego adresu, mógłby czytać zapisane ustawienia albo usuwać na zawsze.',
   'history.ok': 'Zakończono',
   'history.failed': 'Błąd',
   'history.copied': 'skopiowane: {count}',

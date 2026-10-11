@@ -224,6 +224,7 @@ const es: Translations = {
   'entry.binned': 'Movido a la papelera',
   'entry.folderMade': 'Carpeta creada',
   'entry.folderDeleted': 'Carpeta borrada',
+  'error.passwordNotSet': 'Primero pon una contraseña en Ajustes, Seguridad. Sin ella, cualquiera que llegue a esta dirección podría leer los ajustes guardados o borrar para siempre.',
   'history.ok': 'Completado',
   'history.failed': 'Error',
   'history.copied': 'copiados: {count}',

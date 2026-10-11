@@ -224,6 +224,7 @@ const gl: Translations = {
   'entry.binned': 'Movido ao lixo',
   'entry.folderMade': 'Cartafol creado',
   'entry.folderDeleted': 'Cartafol borrado',
+  'error.passwordNotSet': 'Primeiro pon un contrasinal en Axustes, Seguranza. Sen el, calquera que chegue a este enderezo podería ler os axustes gardados ou borrar para sempre.',
   'history.ok': 'Completado',
   'history.failed': 'Erro',
   'history.copied': 'copiados: {count}',

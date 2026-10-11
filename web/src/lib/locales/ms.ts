@@ -224,6 +224,7 @@ const ms: Translations = {
   'entry.binned': 'Dialihkan ke tong sampah',
   'entry.folderMade': 'Folder dibuat',
   'entry.folderDeleted': 'Folder dipadam',
+  'error.passwordNotSet': 'Tetapkan kata laluan dahulu di Tetapan, Keselamatan. Tanpanya, sesiapa yang sampai ke alamat ini boleh membaca tetapan yang disimpan atau memadam untuk selamanya.',
   'history.ok': 'Selesai',
   'history.failed': 'Ralat',
   'history.copied': 'disalin: {count}',

@@ -224,6 +224,7 @@ const ko: Translations = {
   'entry.binned': '휴지통으로 이동함',
   'entry.folderMade': '폴더 만듦',
   'entry.folderDeleted': '폴더 삭제함',
+  'error.passwordNotSet': '먼저 설정, 보안에서 비밀번호를 정하세요. 비밀번호가 없으면 이 주소에 닿는 누구나 저장된 설정을 읽거나 영구히 삭제할 수 있습니다.',
   'history.ok': '완료',
   'history.failed': '오류',
   'history.copied': '복사: {count}',

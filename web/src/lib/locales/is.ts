@@ -224,6 +224,7 @@ const is: Translations = {
   'entry.binned': 'Fært í ruslið',
   'entry.folderMade': 'Mappa búin til',
   'entry.folderDeleted': 'Möppu eytt',
+  'error.passwordNotSet': 'Settu fyrst lykilorð undir Stillingar, Öryggi. Án þess gæti hver sem nær þessu vistfangi lesið vistaðar stillingar eða eytt fyrir fullt og allt.',
   'history.ok': 'Lokið',
   'history.failed': 'Villa',
   'history.copied': 'afrituð: {count}',

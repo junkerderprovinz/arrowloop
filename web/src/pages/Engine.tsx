@@ -165,11 +165,11 @@ export function Engine() {
             <Secret value={matrix.token} onChange={(v) => setMatrix({ token: v })} />
           </Field>
           <Field label={t('engine.webhook')} hint={t('engine.webhookHint')}>
-            <Text
+            {/* A webhook's address is its own key, so it is kept like the token. */}
+            <Secret
               value={typeof draft.notify?.webhook === 'string' ? draft.notify.webhook : ''}
               onChange={(v) => patch({ notify: { ...draft.notify, webhook: v } })}
               placeholder="https://example.org/hook"
-              mono
             />
           </Field>
           <ToggleRow

@@ -224,6 +224,7 @@ const eu: Translations = {
   'entry.binned': 'Zakarrontzira mugituta',
   'entry.folderMade': 'Karpeta sortuta',
   'entry.folderDeleted': 'Karpeta ezabatuta',
+  'error.passwordNotSet': 'Ezarri lehenik pasahitz bat Ezarpenak, Segurtasuna atalean. Hura gabe, helbide honetara iristen den edonork ezarpen gordeak irakurri edo betiko ezabatu lezake.',
   'history.ok': 'Osatuta',
   'history.failed': 'Errorea',
   'history.copied': 'kopiatuta: {count}',

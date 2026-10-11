@@ -12,6 +12,8 @@ import (
 	"net/http"
 	"net/netip"
 	"os"
+	"path"
+	"regexp"
 	"strings"
 )
 
@@ -28,6 +30,7 @@ func (s *Server) Guard(next http.Handler) http.Handler {
 		writeError(w, http.StatusForbidden, errors.New("a page from another site cannot change anything here"))
 	}))
 	allowed := hostList(os.Getenv(HostsEnv))
+	token := os.Getenv(AppTokenEnv)
 	guarded := crossOrigin.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// A page on attacker.example whose name is re-pointed at this machine
 		// is same-origin to the browser. With a password that page has no
@@ -47,10 +50,18 @@ func (s *Server) Guard(next http.Handler) http.Handler {
 			writeError(w, http.StatusUnsupportedMediaType, errors.New("a change has to be sent as JSON, with Content-Type: application/json"))
 			return
 		}
+		// With a token only the phone app that started this engine gets this
+		// far, and it needs no password to keep a stranger out.
+		if token == "" && len(s.passwordHash()) == 0 && needsPassword(r.Method, r.URL.Path) {
+			writeJSON(w, http.StatusForbidden, map[string]string{
+				"code":  passwordNotSet,
+				"error": "set a password under Settings, Security first: without one, anybody who reaches this port could read the saved settings or delete for good",
+			})
+			return
+		}
 		next.ServeHTTP(w, r)
 	}))
 
-	token := os.Getenv(AppTokenEnv)
 	if token == "" {
 		return guarded
 	}
@@ -64,6 +75,40 @@ func (s *Server) Guard(next http.Handler) http.Handler {
 		}
 		guarded.ServeHTTP(w, r)
 	})
+}
+
+// passwordNotSet is the code a route answers with that needs a password set
+// on this install before it does anything.
+const passwordNotSet = "password-not-set"
+
+// guardedWithoutPassword are the routes a server on a network port refuses
+// while no password is set, since the open port is then all that stands
+// between a stranger on the network and them: the backup carries the
+// notification secrets and the hook commands, a restore replaces every job,
+// and the rest deletes for good. The phone and the desktop window are not
+// asked, as no stranger reaches them.
+var guardedWithoutPassword = []struct {
+	method  string
+	pattern *regexp.Regexp
+}{
+	{http.MethodGet, regexp.MustCompile(`^/api/config/raw$`)},
+	{http.MethodPut, regexp.MustCompile(`^/api/config/raw$`)},
+	{http.MethodDelete, regexp.MustCompile(`^/api/jobs/[^/]+/state$`)},
+	{http.MethodDelete, regexp.MustCompile(`^/api/remotes/[^/]+$`)},
+	{http.MethodPost, regexp.MustCompile(`^/api/jobs/[^/]+/trash/[^/]+/(delete|empty|prune)$`)},
+}
+
+// needsPassword reports whether a request goes to one of those routes. The
+// path is cleaned first, as needsSession does, so a detour through ".." does
+// not slip past.
+func needsPassword(method, rawPath string) bool {
+	p := path.Clean("/" + rawPath)
+	for _, g := range guardedWithoutPassword {
+		if g.method == method && g.pattern.MatchString(p) {
+			return true
+		}
+	}
+	return false
 }
 
 // changes reports whether a request method can change something.

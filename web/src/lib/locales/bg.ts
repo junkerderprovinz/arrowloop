@@ -224,6 +224,7 @@ const bg: Translations = {
   'entry.binned': 'Преместено в кошчето',
   'entry.folderMade': 'Папка създадена',
   'entry.folderDeleted': 'Папка изтрита',
+  'error.passwordNotSet': 'Първо задай парола в Настройки, Сигурност. Без нея всеки, който достигне този адрес, може да прочете запазените настройки или да изтрие завинаги.',
   'history.ok': 'Завършен',
   'history.failed': 'Грешка',
   'history.copied': 'копирани: {count}',

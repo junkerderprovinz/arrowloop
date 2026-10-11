@@ -508,9 +508,12 @@ export type RunEvent = {
  *  without reading the English message. */
 export class ApiError extends Error {
   status: number
-  constructor(message: string, status: number) {
+  /** A word the server adds where the interface should say it in its own words. */
+  code?: string
+  constructor(message: string, status: number, code?: string) {
     super(message)
     this.status = status
+    this.code = code
   }
 }
 
@@ -545,16 +548,20 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(path, init)
   if (endsSession(path, res.status)) signedOut.forEach((fn) => fn())
   if (!res.ok) {
-    let detail = res.statusText
-    try {
-      const body = await res.json()
-      if (body?.error) detail = body.error
-    } catch {
-      // The body was not the JSON error shape; the status line has to do.
-    }
-    throw new ApiError(detail, res.status)
+    throw await failure(res)
   }
   return (await res.json()) as T
+}
+
+/** The error a failed answer carries, or its status line when it has none. */
+async function failure(res: Response): Promise<ApiError> {
+  try {
+    const body = await res.json()
+    if (body?.error) return new ApiError(body.error, res.status, body.code)
+  } catch {
+    // The body was not the JSON error shape; the status line has to do.
+  }
+  return new ApiError(res.statusText, res.status)
 }
 
 /** A JSON POST, the shape every security route takes. */
@@ -848,7 +855,7 @@ export const api = {
   /** The configuration file as text, so a backup keeps keys this build does not know. */
   rawConfig: async (): Promise<string> => {
     const res = await fetch('/api/config/raw')
-    if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
+    if (!res.ok) throw await failure(res)
     return res.text()
   },
 

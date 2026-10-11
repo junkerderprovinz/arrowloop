@@ -21,6 +21,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/hold"
 	"github.com/junkerderprovinz/arrowloop/internal/job"
 	"github.com/junkerderprovinz/arrowloop/internal/plan"
+	"github.com/junkerderprovinz/arrowloop/internal/remotes"
 	"github.com/junkerderprovinz/arrowloop/internal/scan"
 	"github.com/junkerderprovinz/arrowloop/internal/security"
 )
@@ -747,7 +748,44 @@ func (s *Server) readSettings(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
-	writeJSON(w, http.StatusOK, settings)
+	writeJSON(w, http.StatusOK, withheld(settings))
+}
+
+// withheld replaces the notification secrets in a settings map with
+// remotes.Placeholder, as a target's password is: the Matrix token posts as the
+// account, and a webhook's address is its own key.
+func withheld(settings map[string]any) map[string]any {
+	notify, _ := settings["notify"].(map[string]any)
+	if notify == nil {
+		return settings
+	}
+	if hook, _ := notify["webhook"].(string); hook != "" {
+		notify["webhook"] = remotes.Placeholder
+	}
+	if matrix, _ := notify["matrix"].(map[string]any); matrix != nil {
+		if token, _ := matrix["token"].(string); token != "" {
+			matrix["token"] = remotes.Placeholder
+		}
+	}
+	return settings
+}
+
+// keepSecrets puts the stored notification secrets back where a settings
+// update carries the placeholder for them.
+func keepSecrets(update map[string]any, stored *job.Config) {
+	notify, _ := update["notify"].(map[string]any)
+	if notify == nil {
+		return
+	}
+	if notify["webhook"] == remotes.Placeholder {
+		notify["webhook"] = stored.Notify.Webhook
+	}
+	if matrix, _ := notify["matrix"].(map[string]any); matrix != nil && matrix["token"] == remotes.Placeholder {
+		matrix["token"] = ""
+		if stored.Notify.Matrix != nil {
+			matrix["token"] = stored.Notify.Matrix.Token
+		}
+	}
 }
 
 // writeSettings merges the keys it is given and reloads. A key the caller does
@@ -759,7 +797,9 @@ func (s *Server) writeSettings(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	next, err := s.Runner.Config().SaveSettings(body)
+	current := s.Runner.Config()
+	keepSecrets(body, current)
+	next, err := current.SaveSettings(body)
 	if err != nil {
 		writeError(w, http.StatusBadRequest, err)
 		return
@@ -776,7 +816,7 @@ func (s *Server) writeSettings(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
-	writeJSON(w, http.StatusOK, settings)
+	writeJSON(w, http.StatusOK, withheld(settings))
 }
 
 // writeConfig replaces the job list and reloads the schedules. The whole list

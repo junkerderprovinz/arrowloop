@@ -7,6 +7,7 @@ import { IconDownload, IconUpload } from './glyphs'
 import { replay } from '../lib/animate'
 import { api } from '../lib/api'
 import { download, pickTextFile } from '../lib/download'
+import { errorText } from '../lib/errorText'
 import { useT } from '../lib/i18n'
 
 /** Exports the whole setup, every job and setting, to a file and imports it back. */
@@ -28,7 +29,7 @@ export function SettingsBackup({ hueIndex }: { hueIndex: number }) {
       // Everything the page holds was read from the replaced configuration.
       .then(() => window.location.reload())
       .catch((e: Error) => {
-        setError(e.message)
+        setError(errorText(t, e))
         setRefused((n) => n + 1)
       })
       .finally(() => setRestoring(false))
@@ -44,11 +45,17 @@ export function SettingsBackup({ hueIndex }: { hueIndex: number }) {
           tone="accent"
           ref={exportButton}
           onClick={() => {
-            void api.rawConfig().then((doc) => {
-              const day = new Date().toISOString().slice(0, 10)
-              download(`arrowloop-${day}.json`, doc, 'application/json')
-              replay(exportButton.current, 'glim-confirm')
-            })
+            void api
+              .rawConfig()
+              .then((doc) => {
+                const day = new Date().toISOString().slice(0, 10)
+                download(`arrowloop-${day}.json`, doc, 'application/json')
+                replay(exportButton.current, 'glim-confirm')
+              })
+              .catch((e: Error) => {
+                setError(errorText(t, e))
+                setRefused((n) => n + 1)
+              })
           }}
         />
         <Button

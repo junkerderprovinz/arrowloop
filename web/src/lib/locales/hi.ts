@@ -224,6 +224,7 @@ const hi: Translations = {
   'entry.binned': 'रद्दी में डाला',
   'entry.folderMade': 'फ़ोल्डर बनाया',
   'entry.folderDeleted': 'फ़ोल्डर हटाया',
+  'error.passwordNotSet': 'पहले सेटिंग्स, सुरक्षा में एक पासवर्ड रखें। उसके बिना जो भी इस पते तक पहुँचे, वह सहेजी गई सेटिंग्स पढ़ सकता है या हमेशा के लिए हटा सकता है।',
   'history.ok': 'पूरा हुआ',
   'history.failed': 'त्रुटि',
   'history.copied': 'नकल की गई: {count}',

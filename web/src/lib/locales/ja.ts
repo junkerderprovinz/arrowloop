@@ -224,6 +224,7 @@ const ja: Translations = {
   'entry.binned': 'ごみ箱に移動',
   'entry.folderMade': 'フォルダーを作成',
   'entry.folderDeleted': 'フォルダーを削除',
+  'error.passwordNotSet': '先に「設定」の「セキュリティ」でパスワードを設定してください。パスワードがないと、このアドレスに届く誰もが保存済みの設定を読んだり、完全に削除したりできます。',
   'history.ok': '完了',
   'history.failed': 'エラー',
   'history.copied': 'コピー: {count}',

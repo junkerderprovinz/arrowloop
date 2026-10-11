@@ -224,6 +224,7 @@ const uk: Translations = {
   'entry.binned': 'Переміщено до кошика',
   'entry.folderMade': 'Теку створено',
   'entry.folderDeleted': 'Теку видалено',
+  'error.passwordNotSet': 'Спершу задай пароль у Налаштуваннях, Безпека. Без нього будь-хто, хто дістанеться цієї адреси, міг би читати збережені налаштування або видаляти назавжди.',
   'history.ok': 'Завершено',
   'history.failed': 'Помилка',
   'history.copied': 'скопійовано: {count}',

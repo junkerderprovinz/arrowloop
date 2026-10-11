@@ -224,6 +224,7 @@ const lv: Translations = {
   'entry.binned': 'Pārvietots uz miskasti',
   'entry.folderMade': 'Mape izveidota',
   'entry.folderDeleted': 'Mape dzēsta',
+  'error.passwordNotSet': 'Vispirms iestati paroli sadaļā Iestatījumi, Drošība. Bez tās jebkurš, kas sasniedz šo adresi, varētu lasīt saglabātos iestatījumus vai dzēst uz visiem laikiem.',
   'history.ok': 'Pabeigts',
   'history.failed': 'Kļūda',
   'history.copied': 'nokopēti: {count}',

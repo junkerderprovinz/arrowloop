@@ -12,6 +12,7 @@ import { bytes } from '../lib/bytes'
 import { byJob, trashTotals } from '../lib/trashView'
 import { translateSide, useT, type TranslationKey } from '../lib/i18n'
 import { useToast } from '../lib/toast'
+import { errorText } from '../lib/errorText'
 import { Since } from './Jobs'
 
 /** What a confirmation is about to remove for good. */
@@ -65,7 +66,7 @@ export function Trash({
       }
       push(done())
     } catch (e) {
-      setError((e as Error).message)
+      setError(errorText(t, e))
     } finally {
       touched.forEach(onChanged)
       setBusy(false)

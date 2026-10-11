@@ -224,6 +224,7 @@ const ru: Translations = {
   'entry.binned': 'Перемещено в корзину',
   'entry.folderMade': 'Папка создана',
   'entry.folderDeleted': 'Папка удалена',
+  'error.passwordNotSet': 'Сначала задай пароль в разделе Настройки, Безопасность. Без него любой, кто доберётся до этого адреса, сможет прочитать сохранённые настройки или удалить навсегда.',
   'history.ok': 'Завершён',
   'history.failed': 'Ошибка',
   'history.copied': 'скопировано: {count}',

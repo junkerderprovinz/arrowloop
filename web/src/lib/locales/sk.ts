@@ -224,6 +224,7 @@ const sk: Translations = {
   'entry.binned': 'Presunuté do koša',
   'entry.folderMade': 'Priečinok vytvorený',
   'entry.folderDeleted': 'Priečinok zmazaný',
+  'error.passwordNotSet': 'Najprv nastav heslo v Nastaveniach, Zabezpečenie. Bez neho by ktokoľvek, kto sa dostane na túto adresu, mohol čítať uložené nastavenia alebo natrvalo mazať.',
   'history.ok': 'Dokončené',
   'history.failed': 'Chyba',
   'history.copied': 'skopírované: {count}',

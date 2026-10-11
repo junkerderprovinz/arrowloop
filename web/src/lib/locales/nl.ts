@@ -224,6 +224,7 @@ const nl: Translations = {
   'entry.binned': 'Naar de prullenbak verplaatst',
   'entry.folderMade': 'Map gemaakt',
   'entry.folderDeleted': 'Map verwijderd',
+  'error.passwordNotSet': 'Stel eerst een wachtwoord in onder Instellingen, Beveiliging. Zonder kan iedereen die dit adres bereikt de opgeslagen instellingen lezen of voorgoed verwijderen.',
   'history.ok': 'Voltooid',
   'history.failed': 'Fout',
   'history.copied': 'gekopieerd: {count}',

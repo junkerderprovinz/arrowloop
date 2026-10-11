@@ -224,6 +224,7 @@ const no: Translations = {
   'entry.binned': 'Flyttet til papirkurven',
   'entry.folderMade': 'Mappe opprettet',
   'entry.folderDeleted': 'Mappe slettet',
+  'error.passwordNotSet': 'Angi først et passord under Innstillinger, Sikkerhet. Uten det kan alle som når denne adressen lese de lagrede innstillingene eller slette for godt.',
   'history.ok': 'Fullført',
   'history.failed': 'Feil',
   'history.copied': 'kopiert: {count}',

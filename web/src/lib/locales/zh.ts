@@ -224,6 +224,7 @@ const zh: Translations = {
   'entry.binned': '已移入回收站',
   'entry.folderMade': '已新建文件夹',
   'entry.folderDeleted': '已删除文件夹',
+  'error.passwordNotSet': '请先在“设置”的“安全”中设置密码。没有密码时，任何能访问这个地址的人都可以读取已保存的设置或永久删除内容。',
   'history.ok': '已完成',
   'history.failed': '错误',
   'history.copied': '已复制：{count}',

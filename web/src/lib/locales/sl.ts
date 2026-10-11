@@ -224,6 +224,7 @@ const sl: Translations = {
   'entry.binned': 'Premaknjeno v koš',
   'entry.folderMade': 'Mapa ustvarjena',
   'entry.folderDeleted': 'Mapa izbrisana',
+  'error.passwordNotSet': 'Najprej nastavi geslo v Nastavitvah, Varnost. Brez njega bi lahko vsak, ki pride do tega naslova, bral shranjene nastavitve ali trajno brisal.',
   'history.ok': 'Končano',
   'history.failed': 'Napaka',
   'history.copied': 'kopirano: {count}',
