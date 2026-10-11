@@ -536,6 +536,12 @@ function endsSession(path: string, status: number): boolean {
 // Checks the status before parsing, so a 500 with an HTML page does not turn
 // into a JSON error somewhere else.
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  // The server takes a change only as JSON, so a page on another site cannot
+  // send one as a form; a change without a body is labelled the same.
+  const method = (init?.method ?? 'GET').toUpperCase()
+  if (method !== 'GET' && method !== 'HEAD') {
+    init = { ...init, headers: { 'Content-Type': 'application/json', ...init?.headers } }
+  }
   const res = await fetch(path, init)
   if (endsSession(path, res.status)) signedOut.forEach((fn) => fn())
   if (!res.ok) {

@@ -196,16 +196,22 @@ func needsSession(rawPath string) bool {
 	if p != "/api" && !strings.HasPrefix(p, "/api/") {
 		return false
 	}
-	switch p {
-	case "/api/login", "/api/logout", "/api/session",
-		"/api/passkeys", "/api/passkeys/login/begin", "/api/passkeys/login/finish":
-		// The probe tells the interface whether to draw a login screen, and
-		// the logout can only destroy the caller's own token, which may just
-		// have expired. The passkey probe answers a stranger with counts only,
-		// and its two login halves are how a passkey signs somebody in.
-		return false
-	}
-	return true
+	return !openRoutes[p]
+}
+
+// openRoutes are the API paths that answer without a session, matched
+// exactly. The probe tells the interface whether to draw a login screen, and
+// the logout can only destroy the caller's own token, which may just have
+// expired. The passkey probe answers a stranger with counts only, and its two
+// login halves are how a passkey signs somebody in. Every other path, a new
+// one included, needs a session.
+var openRoutes = map[string]bool{
+	"/api/login":                 true,
+	"/api/logout":                true,
+	"/api/session":               true,
+	"/api/passkeys":              true,
+	"/api/passkeys/login/begin":  true,
+	"/api/passkeys/login/finish": true,
 }
 
 // Protect wraps a handler so the API needs a session once a password is set.
@@ -473,10 +479,24 @@ func (g *authGate) recordFailure(key string) {
 			delete(g.failures, k)
 		}
 	}
-	// A flood of distinct addresses defeats a per-address limit anyway, so the
-	// table is dropped rather than allowed to exhaust memory.
+	// The table is bounded, since anybody who reaches the port writes to it.
+	// The addresses that are not locked out go first: dropping the whole table
+	// would let somebody with many addresses lift his own lockout.
 	if len(g.failures) >= maxTrackedClients {
-		g.failures = map[string]failureRecord{}
+		for k, rec := range g.failures {
+			if rec.count < maxFailedLogins {
+				delete(g.failures, k)
+			}
+		}
+	}
+	for len(g.failures) >= maxTrackedClients {
+		oldest := ""
+		for k, rec := range g.failures {
+			if oldest == "" || rec.last.Before(g.failures[oldest].last) {
+				oldest = k
+			}
+		}
+		delete(g.failures, oldest)
 	}
 
 	rec := g.failures[key]

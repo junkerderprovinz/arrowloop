@@ -287,6 +287,7 @@ class EngineService : Service() {
     private fun runDueNow(): Due {
         val call = Engine.connect(this, "/api/run-due")
         call.requestMethod = "POST"
+        call.setRequestProperty("Content-Type", "application/json")
         call.doOutput = true
         call.connectTimeout = 5000
         // No read timeout: the answer arrives when the copying has finished.

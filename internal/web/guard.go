@@ -7,6 +7,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"mime"
 	"net"
 	"net/http"
 	"net/netip"
@@ -16,8 +17,9 @@ import (
 
 // Guard wraps the handler of a server that listens on a network port. A page
 // on any web site can make the browser send a request to that port, so Guard
-// refuses a change another site's page started, and on an install with no
-// password it answers only to names nobody outside can point at this machine.
+// refuses a change another site's page started or sent as anything but JSON,
+// and on an install with no password it answers only to names nobody outside
+// can point at this machine.
 // The desktop window needs neither, since nothing but its own page reaches it.
 // On a phone, see AppTokenEnv.
 func (s *Server) Guard(next http.Handler) http.Handler {
@@ -38,6 +40,13 @@ func (s *Server) Guard(next http.Handler) http.Handler {
 				name, name, HostsEnv))
 			return
 		}
+		// A browser sends a form or text/plain to any site without asking, but
+		// asks the server first before sending JSON there, and this server never
+		// says yes.
+		if changes(r.Method) && !isJSON(r.Header.Get("Content-Type")) {
+			writeError(w, http.StatusUnsupportedMediaType, errors.New("a change has to be sent as JSON, with Content-Type: application/json"))
+			return
+		}
 		next.ServeHTTP(w, r)
 	}))
 
@@ -55,6 +64,17 @@ func (s *Server) Guard(next http.Handler) http.Handler {
 		}
 		guarded.ServeHTTP(w, r)
 	})
+}
+
+// changes reports whether a request method can change something.
+func changes(method string) bool {
+	return method != http.MethodGet && method != http.MethodHead && method != http.MethodOptions
+}
+
+// isJSON reports whether a Content-Type header names JSON.
+func isJSON(contentType string) bool {
+	kind, _, err := mime.ParseMediaType(contentType)
+	return err == nil && kind == "application/json"
 }
 
 // AppTokenEnv names the environment variable through which the phone app hands

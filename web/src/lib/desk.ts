@@ -175,7 +175,7 @@ export function trayWords(t: Translate): TrayWords {
 async function send<T>(path: string, method: string, body?: unknown): Promise<T> {
   const res = await fetch(path, {
     method,
-    headers: body === undefined ? undefined : { 'Content-Type': 'application/json' },
+    headers: method === 'GET' ? undefined : { 'Content-Type': 'application/json' },
     body: body === undefined ? undefined : JSON.stringify(body),
   })
   if (!res.ok) throw new Error(res.statusText)

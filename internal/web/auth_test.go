@@ -2,10 +2,13 @@ package web
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"net/http/cookiejar"
 	"net/http/httptest"
+	"os"
+	"regexp"
 	"strings"
 	"sync"
 	"testing"
@@ -563,6 +566,64 @@ func TestTheLockoutKeyFollowsOnlyTrustedProxies(t *testing.T) {
 		}
 		if got := clientKey(r, proxies); got != c.want {
 			t.Errorf("peer %s forwarding %q: key = %q, want %q", c.peer, c.forwarded, got, c.want)
+		}
+	}
+}
+
+// The failure table is bounded, but a flood of fresh addresses must not lift a
+// lockout that is in force.
+func TestAFloodOfAddressesDoesNotLiftALockout(t *testing.T) {
+	g := &authGate{}
+	g.mu.Lock()
+	defer g.mu.Unlock()
+	for range maxFailedLogins {
+		g.recordFailure("203.0.113.9")
+	}
+	for i := range maxTrackedClients + 10 {
+		g.recordFailure(fmt.Sprintf("198.51.%d.%d", i/256, i%256))
+	}
+	if _, locked := g.lockedOut("203.0.113.9"); !locked {
+		t.Fatal("the locked-out address was let in again after a flood of others")
+	}
+	if len(g.failures) > maxTrackedClients {
+		t.Errorf("the table holds %d addresses, more than %d", len(g.failures), maxTrackedClients)
+	}
+}
+
+// registered reads every route Handler registers from its source, as the mux
+// sees it: the method, if any, and the pattern.
+func registered(t *testing.T) map[string][]string {
+	t.Helper()
+	src, err := os.ReadFile("api.go")
+	if err != nil {
+		t.Fatal(err)
+	}
+	routes := map[string][]string{}
+	for _, m := range regexp.MustCompile(`mux\.Handle(?:Func)?\("(?:([A-Z]+) )?(/[^"]*)"`).FindAllStringSubmatch(string(src), -1) {
+		routes[m[2]] = append(routes[m[2]], m[1])
+	}
+	if len(routes) < 20 {
+		t.Fatalf("read only %d routes from api.go; the pattern no longer matches how routes are registered", len(routes))
+	}
+	return routes
+}
+
+// The open list is the only way past the login, so it must name routes that
+// exist, and nothing registered under /api may be open by accident.
+func TestEveryOpenRouteIsARegisteredOne(t *testing.T) {
+	routes := registered(t)
+	for p := range openRoutes {
+		if _, ok := routes[p]; !ok {
+			t.Errorf("%s is open without a session, but no such route is registered", p)
+		}
+	}
+	for p := range routes {
+		if !strings.HasPrefix(p, "/api") {
+			continue
+		}
+		concrete := regexp.MustCompile(`\{[^}]*\}`).ReplaceAllString(p, "x")
+		if !needsSession(concrete) && !openRoutes[p] {
+			t.Errorf("%s answers without a session, though it is not on the open list", p)
 		}
 	}
 }

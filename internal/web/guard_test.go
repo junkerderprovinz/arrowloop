@@ -42,8 +42,7 @@ func send(t *testing.T, srv *httptest.Server, method, path string, header map[st
 	return resp.StatusCode
 }
 
-// A page on any site can send a POST to 127.0.0.1 without asking first, and
-// the handlers read a JSON body whatever its content type says.
+// A page on any site can send a POST to 127.0.0.1 without asking first.
 func TestAnotherSitesPageCannotChangeAnything(t *testing.T) {
 	t.Setenv(web.PasswordHashEnv, "")
 	srv := newGuardedServer(t)
@@ -61,9 +60,9 @@ func TestAnotherSitesPageCannotChangeAnything(t *testing.T) {
 	}
 
 	allowed := []map[string]string{
-		{"Sec-Fetch-Site": "same-origin"},
+		{"Sec-Fetch-Site": "same-origin", "Content-Type": "application/json"},
 		// The phone app and scripts send neither header.
-		{},
+		{"Content-Type": "application/json"},
 	}
 	for _, header := range allowed {
 		if code := send(t, srv, http.MethodPost, "/api/jobs/nope/stop", header, ""); code != http.StatusNotFound {
@@ -201,5 +200,28 @@ func TestWithoutAnAppTokenNothingIsAsked(t *testing.T) {
 	srv := newGuardedServer(t)
 	if code := send(t, srv, http.MethodGet, "/api/jobs", nil, ""); code != http.StatusOK {
 		t.Errorf("GET /api/jobs answered %d", code)
+	}
+}
+
+// A page on any site can POST a form or text/plain without the browser asking
+// this server first, and the handlers read a JSON body whatever the header says.
+func TestAChangeHasToBeSentAsJSON(t *testing.T) {
+	t.Setenv(web.PasswordHashEnv, "")
+	srv := newGuardedServer(t)
+
+	for _, kind := range []string{"", "text/plain", "application/x-www-form-urlencoded", "multipart/form-data; boundary=x"} {
+		header := map[string]string{}
+		if kind != "" {
+			header["Content-Type"] = kind
+		}
+		if code := send(t, srv, http.MethodPost, "/api/jobs/nope/stop", header, ""); code != http.StatusUnsupportedMediaType {
+			t.Errorf("a POST sent as %q answered %d", kind, code)
+		}
+	}
+	if code := send(t, srv, http.MethodPost, "/api/jobs/nope/stop", map[string]string{"Content-Type": "application/json; charset=utf-8"}, ""); code != http.StatusNotFound {
+		t.Errorf("a POST sent as JSON answered %d, want the route's own 404", code)
+	}
+	if code := send(t, srv, http.MethodGet, "/api/jobs", nil, ""); code != http.StatusOK {
+		t.Errorf("a GET without a type answered %d", code)
 	}
 }
