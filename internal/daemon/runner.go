@@ -68,6 +68,9 @@ type Runner struct {
 	// anomalies keeps what a brake refused and what else was found about a
 	// job. It is never nil.
 	anomalies *anomaly.Store
+	// told collects the new findings worth a message, for a wake-up that has
+	// nobody on the event stream to hear of them.
+	told []Found
 
 	// shadows lists the shadow copies runs have taken and not yet removed.
 	shadows string

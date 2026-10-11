@@ -15,7 +15,8 @@
     <!--
       One channel per thing the app can say, so Android's own notification
       page has more than a single switch on it: it is working, it finished, it
-      failed. A fourth channel would be a switch with nothing behind it.
+      failed, it found something. A fifth channel would be a switch with
+      nothing behind it.
     -->
     <string name="channel_engine">Engine</string>
     <string name="channel_engine_why">Shown while ArrowLoop is syncing in the background. Silent.</string>
@@ -25,6 +26,9 @@
 
     <string name="channel_failed">Failed runs</string>
     <string name="channel_failed_why">A scheduled run that did not finish, and why. A sync that fails quietly is worse than one that fails loudly.</string>
+
+    <string name="channel_anomaly">Anomalies</string>
+    <string name="channel_anomaly_why">A job a safety brake holds until you decide, and the notes about a job that keeps failing or is overdue.</string>
 
     <string name="notify_running">ArrowLoop is running</string>
     <string name="notify_running_why">Ready to sync, and able to keep going while the screen is off.</string>
@@ -49,4 +53,15 @@
       the app may not start its foreground service from the background.
     -->
     <string name="notify_failed_cut">Android stopped the run before it was done. Switch battery optimisation off for ArrowLoop to give background runs more time.</string>
+
+    <!-- One placeholder each: the job's name. -->
+    <string name="notify_held">%1$s is held</string>
+    <string name="notify_note">A note about %1$s</string>
+    <!-- One placeholder: what was found, one of the five below. -->
+    <string name="notify_held_why">%1$s. Open ArrowLoop and decide under Anomalies.</string>
+    <string name="anomaly_delete">A run would delete most of the files</string>
+    <string name="anomaly_change">A run would overwrite most of the files</string>
+    <string name="anomaly_empty">One side lists no files at all</string>
+    <string name="anomaly_failing">The last runs failed</string>
+    <string name="anomaly_overdue">The schedule has not been kept for days</string>
 </resources>

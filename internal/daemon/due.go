@@ -120,10 +120,15 @@ func (r *Runner) Retrying(ctx context.Context, now time.Time) []string {
 // RunDue runs the due jobs one at a time and reports what happened. It blocks,
 // because the wake-up calling it has to know when the phone may sleep again.
 func (r *Runner) RunDue(ctx context.Context) Due {
+	// What was found while a screen was listening has been shown there.
+	r.drainTold()
+	// A phone's engine has no clock ticking between wake-ups, so the look at
+	// the schedules happens here.
+	r.overdue(ctx, time.Now())
 	due := r.Due(ctx, time.Now())
 	if len(due) == 0 {
 		r.log("nothing is due")
-		return Due{}
+		return Due{Found: r.drainTold()}
 	}
 	r.log("due now: %s", strings.Join(due, ", "))
 	var out Due
@@ -152,6 +157,7 @@ func (r *Runner) RunDue(ctx context.Context) Due {
 			out.Conflicts += rec.Conflicts
 		}
 	}
+	out.Found = r.drainTold()
 	return out
 }
 
@@ -168,6 +174,9 @@ type Due struct {
 	Conflicts int `json:"conflicts"`
 	// Reason is the first failure's message, which a notification shows.
 	Reason string `json:"reason,omitempty"`
+	// Found is what the wake-up found that somebody should hear of: a job a
+	// brake holds, or a note where notes are reported.
+	Found []Found `json:"found,omitempty"`
 }
 
 // Changed says whether anything moved, and so whether a notification is worth

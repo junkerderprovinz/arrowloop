@@ -15,6 +15,14 @@ export type TrayWords = {
   paused: string
   running: string
   done: string
+  /** The notification about a finding: `held` and `note` keep their placeholders, which the shell fills. */
+  held: string
+  note: string
+  kindDelete: string
+  kindChange: string
+  kindEmpty: string
+  kindFailing: string
+  kindOverdue: string
 }
 
 /** The query the desktop app opens its tray window with. */
@@ -154,6 +162,13 @@ export function trayWords(t: Translate): TrayWords {
     paused: t('tray.paused'),
     running: t('tray.running'),
     done: t('tray.done'),
+    held: t('anomaly.heldNow'),
+    note: t('anomaly.noteTitle'),
+    kindDelete: t('anomaly.kind.delete'),
+    kindChange: t('anomaly.kind.change'),
+    kindEmpty: t('anomaly.kind.empty'),
+    kindFailing: t('anomaly.kind.failing'),
+    kindOverdue: t('anomaly.kind.overdue'),
   }
 }
 

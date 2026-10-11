@@ -176,6 +176,17 @@ DRAWN = [
      '<rect x="1.5" y="2.9" width="11" height="2.2" rx="1.1" />'
      '<rect x="1.5" y="5.9" width="11" height="2.2" rx="1.1" />'
      '<rect x="1.5" y="8.9" width="11" height="2.2" rx="1.1" />'),
+
+    ("IconAnomalies",
+     "Anomalies: a row of readings with one far out of line. BombVault's "
+     "drawing, so the same thing wears the same mark in both apps",
+     # The box is the ink itself, as BombVault has it. The tall bar's corners
+     # then sit where a frame-filling round glyph puts its outermost ink.
+     "1.4 1.4 11.2 11.2",
+     '<rect x="1.4" y="8.6" width="2.2" height="4" rx="1.1" />'
+     '<rect x="4.4" y="7.4" width="2.2" height="5.2" rx="1.1" />'
+     '<rect x="7.4" y="1.4" width="2.2" height="11.2" rx="1.1" />'
+     '<rect x="10.4" y="8" width="2.2" height="4.6" rx="1.1" />'),
 ]
 
 # Glyphs from outside Streamline: name, note, source line, the measured box, and

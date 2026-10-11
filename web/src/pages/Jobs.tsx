@@ -9,7 +9,7 @@ import { Card } from '../lib/glimstone/Card'
 import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
 import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
-import { IconAdd, IconDelete, IconEdit, IconPause, IconRun, IconSave, IconToLeft, IconToRight } from '../components/glyphs'
+import { IconAdd, IconAnomalies, IconDelete, IconEdit, IconPause, IconRun, IconSave, IconToLeft, IconToRight } from '../components/glyphs'
 import { DirectionMark } from '../components/Direction'
 import { JobMark, statusOf } from '../components/JobMark'
 import { Menu } from '../components/Menu'
@@ -22,9 +22,11 @@ import { ViewSwitch, type LogView } from '../components/ViewSwitch'
 import { JobForm, useJobConfig } from './Editor'
 import { Choice, Day, Field, Text } from '../components/Field'
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
+import { groupFindings, shortLine, type Finding } from '../lib/anomalies'
 import { bytes } from '../lib/bytes'
 import { entryLabel, entryNote } from '../lib/entryLabel'
 import { useLiveTick } from '../lib/liveTick'
+import { useGoTo } from '../lib/goTo'
 import { usePlaces } from '../lib/places'
 import { useToast } from '../lib/toast'
 import { api } from '../lib/api'
@@ -41,6 +43,7 @@ import { since } from '../lib/since'
  */
 export function Jobs({
   jobs,
+  findings,
   latest,
   progress,
   speeds,
@@ -48,6 +51,8 @@ export function Jobs({
   onSaved,
 }: {
   jobs: Job[]
+  /** The open findings, of which a job's card shows the loudest. */
+  findings: Finding[]
   /**
    * Each job's newest run. The live job list only carries the last success,
    * which cannot say whether the last attempt failed, and a page of the newest
@@ -245,6 +250,7 @@ export function Jobs({
                     />
                   </JobRow>
                   <Cadence job={j} />
+                  <FindingTeaser findings={findings.filter((f) => f.job === j.name)} />
 
                   {history === j.name && (
                     <JobHistory job={j.name} running={j.running} onClose={() => setHistory(null)} />
@@ -415,6 +421,34 @@ export function Jobs({
         document.body,
       )}
     </Stack>
+  )
+}
+
+/**
+ * What the engine found about a job, as one line on its card that leads to the
+ * Anomalies page. The page holds the files and the answers.
+ */
+function FindingTeaser({ findings }: { findings: Finding[] }) {
+  const { t } = useT()
+  const goTo = useGoTo()
+  const loudest = groupFindings(findings)[0]?.findings[0]
+  if (!loudest) return null
+  const places: [string, string] = [t('side.left'), t('side.right')]
+  return (
+    <button
+      type="button"
+      onClick={() => goTo({ tab: 'anomalies', job: loudest.job })}
+      className="-mx-2 flex min-h-11 flex-wrap items-center gap-x-2 gap-y-1 rounded-control px-2 py-1.5 text-start text-xs hover:bg-carbon-hover"
+    >
+      <span className="shrink-0 text-carbon-textSub" aria-hidden>
+        <IconAnomalies />
+      </span>
+      <Badge tone={loudest.held ? 'warn' : 'neutral'}>
+        {loudest.held ? t('anomaly.heldBadge') : t(`anomaly.severity.${loudest.severity}`)}
+      </Badge>
+      <span className="font-medium text-carbon-text">{t(`anomaly.kind.${loudest.kind}`)}</span>
+      <span className="min-w-0 text-carbon-textSub [overflow-wrap:anywhere]">{shortLine(loudest, t, places)}</span>
+    </button>
   )
 }
 

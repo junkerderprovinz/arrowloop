@@ -35,6 +35,7 @@ vi.mock('./lib/api', async (actual) => ({
     session: () => session(),
     passkeys: () => Promise.resolve({ supported: false, rpId: '', total: 0, here: 0 }),
     conflicts: () => Promise.resolve({ conflicts: [], unread: [] }),
+    anomalies: () => Promise.resolve({ open: [], closed: [] }),
     trashAll: () => Promise.resolve({ sides: [] }),
     config: () => Promise.resolve({ jobs: [] }),
     settings: () => Promise.resolve({}),

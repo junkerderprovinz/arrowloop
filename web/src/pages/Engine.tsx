@@ -105,6 +105,10 @@ export function Engine() {
   const setRetry = (next: Partial<NonNullable<Settings['retry']>>) =>
     patch({ retry: { ...retry, ...next } })
 
+  const anomalies = draft.anomalies ?? {}
+  const setAnomalies = (next: Partial<NonNullable<Settings['anomalies']>>) =>
+    patch({ anomalies: { ...anomalies, ...next } })
+
   const matrix = draft.notify?.matrix ?? { homeserver: '', room: '', token: '' }
   const setMatrix = (next: Partial<typeof matrix>) =>
     patch({ notify: { ...draft.notify, matrix: { ...matrix, ...next } } })
@@ -298,8 +302,8 @@ export function Engine() {
         </div>
       </Card>
 
-      {/* The brakes stop a run from removing more than a share of what it knows
-          about, so they get a card of their own. */}
+      {/* The brakes hold a job whose run would remove or overwrite more than a
+          share of what it knows about, so they get a card of their own. */}
       <Card title={t('settings.safetyNet')} hueIndex={5}>
         <div className="flex flex-col gap-4">
           <Field label={t('engine.brakePercent')} hint={t('engine.brakePercentHint')}>
@@ -311,6 +315,15 @@ export function Engine() {
               onChange={(v) => setDefault({ brakePercent: v })}
             />
           </Field>
+          <Field label={t('engine.changePercent')} hint={t('engine.changePercentHint')}>
+            <NumberField
+              value={defaults.changePercent ?? 50}
+              min={0}
+              max={100}
+              label={t('engine.changePercent')}
+              onChange={(v) => setDefault({ changePercent: v })}
+            />
+          </Field>
           <Field label={t('engine.brakeFloor')} hint={t('engine.brakeFloorHint')}>
             <NumberField
               value={defaults.brakeFloor ?? 10}
@@ -320,6 +333,42 @@ export function Engine() {
               onChange={(v) => setDefault({ brakeFloor: v })}
             />
           </Field>
+        </div>
+      </Card>
+
+      {/* The two notes that hold nothing, and who hears about a finding. */}
+      <Card title={t('nav.anomalies')} hueIndex={5}>
+        <div className="flex flex-col gap-4">
+          <Field label={t('anomaly.failingAfter')} hint={t('anomaly.failingAfterHint')}>
+            <NumberField
+              value={anomalies.failingAfter ?? 3}
+              min={0}
+              max={50}
+              label={t('anomaly.failingAfter')}
+              onChange={(v) => setAnomalies({ failingAfter: v })}
+            />
+          </Field>
+          <Field label={t('anomaly.overdueDays')} hint={t('anomaly.overdueDaysHint')}>
+            <NumberField
+              value={anomalies.overdueDays ?? 2}
+              min={0}
+              max={365}
+              label={t('anomaly.overdueDays')}
+              onChange={(v) => setAnomalies({ overdueDays: v })}
+            />
+          </Field>
+          <ToggleRow
+            label={t('anomaly.notifyHeld')}
+            checked={anomalies.notifyHeld ?? true}
+            onChange={(v) => setAnomalies({ notifyHeld: v })}
+            hint={t('anomaly.notifyHeldHint')}
+          />
+          <ToggleRow
+            label={t('anomaly.notifyNotes')}
+            checked={!!anomalies.notifyNotes}
+            onChange={(v) => setAnomalies({ notifyNotes: v })}
+            hint={t('anomaly.notifyNotesHint')}
+          />
         </div>
       </Card>
 

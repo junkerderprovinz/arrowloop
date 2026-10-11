@@ -193,9 +193,11 @@ class EngineService : Service() {
 
     /**
      * Posts the outcome on the matching channel. A run that changed nothing, or
-     * a held job, posts nothing: the phone wakes every fifteen minutes.
+     * one a run condition held back, posts nothing: the phone wakes every
+     * fifteen minutes. A finding is posted once, when the engine first makes it.
      */
     private fun report(due: Due) {
+        due.found.forEach(::tellFound)
         if (due.failed > 0) {
             tell(CHANNEL_FAILED, FAILED_ID, getString(R.string.notify_failed), due.reason)
             return
@@ -207,6 +209,23 @@ class EngineService : Service() {
             getString(R.string.notify_done),
             getString(R.string.notify_done_what, due.copied, due.moved, due.trashed, due.conflicts),
         )
+    }
+
+    /**
+     * Posts what the engine found about a job. Each job has its own
+     * notification, so two held jobs do not hide each other.
+     */
+    private fun tellFound(found: Found) {
+        val what = when (found.kind) {
+            "delete" -> R.string.anomaly_delete
+            "change" -> R.string.anomaly_change
+            "empty" -> R.string.anomaly_empty
+            "failing" -> R.string.anomaly_failing
+            else -> R.string.anomaly_overdue
+        }
+        val title = getString(if (found.held) R.string.notify_held else R.string.notify_note, found.job)
+        val detail = if (found.held) getString(R.string.notify_held_why, getString(what)) else getString(what)
+        tell(CHANNEL_ANOMALY, ANOMALY_ID + (found.job.hashCode() and 0xffff), title, detail)
     }
 
     /** Posts a notification that replaces the previous one with the same id. */
@@ -256,9 +275,13 @@ class EngineService : Service() {
         val trashed: Int = 0,
         val conflicts: Int = 0,
         val reason: String = "",
+        val found: List<Found> = emptyList(),
     ) {
         fun changed() = copied + moved + trashed + conflicts > 0
     }
+
+    /** A new finding the engine thinks somebody should hear of. */
+    private data class Found(val job: String, val kind: String, val held: Boolean)
 
     private fun runDueNow(): Due {
         val call = Engine.connect(this, "/api/run-due")
@@ -272,7 +295,12 @@ class EngineService : Service() {
         call.disconnect()
 
         val json = JSONObject(body)
+        val found = json.optJSONArray("found")
         return Due(
+            found = (0 until (found?.length() ?: 0)).map {
+                val one = found!!.getJSONObject(it)
+                Found(one.optString("job"), one.optString("kind"), one.optBoolean("held"))
+            },
             ran = json.optInt("ran"),
             failed = json.optInt("failed"),
             copied = json.optInt("copied"),
@@ -323,7 +351,7 @@ class EngineService : Service() {
 
     /**
      * Creates one channel per thing the app can say: running, finished,
-     * failed. Only failures make a sound. Android lets only the person change
+     * failed, found. Failures and findings make a sound. Android lets only the person change
      * a channel's importance once it exists, so these are starting points.
      */
     private fun channel() {
@@ -335,6 +363,8 @@ class EngineService : Service() {
                 to NotificationManager.IMPORTANCE_LOW,
             Triple(CHANNEL_FAILED, R.string.channel_failed, R.string.channel_failed_why)
                 to NotificationManager.IMPORTANCE_DEFAULT,
+            Triple(CHANNEL_ANOMALY, R.string.channel_anomaly, R.string.channel_anomaly_why)
+                to NotificationManager.IMPORTANCE_DEFAULT,
         )
         for ((names, importance) in wanted) {
             val (id, title, why) = names
@@ -342,7 +372,7 @@ class EngineService : Service() {
             manager.createNotificationChannel(
                 NotificationChannel(id, getString(title), importance).apply {
                     description = getString(why)
-                    setShowBadge(id == CHANNEL_FAILED)
+                    setShowBadge(id == CHANNEL_FAILED || id == CHANNEL_ANOMALY)
                 },
             )
         }
@@ -382,10 +412,13 @@ class EngineService : Service() {
         const val CHANNEL = "engine"
         const val CHANNEL_DONE = "done"
         const val CHANNEL_FAILED = "failed"
+        const val CHANNEL_ANOMALY = "anomaly"
         const val NOTIFICATION_ID = 1
         /** Fixed ids, so the latest run replaces the previous notification. */
         const val DONE_ID = 2
         const val FAILED_ID = 3
+        /** The first of a range of ids, one per job with a finding. */
+        const val ANOMALY_ID = 0x10000
         const val ACTION_STOP = "arrowloop.halleluja.design.STOP"
         private const val ACTION_GUARD = "arrowloop.halleluja.design.GUARD"
         private const val ACTION_RELEASE = "arrowloop.halleluja.design.RELEASE"

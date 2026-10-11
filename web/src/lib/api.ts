@@ -2,6 +2,8 @@
 // side defines.
 
 /** Which way a job is allowed to write. */
+import type { FindingListing } from './anomalies'
+
 export type Direction = 'both' | 'leftToRight' | 'rightToLeft'
 
 /**
@@ -248,6 +250,12 @@ export type RawJob = {
    */
   noTrash?: boolean
   exclude?: string[]
+  /**
+   * The job's own brakes. Left out, the job follows the global ones; zero
+   * switches a brake off for this job.
+   */
+  brakePercent?: number
+  changePercent?: number
   /** Shell commands around every run. Only the file sets them; a save keeps them. */
   before?: string
   after?: string
@@ -300,6 +308,7 @@ export type Settings = {
     emptyDirs?: boolean
     metadata?: boolean
     brakePercent?: number
+    changePercent?: number
     brakeFloor?: number
     /**
      * Undefined means ask the two sides. The override exists because backends
@@ -318,6 +327,16 @@ export type Settings = {
     /** Before the first further try, as a Go duration. Each try after that
      *  waits twice as long. */
     wait?: string
+  }
+  /**
+   * The two notes that hold nothing, and who is told about a finding. Zero
+   * switches a note off, and an undefined field keeps the engine's own value.
+   */
+  anomalies?: {
+    failingAfter?: number
+    overdueDays?: number
+    notifyHeld?: boolean
+    notifyNotes?: boolean
   }
   /** Reusable pattern lists, by name. A job asks for them by name. */
   excludeSets?: Record<string, string[]>
@@ -460,8 +479,12 @@ export type RunEvent = {
   /** `moving` carries the files in the air and the speed; only the speed is
    *  drawn here, and the phase has to be known so its frames do not fall
    *  through to the generic handler. See App.tsx. */
-  phase: 'started' | 'progress' | 'finished' | 'moving'
+  phase: 'started' | 'progress' | 'finished' | 'moving' | 'anomaly'
   error?: string
+  /** On `finished`: a safety brake refused the run, which is a finding and no failure. */
+  held?: boolean
+  /** On `anomaly`: the id of a finding that is new and worth telling somebody. */
+  told?: string
   done?: number
   total?: number
   kind?: string
@@ -864,6 +887,18 @@ export const api = {
     post<{ entries: number; bytes: number }>(`/api/jobs/${encodeURIComponent(job)}/trash/${side}/empty`),
 
   /** Every open conflict, or those of the one job named. */
+  anomalies: () => request<FindingListing>('/api/anomalies'),
+
+  /**
+   * Answers a held job: `run` lets the refused change through as shown, `back`
+   * undoes it where it was made. The run reports through the event stream.
+   */
+  answerAnomaly: (id: string, answer: 'run' | 'back') =>
+    post<{ job: string; status: string }>(`/api/anomalies/${encodeURIComponent(id)}/${answer}`),
+
+  acknowledgeAnomaly: (id: string) =>
+    post<{ acknowledged: boolean }>(`/api/anomalies/${encodeURIComponent(id)}/acknowledge`),
+
   conflicts: (job?: string) =>
     request<ConflictListing>(`/api/conflicts${job ? `?job=${encodeURIComponent(job)}` : ''}`),
 

@@ -9,6 +9,9 @@
     <string name="channel_failed">Fehlgeschlagene Läufe</string>
     <string name="channel_failed_why">Ein zeitgesteuerter Lauf, der nicht durchkam, und warum. Ein Abgleich, der still scheitert, ist schlimmer als einer, der laut scheitert.</string>
 
+    <string name="channel_anomaly">Anomalien</string>
+    <string name="channel_anomaly_why">Ein Auftrag, den eine Bremse anhält, bis du entscheidest, und die Hinweise zu einem Auftrag, der wiederholt scheitert oder überfällig ist.</string>
+
     <string name="notify_running">ArrowLoop läuft</string>
     <string name="notify_running_why">Bereit zum Abgleich, auch bei ausgeschaltetem Bildschirm.</string>
     <string name="notify_stop">Anhalten</string>
@@ -19,4 +22,13 @@
     <string name="notify_failed">Abgleich fehlgeschlagen</string>
     <string name="notify_failed_no_engine">Der Motor ist nicht gestartet. Öffne ArrowLoop einmal und sieh auf der Motor-Karte nach.</string>
     <string name="notify_failed_cut">Android hat den Lauf abgebrochen, bevor er fertig war. Schalte die Akkuoptimierung für ArrowLoop aus, dann bekommen Läufe im Hintergrund mehr Zeit.</string>
+
+    <string name="notify_held">„%1$s“ ist angehalten</string>
+    <string name="notify_note">Hinweis zu „%1$s“</string>
+    <string name="notify_held_why">%1$s. Öffne ArrowLoop und entscheide unter Anomalien.</string>
+    <string name="anomaly_delete">Ein Lauf würde die meisten Dateien löschen</string>
+    <string name="anomaly_change">Ein Lauf würde die meisten Dateien überschreiben</string>
+    <string name="anomaly_empty">Eine Seite meldet keine einzige Datei</string>
+    <string name="anomaly_failing">Die letzten Läufe sind gescheitert</string>
+    <string name="anomaly_overdue">Der Zeitplan wird seit Tagen nicht eingehalten</string>
 </resources>

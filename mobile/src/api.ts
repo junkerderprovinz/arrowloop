@@ -4,6 +4,7 @@
 // with (internal/web/guard.go).
 
 import { engine } from "./engine";
+import type { FindingListing } from "../../web/src/lib/anomalies";
 
 export const ORIGIN = "http://127.0.0.1:8422";
 
@@ -59,6 +60,9 @@ export interface JobConfig {
   transfers?: number;
   emptyDirs?: boolean;
   metadata?: boolean;
+  /** The job's own brakes; left out, it follows the global ones. */
+  brakePercent?: number;
+  changePercent?: number;
 }
 
 export interface Config {
@@ -258,8 +262,12 @@ export interface TrashItem {
  */
 export interface RunEvent {
   job: string;
-  phase: "started" | "progress" | "finished" | "moving";
+  phase: "started" | "progress" | "finished" | "moving" | "anomaly";
   error?: string;
+  /** On "finished": a safety brake refused the run, which is a finding and no failure. */
+  held?: boolean;
+  /** On "anomaly": the id of a finding that is new and worth telling somebody. */
+  told?: string;
   done?: number;
   total?: number;
   kind?: string;
@@ -380,6 +388,12 @@ export const api = {
     call<{ entries: number }>(`/api/jobs/${name(job)}/trash/${side}/empty`, { method: "POST", body: "{}" }),
 
   conflicts: () => call<{ conflicts: OpenConflict[]; unread: { job: string; error: string }[] }>("/api/conflicts"),
+
+  anomalies: () => call<FindingListing>("/api/anomalies"),
+  /** Answers a held job: "run" lets the refused change through as shown, "back" undoes it. */
+  answerAnomaly: (id: string, answer: "run" | "back") =>
+    call<void>(`/api/anomalies/${name(id)}/${answer}`, { method: "POST" }),
+  acknowledgeAnomaly: (id: string) => call<void>(`/api/anomalies/${name(id)}/acknowledge`, { method: "POST" }),
   /** Carries out choices on one job's conflicts; a 409 means the job is running. */
   decide: (job: string, decisions: { copy: string; keep: Keep }[]) =>
     call<{ run: Run }>(`/api/jobs/${name(job)}/conflicts`, {

@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 )
 
@@ -62,6 +63,40 @@ type Words struct {
 	// Running carries a {count} placeholder.
 	Running string `json:"running"`
 	Done    string `json:"done"`
+
+	// Held and Note are the notification about a finding. Both carry a {job}
+	// placeholder, and Held a {what} one, filled with one of the five kinds.
+	Held        string `json:"held"`
+	Note        string `json:"note"`
+	KindDelete  string `json:"kindDelete"`
+	KindChange  string `json:"kindChange"`
+	KindEmpty   string `json:"kindEmpty"`
+	KindFailing string `json:"kindFailing"`
+	KindOverdue string `json:"kindOverdue"`
+}
+
+// Found is the sentence a notification says about a finding. Words an older
+// interface never handed over are said in English.
+func (w Words) Found(job, kind string, held bool) string {
+	said := DefaultWords()
+	pick := func(have, fallback string) string {
+		if have == "" {
+			return fallback
+		}
+		return have
+	}
+	what := map[string]string{
+		"delete":  pick(w.KindDelete, said.KindDelete),
+		"change":  pick(w.KindChange, said.KindChange),
+		"empty":   pick(w.KindEmpty, said.KindEmpty),
+		"failing": pick(w.KindFailing, said.KindFailing),
+		"overdue": pick(w.KindOverdue, said.KindOverdue),
+	}[kind]
+	if !held {
+		return strings.ReplaceAll(pick(w.Note, said.Note), "{job}", job) + ": " + what
+	}
+	text := strings.ReplaceAll(pick(w.Held, said.Held), "{job}", job)
+	return strings.ReplaceAll(text, "{what}", what)
 }
 
 // DefaultWords is English, for a first start before the interface has said
@@ -76,6 +111,14 @@ func DefaultWords() Words {
 		Paused:  "Sync is paused",
 		Running: "jobs running: {count}",
 		Done:    "done",
+
+		Held:        `"{job}" is held: {what}`,
+		Note:        `A note about "{job}"`,
+		KindDelete:  "Mass deletion",
+		KindChange:  "Mass change",
+		KindEmpty:   "Empty side",
+		KindFailing: "Failing repeatedly",
+		KindOverdue: "Overdue",
 	}
 }
 

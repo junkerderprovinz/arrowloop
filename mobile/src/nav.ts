@@ -4,11 +4,13 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 // to whatever was open in another tab.
 
 /**
- * The overview, and the two lists it opens that wait on somebody. The bar has
- * no room for a sixth and seventh tab, so they open from here.
+ * The overview, and the three lists it opens that wait on somebody. The bar
+ * has no room for more tabs, so they open from here.
  */
 export type OverviewStack = {
   OverviewHome: undefined;
+  /** `job` opens that job's findings. */
+  Anomalies: { job?: string } | undefined;
   Conflicts: undefined;
   TrashAll: undefined;
 };
@@ -19,6 +21,8 @@ export type JobsStack = {
   /** No name means a new job. */
   JobEdit: { name?: string };
   Plan: { name: string };
+  /** The same screen the overview opens, reached from a job's own card. */
+  Anomalies: { job?: string } | undefined;
   /** `place` is the side's name, for the title. */
   Trash: { name: string; side: "left" | "right"; place: string };
 };

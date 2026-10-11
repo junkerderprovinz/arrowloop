@@ -303,6 +303,15 @@ export function IconMenu(props: SVGProps<SVGSVGElement>) {
   )
 }
 
+/** Anomalies: a row of readings with one far out of line. BombVault's drawing, so the same thing wears the same mark in both apps. Drawn here, see gen_glyphs.py's DRAWN table for why */
+export function IconAnomalies(props: SVGProps<SVGSVGElement>) {
+  return (
+    <Drawn box="1.4 1.4 11.2 11.2" {...props}>
+      <rect x="1.4" y="8.6" width="2.2" height="4" rx="1.1" /><rect x="4.4" y="7.4" width="2.2" height="5.2" rx="1.1" /><rect x="7.4" y="1.4" width="2.2" height="11.2" rx="1.1" /><rect x="10.4" y="8" width="2.2" height="4.6" rx="1.1" />
+    </Drawn>
+  )
+}
+
 /** Save. Material Design Icons (https://pictogrammers.com/library/mdi/), content-save, Apache 2.0 */
 export function IconSave(props: SVGProps<SVGSVGElement>) {
   return <Glyph box="3.00 3.00 18.00 18.00" paths={['M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z']} {...props} />

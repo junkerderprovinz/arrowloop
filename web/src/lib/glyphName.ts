@@ -51,6 +51,9 @@ const RULES: Rule[] = [
   // controls in one card the same mark.
   [/duplicate|dupes|copyPath|\.copy|copied/i, 'IconCopy'],
 
+  // Seen and closed, which is the tick and not the floppy `confirm` would give.
+  [/acknowledge/i, 'IconConfirm'],
+
   // Above `save`: exporting hands a copy to the person's disk rather than
   // writing the program's own file.
   [/^apps\.qr$/i, 'IconQr'],

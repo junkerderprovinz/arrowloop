@@ -445,14 +445,16 @@ function SyncStatus({ jobs, run, tally }: { jobs: Job[]; run: Run | null | "none
 }
 
 /**
- * The open conflicts and the trash across every job, each opening its own list.
- * Asked for again whenever a run finishes, since a run is what adds to either.
+ * The findings, the open conflicts and the trash across every job, each opening
+ * its own list. Asked for again whenever a run finishes, since a run is what
+ * adds to any of them.
  * Missing file access comes first: Android grants it on a settings page, not in
  * a dialog, and without it every job with a folder on the phone reads nothing.
  */
 function Waiting() {
   const { t } = useT();
   const nav = useNavigation<Nav<OverviewStack>>();
+  const [findings, setFindings] = useState<{ open: number; held: boolean } | null>(null);
   const [conflicts, setConflicts] = useState<number | null>(null);
   const [trash, setTrash] = useState<{ entries: number; bytes: number } | null>(null);
   const [access, setAccess] = useState<boolean | null>(null);
@@ -470,6 +472,10 @@ function Waiting() {
   }, []);
 
   const load = useCallback(() => {
+    api.anomalies().then(
+      (got) => setFindings({ open: got.open.length, held: got.open.some((f) => f.held) }),
+      () => {},
+    );
     api.conflicts().then(
       (got) => setConflicts(got.conflicts.length),
       () => {},
@@ -482,7 +488,7 @@ function Waiting() {
 
   useEffect(load, [load]);
   useEngineStream(true, (event) => {
-    if (event.phase === "finished") load();
+    if (event.phase === "finished" || event.phase === "anomaly") load();
   });
 
   return (
@@ -494,6 +500,16 @@ function Waiting() {
           control={<Badge label={t("phone.permissionDenied")} tone="warn" />}
         />
       ) : null}
+      <Row
+        label={t("nav.anomalies")}
+        onPress={() => nav.navigate("Anomalies")}
+        control={
+          <Badge
+            label={findings === null ? "…" : String(findings.open)}
+            tone={findings?.held ? "warn" : "neutral"}
+          />
+        }
+      />
       <Row
         label={t("nav.conflicts")}
         onPress={() => nav.navigate("Conflicts")}

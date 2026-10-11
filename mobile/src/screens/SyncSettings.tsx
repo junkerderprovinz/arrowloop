@@ -37,6 +37,10 @@ export function SyncSettings() {
     engine.setDevicePolicy(patch).then(refresh, () => refresh());
   };
 
+  const anomalies = (settings?.anomalies ?? {}) as Record<string, unknown>;
+  const saveAnomalies = (patch: Record<string, unknown>) =>
+    update({ anomalies: { ...anomalies, ...patch } });
+
   const retry = (settings?.retry ?? {}) as Record<string, unknown>;
   const saveRetry = (patch: Record<string, unknown>) =>
     update({ retry: { ...retry, ...patch } });
@@ -126,10 +130,44 @@ export function SyncSettings() {
           onChange={(v) => saveDefaults({ brakePercent: clamp(v, 0, 100) })}
         />
         <NumberField
+          label={t("engine.changePercent")}
+          hint={t("engine.changePercentHint")}
+          value={String(defaults.changePercent ?? 50)}
+          onChange={(v) => saveDefaults({ changePercent: clamp(v, 0, 100) })}
+        />
+        <NumberField
           label={t("engine.brakeFloor")}
           hint={t("engine.brakeFloorHint")}
           value={String(defaults.brakeFloor ?? 10)}
           onChange={(v) => saveDefaults({ brakeFloor: clamp(v, 0, 100000) })}
+        />
+      </Section>
+
+      {/* The two notes that hold nothing, and who hears about a finding. */}
+      <Section title={t("nav.anomalies")} hue={4}>
+        <NumberField
+          label={t("anomaly.failingAfter")}
+          hint={t("anomaly.failingAfterHint")}
+          value={String(anomalies.failingAfter ?? 3)}
+          onChange={(v) => saveAnomalies({ failingAfter: clamp(v, 0, 50) })}
+        />
+        <NumberField
+          label={t("anomaly.overdueDays")}
+          hint={t("anomaly.overdueDaysHint")}
+          value={String(anomalies.overdueDays ?? 2)}
+          onChange={(v) => saveAnomalies({ overdueDays: clamp(v, 0, 365) })}
+        />
+        <Toggle
+          label={t("anomaly.notifyHeld")}
+          hint={t("anomaly.notifyHeldHint")}
+          value={anomalies.notifyHeld !== false}
+          onChange={(notifyHeld) => saveAnomalies({ notifyHeld })}
+        />
+        <Toggle
+          label={t("anomaly.notifyNotes")}
+          hint={t("anomaly.notifyNotesHint")}
+          value={anomalies.notifyNotes === true}
+          onChange={(notifyNotes) => saveAnomalies({ notifyNotes })}
         />
       </Section>
 

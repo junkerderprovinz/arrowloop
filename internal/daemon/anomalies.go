@@ -73,6 +73,9 @@ func (r *Runner) noted(ctx context.Context, f anomaly.Finding, fresh bool) {
 	ev := Event{Job: f.Job, Phase: "anomaly"}
 	if tells {
 		ev.Told = f.ID
+		r.mu.Lock()
+		r.told = append(r.told, Found{Job: f.Job, Kind: string(f.Kind), Held: f.Held})
+		r.mu.Unlock()
 	}
 	r.publish(ev)
 	if note == nil || !tells {
@@ -85,6 +88,22 @@ func (r *Runner) noted(ctx context.Context, f anomaly.Finding, fresh bool) {
 	if err := note.Send(context.WithoutCancel(ctx), subject, f.Detail); err != nil {
 		r.log("could not send the notification for %s: %v", f.Job, err)
 	}
+}
+
+// Found is a new finding somebody should hear of.
+type Found struct {
+	Job  string `json:"job"`
+	Kind string `json:"kind"`
+	Held bool   `json:"held"`
+}
+
+// drainTold hands over the findings collected since the last call.
+func (r *Runner) drainTold() []Found {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	out := r.told
+	r.told = nil
+	return out
 }
 
 // settle closes a job's findings of the given kinds and says so.

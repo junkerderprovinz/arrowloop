@@ -1,11 +1,12 @@
 import { useNavigation } from "@react-navigation/native";
 import { useCallback, useEffect, useState } from "react";
-import { Alert, RefreshControl, StyleSheet, View } from "react-native";
+import { Alert, Pressable, RefreshControl, StyleSheet, Text, View } from "react-native";
 import { api, type Job, type Remote } from "../api";
 import { CardMenu } from "../CardMenu";
 import { clock } from "../clock";
 import { Glyph, ProviderMark } from "../glyphs";
 import { markForSide } from "../jobMark";
+import { groupFindings, shortLine, type Finding } from "../../../web/src/lib/anomalies";
 import { jobCopy } from "../../../web/src/lib/jobCopy.data";
 import { useT } from "../i18n";
 import { animateNext, useMotion } from "../motion";
@@ -51,6 +52,8 @@ export function Jobs() {
     return stop;
   }, [nav]);
 
+  /** The open findings, of which a job's card shows the loudest. */
+  const [findings, setFindings] = useState<Finding[]>([]);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState<string | null>(null);
   const [holding, setHolding] = useState<string | null>(null);
@@ -59,6 +62,7 @@ export function Jobs() {
     try {
       setJobs(await api.jobs());
       setError("");
+      api.anomalies().then((got) => setFindings(got.open), () => {});
     } catch (e) {
       setError((e as Error).message);
     }
@@ -164,6 +168,8 @@ export function Jobs() {
           job={item}
           index={index}
           busy={busy === item.name}
+          finding={groupFindings(findings.filter((f) => f.job === item.name))[0]?.findings[0]}
+          onFinding={() => nav.navigate("Anomalies", { job: item.name })}
           onOpen={() => nav.navigate("JobDetail", { name: item.name })}
           onAct={() => act(item)}
           holding={holding === item.name}
@@ -188,6 +194,8 @@ export function Jobs() {
 function JobCard({
   job,
   index,
+  finding,
+  onFinding,
   busy,
   onOpen,
   onAct,
@@ -202,6 +210,9 @@ function JobCard({
 }: {
   job: Job;
   index: number;
+  /** The loudest thing the engine found about this job, if anything. */
+  finding?: Finding;
+  onFinding: () => void;
   busy: boolean;
   onOpen: () => void;
   onAct: () => void;
@@ -262,6 +273,21 @@ function JobCard({
           ? t("jobs.lastRun", { when: clock(job.lastSuccess, lang) })
           : t("jobs.historyEmpty")}
       </Caption>
+
+      {/* What the engine found, as one line that leads to the Anomalies
+          screen, which holds the files and the answers. */}
+      {finding ? (
+        <Pressable onPress={onFinding} accessibilityRole="button" style={styles.finding}>
+          <Glyph name="IconAnomalies" color={p.textSub} />
+          <Badge
+            label={finding.held ? t("anomaly.heldBadge") : t(`anomaly.severity.${finding.severity}`)}
+            tone={finding.held ? "warn" : "neutral"}
+          />
+          <Text style={[styles.findingText, { color: p.text }]} numberOfLines={2}>
+            {`${t(`anomaly.kind.${finding.kind}`)}: ${shortLine(finding, t, sidePair(job.left, job.right, t))}`}
+          </Text>
+        </Pressable>
+      ) : null}
 
       {/* Two buttons, since a held job can still be started by hand. A
           running job's button cancels the run rather than pausing, which is
@@ -327,6 +353,8 @@ const styles = StyleSheet.create({
   menuSlot: { marginStart: "auto" },
   side: { flexDirection: "row", alignItems: "flex-start", gap: space.sm },
   way: { flexDirection: "row", alignItems: "center", gap: space.sm },
+  finding: { flexDirection: "row", alignItems: "center", gap: space.sm, minHeight: 44 },
+  findingText: { flex: 1, fontSize: 13, lineHeight: 18 },
   sideBlank: { width: 18 },
   // Room at the end so the floating button does not cover the last card.
   list: { padding: space.lg, gap: space.md, paddingBottom: FAB_ROOM },

@@ -158,7 +158,11 @@ func (l *TrayLive) follow(ev daemon.Event) {
 	case "finished":
 		delete(l.working, ev.Job)
 		// A failure outranks a success that arrives after it while other
-		// jobs are still running.
+		// jobs are still running. A job a brake holds has not failed: its
+		// finding is told on its own.
+		if ev.Held {
+			return
+		}
 		if ev.Error != "" {
 			l.state = TrayFailed
 			l.last = outcome{job: ev.Job, err: ev.Error}

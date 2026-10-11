@@ -92,6 +92,8 @@ func run() error {
 			Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { api.ServeHTTP(w, r) }),
 		},
 	}
+	tell := newTeller()
+	opts.Services = []application.Service{application.NewService(tell)}
 	// Another configuration is another profile, whose interface settings must
 	// not mix with the installed copy's.
 	if *custom != "" {
@@ -168,6 +170,7 @@ func run() error {
 		}
 	}()
 	sh.live.Watch(ctx, runner)
+	tell.watch(ctx, runner, window, sh.showMain)
 	newBridge().run(ctx, runner, app)
 
 	// A newer release is downloaded in the background and starts next time;

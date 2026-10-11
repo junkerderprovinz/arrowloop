@@ -10,6 +10,7 @@ import { ToggleRow } from './components/ToggleRow'
 import { HUE_OFFSET, Selector } from './components/Selector'
 import { Sidebar } from './components/Sidebar'
 import {
+  IconAnomalies,
   IconConflict,
   IconDelete,
   IconHistory,
@@ -34,6 +35,7 @@ import { History, Jobs } from './pages/Jobs'
 import { Preview } from './pages/Preview'
 import { Security } from './pages/Security'
 import { Targets } from './pages/Targets'
+import { Anomalies } from './pages/Anomalies'
 import { Conflicts } from './pages/Conflicts'
 import { Trash } from './pages/Trash'
 import {
@@ -47,6 +49,7 @@ import {
   type Volume,
   type WindowSettings,
 } from './lib/api'
+import type { FindingListing } from './lib/anomalies'
 import { mergeConflicts } from './lib/conflicts'
 import { inJobOrder, mergeTrash, trashTotals } from './lib/trashView'
 import { GoTo, type Place } from './lib/goTo'
@@ -64,10 +67,10 @@ import { isActivityView, onUpdateReady, useTrayWords } from './lib/desk'
 import { ToastProvider, useToast } from './lib/toast'
 
 /**
- * The app's places, in the order the sibling apps use, settings last. The two
+ * The app's places, in the order the sibling apps use, settings last. The three
  * that wait on somebody follow the history, since that is where they come from.
  */
-type Tab = 'jobs' | 'targets' | 'history' | 'conflicts' | 'trash' | 'settings'
+type Tab = 'jobs' | 'targets' | 'history' | 'conflicts' | 'anomalies' | 'trash' | 'settings'
 
 /** Settings is one tab with sections, the same shape BombVault uses. */
 type SettingsSection = 'general' | 'engine' | 'look' | 'app' | 'security'
@@ -221,6 +224,22 @@ export function App() {
       .then((got) => setTrashSides((prev) => mergeTrash(prev, job, got.sides)))
       .catch(() => {})
   }, [])
+  // What the engine found about the jobs, asked for again whenever it says the
+  // findings changed. `refused` counts the runs a brake refused, so the page
+  // can tell a change that grew after it was let through.
+  const [findings, setFindings] = useState<FindingListing | null>(null)
+  const [refused, setRefused] = useState<Record<string, number>>({})
+  const reloadFindings = useCallback(
+    () =>
+      api
+        .anomalies()
+        .then((got) => {
+          setFindings(got)
+          return got
+        })
+        .catch(() => null),
+    [],
+  )
   const orderedTrash = useMemo(
     () => (trashSides ? inJobOrder(trashSides, jobs.map((j) => j.name)) : null),
     [trashSides, jobs],
@@ -237,7 +256,22 @@ export function App() {
     wireTooltips()
     refresh()
     reloadWaiting('')
+    void reloadFindings()
     return api.watch((ev) => {
+      if (ev.phase === 'anomaly') {
+        void reloadFindings().then((got) => {
+          const fresh = got?.open.find((f) => f.id === ev.told)
+          if (!fresh) return
+          const what = t(`anomaly.kind.${fresh.kind}`)
+          push(
+            fresh.held
+              ? t('anomaly.heldNow', { job: fresh.job, what })
+              : `${t('anomaly.noteTitle', { job: fresh.job })}: ${what}`,
+            fresh.held ? 'fail' : undefined,
+          )
+        })
+        return
+      }
       // "moving" frames arrive twice a second during a run. Only their speed
       // is drawn here, and falling through would refetch the job list each
       // time.
@@ -263,9 +297,16 @@ export function App() {
         return next
       })
       refresh()
-      if (ev.phase === 'finished') reloadWaiting(ev.job)
+      if (ev.phase === 'finished') {
+        reloadWaiting(ev.job)
+        void reloadFindings()
+        if (ev.held) setRefused((prev) => ({ ...prev, [ev.job]: (prev[ev.job] ?? 0) + 1 }))
+      }
     })
-  }, [refresh, reloadWaiting])
+    // The toast speaks the language of the moment the stream was opened; a
+    // reconnect per language change would drop events for a word.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [refresh, reloadWaiting, reloadFindings])
 
   // The device setting applies until somebody picks a theme.
   useEffect(() => {
@@ -322,6 +363,7 @@ export function App() {
           { value: 'targets', label: t('nav.targets'), icon: <IconTargets /> },
           { value: 'history', label: t('nav.history'), icon: <IconHistory /> },
           { value: 'conflicts', label: t('nav.conflicts'), icon: <IconConflict />, badge: conflicts?.conflicts.length },
+          { value: 'anomalies', label: t('nav.anomalies'), icon: <IconAnomalies />, badge: findings?.open.length },
           {
             value: 'trash',
             label: t('nav.trash'),
@@ -358,6 +400,7 @@ export function App() {
           ) : tab === 'jobs' ? (
             <Jobs
               jobs={jobs}
+              findings={findings?.open ?? []}
               latest={latest}
               progress={progress}
               speeds={speeds}
@@ -371,6 +414,14 @@ export function App() {
             <Targets />
           ) : tab === 'conflicts' ? (
             <Conflicts listing={conflicts} job={focus} onChanged={reloadWaiting} />
+          ) : tab === 'anomalies' ? (
+            <Anomalies
+              listing={findings}
+              jobs={jobs}
+              job={focus}
+              refused={refused}
+              onChanged={() => void reloadFindings()}
+            />
           ) : tab === 'trash' ? (
             <Trash sides={orderedTrash} job={focus} onChanged={reloadWaiting} />
           ) : tab === 'history' ? (

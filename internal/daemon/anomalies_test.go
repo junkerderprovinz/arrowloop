@@ -292,3 +292,19 @@ func TestAScheduleNotKeptMakesANote(t *testing.T) {
 		t.Fatalf("got %+v, want one note about four days without a run", open)
 	}
 }
+
+func TestANewFindingIsHandedToTheNextWakeUpOnce(t *testing.T) {
+	r, left, _ := syncedPair(t)
+	emptyOut(t, left, 30)
+	held(t, r)
+
+	found := r.drainTold()
+	if len(found) != 1 || found[0].Job != "test" || found[0].Kind != "delete" || !found[0].Held {
+		t.Fatalf("the wake-up would hear %+v, want the one held job", found)
+	}
+	// Confirming the same finding is no news.
+	held(t, r)
+	if again := r.drainTold(); len(again) != 0 {
+		t.Errorf("the same finding would be told twice: %+v", again)
+	}
+}

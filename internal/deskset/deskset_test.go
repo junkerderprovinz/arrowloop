@@ -274,3 +274,14 @@ func TestAWindowInTheTrayIsStillThereAfterARestart(t *testing.T) {
 		t.Error("the window came back out, and the next start still hides it")
 	}
 }
+
+func TestAFindingIsSaidInTheInterfaceWordsOrInEnglish(t *testing.T) {
+	german := Words{Held: "„{job}“ ist angehalten: {what}", KindDelete: "Massenlöschung"}
+	if got := german.Found("fotos", "delete", true); got != "„fotos“ ist angehalten: Massenlöschung" {
+		t.Errorf("a held job reads %q", got)
+	}
+	// An interface from before the findings handed over none of these words.
+	if got := (Words{}).Found("fotos", "overdue", false); got != `A note about "fotos": Overdue` {
+		t.Errorf("without words a note reads %q, want it in English", got)
+	}
+}
