@@ -309,7 +309,10 @@ folder is emptied on purpose, a photo archive is not.
 failed runs in a row make one, and `overdueDays` how many days a scheduled job
 may miss its turn. `0` switches either off. `notifyHeld` and `notifyNotes`
 say whether a held job and a note are sent where runs report to; a held job is
-by default and a note is not.
+by default and a note is not. The desktop app also shows them as a notification
+of the system. On Windows and macOS it plays ArrowLoop's own sound, which keeps
+quiet while Windows does not disturb; on Linux it asks for the warning sound of
+the desktop's sound theme.
 
 The findings are kept in `anomalies.json` beside the configuration, a closed
 one for thirty days. In the interface they have a page of their own.

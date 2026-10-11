@@ -74,10 +74,13 @@ func (t *teller) watch(ctx context.Context, runner *daemon.Runner, store *deskse
 					ID:    f.ID,
 					Title: "ArrowLoop",
 					Body:  store.Words().Found(f.Job, string(f.Kind), f.Held),
+					Sound: sound(),
 				})
 				if err != nil {
 					log.Printf("could not show the notification about %s: %v", f.Job, err)
+					continue
 				}
+				ring()
 			}
 		}
 	}()

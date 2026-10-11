@@ -29,10 +29,12 @@ web/dist/*
 # manifest, icon and version resource, the macOS Info.plist and icon, the
 # installer's helper macros and the WebView2 bootstrapper it carries, and the
 # build output. What is committed is what Wails cannot write for us: the logo,
-# the build configuration and the installer script with the shortcut page.
+# the build configuration, the notification sound and the installer script
+# with the shortcut page.
 desktop/build/*
 !desktop/build/appicon.png
 !desktop/build/config.yml
+!desktop/build/sounds/
 !desktop/build/windows/
 desktop/build/windows/*
 !desktop/build/windows/nsis/

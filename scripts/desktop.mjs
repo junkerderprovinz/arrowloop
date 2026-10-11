@@ -120,11 +120,13 @@ if (process.platform === 'win32') {
   const app = join(bin, 'ArrowLoop.app', 'Contents')
   mkdirSync(join(app, 'MacOS'), { recursive: true })
   mkdirSync(join(app, 'Resources'), { recursive: true })
+  mkdirSync(join(app, 'Library', 'Sounds'), { recursive: true })
   run('lipo', ['-create', '-output', join(app, 'MacOS', 'ArrowLoop'), join(bin, 'ArrowLoop-amd64'), join(bin, 'ArrowLoop-arm64')])
   rmSync(join(bin, 'ArrowLoop-amd64'))
   rmSync(join(bin, 'ArrowLoop-arm64'))
   cpSync(join(desktop, 'build', 'darwin', 'icons.icns'), join(app, 'Resources', 'icons.icns'))
   cpSync(join(desktop, 'build', 'darwin', 'Info.plist'), join(app, 'Info.plist'))
+  cpSync(join(desktop, 'build', 'sounds', 'ArrowLoop.wav'), join(app, 'Library', 'Sounds', 'ArrowLoop.wav'))
   // An ad-hoc signature over the whole bundle, as Wails' own template does:
   // Apple Silicon refuses to start code that carries none.
   run('codesign', ['--force', '--deep', '--sign', '-', join(bin, 'ArrowLoop.app')])
