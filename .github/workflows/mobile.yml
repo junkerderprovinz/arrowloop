@@ -163,11 +163,11 @@ jobs:
           # Real divergence and a bin with something in it, since some shapes
           # exist only while something is happening; check_shapes fails when it
           # could not reach them.
-          curl -sf -m 60 -X POST http://127.0.0.1:18423/api/jobs/check/run
+          curl -sf -m 60 -X POST -H 'Content-Type: application/json' http://127.0.0.1:18423/api/jobs/check/run
           settle
           rm "$work/right/two.txt"
           echo three > "$work/left/three.txt"
-          curl -sf -m 60 -X POST http://127.0.0.1:18423/api/jobs/check/run
+          curl -sf -m 60 -X POST -H 'Content-Type: application/json' http://127.0.0.1:18423/api/jobs/check/run
           settle
           echo four > "$work/left/four.txt"
           # One file changed on both sides, the only action that carries both

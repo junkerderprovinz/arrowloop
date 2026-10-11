@@ -20,7 +20,7 @@ The full notes for each release are in
 - **Without a password, a container refuses what a stranger on the network should never do.** Downloading or restoring the settings backup, deleting from the trash for good, forgetting a job's state and deleting a target answer that a password has to be set first. The phone app and the desktop window are not asked.
 - **The Matrix token and the webhook address stay on the server.** The settings show them as dots, and saving without touching them keeps them.
 - **Emptying or pruning the trash takes exactly what was shown.** A file binned after the confirmation came up stops the emptying instead of going with it.
-- **A change has to arrive as JSON.** A page on another site can send a form to the port without the browser asking first; that is refused.
+- **A change has to arrive as JSON.** A page on another site can send a form to the port without the browser asking first; that is refused. A script that starts a run with curl adds `-H 'Content-Type: application/json'`.
 - **An older ArrowLoop refuses data a newer one wrote**, for the run history, the job records and the login settings, instead of misreading them.
 
 ## 🐛 Fixed

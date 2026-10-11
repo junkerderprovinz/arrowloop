@@ -10,7 +10,7 @@ import (
 	_ "modernc.org/sqlite"
 )
 
-func open(t *testing.T, path string) *sql.DB {
+func openDB(t *testing.T, path string) *sql.DB {
 	t.Helper()
 	db, err := sql.Open("sqlite", path)
 	if err != nil {
@@ -23,7 +23,7 @@ func open(t *testing.T, path string) *sql.DB {
 func TestANewDatabaseIsStampedAndANewerOneRefused(t *testing.T) {
 	ctx := context.Background()
 	path := filepath.Join(t.TempDir(), "state.db")
-	db := open(t, path)
+	db := openDB(t, path)
 	if err := Stamp(ctx, db, path, 1); err != nil {
 		t.Fatalf("a new database: %v", err)
 	}
