@@ -24,7 +24,7 @@ import { Choice, Day, Field, Text } from '../components/Field'
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { groupFindings, shortLine, type Finding } from '../lib/anomalies'
 import { bytes } from '../lib/bytes'
-import { entryAction, entryNote } from '../lib/entryLabel'
+import { entryAction, entryNote, sideName } from '../lib/entryLabel'
 import { useLiveTick } from '../lib/liveTick'
 import { useGoTo } from '../lib/goTo'
 import { usePlaces } from '../lib/places'
@@ -526,14 +526,15 @@ export function JobRow({
   direction: Direction
   children: ReactNode
 }) {
+  const { drives } = usePlaces()
   return (
     <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
       <div className="flex min-w-0 grow basis-64 items-center gap-3">
         {mark}
         <p className="flex min-w-0 flex-1 flex-wrap items-center gap-x-2.5 gap-y-1 text-base text-carbon-text">
-          <span className="min-w-0 [overflow-wrap:anywhere]">{left}</span>
+          <span className="min-w-0 [overflow-wrap:anywhere]">{sideName(left, drives)}</span>
           <DirectionMark direction={direction} size={20} />
-          <span className="min-w-0 [overflow-wrap:anywhere]">{right}</span>
+          <span className="min-w-0 [overflow-wrap:anywhere]">{sideName(right, drives)}</span>
         </p>
       </div>
       <div className="ms-auto flex max-w-full flex-wrap items-center justify-end gap-2">{children}</div>

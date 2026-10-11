@@ -8,6 +8,12 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## Unreleased
+
+## 🎨 Design
+
+- **A job's card names a drive by its label.** A side on a registered drive read as `volume:` and a long identity; it reads as the drive's name and the folder on it, such as "externe_festplatte/opencloud".
+
 ## 1.7.3 - 2026-10-11
 
 ## 🎨 Design

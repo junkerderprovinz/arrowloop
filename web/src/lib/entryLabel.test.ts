@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import type { Job, RunEntry, Volume } from './api'
 import { de } from './i18n'
-import { entryAction, entryLabel, entryNote, placeOf } from './entryLabel'
+import { entryAction, entryLabel, entryNote, placeOf, sideName } from './entryLabel'
 
 // The German table, so the test reads the phrases somebody asked for.
 const t = (key: string, vars?: Record<string, string | number>) =>
@@ -138,5 +138,17 @@ describe('what happened, without where', () => {
 
   it('keeps the full label where there is no single word', () => {
     expect(entryAction(t, noted('conflict', 'keep both'), music, drives)).toBe(de['entry.conflictBoth'])
+  })
+})
+
+describe('a side as it reads', () => {
+  it('names a drive by its label and keeps the folder on it', () => {
+    expect(sideName('volume:a1b2/opencloud', drives)).toBe('Backup-Platte/opencloud')
+    expect(sideName('volume:a1b2', drives)).toBe('Backup-Platte')
+  })
+
+  it('leaves a folder or a target as written', () => {
+    expect(sideName('D:\opencloud', drives)).toBe('D:\opencloud')
+    expect(sideName('OpenCloud:Fotos', drives)).toBe('OpenCloud:Fotos')
   })
 })

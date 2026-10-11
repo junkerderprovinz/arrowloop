@@ -199,16 +199,24 @@ export function entryRoute(
 }
 
 /**
+ * A side as a person reads it: a drive by its label and the folder on it, as
+ * "Backup/Photos", since its stored form starts with an identity nobody can
+ * read. Any other side is shown as written.
+ */
+export function sideName(path: string, drives: Drive[]): string {
+  if (!path.startsWith(DRIVE)) return path
+  const [id = '', ...rest] = path.slice(DRIVE.length).split('/')
+  const label = drives.find((d) => d.id === id)?.label || id
+  return [label, ...rest.filter(Boolean)].join('/')
+}
+
+/**
  * A path inside one side, joined the way that side writes paths: backslashes
  * on a Windows folder, the target's own form after its colon, and a drive by
  * its label rather than its id.
  */
 function within(root: string, path: string, drives: Drive[]): string {
-  if (root.startsWith(DRIVE)) {
-    const [id = '', ...rest] = root.slice(DRIVE.length).split('/')
-    const label = drives.find((d) => d.id === id)?.label || id
-    return [label, ...rest.filter(Boolean), path].join('/')
-  }
+  if (root.startsWith(DRIVE)) return `${sideName(root, drives)}/${path}`
   if (root.endsWith(':')) return root + path
   if (/^[A-Za-z]:\\/.test(root) || (root.includes('\\') && !root.includes('/'))) {
     return `${root.replace(/\\+$/, '')}\\${path.replaceAll('/', '\\')}`
