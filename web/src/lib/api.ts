@@ -444,6 +444,8 @@ export type TrashListing = {
   /** Uncapped, so a shortened list can never read as a complete one. */
   total: number
   entries: TrashEntry[]
+  /** Fingerprints every entry; emptying or pruning sends it back. */
+  mark: string
 }
 
 /** One side of one job in the listing across every job. */
@@ -909,8 +911,8 @@ export const api = {
     post<{ deleted: string }>(`/api/jobs/${encodeURIComponent(job)}/trash/${side}/delete`, { path, runId }),
 
   /** Removes everything in one side's trash. */
-  emptyTrash: (job: string, side: string) =>
-    post<{ entries: number; bytes: number }>(`/api/jobs/${encodeURIComponent(job)}/trash/${side}/empty`),
+  emptyTrash: (job: string, side: string, mark: string) =>
+    post<{ entries: number; bytes: number }>(`/api/jobs/${encodeURIComponent(job)}/trash/${side}/empty`, { mark }),
 
   /** Every open conflict, or those of the one job named. */
   anomalies: () => request<FindingListing>('/api/anomalies'),
@@ -935,13 +937,13 @@ export const api = {
   decide: (job: string, decisions: { copy: string; keep: Resolution }[]) =>
     post<{ job: string; run: Run }>(`/api/jobs/${encodeURIComponent(job)}/conflicts`, { decisions }),
 
-  pruneTrash: (job: string, side: string, olderThanDays: number) =>
+  pruneTrash: (job: string, side: string, olderThanDays: number, mark: string) =>
     request<{ entries: number; bytes: number; unknown: number }>(
       `/api/jobs/${encodeURIComponent(job)}/trash/${side}/prune`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ olderThanDays }),
+        body: JSON.stringify({ olderThanDays, mark }),
       },
     ),
 

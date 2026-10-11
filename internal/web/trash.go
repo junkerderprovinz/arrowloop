@@ -2,11 +2,15 @@ package web
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
+	"sort"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 
@@ -50,6 +54,10 @@ type keptAnswer struct {
 	Total   int         `json:"total"`
 	Bytes   int64       `json:"bytes"`
 	Entries []keptEntry `json:"entries"`
+
+	// Mark fingerprints every entry, the unlisted ones too. Emptying or
+	// pruning carries it back, so what goes is what was shown.
+	Mark string `json:"mark"`
 }
 
 // listTrash reads what one side's trash holds.
@@ -84,7 +92,7 @@ func (s *Server) listKept(w http.ResponseWriter, r *http.Request, store trash.St
 
 // answerOf renders a listing, sending at most limit entries.
 func answerOf(name, side string, store trash.Store, entries []trash.Entry, limit int) keptAnswer {
-	out := keptAnswer{Job: name, Side: side, Store: store.Name(), Dir: store.Dir(), Total: len(entries)}
+	out := keptAnswer{Job: name, Side: side, Store: store.Name(), Dir: store.Dir(), Total: len(entries), Mark: markOf(entries)}
 	for _, e := range entries {
 		out.Bytes += e.Size
 	}
@@ -176,6 +184,40 @@ func (s *Server) deleteTrash(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// markOf fingerprints a listing: every entry's place and size, in order.
+func markOf(entries []trash.Entry) string {
+	lines := make([]string, 0, len(entries))
+	for _, e := range entries {
+		lines = append(lines, fmt.Sprintf("%s\x00%d", e.Remote, e.Size))
+	}
+	sort.Strings(lines)
+	sum := sha256.Sum256([]byte(strings.Join(lines, "\n")))
+	return hex.EncodeToString(sum[:16])
+}
+
+// errTrashChanged refuses to empty or prune a trash that holds something
+// other than what the confirmation showed.
+var errTrashChanged = errors.New("the trash changed since it was shown; look at it again before deleting from it")
+
+// sameTrash answers 409 itself and reports false when the side's trash is no
+// longer what the mark describes.
+func sameTrash(w http.ResponseWriter, r *http.Request, f rclonefs.Fs, store trash.Store, mark string) bool {
+	if mark == "" {
+		writeError(w, http.StatusBadRequest, errors.New("the request carries no mark of the trash it was shown"))
+		return false
+	}
+	entries, err := trash.List(r.Context(), f, store)
+	if err != nil {
+		writeError(w, http.StatusBadGateway, err)
+		return false
+	}
+	if markOf(entries) != mark {
+		writeError(w, http.StatusConflict, errTrashChanged)
+		return false
+	}
+	return true
+}
+
 // emptyTrash removes everything in one side's trash.
 func (s *Server) emptyTrash(w http.ResponseWriter, r *http.Request) {
 	store, ok := trashStore(w, r)
@@ -183,9 +225,19 @@ func (s *Server) emptyTrash(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	name, side := r.PathValue("name"), r.PathValue("side")
+	var req struct {
+		Mark string `json:"mark"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		writeError(w, http.StatusBadRequest, fmt.Errorf("read the request: %w", err))
+		return
+	}
 	f, code, err := s.sideOf(r.Context(), name, side)
 	if err != nil {
 		writeError(w, code, err)
+		return
+	}
+	if !sameTrash(w, r, f, store, req.Mark) {
 		return
 	}
 	emptied, err := trash.Empty(r.Context(), f, store)
@@ -260,7 +312,8 @@ func (s *Server) pruneTrash(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var body struct {
-		OlderThanDays int `json:"olderThanDays"`
+		OlderThanDays int    `json:"olderThanDays"`
+		Mark          string `json:"mark"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 		writeError(w, http.StatusBadRequest, fmt.Errorf("read the request: %w", err))
@@ -269,6 +322,9 @@ func (s *Server) pruneTrash(w http.ResponseWriter, r *http.Request) {
 	cutoff, err := trash.Cutoff(time.Now(), body.OlderThanDays)
 	if err != nil {
 		writeError(w, http.StatusBadRequest, err)
+		return
+	}
+	if !sameTrash(w, r, f, store, body.Mark) {
 		return
 	}
 

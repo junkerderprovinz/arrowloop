@@ -14,7 +14,22 @@ type trashList struct {
 		Total            int
 		Bytes            int64
 		Entries          []struct{ Path, RunID string }
+		Mark             string
 	}
+}
+
+// markOfSide reads the mark the listing gives one side.
+func markOfSide(t *testing.T, h *harness, side string) string {
+	t.Helper()
+	var list trashList
+	h.get(t, "/api/trash", &list)
+	for _, s := range list.Sides {
+		if s.Side == side {
+			return s.Mark
+		}
+	}
+	t.Fatalf("no %s side in the listing", side)
+	return ""
 }
 
 func binned(t *testing.T, root, run, rel, body string) {
@@ -94,7 +109,7 @@ func TestEmptyingOneSideLeavesTheOther(t *testing.T) {
 	binned(t, h.left, "20260902-080000", "b.txt", "bb")
 	binned(t, h.right, "20260901-080000", "a.txt", "aaaa")
 
-	resp := h.post(t, "/api/jobs/photos/trash/left/empty", `{}`)
+	resp := h.post(t, "/api/jobs/photos/trash/left/empty", `{"mark":"`+markOfSide(t, h, "left")+`"}`)
 	body, _ := io.ReadAll(resp.Body)
 	resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
@@ -108,5 +123,38 @@ func TestEmptyingOneSideLeavesTheOther(t *testing.T) {
 		if s.Total != want {
 			t.Errorf("the %s side holds %d entries, want %d", s.Side, s.Total, want)
 		}
+	}
+}
+
+// A file binned after the confirmation was drawn is not what somebody agreed
+// to delete, so the whole emptying is refused.
+func TestATrashThatChangedSinceItWasShownIsNotEmptied(t *testing.T) {
+	h := newHarness(t)
+	binned(t, h.left, "20260901-080000", "a.txt", "aaaa")
+	shown := markOfSide(t, h, "left")
+	binned(t, h.left, "20260902-080000", "late.txt", "new")
+
+	for _, route := range []struct{ path, body string }{
+		{"/api/jobs/photos/trash/left/empty", `{"mark":"` + shown + `"}`},
+		{"/api/jobs/photos/trash/left/prune", `{"olderThanDays":1,"mark":"` + shown + `"}`},
+	} {
+		resp := h.post(t, route.path, route.body)
+		resp.Body.Close()
+		if resp.StatusCode != http.StatusConflict {
+			t.Errorf("%s with the old mark answered %s", route.path, resp.Status)
+		}
+	}
+	var list trashList
+	h.get(t, "/api/trash", &list)
+	for _, side := range list.Sides {
+		if side.Side == "left" && side.Total != 2 {
+			t.Errorf("the left trash holds %d entries after a refused emptying, want 2", side.Total)
+		}
+	}
+
+	resp := h.post(t, "/api/jobs/photos/trash/left/empty", `{"mark":"`+markOfSide(t, h, "left")+`"}`)
+	resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		t.Errorf("emptying with the current mark answered %s", resp.Status)
 	}
 }

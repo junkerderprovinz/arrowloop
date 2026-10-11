@@ -175,6 +175,8 @@ export interface Bin {
   /** What the side holds in bytes, counting entries beyond those listed. */
   bytes: number;
   entries: TrashItem[];
+  /** Fingerprints every entry; emptying sends it back. */
+  mark: string;
 }
 
 /** One side in the listing across jobs, which says why a side could not be read. */
@@ -384,8 +386,11 @@ export const api = {
       body: JSON.stringify({ path, runId }),
     }),
   /** Removes everything in one side's trash. */
-  emptyTrash: (job: string, side: string) =>
-    call<{ entries: number }>(`/api/jobs/${name(job)}/trash/${side}/empty`, { method: "POST", body: "{}" }),
+  emptyTrash: (job: string, side: string, mark: string) =>
+    call<{ entries: number }>(`/api/jobs/${name(job)}/trash/${side}/empty`, {
+      method: "POST",
+      body: JSON.stringify({ mark }),
+    }),
 
   conflicts: () => call<{ conflicts: OpenConflict[]; unread: { job: string; error: string }[] }>("/api/conflicts"),
 

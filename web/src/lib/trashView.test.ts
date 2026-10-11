@@ -4,7 +4,7 @@ import type { TrashSide } from './api'
 import { byJob, inJobOrder, mergeTrash, trashTotals } from './trashView'
 
 function side(job: string, name: 'left' | 'right', total: number, bytes: number): TrashSide {
-  return { job, side: name, store: 'trash', dir: '.arrowloop/trash', total, bytes, entries: [] }
+  return { job, side: name, store: 'trash', dir: '.arrowloop/trash', total, bytes, entries: [], mark: '' }
 }
 
 describe('the trash tab', () => {

@@ -142,7 +142,7 @@ export function TrashAll() {
                           size: bytes(bin.bytes),
                         }),
                         t("trash.emptyAll"),
-                        () => void run([() => api.emptyTrash(bin.job, bin.side)]),
+                        () => void run([() => api.emptyTrash(bin.job, bin.side, bin.mark)]),
                       )
                     }
                   />
@@ -191,7 +191,7 @@ export function TrashAll() {
             t("trash.emptyAll"),
             t("trash.emptyAllConfirm", { count: totals.entries, size: bytes(totals.bytes) }),
             t("trash.emptyAll"),
-            () => void run(readable.filter((b) => b.total > 0).map((b) => () => api.emptyTrash(b.job, b.side))),
+            () => void run(readable.filter((b) => b.total > 0).map((b) => () => api.emptyTrash(b.job, b.side, b.mark))),
           )
         }
       />

@@ -83,13 +83,13 @@ export function Trash({
         )
         break
       case 'side':
-        void act([{ job: p.side.job, run: () => api.emptyTrash(p.side.job, p.side.side) }], () =>
+        void act([{ job: p.side.job, run: () => api.emptyTrash(p.side.job, p.side.side, p.side.mark) }], () =>
           t('trash.emptied', { count: p.side.total }),
         )
         break
       case 'all':
         void act(
-          p.sides.map((s) => ({ job: s.job, run: () => api.emptyTrash(s.job, s.side) })),
+          p.sides.map((s) => ({ job: s.job, run: () => api.emptyTrash(s.job, s.side, s.mark) })),
           () => t('trash.emptied', { count: trashTotals(p.sides).entries }),
         )
         break
@@ -99,7 +99,7 @@ export function Trash({
           p.sides.map((s) => ({
             job: s.job,
             run: async () => {
-              removed += (await api.pruneTrash(s.job, s.side, p.days)).entries
+              removed += (await api.pruneTrash(s.job, s.side, p.days, s.mark)).entries
             },
           })),
           () => t('trash.pruned', { entries: removed }),
