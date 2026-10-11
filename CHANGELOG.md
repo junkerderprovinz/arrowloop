@@ -8,6 +8,28 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## Unreleased
+
+## ✨ Added
+
+- **A forgotten password can be reset with a code from the log.** Forgot the password? on the login page has ArrowLoop write a one-time code into its log, valid for ten minutes. The new password takes two-factor authentication, every passkey and every other session with it, and the page lists what went. Whoever can read the container's log can do this, which the installation guide spells out; a password from `ARROWLOOP_PASSWORD_HASH` is not reset this way.
+
+## ⚡ Improved
+
+- **Every install has a key of its own.** It comes from `ARROWLOOP_APP_KEY`, or is drawn once into `app.key` beside the configuration. The password is stored as Argon2id peppered with it, and the authenticator secret is sealed with it, so a copy of `security.json` alone opens nothing. A password stored the older way works as before and is stored again the new way at the next login.
+- **Without a password, a container refuses what a stranger on the network should never do.** Downloading or restoring the settings backup, deleting from the trash for good, forgetting a job's state and deleting a target answer that a password has to be set first. The phone app and the desktop window are not asked.
+- **The Matrix token and the webhook address stay on the server.** The settings show them as dots, and saving without touching them keeps them.
+- **Emptying or pruning the trash takes exactly what was shown.** A file binned after the confirmation came up stops the emptying instead of going with it.
+- **A change has to arrive as JSON.** A page on another site can send a form to the port without the browser asking first; that is refused.
+- **An older ArrowLoop refuses data a newer one wrote**, for the run history, the job records and the login settings, instead of misreading them.
+
+## 🐛 Fixed
+
+- **Two changes to the password at once can no longer both win.** A change is written only if the password is still the one that was checked.
+- **A flood of addresses can no longer lift a login lockout.** When the table of failed logins is full, the addresses that are not locked out go first.
+- **A job whose two sides are one folder is refused also when the folder is reached through a symlink or spelled in another case.** Forgetting a job's state is refused when another job keeps its record in the same file.
+- **`arrowloop hash-password` takes `-config`**, since the hash is made under that install's key, and refuses where no configuration is found.
+
 ## 1.7.4 - 2026-10-11
 
 ## 🎨 Design
