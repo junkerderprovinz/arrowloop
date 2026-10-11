@@ -42,7 +42,16 @@ Caddy and Traefik pass on the name the browser asked for. nginx passes on the
 name in its `proxy_pass` line unless it is told `proxy_set_header Host $host`,
 so behind a plain `proxy_pass http://arrowloop:8422` every request through the
 proxy gets in without a password; set one there. With or without a password,
-the interface refuses a change that a page from another site started.
+the interface refuses a change that a page from another site started, and any
+change not sent as JSON, which is what a page elsewhere could send without the
+browser asking first.
+
+Without a password, the interface also refuses to download or restore the
+settings backup, to delete from the trash for good, to forget a job's state and
+to delete a target, since anybody who reaches the port could otherwise do it.
+The settings never hand out the Matrix token or the webhook address, with or
+without a password. The phone app and the desktop window, which nobody else
+reaches, are not asked.
 
 The same section sets up a second factor: six digits from an authenticator app
 on top of the password. Setting it up shows eight recovery codes once, and each
@@ -63,23 +72,51 @@ never in `arrowloop.json`. That file is downloaded whole as a settings backup an
 replaced whole by a restore, so a hash in it would leave with every backup and
 restoring an old one would switch the password off.
 
+The password is stored as Argon2id over a value keyed with the install's key,
+and the second factor's secret is sealed with it, so `security.json` on its own
+is no use to whoever copies it. The key comes from `ARROWLOOP_APP_KEY`, 64
+hexadecimal characters such as `openssl rand -hex 32` prints, or without it from
+`/config/app.key`, drawn on the first start. A copy of all of `/config` carries
+that file too, so setting the variable keeps the key out of it. Keep the key:
+under another one the password and the second factor no longer open, and the
+container refuses to start until the old key is back or `security.json` is
+deleted.
+
+#### A forgotten password
+
+Under the password box, **Forgot the password?** has ArrowLoop write a one-time
+code into its log: on Unraid under Docker, ArrowLoop, Logs, elsewhere with
+`docker logs arrowloop`. Type the code and a new password on the same page. The
+code is valid for ten minutes, asking again keeps the code in force rather than
+replacing it, and a wrong code does not spend the right one. The new password
+takes the second factor, every passkey and every other session with it, since
+any of them could belong to whoever made the reset necessary, and the page says
+what went.
+
+Whoever can read that log can take the install over this way: root on the host,
+but also a log viewer such as Dozzle, any container given the Docker socket,
+even read only, and a log collector. If any of those is less trusted than you,
+set the password with `ARROWLOOP_PASSWORD_HASH` instead, which a code from the
+log cannot replace.
+
 #### The environment variable
 
 `ARROWLOOP_PASSWORD_HASH` still works, and it wins over the password set in the
 interface, which then shows the password as set from outside and offers no form
-for it. That makes it the way back in after a forgotten password. Have the image
-hash one and hand the result back:
+for it. The hash is made under the install's key, so make it in the running
+container and hand the result back:
 
 ```bash
-docker run --rm -it junkerderprovinz/arrowloop:latest hash-password
+docker exec -it arrowloop arrowloop hash-password -config /config/arrowloop.json
 
 docker run -d --name arrowloop -p 8422:8422 \
-  -e ARROWLOOP_PASSWORD_HASH='$2a$10$...' \
+  -e ARROWLOOP_PASSWORD_HASH='argon2id$19456$2$1$...' \
   ...
 ```
 
 The single quotes matter: the hash is full of `$`, which a shell would otherwise
-read as variables. In a Compose file, write every `$` as `$$`.
+read as variables. In a Compose file, write every `$` as `$$`. A bcrypt hash,
+as older versions printed and many other tools make, is still accepted.
 
 #### Behind a reverse proxy
 

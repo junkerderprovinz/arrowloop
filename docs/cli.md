@@ -107,12 +107,17 @@ password without it; the variable is for a password managed from outside, such
 as in a container template, and it wins over the one set in the interface,
 which makes it the way back in after that one is forgotten.
 
+The hash is made under the key of the install whose configuration `-config`
+names, so run it where that install runs; in the container that is
+`-config /config/arrowloop.json`. Without a configuration there it refuses,
+unless `ARROWLOOP_APP_KEY` names the key.
+
 At a terminal it asks for the password twice without echoing it; piped, it
 takes the first line.
 
 ```bash
-arrowloop hash-password
-printf '%s\n' "$PASSWORD" | arrowloop hash-password
+arrowloop hash-password -config /config/arrowloop.json
+printf '%s\n' "$PASSWORD" | arrowloop hash-password -config /config/arrowloop.json
 ```
 
 The password never goes on the command line, where it would end up in a shell

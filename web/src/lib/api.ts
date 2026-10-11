@@ -763,7 +763,7 @@ export const api = {
    * one. Asked before anything else is drawn, so a page load does not start
    * with a 401.
    */
-  session: () => request<{ required: boolean; authenticated: boolean }>('/api/session'),
+  session: () => request<{ required: boolean; authenticated: boolean; reset?: boolean }>('/api/session'),
 
   /**
    * Sign in. With a second factor on, a right password alone answers
@@ -773,6 +773,16 @@ export const api = {
     post<{ authenticated: boolean; needCode?: boolean }>('/api/login', code ? { password, code } : { password }),
 
   logout: () => request<{ ok: boolean }>('/api/logout', { method: 'POST' }),
+
+  /** Has the server write a reset code to its log. The answer never carries it. */
+  resetBegin: () => post<{ minutes: number }>('/api/security/reset'),
+
+  /** Sets a new password with the code from the log, and signs the caller in. */
+  resetFinish: (code: string, password: string) =>
+    post<{ removed: { secondFactor: boolean; passkeys: number; sessions: number } }>('/api/security/reset/finish', {
+      code,
+      password,
+    }),
 
   security: () => request<SecurityStatus>('/api/security'),
 

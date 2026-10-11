@@ -28,6 +28,13 @@ func cmdHashPassword(args []string) error {
 	if err := fset.Parse(args); err != nil {
 		return err
 	}
+	// A key drawn beside a configuration that does not exist would make a hash
+	// no install accepts.
+	if os.Getenv(security.KeyEnv) == "" {
+		if _, err := os.Stat(*configPath); err != nil {
+			return fmt.Errorf("no configuration at %s, so this would hash under the wrong key: pass -config with the configuration of the install the password is for, /config/arrowloop.json in the container", *configPath)
+		}
+	}
 	key, err := security.LoadKey(*configPath)
 	if err != nil {
 		return err

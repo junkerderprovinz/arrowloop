@@ -138,6 +138,8 @@ func (s *Server) Handler() http.Handler {
 		mux.HandleFunc("POST /api/security/totp/setup", s.totpSetup)
 		mux.HandleFunc("POST /api/security/totp/confirm", s.totpConfirm)
 		mux.HandleFunc("POST /api/security/totp/disable", s.totpDisable)
+		mux.HandleFunc("POST /api/security/reset", s.resetBegin)
+		mux.HandleFunc("POST /api/security/reset/finish", s.resetFinish)
 
 		mux.HandleFunc("GET /api/passkeys", s.passkeyStatus)
 		mux.HandleFunc("POST /api/passkeys/login/begin", s.passkeyLoginBegin)

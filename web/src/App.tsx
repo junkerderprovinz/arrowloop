@@ -116,11 +116,15 @@ function applyTheme(theme: Theme, remember: boolean) {
  */
 export function Gate() {
   const [state, setState] = useState<'asking' | 'in' | 'out'>('asking')
+  const [canReset, setCanReset] = useState(false)
 
   const ask = useCallback(() => {
     api
       .session()
-      .then((s) => setState(s.required && !s.authenticated ? 'out' : 'in'))
+      .then((s) => {
+        setCanReset(!!s.reset)
+        setState(s.required && !s.authenticated ? 'out' : 'in')
+      })
       .catch(() => {
         // An unreachable engine is no password problem; App shows its own
         // banner for it.
@@ -132,7 +136,7 @@ export function Gate() {
   useEffect(() => whenSignedOut(() => setState('out')), [])
 
   if (state === 'asking') return null
-  if (state === 'out') return <Login onIn={ask} />
+  if (state === 'out') return <Login onIn={ask} canReset={canReset} />
   // The desktop app's tray window loads the same page.
   return isActivityView() ? (
     <Activity />

@@ -106,6 +106,9 @@ type authGate struct {
 	sessions   []session
 	failures   map[string]failureRecord
 	ceremonies map[string]passkeyCeremony
+
+	reset         resetCode
+	resetFailures map[string]failureRecord
 }
 
 // gates maps each server to its own gate, so two servers in one process never
@@ -253,6 +256,8 @@ var openRoutes = map[string]bool{
 	"/api/passkeys":              true,
 	"/api/passkeys/login/begin":  true,
 	"/api/passkeys/login/finish": true,
+	"/api/security/reset":        true,
+	"/api/security/reset/finish": true,
 }
 
 // Protect wraps a handler so the API needs a session once a password is set.
@@ -520,30 +525,36 @@ func (g *authGate) recordFailure(key string) {
 			delete(g.failures, k)
 		}
 	}
-	// The table is bounded, since anybody who reaches the port writes to it.
-	// The addresses that are not locked out go first: dropping the whole table
-	// would let somebody with many addresses lift his own lockout.
-	if len(g.failures) >= maxTrackedClients {
-		for k, rec := range g.failures {
-			if rec.count < maxFailedLogins {
-				delete(g.failures, k)
-			}
-		}
-	}
-	for len(g.failures) >= maxTrackedClients {
-		oldest := ""
-		for k, rec := range g.failures {
-			if oldest == "" || rec.last.Before(g.failures[oldest].last) {
-				oldest = k
-			}
-		}
-		delete(g.failures, oldest)
-	}
+	makeRoom(g.failures)
 
 	rec := g.failures[key]
 	rec.count++
 	rec.last = now
 	g.failures[key] = rec
+}
+
+// makeRoom keeps a failure table under maxTrackedClients, since anybody who
+// reaches the port writes to it. The addresses that are not locked out go
+// first: dropping the whole table would let somebody with many addresses lift
+// his own lockout.
+func makeRoom(table map[string]failureRecord) {
+	if len(table) < maxTrackedClients {
+		return
+	}
+	for k, rec := range table {
+		if rec.count < maxFailedLogins {
+			delete(table, k)
+		}
+	}
+	for len(table) >= maxTrackedClients {
+		oldest := ""
+		for k, rec := range table {
+			if oldest == "" || rec.last.Before(table[oldest].last) {
+				oldest = k
+			}
+		}
+		delete(table, oldest)
+	}
 }
 
 // clearFailures forgets a source address's failures.
@@ -565,6 +576,10 @@ type sessionView struct {
 	// NeedCode answers a right password on an install with a second factor:
 	// the login screen asks for the code next.
 	NeedCode bool `json:"needCode,omitempty"`
+
+	// Reset says the password can be reset with a code from the log, which
+	// is so for a password set in the interface.
+	Reset bool `json:"reset,omitempty"`
 }
 
 // session answers whether a password is needed and whether the caller has one.
@@ -574,7 +589,11 @@ func (s *Server) session(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, http.StatusOK, sessionView{Required: false, Authenticated: true})
 		return
 	}
-	writeJSON(w, http.StatusOK, sessionView{Required: true, Authenticated: s.gate().accepts(cookieToken(r))})
+	writeJSON(w, http.StatusOK, sessionView{
+		Required:      true,
+		Authenticated: s.gate().accepts(cookieToken(r)),
+		Reset:         s.passwordSource() == passwordFile,
+	})
 }
 
 // loginRequest is what the login takes. Code is the six digits from the

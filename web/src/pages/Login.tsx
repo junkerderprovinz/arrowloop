@@ -6,6 +6,7 @@ import { Field, Secret, Text } from '../components/Field'
 import { IconConfirm } from '../components/glyphs'
 import { ApiError, api, passkeysAvailableInBrowser } from '../lib/api'
 import { useT } from '../lib/i18n'
+import { PasswordReset } from '../components/PasswordReset'
 
 /**
  * The password box, drawn only when the server's open probe route says one is
@@ -16,8 +17,9 @@ import { useT } from '../lib/i18n'
  * and the code field appears, the password kept. The field waits for that
  * answer, so nobody spends a thirty-second code on a mistyped password.
  */
-export function Login({ onIn }: { onIn: () => void }) {
+export function Login({ onIn, canReset = false }: { onIn: () => void; canReset?: boolean }) {
   const { t } = useT()
+  const [resetting, setResetting] = useState(false)
   const [password, setPassword] = useState('')
   const [code, setCode] = useState('')
   const [needCode, setNeedCode] = useState(false)
@@ -82,6 +84,16 @@ export function Login({ onIn }: { onIn: () => void }) {
     }
   }
 
+  if (resetting) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-carbon-background p-6">
+        <div className="w-full max-w-sm">
+          <PasswordReset onDone={onIn} onCancel={() => setResetting(false)} />
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="flex h-screen items-center justify-center bg-carbon-background p-6">
       <div className="w-full max-w-sm">
@@ -110,7 +122,18 @@ export function Login({ onIn }: { onIn: () => void }) {
             {/* Beside the password, which always works. Hidden rather than
                 disabled where it cannot work: a disabled control on a login
                 screen reads as being locked out. */}
-            <div className="flex flex-wrap justify-end gap-2">
+            <div className="flex flex-wrap items-center justify-end gap-2">
+              {/* Only for a password set in the interface: one from the
+                  environment is changed where the container is set up. */}
+              {canReset && !needCode && (
+                <button
+                  type="button"
+                  className="me-auto text-xs text-carbon-textMuted underline-offset-2 hover:text-carbon-text hover:underline"
+                  onClick={() => setResetting(true)}
+                >
+                  {t('reset.link')}
+                </button>
+              )}
               {passkeyOffer && !needCode && (
                 <Button
                   label={t('login.passkeyUnlock')}
