@@ -8,6 +8,38 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## Unreleased
+
+## 🎨 Design
+
+- **ArrowLoop follows GlimStone 3.4.2.** Warnings are orange, text comes in five sizes, a pressed button gives way a little, and Design offers System beside Dark and Light.
+- **The sidebar holds Jobs, Conflicts, Trash and History.** Sign out sits above Settings once a password is set. Targets and Anomalies are tiles under Settings, and Also show in the sidebar puts either one back. Every page has an address of its own, and an old one leads to where the page is now.
+- **Settings is a column of tiles, one topic each.** Engine is split into Sync, Workload, Safety net, Notifications and Exclude lists. A search comes up when you scroll up once more at the top of a page, or with / or Ctrl+K, and it finds the old names too.
+- **The Jobs page opens with how things stand.** One sentence says everything is in sync, in sync with notes, or that something needs you, and a Waiting card lists what does. Each job is one row with its last fourteen runs as a strip and one status. A held run or a waiting conflict shows in orange and is never shown as synced.
+- **Every job has a page of its own**, with its runs, the files it touched, the preview, the check and the duplicate search, each in a card. The job editor opens in a window.
+- **Lists have Filter, Sort and Search above them.** Conflicts and trash files are picked with a round mark, Ctrl+click, Shift+click or Ctrl+A, and a right-click offers the answers. Runs, findings and conflicts open in a window instead of folding out, and in a narrow window that window comes up from the bottom.
+- **A narrow window gets a bar along the bottom** with Jobs, Conflicts, History, Settings and More.
+
+## ✨ Added
+
+- **A new install opens on a welcome page** that says what ArrowLoop found and lists three steps to the first sync. Restore settings brings back the jobs from a backup file.
+- **After an update, green dots mark what changed.** A click hides a dot. The Info tile lists the changes, with Show all again and Mark all as seen.
+- **The Info tile** shows the versions of ArrowLoop, GlimStone and rclone, each linked to its release, and checks GitHub for a newer one. It links to the manual and downloads a bug report: one file with the versions, the settings and jobs without passwords or keys, the last 100 runs and the open anomalies. Nothing is sent.
+- **The phone app has a bar with Jobs, Conflicts, History, Settings and More**, and More holds Trash, Targets and Anomalies. The Overview screen is gone: Jobs opens with the same sentence and Waiting card as the web.
+- **The phone's settings are one column in a fixed order.** This phone gathers file access, notifications, background activity and the lock. Problems? copies a short report without paths, names or addresses, and the Danger zone removes every job and storage location while the files stay where they are.
+
+## ⚡ Improved
+
+- **Forgot password? is a full-width button at the foot of the login**, and the reset form appears once the code is in the log. The code field's (i) says where the log is, how long the code lasts and who else can read it. The new password is typed twice. A refused code may have expired, and then the log already shows a new one. The page after the reset lists what it removed and points to Settings, Security.
+- **The reset code stands out in the log** as a block of its own, with how long it is valid and a line to ignore it if nobody asked. Wrong codes are counted in the log at most once a minute, and the reset logs what it removed.
+- **The passkey card names the certificate** when a host name is served over a connection the browser does not trust.
+
+## 🐛 Fixed
+
+- **A reset code is written to the log once per ten minutes.** Asking again while a code is valid writes nothing, so the log no longer fills up with a line per request.
+- **A passkey added during a reset no longer survives it.** A passkey or second factor registered while the password is being reset or changed is refused instead of staying behind under the new password.
+- **Removing a job keeps its state file when ArrowLoop cannot tell whether another job uses it.**
+
 ## 1.8.0 - 2026-10-11
 
 ## ✨ Added
