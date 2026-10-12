@@ -925,7 +925,7 @@ const ca: Translations = {
   'info.refusedRateLimited': 'De moment GitHub rebutja les peticions d\'aquesta adreça. Torna-ho a provar d\'aquí a una hora.',
   'info.refusedBadResponse': 'GitHub ha respost amb alguna cosa que no és una versió.',
   'info.help': 'Ajuda',
-  'info.helpHint': 'L\'informe d\'error és un sol fitxer amb les versions, els ajustos i les tasques sense contrasenyes ni claus, les últimes 100 execucions i les anomalies obertes. No s\'envia res: l\'adjuntes tu mateix a una incidència.',
+  'info.helpHint': 'L\'informe d\'error és un sol fitxer amb les versions, els ajustos i les tasques sense contrasenyes ni claus, les últimes 100 execucions i les anomalies obertes. No s\'envia res: l\'adjuntes tu mateix a una incidència. El que escriuen les teves ordres, els noms dels teus fitxers i el nom de la teva carpeta d\'usuari també en queden fora, perquè pugui anar a una incidència pública.',
   'info.manual': 'Manual',
   'info.bugReport': 'Informe d\'error',
   'info.download': 'Baixa',

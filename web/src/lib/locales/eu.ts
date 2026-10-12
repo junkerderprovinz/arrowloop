@@ -925,7 +925,7 @@ const eu: Translations = {
   'info.refusedRateLimited': 'GitHub-ek helbide honetako eskaerak baztertzen ditu oraingoz. Saiatu berriro ordubete barru.',
   'info.refusedBadResponse': 'GitHub-ek bertsio ez den zerbaitekin erantzun du.',
   'info.help': 'Laguntza',
-  'info.helpHint': 'Akats-txostena fitxategi bakar bat da, bertsioekin, ezarpenekin eta lanekin (pasahitzik eta gakorik gabe), azken 100 exekuzioekin eta irekitako anomaliekin. Ez da ezer bidaltzen: zuk eransten diozu issue bati.',
+  'info.helpHint': 'Akats-txostena fitxategi bakar bat da, bertsioekin, ezarpenekin eta lanekin (pasahitzik eta gakorik gabe), azken 100 exekuzioekin eta irekitako anomaliekin. Ez da ezer bidaltzen: zuk eransten diozu issue bati. Zure aginduen irteera, zure fitxategien izenak eta zure erabiltzaile-karpetaren izena ere kanpoan geratzen dira, issue publiko batera joan ahal izateko.',
   'info.manual': 'Eskuliburua',
   'info.bugReport': 'Akats-txostena',
   'info.download': 'Deskargatu',

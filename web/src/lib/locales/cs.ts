@@ -925,7 +925,7 @@ const cs: Translations = {
   'info.refusedRateLimited': 'GitHub zatím odmítá požadavky z této adresy. Zkus to znovu za hodinu.',
   'info.refusedBadResponse': 'GitHub odpověděl něčím, co není vydání.',
   'info.help': 'Nápověda',
-  'info.helpHint': 'Hlášení chyby je jeden soubor s verzemi, nastavením a úlohami bez hesel a klíčů, posledními 100 běhy a otevřenými anomáliemi. Nic se neodesílá: přiložíš ho sám k hlášení na GitHubu.',
+  'info.helpHint': 'Hlášení chyby je jeden soubor s verzemi, nastavením a úlohami bez hesel a klíčů, posledními 100 běhy a otevřenými anomáliemi. Nic se neodesílá: přiložíš ho sám k hlášení na GitHubu. Výstup tvých příkazů, názvy tvých souborů a název tvé uživatelské složky v něm také nejsou, takže může jít do veřejného hlášení.',
   'info.manual': 'Příručka',
   'info.bugReport': 'Hlášení chyby',
   'info.download': 'Stáhnout',

@@ -925,7 +925,7 @@ const sl: Translations = {
   'info.refusedRateLimited': 'GitHub trenutno zavrača zahteve s tega naslova. Poskusi znova čez eno uro.',
   'info.refusedBadResponse': 'GitHub je odgovoril z nečim, kar ni izdaja.',
   'info.help': 'Pomoč',
-  'info.helpHint': 'Poročilo o napaki je ena datoteka z različicami, nastavitvami in opravili brez gesel ali ključev, zadnjimi 100 zagoni in odprtimi anomalijami. Nič se ne pošlje: datoteko sam priložiš zahtevku na GitHubu.',
+  'info.helpHint': 'Poročilo o napaki je ena datoteka z različicami, nastavitvami in opravili brez gesel ali ključev, zadnjimi 100 zagoni in odprtimi anomalijami. Nič se ne pošlje: datoteko sam priložiš zahtevku na GitHubu. Izpis tvojih ukazov, imena tvojih datotek in ime tvoje uporabniške mape prav tako ostanejo zunaj, zato lahko gre v javni zahtevek.',
   'info.manual': 'Priročnik',
   'info.bugReport': 'Poročilo o napaki',
   'info.download': 'Prenesi',

@@ -925,7 +925,7 @@ const hr: Translations = {
   'info.refusedRateLimited': 'GitHub trenutačno odbija zahtjeve s ove adrese. Pokušajte ponovno za sat vremena.',
   'info.refusedBadResponse': 'GitHub je odgovorio nečim što nije izdanje.',
   'info.help': 'Pomoć',
-  'info.helpHint': 'Izvješće o grešci jedna je datoteka s verzijama, postavkama i zadacima bez lozinki i ključeva, posljednjih 100 izvođenja i otvorenim anomalijama. Ništa se ne šalje: datoteku sami priložite uz issue.',
+  'info.helpHint': 'Izvješće o grešci jedna je datoteka s verzijama, postavkama i zadacima bez lozinki i ključeva, posljednjih 100 izvođenja i otvorenim anomalijama. Ništa se ne šalje: datoteku sami priložite uz issue. Ispis vaših naredbi, nazivi vaših datoteka i naziv vaše korisničke mape također ostaju izvan nje, pa može ići u javni issue.',
   'info.manual': 'Priručnik',
   'info.bugReport': 'Izvješće o grešci',
   'info.download': 'Preuzmi',

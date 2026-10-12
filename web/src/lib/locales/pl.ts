@@ -925,7 +925,7 @@ const pl: Translations = {
   'info.refusedRateLimited': 'GitHub chwilowo odrzuca żądania z tego adresu. Spróbuj ponownie za godzinę.',
   'info.refusedBadResponse': 'GitHub odpowiedział czymś, co nie jest wydaniem.',
   'info.help': 'Pomoc',
-  'info.helpHint': 'Raport o błędzie to jeden plik z wersjami, ustawieniami i zadaniami bez haseł i kluczy, ostatnimi 100 uruchomieniami i otwartymi anomaliami. Nic nie jest wysyłane: dołączasz go do zgłoszenia samodzielnie.',
+  'info.helpHint': 'Raport o błędzie to jeden plik z wersjami, ustawieniami i zadaniami bez haseł i kluczy, ostatnimi 100 uruchomieniami i otwartymi anomaliami. Nic nie jest wysyłane: dołączasz go do zgłoszenia samodzielnie. Wyjście twoich poleceń, nazwy twoich plików i nazwa twojego folderu użytkownika też zostają poza nim, więc może trafić do publicznego zgłoszenia.',
   'info.manual': 'Podręcznik',
   'info.bugReport': 'Raport o błędzie',
   'info.download': 'Pobierz',

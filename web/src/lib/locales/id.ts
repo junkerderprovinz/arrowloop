@@ -925,7 +925,7 @@ const id: Translations = {
   'info.refusedRateLimited': 'GitHub sedang menolak permintaan dari alamat ini. Coba lagi satu jam lagi.',
   'info.refusedBadResponse': 'GitHub menjawab dengan sesuatu yang bukan rilis.',
   'info.help': 'Bantuan',
-  'info.helpHint': 'Laporan bug adalah satu berkas berisi versi, pengaturan, dan tugas tanpa kata sandi atau kunci, 100 proses terakhir, dan anomali yang masih terbuka. Tidak ada yang dikirim: Anda sendiri yang melampirkannya ke sebuah issue.',
+  'info.helpHint': 'Laporan bug adalah satu berkas berisi versi, pengaturan, dan tugas tanpa kata sandi atau kunci, 100 proses terakhir, dan anomali yang masih terbuka. Tidak ada yang dikirim: Anda sendiri yang melampirkannya ke sebuah issue. Keluaran perintah Anda, nama berkas Anda, dan nama folder pengguna Anda juga tidak disertakan, jadi berkas ini boleh dilampirkan ke issue publik.',
   'info.manual': 'Panduan',
   'info.bugReport': 'Laporan bug',
   'info.download': 'Unduh',

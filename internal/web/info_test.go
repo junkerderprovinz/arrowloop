@@ -3,6 +3,7 @@ package web_test
 import (
 	"context"
 	"encoding/json"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -150,6 +151,93 @@ func TestTheBugReportCarriesNoSecret(t *testing.T) {
 	for _, wanted := range []string{"the target refused the upload", `"photos"`, `"rclone"`} {
 		if !strings.Contains(text, wanted) {
 			t.Errorf("the report lacks %s", wanted)
+		}
+	}
+}
+
+func bugReport(t *testing.T, h *harness) string {
+	t.Helper()
+	resp, err := h.srv.Client().Get(h.srv.URL + "/api/diagnostics")
+	if err != nil {
+		t.Fatalf("GET: %v", err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		t.Fatalf("status %s", resp.Status)
+	}
+	var buf strings.Builder
+	if _, err := io.Copy(&buf, resp.Body); err != nil {
+		t.Fatalf("read: %v", err)
+	}
+	return buf.String()
+}
+
+func TestTheBugReportLeavesOutTheConnectionStringARunFailedOn(t *testing.T) {
+	h := engineFor(t, `{"anomalies":{"failingAfter":1},"jobs":[{"name":"photos","left":"%[1]s/left",`+
+		`"right":":sftp,host=127.0.0.1,port=1,user=bob,pass=TOPSECRETPASS:/x","state":"%[1]s/photos.db"}]}`)
+	if _, err := h.runner.Run(context.Background(), "photos"); err == nil || !strings.Contains(err.Error(), "TOPSECRETPASS") {
+		t.Fatalf("the run should fail naming its side, got %v", err)
+	}
+	text := bugReport(t, h)
+	if strings.Contains(text, "TOPSECRETPASS") || strings.Contains(text, "user=bob") {
+		t.Errorf("the report carries the connection string's parameters:\n%s", text)
+	}
+	if !strings.Contains(text, `:sftp:/x`) {
+		t.Errorf("the report lost which side failed:\n%s", text)
+	}
+}
+
+func TestTheBugReportLeavesOutWhatAHookPrinted(t *testing.T) {
+	h := engineFor(t, `{"jobs":[{"name":"photos","left":"%[1]s/left","right":"%[1]s/right","state":"%[1]s/photos.db",`+
+		`"before":"echo HOOKSECRET && exit 3"}]}`)
+	if _, err := h.runner.Run(context.Background(), "photos"); err == nil || !strings.Contains(err.Error(), "HOOKSECRET") {
+		t.Fatalf("the run should fail with the command's output, got %v", err)
+	}
+	text := bugReport(t, h)
+	if strings.Contains(text, "HOOKSECRET") {
+		t.Errorf("the report carries the command's output:\n%s", text)
+	}
+	if !strings.Contains(text, "exit status 3") {
+		t.Errorf("the report lost how the command ended:\n%s", text)
+	}
+}
+
+func TestTheBugReportCountsAFindingsFilesWithoutNamingThem(t *testing.T) {
+	h := newHarness(t)
+	heldJob(t, h)
+	var got struct {
+		Findings []map[string]any `json:"findings"`
+	}
+	if err := json.Unmarshal([]byte(bugReport(t, h)), &got); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	if len(got.Findings) != 1 {
+		t.Fatalf("findings = %v, want the one brake", got.Findings)
+	}
+	f := got.Findings[0]
+	if _, named := f["paths"]; named {
+		t.Errorf("the finding names its files: %v", f["paths"])
+	}
+	if f["files"] != float64(30) {
+		t.Errorf("files = %v, want 30", f["files"])
+	}
+}
+
+func TestTheBugReportShowsAHomeFolderAsATilde(t *testing.T) {
+	h := engineFor(t, `{"excludeSets":{"private":["/home/anna/Tagebuch/**"]},`+
+		`"jobs":[{"name":"photos","left":"C:/Users/Anna Berger/Pictures","right":"/Users/anna/Fotos","state":"%[1]s/photos.db"}]}`)
+	// Set over the API, since the engine would open a run log at this path
+	// if it started with it.
+	if resp, body := putJSON(t, h.srv, "/api/settings", `{"history":"/home/anna/arrowloop/history.db"}`); resp.StatusCode != http.StatusOK {
+		t.Fatalf("save settings: %s %s", resp.Status, body)
+	}
+	text := bugReport(t, h)
+	if strings.Contains(text, "anna") || strings.Contains(text, "Anna Berger") {
+		t.Errorf("the report names the person:\n%s", text)
+	}
+	for _, want := range []string{`"~/Pictures"`, `"~/Fotos"`, `"~/arrowloop/history.db"`, `"~/Tagebuch/**"`} {
+		if !strings.Contains(text, want) {
+			t.Errorf("the report lacks %s:\n%s", want, text)
 		}
 	}
 }

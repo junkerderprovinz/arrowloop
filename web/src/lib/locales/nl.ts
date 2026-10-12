@@ -925,7 +925,7 @@ const nl: Translations = {
   'info.refusedRateLimited': 'GitHub weigert voorlopig verzoeken van dit adres. Probeer het over een uur opnieuw.',
   'info.refusedBadResponse': 'GitHub antwoordde met iets dat geen release is.',
   'info.help': 'Hulp',
-  'info.helpHint': 'Het foutrapport is één bestand met de versies, de instellingen en taken zonder wachtwoorden of sleutels, de laatste 100 runs en de openstaande afwijkingen. Er wordt niets verstuurd: je voegt het zelf toe aan een issue.',
+  'info.helpHint': 'Het foutrapport is één bestand met de versies, de instellingen en taken zonder wachtwoorden of sleutels, de laatste 100 runs en de openstaande afwijkingen. Er wordt niets verstuurd: je voegt het zelf toe aan een issue. De uitvoer van je opdrachten, de namen van je bestanden en de naam van je gebruikersmap blijven er ook buiten, zodat het in een openbare issue kan.',
   'info.manual': 'Handleiding',
   'info.bugReport': 'Foutrapport',
   'info.download': 'Downloaden',

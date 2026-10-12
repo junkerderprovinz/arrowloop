@@ -925,7 +925,7 @@ const ko: Translations = {
   'info.refusedRateLimited': 'GitHub가 지금 이 주소의 요청을 거부하고 있습니다. 한 시간 뒤에 다시 시도하세요.',
   'info.refusedBadResponse': 'GitHub가 릴리스가 아닌 응답을 보냈습니다.',
   'info.help': '도움말',
-  'info.helpHint': '버그 보고서는 버전, 비밀번호와 키를 뺀 설정과 작업, 최근 실행 100건, 열려 있는 이상 징후를 담은 파일 하나입니다. 아무것도 전송되지 않으며, 이슈에는 직접 첨부하세요.',
+  'info.helpHint': '버그 보고서는 버전, 비밀번호와 키를 뺀 설정과 작업, 최근 실행 100건, 열려 있는 이상 징후를 담은 파일 하나입니다. 아무것도 전송되지 않으며, 이슈에는 직접 첨부하세요. 명령의 출력, 파일 이름, 사용자 폴더 이름도 빠지므로 공개 이슈에 올려도 됩니다.',
   'info.manual': '설명서',
   'info.bugReport': '버그 보고서',
   'info.download': '다운로드',

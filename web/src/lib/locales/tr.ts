@@ -925,7 +925,7 @@ const tr: Translations = {
   'info.refusedRateLimited': 'GitHub şu an bu adresten gelen istekleri geri çeviriyor. Bir saat sonra yeniden deneyin.',
   'info.refusedBadResponse': 'GitHub, sürüm olmayan bir yanıt verdi.',
   'info.help': 'Yardım',
-  'info.helpHint': 'Hata raporu; sürümleri, parola ve anahtar içermeyen ayarları ve işleri, son 100 çalıştırmayı ve açık anormallikleri içeren tek bir dosyadır. Hiçbir şey gönderilmez: dosyayı bir issue\'ya kendiniz eklersiniz.',
+  'info.helpHint': 'Hata raporu; sürümleri, parola ve anahtar içermeyen ayarları ve işleri, son 100 çalıştırmayı ve açık anormallikleri içeren tek bir dosyadır. Hiçbir şey gönderilmez: dosyayı bir issue\'ya kendiniz eklersiniz. Komutlarınızın çıktısı, dosyalarınızın adları ve kullanıcı klasörünüzün adı da dışarıda kalır; böylece dosya herkese açık bir issue\'ya eklenebilir.',
   'info.manual': 'Kılavuz',
   'info.bugReport': 'Hata raporu',
   'info.download': 'İndir',

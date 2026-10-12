@@ -29,3 +29,31 @@ func TestReleasesCompareByNumberNotByText(t *testing.T) {
 		}
 	}
 }
+
+func TestAValueIsQuotedOnlyRightAfterItsEqualsSign(t *testing.T) {
+	for in, want := range map[string]string{
+		`nas,pass=it's:share`:      "nas:share",
+		`nas,pass="a""b:c":share`:  "nas:share",
+		`nas,pass='never closed:x`: "nas",
+	} {
+		if got := withoutParameters(in); got != want {
+			t.Errorf("withoutParameters(%q) = %q, want %q", in, got, want)
+		}
+	}
+}
+
+func TestAHomeFolderBecomesATilde(t *testing.T) {
+	for in, want := range map[string]string{
+		"/home/bob/Pictures":                   "~/Pictures",
+		`C:\Users\Junker der Provinz\Pictures`: `~\Pictures`,
+		"/Users/anna":                          "~",
+		"nas:/home/bob/x":                      "nas:~/x",
+		`open "C:\Users\bob\x": access denied`: `open "~\x": access denied`,
+		"/mnt/user/photos":                     "/mnt/user/photos",
+		"/storage/emulated/0/DCIM":             "/storage/emulated/0/DCIM",
+	} {
+		if got := withoutHome(in); got != want {
+			t.Errorf("withoutHome(%q) = %q, want %q", in, got, want)
+		}
+	}
+}

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"regexp"
 	"runtime"
 	"strconv"
 	"strings"
@@ -15,7 +16,9 @@ import (
 
 	"github.com/junkerderprovinz/arrowloop/internal/anomaly"
 	"github.com/junkerderprovinz/arrowloop/internal/boot"
+	"github.com/junkerderprovinz/arrowloop/internal/daemon"
 	"github.com/junkerderprovinz/arrowloop/internal/history"
+	"github.com/junkerderprovinz/arrowloop/internal/job"
 )
 
 // releaseAPI is where the update check asks when the server names nothing else.
@@ -171,15 +174,22 @@ type reportJob struct {
 	Disabled  bool   `json:"disabled,omitempty"`
 }
 
+// reportFinding is a finding without the names of its files, which are
+// somebody's own. How many there are is what a bug needs.
+type reportFinding struct {
+	anomaly.Finding
+	Files int `json:"files,omitempty"`
+}
+
 type report struct {
-	Made     time.Time         `json:"made"`
-	Versions versions          `json:"versions"`
-	System   string            `json:"system"`
-	Desktop  bool              `json:"desktop"`
-	Settings map[string]any    `json:"settings"`
-	Jobs     []reportJob       `json:"jobs"`
-	Runs     []history.Run     `json:"runs"`
-	Findings []anomaly.Finding `json:"findings"`
+	Made     time.Time       `json:"made"`
+	Versions versions        `json:"versions"`
+	System   string          `json:"system"`
+	Desktop  bool            `json:"desktop"`
+	Settings map[string]any  `json:"settings"`
+	Jobs     []reportJob     `json:"jobs"`
+	Runs     []history.Run   `json:"runs"`
+	Findings []reportFinding `json:"findings"`
 }
 
 // reportRuns is how far back the report reaches. A failure that matters is
@@ -187,7 +197,8 @@ type report struct {
 const reportRuns = 100
 
 // diagnostics hands out one file for a bug report: the versions, the settings
-// and jobs without their secrets, the last runs and the open findings.
+// and jobs without their secrets, the last runs and the open findings. The
+// file goes into a public issue, so every free text in it is scrubbed.
 func (s *Server) diagnostics(w http.ResponseWriter, r *http.Request) {
 	cfg := s.Runner.Config()
 	settings, err := cfg.SettingsAsMap()
@@ -201,28 +212,33 @@ func (s *Server) diagnostics(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	open, _ := s.Runner.Findings(r.Context())
+	scrub := scrubber(cfg.Jobs)
 
 	out := report{
 		Made:     time.Now().UTC(),
 		Versions: currentVersions(),
 		System:   runtime.GOOS + "/" + runtime.GOARCH,
 		Desktop:  s.Window != nil,
-		Settings: withheld(settings),
+		Settings: withoutHomeInSettings(withheld(settings)),
 		Jobs:     make([]reportJob, 0, len(cfg.Jobs)),
-		Runs:     runs,
-		Findings: open,
+		Runs:     make([]history.Run, 0, len(runs)),
+		Findings: make([]reportFinding, 0, len(open)),
 	}
 	for _, j := range cfg.Jobs {
 		out.Jobs = append(out.Jobs, reportJob{
-			Name: j.Name, Left: withoutParameters(j.Left), Right: withoutParameters(j.Right),
+			Name: j.Name, Left: reportSide(j.Left), Right: reportSide(j.Right),
 			Direction: j.Direction, Mode: j.Mode, Schedule: j.Schedule, Watch: j.Watch, Disabled: j.Disabled,
 		})
 	}
-	if out.Runs == nil {
-		out.Runs = []history.Run{}
+	for _, run := range runs {
+		run.Err = scrub(run.Err)
+		out.Runs = append(out.Runs, run)
 	}
-	if out.Findings == nil {
-		out.Findings = []anomaly.Finding{}
+	for _, f := range open {
+		files := len(f.Paths)
+		f.Paths = nil
+		f.Detail = scrub(f.Detail)
+		out.Findings = append(out.Findings, reportFinding{Finding: f, Files: files})
 	}
 
 	name := "arrowloop-report-" + out.Made.Format("2006-01-02") + ".json"
@@ -231,6 +247,102 @@ func (s *Server) diagnostics(w http.ResponseWriter, r *http.Request) {
 	enc := json.NewEncoder(w)
 	enc.SetIndent("", "  ")
 	_ = enc.Encode(out)
+}
+
+func reportSide(side string) string { return withoutHome(withoutParameters(side)) }
+
+// quotedText is a Go-quoted string inside an error, which is how the engine
+// names a side it could not open.
+var quotedText = regexp.MustCompile(`"(?:[^"\\]|\\.)*"`)
+
+// hookStatus is the part of a failed command's error that says how it ended.
+// What follows it is the command's own output.
+var hookStatus = regexp.MustCompile(`^(exit status -?\d+|gave no answer within \S+)`)
+
+// scrubber returns what cleans the error of a run or a finding for the report.
+// It takes the parameters out of every connection string, a deleted job's
+// among them, the output out of a failed hook and the home folder out of a
+// path.
+func scrubber(jobs []job.Job) func(string) string {
+	var pairs []string
+	for _, j := range jobs {
+		for _, side := range []string{j.Left, j.Right} {
+			shown := reportSide(side)
+			if shown == side {
+				continue
+			}
+			pairs = append(pairs, side, shown, unquoted(strconv.Quote(side)), unquoted(strconv.Quote(shown)))
+		}
+	}
+	sides := strings.NewReplacer(pairs...)
+	return func(text string) string {
+		text = sides.Replace(text)
+		text = quotedText.ReplaceAllStringFunc(text, func(q string) string {
+			plain, err := strconv.Unquote(q)
+			if err != nil {
+				return q
+			}
+			if shown := withoutParameters(plain); shown != plain {
+				return strconv.Quote(shown)
+			}
+			return q
+		})
+		return withoutHome(withoutHookOutput(text))
+	}
+}
+
+func unquoted(q string) string { return q[1 : len(q)-1] }
+
+func withoutHookOutput(text string) string {
+	for _, failed := range []string{daemon.BeforeFailed, daemon.AfterFailed} {
+		at := strings.Index(text, failed)
+		if at < 0 {
+			continue
+		}
+		end := at + len(failed)
+		rest := strings.TrimPrefix(text[end:], ": ")
+		status := hookStatus.FindString(rest)
+		switch {
+		case status == "":
+			return text[:end]
+		case len(status) < len(rest):
+			return text[:end] + ": " + status + ": the output is left out"
+		}
+		return text[:end] + ": " + status
+	}
+	return text
+}
+
+// homeFolder is a user's own folder, which is usually named after the person.
+// Windows allows spaces in the name, so it ends only at a separator, a quote,
+// a colon or the end of a line.
+var homeFolder = regexp.MustCompile(`(?i)(^|[\s"'(=:,])(?:[a-z]:)?[\\/]+(?:home|users)[\\/]+[^\\/"'\n:]+`)
+
+// withoutHome writes every home folder in s as "~".
+func withoutHome(s string) string { return homeFolder.ReplaceAllString(s, "${1}~") }
+
+// withoutHomeInSettings takes the home folder out of the settings that hold
+// paths: where the run log is kept and the shared exclude lists.
+func withoutHomeInSettings(settings map[string]any) map[string]any {
+	for key, value := range settings {
+		switch {
+		case strings.EqualFold(key, "history"):
+			if p, ok := value.(string); ok {
+				settings[key] = withoutHome(p)
+			}
+		case strings.EqualFold(key, "excludeSets"):
+			sets, _ := value.(map[string]any)
+			for _, patterns := range sets {
+				list, _ := patterns.([]any)
+				for i, p := range list {
+					if p, ok := p.(string); ok {
+						list[i] = withoutHome(p)
+					}
+				}
+			}
+		}
+	}
+	return settings
 }
 
 // withoutParameters drops the parameters of an rclone connection string, such
@@ -245,21 +357,31 @@ func withoutParameters(side string) string {
 	if name == "" || strings.ContainsAny(name, `/\: `) {
 		return side
 	}
-	// A value may be quoted and hold a colon of its own, so the colon that ends
-	// the parameters is the first one outside quotes.
+	// rclone takes a value as quoted only when the quote opens it, and a quote
+	// doubled inside stands for itself. A quoted value may hold a colon, so the
+	// colon that ends the parameters is the first one outside quotes.
 	var quote byte
 	for i := comma + 1; i < len(side); i++ {
 		c := side[i]
 		switch {
 		case quote != 0:
-			if c == quote {
-				quote = 0
+			if c != quote {
+				continue
 			}
-		case c == '"' || c == '\'':
+			if i+1 < len(side) && side[i+1] == quote {
+				i++
+				continue
+			}
+			quote = 0
+		case (c == '"' || c == '\'') && side[i-1] == '=':
 			quote = c
 		case c == ':':
 			return side[:comma] + side[i:]
 		}
+	}
+	// A quote that never closes leaves no telling where the secret ends.
+	if quote != 0 {
+		return side[:comma]
 	}
 	return side
 }

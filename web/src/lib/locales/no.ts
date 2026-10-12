@@ -925,7 +925,7 @@ const no: Translations = {
   'info.refusedRateLimited': 'GitHub avviser foreløpig forespørsler fra denne adressen. Prøv igjen om en time.',
   'info.refusedBadResponse': 'GitHub svarte med noe som ikke er en utgivelse.',
   'info.help': 'Hjelp',
-  'info.helpHint': 'Feilrapporten er én fil med versjonene, innstillingene og jobbene uten passord eller nøkler, de siste 100 kjøringene og de åpne avvikene. Ingenting sendes: du legger den ved et issue selv.',
+  'info.helpHint': 'Feilrapporten er én fil med versjonene, innstillingene og jobbene uten passord eller nøkler, de siste 100 kjøringene og de åpne avvikene. Ingenting sendes: du legger den ved et issue selv. Det kommandoene dine skrev ut, navnene på filene dine og navnet på brukermappen din er også utelatt, så filen kan gå i et offentlig issue.',
   'info.manual': 'Håndbok',
   'info.bugReport': 'Feilrapport',
   'info.download': 'Last ned',

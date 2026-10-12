@@ -925,7 +925,7 @@ const lt: Translations = {
   'info.refusedRateLimited': 'GitHub kol kas atmeta šio adreso užklausas. Pabandyk dar kartą po valandos.',
   'info.refusedBadResponse': 'GitHub atsakė tuo, kas nėra leidimas.',
   'info.help': 'Pagalba',
-  'info.helpHint': 'Klaidos ataskaita yra vienas failas su versijomis, nustatymais ir užduotimis be slaptažodžių ar raktų, paskutiniais 100 vykdymų ir atviromis anomalijomis. Niekas nesiunčiama: prie problemos jį prisegi pats.',
+  'info.helpHint': 'Klaidos ataskaita yra vienas failas su versijomis, nustatymais ir užduotimis be slaptažodžių ar raktų, paskutiniais 100 vykdymų ir atviromis anomalijomis. Niekas nesiunčiama: prie problemos jį prisegi pats. Tavo komandų išvestis, tavo failų pavadinimai ir tavo naudotojo aplanko pavadinimas taip pat lieka už jos ribų, todėl ją galima pridėti prie viešos problemos.',
   'info.manual': 'Vadovas',
   'info.bugReport': 'Klaidos ataskaita',
   'info.download': 'Atsisiųsti',

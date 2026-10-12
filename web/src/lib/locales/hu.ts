@@ -925,7 +925,7 @@ const hu: Translations = {
   'info.refusedRateLimited': 'A GitHub egyelőre elutasítja a kéréseket erről a címről. Próbálja újra egy óra múlva.',
   'info.refusedBadResponse': 'A GitHub olyasmivel válaszolt, ami nem kiadás.',
   'info.help': 'Súgó',
-  'info.helpHint': 'A hibajelentés egyetlen fájl a verziókkal, a beállításokkal és a feladatokkal jelszavak és kulcsok nélkül, az utolsó 100 futással és a nyitott rendellenességekkel. Semmi sem megy el: a fájlt Ön csatolja egy issue-hoz.',
+  'info.helpHint': 'A hibajelentés egyetlen fájl a verziókkal, a beállításokkal és a feladatokkal jelszavak és kulcsok nélkül, az utolsó 100 futással és a nyitott rendellenességekkel. Semmi sem megy el: a fájlt Ön csatolja egy issue-hoz. A parancsai kimenete, a fájljai neve és a felhasználói mappája neve sem kerül bele, így nyilvános issue-hoz is csatolható.',
   'info.manual': 'Kézikönyv',
   'info.bugReport': 'Hibajelentés',
   'info.download': 'Letöltés',

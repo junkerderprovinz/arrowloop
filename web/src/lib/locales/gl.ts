@@ -925,7 +925,7 @@ const gl: Translations = {
   'info.refusedRateLimited': 'GitHub está rexeitando polo momento as solicitudes desde este enderezo. Téntao de novo dentro dunha hora.',
   'info.refusedBadResponse': 'GitHub respondeu con algo que non é unha versión.',
   'info.help': 'Axuda',
-  'info.helpHint': 'O informe de erros é un só ficheiro coas versións, os axustes e as tarefas sen contrasinais nin chaves, as últimas 100 execucións e as anomalías abertas. Non se envía nada: ti mesmo o anexas a unha incidencia.',
+  'info.helpHint': 'O informe de erros é un só ficheiro coas versións, os axustes e as tarefas sen contrasinais nin chaves, as últimas 100 execucións e as anomalías abertas. Non se envía nada: ti mesmo o anexas a unha incidencia. O que escriben as túas ordes, os nomes dos teus ficheiros e o nome do teu cartafol de usuario tamén quedan fóra, para que poida ir a unha incidencia pública.',
   'info.manual': 'Manual',
   'info.bugReport': 'Informe de erros',
   'info.download': 'Descargar',

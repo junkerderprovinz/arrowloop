@@ -925,7 +925,7 @@ const lv: Translations = {
   'info.refusedRateLimited': 'GitHub pagaidām noraida pieprasījumus no šīs adreses. Mēģini vēlreiz pēc stundas.',
   'info.refusedBadResponse': 'GitHub atbildēja ar kaut ko, kas nav laidiens.',
   'info.help': 'Palīdzība',
-  'info.helpHint': 'Kļūdu pārskats ir viens fails ar versijām, iestatījumiem un uzdevumiem bez paroļu vai atslēgu, pēdējiem 100 izpildījumiem un atvērtajām anomālijām. Nekas netiek sūtīts: pie problēmas to pievieno pats.',
+  'info.helpHint': 'Kļūdu pārskats ir viens fails ar versijām, iestatījumiem un uzdevumiem bez paroļu vai atslēgu, pēdējiem 100 izpildījumiem un atvērtajām anomālijām. Nekas netiek sūtīts: pie problēmas to pievieno pats. Tavu komandu izvade, tavu failu nosaukumi un tavas lietotāja mapes nosaukums arī paliek ārpus tā, tāpēc to var pievienot publiskai problēmai.',
   'info.manual': 'Rokasgrāmata',
   'info.bugReport': 'Kļūdu pārskats',
   'info.download': 'Lejupielādēt',

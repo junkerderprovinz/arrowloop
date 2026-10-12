@@ -925,7 +925,7 @@ const pt: Translations = {
   'info.refusedRateLimited': 'O GitHub está a recusar pedidos deste endereço por agora. Tenta de novo dentro de uma hora.',
   'info.refusedBadResponse': 'O GitHub respondeu com algo que não é uma versão.',
   'info.help': 'Ajuda',
-  'info.helpHint': 'O relatório de erros é um ficheiro com as versões, as definições e as tarefas sem palavras-passe nem chaves, as últimas 100 execuções e as anomalias em aberto. Nada é enviado: anexas o ficheiro tu mesmo a um issue.',
+  'info.helpHint': 'O relatório de erros é um ficheiro com as versões, as definições e as tarefas sem palavras-passe nem chaves, as últimas 100 execuções e as anomalias em aberto. Nada é enviado: anexas o ficheiro tu mesmo a um issue. O que os teus comandos escrevem, os nomes dos teus ficheiros e o nome da tua pasta de utilizador também ficam de fora, para que possa ir para um issue público.',
   'info.manual': 'Manual',
   'info.bugReport': 'Relatório de erros',
   'info.download': 'Transferir',

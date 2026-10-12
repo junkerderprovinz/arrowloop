@@ -925,7 +925,7 @@ const vi: Translations = {
   'info.refusedRateLimited': 'GitHub đang tạm từ chối yêu cầu từ địa chỉ này. Hãy thử lại sau một giờ.',
   'info.refusedBadResponse': 'GitHub trả lời bằng thứ không phải là một bản phát hành.',
   'info.help': 'Trợ giúp',
-  'info.helpHint': 'Báo cáo lỗi là một tệp gồm các phiên bản, cài đặt và công việc không kèm mật khẩu hay khóa, 100 lần chạy gần nhất và các bất thường đang mở. Không có gì được gửi đi: bạn tự đính kèm tệp vào một issue.',
+  'info.helpHint': 'Báo cáo lỗi là một tệp gồm các phiên bản, cài đặt và công việc không kèm mật khẩu hay khóa, 100 lần chạy gần nhất và các bất thường đang mở. Không có gì được gửi đi: bạn tự đính kèm tệp vào một issue. Đầu ra của các lệnh, tên các tệp và tên thư mục người dùng của bạn cũng được bỏ ra, nên có thể đính kèm vào một issue công khai.',
   'info.manual': 'Hướng dẫn',
   'info.bugReport': 'Báo cáo lỗi',
   'info.download': 'Tải xuống',

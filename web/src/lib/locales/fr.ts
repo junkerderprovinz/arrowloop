@@ -925,7 +925,7 @@ const fr: Translations = {
   'info.refusedRateLimited': 'GitHub refuse pour le moment les requêtes venant de cette adresse. Réessayez dans une heure.',
   'info.refusedBadResponse': 'GitHub a répondu par quelque chose qui n\'est pas une publication.',
   'info.help': 'Aide',
-  'info.helpHint': 'Le rapport de bogue est un seul fichier avec les versions, les réglages et les tâches sans mots de passe ni clés, les 100 dernières exécutions et les anomalies ouvertes. Rien n\'est envoyé : vous le joignez vous-même à un ticket.',
+  'info.helpHint': 'Le rapport de bogue est un seul fichier avec les versions, les réglages et les tâches sans mots de passe ni clés, les 100 dernières exécutions et les anomalies ouvertes. Rien n\'est envoyé : vous le joignez vous-même à un ticket. Ce qu\'affichent vos commandes, les noms de vos fichiers et le nom de votre dossier utilisateur en sont aussi exclus, pour qu\'il puisse aller dans un ticket public.',
   'info.manual': 'Manuel',
   'info.bugReport': 'Rapport de bogue',
   'info.download': 'Télécharger',

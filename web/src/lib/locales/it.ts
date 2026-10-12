@@ -925,7 +925,7 @@ const it: Translations = {
   'info.refusedRateLimited': 'GitHub al momento rifiuta le richieste da questo indirizzo. Riprova tra un\'ora.',
   'info.refusedBadResponse': 'GitHub ha risposto con qualcosa che non è una release.',
   'info.help': 'Aiuto',
-  'info.helpHint': 'Il report del bug è un unico file con le versioni, le impostazioni e i lavori senza password né chiavi, le ultime 100 esecuzioni e le anomalie aperte. Non viene inviato nulla: lo allegherai tu a una issue.',
+  'info.helpHint': 'Il report del bug è un unico file con le versioni, le impostazioni e i lavori senza password né chiavi, le ultime 100 esecuzioni e le anomalie aperte. Non viene inviato nulla: lo allegherai tu a una issue. Anche ciò che stampano i tuoi comandi, i nomi dei tuoi file e il nome della tua cartella utente restano fuori, così può finire in una issue pubblica.',
   'info.manual': 'Manuale',
   'info.bugReport': 'Report del bug',
   'info.download': 'Scarica',

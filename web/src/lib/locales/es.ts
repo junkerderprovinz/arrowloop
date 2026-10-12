@@ -925,7 +925,7 @@ const es: Translations = {
   'info.refusedRateLimited': 'GitHub está rechazando por ahora las solicitudes desde esta dirección. Inténtalo de nuevo dentro de una hora.',
   'info.refusedBadResponse': 'GitHub respondió con algo que no es una versión.',
   'info.help': 'Ayuda',
-  'info.helpHint': 'El informe de errores es un archivo con las versiones, los ajustes y las tareas sin contraseñas ni claves, las últimas 100 ejecuciones y las anomalías abiertas. No se envía nada: lo adjuntas tú a un issue.',
+  'info.helpHint': 'El informe de errores es un archivo con las versiones, los ajustes y las tareas sin contraseñas ni claves, las últimas 100 ejecuciones y las anomalías abiertas. No se envía nada: lo adjuntas tú a un issue. Lo que imprimen tus comandos, los nombres de tus archivos y el nombre de tu carpeta de usuario también quedan fuera, para que pueda ir en un issue público.',
   'info.manual': 'Manual',
   'info.bugReport': 'Informe de errores',
   'info.download': 'Descargar',

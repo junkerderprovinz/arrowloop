@@ -925,7 +925,7 @@ const da: Translations = {
   'info.refusedRateLimited': 'GitHub afviser lige nu forespørgsler fra denne adresse. Prøv igen om en time.',
   'info.refusedBadResponse': 'GitHub svarede med noget, der ikke er en udgivelse.',
   'info.help': 'Hjælp',
-  'info.helpHint': 'Fejlrapporten er én fil med versionerne, indstillingerne og jobbene uden adgangskoder eller nøgler, de seneste 100 kørsler og de åbne anomalier. Der sendes intet: du vedhæfter den selv til en issue.',
+  'info.helpHint': 'Fejlrapporten er én fil med versionerne, indstillingerne og jobbene uden adgangskoder eller nøgler, de seneste 100 kørsler og de åbne anomalier. Der sendes intet: du vedhæfter den selv til en issue. Det, dine kommandoer skrev ud, navnene på dine filer og navnet på din brugermappe er også udeladt, så filen kan komme med i en offentlig issue.',
   'info.manual': 'Manual',
   'info.bugReport': 'Fejlrapport',
   'info.download': 'Download',

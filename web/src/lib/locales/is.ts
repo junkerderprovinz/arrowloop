@@ -925,7 +925,7 @@ const is: Translations = {
   'info.refusedRateLimited': 'GitHub hafnar tímabundið beiðnum frá þessu vistfangi. Reyndu aftur eftir klukkutíma.',
   'info.refusedBadResponse': 'GitHub svaraði með einhverju sem er ekki útgáfa.',
   'info.help': 'Hjálp',
-  'info.helpHint': 'Villuskýrslan er ein skrá með útgáfunum, stillingunum og verkunum án lykilorða eða lykla, síðustu 100 keyrslum og opnum frávikum. Ekkert er sent: þú hengir skrána við issue þegar þér hentar.',
+  'info.helpHint': 'Villuskýrslan er ein skrá með útgáfunum, stillingunum og verkunum án lykilorða eða lykla, síðustu 100 keyrslum og opnum frávikum. Ekkert er sent: þú hengir skrána við issue þegar þér hentar. Úttak skipananna þinna, nöfn skránna þinna og nafn notandamöppunnar þinnar eru líka skilin eftir, svo skráin má fara í opinbert issue.',
   'info.manual': 'Handbók',
   'info.bugReport': 'Villuskýrsla',
   'info.download': 'Sækja',

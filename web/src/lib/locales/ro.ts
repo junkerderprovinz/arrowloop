@@ -925,7 +925,7 @@ const ro: Translations = {
   'info.refusedRateLimited': 'GitHub respinge deocamdată cererile de la această adresă. Încercați din nou peste o oră.',
   'info.refusedBadResponse': 'GitHub a răspuns cu ceva ce nu este o versiune publicată.',
   'info.help': 'Ajutor',
-  'info.helpHint': 'Raportul de eroare este un singur fișier cu versiunile, setările și sarcinile fără parole sau chei, ultimele 100 de rulări și anomaliile deschise. Nu se trimite nimic: îl atașați singur la un issue.',
+  'info.helpHint': 'Raportul de eroare este un singur fișier cu versiunile, setările și sarcinile fără parole sau chei, ultimele 100 de rulări și anomaliile deschise. Nu se trimite nimic: îl atașați singur la un issue. Ieșirea comenzilor dvs., numele fișierelor dvs. și numele folderului dvs. de utilizator rămân și ele afară, ca fișierul să poată merge într-un issue public.',
   'info.manual': 'Manual',
   'info.bugReport': 'Raport de eroare',
   'info.download': 'Descarcă',

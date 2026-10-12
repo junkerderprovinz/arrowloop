@@ -925,7 +925,7 @@ const sk: Translations = {
   'info.refusedRateLimited': 'GitHub momentálne odmieta požiadavky z tejto adresy. Skús to znova o hodinu.',
   'info.refusedBadResponse': 'GitHub odpovedal niečím, čo nie je vydanie.',
   'info.help': 'Pomoc',
-  'info.helpHint': 'Hlásenie o chybe je jeden súbor s verziami, nastaveniami a úlohami bez hesiel a kľúčov, posledných 100 behov a otvorené anomálie. Nič sa neodosiela: súbor priložíš k issue sám.',
+  'info.helpHint': 'Hlásenie o chybe je jeden súbor s verziami, nastaveniami a úlohami bez hesiel a kľúčov, posledných 100 behov a otvorené anomálie. Nič sa neodosiela: súbor priložíš k issue sám. Výstup tvojich príkazov, názvy tvojich súborov a názov tvojho používateľského priečinka v ňom tiež nie sú, takže môže ísť do verejného issue.',
   'info.manual': 'Príručka',
   'info.bugReport': 'Hlásenie o chybe',
   'info.download': 'Stiahnuť',

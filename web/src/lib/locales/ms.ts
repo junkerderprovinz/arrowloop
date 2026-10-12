@@ -925,7 +925,7 @@ const ms: Translations = {
   'info.refusedRateLimited': 'GitHub sedang menolak permintaan daripada alamat ini buat masa ini. Cuba lagi dalam masa sejam.',
   'info.refusedBadResponse': 'GitHub menjawab dengan sesuatu yang bukan keluaran.',
   'info.help': 'Bantuan',
-  'info.helpHint': 'Laporan pepijat ialah satu fail dengan versi, tetapan dan tugas tanpa kata laluan atau kunci, 100 larian terakhir dan anomali yang masih terbuka. Tiada apa dihantar: anda sendiri yang melampirkannya pada isu.',
+  'info.helpHint': 'Laporan pepijat ialah satu fail dengan versi, tetapan dan tugas tanpa kata laluan atau kunci, 100 larian terakhir dan anomali yang masih terbuka. Tiada apa dihantar: anda sendiri yang melampirkannya pada isu. Output arahan anda, nama fail anda dan nama folder pengguna anda juga ditinggalkan, jadi fail ini boleh dilampirkan pada isu awam.',
   'info.manual': 'Manual',
   'info.bugReport': 'Laporan pepijat',
   'info.download': 'Muat turun',

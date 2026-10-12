@@ -925,7 +925,7 @@ const et: Translations = {
   'info.refusedRateLimited': 'GitHub keeldub praegu sellelt aadressilt päringuid vastu võtmast. Proovi tunni aja pärast uuesti.',
   'info.refusedBadResponse': 'GitHub vastas millegagi, mis ei ole väljalase.',
   'info.help': 'Abi',
-  'info.helpHint': 'Veaaruanne on üks fail, kus on versioonid, seaded ja tööd ilma paroolide ja võtmeteta, viimased 100 käivitust ja avatud anomaaliad. Midagi ei saadeta: lisad selle ise issue\'le.',
+  'info.helpHint': 'Veaaruanne on üks fail, kus on versioonid, seaded ja tööd ilma paroolide ja võtmeteta, viimased 100 käivitust ja avatud anomaaliad. Midagi ei saadeta: lisad selle ise issue\'le. Sinu käskude väljund, failide nimed ja kasutajakausta nimi jäävad samuti välja, nii et selle võib lisada avalikku issue\'sse.',
   'info.manual': 'Käsiraamat',
   'info.bugReport': 'Veaaruanne',
   'info.download': 'Laadi alla',

@@ -925,7 +925,7 @@ const zh: Translations = {
   'info.refusedRateLimited': 'GitHub 暂时拒绝来自此地址的请求。请一小时后再试。',
   'info.refusedBadResponse': 'GitHub 返回的内容不是发布版本。',
   'info.help': '帮助',
-  'info.helpHint': '错误报告是一个文件，包含版本号、不含密码和密钥的设置与任务、最近 100 次运行以及未处理的异常。不会发送任何内容：你需要自己把它附加到 issue 上。',
+  'info.helpHint': '错误报告是一个文件，包含版本号、不含密码和密钥的设置与任务、最近 100 次运行以及未处理的异常。不会发送任何内容：你需要自己把它附加到 issue 上。 命令的输出、文件名和用户文件夹的名称也不会包含在内，因此可以放进公开的 issue。',
   'info.manual': '手册',
   'info.bugReport': '错误报告',
   'info.download': '下载',

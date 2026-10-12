@@ -925,7 +925,7 @@ const fi: Translations = {
   'info.refusedRateLimited': 'GitHub hylkää tästä osoitteesta tulevat pyynnöt toistaiseksi. Yritä tunnin kuluttua uudelleen.',
   'info.refusedBadResponse': 'GitHub vastasi jollakin, mikä ei ole julkaisu.',
   'info.help': 'Ohje',
-  'info.helpHint': 'Virheraportti on yksi tiedosto, jossa ovat versiot, asetukset ja työt ilman salasanoja tai avaimia, viimeiset 100 ajoa ja avoimet poikkeamat. Mitään ei lähetetä: liität sen itse ongelmailmoitukseen.',
+  'info.helpHint': 'Virheraportti on yksi tiedosto, jossa ovat versiot, asetukset ja työt ilman salasanoja tai avaimia, viimeiset 100 ajoa ja avoimet poikkeamat. Mitään ei lähetetä: liität sen itse ongelmailmoitukseen. Komentojesi tuloste, tiedostojesi nimet ja käyttäjäkansiosi nimi jäävät myös pois, joten sen voi liittää julkiseen ilmoitukseen.',
   'info.manual': 'Käyttöohje',
   'info.bugReport': 'Virheraportti',
   'info.download': 'Lataa',

@@ -925,7 +925,7 @@ const sv: Translations = {
   'info.refusedRateLimited': 'GitHub avvisar just nu förfrågningar från den här adressen. Försök igen om en timme.',
   'info.refusedBadResponse': 'GitHub svarade med något som inte är en version.',
   'info.help': 'Hjälp',
-  'info.helpHint': 'Felrapporten är en fil med versionerna, inställningarna och jobben utan lösenord eller nycklar, de senaste 100 körningarna och de öppna avvikelserna. Inget skickas: du bifogar filen till ett ärende själv.',
+  'info.helpHint': 'Felrapporten är en fil med versionerna, inställningarna och jobben utan lösenord eller nycklar, de senaste 100 körningarna och de öppna avvikelserna. Inget skickas: du bifogar filen till ett ärende själv. Det dina kommandon skrev ut, namnen på dina filer och namnet på din användarmapp är också utelämnade, så filen kan gå in i ett offentligt ärende.',
   'info.manual': 'Manual',
   'info.bugReport': 'Felrapport',
   'info.download': 'Ladda ner',
