@@ -647,6 +647,7 @@ func (s *Server) login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	epoch := s.signInEpoch()
 	if !s.passwordMatches(req.Password) {
 		try.fail()
 		// The same words whatever went wrong, so a malformed hash cannot be told
@@ -672,13 +673,44 @@ func (s *Server) login(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
+	if s.checked != nil {
+		s.checked()
+	}
 
+	release, ok := s.holdEpoch(w, epoch)
+	if !ok {
+		return
+	}
+	defer release()
 	if err := s.startSession(w, r); err != nil {
 		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
 	try.succeed()
 	writeJSON(w, http.StatusOK, sessionView{Required: true, Authenticated: true})
+}
+
+// signInEpoch is the count of password changes a sign-in is checked under.
+func (s *Server) signInEpoch() uint64 {
+	if s.Security == nil {
+		return 0
+	}
+	return s.Security.Get().Epoch
+}
+
+// holdEpoch holds off a reset or a change of the password until release is
+// called, for a sign-in about to get its session. It refuses, answering the
+// request itself, when one has come since the sign-in read epoch: the session
+// would outlive the reset that was meant to end them all.
+func (s *Server) holdEpoch(w http.ResponseWriter, epoch uint64) (release func(), ok bool) {
+	g := s.gate()
+	g.mint.RLock()
+	if s.signInEpoch() != epoch {
+		g.mint.RUnlock()
+		writeError(w, http.StatusUnauthorized, errors.New("the password was reset or changed during this sign-in, sign in again"))
+		return nil, false
+	}
+	return g.mint.RUnlock, true
 }
 
 // startSession mints a session and sets its cookie.

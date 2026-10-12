@@ -72,6 +72,10 @@ type Server struct {
 	// can stand as a block of its own between the timestamped lines. Nil means
 	// stdout, which for a container is its log.
 	CodeLog io.Writer
+
+	// checked runs once a sign-in's credentials have held and before its
+	// session is handed out, which is where a test lands a reset.
+	checked func()
 }
 
 // logf is Log with the nil check in one place.

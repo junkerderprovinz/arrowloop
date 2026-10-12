@@ -524,6 +524,9 @@ func (s *Server) passkeyLoginFinish(w http.ResponseWriter, r *http.Request) {
 		refuse("that sign-in was started on another address")
 		return
 	}
+	// Read before the keys, so a reset that takes them while this sign-in
+	// runs refuses it.
+	epoch := s.signInEpoch()
 	user, rows, err := s.passkeyUserFor(rpID)
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, err)
@@ -549,13 +552,27 @@ func (s *Server) passkeyLoginFinish(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if s.checked != nil {
+		s.checked()
+	}
+	release, ok := s.holdEpoch(w, epoch)
+	if !ok {
+		return
+	}
+	defer release()
 	for _, p := range rows {
-		if string(p.CredentialID) == string(cred.ID) {
-			if err := s.Security.TouchPasskey(p.ID, cred.Authenticator.SignCount, time.Now().Unix()); err != nil {
-				s.logf("could not record the use of passkey %q: %v", p.Name, err)
-			}
-			break
+		if string(p.CredentialID) != string(cred.ID) {
+			continue
 		}
+		err := s.Security.TouchPasskey(p.ID, cred.Authenticator.SignCount, time.Now().Unix())
+		if errors.Is(err, security.ErrUnknownPasskey) {
+			writeError(w, http.StatusUnauthorized, errors.New("that passkey has just been removed"))
+			return
+		}
+		if err != nil {
+			s.logf("could not record the use of passkey %q: %v", p.Name, err)
+		}
+		break
 	}
 
 	if err := s.startSession(w, r); err != nil {

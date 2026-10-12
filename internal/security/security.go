@@ -282,17 +282,22 @@ func (s *Store) KeepPasskeysUnder(fingerprint string) error {
 }
 
 // TouchPasskey records a successful login with a key: its new counter and when.
+// A key removed meanwhile answers ErrUnknownPasskey.
 func (s *Store) TouchPasskey(id string, signCount uint32, at int64) error {
 	return s.Update(func(st *State) error {
 		for i := range st.Passkeys {
 			if st.Passkeys[i].ID == id {
 				st.Passkeys[i].SignCount = signCount
 				st.Passkeys[i].LastUsedAt = at
+				return nil
 			}
 		}
-		return nil
+		return ErrUnknownPasskey
 	})
 }
+
+// ErrUnknownPasskey is returned for a key that is not there.
+var ErrUnknownPasskey = errors.New("no passkey with that id")
 
 // DeletePasskey removes a key. Removing one that is not there is not an error.
 func (s *Store) DeletePasskey(id string) error {
