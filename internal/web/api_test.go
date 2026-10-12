@@ -42,6 +42,13 @@ type harness struct {
 
 func newHarness(t *testing.T) *harness {
 	t.Helper()
+	return engineFor(t, `{"jobs":[{"name":"photos","left":"%[1]s/left","right":"%[1]s/right","state":"%[1]s/photos.db","quietPeriod":"0s"}]}`)
+}
+
+// engineFor stands an engine up on a configuration of the test's own. Every
+// %[1]s in config is the sandbox, which holds an empty left and right folder.
+func engineFor(t *testing.T, config string) *harness {
+	t.Helper()
 	ctx := context.Background()
 	dir := t.TempDir()
 	left := filepath.Join(dir, "left")
@@ -51,10 +58,8 @@ func newHarness(t *testing.T) *harness {
 			t.Fatalf("mkdir: %v", err)
 		}
 	}
-	body := fmt.Sprintf(`{"jobs":[{"name":"photos","left":%q,"right":%q,"state":%q,"quietPeriod":"0s"}]}`,
-		filepath.ToSlash(left), filepath.ToSlash(right), filepath.ToSlash(filepath.Join(dir, "photos.db")))
 	cfgPath := filepath.Join(dir, "arrowloop.json")
-	if err := os.WriteFile(cfgPath, []byte(body), 0o644); err != nil {
+	if err := os.WriteFile(cfgPath, []byte(fmt.Sprintf(config, filepath.ToSlash(dir))), 0o644); err != nil {
 		t.Fatalf("write config: %v", err)
 	}
 	cfg, err := job.Load(cfgPath)
