@@ -90,7 +90,11 @@ export function Jobs({
   const [view, setView] = useRemembered<JobView>('arrowloop.jobs.view', DEFAULT_VIEW, isView)
   const [query, setQuery] = useState('')
 
-  const waiting = needs(conflicts, findings)
+  const waiting = needs(
+    conflicts,
+    findings,
+    jobs.map((j) => ({ name: j.name, disabled: j.disabled, ran: j.recent.length > 0, failed: (j.recent[0]?.Err ?? '') !== '' })),
+  )
   const held = useMemo(() => new Set(findings.filter((f) => f.held).map((f) => f.job)), [findings])
   const shown = jobsInView(jobs, view, query, (name) => held.has(name))
 
@@ -121,7 +125,7 @@ export function Jobs({
 
       <div className="flex flex-col gap-6">
         {!nothing && (
-          <ListBar>
+          <ListBar newId="list-bar">
             <FilterButton active={view.filter !== 'all'}>
               <FilterChoice<JobFilter>
                 label={t('jobs.filter.label')}
@@ -301,6 +305,7 @@ function JobRow({
   return (
     <li
       data-testid="job-row"
+      data-new-way="/jobs/:name"
       onClick={() => open(job.name)}
       className="glim-row flex min-h-14 cursor-pointer items-center gap-3 rounded-control px-2 py-2 hover:bg-carbon-hover"
     >
@@ -345,7 +350,7 @@ function JobRow({
           }}
         />
       </span>
-      <span className="shrink-0 max-[600px]:hidden">
+      <span data-new="run-strip" className="shrink-0 max-[600px]:hidden">
         <RunStrip recent={job.recent} />
       </span>
       <span className="flex w-36 shrink-0 justify-end max-[600px]:w-auto">{cell}</span>

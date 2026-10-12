@@ -952,6 +952,8 @@ const ar: Translations = {
   'anomalies.openTab': 'المفتوحة',
   'anomalies.which': 'مفتوحة أو مغلقة',
   'anomalies.ownBadge': 'مكابح خاصة',
+  'needs.neverRan': 'لم تُشغَّل المهمة {job} بعد',
+  'needs.failed': 'فشل آخر تشغيل للمهمة {job}',
 }
 
 export default ar

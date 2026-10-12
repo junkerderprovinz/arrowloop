@@ -952,6 +952,8 @@ const fi: Translations = {
   'anomalies.openTab': 'Avoimet',
   'anomalies.which': 'Avoimet tai suljetut',
   'anomalies.ownBadge': 'Omat jarrut',
+  'needs.neverRan': 'Työtä {job} ei ole vielä ajettu',
+  'needs.failed': 'Työn {job} viimeisin ajo epäonnistui',
 }
 
 export default fi

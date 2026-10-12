@@ -99,6 +99,13 @@ describe('the head of the jobs page', () => {
     expect(screen.queryByText('Waiting')).toBeNull()
   })
 
+  it('is not in sync while an enabled job has never run, and names it', async () => {
+    page({ jobs: [job('photos', { recent: [] })] })
+    expect((await screen.findByTestId('status-head')).textContent).toBe('In sync, with notes')
+    fireEvent.click(screen.getByText('photos has not run yet'))
+    expect(opened).toHaveBeenCalledWith('photos')
+  })
+
   it('needs the person for a conflict and a held job, each leading to where it is answered', async () => {
     const held: Finding = {
       id: 'f1', job: 'music', kind: 'delete', severity: 'critical', held: true, since: '', seen: '', open: true,

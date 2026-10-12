@@ -952,6 +952,8 @@ const sr: Translations = {
   'anomalies.openTab': 'Отворено',
   'anomalies.which': 'Отворено или затворено',
   'anomalies.ownBadge': 'Сопствене кочнице',
+  'needs.neverRan': 'Посао {job} још није извршен',
+  'needs.failed': 'Последње извршавање посла {job} није успело',
 }
 
 export default sr

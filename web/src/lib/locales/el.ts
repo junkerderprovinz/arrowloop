@@ -952,6 +952,8 @@ const el: Translations = {
   'anomalies.openTab': 'Ανοιχτές',
   'anomalies.which': 'Ανοιχτές ή κλειστές',
   'anomalies.ownBadge': 'Δικά της φρένα',
+  'needs.neverRan': 'Η εργασία {job} δεν έχει εκτελεστεί ακόμη',
+  'needs.failed': 'Η τελευταία εκτέλεση της εργασίας {job} απέτυχε',
 }
 
 export default el

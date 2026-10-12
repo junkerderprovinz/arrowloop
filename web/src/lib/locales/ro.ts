@@ -952,6 +952,8 @@ const ro: Translations = {
   'anomalies.openTab': 'Deschise',
   'anomalies.which': 'Deschise sau închise',
   'anomalies.ownBadge': 'Frâne proprii',
+  'needs.neverRan': 'Sarcina {job} nu a rulat încă',
+  'needs.failed': 'Ultima rulare a sarcinii {job} a eșuat',
 }
 
 export default ro

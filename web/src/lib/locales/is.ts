@@ -952,6 +952,8 @@ const is: Translations = {
   'anomalies.openTab': 'Opin',
   'anomalies.which': 'Opin eða lokuð',
   'anomalies.ownBadge': 'Eigin hemlar',
+  'needs.neverRan': 'Verkið {job} hefur aldrei verið keyrt',
+  'needs.failed': 'Síðasta keyrsla verksins {job} mistókst',
 }
 
 export default is

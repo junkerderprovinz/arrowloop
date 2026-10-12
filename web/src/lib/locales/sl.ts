@@ -952,6 +952,8 @@ const sl: Translations = {
   'anomalies.openTab': 'Odprto',
   'anomalies.which': 'Odprto ali zaprto',
   'anomalies.ownBadge': 'Lastne zavore',
+  'needs.neverRan': 'Opravilo {job} še ni bilo zagnano',
+  'needs.failed': 'Zadnji zagon opravila {job} ni uspel',
 }
 
 export default sl

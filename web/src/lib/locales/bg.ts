@@ -952,6 +952,8 @@ const bg: Translations = {
   'anomalies.openTab': 'Отворени',
   'anomalies.which': 'Отворени или затворени',
   'anomalies.ownBadge': 'Собствени спирачки',
+  'needs.neverRan': 'Задачата {job} още не е изпълнявана',
+  'needs.failed': 'Последното изпълнение на {job} не успя',
 }
 
 export default bg

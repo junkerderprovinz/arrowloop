@@ -952,6 +952,8 @@ const pl: Translations = {
   'anomalies.openTab': 'Otwarte',
   'anomalies.which': 'Otwarte czy zamknięte',
   'anomalies.ownBadge': 'Własne hamulce',
+  'needs.neverRan': 'Zadanie {job} jeszcze nigdy się nie uruchomiło',
+  'needs.failed': 'Ostatni przebieg zadania {job} nie powiódł się',
 }
 
 export default pl

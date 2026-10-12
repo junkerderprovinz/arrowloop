@@ -952,6 +952,8 @@ const vi: Translations = {
   'anomalies.openTab': 'Đang mở',
   'anomalies.which': 'Đang mở hoặc đã đóng',
   'anomalies.ownBadge': 'Phanh riêng',
+  'needs.neverRan': 'Công việc {job} chưa từng chạy',
+  'needs.failed': 'Lần chạy gần nhất của {job} không thành công',
 }
 
 export default vi

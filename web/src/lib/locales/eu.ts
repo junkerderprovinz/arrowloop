@@ -952,6 +952,8 @@ const eu: Translations = {
   'anomalies.openTab': 'Irekiak',
   'anomalies.which': 'Irekiak edo itxiak',
   'anomalies.ownBadge': 'Balazta propioak',
+  'needs.neverRan': '{job} lana oraindik ez da exekutatu',
+  'needs.failed': '{job} lanaren azken exekuzioak huts egin du',
 }
 
 export default eu

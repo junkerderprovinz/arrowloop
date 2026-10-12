@@ -952,6 +952,8 @@ const hr: Translations = {
   'anomalies.openTab': 'Otvorene',
   'anomalies.which': 'Otvorene ili zatvorene',
   'anomalies.ownBadge': 'Vlastite kočnice',
+  'needs.neverRan': 'Zadatak {job} još nije izveden',
+  'needs.failed': 'Posljednje izvođenje zadatka {job} nije uspjelo',
 }
 
 export default hr

@@ -952,6 +952,8 @@ const fa: Translations = {
   'anomalies.openTab': 'باز',
   'anomalies.which': 'باز یا بسته',
   'anomalies.ownBadge': 'ترمزهای خودش',
+  'needs.neverRan': '{job} هنوز اجرا نشده است',
+  'needs.failed': 'آخرین اجرای {job} ناموفق بود',
 }
 
 export default fa

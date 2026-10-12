@@ -952,6 +952,8 @@ const ca: Translations = {
   'anomalies.openTab': 'Obertes',
   'anomalies.which': 'Obertes o tancades',
   'anomalies.ownBadge': 'Frens propis',
+  'needs.neverRan': 'La tasca {job} encara no s\'ha executat',
+  'needs.failed': 'L\'última execució de {job} ha fallat',
 }
 
 export default ca

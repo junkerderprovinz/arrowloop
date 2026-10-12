@@ -15,9 +15,9 @@ import { HUE_OFFSET, Selector, type Option } from './Selector'
  * search, three buttons of the same weight at the end of the row. Anything a
  * page puts first, such as a view selector, stands at the start.
  */
-export function ListBar({ start, children }: { start?: ReactNode; children: ReactNode }) {
+export function ListBar({ start, newId, children }: { start?: ReactNode; newId?: string; children: ReactNode }) {
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div data-new={newId} className="flex flex-wrap items-center gap-2">
       {start}
       <div className="ms-auto flex flex-wrap items-center justify-end gap-2">{children}</div>
     </div>

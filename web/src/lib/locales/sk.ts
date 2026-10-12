@@ -952,6 +952,8 @@ const sk: Translations = {
   'anomalies.openTab': 'Otvorené',
   'anomalies.which': 'Otvorené alebo zatvorené',
   'anomalies.ownBadge': 'Vlastné brzdy',
+  'needs.neverRan': 'Úloha {job} ešte nikdy nebežala',
+  'needs.failed': 'Posledný beh úlohy {job} zlyhal',
 }
 
 export default sk

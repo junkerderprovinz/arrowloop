@@ -952,6 +952,8 @@ const zh: Translations = {
   'anomalies.openTab': '未处理',
   'anomalies.which': '未处理或已关闭',
   'anomalies.ownBadge': '专用刹车',
+  'needs.neverRan': '{job} 尚未运行过',
+  'needs.failed': '{job} 上次运行失败',
 }
 
 export default zh

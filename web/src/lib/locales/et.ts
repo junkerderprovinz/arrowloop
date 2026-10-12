@@ -952,6 +952,8 @@ const et: Translations = {
   'anomalies.openTab': 'Avatud',
   'anomalies.which': 'Avatud või suletud',
   'anomalies.ownBadge': 'Oma pidurid',
+  'needs.neverRan': 'Tööd {job} pole veel käivitatud',
+  'needs.failed': 'Töö {job} viimane käivitus ebaõnnestus',
 }
 
 export default et

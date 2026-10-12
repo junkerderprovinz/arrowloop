@@ -952,6 +952,8 @@ const sv: Translations = {
   'anomalies.openTab': 'Öppna',
   'anomalies.which': 'Öppna eller stängda',
   'anomalies.ownBadge': 'Egna bromsar',
+  'needs.neverRan': '{job} har aldrig körts',
+  'needs.failed': 'Senaste körningen av {job} misslyckades',
 }
 
 export default sv

@@ -952,6 +952,8 @@ const lt: Translations = {
   'anomalies.openTab': 'Atviros',
   'anomalies.which': 'Atviros arba uždarytos',
   'anomalies.ownBadge': 'Atskiri stabdžiai',
+  'needs.neverRan': 'Užduotis {job} dar nebuvo paleista',
+  'needs.failed': 'Paskutinis užduoties {job} paleidimas nepavyko',
 }
 
 export default lt

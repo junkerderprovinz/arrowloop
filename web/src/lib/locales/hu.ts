@@ -952,6 +952,8 @@ const hu: Translations = {
   'anomalies.openTab': 'Nyitott',
   'anomalies.which': 'Nyitott vagy lezárt',
   'anomalies.ownBadge': 'Saját fékek',
+  'needs.neverRan': 'A(z) {job} feladat még nem futott',
+  'needs.failed': 'A(z) {job} feladat legutóbbi futása sikertelen volt',
 }
 
 export default hu

@@ -952,6 +952,8 @@ const no: Translations = {
   'anomalies.openTab': 'Åpne',
   'anomalies.which': 'Åpne eller lukkede',
   'anomalies.ownBadge': 'Egne bremser',
+  'needs.neverRan': '{job} har aldri kjørt',
+  'needs.failed': 'Siste kjøring av {job} mislyktes',
 }
 
 export default no

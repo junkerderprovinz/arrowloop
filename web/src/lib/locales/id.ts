@@ -952,6 +952,8 @@ const id: Translations = {
   'anomalies.openTab': 'Terbuka',
   'anomalies.which': 'Terbuka atau selesai',
   'anomalies.ownBadge': 'Rem sendiri',
+  'needs.neverRan': 'Tugas {job} belum pernah dijalankan',
+  'needs.failed': 'Tugas {job} gagal pada terakhir dijalankan',
 }
 
 export default id

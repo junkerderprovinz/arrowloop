@@ -952,6 +952,8 @@ const tr: Translations = {
   'anomalies.openTab': 'Açık',
   'anomalies.which': 'Açık veya kapalı',
   'anomalies.ownBadge': 'Özel frenler',
+  'needs.neverRan': '{job} işi henüz hiç çalıştırılmadı',
+  'needs.failed': '{job} işinin son çalıştırması başarısız oldu',
 }
 
 export default tr

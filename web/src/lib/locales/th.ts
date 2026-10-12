@@ -952,6 +952,8 @@ const th: Translations = {
   'anomalies.openTab': 'ค้างอยู่',
   'anomalies.which': 'ค้างอยู่หรือปิดแล้ว',
   'anomalies.ownBadge': 'เบรกเฉพาะ',
+  'needs.neverRan': '{job} ยังไม่เคยทำงาน',
+  'needs.failed': '{job} ทำงานล่าสุดไม่สำเร็จ',
 }
 
 export default th

@@ -952,6 +952,8 @@ const cs: Translations = {
   'anomalies.openTab': 'Otevřené',
   'anomalies.which': 'Otevřené nebo zavřené',
   'anomalies.ownBadge': 'Vlastní brzdy',
+  'needs.neverRan': 'Úloha {job} ještě neběžela',
+  'needs.failed': 'Poslední běh úlohy {job} selhal',
 }
 
 export default cs

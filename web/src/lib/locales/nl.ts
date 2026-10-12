@@ -952,6 +952,8 @@ const nl: Translations = {
   'anomalies.openTab': 'Open',
   'anomalies.which': 'Open of gesloten',
   'anomalies.ownBadge': 'Eigen remmen',
+  'needs.neverRan': 'Taak {job} is nog nooit uitgevoerd',
+  'needs.failed': 'De laatste run van {job} is mislukt',
 }
 
 export default nl

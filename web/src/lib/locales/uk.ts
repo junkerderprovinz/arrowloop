@@ -952,6 +952,8 @@ const uk: Translations = {
   'anomalies.openTab': 'Відкриті',
   'anomalies.which': 'Відкриті чи закриті',
   'anomalies.ownBadge': 'Власні гальма',
+  'needs.neverRan': 'Завдання {job} ще ніколи не запускалося',
+  'needs.failed': 'Останній запуск завдання {job} завершився помилкою',
 }
 
 export default uk

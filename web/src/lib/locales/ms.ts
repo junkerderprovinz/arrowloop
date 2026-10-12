@@ -952,6 +952,8 @@ const ms: Translations = {
   'anomalies.openTab': 'Terbuka',
   'anomalies.which': 'Terbuka atau ditutup',
   'anomalies.ownBadge': 'Brek sendiri',
+  'needs.neverRan': 'Tugas {job} belum pernah dijalankan',
+  'needs.failed': 'Larian terakhir {job} gagal',
 }
 
 export default ms

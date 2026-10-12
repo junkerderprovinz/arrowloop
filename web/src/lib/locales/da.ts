@@ -952,6 +952,8 @@ const da: Translations = {
   'anomalies.openTab': 'Åbne',
   'anomalies.which': 'Åbne eller lukkede',
   'anomalies.ownBadge': 'Egne bremser',
+  'needs.neverRan': '{job} er aldrig kørt',
+  'needs.failed': 'Seneste kørsel af {job} mislykkedes',
 }
 
 export default da

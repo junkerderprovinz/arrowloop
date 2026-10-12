@@ -952,6 +952,8 @@ const ja: Translations = {
   'anomalies.openTab': '未対応',
   'anomalies.which': '未対応または対応済み',
   'anomalies.ownBadge': '専用ブレーキ',
+  'needs.neverRan': '{job} はまだ実行されていません',
+  'needs.failed': '{job} の前回の実行は失敗しました',
 }
 
 export default ja

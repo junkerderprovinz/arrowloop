@@ -952,6 +952,8 @@ const gl: Translations = {
   'anomalies.openTab': 'Abertas',
   'anomalies.which': 'Abertas ou pechadas',
   'anomalies.ownBadge': 'Freos propios',
+  'needs.neverRan': 'A tarefa {job} aínda non se executou',
+  'needs.failed': 'A última execución de {job} fallou',
 }
 
 export default gl

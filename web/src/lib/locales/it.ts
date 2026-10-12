@@ -952,6 +952,8 @@ const it: Translations = {
   'anomalies.openTab': 'Aperte',
   'anomalies.which': 'Aperte o chiuse',
   'anomalies.ownBadge': 'Freni propri',
+  'needs.neverRan': 'Il lavoro {job} non è mai stato eseguito',
+  'needs.failed': 'L\'ultima esecuzione di {job} non è riuscita',
 }
 
 export default it

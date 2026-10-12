@@ -952,6 +952,8 @@ const lv: Translations = {
   'anomalies.openTab': 'Atvērtas',
   'anomalies.which': 'Atvērtas vai aizvērtas',
   'anomalies.ownBadge': 'Atsevišķas bremzes',
+  'needs.neverRan': 'Uzdevums {job} vēl nav palaists',
+  'needs.failed': 'Uzdevuma {job} pēdējā palaišana neizdevās',
 }
 
 export default lv

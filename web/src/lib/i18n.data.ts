@@ -993,6 +993,8 @@ export const en = {
   'anomalies.openTab': 'Open',
   'anomalies.which': 'Open or closed',
   'anomalies.ownBadge': 'Own brakes',
+  'needs.neverRan': '{job} has not run yet',
+  'needs.failed': 'The last run of {job} failed',
 } as const
 
 export type TranslationKey = keyof typeof en
@@ -1980,6 +1982,8 @@ export const de: Translations = {
   'anomalies.openTab': 'Offen',
   'anomalies.which': 'Offen oder geschlossen',
   'anomalies.ownBadge': 'Eigene Bremsen',
+  'needs.neverRan': '{job} ist noch nie gelaufen',
+  'needs.failed': 'Der letzte Lauf von {job} ist fehlgeschlagen',
 }
 
 export interface Language {

@@ -952,6 +952,8 @@ const hi: Translations = {
   'anomalies.openTab': 'खुली',
   'anomalies.which': 'खुली या बंद',
   'anomalies.ownBadge': 'अपने ब्रेक',
+  'needs.neverRan': '{job} अभी तक नहीं चला',
+  'needs.failed': '{job} का पिछला रन विफल रहा',
 }
 
 export default hi

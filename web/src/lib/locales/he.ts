@@ -952,6 +952,8 @@ const he: Translations = {
   'anomalies.openTab': 'פתוחות',
   'anomalies.which': 'פתוחות או סגורות',
   'anomalies.ownBadge': 'בלמים משלה',
+  'needs.neverRan': 'המשימה {job} עדיין לא הורצה',
+  'needs.failed': 'ההרצה האחרונה של {job} נכשלה',
 }
 
 export default he

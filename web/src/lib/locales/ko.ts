@@ -952,6 +952,8 @@ const ko: Translations = {
   'anomalies.openTab': '열림',
   'anomalies.which': '열림 또는 닫힘',
   'anomalies.ownBadge': '전용 제동',
+  'needs.neverRan': '작업 {job}은(는) 아직 실행된 적이 없습니다',
+  'needs.failed': '작업 {job}의 마지막 실행이 실패했습니다',
 }
 
 export default ko

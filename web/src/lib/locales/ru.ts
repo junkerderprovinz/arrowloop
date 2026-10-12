@@ -952,6 +952,8 @@ const ru: Translations = {
   'anomalies.openTab': 'Открытые',
   'anomalies.which': 'Открытые или закрытые',
   'anomalies.ownBadge': 'Свои тормоза',
+  'needs.neverRan': 'Задание {job} ещё ни разу не запускалось',
+  'needs.failed': 'Последний запуск задания {job} завершился ошибкой',
 }
 
 export default ru
