@@ -66,12 +66,12 @@ function job(name: string, over: Partial<Job> = {}): Job {
 const opened = vi.fn((_name: string) => undefined)
 const went = vi.fn((_place: unknown) => undefined)
 
-function page({ jobs = [job('photos'), job('music')], findings = [] as Finding[], conflicts = [] as { job: string }[], unread = 0 } = {}) {
+function page({ jobs = [job('photos'), job('music')], findings = [] as Finding[], conflicts = [] as { job: string }[] } = {}) {
   render(
     <ToastProvider>
       <GoTo.Provider value={went}>
         <OpenJob.Provider value={opened}>
-          <Jobs jobs={jobs} findings={findings} progress={{}} conflicts={conflicts} unread={unread} onSaved={() => undefined} />
+          <Jobs jobs={jobs} findings={findings} progress={{}} conflicts={conflicts} onSaved={() => undefined} />
         </OpenJob.Provider>
       </GoTo.Provider>
     </ToastProvider>,
@@ -92,41 +92,33 @@ beforeEach(() => {
 })
 afterEach(cleanup)
 
-describe('the head of the jobs page', () => {
-  it('says everything is in sync and shows no waiting card when nothing waits', async () => {
-    page()
-    expect((await screen.findByTestId('status-head')).textContent).toBe('Everything in sync')
-    expect(screen.queryByText('Waiting')).toBeNull()
-  })
-
-  it('is not in sync while an enabled job has never run, and names it', async () => {
-    page({ jobs: [job('photos', { recent: [] })] })
-    expect((await screen.findByTestId('status-head')).textContent).toBe('In sync, with notes')
-    fireEvent.click(screen.getByText('photos has not run yet'))
-    expect(opened).toHaveBeenCalledWith('photos')
-  })
-
-  it('needs the person for a conflict and a held job, each leading to where it is answered', async () => {
+describe('the jobs page', () => {
+  it('opens on the jobs, with no status head and no waiting card', async () => {
     const held: Finding = {
       id: 'f1', job: 'music', kind: 'delete', severity: 'critical', held: true, since: '', seen: '', open: true,
     }
-    page({ findings: [held], conflicts: [{ job: 'photos' }, { job: 'photos' }, { job: 'music' }] })
-    expect((await screen.findByTestId('status-head')).textContent).toBe('Needs you')
-    expect(screen.getByText('Waiting')).toBeTruthy()
+    page({ findings: [held], conflicts: [{ job: 'photos' }] })
+    await screen.findAllByRole('button', { name: 'Pause' })
+    expect(screen.queryByTestId('status-head')).toBeNull()
+    expect(screen.queryByText('Waiting')).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Filter' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Search' })).toBeNull()
+  })
 
-    fireEvent.click(screen.getByText('Conflicts waiting for a choice'))
-    expect(went).toHaveBeenLastCalledWith({ tab: 'conflicts', job: '' })
-    fireEvent.click(screen.getByText('music is held: Mass deletion'))
-    expect(went).toHaveBeenLastCalledWith({ tab: 'anomalies', job: 'music', finding: 'f1' })
+  it('gives every job a card of its own, in name order', async () => {
+    page()
+    const rows = await screen.findAllByTestId('job-row')
+    expect(rows.map((r) => r.querySelectorAll('.glim-notch-card').length)).toEqual([1, 1])
+    expect(rows.map((r) => r.querySelector('h2')?.textContent)).toEqual(['music', 'photos'])
   })
 })
 
-describe('a job row', () => {
+describe('a job card', () => {
   it('carries only pause and run as its buttons, and opens the job anywhere else', async () => {
     page()
     await screen.findAllByRole('button', { name: 'Pause' })
     const photos = row('photos')
-    const actions = photos.querySelector('.glim-row-actions') as HTMLElement
+    const actions = within(photos).getByTestId('job-actions')
     expect(within(actions).getAllByRole('button').map((b) => b.textContent?.trim())).toEqual(['Pause', 'Run now'])
 
     fireEvent.click(photos)
@@ -174,8 +166,6 @@ describe('a job row', () => {
 
   it('never shows a run that skipped files as in sync', async () => {
     page({ jobs: [job('photos', { recent: [{ ...ran('photos'), Skipped: 2 }] }), job('music')] })
-    expect((await screen.findByTestId('status-head')).textContent).toBe('In sync, with notes')
-    expect(screen.getByText('The last run of photos skipped files')).toBeTruthy()
     const status = within(row('photos')).getByTestId('job-status')
     expect(status.textContent).toBe('Needs a look')
     expect(status.querySelector('.bg-statusOkSolid')).toBeNull()
@@ -190,13 +180,6 @@ describe('a job row', () => {
     expect(status.querySelector('.bg-statusOkSolid')).toBeNull()
     fireEvent.click(within(status).getByText('Needs a look'))
     expect(went).toHaveBeenLastCalledWith({ tab: 'anomalies', job: 'music', finding: 'n1' })
-  })
-
-  it('is not in sync while a conflict list could not be read', async () => {
-    page({ unread: 1 })
-    expect((await screen.findByTestId('status-head')).textContent).toBe('In sync, with notes')
-    fireEvent.click(screen.getByText('Conflicts that could not be read'))
-    expect(went).toHaveBeenLastCalledWith({ tab: 'conflicts', job: '' })
   })
 
   it('says a job failed by its own last run', async () => {
@@ -236,23 +219,6 @@ describe('a job row', () => {
     for (const button of screen.getAllByRole('button', { name: 'Pause' })) {
       expect((button as HTMLButtonElement).disabled).toBe(true)
     }
-  })
-})
-
-describe('the list bar', () => {
-  it('keeps only the jobs that need a look under that filter', async () => {
-    page({ jobs: [job('photos'), job('music', { recent: [ran('music', 'boom')] })] })
-    fireEvent.click(screen.getByRole('button', { name: 'Filter' }))
-    fireEvent.click(within(await screen.findByRole('dialog', { name: 'Filter' })).getByRole('tab', { name: 'Problems' }))
-    expect(screen.getAllByTestId('job-row').map((r) => r.textContent)).toEqual([expect.stringContaining('music')])
-  })
-
-  it('finds a job by a folder it syncs', async () => {
-    page()
-    fireEvent.click(screen.getByRole('button', { name: 'Search' }))
-    fireEvent.change(screen.getByRole('searchbox', { name: 'Search' }), { target: { value: 'nas:mus' } })
-    expect(screen.getAllByTestId('job-row')).toHaveLength(1)
-    expect(screen.getByText('music')).toBeTruthy()
   })
 })
 

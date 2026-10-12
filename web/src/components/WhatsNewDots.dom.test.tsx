@@ -78,12 +78,12 @@ describe('the dots of what is new', () => {
     )
     const others = Array.from(document.querySelectorAll('[data-new-dot]')).filter((d) => !['page', 'way', 'navigation'].includes(d.getAttribute('data-new-dot')!))
     expect(others).toHaveLength(0)
-    for (const key of ['new.change.jobsHead', 'new.change.runStrip'] as const) {
+    for (const key of ['new.change.runStrip'] as const) {
       expect(page.getAttribute('aria-label')).toContain(en[key])
     }
     act(() => page.click())
     await waitFor(() => expect(dot('page')).toBeNull())
-    expect(JSON.parse(localStorage.getItem('arrowloop.whatsNew')!).seen).toEqual(expect.arrayContaining(['jobs-head', 'run-strip']))
+    expect(JSON.parse(localStorage.getItem('arrowloop.whatsNew')!).seen).toEqual(expect.arrayContaining(['run-strip']))
   })
 
   it('draw nothing during the first start', async () => {

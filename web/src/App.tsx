@@ -403,14 +403,7 @@ export function App({ signOut = false }: { signOut?: boolean }) {
   const page = !view ? null : view.page === 'welcome' ? (
     <Welcome fresh={fresh} />
   ) : view.page === 'jobs' ? (
-    <Jobs
-      jobs={jobs}
-      findings={findings?.open ?? []}
-      progress={progress}
-      conflicts={conflicts?.conflicts}
-      unread={conflicts?.unread.length}
-      onSaved={saved}
-    />
+    <Jobs jobs={jobs} findings={findings?.open ?? []} progress={progress} conflicts={conflicts?.conflicts} onSaved={saved} />
   ) : view.page === 'job' ? (
     <JobPage name={view.name} />
   ) : view.page === 'targets' ? (

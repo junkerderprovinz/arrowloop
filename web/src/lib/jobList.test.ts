@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { DEFAULT_VIEW, STRIP_LENGTH, jobStatus, jobsInView, runStrip } from './jobList'
+import { STRIP_LENGTH, jobStatus, runStrip } from './jobList'
 
 const ok = { Err: '', Conflicts: 0, Skipped: 0, Started: '2027-03-01T10:00:00Z' }
 const failed = { ...ok, Err: 'boom' }
@@ -60,10 +60,6 @@ describe('jobStatus', () => {
   it('ranks a warning between a waiting conflict and a running job', () => {
     expect(jobStatus(job('a'), { ...noted, conflict: true })).toBe('conflict')
     expect(jobStatus(job('a', { running: true }), noted)).toBe('running')
-    const view = { ...DEFAULT_VIEW, sort: { field: 'status' as const, reversed: false } }
-    const jobs = [job('busy', { running: true }), job('warned'), job('waiting')]
-    const waits = (n: string) => ({ ...quiet, notes: n === 'warned', conflict: n === 'waiting' })
-    expect(jobsInView(jobs, view, '', waits).map((j) => j.name)).toEqual(['waiting', 'warned', 'busy'])
   })
 
   it('names a waiting conflict on a paused job', () => {
@@ -72,35 +68,5 @@ describe('jobStatus', () => {
 
   it('forgets a failure once a later run worked', () => {
     expect(jobStatus(job('a', { recent: [ok, failed] }), quiet)).toBe('last')
-  })
-})
-
-describe('jobsInView', () => {
-  const jobs = [job('photos'), job('music', { recent: [failed] }), job('notes', { disabled: true })]
-  const none = () => quiet
-
-  it('sorts by name both ways', () => {
-    expect(jobsInView(jobs, DEFAULT_VIEW, '', none).map((j) => j.name)).toEqual(['music', 'notes', 'photos'])
-    const back = { ...DEFAULT_VIEW, sort: { field: 'name' as const, reversed: true } }
-    expect(jobsInView(jobs, back, '', none).map((j) => j.name)).toEqual(['photos', 'notes', 'music'])
-  })
-
-  it('puts problems first when sorted by status', () => {
-    const view = { ...DEFAULT_VIEW, sort: { field: 'status' as const, reversed: false } }
-    expect(jobsInView(jobs, view, '', none)[0].name).toBe('music')
-  })
-
-  it('keeps only what needs a look under trouble', () => {
-    const view = { ...DEFAULT_VIEW, filter: 'trouble' as const }
-    expect(jobsInView(jobs, view, '', (n) => ({ ...quiet, held: n === 'photos' })).map((j) => j.name)).toEqual(['music', 'photos'])
-  })
-
-  it('counts a waiting conflict as something to look at', () => {
-    const view = { ...DEFAULT_VIEW, filter: 'trouble' as const }
-    expect(jobsInView(jobs, view, '', (n) => ({ ...quiet, conflict: n === 'notes' })).map((j) => j.name)).toEqual(['music', 'notes'])
-  })
-
-  it('finds a job by the folder it syncs', () => {
-    expect(jobsInView(jobs, DEFAULT_VIEW, 'REMOTE:NOTES', none).map((j) => j.name)).toEqual(['notes'])
   })
 })

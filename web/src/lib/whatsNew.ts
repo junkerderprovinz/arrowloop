@@ -37,7 +37,7 @@ export interface Release {
 }
 
 const JOBS: TranslationKey[] = ['nav.jobs']
-const LISTS = ['/jobs', '/history', '/conflicts', '/trash']
+const LISTS = ['/history', '/conflicts', '/trash']
 const PIN: TranslationKey = 'settings.showInSidebar'
 
 /** Newest first. Only the newest release an update passes is marked. */
@@ -58,8 +58,6 @@ export const RELEASES: Release[] = [
           settings: 'nav.settings',
         },
       },
-      { id: 'jobs-head', at: ['/jobs'], where: JOBS, text: 'new.change.jobsHead' },
-      { id: 'jobs-waiting', at: ['/jobs'], where: JOBS, text: 'new.change.jobsWaiting' },
       { id: 'run-strip', at: ['/jobs'], where: JOBS, text: 'new.change.runStrip' },
       {
         id: 'job-page',
@@ -73,7 +71,7 @@ export const RELEASES: Release[] = [
         at: LISTS,
         where: ['new.where.lists'],
         text: 'new.change.listBar',
-        names: { jobs: 'nav.jobs', history: 'nav.history', conflicts: 'nav.conflicts', trash: 'nav.trash' },
+        names: { history: 'nav.history', conflicts: 'nav.conflicts', trash: 'nav.trash' },
       },
       {
         id: 'targets-tile',

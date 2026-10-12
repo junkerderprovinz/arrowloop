@@ -1,16 +1,14 @@
-import { useNavigation, type NavigationProp, type ParamListBase } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { useCallback, useEffect, useState } from "react";
-import { Alert, AppState, RefreshControl, StyleSheet, Text, View } from "react-native";
+import { Alert, RefreshControl, StyleSheet, Text, View } from "react-native";
 import { api, type Job, type Remote } from "../api";
 import { CardMenu } from "../CardMenu";
 import { clock } from "../clock";
-import { engine } from "../engine";
 import { Glyph, ProviderMark } from "../glyphs";
 import { markForSide } from "../jobMark";
 import { groupFindings, shortLine, type Finding } from "../../../web/src/lib/anomalies";
 import { jobCopy } from "../../../web/src/lib/jobCopy.data";
 import { jobStatus } from "../../../web/src/lib/jobList";
-import { jobState, needs, type HeadState } from "../../../web/src/lib/needs";
 import { useT } from "../i18n";
 import { animateNext, useMotion } from "../motion";
 import type { Nav, JobsStack } from "../nav";
@@ -33,16 +31,13 @@ import {
   Floating,
   MovingList,
   Press,
-  Row,
-  Section,
   useHue,
   useTheme,
 } from "../ui";
 
 /**
- * The job list. It opens with one sentence on how things stand and, only while
- * something waits, a card naming it; then one card per job with its sides, its
- * one status and the two buttons a phone needs most.
+ * The job list: one card per job with its sides, its one status and the two
+ * buttons a phone needs most.
  */
 export function Jobs() {
   const nav = useNavigation<Nav<JobsStack>>();
@@ -201,7 +196,6 @@ export function Jobs() {
           tintColor={accent}
         />
       }
-      ListHeaderComponent={<Head jobs={jobs} />}
       // No empty-list text: the add button already makes the offer.
       ListFooterComponent={error ? <Caption>{error}</Caption> : null}
       renderItem={({ item, index }) => (
@@ -240,111 +234,6 @@ export function Jobs() {
       ) : null}
       <Fab label={t("edit.add")} labelKey="edit.add" onPress={() => nav.navigate("JobEdit", {})} />
     </Floating>
-  );
-}
-
-const HEADLINE = {
-  inSync: "phone.headInSync",
-  withNotes: "phone.headWithNotes",
-  needsYou: "phone.needsYou",
-} as const satisfies Record<HeadState, string>;
-
-/**
- * How things stand, in one of three fixed sentences, and under it the card of
- * what waits, there only while something does. A note never rounds up to "in
- * sync". Missing file access is the phone's own item: Android grants it on a
- * settings page rather than in a dialog, and without it every job with a
- * folder on the phone reads nothing.
- */
-function Head({ jobs }: { jobs: Job[] }) {
-  const { t } = useT();
-  const { p } = useTheme();
-  const nav = useNavigation<NavigationProp<ParamListBase>>();
-  const { conflicts, findings, unread } = useWaiting();
-  const [access, setAccess] = useState<boolean | null>(null);
-
-  // Read again on return, since the settings page reports nothing back.
-  useEffect(() => {
-    const read = () =>
-      Promise.all([engine.storageGranted(), engine.storagePossible()]).then(
-        ([granted, possible]) => setAccess(granted || !possible),
-        () => {},
-      );
-    void read();
-    const sub = AppState.addEventListener("change", (s) => s === "active" && read());
-    return () => sub.remove();
-  }, []);
-
-  if (conflicts === null || findings === null) return null;
-
-  const { head, items } = needs(conflicts, findings, jobs.map(jobState), unread ?? 0);
-  const state: HeadState = access === false ? "needsYou" : head;
-
-  return (
-    <View style={styles.headBlock}>
-      <View style={styles.head} accessibilityRole="header">
-        <Glyph name="IconSync" color={state === "inSync" ? p.okInk : p.warnInk} size={22} />
-        <Text style={[styles.headText, { color: p.text }]}>{t(HEADLINE[state])}</Text>
-      </View>
-
-      {items.length > 0 || access === false ? (
-        <Section title={t("phone.waiting")} hue={0}>
-          {access === false ? (
-            <Row
-              label={t("phone.access")}
-              onPress={() => void engine.openStorageSettings().catch(() => {})}
-              control={<Badge label={t("phone.permissionDenied")} tone="warn" />}
-            />
-          ) : null}
-          {items.map((need) =>
-            need.kind === "conflicts" ? (
-              <Row
-                key="conflicts"
-                label={t("nav.conflicts")}
-                onPress={() => nav.navigate("ConflictsTab")}
-                control={<Badge label={String(need.count)} tone="warn" />}
-              />
-            ) : need.kind === "held" ? (
-              <Row
-                key={need.finding}
-                label={need.job}
-                onPress={() => nav.navigate("Anomalies", { job: need.job })}
-                control={<Badge label={t("anomaly.heldBadge")} tone="warn" />}
-              />
-            ) : need.kind === "notes" ? (
-              <Row
-                key="notes"
-                label={t("nav.anomalies")}
-                onPress={() => nav.navigate("Anomalies")}
-                control={<Badge label={String(need.count)} />}
-              />
-            ) : need.kind === "unread" ? (
-              <Row
-                key="unread"
-                label={t("needs.unread")}
-                onPress={() => nav.navigate("ConflictsTab")}
-                control={<Badge label={String(need.count)} tone="warn" />}
-              />
-            ) : (
-              <Row
-                key={`${need.kind}:${need.job}`}
-                label={need.job}
-                onPress={() => nav.navigate("JobDetail", { name: need.job })}
-                control={
-                  need.kind === "failed" ? (
-                    <Badge label={t("status.failed")} tone="warn" />
-                  ) : need.kind === "warned" ? (
-                    <Badge label={t("status.warned")} tone="warn" />
-                  ) : (
-                    <Badge label={t("status.never")} />
-                  )
-                }
-              />
-            ),
-          )}
-        </Section>
-      ) : null}
-    </View>
   );
 }
 
@@ -591,10 +480,6 @@ const styles = StyleSheet.create({
   sideBlank: { width: 18 },
   // Room at the end so the floating button does not cover the last card.
   list: { padding: space.lg, gap: space.md, paddingBottom: FAB_ROOM },
-  headBlock: { gap: space.md },
-  // Flat, with no card around it, like the head of an object's page.
-  head: { flexDirection: "row", alignItems: "center", gap: space.sm, paddingVertical: space.xs },
-  headText: { fontSize: text.status, fontWeight: "600", flexShrink: 1 },
   status: { gap: space.sm, alignSelf: "stretch", alignItems: "flex-start" },
   // A touch target of its own, though the badge inside stays small.
   statusPress: { alignSelf: "flex-start", minHeight: TOUCH, justifyContent: "center" },

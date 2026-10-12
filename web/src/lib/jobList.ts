@@ -1,7 +1,6 @@
-// How a list of jobs reads: each job's strip of last runs, its one status, and
-// the filter, order and search above the list. Shaped by what it reads rather
-// than by the API types, so the phone, whose api.ts declares its own, can
-// share it.
+// How a job reads in a list: its strip of last runs and its one status. Shaped
+// by what it reads rather than by the API types, so the phone, whose api.ts
+// declares its own, can share it.
 
 type StripRun = { Err: string; Conflicts: number; Skipped: number }
 
@@ -55,65 +54,4 @@ export function jobStatus(job: ListedJob, waits: JobWaits): JobStatus {
   if (job.disabled) return 'paused'
   if (job.recent.length === 0) return 'never'
   return 'last'
-}
-
-/** What the filter keeps: everything, what runs now, what is paused, what needs a look. */
-export type JobFilter = 'all' | 'running' | 'paused' | 'trouble'
-
-export const JOB_FILTERS: JobFilter[] = ['all', 'running', 'paused', 'trouble']
-
-export type JobSortField = 'name' | 'status' | 'lastRun'
-
-/**
- * Each field has a natural order (A to Z, problems first, newest first), and
- * `reversed` turns it round.
- */
-export type JobSort = { field: JobSortField; reversed: boolean }
-
-export type JobView = { filter: JobFilter; sort: JobSort }
-
-export const DEFAULT_VIEW: JobView = { filter: 'all', sort: { field: 'name', reversed: false } }
-
-const TROUBLE: JobStatus[] = ['held', 'failed', 'conflict', 'warned']
-
-// Problems first, then work in progress, then what is quiet.
-const STATUS_RANK: Record<JobStatus, number> = { held: 0, failed: 1, conflict: 2, warned: 3, running: 4, never: 5, paused: 6, last: 7 }
-
-function keeps(filter: JobFilter, status: JobStatus): boolean {
-  switch (filter) {
-    case 'running':
-      return status === 'running'
-    case 'paused':
-      return status === 'paused'
-    case 'trouble':
-      return TROUBLE.includes(status)
-    default:
-      return true
-  }
-}
-
-/**
- * The jobs the list shows, in its order. The search matches the name and both
- * sides, case aside, since a job is as often found by the folder it syncs.
- */
-export function jobsInView<J extends ListedJob & { left: string; right: string }>(
-  jobs: J[],
-  view: JobView,
-  query: string,
-  waits: (name: string) => JobWaits,
-): J[] {
-  const needle = query.trim().toLocaleLowerCase()
-  const status = new Map(jobs.map((j) => [j.name, jobStatus(j, waits(j.name))]))
-  const last = (j: J) => (j.recent[0] ? Date.parse(j.recent[0].Started) : 0)
-  const byName = (a: J, b: J) => a.name.localeCompare(b.name)
-  const order: Record<JobSortField, (a: J, b: J) => number> = {
-    name: byName,
-    status: (a, b) => STATUS_RANK[status.get(a.name)!] - STATUS_RANK[status.get(b.name)!] || byName(a, b),
-    lastRun: (a, b) => last(b) - last(a) || byName(a, b),
-  }
-  const compare = order[view.sort.field]
-  return jobs
-    .filter((j) => keeps(view.filter, status.get(j.name)!))
-    .filter((j) => !needle || [j.name, j.left, j.right].some((s) => s.toLocaleLowerCase().includes(needle)))
-    .sort((a, b) => (view.sort.reversed ? -compare(a, b) : compare(a, b)))
 }
