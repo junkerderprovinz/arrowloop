@@ -637,6 +637,15 @@ export function passkeysAvailableInBrowser(): boolean {
   return typeof window !== 'undefined' && 'PublicKeyCredential' in window
 }
 
+/** Whether the browser counts this page as secure: HTTPS with a certificate it
+ *  trusts, or localhost. Without that it offers no passkeys whatever it can do. */
+export function pageIsSecure(): boolean {
+  return typeof window === 'undefined' || window.isSecureContext !== false
+}
+
+/** What a password reset took away, for the page after it. */
+export type ResetRemoved = { secondFactor: boolean; passkeys: number }
+
 // Only the known binary fields are converted, so an extension the server adds
 // later rides through untouched.
 function creationOptions(o: Record<string, unknown>): PublicKeyCredentialCreationOptions {
@@ -776,15 +785,13 @@ export const api = {
 
   logout: () => request<{ ok: boolean }>('/api/logout', { method: 'POST' }),
 
-  /** Has the server write a reset code to its log. The answer never carries it. */
-  resetBegin: () => post<{ minutes: number }>('/api/security/reset'),
+  /** Has the server write a reset code to its log, unless one is still
+   *  valid. The answer never carries the code. */
+  resetBegin: () => post<{ minutes: number; minPasswordLen: number }>('/api/security/reset'),
 
   /** Sets a new password with the code from the log, and signs the caller in. */
   resetFinish: (code: string, password: string) =>
-    post<{ removed: { secondFactor: boolean; passkeys: number; sessions: number } }>('/api/security/reset/finish', {
-      code,
-      password,
-    }),
+    post<{ removed: ResetRemoved }>('/api/security/reset/finish', { code, password }),
 
   security: () => request<SecurityStatus>('/api/security'),
 

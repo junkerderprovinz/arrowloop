@@ -7,6 +7,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 const passkeys = vi.fn()
 const registerPasskey = vi.fn()
+let secure = true
+let webauthn = true
 vi.mock('../lib/api', async (original) => ({
   ...(await original<typeof import('../lib/api')>()),
   api: {
@@ -14,7 +16,8 @@ vi.mock('../lib/api', async (original) => ({
     registerPasskey: (name: string, current: string, code: string) => registerPasskey(name, current, code),
     deletePasskey: vi.fn(),
   },
-  passkeysAvailableInBrowser: () => true,
+  passkeysAvailableInBrowser: () => webauthn,
+  pageIsSecure: () => secure,
 }))
 
 import { PasskeyCard } from './PasskeyCard'
@@ -22,6 +25,8 @@ import { PasskeyCard } from './PasskeyCard'
 beforeEach(() => {
   passkeys.mockReset()
   registerPasskey.mockReset()
+  secure = true
+  webauthn = true
 })
 afterEach(cleanup)
 
@@ -41,6 +46,16 @@ describe('PasskeyCard', () => {
     await waitFor(() => expect(screen.getByText(/reverse proxy/i)).toBeTruthy())
     expect(screen.getByText(/host name/i)).toBeTruthy()
     expect(screen.queryByText(/ZZZ-SERVER-SENTENCE-ZZZ/)).toBeNull()
+    expect(screen.queryByRole('button', { name: /set up/i })).toBeNull()
+  })
+
+  it('names the certificate on a host name the browser does not trust', async () => {
+    secure = false
+    webauthn = false
+    passkeys.mockResolvedValue({ supported: true, rpId: 'arrowloop.example.com', total: 0, here: 0, passkeys: [] })
+    render(<PasskeyCard passwordSet />)
+    await waitFor(() => expect(screen.getByText(/certificate they trust/i)).toBeTruthy())
+    expect(screen.queryByText(/this browser cannot/i)).toBeNull()
     expect(screen.queryByRole('button', { name: /set up/i })).toBeNull()
   })
 
