@@ -19,7 +19,6 @@ export const en = {
   'settings.general': 'General',
   'settings.look': 'Look',
   'settings.engine': 'Engine',
-  'engine.title': 'Engine',
   'engine.loading': 'Reading the settings…',
   'engine.work': 'How hard it may work',
   'engine.bwlimit': 'Bandwidth limit',
@@ -537,7 +536,6 @@ export const en = {
   'targets.copied': 'Copied',
 
   // Look
-  'look.theme': 'Theme',
   'look.dark': 'Dark',
   'look.light': 'Light',
   'look.corners': 'Corners',
@@ -1004,7 +1002,6 @@ export const de: Translations = {
   'settings.general': 'Allgemein',
   'settings.look': 'Aussehen',
   'settings.engine': 'Motor',
-  'engine.title': 'Motor',
   'engine.loading': 'Lese die Einstellungen…',
   'engine.work': 'Wie hart er arbeiten darf',
   'engine.bwlimit': 'Bandbreitenlimit',
@@ -1516,7 +1513,6 @@ export const de: Translations = {
   'targets.copyPath': 'Auftragspfad kopieren',
   'targets.copied': 'Kopiert',
 
-  'look.theme': 'Farbmodus',
   'look.dark': 'Dunkel',
   'look.light': 'Hell',
   'look.corners': 'Ecken',
