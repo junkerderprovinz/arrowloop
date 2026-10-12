@@ -26,8 +26,8 @@ object Engine {
      * is on. Every other app on the phone can still reach loopback, which is
      * what the token is for.
      */
-    const val ADDRESS = "127.0.0.1:8422"
-    const val ORIGIN = "http://$ADDRESS"
+    val ADDRESS = "127.0.0.1:${BuildConfig.ENGINE_PORT}"
+    val ORIGIN = "http://$ADDRESS"
 
     /** The headers the engine checks; see internal/web/guard.go. */
     private const val TOKEN_HEADER = "X-ArrowLoop-Token"

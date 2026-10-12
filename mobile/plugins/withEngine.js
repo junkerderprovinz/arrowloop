@@ -313,6 +313,40 @@ ${SYNC_END}
 `;
     }
 
+    // The engine port and the side-by-side switch from app.config.js. Kotlin
+    // reads them from BuildConfig; the JavaScript side reads the same config
+    // through expo-constants, which embeds it while Gradle runs, so Gradle
+    // checks the variable still says what prebuild saw. Anchored on
+    // applicationId, since the ABI block below adds a second defaultConfig.
+    const SIDE = "// arrowloop: engine port and side-by-side build";
+    const SIDE_END = "// arrowloop: end of the side-by-side block";
+    {
+      const from = gradle.indexOf(SIDE);
+      const to = gradle.indexOf(SIDE_END);
+      if (from !== -1 && to !== -1) {
+        gradle = gradle.slice(0, gradle.lastIndexOf("\n", from)) + gradle.slice(to + SIDE_END.length);
+      }
+      const { sideBySide, enginePort } = cfg.extra ?? {};
+      if (typeof sideBySide !== "boolean" || !Number.isInteger(enginePort)) {
+        throw new Error("withEngine: app.config.js did not set extra.sideBySide and extra.enginePort");
+      }
+      const before = gradle;
+      gradle = gradle.replace(
+        /(\n(\s*)applicationId\s+['"][^'"\n]+['"])/,
+        `$1
+$2${SIDE}
+$2buildConfigField "int", "ENGINE_PORT", "${enginePort}"
+$2buildConfigField "boolean", "SIDE_BY_SIDE", "${sideBySide}"${sideBySide ? `\n$2applicationIdSuffix ".test"` : ""}
+$2if ((System.getenv('ARROWLOOP_SIDE_BY_SIDE') == '1') != ${sideBySide}) {
+$2    throw new GradleException('ARROWLOOP_SIDE_BY_SIDE differs from the expo prebuild that generated this project, which would leave the app and its engine on different ports. Set it as it was then, or run prebuild again.')
+$2}
+$2${SIDE_END}`,
+      );
+      if (gradle === before) {
+        throw new Error("withEngine: could not find applicationId in the app's build.gradle");
+      }
+    }
+
     // One APK per architecture, inserted before `defaultConfig {`, which every
     // version of the template has.
     const SPLITS = "// arrowloop: one APK per architecture";

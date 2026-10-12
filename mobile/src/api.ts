@@ -3,10 +3,12 @@
 // so the engine answers only requests that carry the token the app started it
 // with (internal/web/guard.go).
 
+import Constants from "expo-constants";
 import { engine } from "./engine";
 import type { FindingListing, JobLearning } from "../../web/src/lib/anomalies";
 
-export const ORIGIN = "http://127.0.0.1:8422";
+// app.config.js sets the port, and Engine.kt starts the engine on the same one.
+export const ORIGIN = `http://127.0.0.1:${Constants.expoConfig?.extra?.enginePort}`;
 
 /**
  * The header that lets a request through to the engine. The token is asked for
