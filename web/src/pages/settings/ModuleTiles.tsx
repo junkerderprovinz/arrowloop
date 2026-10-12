@@ -12,7 +12,9 @@ import { OpenPageRow, SettingsRow } from './rows'
 
 // A page that can stand in the sidebar always keeps its tile. While it is
 // pinned the tile holds only its settings and the way to the page, so nothing
-// shows twice; unpinned, the tile draws the whole page under them.
+// shows twice; unpinned, the tile draws the whole page under them. Both tiles
+// hand their cards straight to the settings column, whose page-top rule gives
+// the first card's badge its room only there.
 
 function SidebarRows({ id, label }: { id: ModuleId; label: string }) {
   const { t } = useT()
@@ -34,14 +36,14 @@ export function TargetsTile({ page }: { page: ReactNode }) {
   const { t } = useT()
   const pinned = useNavPins().targets
   return (
-    <div className="flex flex-col gap-10">
+    <>
       <div data-new="targets-tile">
         <Card title={t('nav.targets')} hueIndex={0}>
           <SidebarRows id="targets" label={t('nav.targets')} />
         </Card>
       </div>
       {!pinned && page}
-    </div>
+    </>
   )
 }
 
@@ -56,7 +58,7 @@ export function AnomaliesTile({ page }: { page: ReactNode }) {
   const set = (next: Partial<NonNullable<Settings['anomalies']>>) => patch({ anomalies: { ...anomalies, ...next } })
 
   return (
-    <div className="flex flex-col gap-10">
+    <>
       <div data-new="anomalies-tile">
         <Card title={t('nav.anomalies')} hueIndex={0}>
           <SettingsRow label={t('anomaly.failingAfter')} hint={t('anomaly.failingAfterHint')}>
@@ -93,6 +95,6 @@ export function AnomaliesTile({ page }: { page: ReactNode }) {
         </Card>
       </div>
       {!pinned && page}
-    </div>
+    </>
   )
 }

@@ -200,9 +200,12 @@ body {
 }
 
 /* A page starts on the rail's top line. One that opens with a card starts at
-   the card's badge, which stands half its 22px above the card. */
+   the card's badge, which stands half its 22px above the card. The card can
+   sit in the page's own wrapper and in a What's new marker, and only a card
+   that comes first at every level is the one at the top. */
 .glim-page-enter > .glim-notch-card:first-child,
-.glim-page-enter > :first-child > .glim-notch-card:first-child {
+.glim-page-enter > :first-child > .glim-notch-card:first-child,
+.glim-page-enter > :first-child > :first-child > .glim-notch-card:first-child {
   margin-top: 11px;
 }
 

@@ -17,7 +17,7 @@ vi.mock('../../lib/api', async (actual) => ({
 
 const { SyncPage } = await import('./SyncPage')
 const { NotificationsPage } = await import('./NotificationsPage')
-const { TargetsTile } = await import('./ModuleTiles')
+const { AnomaliesTile, TargetsTile } = await import('./ModuleTiles')
 const { setNavPin } = await import('../../lib/navPins')
 
 // jsdom cannot measure elements, which the selectors ask for.
@@ -82,5 +82,24 @@ describe('a page that can stand in the sidebar', () => {
     expect(screen.queryByText('the targets page')).toBeNull()
     expect(screen.getByRole('button', { name: 'Open' })).toBeTruthy()
     expect(screen.getByRole('switch', { name: 'Also show in the sidebar' }).getAttribute('aria-checked')).toBe('true')
+  })
+  // The selector is the page-top rule in index.css that drops the first card
+  // by half its badge, which would otherwise be cut off at the column's top.
+  it.each([
+    ['Targets', () => <TargetsTile page={<p>the targets page</p>} />],
+    ['Anomalies', () => <AnomaliesTile page={<p>the anomalies page</p>} />],
+  ])('starts the %s tile on a card the page top makes room for', async (title, tile) => {
+    const { container } = render(<div className="glim-page-enter">{tile()}</div>)
+    await screen.findByRole('switch', { name: 'Also show in the sidebar' })
+    const first = container.querySelector('.glim-notch-card')
+    expect(first?.textContent).toContain(title)
+    const roomy = container.querySelector(
+      [
+        '.glim-page-enter > .glim-notch-card:first-child',
+        '.glim-page-enter > :first-child > .glim-notch-card:first-child',
+        '.glim-page-enter > :first-child > :first-child > .glim-notch-card:first-child',
+      ].join(', '),
+    )
+    expect(roomy).toBe(first)
   })
 })
