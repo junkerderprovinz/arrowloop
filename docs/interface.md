@@ -40,8 +40,13 @@ settings** brings back every job from a backup file; **Start** goes to Jobs.
 
 Every job is a card of its own, in the order of their names, with the job's
 name on the card's edge. The card shows the tile of the job's direction, its
-two sides, the schedule and the next run, one status, the last fourteen runs as
-a strip, and **Pause** and **Run now**. In the strip a green square is a run
+two sides, the schedule and the next run, one status at the card's right end
+with the last fourteen runs as a strip under it, and **Pause**, **Run now** and
+**More**. More holds everything else the job's page offers: **Edit**,
+**Duplicate**, **Preview**, **Check this job**, **Find duplicates**, **Open this
+job's trash** and **Remove**. Edit, Duplicate and Remove open their window on
+the jobs page; Preview, Check and Find duplicates open the job's page at that
+card and start it where there is only one thing to start. In the strip a green square is a run
 that worked, orange one that worked but left something such as a conflict, red
 one that failed, and grey a run that has not happened yet. The status is the
 loudest thing that applies: **Running** with its progress, **Held**,
@@ -67,12 +72,14 @@ chip shows every job again.
 
 ## A job's page
 
-The head carries the job's name, its two sides, its schedule and next run, its
-status and its buttons: **Pause**, **Edit**, **More** (Duplicate, Open this
-job's trash, Remove) and **Run now**.
+The head carries a back button to the jobs, the job's name, its two sides, its
+schedule and next run, its status and its buttons: **Pause**, **Edit**, **More**
+(Duplicate, Open this job's trash, Remove) and **Run now**. The browser's own
+Back works as well.
 
 Under it, one card for each thing to see or do: **Runs**, where a click opens a
-run's details; **Files touched**, with its own search; **Preview**; **Check
+run's details; **Files touched**, newest first (History searches across every
+job); **Preview**; **Check
 this job**; **Find duplicates**; **Brakes**, where **Own brakes for this job**
 gives the job values of its own instead of the global ones; and, once the job's
 runs are learned, **What a run usually does**, with how many files a run
@@ -111,6 +118,24 @@ The `before` and `after` commands are the exception: the interface shows them
 and cannot change them. [Configuring a job](configuration.md#commands-before-and-after-a-run)
 says why.
 
+## Targets
+
+The **Targets** tile, or the Targets page when it is pinned to the sidebar,
+lists the saved targets in three cards: **Clouds**, **Object storage** and
+**Servers & shares**, and the registered drives below them. **Add storage or
+cloud** and **Register a drive** float at the bottom right of the window, in the
+same place as **Add a job** on Jobs.
+
+**Add storage or cloud** opens a window with every kind of storage rclone ships,
+each under its product's name and in its group: Clouds such as Dropbox, 1Fichier
+or premiumize.me, Object storage such as Azure Files, QingStor or Sia, and under
+Servers & shares the protocols and the kinds that are built on another target,
+such as Encrypted, Compressed, Merged targets or Alias. A product shows its
+logo where Dashboard Icons or Simple Icons has one, and the app's storage glyph
+where neither does. Picking one opens its form in the same window. Every field
+has a name in plain words, and its (i) ends with the name rclone gives it, which
+is what rclone's documentation and a hand-written `rclone.conf` use.
+
 ## Drives
 
 A USB disk or a share is added on the **Targets** tile with **Register a
@@ -140,7 +165,7 @@ by hand, as **Pause** and **Resume**, and it saves itself. A held job runs
 neither on its schedule nor on a change, and can still be started by hand.
 
 The one job that arrives held is a **duplicate**, made with **Duplicate** under
-**More** on a job's page. It points at the same two folders as the job it was
+**More** on a job's card or its page. It points at the same two folders as the job it was
 copied from, with a state database of its own, and two such jobs on one
 schedule would compare the same files against two different records. Like every
 job created in the interface, it starts without `before` and `after` commands.
@@ -342,7 +367,9 @@ job**. Every other button is grey.
 The Android app shows the same places. Its bar holds **Jobs**, **Conflicts**,
 **History**, **Settings** and **More**, which opens Anomalies, Trash and
 Targets; Anomalies goes from there while its notes are switched off. Every job
-card shows the same single status as on the web. **Empty the trash** is the
+card shows the same single status as on the web, and its **More** menu holds
+Open, Edit, Duplicate, Preview, Check this job, the trash of either side and
+Delete. **Empty the trash** is the
 floating button on the Trash screen. The Conflicts screen shows every conflict
 as on the web, and from two conflicts up answers all of them at once from the
 card at its foot, after asking. The Anomalies screen shows every finding as a
