@@ -262,7 +262,11 @@ func (s *Server) listJobs(w http.ResponseWriter, r *http.Request) {
 	cfg := s.Runner.Config()
 	// The strips are a nicety, so a failed read leaves them empty rather than
 	// failing the whole list.
-	recent, _ := s.History.EachRecent(r.Context(), recentRuns)
+	names := make([]string, len(cfg.Jobs))
+	for i, j := range cfg.Jobs {
+		names[i] = j.Name
+	}
+	recent, _ := s.History.EachRecent(r.Context(), names, recentRuns)
 	out := make([]jobView, 0, len(cfg.Jobs))
 	for _, j := range cfg.Jobs {
 		v := jobView{

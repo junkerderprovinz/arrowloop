@@ -64,8 +64,11 @@ func TestEachJobGetsOnlyItsOwnNewestRuns(t *testing.T) {
 	if err := db.Record(ctx, history.Run{Job: "daily", Started: start, Finished: start, Err: "boom"}, nil); err != nil {
 		t.Fatalf("record: %v", err)
 	}
+	if err := db.Record(ctx, history.Run{Job: "removed", Started: start, Finished: start}, nil); err != nil {
+		t.Fatalf("record: %v", err)
+	}
 
-	got, err := db.EachRecent(ctx, 14)
+	got, err := db.EachRecent(ctx, []string{"watcher", "daily", "never ran"}, 14)
 	if err != nil {
 		t.Fatalf("each recent: %v", err)
 	}
@@ -77,5 +80,8 @@ func TestEachJobGetsOnlyItsOwnNewestRuns(t *testing.T) {
 	}
 	if len(got["daily"]) != 1 || got["daily"][0].Err != "boom" {
 		t.Errorf("daily = %+v, want its one failed run", got["daily"])
+	}
+	if len(got["removed"]) != 0 || len(got["never ran"]) != 0 {
+		t.Errorf("got runs of jobs not asked for or never run: %v %v", got["removed"], got["never ran"])
 	}
 }

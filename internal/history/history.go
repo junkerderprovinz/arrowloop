@@ -482,35 +482,21 @@ func (d *DB) Latest(ctx context.Context, since time.Time) ([]Latest, error) {
 	return out, rows.Err()
 }
 
-// EachRecent returns up to n stored runs of every job, newest first, in one
-// query, so a list of jobs can draw each one's last runs without asking per job.
-func (d *DB) EachRecent(ctx context.Context, n int) (map[string][]Run, error) {
-	rows, err := d.sql.QueryContext(ctx, `
-		SELECT id, job, started, finished, copied, moved, trashed, conflicts, dirs_made, dirs_removed, unchanged, skipped, err
-		FROM (
-			SELECT *, ROW_NUMBER() OVER (PARTITION BY job ORDER BY started DESC) AS place
-			FROM runs
-		)
-		WHERE place <= ?
-		ORDER BY job, started DESC`, n)
-	if err != nil {
-		return nil, fmt.Errorf("read each job's recent runs: %w", err)
-	}
-	defer rows.Close()
-
-	out := map[string][]Run{}
-	for rows.Next() {
-		var r Run
-		var started, finished int64
-		if err := rows.Scan(&r.ID, &r.Job, &started, &finished, &r.Copied, &r.Moved, &r.Trashed,
-			&r.Conflicts, &r.DirsMade, &r.DirsRemoved, &r.Unchanged, &r.Skipped, &r.Err); err != nil {
-			return nil, fmt.Errorf("scan run: %w", err)
+// EachRecent returns up to n stored runs of each of jobs, newest first. Each
+// job is one query down the (job, started) index, so years of history cost no
+// more than a week of it.
+func (d *DB) EachRecent(ctx context.Context, jobs []string, n int) (map[string][]Run, error) {
+	out := make(map[string][]Run, len(jobs))
+	for _, job := range jobs {
+		runs, err := d.Recent(ctx, job, ShowAll, n)
+		if err != nil {
+			return nil, fmt.Errorf("read the recent runs of %q: %w", job, err)
 		}
-		r.Started = time.Unix(0, started)
-		r.Finished = time.Unix(0, finished)
-		out[r.Job] = append(out[r.Job], r)
+		if len(runs) > 0 {
+			out[job] = runs
+		}
 	}
-	return out, rows.Err()
+	return out, nil
 }
 
 // LastSuccess returns when a job last finished without an error, and whether it
