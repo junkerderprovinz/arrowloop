@@ -7,6 +7,7 @@ import { useLabelMode } from '../../lib/glimstone/useLabelMode'
 import { useT } from '../../lib/i18n'
 import { Link, navigate } from '../../lib/router'
 import type { TileId } from '../../lib/routes'
+import { softHyphen } from '../../lib/softHyphen'
 import type { Tile } from './tiles'
 
 /** Below this width the column shows its glyphs alone and leaves the room to the page. */
@@ -108,7 +109,12 @@ export function SettingsRail({ tiles, active }: { tiles: Tile[]; active: TileId 
               </span>
             ) : (
               mode !== 'glyph' && (
-                <span className="line-clamp-2 min-w-0 text-balance [overflow-clip-margin:3px]">{label}</span>
+                // A single long word such as "Benachrichtigungen" has no
+                // space to wrap at, so it is hyphenated onto the second line
+                // rather than cut at the edge.
+                <span className="line-clamp-2 min-w-0 text-balance hyphens-auto [overflow-clip-margin:3px] [overflow-wrap:break-word]">
+                  {softHyphen(label)}
+                </span>
               )
             )}
           </Link>
