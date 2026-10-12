@@ -19,7 +19,7 @@ import {
   type Shape,
   type ThemeChoice,
 } from "../settings";
-import { GLIMSTONE_VERSION } from "../../../web/src/lib/glimstone/version";
+import { GLIMSTONE_VERSION } from "../glimstone/version";
 import {
   COFFEE,
   glimstoneRelease,
