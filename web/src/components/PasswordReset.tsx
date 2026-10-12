@@ -2,66 +2,95 @@ import { useState } from 'react'
 
 import { Card } from '../lib/glimstone/Card'
 import { Button } from '../lib/glimstone/Button'
-import { Field, Secret, Text } from './Field'
-import { IconCancel } from './glyphs'
-import { ApiError, api } from '../lib/api'
+import { CONTROL_H, Field, Secret } from './Field'
+import { IconConfirm } from './glyphs'
+import { ApiError, api, type ResetRemoved } from '../lib/api'
 import { useT } from '../lib/i18n'
 
-const MIN_LENGTH = 12
-
-type Removed = { secondFactor: boolean; passkeys: number; sessions: number }
-
 /**
- * A forgotten password, reset with a code the server writes to its own log.
- * Reading that log is what proves the owner, so the code is never shown here;
- * the page only says where to find it.
+ * A forgotten password, reset with the code the server has just written to its
+ * own log. Reading that log is what proves the owner, so the code is never
+ * shown here. The caller asks for the code first, so this form never asks for
+ * one that does not exist.
  */
-export function PasswordReset({ onDone, onCancel }: { onDone: () => void; onCancel: () => void }) {
+export function PasswordReset({
+  minutes,
+  minLength,
+  onDone,
+  onBack,
+}: {
+  minutes: number
+  minLength: number
+  /** The answer to the reset already carries the session. */
+  onDone: () => void
+  onBack: () => void
+}) {
   const { t } = useT()
-  const [step, setStep] = useState<'ask' | 'code' | 'done'>('ask')
-  const [minutes, setMinutes] = useState(10)
   const [code, setCode] = useState('')
   const [password, setPassword] = useState('')
-  const [removed, setRemoved] = useState<Removed | null>(null)
+  const [confirm, setConfirm] = useState('')
+  const [removed, setRemoved] = useState<ResetRemoved | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
 
-  async function send() {
-    setBusy(true)
-    setError(null)
-    try {
-      setMinutes((await api.resetBegin()).minutes)
-      setStep('code')
-    } catch (e) {
-      setError((e as Error).message)
-    } finally {
-      setBusy(false)
-    }
-  }
-
   async function finish() {
+    // Caught here, so a typing mistake never costs a guess at the code.
+    if ([...password].length < minLength) {
+      setError(t('password.minLength', { count: minLength }))
+      return
+    }
+    if (password !== confirm) {
+      setError(t('password.mismatch'))
+      return
+    }
     setBusy(true)
     setError(null)
     try {
       const res = await api.resetFinish(code, password)
       setPassword('')
+      setConfirm('')
       setRemoved(res.removed)
-      setStep('done')
     } catch (e) {
-      if (e instanceof ApiError && e.status === 429) setError(t('login.locked'))
-      else setError(t('reset.invalid'))
+      if (e instanceof ApiError && e.status === 429) {
+        setError(t('login.locked'))
+      } else {
+        // The answer does not say whether the code expired, and the sentence
+        // promises a new one for that case. Asking writes one only when none
+        // is live.
+        await api.resetBegin().catch(() => undefined)
+        setError(t('reset.invalid'))
+      }
     } finally {
       setBusy(false)
     }
   }
 
-  const gone = removed
-    ? [
-        removed.secondFactor && t('reset.removedFactor'),
-        removed.passkeys > 0 && t('reset.removedPasskeys', { count: removed.passkeys }),
-        removed.sessions > 0 && t('reset.removedSessions', { count: removed.sessions }),
-      ].filter((x): x is string => !!x)
-    : []
+  if (removed) {
+    // Without this page the next sign-in looks for a passkey that is gone.
+    return (
+      <Card title={t('reset.doneTitle')} hueIndex={0}>
+        <div className="flex flex-col gap-4" role="status">
+          <div className="flex flex-col gap-1.5 text-body text-carbon-text">
+            <p>{t('reset.doneIntro')}</p>
+            <ul className="flex list-disc flex-col gap-1 ps-5">
+              <li>{t('reset.doneSessions')}</li>
+              {removed.secondFactor && <li>{t('reset.doneFactor')}</li>}
+              {removed.passkeys > 0 && <li>{t('reset.donePasskeys', { count: removed.passkeys })}</li>}
+            </ul>
+          </div>
+          {removed.passkeys > 0 && <p className="text-subline text-carbon-textSub">{t('reset.doneAddPasskeys')}</p>}
+          <Button
+            label={t('reset.done')}
+            labelKey="reset.done"
+            glyph={<IconConfirm />}
+            tone="accent"
+            className="w-full"
+            onClick={onDone}
+          />
+        </div>
+      </Card>
+    )
+  }
 
   return (
     <Card title={t('reset.title')} hueIndex={0}>
@@ -69,35 +98,31 @@ export function PasswordReset({ onDone, onCancel }: { onDone: () => void; onCanc
         className="flex flex-col gap-4"
         onSubmit={(e) => {
           e.preventDefault()
-          if (step === 'ask') void send()
-          else if (step === 'code') void finish()
-          else onDone()
+          if (!busy) void finish()
         }}
       >
-        {step === 'ask' && <p className="text-body text-carbon-text">{t('reset.intro')}</p>}
-        {step === 'code' && (
-          <>
-            <p className="text-body text-carbon-text">{t('reset.where', { minutes })}</p>
-            <Field label={t('reset.code')}>
-              <Text value={code} onChange={setCode} placeholder="ABCD-EFGH-JKLM" mono />
-            </Field>
-            <Field label={t('reset.password')} hint={t('password.minLength', { count: MIN_LENGTH })}>
-              <Secret value={password} onChange={setPassword} autoComplete="new-password" />
-            </Field>
-          </>
-        )}
-        {step === 'done' && (
-          <div className="flex flex-col gap-2 text-body text-carbon-text">
-            <p>{gone.length > 0 ? t('reset.doneRemoved') : t('reset.done')}</p>
-            {gone.length > 0 && (
-              <ul className="list-disc ps-5">
-                {gone.map((g) => (
-                  <li key={g}>{g}</li>
-                ))}
-              </ul>
-            )}
-          </div>
-        )}
+        <Field label={t('reset.code')} hint={t('reset.codeTip', { minutes })}>
+          {/* The server takes it in either case, with or without dashes and
+              spaces, since people copy it off the log in every shape. */}
+          <input
+            type="text"
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            autoFocus
+            autoComplete="one-time-code"
+            autoCapitalize="characters"
+            spellCheck={false}
+            placeholder="XXXX-XXXX-XXXX"
+            className={`w-full ${CONTROL_H} bg-carbon-surface2 px-3 font-mono text-meta uppercase tracking-[0.2em] text-carbon-text outline-none transition placeholder:tracking-[0.2em] placeholder:text-carbon-textMuted focus:brightness-125`}
+            style={{ borderRadius: 'var(--radius-control)' }}
+          />
+        </Field>
+        <Field label={t('password.new')} hint={t('password.minLength', { count: minLength })}>
+          <Secret value={password} onChange={setPassword} autoComplete="new-password" />
+        </Field>
+        <Field label={t('password.repeat')}>
+          <Secret value={confirm} onChange={setConfirm} autoComplete="new-password" />
+        </Field>
 
         {/* Cleared at every attempt, so each refusal mounts it and shakes. */}
         {error && (
@@ -106,33 +131,25 @@ export function PasswordReset({ onDone, onCancel }: { onDone: () => void; onCanc
           </p>
         )}
 
-        <div className="flex flex-wrap justify-end gap-2">
-          {step !== 'done' && (
-            <Button
-              label={t('confirm.cancel')}
-              labelKey="confirm.cancel"
-              glyph={<IconCancel />}
-              disabled={busy}
-              onClick={onCancel}
-            />
-          )}
-          {step === 'ask' && (
-            <Button label={t('reset.send')} labelKey="reset.send" tone="accent" type="submit" busy={busy} disabled={busy} />
-          )}
-          {step === 'code' && (
-            <Button
-              label={t('reset.submit')}
-              labelKey="reset.submit"
-              tone="accent"
-              type="submit"
-              busy={busy}
-              disabled={busy || code.trim() === '' || [...password].length < MIN_LENGTH}
-            />
-          )}
-          {step === 'done' && (
-            <Button label={t('reset.continue')} labelKey="reset.continue" tone="accent" type="submit" />
-          )}
-        </div>
+        {/* Stacked, because the longer translations of the two labels do not
+            fit the card side by side. */}
+        <Button
+          label={t('password.saveFirst')}
+          labelKey="password.saveFirst"
+          tone="accent"
+          type="submit"
+          className="w-full"
+          busy={busy}
+          disabled={busy || code.trim() === '' || password === ''}
+        />
+        <Button
+          label={t('preview.back')}
+          labelKey="preview.back"
+          tone="subtle"
+          className="w-full"
+          disabled={busy}
+          onClick={onBack}
+        />
       </form>
     </Card>
   )

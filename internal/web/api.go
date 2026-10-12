@@ -67,6 +67,11 @@ type Server struct {
 	// Log reports what a status code cannot, such as a setting that saved but
 	// could not be applied to the running process. Nil means silence.
 	Log func(format string, args ...any)
+
+	// CodeLog is where a password reset code is written, apart from Log so it
+	// can stand as a block of its own between the timestamped lines. Nil means
+	// stdout, which for a container is its log.
+	CodeLog io.Writer
 }
 
 // logf is Log with the nil check in one place.

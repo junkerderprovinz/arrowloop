@@ -127,7 +127,7 @@ func TestPasskeyRoundTrip(t *testing.T) {
 		RPID:         "arrowloop.example.com",
 		BackedUp:     true,
 		CreatedAt:    1700000000,
-	}, "")
+	}, "", 0)
 	if err != nil {
 		t.Fatalf("AddPasskey: %v", err)
 	}
@@ -159,12 +159,29 @@ func TestPasskeyRoundTrip(t *testing.T) {
 func TestTheSameCredentialIsRegisteredOnce(t *testing.T) {
 	s := openIn(t, t.TempDir())
 	p := Passkey{Name: "A", CredentialID: []byte{5}, PublicKey: []byte{1}, RPID: "a.example.com"}
-	if _, err := s.AddPasskey(p, ""); err != nil {
+	if _, err := s.AddPasskey(p, "", 0); err != nil {
 		t.Fatal(err)
 	}
 	p.Name = "B"
-	if _, err := s.AddPasskey(p, ""); !errors.Is(err, ErrPasskeyExists) {
+	if _, err := s.AddPasskey(p, "", 0); !errors.Is(err, ErrPasskeyExists) {
 		t.Errorf("the second registration gave %v, want ErrPasskeyExists", err)
+	}
+}
+
+// A reset or a change between the password check and the browser's answer
+// removed every key, so the key that answer brings is refused too.
+func TestAPasskeyCheckedUnderAnEarlierPasswordIsRefused(t *testing.T) {
+	s := openIn(t, t.TempDir())
+	checked := s.Get().Epoch
+	if err := s.Update(func(st *State) error { st.PasswordHash = "new"; st.Epoch++; return nil }); err != nil {
+		t.Fatal(err)
+	}
+	_, err := s.AddPasskey(Passkey{Name: "Late", CredentialID: []byte{7}, PublicKey: []byte{1}, RPID: "localhost"}, "", checked)
+	if !errors.Is(err, ErrPasswordMoved) {
+		t.Errorf("a key checked under the old password gave %v, want ErrPasswordMoved", err)
+	}
+	if n := len(s.Get().Passkeys); n != 0 {
+		t.Errorf("%d keys were stored under the new password", n)
 	}
 }
 
@@ -172,7 +189,7 @@ func TestTheSameCredentialIsRegisteredOnce(t *testing.T) {
 func TestPasskeysForFiltersByAddress(t *testing.T) {
 	s := openIn(t, t.TempDir())
 	for i, rp := range []string{"al.example.com", "localhost"} {
-		if _, err := s.AddPasskey(Passkey{Name: rp, CredentialID: []byte{byte(i + 1)}, PublicKey: []byte{1}, RPID: rp}, ""); err != nil {
+		if _, err := s.AddPasskey(Passkey{Name: rp, CredentialID: []byte{byte(i + 1)}, PublicKey: []byte{1}, RPID: rp}, "", 0); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -208,7 +225,7 @@ func TestThePasskeyAccountStaysTheSame(t *testing.T) {
 func TestPasskeysGoWithThePasswordTheyWereAddedUnder(t *testing.T) {
 	dir := t.TempDir()
 	s := openIn(t, dir)
-	if _, err := s.AddPasskey(Passkey{Name: "Phone", CredentialID: []byte{1}, PublicKey: []byte{1}, RPID: "localhost"}, "first"); err != nil {
+	if _, err := s.AddPasskey(Passkey{Name: "Phone", CredentialID: []byte{1}, PublicKey: []byte{1}, RPID: "localhost"}, "first", 0); err != nil {
 		t.Fatal(err)
 	}
 

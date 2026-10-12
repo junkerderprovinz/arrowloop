@@ -6,7 +6,7 @@ import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
 import { Field, Secret, Text } from './Field'
 import { IconAction } from './IconAction'
 import { StateLine } from './Shell'
-import { ApiError, api, passkeysAvailableInBrowser, type PasskeyStatus, type PasskeyView } from '../lib/api'
+import { ApiError, api, pageIsSecure, passkeysAvailableInBrowser, type PasskeyStatus, type PasskeyView } from '../lib/api'
 import { useT } from '../lib/i18n'
 
 /**
@@ -58,6 +58,9 @@ export function PasskeyCard({
   }, [reload])
 
   const browserOK = passkeysAvailableInBrowser()
+  // A browser hides WebAuthn on a page it does not trust, so on a host name
+  // over plain HTTP the cause is the certificate, not the browser.
+  const secureOK = pageIsSecure()
   const addressOK = status?.supported === true
   const keys = status?.passkeys ?? []
 
@@ -124,7 +127,16 @@ export function PasskeyCard({
         </div>
       )}
 
-      {passwordSet && addressOK && !browserOK && <p className="text-subline text-statusWarn">{t('passkey.noBrowser')}</p>}
+      {passwordSet && addressOK && !secureOK && (
+        <div className="rounded-control bg-statusWarnBg px-3 py-2.5 text-body leading-relaxed text-carbon-text">
+          <p className="font-medium">{t('passkey.notHere')}</p>
+          <p className="mt-1 text-subline text-carbon-textSub">{t('passkey.needsCertificate')}</p>
+        </div>
+      )}
+
+      {passwordSet && addressOK && secureOK && !browserOK && (
+        <p className="text-subline text-statusWarn">{t('passkey.noBrowser')}</p>
+      )}
 
       {/* Every key is listed, those for other addresses too, or a key somebody
           registered would look lost. */}

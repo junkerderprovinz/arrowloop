@@ -19,7 +19,8 @@ import { PasswordReset } from '../components/PasswordReset'
  */
 export function Login({ onIn, canReset = false }: { onIn: () => void; canReset?: boolean }) {
   const { t } = useT()
-  const [resetting, setResetting] = useState(false)
+  const [reset, setReset] = useState<{ minutes: number; minLength: number } | null>(null)
+  const [resetBusy, setResetBusy] = useState(false)
   const [password, setPassword] = useState('')
   const [code, setCode] = useState('')
   const [needCode, setNeedCode] = useState(false)
@@ -84,11 +85,26 @@ export function Login({ onIn, canReset = false }: { onIn: () => void; canReset?:
     }
   }
 
-  if (resetting) {
+  // The form appears only once the code is in the log, so it never asks for
+  // a code that does not exist.
+  async function forgot() {
+    setResetBusy(true)
+    setError(null)
+    try {
+      const res = await api.resetBegin()
+      setReset({ minutes: res.minutes, minLength: res.minPasswordLen })
+    } catch (e) {
+      setError(e instanceof ApiError && e.status === 429 ? t('login.locked') : (e as Error).message)
+    } finally {
+      setResetBusy(false)
+    }
+  }
+
+  if (reset) {
     return (
       <div className="flex h-screen items-center justify-center bg-carbon-background p-6">
         <div className="w-full max-w-sm">
-          <PasswordReset onDone={onIn} onCancel={() => setResetting(false)} />
+          <PasswordReset minutes={reset.minutes} minLength={reset.minLength} onDone={onIn} onBack={() => setReset(null)} />
         </div>
       </div>
     )
@@ -119,40 +135,42 @@ export function Login({ onIn, canReset = false }: { onIn: () => void; canReset?:
                 {error}
               </p>
             )}
-            {/* Beside the password, which always works. Hidden rather than
+            <Button
+              label={t('login.submit')}
+              labelKey="login.submit"
+              glyph={<IconConfirm />}
+              tone="accent"
+              type="submit"
+              className="w-full"
+              busy={busy}
+              disabled={busy || password === '' || (needCode && code.trim() === '')}
+            />
+            {/* Under the password, which always works. Hidden rather than
                 disabled where it cannot work: a disabled control on a login
                 screen reads as being locked out. */}
-            <div className="flex flex-wrap items-center justify-end gap-2">
-              {/* Only for a password set in the interface: one from the
-                  environment is changed where the container is set up. */}
-              {canReset && !needCode && (
-                <button
-                  type="button"
-                  className="me-auto text-meta text-carbon-textMuted underline-offset-2 hover:text-carbon-text hover:underline"
-                  onClick={() => setResetting(true)}
-                >
-                  {t('reset.link')}
-                </button>
-              )}
-              {passkeyOffer && !needCode && (
-                <Button
-                  label={t('login.passkeyUnlock')}
-                  labelKey="login.passkeyUnlock"
-                  busy={passkeyBusy}
-                  disabled={busy || passkeyBusy}
-                  onClick={() => void withPasskey()}
-                />
-              )}
+            {passkeyOffer && !needCode && (
               <Button
-                label={t('login.submit')}
-                labelKey="login.submit"
-                glyph={<IconConfirm />}
-                tone="accent"
-                type="submit"
-                busy={busy}
-                disabled={busy || password === '' || (needCode && code.trim() === '')}
+                label={t('login.passkeyUnlock')}
+                labelKey="login.passkeyUnlock"
+                className="w-full"
+                busy={passkeyBusy}
+                disabled={busy || passkeyBusy}
+                onClick={() => void withPasskey()}
               />
-            </div>
+            )}
+            {/* Only for a password set in the interface: one from the
+                environment is changed where the container is set up. */}
+            {canReset && (
+              <Button
+                label={t('reset.link')}
+                labelKey="reset.link"
+                tone="subtle"
+                className="w-full"
+                busy={resetBusy}
+                disabled={busy || resetBusy}
+                onClick={() => void forgot()}
+              />
+            )}
           </form>
         </Card>
       </div>

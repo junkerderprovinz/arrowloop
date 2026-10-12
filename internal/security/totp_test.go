@@ -147,8 +147,10 @@ func TestRecoveryCodesMatchOnlyThemselves(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(plain) != recoveryCodeCount || len(hashed) != recoveryCodeCount {
-		t.Fatalf("want %d codes, got %d and %d", recoveryCodeCount, len(plain), len(hashed))
+	// The count is written out, so a change to the constant has to change
+	// this test too.
+	if len(plain) != 8 || len(hashed) != 8 {
+		t.Fatalf("want 8 codes, got %d and %d", len(plain), len(hashed))
 	}
 	seen := map[string]bool{}
 	for i, code := range plain {

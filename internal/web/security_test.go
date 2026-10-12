@@ -122,6 +122,19 @@ func TestAShortPasswordIsRefused(t *testing.T) {
 	}
 }
 
+// Raising the minimum must not lock out somebody who chose a password under
+// an older one.
+func TestAShorterPasswordFromBeforeStillSignsIn(t *testing.T) {
+	_, srv, store := newSecured(t)
+	hash := testHash(t, "eight ch")
+	if err := store.Update(func(st *security.State) error { st.PasswordHash = hash; return nil }); err != nil {
+		t.Fatal(err)
+	}
+	if resp, said := attemptLogin(t, srv, browser(t), "eight ch"); resp.StatusCode != http.StatusOK {
+		t.Errorf("a password shorter than the minimum was refused at sign-in: %s %s", resp.Status, said)
+	}
+}
+
 // A hash in any answer would be handed to whoever can read the page.
 func TestNoAnswerCarriesTheHash(t *testing.T) {
 	_, srv, store := newSecured(t)

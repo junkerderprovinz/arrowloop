@@ -182,3 +182,31 @@ func TestForgettingAStateAnotherJobSharesIsRefused(t *testing.T) {
 		t.Errorf("the shared record is gone: %v", err)
 	}
 }
+
+// A record that cannot be looked at might be this one under another name, and
+// a wrong "not shared" deletes the other job's record.
+func TestForgettingAStateBesideOneThatCannotBeCheckedIsRefused(t *testing.T) {
+	h := newHarness(t)
+	cfg := *h.runner.Config()
+	first := cfg.Jobs[0]
+	if err := os.MkdirAll(filepath.Dir(first.State), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(first.State, []byte("x"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	other := first
+	other.Name = "zweiter"
+	// No file system takes a NUL in a name, so the record cannot be checked.
+	other.State = filepath.Join(filepath.Dir(first.State), "unlesbar\x00", "photos.db")
+	cfg.Jobs = append(cfg.Jobs, other)
+	h.runner.Reload(&cfg)
+
+	resp, body := doJSON(t, h.srv, http.MethodDelete, "/api/jobs/"+first.Name+"/state", "")
+	if resp.StatusCode != http.StatusConflict || !strings.Contains(body, "zweiter") {
+		t.Fatalf("forgetting a state beside one that cannot be checked answered %s %s", resp.Status, body)
+	}
+	if _, err := os.Stat(first.State); err != nil {
+		t.Errorf("the record is gone: %v", err)
+	}
+}
