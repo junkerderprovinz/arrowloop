@@ -73,7 +73,7 @@ export function SettingsBackup({ hueIndex }: { hueIndex: number }) {
           }}
         />
         {error && (
-          <p key={refused} className="glim-shake text-xs text-statusFail">
+          <p key={refused} className="glim-shake text-subline text-statusFail">
             {error}
           </p>
         )}

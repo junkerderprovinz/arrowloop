@@ -71,7 +71,7 @@ export function Pace({ event, speed = 0 }: { event: RunEvent | undefined; speed?
   const files = new Intl.NumberFormat(lang, { minimumFractionDigits: 1, maximumFractionDigits: 1 })
 
   return (
-    <p className="flex flex-wrap items-center gap-x-3 text-xs tabular-nums text-carbon-textMuted">
+    <p className="flex flex-wrap items-center gap-x-3 text-meta tabular-nums text-carbon-textMuted">
       {moving && (
         <span className="font-medium text-carbon-textSub" title={t('progress.speed')}>
           <span className="sr-only">{t('progress.speed')} </span>

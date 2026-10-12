@@ -93,7 +93,7 @@ export function Engine() {
   if (settings === null) {
     return (
       <Card title={t('engine.title')} hueIndex={0}>
-        <p className="text-xs text-carbon-textMuted">{error ?? t('engine.loading')}</p>
+        <p className="text-subline text-carbon-textMuted">{error ?? t('engine.loading')}</p>
       </Card>
     )
   }
@@ -414,7 +414,7 @@ export function Engine() {
       {/* The save status. A refusal sticks to the bottom of the window, since
           the field that caused it may be far up a long page; "saved" does not. */}
       <div
-        className={`flex min-h-4 flex-wrap items-center justify-end gap-2 text-xs ${
+        className={`flex min-h-4 flex-wrap items-center justify-end gap-2 text-subline ${
           error ? 'sticky bottom-0 -mx-2 rounded-card bg-carbon-surface px-2 py-1.5 shadow-lg' : ''
         }`}
       >

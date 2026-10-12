@@ -115,7 +115,7 @@ export function Login({ onIn, canReset = false }: { onIn: () => void; canReset?:
             )}
             {/* Cleared at every attempt, so each refusal mounts it and shakes. */}
             {error && (
-              <p className="glim-shake text-xs text-statusFail" role="alert">
+              <p className="glim-shake text-subline text-statusFail" role="alert">
                 {error}
               </p>
             )}
@@ -128,7 +128,7 @@ export function Login({ onIn, canReset = false }: { onIn: () => void; canReset?:
               {canReset && !needCode && (
                 <button
                   type="button"
-                  className="me-auto text-xs text-carbon-textMuted underline-offset-2 hover:text-carbon-text hover:underline"
+                  className="me-auto text-meta text-carbon-textMuted underline-offset-2 hover:text-carbon-text hover:underline"
                   onClick={() => setResetting(true)}
                 >
                   {t('reset.link')}

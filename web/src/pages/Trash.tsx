@@ -128,7 +128,7 @@ export function Trash({
               options={[{ value: '', label: t('history.allJobs') }, ...names.map((n) => ({ value: n, label: n }))]}
             />
           </div>
-          <span className="glim-num pb-2 text-xs text-carbon-textMuted">
+          <span className="glim-num pb-2 text-meta text-carbon-textMuted">
             {t('trash.holding', { count: totals.entries, size: bytes(totals.bytes) })}
           </span>
           <div className="ms-auto flex flex-wrap items-end justify-end gap-2">
@@ -152,7 +152,7 @@ export function Trash({
           </div>
         </div>
 
-        {error && <p className="mb-3 text-xs text-statusFail">{error}</p>}
+        {error && <p className="mb-3 text-subline text-statusFail">{error}</p>}
 
         {sides === null ? (
           <Empty>{t('history.working')}</Empty>
@@ -241,11 +241,11 @@ function SideList({
   return (
     <div className="flex flex-col gap-2">
       <div className="flex flex-wrap items-center gap-3">
-        <span className="text-xs font-medium uppercase tracking-wider text-carbon-textMuted">
+        <span className="text-meta font-medium uppercase tracking-wider text-carbon-textMuted">
           {side.job} · {t(side.side === 'left' ? 'edit.left' : 'edit.right')}
         </span>
         {!side.error && (
-          <span className="glim-num text-xs text-carbon-textMuted">
+          <span className="glim-num text-meta text-carbon-textMuted">
             {t('trash.holding', { count: side.total, size: bytes(side.bytes) })}
           </span>
         )}
@@ -257,13 +257,13 @@ function SideList({
       </div>
 
       {side.error ? (
-        <p className="text-xs text-statusFail">{t('trash.unread', { error: side.error })}</p>
+        <p className="text-subline text-statusFail">{t('trash.unread', { error: side.error })}</p>
       ) : (
         <Rows className="flex flex-col">
           {side.entries.map((e, i) => (
             <li key={e.remote}>
               {i > 0 && <Rule />}
-              <div className="flex items-center gap-3 py-1.5 text-xs">
+              <div className="flex items-center gap-3 py-1.5 text-subline">
                 <span className="min-w-0 flex-1 break-all font-mono text-carbon-text" title={e.remote}>
                   {e.path}
                 </span>
@@ -299,7 +299,7 @@ function SideList({
       )}
 
       {side.total > side.entries.length && (
-        <p className="text-xs text-carbon-textMuted">{t('trash.more', { total: side.total, shown: side.entries.length })}</p>
+        <p className="text-subline text-carbon-textMuted">{t('trash.more', { total: side.total, shown: side.entries.length })}</p>
       )}
     </div>
   )

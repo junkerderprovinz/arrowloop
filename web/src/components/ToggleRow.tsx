@@ -39,7 +39,7 @@ export function ToggleRow({
       style={hued ? (hueVars(hueIndex) as CSSProperties) : undefined}
     >
       <span
-        className={`flex items-center gap-1.5 text-sm text-carbon-text${
+        className={`flex items-center gap-1.5 text-body text-carbon-text${
           disabled ? ' opacity-50' : ''
         }`}
       >

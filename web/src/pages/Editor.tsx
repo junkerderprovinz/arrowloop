@@ -301,7 +301,7 @@ export function JobForm({
             onChange={(v) => patch({ left: v })}
           />
           <div className="flex flex-col gap-1.5">
-            <span className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-carbon-textMuted">
+            <span className="flex items-center gap-1.5 text-meta font-medium uppercase tracking-wider text-carbon-textMuted">
               {t('direction.label')}
               <InfoBubble tip={t('direction.hint')} />
             </span>
@@ -393,7 +393,7 @@ export function JobForm({
       {(job.before || job.after) && (
         <div className="mt-5">
           <Field label={t('edit.commands')} hint={t('edit.commandsHint')}>
-            <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1.5 text-sm">
+            <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1.5 text-body">
               {(
                 [
                   ['edit.before', job.before],

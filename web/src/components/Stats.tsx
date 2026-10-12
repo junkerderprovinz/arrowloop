@@ -41,7 +41,7 @@ export function Stats({ job }: { job?: string }) {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex flex-wrap items-baseline gap-x-5 gap-y-1 text-xs">
+      <div className="flex flex-wrap items-baseline gap-x-5 gap-y-1 text-meta">
         <span className="text-carbon-text">
           {t('stats.runs', { count: stats.totals.runs })}
         </span>
@@ -82,7 +82,7 @@ export function Stats({ job }: { job?: string }) {
         ))}
       </div>
 
-      <p className="text-xs text-carbon-textMuted">
+      <p className="text-subline text-carbon-textMuted">
         {t('stats.window', { days: stats.days })}
       </p>
     </div>

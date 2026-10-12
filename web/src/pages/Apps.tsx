@@ -234,7 +234,7 @@ function ServerCard({ version }: { version: string }) {
 /** The version the buttons give, linked to its release where it is one. */
 function ReleaseVersion({ version }: { version: string }) {
   const plain = /^v\d+\.\d+\.\d+$/.test(version)
-  const cls = 'glim-num absolute end-5 top-3 text-[11px] text-carbon-textMuted'
+  const cls = 'glim-num absolute end-5 top-3 text-meta text-carbon-textMuted'
   if (!plain) return <span className={cls}>{version}</span>
   return (
     <a

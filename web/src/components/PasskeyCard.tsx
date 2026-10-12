@@ -113,18 +113,18 @@ export function PasskeyCard({
         {keys.length > 0 ? t('passkey.on', { count: keys.length }) : t('passkey.off')}
       </StateLine>
 
-      {!passwordSet && <p className="text-xs text-carbon-textSub">{t('passkey.needsPassword')}</p>}
+      {!passwordSet && <p className="text-subline text-carbon-textSub">{t('passkey.needsPassword')}</p>}
 
       {/* The card's own translated paragraph rather than the server's English
           reason: it explains the whole feature, it is not an error. */}
       {passwordSet && !addressOK && (
-        <div className="rounded-control bg-statusWarnBg px-3 py-2.5 text-sm leading-relaxed text-carbon-text">
+        <div className="rounded-control bg-statusWarnBg px-3 py-2.5 text-body leading-relaxed text-carbon-text">
           <p className="font-medium">{t('passkey.notHere')}</p>
-          <p className="mt-1 text-xs text-carbon-textSub">{t('passkey.needsDomain')}</p>
+          <p className="mt-1 text-subline text-carbon-textSub">{t('passkey.needsDomain')}</p>
         </div>
       )}
 
-      {passwordSet && addressOK && !browserOK && <p className="text-xs text-statusWarn">{t('passkey.noBrowser')}</p>}
+      {passwordSet && addressOK && !browserOK && <p className="text-subline text-statusWarn">{t('passkey.noBrowser')}</p>}
 
       {/* Every key is listed, those for other addresses too, or a key somebody
           registered would look lost. */}
@@ -137,8 +137,8 @@ export function PasskeyCard({
               style={{ borderRadius: 'var(--radius-control)' }}
             >
               <div className="flex min-w-0 flex-col">
-                <span className="truncate text-sm text-carbon-text">{p.name}</span>
-                <span className="truncate text-xs text-carbon-textSub">
+                <span className="truncate text-body text-carbon-text">{p.name}</span>
+                <span className="truncate text-subline text-carbon-textSub">
                   {p.usableHere ? t('passkey.usableHere') : t('passkey.otherAddress', { host: p.rpId })}
                   {!p.backedUp && <> · {t('passkey.notSynced')}</>}
                 </span>
@@ -154,7 +154,7 @@ export function PasskeyCard({
         </ul>
       )}
 
-      {error && <p className="text-xs text-statusFail" role="alert">{error}</p>}
+      {error && <p className="text-subline text-statusFail" role="alert">{error}</p>}
 
       {passwordSet && addressOK && browserOK && !adding && (
         <div className="flex justify-end">

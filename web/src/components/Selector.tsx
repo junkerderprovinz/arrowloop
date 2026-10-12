@@ -209,7 +209,7 @@ export function Selector<T extends string>({
               'glim-hue glim-hue-icon glim-tab inline-flex items-center justify-center gap-1.5 px-3',
               // A height token rather than padding, so every strip is exactly
               // the same height.
-              'h-[var(--badge-md)] text-xs font-medium',
+              'h-[var(--badge-md)] text-meta font-medium',
               '[transition:background-color_120ms_ease]',
               active
                 ? 'glim-active bg-accent text-accentContrast'

@@ -74,10 +74,10 @@ export function PasswordReset({ onDone, onCancel }: { onDone: () => void; onCanc
           else onDone()
         }}
       >
-        {step === 'ask' && <p className="text-sm text-carbon-text">{t('reset.intro')}</p>}
+        {step === 'ask' && <p className="text-body text-carbon-text">{t('reset.intro')}</p>}
         {step === 'code' && (
           <>
-            <p className="text-sm text-carbon-text">{t('reset.where', { minutes })}</p>
+            <p className="text-body text-carbon-text">{t('reset.where', { minutes })}</p>
             <Field label={t('reset.code')}>
               <Text value={code} onChange={setCode} placeholder="ABCD-EFGH-JKLM" mono />
             </Field>
@@ -87,7 +87,7 @@ export function PasswordReset({ onDone, onCancel }: { onDone: () => void; onCanc
           </>
         )}
         {step === 'done' && (
-          <div className="flex flex-col gap-2 text-sm text-carbon-text">
+          <div className="flex flex-col gap-2 text-body text-carbon-text">
             <p>{gone.length > 0 ? t('reset.doneRemoved') : t('reset.done')}</p>
             {gone.length > 0 && (
               <ul className="list-disc ps-5">
@@ -101,7 +101,7 @@ export function PasswordReset({ onDone, onCancel }: { onDone: () => void; onCanc
 
         {/* Cleared at every attempt, so each refusal mounts it and shakes. */}
         {error && (
-          <p className="glim-shake text-xs text-statusFail" role="alert">
+          <p className="glim-shake text-subline text-statusFail" role="alert">
             {error}
           </p>
         )}

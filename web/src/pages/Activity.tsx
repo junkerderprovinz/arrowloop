@@ -174,8 +174,8 @@ export function Activity() {
             status. */}
         <LogoMark size={28} className="shrink-0" style={{ color: LOGO_GOLD }} />
         <div className="flex min-w-0 flex-1 flex-col">
-          <span className="text-sm font-semibold">ArrowLoop</span>
-          <span className={`truncate text-xs ${paused ? 'text-statusWarn' : 'text-carbon-textSub'}`}>{state}</span>
+          <span className="text-body font-semibold">ArrowLoop</span>
+          <span className={`truncate text-subline ${paused ? 'text-statusWarn' : 'text-carbon-textSub'}`}>{state}</span>
         </div>
         <Button
           label={t('tray.open')}
@@ -197,7 +197,7 @@ export function Activity() {
       <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto">
         {running.length > 0 && (
           <section className="flex flex-col gap-2">
-            <h2 className="text-xs text-carbon-textSub">{t('overview.running')}</h2>
+            <h2 className="text-meta text-carbon-textSub">{t('overview.running')}</h2>
             <ul className="flex flex-col gap-2">
               {running.map((j) => (
                 <RunningRow key={j.name} job={j} event={progress[j.name]} />
@@ -208,9 +208,9 @@ export function Activity() {
 
         {view === 'runs' ? (
           <section className="flex flex-col gap-2">
-            <h2 className="text-xs text-carbon-textSub">{t('activity.recent')}</h2>
+            <h2 className="text-meta text-carbon-textSub">{t('activity.recent')}</h2>
             {latest.length === 0 ? (
-              <p className="text-xs text-carbon-textMuted">{t('history.empty')}</p>
+              <p className="text-subline text-carbon-textMuted">{t('history.empty')}</p>
             ) : (
               <ul className="flex flex-col gap-2">
                 {latest.map((r) => (
@@ -222,7 +222,7 @@ export function Activity() {
         ) : (
           <section className="flex flex-col gap-2">
             {changes !== null && changes.length === 0 ? (
-              <p className="text-xs text-carbon-textMuted">{t('history.logEmpty')}</p>
+              <p className="text-subline text-carbon-textMuted">{t('history.logEmpty')}</p>
             ) : (
               <ul className="flex flex-col gap-2">
                 {(changes ?? []).map((c) => (
@@ -270,12 +270,12 @@ function RunningRow({ job, event }: { job: Job; event?: RunEvent }) {
       <JobMark status="running" size={18} />
       <div className="flex min-w-0 flex-1 flex-col">
         <div className="flex items-baseline gap-2">
-          <span className="truncate text-sm">{job.name}</span>
-          <span className="ms-auto shrink-0 text-xs text-carbon-textMuted">
+          <span className="truncate text-body">{job.name}</span>
+          <span className="ms-auto shrink-0 text-subline text-carbon-textMuted">
             {known ? t('progress.of', { done: event?.done ?? 0, total: event?.total ?? 0 }) : t('progress.starting')}
           </span>
         </div>
-        {event?.path && <span className="truncate text-xs text-carbon-textMuted">{event.path}</span>}
+        {event?.path && <span className="truncate text-subline text-carbon-textMuted">{event.path}</span>}
       </div>
     </li>
   )
@@ -299,7 +299,7 @@ function ChangeRow({ change, jobs, drives }: { change: Touch; jobs: Job[]; drive
         <span className="min-w-0 truncate" title={label}>
           <Badge tone={tone}>{label}</Badge>
         </span>
-        <span className="ms-auto shrink-0 truncate text-xs text-carbon-textMuted" title={when.toLocaleString(lang)}>
+        <span className="ms-auto shrink-0 truncate text-subline text-carbon-textMuted" title={when.toLocaleString(lang)}>
           {change.Job} · {clock(when, lang)}
         </span>
       </div>
@@ -321,7 +321,7 @@ function ChangeRow({ change, jobs, drives }: { change: Touch; jobs: Job[]; drive
  */
 function PathLine({ path, lead, muted = false }: { path: string; lead?: string; muted?: boolean }) {
   return (
-    <span className={`flex min-w-0 gap-1 font-mono text-xs ${muted ? 'text-carbon-textMuted' : 'text-carbon-text'}`}>
+    <span className={`flex min-w-0 gap-1 font-mono text-subline ${muted ? 'text-carbon-textMuted' : 'text-carbon-text'}`}>
       {lead && <span aria-hidden="true">{lead}</span>}
       {/* Right to left moves the ellipsis to the start; the mark keeps the
           path itself reading left to right. */}
@@ -360,12 +360,12 @@ function RunRow({ run }: { run: LatestRun }) {
       <JobMark status={failed ? 'failed' : 'ok'} size={18} />
       <div className="flex min-w-0 flex-1 flex-col">
         <div className="flex items-baseline gap-2">
-          <span className="truncate text-sm">{run.Job}</span>
-          <span className="ms-auto shrink-0 text-xs text-carbon-textMuted" title={new Date(run.Finished || run.Started).toLocaleString(lang)}>
+          <span className="truncate text-body">{run.Job}</span>
+          <span className="ms-auto shrink-0 text-subline text-carbon-textMuted" title={new Date(run.Finished || run.Started).toLocaleString(lang)}>
             {parts.map((part, i) => (part.type === 'integer' ? <Num key={i}>{part.value}</Num> : part.value))}
           </span>
         </div>
-        <span className={`truncate text-xs ${failed ? 'text-statusFail' : 'text-carbon-textMuted'}`}>
+        <span className={`truncate text-subline ${failed ? 'text-statusFail' : 'text-carbon-textMuted'}`}>
           {today ? `${said} · ${today}` : said}
         </span>
       </div>

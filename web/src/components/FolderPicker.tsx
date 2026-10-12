@@ -126,11 +126,11 @@ export function FolderPicker({
         <Card
           title={t('pick.title')}
         >
-          <p className="mb-3 truncate font-mono text-xs text-carbon-text" title={shown || at}>
+          <p className="mb-3 truncate font-mono text-subline text-carbon-text" title={shown || at}>
             {shown || at || t('pick.roots')}
           </p>
 
-          {error && <p className="mb-3 text-xs text-statusFail">{error}</p>}
+          {error && <p className="mb-3 text-subline text-statusFail">{error}</p>}
 
           <ul className="flex max-h-72 flex-col overflow-y-auto">
             {/* Drives and targets cannot be reached by walking the tree, so they
@@ -144,7 +144,7 @@ export function FolderPicker({
                     setEntries([])
                     void go(k.value, false)
                   }}
-                  className="flex w-full items-center gap-2 px-2 py-1.5 text-start text-xs transition hover:bg-carbon-hover"
+                  className="flex w-full items-center gap-2 px-2 py-1.5 text-start text-meta transition hover:bg-carbon-hover"
                   style={{ borderRadius: 'var(--radius-control)' }}
                 >
                   <span className="shrink-0 text-carbon-textMuted" aria-hidden>
@@ -160,7 +160,7 @@ export function FolderPicker({
                 <button
                   type="button"
                   onClick={() => void go(parent, false)}
-                  className="flex w-full items-center gap-2 px-2 py-1.5 text-start text-xs text-carbon-textMuted transition hover:bg-carbon-hover hover:text-carbon-text"
+                  className="flex w-full items-center gap-2 px-2 py-1.5 text-start text-meta text-carbon-textMuted transition hover:bg-carbon-hover hover:text-carbon-text"
                   style={{ borderRadius: 'var(--radius-control)' }}
                 >
                   <IconUp />
@@ -171,16 +171,16 @@ export function FolderPicker({
             {/* A target can take a while to answer, and an empty list meanwhile
                 would read as a folder with nothing in it. */}
             {busy && entries.length === 0 ? (
-              <li className="px-2 py-3 text-xs text-carbon-textMuted">{t('pick.loading')}</li>
+              <li className="px-2 py-3 text-subline text-carbon-textMuted">{t('pick.loading')}</li>
             ) : entries.length === 0 ? (
-              <li className="px-2 py-3 text-xs text-carbon-textMuted">{t('pick.empty')}</li>
+              <li className="px-2 py-3 text-subline text-carbon-textMuted">{t('pick.empty')}</li>
             ) : (
               entries.map((e) => (
                 <li key={e.path}>
                   <button
                     type="button"
                     onClick={() => void go(e.path, false)}
-                    className="flex w-full items-center gap-2 px-2 py-1.5 text-start text-xs transition hover:bg-carbon-hover"
+                    className="flex w-full items-center gap-2 px-2 py-1.5 text-start text-meta transition hover:bg-carbon-hover"
                     style={{ borderRadius: 'var(--radius-control)' }}
                   >
                     <span className="shrink-0 text-carbon-textMuted" aria-hidden>

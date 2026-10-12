@@ -204,7 +204,7 @@ export function ScheduleField({
                       borderRadius: 'var(--radius-pill)',
                       ...(hueVars(i) as CSSProperties),
                     }}
-                    className={`glim-hue grow px-2.5 py-1 text-xs font-medium transition-colors ${
+                    className={`glim-hue grow px-2.5 py-1 text-meta font-medium transition-colors ${
                       on
                         ? 'bg-accent text-accentContrast'
                         : 'bg-transparent text-carbon-textMuted hover:bg-carbon-hover hover:text-carbon-text'
@@ -255,7 +255,7 @@ function Row({
   return (
     <>
       <span
-        className={`mt-1.5 flex items-center gap-1.5 text-xs uppercase tracking-wider text-carbon-textMuted first:mt-0 @md:mt-0 ${className}`}
+        className={`mt-1.5 flex items-center gap-1.5 text-meta uppercase tracking-wider text-carbon-textMuted first:mt-0 @md:mt-0 ${className}`}
       >
         {label}
         {hint && <InfoBubble tip={hint} />}

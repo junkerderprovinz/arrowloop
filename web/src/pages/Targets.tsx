@@ -56,7 +56,7 @@ export function Targets() {
     <Stack>
       {error && (
         <Card title={t('error.unreachable')}>
-          <p className="text-xs text-statusFail">{error}</p>
+          <p className="text-subline text-statusFail">{error}</p>
         </Card>
       )}
       {/* Clouds hand over folders, bucket stores a container with a key and
@@ -311,7 +311,7 @@ function RemoteRow({
       ) : null}
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          <span className="truncate text-sm font-medium">{remote.name}:</span>
+          <span className="truncate text-body font-medium">{remote.name}:</span>
           {/* The protocol only where no logo already says what this is. */}
           {remote.mark ? null : <Badge>{remote.type}</Badge>}
           {result && !local && (
@@ -320,11 +320,11 @@ function RemoteRow({
             </Badge>
           )}
         </div>
-        <p className="mt-0.5 truncate font-mono text-xs text-carbon-textMuted" title={summary}>
+        <p className="mt-0.5 truncate font-mono text-subline text-carbon-textMuted" title={summary}>
           {summary}
         </p>
         {result && !result.ok && result.reason && (
-          <p className="mt-1 text-xs text-statusFail">{result.reason}</p>
+          <p className="mt-1 text-subline text-statusFail">{result.reason}</p>
         )}
         {usage && <Space usage={usage} />}
       </div>
@@ -416,7 +416,7 @@ function Space({ usage }: { usage: Usage }) {
           />
         </div>
       )}
-      <span className="text-xs tabular-nums text-carbon-textMuted">{words}</span>
+      <span className="text-meta tabular-nums text-carbon-textMuted">{words}</span>
     </div>
   )
 }
@@ -544,7 +544,7 @@ function RemoteForm({
           engine's machine, which this interface cannot open, so the form names
           the command that produces one. */}
       {backend?.needsToken && (
-        <p className="flex items-start gap-2 text-xs text-carbon-textMuted">
+        <p className="flex items-start gap-2 text-subline text-carbon-textMuted">
           <InfoBubble tip={t('targets.tokenHowTo')} />
           <span>{t('targets.tokenNeeded', { backend: backend.name })}</span>
         </p>
@@ -599,11 +599,11 @@ function RemoteForm({
 
         <ToggleRow checked={advanced} onChange={setAdvanced} label={t('targets.advanced')} />
 
-        {error && <p className="text-xs text-statusFail">{error}</p>}
+        {error && <p className="text-subline text-statusFail">{error}</p>}
       </div>
 
       {/* Only the reason: the button itself shows the verdict. */}
-      {tried && !tried.ok && tried.reason && <p className="text-xs text-statusFail">{tried.reason}</p>}
+      {tried && !tried.ok && tried.reason && <p className="text-subline text-statusFail">{tried.reason}</p>}
 
       <div className="flex items-center justify-end gap-2">
         <Button label={t('targets.cancel')} labelKey="targets.cancel" onClick={() => onDone(false)} />
@@ -689,11 +689,11 @@ function ShareHost({
       />
       <DropdownListbox open={open} onClose={() => setOpen(false)} triggerRef={row} label={t('targets.pickShare')}>
         {error ? (
-          <p className="px-3 py-2 text-xs text-statusFail">{error}</p>
+          <p className="px-3 py-2 text-subline text-statusFail">{error}</p>
         ) : !shares ? (
-          <p className="px-3 py-2 text-xs text-carbon-textMuted">{t('pick.loading')}</p>
+          <p className="px-3 py-2 text-subline text-carbon-textMuted">{t('pick.loading')}</p>
         ) : shares.length === 0 ? (
-          <p className="px-3 py-2 text-xs text-carbon-textMuted">{t('targets.noShares')}</p>
+          <p className="px-3 py-2 text-subline text-carbon-textMuted">{t('targets.noShares')}</p>
         ) : (
           shares.map((sh) => (
             <button
@@ -705,7 +705,7 @@ function ShareHost({
                 onShare(sh)
                 setOpen(false)
               }}
-              className="flex w-full items-center gap-2 px-3 py-2 text-start text-xs text-carbon-textSub transition-colors hover:bg-carbon-hover hover:text-carbon-text"
+              className="flex w-full items-center gap-2 px-3 py-2 text-start text-meta text-carbon-textSub transition-colors hover:bg-carbon-hover hover:text-carbon-text"
             >
               <span className="shrink-0 text-carbon-textMuted" aria-hidden>
                 <IconFolder />
@@ -790,19 +790,19 @@ function DriveRow({
     <div className="group flex flex-wrap items-center gap-x-3 gap-y-2 py-3">
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          <span className="truncate text-sm font-medium">{volume.label}</span>
+          <span className="truncate text-body font-medium">{volume.label}</span>
           {/* Not the accent: an attached drive is a state, not activity. */}
           <Badge tone={volume.attached ? 'ok' : 'neutral'}>
             {volume.attached ? t('targets.attached') : t('targets.absent')}
           </Badge>
         </div>
-        <p className="mt-0.5 truncate font-mono text-xs text-carbon-textMuted">
+        <p className="mt-0.5 truncate font-mono text-subline text-carbon-textMuted">
           {volume.attached ? volume.mount : volume.path}
         </p>
       </div>
 
       {!volume.attached && volume.lastSeen && (
-        <span className="shrink-0 text-xs text-carbon-textMuted">
+        <span className="shrink-0 text-subline text-carbon-textMuted">
           {t('targets.lastSeen')}: <Since when={volume.lastSeen} />
         </span>
       )}
@@ -927,7 +927,7 @@ function DriveForm({ onDone }: { onDone: (saved: boolean) => void }) {
         </Field>
       </div>
 
-      {error && <p className="text-xs text-statusFail">{error}</p>}
+      {error && <p className="text-subline text-statusFail">{error}</p>}
 
       <div className="flex items-center justify-end gap-2">
         <Button label={t('targets.cancel')} labelKey="targets.cancel" onClick={() => onDone(false)} />

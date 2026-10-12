@@ -389,7 +389,7 @@ export function App() {
         >
           {error && (
             <Card title={t('error.unreachable')} hueIndex={0}>
-              <p className="text-xs text-statusFail">{error}</p>
+              <p className="text-subline text-statusFail">{error}</p>
             </Card>
           )}
 
@@ -874,7 +874,7 @@ function Look({
         <div className="flex flex-col gap-4">
           {CONTROL_AXES.map((axis, row) => (
             <div key={axis} className="flex flex-col gap-1">
-              <span className="text-xs text-carbon-textSub">{t(axisKey[axis])}</span>
+              <span className="text-subline text-carbon-textSub">{t(axisKey[axis])}</span>
               <Selector<LabelMode>
                 label={t(axisKey[axis])}
                 hueOffset={HUE_OFFSET.labels + row}
@@ -894,7 +894,7 @@ function Look({
           {/* The reset belongs to this row rather than to the card's action
               slot: it resets only the accent. */}
           <div className="flex flex-wrap items-center gap-3">
-            <span className={`text-sm text-carbon-text${rainbow.on ? ' opacity-50' : ''}`}>
+            <span className={`text-body text-carbon-text${rainbow.on ? ' opacity-50' : ''}`}>
               {t('look.accent')}
             </span>
             <div className="ms-auto flex flex-wrap items-center gap-2">
@@ -963,7 +963,7 @@ function Look({
 
           {rainbow.on && (
             <div className="flex flex-wrap items-center gap-3">
-              <span className="flex items-center gap-1.5 text-sm text-carbon-text">
+              <span className="flex items-center gap-1.5 text-body text-carbon-text">
                 {t('look.palette')}
                 <InfoBubble tip={t('look.paletteHint')} />
               </span>

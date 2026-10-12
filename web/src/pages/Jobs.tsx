@@ -122,11 +122,11 @@ export function Jobs({
       {(config.error || config.saved) && (
         <div className="flex flex-wrap items-center gap-2">
           {config.error ? (
-            <p key={refused} className="glim-shake text-xs text-statusFail">
+            <p key={refused} className="glim-shake text-subline text-statusFail">
               {config.error}
             </p>
           ) : (
-            <p className="text-xs text-statusOk">{t('edit.savedNote')}</p>
+            <p className="text-subline text-statusOk">{t('edit.savedNote')}</p>
           )}
         </div>
       )}
@@ -268,7 +268,7 @@ export function Jobs({
                   {j.running && (
                     <>
                       {progress[j.name]?.path && (
-                        <p className="flex min-w-0 items-center gap-1.5 text-xs text-carbon-textMuted">
+                        <p className="flex min-w-0 items-center gap-1.5 text-subline text-carbon-textMuted">
                           {progress[j.name].side && (
                             <span className="shrink-0" aria-hidden>
                               {progress[j.name].side === 'right' ? <IconToRight /> : <IconToLeft />}
@@ -356,7 +356,7 @@ export function Jobs({
                     <IconDelete />
                   </IconAction>
                 </JobRow>
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-meta">
                   <Badge tone="neutral">{t('edit.unsaved')}</Badge>
                 </div>
               </div>
@@ -438,7 +438,7 @@ function FindingTeaser({ findings }: { findings: Finding[] }) {
     <button
       type="button"
       onClick={() => goTo({ tab: 'anomalies', job: loudest.job })}
-      className="-mx-2 flex min-h-11 flex-wrap items-center gap-x-2 gap-y-1 rounded-control px-2 py-1.5 text-start text-xs hover:bg-carbon-hover"
+      className="-mx-2 flex min-h-11 flex-wrap items-center gap-x-2 gap-y-1 rounded-control px-2 py-1.5 text-start text-meta hover:bg-carbon-hover"
     >
       <span className="shrink-0 text-carbon-textSub" aria-hidden>
         <IconAnomalies />
@@ -474,7 +474,7 @@ function Progress({ event }: { event?: RunEvent }) {
 
   return (
     <>
-      {event?.stage && <p className="text-xs text-carbon-textMuted">{t(stageKey(event.stage, event.side))}</p>}
+      {event?.stage && <p className="text-subline text-carbon-textMuted">{t(stageKey(event.stage, event.side))}</p>}
       <div className="mt-1.5 flex items-center gap-2">
         <div
           className="h-1 min-w-0 flex-1 overflow-hidden bg-carbon-surface3"
@@ -489,7 +489,7 @@ function Progress({ event }: { event?: RunEvent }) {
             style={{ width: known ? `${share * 100}%` : '35%' }}
           />
         </div>
-        <span className="shrink-0 text-xs tabular-nums text-carbon-textMuted">{words}</span>
+        <span className="shrink-0 text-meta tabular-nums text-carbon-textMuted">{words}</span>
       </div>
     </>
   )
@@ -531,7 +531,7 @@ export function JobRow({
     <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
       <div className="flex min-w-0 grow basis-64 items-center gap-3">
         {mark}
-        <p className="flex min-w-0 flex-1 flex-wrap items-center gap-x-2.5 gap-y-1 text-base text-carbon-text">
+        <p className="flex min-w-0 flex-1 flex-wrap items-center gap-x-2.5 gap-y-1 text-title text-carbon-text">
           <span className="min-w-0 [overflow-wrap:anywhere]">{sideName(left, drives)}</span>
           <DirectionMark direction={direction} size={20} />
           <span className="min-w-0 [overflow-wrap:anywhere]">{sideName(right, drives)}</span>
@@ -552,7 +552,7 @@ function Cadence({ job }: { job: Job }) {
   const words = describeCadence(readCadence(job.schedule ?? '', !!job.watch), t)
 
   return (
-    <div className="flex flex-wrap items-center gap-x-4 gap-y-0.5 text-xs text-carbon-textMuted">
+    <div className="flex flex-wrap items-center gap-x-4 gap-y-0.5 text-subline text-carbon-textMuted">
       {job.running ? (
         <Badge tone="active" className="glim-live">
           {t('jobs.state.running')}
@@ -590,7 +590,7 @@ function ToolFold({ title, onClose, children }: { title: string; onClose: () => 
       }}
     >
       <div className="mb-2 flex items-center justify-between gap-2">
-        <h3 className="text-xs font-medium uppercase tracking-wider text-carbon-textMuted">{title}</h3>
+        <h3 className="text-meta font-medium uppercase tracking-wider text-carbon-textMuted">{title}</h3>
         <IconAction title={t('common.close')} labelKey="common.close" tone="subtle" onClick={onClose} />
       </div>
       {children}
@@ -658,7 +658,7 @@ function JobHistory({ job, running, onClose }: { job: string; running: boolean; 
 
   const head = (
     <div className="mb-2 flex items-center justify-between gap-2">
-      <h3 className="text-xs font-medium uppercase tracking-wider text-carbon-textMuted">{t('jobs.history')}</h3>
+      <h3 className="text-meta font-medium uppercase tracking-wider text-carbon-textMuted">{t('jobs.history')}</h3>
       <IconAction title={t('jobs.historyClose')} labelKey="jobs.historyClose" tone="subtle" onClick={onClose} />
     </div>
   )
@@ -684,7 +684,7 @@ function JobHistory({ job, running, onClose }: { job: string; running: boolean; 
     return fold(
       <>
         {error ? (
-          <p className="mt-1 text-xs text-statusFail">{error}</p>
+          <p className="mt-1 text-subline text-statusFail">{error}</p>
         ) : !touches ? (
           <Empty>{t('jobs.historyLoading')}</Empty>
         ) : (
@@ -733,7 +733,7 @@ function TouchRow({ touch: e, withJob }: { touch: Touch; withJob?: boolean }) {
   const label = entryAction(t, e, jobs.find((j) => j.name === e.Job), drives)
   const note = entryNote(t, e)
   return (
-    <li className="flex items-baseline gap-3 text-xs">
+    <li className="flex items-baseline gap-3 text-subline">
       {/* Wide enough for a conflict's phrase and a target's name; a longer one
           is cut, with the whole phrase in the title. */}
       <span className="w-52 shrink-0 truncate" title={label}>
@@ -815,7 +815,7 @@ function AllTouches({ job, kinds, query, tick }: { job: string; kinds: string[];
     }
   }, [job, kinds.join(','), query, limit, tick])
 
-  if (error) return <p className="mt-1 text-xs text-statusFail">{error}</p>
+  if (error) return <p className="mt-1 text-subline text-statusFail">{error}</p>
   if (!touches) return <Empty>{t('history.working')}</Empty>
   if (touches.length === 0)
     return <Empty>{query ? t('jobs.historyNoMatch', { q: query }) : t('history.logEmpty')}</Empty>
@@ -1089,7 +1089,7 @@ export function History({
               type="button"
               aria-expanded={isOpen(r)}
               onClick={() => setOpen(isOpen(r) ? null : { id: r.ID, job: r.Job, started: r.Started })}
-              className="flex w-full items-center gap-3 py-2.5 text-start text-xs transition-colors hover:bg-carbon-hover"
+              className="flex w-full items-center gap-3 py-2.5 text-start text-subline transition-colors hover:bg-carbon-hover"
             >
               {r.Running ? (
                 <Badge tone="active" className="glim-live">
@@ -1099,10 +1099,10 @@ export function History({
                 <Badge tone={r.Err ? 'fail' : 'ok'}>{r.Err ? t('history.failed') : t('history.ok')}</Badge>
               )}
               <span className="w-32 shrink-0 truncate font-medium">{r.Job}</span>
-              <span className="shrink-0 text-xs text-carbon-textMuted">
+              <span className="shrink-0 text-subline text-carbon-textMuted">
                 <Since when={r.Started} />
               </span>
-              <span className="min-w-0 flex-1 truncate text-xs text-carbon-textMuted">
+              <span className="min-w-0 flex-1 truncate text-subline text-carbon-textMuted">
                 {r.Err ? (
                   r.Err
                 ) : (
@@ -1131,7 +1131,7 @@ export function History({
           arithmetic, because here the window scrolls, not a box of the list's
           own. Only present when the answer filled the limit. */}
       {list.length >= limit && (
-        <div ref={sentinel} className="mt-3 flex justify-center py-2 text-caption text-carbon-textMuted">
+        <div ref={sentinel} className="mt-3 flex justify-center py-2 text-meta text-carbon-textMuted">
           {loading ? t('history.working') : ''}
         </div>
       )}

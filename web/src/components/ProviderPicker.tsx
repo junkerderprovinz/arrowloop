@@ -63,7 +63,7 @@ export function ProviderPicker({
 
       {/* rclone backends with no provider entry, folded away but reachable. */}
       {unlisted.length > 0 && (
-        <details className="text-xs">
+        <details className="text-meta">
           <summary className="cursor-pointer px-1 py-1 text-carbon-textMuted">
             {t('targets.pickMore', { count: unlisted.length })}
           </summary>
@@ -73,7 +73,7 @@ export function ProviderPicker({
                 <button
                   type="button"
                   onClick={() => onPick(b.name)}
-                  className="w-full truncate rounded-[var(--radius-pill)] bg-carbon-surface2 px-3 py-2 text-center text-dense text-carbon-text transition hover:bg-carbon-surface3"
+                  className="w-full truncate rounded-[var(--radius-pill)] bg-carbon-surface2 px-3 py-2 text-center text-meta text-carbon-text transition hover:bg-carbon-surface3"
                 >
                   {b.name}
                 </button>

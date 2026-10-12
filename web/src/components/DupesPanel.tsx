@@ -49,15 +49,15 @@ export function DupesPanel({ job }: { job: string }) {
         ))}
       </div>
 
-      {error && <p className="text-xs text-statusFail">{error}</p>}
+      {error && <p className="text-subline text-statusFail">{error}</p>}
 
       {found && found.groups.length === 0 && (
-        <p className="text-xs text-statusOk">{t('dupes.none', { scanned: found.scanned })}</p>
+        <p className="text-subline text-statusOk">{t('dupes.none', { scanned: found.scanned })}</p>
       )}
 
       {found && found.groups.length > 0 && (
         <>
-          <p className="text-xs text-carbon-textMuted">
+          <p className="text-subline text-carbon-textMuted">
             {t('dupes.summary', {
               sets: found.groups.length,
               wasted: bytes(found.wasted),
@@ -67,14 +67,14 @@ export function DupesPanel({ job }: { job: string }) {
           {/* Without this, a target that cannot hash would read as nothing
               more to find. */}
           {found.unhashable > 0 && (
-            <p className="text-xs text-statusWarn">
+            <p className="text-subline text-statusWarn">
               {t('dupes.unhashable', { count: found.unhashable })}
             </p>
           )}
           <ul className="flex max-h-80 flex-col gap-2 overflow-y-auto">
             {found.groups.map((g) => (
               <li key={g.hash} className="flex flex-col gap-0.5">
-                <div className="flex items-baseline gap-2 text-xs">
+                <div className="flex items-baseline gap-2 text-subline">
                   <Badge tone="warn">{g.paths.length}&times;</Badge>
                   <span className="tabular-nums text-carbon-textMuted">
                     {t('dupes.each', { size: bytes(g.size), wasted: bytes(g.wasted) })}
@@ -84,7 +84,7 @@ export function DupesPanel({ job }: { job: string }) {
                   {g.paths.map((p) => (
                     <li
                       key={p}
-                      className="break-all font-mono text-xs text-carbon-text"
+                      className="break-all font-mono text-subline text-carbon-text"
                       title={p}
                     >
                       {p}

@@ -107,7 +107,7 @@ export function Conflicts({
           {/* The answers for everything chosen; the same three stand on each
               row for one conflict at a time. */}
           <div className="ms-auto flex flex-wrap items-center justify-end gap-2">
-            <span className="glim-num text-xs text-carbon-textMuted">{t('conflicts.chosen', { count: chosen.length })}</span>
+            <span className="glim-num text-meta text-carbon-textMuted">{t('conflicts.chosen', { count: chosen.length })}</span>
             {CHOICES.map(({ keep, key }) => (
               <Button
                 key={keep}
@@ -122,7 +122,7 @@ export function Conflicts({
           </div>
         </div>
 
-        {error && <p className="mb-3 text-xs text-statusFail">{error}</p>}
+        {error && <p className="mb-3 text-subline text-statusFail">{error}</p>}
 
         {listing === null ? (
           <Empty>{t('history.working')}</Empty>
@@ -148,7 +148,7 @@ export function Conflicts({
         )}
 
         {listing?.unread.map((u) => (
-          <p key={u.job} className="mt-3 text-xs text-statusFail">
+          <p key={u.job} className="mt-3 text-subline text-statusFail">
             {t('conflicts.unread', { job: u.job, error: u.error })}
           </p>
         ))}
@@ -182,9 +182,9 @@ function Row({
     <div className="flex flex-col gap-2 py-3">
       <div className="flex min-w-0 items-center gap-3">
         <Toggle label={t('conflicts.select')} hideLabel checked={selected} onChange={onSelect} />
-        <span className="min-w-0 flex-1 break-all font-mono text-xs text-carbon-text">{c.plain}</span>
+        <span className="min-w-0 flex-1 break-all font-mono text-subline text-carbon-text">{c.plain}</span>
         {withJob && <Badge tone="neutral">{c.job}</Badge>}
-        <span className="shrink-0 text-xs text-carbon-textMuted">
+        <span className="shrink-0 text-subline text-carbon-textMuted">
           <Since when={c.at} />
         </span>
       </div>

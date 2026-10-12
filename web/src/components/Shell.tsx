@@ -60,11 +60,11 @@ export function StateLine({ on, children }: { on: boolean; children: ReactNode }
         aria-hidden
         className={`inline-block h-2 w-2 shrink-0 rounded-full ${on ? 'bg-statusOkSolid' : 'bg-carbon-textMuted'}`}
       />
-      <span className="text-sm text-carbon-text">{children}</span>
+      <span className="text-body text-carbon-text">{children}</span>
     </div>
   )
 }
 
 export function Empty({ children }: { children: ReactNode }) {
-  return <p className="py-6 text-center text-xs text-carbon-textMuted">{children}</p>
+  return <p className="py-6 text-center text-subline text-carbon-textMuted">{children}</p>
 }

@@ -30,7 +30,7 @@ export function Security() {
   if (status === null) {
     return (
       <Card title={t('settings.security')} hueIndex={0}>
-        <p className="text-xs text-carbon-textMuted">{error ?? t('engine.loading')}</p>
+        <p className="text-subline text-carbon-textMuted">{error ?? t('engine.loading')}</p>
       </Card>
     )
   }

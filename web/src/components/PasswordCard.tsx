@@ -101,7 +101,7 @@ export function PasswordCard({
       <StateLine on={set}>{set ? t('password.on') : t('password.off')}</StateLine>
 
       {source === 'env' ? (
-        <p className="text-xs text-carbon-textSub">{t('password.env')}</p>
+        <p className="text-subline text-carbon-textSub">{t('password.env')}</p>
       ) : (
         <form
           className="flex flex-col gap-4"
@@ -122,10 +122,10 @@ export function PasswordCard({
             <Secret value={repeat} onChange={setRepeat} autoComplete="new-password" />
           </Field>
           {/* The rule, stated before it is broken. */}
-          <p className="text-xs text-carbon-textMuted">{t('password.minLength', { count: min })}</p>
+          <p className="text-subline text-carbon-textMuted">{t('password.minLength', { count: min })}</p>
 
-          {error && <p className="text-xs text-statusFail" role="alert">{error}</p>}
-          {done && <p className="text-xs text-statusOk" role="status">{done}</p>}
+          {error && <p className="text-subline text-statusFail" role="alert">{error}</p>}
+          {done && <p className="text-subline text-statusOk" role="status">{done}</p>}
 
           <div className="flex flex-wrap items-center justify-end gap-2">
             {source === 'file' && (

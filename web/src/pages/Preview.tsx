@@ -97,7 +97,7 @@ export function Preview({ job, onDone }: { job: string; onDone: () => void }) {
     return (
       <Card title={t('preview.title')} hueIndex={0}>
         {back}
-        <p className="text-xs text-statusFail">{error}</p>
+        <p className="text-subline text-statusFail">{error}</p>
       </Card>
     )
   }
@@ -137,7 +137,7 @@ export function Preview({ job, onDone }: { job: string; onDone: () => void }) {
           <Empty>{t('preview.nothing')}</Empty>
         ) : (
           <>
-            <p className="mb-2 flex items-center gap-1.5 text-xs text-carbon-textMuted">
+            <p className="mb-2 flex items-center gap-1.5 text-subline text-carbon-textMuted">
               {t('preview.explain')}
             </p>
             <Rows className="flex flex-col">
@@ -156,7 +156,7 @@ export function Preview({ job, onDone }: { job: string; onDone: () => void }) {
             </Rows>
           </>
         )}
-        <p className="mt-4 text-xs text-carbon-textMuted">
+        <p className="mt-4 text-subline text-carbon-textMuted">
           {t('preview.unchanged', { count: plan.unchanged })}
           {plan.agreed > 0 && <> {' · '} {t('preview.identical', { count: plan.agreed })}</>}
         </p>
@@ -166,7 +166,7 @@ export function Preview({ job, onDone }: { job: string; onDone: () => void }) {
         <Card title={t('preview.skipped')} hueIndex={1}>
           <ul className="flex flex-col gap-2">
             {plan.skipped.map((s) => (
-              <li key={s.path} className="text-xs">
+              <li key={s.path} className="text-subline">
                 <span className="font-medium">{s.path}</span>
                 <span className="text-carbon-textMuted">, {reason(s.reason)}</span>
               </li>
@@ -252,12 +252,12 @@ function Row({
 
         <Badge tone={tone[action.kind] ?? 'neutral'}>{t(kindKey[action.kind])}</Badge>
 
-        <span className={`min-w-0 flex-1 truncate text-xs ${ticked ? '' : 'opacity-50'}`} title={actionName(action)}>
+        <span className={`min-w-0 flex-1 truncate text-subline ${ticked ? '' : 'opacity-50'}`} title={actionName(action)}>
           {actionName(action)}
         </span>
 
-        <span className="hidden shrink-0 text-xs text-carbon-textMuted sm:inline">{label}</span>
-        <span className="shrink-0 text-xs text-carbon-textMuted">{reason(action.reason)}</span>
+        <span className="hidden shrink-0 text-subline text-carbon-textMuted sm:inline">{label}</span>
+        <span className="shrink-0 text-subline text-carbon-textMuted">{reason(action.reason)}</span>
       </label>
 
       {action.kind === 'conflict' && ticked && (
@@ -315,7 +315,7 @@ export function Version({ side, version, newer }: { side: string; version?: Side
   const { t } = useT()
   if (!version) {
     return (
-      <div className="bg-carbon-surface2 px-3 py-2 text-xs text-carbon-textMuted" style={{ borderRadius: 'var(--radius-control)' }}>
+      <div className="bg-carbon-surface2 px-3 py-2 text-subline text-carbon-textMuted" style={{ borderRadius: 'var(--radius-control)' }}>
         {side}: {t('conflict.missing')}
       </div>
     )
@@ -323,13 +323,13 @@ export function Version({ side, version, newer }: { side: string; version?: Side
   return (
     <div className="bg-carbon-surface2 px-3 py-2" style={{ borderRadius: 'var(--radius-control)' }}>
       <div className="flex items-center gap-2">
-        <span className="text-xs font-medium uppercase tracking-wider text-carbon-textMuted">{side}</span>
+        <span className="text-meta font-medium uppercase tracking-wider text-carbon-textMuted">{side}</span>
         {newer && <Badge tone="ok">{t('conflict.newer')}</Badge>}
       </div>
-      <p className="mt-1 truncate font-mono text-xs" title={version.path}>
+      <p className="mt-1 truncate font-mono text-subline" title={version.path}>
         {version.path}
       </p>
-      <p className="mt-0.5 text-xs text-carbon-textMuted">
+      <p className="mt-0.5 text-subline text-carbon-textMuted">
         {t('conflict.size')}: <Num>{bytes(version.size)}</Num>
         {' · '}
         {t('conflict.changed')}: <Num>{new Date(version.mod).toLocaleString()}</Num>

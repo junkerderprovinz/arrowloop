@@ -219,14 +219,14 @@ export function Anomalies({
   return (
     <Stack>
       {listing === null ? (
-        <p className="text-sm text-carbon-textSub">{t('history.working')}</p>
+        <p className="text-body text-carbon-textSub">{t('history.working')}</p>
       ) : (
         <>
           <SeverityTiles counts={countBySeverity(open)} hidden={hidden} onToggle={toggle} />
           {open.length === 0 ? (
-            <p className="text-sm text-carbon-textSub">{t('anomaly.none')}</p>
+            <p className="text-body text-carbon-textSub">{t('anomaly.none')}</p>
           ) : groups.length === 0 ? (
-            <p className="text-sm text-carbon-textSub">{t('anomaly.noneShown')}</p>
+            <p className="text-body text-carbon-textSub">{t('anomaly.noneShown')}</p>
           ) : (
             groups.map((g, i) => (
               <FindingCard
@@ -245,7 +245,7 @@ export function Anomalies({
         </>
       )}
 
-      {brakes.error && <p className="text-xs text-statusFail">{brakes.error}</p>}
+      {brakes.error && <p className="text-subline text-statusFail">{brakes.error}</p>}
 
       {listing !== null && quiet.length > 0 && (
         <Card title={`${t('anomaly.quiet')} · ${quiet.length}`} hint={t('anomaly.quietHint')} hueIndex={groups.length}>
@@ -314,14 +314,14 @@ function SeverityTiles({
             className={`glim-hue glim-tint${shown ? ' glim-active' : ''} flex min-w-0 flex-col items-start gap-0.5 rounded-card bg-carbon-surface px-3 py-2.5 text-start hover:bg-carbon-surface2 sm:px-4 sm:py-3`}
           >
             <span
-              className={`glim-num text-2xl font-semibold leading-tight ${shown ? NUMBER_TONE[severity] : 'text-carbon-textMuted'}`}
+              className={`glim-num text-status font-semibold leading-tight ${shown ? NUMBER_TONE[severity] : 'text-carbon-textMuted'}`}
             >
               {format.format(counts[severity])}
             </span>
-            <span className={`min-w-0 text-sm [overflow-wrap:anywhere] ${shown ? 'text-carbon-text' : 'text-carbon-textMuted'}`}>
+            <span className={`min-w-0 text-body [overflow-wrap:anywhere] ${shown ? 'text-carbon-text' : 'text-carbon-textMuted'}`}>
               {t(TILE_LABEL[severity])}
             </span>
-            <span aria-hidden="true" className="min-w-0 text-xs text-carbon-textSub [overflow-wrap:anywhere]">
+            <span aria-hidden="true" className="min-w-0 text-subline text-carbon-textSub [overflow-wrap:anywhere]">
               {t(shown ? 'anomaly.tile.shown' : 'anomaly.tile.hidden')}
             </span>
           </button>
@@ -335,7 +335,7 @@ function SeverityTiles({
 function HeldNote() {
   const { t } = useT()
   return (
-    <p className="inline-flex items-center gap-1 self-start text-xs text-statusWarn">
+    <p className="inline-flex items-center gap-1 self-start text-subline text-statusWarn">
       {t('anomaly.held')}
       <InfoBubble tip={t('anomaly.heldHint')} />
     </p>
@@ -455,7 +455,7 @@ function FindingCard({
         </Badge>
       </h2>
 
-      <p className="text-xs text-carbon-textSub">{t('anomaly.open', { count: group.findings.length })}</p>
+      <p className="text-subline text-carbon-textSub">{t('anomaly.open', { count: group.findings.length })}</p>
 
       <div className="flex flex-col">
         {group.findings.map((f, i) => (
@@ -473,7 +473,7 @@ function FindingCard({
           type="button"
           onClick={() => setMonitoring(!monitoring)}
           aria-expanded={monitoring}
-          className="-mx-1 flex min-h-11 items-center gap-1.5 rounded-control px-1 text-xs text-carbon-textSub hover:text-carbon-text"
+          className="-mx-1 flex min-h-11 items-center gap-1.5 rounded-control px-1 text-meta text-carbon-textSub hover:text-carbon-text"
         >
           {t('anomaly.monitoring')}
           <Disclosure open={monitoring} />
@@ -519,15 +519,15 @@ function FindingLine({
         className="-mx-2 flex min-h-11 items-start gap-3 rounded-control px-2 py-2.5 text-start hover:bg-carbon-hover"
       >
         <span aria-hidden="true" className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${DOT[f.severity]}`} />
-        <span className="min-w-0 flex-1 text-sm text-carbon-text [overflow-wrap:anywhere]">
+        <span className="min-w-0 flex-1 text-body text-carbon-text [overflow-wrap:anywhere]">
           {closed && <span className="font-medium">{f.job}: </span>}
           <span className="text-carbon-textSub">{t(`anomaly.kind.${f.kind}`)}: </span>
           {shortLine(f, t, places)}
         </span>
         {closed && f.outcome && (
-          <span className="mt-0.5 shrink-0 text-xs text-carbon-textSub">{t(`anomaly.outcome.${f.outcome}`)}</span>
+          <span className="mt-0.5 shrink-0 text-subline text-carbon-textSub">{t(`anomaly.outcome.${f.outcome}`)}</span>
         )}
-        <span className="mt-0.5 shrink-0 text-xs text-carbon-textSub max-sm:hidden">
+        <span className="mt-0.5 shrink-0 text-subline text-carbon-textSub max-sm:hidden">
           <Since when={closed && f.closed ? f.closed : f.since} />
         </span>
         <span className="mt-1 shrink-0 text-carbon-textSub">
@@ -537,9 +537,9 @@ function FindingLine({
 
       {open && (
         <div className="glim-content-fade flex flex-col gap-2 pb-3 ps-5">
-          <p className="text-sm text-carbon-textSub [overflow-wrap:anywhere]">{sentence(f, t, places)}</p>
+          <p className="text-body text-carbon-textSub [overflow-wrap:anywhere]">{sentence(f, t, places)}</p>
 
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-subline">
             {figures(f, t).map(([term, value]) => (
               <span key={term} className="inline-flex items-baseline gap-1.5">
                 <span className="text-carbon-textSub">{term}</span>
@@ -550,7 +550,7 @@ function FindingLine({
 
           {/* The engine's own words for a failure, which name the cause. */}
           {f.kind === 'failing' && f.detail && (
-            <p className="break-all font-mono text-xs text-carbon-textMuted">{f.detail}</p>
+            <p className="break-all font-mono text-subline text-carbon-textMuted">{f.detail}</p>
           )}
 
           {!closed && paths.length > 0 && (
@@ -560,7 +560,7 @@ function FindingLine({
                   type="button"
                   onClick={() => setFiles(!files)}
                   aria-expanded={files}
-                  className="-mx-1 flex min-h-9 items-center gap-1.5 rounded-control px-1 text-xs text-carbon-textSub hover:text-carbon-text"
+                  className="-mx-1 flex min-h-9 items-center gap-1.5 rounded-control px-1 text-meta text-carbon-textSub hover:text-carbon-text"
                 >
                   <Disclosure open={files} />
                   {t('anomaly.files')}
@@ -570,11 +570,11 @@ function FindingLine({
               {files && (
                 <ul className="flex max-h-64 flex-col gap-1 overflow-y-auto">
                   {paths.map((path) => (
-                    <li key={path} dir="ltr" className="break-all text-start font-mono text-xs text-carbon-text">
+                    <li key={path} dir="ltr" className="break-all text-start font-mono text-subline text-carbon-text">
                       {path}
                     </li>
                   ))}
-                  {more > 0 && <li className="text-xs text-carbon-textMuted">{t('anomaly.filesMore', { count: more })}</li>}
+                  {more > 0 && <li className="text-subline text-carbon-textMuted">{t('anomaly.filesMore', { count: more })}</li>}
                 </ul>
               )}
             </div>
@@ -586,7 +586,7 @@ function FindingLine({
             <button
               type="button"
               onClick={() => goTo({ tab: 'jobs', job: f.job })}
-              className="self-start text-xs text-accentInk hover:underline"
+              className="self-start text-meta text-accentInk hover:underline"
             >
               {t('anomaly.openJob')}
             </button>
@@ -610,7 +610,7 @@ function Monitoring({ job, brakes }: { job: string; brakes: BrakeBook }) {
   return (
     <div className="glim-content-fade flex flex-col gap-3 pb-2 pt-1">
       {!own && (
-        <p className="text-xs text-carbon-textSub">
+        <p className="text-subline text-carbon-textSub">
           {t('anomaly.follows', {
             delete: brakes.global.brakePercent,
             change: brakes.global.changePercent,
@@ -667,7 +667,7 @@ function QuietRow({ job, brakes, focused }: { job: string; brakes: BrakeBook; fo
         aria-expanded={open}
         className="-mx-2 flex min-h-11 items-center gap-2 rounded-control px-2 py-1.5 text-start hover:bg-carbon-hover"
       >
-        <span className="min-w-0 flex-1 text-sm text-carbon-text [overflow-wrap:anywhere]">{job}</span>
+        <span className="min-w-0 flex-1 text-body text-carbon-text [overflow-wrap:anywhere]">{job}</span>
         <span className="shrink-0 text-carbon-textSub">
           <Disclosure open={open} />
         </span>
@@ -702,13 +702,13 @@ function ClosedRow({ closed, places }: { closed: Finding[]; places: [string, str
         <span className="text-carbon-textSub">
           <Disclosure open={open} />
         </span>
-        <span className="min-w-0 flex-1 text-sm text-carbon-text">{t('anomaly.closed')}</span>
-        <span className="glim-num shrink-0 text-sm text-carbon-textSub">{new Intl.NumberFormat(lang).format(closed.length)}</span>
+        <span className="min-w-0 flex-1 text-body text-carbon-text">{t('anomaly.closed')}</span>
+        <span className="glim-num shrink-0 text-body text-carbon-textSub">{new Intl.NumberFormat(lang).format(closed.length)}</span>
       </button>
       {open && (
         <div className="glim-content-fade flex flex-col pb-2">
           {closed.length === 0 ? (
-            <p className="py-2 text-sm text-carbon-textSub">{t('anomaly.noneClosed')}</p>
+            <p className="py-2 text-body text-carbon-textSub">{t('anomaly.noneClosed')}</p>
           ) : (
             closed.map((f) => (
               <FindingLine

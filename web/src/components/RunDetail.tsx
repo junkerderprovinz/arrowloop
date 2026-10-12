@@ -73,9 +73,9 @@ export function RunDetail({
     }
   }, [run, tick])
 
-  if (error) return <p className="py-2 text-xs text-statusFail">{error}</p>
-  if (entries === null) return <p className="py-2 text-xs text-carbon-textMuted">{t('history.loading')}</p>
-  if (entries.length === 0) return <p className="py-2 text-xs text-carbon-textMuted">{t('history.nothing')}</p>
+  if (error) return <p className="py-2 text-subline text-statusFail">{error}</p>
+  if (entries === null) return <p className="py-2 text-subline text-carbon-textMuted">{t('history.loading')}</p>
+  if (entries.length === 0) return <p className="py-2 text-subline text-carbon-textMuted">{t('history.nothing')}</p>
 
   const keptBoth = entries.filter((e) => e.Kind === 'conflict' && e.Note === KEPT_BOTH).length
 
@@ -98,7 +98,7 @@ export function RunDetail({
         {entries.map((e, i) => {
           const note = entryNote(t, e)
           return (
-            <li key={`${e.Path}-${i}`} className="flex items-start gap-2 text-xs">
+            <li key={`${e.Path}-${i}`} className="flex items-start gap-2 text-subline">
               <Badge tone={tone(e.Kind)}>{entryLabel(t, e, config, drives)}</Badge>
               <span className="min-w-0 flex-1 break-all font-mono text-carbon-text" title={e.Path}>
                 {e.Path}
@@ -117,7 +117,7 @@ export function RunDetail({
           still open; this run's record stays as it was. */}
       {keptBoth > 0 && (
         <div className="flex flex-wrap items-center justify-end gap-2">
-          <span className="flex items-center gap-1.5 text-xs text-carbon-textMuted">
+          <span className="flex items-center gap-1.5 text-subline text-carbon-textMuted">
             {t('history.keptBoth', { count: keptBoth })}
             <InfoBubble tip={t('history.keptBothHint')} />
           </span>

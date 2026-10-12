@@ -30,12 +30,12 @@ export function ExcludeSetEditor({
 
   return (
     <div className="flex flex-col gap-4">
-      {names.length === 0 && <p className="text-xs text-carbon-textMuted">{t('sets.none')}</p>}
+      {names.length === 0 && <p className="text-subline text-carbon-textMuted">{t('sets.none')}</p>}
 
       {names.map((name) => (
         <div key={name} className="flex flex-col gap-1.5">
           <div className="flex items-center gap-2">
-            <span className="min-w-0 flex-1 truncate font-mono text-xs font-medium">{name}</span>
+            <span className="min-w-0 flex-1 truncate font-mono text-subline font-medium">{name}</span>
             <IconAction
               title={t('sets.remove')}
               labelKey="sets.remove"
@@ -114,7 +114,7 @@ export function ExcludeSetPicker({
 
   if (available === null) return null
   if (available.length === 0) {
-    return <p className="text-xs text-carbon-textMuted">{t('sets.noneYet')}</p>
+    return <p className="text-subline text-carbon-textMuted">{t('sets.noneYet')}</p>
   }
 
   return (
@@ -130,7 +130,7 @@ export function ExcludeSetPicker({
               onChange(on ? chosen.filter((c) => c !== name) : [...chosen, name])
             }
             style={{ borderRadius: 'var(--radius-pill)' }}
-            className={`inline-flex h-[var(--badge-md)] grow items-center justify-center px-3 font-mono text-xs transition-colors ${
+            className={`inline-flex h-[var(--badge-md)] grow items-center justify-center px-3 font-mono text-meta transition-colors ${
               on
                 ? 'bg-accent text-accentContrast'
                 : 'bg-carbon-surface2 text-carbon-textSub hover:bg-carbon-surface3 hover:text-carbon-text'

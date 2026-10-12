@@ -142,7 +142,7 @@ export function Menu({
                   setOpen(false)
                   item.onSelect()
                 }}
-                className="flex w-full items-center gap-2.5 px-3 py-2 text-start text-xs text-carbon-textSub transition-colors hover:bg-carbon-hover hover:text-carbon-text focus-visible:bg-carbon-hover focus-visible:text-carbon-text"
+                className="flex w-full items-center gap-2.5 px-3 py-2 text-start text-meta text-carbon-textSub transition-colors hover:bg-carbon-hover hover:text-carbon-text focus-visible:bg-carbon-hover focus-visible:text-carbon-text"
               >
                 <span className="flex w-4 shrink-0 justify-center text-carbon-textMuted" aria-hidden>
                   {glyphFor(item.labelKey)}

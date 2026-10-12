@@ -80,16 +80,16 @@ export function CheckPanel({ job }: { job: string }) {
         />
       </div>
 
-      {error && <p className="text-xs text-statusFail">{error}</p>}
+      {error && <p className="text-subline text-statusFail">{error}</p>}
 
       {rows !== null && rows.length === 0 && (
-        <p className="text-xs text-statusOk">{t('check.healthy')}</p>
+        <p className="text-subline text-statusOk">{t('check.healthy')}</p>
       )}
 
       {rows !== null && rows.length > 0 && (
         <ul className="flex flex-col gap-1">
           {rows.map((r) => (
-            <li key={r.key} className="flex items-start gap-2 text-xs">
+            <li key={r.key} className="flex items-start gap-2 text-subline">
               <Badge tone={r.bad ? 'fail' : 'warn'}>{r.bad ? '!' : '?'}</Badge>
               <span className="min-w-0 flex-1 break-words text-carbon-text">{r.text}</span>
             </li>

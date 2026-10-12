@@ -129,7 +129,7 @@ export function TwoFactorCard({
     <Card title={t('twoFactor.title')} hint={t('twoFactor.hint')} hueIndex={hueIndex}>
       <StateLine on={enabled}>{enabled ? t('twoFactor.on') : t('twoFactor.off')}</StateLine>
 
-      {!passwordSet && <p className="text-xs text-carbon-textSub">{t('twoFactor.needsPassword')}</p>}
+      {!passwordSet && <p className="text-subline text-carbon-textSub">{t('twoFactor.needsPassword')}</p>}
 
       {passwordSet && !enabled && step.kind === 'idle' && (
         <div className="flex justify-end">
@@ -155,12 +155,12 @@ export function TwoFactorCard({
             if (code.trim() !== '') void confirm()
           }}
         >
-          <p className="text-sm text-carbon-text">{t('twoFactor.scan')}</p>
+          <p className="text-body text-carbon-text">{t('twoFactor.scan')}</p>
           <QRCode value={step.uri} size={196} className="self-start rounded-control" />
           <div className="flex flex-col gap-1.5">
-            <span className="text-xs text-carbon-textSub">{t('twoFactor.secretManual')}</span>
+            <span className="text-subline text-carbon-textSub">{t('twoFactor.secretManual')}</span>
             <div className="flex flex-wrap items-center gap-2">
-              <code className="break-all rounded-control bg-carbon-surface2 px-3 py-1.5 text-sm tracking-widest text-carbon-text">
+              <code className="break-all rounded-control bg-carbon-surface2 px-3 py-1.5 text-body tracking-widest text-carbon-text">
                 {step.secret}
               </code>
               <Button
@@ -175,7 +175,7 @@ export function TwoFactorCard({
           <Field label={t('twoFactor.confirmCode')}>
             <Text value={code} onChange={setCode} placeholder="000000" code mono />
           </Field>
-          {error && <p className="text-xs text-statusFail" role="alert">{error}</p>}
+          {error && <p className="text-subline text-statusFail" role="alert">{error}</p>}
           <div className="flex justify-end gap-2">
             {cancel}
             <Button
@@ -194,9 +194,9 @@ export function TwoFactorCard({
           acknowledgement puts them away. */}
       {step.kind === 'codes' && (
         <div className="flex flex-col gap-3">
-          <p className="text-sm font-medium text-carbon-text">{t('twoFactor.recoveryTitle')}</p>
-          <p className="text-xs text-carbon-textSub">{t('twoFactor.recoveryOnce')}</p>
-          <ul className="grid grid-cols-2 gap-x-6 gap-y-1 rounded-control bg-carbon-surface2 p-4 font-mono text-sm text-carbon-text">
+          <p className="text-body font-medium text-carbon-text">{t('twoFactor.recoveryTitle')}</p>
+          <p className="text-subline text-carbon-textSub">{t('twoFactor.recoveryOnce')}</p>
+          <ul className="grid grid-cols-2 gap-x-6 gap-y-1 rounded-control bg-carbon-surface2 p-4 font-mono text-body text-carbon-text">
             {step.codes.map((c) => (
               <li key={c}>{c}</li>
             ))}
@@ -224,7 +224,7 @@ export function TwoFactorCard({
       {enabled && step.kind === 'idle' && (
         <div className="flex flex-col gap-3">
           {recoveryLeft !== undefined && (
-            <p className="text-xs text-carbon-textSub">{t('twoFactor.recoveryLeft', { count: recoveryLeft })}</p>
+            <p className="text-subline text-carbon-textSub">{t('twoFactor.recoveryLeft', { count: recoveryLeft })}</p>
           )}
           {!disarming ? (
             <div className="flex justify-end">
@@ -248,7 +248,7 @@ export function TwoFactorCard({
               <Field label={t('twoFactor.disableCodePrompt')}>
                 <Text value={code} onChange={setCode} placeholder="000000" code mono />
               </Field>
-              {error && <p className="text-xs text-statusFail" role="alert">{error}</p>}
+              {error && <p className="text-subline text-statusFail" role="alert">{error}</p>}
               <div className="flex justify-end gap-2">
                 {cancel}
                 <Button
@@ -266,7 +266,7 @@ export function TwoFactorCard({
       )}
 
       {error && step.kind === 'idle' && !disarming && (
-        <p className="text-xs text-statusFail" role="alert">{error}</p>
+        <p className="text-subline text-statusFail" role="alert">{error}</p>
       )}
     </Card>
   )

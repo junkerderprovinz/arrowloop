@@ -86,7 +86,7 @@ function Item<T extends string>({
           modes it moves to the glyph's corner rather than disappearing. */}
       {item.badge ? (
         <span
-          className={`glim-num rounded-[var(--radius-pill)] bg-carbon-surface3/60 px-1.5 py-0.5 text-xs font-semibold leading-none text-carbon-textSub [.glim-active_&]:bg-black/15 [.glim-active_&]:text-current ${
+          className={`glim-num rounded-[var(--radius-pill)] bg-carbon-surface3/60 px-1.5 py-0.5 text-meta font-semibold leading-none text-carbon-textSub [.glim-active_&]:bg-black/15 [.glim-active_&]:text-current ${
             centred ? 'absolute end-1 top-1' : ''
           }`}
         >

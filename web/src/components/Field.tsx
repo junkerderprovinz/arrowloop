@@ -13,7 +13,7 @@ import { IconHidden, IconVisible } from './glyphs'
 export function Field({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
   return (
     <label className="flex flex-col gap-1.5">
-      <span className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-carbon-textMuted">
+      <span className="flex items-center gap-1.5 text-meta font-medium uppercase tracking-wider text-carbon-textMuted">
         {label}
         {hint && <InfoBubble tip={hint} />}
       </span>
@@ -67,7 +67,7 @@ export function Text({
       inputMode={code ? 'numeric' : undefined}
       autoComplete={code ? 'one-time-code' : undefined}
       onChange={(e) => onChange(e.target.value)}
-      className={`w-full ${CONTROL_H} bg-carbon-surface2 px-3 text-xs outline-none transition placeholder:text-carbon-textMuted focus:brightness-125 ${
+      className={`w-full ${CONTROL_H} bg-carbon-surface2 px-3 text-meta outline-none transition placeholder:text-carbon-textMuted focus:brightness-125 ${
         readOnly ? 'text-carbon-textMuted' : 'text-carbon-text'
       } ${mono ? 'font-mono' : ''}`}
       style={{ borderRadius: 'var(--radius-control)' }}
@@ -98,7 +98,7 @@ export function Day({
       max={max}
       aria-label={label}
       onChange={(e) => onChange(e.target.value)}
-      className={`${CONTROL_H} bg-carbon-surface2 px-3 text-xs text-carbon-text outline-none transition focus:brightness-125`}
+      className={`${CONTROL_H} bg-carbon-surface2 px-3 text-meta text-carbon-text outline-none transition focus:brightness-125`}
       style={{ borderRadius: 'var(--radius-control)' }}
     />
   )
@@ -138,7 +138,7 @@ export function NumberField({
         // schedule of "@every NaNh".
         if (Number.isFinite(next)) onChange(next)
       }}
-      className={`w-24 ${CONTROL_H} bg-carbon-surface2 px-3 text-xs text-carbon-text outline-none transition focus:brightness-125`}
+      className={`w-24 ${CONTROL_H} bg-carbon-surface2 px-3 text-meta text-carbon-text outline-none transition focus:brightness-125`}
       style={{ borderRadius: 'var(--radius-control)' }}
     />
   )
@@ -162,7 +162,7 @@ export function Lines({
       rows={rows}
       placeholder={placeholder}
       onChange={(e) => onChange(e.target.value)}
-      className="w-full resize-y bg-carbon-surface2 px-3 py-2 font-mono text-xs text-carbon-text outline-none transition placeholder:text-carbon-textMuted focus:brightness-125"
+      className="w-full resize-y bg-carbon-surface2 px-3 py-2 font-mono text-meta text-carbon-text outline-none transition placeholder:text-carbon-textMuted focus:brightness-125"
       style={{ borderRadius: 'var(--radius-control)' }}
     />
   )
@@ -221,7 +221,7 @@ export function Choice<T extends string>({
         aria-haspopup="listbox"
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
-        className={`flex w-full ${CONTROL_H} items-center ${roomy ? 'gap-2.5' : 'gap-2'} bg-carbon-surface2 pl-3 pr-8 text-start ${roomy ? 'text-sm' : 'text-xs'} text-carbon-text outline-none transition hover:bg-carbon-surface3 focus-visible:brightness-125`}
+        className={`flex w-full ${CONTROL_H} items-center ${roomy ? 'gap-2.5' : 'gap-2'} bg-carbon-surface2 pl-3 pr-8 text-start ${roomy ? 'text-body' : 'text-meta'} text-carbon-text outline-none transition hover:bg-carbon-surface3 focus-visible:brightness-125`}
         style={{ borderRadius: 'var(--radius-control)' }}
       >
         {current?.flag && <Flag code={current.flag} />}
@@ -254,7 +254,7 @@ export function Choice<T extends string>({
               onChange(o.value)
               setOpen(false)
             }}
-            className={`flex w-full items-center ${roomy ? 'gap-2.5' : 'gap-2'} px-3 py-2 text-start ${roomy ? 'text-sm' : 'text-xs'} transition-colors ${
+            className={`flex w-full items-center ${roomy ? 'gap-2.5' : 'gap-2'} px-3 py-2 text-start ${roomy ? 'text-body' : 'text-meta'} transition-colors ${
               o.value === value
                 ? 'bg-carbon-surface3 text-carbon-text'
                 : 'text-carbon-textSub hover:bg-carbon-hover hover:text-carbon-text'
@@ -298,7 +298,7 @@ export function Secret({
         placeholder={placeholder}
         autoComplete={autoComplete}
         onChange={(e) => onChange(e.target.value)}
-        className={`w-full ${CONTROL_H} bg-carbon-surface2 pl-3 pr-9 font-mono text-xs text-carbon-text outline-none transition placeholder:font-sans placeholder:text-carbon-textMuted focus:brightness-125`}
+        className={`w-full ${CONTROL_H} bg-carbon-surface2 pl-3 pr-9 font-mono text-meta text-carbon-text outline-none transition placeholder:font-sans placeholder:text-carbon-textMuted focus:brightness-125`}
         style={{ borderRadius: 'var(--radius-control)' }}
       />
       <button
