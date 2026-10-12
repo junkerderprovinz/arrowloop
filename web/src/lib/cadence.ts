@@ -32,8 +32,26 @@ export function readCadence(schedule: string, watch: boolean): Cadence {
     case 'weekly':
       return { kind: 'weekly', days: s.days, time: s.time }
     default:
-      return { kind: 'cron', expression: s.cron }
+      return stepped(s.cron) ?? { kind: 'cron', expression: s.cron }
   }
+}
+
+/**
+ * A cron step such as "0 *\/6 * * *" said as its interval. The editor keeps it
+ * as written, since `@every` counts from the last run where a step fires on
+ * the clock, but in a sentence the two read the same.
+ */
+function stepped(expression: string): Cadence | null {
+  const f = expression.split(/\s+/)
+  if (f.length !== 5 || f[3] !== '*' || f[4] !== '*') return null
+  const step = (field: string) => (field === '*' ? 1 : Number(/^\*\/(\d+)$/.exec(field)?.[1] ?? NaN))
+  const fixed = (field: string) => /^\d{1,2}$/.test(field)
+  const [minute = '', hour = '', day = ''] = f
+  let every: { count: number; unit: EveryUnit } | null = null
+  if (day === '*' && hour === '*' && !fixed(minute)) every = { count: step(minute), unit: 'minute' }
+  else if (day === '*' && fixed(minute) && !fixed(hour)) every = { count: step(hour), unit: 'hour' }
+  else if (fixed(minute) && fixed(hour) && day !== '*') every = { count: step(day), unit: 'day' }
+  return every && every.count > 0 ? { kind: 'every', ...every } : null
 }
 
 /**
