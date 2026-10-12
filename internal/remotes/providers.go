@@ -80,6 +80,8 @@ const (
 // something they point at by address is a protocol; HDFS is a filesystem with
 // directories and stays a protocol. Nextcloud, ownCloud, OpenCloud and Seafile
 // ask for a server URL but are clouds, because people look for them by name.
+// A target built on top of another one, such as Encrypted, names no product
+// and is a protocol too.
 type Group string
 
 const (
@@ -94,7 +96,11 @@ const (
 
 // providers is the hand-kept list of products, since rclone's registry does
 // not know what products exist or what they are called. A backend missing
-// from it is still offered through UnlistedBackends.
+// from it is still offered through UnlistedBackends, and a test fails until it
+// has an entry here.
+//
+// A product with no logo in Dashboard Icons or Simple Icons wears the app's
+// storage glyph, IconTabStorage, rather than a neighbour's mark.
 var providers = []Provider{
 	{ID: "nextcloud", Name: "Nextcloud", Auth: AuthAppPassword, Backend: "webdav", Group: GroupCloud,
 		Preset: map[string]string{"vendor": "nextcloud"}, Mark: "IconNextcloud",
@@ -146,6 +152,15 @@ var providers = []Provider{
 	{ID: "gofile", Name: "Gofile", Backend: "gofile", Group: GroupCloud, Mark: "IconGofile"},
 	{ID: "pixeldrain", Name: "Pixeldrain", Backend: "pixeldrain", Group: GroupCloud, Mark: "IconPixeldrain"},
 	{ID: "googlephotos", Name: "Google Photos", Backend: "google photos", Group: GroupCloud, Mark: "IconGooglePhotos"},
+	{ID: "premiumize", Name: "premiumize.me", Backend: "premiumizeme", Group: GroupCloud, Mark: "IconPremiumize"},
+	{ID: "fichier", Name: "1Fichier", Auth: AuthAPIKey, AuthURL: "https://1fichier.com/console/params.pl",
+		Backend: "fichier", Group: GroupCloud, Mark: "IconTabStorage"},
+	{ID: "drime", Name: "Drime", Auth: AuthAPIKey, Backend: "drime", Group: GroupCloud, Mark: "IconTabStorage"},
+	{ID: "filelu", Name: "FileLu", Auth: AuthAPIKey, Backend: "filelu", Group: GroupCloud, Mark: "IconTabStorage"},
+	{ID: "shade", Name: "Shade", Auth: AuthAPIKey, Backend: "shade", Group: GroupCloud, Mark: "IconTabStorage"},
+	// Storage Made Easy's product, which runs on the customer's own address.
+	{ID: "filefabric", Name: "Enterprise File Fabric", Backend: "filefabric", Group: GroupCloud,
+		Mark: "IconTabStorage", UrlHint: "https://yourfabric.smestorage.com"},
 
 	{ID: "b2", Name: "Backblaze B2", Backend: "b2", Group: GroupStorage, Mark: "IconBackblaze"},
 	{ID: "azureblob", Name: "Azure Blob Storage", Backend: "azureblob", Group: GroupStorage, Mark: "IconAzure"},
@@ -186,6 +201,15 @@ var providers = []Provider{
 	{ID: "cloudinary", Name: "Cloudinary", Backend: "cloudinary", Group: GroupStorage, Mark: "IconCloudinary"},
 	{ID: "internetarchive", Name: "Internet Archive", Backend: "internetarchive", Group: GroupStorage,
 		Mark: "IconInternetArchive"},
+	// The file shares of an Azure storage account, beside its blobs.
+	{ID: "azurefiles", Name: "Azure Files", Backend: "azurefiles", Group: GroupStorage, Mark: "IconAzure"},
+	// Storj before it took the company's name, for an access set up then.
+	{ID: "tardigrade", Name: "Tardigrade", Backend: "tardigrade", Group: GroupStorage, Mark: "IconStorj"},
+	{ID: "qingstor", Name: "QingStor", Backend: "qingstor", Group: GroupStorage, Mark: "IconTabStorage"},
+	{ID: "imagekit", Name: "ImageKit", Auth: AuthAPIKey, AuthURL: "https://imagekit.io/dashboard/developer/api-keys",
+		Backend: "imagekit", Group: GroupStorage, Mark: "IconTabStorage"},
+	// Reached through a Sia daemon somebody runs, but a bucket store all the same.
+	{ID: "sia", Name: "Sia", Backend: "sia", Group: GroupStorage, Mark: "IconTabStorage"},
 
 	// Bucket stores somebody runs themselves.
 	{ID: "minio", Name: "MinIO", Backend: "s3", Group: GroupStorage,
@@ -206,7 +230,21 @@ var providers = []Provider{
 	{ID: "s3", Name: "S3 compatible", Backend: "s3", Group: GroupStorage, Mark: "IconBuckets"},
 	{ID: "http", Name: "HTTP", Backend: "http", Group: GroupProtocol, Mark: "IconLink"},
 	{ID: "hdfs", Name: "HDFS", Backend: "hdfs", Group: GroupProtocol, Mark: "IconHadoop"},
+	// A dataset somebody points at by its identifier, read-only like HTTP.
+	{ID: "doi", Name: "DOI", Backend: "doi", Group: GroupProtocol, Mark: "IconDoi"},
+
+	// Targets built on another target. Their names are words, translated in
+	// the interface.
 	{ID: "crypt", Name: "Encrypted", Backend: "crypt", Group: GroupProtocol, Mark: "IconLock"},
+	{ID: "alias", Name: "Alias", Backend: "alias", Group: GroupProtocol, Mark: "IconLink"},
+	{ID: "archive", Name: "Archive files", Backend: "archive", Group: GroupProtocol, Mark: "IconFolder"},
+	{ID: "cache", Name: "Cache", Backend: "cache", Group: GroupProtocol, Mark: "IconRefresh"},
+	{ID: "chunker", Name: "Split into pieces", Backend: "chunker", Group: GroupProtocol, Mark: "IconCopy"},
+	{ID: "combine", Name: "Combined targets", Backend: "combine", Group: GroupProtocol, Mark: "IconAdd"},
+	{ID: "compress", Name: "Compressed", Backend: "compress", Group: GroupProtocol, Mark: "IconDownload"},
+	{ID: "hasher", Name: "Checksums", Backend: "hasher", Group: GroupProtocol, Mark: "IconCheck"},
+	{ID: "union", Name: "Merged targets", Backend: "union", Group: GroupProtocol, Mark: "IconSync"},
+	{ID: "memory", Name: "In memory", Backend: "memory", Group: GroupProtocol, Mark: "IconDiagnostics"},
 }
 
 // groupOrder is the order the three cards appear in: clouds first, because

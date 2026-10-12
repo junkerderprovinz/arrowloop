@@ -36,6 +36,19 @@ const NAMES: Record<string, TranslationKey> = {
   scope: 'opt.scope',
   '2fa': 'opt.twoFactor',
   namenode: 'opt.namenode',
+  share_name: 'opt.shareName',
+  upstreams: 'opt.upstreams',
+  level: 'opt.level',
+  doi: 'opt.doi',
+  access_token: 'opt.accessToken',
+  api_key: 'opt.apiKey',
+  public_key: 'opt.publicKey',
+  private_key: 'opt.privateKey',
+  zone: 'opt.zone',
+  api_url: 'opt.apiUrl',
+  api_password: 'opt.apiPassword',
+  satellite_address: 'opt.satellite',
+  passphrase: 'opt.passphrase',
 }
 
 /** The label for one option: its translation where there is one, its rclone name otherwise. */

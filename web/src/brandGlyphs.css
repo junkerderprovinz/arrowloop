@@ -55,6 +55,7 @@
   --brand-internetarchive-0: #ffffff;
   --brand-opencloud-0: #e2baff;
   --brand-oracle-cloud-0: #d15f4f; /* lifted from #C74634 */
+  --brand-premiumize-0: #fc0;
 }
 
 @media (prefers-color-scheme: light) {
@@ -101,6 +102,7 @@
     --brand-internetarchive-0: #000000;
     --brand-opencloud-0: #20434f;
     --brand-oracle-cloud-0: #C74634;
+    --brand-premiumize-0: #7a6200;
   }
 }
 
@@ -147,4 +149,5 @@
   --brand-internetarchive-0: #000000;
   --brand-opencloud-0: #20434f;
   --brand-oracle-cloud-0: #C74634;
+  --brand-premiumize-0: #7a6200;
 }

@@ -134,13 +134,15 @@ export function Targets() {
           glyph={<IconAdd />}
           onClick={() => setRegistering(true)}
         />
-        <PageAction
-          primary
-          label={t('targets.addStorage')}
-          labelKey="targets.addStorage"
-          glyph={<IconAdd />}
-          onClick={() => setAdding(true)}
-        />
+        <span data-new="provider-names" className="flex">
+          <PageAction
+            primary
+            label={t('targets.addStorage')}
+            labelKey="targets.addStorage"
+            glyph={<IconAdd />}
+            onClick={() => setAdding(true)}
+          />
+        </span>
       </PageActions>
     </Stack>
   )

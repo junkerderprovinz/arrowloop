@@ -107,6 +107,13 @@ export const RELEASES: Release[] = [
         text: 'new.change.jobBrakes',
         names: { brakes: 'job.brakes' },
       },
+      { id: 'job-more', at: ['/jobs'], where: JOBS, text: 'new.change.jobMore', names: { more: 'list.more' } },
+      {
+        id: 'provider-names',
+        at: ['/targets', '/settings/targets'],
+        where: ['nav.targets'],
+        text: 'new.change.providerNames',
+      },
       {
         id: 'settings-tiles',
         at: ['/settings/:tile'],

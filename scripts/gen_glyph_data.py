@@ -285,6 +285,7 @@ def resolve(match, colours) -> dict[str, str] | str | None:
 STYLE_ATTR = {
     "clipPath": "clip-path",
     "clipRule": "clip-rule",
+    "display": "display",
     "fill": "fill",
     "fillOpacity": "fill-opacity",
     "fillRule": "fill-rule",

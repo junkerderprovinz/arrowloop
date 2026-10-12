@@ -41,7 +41,7 @@ own lightness calculation entirely - the owner's second drawing beats anything
 computed from the first.
 
 **Dashboard Icons** (`homarr-labs/dashboard-icons`, <https://dashboardicons.com>)
-- `microsoft-onedrive.svg` and `oracle-cloud.svg`, the two nobody has supplied,
+- `microsoft-onedrive.svg`, `oracle-cloud.svg` and `premiumize.svg`, the three nobody has supplied,
 and the Unraid button's `unraid.txt`, its `unraid.svg` with the gradient left
 out, since the button draws it in one ink.
 **Apache-2.0**, whose licence text is beside this file as

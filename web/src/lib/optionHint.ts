@@ -5,7 +5,8 @@
 //  2. What this product needs in it, the sign-in style and the shape of its
 //     address, built from tokens in the provider table, which has no language.
 //  3. rclone's own help, only for a field this app has no name for, which is
-//     where somebody following rclone's documentation looks.
+//     where somebody following rclone's documentation looks. A field this app
+//     does name says rclone's name for it instead.
 
 import type { TranslationKey } from './i18n.data'
 import { hasOptionLabel } from './optionNames'
@@ -29,7 +30,7 @@ export type HintProvider = {
  * rclone's option names are the same across backends: `pass` covers webdav,
  * sftp, ftp and smb.
  */
-const SECRET_FIELDS = new Set(['pass', 'password', 'secret_access_key', 'key', 'api_key', 'token'])
+const SECRET_FIELDS = new Set(['pass', 'password', 'secret_access_key', 'key', 'api_key', 'token', 'access_token', 'private_key'])
 
 /**
  * This app's own sentence per field: what goes in, where to get it, and the
@@ -51,6 +52,20 @@ const GENERAL: Record<string, TranslationKey> = {
   vendor: 'opt.vendorHelp',
   key_file: 'opt.keyFileHelp',
   namenode: 'opt.namenodeHint',
+  remote: 'opt.remoteHint',
+  upstreams: 'opt.upstreamsHint',
+  level: 'opt.levelHint',
+  doi: 'opt.doiHint',
+  zone: 'opt.zoneHint',
+  api_url: 'opt.apiUrlHint',
+  satellite_address: 'opt.satelliteHint',
+  passphrase: 'opt.passphraseHint',
+  share_name: 'opt.shareNameHint',
+}
+
+/** Where one backend writes a field differently from the others. */
+const BY_BACKEND: Record<string, TranslationKey> = {
+  'combine.upstreams': 'opt.upstreamsCombineHint',
 }
 
 /**
@@ -62,7 +77,7 @@ function general(o: HintOption, provider: HintProvider | null | undefined, t: Tr
   if ((o.name === 'pass' || o.name === 'password') && provider?.backend === 'webdav') {
     return t('opt.passCloudHint')
   }
-  const key = GENERAL[o.name]
+  const key = BY_BACKEND[`${provider?.backend}.${o.name}`] ?? GENERAL[o.name]
   return key ? t(key) : undefined
 }
 
@@ -83,6 +98,17 @@ const PROVIDER_HINTS: Record<string, TranslationKey> = {
   seaweedfs: 'provider.selfHostedHint',
   ceph: 'provider.selfHostedHint',
   garage: 'provider.selfHostedHint',
+  doi: 'provider.doiHint',
+  tardigrade: 'provider.tardigradeHint',
+  alias: 'provider.aliasHint',
+  archive: 'provider.archiveHint',
+  cache: 'provider.cacheHint',
+  chunker: 'provider.chunkerHint',
+  combine: 'provider.combineHint',
+  compress: 'provider.compressHint',
+  hasher: 'provider.hasherHint',
+  union: 'provider.unionHint',
+  memory: 'provider.memoryHint',
 }
 
 export function providerHint(id: string, t: Translate): string | undefined {
@@ -98,6 +124,15 @@ const PROVIDER_NAMES: Record<string, TranslationKey> = {
   smb: 'provider.smb',
   s3: 'provider.s3',
   crypt: 'provider.crypt',
+  alias: 'provider.alias',
+  archive: 'provider.archive',
+  cache: 'provider.cache',
+  chunker: 'provider.chunker',
+  combine: 'provider.combine',
+  compress: 'provider.compress',
+  hasher: 'provider.hasher',
+  union: 'provider.union',
+  memory: 'provider.memory',
 }
 
 export function providerName(p: { id: string; name: string }, t: Translate): string {
@@ -149,9 +184,11 @@ export function optionHint(
     if (provider.authUrl) about.push(t('help.authWhere', { url: provider.authUrl }))
   }
 
-  if (own || about.length > 0) return [own, ...about].filter(Boolean).join(' ')
+  // A field with a name of our own still says what rclone calls it, which is
+  // what its documentation and a hand-written rclone.conf use.
+  const named = hasOptionLabel(o.name) ? t('help.rcloneName', { name: o.name }) : undefined
+  if (own || about.length > 0 || named) return [own, ...about, named].filter(Boolean).join(' ')
 
   // rclone's help, only for a field without a name of our own.
-  if (!o.help || hasOptionLabel(o.name)) return undefined
-  return o.help
+  return o.help || undefined
 }

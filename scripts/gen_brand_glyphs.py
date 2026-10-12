@@ -59,6 +59,7 @@ MARKS = [
     ("IconOpenstack", "openstack", "OpenStack Swift"),
     ("IconAkamai", "akamai", "Akamai NetStorage"),
     ("IconHadoop", "apachehadoop", "HDFS"),
+    ("IconDoi", "doi", "DOI datasets"),
 
     # S3-compatible presets. IDrive, Linode and SeaweedFS have no mark in this
     # set; theirs are under LOCAL.
@@ -505,6 +506,8 @@ LOCAL = [
      "homarr-labs/dashboard-icons, svg/microsoft-onedrive.svg", "Apache-2.0"),
     ("IconOracleCloud", "oracle-cloud", "Oracle Object Storage, part of Oracle Cloud",
      "homarr-labs/dashboard-icons, svg/oracle-cloud.svg", "Apache-2.0"),
+    ("IconPremiumize", "premiumize", "premiumize.me",
+     "homarr-labs/dashboard-icons, svg/premiumize.svg", "Apache-2.0"),
 ]
 
 # Attributes that mean nothing inside a component, or that the wrapper sets.

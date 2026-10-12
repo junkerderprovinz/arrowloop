@@ -3,10 +3,10 @@ import { useEffect, useMemo, useState } from "react";
 import { Linking, StyleSheet, View } from "react-native";
 import { api, type Backend, type Provider, type Remote } from "../api";
 import { Field } from "../fields";
-import { useT, type T } from "../i18n";
-import type { TranslationKey } from "../i18n";
+import { useT } from "../i18n";
 import type { Nav, MoreStack } from "../nav";
 import { optionHint, providerHint, providerName } from "../../../web/src/lib/optionHint";
+import { optionLabel } from "../../../web/src/lib/optionNames";
 import { suggestTargetName } from "../../../web/src/lib/targetName";
 import { space } from "../theme";
 import { Body, Button, Caption, Empty, Page, Section, Title } from "../ui";
@@ -175,7 +175,7 @@ export function TargetEdit() {
         {options.map((option) => (
           <Field
             key={option.name}
-            label={label(option.name, t)}
+            label={optionLabel(option.name, t)}
             hint={optionHint(option, t, provider)}
             secret={option.secret}
             value={values[option.name] ?? ""}
@@ -234,34 +234,6 @@ function prune(values: Record<string, string>): Record<string, string> {
     if (value.trim() !== "") out[key] = value;
   }
   return out;
-}
-
-/** Translates common rclone option names; others keep their own name. */
-function label(option: string, t: T): string {
-  const known: Record<string, TranslationKey> = {
-    user: "opt.user",
-    username: "opt.user",
-    pass: "opt.pass",
-    password: "opt.pass",
-    host: "opt.host",
-    url: "opt.url",
-    port: "opt.port",
-    token: "opt.token",
-    vendor: "opt.vendor",
-    provider: "opt.provider",
-    region: "opt.region",
-    endpoint: "opt.endpoint",
-    account: "opt.account",
-    key: "opt.key",
-    access_key_id: "opt.accessKey",
-    secret_access_key: "opt.secretKey",
-    client_id: "opt.clientId",
-    client_secret: "opt.clientSecret",
-    remote: "opt.remote",
-    library: "opt.library",
-  };
-  const key = known[option];
-  return key ? t(key) : option;
 }
 
 const styles = StyleSheet.create({

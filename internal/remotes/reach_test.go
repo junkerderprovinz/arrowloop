@@ -38,3 +38,15 @@ func TestProvidersAndTheTableAgreeOnHowMany(t *testing.T) {
 		t.Errorf("the table holds %d providers and the interface offers %d", want, got)
 	}
 }
+
+// A backend with no entry sits under its bare rclone name below the picker,
+// so one that arrives with an rclone update fails here until it is named.
+func TestEveryBackendHasAProviderEntry(t *testing.T) {
+	var bare []string
+	for _, b := range UnlistedBackends() {
+		bare = append(bare, b.Name)
+	}
+	if len(bare) > 0 {
+		t.Errorf("these backends have no entry in providers.go: %s", strings.Join(bare, ", "))
+	}
+}
