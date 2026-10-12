@@ -223,7 +223,7 @@ function Head({
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
+    <div data-new="job-page" className="flex flex-wrap items-center gap-x-4 gap-y-3">
       <span className="glim-row-glyph flex h-10 w-10 shrink-0 items-center justify-center rounded-control [&_svg]:h-5 [&_svg]:w-5">
         <DirectionGlyph direction={job.direction} />
       </span>

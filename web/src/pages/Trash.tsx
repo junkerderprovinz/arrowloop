@@ -125,7 +125,7 @@ export function Trash({
   return (
     <Stack>
       <div className="flex flex-col gap-6">
-        <ListBar>
+        <ListBar newId="list-bar">
           <FilterButton active={job !== ''}>
             <FilterChoice
               label={t('history.filterJob')}

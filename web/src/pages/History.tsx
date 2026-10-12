@@ -83,7 +83,7 @@ export function History({
 
   return (
     <div className="flex flex-col gap-6">
-      <ListBar>
+      <ListBar newId="list-bar">
         <FilterButton active={filtered}>
           <FilterChoice
             label={t('history.filterJob')}
