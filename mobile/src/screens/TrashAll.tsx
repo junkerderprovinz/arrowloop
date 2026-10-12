@@ -7,7 +7,7 @@ import { bytes } from "../space";
 import { space } from "../theme";
 import { useEngineStream } from "../useEngine";
 import { trashTotals } from "../../../web/src/lib/trashView";
-import { Body, Button, Caption, Card, Empty, Mono, Page, Press, Title, useTheme } from "../ui";
+import { Body, Button, Caption, Card, Empty, Mono, Page, PickRow, Title } from "../ui";
 
 /** Names one trashed file across every job and side. */
 function itemKey(bin: TrashSide, item: TrashItem): string {
@@ -20,7 +20,6 @@ function itemKey(bin: TrashSide, item: TrashItem): string {
  */
 export function TrashAll() {
   const { t } = useT();
-  const { p, corners, accent } = useTheme();
   const [bins, setBins] = useState<TrashSide[] | null>(null);
   // For the name of each side, which a bin only knows as left or right.
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -96,8 +95,10 @@ export function TrashAll() {
                   const key = itemKey(bin, item);
                   const on = chosen.has(key);
                   return (
-                    <Press
+                    <PickRow
                       key={key}
+                      on={on}
+                      label={item.path}
                       // A file somebody put there by hand has no run, and only
                       // emptying reaches it.
                       disabled={!item.runId}
@@ -109,19 +110,10 @@ export function TrashAll() {
                           return next;
                         })
                       }
-                      android_ripple={{ color: p.hover }}
-                      style={[
-                        styles.row,
-                        {
-                          backgroundColor: on ? p.surface2 : p.surface,
-                          borderColor: on ? accent : p.border,
-                          ...corners.control,
-                        },
-                      ]}
                     >
                       <Mono>{item.path}</Mono>
                       <Caption>{`${bytes(item.size)} · ${when(item.filed) ?? t("trash.unknownAge")}`}</Caption>
-                    </Press>
+                    </PickRow>
                   );
                 })}
                 {bin.entries.length > 200 ? (
@@ -206,11 +198,6 @@ function when(stamp: string | null): string | null {
 }
 
 const styles = StyleSheet.create({
-  row: {
-    borderWidth: StyleSheet.hairlineWidth,
-    padding: space.md,
-    gap: space.xs,
-  },
   actions: {
     flexDirection: "row",
     flexWrap: "wrap",

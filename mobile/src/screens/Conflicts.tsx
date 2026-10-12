@@ -8,7 +8,8 @@ import { bytes } from "../space";
 import { space } from "../theme";
 import { useEngineStream } from "../useEngine";
 import { conflictKey, decisionsByJob, newerSide } from "../../../web/src/lib/conflicts";
-import { Badge, Body, Button, Caption, Card, Empty, Mono, Page, Pair, Toggle } from "../ui";
+import { Badge, Body, Button, Caption, Card, Empty, Mono, Page, Pair, PickRow } from "../ui";
+import { useWaiting } from "../waiting";
 
 /** The same three answers, in the same order, as the web's conflicts tab. */
 const CHOICES: Keep[] = ["both", "left", "right"];
@@ -34,6 +35,7 @@ export function Conflicts() {
   const [chosen, setChosen] = useState<Set<string>>(new Set());
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const waiting = useWaiting();
 
   const load = useCallback(async () => {
     try {
@@ -67,6 +69,7 @@ export function Conflicts() {
       }
     }
     await load();
+    waiting.refresh();
     setBusy(false);
   };
 
@@ -89,8 +92,22 @@ export function Conflicts() {
         const sides = jobSides(jobs, c.job, t);
         return (
           <Card key={key}>
-            <Mono>{c.plain}</Mono>
-            <Caption>{`${c.job} · ${clock(c.at, lang)}`}</Caption>
+            {/* The file's row picks it for the answer at the foot. */}
+            <PickRow
+              on={chosen.has(key)}
+              label={`${t("conflicts.select")}: ${c.plain}`}
+              onPress={() =>
+                setChosen((old) => {
+                  const next = new Set(old);
+                  if (next.has(key)) next.delete(key);
+                  else next.add(key);
+                  return next;
+                })
+              }
+            >
+              <Mono>{c.plain}</Mono>
+              <Caption>{`${c.job} · ${clock(c.at, lang)}`}</Caption>
+            </PickRow>
             {(["left", "right"] as const).map((side) => (
               <View key={side} style={styles.version}>
                 <Pair
@@ -110,18 +127,6 @@ export function Conflicts() {
                 />
               ))}
             </View>
-            <Toggle
-              label={t("conflicts.select")}
-              value={chosen.has(key)}
-              onChange={(on) =>
-                setChosen((old) => {
-                  const next = new Set(old);
-                  if (on) next.add(key);
-                  else next.delete(key);
-                  return next;
-                })
-              }
-            />
           </Card>
         );
       })}

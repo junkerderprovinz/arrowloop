@@ -1064,6 +1064,55 @@ export function Swatch({
   );
 }
 
+/**
+ * The round mark a row is picked with, never a switch or a checkbox: grey at
+ * rest, filled and ticked once its row is chosen. A touch screen has no hover
+ * to bring it in, so it stays in view.
+ */
+export function SelectMark({ on }: { on: boolean }) {
+  const { p, corners, accent } = useTheme();
+  return (
+    <View style={[styles.mark, { ...corners.pill, backgroundColor: on ? accent : p.surface3 }]}>
+      {on ? <Glyph name="IconCheck" color={contrastOn(accent)} size={12} /> : null}
+    </View>
+  );
+}
+
+/**
+ * A row that is picked by tapping it, its mark at the start. A picked row is a
+ * deeper fill and nothing else, so no edge line marks it.
+ */
+export function PickRow({
+  on,
+  onPress,
+  label,
+  disabled,
+  children,
+}: {
+  on: boolean;
+  onPress: () => void;
+  /** What a screen reader says for the row. */
+  label?: string;
+  disabled?: boolean;
+  children: ReactNode;
+}) {
+  const { p, corners } = useTheme();
+  return (
+    <Press
+      onPress={onPress}
+      disabled={disabled}
+      accessibilityRole="checkbox"
+      accessibilityState={{ checked: on, disabled: !!disabled }}
+      accessibilityLabel={label}
+      android_ripple={{ color: p.hover }}
+      style={[styles.pickRow, { backgroundColor: on ? p.surface2 : p.surface, ...corners.control }]}
+    >
+      <SelectMark on={on} />
+      <View style={styles.pickBody}>{children}</View>
+    </Press>
+  );
+}
+
 /** A message in place of an empty or loading list, so it does not look broken. */
 export function Empty({ title, detail }: { title: string; detail?: string }) {
   return (
@@ -1284,6 +1333,9 @@ const styles = StyleSheet.create({
 
   dimmed: { opacity: 0.4 },
   held: { opacity: HELD },
+  mark: { width: 20, height: 20, alignItems: "center", justifyContent: "center" },
+  pickRow: { flexDirection: "row", alignItems: "center", gap: space.md, padding: space.md },
+  pickBody: { flex: 1, minWidth: 0, gap: space.xs },
   empty: { padding: space.xxl, gap: space.sm, alignItems: "center" },
 });
 

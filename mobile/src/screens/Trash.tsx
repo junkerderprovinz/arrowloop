@@ -5,7 +5,7 @@ import { api, type Bin } from "../api";
 import { useT } from "../i18n";
 import type { JobsStack } from "../nav";
 import { space } from "../theme";
-import { Badge, Button, Caption, Card, Empty, Mono, Page, Press, Title, useTheme } from "../ui";
+import { Badge, Button, Caption, Card, Empty, Mono, Page, PickRow, Title } from "../ui";
 import { bytes } from "../space";
 
 /**
@@ -15,7 +15,6 @@ import { bytes } from "../space";
 export function Trash() {
   const route = useRoute<RouteProp<JobsStack, "Trash">>();
   const { t } = useT();
-  const { p, corners, accent } = useTheme();
   const { name: job, side, place } = route.params;
 
   const [bin, setBin] = useState<Bin | null>(null);
@@ -68,22 +67,10 @@ export function Trash() {
         const id = `${item.runId}/${item.path}`;
         const on = chosen.has(id);
         return (
-          <Press
-            key={id}
-            onPress={() => toggle(id)}
-            android_ripple={{ color: p.hover }}
-            style={[
-              styles.row,
-              {
-                backgroundColor: on ? p.surface2 : p.surface,
-                borderColor: on ? accent : p.border,
-                ...corners.control,
-              },
-            ]}
-          >
+          <PickRow key={id} on={on} label={item.path} onPress={() => toggle(id)}>
             <Mono>{item.path}</Mono>
             <Caption>{when(item.filed) ?? t("trash.unknownAge")}</Caption>
-          </Press>
+          </PickRow>
         );
       })}
       {items.length > 200 ? <Caption>{t("trash.more", { total: held, shown: 200 })}</Caption> : null}
@@ -129,10 +116,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     gap: space.sm,
-  },
-  row: {
-    borderWidth: StyleSheet.hairlineWidth,
-    padding: space.md,
-    gap: space.xs,
   },
 });
