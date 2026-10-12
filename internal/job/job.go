@@ -132,6 +132,11 @@ func (r Retry) WaitFor(n int) time.Duration {
 // finding. The brakes that hold a job are settings of the job itself, since
 // what is implausible depends on the folder.
 type Anomalies struct {
+	// Off switches the notes off. The brakes keep holding, since they are the
+	// safety net's and have limits of their own; a held job is then answered
+	// on its own page.
+	Off bool `json:"off,omitempty"`
+
 	// FailingAfter is how many failed runs in a row make a note. Zero means
 	// never; nil means the default.
 	FailingAfter *int `json:"failingAfter,omitempty"`
@@ -154,8 +159,12 @@ const (
 	DefaultOverdueDays  = 2
 )
 
-// FailingCount is FailingAfter with the default applied.
+// FailingCount is FailingAfter with the default applied. Zero means the note
+// is off.
 func (a Anomalies) FailingCount() int {
+	if a.Off {
+		return 0
+	}
 	if a.FailingAfter == nil {
 		return DefaultFailingAfter
 	}
@@ -165,6 +174,9 @@ func (a Anomalies) FailingCount() int {
 // OverdueAfter is OverdueDays as a duration with the default applied. Zero
 // means the note is off.
 func (a Anomalies) OverdueAfter() time.Duration {
+	if a.Off {
+		return 0
+	}
 	days := DefaultOverdueDays
 	if a.OverdueDays != nil {
 		days = max(*a.OverdueDays, 0)
@@ -178,7 +190,7 @@ func (a Anomalies) Tells(held bool) bool {
 	if held {
 		return a.NotifyHeld == nil || *a.NotifyHeld
 	}
-	return a.NotifyNotes != nil && *a.NotifyNotes
+	return !a.Off && a.NotifyNotes != nil && *a.NotifyNotes
 }
 
 // KeepHistoryFor is HistoryKeep as a duration, with the default applied. The

@@ -191,10 +191,16 @@ func (r *Runner) overdue(ctx context.Context, now time.Time) {
 func (r *Runner) Findings(ctx context.Context) (open, closed []anomaly.Finding) {
 	r.overdue(ctx, time.Now())
 	cfg := r.config()
-	return r.anomalies.List(func(name string) bool {
+	open, closed = r.anomalies.List(func(name string) bool {
 		_, ok := cfg.Find(name)
 		return ok
 	})
+	if cfg.Anomalies.Off {
+		// What still holds a job has to stay answerable; the notes made before
+		// the switch wait unseen until it is on again.
+		return slices.DeleteFunc(open, func(f anomaly.Finding) bool { return !f.Held }), nil
+	}
+	return open, closed
 }
 
 // Finding returns the open finding with this id.

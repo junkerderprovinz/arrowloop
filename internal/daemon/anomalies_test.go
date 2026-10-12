@@ -335,3 +335,56 @@ func TestAFindingAnsweredBeforeTheWakeUpIsNotTold(t *testing.T) {
 		t.Errorf("the wake-up would hear of a job nobody holds any more: %+v", found)
 	}
 }
+
+func TestAnomaliesSwitchedOffMakeNoNotesWhileABrakeStillHolds(t *testing.T) {
+	r, left, right := syncedPair(t)
+	cfg := *r.config()
+	cfg.Anomalies.Off = true
+	r.Reload(&cfg)
+
+	hidden := right + "-away"
+	if err := os.Rename(right, hidden); err != nil {
+		t.Fatalf("rename: %v", err)
+	}
+	write(t, right, "in the way")
+	for i := range job.DefaultFailingAfter {
+		if _, err := r.Run(context.Background(), "test"); err == nil {
+			t.Fatalf("run %d succeeded against a side that is a file", i+1)
+		}
+	}
+	if open, _ := r.Findings(context.Background()); len(open) != 0 {
+		t.Fatalf("got %+v, want no note while anomalies are off", open)
+	}
+	if err := os.Remove(right); err != nil {
+		t.Fatalf("remove: %v", err)
+	}
+	if err := os.Rename(hidden, right); err != nil {
+		t.Fatalf("rename: %v", err)
+	}
+
+	emptyOut(t, left, 30)
+	f := held(t, r)
+	if f.Kind != anomaly.Delete {
+		t.Errorf("the brake held for %s, want delete", f.Kind)
+	}
+}
+
+func TestANoteMadeBeforeTheSwitchIsHiddenUntilItIsOnAgain(t *testing.T) {
+	r, _, _ := syncedPair(t)
+	cfg := *r.config()
+	cfg.Jobs = []job.Job{cfg.Jobs[0]}
+	cfg.Jobs[0].Schedule = "@hourly"
+	r.Reload(&cfg)
+	r.overdue(context.Background(), time.Now().Add(4*24*time.Hour))
+
+	off := cfg
+	off.Anomalies.Off = true
+	r.Reload(&off)
+	if open, closed := r.Findings(context.Background()); len(open) != 0 || len(closed) != 0 {
+		t.Fatalf("got %+v and %+v, want nothing listed while anomalies are off", open, closed)
+	}
+	r.Reload(&cfg)
+	if open, _ := r.anomalies.List(func(string) bool { return true }); len(open) != 1 || open[0].Kind != anomaly.Overdue {
+		t.Errorf("got %+v, want the overdue note back", open)
+	}
+}

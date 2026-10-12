@@ -277,3 +277,17 @@ func TestACommandSpelledInAnotherCaseIsStillRefused(t *testing.T) {
 		})
 	}
 }
+
+func TestAnomaliesSwitchedOffKeepOnlyTheHeldMessage(t *testing.T) {
+	on := true
+	a := Anomalies{Off: true, NotifyNotes: &on}
+	if a.FailingCount() != 0 || a.OverdueAfter() != 0 {
+		t.Errorf("failing after %d and overdue after %v, want both notes off", a.FailingCount(), a.OverdueAfter())
+	}
+	if a.Tells(false) {
+		t.Error("a note would still be sent")
+	}
+	if !a.Tells(true) {
+		t.Error("a held job would no longer be sent")
+	}
+}
