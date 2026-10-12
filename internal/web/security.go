@@ -156,14 +156,19 @@ func (s *Server) setPassword(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, err)
 		return
 	}
-	if !s.changePassword(w, before, func(st *security.State) {
+	g := s.gate()
+	g.mint.Lock()
+	changed := s.changePassword(w, before, func(st *security.State) {
 		st.PasswordHash = hash
 		st.Passkeys = nil
-	}) {
+	})
+	if changed {
+		g.forgetAll()
+	}
+	g.mint.Unlock()
+	if !changed {
 		return
 	}
-
-	s.gate().forgetAll()
 	if err := s.startSession(w, r); err != nil {
 		writeError(w, http.StatusInternalServerError, err)
 		return
@@ -195,15 +200,21 @@ func (s *Server) removePassword(w http.ResponseWriter, r *http.Request) {
 	if !s.checkCurrentPassword(w, r, body.Current) {
 		return
 	}
-	if !s.changePassword(w, before, func(st *security.State) {
+	g := s.gate()
+	g.mint.Lock()
+	changed := s.changePassword(w, before, func(st *security.State) {
 		st.PasswordHash = ""
 		st.TOTP = security.TOTP{}
 		st.Passkeys = nil
-	}) {
+	})
+	// A session signed in under a password that is gone means nothing.
+	if changed {
+		g.forgetAll()
+	}
+	g.mint.Unlock()
+	if !changed {
 		return
 	}
-	// A session signed in under a password that is gone means nothing.
-	s.gate().forgetAll()
 	clearSessionCookie(w, r)
 	writeJSON(w, http.StatusOK, s.securityView())
 }
@@ -213,6 +224,11 @@ func (s *Server) removePassword(w http.ResponseWriter, r *http.Request) {
 // against the server's copy, but the factor stays off until totpConfirm sees a
 // working code, and an enrolment abandoned halfway changes nothing.
 func (s *Server) totpSetup(w http.ResponseWriter, r *http.Request) {
+	release, ok := s.holdSignIn(w, r)
+	if !ok {
+		return
+	}
+	defer release()
 	if len(s.passwordHash()) == 0 {
 		writeError(w, http.StatusConflict, errors.New("set a password first, a second factor with no first one protects nothing"))
 		return
@@ -262,6 +278,11 @@ func (s *Server) totpConfirm(w http.ResponseWriter, r *http.Request) {
 	if !readBody(w, r, &body) {
 		return
 	}
+	release, ok := s.holdSignIn(w, r)
+	if !ok {
+		return
+	}
+	defer release()
 	pending := s.Security.Get().TOTP
 	if pending.Enabled {
 		writeError(w, http.StatusConflict, errors.New("two-factor authentication is already on"))

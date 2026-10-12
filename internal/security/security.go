@@ -228,9 +228,15 @@ func (s State) PasskeysFor(rpID string) []Passkey {
 	return out
 }
 
+// ErrPasswordMoved refuses a key whose registration checked a password that
+// has been changed or reset since.
+var ErrPasswordMoved = errors.New("the password was changed or reset during the registration; start it again")
+
 // AddPasskey stores a freshly registered key under the fingerprint of the
-// password in force, and returns it with its id filled in.
-func (s *Store) AddPasskey(p Passkey, under string) (Passkey, error) {
+// password in force, and returns it with its id filled in. epoch is the
+// epoch the registration checked the password under; the key is stored only
+// while it still holds.
+func (s *Store) AddPasskey(p Passkey, under string, epoch uint64) (Passkey, error) {
 	if len(p.CredentialID) == 0 || len(p.PublicKey) == 0 {
 		return Passkey{}, errors.New("a passkey needs a credential id and a public key")
 	}
@@ -240,6 +246,9 @@ func (s *Store) AddPasskey(p Passkey, under string) (Passkey, error) {
 	}
 	p.ID = id
 	err = s.Update(func(st *State) error {
+		if st.Epoch != epoch {
+			return ErrPasswordMoved
+		}
 		for _, have := range st.Passkeys {
 			if string(have.CredentialID) == string(p.CredentialID) {
 				return ErrPasskeyExists
