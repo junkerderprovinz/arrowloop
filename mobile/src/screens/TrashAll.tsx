@@ -7,7 +7,7 @@ import { bytes } from "../space";
 import { space } from "../theme";
 import { useEngineStream } from "../useEngine";
 import { trashTotals } from "../../../web/src/lib/trashView";
-import { Body, Button, Caption, Card, Empty, Mono, Page, PickRow, Title } from "../ui";
+import { Body, Button, Caption, Card, Empty, Fab, Floating, Mono, Page, PickRow, Title } from "../ui";
 
 /** Names one trashed file across every job and side. */
 function itemKey(bin: TrashSide, item: TrashItem): string {
@@ -17,6 +17,7 @@ function itemKey(bin: TrashSide, item: TrashItem): string {
 /**
  * Every job's trash on both sides. Rows are tapped to choose them, as on a
  * job's own trash screen; putting back is one tap, removing for good asks.
+ * Emptying all of it is the screen's floating button, as on the web's page.
  */
 export function TrashAll() {
   const { t } = useT();
@@ -73,121 +74,121 @@ export function TrashAll() {
   if (totals.entries === 0 && bins.every((b) => !b.error)) return <Empty title={t("trash.nothing")} />;
 
   return (
-    <Page>
-      <Card>
-        <Title>{t("nav.trash")}</Title>
-        <Caption>{t("trash.holding", { count: totals.entries, size: bytes(totals.bytes) })}</Caption>
-      </Card>
+    <Floating>
+      <Page fab>
+        <Card>
+          <Title>{t("nav.trash")}</Title>
+          <Caption>{t("trash.holding", { count: totals.entries, size: bytes(totals.bytes) })}</Caption>
+        </Card>
 
-      {bins
-        .filter((b) => b.total > 0 || b.error)
-        .map((bin) => {
-          const place = jobSides(jobs, bin.job, t)[bin.side === "left" ? 0 : 1];
-          return (
-          <Card key={`${bin.job}/${bin.side}`}>
-            <Title>{`${bin.job} · ${place}`}</Title>
-            {bin.error ? (
-              <Caption>{t("trash.unread", { error: bin.error })}</Caption>
-            ) : (
-              <>
-                <Caption>{t("trash.holding", { count: bin.total, size: bytes(bin.bytes) })}</Caption>
-                {bin.entries.slice(0, 200).map((item) => {
-                  const key = itemKey(bin, item);
-                  const on = chosen.has(key);
-                  return (
-                    <PickRow
-                      key={key}
-                      on={on}
-                      label={item.path}
-                      // A file somebody put there by hand has no run, and only
-                      // emptying reaches it.
-                      disabled={!item.runId}
+        {bins
+          .filter((b) => b.total > 0 || b.error)
+          .map((bin) => {
+            const place = jobSides(jobs, bin.job, t)[bin.side === "left" ? 0 : 1];
+            return (
+            <Card key={`${bin.job}/${bin.side}`}>
+              <Title>{`${bin.job} · ${place}`}</Title>
+              {bin.error ? (
+                <Caption>{t("trash.unread", { error: bin.error })}</Caption>
+              ) : (
+                <>
+                  <Caption>{t("trash.holding", { count: bin.total, size: bytes(bin.bytes) })}</Caption>
+                  {bin.entries.slice(0, 200).map((item) => {
+                    const key = itemKey(bin, item);
+                    const on = chosen.has(key);
+                    return (
+                      <PickRow
+                        key={key}
+                        on={on}
+                        label={item.path}
+                        // A file somebody put there by hand has no run, and only
+                        // emptying reaches it.
+                        disabled={!item.runId}
+                        onPress={() =>
+                          setChosen((old) => {
+                            const next = new Set(old);
+                            if (next.has(key)) next.delete(key);
+                            else next.add(key);
+                            return next;
+                          })
+                        }
+                      >
+                        <Mono>{item.path}</Mono>
+                        <Caption>{`${bytes(item.size)} · ${when(item.filed) ?? t("trash.unknownAge")}`}</Caption>
+                      </PickRow>
+                    );
+                  })}
+                  {bin.entries.length > 200 ? (
+                    <Caption>{t("trash.more", { total: bin.total, shown: 200 })}</Caption>
+                  ) : null}
+                  <View style={styles.actions}>
+                    <Button
+                      label={t("trash.emptySide")}
+                      labelKey="trash.emptySide"
+                      disabled={busy}
                       onPress={() =>
-                        setChosen((old) => {
-                          const next = new Set(old);
-                          if (next.has(key)) next.delete(key);
-                          else next.add(key);
-                          return next;
-                        })
+                        ask(
+                          t("trash.emptyAll"),
+                          t("trash.emptySideConfirm", {
+                            job: bin.job,
+                            side: place,
+                            count: bin.total,
+                            size: bytes(bin.bytes),
+                          }),
+                          t("trash.emptyAll"),
+                          () => void run([() => api.emptyTrash(bin.job, bin.side, bin.mark)]),
+                        )
                       }
-                    >
-                      <Mono>{item.path}</Mono>
-                      <Caption>{`${bytes(item.size)} · ${when(item.filed) ?? t("trash.unknownAge")}`}</Caption>
-                    </PickRow>
-                  );
-                })}
-                {bin.entries.length > 200 ? (
-                  <Caption>{t("trash.more", { total: bin.total, shown: 200 })}</Caption>
-                ) : null}
-                <View style={styles.actions}>
-                  <Button
-                    label={t("trash.emptySide")}
-                    labelKey="trash.emptySide"
-                    disabled={busy}
-                    onPress={() =>
-                      ask(
-                        t("trash.emptyAll"),
-                        t("trash.emptySideConfirm", {
-                          job: bin.job,
-                          side: place,
-                          count: bin.total,
-                          size: bytes(bin.bytes),
-                        }),
-                        t("trash.emptyAll"),
-                        () => void run([() => api.emptyTrash(bin.job, bin.side, bin.mark)]),
-                      )
-                    }
-                  />
-                </View>
-              </>
-            )}
-          </Card>
-          );
-        })}
+                    />
+                  </View>
+                </>
+              )}
+            </Card>
+            );
+          })}
 
-      {error ? <Body>{error}</Body> : null}
+        {error ? <Body>{error}</Body> : null}
 
-      <View style={styles.actions}>
-        <Button
-          label={t("trash.delete")}
-          labelKey="trash.delete"
-          disabled={busy || picked.length === 0}
+        <View style={styles.actions}>
+          <Button
+            label={t("trash.delete")}
+            labelKey="trash.delete"
+            disabled={busy || picked.length === 0}
+            onPress={() =>
+              ask(
+                t("trash.delete"),
+                picked.length === 1 && picked[0]
+                  ? t("trash.deleteConfirm", { path: picked[0].item.path })
+                  : t("trash.deleteManyConfirm", { count: picked.length }),
+                t("confirm.delete"),
+                () => void run(picked.map(({ bin, item }) => () => api.deleteTrash(bin.job, bin.side, item.path, item.runId))),
+              )
+            }
+          />
+          <Button
+            label={t("trash.restore")}
+            labelKey="trash.restore"
+            busy={busy}
+            disabled={picked.length === 0}
+            onPress={() => void run(picked.map(({ bin, item }) => () => api.restoreTrash(bin.job, bin.side, item.path, item.runId)))}
+          />
+        </View>
+      </Page>
+      {totals.entries > 0 && !busy ? (
+        <Fab
+          label={t("trash.emptyAll")}
+          labelKey="trash.emptyAll"
           onPress={() =>
             ask(
-              t("trash.delete"),
-              picked.length === 1 && picked[0]
-                ? t("trash.deleteConfirm", { path: picked[0].item.path })
-                : t("trash.deleteManyConfirm", { count: picked.length }),
-              t("confirm.delete"),
-              () => void run(picked.map(({ bin, item }) => () => api.deleteTrash(bin.job, bin.side, item.path, item.runId))),
+              t("trash.emptyAll"),
+              t("trash.emptyAllConfirm", { count: totals.entries, size: bytes(totals.bytes) }),
+              t("trash.emptyAll"),
+              () => void run(readable.filter((b) => b.total > 0).map((b) => () => api.emptyTrash(b.job, b.side, b.mark))),
             )
           }
         />
-        <Button
-          label={t("trash.restore")}
-          labelKey="trash.restore"
-          tone="accent"
-          busy={busy}
-          disabled={picked.length === 0}
-          onPress={() => void run(picked.map(({ bin, item }) => () => api.restoreTrash(bin.job, bin.side, item.path, item.runId)))}
-        />
-      </View>
-
-      <Button
-        label={t("trash.emptyAll")}
-        labelKey="trash.emptyAll"
-        wide
-        disabled={busy || totals.entries === 0}
-        onPress={() =>
-          ask(
-            t("trash.emptyAll"),
-            t("trash.emptyAllConfirm", { count: totals.entries, size: bytes(totals.bytes) }),
-            t("trash.emptyAll"),
-            () => void run(readable.filter((b) => b.total > 0).map((b) => () => api.emptyTrash(b.job, b.side, b.mark))),
-          )
-        }
-      />
-    </Page>
+      ) : null}
+    </Floating>
   );
 }
 

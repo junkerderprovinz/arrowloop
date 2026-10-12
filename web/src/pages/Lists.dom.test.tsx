@@ -83,15 +83,21 @@ describe('the trash', () => {
     expect(screen.getByText('song.mp3')).toBeTruthy()
   })
 
+  it('makes emptying the trash the filled button in the corner', () => {
+    wrap(<Trash sides={[side, music]} job="" onJob={() => undefined} onChanged={() => undefined} />)
+    const empty = screen.getByRole('button', { name: 'Empty the trash' })
+    expect(empty.closest('[data-testid="page-actions"]')).toBeTruthy()
+    expect(empty.className.split(' ')).toContain('bg-accent')
+  })
+
   it('keeps every way to empty the trash shut while a search hides part of it', async () => {
     wrap(<Trash sides={[side, music]} job="" onJob={() => undefined} onChanged={() => undefined} />)
     fireEvent.click(screen.getByRole('button', { name: 'Search' }))
     fireEvent.change(screen.getByRole('searchbox', { name: 'Search' }), { target: { value: 'song' } })
+    expect((screen.getByRole('button', { name: 'Empty the trash' }) as HTMLButtonElement).disabled).toBe(true)
     fireEvent.click(screen.getByRole('button', { name: 'More' }))
     const menu = await screen.findByRole('menu')
-    for (const name of ['Empty out the old ones', 'Empty the trash']) {
-      expect((within(menu).getByRole('menuitem', { name }) as HTMLButtonElement).disabled).toBe(true)
-    }
+    expect((within(menu).getByRole('menuitem', { name: 'Empty out the old ones' }) as HTMLButtonElement).disabled).toBe(true)
     for (const empty of screen.getAllByRole('button', { name: 'Empty this side' })) {
       expect((empty as HTMLButtonElement).disabled).toBe(true)
     }

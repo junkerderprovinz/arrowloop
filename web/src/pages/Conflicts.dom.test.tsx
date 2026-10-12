@@ -36,7 +36,6 @@ function page() {
 }
 
 const row = (name: string) => screen.getByText(name).closest('li') as HTMLElement
-const picked = () => screen.getAllByRole('checkbox', { name: 'Choose this conflict' }).filter((m) => m.getAttribute('aria-checked') === 'true')
 
 afterEach(() => {
   cleanup()
@@ -57,25 +56,22 @@ describe('the conflicts list', () => {
     expect(screen.getByText('song.mp3')).toBeTruthy()
   })
 
-  it('picks with round marks, never a checkbox input or a switch', () => {
+  it('carries no selection marks, only the answers of each row', () => {
     page()
-    expect(document.querySelector('input[type="checkbox"]')).toBeNull()
-    expect(screen.queryAllByRole('switch')).toHaveLength(0)
-    expect(screen.getAllByRole('checkbox', { name: 'Choose this conflict' })).toHaveLength(4)
+    expect(screen.queryAllByRole('checkbox')).toHaveLength(0)
+    expect(within(row('a.txt')).getAllByRole('button').map((b) => b.textContent?.trim())).toEqual(['Keep both', 'Keep left', 'Keep right'])
   })
 
-  it('adds a row on Ctrl+click and a range on Shift+click, as a file manager does', () => {
+  it('gives every conflict shown one answer from the corner, once asked', async () => {
     page()
-    fireEvent.click(row('a.txt'), { ctrlKey: true })
-    fireEvent.click(row('c.txt'), { shiftKey: true })
-    expect(picked()).toHaveLength(3)
-    expect(screen.getByText('Chosen: 3')).toBeTruthy()
-  })
-
-  it('picks everything on Ctrl+A', () => {
-    page()
-    fireEvent.keyDown(document, { key: 'a', ctrlKey: true })
-    expect(picked()).toHaveLength(4)
+    fireEvent.click(screen.getByRole('button', { name: 'More' }))
+    fireEvent.click(within(await screen.findByRole('menu')).getByRole('menuitem', { name: 'Keep left for all' }))
+    const ask = await screen.findByRole('dialog', { name: 'Keep left for all' })
+    expect(ask.textContent).toContain('Conflicts: 4')
+    expect(decide).not.toHaveBeenCalled()
+    fireEvent.click(within(ask).getByRole('button', { name: 'Keep left for all' }))
+    await waitFor(() => expect(decide).toHaveBeenCalled())
+    expect(decide.mock.calls[0][1]).toHaveLength(4)
   })
 
   it('opens one conflict with its two versions on a plain click', async () => {
@@ -85,16 +81,11 @@ describe('the conflicts list', () => {
     expect(within(window).getByRole('button', { name: 'Keep both' })).toBeTruthy()
   })
 
-  it('answers the picked rows from the menu a right-click opens', async () => {
+  it('answers one row from the menu a right-click opens', async () => {
     page()
-    fireEvent.click(row('a.txt'), { ctrlKey: true })
-    fireEvent.click(row('b.txt'), { ctrlKey: true })
-    fireEvent.contextMenu(row('a.txt'))
+    fireEvent.contextMenu(row('b.txt'))
     fireEvent.click(within(await screen.findByRole('menu')).getByRole('menuitem', { name: 'Keep left' }))
     await waitFor(() => expect(decide).toHaveBeenCalled())
-    expect(decide.mock.calls[0][1]).toEqual([
-      { copy: 'a.txt.conflict', keep: 'left' },
-      { copy: 'b.txt.conflict', keep: 'left' },
-    ])
+    expect(decide.mock.calls[0][1]).toEqual([{ copy: 'b.txt.conflict', keep: 'left' }])
   })
 })

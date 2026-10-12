@@ -3,25 +3,24 @@ import { useMemo, useState, type MouseEvent } from 'react'
 import { Empty, Rows, Stack } from '../components/Shell'
 import { Dialog } from '../components/Dialog'
 import { FilterButton, FilterChoice, ListBar, SearchFold, SortButton } from '../components/ListBar'
-import { ContextMenu, type MenuItem } from '../components/Menu'
-import { SelectionMark } from '../components/SelectionMark'
+import { ContextMenu, Menu, type MenuItem } from '../components/Menu'
+import { PageActions } from '../components/PageActions'
 import { Since } from '../components/Since'
 import { Card } from '../lib/glimstone/Card'
 import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
-import { InfoBubble } from '../lib/glimstone/InfoBubble'
+import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
 import { ApiError, api, type ConflictListing, type OpenConflict, type Resolution } from '../lib/api'
 import { conflictKey, decisionsByJob, newerSide } from '../lib/conflicts'
 import { useT, type TranslationKey } from '../lib/i18n'
-import { useRowSelection } from '../lib/rowSelection'
 import { useToast } from '../lib/toast'
 import { Version } from './Preview'
 
 /** The three answers in the order they stand everywhere: holding back first, then the two that pick. */
-const CHOICES: { keep: Resolution; key: TranslationKey }[] = [
-  { keep: 'both', key: 'conflict.keepBoth' },
-  { keep: 'left', key: 'conflict.keepLeft' },
-  { keep: 'right', key: 'conflict.keepRight' },
+const CHOICES: { keep: Resolution; key: TranslationKey; all: TranslationKey }[] = [
+  { keep: 'both', key: 'conflict.keepBoth', all: 'conflicts.allBoth' },
+  { keep: 'left', key: 'conflict.keepLeft', all: 'conflicts.allLeft' },
+  { keep: 'right', key: 'conflict.keepRight', all: 'conflicts.allRight' },
 ]
 
 type Order = 'oldest' | 'newest' | 'job'
@@ -34,10 +33,11 @@ const ORDERS: { value: Order; label: TranslationKey }[] = [
 
 /**
  * Every conflict a run kept both versions of that nobody has decided, across
- * all jobs. Rows are picked as in a file manager, a plain click opens one
- * conflict with its two versions, and a choice runs the job's decision at
+ * all jobs. Each row carries the three answers, a click elsewhere on it opens
+ * the conflict with its two versions, and a choice runs the job's decision at
  * once; the version that loses goes to the trash, so a wrong click is undone
- * from there.
+ * from there. One answer for every conflict shown waits in the corner and asks
+ * first, naming how many it decides.
  */
 export function Conflicts({
   listing,
@@ -61,6 +61,7 @@ export function Conflicts({
   const [busy, setBusy] = useState<Set<string>>(new Set())
   const [opened, setOpened] = useState<string | null>(null)
   const [menu, setMenu] = useState<{ x: number; y: number; rows: OpenConflict[] } | null>(null)
+  const [asking, setAsking] = useState<(typeof CHOICES)[number] | null>(null)
 
   const all = listing?.conflicts ?? []
   const jobs = useMemo(() => [...new Set([...all.map((c) => c.job), ...(job ? [job] : [])])].sort((a, b) => a.localeCompare(b)), [all, job])
@@ -73,8 +74,6 @@ export function Conflicts({
     if (order === 'job') return [...kept].sort((a, b) => a.job.localeCompare(b.job) || a.plain.localeCompare(b.plain))
     return kept
   }, [all, job, needle, order])
-  const pick = useRowSelection(shown.map(conflictKey))
-  const chosen = shown.filter((c) => pick.picked.has(conflictKey(c)))
   const open = opened ? all.find((c) => conflictKey(c) === opened) : undefined
 
   async function decide(rows: OpenConflict[], keep: Resolution) {
@@ -97,10 +96,6 @@ export function Conflicts({
   const answers = (rows: OpenConflict[]): MenuItem[] =>
     CHOICES.map(({ keep, key }) => ({ label: t(key), labelKey: key, disabled: busy.size > 0, onSelect: () => void decide(rows, keep) }))
 
-  function onRowClick(e: MouseEvent, c: OpenConflict) {
-    if (!pick.click(e, conflictKey(c))) setOpened(conflictKey(c))
-  }
-
   return (
     <Stack>
       <div className="flex flex-col gap-6">
@@ -118,53 +113,25 @@ export function Conflicts({
         </ListBar>
 
         <Card title={job || t('history.allJobs')} hueIndex={0} hint={t('conflicts.hint')}>
-          {shown.length > 0 && (
-            // The answers for everything picked; the same three stand on each
-            // row for one conflict at a time.
-            <div className="glim-selecting flex min-h-9 flex-wrap items-center gap-3 ps-2">
-              <SelectionMark checked={pick.allPicked} onPick={() => pick.setAll(!pick.allPicked)} label={t('conflicts.selectAll')} />
-              <span className="glim-num text-meta text-carbon-textMuted">
-                {pick.selecting ? t('conflicts.chosen', { count: chosen.length }) : t('conflicts.count', { count: shown.length })}
-              </span>
-              {pick.selecting && (
-                <div className="ms-auto flex flex-wrap items-center justify-end gap-2">
-                  {CHOICES.map(({ keep, key }) => (
-                    <Button
-                      key={keep}
-                      label={t(key)}
-                      labelKey={key}
-                      disabled={busy.size > 0}
-                      onClick={() => void decide(chosen, keep)}
-                    />
-                  ))}
-                  <InfoBubble tip={t('conflicts.chooseHint')} />
-                </div>
-              )}
-            </div>
-          )}
-
           {listing === null ? (
             <Empty>{t('history.working')}</Empty>
           ) : shown.length === 0 ? (
             <Empty>{job || query ? t('conflicts.noneInJob') : t('conflicts.none')}</Empty>
           ) : (
-            <Rows className={`-mx-2 flex flex-col ${pick.selecting ? 'glim-selecting' : ''}`}>
+            <Rows className="-mx-2 flex flex-col">
               {shown.map((c) => {
                 const key = conflictKey(c)
-                const picked = pick.picked.has(key)
                 return (
                   <Row
                     key={key}
                     conflict={c}
                     withJob={!job}
-                    picked={picked}
                     busy={busy.has(key)}
                     idle={busy.size === 0}
-                    onClick={(e) => onRowClick(e, c)}
-                    onPick={(range) => pick.mark(key, range)}
+                    onClick={() => setOpened(key)}
                     onMenu={(e) => {
                       e.preventDefault()
-                      setMenu({ x: e.clientX, y: e.clientY, rows: picked ? chosen : [c] })
+                      setMenu({ x: e.clientX, y: e.clientY, rows: [c] })
                     }}
                     onDecide={(keep) => void decide([c], keep)}
                   />
@@ -184,6 +151,37 @@ export function Conflicts({
       {menu && (
         <ContextMenu label={t('nav.conflicts')} items={answers(menu.rows)} at={menu} onClose={() => setMenu(null)} />
       )}
+
+      {asking && (
+        <ConfirmDialog
+          title={t(asking.all)}
+          message={t('conflicts.allConfirm', { count: shown.length }) + ' ' + t('conflicts.chooseHint')}
+          confirmLabel={t(asking.all)}
+          confirmLabelKey={asking.all}
+          cancelLabel={t('confirm.cancel')}
+          onCancel={() => setAsking(null)}
+          onConfirm={() => {
+            void decide(shown, asking.keep)
+            setAsking(null)
+          }}
+        />
+      )}
+
+      {/* The answers for every conflict the list shows, filter and search
+          included; the same three stand on each row for one at a time. */}
+      <PageActions>
+        <Menu
+          label={t('list.more')}
+          labelKey="list.more"
+          size="key"
+          items={CHOICES.map((choice) => ({
+            label: t(choice.all),
+            labelKey: choice.all,
+            disabled: busy.size > 0 || shown.length === 0,
+            onSelect: () => setAsking(choice),
+          }))}
+        />
+      </PageActions>
 
       {open && (
         <Dialog title={open.plain} onClose={() => setOpened(null)} wide>
@@ -217,23 +215,19 @@ export function Conflicts({
 function Row({
   conflict: c,
   withJob,
-  picked,
   busy,
   idle,
   onClick,
-  onPick,
   onMenu,
   onDecide,
 }: {
   conflict: OpenConflict
   /** Whether to name the job, which a list narrowed to one job does not need. */
   withJob: boolean
-  picked: boolean
   busy: boolean
   /** False while any decision is under way, so two cannot race for one job. */
   idle: boolean
-  onClick: (e: MouseEvent) => void
-  onPick: (range: boolean) => void
+  onClick: () => void
   onMenu: (e: MouseEvent) => void
   onDecide: (keep: Resolution) => void
 }) {
@@ -241,16 +235,10 @@ function Row({
   const newer = newerSide(c)
   return (
     <li
-      data-picked={picked || undefined}
       onClick={onClick}
       onContextMenu={onMenu}
-      // Shift+click would otherwise mark the text between the two rows.
-      onMouseDown={(e) => {
-        if (e.shiftKey) e.preventDefault()
-      }}
       className="glim-row flex min-h-12 cursor-pointer items-center gap-3 rounded-control px-2 py-1.5 hover:bg-carbon-hover"
     >
-      <SelectionMark checked={picked} onPick={onPick} label={t('conflicts.select')} />
       <span className="min-w-0 flex-1 truncate font-mono text-subline text-carbon-text" title={c.plain}>
         {c.plain}
       </span>

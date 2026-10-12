@@ -5,7 +5,7 @@ import { Field, NumberField } from '../components/Field'
 import { IconAction } from '../components/IconAction'
 import { FilterButton, FilterChoice, ListBar, SearchFold } from '../components/ListBar'
 import { Menu } from '../components/Menu'
-import { PageActions } from '../components/PageActions'
+import { PageAction, PageActions } from '../components/PageActions'
 import { Since } from '../components/Since'
 import { IconTrash } from '../components/glyphs'
 import { Card } from '../lib/glimstone/Card'
@@ -27,10 +27,10 @@ type Pending =
 /**
  * Every job's trash on both sides, in one card. Restoring is a click, since it
  * only moves a file back; removing anything for good asks first, because the
- * trash is the last copy there is. The two ways to empty it act on what the
- * job filter shows and wait in the More menu of the page's corner. A search
- * narrows the list but not what emptying removes, so emptying waits until the
- * search is cleared.
+ * trash is the last copy there is. Emptying it is the corner's filled
+ * action, with emptying out only the old entries in the More menu beside it;
+ * both act on what the job filter shows. A search narrows the list but not
+ * what emptying removes, so emptying waits until the search is cleared.
  */
 export function Trash({
   sides,
@@ -206,13 +206,15 @@ export function Trash({
               disabled: busy || !!needle || totals.entries === 0,
               onSelect: () => setPending({ kind: 'prune', sides: full }),
             },
-            {
-              label: t('trash.emptyAll'),
-              labelKey: 'trash.emptyAll',
-              disabled: busy || !!needle || totals.entries === 0,
-              onSelect: () => setPending({ kind: 'all', sides: full }),
-            },
           ]}
+        />
+        <PageAction
+          primary
+          label={t('trash.emptyAll')}
+          labelKey="trash.emptyAll"
+          glyph={<IconTrash />}
+          disabled={busy || !!needle || totals.entries === 0}
+          onClick={() => setPending({ kind: 'all', sides: full })}
         />
       </PageActions>
     </Stack>

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
 import { api, EngineError, type Job, type Keep, type OpenConflict } from "../api";
 import { useT, type T } from "../i18n";
 import { clock } from "../clock";
@@ -8,7 +8,7 @@ import { bytes } from "../space";
 import { space } from "../theme";
 import { useEngineStream } from "../useEngine";
 import { conflictKey, decisionsByJob, newerSide } from "../../../web/src/lib/conflicts";
-import { Badge, Body, Button, Caption, Card, Empty, Mono, Page, Pair, PickRow } from "../ui";
+import { Badge, Body, Button, Caption, Card, Empty, Mono, Page, Pair } from "../ui";
 import { useWaiting } from "../waiting";
 
 /** The same three answers, in the same order, as the web's conflicts tab. */
@@ -25,14 +25,13 @@ function keepLabel(keep: Keep, [left, right]: [string, string], t: T): string {
 
 /**
  * Every open conflict across the jobs, each with both versions and the three
- * answers, and the same answers for all the chosen ones at the foot.
+ * answers, and the same answers for all of them at the foot, which ask first.
  */
 export function Conflicts() {
   const { t, lang } = useT();
   const [list, setList] = useState<OpenConflict[] | null>(null);
   const [jobs, setJobs] = useState<Job[]>([]);
   const [unread, setUnread] = useState<{ job: string; error: string }[]>([]);
-  const [chosen, setChosen] = useState<Set<string>>(new Set());
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const waiting = useWaiting();
@@ -43,8 +42,6 @@ export function Conflicts() {
       setJobs(known);
       setList(got.conflicts);
       setUnread(got.unread);
-      const live = new Set(got.conflicts.map(conflictKey));
-      setChosen((old) => new Set([...old].filter((k) => live.has(k))));
     } catch (e) {
       setError((e as Error).message);
     }
@@ -75,11 +72,9 @@ export function Conflicts() {
 
   if (!list) return <Empty title={t("history.working")} detail={error || undefined} />;
 
-  const picked = list.filter((c) => chosen.has(conflictKey(c)));
-
-  // The answer for all the chosen ones can only name a side they share. Jobs
-  // with different sides leave "keep both", and the rest is decided per card.
-  const pairs = (picked.length > 0 ? picked : list).map((c) => jobSides(jobs, c.job, t));
+  // The answer for all of them can only name a side they share. Jobs with
+  // different sides leave "keep both", and the rest is decided per card.
+  const pairs = list.map((c) => jobSides(jobs, c.job, t));
   const shared = pairs.every(([l, r]) => l === pairs[0]?.[0] && r === pairs[0]?.[1]) ? pairs[0] : undefined;
 
   return (
@@ -92,22 +87,8 @@ export function Conflicts() {
         const sides = jobSides(jobs, c.job, t);
         return (
           <Card key={key}>
-            {/* The file's row picks it for the answer at the foot. */}
-            <PickRow
-              on={chosen.has(key)}
-              label={`${t("conflicts.select")}: ${c.plain}`}
-              onPress={() =>
-                setChosen((old) => {
-                  const next = new Set(old);
-                  if (next.has(key)) next.delete(key);
-                  else next.add(key);
-                  return next;
-                })
-              }
-            >
-              <Mono>{c.plain}</Mono>
-              <Caption>{`${c.job} · ${clock(c.at, lang)}`}</Caption>
-            </PickRow>
+            <Mono>{c.plain}</Mono>
+            <Caption>{`${c.job} · ${clock(c.at, lang)}`}</Caption>
             {(["left", "right"] as const).map((side) => (
               <View key={side} style={styles.version}>
                 <Pair
@@ -138,17 +119,24 @@ export function Conflicts() {
 
       {list.length > 0 ? (
         <Card>
-          <Caption>{t("conflicts.chosen", { count: picked.length })}</Caption>
+          <Caption>{t("conflicts.allConfirm", { count: list.length })}</Caption>
           <View style={styles.choices}>
-            {CHOICES.filter((keep) => keep === "both" || shared).map((keep) => (
-              <Button
-                key={keep}
-                label={shared ? keepLabel(keep, shared, t) : t("conflict.keepBoth")}
-                busy={busy}
-                disabled={picked.length === 0}
-                onPress={() => void decide(picked, keep)}
-              />
-            ))}
+            {CHOICES.filter((keep) => keep === "both" || shared).map((keep) => {
+              const label = shared ? keepLabel(keep, shared, t) : t("conflict.keepBoth");
+              return (
+                <Button
+                  key={keep}
+                  label={label}
+                  busy={busy}
+                  onPress={() =>
+                    Alert.alert(label, `${t("conflicts.allConfirm", { count: list.length })} ${t("conflicts.chooseHint")}`, [
+                      { text: t("confirm.cancel"), style: "cancel" },
+                      { text: label, onPress: () => void decide(list, keep) },
+                    ])
+                  }
+                />
+              );
+            })}
           </View>
         </Card>
       ) : null}
