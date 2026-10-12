@@ -173,7 +173,6 @@ export function PasskeyCard({
           <Button
             label={t('passkey.add')}
             labelKey="passkey.add"
-            tone="accent"
             disabled={busy}
             onClick={() => {
               setError(null)
@@ -209,7 +208,6 @@ export function PasskeyCard({
             <Button
               label={t('passkey.create')}
               labelKey="passkey.create"
-              tone="accent"
               type="submit"
               busy={busy}
               disabled={busy}

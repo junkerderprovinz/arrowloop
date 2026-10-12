@@ -243,7 +243,6 @@ export function Activity() {
         <Button
           label={paused ? t('tray.resume') : t('tray.pause')}
           labelKey={paused ? 'tray.resume' : 'tray.pause'}
-          tone="accent"
           hueIndex={1}
           className="w-full"
           onClick={() => void desk.setPaused(!paused).then(setPaused).catch(() => {})}
@@ -251,7 +250,6 @@ export function Activity() {
         <Button
           label={t('tray.syncNow')}
           labelKey="tray.syncNow"
-          tone="accent"
           hueIndex={2}
           className="w-full"
           disabled={ready.length === 0}

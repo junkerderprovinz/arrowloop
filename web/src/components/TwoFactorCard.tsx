@@ -136,7 +136,6 @@ export function TwoFactorCard({
           <Button
             label={t('twoFactor.add')}
             labelKey="twoFactor.add"
-            tone="accent"
             busy={busy}
             disabled={busy}
             onClick={() => void begin()}
@@ -181,7 +180,6 @@ export function TwoFactorCard({
             <Button
               label={t('twoFactor.confirm')}
               labelKey="twoFactor.confirm"
-              tone="accent"
               type="submit"
               busy={busy}
               disabled={busy || code.trim() === ''}
@@ -212,7 +210,6 @@ export function TwoFactorCard({
             <Button
               label={t('twoFactor.recoverySaved')}
               labelKey="twoFactor.recoverySaved"
-              tone="accent"
               onClick={() => setStep({ kind: 'idle' })}
             />
           </div>
@@ -254,7 +251,6 @@ export function TwoFactorCard({
                 <Button
                   label={t('twoFactor.remove')}
                   labelKey="twoFactor.remove"
-                  tone="accent"
                   type="submit"
                   busy={busy}
                   disabled={busy || code.trim() === ''}

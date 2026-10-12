@@ -147,7 +147,6 @@ export function PasswordCard({
             <Button
               label={set ? t('password.saveChange') : t('password.saveFirst')}
               labelKey={set ? 'password.saveChange' : 'password.saveFirst'}
-              tone="accent"
               type="submit"
               busy={busy}
               disabled={busy || next === '' || repeat === ''}

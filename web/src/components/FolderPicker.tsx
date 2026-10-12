@@ -233,7 +233,6 @@ export function FolderPicker({
                 label={t('pick.create')}
                 labelKey="pick.create"
                 glyph={<IconCheck />}
-                tone="accent"
                 disabled={naming.trim() === '' || busy}
                 onClick={() => void create()}
               />
