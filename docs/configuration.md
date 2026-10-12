@@ -295,21 +295,24 @@ wake-up, spending a night's battery on a remote that is still down.
 ## Anomalies
 
 ```json
-"anomalies": { "off": false, "failingAfter": 3, "overdueDays": 2, "notifyNotes": false }
+"anomalies": { "off": false, "failingAfter": 3, "overdueDays": 2, "unusual": true, "notifyNotes": false }
 ```
 
 A run a brake refuses holds its job until somebody answers it; see
 [A refused run holds the job](safety.md#a-refused-run-holds-the-job). The brakes
 themselves are set per job, with `brakePercent`, `changePercent` and
 `brakeFloor`, because what is implausible depends on the folder: a download
-folder is emptied on purpose, a photo archive is not.
+folder is emptied on purpose, a photo archive is not. In the interface a job's
+own brakes are set on the job's page, in its **Brakes** card.
 
-`anomalies` sets the two notes that hold nothing. `failingAfter` is how many
+`anomalies` sets the notes that hold nothing. `failingAfter` is how many
 failed runs in a row make one, and `overdueDays` how many days late a scheduled
 run may be. The days count from the scheduled run that was missed, not from the
 last run, so a job that runs once a week is overdue only when its weekly run is
-that many days late. `0` switches either off, and `"off": true` switches both
-off together with the Anomalies page. The brakes keep holding then, since they
+that many days late. `0` switches either off. `unusual` says whether a run far
+outside what its job usually does makes a note, which it does unless set to
+`false`; see [Unusual runs](safety.md#unusual-runs). `"off": true` switches
+all three off together with the Anomalies page. The brakes keep holding then, since they
 are set on their own; a held job is answered from its own status. `notifyHeld` and `notifyNotes`
 say whether a held job and a note are sent where runs report to; a held job is
 by default and a note is not. The desktop app also shows them as a notification
@@ -398,10 +401,11 @@ same value unless its `-keep-history` flag gives another.
 | `retry.attempts` | `3` | How many further tries a failed scheduled run gets before the job waits for its next scheduled time. `0` means none; see [After a failure](#after-a-failure). |
 | `retry.wait` | `5m` | How long to wait before the first further try. Each try after that waits twice as long, up to six hours. |
 | `anomalies.failingAfter` | `3` | How many failed runs in a row make a note. `0` means never; see [Anomalies](#anomalies). |
-| `anomalies.off` | `false` | Switch the two notes and the Anomalies page off. The brakes keep holding. |
+| `anomalies.off` | `false` | Switch the notes and the Anomalies page off. The brakes keep holding. |
+| `anomalies.unusual` | `true` | Note a run far outside what its job usually does; see [Unusual runs](safety.md#unusual-runs). |
 | `anomalies.overdueDays` | `2` | How many days late a scheduled run may be, counted from the run that was missed, before it makes a note. `0` means never. |
 | `anomalies.notifyHeld` | `true` | Report a job a brake holds where runs report to. |
-| `anomalies.notifyNotes` | `false` | Report the two notes there as well. |
+| `anomalies.notifyNotes` | `false` | Report the notes there as well. |
 | `defaults` | none | Values for every job that does not set its own; see [below](#defaults-and-the-settings-tabs). |
 | `excludeSets` | none | Named lists of exclude patterns; see [Shared exclude lists](#shared-exclude-lists). |
 

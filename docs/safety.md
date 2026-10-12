@@ -56,7 +56,8 @@ fails if either one is removed.
 ## A refused run holds the job
 
 A brake does not fail the run. It holds the job and lists it under Anomalies,
-with the figures and the files it counted. Every later run of that job, on its
+as a card with the figures, the files it counted and the two answers below.
+With the anomaly notes switched off the same card stands on the job's page. Every later run of that job, on its
 schedule or by hand, stops at the same place until one of three things happens:
 
 **Run anyway** lets the change run now. The permission covers the change as it
@@ -86,6 +87,39 @@ until its cause has gone and come back.
 A held job is reported where runs report to. The notes are not, unless
 `anomalies.notifyNotes` is switched on; see
 [Configuration](configuration.md#anomalies).
+
+## Unusual runs
+
+A brake knows only shares of a job's files. A job that usually deletes nothing
+and one day deletes 400 of its 10,000 files stays far below the mass-delete
+brake, and still did something it never does. So ArrowLoop learns what each
+job's runs usually do and makes a note when one does far more.
+
+It learns from the job's last fifty successful runs, older ones do not count,
+and judges a run only once ten are there to learn from. Until then the job is
+learning and nothing is noted; the rings on the Anomalies page show how far
+each job has got. Three figures are learned: the files a run deleted, the files
+it copied, and how long it took.
+
+A figure is unusual when it lies more than six median absolute deviations above
+the median of the learned runs, and also past a floor: twenty deleted files,
+fifty copied files, or five minutes longer than the median run. Median and
+deviation are used rather than the mean and the standard deviation because a
+single odd run among the learned ones would otherwise move them, and the floor
+keeps a quiet job, whose usual figure is nought, from calling a handful of
+files news. A job that grows slowly moves its own median along and is not
+flagged.
+
+The note says what stood out and what is usual, such as *Files deleted: 412,
+usually 0 to 6*; the usual range runs from the tenth to the ninetieth
+percentile of the learned runs. It never holds the job, since the run has
+already happened; only the brakes stop a run. The next run inside the usual
+range closes the note by itself, and it can be acknowledged like the others.
+A job's page shows its usual ranges once it is learned.
+
+**Report unusual runs** on the **Safety net** tab switches the note off, and
+switching the anomaly notes off switches it off with them. Nothing is stored
+for it: the figures come from the run history.
 
 ## Half-written files
 

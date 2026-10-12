@@ -58,11 +58,12 @@ and **Stop all**.
 
 ## Filter, sort and search
 
-History, Conflicts and Trash have buttons above their card. **Filter** narrows
-the list to one job, and on History also to a kind of entry and a span of days;
-the card's heading names the choice. **Search** finds an entry by its path, and
-Conflicts can **Sort** as well. The Jobs page has none of them, since every job
-stands on it as a card.
+History has buttons above its card. **Filter** narrows the log to one job, a
+kind of entry and a span of days, and the card's heading names the choice.
+**Search** finds an entry by its path. Conflicts, Trash and Anomalies have none
+of them: with a handful of jobs a card per job says enough. A link from a job's
+page narrows them to that job, shown as a chip at the top, and the cross on the
+chip shows every job again.
 
 ## A job's page
 
@@ -72,7 +73,10 @@ job's trash, Remove) and **Run now**.
 
 Under it, one card for each thing to see or do: **Runs**, where a click opens a
 run's details; **Files touched**, with its own search; **Preview**; **Check
-this job**; and **Find duplicates**.
+this job**; **Find duplicates**; **Brakes**, where **Own brakes for this job**
+gives the job values of its own instead of the global ones; and, once the job's
+runs are learned, **What a run usually does**, with how many files a run
+usually deletes and copies and how long it takes.
 
 ## The preview
 
@@ -175,14 +179,29 @@ copying is its **Mode**: **Copy only**, **Mirror** or **Move**, explained in
 
 ## Conflicts
 
-A run that kept both versions of a file lists it under **Conflicts**, across all
-jobs that write both ways. Every row carries **Keep both**, **Keep left** and
-**Keep right**, and right-click opens the same three. A click elsewhere on a row
-shows both versions with their size and time.
+A run that kept both versions of a file lists it under **Conflicts**, in a card
+per job, across all jobs that write both ways. Each conflict says, without
+opening anything:
 
-**More** at the bottom right answers every conflict the list shows at once:
-**Keep both for all**, **Keep left for all** and **Keep right for all**. It
-asks first and says how many conflicts the answer covers.
+- which file it is, with its full path;
+- what went wrong, in one sentence: both sides changed the file since the last
+  sync, or it turned up on both sides with different content before they were
+  ever synced;
+- what each side's version is: its size, when it was last changed, spelled out
+  with the weekday, which of the two is newer, and the name it sits under now.
+  Until somebody chooses, the newer version keeps the plain name on both sides
+  and the older one sits beside it as `name.conflict-left-20261012-223200.txt`
+  or `name.conflict-right-...`, after the side it came from and the run that
+  set it aside.
+
+Under that stand the three answers: **Keep both files** leaves both where they
+are, **Keep the left version, trash the right** and **Keep the right version,
+trash the left**. On the phone the sides go by what they are, so the answers
+read **Keep the version on this phone, trash the other** or name the target.
+
+From two conflicts up, **More** at the bottom right answers every conflict on
+the page at once: **Keep both for all**, **Keep left for all** and **Keep right
+for all**. It asks first and says how many conflicts the answer covers.
 
 A choice made there is carried out by a fresh run of that job rather than by
 rewriting what the first run did, so it cannot overlap another run and lands in
@@ -191,18 +210,19 @@ the job has `noTrash`, so a wrong click can be undone from there.
 
 ## Trash
 
-**Trash** shows every job's trash on both sides, puts files back, and deletes
-them for good: one file, one side, everything older than a number of days, or
-all of it. **Empty the trash** is the filled button at the bottom right, and
-**Empty out the old ones** waits under **More** beside it, with the number of
-days asked in the window that confirms it. Putting a file back is one
+**Trash** shows every job's trash in a card per job, both sides in it, puts
+files back, and deletes them for good: one file, one side, everything older
+than a number of days, or all of it. **Empty the trash** is the filled button at
+the bottom right, and **Delete entries older than…** stands beside it, with the
+number of days asked in the window that confirms it; everything newer stays. Putting a file back is one
 click, since it only moves the file. Removing anything for good asks first,
 because the trash is the last copy there is, and emptying a side or all of it
 says how many files and how big before it does.
 
 ## History
 
-**History** has two views, **Files** and **Runs**. A run says how many files it
+**History** has two views, **Files** and **Runs**. A line keeps all of its
+words: a long kind of entry or a long path wraps instead of being cut. A run says how many files it
 copied and how many were in conflict; a click opens it with the files, and for
 a conflict what was decided. The decision is the part worth having: a scheduled
 run resolves a conflict by keeping both versions, because it has nobody to ask,
@@ -221,29 +241,42 @@ closes its gaps turns "nothing happened" into "nothing to show".
 ## Anomalies
 
 **Anomalies** lists what the engine found about a job: a run a safety brake
-refused, a job that keeps failing, a schedule that is not kept. Tiles at the top
-count the findings by severity, and a click on one shows only that severity.
+refused, a job that keeps failing, a schedule that is not kept, and a run far
+outside what the job usually does. Tiles at the top count the findings by
+severity, and a click on one shows only that severity. **Open or closed**
+switches to what was closed in the last thirty days, with how it ended.
 
-A click on a finding opens it in a window with the whole sentence, the figures
-and the files the brake counted. A held job offers **Run anyway** and **Take
-back**; what each does is in
-[A refused run holds the job](safety.md#a-refused-run-holds-the-job). A note
-offers **Acknowledge** and **Run now**. **Monitoring** gives a job brakes of
-its own. **Open or closed** under Filter switches to what was closed in the
-last thirty days, with how it ended.
+Every finding is a card of its own, laid out as BombVault lays out its
+findings, and nothing opens over the page. The card shows how bad it is, the
+job, what happened in a whole sentence, the figures, since when it has been
+seen, and for a brake the files it counted, the first ten by name and the rest
+as a number. Its answers stand on the card: a held job offers **Run anyway**
+and **Take back**, which ask first and are explained in
+[A refused run holds the job](safety.md#a-refused-run-holds-the-job); a note
+offers **Acknowledge** and **Run now**; an unusual run offers **Acknowledge**.
+**Open job** leads to the job's page, which is also where a job gets brakes of
+its own.
+
+Below the findings, **Learning progress** shows a ring of ten parts for every
+job, one part for each successful run its habits were learned from. A full
+green ring means learned; see [Unusual runs](safety.md#unusual-runs). A click
+on a ring opens the job.
 
 The **Anomalies** card on the **Safety net** tab sets after how many failed
 runs in a row a job counts as failing, when a scheduled job counts as overdue,
 and whether a held job or a note is reported. **Overdue after** counts the days
 from the scheduled run that was missed, not from the last run: a job that runs
 once a week is overdue only when its weekly run is that many days late.
+**Report unusual runs** switches the note about a run far outside its job's
+usual range on or off.
 
 The **Anomalies** switch on the same card turns the notes off. The page leaves
 the sidebar and the phone's More sheet, no note about a failing or overdue job
 is made or sent, and the notes made before stay out of sight until the switch
 is on again. The brakes keep holding, since they belong to the safety net and
 have limits of their own: a held job still shows **Held**, and a click on it
-opens the finding with **Run anyway** and **Take back** over the job itself.
+leads to the job's page, where the finding stands as a card with **Run anyway**
+and **Take back**.
 
 ## Settings
 
@@ -309,8 +342,12 @@ The Android app shows the same places. Its bar holds **Jobs**, **Conflicts**,
 **History**, **Settings** and **More**, which opens Anomalies, Trash and
 Targets; Anomalies goes from there while its notes are switched off. Every job
 card shows the same single status as on the web. **Empty the trash** is the
-floating button on the Trash screen, and the Conflicts screen answers all its
-conflicts at once from the card at its foot, after asking.
+floating button on the Trash screen. The Conflicts screen shows every conflict
+as on the web, and from two conflicts up answers all of them at once from the
+card at its foot, after asking. The Anomalies screen shows every finding as a
+card with its answers, and the learning rings below them. A job's own brakes
+and what its runs usually do are on the job's screen. A More menu that would
+hold a single action is that action's button instead.
 
 Settings on the phone is one column of cards: Language, This phone (file
 access, notifications, background activity, lock), Appearance, Motion, Sync
