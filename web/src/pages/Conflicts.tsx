@@ -99,23 +99,25 @@ export function Conflicts({
         </Card>
       ) : (
         groups.map((g, i) => (
-          <Card key={g.name} title={g.name} hueIndex={i} hint={t('conflicts.hint')}>
-            <ul className="flex flex-col gap-2.5">
-              {g.conflicts.map((c) => {
-                const key = conflictKey(c)
-                return (
-                  <ConflictCard
-                    key={key}
-                    conflict={c}
-                    job={g.job}
-                    busy={busy.has(key)}
-                    idle={busy.size === 0}
-                    onDecide={(keep) => void decide([c], keep)}
-                  />
-                )
-              })}
-            </ul>
-          </Card>
+          <div key={g.name} data-new={i === 0 ? 'conflict-cards' : undefined}>
+            <Card title={g.name} hueIndex={i} hint={t('conflicts.hint')}>
+              <ul className="flex flex-col gap-2.5">
+                {g.conflicts.map((c) => {
+                  const key = conflictKey(c)
+                  return (
+                    <ConflictCard
+                      key={key}
+                      conflict={c}
+                      job={g.job}
+                      busy={busy.has(key)}
+                      idle={busy.size === 0}
+                      onDecide={(keep) => void decide([c], keep)}
+                    />
+                  )
+                })}
+              </ul>
+            </Card>
+          </div>
         ))
       )}
 

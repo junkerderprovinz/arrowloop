@@ -7,16 +7,20 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import type { Finding, FindingListing } from '../lib/anomalies'
 import type { Run, TrashSide } from '../lib/api'
+import type { JobLearning } from '../lib/anomalies'
 import { ToastProvider } from '../lib/toast'
 
 const pruneTrash = vi.fn((_job: string, _side: string, days: number, _mark: string) => Promise.resolve({ entries: days }))
 const history = vi.fn(() => Promise.resolve([] as Run[]))
+
+const learning = vi.fn(() => Promise.resolve([] as JobLearning[]))
 
 vi.mock('../lib/api', () => ({
   api: {
     pruneTrash: (job: string, side: string, days: number, mark: string) => pruneTrash(job, side, days, mark),
     config: () => Promise.resolve({ jobs: [] }),
     settings: () => Promise.resolve({}),
+    learning: () => learning(),
     history: () => history(),
     log: () => Promise.resolve([]),
     historyStats: () => Promise.reject(new Error('none')),
@@ -154,6 +158,33 @@ describe('the anomalies', () => {
   it('lists no jobs that have nothing open', () => {
     page()
     expect(screen.queryByText('Nothing open')).toBeNull()
+  })
+})
+
+describe('what the engine learned', () => {
+  it('words an unusual run by its figures and offers no run again', () => {
+    const odd: Finding = {
+      id: 'u', job: 'docs', kind: 'unusual', severity: 'warning', held: false, since: '2027-03-01T03:00:00Z', seen: '', open: true,
+      figures: [{ figure: 'deleted', value: 412, low: 0, high: 6 }],
+    }
+    wrap(<Anomalies listing={{ open: [odd], closed: [] }} job="" refused={{}} onJob={() => undefined} onChanged={() => undefined} />)
+    const card = document.getElementById('finding-u') as HTMLElement
+    expect(within(card).getByText('Files deleted: 412, usually 0 to 6.')).toBeTruthy()
+    expect(within(card).getAllByRole('button').map((b) => b.textContent?.trim())).toEqual(['Acknowledge', 'Open job'])
+  })
+
+  it('draws a ring per job that says how far it has learned', async () => {
+    learning.mockImplementation(() =>
+      Promise.resolve([
+        { job: 'docs', runs: 4 },
+        { job: 'photos', runs: 50, usual: [] },
+      ]),
+    )
+    wrap(<Anomalies listing={{ open: [], closed: [] }} job="" refused={{}} onJob={() => undefined} onChanged={() => undefined} />)
+    expect(await screen.findByRole('button', { name: 'docs · Runs learned from: 4 of 10' })).toBeTruthy()
+    const photos = screen.getByRole('button', { name: 'photos · Learned' })
+    expect(photos.querySelectorAll('circle.stroke-statusOkSolid')).toHaveLength(10)
+    learning.mockImplementation(() => Promise.resolve([]))
   })
 })
 

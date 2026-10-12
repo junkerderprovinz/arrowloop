@@ -3,7 +3,7 @@
 
 import type { TranslationKey } from './i18n.data'
 
-export type AnomalyKind = 'delete' | 'change' | 'empty' | 'failing' | 'overdue'
+export type AnomalyKind = 'delete' | 'change' | 'empty' | 'failing' | 'overdue' | 'unusual'
 export type Severity = 'critical' | 'warning' | 'info'
 export type Outcome = 'ran' | 'takenBack' | 'acknowledged' | 'resolved'
 
@@ -26,6 +26,8 @@ export type Finding = {
   /** The side that lists nothing. */
   side?: 'left' | 'right'
   paths?: string[]
+  /** What an unusual run did that its job usually does not. */
+  figures?: Measure[]
   /** The engine's own English words: the refusal, or the last failure. */
   detail?: string
   open: boolean
@@ -38,6 +40,37 @@ export type FindingListing = { open: Finding[]; closed: Finding[] }
 type Translate = (key: TranslationKey, vars?: Record<string, string | number>) => string
 
 export const SEVERITIES: Severity[] = ['critical', 'warning', 'info']
+
+/** One thing measured about a run; a duration is in seconds. */
+export type Figure = 'deleted' | 'copied' | 'duration'
+
+/** A figure of one run that left its usual range. */
+export type Measure = { figure: Figure; value: number; low: number; high: number }
+
+/** How far the engine has learned one job's runs, with the usual ranges once it has. */
+export type JobLearning = { job: string; runs: number; usual?: { figure: Figure; low: number; high: number }[] }
+
+/** How many successful runs a job needs before its runs are judged; see internal/anomaly. */
+export const LEARN_AFTER = 10
+
+/** A figure's value as a reader takes it: a count of files as it is, a time in seconds, minutes or hours. */
+export function amount(figure: Figure, n: number, t: Translate): string {
+  if (figure !== 'duration') return String(n)
+  if (n < 120) return t('anomaly.unit.seconds', { count: n })
+  if (n < 2 * 3600) return t('anomaly.unit.minutes', { count: Math.round(n / 60) })
+  return t('anomaly.unit.hours', { count: Math.round(n / 360) / 10 })
+}
+
+/** An unusual run's figures, one sentence each. */
+function unusual(f: Finding, t: Translate): string[] {
+  return (f.figures ?? []).map((m) =>
+    t(`anomaly.say.unusual.${m.figure}`, {
+      value: amount(m.figure, m.value, t),
+      low: amount(m.figure, m.low, t),
+      high: amount(m.figure, m.high, t),
+    }),
+  )
+}
 
 /** One job's open findings, loudest first, with the loudest of them named. */
 export type FindingGroup = { job: string; worst: Severity; findings: Finding[] }
@@ -89,6 +122,8 @@ export function shortLine(f: Finding, t: Translate, places: [string, string]): s
       return places[f.side === 'right' ? 1 : 0]
     case 'failing':
       return t('anomaly.short.failing', { count: f.count ?? 0 })
+    case 'unusual':
+      return unusual(f, t)[0] ?? ''
     default:
       return t('anomaly.short.overdue', { count: f.count ?? 0 })
   }
@@ -113,6 +148,8 @@ export function sentence(f: Finding, t: Translate, places: [string, string]): st
       return t('anomaly.say.empty', { place: name(f.side ?? 'left'), known: f.known ?? 0 })
     case 'failing':
       return t('anomaly.say.failing', { count: f.count ?? 0 })
+    case 'unusual':
+      return unusual(f, t).join(' ')
     default:
       return t('anomaly.say.overdue', { count: f.count ?? 0 })
   }

@@ -92,6 +92,12 @@ export function SafetyPage() {
                   <span className="text-body text-carbon-textSub">{t('anomaly.daysLate')}</span>
                 </span>
               </SettingsRow>
+              <ToggleRow
+                label={t('anomaly.unusual')}
+                hint={t('anomaly.unusualHint')}
+                checked={anomalies.unusual ?? true}
+                onChange={(v) => setAnomalies({ unusual: v })}
+              />
             </>
           )}
           <ToggleRow

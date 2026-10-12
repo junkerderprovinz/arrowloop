@@ -1,18 +1,21 @@
 // The Anomalies page: tiles that count the findings by severity and pick
-// which the list shows, and every finding as a card of its own with its
-// figures and its answers. The layout is BombVault's, so a finding reads the
-// same in both apps.
+// which the list shows, every finding as a card of its own with its figures
+// and its answers, and below them how far each job's runs are learned. The
+// layout is BombVault's, so a finding reads the same in both apps.
 import { useEffect, useRef, useState, type CSSProperties } from 'react'
 
 import { FindingCard } from '../components/FindingCard'
 import { IconAnomalies } from '../components/glyphs'
 import { JobChip } from '../components/JobChip'
+import { LearningRings } from '../components/LearningRings'
 import { Selector } from '../components/Selector'
 import { Empty, Stack } from '../components/Shell'
 import { Card } from '../lib/glimstone/Card'
-import { SEVERITIES, countBySeverity, type FindingListing, type Severity } from '../lib/anomalies'
+import { SEVERITIES, countBySeverity, type FindingListing, type JobLearning, type Severity } from '../lib/anomalies'
+import { api } from '../lib/api'
 import { hueVars } from '../lib/appearance'
 import { useT, type TranslationKey } from '../lib/i18n'
+import { useOpenJob } from '../lib/openJob'
 import { useToast } from '../lib/toast'
 
 const TILE_LABEL: Record<Severity, TranslationKey> = {
@@ -47,6 +50,8 @@ export function Anomalies({
   const push = useToast()
   const [tile, setTile] = useState<Tile>('all')
   const [closedView, setClosedView] = useState(false)
+  const [learning, setLearning] = useState<JobLearning[] | null>(null)
+  const openJob = useOpenJob()
   // The jobs whose refused change was let run, with the refusals counted then.
   const allowed = useRef(new Map<string, number>())
 
@@ -59,6 +64,14 @@ export function Anomalies({
       push(t('anomaly.heldAgain', { job: name }), 'fail')
     }
   }, [refused, push, t])
+
+  // Asked again whenever the findings change, which is when a run has finished.
+  useEffect(() => {
+    api
+      .learning()
+      .then(setLearning)
+      .catch(() => setLearning(null))
+  }, [listing])
 
   const open = listing?.open ?? []
   const closed = listing?.closed ?? []
@@ -99,25 +112,35 @@ export function Anomalies({
         </div>
       </div>
 
-      <Card title={closedView ? t('anomaly.closed') : tile === 'all' ? t('anomalies.all') : t(TILE_LABEL[tile])} hueIndex={0}>
-        {listing === null ? (
-          <Empty>{t('history.working')}</Empty>
-        ) : shown.length === 0 ? (
-          <Empty>{closedView ? t('anomaly.noneClosed') : pool.length === 0 ? t('anomaly.none') : t('anomaly.noneShown')}</Empty>
-        ) : (
-          <ul className="flex flex-col gap-2.5">
-            {shown.map((f, i) => (
-              <FindingCard
-                key={f.id}
-                finding={f}
-                lead={i === 0 && !closedView}
-                onChanged={onChanged}
-                onAllowed={(name) => allowed.current.set(name, refused[name] ?? 0)}
-              />
-            ))}
-          </ul>
-        )}
-      </Card>
+      <div data-new="finding-cards">
+        <Card title={closedView ? t('anomaly.closed') : tile === 'all' ? t('anomalies.all') : t(TILE_LABEL[tile])} hueIndex={0}>
+          {listing === null ? (
+            <Empty>{t('history.working')}</Empty>
+          ) : shown.length === 0 ? (
+            <Empty>{closedView ? t('anomaly.noneClosed') : pool.length === 0 ? t('anomaly.none') : t('anomaly.noneShown')}</Empty>
+          ) : (
+            <ul className="flex flex-col gap-2.5">
+              {shown.map((f, i) => (
+                <FindingCard
+                  key={f.id}
+                  finding={f}
+                  lead={i === 0 && !closedView}
+                  onChanged={onChanged}
+                  onAllowed={(name) => allowed.current.set(name, refused[name] ?? 0)}
+                />
+              ))}
+            </ul>
+          )}
+        </Card>
+      </div>
+
+      {!closedView && tile === 'all' && learning && learning.length > 0 && (
+        <div data-new="learning">
+          <Card title={t('anomaly.learn.title')} hint={t('anomaly.learn.hint')} hueIndex={1}>
+            <LearningRings learning={learning.filter((l) => !job || l.job === job)} onOpen={openJob} />
+          </Card>
+        </div>
+      )}
     </Stack>
   )
 }

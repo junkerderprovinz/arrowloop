@@ -6,6 +6,7 @@ import type { Finding } from '../lib/anomalies'
 import type { Job, RawJob, Run } from '../lib/api'
 import { GoTo } from '../lib/goTo'
 import { LiveJobs } from '../lib/live'
+import type { JobLearning } from '../lib/anomalies'
 import { ToastProvider } from '../lib/toast'
 
 const pair = (): RawJob[] => [
@@ -16,11 +17,14 @@ const config = vi.fn(() => Promise.resolve({ jobs: pair() }))
 const saveConfig = vi.fn((jobs: RawJob[]) => Promise.resolve({ jobs }))
 const forgetJobState = vi.fn((_name: string) => Promise.resolve({}))
 
+const learning = vi.fn(() => Promise.resolve([] as JobLearning[]))
+
 vi.mock('../lib/api', () => ({
   api: {
     config: () => config(),
     saveConfig: (jobs: RawJob[]) => saveConfig(jobs),
     settings: () => Promise.resolve({}),
+    learning: () => learning(),
     volumes: () => Promise.resolve({ volumes: [] }),
     remotes: () => Promise.resolve({ remotes: [], backends: [] }),
     history: () => Promise.resolve([] as Run[]),
@@ -152,5 +156,33 @@ describe('a job page', () => {
     const filled = screen.getAllByRole('button').filter((b) => b.className.split(' ').includes('bg-accent'))
     expect(filled.map((b) => b.textContent?.trim())).toEqual(['Run now'])
     followSettings({})
+  })
+
+  it('says what a run usually does once the job is learned', async () => {
+    learning.mockImplementation(() =>
+      Promise.resolve([
+        {
+          job: 'photos',
+          runs: 12,
+          usual: [
+            { figure: 'deleted', low: 0, high: 6 },
+            { figure: 'duration', low: 45, high: 150 },
+          ],
+        },
+      ] as JobLearning[]),
+    )
+    page()
+    expect(await screen.findByText('Files deleted per run: 0 to 6')).toBeTruthy()
+    expect(screen.getByText('Time per run: 45 s to 3 min')).toBeTruthy()
+    learning.mockImplementation(() => Promise.resolve([]))
+  })
+
+  it('shows no usual ranges while the job is still learning', async () => {
+    learning.mockImplementation(() => Promise.resolve([{ job: 'photos', runs: 3 }]))
+    page()
+    await screen.findByRole('heading', { level: 1, name: 'photos' })
+    await waitFor(() => expect(learning).toHaveBeenCalled())
+    expect(screen.queryByText('What a run usually does')).toBeNull()
+    learning.mockImplementation(() => Promise.resolve([]))
   })
 })

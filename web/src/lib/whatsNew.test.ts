@@ -29,7 +29,7 @@ describe('the way to a change', () => {
   it('matches a named segment against any one segment', () => {
     expect(matchRoute('/settings/:tab', '/settings/look')).toBe(true)
     expect(matchRoute('/settings/:tab', '/settings')).toBe(false)
-    expect(isAt(RELEASES[0].changes.find((c) => c.id === 'list-bar')!, '/trash')).toBe(true)
+    expect(isAt(RELEASES[0].changes.find((c) => c.id === 'list-bar')!, '/history')).toBe(true)
   })
 })
 

@@ -69,41 +69,43 @@ export function BrakesCard({
   }
 
   return (
-    <Card title={t('job.brakes')} hint={t('job.brakesHint')} hueIndex={hueIndex}>
-      {!own && (
-        <p className="text-subline text-carbon-textSub">
-          {t('anomaly.follows', { delete: global.brakePercent, change: global.changePercent, floor: global.brakeFloor })}
-        </p>
-      )}
-      <ToggleRow
-        label={t('anomaly.ownBrakes')}
-        hint={t('anomaly.ownBrakesHint')}
-        checked={own !== null}
-        disabled={config.jobs === null || config.busy}
-        onChange={(on) => write(on ? { brakePercent: global.brakePercent, changePercent: global.changePercent } : null)}
-      />
-      {own && (
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Field label={t('engine.brakePercent')} hint={t('engine.brakePercentHint')}>
-            <NumberField
-              value={own.brakePercent}
-              min={0}
-              max={100}
-              label={t('engine.brakePercent')}
-              onChange={(v) => type({ brakePercent: v })}
-            />
-          </Field>
-          <Field label={t('engine.changePercent')} hint={t('engine.changePercentHint')}>
-            <NumberField
-              value={own.changePercent}
-              min={0}
-              max={100}
-              label={t('engine.changePercent')}
-              onChange={(v) => type({ changePercent: v })}
-            />
-          </Field>
-        </div>
-      )}
-    </Card>
+    <div data-new="job-brakes">
+      <Card title={t('job.brakes')} hint={t('job.brakesHint')} hueIndex={hueIndex}>
+        {!own && (
+          <p className="text-subline text-carbon-textSub">
+            {t('anomaly.follows', { delete: global.brakePercent, change: global.changePercent, floor: global.brakeFloor })}
+          </p>
+        )}
+        <ToggleRow
+          label={t('anomaly.ownBrakes')}
+          hint={t('anomaly.ownBrakesHint')}
+          checked={own !== null}
+          disabled={config.jobs === null || config.busy}
+          onChange={(on) => write(on ? { brakePercent: global.brakePercent, changePercent: global.changePercent } : null)}
+        />
+        {own && (
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field label={t('engine.brakePercent')} hint={t('engine.brakePercentHint')}>
+              <NumberField
+                value={own.brakePercent}
+                min={0}
+                max={100}
+                label={t('engine.brakePercent')}
+                onChange={(v) => type({ brakePercent: v })}
+              />
+            </Field>
+            <Field label={t('engine.changePercent')} hint={t('engine.changePercentHint')}>
+              <NumberField
+                value={own.changePercent}
+                min={0}
+                max={100}
+                label={t('engine.changePercent')}
+                onChange={(v) => type({ changePercent: v })}
+              />
+            </Field>
+          </div>
+        )}
+      </Card>
+    </div>
   )
 }

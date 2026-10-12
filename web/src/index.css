@@ -527,3 +527,17 @@ body {
     text-align: start;
   }
 }
+
+/* A learning ring's parts that a run added while the page was open grow in,
+   one after the other. */
+@keyframes glim-ring-grow {
+  from {
+    stroke-dasharray: 0 999;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion='off']) .glim-ring-grow {
+    animation: glim-ring-grow var(--motion-ring-dur, 500ms) ease-out backwards;
+    animation-delay: calc(var(--ring-i, 0) * var(--motion-ring-step, 160ms));
+  }
+}

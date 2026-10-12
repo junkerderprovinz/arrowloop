@@ -173,14 +173,16 @@ export function Trash({
       )}
 
       <PageActions>
-        <PageAction
-          label={t('trash.prune')}
-          labelKey="trash.prune"
-          glyph={<IconHistory />}
-          title={t('trash.pruneHint')}
-          disabled={busy || totals.entries === 0}
-          onClick={() => setPending({ kind: 'prune', sides: full })}
-        />
+        <span data-new="trash-actions">
+          <PageAction
+            label={t('trash.prune')}
+            labelKey="trash.prune"
+            glyph={<IconHistory />}
+            title={t('trash.pruneHint')}
+            disabled={busy || totals.entries === 0}
+            onClick={() => setPending({ kind: 'prune', sides: full })}
+          />
+        </span>
         <PageAction
           primary
           label={t('trash.emptyAll')}

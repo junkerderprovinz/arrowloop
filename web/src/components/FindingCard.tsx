@@ -108,6 +108,26 @@ export function FindingCard({
     )
     // The answer usually meant stands last, where the way forward goes.
     end = leading === 'run' ? [open, restore, run] : [open, run, restore]
+  } else if (f.open && f.kind === 'unusual') {
+    // The run already happened, so there is nothing to run again; the job's
+    // page shows what is usual for it.
+    start = (
+      <Button
+        label={t('anomaly.acknowledge')}
+        labelKey="anomaly.acknowledge"
+        title={t('anomaly.acknowledgeHint')}
+        onClick={() => void acknowledge()}
+      />
+    )
+    end = [
+      <Button
+        key="open"
+        label={t('anomaly.openJob')}
+        labelKey="anomaly.openJob"
+        tone={lead ? 'accent' : 'neutral'}
+        onClick={() => openJob(f.job)}
+      />,
+    ]
   } else if (f.open) {
     start = (
       <Button

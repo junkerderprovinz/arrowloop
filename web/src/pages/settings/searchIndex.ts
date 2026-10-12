@@ -129,6 +129,7 @@ export const SETTINGS_INDEX: Record<TabId, SearchCard[]> = {
         { key: 'nav.anomalies', hint: 'anomaly.moduleHint' },
         { key: 'anomaly.failingAfter', hint: 'anomaly.failingAfterHint' },
         { key: 'anomaly.overdueDays', hint: 'anomaly.overdueDaysHint' },
+        { key: 'anomaly.unusual', hint: 'anomaly.unusualHint' },
         { key: 'anomaly.notifyHeld', hint: 'anomaly.notifyHeldHint' },
         { key: 'anomaly.notifyNotes', hint: 'anomaly.notifyNotesHint' },
       ],

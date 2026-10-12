@@ -12,9 +12,9 @@ import { contrastOn, space, text } from "../theme";
 import { useEngineSettings } from "../settings";
 import { sideName, sidePair } from "../sides";
 import { animateNext, useMotion } from "../motion";
-import { AxisLabel, Button, Caption, Choice, Empty, Page, Press, Section, Toggle, usePageScroll, useTheme } from "../ui";
+import { AxisLabel, Body, Button, Caption, Choice, Empty, Page, Press, Section, Toggle, usePageScroll, useTheme } from "../ui";
 import { WaySwitch, wayOf } from "../way";
-import { globalBrakes, ownBrakes, type Brakes } from "../../../web/src/lib/anomalies";
+import { amount, globalBrakes, ownBrakes, type Brakes, type JobLearning } from "../../../web/src/lib/anomalies";
 import {
   buildSchedule,
   EVERY_UNITS,
@@ -419,6 +419,7 @@ export function JobEdit() {
       {/* The brakes hold a run whether or not the anomaly notes are on, so
           they are the job's own setting rather than the Anomalies screen's. */}
       {editing ? <BrakesSection job={job} global={globalBrakes(defaults as Partial<Brakes>)} set={set} /> : null}
+      {editing ? <UsualSection job={editing} /> : null}
 
       {/* Holding a job is an action on the job card, not a setting here. */}
       {editing ? (
@@ -502,6 +503,28 @@ function BrakesSection({
           />
         </>
       ) : null}
+    </Section>
+  );
+}
+
+/** What a run of the job usually does, once enough runs were learned from to say. */
+function UsualSection({ job }: { job: string }) {
+  const { t } = useT();
+  const [learned, setLearned] = useState<JobLearning | null>(null);
+  useEffect(() => {
+    api.learning().then(
+      (all) => setLearned(all.find((l) => l.job === job) ?? null),
+      () => setLearned(null),
+    );
+  }, [job]);
+  if (!learned?.usual?.length) return null;
+  return (
+    <Section title={t("job.usual")} hint={t("job.usualHint")} hue={4}>
+      {learned.usual.map((u) => (
+        <Body key={u.figure}>
+          {t(`job.usual.${u.figure}`, { low: amount(u.figure, u.low, t), high: amount(u.figure, u.high, t) })}
+        </Body>
+      ))}
     </Section>
   );
 }

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import {
+  amount,
   countBySeverity,
   direction,
   figures,
@@ -120,5 +121,28 @@ describe('a job\'s own brakes', () => {
 
   it('keep a zero, which switches the brake off for that job', () => {
     expect(ownBrakes({ brakePercent: 0 }, global)).toEqual({ brakePercent: 0, changePercent: 50 })
+  })
+})
+
+describe('an unusual run', () => {
+  it('says each figure that stood out with its usual range', () => {
+    const odd = finding({
+      kind: 'unusual',
+      held: false,
+      figures: [
+        { figure: 'deleted', value: 412, low: 0, high: 6 },
+        { figure: 'duration', value: 2820, low: 60, high: 180 },
+      ],
+    })
+    expect(sentence(odd, t, places)).toBe('Files deleted: 412, usually 0 to 6. Run time: 47 min, usually 60 s to 3 min.')
+    expect(shortLine(odd, t, places)).toBe('Files deleted: 412, usually 0 to 6.')
+    expect(figures(odd, t)).toEqual([])
+  })
+
+  it('gives a time in the unit a reader takes it in', () => {
+    expect(amount('duration', 45, t)).toBe('45 s')
+    expect(amount('duration', 600, t)).toBe('10 min')
+    expect(amount('duration', 3 * 3600, t)).toBe('3 h')
+    expect(amount('deleted', 600, t)).toBe('600')
   })
 })

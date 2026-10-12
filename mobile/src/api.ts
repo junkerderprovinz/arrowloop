@@ -4,7 +4,7 @@
 // with (internal/web/guard.go).
 
 import { engine } from "./engine";
-import type { FindingListing } from "../../web/src/lib/anomalies";
+import type { FindingListing, JobLearning } from "../../web/src/lib/anomalies";
 
 export const ORIGIN = "http://127.0.0.1:8422";
 
@@ -399,6 +399,8 @@ export const api = {
   conflicts: () => call<{ conflicts: OpenConflict[]; unread: { job: string; error: string }[] }>("/api/conflicts"),
 
   anomalies: () => call<FindingListing>("/api/anomalies"),
+  /** Every job with how far its runs are learned, and its usual ranges once they are. */
+  learning: () => call<JobLearning[]>("/api/anomalies/learning"),
   /** Answers a held job: "run" lets the refused change through as shown, "back" undoes it. */
   answerAnomaly: (id: string, answer: "run" | "back") =>
     call<void>(`/api/anomalies/${name(id)}/${answer}`, { method: "POST" }),

@@ -170,6 +170,12 @@ export function SyncSettings() {
               value={String(anomalies.overdueDays ?? 2)}
               onChange={(v) => saveAnomalies({ overdueDays: clamp(v, 0, 365) })}
             />
+            <Toggle
+              label={t("anomaly.unusual")}
+              hint={t("anomaly.unusualHint")}
+              value={anomalies.unusual !== false}
+              onChange={(unusual) => saveAnomalies({ unusual })}
+            />
           </>
         ) : null}
         <Toggle

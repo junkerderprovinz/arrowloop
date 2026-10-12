@@ -37,7 +37,6 @@ export interface Release {
 }
 
 const JOBS: TranslationKey[] = ['nav.jobs']
-const LISTS = ['/history', '/conflicts', '/trash']
 
 /** Newest first. Only the newest release an update passes is marked. */
 export const RELEASES: Release[] = [
@@ -67,10 +66,46 @@ export const RELEASES: Release[] = [
       },
       {
         id: 'list-bar',
-        at: LISTS,
-        where: ['new.where.lists'],
+        at: ['/history'],
+        where: ['nav.history'],
         text: 'new.change.listBar',
-        names: { history: 'nav.history', conflicts: 'nav.conflicts', trash: 'nav.trash' },
+        names: { history: 'nav.history' },
+      },
+      {
+        id: 'finding-cards',
+        at: ['/anomalies'],
+        where: ['nav.anomalies'],
+        text: 'new.change.findingCards',
+        names: { anomalies: 'nav.anomalies' },
+      },
+      {
+        id: 'learning',
+        at: ['/anomalies'],
+        where: ['nav.anomalies'],
+        text: 'new.change.learning',
+        names: { learning: 'anomaly.learn.title' },
+      },
+      {
+        id: 'conflict-cards',
+        at: ['/conflicts'],
+        where: ['nav.conflicts'],
+        text: 'new.change.conflictCards',
+        names: { conflicts: 'nav.conflicts' },
+      },
+      {
+        id: 'trash-actions',
+        at: ['/trash'],
+        where: ['nav.trash'],
+        text: 'new.change.trashActions',
+        names: { prune: 'trash.prune', empty: 'trash.emptyAll' },
+      },
+      {
+        id: 'job-brakes',
+        at: ['/jobs/:name'],
+        go: '/jobs',
+        where: ['nav.jobs', 'new.where.jobPage'],
+        text: 'new.change.jobBrakes',
+        names: { brakes: 'job.brakes' },
       },
       {
         id: 'settings-tabs',

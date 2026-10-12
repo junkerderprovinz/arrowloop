@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Alert, StyleSheet, Text, View } from "react-native";
 import { useNavigation, useRoute, type RouteProp } from "@react-navigation/native";
 import { api, type Job } from "../api";
+import { LearningRings } from "../learningRings";
 import { clock } from "../clock";
 import { useT } from "../i18n";
 import type { MoreStack } from "../nav";
@@ -16,6 +17,7 @@ import {
   sentence,
   type Finding,
   type FindingListing,
+  type JobLearning,
   type Severity,
 } from "../../../web/src/lib/anomalies";
 import type { TranslationKey } from "../i18n";
@@ -64,6 +66,7 @@ export function Anomalies() {
   const focus = useRoute<RouteProp<MoreStack, "Anomalies">>().params?.job;
   const [job, setJob] = useState(focus ?? "");
   const [listing, setListing] = useState<FindingListing | null>(null);
+  const [learning, setLearning] = useState<JobLearning[]>([]);
   const [jobs, setJobs] = useState<Job[]>([]);
   const [picked, setPicked] = useState<Severity | null>(null);
   const [error, setError] = useState("");
@@ -77,6 +80,7 @@ export function Anomalies() {
       const [found, known] = await Promise.all([api.anomalies(), api.jobs()]);
       setListing(found);
       setJobs(known);
+      setLearning(await api.learning().catch(() => []));
     } catch (e) {
       setError((e as Error).message);
     }
@@ -177,6 +181,12 @@ export function Anomalies() {
         />
       ))}
 
+      {!picked && learning.length > 0 ? (
+        <Section title={t("anomaly.learn.title")} hint={t("anomaly.learn.hint")} hue={1}>
+          <LearningRings learning={learning.filter((l) => !job || l.job === job)} onOpen={openJob} />
+        </Section>
+      ) : null}
+
       {/* What was closed is only read, so it stands as lines in one card. */}
       <Section title={`${t("anomaly.closed")} · ${closed.length}`} hue={0}>
         {closed.length === 0 ? <Body muted>{t("anomaly.noneClosed")}</Body> : null}
@@ -268,7 +278,13 @@ function FindingCard({
 
   const open = <Button key="open" label={t("anomaly.openJob")} labelKey="anomaly.openJob" onPress={onOpenJob} />;
   let answers;
-  if (f.held) {
+  if (f.kind === "unusual") {
+    // The run already happened, so there is nothing to run again.
+    answers = [
+      <Button key="ack" label={t("anomaly.acknowledge")} labelKey="anomaly.acknowledge" onPress={onAcknowledge} />,
+      open,
+    ];
+  } else if (f.held) {
     const run = <Button key="run" label={t("anomaly.run")} labelKey="anomaly.run" onPress={() => onAnswer("run")} />;
     const back = (
       <Button key="back" label={t("anomaly.restore")} labelKey="anomaly.restore" onPress={() => onAnswer("back")} />

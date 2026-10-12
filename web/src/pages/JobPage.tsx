@@ -19,6 +19,7 @@ import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
 import { Card } from '../lib/glimstone/Card'
 import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
+import { amount, type JobLearning } from '../lib/anomalies'
 import { useAnomaliesOn } from '../lib/anomalyModule'
 import { api, type Job, type Run, type RunEvent, type Touch } from '../lib/api'
 import { describeCadence, readCadence } from '../lib/cadence'
@@ -148,6 +149,7 @@ export function JobPage({ name }: { name: string }) {
         <DupesPanel job={name} />
       </Card>
       {at !== -1 && <BrakesCard job={name} config={config} hueIndex={5} />}
+      {anomalies !== false && <UsualCard job={name} lastRun={job.recent[0]?.ID} />}
 
       {editing && config.jobs?.[editing.at] && (
         <JobEditor config={config} at={editing.at} added={editing.added} onClose={() => setEditing(null)} />
@@ -235,6 +237,39 @@ function Head({
       </span>
       <span className="flex max-w-full flex-wrap items-center justify-end gap-2">{actions}</span>
     </div>
+  )
+}
+
+/**
+ * What a run of the job usually does, once enough runs were learned from to
+ * say. Asked again after each run, which is what moves the ranges.
+ */
+function UsualCard({ job, lastRun }: { job: string; lastRun?: number }) {
+  const { t } = useT()
+  const [learned, setLearned] = useState<JobLearning | null>(null)
+
+  useEffect(() => {
+    let live = true
+    api
+      .learning()
+      .then((all) => live && setLearned(all.find((l) => l.job === job) ?? null))
+      .catch(() => live && setLearned(null))
+    return () => {
+      live = false
+    }
+  }, [job, lastRun])
+
+  if (!learned?.usual?.length) return null
+  return (
+    <Card title={t('job.usual')} hint={t('job.usualHint')} hueIndex={6}>
+      <ul className="flex flex-col gap-1 text-body text-carbon-text">
+        {learned.usual.map((u) => (
+          <li key={u.figure} className="glim-num">
+            {t(`job.usual.${u.figure}`, { low: amount(u.figure, u.low, t), high: amount(u.figure, u.high, t) })}
+          </li>
+        ))}
+      </ul>
+    </Card>
   )
 }
 

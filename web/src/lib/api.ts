@@ -2,7 +2,7 @@
 // side defines.
 
 /** Which way a job is allowed to write. */
-import type { FindingListing } from './anomalies'
+import type { FindingListing, JobLearning } from './anomalies'
 
 export type Direction = 'both' | 'leftToRight' | 'rightToLeft'
 
@@ -346,6 +346,8 @@ export type Settings = {
     overdueDays?: number
     notifyHeld?: boolean
     notifyNotes?: boolean
+    /** Whether a run far outside its job's usual range makes a note; undefined means it does. */
+    unusual?: boolean
   }
   /** Reusable pattern lists, by name. A job asks for them by name. */
   excludeSets?: Record<string, string[]>
@@ -931,6 +933,8 @@ export const api = {
 
   /** Every open conflict, or those of the one job named. */
   anomalies: () => request<FindingListing>('/api/anomalies'),
+  /** Every job with how far its runs are learned, and its usual ranges once they are. */
+  learning: () => request<JobLearning[]>('/api/anomalies/learning'),
 
   /**
    * Answers a held job: `run` lets the refused change through as shown, `back`
