@@ -33,19 +33,19 @@ export function TouchRow({ touch: e, withJob }: { touch: Touch; withJob?: boolea
   const label = entryAction(t, e, jobs.find((j) => j.name === e.Job), drives)
   const note = entryNote(t, e)
   return (
-    <li className="flex min-h-9 items-center gap-3 text-subline">
-      {/* Wide enough for a conflict's phrase and a target's name; a longer one
-          is cut, with the whole phrase in the title. */}
-      <span className="w-44 shrink-0 truncate max-sm:w-28" title={label}>
-        <Badge tone={touchTone(e.Kind)}>{label}</Badge>
+    <li className="flex min-h-9 items-center gap-x-3 gap-y-1 py-1 text-subline max-sm:flex-wrap">
+      {/* Wide enough for a conflict's phrase in the longer languages; a longer
+          one wraps inside its badge rather than being cut. */}
+      <span className="flex w-64 shrink-0 max-md:w-48 max-sm:w-auto max-sm:max-w-full">
+        <Badge tone={touchTone(e.Kind)} wrap>
+          {label}
+        </Badge>
       </span>
       <span className="glim-num w-40 shrink-0 whitespace-nowrap text-carbon-textMuted max-sm:hidden">
         {dayTime(e.When, lang, (p) => t('list.when', p))}
       </span>
       {withJob && (
-        <span className="w-32 shrink-0 truncate font-medium max-md:hidden" title={e.Job}>
-          {e.Job}
-        </span>
+        <span className="w-32 shrink-0 font-medium [overflow-wrap:anywhere] max-md:hidden">{e.Job}</span>
       )}
       <span className="w-14 shrink-0 text-end tabular-nums text-carbon-textMuted max-sm:hidden">
         {e.Size > 0 ? bytes(e.Size) : ''}
@@ -59,7 +59,11 @@ export function TouchRow({ touch: e, withJob }: { touch: Touch; withJob?: boolea
         {e.Side === 'right' ? <IconToRight /> : e.Side === 'left' ? <IconToLeft /> : null}
         {e.Side && <span className="sr-only">{translateSide(t, e.Side as 'left' | 'right')}</span>}
       </span>
-      <span className="min-w-0 flex-1 truncate font-mono text-carbon-text" title={note ? `${e.Path}\n${note}` : e.Path}>
+      {/* A long path wraps rather than losing its end, which is the file's name. */}
+      <span
+        className="min-w-0 flex-1 font-mono text-carbon-text [overflow-wrap:anywhere] max-sm:basis-full"
+        title={note || undefined}
+      >
         {e.Path}
       </span>
     </li>

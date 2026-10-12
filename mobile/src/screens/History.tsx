@@ -360,7 +360,7 @@ function RunLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void }) 
               accessibilityRole="button"
               style={[styles.row, styles.runRow]}
             >
-              <Text style={[styles.runName, { color: p.text }]} numberOfLines={1}>
+              <Text style={[styles.runName, { color: p.text }]}>
                 {item.Job}
               </Text>
               {failed(item) ? (

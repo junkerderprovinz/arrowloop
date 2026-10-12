@@ -325,7 +325,7 @@ export function RunRow({ run: r, onOpen, withJob = true }: { run: Run; onOpen: (
   return (
     <li
       onClick={onOpen}
-      className="glim-row flex min-h-11 cursor-pointer items-center gap-3 rounded-control px-2 py-1.5 hover:bg-carbon-hover"
+      className="glim-row flex min-h-11 cursor-pointer items-center gap-x-3 gap-y-1 rounded-control px-2 py-1.5 hover:bg-carbon-hover max-sm:flex-wrap"
     >
       <button
         type="button"
@@ -333,7 +333,7 @@ export function RunRow({ run: r, onOpen, withJob = true }: { run: Run; onOpen: (
           e.stopPropagation()
           onOpen()
         }}
-        className="min-w-0 flex-1 truncate text-start text-body text-carbon-text"
+        className="min-w-0 flex-1 text-start text-body text-carbon-text [overflow-wrap:anywhere]"
       >
         {withJob ? (
           <span className="font-medium">{r.Job}</span>
