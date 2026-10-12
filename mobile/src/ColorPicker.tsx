@@ -5,7 +5,7 @@ import { hexToHsv, hsvToHex, normalizeHex } from "../../web/src/lib/colorMath";
 import { useT } from "./i18n";
 import { space, text } from "./theme";
 import { Glyph } from "./glyphs";
-import { Button, useTheme } from "./ui";
+import { Button, Press, useTheme } from "./ui";
 
 // A colour picker with a saturation/value pad, a hue rail and a hex field. The
 // maths is web/src/lib/colorMath.ts, shared with the web picker. The pad is a
@@ -215,7 +215,7 @@ export function EditableSwatch({
 }) {
   const { p, corners } = useTheme();
   return (
-    <Pressable
+    <Press
       accessibilityLabel={label}
       accessibilityRole="button"
       onPress={onPress}
@@ -234,7 +234,7 @@ export function EditableSwatch({
             opens the picker. */}
         <View style={[styles.fill, { ...corners.pill, backgroundColor: hex }]} />
       </View>
-    </Pressable>
+    </Press>
   );
 }
 
@@ -254,7 +254,7 @@ export function ResetMark({
 }) {
   const { p, corners } = useTheme();
   return (
-    <Pressable
+    <Press
       accessibilityLabel={label}
       accessibilityRole="button"
       accessibilityState={{ disabled: !!disabled }}
@@ -271,7 +271,7 @@ export function ResetMark({
       ]}
     >
       <Glyph name="IconRefresh" color={p.textSub} size={14} />
-    </Pressable>
+    </Press>
   );
 }
 

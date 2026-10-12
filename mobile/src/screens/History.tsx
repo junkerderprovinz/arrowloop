@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
+import { RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
 import { entryLabel, entryNote, plainKey } from "../../../web/src/lib/entryLabel";
 import { api, failed, touched, type Job, type Run, type Touch } from "../api";
 import { isPerfectlyIdle } from "../eggs";
@@ -9,7 +9,7 @@ import { useT, type T } from "../i18n";
 import type { HistoryStack, Nav } from "../nav";
 import { contrastOn, space, text } from "../theme";
 import { useEngineEvents } from "../useEngine";
-import { Arrive, Badge, Body, Button, Caption, Card, Choice, Empty, Mono, MovingList, Title, useTheme } from "../ui";
+import { Arrive, Badge, Body, Button, Caption, Card, Choice, Empty, Mono, MovingList, Press, Title, useTheme } from "../ui";
 import { clock } from "../clock";
 import { bytes } from "../space";
 
@@ -237,7 +237,7 @@ function FileLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "fil
       }}
       renderItem={({ item }) => (
         <Arrive>
-          <Pressable
+          <Press
             onPress={() => nav.navigate("RunDetail", { id: item.Run, job: item.Job })}
             android_ripple={{ color: p.hover }}
             style={[styles.row, { backgroundColor: p.surface, ...corners.control }]}
@@ -259,7 +259,7 @@ function FileLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "fil
             </View>
             {/* Why a path was skipped, or the name a renamed file had. */}
             {shownNote(t, item) ? <Caption>{shownNote(t, item)}</Caption> : null}
-          </Pressable>
+          </Press>
         </Arrive>
       )}
     />
@@ -382,7 +382,7 @@ function RunLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "file
 function Chip({ label, on, onPress }: { label: string; on: boolean; onPress: () => void }) {
   const { p, corners, accent } = useTheme();
   return (
-    <Pressable
+    <Press
       onPress={onPress}
       android_ripple={{ color: p.hover }}
       style={[styles.chip, { backgroundColor: on ? accent : p.surface2, ...corners.pill }]}
@@ -390,7 +390,7 @@ function Chip({ label, on, onPress }: { label: string; on: boolean; onPress: () 
       <Text numberOfLines={1} style={[styles.chipText, { color: on ? contrastOn(accent) : p.textSub }]}>
         {label}
       </Text>
-    </Pressable>
+    </Press>
   );
 }
 

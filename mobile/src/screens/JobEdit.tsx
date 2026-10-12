@@ -1,6 +1,6 @@
 import { useNavigation, useRoute, type RouteProp } from "@react-navigation/native";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 import { api, type Config, type JobConfig } from "../api";
 import { Field, TimeField } from "../fields";
 import { FolderPicker } from "../FolderPicker";
@@ -12,7 +12,7 @@ import { contrastOn, space, text } from "../theme";
 import { useEngineSettings } from "../settings";
 import { sideName, sidePair } from "../sides";
 import { animateNext, useMotion } from "../motion";
-import { AxisLabel, Body, Button, Caption, Choice, Empty, Page, Section, Toggle, useTheme } from "../ui";
+import { AxisLabel, Body, Button, Caption, Choice, Empty, Page, Press, Section, Toggle, useTheme } from "../ui";
 import { WaySwitch, wayOf } from "../way";
 import {
   buildSchedule,
@@ -542,7 +542,7 @@ function DayChip({ label, on, onPress }: { label: string; on: boolean; onPress: 
   const { p, corners, accent, hueAt } = useTheme();
   const fill = hueAt(0) ?? accent;
   return (
-    <Pressable
+    <Press
       accessibilityRole="checkbox"
       accessibilityState={{ checked: on }}
       accessibilityLabel={label}
@@ -553,7 +553,7 @@ function DayChip({ label, on, onPress }: { label: string; on: boolean; onPress: 
       ]}
     >
       <Text style={[styles.dayText, { color: on ? contrastOn(fill) : p.textSub }]}>{label}</Text>
-    </Pressable>
+    </Press>
   );
 }
 

@@ -9,7 +9,7 @@ import { useT } from "./i18n";
 import { engine } from "./engine";
 import { animateNext, useMotion } from "./motion";
 import { contrastOn, space, text, TOUCH } from "./theme";
-import { Button, useTheme } from "./ui";
+import { Button, Press, useTheme } from "./ui";
 
 /**
  * The crypto donation dialog, built from the web app's lib/donate.ts and
@@ -81,7 +81,7 @@ export function CryptoDonate({ onClose }: { onClose: () => void }) {
                   const on = n.id === network.id;
                   const fill = hueAt(i) ?? accent;
                   return (
-                    <Pressable
+                    <Press
                       key={n.id}
                       accessibilityRole="radio"
                       accessibilityState={{ checked: on }}
@@ -102,7 +102,7 @@ export function CryptoDonate({ onClose }: { onClose: () => void }) {
                       <Text style={[styles.chainText, { color: on ? contrastOn(fill) : p.textSub }]}>
                         {n.name}
                       </Text>
-                    </Pressable>
+                    </Press>
                   );
                 })}
               </View>

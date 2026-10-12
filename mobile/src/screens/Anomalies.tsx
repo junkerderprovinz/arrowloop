@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import { useRoute, type RouteProp } from "@react-navigation/native";
 import { api, type Config, type Job } from "../api";
@@ -27,7 +27,7 @@ import {
   type Severity,
 } from "../../../web/src/lib/anomalies";
 import type { TranslationKey } from "../i18n";
-import { Badge, Body, Button, Caption, Card, Empty, InfoBubble, Mono, Page, Pair, Section, Toggle, useTheme } from "../ui";
+import { Badge, Body, Button, Caption, Card, Empty, InfoBubble, Mono, Page, Pair, Press, Section, Toggle, useTheme } from "../ui";
 
 const TILE_LABEL: Record<Severity, TranslationKey> = {
   critical: "anomaly.severity.critical",
@@ -236,7 +236,7 @@ function Tiles({
       {SEVERITIES.map((severity) => {
         const shown = !hidden.has(severity);
         return (
-          <Pressable
+          <Press
             key={severity}
             onPress={() => onToggle(severity)}
             accessibilityRole="button"
@@ -249,7 +249,7 @@ function Tiles({
               {t(TILE_LABEL[severity])}
             </Text>
             <Caption>{t(shown ? "anomaly.tile.shown" : "anomaly.tile.hidden")}</Caption>
-          </Pressable>
+          </Press>
         );
       })}
     </View>
@@ -339,7 +339,7 @@ function FindingCard({
 
       {held && !openIds.has(held.id) ? <HeldNote /> : null}
 
-      <Pressable
+      <Press
         onPress={() => setMonitoring(!monitoring)}
         accessibilityRole="button"
         accessibilityState={{ expanded: monitoring }}
@@ -347,7 +347,7 @@ function FindingCard({
       >
         <Text style={[styles.foldText, { color: p.textSub }]}>{t("anomaly.monitoring")}</Text>
         <Disclosure open={monitoring} color={p.textSub} />
-      </Pressable>
+      </Press>
       {monitoring ? <Monitoring job={group.job} brakes={brakes} /> : null}
 
       <View style={styles.answers}>
@@ -408,7 +408,7 @@ function Line({
 
   return (
     <View>
-      <Pressable
+      <Press
         onPress={onToggle}
         accessibilityRole="button"
         accessibilityState={{ expanded: open }}
@@ -422,7 +422,7 @@ function Line({
           {shortLine(f, t, places)}
         </Text>
         <Disclosure open={open} color={p.textSub} />
-      </Pressable>
+      </Press>
 
       {open ? (
         <View style={styles.lineBody}>
@@ -437,7 +437,7 @@ function Line({
           {!closed && paths.length > 0 ? (
             <>
               <View style={styles.filesHead}>
-                <Pressable
+                <Press
                   onPress={() => setFiles(!files)}
                   accessibilityRole="button"
                   accessibilityState={{ expanded: files }}
@@ -445,7 +445,7 @@ function Line({
                 >
                   <Disclosure open={files} color={p.textSub} />
                   <Text style={[styles.foldText, { color: p.textSub }]}>{t("anomaly.files")}</Text>
-                </Pressable>
+                </Press>
                 <InfoBubble tip={t("anomaly.filesHint")} />
               </View>
               {files ? (
@@ -527,7 +527,7 @@ function QuietRow({ job, brakes }: { job: string; brakes: BrakeBook }) {
   const [open, setOpen] = useState(false);
   return (
     <View>
-      <Pressable
+      <Press
         onPress={() => setOpen(!open)}
         accessibilityRole="button"
         accessibilityState={{ expanded: open }}
@@ -536,7 +536,7 @@ function QuietRow({ job, brakes }: { job: string; brakes: BrakeBook }) {
       >
         <Text style={[styles.lineText, { color: p.text }]}>{job}</Text>
         <Disclosure open={open} color={p.textSub} />
-      </Pressable>
+      </Press>
       {open ? <Monitoring job={job} brakes={brakes} /> : null}
     </View>
   );
@@ -558,7 +558,7 @@ function Closed({ closed, jobs }: { closed: Finding[]; jobs: Job[] }) {
 
   return (
     <Card>
-      <Pressable
+      <Press
         onPress={() => setOpen(!open)}
         accessibilityRole="button"
         accessibilityState={{ expanded: open }}
@@ -567,7 +567,7 @@ function Closed({ closed, jobs }: { closed: Finding[]; jobs: Job[] }) {
         <Disclosure open={open} color={p.textSub} />
         <Text style={[styles.lineText, { color: p.text }]}>{t("anomaly.closed")}</Text>
         <Caption>{String(closed.length)}</Caption>
-      </Pressable>
+      </Press>
       {open && closed.length === 0 ? <Body muted>{t("anomaly.noneClosed")}</Body> : null}
       {open
         ? closed.map((f) => (

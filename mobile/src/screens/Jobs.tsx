@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { useCallback, useEffect, useState } from "react";
-import { Alert, Pressable, RefreshControl, StyleSheet, Text, View } from "react-native";
+import { Alert, RefreshControl, StyleSheet, Text, View } from "react-native";
 import { api, type Job, type Remote } from "../api";
 import { CardMenu } from "../CardMenu";
 import { clock } from "../clock";
@@ -23,10 +23,11 @@ import {
   Card,
   CardHead,
   Empty,
-  Fab,
   FAB_ROOM,
+  Fab,
   Floating,
   MovingList,
+  Press,
   Title,
   useHue,
   useTheme,
@@ -277,7 +278,7 @@ function JobCard({
       {/* What the engine found, as one line that leads to the Anomalies
           screen, which holds the files and the answers. */}
       {finding ? (
-        <Pressable onPress={onFinding} accessibilityRole="button" style={styles.finding}>
+        <Press onPress={onFinding} accessibilityRole="button" style={styles.finding}>
           <Glyph name="IconAnomalies" color={p.textSub} />
           <Badge
             label={finding.held ? t("anomaly.heldBadge") : t(`anomaly.severity.${finding.severity}`)}
@@ -286,7 +287,7 @@ function JobCard({
           <Text style={[styles.findingText, { color: p.text }]} numberOfLines={2}>
             {`${t(`anomaly.kind.${finding.kind}`)}: ${shortLine(finding, t, sidePair(job.left, job.right, t))}`}
           </Text>
-        </Pressable>
+        </Press>
       ) : null}
 
       {/* Two buttons, since a held job can still be started by hand. A

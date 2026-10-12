@@ -1,11 +1,11 @@
 import { useRoute, type RouteProp } from "@react-navigation/native";
 import { useCallback, useEffect, useState } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { api, type Bin } from "../api";
 import { useT } from "../i18n";
 import type { JobsStack } from "../nav";
 import { space } from "../theme";
-import { Badge, Button, Caption, Card, Empty, Mono, Page, Title, useTheme } from "../ui";
+import { Badge, Button, Caption, Card, Empty, Mono, Page, Press, Title, useTheme } from "../ui";
 import { bytes } from "../space";
 
 /**
@@ -68,7 +68,7 @@ export function Trash() {
         const id = `${item.runId}/${item.path}`;
         const on = chosen.has(id);
         return (
-          <Pressable
+          <Press
             key={id}
             onPress={() => toggle(id)}
             android_ripple={{ color: p.hover }}
@@ -83,7 +83,7 @@ export function Trash() {
           >
             <Mono>{item.path}</Mono>
             <Caption>{when(item.filed) ?? t("trash.unknownAge")}</Caption>
-          </Pressable>
+          </Press>
         );
       })}
       {items.length > 200 ? <Caption>{t("trash.more", { total: held, shown: 200 })}</Caption> : null}

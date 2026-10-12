@@ -3,7 +3,7 @@ import { Modal, Pressable, StyleSheet, Text, useWindowDimensions, View } from "r
 
 import { Glyph } from "./glyphs";
 import { space, text, TOUCH } from "./theme";
-import { useTheme } from "./ui";
+import { Press, useTheme } from "./ui";
 
 /**
  * One row of the menu. There is no danger style: every delete asks first, and
@@ -67,7 +67,7 @@ export function CardMenu({ items }: { items: CardAction[] }) {
             onPress={() => {}}
           >
             {items.map((item) => (
-              <Pressable
+              <Press
                 key={item.label}
                 android_ripple={{ color: p.hover }}
                 onPress={() => {
@@ -82,7 +82,7 @@ export function CardMenu({ items }: { items: CardAction[] }) {
                 <Text style={[styles.rowText, { color: p.text }]} numberOfLines={1}>
                   {item.label}
                 </Text>
-              </Pressable>
+              </Press>
             ))}
           </Pressable>
         </Pressable>

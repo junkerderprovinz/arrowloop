@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Alert, Pressable, StyleSheet, View } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
 import { api, type Job, type TrashItem, type TrashSide } from "../api";
 import { useT } from "../i18n";
 import { jobSides } from "../sides";
@@ -7,7 +7,7 @@ import { bytes } from "../space";
 import { space } from "../theme";
 import { useEngineStream } from "../useEngine";
 import { trashTotals } from "../../../web/src/lib/trashView";
-import { Body, Button, Caption, Card, Empty, Mono, Page, Title, useTheme } from "../ui";
+import { Body, Button, Caption, Card, Empty, Mono, Page, Press, Title, useTheme } from "../ui";
 
 /** Names one trashed file across every job and side. */
 function itemKey(bin: TrashSide, item: TrashItem): string {
@@ -96,7 +96,7 @@ export function TrashAll() {
                   const key = itemKey(bin, item);
                   const on = chosen.has(key);
                   return (
-                    <Pressable
+                    <Press
                       key={key}
                       // A file somebody put there by hand has no run, and only
                       // emptying reaches it.
@@ -121,7 +121,7 @@ export function TrashAll() {
                     >
                       <Mono>{item.path}</Mono>
                       <Caption>{`${bytes(item.size)} · ${when(item.filed) ?? t("trash.unknownAge")}`}</Caption>
-                    </Pressable>
+                    </Press>
                   );
                 })}
                 {bin.entries.length > 200 ? (

@@ -5,7 +5,7 @@ import { api } from "./api";
 import { useT } from "./i18n";
 import { Glyph } from "./glyphs";
 import { space, text, TOUCH } from "./theme";
-import { Body, Button, Caption, useTheme } from "./ui";
+import { Body, Button, Caption, Press, useTheme } from "./ui";
 
 /**
  * A dialog for choosing a folder on the phone or on a target instead of typing
@@ -85,7 +85,7 @@ export function FolderPicker({
   }, [visible, start, go]);
 
   const row = (label: string, onPress: () => void, glyph: string) => (
-    <Pressable
+    <Press
       key={label}
       onPress={onPress}
       android_ripple={{ color: p.hover }}
@@ -95,7 +95,7 @@ export function FolderPicker({
       <Text style={[styles.rowText, { color: p.text }]} numberOfLines={1}>
         {label}
       </Text>
-    </Pressable>
+    </Press>
   );
 
   return (

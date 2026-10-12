@@ -1,9 +1,9 @@
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useState } from "react";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { StyleSheet, Text, TextInput, View } from "react-native";
 import { Glyph } from "./glyphs";
 import { radiusFor, space, text, TOUCH } from "./theme";
-import { InfoBubble, useTheme } from "./ui";
+import { InfoBubble, Press, useTheme } from "./ui";
 
 export function Field({
   label,
@@ -61,13 +61,13 @@ export function Field({
           ]}
         />
         {secret ? (
-          <Pressable
+          <Press
             onPress={() => setHidden((h) => !h)}
             android_ripple={{ color: p.hover }}
             style={[styles.eye, { backgroundColor: p.surface3, ...corners.pill }]}
           >
             <Glyph name={hidden ? "IconEye" : "IconEyeOff"} color={p.text} size={18} />
-          </Pressable>
+          </Press>
         ) : null}
       </View>
     </View>
@@ -133,7 +133,7 @@ export function TimeField({
         <Text style={[styles.label, { color: p.text }]}>{label}</Text>
         {hint ? <InfoBubble tip={hint} /> : null}
       </View>
-      <Pressable
+      <Press
         onPress={() => setOpen(true)}
         android_ripple={{ color: p.hover }}
         style={[
@@ -143,7 +143,7 @@ export function TimeField({
         ]}
       >
         <Text style={[styles.timeText, { color: p.text }]}>{formatTime(hour, minute)}</Text>
-      </Pressable>
+      </Press>
       {open ? (
         <DateTimePicker
           // The picker takes a Date; only its hour and minute are read back.

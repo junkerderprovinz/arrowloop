@@ -13,6 +13,7 @@ import {
   useColorScheme,
   View,
   type FlatListProps,
+  type PressableProps,
   type NativeScrollEvent,
   type NativeSyntheticEvent,
   type StyleProp,
@@ -163,17 +164,43 @@ function useArrival() {
   };
 }
 
-/** A scale that gives way under a finger and springs back. */
-function usePress() {
+/**
+ * How far a control dims while a finger holds it. A touch screen has no hover,
+ * so this is how a press is answered at every motion level.
+ */
+export const HELD = 0.6;
+
+/**
+ * A scale that gives way under a finger and springs back, and an opacity that
+ * dims while the finger stays. The dim is set rather than animated, since
+ * opacity never rides a spring.
+ */
+export function usePress() {
   const { ms } = useMotion();
   const scale = useRef(new Animated.Value(1)).current;
+  const dim = useRef(new Animated.Value(1)).current;
   const to = (value: number) =>
     Animated.spring(scale, { toValue: value, useNativeDriver: true, ...springOf(ms.bounce) }).start();
   return {
     scale,
-    onPressIn: () => ms.press < 1 && to(ms.press),
-    onPressOut: () => to(1),
+    dim,
+    onPressIn: () => {
+      dim.setValue(HELD);
+      if (ms.press < 1) to(ms.press);
+    },
+    onPressOut: () => {
+      dim.setValue(1);
+      to(1);
+    },
   };
+}
+
+/**
+ * A Pressable that dims while it is held. With no `onLongPress` anywhere, a
+ * long press still ends in `onPress`: it counts as a slow tap.
+ */
+export function Press({ style, ...props }: Omit<PressableProps, "style"> & { style?: StyleProp<ViewStyle> }) {
+  return <Pressable {...props} style={({ pressed }) => [style, pressed && !props.disabled ? styles.held : null]} />;
 }
 
 /**
@@ -278,7 +305,15 @@ export function Card({
   );
   if (!onPress) return <Animated.View style={arrival}>{body}</Animated.View>;
   return (
-    <Animated.View style={[arrival, { transform: [...(arrival?.transform ?? []), { scale: press.scale }] }]}>
+    <Animated.View
+      style={[
+        arrival,
+        {
+          opacity: arrival ? Animated.multiply(arrival.opacity, press.dim) : press.dim,
+          transform: [...(arrival?.transform ?? []), { scale: press.scale }],
+        },
+      ]}
+    >
       <Pressable
         onPress={onPress}
         onPressIn={press.onPressIn}
@@ -358,7 +393,13 @@ export function Row({
       {control}
     </View>
   );
-  return onPress ? <TouchableOpacity onPress={onPress}>{body}</TouchableOpacity> : body;
+  return onPress ? (
+    <Press onPress={onPress} accessibilityRole="button">
+      {body}
+    </Press>
+  ) : (
+    body
+  );
 }
 
 export function Heading({ children }: { children: ReactNode }) {
@@ -537,14 +578,14 @@ export function InfoBubble({ tip, on }: { tip: string; on?: string }) {
   const ink = on ?? accentInk;
   return (
     <>
-      <Pressable
+      <Press
         onPress={() => setOpen(true)}
         // Often sits on a pressable tile.
         hitSlop={8}
         style={[styles.bubble, { backgroundColor: softOn(ink, on ? 0.22 : 0.15), ...corners.pill }]}
       >
         <Text style={[styles.bubbleMark, { color: ink }]}>i</Text>
-      </Pressable>
+      </Press>
       {/* The platform fade follows Android's animator scale; the motion
           setting decides whether it runs at all. */}
       <Modal
@@ -660,7 +701,7 @@ export function Button({
         {
           backgroundColor: ground,
           ...corners.pill,
-          opacity: disabled || busy ? 0.45 : 1,
+          opacity: disabled || busy ? 0.45 : press.dim,
           flexGrow: wide === false ? 0 : 1,
           transform: [
             { translateX: wobble.interpolate({ inputRange: [-1, 1], outputRange: [-8, 8] }) },
@@ -821,6 +862,7 @@ export function Switcher({
   const on = (hue !== undefined ? hueAt(hue) : undefined) ?? accent;
   return (
     <TouchableOpacity
+      activeOpacity={HELD}
       accessibilityRole="switch"
       accessibilityState={{ checked: value, disabled: !!disabled }}
       disabled={disabled}
@@ -917,34 +959,68 @@ export function Choice<T extends string>({
       {options.map((option, i) => {
         const on = option.value === value;
         const fill = option.colour ?? hueAt(i) ?? accent;
-        const ink = on ? contrastOn(fill) : p.textSub;
         return (
-          <TouchableOpacity
+          <Segment
             key={option.value}
+            option={option}
+            on={on}
+            fill={fill}
             onPress={() => onChange(option.value)}
-            accessibilityLabel={option.mark ? option.label : undefined}
-            style={[styles.segment, option.hint ? styles.segmentRow : null, corners.pill, on ? { backgroundColor: fill } : null]}
-          >
-            {option.mark ? (
-              option.mark(ink)
-            ) : (
-              <Text
-                numberOfLines={1}
-                // Shrinks rather than truncates with an ellipsis, down to 0.7;
-                // below that the strip has too many segments.
-                adjustsFontSizeToFit
-                minimumFontScale={0.7}
-                style={[styles.segmentText, { color: ink }]}
-              >
-                {option.label}
-              </Text>
-            )}
-            {/* Its own press target, so reading it does not choose it. */}
-            {option.hint ? <InfoBubble tip={option.hint} on={on ? contrastOn(fill) : undefined} /> : null}
-          </TouchableOpacity>
+          />
         );
       })}
     </View>
+  );
+}
+
+/** One segment of a selector, giving way and dimming under a finger. */
+function Segment({
+  option,
+  on,
+  fill,
+  onPress,
+}: {
+  option: { label: string; hint?: string; mark?: (ink: string) => ReactNode };
+  on: boolean;
+  fill: string;
+  onPress: () => void;
+}) {
+  const { p, corners } = useTheme();
+  const press = usePress();
+  const ink = on ? contrastOn(fill) : p.textSub;
+  return (
+    <AnimatedPressable
+      onPress={onPress}
+      onPressIn={press.onPressIn}
+      onPressOut={press.onPressOut}
+      accessibilityRole="button"
+      accessibilityState={{ selected: on }}
+      accessibilityLabel={option.mark ? option.label : undefined}
+      style={[
+        styles.segment,
+        option.hint ? styles.segmentRow : null,
+        corners.pill,
+        on ? { backgroundColor: fill } : null,
+        { opacity: press.dim, transform: [{ scale: press.scale }] },
+      ]}
+    >
+      {option.mark ? (
+        option.mark(ink)
+      ) : (
+        <Text
+          numberOfLines={1}
+          // Shrinks rather than truncates with an ellipsis, down to 0.7;
+          // below that the strip has too many segments.
+          adjustsFontSizeToFit
+          minimumFontScale={0.7}
+          style={[styles.segmentText, { color: ink }]}
+        >
+          {option.label}
+        </Text>
+      )}
+      {/* Its own press target, so reading it does not choose it. */}
+      {option.hint ? <InfoBubble tip={option.hint} on={on ? ink : undefined} /> : null}
+    </AnimatedPressable>
   );
 }
 
@@ -966,6 +1042,7 @@ export function Swatch({
   const { p, corners } = useTheme();
   return (
     <TouchableOpacity
+      activeOpacity={HELD}
       accessibilityLabel={label}
       accessibilityRole="button"
       onPress={onPress}
@@ -1014,12 +1091,13 @@ export function Page({ children, fab }: { children: ReactNode; fab?: boolean }) 
   );
 }
 
-/** How much a floating button takes from the bottom of a page. */
-export const FAB_ROOM = TOUCH + space.sm + space.lg * 2;
+/** The room every page keeps below its last row, so a floating button covers nothing. */
+export const FAB_ROOM = 96;
 
 /**
- * The floating button at the bottom right, where the thumb rests. It follows
- * the label setting: a circle with the glyph alone, otherwise a pill.
+ * The floating button at the bottom right, where the thumb rests. Above the
+ * bar it shows its glyph alone in every label mode and its label is what a
+ * screen reader says; a key with no glyph keeps its word.
  */
 export function Fab({
   label,
@@ -1031,16 +1109,16 @@ export function Fab({
   labelKey?: string;
   onPress: () => void;
 }) {
-  const { p, corners, labels, accent } = useTheme();
+  const { p, corners, accent } = useTheme();
+  const press = usePress();
   const ink = contrastOn(accent);
   const name = labelKey ? glyphNameForKey(labelKey) : undefined;
-  const glyph = name ? <Glyph name={name} color={ink} size={22} /> : null;
-  const showWord = labels === "text" || labels === "textGlyph" || !glyph;
-  const showGlyph = Boolean(glyph) && labels !== "text";
 
   return (
-    <Pressable
+    <AnimatedPressable
       onPress={onPress}
+      onPressIn={press.onPressIn}
+      onPressOut={press.onPressOut}
       accessibilityRole="button"
       accessibilityLabel={label}
       android_ripple={{ color: p.hover, borderless: false }}
@@ -1050,18 +1128,21 @@ export function Fab({
           backgroundColor: accent,
           // A pill radius on a square box is a circle.
           ...corners.pill,
-          paddingHorizontal: showWord ? space.lg : 0,
-          width: showWord ? undefined : TOUCH + space.sm,
+          paddingHorizontal: name ? 0 : space.lg,
+          width: name ? TOUCH + space.sm : undefined,
+          opacity: press.dim,
+          transform: [{ scale: press.scale }],
         },
       ]}
     >
-      {showGlyph ? glyph : null}
-      {showWord ? (
+      {name ? (
+        <Glyph name={name} color={ink} size={22} />
+      ) : (
         <Text numberOfLines={1} style={[styles.fabText, { color: ink }]}>
           {label}
         </Text>
-      ) : null}
-    </Pressable>
+      )}
+    </AnimatedPressable>
   );
 }
 
@@ -1151,7 +1232,7 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   fabText: { fontSize: text.body, fontWeight: "600" },
-  fabRoom: { paddingBottom: TOUCH + space.sm + space.lg * 2 },
+  fabRoom: { paddingBottom: FAB_ROOM },
 
   button: {
     minHeight: TOUCH,
@@ -1198,6 +1279,7 @@ const styles = StyleSheet.create({
   swatchFill: { width: "86%", height: "86%" },
 
   dimmed: { opacity: 0.4 },
+  held: { opacity: HELD },
   empty: { padding: space.xxl, gap: space.sm, alignItems: "center" },
 });
 
