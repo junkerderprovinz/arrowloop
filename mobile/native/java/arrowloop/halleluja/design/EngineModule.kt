@@ -379,7 +379,9 @@ class EngineModule(private val context: ReactApplicationContext) :
     override fun onNewIntent(intent: Intent) {}
 
     companion object {
-        const val BACKUP_NAME = "arrowloop-einstellungen.json"
+        // Downloads is shared, so a test build next to the released app keeps
+        // its own backup rather than overwriting the real one.
+        val BACKUP_NAME = if (BuildConfig.SIDE_BY_SIDE) "arrowloop-test-einstellungen.json" else "arrowloop-einstellungen.json"
         private const val UNLOCK_REQUEST = 8422
     }
 
