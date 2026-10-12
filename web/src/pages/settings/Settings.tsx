@@ -35,6 +35,10 @@ const JUMP_PATIENCE_MS = 2000
  * open tile one under the other. Only the content column scrolls, so the tiles
  * stay where they are, and the search waits above the cards until somebody
  * scrolls up for it.
+ *
+ * The content column reaches down through the gutter and pads its end by the
+ * same amount, as the other pages do in App.tsx, so a tile's page actions rest
+ * on the window's bottom edge exactly where theirs do.
  */
 export function Settings(props: SettingsProps) {
   const { tile, tiles } = props
@@ -85,7 +89,7 @@ export function Settings(props: SettingsProps) {
       <div
         ref={content}
         data-settings-content
-        className="flex min-w-0 flex-1 flex-col overflow-y-auto ps-2 pb-[var(--page-gutter)] sm:px-6 md:px-8"
+        className="flex min-w-0 flex-1 flex-col overflow-y-auto ps-2 sm:-mb-[var(--page-gutter)] sm:px-6 md:px-8"
       >
         {/* The search ends where the cards below it do. */}
         <SettingsSearch tiles={tiles} tile={tile} wide={wide} />
@@ -94,7 +98,7 @@ export function Settings(props: SettingsProps) {
             together in a wide window. */}
         <div
           key={tile}
-          className={`glim-page-enter flex w-full flex-col gap-10${wide ? '' : ' max-w-[880px]'}${toward ? ' glim-tab-slide' : ''}`}
+          className={`glim-page-enter flex w-full grow flex-col gap-10 pb-4 sm:pb-[var(--page-gutter)]${wide ? '' : ' max-w-[880px]'}${toward ? ' glim-tab-slide' : ''}`}
           style={{ '--tab-dir': toward } as CSSProperties}
         >
           <TilePage {...props} />
