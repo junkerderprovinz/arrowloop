@@ -1,6 +1,8 @@
 package job
 
 import (
+	"errors"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"strings"
@@ -41,4 +43,20 @@ func SamePlace(a, b string) bool {
 	ia, errA := os.Stat(ra)
 	ib, errB := os.Stat(rb)
 	return errA == nil && errB == nil && os.SameFile(ia, ib)
+}
+
+// Apart reports whether two local paths are known to be two places. A path
+// that cannot be looked at, for any reason but not existing, could be the
+// other one under a name this machine cannot follow right now, so it is not
+// known to be apart from anything.
+func Apart(a, b string) bool {
+	if a == b || SamePlace(a, b) {
+		return false
+	}
+	for _, p := range []string{a, b} {
+		if _, err := os.Stat(resolved(p)); err != nil && !errors.Is(err, fs.ErrNotExist) {
+			return false
+		}
+	}
+	return true
 }
