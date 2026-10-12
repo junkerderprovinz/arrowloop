@@ -983,6 +983,7 @@ const zh: Translations = {
   'status.running': '运行中',
   'status.held': '已暂扣',
   'status.conflict': '冲突待处理',
+  'status.warned': '需要查看',
   'status.failed': '失败',
   'status.paused': '已暂停',
   'status.never': '尚未运行',
@@ -990,6 +991,7 @@ const zh: Translations = {
   'needs.conflicts': '等你决定的冲突',
   'needs.held': '{job} 已暂扣：{what}',
   'needs.notes': '关于你的任务的提示',
+  'needs.unread': '无法读取的冲突',
   'jobs.filter.label': '显示',
   'jobs.filter.all': '全部任务',
   'jobs.filter.running': '运行中',
@@ -1037,6 +1039,7 @@ const zh: Translations = {
   'anomalies.ownBadge': '专用刹车',
   'needs.neverRan': '{job} 尚未运行过',
   'needs.failed': '{job} 上次运行失败',
+  'needs.warned': '{job} 的上次运行跳过了一些文件',
 }
 
 export default zh

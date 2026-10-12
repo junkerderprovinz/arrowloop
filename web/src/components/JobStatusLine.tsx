@@ -8,21 +8,24 @@ import { useT } from '../lib/i18n'
 import type { JobStatus } from '../lib/jobList'
 
 /**
- * A job's one status, as its row and its page show it. A held run and a
- * conflict still waiting are warnings that lead to where they are answered;
- * only a job with nothing waiting gets the quiet green dot and the time of its
- * last run.
+ * A job's one status, as its row and its page show it. A held run, a
+ * conflict still waiting and a note are warnings that lead to where they are
+ * answered; only a job with nothing waiting gets the quiet green dot and the
+ * time of its last run.
  */
 export function JobStatusLine({
   job,
   status,
   heldFinding,
+  noteFinding,
   event,
 }: {
   job: Job
   status: JobStatus
   /** The finding that holds the job, which the held badge opens. */
   heldFinding?: string
+  /** A finding about the job that does not hold it, which the warning opens. */
+  noteFinding?: string
   /** The running job's progress, drawn as a bar under the badge. */
   event?: RunEvent
 }) {
@@ -64,6 +67,16 @@ export function JobStatusLine({
         <button type="button" onClick={(e) => lead(e, { tab: 'conflicts', job: job.name })}>
           <Badge tone="warn">{t('status.conflict')}</Badge>
         </button>
+      )
+    case 'warned':
+      // A run that skipped files has its answer on the job's own page, which
+      // the row around the badge already opens.
+      return noteFinding ? (
+        <button type="button" onClick={(e) => lead(e, { tab: 'anomalies', job: job.name, finding: noteFinding })}>
+          <Badge tone="warn">{t('status.warned')}</Badge>
+        </button>
+      ) : (
+        <Badge tone="warn">{t('status.warned')}</Badge>
       )
     case 'failed':
       return <Badge tone="fail">{t('status.failed')}</Badge>

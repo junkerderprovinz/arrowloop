@@ -983,6 +983,7 @@ const ru: Translations = {
   'status.running': 'Выполняется',
   'status.held': 'Приостановлено',
   'status.conflict': 'Конфликт ждёт',
+  'status.warned': 'Стоит проверить',
   'status.failed': 'Не удалось',
   'status.paused': 'На паузе',
   'status.never': 'Ещё не запускалось',
@@ -990,6 +991,7 @@ const ru: Translations = {
   'needs.conflicts': 'Конфликты ждут вашего решения',
   'needs.held': '«{job}» приостановлено: {what}',
   'needs.notes': 'Заметки о ваших заданиях',
+  'needs.unread': 'Конфликты, которые не удалось прочитать',
   'jobs.filter.label': 'Показывать',
   'jobs.filter.all': 'Все задания',
   'jobs.filter.running': 'Выполняются',
@@ -1037,6 +1039,7 @@ const ru: Translations = {
   'anomalies.ownBadge': 'Свои тормоза',
   'needs.neverRan': 'Задание {job} ещё ни разу не запускалось',
   'needs.failed': 'Последний запуск задания {job} завершился ошибкой',
+  'needs.warned': 'Последний запуск задания {job} пропустил файлы',
 }
 
 export default ru

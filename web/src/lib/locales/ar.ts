@@ -983,6 +983,7 @@ const ar: Translations = {
   'status.running': 'قيد التشغيل',
   'status.held': 'موقوفة',
   'status.conflict': 'تعارض بانتظارك',
+  'status.warned': 'يحتاج إلى نظرة',
   'status.failed': 'فشلت',
   'status.paused': 'متوقفة مؤقتًا',
   'status.never': 'لم تعمل بعد',
@@ -990,6 +991,7 @@ const ar: Translations = {
   'needs.conflicts': 'تعارضات تنتظر قرارك',
   'needs.held': '{job} موقوفة: {what}',
   'needs.notes': 'ملاحظات عن مهامك',
+  'needs.unread': 'تعارضات تعذّرت قراءتها',
   'jobs.filter.label': 'عرض',
   'jobs.filter.all': 'كل المهام',
   'jobs.filter.running': 'قيد التشغيل',
@@ -1037,6 +1039,7 @@ const ar: Translations = {
   'anomalies.ownBadge': 'مكابح خاصة',
   'needs.neverRan': 'لم تُشغَّل المهمة {job} بعد',
   'needs.failed': 'فشل آخر تشغيل للمهمة {job}',
+  'needs.warned': 'تخطى آخر تشغيل للمهمة {job} بعض الملفات',
 }
 
 export default ar

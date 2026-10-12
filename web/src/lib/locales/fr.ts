@@ -983,6 +983,7 @@ const fr: Translations = {
   'status.running': 'En cours',
   'status.held': 'Retenue',
   'status.conflict': 'Conflit en attente',
+  'status.warned': 'À vérifier',
   'status.failed': 'Échec',
   'status.paused': 'En pause',
   'status.never': 'Jamais exécutée',
@@ -990,6 +991,7 @@ const fr: Translations = {
   'needs.conflicts': 'Conflits en attente d\'un choix',
   'needs.held': '« {job} » est retenue : {what}',
   'needs.notes': 'Remarques sur vos tâches',
+  'needs.unread': 'Conflits illisibles',
   'jobs.filter.label': 'Afficher',
   'jobs.filter.all': 'Toutes les tâches',
   'jobs.filter.running': 'En cours',
@@ -1037,6 +1039,7 @@ const fr: Translations = {
   'anomalies.ownBadge': 'Freins propres',
   'needs.neverRan': 'La tâche {job} ne s\'est pas encore exécutée',
   'needs.failed': 'La dernière exécution de {job} a échoué',
+  'needs.warned': 'La dernière exécution de {job} a ignoré des fichiers',
 }
 
 export default fr

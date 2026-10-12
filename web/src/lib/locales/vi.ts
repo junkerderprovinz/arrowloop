@@ -983,6 +983,7 @@ const vi: Translations = {
   'status.running': 'Đang chạy',
   'status.held': 'Bị giữ',
   'status.conflict': 'Xung đột đang chờ',
+  'status.warned': 'Cần xem lại',
   'status.failed': 'Thất bại',
   'status.paused': 'Tạm dừng',
   'status.never': 'Chưa chạy lần nào',
@@ -990,6 +991,7 @@ const vi: Translations = {
   'needs.conflicts': 'Xung đột đang chờ bạn chọn',
   'needs.held': '{job} đang bị giữ: {what}',
   'needs.notes': 'Ghi chú về các công việc của bạn',
+  'needs.unread': 'Xung đột không đọc được',
   'jobs.filter.label': 'Hiển thị',
   'jobs.filter.all': 'Tất cả công việc',
   'jobs.filter.running': 'Đang chạy',
@@ -1037,6 +1039,7 @@ const vi: Translations = {
   'anomalies.ownBadge': 'Phanh riêng',
   'needs.neverRan': 'Công việc {job} chưa từng chạy',
   'needs.failed': 'Lần chạy gần nhất của {job} không thành công',
+  'needs.warned': 'Lần chạy gần nhất của {job} đã bỏ qua một số tệp',
 }
 
 export default vi

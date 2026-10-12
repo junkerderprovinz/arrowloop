@@ -65,7 +65,7 @@ export function JobPage({ name }: { name: string }) {
     )
   }
 
-  const status = jobStatus(job, { held: !!held, conflict: live.conflicted.includes(name) })
+  const status = jobStatus(job, { held: !!held, conflict: live.conflicted.includes(name), notes: notes.length > 0 })
 
   return (
     <Stack>
@@ -74,6 +74,7 @@ export function JobPage({ name }: { name: string }) {
         status={status}
         notes={notes.length}
         heldFinding={held?.id}
+        noteFinding={notes[0]?.id}
         actions={
           <>
             {at !== -1 && (
@@ -176,12 +177,14 @@ function Head({
   status,
   notes,
   heldFinding,
+  noteFinding,
   actions,
 }: {
   job: Job
   status: ReturnType<typeof jobStatus>
   notes: number
   heldFinding?: string
+  noteFinding?: string
   actions: ReactNode
 }) {
   const { t, lang } = useT()
@@ -215,7 +218,7 @@ function Head({
         </span>
       </div>
       <span className="flex shrink-0 items-center">
-        <JobStatusLine job={job} status={status} heldFinding={heldFinding} />
+        <JobStatusLine job={job} status={status} heldFinding={heldFinding} noteFinding={noteFinding} />
       </span>
       <span className="flex max-w-full flex-wrap items-center justify-end gap-2">{actions}</span>
     </div>

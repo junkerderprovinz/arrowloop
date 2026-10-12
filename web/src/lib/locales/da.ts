@@ -983,6 +983,7 @@ const da: Translations = {
   'status.running': 'I gang',
   'status.held': 'Stoppet',
   'status.conflict': 'Konflikt venter',
+  'status.warned': 'Bør ses på',
   'status.failed': 'Mislykkedes',
   'status.paused': 'På pause',
   'status.never': 'Endnu ikke kørt',
@@ -990,6 +991,7 @@ const da: Translations = {
   'needs.conflicts': 'Konflikter venter på en afgørelse',
   'needs.held': '{job} er stoppet: {what}',
   'needs.notes': 'Bemærkninger til dine job',
+  'needs.unread': 'Konflikter, der ikke kunne læses',
   'jobs.filter.label': 'Vis',
   'jobs.filter.all': 'Alle job',
   'jobs.filter.running': 'I gang',
@@ -1037,6 +1039,7 @@ const da: Translations = {
   'anomalies.ownBadge': 'Egne bremser',
   'needs.neverRan': '{job} er aldrig kørt',
   'needs.failed': 'Seneste kørsel af {job} mislykkedes',
+  'needs.warned': 'Seneste kørsel af {job} sprang filer over',
 }
 
 export default da

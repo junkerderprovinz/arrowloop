@@ -1,13 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import type { Finding } from './anomalies'
-import { needs, type JobState } from './needs'
+import { jobState, needs, type JobState } from './needs'
 
 function finding(id: string, held: boolean, job = 'photos'): Finding {
   return { id, job, kind: held ? 'delete' : 'overdue', severity: held ? 'critical' : 'warning', held, since: '', seen: '', open: true }
 }
 
 function job(name: string, over: Partial<JobState> = {}): JobState {
-  return { name, disabled: false, ran: true, failed: false, ...over }
+  return { name, disabled: false, ran: true, failed: false, warned: false, ...over }
 }
 
 describe('needs', () => {
@@ -51,8 +51,28 @@ describe('needs', () => {
     expect(needs(1, [], [job('photos', { ran: false })]).head).toBe('needsYou')
   })
 
+  it('never rounds a run that skipped files up to in sync', () => {
+    const got = needs(0, [], [job('photos', { warned: true })])
+    expect(got).toEqual({ head: 'withNotes', items: [{ kind: 'warned', job: 'photos' }] })
+  })
+
+  it('counts conflicts that could not be read as a note', () => {
+    expect(needs(0, [], [job('photos')], 2)).toEqual({ head: 'withNotes', items: [{ kind: 'unread', count: 2 }] })
+  })
+
   it('gives a job its finding already speaks for no second line', () => {
     const got = needs(0, [finding('a', false, 'photos')], [job('photos', { failed: true })])
     expect(got.items).toEqual([{ kind: 'notes', count: 1 }])
+  })
+})
+
+describe('jobState', () => {
+  it('reads a last run that skipped files as a warning', () => {
+    const recent = [
+      { Err: '', Skipped: 2 },
+      { Err: 'boom', Skipped: 0 },
+    ]
+    expect(jobState({ name: 'photos', disabled: false, recent })).toEqual(job('photos', { warned: true }))
+    expect(jobState({ name: 'photos', disabled: false, recent: [] })).toEqual(job('photos', { ran: false }))
   })
 })

@@ -983,6 +983,7 @@ const hu: Translations = {
   'status.running': 'Fut',
   'status.held': 'Felfüggesztve',
   'status.conflict': 'Ütközés vár',
+  'status.warned': 'Érdemes megnézni',
   'status.failed': 'Sikertelen',
   'status.paused': 'Szüneteltetve',
   'status.never': 'Még nem futott',
@@ -990,6 +991,7 @@ const hu: Translations = {
   'needs.conflicts': 'Ütközések várnak döntésre',
   'needs.held': '{job} fel van függesztve: {what}',
   'needs.notes': 'Megjegyzések a feladataidhoz',
+  'needs.unread': 'Ütközések, amelyeket nem sikerült beolvasni',
   'jobs.filter.label': 'Megjelenítés',
   'jobs.filter.all': 'Minden feladat',
   'jobs.filter.running': 'Futó',
@@ -1037,6 +1039,7 @@ const hu: Translations = {
   'anomalies.ownBadge': 'Saját fékek',
   'needs.neverRan': 'A(z) {job} feladat még nem futott',
   'needs.failed': 'A(z) {job} feladat legutóbbi futása sikertelen volt',
+  'needs.warned': 'A(z) {job} utolsó futása kihagyott fájlokat',
 }
 
 export default hu

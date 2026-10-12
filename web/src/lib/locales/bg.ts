@@ -983,6 +983,7 @@ const bg: Translations = {
   'status.running': 'Върви',
   'status.held': 'Спряна',
   'status.conflict': 'Чака конфликт',
+  'status.warned': 'За преглед',
   'status.failed': 'Провалена',
   'status.paused': 'На пауза',
   'status.never': 'Още не е изпълнявана',
@@ -990,6 +991,7 @@ const bg: Translations = {
   'needs.conflicts': 'Конфликти, които чакат избор',
   'needs.held': '{job} е спряна: {what}',
   'needs.notes': 'Бележки към задачите ти',
+  'needs.unread': 'Конфликти, които не можаха да се прочетат',
   'jobs.filter.label': 'Показване',
   'jobs.filter.all': 'Всички задачи',
   'jobs.filter.running': 'Вървящи',
@@ -1037,6 +1039,7 @@ const bg: Translations = {
   'anomalies.ownBadge': 'Собствени спирачки',
   'needs.neverRan': 'Задачата {job} още не е изпълнявана',
   'needs.failed': 'Последното изпълнение на {job} не успя',
+  'needs.warned': 'Последното изпълнение на {job} пропусна файлове',
 }
 
 export default bg

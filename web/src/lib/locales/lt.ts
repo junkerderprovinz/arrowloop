@@ -983,6 +983,7 @@ const lt: Translations = {
   'status.running': 'Vykdoma',
   'status.held': 'Sustabdyta',
   'status.conflict': 'Laukia konfliktas',
+  'status.warned': 'Reikia peržiūrėti',
   'status.failed': 'Nepavyko',
   'status.paused': 'Pristabdyta',
   'status.never': 'Dar nepaleista',
@@ -990,6 +991,7 @@ const lt: Translations = {
   'needs.conflicts': 'Konfliktai laukia sprendimo',
   'needs.held': 'Užduotis {job} sustabdyta: {what}',
   'needs.notes': 'Pastabos apie jūsų užduotis',
+  'needs.unread': 'Konfliktai, kurių nepavyko perskaityti',
   'jobs.filter.label': 'Rodyti',
   'jobs.filter.all': 'Visos užduotys',
   'jobs.filter.running': 'Vykdomos',
@@ -1037,6 +1039,7 @@ const lt: Translations = {
   'anomalies.ownBadge': 'Atskiri stabdžiai',
   'needs.neverRan': 'Užduotis {job} dar nebuvo paleista',
   'needs.failed': 'Paskutinis užduoties {job} paleidimas nepavyko',
+  'needs.warned': 'Paskutinis užduoties {job} vykdymas praleido failus',
 }
 
 export default lt

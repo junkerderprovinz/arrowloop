@@ -983,6 +983,7 @@ const nl: Translations = {
   'status.running': 'Bezig',
   'status.held': 'Vastgehouden',
   'status.conflict': 'Conflict wacht',
+  'status.warned': 'Even nakijken',
   'status.failed': 'Mislukt',
   'status.paused': 'Gepauzeerd',
   'status.never': 'Nog niet uitgevoerd',
@@ -990,6 +991,7 @@ const nl: Translations = {
   'needs.conflicts': 'Conflicten wachten op een keuze',
   'needs.held': '{job} is vastgehouden: {what}',
   'needs.notes': 'Opmerkingen over je taken',
+  'needs.unread': 'Conflicten die niet gelezen konden worden',
   'jobs.filter.label': 'Tonen',
   'jobs.filter.all': 'Alle taken',
   'jobs.filter.running': 'Bezig',
@@ -1037,6 +1039,7 @@ const nl: Translations = {
   'anomalies.ownBadge': 'Eigen remmen',
   'needs.neverRan': 'Taak {job} is nog nooit uitgevoerd',
   'needs.failed': 'De laatste run van {job} is mislukt',
+  'needs.warned': 'De laatste run van {job} heeft bestanden overgeslagen',
 }
 
 export default nl

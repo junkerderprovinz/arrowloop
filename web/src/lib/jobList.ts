@@ -35,19 +35,23 @@ type ListedJob = { name: string; running: boolean; disabled: boolean; recent: (S
 /**
  * The one status a job's row shows, the loudest that applies. A job that ran
  * fine is `last`, which the row draws quietly as the time of that run, so a
- * held run or a conflict still waiting must win over it: a warning is never
- * rounded up to "synced".
+ * held run, a conflict still waiting, a note or a last run that skipped files
+ * must win over it: a warning is never rounded up to "synced".
  */
-export type JobStatus = 'running' | 'held' | 'failed' | 'conflict' | 'paused' | 'never' | 'last'
+export type JobStatus = 'running' | 'held' | 'failed' | 'conflict' | 'warned' | 'paused' | 'never' | 'last'
 
-/** What waits on a person for one job outside its own runs. */
-export type JobWaits = { held: boolean; conflict: boolean }
+/**
+ * What waits on a person for one job outside its own runs. `notes` is a
+ * finding about the job that does not hold it.
+ */
+export type JobWaits = { held: boolean; conflict: boolean; notes: boolean }
 
 export function jobStatus(job: ListedJob, waits: JobWaits): JobStatus {
   if (job.running) return 'running'
   if (waits.held) return 'held'
   if (job.recent[0] && job.recent[0].Err !== '') return 'failed'
   if (waits.conflict) return 'conflict'
+  if (waits.notes || (job.recent[0]?.Skipped ?? 0) > 0) return 'warned'
   if (job.disabled) return 'paused'
   if (job.recent.length === 0) return 'never'
   return 'last'
@@ -70,10 +74,10 @@ export type JobView = { filter: JobFilter; sort: JobSort }
 
 export const DEFAULT_VIEW: JobView = { filter: 'all', sort: { field: 'name', reversed: false } }
 
-const TROUBLE: JobStatus[] = ['held', 'failed', 'conflict']
+const TROUBLE: JobStatus[] = ['held', 'failed', 'conflict', 'warned']
 
 // Problems first, then work in progress, then what is quiet.
-const STATUS_RANK: Record<JobStatus, number> = { held: 0, failed: 1, conflict: 2, running: 3, never: 4, paused: 5, last: 6 }
+const STATUS_RANK: Record<JobStatus, number> = { held: 0, failed: 1, conflict: 2, warned: 3, running: 4, never: 5, paused: 6, last: 7 }
 
 function keeps(filter: JobFilter, status: JobStatus): boolean {
   switch (filter) {

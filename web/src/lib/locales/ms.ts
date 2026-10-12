@@ -983,6 +983,7 @@ const ms: Translations = {
   'status.running': 'Sedang berjalan',
   'status.held': 'Ditahan',
   'status.conflict': 'Percanggahan menunggu',
+  'status.warned': 'Perlu disemak',
   'status.failed': 'Gagal',
   'status.paused': 'Dijeda',
   'status.never': 'Belum pernah dijalankan',
@@ -990,6 +991,7 @@ const ms: Translations = {
   'needs.conflicts': 'Percanggahan menunggu pilihan',
   'needs.held': '{job} ditahan: {what}',
   'needs.notes': 'Catatan tentang tugas anda',
+  'needs.unread': 'Konflik yang tidak dapat dibaca',
   'jobs.filter.label': 'Tunjukkan',
   'jobs.filter.all': 'Semua tugas',
   'jobs.filter.running': 'Sedang berjalan',
@@ -1037,6 +1039,7 @@ const ms: Translations = {
   'anomalies.ownBadge': 'Brek sendiri',
   'needs.neverRan': 'Tugas {job} belum pernah dijalankan',
   'needs.failed': 'Larian terakhir {job} gagal',
+  'needs.warned': 'Larian terakhir {job} melangkau beberapa fail',
 }
 
 export default ms

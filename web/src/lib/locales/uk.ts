@@ -983,6 +983,7 @@ const uk: Translations = {
   'status.running': 'Виконується',
   'status.held': 'Призупинено',
   'status.conflict': 'Конфлікт чекає',
+  'status.warned': 'Варто перевірити',
   'status.failed': 'Невдало',
   'status.paused': 'На паузі',
   'status.never': 'Ще не запускалося',
@@ -990,6 +991,7 @@ const uk: Translations = {
   'needs.conflicts': 'Конфлікти чекають на рішення',
   'needs.held': '{job} призупинено: {what}',
   'needs.notes': 'Примітки до ваших завдань',
+  'needs.unread': 'Конфлікти, які не вдалося прочитати',
   'jobs.filter.label': 'Показати',
   'jobs.filter.all': 'Усі завдання',
   'jobs.filter.running': 'Виконуються',
@@ -1037,6 +1039,7 @@ const uk: Translations = {
   'anomalies.ownBadge': 'Власні гальма',
   'needs.neverRan': 'Завдання {job} ще ніколи не запускалося',
   'needs.failed': 'Останній запуск завдання {job} завершився помилкою',
+  'needs.warned': 'Останній запуск завдання {job} пропустив файли',
 }
 
 export default uk

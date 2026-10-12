@@ -983,6 +983,7 @@ const id: Translations = {
   'status.running': 'Berjalan',
   'status.held': 'Ditahan',
   'status.conflict': 'Konflik menunggu',
+  'status.warned': 'Perlu dicek',
   'status.failed': 'Gagal',
   'status.paused': 'Dijeda',
   'status.never': 'Belum pernah dijalankan',
@@ -990,6 +991,7 @@ const id: Translations = {
   'needs.conflicts': 'Konflik menunggu keputusan',
   'needs.held': '{job} ditahan: {what}',
   'needs.notes': 'Catatan untuk tugas Anda',
+  'needs.unread': 'Konflik yang tidak dapat dibaca',
   'jobs.filter.label': 'Tampilkan',
   'jobs.filter.all': 'Semua tugas',
   'jobs.filter.running': 'Berjalan',
@@ -1037,6 +1039,7 @@ const id: Translations = {
   'anomalies.ownBadge': 'Rem sendiri',
   'needs.neverRan': 'Tugas {job} belum pernah dijalankan',
   'needs.failed': 'Tugas {job} gagal pada terakhir dijalankan',
+  'needs.warned': 'Proses terakhir {job} melewatkan beberapa berkas',
 }
 
 export default id

@@ -983,6 +983,7 @@ const eu: Translations = {
   'status.running': 'Martxan',
   'status.held': 'Geldituta',
   'status.conflict': 'Gatazka zain',
+  'status.warned': 'Begiratu beharra',
   'status.failed': 'Huts egin du',
   'status.paused': 'Pausatuta',
   'status.never': 'Ez da oraindik exekutatu',
@@ -990,6 +991,7 @@ const eu: Translations = {
   'needs.conflicts': 'Erabaki baten zain dauden gatazkak',
   'needs.held': '{job} geldituta dago: {what}',
   'needs.notes': 'Zure lanei buruzko oharrak',
+  'needs.unread': 'Irakurri ezin izan diren gatazkak',
   'jobs.filter.label': 'Erakutsi',
   'jobs.filter.all': 'Lan guztiak',
   'jobs.filter.running': 'Martxan daudenak',
@@ -1037,6 +1039,7 @@ const eu: Translations = {
   'anomalies.ownBadge': 'Balazta propioak',
   'needs.neverRan': '{job} lana oraindik ez da exekutatu',
   'needs.failed': '{job} lanaren azken exekuzioak huts egin du',
+  'needs.warned': '{job} lanaren azken exekuzioak fitxategiak saltatu ditu',
 }
 
 export default eu

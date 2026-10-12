@@ -983,6 +983,7 @@ const sr: Translations = {
   'status.running': 'У току',
   'status.held': 'Заустављено',
   'status.conflict': 'Сукоб чека',
+  'status.warned': 'За проверу',
   'status.failed': 'Није успело',
   'status.paused': 'На паузи',
   'status.never': 'Још није покренуто',
@@ -990,6 +991,7 @@ const sr: Translations = {
   'needs.conflicts': 'Сукоби чекају одлуку',
   'needs.held': '{job} је заустављен: {what}',
   'needs.notes': 'Напомене о твојим пословима',
+  'needs.unread': 'Сукоби који нису могли да се прочитају',
   'jobs.filter.label': 'Прикажи',
   'jobs.filter.all': 'Сви послови',
   'jobs.filter.running': 'У току',
@@ -1037,6 +1039,7 @@ const sr: Translations = {
   'anomalies.ownBadge': 'Сопствене кочнице',
   'needs.neverRan': 'Посао {job} још није извршен',
   'needs.failed': 'Последње извршавање посла {job} није успело',
+  'needs.warned': 'Последње покретање посла {job} прескочило је датотеке',
 }
 
 export default sr

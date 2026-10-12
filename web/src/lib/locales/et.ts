@@ -983,6 +983,7 @@ const et: Translations = {
   'status.running': 'Käib',
   'status.held': 'Peatatud',
   'status.conflict': 'Vastuolu ootab',
+  'status.warned': 'Vajab ülevaatust',
   'status.failed': 'Ebaõnnestus',
   'status.paused': 'Pausil',
   'status.never': 'Pole veel käivitatud',
@@ -990,6 +991,7 @@ const et: Translations = {
   'needs.conflicts': 'Vastuolud ootavad otsust',
   'needs.held': '{job} on peatatud: {what}',
   'needs.notes': 'Märkused sinu tööde kohta',
+  'needs.unread': 'Vastuolud, mida ei õnnestunud lugeda',
   'jobs.filter.label': 'Näita',
   'jobs.filter.all': 'Kõik tööd',
   'jobs.filter.running': 'Käimas',
@@ -1037,6 +1039,7 @@ const et: Translations = {
   'anomalies.ownBadge': 'Oma pidurid',
   'needs.neverRan': 'Tööd {job} pole veel käivitatud',
   'needs.failed': 'Töö {job} viimane käivitus ebaõnnestus',
+  'needs.warned': 'Töö {job} viimane käivitus jättis faile vahele',
 }
 
 export default et

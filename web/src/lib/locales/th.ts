@@ -983,6 +983,7 @@ const th: Translations = {
   'status.running': 'กำลังทำงาน',
   'status.held': 'ถูกพักไว้',
   'status.conflict': 'มีความขัดแย้งรออยู่',
+  'status.warned': 'ควรตรวจดู',
   'status.failed': 'ล้มเหลว',
   'status.paused': 'หยุดชั่วคราว',
   'status.never': 'ยังไม่เคยทำงาน',
@@ -990,6 +991,7 @@ const th: Translations = {
   'needs.conflicts': 'ความขัดแย้งที่รอให้เลือก',
   'needs.held': '{job} ถูกพักไว้: {what}',
   'needs.notes': 'หมายเหตุเกี่ยวกับงานของคุณ',
+  'needs.unread': 'ข้อขัดแย้งที่อ่านไม่ได้',
   'jobs.filter.label': 'แสดง',
   'jobs.filter.all': 'งานทั้งหมด',
   'jobs.filter.running': 'กำลังทำงาน',
@@ -1037,6 +1039,7 @@ const th: Translations = {
   'anomalies.ownBadge': 'เบรกเฉพาะ',
   'needs.neverRan': '{job} ยังไม่เคยทำงาน',
   'needs.failed': '{job} ทำงานล่าสุดไม่สำเร็จ',
+  'needs.warned': 'การทำงานครั้งล่าสุดของ {job} ข้ามบางไฟล์ไป',
 }
 
 export default th

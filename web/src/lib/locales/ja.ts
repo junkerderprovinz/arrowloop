@@ -983,6 +983,7 @@ const ja: Translations = {
   'status.running': '実行中',
   'status.held': '保留中',
   'status.conflict': '競合が未解決',
+  'status.warned': '確認が必要',
   'status.failed': '失敗',
   'status.paused': '一時停止中',
   'status.never': '未実行',
@@ -990,6 +991,7 @@ const ja: Translations = {
   'needs.conflicts': '判断待ちの競合',
   'needs.held': '{job} は保留中です: {what}',
   'needs.notes': 'ジョブについてのお知らせ',
+  'needs.unread': '読み込めなかった競合',
   'jobs.filter.label': '表示',
   'jobs.filter.all': 'すべてのジョブ',
   'jobs.filter.running': '実行中',
@@ -1037,6 +1039,7 @@ const ja: Translations = {
   'anomalies.ownBadge': '専用ブレーキ',
   'needs.neverRan': '{job} はまだ実行されていません',
   'needs.failed': '{job} の前回の実行は失敗しました',
+  'needs.warned': '{job} の前回の実行でスキップされたファイルがあります',
 }
 
 export default ja

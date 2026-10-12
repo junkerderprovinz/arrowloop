@@ -983,6 +983,7 @@ const es: Translations = {
   'status.running': 'En marcha',
   'status.held': 'Detenida',
   'status.conflict': 'Conflicto pendiente',
+  'status.warned': 'Hay que revisarlo',
   'status.failed': 'Fallida',
   'status.paused': 'En pausa',
   'status.never': 'Aún sin ejecutar',
@@ -990,6 +991,7 @@ const es: Translations = {
   'needs.conflicts': 'Conflictos a la espera de una decisión',
   'needs.held': '{job} está detenida: {what}',
   'needs.notes': 'Notas sobre tus tareas',
+  'needs.unread': 'Conflictos que no se pudieron leer',
   'jobs.filter.label': 'Mostrar',
   'jobs.filter.all': 'Todas las tareas',
   'jobs.filter.running': 'En marcha',
@@ -1037,6 +1039,7 @@ const es: Translations = {
   'anomalies.ownBadge': 'Frenos propios',
   'needs.neverRan': 'La tarea {job} aún no se ha ejecutado',
   'needs.failed': 'La última ejecución de {job} falló',
+  'needs.warned': 'La última ejecución de {job} omitió archivos',
 }
 
 export default es

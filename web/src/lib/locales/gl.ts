@@ -983,6 +983,7 @@ const gl: Translations = {
   'status.running': 'Executándose',
   'status.held': 'Retida',
   'status.conflict': 'Conflito pendente',
+  'status.warned': 'Cómpre revisalo',
   'status.failed': 'Fallou',
   'status.paused': 'En pausa',
   'status.never': 'Aínda sen executar',
@@ -990,6 +991,7 @@ const gl: Translations = {
   'needs.conflicts': 'Conflitos á espera dunha decisión',
   'needs.held': '«{job}» está retida: {what}',
   'needs.notes': 'Notas sobre as túas tarefas',
+  'needs.unread': 'Conflitos que non se puideron ler',
   'jobs.filter.label': 'Mostrar',
   'jobs.filter.all': 'Todas as tarefas',
   'jobs.filter.running': 'En execución',
@@ -1037,6 +1039,7 @@ const gl: Translations = {
   'anomalies.ownBadge': 'Freos propios',
   'needs.neverRan': 'A tarefa {job} aínda non se executou',
   'needs.failed': 'A última execución de {job} fallou',
+  'needs.warned': 'A última execución de {job} omitiu ficheiros',
 }
 
 export default gl

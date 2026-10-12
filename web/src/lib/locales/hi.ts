@@ -983,6 +983,7 @@ const hi: Translations = {
   'status.running': 'चल रहा है',
   'status.held': 'रोका गया',
   'status.conflict': 'टकराव बाकी है',
+  'status.warned': 'देखना ज़रूरी',
   'status.failed': 'विफल',
   'status.paused': 'रुका हुआ',
   'status.never': 'अभी तक नहीं चला',
@@ -990,6 +991,7 @@ const hi: Translations = {
   'needs.conflicts': 'फ़ैसले की प्रतीक्षा में टकराव',
   'needs.held': '{job} रोका गया है: {what}',
   'needs.notes': 'आपके कामों पर टिप्पणियाँ',
+  'needs.unread': 'वे टकराव जिन्हें पढ़ा नहीं जा सका',
   'jobs.filter.label': 'दिखाएँ',
   'jobs.filter.all': 'सभी काम',
   'jobs.filter.running': 'चल रहे',
@@ -1037,6 +1039,7 @@ const hi: Translations = {
   'anomalies.ownBadge': 'अपने ब्रेक',
   'needs.neverRan': '{job} अभी तक नहीं चला',
   'needs.failed': '{job} का पिछला रन विफल रहा',
+  'needs.warned': '{job} की पिछली बार की चलावट ने कुछ फ़ाइलें छोड़ दीं',
 }
 
 export default hi

@@ -983,6 +983,7 @@ const no: Translations = {
   'status.running': 'Kjører',
   'status.held': 'Holdt tilbake',
   'status.conflict': 'Konflikt venter',
+  'status.warned': 'Bør sjekkes',
   'status.failed': 'Mislyktes',
   'status.paused': 'På pause',
   'status.never': 'Ikke kjørt ennå',
@@ -990,6 +991,7 @@ const no: Translations = {
   'needs.conflicts': 'Konflikter venter på et valg',
   'needs.held': '{job} er holdt tilbake: {what}',
   'needs.notes': 'Merknader om jobbene dine',
+  'needs.unread': 'Konflikter som ikke kunne leses',
   'jobs.filter.label': 'Vis',
   'jobs.filter.all': 'Alle jobber',
   'jobs.filter.running': 'Kjører',
@@ -1037,6 +1039,7 @@ const no: Translations = {
   'anomalies.ownBadge': 'Egne bremser',
   'needs.neverRan': '{job} har aldri kjørt',
   'needs.failed': 'Siste kjøring av {job} mislyktes',
+  'needs.warned': 'Siste kjøring av {job} hoppet over filer',
 }
 
 export default no

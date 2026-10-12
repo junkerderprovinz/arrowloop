@@ -983,6 +983,7 @@ const he: Translations = {
   'status.running': 'פועלת',
   'status.held': 'מוחזקת',
   'status.conflict': 'התנגשות ממתינה',
+  'status.warned': 'כדאי לבדוק',
   'status.failed': 'נכשלה',
   'status.paused': 'מושהית',
   'status.never': 'טרם הורצה',
@@ -990,6 +991,7 @@ const he: Translations = {
   'needs.conflicts': 'התנגשויות שממתינות להחלטה',
   'needs.held': '{job} מוחזקת: {what}',
   'needs.notes': 'הערות על המשימות שלך',
+  'needs.unread': 'התנגשויות שלא ניתן היה לקרוא',
   'jobs.filter.label': 'הצגה',
   'jobs.filter.all': 'כל המשימות',
   'jobs.filter.running': 'פועלות',
@@ -1037,6 +1039,7 @@ const he: Translations = {
   'anomalies.ownBadge': 'בלמים משלה',
   'needs.neverRan': 'המשימה {job} עדיין לא הורצה',
   'needs.failed': 'ההרצה האחרונה של {job} נכשלה',
+  'needs.warned': 'ההרצה האחרונה של {job} דילגה על קבצים',
 }
 
 export default he

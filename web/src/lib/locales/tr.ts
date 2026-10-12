@@ -983,6 +983,7 @@ const tr: Translations = {
   'status.running': 'Çalışıyor',
   'status.held': 'Durduruldu',
   'status.conflict': 'Çakışma bekliyor',
+  'status.warned': 'Bakılmalı',
   'status.failed': 'Başarısız',
   'status.paused': 'Duraklatıldı',
   'status.never': 'Henüz çalışmadı',
@@ -990,6 +991,7 @@ const tr: Translations = {
   'needs.conflicts': 'Karar bekleyen çakışmalar',
   'needs.held': '{job} durduruldu: {what}',
   'needs.notes': 'İşlerinle ilgili notlar',
+  'needs.unread': 'Okunamayan çakışmalar',
   'jobs.filter.label': 'Göster',
   'jobs.filter.all': 'Tüm işler',
   'jobs.filter.running': 'Çalışanlar',
@@ -1037,6 +1039,7 @@ const tr: Translations = {
   'anomalies.ownBadge': 'Özel frenler',
   'needs.neverRan': '{job} işi henüz hiç çalıştırılmadı',
   'needs.failed': '{job} işinin son çalıştırması başarısız oldu',
+  'needs.warned': '{job} işinin son çalıştırması dosya atladı',
 }
 
 export default tr

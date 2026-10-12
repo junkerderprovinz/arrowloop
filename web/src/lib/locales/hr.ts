@@ -983,6 +983,7 @@ const hr: Translations = {
   'status.running': 'Radi',
   'status.held': 'Zadržan',
   'status.conflict': 'Sukob čeka',
+  'status.warned': 'Za provjeru',
   'status.failed': 'Nije uspio',
   'status.paused': 'Pauziran',
   'status.never': 'Još nije pokrenut',
@@ -990,6 +991,7 @@ const hr: Translations = {
   'needs.conflicts': 'Sukobi čekaju tvoj izbor',
   'needs.held': '{job} je zadržan: {what}',
   'needs.notes': 'Napomene o tvojim zadacima',
+  'needs.unread': 'Sukobi koji se nisu mogli pročitati',
   'jobs.filter.label': 'Prikaži',
   'jobs.filter.all': 'Svi zadaci',
   'jobs.filter.running': 'Pokrenuti',
@@ -1037,6 +1039,7 @@ const hr: Translations = {
   'anomalies.ownBadge': 'Vlastite kočnice',
   'needs.neverRan': 'Zadatak {job} još nije izveden',
   'needs.failed': 'Posljednje izvođenje zadatka {job} nije uspjelo',
+  'needs.warned': 'Posljednje izvođenje zadatka {job} preskočilo je datoteke',
 }
 
 export default hr

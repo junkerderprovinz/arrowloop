@@ -983,6 +983,7 @@ const sv: Translations = {
   'status.running': 'Pågår',
   'status.held': 'Stoppat',
   'status.conflict': 'Konflikt väntar',
+  'status.warned': 'Behöver ses över',
   'status.failed': 'Misslyckades',
   'status.paused': 'Pausat',
   'status.never': 'Inte körd än',
@@ -990,6 +991,7 @@ const sv: Translations = {
   'needs.conflicts': 'Konflikter väntar på ditt val',
   'needs.held': '{job} är stoppat: {what}',
   'needs.notes': 'Noteringar om dina jobb',
+  'needs.unread': 'Konflikter som inte kunde läsas',
   'jobs.filter.label': 'Visa',
   'jobs.filter.all': 'Alla jobb',
   'jobs.filter.running': 'Pågående',
@@ -1037,6 +1039,7 @@ const sv: Translations = {
   'anomalies.ownBadge': 'Egna bromsar',
   'needs.neverRan': '{job} har aldrig körts',
   'needs.failed': 'Senaste körningen av {job} misslyckades',
+  'needs.warned': 'Senaste körningen av {job} hoppade över filer',
 }
 
 export default sv

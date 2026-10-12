@@ -1024,6 +1024,7 @@ export const en = {
   'status.running': 'Running',
   'status.held': 'Held',
   'status.conflict': 'Conflict waiting',
+  'status.warned': 'Needs a look',
   'status.failed': 'Failed',
   'status.paused': 'Paused',
   'status.never': 'Not run yet',
@@ -1031,6 +1032,7 @@ export const en = {
   'needs.conflicts': 'Conflicts waiting for a choice',
   'needs.held': '{job} is held: {what}',
   'needs.notes': 'Notes on your jobs',
+  'needs.unread': 'Conflicts that could not be read',
   'jobs.filter.label': 'Show',
   'jobs.filter.all': 'All jobs',
   'jobs.filter.running': 'Running',
@@ -1078,6 +1080,7 @@ export const en = {
   'anomalies.ownBadge': 'Own brakes',
   'needs.neverRan': '{job} has not run yet',
   'needs.failed': 'The last run of {job} failed',
+  'needs.warned': 'The last run of {job} skipped files',
 } as const
 
 export type TranslationKey = keyof typeof en
@@ -2095,6 +2098,7 @@ export const de: Translations = {
   'status.running': 'Läuft',
   'status.held': 'Angehalten',
   'status.conflict': 'Konflikt wartet',
+  'status.warned': 'Bitte ansehen',
   'status.failed': 'Fehlgeschlagen',
   'status.paused': 'Pausiert',
   'status.never': 'Noch nie gelaufen',
@@ -2102,6 +2106,7 @@ export const de: Translations = {
   'needs.conflicts': 'Konflikte warten auf eine Entscheidung',
   'needs.held': '{job} ist angehalten: {what}',
   'needs.notes': 'Hinweise zu deinen Aufträgen',
+  'needs.unread': 'Konflikte, die sich nicht lesen ließen',
   'jobs.filter.label': 'Zeigen',
   'jobs.filter.all': 'Alle Aufträge',
   'jobs.filter.running': 'Laufend',
@@ -2149,6 +2154,7 @@ export const de: Translations = {
   'anomalies.ownBadge': 'Eigene Bremsen',
   'needs.neverRan': '{job} ist noch nie gelaufen',
   'needs.failed': 'Der letzte Lauf von {job} ist fehlgeschlagen',
+  'needs.warned': 'Der letzte Lauf von {job} hat Dateien übersprungen',
 }
 
 export interface Language {

@@ -983,6 +983,7 @@ const sl: Translations = {
   'status.running': 'Teče',
   'status.held': 'Zadržano',
   'status.conflict': 'Spor čaka',
+  'status.warned': 'Za pregled',
   'status.failed': 'Ni uspelo',
   'status.paused': 'V premoru',
   'status.never': 'Še ni teklo',
@@ -990,6 +991,7 @@ const sl: Translations = {
   'needs.conflicts': 'Spori čakajo na odločitev',
   'needs.held': '{job} je zadržano: {what}',
   'needs.notes': 'Opombe k tvojim opravilom',
+  'needs.unread': 'Spori, ki jih ni bilo mogoče prebrati',
   'jobs.filter.label': 'Prikaži',
   'jobs.filter.all': 'Vsa opravila',
   'jobs.filter.running': 'Tečejo',
@@ -1037,6 +1039,7 @@ const sl: Translations = {
   'anomalies.ownBadge': 'Lastne zavore',
   'needs.neverRan': 'Opravilo {job} še ni bilo zagnano',
   'needs.failed': 'Zadnji zagon opravila {job} ni uspel',
+  'needs.warned': 'Zadnji zagon opravila {job} je preskočil datoteke',
 }
 
 export default sl

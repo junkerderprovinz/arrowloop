@@ -983,6 +983,7 @@ const lv: Translations = {
   'status.running': 'Darbojas',
   'status.held': 'Apturēts',
   'status.conflict': 'Gaida konflikts',
+  'status.warned': 'Jāpārbauda',
   'status.failed': 'Neizdevās',
   'status.paused': 'Pauzēts',
   'status.never': 'Vēl nav palaists',
@@ -990,6 +991,7 @@ const lv: Translations = {
   'needs.conflicts': 'Konflikti gaida lēmumu',
   'needs.held': 'Uzdevums {job} ir apturēts: {what}',
   'needs.notes': 'Piezīmes par jūsu uzdevumiem',
+  'needs.unread': 'Konflikti, kurus neizdevās nolasīt',
   'jobs.filter.label': 'Rādīt',
   'jobs.filter.all': 'Visi uzdevumi',
   'jobs.filter.running': 'Darbojas',
@@ -1037,6 +1039,7 @@ const lv: Translations = {
   'anomalies.ownBadge': 'Atsevišķas bremzes',
   'needs.neverRan': 'Uzdevums {job} vēl nav palaists',
   'needs.failed': 'Uzdevuma {job} pēdējā palaišana neizdevās',
+  'needs.warned': 'Uzdevuma {job} pēdējā izpilde izlaida failus',
 }
 
 export default lv

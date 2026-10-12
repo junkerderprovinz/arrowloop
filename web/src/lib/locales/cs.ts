@@ -983,6 +983,7 @@ const cs: Translations = {
   'status.running': 'Běží',
   'status.held': 'Zastavená',
   'status.conflict': 'Čeká konflikt',
+  'status.warned': 'Ke kontrole',
   'status.failed': 'Selhala',
   'status.paused': 'Pozastavená',
   'status.never': 'Ještě neběžela',
@@ -990,6 +991,7 @@ const cs: Translations = {
   'needs.conflicts': 'Konflikty čekají na rozhodnutí',
   'needs.held': '{job} je zastavená: {what}',
   'needs.notes': 'Poznámky k tvým úlohám',
+  'needs.unread': 'Konflikty, které se nepodařilo načíst',
   'jobs.filter.label': 'Zobrazit',
   'jobs.filter.all': 'Všechny úlohy',
   'jobs.filter.running': 'Běžící',
@@ -1037,6 +1039,7 @@ const cs: Translations = {
   'anomalies.ownBadge': 'Vlastní brzdy',
   'needs.neverRan': 'Úloha {job} ještě neběžela',
   'needs.failed': 'Poslední běh úlohy {job} selhal',
+  'needs.warned': 'Poslední běh úlohy {job} přeskočil soubory',
 }
 
 export default cs

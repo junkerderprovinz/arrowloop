@@ -983,6 +983,7 @@ const el: Translations = {
   'status.running': 'Σε εξέλιξη',
   'status.held': 'Σταματημένη',
   'status.conflict': 'Διένεξη σε αναμονή',
+  'status.warned': 'Θέλει έλεγχο',
   'status.failed': 'Απέτυχε',
   'status.paused': 'Σε παύση',
   'status.never': 'Δεν έχει εκτελεστεί ακόμη',
@@ -990,6 +991,7 @@ const el: Translations = {
   'needs.conflicts': 'Διενέξεις που περιμένουν επιλογή',
   'needs.held': 'Η εργασία {job} είναι σταματημένη: {what}',
   'needs.notes': 'Σημειώσεις για τις εργασίες σας',
+  'needs.unread': 'Διενέξεις που δεν ήταν δυνατό να διαβαστούν',
   'jobs.filter.label': 'Εμφάνιση',
   'jobs.filter.all': 'Όλες οι εργασίες',
   'jobs.filter.running': 'Σε εξέλιξη',
@@ -1037,6 +1039,7 @@ const el: Translations = {
   'anomalies.ownBadge': 'Δικά της φρένα',
   'needs.neverRan': 'Η εργασία {job} δεν έχει εκτελεστεί ακόμη',
   'needs.failed': 'Η τελευταία εκτέλεση της εργασίας {job} απέτυχε',
+  'needs.warned': 'Η τελευταία εκτέλεση της εργασίας {job} παρέλειψε αρχεία',
 }
 
 export default el

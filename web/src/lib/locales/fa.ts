@@ -983,6 +983,7 @@ const fa: Translations = {
   'status.running': 'در حال اجرا',
   'status.held': 'نگه داشته‌شده',
   'status.conflict': 'تعارض در انتظار',
+  'status.warned': 'نیاز به بررسی',
   'status.failed': 'ناموفق',
   'status.paused': 'متوقف',
   'status.never': 'هنوز اجرا نشده',
@@ -990,6 +991,7 @@ const fa: Translations = {
   'needs.conflicts': 'تعارض‌هایی که منتظر انتخاب تو هستند',
   'needs.held': '{job} نگه داشته شده است: {what}',
   'needs.notes': 'یادداشت‌هایی درباره کارهایت',
+  'needs.unread': 'تعارض‌هایی که خوانده نشدند',
   'jobs.filter.label': 'نمایش',
   'jobs.filter.all': 'همهٔ کارها',
   'jobs.filter.running': 'در حال اجرا',
@@ -1037,6 +1039,7 @@ const fa: Translations = {
   'anomalies.ownBadge': 'ترمزهای خودش',
   'needs.neverRan': '{job} هنوز اجرا نشده است',
   'needs.failed': 'آخرین اجرای {job} ناموفق بود',
+  'needs.warned': 'آخرین اجرای {job} از چند فایل گذشت',
 }
 
 export default fa

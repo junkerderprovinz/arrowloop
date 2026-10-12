@@ -983,6 +983,7 @@ const pl: Translations = {
   'status.running': 'W toku',
   'status.held': 'Wstrzymane',
   'status.conflict': 'Konflikt czeka',
+  'status.warned': 'Do sprawdzenia',
   'status.failed': 'Nieudane',
   'status.paused': 'Zapauzowane',
   'status.never': 'Jeszcze nie uruchomione',
@@ -990,6 +991,7 @@ const pl: Translations = {
   'needs.conflicts': 'Konflikty czekają na decyzję',
   'needs.held': 'Zadanie {job} jest wstrzymane: {what}',
   'needs.notes': 'Uwagi o twoich zadaniach',
+  'needs.unread': 'Konflikty, których nie udało się odczytać',
   'jobs.filter.label': 'Pokaż',
   'jobs.filter.all': 'Wszystkie zadania',
   'jobs.filter.running': 'Uruchomione',
@@ -1037,6 +1039,7 @@ const pl: Translations = {
   'anomalies.ownBadge': 'Własne hamulce',
   'needs.neverRan': 'Zadanie {job} jeszcze nigdy się nie uruchomiło',
   'needs.failed': 'Ostatni przebieg zadania {job} nie powiódł się',
+  'needs.warned': 'Ostatni przebieg zadania {job} pominął pliki',
 }
 
 export default pl

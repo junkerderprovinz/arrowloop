@@ -62,6 +62,10 @@ export function NeedsCard({ items, findings, hueIndex }: { items: Need[]; findin
         return { text: t('needs.neverRan', { job: need.job }), tone: 'warn', open: () => openJob(need.job) }
       case 'failed':
         return { text: t('needs.failed', { job: need.job }), tone: 'warn', open: () => openJob(need.job) }
+      case 'warned':
+        return { text: t('needs.warned', { job: need.job }), tone: 'warn', open: () => openJob(need.job) }
+      case 'unread':
+        return { text: t('needs.unread'), count: need.count, tone: 'warn', open: to({ tab: 'conflicts', job: '' }) }
     }
   }
 

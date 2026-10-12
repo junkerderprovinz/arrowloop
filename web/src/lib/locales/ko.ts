@@ -983,6 +983,7 @@ const ko: Translations = {
   'status.running': '실행 중',
   'status.held': '보류됨',
   'status.conflict': '충돌 대기 중',
+  'status.warned': '확인 필요',
   'status.failed': '실패',
   'status.paused': '일시 정지됨',
   'status.never': '아직 실행 안 함',
@@ -990,6 +991,7 @@ const ko: Translations = {
   'needs.conflicts': '결정을 기다리는 충돌',
   'needs.held': '{job}이(가) 보류되었습니다: {what}',
   'needs.notes': '작업에 대한 참고 사항',
+  'needs.unread': '읽을 수 없었던 충돌',
   'jobs.filter.label': '표시',
   'jobs.filter.all': '모든 작업',
   'jobs.filter.running': '실행 중',
@@ -1037,6 +1039,7 @@ const ko: Translations = {
   'anomalies.ownBadge': '전용 제동',
   'needs.neverRan': '작업 {job}은(는) 아직 실행된 적이 없습니다',
   'needs.failed': '작업 {job}의 마지막 실행이 실패했습니다',
+  'needs.warned': '{job}의 마지막 실행에서 건너뛴 파일이 있습니다',
 }
 
 export default ko

@@ -983,6 +983,7 @@ const pt: Translations = {
   'status.running': 'A decorrer',
   'status.held': 'Retida',
   'status.conflict': 'Conflito pendente',
+  'status.warned': 'A verificar',
   'status.failed': 'Falhou',
   'status.paused': 'Em pausa',
   'status.never': 'Ainda não executada',
@@ -990,6 +991,7 @@ const pt: Translations = {
   'needs.conflicts': 'Conflitos à espera de uma escolha',
   'needs.held': '{job} está retida: {what}',
   'needs.notes': 'Notas sobre as tuas tarefas',
+  'needs.unread': 'Conflitos que não foi possível ler',
   'jobs.filter.label': 'Mostrar',
   'jobs.filter.all': 'Todas as tarefas',
   'jobs.filter.running': 'A decorrer',
@@ -1037,6 +1039,7 @@ const pt: Translations = {
   'anomalies.ownBadge': 'Travões próprios',
   'needs.neverRan': 'A tarefa {job} ainda não foi executada',
   'needs.failed': 'A última execução de {job} falhou',
+  'needs.warned': 'A última execução de {job} ignorou ficheiros',
 }
 
 export default pt

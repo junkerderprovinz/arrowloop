@@ -983,6 +983,7 @@ const ca: Translations = {
   'status.running': 'En marxa',
   'status.held': 'Aturada',
   'status.conflict': 'Conflicte pendent',
+  'status.warned': 'Cal revisar-ho',
   'status.failed': 'Fallida',
   'status.paused': 'En pausa',
   'status.never': 'Encara no executada',
@@ -990,6 +991,7 @@ const ca: Translations = {
   'needs.conflicts': 'Conflictes que esperen una decisió',
   'needs.held': '{job} està aturada: {what}',
   'needs.notes': 'Notes sobre les teves tasques',
+  'needs.unread': 'Conflictes que no s\'han pogut llegir',
   'jobs.filter.label': 'Mostra',
   'jobs.filter.all': 'Totes les tasques',
   'jobs.filter.running': 'En marxa',
@@ -1037,6 +1039,7 @@ const ca: Translations = {
   'anomalies.ownBadge': 'Frens propis',
   'needs.neverRan': 'La tasca {job} encara no s\'ha executat',
   'needs.failed': 'L\'última execució de {job} ha fallat',
+  'needs.warned': 'L\'última execució de {job} ha omès fitxers',
 }
 
 export default ca

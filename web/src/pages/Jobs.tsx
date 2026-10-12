@@ -22,7 +22,7 @@ import { dayTime } from '../lib/dayTime'
 import { sideName } from '../lib/entryLabel'
 import { useT, type TranslationKey } from '../lib/i18n'
 import { DEFAULT_VIEW, JOB_FILTERS, jobStatus, jobsInView, type JobFilter, type JobView } from '../lib/jobList'
-import { needs } from '../lib/needs'
+import { jobState, needs } from '../lib/needs'
 import { useOpenJob } from '../lib/openJob'
 import { usePlaces } from '../lib/places'
 import { useRemembered } from '../lib/remember'
@@ -66,6 +66,7 @@ export function Jobs({
   findings,
   progress,
   conflicts = [],
+  unread = 0,
   onSaved,
 }: {
   jobs: Job[]
@@ -74,6 +75,8 @@ export function Jobs({
   progress: Record<string, RunEvent>
   /** The conflicts waiting for an answer, across every job. */
   conflicts?: Pick<OpenConflict, 'job'>[]
+  /** How many conflict lists could not be read, which may hide one waiting. */
+  unread?: number
   onSaved: () => void
 }) {
   const { t } = useT()
@@ -84,14 +87,11 @@ export function Jobs({
   const [view, setView] = useRemembered<JobView>('arrowloop.jobs.view', DEFAULT_VIEW, isView)
   const [query, setQuery] = useState('')
 
-  const waiting = needs(
-    conflicts.length,
-    findings,
-    jobs.map((j) => ({ name: j.name, disabled: j.disabled, ran: j.recent.length > 0, failed: (j.recent[0]?.Err ?? '') !== '' })),
-  )
+  const waiting = needs(conflicts.length, findings, jobs.map(jobState), unread)
   const held = useMemo(() => new Set(findings.filter((f) => f.held).map((f) => f.job)), [findings])
+  const noted = useMemo(() => new Set(findings.filter((f) => !f.held).map((f) => f.job)), [findings])
   const conflicted = useMemo(() => new Set(conflicts.map((c) => c.job)), [conflicts])
-  const waits = (name: string) => ({ held: held.has(name), conflict: conflicted.has(name) })
+  const waits = (name: string) => ({ held: held.has(name), conflict: conflicted.has(name), notes: noted.has(name) })
   const shown = jobsInView(jobs, view, query, waits)
 
   // Entries in the configuration the engine does not run, such as a job saved
@@ -151,6 +151,7 @@ export function Jobs({
                   key={j.name}
                   job={j}
                   held={findings.find((f) => f.held && f.job === j.name)}
+                  note={findings.find((f) => !f.held && f.job === j.name)}
                   conflict={conflicted.has(j.name)}
                   event={progress[j.name]}
                   busy={config.busy}
@@ -221,6 +222,7 @@ function keepInRow(e: MouseEvent) {
 function JobRow({
   job,
   held,
+  note,
   conflict,
   event,
   busy,
@@ -230,6 +232,8 @@ function JobRow({
   job: Job
   /** The finding that holds the job, if a brake does. */
   held?: Finding
+  /** A finding about the job that does not hold it. */
+  note?: Finding
   /** Whether a conflict of this job waits for an answer. */
   conflict: boolean
   event?: RunEvent
@@ -242,7 +246,7 @@ function JobRow({
   const push = useToast()
   const open = useOpenJob()
   const { drives } = usePlaces()
-  const status = jobStatus(job, { held: !!held, conflict })
+  const status = jobStatus(job, { held: !!held, conflict, notes: !!note })
 
   const facts = [
     t('jobs.fact.sides', {
@@ -312,7 +316,7 @@ function JobRow({
         data-testid="job-status"
         className="flex justify-end max-[600px]:col-start-2 max-[600px]:row-start-2 max-[600px]:justify-start"
       >
-        <JobStatusLine job={job} status={status} heldFinding={held?.id} event={event} />
+        <JobStatusLine job={job} status={status} heldFinding={held?.id} noteFinding={note?.id} event={event} />
       </span>
     </li>
   )

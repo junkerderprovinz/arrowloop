@@ -983,6 +983,7 @@ const sk: Translations = {
   'status.running': 'Beží',
   'status.held': 'Pozastavená',
   'status.conflict': 'Čaká konflikt',
+  'status.warned': 'Na kontrolu',
   'status.failed': 'Zlyhala',
   'status.paused': 'Na pauze',
   'status.never': 'Ešte nebežala',
@@ -990,6 +991,7 @@ const sk: Translations = {
   'needs.conflicts': 'Konflikty čakajú na rozhodnutie',
   'needs.held': '{job} je pozastavená: {what}',
   'needs.notes': 'Poznámky k tvojim úlohám',
+  'needs.unread': 'Konflikty, ktoré sa nepodarilo načítať',
   'jobs.filter.label': 'Zobraziť',
   'jobs.filter.all': 'Všetky úlohy',
   'jobs.filter.running': 'Bežiace',
@@ -1037,6 +1039,7 @@ const sk: Translations = {
   'anomalies.ownBadge': 'Vlastné brzdy',
   'needs.neverRan': 'Úloha {job} ešte nikdy nebežala',
   'needs.failed': 'Posledný beh úlohy {job} zlyhal',
+  'needs.warned': 'Posledný beh úlohy {job} preskočil súbory',
 }
 
 export default sk

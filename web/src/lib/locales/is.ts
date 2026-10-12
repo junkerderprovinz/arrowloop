@@ -983,6 +983,7 @@ const is: Translations = {
   'status.running': 'Í gangi',
   'status.held': 'Stöðvað',
   'status.conflict': 'Árekstur bíður',
+  'status.warned': 'Þarf að skoða',
   'status.failed': 'Mistókst',
   'status.paused': 'Í hléi',
   'status.never': 'Ekki keyrt enn',
@@ -990,6 +991,7 @@ const is: Translations = {
   'needs.conflicts': 'Árekstrar bíða ákvörðunar',
   'needs.held': '{job} er stöðvað: {what}',
   'needs.notes': 'Athugasemdir um verkin þín',
+  'needs.unread': 'Árekstrar sem ekki tókst að lesa',
   'jobs.filter.label': 'Sýna',
   'jobs.filter.all': 'Öll verk',
   'jobs.filter.running': 'Í gangi',
@@ -1037,6 +1039,7 @@ const is: Translations = {
   'anomalies.ownBadge': 'Eigin hemlar',
   'needs.neverRan': 'Verkið {job} hefur aldrei verið keyrt',
   'needs.failed': 'Síðasta keyrsla verksins {job} mistókst',
+  'needs.warned': 'Síðasta keyrsla {job} sleppti skrám',
 }
 
 export default is

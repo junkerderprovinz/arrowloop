@@ -983,6 +983,7 @@ const ro: Translations = {
   'status.running': 'În desfășurare',
   'status.held': 'Oprită',
   'status.conflict': 'Conflict în așteptare',
+  'status.warned': 'De verificat',
   'status.failed': 'Eșuată',
   'status.paused': 'În pauză',
   'status.never': 'Încă nerulată',
@@ -990,6 +991,7 @@ const ro: Translations = {
   'needs.conflicts': 'Conflicte care așteaptă o alegere',
   'needs.held': '{job} este oprită: {what}',
   'needs.notes': 'Observații despre sarcinile tale',
+  'needs.unread': 'Conflicte care nu au putut fi citite',
   'jobs.filter.label': 'Afișează',
   'jobs.filter.all': 'Toate sarcinile',
   'jobs.filter.running': 'În desfășurare',
@@ -1037,6 +1039,7 @@ const ro: Translations = {
   'anomalies.ownBadge': 'Frâne proprii',
   'needs.neverRan': 'Sarcina {job} nu a rulat încă',
   'needs.failed': 'Ultima rulare a sarcinii {job} a eșuat',
+  'needs.warned': 'Ultima rulare a sarcinii {job} a omis fișiere',
 }
 
 export default ro

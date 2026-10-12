@@ -66,12 +66,12 @@ function job(name: string, over: Partial<Job> = {}): Job {
 const opened = vi.fn((_name: string) => undefined)
 const went = vi.fn((_place: unknown) => undefined)
 
-function page({ jobs = [job('photos'), job('music')], findings = [] as Finding[], conflicts = [] as { job: string }[] } = {}) {
+function page({ jobs = [job('photos'), job('music')], findings = [] as Finding[], conflicts = [] as { job: string }[], unread = 0 } = {}) {
   render(
     <ToastProvider>
       <GoTo.Provider value={went}>
         <OpenJob.Provider value={opened}>
-          <Jobs jobs={jobs} findings={findings} progress={{}} conflicts={conflicts} onSaved={() => undefined} />
+          <Jobs jobs={jobs} findings={findings} progress={{}} conflicts={conflicts} unread={unread} onSaved={() => undefined} />
         </OpenJob.Provider>
       </GoTo.Provider>
     </ToastProvider>,
@@ -170,6 +170,33 @@ describe('a job row', () => {
     fireEvent.click(badge)
     expect(went).toHaveBeenLastCalledWith({ tab: 'conflicts', job: 'photos' })
     expect(opened).not.toHaveBeenCalled()
+  })
+
+  it('never shows a run that skipped files as in sync', async () => {
+    page({ jobs: [job('photos', { recent: [{ ...ran('photos'), Skipped: 2 }] }), job('music')] })
+    expect((await screen.findByTestId('status-head')).textContent).toBe('In sync, with notes')
+    expect(screen.getByText('The last run of photos skipped files')).toBeTruthy()
+    const status = within(row('photos')).getByTestId('job-status')
+    expect(status.textContent).toBe('Needs a look')
+    expect(status.querySelector('.bg-statusOkSolid')).toBeNull()
+  })
+
+  it('gives a job a note speaks of no synced dot, and leads to the note', async () => {
+    const note: Finding = {
+      id: 'n1', job: 'music', kind: 'overdue', severity: 'warning', held: false, since: '', seen: '', open: true,
+    }
+    page({ findings: [note] })
+    const status = within(row('music')).getByTestId('job-status')
+    expect(status.querySelector('.bg-statusOkSolid')).toBeNull()
+    fireEvent.click(within(status).getByText('Needs a look'))
+    expect(went).toHaveBeenLastCalledWith({ tab: 'anomalies', job: 'music', finding: 'n1' })
+  })
+
+  it('is not in sync while a conflict list could not be read', async () => {
+    page({ unread: 1 })
+    expect((await screen.findByTestId('status-head')).textContent).toBe('In sync, with notes')
+    fireEvent.click(screen.getByText('Conflicts that could not be read'))
+    expect(went).toHaveBeenLastCalledWith({ tab: 'conflicts', job: '' })
   })
 
   it('says a job failed by its own last run', async () => {

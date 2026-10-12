@@ -983,6 +983,7 @@ const fi: Translations = {
   'status.running': 'Käynnissä',
   'status.held': 'Pysäytetty',
   'status.conflict': 'Ristiriita odottaa',
+  'status.warned': 'Tarkista',
   'status.failed': 'Epäonnistui',
   'status.paused': 'Keskeytetty',
   'status.never': 'Ei vielä ajettu',
@@ -990,6 +991,7 @@ const fi: Translations = {
   'needs.conflicts': 'Ristiriidat odottavat valintaasi',
   'needs.held': '"{job}" on pysäytetty: {what}',
   'needs.notes': 'Huomautuksia töistäsi',
+  'needs.unread': 'Ristiriidat, joita ei voitu lukea',
   'jobs.filter.label': 'Näytä',
   'jobs.filter.all': 'Kaikki työt',
   'jobs.filter.running': 'Käynnissä olevat',
@@ -1037,6 +1039,7 @@ const fi: Translations = {
   'anomalies.ownBadge': 'Omat jarrut',
   'needs.neverRan': 'Työtä {job} ei ole vielä ajettu',
   'needs.failed': 'Työn {job} viimeisin ajo epäonnistui',
+  'needs.warned': 'Työn {job} viimeisin ajo ohitti tiedostoja',
 }
 
 export default fi

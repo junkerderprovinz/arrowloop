@@ -9,22 +9,28 @@ export type Need =
   | { kind: 'conflicts'; count: number }
   | { kind: 'held'; job: string; finding: string }
   | { kind: 'notes'; count: number }
+  | { kind: 'unread'; count: number }
   | { kind: 'neverRan'; job: string }
   | { kind: 'failed'; job: string }
+  | { kind: 'warned'; job: string }
 
 export type Needs = { head: HeadState; items: Need[] }
 
-/** What a job's own state adds: whether it is switched on, has run, and whether its last run failed. */
-export type JobState = { name: string; disabled: boolean; ran: boolean; failed: boolean }
+/**
+ * What a job's own state adds: whether it is switched on, has run, and whether
+ * its last run failed or skipped files.
+ */
+export type JobState = { name: string; disabled: boolean; ran: boolean; failed: boolean; warned: boolean }
 
 /**
  * Open conflicts and held runs need an answer before anything moves on, so
  * either puts the head on "Needs you". Any other open finding is a note, and
- * so is an enabled job that has not run yet or whose last run failed: nothing
- * is in sync that never synced. A job a finding already speaks for gets no
- * second line.
+ * so is an enabled job that has not run yet or whose last run failed or
+ * skipped files: nothing is in sync that never synced. Conflict lists that
+ * could not be read, `unread` of them, may hide one waiting, so they are a
+ * note too. A job a finding already speaks for gets no second line.
  */
-export function needs(openConflicts: number, openFindings: Finding[], jobs: JobState[]): Needs {
+export function needs(openConflicts: number, openFindings: Finding[], jobs: JobState[], unread = 0): Needs {
   const items: Need[] = []
   if (openConflicts > 0) items.push({ kind: 'conflicts', count: openConflicts })
   for (const f of openFindings) {
@@ -32,15 +38,29 @@ export function needs(openConflicts: number, openFindings: Finding[], jobs: JobS
   }
   const notes = openFindings.filter((f) => !f.held).length
   if (notes > 0) items.push({ kind: 'notes', count: notes })
+  if (unread > 0) items.push({ kind: 'unread', count: unread })
 
   const spoken = new Set(openFindings.map((f) => f.job))
   for (const j of jobs) {
     if (j.disabled || spoken.has(j.name)) continue
     if (!j.ran) items.push({ kind: 'neverRan', job: j.name })
     else if (j.failed) items.push({ kind: 'failed', job: j.name })
+    else if (j.warned) items.push({ kind: 'warned', job: j.name })
   }
 
   const urgent = items.some((n) => n.kind === 'conflicts' || n.kind === 'held')
   const head: HeadState = urgent ? 'needsYou' : items.length > 0 ? 'withNotes' : 'inSync'
   return { head, items }
+}
+
+/** A listed job's own state, as needs reads it. */
+export function jobState(job: { name: string; disabled: boolean; recent: { Err: string; Skipped: number }[] }): JobState {
+  const last = job.recent[0]
+  return {
+    name: job.name,
+    disabled: job.disabled,
+    ran: !!last,
+    failed: !!last && last.Err !== '',
+    warned: !!last && last.Skipped > 0,
+  }
 }

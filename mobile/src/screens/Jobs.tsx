@@ -10,7 +10,7 @@ import { markForSide } from "../jobMark";
 import { groupFindings, shortLine, type Finding } from "../../../web/src/lib/anomalies";
 import { jobCopy } from "../../../web/src/lib/jobCopy.data";
 import { jobStatus } from "../../../web/src/lib/jobList";
-import { needs, type HeadState } from "../../../web/src/lib/needs";
+import { jobState, needs, type HeadState } from "../../../web/src/lib/needs";
 import { useT } from "../i18n";
 import { animateNext, useMotion } from "../motion";
 import type { Nav, JobsStack } from "../nav";
@@ -213,6 +213,7 @@ export function Jobs() {
           finding={groupFindings(findings.filter((f) => f.job === item.name))[0]?.findings[0]}
           onFinding={() => nav.navigate("Anomalies", { job: item.name })}
           held={findings.some((f) => f.held && f.job === item.name)}
+          noted={findings.some((f) => !f.held && f.job === item.name)}
           conflict={conflicted.includes(item.name)}
           onConflict={() => nav.getParent()?.navigate("ConflictsTab")}
           onOpen={() => nav.navigate("JobDetail", { name: item.name })}
@@ -259,7 +260,7 @@ function Head({ jobs }: { jobs: Job[] }) {
   const { t } = useT();
   const { p } = useTheme();
   const nav = useNavigation<NavigationProp<ParamListBase>>();
-  const { conflicts, findings } = useWaiting();
+  const { conflicts, findings, unread } = useWaiting();
   const [access, setAccess] = useState<boolean | null>(null);
 
   // Read again on return, since the settings page reports nothing back.
@@ -276,16 +277,7 @@ function Head({ jobs }: { jobs: Job[] }) {
 
   if (conflicts === null || findings === null) return null;
 
-  const { head, items } = needs(
-    conflicts,
-    findings,
-    jobs.map((j) => ({
-      name: j.name,
-      disabled: j.disabled,
-      ran: j.recent.length > 0,
-      failed: (j.recent[0]?.Err ?? "") !== "",
-    })),
-  );
+  const { head, items } = needs(conflicts, findings, jobs.map(jobState), unread ?? 0);
   const state: HeadState = access === false ? "needsYou" : head;
 
   return (
@@ -326,6 +318,13 @@ function Head({ jobs }: { jobs: Job[] }) {
                 onPress={() => nav.navigate("Anomalies")}
                 control={<Badge label={String(need.count)} />}
               />
+            ) : need.kind === "unread" ? (
+              <Row
+                key="unread"
+                label={t("needs.unread")}
+                onPress={() => nav.navigate("ConflictsTab")}
+                control={<Badge label={String(need.count)} tone="warn" />}
+              />
             ) : (
               <Row
                 key={`${need.kind}:${need.job}`}
@@ -334,6 +333,8 @@ function Head({ jobs }: { jobs: Job[] }) {
                 control={
                   need.kind === "failed" ? (
                     <Badge label={t("status.failed")} tone="warn" />
+                  ) : need.kind === "warned" ? (
+                    <Badge label={t("status.warned")} tone="warn" />
                   ) : (
                     <Badge label={t("status.never")} />
                   )
@@ -354,6 +355,7 @@ function JobCard({
   finding,
   onFinding,
   held,
+  noted,
   conflict,
   onConflict,
   busy,
@@ -377,6 +379,8 @@ function JobCard({
   onFinding: () => void;
   /** Whether a brake holds the job. */
   held: boolean;
+  /** Whether a finding speaks of the job without holding it. */
+  noted: boolean;
   /** Whether a conflict of the job waits for an answer. */
   conflict: boolean;
   onConflict: () => void;
@@ -439,7 +443,16 @@ function JobCard({
         </Press>
       ) : null}
 
-      <JobStatus job={job} held={held} conflict={conflict} onConflict={onConflict} progress={progress} hue={hue} />
+      <JobStatus
+        job={job}
+        held={held}
+        noted={noted}
+        conflict={conflict}
+        onConflict={onConflict}
+        onNote={onFinding}
+        progress={progress}
+        hue={hue}
+      />
 
       {/* Two buttons, since a held job can still be started by hand. A
           running job's button cancels the run rather than pausing, which is
@@ -466,27 +479,31 @@ function JobCard({
 
 /**
  * The job's one status, by the web list's rule. Only a job with nothing waiting
- * gets the quiet green dot, so a held run or a waiting conflict is never
- * rounded up to it.
+ * gets the quiet green dot, so a held run, a waiting conflict, a note or a run
+ * that skipped files is never rounded up to it.
  */
 function JobStatus({
   job,
   held,
+  noted,
   conflict,
   onConflict,
+  onNote,
   progress,
   hue,
 }: {
   job: Job;
   held: boolean;
+  noted: boolean;
   conflict: boolean;
   onConflict: () => void;
+  onNote: () => void;
   progress?: Progress;
   hue: string;
 }) {
   const { t, lang } = useT();
   const { p } = useTheme();
-  switch (jobStatus(job, { held, conflict })) {
+  switch (jobStatus(job, { held, conflict, notes: noted })) {
     case "running":
       return (
         <View style={styles.status}>
@@ -501,6 +518,16 @@ function JobStatus({
         <Press onPress={onConflict} accessibilityRole="button" style={styles.statusPress}>
           <Badge label={t("status.conflict")} tone="warn" />
         </Press>
+      );
+    case "warned":
+      // A run that skipped files is answered on the job's own screen, which
+      // the card around the badge already opens.
+      return noted ? (
+        <Press onPress={onNote} accessibilityRole="button" style={styles.statusPress}>
+          <Badge label={t("status.warned")} tone="warn" />
+        </Press>
+      ) : (
+        <Badge label={t("status.warned")} tone="warn" />
       );
     case "failed":
       return <Badge label={t("status.failed")} tone="fail" />;

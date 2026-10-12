@@ -405,6 +405,7 @@ export function App({ signOut = false }: { signOut?: boolean }) {
       findings={findings?.open ?? []}
       progress={progress}
       conflicts={conflicts?.conflicts}
+      unread={conflicts?.unread.length}
       onSaved={saved}
     />
   ) : view.page === 'job' ? (
