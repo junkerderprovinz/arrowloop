@@ -210,7 +210,13 @@ type jobView struct {
 	// NextRun is when the schedule next reaches this job; see nextRun. It is a
 	// due time, and a condition such as mains power may still hold the run.
 	NextRun *string `json:"nextRun,omitempty"`
+	// Recent is the job's last stored runs, newest first, for the strip a job
+	// list draws beside each name.
+	Recent []history.Run `json:"recent"`
 }
+
+// recentRuns is how many runs a job list shows per job.
+const recentRuns = 14
 
 // nextRun is when the schedule will next reach this job. It is computed with
 // the same Next the scheduler uses, so it needs no live scheduler. A job with
@@ -243,6 +249,9 @@ func directionName(d plan.Direction) string {
 func (s *Server) listJobs(w http.ResponseWriter, r *http.Request) {
 	running := s.Runner.Running()
 	cfg := s.Runner.Config()
+	// The strips are a nicety, so a failed read leaves them empty rather than
+	// failing the whole list.
+	recent, _ := s.History.EachRecent(r.Context(), recentRuns)
 	out := make([]jobView, 0, len(cfg.Jobs))
 	for _, j := range cfg.Jobs {
 		v := jobView{
@@ -250,6 +259,10 @@ func (s *Server) listJobs(w http.ResponseWriter, r *http.Request) {
 			// Resolved, so an unset field and "both" look the same.
 			Direction: directionName(plan.ParseDirection(j.Direction)),
 			Schedule:  j.Schedule, Disabled: j.Disabled, Running: running[j.Name],
+			Recent: recent[j.Name],
+		}
+		if v.Recent == nil {
+			v.Recent = []history.Run{}
 		}
 		if when, ok, err := s.History.LastSuccess(r.Context(), j.Name); err == nil && ok {
 			stamp := when.UTC().Format(time.RFC3339)
