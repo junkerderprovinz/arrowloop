@@ -1,10 +1,10 @@
-// What the settings search knows: every card on every tab, and the name and
+// What the settings search knows: every card on every tile, and the name and
 // (i) text of the rows on it, as translation keys, so it searches in the
 // reader's language. It is written by hand because the cards take their
-// strings from several files; searchIndex.test.ts holds each tab's card
+// strings from several files; searchIndex.test.ts holds each tile's card
 // titles to its page.
 import type { TranslationKey } from '../../lib/i18n'
-import type { TabId } from '../../lib/routes'
+import type { TileId } from '../../lib/routes'
 
 export interface SearchRow {
   key: TranslationKey
@@ -21,7 +21,7 @@ export interface SearchCard {
 
 const SIDEBAR_ROW: SearchRow = { key: 'settings.showInSidebar', hint: 'settings.showInSidebarHint' }
 
-export const SETTINGS_INDEX: Record<TabId, SearchCard[]> = {
+export const SETTINGS_INDEX: Record<TileId, SearchCard[]> = {
   general: [
     {
       title: 'settings.thisComputer',

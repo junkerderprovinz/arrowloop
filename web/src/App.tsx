@@ -16,7 +16,7 @@ import { Trash } from './pages/Trash'
 import { Welcome } from './pages/Welcome'
 import { Settings } from './pages/settings/Settings'
 import { DEFAULT_ACCENT, PRESET_HEXES, type LookProps } from './pages/settings/LookPage'
-import { rememberedTab, settingsTabs } from './pages/settings/tabs'
+import { rememberedTile, settingsTiles } from './pages/settings/tiles'
 import { WhatsNewCard } from './pages/settings/WhatsNewCard'
 import {
   api,
@@ -146,8 +146,8 @@ export function App({ signOut = false }: { signOut?: boolean }) {
   const [version, setVersion] = useState('dev')
   // The version as the engine stamps it, null until it has answered.
   const [running, setRunning] = useState<string | null>(null)
-  // Null until the engine has said, so the Security tab's address does not
-  // bounce to the first tab while the question is out.
+  // Null until the engine has said, so the Security tile's address does not
+  // bounce to the first tile while the question is out.
   const [canSecure, setCanSecure] = useState<boolean | null>(null)
   useTrayWords(window_ !== null, t)
   useUpdateReadyToast()
@@ -332,17 +332,17 @@ export function App({ signOut = false }: { signOut?: boolean }) {
     if (running !== null && fresh !== null) startWhatsNew(running, !fresh)
   }, [running, fresh])
 
-  const tabs = useMemo(() => settingsTabs(canSecure), [canSecure])
+  const tiles = useMemo(() => settingsTiles(canSecure), [canSecure])
   const resolved = useMemo(
     () =>
       resolveRoute(pathname, search, {
         pins,
         anomalies: anomaliesOn,
-        tabs: tabs.map((x) => x.id),
-        remembered: rememberedTab(),
+        tiles: tiles.map((x) => x.id),
+        remembered: rememberedTile(),
         fresh,
       }),
-    [pathname, search, pins, anomaliesOn, tabs, fresh],
+    [pathname, search, pins, anomaliesOn, tiles, fresh],
   )
   const extras = { targets: pins.targets, anomalies: anomaliesOn === true }
   useLayoutEffect(() => {
@@ -450,8 +450,8 @@ export function App({ signOut = false }: { signOut?: boolean }) {
               {view?.page === 'settings' ? (
                 <main className="flex min-h-0 min-w-0 flex-1 flex-col">
                   <Settings
-                    tab={view.tab}
-                    tabs={tabs}
+                    tile={view.tile}
+                    tiles={tiles}
                     look={look}
                     version={version}
                     window={window_}

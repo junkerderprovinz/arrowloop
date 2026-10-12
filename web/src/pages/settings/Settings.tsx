@@ -1,59 +1,61 @@
 import { useEffect, useRef, type CSSProperties, type ReactNode } from 'react'
 
 import type { WindowSettings } from '../../lib/api'
-import type { TabId } from '../../lib/routes'
+import type { TileId } from '../../lib/routes'
 import { Apps } from '../Apps'
 import { Security } from '../Security'
 import { GeneralPage } from './GeneralPage'
 import { InfoPage } from './InfoPage'
 import { LookPage, type LookProps } from './LookPage'
 import { SafetyPage } from './SafetyPage'
-import { SettingsTabs } from './SettingsTabs'
+import { SettingsRail } from './SettingsRail'
 import { jumpTarget, markHit, SettingsSearch, takeJump } from './SettingsSearch'
 import { SyncPage } from './SyncPage'
-import { rememberTab, type SettingsTab } from './tabs'
-import { TargetsTab } from './TargetsTab'
+import { rememberTile, type Tile } from './tiles'
+import { TargetsTile } from './TargetsTile'
 
 export interface SettingsProps {
-  tab: TabId
-  tabs: SettingsTab[]
+  tile: TileId
+  tiles: Tile[]
   look: LookProps
   version: string
   window: WindowSettings | null
   onWindow: (next: WindowSettings) => void
-  /** The Targets page, which its tab draws whole. */
+  /** The Targets page, which its tile draws whole. */
   targets: ReactNode
-  /** The list of what the last update changed, for the Info tab. */
+  /** The list of what the last update changed, for the Info tile. */
   whatsNew?: ReactNode
 }
 
-/** How long a search result waits for its tab's cards, which may still be reading the settings. */
+/** How long a search result waits for its tile's cards, which may still be reading the settings. */
 const JUMP_PATIENCE_MS = 2000
 
 /**
- * Settings as a strip of tabs across the page and the open tab's cards under
- * it. The strip scrolls with the page, and the search waits above it until
- * somebody scrolls up for it.
+ * Settings as a column of tiles beside the content, with every card of the
+ * open tile one under the other. Only the content column scrolls, so the tiles
+ * stay where they are, and the search waits above the cards until somebody
+ * scrolls up for it.
  */
 export function Settings(props: SettingsProps) {
-  const { tab, tabs } = props
-  const wide = tabs.find((x) => x.id === tab)?.wide ?? false
+  const { tile, tiles } = props
+  const wide = tiles.find((x) => x.id === tile)?.wide ?? false
   const content = useRef<HTMLDivElement>(null)
 
-  // The side a new tab's cards slide in from: 1 for one further along the
-  // strip, -1 for one before it, 0 on arrival.
-  const previous = useRef<TabId | null>(null)
-  const order = tabs.map((x) => x.id)
+  // The side a new tile's cards slide in from: 1 for one further down the
+  // column, -1 for one above, 0 on arrival.
+  const previous = useRef<TileId | null>(null)
+  const order = tiles.map((x) => x.id)
   const toward =
-    previous.current === null || previous.current === tab
+    previous.current === null || previous.current === tile
       ? 0
-      : order.indexOf(tab) > order.indexOf(previous.current)
+      : order.indexOf(tile) > order.indexOf(previous.current)
         ? 1
         : -1
   useEffect(() => {
-    previous.current = tab
-    rememberTab(tab)
-  }, [tab])
+    previous.current = tile
+    rememberTile(tile)
+    if (content.current) content.current.scrollTop = 0
+  }, [tile])
 
   useEffect(() => {
     const jump = takeJump()
@@ -63,7 +65,7 @@ export function Settings(props: SettingsProps) {
     const look = () => {
       const el = content.current && jumpTarget(content.current, jump)
       const late = performance.now() - started >= JUMP_PATIENCE_MS
-      // A tab that is still reading its settings shows a card of the same
+      // A tile that is still reading its settings shows a card of the same
       // name without the row, so the card alone is taken only at the end.
       const found = el && (!jump.row || el.dataset.glimLabel === jump.row || late)
       if (found) {
@@ -75,35 +77,35 @@ export function Settings(props: SettingsProps) {
     }
     frame = requestAnimationFrame(look)
     return () => cancelAnimationFrame(frame)
-  }, [tab])
+  }, [tile])
 
   return (
-    <div
-      ref={content}
-      data-settings-content
-      className="flex min-h-0 min-w-0 flex-1 flex-col gap-10 overflow-y-auto pb-[var(--page-gutter)] sm:px-6 md:px-8"
-    >
-      <div className="flex w-full flex-col">
-        {/* The search ends where the cards below it do. */}
-        <SettingsSearch tabs={tabs} tab={tab} wide={wide} />
-        <SettingsTabs tabs={tabs} active={tab} />
-      </div>
-      {/* The cap belongs to the page: a form of rows with a name at one end
-          and a control at the other is held to 880px so the two stay
-          together in a wide window. */}
+    <div className="flex min-h-0 flex-1">
+      <SettingsRail tiles={tiles} active={tile} />
       <div
-        key={tab}
-        className={`glim-page-enter flex w-full flex-col gap-10${wide ? '' : ' max-w-[880px]'}${toward ? ' glim-tab-slide' : ''}`}
-        style={{ '--tab-dir': toward } as CSSProperties}
+        ref={content}
+        data-settings-content
+        className="flex min-w-0 flex-1 flex-col overflow-y-auto ps-2 pb-[var(--page-gutter)] sm:px-6 md:px-8"
       >
-        <TabPage {...props} />
+        {/* The search ends where the cards below it do. */}
+        <SettingsSearch tiles={tiles} tile={tile} wide={wide} />
+        {/* The cap belongs to the page: a form of rows with a name at one end
+            and a control at the other is held to 880px so the two stay
+            together in a wide window. */}
+        <div
+          key={tile}
+          className={`glim-page-enter flex w-full flex-col gap-10${wide ? '' : ' max-w-[880px]'}${toward ? ' glim-tab-slide' : ''}`}
+          style={{ '--tab-dir': toward } as CSSProperties}
+        >
+          <TilePage {...props} />
+        </div>
       </div>
     </div>
   )
 }
 
-function TabPage({ tab, look, version, window, onWindow, targets, whatsNew }: SettingsProps) {
-  switch (tab) {
+function TilePage({ tile, look, version, window, onWindow, targets, whatsNew }: SettingsProps) {
+  switch (tile) {
     case 'general':
       return <GeneralPage window={window} onWindow={onWindow} />
     case 'look':
@@ -113,7 +115,7 @@ function TabPage({ tab, look, version, window, onWindow, targets, whatsNew }: Se
     case 'safety':
       return <SafetyPage />
     case 'targets':
-      return <TargetsTab page={targets} />
+      return <TargetsTile page={targets} />
     case 'security':
       return <Security />
     case 'apps':

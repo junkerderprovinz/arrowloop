@@ -11,21 +11,21 @@ import {
   IconTabStorage,
 } from '../../components/glyphs'
 import type { TranslationKey } from '../../lib/i18n'
-import { TAB_IDS, type TabId } from '../../lib/routes'
+import { TILE_IDS, type TileId } from '../../lib/routes'
 
-export interface SettingsTab {
-  id: TabId
+export interface Tile {
+  id: TileId
   labelKey: TranslationKey
   icon: ComponentType
   /**
    * A list rather than a form, which uses the page's whole width. Every other
-   * tab is rows with a name at one end and a control at the other, capped at
+   * tile is rows with a name at one end and a control at the other, capped at
    * 880px so the two stay together in a wide window.
    */
   wide?: boolean
 }
 
-const TABS: Record<TabId, SettingsTab> = {
+const TILES: Record<TileId, Tile> = {
   general: { id: 'general', labelKey: 'settings.general', icon: IconTabGeneral },
   look: { id: 'look', labelKey: 'settings.look', icon: IconTabLook },
   sync: { id: 'sync', labelKey: 'settings.sync', icon: IconSync },
@@ -37,18 +37,18 @@ const TABS: Record<TabId, SettingsTab> = {
 }
 
 /**
- * The tabs this build offers. Security is left out where the interface cannot
+ * The tiles this build offers. Security is left out where the interface cannot
  * keep a password of its own, the desktop window; `security` is null while
- * nobody has asked yet, which keeps the tab so its address does not bounce.
+ * nobody has asked yet, which keeps the tile so its address does not bounce.
  */
-export function settingsTabs(security: boolean | null): SettingsTab[] {
-  return TAB_IDS.filter((id) => id !== 'security' || security !== false).map((id) => TABS[id])
+export function settingsTiles(security: boolean | null): Tile[] {
+  return TILE_IDS.filter((id) => id !== 'security' || security !== false).map((id) => TILES[id])
 }
 
-/** A name the settings carried in an earlier version, and the tab that holds it. */
+/** A name the settings carried in an earlier version, and the tile that holds it. */
 export interface FormerName {
   labelKey: TranslationKey
-  tab: TabId
+  tile: TileId
 }
 
 /**
@@ -56,16 +56,16 @@ export interface FormerName {
  * learned the old app looks for the old word.
  */
 export const FORMER_NAMES: FormerName[] = [
-  { labelKey: 'settings.engine', tab: 'sync' },
-  { labelKey: 'settings.app', tab: 'apps' },
-  { labelKey: 'engine.work', tab: 'general' },
-  { labelKey: 'engine.memory', tab: 'general' },
-  { labelKey: 'engine.telling', tab: 'safety' },
+  { labelKey: 'settings.engine', tile: 'sync' },
+  { labelKey: 'settings.app', tile: 'apps' },
+  { labelKey: 'engine.work', tile: 'general' },
+  { labelKey: 'engine.memory', tile: 'general' },
+  { labelKey: 'engine.telling', tile: 'safety' },
 ]
 
 const REMEMBERED = 'arrowloop.settingsTile'
 
-export function rememberedTab(): string | null {
+export function rememberedTile(): string | null {
   try {
     return localStorage.getItem(REMEMBERED)
   } catch {
@@ -73,10 +73,10 @@ export function rememberedTab(): string | null {
   }
 }
 
-export function rememberTab(id: TabId) {
+export function rememberTile(id: TileId) {
   try {
     localStorage.setItem(REMEMBERED, id)
   } catch {
-    // Without storage Settings opens on its first tab, which is no loss.
+    // Without storage Settings opens on its first tile, which is no loss.
   }
 }

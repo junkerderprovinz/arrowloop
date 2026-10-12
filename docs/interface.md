@@ -20,9 +20,9 @@ switched on (see [Anomalies](#anomalies)). A number beside an entry counts what
 is there: running jobs, open conflicts, findings, files in the trash. **Sign
 out** stands at the foot, above **Settings**, and only once a password is set.
 
-**Targets** is a tab under Settings. Its switch **Also show in the sidebar**
-puts the page in the sidebar as well; the tab keeps showing it either way. An
-old link to `/targets` leads to the tab while the page is not in the sidebar.
+**Targets** is a tile under Settings. Its switch **Also show in the sidebar**
+puts the page in the sidebar as well; the tile keeps showing it either way. An
+old link to `/targets` leads to the tile while the page is not in the sidebar.
 
 In a narrow window the sidebar becomes a bar along the bottom: **Jobs**,
 **Conflicts**, **History**, **Settings** and **More**. More opens a sheet with
@@ -113,7 +113,7 @@ says why.
 
 ## Drives
 
-A USB disk or a share is added on the **Targets** tab with **Register a
+A USB disk or a share is added on the **Targets** tile with **Register a
 drive**. The list offers each drive by its letter and the name the system shows
 for it, and that name fills the **Name** field until you type your own.
 ArrowLoop writes a small identity file onto the drive, so a job keeps finding it
@@ -262,7 +262,7 @@ job, one part for each successful run its habits were learned from. A full
 green ring means learned; see [Unusual runs](safety.md#unusual-runs). A click
 on a ring opens the job.
 
-The **Anomalies** card on the **Safety net** tab sets after how many failed
+The **Anomalies** card on the **Safety net** tile sets after how many failed
 runs in a row a job counts as failing, when a scheduled job counts as overdue,
 and whether a held job or a note is reported. **Overdue after** counts the days
 from the scheduled run that was missed, not from the last run: a job that runs
@@ -280,12 +280,13 @@ and **Take back**.
 
 ## Settings
 
-Settings has a strip of tabs across the top of the page: **General**,
-**Look**, **Sync**, **Safety net**, **Targets**, **Security**, **Apps** and
-**Info**. The strip wraps onto a second row where the window is too narrow for
-one. Settings opens on the tab used last, and every tab has an address of its
-own, such as `/settings/sync`; the addresses of the earlier tiles lead to the
-tab that holds their cards.
+Settings is a column of tiles beside the page: **General**, **Look**,
+**Sync**, **Safety net**, **Targets**, **Security**, **Apps** and **Info**. A
+tile shows all its cards, one under the other, and only the cards scroll, so
+the column stays in place. In a window narrower than 1024 pixels the tiles
+show their glyphs alone. Settings opens on the tile used last, and every tile
+has an address of its own, such as `/settings/sync`. An older address such as
+`/settings/workload` leads to the tile that holds its cards.
 
 - **General**: the settings backup and the workload (bandwidth limit, jobs at
   once and the run log file), and in the desktop app this computer: the
@@ -299,18 +300,18 @@ tab that holds their cards.
   **Change** beside it.
 - **Targets**: the storage targets and drives; see [Drives](#drives).
 - **Security**: password, two-factor authentication and passkeys. The desktop
-  app has no such tab, since nobody else reaches its window.
+  app has no such tile, since nobody else reaches its window.
 - **Apps**: the other ways to run ArrowLoop, each with its version, and the
   phone app from Google Play, F-Droid or as an APK.
 
 The settings have a search. It stays out of sight until you scroll up once more
 at the top of a page, or press `/` or Ctrl+K. It finds a setting by its name or
 by a word from its explanation, and it knows the old names too: **Engine**
-leads to the tabs that took its cards, and **App** to Apps.
+leads to the tiles that took its cards, and **App** to Apps.
 
 ## Info
 
-The last tab has four cards. **Version** lists ArrowLoop, GlimStone and
+The last tile has four cards. **Version** lists ArrowLoop, GlimStone and
 rclone, each linked to its release notes, and **Check for updates** asks GitHub
 for a newer release. **Help** leads to GitHub, to email and to this manual, and
 **Bug report** downloads one file with the versions, the settings and jobs
@@ -323,7 +324,7 @@ sent: you attach the file to an issue yourself. Then come **What's new** and
 After an update a glowing green dot marks each change on its page, and a dot
 on a link says something behind it changed. A click on a dot hides it, and a
 link's dot goes once everything behind it has been seen. The **What's new**
-card on the Info tab lists the changes of the last update with a way to each,
+card on the Info tile lists the changes of the last update with a way to each,
 and has **Show all again**, **Mark all as seen** and a switch for the dots.
 
 ## The look
@@ -331,7 +332,7 @@ and has **Show all again**, **Mark all as seen** and a switch for the dots.
 The interface uses [GlimStone](https://github.com/junkerderprovinz/glimstone)
 3.4.2, with its reference tokens and appearance engine copied in verbatim rather
 than reimplemented. Design, corner shape and accent are the viewer's to set on
-the **Look** tab.
+the **Look** tile.
 
 The accent marks activity and the one action a page is for, such as **Add a
 job**. Every other button is grey.
@@ -359,7 +360,7 @@ About this app and Danger zone.
 `arrowloop web` listens on loopback unless `-addr` or `ARROWLOOP_ADDR` says
 otherwise, and the container listens on every address. This interface starts
 jobs that delete files, so anybody on the network who can reach it can drive
-it. A password, a second factor and passkeys are set on the **Security** tab;
+it. A password, a second factor and passkeys are set on the **Security** tile;
 [Installing](installing.md#a-password-for-the-interface) has the details.
 
 Over plain HTTP the session cookie crosses the wire in clear, so a machine

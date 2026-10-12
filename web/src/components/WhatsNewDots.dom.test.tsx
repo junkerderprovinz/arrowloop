@@ -62,7 +62,7 @@ describe('the dots of what is new', () => {
   it('take the dot off a link once everything behind it was seen', async () => {
     render(<Page />)
     await waitFor(() => expect(dot('way')).not.toBeNull())
-    act(() => markSeen(['settings-tabs', 'settings-search', 'anomalies-module', 'info-tile', 'login-reset']))
+    act(() => markSeen(['settings-tiles', 'settings-search', 'anomalies-module', 'info-tile', 'login-reset']))
     await waitFor(() => expect(dot('way')).toBeNull())
   })
 

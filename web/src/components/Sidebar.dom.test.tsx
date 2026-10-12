@@ -39,7 +39,7 @@ describe('the rail', () => {
     expect(screen.getByRole('link', { name: 'Settings' }).getAttribute('aria-current')).toBeNull()
   })
 
-  it('holds Anomalies while its notes are on, and leaves unpinned Targets to its tab', () => {
+  it('holds Anomalies while its notes are on, and leaves unpinned Targets to its tile', () => {
     show(false)
     expect(screen.getByRole('link', { name: /Anomalies/ })).toBeTruthy()
     expect(screen.queryByRole('link', { name: 'Targets' })).toBeNull()

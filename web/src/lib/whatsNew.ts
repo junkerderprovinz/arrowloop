@@ -14,7 +14,7 @@ export interface Change {
   /**
    * The addresses the element is drawn at, as routes where `:name` stands for
    * any one segment. The first one with a link on its way is followed, so a
-   * page that may be pinned names its sidebar address before its tab.
+   * page that may be pinned names its sidebar address before its tile.
    */
   at: string[]
   /** Where "Go there" leads, for an address that names one entry. */
@@ -108,11 +108,11 @@ export const RELEASES: Release[] = [
         names: { brakes: 'job.brakes' },
       },
       {
-        id: 'settings-tabs',
-        at: ['/settings/:tab'],
+        id: 'settings-tiles',
+        at: ['/settings/:tile'],
         go: '/settings',
         where: ['nav.settings'],
-        text: 'new.change.settingsTabs',
+        text: 'new.change.settingsTiles',
         names: {
           settings: 'nav.settings',
           engine: 'settings.engine',
@@ -123,7 +123,7 @@ export const RELEASES: Release[] = [
       },
       {
         id: 'settings-search',
-        at: ['/settings/:tab'],
+        at: ['/settings/:tile'],
         go: '/settings',
         where: ['nav.settings'],
         text: 'new.change.settingsSearch',

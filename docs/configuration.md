@@ -112,7 +112,7 @@ manager happened to start the process in.
 
 `mode` says what a one-way job does beyond copying. The job form offers it as
 **Mode**, with **Copy only**, **Mirror** and **Move**, and it can also be set
-in the [defaults](#defaults-and-the-settings-tabs).
+in the [defaults](#defaults-and-the-settings-tiles).
 
 `sync`, the default and **Copy only** in the interface, copies what the source
 has and removes nothing. A file only the destination has stays there, and a
@@ -182,7 +182,7 @@ A list's patterns are added to the job's own `exclude` rather than replacing
 it. A job asking for a list that does not exist is refused when the file is
 read, because a filter that silently matches nothing breaks nothing anybody
 would notice; it syncs the thing somebody asked it to leave alone. In the
-interface the lists are kept on the **Sync** tab under **Settings**.
+interface the lists are kept on the **Sync** tile under **Settings**.
 
 ## Keeping old versions
 
@@ -197,7 +197,7 @@ only ever lands on a free name. It is off by default, since most trees are never
 edited in place and a copy of every overwrite would double them. `1` keeps only
 the version about to be overwritten.
 
-It is set in the file or in the [defaults](#defaults-and-the-settings-tabs); the
+It is set in the file or in the [defaults](#defaults-and-the-settings-tiles); the
 interface has no control for it, and `arrowloop sync` has no flag for it.
 
 ## Upper and lower case
@@ -284,7 +284,7 @@ cannot be read counts as five minutes.
 
 It is one setting for the whole file rather than per job, because how patient
 to be after a failure depends on the machine, not on a folder pair. In the
-interface it sits on the **Sync** tab under **Settings**, in **Retries**,
+interface it sits on the **Sync** tile under **Settings**, in **Retries**,
 with the wait in minutes.
 
 On a computer or in a container the scheduler looks once a minute for a failed
@@ -406,7 +406,7 @@ same value unless its `-keep-history` flag gives another.
 | `anomalies.overdueDays` | `2` | How many days late a scheduled run may be, counted from the run that was missed, before it makes a note. `0` means never. |
 | `anomalies.notifyHeld` | `true` | Report a job a brake holds where runs report to. |
 | `anomalies.notifyNotes` | `false` | Report the notes there as well. |
-| `defaults` | none | Values for every job that does not set its own; see [below](#defaults-and-the-settings-tabs). |
+| `defaults` | none | Values for every job that does not set its own; see [below](#defaults-and-the-settings-tiles). |
 | `excludeSets` | none | Named lists of exclude patterns; see [Shared exclude lists](#shared-exclude-lists). |
 
 !!! note "The bandwidth limit is not per job"
@@ -415,7 +415,7 @@ same value unless its `-keep-history` flag gives another.
     uplink either way.
 
     The limit is checked when the file is read, like everything else, and a
-    limit saved on the **General** tab applies to the running process at
+    limit saved on the **General** tile applies to the running process at
     once. Everything else is per job, and each job gets its own copy of rclone's
     settings, so a job asking for eight transfers does not change what another
     job is doing.
@@ -425,10 +425,10 @@ successful sync teaches you to ignore it, and then the one message that mattered
 is ignored with the rest. Matrix and a plain webhook are supported, and a
 failure at one destination does not stop the other from firing.
 
-## Defaults and the settings tabs
+## Defaults and the settings tiles
 
 The settings at the top of the file have a place in the interface as well as in
-the file, each on a tab under **Settings**. The bandwidth limit, how many jobs
+the file, each on a tile under **Settings**. The bandwidth limit, how many jobs
 may run at once and where the run log lives are on **General**; the defaults
 below, what happens after a failure and the shared exclude lists are on
 **Sync**; the two brakes, the anomaly notes and who gets told are on **Safety
@@ -465,7 +465,7 @@ the jobs that did.
 
 ## Backup and restore
 
-**Back up your settings**, on the **General** tab under **Settings**, exports
+**Back up your settings**, on the **General** tile under **Settings**, exports
 every job and every setting to a single JSON file and imports one back the same
 way, so a new machine is one restore away.
 

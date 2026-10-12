@@ -117,7 +117,7 @@ already happened; only the brakes stop a run. The next run inside the usual
 range closes the note by itself, and it can be acknowledged like the others.
 A job's page shows its usual ranges once it is learned.
 
-**Report unusual runs** on the **Safety net** tab switches the note off, and
+**Report unusual runs** on the **Safety net** tile switches the note off, and
 switching the anomaly notes off switches it off with them. Nothing is stored
 for it: the figures come from the run history.
 

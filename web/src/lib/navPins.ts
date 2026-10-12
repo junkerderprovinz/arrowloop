@@ -1,5 +1,5 @@
 // Whether Targets also stands in the sidebar. The choice belongs to the person
-// at this browser, like the remembered settings tab.
+// at this browser, like the remembered settings tile.
 
 import { useMemo, useSyncExternalStore } from 'react'
 
@@ -15,7 +15,7 @@ function readRaw(): string {
   }
 }
 
-/** Targets starts on its tab only, until somebody pins it. */
+/** Targets starts on its tile only, until somebody pins it. */
 export function parsePins(raw: string): NavPins {
   const pins: NavPins = { targets: false }
   try {

@@ -1,18 +1,18 @@
-// The search over all of Settings: the tab names, the card titles, the name of
+// The search over all of Settings: the tile names, the card titles, the name of
 // each setting and the text behind its (i), in the reader's language. A result
-// opens its tab and marks the card or row there; it does not filter the page.
+// opens its tile and marks the card or row there; it does not filter the page.
 import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from 'react'
 
 import { IconClose, IconSearch } from '../../components/glyphs'
 import { InfoBubble } from '../../lib/glimstone/InfoBubble'
 import { useT, type TranslationKey } from '../../lib/i18n'
 import { navigate } from '../../lib/router'
-import type { TabId } from '../../lib/routes'
+import type { TileId } from '../../lib/routes'
 import { useRevealOnScrollUp } from './revealOnScrollUp'
 import { SETTINGS_INDEX } from './searchIndex'
-import { FORMER_NAMES, type SettingsTab } from './tabs'
+import { FORMER_NAMES, type Tile } from './tiles'
 
-/** Where a result leads on its tab: the card, and the row in it. */
+/** Where a result leads on its tile: the card, and the row in it. */
 export interface SearchJump {
   card?: string
   row?: string
@@ -20,8 +20,8 @@ export interface SearchJump {
 
 interface Item {
   id: string
-  tab: TabId
-  tabName: string
+  tile: TileId
+  tileName: string
   name: string
   cardName?: string
   /** A name the settings carried in an earlier version. */
@@ -42,20 +42,20 @@ export function fold(s: string): string {
   return s.normalize('NFD').replace(/\p{M}/gu, '').replace(/ß/g, 'ss').replace(/-/g, '').toLowerCase()
 }
 
-export function buildItems(t: (k: TranslationKey) => string, tabs: SettingsTab[]): Item[] {
+export function buildItems(t: (k: TranslationKey) => string, tiles: Tile[]): Item[] {
   const items: Item[] = []
-  for (const tab of tabs) {
-    const tabName = t(tab.labelKey)
-    const add = (item: Omit<Item, 'tab' | 'tabName' | 'foldedName'>) =>
-      items.push({ ...item, tab: tab.id, tabName, foldedName: fold(item.name) })
-    add({ id: `tab:${tab.id}`, name: tabName, tier: 0, foldedProse: '' })
-    for (const card of SETTINGS_INDEX[tab.id]) {
+  for (const tile of tiles) {
+    const tileName = t(tile.labelKey)
+    const add = (item: Omit<Item, 'tile' | 'tileName' | 'foldedName'>) =>
+      items.push({ ...item, tile: tile.id, tileName, foldedName: fold(item.name) })
+    add({ id: `tile:${tile.id}`, name: tileName, tier: 0, foldedProse: '' })
+    for (const card of SETTINGS_INDEX[tile.id]) {
       const title = t(card.title)
       const prose = [card.hint, ...(card.body ?? [])].map((k) => (k ? t(k) : '')).join(' ')
-      add({ id: `card:${tab.id}:${title}`, name: title, tier: 1, foldedProse: fold(prose) })
+      add({ id: `card:${tile.id}:${title}`, name: title, tier: 1, foldedProse: fold(prose) })
       for (const row of card.rows) {
         add({
-          id: `row:${tab.id}:${title}:${row.key}`,
+          id: `row:${tile.id}:${title}:${row.key}`,
           name: t(row.key),
           cardName: title,
           tier: 2,
@@ -65,13 +65,13 @@ export function buildItems(t: (k: TranslationKey) => string, tabs: SettingsTab[]
     }
   }
   for (const f of FORMER_NAMES) {
-    const tab = tabs.find((x) => x.id === f.tab)
-    if (!tab) continue
+    const tile = tiles.find((x) => x.id === f.tile)
+    if (!tile) continue
     const name = t(f.labelKey)
     items.push({
       id: `former:${f.labelKey}`,
-      tab: tab.id,
-      tabName: t(tab.labelKey),
+      tile: tile.id,
+      tileName: t(tile.labelKey),
       name,
       former: true,
       tier: 0,
@@ -103,7 +103,7 @@ export function search<T extends { foldedName: string; foldedProse: string; tier
   return hits.sort((a, b) => a.score - b.score)
 }
 
-/** The jump a result asked for, taken by the tab once it has drawn. */
+/** The jump a result asked for, taken by the tile once it has drawn. */
 let pending: SearchJump | null = null
 
 export function takeJump(): SearchJump | null {
@@ -112,14 +112,14 @@ export function takeJump(): SearchJump | null {
   return jump
 }
 
-/** Opens a tab and marks the card or row there, the way a search result does. */
-export function openSetting(tab: TabId, jump: SearchJump | null) {
+/** Opens a tile and marks the card or row there, the way a search result does. */
+export function openSetting(tile: TileId, jump: SearchJump | null) {
   pending = jump
-  navigate(`/settings/${tab}`)
+  navigate(`/settings/${tile}`)
 }
 
-/** `wide` lets the bar run the page's width, over a tab that is a list rather than a form. */
-export function SettingsSearch({ tabs, tab, wide }: { tabs: SettingsTab[]; tab: TabId; wide: boolean }) {
+/** `wide` lets the bar run the page's width, over a tile that is a list rather than a form. */
+export function SettingsSearch({ tiles, tile, wide }: { tiles: Tile[]; tile: TileId; wide: boolean }) {
   const { t } = useT()
   const [query, setQuery] = useState('')
   const [open, setOpen] = useState(false)
@@ -128,7 +128,7 @@ export function SettingsSearch({ tabs, tab, wide }: { tabs: SettingsTab[]; tab: 
   const listId = useId()
   // Kept while in use, so a wheel tick cannot take it from somebody typing.
   const inUse = open || query !== '' || (typeof document !== 'undefined' && document.activeElement === field.current)
-  const { revealed, barRef, show, hide } = useRevealOnScrollUp(tab, inUse)
+  const { revealed, barRef, show, hide } = useRevealOnScrollUp(tile, inUse)
   const [summoned, setSummoned] = useState(0)
 
   // A slash outside a field and Ctrl+K anywhere bring the search up with the
@@ -152,7 +152,7 @@ export function SettingsSearch({ tabs, tab, wide }: { tabs: SettingsTab[]; tab: 
     if (summoned > 0) field.current?.focus()
   }, [summoned, revealed])
 
-  const items = useMemo(() => buildItems(t, tabs), [t, tabs])
+  const items = useMemo(() => buildItems(t, tiles), [t, tiles])
   const hits = useMemo(() => search(items, query), [items, query])
   const shown = hits.slice(0, SHOWN)
   const showList = open && query.trim() !== ''
@@ -161,7 +161,7 @@ export function SettingsSearch({ tabs, tab, wide }: { tabs: SettingsTab[]; tab: 
     setQuery('')
     setOpen(false)
     field.current?.blur()
-    openSetting(item.tab, item.tier === 1 ? { card: item.name } : item.tier === 2 ? { card: item.cardName, row: item.name } : null)
+    openSetting(item.tile, item.tier === 1 ? { card: item.name } : item.tier === 2 ? { card: item.cardName, row: item.name } : null)
   }
 
   function onKeyDown(e: KeyboardEvent<HTMLInputElement>) {
@@ -186,12 +186,12 @@ export function SettingsSearch({ tabs, tab, wide }: { tabs: SettingsTab[]; tab: 
     }
   }
 
-  // Results stay grouped by tab, in rank order within each.
-  const groups: { tab: TabId; name: string; hits: { hit: (typeof shown)[number]; index: number }[] }[] = []
+  // Results stay grouped by tile, in rank order within each.
+  const groups: { tile: TileId; name: string; hits: { hit: (typeof shown)[number]; index: number }[] }[] = []
   shown.forEach((hit, index) => {
-    let group = groups.find((g) => g.tab === hit.item.tab)
+    let group = groups.find((g) => g.tile === hit.item.tile)
     if (!group) {
-      group = { tab: hit.item.tab, name: hit.item.tabName, hits: [] }
+      group = { tile: hit.item.tile, name: hit.item.tileName, hits: [] }
       groups.push(group)
     }
     group.hits.push({ hit, index })
@@ -269,7 +269,7 @@ export function SettingsSearch({ tabs, tab, wide }: { tabs: SettingsTab[]; tab: 
             <p className="px-4 py-6 text-center text-subline text-carbon-textMuted">{t('settings.searchNone')}</p>
           )}
           {groups.map((g) => (
-            <div key={g.tab} role="group" aria-label={g.name} className="py-1">
+            <div key={g.tile} role="group" aria-label={g.name} className="py-1">
               <div className="glim-eyebrow px-4 pb-1 font-semibold">{g.name}</div>
               {g.hits.map(({ hit, index }) => (
                 <div
@@ -288,7 +288,7 @@ export function SettingsSearch({ tabs, tab, wide }: { tabs: SettingsTab[]; tab: 
                     <span className="flex min-w-0 gap-2 text-meta text-carbon-textMuted">
                       <span className="truncate">
                         {hit.item.former
-                          ? t('settings.searchFormer', { tile: hit.item.tabName })
+                          ? t('settings.searchFormer', { tile: hit.item.tileName })
                           : hit.item.tier === 0
                             ? t('settings.searchTile')
                             : hit.item.cardName}
@@ -310,7 +310,7 @@ export function SettingsSearch({ tabs, tab, wide }: { tabs: SettingsTab[]; tab: 
 }
 
 /**
- * The element a result leads to on the open tab: the row inside its card, or
+ * The element a result leads to on the open tile: the row inside its card, or
  * the card itself when the row is not drawn, such as a switch that only shows
  * while another one is on.
  */

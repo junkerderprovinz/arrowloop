@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest'
 
-import { jobPlace, resolveRoute, TAB_IDS, type RouteContext } from './routes'
+import { jobPlace, resolveRoute, TILE_IDS, type RouteContext } from './routes'
 
 const ctx = (over: Partial<RouteContext> = {}): RouteContext => ({
   pins: { targets: false },
   anomalies: true,
-  tabs: TAB_IDS,
+  tiles: TILE_IDS,
   remembered: null,
   ...over,
 })
@@ -34,7 +34,7 @@ describe('the addresses', () => {
     expect(go('/jobs/photos%20raw/preview')).toEqual({ redirect: '/jobs/photos%20raw' })
   })
 
-  it('send unpinned Targets to its settings tab and keep what the link asked for', () => {
+  it('send unpinned Targets to its settings tile and keep what the link asked for', () => {
     expect(go('/targets?x=1')).toEqual({ redirect: '/settings/targets?x=1' })
   })
 
@@ -56,7 +56,7 @@ describe('the addresses', () => {
     expect(go('/targets', { pins: { targets: true } })).toEqual({ view: { page: 'targets' } })
   })
 
-  it('open Settings on the tab that was open last', () => {
+  it('open Settings on the tile that was open last', () => {
     expect(go('/settings', { remembered: 'safety' })).toEqual({ redirect: '/settings/safety' })
   })
 
@@ -64,12 +64,12 @@ describe('the addresses', () => {
     expect(go('/settings', { remembered: 'workload' })).toEqual({ redirect: '/settings/general' })
   })
 
-  it('open Settings on its first tab when the remembered one is gone', () => {
-    const tabs = TAB_IDS.filter((t) => t !== 'security')
-    expect(go('/settings', { remembered: 'security', tabs })).toEqual({ redirect: '/settings/general' })
+  it('open Settings on its first tile when the remembered one is gone', () => {
+    const tiles = TILE_IDS.filter((t) => t !== 'security')
+    expect(go('/settings', { remembered: 'security', tiles })).toEqual({ redirect: '/settings/general' })
   })
 
-  it('lead every old tile to the tab that holds its cards', () => {
+  it('lead every old address to the tile that holds its cards', () => {
     expect(go('/settings/engine')).toEqual({ redirect: '/settings/sync' })
     expect(go('/settings/workload')).toEqual({ redirect: '/settings/general' })
     expect(go('/settings/exclude')).toEqual({ redirect: '/settings/sync' })
@@ -78,7 +78,7 @@ describe('the addresses', () => {
     expect(go('/settings/app')).toEqual({ redirect: '/settings/apps' })
   })
 
-  it('send a tab nobody made to the first one', () => {
+  it('send a tile nobody made to the first one', () => {
     expect(go('/settings/nothing')).toEqual({ redirect: '/settings/general' })
   })
 

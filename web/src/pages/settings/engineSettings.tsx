@@ -14,9 +14,9 @@ import { useToast } from '../../lib/toast'
 const SETTLE_MS = 700
 
 /**
- * The engine settings the General, Sync and Safety tabs show, saved as they
+ * The engine settings the General, Sync and Safety tiles show, saved as they
  * change. A save is quiet; a refusal says so in a toast, since the field that
- * caused it may be far up a long page. Each tab asks once and hands the result
+ * caused it may be far up a long page. Each tile asks once and hands the result
  * to all its cards, since a save sends the whole draft and a second draft
  * would undo the first one's changes.
  */
@@ -42,7 +42,7 @@ export function useEngineSettings() {
   // would otherwise send a stale draft.
   const latest = useRef<Settings>({})
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
-  // Leaving the tab unmounts it, and a change still waiting to settle is sent
+  // Leaving the tile unmounts it, and a change still waiting to settle is sent
   // then rather than lost. Nothing is left on screen to take the answer.
   useEffect(
     () => () => {
@@ -98,7 +98,7 @@ export function waitMinutes(raw: string | undefined): number {
   return match[2] === 'h' ? n * 60 : n
 }
 
-/** Stands in for a tab's cards until the settings have been read. */
+/** Stands in for a tile's cards until the settings have been read. */
 export function Reading({ title, error, hueIndex = 0 }: { title: string; error: string | null; hueIndex?: number }) {
   const { t } = useT()
   return (

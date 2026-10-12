@@ -6,11 +6,11 @@ import { useT } from '../../lib/i18n'
 import { setNavPin, useNavPins } from '../../lib/navPins'
 
 /**
- * Targets always lives on its tab, the page whole under the switch that also
+ * Targets always lives on its tile, the page whole under the switch that also
  * puts it in the sidebar. The cards go straight to the settings column, whose
  * page-top rule gives the first card's badge its room only there.
  */
-export function TargetsTab({ page }: { page: ReactNode }) {
+export function TargetsTile({ page }: { page: ReactNode }) {
   const { t } = useT()
   const pinned = useNavPins().targets
   return (

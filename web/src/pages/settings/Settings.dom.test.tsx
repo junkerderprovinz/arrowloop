@@ -17,7 +17,7 @@ vi.mock('../../lib/api', async (actual) => ({
 
 const { SyncPage } = await import('./SyncPage')
 const { SafetyPage } = await import('./SafetyPage')
-const { TargetsTab } = await import('./TargetsTab')
+const { TargetsTile } = await import('./TargetsTile')
 const { setNavPin } = await import('../../lib/navPins')
 
 // jsdom cannot measure elements, which the selectors ask for.
@@ -34,8 +34,8 @@ beforeEach(() => {
 })
 afterEach(cleanup)
 
-describe('a settings tab', () => {
-  it('saves a change made just before the tab closes', async () => {
+describe('a settings tile', () => {
+  it('saves a change made just before the tile closes', async () => {
     const { unmount } = render(<SyncPage />)
     fireEvent.click(await screen.findByRole('switch', { name: 'Carry empty folders' }))
     unmount()
@@ -82,9 +82,9 @@ describe('the anomalies switch', () => {
   })
 })
 
-describe('the Targets tab', () => {
+describe('the Targets tile', () => {
   it('draws the whole page, pinned or not', () => {
-    render(<TargetsTab page={<p>the targets page</p>} />)
+    render(<TargetsTile page={<p>the targets page</p>} />)
     expect(screen.getByText('the targets page')).toBeTruthy()
     act(() => setNavPin('targets', true))
     expect(screen.getByText('the targets page')).toBeTruthy()
@@ -96,7 +96,7 @@ describe('the Targets tab', () => {
   it('starts on a card the page top makes room for', async () => {
     const { container } = render(
       <div className="glim-page-enter">
-        <TargetsTab page={<p>the targets page</p>} />
+        <TargetsTile page={<p>the targets page</p>} />
       </div>,
     )
     await screen.findByRole('switch', { name: 'Also show in the sidebar' })
