@@ -59,6 +59,10 @@ plugged in opens like any folder, so a job can sync into one folder on it; one
 that is not plugged in can only be taken whole. The job stores the drive's
 identity and the folder, such as `volume:<id>/Music`, and not the letter.
 
+A job whose drive is missing when its turn comes waits for it. When the drive
+is back, the job runs within a minute if it missed a turn meanwhile, and a
+job that watches for changes starts watching the drive too.
+
 ## New jobs, drafts and held jobs
 
 A new job arrives switched on, and the form has no switch for it.

@@ -36,8 +36,8 @@ func (r *Runner) condition() Condition {
 }
 
 // waiting remembers the jobs whose drive was not attached last time, so the
-// interface can say "waiting for a drive". It is not a retry loop: the schedule
-// notices a drive being plugged in within one turn.
+// interface can say "waiting for a drive" and the scheduler can catch up the
+// turn the drive was away for once it is back.
 type waiting struct {
 	mu   sync.Mutex
 	when map[string]time.Time
@@ -69,6 +69,17 @@ func (w *waiting) Since(name string) (time.Time, bool) {
 // WaitingFor reports whether this job is waiting for a drive to be attached,
 // and since when.
 func (r *Runner) WaitingFor(name string) (time.Time, bool) { return r.waiting.Since(name) }
+
+// waitForDrive marks a job as waiting for its drive. A watch on the drive
+// ends with the drive, so the job's watcher is started again once it is back.
+func (r *Runner) waitForDrive(name string) {
+	r.waiting.note(name, time.Now())
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	if w := r.watchers[name]; w != nil {
+		w.short = true
+	}
+}
 
 // attached reports whether both of a job's sides can be resolved right now. The
 // engine checks again when it opens the sides, since a drive can be unplugged

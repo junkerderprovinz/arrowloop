@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"time"
 
 	"github.com/junkerderprovinz/arrowloop/internal/apply"
 	"github.com/junkerderprovinz/arrowloop/internal/history"
@@ -30,7 +29,7 @@ func (r *Runner) RunAutomatically(ctx context.Context, name string) (history.Run
 	// mounts it, so such a job finds out from the run.
 	if j.Before == "" {
 		if err := attached(j); err != nil {
-			r.waiting.note(name, time.Now())
+			r.waitForDrive(name)
 			return history.Run{}, fmt.Errorf("%w: %w", ErrVolumeMissing, err)
 		}
 	}
@@ -52,7 +51,7 @@ func (r *Runner) RunAutomatically(ctx context.Context, name string) (history.Run
 		return r.execute(ctx, j, only, nil, nil, live)
 	})
 	if errors.Is(err, ErrVolumeMissing) {
-		r.waiting.note(name, time.Now())
+		r.waitForDrive(name)
 	}
 	return rec, err
 }

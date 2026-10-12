@@ -89,7 +89,7 @@ type Runner struct {
 	// inflight holds, per running job, the way to stop it.
 	inflight map[string]context.CancelFunc
 	subs     map[chan Event]struct{}
-	watchers map[string]*watch.Watcher
+	watchers map[string]*watched
 }
 
 // New builds a runner. hist may be nil, which turns off the run log. The
@@ -683,7 +683,7 @@ func (r *Runner) Serve(ctx context.Context) error {
 			endRound()
 			c.Stop()
 			r.mu.Lock()
-			r.watchers = map[string]*watch.Watcher{}
+			r.watchers = map[string]*watched{}
 			r.mu.Unlock()
 			r.log("configuration reloaded")
 		}
@@ -721,10 +721,14 @@ func (r *Runner) schedule(ctx, round context.Context) *cron.Cron {
 
 	c.Schedule(cron.Every(time.Minute), cron.FuncJob(func() {
 		r.overdue(ctx, time.Now())
+		r.rewatch(ctx, round)
 		for _, name := range r.Retrying(ctx, time.Now()) {
 			r.log("%s: trying again after a failure", name)
 			r.runAndReport(ctx, name)
 		}
+		// After the retries, so a retry that found the drive back has
+		// already ended the job's wait.
+		r.catchUp(ctx, time.Now())
 	}))
 
 	// Pruned daily, since a container stays up for months while a watching
@@ -1173,15 +1177,14 @@ func (r *Runner) Running() map[string]bool {
 	return out
 }
 
-// localRoots returns the sides of a job that live on a real filesystem. It
-// parses rather than connects, so starting the daemon does not reach out to a
-// remote.
-func localRoots(j job.Job) []string {
-	var out []string
+// localRoots returns the sides of a job that live on a real filesystem, and
+// whether a side was left out because its drive is not attached. It parses
+// rather than connects, so starting the daemon does not reach out to a remote.
+func localRoots(j job.Job) (roots []string, missing bool) {
 	for _, side := range []string{j.Left, j.Right} {
-		// A volume that is not attached is skipped without complaint.
 		resolved, err := volume.Resolve(side)
 		if err != nil {
+			missing = true
 			continue
 		}
 		parsed, err := fspath.Parse(resolved)
@@ -1192,27 +1195,40 @@ func localRoots(j job.Job) []string {
 		if err != nil {
 			continue
 		}
-		out = append(out, filepath.Clean(abs))
+		roots = append(roots, filepath.Clean(abs))
 	}
-	return out
+	return roots, missing
+}
+
+// watched is one job's watcher. short is set while it lacks a side on a drive
+// that was not attached; w is nil when that drive held the only local side.
+type watched struct {
+	w     *watch.Watcher
+	stop  context.CancelFunc
+	short bool
 }
 
 // startWatcher makes one job react to changes as well as to the clock. Only a
 // local side can be watched, and the schedule stays behind it. The watcher
 // lives as long as round; the runs it starts live under ctx.
 func (r *Runner) startWatcher(ctx, round context.Context, j job.Job) {
-	roots := localRoots(j)
+	name := j.Name
+	roots, missing := localRoots(j)
 	if len(roots) == 0 {
-		r.log("%s asks to be watched but has no local side; the schedule alone will have to do", j.Name)
+		if missing {
+			r.setWatcher(name, &watched{short: true})
+			r.log("%s: its drive is not attached, so watching starts when it is", name)
+			return
+		}
+		r.log("%s asks to be watched but has no local side; the schedule alone will have to do", name)
 		return
 	}
 	opt, err := j.Options()
 	if err != nil {
-		r.log("%s: %v", j.Name, err)
+		r.log("%s: %v", name, err)
 		return
 	}
 
-	name := j.Name
 	w, err := watch.New(watch.Options{
 		Roots:    roots,
 		Exclude:  opt.Exclude,
@@ -1237,20 +1253,60 @@ func (r *Runner) startWatcher(ctx, round context.Context, j job.Job) {
 		return
 	}
 
-	r.mu.Lock()
-	if r.watchers == nil {
-		r.watchers = map[string]*watch.Watcher{}
-	}
-	r.watchers[name] = w
-	r.mu.Unlock()
+	// Its own context, so a watcher started again once a drive is back can
+	// replace it.
+	live, stop := context.WithCancel(round)
+	r.setWatcher(name, &watched{w: w, stop: stop, short: missing})
 
 	r.log("%s: watching %d folder(s) across %d local side(s)", name, w.Watching(), len(roots))
 	go func() {
 		defer w.Close()
-		if err := w.Run(round); err != nil {
+		if err := w.Run(live); err != nil {
 			r.log("%s: watching stopped: %v", name, err)
 		}
 	}()
+}
+
+func (r *Runner) setWatcher(name string, w *watched) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	if r.watchers == nil {
+		r.watchers = map[string]*watched{}
+	}
+	r.watchers[name] = w
+}
+
+// rewatch starts again the watchers that a missing drive left short, once
+// the drive is back.
+func (r *Runner) rewatch(ctx, round context.Context) {
+	r.mu.Lock()
+	var short []string
+	for name, w := range r.watchers {
+		if w.short {
+			short = append(short, name)
+		}
+	}
+	r.mu.Unlock()
+	sort.Strings(short)
+
+	for _, name := range short {
+		if round.Err() != nil {
+			return
+		}
+		j, ok := r.config().Find(name)
+		if !ok || j.Disabled || !j.Watch || attached(j) != nil {
+			continue
+		}
+		r.mu.Lock()
+		old := r.watchers[name]
+		delete(r.watchers, name)
+		r.mu.Unlock()
+		if old != nil && old.stop != nil {
+			old.stop()
+		}
+		r.log("%s: its drive is back, watching it too", name)
+		r.startWatcher(ctx, round, j)
+	}
 }
 
 // muteWatcher stops a job's own writes coming back as a change that runs the
@@ -1259,7 +1315,7 @@ func (r *Runner) muteWatcher(name string) {
 	r.mu.Lock()
 	w := r.watchers[name]
 	r.mu.Unlock()
-	if w != nil {
-		w.Mute()
+	if w != nil && w.w != nil {
+		w.w.Mute()
 	}
 }
