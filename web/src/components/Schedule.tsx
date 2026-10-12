@@ -206,7 +206,7 @@ export function ScheduleField({
                     }}
                     className={`glim-hue grow px-2.5 py-1 text-meta font-medium transition-colors ${
                       on
-                        ? 'bg-accent text-accentContrast'
+                        ? 'bg-accent text-accentContrast hover:bg-accentHover'
                         : 'bg-transparent text-carbon-textMuted hover:bg-carbon-hover hover:text-carbon-text'
                     }`}
                   >

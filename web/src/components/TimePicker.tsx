@@ -91,7 +91,7 @@ export function TimePicker({
         aria-haspopup="dialog"
         aria-expanded={open}
         aria-label={`${label}: ${formatTime(hour, shownMinute)}`}
-        className="inline-flex items-center gap-2 bg-carbon-surface2 px-3 py-2 text-meta tabular-nums text-carbon-text outline-none transition hover:brightness-110 focus:brightness-125"
+        className="inline-flex items-center gap-2 bg-carbon-surface2 px-3 py-2 text-meta tabular-nums text-carbon-text outline-none transition hover:bg-carbon-surface3 focus:brightness-125"
         style={{ borderRadius: 'var(--radius-control)' }}
       >
         <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden>

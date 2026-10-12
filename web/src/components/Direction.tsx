@@ -88,7 +88,7 @@ export function DirectionSwitch({
         }
       }}
       aria-label={`${t('direction.label')}: ${name}`}
-      className={`glim-btn glim-btn-key glim-hue inline-flex ${KEY_CONTROL_H} shrink-0 items-center justify-center gap-2 bg-accent px-4 text-body font-medium text-accentContrast transition hover:opacity-90 disabled:pointer-events-none disabled:opacity-45`}
+      className={`glim-btn glim-btn-key glim-hue inline-flex ${KEY_CONTROL_H} shrink-0 items-center justify-center gap-2 bg-accent px-4 text-body font-medium text-accentContrast transition hover:bg-accentHover disabled:pointer-events-none disabled:opacity-45`}
       style={{
         borderRadius: 'var(--radius-pill)',
         minWidth: `var(--btn-w-${stage})`,

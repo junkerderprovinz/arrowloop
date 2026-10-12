@@ -263,3 +263,16 @@ body {
   border-radius: var(--radius-pill);
   box-shadow: var(--elevation);
 }
+
+/* Every button gives way to .97 on press, the web's side of the phone's press.
+   The design language states the rule but its stylesheet has no line for it,
+   so it stands here until tokens.css carries one. The individual `scale`
+   property leaves any transform a button already has alone. */
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion='off']) :is(button, [role='button'], a.glim-readme-btn):not(:disabled):active {
+    scale: 0.97;
+  }
+  .glim-btn {
+    transition: opacity 120ms, background-color 120ms, scale 120ms;
+  }
+}
