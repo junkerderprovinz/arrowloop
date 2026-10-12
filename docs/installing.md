@@ -84,20 +84,21 @@ deleted.
 
 #### A forgotten password
 
-Under the password box, **Forgot the password?** has ArrowLoop write a one-time
-code into its log: on Unraid under Docker, ArrowLoop, Logs, elsewhere with
-`docker logs arrowloop`. Type the code and a new password on the same page. The
-code is valid for ten minutes, asking again keeps the code in force rather than
-replacing it, and a wrong code does not spend the right one. The new password
-takes the second factor, every passkey and every other session with it, since
-any of them could belong to whoever made the reset necessary, and the page says
-what went.
+At the foot of the sign-in form, **Forgot password?** has ArrowLoop write a
+one-time code into its log: on Unraid under Docker, ArrowLoop, Logs, elsewhere
+with `docker logs arrowloop`. The code stands on its own between the other
+lines, in yellow. Type it and a new password on the same page. The code is
+valid for ten minutes, and a wrong code does not spend the right one. Asking
+again while it is valid writes nothing, so the log does not fill up and the
+code you are typing stays good. The new password takes the second factor, every
+passkey and every other session with it, since any of them could belong to
+whoever made the reset necessary, and the page says what went.
 
-Whoever can read that log can take the install over this way: root on the host,
+Whoever can read that log can reset the password this way: root on the host,
 but also a log viewer such as Dozzle, any container given the Docker socket,
-even read only, and a log collector. If any of those is less trusted than you,
-set the password with `ARROWLOOP_PASSWORD_HASH` instead, which a code from the
-log cannot replace.
+even read only, and any log shipper that forwards container output. If any of
+those is less trusted than you, set the password with `ARROWLOOP_PASSWORD_HASH`
+instead, which a code from the log cannot replace.
 
 #### The environment variable
 
