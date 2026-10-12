@@ -5,7 +5,7 @@ documents folder and a server backup has three of them, each with its own
 schedule, its own filters and its own idea of what may be deleted, so everything
 past `arrowloop sync` works from a configuration file.
 
-Jobs live in `arrowloop.json`. The jobs tab in the interface writes the same
+Jobs live in `arrowloop.json`. The Jobs page in the interface writes the same
 file, through the same validator, so neither way can produce something the other
 refuses. A complete example is
 [arrowloop.example.json](https://github.com/junkerderprovinz/arrowloop/blob/main/arrowloop.example.json).
@@ -112,7 +112,7 @@ manager happened to start the process in.
 
 `mode` says what a one-way job does beyond copying. The job form offers it as
 **Mode**, with **Copy only**, **Mirror** and **Move**, and it can also be set
-in the [defaults](#defaults-and-the-settings-tab).
+in the [defaults](#defaults-and-the-settings-tiles).
 
 `sync`, the default and **Copy only** in the interface, copies what the source
 has and removes nothing. A file only the destination has stays there, and a
@@ -182,8 +182,7 @@ A list's patterns are added to the job's own `exclude` rather than replacing
 it. A job asking for a list that does not exist is refused when the file is
 read, because a filter that silently matches nothing breaks nothing anybody
 would notice; it syncs the thing somebody asked it to leave alone. In the
-interface the lists are kept under **Settings**, **Engine**, **Shared exclude
-lists**.
+interface the lists are kept on the **Exclude lists** tile under **Settings**.
 
 ## Keeping old versions
 
@@ -198,7 +197,7 @@ only ever lands on a free name. It is off by default, since most trees are never
 edited in place and a copy of every overwrite would double them. `1` keeps only
 the version about to be overwritten.
 
-It is set in the file or in the [defaults](#defaults-and-the-settings-tab); the
+It is set in the file or in the [defaults](#defaults-and-the-settings-tiles); the
 interface has no control for it, and `arrowloop sync` has no flag for it.
 
 ## Upper and lower case
@@ -285,8 +284,8 @@ cannot be read counts as five minutes.
 
 It is one setting for the whole file rather than per job, because how patient
 to be after a failure depends on the machine, not on a folder pair. In the
-interface it sits under **Settings**, **Engine**, **After a failure**, with the
-wait in minutes.
+interface it sits on the **Workload** tile under **Settings**, in **Retries**,
+with the wait in minutes.
 
 On a computer or in a container the scheduler looks once a minute for a failed
 job whose wait is over. On Android the same rule decides what runs when the app
@@ -362,7 +361,7 @@ such as an SSH tunnel, keeps running.
     machine, with the rights of the process. So the interface shows the
     commands but cannot set or change them: every save from the interface puts
     back what the file on disk says for a job of the same name. A job created or
-    renamed in the interface starts without commands. The jobs tab and the file
+    renamed in the interface starts without commands. The interface and the file
     agree on everything else.
 
 ## Every run is written down
@@ -398,7 +397,7 @@ same value unless its `-keep-history` flag gives another.
 | `anomalies.overdueDays` | `2` | How many days a scheduled job may miss its turn before it makes a note. `0` means never. |
 | `anomalies.notifyHeld` | `true` | Report a job a brake holds where runs report to. |
 | `anomalies.notifyNotes` | `false` | Report the two notes there as well. |
-| `defaults` | none | Values for every job that does not set its own; see [below](#defaults-and-the-settings-tab). |
+| `defaults` | none | Values for every job that does not set its own; see [below](#defaults-and-the-settings-tiles). |
 | `excludeSets` | none | Named lists of exclude patterns; see [Shared exclude lists](#shared-exclude-lists). |
 
 !!! note "The bandwidth limit is not per job"
@@ -407,7 +406,7 @@ same value unless its `-keep-history` flag gives another.
     uplink either way.
 
     The limit is checked when the file is read, like everything else, and a
-    limit saved under **Settings**, **Engine** applies to the running process at
+    limit saved on the **Workload** tile applies to the running process at
     once. Everything else is per job, and each job gets its own copy of rclone's
     settings, so a job asking for eight transfers does not change what another
     job is doing.
@@ -417,13 +416,14 @@ successful sync teaches you to ignore it, and then the one message that mattered
 is ignored with the rest. Matrix and a plain webhook are supported, and a
 failure at one destination does not stop the other from firing.
 
-## Defaults and the Settings tab
+## Defaults and the settings tiles
 
 The settings at the top of the file have a place in the interface as well as in
-the file. The bandwidth limit, how many jobs may run at once, where the run log
-lives, who gets told and what happens after a failure sit under **Settings**,
-**Engine**, and so do the defaults below, the two brakes among them.
-`historyKeep` has no control there and is set in the file.
+the file, each on a tile under **Settings**. The bandwidth limit, how many jobs
+may run at once, where the run log lives and what happens after a failure are
+on **Workload**, who gets told is on **Notifications**, the defaults below are
+on **Sync**, and the two brakes are on **Safety net**. `historyKeep` has no
+control there and is set in the file.
 
 What is usually the same for every job lives in `defaults`, and a job keeps only
 what makes it different, so the job form stays short:
@@ -456,9 +456,9 @@ the jobs that did.
 
 ## Backup and restore
 
-**Settings**, **General**, **Back up your settings** exports every job and every
-setting to a single JSON file and imports one back the same way, so a new
-machine is one restore away.
+**Back up your settings**, on the **General** tile under **Settings**, exports
+every job and every setting to a single JSON file and imports one back the same
+way, so a new machine is one restore away.
 
 Importing replaces everything and asks first, with the file's name in the
 question, because the one thing nobody can do afterwards is get the old setup
@@ -477,6 +477,7 @@ has no browser to open.
 
 Run `rclone authorize "<backend>"` on a computer that has a browser. It opens
 the provider's sign-in page and prints a token when you are done; paste that
-whole line into the token field when you add the service under **Targets**. The
+whole line into the token field when you add the service with **Add storage or
+cloud** on **Targets**. The
 client id and secret below it are optional and only matter if you registered
 your own application with the provider.

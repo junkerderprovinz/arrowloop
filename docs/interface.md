@@ -6,34 +6,101 @@ arrowloop web -config arrowloop.json
 
 serves it on `http://127.0.0.1:8422`, with the schedules running in the same
 process. The container serves the same interface on port 8422, and the desktop
-app shows it in a window of its own. It has a tab each for Jobs, Targets,
-History, Conflicts, Anomalies, Trash and Settings.
+app shows it in a window of its own.
 
 `arrowloop daemon` is the same scheduler without the interface, for a machine
 where nobody is looking; see [the command line](cli.md#web-and-daemon).
 
+## Finding your way
+
+The sidebar holds four places: **Jobs**, **Conflicts**, **Trash** and
+**History**. A number beside an entry counts what is there: running jobs, open
+conflicts, files in the trash. **Sign out** stands at the foot, above
+**Settings**, and only once a password is set.
+
+**Targets** and **Anomalies** are tiles under Settings. Each has a switch,
+**Also show in the sidebar**, that puts the page in the sidebar as well. While
+it is there, its tile keeps only its settings and an **Open** row, so nothing
+is shown twice. An old link to `/targets` or `/anomalies` leads to the tile
+while the page is not in the sidebar.
+
+In a narrow window the sidebar becomes a bar along the bottom: **Jobs**,
+**Conflicts**, **History**, **Settings** and **More**. More opens a sheet with
+Trash, Targets and Anomalies.
+
+## The first start
+
+A new install opens on a welcome page. It says what it found, such as the
+targets rclone already knows and the drives that are plugged in, and lists the
+three steps to a first sync: add a target or pick a folder, create a job, run
+the preview. Each step is a link and is marked done once it is. **Restore
+settings** brings back every job from a backup file; **Start** goes to Jobs.
+
+## Jobs
+
+The page opens with one sentence on how things stand: **Everything in sync**,
+**In sync, with notes** or **Needs you**. A warning is never rounded up to "in
+sync". Under it, and only while something waits, a **Waiting** card names it:
+conflicts waiting for a choice, a held job, notes on your jobs, a job whose
+last run failed or that has not run yet. Each line leads to where it is
+answered.
+
+Below that is one row per job: the tile of its direction, its name, an (i)
+with both sides, the schedule and the next run, **Pause** and **Run now**, the
+last fourteen runs as a strip, and one status. In the strip a green square is a
+run that worked, orange one that worked but left something such as a conflict,
+red one that failed, and grey a run that has not happened yet. The status is the loudest thing that applies: **Running** with its
+progress, **Held**, **Failed**, **Conflict waiting**, **Paused**, **Not run
+yet**, or, when nothing waits, a green dot and the time of the last run. A
+held job and a waiting conflict are orange and lead to the finding or the
+conflict.
+
+The row buttons appear when the pointer is over the row and stay on a touch
+screen. Below 600 pixels the strip goes and the status moves under the name.
+A click anywhere else on the row opens the job's page.
+
+**Add a job** stands at the bottom right. **More** beside it has **Run all**
+and **Stop all**.
+
+## Filter, sort and search
+
+Every list has three buttons above its card: **Filter**, **Sort** and
+**Search**. On Jobs the filter shows all jobs, the running, the paused or the
+ones with a problem, and the card's heading names the choice. Sort orders by
+name, by problems or by the last run, each way round. Search finds a job by its
+name or by a folder on either side. Jobs remembers its filter and sort.
+
+## A job's page
+
+The head carries the job's name, its two sides, its schedule and next run, its
+status and its buttons: **Pause**, **Edit**, **More** (Duplicate, Open this
+job's trash, Remove) and **Run now**.
+
+Under it, one card for each thing to see or do: **Runs**, where a click opens a
+run's details; **Files touched**, with its own search; **Preview**; **Check
+this job**; and **Find duplicates**.
+
 ## The preview
 
-**Preview**, in a job's **Options** menu, is the screen the product exists for.
-It lists every proposed change with its direction and the reason the engine
-gives for it. Each row can be unticked, and nothing moves until the button is
-pressed.
+**Show what would happen**, in a job's **Preview** card, is the screen the
+product exists for. It lists every proposed change with its direction and the
+reason the engine gives for it. Every row starts included; take the mark off a
+row to leave that change out. Nothing moves until the run button, which counts
+what is included, is pressed.
 
-The run then plans again and keeps only the paths that were ticked, rather than
-replaying the plan that was on screen: between reading a preview and pressing
-the button a file can change, and acting on the older plan would mean acting on
-a stale description of the tree. A ticked path whose fresh action differs from
-the one the preview showed is left alone.
+The run then plans again and keeps only the paths that were included, rather
+than replaying the plan that was on screen: between reading a preview and
+pressing the button a file can change, and acting on the older plan would mean
+acting on a stale description of the tree. An included path whose fresh action
+differs from the one the preview showed is left alone.
 
-An empty selection stays distinguishable from no selection at all, so unticking
-every row does nothing rather than running everything.
+An empty selection stays distinguishable from no selection at all, so leaving
+every row out does nothing rather than running everything.
 
 ## Making and editing jobs
 
-Jobs are made and edited on the same tab they are watched on. **Add a job**,
-the plus button at the corner of the window, adds one and opens its form;
-**Edit**, in a job's **Options** menu, opens that job's. The form opens inside
-the job's own card.
+**Add a job** opens the form in a window, and **Edit** on a job's page does the
+same for that job. **Save** is the window's main button.
 
 It writes the same configuration file a person can still open in an editor,
 and it validates through the same function that guards it there. A refused edit
@@ -48,11 +115,11 @@ says why.
 
 ## Drives
 
-A USB disk or a share is added under **Targets**, **Drives**. The list offers
-each drive by its letter and the name the system shows for it, and that name
-fills the **Name** field until you type your own. ArrowLoop writes a small
-identity file onto the drive, so a job keeps finding it after it comes back
-under another letter.
+A USB disk or a share is added on the **Targets** tile with **Register a
+drive**. The list offers each drive by its letter and the name the system shows
+for it, and that name fills the **Name** field until you type your own.
+ArrowLoop writes a small identity file onto the drive, so a job keeps finding it
+after it comes back under another letter.
 
 In a job's form, **Choose a folder** lists the drives first. A drive that is
 plugged in opens like any folder, so a job can sync into one folder on it; one
@@ -70,15 +137,15 @@ other is refused when it is switched on, because that is a form half filled in
 rather than a draft.
 
 Holding a job is a decision made about a job that exists, looking at the list,
-so it lives on the card next to the control that starts a run by hand, as
-**Pause** and **Resume**, and it saves itself. A held job runs neither on its
-schedule nor on a change, and can still be started by hand.
+so it sits on the job's row and its page, next to the control that starts a run
+by hand, as **Pause** and **Resume**, and it saves itself. A held job runs
+neither on its schedule nor on a change, and can still be started by hand.
 
-The one job that arrives held is a **duplicate**, made with **Duplicate** in the
-**Options** menu. It points at the same two folders as the job it was copied
-from, with a state database of its own, and two such jobs on one schedule would
-compare the same files against two different records. Like every job created
-in the interface, it starts without `before` and `after` commands.
+The one job that arrives held is a **duplicate**, made with **Duplicate** under
+**More** on a job's page. It points at the same two folders as the job it was
+copied from, with a state database of its own, and two such jobs on one
+schedule would compare the same files against two different records. Like every
+job created in the interface, it starts without `before` and `after` commands.
 
 ## Building a schedule
 
@@ -99,8 +166,8 @@ it sets `"watch": true` and writes a backstop schedule as well.
 
 ## What is running now
 
-A running job shows its progress in its own card on the Jobs tab: which file,
-on which side, how far, and how fast. It arrives from the engine as it happens
+A running job shows its progress in its row and on its page: which file, on
+which side, how far, and how fast. It arrives from the engine as it happens
 rather than being polled for.
 
 ## Direction
@@ -112,83 +179,141 @@ drifting; see [Configuring a job](configuration.md#per-job). What it does beyond
 copying is its **Mode**: **Copy only**, **Mirror** or **Move**, explained in
 [Copy only, mirror or move](configuration.md#copy-only-mirror-or-move).
 
-## The look
-
-The interface uses [GlimStone](https://github.com/junkerderprovinz/glimstone)
-3.0.2, with its reference tokens and appearance engine copied in verbatim rather
-than reimplemented. Theme, corner shape and accent are the viewer's to set,
-under **Settings**, **Look**.
-
-The accent marks activity and nothing else, which is why the switches down the
-preview are colourless: every row arrives ticked, and a control that is on in
-all of them is not activity.
-
-## Who can reach it
-
-`arrowloop web` listens on loopback unless `-addr` or `ARROWLOOP_ADDR` says
-otherwise, and the container listens on every address. This interface starts
-jobs that delete files, so anybody on the network who can reach it can drive
-it. A password, a second factor and
-passkeys are set under **Settings**, **Security**;
-[Installing](installing.md#a-password-for-the-interface) has the details.
-
-Over plain HTTP the session cookie crosses the wire in clear, so a machine
-reachable from outside wants TLS in front of it, with a password or without.
-
-## History
-
-A row in the History tab says how many files a run copied and how many were in
-conflict; clicking it says which files, and for a conflict what was decided.
-The decision is the part worth having: a scheduled run resolves a conflict by
-keeping both versions, because it has nobody to ask, so the decision was made
-on somebody's behalf while they were not watching.
-
-The history lists only what a run did to files. A file both sides already had
-is counted as unchanged and gets no line, since on a first run over a full
-folder those would be nearly every line.
-
-## A month of runs
-
-A chart above the history list shows a month of runs. The list answers what happened
-on Tuesday; it cannot answer whether the thing is doing anything at all, which
-is the question somebody has after leaving it alone for three weeks. Days with
-no runs are drawn as empty columns rather than left out, because a chart that
-closes its gaps turns "nothing happened" into "nothing to show".
-
 ## Conflicts
 
-A run that kept both versions of a file links to **Conflicts**, a tab of its own
-that lists every conflict still open across all jobs that write both ways. Each
-row offers **Keep both**, **Keep left** and **Keep right**.
+A run that kept both versions of a file lists it under **Conflicts**, across all
+jobs that write both ways. A click on a row shows both versions with their size
+and time, and offers **Keep both**, **Keep left** and **Keep right**.
+
+Several conflicts can be answered at once. The round mark at a row's start
+picks it, and so do Ctrl+click, Shift+click for a range and Ctrl+A for all;
+right-click opens the answers for what is picked.
 
 A choice made there is carried out by a fresh run of that job rather than by
 rewriting what the first run did, so it cannot overlap another run and lands in
 the history like any other. The version that loses goes to the trash, unless
 the job has `noTrash`, so a wrong click can be undone from there.
 
+## Trash
+
+**Trash** shows every job's trash on both sides, puts files back, and deletes
+them for good: one file, one side, everything older than a number of days, or
+all of it. The last two are under **More** at the bottom right, and the number
+of days is asked in the window that confirms it. Putting a file back is one
+click, since it only moves the file. Removing anything for good asks first,
+because the trash is the last copy there is, and emptying a side or all of it
+says how many files and how big before it does.
+
+## History
+
+**History** has two views, **Files** and **Runs**. A run says how many files it
+copied and how many were in conflict; a click opens it with the files, and for
+a conflict what was decided. The decision is the part worth having: a scheduled
+run resolves a conflict by keeping both versions, because it has nobody to ask,
+so the decision was made on somebody's behalf while they were not watching.
+
+The history lists only what a run did to files. A file both sides already had
+is counted as unchanged and gets no line, since on a first run over a full
+folder those would be nearly every line.
+
+A chart above the runs shows a month of them. The list answers what happened on
+Tuesday; it cannot answer whether the thing is doing anything at all, which is
+the question somebody has after leaving it alone for three weeks. Days with no
+runs are drawn as empty columns rather than left out, because a chart that
+closes its gaps turns "nothing happened" into "nothing to show".
+
 ## Anomalies
 
 **Anomalies** lists what the engine found about a job: a run a safety brake
-refused, a job that keeps failing, a schedule that is not kept. Three tiles
-count the findings by severity, and a click on one hides that severity.
+refused, a job that keeps failing, a schedule that is not kept. Tiles at the top
+count the findings by severity, and a click on one shows only that severity.
 
-Each job with a finding has a card. A line opens to the whole sentence, the
-figures and the files the brake counted. A held job offers **Run anyway** and
-**Take back**; what each does is in
+A click on a finding opens it in a window with the whole sentence, the figures
+and the files the brake counted. A held job offers **Run anyway** and **Take
+back**; what each does is in
 [A refused run holds the job](safety.md#a-refused-run-holds-the-job). A note
-offers **Acknowledge** and **Run now**. **Monitoring** on a card gives that job
-brakes of its own, and the jobs with nothing open are listed below with the
-same switch. What was closed in the last thirty days is in the row at the end,
-with how it ended.
+offers **Acknowledge** and **Run now**. **Monitoring** gives a job brakes of
+its own. **Open or closed** under Filter switches to what was closed in the
+last thirty days, with how it ended.
 
-A job with a finding says so on its own card on the Jobs tab, and the line
-leads here.
+The Anomalies tile sets after how many failed runs in a row a job counts as
+failing, after how many days without a run it counts as overdue, and whether a
+held job or a note is reported.
 
-## Trash
+## Settings
 
-Trash has a tab of its own too. It shows every job's trash on both sides, puts
-files back, and deletes them for good: one file, one side, everything older
-than a number of days, or all of it. Putting a file back is one click, since it
-only moves the file. Removing anything for good asks first, because the trash
-is the last copy there is, and emptying a side or all of it says how many files
-and how big before it does.
+Settings is a column of tiles: **General**, **Look**, **Sync**, **Workload**,
+**Safety net**, **Notifications**, **Exclude lists**, **Targets**,
+**Anomalies**, **Security**, **App** and **Info**. Settings opens on the tile
+used last.
+
+- **General**: the settings backup, and in the desktop app this computer: the
+  window, starting with the system and automatic updates.
+- **Look**: language, design (Dark, Light or System), corners, motion, labels
+  and colours.
+- **Sync**: the global sync settings every job starts from, transfer, and what
+  gets carried.
+- **Workload**: bandwidth limit, jobs at once, the run log file and retries.
+- **Safety net**: the two brakes.
+- **Notifications**: Matrix and a webhook. A saved secret shows as **Saved**
+  with **Change** beside it.
+- **Exclude lists**: the shared exclude lists.
+- **Security**: password, two-factor authentication and passkeys. The desktop
+  app has no such tile, since nobody else reaches its window.
+- **App**: the other ways to run ArrowLoop, each with its version.
+
+The settings have a search. It stays out of sight until you scroll up once more
+at the top of a page, or press `/` or Ctrl+K. It finds a setting by its name or
+by a word from its explanation, and it knows the old names too: **Engine**
+leads to the tiles that took its cards.
+
+## Info
+
+The last tile has four cards. **Version** lists ArrowLoop, GlimStone and
+rclone, each linked to its release notes, and **Check for updates** asks GitHub
+for a newer release. **Help** leads to GitHub, to email and to this manual, and
+**Bug report** downloads one file with the versions, the settings and jobs
+without passwords or keys, the last 100 runs and the open anomalies. Nothing is
+sent: you attach the file to an issue yourself. Then come **What's new** and
+**About**.
+
+## What's new
+
+After an update a glowing green dot marks each change on its page, and a dot
+on a link says something behind it changed. A click on a dot hides it, and a
+link's dot goes once everything behind it has been seen. The **What's new**
+card on the Info tile lists the changes of the last update with a way to each,
+and has **Show all again**, **Mark all as seen** and a switch for the dots.
+
+## The look
+
+The interface uses [GlimStone](https://github.com/junkerderprovinz/glimstone)
+3.4.2, with its reference tokens and appearance engine copied in verbatim rather
+than reimplemented. Design, corner shape and accent are the viewer's to set on
+the **Look** tile.
+
+The accent marks activity and the one action a page is for, such as **Add a
+job**. Every other button is grey.
+
+## On the phone
+
+The Android app shows the same places. Its bar holds **Jobs**, **Conflicts**,
+**History**, **Settings** and **More**, which opens Trash, Targets and
+Anomalies. Jobs opens with the same sentence and Waiting card as on the web,
+and every job card shows the same single status.
+
+Settings on the phone is one column of cards: Language, This phone (file
+access, notifications, background activity, lock), Appearance, Motion, Sync
+engine, Back up and restore settings, On a server, Desktop app, Problems?,
+About this app and Danger zone.
+
+## Who can reach it
+
+`arrowloop web` listens on loopback unless `-addr` or `ARROWLOOP_ADDR` says
+otherwise, and the container listens on every address. This interface starts
+jobs that delete files, so anybody on the network who can reach it can drive
+it. A password, a second factor and passkeys are set on the **Security** tile;
+[Installing](installing.md#a-password-for-the-interface) has the details.
+
+Over plain HTTP the session cookie crosses the wire in clear, so a machine
+reachable from outside wants TLS in front of it, with a password or without.

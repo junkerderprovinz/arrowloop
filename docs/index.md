@@ -46,7 +46,7 @@ sign in through a browser take a token made once with `rclone authorize`; see
 - [Installing](installing.md) as a container, a desktop app, an Android app, or
   a single binary.
 - [Configuring a job](configuration.md), every setting and what it is for.
-- [The interface](interface.md), the preview and the tabs around it.
+- [The interface](interface.md), the preview and the pages around it.
 - [Command line](cli.md) for a machine nobody is looking at.
 - [How it decides](decisions.md), the table the whole engine rests on.
 - [Safety](safety.md), what stops it destroying anything.

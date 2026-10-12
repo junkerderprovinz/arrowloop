@@ -196,8 +196,8 @@ instead; see [the command line](cli.md).
 
 ### Starting with the system
 
-Settings, General, Starting has a switch that registers ArrowLoop to start when
-you sign in. It is a **per-user** entry (a value under `HKCU` on Windows, a
+**Start with the system**, on the **General** tile under Settings, registers
+ArrowLoop to start when you sign in. It is a **per-user** entry (a value under `HKCU` on Windows, a
 `.desktop` file under `~/.config/autostart` on Linux, a LaunchAgent in your own
 Library on macOS), so it needs no administrator rights and affects nobody else on
 the machine.
@@ -235,7 +235,8 @@ menu has:
 
 The menu and the small window speak the language the interface is set to.
 
-Settings, General decides what the window buttons do: whether closing quits or
+The **This computer** card on the General tile decides what the window buttons
+do: whether closing quits or
 hides, and whether minimising goes to the taskbar or to the notification area.
 Closing quits by default, because a close button that quietly leaves a program
 running is the kind of surprise somebody finds a week later. Both choices switch
@@ -262,7 +263,7 @@ downloads the file for your system in the background and checks it against the
 release's `checksums.txt`. The new version starts the next time you start
 ArrowLoop, so a sync that is running is never cut off, and a note in the corner
 of the window says when it is ready. Pre-releases are never installed.
-**Update automatically** under Settings, General, Updates turns this off; it is
+**Update automatically**, on the General tile under Settings, turns this off; it is
 on from the start. The container and the phone do not show the switch: a
 container is updated the way it was deployed, and the phone through its store
 or a new APK.
