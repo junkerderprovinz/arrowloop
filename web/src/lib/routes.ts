@@ -28,7 +28,7 @@ export const FORMER_TILES: Record<string, TileId> = { engine: 'sync' }
 
 export type View =
   | { page: 'jobs' | 'conflicts' | 'trash' | 'history' | 'welcome' }
-  | { page: 'job' | 'preview'; name: string }
+  | { page: 'job'; name: string }
   | { page: ModuleId }
   | { page: 'settings'; tile: TileId }
 
@@ -61,7 +61,8 @@ export function resolveRoute(pathname: string, search: URLSearchParams, ctx: Rou
     case 'jobs':
       if (parts.length === 1) return { view: { page: 'jobs' } }
       if (parts.length === 2 && second) return { view: { page: 'job', name: second } }
-      if (parts.length === 3 && second && third === 'preview') return { view: { page: 'preview', name: second } }
+      // The preview is a card on the job's page.
+      if (parts.length === 3 && second && third === 'preview') return { redirect: `/jobs/${encodeURIComponent(second)}` }
       return { redirect: '/jobs' }
     case 'conflicts':
     case 'trash':
@@ -90,7 +91,8 @@ function settings(tile: string | undefined, depth: number, query: string, ctx: R
   return { redirect: `/settings/${first}` }
 }
 
-/** The address of a page another screen narrows to one job. */
-export function jobPlace(page: 'jobs' | 'conflicts' | 'trash' | 'anomalies', job: string): string {
-  return job ? `/${page}?job=${encodeURIComponent(job)}` : `/${page}`
+/** The address of a page another screen narrows to one job, and on Anomalies to one finding. */
+export function jobPlace(page: 'jobs' | 'conflicts' | 'trash' | 'anomalies', job: string, finding?: string): string {
+  const query = [job && `job=${encodeURIComponent(job)}`, finding && `finding=${encodeURIComponent(finding)}`].filter(Boolean)
+  return query.length ? `/${page}?${query.join('&')}` : `/${page}`
 }

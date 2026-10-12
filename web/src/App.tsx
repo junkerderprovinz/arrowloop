@@ -11,7 +11,6 @@ import { Conflicts } from './pages/Conflicts'
 import { History } from './pages/History'
 import { JobPage } from './pages/JobPage'
 import { Jobs } from './pages/Jobs'
-import { Preview } from './pages/Preview'
 import { Targets } from './pages/Targets'
 import { Trash } from './pages/Trash'
 import { Welcome } from './pages/Welcome'
@@ -34,6 +33,8 @@ import type { FindingListing } from './lib/anomalies'
 import { mergeConflicts } from './lib/conflicts'
 import { inJobOrder, mergeTrash, trashTotals } from './lib/trashView'
 import { GoTo, type Place } from './lib/goTo'
+import { LiveJobs } from './lib/live'
+import { OpenJob } from './lib/openJob'
 import { Places } from './lib/places'
 import { applyAccent, applyRainbow, applyShape, cacheAppearance, DEFAULT_SHAPE, rainbowState, type RainbowState, type Shape } from './lib/appearance'
 import { storedLook, storedSlots, storeSlots } from './lib/look'
@@ -121,7 +122,6 @@ export function App({ signOut = false }: { signOut?: boolean }) {
   // start from an install that has jobs.
   const [jobsRead, setJobsRead] = useState(false)
   const [runs, setRuns] = useState<Run[]>([])
-  const [latest, setLatest] = useState<Run[]>([])
   const [progress, setProgress] = useState<Record<string, RunEvent>>({})
   const [speeds, setSpeeds] = useState<Record<string, number>>({})
   const [error, setError] = useState<string | null>(null)
@@ -166,10 +166,6 @@ export function App({ signOut = false }: { signOut?: boolean }) {
       .catch(() => {
         // The job list is still useful without the history.
       })
-    api
-      .latestRuns(new Date().toISOString())
-      .then(setLatest)
-      .catch(() => {})
   }, [])
 
   useEffect(() => {
@@ -225,8 +221,20 @@ export function App({ signOut = false }: { signOut?: boolean }) {
   )
 
   const goTo = useCallback((place: Place) => {
-    navigate(place.tab === 'jobs' && place.job ? `/jobs/${encodeURIComponent(place.job)}` : jobPlace(place.tab, place.job))
+    navigate(
+      place.tab === 'jobs' && place.job ? `/jobs/${encodeURIComponent(place.job)}` : jobPlace(place.tab, place.job, place.finding),
+    )
   }, [])
+  const openJob = useCallback((name: string) => navigate(`/jobs/${encodeURIComponent(name)}`), [])
+  // A saved job can drop conflicts and trash along with it.
+  const saved = useCallback(() => {
+    refresh()
+    reloadWaiting('')
+  }, [refresh, reloadWaiting])
+  const live = useMemo(
+    () => ({ jobs, findings: findings?.open ?? [], progress, speeds, onSaved: saved }),
+    [jobs, findings, progress, speeds, saved],
+  )
 
   useEffect(() => {
     wireTooltips()
@@ -329,8 +337,10 @@ export function App({ signOut = false }: { signOut?: boolean }) {
         trash: orderedTrash ? trashTotals(orderedTrash.filter((s) => !s.error)).entries : 0,
         findings: findings?.open.length ?? 0,
       }
-  // The job a link from another page narrowed this one to.
+  // The job a link from another page narrowed this one to, and on Anomalies
+  // the finding it opens.
   const focus = search.get('job') ?? ''
+  const finding = search.get('finding') ?? undefined
 
   const look: LookProps = {
     theme,
@@ -370,7 +380,14 @@ export function App({ signOut = false }: { signOut?: boolean }) {
   }
 
   const anomalies = (
-    <Anomalies listing={findings} jobs={jobs} job={focus} refused={refused} onChanged={() => void reloadFindings()} />
+    <Anomalies
+      listing={findings}
+      jobs={jobs}
+      job={focus}
+      finding={finding}
+      refused={refused}
+      onChanged={() => void reloadFindings()}
+    />
   )
 
   const page = !view ? null : view.page === 'welcome' ? (
@@ -379,25 +396,12 @@ export function App({ signOut = false }: { signOut?: boolean }) {
     <Jobs
       jobs={jobs}
       findings={findings?.open ?? []}
-      latest={latest}
       progress={progress}
-      speeds={speeds}
-      onPreview={(name) => navigate(`/jobs/${encodeURIComponent(name)}/preview`)}
-      onSaved={() => {
-        refresh()
-        reloadWaiting('')
-      }}
+      conflicts={conflicts?.conflicts.length ?? 0}
+      onSaved={saved}
     />
   ) : view.page === 'job' ? (
     <JobPage name={view.name} />
-  ) : view.page === 'preview' ? (
-    <Preview
-      job={view.name}
-      onDone={() => {
-        navigate('/jobs')
-        refresh()
-      }}
-    />
   ) : view.page === 'targets' ? (
     <Targets />
   ) : view.page === 'conflicts' ? (
@@ -426,47 +430,51 @@ export function App({ signOut = false }: { signOut?: boolean }) {
 
       <Places.Provider value={places}>
         <GoTo.Provider value={goTo}>
-          {view?.page === 'settings' ? (
-            <main className="flex min-h-0 min-w-0 flex-1 flex-col">
-              <Settings
-                tile={view.tile}
-                tiles={tiles}
-                look={look}
-                version={version}
-                window={window_}
-                onWindow={(next) => {
-                  const before = window_
-                  setWindow(next)
-                  api
-                    .saveWindow(next)
-                    .then(setWindow)
-                    .catch((e: Error) => {
-                      setWindow(before)
-                      push(e.message, 'fail')
-                    })
-                }}
-                targets={<Targets />}
-                anomalies={anomalies}
-                whatsNew={<WhatsNewCard hueIndex={2} />}
-              />
-            </main>
-          ) : (
-            <main className="min-h-0 min-w-0 flex-1 overflow-y-auto sm:-mb-[var(--page-gutter)]">
-              {/* Keyed on the address, so the subtree remounts and GlimStone's
-                  entrance animation plays on every page change. */}
-              <div
-                key={pathname}
-                className="glim-page-enter flex min-h-full w-full flex-col gap-8 pb-4 sm:px-6 sm:pb-[var(--page-gutter)] md:px-8"
-              >
-                {error && (
-                  <Card title={t('error.unreachable')} hueIndex={0}>
-                    <p className="text-subline text-statusFail">{error}</p>
-                  </Card>
-                )}
-                {page}
-              </div>
-            </main>
-          )}
+          <OpenJob.Provider value={openJob}>
+            <LiveJobs.Provider value={live}>
+              {view?.page === 'settings' ? (
+                <main className="flex min-h-0 min-w-0 flex-1 flex-col">
+                  <Settings
+                    tile={view.tile}
+                    tiles={tiles}
+                    look={look}
+                    version={version}
+                    window={window_}
+                    onWindow={(next) => {
+                      const before = window_
+                      setWindow(next)
+                      api
+                        .saveWindow(next)
+                        .then(setWindow)
+                        .catch((e: Error) => {
+                          setWindow(before)
+                          push(e.message, 'fail')
+                        })
+                    }}
+                    targets={<Targets />}
+                    anomalies={anomalies}
+                    whatsNew={<WhatsNewCard hueIndex={2} />}
+                  />
+                </main>
+              ) : (
+                <main className="min-h-0 min-w-0 flex-1 overflow-y-auto sm:-mb-[var(--page-gutter)]">
+                  {/* Keyed on the address, so the subtree remounts and GlimStone's
+                      entrance animation plays on every page change. */}
+                  <div
+                    key={pathname}
+                    className="glim-page-enter flex min-h-full w-full flex-col gap-8 pb-4 sm:px-6 sm:pb-[var(--page-gutter)] md:px-8"
+                  >
+                    {error && (
+                      <Card title={t('error.unreachable')} hueIndex={0}>
+                        <p className="text-subline text-statusFail">{error}</p>
+                      </Card>
+                    )}
+                    {page}
+                  </div>
+                </main>
+              )}
+            </LiveJobs.Provider>
+          </OpenJob.Provider>
         </GoTo.Provider>
       </Places.Provider>
 

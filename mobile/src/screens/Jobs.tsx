@@ -199,7 +199,7 @@ export function Jobs() {
           tintColor={accent}
         />
       }
-      ListHeaderComponent={<Head />}
+      ListHeaderComponent={<Head jobs={jobs} />}
       // No empty-list text: the add button already makes the offer.
       ListFooterComponent={error ? <Caption>{error}</Caption> : null}
       renderItem={({ item, index }) => (
@@ -250,7 +250,7 @@ const HEADLINE = {
  * settings page rather than in a dialog, and without it every job with a
  * folder on the phone reads nothing.
  */
-function Head() {
+function Head({ jobs }: { jobs: Job[] }) {
   const { t } = useT();
   const { p } = useTheme();
   const nav = useNavigation<NavigationProp<ParamListBase>>();
@@ -271,7 +271,16 @@ function Head() {
 
   if (conflicts === null || findings === null) return null;
 
-  const { head, items } = needs(conflicts, findings);
+  const { head, items } = needs(
+    conflicts,
+    findings,
+    jobs.map((j) => ({
+      name: j.name,
+      disabled: j.disabled,
+      ran: j.recent.length > 0,
+      failed: (j.recent[0]?.Err ?? "") !== "",
+    })),
+  );
   const state: HeadState = access === false ? "needsYou" : head;
 
   return (
@@ -305,12 +314,25 @@ function Head() {
                 onPress={() => nav.navigate("Anomalies", { job: need.job })}
                 control={<Badge label={t("anomaly.heldBadge")} tone="warn" />}
               />
-            ) : (
+            ) : need.kind === "notes" ? (
               <Row
                 key="notes"
                 label={t("nav.anomalies")}
                 onPress={() => nav.navigate("Anomalies")}
                 control={<Badge label={String(need.count)} />}
+              />
+            ) : (
+              <Row
+                key={`${need.kind}:${need.job}`}
+                label={need.job}
+                onPress={() => nav.navigate("JobDetail", { name: need.job })}
+                control={
+                  need.kind === "failed" ? (
+                    <Badge label={t("status.failed")} tone="warn" />
+                  ) : (
+                    <Badge label={t("status.never")} />
+                  )
+                }
               />
             ),
           )}

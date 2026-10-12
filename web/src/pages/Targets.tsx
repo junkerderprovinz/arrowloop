@@ -4,15 +4,28 @@ import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { Empty, Rows, Stack } from '../components/Shell'
 import { Dialog } from '../components/Dialog'
 import { IconAction } from '../components/IconAction'
+import { PageAction, PageActions } from '../components/PageActions'
 import { ProviderPicker } from '../components/ProviderPicker'
+import { Since } from '../components/Since'
 import { Card } from '../lib/glimstone/Card'
 import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
 import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
-import { IconCheck, IconCheckDraw, IconClose, IconCopy, IconFolder, IconPencil, IconTrash } from '../components/glyphs'
+import {
+  IconAdd,
+  IconBack,
+  IconCheck,
+  IconCheckDraw,
+  IconClose,
+  IconCopy,
+  IconFolder,
+  IconPencil,
+  IconSave,
+  IconTabStorage,
+  IconTrash,
+} from '../components/glyphs'
 import { brandMark } from '../components/brandMarks'
 import { Choice, Field, Secret, Text } from '../components/Field'
-import { ToggleRow } from '../components/ToggleRow'
 import { replay } from '../lib/animate'
 import { DropdownListbox } from '../lib/glimstone/DropdownListbox'
 import { api, type Backend, type Provider, type Remote, type Share, type Usage, type Volume, type DriveCandidate } from '../lib/api'
@@ -25,9 +38,12 @@ import { optionHint } from '../lib/optionHint'
 import { optionLabel } from '../lib/optionNames'
 import { suggestTargetName } from '../lib/targetName'
 import { errorText } from '../lib/errorText'
-import { Since } from './Jobs'
 
-/** The storage targets and registered drives a job's sides can point at. */
+/**
+ * The storage targets and registered drives a job's sides can point at, one
+ * card per kind. Adding a target is what the page is for, so it is the
+ * corner's filled action, with registering a drive beside it.
+ */
 export function Targets() {
   const { t } = useT()
   const [remotes, setRemotes] = useState<Remote[]>([])
@@ -36,6 +52,8 @@ export function Targets() {
   const [unlisted, setUnlisted] = useState<Backend[]>([])
   const [volumes, setVolumes] = useState<Volume[]>([])
   const [error, setError] = useState<string | null>(null)
+  const [adding, setAdding] = useState(false)
+  const [registering, setRegistering] = useState(false)
 
   const refresh = useCallback(() => {
     const targets = api.remotes().then((r) => {
@@ -52,6 +70,19 @@ export function Targets() {
 
   useEffect(refresh, [refresh])
 
+  // A saved target only remembers its rclone type, which several groups share
+  // (s3 above all), so the cards claim backends in order: clouds, then
+  // storage, and the protocols take the rest. No row appears twice.
+  const rows = useMemo(() => {
+    const cloud = new Set(providers.filter((p) => p.group === 'cloud').map((p) => p.backend))
+    const store = new Set(providers.filter((p) => p.group === 'storage' && !cloud.has(p.backend)).map((p) => p.backend))
+    return {
+      cloud: remotes.filter((r) => cloud.has(r.type)),
+      storage: remotes.filter((r) => store.has(r.type)),
+      protocol: remotes.filter((r) => !cloud.has(r.type) && !store.has(r.type)),
+    }
+  }, [remotes, providers])
+
   return (
     <Stack>
       {error && (
@@ -62,196 +93,179 @@ export function Targets() {
       {/* Clouds hand over folders, bucket stores a container with a key and
           a secret, and protocols need a machine and an address (plain S3
           included, although it is Amazon's). */}
-      <Storage
-        group="cloud"
-        title={t('targets.cloud')}
-        hueIndex={0}
-        remotes={remotes}
-        backends={backends}
-        providers={providers}
-        unlisted={[]}
-        onChanged={refresh}
-      />
-      <Storage
-        group="storage"
-        title={t('targets.storage')}
-        hueIndex={1}
-        remotes={remotes}
-        backends={backends}
-        providers={providers}
-        unlisted={[]}
-        onChanged={refresh}
-      />
-      <Storage
-        group="protocol"
-        title={t('targets.connections')}
-        hueIndex={2}
-        remotes={remotes}
-        backends={backends}
-        providers={providers}
-        // An rclone backend with no provider entry counts as a protocol here.
-        unlisted={unlisted}
-        onChanged={refresh}
-      />
+      {GROUPS.map((group, i) => (
+        <Storage
+          key={group}
+          group={group}
+          hueIndex={i}
+          rows={rows[group]}
+          backends={backends}
+          providers={providers.filter((p) => p.group === group)}
+          onChanged={refresh}
+        />
+      ))}
       <Drives volumes={volumes} onChanged={refresh} />
+
+      {adding && (
+        <AddTarget
+          backends={backends}
+          providers={providers}
+          unlisted={unlisted}
+          taken={remotes.map((r) => r.name)}
+          onDone={(saved) => {
+            setAdding(false)
+            if (saved) refresh()
+          }}
+        />
+      )}
+      {registering && (
+        <DriveForm
+          onDone={(saved) => {
+            setRegistering(false)
+            if (saved) refresh()
+          }}
+        />
+      )}
+
+      <PageActions>
+        <PageAction
+          label={t('targets.registerDrive')}
+          labelKey="targets.registerDrive"
+          glyph={<IconAdd />}
+          onClick={() => setRegistering(true)}
+        />
+        <PageAction
+          primary
+          label={t('targets.addStorage')}
+          labelKey="targets.addStorage"
+          glyph={<IconAdd />}
+          onClick={() => setAdding(true)}
+        />
+      </PageActions>
     </Stack>
   )
 }
 
-/** Each card's own button and empty line, so the three never read alike. */
+const GROUPS = ['cloud', 'storage', 'protocol'] as const
+
+type Group = (typeof GROUPS)[number]
+
+/** Each card's title and empty line, so the three never read alike. */
 const TEXT = {
-  cloud: { add: 'targets.addCloud', empty: 'targets.cloudEmpty' },
-  storage: { add: 'targets.addBucket', empty: 'targets.bucketEmpty' },
-  protocol: { add: 'targets.addServer', empty: 'targets.serverEmpty' },
+  cloud: { title: 'targets.cloud', empty: 'targets.cloudEmpty' },
+  storage: { title: 'targets.storage', empty: 'targets.bucketEmpty' },
+  protocol: { title: 'targets.connections', empty: 'targets.serverEmpty' },
 } as const
 
 function Storage({
   group,
-  title,
   hueIndex,
-  remotes,
+  rows,
   backends,
   providers,
-  unlisted,
   onChanged,
 }: {
-  /** Which third of the providers this card offers. */
-  group: 'cloud' | 'storage' | 'protocol'
-  title: string
+  group: Group
   hueIndex: number
-  remotes: Remote[]
+  rows: Remote[]
   backends: Backend[]
+  /** The providers of this card's group, which name a target's product. */
   providers: Provider[]
-  unlisted: Backend[]
   onChanged: () => void
 }) {
   const { t } = useT()
-  const [editing, setEditing] = useState<string | null>(null)
-  // Adding picks a product first, then shows that backend's fields, so nobody
-  // has to know Nextcloud is "webdav". Both steps sit in one window over the
-  // page. Null is closed, 'pick' is the list, and a string is the chosen
-  // backend.
-  const [adding, setAdding] = useState<null | 'pick' | string>(null)
-  const [provider, setProvider] = useState<Provider | null>(null)
-
-  const mine = useMemo(() => providers.filter((p) => p.group === group), [providers, group])
-
-  // A saved target only remembers its rclone type, which several groups share
-  // (s3 above all), so the cards claim backends in order: clouds, then
-  // storage, and the protocols take the rest. No row appears twice.
-  const claimed = useMemo(() => {
-    const cloud = new Set(providers.filter((p) => p.group === 'cloud').map((p) => p.backend))
-    const store = new Set(
-      providers.filter((p) => p.group === 'storage' && !cloud.has(p.backend)).map((p) => p.backend),
-    )
-    return { cloud, store }
-  }, [providers])
-  const rows = useMemo(
-    () =>
-      remotes.filter((r) => {
-        if (group === 'cloud') return claimed.cloud.has(r.type)
-        if (group === 'storage') return claimed.store.has(r.type)
-        return !claimed.cloud.has(r.type) && !claimed.store.has(r.type)
-      }),
-    [remotes, group, claimed],
-  )
+  const [editing, setEditing] = useState<Remote | null>(null)
 
   return (
-    <Card title={title} hueIndex={hueIndex}>
-      {editing === null && (
-        <div className="flex justify-end">
-          <Button
-            label={t(TEXT[group].add)}
-            labelKey={TEXT[group].add}
-            tone="accent"
-            onClick={() => {
-              setAdding('pick')
-              setProvider(null)
-            }}
-          />
-        </div>
-      )}
-      {adding !== null && (
-        <Dialog
-          title={t(TEXT[group].add)}
-          hueIndex={hueIndex}
-          onClose={() => setAdding(null)}
-          closeOnBackdrop={adding === 'pick'}
-        >
-          {adding === 'pick' ? (
-            <ProviderPicker
-              providers={mine}
-              unlisted={unlisted}
-              onPick={(picked) => {
-                setProvider(typeof picked === 'string' ? null : picked)
-                setAdding(typeof picked === 'string' ? picked : picked.backend)
-              }}
-            />
-          ) : (
-            <RemoteForm
-              backends={backends}
-              kind={adding}
-              provider={provider}
-              taken={remotes.map((r) => r.name)}
-              onDone={(saved) => {
-                setAdding(null)
-                if (saved) onChanged()
-              }}
-            />
-          )}
-        </Dialog>
-      )}
-
+    <Card title={t(TEXT[group].title)} hueIndex={hueIndex}>
       {rows.length === 0 ? (
         <Empty>{t(TEXT[group].empty)}</Empty>
       ) : (
-        // Each target is a card of its own on the group's card.
-        <Rows className="flex flex-col gap-2">
-          {rows.map((r, i) => (
-            <li key={r.name} className="rounded-control bg-carbon-surface2 px-4">
-              {editing === r.name ? (
-                <RemoteForm
-                  backends={backends}
-                  existing={r}
-                  // The engine identifies the product from the target's settings
-                  // (internal/remotes/identify.go).
-                  provider={mine.find((x) => x.id === r.provider) ?? null}
-                  onDone={(saved) => {
-                    setEditing(null)
-                    if (saved) onChanged()
-                  }}
-                />
-              ) : (
-                <RemoteRow
-                  remote={r}
-                  row={i}
-                  onEdit={() => setEditing(r.name)}
-                  onChanged={onChanged}
-                />
-              )}
-            </li>
+        <Rows className="-mx-2 flex flex-col">
+          {rows.map((r) => (
+            <RemoteRow key={r.name} remote={r} onEdit={() => setEditing(r)} onChanged={onChanged} />
           ))}
         </Rows>
+      )}
+      {editing && (
+        <RemoteForm
+          title={t('targets.editTitle', { name: editing.name })}
+          backends={backends}
+          existing={editing}
+          // The engine identifies the product from the target's settings
+          // (internal/remotes/identify.go).
+          provider={providers.find((x) => x.id === editing.provider) ?? null}
+          onDone={(saved) => {
+            setEditing(null)
+            if (saved) onChanged()
+          }}
+        />
       )}
     </Card>
   )
 }
 
-function RemoteRow({
-  remote,
-  row,
-  onEdit,
-  onChanged,
+/**
+ * Adding picks a product first, then shows that backend's fields in the same
+ * place, so nobody has to know Nextcloud is "webdav". The products stand in
+ * their three groups, and Back returns to them.
+ */
+function AddTarget({
+  backends,
+  providers,
+  unlisted,
+  taken,
+  onDone,
 }: {
-  remote: Remote
-  /**
-   * The row's place in the list. Its actions take fixed palette offsets from
-   * it, so a button keeps its colour when a neighbour is not rendered.
-   */
-  row: number
-  onEdit: () => void
-  onChanged: () => void
+  backends: Backend[]
+  providers: Provider[]
+  unlisted: Backend[]
+  taken: string[]
+  onDone: (saved: boolean) => void
 }) {
+  const { t } = useT()
+  const [picked, setPicked] = useState<{ kind: string; provider: Provider | null } | null>(null)
+
+  if (picked) {
+    return (
+      <RemoteForm
+        title={t('targets.addStorage')}
+        backends={backends}
+        kind={picked.kind}
+        provider={picked.provider}
+        taken={taken}
+        onBack={() => setPicked(null)}
+        onDone={onDone}
+      />
+    )
+  }
+  return (
+    <Dialog title={t('targets.addStorage')} onClose={() => onDone(false)} wide>
+      <div className="flex flex-col gap-6">
+        {GROUPS.map((group) => (
+          <section key={group} className="flex flex-col gap-3">
+            <h3 className="glim-eyebrow">{t(TEXT[group].title)}</h3>
+            <ProviderPicker
+              providers={providers.filter((p) => p.group === group)}
+              // An rclone backend with no provider entry counts as a protocol here.
+              unlisted={group === 'protocol' ? unlisted : []}
+              onPick={(choice) =>
+                setPicked(typeof choice === 'string' ? { kind: choice, provider: null } : { kind: choice.backend, provider: choice })
+              }
+            />
+          </section>
+        ))}
+      </div>
+    </Dialog>
+  )
+}
+
+/**
+ * One target as one row: its brand in the tile, its name, whether it answers,
+ * and what else it could say in the bubble beside the name. Its buttons come
+ * in under the pointer.
+ */
+function RemoteRow({ remote, onEdit, onChanged }: { remote: Remote; onEdit: () => void; onChanged: () => void }) {
   const { t } = useT()
   const push = useToast()
   const [checking, setChecking] = useState(false)
@@ -297,60 +311,43 @@ function RemoteRow({
     .filter((s) => !s.secret && s.value)
     .slice(0, 3)
     .map((s) => `${s.key}=${s.value}`)
-    .join('  ')
+    .join(', ')
+  const facts = [
+    remote.mark ? '' : remote.type,
+    summary,
+    result && !result.ok ? (result.reason ?? '') : '',
+    usage ? space(usage, t) : '',
+  ].filter(Boolean)
 
   return (
-    <div className="flex flex-wrap items-center gap-x-3 gap-y-2 py-3">
+    <li className="glim-row flex min-h-14 items-center gap-3 rounded-control px-2 py-2 hover:bg-carbon-hover">
       {/* The engine identifies the product and its mark from the saved
-          settings (internal/remotes/identify.go). The mark spans both lines,
-          since it is what the eye looks for in a list of targets. */}
-      {remote.mark && brandMark(remote.mark) ? (
-        <span className="flex size-10 shrink-0 items-center justify-center text-[32px] text-carbon-textSub">
-          {brandMark(remote.mark)}
-        </span>
-      ) : null}
-      <div className="min-w-0 flex-1">
-        <div className="flex items-center gap-2">
-          <span className="truncate text-body font-medium">{remote.name}:</span>
-          {/* The protocol only where no logo already says what this is. */}
-          {remote.mark ? null : <Badge>{remote.type}</Badge>}
-          {result && !local && (
-            <Badge tone={result.ok ? 'ok' : 'fail'}>
-              {result.ok ? t('targets.checkOk') : t('targets.checkFailed')}
-            </Badge>
-          )}
-        </div>
-        <p className="mt-0.5 truncate font-mono text-subline text-carbon-textMuted" title={summary}>
-          {summary}
-        </p>
-        {result && !result.ok && result.reason && (
-          <p className="mt-1 text-subline text-statusFail">{result.reason}</p>
-        )}
-        {usage && <Space usage={usage} />}
-      </div>
-      <div className="flex shrink-0 items-center gap-1.5">
+          settings (internal/remotes/identify.go). */}
+      <span className="glim-row-glyph flex h-9 w-9 shrink-0 items-center justify-center rounded-control text-[20px]">
+        {(remote.mark && brandMark(remote.mark)) || <IconTabStorage />}
+      </span>
+      <span className="flex min-w-0 flex-1 items-center gap-2">
+        <span className="truncate text-body font-medium">{remote.name}:</span>
+        {facts.length > 0 && <InfoBubble tip={facts.join(' · ')} />}
+      </span>
+      <span className="glim-row-actions flex shrink-0 items-center gap-1.5">
         <IconAction
           onClick={check}
           disabled={checking}
           title={checking ? t('targets.checking') : t('targets.check')}
           labelKey={checking ? 'targets.checking' : 'targets.check'}
           hint={t('targets.checkHint')}
-          hueIndex={row + 1}
-        >
-          <IconCheck />
-        </IconAction>
-        <IconAction onClick={onEdit} title={t('action.edit')} labelKey="action.edit" hueIndex={row + 2}>
+        />
+        <IconAction onClick={onEdit} title={t('action.edit')} labelKey="action.edit">
           <IconPencil />
         </IconAction>
-        <IconAction
-          title={t('action.delete')}
-          labelKey="action.delete"
-          hueIndex={row + 3}
-          onClick={() => setConfirming(true)}
-        >
+        <IconAction title={t('action.delete')} labelKey="action.delete" onClick={() => setConfirming(true)}>
           <IconTrash />
         </IconAction>
-      </div>
+      </span>
+      {result && !local && (
+        <Badge tone={result.ok ? 'ok' : 'fail'}>{result.ok ? t('targets.checkOk') : t('targets.checkFailed')}</Badge>
+      )}
 
       {confirming && (
         <ConfirmDialog
@@ -369,70 +366,41 @@ function RemoteRow({
           }}
         />
       )}
-    </div>
+    </li>
   )
 }
 
 /**
- * How full a target is, drawn only as far as the target said. A bucket store
- * with no quota draws nothing rather than a bar at zero, and a figure without
- * its pair shows as words without the bar. Past nine tenths the bar warns,
- * since a sync may stop halfway.
+ * How full a target is, in words, as far as the target said. A bucket store
+ * with no quota says nothing rather than a figure at zero.
  */
-function Space({ usage }: { usage: Usage }) {
-  const { t } = useT()
-  if (!usage.supported) return null
-
+function space(usage: Usage, t: ReturnType<typeof useT>['t']): string {
+  if (!usage.supported) return ''
   const total = usage.total
-  const used =
-    usage.used ?? (total !== undefined && usage.free !== undefined ? total - usage.free : undefined)
-  const share = total && total > 0 && used !== undefined ? Math.min(1, used / total) : undefined
-
-  const words =
-    usage.free !== undefined && total !== undefined
-      ? t('targets.spaceFree', { free: bytes(usage.free), total: bytes(total) })
-      : used !== undefined
-        ? t('targets.spaceUsed', { used: bytes(used) })
-        : total !== undefined
-          ? t('targets.spaceTotal', { total: bytes(total) })
-          : null
-  if (!words) return null
-
-  return (
-    <div className="mt-1.5 flex items-center gap-2">
-      {share !== undefined && (
-        <div
-          className="h-1 w-24 shrink-0 overflow-hidden bg-carbon-surface3"
-          style={{ borderRadius: 'var(--radius-pill)' }}
-          role="progressbar"
-          aria-valuemin={0}
-          aria-valuemax={100}
-          aria-valuenow={Math.round(share * 100)}
-          aria-label={words}
-        >
-          <div
-            className={`h-full ${share >= 0.9 ? 'bg-statusFailSolid' : share >= 0.75 ? 'bg-statusWarnSolid' : 'bg-accent'}`}
-            style={{ width: `${share * 100}%` }}
-          />
-        </div>
-      )}
-      <span className="text-meta tabular-nums text-carbon-textMuted">{words}</span>
-    </div>
-  )
+  const used = usage.used ?? (total !== undefined && usage.free !== undefined ? total - usage.free : undefined)
+  if (usage.free !== undefined && total !== undefined) return t('targets.spaceFree', { free: bytes(usage.free), total: bytes(total) })
+  if (used !== undefined) return t('targets.spaceUsed', { used: bytes(used) })
+  if (total !== undefined) return t('targets.spaceTotal', { total: bytes(total) })
+  return ''
 }
 
 /**
- * The form for one target, built from the option metadata rclone carries for
- * each backend, so it stays right as backends gain options.
+ * The form for one target in a window, built from the option metadata rclone
+ * carries for each backend, so it stays right as backends gain options. The
+ * questions most targets need come first; every other setting stands below
+ * them in a sub-card of its own.
  */
 function RemoteForm({
+  title,
   backends,
   kind: chosen,
   provider,
   taken,
   existing,
+  onBack,
   onDone,
 }: {
+  title: string
   backends: Backend[]
   /** The backend, chosen in the provider picker before the form opens. */
   kind?: string
@@ -444,9 +412,12 @@ function RemoteForm({
   /** The names already in use, so a suggested one does not collide. */
   taken?: string[]
   existing?: Remote
+  /** Returns to the picker the form was opened from, in place of Cancel. */
+  onBack?: () => void
   onDone: (saved: boolean) => void
 }) {
   const { t } = useT()
+  const push = useToast()
   const preset = provider?.preset
   // Suggested from the product's own name, numbered when taken (`OpenCloud-2`).
   const [name, setName] = useState(() => {
@@ -459,28 +430,24 @@ function RemoteForm({
     ...(preset ?? {}),
     ...Object.fromEntries((existing?.settings ?? []).map((s) => [s.key, s.value])),
   }))
-  const [advanced, setAdvanced] = useState(false)
-  const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
   const [checking, setChecking] = useState(false)
   const [trying, setTrying] = useState(false)
   /** The result of a test run before saving. */
   const [tried, setTried] = useState<{ ok: boolean; reason?: string } | null>(null)
-  // Counts failed tests, so each one remounts the button and shakes it again.
+  // Count failed tests and saves, so each one remounts its button and shakes it again.
   const [refused, setRefused] = useState(0)
+  const [unsaved, setUnsaved] = useState(0)
 
   const backend = useMemo(() => backends.find((b) => b.name === kind), [backends, kind])
-  // Only rclone's required and essential options until the advanced switch
-  // shows everything; s3 alone has fourteen non-advanced ones.
-  const shown = useMemo(
-    () =>
-      (backend?.options ?? [])
-        .filter((o) => advanced || o.required || o.essential)
-        // A setting the chosen product already presets (the WebDAV vendor for
-        // Nextcloud) is no question, outside the advanced view.
-        .filter((o) => advanced || !preset || preset[o.name] === undefined),
-    [backend, advanced, preset],
-  )
+  // rclone's required and essential options first; s3 alone has fourteen
+  // others. A setting the chosen product already presets (the WebDAV vendor
+  // for Nextcloud) is no question, so it waits with the rest.
+  const [first, rest] = useMemo(() => {
+    const options = backend?.options ?? []
+    const main = options.filter((o) => (o.required || o.essential) && (!preset || preset[o.name] === undefined))
+    return [main, options.filter((o) => !main.includes(o))]
+  }, [backend, preset])
 
   /**
    * Tests the settings save would send, preset included, without writing
@@ -506,7 +473,6 @@ function RemoteForm({
 
   async function save() {
     setBusy(true)
-    setError(null)
     try {
       // An empty field clears its setting, so only filled fields and existing
       // settings are sent, not every untouched option.
@@ -521,124 +487,125 @@ function RemoteForm({
       setChecking(true)
       try {
         const answer = await api.checkRemote(saved)
-        setChecking(false)
-        if (!answer.ok) {
-          setError(t('targets.savedButUnreachable', { reason: answer.reason ?? '' }))
-          return
-        }
+        if (!answer.ok) push(t('targets.savedButUnreachable', { reason: answer.reason ?? '' }), 'fail')
       } catch {
         // A check that could not run says nothing about the target.
+      } finally {
         setChecking(false)
       }
       onDone(true)
     } catch (e) {
-      setError((e as Error).message)
+      push((e as Error).message, 'fail')
+      setUnsaved((n) => n + 1)
     } finally {
       setBusy(false)
     }
   }
 
-  return (
-    <div className="flex flex-col gap-4 py-4">
-      {/* An OAuth token needs a browser at the provider's sign-in page on the
-          engine's machine, which this interface cannot open, so the form names
-          the command that produces one. */}
-      {backend?.needsToken && (
-        <p className="flex items-start gap-2 text-subline text-carbon-textMuted">
-          <InfoBubble tip={t('targets.tokenHowTo')} />
-          <span>{t('targets.tokenNeeded', { backend: backend.name })}</span>
-        </p>
+  const field = (o: Backend['options'][number]) => (
+    <Field key={o.name} label={optionLabel(o.name, t)} hint={optionHint(o, t, provider)}>
+      {o.secret ? (
+        <Secret
+          value={values[o.name] ?? ''}
+          onChange={(next) => setValues((prev) => ({ ...prev, [o.name]: next }))}
+          placeholder={values[o.name] ? t('targets.secretSet') : o.default}
+        />
+      ) : kind === 'smb' && o.name === 'host' ? (
+        <ShareHost
+          value={values.host ?? ''}
+          onChange={(next) => setValues((prev) => ({ ...prev, host: next }))}
+          placeholder={o.default || o.examples?.[0]?.value}
+          // The account comes along where the field is still empty; the
+          // password cannot be read back from Windows.
+          onShare={(picked) =>
+            setValues((prev) => ({
+              ...prev,
+              host: picked.host,
+              ...(picked.user && !prev.user ? { user: picked.user } : {}),
+              ...(picked.domain && !prev.domain ? { domain: picked.domain } : {}),
+            }))
+          }
+        />
+      ) : (
+        <Text
+          value={values[o.name] ?? ''}
+          onChange={(next) => setValues((prev) => ({ ...prev, [o.name]: next }))}
+          placeholder={o.default || o.examples?.[0]?.value}
+          mono
+        />
       )}
-      {/* No backend type on screen: the picker already chose it in terms of
-          products. */}
-      <div className="mx-auto flex w-full max-w-md flex-col gap-4">
+    </Field>
+  )
+
+  return (
+    <Dialog
+      title={title}
+      onClose={() => onDone(false)}
+      closeOnBackdrop={false}
+      footer={
+        <>
+          {onBack ? (
+            <Button label={t('preview.back')} labelKey="preview.back" glyph={<IconBack />} onClick={onBack} />
+          ) : (
+            <Button label={t('targets.cancel')} labelKey="targets.cancel" glyph={<IconClose />} onClick={() => onDone(false)} />
+          )}
+          {/* Tests before anything is written; saving checks again afterwards.
+              Colour, word and glyph all carry the last verdict, so colour is
+              never the only signal. */}
+          <Button
+            key={`try-${refused}`}
+            label={
+              trying ? t('targets.checking') : !tried ? t('targets.check') : tried.ok ? t('targets.checkOk') : t('targets.checkFailed')
+            }
+            labelKey="targets.check"
+            glyph={trying || !tried ? undefined : tried.ok ? <IconCheck /> : <IconClose />}
+            tone={trying || !tried ? 'neutral' : tried.ok ? 'ok' : 'danger'}
+            title={tried && !tried.ok ? tried.reason : undefined}
+            className={tried && !tried.ok && !trying ? 'glim-shake' : ''}
+            busy={trying}
+            stage={groupStage([t('targets.check'), t('targets.checking'), t('targets.checkOk'), t('targets.checkFailed')])}
+            onClick={() => void tryIt()}
+            disabled={busy || trying || !kind}
+          />
+          <Button
+            key={`save-${unsaved}`}
+            label={checking ? t('targets.checking') : t('targets.save')}
+            labelKey={checking ? 'targets.checking' : 'targets.save'}
+            glyph={<IconSave />}
+            tone="accent"
+            className={unsaved > 0 ? 'glim-shake' : ''}
+            onClick={() => void save()}
+            disabled={busy || checking || !name.trim() || !kind}
+          />
+        </>
+      }
+    >
+      <div className="flex flex-col gap-4 py-2">
+        {/* An OAuth token needs a browser at the provider's sign-in page on the
+            engine's machine, which this interface cannot open, so the form
+            names the command that produces one. */}
+        {backend?.needsToken && (
+          <p className="flex items-start gap-2 text-subline text-carbon-textMuted">
+            <InfoBubble tip={t('targets.tokenHowTo')} />
+            <span>{t('targets.tokenNeeded', { backend: backend.name })}</span>
+          </p>
+        )}
+        {/* No backend type on screen: the picker already chose it in terms of
+            products. */}
         <Field label={t('targets.remoteName')} hint={t('targets.remoteNameHint')}>
           {/* Fixed once saved: the jobs that use the target name it, and its
               secrets never reach this form to be written under a new name. */}
           <Text value={name} onChange={setName} placeholder="backup" mono readOnly={!!existing} />
         </Field>
-
-        {shown.map((o) => (
-          <Field
-            key={o.name}
-            label={optionLabel(o.name, t)}
-            hint={optionHint(o, t, provider)}
-          >
-            {o.secret ? (
-              <Secret
-                value={values[o.name] ?? ''}
-                onChange={(next) => setValues((prev) => ({ ...prev, [o.name]: next }))}
-                placeholder={values[o.name] ? t('targets.secretSet') : o.default}
-              />
-            ) : kind === 'smb' && o.name === 'host' ? (
-              <ShareHost
-                value={values.host ?? ''}
-                onChange={(next) => setValues((prev) => ({ ...prev, host: next }))}
-                placeholder={o.default || o.examples?.[0]?.value}
-                // The account comes along where the field is still empty; the
-                // password cannot be read back from Windows.
-                onShare={(picked) =>
-                  setValues((prev) => ({
-                    ...prev,
-                    host: picked.host,
-                    ...(picked.user && !prev.user ? { user: picked.user } : {}),
-                    ...(picked.domain && !prev.domain ? { domain: picked.domain } : {}),
-                  }))
-                }
-              />
-            ) : (
-              <Text
-                value={values[o.name] ?? ''}
-                onChange={(next) => setValues((prev) => ({ ...prev, [o.name]: next }))}
-                placeholder={o.default || o.examples?.[0]?.value}
-                mono
-              />
-            )}
-          </Field>
-        ))}
-
-        <ToggleRow checked={advanced} onChange={setAdvanced} label={t('targets.advanced')} />
-
-        {error && <p className="text-subline text-statusFail">{error}</p>}
+        {first.map(field)}
+        {rest.length > 0 && (
+          <section className="glim-well flex flex-col gap-4 rounded-card p-4">
+            <h3 className="glim-eyebrow">{t('targets.moreSettings')}</h3>
+            {rest.map(field)}
+          </section>
+        )}
       </div>
-
-      {/* Only the reason: the button itself shows the verdict. */}
-      {tried && !tried.ok && tried.reason && <p className="text-subline text-statusFail">{tried.reason}</p>}
-
-      <div className="flex items-center justify-end gap-2">
-        <Button label={t('targets.cancel')} labelKey="targets.cancel" onClick={() => onDone(false)} />
-        {/* Tests before anything is written; saving checks again afterwards.
-            Colour, word and glyph all carry the last verdict, so colour is
-            never the only signal. */}
-        <Button
-          key={refused}
-          label={
-            trying
-              ? t('targets.checking')
-              : !tried
-                ? t('targets.check')
-                : tried.ok
-                  ? t('targets.checkOk')
-                  : t('targets.checkFailed')
-          }
-          labelKey="targets.check"
-          glyph={trying || !tried ? undefined : tried.ok ? <IconCheck /> : <IconClose />}
-          tone={trying || !tried ? 'neutral' : tried.ok ? 'ok' : 'danger'}
-          className={tried && !tried.ok && !trying ? 'glim-shake' : ''}
-          busy={trying}
-          stage={groupStage([t('targets.check'), t('targets.checking'), t('targets.checkOk'), t('targets.checkFailed')])}
-          onClick={() => void tryIt()}
-          disabled={busy || trying || !kind}
-        />
-        <Button
-          label={checking ? t('targets.checking') : t('targets.save')}
-          labelKey={checking ? 'targets.checking' : 'targets.save'}
-          tone="accent"
-          onClick={() => void save()}
-          disabled={busy || checking || !name.trim() || !kind}
-        />
-      </div>
-    </div>
+    </Dialog>
   )
 }
 
@@ -724,41 +691,14 @@ function ShareHost({
 
 function Drives({ volumes, onChanged }: { volumes: Volume[]; onChanged: () => void }) {
   const { t } = useT()
-  const [adding, setAdding] = useState(false)
-
   return (
-    <Card
-      title={t('targets.drives')}
-      hint={t('targets.driveExplain')}
-      hueIndex={1}
-    >
-      {!adding && (
-        <div className="flex justify-end">
-          <Button
-            label={t('targets.registerDrive')}
-            labelKey="targets.registerDrive"
-            tone="accent"
-            onClick={() => setAdding(true)}
-          />
-        </div>
-      )}
-      {adding && (
-        <DriveForm
-          onDone={(saved) => {
-            setAdding(false)
-            if (saved) onChanged()
-          }}
-        />
-      )}
-
-      {volumes.length === 0 && !adding ? (
+    <Card title={t('targets.drives')} hint={t('targets.driveExplain')} hueIndex={3}>
+      {volumes.length === 0 ? (
         <Empty>{t('targets.drivesEmpty')}</Empty>
       ) : (
-        <Rows className="flex flex-col gap-2">
-          {volumes.map((v, i) => (
-            <li key={v.id} className="rounded-control bg-carbon-surface2 px-4">
-              <DriveRow volume={v} row={i} onChanged={onChanged} />
-            </li>
+        <Rows className="-mx-2 flex flex-col">
+          {volumes.map((v) => (
+            <DriveRow key={v.id} volume={v} onChanged={onChanged} />
           ))}
         </Rows>
       )}
@@ -766,16 +706,7 @@ function Drives({ volumes, onChanged }: { volumes: Volume[]; onChanged: () => vo
   )
 }
 
-function DriveRow({
-  volume,
-  row,
-  onChanged,
-}: {
-  volume: Volume
-  /** The row's place in the list, as in RemoteRow. */
-  row: number
-  onChanged: () => void
-}) {
+function DriveRow({ volume, onChanged }: { volume: Volume; onChanged: () => void }) {
   const { t } = useT()
   const push = useToast()
   const [copied, setCopied] = useState(false)
@@ -787,31 +718,17 @@ function DriveRow({
   const [confirming, setConfirming] = useState(false)
 
   return (
-    <div className="group flex flex-wrap items-center gap-x-3 gap-y-2 py-3">
-      <div className="min-w-0 flex-1">
-        <div className="flex items-center gap-2">
-          <span className="truncate text-body font-medium">{volume.label}</span>
-          {/* Not the accent: an attached drive is a state, not activity. */}
-          <Badge tone={volume.attached ? 'ok' : 'neutral'}>
-            {volume.attached ? t('targets.attached') : t('targets.absent')}
-          </Badge>
-        </div>
-        <p className="mt-0.5 truncate font-mono text-subline text-carbon-textMuted">
-          {volume.attached ? volume.mount : volume.path}
-        </p>
-      </div>
-
-      {!volume.attached && volume.lastSeen && (
-        <span className="shrink-0 text-subline text-carbon-textMuted">
-          {t('targets.lastSeen')}: <Since when={volume.lastSeen} />
-        </span>
-      )}
-
-      <div className="flex shrink-0 items-center gap-1.5">
+    <li className="glim-row flex min-h-14 items-center gap-3 rounded-control px-2 py-2 hover:bg-carbon-hover">
+      <span className="glim-row-glyph flex h-9 w-9 shrink-0 items-center justify-center rounded-control">
+        <IconTabStorage />
+      </span>
+      <span className="flex min-w-0 flex-1 items-center gap-2">
+        <span className="truncate text-body font-medium">{volume.label}</span>
+        <InfoBubble tip={volume.attached ? volume.mount : volume.path} />
+      </span>
+      <span className="glim-row-actions flex shrink-0 items-center gap-1.5">
         <IconAction
           ref={copyButton}
-          tone={copied ? 'accent' : 'subtle'}
-          hueIndex={row + 1}
           title={copied ? t('targets.copied') : t('targets.copyPath')}
           labelKey={copied ? 'targets.copied' : 'targets.copyPath'}
           onClick={() => {
@@ -827,12 +744,18 @@ function DriveRow({
           title={t('targets.deleteDrive')}
           labelKey="targets.deleteDrive"
           hint={t('targets.deleteDriveHint')}
-          hueIndex={row + 2}
           onClick={() => setConfirming(true)}
         >
           <IconTrash />
         </IconAction>
-      </div>
+      </span>
+      {!volume.attached && volume.lastSeen && (
+        <span className="shrink-0 text-subline text-carbon-textMuted max-sm:hidden">
+          {t('targets.lastSeen')}: <Since when={volume.lastSeen} />
+        </span>
+      )}
+      {/* Not the accent: an attached drive is a state, not activity. */}
+      <Badge tone={volume.attached ? 'ok' : 'neutral'}>{volume.attached ? t('targets.attached') : t('targets.absent')}</Badge>
 
       {confirming && (
         <ConfirmDialog
@@ -851,19 +774,21 @@ function DriveRow({
           }}
         />
       )}
-    </div>
+    </li>
   )
 }
 
+/** Registering a drive, in a window: which one, and what to call it. */
 function DriveForm({ onDone }: { onDone: (saved: boolean) => void }) {
   const { t } = useT()
-  const [candidates, setCandidates] = useState<DriveCandidate[]>([])
+  const push = useToast()
+  const [candidates, setCandidates] = useState<DriveCandidate[] | null>(null)
   const [mount, setMount] = useState('')
   const [label, setLabel] = useState('')
   // The drive's own name fills the field until somebody types one.
   const [typed, setTyped] = useState(false)
-  const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
+  const [refused, setRefused] = useState(0)
 
   useEffect(() => {
     api
@@ -874,65 +799,79 @@ function DriveForm({ onDone }: { onDone: (saved: boolean) => void }) {
         setMount((current) => current || fresh[0]?.mount || '')
         setLabel((current) => current || fresh[0]?.name || '')
       })
-      .catch((e: Error) => setError(e.message))
-  }, [])
+      .catch((e: Error) => {
+        setCandidates([])
+        push(e.message, 'fail')
+      })
+  }, [push])
 
   async function save() {
     setBusy(true)
-    setError(null)
     try {
       await api.markVolume(mount, label.trim())
       onDone(true)
     } catch (e) {
-      setError((e as Error).message)
+      push((e as Error).message, 'fail')
+      setRefused((n) => n + 1)
     } finally {
       setBusy(false)
     }
   }
 
-  if (candidates.length === 0 && !error) {
-    return (
-      <div className="py-4">
-        <Empty>{t('targets.noCandidates')}</Empty>
-        <div className="flex justify-center">
-          <Button label={t('targets.cancel')} labelKey="targets.cancel" onClick={() => onDone(false)} />
-        </div>
-      </div>
-    )
-  }
-
+  const none = candidates !== null && candidates.length === 0
   return (
-    <div className="flex flex-col gap-4 py-4">
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Field label={t('targets.driveMount')}>
-          <Choice
-            value={mount}
-            onChange={(next) => {
-              setMount(next)
-              if (!typed) setLabel(candidates.find((c) => c.mount === next)?.name ?? '')
-            }}
-            label={t('targets.driveMount')}
-            options={candidates.map((c) => ({ value: c.mount, label: c.name ? `${c.mount} · ${c.name}` : c.mount }))}
-          />
-        </Field>
-        <Field label={t('targets.driveLabel')} hint={t('targets.driveLabelHint')}>
-          <Text
-            value={label}
-            onChange={(next) => {
-              setLabel(next)
-              setTyped(true)
-            }}
-            placeholder="Backup drive"
-          />
-        </Field>
-      </div>
-
-      {error && <p className="text-subline text-statusFail">{error}</p>}
-
-      <div className="flex items-center justify-end gap-2">
-        <Button label={t('targets.cancel')} labelKey="targets.cancel" onClick={() => onDone(false)} />
-        <Button label={t('targets.save')} labelKey="targets.save" tone="accent" onClick={() => void save()} disabled={busy || !mount} />
-      </div>
-    </div>
+    <Dialog
+      title={t('targets.registerDrive')}
+      hint={t('targets.driveExplain')}
+      onClose={() => onDone(false)}
+      closeOnBackdrop={false}
+      footer={
+        <>
+          <Button label={t('targets.cancel')} labelKey="targets.cancel" glyph={<IconClose />} onClick={() => onDone(false)} />
+          {!none && (
+            <Button
+              key={refused}
+              label={t('targets.save')}
+              labelKey="targets.save"
+              glyph={<IconSave />}
+              tone="accent"
+              className={refused > 0 ? 'glim-shake' : ''}
+              onClick={() => void save()}
+              disabled={busy || !mount}
+            />
+          )}
+        </>
+      }
+    >
+      {candidates === null ? (
+        <Empty>{t('pick.loading')}</Empty>
+      ) : none ? (
+        <Empty>{t('targets.noCandidates')}</Empty>
+      ) : (
+        <div className="grid gap-4 py-2 sm:grid-cols-2">
+          <Field label={t('targets.driveMount')}>
+            <Choice
+              value={mount}
+              onChange={(next) => {
+                setMount(next)
+                if (!typed) setLabel(candidates.find((c) => c.mount === next)?.name ?? '')
+              }}
+              label={t('targets.driveMount')}
+              options={candidates.map((c) => ({ value: c.mount, label: c.name ? `${c.mount} · ${c.name}` : c.mount }))}
+            />
+          </Field>
+          <Field label={t('targets.driveLabel')} hint={t('targets.driveLabelHint')}>
+            <Text
+              value={label}
+              onChange={(next) => {
+                setLabel(next)
+                setTyped(true)
+              }}
+              placeholder="Backup drive"
+            />
+          </Field>
+        </div>
+      )}
+    </Dialog>
   )
 }

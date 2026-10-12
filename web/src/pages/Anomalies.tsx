@@ -1,12 +1,16 @@
-// The Anomalies page: one card per job with open findings, because the question
-// somebody brings is which job is in trouble and what to press. Jobs without
-// findings keep their brakes in one card below, and what was closed lately sits
-// in a row under that. The layout is BombVault's, so a finding reads the same
-// in both apps.
-import { useCallback, useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+// The Anomalies page: the findings as one list with tiles above it that pick a
+// severity, and each finding's details and answers in a window. Jobs without
+// findings keep their brakes in a card below. The layout is BombVault's, so a
+// finding reads the same in both apps.
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react'
 
+import { Dialog } from '../components/Dialog'
 import { Field, NumberField } from '../components/Field'
-import { Stack } from '../components/Shell'
+import { IconAnomalies } from '../components/glyphs'
+import { FilterButton, FilterChoice, ListBar } from '../components/ListBar'
+import { Selector } from '../components/Selector'
+import { Empty, Rows, Stack } from '../components/Shell'
+import { Since } from '../components/Since'
 import { ToggleRow } from '../components/ToggleRow'
 import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
@@ -18,34 +22,25 @@ import {
   countBySeverity,
   figures,
   globalBrakes,
-  groupFindings,
   leadingAnswer,
   ownBrakes,
   sentence,
   shortLine,
   type Brakes,
   type Finding,
-  type FindingGroup,
   type FindingListing,
   type Severity,
 } from '../lib/anomalies'
 import { api, type Job, type RawJob } from '../lib/api'
 import { hueVars } from '../lib/appearance'
-import { useGoTo } from '../lib/goTo'
 import { useT, type TranslationKey } from '../lib/i18n'
+import { useOpenJob } from '../lib/openJob'
 import { useToast } from '../lib/toast'
-import { Since } from './Jobs'
 
 const TILE_LABEL: Record<Severity, TranslationKey> = {
   critical: 'anomaly.severity.critical',
   warning: 'anomaly.tile.warning',
   info: 'anomaly.tile.info',
-}
-
-const NUMBER_TONE: Record<Severity, string> = {
-  critical: 'text-statusFail',
-  warning: 'text-statusWarn',
-  info: 'text-carbon-text',
 }
 
 const DOT: Record<Severity, string> = {
@@ -63,29 +58,16 @@ const BADGE_TONE: Record<Severity, 'fail' | 'warn' | 'neutral'> = {
 /** How long a typed brake value waits before it is saved, as on the settings page. */
 const SETTLE_MS = 700
 
-/** The fold arrow, pointing along the reading direction and down when open. */
-function Disclosure({ open }: { open: boolean }) {
-  return (
-    <svg
-      width="12"
-      height="12"
-      viewBox="0 0 12 12"
-      aria-hidden="true"
-      className={`transition-transform ${open ? 'rotate-90' : 'rtl:rotate-180'}`}
-    >
-      <path fill="currentColor" d="M4 1.3 8.5 6 4 10.7Z" />
-    </svg>
-  )
-}
+type Tile = 'all' | Severity
 
 /**
  * Each job's own brakes, read from the configuration and written back to it. A
  * typed value waits to settle, since every save makes the engine reload.
  */
 function useBrakes() {
+  const push = useToast()
   const [jobs, setJobs] = useState<RawJob[] | null>(null)
   const [global, setGlobal] = useState<Brakes>(() => globalBrakes(undefined))
-  const [error, setError] = useState<string | null>(null)
   const latest = useRef<RawJob[] | null>(null)
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -93,21 +75,18 @@ function useBrakes() {
     api
       .config()
       .then((got) => setJobs(got.jobs))
-      .catch((e: Error) => setError(e.message))
+      .catch((e: Error) => push(e.message, 'fail'))
     api
       .settings()
       .then((got) => setGlobal(globalBrakes(got.defaults)))
       .catch(() => {})
-  }, [])
+  }, [push])
 
   const commit = useCallback(() => {
     timer.current = null
     if (!latest.current) return
-    api
-      .saveConfig(latest.current)
-      .then(() => setError(null))
-      .catch((e: Error) => setError(e.message))
-  }, [])
+    api.saveConfig(latest.current).catch((e: Error) => push(e.message, 'fail'))
+  }, [push])
 
   // Leaving the page sends a value still waiting to settle.
   useEffect(
@@ -138,7 +117,7 @@ function useBrakes() {
     [commit],
   )
 
-  return { jobs, global, setOwn, error }
+  return { jobs, global, setOwn }
 }
 
 type BrakeBook = ReturnType<typeof useBrakes>
@@ -147,14 +126,17 @@ export function Anomalies({
   listing,
   jobs,
   job: focus,
+  finding: focusFinding,
   refused,
   onChanged,
 }: {
   /** Null until the first answer arrives. */
   listing: FindingListing | null
   jobs: Job[]
-  /** The job whose card opens, when another screen sent somebody here for it. */
+  /** The job to narrow the list to, when another screen sent somebody here for it. */
   job: string
+  /** The finding whose window opens, when another screen sent somebody here for it. */
+  finding?: string
   /** How often a brake has refused each job since the page loaded. */
   refused: Record<string, number>
   onChanged: () => void
@@ -162,10 +144,17 @@ export function Anomalies({
   const { t } = useT()
   const push = useToast()
   const brakes = useBrakes()
-  const [hidden, setHidden] = useState<Set<Severity>>(new Set())
+  const [tile, setTile] = useState<Tile>('all')
+  const [closedView, setClosedView] = useState(false)
+  const [job, setJob] = useState(focus)
+  const [opened, setOpened] = useState<string | null>(focusFinding ?? null)
+  const [watching, setWatching] = useState<string | null>(null)
   const [asking, setAsking] = useState<{ finding: Finding; answer: 'run' | 'back' } | null>(null)
   // The jobs whose refused change was let run, with the refusals counted then.
   const allowed = useRef(new Map<string, number>())
+
+  useEffect(() => setOpened(focusFinding ?? null), [focusFinding])
+  useEffect(() => setJob(focus), [focus])
 
   // The permission covers what was shown. A job the brake refuses again after
   // it was given has changed since, and says so.
@@ -178,19 +167,17 @@ export function Anomalies({
   }, [refused, push, t])
 
   const open = listing?.open ?? []
-  const groups = groupFindings(open.filter((f) => !hidden.has(f.severity)))
+  const closed = listing?.closed ?? []
+  const pool = (closedView ? closed : open).filter((f) => !job || f.job === job)
+  const rank = (s: Severity) => SEVERITIES.indexOf(s)
+  const shown = pool
+    .filter((f) => tile === 'all' || f.severity === tile)
+    .sort((a, b) => (closedView ? 0 : rank(a.severity) - rank(b.severity)) || a.job.localeCompare(b.job))
   const loud = new Set(open.map((f) => f.job))
   const quiet = jobs.filter((j) => !loud.has(j.name))
+  const names = [...new Set([...jobs.map((j) => j.name), ...open.map((f) => f.job)])].sort((a, b) => a.localeCompare(b))
+  const current = opened ? [...open, ...closed].find((f) => f.id === opened) : undefined
   const places: [string, string] = [t('side.left'), t('side.right')]
-
-  function toggle(severity: Severity) {
-    setHidden((prev) => {
-      const next = new Set(prev)
-      if (next.has(severity)) next.delete(severity)
-      else next.add(severity)
-      return next
-    })
-  }
 
   function answer(finding: Finding, how: 'run' | 'back') {
     if (how === 'run') allowed.current.set(finding.job, refused[finding.job] ?? 0)
@@ -218,46 +205,95 @@ export function Anomalies({
 
   return (
     <Stack>
-      {listing === null ? (
-        <p className="text-body text-carbon-textSub">{t('history.working')}</p>
-      ) : (
-        <>
-          <SeverityTiles counts={countBySeverity(open)} hidden={hidden} onToggle={toggle} />
-          {open.length === 0 ? (
-            <p className="text-body text-carbon-textSub">{t('anomaly.none')}</p>
-          ) : groups.length === 0 ? (
-            <p className="text-body text-carbon-textSub">{t('anomaly.noneShown')}</p>
-          ) : (
-            groups.map((g, i) => (
-              <FindingCard
-                key={g.job}
-                group={g}
-                places={places}
-                hueIndex={i}
-                focused={focus === g.job}
-                brakes={brakes}
-                onAsk={(finding, how) => setAsking({ finding, answer: how })}
-                onAcknowledge={acknowledge}
-                onRun={runNow}
-              />
-            ))
-          )}
-        </>
-      )}
+      <SeverityTiles counts={countBySeverity(open.filter((f) => !job || f.job === job))} chosen={tile} onChoose={setTile} />
 
-      {brakes.error && <p className="text-subline text-statusFail">{brakes.error}</p>}
+      <div className="flex flex-col gap-6">
+        <ListBar
+          start={
+            <div className="w-full sm:w-auto sm:min-w-64">
+              <Selector<'open' | 'closed'>
+                scale="small"
+                label={t('anomalies.which')}
+                value={closedView ? 'closed' : 'open'}
+                onChange={(next) => setClosedView(next === 'closed')}
+                options={[
+                  { value: 'open', label: t('anomalies.openTab') },
+                  { value: 'closed', label: t('anomaly.closed') },
+                ]}
+              />
+            </div>
+          }
+        >
+          <FilterButton active={job !== ''}>
+            <FilterChoice
+              label={t('history.filterJob')}
+              value={job}
+              onChange={setJob}
+              options={[{ value: '', label: t('history.allJobs') }, ...names.map((n) => ({ value: n, label: n }))]}
+            />
+          </FilterButton>
+        </ListBar>
+
+        <Card title={tile === 'all' ? t('anomalies.all') : t(TILE_LABEL[tile])} hueIndex={0}>
+          {listing === null ? (
+            <Empty>{t('history.working')}</Empty>
+          ) : shown.length === 0 ? (
+            <Empty>{closedView ? t('anomaly.noneClosed') : pool.length === 0 ? t('anomaly.none') : t('anomaly.noneShown')}</Empty>
+          ) : (
+            <Rows className="-mx-2 flex flex-col">
+              {shown.map((f) => (
+                <FindingRow key={f.id} finding={f} places={places} closed={closedView} onOpen={() => setOpened(f.id)} />
+              ))}
+            </Rows>
+          )}
+        </Card>
+      </div>
 
       {listing !== null && quiet.length > 0 && (
-        <Card title={`${t('anomaly.quiet')} · ${quiet.length}`} hint={t('anomaly.quietHint')} hueIndex={groups.length}>
-          <ul className="grid gap-x-8 md:grid-cols-2">
+        <Card title={t('anomaly.quiet')} hint={t('anomaly.quietHint')} hueIndex={1}>
+          <Rows className="-mx-2 grid gap-x-8 md:grid-cols-2">
             {quiet.map((j) => (
-              <QuietRow key={j.name} job={j.name} brakes={brakes} focused={focus === j.name} />
+              <li
+                key={j.name}
+                onClick={() => setWatching(j.name)}
+                className="glim-row flex min-h-11 cursor-pointer items-center gap-2 rounded-control px-2 hover:bg-carbon-hover"
+              >
+                <button type="button" className="min-w-0 flex-1 truncate text-start text-body text-carbon-text">
+                  {j.name}
+                </button>
+                {ownBrakes(
+                  brakes.jobs?.find((raw) => raw.name === j.name),
+                  brakes.global,
+                ) && <Badge tone="neutral">{t('anomalies.ownBadge')}</Badge>}
+              </li>
             ))}
-          </ul>
+          </Rows>
         </Card>
       )}
 
-      {listing !== null && <ClosedRow closed={listing.closed} places={places} />}
+      {current && (
+        <FindingWindow
+          finding={current}
+          places={places}
+          onClose={() => setOpened(null)}
+          onWatch={() => setWatching(current.job)}
+          onAsk={(how) => setAsking({ finding: current, answer: how })}
+          onAcknowledge={() => {
+            acknowledge(current)
+            setOpened(null)
+          }}
+          onRun={() => {
+            runNow(current)
+            setOpened(null)
+          }}
+        />
+      )}
+
+      {watching && (
+        <Dialog title={`${t('anomaly.monitoring')}: ${watching}`} onClose={() => setWatching(null)}>
+          <Monitoring job={watching} brakes={brakes} />
+        </Dialog>
+      )}
 
       {asking && (
         <ConfirmDialog
@@ -278,6 +314,7 @@ export function Anomalies({
           onConfirm={() => {
             answer(asking.finding, asking.answer)
             setAsking(null)
+            setOpened(null)
           }}
         />
       )}
@@ -286,108 +323,121 @@ export function Anomalies({
 }
 
 /**
- * The tiles count the open findings by severity and are the only filter: a
- * press hides that severity and a second one brings it back.
+ * The tiles count the open findings by severity and pick what the list shows:
+ * everything, or one severity. The rest of the page stays.
  */
 function SeverityTiles({
   counts,
-  hidden,
-  onToggle,
+  chosen,
+  onChoose,
 }: {
   counts: Record<Severity, number>
-  hidden: Set<Severity>
-  onToggle: (severity: Severity) => void
+  chosen: Tile
+  onChoose: (tile: Tile) => void
 }) {
   const { t, lang } = useT()
   const format = new Intl.NumberFormat(lang)
+  const total = counts.critical + counts.warning + counts.info
+  const tiles: { tile: Tile; label: string; count: number }[] = [
+    { tile: 'all', label: t('anomalies.all'), count: total },
+    ...SEVERITIES.map((s) => ({ tile: s as Tile, label: t(TILE_LABEL[s]), count: counts[s] })),
+  ]
   return (
-    <div role="group" aria-label={t('anomaly.filter')} className="grid grid-cols-3 gap-2 sm:gap-4">
-      {SEVERITIES.map((severity, i) => {
-        const shown = !hidden.has(severity)
-        return (
-          <button
-            key={severity}
-            type="button"
-            aria-pressed={shown}
-            onClick={() => onToggle(severity)}
-            style={hueVars(i) as CSSProperties}
-            className={`glim-hue glim-tint${shown ? ' glim-active' : ''} flex min-w-0 flex-col items-start gap-0.5 rounded-card bg-carbon-surface px-3 py-2.5 text-start hover:bg-carbon-surface2 sm:px-4 sm:py-3`}
-          >
-            <span
-              className={`glim-num text-status font-semibold leading-tight ${shown ? NUMBER_TONE[severity] : 'text-carbon-textMuted'}`}
+    <div role="group" aria-label={t('anomaly.filter')} className="rounded-card bg-carbon-surface p-3 max-[600px]:p-2">
+      <div className="flex flex-wrap justify-center gap-2 max-[860px]:grid max-[860px]:grid-cols-2 max-[600px]:flex max-[600px]:flex-nowrap max-[600px]:justify-start max-[600px]:overflow-x-auto">
+        {tiles.map(({ tile, label, count }, i) => {
+          const on = tile === chosen
+          return (
+            <button
+              key={tile}
+              type="button"
+              aria-pressed={on}
+              onClick={() => onChoose(tile)}
+              style={hueVars(i) as CSSProperties}
+              className={`glim-hue flex min-w-40 flex-1 items-center gap-2.5 rounded-card px-3 py-2 text-start transition-colors max-[860px]:min-w-0 max-[600px]:flex-none max-[600px]:rounded-[var(--radius-pill)] max-[600px]:py-1.5 ${
+                on ? 'glim-active bg-accent text-accentContrast' : 'bg-carbon-surface2 text-carbon-text hover:bg-carbon-surface3'
+              }`}
             >
-              {format.format(counts[severity])}
-            </span>
-            <span className={`min-w-0 text-body [overflow-wrap:anywhere] ${shown ? 'text-carbon-text' : 'text-carbon-textMuted'}`}>
-              {t(TILE_LABEL[severity])}
-            </span>
-            <span aria-hidden="true" className="min-w-0 text-subline text-carbon-textSub [overflow-wrap:anywhere]">
-              {t(shown ? 'anomaly.tile.shown' : 'anomaly.tile.hidden')}
-            </span>
-          </button>
-        )
-      })}
+              <span className="flex [&_svg]:h-5 [&_svg]:w-5 max-[600px]:hidden" aria-hidden>
+                <IconAnomalies />
+              </span>
+              <span className="min-w-0 flex-1 truncate text-body font-semibold">{label}</span>
+              <span className="glim-num text-body font-semibold">{format.format(count)}</span>
+            </button>
+          )
+        })}
+      </div>
     </div>
   )
 }
 
-/** A held job says so wherever its finding's line is closed. */
-function HeldNote() {
+/**
+ * One finding as one row: a dot for its severity, the job, what happened and
+ * when. A held job says so as a badge. The row opens the finding's window.
+ */
+function FindingRow({
+  finding: f,
+  places,
+  closed,
+  onOpen,
+}: {
+  finding: Finding
+  places: [string, string]
+  closed: boolean
+  onOpen: () => void
+}) {
   const { t } = useT()
   return (
-    <p className="inline-flex items-center gap-1 self-start text-subline text-statusWarn">
-      {t('anomaly.held')}
-      <InfoBubble tip={t('anomaly.heldHint')} />
-    </p>
+    <li onClick={onOpen} className="glim-row flex min-h-12 cursor-pointer items-center gap-3 rounded-control px-2 py-1.5 hover:bg-carbon-hover">
+      <span aria-hidden="true" className={`h-2 w-2 shrink-0 rounded-full ${DOT[f.severity]}`} />
+      <button type="button" className="flex min-w-0 flex-1 items-baseline gap-2 text-start">
+        <span className="shrink-0 text-body font-medium text-carbon-text">{f.job}</span>
+        <span className="min-w-0 truncate text-subline text-carbon-textSub">
+          {t(`anomaly.kind.${f.kind}`)}: {shortLine(f, t, places)}
+        </span>
+      </button>
+      {!closed && f.held && <Badge tone="warn">{t('anomaly.heldBadge')}</Badge>}
+      {closed && f.outcome && <Badge tone="neutral">{t(`anomaly.outcome.${f.outcome}`)}</Badge>}
+      <span className="w-28 shrink-0 text-end text-subline text-carbon-textSub max-sm:hidden">
+        <Since when={closed && f.closed ? f.closed : f.since} />
+      </span>
+    </li>
   )
 }
 
-function FindingCard({
-  group,
+/**
+ * One finding in a window: the whole sentence, its figures, the engine's own
+ * words for a failure, the files a brake counted, and its answers. A held
+ * job's answers are run and take back, the one usually meant last and filled;
+ * a note is run or acknowledged, the fix last and filled.
+ */
+function FindingWindow({
+  finding: f,
   places,
-  hueIndex,
-  focused,
-  brakes,
+  onClose,
+  onWatch,
   onAsk,
   onAcknowledge,
   onRun,
 }: {
-  group: FindingGroup
+  finding: Finding
   places: [string, string]
-  hueIndex: number
-  focused: boolean
-  brakes: BrakeBook
-  onAsk: (finding: Finding, how: 'run' | 'back') => void
-  onAcknowledge: (finding: Finding) => void
-  onRun: (finding: Finding) => void
+  onClose: () => void
+  onWatch: () => void
+  onAsk: (how: 'run' | 'back') => void
+  onAcknowledge: () => void
+  onRun: () => void
 }) {
   const { t } = useT()
-  const box = useRef<HTMLElement>(null)
-  const [openIds, setOpenIds] = useState<Set<string>>(() => new Set(focused ? group.findings.map((f) => f.id) : []))
-  const [monitoring, setMonitoring] = useState(false)
+  const openJob = useOpenJob()
+  const paths = f.paths ?? []
+  const more = (f.count ?? 0) - paths.length
 
-  useEffect(() => {
-    if (!focused) return
-    box.current?.scrollIntoView({ block: 'start' })
-  }, [focused])
-
-  const held = group.findings.find((f) => f.held)
-  const first = held ?? group.findings[0]
-
-  function toggleLine(id: string) {
-    setOpenIds((prev) => {
-      const next = new Set(prev)
-      if (next.has(id)) next.delete(id)
-      else next.add(id)
-      return next
-    })
-  }
-
-  // A held job has two answers, run or take back; a note is acknowledged or
-  // the job is run. The one usually meant stands last, in the accent.
-  let answers: ReactNode
-  if (held) {
-    const lead = leadingAnswer(held)
+  let answers
+  if (!f.open) {
+    answers = <Button label={t('common.close')} labelKey="common.close" onClick={onClose} />
+  } else if (f.held) {
+    const lead = leadingAnswer(f)
     const run = (
       <Button
         key="run"
@@ -395,7 +445,7 @@ function FindingCard({
         labelKey="anomaly.run"
         title={t('anomaly.runHint')}
         tone={lead === 'run' ? 'accent' : 'neutral'}
-        onClick={() => onAsk(held, 'run')}
+        onClick={() => onAsk('run')}
       />
     )
     const restore = (
@@ -405,7 +455,7 @@ function FindingCard({
         labelKey="anomaly.restore"
         title={t('anomaly.restoreHint')}
         tone={lead === 'restore' ? 'accent' : 'neutral'}
-        onClick={() => onAsk(held, 'back')}
+        onClick={() => onAsk('back')}
       />
     )
     answers = lead === 'run' ? [restore, run] : [run, restore]
@@ -416,184 +466,69 @@ function FindingCard({
           label={t('anomaly.acknowledge')}
           labelKey="anomaly.acknowledge"
           title={t('anomaly.acknowledgeHint')}
-          tone="neutral"
-          onClick={() => onAcknowledge(first)}
+          onClick={onAcknowledge}
         />
-        <Button
-          label={t('jobs.runNow')}
-          labelKey="jobs.runNow"
-          title={t('jobs.runNowHint')}
-          tone="accent"
-          onClick={() => onRun(first)}
-        />
+        <Button label={t('jobs.runNow')} labelKey="jobs.runNow" title={t('jobs.runNowHint')} tone="accent" onClick={onRun} />
       </>
     )
   }
 
   return (
-    <section
-      ref={box}
-      aria-label={group.job}
-      style={{
-        ...(hueVars(hueIndex) as CSSProperties),
-        // The wash is translucent, so it goes over the card's own surface.
-        ...(group.worst === 'critical'
-          ? { backgroundImage: 'linear-gradient(var(--status-fail-bg), var(--status-fail-bg))' }
-          : {}),
-      }}
-      className="glim-hue glim-notch-card relative flex scroll-mt-10 flex-col gap-1 rounded-card bg-carbon-surface p-5 pt-6"
+    <Dialog
+      title={`${f.job}: ${t(`anomaly.kind.${f.kind}`)}`}
+      onClose={onClose}
+      footer={
+        <>
+          <span className="me-auto flex flex-wrap gap-2">
+            <Button label={t('anomaly.openJob')} labelKey="anomaly.openJob" onClick={() => openJob(f.job)} />
+            <Button label={t('anomaly.monitoring')} labelKey="anomaly.monitoring" onClick={onWatch} />
+          </span>
+          {answers}
+        </>
+      }
     >
-      {/* Two heading badges in the flow of one positioned h2, so the pair stays
-          on the card's top edge when a long name wraps. */}
-      <h2 className="absolute top-0 z-10 flex max-w-[calc(100%-2.5rem)] -translate-y-1/2 items-center gap-1.5">
-        <Badge tone="heading" size="heading" inFlow wrap hueIndex={hueIndex} className="min-w-0">
-          {/* A job's name is an identifier, so it keeps its own case. */}
-          <span className="min-w-0 normal-case tracking-normal [overflow-wrap:anywhere]">{group.job}</span>
-        </Badge>
-        <Badge tone={BADGE_TONE[group.worst]} size="heading" className="shrink-0">
-          {t(`anomaly.severity.${group.worst}`)}
-        </Badge>
-      </h2>
-
-      <p className="text-subline text-carbon-textSub">{t('anomaly.open', { count: group.findings.length })}</p>
-
-      <div className="flex flex-col">
-        {group.findings.map((f, i) => (
-          <div key={f.id}>
-            {i > 0 && <div className="h-px w-full" style={{ background: 'var(--hairline)' }} />}
-            <FindingLine finding={f} places={places} open={openIds.has(f.id)} onToggle={() => toggleLine(f.id)} />
-          </div>
-        ))}
-      </div>
-
-      {held && !openIds.has(held.id) && <HeldNote />}
-
-      <div className="mt-2 flex flex-wrap items-center gap-3">
-        <button
-          type="button"
-          onClick={() => setMonitoring(!monitoring)}
-          aria-expanded={monitoring}
-          className="-mx-1 flex min-h-11 items-center gap-1.5 rounded-control px-1 text-meta text-carbon-textSub hover:text-carbon-text"
-        >
-          {t('anomaly.monitoring')}
-          <Disclosure open={monitoring} />
-        </button>
-        <div className="ms-auto flex flex-wrap items-center justify-end gap-2">{answers}</div>
-      </div>
-
-      {monitoring && <Monitoring job={group.job} brakes={brakes} />}
-    </section>
-  )
-}
-
-/**
- * One finding as a line: a dot for its severity, what happened, when, and the
- * fold arrow. Opened, it says the whole sentence, the figures and the files.
- * The card around it names the job, so only a closed finding's line does.
- */
-function FindingLine({
-  finding: f,
-  places,
-  open,
-  onToggle,
-  closed = false,
-}: {
-  finding: Finding
-  places: [string, string]
-  open: boolean
-  onToggle: () => void
-  closed?: boolean
-}) {
-  const { t } = useT()
-  const goTo = useGoTo()
-  const [files, setFiles] = useState(false)
-  const paths = f.paths ?? []
-  const more = (f.count ?? 0) - paths.length
-
-  return (
-    <div className="flex flex-col">
-      <button
-        type="button"
-        onClick={onToggle}
-        aria-expanded={open}
-        className="-mx-2 flex min-h-11 items-start gap-3 rounded-control px-2 py-2.5 text-start hover:bg-carbon-hover"
-      >
-        <span aria-hidden="true" className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${DOT[f.severity]}`} />
-        <span className="min-w-0 flex-1 text-body text-carbon-text [overflow-wrap:anywhere]">
-          {closed && <span className="font-medium">{f.job}: </span>}
-          <span className="text-carbon-textSub">{t(`anomaly.kind.${f.kind}`)}: </span>
-          {shortLine(f, t, places)}
-        </span>
-        {closed && f.outcome && (
-          <span className="mt-0.5 shrink-0 text-subline text-carbon-textSub">{t(`anomaly.outcome.${f.outcome}`)}</span>
-        )}
-        <span className="mt-0.5 shrink-0 text-subline text-carbon-textSub max-sm:hidden">
-          <Since when={closed && f.closed ? f.closed : f.since} />
-        </span>
-        <span className="mt-1 shrink-0 text-carbon-textSub">
-          <Disclosure open={open} />
-        </span>
-      </button>
-
-      {open && (
-        <div className="glim-content-fade flex flex-col gap-2 pb-3 ps-5">
-          <p className="text-body text-carbon-textSub [overflow-wrap:anywhere]">{sentence(f, t, places)}</p>
-
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-subline">
-            {figures(f, t).map(([term, value]) => (
-              <span key={term} className="inline-flex items-baseline gap-1.5">
-                <span className="text-carbon-textSub">{term}</span>
-                <span className="glim-num font-medium text-carbon-text">{value}</span>
-              </span>
-            ))}
-          </div>
-
-          {/* The engine's own words for a failure, which name the cause. */}
-          {f.kind === 'failing' && f.detail && (
-            <p className="break-all font-mono text-subline text-carbon-textMuted">{f.detail}</p>
+      <div className="flex flex-col gap-3 py-1">
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge tone={BADGE_TONE[f.severity]}>{t(`anomaly.severity.${f.severity}`)}</Badge>
+          {f.open && f.held && (
+            <span className="inline-flex items-center gap-1 text-subline text-statusWarn">
+              {t('anomaly.held')}
+              <InfoBubble tip={t('anomaly.heldHint')} />
+            </span>
           )}
-
-          {!closed && paths.length > 0 && (
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-1.5">
-                <button
-                  type="button"
-                  onClick={() => setFiles(!files)}
-                  aria-expanded={files}
-                  className="-mx-1 flex min-h-9 items-center gap-1.5 rounded-control px-1 text-meta text-carbon-textSub hover:text-carbon-text"
-                >
-                  <Disclosure open={files} />
-                  {t('anomaly.files')}
-                </button>
-                <InfoBubble tip={t('anomaly.filesHint')} />
-              </div>
-              {files && (
-                <ul className="flex max-h-64 flex-col gap-1 overflow-y-auto">
-                  {paths.map((path) => (
-                    <li key={path} dir="ltr" className="break-all text-start font-mono text-subline text-carbon-text">
-                      {path}
-                    </li>
-                  ))}
-                  {more > 0 && <li className="text-subline text-carbon-textMuted">{t('anomaly.filesMore', { count: more })}</li>}
-                </ul>
-              )}
-            </div>
-          )}
-
-          {!closed && f.held && <HeldNote />}
-
-          {!closed && (
-            <button
-              type="button"
-              onClick={() => goTo({ tab: 'jobs', job: f.job })}
-              className="self-start text-meta text-accentInk hover:underline"
-            >
-              {t('anomaly.openJob')}
-            </button>
-          )}
+          {!f.open && f.outcome && <Badge tone="neutral">{t(`anomaly.outcome.${f.outcome}`)}</Badge>}
         </div>
-      )}
-    </div>
+        <p className="text-body text-carbon-text [overflow-wrap:anywhere]">{sentence(f, t, places)}</p>
+        {figures(f, t).length > 0 && (
+          <dl className="flex flex-wrap items-center gap-x-4 gap-y-1 text-subline">
+            {figures(f, t).map(([term, value]) => (
+              <div key={term} className="inline-flex items-baseline gap-1.5">
+                <dt className="text-carbon-textSub">{term}</dt>
+                <dd className="glim-num font-medium text-carbon-text">{value}</dd>
+              </div>
+            ))}
+          </dl>
+        )}
+        {/* The engine's own words for a failure, which name the cause. */}
+        {f.kind === 'failing' && f.detail && <p className="break-all font-mono text-subline text-carbon-textMuted">{f.detail}</p>}
+        {f.open && paths.length > 0 && (
+          <section className="glim-well flex flex-col gap-2 rounded-card p-4">
+            <h3 className="glim-eyebrow flex items-center gap-1.5">
+              {t('anomaly.files')}
+              <InfoBubble tip={t('anomaly.filesHint')} />
+            </h3>
+            <ul className="flex max-h-64 flex-col gap-1 overflow-y-auto">
+              {paths.map((path) => (
+                <li key={path} dir="ltr" className="break-all text-start font-mono text-subline text-carbon-text">
+                  {path}
+                </li>
+              ))}
+              {more > 0 && <li className="text-subline text-carbon-textMuted">{t('anomaly.filesMore', { count: more })}</li>}
+            </ul>
+          </section>
+        )}
+      </div>
+    </Dialog>
   )
 }
 
@@ -608,7 +543,7 @@ function Monitoring({ job, brakes }: { job: string; brakes: BrakeBook }) {
     brakes.setOwn(job, { ...(own ?? brakes.global), ...next }, true)
 
   return (
-    <div className="glim-content-fade flex flex-col gap-3 pb-2 pt-1">
+    <div className="flex flex-col gap-3 py-1">
       {!own && (
         <p className="text-subline text-carbon-textSub">
           {t('anomaly.follows', {
@@ -654,75 +589,5 @@ function Monitoring({ job, brakes }: { job: string; brakes: BrakeBook }) {
         </div>
       )}
     </div>
-  )
-}
-
-function QuietRow({ job, brakes, focused }: { job: string; brakes: BrakeBook; focused: boolean }) {
-  const [open, setOpen] = useState(focused)
-  return (
-    <li className="flex min-w-0 flex-col">
-      <button
-        type="button"
-        onClick={() => setOpen(!open)}
-        aria-expanded={open}
-        className="-mx-2 flex min-h-11 items-center gap-2 rounded-control px-2 py-1.5 text-start hover:bg-carbon-hover"
-      >
-        <span className="min-w-0 flex-1 text-body text-carbon-text [overflow-wrap:anywhere]">{job}</span>
-        <span className="shrink-0 text-carbon-textSub">
-          <Disclosure open={open} />
-        </span>
-      </button>
-      {open && <Monitoring job={job} brakes={brakes} />}
-    </li>
-  )
-}
-
-function ClosedRow({ closed, places }: { closed: Finding[]; places: [string, string] }) {
-  const { t, lang } = useT()
-  const [open, setOpen] = useState(false)
-  const [openIds, setOpenIds] = useState<Set<string>>(new Set())
-
-  function toggleLine(id: string) {
-    setOpenIds((prev) => {
-      const next = new Set(prev)
-      if (next.has(id)) next.delete(id)
-      else next.add(id)
-      return next
-    })
-  }
-
-  return (
-    <section className="flex flex-col rounded-card bg-carbon-surface px-5 py-1">
-      <button
-        type="button"
-        onClick={() => setOpen(!open)}
-        aria-expanded={open}
-        className="-mx-2 flex min-h-12 items-center gap-3 rounded-control px-2 text-start hover:bg-carbon-hover"
-      >
-        <span className="text-carbon-textSub">
-          <Disclosure open={open} />
-        </span>
-        <span className="min-w-0 flex-1 text-body text-carbon-text">{t('anomaly.closed')}</span>
-        <span className="glim-num shrink-0 text-body text-carbon-textSub">{new Intl.NumberFormat(lang).format(closed.length)}</span>
-      </button>
-      {open && (
-        <div className="glim-content-fade flex flex-col pb-2">
-          {closed.length === 0 ? (
-            <p className="py-2 text-body text-carbon-textSub">{t('anomaly.noneClosed')}</p>
-          ) : (
-            closed.map((f) => (
-              <FindingLine
-                key={f.id}
-                finding={f}
-                places={places}
-                closed
-                open={openIds.has(f.id)}
-                onToggle={() => toggleLine(f.id)}
-              />
-            ))
-          )}
-        </div>
-      )}
-    </section>
   )
 }

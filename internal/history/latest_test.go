@@ -49,3 +49,33 @@ func TestEveryJobKeepsItsLatestRunBesideABusyOne(t *testing.T) {
 		t.Errorf("daily = %+v, want its one run with three copies", day)
 	}
 }
+
+func TestEachJobGetsOnlyItsOwnNewestRuns(t *testing.T) {
+	db := openTemp(t)
+	ctx := context.Background()
+	start := time.Date(2026, 9, 28, 8, 0, 0, 0, time.UTC)
+
+	for i := 0; i < 20; i++ {
+		at := start.Add(time.Duration(i) * time.Minute)
+		if err := db.Record(ctx, history.Run{Job: "watcher", Started: at, Finished: at, Copied: i}, nil); err != nil {
+			t.Fatalf("record: %v", err)
+		}
+	}
+	if err := db.Record(ctx, history.Run{Job: "daily", Started: start, Finished: start, Err: "boom"}, nil); err != nil {
+		t.Fatalf("record: %v", err)
+	}
+
+	got, err := db.EachRecent(ctx, 14)
+	if err != nil {
+		t.Fatalf("each recent: %v", err)
+	}
+	if len(got["watcher"]) != 14 {
+		t.Fatalf("watcher has %d runs, want the newest 14", len(got["watcher"]))
+	}
+	if got["watcher"][0].Copied != 19 || got["watcher"][13].Copied != 6 {
+		t.Errorf("watcher's runs run from %d to %d, want 19 down to 6", got["watcher"][0].Copied, got["watcher"][13].Copied)
+	}
+	if len(got["daily"]) != 1 || got["daily"][0].Err != "boom" {
+		t.Errorf("daily = %+v, want its one failed run", got["daily"])
+	}
+}

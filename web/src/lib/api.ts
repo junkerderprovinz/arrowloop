@@ -24,6 +24,10 @@ export type Job = {
   disabled: boolean
   running: boolean
   lastSuccess: string | null
+  /** When the schedule next reaches the job, if it has one and is not paused. */
+  nextRun?: string
+  /** The last stored runs, newest first, at most fourteen. */
+  recent: Run[]
 }
 
 export type { Reason } from './i18n'

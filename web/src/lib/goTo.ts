@@ -1,7 +1,10 @@
 import { createContext, useContext } from 'react'
 
-/** A tab another screen can send somebody to, narrowed to one job. */
-export type Place = { tab: 'jobs' | 'conflicts' | 'anomalies' | 'trash'; job: string }
+/**
+ * A tab another screen can send somebody to, narrowed to one job, and on the
+ * Anomalies page to one finding, whose details then open.
+ */
+export type Place = { tab: 'jobs' | 'conflicts' | 'anomalies' | 'trash'; job: string; finding?: string }
 
 /**
  * Switches the page to a place. A context rather than a prop, because the

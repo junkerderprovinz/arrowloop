@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { resolveRoute, TILE_IDS, type RouteContext } from './routes'
+import { jobPlace, resolveRoute, TILE_IDS, type RouteContext } from './routes'
 
 const ctx = (over: Partial<RouteContext> = {}): RouteContext => ({
   pins: { targets: false, anomalies: false },
@@ -28,14 +28,19 @@ describe('the addresses', () => {
     expect(go('/', { fresh: null })).toEqual({ wait: true })
   })
 
-  it('give each job a page and its preview an address below it', () => {
+  it('give each job a page, and lead its old preview address there', () => {
     expect(go('/jobs/photos%20raw')).toEqual({ view: { page: 'job', name: 'photos raw' } })
-    expect(go('/jobs/photos/preview')).toEqual({ view: { page: 'preview', name: 'photos' } })
+    expect(go('/jobs/photos%20raw/preview')).toEqual({ redirect: '/jobs/photos%20raw' })
   })
 
   it('send an unpinned page to its settings tile and keep what the link asked for', () => {
     expect(go('/anomalies?job=photos')).toEqual({ redirect: '/settings/anomalies?job=photos' })
     expect(go('/targets')).toEqual({ redirect: '/settings/targets' })
+  })
+
+  it('carry the finding a link opens on Anomalies', () => {
+    expect(jobPlace('anomalies', 'photos raw', 'f1')).toBe('/anomalies?job=photos%20raw&finding=f1')
+    expect(jobPlace('jobs', '')).toBe('/jobs')
   })
 
   it('serve a pinned page at its own address', () => {

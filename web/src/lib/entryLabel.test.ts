@@ -23,6 +23,7 @@ function job(left: string, right: string): Job {
     disabled: false,
     running: false,
     lastSuccess: null,
+    recent: [],
   }
 }
 

@@ -2,14 +2,13 @@
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { Job, LatestRun, Run, RunEvent, TrashSide, WindowSettings } from './lib/api'
+import type { Job, Run, RunEvent, TrashSide, WindowSettings } from './lib/api'
 import { ToastProvider } from './lib/toast'
 
 let emit: (ev: RunEvent) => void = () => undefined
 
 const jobs = vi.fn(() => Promise.resolve([] as Job[]))
 const history = vi.fn(() => Promise.resolve([] as Run[]))
-const latestRuns = vi.fn((_since: string) => Promise.resolve([] as LatestRun[]))
 const desktop = vi.fn(() => false)
 const settled: WindowSettings = {
   tray: false,
@@ -28,7 +27,6 @@ vi.mock('./lib/api', async (actual) => ({
   api: {
     jobs: () => jobs(),
     history: () => history(),
-    latestRuns: (since: string) => latestRuns(since),
     volumes: () => Promise.resolve({ volumes: [] }),
     capabilities: () => Promise.resolve({ window: desktop(), version: 'test' }),
     window: () => Promise.resolve(settled),
@@ -72,8 +70,6 @@ beforeEach(() => {
   jobs.mockImplementation(() => Promise.resolve([]))
   history.mockReset()
   history.mockImplementation(() => Promise.resolve([]))
-  latestRuns.mockReset()
-  latestRuns.mockImplementation(() => Promise.resolve([]))
   session.mockReset()
   session.mockImplementation(() => Promise.resolve({ required: false, authenticated: false }))
   desktop.mockReset()
@@ -133,7 +129,7 @@ describe('the app', () => {
   })
 
   it('gives every page an address, and Back returns to the one before', async () => {
-    jobs.mockImplementation(() => Promise.resolve([{ name: 'photos', left: 'a', right: 'b', direction: 'both' } as Job]))
+    jobs.mockImplementation(() => Promise.resolve([{ name: 'photos', left: 'a', right: 'b', direction: 'both', recent: [] as Run[] } as Job]))
     show()
     await waitFor(() => expect(window.location.pathname).toBe('/jobs'))
     fireEvent.click(screen.getByRole('link', { name: 'Conflicts' }))
@@ -151,17 +147,17 @@ describe('the app', () => {
     expect(await screen.findByRole('switch', { name: 'Also show in the sidebar' })).toBeTruthy()
   })
 
-  it("marks a job failed after other jobs' runs fill the recent list", async () => {
-    const nightly = { name: 'nightly', left: 'D:/Docs', right: 'nas:docs', direction: 'both', schedule: '0 3 * * *', watch: false, disabled: false, running: false, lastSuccess: null } as Job
-    const watcher = { ...nightly, name: 'watcher', schedule: '', watch: true }
+  it("marks a job failed by its own last run after other jobs' runs fill the recent list", async () => {
+    const nightly = {
+      name: 'nightly', left: 'D:/Docs', right: 'nas:docs', direction: 'both', schedule: '0 3 * * *',
+      watch: false, disabled: false, running: false, lastSuccess: null, recent: [run(1, 'nightly', 'the right side is not there')],
+    } as Job
+    const watcher = { ...nightly, name: 'watcher', schedule: '', watch: true, recent: [run(100, 'watcher')] }
     jobs.mockImplementation(() => Promise.resolve([nightly, watcher]))
     history.mockImplementation(() => Promise.resolve(Array.from({ length: 50 }, (_, i) => run(100 - i, 'watcher'))))
-    latestRuns.mockImplementation(() =>
-      Promise.resolve([{ ...run(100, 'watcher'), Since: 50 }, { ...run(1, 'nightly', 'the right side is not there'), Since: 1 }]),
-    )
     show()
-    expect(await screen.findByRole('img', { name: 'last run failed' })).toBeTruthy()
-    expect(screen.getAllByRole('img', { name: 'ready' })).toHaveLength(1)
+    expect(await screen.findByText('Failed')).toBeTruthy()
+    expect(screen.getAllByTestId('job-row')).toHaveLength(2)
   })
 
   it('goes back to the login once the session has ended', async () => {

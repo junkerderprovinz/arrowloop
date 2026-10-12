@@ -20,7 +20,7 @@ const OUTSIDE: Record<string, string[]> = {
   // The settings tiles take the rail rows' size, since they stand beside them.
   'pages/settings/SettingsRail.tsx': ['text-[15px]'],
   // A brand mark drawn at 1em, sized through the font size.
-  'pages/Targets.tsx': ['text-[32px]'],
+  'pages/Targets.tsx': ['text-[20px]'],
 }
 
 const OFF_SCALE =

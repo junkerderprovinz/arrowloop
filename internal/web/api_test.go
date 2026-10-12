@@ -217,6 +217,36 @@ func TestJobListReportsLastSuccess(t *testing.T) {
 	}
 }
 
+func TestJobListCarriesEachJobsLastRunsNewestFirst(t *testing.T) {
+	h := newHarness(t)
+	var before []struct {
+		Recent []history.Run
+	}
+	h.get(t, "/api/jobs", &before)
+	if len(before) != 1 || before[0].Recent == nil || len(before[0].Recent) != 0 {
+		t.Fatalf("a job that never ran should carry an empty list, got %+v", before)
+	}
+
+	for i, name := range []string{"a.txt", "b.txt"} {
+		write(t, h.left, name, "hello")
+		resp := h.post(t, "/api/jobs/photos/run", ``)
+		resp.Body.Close()
+		waitForRun(t, h, i+1)
+	}
+
+	var after []struct {
+		Recent []history.Run
+	}
+	h.get(t, "/api/jobs", &after)
+	runs := after[0].Recent
+	if len(runs) != 2 {
+		t.Fatalf("expected both runs, got %d", len(runs))
+	}
+	if !runs[0].Started.After(runs[1].Started) {
+		t.Errorf("runs are not newest first: %v then %v", runs[0].Started, runs[1].Started)
+	}
+}
+
 // A typo must not look like an empty plan.
 func TestAnUnknownJobIsRefused(t *testing.T) {
 	h := newHarness(t)

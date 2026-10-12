@@ -33,6 +33,8 @@ export interface Job {
    * schedule, a held job, or an unparsable expression (internal/web/api.go).
    */
   nextRun?: string;
+  /** Its last runs, newest first. */
+  recent: Run[];
 }
 
 /** A job as the configuration file holds it. */

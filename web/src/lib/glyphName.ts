@@ -36,7 +36,7 @@ const RULES: Rule[] = [
   // Syncing is the circle the jobs tab wears, and sits above the run rule
   // because `syncNow` contains its word.
   [/^tray\.syncNow$/i, 'IconSync'],
-  [/runNow|\.run$|start|resume/i, 'IconPlay'],
+  [/runNow|runAll|\.run$|start|resume/i, 'IconPlay'],
   // Cancelling a run throws its work away, which is not the same as pausing.
   [/cancelRun|abort/i, 'IconClose'],
 
@@ -68,7 +68,9 @@ const RULES: Rule[] = [
   // writing the program's own file.
   [/^apps\.qr$/i, 'IconQr'],
   [/export|download/i, 'IconDownload'],
-  [/^history\.filter$/i, 'IconFilter'],
+  [/^history\.filter$|^list\.filter$/i, 'IconFilter'],
+  [/^list\.sort$/i, 'IconSort'],
+  [/^list\.search$/i, 'IconSearch'],
   [/import|upload/i, 'IconUpload'],
 
   // A key is namespace and verb, and the verb decides. Cancel sits above save
@@ -84,14 +86,17 @@ const RULES: Rule[] = [
 
   // Below the app's own verbs, so `preview` keeps the eye.
   [/check|verify|test|probe/i, 'IconCheck'],
-  [/activity|history|log\b/i, 'IconHistory'],
+  [/activity|history|log\b|moreRuns/i, 'IconHistory'],
+  // A job's page is reached from a finding, and its brakes are what watches it.
+  [/openJob/i, 'IconSync'],
+  [/monitoring/i, 'IconShieldOn'],
 
   // Above the settings rule, since the lock's keys live under `settings.`.
   [/unlock/i, 'IconUnlock'],
   [/lock/i, 'IconLock'],
 
   // A button that opens a menu of further actions.
-  [/\.options$/i, 'IconMore'],
+  [/\.options$|\.more$/i, 'IconMore'],
   // Picks one of the shares the computer is connected to, as a folder.
   [/pickShare/i, 'IconFolder'],
 
