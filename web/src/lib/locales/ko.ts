@@ -768,6 +768,15 @@ const ko: Translations = {
   'danger.removeAll': '모든 작업과 저장소 삭제',
   'danger.confirm': '이 휴대폰의 ArrowLoop에서 모든 작업({jobs}개)과 모든 저장소({targets}개)를 제거합니다. 폴더와 저장소에 있는 파일은 그대로 남습니다.',
   'danger.confirmButton': '모두 삭제',
+  'phone.waiting': '대기 중',
+  'phone.runAll': '모두 실행',
+  'phone.stopAll': '모든 실행 중지',
+  'phone.sort': '정렬',
+  'phone.sortNewest': '최신순',
+  'phone.sortOldest': '오래된 순',
+  'phone.sortAz': '가나다순',
+  'phone.sortZa': '가나다 역순',
+  'phone.search': '검색',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

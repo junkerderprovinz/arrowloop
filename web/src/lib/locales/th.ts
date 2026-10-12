@@ -768,6 +768,15 @@ const th: Translations = {
   'danger.removeAll': 'ลบงานและที่เก็บทั้งหมด',
   'danger.confirm': 'การทำเช่นนี้จะลบงานทั้งหมด ({jobs}) และที่เก็บทั้งหมด ({targets}) ออกจาก ArrowLoop บนเครื่องนี้ ไฟล์ในโฟลเดอร์ของคุณและในที่เก็บจะยังอยู่ที่เดิม',
   'danger.confirmButton': 'ลบทั้งหมด',
+  'phone.waiting': 'รอดำเนินการ',
+  'phone.runAll': 'เรียกใช้ทั้งหมด',
+  'phone.stopAll': 'หยุดการทำงานทั้งหมด',
+  'phone.sort': 'เรียงลำดับ',
+  'phone.sortNewest': 'ใหม่สุดก่อน',
+  'phone.sortOldest': 'เก่าสุดก่อน',
+  'phone.sortAz': 'ก ถึง ฮ',
+  'phone.sortZa': 'ฮ ถึง ก',
+  'phone.search': 'ค้นหา',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

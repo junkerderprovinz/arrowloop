@@ -768,6 +768,15 @@ const ru: Translations = {
   'danger.removeAll': 'Удалить все задания и хранилища',
   'danger.confirm': 'Из ArrowLoop на этом телефоне будут удалены все задания ({jobs}) и все хранилища ({targets}). Файлы в твоих папках и в хранилищах останутся на месте.',
   'danger.confirmButton': 'Удалить всё',
+  'phone.waiting': 'Ожидают',
+  'phone.runAll': 'Запустить все',
+  'phone.stopAll': 'Остановить все запуски',
+  'phone.sort': 'Сортировка',
+  'phone.sortNewest': 'Сначала новые',
+  'phone.sortOldest': 'Сначала старые',
+  'phone.sortAz': 'От А до Я',
+  'phone.sortZa': 'От Я до А',
+  'phone.search': 'Поиск',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

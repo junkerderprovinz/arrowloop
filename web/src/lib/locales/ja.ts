@@ -768,6 +768,15 @@ const ja: Translations = {
   'danger.removeAll': 'すべてのジョブとストレージを削除',
   'danger.confirm': 'この端末の ArrowLoop から、すべてのジョブ（{jobs} 件）とすべてのストレージ（{targets} 件）を取り除きます。フォルダーやストレージにあるファイルはそのまま残ります。',
   'danger.confirmButton': 'すべて削除',
+  'phone.waiting': '待機中',
+  'phone.runAll': 'すべて実行',
+  'phone.stopAll': 'すべての実行を停止',
+  'phone.sort': '並べ替え',
+  'phone.sortNewest': '新しい順',
+  'phone.sortOldest': '古い順',
+  'phone.sortAz': 'A から Z',
+  'phone.sortZa': 'Z から A',
+  'phone.search': '検索',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

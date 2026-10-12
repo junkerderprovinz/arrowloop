@@ -768,6 +768,15 @@ const gl: Translations = {
   'danger.removeAll': 'Eliminar todas as tarefas e os almacenamentos',
   'danger.confirm': 'Isto quita todas as tarefas ({jobs}) e todos os almacenamentos ({targets}) de ArrowLoop neste teléfono. Os ficheiros dos teus cartafoles e dos almacenamentos quedan onde están.',
   'danger.confirmButton': 'Eliminar todo',
+  'phone.waiting': 'En espera',
+  'phone.runAll': 'Executar todo',
+  'phone.stopAll': 'Deter todas as execucións',
+  'phone.sort': 'Ordenar',
+  'phone.sortNewest': 'Máis recentes primeiro',
+  'phone.sortOldest': 'Máis antigos primeiro',
+  'phone.sortAz': 'De A a Z',
+  'phone.sortZa': 'De Z a A',
+  'phone.search': 'Buscar',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

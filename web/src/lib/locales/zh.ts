@@ -768,6 +768,15 @@ const zh: Translations = {
   'danger.removeAll': '移除所有任务和存储',
   'danger.confirm': '这会把所有任务（{jobs}）和所有存储（{targets}）从这台手机上的 ArrowLoop 中移除。你文件夹和存储中的文件会保持原样。',
   'danger.confirmButton': '全部移除',
+  'phone.waiting': '等待中',
+  'phone.runAll': '全部运行',
+  'phone.stopAll': '停止所有运行',
+  'phone.sort': '排序',
+  'phone.sortNewest': '最新优先',
+  'phone.sortOldest': '最早优先',
+  'phone.sortAz': 'A 到 Z',
+  'phone.sortZa': 'Z 到 A',
+  'phone.search': '搜索',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

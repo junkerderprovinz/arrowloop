@@ -768,6 +768,15 @@ const ca: Translations = {
   'danger.removeAll': 'Elimina totes les tasques i els emmagatzematges',
   'danger.confirm': 'Això treu totes les tasques ({jobs}) i tots els emmagatzematges ({targets}) d\'ArrowLoop en aquest telèfon. Els fitxers de les teves carpetes i dels emmagatzematges es queden on són.',
   'danger.confirmButton': 'Elimina-ho tot',
+  'phone.waiting': 'En espera',
+  'phone.runAll': 'Executa-ho tot',
+  'phone.stopAll': 'Atura totes les execucions',
+  'phone.sort': 'Ordena',
+  'phone.sortNewest': 'Més recents primer',
+  'phone.sortOldest': 'Més antics primer',
+  'phone.sortAz': 'De la A a la Z',
+  'phone.sortZa': 'De la Z a la A',
+  'phone.search': 'Cerca',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

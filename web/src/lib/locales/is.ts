@@ -768,6 +768,15 @@ const is: Translations = {
   'danger.removeAll': 'Fjarlægja öll verk og allar geymslur',
   'danger.confirm': 'Þetta fjarlægir öll verk ({jobs}) og allar geymslur ({targets}) úr ArrowLoop í þessum síma. Skrárnar í möppunum þínum og geymslunum haldast þar sem þær eru.',
   'danger.confirmButton': 'Fjarlægja allt',
+  'phone.waiting': 'Bíður',
+  'phone.runAll': 'Keyra allt',
+  'phone.stopAll': 'Stöðva allar keyrslur',
+  'phone.sort': 'Raða',
+  'phone.sortNewest': 'Nýjast fyrst',
+  'phone.sortOldest': 'Elst fyrst',
+  'phone.sortAz': 'A til Ö',
+  'phone.sortZa': 'Ö til A',
+  'phone.search': 'Leita',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

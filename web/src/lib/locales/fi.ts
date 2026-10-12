@@ -768,6 +768,15 @@ const fi: Translations = {
   'danger.removeAll': 'Poista kaikki työt ja tallennuspaikat',
   'danger.confirm': 'Tämä poistaa kaikki työt ({jobs}) ja kaikki tallennuspaikat ({targets}) ArrowLoopista tässä puhelimessa. Kansioidesi ja tallennuspaikkojen tiedostot pysyvät paikoillaan.',
   'danger.confirmButton': 'Poista kaikki',
+  'phone.waiting': 'Odottaa',
+  'phone.runAll': 'Suorita kaikki',
+  'phone.stopAll': 'Pysäytä kaikki ajot',
+  'phone.sort': 'Järjestä',
+  'phone.sortNewest': 'Uusimmat ensin',
+  'phone.sortOldest': 'Vanhimmat ensin',
+  'phone.sortAz': 'A:sta Ö:hön',
+  'phone.sortZa': 'Ö:stä A:han',
+  'phone.search': 'Hae',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

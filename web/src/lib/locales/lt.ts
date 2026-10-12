@@ -768,6 +768,15 @@ const lt: Translations = {
   'danger.removeAll': 'Pašalinti visas užduotis ir saugyklas',
   'danger.confirm': 'Tai pašalins visas užduotis ({jobs}) ir visas saugyklas ({targets}) iš ArrowLoop šiame telefone. Failai tavo aplankuose ir saugyklose lieka, kur buvo.',
   'danger.confirmButton': 'Pašalinti viską',
+  'phone.waiting': 'Laukia',
+  'phone.runAll': 'Paleisti viską',
+  'phone.stopAll': 'Sustabdyti visus paleidimus',
+  'phone.sort': 'Rikiuoti',
+  'phone.sortNewest': 'Naujausi pirmi',
+  'phone.sortOldest': 'Seniausi pirmi',
+  'phone.sortAz': 'Nuo A iki Ž',
+  'phone.sortZa': 'Nuo Ž iki A',
+  'phone.search': 'Ieškoti',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

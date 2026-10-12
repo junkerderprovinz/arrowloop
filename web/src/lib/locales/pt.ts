@@ -768,6 +768,15 @@ const pt: Translations = {
   'danger.removeAll': 'Remover todas as tarefas e locais de armazenamento',
   'danger.confirm': 'Isto tira todas as tarefas ({jobs}) e todos os locais de armazenamento ({targets}) do ArrowLoop neste telemóvel. Os ficheiros nas tuas pastas e nos locais de armazenamento ficam onde estão.',
   'danger.confirmButton': 'Remover tudo',
+  'phone.waiting': 'Em espera',
+  'phone.runAll': 'Executar tudo',
+  'phone.stopAll': 'Parar todas as execuções',
+  'phone.sort': 'Ordenar',
+  'phone.sortNewest': 'Mais recentes primeiro',
+  'phone.sortOldest': 'Mais antigos primeiro',
+  'phone.sortAz': 'A a Z',
+  'phone.sortZa': 'Z a A',
+  'phone.search': 'Pesquisar',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

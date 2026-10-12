@@ -22,7 +22,14 @@ export interface CardAction {
  * opens next to it, since it belongs to one card; it is a Modal because React
  * Native has no other way to float above the list.
  */
-export function CardMenu({ items }: { items: CardAction[] }) {
+export function CardMenu({
+  items,
+  floating,
+}: {
+  items: CardAction[];
+  /** Beside a screen's floating button, where it shows its glyph alone. */
+  floating?: boolean;
+}) {
   const { t } = useT();
   const { p, corners } = useTheme();
   const screen = useWindowDimensions();
@@ -46,7 +53,19 @@ export function CardMenu({ items }: { items: CardAction[] }) {
     <>
       {/* Measured through this view, since the button does not hand out its own. */}
       <View ref={button} collapsable={false}>
-        <Button label={t("more.title")} glyph="IconMore" wide={false} onPress={open} />
+        {floating ? (
+          <Press
+            onPress={open}
+            accessibilityRole="button"
+            accessibilityLabel={t("more.title")}
+            android_ripple={{ color: p.hover }}
+            style={[styles.floating, { backgroundColor: p.surface2, ...corners.pill }]}
+          >
+            <Glyph name="IconMore" color={p.text} size={22} />
+          </Press>
+        ) : (
+          <Button label={t("more.title")} glyph="IconMore" wide={false} onPress={open} />
+        )}
       </View>
       <Modal
         visible={at !== null}
@@ -88,6 +107,9 @@ export function CardMenu({ items }: { items: CardAction[] }) {
 }
 
 const styles = StyleSheet.create({
+  // The floating button's size, so the two stand as a pair.
+  floating: { width: TOUCH + space.sm, height: TOUCH + space.sm, alignItems: "center", justifyContent: "center", elevation: 6 },
+
   // Fills the screen so a tap anywhere closes the menu.
   ground: { flex: 1 },
   sheet: {

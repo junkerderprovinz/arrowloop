@@ -768,6 +768,15 @@ const hu: Translations = {
   'danger.removeAll': 'Minden feladat és tárhely eltávolítása',
   'danger.confirm': 'Ez az összes feladatot ({jobs}) és az összes tárhelyet ({targets}) eltávolítja az ArrowLoopból ezen a telefonon. A mappáidban és a tárhelyeken lévő fájlok a helyükön maradnak.',
   'danger.confirmButton': 'Mindet eltávolítom',
+  'phone.waiting': 'Várakozik',
+  'phone.runAll': 'Összes futtatása',
+  'phone.stopAll': 'Minden futás leállítása',
+  'phone.sort': 'Rendezés',
+  'phone.sortNewest': 'Legújabb elöl',
+  'phone.sortOldest': 'Legrégebbi elöl',
+  'phone.sortAz': 'A-tól Zs-ig',
+  'phone.sortZa': 'Zs-től A-ig',
+  'phone.search': 'Keresés',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

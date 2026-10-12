@@ -768,6 +768,15 @@ const he: Translations = {
   'danger.removeAll': 'הסרת כל המשימות ומקומות האחסון',
   'danger.confirm': 'הפעולה מסירה את כל המשימות ({jobs}) ואת כל מקומות האחסון ({targets}) מ-ArrowLoop בטלפון הזה. הקבצים בתיקיות שלכם ובמקומות האחסון נשארים במקומם.',
   'danger.confirmButton': 'הסרת הכול',
+  'phone.waiting': 'ממתינים',
+  'phone.runAll': 'הרצת הכול',
+  'phone.stopAll': 'עצירת כל ההרצות',
+  'phone.sort': 'מיון',
+  'phone.sortNewest': 'החדש ביותר קודם',
+  'phone.sortOldest': 'הישן ביותר קודם',
+  'phone.sortAz': 'א עד ת',
+  'phone.sortZa': 'ת עד א',
+  'phone.search': 'חיפוש',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

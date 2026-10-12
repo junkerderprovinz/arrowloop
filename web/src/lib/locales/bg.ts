@@ -768,6 +768,15 @@ const bg: Translations = {
   'danger.removeAll': 'Премахни всички задачи и хранилища',
   'danger.confirm': 'Това премахва всяка задача ({jobs}) и всяко хранилище ({targets}) от ArrowLoop на този телефон. Файловете в папките ти и в хранилищата остават където са.',
   'danger.confirmButton': 'Премахни всичко',
+  'phone.waiting': 'Чакат',
+  'phone.runAll': 'Изпълни всички',
+  'phone.stopAll': 'Спри всички изпълнения',
+  'phone.sort': 'Подреди',
+  'phone.sortNewest': 'Първо най-новите',
+  'phone.sortOldest': 'Първо най-старите',
+  'phone.sortAz': 'От А до Я',
+  'phone.sortZa': 'От Я до А',
+  'phone.search': 'Търсене',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

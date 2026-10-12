@@ -768,6 +768,15 @@ const vi: Translations = {
   'danger.removeAll': 'Xoá mọi công việc và nơi lưu trữ',
   'danger.confirm': 'Thao tác này gỡ mọi công việc ({jobs}) và mọi nơi lưu trữ ({targets}) khỏi ArrowLoop trên máy này. Các tệp trong thư mục của bạn và trong nơi lưu trữ vẫn nằm nguyên chỗ cũ.',
   'danger.confirmButton': 'Xoá tất cả',
+  'phone.waiting': 'Đang chờ',
+  'phone.runAll': 'Chạy tất cả',
+  'phone.stopAll': 'Dừng tất cả lần chạy',
+  'phone.sort': 'Sắp xếp',
+  'phone.sortNewest': 'Mới nhất trước',
+  'phone.sortOldest': 'Cũ nhất trước',
+  'phone.sortAz': 'A đến Z',
+  'phone.sortZa': 'Z đến A',
+  'phone.search': 'Tìm kiếm',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

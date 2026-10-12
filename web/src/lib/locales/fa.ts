@@ -768,6 +768,15 @@ const fa: Translations = {
   'danger.removeAll': 'حذف همهٔ کارها و محل‌های ذخیره‌سازی',
   'danger.confirm': 'این کار همهٔ کارها ({jobs}) و همهٔ محل‌های ذخیره‌سازی ({targets}) را از ArrowLoop روی این گوشی برمی‌دارد. فایل‌های پوشه‌هایت و محل‌های ذخیره‌سازی همان‌جا که هستند می‌مانند.',
   'danger.confirmButton': 'حذف همه',
+  'phone.waiting': 'در انتظار',
+  'phone.runAll': 'همه را اجرا کن',
+  'phone.stopAll': 'توقف همه اجراها',
+  'phone.sort': 'مرتب‌سازی',
+  'phone.sortNewest': 'جدیدترین اول',
+  'phone.sortOldest': 'قدیمی‌ترین اول',
+  'phone.sortAz': 'الف تا ی',
+  'phone.sortZa': 'ی تا الف',
+  'phone.search': 'جستجو',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

@@ -768,6 +768,15 @@ const hi: Translations = {
   'danger.removeAll': 'सभी काम और स्टोरेज हटाएँ',
   'danger.confirm': 'इससे इस फ़ोन पर ArrowLoop से सभी काम ({jobs}) और सभी स्टोरेज ({targets}) हट जाएँगे। आपके फ़ोल्डरों और स्टोरेज की फ़ाइलें जहाँ हैं वहीं रहेंगी।',
   'danger.confirmButton': 'सब हटाएँ',
+  'phone.waiting': 'प्रतीक्षा में',
+  'phone.runAll': 'सब चलाएँ',
+  'phone.stopAll': 'सभी चक्र रोकें',
+  'phone.sort': 'क्रमबद्ध करें',
+  'phone.sortNewest': 'सबसे नया पहले',
+  'phone.sortOldest': 'सबसे पुराना पहले',
+  'phone.sortAz': 'अ से ज्ञ',
+  'phone.sortZa': 'ज्ञ से अ',
+  'phone.search': 'खोजें',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

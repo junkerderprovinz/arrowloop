@@ -768,6 +768,15 @@ const fr: Translations = {
   'danger.removeAll': 'Supprimer toutes les tâches et tous les stockages',
   'danger.confirm': 'Cette action retire toutes les tâches ({jobs}) et tous les stockages ({targets}) d\'ArrowLoop sur ce téléphone. Les fichiers de tes dossiers et des stockages restent où ils sont.',
   'danger.confirmButton': 'Tout supprimer',
+  'phone.waiting': 'En attente',
+  'phone.runAll': 'Tout exécuter',
+  'phone.stopAll': 'Arrêter toutes les exécutions',
+  'phone.sort': 'Trier',
+  'phone.sortNewest': 'Plus récents d\'abord',
+  'phone.sortOldest': 'Plus anciens d\'abord',
+  'phone.sortAz': 'De A à Z',
+  'phone.sortZa': 'De Z à A',
+  'phone.search': 'Rechercher',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

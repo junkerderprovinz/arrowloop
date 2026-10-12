@@ -768,6 +768,15 @@ const el: Translations = {
   'danger.removeAll': 'Αφαίρεση όλων των εργασιών και αποθηκεύσεων',
   'danger.confirm': 'Αυτό αφαιρεί κάθε εργασία ({jobs}) και κάθε αποθήκευση ({targets}) από το ArrowLoop σε αυτό το τηλέφωνο. Τα αρχεία στους φακέλους σου και στις αποθηκεύσεις μένουν εκεί που είναι.',
   'danger.confirmButton': 'Αφαίρεση όλων',
+  'phone.waiting': 'Σε αναμονή',
+  'phone.runAll': 'Εκτέλεση όλων',
+  'phone.stopAll': 'Διακοπή όλων των εκτελέσεων',
+  'phone.sort': 'Ταξινόμηση',
+  'phone.sortNewest': 'Πρώτα τα νεότερα',
+  'phone.sortOldest': 'Πρώτα τα παλαιότερα',
+  'phone.sortAz': 'Α έως Ω',
+  'phone.sortZa': 'Ω έως Α',
+  'phone.search': 'Αναζήτηση',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

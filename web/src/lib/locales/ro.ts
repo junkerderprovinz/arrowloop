@@ -768,6 +768,15 @@ const ro: Translations = {
   'danger.removeAll': 'Elimină toate sarcinile și locurile de stocare',
   'danger.confirm': 'Aceasta scoate toate sarcinile ({jobs}) și toate locurile de stocare ({targets}) din ArrowLoop de pe acest telefon. Fișierele din folderele tale și din locurile de stocare rămân unde sunt.',
   'danger.confirmButton': 'Elimină tot',
+  'phone.waiting': 'În așteptare',
+  'phone.runAll': 'Rulează toate',
+  'phone.stopAll': 'Oprește toate rulările',
+  'phone.sort': 'Sortează',
+  'phone.sortNewest': 'Cele mai noi primele',
+  'phone.sortOldest': 'Cele mai vechi primele',
+  'phone.sortAz': 'A la Z',
+  'phone.sortZa': 'Z la A',
+  'phone.search': 'Caută',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

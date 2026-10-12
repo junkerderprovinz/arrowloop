@@ -768,6 +768,15 @@ const sk: Translations = {
   'danger.removeAll': 'Odstrániť všetky úlohy a úložiská',
   'danger.confirm': 'Týmto sa z ArrowLoop na tomto telefóne odstránia všetky úlohy ({jobs}) a všetky úložiská ({targets}). Súbory v tvojich priečinkoch a v úložiskách zostanú tam, kde sú.',
   'danger.confirmButton': 'Odstrániť všetko',
+  'phone.waiting': 'Čaká',
+  'phone.runAll': 'Spustiť všetko',
+  'phone.stopAll': 'Zastaviť všetky behy',
+  'phone.sort': 'Zoradiť',
+  'phone.sortNewest': 'Najnovšie ako prvé',
+  'phone.sortOldest': 'Najstaršie ako prvé',
+  'phone.sortAz': 'A až Z',
+  'phone.sortZa': 'Z až A',
+  'phone.search': 'Hľadať',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

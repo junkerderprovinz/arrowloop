@@ -768,6 +768,15 @@ const lv: Translations = {
   'danger.removeAll': 'Noņemt visus uzdevumus un krātuves',
   'danger.confirm': 'Tas noņem visus uzdevumus ({jobs}) un visas krātuves ({targets}) no ArrowLoop šajā tālrunī. Faili tavās mapēs un krātuvēs paliek, kur bija.',
   'danger.confirmButton': 'Noņemt visu',
+  'phone.waiting': 'Gaida',
+  'phone.runAll': 'Palaist visu',
+  'phone.stopAll': 'Apturēt visas palaišanas',
+  'phone.sort': 'Kārtot',
+  'phone.sortNewest': 'Jaunākie pirmie',
+  'phone.sortOldest': 'Vecākie pirmie',
+  'phone.sortAz': 'No A līdz Ž',
+  'phone.sortZa': 'No Ž līdz A',
+  'phone.search': 'Meklēt',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

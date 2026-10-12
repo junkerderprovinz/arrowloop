@@ -768,6 +768,15 @@ const uk: Translations = {
   'danger.removeAll': 'Видалити всі завдання та сховища',
   'danger.confirm': 'З ArrowLoop на цьому телефоні буде видалено всі завдання ({jobs}) і всі сховища ({targets}). Файли у твоїх теках і в сховищах залишаться на місці.',
   'danger.confirmButton': 'Видалити все',
+  'phone.waiting': 'Очікують',
+  'phone.runAll': 'Запустити все',
+  'phone.stopAll': 'Зупинити всі запуски',
+  'phone.sort': 'Сортування',
+  'phone.sortNewest': 'Спочатку нові',
+  'phone.sortOldest': 'Спочатку старі',
+  'phone.sortAz': 'Від А до Я',
+  'phone.sortZa': 'Від Я до А',
+  'phone.search': 'Пошук',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

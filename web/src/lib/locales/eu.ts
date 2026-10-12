@@ -768,6 +768,15 @@ const eu: Translations = {
   'danger.removeAll': 'Kendu lan eta biltegi guztiak',
   'danger.confirm': 'Honek lan guztiak ({jobs}) eta biltegi guztiak ({targets}) kentzen ditu telefono honetako ArrowLoop-etik. Zure karpetetako eta biltegietako fitxategiak dauden lekuan geratzen dira.',
   'danger.confirmButton': 'Kendu guztia',
+  'phone.waiting': 'Zain daude',
+  'phone.runAll': 'Exekutatu guztiak',
+  'phone.stopAll': 'Gelditu exekuzio guztiak',
+  'phone.sort': 'Ordenatu',
+  'phone.sortNewest': 'Berrienak lehenengo',
+  'phone.sortOldest': 'Zaharrenak lehenengo',
+  'phone.sortAz': 'A-tik Z-ra',
+  'phone.sortZa': 'Z-tik A-ra',
+  'phone.search': 'Bilatu',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

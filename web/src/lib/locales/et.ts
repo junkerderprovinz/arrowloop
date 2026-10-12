@@ -768,6 +768,15 @@ const et: Translations = {
   'danger.removeAll': 'Eemalda kõik tööd ja salvestuskohad',
   'danger.confirm': 'See eemaldab sellest telefonist ArrowLoopis kõik tööd ({jobs}) ja kõik salvestuskohad ({targets}). Failid sinu kaustades ja salvestuskohtades jäävad sinna, kus nad on.',
   'danger.confirmButton': 'Eemalda kõik',
+  'phone.waiting': 'Ootel',
+  'phone.runAll': 'Käivita kõik',
+  'phone.stopAll': 'Peata kõik käivitused',
+  'phone.sort': 'Sorteeri',
+  'phone.sortNewest': 'Uuemad enne',
+  'phone.sortOldest': 'Vanemad enne',
+  'phone.sortAz': 'A kuni Z',
+  'phone.sortZa': 'Z kuni A',
+  'phone.search': 'Otsi',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

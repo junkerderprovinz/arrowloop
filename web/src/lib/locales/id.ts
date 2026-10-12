@@ -768,6 +768,15 @@ const id: Translations = {
   'danger.removeAll': 'Hapus semua tugas dan penyimpanan',
   'danger.confirm': 'Ini menghapus semua tugas ({jobs}) dan semua penyimpanan ({targets}) dari ArrowLoop di ponsel ini. Berkas di folder dan penyimpananmu tetap di tempatnya.',
   'danger.confirmButton': 'Hapus semua',
+  'phone.waiting': 'Menunggu',
+  'phone.runAll': 'Jalankan semua',
+  'phone.stopAll': 'Hentikan semua jalan',
+  'phone.sort': 'Urutkan',
+  'phone.sortNewest': 'Terbaru dulu',
+  'phone.sortOldest': 'Terlama dulu',
+  'phone.sortAz': 'A ke Z',
+  'phone.sortZa': 'Z ke A',
+  'phone.search': 'Cari',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

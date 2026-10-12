@@ -768,6 +768,15 @@ const hr: Translations = {
   'danger.removeAll': 'Ukloni sve zadatke i pohrane',
   'danger.confirm': 'Ovim se iz ArrowLoopa na ovom telefonu uklanjaju svi zadaci ({jobs}) i sve pohrane ({targets}). Datoteke u tvojim mapama i pohranama ostaju gdje jesu.',
   'danger.confirmButton': 'Ukloni sve',
+  'phone.waiting': 'Čeka',
+  'phone.runAll': 'Pokreni sve',
+  'phone.stopAll': 'Zaustavi sva pokretanja',
+  'phone.sort': 'Poredaj',
+  'phone.sortNewest': 'Najnovije prvo',
+  'phone.sortOldest': 'Najstarije prvo',
+  'phone.sortAz': 'A do Ž',
+  'phone.sortZa': 'Ž do A',
+  'phone.search': 'Traži',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

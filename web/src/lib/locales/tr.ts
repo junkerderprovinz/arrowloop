@@ -768,6 +768,15 @@ const tr: Translations = {
   'danger.removeAll': 'Tüm işleri ve depolamaları kaldır',
   'danger.confirm': 'Bu, bu telefondaki ArrowLoop\'tan tüm işleri ({jobs}) ve tüm depolamaları ({targets}) kaldırır. Klasörlerindeki ve depolamalardaki dosyalar olduğu yerde kalır.',
   'danger.confirmButton': 'Hepsini kaldır',
+  'phone.waiting': 'Bekleyenler',
+  'phone.runAll': 'Hepsini çalıştır',
+  'phone.stopAll': 'Tüm çalışmaları durdur',
+  'phone.sort': 'Sırala',
+  'phone.sortNewest': 'Önce en yeni',
+  'phone.sortOldest': 'Önce en eski',
+  'phone.sortAz': 'A\'dan Z\'ye',
+  'phone.sortZa': 'Z\'den A\'ya',
+  'phone.search': 'Ara',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

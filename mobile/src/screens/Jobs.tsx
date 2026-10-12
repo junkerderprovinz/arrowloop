@@ -15,7 +15,7 @@ import { animateNext, useMotion } from "../motion";
 import type { Nav, JobsStack } from "../nav";
 import { RunProgress, useRunProgress, type Progress } from "../progress";
 import { sidePair } from "../sides";
-import { space, text } from "../theme";
+import { space, text, TOUCH } from "../theme";
 import { useEngineEvents } from "../useEngine";
 import { useWaiting } from "../waiting";
 import { WayGlyph, wayLabel, wayOf } from "../way";
@@ -165,6 +165,23 @@ export function Jobs() {
 
   const findings = waiting.findings ?? [];
 
+  // Held jobs and drafts without both sides stay out. The requests go out
+  // together, since the engine limits how many run at once itself.
+  const running = jobs.filter((j) => j.running);
+  const ready = jobs.filter((j) => !j.disabled && !j.running && j.left && j.right);
+  const all = async (work: Promise<unknown>[]) => {
+    await Promise.allSettled(work);
+    await load();
+  };
+  const more = [
+    ...(ready.length > 0
+      ? [{ label: t("phone.runAll"), glyph: "IconPlay", onPress: () => void all(ready.map((j) => api.run(j.name))) }]
+      : []),
+    ...(running.length > 0
+      ? [{ label: t("phone.stopAll"), glyph: "IconClose", onPress: () => void all(running.map((j) => api.stop(j.name))) }]
+      : []),
+  ];
+
   return (
     <Floating>
       <MovingList
@@ -209,6 +226,12 @@ export function Jobs() {
         />
       )}
       />
+      {/* The screen's rarer actions, quiet beside the one accent. */}
+      {more.length > 0 ? (
+        <View style={styles.moreSlot}>
+          <CardMenu items={more} floating />
+        </View>
+      ) : null}
       <Fab label={t("edit.add")} labelKey="edit.add" onPress={() => nav.navigate("JobEdit", {})} />
     </Floating>
   );
@@ -259,7 +282,7 @@ function Head() {
       </View>
 
       {items.length > 0 || access === false ? (
-        <Section title={t("phone.needsYou")} hue={0}>
+        <Section title={t("phone.waiting")} hue={0}>
           {access === false ? (
             <Row
               label={t("phone.access")}
@@ -487,4 +510,6 @@ const styles = StyleSheet.create({
   quiet: { flexDirection: "row", alignItems: "center", gap: space.sm },
   dot: { width: 8, height: 8, borderRadius: 4 },
   actions: { flexDirection: "row", gap: space.sm, marginTop: space.xs },
+  // Left of the floating button, at its height.
+  moreSlot: { position: "absolute", right: space.lg + TOUCH + space.sm * 2, bottom: space.lg },
 });

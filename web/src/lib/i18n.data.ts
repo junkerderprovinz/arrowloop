@@ -812,6 +812,15 @@ export const en = {
   'danger.removeAll': 'Remove all jobs and storage locations',
   'danger.confirm': 'This takes every job ({jobs}) and every storage location ({targets}) out of ArrowLoop on this phone. The files in your folders and in the storage locations stay where they are.',
   'danger.confirmButton': 'Remove all',
+  'phone.waiting': 'Waiting',
+  'phone.runAll': 'Run all',
+  'phone.stopAll': 'Stop all runs',
+  'phone.sort': 'Sort',
+  'phone.sortNewest': 'Newest first',
+  'phone.sortOldest': 'Oldest first',
+  'phone.sortAz': 'A to Z',
+  'phone.sortZa': 'Z to A',
+  'phone.search': 'Search',
 
   // A one-way job's mode. Two of the three delete, so each hint says exactly
   // what it removes and what it leaves.
@@ -1735,6 +1744,15 @@ export const de: Translations = {
   'danger.removeAll': 'Alle Aufträge und Speicherorte entfernen',
   'danger.confirm': 'Das nimmt jeden Auftrag ({jobs}) und jeden Speicherort ({targets}) aus ArrowLoop auf diesem Telefon. Die Dateien in deinen Ordnern und in den Speicherorten bleiben, wo sie sind.',
   'danger.confirmButton': 'Alle entfernen',
+  'phone.waiting': 'Wartet',
+  'phone.runAll': 'Alle starten',
+  'phone.stopAll': 'Alle Läufe stoppen',
+  'phone.sort': 'Sortieren',
+  'phone.sortNewest': 'Neueste zuerst',
+  'phone.sortOldest': 'Älteste zuerst',
+  'phone.sortAz': 'A bis Z',
+  'phone.sortZa': 'Z bis A',
+  'phone.search': 'Suchen',
 
   // A one-way job's mode. Two of the three delete, so each hint says exactly
   // what it removes and what it leaves.
