@@ -21,6 +21,7 @@ import { GLIMSTONE_VERSION } from "../glimstone/version";
 import { glimstoneRelease, MAIL, PAYPAL, REPO } from "../../../web/src/lib/donate";
 import { MANUAL, PRIVACY } from "../../../web/src/lib/handbook";
 import { nearestPreset } from "../../../web/src/lib/colorMath";
+import { stopEvery } from "../../../web/src/lib/stopEvery";
 import { flagEmoji } from "../../../web/src/lib/flagEmoji";
 import { useClosingLoop, useDiscoUnlock, useLeafUnlock, useStormUnlock } from "../eggs";
 import { animateNext, useMotion, useSystemReduced, type MotionIntensity } from "../motion";
@@ -229,12 +230,13 @@ export function Settings() {
 
   /**
    * Asks before taking every job and every storage location out of the app,
-   * naming how many of each. The files themselves stay where they are. Running
-   * jobs are stopped first, so nothing writes after its job is gone.
+   * naming how many of each. The files themselves stay where they are. What
+   * runs once the answer is given is stopped, and the jobs go only after those
+   * runs have ended, so nothing writes after its job is gone.
    */
   const removeAll = async () => {
     try {
-      const [config, storage, jobs] = await Promise.all([api.config(), api.storage(), api.jobs()]);
+      const [config, storage] = await Promise.all([api.config(), api.storage()]);
       const targets = storage.remotes.filter(isAccount);
       Alert.alert(
         t("danger.removeAll"),
@@ -247,8 +249,8 @@ export function Settings() {
             onPress: async () => {
               setRemoving(true);
               try {
-                await Promise.allSettled(jobs.filter((j) => j.running).map((j) => api.stop(j.name)));
-                await api.writeConfig({ ...config, jobs: [] });
+                if (!(await stopEvery(api, { within: 30_000, every: 500 }))) throw new Error("a run did not stop");
+                await api.writeConfig({ ...(await api.config()), jobs: [] });
                 for (const target of targets) await api.deleteRemote(target.name);
               } catch {
                 setRemoveFailed((n) => n + 1);
