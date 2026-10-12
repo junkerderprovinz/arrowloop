@@ -2,8 +2,9 @@ import { useRef, useState } from "react";
 import { Modal, Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 
 import { Glyph } from "./glyphs";
+import { useT } from "./i18n";
 import { space, text, TOUCH } from "./theme";
-import { Press, useTheme } from "./ui";
+import { Button, Press, useTheme } from "./ui";
 
 /**
  * One row of the menu. There is no danger style: every delete asks first, and
@@ -16,11 +17,13 @@ export interface CardAction {
 }
 
 /**
- * The menu button on a card's top right. The menu opens next to the button,
- * since it belongs to one card; it is a Modal because React Native has no
- * other way to float above the list.
+ * The More button on a card's top right, for the card's rarer actions. It is
+ * an ordinary button that says "More" and follows the label setting. The menu
+ * opens next to it, since it belongs to one card; it is a Modal because React
+ * Native has no other way to float above the list.
  */
 export function CardMenu({ items }: { items: CardAction[] }) {
+  const { t } = useT();
   const { p, corners } = useTheme();
   const screen = useWindowDimensions();
   const button = useRef<View>(null);
@@ -41,17 +44,10 @@ export function CardMenu({ items }: { items: CardAction[] }) {
 
   return (
     <>
-      <Pressable
-        ref={button}
-        onPress={open}
-        accessibilityRole="button"
-        // The card underneath is pressable too.
-        hitSlop={6}
-        android_ripple={{ color: p.hover }}
-        style={[styles.button, { backgroundColor: p.surface2, ...corners.pill }]}
-      >
-        <Glyph name="IconMore" color={p.text} size={18} />
-      </Pressable>
+      {/* Measured through this view, since the button does not hand out its own. */}
+      <View ref={button} collapsable={false}>
+        <Button label={t("more.title")} glyph="IconMore" wide={false} onPress={open} />
+      </View>
       <Modal
         visible={at !== null}
         transparent
@@ -92,13 +88,6 @@ export function CardMenu({ items }: { items: CardAction[] }) {
 }
 
 const styles = StyleSheet.create({
-  button: {
-    width: TOUCH,
-    height: TOUCH,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
   // Fills the screen so a tap anywhere closes the menu.
   ground: { flex: 1 },
   sheet: {
