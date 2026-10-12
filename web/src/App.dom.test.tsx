@@ -2,7 +2,7 @@
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { Job, LatestRun, Run, RunEvent, WindowSettings } from './lib/api'
+import type { Job, LatestRun, Run, RunEvent, TrashSide, WindowSettings } from './lib/api'
 import { ToastProvider } from './lib/toast'
 
 let emit: (ev: RunEvent) => void = () => undefined
@@ -21,6 +21,7 @@ const settled: WindowSettings = {
 }
 const session = vi.fn(() => Promise.resolve({ required: false, authenticated: false }))
 const saveWindow = vi.fn((_next: WindowSettings) => Promise.resolve(settled))
+const trashAll = vi.fn(() => Promise.resolve({ sides: [] as TrashSide[] }))
 
 vi.mock('./lib/api', async (actual) => ({
   ...(await actual<typeof import('./lib/api')>()),
@@ -36,7 +37,8 @@ vi.mock('./lib/api', async (actual) => ({
     passkeys: () => Promise.resolve({ supported: false, rpId: '', total: 0, here: 0 }),
     conflicts: () => Promise.resolve({ conflicts: [], unread: [] }),
     anomalies: () => Promise.resolve({ open: [], closed: [] }),
-    trashAll: () => Promise.resolve({ sides: [] }),
+    trashAll: () => trashAll(),
+    volumeCandidates: () => Promise.resolve({ candidates: [] }),
     config: () => Promise.resolve({ jobs: [] }),
     settings: () => Promise.resolve({}),
     remotes: () => Promise.resolve({ remotes: [], backends: [], providers: [], unlisted: [] }),
@@ -76,6 +78,8 @@ beforeEach(() => {
   session.mockImplementation(() => Promise.resolve({ required: false, authenticated: false }))
   desktop.mockReset()
   desktop.mockImplementation(() => false)
+  trashAll.mockReset()
+  trashAll.mockImplementation(() => Promise.resolve({ sides: [] }))
 })
 afterEach(() => {
   cleanup()
@@ -120,7 +124,16 @@ describe('the app', () => {
     expect(screen.getByRole('switch', { name: 'Icon in the notification area' }).getAttribute('aria-checked')).toBe('false')
   })
 
+  it('opens a new install on the welcome page and counts nothing in the rail', async () => {
+    trashAll.mockImplementation(() => Promise.resolve({ sides: [{ job: 'old', side: 'left', total: 2, bytes: 10 } as TrashSide] }))
+    show()
+    await waitFor(() => expect(window.location.pathname).toBe('/welcome'))
+    expect(await screen.findByRole('heading', { name: 'Welcome to ArrowLoop' })).toBeTruthy()
+    expect(document.querySelector('.glim-nav-count')).toBeNull()
+  })
+
   it('gives every page an address, and Back returns to the one before', async () => {
+    jobs.mockImplementation(() => Promise.resolve([{ name: 'photos', left: 'a', right: 'b', direction: 'both' } as Job]))
     show()
     await waitFor(() => expect(window.location.pathname).toBe('/jobs'))
     fireEvent.click(screen.getByRole('link', { name: 'Conflicts' }))

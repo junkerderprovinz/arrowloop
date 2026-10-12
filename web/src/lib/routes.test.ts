@@ -19,6 +19,15 @@ describe('the addresses', () => {
     expect(go('/')).toEqual({ redirect: '/jobs' })
   })
 
+  it('open on the welcome page while there is no job yet', () => {
+    expect(go('/', { fresh: true })).toEqual({ redirect: '/welcome' })
+    expect(go('/welcome', { fresh: true })).toEqual({ view: { page: 'welcome' } })
+  })
+
+  it('hold the start back until the jobs are read', () => {
+    expect(go('/', { fresh: null })).toEqual({ wait: true })
+  })
+
   it('give each job a page and its preview an address below it', () => {
     expect(go('/jobs/photos%20raw')).toEqual({ view: { page: 'job', name: 'photos raw' } })
     expect(go('/jobs/photos/preview')).toEqual({ view: { page: 'preview', name: 'photos' } })
