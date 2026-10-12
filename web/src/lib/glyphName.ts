@@ -25,7 +25,7 @@ const RULES: Rule[] = [
   [/preview|dryRun/i, 'IconPreview'],
   // Syncing is the circle the jobs tab wears, and sits above the run rule
   // because `syncNow` contains its word.
-  [/^(overview|tray)\.syncNow$/i, 'IconSync'],
+  [/^tray\.syncNow$/i, 'IconSync'],
   [/runNow|\.run$|start|resume/i, 'IconPlay'],
   // Cancelling a run throws its work away, which is not the same as pausing.
   [/cancelRun|abort/i, 'IconClose'],
