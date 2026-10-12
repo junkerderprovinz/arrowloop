@@ -5,8 +5,7 @@ import { hueVars } from '../lib/appearance'
 import { hidesLabel, type LabelMode } from '../lib/controls'
 import { useT } from '../lib/i18n'
 import { shudder } from '../lib/logoFlight'
-import { onDestination, sidebarDestinations, type NavCounts, type NavDestination } from '../lib/navModel'
-import type { NavPins } from '../lib/navPins'
+import { onDestination, sidebarDestinations, type NavCounts, type NavDestination, type NavExtras } from '../lib/navModel'
 import { Link, navigate } from '../lib/router'
 import { HOLD, NO_STREAK, press } from '../lib/tapStreak'
 import { IconSignOut } from './glyphs'
@@ -109,13 +108,13 @@ function SignOut({ hue, mode }: { hue: number; mode: LabelMode }) {
 }
 
 export function Sidebar({
-  pins,
+  extras,
   counts,
   pathname,
   mode,
   signOut,
 }: {
-  pins: NavPins
+  extras: NavExtras
   counts: NavCounts
   pathname: string
   mode: LabelMode
@@ -125,7 +124,7 @@ export function Sidebar({
   // Re-rendered on palette changes, so an edited swatch shows here at once.
   useRainbow()
   const narrow = mode === 'glyph'
-  const all = sidebarDestinations(pins)
+  const all = sidebarDestinations(extras)
   const list = all.filter((d) => !d.footer)
   const foot = all.filter((d) => d.footer)
 

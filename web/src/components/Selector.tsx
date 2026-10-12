@@ -58,6 +58,7 @@ export function Selector<T extends string>({
   label,
   labelledBy,
   disabled = false,
+  low = false,
 }: {
   options: Option<T>[]
   value: T
@@ -85,6 +86,12 @@ export function Selector<T extends string>({
    * shows that value, so the card keeps one shape.
    */
   disabled?: boolean
+  /**
+   * As tall as a field, for a selector in a settings row beside fields and
+   * switches. The groove's padding comes off the segments, so the whole
+   * control is `--btn-h` high.
+   */
+  low?: boolean
 }) {
   const track = useRef<HTMLDivElement>(null)
 
@@ -207,7 +214,11 @@ export function Selector<T extends string>({
               'glim-hue glim-hue-icon glim-tab inline-flex items-center justify-center gap-1.5 px-3',
               // A height token rather than padding, so every strip is exactly
               // the same height.
-              'h-[var(--badge-md)] text-meta font-medium',
+              low
+                ? variant === 'well'
+                  ? 'h-[calc(var(--btn-h)-0.4rem)] text-meta font-medium'
+                  : 'h-[var(--btn-h)] text-meta font-medium'
+                : 'h-[var(--badge-md)] text-meta font-medium',
               '[transition:background-color_120ms_ease]',
               active
                 ? 'glim-active bg-accent text-accentContrast'

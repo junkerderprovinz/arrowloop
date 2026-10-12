@@ -296,20 +296,10 @@ export function Anomalies({
       )}
 
       {asking && (
-        <ConfirmDialog
-          title={t(asking.answer === 'run' ? 'anomaly.runAsk' : 'anomaly.restoreAsk', { job: asking.finding.job })}
-          message={
-            asking.answer === 'run'
-              ? sentence(asking.finding, t, places) + ' ' + t('anomaly.runHint')
-              : asking.finding.kind === 'empty'
-                ? t('anomaly.restoreEmpty', { place: places[asking.finding.side === 'right' ? 1 : 0] }) +
-                  ' ' +
-                  t('anomaly.restoreHint')
-                : t('anomaly.restoreHint')
-          }
-          confirmLabel={t(asking.answer === 'run' ? 'anomaly.run' : 'anomaly.restore')}
-          confirmLabelKey={asking.answer === 'run' ? 'anomaly.run' : 'anomaly.restore'}
-          cancelLabel={t('confirm.cancel')}
+        <AnswerDialog
+          finding={asking.finding}
+          answer={asking.answer}
+          places={places}
           onCancel={() => setAsking(null)}
           onConfirm={() => {
             answer(asking.finding, asking.answer)
@@ -319,6 +309,90 @@ export function Anomalies({
         />
       )}
     </Stack>
+  )
+}
+
+/** Asks before a held job's answer runs, with what it is about to do. */
+function AnswerDialog({
+  finding,
+  answer,
+  places,
+  onCancel,
+  onConfirm,
+}: {
+  finding: Finding
+  answer: 'run' | 'back'
+  places: [string, string]
+  onCancel: () => void
+  onConfirm: () => void
+}) {
+  const { t } = useT()
+  return (
+    <ConfirmDialog
+      title={t(answer === 'run' ? 'anomaly.runAsk' : 'anomaly.restoreAsk', { job: finding.job })}
+      message={
+        answer === 'run'
+          ? sentence(finding, t, places) + ' ' + t('anomaly.runHint')
+          : finding.kind === 'empty'
+            ? t('anomaly.restoreEmpty', { place: places[finding.side === 'right' ? 1 : 0] }) + ' ' + t('anomaly.restoreHint')
+            : t('anomaly.restoreHint')
+      }
+      confirmLabel={t(answer === 'run' ? 'anomaly.run' : 'anomaly.restore')}
+      confirmLabelKey={answer === 'run' ? 'anomaly.run' : 'anomaly.restore'}
+      cancelLabel={t('confirm.cancel')}
+      onCancel={onCancel}
+      onConfirm={onConfirm}
+    />
+  )
+}
+
+/**
+ * A held job's finding in its window, with its two answers, opened from the
+ * job's held badge. While the anomaly notes are switched off there is no
+ * Anomalies page, and this is where a held run is answered.
+ */
+export function HeldWindow({ finding, onClose }: { finding: Finding; onClose: () => void }) {
+  const { t } = useT()
+  const push = useToast()
+  const brakes = useBrakes()
+  const [asking, setAsking] = useState<'run' | 'back' | null>(null)
+  const [watching, setWatching] = useState(false)
+  const places: [string, string] = [t('side.left'), t('side.right')]
+
+  if (asking) {
+    return (
+      <AnswerDialog
+        finding={finding}
+        answer={asking}
+        places={places}
+        onCancel={() => setAsking(null)}
+        onConfirm={() => {
+          api
+            .answerAnomaly(finding.id, asking)
+            .then(() => push(t('anomaly.started', { job: finding.job })))
+            .catch((e: Error) => push(e.message, 'fail'))
+          onClose()
+        }}
+      />
+    )
+  }
+  if (watching) {
+    return (
+      <Dialog title={`${t('anomaly.monitoring')}: ${finding.job}`} onClose={() => setWatching(false)}>
+        <Monitoring job={finding.job} brakes={brakes} />
+      </Dialog>
+    )
+  }
+  return (
+    <FindingWindow
+      finding={finding}
+      places={places}
+      onClose={onClose}
+      onWatch={() => setWatching(true)}
+      onAsk={setAsking}
+      onAcknowledge={onClose}
+      onRun={onClose}
+    />
   )
 }
 

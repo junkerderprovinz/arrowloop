@@ -14,7 +14,7 @@ export interface Change {
   /**
    * The addresses the element is drawn at, as routes where `:name` stands for
    * any one segment. The first one with a link on its way is followed, so a
-   * page that may be pinned names its sidebar address before its tile.
+   * page that may be pinned names its sidebar address before its tab.
    */
   at: string[]
   /** Where "Go there" leads, for an address that names one entry. */
@@ -38,7 +38,6 @@ export interface Release {
 
 const JOBS: TranslationKey[] = ['nav.jobs']
 const LISTS = ['/history', '/conflicts', '/trash']
-const PIN: TranslationKey = 'settings.showInSidebar'
 
 /** Newest first. Only the newest release an update passes is marked. */
 export const RELEASES: Release[] = [
@@ -52,9 +51,9 @@ export const RELEASES: Release[] = [
         text: 'new.change.navigation',
         names: {
           conflicts: 'nav.conflicts',
+          anomalies: 'nav.anomalies',
           trash: 'nav.trash',
           targets: 'nav.targets',
-          anomalies: 'nav.anomalies',
           settings: 'nav.settings',
         },
       },
@@ -74,41 +73,32 @@ export const RELEASES: Release[] = [
         names: { history: 'nav.history', conflicts: 'nav.conflicts', trash: 'nav.trash' },
       },
       {
-        id: 'targets-tile',
-        at: ['/settings/targets'],
-        where: ['nav.settings', 'nav.targets'],
-        text: 'new.change.targetsTile',
-        names: { targets: 'nav.targets', pin: PIN },
-      },
-      {
-        id: 'anomalies-tile',
-        at: ['/settings/anomalies'],
-        where: ['nav.settings', 'nav.anomalies'],
-        text: 'new.change.anomaliesTile',
-        names: { anomalies: 'nav.anomalies', pin: PIN },
-      },
-      {
-        id: 'settings-tiles',
-        at: ['/settings/:tile'],
+        id: 'settings-tabs',
+        at: ['/settings/:tab'],
         go: '/settings',
         where: ['nav.settings'],
-        text: 'new.change.settingsTiles',
+        text: 'new.change.settingsTabs',
         names: {
           settings: 'nav.settings',
           engine: 'settings.engine',
+          general: 'settings.general',
           sync: 'settings.sync',
-          workload: 'settings.workload',
           safety: 'settings.safetyNet',
-          notifications: 'settings.notifications',
-          exclude: 'settings.excludeLists',
         },
       },
       {
         id: 'settings-search',
-        at: ['/settings/:tile'],
+        at: ['/settings/:tab'],
         go: '/settings',
         where: ['nav.settings'],
         text: 'new.change.settingsSearch',
+      },
+      {
+        id: 'anomalies-module',
+        at: ['/settings/safety'],
+        where: ['nav.settings', 'settings.safetyNet'],
+        text: 'new.change.anomaliesModule',
+        names: { anomalies: 'nav.anomalies', safety: 'settings.safetyNet' },
       },
       {
         id: 'info-tile',

@@ -6,8 +6,7 @@ import { hueVars } from '../lib/appearance'
 import { hidesLabel, type LabelMode } from '../lib/controls'
 import { useLabelMode } from '../lib/glimstone/useLabelMode'
 import { useT } from '../lib/i18n'
-import { barDestinations, moreDestinations, onDestination, type NavCounts, type NavDestination } from '../lib/navModel'
-import type { NavPins } from '../lib/navPins'
+import { barDestinations, moreDestinations, onDestination, type NavCounts, type NavDestination, type NavExtras } from '../lib/navModel'
 import { Link } from '../lib/router'
 import { IconClose, IconMore, IconSignOut } from './glyphs'
 import { NavCount } from './NavCount'
@@ -69,12 +68,12 @@ function FitWord({ word, hidden }: { word: string; hidden: boolean }) {
 }
 
 export function BottomBar({
-  pins,
+  extras,
   counts,
   pathname,
   signOut,
 }: {
-  pins: NavPins
+  extras: NavExtras
   counts: NavCounts
   pathname: string
   signOut: boolean
@@ -83,8 +82,8 @@ export function BottomBar({
   useRainbow()
   const mode = useLabelMode('bottombar')
   const [open, setOpen] = useState(false)
-  const slots = barDestinations(pins)
-  const more = moreDestinations(pins)
+  const slots = barDestinations(extras)
+  const more = moreDestinations(extras)
   // Filled for the pages its sheet leads to, so somebody on one of them still
   // sees where they are.
   const moreActive = more.some((d) => onDestination(pathname, d))

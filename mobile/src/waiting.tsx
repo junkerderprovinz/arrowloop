@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 import type { Finding } from "../../web/src/lib/anomalies";
 import { trashTotals } from "../../web/src/lib/trashView";
 import { api } from "./api";
+import { settings } from "./settings";
 import { useEngineStream } from "./useEngine";
 
 /**
@@ -19,6 +20,8 @@ export interface Waiting {
   findings: Finding[] | null;
   /** Files in the trash of every job's two sides. */
   trash: number | null;
+  /** Whether the anomaly notes and their screen are switched on. */
+  anomaliesOn: boolean | null;
   /** Asks again, after something on screen changed one of the counts. */
   refresh: () => void;
 }
@@ -30,6 +33,7 @@ const Ctx = createContext<Waiting>({
   unread: null,
   findings: null,
   trash: null,
+  anomaliesOn: null,
   refresh: () => {},
 });
 
@@ -40,6 +44,7 @@ export function WaitingProvider({ children }: { children: ReactNode }) {
   const [unread, setUnread] = useState<number | null>(null);
   const [findings, setFindings] = useState<Finding[] | null>(null);
   const [trash, setTrash] = useState<number | null>(null);
+  const [anomaliesOn, setAnomaliesOn] = useState<boolean | null>(null);
 
   // Each count lands on its own, so a slow trash listing holds up nothing.
   const refresh = useCallback(() => {
@@ -54,6 +59,10 @@ export function WaitingProvider({ children }: { children: ReactNode }) {
     );
     api.anomalies().then((got) => setFindings(got.open), () => {});
     api.trashAll().then((got) => setTrash(trashTotals(got.sides.filter((s) => !s.error)).entries), () => {});
+    settings.read().then(
+      (got) => setAnomaliesOn((got.anomalies as { off?: boolean } | undefined)?.off !== true),
+      () => {},
+    );
   }, []);
 
   useEffect(refresh, [refresh]);
@@ -63,8 +72,8 @@ export function WaitingProvider({ children }: { children: ReactNode }) {
   });
 
   const value = useMemo(
-    () => ({ running, conflicts, conflicted, unread, findings, trash, refresh }),
-    [running, conflicts, conflicted, unread, findings, trash, refresh],
+    () => ({ running, conflicts, conflicted, unread, findings, trash, anomaliesOn, refresh }),
+    [running, conflicts, conflicted, unread, findings, trash, anomaliesOn, refresh],
   );
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

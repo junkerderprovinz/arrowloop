@@ -16,7 +16,7 @@ import { Trash } from './pages/Trash'
 import { Welcome } from './pages/Welcome'
 import { Settings } from './pages/settings/Settings'
 import { DEFAULT_ACCENT, PRESET_HEXES, type LookProps } from './pages/settings/LookPage'
-import { rememberedTile, settingsTiles } from './pages/settings/tiles'
+import { rememberedTab, settingsTabs } from './pages/settings/tabs'
 import { WhatsNewCard } from './pages/settings/WhatsNewCard'
 import {
   api,
@@ -45,6 +45,7 @@ import { useT } from './lib/i18n'
 import { getMotion, setMotion, type MotionIntensity } from './lib/motion'
 import type { NavCounts } from './lib/navModel'
 import { useNavPins } from './lib/navPins'
+import { followSettings, useAnomaliesOn } from './lib/anomalyModule'
 import { navigate, useLocation } from './lib/router'
 import { jobPlace, resolveRoute } from './lib/routes'
 import { followDevice, paintTheme, storedTheme, storeTheme, type ThemeChoice } from './lib/theme'
@@ -116,6 +117,7 @@ export function App({ signOut = false }: { signOut?: boolean }) {
   const { t, lang, setLanguage, languages } = useT()
   const { pathname, search } = useLocation()
   const pins = useNavPins()
+  const anomaliesOn = useAnomaliesOn()
   const small = useSmallWindow()
   const [jobs, setJobs] = useState<Job[]>([])
   // Whether the engine has listed its jobs once, which is what tells a first
@@ -144,8 +146,8 @@ export function App({ signOut = false }: { signOut?: boolean }) {
   const [version, setVersion] = useState('dev')
   // The version as the engine stamps it, null until it has answered.
   const [running, setRunning] = useState<string | null>(null)
-  // Null until the engine has said, so the Security tile's address does not
-  // bounce to the first tile while the question is out.
+  // Null until the engine has said, so the Security tab's address does not
+  // bounce to the first tab while the question is out.
   const [canSecure, setCanSecure] = useState<boolean | null>(null)
   useTrayWords(window_ !== null, t)
   useUpdateReadyToast()
@@ -182,6 +184,11 @@ export function App({ signOut = false }: { signOut?: boolean }) {
         if (can.window) void api.window().then(setWindow)
       })
       .catch(() => setCanSecure(false))
+    api
+      .settings()
+      .then(followSettings)
+      // Unread, the notes count as on, which is the engine's own default.
+      .catch(() => followSettings({}))
   }, [])
 
   // What waits on somebody, for the two pages and their counts. Asked for in
@@ -325,11 +332,19 @@ export function App({ signOut = false }: { signOut?: boolean }) {
     if (running !== null && fresh !== null) startWhatsNew(running, !fresh)
   }, [running, fresh])
 
-  const tiles = useMemo(() => settingsTiles(canSecure), [canSecure])
+  const tabs = useMemo(() => settingsTabs(canSecure), [canSecure])
   const resolved = useMemo(
-    () => resolveRoute(pathname, search, { pins, tiles: tiles.map((x) => x.id), remembered: rememberedTile(), fresh }),
-    [pathname, search, pins, tiles, fresh],
+    () =>
+      resolveRoute(pathname, search, {
+        pins,
+        anomalies: anomaliesOn,
+        tabs: tabs.map((x) => x.id),
+        remembered: rememberedTab(),
+        fresh,
+      }),
+    [pathname, search, pins, anomaliesOn, tabs, fresh],
   )
+  const extras = { targets: pins.targets, anomalies: anomaliesOn === true }
   useLayoutEffect(() => {
     if ('redirect' in resolved) navigate(resolved.redirect, { replace: true })
   }, [resolved])
@@ -342,7 +357,7 @@ export function App({ signOut = false }: { signOut?: boolean }) {
         running: jobs.filter((j) => j.running).length,
         conflicts: conflicts?.conflicts.length ?? 0,
         trash: orderedTrash ? trashTotals(orderedTrash.filter((s) => !s.error)).entries : 0,
-        findings: findings?.open.length ?? 0,
+        findings: anomaliesOn ? (findings?.open.length ?? 0) : 0,
       }
   // The job a link from another page narrowed this one to, and on Anomalies
   // the finding it opens.
@@ -389,17 +404,6 @@ export function App({ signOut = false }: { signOut?: boolean }) {
     languages,
   }
 
-  const anomalies = (
-    <Anomalies
-      listing={findings}
-      jobs={jobs}
-      job={focus}
-      finding={finding}
-      refused={refused}
-      onChanged={() => void reloadFindings()}
-    />
-  )
-
   const page = !view ? null : view.page === 'welcome' ? (
     <Welcome fresh={fresh} />
   ) : view.page === 'jobs' ? (
@@ -411,7 +415,14 @@ export function App({ signOut = false }: { signOut?: boolean }) {
   ) : view.page === 'conflicts' ? (
     <Conflicts listing={conflicts} job={focus} onJob={focusOn} onChanged={reloadWaiting} />
   ) : view.page === 'anomalies' ? (
-    anomalies
+    <Anomalies
+      listing={findings}
+      jobs={jobs}
+      job={focus}
+      finding={finding}
+      refused={refused}
+      onChanged={() => void reloadFindings()}
+    />
   ) : view.page === 'trash' ? (
     <Trash sides={orderedTrash} job={focus} onJob={focusOn} onChanged={reloadWaiting} />
   ) : view.page === 'history' ? (
@@ -430,7 +441,7 @@ export function App({ signOut = false }: { signOut?: boolean }) {
     // that fills the window, or one scrolled to its end, stops on the rail's
     // bottom line with room for its cards' shadow.
     <div className="flex h-screen flex-col overflow-hidden bg-carbon-background p-[var(--page-gutter)] sm:flex-row sm:gap-4">
-      {!small && <Sidebar pins={pins} counts={counts} pathname={pathname} mode={labels.sidebar} signOut={signOut} />}
+      {!small && <Sidebar extras={extras} counts={counts} pathname={pathname} mode={labels.sidebar} signOut={signOut} />}
 
       <Places.Provider value={places}>
         <GoTo.Provider value={goTo}>
@@ -439,8 +450,8 @@ export function App({ signOut = false }: { signOut?: boolean }) {
               {view?.page === 'settings' ? (
                 <main className="flex min-h-0 min-w-0 flex-1 flex-col">
                   <Settings
-                    tile={view.tile}
-                    tiles={tiles}
+                    tab={view.tab}
+                    tabs={tabs}
                     look={look}
                     version={version}
                     window={window_}
@@ -456,7 +467,6 @@ export function App({ signOut = false }: { signOut?: boolean }) {
                         })
                     }}
                     targets={<Targets />}
-                    anomalies={anomalies}
                     whatsNew={<WhatsNewCard hueIndex={2} />}
                   />
                 </main>
@@ -482,7 +492,7 @@ export function App({ signOut = false }: { signOut?: boolean }) {
         </GoTo.Provider>
       </Places.Provider>
 
-      {small && <BottomBar pins={pins} counts={counts} pathname={pathname} signOut={signOut} />}
+      {small && <BottomBar extras={extras} counts={counts} pathname={pathname} signOut={signOut} />}
 
       <WhatsNewDots news={news} active={fresh === false && news?.version === running && view?.page !== 'welcome'} />
     </div>

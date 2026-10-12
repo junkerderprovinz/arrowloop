@@ -16,8 +16,8 @@ vi.mock('../../lib/api', async (actual) => ({
 }))
 
 const { SyncPage } = await import('./SyncPage')
-const { NotificationsPage } = await import('./NotificationsPage')
-const { AnomaliesTile, TargetsTile } = await import('./ModuleTiles')
+const { SafetyPage } = await import('./SafetyPage')
+const { TargetsTab } = await import('./TargetsTab')
 const { setNavPin } = await import('../../lib/navPins')
 
 // jsdom cannot measure elements, which the selectors ask for.
@@ -34,8 +34,8 @@ beforeEach(() => {
 })
 afterEach(cleanup)
 
-describe('a settings tile', () => {
-  it('saves a change made just before the tile closes', async () => {
+describe('a settings tab', () => {
+  it('saves a change made just before the tab closes', async () => {
     const { unmount } = render(<SyncPage />)
     fireEvent.click(await screen.findByRole('switch', { name: 'Carry empty folders' }))
     unmount()
@@ -57,7 +57,7 @@ describe('a settings tile', () => {
 describe('a stored secret', () => {
   it('shows as saved and keeps the saved one until something new is typed', async () => {
     stored = { notify: { webhook: '********' } }
-    const { unmount } = render(<NotificationsPage />)
+    const { unmount } = render(<SafetyPage />)
     expect(await screen.findByText('Saved')).toBeTruthy()
     expect(screen.queryByLabelText('Webhook')).toBeNull()
 
@@ -69,36 +69,41 @@ describe('a stored secret', () => {
   })
 })
 
-describe('a page that can stand in the sidebar', () => {
-  it('draws the whole page on its tile while it is not pinned', () => {
-    render(<TargetsTile page={<p>the targets page</p>} />)
-    expect(screen.getByText('the targets page')).toBeTruthy()
-    expect(screen.queryByRole('button', { name: 'Open' })).toBeNull()
-  })
+describe('the anomalies switch', () => {
+  it('takes the notes away and keeps the held message', async () => {
+    const { unmount } = render(<SafetyPage />)
+    fireEvent.click(await screen.findByRole('switch', { name: 'Anomalies' }))
+    expect(screen.queryByText('Failed runs in a row')).toBeNull()
+    expect(screen.queryByRole('switch', { name: 'Report notes too' })).toBeNull()
+    expect(screen.getByRole('switch', { name: 'Report a held job' })).toBeTruthy()
+    unmount()
 
-  it('keeps only the switch and the way to the page once pinned', () => {
-    render(<TargetsTile page={<p>the targets page</p>} />)
+    expect(saveSettings.mock.calls.at(-1)?.[0].anomalies?.off).toBe(true)
+  })
+})
+
+describe('the Targets tab', () => {
+  it('draws the whole page, pinned or not', () => {
+    render(<TargetsTab page={<p>the targets page</p>} />)
+    expect(screen.getByText('the targets page')).toBeTruthy()
     act(() => setNavPin('targets', true))
-    expect(screen.queryByText('the targets page')).toBeNull()
-    expect(screen.getByRole('button', { name: 'Open' })).toBeTruthy()
+    expect(screen.getByText('the targets page')).toBeTruthy()
     expect(screen.getByRole('switch', { name: 'Also show in the sidebar' }).getAttribute('aria-checked')).toBe('true')
   })
+
   // The selector is the page-top rule in index.css that drops the first card
   // by half its badge, which would otherwise be cut off at the column's top.
-  it.each([
-    ['Targets', () => <TargetsTile page={<p>the targets page</p>} />],
-    ['Anomalies', () => <AnomaliesTile page={<p>the anomalies page</p>} />],
-  ])('starts the %s tile on a card the page top makes room for', async (title, tile) => {
-    const { container } = render(<div className="glim-page-enter">{tile()}</div>)
+  it('starts on a card the page top makes room for', async () => {
+    const { container } = render(
+      <div className="glim-page-enter">
+        <TargetsTab page={<p>the targets page</p>} />
+      </div>,
+    )
     await screen.findByRole('switch', { name: 'Also show in the sidebar' })
     const first = container.querySelector('.glim-notch-card')
-    expect(first?.textContent).toContain(title)
+    expect(first?.textContent).toContain('Targets')
     const roomy = container.querySelector(
-      [
-        '.glim-page-enter > .glim-notch-card:first-child',
-        '.glim-page-enter > :first-child > .glim-notch-card:first-child',
-        '.glim-page-enter > :first-child > :first-child > .glim-notch-card:first-child',
-      ].join(', '),
+      ['.glim-page-enter > .glim-notch-card:first-child', '.glim-page-enter > :first-child > .glim-notch-card:first-child'].join(', '),
     )
     expect(roomy).toBe(first)
   })

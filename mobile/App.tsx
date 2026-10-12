@@ -431,7 +431,7 @@ function MoreSheet({
   const { p, corners } = useTheme();
   const { t } = useT();
   const { ms } = useMotion();
-  const { findings, trash } = useWaiting();
+  const { findings, trash, anomaliesOn } = useWaiting();
   const counts: Record<MorePlace["screen"], number | null> = {
     TrashAll: trash,
     TargetList: null,
@@ -444,7 +444,7 @@ function MoreSheet({
       <Pressable style={[styles.ground, { backgroundColor: p.scrim, paddingBottom: above }]} onPress={onClose}>
         {/* Swallows presses, so a tap between the rows does not close it. */}
         <Pressable onPress={() => {}} style={[styles.sheet, { backgroundColor: p.surface, ...corners.card }]}>
-          {MORE.map((place) => {
+          {MORE.filter((place) => place.screen !== "Anomalies" || anomaliesOn !== false).map((place) => {
             const count = counts[place.screen];
             return (
               <Press

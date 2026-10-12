@@ -1,13 +1,17 @@
+import { Field, NumberField, Text } from '../../components/Field'
 import { Stack } from '../../components/Shell'
 import { ToggleRow } from '../../components/ToggleRow'
 import type { WindowSettings } from '../../lib/api'
 import { Card } from '../../lib/glimstone/Card'
 import { useT } from '../../lib/i18n'
 import { BackupCard } from './BackupCard'
+import { Reading, useEngineSettings } from './engineSettings'
+import { SettingsRow } from './rows'
 
 /**
  * What concerns the app as a whole: this computer's window, start and updates
- * where there is a desktop app, and the settings backup everywhere.
+ * where there is a desktop app, the settings backup, and how hard the engine
+ * may work on this machine.
  */
 export function GeneralPage({
   window: windowSettings,
@@ -64,6 +68,47 @@ export function GeneralPage({
       )}
 
       <BackupCard hueIndex={windowSettings ? 1 : 0} />
+      <WorkloadCard hueIndex={windowSettings ? 2 : 1} />
     </Stack>
+  )
+}
+
+/** How hard the engine may work and where it writes its log of runs. */
+function WorkloadCard({ hueIndex }: { hueIndex: number }) {
+  const { t } = useT()
+  const { loaded, draft, patch, error } = useEngineSettings()
+  if (!loaded) return <Reading title={t('settings.workload')} error={error} hueIndex={hueIndex} />
+
+  return (
+    <Card title={t('settings.workload')} hueIndex={hueIndex}>
+      <SettingsRow label={t('engine.bwlimit')} hint={t('engine.bwlimitHint')}>
+        <div className="w-32">
+          <Text
+            value={typeof draft.bwlimit === 'string' ? draft.bwlimit : ''}
+            onChange={(v) => patch({ bwlimit: v })}
+            placeholder="1M"
+            label={t('engine.bwlimit')}
+            mono
+          />
+        </div>
+      </SettingsRow>
+      <SettingsRow label={t('engine.parallel')} hint={t('engine.parallelHint')}>
+        <NumberField
+          value={typeof draft.parallelJobs === 'number' ? draft.parallelJobs : 1}
+          min={1}
+          max={16}
+          label={t('engine.parallel')}
+          onChange={(v) => patch({ parallelJobs: v })}
+        />
+      </SettingsRow>
+      <Field label={t('engine.history')} hint={t('engine.historyHint')}>
+        <Text
+          value={typeof draft.history === 'string' ? draft.history : ''}
+          onChange={(v) => patch({ history: v })}
+          placeholder="arrowloop-history.db"
+          mono
+        />
+      </Field>
+    </Card>
   )
 }

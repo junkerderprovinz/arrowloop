@@ -1,3 +1,4 @@
+import { ExcludeSetEditor, type Sets } from '../../components/ExcludeSets'
 import { Field, NumberField, Text } from '../../components/Field'
 import { QuietPeriod } from '../../components/QuietPeriod'
 import { Selector } from '../../components/Selector'
@@ -7,13 +8,16 @@ import type { Settings } from '../../lib/api'
 import { Card } from '../../lib/glimstone/Card'
 import { useT } from '../../lib/i18n'
 import { modesHint } from '../../lib/modes'
-import { Reading, useEngineSettings } from './engineSettings'
+import { Reading, useEngineSettings, waitMinutes } from './engineSettings'
 import { counter, SettingsRow } from './rows'
 
 type Direction = 'both' | 'leftToRight' | 'rightToLeft'
 type Mode = 'sync' | 'mirror' | 'move'
 
-/** What every job starts from, and how it moves and compares files. */
+/**
+ * What every job starts from, how it moves and compares files, how often a
+ * failed run is tried again, and the lists of patterns jobs leave out.
+ */
 export function SyncPage() {
   const { t } = useT()
   const { loaded, draft, patch, error } = useEngineSettings()
@@ -22,14 +26,17 @@ export function SyncPage() {
   const defaults = draft.defaults ?? {}
   const setDefault = (next: Partial<NonNullable<Settings['defaults']>>) => patch({ defaults: { ...defaults, ...next } })
   const direction: Direction = (defaults.direction as Direction | undefined) ?? 'both'
+  const retry = draft.retry ?? {}
+  const setRetry = (next: Partial<NonNullable<Settings['retry']>>) => patch({ retry: { ...retry, ...next } })
   const selectorHue = counter()
 
   return (
     <Stack>
       <Card title={t('engine.defaults')} hint={t('settings.syncHint')} hueIndex={0}>
-        <SettingsRow label={t('direction.label')} hint={t('defaults.followHint')}>
+        <SettingsRow label={t('direction.label')} hint={t('defaults.followHint')} wide>
           <Selector<Direction>
             scale="small"
+            low
             label={t('direction.label')}
             hue={selectorHue()}
             value={direction}
@@ -48,9 +55,11 @@ export function SyncPage() {
         <SettingsRow
           label={t('mode.label')}
           hint={direction === 'both' ? `${t('mode.onlyOneWay')} ${modesHint(t)}` : undefined}
+          wide
         >
           <Selector<Mode>
             scale="small"
+            low
             label={t('mode.label')}
             hue={selectorHue()}
             disabled={direction === 'both'}
@@ -114,9 +123,10 @@ export function SyncPage() {
         />
         {/* Three answers rather than a switch, since the default "ask the two
             sides" differs from "never fold". */}
-        <SettingsRow label={t('engine.foldCase')} hint={t('engine.foldCaseHint')}>
+        <SettingsRow label={t('engine.foldCase')} hint={t('engine.foldCaseHint')} wide>
           <Selector<'auto' | 'on' | 'off'>
             scale="small"
+            low
             label={t('engine.foldCase')}
             hue={selectorHue()}
             value={defaults.foldCase === undefined ? 'auto' : defaults.foldCase ? 'on' : 'off'}
@@ -128,6 +138,37 @@ export function SyncPage() {
             ]}
           />
         </SettingsRow>
+      </Card>
+
+      {/* Engine-wide rather than a job default: patience after a failure
+          depends on the machine, not on a folder pair. */}
+      <Card title={t('workload.retries')} hint={t('retry.hint')} hueIndex={3}>
+        <SettingsRow label={t('retry.attempts')} hint={t('retry.attemptsHint')}>
+          <NumberField
+            value={retry.attempts ?? 3}
+            min={0}
+            max={10}
+            label={t('retry.attempts')}
+            onChange={(v) => setRetry({ attempts: v })}
+          />
+        </SettingsRow>
+        {/* Minutes, so nobody has to know the Go duration syntax. */}
+        <SettingsRow label={`${t('retry.wait')} (${t('schedule.unit.minute')})`} hint={t('retry.waitHint')}>
+          <NumberField
+            value={waitMinutes(retry.wait)}
+            min={1}
+            max={1440}
+            label={t('retry.wait')}
+            onChange={(v) => setRetry({ wait: `${v}m` })}
+          />
+        </SettingsRow>
+      </Card>
+
+      <Card title={t('engine.sets')} hint={t('engine.setsHint')} hueIndex={4}>
+        <ExcludeSetEditor
+          sets={(draft.excludeSets as Sets | undefined) ?? {}}
+          onChange={(next) => patch({ excludeSets: next })}
+        />
       </Card>
     </Stack>
   )

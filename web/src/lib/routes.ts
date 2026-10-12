@@ -2,50 +2,40 @@
 
 import type { NavPins } from './navPins'
 
-/** The settings tiles in their column's order, Info last. */
-export const TILE_IDS = [
-  'general',
-  'look',
-  'sync',
-  'workload',
-  'safety',
-  'notifications',
-  'exclude',
-  'targets',
-  'anomalies',
-  'security',
-  'app',
-  'info',
-] as const
+/** The settings tabs in their strip's order, Info last. */
+export const TAB_IDS = ['general', 'look', 'sync', 'safety', 'targets', 'security', 'apps', 'info'] as const
 
-export type TileId = (typeof TILE_IDS)[number]
+export type TabId = (typeof TAB_IDS)[number]
 
-/** The pages that are settings tiles and, when pinned, sidebar entries too. */
-export type ModuleId = 'targets' | 'anomalies'
-
-/** Tiles that were renamed or split, so a bookmark to the old address still lands. */
-export const FORMER_TILES: Record<string, TileId> = { engine: 'sync' }
+/** Tabs that were renamed or merged, so a bookmark to the old address still lands. */
+export const FORMER_TABS: Record<string, TabId> = {
+  engine: 'sync',
+  workload: 'general',
+  exclude: 'sync',
+  notifications: 'safety',
+  anomalies: 'safety',
+  app: 'apps',
+}
 
 export type View =
-  | { page: 'jobs' | 'conflicts' | 'trash' | 'history' | 'welcome' }
+  | { page: 'jobs' | 'conflicts' | 'trash' | 'history' | 'welcome' | 'anomalies' | 'targets' }
   | { page: 'job'; name: string }
-  | { page: ModuleId }
-  | { page: 'settings'; tile: TileId }
+  | { page: 'settings'; tab: TabId }
 
 /** `wait` holds an address back until the engine has said what it leads to. */
 export type Resolved = { view: View } | { redirect: string } | { wait: true }
 
 export interface RouteContext {
   pins: NavPins
-  /** The tiles this build offers, in order. */
-  tiles: readonly TileId[]
-  /** The tile that was open last in this browser. */
+  /** Whether the anomaly notes are switched on; null until the settings are read. */
+  anomalies: boolean | null
+  /** The tabs this build offers, in order. */
+  tabs: readonly TabId[]
+  /** The tab that was open last in this browser. */
   remembered: string | null
   /** Whether this is the first start, with no job yet; null until the jobs are read. */
   fresh?: boolean | null
 }
-
-const MODULES: readonly string[] = ['targets', 'anomalies']
 
 export function resolveRoute(pathname: string, search: URLSearchParams, ctx: RouteContext): Resolved {
   const query = search.toString() ? `?${search}` : ''
@@ -70,23 +60,27 @@ export function resolveRoute(pathname: string, search: URLSearchParams, ctx: Rou
       return parts.length === 1 ? { view: { page: first } } : { redirect: `/${first}${query}` }
     case 'settings':
       return settings(second, parts.length, query, ctx)
-  }
-  if (MODULES.includes(first) && parts.length === 1) {
-    const id = first as ModuleId
-    // An unpinned page lives on its tile, so its own address leads there.
-    return ctx.pins[id] ? { view: { page: id } } : { redirect: `/settings/${id}${query}` }
+    case 'anomalies':
+      if (ctx.anomalies === null) return { wait: true }
+      if (!ctx.anomalies) return { redirect: '/jobs' }
+      return parts.length === 1 ? { view: { page: 'anomalies' } } : { redirect: `/anomalies${query}` }
+    case 'targets':
+      // An unpinned page lives on its tab, so its own address leads there.
+      if (parts.length > 1) return { redirect: '/targets' }
+      return ctx.pins.targets ? { view: { page: 'targets' } } : { redirect: `/settings/targets${query}` }
   }
   return { redirect: '/jobs' }
 }
 
-function settings(tile: string | undefined, depth: number, query: string, ctx: RouteContext): Resolved {
-  const offered = (id: string | null | undefined): id is TileId => !!id && (ctx.tiles as readonly string[]).includes(id)
-  const first = ctx.tiles[0] ?? 'general'
-  if (tile === undefined) {
-    return { redirect: `/settings/${offered(ctx.remembered) ? ctx.remembered : first}` }
+function settings(tab: string | undefined, depth: number, query: string, ctx: RouteContext): Resolved {
+  const offered = (id: string | null | undefined): id is TabId => !!id && (ctx.tabs as readonly string[]).includes(id)
+  const first = ctx.tabs[0] ?? 'general'
+  if (tab === undefined) {
+    const remembered = ctx.remembered && (FORMER_TABS[ctx.remembered] ?? ctx.remembered)
+    return { redirect: `/settings/${offered(remembered) ? remembered : first}` }
   }
-  if (depth === 2 && offered(tile)) return { view: { page: 'settings', tile } }
-  const moved = FORMER_TILES[tile]
+  if (depth === 2 && offered(tab)) return { view: { page: 'settings', tab } }
+  const moved = FORMER_TABS[tab]
   if (moved && offered(moved)) return { redirect: `/settings/${moved}${query}` }
   return { redirect: `/settings/${first}` }
 }

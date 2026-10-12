@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
+import { followSettings } from '../../lib/anomalyModule'
 import { api, type Settings } from '../../lib/api'
 import { Card } from '../../lib/glimstone/Card'
 import { errorText } from '../../lib/errorText'
@@ -13,10 +14,11 @@ import { useToast } from '../../lib/toast'
 const SETTLE_MS = 700
 
 /**
- * The engine settings the Sync, Workload, Safety net, Notifications, Exclude
- * lists and Anomalies tiles share, saved as they change. A save is quiet; a
- * refusal says so in a toast, since the field that caused it may be far up a
- * long page.
+ * The engine settings the General, Sync and Safety tabs show, saved as they
+ * change. A save is quiet; a refusal says so in a toast, since the field that
+ * caused it may be far up a long page. Each tab asks once and hands the result
+ * to all its cards, since a save sends the whole draft and a second draft
+ * would undo the first one's changes.
  */
 export function useEngineSettings() {
   const { t } = useT()
@@ -31,6 +33,7 @@ export function useEngineSettings() {
       .then((got) => {
         setLoaded(got)
         setDraft(got)
+        followSettings(got)
       })
       .catch((e: Error) => setError(e.message))
   }, [])
@@ -39,7 +42,7 @@ export function useEngineSettings() {
   // would otherwise send a stale draft.
   const latest = useRef<Settings>({})
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
-  // Leaving the tile unmounts it, and a change still waiting to settle is sent
+  // Leaving the tab unmounts it, and a change still waiting to settle is sent
   // then rather than lost. Nothing is left on screen to take the answer.
   useEffect(
     () => () => {
@@ -55,7 +58,9 @@ export function useEngineSettings() {
       // The whole draft rather than a diff; the endpoint merges. Only `loaded`
       // takes the answer: replacing the draft would overwrite a box somebody
       // is still typing in.
-      setLoaded(await api.saveSettings(latest.current))
+      const saved = await api.saveSettings(latest.current)
+      setLoaded(saved)
+      followSettings(saved)
     } catch (e) {
       push(errorText(t, e), 'fail')
     }
@@ -93,11 +98,11 @@ export function waitMinutes(raw: string | undefined): number {
   return match[2] === 'h' ? n * 60 : n
 }
 
-/** Stands in for a tile's cards until the settings have been read. */
-export function Reading({ title, error }: { title: string; error: string | null }) {
+/** Stands in for a tab's cards until the settings have been read. */
+export function Reading({ title, error, hueIndex = 0 }: { title: string; error: string | null; hueIndex?: number }) {
   const { t } = useT()
   return (
-    <Card title={title} hueIndex={0}>
+    <Card title={title} hueIndex={hueIndex}>
       <p className="text-subline text-carbon-textMuted">{error ?? t('engine.loading')}</p>
     </Card>
   )

@@ -1,10 +1,11 @@
 import { describe, expect, it } from 'vitest'
 
-import { jobPlace, resolveRoute, TILE_IDS, type RouteContext } from './routes'
+import { jobPlace, resolveRoute, TAB_IDS, type RouteContext } from './routes'
 
 const ctx = (over: Partial<RouteContext> = {}): RouteContext => ({
-  pins: { targets: false, anomalies: false },
-  tiles: TILE_IDS,
+  pins: { targets: false },
+  anomalies: true,
+  tabs: TAB_IDS,
   remembered: null,
   ...over,
 })
@@ -33,9 +34,17 @@ describe('the addresses', () => {
     expect(go('/jobs/photos%20raw/preview')).toEqual({ redirect: '/jobs/photos%20raw' })
   })
 
-  it('send an unpinned page to its settings tile and keep what the link asked for', () => {
-    expect(go('/anomalies?job=photos')).toEqual({ redirect: '/settings/anomalies?job=photos' })
-    expect(go('/targets')).toEqual({ redirect: '/settings/targets' })
+  it('send unpinned Targets to its settings tab and keep what the link asked for', () => {
+    expect(go('/targets?x=1')).toEqual({ redirect: '/settings/targets?x=1' })
+  })
+
+  it('serve Anomalies at its own address while the notes are on', () => {
+    expect(go('/anomalies?job=photos')).toEqual({ view: { page: 'anomalies' } })
+  })
+
+  it('send Anomalies to the jobs while the notes are off, and wait until that is known', () => {
+    expect(go('/anomalies', { anomalies: false })).toEqual({ redirect: '/jobs' })
+    expect(go('/anomalies', { anomalies: null })).toEqual({ wait: true })
   })
 
   it('carry the finding a link opens on Anomalies', () => {
@@ -44,23 +53,32 @@ describe('the addresses', () => {
   })
 
   it('serve a pinned page at its own address', () => {
-    expect(go('/targets', { pins: { targets: true, anomalies: false } })).toEqual({ view: { page: 'targets' } })
+    expect(go('/targets', { pins: { targets: true } })).toEqual({ view: { page: 'targets' } })
   })
 
-  it('open Settings on the tile that was open last', () => {
-    expect(go('/settings', { remembered: 'workload' })).toEqual({ redirect: '/settings/workload' })
+  it('open Settings on the tab that was open last', () => {
+    expect(go('/settings', { remembered: 'safety' })).toEqual({ redirect: '/settings/safety' })
   })
 
-  it('open Settings on its first tile when the remembered one is gone', () => {
-    const tiles = TILE_IDS.filter((t) => t !== 'security')
-    expect(go('/settings', { remembered: 'security', tiles })).toEqual({ redirect: '/settings/general' })
+  it('open Settings where a remembered tile went', () => {
+    expect(go('/settings', { remembered: 'workload' })).toEqual({ redirect: '/settings/general' })
   })
 
-  it('lead the old Engine tab to Sync', () => {
+  it('open Settings on its first tab when the remembered one is gone', () => {
+    const tabs = TAB_IDS.filter((t) => t !== 'security')
+    expect(go('/settings', { remembered: 'security', tabs })).toEqual({ redirect: '/settings/general' })
+  })
+
+  it('lead every old tile to the tab that holds its cards', () => {
     expect(go('/settings/engine')).toEqual({ redirect: '/settings/sync' })
+    expect(go('/settings/workload')).toEqual({ redirect: '/settings/general' })
+    expect(go('/settings/exclude')).toEqual({ redirect: '/settings/sync' })
+    expect(go('/settings/notifications')).toEqual({ redirect: '/settings/safety' })
+    expect(go('/settings/anomalies?job=photos')).toEqual({ redirect: '/settings/safety?job=photos' })
+    expect(go('/settings/app')).toEqual({ redirect: '/settings/apps' })
   })
 
-  it('send a tile nobody made to the first one', () => {
+  it('send a tab nobody made to the first one', () => {
     expect(go('/settings/nothing')).toEqual({ redirect: '/settings/general' })
   })
 

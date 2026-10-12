@@ -4,7 +4,6 @@ import { Field, Secret } from '../../components/Field'
 import { Button } from '../../lib/glimstone/Button'
 import { InfoBubble } from '../../lib/glimstone/InfoBubble'
 import { useT } from '../../lib/i18n'
-import { navigate } from '../../lib/router'
 
 /**
  * Hands out rainbow positions in the order it is asked, so the selectors on a
@@ -18,9 +17,21 @@ export function counter(start = 0): () => number {
 /**
  * One setting on a line: its name at the start, the explanation behind an (i),
  * and a short control at the end. Where the row is too narrow for both, the
- * control moves under the name and keeps the row's end.
+ * control moves under the name and keeps the row's end. A `wide` control, a
+ * selector, takes the rest of the row and the whole row once it wraps, so its
+ * segments share the width instead of sitting in a narrow block.
  */
-export function SettingsRow({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
+export function SettingsRow({
+  label,
+  hint,
+  wide = false,
+  children,
+}: {
+  label: string
+  hint?: string
+  wide?: boolean
+  children: ReactNode
+}) {
   return (
     <div className="flex flex-wrap items-center justify-end gap-x-4 gap-y-2">
       {/* data-glim-label is where the settings search scrolls to. */}
@@ -31,9 +42,7 @@ export function SettingsRow({ label, hint, children }: { label: string; hint?: s
         {label}
         {hint && <InfoBubble tip={hint} />}
       </span>
-      {/* Sized to its content, so a selector hugs its segments instead of
-          stretching across the row. */}
-      <div className="inline-flex max-w-full shrink-0">{children}</div>
+      <div className={wide ? 'flex min-w-0 flex-[2_1_20rem]' : 'inline-flex max-w-full shrink-0'}>{children}</div>
     </div>
   )
 }
@@ -51,19 +60,6 @@ export function SubCard({ label, hint, children }: { label: string; hint?: strin
       </h3>
       {children}
     </section>
-  )
-}
-
-/**
- * Leads from a pinned page's tile to the page itself. The button says only
- * "Open", since the row already names the page.
- */
-export function OpenPageRow({ label, to }: { label: string; to: string }) {
-  const { t } = useT()
-  return (
-    <SettingsRow label={label}>
-      <Button label={t('settings.open')} labelKey="settings.open" onClick={() => navigate(to)} />
-    </SettingsRow>
   )
 }
 

@@ -30,6 +30,8 @@ vi.mock('../lib/api', () => ({
 }))
 
 const { Jobs } = await import('./Jobs')
+const { followSettings } = await import('../lib/anomalyModule')
+const { LiveJobs } = await import('../lib/live')
 
 // jsdom cannot measure elements, which the selectors and the corner ask for.
 globalThis.ResizeObserver ??= class {
@@ -149,6 +151,29 @@ describe('a job card', () => {
     fireEvent.click(badge)
     expect(went).toHaveBeenLastCalledWith({ tab: 'anomalies', job: 'music', finding: 'f1' })
     expect(opened).not.toHaveBeenCalled()
+  })
+
+  it('answers a held run over the job while the anomaly notes are off', async () => {
+    const held: Finding = {
+      id: 'f1', job: 'music', kind: 'delete', severity: 'critical', held: true, since: '', seen: '', open: true,
+    }
+    followSettings({ anomalies: { off: true } })
+    render(
+      <ToastProvider>
+        <GoTo.Provider value={went}>
+          <OpenJob.Provider value={opened}>
+            <LiveJobs.Provider value={{ jobs: [], findings: [held], conflicted: [], progress: {}, speeds: {}, onSaved: () => {} }}>
+              <Jobs jobs={[job('music')]} findings={[held]} progress={{}} onSaved={() => undefined} />
+            </LiveJobs.Provider>
+          </OpenJob.Provider>
+        </GoTo.Provider>
+      </ToastProvider>,
+    )
+    fireEvent.click(within(row('music')).getByText('Held'))
+    expect(await screen.findByRole('dialog', { name: 'music: Mass deletion' })).toBeTruthy()
+    expect(went).not.toHaveBeenCalled()
+    expect(opened).not.toHaveBeenCalled()
+    followSettings({})
   })
 
   it('names a waiting conflict in the warn colour and leads to it, not to the job', async () => {

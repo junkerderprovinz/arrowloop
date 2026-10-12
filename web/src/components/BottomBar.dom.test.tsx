@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { BottomBar } from './BottomBar'
 
 const counts = { running: 0, conflicts: 3, trash: 0, findings: 0 }
-const none = { targets: false, anomalies: false }
+const extras = { targets: false, anomalies: true }
 
 afterEach(() => {
   cleanup()
@@ -14,7 +14,7 @@ afterEach(() => {
 
 describe('the bottom bar', () => {
   it('holds four places and More', () => {
-    render(<BottomBar pins={none} counts={counts} pathname="/jobs" signOut={false} />)
+    render(<BottomBar extras={extras} counts={counts} pathname="/jobs" signOut={false} />)
     const bar = screen.getByRole('navigation')
     expect(within(bar).getAllByRole('link').map((a) => a.getAttribute('href'))).toEqual([
       '/jobs',
@@ -26,13 +26,13 @@ describe('the bottom bar', () => {
   })
 
   it('opens the rest in a sheet, sign out last where a password is set', () => {
-    render(<BottomBar pins={none} counts={counts} pathname="/jobs" signOut />)
+    render(<BottomBar extras={extras} counts={counts} pathname="/jobs" signOut />)
     fireEvent.click(screen.getByRole('button', { name: 'More' }))
     const sheet = screen.getByRole('dialog', { name: 'More' })
     expect(within(sheet).getAllByRole('link').map((a) => a.getAttribute('href'))).toEqual([
+      '/anomalies',
       '/trash',
       '/targets',
-      '/anomalies',
     ])
     expect(within(sheet).getByRole('button', { name: 'Log out' })).toBeTruthy()
   })
@@ -43,13 +43,13 @@ describe('the bottom bar', () => {
     vi.spyOn(HTMLElement.prototype, 'scrollWidth', 'get').mockImplementation(function (this: HTMLElement) {
       return this.style.fontSize ? 66 : 90
     })
-    render(<BottomBar pins={none} counts={counts} pathname="/jobs" signOut={false} />)
+    render(<BottomBar extras={extras} counts={counts} pathname="/jobs" signOut={false} />)
     const word = within(screen.getByRole('navigation')).getByText('Settings')
     expect(word.style.fontSize).toBe('calc(var(--text-meta) * 0.733)')
   })
 
   it('fills More while one of its pages is open', () => {
-    render(<BottomBar pins={none} counts={counts} pathname="/trash" signOut={false} />)
+    render(<BottomBar extras={extras} counts={counts} pathname="/trash" signOut={false} />)
     expect(screen.getByRole('button', { name: 'More' }).getAttribute('aria-current')).toBe('true')
   })
 })

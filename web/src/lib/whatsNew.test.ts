@@ -27,8 +27,8 @@ describe('the way to a change', () => {
   })
 
   it('matches a named segment against any one segment', () => {
-    expect(matchRoute('/settings/:tile', '/settings/look')).toBe(true)
-    expect(matchRoute('/settings/:tile', '/settings')).toBe(false)
+    expect(matchRoute('/settings/:tab', '/settings/look')).toBe(true)
+    expect(matchRoute('/settings/:tab', '/settings')).toBe(false)
     expect(isAt(RELEASES[0].changes.find((c) => c.id === 'list-bar')!, '/trash')).toBe(true)
   })
 })

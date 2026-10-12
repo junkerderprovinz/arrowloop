@@ -1,11 +1,9 @@
-// Which settings pages also stand in the sidebar. The choice belongs to the
-// person at this browser, like the remembered settings page.
+// Whether Targets also stands in the sidebar. The choice belongs to the person
+// at this browser, like the remembered settings tab.
 
 import { useMemo, useSyncExternalStore } from 'react'
 
-import type { ModuleId } from './routes'
-
-export type NavPins = Record<ModuleId, boolean>
+export type NavPins = { targets: boolean }
 
 const KEY = 'arrowloop.navPins'
 
@@ -17,13 +15,13 @@ function readRaw(): string {
   }
 }
 
-/** Both start on their tile only; the sidebar keeps its four places until somebody pins one. */
+/** Targets starts on its tab only, until somebody pins it. */
 export function parsePins(raw: string): NavPins {
-  const pins: NavPins = { targets: false, anomalies: false }
+  const pins: NavPins = { targets: false }
   try {
     const stored: unknown = raw ? JSON.parse(raw) : null
     if (stored && typeof stored === 'object') {
-      for (const id of Object.keys(pins) as ModuleId[]) {
+      for (const id of Object.keys(pins) as (keyof NavPins)[]) {
         const value = (stored as Record<string, unknown>)[id]
         if (typeof value === 'boolean') pins[id] = value
       }
@@ -46,7 +44,7 @@ function subscribe(listener: () => void) {
   }
 }
 
-export function setNavPin(id: ModuleId, pinned: boolean) {
+export function setNavPin(id: keyof NavPins, pinned: boolean) {
   try {
     localStorage.setItem(KEY, JSON.stringify({ ...parsePins(readRaw()), [id]: pinned }))
   } catch {

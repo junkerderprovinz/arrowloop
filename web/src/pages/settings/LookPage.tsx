@@ -162,9 +162,10 @@ export function LookPage({
           </div>
         </SettingsRow>
 
-        <SettingsRow label={t('look.design')}>
+        <SettingsRow label={t('look.design')} wide>
           <Selector<ThemeChoice>
             scale="small"
+            low
             label={t('look.design')}
             hue={selectorHue()}
             value={theme}
@@ -177,9 +178,10 @@ export function LookPage({
           />
         </SettingsRow>
 
-        <SettingsRow label={t('look.corners')} hint={t('look.cornersHint')}>
+        <SettingsRow label={t('look.corners')} hint={t('look.cornersHint')} wide>
           <Selector<Shape>
             scale="small"
+            low
             label={t('look.corners')}
             hue={selectorHue()}
             value={shape}
@@ -196,9 +198,10 @@ export function LookPage({
           />
         </SettingsRow>
 
-        <SettingsRow label={t('look.motion')} hint={t('look.motionHint')}>
+        <SettingsRow label={t('look.motion')} hint={t('look.motionHint')} wide>
           <Selector<MotionIntensity>
             scale="small"
+            low
             label={t('look.motion')}
             hue={selectorHue()}
             value={motion}
@@ -216,9 +219,15 @@ export function LookPage({
 
       <Card title={t('look.labels')} hueIndex={1} hint={t('look.labelsHint')}>
         {[...CONTROL_AXES, BOTTOM_BAR_AXIS].map((axis) => (
-          <SettingsRow key={axis} label={t(axisKey[axis])} hint={axis === BOTTOM_BAR_AXIS ? t('look.barLabelsWeb') : undefined}>
+          <SettingsRow
+            key={axis}
+            label={t(axisKey[axis])}
+            hint={axis === BOTTOM_BAR_AXIS ? t('look.barLabelsWeb') : undefined}
+            wide
+          >
             <Selector<LabelMode>
               scale="small"
+              low
               label={t(axisKey[axis])}
               hue={selectorHue()}
               value={labels[axis]}

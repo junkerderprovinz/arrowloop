@@ -17,7 +17,6 @@ import {
   IconTabStorage,
 } from '../components/glyphs'
 import type { TranslationKey } from './i18n.data'
-import type { NavPins } from './navPins'
 
 /** What an entry counts beside its name. */
 export type NavCountKind = 'running' | 'conflicts' | 'trash' | 'findings'
@@ -36,34 +35,40 @@ export interface NavDestination {
   bar: boolean
 }
 
+/** The places that are not always in the rail: Targets while pinned, Anomalies while switched on. */
+export type NavExtras = { targets: boolean; anomalies: boolean }
+
 /**
  * The whole navigation in sidebar order. A pin flips a flag and never removes
  * an entry, so the order between any two entries is the same everywhere.
+ * Anomalies stands beside Conflicts, since both list what waits for an answer.
  */
-export function destinations(pins: NavPins): NavDestination[] {
+export function destinations(extras: NavExtras): NavDestination[] {
   return [
     { to: '/jobs', labelKey: 'nav.jobs', icon: IconSync, count: 'running', sidebar: true, footer: false, bar: true },
     { to: '/conflicts', labelKey: 'nav.conflicts', icon: IconConflict, count: 'conflicts', sidebar: true, footer: false, bar: true },
+    ...(extras.anomalies
+      ? [{ to: '/anomalies', labelKey: 'nav.anomalies', icon: IconAnomalies, count: 'findings', sidebar: true, footer: false, bar: false } as const]
+      : []),
     // Getting a file back is what Trash is for here, so it wears the lifebuoy.
     { to: '/trash', labelKey: 'nav.trash', icon: IconTabRecovery, count: 'trash', sidebar: true, footer: false, bar: false },
     { to: '/history', labelKey: 'nav.history', icon: IconHistory, sidebar: true, footer: false, bar: true },
-    { to: '/targets', labelKey: 'nav.targets', icon: IconTabStorage, sidebar: pins.targets, footer: false, bar: false },
-    { to: '/anomalies', labelKey: 'nav.anomalies', icon: IconAnomalies, count: 'findings', sidebar: pins.anomalies, footer: false, bar: false },
+    { to: '/targets', labelKey: 'nav.targets', icon: IconTabStorage, sidebar: extras.targets, footer: false, bar: false },
     { to: '/settings', labelKey: 'nav.settings', icon: IconGear, sidebar: true, footer: true, bar: true },
   ]
 }
 
-export function sidebarDestinations(pins: NavPins): NavDestination[] {
-  return destinations(pins).filter((d) => d.sidebar)
+export function sidebarDestinations(extras: NavExtras): NavDestination[] {
+  return destinations(extras).filter((d) => d.sidebar)
 }
 
-export function barDestinations(pins: NavPins): NavDestination[] {
-  return destinations(pins).filter((d) => d.bar)
+export function barDestinations(extras: NavExtras): NavDestination[] {
+  return destinations(extras).filter((d) => d.bar)
 }
 
 /** The More sheet lists every page without a slot, pinned or not, so it is never empty. */
-export function moreDestinations(pins: NavPins): NavDestination[] {
-  return destinations(pins).filter((d) => !d.bar)
+export function moreDestinations(extras: NavExtras): NavDestination[] {
+  return destinations(extras).filter((d) => !d.bar)
 }
 
 /** Whether a path is the destination or a page below it. */

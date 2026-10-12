@@ -67,8 +67,9 @@ export const BAR: BarPlace[] = [
   { tab: "SettingsTab", label: "nav.settings", glyph: "IconGear" },
 ];
 
+/** In the web rail's order; Anomalies goes while its notes are switched off. */
 export const MORE: MorePlace[] = [
+  { screen: "Anomalies", label: "nav.anomalies", glyph: "IconAnomalies" },
   { screen: "TrashAll", label: "nav.trash", glyph: "IconTabRecovery" },
   { screen: "TargetList", label: "nav.targets", glyph: "IconTabStorage" },
-  { screen: "Anomalies", label: "nav.anomalies", glyph: "IconAnomalies" },
 ];

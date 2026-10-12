@@ -5,6 +5,7 @@ import { heldKey } from "../deviceConditions";
 import { engine, type DeviceConditions, type DevicePolicy } from "../engine";
 import { useT } from "../i18n";
 import { useEngineSettings } from "../settings";
+import { useWaiting } from "../waiting";
 import { Field, NumberField } from "../fields";
 import { Schedule } from "./JobEdit";
 import { AxisLabel, Body, Choice, Page, Section, Toggle } from "../ui";
@@ -19,6 +20,7 @@ export function SyncSettings() {
   const [policy, setPolicy] = useState<DevicePolicy | null>(null);
 
   const { settings, update } = useEngineSettings(true);
+  const waiting = useWaiting();
   const defaults = (settings?.defaults ?? {}) as Record<string, unknown>;
   const saveDefaults = (patch: Record<string, unknown>) =>
     update({ defaults: { ...defaults, ...patch } });
@@ -144,32 +146,46 @@ export function SyncSettings() {
         />
       </Section>
 
-      {/* The two notes that hold nothing, and who hears about a finding. */}
+      {/* The two notes that hold nothing, and who hears about a finding. Off,
+          the notes and their screen go; a brake still holds a job, and a
+          held job is still told. */}
       <Section title={t("nav.anomalies")} hue={4}>
-        <NumberField
-          label={t("anomaly.failingAfter")}
-          hint={t("anomaly.failingAfterHint")}
-          value={String(anomalies.failingAfter ?? 3)}
-          onChange={(v) => saveAnomalies({ failingAfter: clamp(v, 0, 50) })}
+        <Toggle
+          label={t("nav.anomalies")}
+          hint={t("anomaly.moduleHint")}
+          value={anomalies.off !== true}
+          onChange={(on) => void saveAnomalies({ off: !on }).then(waiting.refresh)}
         />
-        <NumberField
-          label={t("anomaly.overdueDays")}
-          hint={t("anomaly.overdueDaysHint")}
-          value={String(anomalies.overdueDays ?? 2)}
-          onChange={(v) => saveAnomalies({ overdueDays: clamp(v, 0, 365) })}
-        />
+        {anomalies.off !== true ? (
+          <>
+            <NumberField
+              label={t("anomaly.failingAfter")}
+              hint={t("anomaly.failingAfterHint")}
+              value={String(anomalies.failingAfter ?? 3)}
+              onChange={(v) => saveAnomalies({ failingAfter: clamp(v, 0, 50) })}
+            />
+            <NumberField
+              label={`${t("anomaly.overdueDays")} (${t("anomaly.daysLate")})`}
+              hint={t("anomaly.overdueDaysHint")}
+              value={String(anomalies.overdueDays ?? 2)}
+              onChange={(v) => saveAnomalies({ overdueDays: clamp(v, 0, 365) })}
+            />
+          </>
+        ) : null}
         <Toggle
           label={t("anomaly.notifyHeld")}
           hint={t("anomaly.notifyHeldHint")}
           value={anomalies.notifyHeld !== false}
           onChange={(notifyHeld) => saveAnomalies({ notifyHeld })}
         />
-        <Toggle
-          label={t("anomaly.notifyNotes")}
-          hint={t("anomaly.notifyNotesHint")}
-          value={anomalies.notifyNotes === true}
-          onChange={(notifyNotes) => saveAnomalies({ notifyNotes })}
-        />
+        {anomalies.off !== true ? (
+          <Toggle
+            label={t("anomaly.notifyNotes")}
+            hint={t("anomaly.notifyNotesHint")}
+            value={anomalies.notifyNotes === true}
+            onChange={(notifyNotes) => saveAnomalies({ notifyNotes })}
+          />
+        ) : null}
       </Section>
 
       {/* Neither power condition holds a run started by hand. */}

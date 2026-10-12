@@ -340,6 +340,8 @@ export type Settings = {
    * switches a note off, and an undefined field keeps the engine's own value.
    */
   anomalies?: {
+    /** Switches the notes and their page off; a brake still holds a job. */
+    off?: boolean
     failingAfter?: number
     overdueDays?: number
     notifyHeld?: boolean

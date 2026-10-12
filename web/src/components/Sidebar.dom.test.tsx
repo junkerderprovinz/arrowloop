@@ -5,12 +5,12 @@ import { afterEach, describe, expect, it } from 'vitest'
 import { Sidebar } from './Sidebar'
 
 const counts = { running: 2, conflicts: 0, trash: 5, findings: 1 }
-const none = { targets: false, anomalies: false }
+const extras = { targets: false, anomalies: true }
 
 afterEach(cleanup)
 
 function show(signOut: boolean, pathname = '/jobs') {
-  render(<Sidebar pins={none} counts={counts} pathname={pathname} mode="textGlyph" signOut={signOut} />)
+  render(<Sidebar extras={extras} counts={counts} pathname={pathname} mode="textGlyph" signOut={signOut} />)
 }
 
 describe('the rail', () => {
@@ -39,9 +39,14 @@ describe('the rail', () => {
     expect(screen.getByRole('link', { name: 'Settings' }).getAttribute('aria-current')).toBeNull()
   })
 
-  it('leaves the pages that are not pinned to their tiles', () => {
+  it('holds Anomalies while its notes are on, and leaves unpinned Targets to its tab', () => {
     show(false)
+    expect(screen.getByRole('link', { name: /Anomalies/ })).toBeTruthy()
     expect(screen.queryByRole('link', { name: 'Targets' })).toBeNull()
+  })
+
+  it('leaves Anomalies out while its notes are off', () => {
+    render(<Sidebar extras={{ targets: false, anomalies: false }} counts={counts} pathname="/jobs" mode="textGlyph" signOut={false} />)
     expect(screen.queryByRole('link', { name: /Anomalies/ })).toBeNull()
   })
 })
