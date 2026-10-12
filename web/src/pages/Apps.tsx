@@ -19,15 +19,15 @@ const APK = DOWNLOADS.apk
 const PLAY_STORE = ''
 
 /**
- * Where to get ArrowLoop outside this page. The phone app is offered
- * everywhere; the second card offers the forms this one is not, so the
- * desktop app offers the server installs and a server offers the desktop app.
+ * Where to get ArrowLoop outside this page, in the README's order: first the
+ * form this one is not, so the desktop app offers the server installs and a
+ * server offers the desktop app, then the phone app.
  */
 export function Apps({ version, desktop }: { version: string; desktop: boolean }) {
   return (
     <Stack>
+      {desktop ? <ServerCard version={version} /> : <DesktopCard version={version} />}
       <PhoneCard version={version} />
-      {desktop ? <ServerCard version={version} /> : <DesktopCard />}
     </Stack>
   )
 }
@@ -35,7 +35,7 @@ export function Apps({ version, desktop }: { version: string; desktop: boolean }
 function PhoneCard({ version }: { version: string }) {
   const { t } = useT()
   return (
-    <Card title={t('apps.phoneTitle')} hint={t('apps.phoneHint')} hueIndex={0}>
+    <Card title={t('apps.phoneTitle')} hint={t('apps.phoneHint')} hueIndex={1}>
       <ReleaseVersion version={version} />
       <div className="glim-readme-btn-rows">
         <ReadmeButton
@@ -152,10 +152,11 @@ function QrWindow({
   )
 }
 
-function DesktopCard() {
+function DesktopCard({ version }: { version: string }) {
   const { t } = useT()
   return (
-    <Card title={t('apps.desktopTitle')} hint={t('apps.desktopHint')} hueIndex={1}>
+    <Card title={t('apps.desktopTitle')} hint={t('apps.desktopHint')} hueIndex={0}>
+      <ReleaseVersion version={version} />
       <div className="glim-readme-btn-rows">
         <ReadmeButton
           brand="windows"
@@ -192,7 +193,8 @@ function ServerCard({ version }: { version: string }) {
   const [copied, setCopied] = useState(false)
   const zip = sourceZip(version)
   return (
-    <Card title={t('apps.serverTitle')} hint={t('apps.serverHint')} hueIndex={1}>
+    <Card title={t('apps.serverTitle')} hint={t('apps.serverHint')} hueIndex={0}>
+      <ReleaseVersion version={version} />
       <div className="glim-readme-btn-rows">
         <ReadmeButton
           brand="unraid"
@@ -231,7 +233,7 @@ function ServerCard({ version }: { version: string }) {
   )
 }
 
-/** The version the buttons give, linked to its release where it is one. */
+/** The version every download on a card gives, linked to its release where it is one. */
 function ReleaseVersion({ version }: { version: string }) {
   const plain = /^v\d+\.\d+\.\d+$/.test(version)
   const cls = 'glim-num absolute end-5 top-3 text-meta text-carbon-textMuted'

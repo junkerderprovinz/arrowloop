@@ -17,6 +17,8 @@ const SRC = fileURLToPath(new URL('..', import.meta.url))
 const OUTSIDE: Record<string, string[]> = {
   // The wordmark, and the rail rows at the sidebar's own 15px.
   'components/Sidebar.tsx': ['text-xl', 'text-[15px]'],
+  // The settings tiles take the rail rows' size, since they stand beside them.
+  'pages/settings/SettingsRail.tsx': ['text-[15px]'],
   // A brand mark drawn at 1em, sized through the font size.
   'pages/Targets.tsx': ['text-[32px]'],
 }

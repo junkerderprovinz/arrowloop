@@ -38,7 +38,9 @@ export function ToggleRow({
       className={`flex items-start justify-between gap-4${hued ? ' glim-hue' : ''}`}
       style={hued ? (hueVars(hueIndex) as CSSProperties) : undefined}
     >
+      {/* data-glim-label is where the settings search scrolls to. */}
       <span
+        data-glim-label={label}
         className={`flex items-center gap-1.5 text-body text-carbon-text${
           disabled ? ' opacity-50' : ''
         }`}
