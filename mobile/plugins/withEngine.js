@@ -245,6 +245,16 @@ function withEngineGradle(config) {
       }
       gradle += `
 ${SYNC}
+// React Native's CMake step fails on newer JDKs over restricted-method
+// warnings, and only minutes into the build, so the JVM Gradle runs on is
+// checked while configuring.
+if (JavaVersion.current() != JavaVersion.VERSION_17) {
+    throw new GradleException(
+        'mobile/ builds with a JDK 17, but Gradle runs on Java ' + JavaVersion.current() +
+        ' from ' + System.getProperty('java.home') + '. React Native\\'s CMake step fails on newer JDKs. ' +
+        'Point JAVA_HOME at a JDK 17 and run the build again.')
+}
+
 copy {
     from rootProject.file('../native/java')
     into file('src/main/java')
