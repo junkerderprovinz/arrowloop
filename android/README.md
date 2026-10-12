@@ -43,6 +43,9 @@ wifi.
 
     gradle assembleRelease
 
+It builds with JDK 25, like `.github/workflows/android.yml`. The React Native
+app in `../mobile/` needs a JDK 17 instead; its README says why.
+
 There is no Gradle wrapper in here on purpose: the build runs on a machine that
 already has Gradle (the CI runner does), and a wrapper whose jar nobody checks
 is a binary in the repository that every clone executes without reading.

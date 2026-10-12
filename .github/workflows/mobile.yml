@@ -178,6 +178,8 @@ jobs:
           curl -sf -m 10 -X PUT -H 'Content-Type: application/json' -d '{"type":"sftp","settings":{"host":"example.org","user":"nobody"}}' http://127.0.0.1:18423/api/remotes/somewhere
           python mobile/tools/check_shapes.py http://127.0.0.1:18423
 
+      # 17, not the 25 android.yml builds with: React Native's CMake step
+      # fails on 25 over restricted-method warnings.
       - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6
         with:
           distribution: temurin

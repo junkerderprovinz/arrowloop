@@ -58,12 +58,26 @@ than loaded, and one stable signing key.
 
 ## Building it
 
-```
+This needs a JDK 17. The native app in `../android/` builds with JDK 25, but
+React Native's CMake step fails on 25 over restricted-method warnings. Set
+`JAVA_HOME` to a JDK 17 for this build rather than relying on whichever Java is
+the default; the generated `build.gradle` stops early and names the Java Gradle
+found if it is anything other than 17.
+
+```sh
 cd mobile
 npm ci
+# the engine, into mobile/native/jniLibs/<abi>/libarrowloop.so
 npx expo prebuild --platform android --clean
-# the engine, into mobile/android/app/src/main/jniLibs/<abi>/libarrowloop.so
-cd android && ./gradlew assembleRelease
+cd android
+JAVA_HOME=/path/to/jdk-17 ./gradlew assembleRelease
+```
+
+On Windows, in PowerShell:
+
+```powershell
+$env:JAVA_HOME = "C:\path\to\jdk-17"
+.\gradlew.bat assembleRelease
 ```
 
 **Release, not debug.** A React Native debug build expects Metro to hand it the
