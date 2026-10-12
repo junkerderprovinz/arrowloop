@@ -109,6 +109,14 @@ type authGate struct {
 
 	reset         resetCode
 	resetFailures map[string]failureRecord
+	refused       resetRefusals
+
+	// mint is held to read by a request that adds a way in or arms the
+	// second factor, and to write by whatever takes them all away: a reset
+	// or a change of the password. What a request adds then exists before
+	// the reset removes it, or the request is refused because the reset
+	// ended its session.
+	mint sync.RWMutex
 }
 
 // gates maps each server to its own gate, so two servers in one process never

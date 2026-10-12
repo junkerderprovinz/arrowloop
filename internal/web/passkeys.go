@@ -33,6 +33,9 @@ type passkeyCeremony struct {
 	session webauthn.SessionData
 	rpID    string
 	expires time.Time
+
+	// epoch is the password's epoch when a registration checked it.
+	epoch uint64
 }
 
 const (
@@ -47,7 +50,7 @@ const (
 
 // beginCeremony stores the session data and returns the random, single-use
 // handle the finishing call has to present.
-func (g *authGate) beginCeremony(sd *webauthn.SessionData, rpID string) (string, error) {
+func (g *authGate) beginCeremony(sd *webauthn.SessionData, rpID string, epoch uint64) (string, error) {
 	raw := make([]byte, 32)
 	if _, err := rand.Read(raw); err != nil {
 		return "", fmt.Errorf("draw a ceremony handle: %w", err)
@@ -76,7 +79,7 @@ func (g *authGate) beginCeremony(sd *webauthn.SessionData, rpID string) (string,
 		}
 		delete(g.ceremonies, oldestKey)
 	}
-	g.ceremonies[id] = passkeyCeremony{session: *sd, rpID: rpID, expires: now.Add(passkeyCeremonyTTL)}
+	g.ceremonies[id] = passkeyCeremony{session: *sd, rpID: rpID, expires: now.Add(passkeyCeremonyTTL), epoch: epoch}
 	return id, nil
 }
 
@@ -333,6 +336,7 @@ func (s *Server) passkeyRegisterBegin(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, err)
 		return
 	}
+	epoch := s.Security.Get().Epoch
 	if !s.checkCurrentPassword(w, r, body.Current) {
 		return
 	}
@@ -361,7 +365,7 @@ func (s *Server) passkeyRegisterBegin(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, err)
 		return
 	}
-	handle, err := s.gate().beginCeremony(sd, rpID)
+	handle, err := s.gate().beginCeremony(sd, rpID, epoch)
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, err)
 		return
@@ -385,6 +389,11 @@ func (s *Server) passkeyRegisterFinish(w http.ResponseWriter, r *http.Request) {
 	if !readBody(w, r, &body) {
 		return
 	}
+	release, ok := s.holdSignIn(w, r)
+	if !ok {
+		return
+	}
+	defer release()
 	cer, ok := s.gate().takeCeremony(body.CeremonyID)
 	if !ok {
 		writeError(w, http.StatusBadRequest, errors.New("that registration has expired, start it again"))
@@ -429,8 +438,8 @@ func (s *Server) passkeyRegisterFinish(w http.ResponseWriter, r *http.Request) {
 		RPID:         rpID,
 		BackedUp:     cred.Flags.BackupEligible,
 		CreatedAt:    time.Now().Unix(),
-	}, s.passwordFingerprint())
-	if errors.Is(err, security.ErrPasskeyExists) {
+	}, s.passwordFingerprint(), cer.epoch)
+	if errors.Is(err, security.ErrPasskeyExists) || errors.Is(err, security.ErrPasswordMoved) {
 		writeError(w, http.StatusConflict, err)
 		return
 	}
@@ -467,7 +476,7 @@ func (s *Server) passkeyLoginBegin(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, err)
 		return
 	}
-	handle, err := s.gate().beginCeremony(sd, rpID)
+	handle, err := s.gate().beginCeremony(sd, rpID, 0)
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, err)
 		return

@@ -105,7 +105,7 @@ func TestTheOriginFollowsTheProxysScheme(t *testing.T) {
 // An answered challenge is spent, or a captured answer could be replayed.
 func TestACeremonyHandleWorksOnce(t *testing.T) {
 	g := &authGate{}
-	id, err := g.beginCeremony(&testSessionData, "arrowloop.example.com")
+	id, err := g.beginCeremony(&testSessionData, "arrowloop.example.com", 0)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -122,7 +122,7 @@ func TestACeremonyHandleWorksOnce(t *testing.T) {
 func TestCeremoniesAreBounded(t *testing.T) {
 	g := &authGate{}
 	for range passkeyCeremonyMax * 3 {
-		if _, err := g.beginCeremony(&testSessionData, "arrowloop.example.com"); err != nil {
+		if _, err := g.beginCeremony(&testSessionData, "arrowloop.example.com", 0); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -139,7 +139,7 @@ func TestCeremoniesAreBounded(t *testing.T) {
 func TestAStrangerSeesCountsButNotTheKeys(t *testing.T) {
 	_, srv, store := newSecured(t)
 	storePassword(t, store)
-	if _, err := store.AddPasskey(security.Passkey{Name: "Phone", CredentialID: []byte{1}, PublicKey: []byte{1}, RPID: "localhost"}, ""); err != nil {
+	if _, err := store.AddPasskey(security.Passkey{Name: "Phone", CredentialID: []byte{1}, PublicKey: []byte{1}, RPID: "localhost"}, "", 0); err != nil {
 		t.Fatal(err)
 	}
 
@@ -268,7 +268,7 @@ func TestChangingOrRemovingThePasswordRemovesThePasskeys(t *testing.T) {
 	for _, route := range []string{"/api/security/password", "/api/security/password/remove"} {
 		_, srv, store := newSecured(t)
 		storePassword(t, store)
-		if _, err := store.AddPasskey(security.Passkey{Name: "Planted", CredentialID: []byte{1}, PublicKey: []byte{1}, RPID: "localhost"}, ""); err != nil {
+		if _, err := store.AddPasskey(security.Passkey{Name: "Planted", CredentialID: []byte{1}, PublicKey: []byte{1}, RPID: "localhost"}, "", 0); err != nil {
 			t.Fatal(err)
 		}
 		c := browser(t)
@@ -307,7 +307,7 @@ func TestChangingThePasswordInTheEnvironmentRemovesThePasskeys(t *testing.T) {
 
 	first := testHash(t, uiPassword)
 	store := start(first)
-	if _, err := store.AddPasskey(security.Passkey{Name: "Phone", CredentialID: []byte{1}, PublicKey: []byte{1}, RPID: "localhost"}, ""); err != nil {
+	if _, err := store.AddPasskey(security.Passkey{Name: "Phone", CredentialID: []byte{1}, PublicKey: []byte{1}, RPID: "localhost"}, "", 0); err != nil {
 		t.Fatal(err)
 	}
 
