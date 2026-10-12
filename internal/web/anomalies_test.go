@@ -100,3 +100,19 @@ func TestAHeldJobIsListedAndAnsweredOverTheAPI(t *testing.T) {
 		t.Errorf("answering a closed finding got %d, want 404", got)
 	}
 }
+
+func TestEveryJobIsListedWithWhatItHasLearned(t *testing.T) {
+	h := newHarness(t)
+	if _, err := h.runner.Run(context.Background(), "photos"); err != nil {
+		t.Fatalf("run: %v", err)
+	}
+	var learning []struct {
+		Job   string
+		Runs  int
+		Usual []struct{ Figure string }
+	}
+	h.get(t, "/api/anomalies/learning", &learning)
+	if len(learning) == 0 || learning[0].Job != "photos" || learning[0].Runs != 1 || learning[0].Usual != nil {
+		t.Errorf("the learning reads %+v, want photos with one run and no range yet", learning)
+	}
+}

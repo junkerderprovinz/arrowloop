@@ -388,3 +388,98 @@ func TestANoteMadeBeforeTheSwitchIsHiddenUntilItIsOnAgain(t *testing.T) {
 		t.Errorf("got %+v, want the overdue note back", open)
 	}
 }
+
+// learned records enough quiet successful runs of the test job for its
+// habits to count as learned: none of them deletes anything.
+func learned(t *testing.T, r *Runner) {
+	t.Helper()
+	start := time.Now().Add(-48 * time.Hour)
+	for i := range anomaly.LearnAfter {
+		at := start.Add(time.Duration(i) * time.Hour)
+		if err := r.hist.Record(context.Background(), history.Run{Job: "test", Started: at, Finished: at.Add(time.Minute), Copied: 3}, nil); err != nil {
+			t.Fatalf("record: %v", err)
+		}
+	}
+}
+
+func unusualRun(trashed int) history.Run {
+	now := time.Now()
+	return history.Run{Job: "test", Started: now, Finished: now.Add(time.Minute), Copied: 3, Trashed: trashed}
+}
+
+func TestARunFarOutsideTheLearnedRangeMakesANoteThatTheNextUsualRunCloses(t *testing.T) {
+	r, _, _ := syncedPair(t)
+	learned(t, r)
+
+	r.review(context.Background(), unusualRun(412))
+	open, _ := r.Findings(context.Background())
+	if len(open) != 1 || open[0].Kind != anomaly.Unusual || open[0].Held {
+		t.Fatalf("got %+v, want one note about an unusual run that holds nothing", open)
+	}
+	if fig := open[0].Figures; len(fig) != 1 || fig[0].Figure != anomaly.Deleted || fig[0].Value != 412 {
+		t.Errorf("the note says %+v, want the 412 deletions", fig)
+	}
+
+	r.review(context.Background(), unusualRun(0))
+	if open, _ := r.Findings(context.Background()); len(open) != 0 {
+		t.Errorf("the note outlived a usual run: %+v", open)
+	}
+}
+
+func TestAJobStillLearningMakesNoUnusualNote(t *testing.T) {
+	r, _, _ := syncedPair(t)
+	r.review(context.Background(), unusualRun(412))
+	if open, _ := r.Findings(context.Background()); len(open) != 0 {
+		t.Errorf("a job with one run behind it made a note: %+v", open)
+	}
+}
+
+func TestUnusualRunsStayQuietWhenSwitchedOff(t *testing.T) {
+	no := false
+	for name, a := range map[string]job.Anomalies{"notes off": {Off: true}, "unusual off": {Unusual: &no}} {
+		t.Run(name, func(t *testing.T) {
+			r, _, _ := syncedPair(t)
+			cfg := *r.config()
+			cfg.Anomalies = a
+			r.Reload(&cfg)
+			learned(t, r)
+			r.review(context.Background(), unusualRun(412))
+			if r.anomalies.Has("test", anomaly.Unusual) {
+				t.Error("an unusual run made a note while they were switched off")
+			}
+		})
+	}
+}
+
+func TestLearningIsListedPerJob(t *testing.T) {
+	r, _, _ := syncedPair(t)
+	got := r.Learning(context.Background())
+	if len(got) != 1 || got[0].Job != "test" || got[0].Runs != 1 || got[0].Learned() {
+		t.Fatalf("after the first run the job lists as %+v, want one run learned", got)
+	}
+	learned(t, r)
+	got = r.Learning(context.Background())
+	if got[0].Runs != anomaly.LearnAfter+1 || !got[0].Learned() || len(got[0].Usual) != 3 {
+		t.Errorf("after %d more runs the job lists as %+v", anomaly.LearnAfter, got[0])
+	}
+}
+
+func TestTheRunBeingJudgedDoesNotCountTowardsLearning(t *testing.T) {
+	r, _, _ := syncedPair(t)
+	// With the first run of syncedPair, one short of learned.
+	start := time.Now().Add(-48 * time.Hour)
+	for i := range anomaly.LearnAfter - 2 {
+		at := start.Add(time.Duration(i) * time.Hour)
+		if err := r.hist.Record(context.Background(), history.Run{Job: "test", Started: at, Finished: at.Add(time.Minute)}, nil); err != nil {
+			t.Fatalf("record: %v", err)
+		}
+	}
+	rec := unusualRun(412)
+	if err := r.hist.Record(context.Background(), rec, nil); err != nil {
+		t.Fatalf("record: %v", err)
+	}
+	r.review(context.Background(), rec)
+	if r.anomalies.Has("test", anomaly.Unusual) {
+		t.Error("a run was judged by a range it helped learn")
+	}
+}

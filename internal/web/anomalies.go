@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/junkerderprovinz/arrowloop/internal/anomaly"
+	"github.com/junkerderprovinz/arrowloop/internal/daemon"
 )
 
 // listAnomalies answers with the open findings, loudest first, and the ones
@@ -20,6 +21,15 @@ func (s *Server) listAnomalies(w http.ResponseWriter, r *http.Request) {
 		closed = []anomaly.Finding{}
 	}
 	writeJSON(w, http.StatusOK, map[string]any{"open": open, "closed": closed})
+}
+
+// listLearning answers with every job and how far its habits are learned.
+func (s *Server) listLearning(w http.ResponseWriter, r *http.Request) {
+	learning := s.Runner.Learning(r.Context())
+	if learning == nil {
+		learning = []daemon.JobLearning{}
+	}
+	writeJSON(w, http.StatusOK, learning)
 }
 
 // answerAnomaly starts the run that answers a held job: letting the refused

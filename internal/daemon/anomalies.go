@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"slices"
+	"strings"
 	"time"
 
 	"github.com/junkerderprovinz/arrowloop/internal/anomaly"
@@ -118,11 +119,12 @@ func (r *Runner) settle(name, outcome string, kinds ...anomaly.Kind) {
 	}
 }
 
-// review makes or clears the note about a job that keeps failing, once a run
-// has been recorded.
+// review makes or clears the notes about a job that keeps failing and about a
+// run far outside its usual range, once a run has been recorded.
 func (r *Runner) review(ctx context.Context, rec history.Run) {
 	if !rec.Failed() {
 		r.settle(rec.Job, anomaly.Resolved, anomaly.Failing, anomaly.Overdue)
+		r.judge(ctx, rec)
 		return
 	}
 	after := r.config().Anomalies.FailingCount()
@@ -142,6 +144,73 @@ func (r *Runner) review(ctx context.Context, rec history.Run) {
 		Detail: fmt.Sprintf("the last %d runs failed: %s", fails, rec.Err),
 	})
 	r.noted(ctx, stored, fresh)
+}
+
+// judge holds a successful run against what the job's earlier successful runs
+// taught, and makes the note when it stands out or clears it when it does not.
+// A job still learning is not judged.
+func (r *Runner) judge(ctx context.Context, rec history.Run) {
+	if !r.config().Anomalies.ReportsUnusual() || r.hist == nil {
+		return
+	}
+	learned, err := r.learn(ctx, rec.Job, rec.Started)
+	if err != nil || !learned.Learned() {
+		return
+	}
+	odd := learned.Unusual(sample(rec))
+	if len(odd) == 0 {
+		r.settle(rec.Job, anomaly.Resolved, anomaly.Unusual)
+		return
+	}
+	said := make([]string, len(odd))
+	for i, m := range odd {
+		said[i] = m.Say()
+	}
+	stored, fresh := r.anomalies.Raise(anomaly.Finding{
+		Job: rec.Job, Kind: anomaly.Unusual, Figures: odd,
+		Detail: "an unusual run: " + strings.Join(said, ", "),
+	})
+	r.noted(ctx, stored, fresh)
+}
+
+// learn learns a job's habits from its latest successful runs, leaving out
+// the run started at skip, which is the one being judged.
+func (r *Runner) learn(ctx context.Context, name string, skip time.Time) (anomaly.Learning, error) {
+	runs, err := r.hist.Recent(ctx, name, history.ShowSucceeded, anomaly.LearnFrom+1)
+	if err != nil {
+		return anomaly.Learning{}, err
+	}
+	samples := make([]anomaly.Sample, 0, len(runs))
+	for _, run := range runs {
+		if !run.Started.Equal(skip) {
+			samples = append(samples, sample(run))
+		}
+	}
+	return anomaly.Learn(samples), nil
+}
+
+func sample(run history.Run) anomaly.Sample {
+	return anomaly.Sample{Deleted: run.Trashed, Copied: run.Copied, Took: run.Finished.Sub(run.Started)}
+}
+
+// JobLearning is how far the engine has learned one job's habits.
+type JobLearning struct {
+	Job string `json:"job"`
+	anomaly.Learning
+}
+
+// Learning lists every job with how many runs it has learned from and, once
+// learned, its usual ranges.
+func (r *Runner) Learning(ctx context.Context) []JobLearning {
+	var out []JobLearning
+	for _, j := range r.config().Jobs {
+		var l anomaly.Learning
+		if r.hist != nil {
+			l, _ = r.learn(ctx, j.Name, time.Time{})
+		}
+		out = append(out, JobLearning{Job: j.Name, Learning: l})
+	}
+	return out
 }
 
 // overdue makes the note about a scheduled job whose turn came and went. A

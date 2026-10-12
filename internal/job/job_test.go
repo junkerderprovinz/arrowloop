@@ -291,3 +291,19 @@ func TestAnomaliesSwitchedOffKeepOnlyTheHeldMessage(t *testing.T) {
 		t.Error("a held job would no longer be sent")
 	}
 }
+
+func TestUnusualRunsAreReportedUnlessSwitchedOff(t *testing.T) {
+	no := false
+	for _, c := range []struct {
+		a    Anomalies
+		want bool
+	}{
+		{Anomalies{}, true},
+		{Anomalies{Unusual: &no}, false},
+		{Anomalies{Off: true}, false},
+	} {
+		if got := c.a.ReportsUnusual(); got != c.want {
+			t.Errorf("%+v reports unusual runs: %v, want %v", c.a, got, c.want)
+		}
+	}
+}

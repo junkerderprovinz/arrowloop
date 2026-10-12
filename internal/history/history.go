@@ -351,6 +351,9 @@ const (
 	ShowChanged Show = "changed"
 	// ShowFailed is the runs that ended badly.
 	ShowFailed Show = "failed"
+	// ShowSucceeded is the runs that ended well, which are what a job's
+	// habits are learned from.
+	ShowSucceeded Show = "succeeded"
 )
 
 // where is the SQL condition for this filter, or "" for all runs. The changed
@@ -361,6 +364,8 @@ func (s Show) where() string {
 		return `(copied + moved + trashed + conflicts + dirs_made + dirs_removed > 0 OR err <> '')`
 	case ShowFailed:
 		return `err <> ''`
+	case ShowSucceeded:
+		return `err = ''`
 	default:
 		return ``
 	}

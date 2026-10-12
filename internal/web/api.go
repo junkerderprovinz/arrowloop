@@ -108,6 +108,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /api/conflicts", s.listConflicts)
 	mux.HandleFunc("POST /api/jobs/{name}/conflicts", s.decideConflicts)
 	mux.HandleFunc("GET /api/anomalies", s.listAnomalies)
+	mux.HandleFunc("GET /api/anomalies/learning", s.listLearning)
 	mux.HandleFunc("POST /api/anomalies/{id}/acknowledge", s.acknowledgeAnomaly)
 	mux.HandleFunc("POST /api/anomalies/{id}/{answer}", s.answerAnomaly)
 	mux.HandleFunc("GET /api/jobs/{name}/versions/{side}", s.listVersions)

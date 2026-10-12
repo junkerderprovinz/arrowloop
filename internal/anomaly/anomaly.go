@@ -1,5 +1,6 @@
 // Package anomaly keeps what the engine found odd about a job: a run a safety
-// brake refused, a job that keeps failing, a schedule that stopped being kept.
+// brake refused, a job that keeps failing, a schedule that stopped being kept,
+// a run far outside what the job usually does.
 //
 // A finding from a brake holds its job. Every run of it stops at the same
 // place until somebody answers the finding or the cause goes away, and the
@@ -21,13 +22,14 @@ import (
 // Kind is what was found.
 type Kind string
 
-// The three brakes hold a job; the last two are notes.
+// The three brakes hold a job; the rest are notes.
 const (
 	Delete  Kind = "delete"
 	Change  Kind = "change"
 	Empty   Kind = "empty"
 	Failing Kind = "failing"
 	Overdue Kind = "overdue"
+	Unusual Kind = "unusual"
 )
 
 // Holds reports whether a finding of this kind stops its job.
@@ -87,6 +89,9 @@ type Finding struct {
 	Side    string `json:"side,omitempty"`
 
 	Paths []string `json:"paths,omitempty"`
+
+	// Figures are what an unusual run did that its job usually does not.
+	Figures []Measure `json:"figures,omitempty"`
 
 	// Detail is the last failure's own words.
 	Detail string `json:"detail,omitempty"`

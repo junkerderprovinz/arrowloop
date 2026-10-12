@@ -133,6 +133,8 @@ func (s Show) shows(r Run) bool {
 		return r.Changed() || r.Failed()
 	case ShowFailed:
 		return r.Failed()
+	case ShowSucceeded:
+		return !r.Failed()
 	default:
 		return true
 	}

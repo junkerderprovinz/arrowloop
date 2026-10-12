@@ -145,6 +145,10 @@ type Anomalies struct {
 	// it makes a note. Zero means never; nil means the default.
 	OverdueDays *int `json:"overdueDays,omitempty"`
 
+	// Unusual says whether a run far outside what its job usually does makes
+	// a note. Nil means it does.
+	Unusual *bool `json:"unusual,omitempty"`
+
 	// NotifyHeld and NotifyNotes say whether a held job and a note are sent
 	// where runs report to. Nil means the default, which tells about a held
 	// job and stays quiet about a note.
@@ -182,6 +186,11 @@ func (a Anomalies) OverdueAfter() time.Duration {
 		days = max(*a.OverdueDays, 0)
 	}
 	return time.Duration(days) * 24 * time.Hour
+}
+
+// ReportsUnusual reports whether an unusual run makes a note.
+func (a Anomalies) ReportsUnusual() bool {
+	return !a.Off && (a.Unusual == nil || *a.Unusual)
 }
 
 // Tells reports whether a finding is worth a message: a held job unless that
