@@ -30,7 +30,7 @@ const listing: ConflictListing = { conflicts: ['a.txt', 'b.txt', 'c.txt', 'd.txt
 function page() {
   render(
     <ToastProvider>
-      <Conflicts listing={listing} job="" onChanged={() => undefined} />
+      <Conflicts listing={listing} job="" onJob={() => undefined} onChanged={() => undefined} />
     </ToastProvider>,
   )
 }
@@ -44,6 +44,19 @@ afterEach(() => {
 })
 
 describe('the conflicts list', () => {
+  it('follows the job the address names', () => {
+    const both: ConflictListing = { conflicts: [conflict('a.txt'), conflict('song.mp3', 'music')], unread: [] }
+    const at = (job: string) => (
+      <ToastProvider>
+        <Conflicts listing={both} job={job} onJob={() => undefined} onChanged={() => undefined} />
+      </ToastProvider>
+    )
+    const { rerender } = render(at('docs'))
+    expect(screen.queryByText('song.mp3')).toBeNull()
+    rerender(at(''))
+    expect(screen.getByText('song.mp3')).toBeTruthy()
+  })
+
   it('picks with round marks, never a checkbox input or a switch', () => {
     page()
     expect(document.querySelector('input[type="checkbox"]')).toBeNull()

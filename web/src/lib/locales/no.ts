@@ -174,6 +174,7 @@ const no: Translations = {
   'trash.deleteManyConfirm': 'Slette de valgte filene for godt? De forlater papirkurven, og ingenting kan hente dem tilbake. Filer: {count}',
   'trash.emptySide': 'Tøm denne siden',
   'trash.emptyAll': 'Tøm papirkurven',
+  'trash.searchHolds': 'Mens et søk er skrevet inn, venter tømmingen: den ville også fjerne filene søket skjuler.',
   'trash.emptySideConfirm': 'Tømme papirkurven til {job} ({side}) for godt? Filer som fjernes: {count}, {size}',
   'trash.emptyAllConfirm': 'Tømme alle papirkurvene som står her, for godt? Filer som fjernes: {count}, {size}',
   'trash.emptied': 'Fjernet fra papirkurven: {count}',

@@ -174,6 +174,7 @@ const ms: Translations = {
   'trash.deleteManyConfirm': 'Padam fail yang dipilih secara kekal? Ia keluar dari tong sampah, dan tiada apa yang dapat mengembalikannya. Fail: {count}',
   'trash.emptySide': 'Kosongkan sebelah ini',
   'trash.emptyAll': 'Kosongkan tong sampah',
+  'trash.searchHolds': 'Selagi ada carian ditaip, pengosongan menunggu: ia juga akan membuang fail yang disembunyikan oleh carian.',
   'trash.emptySideConfirm': 'Kosongkan tong sampah {job} ({side}) secara kekal? Fail dibuang: {count}, {size}',
   'trash.emptyAllConfirm': 'Kosongkan semua tong sampah yang disenaraikan di sini secara kekal? Fail dibuang: {count}, {size}',
   'trash.emptied': 'Dibuang dari tong sampah: {count}',

@@ -174,6 +174,7 @@ const ja: Translations = {
   'trash.deleteManyConfirm': '選んだファイルを完全に削除しますか。ごみ箱から消え、二度と取り戻せません。ファイル: {count}',
   'trash.emptySide': 'この側を空にする',
   'trash.emptyAll': 'ごみ箱を空にする',
+  'trash.searchHolds': '検索語が入力されている間は空にする操作を止めています。検索で隠れているファイルまで削除されるためです。',
   'trash.emptySideConfirm': '{job}（{side}）のごみ箱を完全に空にしますか。削除されるファイル: {count}、{size}',
   'trash.emptyAllConfirm': 'ここに表示されているすべてのごみ箱を完全に空にしますか。削除されるファイル: {count}、{size}',
   'trash.emptied': 'ごみ箱から削除: {count}',

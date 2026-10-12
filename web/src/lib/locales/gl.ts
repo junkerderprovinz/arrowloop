@@ -174,6 +174,7 @@ const gl: Translations = {
   'trash.deleteManyConfirm': 'Eliminar definitivamente os ficheiros escollidos? Saen do lixo e xa nada os poderá recuperar. Ficheiros: {count}',
   'trash.emptySide': 'Baleirar este lado',
   'trash.emptyAll': 'Baleirar o lixo',
+  'trash.searchHolds': 'Mentres haxa unha busca escrita, o baleirado agarda: tamén quitaría os ficheiros que a busca agocha.',
   'trash.emptySideConfirm': 'Baleirar definitivamente o lixo de {job} ({side})? Ficheiros eliminados: {count}, {size}',
   'trash.emptyAllConfirm': 'Baleirar definitivamente todos os lixos desta lista? Ficheiros eliminados: {count}, {size}',
   'trash.emptied': 'Eliminados do lixo: {count}',

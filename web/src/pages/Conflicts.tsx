@@ -41,19 +41,21 @@ const ORDERS: { value: Order; label: TranslationKey }[] = [
  */
 export function Conflicts({
   listing,
-  job: startJob,
+  job,
+  onJob,
   onChanged,
 }: {
   /** Null until the first answer arrives. */
   listing: ConflictListing | null
-  /** The job to show first, when another screen sent somebody here for one. */
+  /** The job the address narrows the page to, empty for every job. */
   job: string
+  /** Narrows the page to another job, by changing the address. */
+  onJob: (job: string) => void
   /** Asks for a job's conflicts and trash again after something was decided. */
   onChanged: (job: string) => void
 }) {
   const { t } = useT()
   const push = useToast()
-  const [job, setJob] = useState(startJob)
   const [order, setOrder] = useState<Order>('oldest')
   const [query, setQuery] = useState('')
   const [busy, setBusy] = useState<Set<string>>(new Set())
@@ -107,7 +109,7 @@ export function Conflicts({
             <FilterChoice
               label={t('history.filterJob')}
               value={job}
-              onChange={setJob}
+              onChange={onJob}
               options={[{ value: '', label: t('history.allJobs') }, ...jobs.map((n) => ({ value: n, label: n }))]}
             />
           </FilterButton>

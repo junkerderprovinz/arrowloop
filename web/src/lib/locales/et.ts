@@ -174,6 +174,7 @@ const et: Translations = {
   'trash.deleteManyConfirm': 'Kas kustutada valitud failid jäädavalt? Need lahkuvad prügikastist ja miski ei too neid tagasi. Faile: {count}',
   'trash.emptySide': 'Tühjenda see pool',
   'trash.emptyAll': 'Tühjenda prügikast',
+  'trash.searchHolds': 'Kuni otsing on sisestatud, tühjendamine ootab: see eemaldaks ka failid, mille otsing peidab.',
   'trash.emptySideConfirm': 'Kas tühjendada töö {job} prügikast ({side}) jäädavalt? Eemaldatakse faile: {count}, {size}',
   'trash.emptyAllConfirm': 'Kas tühjendada kõik siin loetletud prügikastid jäädavalt? Eemaldatakse faile: {count}, {size}',
   'trash.emptied': 'Prügikastist eemaldatud: {count}',

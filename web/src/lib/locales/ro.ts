@@ -174,6 +174,7 @@ const ro: Translations = {
   'trash.deleteManyConfirm': 'Se șterg definitiv fișierele alese? Ies din coș și nimic nu le mai poate aduce înapoi. Fișiere: {count}',
   'trash.emptySide': 'Golește partea aceasta',
   'trash.emptyAll': 'Golește coșul',
+  'trash.searchHolds': 'Cât timp este scrisă o căutare, golirea așteaptă: ar elimina și fișierele pe care căutarea le ascunde.',
   'trash.emptySideConfirm': 'Se golește definitiv coșul din {job} ({side})? Fișiere eliminate: {count}, {size}',
   'trash.emptyAllConfirm': 'Se golesc definitiv toate coșurile listate aici? Fișiere eliminate: {count}, {size}',
   'trash.emptied': 'Eliminate din coș: {count}',

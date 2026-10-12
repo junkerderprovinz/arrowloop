@@ -174,6 +174,7 @@ const pl: Translations = {
   'trash.deleteManyConfirm': 'Usunąć wybrane pliki na stałe? Opuszczą kosz i nic ich już nie przywróci. Pliki: {count}',
   'trash.emptySide': 'Opróżnij tę stronę',
   'trash.emptyAll': 'Opróżnij kosz',
+  'trash.searchHolds': 'Dopóki wpisane jest wyszukiwanie, opróżnianie czeka: usunęłoby też pliki, które wyszukiwanie ukrywa.',
   'trash.emptySideConfirm': 'Opróżnić na stałe kosz zadania {job} ({side})? Usunięte pliki: {count}, {size}',
   'trash.emptyAllConfirm': 'Opróżnić na stałe każdy wymieniony tutaj kosz? Usunięte pliki: {count}, {size}',
   'trash.emptied': 'Usunięto z kosza: {count}',

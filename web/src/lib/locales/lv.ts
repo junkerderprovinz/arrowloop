@@ -174,6 +174,7 @@ const lv: Translations = {
   'trash.deleteManyConfirm': 'Vai dzēst izvēlētos failus neatgriezeniski? Tie pamet miskasti, un nekas tos vairs neatgriezīs. Faili: {count}',
   'trash.emptySide': 'Iztukšot šo pusi',
   'trash.emptyAll': 'Iztukšot miskasti',
+  'trash.searchHolds': 'Kamēr ievadīta meklēšana, iztukšošana gaida: tā noņemtu arī failus, ko meklēšana paslēpj.',
   'trash.emptySideConfirm': 'Vai neatgriezeniski iztukšot uzdevuma {job} miskasti ({side})? Tiks izņemti faili: {count}, {size}',
   'trash.emptyAllConfirm': 'Vai neatgriezeniski iztukšot visas šeit uzskaitītās miskastes? Tiks izņemti faili: {count}, {size}',
   'trash.emptied': 'Izņemti no miskastes: {count}',

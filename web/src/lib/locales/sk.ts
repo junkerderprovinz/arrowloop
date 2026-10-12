@@ -174,6 +174,7 @@ const sk: Translations = {
   'trash.deleteManyConfirm': 'Vymazať vybrané súbory nadobro? Opustia kôš a nič ich už nevráti. Súbory: {count}',
   'trash.emptySide': 'Vyprázdniť túto stranu',
   'trash.emptyAll': 'Vyprázdniť kôš',
+  'trash.searchHolds': 'Kým je zadané hľadanie, vyprázdnenie čaká: odstránilo by aj súbory, ktoré hľadanie skrýva.',
   'trash.emptySideConfirm': 'Nadobro vyprázdniť kôš úlohy {job} ({side})? Odstránené súbory: {count}, {size}',
   'trash.emptyAllConfirm': 'Nadobro vyprázdniť všetky tu uvedené koše? Odstránené súbory: {count}, {size}',
   'trash.emptied': 'Odstránené z koša: {count}',

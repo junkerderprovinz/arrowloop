@@ -174,6 +174,7 @@ const sr: Translations = {
   'trash.deleteManyConfirm': 'Трајно обрисати изабране датотеке? Излазе из корпе и више се не могу вратити. Датотеке: {count}',
   'trash.emptySide': 'Испразни ову страну',
   'trash.emptyAll': 'Испразни корпу',
+  'trash.searchHolds': 'Док је унета претрага, пражњење чека: уклонило би и датотеке које претрага скрива.',
   'trash.emptySideConfirm': 'Трајно испразнити корпу посла {job} ({side})? Уклоњене датотеке: {count}, {size}',
   'trash.emptyAllConfirm': 'Трајно испразнити све корпе са овог списка? Уклоњене датотеке: {count}, {size}',
   'trash.emptied': 'Уклоњено из корпе: {count}',

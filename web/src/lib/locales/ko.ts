@@ -174,6 +174,7 @@ const ko: Translations = {
   'trash.deleteManyConfirm': '고른 파일을 완전히 지울까요? 휴지통에서 빠지며 다시는 되찾을 수 없습니다. 파일: {count}',
   'trash.emptySide': '이쪽 비우기',
   'trash.emptyAll': '휴지통 비우기',
+  'trash.searchHolds': '검색어가 입력되어 있는 동안에는 비우기를 기다립니다. 검색으로 가려진 파일까지 지워지기 때문입니다.',
   'trash.emptySideConfirm': '{job}({side})의 휴지통을 완전히 비울까요? 지워지는 파일: {count}, {size}',
   'trash.emptyAllConfirm': '여기 나열된 모든 휴지통을 완전히 비울까요? 지워지는 파일: {count}, {size}',
   'trash.emptied': '휴지통에서 지운 항목: {count}',

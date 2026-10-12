@@ -174,6 +174,7 @@ const is: Translations = {
   'trash.deleteManyConfirm': 'Eyða völdu skránum endanlega? Þær fara úr ruslinu, og ekkert getur sótt þær aftur. Skrár: {count}',
   'trash.emptySide': 'Tæma þessa hlið',
   'trash.emptyAll': 'Tæma ruslið',
+  'trash.searchHolds': 'Á meðan leit er slegin inn bíður tæmingin: hún myndi líka fjarlægja skrárnar sem leitin felur.',
   'trash.emptySideConfirm': 'Tæma ruslið í {job} ({side}) endanlega? Skrár fjarlægðar: {count}, {size}',
   'trash.emptyAllConfirm': 'Tæma endanlega allt rusl sem er talið upp hér? Skrár fjarlægðar: {count}, {size}',
   'trash.emptied': 'Fjarlægt úr ruslinu: {count}',

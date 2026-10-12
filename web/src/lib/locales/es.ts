@@ -174,6 +174,7 @@ const es: Translations = {
   'trash.deleteManyConfirm': '¿Eliminar definitivamente los archivos elegidos? Salen de la papelera y ya nada podrá recuperarlos. Archivos: {count}',
   'trash.emptySide': 'Vaciar este lado',
   'trash.emptyAll': 'Vaciar la papelera',
+  'trash.searchHolds': 'Mientras haya una búsqueda escrita, vaciar espera: también quitaría los archivos que la búsqueda oculta.',
   'trash.emptySideConfirm': '¿Vaciar definitivamente la papelera de {job} ({side})? Archivos eliminados: {count}, {size}',
   'trash.emptyAllConfirm': '¿Vaciar definitivamente todas las papeleras de esta lista? Archivos eliminados: {count}, {size}',
   'trash.emptied': 'Eliminados de la papelera: {count}',

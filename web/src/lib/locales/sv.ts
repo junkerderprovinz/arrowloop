@@ -174,6 +174,7 @@ const sv: Translations = {
   'trash.deleteManyConfirm': 'Radera de valda filerna för gott? De lämnar papperskorgen, och inget kan få tillbaka dem. Filer: {count}',
   'trash.emptySide': 'Töm den här sidan',
   'trash.emptyAll': 'Töm papperskorgen',
+  'trash.searchHolds': 'Medan en sökning är inskriven väntar tömningen: den skulle också ta bort filerna som sökningen döljer.',
   'trash.emptySideConfirm': 'Tömma papperskorgen för {job} ({side}) för gott? Filer som tas bort: {count}, {size}',
   'trash.emptyAllConfirm': 'Tömma alla papperskorgar som listas här för gott? Filer som tas bort: {count}, {size}',
   'trash.emptied': 'Borttagna ur papperskorgen: {count}',

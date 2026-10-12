@@ -174,6 +174,7 @@ const pt: Translations = {
   'trash.deleteManyConfirm': 'Apagar definitivamente os ficheiros escolhidos? Saem da reciclagem e nada os pode trazer de volta. Ficheiros: {count}',
   'trash.emptySide': 'Esvaziar este lado',
   'trash.emptyAll': 'Esvaziar a reciclagem',
+  'trash.searchHolds': 'Enquanto houver uma pesquisa escrita, esvaziar espera: também removeria os ficheiros que a pesquisa esconde.',
   'trash.emptySideConfirm': 'Esvaziar definitivamente a reciclagem de {job} ({side})? Ficheiros removidos: {count}, {size}',
   'trash.emptyAllConfirm': 'Esvaziar definitivamente todas as reciclagens desta lista? Ficheiros removidos: {count}, {size}',
   'trash.emptied': 'Removidos da reciclagem: {count}',

@@ -174,6 +174,7 @@ const id: Translations = {
   'trash.deleteManyConfirm': 'Hapus berkas yang dipilih secara permanen? Berkas-berkas itu keluar dari tempat sampah, dan tidak ada yang bisa mengembalikannya. Berkas: {count}',
   'trash.emptySide': 'Kosongkan sisi ini',
   'trash.emptyAll': 'Kosongkan tempat sampah',
+  'trash.searchHolds': 'Selama ada pencarian yang diketik, pengosongan menunggu: itu juga akan menghapus berkas yang disembunyikan pencarian.',
   'trash.emptySideConfirm': 'Kosongkan tempat sampah {job} ({side}) secara permanen? Berkas yang dihapus: {count}, {size}',
   'trash.emptyAllConfirm': 'Kosongkan secara permanen semua tempat sampah yang tercantum di sini? Berkas yang dihapus: {count}, {size}',
   'trash.emptied': 'Dihapus dari tempat sampah: {count}',

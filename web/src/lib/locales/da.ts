@@ -174,6 +174,7 @@ const da: Translations = {
   'trash.deleteManyConfirm': 'Slette de valgte filer for altid? De forlader papirkurven, og intet kan hente dem tilbage. Filer: {count}',
   'trash.emptySide': 'Tøm denne side',
   'trash.emptyAll': 'Tøm papirkurven',
+  'trash.searchHolds': 'Mens der er skrevet en søgning, venter tømningen: den ville også fjerne de filer, søgningen skjuler.',
   'trash.emptySideConfirm': 'Tømme papirkurven for {job} ({side}) for altid? Filer, der fjernes: {count}, {size}',
   'trash.emptyAllConfirm': 'Tømme alle papirkurvene på listen her for altid? Filer, der fjernes: {count}, {size}',
   'trash.emptied': 'Fjernet fra papirkurven: {count}',

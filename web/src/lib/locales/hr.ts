@@ -174,6 +174,7 @@ const hr: Translations = {
   'trash.deleteManyConfirm': 'Trajno izbrisati odabrane datoteke? Izlaze iz smeća i više se ne mogu vratiti. Datoteke: {count}',
   'trash.emptySide': 'Isprazni ovu stranu',
   'trash.emptyAll': 'Isprazni smeće',
+  'trash.searchHolds': 'Dok je upisana pretraga, pražnjenje čeka: uklonilo bi i datoteke koje pretraga skriva.',
   'trash.emptySideConfirm': 'Trajno isprazniti smeće zadatka {job} ({side})? Uklonjene datoteke: {count}, {size}',
   'trash.emptyAllConfirm': 'Trajno isprazniti svako smeće s ovog popisa? Uklonjene datoteke: {count}, {size}',
   'trash.emptied': 'Uklonjeno iz smeća: {count}',

@@ -52,7 +52,7 @@ describe('the trash', () => {
   } as TrashSide
 
   it('asks the age in the window of the action that needs it', async () => {
-    wrap(<Trash sides={[side]} job="" onChanged={() => undefined} />)
+    wrap(<Trash sides={[side]} job="" onJob={() => undefined} onChanged={() => undefined} />)
     expect(screen.queryByRole('spinbutton')).toBeNull()
     fireEvent.click(screen.getByRole('button', { name: 'More' }))
     fireEvent.click(within(await screen.findByRole('menu')).getByRole('menuitem', { name: 'Empty out the old ones' }))
@@ -60,6 +60,41 @@ describe('the trash', () => {
     fireEvent.change(within(window).getByRole('spinbutton'), { target: { value: '7' } })
     fireEvent.click(within(window).getByRole('button', { name: 'Empty out the old ones' }))
     await waitFor(() => expect(pruneTrash).toHaveBeenCalledWith('docs', 'left', 7, 'm'))
+  })
+
+  const music = {
+    ...side,
+    job: 'music',
+    entries: [{ ...side.entries[0], path: 'song.mp3', remote: 'song.mp3' }],
+  } as TrashSide
+
+  it('follows the job the address names', () => {
+    const { rerender } = render(
+      <ToastProvider>
+        <Trash sides={[side, music]} job="docs" onJob={() => undefined} onChanged={() => undefined} />
+      </ToastProvider>,
+    )
+    expect(screen.queryByText('song.mp3')).toBeNull()
+    rerender(
+      <ToastProvider>
+        <Trash sides={[side, music]} job="" onJob={() => undefined} onChanged={() => undefined} />
+      </ToastProvider>,
+    )
+    expect(screen.getByText('song.mp3')).toBeTruthy()
+  })
+
+  it('keeps every way to empty the trash shut while a search hides part of it', async () => {
+    wrap(<Trash sides={[side, music]} job="" onJob={() => undefined} onChanged={() => undefined} />)
+    fireEvent.click(screen.getByRole('button', { name: 'Search' }))
+    fireEvent.change(screen.getByRole('searchbox', { name: 'Search' }), { target: { value: 'song' } })
+    fireEvent.click(screen.getByRole('button', { name: 'More' }))
+    const menu = await screen.findByRole('menu')
+    for (const name of ['Empty out the old ones', 'Empty the trash']) {
+      expect((within(menu).getByRole('menuitem', { name }) as HTMLButtonElement).disabled).toBe(true)
+    }
+    for (const empty of screen.getAllByRole('button', { name: 'Empty this side' })) {
+      expect((empty as HTMLButtonElement).disabled).toBe(true)
+    }
   })
 })
 

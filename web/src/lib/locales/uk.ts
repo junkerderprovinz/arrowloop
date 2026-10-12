@@ -174,6 +174,7 @@ const uk: Translations = {
   'trash.deleteManyConfirm': 'Вилучити обрані файли назавжди? Вони покинуть кошик, і повернути їх уже не вийде. Файлів: {count}',
   'trash.emptySide': 'Спорожнити цей бік',
   'trash.emptyAll': 'Спорожнити кошик',
+  'trash.searchHolds': 'Поки введено пошук, очищення чекає: воно видалило б і файли, які пошук приховує.',
   'trash.emptySideConfirm': 'Остаточно спорожнити кошик завдання {job} ({side})? Буде вилучено файлів: {count}, {size}',
   'trash.emptyAllConfirm': 'Остаточно спорожнити всі кошики з цього списку? Буде вилучено файлів: {count}, {size}',
   'trash.emptied': 'Вилучено з кошика: {count}',

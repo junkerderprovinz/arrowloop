@@ -174,6 +174,7 @@ const zh: Translations = {
   'trash.deleteManyConfirm': '永久删除选中的文件吗？它们会离开回收站，再也无法找回。文件：{count}',
   'trash.emptySide': '清空这一侧',
   'trash.emptyAll': '清空回收站',
+  'trash.searchHolds': '输入了搜索词时，清空会暂停：它也会删除被搜索隐藏的文件。',
   'trash.emptySideConfirm': '永久清空 {job}（{side}）的回收站吗？将删除的文件：{count}，{size}',
   'trash.emptyAllConfirm': '永久清空这里列出的所有回收站吗？将删除的文件：{count}，{size}',
   'trash.emptied': '已从回收站删除：{count}',

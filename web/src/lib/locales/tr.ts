@@ -174,6 +174,7 @@ const tr: Translations = {
   'trash.deleteManyConfirm': 'Seçilen dosyalar kalıcı olarak silinsin mi? Çöp kutusundan çıkarlar ve hiçbir şey onları geri getiremez. Dosya: {count}',
   'trash.emptySide': 'Bu tarafı boşalt',
   'trash.emptyAll': 'Çöp kutusunu boşalt',
+  'trash.searchHolds': 'Bir arama yazılıyken boşaltma bekler: aramanın gizlediği dosyaları da kaldırırdı.',
   'trash.emptySideConfirm': '{job} işinin çöp kutusu ({side}) kalıcı olarak boşaltılsın mı? Silinecek dosya: {count}, {size}',
   'trash.emptyAllConfirm': 'Burada listelenen tüm çöp kutuları kalıcı olarak boşaltılsın mı? Silinecek dosya: {count}, {size}',
   'trash.emptied': 'Çöp kutusundan silinen: {count}',

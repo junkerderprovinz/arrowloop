@@ -174,6 +174,7 @@ const vi: Translations = {
   'trash.deleteManyConfirm': 'Xóa vĩnh viễn các tệp đã chọn? Chúng sẽ rời khỏi thùng rác và không gì có thể lấy lại được. Số tệp: {count}',
   'trash.emptySide': 'Dọn sạch bên này',
   'trash.emptyAll': 'Dọn sạch thùng rác',
+  'trash.searchHolds': 'Khi đang có từ tìm kiếm, việc dọn sạch sẽ chờ: nó sẽ xóa cả các tệp mà tìm kiếm đang ẩn.',
   'trash.emptySideConfirm': 'Dọn sạch vĩnh viễn thùng rác của {job} ({side})? Số tệp bị xóa: {count}, {size}',
   'trash.emptyAllConfirm': 'Dọn sạch vĩnh viễn mọi thùng rác được liệt kê ở đây? Số tệp bị xóa: {count}, {size}',
   'trash.emptied': 'Đã xóa khỏi thùng rác: {count}',

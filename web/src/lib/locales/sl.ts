@@ -174,6 +174,7 @@ const sl: Translations = {
   'trash.deleteManyConfirm': 'Ali naj se izbrane datoteke dokončno izbrišejo? Zapustijo koš in nič jih ne more vrniti. Datoteke: {count}',
   'trash.emptySide': 'Izprazni to stran',
   'trash.emptyAll': 'Izprazni koš',
+  'trash.searchHolds': 'Dokler je vpisano iskanje, praznjenje čaka: odstranilo bi tudi datoteke, ki jih iskanje skriva.',
   'trash.emptySideConfirm': 'Ali naj se koš opravila {job} ({side}) dokončno izprazni? Odstranjene datoteke: {count}, {size}',
   'trash.emptyAllConfirm': 'Ali naj se vsi tukaj navedeni koši dokončno izpraznijo? Odstranjene datoteke: {count}, {size}',
   'trash.emptied': 'Odstranjeno iz koša: {count}',

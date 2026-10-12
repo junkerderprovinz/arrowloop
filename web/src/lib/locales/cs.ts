@@ -174,6 +174,7 @@ const cs: Translations = {
   'trash.deleteManyConfirm': 'Smazat vybrané soubory nadobro? Opustí koš a nic je už nevrátí. Soubory: {count}',
   'trash.emptySide': 'Vyprázdnit tuto stranu',
   'trash.emptyAll': 'Vyprázdnit koš',
+  'trash.searchHolds': 'Dokud je zadané hledání, vyprázdnění čeká: odstranilo by i soubory, které hledání skrývá.',
   'trash.emptySideConfirm': 'Nadobro vyprázdnit koš úlohy {job} ({side})? Odstraněné soubory: {count}, {size}',
   'trash.emptyAllConfirm': 'Nadobro vyprázdnit všechny zde uvedené koše? Odstraněné soubory: {count}, {size}',
   'trash.emptied': 'Odstraněno z koše: {count}',

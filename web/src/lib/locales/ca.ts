@@ -174,6 +174,7 @@ const ca: Translations = {
   'trash.deleteManyConfirm': 'Vols suprimir definitivament els fitxers triats? Surten de la paperera i ja res no els podrà recuperar. Fitxers: {count}',
   'trash.emptySide': 'Buida aquesta banda',
   'trash.emptyAll': 'Buida la paperera',
+  'trash.searchHolds': 'Mentre hi hagi una cerca escrita, el buidatge espera: també trauria els fitxers que la cerca amaga.',
   'trash.emptySideConfirm': 'Vols buidar definitivament la paperera de {job} ({side})? Fitxers suprimits: {count}, {size}',
   'trash.emptyAllConfirm': 'Vols buidar definitivament totes les papereres d\'aquesta llista? Fitxers suprimits: {count}, {size}',
   'trash.emptied': 'Suprimits de la paperera: {count}',

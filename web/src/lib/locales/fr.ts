@@ -174,6 +174,7 @@ const fr: Translations = {
   'trash.deleteManyConfirm': 'Supprimer définitivement les fichiers choisis ? Ils quittent la corbeille, et plus rien ne pourra les récupérer. Fichiers : {count}',
   'trash.emptySide': 'Vider ce côté',
   'trash.emptyAll': 'Vider la corbeille',
+  'trash.searchHolds': 'Tant qu\'une recherche est saisie, le vidage attend : il supprimerait aussi les fichiers que la recherche masque.',
   'trash.emptySideConfirm': 'Vider définitivement la corbeille de {job} ({side}) ? Fichiers supprimés : {count}, {size}',
   'trash.emptyAllConfirm': 'Vider définitivement toutes les corbeilles listées ici ? Fichiers supprimés : {count}, {size}',
   'trash.emptied': 'Retirés de la corbeille : {count}',

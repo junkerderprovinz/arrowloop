@@ -28,23 +28,27 @@ type Pending =
  * Every job's trash on both sides, in one card. Restoring is a click, since it
  * only moves a file back; removing anything for good asks first, because the
  * trash is the last copy there is. The two ways to empty it act on what the
- * filter shows and wait in the More menu of the page's corner.
+ * job filter shows and wait in the More menu of the page's corner. A search
+ * narrows the list but not what emptying removes, so emptying waits until the
+ * search is cleared.
  */
 export function Trash({
   sides,
-  job: startJob,
+  job,
+  onJob,
   onChanged,
 }: {
   /** Null until the first answer arrives. */
   sides: TrashSide[] | null
-  /** The job to show first, when another screen sent somebody here for one. */
+  /** The job the address narrows the page to, empty for every job. */
   job: string
+  /** Narrows the page to another job, by changing the address. */
+  onJob: (job: string) => void
   /** Asks for a job's trash again after something in it changed. */
   onChanged: (job: string) => void
 }) {
   const { t } = useT()
   const push = useToast()
-  const [job, setJob] = useState(startJob)
   const [query, setQuery] = useState('')
   const [days, setDays] = useState(30)
   const [pending, setPending] = useState<Pending | null>(null)
@@ -130,14 +134,18 @@ export function Trash({
             <FilterChoice
               label={t('history.filterJob')}
               value={job}
-              onChange={setJob}
+              onChange={onJob}
               options={[{ value: '', label: t('history.allJobs') }, ...names.map((n) => ({ value: n, label: n }))]}
             />
           </FilterButton>
           <SearchFold value={query} onChange={setQuery} placeholder={t('history.pathHint')} />
         </ListBar>
 
-        <Card title={job || t('history.allJobs')} hueIndex={0} hint={t('trash.hint')}>
+        <Card
+          title={job || t('history.allJobs')}
+          hueIndex={0}
+          hint={needle ? t('trash.hint') + ' ' + t('trash.searchHolds') : t('trash.hint')}
+        >
           {sides === null ? (
             <Empty>{t('history.working')}</Empty>
           ) : totals.entries === 0 && shown.every((s) => !s.error) ? (
@@ -152,6 +160,7 @@ export function Trash({
                       key={`${group.job}:${s.side}`}
                       side={s}
                       busy={busy}
+                      searching={!!needle}
                       matches={matches}
                       onRestore={(entry) => restore(s, entry)}
                       onDelete={(entry) => setPending({ kind: 'entry', side: s, entry })}
@@ -194,13 +203,13 @@ export function Trash({
             {
               label: t('trash.prune'),
               labelKey: 'trash.prune',
-              disabled: busy || totals.entries === 0,
+              disabled: busy || !!needle || totals.entries === 0,
               onSelect: () => setPending({ kind: 'prune', sides: full }),
             },
             {
               label: t('trash.emptyAll'),
               labelKey: 'trash.emptyAll',
-              disabled: busy || totals.entries === 0,
+              disabled: busy || !!needle || totals.entries === 0,
               onSelect: () => setPending({ kind: 'all', sides: full }),
             },
           ]}
@@ -242,6 +251,7 @@ function stakes(p: Pending, t: ReturnType<typeof useT>['t']): string {
 function SideList({
   side,
   busy,
+  searching,
   matches,
   onRestore,
   onDelete,
@@ -249,6 +259,8 @@ function SideList({
 }: {
   side: TrashSide
   busy: boolean
+  /** A search is typed, which emptying the side would not respect. */
+  searching: boolean
   matches: (entry: TrashEntry) => boolean
   onRestore: (entry: TrashEntry) => void
   onDelete: (entry: TrashEntry) => void
@@ -269,7 +281,7 @@ function SideList({
         )}
         {!side.error && (
           <span className="glim-row-actions ms-auto">
-            <IconAction title={t('trash.emptySide')} labelKey="trash.emptySide" disabled={busy} onClick={onEmpty} />
+            <IconAction title={t('trash.emptySide')} labelKey="trash.emptySide" disabled={busy || searching} onClick={onEmpty} />
           </span>
         )}
       </div>

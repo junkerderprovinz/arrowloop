@@ -174,6 +174,7 @@ const it: Translations = {
   'trash.deleteManyConfirm': 'Eliminare definitivamente i file scelti? Escono dal cestino e niente potrà riportarli indietro. File: {count}',
   'trash.emptySide': 'Svuota questo lato',
   'trash.emptyAll': 'Svuota il cestino',
+  'trash.searchHolds': 'Finché c\'è una ricerca, lo svuotamento aspetta: toglierebbe anche i file che la ricerca nasconde.',
   'trash.emptySideConfirm': 'Svuotare definitivamente il cestino di {job} ({side})? File rimossi: {count}, {size}',
   'trash.emptyAllConfirm': 'Svuotare definitivamente tutti i cestini elencati qui? File rimossi: {count}, {size}',
   'trash.emptied': 'Rimossi dal cestino: {count}',

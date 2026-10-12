@@ -174,6 +174,7 @@ const fi: Translations = {
   'trash.deleteManyConfirm': 'Poistetaanko valitut tiedostot lopullisesti? Ne lähtevät roskakorista, eikä mikään tuo niitä takaisin. Tiedostoja: {count}',
   'trash.emptySide': 'Tyhjennä tämä puoli',
   'trash.emptyAll': 'Tyhjennä roskakori',
+  'trash.searchHolds': 'Kun haku on kirjoitettu, tyhjennys odottaa: se poistaisi myös tiedostot, jotka haku piilottaa.',
   'trash.emptySideConfirm': 'Tyhjennetäänkö työn {job} roskakori ({side}) lopullisesti? Poistettavia tiedostoja: {count}, {size}',
   'trash.emptyAllConfirm': 'Tyhjennetäänkö kaikki tässä luetellut roskakorit lopullisesti? Poistettavia tiedostoja: {count}, {size}',
   'trash.emptied': 'Poistettu roskakorista: {count}',

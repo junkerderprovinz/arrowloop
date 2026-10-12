@@ -174,6 +174,7 @@ const lt: Translations = {
   'trash.deleteManyConfirm': 'Ištrinti pasirinktus failus visam laikui? Jie paliks šiukšlinę, ir niekas jų nebesugrąžins. Failai: {count}',
   'trash.emptySide': 'Ištuštinti šią pusę',
   'trash.emptyAll': 'Ištuštinti šiukšlinę',
+  'trash.searchHolds': 'Kol įvesta paieška, ištuštinimas laukia: jis pašalintų ir paieškos paslėptus failus.',
   'trash.emptySideConfirm': 'Visam laikui ištuštinti užduoties {job} šiukšlinę ({side})? Bus pašalinta failų: {count}, {size}',
   'trash.emptyAllConfirm': 'Visam laikui ištuštinti visas čia išvardytas šiukšlines? Bus pašalinta failų: {count}, {size}',
   'trash.emptied': 'Pašalinta iš šiukšlinės: {count}',

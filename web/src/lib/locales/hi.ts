@@ -174,6 +174,7 @@ const hi: Translations = {
   'trash.deleteManyConfirm': 'चुनी गई फ़ाइलें हमेशा के लिए मिटाएँ? वे रद्दी से निकल जाएँगी, और कुछ भी उन्हें वापस नहीं ला सकता। फ़ाइलें: {count}',
   'trash.emptySide': 'इस ओर की रद्दी खाली करें',
   'trash.emptyAll': 'रद्दी खाली करें',
+  'trash.searchHolds': 'जब तक खोज लिखी है, खाली करना रुका रहता है: वह उन फ़ाइलों को भी हटा देगा जिन्हें खोज छिपा रही है।',
   'trash.emptySideConfirm': '{job} ({side}) की रद्दी हमेशा के लिए खाली करें? हटाई जाने वाली फ़ाइलें: {count}, {size}',
   'trash.emptyAllConfirm': 'यहाँ दिखाई गई हर रद्दी हमेशा के लिए खाली करें? हटाई जाने वाली फ़ाइलें: {count}, {size}',
   'trash.emptied': 'रद्दी से हटाई गईं: {count}',

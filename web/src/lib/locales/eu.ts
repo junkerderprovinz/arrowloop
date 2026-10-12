@@ -174,6 +174,7 @@ const eu: Translations = {
   'trash.deleteManyConfirm': 'Aukeratutako fitxategiak betiko ezabatu? Zakarrontzitik ateratzen dira, eta ezerk ezin ditu berreskuratu. Fitxategiak: {count}',
   'trash.emptySide': 'Hustu alde hau',
   'trash.emptyAll': 'Hustu zakarrontzia',
+  'trash.searchHolds': 'Bilaketa bat idatzita dagoen bitartean, husteak itxaroten du: bilaketak ezkutatzen dituen fitxategiak ere kenduko lituzke.',
   'trash.emptySideConfirm': '{job} lanaren zakarrontzia ({side}) betiko hustu? Kendutako fitxategiak: {count}, {size}',
   'trash.emptyAllConfirm': 'Hemen zerrendatutako zakarrontzi guztiak betiko hustu? Kendutako fitxategiak: {count}, {size}',
   'trash.emptied': 'Zakarrontzitik kenduta: {count}',

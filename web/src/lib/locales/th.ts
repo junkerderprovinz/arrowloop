@@ -174,6 +174,7 @@ const th: Translations = {
   'trash.deleteManyConfirm': 'ลบไฟล์ที่เลือกถาวรหรือไม่ ไฟล์จะออกจากถังขยะ และไม่มีอะไรนำกลับมาได้อีก ไฟล์: {count}',
   'trash.emptySide': 'ล้างฝั่งนี้',
   'trash.emptyAll': 'ล้างถังขยะ',
+  'trash.searchHolds': 'ขณะที่มีคำค้นอยู่ การล้างจะรอไว้ก่อน เพราะจะลบไฟล์ที่การค้นหาซ่อนไว้ด้วย',
   'trash.emptySideConfirm': 'ล้างถังขยะของ {job} ({side}) ถาวรหรือไม่ ไฟล์ที่จะถูกลบ: {count}, {size}',
   'trash.emptyAllConfirm': 'ล้างถังขยะทุกถังที่แสดงอยู่ที่นี่ถาวรหรือไม่ ไฟล์ที่จะถูกลบ: {count}, {size}',
   'trash.emptied': 'ลบออกจากถังขยะแล้ว: {count}',

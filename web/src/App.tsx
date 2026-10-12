@@ -348,6 +348,9 @@ export function App({ signOut = false }: { signOut?: boolean }) {
   // the finding it opens.
   const focus = search.get('job') ?? ''
   const finding = search.get('finding') ?? undefined
+  // A page's job filter lives in the address, so the rail's plain link and
+  // the browser's back button undo it like any other step.
+  const focusOn = (job: string) => navigate(job ? `${pathname}?job=${encodeURIComponent(job)}` : pathname, { replace: true })
 
   const look: LookProps = {
     theme,
@@ -413,11 +416,11 @@ export function App({ signOut = false }: { signOut?: boolean }) {
   ) : view.page === 'targets' ? (
     <Targets />
   ) : view.page === 'conflicts' ? (
-    <Conflicts listing={conflicts} job={focus} onChanged={reloadWaiting} />
+    <Conflicts listing={conflicts} job={focus} onJob={focusOn} onChanged={reloadWaiting} />
   ) : view.page === 'anomalies' ? (
     anomalies
   ) : view.page === 'trash' ? (
-    <Trash sides={orderedTrash} job={focus} onChanged={reloadWaiting} />
+    <Trash sides={orderedTrash} job={focus} onJob={focusOn} onChanged={reloadWaiting} />
   ) : view.page === 'history' ? (
     // The log is the whole page, so its card reaches the bottom of the
     // window however few lines it has.

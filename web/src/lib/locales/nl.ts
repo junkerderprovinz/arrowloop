@@ -174,6 +174,7 @@ const nl: Translations = {
   'trash.deleteManyConfirm': 'De gekozen bestanden definitief verwijderen? Ze verlaten de prullenbak en niets kan ze nog terughalen. Bestanden: {count}',
   'trash.emptySide': 'Deze kant legen',
   'trash.emptyAll': 'Prullenbak legen',
+  'trash.searchHolds': 'Zolang er een zoekopdracht staat, wacht het legen: het zou ook de bestanden verwijderen die de zoekopdracht verbergt.',
   'trash.emptySideConfirm': 'De prullenbak van {job} ({side}) definitief legen? Verwijderde bestanden: {count}, {size}',
   'trash.emptyAllConfirm': 'Alle prullenbakken die hier staan definitief legen? Verwijderde bestanden: {count}, {size}',
   'trash.emptied': 'Uit de prullenbak verwijderd: {count}',

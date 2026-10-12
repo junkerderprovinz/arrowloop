@@ -174,6 +174,7 @@ const he: Translations = {
   'trash.deleteManyConfirm': 'למחוק לצמיתות את הקבצים שנבחרו? הם יוצאים מסל האשפה, ושום דבר לא יוכל להחזיר אותם. קבצים: {count}',
   'trash.emptySide': 'ריקון הצד הזה',
   'trash.emptyAll': 'ריקון סל האשפה',
+  'trash.searchHolds': 'כל עוד מוקלד חיפוש, הריקון ממתין: הוא היה מסיר גם את הקבצים שהחיפוש מסתיר.',
   'trash.emptySideConfirm': 'לרוקן לצמיתות את סל האשפה של {job} ({side})? קבצים שיוסרו: {count}, {size}',
   'trash.emptyAllConfirm': 'לרוקן לצמיתות את כל סלי האשפה שמופיעים כאן? קבצים שיוסרו: {count}, {size}',
   'trash.emptied': 'הוסרו מסל האשפה: {count}',

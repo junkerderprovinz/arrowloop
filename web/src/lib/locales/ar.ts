@@ -174,6 +174,7 @@ const ar: Translations = {
   'trash.deleteManyConfirm': 'أتحذف الملفات المختارة نهائيًا؟ ستخرج من سلة المهملات، ولا شيء يمكنه إعادتها. الملفات: {count}',
   'trash.emptySide': 'أفرغ هذا الجانب',
   'trash.emptyAll': 'أفرغ سلة المهملات',
+  'trash.searchHolds': 'ما دام هناك بحث مكتوب، ينتظر الإفراغ: فهو سيزيل أيضًا الملفات التي يخفيها البحث.',
   'trash.emptySideConfirm': 'أتفرغ سلة المهملات في {job} ({side}) نهائيًا؟ الملفات المُزالة: {count}، {size}',
   'trash.emptyAllConfirm': 'أتفرغ كل سلال المهملات المعروضة هنا نهائيًا؟ الملفات المُزالة: {count}، {size}',
   'trash.emptied': 'أُزيلت من سلة المهملات: {count}',

@@ -174,6 +174,7 @@ const hu: Translations = {
   'trash.deleteManyConfirm': 'Véglegesen törlöd a kiválasztott fájlokat? Kikerülnek a kukából, és semmi nem hozza vissza őket. Fájlok: {count}',
   'trash.emptySide': 'Az oldal ürítése',
   'trash.emptyAll': 'A kuka ürítése',
+  'trash.searchHolds': 'Amíg keresés van beírva, az ürítés vár: a keresés által elrejtett fájlokat is eltávolítaná.',
   'trash.emptySideConfirm': 'Véglegesen kiüríted a(z) {job} kukáját ({side})? Eltávolított fájlok: {count}, {size}',
   'trash.emptyAllConfirm': 'Véglegesen kiüríted az összes itt felsorolt kukát? Eltávolított fájlok: {count}, {size}',
   'trash.emptied': 'Eltávolítva a kukából: {count}',
