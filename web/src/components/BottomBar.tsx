@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties, type MouseEvent, type ReactNode } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type MouseEvent, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 
 import { api } from '../lib/api'
@@ -34,8 +34,37 @@ function SlotFace({ icon, label, mode, count }: { icon: ReactNode; label: string
         {mode !== 'text' && icon}
         {count ? <NavCount value={count} quiet className="absolute -end-3 -top-1.5" /> : null}
       </span>
-      <span className={`max-w-full truncate ${hidesLabel(mode) ? 'sr-only' : ''}`}>{label}</span>
+      <FitWord word={label} hidden={hidesLabel(mode)} />
     </>
+  )
+}
+
+/**
+ * A slot's word, shrunk until it fits rather than cut, down to 70% of the meta
+ * size as the phone's bar does. Five slots at 390px leave about 66px each,
+ * and "Einstellungen" needs more than that at the full size.
+ */
+function FitWord({ word, hidden }: { word: string; hidden: boolean }) {
+  const ref = useRef<HTMLSpanElement>(null)
+  useLayoutEffect(() => {
+    const el = ref.current
+    if (!el || hidden) return
+    const fit = () => {
+      el.style.fontSize = ''
+      const room = el.clientWidth
+      const need = el.scrollWidth
+      if (room > 0 && need > room) el.style.fontSize = `calc(var(--text-meta) * ${Math.max(0.7, Math.floor((room / need) * 1000) / 1000)})`
+    }
+    fit()
+    // The webfont arriving late widens the word it was measured in.
+    void document.fonts?.ready.then(fit)
+    window.addEventListener('resize', fit)
+    return () => window.removeEventListener('resize', fit)
+  }, [word, hidden])
+  return (
+    <span ref={ref} className={`max-w-full truncate ${hidden ? 'sr-only' : ''}`}>
+      {word}
+    </span>
   )
 }
 

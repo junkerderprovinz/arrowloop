@@ -1,13 +1,16 @@
 // @vitest-environment jsdom
 import { cleanup, fireEvent, render, screen, within } from '@testing-library/react'
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { BottomBar } from './BottomBar'
 
 const counts = { running: 0, conflicts: 3, trash: 0, findings: 0 }
 const none = { targets: false, anomalies: false }
 
-afterEach(cleanup)
+afterEach(() => {
+  cleanup()
+  vi.restoreAllMocks()
+})
 
 describe('the bottom bar', () => {
   it('holds four places and More', () => {
@@ -32,6 +35,17 @@ describe('the bottom bar', () => {
       '/anomalies',
     ])
     expect(within(sheet).getByRole('button', { name: 'Log out' })).toBeTruthy()
+  })
+
+  it('shrinks a word that would be cut rather than cutting it, as far as the phone does', () => {
+    // jsdom lays nothing out: every word is 90px wide in a 66px slot.
+    vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(66)
+    vi.spyOn(HTMLElement.prototype, 'scrollWidth', 'get').mockImplementation(function (this: HTMLElement) {
+      return this.style.fontSize ? 66 : 90
+    })
+    render(<BottomBar pins={none} counts={counts} pathname="/jobs" signOut={false} />)
+    const word = within(screen.getByRole('navigation')).getByText('Settings')
+    expect(word.style.fontSize).toBe('calc(var(--text-meta) * 0.733)')
   })
 
   it('fills More while one of its pages is open', () => {
