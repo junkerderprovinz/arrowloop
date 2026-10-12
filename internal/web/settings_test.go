@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/junkerderprovinz/arrowloop/internal/web"
@@ -198,4 +199,35 @@ func mustJSON(t *testing.T, v any) []byte {
 		t.Fatal(err)
 	}
 	return b
+}
+
+// Load reads a key whichever case it is spelled in, so the secrets under
+// "Notify" and the hooks under "Jobs" are as much the file's as under the
+// usual spelling.
+func TestSecretsSpelledInAnotherCaseStayOnTheServer(t *testing.T) {
+	h := engineFor(t, `{"Notify":{"Webhook":"https://hooks.example/CASEWEBHOOK","Matrix":{"homeserver":"https://m.example","room":"!r:m.example","Token":"syt_CASETOKEN"}},`+
+		`"Jobs":[{"name":"photos","left":"%[1]s/left","right":"%[1]s/right","state":"%[1]s/photos.db","before":"curl -u admin:HOOKSECRET http://nas"}]}`) // gitleaks:allow
+	if len(h.runner.Config().Jobs) != 1 {
+		t.Fatal("the job under \"Jobs\" was not loaded")
+	}
+	for _, path := range []string{"/api/settings", "/api/diagnostics"} {
+		resp, text := doJSON(t, h.srv, http.MethodGet, path, "")
+		if resp.StatusCode != http.StatusOK {
+			t.Fatalf("GET %s: %s", path, resp.Status)
+		}
+		for _, secret := range []string{"CASEWEBHOOK", "syt_CASETOKEN", "HOOKSECRET"} {
+			if strings.Contains(text, secret) {
+				t.Errorf("%s carries %s:\n%s", path, secret, text)
+			}
+		}
+	}
+
+	_, settings := doJSON(t, h.srv, http.MethodGet, "/api/settings", "")
+	if resp, body := putJSON(t, h.srv, "/api/settings", settings); resp.StatusCode != http.StatusOK {
+		t.Fatalf("save the settings back: %s %s", resp.Status, body)
+	}
+	n := h.runner.Config().Notify
+	if n.Webhook != "https://hooks.example/CASEWEBHOOK" || n.Matrix == nil || n.Matrix.Token != "syt_CASETOKEN" {
+		t.Errorf("saving the page's copy back replaced the secrets: %+v %+v", n, n.Matrix)
+	}
 }

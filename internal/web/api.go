@@ -787,16 +787,18 @@ func (s *Server) readSettings(w http.ResponseWriter, r *http.Request) {
 // remotes.Placeholder, as a target's password is: the Matrix token posts as the
 // account, and a webhook's address is its own key.
 func withheld(settings map[string]any) map[string]any {
-	notify, _ := settings["notify"].(map[string]any)
-	if notify == nil {
-		return settings
-	}
-	if hook, _ := notify["webhook"].(string); hook != "" {
-		notify["webhook"] = remotes.Placeholder
-	}
-	if matrix, _ := notify["matrix"].(map[string]any); matrix != nil {
-		if token, _ := matrix["token"].(string); token != "" {
-			matrix["token"] = remotes.Placeholder
+	for _, notify := range objects(settings, "notify") {
+		for _, k := range keysLike(notify, "webhook") {
+			if hook, _ := notify[k].(string); hook != "" {
+				notify[k] = remotes.Placeholder
+			}
+		}
+		for _, matrix := range objects(notify, "matrix") {
+			for _, k := range keysLike(matrix, "token") {
+				if token, _ := matrix[k].(string); token != "" {
+					matrix[k] = remotes.Placeholder
+				}
+			}
 		}
 	}
 	return settings
@@ -805,19 +807,47 @@ func withheld(settings map[string]any) map[string]any {
 // keepSecrets puts the stored notification secrets back where a settings
 // update carries the placeholder for them.
 func keepSecrets(update map[string]any, stored *job.Config) {
-	notify, _ := update["notify"].(map[string]any)
-	if notify == nil {
-		return
-	}
-	if notify["webhook"] == remotes.Placeholder {
-		notify["webhook"] = stored.Notify.Webhook
-	}
-	if matrix, _ := notify["matrix"].(map[string]any); matrix != nil && matrix["token"] == remotes.Placeholder {
-		matrix["token"] = ""
-		if stored.Notify.Matrix != nil {
-			matrix["token"] = stored.Notify.Matrix.Token
+	for _, notify := range objects(update, "notify") {
+		for _, k := range keysLike(notify, "webhook") {
+			if notify[k] == remotes.Placeholder {
+				notify[k] = stored.Notify.Webhook
+			}
+		}
+		for _, matrix := range objects(notify, "matrix") {
+			for _, k := range keysLike(matrix, "token") {
+				if matrix[k] != remotes.Placeholder {
+					continue
+				}
+				matrix[k] = ""
+				if stored.Notify.Matrix != nil {
+					matrix[k] = stored.Notify.Matrix.Token
+				}
+			}
 		}
 	}
+}
+
+// keysLike lists the keys of m that spell name in any case, since Load reads
+// a key whichever way it is written.
+func keysLike(m map[string]any, name string) []string {
+	var out []string
+	for k := range m {
+		if strings.EqualFold(k, name) {
+			out = append(out, k)
+		}
+	}
+	return out
+}
+
+// objects returns the objects m holds under name in any case.
+func objects(m map[string]any, name string) []map[string]any {
+	var out []map[string]any
+	for _, k := range keysLike(m, name) {
+		if o, ok := m[k].(map[string]any); ok {
+			out = append(out, o)
+		}
+	}
+	return out
 }
 
 // writeSettings merges the keys it is given and reloads. A key the caller does

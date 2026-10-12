@@ -745,13 +745,18 @@ func (c *Config) Replace(doc []byte) (*Config, error) {
 	})
 }
 
-// SettingsAsMap returns the file's top-level keys apart from the jobs.
+// SettingsAsMap returns the file's top-level keys apart from the jobs, in
+// whatever case the file spells them, since Load reads them in any.
 func (c *Config) SettingsAsMap() (map[string]any, error) {
 	var doc map[string]any
 	if err := json.Unmarshal(c.raw, &doc); err != nil {
 		return nil, fmt.Errorf("re-read the configuration: %w", err)
 	}
-	delete(doc, "jobs")
+	for k := range doc {
+		if strings.EqualFold(k, "jobs") {
+			delete(doc, k)
+		}
+	}
 	if doc == nil {
 		doc = map[string]any{}
 	}
