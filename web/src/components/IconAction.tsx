@@ -17,8 +17,9 @@ export function IconAction({
   disabled,
   busy,
   size = 'default',
-  tone = 'accent',
+  tone = 'neutral',
   hueIndex,
+  className = '',
   ref,
 }: {
   /**
@@ -45,16 +46,18 @@ export function IconAction({
   /** GlimStone's one step up, for the action a page exists to offer. */
   size?: 'default' | 'key'
   /**
-   * Accent by default, because it inherits the card's hue and so follows the
-   * colour engine; "subtle" is a flat grey the engine cannot reach. A delete
-   * action takes the same tone as its neighbours.
+   * Neutral by default: a view has one filled accent, and it is the page's
+   * floating action or a window's main button, never a row's. "subtle" sits
+   * one step lower, for a control on a surface2 ground. A delete action takes
+   * the same tone as its neighbours.
    */
-  tone?: 'subtle' | 'accent'
+  tone?: 'neutral' | 'subtle' | 'accent'
   /**
    * The control's own palette position, only for a control outside every card.
    * Inside one, the card already rebinds --accent for its subtree.
    */
   hueIndex?: number
+  className?: string
   /** The button itself, for an animation that plays on it. */
   ref?: Ref<HTMLButtonElement>
 }) {
@@ -67,7 +70,7 @@ export function IconAction({
       title={hint}
       tone={tone}
       hueIndex={hueIndex}
-      className={size === 'key' ? 'glim-btn-key' : ''}
+      className={`${size === 'key' ? 'glim-btn-key' : ''} ${className}`.trim()}
       disabled={disabled}
       busy={busy}
       onClick={onClick}

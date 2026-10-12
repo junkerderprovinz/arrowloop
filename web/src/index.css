@@ -252,16 +252,128 @@ body {
   width: auto;
 }
 
-/* The one action a page exists for, floating in the window's bottom corner so
-   it stays put while the list scrolls under it. A pill, and a circle where the
-   label mode shows the glyph alone, as the phone's floating button. */
-.glim-btn.glim-fab {
-  position: fixed;
-  inset-block-end: calc(var(--page-gutter) + 1rem);
-  inset-inline-end: calc(var(--page-gutter) + 1rem);
-  z-index: 30;
-  border-radius: var(--radius-pill);
-  box-shadow: var(--elevation);
+/* Page actions (components/PageActions.tsx) stick to the bottom of the
+   scroller. A page that has them fills the scroller's height, so they rest at
+   its bottom edge on a page shorter than the window too. Their buttons float
+   over the rows and are raised like a card. */
+.glim-page-enter > :has(> .glim-page-actions) {
+  flex-grow: 1;
+}
+.glim-page-actions .glim-btn {
+  box-shadow: var(--elevation), var(--hairline);
+}
+
+/* A toast rises above the page actions, or it would lie on the button that
+   raised it. PageActions reports how far up it reaches. */
+:has(> .glim-toast) {
+  padding-bottom: calc(1rem + var(--page-actions-clearance, 0px));
+}
+
+/* A button that shows its glyph alone whatever the label mode, as the page
+   actions do on a phone-narrow window. */
+.glim-btn.glim-glyph-only {
+  gap: 0;
+  width: var(--btn-h);
+  min-width: 0;
+  padding-inline: 0;
+}
+.glim-btn.glim-btn-key.glim-glyph-only {
+  width: var(--btn-h-key);
+}
+.glim-btn.glim-glyph-only .glim-btn-glyph {
+  display: inline-flex;
+}
+.glim-btn.glim-glyph-only .glim-btn-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* A list row (GlimStone, "Lists"): one height, the whole row opens its
+   object, and a picked row is filled, never edged. */
+.glim-row[data-picked] {
+  background-color: var(--accent-soft);
+}
+
+/* A row's buttons come in while the pointer is over the row or the focus is
+   inside it, and stay where there is no hover to bring them (rule 6). They
+   keep their room at rest, so nothing beside them moves. */
+.glim-row-actions {
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+.glim-row:is(:hover, :focus-within) .glim-row-actions,
+.glim-row-actions:has([aria-expanded='true']) {
+  opacity: 1;
+}
+
+/* The tile at a row's start takes the accent as its ground and the accent's
+   ink for its glyph while the row is hovered, focused or picked. */
+.glim-row-glyph {
+  background-color: var(--carbon-surface2);
+  color: var(--accent-glyph);
+  transition: background-color 120ms ease, color 120ms ease;
+}
+.glim-row:is(:hover, :focus-within, [data-picked]) .glim-row-glyph {
+  background-color: var(--accent);
+  color: var(--accent-contrast);
+}
+
+/* The selection mark shows once something is picked or while the pointer is
+   over its row. */
+.glim-select-mark {
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+.glim-row:is(:hover, :focus-within) .glim-select-mark,
+.glim-selecting .glim-select-mark {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .glim-row-actions,
+  .glim-select-mark {
+    opacity: 1;
+  }
+}
+
+/* Below the phone width a window stands on the bottom edge as a sheet, its
+   button row stuck to the bottom, so the answer stays under the thumb however
+   long the content (GlimStone, "Narrow windows"). The confirmation is a
+   reference copy, so its sheet shape is set here rather than in its classes. */
+@media (max-width: 639px) {
+  /* A row's buttons are squares here, so the name keeps its room. */
+  .glim-row-actions .glim-btn {
+    gap: 0;
+    width: var(--btn-h);
+    min-width: 0;
+    padding-inline: 0;
+  }
+  .glim-row-actions .glim-btn-glyph {
+    display: inline-flex;
+  }
+  .glim-row-actions .glim-btn-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .glim-modal-backdrop {
+    align-items: flex-end;
+    padding: 0;
+  }
+  .glim-modal-backdrop > .glim-modal-card {
+    max-width: none;
+    max-height: 90dvh;
+    border-end-start-radius: 0;
+    border-end-end-radius: 0;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
 }
 
 /* Every button gives way to .97 on press, the web's side of the phone's press.

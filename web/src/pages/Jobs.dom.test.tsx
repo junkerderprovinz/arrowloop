@@ -2,14 +2,17 @@
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { Job, RawJob } from '../lib/api'
+import type { Finding } from '../lib/anomalies'
+import type { Job, RawJob, Run } from '../lib/api'
+import { GoTo } from '../lib/goTo'
+import { OpenJob } from '../lib/openJob'
 import { ToastProvider } from '../lib/toast'
 
-const LEFT = 'C:\\Users\\somebody\\Pictures\\Camera Roll\\2024\\Holidays in the mountains\\Day three'
-const RIGHT = 'nextcloud:Photos/Archive/2024/Holidays in the mountains/Day three/Originals'
-
-const stored = (): RawJob[] => [{ name: 'photos', left: LEFT, right: RIGHT, state: 'state/photos.db' }]
-const config = vi.fn(() => Promise.resolve({ jobs: stored() }))
+const pair = (): RawJob[] => [
+  { name: 'photos', left: 'D:/Photos', right: 'nas:photos', state: 'state/photos.db' },
+  { name: 'music', left: 'D:/Music', right: 'nas:music', state: 'state/music.db' },
+]
+const config = vi.fn(() => Promise.resolve({ jobs: pair() }))
 const saveConfig = vi.fn((jobs: RawJob[]) => Promise.resolve({ jobs }))
 const run = vi.fn((name: string) => Promise.resolve({ job: name, status: 'started' }))
 const stopJob = vi.fn((_name: string) => Promise.resolve({ stopped: true }))
@@ -23,306 +26,223 @@ vi.mock('../lib/api', () => ({
     remotes: () => Promise.resolve({ remotes: [], backends: [] }),
     run: (name: string) => run(name),
     stopJob: (name: string) => stopJob(name),
-    jobTouches: () =>
-      Promise.resolve([
-        { Kind: 'copy', Side: 'right', Path: 'a.jpg', Note: '', Size: 10, Run: 1, Job: 'photos', When: '2027-03-01T12:00:00Z', Seq: 0 },
-      ]),
   },
 }))
 
 const { Jobs } = await import('./Jobs')
 
-// jsdom cannot measure elements, which the form's switches ask for.
+// jsdom cannot measure elements, which the selectors and the corner ask for.
 globalThis.ResizeObserver ??= class {
   observe() {}
   disconnect() {}
   unobserve() {}
 } as unknown as typeof ResizeObserver
 
-function job(over: Partial<Job> = {}): Job {
+function ran(job: string, err = ''): Run {
+  const at = '2027-03-01T03:00:00Z'
   return {
-    name: 'photos',
-    left: LEFT,
-    right: RIGHT,
+    ID: 1, Job: job, Started: at, Finished: at, Copied: 1, Moved: 0, Trashed: 0, Conflicts: 0,
+    DirsMade: 0, DirsRemoved: 0, Unchanged: 0, Skipped: 0, Err: err,
+  }
+}
+
+function job(name: string, over: Partial<Job> = {}): Job {
+  const raw = pair().find((j) => j.name === name)
+  return {
+    name,
+    left: raw?.left ?? `D:/${name}`,
+    right: raw?.right ?? `nas:${name}`,
     direction: 'both',
     schedule: '',
     watch: false,
     disabled: false,
     running: false,
     lastSuccess: null,
+    recent: [ran(name)],
     ...over,
   }
 }
 
-function card(over: Partial<Job> = {}) {
+const opened = vi.fn((_name: string) => undefined)
+const went = vi.fn((_place: unknown) => undefined)
+
+function page({ jobs = [job('photos'), job('music')], findings = [] as Finding[], conflicts = 0 } = {}) {
   render(
     <ToastProvider>
-      <Jobs
-        jobs={[job(over)]}
-        findings={[]}
-        latest={[]}
-        progress={{}}
-        speeds={{}}
-        onPreview={() => undefined}
-        onSaved={() => undefined}
-      />
+      <GoTo.Provider value={went}>
+        <OpenJob.Provider value={opened}>
+          <Jobs jobs={jobs} findings={findings} progress={{}} conflicts={conflicts} onSaved={() => undefined} />
+        </OpenJob.Provider>
+      </GoTo.Provider>
     </ToastProvider>,
   )
 }
 
+const row = (name: string) => screen.getByText(name).closest('li') as HTMLElement
+
 beforeEach(() => {
+  localStorage.clear()
   config.mockReset()
-  config.mockImplementation(() => Promise.resolve({ jobs: stored() }))
+  config.mockImplementation(() => Promise.resolve({ jobs: pair() }))
   saveConfig.mockReset()
   saveConfig.mockImplementation((jobs: RawJob[]) => Promise.resolve({ jobs }))
+  run.mockClear()
+  opened.mockClear()
+  went.mockClear()
 })
 afterEach(cleanup)
 
-describe('a job card', () => {
-  it('shows both sides whole', () => {
-    card()
-    const left = screen.getByText(LEFT)
-    const right = screen.getByText(RIGHT)
-    for (const side of [left, right]) {
-      expect(side.className).not.toMatch(/truncate/)
-      expect(side.className).toMatch(/overflow-wrap:anywhere/)
-    }
+describe('the head of the jobs page', () => {
+  it('says everything is in sync and shows no waiting card when nothing waits', async () => {
+    page()
+    expect((await screen.findByTestId('status-head')).textContent).toBe('Everything in sync')
+    expect(screen.queryByText('Waiting')).toBeNull()
   })
 
-  it('has exactly pause, run and options once the job is known', async () => {
-    card()
-    await waitFor(() => expect(screen.getByRole('button', { name: 'Pause' })).toBeTruthy())
-    const row = screen.getByRole('button', { name: 'Pause' }).parentElement as HTMLElement
-    const names = within(row)
-      .getAllByRole('button')
-      .map((b) => b.getAttribute('aria-label') ?? b.textContent?.trim())
-    expect(names).toEqual(['Pause', 'Run now', 'Options'])
+  it('needs the person for a conflict and a held job, each leading to where it is answered', async () => {
+    const held: Finding = {
+      id: 'f1', job: 'music', kind: 'delete', severity: 'critical', held: true, since: '', seen: '', open: true,
+    }
+    page({ findings: [held], conflicts: 3 })
+    expect((await screen.findByTestId('status-head')).textContent).toBe('Needs you')
+    expect(screen.getByText('Waiting')).toBeTruthy()
+
+    fireEvent.click(screen.getByText('Conflicts waiting for a choice'))
+    expect(went).toHaveBeenLastCalledWith({ tab: 'conflicts', job: '' })
+    fireEvent.click(screen.getByText('music is held: Mass deletion'))
+    expect(went).toHaveBeenLastCalledWith({ tab: 'anomalies', job: 'music', finding: 'f1' })
+  })
+})
+
+describe('a job row', () => {
+  it('carries only pause and run as its buttons, and opens the job anywhere else', async () => {
+    page()
+    await screen.findAllByRole('button', { name: 'Pause' })
+    const photos = row('photos')
+    const actions = photos.querySelector('.glim-row-actions') as HTMLElement
+    expect(within(actions).getAllByRole('button').map((b) => b.textContent?.trim())).toEqual(['Pause', 'Run now'])
+
+    fireEvent.click(photos)
+    expect(opened).toHaveBeenCalledWith('photos')
+    opened.mockClear()
+    fireEvent.click(within(actions).getByRole('button', { name: 'Run now' }))
+    expect(opened).not.toHaveBeenCalled()
+    expect(run).toHaveBeenCalledWith('photos')
+  })
+
+  it('shows the last runs as a strip and keeps a run that worked quiet', async () => {
+    page()
+    const photos = row('photos')
+    expect(within(photos).getByRole('img', { name: 'Last runs: worked: 1' })).toBeTruthy()
+    expect(within(photos).queryByText('Failed')).toBeNull()
+  })
+
+  it('says a job failed by its own last run', async () => {
+    page({ jobs: [job('photos', { recent: [ran('photos', 'boom'), ran('photos')] })] })
+    expect(within(row('photos')).getByText('Failed')).toBeTruthy()
   })
 
   it('offers cancel instead of run while the job runs', async () => {
-    card({ running: true })
-    await waitFor(() => expect(screen.getByRole('button', { name: 'Cancel the run' })).toBeTruthy())
-    expect(screen.queryByRole('button', { name: 'Run now' })).toBeNull()
-  })
-
-  it('keeps everything else in the options menu', async () => {
-    card()
-    await waitFor(() => expect(screen.getByRole('button', { name: 'Options' })).toBeTruthy())
-    fireEvent.click(screen.getByRole('button', { name: 'Options' }))
-    const menu = await screen.findByRole('menu')
-    const items = within(menu)
-      .getAllByRole('menuitem')
-      .map((b) => b.textContent?.trim())
-    expect(items).toEqual(['History', 'Check this job', 'Find duplicates', 'Edit', 'Duplicate', 'Remove', 'Preview'])
-  })
-
-  it('closes the menu on Escape', async () => {
-    card()
-    await waitFor(() => expect(screen.getByRole('button', { name: 'Options' })).toBeTruthy())
-    fireEvent.click(screen.getByRole('button', { name: 'Options' }))
-    await screen.findByRole('menu')
-    fireEvent.keyDown(document, { key: 'Escape' })
-    expect(screen.queryByRole('menu')).toBeNull()
-  })
-
-  it('closes its history with the button on it and with Escape', async () => {
-    card()
-    const open = async () => {
-      fireEvent.click(await screen.findByRole('button', { name: 'Options' }))
-      fireEvent.click(within(await screen.findByRole('menu')).getByRole('menuitem', { name: 'History' }))
-      return screen.findByRole('region', { name: 'History' })
-    }
-
-    await open()
-    fireEvent.click(screen.getByRole('button', { name: 'Close the history' }))
-    expect(screen.queryByRole('region', { name: 'History' })).toBeNull()
-
-    const fold = await open()
-    fireEvent.keyDown(within(fold).getByRole('textbox'), { key: 'Escape' })
-    expect(screen.queryByRole('region', { name: 'History' })).toBeNull()
-  })
-
-  it('opens the check and the duplicate search from the menu and closes them again', async () => {
-    card()
-    const pick = async (name: string) => {
-      fireEvent.click(await screen.findByRole('button', { name: 'Options' }))
-      fireEvent.click(within(await screen.findByRole('menu')).getByRole('menuitem', { name }))
-      return screen.findByRole('region', { name })
-    }
-
-    const check = await pick('Check this job')
-    expect(within(check).getByRole('button', { name: 'Check this job' })).toBeTruthy()
-    const dupes = await pick('Find duplicates')
-    expect(screen.queryByRole('region', { name: 'Check this job' })).toBeNull()
-    expect(within(dupes).getAllByRole('button', { name: /Duplicates on the/ })).toHaveLength(2)
-
-    fireEvent.click(within(dupes).getByRole('button', { name: 'Close' }))
-    expect(screen.queryByRole('region', { name: 'Find duplicates' })).toBeNull()
-
-    const again = await pick('Check this job')
-    fireEvent.keyDown(within(again).getByRole('button', { name: 'Check this job' }), { key: 'Escape' })
-    expect(screen.queryByRole('region', { name: 'Check this job' })).toBeNull()
+    page({ jobs: [job('photos', { running: true })] })
+    expect(within(row('photos')).getByRole('button', { name: 'Cancel the run' })).toBeTruthy()
+    expect(within(row('photos')).queryByRole('button', { name: 'Run now' })).toBeNull()
   })
 
   it('says why a run could not be started', async () => {
     run.mockImplementationOnce(() => Promise.reject(new Error('this interface is password protected, log in first')))
-    card()
-    fireEvent.click(await screen.findByRole('button', { name: 'Run now' }))
+    page()
+    fireEvent.click(within(row('photos')).getByRole('button', { name: 'Run now' }))
     expect(await screen.findByText('this interface is password protected, log in first')).toBeTruthy()
   })
 
-  it('says why a run could not be cancelled', async () => {
-    stopJob.mockImplementationOnce(() => Promise.reject(new Error('Failed to fetch')))
-    card({ running: true })
-    fireEvent.click(await screen.findByRole('button', { name: 'Cancel the run' }))
-    expect(await screen.findByText('Failed to fetch')).toBeTruthy()
-  })
-
-  it('floats the button that adds a job outside the page', async () => {
-    card()
-    const add = await screen.findByRole('button', { name: 'Add a job' })
-    expect(add.className).toMatch(/glim-fab/)
-    expect(add.closest('.flex.flex-col.gap-10')).toBeNull()
-  })
-})
-
-describe('adding a job', () => {
-  it('waits until the job list has loaded', async () => {
-    config.mockImplementation(() => new Promise(() => undefined))
-    card()
-    const add = await screen.findByRole('button', { name: 'Add a job' })
-    fireEvent.click(add)
-    expect(screen.queryByDisplayValue('new-job')).toBeNull()
-  })
-
-  it('is refused while the job list could not be read', async () => {
-    config.mockImplementation(() => Promise.reject(new Error('Failed to fetch')))
-    card()
-    await screen.findByText('Failed to fetch')
-    fireEvent.click(screen.getByRole('button', { name: 'Add a job' }))
-    expect(screen.queryByRole('button', { name: 'Save' })).toBeNull()
-    expect(saveConfig).not.toHaveBeenCalled()
-  })
-})
-
-describe('pausing and removing a job', () => {
-  const pair = (): RawJob[] => [
-    { name: 'photos', left: 'D:/Photos', right: 'nas:photos', state: 'state/photos.db' },
-    { name: 'music', left: 'D:/Music', right: 'nas:music', state: 'state/music.db' },
-  ]
-  const live = (r: RawJob): Job => job({ name: r.name, left: r.left, right: r.right })
-
-  function cards(list: RawJob[] = pair()) {
-    render(
-      <ToastProvider>
-        <Jobs
-          jobs={list.map(live)}
-          findings={[]}
-          latest={[]}
-          progress={{}}
-          speeds={{}}
-          onPreview={() => undefined}
-          onSaved={() => undefined}
-        />
-      </ToastProvider>,
-    )
-  }
-
-  // The row that draws a job's two sides also holds its buttons.
-  async function pause(name: string) {
-    const side = pair().find((j) => j.name === name)?.left ?? ''
-    const row = (await screen.findByText(side)).closest('div.flex-wrap') as HTMLElement
-    fireEvent.click(within(row).getByRole('button', { name: 'Pause' }))
-  }
-
-  beforeEach(() => {
-    config.mockImplementation(() => Promise.resolve({ jobs: pair() }))
-  })
-
-  it('writes only the paused job, not another card\'s unsaved edit', async () => {
-    cards()
+  it('writes only the paused job', async () => {
+    page()
     await screen.findAllByRole('button', { name: 'Pause' })
-    fireEvent.click(screen.getAllByRole('button', { name: 'Options' })[0])
-    fireEvent.click(within(await screen.findByRole('menu')).getByRole('menuitem', { name: 'Edit' }))
-    fireEvent.change(await screen.findByDisplayValue('nas:photos'), { target: { value: 'nas:elsewhere' } })
-
-    await pause('music')
+    fireEvent.click(within(row('music')).getByRole('button', { name: 'Pause' }))
     await waitFor(() => expect(saveConfig).toHaveBeenCalled())
     const written = saveConfig.mock.calls[0][0]
-    expect(written.find((j) => j.name === 'photos')?.right).toBe('nas:photos')
     expect(written.find((j) => j.name === 'music')?.disabled).toBe(true)
-  })
-
-  it('keeps a job another window added since the page loaded', async () => {
-    cards()
-    await screen.findAllByRole('button', { name: 'Pause' })
-    config.mockImplementation(() =>
-      Promise.resolve({ jobs: [...pair(), { name: 'films', left: 'D:/Films', right: 'nas:films', state: 'state/films.db' }] }),
-    )
-
-    await pause('photos')
-    await waitFor(() => expect(saveConfig).toHaveBeenCalled())
-    expect(saveConfig.mock.calls[0][0].map((j) => j.name)).toEqual(['photos', 'music', 'films'])
+    expect(written.find((j) => j.name === 'photos')?.disabled).toBeUndefined()
   })
 
   it('holds the pause buttons while a write is under way', async () => {
     saveConfig.mockImplementation(() => new Promise(() => undefined))
-    cards()
-    await pause('photos')
+    page()
+    await screen.findAllByRole('button', { name: 'Pause' })
+    fireEvent.click(within(row('photos')).getByRole('button', { name: 'Pause' }))
     await waitFor(() => expect(saveConfig).toHaveBeenCalled())
     for (const button of screen.getAllByRole('button', { name: 'Pause' })) {
       expect((button as HTMLButtonElement).disabled).toBe(true)
     }
   })
+})
 
-  it('removes one job without writing another card\'s unsaved edit', async () => {
-    cards()
-    await screen.findAllByRole('button', { name: 'Pause' })
-    fireEvent.click(screen.getAllByRole('button', { name: 'Options' })[0])
-    fireEvent.click(within(await screen.findByRole('menu')).getByRole('menuitem', { name: 'Edit' }))
-    fireEvent.change(await screen.findByDisplayValue('nas:photos'), { target: { value: 'nas:elsewhere' } })
-
-    fireEvent.click(screen.getAllByRole('button', { name: 'Options' })[0])
-    fireEvent.click(within(await screen.findByRole('menu')).getByRole('menuitem', { name: 'Remove' }))
-    const dialog = await screen.findByRole('dialog')
-    fireEvent.click(within(dialog).getByRole('switch'))
-    fireEvent.click(within(dialog).getByRole('button', { name: 'Delete it' }))
-
-    await waitFor(() => expect(saveConfig).toHaveBeenCalled())
-    expect(saveConfig.mock.calls[0][0]).toEqual([pair()[0]])
+describe('the list bar', () => {
+  it('keeps only the jobs that need a look under that filter', async () => {
+    page({ jobs: [job('photos'), job('music', { recent: [ran('music', 'boom')] })] })
+    fireEvent.click(screen.getByRole('button', { name: 'Filter' }))
+    fireEvent.click(within(await screen.findByRole('dialog', { name: 'Filter' })).getByRole('tab', { name: 'Problems' }))
+    expect(screen.getAllByTestId('job-row').map((r) => r.textContent)).toEqual([expect.stringContaining('music')])
   })
 
-  it('keeps an open form on its job when a job above it is removed', async () => {
-    cards()
-    await screen.findAllByRole('button', { name: 'Pause' })
-    fireEvent.click(screen.getAllByRole('button', { name: 'Options' })[1])
-    fireEvent.click(within(await screen.findByRole('menu')).getByRole('menuitem', { name: 'Edit' }))
-    fireEvent.change(await screen.findByDisplayValue('nas:music'), { target: { value: 'nas:elsewhere' } })
-
-    fireEvent.click(screen.getAllByRole('button', { name: 'Options' })[0])
-    fireEvent.click(within(await screen.findByRole('menu')).getByRole('menuitem', { name: 'Remove' }))
-    const dialog = await screen.findByRole('dialog')
-    fireEvent.click(within(dialog).getByRole('switch'))
-    fireEvent.click(within(dialog).getByRole('button', { name: 'Delete it' }))
-
-    await waitFor(() => expect(saveConfig).toHaveBeenCalled())
-    expect(saveConfig.mock.calls[0][0]).toEqual([pair()[1]])
-    expect(await screen.findByDisplayValue('nas:elsewhere')).toBeTruthy()
-    expect(screen.getByDisplayValue('music')).toBeTruthy()
+  it('finds a job by a folder it syncs', async () => {
+    page()
+    fireEvent.click(screen.getByRole('button', { name: 'Search' }))
+    fireEvent.change(screen.getByRole('searchbox', { name: 'Search' }), { target: { value: 'nas:mus' } })
+    expect(screen.getAllByTestId('job-row')).toHaveLength(1)
+    expect(screen.getByText('music')).toBeTruthy()
   })
 })
 
-describe('renaming a job', () => {
-  it('keeps the form in the job\'s own card while the name is typed', async () => {
-    card()
-    fireEvent.click(await screen.findByRole('button', { name: 'Options' }))
-    fireEvent.click(within(await screen.findByRole('menu')).getByRole('menuitem', { name: 'Edit' }))
-    const name = (await screen.findByDisplayValue('photos')) as HTMLInputElement
+describe('adding a job', () => {
+  it('is the one filled button on the page', async () => {
+    page()
+    const add = await screen.findByRole('button', { name: 'Add a job' })
+    await waitFor(() => expect((add as HTMLButtonElement).disabled).toBe(false))
+    expect(add.closest('[data-testid="page-actions"]')).toBeTruthy()
+    const filled = screen.getAllByRole('button').filter((b) => b.className.split(' ').includes('bg-accent'))
+    expect(filled).toEqual([add])
+  })
 
-    fireEvent.change(name, { target: { value: 'photosx' } })
-    expect(name.isConnected).toBe(true)
-    expect(name.value).toBe('photosx')
-    expect(screen.queryByText('not saved yet')).toBeNull()
-    expect(screen.getAllByDisplayValue('photosx')).toHaveLength(1)
+  it('waits until the job list has loaded', async () => {
+    config.mockImplementation(() => new Promise(() => undefined))
+    page()
+    const add = await screen.findByRole('button', { name: 'Add a job' })
+    expect((add as HTMLButtonElement).disabled).toBe(true)
+  })
+
+  it('opens the editor in a window, and Cancel drops the new job unsaved', async () => {
+    page()
+    const add = await screen.findByRole('button', { name: 'Add a job' })
+    await waitFor(() => expect((add as HTMLButtonElement).disabled).toBe(false))
+    fireEvent.click(add)
+    const window = await screen.findByRole('dialog', { name: 'New job' })
+    expect(within(window).getByDisplayValue('new-job')).toBeTruthy()
+    fireEvent.click(within(window).getByRole('button', { name: 'Cancel' }))
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
+    expect(screen.queryByText('new-job')).toBeNull()
+    expect(saveConfig).not.toHaveBeenCalled()
+  })
+
+  it('saves the new job from the window', async () => {
+    page()
+    const add = await screen.findByRole('button', { name: 'Add a job' })
+    await waitFor(() => expect((add as HTMLButtonElement).disabled).toBe(false))
+    fireEvent.click(add)
+    const window = await screen.findByRole('dialog', { name: 'New job' })
+    fireEvent.click(within(window).getByRole('button', { name: 'Save' }))
+    await waitFor(() => expect(saveConfig).toHaveBeenCalled())
+    expect(saveConfig.mock.calls[0][0].map((j) => j.name)).toEqual(['photos', 'music', 'new-job'])
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
+  })
+})
+
+describe('the More menu beside Add a job', () => {
+  it('runs every job that is ready, and only those', async () => {
+    page({ jobs: [job('photos'), job('music', { disabled: true })] })
+    fireEvent.click(screen.getByRole('button', { name: 'More' }))
+    fireEvent.click(within(await screen.findByRole('menu')).getByRole('menuitem', { name: 'Run all' }))
+    await waitFor(() => expect(run).toHaveBeenCalledTimes(1))
+    expect(run).toHaveBeenCalledWith('photos')
   })
 })

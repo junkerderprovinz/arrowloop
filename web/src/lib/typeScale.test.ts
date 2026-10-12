@@ -18,7 +18,7 @@ const OUTSIDE: Record<string, string[]> = {
   // The wordmark, and the rail rows at the sidebar's own 15px.
   'components/Sidebar.tsx': ['text-xl', 'text-[15px]'],
   // A brand mark drawn at 1em, sized through the font size.
-  'pages/Targets.tsx': ['text-[32px]'],
+  'pages/Targets.tsx': ['text-[20px]'],
 }
 
 const OFF_SCALE =

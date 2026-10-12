@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 
-import { Empty, Num, Rows, Rule, Stack } from '../components/Shell'
+import { Empty, Num, Rows, Rule } from '../components/Shell'
+import { SelectionMark } from '../components/SelectionMark'
+import { IconPlay } from '../components/glyphs'
 import { Card } from '../lib/glimstone/Card'
 import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
@@ -11,12 +13,22 @@ import { actionName } from '../lib/actionName'
 import { api, type Action, type ActionKind, type Plan, type Resolution, type Shown, type SideVersion } from '../lib/api'
 import { translateSide, useReason, useT, type TranslationKey } from '../lib/i18n'
 
+/** A job's plan as a page of its own, for a shell that opens it there. */
+export function Preview({ job, onDone }: { job: string; onDone: () => void }) {
+  const { t } = useT()
+  return (
+    <Card title={t('preview.for', { job })} hueIndex={0}>
+      <PreviewPlan job={job} onDone={onDone} />
+    </Card>
+  )
+}
+
 /**
  * A job's plan before anything moves: each proposed change with its direction
- * and the engine's reason, each one untickable, and nothing runs until the
- * button is pressed.
+ * and the engine's reason, each one picked to start with and each one can be
+ * left out, and nothing runs until the button is pressed.
  */
-export function Preview({ job, onDone }: { job: string; onDone: () => void }) {
+export function PreviewPlan({ job, onDone }: { job: string; onDone: () => void }) {
   const { t } = useT()
   const reason = useReason()
   const [plan, setPlan] = useState<Plan | null>(null)
@@ -25,10 +37,10 @@ export function Preview({ job, onDone }: { job: string; onDone: () => void }) {
   const [resolutions, setResolutions] = useState<Record<string, Resolution>>({})
   const [busy, setBusy] = useState(false)
 
-  // Escape leaves, except while a run is starting.
+  // Escape leaves, except while a run is starting or a window above has it.
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
-      if (e.key === 'Escape' && !busy) onDone()
+      if (e.key === 'Escape' && !busy && !document.querySelector('[role="dialog"], [role="menu"]')) onDone()
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
@@ -95,75 +107,70 @@ export function Preview({ job, onDone }: { job: string; onDone: () => void }) {
 
   if (error) {
     return (
-      <Card title={t('preview.title')} hueIndex={0}>
+      <>
         {back}
         <p className="text-subline text-statusFail">{error}</p>
-      </Card>
+      </>
     )
   }
   if (!plan) {
     return (
-      <Card title={t('preview.title')} hueIndex={0}>
+      <>
         {back}
         <Empty>{t('preview.working')}</Empty>
-      </Card>
+      </>
     )
   }
 
   const nothingToDo = everything.length === 0
 
   return (
-    <Stack>
-      <Card
-        title={t('preview.for', { job })}
-        hueIndex={0}
-      >
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          {back}
-          <Button
-            label={
-              busy
-                ? t('preview.starting')
-                : t('preview.run', { chosen: chosen.length, total: everything.length })
-            }
-            labelKey={busy ? 'preview.starting' : 'preview.run'}
-            tone="accent"
-            busy={busy}
-            onClick={() => void start()}
-            disabled={busy || nothingToDo || chosen.length === 0}
-          />
-        </div>
-        {nothingToDo ? (
-          <Empty>{t('preview.nothing')}</Empty>
-        ) : (
-          <>
-            <p className="mb-2 flex items-center gap-1.5 text-subline text-carbon-textMuted">
-              {t('preview.explain')}
-            </p>
-            <Rows className="flex flex-col">
-              {everything.map((a, i) => (
-                <li key={`${a.kind}:${a.path}`}>
-                  {i > 0 && <Rule />}
-                  <Row
-                    action={a}
-                    ticked={!unticked.has(a.path)}
-                    onToggle={() => toggle(a.path)}
-                    resolution={resolutions[a.path] ?? 'both'}
-                    onResolve={(next) => setResolutions((prev) => ({ ...prev, [a.path]: next }))}
-                  />
-                </li>
-              ))}
-            </Rows>
-          </>
-        )}
-        <p className="mt-4 text-subline text-carbon-textMuted">
-          {t('preview.unchanged', { count: plan.unchanged })}
-          {plan.agreed > 0 && <> {' · '} {t('preview.identical', { count: plan.agreed })}</>}
-        </p>
-      </Card>
-
+    <>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        {back}
+        <Button
+          label={
+            busy
+              ? t('preview.starting')
+              : t('preview.run', { chosen: chosen.length, total: everything.length })
+          }
+          labelKey={busy ? 'preview.starting' : 'preview.run'}
+          glyph={<IconPlay />}
+          busy={busy}
+          onClick={() => void start()}
+          disabled={busy || nothingToDo || chosen.length === 0}
+        />
+      </div>
+      {nothingToDo ? (
+        <Empty>{t('preview.nothing')}</Empty>
+      ) : (
+        <>
+          <p className="mb-2 flex items-center gap-1.5 text-subline text-carbon-textMuted">
+            {t('preview.explain')}
+          </p>
+          <Rows className="glim-selecting flex flex-col">
+            {everything.map((a, i) => (
+              <li key={`${a.kind}:${a.path}`}>
+                {i > 0 && <Rule />}
+                <Row
+                  action={a}
+                  ticked={!unticked.has(a.path)}
+                  onToggle={() => toggle(a.path)}
+                  resolution={resolutions[a.path] ?? 'both'}
+                  onResolve={(next) => setResolutions((prev) => ({ ...prev, [a.path]: next }))}
+                />
+              </li>
+            ))}
+          </Rows>
+        </>
+      )}
+      <p className="text-subline text-carbon-textMuted">
+        {t('preview.unchanged', { count: plan.unchanged })}
+        {plan.agreed > 0 && <> {' · '} {t('preview.identical', { count: plan.agreed })}</>}
+      </p>
       {plan.skipped.length > 0 && (
-        <Card title={t('preview.skipped')} hueIndex={1}>
+        <section className="glim-well flex flex-col gap-2 rounded-card p-4">
+          <h3 className="glim-eyebrow">{t('preview.skipped')}</h3>
           <ul className="flex flex-col gap-2">
             {plan.skipped.map((s) => (
               <li key={s.path} className="text-subline">
@@ -172,9 +179,9 @@ export function Preview({ job, onDone }: { job: string; onDone: () => void }) {
               </li>
             ))}
           </ul>
-        </Card>
+        </section>
       )}
-    </Stack>
+    </>
   )
 }
 
@@ -225,30 +232,8 @@ function Row({
 
   return (
     <div className="py-2.5">
-      <label className="flex cursor-pointer items-center gap-3">
-        {/* A switch, since the design language never uses a checkbox. */}
-        <span
-          role="switch"
-          aria-checked={ticked}
-          tabIndex={0}
-          onClick={onToggle}
-          onKeyDown={(e) => {
-            if (e.key === ' ' || e.key === 'Enter') {
-              e.preventDefault()
-              onToggle()
-            }
-          }}
-          // Not the accent: every row arrives ticked, so "on" marks no activity.
-          className={`inline-flex h-4 w-7 shrink-0 items-center p-0.5 transition-colors ${
-            ticked ? 'bg-carbon-text' : 'bg-carbon-surface3'
-          }`}
-          style={{ borderRadius: 'var(--radius-pill)' }}
-        >
-          <span
-            className={`h-3 w-3 bg-carbon-background transition-transform ${ticked ? 'translate-x-3' : ''}`}
-            style={{ borderRadius: 'var(--radius-pill)' }}
-          />
-        </span>
+      <div className="flex items-center gap-3">
+        <SelectionMark checked={ticked} onPick={onToggle} label={t('job.pick', { path: actionName(action) })} />
 
         <Badge tone={tone[action.kind] ?? 'neutral'}>{t(kindKey[action.kind])}</Badge>
 
@@ -258,7 +243,7 @@ function Row({
 
         <span className="hidden shrink-0 text-subline text-carbon-textMuted sm:inline">{label}</span>
         <span className="shrink-0 text-subline text-carbon-textMuted">{reason(action.reason)}</span>
-      </label>
+      </div>
 
       {action.kind === 'conflict' && ticked && (
         <Conflict action={action} resolution={resolution} onResolve={onResolve} />

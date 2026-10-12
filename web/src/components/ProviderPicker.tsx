@@ -61,13 +61,12 @@ export function ProviderPicker({
         })}
       </ul>
 
-      {/* rclone backends with no provider entry, folded away but reachable. */}
+      {/* rclone backends with no provider entry, after the products and
+          smaller, since few people look for a protocol by its rclone name. */}
       {unlisted.length > 0 && (
-        <details className="text-meta">
-          <summary className="cursor-pointer px-1 py-1 text-carbon-textMuted">
-            {t('targets.pickMore', { count: unlisted.length })}
-          </summary>
-          <ul className="mt-2 grid grid-cols-[repeat(auto-fill,minmax(9.5rem,1fr))] gap-2">
+        <section className="flex flex-col gap-2 text-meta">
+          <h4 className="px-1 text-carbon-textMuted">{t('targets.pickMore', { count: unlisted.length })}</h4>
+          <ul className="grid grid-cols-[repeat(auto-fill,minmax(9.5rem,1fr))] gap-2">
             {unlisted.map((b) => (
               <li key={b.name}>
                 <button
@@ -80,7 +79,7 @@ export function ProviderPicker({
               </li>
             ))}
           </ul>
-        </details>
+        </section>
       )}
     </div>
   )

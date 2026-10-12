@@ -1,1140 +1,376 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
-import type { ReactNode } from 'react'
-import { createPortal } from 'react-dom'
+import { useMemo, useState, type MouseEvent } from 'react'
 
-import { Empty, Num, Rows, Rule, Stack } from '../components/Shell'
+import { Empty, Rows, Stack } from '../components/Shell'
 import { IconAction } from '../components/IconAction'
-import { ToggleRow } from '../components/ToggleRow'
+import { Menu } from '../components/Menu'
+import { DirectionGlyph, directionKey } from '../components/Direction'
+import { IconAdd, IconPause, IconPlay } from '../components/glyphs'
+import { JobEditor, useConfigErrors } from '../components/JobEditor'
+import { FilterButton, FilterChoice, ListBar, SearchFold, SortButton } from '../components/ListBar'
+import { NeedsCard, StatusHead } from '../components/NeedsHead'
+import { PageAction, PageActions } from '../components/PageActions'
+import { RunStrip } from '../components/RunStrip'
 import { Card } from '../lib/glimstone/Card'
 import { Badge } from '../lib/glimstone/Badge'
-import { Button } from '../lib/glimstone/Button'
-import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
-import { IconAdd, IconAnomalies, IconPause, IconPencil, IconPlay, IconSave, IconToLeft, IconToRight, IconTrash } from '../components/glyphs'
-import { DirectionMark } from '../components/Direction'
-import { JobMark, statusOf } from '../components/JobMark'
-import { Menu } from '../components/Menu'
-import { Pace } from '../components/Pace'
-import { RunDetail } from '../components/RunDetail'
-import { Stats } from '../components/Stats'
-import { CheckPanel } from '../components/CheckPanel'
-import { DupesPanel } from '../components/DupesPanel'
-import { ViewSwitch, type LogView } from '../components/ViewSwitch'
-import { JobForm, useJobConfig } from './Editor'
-import { Choice, Day, Field, Text } from '../components/Field'
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
-import { groupFindings, shortLine, type Finding } from '../lib/anomalies'
-import { bytes } from '../lib/bytes'
-import { entryAction, entryNote, sideName } from '../lib/entryLabel'
-import { useLiveTick } from '../lib/liveTick'
-import { useGoTo } from '../lib/goTo'
-import { usePlaces } from '../lib/places'
-import { useToast } from '../lib/toast'
-import { api } from '../lib/api'
-import type { Direction, HistoryShow, Job, Run, RunEvent, Touch } from '../lib/api'
-import { translateSide, useT } from '../lib/i18n'
-import { stageKey } from '../lib/readingStage'
+import { useJobConfig } from './Editor'
+import type { Finding } from '../lib/anomalies'
+import { api, type Job, type Run, type RunEvent } from '../lib/api'
 import { describeCadence, readCadence } from '../lib/cadence'
-import { since } from '../lib/since'
+import { dayTime } from '../lib/dayTime'
+import { sideName } from '../lib/entryLabel'
+import { useGoTo } from '../lib/goTo'
+import { useT, type TranslationKey } from '../lib/i18n'
+import { DEFAULT_VIEW, JOB_FILTERS, jobStatus, jobsInView, type JobFilter, type JobView } from '../lib/jobList'
+import { needs } from '../lib/needs'
+import { useOpenJob } from '../lib/openJob'
+import { usePlaces } from '../lib/places'
+import { useRemembered } from '../lib/remember'
+import { useToast } from '../lib/toast'
+
+export { History } from './History'
+
+const FILTER_LABEL: Record<JobFilter, TranslationKey> = {
+  all: 'jobs.filter.all',
+  running: 'jobs.filter.running',
+  paused: 'jobs.filter.paused',
+  trouble: 'jobs.filter.trouble',
+}
+
+const SORTS: { value: string; label: TranslationKey; sort: JobView['sort'] }[] = [
+  { value: 'name', label: 'list.sort.nameAz', sort: { field: 'name', reversed: false } },
+  { value: 'name-', label: 'list.sort.nameZa', sort: { field: 'name', reversed: true } },
+  { value: 'status', label: 'list.sort.problemsFirst', sort: { field: 'status', reversed: false } },
+  { value: 'status-', label: 'list.sort.problemsLast', sort: { field: 'status', reversed: true } },
+  { value: 'lastRun', label: 'list.sort.newestFirst', sort: { field: 'lastRun', reversed: false } },
+  { value: 'lastRun-', label: 'list.sort.oldestFirst', sort: { field: 'lastRun', reversed: true } },
+]
+
+const sortValue = (sort: JobView['sort']) => `${sort.field}${sort.reversed ? '-' : ''}`
+
+function isView(value: unknown): value is JobView {
+  const v = value as JobView
+  return (
+    !!v &&
+    JOB_FILTERS.includes(v.filter) &&
+    !!v.sort &&
+    SORTS.some((s) => s.value === sortValue(v.sort))
+  )
+}
 
 /**
- * The jobs tab: one card per job with its state, actions and live progress,
- * and the form that opens inside a job's own card. The mark on each card says
- * whether the last attempt worked, not merely whether it ran.
+ * The jobs page: the state of everything in one sentence, what waits for a
+ * person while something does, and every job as one row that opens its page.
+ * Making a job is what the page is for, so it is the corner's action.
  */
 export function Jobs({
   jobs,
   findings,
-  latest,
   progress,
-  speeds,
-  onPreview,
+  conflicts = 0,
   onSaved,
 }: {
   jobs: Job[]
-  /** The open findings, of which a job's card shows the loudest. */
+  /** The open findings, which decide the head and a held job's status. */
   findings: Finding[]
-  /**
-   * Each job's newest run. The live job list only carries the last success,
-   * which cannot say whether the last attempt failed, and a page of the newest
-   * runs across all jobs loses a daily job behind one that watches a folder.
-   */
-  latest: Run[]
   progress: Record<string, RunEvent>
-  /** Bytes a second per running job, from the engine's moving frames. */
-  speeds: Record<string, number>
-  onPreview: (name: string) => void
+  /** Unused here: each job carries its own last runs, and its page shows the pace and the preview. */
+  latest?: Run[]
+  speeds?: Record<string, number>
+  onPreview?: (name: string) => void
+  /** How many conflicts wait for an answer, across every job. */
+  conflicts?: number
   onSaved: () => void
 }) {
   const { t } = useT()
   const push = useToast()
-
-  // Only the most recent run counts: a job that failed last week and has worked
-  // since is not in trouble.
-  function lastFailed(name: string): boolean {
-    const last = latest.find((r) => r.Job === name)
-    return !!last && last.Err !== ''
-  }
   const config = useJobConfig(onSaved)
-  // The job open in the form, by its position in the configuration file, and
-  // for a saved job the name the engine knows it by. The name in the form can
-  // change with every keystroke, so it cannot tie the form to its card.
-  const [open, setOpen] = useState<{ at: number; live?: string } | null>(null)
-  const editing = open?.at ?? null
-  const setEditing = (at: number | null, live?: string) => setOpen(at === null ? null : { at, live })
-  // The entry by its place in the file, and the name the engine knows it by
-  // unless it is a draft.
-  const [removing, setRemoving] = useState<{ at: number; saved?: string } | null>(null)
-  // Whose history fold is open, by job name; one at a time.
-  const [history, setHistory] = useState<string | null>(null)
-  // The check or the duplicate search open on a card, one at a time.
-  const [tool, setTool] = useState<{ job: string; kind: 'check' | 'dupes' } | null>(null)
-  const toggleTool = (job: string, kind: 'check' | 'dupes') =>
-    setTool((open) => (open?.job === job && open.kind === kind ? null : { job, kind }))
-  // A counter used as the error's key, so each refused save remounts it and
-  // replays the shake.
-  const [refused, setRefused] = useState(0)
-  // A removed job's state database is deleted by default. Keeping it is for a
-  // pair that is coming back, so its files do not all count as new.
-  const [dropState, setDropState] = useState(true)
+  useConfigErrors(config)
+  const [editing, setEditing] = useState<{ at: number; added: boolean } | null>(null)
+  const [view, setView] = useRemembered<JobView>('arrowloop.jobs.view', DEFAULT_VIEW, isView)
+  const [query, setQuery] = useState('')
 
-  const raw = config.jobs
+  const waiting = needs(conflicts, findings)
+  const held = useMemo(() => new Set(findings.filter((f) => f.held).map((f) => f.job)), [findings])
+  const shown = jobsInView(jobs, view, query, (name) => held.has(name))
 
-  // The live list comes from the engine and the editable one from the
-  // configuration file, so a row is matched to its record by name.
-  function indexOf(name: string): number | null {
-    if (!raw) return null
-    if (open?.live === name) return open.at
-    const at = raw.findIndex((j) => j.name === name)
-    return at === -1 ? null : at
+  // Entries in the configuration the engine does not run, such as a job saved
+  // with a side still empty, are listed so they can be finished.
+  const drafts = (config.jobs ?? [])
+    .map((job, at) => ({ job, at }))
+    .filter(({ job, at }) => !jobs.some((j) => j.name === job.name) && at !== editing?.at)
+
+  const nothing = jobs.length === 0 && drafts.length === 0
+  // Paused jobs and drafts stay out of "run all", as they would on a schedule.
+  const ready = jobs.filter((j) => !j.disabled && !j.running && j.left && j.right)
+  const running = jobs.filter((j) => j.running)
+
+  // The engine starts and stops one job at a time, so every job is asked on
+  // its own and one refusal leaves the others going.
+  function everyJob(names: string[], act: (name: string) => Promise<unknown>) {
+    void Promise.allSettled(names.map((name) => act(name))).then((answers) => {
+      const refused = answers.find((a): a is PromiseRejectedResult => a.status === 'rejected')
+      if (refused) push((refused.reason as Error).message, 'fail')
+    })
   }
-
-  // The entry open in a saved job's own card, whatever its name reads now.
-  const held = open?.live !== undefined && jobs.some((j) => j.name === open.live) ? open.at : null
-
-  // Jobs in the configuration that the engine only learns about on save still
-  // get a card, marked unsaved.
-  const pending = (raw ?? [])
-    .map((j, at) => ({ job: j, at }))
-    .filter(({ job, at }) => !jobs.some((live) => live.name === job.name) && at !== held)
 
   return (
     <Stack>
-      {(config.error || config.saved) && (
-        <div className="flex flex-wrap items-center gap-2">
-          {config.error ? (
-            <p key={refused} className="glim-shake text-subline text-statusFail">
-              {config.error}
-            </p>
-          ) : (
-            <p className="text-subline text-statusOk">{t('edit.savedNote')}</p>
-          )}
-        </div>
-      )}
+      <StatusHead head={waiting.head} />
+      <NeedsCard items={waiting.items} findings={findings} hueIndex={0} />
 
-      {jobs.length === 0 && (!raw || raw.length === 0) ? (
-        <Card title={t('jobs.title')} hueIndex={0}>
-          <Empty>{t('jobs.empty')}</Empty>
-        </Card>
-      ) : (
-        <>
-          {jobs.map((j, i) => {
-            const at = indexOf(j.name)
-            return (
-              <Card
-                key={j.name}
-                title={j.name}
-                hueIndex={i}
-              >
-                {/* The form replaces the summary inside the job's own card. */}
-                {at !== null && at === editing ? (
-                  <div className="flex flex-col gap-4">
-                    <JobForm
-                      job={(raw ?? [])[at]}
-                      known={config.known}
-                      defaults={config.defaults}
-                      patch={(next) => config.patch(at, next)}
-                    />
-                    <div className="flex justify-end gap-2">
-                      <IconAction
-                        title={t('edit.remove')}
-                        labelKey="edit.remove"
-                        hueIndex={i + 4}
-                        onClick={() => setRemoving({ at, saved: j.name })}
-                      >
-                        <IconTrash />
-                      </IconAction>
-                      <Button
-                        label={config.busy ? t('edit.checking') : t('edit.save')}
-                        labelKey={config.busy ? 'edit.checking' : 'edit.save'}
-                        glyph={<IconSave />}
-                        tone="accent"
-                        busy={config.busy}
-                        disabled={config.busy}
-                        onClick={() => {
-                          void config.save().then((ok) => {
-                            if (ok) setEditing(null)
-                            else setRefused((n) => n + 1)
-                          })
-                        }}
-                      />
-                    </div>
-                  </div>
-                ) : (
-                <div className="flex flex-col gap-2">
-                  <JobRow
-                    mark={<JobMark status={statusOf(j, lastFailed(j.name))} size={28} />}
-                    left={j.left}
-                    right={j.right}
-                    direction={j.direction}
-                  >
-                    {/* Each action takes its own palette position at a fixed
-                        offset from the card's index, so a button keeps its
-                        colour when a neighbour is not rendered and each card
-                        starts its row on a different colour. Holding and
-                        starting are separate controls: a held job can still be
-                        started by hand, and stays held. */}
-                    {at !== null && (
-                      <IconAction
-                        title={j.disabled ? t('jobs.resume') : t('jobs.pause')}
-                        labelKey={j.disabled ? 'jobs.resume' : 'jobs.pause'}
-                        hueIndex={i + 5}
-                        disabled={config.busy}
-                        onClick={() => void config.setDisabled(j.name, !j.disabled)}
-                      >
-                        {j.disabled ? <IconPlay /> : <IconPause />}
-                      </IconAction>
-                    )}
-                    <IconAction
-                      title={j.running ? t('jobs.cancelRun') : t('jobs.runNow')}
-                      labelKey={j.running ? 'jobs.cancelRun' : 'jobs.runNow'}
-                      hint={j.running ? undefined : t('jobs.runNowHint')}
-                      hueIndex={i + 6}
-                      onClick={() => {
-                        const asked = j.running ? api.stopJob(j.name) : api.run(j.name)
-                        asked.catch((e: Error) => push(e.message, 'fail'))
-                      }}
-                    />
-                    <Menu
-                      label={t('jobs.options')}
-                      labelKey="jobs.options"
-                      hueIndex={i + 7}
-                      items={[
-                        {
-                          label: t('jobs.history'),
-                          labelKey: 'jobs.history',
-                          onSelect: () => setHistory(history === j.name ? null : j.name),
-                        },
-                        { label: t('jobs.check'), labelKey: 'jobs.check', onSelect: () => toggleTool(j.name, 'check') },
-                        { label: t('jobs.dupes'), labelKey: 'jobs.dupes', onSelect: () => toggleTool(j.name, 'dupes') },
-                        ...(at !== null
-                          ? [
-                              {
-                                label: t('edit.editJob'),
-                                labelKey: 'edit.editJob' as const,
-                                onSelect: () => setEditing(at, j.name),
-                              },
-                              {
-                                label: t('edit.duplicate'),
-                                labelKey: 'edit.duplicate' as const,
-                                onSelect: () => setEditing(config.duplicate(at)),
-                              },
-                              {
-                                label: t('edit.remove'),
-                                labelKey: 'edit.remove' as const,
-                                onSelect: () => setRemoving({ at, saved: j.name }),
-                              },
-                            ]
-                          : []),
-                        { label: t('jobs.preview'), labelKey: 'jobs.preview', onSelect: () => onPreview(j.name) },
-                      ]}
-                    />
-                  </JobRow>
-                  <Cadence job={j} />
-                  <FindingTeaser findings={findings.filter((f) => f.job === j.name)} />
-
-                  {history === j.name && (
-                    <JobHistory job={j.name} running={j.running} onClose={() => setHistory(null)} />
-                  )}
-
-                  {tool?.job === j.name && (
-                    <ToolFold
-                      title={t(tool.kind === 'check' ? 'jobs.check' : 'jobs.dupes')}
-                      onClose={() => setTool(null)}
-                    >
-                      {tool.kind === 'check' ? <CheckPanel job={j.name} /> : <DupesPanel job={j.name} />}
-                    </ToolFold>
-                  )}
-
-                  {j.running && (
-                    <>
-                      {progress[j.name]?.path && (
-                        <p className="flex min-w-0 items-center gap-1.5 text-subline text-carbon-textMuted">
-                          {progress[j.name].side && (
-                            <span className="shrink-0" aria-hidden>
-                              {progress[j.name].side === 'right' ? <IconToRight /> : <IconToLeft />}
-                            </span>
-                          )}
-                          <span className="truncate font-mono" title={progress[j.name].path}>
-                            {progress[j.name].path}
-                          </span>
-                          {progress[j.name].side && (
-                            <span className="shrink-0">
-                              {translateSide(t, progress[j.name].side as 'left' | 'right')}
-                            </span>
-                          )}
-                        </p>
-                      )}
-                      <Progress event={progress[j.name]} />
-                      <Pace event={progress[j.name]} speed={speeds[j.name]} />
-                    </>
-                  )}
-                </div>
-                )}
-              </Card>
-            )
-          })}
-
-          {pending.map(({ job: p, at }) => (
-            <Card
-              key={`pending-${at}`}
-              title={p.name || t('edit.unnamed')}
-              hueIndex={jobs.length + at}
-            >
-              {at === editing ? (
-                <div className="flex flex-col gap-4">
-                  <JobForm
-                    job={p}
-                    known={config.known}
-                    defaults={config.defaults}
-                    patch={(next) => config.patch(at, next)}
-                  />
-                  {/* Delete beside save, so a draft can be dropped unsaved. */}
-                  <div className="flex justify-end gap-2">
-                    <IconAction
-                      title={t('edit.remove')}
-                      labelKey="edit.remove"
-                      hueIndex={jobs.length + at + 4}
-                      onClick={() => setRemoving({ at })}
-                    >
-                      <IconTrash />
-                    </IconAction>
-                    <Button
-                      label={config.busy ? t('edit.checking') : t('edit.save')}
-                      labelKey={config.busy ? 'edit.checking' : 'edit.save'}
-                      glyph={<IconSave />}
-                      tone="accent"
-                      busy={config.busy}
-                      disabled={config.busy}
-                      onClick={() => {
-                        void config.save().then((ok) => {
-                            if (ok) setEditing(null)
-                            else setRefused((n) => n + 1)
-                          })
-                      }}
-                    />
-                  </div>
-                </div>
-              ) : (
-              <div className="flex flex-col gap-2">
-                {/* The same row as a saved card. No preview until the engine
-                    knows the job, and the offsets match the saved card's. */}
-                <JobRow left={p.left ?? ''} right={p.right ?? ''} direction={p.direction ?? 'both'}>
-                  <IconAction
-                    title={t('edit.editJob')}
-                    labelKey="edit.editJob"
-                    hueIndex={jobs.length + at + 2}
-                    onClick={() => setEditing(at === editing ? null : at)}
-                  >
-                    <IconPencil />
-                  </IconAction>
-                  <IconAction
-                    title={t('edit.remove')}
-                    labelKey="edit.remove"
-                    hueIndex={jobs.length + at + 4}
-                    onClick={() => setRemoving({ at })}
-                  >
-                    <IconTrash />
-                  </IconAction>
-                </JobRow>
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-meta">
-                  <Badge tone="neutral">{t('edit.unsaved')}</Badge>
-                </div>
-              </div>
-              )}
-            </Card>
-          ))}
-        </>
-      )}
-
-      {removing !== null && raw && raw[removing.at] && (
-        <ConfirmDialog
-          title={t('edit.removeJob')}
-          message={t('edit.removeStakes', { name: raw[removing.at].name || t('edit.unnamed') })}
-          confirmLabel={t('confirm.delete')}
-          confirmGlyph={<IconTrash />}
-          cancelLabel={t('confirm.cancel')}
-          extra={
-            <ToggleRow
-              label={t('edit.removeState')}
-              hint={t('edit.removeStateHint')}
-              checked={dropState}
-              onChange={setDropState}
-              hueIndex={0}
+      <div className="flex flex-col gap-6">
+        {!nothing && (
+          <ListBar>
+            <FilterButton active={view.filter !== 'all'}>
+              <FilterChoice<JobFilter>
+                label={t('jobs.filter.label')}
+                value={view.filter}
+                onChange={(filter) => setView({ ...view, filter })}
+                options={JOB_FILTERS.map((f) => ({ value: f, label: t(FILTER_LABEL[f]) }))}
+              />
+            </FilterButton>
+            <SortButton
+              value={sortValue(view.sort)}
+              onChange={(next) => setView({ ...view, sort: SORTS.find((s) => s.value === next)!.sort })}
+              options={SORTS.map((s) => ({ value: s.value, label: t(s.label) }))}
             />
-          }
-          onCancel={() => setRemoving(null)}
-          onConfirm={() => {
-            const at = removing.at
-            // The form follows its entry, which moves up when one above it goes.
-            void config.remove(at, dropState, removing.saved, () =>
-              setOpen((o) => (o === null || o.at < at ? o : o.at === at ? null : { ...o, at: o.at - 1 })),
-            )
-            setRemoving(null)
-          }}
-        />
+            <SearchFold value={query} onChange={setQuery} placeholder={t('jobs.searchFor')} />
+          </ListBar>
+        )}
+
+        <Card title={t(FILTER_LABEL[view.filter])} hueIndex={1}>
+          {nothing ? (
+            <Empty>{t('jobs.none')}</Empty>
+          ) : shown.length === 0 && drafts.length === 0 ? (
+            <Empty>{t('jobs.noMatch')}</Empty>
+          ) : (
+            <Rows className="-mx-2 flex flex-col">
+              {shown.map((j) => (
+                <JobRow
+                  key={j.name}
+                  job={j}
+                  held={findings.find((f) => f.held && f.job === j.name)}
+                  event={progress[j.name]}
+                  busy={config.busy}
+                  canPause={config.jobs?.some((raw) => raw.name === j.name) ?? false}
+                  onPause={() => void config.setDisabled(j.name, !j.disabled)}
+                />
+              ))}
+              {drafts.map(({ job, at }) => (
+                <DraftRow key={`draft-${at}`} name={job.name || t('edit.unnamed')} onOpen={() => setEditing({ at, added: false })} />
+              ))}
+            </Rows>
+          )}
+        </Card>
+      </div>
+
+      {editing && config.jobs?.[editing.at] && (
+        <JobEditor config={config} at={editing.at} added={editing.added} onClose={() => setEditing(null)} />
       )}
 
-      {/* Room under the last card, so the floating button never covers its
-          buttons once the list is scrolled to the end. */}
-      <div aria-hidden className="h-[var(--btn-h-key)] shrink-0" />
-
-      {/* Making a job is what this page is for, so its button floats at the
-          window's corner and stays while the list scrolls. Rendered into the
-          body: the page's entrance animation transforms the page, and a fixed
-          element inside a transformed one scrolls with it. It stands outside
-          every card, so it takes its own hueIndex. */}
-      {createPortal(
-        <Button
-          variant="icon"
+      <PageActions>
+        <Menu
+          label={t('list.more')}
+          labelKey="list.more"
+          size="key"
+          items={[
+            {
+              label: t('jobs.runAll'),
+              labelKey: 'jobs.runAll',
+              disabled: ready.length === 0,
+              onSelect: () => everyJob(ready.map((j) => j.name), api.run),
+            },
+            {
+              label: t('jobs.stopAll'),
+              labelKey: 'jobs.stopAll',
+              disabled: running.length === 0,
+              onSelect: () => everyJob(running.map((j) => j.name), api.stopJob),
+            },
+          ]}
+        />
+        <PageAction
+          primary
           label={t('edit.add')}
           labelKey="edit.add"
           glyph={<IconAdd />}
-          tone="accent"
-          hueIndex={0}
-          className="glim-btn-key glim-fab"
-          disabled={!raw}
+          disabled={!config.jobs}
           onClick={() => {
             const at = config.add()
-            if (at !== null) setEditing(at)
+            if (at !== null) setEditing({ at, added: true })
           }}
-        />,
-        document.body,
-      )}
+        />
+      </PageActions>
     </Stack>
   )
 }
 
-/**
- * What the engine found about a job, as one line on its card that leads to the
- * Anomalies page. The page holds the files and the answers.
- */
-function FindingTeaser({ findings }: { findings: Finding[] }) {
-  const { t } = useT()
-  const goTo = useGoTo()
-  const loudest = groupFindings(findings)[0]?.findings[0]
-  if (!loudest) return null
-  const places: [string, string] = [t('side.left'), t('side.right')]
-  return (
-    <button
-      type="button"
-      onClick={() => goTo({ tab: 'anomalies', job: loudest.job })}
-      className="-mx-2 flex min-h-11 flex-wrap items-center gap-x-2 gap-y-1 rounded-control px-2 py-1.5 text-start text-meta hover:bg-carbon-hover"
-    >
-      <span className="shrink-0 text-carbon-textSub" aria-hidden>
-        <IconAnomalies />
-      </span>
-      <Badge tone={loudest.held ? 'warn' : 'neutral'}>
-        {loudest.held ? t('anomaly.heldBadge') : t(`anomaly.severity.${loudest.severity}`)}
-      </Badge>
-      <span className="font-medium text-carbon-text">{t(`anomaly.kind.${loudest.kind}`)}</span>
-      <span className="min-w-0 text-carbon-textSub [overflow-wrap:anywhere]">{shortLine(loudest, t, places)}</span>
-    </button>
-  )
+// A click on something inside the row that acts by itself must not open the row.
+function keepInRow(e: MouseEvent) {
+  e.stopPropagation()
 }
 
 /**
- * A running job's progress bar, in the accent because it is activity. While
- * the job is still being read it names the stage, since listing a large share
- * takes minutes. A listing measured against the last run stops short of full,
- * because this run may hold more; with nothing to measure against the bar is
- * indeterminate.
+ * One job: the tile of its direction, its name with everything else it could
+ * say in the bubble beside it, its two everyday buttons, its last runs and its
+ * one status. The whole row opens the job's page.
  */
-function Progress({ event }: { event?: RunEvent }) {
-  const { t, lang } = useT()
-  const total = event?.total ?? 0
-  const done = event?.done ?? 0
-  const known = total > 0
-  const share = known ? Math.min(event?.guess ? 0.99 : 1, done / total) : 0
-  const format = new Intl.NumberFormat(lang)
-  const counts = { done: format.format(done), total: format.format(total) }
-
-  let words = t('progress.starting')
-  if (known) words = t(event?.guess ? 'progress.about' : 'progress.of', counts)
-  else if (event?.stage) words = t('progress.found', counts)
-
-  return (
-    <>
-      {event?.stage && <p className="text-subline text-carbon-textMuted">{t(stageKey(event.stage, event.side))}</p>}
-      <div className="mt-1.5 flex items-center gap-2">
-        <div
-          className="h-1 min-w-0 flex-1 overflow-hidden bg-carbon-surface3"
-          style={{ borderRadius: 'var(--radius-pill)' }}
-          role="progressbar"
-          aria-valuemin={0}
-          aria-valuemax={known ? total : undefined}
-          aria-valuenow={known ? done : undefined}
-        >
-          <div
-            className={`h-full bg-accent transition-[width] ${known ? '' : 'glim-indeterminate'}`}
-            style={{ width: known ? `${share * 100}%` : '35%' }}
-          />
-        </div>
-        <span className="shrink-0 text-meta tabular-nums text-carbon-textMuted">{words}</span>
-      </div>
-    </>
-  )
-}
-
-/** A time as "2 days ago" in the reader's language, with the exact time on hover. */
-export function Since({ when }: { when: string }) {
-  const { lang } = useT()
-  const { count, unit } = since(when)
-  const parts = new Intl.RelativeTimeFormat(lang, { numeric: 'auto' }).formatToParts(-count, unit)
-  return (
-    <span title={new Date(when).toLocaleString(lang)}>
-      {parts.map((part, i) => (part.type === 'integer' ? <Num key={i}>{part.value}</Num> : part.value))}
-    </span>
-  )
-}
-
-/**
- * A job's two sides and the way between them, with the card's buttons at the
- * end of the same row. The path is never cut: it wraps inside its own box, and
- * once the box would be narrower than 16rem the buttons move under it, so
- * nothing runs out of the card at any width.
- */
-export function JobRow({
-  mark,
-  left,
-  right,
-  direction,
-  children,
+function JobRow({
+  job,
+  held,
+  event,
+  busy,
+  canPause,
+  onPause,
 }: {
-  mark?: ReactNode
-  left: string
-  right: string
-  direction: Direction
-  children: ReactNode
+  job: Job
+  /** The finding that holds the job, if a brake does. */
+  held?: Finding
+  event?: RunEvent
+  busy: boolean
+  /** Only a job in the configuration file can be paused from here. */
+  canPause: boolean
+  onPause: () => void
 }) {
+  const { t, lang } = useT()
+  const push = useToast()
+  const open = useOpenJob()
+  const goTo = useGoTo()
   const { drives } = usePlaces()
-  return (
-    <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
-      <div className="flex min-w-0 grow basis-64 items-center gap-3">
-        {mark}
-        <p className="flex min-w-0 flex-1 flex-wrap items-center gap-x-2.5 gap-y-1 text-title text-carbon-text">
-          <span className="min-w-0 [overflow-wrap:anywhere]">{sideName(left, drives)}</span>
-          <DirectionMark direction={direction} size={20} />
-          <span className="min-w-0 [overflow-wrap:anywhere]">{sideName(right, drives)}</span>
-        </p>
-      </div>
-      <div className="ms-auto flex max-w-full flex-wrap items-center justify-end gap-2">{children}</div>
-    </div>
-  )
-}
+  const status = jobStatus(job, !!held)
 
-/**
- * What the job does, in a sentence, and when it last succeeded; the state
- * itself is the mark. A running job also gets a live badge, since with motion
- * off the mark does not turn.
- */
-function Cadence({ job }: { job: Job }) {
-  const { t } = useT()
-  const words = describeCadence(readCadence(job.schedule ?? '', !!job.watch), t)
+  const facts = [
+    t('jobs.fact.sides', {
+      direction: t(directionKey[job.direction]),
+      left: sideName(job.left, drives),
+      right: sideName(job.right, drives),
+    }),
+    t('jobs.runs', { cadence: describeCadence(readCadence(job.schedule ?? '', !!job.watch), t) }),
+    ...(job.nextRun && !job.disabled ? [t('jobs.fact.next', { when: dayTime(job.nextRun, lang, (p) => t('list.when', p)) })] : []),
+  ]
 
-  return (
-    <div className="flex flex-wrap items-center gap-x-4 gap-y-0.5 text-subline text-carbon-textMuted">
-      {job.running ? (
-        <Badge tone="active" className="glim-live">
-          {t('jobs.state.running')}
-        </Badge>
-      ) : (
-        <span>{job.disabled ? t('jobs.state.disabled') : t('jobs.runs', { cadence: words })}</span>
-      )}
-      {/* The absolute date and time, which "two days ago" cannot replace when
-          somebody needs to know whether it was before or after a change. */}
-      {job.lastSuccess && (
-        <span>{t('jobs.lastRun', { when: new Date(job.lastSuccess).toLocaleString() })}</span>
-      )}
-    </div>
-  )
-}
-
-/**
- * What this job has done to individual files, newest first, folded under its
- * card. The runs the page holds carry counts rather than paths, so this has
- * its own endpoint. While the job runs it asks again every second, and the
- * engine answers with the running run's lines among the stored ones, so they
- * appear as they happen and read the same once the run is stored.
- */
-/** A tool opened on a job's card, headed and closed the way the history fold is. */
-function ToolFold({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
-  const { t } = useT()
-  return (
-    <section
-      className="mt-1 w-full"
-      aria-label={title}
-      onKeyDown={(e) => {
-        if (e.key !== 'Escape' || e.defaultPrevented) return
-        e.stopPropagation()
-        onClose()
-      }}
-    >
-      <div className="mb-2 flex items-center justify-between gap-2">
-        <h3 className="text-meta font-medium uppercase tracking-wider text-carbon-textMuted">{title}</h3>
-        <IconAction title={t('common.close')} labelKey="common.close" tone="subtle" onClick={onClose} />
-      </div>
-      {children}
-    </section>
-  )
-}
-
-function JobHistory({ job, running, onClose }: { job: string; running: boolean; onClose: () => void }) {
-  const { t } = useT()
-  const tick = useLiveTick(running)
-  const [touches, setTouches] = useState<Touch[] | null>(null)
-  const [error, setError] = useState<string | null>(null)
-  // Doubles as the list is scrolled to its end, rather than paging.
-  const [limit, setLimit] = useState(60)
-  // The box answers every keystroke; the server only gets the settled query.
-  const [typed, setTyped] = useState('')
-  const [query, setQuery] = useState('')
-
-  // Without the pause, each keystroke is a query and out-of-order answers can
-  // leave the list showing the results for a prefix.
-  useEffect(() => {
-    const timer = setTimeout(() => setQuery(typed.trim()), 250)
-    return () => clearTimeout(timer)
-  }, [typed])
-
-  // A new question starts again at one screenful.
-  useEffect(() => setLimit(60), [query])
-
-  useEffect(() => {
-    let live = true
-    api
-      .jobTouches(job, limit, query)
-      .then((got) => {
-        if (!live) return
-        setError(null)
-        setTouches(got)
-      })
-      .catch((e: Error) => live && setError(e.message))
-    return () => {
-      live = false
+  let cell
+  switch (status) {
+    case 'running': {
+      const total = event?.total ?? 0
+      cell = (
+        <span className="flex w-full flex-col items-end gap-1">
+          <Badge tone="active" className="glim-live">
+            {t('status.running')}
+          </Badge>
+          {total > 0 && (
+            <span className="h-1 w-24 overflow-hidden rounded-[var(--radius-pill)] bg-carbon-surface3" aria-hidden>
+              <span className="block h-full bg-accent" style={{ width: `${Math.min(1, (event?.done ?? 0) / total) * 100}%` }} />
+            </span>
+          )}
+        </span>
+      )
+      break
     }
-  }, [job, limit, query, tick])
+    case 'held':
+      cell = (
+        <button
+          type="button"
+          onClick={(e) => {
+            keepInRow(e)
+            goTo({ tab: 'anomalies', job: job.name, finding: held?.id })
+          }}
+        >
+          <Badge tone="warn">{t('status.held')}</Badge>
+        </button>
+      )
+      break
+    case 'failed':
+      cell = <Badge tone="fail">{t('status.failed')}</Badge>
+      break
+    case 'paused':
+      cell = <Badge tone="neutral">{t('status.paused')}</Badge>
+      break
+    case 'never':
+      cell = <Badge tone="neutral">{t('status.never')}</Badge>
+      break
+    default:
+      cell = (
+        <span className="flex items-center gap-1.5 whitespace-nowrap text-subline text-carbon-textSub">
+          <span aria-hidden className="h-[7px] w-[7px] shrink-0 rounded-full bg-statusOkSolid" />
+          <span className="glim-num">{dayTime(job.recent[0].Finished, lang, (p) => t('list.when', p))}</span>
+        </span>
+      )
+  }
 
-  // The heading and the search box stay when nothing matches, so a typo can
-  // be corrected and the fold closed from where it is.
-  const search = (
-    <div className="mb-2 flex items-center gap-2">
-      <Text
-        value={typed}
-        onChange={setTyped}
-        placeholder={t('jobs.historySearch')}
-        label={t('jobs.historySearch')}
-        mono
-      />
-      {typed && (
-        <IconAction
-          title={t('jobs.searchReset')}
-          labelKey="jobs.searchReset"
-          tone="subtle"
-          onClick={() => setTyped('')}
-        />
-      )}
-    </div>
-  )
-
-  const head = (
-    <div className="mb-2 flex items-center justify-between gap-2">
-      <h3 className="text-meta font-medium uppercase tracking-wider text-carbon-textMuted">{t('jobs.history')}</h3>
-      <IconAction title={t('jobs.historyClose')} labelKey="jobs.historyClose" tone="subtle" onClick={onClose} />
-    </div>
-  )
-
-  // Escape closes the fold from anywhere inside it, the search box included.
-  const fold = (body: ReactNode) => (
-    <section
-      className="mt-1 w-full"
-      aria-label={t('jobs.history')}
-      onKeyDown={(e) => {
-        if (e.key !== 'Escape' || e.defaultPrevented) return
-        e.stopPropagation()
-        onClose()
-      }}
-    >
-      {head}
-      {search}
-      {body}
-    </section>
-  )
-
-  if (error || !touches || touches.length === 0)
-    return fold(
-      <>
-        {error ? (
-          <p className="mt-1 text-subline text-statusFail">{error}</p>
-        ) : !touches ? (
-          <Empty>{t('jobs.historyLoading')}</Empty>
-        ) : (
-          <Empty>{query ? t('jobs.historyNoMatch', { q: query }) : t('jobs.historyEmpty')}</Empty>
-        )}
-      </>,
-    )
-
-  return fold(
-    <>
-      {/* Loads more near the bottom; 40px rather than the exact end, which a
-          trackpad stops a pixel or two short of. */}
-      <ul
-        className="flex max-h-80 flex-col gap-1 overflow-y-auto"
-        onScroll={(e) => {
-          const el = e.currentTarget
-          if (el.scrollHeight - el.scrollTop - el.clientHeight > 40) return
-          // A list shorter than the limit is the whole list.
-          if (touches.length >= limit) setLimit((n) => n * 2)
-        }}
-      >
-        {touches.map((e) => (
-          <TouchRow key={touchKey(e)} touch={e} />
-        ))}
-      </ul>
-    </>,
-  )
-}
-
-/**
- * A line's key, the same while its run goes and once it is stored, when the
- * run's id changes: a new key would remount every row once a second.
- */
-function touchKey(e: Touch): string {
-  return `${e.Job}\n${e.When}\n${e.Seq}`
-}
-
-/**
- * One line of the file log, shared by a job's activity fold and the history
- * tab. `withJob` adds the job column, which only makes sense across jobs.
- */
-function TouchRow({ touch: e, withJob }: { touch: Touch; withJob?: boolean }) {
-  const { t } = useT()
-  const { jobs, drives } = usePlaces()
-  // The path and the arrow beside it say where, so the badge only says what.
-  const label = entryAction(t, e, jobs.find((j) => j.name === e.Job), drives)
-  const note = entryNote(t, e)
   return (
-    <li className="flex items-baseline gap-3 text-subline">
-      {/* Wide enough for a conflict's phrase and a target's name; a longer one
-          is cut, with the whole phrase in the title. */}
-      <span className="w-52 shrink-0 truncate" title={label}>
-        <Badge tone={touchTone(e.Kind)}>{label}</Badge>
+    <li
+      data-testid="job-row"
+      onClick={() => open(job.name)}
+      className="glim-row flex min-h-14 cursor-pointer items-center gap-3 rounded-control px-2 py-2 hover:bg-carbon-hover"
+    >
+      <span className="glim-row-glyph flex h-9 w-9 shrink-0 items-center justify-center rounded-control [&_svg]:h-4 [&_svg]:w-4">
+        <DirectionGlyph direction={job.direction} />
       </span>
-      {/* Wide enough for the longest phrase in any locale, so it never wraps. */}
-      <span className="w-28 shrink-0 whitespace-nowrap text-carbon-textMuted">
-        <Since when={e.When} />
-      </span>
-      {withJob && (
-        <span className="w-32 shrink-0 truncate font-medium" title={e.Job}>
-          {e.Job}
+      <span className="flex min-w-0 flex-1 items-center gap-2">
+        <button
+          type="button"
+          onClick={(e) => {
+            keepInRow(e)
+            open(job.name)
+          }}
+          className="min-w-0 truncate text-start text-body font-medium text-carbon-text hover:underline"
+        >
+          {job.name}
+        </button>
+        <span className="flex" onClick={keepInRow}>
+          <InfoBubble tip={facts.join(' · ')} />
         </span>
-      )}
-      <span className="w-14 shrink-0 text-end tabular-nums text-carbon-textMuted">
-        {e.Size > 0 ? bytes(e.Size) : ''}
       </span>
-      {/* The side written to, drawn as an arrow; the word stays in the title
-          and the accessible name. */}
-      <span
-        className="flex w-6 shrink-0 justify-center text-carbon-textMuted"
-        title={e.Side ? translateSide(t, e.Side as 'left' | 'right') : undefined}
-      >
-        {e.Side === 'right' ? <IconToRight /> : e.Side === 'left' ? <IconToLeft /> : null}
-        {e.Side && <span className="sr-only">{translateSide(t, e.Side as 'left' | 'right')}</span>}
+      {/* Holding and starting are separate controls: a held job can still be
+          started by hand, and stays held. */}
+      <span className="glim-row-actions flex shrink-0 items-center gap-1.5" onClick={keepInRow}>
+        {canPause && (
+          <IconAction
+            title={job.disabled ? t('jobs.resume') : t('jobs.pause')}
+            labelKey={job.disabled ? 'jobs.resume' : 'jobs.pause'}
+            disabled={busy}
+            onClick={onPause}
+          >
+            {job.disabled ? <IconPlay /> : <IconPause />}
+          </IconAction>
+        )}
+        <IconAction
+          title={job.running ? t('jobs.cancelRun') : t('jobs.runNow')}
+          labelKey={job.running ? 'jobs.cancelRun' : 'jobs.runNow'}
+          hint={job.running ? undefined : t('jobs.runNowHint')}
+          onClick={() => {
+            const asked = job.running ? api.stopJob(job.name) : api.run(job.name)
+            asked.catch((e: Error) => push(e.message, 'fail'))
+          }}
+        />
       </span>
-      <span className="min-w-0 flex-1 break-all font-mono text-carbon-text" title={e.Path}>
-        {e.Path}
+      <span className="shrink-0 max-[600px]:hidden">
+        <RunStrip recent={job.recent} />
       </span>
-      {note && (
-        <span className="min-w-0 max-w-[30%] shrink-0 text-carbon-textMuted" title={note}>
-          {note}
-        </span>
-      )}
+      <span className="flex w-36 shrink-0 justify-end max-[600px]:w-auto">{cell}</span>
     </li>
   )
 }
 
-/**
- * Every file the engine has touched, across jobs. All three filters apply in
- * the database, since the log runs to tens of thousands of rows and only a
- * screenful has arrived.
- */
-function AllTouches({ job, kinds, query, tick }: { job: string; kinds: string[]; query: string; tick: number }) {
+/** A job the configuration holds but the engine does not run yet, which opens in the editor. */
+function DraftRow({ name, onOpen }: { name: string; onOpen: () => void }) {
   const { t } = useT()
-  const [touches, setTouches] = useState<Touch[] | null>(null)
-  const [error, setError] = useState<string | null>(null)
-  const [limit, setLimit] = useState(60)
-  const end = useRef<HTMLLIElement | null>(null)
-
-  // A new question starts again at one screenful.
-  useEffect(() => setLimit(60), [job, query, kinds.join(',')])
-
-  // The list runs with the page, so the next screenful comes when its end
-  // scrolls into view. Only a list that filled the limit can have more.
-  const more = touches !== null && touches.length >= limit
-  useEffect(() => {
-    const el = end.current
-    if (!el || !more) return
-    const watcher = new IntersectionObserver((entries) => {
-      if (entries.some((e) => e.isIntersecting)) setLimit((n) => n * 2)
-    })
-    watcher.observe(el)
-    return () => watcher.disconnect()
-  }, [more, touches])
-
-  useEffect(() => {
-    let live = true
-    api
-      .log(job, kinds, query, limit)
-      .then((got) => {
-        if (!live) return
-        setError(null)
-        setTouches(got)
-      })
-      .catch((e: Error) => live && setError(e.message))
-    return () => {
-      live = false
-    }
-  }, [job, kinds.join(','), query, limit, tick])
-
-  if (error) return <p className="mt-1 text-subline text-statusFail">{error}</p>
-  if (!touches) return <Empty>{t('history.working')}</Empty>
-  if (touches.length === 0)
-    return <Empty>{query ? t('jobs.historyNoMatch', { q: query }) : t('history.logEmpty')}</Empty>
-
   return (
-    <Rows className="flex flex-col gap-1">
-      {touches.map((e) => (
-        <TouchRow key={touchKey(e)} touch={e} withJob={!job} />
-      ))}
-      {more && <li ref={end} aria-hidden className="h-px" />}
-    </Rows>
-  )
-}
-
-/**
- * The kinds behind each choice of the file log's filter, grouped by what
- * somebody looks for. A `skip` carries the reason a path was not touched, and
- * there is no "error" kind, so trouble means conflict or skip.
- */
-const SHOWS = {
-  all: [] as string[],
-  copied: ['copy', 'move'],
-  gone: ['trash', 'rmdir'],
-  trouble: ['conflict', 'skip'],
-}
-
-type Show = keyof typeof SHOWS
-
-/** Which kinds are a problem, so they stand out in a long list. */
-function touchTone(kind: string): 'ok' | 'warn' | 'fail' | 'neutral' {
-  if (kind === 'skip' || kind === 'error') return 'fail'
-  if (kind === 'conflict') return 'warn'
-  return 'neutral'
-}
-
-/**
- * The history tab: the file log, or the run log newest first.
- *
- * It fetches its own runs rather than filtering the page's copy, which must
- * stay unfiltered for the job cards. Filters go to the server, since a job
- * watching a folder writes a run a minute and would push a daily job out of
- * any fixed window.
- *
- * While any job runs, both views ask again every second, and a running run is
- * listed with what it has done so far. The engine keeps a running run's lines
- * until it stores the run and then answers from the table, so the lists never
- * hold a line twice and settle on exactly what a reload shows.
- */
-export function History({
-  runs,
-  jobs,
-}: {
-  /** The page's own unfiltered copy, used until this tab's first answer lands. */
-  runs: Run[]
-  /** The job names to offer, including jobs with no runs yet. */
-  jobs: Job[]
-}) {
-  const { t } = useT()
-  // Which run is open, one at a time. By job and start as well as by id,
-  // since a running run's id changes when it is stored.
-  const [open, setOpen] = useState<{ id: number; job: string; started: string } | null>(null)
-  const isOpen = (r: Run) =>
-    !!open && (r.ID === open.id || (open.id < 0 && r.Job === open.job && Date.parse(r.Started) === Date.parse(open.started)))
-  const tick = useLiveTick(jobs.some((j) => j.running))
-  const [job, setJob] = useState('')
-  const [show, setShow] = useState<HistoryShow>('all')
-  // Files first: where a file went is the usual question.
-  const [view, setView] = useState<LogView>('files')
-  const [kind, setKind] = useState<Show>('all')
-  // The box answers every keystroke; the engine only gets the settled query.
-  const [typed, setTyped] = useState('')
-  const [query, setQuery] = useState('')
-  useEffect(() => {
-    const timer = setTimeout(() => setQuery(typed.trim()), 250)
-    return () => clearTimeout(timer)
-  }, [typed])
-  // Two calendar days bounding the runs; blank means open-ended.
-  const [since, setSince] = useState('')
-  const [until, setUntil] = useState('')
-  const [own, setOwn] = useState<Run[] | null>(null)
-  const [loading, setLoading] = useState(false)
-  // How many runs to ask for; doubles as the end of the list comes into view.
-  const [limit, setLimit] = useState(50)
-  const sentinel = useRef<HTMLDivElement | null>(null)
-
-  const filtered = job !== '' || show !== 'all' || since !== '' || until !== ''
-
-  useEffect(() => {
-    // The file log has its own query.
-    if (view === 'files') return
-    let live = true
-    setLoading(true)
-    api
-      .history(job || undefined, show, limit, since, until, true)
-      .then((got) => live && setOwn(got))
-      .catch(() => live && setOwn([]))
-      .finally(() => live && setLoading(false))
-    return () => {
-      live = false
-    }
-  }, [view, job, show, limit, since, until, runs, tick])
-
-  const list = own ?? runs
-
-  // Re-armed whenever the list changes, since the sentinel is then a new
-  // element. The dependency on `loading` re-arms it too, so an answer that lands
-  // with the sentinel still on screen asks again straight away.
-  useEffect(() => {
-    const end = sentinel.current
-    if (!end) return
-    const watcher = new IntersectionObserver((entries) => {
-      if (entries.some((e) => e.isIntersecting) && !loading) setLimit((n) => n * 2)
-    })
-    watcher.observe(end)
-    return () => watcher.disconnect()
-  }, [list.length, limit, loading])
-
-  // Configuration and log joined: a renamed or deleted job still has runs, and
-  // a job that never ran has none.
-  const names = useMemo(() => {
-    const seen = new Set<string>()
-    for (const j of jobs) seen.add(j.name)
-    for (const r of runs) seen.add(r.Job)
-    for (const r of own ?? []) seen.add(r.Job)
-    return [...seen].sort((a, b) => a.localeCompare(b))
-  }, [jobs, runs, own])
-
-  const controls = (
-    <div className="mb-4 flex flex-wrap items-end gap-3">
-      <div className="w-56 shrink-0">
-        <Choice
-          label={t('history.filterJob')}
-          value={job}
-          onChange={(next) => {
-            setJob(next)
-            setLimit(50)
-          }}
-          options={[
-            { value: '', label: t('history.allJobs') },
-            ...names.map((n) => ({ value: n, label: n })),
-          ]}
-        />
-      </div>
-      {view === 'files' ? (
-        <>
-          <div className="w-56 shrink-0">
-            {/* Its own label, so it is not a second "Show" beside the first. */}
-            <Choice<Show>
-              label={t('history.filterKind')}
-              value={kind}
-              onChange={setKind}
-              options={[
-                { value: 'all', label: t('history.everything') },
-                { value: 'copied', label: t('history.onlyCopied') },
-                { value: 'gone', label: t('history.onlyGone') },
-                { value: 'trouble', label: t('history.onlyTrouble') },
-              ]}
-            />
-          </div>
-          <div className="w-56 shrink-0">
-            <Text
-              value={typed}
-              onChange={setTyped}
-              placeholder={t('history.pathHint')}
-              label={t('jobs.historySearch')}
-              mono
-            />
-          </div>
-        </>
-      ) : null}
-      {view === 'runs' ? (
-      <>
-      <div className="w-56 shrink-0">
-        <Choice<HistoryShow>
-          label={t('history.filterShow')}
-          value={show}
-          onChange={(next) => {
-            setShow(next)
-            setLimit(50)
-          }}
-          options={[
-            { value: 'all', label: t('history.showAll') },
-            { value: 'changed', label: t('history.showChanged') },
-            { value: 'failed', label: t('history.showFailed') },
-          ]}
-        />
-      </div>
-      {/* Two free days rather than presets, since the day in question is
-          usually the day it went wrong. */}
-      <div className="flex shrink-0 items-end gap-2">
-        <Field label={t('history.since')}>
-          <Day
-            value={since}
-            onChange={(next) => {
-              setSince(next)
-              setLimit(50)
-            }}
-            label={t('history.since')}
-            // A backwards range would look like an empty log.
-            max={until || undefined}
-          />
-        </Field>
-        <Field label={t('history.until')}>
-          <Day
-            value={until}
-            onChange={(next) => {
-              setUntil(next)
-              setLimit(50)
-            }}
-            label={t('history.until')}
-          />
-        </Field>
-        {(since || until) && (
-          // The glyph resolves from the key, which ends in `Reset`.
-          <IconAction
-            title={t('history.rangeReset')}
-            labelKey="history.rangeReset"
-            tone="subtle"
-            onClick={() => {
-              setSince('')
-              setUntil('')
-              setLimit(50)
-            }}
-          />
-        )}
-      </div>
-      </>
-      ) : null}
-      {/* The hint describes the run filters only. */}
-      {view === 'runs' ? <InfoBubble tip={t('history.filterHint')} /> : null}
-    </div>
-  )
-
-  // The switch stands above the card, where a page's view selector stands,
-  // and the card below it reaches the bottom of the window however short its
-  // list. Both views stay: a run that fails before touching anything writes no
-  // file lines at all.
-  const page = (body: ReactNode) => (
-    <div className="flex flex-col gap-10">
-      <div className="w-full sm:max-w-xs">
-        <ViewSwitch value={view} onChange={setView} />
-      </div>
-      <div className="flex flex-1 flex-col *:flex-1">
-        <Card title={t('history.title')} hueIndex={0}>
-          {controls}
-          {body}
-        </Card>
-      </div>
-    </div>
-  )
-
-  // The file log has its own paging and empty states.
-  if (view === 'files') return page(<AllTouches job={job} kinds={SHOWS[kind]} query={query} tick={tick} />)
-
-  if (list.length === 0) {
-    return page(
-      // With a filter on, empty means nothing matches, not no history.
-      <Empty>{loading ? t('history.working') : filtered ? t('history.noMatch') : t('history.empty')}</Empty>,
-    )
-  }
-  return page(
-    <>
-      <div className="mb-4">
-        <Stats />
-      </div>
-      <Rows className="flex flex-col">
-        {list.map((r, i) => (
-          <li key={`${r.Job}\n${r.Started}`}>
-            {i > 0 && <Rule />}
-            <button
-              type="button"
-              aria-expanded={isOpen(r)}
-              onClick={() => setOpen(isOpen(r) ? null : { id: r.ID, job: r.Job, started: r.Started })}
-              className="flex w-full items-center gap-3 py-2.5 text-start text-subline transition-colors hover:bg-carbon-hover"
-            >
-              {r.Running ? (
-                <Badge tone="active" className="glim-live">
-                  {t('jobs.state.running')}
-                </Badge>
-              ) : (
-                <Badge tone={r.Err ? 'fail' : 'ok'}>{r.Err ? t('history.failed') : t('history.ok')}</Badge>
-              )}
-              <span className="w-32 shrink-0 truncate font-medium">{r.Job}</span>
-              <span className="shrink-0 text-subline text-carbon-textMuted">
-                <Since when={r.Started} />
-              </span>
-              <span className="min-w-0 flex-1 truncate text-subline text-carbon-textMuted">
-                {r.Err ? (
-                  r.Err
-                ) : (
-                  <>
-                    {t('history.copied', { count: r.Copied })}
-                    {' · '}
-                    {t('history.moved', { count: r.Moved })}
-                    {' · '}
-                    {t('history.trashed', { count: r.Trashed })}
-                    {' · '}
-                    {t('history.conflicts', { count: r.Conflicts })}
-                    {r.Skipped > 0 && <> {' · '} {t('history.left', { count: r.Skipped })}</>}
-                  </>
-                )}
-              </span>
-              {/* Shows which closed run had conflicts without opening each. */}
-              {r.Conflicts > 0 && <Badge tone="warn">{r.Conflicts}</Badge>}
-            </button>
-            {isOpen(r) && (
-              <RunDetail run={r.ID} job={r.Job} tick={r.Running ? tick : 0} />
-            )}
-          </li>
-        ))}
-      </Rows>
-      {/* Reaching the end loads more. An observed sentinel rather than scroll
-          arithmetic, because here the window scrolls, not a box of the list's
-          own. Only present when the answer filled the limit. */}
-      {list.length >= limit && (
-        <div ref={sentinel} className="mt-3 flex justify-center py-2 text-meta text-carbon-textMuted">
-          {loading ? t('history.working') : ''}
-        </div>
-      )}
-    </>,
+    <li className="glim-row flex min-h-14 cursor-pointer items-center gap-3 rounded-control px-2 py-2 hover:bg-carbon-hover" onClick={onOpen}>
+      <span className="glim-row-glyph flex h-9 w-9 shrink-0 items-center justify-center rounded-control [&_svg]:h-4 [&_svg]:w-4">
+        <DirectionGlyph direction="both" />
+      </span>
+      <button
+        type="button"
+        onClick={(e) => {
+          keepInRow(e)
+          onOpen()
+        }}
+        className="min-w-0 truncate text-start text-body font-medium text-carbon-text">
+        {name}
+      </button>
+      <Badge tone="neutral">{t('edit.unsaved')}</Badge>
+    </li>
   )
 }

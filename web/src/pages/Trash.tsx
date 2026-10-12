@@ -1,11 +1,14 @@
 import { useState } from 'react'
 
-import { Empty, Num, Rows, Rule, Stack } from '../components/Shell'
-import { Choice, Field, NumberField } from '../components/Field'
+import { Empty, Num, Rows, Stack } from '../components/Shell'
+import { Field, NumberField } from '../components/Field'
 import { IconAction } from '../components/IconAction'
+import { FilterButton, FilterChoice, ListBar, SearchFold } from '../components/ListBar'
+import { Menu } from '../components/Menu'
+import { PageActions } from '../components/PageActions'
+import { Since } from '../components/Since'
 import { IconTrash } from '../components/glyphs'
 import { Card } from '../lib/glimstone/Card'
-import { Button } from '../lib/glimstone/Button'
 import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
 import { api, type TrashEntry, type TrashSide } from '../lib/api'
 import { bytes } from '../lib/bytes'
@@ -13,19 +16,19 @@ import { byJob, trashTotals } from '../lib/trashView'
 import { translateSide, useT, type TranslationKey } from '../lib/i18n'
 import { useToast } from '../lib/toast'
 import { errorText } from '../lib/errorText'
-import { Since } from './Jobs'
 
 /** What a confirmation is about to remove for good. */
 type Pending =
   | { kind: 'entry'; side: TrashSide; entry: TrashEntry }
   | { kind: 'side'; side: TrashSide }
   | { kind: 'all'; sides: TrashSide[] }
-  | { kind: 'prune'; sides: TrashSide[]; days: number }
+  | { kind: 'prune'; sides: TrashSide[] }
 
 /**
- * Every job's trash on both sides. Restoring is a click, since it only moves a
- * file back; removing anything for good asks first, because the trash is the
- * last copy there is.
+ * Every job's trash on both sides, in one card. Restoring is a click, since it
+ * only moves a file back; removing anything for good asks first, because the
+ * trash is the last copy there is. The two ways to empty it act on what the
+ * filter shows and wait in the More menu of the page's corner.
  */
 export function Trash({
   sides,
@@ -42,22 +45,23 @@ export function Trash({
   const { t } = useT()
   const push = useToast()
   const [job, setJob] = useState(startJob)
+  const [query, setQuery] = useState('')
   const [days, setDays] = useState(30)
   const [pending, setPending] = useState<Pending | null>(null)
   const [busy, setBusy] = useState(false)
-  const [error, setError] = useState<string | null>(null)
 
   const all = sides ?? []
   const shown = job ? all.filter((s) => s.job === job) : all
   const readable = shown.filter((s) => !s.error)
   const totals = trashTotals(readable)
   const names = [...new Set([...all.map((s) => s.job), ...(job ? [job] : [])])]
+  const needle = query.trim().toLocaleLowerCase()
+  const matches = (e: TrashEntry) => !needle || e.path.toLocaleLowerCase().includes(needle)
 
   // Runs one change after another and asks for each touched job again. The
   // first refusal stops the rest, since it usually means the same for them.
   async function act(work: { job: string; run: () => Promise<unknown> }[], done: () => string) {
     setBusy(true)
-    setError(null)
     const touched = new Set<string>()
     try {
       for (const w of work) {
@@ -66,7 +70,7 @@ export function Trash({
       }
       push(done())
     } catch (e) {
-      setError(errorText(t, e))
+      push(errorText(t, e), 'fail')
     } finally {
       touched.forEach(onChanged)
       setBusy(false)
@@ -99,7 +103,7 @@ export function Trash({
           p.sides.map((s) => ({
             job: s.job,
             run: async () => {
-              removed += (await api.pruneTrash(s.job, s.side, p.days, s.mark)).entries
+              removed += (await api.pruneTrash(s.job, s.side, days, s.mark)).entries
             },
           })),
           () => t('trash.pruned', { entries: removed }),
@@ -116,86 +120,97 @@ export function Trash({
     )
   }
 
+  const full = readable.filter((s) => s.total > 0)
+
   return (
     <Stack>
-      <Card title={t('nav.trash')} hueIndex={0} hint={t('trash.hint')}>
-        <div className="mb-4 flex flex-wrap items-end gap-3">
-          <div className="w-56 shrink-0">
-            <Choice
+      <div className="flex flex-col gap-6">
+        <ListBar>
+          <FilterButton active={job !== ''}>
+            <FilterChoice
               label={t('history.filterJob')}
               value={job}
               onChange={setJob}
               options={[{ value: '', label: t('history.allJobs') }, ...names.map((n) => ({ value: n, label: n }))]}
             />
-          </div>
-          <span className="glim-num pb-2 text-meta text-carbon-textMuted">
-            {t('trash.holding', { count: totals.entries, size: bytes(totals.bytes) })}
-          </span>
-          <div className="ms-auto flex flex-wrap items-end justify-end gap-2">
-            <Field label={t('trash.days')}>
-              <NumberField value={days} min={1} max={3650} label={t('trash.days')} onChange={setDays} />
-            </Field>
-            <Button
-              label={t('trash.prune')}
-              labelKey="trash.prune"
-              busy={busy}
-              disabled={busy || totals.entries === 0}
-              onClick={() => setPending({ kind: 'prune', sides: readable.filter((s) => s.total > 0), days })}
-            />
-            <Button
-              label={t('trash.emptyAll')}
-              labelKey="trash.emptyAll"
-              busy={busy}
-              disabled={busy || totals.entries === 0}
-              onClick={() => setPending({ kind: 'all', sides: readable.filter((s) => s.total > 0) })}
-            />
-          </div>
-        </div>
+          </FilterButton>
+          <SearchFold value={query} onChange={setQuery} placeholder={t('history.pathHint')} />
+        </ListBar>
 
-        {error && <p className="mb-3 text-subline text-statusFail">{error}</p>}
-
-        {sides === null ? (
-          <Empty>{t('history.working')}</Empty>
-        ) : totals.entries === 0 && shown.every((s) => !s.error) ? (
-          <Empty>{job ? t('trash.nothingInJob') : t('trash.nothing')}</Empty>
-        ) : (
-          <div className="glim-content-fade flex flex-col gap-6">
-            {byJob(shown).map((group) => (
-              <section key={group.job} className="flex flex-col gap-4">
-                {group.sides
+        <Card title={job || t('history.allJobs')} hueIndex={0} hint={t('trash.hint')}>
+          {sides === null ? (
+            <Empty>{t('history.working')}</Empty>
+          ) : totals.entries === 0 && shown.every((s) => !s.error) ? (
+            <Empty>{job ? t('trash.nothingInJob') : t('trash.nothing')}</Empty>
+          ) : (
+            <div className="glim-content-fade flex flex-col gap-6">
+              {byJob(shown).map((group) =>
+                group.sides
                   .filter((s) => s.total > 0 || s.error)
                   .map((s) => (
                     <SideList
-                      key={s.side}
+                      key={`${group.job}:${s.side}`}
                       side={s}
                       busy={busy}
+                      matches={matches}
                       onRestore={(entry) => restore(s, entry)}
                       onDelete={(entry) => setPending({ kind: 'entry', side: s, entry })}
                       onEmpty={() => setPending({ kind: 'side', side: s })}
                     />
-                  ))}
-              </section>
-            ))}
-          </div>
-        )}
-      </Card>
+                  )),
+              )}
+            </div>
+          )}
+        </Card>
+      </div>
 
       {pending && (
         <ConfirmDialog
           title={t(TITLES[pending.kind])}
           message={stakes(pending, t)}
           confirmLabel={pending.kind === 'entry' ? t('confirm.delete') : t(TITLES[pending.kind])}
+          confirmLabelKey={pending.kind === 'entry' ? 'confirm.delete' : TITLES[pending.kind]}
           confirmGlyph={<IconTrash />}
           cancelLabel={t('confirm.cancel')}
+          // The age belongs to this one action, so it is asked here.
+          extra={
+            pending.kind === 'prune' ? (
+              <Field label={t('trash.days')}>
+                <NumberField value={days} min={1} max={3650} label={t('trash.days')} onChange={setDays} />
+              </Field>
+            ) : undefined
+          }
           onCancel={() => setPending(null)}
           onConfirm={() => confirmed(pending)}
         />
       )}
+
+      <PageActions>
+        <Menu
+          label={t('list.more')}
+          labelKey="list.more"
+          size="key"
+          items={[
+            {
+              label: t('trash.prune'),
+              labelKey: 'trash.prune',
+              disabled: busy || totals.entries === 0,
+              onSelect: () => setPending({ kind: 'prune', sides: full }),
+            },
+            {
+              label: t('trash.emptyAll'),
+              labelKey: 'trash.emptyAll',
+              disabled: busy || totals.entries === 0,
+              onSelect: () => setPending({ kind: 'all', sides: full }),
+            },
+          ]}
+        />
+      </PageActions>
     </Stack>
   )
 }
 
-/** A confirmation's title, which names the button that opened it. */
+/** A confirmation's title, which names the action that opened it. */
 const TITLES: Record<Pending['kind'], TranslationKey> = {
   entry: 'trash.delete',
   side: 'trash.emptySide',
@@ -220,79 +235,78 @@ function stakes(p: Pending, t: ReturnType<typeof useT>['t']): string {
       return t('trash.emptyAllConfirm', { count: entries, size: bytes(size) })
     }
     case 'prune':
-      return t('trash.pruneAsk', { days: p.days })
+      return t('trash.pruneQuestion')
   }
 }
 
 function SideList({
   side,
   busy,
+  matches,
   onRestore,
   onDelete,
   onEmpty,
 }: {
   side: TrashSide
   busy: boolean
+  matches: (entry: TrashEntry) => boolean
   onRestore: (entry: TrashEntry) => void
   onDelete: (entry: TrashEntry) => void
   onEmpty: () => void
 }) {
   const { t } = useT()
+  const entries = side.entries.filter(matches)
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex flex-wrap items-center gap-3">
-        <span className="text-meta font-medium uppercase tracking-wider text-carbon-textMuted">
+    <section className="flex flex-col gap-1">
+      <div className="glim-row flex min-h-9 items-center gap-3">
+        <h3 className="glim-eyebrow">
           {side.job} · {t(side.side === 'left' ? 'edit.left' : 'edit.right')}
-        </span>
+        </h3>
         {!side.error && (
           <span className="glim-num text-meta text-carbon-textMuted">
             {t('trash.holding', { count: side.total, size: bytes(side.bytes) })}
           </span>
         )}
         {!side.error && (
-          <div className="ms-auto">
-            <Button label={t('trash.emptySide')} labelKey="trash.emptySide" disabled={busy} onClick={onEmpty} />
-          </div>
+          <span className="glim-row-actions ms-auto">
+            <IconAction title={t('trash.emptySide')} labelKey="trash.emptySide" disabled={busy} onClick={onEmpty} />
+          </span>
         )}
       </div>
 
       {side.error ? (
         <p className="text-subline text-statusFail">{t('trash.unread', { error: side.error })}</p>
       ) : (
-        <Rows className="flex flex-col">
-          {side.entries.map((e, i) => (
-            <li key={e.remote}>
-              {i > 0 && <Rule />}
-              <div className="flex items-center gap-3 py-1.5 text-subline">
-                <span className="min-w-0 flex-1 break-all font-mono text-carbon-text" title={e.remote}>
-                  {e.path}
-                </span>
-                <span className="shrink-0 text-carbon-textMuted">
-                  <Num>{bytes(e.size)}</Num>
-                </span>
-                {/* No date when the run id cannot be read; such an entry is never
-                    pruned by age. */}
-                <span className="w-28 shrink-0 text-end text-carbon-textMuted">
-                  {e.filed ? <Since when={e.filed} /> : t('trash.unknownAge')}
-                </span>
-                {/* Grey, since an action on every row marks no activity. A file
-                    somebody put there by hand has no run, and the engine
-                    names an entry by its run, so only emptying reaches it. */}
+        <Rows className="-mx-2 flex flex-col">
+          {entries.map((e) => (
+            <li key={e.remote} className="glim-row flex min-h-10 items-center gap-3 rounded-control px-2 text-subline hover:bg-carbon-hover">
+              <span className="min-w-0 flex-1 truncate font-mono text-carbon-text" title={e.remote}>
+                {e.path}
+              </span>
+              {/* A file somebody put there by hand has no run, and the engine
+                  names an entry by its run, so only emptying reaches it. */}
+              <span className="glim-row-actions flex shrink-0 items-center gap-1.5">
                 <IconAction
                   title={t('trash.delete')}
                   labelKey="trash.delete"
-                  tone="subtle"
                   disabled={busy || !e.runId}
                   onClick={() => onDelete(e)}
                 />
                 <IconAction
                   title={t('trash.restore')}
                   labelKey="trash.restore"
-                  tone="subtle"
                   disabled={busy || !e.runId}
                   onClick={() => onRestore(e)}
                 />
-              </div>
+              </span>
+              <span className="shrink-0 text-carbon-textMuted max-sm:hidden">
+                <Num>{bytes(e.size)}</Num>
+              </span>
+              {/* No date when the run id cannot be read; such an entry is never
+                  pruned by age. */}
+              <span className="w-28 shrink-0 text-end text-carbon-textMuted">
+                {e.filed ? <Since when={e.filed} /> : t('trash.unknownAge')}
+              </span>
             </li>
           ))}
         </Rows>
@@ -301,6 +315,6 @@ function SideList({
       {side.total > side.entries.length && (
         <p className="text-subline text-carbon-textMuted">{t('trash.more', { total: side.total, shown: side.entries.length })}</p>
       )}
-    </div>
+    </section>
   )
 }

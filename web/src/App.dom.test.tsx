@@ -118,17 +118,17 @@ describe('the app', () => {
     expect(screen.getByRole('switch', { name: 'Icon in the notification area' }).getAttribute('aria-checked')).toBe('false')
   })
 
-  it("marks a job failed after other jobs' runs fill the recent list", async () => {
-    const nightly = { name: 'nightly', left: 'D:/Docs', right: 'nas:docs', direction: 'both', schedule: '0 3 * * *', watch: false, disabled: false, running: false, lastSuccess: null } as Job
-    const watcher = { ...nightly, name: 'watcher', schedule: '', watch: true }
+  it("marks a job failed by its own last run after other jobs' runs fill the recent list", async () => {
+    const nightly = {
+      name: 'nightly', left: 'D:/Docs', right: 'nas:docs', direction: 'both', schedule: '0 3 * * *',
+      watch: false, disabled: false, running: false, lastSuccess: null, recent: [run(1, 'nightly', 'the right side is not there')],
+    } as Job
+    const watcher = { ...nightly, name: 'watcher', schedule: '', watch: true, recent: [run(100, 'watcher')] }
     jobs.mockImplementation(() => Promise.resolve([nightly, watcher]))
     history.mockImplementation(() => Promise.resolve(Array.from({ length: 50 }, (_, i) => run(100 - i, 'watcher'))))
-    latestRuns.mockImplementation(() =>
-      Promise.resolve([{ ...run(100, 'watcher'), Since: 50 }, { ...run(1, 'nightly', 'the right side is not there'), Since: 1 }]),
-    )
     show()
-    expect(await screen.findByRole('img', { name: 'last run failed' })).toBeTruthy()
-    expect(screen.getAllByRole('img', { name: 'ready' })).toHaveLength(1)
+    expect(await screen.findByText('Failed')).toBeTruthy()
+    expect(screen.getAllByTestId('job-row')).toHaveLength(2)
   })
 
   it('goes back to the login once the session has ended', async () => {
