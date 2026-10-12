@@ -251,6 +251,17 @@ func TestWithoutAPasswordTheSecretsAndLastingDeletionsAreRefused(t *testing.T) {
 	if code := send(t, srv, http.MethodPost, "/api/jobs/photos/trash/left/restore", json, ""); code == http.StatusForbidden {
 		t.Error("putting a file back out of the trash was refused, though it deletes nothing")
 	}
+
+	// The interface picks its own sentence by this code.
+	resp, err := srv.Client().Get(srv.URL + "/api/config/raw")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	if !strings.Contains(string(body), `"code":"password-not-set"`) {
+		t.Errorf("the refusal carries no password-not-set code: %s", body)
+	}
 }
 
 // The phone app's engine has no password and is reached only by the app.
