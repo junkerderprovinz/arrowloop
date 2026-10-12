@@ -39,12 +39,15 @@ const EDGE: Record<Severity, string> = {
 export function FindingCard({
   finding: f,
   lead = false,
+  onJobPage = false,
   onChanged,
   onAllowed,
 }: {
   finding: Finding
   /** The first card on the page, whose answer is the view's one filled button. */
   lead?: boolean
+  /** The card stands on its job's own page, which needs no way to open it. */
+  onJobPage?: boolean
   /** Asks for the findings again once an answer went out. */
   onChanged?: () => void
   /** Called when a held change is let run, so a refusal after it can say so. */
@@ -205,7 +208,9 @@ export function FindingCard({
 
       <div className="mt-1 flex flex-wrap items-center justify-between gap-2">
         <span className="flex flex-wrap items-center gap-2">{start}</span>
-        <span className="flex flex-wrap items-center justify-end gap-2">{end}</span>
+        <span className="flex flex-wrap items-center justify-end gap-2">
+          {onJobPage ? end.filter((button) => button.key !== 'open') : end}
+        </span>
       </div>
 
       {asking && (

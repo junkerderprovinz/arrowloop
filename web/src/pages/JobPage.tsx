@@ -135,7 +135,7 @@ export function JobPage({ name }: { name: string }) {
       {anomalies === false && held && (
         <Card title={t('anomaly.held')} hueIndex={6}>
           <ul className="flex flex-col">
-            <FindingCard finding={held} onChanged={live.onSaved} />
+            <FindingCard finding={held} onJobPage onChanged={live.onSaved} />
           </ul>
         </Card>
       )}

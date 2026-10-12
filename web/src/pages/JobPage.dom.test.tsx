@@ -153,6 +153,7 @@ describe('a job page', () => {
     page('photos', [], [held])
     const card = (await screen.findByText('This run would delete 0 of 0 files (0 %, limit 0 %).')).closest('li') as HTMLElement
     expect(within(card).getByRole('button', { name: 'Take back' })).toBeTruthy()
+    expect(within(card).queryByRole('button', { name: 'Open job' })).toBeNull()
     const filled = screen.getAllByRole('button').filter((b) => b.className.split(' ').includes('bg-accent'))
     expect(filled.map((b) => b.textContent?.trim())).toEqual(['Run now'])
     followSettings({})
