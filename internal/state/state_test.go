@@ -151,6 +151,9 @@ func TestAKeptFileIsForgottenWithItsRecord(t *testing.T) {
 	if err := db.Keep(ctx, path, time.Now()); err != nil {
 		t.Fatalf("keep: %v", err)
 	}
+	if err := db.SetAside(ctx, path, "changedBoth"); err != nil {
+		t.Fatalf("set aside: %v", err)
+	}
 	if kept, err := db.Kept(ctx); err != nil || !kept[path] {
 		t.Fatalf("the decision was not recorded: %v %v", kept, err)
 	}
@@ -163,6 +166,9 @@ func TestAKeptFileIsForgottenWithItsRecord(t *testing.T) {
 	}
 	if kept, _ := db.Kept(ctx); kept[path] {
 		t.Error("the decision outlived the file it was about")
+	}
+	if why, _ := db.AsideReasons(ctx); why[path] != "" {
+		t.Error("the reason the file was set aside outlived it")
 	}
 	if _, found, _ := db.Get(ctx, path); found {
 		t.Error("the record outlived Forget")

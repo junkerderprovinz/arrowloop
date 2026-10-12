@@ -25,6 +25,8 @@ type conflictView struct {
 	At    string   `json:"at"`
 	Left  sideView `json:"left"`
 	Right sideView `json:"right"`
+	// Why is the reason code of the conflict, empty where it was not kept.
+	Why string `json:"why,omitempty"`
 }
 
 type unreadView struct {
@@ -49,6 +51,7 @@ func (s *Server) listConflicts(w http.ResponseWriter, r *http.Request) {
 			Job: c.Job, Copy: c.Copy, Plain: c.Plain, Side: c.Side.String(),
 			At:   c.At.UTC().Format(time.RFC3339),
 			Left: versionView(c.Left), Right: versionView(c.Right),
+			Why: c.Why,
 		})
 	}
 	for _, u := range unread {

@@ -127,6 +127,25 @@ func TestAKeptBothConflictIsListedWithBothVersions(t *testing.T) {
 	}
 }
 
+func TestAnOpenConflictSaysBothSidesChangedTheFile(t *testing.T) {
+	j := keptBoth(t)
+	if got := openConflicts(t, j)[0].Why; got != "changedBoth" {
+		t.Errorf("a file edited on both sides after a sync is listed as %q", got)
+	}
+}
+
+func TestAnOpenConflictSaysTheFileTurnedUpOnBothSides(t *testing.T) {
+	j := newJob(t, quick())
+	write(t, j.left, "docs/notes.txt", "written on the left")
+	write(t, j.right, "docs/notes.txt", "written on the right first")
+	if _, res := j.sync(t); res.Conflicts != 1 {
+		t.Fatalf("expected the first run to meet one conflict, got %d", res.Conflicts)
+	}
+	if got := openConflicts(t, j)[0].Why; got != "appearedDiffer" {
+		t.Errorf("a file that was new on both sides is listed as %q", got)
+	}
+}
+
 func TestChoosingTheSetAsideVersionPutsItUnderThePlainName(t *testing.T) {
 	j := keptBoth(t)
 	c := openConflicts(t, j)[0]

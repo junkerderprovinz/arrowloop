@@ -70,6 +70,9 @@ type Open struct {
 	// Left and Right are the two versions, each read from its own side under
 	// whichever name it sits.
 	Left, Right Version
+	// Why is the plan's reason code for the conflict, such as changedBoth,
+	// and empty for a copy set aside before the reason was kept.
+	Why string
 }
 
 // OpenConflicts lists one job's open conflicts, found in the record, which
@@ -81,6 +84,10 @@ func OpenConflicts(ctx context.Context, ends Ends, db *state.DB, foldCase bool) 
 		return nil, err
 	}
 	kept, err := db.Kept(ctx)
+	if err != nil {
+		return nil, err
+	}
+	why, err := db.AsideReasons(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -97,7 +104,9 @@ func OpenConflicts(ctx context.Context, ends Ends, db *state.DB, foldCase bool) 
 		if err != nil {
 			return nil, err
 		}
-		out = append(out, pair.open(ctx))
+		open := pair.open(ctx)
+		open.Why = why[row.Path]
+		out = append(out, open)
 	}
 	return out, nil
 }

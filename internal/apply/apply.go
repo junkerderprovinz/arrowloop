@@ -866,7 +866,11 @@ func resolveConflict(ctx context.Context, ends Ends, rec recorder, act plan.Acti
 		// there would read as a deletion on the next run.
 		return nil
 	}
-	return rec.settle(ctx, pathid.Key(last.losingName, opt.FoldCase), last.losingName, last.losingName, false)
+	losingKey := pathid.Key(last.losingName, opt.FoldCase)
+	if err := rec.settle(ctx, losingKey, last.losingName, last.losingName, false); err != nil {
+		return err
+	}
+	return rec.db.SetAside(ctx, losingKey, act.Reason.Code)
 }
 
 // conflictStep is one filesystem operation of a conflict resolution, named so

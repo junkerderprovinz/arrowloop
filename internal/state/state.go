@@ -67,6 +67,10 @@ CREATE TABLE IF NOT EXISTS kept (
 	path        TEXT PRIMARY KEY,
 	decided_at  INTEGER NOT NULL
 );
+CREATE TABLE IF NOT EXISTS asides (
+	path        TEXT PRIMARY KEY,
+	reason      TEXT NOT NULL
+);
 `
 
 // version is the state database's layout. It goes up when a newer layout
@@ -153,6 +157,9 @@ func (d *DB) Forget(ctx context.Context, path string) error {
 	if _, err := d.sql.ExecContext(ctx, `DELETE FROM kept WHERE path = ?`, path); err != nil {
 		return fmt.Errorf("forget the decision on %q: %w", path, err)
 	}
+	if _, err := d.sql.ExecContext(ctx, `DELETE FROM asides WHERE path = ?`, path); err != nil {
+		return fmt.Errorf("forget why %q was set aside: %w", path, err)
+	}
 	return nil
 }
 
@@ -232,6 +239,39 @@ func (d *DB) Kept(ctx context.Context) (map[string]bool, error) {
 			return nil, fmt.Errorf("scan kept row: %w", err)
 		}
 		out[path] = true
+	}
+	return out, rows.Err()
+}
+
+// SetAside records why a run set a version aside, as the reason code the plan
+// gave the conflict, so the version can still say so once the run is over.
+func (d *DB) SetAside(ctx context.Context, path, reason string) error {
+	_, err := d.sql.ExecContext(ctx,
+		`INSERT INTO asides (path, reason) VALUES (?, ?)
+		 ON CONFLICT(path) DO UPDATE SET reason=excluded.reason`,
+		path, reason)
+	if err != nil {
+		return fmt.Errorf("record why %q was set aside: %w", path, err)
+	}
+	return nil
+}
+
+// AsideReasons returns why each set-aside version was set aside. A version
+// set aside by an older build has no row.
+func (d *DB) AsideReasons(ctx context.Context) (map[string]string, error) {
+	rows, err := d.sql.QueryContext(ctx, `SELECT path, reason FROM asides`)
+	if err != nil {
+		return nil, fmt.Errorf("read the set-aside reasons: %w", err)
+	}
+	defer rows.Close()
+
+	out := make(map[string]string)
+	for rows.Next() {
+		var path, reason string
+		if err := rows.Scan(&path, &reason); err != nil {
+			return nil, fmt.Errorf("scan set-aside row: %w", err)
+		}
+		out[path] = reason
 	}
 	return out, rows.Err()
 }
