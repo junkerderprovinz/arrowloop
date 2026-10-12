@@ -15,14 +15,14 @@ import {
   IconDashboard,
   IconGear,
   IconHistory,
-  IconLock,
   IconRefresh,
   IconSync,
   IconTabApp,
   IconTabGeneral,
   IconTabLook,
+  IconTabRecovery,
+  IconTabSecurity,
   IconTabStorage,
-  IconTrash,
 } from './components/glyphs'
 import { AccentSwatches, PaletteSwatches } from './components/Swatches'
 import { About } from './components/About'
@@ -371,7 +371,7 @@ export function App() {
           {
             value: 'trash',
             label: t('nav.trash'),
-            icon: <IconTrash />,
+            icon: <IconTabRecovery />,
             badge: orderedTrash ? trashTotals(orderedTrash.filter((s) => !s.error)).entries : undefined,
           },
         ]}
@@ -526,7 +526,7 @@ function Settings(props: LookProps) {
           { value: 'app', label: t('settings.app'), icon: <IconTabApp /> },
           // Left out where the interface cannot keep a password of its own.
           ...(props.security
-            ? [{ value: 'security' as SettingsSection, label: t('settings.security'), icon: <IconLock /> }]
+            ? [{ value: 'security' as SettingsSection, label: t('settings.security'), icon: <IconTabSecurity /> }]
             : []),
         ]}
       />

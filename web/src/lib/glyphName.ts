@@ -19,7 +19,7 @@ const RULES: Rule[] = [
   [/^about\.mail$/i, 'IconMail'],
 
   // Above the preview rule, which would otherwise claim `preview.back`.
-  [/\.back$|goBack|\.return$/i, 'IconFolderUp'],
+  [/\.back$|goBack|\.return$/i, 'IconBack'],
 
   // This app's own verbs, above anything generic.
   [/preview|dryRun/i, 'IconPreview'],
@@ -64,7 +64,8 @@ const RULES: Rule[] = [
   // A key is namespace and verb, and the verb decides. Cancel sits above save
   // so `confirm.cancel` does not wear the floppy, and save above edit so
   // `edit.save` does not wear the pencil.
-  [/cancel|close|logout|dismiss/i, 'IconClose'],
+  [/logout/i, 'IconSignOut'],
+  [/cancel|close|dismiss/i, 'IconClose'],
 
   [/save|apply|choose|submit|confirm/i, 'IconSave'],
 
@@ -76,6 +77,7 @@ const RULES: Rule[] = [
   [/activity|history|log\b/i, 'IconHistory'],
 
   // Above the settings rule, since the lock's keys live under `settings.`.
+  [/unlock/i, 'IconUnlock'],
   [/lock/i, 'IconLock'],
 
   // A button that opens a menu of further actions.

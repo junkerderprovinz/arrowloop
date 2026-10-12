@@ -50,10 +50,7 @@ export function CardMenu({ items }: { items: CardAction[] }) {
         android_ripple={{ color: p.hover }}
         style={[styles.button, { backgroundColor: p.surface2, ...corners.pill }]}
       >
-        {/* The icon set has no menu mark, so the three bars are plain Views. */}
-        <View style={[styles.bar, { backgroundColor: p.text }]} />
-        <View style={[styles.bar, { backgroundColor: p.text }]} />
-        <View style={[styles.bar, { backgroundColor: p.text }]} />
+        <Glyph name="IconMore" color={p.text} size={18} />
       </Pressable>
       <Modal
         visible={at !== null}
@@ -100,9 +97,7 @@ const styles = StyleSheet.create({
     height: TOUCH,
     alignItems: "center",
     justifyContent: "center",
-    gap: 3,
   },
-  bar: { width: 16, height: 2, borderRadius: 1 },
 
   // Fills the screen so a tap anywhere closes the menu.
   ground: { flex: 1 },
