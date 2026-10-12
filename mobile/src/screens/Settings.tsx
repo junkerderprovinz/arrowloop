@@ -18,7 +18,7 @@ import {
   type ThemeChoice,
 } from "../settings";
 import { GLIMSTONE_VERSION } from "../glimstone/version";
-import { COFFEE, glimstoneRelease, MAIL, PAYPAL, REPO } from "../../../web/src/lib/donate";
+import { glimstoneRelease, MAIL, PAYPAL, REPO } from "../../../web/src/lib/donate";
 import { MANUAL, PRIVACY } from "../../../web/src/lib/handbook";
 import { nearestPreset } from "../../../web/src/lib/colorMath";
 import { flagEmoji } from "../../../web/src/lib/flagEmoji";
