@@ -5,7 +5,7 @@ import { IconGithub } from '../../components/brandGlyphs'
 import { IconDiagnostics } from '../../components/glyphs'
 import { Stack } from '../../components/Shell'
 import { api, ApiError } from '../../lib/api'
-import { MAIL_SVG, MANUAL_SVG } from '../../lib/appMarks'
+import { DOCS_SVG, MAIL_SVG } from '../../lib/appMarks'
 import { download } from '../../lib/download'
 import { GLIMSTONE_REPO, MAIL, MANUAL, RCLONE_REPO, REPO } from '../../lib/donate'
 import { openExternal } from '../../lib/external'
@@ -113,11 +113,12 @@ export function InfoPage({ version, whatsNew }: { version: string; whatsNew?: Re
             mark={<BrandMark svg={MAIL_SVG} />}
             markClass="glim-house-mark"
           />
+          {/* The README's own manual button, its book and its yellow. */}
           <ReadmeButton
-            brand="house"
+            brand="docs"
             parts={[{ name: t('info.manual'), sub: t('settings.open'), onClick: () => openExternal(MANUAL) }]}
-            mark={<BrandMark svg={MANUAL_SVG} />}
-            markClass="glim-house-mark"
+            mark={<BrandMark svg={DOCS_SVG} />}
+            markClass="glim-docs-mark"
           />
           {/* The file goes with an issue on GitHub, so it lights up beside it. */}
           <ReadmeButton

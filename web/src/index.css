@@ -495,3 +495,11 @@ body {
   border-radius: var(--radius-control);
   animation: glim-search-hit 1.6s ease-out;
 }
+
+/* Local, not in GlimStone: the tiles of two README buttons GlimStone does not
+   carry. F-Droid's blue is the README button's, 4.6:1 with white. The manual
+   is the README's docs button, which wears Buy Me a Coffee's yellow and its
+   near-black ink; its book takes the adjusted yellow at rest. */
+.glim-tile-fdroid { --tile: #1976d2; --tile-ink: #ffffff; }
+.glim-tile-docs   { --tile: #ffdd00; --tile-ink: #0d0c23; }
+.glim-docs-mark   { color: var(--brand-coffee); }

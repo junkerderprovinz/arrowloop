@@ -24,6 +24,9 @@ const TILES = {
   bitcoin: "glim-tile-bitcoin",
   coffee: "glim-tile-coffee",
   house: "glim-tile-house",
+  // Local, not in GlimStone: the README's F-Droid and manual buttons.
+  fdroid: "glim-tile-fdroid",
+  docs: "glim-tile-docs",
 } as const;
 
 export interface ReadmePart {

@@ -6,7 +6,7 @@ import { QRCode } from '../components/QRCode'
 import { Stack } from '../components/Shell'
 import { Card } from '../lib/glimstone/Card'
 import { BrandMark, ReadmeButton } from '../lib/glimstone/ReadmeButton'
-import { ANDROID_SVG, APPLE_SVG, DOCKER_SVG, LINUX_SVG, PLAY_SVG, UNRAID_SVG, WINDOWS_SVG, ZIP_SVG } from '../lib/appMarks'
+import { ANDROID_SVG, APPLE_SVG, DOCKER_SVG, FDROID_SVG, LINUX_SVG, PLAY_SVG, UNRAID_SVG, WINDOWS_SVG, ZIP_SVG } from '../lib/appMarks'
 import { DOCKER_RUN, DOWNLOADS, UNRAID_CA, sourceZip } from '../lib/downloads'
 import { followExternal } from '../lib/external'
 import { useT } from '../lib/i18n'
@@ -17,6 +17,8 @@ const APK = DOWNLOADS.apk
 
 // Empty until the listing is live; the button then says it is coming.
 const PLAY_STORE = ''
+
+const F_DROID = 'https://f-droid.org/packages/arrowloop.halleluja.design/'
 
 /**
  * Where to get ArrowLoop outside this page, in the README's order: first the
@@ -43,6 +45,12 @@ function PhoneCard({ version }: { version: string }) {
           parts={[{ name: t('apps.playStore'), href: PLAY_STORE }]}
           mark={<BrandMark svg={PLAY_SVG} />}
           soonLabel={t('apps.soon')}
+          onLinkClick={followExternal}
+        />
+        <ReadmeButton
+          brand="fdroid"
+          parts={[{ name: 'F-Droid', href: F_DROID }]}
+          mark={<BrandMark svg={FDROID_SVG} />}
           onLinkClick={followExternal}
         />
         <ApkButton />

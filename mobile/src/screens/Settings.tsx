@@ -30,8 +30,8 @@ import { CoffeeDonate, CryptoDonate } from "../donate";
 import { Field } from "../fields";
 import { isAccount } from "../space";
 import { useWaiting } from "../waiting";
-import { AppMark, CoffeeArt, DonateMark, MailMark, ManualMark } from "../glyphs";
-import { APPLE_SVG, DOCKER_SVG, LINUX_SVG, UNRAID_SVG, WINDOWS_SVG, ZIP_SVG } from "../../../web/src/lib/appMarks";
+import { AppMark, CoffeeArt, DonateMark, MailMark } from "../glyphs";
+import { APPLE_SVG, DOCKER_SVG, DOCS_SVG, LINUX_SVG, UNRAID_SVG, WINDOWS_SVG, ZIP_SVG } from "../../../web/src/lib/appMarks";
 import { DOCKER_RUN, DOWNLOADS, UNRAID_CA, sourceZip } from "../../../web/src/lib/downloads";
 import {
   AxisLabel,
@@ -737,9 +737,10 @@ export function Settings() {
             mark={(lit, ink) => <DonateMark name="github" scheme={scheme} ink={lit ? ink : undefined} />}
             onPress={() => Linking.openURL(REPO)}
           />
-          {/* Mail and the manual reach the authors rather than a vendor, so
-              they take the accent at rest and lit, and their marks open
-              under the finger. */}
+          {/* Mail reaches the authors rather than a vendor, so it takes the
+              accent at rest and lit, and its envelope opens under the
+              finger. The manual is the README's own button, its book in the
+              README's yellow. */}
           <ReadmeButton
             label={t("about.mail")}
             tile={{ color: accent, ink: accentContrast }}
@@ -751,8 +752,8 @@ export function Settings() {
           <ReadmeButton
             label={t("phone.manual")}
             sub={t("action.open")}
-            tile={{ color: accent, ink: accentContrast }}
-            mark={(lit, ink) => <ManualMark open={lit} ink={lit ? ink : accentInk} />}
+            tile={TILE.coffee}
+            mark={(lit, ink) => <AppMark svg={DOCS_SVG} ink={lit ? ink : BRAND[scheme].coffee} />}
             onPress={() => Linking.openURL(MANUAL)}
           />
         </ReadmeRow>
