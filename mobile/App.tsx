@@ -1,8 +1,8 @@
 import {
+  CommonActions,
   NavigationContainer,
   DarkTheme,
   DefaultTheme,
-  getFocusedRouteNameFromRoute,
   type ParamListBase,
   type RouteProp,
 } from "@react-navigation/native";
@@ -13,15 +13,24 @@ import {
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { AppState, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Animated, AppState, Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
 import { I18nProvider, useT } from "./src/i18n";
-import type { HistoryStack, JobsStack, OverviewStack, SettingsStack, TargetsStack } from "./src/nav";
+import {
+  BAR,
+  MORE,
+  type BarPlace,
+  type ConflictsStack,
+  type HistoryStack,
+  type JobsStack,
+  type MorePlace,
+  type MoreStack,
+  type SettingsStack,
+} from "./src/nav";
 import { History } from "./src/screens/History";
 import { JobEdit } from "./src/screens/JobEdit";
 import { Jobs } from "./src/screens/Jobs";
 import { Language } from "./src/screens/Language";
-import { Overview } from "./src/screens/Overview";
 import { Plan } from "./src/screens/Plan";
 import { RunDetail } from "./src/screens/RunDetail";
 import { Settings } from "./src/screens/Settings";
@@ -35,24 +44,26 @@ import { Anomalies } from "./src/screens/Anomalies";
 import { Conflicts } from "./src/screens/Conflicts";
 import { askNotifications, notificationsGranted } from "./src/screens/Settings";
 import { useDiscoWalk } from "./src/disco";
+import { useMotion } from "./src/motion";
 import { loadAppearance, useAppearance } from "./src/settings";
 import { contrastOn, space, text } from "./src/theme";
 import { Glyph } from "./src/glyphs";
-import { Body, Button, Heading, Screen, useTheme } from "./src/ui";
+import { Badge, Body, Button, Heading, Press, Screen, usePress, useTheme } from "./src/ui";
 import { engine } from "./src/engine";
 import { useEngine } from "./src/useEngine";
+import { useWaiting, WaitingProvider } from "./src/waiting";
 
-// Five tabs: the overview first, then the desktop's four. Each tab has its own
-// stack, so back returns within the tab. The tabs use the material top tab
-// navigator with its bar at the bottom, because the bottom tab navigator has no
-// pager to swipe between pages; swiping is off once a tab has left its root
-// screen, where a sideways drag belongs to the screen.
+// Four places on the bar and More for the rest. Each tab has its own stack, so
+// back returns within the tab. The tabs use the material top tab navigator
+// with its bar at the bottom, because the bottom tab navigator has no pager to
+// swipe between pages; swiping is off once a tab has left its root screen,
+// where a sideways drag belongs to the screen.
 const Tabs = createMaterialTopTabNavigator();
-const OverviewNav = createNativeStackNavigator<OverviewStack>();
 const JobsNav = createNativeStackNavigator<JobsStack>();
+const ConflictsNav = createNativeStackNavigator<ConflictsStack>();
 const HistoryNav = createNativeStackNavigator<HistoryStack>();
-const TargetsNav = createNativeStackNavigator<TargetsStack>();
 const SettingsNav = createNativeStackNavigator<SettingsStack>();
+const MoreNav = createNativeStackNavigator<MoreStack>();
 
 export default function App() {
   // Loaded before the first paint, so nothing flashes in the wrong theme.
@@ -153,7 +164,7 @@ function Shell() {
   if (state !== "ready") return <Waiting state={state} log={log} onRetry={retry} />;
 
   return (
-    <>
+    <WaitingProvider>
       <StatusBar style={scheme === "light" ? "dark" : "light"} />
       <NavigationContainer theme={navTheme}>
         <Tabs.Navigator
@@ -170,30 +181,7 @@ function Shell() {
           })}
           tabBar={(props) => <TabBar {...props} />}
         >
-          <Tabs.Screen
-            name="OverviewTab"
-            options={{ title: t("nav.overview") }}
-          >
-            {() => (
-              <OverviewNav.Navigator screenOptions={header}>
-                {/* The first screen carries the product name, untranslated;
-                    its tab keeps the translated label. */}
-                <OverviewNav.Screen
-                  name="OverviewHome"
-                  component={Overview}
-                  options={{ title: "ArrowLoop" }}
-                />
-                <OverviewNav.Screen name="Anomalies" component={Anomalies} options={{ title: t("nav.anomalies") }} />
-                <OverviewNav.Screen name="Conflicts" component={Conflicts} options={{ title: t("nav.conflicts") }} />
-                <OverviewNav.Screen name="TrashAll" component={TrashAll} options={{ title: t("nav.trash") }} />
-              </OverviewNav.Navigator>
-            )}
-          </Tabs.Screen>
-
-          <Tabs.Screen
-            name="JobsTab"
-            options={{ title: t("nav.jobs") }}
-          >
+          <Tabs.Screen name="JobsTab" options={{ title: t("nav.jobs") }}>
             {() => (
               <JobsNav.Navigator screenOptions={header}>
                 <JobsNav.Screen name="JobList" component={Jobs} options={{ title: t("jobs.title") }} />
@@ -213,190 +201,287 @@ function Shell() {
             )}
           </Tabs.Screen>
 
-          <Tabs.Screen
-            name="HistoryTab"
-            options={{ title: t("nav.history") }}
-          >
+          <Tabs.Screen name="ConflictsTab" options={{ title: t("nav.conflicts") }}>
+            {() => (
+              <ConflictsNav.Navigator screenOptions={header}>
+                <ConflictsNav.Screen
+                  name="ConflictList"
+                  component={Conflicts}
+                  options={{ title: t("nav.conflicts") }}
+                />
+              </ConflictsNav.Navigator>
+            )}
+          </Tabs.Screen>
+
+          <Tabs.Screen name="HistoryTab" options={{ title: t("nav.history") }}>
             {() => (
               <HistoryNav.Navigator screenOptions={header}>
-                <HistoryNav.Screen
-                  name="RunList"
-                  component={History}
-                  options={{ title: t("history.title") }}
-                />
-                <HistoryNav.Screen
-                  name="RunDetail"
-                  component={RunDetail}
-                  options={{ title: t("jobs.history") }}
-                />
+                <HistoryNav.Screen name="RunList" component={History} options={{ title: t("history.title") }} />
+                <HistoryNav.Screen name="RunDetail" component={RunDetail} options={{ title: t("jobs.history") }} />
               </HistoryNav.Navigator>
             )}
           </Tabs.Screen>
 
-          <Tabs.Screen
-            name="TargetsTab"
-            options={{ title: t("nav.targets") }}
-          >
+          <Tabs.Screen name="SettingsTab" options={{ title: t("nav.settings") }}>
             {() => (
-              <TargetsNav.Navigator screenOptions={header}>
-                <TargetsNav.Screen
-                  name="TargetList"
-                  component={Targets}
-                  options={{ title: t("targets.title") }}
-                />
-                <TargetsNav.Screen
-                  name="TargetPick"
-                  component={TargetPick}
-                  options={{ title: t("targets.addStorage") }}
-                />
-                <TargetsNav.Screen
-                  name="TargetEdit"
-                  component={TargetEdit}
-                  options={{ title: t("action.edit") }}
-                />
-              </TargetsNav.Navigator>
+              <SettingsNav.Navigator screenOptions={header}>
+                <SettingsNav.Screen name="SettingsHome" component={Settings} options={{ title: t("nav.settings") }} />
+                <SettingsNav.Screen name="Language" component={Language} options={{ title: t("look.language") }} />
+                <SettingsNav.Screen name="Sync" component={SyncSettings} options={{ title: t("engine.defaults") }} />
+              </SettingsNav.Navigator>
             )}
           </Tabs.Screen>
 
-          <Tabs.Screen
-            name="SettingsTab"
-            options={{ title: t("nav.settings") }}
-          >
+          {/* The places behind More share one tab. Picking one makes it the
+              stack's first screen, so back from a target's form returns to
+              the targets, and a swipe from Settings lands where More last led. */}
+          <Tabs.Screen name="MoreTab" options={{ title: t("more.title") }}>
             {() => (
-              <SettingsNav.Navigator screenOptions={header}>
-                <SettingsNav.Screen
-                  name="SettingsHome"
-                  component={Settings}
-                  options={{ title: t("nav.settings") }}
-                />
-                <SettingsNav.Screen
-                  name="Language"
-                  component={Language}
-                  options={{ title: t("look.language") }}
-                />
-                <SettingsNav.Screen
-                  name="Sync"
-                  component={SyncSettings}
-                  options={{ title: t("engine.defaults") }}
-                />
-              </SettingsNav.Navigator>
+              <MoreNav.Navigator screenOptions={header}>
+                <MoreNav.Screen name="TrashAll" component={TrashAll} options={{ title: t("nav.trash") }} />
+                <MoreNav.Screen name="TargetList" component={Targets} options={{ title: t("targets.title") }} />
+                <MoreNav.Screen name="TargetPick" component={TargetPick} options={{ title: t("targets.addStorage") }} />
+                <MoreNav.Screen name="TargetEdit" component={TargetEdit} options={{ title: t("action.edit") }} />
+                <MoreNav.Screen name="Anomalies" component={Anomalies} options={{ title: t("nav.anomalies") }} />
+              </MoreNav.Navigator>
             )}
           </Tabs.Screen>
         </Tabs.Navigator>
       </NavigationContainer>
-    </>
+    </WaitingProvider>
   );
 }
+
+/** The bar's fixed height; see the segment style. */
+const BAR_H = 48;
 
 /**
  * The bottom bar, drawn by hand because react-navigation's bar cannot follow
  * the label setting, fill the current tab, or centre a glyph when no label is
- * drawn. It is a well, GlimStone's horizontal selector, with equal segments.
+ * drawn. It is a well, GlimStone's horizontal selector, with four equal places
+ * and More, which opens the rest as a sheet.
  */
-function TabBar({ state, descriptors, navigation }: MaterialTopTabBarProps) {
-  // The bar has its own label setting.
-  const { p, corners, barLabels, accent, hueAt } = useTheme();
+function TabBar({ state, navigation }: MaterialTopTabBarProps) {
+  const { p, corners } = useTheme();
+  const { t } = useT();
+  const { running, conflicts } = useWaiting();
   const inset = useSafeAreaInsets();
-  const showGlyph = barLabels !== "text";
-  const showWord = barLabels !== "glyph";
+  const [sheet, setSheet] = useState(false);
+  const current = state.routes[state.index]?.name;
+  const counts: Record<BarPlace["tab"], number | null> = {
+    JobsTab: running,
+    ConflictsTab: conflicts,
+    HistoryTab: null,
+    SettingsTab: null,
+  };
+  // Clear of the gesture bar, with a floor for phones with buttons.
+  const below = Math.max(inset.bottom, space.sm);
+
+  const go = (name: string) => {
+    const route = state.routes.find((r) => r.name === name);
+    if (!route) return;
+    const event = navigation.emit({ type: "tabPress", target: route.key, canPreventDefault: true });
+    if (!event.defaultPrevented) navigation.navigate(name);
+  };
 
   return (
     <View>
       {/* The app's ground under the bar, or Android's near-white window
           background shows through around it. */}
       <View style={[StyleSheet.absoluteFill, { backgroundColor: p.background }]} />
-      <View
-        style={[
-          styles.bar,
-          {
-            backgroundColor: p.surface2,
-            ...corners.pill,
-            // Clear of the gesture bar, with a floor for phones with buttons.
-            marginBottom: Math.max(inset.bottom, space.sm),
-          },
-        ]}
-      >
+      <View style={[styles.bar, { backgroundColor: p.surface2, ...corners.pill, marginBottom: below }]}>
         <View style={styles.well}>
-          {state.routes.map((route, index) => {
-            const { options } = descriptors[route.key]!;
-            const label = options.title ?? route.name;
-            const on = state.index === index;
-            // Each tab takes a palette position; without the rainbow, the accent.
-            const fill = hueAt(index) ?? accent;
-            const ink = on ? contrastOn(fill) : p.textSub;
-            return (
-              <Pressable
-                key={route.key}
-                accessibilityRole="button"
-                accessibilityState={on ? { selected: true } : {}}
-                accessibilityLabel={label}
-                onPress={() => {
-                  const event = navigation.emit({
-                    type: "tabPress",
-                    target: route.key,
-                    canPreventDefault: true,
-                  });
-                  if (!event.defaultPrevented) navigation.navigate(route.name);
-                }}
-                android_ripple={{ color: p.hover }}
-                style={[
-                  styles.segment,
-                  {
-                    ...corners.pill,
-                    backgroundColor: on ? fill : "transparent",
-                  },
-                ]}
-              >
-                {showGlyph ? <Glyph name={markFor(route.name)} color={ink} size={20} /> : null}
-                {showWord ? (
-                  <Text
-                    numberOfLines={1}
-                    // Shrinks rather than truncates, like the horizontal selector.
-                    adjustsFontSizeToFit
-                    minimumFontScale={0.7}
-                    style={[styles.tabText, { color: ink }]}
-                  >
-                    {label}
-                  </Text>
-                ) : null}
-              </Pressable>
-            );
-          })}
+          {BAR.map((place, index) => (
+            <BarSegment
+              key={place.tab}
+              label={t(place.label)}
+              glyph={place.glyph}
+              index={index}
+              on={current === place.tab}
+              count={counts[place.tab]}
+              onPress={() => go(place.tab)}
+            />
+          ))}
+          <BarSegment
+            label={t("more.title")}
+            glyph="IconMore"
+            index={BAR.length}
+            on={current === "MoreTab"}
+            onPress={() => setSheet(true)}
+          />
         </View>
       </View>
+      <MoreSheet
+        open={sheet}
+        above={below + BAR_H + 6}
+        onClose={() => setSheet(false)}
+        onPick={(screen) => {
+          setSheet(false);
+          // The picked place replaces whatever More held, rather than piling
+          // up on it.
+          const at = state.routes.findIndex((r) => r.name === "MoreTab");
+          // Handed over as a partial state, so the router fills in the rest.
+          const partial = {
+            index: at,
+            routes: state.routes.map((r, i) => ({
+              key: r.key,
+              name: r.name,
+              params: r.params,
+              state: i === at ? { routes: [{ name: screen }] } : r.state,
+            })),
+          };
+          navigation.dispatch(CommonActions.reset(partial as Parameters<typeof CommonActions.reset>[0]));
+        }}
+      />
     </View>
   );
 }
 
-/** The first screen of each tab's stack. */
-const TAB_ROOT: Record<string, string> = {
-  OverviewTab: "OverviewHome",
-  JobsTab: "JobList",
-  TargetsTab: "TargetList",
-  HistoryTab: "RunList",
-  SettingsTab: "SettingsHome",
-};
+/**
+ * One place on the bar. The current one is filled with its palette position,
+ * or the accent without the rainbow. A count stands grey at the glyph's corner
+ * and swaps to the fill's colours on the current place.
+ */
+function BarSegment({
+  label,
+  glyph,
+  index,
+  on,
+  count,
+  onPress,
+}: {
+  label: string;
+  glyph: string;
+  index: number;
+  on: boolean;
+  count?: number | null;
+  onPress: () => void;
+}) {
+  // The bar has its own label setting.
+  const { p, corners, barLabels, accent, hueAt } = useTheme();
+  const press = usePress();
+  const showGlyph = barLabels !== "text";
+  const showWord = barLabels !== "glyph";
+  const fill = hueAt(index) ?? accent;
+  const ink = on ? contrastOn(fill) : p.textSub;
+  const badge = count ? (
+    <View style={[styles.count, { backgroundColor: on ? ink : p.surface3, ...corners.pill }]}>
+      <Text style={[styles.countText, { color: on ? fill : p.text }]}>{count}</Text>
+    </View>
+  ) : null;
+
+  return (
+    <AnimatedPressable
+      accessibilityRole="button"
+      accessibilityState={on ? { selected: true } : {}}
+      accessibilityLabel={count ? `${label}, ${count}` : label}
+      onPress={onPress}
+      onPressIn={press.onPressIn}
+      onPressOut={press.onPressOut}
+      android_ripple={{ color: p.hover }}
+      style={[
+        styles.segment,
+        {
+          ...corners.pill,
+          backgroundColor: on ? fill : "transparent",
+          opacity: press.dim,
+          transform: [{ scale: press.scale }],
+        },
+      ]}
+    >
+      {showGlyph ? (
+        <View>
+          <Glyph name={glyph} color={ink} size={20} />
+          {badge}
+        </View>
+      ) : null}
+      {showWord ? (
+        <View>
+          <Text
+            numberOfLines={1}
+            // Shrinks rather than truncates, like the horizontal selector.
+            adjustsFontSizeToFit
+            minimumFontScale={0.7}
+            style={[styles.tabText, { color: ink }]}
+          >
+            {label}
+          </Text>
+          {showGlyph ? null : badge}
+        </View>
+      ) : null}
+    </AnimatedPressable>
+  );
+}
+
+/**
+ * The places that do not fit on the bar, as a sheet standing just above it.
+ * A tap outside or Android's back closes it, as it closes a card's menu.
+ */
+function MoreSheet({
+  open,
+  above,
+  onClose,
+  onPick,
+}: {
+  open: boolean;
+  /** How far the bar reaches up from the bottom edge. */
+  above: number;
+  onClose: () => void;
+  onPick: (screen: MorePlace["screen"]) => void;
+}) {
+  const { p, corners } = useTheme();
+  const { t } = useT();
+  const { ms } = useMotion();
+  const { findings, trash } = useWaiting();
+  const counts: Record<MorePlace["screen"], number | null> = {
+    TrashAll: trash,
+    TargetList: null,
+    Anomalies: findings?.length ?? null,
+  };
+  const held = findings?.some((f) => f.held) ?? false;
+
+  return (
+    <Modal visible={open} transparent animationType={ms.fade ? "fade" : "none"} onRequestClose={onClose}>
+      <Pressable style={[styles.ground, { backgroundColor: p.scrim, paddingBottom: above }]} onPress={onClose}>
+        {/* Swallows presses, so a tap between the rows does not close it. */}
+        <Pressable onPress={() => {}} style={[styles.sheet, { backgroundColor: p.surface, ...corners.card }]}>
+          {MORE.map((place) => {
+            const count = counts[place.screen];
+            return (
+              <Press
+                key={place.screen}
+                accessibilityRole="button"
+                onPress={() => onPick(place.screen)}
+                android_ripple={{ color: p.hover }}
+                style={[styles.sheetRow, { backgroundColor: p.surface2, ...corners.control }]}
+              >
+                <Glyph name={place.glyph} color={p.text} size={20} />
+                <Text style={[styles.sheetText, { color: p.text }]} numberOfLines={1}>
+                  {t(place.label)}
+                </Text>
+                {count ? (
+                  <Badge label={String(count)} tone={place.screen === "Anomalies" && held ? "warn" : "neutral"} />
+                ) : null}
+              </Press>
+            );
+          })}
+        </Pressable>
+      </Pressable>
+    </Modal>
+  );
+}
+
+// Created at module level, so a render does not make a new component type.
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 /**
  * Reports whether a tab's stack has moved off its first screen. A tab whose
- * stack has not rendered yet reports no focused route and counts as at root.
+ * stack has not rendered yet has no state and counts as at its first screen.
  */
 function deeperThanRoot(route: RouteProp<ParamListBase>): boolean {
-  const focused = getFocusedRouteNameFromRoute(route);
-  return focused !== undefined && focused !== TAB_ROOT[route.name];
-}
-
-/** A tab's glyph, the same marks the desktop rail uses. */
-function markFor(route: string): string {
-  return (
-    {
-      OverviewTab: "IconDashboard",
-      JobsTab: "IconSync",
-      TargetsTab: "IconTabStorage",
-      HistoryTab: "IconHistory",
-      SettingsTab: "IconGear",
-    }[route] ?? "IconSync"
-  );
+  const stack = (route as { state?: { index?: number; routes: unknown[] } }).state;
+  if (!stack) return false;
+  return (stack.index ?? stack.routes.length - 1) > 0;
 }
 
 /**
@@ -485,4 +570,29 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
   },
   tabText: { fontSize: text.meta, fontWeight: "500" },
+  // At the glyph's top corner, over the edge of the segment's content.
+  count: {
+    position: "absolute",
+    top: -4,
+    end: -12,
+    minWidth: 16,
+    height: 16,
+    paddingHorizontal: 4,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  countText: { fontSize: text.meta, lineHeight: 14, fontWeight: "600", fontVariant: ["tabular-nums"] },
+
+  // Fills the screen so a tap anywhere closes the sheet; the sheet itself
+  // stands at the bottom, over the bar's end.
+  ground: { flex: 1, justifyContent: "flex-end", paddingHorizontal: space.md },
+  sheet: { padding: space.sm, gap: space.xs, elevation: 8 },
+  sheetRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: space.md,
+    minHeight: 52,
+    paddingHorizontal: space.lg,
+  },
+  sheetText: { flex: 1, fontSize: text.body },
 });

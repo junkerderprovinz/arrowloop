@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Alert, StyleSheet, View } from "react-native";
 import { api, type Remote, type Usage } from "../api";
 import { useT } from "../i18n";
-import type { Nav, TargetsStack } from "../nav";
+import type { Nav, MoreStack } from "../nav";
 import { account, isAccount, ReachBadge, Room, useReach, useRoom, type Room as Space } from "../space";
 import { space } from "../theme";
 import { Body, Button, Caption, Card, CardHead, Empty, Fab, Floating, Page, useHue, useTheme } from "../ui";
@@ -14,7 +14,7 @@ import { CardMenu } from "../CardMenu";
  * where the service says.
  */
 export function Targets() {
-  const nav = useNavigation<Nav<TargetsStack>>();
+  const nav = useNavigation<Nav<MoreStack>>();
   const { t } = useT();
   const [remotes, setRemotes] = useState<Remote[] | null>(null);
   const [error, setError] = useState("");

@@ -5,7 +5,7 @@ import { useRoute, type RouteProp } from "@react-navigation/native";
 import { api, type Config, type Job } from "../api";
 import { NumberField } from "../fields";
 import { useT } from "../i18n";
-import type { OverviewStack } from "../nav";
+import type { MoreStack } from "../nav";
 import { settings } from "../settings";
 import { jobSides } from "../sides";
 import { space, text } from "../theme";
@@ -53,7 +53,7 @@ type OwnBrakes = Pick<Brakes, "brakePercent" | "changePercent">;
  */
 export function Anomalies() {
   const { t } = useT();
-  const focus = useRoute<RouteProp<OverviewStack, "Anomalies">>().params?.job;
+  const focus = useRoute<RouteProp<MoreStack, "Anomalies">>().params?.job;
   const [listing, setListing] = useState<FindingListing | null>(null);
   const [jobs, setJobs] = useState<Job[]>([]);
   const [config, setConfig] = useState<Config | null>(null);

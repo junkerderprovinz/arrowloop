@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { api, type Provider } from "../api";
 import { useT } from "../i18n";
-import type { Nav, TargetsStack } from "../nav";
+import type { Nav, MoreStack } from "../nav";
 import { nameAndKind, providerHint, providerName } from "../../../web/src/lib/optionHint";
 import { space } from "../theme";
 import { brandTile, ProviderMark } from "../glyphs";
@@ -15,7 +15,7 @@ import { Caption, Empty, Page, ReadmeButton, ReadmeRow, Title, useTheme } from "
  * Only protocols carry a hint, since "SMB" or "WebDAV" does not say what it is.
  */
 export function TargetPick() {
-  const nav = useNavigation<Nav<TargetsStack>>();
+  const nav = useNavigation<Nav<MoreStack>>();
   const { t } = useT();
   const { p, scheme, accent, accentContrast } = useTheme();
   const [providers, setProviders] = useState<Provider[] | null>(null);

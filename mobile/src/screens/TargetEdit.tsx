@@ -5,7 +5,7 @@ import { api, type Backend, type Provider, type Remote } from "../api";
 import { Field } from "../fields";
 import { useT, type T } from "../i18n";
 import type { TranslationKey } from "../i18n";
-import type { Nav, TargetsStack } from "../nav";
+import type { Nav, MoreStack } from "../nav";
 import { optionHint, providerHint, providerName } from "../../../web/src/lib/optionHint";
 import { suggestTargetName } from "../../../web/src/lib/targetName";
 import { space } from "../theme";
@@ -17,8 +17,8 @@ import { Body, Button, Caption, Empty, Page, Section, Title } from "../ui";
  * name) is applied underneath and not shown.
  */
 export function TargetEdit() {
-  const route = useRoute<RouteProp<TargetsStack, "TargetEdit">>();
-  const nav = useNavigation<Nav<TargetsStack>>();
+  const route = useRoute<RouteProp<MoreStack, "TargetEdit">>();
+  const nav = useNavigation<Nav<MoreStack>>();
   const { t } = useT();
   const editing = route.params?.name;
   const providerId = route.params?.provider;
