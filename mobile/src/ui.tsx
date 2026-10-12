@@ -1,5 +1,5 @@
 import { NavigationContext } from "@react-navigation/native";
-import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from "react";
 import {
   ActivityIndicator,
   Animated,
@@ -1227,12 +1227,23 @@ export function Empty({ title, detail }: { title: string; detail?: string }) {
  * A scrolling page. `fab` adds room at the bottom so a floating button does
  * not cover the last row.
  */
-export function Page({ children, fab }: { children: ReactNode; fab?: boolean }) {
+export function Page({
+  children,
+  fab,
+  scroll,
+}: {
+  children: ReactNode;
+  fab?: boolean;
+  /** From usePageScroll, for a page that brings a part of itself into view. */
+  scroll?: PageScroll;
+}) {
   const { p } = useTheme();
   const motion = useScrollMotion();
   return (
     <Animated.View style={motion.style}>
       <ScrollView
+        ref={scroll?.scroller}
+        innerViewRef={scroll?.inner as RefObject<View> | undefined}
         {...motion.scroll}
         style={{ backgroundColor: p.background }}
         contentContainerStyle={[styles.page, fab ? styles.fabRoom : null]}
@@ -1242,6 +1253,32 @@ export function Page({ children, fab }: { children: ReactNode; fab?: boolean }) 
       </ScrollView>
     </Animated.View>
   );
+}
+
+export type PageScroll = ReturnType<typeof usePageScroll>;
+
+/**
+ * Lets a page scroll to one of its parts, such as the field a refused save
+ * names. `reveal` takes a ref to a view anywhere inside the page.
+ */
+export function usePageScroll() {
+  const { ms } = useMotion();
+  const scroller = useRef<ScrollView>(null);
+  const inner = useRef<View>(null);
+  const animated = ms.layout > 0;
+  const reveal = useCallback(
+    (target: RefObject<View | null>) => {
+      const box = inner.current;
+      if (!box || !target.current) return;
+      target.current.measureLayout(
+        box,
+        (_x, y) => scroller.current?.scrollTo({ y: Math.max(0, y - space.xl), animated }),
+        () => {},
+      );
+    },
+    [animated],
+  );
+  return { scroller, inner, reveal };
 }
 
 /** The room every page keeps below its last row, so a floating button covers nothing. */

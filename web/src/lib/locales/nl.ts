@@ -264,7 +264,6 @@ const nl: Translations = {
   'edit.nameHint': 'De naam waaronder deze taak in de lijst, het logboek en de meldingen staat.',
   'edit.sameSides': 'Beide kanten wijzen naar dezelfde plek, dan wordt de taak een slang die in zijn eigen staart bijt. Kies voor een van beide een andere map.',
   'edit.sideHint': 'Een map, een ingesteld doel in de vorm naam:pad, of een schijf die is aangemeld op het tabblad Doelen.',
-  'edit.sides': 'De twee kanten',
   'edit.stateHint': 'Waar deze taak onthoudt waarover beide kanten het eens waren. Eén bestand per taak. Het kwijtraken vernielt niets, maar zet de taak ver terug.',
   'edit.scheduleHint': 'Wanneer deze taak vanzelf loopt. Handmatig betekent alleen wanneer je hem vanaf zijn kaart start. Realtime reageert binnen seconden op een wijziging. Elke N, Elke dag en Weekdagen houden zich aan de klok. Cron is voor een ritme dat de keuzes niet kunnen zeggen, en wordt gelezen in de tijdzone van deze machine.',
   'edit.excludeHint': 'Eén patroon per regel. Namen van half geschreven bestanden worden altijd uitgesloten, wat hier ook staat.',
@@ -757,6 +756,9 @@ const nl: Translations = {
   'phone.sortAz': 'A tot Z',
   'phone.sortZa': 'Z tot A',
   'phone.search': 'Zoeken',
+  'phone.job': 'Taak',
+  'phone.needName': 'Geef de taak een naam.',
+  'phone.needSide': 'Kies een map of een doel voor deze kant.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

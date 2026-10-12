@@ -264,7 +264,6 @@ const sl: Translations = {
   'edit.nameHint': 'Ime, pod katerim to opravilo nastopa na seznamu, v dnevniku in v obvestilih.',
   'edit.sameSides': 'Obe strani kažeta na isto mesto, zato bi bilo opravilo kača, ki je svoj rep. Za eno od njiju izberi drugo mapo.',
   'edit.sideHint': 'Mapa, nastavljen cilj v obliki ime:pot, ali disk, prijavljen na zavihku Cilji.',
-  'edit.sides': 'Obe strani',
   'edit.stateHint': 'Tu si opravilo zapomni, o čem sta se strani nazadnje uskladili. Ena datoteka na opravilo. Njena izguba ničesar ne uniči, a opravilo vrne daleč nazaj.',
   'edit.scheduleHint': 'Kdaj se to opravilo zažene samo. Ročno pomeni samo takrat, ko ga zaženete z njegove kartice. V realnem času se na spremembo odzove v nekaj sekundah. Vsakih N, Vsak dan in Dnevi v tednu se držijo ure. Cron je za ritem, ki ga izbirniki ne znajo povedati, in se bere v časovnem pasu tega računalnika.',
   'edit.excludeHint': 'En vzorec na vrstico. Imena na pol zapisanih datotek so vedno izključena, karkoli piše tukaj.',
@@ -757,6 +756,9 @@ const sl: Translations = {
   'phone.sortAz': 'A do Ž',
   'phone.sortZa': 'Ž do A',
   'phone.search': 'Išči',
+  'phone.job': 'Opravilo',
+  'phone.needName': 'Poimenuj opravilo.',
+  'phone.needSide': 'Izberi mapo ali cilj za to stran.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

@@ -264,7 +264,6 @@ const hr: Translations = {
   'edit.nameHint': 'Naziv pod kojim ovaj zadatak stoji na popisu, u zapisniku i u obavijestima.',
   'edit.sameSides': 'Obje strane pokazuju na isto mjesto, pa bi zadatak bio zmija koja jede vlastiti rep. Odaberi drugu mapu za jednu od njih.',
   'edit.sideHint': 'Mapa, postavljeno odredište u obliku naziv:putanja, ili disk prijavljen na kartici Odredišta.',
-  'edit.sides': 'Obje strane',
   'edit.stateHint': 'Ovdje zadatak pamti o čemu su se strane zadnji put složile. Jedna datoteka po zadatku. Njezin gubitak ništa ne uništava, ali zadatak vraća daleko unatrag.',
   'edit.scheduleHint': 'Kada se ovaj zadatak pokreće sam. Ručno znači samo kad ga pokrenete s njegove kartice. U stvarnom vremenu reagira na promjenu u nekoliko sekundi. Svakih N, Svaki dan i Dani u tjednu drže se sata. Cron je za ritam koji birači ne znaju izreći, a čita se u vremenskoj zoni ovog računala.',
   'edit.excludeHint': 'Jedan uzorak po retku. Nazivi napola zapisanih datoteka uvijek se isključuju, što god ovdje pisalo.',
@@ -757,6 +756,9 @@ const hr: Translations = {
   'phone.sortAz': 'A do Ž',
   'phone.sortZa': 'Ž do A',
   'phone.search': 'Traži',
+  'phone.job': 'Zadatak',
+  'phone.needName': 'Daj zadatku naziv.',
+  'phone.needSide': 'Odaberi mapu ili odredište za ovu stranu.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

@@ -295,16 +295,17 @@ function TabBar({ state, navigation }: MaterialTopTabBarProps) {
               label={t(place.label)}
               glyph={place.glyph}
               index={index}
-              on={current === place.tab}
+              on={!sheet && current === place.tab}
               count={counts[place.tab]}
               onPress={() => go(place.tab)}
             />
           ))}
+          {/* Filled while its sheet is open, since that is where the person is. */}
           <BarSegment
             label={t("more.title")}
             glyph="IconMore"
             index={BAR.length}
-            on={current === "MoreTab"}
+            on={sheet || current === "MoreTab"}
             onPress={() => setSheet(true)}
           />
         </View>

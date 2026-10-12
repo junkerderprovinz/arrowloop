@@ -264,7 +264,6 @@ const gl: Translations = {
   'edit.nameHint': 'O nome co que esta tarefa aparece na lista, no rexistro e nos avisos.',
   'edit.sameSides': 'Ambos lados apuntan ao mesmo sitio, polo que a tarefa sería unha serpe que se morde a cola. Escolle outro cartafol para un dos dous.',
   'edit.sideHint': 'Un cartafol, un destino configurado na forma nome:ruta, ou un disco rexistrado na lapela Destinos.',
-  'edit.sides': 'Os dous lados',
   'edit.stateHint': 'Aquí a tarefa lembra en que coincidiron os dous lados a última vez. Un ficheiro por tarefa. Perdelo non destrúe nada, pero fai recuar moito a tarefa.',
   'edit.scheduleHint': 'Cando se executa esta tarefa por si soa. Manual significa só cando a inicias dende a súa tarxeta. Tempo real reacciona a un cambio en segundos. Cada N, Cada día e Días da semana séguen o reloxo. Cron é para un ritmo que os selectores non saben dicir, e lese na zona horaria desta máquina.',
   'edit.excludeHint': 'Un patrón por liña. Os nomes de ficheiros escritos a medias exclúense sempre, poña o que poña aquí.',
@@ -757,6 +756,9 @@ const gl: Translations = {
   'phone.sortAz': 'De A a Z',
   'phone.sortZa': 'De Z a A',
   'phone.search': 'Buscar',
+  'phone.job': 'Tarefa',
+  'phone.needName': 'Ponlle un nome á tarefa.',
+  'phone.needSide': 'Escolle un cartafol ou un destino para este lado.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

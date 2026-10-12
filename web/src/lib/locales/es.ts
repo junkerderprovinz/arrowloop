@@ -264,7 +264,6 @@ const es: Translations = {
   'edit.nameHint': 'El nombre con el que esta tarea aparece en la lista, en el registro y en los avisos.',
   'edit.sameSides': 'Ambos lados apuntan al mismo sitio, así que la tarea sería una serpiente que se muerde la cola. Elige otra carpeta para uno de los dos.',
   'edit.sideHint': 'Una carpeta, un destino configurado en la forma nombre:ruta, o un disco registrado en la pestaña Destinos.',
-  'edit.sides': 'Los dos lados',
   'edit.stateHint': 'Donde esta tarea recuerda en qué quedaron de acuerdo ambos lados. Un archivo por tarea. Perderlo no destruye nada, pero deja a la tarea muy atrás.',
   'edit.scheduleHint': 'Cuándo se ejecuta esta tarea por sí sola. Manual significa solo cuando la inicias desde su tarjeta. Tiempo real reacciona a un cambio en segundos. Cada N, Cada día y Días de la semana se atienen al reloj. Cron es para un ritmo que los selectores no saben decir, y se lee en la zona horaria de esta máquina.',
   'edit.excludeHint': 'Un patrón por línea. Los nombres de archivos a medio escribir se excluyen siempre, sea cual sea el contenido de aquí.',
@@ -757,6 +756,9 @@ const es: Translations = {
   'phone.sortAz': 'De A a Z',
   'phone.sortZa': 'De Z a A',
   'phone.search': 'Buscar',
+  'phone.job': 'Tarea',
+  'phone.needName': 'Ponle un nombre a la tarea.',
+  'phone.needSide': 'Elige una carpeta o un destino para este lado.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

@@ -264,7 +264,6 @@ const fi: Translations = {
   'edit.nameHint': 'Nimi, jolla tämä työ näkyy luettelossa, lokissa ja ilmoituksissa.',
   'edit.sameSides': 'Molemmat puolet osoittavat samaan paikkaan, joten työstä tulisi omaa häntäänsä syövä käärme. Valitse toiselle toinen kansio.',
   'edit.sideHint': 'Kansio, määritetty kohde muodossa nimi:polku, tai Kohteet-välilehdellä ilmoitettu levy.',
-  'edit.sides': 'Molemmat puolet',
   'edit.stateHint': 'Täällä työ muistaa, mistä molemmat puolet viimeksi olivat yhtä mieltä. Yksi tiedosto työtä kohti. Sen menettäminen ei tuhoa mitään, mutta heittää työn kauas taaksepäin.',
   'edit.scheduleHint': 'Milloin tämä työ ajetaan itsestään. Käsin tarkoittaa vain silloin, kun käynnistät sen sen omalta kortilta. Reaaliaika reagoi muutokseen sekunneissa. Joka N, Joka päivä ja Viikonpäivät pitäytyvät kellossa. Cron on rytmille, jota valitsimet eivät osaa sanoa, ja se luetaan tämän koneen aikavyöhykkeessä.',
   'edit.excludeHint': 'Yksi kuvio riviä kohti. Keskeneräisten tiedostojen nimet jätetään aina pois, oli täällä mitä tahansa.',
@@ -757,6 +756,9 @@ const fi: Translations = {
   'phone.sortAz': 'A:sta Ö:hön',
   'phone.sortZa': 'Ö:stä A:han',
   'phone.search': 'Hae',
+  'phone.job': 'Työ',
+  'phone.needName': 'Anna työlle nimi.',
+  'phone.needSide': 'Valitse tälle puolelle kansio tai kohde.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

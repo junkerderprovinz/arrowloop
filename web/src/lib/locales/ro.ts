@@ -264,7 +264,6 @@ const ro: Translations = {
   'edit.nameHint': 'Numele sub care apare această sarcină în listă, în jurnal și în notificări.',
   'edit.sameSides': 'Ambele părți indică același loc, așa că sarcina ar fi un șarpe care își mănâncă propria coadă. Alege alt dosar pentru una dintre ele.',
   'edit.sideHint': 'Un dosar, o destinație configurată sub forma nume:cale, sau un disc înregistrat în fila Destinații.',
-  'edit.sides': 'Cele două părți',
   'edit.stateHint': 'Aici își amintește sarcina asupra a ce s-au înțeles ultima dată cele două părți. Un fișier pentru fiecare sarcină. Pierderea lui nu distruge nimic, dar aruncă sarcina mult înapoi.',
   'edit.scheduleHint': 'Când rulează singură această sarcină. Manual înseamnă doar când o pornești de pe cartela ei. Timp real reacționează la o modificare în câteva secunde. La fiecare N, În fiecare zi și Zilele săptămânii se țin după ceas. Cron este pentru un ritm pe care selectoarele nu îl pot spune și se citește în fusul orar al acestei mașini.',
   'edit.excludeHint': 'Un tipar pe linie. Numele fișierelor scrise pe jumătate sunt excluse întotdeauna, orice ar scrie aici.',
@@ -757,6 +756,9 @@ const ro: Translations = {
   'phone.sortAz': 'A la Z',
   'phone.sortZa': 'Z la A',
   'phone.search': 'Caută',
+  'phone.job': 'Sarcină',
+  'phone.needName': 'Dă un nume sarcinii.',
+  'phone.needSide': 'Alege un dosar sau o destinație pentru această parte.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

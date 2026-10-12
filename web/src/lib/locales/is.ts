@@ -264,7 +264,6 @@ const is: Translations = {
   'edit.nameHint': 'Heitið sem þetta verk ber í listanum, í annálnum og í tilkynningunum.',
   'edit.sameSides': 'Báðar hliðar benda á sama stað, svo verkið yrði slanga sem étur eigin hala. Veldu aðra möppu fyrir aðra hvora.',
   'edit.sideHint': 'Mappa, uppsettur áfangastaður á forminu heiti:slóð, eða diskur sem skráður er á flipanum Áfangastaðir.',
-  'edit.sides': 'Báðar hliðar',
   'edit.stateHint': 'Hér man verkið hvað hliðarnar tvær komu sér saman um síðast. Ein skrá á hvert verk. Að týna henni eyðileggur ekkert en kastar verkinu langt aftur.',
   'edit.scheduleHint': 'Hvenær þetta verk keyrir af sjálfu sér. Handvirkt þýðir aðeins þegar þú ræsir það af spjaldinu þess. Rauntími bregst við breytingu á nokkrum sekúndum. Á N fresti, Á hverjum degi og Vikudagar fylgja klukkunni. Cron er fyrir takt sem valmyndirnar geta ekki sagt, og hann er lesinn á tímabelti þessarar vélar.',
   'edit.excludeHint': 'Eitt mynstur í hverja línu. Nöfn hálfskrifaðra skráa eru alltaf undanskilin, hvað sem hér stendur.',
@@ -757,6 +756,9 @@ const is: Translations = {
   'phone.sortAz': 'A til Ö',
   'phone.sortZa': 'Ö til A',
   'phone.search': 'Leita',
+  'phone.job': 'Verk',
+  'phone.needName': 'Gefðu verkinu nafn.',
+  'phone.needSide': 'Veldu möppu eða áfangastað fyrir þessa hlið.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

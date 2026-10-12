@@ -15,6 +15,7 @@ export function Field({
   secret,
   keyboard,
   onBlur,
+  error,
 }: {
   label: string;
   hint?: string;
@@ -25,6 +26,8 @@ export function Field({
   secret?: boolean;
   keyboard?: "default" | "numeric";
   onBlur?: () => void;
+  /** Why the value was refused, said under the field it concerns. */
+  error?: string;
 }) {
   const { p, corners } = useTheme();
   const [hidden, setHidden] = useState(Boolean(secret));
@@ -70,8 +73,15 @@ export function Field({
           </Press>
         ) : null}
       </View>
+      {error ? <Refusal text={error} /> : null}
     </View>
   );
+}
+
+/** Why a value was refused, under what it concerns. */
+export function Refusal({ text }: { text: string }) {
+  const { p } = useTheme();
+  return <Text style={[styles.error, { color: p.failInk }]}>{text}</Text>;
 }
 
 /**
@@ -187,6 +197,7 @@ const styles = StyleSheet.create({
   labelRow: { flexDirection: "row", alignItems: "center", gap: space.sm },
   row: { flexDirection: "row", gap: space.sm, alignItems: "stretch" },
   label: { fontSize: text.body, fontWeight: "600" },
+  error: { fontSize: text.subline, lineHeight: 18 },
   input: {
     flex: 1,
     paddingHorizontal: space.md,

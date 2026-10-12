@@ -264,7 +264,6 @@ const vi: Translations = {
   'edit.nameHint': 'Tên mà công việc này mang trong danh sách, trong nhật ký và trong các thông báo.',
   'edit.sameSides': 'Cả hai bên đều trỏ tới cùng một nơi, nên công việc sẽ thành con rắn tự cắn đuôi. Hãy chọn thư mục khác cho một bên.',
   'edit.sideHint': 'Một thư mục, một đích đã thiết lập dạng tên:đường_dẫn, hoặc một ổ đĩa đã đăng ký ở thẻ Đích.',
-  'edit.sides': 'Hai phía',
   'edit.stateHint': 'Nơi công việc ghi nhớ hai bên đã thống nhất điều gì lần cuối. Mỗi công việc một tệp. Mất nó không phá hỏng gì nhưng đẩy công việc lùi rất xa.',
   'edit.scheduleHint': 'Khi nào công việc này tự chạy. Thủ công nghĩa là chỉ khi bạn khởi động nó từ thẻ của nó. Thời gian thực phản ứng với một thay đổi trong vài giây. Mỗi N, Mỗi ngày và Ngày trong tuần bám theo đồng hồ. Cron dành cho nhịp mà các bộ chọn không nói được, và được đọc theo múi giờ của máy này.',
   'edit.excludeHint': 'Mỗi dòng một mẫu. Tên các tệp đang viết dở luôn bị loại trừ, bất kể ở đây có gì.',
@@ -757,6 +756,9 @@ const vi: Translations = {
   'phone.sortAz': 'A đến Z',
   'phone.sortZa': 'Z đến A',
   'phone.search': 'Tìm kiếm',
+  'phone.job': 'Công việc',
+  'phone.needName': 'Đặt tên cho công việc.',
+  'phone.needSide': 'Chọn một thư mục hoặc một đích cho phía này.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each
