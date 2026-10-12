@@ -4,21 +4,18 @@ import { CheckPanel } from '../components/CheckPanel'
 import { DirectionGlyph, DirectionMark } from '../components/Direction'
 import { DupesPanel } from '../components/DupesPanel'
 import { FindingCard } from '../components/FindingCard'
-import { IconPause, IconPencil, IconPlay, IconPreview, IconTrash } from '../components/glyphs'
+import { IconBack, IconPause, IconPencil, IconPlay, IconPreview } from '../components/glyphs'
 import { BrakesCard } from '../components/JobBrakes'
-import { JobEditor, useConfigErrors } from '../components/JobEditor'
+import { JobEditor, RemoveJobDialog, useConfigErrors } from '../components/JobEditor'
 import { JobStatusLine } from '../components/JobStatusLine'
-import { ListBar, SearchFold } from '../components/ListBar'
 import { Menu } from '../components/Menu'
 import { Pace } from '../components/Pace'
 import { RunSheet } from '../components/RunSheet'
 import { Empty, Rows, Stack } from '../components/Shell'
-import { ToggleRow } from '../components/ToggleRow'
 import { TouchRow, touchKey } from '../components/TouchRow'
 import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
 import { Card } from '../lib/glimstone/Card'
-import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
 import { amount, type JobLearning } from '../lib/anomalies'
 import { useAnomaliesOn } from '../lib/anomalyModule'
 import { api, type Job, type Run, type RunEvent, type Touch } from '../lib/api'
@@ -32,10 +29,15 @@ import { useLive } from '../lib/live'
 import { useLiveTick } from '../lib/liveTick'
 import { usePlaces } from '../lib/places'
 import { stageKey } from '../lib/readingStage'
+import { JOB_CARDS, readJobCard, type JobPageCard } from '../lib/jobCards'
+import { navigate, useLocation } from '../lib/router'
 import { useToast } from '../lib/toast'
 import { useJobConfig } from './Editor'
 import { PreviewPlan } from './Preview'
 import { RunRow } from './History'
+
+/** How long a card a link asked for is kept in view while the page fills in. */
+const HOLD_CARD_MS = 1500
 
 /**
  * One job's own page: a flat header with its name, one line of state, its
@@ -52,9 +54,7 @@ export function JobPage({ name }: { name: string }) {
   useConfigErrors(config)
   const [editing, setEditing] = useState<{ at: number; added: boolean } | null>(null)
   const [removing, setRemoving] = useState(false)
-  // A removed job's state database is deleted by default. Keeping it is for a
-  // pair that is coming back, so its files do not all count as new.
-  const [dropState, setDropState] = useState(true)
+  const card = useCardFromAddress(live.jobs.some((j) => j.name === name))
 
   const job = live.jobs.find((j) => j.name === name)
   const at = config.jobs?.findIndex((j) => j.name === name) ?? -1
@@ -141,13 +141,19 @@ export function JobPage({ name }: { name: string }) {
       )}
       <RunsCard job={job} event={live.progress[name]} speed={live.speeds[name]} />
       <FilesCard job={job} />
-      <PreviewCard job={name} onDone={live.onSaved} />
-      <Card title={t('jobs.check')} hueIndex={3}>
-        <CheckPanel job={name} />
-      </Card>
-      <Card title={t('jobs.dupes')} hueIndex={4}>
-        <DupesPanel job={name} />
-      </Card>
+      <section id={JOB_CARDS.preview} tabIndex={-1} className="outline-none">
+        <PreviewCard job={name} start={card === 'preview'} onDone={live.onSaved} />
+      </section>
+      <section id={JOB_CARDS.check} tabIndex={-1} className="outline-none">
+        <Card title={t('jobs.check')} hueIndex={3}>
+          <CheckPanel job={name} start={card === 'check'} />
+        </Card>
+      </section>
+      <section id={JOB_CARDS.dupes} tabIndex={-1} className="outline-none">
+        <Card title={t('jobs.dupes')} hueIndex={4}>
+          <DupesPanel job={name} />
+        </Card>
+      </section>
       {at !== -1 && <BrakesCard job={name} config={config} hueIndex={5} />}
       {anomalies !== false && <UsualCard job={name} lastRun={job.recent[0]?.ID} />}
 
@@ -155,31 +161,57 @@ export function JobPage({ name }: { name: string }) {
         <JobEditor config={config} at={editing.at} added={editing.added} onClose={() => setEditing(null)} />
       )}
 
-      {removing && config.jobs?.[at] && (
-        <ConfirmDialog
-          title={t('edit.removeJob')}
-          message={t('edit.removeStakes', { name })}
-          confirmLabel={t('confirm.delete')}
-          confirmGlyph={<IconTrash />}
-          cancelLabel={t('confirm.cancel')}
-          extra={
-            <ToggleRow
-              label={t('edit.removeState')}
-              hint={t('edit.removeStateHint')}
-              checked={dropState}
-              onChange={setDropState}
-              hueIndex={0}
-            />
-          }
-          onCancel={() => setRemoving(false)}
-          onConfirm={() => {
-            setRemoving(false)
-            void config.remove(at, dropState, name, () => goTo({ tab: 'jobs', job: '' }))
-          }}
+      {removing && at !== -1 && (
+        <RemoveJobDialog
+          config={config}
+          at={at}
+          onClose={() => setRemoving(false)}
+          onRemoved={() => goTo({ tab: 'jobs', job: '' })}
         />
       )}
     </Stack>
   )
+}
+
+/**
+ * The card a link from the jobs page asked for with `?card=`, scrolled into
+ * view with its first control focused once the job is there, or the card
+ * itself while its work keeps the controls disabled. The address is then put
+ * back, so a reload does not start the card's work again.
+ *
+ * The cards above are still loading and arriving with their entrance, which
+ * keeps the browser from holding the scroll position, so the card is held in
+ * view for a moment, until somebody scrolls or presses anything first.
+ */
+function useCardFromAddress(ready: boolean): JobPageCard | null {
+  const { pathname, search } = useLocation()
+  const [card] = useState(() => readJobCard(search.get('card')))
+
+  useEffect(() => {
+    if (!card || !ready) return
+    navigate(pathname, { replace: true })
+    const el = document.getElementById(JOB_CARDS[card])
+    if (!el) return
+    const control = el.querySelector<HTMLElement>('button:not(:disabled)') ?? el
+    control.focus({ preventScroll: true })
+
+    const until = performance.now() + HOLD_CARD_MS
+    let frame = 0
+    const hold = () => {
+      el.scrollIntoView({ block: 'start' })
+      if (performance.now() < until) frame = requestAnimationFrame(hold)
+    }
+    const stop = () => cancelAnimationFrame(frame)
+    const inputs = ['wheel', 'touchstart', 'pointerdown', 'keydown'] as const
+    for (const input of inputs) window.addEventListener(input, stop, { capture: true, once: true })
+    hold()
+    return () => {
+      stop()
+      for (const input of inputs) window.removeEventListener(input, stop, { capture: true })
+    }
+  }, [card, ready, pathname])
+
+  return card
 }
 
 /**
@@ -209,6 +241,11 @@ function Head({
 
   return (
     <div data-new="job-page" className="flex flex-wrap items-center gap-x-4 gap-y-3">
+      {/* The jobs page rather than history.back(), which leaves the app when
+          the page was opened from a bookmark. */}
+      <Badge as="button" shape="square" size="icon" tone="neutral" tip={t('preview.back')} onClick={() => goTo({ tab: 'jobs', job: '' })}>
+        <IconBack />
+      </Badge>
       <span className="glim-row-glyph flex h-10 w-10 shrink-0 items-center justify-center rounded-control [&_svg]:h-5 [&_svg]:w-5">
         <DirectionGlyph direction={job.direction} />
       </span>
@@ -369,9 +406,9 @@ function Now({ event, speed }: { event?: RunEvent; speed?: number }) {
 }
 
 /**
- * What the job has done to individual files, newest first, with its own
- * search above the card. While the job runs it asks again every second, and
- * the engine answers with the running run's lines among the stored ones.
+ * What the job has done to individual files, newest first. While the job runs
+ * it asks again every second, and the engine answers with the running run's
+ * lines among the stored ones.
  */
 function FilesCard({ job }: { job: Job }) {
   const { t } = useT()
@@ -379,22 +416,11 @@ function FilesCard({ job }: { job: Job }) {
   const [touches, setTouches] = useState<Touch[] | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [limit, setLimit] = useState(60)
-  // The box answers every keystroke; the engine only gets the settled query.
-  const [typed, setTyped] = useState('')
-  const [query, setQuery] = useState('')
-
-  // Without the pause, each keystroke is a query and out-of-order answers can
-  // leave the list showing the results for a prefix.
-  useEffect(() => {
-    const timer = setTimeout(() => setQuery(typed.trim()), 250)
-    return () => clearTimeout(timer)
-  }, [typed])
-  useEffect(() => setLimit(60), [query])
 
   useEffect(() => {
     let live = true
     api
-      .jobTouches(job.name, limit, query)
+      .jobTouches(job.name, limit, '')
       .then((got) => {
         if (!live) return
         setError(null)
@@ -404,46 +430,45 @@ function FilesCard({ job }: { job: Job }) {
     return () => {
       live = false
     }
-  }, [job.name, limit, query, tick])
+  }, [job.name, limit, tick])
 
   return (
-    <div className="flex flex-col gap-6">
-      <ListBar>
-        <SearchFold value={typed} onChange={setTyped} placeholder={t('jobs.historySearch')} />
-      </ListBar>
-      <Card title={t('job.files')} hueIndex={1}>
-        {error ? (
-          <p className="text-subline text-statusFail">{error}</p>
-        ) : !touches ? (
-          <Empty>{t('jobs.historyLoading')}</Empty>
-        ) : touches.length === 0 ? (
-          <Empty>{query ? t('jobs.historyNoMatch', { q: query }) : t('jobs.historyEmpty')}</Empty>
-        ) : (
-          // Loads more near the bottom; 40px rather than the exact end, which a
-          // trackpad stops a pixel or two short of.
-          <ul
-            className="flex max-h-96 flex-col overflow-y-auto"
-            onScroll={(e) => {
-              const el = e.currentTarget
-              if (el.scrollHeight - el.scrollTop - el.clientHeight > 40) return
-              // A list shorter than the limit is the whole list.
-              if (touches.length >= limit) setLimit((n) => n * 2)
-            }}
-          >
-            {touches.map((e) => (
-              <TouchRow key={touchKey(e)} touch={e} />
-            ))}
-          </ul>
-        )}
-      </Card>
-    </div>
+    <Card title={t('job.files')} hueIndex={1}>
+      {error ? (
+        <p className="text-subline text-statusFail">{error}</p>
+      ) : !touches ? (
+        <Empty>{t('jobs.historyLoading')}</Empty>
+      ) : touches.length === 0 ? (
+        <Empty>{t('jobs.historyEmpty')}</Empty>
+      ) : (
+        // Loads more near the bottom; 40px rather than the exact end, which a
+        // trackpad stops a pixel or two short of.
+        <ul
+          className="flex max-h-96 flex-col overflow-y-auto"
+          onScroll={(e) => {
+            const el = e.currentTarget
+            if (el.scrollHeight - el.scrollTop - el.clientHeight > 40) return
+            // A list shorter than the limit is the whole list.
+            if (touches.length >= limit) setLimit((n) => n * 2)
+          }}
+        >
+          {touches.map((e) => (
+            <TouchRow key={touchKey(e)} touch={e} />
+          ))}
+        </ul>
+      )}
+    </Card>
   )
 }
 
-/** What a run would do, worked out on request and shown in its card with the rows to leave out. */
-function PreviewCard({ job, onDone }: { job: string; onDone: () => void }) {
+/**
+ * What a run would do, worked out on request and shown in its card with the
+ * rows to leave out. `start` works it out at once, for a link that asked for
+ * the preview.
+ */
+function PreviewCard({ job, start, onDone }: { job: string; start: boolean; onDone: () => void }) {
   const { t } = useT()
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(start)
   return (
     <Card title={t('jobs.preview')} hint={t('job.previewHint')} hueIndex={2}>
       {open ? (

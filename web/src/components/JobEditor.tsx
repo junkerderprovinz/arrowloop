@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 
 import { Dialog } from './Dialog'
-import { IconClose, IconSave } from './glyphs'
+import { IconClose, IconSave, IconTrash } from './glyphs'
+import { ToggleRow } from './ToggleRow'
 import { Button } from '../lib/glimstone/Button'
+import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
 import type { RawJob } from '../lib/api'
 import { useT } from '../lib/i18n'
 import { useToast } from '../lib/toast'
@@ -70,6 +72,51 @@ export function JobEditor({
     >
       <JobForm job={job} known={config.known} defaults={config.defaults} patch={(next) => config.patch(at, next)} />
     </Dialog>
+  )
+}
+
+/**
+ * Asks before a job leaves the configuration. Its state database goes with it
+ * unless the switch keeps it, which is for a pair that is coming back, so its
+ * files do not all count as new.
+ */
+export function RemoveJobDialog({
+  config,
+  at,
+  onClose,
+  onRemoved,
+}: {
+  config: JobConfig
+  at: number
+  onClose: () => void
+  onRemoved?: () => void
+}) {
+  const { t } = useT()
+  const [dropState, setDropState] = useState(true)
+  const name = config.jobs?.[at]?.name
+  if (!name) return null
+  return (
+    <ConfirmDialog
+      title={t('edit.removeJob')}
+      message={t('edit.removeStakes', { name })}
+      confirmLabel={t('confirm.delete')}
+      confirmGlyph={<IconTrash />}
+      cancelLabel={t('confirm.cancel')}
+      extra={
+        <ToggleRow
+          label={t('edit.removeState')}
+          hint={t('edit.removeStateHint')}
+          checked={dropState}
+          onChange={setDropState}
+          hueIndex={0}
+        />
+      }
+      onCancel={onClose}
+      onConfirm={() => {
+        onClose()
+        void config.remove(at, dropState, name, onRemoved)
+      }}
+    />
   )
 }
 

@@ -18,6 +18,7 @@ const saveConfig = vi.fn((jobs: RawJob[]) => Promise.resolve({ jobs }))
 const forgetJobState = vi.fn((_name: string) => Promise.resolve({}))
 
 const learning = vi.fn(() => Promise.resolve([] as JobLearning[]))
+const checkJob = vi.fn((_name: string) => Promise.resolve({ ok: true, findings: [] }))
 
 vi.mock('../lib/api', () => ({
   api: {
@@ -31,6 +32,8 @@ vi.mock('../lib/api', () => ({
     jobTouches: () => Promise.resolve([]),
     historyStats: () => Promise.reject(new Error('none')),
     forgetJobState: (name: string) => forgetJobState(name),
+    checkJob: (name: string) => checkJob(name),
+    verifyJob: () => Promise.resolve({ findings: [], truncated: false }),
     run: () => Promise.resolve({}),
     stopJob: () => Promise.resolve({}),
   },
@@ -44,6 +47,8 @@ globalThis.ResizeObserver ??= class {
   disconnect() {}
   unobserve() {}
 } as unknown as typeof ResizeObserver
+// jsdom does not lay out, so it has no scrolling to do either.
+Element.prototype.scrollIntoView ??= () => undefined
 
 function job(name: string): Job {
   const raw = pair().find((j) => j.name === name)!
@@ -84,6 +89,26 @@ describe('a job page', () => {
     await screen.findByRole('button', { name: 'Edit' })
     const filled = screen.getAllByRole('button').filter((b) => b.className.split(' ').includes('bg-accent'))
     expect(filled.map((b) => b.textContent?.trim())).toEqual(['Run now'])
+  })
+
+  it('leads back to the jobs from its head', async () => {
+    page()
+    fireEvent.click(await screen.findByRole('button', { name: 'Back' }))
+    expect(went).toHaveBeenCalledWith({ tab: 'jobs', job: '' })
+  })
+
+  it('lists the files touched without a search of its own', async () => {
+    page()
+    expect(await screen.findByRole('heading', { level: 2, name: /^Files touched/ })).toBeTruthy()
+    expect(screen.queryByRole('button', { name: 'Search' })).toBeNull()
+  })
+
+  it('starts the check when the address asks for its card, then forgets the ask', async () => {
+    window.history.replaceState(null, '', '/jobs/photos?card=check')
+    page()
+    await waitFor(() => expect(checkJob).toHaveBeenCalledWith('photos'))
+    expect(window.location.search).toBe('')
+    window.history.replaceState(null, '', '/')
   })
 
   it('has a card for each thing it does, none of them folded', async () => {

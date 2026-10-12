@@ -122,6 +122,16 @@ export function Jobs() {
     }
   };
 
+  /** Asks the engine to check a job, as the job screen's Check button does. */
+  const check = async (job: Job) => {
+    try {
+      await api.check(job.name);
+      await load();
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  };
+
   /** Adds a copy of a job without asking, since deleting the copy undoes it. */
   const duplicate = async (job: Job) => {
     try {
@@ -219,6 +229,9 @@ export function Jobs() {
           // so somebody looking for "edit" finds it.
           onEdit={() => nav.navigate("JobEdit", { name: item.name })}
           onDuplicate={() => duplicate(item)}
+          onPreview={() => nav.navigate("Plan", { name: item.name })}
+          onCheck={() => void check(item)}
+          onTrash={(side, place) => nav.navigate("Trash", { name: item.name, side, place })}
           onRemove={() => remove(item)}
           // Either side can be the target; the right is the usual one.
           mark={markForSide(item.right, remotes) ?? markForSide(item.left, remotes)}
@@ -255,6 +268,9 @@ function JobCard({
   onHold,
   onEdit,
   onDuplicate,
+  onPreview,
+  onCheck,
+  onTrash,
   onRemove,
   mark,
   leftMark,
@@ -282,6 +298,10 @@ function JobCard({
   onHold: () => void;
   onEdit: () => void;
   onDuplicate: () => void;
+  onPreview: () => void;
+  onCheck: () => void;
+  /** Opens one side's trash; `place` is the side's name, for the title. */
+  onTrash: (side: "left" | "right", place: string) => void;
   onRemove: () => void;
   /** The target's logo, if the engine could name its product. */
   mark?: string;
@@ -292,18 +312,25 @@ function JobCard({
   const { t } = useT();
   const hue = useHue(index);
   const { p } = useTheme();
+  const [upper, lower] = sidePair(job.left, job.right, t);
   return (
     <Card onPress={onOpen} hue={hue}>
       <CardHead mark={mark} title={job.name}>
         <View style={styles.menuSlot}>
+          {/* Everything the job screen offers besides Run now and the hold,
+              so nothing needs the job opened first. */}
           <CardMenu
             items={[
               // Open is listed although tapping the card does the same, so it
               // can be found.
-              { label: t("action.open"), glyph: "IconPreview", onPress: onOpen },
+              { label: t("action.open"), glyph: "IconSync", onPress: onOpen },
               { label: t("action.edit"), glyph: "IconPencil", onPress: onEdit },
               // The copy starts held; see jobCopy.data.ts.
               { label: t("edit.duplicate"), glyph: "IconCopy", onPress: onDuplicate },
+              { label: t("jobs.preview"), glyph: "IconPreview", onPress: onPreview },
+              { label: t("jobs.check"), glyph: "IconCheck", onPress: onCheck },
+              { label: `${t("nav.trash")} · ${upper}`, glyph: "IconTabRecovery", onPress: () => onTrash("left", upper) },
+              { label: `${t("nav.trash")} · ${lower}`, glyph: "IconTabRecovery", onPress: () => onTrash("right", lower) },
               { label: t("action.delete"), glyph: "IconTrash", onPress: onRemove },
             ]}
           />

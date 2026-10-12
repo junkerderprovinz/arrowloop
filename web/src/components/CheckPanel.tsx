@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
@@ -6,20 +6,25 @@ import { IconCheck } from './glyphs'
 import { api, type CheckFinding, type VerifyFinding } from '../lib/api'
 import { useT } from '../lib/i18n'
 
+type Row = { key: string; text: string; bad: boolean }
+
 /**
  * Checks whether a job can work at all and whether both sides match its record.
+ * `start` checks straight away, for a link that asked for the check.
  *
  * Findings show the server's own sentence rather than a translation of their
  * code; the code is in the payload for a locale that wants to take one over.
  */
-
-type Row = { key: string; text: string; bad: boolean }
-
-export function CheckPanel({ job }: { job: string }) {
+export function CheckPanel({ job, start = false }: { job: string; start?: boolean }) {
   const { t } = useT()
   const [rows, setRows] = useState<Row[] | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const [busy, setBusy] = useState(false)
+  const [busy, setBusy] = useState(start)
+
+  useEffect(() => {
+    if (start) void look()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   async function look() {
     setBusy(true)

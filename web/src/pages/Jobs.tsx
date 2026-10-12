@@ -2,10 +2,10 @@ import { useMemo, useState, type MouseEvent } from 'react'
 
 import { Empty, Stack } from '../components/Shell'
 import { IconAction } from '../components/IconAction'
-import { Menu } from '../components/Menu'
+import { Menu, type MenuItem } from '../components/Menu'
 import { DirectionGlyph, DirectionMark } from '../components/Direction'
 import { IconAdd, IconPause, IconPlay } from '../components/glyphs'
-import { JobEditor, useConfigErrors } from '../components/JobEditor'
+import { JobEditor, RemoveJobDialog, useConfigErrors } from '../components/JobEditor'
 import { PageAction, PageActions } from '../components/PageActions'
 import { JobStatusLine } from '../components/JobStatusLine'
 import { RunStrip } from '../components/RunStrip'
@@ -17,16 +17,20 @@ import { api, type Job, type OpenConflict, type RunEvent } from '../lib/api'
 import { describeCadence, readCadence } from '../lib/cadence'
 import { dayTime } from '../lib/dayTime'
 import { sideName } from '../lib/entryLabel'
+import { useGoTo } from '../lib/goTo'
 import { useT } from '../lib/i18n'
+import { jobCardPlace, type JobPageCard } from '../lib/jobCards'
 import { jobStatus } from '../lib/jobList'
 import { useOpenJob } from '../lib/openJob'
 import { usePlaces } from '../lib/places'
+import { navigate } from '../lib/router'
 import { useToast } from '../lib/toast'
 
 /**
  * The jobs page: every job as a card of its own that opens its page, with its
- * status, its last runs and its two everyday buttons. Making a job is what the
- * page is for, so it is the corner's action.
+ * status, its last runs, its two everyday buttons and a More menu with what
+ * else the job's page offers. Making a job is what the page is for, so it is
+ * the corner's action.
  */
 export function Jobs({
   jobs,
@@ -45,9 +49,11 @@ export function Jobs({
 }) {
   const { t } = useT()
   const push = useToast()
+  const goTo = useGoTo()
   const config = useJobConfig(onSaved)
   useConfigErrors(config)
   const [editing, setEditing] = useState<{ at: number; added: boolean } | null>(null)
+  const [removing, setRemoving] = useState<number | null>(null)
   const conflicted = useMemo(() => new Set(conflicts.map((c) => c.job)), [conflicts])
   const shown = useMemo(() => [...jobs].sort((a, b) => a.name.localeCompare(b.name)), [jobs])
 
@@ -71,6 +77,34 @@ export function Jobs({
     })
   }
 
+  // What the job's page offers beyond Pause and Run now. The windows open
+  // here; the preview, the check and the duplicate search are cards on the
+  // job's page and open it at theirs. Only a job in the configuration file
+  // can be edited, copied or removed.
+  function moreFor(name: string): MenuItem[] {
+    const at = config.jobs?.findIndex((raw) => raw.name === name) ?? -1
+    const card = (which: JobPageCard) => () => navigate(jobCardPlace(name, which))
+    const saved: MenuItem[] =
+      at === -1
+        ? []
+        : [
+            { label: t('job.edit'), labelKey: 'job.edit', onSelect: () => setEditing({ at, added: false }) },
+            {
+              label: t('edit.duplicate'),
+              labelKey: 'edit.duplicate',
+              onSelect: () => setEditing({ at: config.duplicate(at), added: true }),
+            },
+          ]
+    return [
+      ...saved,
+      { label: t('jobs.preview'), labelKey: 'jobs.preview', onSelect: card('preview') },
+      { label: t('jobs.check'), labelKey: 'jobs.check', onSelect: card('check') },
+      { label: t('jobs.dupes'), labelKey: 'jobs.dupes', onSelect: card('dupes') },
+      { label: t('edit.openTrash'), labelKey: 'edit.openTrash', onSelect: () => goTo({ tab: 'trash', job: name }) },
+      ...(at === -1 ? [] : [{ label: t('edit.remove'), labelKey: 'edit.remove' as const, onSelect: () => setRemoving(at) }]),
+    ]
+  }
+
   return (
     <Stack>
       {nothing ? (
@@ -91,6 +125,7 @@ export function Jobs({
               busy={config.busy}
               canPause={config.jobs?.some((raw) => raw.name === j.name) ?? false}
               onPause={() => void config.setDisabled(j.name, !j.disabled)}
+              more={moreFor(j.name)}
             />
           ))}
           {drafts.map(({ job, at }, i) => (
@@ -107,6 +142,7 @@ export function Jobs({
       {editing && config.jobs?.[editing.at] && (
         <JobEditor config={config} at={editing.at} added={editing.added} onClose={() => setEditing(null)} />
       )}
+      {removing !== null && <RemoveJobDialog config={config} at={removing} onClose={() => setRemoving(null)} />}
 
       <PageActions>
         <Menu
@@ -152,7 +188,8 @@ function keepInCard(e: MouseEvent) {
 /**
  * One job as a card that opens its page wherever it is clicked: its name in
  * the notch, the tile of its direction, what it joins and when it runs, its
- * one status, its last runs and its two everyday buttons.
+ * one status with its last runs under it, and its two everyday buttons beside
+ * More.
  */
 function JobCard({
   job,
@@ -164,6 +201,7 @@ function JobCard({
   busy,
   canPause,
   onPause,
+  more,
 }: {
   job: Job
   hueIndex: number
@@ -178,6 +216,8 @@ function JobCard({
   /** Only a job in the configuration file can be paused from here. */
   canPause: boolean
   onPause: () => void
+  /** The job page's further actions. */
+  more: MenuItem[]
 }) {
   const { t, lang } = useT()
   const push = useToast()
@@ -205,14 +245,17 @@ function JobCard({
               )}
             </span>
           </span>
-          <span data-testid="job-status" className="flex shrink-0 justify-end">
-            <JobStatusLine job={job} status={status} heldFinding={held?.id} noteFinding={note?.id} event={event} />
+          {/* The status and the runs that led to it, at the card's end. */}
+          <span className="ms-auto flex shrink-0 flex-col items-end gap-2">
+            <span data-testid="job-status" className="flex justify-end">
+              <JobStatusLine job={job} status={status} heldFinding={held?.id} noteFinding={note?.id} event={event} />
+            </span>
+            <span data-new="run-strip" className="flex">
+              <RunStrip recent={job.recent} />
+            </span>
           </span>
         </div>
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <span data-new="run-strip">
-            <RunStrip recent={job.recent} />
-          </span>
+        <div className="flex flex-wrap items-center justify-end gap-3">
           {/* Holding and starting are separate controls: a held job can still
               be started by hand, and stays held. */}
           <span data-testid="job-actions" className="ms-auto flex shrink-0 items-center gap-1.5" onClick={keepInCard}>
@@ -235,6 +278,9 @@ function JobCard({
                 asked.catch((e: Error) => push(e.message, 'fail'))
               }}
             />
+            <span data-new="job-more" className="flex">
+              <Menu label={t('list.more')} labelKey="list.more" items={more} />
+            </span>
           </span>
         </div>
       </Card>

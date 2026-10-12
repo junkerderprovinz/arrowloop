@@ -116,12 +116,12 @@ describe('the jobs page', () => {
 })
 
 describe('a job card', () => {
-  it('carries only pause and run as its buttons, and opens the job anywhere else', async () => {
+  it('carries pause, run and More as its buttons, and opens the job anywhere else', async () => {
     page()
     await screen.findAllByRole('button', { name: 'Pause' })
     const photos = row('photos')
     const actions = within(photos).getByTestId('job-actions')
-    expect(within(actions).getAllByRole('button').map((b) => b.textContent?.trim())).toEqual(['Pause', 'Run now'])
+    expect(within(actions).getAllByRole('button').map((b) => b.textContent?.trim())).toEqual(['Pause', 'Run now', 'More'])
 
     fireEvent.click(photos)
     expect(opened).toHaveBeenCalledWith('photos')
@@ -131,7 +131,54 @@ describe('a job card', () => {
     expect(run).toHaveBeenCalledWith('photos')
   })
 
-  it('shows the last runs as a strip and keeps a run that worked quiet', async () => {
+  it('offers in More what the job page offers, without opening the job', async () => {
+    page()
+    await screen.findAllByRole('button', { name: 'Pause' })
+    fireEvent.click(within(row('photos')).getByRole('button', { name: 'More' }))
+    const items = within(await screen.findByRole('menu')).getAllByRole('menuitem')
+    expect(items.map((i) => i.textContent?.trim())).toEqual([
+      'Edit', 'Duplicate', 'Preview', 'Check this job', 'Find duplicates', "Open this job's trash", 'Remove',
+    ])
+    expect(opened).not.toHaveBeenCalled()
+  })
+
+  it('edits a job from its card in a window on the jobs page', async () => {
+    page()
+    await screen.findAllByRole('button', { name: 'Pause' })
+    fireEvent.click(within(row('photos')).getByRole('button', { name: 'More' }))
+    fireEvent.click(within(await screen.findByRole('menu')).getByRole('menuitem', { name: 'Edit' }))
+    expect(await screen.findByRole('dialog', { name: 'Edit photos' })).toBeTruthy()
+    expect(opened).not.toHaveBeenCalled()
+  })
+
+  it('removes only that job from its card, after asking', async () => {
+    page()
+    await screen.findAllByRole('button', { name: 'Pause' })
+    fireEvent.click(within(row('photos')).getByRole('button', { name: 'More' }))
+    fireEvent.click(within(await screen.findByRole('menu')).getByRole('menuitem', { name: 'Remove' }))
+    fireEvent.click(within(await screen.findByRole('dialog')).getByRole('button', { name: 'Delete it' }))
+    await waitFor(() => expect(saveConfig).toHaveBeenCalled())
+    expect(saveConfig.mock.calls[0][0]).toEqual([pair()[1]])
+  })
+
+  it('opens the job page at its check card for Check this job', async () => {
+    page()
+    await screen.findAllByRole('button', { name: 'Pause' })
+    fireEvent.click(within(row('photos')).getByRole('button', { name: 'More' }))
+    fireEvent.click(within(await screen.findByRole('menu')).getByRole('menuitem', { name: 'Check this job' }))
+    expect(window.location.pathname + window.location.search).toBe('/jobs/photos?card=check')
+    window.history.replaceState(null, '', '/')
+  })
+
+  it("leads to the job's trash from its card", async () => {
+    page()
+    await screen.findAllByRole('button', { name: 'Pause' })
+    fireEvent.click(within(row('photos')).getByRole('button', { name: 'More' }))
+    fireEvent.click(within(await screen.findByRole('menu')).getByRole('menuitem', { name: "Open this job's trash" }))
+    expect(went).toHaveBeenLastCalledWith({ tab: 'trash', job: 'photos' })
+  })
+
+  it('shows the last runs as a strip under its status and keeps a run that worked quiet', async () => {
     page()
     const photos = row('photos')
     expect(within(photos).getByRole('img', { name: 'Last runs: worked: 1' })).toBeTruthy()
@@ -292,7 +339,7 @@ describe('adding a job', () => {
 describe('the More menu beside Add a job', () => {
   it('runs every job that is ready, and only those', async () => {
     page({ jobs: [job('photos'), job('music', { disabled: true })] })
-    fireEvent.click(screen.getByRole('button', { name: 'More' }))
+    fireEvent.click(within(screen.getByTestId('page-actions')).getByRole('button', { name: 'More' }))
     fireEvent.click(within(await screen.findByRole('menu')).getByRole('menuitem', { name: 'Run all' }))
     await waitFor(() => expect(run).toHaveBeenCalledTimes(1))
     expect(run).toHaveBeenCalledWith('photos')
