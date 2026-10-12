@@ -1,8 +1,8 @@
 import { Badge } from '../lib/glimstone/Badge'
 import { IconToLeft, IconToRight } from './glyphs'
-import { Since } from './Since'
 import type { Touch } from '../lib/api'
 import { bytes } from '../lib/bytes'
+import { dayTime } from '../lib/dayTime'
 import { entryAction, entryNote } from '../lib/entryLabel'
 import { translateSide, useT } from '../lib/i18n'
 import { usePlaces } from '../lib/places'
@@ -27,7 +27,7 @@ function touchTone(kind: string): 'warn' | 'fail' | 'neutral' {
  * `withJob` adds the job column, which only makes sense across jobs.
  */
 export function TouchRow({ touch: e, withJob }: { touch: Touch; withJob?: boolean }) {
-  const { t } = useT()
+  const { t, lang } = useT()
   const { jobs, drives } = usePlaces()
   // The path and the arrow beside it say where, so the badge only says what.
   const label = entryAction(t, e, jobs.find((j) => j.name === e.Job), drives)
@@ -39,8 +39,8 @@ export function TouchRow({ touch: e, withJob }: { touch: Touch; withJob?: boolea
       <span className="w-44 shrink-0 truncate max-sm:w-28" title={label}>
         <Badge tone={touchTone(e.Kind)}>{label}</Badge>
       </span>
-      <span className="w-28 shrink-0 whitespace-nowrap text-carbon-textMuted max-sm:hidden">
-        <Since when={e.When} />
+      <span className="glim-num w-40 shrink-0 whitespace-nowrap text-carbon-textMuted max-sm:hidden">
+        {dayTime(e.When, lang, (p) => t('list.when', p))}
       </span>
       {withJob && (
         <span className="w-32 shrink-0 truncate font-medium max-md:hidden" title={e.Job}>
