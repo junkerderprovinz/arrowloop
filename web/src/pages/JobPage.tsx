@@ -3,7 +3,9 @@ import { useEffect, useState, type ReactNode } from 'react'
 import { CheckPanel } from '../components/CheckPanel'
 import { DirectionGlyph, DirectionMark } from '../components/Direction'
 import { DupesPanel } from '../components/DupesPanel'
+import { FindingCard } from '../components/FindingCard'
 import { IconPause, IconPencil, IconPlay, IconPreview, IconTrash } from '../components/glyphs'
+import { BrakesCard } from '../components/JobBrakes'
 import { JobEditor, useConfigErrors } from '../components/JobEditor'
 import { JobStatusLine } from '../components/JobStatusLine'
 import { ListBar, SearchFold } from '../components/ListBar'
@@ -17,6 +19,7 @@ import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
 import { Card } from '../lib/glimstone/Card'
 import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
+import { useAnomaliesOn } from '../lib/anomalyModule'
 import { api, type Job, type Run, type RunEvent, type Touch } from '../lib/api'
 import { describeCadence, readCadence } from '../lib/cadence'
 import { dayTime } from '../lib/dayTime'
@@ -43,6 +46,7 @@ export function JobPage({ name }: { name: string }) {
   const push = useToast()
   const goTo = useGoTo()
   const live = useLive()
+  const anomalies = useAnomaliesOn()
   const config = useJobConfig(live.onSaved)
   useConfigErrors(config)
   const [editing, setEditing] = useState<{ at: number; added: boolean } | null>(null)
@@ -126,6 +130,14 @@ export function JobPage({ name }: { name: string }) {
         }
       />
 
+      {/* Without the Anomalies page a held run is answered here. */}
+      {anomalies === false && held && (
+        <Card title={t('anomaly.held')} hueIndex={6}>
+          <ul className="flex flex-col">
+            <FindingCard finding={held} onChanged={live.onSaved} />
+          </ul>
+        </Card>
+      )}
       <RunsCard job={job} event={live.progress[name]} speed={live.speeds[name]} />
       <FilesCard job={job} />
       <PreviewCard job={name} onDone={live.onSaved} />
@@ -135,6 +147,7 @@ export function JobPage({ name }: { name: string }) {
       <Card title={t('jobs.dupes')} hueIndex={4}>
         <DupesPanel job={name} />
       </Card>
+      {at !== -1 && <BrakesCard job={name} config={config} hueIndex={5} />}
 
       {editing && config.jobs?.[editing.at] && (
         <JobEditor config={config} at={editing.at} added={editing.added} onClose={() => setEditing(null)} />

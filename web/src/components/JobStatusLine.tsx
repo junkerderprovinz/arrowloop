@@ -1,4 +1,4 @@
-import { useState, type MouseEvent } from 'react'
+import type { MouseEvent } from 'react'
 
 import { Badge } from '../lib/glimstone/Badge'
 import { useAnomaliesOn } from '../lib/anomalyModule'
@@ -7,8 +7,6 @@ import { dayTime } from '../lib/dayTime'
 import { useGoTo, type Place } from '../lib/goTo'
 import { useT } from '../lib/i18n'
 import type { JobStatus } from '../lib/jobList'
-import { useLive } from '../lib/live'
-import { HeldWindow } from '../pages/Anomalies'
 
 /**
  * A job's one status, as its row and its page show it. A held run, a
@@ -25,7 +23,7 @@ export function JobStatusLine({
 }: {
   job: Job
   status: JobStatus
-  /** The finding that holds the job, which the held badge opens. */
+  /** The finding that holds the job, which the held badge leads to. */
   heldFinding?: string
   /** A finding about the job that does not hold it, which the warning opens. */
   noteFinding?: string
@@ -35,8 +33,6 @@ export function JobStatusLine({
   const { t, lang } = useT()
   const goTo = useGoTo()
   const anomalies = useAnomaliesOn()
-  const live = useLive()
-  const [answering, setAnswering] = useState(false)
   // The status sits inside a row that opens the job, which a click on a
   // badge that leads elsewhere must not do as well.
   const lead = (e: MouseEvent, place: Place) => {
@@ -62,29 +58,18 @@ export function JobStatusLine({
         </span>
       )
     }
-    case 'held': {
-      // Without the Anomalies page the finding opens here, over the job.
-      const held = anomalies === false ? live.findings.find((f) => f.id === heldFinding) : undefined
+    case 'held':
+      // Without the Anomalies page the held run is answered on the job's own page.
       return (
-        <>
-          <button
-            type="button"
-            onClick={(e) => {
-              if (!held) return lead(e, { tab: 'anomalies', job: job.name, finding: heldFinding })
-              e.stopPropagation()
-              setAnswering(true)
-            }}
-          >
-            <Badge tone="warn">{t('status.held')}</Badge>
-          </button>
-          {held && answering && (
-            <span onClick={(e) => e.stopPropagation()}>
-              <HeldWindow finding={held} onClose={() => setAnswering(false)} />
-            </span>
-          )}
-        </>
+        <button
+          type="button"
+          onClick={(e) =>
+            lead(e, anomalies === false ? { tab: 'jobs', job: job.name } : { tab: 'anomalies', job: job.name, finding: heldFinding })
+          }
+        >
+          <Badge tone="warn">{t('status.held')}</Badge>
+        </button>
       )
-    }
     case 'conflict':
       return (
         <button type="button" onClick={(e) => lead(e, { tab: 'conflicts', job: job.name })}>

@@ -477,6 +477,8 @@ export type OpenConflict = {
   at: string
   left: SideVersion
   right: SideVersion
+  /** The engine's reason code, such as changedBoth; missing for a copy set aside by an older build. */
+  why?: string
 }
 
 export type ConflictListing = {

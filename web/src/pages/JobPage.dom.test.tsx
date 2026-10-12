@@ -2,6 +2,7 @@
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import type { Finding } from '../lib/anomalies'
 import type { Job, RawJob, Run } from '../lib/api'
 import { GoTo } from '../lib/goTo'
 import { LiveJobs } from '../lib/live'
@@ -32,6 +33,7 @@ vi.mock('../lib/api', () => ({
 }))
 
 const { JobPage } = await import('./JobPage')
+const { followSettings } = await import('../lib/anomalyModule')
 
 globalThis.ResizeObserver ??= class {
   observe() {}
@@ -49,12 +51,12 @@ function job(name: string): Job {
 
 const went = vi.fn((_place: unknown) => undefined)
 
-function page(name = 'photos', conflicted: string[] = []) {
+function page(name = 'photos', conflicted: string[] = [], findings: Finding[] = []) {
   render(
     <ToastProvider>
       <GoTo.Provider value={went}>
         <LiveJobs.Provider
-          value={{ jobs: [job('photos'), job('music')], findings: [], conflicted, progress: {}, speeds: {}, onSaved: () => undefined }}
+          value={{ jobs: [job('photos'), job('music')], findings, conflicted, progress: {}, speeds: {}, onSaved: () => undefined }}
         >
           <JobPage name={name} />
         </LiveJobs.Provider>
@@ -128,5 +130,27 @@ describe('a job page', () => {
   it('says so when no job has the name', async () => {
     page('films')
     expect(await screen.findByText('There is no job by this name.')).toBeTruthy()
+  })
+
+  it('gives the job brakes of its own, written into its entry', async () => {
+    page()
+    const own = await screen.findByRole('switch', { name: 'Own brakes for this job' })
+    await waitFor(() => expect((own as HTMLButtonElement).disabled).toBe(false))
+    fireEvent.click(own)
+    await waitFor(() => expect(saveConfig).toHaveBeenCalled())
+    const written = saveConfig.mock.calls[0][0].find((j) => j.name === 'photos')
+    expect(written).toMatchObject({ brakePercent: 50, changePercent: 50 })
+    expect(saveConfig.mock.calls[0][0].find((j) => j.name === 'music')?.brakePercent).toBeUndefined()
+  })
+
+  it('answers a held run on the page while the anomaly notes are off', async () => {
+    const held: Finding = { id: 'f1', job: 'photos', kind: 'delete', severity: 'critical', held: true, since: '2027-03-01T03:00:00Z', seen: '', open: true }
+    followSettings({ anomalies: { off: true } })
+    page('photos', [], [held])
+    const card = (await screen.findByText('This run would delete 0 of 0 files (0 %, limit 0 %).')).closest('li') as HTMLElement
+    expect(within(card).getByRole('button', { name: 'Take back' })).toBeTruthy()
+    const filled = screen.getAllByRole('button').filter((b) => b.className.split(' ').includes('bg-accent'))
+    expect(filled.map((b) => b.textContent?.trim())).toEqual(['Run now'])
+    followSettings({})
   })
 })

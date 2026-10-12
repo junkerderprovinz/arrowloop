@@ -6,6 +6,9 @@ import { api, type Duplicates } from '../lib/api'
 import { bytes } from '../lib/bytes'
 import { useT } from '../lib/i18n'
 
+// A whole sentence per side, since languages decline the side word.
+const FIND_ON = { left: 'dupes.findOnLeft', right: 'dupes.findOnRight' } as const
+
 /**
  * Lists content found in more than one place on one side of a job.
  *
@@ -40,8 +43,8 @@ export function DupesPanel({ job }: { job: string }) {
         {(['left', 'right'] as const).map((which) => (
           <Button
             key={which}
-            label={t(which === 'left' ? 'dupes.findOnLeft' : 'dupes.findOnRight')}
-            labelKey={which === 'left' ? 'dupes.findOnLeft' : 'dupes.findOnRight'}
+            label={t(FIND_ON[which])}
+            labelKey={FIND_ON[which]}
             busy={busy && side === which}
             disabled={busy}
             onClick={() => void look(which)}

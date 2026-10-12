@@ -505,3 +505,25 @@ body {
 .glim-tile-fdroid { --tile: #1976d2; --tile-ink: #ffffff; }
 .glim-tile-docs   { --tile: #ffdd00; --tile-ink: #0d0c23; }
 .glim-docs-mark   { color: var(--brand-coffee); }
+
+/* For a button whose words are the only thing that tells it from its
+   neighbours, as BombVault has it. Below 48rem the column can be narrower than
+   the label, so the label wraps onto a second line instead of ending in an
+   ellipsis, and the button stays inside its row. */
+@media (width < 48rem) {
+  .glim-btn.glim-btn-wrap {
+    height: auto;
+    min-height: var(--btn-h);
+    min-width: 0;
+    max-width: 100%;
+    padding-block: 0.375rem;
+    --btn-pad-x: 0.625rem;
+  }
+
+  .glim-btn-wrap .glim-btn-label {
+    white-space: normal;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    text-align: start;
+  }
+}

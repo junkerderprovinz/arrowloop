@@ -3,11 +3,10 @@ import { useState } from 'react'
 import { Empty, Num, Rows, Stack } from '../components/Shell'
 import { Field, NumberField } from '../components/Field'
 import { IconAction } from '../components/IconAction'
-import { FilterButton, FilterChoice, ListBar, SearchFold } from '../components/ListBar'
-import { Menu } from '../components/Menu'
+import { JobChip } from '../components/JobChip'
 import { PageAction, PageActions } from '../components/PageActions'
 import { Since } from '../components/Since'
-import { IconTrash } from '../components/glyphs'
+import { IconHistory, IconTrash } from '../components/glyphs'
 import { Card } from '../lib/glimstone/Card'
 import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
 import { api, type TrashEntry, type TrashSide } from '../lib/api'
@@ -25,12 +24,11 @@ type Pending =
   | { kind: 'prune'; sides: TrashSide[] }
 
 /**
- * Every job's trash on both sides, in one card. Restoring is a click, since it
- * only moves a file back; removing anything for good asks first, because the
- * trash is the last copy there is. Emptying it is the corner's filled
- * action, with emptying out only the old entries in the More menu beside it;
- * both act on what the job filter shows. A search narrows the list but not
- * what emptying removes, so emptying waits until the search is cleared.
+ * Every job's trash on both sides, in a card per job. Restoring is a click,
+ * since it only moves a file back; removing anything for good asks first,
+ * because the trash is the last copy there is. Emptying it is the corner's
+ * filled action, with deleting only the old entries beside it; both act on
+ * the jobs the page shows.
  */
 export function Trash({
   sides,
@@ -49,7 +47,6 @@ export function Trash({
 }) {
   const { t } = useT()
   const push = useToast()
-  const [query, setQuery] = useState('')
   const [days, setDays] = useState(30)
   const [pending, setPending] = useState<Pending | null>(null)
   const [busy, setBusy] = useState(false)
@@ -58,9 +55,6 @@ export function Trash({
   const shown = job ? all.filter((s) => s.job === job) : all
   const readable = shown.filter((s) => !s.error)
   const totals = trashTotals(readable)
-  const names = [...new Set([...all.map((s) => s.job), ...(job ? [job] : [])])]
-  const needle = query.trim().toLocaleLowerCase()
-  const matches = (e: TrashEntry) => !needle || e.path.toLocaleLowerCase().includes(needle)
 
   // Runs one change after another and asks for each touched job again. The
   // first refusal stops the rest, since it usually means the same for them.
@@ -128,50 +122,34 @@ export function Trash({
 
   return (
     <Stack>
-      <div className="flex flex-col gap-6">
-        <ListBar newId="list-bar">
-          <FilterButton active={job !== ''}>
-            <FilterChoice
-              label={t('history.filterJob')}
-              value={job}
-              onChange={onJob}
-              options={[{ value: '', label: t('history.allJobs') }, ...names.map((n) => ({ value: n, label: n }))]}
-            />
-          </FilterButton>
-          <SearchFold value={query} onChange={setQuery} placeholder={t('history.pathHint')} />
-        </ListBar>
+      <JobChip job={job} onClear={() => onJob('')} />
 
-        <Card
-          title={job || t('history.allJobs')}
-          hueIndex={0}
-          hint={needle ? t('trash.hint') + ' ' + t('trash.searchHolds') : t('trash.hint')}
-        >
-          {sides === null ? (
-            <Empty>{t('history.working')}</Empty>
-          ) : totals.entries === 0 && shown.every((s) => !s.error) ? (
-            <Empty>{job ? t('trash.nothingInJob') : t('trash.nothing')}</Empty>
-          ) : (
-            <div className="glim-content-fade flex flex-col gap-6">
-              {byJob(shown).map((group) =>
-                group.sides
+      {sides === null || (totals.entries === 0 && shown.every((s) => !s.error)) ? (
+        <Card title={t('nav.trash')} hueIndex={0} hint={t('trash.hint')}>
+          <Empty>{sides === null ? t('history.working') : job ? t('trash.nothingInJob') : t('trash.nothing')}</Empty>
+        </Card>
+      ) : (
+        byJob(shown)
+          .filter((group) => group.sides.some((s) => s.total > 0 || s.error))
+          .map((group, i) => (
+            <Card key={group.job} title={group.job} hueIndex={i} hint={t('trash.hint')}>
+              <div className="glim-content-fade flex flex-col gap-6">
+                {group.sides
                   .filter((s) => s.total > 0 || s.error)
                   .map((s) => (
                     <SideList
-                      key={`${group.job}:${s.side}`}
+                      key={s.side}
                       side={s}
                       busy={busy}
-                      searching={!!needle}
-                      matches={matches}
                       onRestore={(entry) => restore(s, entry)}
                       onDelete={(entry) => setPending({ kind: 'entry', side: s, entry })}
                       onEmpty={() => setPending({ kind: 'side', side: s })}
                     />
-                  )),
-              )}
-            </div>
-          )}
-        </Card>
-      </div>
+                  ))}
+              </div>
+            </Card>
+          ))
+      )}
 
       {pending && (
         <ConfirmDialog
@@ -195,25 +173,20 @@ export function Trash({
       )}
 
       <PageActions>
-        <Menu
-          label={t('list.more')}
-          labelKey="list.more"
-          size="key"
-          items={[
-            {
-              label: t('trash.prune'),
-              labelKey: 'trash.prune',
-              disabled: busy || !!needle || totals.entries === 0,
-              onSelect: () => setPending({ kind: 'prune', sides: full }),
-            },
-          ]}
+        <PageAction
+          label={t('trash.prune')}
+          labelKey="trash.prune"
+          glyph={<IconHistory />}
+          title={t('trash.pruneHint')}
+          disabled={busy || totals.entries === 0}
+          onClick={() => setPending({ kind: 'prune', sides: full })}
         />
         <PageAction
           primary
           label={t('trash.emptyAll')}
           labelKey="trash.emptyAll"
           glyph={<IconTrash />}
-          disabled={busy || !!needle || totals.entries === 0}
+          disabled={busy || totals.entries === 0}
           onClick={() => setPending({ kind: 'all', sides: full })}
         />
       </PageActions>
@@ -253,29 +226,21 @@ function stakes(p: Pending, t: ReturnType<typeof useT>['t']): string {
 function SideList({
   side,
   busy,
-  searching,
-  matches,
   onRestore,
   onDelete,
   onEmpty,
 }: {
   side: TrashSide
   busy: boolean
-  /** A search is typed, which emptying the side would not respect. */
-  searching: boolean
-  matches: (entry: TrashEntry) => boolean
   onRestore: (entry: TrashEntry) => void
   onDelete: (entry: TrashEntry) => void
   onEmpty: () => void
 }) {
   const { t } = useT()
-  const entries = side.entries.filter(matches)
   return (
     <section className="flex flex-col gap-1">
       <div className="glim-row flex min-h-9 items-center gap-3">
-        <h3 className="glim-eyebrow">
-          {side.job} · {t(side.side === 'left' ? 'edit.left' : 'edit.right')}
-        </h3>
+        <h3 className="glim-eyebrow">{t(side.side === 'left' ? 'edit.left' : 'edit.right')}</h3>
         {!side.error && (
           <span className="glim-num text-meta text-carbon-textMuted">
             {t('trash.holding', { count: side.total, size: bytes(side.bytes) })}
@@ -283,7 +248,7 @@ function SideList({
         )}
         {!side.error && (
           <span className="glim-row-actions ms-auto">
-            <IconAction title={t('trash.emptySide')} labelKey="trash.emptySide" disabled={busy || searching} onClick={onEmpty} />
+            <IconAction title={t('trash.emptySide')} labelKey="trash.emptySide" disabled={busy} onClick={onEmpty} />
           </span>
         )}
       </div>
@@ -292,7 +257,7 @@ function SideList({
         <p className="text-subline text-statusFail">{t('trash.unread', { error: side.error })}</p>
       ) : (
         <Rows className="-mx-2 flex flex-col">
-          {entries.map((e) => (
+          {side.entries.map((e) => (
             <li key={e.remote} className="glim-row flex min-h-10 items-center gap-3 rounded-control px-2 text-subline hover:bg-carbon-hover">
               <span className="min-w-0 flex-1 truncate font-mono text-carbon-text" title={e.remote}>
                 {e.path}

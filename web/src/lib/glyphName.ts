@@ -77,7 +77,8 @@ const RULES: Rule[] = [
   // so `confirm.cancel` does not wear the floppy, and save above edit so
   // `edit.save` does not wear the pencil.
   [/logout/i, 'IconSignOut'],
-  [/cancel|close|dismiss/i, 'IconClose'],
+  // Showing every job again takes away the chip that narrowed the page.
+  [/cancel|close|dismiss|everyJob/i, 'IconClose'],
 
   [/save|apply|choose|submit|confirm/i, 'IconSave'],
 
@@ -87,9 +88,8 @@ const RULES: Rule[] = [
   // Below the app's own verbs, so `preview` keeps the eye.
   [/check|verify|test|probe/i, 'IconCheck'],
   [/activity|history|log\b|moreRuns/i, 'IconHistory'],
-  // A job's page is reached from a finding, and its brakes are what watches it.
+  // A job's page is reached from a finding.
   [/openJob/i, 'IconSync'],
-  [/monitoring/i, 'IconShieldOn'],
 
   // Above the settings rule, since the lock's keys live under `settings.`.
   [/unlock/i, 'IconUnlock'],

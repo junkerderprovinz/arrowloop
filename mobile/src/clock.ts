@@ -19,3 +19,25 @@ export function clock(iso: string, lang: string): string {
     return at.toLocaleString();
   }
 }
+
+/**
+ * A moment spelled out with its weekday, month and year, for a choice that
+ * turns on which of two files is older.
+ */
+export function fullClock(iso: string, lang: string): string {
+  const at = new Date(iso);
+  if (Number.isNaN(at.getTime())) return "-";
+  const parts: Intl.DateTimeFormatOptions = {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  };
+  try {
+    return at.toLocaleString(lang, parts);
+  } catch {
+    return at.toLocaleString(undefined, parts);
+  }
+}

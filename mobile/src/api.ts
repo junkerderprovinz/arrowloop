@@ -199,6 +199,8 @@ export interface OpenConflict {
   at: string;
   left: SideVersion;
   right: SideVersion;
+  /** The engine's reason code, such as changedBoth; missing for a copy set aside by an older build. */
+  why?: string;
 }
 
 export type Keep = "left" | "right" | "both";

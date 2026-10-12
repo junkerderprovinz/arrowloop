@@ -4,7 +4,7 @@ import { Alert, RefreshControl, StyleSheet, Text, View } from "react-native";
 import { api, type Job, type Remote } from "../api";
 import { CardMenu } from "../CardMenu";
 import { clock } from "../clock";
-import { Glyph, ProviderMark } from "../glyphs";
+import { Glyph } from "../glyphs";
 import { markForSide } from "../jobMark";
 import { groupFindings, shortLine, type Finding } from "../../../web/src/lib/anomalies";
 import { jobCopy } from "../../../web/src/lib/jobCopy.data";
@@ -14,6 +14,7 @@ import { animateNext, useMotion } from "../motion";
 import type { Nav, JobsStack } from "../nav";
 import { RunProgress, useRunProgress, type Progress } from "../progress";
 import { sidePair } from "../sides";
+import { SideRow, sideMark } from "../sideRow";
 import { space, text, TOUCH } from "../theme";
 import { useEngineEvents } from "../useEngine";
 import { useWaiting } from "../waiting";
@@ -311,7 +312,7 @@ function JobCard({
 
       {/* Paths wrap rather than truncate, since the cut part is what tells
           two similar jobs apart. */}
-      <Side path={job.left} mark={leftMark} />
+      <SideRow path={job.left} mark={leftMark} />
       <View
         style={styles.way}
         accessible
@@ -319,7 +320,7 @@ function JobCard({
       >
         <WayGlyph way={wayOf(job.direction)} color={p.textSub} />
       </View>
-      <Side path={job.right} mark={rightMark} />
+      <SideRow path={job.right} mark={rightMark} />
 
       {/* What the engine found, as one line that leads to the Anomalies
           screen, which holds the files and the answers. */}
@@ -434,37 +435,6 @@ function JobStatus({
   }
 }
 
-/**
- * One side of a job, its path behind a mark: the phone glyph for a path on
- * this device, the provider's mark for a target, and an empty slot when the
- * product is unknown.
- */
-function Side({ path, mark }: { path: string; mark?: string }) {
-  const { p, scheme } = useTheme();
-  return (
-    <View style={styles.side}>
-      {mark === DEVICE ? (
-        <Glyph name="IconPhone" color={p.textSub} size={16} />
-      ) : mark ? (
-        // In one ink, like the device glyph it stands beside.
-        <ProviderMark name={mark} width={18} height={18} color={p.textSub} scheme={scheme} mono />
-      ) : (
-        // Keeps the two paths aligned.
-        <View style={styles.sideBlank} />
-      )}
-      <Body>{path}</Body>
-    </View>
-  );
-}
-
-/** The mark for a folder on this phone. */
-const DEVICE = "__device__";
-
-function sideMark(side: string, remotes: Remote[]): string | undefined {
-  if (side.indexOf(":") < 2) return side ? DEVICE : undefined;
-  return markForSide(side, remotes);
-}
-
 export function arrow(direction: string): string {
   if (direction === "toRight" || direction === "right") return "→";
   if (direction === "toLeft" || direction === "left") return "←";
@@ -473,11 +443,9 @@ export function arrow(direction: string): string {
 
 const styles = StyleSheet.create({
   menuSlot: { marginStart: "auto" },
-  side: { flexDirection: "row", alignItems: "flex-start", gap: space.sm },
   way: { flexDirection: "row", alignItems: "center", gap: space.sm },
   finding: { flexDirection: "row", alignItems: "center", gap: space.sm, minHeight: 44 },
   findingText: { flex: 1, fontSize: text.subline, lineHeight: 18 },
-  sideBlank: { width: 18 },
   // Room at the end so the floating button does not cover the last card.
   list: { padding: space.lg, gap: space.md, paddingBottom: FAB_ROOM },
   status: { gap: space.sm, alignSelf: "stretch", alignItems: "flex-start" },

@@ -153,7 +153,7 @@ describe('a job card', () => {
     expect(opened).not.toHaveBeenCalled()
   })
 
-  it('answers a held run over the job while the anomaly notes are off', async () => {
+  it('leads a held run to its job while the anomaly notes are off', async () => {
     const held: Finding = {
       id: 'f1', job: 'music', kind: 'delete', severity: 'critical', held: true, since: '', seen: '', open: true,
     }
@@ -170,9 +170,8 @@ describe('a job card', () => {
       </ToastProvider>,
     )
     fireEvent.click(within(row('music')).getByText('Held'))
-    expect(await screen.findByRole('dialog', { name: 'music: Mass deletion' })).toBeTruthy()
-    expect(went).not.toHaveBeenCalled()
-    expect(opened).not.toHaveBeenCalled()
+    expect(went).toHaveBeenLastCalledWith({ tab: 'jobs', job: 'music' })
+    expect(screen.queryByRole('dialog')).toBeNull()
     followSettings({})
   })
 

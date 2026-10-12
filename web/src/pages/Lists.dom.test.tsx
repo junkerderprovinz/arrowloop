@@ -39,6 +39,11 @@ globalThis.IntersectionObserver ??= class {
   unobserve() {}
 } as unknown as typeof IntersectionObserver
 
+const scrolled = vi.fn()
+Element.prototype.scrollIntoView = function (this: Element) {
+  scrolled(this.id)
+}
+
 afterEach(cleanup)
 
 function wrap(node: ReactNode) {
@@ -54,11 +59,10 @@ describe('the trash', () => {
   it('asks the age in the window of the action that needs it', async () => {
     wrap(<Trash sides={[side]} job="" onJob={() => undefined} onChanged={() => undefined} />)
     expect(screen.queryByRole('spinbutton')).toBeNull()
-    fireEvent.click(screen.getByRole('button', { name: 'More' }))
-    fireEvent.click(within(await screen.findByRole('menu')).getByRole('menuitem', { name: 'Empty out the old ones' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Delete entries older than…' }))
     const window = await screen.findByRole('dialog')
     fireEvent.change(within(window).getByRole('spinbutton'), { target: { value: '7' } })
-    fireEvent.click(within(window).getByRole('button', { name: 'Empty out the old ones' }))
+    fireEvent.click(within(window).getByRole('button', { name: 'Delete entries older than…' }))
     await waitFor(() => expect(pruneTrash).toHaveBeenCalledWith('docs', 'left', 7, 'm'))
   })
 
@@ -90,17 +94,21 @@ describe('the trash', () => {
     expect(empty.className.split(' ')).toContain('bg-accent')
   })
 
-  it('keeps every way to empty the trash shut while a search hides part of it', async () => {
+  it('puts its two actions side by side rather than one in a menu', () => {
     wrap(<Trash sides={[side, music]} job="" onJob={() => undefined} onChanged={() => undefined} />)
-    fireEvent.click(screen.getByRole('button', { name: 'Search' }))
-    fireEvent.change(screen.getByRole('searchbox', { name: 'Search' }), { target: { value: 'song' } })
-    expect((screen.getByRole('button', { name: 'Empty the trash' }) as HTMLButtonElement).disabled).toBe(true)
-    fireEvent.click(screen.getByRole('button', { name: 'More' }))
-    const menu = await screen.findByRole('menu')
-    expect((within(menu).getByRole('menuitem', { name: 'Empty out the old ones' }) as HTMLButtonElement).disabled).toBe(true)
-    for (const empty of screen.getAllByRole('button', { name: 'Empty this side' })) {
-      expect((empty as HTMLButtonElement).disabled).toBe(true)
-    }
+    expect(screen.queryByRole('button', { name: 'More' })).toBeNull()
+    const prune = screen.getByRole('button', { name: 'Delete entries older than…' })
+    expect(prune.closest('[data-testid="page-actions"]')).toBeTruthy()
+    expect(prune.className.split(' ')).not.toContain('bg-accent')
+  })
+
+  it('has no search, and names the job a link narrowed it to in a chip that undoes it', () => {
+    const onJob = vi.fn()
+    wrap(<Trash sides={[side, music]} job="docs" onJob={onJob} onChanged={() => undefined} />)
+    expect(screen.queryByRole('button', { name: 'Search' })).toBeNull()
+    expect(screen.getByText('Only docs')).toBeTruthy()
+    fireEvent.click(screen.getByRole('button', { name: 'Show every job' }))
+    expect(onJob).toHaveBeenCalledWith('')
   })
 })
 
@@ -111,23 +119,41 @@ describe('the anomalies', () => {
   const listing: FindingListing = { open: [finding('c', 'critical'), finding('w', 'warning')], closed: [] }
 
   function page(focus?: string) {
-    wrap(<Anomalies listing={listing} jobs={[]} job="" finding={focus} refused={{}} onChanged={() => undefined} />)
+    wrap(<Anomalies listing={listing} job="" finding={focus} refused={{}} onJob={() => undefined} onChanged={() => undefined} />)
   }
 
   it('has tiles that pick a severity, keeping the rest of the page', () => {
     page()
-    expect(screen.getAllByRole('listitem').filter((li) => li.textContent?.includes('docs'))).toHaveLength(2)
+    expect(document.querySelectorAll('[id^="finding-"]')).toHaveLength(2)
     fireEvent.click(screen.getByRole('button', { name: /^Warnings/ }))
     expect(screen.getByRole('button', { name: /^Warnings/ }).getAttribute('aria-pressed')).toBe('true')
-    expect(screen.getAllByRole('listitem').filter((li) => li.textContent?.includes('docs'))).toHaveLength(1)
+    expect(document.querySelectorAll('[id^="finding-"]')).toHaveLength(1)
     expect(screen.getByRole('button', { name: /^Critical/ })).toBeTruthy()
   })
 
-  it('opens a finding in a window, the one another page sent somebody to', async () => {
+  it('shows each finding as a card with its answers, and opens no window', () => {
     page('c')
-    const window = await screen.findByRole('dialog', { name: 'docs: Mass deletion' })
-    expect(within(window).getByRole('button', { name: 'Take back' })).toBeTruthy()
-    expect(document.querySelector('[aria-expanded]:not([aria-haspopup])')).toBeNull()
+    const card = document.getElementById('finding-c') as HTMLElement
+    expect(within(card).getByText('This run would delete 0 of 0 files (0 %, limit 0 %).')).toBeTruthy()
+    expect(within(card).getByRole('button', { name: 'Take back' })).toBeTruthy()
+    expect(within(card).getByRole('button', { name: 'Run anyway' })).toBeTruthy()
+    expect(within(card).getByRole('button', { name: 'Open job' })).toBeTruthy()
+    expect(screen.queryByRole('dialog')).toBeNull()
+    expect(scrolled).toHaveBeenCalledWith('finding-c')
+  })
+
+  it('names the files a brake counted and counts the rest', () => {
+    const paths = Array.from({ length: 12 }, (_, i) => `photos/${i}.jpg`)
+    const held = { ...finding('c', 'critical'), count: 40, known: 50, paths }
+    wrap(<Anomalies listing={{ open: [held], closed: [] }} job="" refused={{}} onJob={() => undefined} onChanged={() => undefined} />)
+    expect(screen.getByText('photos/9.jpg')).toBeTruthy()
+    expect(screen.queryByText('photos/10.jpg')).toBeNull()
+    expect(screen.getByText('and 30 more')).toBeTruthy()
+  })
+
+  it('lists no jobs that have nothing open', () => {
+    page()
+    expect(screen.queryByText('Nothing open')).toBeNull()
   })
 })
 

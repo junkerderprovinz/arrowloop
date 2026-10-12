@@ -2,7 +2,7 @@ import { useNavigation, useRoute, type RouteProp } from "@react-navigation/nativ
 import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
 import { Alert, StyleSheet, Text, View } from "react-native";
 import { api, type Config, type JobConfig } from "../api";
-import { Field, Refusal, TimeField } from "../fields";
+import { Field, NumberField, Refusal, TimeField } from "../fields";
 import { FolderPicker } from "../FolderPicker";
 import { JobLive } from "./JobLive";
 import { Glyph } from "../glyphs";
@@ -12,8 +12,9 @@ import { contrastOn, space, text } from "../theme";
 import { useEngineSettings } from "../settings";
 import { sideName, sidePair } from "../sides";
 import { animateNext, useMotion } from "../motion";
-import { AxisLabel, Button, Choice, Empty, Page, Press, Section, Toggle, usePageScroll, useTheme } from "../ui";
+import { AxisLabel, Button, Caption, Choice, Empty, Page, Press, Section, Toggle, usePageScroll, useTheme } from "../ui";
 import { WaySwitch, wayOf } from "../way";
+import { globalBrakes, ownBrakes, type Brakes } from "../../../web/src/lib/anomalies";
 import {
   buildSchedule,
   EVERY_UNITS,
@@ -415,6 +416,10 @@ export function JobEdit() {
         />
       </Section>
 
+      {/* The brakes hold a run whether or not the anomaly notes are on, so
+          they are the job's own setting rather than the Anomalies screen's. */}
+      {editing ? <BrakesSection job={job} global={globalBrakes(defaults as Partial<Brakes>)} set={set} /> : null}
+
       {/* Holding a job is an action on the job card, not a setting here. */}
       {editing ? (
         <View style={styles.actions}>
@@ -446,6 +451,58 @@ export function JobEdit() {
         onClose={() => setPicking(null)}
       />
     </Page>
+  );
+}
+
+/** The job's brakes: the global ones it follows, or its own two values. */
+function BrakesSection({
+  job,
+  global,
+  set,
+}: {
+  job: JobConfig;
+  global: Brakes;
+  set: (patch: Partial<JobConfig>, now?: boolean) => void;
+}) {
+  const { t } = useT();
+  const own = ownBrakes(job, global);
+  const fallback = { brakePercent: global.brakePercent, changePercent: global.changePercent };
+  // An empty box is a value being typed, so it writes nothing.
+  const type = (key: "brakePercent" | "changePercent", text: string) => {
+    const value = Number(text.replace(/[^\d]/g, ""));
+    if (!text.trim() || Number.isNaN(value)) return;
+    set({ ...(own ?? fallback), [key]: Math.min(100, value) });
+  };
+  return (
+    <Section title={t("job.brakes")} hint={t("job.brakesHint")} hue={3}>
+      {!own ? (
+        <Caption>
+          {t("anomaly.follows", { delete: global.brakePercent, change: global.changePercent, floor: global.brakeFloor })}
+        </Caption>
+      ) : null}
+      <Toggle
+        label={t("anomaly.ownBrakes")}
+        hint={t("anomaly.ownBrakesHint")}
+        value={own !== null}
+        onChange={(on) => set(on ? fallback : { brakePercent: undefined, changePercent: undefined }, true)}
+      />
+      {own ? (
+        <>
+          <NumberField
+            label={t("engine.brakePercent")}
+            hint={t("engine.brakePercentHint")}
+            value={String(own.brakePercent)}
+            onChange={(v) => type("brakePercent", v)}
+          />
+          <NumberField
+            label={t("engine.changePercent")}
+            hint={t("engine.changePercentHint")}
+            value={String(own.changePercent)}
+            onChange={(v) => type("changePercent", v)}
+          />
+        </>
+      ) : null}
+    </Section>
   );
 }
 

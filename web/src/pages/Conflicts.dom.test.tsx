@@ -35,7 +35,7 @@ function page() {
   )
 }
 
-const row = (name: string) => screen.getByText(name).closest('li') as HTMLElement
+const card = (name: string) => screen.getByText(name, { selector: 'span' }).closest('li') as HTMLElement
 
 afterEach(() => {
   cleanup()
@@ -51,15 +51,44 @@ describe('the conflicts list', () => {
       </ToastProvider>
     )
     const { rerender } = render(at('docs'))
-    expect(screen.queryByText('song.mp3')).toBeNull()
+    expect(screen.queryAllByText('song.mp3')).toHaveLength(0)
     rerender(at(''))
-    expect(screen.getByText('song.mp3')).toBeTruthy()
+    expect(screen.queryAllByText('song.mp3').length).toBeGreaterThan(0)
   })
 
-  it('carries no selection marks, only the answers of each row', () => {
-    page()
+  it('says what went wrong and answers in words that say what each answer does', () => {
+    const changed = { ...conflict('a.txt'), why: 'changedBoth' }
+    render(
+      <ToastProvider>
+        <Conflicts listing={{ conflicts: [changed], unread: [] }} job="" onJob={() => undefined} onChanged={() => undefined} />
+      </ToastProvider>,
+    )
+    const a = card('a.txt')
+    expect(within(a).getByText(/Both sides changed this file since the last sync/)).toBeTruthy()
+    expect(within(a).getAllByRole('button').map((b) => b.textContent?.trim())).toEqual([
+      'Keep both files',
+      'Keep the left version, trash the right',
+      'Keep the right version, trash the left',
+    ])
     expect(screen.queryAllByRole('checkbox')).toHaveLength(0)
-    expect(within(row('a.txt')).getAllByRole('button').map((b) => b.textContent?.trim())).toEqual(['Keep both', 'Keep left', 'Keep right'])
+  })
+
+  it('marks the side that holds the newer version and names the set-aside copy', () => {
+    const newer = {
+      ...conflict('a.txt'),
+      left: { path: 'a.conflict-left-20270301-030000.txt', size: 10, mod: '2027-03-01T03:00:00Z' },
+      right: { path: 'a.txt', size: 12, mod: '2027-03-02T03:00:00Z' },
+    }
+    render(
+      <ToastProvider>
+        <Conflicts listing={{ conflicts: [newer], unread: [] }} job="" onJob={() => undefined} onChanged={() => undefined} />
+      </ToastProvider>,
+    )
+    expect(screen.getByText('a.conflict-left-20270301-030000.txt')).toBeTruthy()
+    const right = screen.getByText('Right side').parentElement?.parentElement as HTMLElement
+    expect(within(right).getByText('newer')).toBeTruthy()
+    const left = screen.getByText('Left side').parentElement?.parentElement as HTMLElement
+    expect(within(left).queryByText('newer')).toBeNull()
   })
 
   it('gives every conflict shown one answer from the corner, once asked', async () => {
@@ -74,18 +103,20 @@ describe('the conflicts list', () => {
     expect(decide.mock.calls[0][1]).toHaveLength(4)
   })
 
-  it('opens one conflict with its two versions on a plain click', async () => {
-    page()
-    fireEvent.click(row('b.txt'))
-    const window = await screen.findByRole('dialog', { name: 'b.txt' })
-    expect(within(window).getByRole('button', { name: 'Keep both' })).toBeTruthy()
+  it('offers no answer for all while one conflict waits', () => {
+    render(
+      <ToastProvider>
+        <Conflicts listing={{ conflicts: [conflict('a.txt')], unread: [] }} job="" onJob={() => undefined} onChanged={() => undefined} />
+      </ToastProvider>,
+    )
+    expect(screen.queryByRole('button', { name: 'More' })).toBeNull()
   })
 
-  it('answers one row from the menu a right-click opens', async () => {
+  it('answers one conflict from its own card without opening anything', async () => {
     page()
-    fireEvent.contextMenu(row('b.txt'))
-    fireEvent.click(within(await screen.findByRole('menu')).getByRole('menuitem', { name: 'Keep left' }))
+    fireEvent.click(within(card('b.txt')).getByRole('button', { name: 'Keep the left version, trash the right' }))
     await waitFor(() => expect(decide).toHaveBeenCalled())
     expect(decide.mock.calls[0][1]).toEqual([{ copy: 'b.txt.conflict', keep: 'left' }])
+    expect(screen.queryByRole('dialog')).toBeNull()
   })
 })

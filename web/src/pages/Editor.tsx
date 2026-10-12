@@ -219,6 +219,20 @@ export function useJobConfig(onSaved: () => void) {
   )
 
   /**
+   * Changes fields of a saved job that are set outside its form, such as its
+   * brakes, and writes them straight away the way setDisabled does, so a later
+   * save of the form keeps them.
+   */
+  const amend = useCallback(
+    async (name: string, change: (job: RawJob) => RawJob) => {
+      setSaved(false)
+      const apply = (list: RawJob[]) => list.map((j) => (j.name === name ? change(j) : j))
+      if (await writeOne(apply)) setJobs((prev) => prev && apply(prev))
+    },
+    [writeOne],
+  )
+
+  /**
    * Copies a job as a draft in the form, not yet written, and returns its
    * index. The copy's name, own state database and held state come from
    * jobCopy, shared with the phone.
@@ -245,7 +259,7 @@ export function useJobConfig(onSaved: () => void) {
     [jobs, t],
   )
 
-  return { jobs, known, defaults, error, saved, busy, patch, replace, save, add, remove, setDisabled, duplicate }
+  return { jobs, known, defaults, error, saved, busy, patch, replace, save, add, remove, setDisabled, amend, duplicate }
 }
 
 /** One job's fields, with the direction between the two sides it relates. */

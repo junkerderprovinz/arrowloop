@@ -360,7 +360,7 @@ export function App({ signOut = false }: { signOut?: boolean }) {
         findings: anomaliesOn ? (findings?.open.length ?? 0) : 0,
       }
   // The job a link from another page narrowed this one to, and on Anomalies
-  // the finding it opens.
+  // the finding it brings into view.
   const focus = search.get('job') ?? ''
   const finding = search.get('finding') ?? undefined
   // A page's job filter lives in the address, so the rail's plain link and
@@ -417,10 +417,10 @@ export function App({ signOut = false }: { signOut?: boolean }) {
   ) : view.page === 'anomalies' ? (
     <Anomalies
       listing={findings}
-      jobs={jobs}
       job={focus}
       finding={finding}
       refused={refused}
+      onJob={focusOn}
       onChanged={() => void reloadFindings()}
     />
   ) : view.page === 'trash' ? (

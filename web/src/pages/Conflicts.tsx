@@ -1,43 +1,43 @@
-import { useMemo, useState, type MouseEvent } from 'react'
+import { useState } from 'react'
 
-import { Empty, Rows, Stack } from '../components/Shell'
-import { Dialog } from '../components/Dialog'
-import { FilterButton, FilterChoice, ListBar, SearchFold, SortButton } from '../components/ListBar'
-import { ContextMenu, Menu, type MenuItem } from '../components/Menu'
+import { JobChip } from '../components/JobChip'
+import { Menu } from '../components/Menu'
 import { PageActions } from '../components/PageActions'
+import { Empty, Num, Stack } from '../components/Shell'
 import { Since } from '../components/Since'
-import { Card } from '../lib/glimstone/Card'
 import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
+import { Card } from '../lib/glimstone/Card'
 import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
-import { ApiError, api, type ConflictListing, type OpenConflict, type Resolution } from '../lib/api'
+import { ApiError, api, type ConflictListing, type Job, type OpenConflict, type Resolution, type SideVersion } from '../lib/api'
+import { bytes } from '../lib/bytes'
 import { conflictKey, decisionsByJob, newerSide } from '../lib/conflicts'
+import { sideName } from '../lib/entryLabel'
 import { useT, type TranslationKey } from '../lib/i18n'
+import { useLive } from '../lib/live'
+import { usePlaces } from '../lib/places'
 import { useToast } from '../lib/toast'
-import { Version } from './Preview'
 
 /** The three answers in the order they stand everywhere: holding back first, then the two that pick. */
 const CHOICES: { keep: Resolution; key: TranslationKey; all: TranslationKey }[] = [
-  { keep: 'both', key: 'conflict.keepBoth', all: 'conflicts.allBoth' },
-  { keep: 'left', key: 'conflict.keepLeft', all: 'conflicts.allLeft' },
-  { keep: 'right', key: 'conflict.keepRight', all: 'conflicts.allRight' },
+  { keep: 'both', key: 'conflict.answerBoth', all: 'conflicts.allBoth' },
+  { keep: 'left', key: 'conflict.answerLeft', all: 'conflicts.allLeft' },
+  { keep: 'right', key: 'conflict.answerRight', all: 'conflicts.allRight' },
 ]
 
-type Order = 'oldest' | 'newest' | 'job'
-
-const ORDERS: { value: Order; label: TranslationKey }[] = [
-  { value: 'oldest', label: 'list.sort.oldestFirst' },
-  { value: 'newest', label: 'list.sort.newestFirst' },
-  { value: 'job', label: 'conflicts.sort.job' },
-]
+/** What the engine says caused a conflict, in a sentence, keyed by its reason code. */
+const WHY: Record<string, TranslationKey> = {
+  changedBoth: 'conflict.why.changedBoth',
+  appearedDiffer: 'conflict.why.appearedDiffer',
+}
 
 /**
- * Every conflict a run kept both versions of that nobody has decided, across
- * all jobs. Each row carries the three answers, a click elsewhere on it opens
- * the conflict with its two versions, and a choice runs the job's decision at
- * once; the version that loses goes to the trash, so a wrong click is undone
- * from there. One answer for every conflict shown waits in the corner and asks
- * first, naming how many it decides.
+ * Every conflict a run kept both versions of that nobody has decided, in a
+ * card per job. Each conflict says which file it is, what went wrong and what
+ * each side holds, with the three answers under it; a choice runs the job's
+ * decision at once, and the version that loses goes to the trash, so a wrong
+ * click is undone from there. From two conflicts up, one answer for all of
+ * them waits in the corner and asks first, naming how many it decides.
  */
 export function Conflicts({
   listing,
@@ -56,25 +56,17 @@ export function Conflicts({
 }) {
   const { t } = useT()
   const push = useToast()
-  const [order, setOrder] = useState<Order>('oldest')
-  const [query, setQuery] = useState('')
+  const live = useLive()
   const [busy, setBusy] = useState<Set<string>>(new Set())
-  const [opened, setOpened] = useState<string | null>(null)
-  const [menu, setMenu] = useState<{ x: number; y: number; rows: OpenConflict[] } | null>(null)
   const [asking, setAsking] = useState<(typeof CHOICES)[number] | null>(null)
 
-  const all = listing?.conflicts ?? []
-  const jobs = useMemo(() => [...new Set([...all.map((c) => c.job), ...(job ? [job] : [])])].sort((a, b) => a.localeCompare(b)), [all, job])
-  const needle = query.trim().toLocaleLowerCase()
-  const shown = useMemo(() => {
-    const kept = all
-      .filter((c) => !job || c.job === job)
-      .filter((c) => !needle || c.plain.toLocaleLowerCase().includes(needle))
-    if (order === 'newest') return [...kept].reverse()
-    if (order === 'job') return [...kept].sort((a, b) => a.job.localeCompare(b.job) || a.plain.localeCompare(b.plain))
-    return kept
-  }, [all, job, needle, order])
-  const open = opened ? all.find((c) => conflictKey(c) === opened) : undefined
+  const shown = (listing?.conflicts ?? []).filter((c) => !job || c.job === job)
+  const groups = [...new Set(shown.map((c) => c.job))].map((name) => ({
+    name,
+    job: live.jobs.find((j) => j.name === name),
+    conflicts: shown.filter((c) => c.job === name),
+  }))
+  const unread = (listing?.unread ?? []).filter((u) => !job || u.job === job)
 
   async function decide(rows: OpenConflict[], keep: Resolution) {
     setBusy(new Set(rows.map(conflictKey)))
@@ -93,64 +85,45 @@ export function Conflicts({
     setBusy(new Set())
   }
 
-  const answers = (rows: OpenConflict[]): MenuItem[] =>
-    CHOICES.map(({ keep, key }) => ({ label: t(key), labelKey: key, disabled: busy.size > 0, onSelect: () => void decide(rows, keep) }))
-
   return (
     <Stack>
-      <div className="flex flex-col gap-6">
-        <ListBar newId="list-bar">
-          <FilterButton active={job !== ''}>
-            <FilterChoice
-              label={t('history.filterJob')}
-              value={job}
-              onChange={onJob}
-              options={[{ value: '', label: t('history.allJobs') }, ...jobs.map((n) => ({ value: n, label: n }))]}
-            />
-          </FilterButton>
-          <SortButton value={order} onChange={setOrder} options={ORDERS.map((o) => ({ value: o.value, label: t(o.label) }))} />
-          <SearchFold value={query} onChange={setQuery} placeholder={t('history.pathHint')} />
-        </ListBar>
+      <JobChip job={job} onClear={() => onJob('')} />
 
-        <Card title={job || t('history.allJobs')} hueIndex={0} hint={t('conflicts.hint')}>
-          {listing === null ? (
-            <Empty>{t('history.working')}</Empty>
-          ) : shown.length === 0 ? (
-            <Empty>{job || query ? t('conflicts.noneInJob') : t('conflicts.none')}</Empty>
-          ) : (
-            <Rows className="-mx-2 flex flex-col">
-              {shown.map((c) => {
+      {listing === null ? (
+        <Card title={t('nav.conflicts')} hueIndex={0}>
+          <Empty>{t('history.working')}</Empty>
+        </Card>
+      ) : groups.length === 0 && unread.length === 0 ? (
+        <Card title={t('nav.conflicts')} hueIndex={0} hint={t('conflicts.hint')}>
+          <Empty>{job ? t('conflicts.noneInJob') : t('conflicts.none')}</Empty>
+        </Card>
+      ) : (
+        groups.map((g, i) => (
+          <Card key={g.name} title={g.name} hueIndex={i} hint={t('conflicts.hint')}>
+            <ul className="flex flex-col gap-2.5">
+              {g.conflicts.map((c) => {
                 const key = conflictKey(c)
                 return (
-                  <Row
+                  <ConflictCard
                     key={key}
                     conflict={c}
-                    withJob={!job}
+                    job={g.job}
                     busy={busy.has(key)}
                     idle={busy.size === 0}
-                    onClick={() => setOpened(key)}
-                    onMenu={(e) => {
-                      e.preventDefault()
-                      setMenu({ x: e.clientX, y: e.clientY, rows: [c] })
-                    }}
                     onDecide={(keep) => void decide([c], keep)}
                   />
                 )
               })}
-            </Rows>
-          )}
-        </Card>
-      </div>
+            </ul>
+          </Card>
+        ))
+      )}
 
-      {listing?.unread.map((u) => (
-        <Card key={u.job} title={u.job} hueIndex={1}>
-          <p className="text-subline text-statusFail">{t('conflicts.unread', { job: u.job, error: u.error })}</p>
+      {unread.map((u, i) => (
+        <Card key={u.job} title={u.job} hueIndex={groups.length + i}>
+          <p className="text-subline text-statusFail [overflow-wrap:anywhere]">{t('conflicts.unread', { job: u.job, error: u.error })}</p>
         </Card>
       ))}
-
-      {menu && (
-        <ContextMenu label={t('nav.conflicts')} items={answers(menu.rows)} at={menu} onClose={() => setMenu(null)} />
-      )}
 
       {asking && (
         <ConfirmDialog
@@ -167,91 +140,117 @@ export function Conflicts({
         />
       )}
 
-      {/* The answers for every conflict the list shows, filter and search
-          included; the same three stand on each row for one at a time. */}
-      <PageActions>
-        <Menu
-          label={t('list.more')}
-          labelKey="list.more"
-          size="key"
-          items={CHOICES.map((choice) => ({
-            label: t(choice.all),
-            labelKey: choice.all,
-            disabled: busy.size > 0 || shown.length === 0,
-            onSelect: () => setAsking(choice),
-          }))}
-        />
-      </PageActions>
-
-      {open && (
-        <Dialog title={open.plain} onClose={() => setOpened(null)} wide>
-          <div className="flex flex-col gap-4">
-            <div className="grid gap-2 sm:grid-cols-2">
-              <Version side={t('side.left')} version={open.left} newer={newerSide(open) === 'left'} />
-              <Version side={t('side.right')} version={open.right} newer={newerSide(open) === 'right'} />
-            </div>
-            <div className="flex flex-wrap items-center justify-end gap-2">
-              {CHOICES.map(({ keep, key }) => (
-                <Button
-                  key={keep}
-                  label={t(key)}
-                  labelKey={key}
-                  busy={busy.has(conflictKey(open))}
-                  disabled={busy.size > 0}
-                  onClick={() => {
-                    void decide([open], keep)
-                    setOpened(null)
-                  }}
-                />
-              ))}
-            </div>
-          </div>
-        </Dialog>
+      {/* One answer for every conflict on the page; for a single conflict the
+          card's own three say the same. */}
+      {shown.length > 1 && (
+        <PageActions>
+          <Menu
+            label={t('list.more')}
+            labelKey="list.more"
+            size="key"
+            items={CHOICES.map((choice) => ({
+              label: t(choice.all),
+              labelKey: choice.all,
+              disabled: busy.size > 0,
+              onSelect: () => setAsking(choice),
+            }))}
+          />
+        </PageActions>
       )}
     </Stack>
   )
 }
 
-function Row({
+/**
+ * One conflict, readable without opening anything: the file, what went wrong,
+ * what each side's version is and where it sits now, and the three answers in
+ * words that say what each does.
+ */
+function ConflictCard({
   conflict: c,
-  withJob,
+  job,
   busy,
   idle,
-  onClick,
-  onMenu,
   onDecide,
 }: {
   conflict: OpenConflict
-  /** Whether to name the job, which a list narrowed to one job does not need. */
-  withJob: boolean
+  job?: Job
   busy: boolean
   /** False while any decision is under way, so two cannot race for one job. */
   idle: boolean
-  onClick: () => void
-  onMenu: (e: MouseEvent) => void
   onDecide: (keep: Resolution) => void
 }) {
   const { t } = useT()
+  const { drives } = usePlaces()
   const newer = newerSide(c)
   return (
-    <li
-      onClick={onClick}
-      onContextMenu={onMenu}
-      className="glim-row flex min-h-12 cursor-pointer items-center gap-3 rounded-control px-2 py-1.5 hover:bg-carbon-hover"
-    >
-      <span className="min-w-0 flex-1 truncate font-mono text-subline text-carbon-text" title={c.plain}>
-        {c.plain}
-      </span>
-      {withJob && <Badge tone="neutral">{c.job}</Badge>}
-      {newer && <Badge tone="neutral">{t(newer === 'left' ? 'conflicts.newerLeft' : 'conflicts.newerRight')}</Badge>}
-      <span className="glim-row-actions flex shrink-0 items-center gap-1.5 max-md:hidden" onClick={(e) => e.stopPropagation()}>
-        {CHOICES.map(({ keep, key }) => (
-          <Button key={keep} label={t(key)} labelKey={key} busy={busy} disabled={!idle} onClick={() => onDecide(keep)} />
+    <li className="flex min-w-0 flex-col gap-3 rounded-card bg-carbon-surface2 px-4 pb-3.5 pt-3 shadow-[inset_3px_0_0_var(--status-warn-solid)] max-sm:px-3 rtl:shadow-[inset_-3px_0_0_var(--status-warn-solid)]">
+      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+        <span dir="ltr" className="min-w-0 flex-1 text-start font-mono text-title font-semibold text-carbon-text [overflow-wrap:anywhere]">
+          {c.plain}
+        </span>
+        <span className="shrink-0 text-subline text-carbon-textMuted">
+          {t('conflict.metAt')} <Since when={c.at} />
+        </span>
+      </div>
+      <p className="text-body text-carbon-text">{t(WHY[c.why ?? ''] ?? 'conflict.why.unknown')}</p>
+
+      <div className="grid gap-2 sm:grid-cols-2">
+        {(['left', 'right'] as const).map((side) => (
+          <SideHolds
+            key={side}
+            label={t(side === 'left' ? 'edit.left' : 'edit.right')}
+            place={job ? sideName(job[side], drives) : undefined}
+            version={c[side]}
+            newer={newer === side}
+          />
         ))}
-      </span>
-      <span className="w-28 shrink-0 text-end text-subline text-carbon-textMuted max-sm:hidden">
-        <Since when={c.at} />
-      </span>
+      </div>
+
+      <div className="flex flex-wrap items-center justify-end gap-2">
+        {CHOICES.map(({ keep, key }) => (
+          <Button
+            key={keep}
+            label={t(key)}
+            labelKey={key}
+            busy={busy}
+            disabled={!idle}
+            className="glim-btn-wrap"
+            onClick={() => onDecide(keep)}
+          />
+        ))}
+      </div>
     </li>
+  )
+}
+
+/** What one side's version is: where the side is, how big and how old the file is, and its name now. */
+function SideHolds({ label, place, version, newer }: { label: string; place?: string; version: SideVersion; newer: boolean }) {
+  const { t, lang } = useT()
+  const modified = new Intl.DateTimeFormat(lang, { dateStyle: 'full', timeStyle: 'short' }).format(new Date(version.mod))
+  return (
+    <div className="flex min-w-0 flex-col gap-1 rounded-control bg-carbon-surface px-3 py-2">
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="glim-eyebrow">{label}</span>
+        {newer && <Badge tone="ok">{t('conflict.newer')}</Badge>}
+      </div>
+      {place && (
+        <p dir="ltr" className="text-start text-subline text-carbon-textSub [overflow-wrap:anywhere]">
+          {place}
+        </p>
+      )}
+      <dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-0.5 text-subline">
+        <dt className="text-carbon-textSub">{t('conflict.size')}</dt>
+        <dd className="text-carbon-text">
+          <Num>{bytes(version.size)}</Num>
+        </dd>
+        <dt className="text-carbon-textSub">{t('conflict.changed')}</dt>
+        <dd className="text-carbon-text">{modified}</dd>
+        <dt className="text-carbon-textSub">{t('conflict.namedNow')}</dt>
+        <dd dir="ltr" className="text-start font-mono text-carbon-text [overflow-wrap:anywhere]">
+          {version.path.split('/').pop()}
+        </dd>
+      </dl>
+    </div>
   )
 }

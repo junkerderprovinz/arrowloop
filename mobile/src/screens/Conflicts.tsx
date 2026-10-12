@@ -1,36 +1,51 @@
 import { useCallback, useEffect, useState } from "react";
 import { Alert, StyleSheet, View } from "react-native";
-import { api, EngineError, type Job, type Keep, type OpenConflict } from "../api";
-import { useT, type T } from "../i18n";
-import { clock } from "../clock";
-import { jobSides } from "../sides";
+import { api, EngineError, type Job, type Keep, type OpenConflict, type Remote } from "../api";
+import { useT, type T, type TranslationKey } from "../i18n";
+import { fullClock } from "../clock";
+import { remoteOf, sidePair } from "../sides";
+import { SideRow, sideMark } from "../sideRow";
 import { bytes } from "../space";
 import { space } from "../theme";
 import { useEngineStream } from "../useEngine";
 import { conflictKey, decisionsByJob, newerSide } from "../../../web/src/lib/conflicts";
-import { Badge, Body, Button, Caption, Card, Empty, Mono, Page, Pair } from "../ui";
+import { AxisLabel, Badge, Body, Button, Caption, Card, Empty, Mono, Page, Pair } from "../ui";
 import { useWaiting } from "../waiting";
 
-/** The same three answers, in the same order, as the web's conflicts tab. */
+/** The same three answers, in the same order, as the web's conflicts page. */
 const CHOICES: Keep[] = ["both", "left", "right"];
 
+/** What the engine says caused a conflict, in a sentence, keyed by its reason code. */
+const WHY: Record<string, TranslationKey> = {
+  changedBoth: "conflict.why.changedBoth",
+  appearedDiffer: "conflict.why.appearedDiffer",
+};
+
 /**
- * An answer's words. The web says left and right, which name nothing on a
- * screen that shows the two sides under each other, so a side goes by its name.
+ * An answer's words, which say what it does to which version. A side goes by
+ * what it is, the way the job card names it: this phone, a target, or, where
+ * both sides are folders on the phone, the folder.
  */
-function keepLabel(keep: Keep, [left, right]: [string, string], t: T): string {
-  if (keep === "both") return t("conflict.keepBoth");
-  return t("conflict.keepPlace", { place: keep === "left" ? left : right });
+function keepLabel(keep: Keep, job: Job | undefined, t: T): string {
+  if (keep === "both") return t("conflict.answerBoth");
+  const path = (keep === "left" ? job?.left : job?.right) ?? "";
+  const name = sidePair(job?.left, job?.right, t)[keep === "left" ? 0 : 1];
+  if (remoteOf(path)) return t("conflict.keepOnPlace", { place: name });
+  if (name === t("side.onDevice")) return t("conflict.keepOnPhone");
+  return t("conflict.keepInFolder", { place: name });
 }
 
 /**
- * Every open conflict across the jobs, each with both versions and the three
- * answers, and the same answers for all of them at the foot, which ask first.
+ * Every open conflict across the jobs, each saying which file it is, what went
+ * wrong and what each side holds, with the three answers under it. From two
+ * conflicts up, the same answers for all of them stand at the foot and ask
+ * first.
  */
 export function Conflicts() {
   const { t, lang } = useT();
   const [list, setList] = useState<OpenConflict[] | null>(null);
   const [jobs, setJobs] = useState<Job[]>([]);
+  const [remotes, setRemotes] = useState<Remote[]>([]);
   const [unread, setUnread] = useState<{ job: string; error: string }[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -49,6 +64,7 @@ export function Conflicts() {
 
   useEffect(() => {
     void load();
+    api.storage().then((found) => setRemotes(found.remotes), () => {});
   }, [load]);
   useEngineStream(true, (event) => {
     if (event.phase === "finished") void load();
@@ -72,40 +88,37 @@ export function Conflicts() {
 
   if (!list) return <Empty title={t("history.working")} detail={error || undefined} />;
 
-  // The answer for all of them can only name a side they share. Jobs with
-  // different sides leave "keep both", and the rest is decided per card.
-  const pairs = list.map((c) => jobSides(jobs, c.job, t));
-  const shared = pairs.every(([l, r]) => l === pairs[0]?.[0] && r === pairs[0]?.[1]) ? pairs[0] : undefined;
+  // The answer for all of them names a side by position, which only reads
+  // true when every conflict belongs to one job.
+  const single = new Set(list.map((c) => c.job)).size === 1 ? jobs.find((j) => j.name === list[0]?.job) : undefined;
 
   return (
     <Page>
       {list.length === 0 ? <Empty title={t("conflicts.none")} /> : null}
 
       {list.map((c) => {
-        const key = conflictKey(c);
+        const job = jobs.find((j) => j.name === c.job);
         const newer = newerSide(c);
-        const sides = jobSides(jobs, c.job, t);
         return (
-          <Card key={key}>
+          <Card key={conflictKey(c)}>
             <Mono>{c.plain}</Mono>
-            <Caption>{`${c.job} · ${clock(c.at, lang)}`}</Caption>
+            <Caption>{c.job}</Caption>
+            <Body>{t(WHY[c.why ?? ""] ?? "conflict.why.unknown")}</Body>
             {(["left", "right"] as const).map((side) => (
-              <View key={side} style={styles.version}>
-                <Pair
-                  label={sides[side === "left" ? 0 : 1]}
-                  value={`${bytes(c[side].size)} · ${clock(c[side].mod, lang)}`}
-                />
-                {newer === side ? <Badge label={t("conflict.newer")} tone="ok" /> : null}
+              <View key={side} style={styles.side}>
+                <View style={styles.sideHead}>
+                  <AxisLabel>{t(side === "left" ? "edit.left" : "edit.right")}</AxisLabel>
+                  {newer === side ? <Badge label={t("conflict.newer")} tone="ok" /> : null}
+                </View>
+                {job ? <SideRow path={job[side]} mark={sideMark(job[side], remotes)} /> : null}
+                <Pair label={t("conflict.size")} value={bytes(c[side].size)} />
+                <Pair label={t("conflict.changed")} value={fullClock(c[side].mod, lang)} />
+                <Pair label={t("conflict.namedNow")} value={c[side].path.split("/").pop() ?? c[side].path} />
               </View>
             ))}
             <View style={styles.choices}>
               {CHOICES.map((keep) => (
-                <Button
-                  key={keep}
-                  label={keepLabel(keep, sides, t)}
-                  disabled={busy}
-                  onPress={() => void decide([c], keep)}
-                />
+                <Button key={keep} label={keepLabel(keep, job, t)} disabled={busy} onPress={() => void decide([c], keep)} />
               ))}
             </View>
           </Card>
@@ -117,12 +130,12 @@ export function Conflicts() {
       ))}
       {error ? <Body>{error}</Body> : null}
 
-      {list.length > 0 ? (
+      {list.length > 1 ? (
         <Card>
           <Caption>{t("conflicts.allConfirm", { count: list.length })}</Caption>
           <View style={styles.choices}>
-            {CHOICES.filter((keep) => keep === "both" || shared).map((keep) => {
-              const label = shared ? keepLabel(keep, shared, t) : t("conflict.keepBoth");
+            {CHOICES.filter((keep) => keep === "both" || single).map((keep) => {
+              const label = keep === "both" ? t("conflicts.allBoth") : keepLabel(keep, single, t);
               return (
                 <Button
                   key={keep}
@@ -145,15 +158,15 @@ export function Conflicts() {
 }
 
 const styles = StyleSheet.create({
-  version: {
+  side: {
+    gap: space.xs,
+  },
+  sideHead: {
     flexDirection: "row",
     alignItems: "center",
     gap: space.sm,
   },
   choices: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "flex-end",
     gap: space.sm,
   },
 });

@@ -36,6 +36,9 @@ export function CardMenu({
   const button = useRef<View>(null);
   const [at, setAt] = useState<{ top: number; right: number } | null>(null);
 
+  // A single action stands as a plain button, since a menu would only hide it.
+  const only = items.length === 1 ? items[0] : undefined;
+
   // The menu opens only once the button is measured, so it never paints at
   // the top left for a frame.
   const open = () => {
@@ -48,6 +51,22 @@ export function CardMenu({
       });
     });
   };
+
+  if (only) {
+    return floating ? (
+      <Press
+        onPress={only.onPress}
+        accessibilityRole="button"
+        accessibilityLabel={only.label}
+        android_ripple={{ color: p.hover }}
+        style={[styles.floating, { backgroundColor: p.surface2, ...corners.pill }]}
+      >
+        <Glyph name={only.glyph} color={p.text} size={22} />
+      </Press>
+    ) : (
+      <Button label={only.label} glyph={only.glyph} wide={false} onPress={only.onPress} />
+    );
+  }
 
   return (
     <>
