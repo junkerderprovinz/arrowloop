@@ -3,8 +3,8 @@
 //
 // Each size stage pins height, horizontal padding and font size together, so
 // no call site repeats its own literals:
-//   small   18px tall, 11px text (--text-caption)
-//   medium  20px tall, 12px text (--text-dense), the usual status chip
+//   small   18px tall, 12px text (--text-meta)
+//   medium  20px tall, 12px text, the usual status chip
 //   large   24px tall, 12px text, a count badge or a button-weight badge
 //   heading 22px, the section heading notch
 //   icon    32px, every square icon-only badge
@@ -78,6 +78,19 @@ const TONE_CLASSES: Record<BadgeTone, string> = {
   muted: "text-carbon-textMuted",
 };
 
+// A badge that is a button or a link hovers by a colour step, like Button
+// (rule 21); `opacity` would let the card show through. A wash steps toward its
+// own ink, read where the badge sits, so a hued badge steps from its hue.
+const HOVER_CLASSES: Record<BadgeTone, string> = {
+  ok: "hover:bg-[color-mix(in_srgb,var(--status-ok-bg),var(--status-ok)_12%)]",
+  fail: "hover:bg-[color-mix(in_srgb,var(--status-fail-bg),var(--status-fail)_12%)]",
+  warn: "hover:bg-[color-mix(in_srgb,var(--status-warn-bg-strong),var(--status-warn)_12%)]",
+  active: "hover:bg-[color-mix(in_srgb,var(--accent-soft),var(--accent)_12%)]",
+  neutral: "hover:bg-carbon-surface3",
+  heading: "hover:bg-accentHover",
+  muted: "hover:text-carbon-text",
+};
+
 const RADIUS_CLASSES: Record<BadgeShape, string> = {
   pill: "rounded-pill",
   square: "rounded-pill",
@@ -89,12 +102,12 @@ const RADIUS_CLASSES: Record<BadgeShape, string> = {
 // two conflicting px-* utilities, whose winner would depend on stylesheet
 // order. minHeight replaces height in wrap mode for the same reason.
 const SIZE_TOKENS: Record<BadgeSize, { height: string; minHeight: string; text: string; padding: string }> = {
-  small: { height: "h-[18px]", minHeight: "min-h-[18px]", text: "text-caption", padding: "px-1.5" },
-  medium: { height: "h-5", minHeight: "min-h-5", text: "text-dense", padding: "px-2" },
-  large: { height: "h-6", minHeight: "min-h-6", text: "text-dense", padding: "px-2.5" },
-  heading: { height: "h-[22px]", minHeight: "min-h-[22px]", text: "text-dense uppercase tracking-widest", padding: "px-3" },
+  small: { height: "h-[18px]", minHeight: "min-h-[18px]", text: "text-meta", padding: "px-1.5" },
+  medium: { height: "h-5", minHeight: "min-h-5", text: "text-meta", padding: "px-2" },
+  large: { height: "h-6", minHeight: "min-h-6", text: "text-meta", padding: "px-2.5" },
+  heading: { height: "h-[22px]", minHeight: "min-h-[22px]", text: "text-meta uppercase tracking-widest", padding: "px-3" },
   // text and padding are unused, since an icon-only badge has no text.
-  icon: { height: "h-8", minHeight: "min-h-8", text: "text-dense", padding: "px-2" },
+  icon: { height: "h-8", minHeight: "min-h-8", text: "text-meta", padding: "px-2" },
 };
 
 interface BadgeStyleOptions {
@@ -237,8 +250,9 @@ export function Badge({
   // plain function, and hueVars points at the root's colours, so a palette
   // change reaches the badge without a render.
   //
-  // In the light theme --accent-ink is a fixed value, so a hued active badge's
-  // text keeps the gold-calibrated ink while its background follows the hue.
+  // Rainbow never colours text: --accent-ink is not redefined under .glim-hue,
+  // so a hued active badge's text keeps the single accent's ink while its
+  // background follows the hue.
   const hueOn = hueIndex !== undefined && (tone === "heading" || tone === "active");
   // `.glim-notch-hue` drives the card-wide reactive hover in tokens.css, so it
   // is only set on a heading-sized badge.
@@ -246,9 +260,11 @@ export function Badge({
   const shared = badgeClassName({ tone, size, shape, wrap, className, iconOnly: tip !== undefined, inFlow, insetStart });
   const merged = hueOn ? `glim-hue ${isNotchHue ? "glim-notch-hue " : ""}${shared}` : shared;
   const hueStyle = hueOn ? (hueVars(hueIndex) as CSSProperties) : undefined;
+  // The icon-only active badge is the solid accent, so it steps like a heading.
+  const hover = tip !== undefined && tone === "active" ? HOVER_CLASSES.heading : HOVER_CLASSES[tone];
 
   if (as === "button") {
-    const buttonClassName = `appearance-none transition-opacity hover:opacity-80 disabled:opacity-50 disabled:hover:opacity-50 ${merged}`;
+    const buttonClassName = `appearance-none transition-colors ${hover} disabled:pointer-events-none disabled:opacity-50 ${merged}`;
     if (tip !== undefined) {
       return (
         <IconTipButton tip={tip} onClick={onClick} disabled={disabled} style={hueStyle} className={buttonClassName}>
@@ -273,7 +289,7 @@ export function Badge({
 
   if (as === "a") {
     return (
-      <a href={href} target={target} rel={rel} title={title} aria-label={ariaLabel} style={hueStyle} className={`transition-opacity hover:opacity-80 ${merged}`}>
+      <a href={href} target={target} rel={rel} title={title} aria-label={ariaLabel} style={hueStyle} className={`transition-colors ${hover} ${merged}`}>
         {children}
       </a>
     );

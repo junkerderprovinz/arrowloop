@@ -27,14 +27,21 @@
      tokens.css): text-* and strokes on the page's ground use ink, bg-* keeps
      text-accent with --accent-contrast on top. */
   --color-accentInk: var(--accent-ink);
+  /* The ink for a line-drawn glyph, which takes a rainbow position where text
+     does not. */
+  --color-accentGlyph: var(--accent-glyph);
+  /* The accent-filled button's hover step (rule 21). */
+  --color-accentHover: var(--accent-hover);
 
   --color-statusOk: var(--status-ok-text);
   --color-statusOkBg: var(--status-ok-bg);
   --color-statusOkSolid: var(--status-ok-solid);
+  --color-statusOkHover: var(--status-ok-hover);
 
   --color-statusFail: var(--status-fail-text);
   --color-statusFailBg: var(--status-fail-bg);
   --color-statusFailSolid: var(--status-fail-solid);
+  --color-statusFailHover: var(--status-fail-hover);
 
   --color-statusWarn: var(--status-warn-text);
   --color-statusWarnBg: var(--status-warn-bg);
@@ -44,6 +51,7 @@
   /* The quiet end, for a paragraph that explains rather than warns. */
   --color-statusWarnBgSoft: var(--status-warn-bg-soft);
   --color-statusWarnSolid: var(--status-warn-solid);
+  --color-statusWarnHover: var(--status-warn-hover);
 
   --color-statusInfo: var(--status-info-text);
   --color-statusInfoBg: var(--status-info-bg);
@@ -56,23 +64,38 @@
   --radius-card: var(--radius-card);
   --radius-control: var(--radius-control);
   --radius-pill: var(--radius-pill);
+
+  /* The type scale as text-status, text-title, text-body, text-subline and
+     text-meta. Each key names its own runtime property, which works because
+     @theme compiles into a cascade layer that the unlayered :root in
+     tokens.css outranks. */
+  --text-status: var(--text-status);
+  --text-title: var(--text-title);
+  --text-body: var(--text-body);
+  --text-subline: var(--text-subline);
+  --text-meta: var(--text-meta);
+  --text-heading: var(--text-heading);
+  --text-dense: var(--text-dense);
+  --text-caption: var(--text-caption);
 }
 
 /* Tailwind resolves `--color-accent: var(--accent)` once at :root, so bg-accent
    and text-accent never see a .glim-hue subtree's own --accent. Anything in the
    @theme block that a rainbow position should own is repeated here under the
-   selectors tokens.css uses for --accent. */
+   selectors tokens.css uses for --accent. --color-accentInk is not among them,
+   because rainbow never colours text. */
 [data-rainbow] .glim-hue {
   --color-accent: var(--item-hue);
   --color-accentContrast: var(--item-hue-ink);
   --color-accentSoft: var(--item-hue-soft);
-  --color-accentInk: var(--accent-ink);
+  --color-accentGlyph: var(--accent-glyph);
+  --color-accentHover: var(--accent-hover);
 }
 [data-rainbow='reactive'] .glim-hue {
   --color-accent: var(--carbon-text-muted);
   --color-accentContrast: var(--carbon-bg);
   --color-accentSoft: transparent;
-  --color-accentInk: var(--carbon-text-muted);
+  --color-accentGlyph: var(--carbon-text-muted);
 }
 [data-rainbow='reactive'] .glim-hue:hover,
 [data-rainbow='reactive'] .glim-hue:focus-within,
@@ -80,5 +103,5 @@
   --color-accent: var(--item-hue);
   --color-accentContrast: var(--item-hue-ink);
   --color-accentSoft: var(--item-hue-soft);
-  --color-accentInk: var(--accent-ink);
+  --color-accentGlyph: var(--accent-glyph);
 }

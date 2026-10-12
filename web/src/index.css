@@ -6,16 +6,6 @@
 @import "./brandGlyphs.css";
 @import "./donateMarks.css";
 
-/* GlimStone's tailwind-theme.css does not register the type scale, so
-   `text-caption` and its siblings would resolve to nothing without this. It is
-   the same block BombVault carries until the design language takes it. */
-@theme inline {
-  --text-heading: var(--text-heading);
-  --text-body: var(--text-body);
-  --text-dense: var(--text-dense);
-  --text-caption: var(--text-caption);
-}
-
 /* Everything above is GlimStone; a rule below is one the design language does
    not know about, so keep them few. */
 html,

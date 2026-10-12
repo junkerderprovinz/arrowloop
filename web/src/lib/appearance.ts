@@ -193,8 +193,9 @@ export function stormTap(state: { taps: number }, tapped: string, current: strin
  * back. The contrast colour is computed, so a light accent never gets white
  * text.
  *
- * `--accent-ink` is not set here: tokens.css derives it from --accent with
- * color-mix, so it also follows a later light or dark switch.
+ * `--accent-ink`, `--accent-glyph` and `--accent-hover` are not set here:
+ * tokens.css derives them from --accent with color-mix, so they also follow a
+ * later light or dark switch.
  */
 export function applyAccent(hex: string | undefined): void {
   const root = document.documentElement.style;

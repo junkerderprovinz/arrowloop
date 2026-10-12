@@ -22,7 +22,7 @@ export function statusOf(job: Job, lastFailed: boolean): JobStatus {
 }
 
 const INK: Record<JobStatus, string> = {
-  running: 'text-accentInk',
+  running: 'text-accentGlyph',
   failed: 'text-statusFail',
   paused: 'text-carbon-textMuted',
   ok: 'text-statusOk',

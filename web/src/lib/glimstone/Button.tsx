@@ -48,15 +48,18 @@ export type ButtonVariant = "default" | "chip" | "icon";
 // `ok`, `danger` and `warn` put the solid status tokens under `carbon-background`
 // ink: in both themes the solid values sit at the opposite lightness to the
 // background, so one ink reads on both.
+//
+// Filled tones hover up their own ramp (rule 21). `--carbon-hover` is for
+// controls with no fill, and on the dark ramp it is darker than surface2. The
+// accent and status fills have no ramp, so each steps toward the theme's text
+// colour; `opacity` would let the card show through and move the other way.
 const TONE_CLASS: Record<ButtonTone, string> = {
-  accent: "bg-accent text-accentContrast hover:opacity-90",
-  // Filled tones hover up their own ramp (rule 21). `--carbon-hover` is for
-  // controls with no fill, and on the dark ramp it is darker than surface2.
+  accent: "bg-accent text-accentContrast hover:bg-accentHover",
   neutral: "bg-carbon-surface3 text-carbon-text hover:bg-carbon-hoverRaised",
   subtle: "bg-carbon-surface2 text-carbon-text hover:bg-carbon-surface3",
-  ok: "bg-statusOkSolid text-carbon-background hover:opacity-90",
-  danger: "bg-statusFailSolid text-carbon-background hover:opacity-90",
-  warn: "bg-statusWarnSolid text-carbon-background hover:opacity-90",
+  ok: "bg-statusOkSolid text-carbon-background hover:bg-statusOkHover",
+  danger: "bg-statusFailSolid text-carbon-background hover:bg-statusFailHover",
+  warn: "bg-statusWarnSolid text-carbon-background hover:bg-statusWarnHover",
 };
 
 export function Button({
