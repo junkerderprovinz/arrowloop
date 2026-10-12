@@ -22,7 +22,6 @@ export type ConflictsStack = {
 
 export type HistoryStack = {
   RunList: undefined;
-  RunDetail: { id: number; job: string };
 };
 
 export type SettingsStack = {

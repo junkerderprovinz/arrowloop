@@ -32,7 +32,6 @@ import { JobEdit } from "./src/screens/JobEdit";
 import { Jobs } from "./src/screens/Jobs";
 import { Language } from "./src/screens/Language";
 import { Plan } from "./src/screens/Plan";
-import { RunDetail } from "./src/screens/RunDetail";
 import { Settings } from "./src/screens/Settings";
 import { SyncSettings } from "./src/screens/SyncSettings";
 import { TargetEdit } from "./src/screens/TargetEdit";
@@ -217,7 +216,6 @@ function Shell() {
             {() => (
               <HistoryNav.Navigator screenOptions={header}>
                 <HistoryNav.Screen name="RunList" component={History} options={{ title: t("history.title") }} />
-                <HistoryNav.Screen name="RunDetail" component={RunDetail} options={{ title: t("jobs.history") }} />
               </HistoryNav.Navigator>
             )}
           </Tabs.Screen>

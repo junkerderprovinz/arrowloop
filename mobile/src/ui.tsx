@@ -34,6 +34,8 @@ import {
   type Corners,
   type Radii,
 } from "./theme";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useT } from "./i18n";
 import { useAppearance, type BarLabelMode, type LabelMode } from "./settings";
 import { useWalkedPalette } from "./disco";
 import { springOf, useConfirm, useMotion } from "./motion";
@@ -368,6 +370,104 @@ export function Section({
         {hint ? <InfoBubble tip={hint} on={ink} /> : null}
       </View>
     </Animated.View>
+  );
+}
+
+/**
+ * The top of a card that a virtualised list draws piece by piece: the notch
+ * and the card's upper corners. The rows go in ListPiece and the card closes
+ * with ListEnd, so a long list still reads as one card.
+ */
+export function ListTop({ title, hue }: { title: string; hue?: number }) {
+  const { p, corners, accent, hueAt } = useTheme();
+  const fill = (hue !== undefined ? hueAt(hue) : undefined) ?? accent;
+  const c = corners.card;
+  return (
+    <View style={styles.notchWrap}>
+      <View
+        style={[
+          styles.listTop,
+          {
+            backgroundColor: p.surface,
+            borderTopLeftRadius: c.borderTopLeftRadius ?? c.borderRadius,
+            borderTopRightRadius: c.borderTopRightRadius ?? c.borderRadius,
+          },
+        ]}
+      />
+      <View style={[styles.notch, { backgroundColor: fill, ...corners.pill }]}>
+        <Text style={[styles.notchText, { color: contrastOn(fill) }]} numberOfLines={1}>
+          {title}
+        </Text>
+      </View>
+    </View>
+  );
+}
+
+/** One stretch of a ListTop's card, at the card's ground and side padding. */
+export function ListPiece({ children }: { children: ReactNode }) {
+  const { p } = useTheme();
+  return <View style={[styles.listPiece, { backgroundColor: p.surface }]}>{children}</View>;
+}
+
+/** The lower end of a ListTop's card. */
+export function ListEnd() {
+  const { p, corners } = useTheme();
+  const c = corners.card;
+  return (
+    <View
+      style={[
+        styles.listEnd,
+        {
+          backgroundColor: p.surface,
+          borderBottomLeftRadius: c.borderBottomLeftRadius ?? c.borderRadius,
+          borderBottomRightRadius: c.borderBottomRightRadius ?? c.borderRadius,
+        },
+      ]}
+    />
+  );
+}
+
+/**
+ * A window that rises from the bottom edge, for what a row used to fold out:
+ * its title as a badge, the content scrolling between, and Close in the
+ * bottom row, in reach of the thumb.
+ */
+export function Sheet({
+  open,
+  title,
+  onClose,
+  children,
+}: {
+  open: boolean;
+  title: string;
+  onClose: () => void;
+  children: ReactNode;
+}) {
+  const { p, corners, accent } = useTheme();
+  const { t } = useT();
+  const { ms } = useMotion();
+  const inset = useSafeAreaInsets();
+  return (
+    <Modal visible={open} transparent animationType={ms.fade ? "fade" : "none"} onRequestClose={onClose}>
+      <View style={[styles.sheetGround, { paddingBottom: Math.max(inset.bottom, space.sm) }]}>
+        <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: p.scrim }]} onPress={onClose} />
+        <View style={[styles.sheet, { backgroundColor: p.surface, ...corners.card }]}>
+          <View style={styles.sheetHead}>
+            <View style={[styles.sheetTitle, { backgroundColor: accent, ...corners.pill }]}>
+              <Text style={[styles.notchText, { color: contrastOn(accent) }]} numberOfLines={2}>
+                {title}
+              </Text>
+            </View>
+          </View>
+          <ScrollView style={styles.sheetScroll} contentContainerStyle={styles.sheetBody}>
+            {children}
+          </ScrollView>
+          <View style={styles.sheetFoot}>
+            <Button label={t("common.close")} labelKey="common.close" wide={false} onPress={onClose} />
+          </View>
+        </View>
+      </View>
+    </Modal>
   );
 }
 
@@ -1333,6 +1433,17 @@ const styles = StyleSheet.create({
 
   dimmed: { opacity: 0.4 },
   held: { opacity: HELD },
+  // The notch's room above, the card's padding at its sides and ends.
+  listTop: { height: space.xl },
+  listPiece: { paddingHorizontal: space.lg },
+  listEnd: { height: space.md },
+  sheetGround: { flex: 1, justifyContent: "flex-end", paddingHorizontal: space.md },
+  sheet: { maxHeight: "88%", overflow: "hidden", elevation: 8 },
+  sheetHead: { paddingHorizontal: space.lg, paddingTop: space.lg },
+  sheetTitle: { alignSelf: "flex-start", paddingHorizontal: space.md, paddingVertical: 3 },
+  sheetScroll: { flexGrow: 0, flexShrink: 1 },
+  sheetBody: { padding: space.lg, gap: space.md },
+  sheetFoot: { flexDirection: "row", justifyContent: "flex-end", padding: space.lg, paddingTop: 0 },
   mark: { width: 20, height: 20, alignItems: "center", justifyContent: "center" },
   pickRow: { flexDirection: "row", alignItems: "center", gap: space.md, padding: space.md },
   pickBody: { flex: 1, minWidth: 0, gap: space.xs },
