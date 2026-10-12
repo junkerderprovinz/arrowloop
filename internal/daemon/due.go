@@ -19,43 +19,49 @@ import (
 func (r *Runner) Due(ctx context.Context, now time.Time) []string {
 	var due []string
 	for _, j := range r.config().Jobs {
-		if j.Disabled || j.Schedule == "" {
-			continue
-		}
-		parsed, err := job.ParseSchedule(j.Schedule)
-		if err != nil {
-			r.log("%s: unusable schedule %q: %v", j.Name, j.Schedule, err)
-			continue
-		}
-		last, ok, err := r.lastSuccess(ctx, j.Name)
-		if err != nil {
-			// A broken log must not stop every schedule: a run too many costs
-			// a comparison, a run too few a night's backup.
-			r.log("%s: cannot read when it last succeeded (%v), treating it as due", j.Name, err)
+		if r.owed(ctx, j, now) {
 			due = append(due, j.Name)
-			continue
 		}
-		// A next tick after the last success that has already passed is a
-		// tick this job missed.
-		if ok {
-			if next := parsed.Next(last); next.After(now) {
-				continue
-			}
-		}
-		// For a job that never worked, last is the zero time and every
-		// failure counts.
-		if r.backingOff(ctx, j.Name, last, parsed, now) {
-			continue
-		}
-		// A held job is looked at once per scheduled turn, to see whether
-		// what held it has gone. It never succeeds while held, and without
-		// this a phone would list both sides at every wake-up.
-		if seen, held := r.Held(j.Name); held && parsed.Next(seen).After(now) {
-			continue
-		}
-		due = append(due, j.Name)
 	}
 	return due
+}
+
+// owed reports whether a job is due, which Due describes.
+func (r *Runner) owed(ctx context.Context, j job.Job, now time.Time) bool {
+	if j.Disabled || j.Schedule == "" {
+		return false
+	}
+	parsed, err := job.ParseSchedule(j.Schedule)
+	if err != nil {
+		r.log("%s: unusable schedule %q: %v", j.Name, j.Schedule, err)
+		return false
+	}
+	last, ok, err := r.lastSuccess(ctx, j.Name)
+	if err != nil {
+		// A broken log must not stop every schedule: a run too many costs
+		// a comparison, a run too few a night's backup.
+		r.log("%s: cannot read when it last succeeded (%v), treating it as due", j.Name, err)
+		return true
+	}
+	// A next tick after the last success that has already passed is a tick
+	// this job missed.
+	if ok {
+		if next := parsed.Next(last); next.After(now) {
+			return false
+		}
+	}
+	// For a job that never worked, last is the zero time and every failure
+	// counts.
+	if r.backingOff(ctx, j.Name, last, parsed, now) {
+		return false
+	}
+	// A held job is looked at once per scheduled turn, to see whether what
+	// held it has gone. It never succeeds while held, and without this a
+	// phone would list both sides at every wake-up.
+	if seen, held := r.Held(j.Name); held && parsed.Next(seen).After(now) {
+		return false
+	}
+	return true
 }
 
 // backingOff reports whether a job that is otherwise due should be left alone
@@ -115,6 +121,43 @@ func (r *Runner) Retrying(ctx context.Context, now time.Time) []string {
 		due = append(due, j.Name)
 	}
 	return due
+}
+
+// catchUp runs the jobs whose drive is back and that missed a turn while it
+// was away. A computer's clock only fires on each job's own turns, where a
+// phone's next wake-up finds the turn owed, so the scheduler asks this every
+// minute.
+func (r *Runner) catchUp(ctx context.Context, now time.Time) {
+	for _, name := range r.returned(ctx, now) {
+		if ctx.Err() != nil {
+			return
+		}
+		r.log("%s: its drive is back, catching up the run it missed", name)
+		r.runAndReport(ctx, name)
+	}
+}
+
+// returned is the jobs waiting for a drive that is attached again and that
+// owe a turn. One whose drive is back and that owes nothing stops waiting. A
+// job with a before command is left to its turn, since the command may be
+// what attaches the drive.
+func (r *Runner) returned(ctx context.Context, now time.Time) []string {
+	running := r.Running()
+	var back []string
+	for _, j := range r.config().Jobs {
+		if _, waits := r.waiting.Since(j.Name); !waits {
+			continue
+		}
+		if j.Disabled || j.Before != "" || running[j.Name] || attached(j) != nil {
+			continue
+		}
+		if !r.owed(ctx, j, now) {
+			r.waiting.clear(j.Name)
+			continue
+		}
+		back = append(back, j.Name)
+	}
+	return back
 }
 
 // RunDue runs the due jobs one at a time and reports what happened. It blocks,
