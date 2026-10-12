@@ -6,9 +6,9 @@ import { DEFAULT_APPEARANCE, useAppearance, type MotionIntensity } from "./setti
 
 /**
  * The motion levels of the web app's lib/motion.ts: one animation at every
- * level, with only the numbers changing. Android's reduce motion setting always
- * wins. LayoutAnimation covers most movement here, since nearly everything that
- * moves is a layout change.
+ * level, with only the numbers changing. Android's reduce motion setting wins
+ * over every level but the storm. LayoutAnimation covers most movement here,
+ * since nearly everything that moves is a layout change.
  */
 
 export type { MotionIntensity };
@@ -51,9 +51,8 @@ AccessibilityInfo.addEventListener("reduceMotionChanged", (on) => {
   listeners.forEach((fn) => fn());
 });
 
-/** The level in force: the app's own choice, or `off` when Android asks for less motion. */
-export function useMotion(): { intensity: MotionIntensity; ms: (typeof MOTION)[MotionIntensity] } {
-  const a = useAppearance();
+/** Whether Android asks for less motion, re-rendering when that changes. */
+export function useSystemReduced(): boolean {
   const [, bump] = useState(0);
   useEffect(() => {
     const fn = () => bump((n) => n + 1);
@@ -62,7 +61,18 @@ export function useMotion(): { intensity: MotionIntensity; ms: (typeof MOTION)[M
       listeners.delete(fn);
     };
   }, []);
-  const intensity: MotionIntensity = systemReduced ? "off" : a.motion;
+  return systemReduced;
+}
+
+/**
+ * The level in force: the app's own choice, or `off` when Android asks for
+ * less motion. The storm is the exception, since somebody who found the
+ * hidden level asked for it outright.
+ */
+export function useMotion(): { intensity: MotionIntensity; ms: (typeof MOTION)[MotionIntensity] } {
+  const a = useAppearance();
+  const reduced = useSystemReduced();
+  const intensity: MotionIntensity = reduced && a.motion !== "storm" ? "off" : a.motion;
   return { intensity, ms: MOTION[intensity] };
 }
 

@@ -1,49 +1,47 @@
 import { useNavigation } from "@react-navigation/native";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { LANGUAGES, useT } from "../i18n";
 import { flagEmoji } from "../../../web/src/lib/flagEmoji";
-import { contrastOn, space, text } from "../theme";
-import { Caption, Page, Title, useTheme } from "../ui";
+import { Glyph } from "../glyphs";
+import { space, text } from "../theme";
+import { Page, Press, useTheme } from "../ui";
 
 /**
- * The language list, each entry named in its own language. There is no
- * "automatic" entry: a fresh install starts on the phone's locale, and the
- * list shows which language that is.
+ * The language list, each entry named in its own language, with a check on
+ * the one in use. There is no "automatic" entry: a fresh install starts on the
+ * phone's locale, and the list shows which language that is. The header
+ * already names the page, so the list starts at once.
  */
 export function Language() {
   const nav = useNavigation();
-  const { t, lang, setLang } = useT();
-  const { p, corners, accent } = useTheme();
+  const { lang, setLang } = useT();
+  const { p, corners, accentInk } = useTheme();
 
   return (
     <Page>
-      <Title>{t("look.language")}</Title>
       <View style={styles.list}>
         {LANGUAGES.map((language) => {
           const on = language.code === lang;
           return (
-            <Pressable
+            <Press
               key={language.code}
+              accessibilityRole="button"
+              accessibilityState={{ selected: on }}
               onPress={() => {
                 setLang(language.code);
                 nav.goBack();
               }}
               android_ripple={{ color: p.hover }}
-              style={[
-                styles.row,
-                {
-                  backgroundColor: on ? accent : p.surface,
-                  ...corners.control,
-                },
-              ]}
+              // The chosen row is a deeper fill rather than an outline, since
+              // surfaces are told apart by shade.
+              style={[styles.row, { backgroundColor: on ? p.surface2 : p.surface, ...corners.card }]}
             >
               {/* Android draws the regional-indicator pair as a flag. The web
                   needs a sprite because Windows shows it as two letters. */}
               <Text style={styles.flag}>{flagEmoji(language.flag)}</Text>
-              <Text style={[styles.label, { color: on ? contrastOn(accent) : p.text }]}>
-                {language.label}
-              </Text>
-            </Pressable>
+              <Text style={[styles.label, { color: p.text }]}>{language.label}</Text>
+              {on ? <Glyph name="IconCheck" color={accentInk} size={18} /> : null}
+            </Press>
           );
         })}
       </View>
@@ -53,7 +51,6 @@ export function Language() {
 
 const styles = StyleSheet.create({
   list: { gap: space.sm },
-  // No border: surfaces are separated by shade, and the chosen row is filled.
   row: {
     paddingHorizontal: space.lg,
     minHeight: 52,
@@ -61,6 +58,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: space.md,
   },
-  flag: { fontSize: 20 },
-  label: { fontSize: text.body, fontWeight: "600" },
+  // A fixed width keeps every name on one column, since emoji flags do not
+  // all measure the same.
+  flag: { fontSize: text.status, width: 32 },
+  label: { flex: 1, fontSize: text.body },
 });

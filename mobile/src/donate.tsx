@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import Svg, { Path, Rect } from "react-native-svg";
+import { WebView } from "react-native-webview";
 
-import { CRYPTO_COINS, type CryptoCoin, type CryptoNetwork } from "../../web/src/lib/donate";
+import { COFFEE_WIDGET, CRYPTO_COINS, type CryptoCoin, type CryptoNetwork } from "../../web/src/lib/donate";
 import { buildQR } from "../../web/src/lib/qr";
 import { CoinMark } from "./glyphs";
 import { useT } from "./i18n";
@@ -196,6 +197,53 @@ export function CryptoDonate({ onClose }: { onClose: () => void }) {
 }
 
 /**
+ * The coffee window: Buy Me a Coffee's widget page, the one page of theirs that
+ * may be framed, in a web view inside the house's window. It is mounted only
+ * while the window is open, so nothing of theirs loads before somebody asks
+ * for it, and it takes all the height the screen allows, since the payment
+ * step runs long.
+ */
+export function CoffeeDonate({ onClose }: { onClose: () => void }) {
+  const { t } = useT();
+  const { p, corners, accent } = useTheme();
+  const { ms } = useMotion();
+  return (
+    <Modal visible transparent animationType={ms.fade ? "fade" : "none"} onRequestClose={onClose}>
+      {/* The window is no pressable, so the frame's own scrolling and taps
+          reach it untouched; the scrim behind it closes. */}
+      <View style={styles.ground}>
+        <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: p.scrim }]} onPress={onClose} />
+        <View style={[styles.card, styles.tall, { backgroundColor: p.surface, ...corners.card }]}>
+          <View style={styles.titleRow}>
+            <View style={[styles.title, { backgroundColor: accent, ...corners.pill }]}>
+              <Text style={[styles.titleText, { color: contrastOn(accent) }]} numberOfLines={2}>
+                {t("about.coffeeButton")}
+              </Text>
+            </View>
+          </View>
+          <View style={styles.body}>
+            <Text style={[styles.intro, { color: p.text }]}>{t("about.donateAppeal")}</Text>
+            <Text style={[styles.intro, { color: p.textSub }]}>{t("about.coffeeIntro")}</Text>
+          </View>
+          <View style={[styles.frame, { backgroundColor: p.surface2, ...corners.control }]}>
+            <WebView
+              source={{ uri: COFFEE_WIDGET }}
+              originWhitelist={["https://*"]}
+              // A page that opens a new window loads it here instead.
+              setSupportMultipleWindows={false}
+              style={{ backgroundColor: p.surface2 }}
+            />
+          </View>
+          <View style={styles.footer}>
+            <Button label={t("common.close")} labelKey="common.close" onPress={onClose} />
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
+}
+
+/**
  * The address as a QR code, black on white in every theme: many scanners
  * cannot read an inverted code.
  */
@@ -217,6 +265,9 @@ const styles = StyleSheet.create({
     padding: space.lg,
   },
   card: { width: "100%", maxWidth: 420, maxHeight: "88%", overflow: "hidden" },
+  // The screen's height less the ground's margin, which keeps it a window.
+  tall: { flex: 1, maxHeight: "100%" },
+  frame: { flex: 1, marginHorizontal: space.lg, marginBottom: space.lg, overflow: "hidden" },
   titleRow: { paddingHorizontal: space.lg, paddingTop: space.lg },
   title: { alignSelf: "flex-start", paddingHorizontal: space.md, paddingVertical: 3 },
   titleText: { fontSize: text.meta, fontWeight: "500", textTransform: "uppercase", letterSpacing: 1.2 },

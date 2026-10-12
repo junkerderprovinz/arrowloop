@@ -1,10 +1,9 @@
 import { useNavigation } from "@react-navigation/native";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { AppState, Linking, PermissionsAndroid, Platform, StyleSheet, Text, View } from "react-native";
+import { Alert, AppState, Linking, PermissionsAndroid, Platform, StyleSheet, Text, View } from "react-native";
 import Constants from "expo-constants";
 import { api } from "../api";
-import { heldKey } from "../deviceConditions";
-import { engine, type DeviceConditions, type DevicePolicy } from "../engine";
+import { engine } from "../engine";
 import { useT } from "../i18n";
 import type { Nav, SettingsStack } from "../nav";
 import { ACCENTS, BRAND, DEFAULT_ACCENT, PLATFORM, RAINBOW, space, text, TILE } from "../theme";
@@ -12,7 +11,6 @@ import {
   setAppearance,
   settings as settingsApi,
   useAppearance,
-  useEngineSettings,
   type BarLabelMode,
   type EngineSettings,
   type LabelMode,
@@ -20,22 +18,18 @@ import {
   type ThemeChoice,
 } from "../settings";
 import { GLIMSTONE_VERSION } from "../glimstone/version";
-import {
-  COFFEE,
-  glimstoneRelease,
-  MAIL,
-  PAYPAL,
-  REPO,
-} from "../../../web/src/lib/donate";
+import { COFFEE, glimstoneRelease, MAIL, PAYPAL, REPO } from "../../../web/src/lib/donate";
+import { MANUAL, PRIVACY } from "../../../web/src/lib/handbook";
 import { nearestPreset } from "../../../web/src/lib/colorMath";
 import { flagEmoji } from "../../../web/src/lib/flagEmoji";
 import { useClosingLoop, useDiscoUnlock, useLeafUnlock, useStormUnlock } from "../eggs";
-import { animateNext, useMotion, type MotionIntensity } from "../motion";
+import { animateNext, useMotion, useSystemReduced, type MotionIntensity } from "../motion";
 import { ColorPicker, EditableSwatch, ResetMark } from "../ColorPicker";
-import { CryptoDonate } from "../donate";
+import { CoffeeDonate, CryptoDonate } from "../donate";
 import { Field } from "../fields";
-import { Schedule } from "./JobEdit";
-import { AppMark, CoffeeArt, DonateMark, MailMark } from "../glyphs";
+import { isAccount } from "../space";
+import { useWaiting } from "../waiting";
+import { AppMark, CoffeeArt, DonateMark, MailMark, ManualMark } from "../glyphs";
 import { APPLE_SVG, DOCKER_SVG, LINUX_SVG, UNRAID_SVG, WINDOWS_SVG, ZIP_SVG } from "../../../web/src/lib/appMarks";
 import { DOCKER_RUN, DOWNLOADS, UNRAID_CA, sourceZip } from "../../../web/src/lib/downloads";
 import {
@@ -46,25 +40,31 @@ import {
   Choice,
   Page,
   InfoBubble,
+  Mono,
+  Press,
   README_GAP,
   ReadmeButton,
   ReadmeRow,
+  Row,
   Section,
-  Title,
   Toggle,
   useTheme,
 } from "../ui";
 
 /**
- * The settings page: the GlimStone appearance axes first, then when jobs may
- * run, then the permissions, each with what it is for and one button.
+ * The settings page, in the order every GlimStone phone app keeps: the
+ * language, the phone's own permissions, the look, motion, then what this app
+ * does, the other forms of ArrowLoop, the report, About and the danger zone.
+ * Each card keeps its palette position wherever it stands.
  */
 export function Settings() {
   const nav = useNavigation<Nav<SettingsStack>>();
   const { t, lang } = useT();
   const look = useAppearance();
-  const { p, scheme, accent, accentContrast, accentInk, barLabels } = useTheme();
+  const { p, corners, scheme, accent, accentContrast, accentInk, barLabels } = useTheme();
   const { intensity: motion } = useMotion();
+  const reduced = useSystemReduced();
+  const waiting = useWaiting();
   const storm = useStormUnlock();
   const leaf = useLeafUnlock();
   const disco = useDiscoUnlock();
@@ -84,22 +84,32 @@ export function Settings() {
   const [notify, setNotify] = useState<boolean | null>(null);
   const [doze, setDoze] = useState<boolean | null>(null);
   const [running, setRunning] = useState<boolean | null>(null);
-  const [policy, setPolicy] = useState<DevicePolicy | null>(null);
   const [version, setVersion] = useState<string | null>(null);
   const [lockable, setLockable] = useState(false);
   const [backupFile, setBackupFile] = useState("");
   const [backupBusy, setBackupBusy] = useState(false);
   const [backupSaid, setBackupSaid] = useState("");
-  // Counters, so each export or import that lands swells its button again.
+  // Counters, so each export, import or copy that lands swells its button again.
   const [exported, setExported] = useState(0);
   const [imported, setImported] = useState(0);
+  const [reported, setReported] = useState(0);
+  const [coffee, setCoffee] = useState(false);
   const [crypto, setCrypto] = useState(false);
   const [dockerCopied, setDockerCopied] = useState(false);
+  const [reportCopied, setReportCopied] = useState(false);
+  const [removing, setRemoving] = useState(false);
+  // Counts refusals, so each one shakes the button that was pressed.
+  const [removeFailed, setRemoveFailed] = useState(0);
   useEffect(() => {
     if (!dockerCopied) return;
     const id = setTimeout(() => setDockerCopied(false), 1800);
     return () => clearTimeout(id);
   }, [dockerCopied]);
+  useEffect(() => {
+    if (!reportCopied) return;
+    const id = setTimeout(() => setReportCopied(false), 2000);
+    return () => clearTimeout(id);
+  }, [reportCopied]);
 
   // The swatch a second press would open. One slot for both rows, so only one
   // ring shows at a time.
@@ -122,11 +132,6 @@ export function Settings() {
   }, [look.accent]);
 
   const palette = look.palette.length ? look.palette : RAINBOW;
-
-  const { settings, update } = useEngineSettings(true);
-  const defaults = (settings?.defaults ?? {}) as Record<string, unknown>;
-  const saveDefaults = (patch: Record<string, unknown>) =>
-    update({ defaults: { ...defaults, ...patch } });
 
   /**
    * Backs up the engine's settings and the jobs. The appearance and the lock
@@ -178,22 +183,19 @@ export function Settings() {
   };
 
   const refresh = useCallback(async () => {
-    const [access, can, alive, device, exempt] = await Promise.all([
+    const [access, can, alive, exempt] = await Promise.all([
       engine.storageGranted(),
       engine.storagePossible(),
       // The process handle is null when the engine was already up at launch.
       engine.answering(),
-      engine.devicePolicy(),
       engine.batteryExempt(),
     ]);
     setGranted(access);
     setPossible(can);
     setRunning(alive);
-    setPolicy(device);
     setDoze(exempt);
     engine.hasDeviceLock().then(setLockable, () => setLockable(false));
     // Shows where a backup would go before one exists.
-    setBackupFile((old) => old || "");
     engine.backupPath().then(
       (where) => setBackupFile((old) => old || where),
       () => {},
@@ -213,43 +215,144 @@ export function Settings() {
     return () => sub.remove();
   }, [refresh]);
 
-  const setConditions = async (next: Partial<DeviceConditions>) => {
-    setPolicy((old) => ({ ...(old ?? EMPTY), ...next }));
-    await engine.setDevicePolicy(next);
-    refresh();
-  };
+  // What a report needs and nothing more. No path, no job or target name and
+  // no address: it is meant to be pasted into a public issue.
+  const appVersion = Constants.expoConfig?.version ?? "?";
+  const report = [
+    `app:      ${appVersion} (${Constants.expoConfig?.android?.versionCode ?? "?"})`,
+    `engine:   ${version ?? "?"}`,
+    `android:  ${Platform.Version}`,
+    `language: ${lang}`,
+    `look:     design=${look.theme}${look.theme === "system" ? ` (${scheme})` : ""} corners=${look.shape} rainbow=${look.rainbow ? "on" : "off"} labels=${look.labels} bar=${barLabels} motion=${look.motion}${reduced ? " (reduced)" : ""}`,
+    `glimstone: ${GLIMSTONE_VERSION}`,
+  ].join("\n");
 
-  const heldAt = heldKey(policy);
-  const held = heldAt ? t(heldAt) : "";
+  /**
+   * Asks before taking every job and every storage location out of the app,
+   * naming how many of each. The files themselves stay where they are. Running
+   * jobs are stopped first, so nothing writes after its job is gone.
+   */
+  const removeAll = async () => {
+    try {
+      const [config, storage, jobs] = await Promise.all([api.config(), api.storage(), api.jobs()]);
+      const targets = storage.remotes.filter(isAccount);
+      Alert.alert(
+        t("danger.removeAll"),
+        t("danger.confirm", { jobs: config.jobs.length, targets: targets.length }),
+        [
+          { text: t("confirm.cancel"), style: "cancel" },
+          {
+            text: t("danger.confirmButton"),
+            // Not "destructive": the question is the warning, not the colour.
+            onPress: async () => {
+              setRemoving(true);
+              try {
+                await Promise.allSettled(jobs.filter((j) => j.running).map((j) => api.stop(j.name)));
+                await api.writeConfig({ ...config, jobs: [] });
+                for (const target of targets) await api.deleteRemote(target.name);
+              } catch {
+                setRemoveFailed((n) => n + 1);
+              } finally {
+                setRemoving(false);
+                waiting.refresh();
+              }
+            },
+          },
+        ],
+      );
+    } catch {
+      setRemoveFailed((n) => n + 1);
+    }
+  };
 
   return (
     <Page>
-      {/* One card per appearance axis, each with its own palette position. The
-          language comes first: somebody who cannot read the screen comes
+      {/* The language comes first: somebody who cannot read the screen comes
           looking for exactly this. */}
       <Section title={t("look.language")} hue={0}>
-        {/* The flag is an emoji, not a glyph, so it is passed as the mark. */}
-        <Button
-          label={langName(lang)}
-          mark={() => <Text style={styles.flag}>{flagEmoji(langFlag(lang))}</Text>}
+        {/* A row rather than a picker: forty languages want a page. The notch
+            names the setting, so the row shows only the language in use. */}
+        <Press
+          accessibilityRole="button"
           onPress={() => nav.navigate("Language")}
+          style={styles.language}
+        >
+          {/* The flag is an emoji, not a glyph. */}
+          <Text style={styles.flag}>{flagEmoji(langFlag(lang))}</Text>
+          <Text style={[styles.languageName, { color: p.text }]}>{langName(lang)}</Text>
+        </Press>
+      </Section>
+
+      {/* Each switch reads Android's state; a tap opens the request dialog or
+          the settings page, and the switch follows what Android reports when
+          the app returns. */}
+      <Section title={t("phone.thisPhone")} hue={4}>
+        <Toggle
+          label={t("phone.access")}
+          // On Android 10 the switch cannot move, and the bubble says why.
+          hint={possible ? t("phone.permissionHint") : t("phone.accessNone")}
+          // Off until the answer arrives.
+          value={granted === true}
+          disabled={!possible}
+          onChange={() => engine.openStorageSettings()}
+        />
+        <Toggle
+          label={t("phone.notify")}
+          hint={t("phone.permissionHint")}
+          value={notify === true}
+          onChange={() => {
+            // After a refusal Android shows no dialog, so the settings page is
+            // the fallback.
+            if (notify) engine.openNotificationSettings();
+            else askNotifications().then((ok) => (ok ? refresh() : engine.openNotificationSettings()));
+          }}
+        />
+        <Toggle
+          label={t("phone.doze")}
+          hint={t("phone.dozeOff")}
+          value={doze === true}
+          onChange={() => engine.openBatterySettings().catch(() => engine.openAppSettings())}
+        />
+        {/* The phone's own lock rather than an app PIN, so there is no second
+            secret to forget. */}
+        <Toggle
+          label={t("settings.lockOn")}
+          hint={lockable ? t("settings.lockHint") : t("settings.lockUnavailable")}
+          value={look.lock}
+          disabled={!lockable}
+          onChange={(on) => {
+            // The lock is tried before it is switched on, so it cannot lock
+            // somebody out.
+            if (!on) {
+              setAppearance({ lock: false });
+              return;
+            }
+            engine
+              .confirmDeviceLock(t("settings.lock"), t("settings.lockHint"))
+              .then((ok) => ok && setAppearance({ lock: true }))
+              .catch(() => {});
+          }}
         />
       </Section>
 
-      <Section title={t("look.theme")} hue={1}>
+      {/* The selectors on this page count through the palette in the order
+          they stand: Design, Corners, the two label rows, then Motion. */}
+      <Section title={t("phone.appearance")} hue={1}>
+        <AxisLabel>{t("phone.design")}</AxisLabel>
         <Choice<ThemeChoice>
+          hue={0}
           value={look.theme}
           onChange={(theme) => setAppearance({ theme })}
           options={[
-            { value: "system", label: t("phone.themeSystem") },
             { value: "dark", label: t("look.dark") },
             { value: "light", label: t("look.light") },
+            { value: "system", label: t("phone.system") },
           ]}
         />
-      </Section>
 
-      <Section title={t("look.corners")} hint={t("look.cornersHint")} hue={2}>
+        <AxisLabel hint={t("look.cornersHint")}>{t("look.corners")}</AxisLabel>
         <Choice<Shape>
+          hue={1}
           value={look.shape}
           onChange={(shape) => {
             setAppearance({ shape });
@@ -262,12 +365,11 @@ export function Settings() {
             ...(leaf.offered ? [{ value: "leaf" as Shape, label: t("look.leaf") }] : []),
           ]}
         />
-      </Section>
 
-      {/* Every swatch chooses on the first press and opens the picker on a
-          second. The web's reactive switch is left out, since a phone has no
-          pointer. */}
-      <Section title={t("look.colors")} hue={3}>
+        {/* Every swatch chooses on the first press and opens the picker on a
+            second. The web's reactive switch is left out, since a phone has
+            no pointer. */}
+        <AxisLabel>{t("look.colors")}</AxisLabel>
         {/* Dimmed rather than hidden while the rainbow is on, so it still shows
             which accent returns when the rainbow is switched off. */}
         <View style={[styles.axisRow, look.rainbow ? styles.dimmed : null]} pointerEvents={look.rainbow ? "none" : "auto"}>
@@ -322,75 +424,69 @@ export function Settings() {
 
         {/* Dimmed rather than hidden while the rainbow is off, so the colours
             it would turn on are visible beforehand. */}
-        <View
-          style={look.rainbow ? null : styles.dimmed}
-          pointerEvents={look.rainbow ? "auto" : "none"}
-        >
-          <>
+        <View style={look.rainbow ? null : styles.dimmed} pointerEvents={look.rainbow ? "auto" : "none"}>
+          <Toggle
+            label={t("look.rainbowRotate")}
+            hint={t("look.rotateHint")}
+            value={look.rainbowRotate}
+            hue={1}
+            onChange={(rainbowRotate) =>
+              setAppearance({
+                rainbowRotate,
+                // A new offset each time it is switched on.
+                rainbowSeed: rainbowRotate ? (look.rainbowSeed + 1) % 8 : 0,
+              })
+            }
+          />
+
+          {disco.offered && (
             <Toggle
-              label={t("look.rainbowRotate")}
-              hint={t("look.rotateHint")}
-              value={look.rainbowRotate}
-              hue={1}
-              onChange={(rainbowRotate) =>
-                setAppearance({
-                  rainbowRotate,
-                  // A new offset each time it is switched on.
-                  rainbowSeed: rainbowRotate ? (look.rainbowSeed + 1) % 8 : 0,
-                })
-              }
+              label={t("look.disco")}
+              hint={t("look.discoHint")}
+              value={look.disco}
+              hue={2}
+              onChange={(on) => setAppearance({ disco: on })}
             />
+          )}
 
-            {disco.offered && (
-              <Toggle
-                label={t("look.disco")}
-                hint={t("look.discoHint")}
-                value={look.disco}
-                hue={2}
-                onChange={(on) => setAppearance({ disco: on })}
-              />
-            )}
-
-            <View style={styles.axisRow}>
-              <View style={styles.axisName}>
-                <Body>{t("look.palette")}</Body>
-                <InfoBubble tip={t("look.paletteHint")} />
-              </View>
-              <View style={styles.swatches}>
-                {palette.map((hex, i) => (
-                  <EditableSwatch
-                    key={`${i}-${hex}`}
-                    hex={hex}
-                    label={hex.toUpperCase()}
-                    // All palette colours are in force, so the ring marks the
-                    // swatch a second press would open.
-                    selected={armed?.kind === "palette" && armed.index === i}
-                    onPress={() => {
-                      if (armed?.kind === "palette" && armed.index === i) {
-                        setEditing({ kind: "palette", index: i, hex });
-                        setArmed(null);
-                      } else {
-                        setArmed({ kind: "palette", index: i });
-                      }
-                    }}
-                  />
-                ))}
-              </View>
-              <ResetMark
-                label={t("look.paletteReset")}
-                disabled={palette.join() === RAINBOW.join()}
-                onPress={() => setAppearance({ palette: [] })}
-              />
+          <View style={styles.axisRow}>
+            <View style={styles.axisName}>
+              <Body>{t("look.palette")}</Body>
+              <InfoBubble tip={t("look.paletteHint")} />
             </View>
-          </>
+            <View style={styles.swatches}>
+              {palette.map((hex, i) => (
+                <EditableSwatch
+                  key={`${i}-${hex}`}
+                  hex={hex}
+                  label={hex.toUpperCase()}
+                  // All palette colours are in force, so the ring marks the
+                  // swatch a second press would open.
+                  selected={armed?.kind === "palette" && armed.index === i}
+                  onPress={() => {
+                    if (armed?.kind === "palette" && armed.index === i) {
+                      setEditing({ kind: "palette", index: i, hex });
+                      setArmed(null);
+                    } else {
+                      setArmed({ kind: "palette", index: i });
+                    }
+                  }}
+                />
+              ))}
+            </View>
+            <ResetMark
+              label={t("look.paletteReset")}
+              disabled={palette.join() === RAINBOW.join()}
+              onPress={() => setAppearance({ palette: [] })}
+            />
+          </View>
         </View>
-      </Section>
 
-      {/* Three modes, without the web's pointer-based `reactive`. The bottom
-          bar has its own setting, since it fits five words across the width. */}
-      <Section title={t("look.labels")} hint={t("look.labelsHint")} hue={4}>
-        <AxisLabel>{t("look.labelsEverywhere")}</AxisLabel>
+        {/* Three modes, without the web's pointer-based `reactive`. The bottom
+            bar has its own setting, since it fits five words across the width. */}
+        <AxisLabel hint={t("look.labelsHint")}>{t("look.labels")}</AxisLabel>
         <Choice<LabelMode>
+          hue={2}
           // A stored `reactive` shows as symbols, which is how it rendered.
           value={look.labels === "reactive" ? "glyph" : look.labels}
           onChange={(labels) => setAppearance({ labels })}
@@ -402,6 +498,7 @@ export function Settings() {
         />
         <AxisLabel hint={t("look.barLabelsHint")}>{t("look.barLabels")}</AxisLabel>
         <Choice<BarLabelMode>
+          hue={3}
           // The resolved mode, so a stored "same" still lights a segment; see
           // barMode in ui.tsx.
           value={barLabels}
@@ -414,9 +511,18 @@ export function Settings() {
         />
       </Section>
 
-      {/* Android's reduce motion setting still wins; see motion.ts. */}
-      <Section title={t("look.motion")} hint={t("look.motionHint")} hue={5}>
+      {/* While the phone asks for less motion the bubble says so, or somebody
+          picks the liveliest level, sees nothing move and takes it for a bug.
+          The picker stays live: the choice is stored and comes back the
+          moment the phone's setting does. The storm is not stopped by it, so
+          the sentence does not show then. */}
+      <Section
+        title={t("look.motion")}
+        hint={reduced && look.motion !== "storm" ? `${t("look.motionHint")} ${t("phone.motionReduced")}` : t("look.motionHint")}
+        hue={5}
+      >
         <Choice<MotionIntensity>
+          hue={4}
           value={look.motion}
           onChange={(motion) => {
             // Animated at the new level, as a preview of it.
@@ -434,65 +540,31 @@ export function Settings() {
         />
       </Section>
 
-      {/* The job defaults and run conditions live on their own page. */}
-      <Section title={t("engine.defaults")} hint={t("settings.syncHint")} hue={5}>
-        <Button
-          label={t("settings.openSync")}
-          labelKey="settings.openSync"
-          onPress={() => nav.navigate("Sync")}
-        />
-      </Section>
-
-      {/* Each permission switch reads Android's state; a tap opens the
-          request dialog or the settings page, and the switch follows what
-          Android reports when the app returns. */}
-      <Section
-        // On Android 10 the switch cannot move, and the bubble says why.
-        title={t("phone.access")}
-        hint={possible ? t("phone.permissionHint") : t("phone.accessNone")}
-        hue={6}
-      >
-        <Toggle
-          label={t("phone.permissionGranted")}
-          off={t("phone.permissionDenied")}
-          // Off until the answer arrives.
-          value={granted === true}
-          disabled={!possible}
-          onChange={() => engine.openStorageSettings()}
-        />
-      </Section>
-
-      <Section title={t("phone.notify")} hint={t("phone.permissionHint")} hue={7}>
-        <Toggle
-          label={t("phone.permissionGranted")}
-          off={t("phone.permissionDenied")}
-          value={notify === true}
-          onChange={() => {
-            // After a refusal Android shows no dialog, so the settings page is
-            // the fallback.
-            if (notify) engine.openNotificationSettings();
-            else askNotifications().then((ok) => (ok ? refresh() : engine.openNotificationSettings()));
-          }}
-        />
-        <Button
-          label={t("phone.openNotifications")}
-          labelKey="phone.openNotifications"
-          onPress={() => engine.openNotificationSettings().catch(() => {})}
-        />
-      </Section>
-
-      <Section title={t("phone.doze")} hint={t("phone.dozeOff")} hue={0}>
-        <Toggle
-          label={t("phone.permissionGranted")}
-          off={t("phone.permissionDenied")}
-          value={doze === true}
-          onChange={() => engine.openBatterySettings().catch(() => engine.openAppSettings())}
-        />
+      {/* The engine runs inside this app; the defaults every job starts from
+          live on their own page. */}
+      <Section title={t("phone.syncEngine")} hint={t("phone.engineHint")} hue={9}>
+        <Body>{running ? t("phone.engineOn") : t("phone.engineOff")}</Body>
+        <View style={styles.actions}>
+          {running ? (
+            <Button
+              label={t("phone.engineStop")}
+              labelKey="phone.engineStop"
+              onPress={() => engine.stop().then(refresh)}
+            />
+          ) : (
+            <Button
+              label={t("phone.engineStart")}
+              labelKey="phone.engineStart"
+              onPress={() => engine.start().then(refresh)}
+            />
+          )}
+        </View>
+        <Row label={t("engine.defaults")} hint={t("settings.syncHint")} onPress={() => nav.navigate("Sync")} />
       </Section>
 
       {/* One file with a fixed name in Downloads; the path can be edited to
           import a file moved elsewhere. */}
-      <Section title={t("settings.backup")} hint={t("settings.backupHint")} hue={2}>
+      <Section title={t("settings.backup")} hint={t("settings.backupHint")} hue={10}>
         <Field
           label={t("settings.backupFile")}
           value={backupFile}
@@ -503,7 +575,6 @@ export function Settings() {
           <Button
             label={t("settings.export")}
             labelKey="settings.export"
-            tone="accent"
             busy={backupBusy}
             confirm={exported}
             onPress={exportSettings}
@@ -519,56 +590,39 @@ export function Settings() {
         {backupSaid ? <Body>{backupSaid}</Body> : null}
       </Section>
 
-      {/* The phone's own lock rather than an app PIN, so there is no second
-          secret to forget. */}
-      <Section
-        title={t("settings.lock")}
-        hint={lockable ? t("settings.lockHint") : t("settings.lockUnavailable")}
-        hue={3}
-      >
-        <Toggle
-          label={t("settings.lockOn")}
-          value={look.lock}
-          disabled={!lockable}
-          onChange={(on) => {
-            // The lock is tried before it is switched on, so it cannot lock
-            // somebody out.
-            if (!on) {
-              setAppearance({ lock: false });
-              return;
-            }
-            engine
-              .confirmDeviceLock(t("settings.lock"), t("settings.lockHint"))
-              .then((ok) => ok && setAppearance({ lock: true }))
-              .catch(() => {});
-          }}
-        />
+      {/* The forms of ArrowLoop a phone is not, in the README's order: the
+          server first, then the desktop app. Every download is the newest
+          release, and each card names it. */}
+      <Section title={t("apps.serverTitle")} hint={t("apps.serverHint")} hue={6}>
+        <ReadmeRow>
+          <ReadmeButton
+            label={t("apps.unraid")}
+            sub={t("apps.unraidSub")}
+            tile={TILE.unraid}
+            mark={(lit, ink) => <AppMark svg={UNRAID_SVG} ink={lit ? ink : p.text} />}
+            onPress={() => Linking.openURL(UNRAID_CA)}
+          />
+          <ReadmeButton
+            label={t("apps.docker")}
+            sub={dockerCopied ? t("apps.copied") : t("apps.dockerSub")}
+            tile={TILE.docker}
+            hint={`${t("apps.dockerHint")} ${DOCKER_RUN}`}
+            mark={(lit, ink) => <AppMark svg={DOCKER_SVG} ink={lit ? ink : PLATFORM[scheme].docker} />}
+            onPress={() => void engine.copy(DOCKER_RUN).then(() => setDockerCopied(true))}
+          />
+          <ReadmeButton
+            label={t("apps.source")}
+            sub={t("apps.zipSub")}
+            tile={TILE.zip}
+            mark={(lit, ink) => <AppMark svg={ZIP_SVG} ink={lit ? ink : p.textSub} />}
+            onPress={() => Linking.openURL(sourceZip(version ?? ""))}
+          />
+        </ReadmeRow>
+        <VersionLine version={version} />
       </Section>
 
-      <Section title={t("engine.title")} hint={t("phone.engineHint")} hue={1}>
-        <Body>{running ? t("phone.engineOn") : t("phone.engineOff")}</Body>
-        <View style={styles.actions}>
-          {running ? (
-            <Button
-              label={t("phone.engineStop")}
-              labelKey="phone.engineStop"
-              onPress={() => engine.stop().then(refresh)}
-            />
-          ) : (
-            <Button
-              label={t("phone.engineStart")}
-              labelKey="phone.engineStart"
-              tone="accent"
-              onPress={() => engine.start().then(refresh)}
-            />
-          )}
-        </View>
-      </Section>
-
-      {/* The forms of ArrowLoop a phone is not, with the web's Apps page's
-          buttons. Every download is the newest release. A row per system, in
-          the README's order, keeps each ARM64 build beside its own. */}
-      <Section title={t("apps.desktopTitle")} hint={t("apps.desktopHint")} hue={3}>
+      {/* A row per system keeps each ARM64 build beside its own. */}
+      <Section title={t("apps.desktopTitle")} hint={t("apps.desktopHint")} hue={7}>
         <View style={styles.readmeRows}>
           <ReadmeRow>
             <ReadmeButton
@@ -612,54 +666,52 @@ export function Settings() {
             />
           </ReadmeRow>
         </View>
+        <VersionLine version={version} />
       </Section>
 
-      <Section title={t("apps.serverTitle")} hint={t("apps.serverHint")} hue={4}>
-        <ReadmeRow>
-          <ReadmeButton
-            label={t("apps.unraid")}
-            sub={t("apps.unraidSub")}
-            tile={TILE.unraid}
-            mark={(lit, ink) => <AppMark svg={UNRAID_SVG} ink={lit ? ink : p.text} />}
-            onPress={() => Linking.openURL(UNRAID_CA)}
+      <Section title={t("problems.title")} hint={t("problems.hint")} hue={2}>
+        <View style={[styles.report, { backgroundColor: p.surface2, ...corners.control }]}>
+          <Mono>{report}</Mono>
+        </View>
+        <View style={styles.actions}>
+          <Button
+            label={reportCopied ? t("problems.copied") : t("problems.copy")}
+            labelKey="problems.copy"
+            confirm={reported}
+            onPress={() =>
+              // The label changes only once the copy has landed.
+              void engine.copy(report).then(
+                () => {
+                  setReportCopied(true);
+                  setReported((n) => n + 1);
+                },
+                () => {},
+              )
+            }
           />
-          <ReadmeButton
-            label={t("apps.docker")}
-            sub={dockerCopied ? t("apps.copied") : t("apps.dockerSub")}
-            tile={TILE.docker}
-            hint={`${t("apps.dockerHint")} ${DOCKER_RUN}`}
-            mark={(lit, ink) => <AppMark svg={DOCKER_SVG} ink={lit ? ink : PLATFORM[scheme].docker} />}
-            onPress={() => void engine.copy(DOCKER_RUN).then(() => setDockerCopied(true))}
-          />
-          <ReadmeButton
-            label={t("apps.source")}
-            sub={t("apps.zipSub")}
-            tile={TILE.zip}
-            mark={(lit, ink) => <AppMark svg={ZIP_SVG} ink={lit ? ink : p.textSub} />}
-            onPress={() => Linking.openURL(sourceZip(version ?? ""))}
-          />
-        </ReadmeRow>
+        </View>
       </Section>
 
-      {/* GlimStone's About card: who made it, the donation buttons, the report
-          buttons, and the versions as a footer. The links come from
-          lib/donate.ts, shared with the web app. The title counts the taps for
-          the loop egg, being the only part of the card with no other action. */}
-      <Section title={t("about.title")} hue={2} onTitlePress={loop.tap}>
+      {/* GlimStone's About card: who made it, the ways to give, the ways to
+          report, then the versions and the privacy policy. The title counts
+          the taps for the loop egg, being the only part of the card with no
+          other action. */}
+      <Section title={t("phone.aboutTitle")} hue={3} onTitlePress={loop.tap}>
         {loop.mark}
         <Body>{t("about.body")}</Body>
 
         <Body>{t("about.coffee")}</Body>
-        {/* The README's give buttons, a blank line apart from the sentences
-            above and below, since they are the loudest row on the card. Brand
-            marks are passed explicitly, never matched from the label key. */}
+        {/* The README's give buttons, a blank line below the sentence above,
+            since they are the loudest row on the card. Coffee and crypto stay
+            in the app; PayPal leaves for the browser, since its buttons need
+            popups a web view does not open. */}
         <ReadmeRow style={styles.give}>
           <ReadmeButton
             label={t("about.coffeeButton")}
             art
             tile={TILE.coffee}
             mark={(lit, ink) => <CoffeeArt cup={lit ? ink : BRAND[scheme].coffee} ink={ink} />}
-            onPress={() => Linking.openURL(COFFEE)}
+            onPress={() => setCoffee(true)}
           />
           <ReadmeButton
             label={t("about.paypal")}
@@ -683,42 +735,64 @@ export function Settings() {
             mark={(lit, ink) => <DonateMark name="github" scheme={scheme} ink={lit ? ink : undefined} />}
             onPress={() => Linking.openURL(REPO)}
           />
-          {/* Mail reaches the authors rather than a vendor, so it takes the
-              accent at rest and lit. */}
+          {/* Mail and the manual reach the authors rather than a vendor, so
+              they take the accent at rest and lit, and their marks open
+              under the finger. */}
           <ReadmeButton
             label={t("about.mail")}
             tile={{ color: accent, ink: accentContrast }}
             mark={(lit, ink) => <MailMark open={lit} ink={lit ? ink : accentInk} />}
             onPress={() =>
-              Linking.openURL(
-                `mailto:${MAIL}?subject=${encodeURIComponent(
-                  `ArrowLoop: ${t("about.mailSubject")}`,
-                )}`,
-              )
+              Linking.openURL(`mailto:${MAIL}?subject=${encodeURIComponent(`ArrowLoop: ${t("about.mailSubject")}`)}`)
             }
+          />
+          <ReadmeButton
+            label={t("phone.manual")}
+            sub={t("action.open")}
+            tile={{ color: accent, ink: accentContrast }}
+            mark={(lit, ink) => <ManualMark open={lit} ink={lit ? ink : accentInk} />}
+            onPress={() => Linking.openURL(MANUAL)}
           />
         </ReadmeRow>
 
         {/* The engine reports its own version; the app manifest's is only the
-            fallback when there is no engine to ask. */}
-        <Caption>
-          <Text onPress={() => Linking.openURL(releaseUrl(version))} style={styles.versionLink}>
-            {`ArrowLoop ${version ?? Constants.expoConfig?.version ?? "?"}`}
-          </Text>
-          {"  ·  "}
-          <Text
-            onPress={() =>
-              Linking.openURL(
-                glimstoneRelease(GLIMSTONE_VERSION),
-              )
-            }
-            style={styles.versionLink}
-          >
-            {`GlimStone ${GLIMSTONE_VERSION}`}
-          </Text>
-        </Caption>
+            fallback when there is no engine to ask. Every number links to its
+            release. A line after a row of buttons takes a step of space. */}
+        <View style={styles.afterControls}>
+          <Caption>
+            <Text onPress={() => Linking.openURL(releaseUrl(version))} style={[styles.link, { color: accentInk }]}>
+              {`ArrowLoop ${version ?? appVersion}`}
+            </Text>
+            {"  ·  "}
+            <Text
+              onPress={() => Linking.openURL(glimstoneRelease(GLIMSTONE_VERSION))}
+              style={[styles.link, { color: accentInk }]}
+            >
+              {`GlimStone ${GLIMSTONE_VERSION}`}
+            </Text>
+          </Caption>
+          <Caption>
+            <Text accessibilityRole="link" onPress={() => Linking.openURL(PRIVACY)} style={{ color: accentInk }}>
+              {t("phone.privacy")}
+            </Text>
+          </Caption>
+        </View>
       </Section>
 
+      {/* Quiet, with a glyph and no red: the question it asks is the warning. */}
+      <Section title={t("danger.title")} hue={6}>
+        <View style={styles.actions}>
+          <Button
+            label={t("danger.removeAll")}
+            glyph="IconTrash"
+            busy={removing}
+            shake={removeFailed}
+            onPress={() => void removeAll()}
+          />
+        </View>
+      </Section>
+
+      {coffee ? <CoffeeDonate onClose={() => setCoffee(false)} /> : null}
       {crypto ? <CryptoDonate onClose={() => setCrypto(false)} /> : null}
 
       {/* One picker for both rows, applying the colour live during the drag. */}
@@ -743,20 +817,24 @@ export function Settings() {
   );
 }
 
-/** The policy before the bridge has answered: nothing set, nothing held. */
-const EMPTY: DevicePolicy = {
-  onlyCharging: false,
-  onlyWifi: false,
-  minBattery: 0,
-  notRoaming: false,
-  notMetered: false,
-  charging: true,
-  onWifi: true,
-  battery: 100,
-  roaming: false,
-  metered: false,
-  holding: "",
-};
+/**
+ * The release the download buttons above it give, as a link where the version
+ * is a plain release number.
+ */
+function VersionLine({ version }: { version: string | null }) {
+  const { t } = useT();
+  const { accentInk } = useTheme();
+  if (!version) return null;
+  const label = `${t("about.version")} ${version.replace(/^v/, "")}`;
+  if (!isRelease(version)) return <Caption>{label}</Caption>;
+  return (
+    <Caption>
+      <Text onPress={() => Linking.openURL(releaseUrl(version))} style={[styles.link, { color: accentInk }]}>
+        {label}
+      </Text>
+    </Caption>
+  );
+}
 
 // The notification permission goes through React Native's PermissionsAndroid.
 // It exists from Android 13; below that notifications are always allowed.
@@ -781,15 +859,18 @@ export async function askNotifications(): Promise<boolean> {
   }
 }
 
+/** Whether a version stamp names a release rather than a build after one. */
+function isRelease(version: string | null): version is string {
+  return Boolean(version && /^v?\d+\.\d+\.\d+$/.test(version));
+}
+
 /**
  * Returns the release page for a version stamp. The stamp comes from
  * `git describe`, so a build after a tag (`v0.7.0-47-g7b39f19`) has no page of
  * its own and gets the releases list.
  */
 function releaseUrl(version: string | null): string {
-  if (version && /^v?\d+\.\d+\.\d+$/.test(version)) {
-    return `${REPO}/releases/tag/${version.startsWith("v") ? version : `v${version}`}`;
-  }
+  if (isRelease(version)) return `${REPO}/releases/tag/${version.startsWith("v") ? version : `v${version}`}`;
   return `${REPO}/releases`;
 }
 
@@ -812,8 +893,12 @@ const styles = StyleSheet.create({
   axisName: { flexDirection: "row", alignItems: "center", gap: space.sm },
   axisRowInner: { flexDirection: "row", alignItems: "center", gap: space.md, flex: 1 },
   dimmed: { opacity: 0.4 },
-  versionLink: { fontVariant: ["tabular-nums"] },
-  flag: { fontSize: 18 },
+  language: { flexDirection: "row", alignItems: "center", gap: space.md, minHeight: 44 },
+  languageName: { flex: 1, fontSize: text.body },
+  flag: { fontSize: text.title },
+  link: { fontVariant: ["tabular-nums"] },
+  report: { padding: space.md },
+  afterControls: { marginTop: text.body, gap: space.xs },
   // The README buttons' own gap, 13 on the README's 16.
   readmeRows: { gap: README_GAP },
   // A blank line of the card's text above and below.

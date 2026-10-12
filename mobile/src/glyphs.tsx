@@ -7,7 +7,7 @@ import {
   type BrandData,
   type GlyphData,
 } from "../../web/src/lib/glyphs.data";
-import { COFFEE_BUTTON_SVG, MAIL_SVG } from "../../web/src/lib/appMarks";
+import { COFFEE_BUTTON_SVG, MAIL_SVG, MANUAL_SVG } from "../../web/src/lib/appMarks";
 import { glyphNameFor } from "../../web/src/lib/glyphName";
 import { BRAND } from "./theme";
 
@@ -284,7 +284,17 @@ export function CoffeeArt({ cup, ink }: { cup: string; ink: string }) {
  * same size.
  */
 export function MailMark({ open, ink }: { open: boolean; ink: string }) {
-  const [closed, opened] = MAIL_SVG.split("</svg>");
+  return <PairMark svg={MAIL_SVG} open={open} ink={ink} />;
+}
+
+/** The Manual button's book, closed at rest and open while pressed. */
+export function ManualMark({ open, ink }: { open: boolean; ink: string }) {
+  return <PairMark svg={MANUAL_SVG} open={open} ink={ink} />;
+}
+
+/** One of a pair of drawings that share a string, the resting one first. */
+function PairMark({ svg, open, ink }: { svg: string; open: boolean; ink: string }) {
+  const [closed, opened] = svg.split("</svg>");
   const xml = `${open ? opened : closed}</svg>`.split("currentColor").join(ink);
   return <SvgXml xml={xml} width={32} height={25} />;
 }
