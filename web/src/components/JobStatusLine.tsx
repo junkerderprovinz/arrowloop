@@ -45,7 +45,7 @@ export function JobStatusLine({
       )
       if (total === 0) return badge
       return (
-        <span className="flex w-full flex-col items-end gap-1">
+        <span className="flex w-full flex-col items-end gap-1 max-[600px]:items-start">
           {badge}
           <span className="h-1 w-24 overflow-hidden rounded-[var(--radius-pill)] bg-carbon-surface3" aria-hidden>
             <span className="block h-full bg-accent" style={{ width: `${Math.min(1, (event?.done ?? 0) / total) * 100}%` }} />

@@ -214,7 +214,9 @@ function keepInRow(e: MouseEvent) {
 /**
  * One job: the tile of its direction, its name with everything else it could
  * say in the bubble beside it, its two everyday buttons, its last runs and its
- * one status. The whole row opens the job's page.
+ * one status. The whole row opens the job's page. Below 600px the strip goes
+ * and the status moves under the name, which would otherwise be cut to a few
+ * letters beside the buttons.
  */
 function JobRow({
   job,
@@ -257,12 +259,12 @@ function JobRow({
       data-testid="job-row"
       data-new-way="/jobs/:name"
       onClick={() => open(job.name)}
-      className="glim-row flex min-h-14 cursor-pointer items-center gap-3 rounded-control px-2 py-2 hover:bg-carbon-hover"
+      className="glim-row grid min-h-14 cursor-pointer grid-cols-[auto_minmax(0,1fr)_auto_auto_9rem] items-center gap-x-3 gap-y-0.5 rounded-control px-2 py-2 hover:bg-carbon-hover max-[600px]:grid-cols-[auto_minmax(0,1fr)_auto]"
     >
-      <span className="glim-row-glyph flex h-9 w-9 shrink-0 items-center justify-center rounded-control [&_svg]:h-4 [&_svg]:w-4">
+      <span className="glim-row-glyph flex h-9 w-9 shrink-0 items-center justify-center rounded-control max-[600px]:row-span-2 [&_svg]:h-4 [&_svg]:w-4">
         <DirectionGlyph direction={job.direction} />
       </span>
-      <span className="flex min-w-0 flex-1 items-center gap-2">
+      <span className="flex min-w-0 items-center gap-2">
         <button
           type="button"
           onClick={(e) => {
@@ -279,7 +281,10 @@ function JobRow({
       </span>
       {/* Holding and starting are separate controls: a held job can still be
           started by hand, and stays held. */}
-      <span className="glim-row-actions flex shrink-0 items-center gap-1.5" onClick={keepInRow}>
+      <span
+        className="glim-row-actions flex shrink-0 items-center gap-1.5 max-[600px]:col-start-3 max-[600px]:row-span-2 max-[600px]:row-start-1"
+        onClick={keepInRow}
+      >
         {canPause && (
           <IconAction
             title={job.disabled ? t('jobs.resume') : t('jobs.pause')}
@@ -303,7 +308,10 @@ function JobRow({
       <span data-new="run-strip" className="shrink-0 max-[600px]:hidden">
         <RunStrip recent={job.recent} />
       </span>
-      <span data-testid="job-status" className="flex w-36 shrink-0 justify-end max-[600px]:w-auto">
+      <span
+        data-testid="job-status"
+        className="flex justify-end max-[600px]:col-start-2 max-[600px]:row-start-2 max-[600px]:justify-start"
+      >
         <JobStatusLine job={job} status={status} heldFinding={held?.id} event={event} />
       </span>
     </li>
