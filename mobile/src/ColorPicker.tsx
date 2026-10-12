@@ -270,7 +270,7 @@ export function ResetMark({
         },
       ]}
     >
-      <Glyph name="IconReset" color={p.textSub} size={14} />
+      <Glyph name="IconRefresh" color={p.textSub} size={14} />
     </Pressable>
   );
 }

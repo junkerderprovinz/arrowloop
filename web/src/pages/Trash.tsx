@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Empty, Num, Rows, Rule, Stack } from '../components/Shell'
 import { Choice, Field, NumberField } from '../components/Field'
 import { IconAction } from '../components/IconAction'
-import { IconDelete } from '../components/glyphs'
+import { IconTrash } from '../components/glyphs'
 import { Card } from '../lib/glimstone/Card'
 import { Button } from '../lib/glimstone/Button'
 import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
@@ -185,7 +185,7 @@ export function Trash({
           title={t(TITLES[pending.kind])}
           message={stakes(pending, t)}
           confirmLabel={pending.kind === 'entry' ? t('confirm.delete') : t(TITLES[pending.kind])}
-          confirmGlyph={<IconDelete />}
+          confirmGlyph={<IconTrash />}
           cancelLabel={t('confirm.cancel')}
           onCancel={() => setPending(null)}
           onConfirm={() => confirmed(pending)}

@@ -72,10 +72,9 @@ function Drawn({
               <Path
                 key={pi}
                 d={part.d}
-                // The one stroked mark takes no fill; the rest are even-odd
-                // filled shapes, as the source set was drawn.
+                // The one stroked mark takes no fill.
                 fill={part.fill === "none" ? "none" : color}
-                fillRule="evenodd"
+                fillRule={part.evenodd ? "evenodd" : "nonzero"}
                 stroke={part.stroke ? color : undefined}
                 strokeWidth={part.stroke}
                 strokeLinecap="round"

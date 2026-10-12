@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { Card } from '../lib/glimstone/Card'
 import { Button } from '../lib/glimstone/Button'
 import { Field, Secret, Text } from '../components/Field'
-import { IconConfirm } from '../components/glyphs'
+import { IconCheck } from '../components/glyphs'
 import { ApiError, api, passkeysAvailableInBrowser } from '../lib/api'
 import { useT } from '../lib/i18n'
 import { PasswordReset } from '../components/PasswordReset'
@@ -138,7 +138,7 @@ export function Login({ onIn, canReset = false }: { onIn: () => void; canReset?:
             <Button
               label={t('login.submit')}
               labelKey="login.submit"
-              glyph={<IconConfirm />}
+              glyph={<IconCheck />}
               tone="accent"
               type="submit"
               className="w-full"

@@ -9,7 +9,7 @@ import { Card } from '../lib/glimstone/Card'
 import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
 import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
-import { IconAdd, IconAnomalies, IconDelete, IconEdit, IconPause, IconRun, IconSave, IconToLeft, IconToRight } from '../components/glyphs'
+import { IconAdd, IconAnomalies, IconPause, IconPencil, IconPlay, IconSave, IconToLeft, IconToRight, IconTrash } from '../components/glyphs'
 import { DirectionMark } from '../components/Direction'
 import { JobMark, statusOf } from '../components/JobMark'
 import { Menu } from '../components/Menu'
@@ -161,7 +161,7 @@ export function Jobs({
                         hueIndex={i + 4}
                         onClick={() => setRemoving({ at, saved: j.name })}
                       >
-                        <IconDelete />
+                        <IconTrash />
                       </IconAction>
                       <Button
                         label={config.busy ? t('edit.checking') : t('edit.save')}
@@ -201,7 +201,7 @@ export function Jobs({
                         disabled={config.busy}
                         onClick={() => void config.setDisabled(j.name, !j.disabled)}
                       >
-                        {j.disabled ? <IconRun /> : <IconPause />}
+                        {j.disabled ? <IconPlay /> : <IconPause />}
                       </IconAction>
                     )}
                     <IconAction
@@ -316,7 +316,7 @@ export function Jobs({
                       hueIndex={jobs.length + at + 4}
                       onClick={() => setRemoving({ at })}
                     >
-                      <IconDelete />
+                      <IconTrash />
                     </IconAction>
                     <Button
                       label={config.busy ? t('edit.checking') : t('edit.save')}
@@ -345,7 +345,7 @@ export function Jobs({
                     hueIndex={jobs.length + at + 2}
                     onClick={() => setEditing(at === editing ? null : at)}
                   >
-                    <IconEdit />
+                    <IconPencil />
                   </IconAction>
                   <IconAction
                     title={t('edit.remove')}
@@ -353,7 +353,7 @@ export function Jobs({
                     hueIndex={jobs.length + at + 4}
                     onClick={() => setRemoving({ at })}
                   >
-                    <IconDelete />
+                    <IconTrash />
                   </IconAction>
                 </JobRow>
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-meta">
@@ -371,7 +371,7 @@ export function Jobs({
           title={t('edit.removeJob')}
           message={t('edit.removeStakes', { name: raw[removing.at].name || t('edit.unnamed') })}
           confirmLabel={t('confirm.delete')}
-          confirmGlyph={<IconDelete />}
+          confirmGlyph={<IconTrash />}
           cancelLabel={t('confirm.cancel')}
           extra={
             <ToggleRow

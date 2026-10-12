@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { Lines, Text } from './Field'
-import { IconAdd, IconDelete } from './glyphs'
+import { IconAdd, IconTrash } from './glyphs'
 import { IconAction } from './IconAction'
 import { api } from '../lib/api'
 import { useT } from '../lib/i18n'
@@ -48,7 +48,7 @@ export function ExcludeSetEditor({
                 onChange(next)
               }}
             >
-              <IconDelete />
+              <IconTrash />
             </IconAction>
           </div>
           <Lines

@@ -390,12 +390,12 @@ function deeperThanRoot(route: RouteProp<ParamListBase>): boolean {
 function markFor(route: string): string {
   return (
     {
-      OverviewTab: "IconLive",
-      JobsTab: "IconJobs",
-      TargetsTab: "IconTargets",
+      OverviewTab: "IconDashboard",
+      JobsTab: "IconSync",
+      TargetsTab: "IconTabStorage",
       HistoryTab: "IconHistory",
-      SettingsTab: "IconSettings",
-    }[route] ?? "IconJobs"
+      SettingsTab: "IconGear",
+    }[route] ?? "IconSync"
   );
 }
 

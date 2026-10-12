@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Button } from '../lib/glimstone/Button'
 import { Card } from '../lib/glimstone/Card'
 import { Field, Text } from './Field'
-import { IconConfirm } from './glyphs'
+import { IconCheckDraw } from './glyphs'
 import { QRCode } from './QRCode'
 import { StateLine } from './Shell'
 import { replay } from '../lib/animate'
@@ -166,7 +166,7 @@ export function TwoFactorCard({
               <Button
                 label={copied ? t('common.copied') : t('common.copy')}
                 labelKey={copied ? 'common.copied' : 'common.copy'}
-                glyph={copied ? <IconConfirm className="glim-check-draw" /> : undefined}
+                glyph={copied ? <IconCheckDraw className="glim-check-draw" /> : undefined}
                 ref={copyButton}
                 onClick={() => copy(step.secret)}
               />
@@ -205,7 +205,7 @@ export function TwoFactorCard({
             <Button
               label={copied ? t('common.copied') : t('common.copy')}
               labelKey={copied ? 'common.copied' : 'common.copy'}
-              glyph={copied ? <IconConfirm className="glim-check-draw" /> : undefined}
+              glyph={copied ? <IconCheckDraw className="glim-check-draw" /> : undefined}
               ref={copyButton}
               onClick={() => copy(step.codes.join('\n'))}
             />

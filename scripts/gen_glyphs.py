@@ -1,303 +1,287 @@
-"""Generate ArrowLoop's icon set from Streamline's free Core Solid subset.
+"""Generate ArrowLoop's glyphs from GlimStone's glyph assortment.
 
-Run from the repository root:
-    python scripts/gen_glyphs.py <path to streamline-vectors/core/solid>
+Run from anywhere:  python scripts/gen_glyphs.py
 
-Source: github.com/webalys-hq/streamline-vectors, folder core/solid, CC BY 4.0,
-the free 1000-icon subset whose licence permits redistribution. The premium set
-sold on streamlinehq.com forbids what a public repository does and cannot be
-used here.
+scripts/glyphs.json is GlimStone's reference/glyphs.json, copied unchanged.
+Each entry is one meaning: its drawing, where the drawing comes from, the
+measured ink box and a square viewBox cropped to that ink, so glyphs from
+different sets and grids fill their box alike. Refresh the copy from GlimStone
+instead of editing it here, or the apps that share the set drift apart.
 
-Every icon in the set is drawn on one 14-unit grid with one convention, so the
-source viewBox is carried through unchanged. A glyph from anywhere else needs a
-measured ink crop first (see LICENSED below and scripts/measure_ink.py).
+A meaning the assortment has no entry for gets its own entry in APP below, in
+the same shape: the paths verbatim, the measured ink and the crop made from it.
 
 Writes web/src/components/glyphs.tsx, which is generated: a hand edit is lost on
-the next run.
+the next run. Run gen_glyph_data.py afterwards, which lifts the drawings into
+the data the phone draws.
 """
-
-import io
-import os
+import json
 import re
-import sys
+from pathlib import Path
 
-SRC = sys.argv[1] if len(sys.argv) > 1 else "/tmp/slv/core/solid"
-OUT = os.path.join(os.path.dirname(__file__), "..", "web", "src", "components", "glyphs.tsx")
+ROOT = Path(__file__).resolve().parent.parent
+OUT = ROOT / "web" / "src" / "components" / "glyphs.tsx"
+ASSORTMENT = {e["name"]: e for e in json.loads((ROOT / "scripts" / "glyphs.json").read_text(encoding="utf-8"))}
 
-# our name -> (file under core/solid, what it means here[, transform])
-GLYPHS = [
-    # Navigation.
-    ("IconJobs", "interface-essential/arrow-reload-horizontal-1.svg",
-     "Jobs: two arrows, one each way, which is the whole product"),
-    ("IconEdit", "interface-essential/pencil.svg", "Edit"),
-    ("IconTargets", "computer-devices/database-server-1.svg", "Storage targets and drives"),
-    ("IconHistory", "interface-essential/bullet-list.svg", "What the runs did"),
-    # The Jobs circle's cousin with a mark in the middle, so the two read as
-    # related without one being taken for the other. The Trash tab wears the
-    # bin IconDelete already draws, since the trash is where deletions go.
-    ("IconConflict", "interface-essential/synchronize-warning.svg",
-     "Conflicts: a sync that waits for somebody to choose"),
-    ("IconLook", "interface-essential/color-palette.svg", "Theme, shape, accent, language"),
-    # The cog is Settings itself and no tab inside it, so one drawing keeps
-    # one meaning. The General tab wears Material's tune, in LICENSED below.
-    ("IconSettings", "interface-essential/cog.svg", "Settings, the last tab as in every other app here"),
-    ("IconTabApp", "computer-devices/computer-pc-desktop.svg",
-     "The App tab: every other way to get ArrowLoop"),
-    ("IconAbout", "interface-essential/information-circle.svg",
-     "The About section, on the settings tab strip"),
-
-    # Row actions: small, secondary, icon-only.
-    ("IconAdd", "interface-essential/add-1.svg", "Add a job, from the list it appears in"),
-    ("IconLive", "interface-essential/dashboard-3.svg", "What is happening right now"),
-    ("IconReset", "interface-essential/arrow-round-left.svg",
-     "Put a colour back to the house default. A small reset badge carries a glyph, never a word"),
-    ("IconCheck", "interface-essential/magnifying-glass.svg", "Open a target and look at it"),
-    ("IconDelete", "interface-essential/recycle-bin-2.svg", "Delete"),
-    ("IconCopy", "interface-essential/copy-paste.svg", "Copy to the clipboard"),
-    ("IconForget", "interface-essential/subtract-circle.svg", "Forget a drive, leaving its marker"),
-    ("IconPreview", "interface-essential/visible.svg", "See what a run would do"),
-
-    # Two verbs on a job's card: start a run now, and switch the schedule off.
-    ("IconRun", "entertainment/button-play.svg", "Start this job now, by hand"),
-    ("IconPause", "entertainment/button-pause-2.svg", "Hold this job's schedule"),
-
-    # The direction of a job: one bare arrow, turned. move-right.svg and
-    # move-left.svg draw a bar behind the head, which reads as "move to the end".
-    ("IconToRight", "interface-essential/arrow-up-1.svg", "Left to right only",
-     "rotate(90 7 7)"),
-    ("IconToLeft", "interface-essential/arrow-up-1.svg", "Right to left only",
-     "rotate(-90 7 7)"),
-
-    # The two sides of a job. The cloud side draws the provider's own brand
-    # mark, so only the device needs one here.
-    ("IconThisDevice", "phone/phone-mobile-phone.svg",
-     "The side of a job that is a folder on this phone"),
-    # Folders, the picker, and saving.
-    ("IconFolder", "interface-essential/new-folder.svg", "Pick a folder. The plain shape: the local-storage one carries a drive motif and reads as a monitor at fourteen pixels"),
-    ("IconNewFolder", "interface-essential/folder-add.svg", "Make a folder here"),
-    # The bare arrow again: the bar in move-left.svg reads as "jump to the
-    # start".
-    ("IconUp", "interface-essential/arrow-up-1.svg", "One level up, in the folder picker",
-     "rotate(-90 7 7)"),
-    # IconSave comes from outside Streamline and lives in LICENSED below.
-
-    # The reveal eye on a field holding a secret, and its slashed twin.
-    ("IconVisible", "interface-essential/visible.svg", "Show a stored secret"),
-    ("IconHidden", "interface-essential/invisible-1.svg", "Hide it again"),
-
-    ("IconLock", "interface-essential/padlock-square-1.svg",
-     "A target that encrypts what is written into it"),
-
-    # Three protocols, three drawings: a machine, a transfer, a store.
-    ("IconServer", "computer-devices/database-server-2.svg", "SFTP: a machine reached over SSH"),
-    ("IconTransfer", "interface-essential/arrow-transfer-diagonal-1.svg",
-     "FTP: the protocol whose whole name is the transfer"),
-    ("IconBuckets", "computer-devices/database.svg", "S3: object storage, which is buckets"),
-
-    # One box with the arrow reversed, the same pair the sibling app uses.
-    ("IconDownload", "interface-essential/download-box-1.svg", "Export the setup to a file"),
-    ("IconFilter", "interface-essential/filter-2.svg", "Narrow a list down"),
-    ("IconQr", "money-shopping/qr-code.svg", "Show a download as a code to scan with the phone"),
-    ("IconUpload", "interface-essential/upload-box-1.svg", "Read a setup back in from a file"),
-
-    # The buttons on GlimStone's AboutCard; main.tsx maps its label keys here.
-    ("IconCoffee", "food-drink/coffee-mug.svg", "Buy the author a coffee"),
-    ("IconLink", "interface-essential/link-chain.svg", "Open the repository"),
-    ("IconMail", "mail/mail-send-envelope.svg", "Write to the author"),
-    # A wallet rather than a coin: the window behind this button offers five
-    # chains, and a Bitcoin symbol would name only one.
-    ("IconWallet", "money-shopping/wallet.svg", "Give with crypto"),
+# The assortment covers every app that speaks GlimStone; these are the meanings
+# ArrowLoop has, some of them for pages that are still being built.
+STANDARD = [
+    "IconAdd",
+    "IconBack",
+    "IconCheck",
+    "IconClose",
+    "IconCopy",
+    "IconDownload",
+    "IconEye",
+    "IconEyeOff",
+    "IconFilter",
+    "IconFolderUp",
+    "IconInfo",
+    "IconLink",
+    "IconMore",
+    "IconPause",
+    "IconPencil",
+    "IconPlay",
+    "IconRefresh",
+    "IconSave",
+    "IconSearch",
+    "IconShieldOn",
+    "IconSignOut",
+    "IconSort",
+    "IconTrash",
+    "IconUnlock",
+    "IconUpload",
+    # The About card's buttons. IconCoffee is a brand mark and goes only on the
+    # button that leads there.
+    "IconCoffee",
+    "IconMail",
+    "IconMailOpen",
+    "IconManual",
+    "IconManualOpen",
+    "IconAnomalies",
+    "IconDashboard",
+    "IconFolder",
+    "IconFolderAdd",
+    "IconGear",
+    "IconPhone",
+    "IconSync",
+    # Settings tiles, and the rail entry that gets files back.
+    "IconDiagnostics",
+    "IconNotifications",
+    "IconTabApp",
+    "IconTabGeneral",
+    "IconTabLook",
+    "IconTabRecovery",
+    "IconTabSecurity",
+    "IconTabStorage",
 ]
 
-# Glyphs composed from this set. Every part is on the same grid, so they need no
-# measuring either.
-#
-# name -> (note, [(source file, transform), ...])
-COMPOSED = [
-    # A transform list applies right to left: the uniform scale first, in the
-    # arrow's upright frame, then the translate, then the rotation.
-    #
-    #   scale(0.6)          x 3..11 -> 1.8..6.6      y 0..14 -> 0..8.4
-    #   translate(-0.7 2.8) x       -> 1.1..5.9      y       -> 2.8..11.2
-    #   rotate(90 7 7)      (x,y) -> (14-y, x)  = x' 2.8..11.2, y' 1.1..5.9
-    #   rotate(-90 7 7)     (x,y) -> (y, 14-x) = x' 2.8..11.2, y' 8.1..12.9
-    #
-    # Both arrows span the same horizontal run, centred on y=3.5 and y=10.5,
-    # symmetric about the middle and inside the 0..14 viewBox.
-    ("IconBothWays",
-     "Both ways: the one-way arrows, one above the other and pointing opposite "
-     "ways",
-     [("interface-essential/arrow-up-1.svg", "rotate(90 7 7) translate(-0.7 2.8) scale(0.6)"),
-      ("interface-essential/arrow-up-1.svg", "rotate(-90 7 7) translate(-0.7 2.8) scale(0.6)")]),
-
+# Meanings only ArrowLoop has. The Streamline drawings come from the free Core
+# Solid subset and fill their 14-unit grid, so most crops are the grid itself.
+APP = [
+    {
+        "name": "IconHistory",
+        "means": "What the runs did, the History page",
+        "source": "Streamline interface-essential/bullet-list.svg",
+        "viewBox": "0 0 14 14",
+        "ink": [0, 1.5, 14, 11.001],
+        "svg": (
+            '<path fill-rule="evenodd" clip-rule="evenodd" d="M2 2.49951c0 0.55229 -0.44772 1 -1 1 -0.552285 0 -1 -0.44771 -1 -1 0 -0.55228 0.447715 -1 1 -1 0.55228 0 1 0.44772 1 1ZM1 8c0.55228 0 1 -0.44772 1 -1s-0.44772 -1 -1 -1c-0.552285 0 -1 0.44772 -1 1s0.447715 1 1 1Zm0 4.5005c0.55228 0 1 -0.4477 1 -1s-0.44772 -1 -1 -1c-0.552285 0 -1 0.4477 -1 1s0.447715 1 1 1ZM4.75 1.75c-0.41421 0 -0.75 0.33579 -0.75 0.75s0.33579 0.75 0.75 0.75h8.5c0.4142 0 0.75 -0.33579 0.75 -0.75s-0.3358 -0.75 -0.75 -0.75h-8.5ZM4 7c0 -0.41421 0.33579 -0.75 0.75 -0.75h8.5c0.4142 0 0.75 0.33579 0.75 0.75s-0.3358 0.75 -0.75 0.75h-8.5C4.33579 7.75 4 7.41421 4 7Zm0.75 3.75c-0.41421 0 -0.75 0.3358 -0.75 0.75s0.33579 0.75 0.75 0.75h8.5c0.4142 0 0.75 -0.3358 0.75 -0.75s-0.3358 -0.75 -0.75 -0.75h-8.5Z" />'
+        ),
+    },
+    {
+        "name": "IconConflict",
+        "means": "Conflicts: a sync that waits for somebody to choose",
+        "source": "Streamline interface-essential/synchronize-warning.svg",
+        "viewBox": "0 0 14 14",
+        "ink": [0, 0.25, 14, 13.5],
+        "svg": (
+            '<path fill-rule="evenodd" clip-rule="evenodd" d="M7.00001 1.75c-1.85449 0 -3.48561 0.96181 -4.41976 2.41506l0.67699 0.40619c0.17341 0.10405 0.26707 0.30231 0.23731 0.50234 -0.02977 0.20003 -0.1771 0.36243 -0.37329 0.41148l-2 0.5c-0.267896 0.06698 -0.539363 -0.09591 -0.606338 -0.3638l-0.4999996 -2c-0.0490483 -0.1962 0.0249169 -0.40262 0.1874056 -0.52301 0.162489 -0.12039 0.381502 -0.13105 0.554913 -0.02701l0.536449 0.32187C2.4898 1.50463 4.59775 0.25 7.00001 0.25c2.72533 0 5.07189 1.61511 6.13759 3.93715 0.1728 0.37646 0.0077 0.8217 -0.3688 0.99449 -0.3764 0.17278 -0.8217 0.00766 -0.9945 -0.36879C10.9441 3.00383 9.11767 1.75 7.00001 1.75Zm0.74998 1.75c0 -0.41421 -0.33578 -0.75 -0.75 -0.75 -0.41421 0 -0.75 0.33579 -0.75 0.75v4c0 0.41421 0.33579 0.75 0.75 0.75 0.41422 0 0.75 -0.33579 0.75 -0.75v-4Zm-0.75 7.5c0.55229 0 1 -0.4477 1 -1 0 -0.55229 -0.44771 -1 -1 -1 -0.55228 0 -1 0.44771 -1 1 0 0.5523 0.44772 1 1 1Zm4.41981 -1.16504 -0.6771 -0.40621c-0.1734 -0.10405 -0.267 -0.30231 -0.2373 -0.50234 0.0298 -0.20003 0.1771 -0.36243 0.3733 -0.41148l2 -0.5c0.2679 -0.06698 0.5394 0.0959 0.6064 0.3638l0.5 1.99997c0.049 0.1962 -0.025 0.4026 -0.1874 0.523 -0.1625 0.1204 -0.3815 0.1311 -0.555 0.027l-0.5364 -0.3218C11.5102 12.4954 9.40228 13.75 7.00002 13.75c-2.72533 0 -5.07186 -1.6151 -6.137594 -3.93715 -0.172781 -0.37646 -0.007669 -0.8217 0.368784 -0.99448 0.37646 -0.17279 0.82171 -0.00767 0.99449 0.36878C3.05597 10.9962 4.88236 12.25 7.00002 12.25c1.85448 0 3.48558 -0.9618 4.41978 -2.41504Z" />'
+        ),
+    },
+    {
+        "name": "IconPreview",
+        "means": "See what a run would do before it does it",
+        "source": "Streamline interface-essential/visible.svg",
+        "viewBox": "0 0 14 14",
+        "ink": [0, 2, 14, 10],
+        "svg": (
+            '<path fill-rule="evenodd" clip-rule="evenodd" d="M2.9327 3.49099C4.0559 2.68177 5.4556 2 7 2c1.54441 0 2.9441 0.68177 4.0673 1.49099 1.1273 0.81215 2.0197 1.78397 2.5599 2.4369l0.0045 0.00553c0.2413 0.3002 0.3683 0.68062 0.3683 1.06664 0 0.38601 -0.127 0.76644 -0.3683 1.06664l-0.0045 0.00553c-0.5402 0.65292 -1.4326 1.62475 -2.5599 2.43687 -1.1232 0.8092 -2.52289 1.491 -4.0673 1.491 -1.5444 0 -2.9441 -0.6818 -4.0673 -1.491C1.80544 9.69698 0.913028 8.72515 0.37279 8.07223L0.36828 8.0667C0.127025 7.7665 0 7.38607 0 7.00006c0 -0.38602 0.127025 -0.76644 0.36828 -1.06664l0.00451 -0.00553c0.540238 -0.65293 1.43265 -1.62475 2.55991 -2.4369ZM7 9.25c1.24264 0 2.25 -1.00736 2.25 -2.25S8.24264 4.75 7 4.75 4.75 5.75736 4.75 7 5.75736 9.25 7 9.25Z" />'
+        ),
+    },
+    {
+        "name": "IconForget",
+        "means": "Forget a drive, leaving its marker on the drive",
+        "source": "Streamline interface-essential/subtract-circle.svg",
+        "viewBox": "0 0 14 14",
+        "ink": [0, 0, 14, 14],
+        "svg": (
+            '<path fill-rule="evenodd" clip-rule="evenodd" d="M7 14c3.866 0 7 -3.134 7 -7 0 -3.86599 -3.134 -7 -7 -7 -3.86599 0 -7 3.13401 -7 7 0 3.866 3.13401 7 7 7ZM4 6.25c-0.41421 0 -0.75 0.33579 -0.75 0.75s0.33579 0.75 0.75 0.75h6c0.4142 0 0.75 -0.33579 0.75 -0.75s-0.3358 -0.75 -0.75 -0.75H4Z" />'
+        ),
+    },
+    {
+        "name": "IconToRight",
+        "means": "A job that copies left to right only",
+        "source": "Streamline interface-essential/arrow-up-1.svg, turned",
+        "viewBox": "0 0 14 14",
+        "ink": [0, 3, 14, 8],
+        "svg": (
+            '<g transform="rotate(90 7 7)"><path fill-rule="evenodd" clip-rule="evenodd" d="M6.64645 0.146447c0.19526 -0.1952625 0.51184 -0.1952625 0.7071 0L10.8536 3.64645c0.143 0.143 0.1857 0.35805 0.1083 0.54489 -0.0774 0.18684 -0.2597 0.30866 -0.4619 0.30866H8V13c0 0.5523 -0.44772 1 -1 1 -0.55229 0 -1 -0.4477 -1 -1V4.5H3.5c-0.20223 0 -0.38455 -0.12182 -0.46194 -0.30866 -0.07739 -0.18684 -0.03461 -0.40189 0.10839 -0.54489l3.5 -3.500003Z" /></g>'
+        ),
+    },
+    {
+        "name": "IconToLeft",
+        "means": "A job that copies right to left only",
+        "source": "Streamline interface-essential/arrow-up-1.svg, turned",
+        "viewBox": "0 0 14 14",
+        "ink": [0, 3, 14, 8],
+        "svg": (
+            '<g transform="rotate(-90 7 7)"><path fill-rule="evenodd" clip-rule="evenodd" d="M6.64645 0.146447c0.19526 -0.1952625 0.51184 -0.1952625 0.7071 0L10.8536 3.64645c0.143 0.143 0.1857 0.35805 0.1083 0.54489 -0.0774 0.18684 -0.2597 0.30866 -0.4619 0.30866H8V13c0 0.5523 -0.44772 1 -1 1 -0.55229 0 -1 -0.4477 -1 -1V4.5H3.5c-0.20223 0 -0.38455 -0.12182 -0.46194 -0.30866 -0.07739 -0.18684 -0.03461 -0.40189 0.10839 -0.54489l3.5 -3.500003Z" /></g>'
+        ),
+    },
+    {
+        "name": "IconBothWays",
+        "means": "A job that syncs both ways",
+        "source": "Streamline interface-essential/arrow-up-1.svg, twice, scaled and turned",
+        "viewBox": "1.1 1.1 11.8 11.8",
+        "ink": [2.8, 1.1, 8.4, 11.8],
+        "svg": (
+            '<g transform="rotate(90 7 7) translate(-0.7 2.8) scale(0.6)"><path fill-rule="evenodd" clip-rule="evenodd" d="M6.64645 0.146447c0.19526 -0.1952625 0.51184 -0.1952625 0.7071 0L10.8536 3.64645c0.143 0.143 0.1857 0.35805 0.1083 0.54489 -0.0774 0.18684 -0.2597 0.30866 -0.4619 0.30866H8V13c0 0.5523 -0.44772 1 -1 1 -0.55229 0 -1 -0.4477 -1 -1V4.5H3.5c-0.20223 0 -0.38455 -0.12182 -0.46194 -0.30866 -0.07739 -0.18684 -0.03461 -0.40189 0.10839 -0.54489l3.5 -3.500003Z" /></g>'
+            '<g transform="rotate(-90 7 7) translate(-0.7 2.8) scale(0.6)"><path fill-rule="evenodd" clip-rule="evenodd" d="M6.64645 0.146447c0.19526 -0.1952625 0.51184 -0.1952625 0.7071 0L10.8536 3.64645c0.143 0.143 0.1857 0.35805 0.1083 0.54489 -0.0774 0.18684 -0.2597 0.30866 -0.4619 0.30866H8V13c0 0.5523 -0.44772 1 -1 1 -0.55229 0 -1 -0.4477 -1 -1V4.5H3.5c-0.20223 0 -0.38455 -0.12182 -0.46194 -0.30866 -0.07739 -0.18684 -0.03461 -0.40189 0.10839 -0.54489l3.5 -3.500003Z" /></g>'
+        ),
+    },
+    {
+        "name": "IconLock",
+        "means": "Locked or encrypted: the app lock, a target that encrypts what is written into it",
+        "source": "Streamline interface-essential/padlock-square-1.svg",
+        "viewBox": "0 0 14 14",
+        "ink": [1.5, 0, 11, 14],
+        "svg": (
+            '<path fill-rule="evenodd" clip-rule="evenodd" d="M7 2a2 2 0 0 0 -2 2v1h4V4a2 2 0 0 0 -2 -2ZM3 4v1a1.5 1.5 0 0 0 -1.5 1.5v6A1.5 1.5 0 0 0 3 14h8a1.5 1.5 0 0 0 1.5 -1.5v-6A1.5 1.5 0 0 0 11 5V4a4 4 0 1 0 -8 0Zm4 6.75a1.25 1.25 0 1 0 0 -2.5 1.25 1.25 0 0 0 0 2.5Z" />'
+        ),
+    },
+    {
+        "name": "IconServer",
+        "means": "SFTP: a machine reached over SSH",
+        "source": "Streamline computer-devices/database-server-2.svg",
+        "viewBox": "0 -0.006 14 14",
+        "ink": [0, 0, 14, 13.987],
+        "svg": (
+            '<path fill-rule="evenodd" clip-rule="evenodd" d="M0 1.5A1.5 1.5 0 0 1 1.5 0h11A1.5 1.5 0 0 1 14 1.5V3a1.5 1.5 0 0 1 -1.5 1.5h-11A1.5 1.5 0 0 1 0 3V1.5Zm0 6A1.5 1.5 0 0 1 1.5 6h11A1.5 1.5 0 0 1 14 7.5V9a1.5 1.5 0 0 1 -1.5 1.5H7.75v1.987H12a0.75 0.75 0 0 1 0 1.5H2a0.75 0.75 0 0 1 0 -1.5h4.25V10.5H1.5A1.5 1.5 0 0 1 0 9V7.5Zm3.5 -5.25a0.75 0.75 0 1 1 -1.5 0 0.75 0.75 0 0 1 1.5 0Zm4.33 -0.625a0.625 0.625 0 1 0 0 1.25H11a0.625 0.625 0 1 0 0 -1.25H7.83ZM3.5 8.25a0.75 0.75 0 1 1 -1.5 0 0.75 0.75 0 0 1 1.5 0Zm3.706 0c0 -0.345 0.28 -0.625 0.625 -0.625H11a0.625 0.625 0 1 1 0 1.25H7.83a0.625 0.625 0 0 1 -0.624 -0.625Z" />'
+        ),
+    },
+    {
+        "name": "IconTransfer",
+        "means": "FTP: the protocol whose whole name is the transfer",
+        "source": "Streamline interface-essential/arrow-transfer-diagonal-1.svg",
+        "viewBox": "0 0 14 14",
+        "ink": [0, 0, 14, 14],
+        "svg": (
+            '<path fill-rule="evenodd" clip-rule="evenodd" d="M10.9977 1.06752c-0.0156 0.23297 -0.1125 0.46151 -0.2906 0.63959l-1.99999 2 -7 6.99999c-0.39053 0.3905 -1.023693 0.3905 -1.414217 0 -0.3905241 -0.3905 -0.3905241 -1.02368 0 -1.41421L6.58579 3l-1.2929 -1.29289c-0.28599 -0.286 -0.37155 -0.716119 -0.21677 -1.089793C5.2309 0.243642 5.59554 0 6 0h4c0.2546 0 0.4934 0.096541 0.674 0.261286m0.0818 0.083848c0.0691 0.07974 0.1263 0.171214 0.1681 0.272183 0.0341 0.082471 0.0566 0.167691 0.0678 0.253505 -0.0245 -0.189242 -0.1032 -0.372814 -0.2359 -0.525688ZM7.41421 11l6.29289 -6.29289c0.3905 -0.39053 0.3905 -1.02369 0 -1.41422 -0.3905 -0.39052 -1.0237 -0.39052 -1.4142 0L5.29289 10.2929l-2 2c-0.17808 0.1781 -0.27495 0.4066 -0.29062 0.6396 -0.00443 0.0653 -0.00248 0.1311 0.00606 0.1967 0.02439 0.1883 0.10234 0.3709 0.23386 0.5233 0.02624 0.0305 0.05422 0.0593 0.08376 0.0862 0.178 0.1627 0.40056 0.2494 0.62608 0.2602C3.96801 13.9996 3.984 14 4 14h4c0.40446 0 0.7691 -0.2436 0.92388 -0.6173 0.15478 -0.3737 0.06922 -0.8038 -0.21677 -1.0898L7.41421 11Z" />'
+        ),
+    },
+    {
+        "name": "IconBuckets",
+        "means": "S3: object storage, which is buckets",
+        "source": "Streamline computer-devices/database.svg",
+        "viewBox": "0.056 0.112 13.888 13.888",
+        "ink": [0.488, 0.112, 13.024, 13.888],
+        "svg": (
+            '<path fill-rule="evenodd" clip-rule="evenodd" d="M0.551514 2.27783c0 -0.15488 0.07702 -0.36799 0.357204 -0.62937 0.281142 -0.26227 0.721972 -0.52723 1.318962 -0.762786C3.41794 0.416028 5.10495 0.111832 6.99996 0.111832S10.582 0.416028 11.7722 0.885674c0.597 0.235556 1.0379 0.500516 1.319 0.762786 0.2802 0.26138 0.3572 0.47449 0.3572 0.62937 0 0.15487 -0.077 0.36799 -0.3572 0.62936 -0.2811 0.26227 -0.722 0.52723 -1.319 0.76279 -1.1902 0.46965 -2.87723 0.77384 -4.77224 0.77384s-3.58202 -0.30419 -4.77228 -0.77384c-0.59699 -0.23556 -1.03782 -0.50052 -1.318962 -0.76279 -0.280184 -0.26137 -0.357204 -0.47449 -0.357204 -0.62936ZM13.5121 4.16708c-0.3673 0.25522 -0.8026 0.47686 -1.2811 0.66566 -1.3698 0.54049 -3.21949 0.86108 -5.23104 0.86108s-3.86126 -0.32059 -5.23108 -0.86108c-0.47845 -0.18879 -0.913723 -0.41041 -1.280965 -0.66562v3.17781c0.055969 0.0849 0.135466 0.17801 0.246193 0.27869 0.289992 0.26368 0.744472 0.52986 1.359042 0.76629 1.22499 0.47125 2.95961 0.77608 4.90685 0.77608 1.94723 0 3.6819 -0.30483 4.9068 -0.77608 0.6146 -0.23643 1.0691 -0.50261 1.3591 -0.76629 0.1107 -0.10067 0.1902 -0.19378 0.2462 -0.27868V4.16708ZM0.487915 11.209V8.99273c0.341164 0.21282 0.732125 0.4006 1.156435 0.56383C3.04569 10.0957 4.93936 10.416 7 10.416c2.06063 0 3.9543 -0.3203 5.3556 -0.85944 0.4243 -0.16323 0.8153 -0.351 1.1565 -0.56383V11.209c0 1.5406 -2.9154 2.791 -6.51211 2.791 -3.59667 0 -6.512075 -1.2504 -6.512075 -2.791Z" />'
+        ),
+    },
+    {
+        "name": "IconQr",
+        "means": "Show a download as a code to scan with the phone",
+        "source": "Streamline money-shopping/qr-code.svg",
+        "viewBox": "0.076 0.076 13.848 13.848",
+        "ink": [0.076, 0.076, 13.848, 13.848],
+        "svg": (
+            '<path fill-rule="evenodd" clip-rule="evenodd" d="M1.77607 0.0762329c-0.45082 0 -0.883169 0.1790861 -1.201944 0.4978621C0.25535 0.892871 0.0762634 1.32522 0.0762634 1.77604v1.42471c0 0.41422 0.3357866 0.75 0.7499996 0.75 0.414217 0 0.749997 -0.33578 0.749997 -0.75V1.77604c0 -0.05299 0.02105 -0.10381 0.05853 -0.14128 0.03747 -0.03748 0.08829 -0.05853 0.14128 -0.05853h1.42471c0.41422 0 0.75 -0.33578 0.75 -0.749997 0 -0.414214 -0.33578 -0.7500001 -0.75 -0.7500001H1.77607ZM3.99586 2.74559c-0.69036 0 -1.25 0.55965 -1.25 1.25v2.07296c0 0.69036 0.55964 1.25 1.25 1.25h2.07296c0.69035 0 1.25 -0.55964 1.25 -1.25V3.99559c0 -0.69036 -0.55965 -1.25 -1.25 -1.25H3.99586Zm0.25 3.07296V4.24559h1.57296v1.57296H4.24586ZM10.0493 0.826309c0 -0.414213 0.3358 -0.7499998 0.75 -0.7499998h1.4247c0.4508 0 0.8832 0.1790868 1.202 0.4978618 0.3187 0.318776 0.4978 0.751129 0.4978 1.201949v1.42471c0 0.41421 -0.3358 0.75 -0.75 0.75s-0.75 -0.33579 -0.75 -0.75V1.77612c0 -0.053 -0.021 -0.10382 -0.0585 -0.14129 -0.0375 -0.03747 -0.0883 -0.05852 -0.1413 -0.05852h-1.4247c-0.4142 0 -0.75 -0.33579 -0.75 -0.750001ZM1.57632 10.7993c0 -0.4142 -0.33578 -0.75 -0.749996 -0.75 -0.414213 0 -0.7499995 0.3358 -0.7499995 0.75v1.4247c0 0.4508 0.1790865 0.8832 0.4978625 1.202 0.318775 0.3187 0.751123 0.4978 1.201943 0.4978h1.42471c0.41422 0 0.75 -0.3358 0.75 -0.75s-0.33578 -0.75 -0.75 -0.75H1.77613c-0.05299 0 -0.10381 -0.021 -0.14128 -0.0585 -0.03747 -0.0375 -0.05853 -0.0883 -0.05853 -0.1413v-1.4247Zm11.59748 -0.75c0.4142 0 0.75 0.3358 0.75 0.75v1.4247c0 0.4508 -0.1791 0.8832 -0.4978 1.202 -0.3188 0.3187 -0.7512 0.4978 -1.202 0.4978h-1.4247c-0.4142 0 -0.75 -0.3358 -0.75 -0.75s0.3358 -0.75 0.75 -0.75h1.4247c0.053 0 0.1038 -0.021 0.1413 -0.0585 0.0375 -0.0375 0.0585 -0.0883 0.0585 -0.1413v-1.4247c0 -0.4142 0.3358 -0.75 0.75 -0.75Zm-8.92789 -0.85918c0 -0.41421 -0.33579 -0.75 -0.75 -0.75s-0.75 0.33579 -0.75 0.75v1.31408c0 0.4142 0.33579 0.75 0.75 0.75H4.81c0.41421 0 0.75 -0.3358 0.75 -0.75s-0.33579 -0.74999 -0.75 -0.74999h-0.56409v-0.56409Zm1.46005 0c0 -0.41421 0.33579 -0.75 0.75 -0.75h0.54402c0.41422 0 0.75 0.33579 0.75 0.75v1.31408c0 0.4142 -0.33578 0.75 -0.75 0.75 -0.41421 0 -0.75 -0.3358 -0.75 -0.75v-0.59271c-0.31406 -0.08951 -0.54402 -0.37858 -0.54402 -0.72137Zm4.2342 -5.69445c0 -0.41422 -0.33579 -0.75 -0.75 -0.75 -0.41422 0 -0.75 0.33578 -0.75 0.75v1.31409c0 0.41421 0.33578 0.75 0.75 0.75h1.31404c0.4143 0 0.75 -0.33579 0.75 -0.75 0 -0.41422 -0.3357 -0.75 -0.75 -0.75l-0.56404 0v-0.56409Zm-1.5 3.50431c0 -0.41421 0.33578 -0.75 0.75 -0.75h1.31404c0.4143 0 0.75 0.33579 0.75 0.75v0.63901c0 0.41421 -0.3357 0.74999 -0.75 0.74999 -0.3765 0 -0.68816 -0.27742 -0.7418 -0.639h-0.57224c-0.41422 0 -0.75 -0.33578 -0.75 -0.75Zm1.5 2.19014c0 -0.41421 -0.33579 -0.75 -0.75 -0.75 -0.41422 0 -0.75 0.33579 -0.75 0.75v1.31408c0 0.4142 0.33578 0.75 0.75 0.75h1.31404c0.4143 0 0.75 -0.3358 0.75 -0.75s-0.3357 -0.74999 -0.75 -0.74999h-0.56404v-0.56409Z" />'
+        ),
+    },
+    {
+        "name": "IconWallet",
+        "means": "Give with crypto",
+        "source": "Streamline money-shopping/wallet.svg",
+        "viewBox": "0 0.546 13.763 13.763",
+        "ink": [0, 0.855, 13.763, 13.145],
+        "svg": (
+            '<path fill-rule="evenodd" clip-rule="evenodd" d="M0 4.35474C0 2.42174 1.567 0.854736 3.5 0.854736H10c0.2761 0 0.5 0.223854 0.5 0.500004v1.39795l-7.14453 0c-0.34518 0 -0.625 0.27982 -0.625 0.625 0 0.34517 0.27982 0.625 0.625 0.625l7.58413 0c0.0198 0 0.0394 -0.00093 0.0587 -0.00273l0.2138 0c0.3978 0 0.7793 0.15803 1.0606 0.43934 0.2813 0.2813 0.4394 0.66283 0.4394 1.06066v0.91618H9.76276c-0.82448 0 -1.75 0.62476 -1.75 1.6946v1.77843c0 1.06983 0.92552 1.69463 1.75 1.69463h2.94934v0.9161c0 0.3979 -0.1581 0.7794 -0.4394 1.0607s-0.6628 0.4393 -1.0606 0.4393L1.5 14c-0.39783 0 -0.779356 -0.1581 -1.06066 -0.4394C0.158035 13.2793 0 12.8978 0 12.5V4.35474Zm9.76276 3.3114h3.50004c0.2761 0 0.5 0.19905 0.5 0.4446v1.77843c0 0.24553 -0.2239 0.44463 -0.5 0.44463H9.76276c-0.27615 0 -0.5 -0.1991 -0.5 -0.44463V8.11074c0 -0.24555 0.22385 -0.4446 0.5 -0.4446Z" />'
+        ),
+    },
+    {
+        "name": "IconCheckDraw",
+        "means": "A tick that draws itself in where a copy or a check has just worked",
+        "source": "Drawn for ArrowLoop",
+        # Stroked, unlike every other glyph, because the draw-in runs a dash
+        # offset along the line; pathLength makes that one unit whatever the
+        # geometry. The box stays the grid so the tick keeps the reach of the
+        # round glyph it stands in for (glyphs.reach.test.ts).
+        "viewBox": "0 0 14 14",
+        "ink": [1.3, 2.3, 11.4, 9.7],
+        "svg": (
+            '<path d="M2.4 7.4L5.6 10.9L11.6 3.4" pathLength="1" fill="none" stroke="currentColor"'
+            ' stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />'
+        ),
+    },
 ]
 
-# Glyphs drawn here, because the set's diagonal marks look larger than the round
-# glyphs beside them.
-#
-# Reach, the distance from the centre to the furthest ink, is what the eye reads
-# as size. A cross puts its tips on the corners of its box, so filling the same
-# box as a round glyph makes it reach sqrt(2) further: delete-1.svg reaches 9.49
-# and check.svg 8.82, against 7.0 for a frame-filling round glyph. The cross is
-# BombVault's settled geometry, and the check is drawn to the same rule.
-#
-# name -> (note, box, markup)
-DRAWN = [
-    ("IconCancel",
-     "Cancel, on a dialog's own footer. A plus turned 45 degrees, which is one "
-     "drawing rather than two that could drift apart",
-     # Tip radius 5 lands the tips where a frame-filling round glyph puts its
-     # outermost ink. The bars are 2.2 rather than the upright plus's 2.8
-     # because the mark shrank by 1/sqrt(2) and painted area goes with its
-     # square.
-     "2 2 10 10",
-     '<g transform="rotate(45 7 7)">'
-     '<rect x="2" y="5.9" width="10" height="2.2" rx="1.1" />'
-     '<rect x="5.9" y="2" width="2.2" height="10" rx="1.1" />'
-     '</g>'),
+# Glyphs that point along the reading direction, so a right-to-left layout
+# mirrors them.
+MIRRORED = {"IconBack", "IconSignOut"}
 
-    ("IconConfirm",
-     "Confirm. Not IconCheck, which is the magnifying glass this app uses for "
-     "\"open a target and look at it\"",
-     # The long tip at (11.6, 3.4) is 5.84 from the centre, plus the 1.1 cap
-     # radius makes 6.94 against the round glyphs' 7.0. Stroked, so the bar
-     # holds the cross's 2.2 thickness, with round caps for the same ends.
-     "0 0 14 14",
-     # pathLength lets a copy button draw the check in with .glim-check-draw.
-     '<path d="M2.4 7.4L5.6 10.9L11.6 3.4" pathLength="1" fill="none" stroke="currentColor"'
-     ' stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />'),
-
-    ("IconMenu",
-     "A menu of further actions, the three bars GlimStone reserves for a menu. "
-     "The free subset has no plain one",
-     # The outer corners sit 6.86 from the centre, the round glyphs' reach, in
-     # the cross's 2.2 bar thickness.
-     "0 0 14 14",
-     '<rect x="1.5" y="2.9" width="11" height="2.2" rx="1.1" />'
-     '<rect x="1.5" y="5.9" width="11" height="2.2" rx="1.1" />'
-     '<rect x="1.5" y="8.9" width="11" height="2.2" rx="1.1" />'),
-
-    ("IconAnomalies",
-     "Anomalies: a row of readings with one far out of line. BombVault's "
-     "drawing, so the same thing wears the same mark in both apps",
-     # The box is the ink itself, as BombVault has it. The tall bar's corners
-     # then sit where a frame-filling round glyph puts its outermost ink.
-     "1.4 1.4 11.2 11.2",
-     '<rect x="1.4" y="8.6" width="2.2" height="4" rx="1.1" />'
-     '<rect x="4.4" y="7.4" width="2.2" height="5.2" rx="1.1" />'
-     '<rect x="7.4" y="1.4" width="2.2" height="11.2" rx="1.1" />'
-     '<rect x="10.4" y="8" width="2.2" height="4.6" rx="1.1" />'),
+# Where a drawing comes from decides what the file owes its author. A source
+# matching neither these nor NO_LICENCE stops the run, so a glyph from a new set
+# cannot ship without its licence line.
+LICENCES = [
+    ("Streamline", "Free icons from Streamline, https://streamlinehq.com (CC BY 4.0)"),
+    ("Font Awesome Free", "Font Awesome Free, https://fontawesome.com (icons: CC BY 4.0)"),
+    ("Tabler Icons", "Tabler Icons, https://tabler.io/icons (MIT)"),
+    ("Material Design Icons", "Material Design Icons, https://pictogrammers.com/library/mdi/ (Apache 2.0)"),
+    ("Simple Icons", "Simple Icons, https://simpleicons.org (CC0)"),
 ]
+NO_LICENCE = ("Drawn", "KnightLoader's drawing")
 
-# Glyphs from outside Streamline: name, note, source line, the measured box, and
-# the paths verbatim.
-#
-# The box is the drawing's own ink, squared off and centred. MDI draws on a
-# 24-unit grid with a 3-unit margin, so the declared box would render the mark
-# at three quarters the size of its neighbours. IconSave is the drawing in
-# GlimStone's reference/glyphs.json.
-LICENSED = [
-    ("IconSave",
-     "Save",
-     "Material Design Icons (https://pictogrammers.com/library/mdi/), content-save, Apache 2.0",
-     "3.00 3.00 18.00 18.00",
-     [
-         "M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19"
-         "M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z",
-     ]),
-    # Streamline's arrows are thin, and a bare arrow on a button needs more
-    # weight to hold its own beside the words. Same 14-unit grid.
-    ("IconArrowDown",
-     "Download a file to this computer",
-     "Drawn for this app",
-     "0 0 14 14",
-     [
-         "M5.2 1.6c0-.9.8-1.6 1.8-1.6s1.8.7 1.8 1.6V6.4h3c.9 0 1.3 1 .7 1.7l-4.8 5.1c-.4.4-1 .4-1.4 0"
-         "L1.5 8.1c-.6-.7-.2-1.7.7-1.7h3V1.6z",
-     ]),
-    # The free Streamline set has no pair of sliders that reads at 20px
-    # (glyphs.md, "Settings tabs"). Declared on a 24-unit grid with a 3-unit
-    # margin all round.
-    ("IconTabGeneral",
-     "The General tab",
-     "Material Design Icons (https://pictogrammers.com/library/mdi/), tune, Apache 2.0",
-     "3.00 3.00 18.00 18.00",
-     [
-         "M3,17V19H9V17H3M3,5V7H13V5H3M13,21V19H21V17H13V15H11V21H13M7,9V11H3V13H7V15H9V9H7"
-         "M21,13V11H11V13H21M15,9H17V7H21V5H17V3H15V9Z",
-     ]),
-]
+TRADEMARKS = {
+    "IconCoffee": "Buy Me a Coffee",
+}
 
-HEADER = '''// ArrowLoop's icon set.
+HEADER = """// ArrowLoop's icon set.
 //
-// GENERATED by scripts/gen_glyphs.py. Do not hand-edit: regenerate instead, or
-// the next run silently discards the change.
+// GENERATED by scripts/gen_glyphs.py from scripts/glyphs.json, GlimStone's glyph
+// assortment, and the generator's own table of ArrowLoop's meanings. Do not
+// hand-edit: regenerate instead, or the next run silently overwrites the change.
 //
-// Attribution, required by the licence:
-//   Free icons from Streamline, https://streamlinehq.com (CC BY 4.0)
-//   The free 1000-icon Core Solid subset only:
-//   https://github.com/webalys-hq/streamline-vectors
-//   IconSave and IconTabGeneral from Material Design Icons,
-//   https://pictogrammers.com/library/mdi/ (Apache 2.0)
+// Attribution, required by the licences below:
+%(licences)s
 //
-// The Streamline glyphs share one 14-unit grid, so they keep their own
-// viewBox; IconSave and IconTabGeneral carry a measured crop.
+// Only Streamline's free 1000-icon subset is used
+// (github.com/webalys-hq/streamline-vectors, core/solid), which is CC BY 4.0
+// and may be redistributed. The 5771-icon set sold on streamlinehq.com is a
+// separate product whose licence forbids redistribution.
+%(trademarks)s//
+// Every glyph takes the ink of its control through `currentColor`, so it is
+// right in every theme, and is `aria-hidden`, because the control's label is
+// its accessible name. Each viewBox is a square cropped to the drawing's
+// measured ink, which makes glyphs from different sets the same size in the
+// same box.
 
 import type { ReactNode, SVGProps } from 'react'
 
-/** Two or more glyphs from the same set, stacked into one drawing, each group
- *  with its own transform. */
-function Stack({ box, groups, ...rest }: { box: string; groups: { transform: string; paths: string[] }[] } & SVGProps<SVGSVGElement>) {
+function G({
+  box,
+  mirror = false,
+  children,
+  ...rest
+}: { box: string; mirror?: boolean; children: ReactNode } & SVGProps<SVGSVGElement>) {
   return (
     <svg
       width="14"
       height="14"
       viewBox={box}
       fill="currentColor"
-      className="shrink-0"
-      aria-hidden="true"
-      {...rest}
-    >
-      {groups.map((g) => (
-        <g key={g.transform} transform={g.transform}>
-          {g.paths.map((one) => (
-            <path key={one} fillRule="evenodd" clipRule="evenodd" d={one} />
-          ))}
-        </g>
-      ))}
-    </svg>
-  )
-}
-
-/** One glyph, sized by the caller and coloured by currentColor. */
-function Glyph({ box, paths, ...rest }: { box: string; paths: string[] } & SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      width="14"
-      height="14"
-      viewBox={box}
-      fill="currentColor"
-      className="shrink-0"
-      aria-hidden="true"
-      {...rest}
-    >
-      {paths.map((one) => (
-        <path key={one} fillRule="evenodd" clipRule="evenodd" d={one} />
-      ))}
-    </svg>
-  )
-}
-
-/** A mark drawn to match the set's size; see the DRAWN table in
- *  scripts/gen_glyphs.py. */
-function Drawn({ box, children, ...rest }: { box: string; children: ReactNode } & SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      width="14"
-      height="14"
-      viewBox={box}
-      fill="currentColor"
-      className="shrink-0"
+      className={mirror ? 'shrink-0 rtl:-scale-x-100' : 'shrink-0'}
       aria-hidden="true"
       {...rest}
     >
@@ -305,117 +289,102 @@ function Drawn({ box, children, ...rest }: { box: string; children: ReactNode } 
     </svg>
   )
 }
-'''
+"""
 
 
-def paths_of(svg: str):
-    """Every path's d attribute, in document order."""
-    return re.findall(r'<path[^>]*\sd="([^"]+)"', svg)
+def licence(name, source):
+    for prefix, line in LICENCES:
+        if source.startswith(prefix):
+            return line
+    if source.startswith(NO_LICENCE):
+        return None
+    raise SystemExit("%s comes from %r, which has no licence line in LICENCES" % (name, source))
 
 
-def jsx(markup: str) -> str:
-    """SVG markup as JSX: hyphenated attributes become camelCase.
+def jsx(svg):
+    """An entry's markup as JSX lines, without what the wrapper already sets.
 
-    An attribute left hyphenated is an error, since React would drop it
-    silently and ship a glyph missing its stroke.
+    Streamline exports wrap their paths in a bare <g> and repeat the fill and a
+    stroke width on every path; the wrapper's fill reaches them anyway.
     """
-    known = {
-        "stroke-width": "strokeWidth",
-        "stroke-linecap": "strokeLinecap",
-        "stroke-linejoin": "strokeLinejoin",
-        "fill-rule": "fillRule",
-        "clip-rule": "clipRule",
-    }
-    for was, now in known.items():
-        markup = markup.replace(was + "=", now + "=")
-    left = re.findall(r'\s([a-z]+-[a-z-]+)=', markup)
-    if left:
-        raise SystemExit("untranslated SVG attribute(s) in a DRAWN glyph: %s" % ", ".join(left))
-    return markup
+    s = svg.strip()
+    bare = re.fullmatch(r"<g>\s*(.*?)\s*</g>", s, re.S)
+    if bare:
+        s = bare.group(1)
+    s = re.sub(r'\s(?:fill="currentColor"|stroke-width="1")(?=[\s/>])', "", s)
+    s = re.sub(r"<(\w+)([^<>]*?)\s*>\s*</\1>", r"<\1\2 />", s)
+    s = re.sub(r"\s*/>", " />", s)
+    s = re.sub(r"\b([a-z]+)-([a-z]+)=", lambda m: m.group(1) + m.group(2).capitalize() + "=", s)
+    lines, depth = [], 0
+    for tag in re.findall(r"<[^<>]+>", s):
+        if tag.startswith("</"):
+            depth -= 1
+        lines.append("  " * depth + tag)
+        if not tag.startswith("</") and not tag.endswith("/>"):
+            depth += 1
+    return lines
 
 
-def box_of(svg: str) -> str:
-    found = re.search(r'viewBox="([^"]+)"', svg)
-    if not found:
-        raise SystemExit("no viewBox")
-    return found.group(1)
-
-
-def main() -> None:
-    out = [HEADER]
-    for entry in GLYPHS:
-        # An optional fourth field turns the drawing.
-        name, rel, note = entry[0], entry[1], entry[2]
-        transform = entry[3] if len(entry) > 3 else None
-        full = os.path.join(SRC, rel)
-        if not os.path.exists(full):
-            raise SystemExit("missing source glyph: %s" % full)
-        svg = io.open(full, encoding="utf-8").read()
-        paths = paths_of(svg)
-        if not paths:
-            raise SystemExit("no paths in %s" % rel)
-        joined = ", ".join("'%s'" % p.replace("\\", "\\\\").replace("'", "\\'") for p in paths)
-        if transform:
-            out.append(
-                "\n/** %s. Streamline: %s, turned */\n"
-                "export function %s(props: SVGProps<SVGSVGElement>) {\n"
-                "  return <Stack box=\"%s\" groups={[{ transform: '%s', paths: [%s] }]} {...props} />\n"
-                "}\n" % (note, rel, name, box_of(svg), transform, joined)
-            )
-            continue
-        out.append(
-            "\n/** %s. Streamline: %s */\n"
-            "export function %s(props: SVGProps<SVGSVGElement>) {\n"
-            "  return <Glyph box=\"%s\" paths={[%s]} {...props} />\n"
-            "}\n" % (note, rel, name, box_of(svg), joined)
-        )
-    for name, note, parts in COMPOSED:
-        groups = []
-        sources = []
-        for rel, transform in parts:
-            full = os.path.join(SRC, rel)
-            if not os.path.exists(full):
-                raise SystemExit("missing source glyph: %s" % full)
-            svg = io.open(full, encoding="utf-8").read()
-            paths = paths_of(svg)
-            if not paths:
-                raise SystemExit("no paths in %s" % rel)
-            joined = ", ".join(
-                "'%s'" % q.replace(chr(92), chr(92) * 2).replace("'", chr(92) + "'")
-                for q in paths)
-            groups.append("{ transform: '%s', paths: [%s] }" % (transform, joined))
-            sources.append(rel)
-        out.append(
-            "\n/** %s. Streamline: %s */\n"
-            "export function %s(props: SVGProps<SVGSVGElement>) {\n"
-            "  return <Stack box=\"0 0 14 14\" groups={[%s]} {...props} />\n"
-            "}\n" % (note, " + ".join(sources), name, ", ".join(groups))
-        )
-    for name, note, box, markup in DRAWN:
-        out.append(
-            "\n/** %s. Drawn here, see gen_glyphs.py's DRAWN table for why */\n"
-            "export function %s(props: SVGProps<SVGSVGElement>) {\n"
-            "  return (\n"
-            "    <Drawn box=\"%s\" {...props}>\n"
-            "      %s\n"
-            "    </Drawn>\n"
-            "  )\n"
-            "}\n" % (note, name, box, jsx(markup))
-        )
-    for name, note, source, box, paths in LICENSED:
-        joined = ", ".join("'%s'" % p.replace("\\", "\\\\").replace("'", "\\'") for p in paths)
-        out.append(
-            "\n/** %s. %s */\n"
-            "export function %s(props: SVGProps<SVGSVGElement>) {\n"
-            "  return <Glyph box=\"%s\" paths={[%s]} {...props} />\n"
-            "}\n" % (note, source, name, box, joined)
-        )
-    with open(OUT, "w", encoding="utf-8", newline="") as f:
-        f.write("".join(out))
-    print(
-        "wrote %s with %d glyphs"
-        % (OUT, len(GLYPHS) + len(COMPOSED) + len(DRAWN) + len(LICENSED))
+def component(entry):
+    name = entry["name"]
+    mirror = " mirror" if name in MIRRORED else ""
+    body = "\n".join("      " + line for line in jsx(entry["svg"]))
+    return (
+        "\n/** %s. %s. */\n"
+        "export function %s(props: SVGProps<SVGSVGElement>) {\n"
+        "  return (\n"
+        '    <G box="%s"%s {...props}>\n'
+        "%s\n"
+        "    </G>\n"
+        "  )\n"
+        "}\n" % (entry["means"], entry["source"].rstrip("."), name, entry["viewBox"], mirror, body)
     )
+
+
+def wrap(text, width=80):
+    lines, line = [], "//"
+    for word in text.split():
+        if len(line) + 1 + len(word) > width:
+            lines.append(line)
+            line = "//"
+        line += " " + word
+    lines.append(line)
+    return "\n".join(lines)
+
+
+def main():
+    own = {e["name"] for e in APP}
+    clash = own & set(ASSORTMENT)
+    if clash:
+        raise SystemExit("ArrowLoop's own table reuses assortment names: %s" % ", ".join(sorted(clash)))
+    missing = [n for n in STANDARD if n not in ASSORTMENT]
+    if missing:
+        raise SystemExit("not in glyphs.json: %s" % ", ".join(missing))
+
+    # The assortment's own order, so a refreshed copy moves nothing it did not change.
+    entries = [e for e in ASSORTMENT.values() if e["name"] in STANDARD] + APP
+
+    used = []
+    for e in entries:
+        line = licence(e["name"], e["source"])
+        if line and line not in used:
+            used.append(line)
+    licences = "\n".join("//   " + line for line in sorted(used, key=[l for _, l in LICENCES].index))
+    marks = ["%s (%s)" % (n, TRADEMARKS[n]) for n in STANDARD if n in TRADEMARKS]
+    trademarks = ""
+    if marks:
+        joined = marks[0] if len(marks) == 1 else ", ".join(marks[:-1]) + " and " + marks[-1]
+        text = "%s %s of %s, used unmodified and only to name what the control leads to, with no claim of endorsement or affiliation." % (
+            joined,
+            "is a trademark" if len(marks) == 1 else "are trademarks",
+            "its owner" if len(marks) == 1 else "their owners",
+        )
+        trademarks = "//\n" + wrap(text) + "\n"
+
+    out = [HEADER % {"licences": licences, "trademarks": trademarks}]
+    out.extend(component(e) for e in entries)
+    OUT.write_text("".join(out), encoding="utf-8", newline="")
+    print("wrote %d glyphs to %s" % (len(entries), OUT.relative_to(ROOT)))
 
 
 if __name__ == "__main__":

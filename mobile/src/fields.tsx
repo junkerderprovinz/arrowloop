@@ -66,7 +66,7 @@ export function Field({
             android_ripple={{ color: p.hover }}
             style={[styles.eye, { backgroundColor: p.surface3, ...corners.pill }]}
           >
-            <Glyph name={hidden ? "IconVisible" : "IconHidden"} color={p.text} size={18} />
+            <Glyph name={hidden ? "IconEye" : "IconEyeOff"} color={p.text} size={18} />
           </Pressable>
         ) : null}
       </View>

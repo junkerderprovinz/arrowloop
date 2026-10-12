@@ -116,8 +116,8 @@ function TargetCard({
         <View style={styles.menuSlot}>
           <CardMenu
             items={[
-              { label: t("action.edit"), glyph: "IconEdit", onPress: onEdit },
-              { label: t("action.delete"), glyph: "IconDelete", onPress: remove },
+              { label: t("action.edit"), glyph: "IconPencil", onPress: onEdit },
+              { label: t("action.delete"), glyph: "IconTrash", onPress: remove },
             ]}
           />
         </View>

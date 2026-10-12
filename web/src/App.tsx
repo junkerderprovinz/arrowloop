@@ -12,17 +12,17 @@ import { Sidebar } from './components/Sidebar'
 import {
   IconAnomalies,
   IconConflict,
-  IconDelete,
+  IconDashboard,
+  IconGear,
   IconHistory,
-  IconJobs,
-  IconLive,
   IconLock,
-  IconLook,
-  IconReset,
-  IconSettings,
+  IconRefresh,
+  IconSync,
   IconTabApp,
   IconTabGeneral,
-  IconTargets,
+  IconTabLook,
+  IconTabStorage,
+  IconTrash,
 } from './components/glyphs'
 import { AccentSwatches, PaletteSwatches } from './components/Swatches'
 import { About } from './components/About'
@@ -363,19 +363,19 @@ export function App() {
           setTab(next)
         }}
         items={[
-          { value: 'jobs', label: t('nav.jobs'), icon: <IconJobs />, badge: running },
-          { value: 'targets', label: t('nav.targets'), icon: <IconTargets /> },
+          { value: 'jobs', label: t('nav.jobs'), icon: <IconSync />, badge: running },
+          { value: 'targets', label: t('nav.targets'), icon: <IconTabStorage /> },
           { value: 'history', label: t('nav.history'), icon: <IconHistory /> },
           { value: 'conflicts', label: t('nav.conflicts'), icon: <IconConflict />, badge: conflicts?.conflicts.length },
           { value: 'anomalies', label: t('nav.anomalies'), icon: <IconAnomalies />, badge: findings?.open.length },
           {
             value: 'trash',
             label: t('nav.trash'),
-            icon: <IconDelete />,
+            icon: <IconTrash />,
             badge: orderedTrash ? trashTotals(orderedTrash.filter((s) => !s.error)).entries : undefined,
           },
         ]}
-        settings={{ value: 'settings', label: t('nav.settings'), icon: <IconSettings /> }}
+        settings={{ value: 'settings', label: t('nav.settings'), icon: <IconGear /> }}
       />
 
       <Places.Provider value={places}>
@@ -521,8 +521,8 @@ function Settings(props: LookProps) {
         variant="chip"
         options={[
           { value: 'general', label: t('settings.general'), icon: <IconTabGeneral /> },
-          { value: 'engine', label: t('settings.engine'), icon: <IconLive /> },
-          { value: 'look', label: t('settings.look'), icon: <IconLook /> },
+          { value: 'engine', label: t('settings.engine'), icon: <IconDashboard /> },
+          { value: 'look', label: t('settings.look'), icon: <IconTabLook /> },
           { value: 'app', label: t('settings.app'), icon: <IconTabApp /> },
           // Left out where the interface cannot keep a password of its own.
           ...(props.security
@@ -1016,7 +1016,7 @@ function ResetBadge({
         border: '2px solid var(--carbon-border)',
       }}
     >
-      <IconReset />
+      <IconRefresh />
     </button>
   )
 }

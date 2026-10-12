@@ -15,11 +15,11 @@ import { glyphNameFor } from './glyphName'
 /** The verbs an area is plausibly named after. */
 const VERBS: Record<string, string> = {
   save: 'IconSave',
-  edit: 'IconEdit',
+  edit: 'IconPencil',
   copy: 'IconCopy',
-  cancel: 'IconCancel',
-  remove: 'IconDelete',
-  delete: 'IconDelete',
+  cancel: 'IconClose',
+  remove: 'IconTrash',
+  delete: 'IconTrash',
 }
 
 describe('the glyph rule table', () => {

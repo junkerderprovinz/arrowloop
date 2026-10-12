@@ -12,7 +12,7 @@ import { ScheduleField } from '../components/Schedule'
 import { HUE_OFFSET, Selector } from '../components/Selector'
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { Button } from '../lib/glimstone/Button'
-import { IconDelete } from '../components/glyphs'
+import { IconTrash } from '../components/glyphs'
 import { followPatch, followsDefaults } from '../lib/follows'
 import { useGoTo } from '../lib/goTo'
 import { MODES } from '../lib/modes'
@@ -452,7 +452,7 @@ export function JobForm({
             <Button
               label={t('edit.openTrash')}
               labelKey="edit.openTrash"
-              glyph={<IconDelete />}
+              glyph={<IconTrash />}
               onClick={() => goTo({ tab: 'trash', job: job.name ?? '' })}
             />
           </div>

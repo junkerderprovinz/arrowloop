@@ -9,7 +9,7 @@ import { Card } from '../lib/glimstone/Card'
 import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
 import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
-import { IconCancel, IconCheck, IconConfirm, IconCopy, IconDelete, IconEdit, IconFolder } from '../components/glyphs'
+import { IconCheck, IconCheckDraw, IconClose, IconCopy, IconFolder, IconPencil, IconTrash } from '../components/glyphs'
 import { brandMark } from '../components/brandMarks'
 import { Choice, Field, Secret, Text } from '../components/Field'
 import { ToggleRow } from '../components/ToggleRow'
@@ -340,7 +340,7 @@ function RemoteRow({
           <IconCheck />
         </IconAction>
         <IconAction onClick={onEdit} title={t('action.edit')} labelKey="action.edit" hueIndex={row + 2}>
-          <IconEdit />
+          <IconPencil />
         </IconAction>
         <IconAction
           title={t('action.delete')}
@@ -348,7 +348,7 @@ function RemoteRow({
           hueIndex={row + 3}
           onClick={() => setConfirming(true)}
         >
-          <IconDelete />
+          <IconTrash />
         </IconAction>
       </div>
 
@@ -357,7 +357,7 @@ function RemoteRow({
           title={t('confirm.deleteRemote')}
           message={t('confirm.deleteRemoteStakes', { name: remote.name })}
           confirmLabel={t('confirm.delete')}
-          confirmGlyph={<IconDelete />}
+          confirmGlyph={<IconTrash />}
           cancelLabel={t('confirm.cancel')}
           onCancel={() => setConfirming(false)}
           onConfirm={() => {
@@ -622,7 +622,7 @@ function RemoteForm({
                   : t('targets.checkFailed')
           }
           labelKey="targets.check"
-          glyph={trying || !tried ? undefined : tried.ok ? <IconConfirm /> : <IconCancel />}
+          glyph={trying || !tried ? undefined : tried.ok ? <IconCheck /> : <IconClose />}
           tone={trying || !tried ? 'neutral' : tried.ok ? 'ok' : 'danger'}
           className={tried && !tried.ok && !trying ? 'glim-shake' : ''}
           busy={trying}
@@ -821,7 +821,7 @@ function DriveRow({
             })
           }}
         >
-          {copied ? <IconConfirm className="glim-check-draw" /> : <IconCopy />}
+          {copied ? <IconCheckDraw className="glim-check-draw" /> : <IconCopy />}
         </IconAction>
         <IconAction
           title={t('targets.deleteDrive')}
@@ -830,7 +830,7 @@ function DriveRow({
           hueIndex={row + 2}
           onClick={() => setConfirming(true)}
         >
-          <IconDelete />
+          <IconTrash />
         </IconAction>
       </div>
 
@@ -839,7 +839,7 @@ function DriveRow({
           title={t('confirm.deleteDrive')}
           message={t('confirm.deleteDriveStakes', { name: volume.label })}
           confirmLabel={t('confirm.delete')}
-          confirmGlyph={<IconDelete />}
+          confirmGlyph={<IconTrash />}
           cancelLabel={t('confirm.cancel')}
           onCancel={() => setConfirming(false)}
           onConfirm={() => {

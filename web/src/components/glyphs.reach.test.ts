@@ -3,9 +3,9 @@ import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 
 // Reach is the distance from a glyph's centre to its furthest ink, as a
-// fraction of its box; a frame-filling round glyph sits at 0.5. A cross that
-// fills its box puts its tips in the corners and reaches sqrt(2) further, which
-// is what makes it look too big beside its neighbours even at equal extent.
+// fraction of its box; a frame-filling round glyph sits at 0.5. A diagonal mark
+// that fills its box puts its tips in the corners and reaches sqrt(2) further,
+// which is what makes it look too big beside its neighbours even at equal extent.
 
 const require_ = createRequire(import.meta.url)
 const source = readFileSync(
@@ -31,44 +31,14 @@ function bodyOf(name: string): string {
   return after.split('\n}')[0]
 }
 
-describe('cross and check reach', () => {
-  it('puts the cross tips exactly where a round glyph puts its ink', () => {
-    const [x, y, w, h] = boxOf('IconCancel')
+describe('the drawn tick', () => {
+  it('stays inside the circle a round glyph fills', () => {
+    const [x, y, w, h] = boxOf('IconCheckDraw')
     expect(w).toBe(h)
     const cx = x + w / 2
     const cy = y + h / 2
 
-    // Rotating about the box centre cannot change the tip radius.
-    const bars = [...bodyOf('IconCancel').matchAll(
-      /<rect x="([-\d.]+)" y="([-\d.]+)" width="([-\d.]+)" height="([-\d.]+)"/g,
-    )]
-    expect(bars, 'the cross should be drawn from two rectangles').toHaveLength(2)
-
-    const turn = /rotate\(45 ([-\d.]+) ([-\d.]+)\)/.exec(bodyOf('IconCancel'))
-    expect(turn, 'the cross is a plus turned 45 degrees').not.toBeNull()
-    expect(Number((turn as RegExpExecArray)[1])).toBeCloseTo(cx, 6)
-    expect(Number((turn as RegExpExecArray)[2])).toBeCloseTo(cy, 6)
-
-    for (const bar of bars) {
-      const bx = Number(bar[1])
-      const by = Number(bar[2])
-      const bw = Number(bar[3])
-      const bh = Number(bar[4])
-      const reach = Math.max(
-        Math.abs(bx - cx), Math.abs(bx + bw - cx),
-        Math.abs(by - cy), Math.abs(by + bh - cy),
-      )
-      expect(reach / w).toBeCloseTo(0.5, 2)
-    }
-  })
-
-  it('keeps the check inside the same circle', () => {
-    const [x, y, w, h] = boxOf('IconConfirm')
-    expect(w).toBe(h)
-    const cx = x + w / 2
-    const cy = y + h / 2
-
-    const body = bodyOf('IconConfirm')
+    const body = bodyOf('IconCheckDraw')
     const d = /<path d="([^"]+)"/.exec(body)
     expect(d, 'the check should be one stroked path').not.toBeNull()
     const stroke = /strokeWidth="([\d.]+)"/.exec(body)
@@ -93,7 +63,7 @@ describe('cross and check reach', () => {
 describe('the arrows carry no bar', () => {
   // move-left.svg and move-right.svg put a "jump to the end" bar behind the
   // arrowhead; the bare arrow is arrow-up-1.svg, turned.
-  it.each(['IconUp', 'IconToLeft', 'IconToRight', 'IconBothWays'])(
+  it.each(['IconToLeft', 'IconToRight', 'IconBothWays'])(
     '%s is the bare arrow, turned',
     (name) => {
       const body = bodyOf(name)

@@ -247,10 +247,10 @@ function JobCard({
               // Open is listed although tapping the card does the same, so it
               // can be found.
               { label: t("action.open"), glyph: "IconPreview", onPress: onOpen },
-              { label: t("action.edit"), glyph: "IconEdit", onPress: onEdit },
+              { label: t("action.edit"), glyph: "IconPencil", onPress: onEdit },
               // The copy starts held; see jobCopy.data.ts.
               { label: t("edit.duplicate"), glyph: "IconCopy", onPress: onDuplicate },
-              { label: t("action.delete"), glyph: "IconDelete", onPress: onRemove },
+              { label: t("action.delete"), glyph: "IconTrash", onPress: onRemove },
             ]}
           />
         </View>
@@ -322,7 +322,7 @@ function Side({ path, mark }: { path: string; mark?: string }) {
   return (
     <View style={styles.side}>
       {mark === DEVICE ? (
-        <Glyph name="IconThisDevice" color={p.textSub} size={16} />
+        <Glyph name="IconPhone" color={p.textSub} size={16} />
       ) : mark ? (
         // In one ink, like the device glyph it stands beside.
         <ProviderMark name={mark} width={18} height={18} color={p.textSub} scheme={scheme} mono />

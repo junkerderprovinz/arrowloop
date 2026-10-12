@@ -7,7 +7,7 @@ import { DropdownListbox } from '../lib/glimstone/DropdownListbox'
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { useT } from '../lib/i18n'
 import { Flag } from './Flag'
-import { IconHidden, IconVisible } from './glyphs'
+import { IconEye, IconEyeOff } from './glyphs'
 
 /** A labelled field: the eyebrow and its info bubble above, the control below. */
 export function Field({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
@@ -309,7 +309,7 @@ export function Secret({
         aria-pressed={shown}
         className="absolute right-2 top-1/2 -translate-y-1/2 text-carbon-textMuted transition hover:text-carbon-text"
       >
-        {shown ? <IconHidden /> : <IconVisible />}
+        {shown ? <IconEyeOff /> : <IconEye />}
       </button>
     </div>
   )

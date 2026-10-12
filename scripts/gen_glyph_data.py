@@ -25,59 +25,24 @@ DONATE_TSX = ROOT / "web" / "src" / "components" / "donateMarks.tsx"
 DONATE_CSS = ROOT / "web" / "src" / "donateMarks.css"
 OUT = ROOT / "web" / "src" / "lib" / "glyphs.data.ts"
 
-# `paths={['a', 'b']}`: single-quoted strings with backslash escapes.
-STRINGS = re.compile(r"'((?:[^'\\]|\\.)*)'")
-
-
-def unquote(raw: str) -> str:
-    return raw.replace("\\'", "'").replace("\\\\", "\\")
-
 
 def app_glyphs() -> dict[str, dict]:
-    """The app's own set: one grid, one convention, no gradients."""
+    """The app's own set: filled shapes in one ink, no gradients."""
     text = io.open(GLYPHS_TSX, encoding="utf-8").read()
     out: dict[str, dict] = {}
-
     for match in re.finditer(
-        r"export function (Icon\w+)\(props[^)]*\) \{\s*return <Glyph box=\"([^\"]+)\" paths=\{\[(.*?)\]\}",
-        text,
-        re.S,
-    ):
-        name, box, body = match.groups()
-        out[name] = {
-            "box": box,
-            "groups": [{"parts": [{"d": unquote(p)} for p in STRINGS.findall(body)]}],
-        }
-
-    for match in re.finditer(
-        r"export function (Icon\w+)\(props[^)]*\) \{\s*return <Stack box=\"([^\"]+)\" groups=\{\[(.*?)\]\}\s*\{\.\.\.props\}",
-        text,
-        re.S,
-    ):
-        name, box, body = match.groups()
-        groups = []
-        for one in re.finditer(r"\{ transform: '([^']*)', paths: \[(.*?)\] \}", body, re.S):
-            transform, paths = one.groups()
-            groups.append(
-                {"transform": transform, "parts": [{"d": unquote(p)} for p in STRINGS.findall(paths)]}
-            )
-        out[name] = {"box": box, "groups": groups}
-
-    for match in re.finditer(
-        r"export function (Icon\w+)\(props[^)]*\) \{\s*return \(\s*<Drawn box=\"([^\"]+)\"[^>]*>\s*(.*?)\s*</Drawn>",
+        r"export function (Icon\w+)\(props[^)]*\) \{\s*return \(\s*<G box=\"([^\"]+)\"[^>]*>\s*(.*?)\s*</G>",
         text,
         re.S,
     ):
         name, box, markup = match.groups()
         out[name] = {"box": box, "groups": drawn(markup)}
-
     return out
 
 
 def drawn(markup: str) -> list[dict]:
-    """The two marks drawn by hand: rounded bars in a rotated group, and one
-    stroked polyline. Anything else raises rather than leaving a button with no
-    mark."""
+    """Paths and rounded bars, loose or in a transformed group. Anything else
+    raises rather than leaving a button with no mark."""
     groups: list[dict] = []
     rest = markup
 
@@ -105,6 +70,8 @@ def shapes(markup: str) -> list[dict]:
         if "d" not in attrs:
             continue
         one: dict = {"d": attrs["d"]}
+        if attrs.get("fillRule") == "evenodd":
+            one["evenodd"] = True
         if attrs.get("fill") == "none":
             one["fill"] = "none"
         if "strokeWidth" in attrs:
@@ -576,6 +543,8 @@ HEADER = """// The drawings, as data.
 export interface GlyphPart {
   /** SVG path data. */
   d?: string
+  /** Filled even-odd, as the drawing's source declares; otherwise nonzero. */
+  evenodd?: boolean
   /** A rounded rectangle, as [x, y, width, height, rx]. */
   rect?: number[]
   /** `none` where the shape is stroked rather than filled. */

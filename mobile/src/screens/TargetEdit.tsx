@@ -211,7 +211,7 @@ export function TargetEdit() {
         labelKey="targets.check"
         // Named outright, since the key-to-glyph rule would give every state
         // the magnifier.
-        glyph={!tried || trying ? undefined : tried.ok ? "IconConfirm" : "IconCancel"}
+        glyph={!tried || trying ? undefined : tried.ok ? "IconCheck" : "IconClose"}
         busy={trying}
         tone={trying || !tried ? "neutral" : tried.ok ? "ok" : "fail"}
         shake={refused}

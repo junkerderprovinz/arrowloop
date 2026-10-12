@@ -19,27 +19,27 @@ const RULES: Rule[] = [
   [/^about\.mail$/i, 'IconMail'],
 
   // Above the preview rule, which would otherwise claim `preview.back`.
-  [/\.back$|goBack|\.return$/i, 'IconUp'],
+  [/\.back$|goBack|\.return$/i, 'IconFolderUp'],
 
   // This app's own verbs, above anything generic.
   [/preview|dryRun/i, 'IconPreview'],
   // Syncing is the circle the jobs tab wears, and sits above the run rule
   // because `syncNow` contains its word.
-  [/^(overview|tray)\.syncNow$/i, 'IconJobs'],
-  [/runNow|\.run$|start|resume/i, 'IconRun'],
+  [/^(overview|tray)\.syncNow$/i, 'IconSync'],
+  [/runNow|\.run$|start|resume/i, 'IconPlay'],
   // Cancelling a run throws its work away, which is not the same as pausing.
-  [/cancelRun|abort/i, 'IconCancel'],
+  [/cancelRun|abort/i, 'IconClose'],
 
   // Above the generic rules, which gave `phone.engineStop` the settings gear.
   [/pause|hold|stop/i, 'IconPause'],
 
   // Destructive and corrective.
-  [/\.(delete|remove|prune)$|\.empty(All|Side)$|removeJob|deleteDrive|discard/i, 'IconDelete'],
+  [/\.(delete|remove|prune)$|\.empty(All|Side)$|removeJob|deleteDrive|discard/i, 'IconTrash'],
   [/forget/i, 'IconForget'],
-  [/restore|revert|undo|reset/i, 'IconReset'],
+  [/restore|revert|undo|reset/i, 'IconRefresh'],
 
   // Creation and editing.
-  [/newFolder|addSet|createFolder/i, 'IconNewFolder'],
+  [/newFolder|addSet|createFolder/i, 'IconFolderAdd'],
   // The desktop app's main window, which is no folder.
   [/^tray\.open$/i, 'IconTabApp'],
   // Above `\.add`, so an "open and add" key cannot be claimed by the wrong half.
@@ -52,12 +52,11 @@ const RULES: Rule[] = [
   [/duplicate|dupes|copyPath|\.copy|copied/i, 'IconCopy'],
 
   // Seen and closed, which is the tick and not the floppy `confirm` would give.
-  [/acknowledge/i, 'IconConfirm'],
+  [/acknowledge/i, 'IconCheck'],
 
   // Above `save`: exporting hands a copy to the person's disk rather than
   // writing the program's own file.
   [/^apps\.qr$/i, 'IconQr'],
-  [/^apps\.download$/i, 'IconArrowDown'],
   [/export|download/i, 'IconDownload'],
   [/^history\.filter$/i, 'IconFilter'],
   [/import|upload/i, 'IconUpload'],
@@ -65,12 +64,12 @@ const RULES: Rule[] = [
   // A key is namespace and verb, and the verb decides. Cancel sits above save
   // so `confirm.cancel` does not wear the floppy, and save above edit so
   // `edit.save` does not wear the pencil.
-  [/cancel|close|logout|dismiss/i, 'IconCancel'],
+  [/cancel|close|logout|dismiss/i, 'IconClose'],
 
   [/save|apply|choose|submit|confirm/i, 'IconSave'],
 
-  [/edit|rename/i, 'IconEdit'],
-  [/\.up$|parent|levelUp/i, 'IconUp'],
+  [/edit|rename/i, 'IconPencil'],
+  [/\.up$|parent|levelUp/i, 'IconFolderUp'],
 
   // Below the app's own verbs, so `preview` keeps the eye.
   [/check|verify|test|probe/i, 'IconCheck'],
@@ -80,12 +79,12 @@ const RULES: Rule[] = [
   [/lock/i, 'IconLock'],
 
   // A button that opens a menu of further actions.
-  [/\.options$/i, 'IconMenu'],
+  [/\.options$/i, 'IconMore'],
   // Picks one of the shares the computer is connected to, as a folder.
   [/pickShare/i, 'IconFolder'],
 
   // Vaguest last.
-  [/settings|config|engine|backup/i, 'IconSettings'],
+  [/settings|config|engine|backup/i, 'IconGear'],
 ]
 
 /**

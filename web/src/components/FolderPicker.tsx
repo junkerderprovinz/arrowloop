@@ -6,7 +6,7 @@ import { Text } from './Field'
 import { Rule } from './Shell'
 import { Button } from '../lib/glimstone/Button'
 import { Card } from '../lib/glimstone/Card'
-import { IconCancel, IconConfirm, IconFolder, IconNewFolder, IconTargets, IconUp } from './glyphs'
+import { IconCheck, IconClose, IconFolder, IconFolderAdd, IconFolderUp, IconTabStorage } from './glyphs'
 import { api } from '../lib/api'
 import { useT } from '../lib/i18n'
 
@@ -148,7 +148,7 @@ export function FolderPicker({
                   style={{ borderRadius: 'var(--radius-control)' }}
                 >
                   <span className="shrink-0 text-carbon-textMuted" aria-hidden>
-                    <IconTargets />
+                    <IconTabStorage />
                   </span>
                   <span className="truncate">{k.label}</span>
                 </button>
@@ -163,7 +163,7 @@ export function FolderPicker({
                   className="flex w-full items-center gap-2 px-2 py-1.5 text-start text-meta text-carbon-textMuted transition hover:bg-carbon-hover hover:text-carbon-text"
                   style={{ borderRadius: 'var(--radius-control)' }}
                 >
-                  <IconUp />
+                  <IconFolderUp />
                   {t('pick.up')}
                 </button>
               </li>
@@ -201,7 +201,7 @@ export function FolderPicker({
             <Button
               label={t('pick.newFolder')}
               labelKey="pick.newFolder"
-              glyph={<IconNewFolder />}
+              glyph={<IconFolderAdd />}
               disabled={!at || busy}
               onClick={() => setNaming('')}
               className="me-auto"
@@ -209,13 +209,13 @@ export function FolderPicker({
             <Button
               label={t('pick.cancel')}
               labelKey="pick.cancel"
-              glyph={<IconCancel />}
+              glyph={<IconClose />}
               onClick={onClose}
             />
             <Button
               label={t('pick.choose')}
               labelKey="pick.choose"
-              glyph={<IconConfirm />}
+              glyph={<IconCheck />}
               tone="accent"
               disabled={!at}
               onClick={() => {
@@ -232,7 +232,7 @@ export function FolderPicker({
               <Button
                 label={t('pick.create')}
                 labelKey="pick.create"
-                glyph={<IconConfirm />}
+                glyph={<IconCheck />}
                 tone="accent"
                 disabled={naming.trim() === '' || busy}
                 onClick={() => void create()}
@@ -240,7 +240,7 @@ export function FolderPicker({
               <Button
                 label={t('pick.cancel')}
                 labelKey="pick.cancel"
-                glyph={<IconCancel />}
+                glyph={<IconClose />}
                 onClick={() => setNaming(null)}
               />
             </div>
