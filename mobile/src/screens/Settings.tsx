@@ -156,6 +156,13 @@ export function Settings() {
     }
   };
 
+  // Restoring replaces every job, so it asks first, with the web's sentence.
+  const confirmImport = () =>
+    Alert.alert(t("backup.import"), t("backup.confirm", { file: backupFile }), [
+      { text: t("confirm.cancel"), style: "cancel" },
+      { text: t("backup.import"), onPress: () => void importSettings() },
+    ]);
+
   const importSettings = async () => {
     setBackupBusy(true);
     setBackupSaid("");
@@ -573,22 +580,33 @@ export function Settings() {
           onChange={setBackupFile}
           placeholder="/storage/emulated/0/Download"
         />
-        <View style={styles.actions}>
-          <Button
-            label={t("settings.export")}
-            labelKey="settings.export"
-            busy={backupBusy}
-            confirm={exported}
-            onPress={exportSettings}
-          />
-          <Button
-            label={t("settings.import")}
-            labelKey="settings.import"
-            busy={backupBusy}
-            confirm={imported}
-            onPress={importSettings}
-          />
-        </View>
+        {/* The rows say what each button does to everything, as on the web. */}
+        <Row
+          label={t("settings.backupExportRow")}
+          control={
+            <Button
+              label={t("settings.export")}
+              labelKey="settings.export"
+              wide={false}
+              busy={backupBusy}
+              confirm={exported}
+              onPress={exportSettings}
+            />
+          }
+        />
+        <Row
+          label={t("settings.backupImportRow")}
+          control={
+            <Button
+              label={t("settings.import")}
+              labelKey="settings.import"
+              wide={false}
+              busy={backupBusy}
+              confirm={imported}
+              onPress={confirmImport}
+            />
+          }
+        />
         {backupSaid ? <Body>{backupSaid}</Body> : null}
       </Section>
 
