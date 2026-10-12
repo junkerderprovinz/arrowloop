@@ -18,6 +18,11 @@ const RULES: Rule[] = [
   [/^about\.paypal$/i, 'IconLink'],
   [/^about\.mail$/i, 'IconMail'],
 
+  // A stored secret's two buttons, and the way from a settings tile to its page.
+  [/^notify\.change$/i, 'IconPencil'],
+  [/^notify\.keep$/i, 'IconClose'],
+  [/^settings\.open$/i, 'IconLink'],
+
   // Above the preview rule, which would otherwise claim `preview.back`.
   [/\.back$|goBack|\.return$/i, 'IconBack'],
 
