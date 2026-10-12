@@ -8,7 +8,7 @@ import { useT } from "../i18n";
 import type { OverviewStack } from "../nav";
 import { settings } from "../settings";
 import { jobSides } from "../sides";
-import { space } from "../theme";
+import { space, text } from "../theme";
 import { useEngineStream } from "../useEngine";
 import {
   SEVERITIES,
@@ -596,11 +596,11 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   tileNumber: {
-    fontSize: 24,
+    fontSize: text.status,
     fontWeight: "600",
   },
   tileLabel: {
-    fontSize: 14,
+    fontSize: text.body,
   },
   cardHead: {
     flexDirection: "row",
@@ -615,7 +615,7 @@ const styles = StyleSheet.create({
   },
   lineText: {
     flex: 1,
-    fontSize: 14,
+    fontSize: text.body,
     lineHeight: 20,
   },
   lineJob: {
@@ -646,7 +646,7 @@ const styles = StyleSheet.create({
     minHeight: 36,
   },
   foldText: {
-    fontSize: 12,
+    fontSize: text.meta,
   },
   held: {
     flexDirection: "row",
@@ -654,7 +654,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   heldText: {
-    fontSize: 12,
+    fontSize: text.meta,
   },
   monitoring: {
     gap: space.sm,

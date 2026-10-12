@@ -12,7 +12,7 @@ import { useT } from "../i18n";
 import { animateNext, useMotion } from "../motion";
 import type { Nav, JobsStack } from "../nav";
 import { sidePair } from "../sides";
-import { space } from "../theme";
+import { space, text } from "../theme";
 import { useEngineEvents } from "../useEngine";
 import { WayGlyph, wayLabel, wayOf } from "../way";
 import {
@@ -354,7 +354,7 @@ const styles = StyleSheet.create({
   side: { flexDirection: "row", alignItems: "flex-start", gap: space.sm },
   way: { flexDirection: "row", alignItems: "center", gap: space.sm },
   finding: { flexDirection: "row", alignItems: "center", gap: space.sm, minHeight: 44 },
-  findingText: { flex: 1, fontSize: 13, lineHeight: 18 },
+  findingText: { flex: 1, fontSize: text.subline, lineHeight: 18 },
   sideBlank: { width: 18 },
   // Room at the end so the floating button does not cover the last card.
   list: { padding: space.lg, gap: space.md, paddingBottom: FAB_ROOM },

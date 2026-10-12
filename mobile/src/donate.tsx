@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
   card: { width: "100%", maxWidth: 420, maxHeight: "88%", overflow: "hidden" },
   titleRow: { paddingHorizontal: space.lg, paddingTop: space.lg },
   title: { alignSelf: "flex-start", paddingHorizontal: space.md, paddingVertical: 3 },
-  titleText: { fontSize: text.caption, fontWeight: "500", textTransform: "uppercase", letterSpacing: 1.2 },
+  titleText: { fontSize: text.meta, fontWeight: "500", textTransform: "uppercase", letterSpacing: 1.2 },
   scroll: { flexGrow: 0, flexShrink: 1 },
   body: { padding: space.lg, gap: space.md },
   intro: { fontSize: text.body, lineHeight: text.body + 6 },
@@ -227,14 +227,14 @@ const styles = StyleSheet.create({
   answer: { padding: space.lg, gap: space.md, alignItems: "center" },
   address: {
     fontFamily: "monospace",
-    fontSize: text.dense,
+    fontSize: text.meta,
     textAlign: "center",
     width: "100%",
   },
   chains: { flexDirection: "row", flexWrap: "wrap", justifyContent: "center", gap: space.sm },
   chain: { paddingHorizontal: space.md, paddingVertical: 6 },
-  chainText: { fontSize: text.dense, fontWeight: "500" },
-  note: { fontSize: text.dense, textAlign: "center" },
+  chainText: { fontSize: text.meta, fontWeight: "500" },
+  note: { fontSize: text.subline, textAlign: "center" },
   copyRow: { flexDirection: "row", alignSelf: "stretch" },
 
   // Four across at any width: five 20% bases plus the gaps overflow, and
@@ -249,7 +249,7 @@ const styles = StyleSheet.create({
     gap: space.xs,
     paddingVertical: space.md,
   },
-  ticker: { fontSize: text.caption, fontWeight: "500" },
+  ticker: { fontSize: text.meta, fontWeight: "500" },
 
   footer: { flexDirection: "row", justifyContent: "flex-end", padding: space.lg, paddingTop: 0 },
 });

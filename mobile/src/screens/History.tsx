@@ -468,7 +468,7 @@ const styles = StyleSheet.create({
   filterMode: { flex: 1 },
   chips: { gap: space.sm, paddingVertical: space.xs },
   chip: { paddingHorizontal: space.md, paddingVertical: space.xs },
-  chipText: { fontSize: text.caption, fontWeight: "600" },
+  chipText: { fontSize: text.meta, fontWeight: "600" },
   // A log line is a plain surface rather than a card.
   row: { padding: space.md, gap: space.xs },
   meta: { flexDirection: "row", alignItems: "center", flexWrap: "wrap", gap: space.sm },

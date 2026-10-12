@@ -304,7 +304,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 40,
     paddingHorizontal: space.md,
-    fontSize: text.dense,
+    fontSize: text.meta,
     fontVariant: ["tabular-nums"],
   },
   actions: { flexDirection: "row" },

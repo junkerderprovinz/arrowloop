@@ -1101,34 +1101,34 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     shadowOffset: { width: 0, height: 1 },
   },
-  notchText: { fontSize: text.caption, fontWeight: "500", textTransform: "uppercase", letterSpacing: 1.2 },
+  notchText: { fontSize: text.meta, fontWeight: "500", textTransform: "uppercase", letterSpacing: 1.2 },
 
   row: { flexDirection: "row", alignItems: "center", gap: space.md, paddingVertical: space.sm },
   rowText: { flex: 1, minWidth: 0, flexDirection: "row", alignItems: "center", gap: space.sm },
 
-  heading: { fontSize: text.heading, fontWeight: "600" },
+  heading: { fontSize: text.status, fontWeight: "600" },
   title: { fontSize: text.title, fontWeight: "600" },
   body: { fontSize: text.body },
-  caption: { fontSize: text.caption, lineHeight: 16 },
+  caption: { fontSize: text.subline, lineHeight: 18 },
   pair: { flexDirection: "row", alignItems: "flex-start", gap: space.md },
   pairLabel: { fontSize: text.body, flexShrink: 0 },
   pairValue: { fontSize: text.body, fontWeight: "600", flex: 1, textAlign: "right" },
-  axis: { fontSize: text.caption, fontWeight: "500", textTransform: "uppercase", letterSpacing: 1.2 },
+  axis: { fontSize: text.meta, fontWeight: "500", textTransform: "uppercase", letterSpacing: 1.2 },
   axisRow: { flexDirection: "row", alignItems: "center", gap: space.sm },
-  mono: { fontFamily: "monospace", fontSize: text.caption },
+  mono: { fontFamily: "monospace", fontSize: text.meta },
 
   cardHead: { flexDirection: "row", alignItems: "center", gap: space.sm },
   cardHeadMark: { width: 36, alignItems: "center" },
   // A long name yields to the badge and menu beside it.
-  cardHeadTitle: { fontSize: text.heading, fontWeight: "600", flexShrink: 1 },
+  cardHeadTitle: { fontSize: text.title, fontWeight: "600", flexShrink: 1 },
   // `center` keeps a badge from stretching without overriding the row's
   // vertical centring.
   badge: { paddingHorizontal: 7, paddingVertical: 2, alignSelf: "center", flexShrink: 0 },
-  badgeText: { fontSize: text.caption, fontWeight: "600", letterSpacing: 0.2 },
+  badgeText: { fontSize: text.meta, fontWeight: "600", letterSpacing: 0.2 },
   meter: { height: 6, overflow: "hidden" },
   meterFill: { height: "100%" },
   bubble: { width: 18, height: 18, alignItems: "center", justifyContent: "center" },
-  bubbleMark: { fontSize: text.caption, fontWeight: "700", lineHeight: text.caption + 3 },
+  bubbleMark: { fontSize: text.meta, fontWeight: "700", lineHeight: text.meta + 3 },
   tipGround: {
     flex: 1,
     alignItems: "center",
@@ -1190,7 +1190,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  segmentText: { fontSize: text.dense, fontWeight: "500", flexShrink: 1 },
+  segmentText: { fontSize: text.meta, fontWeight: "500", flexShrink: 1 },
   segmentRow: { flexDirection: "row", gap: 4 },
 
   swatchRing: { flex: 1, maxWidth: 32, aspectRatio: 1, alignItems: "center", justifyContent: "center" },

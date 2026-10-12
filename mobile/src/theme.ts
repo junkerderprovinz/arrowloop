@@ -49,8 +49,8 @@ const dark: Palette = {
   okSolid: "#6fdc8c",
   failInk: "#ff8389",
   failSolid: "#ff8389",
-  warnInk: "#f1c21b",
-  warnSolid: "#f1c21b",
+  warnInk: "#FF832B",
+  warnSolid: "#FF832B",
   neutralInk: "#a8a8a8",
   neutralSolid: "#8d8d8d",
   scrim: "rgba(0, 0, 0, 0.72)",
@@ -72,8 +72,8 @@ const light: Palette = {
   okSolid: "#198038",
   failInk: "#da1e28",
   failSolid: "#da1e28",
-  warnInk: "#8E6A00",
-  warnSolid: "#b28600",
+  warnInk: "#ba4e00",
+  warnSolid: "#ba4e00",
   neutralInk: "#6f6f6f",
   neutralSolid: "#8d8d8d",
   scrim: "rgba(0, 0, 0, 0.62)",
@@ -144,15 +144,16 @@ export function softOn(hex: string, alpha = 0.14): string {
 }
 
 /**
- * The type scale. The roles match the web, but the sizes are the ones the
- * other GlimStone phone app uses rather than the web's rem values.
+ * GlimStone's five type sizes, one per role and the same numbers as the web's
+ * --text-* tokens: the status head, an emphasised title, body text, the
+ * sub-line beside or under a name, and the notch and meta size.
  */
 export const text = {
-  heading: 20,
+  status: 22,
   title: 16,
   body: 14,
-  dense: 12,
-  caption: 11,
+  subline: 13,
+  meta: 12,
 } as const;
 
 /** Spacing in the web's 4px steps. */

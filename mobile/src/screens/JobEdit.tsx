@@ -582,5 +582,5 @@ const styles = StyleSheet.create({
   stack: { gap: space.sm },
   days: { flexDirection: "row", flexWrap: "wrap", gap: space.xs },
   day: { flexGrow: 1, minWidth: 40, paddingVertical: 7, paddingHorizontal: space.sm, alignItems: "center" },
-  dayText: { fontSize: text.dense, fontWeight: "500" },
+  dayText: { fontSize: text.meta, fontWeight: "500" },
 });

@@ -129,7 +129,7 @@ function Shell() {
 
   const header = {
     headerStyle: { backgroundColor: p.background },
-    headerTitleStyle: { color: p.text, fontSize: text.heading, fontWeight: "600" },
+    headerTitleStyle: { color: p.text, fontSize: text.title, fontWeight: "600" },
     headerTintColor: p.text,
     headerShadowVisible: false,
     contentStyle: { backgroundColor: p.background },
@@ -466,7 +466,7 @@ const styles = StyleSheet.create({
     gap: space.sm,
   },
   trouble: { padding: space.lg, gap: space.md },
-  log: { fontFamily: "monospace", fontSize: text.caption, padding: space.md },
+  log: { fontFamily: "monospace", fontSize: text.meta, padding: space.md },
 
   // Inset from the edges so the bar floats on the page.
   bar: { marginHorizontal: space.md, padding: 3 },
@@ -484,5 +484,5 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 4,
   },
-  tabText: { fontSize: text.caption, fontWeight: "500" },
+  tabText: { fontSize: text.meta, fontWeight: "500" },
 });
