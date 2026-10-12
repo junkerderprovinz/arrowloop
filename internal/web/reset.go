@@ -101,11 +101,11 @@ func printResetCode(w io.Writer, code string) {
 		spaced(code), int(resetCodeLife.Minutes()))
 }
 
-// resetFinish sets a new password with the code from the log. The right code
-// always gets through, also when the address is throttled: behind a reverse
-// proxy every visitor shares one address, and a stranger's wrong codes must
-// not lock the owner out. Only wrong codes are throttled, and they do not
-// spend the code.
+// resetFinish sets a new password with the code from the log. Wrong codes are
+// throttled per address and do not spend the code. A throttled address is
+// refused whatever code it sends, since a refusal that let the right code
+// through would still answer each guess. Behind a reverse proxy every visitor
+// shares one address, so the owner then waits for the minute to pass too.
 //
 // A reset ends every other session and takes the second factor and every
 // passkey with it, since any of them could belong to whoever made the reset
@@ -131,19 +131,20 @@ func (s *Server) resetFinish(w http.ResponseWriter, r *http.Request) {
 
 	g := s.gate()
 	key := s.lockoutKey(r)
+	g.mu.Lock()
+	wait, locked := g.resetLockedOut(key)
+	g.mu.Unlock()
+	if locked {
+		time.Sleep(failedLoginDelay)
+		w.Header().Set("Retry-After", fmt.Sprint(int(wait.Seconds())+1))
+		writeError(w, http.StatusTooManyRequests, errors.New("too many wrong codes, try again in a minute"))
+		return
+	}
 	if ok, stale := g.checkResetCode(body.Code); !ok {
 		g.mu.Lock()
 		g.refused.add(stale, s.logf)
-		wait, locked := g.resetLockedOut(key)
-		if !locked {
-			g.recordResetFailure(key)
-		}
+		g.recordResetFailure(key)
 		g.mu.Unlock()
-		if locked {
-			w.Header().Set("Retry-After", fmt.Sprint(int(wait.Seconds())+1))
-			writeError(w, http.StatusTooManyRequests, errors.New("too many wrong codes, try again in a minute"))
-			return
-		}
 		time.Sleep(failedLoginDelay)
 		writeError(w, http.StatusBadRequest, errResetCode)
 		return

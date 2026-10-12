@@ -213,21 +213,28 @@ func TestAWrongCodeDoesNotSpendTheRightOne(t *testing.T) {
 	}
 }
 
-// Behind a reverse proxy every visitor shares one address, so a stranger's
-// wrong codes must not keep the owner's right one out.
-func TestTheRightCodeGetsThroughAThrottledAddress(t *testing.T) {
-	s, srv, _, _ := resettable(t)
+// A throttled address waits out the minute whatever it sends, or the refusal
+// would still tell a right guess from a wrong one.
+func TestAThrottledAddressIsRefusedEvenWithTheRightCode(t *testing.T) {
+	s, srv, store, _ := resettable(t)
 	post(t, browser(t), srv.URL+"/api/security/reset", map[string]any{})
 	c := browser(t)
-	last := 0
-	for range maxFailedLogins + 2 {
-		last, _ = post(t, c, srv.URL+"/api/security/reset/finish", map[string]any{"code": "AAAAAAAAAAAA", "password": resetPassword})
+	for range maxFailedLogins {
+		post(t, c, srv.URL+"/api/security/reset/finish", map[string]any{"code": "AAAAAAAAAAAA", "password": resetPassword})
 	}
-	if last != http.StatusTooManyRequests {
-		t.Fatalf("wrong codes were never throttled, the last answered %d", last)
-	}
-	if code, said := post(t, c, srv.URL+"/api/security/reset/finish", map[string]any{"code": liveCode(s), "password": resetPassword}); code != http.StatusOK {
+	live := liveCode(s)
+	start := time.Now()
+	if code, said := post(t, c, srv.URL+"/api/security/reset/finish", map[string]any{"code": live, "password": resetPassword}); code != http.StatusTooManyRequests {
 		t.Fatalf("the right code from a throttled address answered %d: %s", code, said)
+	}
+	if time.Since(start) < failedLoginDelay {
+		t.Error("the refusal came at once, so a throttled address guesses for free")
+	}
+	if security.VerifyPassword(s.key(), resetPassword, store.Get().PasswordHash) {
+		t.Error("a throttled address reset the password")
+	}
+	if liveCode(s) != live {
+		t.Error("the refusal spent the code")
 	}
 }
 

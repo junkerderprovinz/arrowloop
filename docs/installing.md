@@ -88,7 +88,9 @@ At the foot of the sign-in form, **Forgot password?** has ArrowLoop write a
 one-time code into its log: on Unraid under Docker, ArrowLoop, Logs, elsewhere
 with `docker logs arrowloop`. The code stands on its own between the other
 lines, in yellow. Type it and a new password on the same page. The code is
-valid for ten minutes, and a wrong code does not spend the right one. Asking
+valid for ten minutes, and a wrong code does not spend the right one. After
+five wrong codes from one address, that address waits a minute before any
+code is checked again, the right one included. Asking
 again while it is valid writes nothing, so the log does not fill up and the
 code you are typing stays good. The new password takes the second factor, every
 passkey and every other session with it, since any of them could belong to
@@ -121,7 +123,8 @@ as older versions printed and many other tools make, is still accepted.
 
 #### Behind a reverse proxy
 
-Five wrong passwords from one address lock that address out for a minute.
+Five wrong passwords or reset codes from one address lock that address out for
+a minute.
 Behind a reverse proxy every request comes from the proxy, so one stranger
 guessing would lock out everybody, you included. Set
 `ARROWLOOP_TRUSTED_PROXIES` to the proxy's address, and the count goes against
