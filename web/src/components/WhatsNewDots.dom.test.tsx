@@ -2,6 +2,7 @@
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { en } from '../lib/i18n.data'
 import { Link } from '../lib/router'
 import { markSeen, startWhatsNew, useWhatsNew } from '../lib/whatsNewStore'
 import { WhatsNewDots } from './WhatsNewDots'
@@ -65,9 +66,24 @@ describe('the dots of what is new', () => {
     await waitFor(() => expect(dot('way')).toBeNull())
   })
 
-  it('mark the page when it does not draw a change on it', async () => {
+  it('mark the page once for every change it does not draw, and name them all', async () => {
     render(<Page />)
-    await waitFor(() => expect(dot('jobs-head')).not.toBeNull(), { timeout: 3000 })
+    const page = await waitFor(
+      () => {
+        const found = dot('page')
+        expect(found).not.toBeNull()
+        return found!
+      },
+      { timeout: 3000 },
+    )
+    const others = Array.from(document.querySelectorAll('[data-new-dot]')).filter((d) => !['page', 'way', 'navigation'].includes(d.getAttribute('data-new-dot')!))
+    expect(others).toHaveLength(0)
+    for (const key of ['new.change.jobsHead', 'new.change.runStrip'] as const) {
+      expect(page.getAttribute('aria-label')).toContain(en[key])
+    }
+    act(() => page.click())
+    await waitFor(() => expect(dot('page')).toBeNull())
+    expect(JSON.parse(localStorage.getItem('arrowloop.whatsNew')!).seen).toEqual(expect.arrayContaining(['jobs-head', 'run-strip']))
   })
 
   it('draw nothing during the first start', async () => {

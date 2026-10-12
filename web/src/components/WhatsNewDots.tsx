@@ -1,8 +1,9 @@
 // The glowing dots that mark what an update changed. A changed element carries
 // data-new with the id of its change, and a dot is drawn over the page at its
-// corner. A change on another page puts a dot on every link that leads there,
-// and one the open page does not draw at the moment, a card that only appears
-// when something waits, puts its dot on the page's own corner.
+// corner. A change on another page puts a dot on every link that leads there.
+// The changes the open page does not draw at the moment, such as a card that
+// only appears when something waits, share one dot on the page's own corner,
+// since a row of dots there would point at nothing in particular.
 //
 // The dots live in one layer in <body> rather than inside the components, so
 // marking a change costs its component one attribute and no layout.
@@ -38,7 +39,7 @@ const APART = 20
 interface Target {
   key: string
   el: HTMLElement
-  /** `change` stands on the changed element, `page` on the page that does not draw it, `way` on a link. */
+  /** `change` stands on the changed element, `page` on the page for what it does not draw, `way` on a link. */
   kind: 'change' | 'page' | 'way'
   changes: Change[]
 }
@@ -84,6 +85,7 @@ function collect(unseen: Change[], here: string, arrived: boolean): Target[] {
   const page = document.querySelector<HTMLElement>('[data-settings-content]') ?? document.querySelector<HTMLElement>('main')
 
   const targets: Target[] = []
+  const undrawn: Change[] = []
   const ways = new Map<HTMLElement, Change[]>()
   const lead = (el: HTMLElement, change: Change) => ways.set(el, [...(ways.get(el) ?? []), change])
   for (const change of unseen) {
@@ -93,7 +95,7 @@ function collect(unseen: Change[], here: string, arrived: boolean): Target[] {
       continue
     }
     if (isAt(change, here)) {
-      if (arrived && page) targets.push({ key: `page:${change.id}`, el: page, kind: 'page', changes: [change] })
+      if (arrived && page) undrawn.push(change)
       continue
     }
     let found = false
@@ -108,6 +110,7 @@ function collect(unseen: Change[], here: string, arrived: boolean): Target[] {
     const more = found ? undefined : Array.from(document.querySelectorAll('[data-new-way="more"]')).find(drawn)
     if (more) lead(more, change)
   }
+  if (page && undrawn.length > 0) targets.push({ key: 'page', el: page, kind: 'page', changes: undrawn })
   for (const [el, changes] of ways) targets.push({ key: wayKey(el), el, kind: 'way', changes })
   return targets
 }
@@ -149,7 +152,7 @@ function Dot({ target, register }: { target: Target; register: (key: string, el:
   const { t } = useT()
   const way = target.kind === 'way'
   const sentences = target.changes.map((c) => sentenceOf(t, c))
-  const tip = way ? [t('new.way', { count: target.changes.length }), ...sentences].join(' ') : sentences[0]
+  const tip = way ? [t('new.way', { count: target.changes.length }), ...sentences].join(' ') : sentences.join(' ')
   const bubble = useTipBubble(tip)
   return (
     <>
@@ -162,12 +165,12 @@ function Dot({ target, register }: { target: Target; register: (key: string, el:
         {...bubble.handlers}
         aria-label={tip}
         aria-describedby={bubble.describedBy}
-        data-new-dot={way ? 'way' : target.changes[0].id}
+        data-new-dot={target.kind === 'change' ? target.changes[0].id : target.kind}
         onClick={() => {
           bubble.hide()
           // A dot on a link goes where the link goes; any other has been read.
           if (way) target.el.click()
-          else markSeen([target.changes[0].id])
+          else markSeen(target.changes.map((c) => c.id))
         }}
         className="glim-new-dot"
       />
