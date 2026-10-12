@@ -27,6 +27,8 @@ export interface SettingsProps {
   /** The two pages a tile draws whole while they are not in the sidebar. */
   targets: ReactNode
   anomalies: ReactNode
+  /** The list of what the last update changed, for the Info tile. */
+  whatsNew?: ReactNode
 }
 
 /** How long a search result waits for its tile's cards, which may still be reading the settings. */
@@ -105,7 +107,7 @@ export function Settings(props: SettingsProps) {
   )
 }
 
-function TilePage({ tile, look, version, window, onWindow, targets, anomalies }: SettingsProps) {
+function TilePage({ tile, look, version, window, onWindow, targets, anomalies, whatsNew }: SettingsProps) {
   switch (tile) {
     case 'general':
       return <GeneralPage window={window} onWindow={onWindow} />
@@ -130,6 +132,6 @@ function TilePage({ tile, look, version, window, onWindow, targets, anomalies }:
     case 'app':
       return <Apps version={version} desktop={window !== null} />
     case 'info':
-      return <InfoPage version={version} />
+      return <InfoPage version={version} whatsNew={whatsNew} />
   }
 }

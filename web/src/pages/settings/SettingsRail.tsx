@@ -67,6 +67,7 @@ export function SettingsRail({ tiles, active }: { tiles: Tile[]; active: TileId 
       role="tablist"
       aria-orientation="vertical"
       aria-label={t('settings.tiles')}
+      data-new="settings-tiles"
       onKeyDown={onKeyDown}
       // No vertical padding, so the column starts and ends flush with the
       // sidebar. The 4px at the start are what the focus ring reaches into.

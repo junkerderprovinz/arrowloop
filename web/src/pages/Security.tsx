@@ -38,7 +38,9 @@ export function Security() {
   const passwordSet = status.password !== 'none'
   return (
     <Stack>
-      <PasswordCard status={status} onChanged={setStatus} hueIndex={0} />
+      <div data-new="login-reset">
+        <PasswordCard status={status} onChanged={setStatus} hueIndex={0} />
+      </div>
       {/* Keyed on the password, so a removed password also drops a setup
           that was half done under it. */}
       <TwoFactorCard

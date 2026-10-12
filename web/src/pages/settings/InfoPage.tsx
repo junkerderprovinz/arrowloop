@@ -64,29 +64,31 @@ export function InfoPage({ version, whatsNew }: { version: string; whatsNew?: Re
 
   return (
     <Stack>
-      <InfoVersionCard
-        hueIndex={0}
-        openUrl={openExternal}
-        text={{
-          title: t('about.version'),
-          hint: t('info.versionHint'),
-          unreleased: (v) => t('about.unreleased', { version: v }),
-        }}
-        rows={[
-          { name: 'ArrowLoop', version: versions?.arrowloop ?? version, repoUrl: REPO },
-          { name: 'GlimStone', sub: t('info.glimstoneSub'), version: GLIMSTONE_VERSION, repoUrl: GLIMSTONE_REPO },
-          ...(versions ? [{ name: 'rclone', sub: t('info.rcloneSub'), version: versions.rclone, repoUrl: RCLONE_REPO }] : []),
-        ]}
-        updateCheck={{
-          run: updateCheck,
-          text: {
-            check: t('info.check'),
-            upToDate: t('info.upToDate'),
-            updatesFound: () => t('info.updateFound'),
-            checkFailed: t('info.checkFailed'),
-          },
-        }}
-      />
+      <div data-new="info-tile">
+        <InfoVersionCard
+          hueIndex={0}
+          openUrl={openExternal}
+          text={{
+            title: t('about.version'),
+            hint: t('info.versionHint'),
+            unreleased: (v) => t('about.unreleased', { version: v }),
+          }}
+          rows={[
+            { name: 'ArrowLoop', version: versions?.arrowloop ?? version, repoUrl: REPO },
+            { name: 'GlimStone', sub: t('info.glimstoneSub'), version: GLIMSTONE_VERSION, repoUrl: GLIMSTONE_REPO },
+            ...(versions ? [{ name: 'rclone', sub: t('info.rcloneSub'), version: versions.rclone, repoUrl: RCLONE_REPO }] : []),
+          ]}
+          updateCheck={{
+            run: updateCheck,
+            text: {
+              check: t('info.check'),
+              upToDate: t('info.upToDate'),
+              updatesFound: () => t('info.updateFound'),
+              checkFailed: t('info.checkFailed'),
+            },
+          }}
+        />
+      </div>
 
       {/* Built here rather than with the reference Help card, which has no
           place for the manual between Email and the bug report. */}

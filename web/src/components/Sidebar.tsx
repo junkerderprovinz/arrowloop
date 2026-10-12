@@ -190,6 +190,8 @@ export function Sidebar({
     // than the rows scrolls the rail instead of cutting off Settings.
     <aside
       ref={rail}
+      data-nav-rail
+      data-new="navigation"
       className={`flex h-full shrink-0 flex-col overflow-x-hidden overflow-y-auto rounded-card bg-carbon-sidebar ${
         narrow ? 'w-(--rail-narrow)' : 'w-56'
       }`}

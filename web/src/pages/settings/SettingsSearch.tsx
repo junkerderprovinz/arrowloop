@@ -112,6 +112,12 @@ export function takeJump(): SearchJump | null {
   return jump
 }
 
+/** Opens a tile and marks the card or row there, the way a search result does. */
+export function openSetting(tile: TileId, jump: SearchJump | null) {
+  pending = jump
+  navigate(`/settings/${tile}`)
+}
+
 export function SettingsSearch({ tiles, tile }: { tiles: Tile[]; tile: TileId }) {
   const { t } = useT()
   const [query, setQuery] = useState('')
@@ -151,11 +157,10 @@ export function SettingsSearch({ tiles, tile }: { tiles: Tile[]; tile: TileId })
   const showList = open && query.trim() !== ''
 
   function pick({ item }: { item: Item }) {
-    pending = item.tier === 1 ? { card: item.name } : item.tier === 2 ? { card: item.cardName, row: item.name } : null
     setQuery('')
     setOpen(false)
     field.current?.blur()
-    navigate(`/settings/${item.tile}`)
+    openSetting(item.tile, item.tier === 1 ? { card: item.name } : item.tier === 2 ? { card: item.cardName, row: item.name } : null)
   }
 
   function onKeyDown(e: KeyboardEvent<HTMLInputElement>) {
@@ -196,7 +201,7 @@ export function SettingsSearch({ tiles, tile }: { tiles: Tile[]; tile: TileId })
   if (!revealed) return null
 
   return (
-    <div ref={barRef} data-settings-search className="relative">
+    <div ref={barRef} data-settings-search data-new="settings-search" className="relative">
       <div
         className="flex h-[var(--btn-h)] items-center gap-2 bg-carbon-surface2 ps-3 pe-1"
         style={{ borderRadius: 'var(--radius-control)' }}

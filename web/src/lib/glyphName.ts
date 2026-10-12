@@ -23,6 +23,11 @@ const RULES: Rule[] = [
   [/^notify\.keep$/i, 'IconClose'],
   [/^settings\.open$/i, 'IconLink'],
 
+  // The list of what is new: following a change, and showing or settling the lot.
+  [/^new\.go$/i, 'IconLink'],
+  [/^new\.showAll$/i, 'IconEye'],
+  [/^new\.markAll$/i, 'IconCheck'],
+
   // Above the preview rule, which would otherwise claim `preview.back`.
   [/\.back$|goBack|\.return$/i, 'IconBack'],
 

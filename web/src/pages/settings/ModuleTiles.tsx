@@ -35,9 +35,11 @@ export function TargetsTile({ page }: { page: ReactNode }) {
   const pinned = useNavPins().targets
   return (
     <div className="flex flex-col gap-10">
-      <Card title={t('nav.targets')} hueIndex={0}>
-        <SidebarRows id="targets" label={t('nav.targets')} />
-      </Card>
+      <div data-new="targets-tile">
+        <Card title={t('nav.targets')} hueIndex={0}>
+          <SidebarRows id="targets" label={t('nav.targets')} />
+        </Card>
+      </div>
       {!pinned && page}
     </div>
   )
@@ -55,39 +57,41 @@ export function AnomaliesTile({ page }: { page: ReactNode }) {
 
   return (
     <div className="flex flex-col gap-10">
-      <Card title={t('nav.anomalies')} hueIndex={0}>
-        <SettingsRow label={t('anomaly.failingAfter')} hint={t('anomaly.failingAfterHint')}>
-          <NumberField
-            value={anomalies.failingAfter ?? 3}
-            min={0}
-            max={50}
-            label={t('anomaly.failingAfter')}
-            onChange={(v) => set({ failingAfter: v })}
+      <div data-new="anomalies-tile">
+        <Card title={t('nav.anomalies')} hueIndex={0}>
+          <SettingsRow label={t('anomaly.failingAfter')} hint={t('anomaly.failingAfterHint')}>
+            <NumberField
+              value={anomalies.failingAfter ?? 3}
+              min={0}
+              max={50}
+              label={t('anomaly.failingAfter')}
+              onChange={(v) => set({ failingAfter: v })}
+            />
+          </SettingsRow>
+          <SettingsRow label={t('anomaly.overdueDays')} hint={t('anomaly.overdueDaysHint')}>
+            <NumberField
+              value={anomalies.overdueDays ?? 2}
+              min={0}
+              max={365}
+              label={t('anomaly.overdueDays')}
+              onChange={(v) => set({ overdueDays: v })}
+            />
+          </SettingsRow>
+          <ToggleRow
+            label={t('anomaly.notifyHeld')}
+            checked={anomalies.notifyHeld ?? true}
+            onChange={(v) => set({ notifyHeld: v })}
+            hint={t('anomaly.notifyHeldHint')}
           />
-        </SettingsRow>
-        <SettingsRow label={t('anomaly.overdueDays')} hint={t('anomaly.overdueDaysHint')}>
-          <NumberField
-            value={anomalies.overdueDays ?? 2}
-            min={0}
-            max={365}
-            label={t('anomaly.overdueDays')}
-            onChange={(v) => set({ overdueDays: v })}
+          <ToggleRow
+            label={t('anomaly.notifyNotes')}
+            checked={!!anomalies.notifyNotes}
+            onChange={(v) => set({ notifyNotes: v })}
+            hint={t('anomaly.notifyNotesHint')}
           />
-        </SettingsRow>
-        <ToggleRow
-          label={t('anomaly.notifyHeld')}
-          checked={anomalies.notifyHeld ?? true}
-          onChange={(v) => set({ notifyHeld: v })}
-          hint={t('anomaly.notifyHeldHint')}
-        />
-        <ToggleRow
-          label={t('anomaly.notifyNotes')}
-          checked={!!anomalies.notifyNotes}
-          onChange={(v) => set({ notifyNotes: v })}
-          hint={t('anomaly.notifyNotesHint')}
-        />
-        <SidebarRows id="anomalies" label={t('nav.anomalies')} />
-      </Card>
+          <SidebarRows id="anomalies" label={t('nav.anomalies')} />
+        </Card>
+      </div>
       {!pinned && page}
     </div>
   )
