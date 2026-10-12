@@ -76,6 +76,10 @@ type Server struct {
 	// Releases is the GitHub API the update check asks for the newest
 	// release. Empty means api.github.com.
 	Releases string
+
+	// checked runs once a sign-in's credentials have held and before its
+	// session is handed out, which is where a test lands a reset.
+	checked func()
 }
 
 // logf is Log with the nil check in one place.

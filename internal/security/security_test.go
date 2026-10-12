@@ -309,3 +309,20 @@ func TestAFileFromANewerBuildIsRefused(t *testing.T) {
 		t.Errorf("a file from a newer build gave %v", err)
 	}
 }
+
+func TestTouchingARemovedPasskeySaysItIsGone(t *testing.T) {
+	s := openIn(t, t.TempDir())
+	p, err := s.AddPasskey(Passkey{Name: "Phone", CredentialID: []byte{7}, PublicKey: []byte{1}, RPID: "localhost"}, "", s.Get().Epoch)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := s.TouchPasskey(p.ID, 3, 100); err != nil {
+		t.Fatalf("touching a present key: %v", err)
+	}
+	if err := s.DeletePasskey(p.ID); err != nil {
+		t.Fatal(err)
+	}
+	if err := s.TouchPasskey(p.ID, 4, 200); !errors.Is(err, ErrUnknownPasskey) {
+		t.Errorf("touching a removed key gave %v, want ErrUnknownPasskey", err)
+	}
+}
