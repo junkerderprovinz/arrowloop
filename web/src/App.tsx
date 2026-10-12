@@ -2,6 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'reac
 
 import { BottomBar } from './components/BottomBar'
 import { Sidebar } from './components/Sidebar'
+import { WhatsNewDots } from './components/WhatsNewDots'
 import { Card } from './lib/glimstone/Card'
 import { Login } from './pages/Login'
 import { Activity } from './pages/Activity'
@@ -13,9 +14,11 @@ import { Jobs } from './pages/Jobs'
 import { Preview } from './pages/Preview'
 import { Targets } from './pages/Targets'
 import { Trash } from './pages/Trash'
+import { Welcome } from './pages/Welcome'
 import { Settings } from './pages/settings/Settings'
 import { DEFAULT_ACCENT, PRESET_HEXES, type LookProps } from './pages/settings/LookPage'
 import { rememberedTile, settingsTiles } from './pages/settings/tiles'
+import { WhatsNewCard } from './pages/settings/WhatsNewCard'
 import {
   api,
   whenSignedOut,
@@ -47,6 +50,7 @@ import { followDevice, paintTheme, storedTheme, storeTheme, type ThemeChoice } f
 import { wireTooltips } from './lib/tooltip'
 import { isActivityView, onUpdateReady, useTrayWords } from './lib/desk'
 import { ToastProvider, useToast } from './lib/toast'
+import { startWhatsNew, useWhatsNew } from './lib/whatsNewStore'
 
 /**
  * The login gate. App mounts only once there is a session, since its fetches
@@ -113,6 +117,9 @@ export function App({ signOut = false }: { signOut?: boolean }) {
   const pins = useNavPins()
   const small = useSmallWindow()
   const [jobs, setJobs] = useState<Job[]>([])
+  // Whether the engine has listed its jobs once, which is what tells a first
+  // start from an install that has jobs.
+  const [jobsRead, setJobsRead] = useState(false)
   const [runs, setRuns] = useState<Run[]>([])
   const [latest, setLatest] = useState<Run[]>([])
   const [progress, setProgress] = useState<Record<string, RunEvent>>({})
@@ -135,6 +142,8 @@ export function App({ signOut = false }: { signOut?: boolean }) {
   // Null until asked, and always on a build with no window of its own.
   const [window_, setWindow] = useState<WindowSettings | null>(null)
   const [version, setVersion] = useState('dev')
+  // The version as the engine stamps it, null until it has answered.
+  const [running, setRunning] = useState<string | null>(null)
   // Null until the engine has said, so the Security tile's address does not
   // bounce to the first tile while the question is out.
   const [canSecure, setCanSecure] = useState<boolean | null>(null)
@@ -147,6 +156,7 @@ export function App({ signOut = false }: { signOut?: boolean }) {
       .jobs()
       .then((got) => {
         setJobs(got)
+        setJobsRead(true)
         setError(null)
       })
       .catch((e: Error) => setError(e.message))
@@ -171,6 +181,7 @@ export function App({ signOut = false }: { signOut?: boolean }) {
       .capabilities()
       .then((can) => {
         setVersion(can.version || 'dev')
+        setRunning(can.version || 'dev')
         setCanSecure(can.security === true)
         if (can.window) void api.window().then(setWindow)
       })
@@ -292,22 +303,32 @@ export function App({ signOut = false }: { signOut?: boolean }) {
     applyDisco(disco)
   }, [disco, rainbow])
 
+  // The first start lasts while there is no job. Null until the jobs are read.
+  const fresh = jobsRead ? jobs.length === 0 : null
+  const news = useWhatsNew()
+  useEffect(() => {
+    if (running !== null && fresh !== null) startWhatsNew(running, !fresh)
+  }, [running, fresh])
+
   const tiles = useMemo(() => settingsTiles(canSecure), [canSecure])
   const resolved = useMemo(
-    () => resolveRoute(pathname, search, { pins, tiles: tiles.map((x) => x.id), remembered: rememberedTile() }),
-    [pathname, search, pins, tiles],
+    () => resolveRoute(pathname, search, { pins, tiles: tiles.map((x) => x.id), remembered: rememberedTile(), fresh }),
+    [pathname, search, pins, tiles, fresh],
   )
   useLayoutEffect(() => {
     if ('redirect' in resolved) navigate(resolved.redirect, { replace: true })
   }, [resolved])
   const view = 'view' in resolved ? resolved.view : null
 
-  const counts: NavCounts = {
-    running: jobs.filter((j) => j.running).length,
-    conflicts: conflicts?.conflicts.length ?? 0,
-    trash: orderedTrash ? trashTotals(orderedTrash.filter((s) => !s.error)).entries : 0,
-    findings: findings?.open.length ?? 0,
-  }
+  // Nothing can need attention during the first start, so the rail counts nothing.
+  const counts: NavCounts = fresh
+    ? { running: 0, conflicts: 0, trash: 0, findings: 0 }
+    : {
+        running: jobs.filter((j) => j.running).length,
+        conflicts: conflicts?.conflicts.length ?? 0,
+        trash: orderedTrash ? trashTotals(orderedTrash.filter((s) => !s.error)).entries : 0,
+        findings: findings?.open.length ?? 0,
+      }
   // The job a link from another page narrowed this one to.
   const focus = search.get('job') ?? ''
 
@@ -352,7 +373,9 @@ export function App({ signOut = false }: { signOut?: boolean }) {
     <Anomalies listing={findings} jobs={jobs} job={focus} refused={refused} onChanged={() => void reloadFindings()} />
   )
 
-  const page = !view ? null : view.page === 'jobs' ? (
+  const page = !view ? null : view.page === 'welcome' ? (
+    <Welcome fresh={fresh} />
+  ) : view.page === 'jobs' ? (
     <Jobs
       jobs={jobs}
       findings={findings?.open ?? []}
@@ -424,6 +447,7 @@ export function App({ signOut = false }: { signOut?: boolean }) {
                 }}
                 targets={<Targets />}
                 anomalies={anomalies}
+                whatsNew={<WhatsNewCard hueIndex={2} />}
               />
             </main>
           ) : (
@@ -447,6 +471,8 @@ export function App({ signOut = false }: { signOut?: boolean }) {
       </Places.Provider>
 
       {small && <BottomBar pins={pins} counts={counts} pathname={pathname} signOut={signOut} />}
+
+      <WhatsNewDots news={news} active={fresh === false && news?.version === running && view?.page !== 'welcome'} />
     </div>
   )
 }

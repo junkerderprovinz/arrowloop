@@ -27,12 +27,13 @@ export type ModuleId = 'targets' | 'anomalies'
 export const FORMER_TILES: Record<string, TileId> = { engine: 'sync' }
 
 export type View =
-  | { page: 'jobs' | 'conflicts' | 'trash' | 'history' }
+  | { page: 'jobs' | 'conflicts' | 'trash' | 'history' | 'welcome' }
   | { page: 'job' | 'preview'; name: string }
   | { page: ModuleId }
   | { page: 'settings'; tile: TileId }
 
-export type Resolved = { view: View } | { redirect: string }
+/** `wait` holds an address back until the engine has said what it leads to. */
+export type Resolved = { view: View } | { redirect: string } | { wait: true }
 
 export interface RouteContext {
   pins: NavPins
@@ -40,6 +41,8 @@ export interface RouteContext {
   tiles: readonly TileId[]
   /** The tile that was open last in this browser. */
   remembered: string | null
+  /** Whether this is the first start, with no job yet; null until the jobs are read. */
+  fresh?: boolean | null
 }
 
 const MODULES: readonly string[] = ['targets', 'anomalies']
@@ -51,7 +54,10 @@ export function resolveRoute(pathname: string, search: URLSearchParams, ctx: Rou
 
   switch (first) {
     case undefined:
-      return { redirect: '/jobs' }
+      if (ctx.fresh === null) return { wait: true }
+      return { redirect: ctx.fresh ? '/welcome' : '/jobs' }
+    case 'welcome':
+      return parts.length === 1 ? { view: { page: 'welcome' } } : { redirect: '/welcome' }
     case 'jobs':
       if (parts.length === 1) return { view: { page: 'jobs' } }
       if (parts.length === 2 && second) return { view: { page: 'job', name: second } }

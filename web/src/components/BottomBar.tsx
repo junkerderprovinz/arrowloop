@@ -70,7 +70,7 @@ export function BottomBar({
 
   return (
     <nav aria-label={t('nav.label')} className="shrink-0 pt-2">
-      <div className="flex h-12 gap-1 rounded-card bg-carbon-sidebar p-1">
+      <div data-new="navigation" className="flex h-12 gap-1 rounded-card bg-carbon-sidebar p-1">
         {slots.map((d, i) => {
           const active = onDestination(pathname, d)
           const label = t(d.labelKey)
@@ -96,6 +96,7 @@ export function BottomBar({
           onClick={() => setOpen(true)}
           aria-haspopup="dialog"
           aria-expanded={open}
+          data-new-way="more"
           aria-current={moreActive ? 'true' : undefined}
           title={hidesLabel(mode) ? t('nav.more') : undefined}
           className={slotClass(moreActive)}
@@ -160,6 +161,7 @@ function MoreSheet({
         role="dialog"
         aria-modal="true"
         aria-label={t('nav.more')}
+        data-nav-rail
         className="glim-page-enter relative m-2 flex flex-col gap-1 rounded-card bg-carbon-surface p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]"
       >
         <div className="flex items-center justify-between ps-3">
