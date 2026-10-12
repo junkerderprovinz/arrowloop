@@ -72,6 +72,7 @@ export function SyncSettings() {
                 {t("mode.label")}
               </AxisLabel>
               <Choice
+                hue={1}
                 disabled={both}
                 value={both ? "sync" : String(defaults.mode ?? "sync")}
                 onChange={(mode) => saveDefaults({ mode })}

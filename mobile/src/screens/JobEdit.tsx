@@ -299,6 +299,7 @@ export function JobEdit() {
       >
         {/* Inert on `sync` for a both-ways job, so the card keeps its shape. */}
         <Choice
+          hue={1}
           value={(job.direction ?? "both") === "both" ? "sync" : (job.mode ?? "sync")}
           disabled={(job.direction ?? "both") === "both"}
           onChange={(mode) => set({ mode }, true)}
@@ -457,6 +458,7 @@ export function Schedule({ value, onChange }: { value: string; onChange: (next: 
   return (
     <View style={styles.stack}>
       <Choice<ScheduleMode>
+        hue={2}
         value={state.mode}
         // No `live` mode: watching is stored on the job, not in the expression.
         // Each mode shows different rows, so the change is animated.
@@ -484,6 +486,7 @@ export function Schedule({ value, onChange }: { value: string; onChange: (next: 
             onChange={(v) => set({ everyCount: Math.max(1, Math.round(Number(v) || 1)) })}
           />
           <Choice<EveryUnit>
+            hue={3}
             value={state.everyUnit}
             onChange={(everyUnit) => set({ everyUnit })}
             options={EVERY_UNITS.map((unit) => ({

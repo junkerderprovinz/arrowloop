@@ -34,6 +34,7 @@ function Mode({ value, onChange }: { value: "files" | "runs"; onChange: (next: "
     <Choice
       // Grows into what the filter button leaves, and stands as tall as it.
       style={styles.filterMode}
+      hue={0}
       value={value}
       onChange={onChange}
       options={[
@@ -175,6 +176,7 @@ function FileLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "fil
             placeholder={t("history.pathHint")}
           />
           <Choice<Show>
+            hue={1}
             value={show}
             onChange={setShow}
             options={[
@@ -312,6 +314,7 @@ function RunLog({ mode, onMode }: { mode: "files" | "runs"; onMode: (next: "file
       />
       {open ? (
         <Choice
+          hue={1}
           value={show}
           onChange={setShow}
           options={[

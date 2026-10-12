@@ -918,13 +918,15 @@ export function Toggle({
 
 /**
  * The horizontal selector: a groove one surface deeper with equal segments,
- * where only the chosen segment is filled. Each segment takes its own palette
- * position.
+ * where only the chosen segment is filled. Under the rainbow the selectors on
+ * a screen count through the palette in the order they stand, so `hue` is
+ * this one's place among them.
  */
 export function Choice<T extends string>({
   options,
   value,
   onChange,
+  hue,
   disabled,
   style,
 }: {
@@ -941,11 +943,13 @@ export function Choice<T extends string>({
   }[];
   value: T;
   onChange: (next: T) => void;
+  hue?: number;
   /** Dimmed and inert, but still showing the value in force. */
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
 }) {
   const { p, corners, accent, hueAt } = useTheme();
+  const mine = (hue !== undefined ? hueAt(hue) : undefined) ?? accent;
   return (
     <View
       pointerEvents={disabled ? "none" : "auto"}
@@ -956,9 +960,9 @@ export function Choice<T extends string>({
         style,
       ]}
     >
-      {options.map((option, i) => {
+      {options.map((option) => {
         const on = option.value === value;
-        const fill = option.colour ?? hueAt(i) ?? accent;
+        const fill = option.colour ?? mine;
         return (
           <Segment
             key={option.value}

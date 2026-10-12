@@ -69,6 +69,7 @@ export function WaySwitch({
   return (
     <View style={styles.stack}>
       <Choice<Way>
+        hue={0}
         value={way}
         disabled={disabled}
         onChange={onChange}
