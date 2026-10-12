@@ -62,7 +62,7 @@ async function mount() {
   // fresh copy of it.
   vi.resetModules()
   const { About } = await import('./About')
-  render(<About version="1.0.0" hueIndex={0} />)
+  render(<About hueIndex={0} />)
 }
 
 async function openPaypal() {
@@ -116,30 +116,6 @@ describe('the PayPal button in the desktop build', () => {
     await openPaypal()
     expect(runtime.BrowserOpenURL).not.toHaveBeenCalled()
     expect(scripts).toHaveLength(1)
-  })
-})
-
-describe('the links on the card', () => {
-  it('reach GitHub and the mail program through the system in the desktop build', async () => {
-    const runtime = desktop('linux')
-    const open = vi.spyOn(window, 'open')
-    await mount()
-    await click('GitHub')
-    await click('Email')
-    await click('1.0.0', 'link')
-    expect(runtime.BrowserOpenURL.mock.calls.map((c) => c[0])).toEqual([
-      'https://github.com/junkerderprovinz/arrowloop',
-      'mailto:hello@halleluja.design?subject=ArrowLoop%20Feedback',
-      'https://github.com/junkerderprovinz/arrowloop/releases/tag/v1.0.0',
-    ])
-    expect(open).not.toHaveBeenCalled()
-  })
-
-  it('open a new tab in a browser', async () => {
-    const open = vi.spyOn(window, 'open').mockReturnValue(null)
-    await mount()
-    await click('GitHub')
-    expect(open).toHaveBeenCalledWith('https://github.com/junkerderprovinz/arrowloop', '_blank', 'noopener,noreferrer')
   })
 })
 

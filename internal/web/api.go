@@ -72,6 +72,10 @@ type Server struct {
 	// can stand as a block of its own between the timestamped lines. Nil means
 	// stdout, which for a container is its log.
 	CodeLog io.Writer
+
+	// Releases is the GitHub API the update check asks for the newest
+	// release. Empty means api.github.com.
+	Releases string
 }
 
 // logf is Log with the nil check in one place.
@@ -129,6 +133,9 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("POST /api/browse/mkdir", s.makeDir)
 	mux.HandleFunc("GET /api/shares", s.listSharesHandler)
 	mux.HandleFunc("GET /api/capabilities", s.capabilities)
+	mux.HandleFunc("GET /api/versions", s.versions)
+	mux.HandleFunc("POST /api/update-check", s.checkUpdate)
+	mux.HandleFunc("GET /api/diagnostics", s.diagnostics)
 
 	// The routes an unauthenticated caller may reach are listed in
 	// needsSession.

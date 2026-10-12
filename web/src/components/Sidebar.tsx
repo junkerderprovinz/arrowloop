@@ -1,34 +1,33 @@
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import { useRef, useState, type CSSProperties, type ReactNode } from 'react'
 
+import { api } from '../lib/api'
 import { hueVars } from '../lib/appearance'
 import { hidesLabel, type LabelMode } from '../lib/controls'
-import { LogoLoop } from './LogoLoop'
+import { useT } from '../lib/i18n'
 import { shudder } from '../lib/logoFlight'
-import { LOGO_GOLD, LogoMark } from './LogoMark'
+import { onDestination, sidebarDestinations, type NavCounts, type NavDestination } from '../lib/navModel'
+import type { NavPins } from '../lib/navPins'
+import { Link, navigate } from '../lib/router'
 import { HOLD, NO_STREAK, press } from '../lib/tapStreak'
+import { IconSignOut } from './glyphs'
+import { LogoLoop } from './LogoLoop'
+import { LOGO_GOLD, LogoMark } from './LogoMark'
+import { NavCount } from './NavCount'
 import { useRainbow } from './Shell'
 
 /**
  * The navigation rail, the same left rail the sibling apps use. Only glyph
  * mode narrows it; reactive mode keeps the full width so nothing moves when a
- * label appears under the pointer. A window too narrow for a rail beside the
- * page gets it as a bar of glyphs across the top instead.
+ * label appears under the pointer. A window too narrow for it gets the
+ * BottomBar instead.
  */
 const navBase =
-  'glim-nav-row relative flex items-center rounded-[var(--radius-pill)] px-3 py-2.5 text-[15px] font-medium transition duration-150 select-none'
+  'glim-nav-row relative flex w-full items-center rounded-[var(--radius-pill)] px-3 py-2.5 text-[15px] font-medium transition duration-150 select-none'
 const navActive = 'glim-active bg-accent text-accentContrast'
 const navInactive = 'text-[var(--sidebar-text)] hover:bg-carbon-hover hover:text-carbon-text'
 
-// In rainbow mode each glyph carries its item's own hue.
+// In rainbow mode each glyph carries its entry's own hue.
 const navHued = 'glim-hue glim-hue-icon'
-
-export interface RailItem<T extends string> {
-  value: T
-  label: string
-  icon: ReactNode
-  /** A number worth watching without reading, such as the running jobs. */
-  badge?: number
-}
 
 /**
  * The label for the given mode. In reactive mode it collapses to zero width in
@@ -50,73 +49,85 @@ function NavLabel({ label, mode }: { label: string; mode: LabelMode }) {
   )
 }
 
-function Item<T extends string>({
-  item,
+function rowClass(mode: LabelMode, active: boolean): string {
+  return `${navHued} ${navBase} group ${hidesLabel(mode) ? 'justify-center' : 'gap-3'} ${active ? navActive : navInactive}`
+}
+
+function Entry({
+  destination,
   active,
   hue,
   mode,
-  row,
-  onPick,
+  count,
 }: {
-  item: RailItem<T>
+  destination: NavDestination
   active: boolean
   hue: number
   mode: LabelMode
-  /** In the bar across the top, where the rows sit side by side. */
-  row: boolean
-  onPick: (next: T) => void
+  count: number
 }) {
+  const { t } = useT()
+  const label = t(destination.labelKey)
+  const Icon = destination.icon
   const centred = hidesLabel(mode)
+  return (
+    <Link
+      to={destination.to}
+      style={hueVars(hue) as CSSProperties}
+      // Glyph mode has no visible text to take the accessible name from.
+      title={centred ? label : undefined}
+      aria-label={mode === 'glyph' ? (count ? `${label}, ${count}` : label) : undefined}
+      aria-current={active ? 'page' : undefined}
+      className={rowClass(mode, active)}
+    >
+      {mode !== 'text' && <Icon />}
+      <NavLabel label={label} mode={mode} />
+      {/* In the centred modes the figure moves to the glyph's corner rather
+          than disappearing. */}
+      {count > 0 && <NavCount value={count} className={centred ? 'absolute end-1 top-1' : ''} />}
+    </Link>
+  )
+}
+
+/** Signing out drops this browser's cookie, and the reload brings the login back. */
+function SignOut({ hue, mode }: { hue: number; mode: LabelMode }) {
+  const { t } = useT()
+  const label = t('login.logout')
   return (
     <button
       type="button"
-      onClick={() => onPick(item.value)}
+      onClick={() => void api.logout().finally(() => window.location.reload())}
       style={hueVars(hue) as CSSProperties}
-      // Glyph mode has no visible text to take the accessible name from.
-      title={centred ? item.label : undefined}
-      aria-label={mode === 'glyph' ? item.label : undefined}
-      aria-current={active ? 'page' : undefined}
-      className={`${navHued} ${navBase} ${row ? 'w-auto' : 'w-full'} group ${centred ? 'justify-center' : 'gap-3'} ${
-        active ? navActive : navInactive
-      }`}
+      title={hidesLabel(mode) ? label : undefined}
+      aria-label={mode === 'glyph' ? label : undefined}
+      className={rowClass(mode, false)}
     >
-      {mode !== 'text' && item.icon}
-      <NavLabel label={item.label} mode={mode} />
-      {/* On the active row the badge takes the ink colour; in the centred
-          modes it moves to the glyph's corner rather than disappearing. */}
-      {item.badge ? (
-        <span
-          className={`glim-num rounded-[var(--radius-pill)] bg-carbon-surface3/60 px-1.5 py-0.5 text-meta font-semibold leading-none text-carbon-textSub [.glim-active_&]:bg-black/15 [.glim-active_&]:text-current ${
-            centred ? 'absolute end-1 top-1' : ''
-          }`}
-        >
-          {item.badge}
-        </span>
-      ) : null}
+      {mode !== 'text' && <IconSignOut />}
+      <NavLabel label={label} mode={mode} />
     </button>
   )
 }
 
-export function Sidebar<T extends string>({
-  items,
-  settings,
-  value,
-  onChange,
+export function Sidebar({
+  pins,
+  counts,
+  pathname,
   mode,
+  signOut,
 }: {
-  items: RailItem<T>[]
-  /** The one that sits at the foot of the rail, away from the rest. */
-  settings: RailItem<T>
-  value: T
-  onChange: (next: T) => void
+  pins: NavPins
+  counts: NavCounts
+  pathname: string
   mode: LabelMode
+  /** Whether a password is set, the one case where signing out means anything. */
+  signOut: boolean
 }) {
   // Re-rendered on palette changes, so an edited swatch shows here at once.
   useRainbow()
-
-  const bar = useSmallWindow()
-  const shown: LabelMode = bar ? 'glyph' : mode
-  const narrow = shown === 'glyph'
+  const narrow = mode === 'glyph'
+  const all = sidebarDestinations(pins)
+  const list = all.filter((d) => !d.footer)
+  const foot = all.filter((d) => d.footer)
 
   // The easter egg: five quick presses on the logo, or a press and hold, run
   // the arrows along the rings' gap into the middle, curl them into a ring that
@@ -145,7 +156,7 @@ export function Sidebar<T extends string>({
     if (held.current !== null) window.clearTimeout(held.current)
     held.current = window.setTimeout(() => {
       held.current = null
-      fly()
+      setFlight((n) => n + 1)
     }, HOLD)
   }
 
@@ -156,15 +167,22 @@ export function Sidebar<T extends string>({
     }
   }
 
-  function fly() {
-    setFlight((n) => n + 1)
-  }
-
   function tapped() {
     const { next, fired } = press(streak.current, performance.now())
     streak.current = next
-    if (fired) fly()
+    if (fired) setFlight((n) => n + 1)
   }
+
+  const entry = (d: NavDestination, hue: number): ReactNode => (
+    <Entry
+      key={d.to}
+      destination={d}
+      hue={hue}
+      mode={mode}
+      active={onDestination(pathname, d)}
+      count={d.count ? counts[d.count] : 0}
+    />
+  )
 
   return (
     // Shaped as a card with the ground showing around it, but on the sidebar
@@ -172,80 +190,45 @@ export function Sidebar<T extends string>({
     // than the rows scrolls the rail instead of cutting off Settings.
     <aside
       ref={rail}
-      className={`flex shrink-0 rounded-card bg-carbon-sidebar ${
-        bar
-          ? 'w-full flex-row items-center overflow-x-auto'
-          : `h-full flex-col overflow-x-hidden overflow-y-auto ${narrow ? 'w-(--rail-narrow)' : 'w-56'}`
+      className={`flex h-full shrink-0 flex-col overflow-x-hidden overflow-y-auto rounded-card bg-carbon-sidebar ${
+        narrow ? 'w-(--rail-narrow)' : 'w-56'
       }`}
     >
-      {/* The narrow rail drops the wordmark and shrinks the mark to fit. */}
+      {/* The narrow rail drops the wordmark and shrinks the mark to fit. The
+          block steps its surface on hover like any unfilled control. */}
       <button
         type="button"
         onClick={() => {
           tapped()
-          onChange(items[0]?.value ?? value)
+          navigate(list[0]?.to ?? '/jobs')
         }}
         onPointerDown={holdStart}
         onPointerUp={holdEnd}
         onPointerLeave={holdEnd}
         onPointerCancel={holdEnd}
-        className={`flex flex-col items-center gap-2 transition-opacity hover:opacity-90 ${
-          bar ? 'p-2' : narrow ? 'px-2 py-4' : 'px-4 py-6'
+        className={`flex flex-col items-center gap-2 rounded-card transition-colors hover:bg-carbon-hover ${
+          narrow ? 'px-2 py-4' : 'px-4 py-6'
         }`}
       >
         {/* Inline, so its two halves can move independently. LOGO_GOLD as
             the colour makes the rings the logo's own gold. */}
         <LogoMark
           key={flight}
-          size={bar ? 36 : narrow ? 44 : 104}
+          size={narrow ? 44 : 104}
           style={{ color: LOGO_GOLD }}
           className={`shrink-0 ${flight > 0 ? 'al-logo-morph' : ''}`}
         >
           {flight > 0 && <LogoLoop onRelease={shake} />}
         </LogoMark>
-        {!narrow && (
-          <span className="al-wordmark text-xl font-bold tracking-tight text-carbon-text">ArrowLoop</span>
-        )}
+        {!narrow && <span className="al-wordmark text-xl font-bold tracking-tight text-carbon-text">ArrowLoop</span>}
       </button>
 
-      <nav className={`flex flex-1 gap-1 ${bar ? 'flex-row justify-center p-2' : narrow ? 'flex-col p-2' : 'flex-col p-3'}`}>
-        {items.map((item, i) => (
-          <Item
-            key={item.value}
-            item={item}
-            hue={i}
-            mode={shown}
-            row={bar}
-            active={item.value === value}
-            onPick={onChange}
-          />
-        ))}
-      </nav>
+      <nav className={`flex flex-1 flex-col gap-1 ${narrow ? 'p-2' : 'p-3'}`}>{list.map((d, i) => entry(d, i))}</nav>
 
-      <div className={`flex gap-1 ${bar ? 'flex-row p-2' : narrow ? 'flex-col p-2' : 'flex-col p-3'}`}>
-        <Item
-          item={settings}
-          hue={items.length}
-          mode={shown}
-          row={bar}
-          active={settings.value === value}
-          onPick={onChange}
-        />
+      <div className={`flex flex-col gap-1 ${narrow ? 'p-2' : 'p-3'}`}>
+        {signOut && <SignOut hue={list.length} mode={mode} />}
+        {foot.map((d, i) => entry(d, list.length + (signOut ? 1 : 0) + i))}
       </div>
     </aside>
   )
-}
-
-/** The width below which the rail turns into the bar across the top. */
-const SMALL_WINDOW = '(max-width: 639px)'
-
-function useSmallWindow(): boolean {
-  const [small, setSmall] = useState(() => window.matchMedia(SMALL_WINDOW).matches)
-  useEffect(() => {
-    const query = window.matchMedia(SMALL_WINDOW)
-    const follow = () => setSmall(query.matches)
-    query.addEventListener('change', follow)
-    return () => query.removeEventListener('change', follow)
-  }, [])
-  return small
 }

@@ -64,6 +64,8 @@ globalThis.ResizeObserver ??= class {
 } as unknown as typeof ResizeObserver
 
 beforeEach(() => {
+  window.history.replaceState(null, '', '/')
+  localStorage.clear()
   jobs.mockReset()
   jobs.mockImplementation(() => Promise.resolve([]))
   history.mockReset()
@@ -110,12 +112,30 @@ describe('the app', () => {
     desktop.mockImplementation(() => true)
     saveWindow.mockImplementationOnce(() => Promise.reject(new Error('could not set the autostart entry')))
     show()
-    fireEvent.click(await screen.findByRole('button', { name: 'Settings' }))
+    fireEvent.click(await screen.findByRole('link', { name: 'Settings' }))
     const tray = await screen.findByRole('switch', { name: 'Icon in the notification area' })
     fireEvent.click(tray)
 
     expect(await screen.findByText('could not set the autostart entry')).toBeTruthy()
     expect(screen.getByRole('switch', { name: 'Icon in the notification area' }).getAttribute('aria-checked')).toBe('false')
+  })
+
+  it('gives every page an address, and Back returns to the one before', async () => {
+    show()
+    await waitFor(() => expect(window.location.pathname).toBe('/jobs'))
+    fireEvent.click(screen.getByRole('link', { name: 'Conflicts' }))
+    await waitFor(() => expect(window.location.pathname).toBe('/conflicts'))
+    act(() => {
+      window.history.back()
+    })
+    await waitFor(() => expect(window.location.pathname).toBe('/jobs'))
+  })
+
+  it('opens a page that is not in the sidebar on its settings tile', async () => {
+    window.history.replaceState(null, '', '/targets')
+    show()
+    await waitFor(() => expect(window.location.pathname).toBe('/settings/targets'))
+    expect(await screen.findByRole('switch', { name: 'Also show in the sidebar' })).toBeTruthy()
   })
 
   it("marks a job failed after other jobs' runs fill the recent list", async () => {

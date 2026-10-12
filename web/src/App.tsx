@@ -1,43 +1,21 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import type { CSSProperties } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react'
 
-import { Stack } from './components/Shell'
-import { Card } from './lib/glimstone/Card'
-import { Button } from './lib/glimstone/Button'
-import { Choice } from './components/Field'
-import { InfoBubble } from './lib/glimstone/InfoBubble'
-import { ToggleRow } from './components/ToggleRow'
-import { HUE_OFFSET, Selector } from './components/Selector'
+import { BottomBar } from './components/BottomBar'
 import { Sidebar } from './components/Sidebar'
-import {
-  IconAnomalies,
-  IconConflict,
-  IconDashboard,
-  IconGear,
-  IconHistory,
-  IconRefresh,
-  IconSync,
-  IconTabApp,
-  IconTabGeneral,
-  IconTabLook,
-  IconTabRecovery,
-  IconTabSecurity,
-  IconTabStorage,
-} from './components/glyphs'
-import { AccentSwatches, PaletteSwatches } from './components/Swatches'
-import { About } from './components/About'
-import { SettingsBackup } from './components/SettingsBackup'
+import { Card } from './lib/glimstone/Card'
 import { Login } from './pages/Login'
 import { Activity } from './pages/Activity'
-import { Apps } from './pages/Apps'
-import { Engine } from './pages/Engine'
-import { History, Jobs } from './pages/Jobs'
-import { Preview } from './pages/Preview'
-import { Security } from './pages/Security'
-import { Targets } from './pages/Targets'
 import { Anomalies } from './pages/Anomalies'
 import { Conflicts } from './pages/Conflicts'
+import { History } from './pages/History'
+import { JobPage } from './pages/JobPage'
+import { Jobs } from './pages/Jobs'
+import { Preview } from './pages/Preview'
+import { Targets } from './pages/Targets'
 import { Trash } from './pages/Trash'
+import { Settings } from './pages/settings/Settings'
+import { DEFAULT_ACCENT, PRESET_HEXES, type LookProps } from './pages/settings/LookPage'
+import { rememberedTile, settingsTiles } from './pages/settings/tiles'
 import {
   api,
   whenSignedOut,
@@ -54,61 +32,21 @@ import { mergeConflicts } from './lib/conflicts'
 import { inJobOrder, mergeTrash, trashTotals } from './lib/trashView'
 import { GoTo, type Place } from './lib/goTo'
 import { Places } from './lib/places'
-import { ACCENTS, applyAccent, applyRainbow, applyShape, cacheAppearance, DEFAULT_SHAPE, leafTap, RAINBOW, rainbowState, type RainbowState, type Shape } from './lib/appearance'
+import { applyAccent, applyRainbow, applyShape, cacheAppearance, DEFAULT_SHAPE, rainbowState, type RainbowState, type Shape } from './lib/appearance'
 import { storedLook, storedSlots, storeSlots } from './lib/look'
-import { applyDisco, discoTap } from './lib/disco'
+import { applyDisco } from './lib/disco'
 import { getDisco, setDisco } from './lib/discoSetting'
-import { CONTROL_AXES, getLabelMode, LABEL_MODES, setLabelMode, type ControlAxis, type LabelMode } from './lib/controls'
-import { wipeColours } from './lib/animate'
+import { BOTTOM_BAR_AXIS, CONTROL_AXES, getLabelMode, setLabelMode, type LabelAxis, type LabelMode } from './lib/controls'
 import { useT } from './lib/i18n'
-import { getMotion, MOTION_INTENSITIES, setMotion, type MotionIntensity } from './lib/motion'
+import { getMotion, setMotion, type MotionIntensity } from './lib/motion'
+import type { NavCounts } from './lib/navModel'
+import { useNavPins } from './lib/navPins'
+import { navigate, useLocation } from './lib/router'
+import { jobPlace, resolveRoute } from './lib/routes'
+import { followDevice, paintTheme, storedTheme, storeTheme, type ThemeChoice } from './lib/theme'
 import { wireTooltips } from './lib/tooltip'
 import { isActivityView, onUpdateReady, useTrayWords } from './lib/desk'
 import { ToastProvider, useToast } from './lib/toast'
-
-/**
- * The app's places, in the order the sibling apps use, settings last. The three
- * that wait on somebody follow the history, since that is where they come from.
- */
-type Tab = 'jobs' | 'targets' | 'history' | 'conflicts' | 'anomalies' | 'trash' | 'settings'
-
-/** Settings is one tab with sections, the same shape BombVault uses. */
-type SettingsSection = 'general' | 'engine' | 'look' | 'app' | 'security'
-
-/** The sections in the strip's order, which decides the side a tab slides in from. */
-const SECTIONS: SettingsSection[] = ['general', 'engine', 'look', 'app', 'security']
-
-type Theme = 'dark' | 'light'
-
-/** The house accent a reset returns to, the first preset. */
-const DEFAULT_ACCENT = ACCENTS[0]?.hex ?? '#FCC419'
-const presetHexes = ACCENTS.map((a) => a.hex)
-
-const THEME_KEY = 'arrowloop.theme'
-
-/**
- * The theme in use. There is no "system" choice: the device setting resolves
- * to the real theme, which the control shows until somebody picks one.
- */
-function currentTheme(): Theme {
-  try {
-    const stored = localStorage.getItem(THEME_KEY)
-    if (stored === 'dark' || stored === 'light') return stored
-  } catch {
-    // Storage turned off. The device setting still answers.
-  }
-  return window.matchMedia?.('(prefers-color-scheme: light)').matches ? 'light' : 'dark'
-}
-
-function applyTheme(theme: Theme, remember: boolean) {
-  document.documentElement.setAttribute('data-theme', theme)
-  if (!remember) return
-  try {
-    localStorage.setItem(THEME_KEY, theme)
-  } catch {
-    // A browser with storage disabled forgets the choice on reload.
-  }
-}
 
 /**
  * The login gate. App mounts only once there is a session, since its fetches
@@ -117,12 +55,14 @@ function applyTheme(theme: Theme, remember: boolean) {
 export function Gate() {
   const [state, setState] = useState<'asking' | 'in' | 'out'>('asking')
   const [canReset, setCanReset] = useState(false)
+  const [password, setPassword] = useState(false)
 
   const ask = useCallback(() => {
     api
       .session()
       .then((s) => {
         setCanReset(!!s.reset)
+        setPassword(s.required)
         setState(s.required && !s.authenticated ? 'out' : 'in')
       })
       .catch(() => {
@@ -142,41 +82,62 @@ export function Gate() {
     <Activity />
   ) : (
     <ToastProvider>
-      <App />
+      <App signOut={password} />
     </ToastProvider>
   )
 }
 
-export function App() {
+/** The width below which the rail gives way to the bar along the bottom. */
+const SMALL_WINDOW = '(max-width: 639px)'
+
+function useSmallWindow(): boolean {
+  const [small, setSmall] = useState(() => window.matchMedia(SMALL_WINDOW).matches)
+  useEffect(() => {
+    const query = window.matchMedia(SMALL_WINDOW)
+    const follow = () => setSmall(query.matches)
+    query.addEventListener('change', follow)
+    return () => query.removeEventListener('change', follow)
+  }, [])
+  return small
+}
+
+const LABEL_AXES: LabelAxis[] = [...CONTROL_AXES, BOTTOM_BAR_AXIS]
+
+/**
+ * @param signOut whether a password is set, the one case where the rail
+ *                offers to sign out.
+ */
+export function App({ signOut = false }: { signOut?: boolean }) {
   const { t, lang, setLanguage, languages } = useT()
-  const [tab, setTab] = useState<Tab>('jobs')
+  const { pathname, search } = useLocation()
+  const pins = useNavPins()
+  const small = useSmallWindow()
   const [jobs, setJobs] = useState<Job[]>([])
   const [runs, setRuns] = useState<Run[]>([])
   const [latest, setLatest] = useState<Run[]>([])
   const [progress, setProgress] = useState<Record<string, RunEvent>>({})
   const [speeds, setSpeeds] = useState<Record<string, number>>({})
-  const [previewing, setPreviewing] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 
-  const [theme, setTheme] = useState<Theme>(currentTheme)
+  const [theme, setTheme] = useState<ThemeChoice>(storedTheme)
   const [shape, setShape] = useState<Shape>(() => storedLook().shape ?? DEFAULT_SHAPE)
   const [accent, setAccent] = useState<string>(() => storedLook().accent ?? DEFAULT_ACCENT)
-  const [slots, setSlots] = useState(() => storedSlots(presetHexes))
+  const [slots, setSlots] = useState(() => storedSlots(PRESET_HEXES))
   const [rainbow, setRainbow] = useState<RainbowState>(rainbowState)
   const [motion, setMotionState] = useState<MotionIntensity>(getMotion)
   const [disco, setDiscoState] = useState(getDisco)
+  const [labels, setLabels] = useState(
+    () => Object.fromEntries(LABEL_AXES.map((axis) => [axis, getLabelMode(axis)])) as Record<LabelAxis, LabelMode>,
+  )
   // Only for naming a drive in the file log, so a failed fetch leaves the id.
   const [drives, setDrives] = useState<Volume[]>([])
   const places = useMemo(() => ({ jobs, drives }), [jobs, drives])
   // Null until asked, and always on a build with no window of its own.
   const [window_, setWindow] = useState<WindowSettings | null>(null)
   const [version, setVersion] = useState('dev')
-  const [canSecure, setCanSecure] = useState(false)
-  const [labels, setLabels] = useState<Record<ControlAxis, LabelMode>>(() => ({
-    buttons: getLabelMode('buttons'),
-    sidebar: getLabelMode('sidebar'),
-    tabs: getLabelMode('tabs'),
-  }))
+  // Null until the engine has said, so the Security tile's address does not
+  // bounce to the first tile while the question is out.
+  const [canSecure, setCanSecure] = useState<boolean | null>(null)
   useTrayWords(window_ !== null, t)
   useUpdateReadyToast()
   const push = useToast()
@@ -206,16 +167,19 @@ export function App() {
       .volumes()
       .then((v) => setDrives(v.volumes))
       .catch(() => {})
-    void api.capabilities().then((can) => {
-      setVersion(can.version || 'dev')
-      setCanSecure(can.security === true)
-      if (can.window) void api.window().then(setWindow)
-    })
+    void api
+      .capabilities()
+      .then((can) => {
+        setVersion(can.version || 'dev')
+        setCanSecure(can.security === true)
+        if (can.window) void api.window().then(setWindow)
+      })
+      .catch(() => setCanSecure(false))
   }, [])
 
-  // What waits on somebody, for the two tabs and their badges. Asked for in full
-  // at the start and after a save, and for one job whenever one of its runs
-  // ends, since a run is what sets a conflict aside or fills a trash.
+  // What waits on somebody, for the two pages and their counts. Asked for in
+  // full at the start and after a save, and for one job whenever one of its
+  // runs ends, since a run is what sets a conflict aside or fills a trash.
   const [conflicts, setConflicts] = useState<ConflictListing | null>(null)
   const [trashSides, setTrashSides] = useState<TrashSide[] | null>(null)
   const reloadWaiting = useCallback((job: string) => {
@@ -248,12 +212,9 @@ export function App() {
     () => (trashSides ? inJobOrder(trashSides, jobs.map((j) => j.name)) : null),
     [trashSides, jobs],
   )
-  // The job a link from another screen narrowed the tab to.
-  const [focus, setFocus] = useState('')
+
   const goTo = useCallback((place: Place) => {
-    setPreviewing(null)
-    setFocus(place.job)
-    setTab(place.tab)
+    navigate(place.tab === 'jobs' && place.job ? `/jobs/${encodeURIComponent(place.job)}` : jobPlace(place.tab, place.job))
   }, [])
 
   useEffect(() => {
@@ -312,23 +273,10 @@ export function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refresh, reloadWaiting, reloadFindings])
 
-  // The device setting applies until somebody picks a theme.
   useEffect(() => {
-    const media = window.matchMedia?.('(prefers-color-scheme: light)')
-    if (!media) return
-    const follow = () => {
-      try {
-        if (localStorage.getItem(THEME_KEY)) return
-      } catch {
-        // Without storage nothing was picked, so follow the device.
-      }
-      setTheme(media.matches ? 'light' : 'dark')
-    }
-    media.addEventListener('change', follow)
-    return () => media.removeEventListener('change', follow)
-  }, [])
-
-  useEffect(() => applyTheme(theme, false), [theme])
+    paintTheme(theme)
+    return followDevice(theme)
+  }, [theme])
   useEffect(() => {
     applyShape(shape)
     applyAccent(accent)
@@ -344,213 +292,161 @@ export function App() {
     applyDisco(disco)
   }, [disco, rainbow])
 
-  const running = jobs.filter((j) => j.running).length
+  const tiles = useMemo(() => settingsTiles(canSecure), [canSecure])
+  const resolved = useMemo(
+    () => resolveRoute(pathname, search, { pins, tiles: tiles.map((x) => x.id), remembered: rememberedTile() }),
+    [pathname, search, pins, tiles],
+  )
+  useLayoutEffect(() => {
+    if ('redirect' in resolved) navigate(resolved.redirect, { replace: true })
+  }, [resolved])
+  const view = 'view' in resolved ? resolved.view : null
+
+  const counts: NavCounts = {
+    running: jobs.filter((j) => j.running).length,
+    conflicts: conflicts?.conflicts.length ?? 0,
+    trash: orderedTrash ? trashTotals(orderedTrash.filter((s) => !s.error)).entries : 0,
+    findings: findings?.open.length ?? 0,
+  }
+  // The job a link from another page narrowed this one to.
+  const focus = search.get('job') ?? ''
+
+  const look: LookProps = {
+    theme,
+    onTheme: (next) => {
+      setTheme(next)
+      storeTheme(next)
+    },
+    shape,
+    onShape: setShape,
+    accent,
+    onAccent: setAccent,
+    slots,
+    onSlots: (next) => {
+      setSlots(next)
+      storeSlots(next)
+    },
+    rainbow,
+    onRainbow: setRainbow,
+    disco,
+    onDisco: (on) => {
+      setDisco(on)
+      setDiscoState(on)
+    },
+    motion,
+    onMotion: (next) => {
+      setMotion(next)
+      setMotionState(next)
+    },
+    labels,
+    onLabels: (axis, next) => {
+      setLabelMode(axis, next)
+      setLabels((prev) => ({ ...prev, [axis]: next }))
+    },
+    lang,
+    onLang: setLanguage,
+    languages,
+  }
+
+  const anomalies = (
+    <Anomalies listing={findings} jobs={jobs} job={focus} refused={refused} onChanged={() => void reloadFindings()} />
+  )
+
+  const page = !view ? null : view.page === 'jobs' ? (
+    <Jobs
+      jobs={jobs}
+      findings={findings?.open ?? []}
+      latest={latest}
+      progress={progress}
+      speeds={speeds}
+      onPreview={(name) => navigate(`/jobs/${encodeURIComponent(name)}/preview`)}
+      onSaved={() => {
+        refresh()
+        reloadWaiting('')
+      }}
+    />
+  ) : view.page === 'job' ? (
+    <JobPage name={view.name} />
+  ) : view.page === 'preview' ? (
+    <Preview
+      job={view.name}
+      onDone={() => {
+        navigate('/jobs')
+        refresh()
+      }}
+    />
+  ) : view.page === 'targets' ? (
+    <Targets />
+  ) : view.page === 'conflicts' ? (
+    <Conflicts listing={conflicts} job={focus} onChanged={reloadWaiting} />
+  ) : view.page === 'anomalies' ? (
+    anomalies
+  ) : view.page === 'trash' ? (
+    <Trash sides={orderedTrash} job={focus} onChanged={reloadWaiting} />
+  ) : view.page === 'history' ? (
+    // The log is the whole page, so its card reaches the bottom of the
+    // window however few lines it has.
+    <div className="flex flex-1 flex-col *:flex-1">
+      <History runs={runs} jobs={jobs} />
+    </div>
+  ) : null
 
   return (
-    // A fixed rail and a page that scrolls beside it, or below it where the
-    // window is too narrow for both side by side. The gutter padding lets the
-    // rail float as a card on the ground. Beside the rail the page reaches
+    // A fixed rail and a page that scrolls beside it, or above the bar where
+    // the window is too narrow for both side by side. The gutter padding lets
+    // the rail float as a card on the ground. Beside the rail the page reaches
     // down through the gutter and pads its end by the same amount, so a page
     // that fills the window, or one scrolled to its end, stops on the rail's
     // bottom line with room for its cards' shadow.
-    <div className="flex h-screen flex-col gap-4 overflow-hidden bg-carbon-background p-[var(--page-gutter)] sm:flex-row">
-      <Sidebar<Tab>
-        value={previewing ? 'jobs' : tab}
-        mode={labels.sidebar}
-        onChange={(next) => {
-          setPreviewing(null)
-          setFocus('')
-          setTab(next)
-        }}
-        items={[
-          { value: 'jobs', label: t('nav.jobs'), icon: <IconSync />, badge: running },
-          { value: 'targets', label: t('nav.targets'), icon: <IconTabStorage /> },
-          { value: 'history', label: t('nav.history'), icon: <IconHistory /> },
-          { value: 'conflicts', label: t('nav.conflicts'), icon: <IconConflict />, badge: conflicts?.conflicts.length },
-          { value: 'anomalies', label: t('nav.anomalies'), icon: <IconAnomalies />, badge: findings?.open.length },
-          {
-            value: 'trash',
-            label: t('nav.trash'),
-            icon: <IconTabRecovery />,
-            badge: orderedTrash ? trashTotals(orderedTrash.filter((s) => !s.error)).entries : undefined,
-          },
-        ]}
-        settings={{ value: 'settings', label: t('nav.settings'), icon: <IconGear /> }}
-      />
+    <div className="flex h-screen flex-col overflow-hidden bg-carbon-background p-[var(--page-gutter)] sm:flex-row sm:gap-4">
+      {!small && <Sidebar pins={pins} counts={counts} pathname={pathname} mode={labels.sidebar} signOut={signOut} />}
 
       <Places.Provider value={places}>
-      <GoTo.Provider value={goTo}>
-      <main className="min-w-0 flex-1 overflow-y-auto sm:-mb-[var(--page-gutter)]">
-        {/* Keyed on the tab, so the subtree remounts and GlimStone's entrance
-            animation plays on every tab change. */}
-        <div
-          key={previewing ? `preview:${previewing}` : tab}
-          className="glim-page-enter flex min-h-full w-full flex-col gap-8 px-4 pb-4 pt-4 sm:px-6 sm:pb-[var(--page-gutter)] sm:pt-0 md:px-8"
-        >
-          {error && (
-            <Card title={t('error.unreachable')} hueIndex={0}>
-              <p className="text-subline text-statusFail">{error}</p>
-            </Card>
-          )}
-
-          {previewing ? (
-            <Preview
-              job={previewing}
-              onDone={() => {
-                setPreviewing(null)
-                refresh()
-              }}
-            />
-          ) : tab === 'jobs' ? (
-            <Jobs
-              jobs={jobs}
-              findings={findings?.open ?? []}
-              latest={latest}
-              progress={progress}
-              speeds={speeds}
-              onPreview={setPreviewing}
-              onSaved={() => {
-                refresh()
-                reloadWaiting('')
-              }}
-            />
-          ) : tab === 'targets' ? (
-            <Targets />
-          ) : tab === 'conflicts' ? (
-            <Conflicts listing={conflicts} job={focus} onChanged={reloadWaiting} />
-          ) : tab === 'anomalies' ? (
-            <Anomalies
-              listing={findings}
-              jobs={jobs}
-              job={focus}
-              refused={refused}
-              onChanged={() => void reloadFindings()}
-            />
-          ) : tab === 'trash' ? (
-            <Trash sides={orderedTrash} job={focus} onChanged={reloadWaiting} />
-          ) : tab === 'history' ? (
-            // The log is the whole page, so its card reaches the bottom of the
-            // window however few lines it has.
-            <div className="flex flex-1 flex-col *:flex-1">
-              <History runs={runs} jobs={jobs} />
-            </div>
+        <GoTo.Provider value={goTo}>
+          {view?.page === 'settings' ? (
+            <main className="flex min-h-0 min-w-0 flex-1 flex-col">
+              <Settings
+                tile={view.tile}
+                tiles={tiles}
+                look={look}
+                version={version}
+                window={window_}
+                onWindow={(next) => {
+                  const before = window_
+                  setWindow(next)
+                  api
+                    .saveWindow(next)
+                    .then(setWindow)
+                    .catch((e: Error) => {
+                      setWindow(before)
+                      push(e.message, 'fail')
+                    })
+                }}
+                targets={<Targets />}
+                anomalies={anomalies}
+              />
+            </main>
           ) : (
-            <Settings
-          theme={theme}
-          onTheme={(next) => {
-            setTheme(next)
-            applyTheme(next, true)
-          }}
-          shape={shape}
-          onShape={setShape}
-          accent={accent}
-          onAccent={setAccent}
-          slots={slots}
-          onSlots={(next) => {
-            setSlots(next)
-            storeSlots(next)
-          }}
-          rainbow={rainbow}
-          onRainbow={setRainbow}
-          disco={disco}
-          onDisco={(on) => {
-            setDisco(on)
-            setDiscoState(on)
-          }}
-          motion={motion}
-          onMotion={(next) => {
-            setMotion(next)
-            setMotionState(next)
-          }}
-          labels={labels}
-          onLabels={(axis, next) => {
-            setLabelMode(axis, next)
-            setLabels((prev) => ({ ...prev, [axis]: next }))
-          }}
-          version={version}
-          security={canSecure}
-          window={window_}
-          onWindow={(next) => {
-            const before = window_
-            setWindow(next)
-            api
-              .saveWindow(next)
-              .then(setWindow)
-              .catch((e: Error) => {
-                setWindow(before)
-                push(e.message, 'fail')
-              })
-          }}
-              lang={lang}
-              onLang={setLanguage}
-              languages={languages}
-            />
+            <main className="min-h-0 min-w-0 flex-1 overflow-y-auto sm:-mb-[var(--page-gutter)]">
+              {/* Keyed on the address, so the subtree remounts and GlimStone's
+                  entrance animation plays on every page change. */}
+              <div
+                key={pathname}
+                className="glim-page-enter flex min-h-full w-full flex-col gap-8 pb-4 sm:px-6 sm:pb-[var(--page-gutter)] md:px-8"
+              >
+                {error && (
+                  <Card title={t('error.unreachable')} hueIndex={0}>
+                    <p className="text-subline text-statusFail">{error}</p>
+                  </Card>
+                )}
+                {page}
+              </div>
+            </main>
           )}
-        </div>
-      </main>
-      </GoTo.Provider>
+        </GoTo.Provider>
       </Places.Provider>
-    </div>
-  )
-}
 
-/**
- * Settings: one tab with general, engine and appearance sections. Every card
- * carries its own palette position, so the rainbow shows on this page too.
- */
-function Settings(props: LookProps) {
-  const { t } = useT()
-  const [section, setSection] = useState<SettingsSection>('general')
-  // The side a new tab's cards slide in from: 1 for a later tab, -1 for an
-  // earlier one, 0 on arrival, where the page's own entrance plays instead.
-  const [toward, setToward] = useState(0)
-
-  return (
-    <div className="flex flex-col gap-10">
-      {/* Chips rather than a groove: a settings strip is tabs, not a
-          segmented control. */}
-      <div className="max-w-4xl">
-      <Selector<SettingsSection>
-        label={t('settings.section')}
-        hueOffset={HUE_OFFSET.tabs}
-        value={section}
-        onChange={(next) => {
-          setToward(SECTIONS.indexOf(next) > SECTIONS.indexOf(section) ? 1 : -1)
-          setSection(next)
-        }}
-        variant="chip"
-        options={[
-          { value: 'general', label: t('settings.general'), icon: <IconTabGeneral /> },
-          { value: 'engine', label: t('settings.engine'), icon: <IconDashboard /> },
-          { value: 'look', label: t('settings.look'), icon: <IconTabLook /> },
-          { value: 'app', label: t('settings.app'), icon: <IconTabApp /> },
-          // Left out where the interface cannot keep a password of its own.
-          ...(props.security
-            ? [{ value: 'security' as SettingsSection, label: t('settings.security'), icon: <IconTabSecurity /> }]
-            : []),
-        ]}
-      />
-      </div>
-      {/* A reading width that the strip above shares, so cards and tabs line
-          up without the column depending on the length of the tab labels.
-          Keyed on the tab, so the slide plays again on every change. */}
-      <div
-        key={section}
-        className={`flex max-w-4xl flex-col gap-10${toward ? ' glim-tab-slide' : ''}`}
-        style={{ '--tab-dir': toward } as CSSProperties}
-      >
-        {section === 'general' ? (
-          <General {...props} />
-        ) : section === 'engine' ? (
-          <Engine />
-        ) : section === 'app' ? (
-          <Apps version={props.version} desktop={props.window !== null} />
-        ) : section === 'security' ? (
-          <Security />
-        ) : (
-          <Look {...props} />
-        )}
-      </div>
+      {small && <BottomBar pins={pins} counts={counts} pathname={pathname} signOut={signOut} />}
     </div>
   )
 }
@@ -581,462 +477,3 @@ function useUpdateReadyToast() {
     [push, t],
   )
 }
-
-/** The log-out row, drawn only on an install that has a password. */
-function LogOut() {
-  const { t } = useT()
-  const [required, setRequired] = useState(false)
-
-  useEffect(() => {
-    api
-      .session()
-      .then((s) => setRequired(s.required))
-      .catch(() => setRequired(false))
-  }, [])
-
-  if (!required) return null
-  return (
-    <div className="flex justify-end">
-      <Button
-        label={t('login.logout')}
-        labelKey="login.logout"
-        onClick={() => {
-          // A reload, so nothing fetched with the old session stays on screen.
-          void api.logout().finally(() => window.location.reload())
-        }}
-      />
-    </div>
-  )
-}
-
-/** The settings that concern the app as a whole: backup, window, About. */
-function General({ window: windowSettings, onWindow, version }: LookProps) {
-  const { t } = useT()
-  return (
-    <Stack>
-      <LogOut />
-
-      <SettingsBackup hueIndex={0} />
-
-      {/* Left out rather than shown inert on a build with no window. */}
-      {windowSettings && (
-        <Card title={t('window.title')} hueIndex={1}>
-          <div className="flex flex-col gap-3">
-            <ToggleRow
-              label={t('window.tray')}
-              hint={t('window.trayHint')}
-              checked={windowSettings.tray}
-              onChange={(tray) => onWindow({ ...windowSettings, tray })}
-            />
-            {/* Both rely on the tray icon to bring a hidden window back. */}
-            <ToggleRow
-              label={t('window.close')}
-              hint={t('window.closeHint')}
-              checked={windowSettings.closeToTray}
-              onChange={(closeToTray) => onWindow({ ...windowSettings, closeToTray })}
-            />
-            <ToggleRow
-              label={t('window.minimise')}
-              hint={t('window.minimiseHint')}
-              checked={windowSettings.minimiseToTray}
-              onChange={(minimiseToTray) => onWindow({ ...windowSettings, minimiseToTray })}
-            />
-          </div>
-        </Card>
-      )}
-
-      {/* Gated on the platform having an autostart mechanism, or the switch
-          would report false however it is pressed. */}
-      {windowSettings?.canStartWithSystem && (
-        <Card title={t('start.title')} hueIndex={2}>
-          <ToggleRow
-            label={t('start.withSystem')}
-            hint={t('start.withSystemHint')}
-            checked={windowSettings.startWithSystem}
-            onChange={(startWithSystem) => onWindow({ ...windowSettings, startWithSystem })}
-          />
-        </Card>
-      )}
-
-      {/* Only the desktop app replaces itself. A container is updated the way
-          it was deployed, and the phone through its store. */}
-      {windowSettings && (
-        <Card title={t('update.title')} hueIndex={3}>
-          <ToggleRow
-            label={t('update.auto')}
-            hint={t('update.autoHint')}
-            checked={windowSettings.autoUpdate}
-            onChange={(autoUpdate) => onWindow({ ...windowSettings, autoUpdate })}
-          />
-        </Card>
-      )}
-
-      <About version={version} hueIndex={4} />
-    </Stack>
-  )
-}
-
-interface LookProps {
-  theme: Theme
-  onTheme: (next: Theme) => void
-  shape: Shape
-  onShape: (next: Shape) => void
-  accent: string
-  onAccent: (next: string) => void
-  /** The colour each accent swatch holds. */
-  slots: string[]
-  onSlots: (next: string[]) => void
-  rainbow: RainbowState
-  onRainbow: (next: RainbowState) => void
-  disco: boolean
-  onDisco: (on: boolean) => void
-  motion: MotionIntensity
-  onMotion: (next: MotionIntensity) => void
-  labels: Record<ControlAxis, LabelMode>
-  onLabels: (axis: ControlAxis, next: LabelMode) => void
-  version: string
-  /** Whether this build keeps a password, a second factor and passkeys. */
-  security: boolean
-  window: WindowSettings | null
-  onWindow: (next: WindowSettings) => void
-  lang: string
-  onLang: (next: string) => void
-  languages: { code: string; label: string; flag: string }[]
-}
-
-/** How many clicks on the chosen level open the one above the ceiling. */
-const STORM_CLICKS = 5
-
-/**
- * The storm, a hidden fourth motion level: with the motion on "wild", click
- * "wild" five more times.
- *
- * The discovery is not stored. The option shows while it is chosen, and
- * otherwise only while this screen stays open. The chosen value itself is
- * stored like any other (see MOTION_VALUES in lib/motion.ts). The phone runs
- * the same rule in mobile/src/eggs.tsx.
- */
-function useStormUnlock(motion: MotionIntensity, onMotion: (next: MotionIntensity) => void) {
-  const [found, setFound] = useState(false)
-  const clicks = useRef(0)
-  return {
-    offered: found || motion === 'storm',
-    click: (level: MotionIntensity) => {
-      if (level !== 'wild' || motion !== 'wild') {
-        clicks.current = 0
-        return
-      }
-      clicks.current += 1
-      if (clicks.current < STORM_CLICKS) return
-      clicks.current = 0
-      setFound(true)
-      onMotion('storm')
-    },
-  }
-}
-
-/**
- * The leaf, a hidden fourth shape found the storm's way: with the corners on
- * "square", click "square" five more times. Offered by the same rule.
- */
-function useLeafUnlock(shape: Shape, onShape: (next: Shape) => void) {
-  const [found, setFound] = useState(false)
-  const taps = useRef({ taps: 0 })
-  return {
-    offered: found || shape === 'leaf',
-    click: (tapped: Shape) => {
-      if (!leafTap(taps.current, tapped, shape)) return
-      setFound(true)
-      onShape('leaf')
-    },
-  }
-}
-
-/**
- * Disco, the colour engine's easter egg: turn Rainbow Mode on five times, each
- * within three seconds of the last, and the palette starts to walk. Like the
- * storm, the discovery is not stored; the switch shows while disco is on and
- * otherwise only while this screen stays open. The phone runs the same rule in
- * mobile/src/eggs.tsx.
- */
-function useDiscoUnlock(disco: boolean, onDisco: (on: boolean) => void) {
-  const [found, setFound] = useState(false)
-  const taps = useRef({ taps: 0, last: 0 })
-  return {
-    offered: found || disco,
-    turned: (on: boolean) => {
-      if (!discoTap(taps.current, on, { now: performance.now() })) return
-      setFound(true)
-      onDisco(true)
-    },
-  }
-}
-
-/** The looks a person owns. */
-function Look({
-  theme,
-  onTheme,
-  shape,
-  onShape,
-  accent,
-  onAccent,
-  slots,
-  onSlots,
-  rainbow,
-  onRainbow,
-  disco,
-  onDisco,
-  motion,
-  onMotion,
-  labels,
-  onLabels,
-  lang,
-  onLang,
-  languages,
-}: LookProps) {
-  const { t } = useT()
-  const storm = useStormUnlock(motion, onMotion)
-  const leaf = useLeafUnlock(shape, onShape)
-  const discoUnlock = useDiscoUnlock(disco, onDisco)
-  // A switch that changes the rainbow wipes across the page. A colour dragged
-  // in the picker does not, since it has to follow the pointer.
-  const switchRainbow = (next: RainbowState) => {
-    wipeColours()
-    onRainbow(next)
-  }
-  return (
-    <Stack>
-      {/* First, because somebody who cannot read the screen comes looking for
-          exactly this, and it decides how the app appears, like the axes
-          below it. */}
-      <Card title={t('look.language')} hueIndex={0}>
-        <Choice
-          value={lang}
-          onChange={onLang}
-          label={t('look.language')}
-          roomy
-          options={languages.map((l) => ({
-            value: l.code,
-            label: l.label,
-            flag: l.flag,
-          }))}
-        />
-      </Card>
-
-      <Card title={t('look.theme')} hueIndex={1}>
-        <Selector<Theme>
-          label={t('look.theme')}
-          hueOffset={HUE_OFFSET.theme}
-          value={theme}
-          onChange={onTheme}
-          options={[
-            { value: 'dark', label: t('look.dark') },
-            { value: 'light', label: t('look.light') },
-          ]}
-        />
-      </Card>
-
-      <Card title={t('look.corners')} hueIndex={2} hint={t('look.cornersHint')}>
-        <Selector<Shape>
-          label={t('look.corners')}
-          hueOffset={HUE_OFFSET.shape}
-          value={shape}
-          onChange={(next) => {
-            onShape(next)
-            leaf.click(next)
-          }}
-          options={[
-            { value: 'round', label: t('look.round') },
-            { value: 'soft', label: t('look.soft') },
-            { value: 'square', label: t('look.square') },
-            ...(leaf.offered ? [{ value: 'leaf' as Shape, label: t('look.leaf') }] : []),
-          ]}
-        />
-      </Card>
-
-      <Card title={t('look.motion')} hueIndex={3} hint={t('look.motionHint')}>
-        <Selector<MotionIntensity>
-          label={t('look.motion')}
-          hueOffset={HUE_OFFSET.motion}
-          value={motion}
-          onChange={(next) => {
-            onMotion(next)
-            storm.click(next)
-          }}
-          options={[
-            ...MOTION_INTENSITIES.map((m) => ({ value: m, label: t(motionKey[m]) })),
-            ...(storm.offered ? [{ value: 'storm' as MotionIntensity, label: t(motionKey.storm) }] : []),
-          ]}
-        />
-      </Card>
-
-      <Card title={t('look.labels')} hueIndex={4} hint={t('look.labelsHint')}>
-        <div className="flex flex-col gap-4">
-          {CONTROL_AXES.map((axis, row) => (
-            <div key={axis} className="flex flex-col gap-1">
-              <span className="text-subline text-carbon-textSub">{t(axisKey[axis])}</span>
-              <Selector<LabelMode>
-                label={t(axisKey[axis])}
-                hueOffset={HUE_OFFSET.labels + row}
-                value={labels[axis]}
-                onChange={(next) => onLabels(axis, next)}
-                options={LABEL_MODES.map((m) => ({ value: m, label: t(labelModeKey[m]) }))}
-              />
-            </div>
-          ))}
-        </div>
-      </Card>
-
-      {/* Accent and rainbow share one card, last, as in BombVault: the accent
-          is the rainbow's position zero. */}
-      <Card title={t('look.colors')} hueIndex={5}>
-        <div className="flex flex-col gap-4">
-          {/* The reset belongs to this row rather than to the card's action
-              slot: it resets only the accent. */}
-          <div className="flex flex-wrap items-center gap-3">
-            <span className={`text-body text-carbon-text${rainbow.on ? ' opacity-50' : ''}`}>
-              {t('look.accent')}
-            </span>
-            <div className="ms-auto flex flex-wrap items-center gap-2">
-              {/* Inert while the rainbow hands out the colours. */}
-              <AccentSwatches
-                presets={ACCENTS}
-                slots={slots}
-                value={accent}
-                onChange={onAccent}
-                onSlots={onSlots}
-                disabled={rainbow.on}
-              />
-              <ResetBadge
-                tip={t('look.accentReset')}
-                disabled={rainbow.on || (accent === DEFAULT_ACCENT && slots.join() === presetHexes.join())}
-                onClick={() => {
-                  onAccent(DEFAULT_ACCENT)
-                  onSlots(presetHexes)
-                }}
-              />
-            </div>
-          </div>
-
-          <ToggleRow
-            checked={rainbow.on}
-            onChange={(on) => {
-              switchRainbow({ ...rainbow, on })
-              discoUnlock.turned(on)
-            }}
-            label={t('look.rainbowOn')}
-            hint={t('look.rainbowHint')}
-            hueIndex={0}
-          />
-          {/* Reactive, rotate and the palette only mean something while the
-              rainbow runs, so they are absent rather than dimmed when it is
-              off. */}
-          {rainbow.on && (
-            <>
-              <ToggleRow
-                checked={rainbow.reactive}
-                onChange={(reactive) => switchRainbow({ ...rainbow, reactive })}
-                label={t('look.rainbowReactive')}
-                hint={t('look.reactiveHint')}
-                hueIndex={1}
-              />
-              <ToggleRow
-                checked={rainbow.rotate}
-                onChange={(rotate) =>
-                  switchRainbow({ ...rainbow, rotate, seed: rotate ? (rainbow.seed + 1) % 8 : 0 })
-                }
-                label={t('look.rainbowRotate')}
-                hint={t('look.rotateHint')}
-                hueIndex={2}
-              />
-              {discoUnlock.offered && (
-                <ToggleRow
-                  checked={disco}
-                  onChange={onDisco}
-                  label={t('look.disco')}
-                  hint={t('look.discoHint')}
-                  hueIndex={3}
-                />
-              )}
-            </>
-          )}
-
-          {rainbow.on && (
-            <div className="flex flex-wrap items-center gap-3">
-              <span className="flex items-center gap-1.5 text-body text-carbon-text">
-                {t('look.palette')}
-                <InfoBubble tip={t('look.paletteHint')} />
-              </span>
-              <div className="ms-auto flex flex-wrap items-center gap-2">
-                <PaletteSwatches
-                  palette={rainbow.palette}
-                  onChange={(palette) => onRainbow({ ...rainbow, palette })}
-                />
-                <ResetBadge
-                  tip={t('look.paletteReset')}
-                  disabled={rainbow.palette.join() === RAINBOW.join()}
-                  onClick={() => switchRainbow({ ...rainbow, palette: [...RAINBOW] })}
-                />
-              </div>
-            </div>
-          )}
-        </div>
-      </Card>
-    </Stack>
-  )
-}
-
-/**
- * The reset at the end of a row of colour swatches. Always rendered and
- * disabled when there is nothing to undo, so the row never changes length.
- *
- * The one control outside the colour engine, as in BombVault: in a row of
- * swatches an accent fill would read as one more colour to pick.
- */
-function ResetBadge({
-  tip,
-  onClick,
-  disabled,
-}: {
-  tip: string
-  onClick: () => void
-  disabled?: boolean
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      data-tip={tip}
-      aria-label={tip}
-      // Built like a swatch, a border around a fill, so it reads the same size.
-      className="inline-flex h-7 w-7 items-center justify-center bg-carbon-surface2 text-carbon-textSub transition disabled:cursor-not-allowed disabled:opacity-50"
-      style={{
-        borderRadius: 'var(--radius-pill)',
-        border: '2px solid var(--carbon-border)',
-      }}
-    >
-      <IconRefresh />
-    </button>
-  )
-}
-
-const motionKey = {
-  off: 'look.motionOff',
-  subtle: 'look.motionSubtle',
-  wild: 'look.motionWild',
-  storm: 'look.motionStorm',
-} as const
-
-const axisKey = {
-  buttons: 'look.labelsButtons',
-  sidebar: 'look.labelsSidebar',
-  tabs: 'look.labelsTabs',
-} as const
-
-const labelModeKey = {
-  text: 'look.labelText',
-  textGlyph: 'look.labelTextGlyph',
-  glyph: 'look.labelGlyph',
-  reactive: 'look.labelReactive',
-} as const

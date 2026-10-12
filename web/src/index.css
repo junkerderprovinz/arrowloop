@@ -263,16 +263,67 @@ body {
   border-radius: var(--radius-pill);
   box-shadow: var(--elevation);
 }
+/* A narrow window has the bottom bar in that corner, 48px and its gap high. */
+@media (max-width: 639px) {
+  .glim-btn.glim-fab {
+    inset-block-end: calc(var(--page-gutter) + 3.5rem + 1rem);
+  }
+}
 
 /* Every button gives way to .97 on press, the web's side of the phone's press.
    The design language states the rule but its stylesheet has no line for it,
    so it stands here until tokens.css carries one. The individual `scale`
    property leaves any transform a button already has alone. */
 @media (prefers-reduced-motion: no-preference) {
-  :root:not([data-motion='off']) :is(button, [role='button'], a.glim-readme-btn):not(:disabled):active {
+  :root:not([data-motion='off']) :is(button, [role='button'], a.glim-readme-btn, a.glim-nav-row):not(:disabled):active {
     scale: 0.97;
   }
   .glim-btn {
     transition: opacity 120ms, background-color 120ms, scale 120ms;
   }
+}
+
+/* A count in the rail wears its entry's colours: the accent, or the entry's
+   rainbow hue through .glim-hue, with that colour's ink. On the current entry
+   the two turn round. The bottom bar keeps colour for the current tab, so its
+   figures rest grey. */
+.glim-nav-count {
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+.glim-active .glim-nav-count {
+  background: var(--accent-contrast);
+  color: var(--accent);
+}
+.glim-nav-count--quiet {
+  background: var(--carbon-text-muted);
+  color: var(--carbon-sidebar);
+}
+
+/* A group of rows inside a card, one step up the surface ramp, where a fold
+   would otherwise hide it. Fields inside take the next step so they still
+   stand out. */
+.glim-subcard {
+  background-color: var(--carbon-surface2);
+  border-radius: var(--radius-card);
+}
+.glim-subcard input,
+.glim-subcard textarea {
+  background-color: var(--carbon-surface3);
+}
+
+/* Where a settings search result landed, ringed for a moment so the eye finds
+   it after the scroll. */
+@keyframes glim-search-hit {
+  0%,
+  60% {
+    box-shadow: 0 0 0 2px var(--accent);
+  }
+  100% {
+    box-shadow: 0 0 0 2px transparent;
+  }
+}
+.glim-search-hit {
+  border-radius: var(--radius-control);
+  animation: glim-search-hit 1.6s ease-out;
 }

@@ -1,17 +1,18 @@
 import { useRef, useState } from 'react'
 
-import { Button } from '../lib/glimstone/Button'
-import { Card } from '../lib/glimstone/Card'
-import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
-import { IconDownload, IconUpload } from './glyphs'
-import { replay } from '../lib/animate'
-import { api } from '../lib/api'
-import { download, pickTextFile } from '../lib/download'
-import { errorText } from '../lib/errorText'
-import { useT } from '../lib/i18n'
+import { Button } from '../../lib/glimstone/Button'
+import { Card } from '../../lib/glimstone/Card'
+import { ConfirmDialog } from '../../lib/glimstone/ConfirmDialog'
+import { IconDownload, IconUpload } from '../../components/glyphs'
+import { replay } from '../../lib/animate'
+import { api } from '../../lib/api'
+import { download, pickTextFile } from '../../lib/download'
+import { errorText } from '../../lib/errorText'
+import { useT } from '../../lib/i18n'
+import { SettingsRow } from './rows'
 
 /** Exports the whole setup, every job and setting, to a file and imports it back. */
-export function SettingsBackup({ hueIndex }: { hueIndex: number }) {
+export function BackupCard({ hueIndex }: { hueIndex: number }) {
   const { t } = useT()
   const [restoring, setRestoring] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -37,12 +38,13 @@ export function SettingsBackup({ hueIndex }: { hueIndex: number }) {
 
   return (
     <Card title={t('backup.title')} hint={t('backup.hint')} hueIndex={hueIndex}>
-      <div className="flex flex-wrap items-center gap-2">
+      {/* Neutral: the one filled accent on a page belongs to its main action,
+          and neither of these is what Settings exists for. */}
+      <SettingsRow label={t('settings.backupExportRow')}>
         <Button
           label={t('backup.export')}
           labelKey="backup.export"
           glyph={<IconDownload />}
-          tone="accent"
           ref={exportButton}
           onClick={() => {
             void api
@@ -58,11 +60,12 @@ export function SettingsBackup({ hueIndex }: { hueIndex: number }) {
               })
           }}
         />
+      </SettingsRow>
+      <SettingsRow label={t('settings.backupImportRow')}>
         <Button
           label={t('backup.import')}
           labelKey="backup.import"
           glyph={<IconUpload />}
-          tone="accent"
           busy={restoring}
           disabled={restoring}
           onClick={() => {
@@ -72,12 +75,12 @@ export function SettingsBackup({ hueIndex }: { hueIndex: number }) {
             })
           }}
         />
-        {error && (
-          <p key={refused} className="glim-shake text-subline text-statusFail">
-            {error}
-          </p>
-        )}
-      </div>
+      </SettingsRow>
+      {error && (
+        <p key={refused} className="glim-shake text-subline text-statusFail">
+          {error}
+        </p>
+      )}
 
       {picked && (
         <ConfirmDialog

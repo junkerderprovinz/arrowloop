@@ -33,6 +33,9 @@ export const PAYPAL_GIVING = {
 
 export const REPO = "https://github.com/junkerderprovinz/arrowloop";
 export const GLIMSTONE_REPO = "https://github.com/junkerderprovinz/glimstone";
+export const RCLONE_REPO = "https://github.com/rclone/rclone";
+/** The handbook, built from docs/ by mkdocs. */
+export const MANUAL = "https://junkerderprovinz.github.io/arrowloop/";
 /** Shared by every tool; the subject line names the product. */
 export const MAIL = "hello@halleluja.design";
 

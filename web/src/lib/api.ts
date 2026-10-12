@@ -991,6 +991,27 @@ export const api = {
   capabilities: () =>
     request<{ window: boolean; security?: boolean; version: string }>('/api/capabilities'),
 
+  /** The versions this build is made of, for the Info tile. */
+  versions: () => request<{ arrowloop: string; rclone: string; go: string }>('/api/versions'),
+
+  /**
+   * Asks GitHub for the newest release. A check that cannot run rejects with
+   * an ApiError whose code says why: dev-build, offline, rate-limited or
+   * bad-response.
+   */
+  updateCheck: () =>
+    request<{ current: string; latest: string; updateAvailable: boolean; releaseUrl: string }>(
+      '/api/update-check',
+      { method: 'POST' },
+    ),
+
+  /** The bug report: versions, settings and jobs without secrets, the last runs. */
+  diagnostics: async (): Promise<string> => {
+    const res = await fetch('/api/diagnostics')
+    if (!res.ok) throw await failure(res)
+    return res.text()
+  },
+
   /** The folders inside one folder. An empty path asks for the roots. */
   browse: (path?: string) =>
     request<{ path: string; parent: string; shown?: string; entries: { name: string; path: string }[] }>(

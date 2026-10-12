@@ -34,22 +34,13 @@ export type Option<T extends string> = {
 const MIN_SEGMENT = 200
 
 /**
- * Where each selector in the settings starts in the palette. Stacked selectors
- * of similar width would otherwise repeat every colour straight down the page;
- * settingsHue.test.ts holds every settings selector to this table. The engine
- * tab's three share starts with the look tab's, since the two are never on
- * screen together, and none shares the section tabs' start above both.
+ * Where a selector outside Settings starts in the palette, so it does not
+ * repeat the colours of the strip beside it. Settings pages give each selector
+ * one position of its own instead (`hue`).
  */
 export const HUE_OFFSET = {
-  tabs: 0,
-  /** The three label rows take +0..2 by row, so the block reads as one group. */
-  labels: 1,
-  shape: 4,
-  motion: 5,
-  theme: 6,
   direction: 1,
   mode: 2,
-  foldCase: 3,
 } as const
 
 /** The gaps between segments, in pixels: 0.2rem in the well, 0.25rem between chips. */
@@ -63,6 +54,7 @@ export function Selector<T extends string>({
   scale = 'big',
   variant = 'well',
   hueOffset = 0,
+  hue,
   label,
   labelledBy,
   disabled = false,
@@ -79,6 +71,12 @@ export function Selector<T extends string>({
   variant?: 'well' | 'chip'
   /** Where this selector starts in the palette; see HUE_OFFSET. */
   hueOffset?: number
+  /**
+   * One palette position for every segment, for a selector among others on a
+   * settings page: under rainbow each of them wears a colour of its own,
+   * counted in the order they stand. It replaces `hueOffset`.
+   */
+  hue?: number
   label?: string
   /** The id of a visible label, used in place of `label`. */
   labelledBy?: string
@@ -189,7 +187,7 @@ export function Selector<T extends string>({
               // Each segment takes its own palette position. It sits on the
               // segment because `.glim-hue` rebinds the accent for the fill,
               // the ink and the focus ring together.
-              ...(hueVars(i + hueOffset) as CSSProperties),
+              ...(hueVars(hue ?? i + hueOffset) as CSSProperties),
               // The full control radius, as BombVault uses; subtracting the
               // well's padding left the strip looking square at the Soft stage.
               borderRadius: 'var(--radius-pill)',
