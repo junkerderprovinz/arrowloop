@@ -257,9 +257,9 @@ type BrakeBook = {
 };
 
 /**
- * The tiles count the open findings by severity. A tap picks the findings a
- * tile stands for and a second tap shows them all again; the rest of the page
- * stays.
+ * The categories count the open findings by severity, as a row of chips, the
+ * form tiles take on a phone. A tap picks the findings a chip stands for and a
+ * second tap shows them all again; the rest of the page stays.
  */
 function Tiles({
   counts,
@@ -285,12 +285,12 @@ function Tiles({
             accessibilityRole="button"
             accessibilityState={{ selected: on }}
             android_ripple={{ color: p.hover }}
-            style={[styles.tile, { backgroundColor: on ? accent : p.surface, ...corners.card }]}
+            style={[styles.tile, { backgroundColor: on ? accent : p.surface2, ...corners.pill }]}
           >
-            <Text style={[styles.tileNumber, { color: ink ?? tone[severity] }]}>{counts[severity]}</Text>
             <Text style={[styles.tileLabel, { color: ink ?? p.text }]} numberOfLines={1}>
               {t(TILE_LABEL[severity])}
             </Text>
+            <Text style={[styles.tileNumber, { color: ink ?? tone[severity] }]}>{counts[severity]}</Text>
           </Press>
         );
       })}
@@ -514,16 +514,21 @@ function Monitoring({ job, brakes }: { job: string; brakes: BrakeBook }) {
 const styles = StyleSheet.create({
   tiles: {
     flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
     gap: space.sm,
   },
   tile: {
-    flex: 1,
-    padding: space.md,
-    gap: 2,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: space.sm,
+    minHeight: 36,
+    paddingHorizontal: space.md,
   },
   tileNumber: {
-    fontSize: text.status,
+    fontSize: text.body,
     fontWeight: "600",
+    fontVariant: ["tabular-nums"],
   },
   tileLabel: {
     fontSize: text.body,
