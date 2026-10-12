@@ -70,6 +70,24 @@ func TestTheTrashIsListedForEverySide(t *testing.T) {
 	}
 }
 
+func TestASideThatCannotBeOpenedStillListsNoEntries(t *testing.T) {
+	h := engineFor(t, `{"jobs":[{"name":"share","left":"%[1]s/left",`+
+		`"right":":sftp,host=127.0.0.1,port=1,user=demo:/x","state":"%[1]s/share.db"}]}`)
+
+	var list struct {
+		Sides []map[string]any
+	}
+	h.get(t, "/api/trash", &list)
+	for _, s := range list.Sides {
+		if _, ok := s["entries"].([]any); !ok {
+			t.Errorf("the %v side sent entries %v instead of a list", s["side"], s["entries"])
+		}
+		if s["side"] == "right" && s["error"] == nil {
+			t.Errorf("the unreachable side answered without an error: %v", s)
+		}
+	}
+}
+
 func TestOneTrashedFileCanBeRestoredOrDeleted(t *testing.T) {
 	h := newHarness(t)
 	binned(t, h.left, "20260901-080000", "keep.txt", "wanted")

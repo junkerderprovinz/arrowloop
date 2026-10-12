@@ -135,7 +135,7 @@ func (s *Server) listAllTrash(w http.ResponseWriter, r *http.Request) {
 		}
 		for _, side := range []string{"left", "right"} {
 			if spec, _ := sideSpec(j, side); spec != "" {
-				out = append(out, sideTrash{keptAnswer: keptAnswer{Job: j.Name, Side: side, Store: trash.Trash.Name(), Dir: trash.Trash.Dir()}})
+				out = append(out, sideTrash{keptAnswer: keptAnswer{Job: j.Name, Side: side, Store: trash.Trash.Name(), Dir: trash.Trash.Dir(), Entries: []keptEntry{}}})
 			}
 		}
 	}
