@@ -10,6 +10,7 @@ import { IconAction } from '../components/IconAction'
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { Selector } from '../components/Selector'
 import { actionName } from '../lib/actionName'
+import { dayTime } from '../lib/dayTime'
 import { api, type Action, type ActionKind, type Plan, type Resolution, type Shown, type SideVersion } from '../lib/api'
 import { translateSide, useReason, useT, type TranslationKey } from '../lib/i18n'
 
@@ -297,7 +298,7 @@ function Conflict({
 
 /** One side's version of a file both sides changed, as the preview and the conflicts tab show it. */
 export function Version({ side, version, newer }: { side: string; version?: SideVersion; newer: boolean }) {
-  const { t } = useT()
+  const { t, lang } = useT()
   if (!version) {
     return (
       <div className="bg-carbon-surface2 px-3 py-2 text-subline text-carbon-textMuted" style={{ borderRadius: 'var(--radius-control)' }}>
@@ -317,7 +318,7 @@ export function Version({ side, version, newer }: { side: string; version?: Side
       <p className="mt-0.5 text-subline text-carbon-textMuted">
         {t('conflict.size')}: <Num>{bytes(version.size)}</Num>
         {' · '}
-        {t('conflict.changed')}: <Num>{new Date(version.mod).toLocaleString()}</Num>
+        {t('conflict.changed')}: <Num>{dayTime(version.mod, lang, (p) => t('list.when', p))}</Num>
       </p>
     </div>
   )
