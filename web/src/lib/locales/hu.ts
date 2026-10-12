@@ -268,7 +268,6 @@ const hu: Translations = {
   'edit.nameHint': 'Ezen a néven szerepel a feladat a listában, a naplóban és az értesítésekben.',
   'edit.sameSides': 'Mindkét oldal ugyanoda mutat, így a feladat a saját farkába harapó kígyó lenne. Válassz másik mappát az egyiknek.',
   'edit.sideHint': 'Egy mappa, egy beállított cél név:útvonal alakban, vagy a Célok fülön bejelentett lemez.',
-  'edit.sides': 'A két oldal',
   'edit.stateHint': 'Itt jegyzi meg a feladat, miben egyezett meg utoljára a két oldal. Feladatonként egy fájl. Az elvesztése semmit nem rombol le, de messzire visszaveti a feladatot.',
   'edit.scheduleHint': 'Mikor fut le ez a feladat magától. A Kézzel azt jelenti, hogy csak akkor, ha a kártyájáról indítod. A Valós idő másodperceken belül reagál egy változásra. A Minden N, a Minden nap és a Hétköznapok az órához igazodnak. A Cron olyan ritmusra való, amit a választók nem tudnak kimondani, és ennek a gépnek az időzónájában olvasódik.',
   'edit.excludeHint': 'Soronként egy minta. A félig megírt fájlok nevei mindig ki vannak zárva, bármi álljon is itt.',
@@ -769,6 +768,9 @@ const hu: Translations = {
   'phone.sortAz': 'A-tól Zs-ig',
   'phone.sortZa': 'Zs-től A-ig',
   'phone.search': 'Keresés',
+  'phone.job': 'Feladat',
+  'phone.needName': 'Adj nevet a feladatnak.',
+  'phone.needSide': 'Válassz mappát vagy célt ehhez az oldalhoz.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

@@ -268,7 +268,6 @@ const it: Translations = {
   'edit.nameHint': 'Il nome con cui questo lavoro compare nell\'elenco, nel registro e nelle notifiche.',
   'edit.sameSides': 'Entrambi i lati puntano allo stesso posto, quindi il lavoro sarebbe un serpente che si morde la coda. Scegli un’altra cartella per uno dei due.',
   'edit.sideHint': 'Una cartella, una destinazione configurata nella forma nome:percorso, oppure un disco registrato nella scheda Destinazioni.',
-  'edit.sides': 'I due lati',
   'edit.stateHint': 'Dove questo lavoro ricorda su cosa si sono trovati d\'accordo i due lati. Un file per lavoro. Perderlo non distrugge nulla, ma riporta il lavoro molto indietro.',
   'edit.scheduleHint': 'Quando questo lavoro parte da solo. Manuale significa solo quando lo avvii dalla sua scheda. Tempo reale reagisce a una modifica in pochi secondi. Ogni N, Ogni giorno e Giorni feriali seguono l’orologio. Cron serve per un ritmo che i selettori non sanno dire, e viene letto nel fuso orario di questa macchina.',
   'edit.excludeHint': 'Un modello per riga. I nomi dei file scritti a metà sono sempre esclusi, qualunque cosa ci sia qui.',
@@ -769,6 +768,9 @@ const it: Translations = {
   'phone.sortAz': 'Da A a Z',
   'phone.sortZa': 'Da Z ad A',
   'phone.search': 'Cerca',
+  'phone.job': 'Lavoro',
+  'phone.needName': 'Dai un nome al lavoro.',
+  'phone.needSide': 'Scegli una cartella o una destinazione per questo lato.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

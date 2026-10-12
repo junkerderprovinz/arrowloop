@@ -268,7 +268,6 @@ const id: Translations = {
   'edit.nameHint': 'Nama yang dipakai tugas ini di daftar, di catatan dan di pemberitahuan.',
   'edit.sameSides': 'Kedua sisi menunjuk ke tempat yang sama, jadi tugas ini akan jadi ular yang memakan ekornya sendiri. Pilih folder lain untuk salah satunya.',
   'edit.sideHint': 'Sebuah folder, tujuan yang sudah disiapkan dalam bentuk nama:jalur, atau cakram yang didaftarkan di tab Tujuan.',
-  'edit.sides': 'Kedua sisi',
   'edit.stateHint': 'Di sini tugas mengingat apa yang terakhir disepakati kedua sisi. Satu berkas untuk tiap tugas. Kehilangannya tidak merusak apa pun, tetapi melempar tugas jauh ke belakang.',
   'edit.scheduleHint': 'Kapan tugas ini berjalan sendiri. Manual berarti hanya ketika Anda memulainya dari kartunya. Waktu nyata bereaksi terhadap perubahan dalam hitungan detik. Setiap N, Setiap hari dan Hari dalam minggu mengikuti jam. Cron untuk irama yang tidak bisa dikatakan oleh pemilih, dan dibaca dalam zona waktu mesin ini.',
   'edit.excludeHint': 'Satu pola per baris. Nama berkas yang masih setengah ditulis selalu dikecualikan, apa pun yang tertulis di sini.',
@@ -769,6 +768,9 @@ const id: Translations = {
   'phone.sortAz': 'A ke Z',
   'phone.sortZa': 'Z ke A',
   'phone.search': 'Cari',
+  'phone.job': 'Tugas',
+  'phone.needName': 'Beri nama pada tugas ini.',
+  'phone.needSide': 'Pilih folder atau tujuan untuk sisi ini.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

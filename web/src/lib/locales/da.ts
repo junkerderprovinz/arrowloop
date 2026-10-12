@@ -268,7 +268,6 @@ const da: Translations = {
   'edit.nameHint': 'Navnet, som dette job står under i listen, i loggen og i beskederne.',
   'edit.sameSides': 'Begge sider peger på samme sted, så jobbet ville være en slange, der spiser sin egen hale. Vælg en anden mappe til den ene.',
   'edit.sideHint': 'En mappe, et opsat mål skrevet som navn:sti, eller en disk der er anmeldt under fanen Mål.',
-  'edit.sides': 'De to sider',
   'edit.stateHint': 'Her husker jobbet, hvad de to sider sidst var enige om. Én fil pr. job. At miste den ødelægger intet, men sætter jobbet langt tilbage.',
   'edit.scheduleHint': 'Hvornår dette job kører af sig selv. Manuelt betyder kun, når du starter det fra dets kort. Realtid reagerer på en ændring inden for sekunder. Hver N, Hver dag og Ugedage holder sig til uret. Cron er til en rytme, vælgerne ikke kan sige, og læses i denne maskines tidszone.',
   'edit.excludeHint': 'Ét mønster pr. linje. Navne på halvskrevne filer udelades altid, uanset hvad der står her.',
@@ -769,6 +768,9 @@ const da: Translations = {
   'phone.sortAz': 'A til Å',
   'phone.sortZa': 'Å til A',
   'phone.search': 'Søg',
+  'phone.job': 'Job',
+  'phone.needName': 'Giv jobbet et navn.',
+  'phone.needSide': 'Vælg en mappe eller et mål til denne side.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

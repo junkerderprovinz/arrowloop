@@ -268,7 +268,6 @@ const zh: Translations = {
   'edit.nameHint': '该任务在列表、日志和通知中显示的名称。',
   'edit.sameSides': '两边指向同一个位置，这份任务会成为一条咬自己尾巴的蛇。请给其中一边选另一个文件夹。',
   'edit.sideHint': '一个文件夹、以 名称:路径 形式配置的目标，或在目标标签页中登记的磁盘。',
-  'edit.sides': '两端',
   'edit.stateHint': '任务在这里记住两侧上次达成的一致。每个任务一个文件。丢失它不会破坏什么，但会让任务倒退很远。',
   'edit.scheduleHint': '这个任务何时自己运行。手动表示只有你从它的卡片上启动时才运行。实时会在几秒内对更改作出反应。每 N、每天和按星期都照着时钟走。Cron 用于选择器说不出来的节奏，按本机时区读取。',
   'edit.excludeHint': '每行一个模式。写到一半的文件名始终会被排除，无论这里写了什么。',
@@ -769,6 +768,9 @@ const zh: Translations = {
   'phone.sortAz': 'A 到 Z',
   'phone.sortZa': 'Z 到 A',
   'phone.search': '搜索',
+  'phone.job': '任务',
+  'phone.needName': '给任务起个名字。',
+  'phone.needSide': '为这一侧选择一个文件夹或目标。',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

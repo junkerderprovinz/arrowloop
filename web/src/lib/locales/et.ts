@@ -268,7 +268,6 @@ const et: Translations = {
   'edit.nameHint': 'Nimi, mille all see töö seisab loendis, logis ja teadetes.',
   'edit.sameSides': 'Mõlemad pooled osutavad samasse kohta, nii oleks töö madu, kes närib oma saba. Vali ühele neist teine kaust.',
   'edit.sideHint': 'Kaust, seadistatud sihtkoht kujul nimi:tee, või kaardil Sihtkohad registreeritud ketas.',
-  'edit.sides': 'Mõlemad pooled',
   'edit.stateHint': 'Siin mäletab töö, milles pooled viimati kokku leppisid. Üks fail töö kohta. Selle kaotamine ei hävita midagi, kuid viskab töö kaugele tagasi.',
   'edit.scheduleHint': 'Millal see töö ise käivitub. Käsitsi tähendab ainult siis, kui käivitad selle tema kaardilt. Reaalajas reageerib muutusele sekunditega. Iga N, Iga päev ja Nädalapäevad peavad kella. Cron on rütmi jaoks, mida valikud öelda ei oska, ja seda loetakse selle masina ajavööndis.',
   'edit.excludeHint': 'Üks muster rea kohta. Poolelioleva kirjutamisega failide nimed jäetakse alati välja, mis siin ka ei seisaks.',
@@ -769,6 +768,9 @@ const et: Translations = {
   'phone.sortAz': 'A kuni Z',
   'phone.sortZa': 'Z kuni A',
   'phone.search': 'Otsi',
+  'phone.job': 'Töö',
+  'phone.needName': 'Pane tööle nimi.',
+  'phone.needSide': 'Vali selle poole jaoks kaust või sihtkoht.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

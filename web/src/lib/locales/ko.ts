@@ -268,7 +268,6 @@ const ko: Translations = {
   'edit.nameHint': '목록과 로그, 알림에서 이 작업이 표시되는 이름입니다.',
   'edit.sameSides': '양쪽이 같은 곳을 가리키고 있어 자기 꼬리를 물는 뱀이 됩니다. 한쪽에 다른 폴더를 골라 주세요.',
   'edit.sideHint': '폴더, 이름:경로 형태로 설정한 대상, 또는 대상 탭에서 등록한 디스크입니다.',
-  'edit.sides': '양쪽',
   'edit.stateHint': '양쪽이 마지막으로 무엇에 합의했는지 이 작업이 기억하는 곳입니다. 작업마다 파일 하나. 잃어도 무엇이 부서지지는 않지만 작업이 크게 뒤로 돌아갑니다.',
   'edit.scheduleHint': '이 작업이 스스로 실행되는 시점입니다. 수동은 카드에서 직접 시작할 때만 실행한다는 뜻입니다. 실시간은 변경에 몇 초 안에 반응합니다. N마다, 매일, 요일 지정은 시계를 따릅니다. Cron은 선택기로는 표현할 수 없는 주기를 위한 것이며 이 컴퓨터의 시간대로 읽힙니다.',
   'edit.excludeHint': '한 줄에 한 패턴. 쓰다 만 파일의 이름은 여기에 무엇이 있든 항상 제외됩니다.',
@@ -769,6 +768,9 @@ const ko: Translations = {
   'phone.sortAz': '가나다순',
   'phone.sortZa': '가나다 역순',
   'phone.search': '검색',
+  'phone.job': '작업',
+  'phone.needName': '작업에 이름을 지정하세요.',
+  'phone.needSide': '이 쪽에 쓸 폴더나 대상을 선택하세요.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

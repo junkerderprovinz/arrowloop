@@ -268,7 +268,6 @@ const lv: Translations = {
   'edit.nameHint': 'Nosaukums, ar kādu šis uzdevums parādās sarakstā, žurnālā un paziņojumos.',
   'edit.sameSides': 'Abas puses norāda uz vienu vietu, tādējādi uzdevums būtu čūska, kas ēd savu asti. Izvēlies vienai no tām citu mapi.',
   'edit.sideHint': 'Mape, iestatīts galamērķis formā nosaukums:ceļš vai disks, kas reģistrēts cilnē Galamērķi.',
-  'edit.sides': 'Abas puses',
   'edit.stateHint': 'Šeit uzdevums atceras, par ko abas puses pēdējoreiz vienojās. Viens fails uz uzdevumu. Tā zaudēšana neko neiznīcina, bet atmet uzdevumu tālu atpakaļ.',
   'edit.scheduleHint': 'Kad šis uzdevums izpildās pats. Manuāli nozīmē tikai tad, kad to palaižat no tā kartītes. Reāllaikā reaģē uz izmaiņām dažu sekunžu laikā. Ik pēc N, Katru dienu un Nedēļas dienas turas pie pulksteņa. Cron ir domāts ritmam, ko atlasītāji pateikt nespēj, un to nolasa šī datora laika joslā.',
   'edit.excludeHint': 'Viens paraugs rindā. Pusē uzrakstītu failu nosaukumi tiek izslēgti vienmēr, lai kas šeit būtu rakstīts.',
@@ -769,6 +768,9 @@ const lv: Translations = {
   'phone.sortAz': 'No A līdz Ž',
   'phone.sortZa': 'No Ž līdz A',
   'phone.search': 'Meklēt',
+  'phone.job': 'Uzdevums',
+  'phone.needName': 'Dod uzdevumam nosaukumu.',
+  'phone.needSide': 'Izvēlies šai pusei mapi vai galamērķi.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

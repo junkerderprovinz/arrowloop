@@ -268,7 +268,6 @@ const fr: Translations = {
   'edit.nameHint': 'Le nom sous lequel cette tâche apparaît dans la liste, le journal et les notifications.',
   'edit.sameSides': 'Les deux côtés désignent le même endroit, la tâche serait un serpent qui se mord la queue. Choisissez un autre dossier pour l’un des deux.',
   'edit.sideHint': 'Un dossier, une cible configurée sous la forme nom:chemin, ou un disque enregistré dans l\'onglet Cibles.',
-  'edit.sides': 'Les deux côtés',
   'edit.stateHint': 'L\'endroit où cette tâche se souvient de ce sur quoi les deux côtés se sont mis d\'accord. Un fichier par tâche. Le perdre ne détruit rien mais fait repartir la tâche de loin.',
   'edit.scheduleHint': 'Quand cette tâche s’exécute d’elle-même. Manuel veut dire uniquement quand vous la lancez depuis sa carte. Temps réel réagit à un changement en quelques secondes. Tous les N, Chaque jour et Jours de la semaine suivent l’horloge. Cron sert à un rythme que les sélecteurs ne savent pas dire, et il est lu dans le fuseau horaire de cette machine.',
   'edit.excludeHint': 'Un motif par ligne. Les noms de fichiers en cours d\'écriture sont toujours exclus, quoi qu\'il y ait ici.',
@@ -769,6 +768,9 @@ const fr: Translations = {
   'phone.sortAz': 'De A à Z',
   'phone.sortZa': 'De Z à A',
   'phone.search': 'Rechercher',
+  'phone.job': 'Tâche',
+  'phone.needName': 'Donnez un nom à la tâche.',
+  'phone.needSide': 'Choisissez un dossier ou une cible pour ce côté.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

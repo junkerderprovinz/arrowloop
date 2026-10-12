@@ -268,7 +268,6 @@ const pt: Translations = {
   'edit.nameHint': 'O nome com que esta tarefa aparece na lista, no registo e nas notificações.',
   'edit.sameSides': 'Ambos os lados apontam para o mesmo sítio, por isso a tarefa seria uma serpente a morder a própria cauda. Escolhe outra pasta para um deles.',
   'edit.sideHint': 'Uma pasta, um destino configurado na forma nome:caminho, ou um disco registado no separador Destinos.',
-  'edit.sides': 'Os dois lados',
   'edit.stateHint': 'Onde esta tarefa se lembra daquilo em que os dois lados ficaram de acordo. Um ficheiro por tarefa. Perdê-lo não destrói nada, mas atira a tarefa muito para trás.',
   'edit.scheduleHint': 'Quando esta tarefa corre sozinha. Manual significa só quando a inicia a partir do cartão dela. Tempo real reage a uma alteração em segundos. A cada N, Todos os dias e Dias da semana seguem o relógio. Cron serve para um ritmo que os seletores não sabem dizer, e é lido no fuso horário desta máquina.',
   'edit.excludeHint': 'Um padrão por linha. Os nomes de ficheiros escritos a meio são sempre excluídos, seja o que for que esteja aqui.',
@@ -769,6 +768,9 @@ const pt: Translations = {
   'phone.sortAz': 'A a Z',
   'phone.sortZa': 'Z a A',
   'phone.search': 'Pesquisar',
+  'phone.job': 'Tarefa',
+  'phone.needName': 'Dá um nome à tarefa.',
+  'phone.needSide': 'Escolhe uma pasta ou um destino para este lado.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

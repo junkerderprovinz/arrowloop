@@ -268,7 +268,6 @@ const pl: Translations = {
   'edit.nameHint': 'Nazwa, pod którą to zadanie występuje na liście, w dzienniku i w powiadomieniach.',
   'edit.sameSides': 'Obie strony wskazują to samo miejsce, więc zadanie byłoby wężem zjadającym własny ogon. Wybierz inny folder dla jednej z nich.',
   'edit.sideHint': 'Folder, skonfigurowany cel w postaci nazwa:ścieżka albo dysk zgłoszony w zakładce Cele.',
-  'edit.sides': 'Obie strony',
   'edit.stateHint': 'Miejsce, w którym to zadanie pamięta, na czym stanęły obie strony. Jeden plik na zadanie. Jego utrata niczego nie niszczy, ale cofa zadanie daleko wstecz.',
   'edit.scheduleHint': 'Kiedy to zadanie uruchamia się samo. Ręcznie znaczy tylko wtedy, gdy uruchomisz je z jego karty. Czas rzeczywisty reaguje na zmianę w ciągu sekund. Co N, Codziennie i Dni tygodnia trzymają się zegara. Cron służy do rytmu, którego selektory nie potrafią wyrazić, i jest czytany w strefie czasowej tego komputera.',
   'edit.excludeHint': 'Jeden wzorzec na wiersz. Nazwy plików zapisywanych w połowie są wykluczane zawsze, niezależnie od tego, co tu stoi.',
@@ -769,6 +768,9 @@ const pl: Translations = {
   'phone.sortAz': 'A do Z',
   'phone.sortZa': 'Z do A',
   'phone.search': 'Szukaj',
+  'phone.job': 'Zadanie',
+  'phone.needName': 'Nadaj zadaniu nazwę.',
+  'phone.needSide': 'Wybierz folder lub cel dla tej strony.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

@@ -1,18 +1,18 @@
 import { useNavigation, useRoute, type RouteProp } from "@react-navigation/native";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
 import { Alert, StyleSheet, Text, View } from "react-native";
 import { api, type Config, type JobConfig } from "../api";
-import { Field, TimeField } from "../fields";
+import { Field, Refusal, TimeField } from "../fields";
 import { FolderPicker } from "../FolderPicker";
 import { JobLive } from "./JobLive";
 import { Glyph } from "../glyphs";
-import { useT } from "../i18n";
+import { useT, type T } from "../i18n";
 import type { JobsStack, Nav } from "../nav";
 import { contrastOn, space, text } from "../theme";
 import { useEngineSettings } from "../settings";
 import { sideName, sidePair } from "../sides";
 import { animateNext, useMotion } from "../motion";
-import { AxisLabel, Body, Button, Caption, Choice, Empty, Page, Press, Section, Toggle, useTheme } from "../ui";
+import { AxisLabel, Button, Choice, Empty, Page, Press, Section, Toggle, usePageScroll, useTheme } from "../ui";
 import { WaySwitch, wayOf } from "../way";
 import {
   buildSchedule,
@@ -117,18 +117,19 @@ export function JobEdit() {
   const savedAs = useRef<string | undefined>(editing);
 
   const pending = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // The engine's last refusal, read by Save to find the field it names.
+  const refusal = useRef("");
 
   /**
    * Writes the job into a freshly read configuration, so a change made
-   * elsewhere in between is not undone. Reports whether it was written.
+   * elsewhere in between is not undone. Reports whether it was written. A job
+   * the form itself finds wanting is not sent, since the engine would refuse
+   * it in English and the form says why in the reader's language.
    */
   const persist = useCallback(
     async (next: JobConfig): Promise<boolean> => {
       const name = next.name.trim();
-      if (!name || !next.left.trim() || !next.right.trim()) return false;
-      // Not sent while both sides name one place: the engine would refuse it
-      // with an English error, and the form already says so itself.
-      if (bothSidesOnePlace(next.left, next.right)) {
+      if (problemOf(next, t)) {
         setError("");
         return false;
       }
@@ -148,11 +149,12 @@ export function JobEdit() {
         setError("");
         return true;
       } catch (e) {
-        setError((e as Error).message);
+        refusal.current = (e as Error).message;
+        setError(refusal.current);
         return false;
       }
     },
-    [],
+    [t],
   );
 
   /**
@@ -187,10 +189,22 @@ export function JobEdit() {
     [],
   );
 
-  // `persist` silently skips a job without a name and both sides, so the
-  // page says what is missing.
-  const unnamed = !job?.name.trim();
-  const oneSided = !job?.left.trim() || !job?.right.trim();
+  // A new job says what is missing once its Save was refused; a saved job,
+  // which writes itself, says so at once, since nothing else would.
+  const [tried, setTried] = useState(false);
+  const scroll = usePageScroll();
+  const nameRef = useRef<View>(null);
+  const leftRef = useRef<View>(null);
+  const rightRef = useRef<View>(null);
+  const scheduleRef = useRef<View>(null);
+  const excludeRef = useRef<View>(null);
+  const refs: Record<Spot, RefObject<View | null>> = {
+    name: nameRef,
+    left: leftRef,
+    right: rightRef,
+    schedule: scheduleRef,
+    exclude: excludeRef,
+  };
 
   const remove = () => {
     if (!config || !editing) return;
@@ -215,31 +229,63 @@ export function JobEdit() {
 
   const [upper, lower] = sidePair(job.left, job.right, t);
 
+  const way = follows ? defaultWay : wayOf(job.direction);
+
+  // A refused Save shakes, says why at the field it concerns and scrolls
+  // there, since the field may be far above the button.
   const create = async () => {
+    setTried(true);
+    const found = problemOf(job, t);
+    if (found) {
+      setRefused((n) => n + 1);
+      scroll.reveal(refs[found.spot]);
+      return;
+    }
     setSaving(true);
     const written = await persist(job);
     setSaving(false);
-    if (written) nav.goBack();
-    else setRefused((n) => n + 1);
+    if (written) {
+      nav.goBack();
+      return;
+    }
+    setRefused((n) => n + 1);
+    scroll.reveal(refs[spotOf(refusal.current, follows)]);
   };
 
+  // Where the reason for a refusal stands: the form's own check first, then
+  // the engine's answer, placed by what it names.
+  const problem = problemOf(job, t);
+  const said: { spot: Spot; text: string } | null =
+    problem && (editing || tried) ? problem : !problem && error ? { spot: spotOf(error, follows), text: error } : null;
+  const reason = (spot: Spot) => (said?.spot === spot ? said.text : undefined);
+
   return (
-    <Page>
+    <Page scroll={scroll}>
       {editing ? <JobLive name={editing} /> : null}
 
-      <Section title={t("edit.name")} hint={t("edit.nameHint")}>
-        <Field label={t("edit.name")} value={job.name} onChange={(name) => set({ name })} />
-      </Section>
-
-      {/* Each side is labelled after what it is; see sideName. */}
-      <Section title={t("edit.sides")} hint={t("edit.sideHint")} hue={1}>
-        <View style={styles.pickRow}>
+      {/* What the job is: its name, its two sides and the way files go
+          between them. Each side is labelled after what it is; see sideName.
+          A job that follows the global settings shows the direction and mode
+          it runs with, locked. */}
+      <Section title={t("phone.job")} hue={0}>
+        <View ref={nameRef} collapsable={false}>
+          <Field
+            label={t("edit.name")}
+            hint={t("edit.nameHint")}
+            value={job.name}
+            onChange={(name) => set({ name })}
+            error={reason("name")}
+          />
+        </View>
+        <View ref={leftRef} collapsable={false} style={styles.pickRow}>
           <View style={styles.pickField}>
             <Field
               label={sideName(job.left, t)}
+              hint={t("edit.sideHint")}
               value={job.left}
               onChange={(left) => set({ left })}
               placeholder="/storage/emulated/0/DCIM"
+              error={reason("left")}
             />
           </View>
           <Button
@@ -249,8 +295,6 @@ export function JobEdit() {
             onPress={() => setPicking("left")}
           />
         </View>
-        {/* Between the two sides it relates. A job that follows the global
-            settings shows the direction it runs with, dimmed. */}
         <AxisLabel hint={t("direction.hint")}>{t("direction.label")}</AxisLabel>
         <WaySwitch
           value={follows ? defaultWay : job.direction}
@@ -259,13 +303,15 @@ export function JobEdit() {
           lower={lower}
           onChange={(direction) => set({ direction, mode: direction === "both" ? "sync" : job.mode }, true)}
         />
-        <View style={styles.pickRow}>
+        <View ref={rightRef} collapsable={false} style={styles.pickRow}>
           <View style={styles.pickField}>
             <Field
               label={sideName(job.right, t, "target")}
+              hint={t("edit.sideHint")}
               value={job.right}
               onChange={(right) => set({ right })}
               placeholder="nextcloud:Photos"
+              error={reason("right")}
             />
           </View>
           <Button
@@ -275,33 +321,13 @@ export function JobEdit() {
             onPress={() => setPicking("right")}
           />
         </View>
-      </Section>
-
-      {/* While the job follows the global settings, the other options it
-          would override are hidden rather than greyed. */}
-      <Section title={t("engine.defaults")} hint={t("defaults.followHint")} hue={0}>
-        <Toggle
-          label={t("defaults.follow")}
-          value={follows}
-          hue={0}
-          onChange={setFollows}
-        />
-      </Section>
-
-      {!follows ? (
-      <>
-      <Section
-        title={t("mode.label")}
-        // Each mode explains itself in its segment. An inert strip cannot be
-        // reached, so the heading says why.
-        hint={(job.direction ?? "both") === "both" ? t("mode.onlyOneWay") : undefined}
-        hue={2}
-      >
-        {/* Inert on `sync` for a both-ways job, so the card keeps its shape. */}
+        {/* Each mode explains itself in its segment. A both-ways job has only
+            one, so the label's bubble says why the strip stands still. */}
+        <AxisLabel hint={way === "both" ? t("mode.onlyOneWay") : undefined}>{t("mode.label")}</AxisLabel>
         <Choice
           hue={1}
-          value={(job.direction ?? "both") === "both" ? "sync" : (job.mode ?? "sync")}
-          disabled={(job.direction ?? "both") === "both"}
+          value={way === "both" ? "sync" : String((follows ? defaults.mode : job.mode) ?? "sync")}
+          disabled={follows || way === "both"}
           onChange={(mode) => set({ mode }, true)}
           options={[
             { value: "sync", label: t("mode.sync"), hint: t("mode.syncHint") },
@@ -311,15 +337,25 @@ export function JobEdit() {
         />
       </Section>
 
-      </>
-      ) : null}
-
-      {/* Only the schedule expression is a global default. `watch` is a plain
-          bool, where off and unset are the same, so a default could never be
-          switched off for one job; it stays visible either way. */}
-      <Section title={t("edit.schedule")} hint={t("edit.scheduleHint")}>
+      {/* When the job runs and what it keeps. Only the schedule expression is
+          a global default; `watch` is a plain bool, where off and unset are
+          the same, so it stays visible either way. No "run at start" switch:
+          the engine restarts with the app and after every eviction, so it
+          would run a job several times a day. */}
+      <Section title={t("history.runs")} hue={1}>
+        <Toggle
+          label={t("defaults.follow")}
+          hint={t("defaults.followHint")}
+          value={follows}
+          hue={0}
+          onChange={setFollows}
+        />
         {!follows ? (
-          <Schedule value={job.schedule ?? ""} onChange={(schedule) => set({ schedule }, true)} />
+          <View ref={scheduleRef} collapsable={false} style={styles.stack}>
+            <AxisLabel hint={t("edit.scheduleHint")}>{t("edit.schedule")}</AxisLabel>
+            <Schedule value={job.schedule ?? ""} onChange={(schedule) => set({ schedule }, true)} />
+            {reason("schedule") ? <Refusal text={reason("schedule") ?? ""} /> : null}
+          </View>
         ) : null}
         <Toggle
           label={t("schedule.live")}
@@ -327,26 +363,9 @@ export function JobEdit() {
           value={Boolean(job.watch)}
           onChange={(watch) => set({ watch }, true)}
         />
-        {/* No "run at start" switch: the engine restarts with the app and
-            after every eviction, so it would run a job several times a day. A
-            job that carries the setting keeps it. */}
-      </Section>
-
-      <Section title={t("edit.exclude")} hint={t("edit.excludeHint")}>
-        <Field
-          label={t("edit.exclude")}
-          value={(job.exclude ?? []).join("\n")}
-          onChange={(raw) =>
-            set({ exclude: raw.split("\n").map((l) => l.trim()).filter(Boolean) })
-          }
-          multiline
-          placeholder={"*.tmp\n.thumbnails/"}
-        />
-      </Section>
-
-      <Section title={t("edit.trash")} hint={t("edit.trashHint")}>
         <Toggle
           label={t("edit.trash")}
+          hint={t("edit.trashHint")}
           value={!job.noTrash}
           onChange={(on) => set({ noTrash: !on }, true)}
         />
@@ -365,31 +384,38 @@ export function JobEdit() {
         ) : null}
       </Section>
 
+      {/* What crosses over: what is left out, and whether empty folders and
+          permissions go along. The last two are global defaults, shown locked
+          while the job follows them. */}
+      <Section title={t("settings.contents")} hue={2}>
+        <View ref={excludeRef} collapsable={false}>
+          <Field
+            label={t("edit.exclude")}
+            hint={t("edit.excludeHint")}
+            value={(job.exclude ?? []).join("\n")}
+            onChange={(raw) => set({ exclude: raw.split("\n").map((l) => l.trim()).filter(Boolean) })}
+            multiline
+            placeholder={"*.tmp\n.thumbnails/"}
+            error={reason("exclude")}
+          />
+        </View>
+        <Toggle
+          label={t("edit.emptyDirs")}
+          hint={t("edit.emptyDirsHint")}
+          value={Boolean(follows ? defaults.emptyDirs : job.emptyDirs)}
+          disabled={follows}
+          onChange={(emptyDirs) => set({ emptyDirs }, true)}
+        />
+        <Toggle
+          label={t("edit.metadata")}
+          hint={t("edit.metadataHint")}
+          value={Boolean(follows ? defaults.metadata : job.metadata)}
+          disabled={follows}
+          onChange={(metadata) => set({ metadata }, true)}
+        />
+      </Section>
+
       {/* Holding a job is an action on the job card, not a setting here. */}
-      {!follows ? (
-        <Section title={t("settings.general")}>
-          <Toggle
-            label={t("edit.emptyDirs")}
-            hint={t("edit.emptyDirsHint")}
-            value={Boolean(job.emptyDirs)}
-            onChange={(emptyDirs) => set({ emptyDirs }, true)}
-          />
-          <Toggle
-            label={t("edit.metadata")}
-            hint={t("edit.metadataHint")}
-            value={Boolean(job.metadata)}
-            onChange={(metadata) => set({ metadata }, true)}
-          />
-        </Section>
-      ) : null}
-
-      {error ? <Body>{error}</Body> : null}
-      {unnamed ? <Body muted>{t("edit.nameHint")}</Body> : null}
-      {oneSided ? <Body muted>{t("edit.sideHint")}</Body> : null}
-      {/* Said by the form in the reader's language; the engine still refuses
-          such a job, since a configuration can also arrive by backup. */}
-      {bothSidesOnePlace(job.left, job.right) ? <Body muted>{t("edit.sameSides")}</Body> : null}
-
       {editing ? (
         <View style={styles.actions}>
           <Button label={t("action.delete")} labelKey="action.delete" onPress={remove} />
@@ -421,6 +447,33 @@ export function JobEdit() {
       />
     </Page>
   );
+}
+
+/** The parts of the form a refusal can point at. */
+type Spot = "name" | "left" | "right" | "schedule" | "exclude";
+
+/** What the form itself refuses before anything is sent, and where it says so. */
+function problemOf(job: JobConfig, t: T): { spot: Spot; text: string } | null {
+  if (!job.name.trim()) return { spot: "name", text: t("phone.needName") };
+  if (!job.left.trim()) return { spot: "left", text: t("phone.needSide") };
+  if (!job.right.trim()) return { spot: "right", text: t("phone.needSide") };
+  // The engine refuses this too, since a configuration can also arrive by
+  // backup.
+  if (bothSidesOnePlace(job.left, job.right)) return { spot: "right", text: t("edit.sameSides") };
+  return null;
+}
+
+/**
+ * The part of the form an engine refusal is about, read from what it names.
+ * Most name a place, so the target side is where the rest is said. A job that
+ * follows the global schedule has no schedule on the form to point at.
+ */
+function spotOf(message: string, follows: boolean): Spot {
+  if (/schedule|watch/i.test(message) && !follows) return "schedule";
+  if (/exclude/i.test(message)) return "exclude";
+  if (/no name/i.test(message)) return "name";
+  if (/\bleft\b/i.test(message)) return "left";
+  return "right";
 }
 
 /**

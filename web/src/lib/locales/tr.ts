@@ -268,7 +268,6 @@ const tr: Translations = {
   'edit.nameHint': 'Bu işin listede, kayıtta ve bildirimlerde göründüğü ad.',
   'edit.sameSides': 'İki taraf da aynı yeri gösteriyor, böylece iş kendi kuyruğunu yiyen bir yılana dönüşür. Biri için başka bir klasör seç.',
   'edit.sideHint': 'Bir klasör, ad:yol biçiminde kurulmuş bir hedef ya da Hedefler sekmesinde kaydedilmiş bir disk.',
-  'edit.sides': 'İki taraf',
   'edit.stateHint': 'Bu iş, iki tarafın en son neyde anlaştığını burada hatırlar. İş başına bir dosya. Kaybolması hiçbir şeyi yok etmez ama işi çok geriye atar.',
   'edit.scheduleHint': 'Bu işin kendi kendine ne zaman çalışacağı. Elle, yalnızca kartından başlattığınızda çalışması demektir. Gerçek zamanlı, bir değişikliğe saniyeler içinde tepki verir. Her N, Her gün ve Hafta günleri saate uyar. Cron, seçicilerin ifade edemediği bir ritim içindir ve bu makinenin saat diliminde okunur.',
   'edit.excludeHint': 'Her satıra bir desen. Yarım yazılmış dosyaların adları burada ne yazarsa yazsın her zaman dışarıda bırakılır.',
@@ -769,6 +768,9 @@ const tr: Translations = {
   'phone.sortAz': 'A\'dan Z\'ye',
   'phone.sortZa': 'Z\'den A\'ya',
   'phone.search': 'Ara',
+  'phone.job': 'İş',
+  'phone.needName': 'İşe bir ad ver.',
+  'phone.needSide': 'Bu taraf için bir klasör ya da hedef seç.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

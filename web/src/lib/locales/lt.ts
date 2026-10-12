@@ -268,7 +268,6 @@ const lt: Translations = {
   'edit.nameHint': 'Pavadinimas, kuriuo ši užduotis matoma sąraše, žurnale ir pranešimuose.',
   'edit.sameSides': 'Abi pusės rodo į tą pačią vietą, tad užduotis būtų gyvatė, ėdanti savo uodegą. Vienai iš jų pasirink kitą aplanką.',
   'edit.sideHint': 'Aplankas, sukonfigūruota paskirtis pavidalu pavadinimas:kelias arba diskas, užregistruotas kortelėje Paskirtys.',
-  'edit.sides': 'Abi pusės',
   'edit.stateHint': 'Čia užduotis prisimena, dėl ko abi pusės paskutinį kartą sutarė. Po vieną failą kiekvienai užduočiai. Jo praradimas nieko nesugriauna, bet grąžina užduotį toli atgal.',
   'edit.scheduleHint': 'Kada ši užduotis pasileidžia pati. Rankiniu būdu reiškia tik tada, kai paleidžiate ją iš jos kortelės. Realiuoju laiku sureaguoja į pakeitimą per sekundes. Kas N, Kasdien ir Savaitės dienos laikosi laikrodžio. Cron skirtas ritmui, kurio parinkikliai pasakyti negali, ir skaitomas šio kompiuterio laiko juostoje.',
   'edit.excludeHint': 'Po vieną šabloną eilutėje. Pusiau įrašytų failų vardai visada neįtraukiami, kad ir kas čia būtų parašyta.',
@@ -769,6 +768,9 @@ const lt: Translations = {
   'phone.sortAz': 'Nuo A iki Ž',
   'phone.sortZa': 'Nuo Ž iki A',
   'phone.search': 'Ieškoti',
+  'phone.job': 'Užduotis',
+  'phone.needName': 'Suteik užduočiai pavadinimą.',
+  'phone.needSide': 'Pasirink šios pusės aplanką arba paskirtį.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

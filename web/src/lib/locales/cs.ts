@@ -268,7 +268,6 @@ const cs: Translations = {
   'edit.nameHint': 'Název, pod kterým tato úloha vystupuje v seznamu, v protokolu a v oznámeních.',
   'edit.sameSides': 'Obě strany míří na stejné místo, úloha by byla had požírající vlastní ocas. Vyber pro jednu z nich jinou složku.',
   'edit.sideHint': 'Složka, nastavený cíl ve tvaru název:cesta, nebo disk zaregistrovaný na kartě Cíle.',
-  'edit.sides': 'Obě strany',
   'edit.stateHint': 'Zde si úloha pamatuje, na čem se obě strany naposledy shodly. Jeden soubor na úlohu. Jeho ztráta nic nezničí, ale vrátí úlohu daleko zpět.',
   'edit.scheduleHint': 'Kdy se úloha spustí sama. Ručně znamená jen tehdy, když ji spustíte z její karty. V reálném čase reaguje na změnu během sekund. Každých N, Každý den a Dny v týdnu se drží hodin. Cron je pro rytmus, který voliče neumějí vyjádřit, a čte se v časovém pásmu tohoto stroje.',
   'edit.excludeHint': 'Jeden vzor na řádek. Názvy rozepsaných souborů jsou vyloučeny vždy, ať je tu cokoli.',
@@ -769,6 +768,9 @@ const cs: Translations = {
   'phone.sortAz': 'Od A do Z',
   'phone.sortZa': 'Od Z do A',
   'phone.search': 'Hledat',
+  'phone.job': 'Úloha',
+  'phone.needName': 'Pojmenuj úlohu.',
+  'phone.needSide': 'Vyber složku nebo cíl pro tuto stranu.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

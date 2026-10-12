@@ -268,7 +268,6 @@ const sk: Translations = {
   'edit.nameHint': 'Názov, pod ktorým táto úloha vystupuje v zozname, v zázname a v upozorneniach.',
   'edit.sameSides': 'Obe strany ukazujú na to isté miesto, úloha by bola had požierajúci vlastný chvost. Vyber pre jednu z nich iný priečinok.',
   'edit.sideHint': 'Priečinok, nastavený cieľ v tvare názov:cesta, alebo disk zaregistrovaný na karte Ciele.',
-  'edit.sides': 'Obe strany',
   'edit.stateHint': 'Tu si úloha pamätá, na čom sa obe strany naposledy zhodli. Jeden súbor na úlohu. Jeho strata nič nezničí, ale vráti úlohu ďaleko dozadu.',
   'edit.scheduleHint': 'Kedy sa táto úloha spustí sama. Ručne znamená len vtedy, keď ju spustíte z jej karty. V reálnom čase reaguje na zmenu v priebehu sekúnd. Každých N, Každý deň a Dni v týždni sa držia hodín. Cron je pre rytmus, ktorý voliče nevedia vysloviť, a číta sa v časovom pásme tohto počítača.',
   'edit.excludeHint': 'Jeden vzor na riadok. Názvy rozpísaných súborov sa vylučujú vždy, nech je tu čokoľvek.',
@@ -769,6 +768,9 @@ const sk: Translations = {
   'phone.sortAz': 'A až Z',
   'phone.sortZa': 'Z až A',
   'phone.search': 'Hľadať',
+  'phone.job': 'Úloha',
+  'phone.needName': 'Pomenuj úlohu.',
+  'phone.needSide': 'Vyber priečinok alebo cieľ pre túto stranu.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

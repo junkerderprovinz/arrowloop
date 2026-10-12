@@ -268,7 +268,6 @@ const he: Translations = {
   'edit.nameHint': 'השם שבו מופיעה המשימה ברשימה, ביומן ובהתראות.',
   'edit.sameSides': 'שני הצדדים מצביעים לאותו מקום, והמשימה תהיה נחש שאוכל את זנבו. בחר תיקייה אחרת לאחד מהם.',
   'edit.sideHint': 'תיקייה, יעד מוגדר בצורת שם:נתיב, או כונן שנרשם בלשונית יעדים.',
-  'edit.sides': 'שני הצדדים',
   'edit.stateHint': 'כאן המשימה זוכרת על מה הסכימו שני הצדדים לאחרונה. קובץ אחד לכל משימה. אובדנו אינו הורס דבר אך מחזיר את המשימה הרבה אחורה.',
   'edit.scheduleHint': 'מתי המשימה הזאת רצה מעצמה. ידני פירושו רק כשמפעילים אותה מהכרטיס שלה. זמן אמת מגיב לשינוי תוך שניות. כל N, כל יום וימי השבוע נצמדים לשעון. Cron מיועד לקצב שהבוררים אינם יודעים לבטא, והוא נקרא באזור הזמן של המחשב הזה.',
   'edit.excludeHint': 'תבנית אחת בכל שורה. שמות של קבצים שנכתבים באמצע מוחרגים תמיד, לא משנה מה כתוב כאן.',
@@ -769,6 +768,9 @@ const he: Translations = {
   'phone.sortAz': 'א עד ת',
   'phone.sortZa': 'ת עד א',
   'phone.search': 'חיפוש',
+  'phone.job': 'משימה',
+  'phone.needName': 'תן שם למשימה.',
+  'phone.needSide': 'בחר תיקייה או יעד לצד הזה.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

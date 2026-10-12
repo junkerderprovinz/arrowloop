@@ -268,7 +268,6 @@ const eu: Translations = {
   'edit.nameHint': 'Lan hau zerrendan, egunkarian eta jakinarazpenetan agertzen den izena.',
   'edit.sameSides': 'Bi aldeek leku berera egiten dute, beraz lana bere buztana jaten duen sugea litzateke. Aukeratu beste karpeta bat bietako batentzat.',
   'edit.sideHint': 'Karpeta bat, izena:bidea moduan konfiguratutako helburu bat, edo Helburuak fitxan erregistratutako disko bat.',
-  'edit.sides': 'Bi aldeak',
   'edit.stateHint': 'Hemen gogoratzen du lanak bi aldeak zertan ados jarri ziren azkenekoz. Fitxategi bat lan bakoitzeko. Galtzeak ez du ezer suntsitzen, baina lana atzera botatzen du.',
   'edit.scheduleHint': 'Noiz exekutatzen den lan hau bere kabuz. Eskuz esan nahi du bere txarteletik abiarazten duzunean bakarrik. Denbora errealak segundotan erantzuten dio aldaketa bati. N bakoitzeko, Egunero eta Asteko egunak erlojuari jarraitzen diote. Cron hautatzaileek esan ezin duten erritmo baterako da, eta makina honen ordu-eremuan irakurtzen da.',
   'edit.excludeHint': 'Eredu bat lerroko. Erdizka idatzitako fitxategien izenak beti baztertzen dira, hemen dagoena dagoela.',
@@ -769,6 +768,9 @@ const eu: Translations = {
   'phone.sortAz': 'A-tik Z-ra',
   'phone.sortZa': 'Z-tik A-ra',
   'phone.search': 'Bilatu',
+  'phone.job': 'Lana',
+  'phone.needName': 'Eman izena lanari.',
+  'phone.needSide': 'Aukeratu karpeta bat edo helburu bat alde honetarako.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

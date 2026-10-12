@@ -268,7 +268,6 @@ const ja: Translations = {
   'edit.nameHint': '一覧、ログ、通知でこのジョブが表示される名前です。',
   'edit.sameSides': '両方の側が同じ場所を指しています。このままでは自分の尾を食べる蛇になります。どちらかに別のフォルダーを選んでください。',
   'edit.sideHint': 'フォルダー、名前:パス の形式で設定した接続先、または接続先タブで登録したドライブ。',
-  'edit.sides': '二つの側',
   'edit.stateHint': '両側が最後に何で一致したかをこのジョブが覚えておく場所です。ジョブごとに 1 ファイル。失っても何も壊れませんが、ジョブは大きく後戻りします。',
   'edit.scheduleHint': 'このジョブがひとりでに動くタイミングです。手動はカードから自分で開始したときだけ動きます。リアルタイムは変更に数秒で反応します。N ごと、毎日、曜日指定は時計に従います。Cron は選択肢では言い表せないリズム用で、この機械のタイムゾーンで読まれます。',
   'edit.excludeHint': '1 行に 1 つのパターン。書きかけのファイル名はここに何を書いても常に除外されます。',
@@ -769,6 +768,9 @@ const ja: Translations = {
   'phone.sortAz': 'A から Z',
   'phone.sortZa': 'Z から A',
   'phone.search': '検索',
+  'phone.job': 'ジョブ',
+  'phone.needName': 'ジョブに名前を付けてください。',
+  'phone.needSide': 'この側のフォルダーまたは接続先を選んでください。',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

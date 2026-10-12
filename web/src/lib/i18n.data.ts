@@ -430,7 +430,6 @@ export const en = {
   'edit.sameSides': 'Both sides point at the same place, so this job would be a snake eating its own tail. Pick a different folder for one of them.',
   'edit.sideHint':
     'A folder, a configured target as name:path, or a drive registered on the Targets tab.',
-  'edit.sides': 'The two sides',
   'edit.stateHint':
     'Where this job remembers what the two sides last agreed on. One file per job, and losing it is not destructive but it is disruptive.',
   'edit.scheduleHint': 'When the job runs on its own. A job with no schedule still runs when you press the button.',
@@ -813,6 +812,9 @@ export const en = {
   'phone.sortAz': 'A to Z',
   'phone.sortZa': 'Z to A',
   'phone.search': 'Search',
+  'phone.job': 'Job',
+  'phone.needName': 'Give the job a name.',
+  'phone.needSide': 'Pick a folder or a target for this side.',
 
   // A one-way job's mode. Two of the three delete, so each hint says exactly
   // what it removes and what it leaves.
@@ -1444,7 +1446,6 @@ export const de: Translations = {
   'edit.sameSides': 'Beide Seiten zeigen auf denselben Ort, damit wäre der Auftrag eine Schlange, die sich in den Schwanz beißt. Wähle für eine der beiden einen anderen Ordner.',
   'edit.sideHint':
     'Ein Ordner, ein eingerichtetes Ziel als Name:Pfad, oder ein unter Ziele angemeldeter Datenträger.',
-  'edit.sides': 'Die beiden Seiten',
   'edit.stateHint':
     'Hier merkt sich der Auftrag, worauf sich beide Seiten zuletzt geeinigt haben. Eine Datei je Auftrag. Sie zu verlieren zerstört nichts, wirft den Auftrag aber zurück.',
   'edit.scheduleHint': 'Wann der Auftrag von selbst läuft. Ein Auftrag ohne Zeitplan läuft trotzdem, wenn du den Knopf drückst.',
@@ -1824,6 +1825,9 @@ export const de: Translations = {
   'phone.sortAz': 'A bis Z',
   'phone.sortZa': 'Z bis A',
   'phone.search': 'Suchen',
+  'phone.job': 'Auftrag',
+  'phone.needName': 'Gib dem Auftrag einen Namen.',
+  'phone.needSide': 'Wähle für diese Seite einen Ordner oder ein Ziel.',
 
   // A one-way job's mode. Two of the three delete, so each hint says exactly
   // what it removes and what it leaves.

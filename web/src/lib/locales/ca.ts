@@ -268,7 +268,6 @@ const ca: Translations = {
   'edit.nameHint': 'El nom amb què aquesta tasca surt a la llista, al registre i als avisos.',
   'edit.sameSides': 'Les dues bandes apunten al mateix lloc, així la tasca seria una serp que es mossega la cua. Tria una carpeta diferent per a una de les dues.',
   'edit.sideHint': 'Una carpeta, una destinació configurada en la forma nom:camí, o un disc registrat a la pestanya Destinacions.',
-  'edit.sides': 'Els dos costats',
   'edit.stateHint': 'Aquí la tasca recorda en què van coincidir les dues bandes l\'última vegada. Un fitxer per tasca. Perdre\'l no destrueix res, però fa recular molt la tasca.',
   'edit.scheduleHint': 'Quan s’executa aquesta tasca per si sola. Manual vol dir només quan la inicieu des de la seva targeta. Temps real reacciona a un canvi en segons. Cada N, Cada dia i Dies de la setmana segueixen el rellotge. Cron és per a un ritme que els selectors no saben dir, llegit en la zona horària d’aquesta màquina.',
   'edit.excludeHint': 'Un patró per línia. Els noms de fitxers escrits a mitges s\'exclouen sempre, hi hagi el que hi hagi aquí.',
@@ -769,6 +768,9 @@ const ca: Translations = {
   'phone.sortAz': 'De la A a la Z',
   'phone.sortZa': 'De la Z a la A',
   'phone.search': 'Cerca',
+  'phone.job': 'Tasca',
+  'phone.needName': 'Posa un nom a la tasca.',
+  'phone.needSide': 'Tria una carpeta o una destinació per a aquest costat.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each
