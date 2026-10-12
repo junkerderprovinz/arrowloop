@@ -112,7 +112,7 @@ manager happened to start the process in.
 
 `mode` says what a one-way job does beyond copying. The job form offers it as
 **Mode**, with **Copy only**, **Mirror** and **Move**, and it can also be set
-in the [defaults](#defaults-and-the-settings-tiles).
+in the [defaults](#defaults-and-the-settings-tabs).
 
 `sync`, the default and **Copy only** in the interface, copies what the source
 has and removes nothing. A file only the destination has stays there, and a
@@ -182,7 +182,7 @@ A list's patterns are added to the job's own `exclude` rather than replacing
 it. A job asking for a list that does not exist is refused when the file is
 read, because a filter that silently matches nothing breaks nothing anybody
 would notice; it syncs the thing somebody asked it to leave alone. In the
-interface the lists are kept on the **Exclude lists** tile under **Settings**.
+interface the lists are kept on the **Sync** tab under **Settings**.
 
 ## Keeping old versions
 
@@ -197,7 +197,7 @@ only ever lands on a free name. It is off by default, since most trees are never
 edited in place and a copy of every overwrite would double them. `1` keeps only
 the version about to be overwritten.
 
-It is set in the file or in the [defaults](#defaults-and-the-settings-tiles); the
+It is set in the file or in the [defaults](#defaults-and-the-settings-tabs); the
 interface has no control for it, and `arrowloop sync` has no flag for it.
 
 ## Upper and lower case
@@ -284,7 +284,7 @@ cannot be read counts as five minutes.
 
 It is one setting for the whole file rather than per job, because how patient
 to be after a failure depends on the machine, not on a folder pair. In the
-interface it sits on the **Workload** tile under **Settings**, in **Retries**,
+interface it sits on the **Sync** tab under **Settings**, in **Retries**,
 with the wait in minutes.
 
 On a computer or in a container the scheduler looks once a minute for a failed
@@ -295,7 +295,7 @@ wake-up, spending a night's battery on a remote that is still down.
 ## Anomalies
 
 ```json
-"anomalies": { "failingAfter": 3, "overdueDays": 2, "notifyNotes": false }
+"anomalies": { "off": false, "failingAfter": 3, "overdueDays": 2, "notifyNotes": false }
 ```
 
 A run a brake refuses holds its job until somebody answers it; see
@@ -305,8 +305,12 @@ themselves are set per job, with `brakePercent`, `changePercent` and
 folder is emptied on purpose, a photo archive is not.
 
 `anomalies` sets the two notes that hold nothing. `failingAfter` is how many
-failed runs in a row make one, and `overdueDays` how many days a scheduled job
-may miss its turn. `0` switches either off. `notifyHeld` and `notifyNotes`
+failed runs in a row make one, and `overdueDays` how many days late a scheduled
+run may be. The days count from the scheduled run that was missed, not from the
+last run, so a job that runs once a week is overdue only when its weekly run is
+that many days late. `0` switches either off, and `"off": true` switches both
+off together with the Anomalies page. The brakes keep holding then, since they
+are set on their own; a held job is answered from its own status. `notifyHeld` and `notifyNotes`
 say whether a held job and a note are sent where runs report to; a held job is
 by default and a note is not. The desktop app also shows them as a notification
 of the system. On Windows and macOS it plays ArrowLoop's own sound, which keeps
@@ -394,10 +398,11 @@ same value unless its `-keep-history` flag gives another.
 | `retry.attempts` | `3` | How many further tries a failed scheduled run gets before the job waits for its next scheduled time. `0` means none; see [After a failure](#after-a-failure). |
 | `retry.wait` | `5m` | How long to wait before the first further try. Each try after that waits twice as long, up to six hours. |
 | `anomalies.failingAfter` | `3` | How many failed runs in a row make a note. `0` means never; see [Anomalies](#anomalies). |
-| `anomalies.overdueDays` | `2` | How many days a scheduled job may miss its turn before it makes a note. `0` means never. |
+| `anomalies.off` | `false` | Switch the two notes and the Anomalies page off. The brakes keep holding. |
+| `anomalies.overdueDays` | `2` | How many days late a scheduled run may be, counted from the run that was missed, before it makes a note. `0` means never. |
 | `anomalies.notifyHeld` | `true` | Report a job a brake holds where runs report to. |
 | `anomalies.notifyNotes` | `false` | Report the two notes there as well. |
-| `defaults` | none | Values for every job that does not set its own; see [below](#defaults-and-the-settings-tiles). |
+| `defaults` | none | Values for every job that does not set its own; see [below](#defaults-and-the-settings-tabs). |
 | `excludeSets` | none | Named lists of exclude patterns; see [Shared exclude lists](#shared-exclude-lists). |
 
 !!! note "The bandwidth limit is not per job"
@@ -406,7 +411,7 @@ same value unless its `-keep-history` flag gives another.
     uplink either way.
 
     The limit is checked when the file is read, like everything else, and a
-    limit saved on the **Workload** tile applies to the running process at
+    limit saved on the **General** tab applies to the running process at
     once. Everything else is per job, and each job gets its own copy of rclone's
     settings, so a job asking for eight transfers does not change what another
     job is doing.
@@ -416,14 +421,14 @@ successful sync teaches you to ignore it, and then the one message that mattered
 is ignored with the rest. Matrix and a plain webhook are supported, and a
 failure at one destination does not stop the other from firing.
 
-## Defaults and the settings tiles
+## Defaults and the settings tabs
 
 The settings at the top of the file have a place in the interface as well as in
-the file, each on a tile under **Settings**. The bandwidth limit, how many jobs
-may run at once, where the run log lives and what happens after a failure are
-on **Workload**, who gets told is on **Notifications**, the defaults below are
-on **Sync**, and the two brakes are on **Safety net**. `historyKeep` has no
-control there and is set in the file.
+the file, each on a tab under **Settings**. The bandwidth limit, how many jobs
+may run at once and where the run log lives are on **General**; the defaults
+below, what happens after a failure and the shared exclude lists are on
+**Sync**; the two brakes, the anomaly notes and who gets told are on **Safety
+net**. `historyKeep` has no control there and is set in the file.
 
 What is usually the same for every job lives in `defaults`, and a job keeps only
 what makes it different, so the job form stays short:
@@ -456,7 +461,7 @@ the jobs that did.
 
 ## Backup and restore
 
-**Back up your settings**, on the **General** tile under **Settings**, exports
+**Back up your settings**, on the **General** tab under **Settings**, exports
 every job and every setting to a single JSON file and imports one back the same
 way, so a new machine is one restore away.
 

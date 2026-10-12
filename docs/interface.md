@@ -13,20 +13,20 @@ where nobody is looking; see [the command line](cli.md#web-and-daemon).
 
 ## Finding your way
 
-The sidebar holds four places: **Jobs**, **Conflicts**, **Trash** and
-**History**. A number beside an entry counts what is there: running jobs, open
-conflicts, files in the trash. **Sign out** stands at the foot, above
-**Settings**, and only once a password is set.
+The sidebar holds five places: **Jobs**, **Conflicts**, **Anomalies**,
+**Trash** and **History**. Anomalies stands beside Conflicts, since both list
+what waits for an answer, and it is there for as long as the anomaly notes are
+switched on (see [Anomalies](#anomalies)). A number beside an entry counts what
+is there: running jobs, open conflicts, findings, files in the trash. **Sign
+out** stands at the foot, above **Settings**, and only once a password is set.
 
-**Targets** and **Anomalies** are tiles under Settings. Each has a switch,
-**Also show in the sidebar**, that puts the page in the sidebar as well. While
-it is there, its tile keeps only its settings and an **Open** row, so nothing
-is shown twice. An old link to `/targets` or `/anomalies` leads to the tile
-while the page is not in the sidebar.
+**Targets** is a tab under Settings. Its switch **Also show in the sidebar**
+puts the page in the sidebar as well; the tab keeps showing it either way. An
+old link to `/targets` leads to the tab while the page is not in the sidebar.
 
 In a narrow window the sidebar becomes a bar along the bottom: **Jobs**,
 **Conflicts**, **History**, **Settings** and **More**. More opens a sheet with
-Trash, Targets and Anomalies.
+Anomalies, Trash and Targets.
 
 ## The first start
 
@@ -38,37 +38,31 @@ settings** brings back every job from a backup file; **Start** goes to Jobs.
 
 ## Jobs
 
-The page opens with one sentence on how things stand: **Everything in sync**,
-**In sync, with notes** or **Needs you**. A warning is never rounded up to "in
-sync". Under it, and only while something waits, a **Waiting** card names it:
-conflicts waiting for a choice, a held job, notes on your jobs, a job whose
-last run failed or that has not run yet. Each line leads to where it is
-answered.
-
-Below that is one row per job: the tile of its direction, its name, an (i)
-with both sides, the schedule and the next run, **Pause** and **Run now**, the
-last fourteen runs as a strip, and one status. In the strip a green square is a
-run that worked, orange one that worked but left something such as a conflict,
-red one that failed, and grey a run that has not happened yet. The status is the loudest thing that applies: **Running** with its
-progress, **Held**, **Failed**, **Conflict waiting**, **Paused**, **Not run
+Every job is a card of its own, in the order of their names, with the job's
+name on the card's edge. The card shows the tile of the job's direction, its
+two sides, the schedule and the next run, one status, the last fourteen runs as
+a strip, and **Pause** and **Run now**. In the strip a green square is a run
+that worked, orange one that worked but left something such as a conflict, red
+one that failed, and grey a run that has not happened yet. The status is the
+loudest thing that applies: **Running** with its progress, **Held**,
+**Failed**, **Conflict waiting**, **Needs a look**, **Paused**, **Not run
 yet**, or, when nothing waits, a green dot and the time of the last run. A
-held job and a waiting conflict are orange and lead to the finding or the
-conflict.
+held job, a waiting conflict and a note are orange and lead to the finding or
+the conflict. The counts beside **Conflicts** and **Anomalies** in the sidebar
+say how much waits across all jobs.
 
-The row buttons appear when the pointer is over the row and stay on a touch
-screen. Below 600 pixels the strip goes and the status moves under the name.
-A click anywhere else on the row opens the job's page.
+A click anywhere else on the card opens the job's page.
 
 **Add a job** stands at the bottom right. **More** beside it has **Run all**
 and **Stop all**.
 
 ## Filter, sort and search
 
-Every list has three buttons above its card: **Filter**, **Sort** and
-**Search**. On Jobs the filter shows all jobs, the running, the paused or the
-ones with a problem, and the card's heading names the choice. Sort orders by
-name, by problems or by the last run, each way round. Search finds a job by its
-name or by a folder on either side. Jobs remembers its filter and sort.
+History, Conflicts and Trash have buttons above their card. **Filter** narrows
+the list to one job, and on History also to a kind of entry and a span of days;
+the card's heading names the choice. **Search** finds an entry by its path, and
+Conflicts can **Sort** as well. The Jobs page has none of them, since every job
+stands on it as a card.
 
 ## A job's page
 
@@ -115,7 +109,7 @@ says why.
 
 ## Drives
 
-A USB disk or a share is added on the **Targets** tile with **Register a
+A USB disk or a share is added on the **Targets** tab with **Register a
 drive**. The list offers each drive by its letter and the name the system shows
 for it, and that name fills the **Name** field until you type your own.
 ArrowLoop writes a small identity file onto the drive, so a job keeps finding it
@@ -182,12 +176,13 @@ copying is its **Mode**: **Copy only**, **Mirror** or **Move**, explained in
 ## Conflicts
 
 A run that kept both versions of a file lists it under **Conflicts**, across all
-jobs that write both ways. A click on a row shows both versions with their size
-and time, and offers **Keep both**, **Keep left** and **Keep right**.
+jobs that write both ways. Every row carries **Keep both**, **Keep left** and
+**Keep right**, and right-click opens the same three. A click elsewhere on a row
+shows both versions with their size and time.
 
-Several conflicts can be answered at once. The round mark at a row's start
-picks it, and so do Ctrl+click, Shift+click for a range and Ctrl+A for all;
-right-click opens the answers for what is picked.
+**More** at the bottom right answers every conflict the list shows at once:
+**Keep both for all**, **Keep left for all** and **Keep right for all**. It
+asks first and says how many conflicts the answer covers.
 
 A choice made there is carried out by a fresh run of that job rather than by
 rewriting what the first run did, so it cannot overlap another run and lands in
@@ -198,8 +193,9 @@ the job has `noTrash`, so a wrong click can be undone from there.
 
 **Trash** shows every job's trash on both sides, puts files back, and deletes
 them for good: one file, one side, everything older than a number of days, or
-all of it. The last two are under **More** at the bottom right, and the number
-of days is asked in the window that confirms it. Putting a file back is one
+all of it. **Empty the trash** is the filled button at the bottom right, and
+**Empty out the old ones** waits under **More** beside it, with the number of
+days asked in the window that confirms it. Putting a file back is one
 click, since it only moves the file. Removing anything for good asks first,
 because the trash is the last copy there is, and emptying a side or all of it
 says how many files and how big before it does.
@@ -236,40 +232,52 @@ offers **Acknowledge** and **Run now**. **Monitoring** gives a job brakes of
 its own. **Open or closed** under Filter switches to what was closed in the
 last thirty days, with how it ended.
 
-The Anomalies tile sets after how many failed runs in a row a job counts as
-failing, after how many days without a run it counts as overdue, and whether a
-held job or a note is reported.
+The **Anomalies** card on the **Safety net** tab sets after how many failed
+runs in a row a job counts as failing, when a scheduled job counts as overdue,
+and whether a held job or a note is reported. **Overdue after** counts the days
+from the scheduled run that was missed, not from the last run: a job that runs
+once a week is overdue only when its weekly run is that many days late.
+
+The **Anomalies** switch on the same card turns the notes off. The page leaves
+the sidebar and the phone's More sheet, no note about a failing or overdue job
+is made or sent, and the notes made before stay out of sight until the switch
+is on again. The brakes keep holding, since they belong to the safety net and
+have limits of their own: a held job still shows **Held**, and a click on it
+opens the finding with **Run anyway** and **Take back** over the job itself.
 
 ## Settings
 
-Settings is a column of tiles: **General**, **Look**, **Sync**, **Workload**,
-**Safety net**, **Notifications**, **Exclude lists**, **Targets**,
-**Anomalies**, **Security**, **App** and **Info**. Settings opens on the tile
-used last.
+Settings has a strip of tabs across the top of the page: **General**,
+**Look**, **Sync**, **Safety net**, **Targets**, **Security**, **Apps** and
+**Info**. The strip wraps onto a second row where the window is too narrow for
+one. Settings opens on the tab used last, and every tab has an address of its
+own, such as `/settings/sync`; the addresses of the earlier tiles lead to the
+tab that holds their cards.
 
-- **General**: the settings backup, and in the desktop app this computer: the
+- **General**: the settings backup and the workload (bandwidth limit, jobs at
+  once and the run log file), and in the desktop app this computer: the
   window, starting with the system and automatic updates.
 - **Look**: language, design (Dark, Light or System), corners, motion, labels
   and colours.
-- **Sync**: the global sync settings every job starts from, transfer, and what
-  gets carried.
-- **Workload**: bandwidth limit, jobs at once, the run log file and retries.
-- **Safety net**: the two brakes.
-- **Notifications**: Matrix and a webhook. A saved secret shows as **Saved**
-  with **Change** beside it.
-- **Exclude lists**: the shared exclude lists.
+- **Sync**: the global sync settings every job starts from, transfer, what gets
+  carried, retries and the shared exclude lists.
+- **Safety net**: the two brakes, the anomaly notes with their switch, and the
+  notifications by Matrix and webhook. A saved secret shows as **Saved** with
+  **Change** beside it.
+- **Targets**: the storage targets and drives; see [Drives](#drives).
 - **Security**: password, two-factor authentication and passkeys. The desktop
-  app has no such tile, since nobody else reaches its window.
-- **App**: the other ways to run ArrowLoop, each with its version.
+  app has no such tab, since nobody else reaches its window.
+- **Apps**: the other ways to run ArrowLoop, each with its version, and the
+  phone app from Google Play, F-Droid or as an APK.
 
 The settings have a search. It stays out of sight until you scroll up once more
 at the top of a page, or press `/` or Ctrl+K. It finds a setting by its name or
 by a word from its explanation, and it knows the old names too: **Engine**
-leads to the tiles that took its cards.
+leads to the tabs that took its cards, and **App** to Apps.
 
 ## Info
 
-The last tile has four cards. **Version** lists ArrowLoop, GlimStone and
+The last tab has four cards. **Version** lists ArrowLoop, GlimStone and
 rclone, each linked to its release notes, and **Check for updates** asks GitHub
 for a newer release. **Help** leads to GitHub, to email and to this manual, and
 **Bug report** downloads one file with the versions, the settings and jobs
@@ -282,7 +290,7 @@ sent: you attach the file to an issue yourself. Then come **What's new** and
 After an update a glowing green dot marks each change on its page, and a dot
 on a link says something behind it changed. A click on a dot hides it, and a
 link's dot goes once everything behind it has been seen. The **What's new**
-card on the Info tile lists the changes of the last update with a way to each,
+card on the Info tab lists the changes of the last update with a way to each,
 and has **Show all again**, **Mark all as seen** and a switch for the dots.
 
 ## The look
@@ -290,7 +298,7 @@ and has **Show all again**, **Mark all as seen** and a switch for the dots.
 The interface uses [GlimStone](https://github.com/junkerderprovinz/glimstone)
 3.4.2, with its reference tokens and appearance engine copied in verbatim rather
 than reimplemented. Design, corner shape and accent are the viewer's to set on
-the **Look** tile.
+the **Look** tab.
 
 The accent marks activity and the one action a page is for, such as **Add a
 job**. Every other button is grey.
@@ -298,9 +306,11 @@ job**. Every other button is grey.
 ## On the phone
 
 The Android app shows the same places. Its bar holds **Jobs**, **Conflicts**,
-**History**, **Settings** and **More**, which opens Trash, Targets and
-Anomalies. Jobs opens with the same sentence and Waiting card as on the web,
-and every job card shows the same single status.
+**History**, **Settings** and **More**, which opens Anomalies, Trash and
+Targets; Anomalies goes from there while its notes are switched off. Every job
+card shows the same single status as on the web. **Empty the trash** is the
+floating button on the Trash screen, and the Conflicts screen answers all its
+conflicts at once from the card at its foot, after asking.
 
 Settings on the phone is one column of cards: Language, This phone (file
 access, notifications, background activity, lock), Appearance, Motion, Sync
@@ -312,7 +322,7 @@ About this app and Danger zone.
 `arrowloop web` listens on loopback unless `-addr` or `ARROWLOOP_ADDR` says
 otherwise, and the container listens on every address. This interface starts
 jobs that delete files, so anybody on the network who can reach it can drive
-it. A password, a second factor and passkeys are set on the **Security** tile;
+it. A password, a second factor and passkeys are set on the **Security** tab;
 [Installing](installing.md#a-password-for-the-interface) has the details.
 
 Over plain HTTP the session cookie crosses the wire in clear, so a machine

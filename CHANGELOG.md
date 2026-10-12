@@ -13,19 +13,21 @@ The full notes for each release are in
 ## 🎨 Design
 
 - **ArrowLoop follows GlimStone 3.4.2.** Warnings are orange, text comes in five sizes, a pressed button gives way a little, and Design offers System beside Dark and Light.
-- **The sidebar holds Jobs, Conflicts, Trash and History.** Sign out sits above Settings once a password is set. Targets and Anomalies are tiles under Settings, and Also show in the sidebar puts either one back. Every page has an address of its own, and an old one leads to where the page is now.
-- **Settings is a column of tiles, one topic each.** Engine is split into Sync, Workload, Safety net, Notifications and Exclude lists. A search comes up when you scroll up once more at the top of a page, or with / or Ctrl+K, and it finds the old names too.
-- **The Jobs page opens with how things stand.** One sentence says everything is in sync, in sync with notes, or that something needs you, and a Waiting card lists what does. Each job is one row with its last fourteen runs as a strip and one status. A held run or a waiting conflict shows in orange and is never shown as synced.
+- **The sidebar holds Jobs, Conflicts, Anomalies, Trash and History.** Sign out sits above Settings once a password is set. Targets is a tab under Settings, and Also show in the sidebar puts it back. Every page has an address of its own, and an old one leads to where the page is now.
+- **Settings has a strip of tabs across the page: General, Look, Sync, Safety net, Targets, Security, Apps and Info.** What Engine held is now under General, Sync and Safety net, and App is called Apps. A search comes up when you scroll up once more at the top of a page, or with / or Ctrl+K, and it finds the old names too. The selectors in Settings are as low as a field and take the width of their row.
+- **Every job is a card of its own** with its last fourteen runs as a strip, one status, Pause and Run now. A held run, a waiting conflict or a note shows in orange and is never shown as synced. A click on the card opens the job.
 - **Every job has a page of its own**, with its runs, the files it touched, the preview, the check and the duplicate search, each in a card. The job editor opens in a window.
-- **Lists have Filter, Sort and Search above them.** Conflicts and trash files are picked with a round mark, Ctrl+click, Shift+click or Ctrl+A, and a right-click offers the answers. Runs, findings and conflicts open in a window instead of folding out, and in a narrow window that window comes up from the bottom.
+- **History, Conflicts and Trash have Filter and Search above them.** Every conflict carries its three answers, and More in the corner answers all the conflicts shown at once after asking. Empty the trash is the filled button in the Trash corner. Runs, findings and conflicts open in a window instead of folding out, and in a narrow window that window comes up from the bottom.
 - **A narrow window gets a bar along the bottom** with Jobs, Conflicts, History, Settings and More.
 
 ## ✨ Added
 
 - **A new install opens on a welcome page** that says what ArrowLoop found and lists three steps to the first sync. Restore settings brings back the jobs from a backup file.
-- **After an update, green dots mark what changed.** A click hides a dot. The Info tile lists the changes, with Show all again and Mark all as seen.
-- **The Info tile** shows the versions of ArrowLoop, GlimStone and rclone, each linked to its release, and checks GitHub for a newer one. It links to the manual and downloads a bug report: one file with the versions, the settings and jobs without passwords or keys, the last 100 runs and the open anomalies. Nothing is sent.
-- **The phone app has a bar with Jobs, Conflicts, History, Settings and More**, and More holds Trash, Targets and Anomalies. The Overview screen is gone: Jobs opens with the same sentence and Waiting card as the web.
+- **After an update, green dots mark what changed.** A click hides a dot. The Info tab lists the changes, with Show all again and Mark all as seen.
+- **The Info tab** shows the versions of ArrowLoop, GlimStone and rclone, each linked to its release, and checks GitHub for a newer one. It links to the manual and downloads a bug report: one file with the versions, the settings and jobs without passwords or keys, the last 100 runs and the open anomalies. Nothing is sent.
+- **The anomaly notes can be switched off.** The switch sits in the Anomalies card on Safety net, beside its settings. Off, the Anomalies page leaves the sidebar and the phone, and no note about a failing or overdue job is made. The brakes keep holding, and a held job is answered from its own Held badge.
+- **The Apps tab offers the phone app on F-Droid**, and the Help card's manual button is the README's own.
+- **The phone app has a bar with Jobs, Conflicts, History, Settings and More**, and More holds Anomalies, Trash and Targets. The Overview screen is gone, and Jobs lists the job cards straight away.
 - **The phone's settings are one column in a fixed order.** This phone gathers file access, notifications, background activity and the lock. Problems? copies a short report without paths, names or addresses, and the Danger zone removes every job and storage location while the files stay where they are.
 
 ## ⚡ Improved
@@ -39,6 +41,7 @@ The full notes for each release are in
 - **A reset code is written to the log once per ten minutes.** Asking again while a code is valid writes nothing, so the log no longer fills up with a line per request.
 - **A passkey added during a reset no longer survives it.** A passkey or second factor registered while the password is being reset or changed is refused instead of staying behind under the new password.
 - **Removing a job keeps its state file when ArrowLoop cannot tell whether another job uses it.**
+- **Overdue after says what it counts.** The setting was called Days without a run, which read wrong for a job that runs once a week. It counts the days from the scheduled run that was missed, and its (i) gives the weekly example.
 
 ## 1.8.0 - 2026-10-11
 
