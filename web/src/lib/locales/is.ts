@@ -32,7 +32,6 @@ const is: Translations = {
   'dupes.each': '{size} hvert, {wasted} ónýtt',
   'dupes.summary': '{sets} hpar, {wasted} endurheimtanleg, af {scanned} skrám.',
   'dupes.none': 'Engar tvítekningar meðal {scanned} skráa.',
-  'dupes.findOn': 'Tvítekningar {side} megin',
   'check.more': '{found} atriði fundust alls, fyrstu {shown} eru sýnd.',
   'jobs.schedule.onRequest': 'eftir beiðni',
   'preview.title': 'Forskoðun',
@@ -1012,6 +1011,8 @@ const is: Translations = {
   'anomalies.openTab': 'Opin',
   'anomalies.which': 'Opin eða lokuð',
   'anomalies.ownBadge': 'Eigin hemlar',
+  'dupes.findOnLeft': 'Tvítekningar vinstra megin',
+  'dupes.findOnRight': 'Tvítekningar hægra megin',
 }
 
 export default is

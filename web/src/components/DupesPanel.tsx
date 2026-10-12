@@ -4,7 +4,7 @@ import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
 import { api, type Duplicates } from '../lib/api'
 import { bytes } from '../lib/bytes'
-import { translateSide, useT } from '../lib/i18n'
+import { useT } from '../lib/i18n'
 
 /**
  * Lists content found in more than one place on one side of a job.
@@ -40,8 +40,8 @@ export function DupesPanel({ job }: { job: string }) {
         {(['left', 'right'] as const).map((which) => (
           <Button
             key={which}
-            label={t('dupes.findOn', { side: translateSide(t, which) })}
-            labelKey="dupes.findOn"
+            label={t(which === 'left' ? 'dupes.findOnLeft' : 'dupes.findOnRight')}
+            labelKey={which === 'left' ? 'dupes.findOnLeft' : 'dupes.findOnRight'}
             busy={busy && side === which}
             disabled={busy}
             onClick={() => void look(which)}

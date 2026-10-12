@@ -32,7 +32,6 @@ const et: Translations = {
   'dupes.each': '{size} kumbki, {wasted} raisku',
   'dupes.summary': '{sets} rühma, {wasted} tagasi saada, {scanned} failist.',
   'dupes.none': 'Duplikaate ei ole {scanned} faili seas.',
-  'dupes.findOn': 'Duplikaadid {side} poolel',
   'check.more': 'Kokku {found} leidu, näidatakse esimest {shown}.',
   'jobs.schedule.onRequest': 'soovi korral',
   'preview.title': 'Eelvaade',
@@ -1012,6 +1011,8 @@ const et: Translations = {
   'anomalies.openTab': 'Avatud',
   'anomalies.which': 'Avatud või suletud',
   'anomalies.ownBadge': 'Oma pidurid',
+  'dupes.findOnLeft': 'Duplikaadid vasakul poolel',
+  'dupes.findOnRight': 'Duplikaadid paremal poolel',
 }
 
 export default et

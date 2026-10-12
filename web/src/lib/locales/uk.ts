@@ -32,7 +32,6 @@ const uk: Translations = {
   'dupes.each': 'по {size}, {wasted} марно',
   'dupes.summary': '{sets} груп, {wasted} можна повернути, з {scanned} файлів.',
   'dupes.none': 'Серед {scanned} файлів дублікатів немає.',
-  'dupes.findOn': 'Дублікати з {side} боку',
   'check.more': 'Усього знайдено {found}, показано перші {shown}.',
   'jobs.schedule.onRequest': 'на вимогу',
   'preview.title': 'Перегляд',
@@ -1012,6 +1011,8 @@ const uk: Translations = {
   'anomalies.openTab': 'Відкриті',
   'anomalies.which': 'Відкриті чи закриті',
   'anomalies.ownBadge': 'Власні гальма',
+  'dupes.findOnLeft': 'Дублікати з лівого боку',
+  'dupes.findOnRight': 'Дублікати з правого боку',
 }
 
 export default uk

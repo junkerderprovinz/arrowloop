@@ -32,7 +32,6 @@ const pl: Translations = {
   'dupes.each': 'po {size}, {wasted} zmarnowane',
   'dupes.summary': '{sets} zestawów, {wasted} do odzyskania, z {scanned} plików.',
   'dupes.none': 'Brak duplikatów wśród {scanned} plików.',
-  'dupes.findOn': 'Duplikaty po stronie {side}',
   'check.more': 'Łącznie {found} ustaleń, pokazano pierwsze {shown}.',
   'jobs.schedule.onRequest': 'na żądanie',
   'preview.title': 'Podgląd',
@@ -1012,6 +1011,8 @@ const pl: Translations = {
   'anomalies.openTab': 'Otwarte',
   'anomalies.which': 'Otwarte czy zamknięte',
   'anomalies.ownBadge': 'Własne hamulce',
+  'dupes.findOnLeft': 'Duplikaty po lewej stronie',
+  'dupes.findOnRight': 'Duplikaty po prawej stronie',
 }
 
 export default pl

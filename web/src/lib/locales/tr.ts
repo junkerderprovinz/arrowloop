@@ -32,7 +32,6 @@ const tr: Translations = {
   'dupes.each': 'her biri {size}, {wasted} boşuna',
   'dupes.summary': '{scanned} dosyada {sets} küme, {wasted} geri kazanılabilir.',
   'dupes.none': '{scanned} dosya içinde kopya yok.',
-  'dupes.findOn': '{side} taraftaki kopyalar',
   'check.more': 'Toplam {found} bulgu var, ilk {shown} tanesi gösteriliyor.',
   'jobs.schedule.onRequest': 'istek üzerine',
   'preview.title': 'Önizleme',
@@ -1012,6 +1011,8 @@ const tr: Translations = {
   'anomalies.openTab': 'Açık',
   'anomalies.which': 'Açık veya kapalı',
   'anomalies.ownBadge': 'Özel frenler',
+  'dupes.findOnLeft': 'Sol taraftaki kopyalar',
+  'dupes.findOnRight': 'Sağ taraftaki kopyalar',
 }
 
 export default tr

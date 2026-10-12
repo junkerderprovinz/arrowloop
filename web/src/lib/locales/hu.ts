@@ -32,7 +32,6 @@ const hu: Translations = {
   'dupes.each': 'egyenként {size}, {wasted} elpazarolva',
   'dupes.summary': '{sets} csoport, {wasted} nyerhető vissza, {scanned} fájlból.',
   'dupes.none': 'Nincs duplikátum {scanned} fájl között.',
-  'dupes.findOn': 'Duplikátumok a(z) {side} oldalon',
   'check.more': 'Összesen {found} észrevétel, az első {shown} látszik.',
   'jobs.schedule.onRequest': 'kérésre',
   'preview.title': 'Előnézet',
@@ -1012,6 +1011,8 @@ const hu: Translations = {
   'anomalies.openTab': 'Nyitott',
   'anomalies.which': 'Nyitott vagy lezárt',
   'anomalies.ownBadge': 'Saját fékek',
+  'dupes.findOnLeft': 'Duplikátumok a bal oldalon',
+  'dupes.findOnRight': 'Duplikátumok a jobb oldalon',
 }
 
 export default hu

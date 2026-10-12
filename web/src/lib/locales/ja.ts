@@ -32,7 +32,6 @@ const ja: Translations = {
   'dupes.each': '各 {size}、{wasted} の無駄',
   'dupes.summary': '{scanned} 件中 {sets} 組、{wasted} を回収できます。',
   'dupes.none': '{scanned} 件のファイルに重複はありません。',
-  'dupes.findOn': '{side}側の重複',
   'check.more': '全部で {found} 件の指摘があり、最初の {shown} 件を表示しています。',
   'jobs.schedule.onRequest': '手動のみ',
   'preview.title': 'プレビュー',
@@ -1012,6 +1011,8 @@ const ja: Translations = {
   'anomalies.openTab': '未対応',
   'anomalies.which': '未対応または対応済み',
   'anomalies.ownBadge': '専用ブレーキ',
+  'dupes.findOnLeft': '左側の重複',
+  'dupes.findOnRight': '右側の重複',
 }
 
 export default ja

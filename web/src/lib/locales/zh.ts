@@ -32,7 +32,6 @@ const zh: Translations = {
   'dupes.each': '每份 {size}，浪费 {wasted}',
   'dupes.summary': '{scanned} 个文件中有 {sets} 组，可释放 {wasted}。',
   'dupes.none': '{scanned} 个文件中没有重复。',
-  'dupes.findOn': '{side}侧的重复文件',
   'check.more': '共发现 {found} 处，显示前 {shown} 处。',
   'jobs.schedule.onRequest': '仅手动',
   'preview.title': '预览',
@@ -1012,6 +1011,8 @@ const zh: Translations = {
   'anomalies.openTab': '未处理',
   'anomalies.which': '未处理或已关闭',
   'anomalies.ownBadge': '专用刹车',
+  'dupes.findOnLeft': '左侧的重复文件',
+  'dupes.findOnRight': '右侧的重复文件',
 }
 
 export default zh

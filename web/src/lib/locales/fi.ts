@@ -32,7 +32,6 @@ const fi: Translations = {
   'dupes.each': '{size} kukin, {wasted} hukkaan',
   'dupes.summary': '{sets} ryhmää, {wasted} vapautettavissa, {scanned} tiedostosta.',
   'dupes.none': 'Ei kaksoiskappaleita {scanned} tiedoston joukossa.',
-  'dupes.findOn': 'Kaksoiskappaleet {side} puolella',
   'check.more': 'Yhteensä {found} havaintoa, näytetään ensimmäiset {shown}.',
   'jobs.schedule.onRequest': 'pyynnöstä',
   'preview.title': 'Esikatselu',
@@ -1012,6 +1011,8 @@ const fi: Translations = {
   'anomalies.openTab': 'Avoimet',
   'anomalies.which': 'Avoimet tai suljetut',
   'anomalies.ownBadge': 'Omat jarrut',
+  'dupes.findOnLeft': 'Kaksoiskappaleet vasemmalla puolella',
+  'dupes.findOnRight': 'Kaksoiskappaleet oikealla puolella',
 }
 
 export default fi

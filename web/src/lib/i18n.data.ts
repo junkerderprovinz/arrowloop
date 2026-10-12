@@ -169,7 +169,6 @@ export const en = {
   'dupes.each': '{size} each, {wasted} wasted',
   'dupes.summary': '{sets} sets, {wasted} to reclaim, out of {scanned} files.',
   'dupes.none': 'No duplicates among {scanned} files.',
-  'dupes.findOn': 'Duplicates on the {side} side',
   'check.more': '{found} findings in total, showing the first {shown}.',
   'jobs.schedule.onRequest': 'on request',
 
@@ -1053,6 +1052,8 @@ export const en = {
   'anomalies.openTab': 'Open',
   'anomalies.which': 'Open or closed',
   'anomalies.ownBadge': 'Own brakes',
+  'dupes.findOnLeft': 'Duplicates on the left side',
+  'dupes.findOnRight': 'Duplicates on the right side',
 } as const
 
 export type TranslationKey = keyof typeof en
@@ -1223,7 +1224,6 @@ export const de: Translations = {
   'dupes.each': 'je {size}, {wasted} verschwendet',
   'dupes.summary': '{sets} Sätze, {wasted} zurückzuholen, aus {scanned} Dateien.',
   'dupes.none': 'Keine Doppelten unter {scanned} Dateien.',
-  'dupes.findOn': 'Doppelte auf der {side}n Seite',
   'check.more': 'Insgesamt {found} Funde, angezeigt werden die ersten {shown}.',
   'jobs.schedule.onRequest': 'auf Zuruf',
   'preview.title': 'Vorschau',
@@ -2099,6 +2099,8 @@ export const de: Translations = {
   'anomalies.openTab': 'Offen',
   'anomalies.which': 'Offen oder geschlossen',
   'anomalies.ownBadge': 'Eigene Bremsen',
+  'dupes.findOnLeft': 'Doppelte auf der linken Seite',
+  'dupes.findOnRight': 'Doppelte auf der rechten Seite',
 }
 
 export interface Language {

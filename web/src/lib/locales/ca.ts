@@ -32,7 +32,6 @@ const ca: Translations = {
   'dupes.each': '{size} cadascun, {wasted} malgastats',
   'dupes.summary': '{sets} conjunts, {wasted} a recuperar, de {scanned} fitxers.',
   'dupes.none': 'Cap duplicat entre {scanned} fitxers.',
-  'dupes.findOn': 'Duplicats al cantó {side}',
   'check.more': '{found} troballes en total, se\'n mostren les primeres {shown}.',
   'jobs.schedule.onRequest': 'a petició',
   'preview.title': 'Previsualització',
@@ -1012,6 +1011,8 @@ const ca: Translations = {
   'anomalies.openTab': 'Obertes',
   'anomalies.which': 'Obertes o tancades',
   'anomalies.ownBadge': 'Frens propis',
+  'dupes.findOnLeft': 'Duplicats a la banda esquerra',
+  'dupes.findOnRight': 'Duplicats a la banda dreta',
 }
 
 export default ca

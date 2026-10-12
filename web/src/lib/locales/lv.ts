@@ -32,7 +32,6 @@ const lv: Translations = {
   'dupes.each': 'pa {size}, {wasted} izniekoti',
   'dupes.summary': '{sets} kopas, {wasted} atgūstami, no {scanned} datnēm.',
   'dupes.none': 'Starp {scanned} datnēm nav dublikātu.',
-  'dupes.findOn': 'Dublikāti {side} pusē',
   'check.more': 'Kopā {found} atradumi, tiek rādīti pirmie {shown}.',
   'jobs.schedule.onRequest': 'pēc pieprasījuma',
   'preview.title': 'Priekšskatījums',
@@ -1012,6 +1011,8 @@ const lv: Translations = {
   'anomalies.openTab': 'Atvērtas',
   'anomalies.which': 'Atvērtas vai aizvērtas',
   'anomalies.ownBadge': 'Atsevišķas bremzes',
+  'dupes.findOnLeft': 'Dublikāti kreisajā pusē',
+  'dupes.findOnRight': 'Dublikāti labajā pusē',
 }
 
 export default lv

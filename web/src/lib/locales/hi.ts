@@ -32,7 +32,6 @@ const hi: Translations = {
   'dupes.each': 'प्रत्येक {size}, {wasted} व्यर्थ',
   'dupes.summary': '{scanned} फ़ाइलों में {sets} समूह, {wasted} वापस मिल सकता है।',
   'dupes.none': '{scanned} फ़ाइलों में कोई दोहरा नहीं।',
-  'dupes.findOn': '{side} पक्ष में दोहरे',
   'check.more': 'कुल {found} बातें मिलीं, पहली {shown} दिखाई जा रही हैं।',
   'jobs.schedule.onRequest': 'माँगने पर',
   'preview.title': 'झलक',
@@ -1012,6 +1011,8 @@ const hi: Translations = {
   'anomalies.openTab': 'खुली',
   'anomalies.which': 'खुली या बंद',
   'anomalies.ownBadge': 'अपने ब्रेक',
+  'dupes.findOnLeft': 'बाईं ओर दोहरे',
+  'dupes.findOnRight': 'दाईं ओर दोहरे',
 }
 
 export default hi

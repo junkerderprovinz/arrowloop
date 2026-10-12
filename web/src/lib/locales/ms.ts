@@ -32,7 +32,6 @@ const ms: Translations = {
   'dupes.each': '{size} setiap satu, {wasted} terbazir',
   'dupes.summary': '{sets} set, {wasted} boleh dituntut semula, daripada {scanned} fail.',
   'dupes.none': 'Tiada pendua antara {scanned} fail.',
-  'dupes.findOn': 'Pendua di sisi {side}',
   'check.more': '{found} penemuan kesemuanya, {shown} yang pertama dipaparkan.',
   'jobs.schedule.onRequest': 'atas permintaan',
   'preview.title': 'Pratonton',
@@ -1012,6 +1011,8 @@ const ms: Translations = {
   'anomalies.openTab': 'Terbuka',
   'anomalies.which': 'Terbuka atau ditutup',
   'anomalies.ownBadge': 'Brek sendiri',
+  'dupes.findOnLeft': 'Pendua di sebelah kiri',
+  'dupes.findOnRight': 'Pendua di sebelah kanan',
 }
 
 export default ms

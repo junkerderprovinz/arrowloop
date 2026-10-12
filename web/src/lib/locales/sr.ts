@@ -32,7 +32,6 @@ const sr: Translations = {
   'dupes.each': 'по {size}, {wasted} узалуд',
   'dupes.summary': '{sets} група, {wasted} за повратак, од {scanned} датотека.',
   'dupes.none': 'Нема дупликата међу {scanned} датотека.',
-  'dupes.findOn': 'Дупликати на {side} страни',
   'check.more': 'Укупно {found} налаза, приказано је првих {shown}.',
   'jobs.schedule.onRequest': 'на захтев',
   'preview.title': 'Преглед',
@@ -1012,6 +1011,8 @@ const sr: Translations = {
   'anomalies.openTab': 'Отворено',
   'anomalies.which': 'Отворено или затворено',
   'anomalies.ownBadge': 'Сопствене кочнице',
+  'dupes.findOnLeft': 'Дупликати на левој страни',
+  'dupes.findOnRight': 'Дупликати на десној страни',
 }
 
 export default sr

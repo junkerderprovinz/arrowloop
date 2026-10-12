@@ -32,7 +32,6 @@ const fa: Translations = {
   'dupes.each': 'هر کدام {size}، {wasted} هدر',
   'dupes.summary': '{sets} دسته، {wasted} قابل بازپس‌گیری، از {scanned} پرونده.',
   'dupes.none': 'هیچ تکراری در میان {scanned} پرونده نیست.',
-  'dupes.findOn': 'تکراری‌ها در سمت {side}',
   'check.more': 'در مجموع {found} یافته، {shown} مورد نخست نشان داده می‌شود.',
   'jobs.schedule.onRequest': 'به درخواست',
   'preview.title': 'پیش‌نمایش',
@@ -1012,6 +1011,8 @@ const fa: Translations = {
   'anomalies.openTab': 'باز',
   'anomalies.which': 'باز یا بسته',
   'anomalies.ownBadge': 'ترمزهای خودش',
+  'dupes.findOnLeft': 'تکراری‌ها در طرف چپ',
+  'dupes.findOnRight': 'تکراری‌ها در طرف راست',
 }
 
 export default fa

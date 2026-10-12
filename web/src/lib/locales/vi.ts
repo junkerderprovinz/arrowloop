@@ -32,7 +32,6 @@ const vi: Translations = {
   'dupes.each': 'Mỗi bản {size}, lãng phí {wasted}',
   'dupes.summary': '{sets} nhóm, thu hồi được {wasted}, trên {scanned} tệp.',
   'dupes.none': 'Không có bản trùng trong {scanned} tệp.',
-  'dupes.findOn': 'Bản trùng ở phía {side}',
   'check.more': 'Tổng cộng {found} phát hiện, đang hiển thị {shown} mục đầu.',
   'jobs.schedule.onRequest': 'theo yêu cầu',
   'preview.title': 'Xem trước',
@@ -1012,6 +1011,8 @@ const vi: Translations = {
   'anomalies.openTab': 'Đang mở',
   'anomalies.which': 'Đang mở hoặc đã đóng',
   'anomalies.ownBadge': 'Phanh riêng',
+  'dupes.findOnLeft': 'Bản trùng ở bên trái',
+  'dupes.findOnRight': 'Bản trùng ở bên phải',
 }
 
 export default vi

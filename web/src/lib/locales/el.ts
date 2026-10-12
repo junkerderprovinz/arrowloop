@@ -32,7 +32,6 @@ const el: Translations = {
   'dupes.each': '{size} έκαστο, {wasted} χαμένα',
   'dupes.summary': '{sets} ομάδες, {wasted} προς ανάκτηση, από {scanned} αρχεία.',
   'dupes.none': 'Κανένα διπλότυπο σε {scanned} αρχεία.',
-  'dupes.findOn': 'Διπλότυπα στην πλευρά {side}',
   'check.more': '{found} ευρήματα συνολικά, εμφανίζονται τα πρώτα {shown}.',
   'jobs.schedule.onRequest': 'κατόπιν αιτήματος',
   'preview.title': 'Προεπισκόπηση',
@@ -1012,6 +1011,8 @@ const el: Translations = {
   'anomalies.openTab': 'Ανοιχτές',
   'anomalies.which': 'Ανοιχτές ή κλειστές',
   'anomalies.ownBadge': 'Δικά της φρένα',
+  'dupes.findOnLeft': 'Διπλότυπα στην αριστερή πλευρά',
+  'dupes.findOnRight': 'Διπλότυπα στη δεξιά πλευρά',
 }
 
 export default el

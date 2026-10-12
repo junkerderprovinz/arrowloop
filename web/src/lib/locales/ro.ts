@@ -32,7 +32,6 @@ const ro: Translations = {
   'dupes.each': '{size} fiecare, {wasted} irosiți',
   'dupes.summary': '{sets} seturi, {wasted} de recuperat, din {scanned} fișiere.',
   'dupes.none': 'Niciun duplicat printre {scanned} fișiere.',
-  'dupes.findOn': 'Duplicate pe partea {side}',
   'check.more': '{found} constatări în total, se afișează primele {shown}.',
   'jobs.schedule.onRequest': 'la cerere',
   'preview.title': 'Previzualizare',
@@ -1012,6 +1011,8 @@ const ro: Translations = {
   'anomalies.openTab': 'Deschise',
   'anomalies.which': 'Deschise sau închise',
   'anomalies.ownBadge': 'Frâne proprii',
+  'dupes.findOnLeft': 'Duplicate pe partea stângă',
+  'dupes.findOnRight': 'Duplicate pe partea dreaptă',
 }
 
 export default ro

@@ -32,7 +32,6 @@ const fr: Translations = {
   'dupes.each': '{size} chacun, {wasted} gaspillés',
   'dupes.summary': '{sets} ensembles, {wasted} à récupérer, sur {scanned} fichiers.',
   'dupes.none': 'Aucun doublon parmi {scanned} fichiers.',
-  'dupes.findOn': 'Doublons du côté {side}',
   'check.more': '{found} constats au total, les {shown} premiers sont affichés.',
   'jobs.schedule.onRequest': 'à la demande',
   'preview.title': 'Aperçu',
@@ -1012,6 +1011,8 @@ const fr: Translations = {
   'anomalies.openTab': 'Ouvertes',
   'anomalies.which': 'Ouvertes ou fermées',
   'anomalies.ownBadge': 'Freins propres',
+  'dupes.findOnLeft': 'Doublons du côté gauche',
+  'dupes.findOnRight': 'Doublons du côté droit',
 }
 
 export default fr

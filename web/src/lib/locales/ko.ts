@@ -32,7 +32,6 @@ const ko: Translations = {
   'dupes.each': '개당 {size}, {wasted} 낭비',
   'dupes.summary': '파일 {scanned}개 중 {sets}세트, {wasted} 회수 가능.',
   'dupes.none': '파일 {scanned}개 중 중복 없음.',
-  'dupes.findOn': '{side}쪽 중복',
   'check.more': '모두 {found}건이 발견되었고 처음 {shown}건을 보여 줍니다.',
   'jobs.schedule.onRequest': '요청 시에만',
   'preview.title': '미리 보기',
@@ -1012,6 +1011,8 @@ const ko: Translations = {
   'anomalies.openTab': '열림',
   'anomalies.which': '열림 또는 닫힘',
   'anomalies.ownBadge': '전용 제동',
+  'dupes.findOnLeft': '왼쪽의 중복',
+  'dupes.findOnRight': '오른쪽의 중복',
 }
 
 export default ko

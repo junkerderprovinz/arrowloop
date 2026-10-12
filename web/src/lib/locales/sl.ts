@@ -32,7 +32,6 @@ const sl: Translations = {
   'dupes.each': 'po {size}, {wasted} zapravljeno',
   'dupes.summary': '{sets} skupin, {wasted} za sprostitev, od {scanned} datotek.',
   'dupes.none': 'Med {scanned} datotekami ni podvojenih.',
-  'dupes.findOn': 'Podvojeno na {side} strani',
   'check.more': 'Skupaj {found} ugotovitev, prikazanih je prvih {shown}.',
   'jobs.schedule.onRequest': 'na zahtevo',
   'preview.title': 'Predogled',
@@ -1012,6 +1011,8 @@ const sl: Translations = {
   'anomalies.openTab': 'Odprto',
   'anomalies.which': 'Odprto ali zaprto',
   'anomalies.ownBadge': 'Lastne zavore',
+  'dupes.findOnLeft': 'Podvojeno na levi strani',
+  'dupes.findOnRight': 'Podvojeno na desni strani',
 }
 
 export default sl

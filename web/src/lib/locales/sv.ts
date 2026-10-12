@@ -32,7 +32,6 @@ const sv: Translations = {
   'dupes.each': '{size} styck, {wasted} bortkastat',
   'dupes.summary': '{sets} uppsättningar, {wasted} att frigöra, av {scanned} filer.',
   'dupes.none': 'Inga dubbletter bland {scanned} filer.',
-  'dupes.findOn': 'Dubbletter på {side} sidan',
   'check.more': '{found} fynd totalt, de första {shown} visas.',
   'jobs.schedule.onRequest': 'på begäran',
   'preview.title': 'Förhandsgranskning',
@@ -1012,6 +1011,8 @@ const sv: Translations = {
   'anomalies.openTab': 'Öppna',
   'anomalies.which': 'Öppna eller stängda',
   'anomalies.ownBadge': 'Egna bromsar',
+  'dupes.findOnLeft': 'Dubbletter på vänster sida',
+  'dupes.findOnRight': 'Dubbletter på höger sida',
 }
 
 export default sv

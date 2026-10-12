@@ -32,7 +32,6 @@ const lt: Translations = {
   'dupes.each': 'po {size}, {wasted} švaistoma',
   'dupes.summary': '{sets} grupės, {wasted} atgautina, iš {scanned} rinkmenų.',
   'dupes.none': 'Tarp {scanned} rinkmenų dublikatų nėra.',
-  'dupes.findOn': 'Dublikatai {side} pusėje',
   'check.more': 'Iš viso {found} radinių, rodomi pirmi {shown}.',
   'jobs.schedule.onRequest': 'pagal pareikalavimą',
   'preview.title': 'Peržiūra',
@@ -1012,6 +1011,8 @@ const lt: Translations = {
   'anomalies.openTab': 'Atviros',
   'anomalies.which': 'Atviros arba uždarytos',
   'anomalies.ownBadge': 'Atskiri stabdžiai',
+  'dupes.findOnLeft': 'Dublikatai kairėje pusėje',
+  'dupes.findOnRight': 'Dublikatai dešinėje pusėje',
 }
 
 export default lt

@@ -32,7 +32,6 @@ const eu: Translations = {
   'dupes.each': '{size} bakoitza, {wasted} alferrik',
   'dupes.summary': '{sets} multzo, {wasted} berreskuratzeko, {scanned} fitxategitik.',
   'dupes.none': 'Ez dago bikoizturik {scanned} fitxategiren artean.',
-  'dupes.findOn': 'Bikoiztuak {side} aldean',
   'check.more': 'Guztira {found} aurkikuntza, lehen {shown} erakusten dira.',
   'jobs.schedule.onRequest': 'eskatutakoan',
   'preview.title': 'Aurrebista',
@@ -1012,6 +1011,8 @@ const eu: Translations = {
   'anomalies.openTab': 'Irekiak',
   'anomalies.which': 'Irekiak edo itxiak',
   'anomalies.ownBadge': 'Balazta propioak',
+  'dupes.findOnLeft': 'Bikoiztuak ezkerreko aldean',
+  'dupes.findOnRight': 'Bikoiztuak eskuineko aldean',
 }
 
 export default eu

@@ -32,7 +32,6 @@ const ar: Translations = {
   'dupes.each': '{size} لكل نسخة، {wasted} مهدورة',
   'dupes.summary': '{sets} مجموعة، {wasted} يمكن استردادها، من {scanned} ملفاً.',
   'dupes.none': 'لا توجد مكررات بين {scanned} ملفاً.',
-  'dupes.findOn': 'المكررة في الجهة {side}',
   'check.more': '{found} ملاحظة في المجموع، وتُعرض أول {shown}.',
   'jobs.schedule.onRequest': 'عند الطلب',
   'preview.title': 'معاينة',
@@ -1012,6 +1011,8 @@ const ar: Translations = {
   'anomalies.openTab': 'المفتوحة',
   'anomalies.which': 'مفتوحة أو مغلقة',
   'anomalies.ownBadge': 'مكابح خاصة',
+  'dupes.findOnLeft': 'المكررة في الجانب الأيسر',
+  'dupes.findOnRight': 'المكررة في الجانب الأيمن',
 }
 
 export default ar

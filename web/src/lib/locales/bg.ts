@@ -32,7 +32,6 @@ const bg: Translations = {
   'dupes.each': 'по {size}, {wasted} напразно',
   'dupes.summary': '{sets} групи, {wasted} за освобождаване, от {scanned} файла.',
   'dupes.none': 'Няма дубликати сред {scanned} файла.',
-  'dupes.findOn': 'Дубликати от {side} страна',
   'check.more': 'Общо {found} находки, показани са първите {shown}.',
   'jobs.schedule.onRequest': 'при поискване',
   'preview.title': 'Преглед',
@@ -1012,6 +1011,8 @@ const bg: Translations = {
   'anomalies.openTab': 'Отворени',
   'anomalies.which': 'Отворени или затворени',
   'anomalies.ownBadge': 'Собствени спирачки',
+  'dupes.findOnLeft': 'Дубликати от лявата страна',
+  'dupes.findOnRight': 'Дубликати от дясната страна',
 }
 
 export default bg

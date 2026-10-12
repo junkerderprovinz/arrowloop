@@ -32,7 +32,6 @@ const ru: Translations = {
   'dupes.each': 'по {size}, {wasted} впустую',
   'dupes.summary': '{sets} групп, {wasted} можно вернуть, из {scanned} файлов.',
   'dupes.none': 'Среди {scanned} файлов дубликатов нет.',
-  'dupes.findOn': 'Дубликаты с {side} стороны',
   'check.more': 'Всего найдено {found}, показаны первые {shown}.',
   'jobs.schedule.onRequest': 'по запросу',
   'preview.title': 'Предпросмотр',
@@ -1012,6 +1011,8 @@ const ru: Translations = {
   'anomalies.openTab': 'Открытые',
   'anomalies.which': 'Открытые или закрытые',
   'anomalies.ownBadge': 'Свои тормоза',
+  'dupes.findOnLeft': 'Дубликаты на левой стороне',
+  'dupes.findOnRight': 'Дубликаты на правой стороне',
 }
 
 export default ru

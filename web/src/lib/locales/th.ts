@@ -32,7 +32,6 @@ const th: Translations = {
   'dupes.each': 'ไฟล์ละ {size} สูญเปล่า {wasted}',
   'dupes.summary': '{sets} ชุด คืนได้ {wasted} จาก {scanned} ไฟล์',
   'dupes.none': 'ไม่พบไฟล์ซ้ำใน {scanned} ไฟล์',
-  'dupes.findOn': 'ไฟล์ซ้ำฝั่ง {side}',
   'check.more': 'พบทั้งหมด {found} รายการ แสดง {shown} รายการแรก',
   'jobs.schedule.onRequest': 'เมื่อสั่งเท่านั้น',
   'preview.title': 'ตัวอย่าง',
@@ -1012,6 +1011,8 @@ const th: Translations = {
   'anomalies.openTab': 'ค้างอยู่',
   'anomalies.which': 'ค้างอยู่หรือปิดแล้ว',
   'anomalies.ownBadge': 'เบรกเฉพาะ',
+  'dupes.findOnLeft': 'ไฟล์ซ้ำฝั่งซ้าย',
+  'dupes.findOnRight': 'ไฟล์ซ้ำฝั่งขวา',
 }
 
 export default th

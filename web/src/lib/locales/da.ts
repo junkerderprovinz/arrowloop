@@ -32,7 +32,6 @@ const da: Translations = {
   'dupes.each': '{size} hver, {wasted} spildt',
   'dupes.summary': '{sets} sæt, {wasted} at frigive, ud af {scanned} filer.',
   'dupes.none': 'Ingen dubletter blandt {scanned} filer.',
-  'dupes.findOn': 'Dubletter i {side} side',
   'check.more': '{found} fund i alt, de første {shown} vises.',
   'jobs.schedule.onRequest': 'efter behov',
   'preview.title': 'Forhåndsvisning',
@@ -1012,6 +1011,8 @@ const da: Translations = {
   'anomalies.openTab': 'Åbne',
   'anomalies.which': 'Åbne eller lukkede',
   'anomalies.ownBadge': 'Egne bremser',
+  'dupes.findOnLeft': 'Dubletter i venstre side',
+  'dupes.findOnRight': 'Dubletter i højre side',
 }
 
 export default da

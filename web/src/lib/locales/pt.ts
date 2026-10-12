@@ -32,7 +32,6 @@ const pt: Translations = {
   'dupes.each': '{size} cada, {wasted} desperdiçados',
   'dupes.summary': '{sets} conjuntos, {wasted} a recuperar, de {scanned} ficheiros.',
   'dupes.none': 'Nenhum duplicado entre {scanned} ficheiros.',
-  'dupes.findOn': 'Duplicados do lado {side}',
   'check.more': '{found} achados no total, mostram-se os primeiros {shown}.',
   'jobs.schedule.onRequest': 'a pedido',
   'preview.title': 'Pré-visualização',
@@ -1012,6 +1011,8 @@ const pt: Translations = {
   'anomalies.openTab': 'Em aberto',
   'anomalies.which': 'Em aberto ou fechadas',
   'anomalies.ownBadge': 'Travões próprios',
+  'dupes.findOnLeft': 'Duplicados do lado esquerdo',
+  'dupes.findOnRight': 'Duplicados do lado direito',
 }
 
 export default pt

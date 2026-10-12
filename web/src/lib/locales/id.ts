@@ -32,7 +32,6 @@ const id: Translations = {
   'dupes.each': '{size} masing-masing, {wasted} terbuang',
   'dupes.summary': '{sets} kelompok, {wasted} dapat dibebaskan, dari {scanned} berkas.',
   'dupes.none': 'Tidak ada duplikat di antara {scanned} berkas.',
-  'dupes.findOn': 'Duplikat di sisi {side}',
   'check.more': 'Ada {found} temuan seluruhnya, yang ditampilkan {shown} pertama.',
   'jobs.schedule.onRequest': 'sesuai permintaan',
   'preview.title': 'Pratinjau',
@@ -1012,6 +1011,8 @@ const id: Translations = {
   'anomalies.openTab': 'Terbuka',
   'anomalies.which': 'Terbuka atau selesai',
   'anomalies.ownBadge': 'Rem sendiri',
+  'dupes.findOnLeft': 'Duplikat di sisi kiri',
+  'dupes.findOnRight': 'Duplikat di sisi kanan',
 }
 
 export default id

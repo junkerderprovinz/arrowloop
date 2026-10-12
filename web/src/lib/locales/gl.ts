@@ -32,7 +32,6 @@ const gl: Translations = {
   'dupes.each': '{size} cada un, {wasted} desperdiciados',
   'dupes.summary': '{sets} conxuntos, {wasted} a recuperar, de {scanned} ficheiros.',
   'dupes.none': 'Ningún duplicado entre {scanned} ficheiros.',
-  'dupes.findOn': 'Duplicados no lado {side}',
   'check.more': '{found} achados en total, móstranse os primeiros {shown}.',
   'jobs.schedule.onRequest': 'a petición',
   'preview.title': 'Vista previa',
@@ -1012,6 +1011,8 @@ const gl: Translations = {
   'anomalies.openTab': 'Abertas',
   'anomalies.which': 'Abertas ou pechadas',
   'anomalies.ownBadge': 'Freos propios',
+  'dupes.findOnLeft': 'Duplicados no lado esquerdo',
+  'dupes.findOnRight': 'Duplicados no lado dereito',
 }
 
 export default gl

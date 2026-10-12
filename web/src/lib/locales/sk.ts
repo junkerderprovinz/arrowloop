@@ -32,7 +32,6 @@ const sk: Translations = {
   'dupes.each': 'po {size}, {wasted} nazmar',
   'dupes.summary': '{sets} skupín, {wasted} na získanie späť, z {scanned} súborov.',
   'dupes.none': 'Žiadne duplicity medzi {scanned} súbormi.',
-  'dupes.findOn': 'Duplicity na {side} strane',
   'check.more': 'Celkom {found} nálezov, zobrazených je prvých {shown}.',
   'jobs.schedule.onRequest': 'na požiadanie',
   'preview.title': 'Náhľad',
@@ -1012,6 +1011,8 @@ const sk: Translations = {
   'anomalies.openTab': 'Otvorené',
   'anomalies.which': 'Otvorené alebo zatvorené',
   'anomalies.ownBadge': 'Vlastné brzdy',
+  'dupes.findOnLeft': 'Duplicity na ľavej strane',
+  'dupes.findOnRight': 'Duplicity na pravej strane',
 }
 
 export default sk

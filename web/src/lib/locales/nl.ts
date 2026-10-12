@@ -32,7 +32,6 @@ const nl: Translations = {
   'dupes.each': '{size} elk, {wasted} verspild',
   'dupes.summary': '{sets} sets, {wasted} terug te winnen, uit {scanned} bestanden.',
   'dupes.none': 'Geen dubbele bestanden onder {scanned} bestanden.',
-  'dupes.findOn': 'Dubbele bestanden aan de {side} kant',
   'check.more': '{found} bevindingen in totaal, de eerste {shown} worden getoond.',
   'jobs.schedule.onRequest': 'op verzoek',
   'preview.title': 'Voorbeeld',
@@ -1012,6 +1011,8 @@ const nl: Translations = {
   'anomalies.openTab': 'Open',
   'anomalies.which': 'Open of gesloten',
   'anomalies.ownBadge': 'Eigen remmen',
+  'dupes.findOnLeft': 'Dubbele bestanden aan de linkerkant',
+  'dupes.findOnRight': 'Dubbele bestanden aan de rechterkant',
 }
 
 export default nl

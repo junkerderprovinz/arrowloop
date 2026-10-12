@@ -32,7 +32,6 @@ const he: Translations = {
   'dupes.each': '{size} לכל אחד, {wasted} מבוזבזים',
   'dupes.summary': '{sets} קבוצות, {wasted} לשחרור, מתוך {scanned} קבצים.',
   'dupes.none': 'אין כפולים בקרב {scanned} קבצים.',
-  'dupes.findOn': 'כפולים בצד {side}',
   'check.more': '{found} ממצאים בסך הכול, מוצגים {shown} הראשונים.',
   'jobs.schedule.onRequest': 'לפי בקשה',
   'preview.title': 'תצוגה מקדימה',
@@ -1012,6 +1011,8 @@ const he: Translations = {
   'anomalies.openTab': 'פתוחות',
   'anomalies.which': 'פתוחות או סגורות',
   'anomalies.ownBadge': 'בלמים משלה',
+  'dupes.findOnLeft': 'כפולים בצד שמאל',
+  'dupes.findOnRight': 'כפולים בצד ימין',
 }
 
 export default he
