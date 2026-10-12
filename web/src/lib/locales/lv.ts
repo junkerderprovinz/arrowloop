@@ -982,6 +982,7 @@ const lv: Translations = {
   'status.needsYou': 'Vajadzīgs jūsu lēmums',
   'status.running': 'Darbojas',
   'status.held': 'Apturēts',
+  'status.conflict': 'Gaida konflikts',
   'status.failed': 'Neizdevās',
   'status.paused': 'Pauzēts',
   'status.never': 'Vēl nav palaists',

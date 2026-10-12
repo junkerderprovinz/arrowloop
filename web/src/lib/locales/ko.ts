@@ -982,6 +982,7 @@ const ko: Translations = {
   'status.needsYou': '확인이 필요합니다',
   'status.running': '실행 중',
   'status.held': '보류됨',
+  'status.conflict': '충돌 대기 중',
   'status.failed': '실패',
   'status.paused': '일시 정지됨',
   'status.never': '아직 실행 안 함',

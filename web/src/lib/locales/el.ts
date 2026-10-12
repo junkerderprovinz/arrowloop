@@ -982,6 +982,7 @@ const el: Translations = {
   'status.needsYou': 'Θέλει την προσοχή σας',
   'status.running': 'Σε εξέλιξη',
   'status.held': 'Σταματημένη',
+  'status.conflict': 'Διένεξη σε αναμονή',
   'status.failed': 'Απέτυχε',
   'status.paused': 'Σε παύση',
   'status.never': 'Δεν έχει εκτελεστεί ακόμη',

@@ -982,6 +982,7 @@ const ar: Translations = {
   'status.needsYou': 'يحتاج إليك',
   'status.running': 'قيد التشغيل',
   'status.held': 'موقوفة',
+  'status.conflict': 'تعارض بانتظارك',
   'status.failed': 'فشلت',
   'status.paused': 'متوقفة مؤقتًا',
   'status.never': 'لم تعمل بعد',

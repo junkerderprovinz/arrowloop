@@ -982,6 +982,7 @@ const hr: Translations = {
   'status.needsYou': 'Treba te',
   'status.running': 'Radi',
   'status.held': 'Zadržan',
+  'status.conflict': 'Sukob čeka',
   'status.failed': 'Nije uspio',
   'status.paused': 'Pauziran',
   'status.never': 'Još nije pokrenut',

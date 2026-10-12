@@ -34,14 +34,20 @@ type ListedJob = { name: string; running: boolean; disabled: boolean; recent: (S
 
 /**
  * The one status a job's row shows, the loudest that applies. A job that ran
- * fine is `last`, which the row draws quietly as the time of that run.
+ * fine is `last`, which the row draws quietly as the time of that run, so a
+ * held run or a conflict still waiting must win over it: a warning is never
+ * rounded up to "synced".
  */
-export type JobStatus = 'running' | 'held' | 'failed' | 'paused' | 'never' | 'last'
+export type JobStatus = 'running' | 'held' | 'failed' | 'conflict' | 'paused' | 'never' | 'last'
 
-export function jobStatus(job: ListedJob, held: boolean): JobStatus {
+/** What waits on a person for one job outside its own runs. */
+export type JobWaits = { held: boolean; conflict: boolean }
+
+export function jobStatus(job: ListedJob, waits: JobWaits): JobStatus {
   if (job.running) return 'running'
-  if (held) return 'held'
+  if (waits.held) return 'held'
   if (job.recent[0] && job.recent[0].Err !== '') return 'failed'
+  if (waits.conflict) return 'conflict'
   if (job.disabled) return 'paused'
   if (job.recent.length === 0) return 'never'
   return 'last'
@@ -64,10 +70,10 @@ export type JobView = { filter: JobFilter; sort: JobSort }
 
 export const DEFAULT_VIEW: JobView = { filter: 'all', sort: { field: 'name', reversed: false } }
 
-const TROUBLE: JobStatus[] = ['held', 'failed']
+const TROUBLE: JobStatus[] = ['held', 'failed', 'conflict']
 
 // Problems first, then work in progress, then what is quiet.
-const STATUS_RANK: Record<JobStatus, number> = { held: 0, failed: 1, running: 2, never: 3, paused: 4, last: 5 }
+const STATUS_RANK: Record<JobStatus, number> = { held: 0, failed: 1, conflict: 2, running: 3, never: 4, paused: 5, last: 6 }
 
 function keeps(filter: JobFilter, status: JobStatus): boolean {
   switch (filter) {
@@ -90,10 +96,10 @@ export function jobsInView<J extends ListedJob & { left: string; right: string }
   jobs: J[],
   view: JobView,
   query: string,
-  held: (name: string) => boolean,
+  waits: (name: string) => JobWaits,
 ): J[] {
   const needle = query.trim().toLocaleLowerCase()
-  const status = new Map(jobs.map((j) => [j.name, jobStatus(j, held(j.name))]))
+  const status = new Map(jobs.map((j) => [j.name, jobStatus(j, waits(j.name))]))
   const last = (j: J) => (j.recent[0] ? Date.parse(j.recent[0].Started) : 0)
   const byName = (a: J, b: J) => a.name.localeCompare(b.name)
   const order: Record<JobSortField, (a: J, b: J) => number> = {

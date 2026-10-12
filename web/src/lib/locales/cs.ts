@@ -982,6 +982,7 @@ const cs: Translations = {
   'status.needsYou': 'Potřebuje tebe',
   'status.running': 'Běží',
   'status.held': 'Zastavená',
+  'status.conflict': 'Čeká konflikt',
   'status.failed': 'Selhala',
   'status.paused': 'Pozastavená',
   'status.never': 'Ještě neběžela',

@@ -982,6 +982,7 @@ const is: Translations = {
   'status.needsYou': 'Þarfnast þín',
   'status.running': 'Í gangi',
   'status.held': 'Stöðvað',
+  'status.conflict': 'Árekstur bíður',
   'status.failed': 'Mistókst',
   'status.paused': 'Í hléi',
   'status.never': 'Ekki keyrt enn',

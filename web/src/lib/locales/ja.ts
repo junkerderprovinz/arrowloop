@@ -982,6 +982,7 @@ const ja: Translations = {
   'status.needsYou': '対応が必要です',
   'status.running': '実行中',
   'status.held': '保留中',
+  'status.conflict': '競合が未解決',
   'status.failed': '失敗',
   'status.paused': '一時停止中',
   'status.never': '未実行',

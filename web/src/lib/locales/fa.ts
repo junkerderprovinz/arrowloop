@@ -982,6 +982,7 @@ const fa: Translations = {
   'status.needsYou': 'به تو نیاز دارد',
   'status.running': 'در حال اجرا',
   'status.held': 'نگه داشته‌شده',
+  'status.conflict': 'تعارض در انتظار',
   'status.failed': 'ناموفق',
   'status.paused': 'متوقف',
   'status.never': 'هنوز اجرا نشده',

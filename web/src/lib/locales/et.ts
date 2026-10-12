@@ -982,6 +982,7 @@ const et: Translations = {
   'status.needsYou': 'Vajab sind',
   'status.running': 'Käib',
   'status.held': 'Peatatud',
+  'status.conflict': 'Vastuolu ootab',
   'status.failed': 'Ebaõnnestus',
   'status.paused': 'Pausil',
   'status.never': 'Pole veel käivitatud',

@@ -66,7 +66,7 @@ function job(name: string, over: Partial<Job> = {}): Job {
 const opened = vi.fn((_name: string) => undefined)
 const went = vi.fn((_place: unknown) => undefined)
 
-function page({ jobs = [job('photos'), job('music')], findings = [] as Finding[], conflicts = 0 } = {}) {
+function page({ jobs = [job('photos'), job('music')], findings = [] as Finding[], conflicts = [] as { job: string }[] } = {}) {
   render(
     <ToastProvider>
       <GoTo.Provider value={went}>
@@ -110,7 +110,7 @@ describe('the head of the jobs page', () => {
     const held: Finding = {
       id: 'f1', job: 'music', kind: 'delete', severity: 'critical', held: true, since: '', seen: '', open: true,
     }
-    page({ findings: [held], conflicts: 3 })
+    page({ findings: [held], conflicts: [{ job: 'photos' }, { job: 'photos' }, { job: 'music' }] })
     expect((await screen.findByTestId('status-head')).textContent).toBe('Needs you')
     expect(screen.getByText('Waiting')).toBeTruthy()
 
@@ -142,6 +142,34 @@ describe('a job row', () => {
     const photos = row('photos')
     expect(within(photos).getByRole('img', { name: 'Last runs: worked: 1' })).toBeTruthy()
     expect(within(photos).queryByText('Failed')).toBeNull()
+  })
+
+  it('names a held run in the warn colour instead of the synced dot', async () => {
+    const held: Finding = {
+      id: 'f1', job: 'music', kind: 'delete', severity: 'critical', held: true, since: '', seen: '', open: true,
+    }
+    page({ findings: [held] })
+    const status = within(row('music')).getByTestId('job-status')
+    expect(status.textContent).toBe('Held')
+    const badge = within(status).getByText('Held')
+    expect(badge.className).toContain('text-statusWarn')
+    expect(status.querySelector('.bg-statusOkSolid')).toBeNull()
+    fireEvent.click(badge)
+    expect(went).toHaveBeenLastCalledWith({ tab: 'anomalies', job: 'music', finding: 'f1' })
+    expect(opened).not.toHaveBeenCalled()
+  })
+
+  it('names a waiting conflict in the warn colour and leads to it, not to the job', async () => {
+    page({ conflicts: [{ job: 'photos' }] })
+    const status = within(row('photos')).getByTestId('job-status')
+    expect(status.textContent).toBe('Conflict waiting')
+    const badge = within(status).getByText('Conflict waiting')
+    expect(badge.className).toContain('text-statusWarn')
+    expect(status.querySelector('.bg-statusOkSolid')).toBeNull()
+    expect(within(row('music')).getByTestId('job-status').querySelector('.bg-statusOkSolid')).toBeTruthy()
+    fireEvent.click(badge)
+    expect(went).toHaveBeenLastCalledWith({ tab: 'conflicts', job: 'photos' })
+    expect(opened).not.toHaveBeenCalled()
   })
 
   it('says a job failed by its own last run', async () => {

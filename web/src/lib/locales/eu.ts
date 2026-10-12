@@ -982,6 +982,7 @@ const eu: Translations = {
   'status.needsYou': 'Zure beharra du',
   'status.running': 'Martxan',
   'status.held': 'Geldituta',
+  'status.conflict': 'Gatazka zain',
   'status.failed': 'Huts egin du',
   'status.paused': 'Pausatuta',
   'status.never': 'Ez da oraindik exekutatu',

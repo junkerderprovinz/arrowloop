@@ -30,24 +30,38 @@ describe('runStrip', () => {
   })
 })
 
+const quiet = { held: false, conflict: false }
+const held = { held: true, conflict: false }
+const conflict = { held: false, conflict: true }
+
 describe('jobStatus', () => {
   it('says the loudest thing that applies', () => {
-    expect(jobStatus(job('a', { running: true, recent: [failed] }), true)).toBe('running')
-    expect(jobStatus(job('a', { recent: [failed] }), true)).toBe('held')
-    expect(jobStatus(job('a', { recent: [failed], disabled: true }), false)).toBe('failed')
-    expect(jobStatus(job('a', { disabled: true }), false)).toBe('paused')
-    expect(jobStatus(job('a', { recent: [] }), false)).toBe('never')
-    expect(jobStatus(job('a'), false)).toBe('last')
+    expect(jobStatus(job('a', { running: true, recent: [failed] }), held)).toBe('running')
+    expect(jobStatus(job('a', { recent: [failed] }), held)).toBe('held')
+    expect(jobStatus(job('a', { recent: [failed], disabled: true }), conflict)).toBe('failed')
+    expect(jobStatus(job('a', { disabled: true }), quiet)).toBe('paused')
+    expect(jobStatus(job('a', { recent: [] }), quiet)).toBe('never')
+    expect(jobStatus(job('a'), quiet)).toBe('last')
+  })
+
+  it('never rounds a held run or a waiting conflict up to the last good run', () => {
+    expect(jobStatus(job('a'), held)).toBe('held')
+    expect(jobStatus(job('a'), conflict)).toBe('conflict')
+    expect(jobStatus(job('a'), { held: true, conflict: true })).toBe('held')
+  })
+
+  it('names a waiting conflict on a paused job', () => {
+    expect(jobStatus(job('a', { disabled: true }), conflict)).toBe('conflict')
   })
 
   it('forgets a failure once a later run worked', () => {
-    expect(jobStatus(job('a', { recent: [ok, failed] }), false)).toBe('last')
+    expect(jobStatus(job('a', { recent: [ok, failed] }), quiet)).toBe('last')
   })
 })
 
 describe('jobsInView', () => {
   const jobs = [job('photos'), job('music', { recent: [failed] }), job('notes', { disabled: true })]
-  const none = () => false
+  const none = () => quiet
 
   it('sorts by name both ways', () => {
     expect(jobsInView(jobs, DEFAULT_VIEW, '', none).map((j) => j.name)).toEqual(['music', 'notes', 'photos'])
@@ -62,7 +76,12 @@ describe('jobsInView', () => {
 
   it('keeps only what needs a look under trouble', () => {
     const view = { ...DEFAULT_VIEW, filter: 'trouble' as const }
-    expect(jobsInView(jobs, view, '', (n) => n === 'photos').map((j) => j.name)).toEqual(['music', 'photos'])
+    expect(jobsInView(jobs, view, '', (n) => ({ ...quiet, held: n === 'photos' })).map((j) => j.name)).toEqual(['music', 'photos'])
+  })
+
+  it('counts a waiting conflict as something to look at', () => {
+    const view = { ...DEFAULT_VIEW, filter: 'trouble' as const }
+    expect(jobsInView(jobs, view, '', (n) => ({ ...quiet, conflict: n === 'notes' })).map((j) => j.name)).toEqual(['music', 'notes'])
   })
 
   it('finds a job by the folder it syncs', () => {

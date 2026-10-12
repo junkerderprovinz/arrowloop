@@ -11,6 +11,8 @@ export type Live = {
   jobs: Job[]
   /** The open findings. */
   findings: Finding[]
+  /** The jobs with a conflict waiting for an answer. */
+  conflicted: string[]
   progress: Record<string, RunEvent>
   /** Bytes a second per running job. */
   speeds: Record<string, number>
@@ -18,7 +20,7 @@ export type Live = {
   onSaved: () => void
 }
 
-export const LiveJobs = createContext<Live>({ jobs: [], findings: [], progress: {}, speeds: {}, onSaved: () => {} })
+export const LiveJobs = createContext<Live>({ jobs: [], findings: [], conflicted: [], progress: {}, speeds: {}, onSaved: () => {} })
 
 export function useLive() {
   return useContext(LiveJobs)

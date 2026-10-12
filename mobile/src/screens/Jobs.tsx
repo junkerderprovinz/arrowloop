@@ -9,6 +9,7 @@ import { Glyph, ProviderMark } from "../glyphs";
 import { markForSide } from "../jobMark";
 import { groupFindings, shortLine, type Finding } from "../../../web/src/lib/anomalies";
 import { jobCopy } from "../../../web/src/lib/jobCopy.data";
+import { jobStatus } from "../../../web/src/lib/jobList";
 import { needs, type HeadState } from "../../../web/src/lib/needs";
 import { useT } from "../i18n";
 import { animateNext, useMotion } from "../motion";
@@ -164,6 +165,7 @@ export function Jobs() {
   if (jobs === null) return <Empty title={t("jobs.historyLoading")} detail={error || undefined} />;
 
   const findings = waiting.findings ?? [];
+  const conflicted = waiting.conflicted ?? [];
 
   // Held jobs and drafts without both sides stay out. The requests go out
   // together, since the engine limits how many run at once itself.
@@ -210,6 +212,9 @@ export function Jobs() {
           progress={progress[item.name]}
           finding={groupFindings(findings.filter((f) => f.job === item.name))[0]?.findings[0]}
           onFinding={() => nav.navigate("Anomalies", { job: item.name })}
+          held={findings.some((f) => f.held && f.job === item.name)}
+          conflict={conflicted.includes(item.name)}
+          onConflict={() => nav.getParent()?.navigate("ConflictsTab")}
           onOpen={() => nav.navigate("JobDetail", { name: item.name })}
           onAct={() => act(item)}
           holding={holding === item.name}
@@ -348,6 +353,9 @@ function JobCard({
   progress,
   finding,
   onFinding,
+  held,
+  conflict,
+  onConflict,
   busy,
   onOpen,
   onAct,
@@ -367,6 +375,11 @@ function JobCard({
   /** The loudest thing the engine found about this job, if anything. */
   finding?: Finding;
   onFinding: () => void;
+  /** Whether a brake holds the job. */
+  held: boolean;
+  /** Whether a conflict of the job waits for an answer. */
+  conflict: boolean;
+  onConflict: () => void;
   busy: boolean;
   onOpen: () => void;
   onAct: () => void;
@@ -426,7 +439,7 @@ function JobCard({
         </Press>
       ) : null}
 
-      <JobStatus job={job} held={Boolean(finding?.held)} progress={progress} hue={hue} />
+      <JobStatus job={job} held={held} conflict={conflict} onConflict={onConflict} progress={progress} hue={hue} />
 
       {/* Two buttons, since a held job can still be started by hand. A
           running job's button cancels the run rather than pausing, which is
@@ -452,30 +465,57 @@ function JobCard({
 }
 
 /**
- * The job's one status. A run in progress shows its bar, a held run or a
- * paused job its badge, and the normal case stays quiet: a green dot before
- * the time of the last good run.
+ * The job's one status, by the web list's rule. Only a job with nothing waiting
+ * gets the quiet green dot, so a held run or a waiting conflict is never
+ * rounded up to it.
  */
-function JobStatus({ job, held, progress, hue }: { job: Job; held: boolean; progress?: Progress; hue: string }) {
+function JobStatus({
+  job,
+  held,
+  conflict,
+  onConflict,
+  progress,
+  hue,
+}: {
+  job: Job;
+  held: boolean;
+  conflict: boolean;
+  onConflict: () => void;
+  progress?: Progress;
+  hue: string;
+}) {
   const { t, lang } = useT();
   const { p } = useTheme();
-  if (job.running) {
-    return (
-      <View style={styles.status}>
-        <Badge label={t("jobs.state.running")} tone="accent" />
-        <RunProgress job={job} at={progress} hue={hue} />
-      </View>
-    );
+  switch (jobStatus(job, { held, conflict })) {
+    case "running":
+      return (
+        <View style={styles.status}>
+          <Badge label={t("jobs.state.running")} tone="accent" />
+          <RunProgress job={job} at={progress} hue={hue} />
+        </View>
+      );
+    case "held":
+      return <Badge label={t("anomaly.heldBadge")} tone="warn" />;
+    case "conflict":
+      return (
+        <Press onPress={onConflict} accessibilityRole="button" style={styles.statusPress}>
+          <Badge label={t("status.conflict")} tone="warn" />
+        </Press>
+      );
+    case "failed":
+      return <Badge label={t("status.failed")} tone="fail" />;
+    case "paused":
+      return <Badge label={t("jobs.state.disabled")} />;
+    case "never":
+      return <Caption>{t("jobs.historyEmpty")}</Caption>;
+    default:
+      return (
+        <View style={styles.quiet}>
+          <View style={[styles.dot, { backgroundColor: p.okSolid }]} />
+          <Caption>{t("jobs.lastRun", { when: clock(job.lastSuccess ?? job.recent[0]!.Finished, lang) })}</Caption>
+        </View>
+      );
   }
-  if (held) return <Badge label={t("anomaly.heldBadge")} tone="warn" />;
-  if (job.disabled) return <Badge label={t("jobs.state.disabled")} />;
-  if (!job.lastSuccess) return <Caption>{t("jobs.historyEmpty")}</Caption>;
-  return (
-    <View style={styles.quiet}>
-      <View style={[styles.dot, { backgroundColor: p.okSolid }]} />
-      <Caption>{t("jobs.lastRun", { when: clock(job.lastSuccess, lang) })}</Caption>
-    </View>
-  );
 }
 
 /**
@@ -529,6 +569,8 @@ const styles = StyleSheet.create({
   head: { flexDirection: "row", alignItems: "center", gap: space.sm, paddingVertical: space.xs },
   headText: { fontSize: text.status, fontWeight: "600", flexShrink: 1 },
   status: { gap: space.sm, alignSelf: "stretch", alignItems: "flex-start" },
+  // A touch target of its own, though the badge inside stays small.
+  statusPress: { alignSelf: "flex-start", minHeight: TOUCH, justifyContent: "center" },
   quiet: { flexDirection: "row", alignItems: "center", gap: space.sm },
   dot: { width: 8, height: 8, borderRadius: 4 },
   actions: { flexDirection: "row", gap: space.sm, marginTop: space.xs },

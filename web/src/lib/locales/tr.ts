@@ -982,6 +982,7 @@ const tr: Translations = {
   'status.needsYou': 'Sana ihtiyaç var',
   'status.running': 'Çalışıyor',
   'status.held': 'Durduruldu',
+  'status.conflict': 'Çakışma bekliyor',
   'status.failed': 'Başarısız',
   'status.paused': 'Duraklatıldı',
   'status.never': 'Henüz çalışmadı',

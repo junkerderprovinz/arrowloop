@@ -982,6 +982,7 @@ const th: Translations = {
   'status.needsYou': 'ต้องการคุณ',
   'status.running': 'กำลังทำงาน',
   'status.held': 'ถูกพักไว้',
+  'status.conflict': 'มีความขัดแย้งรออยู่',
   'status.failed': 'ล้มเหลว',
   'status.paused': 'หยุดชั่วคราว',
   'status.never': 'ยังไม่เคยทำงาน',

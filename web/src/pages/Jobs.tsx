@@ -9,17 +9,17 @@ import { JobEditor, useConfigErrors } from '../components/JobEditor'
 import { FilterButton, FilterChoice, ListBar, SearchFold, SortButton } from '../components/ListBar'
 import { NeedsCard, StatusHead } from '../components/NeedsHead'
 import { PageAction, PageActions } from '../components/PageActions'
+import { JobStatusLine } from '../components/JobStatusLine'
 import { RunStrip } from '../components/RunStrip'
 import { Card } from '../lib/glimstone/Card'
 import { Badge } from '../lib/glimstone/Badge'
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { useJobConfig } from './Editor'
 import type { Finding } from '../lib/anomalies'
-import { api, type Job, type RunEvent } from '../lib/api'
+import { api, type Job, type OpenConflict, type RunEvent } from '../lib/api'
 import { describeCadence, readCadence } from '../lib/cadence'
 import { dayTime } from '../lib/dayTime'
 import { sideName } from '../lib/entryLabel'
-import { useGoTo } from '../lib/goTo'
 import { useT, type TranslationKey } from '../lib/i18n'
 import { DEFAULT_VIEW, JOB_FILTERS, jobStatus, jobsInView, type JobFilter, type JobView } from '../lib/jobList'
 import { needs } from '../lib/needs'
@@ -65,15 +65,15 @@ export function Jobs({
   jobs,
   findings,
   progress,
-  conflicts = 0,
+  conflicts = [],
   onSaved,
 }: {
   jobs: Job[]
   /** The open findings, which decide the head and a held job's status. */
   findings: Finding[]
   progress: Record<string, RunEvent>
-  /** How many conflicts wait for an answer, across every job. */
-  conflicts?: number
+  /** The conflicts waiting for an answer, across every job. */
+  conflicts?: Pick<OpenConflict, 'job'>[]
   onSaved: () => void
 }) {
   const { t } = useT()
@@ -85,12 +85,14 @@ export function Jobs({
   const [query, setQuery] = useState('')
 
   const waiting = needs(
-    conflicts,
+    conflicts.length,
     findings,
     jobs.map((j) => ({ name: j.name, disabled: j.disabled, ran: j.recent.length > 0, failed: (j.recent[0]?.Err ?? '') !== '' })),
   )
   const held = useMemo(() => new Set(findings.filter((f) => f.held).map((f) => f.job)), [findings])
-  const shown = jobsInView(jobs, view, query, (name) => held.has(name))
+  const conflicted = useMemo(() => new Set(conflicts.map((c) => c.job)), [conflicts])
+  const waits = (name: string) => ({ held: held.has(name), conflict: conflicted.has(name) })
+  const shown = jobsInView(jobs, view, query, waits)
 
   // Entries in the configuration the engine does not run, such as a job saved
   // with a side still empty, are listed so they can be finished.
@@ -149,6 +151,7 @@ export function Jobs({
                   key={j.name}
                   job={j}
                   held={findings.find((f) => f.held && f.job === j.name)}
+                  conflict={conflicted.has(j.name)}
                   event={progress[j.name]}
                   busy={config.busy}
                   canPause={config.jobs?.some((raw) => raw.name === j.name) ?? false}
@@ -216,6 +219,7 @@ function keepInRow(e: MouseEvent) {
 function JobRow({
   job,
   held,
+  conflict,
   event,
   busy,
   canPause,
@@ -224,6 +228,8 @@ function JobRow({
   job: Job
   /** The finding that holds the job, if a brake does. */
   held?: Finding
+  /** Whether a conflict of this job waits for an answer. */
+  conflict: boolean
   event?: RunEvent
   busy: boolean
   /** Only a job in the configuration file can be paused from here. */
@@ -233,9 +239,8 @@ function JobRow({
   const { t, lang } = useT()
   const push = useToast()
   const open = useOpenJob()
-  const goTo = useGoTo()
   const { drives } = usePlaces()
-  const status = jobStatus(job, !!held)
+  const status = jobStatus(job, { held: !!held, conflict })
 
   const facts = [
     t('jobs.fact.sides', {
@@ -246,55 +251,6 @@ function JobRow({
     t('jobs.runs', { cadence: describeCadence(readCadence(job.schedule ?? '', !!job.watch), t) }),
     ...(job.nextRun && !job.disabled ? [t('jobs.fact.next', { when: dayTime(job.nextRun, lang, (p) => t('list.when', p)) })] : []),
   ]
-
-  let cell
-  switch (status) {
-    case 'running': {
-      const total = event?.total ?? 0
-      cell = (
-        <span className="flex w-full flex-col items-end gap-1">
-          <Badge tone="active" className="glim-live">
-            {t('status.running')}
-          </Badge>
-          {total > 0 && (
-            <span className="h-1 w-24 overflow-hidden rounded-[var(--radius-pill)] bg-carbon-surface3" aria-hidden>
-              <span className="block h-full bg-accent" style={{ width: `${Math.min(1, (event?.done ?? 0) / total) * 100}%` }} />
-            </span>
-          )}
-        </span>
-      )
-      break
-    }
-    case 'held':
-      cell = (
-        <button
-          type="button"
-          onClick={(e) => {
-            keepInRow(e)
-            goTo({ tab: 'anomalies', job: job.name, finding: held?.id })
-          }}
-        >
-          <Badge tone="warn">{t('status.held')}</Badge>
-        </button>
-      )
-      break
-    case 'failed':
-      cell = <Badge tone="fail">{t('status.failed')}</Badge>
-      break
-    case 'paused':
-      cell = <Badge tone="neutral">{t('status.paused')}</Badge>
-      break
-    case 'never':
-      cell = <Badge tone="neutral">{t('status.never')}</Badge>
-      break
-    default:
-      cell = (
-        <span className="flex items-center gap-1.5 whitespace-nowrap text-subline text-carbon-textSub">
-          <span aria-hidden className="h-[7px] w-[7px] shrink-0 rounded-full bg-statusOkSolid" />
-          <span className="glim-num">{dayTime(job.recent[0].Finished, lang, (p) => t('list.when', p))}</span>
-        </span>
-      )
-  }
 
   return (
     <li
@@ -347,7 +303,9 @@ function JobRow({
       <span data-new="run-strip" className="shrink-0 max-[600px]:hidden">
         <RunStrip recent={job.recent} />
       </span>
-      <span className="flex w-36 shrink-0 justify-end max-[600px]:w-auto">{cell}</span>
+      <span data-testid="job-status" className="flex w-36 shrink-0 justify-end max-[600px]:w-auto">
+        <JobStatusLine job={job} status={status} heldFinding={held?.id} event={event} />
+      </span>
     </li>
   )
 }

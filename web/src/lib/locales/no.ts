@@ -982,6 +982,7 @@ const no: Translations = {
   'status.needsYou': 'Trenger deg',
   'status.running': 'Kjører',
   'status.held': 'Holdt tilbake',
+  'status.conflict': 'Konflikt venter',
   'status.failed': 'Mislyktes',
   'status.paused': 'På pause',
   'status.never': 'Ikke kjørt ennå',

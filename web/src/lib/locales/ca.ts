@@ -982,6 +982,7 @@ const ca: Translations = {
   'status.needsYou': 'Et necessita',
   'status.running': 'En marxa',
   'status.held': 'Aturada',
+  'status.conflict': 'Conflicte pendent',
   'status.failed': 'Fallida',
   'status.paused': 'En pausa',
   'status.never': 'Encara no executada',

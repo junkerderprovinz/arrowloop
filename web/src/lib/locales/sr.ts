@@ -982,6 +982,7 @@ const sr: Translations = {
   'status.needsYou': 'Треба тебе',
   'status.running': 'У току',
   'status.held': 'Заустављено',
+  'status.conflict': 'Сукоб чека',
   'status.failed': 'Није успело',
   'status.paused': 'На паузи',
   'status.never': 'Још није покренуто',

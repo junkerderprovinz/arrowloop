@@ -982,6 +982,7 @@ const fi: Translations = {
   'status.needsYou': 'Tarvitsee sinua',
   'status.running': 'Käynnissä',
   'status.held': 'Pysäytetty',
+  'status.conflict': 'Ristiriita odottaa',
   'status.failed': 'Epäonnistui',
   'status.paused': 'Keskeytetty',
   'status.never': 'Ei vielä ajettu',

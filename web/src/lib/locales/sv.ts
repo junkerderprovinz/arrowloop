@@ -982,6 +982,7 @@ const sv: Translations = {
   'status.needsYou': 'Behöver dig',
   'status.running': 'Pågår',
   'status.held': 'Stoppat',
+  'status.conflict': 'Konflikt väntar',
   'status.failed': 'Misslyckades',
   'status.paused': 'Pausat',
   'status.never': 'Inte körd än',

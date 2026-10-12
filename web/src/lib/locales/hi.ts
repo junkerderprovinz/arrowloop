@@ -982,6 +982,7 @@ const hi: Translations = {
   'status.needsYou': 'आपकी ज़रूरत है',
   'status.running': 'चल रहा है',
   'status.held': 'रोका गया',
+  'status.conflict': 'टकराव बाकी है',
   'status.failed': 'विफल',
   'status.paused': 'रुका हुआ',
   'status.never': 'अभी तक नहीं चला',

@@ -982,6 +982,7 @@ const ru: Translations = {
   'status.needsYou': 'Нужно ваше внимание',
   'status.running': 'Выполняется',
   'status.held': 'Приостановлено',
+  'status.conflict': 'Конфликт ждёт',
   'status.failed': 'Не удалось',
   'status.paused': 'На паузе',
   'status.never': 'Ещё не запускалось',

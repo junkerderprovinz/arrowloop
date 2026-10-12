@@ -982,6 +982,7 @@ const vi: Translations = {
   'status.needsYou': 'Cần bạn',
   'status.running': 'Đang chạy',
   'status.held': 'Bị giữ',
+  'status.conflict': 'Xung đột đang chờ',
   'status.failed': 'Thất bại',
   'status.paused': 'Tạm dừng',
   'status.never': 'Chưa chạy lần nào',

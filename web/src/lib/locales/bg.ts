@@ -982,6 +982,7 @@ const bg: Translations = {
   'status.needsYou': 'Нужен си ти',
   'status.running': 'Върви',
   'status.held': 'Спряна',
+  'status.conflict': 'Чака конфликт',
   'status.failed': 'Провалена',
   'status.paused': 'На пауза',
   'status.never': 'Още не е изпълнявана',

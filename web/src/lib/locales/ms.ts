@@ -982,6 +982,7 @@ const ms: Translations = {
   'status.needsYou': 'Perlukan anda',
   'status.running': 'Sedang berjalan',
   'status.held': 'Ditahan',
+  'status.conflict': 'Percanggahan menunggu',
   'status.failed': 'Gagal',
   'status.paused': 'Dijeda',
   'status.never': 'Belum pernah dijalankan',

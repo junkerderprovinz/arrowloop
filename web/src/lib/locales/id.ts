@@ -982,6 +982,7 @@ const id: Translations = {
   'status.needsYou': 'Perlu Anda',
   'status.running': 'Berjalan',
   'status.held': 'Ditahan',
+  'status.conflict': 'Konflik menunggu',
   'status.failed': 'Gagal',
   'status.paused': 'Dijeda',
   'status.never': 'Belum pernah dijalankan',

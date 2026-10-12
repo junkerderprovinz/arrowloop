@@ -982,6 +982,7 @@ const hu: Translations = {
   'status.needsYou': 'Rád vár',
   'status.running': 'Fut',
   'status.held': 'Felfüggesztve',
+  'status.conflict': 'Ütközés vár',
   'status.failed': 'Sikertelen',
   'status.paused': 'Szüneteltetve',
   'status.never': 'Még nem futott',

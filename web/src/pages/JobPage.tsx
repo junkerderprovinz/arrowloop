@@ -5,6 +5,7 @@ import { DirectionGlyph, DirectionMark } from '../components/Direction'
 import { DupesPanel } from '../components/DupesPanel'
 import { IconPause, IconPencil, IconPlay, IconPreview, IconTrash } from '../components/glyphs'
 import { JobEditor, useConfigErrors } from '../components/JobEditor'
+import { JobStatusLine } from '../components/JobStatusLine'
 import { ListBar, SearchFold } from '../components/ListBar'
 import { Menu } from '../components/Menu'
 import { Pace } from '../components/Pace'
@@ -64,7 +65,7 @@ export function JobPage({ name }: { name: string }) {
     )
   }
 
-  const status = jobStatus(job, !!held)
+  const status = jobStatus(job, { held: !!held, conflict: live.conflicted.includes(name) })
 
   return (
     <Stack>
@@ -188,40 +189,6 @@ function Head({
   const { drives } = usePlaces()
   const when = (at: string) => dayTime(at, lang, (p) => t('list.when', p))
 
-  let state
-  switch (status) {
-    case 'running':
-      state = (
-        <Badge tone="active" className="glim-live">
-          {t('status.running')}
-        </Badge>
-      )
-      break
-    case 'held':
-      state = (
-        <button type="button" onClick={() => goTo({ tab: 'anomalies', job: job.name, finding: heldFinding })}>
-          <Badge tone="warn">{t('status.held')}</Badge>
-        </button>
-      )
-      break
-    case 'failed':
-      state = <Badge tone="fail">{t('status.failed')}</Badge>
-      break
-    case 'paused':
-      state = <Badge tone="neutral">{t('status.paused')}</Badge>
-      break
-    case 'never':
-      state = <Badge tone="neutral">{t('status.never')}</Badge>
-      break
-    default:
-      state = (
-        <span className="flex items-center gap-1.5 whitespace-nowrap text-subline text-carbon-textSub">
-          <span aria-hidden className="h-[7px] w-[7px] rounded-full bg-statusOkSolid" />
-          <span className="glim-num">{when(job.recent[0].Finished)}</span>
-        </span>
-      )
-  }
-
   return (
     <div data-new="job-page" className="flex flex-wrap items-center gap-x-4 gap-y-3">
       <span className="glim-row-glyph flex h-10 w-10 shrink-0 items-center justify-center rounded-control [&_svg]:h-5 [&_svg]:w-5">
@@ -247,7 +214,9 @@ function Head({
           {job.nextRun && !job.disabled && <span>{t('jobs.fact.next', { when: when(job.nextRun) })}</span>}
         </span>
       </div>
-      <span className="flex shrink-0 items-center">{state}</span>
+      <span className="flex shrink-0 items-center">
+        <JobStatusLine job={job} status={status} heldFinding={heldFinding} />
+      </span>
       <span className="flex max-w-full flex-wrap items-center justify-end gap-2">{actions}</span>
     </div>
   )

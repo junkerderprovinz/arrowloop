@@ -982,6 +982,7 @@ const zh: Translations = {
   'status.needsYou': '需要你处理',
   'status.running': '运行中',
   'status.held': '已暂扣',
+  'status.conflict': '冲突待处理',
   'status.failed': '失败',
   'status.paused': '已暂停',
   'status.never': '尚未运行',

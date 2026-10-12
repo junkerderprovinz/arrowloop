@@ -982,6 +982,7 @@ const pl: Translations = {
   'status.needsYou': 'Wymaga ciebie',
   'status.running': 'W toku',
   'status.held': 'Wstrzymane',
+  'status.conflict': 'Konflikt czeka',
   'status.failed': 'Nieudane',
   'status.paused': 'Zapauzowane',
   'status.never': 'Jeszcze nie uruchomione',

@@ -982,6 +982,7 @@ const da: Translations = {
   'status.needsYou': 'Har brug for dig',
   'status.running': 'I gang',
   'status.held': 'Stoppet',
+  'status.conflict': 'Konflikt venter',
   'status.failed': 'Mislykkedes',
   'status.paused': 'På pause',
   'status.never': 'Endnu ikke kørt',

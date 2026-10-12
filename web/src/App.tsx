@@ -232,8 +232,15 @@ export function App({ signOut = false }: { signOut?: boolean }) {
     reloadWaiting('')
   }, [refresh, reloadWaiting])
   const live = useMemo(
-    () => ({ jobs, findings: findings?.open ?? [], progress, speeds, onSaved: saved }),
-    [jobs, findings, progress, speeds, saved],
+    () => ({
+      jobs,
+      findings: findings?.open ?? [],
+      conflicted: [...new Set(conflicts?.conflicts.map((c) => c.job))],
+      progress,
+      speeds,
+      onSaved: saved,
+    }),
+    [jobs, findings, conflicts, progress, speeds, saved],
   )
 
   useEffect(() => {
@@ -397,7 +404,7 @@ export function App({ signOut = false }: { signOut?: boolean }) {
       jobs={jobs}
       findings={findings?.open ?? []}
       progress={progress}
-      conflicts={conflicts?.conflicts.length ?? 0}
+      conflicts={conflicts?.conflicts}
       onSaved={saved}
     />
   ) : view.page === 'job' ? (

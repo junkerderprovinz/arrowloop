@@ -982,6 +982,7 @@ const sl: Translations = {
   'status.needsYou': 'Potrebuje tebe',
   'status.running': 'Teče',
   'status.held': 'Zadržano',
+  'status.conflict': 'Spor čaka',
   'status.failed': 'Ni uspelo',
   'status.paused': 'V premoru',
   'status.never': 'Še ni teklo',

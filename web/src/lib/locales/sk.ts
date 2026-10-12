@@ -982,6 +982,7 @@ const sk: Translations = {
   'status.needsYou': 'Potrebuje teba',
   'status.running': 'Beží',
   'status.held': 'Pozastavená',
+  'status.conflict': 'Čaká konflikt',
   'status.failed': 'Zlyhala',
   'status.paused': 'Na pauze',
   'status.never': 'Ešte nebežala',

@@ -12,6 +12,8 @@ import { useEngineStream } from "./useEngine";
 export interface Waiting {
   running: number | null;
   conflicts: number | null;
+  /** The jobs with a conflict waiting for an answer. */
+  conflicted: string[] | null;
   findings: Finding[] | null;
   /** Files in the trash of every job's two sides. */
   trash: number | null;
@@ -22,6 +24,7 @@ export interface Waiting {
 const Ctx = createContext<Waiting>({
   running: null,
   conflicts: null,
+  conflicted: null,
   findings: null,
   trash: null,
   refresh: () => {},
@@ -30,13 +33,20 @@ const Ctx = createContext<Waiting>({
 export function WaitingProvider({ children }: { children: ReactNode }) {
   const [running, setRunning] = useState<number | null>(null);
   const [conflicts, setConflicts] = useState<number | null>(null);
+  const [conflicted, setConflicted] = useState<string[] | null>(null);
   const [findings, setFindings] = useState<Finding[] | null>(null);
   const [trash, setTrash] = useState<number | null>(null);
 
   // Each count lands on its own, so a slow trash listing holds up nothing.
   const refresh = useCallback(() => {
     api.jobs().then((jobs) => setRunning(jobs.filter((j) => j.running).length), () => {});
-    api.conflicts().then((got) => setConflicts(got.conflicts.length), () => {});
+    api.conflicts().then(
+      (got) => {
+        setConflicts(got.conflicts.length);
+        setConflicted([...new Set(got.conflicts.map((c) => c.job))]);
+      },
+      () => {},
+    );
     api.anomalies().then((got) => setFindings(got.open), () => {});
     api.trashAll().then((got) => setTrash(trashTotals(got.sides.filter((s) => !s.error)).entries), () => {});
   }, []);
@@ -48,8 +58,8 @@ export function WaitingProvider({ children }: { children: ReactNode }) {
   });
 
   const value = useMemo(
-    () => ({ running, conflicts, findings, trash, refresh }),
-    [running, conflicts, findings, trash, refresh],
+    () => ({ running, conflicts, conflicted, findings, trash, refresh }),
+    [running, conflicts, conflicted, findings, trash, refresh],
   );
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

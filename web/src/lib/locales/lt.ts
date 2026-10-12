@@ -982,6 +982,7 @@ const lt: Translations = {
   'status.needsYou': 'Reikia jūsų',
   'status.running': 'Vykdoma',
   'status.held': 'Sustabdyta',
+  'status.conflict': 'Laukia konfliktas',
   'status.failed': 'Nepavyko',
   'status.paused': 'Pristabdyta',
   'status.never': 'Dar nepaleista',

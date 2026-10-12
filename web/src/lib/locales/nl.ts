@@ -982,6 +982,7 @@ const nl: Translations = {
   'status.needsYou': 'Heeft jou nodig',
   'status.running': 'Bezig',
   'status.held': 'Vastgehouden',
+  'status.conflict': 'Conflict wacht',
   'status.failed': 'Mislukt',
   'status.paused': 'Gepauzeerd',
   'status.never': 'Nog niet uitgevoerd',

@@ -49,12 +49,12 @@ function job(name: string): Job {
 
 const went = vi.fn((_place: unknown) => undefined)
 
-function page(name = 'photos') {
+function page(name = 'photos', conflicted: string[] = []) {
   render(
     <ToastProvider>
       <GoTo.Provider value={went}>
         <LiveJobs.Provider
-          value={{ jobs: [job('photos'), job('music')], findings: [], progress: {}, speeds: {}, onSaved: () => undefined }}
+          value={{ jobs: [job('photos'), job('music')], findings: [], conflicted, progress: {}, speeds: {}, onSaved: () => undefined }}
         >
           <JobPage name={name} />
         </LiveJobs.Provider>
@@ -117,6 +117,12 @@ describe('a job page', () => {
     await waitFor(() => expect(saveConfig).toHaveBeenCalled())
     expect(saveConfig.mock.calls[0][0]).toEqual([pair()[1]])
     await waitFor(() => expect(went).toHaveBeenCalledWith({ tab: 'jobs', job: '' }))
+  })
+
+  it('names a waiting conflict in its head and leads to it', async () => {
+    page('photos', ['photos'])
+    fireEvent.click(await screen.findByRole('button', { name: 'Conflict waiting' }))
+    expect(went).toHaveBeenCalledWith({ tab: 'conflicts', job: 'photos' })
   })
 
   it('says so when no job has the name', async () => {

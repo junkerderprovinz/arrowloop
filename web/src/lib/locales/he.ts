@@ -982,6 +982,7 @@ const he: Translations = {
   'status.needsYou': 'דורש את תשומת לבך',
   'status.running': 'פועלת',
   'status.held': 'מוחזקת',
+  'status.conflict': 'התנגשות ממתינה',
   'status.failed': 'נכשלה',
   'status.paused': 'מושהית',
   'status.never': 'טרם הורצה',

@@ -982,6 +982,7 @@ const uk: Translations = {
   'status.needsYou': 'Потрібна ваша увага',
   'status.running': 'Виконується',
   'status.held': 'Призупинено',
+  'status.conflict': 'Конфлікт чекає',
   'status.failed': 'Невдало',
   'status.paused': 'На паузі',
   'status.never': 'Ще не запускалося',

@@ -982,6 +982,7 @@ const ro: Translations = {
   'status.needsYou': 'Are nevoie de tine',
   'status.running': 'În desfășurare',
   'status.held': 'Oprită',
+  'status.conflict': 'Conflict în așteptare',
   'status.failed': 'Eșuată',
   'status.paused': 'În pauză',
   'status.never': 'Încă nerulată',

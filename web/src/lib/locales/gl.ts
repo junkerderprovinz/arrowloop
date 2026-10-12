@@ -982,6 +982,7 @@ const gl: Translations = {
   'status.needsYou': 'Necesítate',
   'status.running': 'Executándose',
   'status.held': 'Retida',
+  'status.conflict': 'Conflito pendente',
   'status.failed': 'Fallou',
   'status.paused': 'En pausa',
   'status.never': 'Aínda sen executar',
