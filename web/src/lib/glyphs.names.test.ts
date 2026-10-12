@@ -57,3 +57,9 @@ describe('glyph names given as strings', () => {
     expect(stale, 'glyphs.json changed without a rerun of scripts/gen_glyphs.py').toEqual([])
   })
 })
+
+describe('the preview glyph', () => {
+  it('is a drawing of its own, not the eye that shows a secret', () => {
+    expect(JSON.stringify(GLYPHS.IconPreview)).not.toEqual(JSON.stringify(GLYPHS.IconEye))
+  })
+})
