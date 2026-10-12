@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Alert, StyleSheet, Text, View } from "react-native";
-import Svg, { Path } from "react-native-svg";
 import { useRoute, type RouteProp } from "@react-navigation/native";
 import { api, type Config, type Job } from "../api";
 import { NumberField } from "../fields";
@@ -8,7 +7,7 @@ import { useT } from "../i18n";
 import type { MoreStack } from "../nav";
 import { settings } from "../settings";
 import { jobSides } from "../sides";
-import { space, text } from "../theme";
+import { contrastOn, space, text } from "../theme";
 import { useEngineStream } from "../useEngine";
 import {
   SEVERITIES,
@@ -27,7 +26,24 @@ import {
   type Severity,
 } from "../../../web/src/lib/anomalies";
 import type { TranslationKey } from "../i18n";
-import { Badge, Body, Button, Caption, Card, Empty, InfoBubble, Mono, Page, Pair, Press, Section, Toggle, useTheme } from "../ui";
+import {
+  AxisLabel,
+  Badge,
+  Body,
+  Button,
+  Caption,
+  Empty,
+  InfoBubble,
+  Mono,
+  Page,
+  Pair,
+  Press,
+  Row,
+  Section,
+  Sheet,
+  Toggle,
+  useTheme,
+} from "../ui";
 
 const TILE_LABEL: Record<Severity, TranslationKey> = {
   critical: "anomaly.severity.critical",
@@ -46,10 +62,16 @@ const SHOWN_PATHS = 50;
 
 type OwnBrakes = Pick<Brakes, "brakePercent" | "changePercent">;
 
+/** What a sheet over the page shows: one finding, or one job's brakes. */
+type Opened =
+  | { kind: "finding"; finding: Finding; places: [string, string]; closed?: boolean }
+  | { kind: "monitoring"; job: string };
+
 /**
  * What the engine found about the jobs, laid out as the web's Anomalies page:
- * three tiles that count and filter, a card per job with open findings, the
- * jobs without any, and what was closed lately.
+ * three tiles that count and pick, a card per job with open findings, the jobs
+ * without any, and what was closed lately. Nothing folds open in place: a
+ * finding and a job's brakes open in a sheet.
  */
 export function Anomalies() {
   const { t } = useT();
@@ -58,10 +80,13 @@ export function Anomalies() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [config, setConfig] = useState<Config | null>(null);
   const [global, setGlobal] = useState<Brakes>(() => globalBrakes(undefined));
-  const [hidden, setHidden] = useState<Set<Severity>>(new Set());
+  const [picked, setPicked] = useState<Severity | null>(null);
+  const [opened, setOpened] = useState<Opened | null>(null);
   const [error, setError] = useState("");
   // The jobs whose refused change was let run, and have not answered yet.
   const allowed = useRef(new Set<string>());
+  // Another screen sent somebody here for one job's finding, which opens once.
+  const focused = useRef(false);
 
   const load = useCallback(async () => {
     try {
@@ -81,6 +106,13 @@ export function Anomalies() {
       () => {},
     );
   }, [load]);
+
+  useEffect(() => {
+    if (!listing || !focus || focused.current) return;
+    focused.current = true;
+    const first = groupFindings(listing.open.filter((f) => f.job === focus))[0]?.findings[0];
+    if (first) setOpened({ kind: "finding", finding: first, places: jobSides(jobs, focus, t) });
+  }, [listing, focus, jobs, t]);
 
   useEngineStream(true, (event) => {
     if (event.phase !== "finished" && event.phase !== "anomaly") return;
@@ -144,24 +176,20 @@ export function Anomalies() {
 
   if (!listing) return <Empty title={t("history.working")} detail={error || undefined} />;
 
-  const groups = groupFindings(listing.open.filter((f) => !hidden.has(f.severity)));
+  const groups = groupFindings(listing.open.filter((f) => !picked || f.severity === picked));
   const loud = new Set(listing.open.map((f) => f.job));
   const quiet = jobs.filter((j) => !loud.has(j.name));
   const brakes: BrakeBook = { config, global, setOwn };
+  const openFinding = (finding: Finding, closed?: boolean) =>
+    setOpened({ kind: "finding", finding, places: jobSides(jobs, finding.job, t), closed });
+  const openMonitoring = (job: string) => setOpened({ kind: "monitoring", job });
 
   return (
     <Page>
       <Tiles
         counts={countBySeverity(listing.open)}
-        hidden={hidden}
-        onToggle={(severity) =>
-          setHidden((old) => {
-            const next = new Set(old);
-            if (next.has(severity)) next.delete(severity);
-            else next.add(severity);
-            return next;
-          })
-        }
+        picked={picked}
+        onPick={(severity) => setPicked((old) => (old === severity ? null : severity))}
       />
 
       {error ? <Body>{error}</Body> : null}
@@ -178,8 +206,8 @@ export function Anomalies() {
           group={g}
           places={jobSides(jobs, g.job, t)}
           hue={i}
-          opened={focus === g.job}
-          brakes={brakes}
+          onOpen={(f) => openFinding(f)}
+          onMonitoring={() => openMonitoring(g.job)}
           onAnswer={answer}
           onAcknowledge={acknowledge}
           onRun={runNow}
@@ -189,12 +217,34 @@ export function Anomalies() {
       {quiet.length > 0 ? (
         <Section title={`${t("anomaly.quiet")} · ${quiet.length}`} hint={t("anomaly.quietHint")} hue={groups.length}>
           {quiet.map((j) => (
-            <QuietRow key={j.name} job={j.name} brakes={brakes} />
+            <Row key={j.name} label={j.name} onPress={() => openMonitoring(j.name)} />
           ))}
         </Section>
       ) : null}
 
-      <Closed closed={listing.closed} jobs={jobs} />
+      <Section title={`${t("anomaly.closed")} · ${listing.closed.length}`} hue={groups.length + 1}>
+        {listing.closed.length === 0 ? <Body muted>{t("anomaly.noneClosed")}</Body> : null}
+        {listing.closed.map((f) => (
+          <Line key={f.id} finding={f} places={jobSides(jobs, f.job, t)} closed onPress={() => openFinding(f, true)} />
+        ))}
+      </Section>
+
+      <Sheet
+        open={opened !== null}
+        title={
+          opened?.kind === "monitoring"
+            ? `${opened.job} · ${t("anomaly.monitoring")}`
+            : opened
+              ? `${opened.finding.job} · ${t(`anomaly.kind.${opened.finding.kind}`)}`
+              : ""
+        }
+        onClose={() => setOpened(null)}
+      >
+        {opened?.kind === "monitoring" ? <Monitoring job={opened.job} brakes={brakes} /> : null}
+        {opened?.kind === "finding" ? (
+          <FindingDetail finding={opened.finding} places={opened.places} closed={opened.closed} />
+        ) : null}
+      </Sheet>
     </Page>
   );
 }
@@ -206,49 +256,41 @@ type BrakeBook = {
   setOwn: (job: string, own: OwnBrakes | null) => void;
 };
 
-/** The fold arrow, pointing along the line and down when open. */
-function Disclosure({ open, color }: { open: boolean; color: string }) {
-  return (
-    <Svg width={12} height={12} viewBox="0 0 12 12" style={{ transform: [{ rotate: open ? "90deg" : "0deg" }] }}>
-      <Path fill={color} d="M4 1.3 8.5 6 4 10.7Z" />
-    </Svg>
-  );
-}
-
 /**
- * The tiles count the open findings by severity and are the only filter: a
- * tap hides that severity and a second one brings it back.
+ * The tiles count the open findings by severity. A tap picks the findings a
+ * tile stands for and a second tap shows them all again; the rest of the page
+ * stays.
  */
 function Tiles({
   counts,
-  hidden,
-  onToggle,
+  picked,
+  onPick,
 }: {
   counts: Record<Severity, number>;
-  hidden: Set<Severity>;
-  onToggle: (severity: Severity) => void;
+  picked: Severity | null;
+  onPick: (severity: Severity) => void;
 }) {
   const { t } = useT();
-  const { p, corners } = useTheme();
+  const { p, corners, accent } = useTheme();
   const tone: Record<Severity, string> = { critical: p.failInk, warning: p.warnInk, info: p.text };
   return (
     <View style={styles.tiles} accessibilityLabel={t("anomaly.filter")}>
       {SEVERITIES.map((severity) => {
-        const shown = !hidden.has(severity);
+        const on = picked === severity;
+        const ink = on ? contrastOn(accent) : undefined;
         return (
           <Press
             key={severity}
-            onPress={() => onToggle(severity)}
+            onPress={() => onPick(severity)}
             accessibilityRole="button"
-            accessibilityState={{ selected: shown }}
+            accessibilityState={{ selected: on }}
             android_ripple={{ color: p.hover }}
-            style={[styles.tile, { backgroundColor: p.surface, ...corners.card }]}
+            style={[styles.tile, { backgroundColor: on ? accent : p.surface, ...corners.card }]}
           >
-            <Text style={[styles.tileNumber, { color: shown ? tone[severity] : p.textMuted }]}>{counts[severity]}</Text>
-            <Text style={[styles.tileLabel, { color: shown ? p.text : p.textMuted }]} numberOfLines={1}>
+            <Text style={[styles.tileNumber, { color: ink ?? tone[severity] }]}>{counts[severity]}</Text>
+            <Text style={[styles.tileLabel, { color: ink ?? p.text }]} numberOfLines={1}>
               {t(TILE_LABEL[severity])}
             </Text>
-            <Caption>{t(shown ? "anomaly.tile.shown" : "anomaly.tile.hidden")}</Caption>
           </Press>
         );
       })}
@@ -256,7 +298,7 @@ function Tiles({
   );
 }
 
-/** A held job says so wherever its finding's line is closed. */
+/** A held job says so on its card and in its finding. */
 function HeldNote() {
   const { t } = useT();
   const { p } = useTheme();
@@ -272,8 +314,8 @@ function FindingCard({
   group,
   places,
   hue,
-  opened,
-  brakes,
+  onOpen,
+  onMonitoring,
   onAnswer,
   onAcknowledge,
   onRun,
@@ -281,47 +323,27 @@ function FindingCard({
   group: FindingGroup;
   places: [string, string];
   hue: number;
-  /** Another screen sent somebody here for this job, so its lines start open. */
-  opened: boolean;
-  brakes: BrakeBook;
+  onOpen: (finding: Finding) => void;
+  onMonitoring: () => void;
   onAnswer: (finding: Finding, how: "run" | "back") => void;
   onAcknowledge: (finding: Finding) => void;
   onRun: (job: string) => void;
 }) {
   const { t } = useT();
-  const { p } = useTheme();
-  const [openIds, setOpenIds] = useState<Set<string>>(() => new Set(opened ? group.findings.map((f) => f.id) : []));
-  const [monitoring, setMonitoring] = useState(false);
   const held = group.findings.find((f) => f.held);
   const lead = held ? leadingAnswer(held) : undefined;
 
-  const toggleLine = (id: string) =>
-    setOpenIds((old) => {
-      const next = new Set(old);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-
   // A held job has two answers, run or take back; a note is acknowledged or
-  // the job is run. The one usually meant stands last, in the accent.
+  // the job is run. The one usually meant stands last. Both are quiet, since a
+  // button inside a card is never the screen's accent.
   const run = held ? (
-    <Button
-      key="run"
-      label={t("anomaly.run")}
-      labelKey="anomaly.run"
-      tone={lead === "run" ? "accent" : "neutral"}
-      hue={hue}
-      onPress={() => onAnswer(held, "run")}
-    />
+    <Button key="run" label={t("anomaly.run")} labelKey="anomaly.run" onPress={() => onAnswer(held, "run")} />
   ) : null;
   const restore = held ? (
     <Button
       key="restore"
       label={t("anomaly.restore")}
       labelKey="anomaly.restore"
-      tone={lead === "restore" ? "accent" : "neutral"}
-      hue={hue}
       onPress={() => onAnswer(held, "back")}
     />
   ) : null;
@@ -334,21 +356,12 @@ function FindingCard({
       </View>
 
       {group.findings.map((f) => (
-        <Line key={f.id} finding={f} places={places} open={openIds.has(f.id)} onToggle={() => toggleLine(f.id)} />
+        <Line key={f.id} finding={f} places={places} onPress={() => onOpen(f)} />
       ))}
 
-      {held && !openIds.has(held.id) ? <HeldNote /> : null}
+      {held ? <HeldNote /> : null}
 
-      <Press
-        onPress={() => setMonitoring(!monitoring)}
-        accessibilityRole="button"
-        accessibilityState={{ expanded: monitoring }}
-        style={styles.fold}
-      >
-        <Text style={[styles.foldText, { color: p.textSub }]}>{t("anomaly.monitoring")}</Text>
-        <Disclosure open={monitoring} color={p.textSub} />
-      </Press>
-      {monitoring ? <Monitoring job={group.job} brakes={brakes} /> : null}
+      <Row label={t("anomaly.monitoring")} onPress={onMonitoring} />
 
       <View style={styles.answers}>
         {held ? (
@@ -360,13 +373,7 @@ function FindingCard({
               labelKey="anomaly.acknowledge"
               onPress={() => group.findings.forEach(onAcknowledge)}
             />
-            <Button
-              label={t("jobs.runNow")}
-              labelKey="jobs.runNow"
-              tone="accent"
-              hue={hue}
-              onPress={() => onRun(group.job)}
-            />
+            <Button label={t("jobs.runNow")} labelKey="jobs.runNow" onPress={() => onRun(group.job)} />
           </>
         )}
       </View>
@@ -382,87 +389,69 @@ function FindingCard({
 }
 
 /**
- * One finding as a line: a dot for its severity, what happened, and the fold
- * arrow. Opened, it says the whole sentence, the figures and the files. The
- * card around it names the job, so only a closed finding's line does.
+ * One finding as a line: a dot for its severity and what happened. A tap opens
+ * the whole of it in a sheet. The card around it names the job, so only a
+ * closed finding's line does.
  */
 function Line({
   finding: f,
   places,
-  open,
-  onToggle,
+  onPress,
   closed,
 }: {
   finding: Finding;
   places: [string, string];
-  open: boolean;
-  onToggle: () => void;
+  onPress: () => void;
   closed?: boolean;
 }) {
   const { t } = useT();
   const { p } = useTheme();
-  const [files, setFiles] = useState(false);
   const dot: Record<Severity, string> = { critical: p.failSolid, warning: p.warnSolid, info: p.textMuted };
+  return (
+    <Press onPress={onPress} accessibilityRole="button" android_ripple={{ color: p.hover }} style={styles.line}>
+      <View style={[styles.dot, { backgroundColor: dot[f.severity] }]} />
+      <Text style={[styles.lineText, { color: p.text }]}>
+        {closed ? <Text style={styles.lineJob}>{`${f.job}: `}</Text> : null}
+        <Text style={{ color: p.textSub }}>{`${t(`anomaly.kind.${f.kind}`)}: `}</Text>
+        {shortLine(f, t, places)}
+      </Text>
+    </Press>
+  );
+}
+
+/** A finding in full: the sentence, the figures, the engine's words and the files. */
+function FindingDetail({
+  finding: f,
+  places,
+  closed,
+}: {
+  finding: Finding;
+  places: [string, string];
+  closed?: boolean;
+}) {
+  const { t } = useT();
   const paths = (f.paths ?? []).slice(0, SHOWN_PATHS);
   const more = (f.count ?? 0) - paths.length;
-
   return (
-    <View>
-      <Press
-        onPress={onToggle}
-        accessibilityRole="button"
-        accessibilityState={{ expanded: open }}
-        android_ripple={{ color: p.hover }}
-        style={styles.line}
-      >
-        <View style={[styles.dot, { backgroundColor: dot[f.severity] }]} />
-        <Text style={[styles.lineText, { color: p.text }]}>
-          {closed ? <Text style={styles.lineJob}>{`${f.job}: `}</Text> : null}
-          <Text style={{ color: p.textSub }}>{`${t(`anomaly.kind.${f.kind}`)}: `}</Text>
-          {shortLine(f, t, places)}
-        </Text>
-        <Disclosure open={open} color={p.textSub} />
-      </Press>
-
-      {open ? (
-        <View style={styles.lineBody}>
-          {closed && f.outcome ? <Caption>{t(`anomaly.outcome.${f.outcome}`)}</Caption> : null}
-          <Body>{sentence(f, t, places)}</Body>
-          {figures(f, t).map(([term, value]) => (
-            <Pair key={term} label={term} value={value} />
+    <>
+      {closed && f.outcome ? <Caption>{t(`anomaly.outcome.${f.outcome}`)}</Caption> : null}
+      <Body>{sentence(f, t, places)}</Body>
+      {figures(f, t).map(([term, value]) => (
+        <Pair key={term} label={term} value={value} />
+      ))}
+      {/* The engine's own words for a failure, which name the cause. */}
+      {f.kind === "failing" && f.detail ? <Mono>{f.detail}</Mono> : null}
+      {!closed && paths.length > 0 ? (
+        <View style={styles.files}>
+          <AxisLabel hint={t("anomaly.filesHint")}>{t("anomaly.files")}</AxisLabel>
+          {paths.map((path) => (
+            <Mono key={path}>{path}</Mono>
           ))}
-          {/* The engine's own words for a failure, which name the cause. */}
-          {f.kind === "failing" && f.detail ? <Mono>{f.detail}</Mono> : null}
-
-          {!closed && paths.length > 0 ? (
-            <>
-              <View style={styles.filesHead}>
-                <Press
-                  onPress={() => setFiles(!files)}
-                  accessibilityRole="button"
-                  accessibilityState={{ expanded: files }}
-                  style={styles.fold}
-                >
-                  <Disclosure open={files} color={p.textSub} />
-                  <Text style={[styles.foldText, { color: p.textSub }]}>{t("anomaly.files")}</Text>
-                </Press>
-                <InfoBubble tip={t("anomaly.filesHint")} />
-              </View>
-              {files ? (
-                <View style={styles.files}>
-                  {paths.map((path) => (
-                    <Mono key={path}>{path}</Mono>
-                  ))}
-                  {more > 0 ? <Caption>{t("anomaly.filesMore", { count: more })}</Caption> : null}
-                </View>
-              ) : null}
-            </>
-          ) : null}
-
-          {!closed && f.held ? <HeldNote /> : null}
+          {more > 0 ? <Caption>{t("anomaly.filesMore", { count: more })}</Caption> : null}
         </View>
       ) : null}
-    </View>
+      {!closed && f.held ? <HeldNote /> : null}
+    </>
   );
 }
 
@@ -522,69 +511,6 @@ function Monitoring({ job, brakes }: { job: string; brakes: BrakeBook }) {
   );
 }
 
-function QuietRow({ job, brakes }: { job: string; brakes: BrakeBook }) {
-  const { p } = useTheme();
-  const [open, setOpen] = useState(false);
-  return (
-    <View>
-      <Press
-        onPress={() => setOpen(!open)}
-        accessibilityRole="button"
-        accessibilityState={{ expanded: open }}
-        android_ripple={{ color: p.hover }}
-        style={styles.line}
-      >
-        <Text style={[styles.lineText, { color: p.text }]}>{job}</Text>
-        <Disclosure open={open} color={p.textSub} />
-      </Press>
-      {open ? <Monitoring job={job} brakes={brakes} /> : null}
-    </View>
-  );
-}
-
-function Closed({ closed, jobs }: { closed: Finding[]; jobs: Job[] }) {
-  const { t } = useT();
-  const { p } = useTheme();
-  const [open, setOpen] = useState(false);
-  const [openIds, setOpenIds] = useState<Set<string>>(new Set());
-
-  const toggleLine = (id: string) =>
-    setOpenIds((old) => {
-      const next = new Set(old);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-
-  return (
-    <Card>
-      <Press
-        onPress={() => setOpen(!open)}
-        accessibilityRole="button"
-        accessibilityState={{ expanded: open }}
-        style={styles.line}
-      >
-        <Disclosure open={open} color={p.textSub} />
-        <Text style={[styles.lineText, { color: p.text }]}>{t("anomaly.closed")}</Text>
-        <Caption>{String(closed.length)}</Caption>
-      </Press>
-      {open && closed.length === 0 ? <Body muted>{t("anomaly.noneClosed")}</Body> : null}
-      {open
-        ? closed.map((f) => (
-            <Line
-              key={f.id}
-              finding={f}
-              places={jobSides(jobs, f.job, t)}
-              closed
-              open={openIds.has(f.id)}
-              onToggle={() => toggleLine(f.id)}
-            />
-          ))
-        : null}
-    </Card>
-  );
-}
-
 const styles = StyleSheet.create({
   tiles: {
     flexDirection: "row",
@@ -626,27 +552,8 @@ const styles = StyleSheet.create({
     height: 8,
     borderRadius: 4,
   },
-  lineBody: {
-    gap: space.sm,
-    paddingStart: space.lg,
-    paddingBottom: space.sm,
-  },
-  filesHead: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: space.sm,
-  },
   files: {
     gap: 2,
-  },
-  fold: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    minHeight: 36,
-  },
-  foldText: {
-    fontSize: text.meta,
   },
   held: {
     flexDirection: "row",

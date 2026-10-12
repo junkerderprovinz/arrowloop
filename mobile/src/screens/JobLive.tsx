@@ -69,7 +69,6 @@ export function JobLive({ name }: { name: string }) {
             // and "pause" is the word for holding a schedule.
             label={job.running ? t("jobs.cancelRun") : t("jobs.runNow")}
             labelKey={job.running ? "jobs.cancelRun" : "jobs.runNow"}
-            tone={job.running ? "neutral" : "accent"}
             busy={busy === "run"}
             disabled={job.disabled}
             onPress={() =>
