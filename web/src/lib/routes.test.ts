@@ -34,6 +34,10 @@ describe('the addresses', () => {
     expect(go('/jobs/photos%20raw/preview')).toEqual({ redirect: '/jobs/photos%20raw' })
   })
 
+  it('give a job address with a broken escape a page that finds no job', () => {
+    expect(go('/jobs/%E0')).toEqual({ view: { page: 'job', name: '%E0' } })
+  })
+
   it('send unpinned Targets to its settings tile and keep what the link asked for', () => {
     expect(go('/targets?x=1')).toEqual({ redirect: '/settings/targets?x=1' })
   })
