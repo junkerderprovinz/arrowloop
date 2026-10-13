@@ -1,12 +1,12 @@
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Alert, AppState, Linking, PermissionsAndroid, Platform, StyleSheet, Text, View } from "react-native";
 import Constants from "expo-constants";
 import { api } from "../api";
 import { engine } from "../engine";
-import { useT } from "../i18n";
+import { useT, type T } from "../i18n";
 import type { Nav, SettingsStack } from "../nav";
-import { ACCENTS, BRAND, DEFAULT_ACCENT, PLATFORM, RAINBOW, space, text, TILE } from "../theme";
+import { ACCENTS, BRAND, DEFAULT_ACCENT, PLATFORM, RAINBOW, space, text, TILE, TOUCH } from "../theme";
 import {
   setAppearance,
   settings as settingsApi,
@@ -23,11 +23,14 @@ import { MANUAL, PRIVACY } from "../../../web/src/lib/handbook";
 import { nearestPreset } from "../../../web/src/lib/colorMath";
 import { stopEvery } from "../../../web/src/lib/stopEvery";
 import { flagEmoji } from "../../../web/src/lib/flagEmoji";
+import { describeValue, inForce, type Defaults } from "../../../web/src/lib/follows";
 import { useClosingLoop, useDiscoUnlock, useLeafUnlock, useStormUnlock } from "../eggs";
 import { animateNext, useMotion, useSystemReduced, type MotionIntensity } from "../motion";
 import { ColorPicker, EditableSwatch, ResetMark } from "../ColorPicker";
 import { CryptoDonate } from "../donate";
 import { Field } from "../fields";
+import { DropButton } from "../choiceRow";
+import { wayLabel, wayOf } from "../way";
 import { isAccount } from "../space";
 import { useWaiting } from "../waiting";
 import { AppMark, CoffeeArt, DonateMark, MailMark, ManualMark } from "../glyphs";
@@ -42,7 +45,7 @@ import {
   Page,
   InfoBubble,
   Mono,
-  Press,
+  Pair,
   README_GAP,
   ReadmeButton,
   ReadmeRow,
@@ -56,7 +59,9 @@ import {
  * The settings page, in the order every GlimStone phone app keeps: the
  * language, the phone's own permissions, the look, motion, then what this app
  * does, the other forms of ArrowLoop, the report, About and the danger zone.
- * Each card keeps its palette position wherever it stands.
+ * The global sync settings stand right under the language, since they are
+ * what most people come here to change. Each card keeps its palette position
+ * wherever it stands.
  */
 export function Settings() {
   const nav = useNavigation<Nav<SettingsStack>>();
@@ -86,6 +91,8 @@ export function Settings() {
   const [doze, setDoze] = useState<boolean | null>(null);
   const [running, setRunning] = useState<boolean | null>(null);
   const [version, setVersion] = useState<string | null>(null);
+  // Null until read, so the card never shows the built-in values for a moment.
+  const [defaults, setDefaults] = useState<Defaults | null>(null);
   const [lockable, setLockable] = useState(false);
   const [backupFile, setBackupFile] = useState("");
   const [backupBusy, setBackupBusy] = useState(false);
@@ -216,6 +223,16 @@ export function Settings() {
     refresh();
   }, [refresh]);
 
+  // Read on every visit, so the card shows what was just changed on the Sync page.
+  useFocusEffect(
+    useCallback(() => {
+      settingsApi.read().then(
+        (s) => setDefaults((s.defaults ?? {}) as Defaults),
+        () => {},
+      );
+    }, []),
+  );
+
   // Two of the permissions are granted on system pages with no result
   // callback, so they are read again when the app returns.
   useEffect(() => {
@@ -279,17 +296,41 @@ export function Settings() {
       {/* The language comes first: somebody who cannot read the screen comes
           looking for exactly this. */}
       <Section title={t("look.language")} hue={0}>
-        {/* A row rather than a picker: forty languages want a page. The notch
-            names the setting, so the row shows only the language in use. */}
-        <Press
-          accessibilityRole="button"
+        {/* A dropdown that opens a page rather than a list: forty languages
+            want a page. The notch names the setting, so the control shows
+            only the language in use. */}
+        <DropButton
+          accessibilityLabel={`${t("look.language")}: ${langName(lang)}`}
           onPress={() => nav.navigate("Language")}
           style={styles.language}
         >
           {/* The flag is an emoji, not a glyph. */}
           <Text style={styles.flag}>{flagEmoji(langFlag(lang))}</Text>
-          <Text style={[styles.languageName, { color: p.text }]}>{langName(lang)}</Text>
-        </Press>
+          <Text style={[styles.languageName, { color: p.text }]} numberOfLines={1}>
+            {langName(lang)}
+          </Text>
+        </DropButton>
+      </Section>
+
+      {/* The defaults at a glance and the way to all of them, as the web's
+          Sync tile leads to its page. */}
+      <Section title={t("settings.sync")} hint={t("settings.syncHint")} hue={3}>
+        <Pair label={t("direction.label")} value={defaults ? directionOf(defaults, t) : ""} />
+        <Pair
+          label={t("edit.schedule")}
+          value={defaults ? sentence(describeValue(inForce(defaults, "schedule"), "schedule", t)) : ""}
+        />
+        <Row
+          label={t("engine.defaults")}
+          control={
+            <Button
+              label={t("settings.open")}
+              labelKey="settings.open"
+              wide={false}
+              onPress={() => nav.navigate("Sync")}
+            />
+          }
+        />
       </Section>
 
       {/* Each switch reads Android's state; a tap opens the request dialog or
@@ -549,8 +590,6 @@ export function Settings() {
         />
       </Section>
 
-      {/* The engine runs inside this app; the defaults every job starts from
-          live on their own page. */}
       <Section title={t("phone.syncEngine")} hint={t("phone.engineHint")} hue={9}>
         <Body>{running ? t("phone.engineOn") : t("phone.engineOff")}</Body>
         <View style={styles.actions}>
@@ -568,7 +607,6 @@ export function Settings() {
             />
           )}
         </View>
-        <Row label={t("engine.defaults")} hint={t("settings.syncHint")} onPress={() => nav.navigate("Sync")} />
       </Section>
 
       {/* One file with a fixed name in Downloads; the path can be edited to
@@ -902,6 +940,23 @@ function releaseUrl(version: string | null): string {
   return `${REPO}/releases`;
 }
 
+/**
+ * The default direction as the Sync page's selector names it, by the sides a
+ * phone stacks rather than left and right, with the mode where it has one.
+ */
+function directionOf(defaults: Defaults, t: T): string {
+  const { direction, mode } = inForce(defaults, "direction");
+  const way = wayOf(direction);
+  const named = wayLabel(way, t("side.onDevice"), t("side.target"), t("direction.both"));
+  if (way === "both") return named;
+  return `${named}, ${t(mode === "mirror" ? "mode.mirror" : mode === "move" ? "mode.move" : "mode.sync")}`;
+}
+
+/** A cadence starts mid-sentence in lower case; standing alone it takes a capital. */
+function sentence(said: string): string {
+  return said.charAt(0).toLocaleUpperCase() + said.slice(1);
+}
+
 function langName(code: string): string {
   // Required lazily; LANGUAGES is all this needs from the module.
   const { LANGUAGES } = require("../i18n") as typeof import("../i18n");
@@ -921,7 +976,8 @@ const styles = StyleSheet.create({
   axisName: { flexDirection: "row", alignItems: "center", gap: space.sm },
   axisRowInner: { flexDirection: "row", alignItems: "center", gap: space.md, flex: 1 },
   dimmed: { opacity: 0.4 },
-  language: { flexDirection: "row", alignItems: "center", gap: space.md, minHeight: 44 },
+  // The key-control height, as the fields and buttons further down.
+  language: { minHeight: TOUCH, gap: space.md },
   languageName: { flex: 1, fontSize: text.body },
   flag: { fontSize: text.title },
   link: { fontVariant: ["tabular-nums"] },

@@ -1,5 +1,14 @@
-import { useRef, useState } from "react";
-import { Modal, Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
+import { useRef, useState, type ReactNode } from "react";
+import {
+  Modal,
+  Pressable,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
+  type StyleProp,
+  type ViewStyle,
+} from "react-native";
 import Svg, { Path } from "react-native-svg";
 
 import { Glyph } from "./glyphs";
@@ -129,22 +138,16 @@ function Dropdown<T extends string>({
   return (
     <>
       <View ref={button} collapsable={false} style={styles.slot}>
-        <Press
+        <DropButton
           onPress={open}
           disabled={disabled}
-          accessibilityRole="button"
+          expanded={at !== null}
           accessibilityLabel={`${label}: ${current?.label ?? ""}`}
-          accessibilityState={{ disabled: !!disabled, expanded: at !== null }}
-          android_ripple={{ color: p.hover }}
-          style={[styles.button, { backgroundColor: p.surface2, ...corners.control }, disabled ? styles.dimmed : null]}
         >
           <Text style={[styles.buttonText, { color: p.text }]} numberOfLines={1}>
             {current?.label ?? ""}
           </Text>
-          <Svg width={10} height={10} viewBox="0 0 10 10">
-            <Path d="M2 4l3 3 3-3" stroke={p.textMuted} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" fill="none" />
-          </Svg>
-        </Press>
+        </DropButton>
       </View>
       <Modal visible={at !== null} transparent animationType="fade" onRequestClose={() => setAt(null)}>
         <Pressable style={[styles.ground, { backgroundColor: p.scrim }]} onPress={() => setAt(null)}>
@@ -184,6 +187,45 @@ function Dropdown<T extends string>({
         </Pressable>
       </Modal>
     </>
+  );
+}
+
+/**
+ * A closed dropdown: the value on the control fill with a chevron at its end,
+ * so it reads as something to press. The language row opens a page rather
+ * than a list and wears the same control, as the web's language select does.
+ */
+export function DropButton({
+  onPress,
+  accessibilityLabel,
+  disabled,
+  expanded = false,
+  style,
+  children,
+}: {
+  onPress: () => void;
+  accessibilityLabel: string;
+  disabled?: boolean;
+  expanded?: boolean;
+  style?: StyleProp<ViewStyle>;
+  children: ReactNode;
+}) {
+  const { p, corners } = useTheme();
+  return (
+    <Press
+      onPress={onPress}
+      disabled={disabled}
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel}
+      accessibilityState={{ disabled: !!disabled, expanded }}
+      android_ripple={{ color: p.hover }}
+      style={[styles.button, { backgroundColor: p.surface2, ...corners.control }, disabled ? styles.dimmed : null, style]}
+    >
+      {children}
+      <Svg width={10} height={10} viewBox="0 0 10 10">
+        <Path d="M2 4l3 3 3-3" stroke={p.textMuted} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" fill="none" />
+      </Svg>
+    </Press>
   );
 }
 

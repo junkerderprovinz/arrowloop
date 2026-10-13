@@ -244,7 +244,7 @@ function Shell() {
                 <MoreNav.Screen name="Anomalies" component={Anomalies} options={{ title: t("nav.anomalies") }} />
                 <MoreNav.Screen name="SettingsHome" component={Settings} options={{ title: t("nav.settings") }} />
                 <MoreNav.Screen name="Language" component={Language} options={{ title: t("look.language") }} />
-                <MoreNav.Screen name="Sync" component={SyncSettings} options={{ title: t("engine.defaults") }} />
+                <MoreNav.Screen name="Sync" component={SyncSettings} options={{ title: t("settings.sync") }} />
               </MoreNav.Navigator>
             )}
           </Tabs.Screen>
