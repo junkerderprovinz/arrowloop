@@ -350,17 +350,18 @@ body {
    long the content (GlimStone, "Narrow windows"). The confirmation is a
    reference copy, so its sheet shape is set here rather than in its classes. */
 @media (max-width: 639px) {
-  /* A row's buttons are squares here, so the name keeps its room. */
-  .glim-row-actions .glim-btn {
+  /* A row's buttons are squares here, so the name keeps its room. A verdict
+     keeps its colour and glyph, and its reason stands under the name. */
+  :is(.glim-row-actions, .glim-row-verdict) .glim-btn {
     gap: 0;
     width: var(--btn-h);
     min-width: 0;
     padding-inline: 0;
   }
-  .glim-row-actions .glim-btn-glyph {
+  :is(.glim-row-actions, .glim-row-verdict) .glim-btn-glyph {
     display: inline-flex;
   }
-  .glim-row-actions .glim-btn-label {
+  :is(.glim-row-actions, .glim-row-verdict) .glim-btn-label {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -371,6 +372,11 @@ body {
   .glim-modal-backdrop {
     align-items: flex-end;
     padding: 0;
+  }
+  /* The 13rem floor would leave a single column of brands to scroll through. */
+  .glim-provider-pick {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
   }
   .glim-modal-backdrop > .glim-modal-card {
     max-width: none;

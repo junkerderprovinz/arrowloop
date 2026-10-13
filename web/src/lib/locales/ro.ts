@@ -302,6 +302,9 @@ const ro: Translations = {
   'edit.pickDrive': 'Un disc înregistrat',
   'edit.pickRemote': 'O destinație configurată',
   'targets.addStorage': 'Conectează stocare și cloud-uri',
+  'targets.addStorageHint': 'Alege ce vrei să conectezi. Cloud-urile, stocarea de obiecte și serverele au fiecare grupul lor, iar căutarea găsește un serviciu după numele lui sau după numele din rclone.',
+  'targets.search': 'Caută stocare și cloud-uri',
+  'targets.searchNone': 'Nimic nu se potrivește cu „{query}”. Majoritatea celorlalte servicii funcționează cu {s3} sau {webdav}.',
   'targets.cloudEmpty': 'Încă niciun cloud conectat. Aici se adaugă Dropbox, OneDrive, Google Drive și celelalte cloud-uri.',
   'targets.bucketEmpty': 'Încă nicio stocare de obiecte. Aici se adaugă găleți pe Backblaze B2, Wasabi, MinIO și orice altă stocare S3.',
   'targets.serverEmpty': 'Încă niciun server sau partajare. Aici se adaugă gazde SSH prin SFTP, servere WebDAV și partajări Windows.',
@@ -319,7 +322,6 @@ const ro: Translations = {
   'action.edit': 'Editează',
   'targets.cancel': 'Renunță',
   'targets.save': 'Salvează',
-  'targets.secretSet': 'Există o valoare salvată. Lăsați-o așa cum este și se păstrează.',
   'targets.access': 'Acces',
   'targets.drives': 'Discuri',
   'targets.drivesEmpty': 'Niciun disc înregistrat. Înregistrați unul ca o sarcină să îl regăsească chiar dacă revine cu altă literă.',
@@ -1168,7 +1170,8 @@ const ro: Translations = {
   'new.change.exceptions': '{exceptions} din {sync} enumeră sarcinile cu valori proprii. Cât timp fiecare sarcină urmează valorile implicite, cardul lipsește.',
   'new.change.scheduleSentence': 'Un program se citește ca o propoziție. Dă clic pe el pentru a deschide editorul; o expresie scrisă de mână rămâne la {cron}.',
   'new.change.jobMore': 'Fiecare card de sarcină are {more}, cu tot ce oferă pagina sarcinii. O sarcină poate fi editată, verificată sau eliminată fără să o deschizi.',
-  'new.change.providerNames': '{connect} numește fiecare tip de stocare pe care îl cunoaște rclone și îl pune în grupul său, cu logo, acolo unde există.',
+  'new.change.providerNames': '{connect} numește fiecare tip de stocare pe care îl cunoaște rclone și îl pune în grupul său, cu logo, acolo unde există. O căutare sus găsește un tip după nume sau după numele din rclone.',
+  'new.change.targetRows': 'Butonul {test} al fiecărei ținte arată singur {connected} sau {notConnected}, cu motivul pe rândul de sub nume. O parolă sau o cheie salvată apare ca {saved}, iar {change} deschide câmpul.',
 }
 
 export default ro

@@ -302,6 +302,9 @@ const it: Translations = {
   'edit.pickDrive': 'Un disco registrato',
   'edit.pickRemote': 'Una destinazione configurata',
   'targets.addStorage': 'Collega archivi e cloud',
+  'targets.addStorageHint': 'Scegli cosa collegare. Cloud, archivi a oggetti e server hanno ciascuno il proprio gruppo, e la ricerca trova un servizio dal suo nome o dal suo nome in rclone.',
+  'targets.search': 'Cerca archivi e cloud',
+  'targets.searchNone': 'Niente corrisponde a «{query}». La maggior parte degli altri servizi funziona con {s3} o {webdav}.',
   'targets.cloudEmpty': 'Ancora nessun cloud collegato. Qui si aggiungono Dropbox, OneDrive, Google Drive e gli altri cloud.',
   'targets.bucketEmpty': 'Ancora nessuna archiviazione a oggetti. Qui si aggiungono i bucket su Backblaze B2, Wasabi, MinIO e ogni altro archivio S3.',
   'targets.serverEmpty': 'Ancora nessun server o condivisione. Qui si aggiungono host SSH tramite SFTP, server WebDAV e condivisioni Windows.',
@@ -319,7 +322,6 @@ const it: Translations = {
   'action.edit': 'Modifica',
   'targets.cancel': 'Annulla',
   'targets.save': 'Salva',
-  'targets.secretSet': 'Un valore è memorizzato. Lascialo com\'è per conservarlo.',
   'targets.access': 'Accesso',
   'targets.drives': 'Dischi',
   'targets.drivesEmpty': 'Nessun disco registrato. Registrane uno perché un lavoro lo ritrovi anche se torna con un\'altra lettera.',
@@ -1168,7 +1170,8 @@ const it: Translations = {
   'new.change.exceptions': '{exceptions} in {sync} elenca i lavori con valori propri. Finché ogni lavoro segue i predefiniti, la scheda non c\'è.',
   'new.change.scheduleSentence': 'Una pianificazione si legge come una frase. Fai clic per aprire l\'editor; un\'espressione scritta a mano resta sotto {cron}.',
   'new.change.jobMore': 'Ogni scheda di lavoro ha {more}, con tutto ciò che offre la pagina del lavoro. Un lavoro si può modificare, controllare o rimuovere senza aprirlo.',
-  'new.change.providerNames': '{connect} dà un nome a ogni tipo di archivio che rclone conosce e lo mette nel suo gruppo, con il logo dove esiste.',
+  'new.change.providerNames': '{connect} dà un nome a ogni tipo di archivio che rclone conosce e lo mette nel suo gruppo, con il logo dove esiste. Una ricerca in alto ne trova uno dal nome o dal nome in rclone.',
+  'new.change.targetRows': 'Il pulsante {test} di ogni destinazione mostra da sé {connected} o {notConnected}, con il motivo sulla riga sotto il nome. Una password o una chiave salvata appare come {saved}, e {change} apre il campo.',
 }
 
 export default it

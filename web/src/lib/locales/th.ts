@@ -302,6 +302,9 @@ const th: Translations = {
   'edit.pickDrive': 'ดิสก์ที่ลงทะเบียนไว้',
   'edit.pickRemote': 'ปลายทางที่ตั้งไว้',
   'targets.addStorage': 'เชื่อมต่อที่เก็บและคลาวด์',
+  'targets.addStorageHint': 'เลือกสิ่งที่จะเชื่อมต่อ คลาวด์ ที่เก็บออบเจ็กต์ และเซิร์ฟเวอร์ต่างอยู่ในกลุ่มของตัวเอง และการค้นหาจะพบบริการจากชื่อหรือชื่อใน rclone',
+  'targets.search': 'ค้นหาที่เก็บและคลาวด์',
+  'targets.searchNone': 'ไม่มีรายการที่ตรงกับ "{query}" บริการอื่นส่วนใหญ่ใช้งานได้ด้วย {s3} หรือ {webdav}',
   'targets.cloudEmpty': 'ยังไม่มีคลาวด์ที่เชื่อมต่อ Dropbox, OneDrive, Google Drive และคลาวด์อื่นๆ เพิ่มได้ที่นี่',
   'targets.bucketEmpty': 'ยังไม่มีที่เก็บอ็อบเจกต์ ถังบน Backblaze B2, Wasabi, MinIO และที่เก็บ S3 อื่นๆ เพิ่มได้ที่นี่',
   'targets.serverEmpty': 'ยังไม่มีเซิร์ฟเวอร์หรือการแชร์ เครื่อง SSH ผ่าน SFTP เซิร์ฟเวอร์ WebDAV และแชร์ของ Windows เพิ่มได้ที่นี่',
@@ -319,7 +322,6 @@ const th: Translations = {
   'action.edit': 'แก้ไข',
   'targets.cancel': 'ยกเลิก',
   'targets.save': 'บันทึก',
-  'targets.secretSet': 'มีค่าที่บันทึกไว้แล้ว ปล่อยไว้อย่างนั้นแล้วค่าจะยังอยู่',
   'targets.access': 'การเข้าถึง',
   'targets.drives': 'ดิสก์',
   'targets.drivesEmpty': 'ยังไม่ได้ลงทะเบียนดิสก์ใด ลงทะเบียนสักลูกเพื่อให้งานหามันเจออีกครั้ง แม้จะกลับมาด้วยอักษรไดรฟ์อื่น',
@@ -1168,7 +1170,8 @@ const th: Translations = {
   'new.change.exceptions': '{exceptions} ใน {sync} แสดงรายการงานที่มีค่าของตัวเอง ระหว่างที่ทุกงานทำตามค่าเริ่มต้น การ์ดนี้จะไม่ปรากฏ',
   'new.change.scheduleSentence': 'กำหนดการแสดงเป็นประโยค คลิกเพื่อเปิดตัวแก้ไข ส่วนนิพจน์ที่พิมพ์เองยังอยู่ใต้ {cron}',
   'new.change.jobMore': 'การ์ดงานทุกใบมี {more} พร้อมทุกอย่างที่หน้าของงานมีให้ แก้ไข ตรวจสอบ หรือลบงานได้โดยไม่ต้องเปิด',
-  'new.change.providerNames': '{connect} ตั้งชื่อพื้นที่จัดเก็บทุกชนิดที่ rclone รู้จักและจัดเข้ากลุ่ม พร้อมโลโก้หากมี',
+  'new.change.providerNames': '{connect} ตั้งชื่อพื้นที่จัดเก็บทุกชนิดที่ rclone รู้จักและจัดเข้ากลุ่ม พร้อมโลโก้หากมี การค้นหาด้านบนหาได้จากชื่อหรือชื่อใน rclone',
+  'new.change.targetRows': 'ปุ่ม {test} ของแต่ละปลายทางแสดง {connected} หรือ {notConnected} ด้วยตัวเอง พร้อมเหตุผลในบรรทัดใต้ชื่อ รหัสผ่านหรือคีย์ที่บันทึกไว้จะแสดงเป็น {saved} และ {change} จะเปิดช่องให้กรอก',
 }
 
 export default th

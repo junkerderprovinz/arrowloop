@@ -302,6 +302,9 @@ const nl: Translations = {
   'edit.pickDrive': 'Een aangemelde schijf',
   'edit.pickRemote': 'Een ingesteld doel',
   'targets.addStorage': 'Opslag en clouds verbinden',
+  'targets.addStorageHint': 'Kies wat je wilt verbinden. Clouds, objectopslag en servers staan elk in een eigen groep, en het zoeken vindt een dienst op zijn naam of op zijn naam in rclone.',
+  'targets.search': 'Opslag en clouds doorzoeken',
+  'targets.searchNone': 'Niets past bij "{query}". De meeste andere diensten werken met {s3} of {webdav}.',
   'targets.cloudEmpty': 'Nog geen cloud gekoppeld. Dropbox, OneDrive, Google Drive en de andere clouds komen hier.',
   'targets.bucketEmpty': 'Nog geen objectopslag. Buckets bij Backblaze B2, Wasabi, MinIO en elke andere S3-opslag komen hier.',
   'targets.serverEmpty': 'Nog geen server of share. SSH-machines via SFTP, WebDAV-servers en Windows-shares komen hier.',
@@ -319,7 +322,6 @@ const nl: Translations = {
   'action.edit': 'Bewerken',
   'targets.cancel': 'Annuleren',
   'targets.save': 'Opslaan',
-  'targets.secretSet': 'Er is een waarde bewaard. Laat hem staan om hem te behouden.',
   'targets.access': 'Toegang',
   'targets.drives': 'Schijven',
   'targets.drivesEmpty': 'Er is geen schijf aangemeld. Meld er een aan zodat een taak hem terugvindt, ook als hij op een andere letter terugkomt.',
@@ -1168,7 +1170,8 @@ const nl: Translations = {
   'new.change.exceptions': '{exceptions} onder {sync} somt de taken met eigen waarden op. Zolang elke taak de standaarden volgt, is de kaart er niet.',
   'new.change.scheduleSentence': 'Een planning staat er als een zin. Klik erop om de editor te openen; een met de hand getypte expressie blijft onder {cron}.',
   'new.change.jobMore': 'Elke taakkaart heeft {more}, met alles wat de pagina van de taak biedt. Een taak kun je zo bewerken, controleren of verwijderen zonder hem te openen.',
-  'new.change.providerNames': '{connect} noemt elke soort opslag die rclone kent bij naam en zet hem in zijn groep, met logo waar er een is.',
+  'new.change.providerNames': '{connect} noemt elke soort opslag die rclone kent bij naam en zet hem in zijn groep, met logo waar er een is. Een zoekveld bovenaan vindt er een op naam of op de naam in rclone.',
+  'new.change.targetRows': 'De knop {test} van een doel toont zelf {connected} of {notConnected}, met de reden op de regel onder de naam. Een opgeslagen wachtwoord of sleutel staat er als {saved}, en {change} opent het veld.',
 }
 
 export default nl

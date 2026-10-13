@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/junkerderprovinz/arrowloop/internal/failure"
 	"github.com/junkerderprovinz/arrowloop/internal/remotes"
 	"github.com/junkerderprovinz/arrowloop/internal/volume"
 )
@@ -143,10 +144,16 @@ func (s *Server) checkRemote(w http.ResponseWriter, r *http.Request) {
 	if err := remotes.Check(r.Context(), r.PathValue("name")); err != nil {
 		// 200 with a reason: a credential that does not work answers the
 		// question rather than failing the request.
-		writeJSON(w, http.StatusOK, map[string]any{"ok": false, "reason": err.Error()})
+		writeJSON(w, http.StatusOK, refused(err))
 		return
 	}
 	writeJSON(w, http.StatusOK, map[string]any{"ok": true})
+}
+
+// refused is a check's answer for settings that do not work: rclone's words,
+// and the kind of failure where the page has a sentence for it.
+func refused(err error) map[string]any {
+	return map[string]any{"ok": false, "reason": err.Error(), "failure": failure.Of(err.Error())}
 }
 
 // tryRemote checks settings that have not been saved, so a form can be tested
@@ -164,7 +171,7 @@ func (s *Server) tryRemote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if err := remotes.CheckSettings(r.Context(), body.Type, remotes.WithSavedSecrets(body.Name, body.Type, body.Settings)); err != nil {
-		writeJSON(w, http.StatusOK, map[string]any{"ok": false, "reason": err.Error()})
+		writeJSON(w, http.StatusOK, refused(err))
 		return
 	}
 	writeJSON(w, http.StatusOK, map[string]any{"ok": true})

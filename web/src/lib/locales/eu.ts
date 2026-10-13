@@ -302,6 +302,9 @@ const eu: Translations = {
   'edit.pickDrive': 'Erregistratutako disko bat',
   'edit.pickRemote': 'Konfiguratutako helburu bat',
   'targets.addStorage': 'Konektatu biltegiak eta hodeiak',
+  'targets.addStorageHint': 'Hautatu zer konektatu nahi duzun. Hodeiek, objektu-biltegiek eta zerbitzariek bakoitzak bere taldea dute, eta bilaketak zerbitzu bat aurkitzen du bere izenaz edo rclone-ko izenaz.',
+  'targets.search': 'Bilatu biltegiak eta hodeiak',
+  'targets.searchNone': 'Ezer ez dator bat «{query}»-rekin. Beste zerbitzu gehienek {s3} edo {webdav} erabiliz funtzionatzen dute.',
   'targets.cloudEmpty': 'Oraindik ez dago hodeirik konektatuta. Hemen gehitzen dira Dropbox, OneDrive, Google Drive eta beste hodeiak.',
   'targets.bucketEmpty': 'Oraindik ez dago objektu-biltegirik. Hemen gehitzen dira Backblaze B2, Wasabi, MinIO eta beste edozein S3 biltegitako ontziak.',
   'targets.serverEmpty': 'Oraindik ez dago zerbitzari edo partekatzerik. Hemen gehitzen dira SFTP bidezko SSH ostalariak, WebDAV zerbitzariak eta Windows partekatzeak.',
@@ -319,7 +322,6 @@ const eu: Translations = {
   'action.edit': 'Editatu',
   'targets.cancel': 'Utzi',
   'targets.save': 'Gorde',
-  'targets.secretSet': 'Balio bat gordeta dago. Utzi dagoen bezala eta mantendu egingo da.',
   'targets.access': 'Sarbidea',
   'targets.drives': 'Diskoak',
   'targets.drivesEmpty': 'Ez dago diskorik erregistratuta. Erregistratu bat, lan batek berriz aurki dezan beste hizki batekin itzultzen bada ere.',
@@ -1168,7 +1170,8 @@ const eu: Translations = {
   'new.change.exceptions': '{sync} ataleko {exceptions} txartelak balio propioak dituzten lanak zerrendatzen ditu. Lan guztiek lehenetsiak jarraitzen dituzten bitartean, txartela ez dago.',
   'new.change.scheduleSentence': 'Programazio bat esaldi gisa irakurtzen da. Egin klik gainean editorea irekitzeko; eskuz idatzitako adierazpena {cron} atalean geratzen da.',
   'new.change.jobMore': 'Lan-txartel bakoitzak {more} du, lanaren orriak eskaintzen duen guztiarekin. Lan bat editatu, egiaztatu edo kendu daiteke ireki gabe.',
-  'new.change.providerNames': '{connect} aukerak rclone-k ezagutzen duen biltegi mota bakoitza izendatzen du eta bere taldean jartzen du, logoarekin, baldin badago.',
+  'new.change.providerNames': '{connect} aukerak rclone-k ezagutzen duen biltegi mota bakoitza izendatzen du eta bere taldean jartzen du, logoarekin, baldin badago. Goiko bilaketak mota bat aurkitzen du bere izenaz edo rclone-ko izenaz.',
+  'new.change.targetRows': 'Helburu bakoitzaren {test} botoiak berak erakusten du {connected} edo {notConnected}, eta arrazoia izenaren azpiko lerroan dago. Gordetako pasahitz edo gako bat {saved} gisa agertzen da, eta {change} aukerak eremua irekitzen du.',
 }
 
 export default eu

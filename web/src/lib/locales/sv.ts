@@ -302,6 +302,9 @@ const sv: Translations = {
   'edit.pickDrive': 'En anmäld disk',
   'edit.pickRemote': 'Ett inställt mål',
   'targets.addStorage': 'Anslut lagring och moln',
+  'targets.addStorageHint': 'Välj vad du vill ansluta. Moln, objektlagring och servrar står var och en i sin grupp, och sökningen hittar en tjänst på dess namn eller dess namn i rclone.',
+  'targets.search': 'Sök lagring och moln',
+  'targets.searchNone': 'Inget matchar ”{query}”. De flesta andra tjänster fungerar med {s3} eller {webdav}.',
   'targets.cloudEmpty': 'Inget moln anslutet än. Dropbox, OneDrive, Google Drive och de andra molnen läggs till här.',
   'targets.bucketEmpty': 'Ingen objektlagring än. Buckets hos Backblaze B2, Wasabi, MinIO och all annan S3-lagring läggs till här.',
   'targets.serverEmpty': 'Ingen server eller utdelning än. SSH-värdar via SFTP, WebDAV-servrar och Windows-utdelningar läggs till här.',
@@ -319,7 +322,6 @@ const sv: Translations = {
   'action.edit': 'Redigera',
   'targets.cancel': 'Avbryt',
   'targets.save': 'Spara',
-  'targets.secretSet': 'Ett värde är sparat. Låt det stå kvar så behålls det.',
   'targets.access': 'Åtkomst',
   'targets.drives': 'Diskar',
   'targets.drivesEmpty': 'Ingen disk är anmäld. Anmäl en så att ett jobb hittar den igen även om den kommer tillbaka på en annan bokstav.',
@@ -1168,7 +1170,8 @@ const sv: Translations = {
   'new.change.exceptions': '{exceptions} under {sync} listar jobben som har egna värden. Så länge alla jobb följer standardvärdena finns kortet inte.',
   'new.change.scheduleSentence': 'Ett schema står som en mening. Klicka på den för att öppna redigeraren; ett uttryck som skrivits för hand finns kvar under {cron}.',
   'new.change.jobMore': 'Varje jobbkort har {more}, med allt som jobbets sida erbjuder. Ett jobb kan redigeras, kontrolleras eller tas bort utan att öppnas.',
-  'new.change.providerNames': '{connect} namnger varje lagringstyp som rclone känner till och placerar den i sin grupp, med logotyp där en finns.',
+  'new.change.providerNames': '{connect} namnger varje lagringstyp som rclone känner till och placerar den i sin grupp, med logotyp där en finns. En sökning högst upp hittar en på namnet eller namnet i rclone.',
+  'new.change.targetRows': 'Knappen {test} vid ett mål visar själv {connected} eller {notConnected}, med orsaken på raden under namnet. Ett sparat lösenord eller en nyckel visas som {saved}, och {change} öppnar fältet.',
 }
 
 export default sv

@@ -79,24 +79,34 @@ export function SecretRow({
   value,
   onChange,
   placeholder,
+  stacked = false,
 }: {
   label: string
   hint?: string
   value: string
   onChange: (next: string) => void
   placeholder?: string
+  /** Keeps the name above Saved, for a form whose fields all carry it there. */
+  stacked?: boolean
 }) {
   const { t } = useT()
   const [changing, setChanging] = useState(false)
   const stored = value === WITHHELD
 
   if (stored && !changing) {
-    return (
+    const saved = (
+      <span className="flex items-center gap-3">
+        <span className="text-subline text-carbon-textSub">{t('notify.saved')}</span>
+        <Button label={t('notify.change')} labelKey="notify.change" onClick={() => setChanging(true)} />
+      </span>
+    )
+    return stacked ? (
+      <Field label={label} hint={hint} plain>
+        {saved}
+      </Field>
+    ) : (
       <SettingsRow label={label} hint={hint}>
-        <span className="flex items-center gap-3">
-          <span className="text-subline text-carbon-textSub">{t('notify.saved')}</span>
-          <Button label={t('notify.change')} labelKey="notify.change" onClick={() => setChanging(true)} />
-        </span>
+        {saved}
       </SettingsRow>
     )
   }

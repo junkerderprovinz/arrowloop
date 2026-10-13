@@ -302,6 +302,9 @@ const lt: Translations = {
   'edit.pickDrive': 'Užregistruotas diskas',
   'edit.pickRemote': 'Sukonfigūruota paskirtis',
   'targets.addStorage': 'Prijungti saugyklas ir debesis',
+  'targets.addStorageHint': 'Pasirinkite, ką prijungti. Debesys, objektų saugyklos ir serveriai turi kiekvienas savo grupę, o paieška randa paslaugą pagal jos pavadinimą arba pavadinimą rclone.',
+  'targets.search': 'Ieškoti saugyklų ir debesų',
+  'targets.searchNone': 'Niekas neatitinka „{query}“. Dauguma kitų paslaugų veikia su {s3} arba {webdav}.',
   'targets.cloudEmpty': 'Kol kas neprijungtas joks debesis. Čia pridedami Dropbox, OneDrive, Google Drive ir kiti debesys.',
   'targets.bucketEmpty': 'Kol kas nėra objektų saugyklos. Čia pridedami kibirai Backblaze B2, Wasabi, MinIO ir bet kurioje kitoje S3 saugykloje.',
   'targets.serverEmpty': 'Kol kas nėra serverio ar bendrinimo. Čia pridedami SSH kompiuteriai per SFTP, WebDAV serveriai ir Windows bendrinami aplankai.',
@@ -319,7 +322,6 @@ const lt: Translations = {
   'action.edit': 'Redaguoti',
   'targets.cancel': 'Atsisakyti',
   'targets.save': 'Įrašyti',
-  'targets.secretSet': 'Reikšmė įrašyta. Palikite ją ramybėje ir ji išliks.',
   'targets.access': 'Prieiga',
   'targets.drives': 'Diskai',
   'targets.drivesEmpty': 'Neužregistruotas nė vienas diskas. Užregistruokite vieną, kad užduotis jį rastų net ir tada, kai jis grįš su kita raide.',
@@ -1168,7 +1170,8 @@ const lt: Translations = {
   'new.change.exceptions': '{exceptions} skiltyje {sync} išvardija užduotis su savomis reikšmėmis. Kol kiekviena užduotis seka numatytąsias, kortelės nėra.',
   'new.change.scheduleSentence': 'Tvarkaraštis skaitomas kaip sakinys. Spustelėk jį, kad atidarytum redaktorių; ranka įvesta išraiška lieka skiltyje {cron}.',
   'new.change.jobMore': 'Kiekvienoje užduoties kortelėje yra {more} su viskuo, ką siūlo užduoties puslapis. Užduotį galima redaguoti, patikrinti ar pašalinti jos neatidarius.',
-  'new.change.providerNames': '{connect} įvardija kiekvieną rclone žinomą saugyklos rūšį ir priskiria ją grupei, su logotipu, jei jis yra.',
+  'new.change.providerNames': '{connect} įvardija kiekvieną rclone žinomą saugyklos rūšį ir priskiria ją grupei, su logotipu, jei jis yra. Paieška viršuje randa rūšį pagal pavadinimą arba pavadinimą rclone.',
+  'new.change.targetRows': 'Kiekvienos paskirties mygtukas {test} pats parodo {connected} arba {notConnected}, o priežastis būna eilutėje po pavadinimu. Išsaugotas slaptažodis ar raktas rodomas kaip {saved}, o {change} atveria lauką.',
 }
 
 export default lt

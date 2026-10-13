@@ -302,6 +302,9 @@ const pt: Translations = {
   'edit.pickDrive': 'Um disco registado',
   'edit.pickRemote': 'Um destino configurado',
   'targets.addStorage': 'Ligar armazenamento e nuvens',
+  'targets.addStorageHint': 'Escolha o que quer ligar. As nuvens, o armazenamento de objetos e os servidores têm cada um o seu grupo, e a pesquisa encontra um serviço pelo nome ou pelo nome no rclone.',
+  'targets.search': 'Pesquisar armazenamento e nuvens',
+  'targets.searchNone': 'Nada corresponde a «{query}». A maioria dos outros serviços funciona com {s3} ou {webdav}.',
   'targets.cloudEmpty': 'Ainda não há nenhuma nuvem ligada. Dropbox, OneDrive, Google Drive e as outras nuvens adicionam-se aqui.',
   'targets.bucketEmpty': 'Ainda não há armazenamento de objetos. Buckets no Backblaze B2, Wasabi, MinIO e em qualquer outro armazenamento S3 adicionam-se aqui.',
   'targets.serverEmpty': 'Ainda não há servidores nem partilhas. Servidores SSH por SFTP, servidores WebDAV e partilhas Windows adicionam-se aqui.',
@@ -319,7 +322,6 @@ const pt: Translations = {
   'action.edit': 'Editar',
   'targets.cancel': 'Cancelar',
   'targets.save': 'Guardar',
-  'targets.secretSet': 'Há um valor guardado. Deixe-o como está para o manter.',
   'targets.access': 'Acesso',
   'targets.drives': 'Discos',
   'targets.drivesEmpty': 'Não há nenhum disco registado. Registe um para que uma tarefa o volte a encontrar mesmo que regresse com outra letra.',
@@ -1168,7 +1170,8 @@ const pt: Translations = {
   'new.change.exceptions': '{exceptions} em {sync} lista as tarefas com valores próprios. Enquanto todas as tarefas seguem os predefinidos, o cartão não aparece.',
   'new.change.scheduleSentence': 'Um agendamento lê-se como uma frase. Clique nele para abrir o editor; uma expressão escrita à mão fica em {cron}.',
   'new.change.jobMore': 'Cada cartão de tarefa tem {more}, com tudo o que a página da tarefa oferece. Uma tarefa pode ser editada, verificada ou removida sem a abrir.',
-  'new.change.providerNames': '{connect} dá nome a cada tipo de armazenamento que o rclone conhece e coloca-o no seu grupo, com o logótipo quando existe.',
+  'new.change.providerNames': '{connect} dá nome a cada tipo de armazenamento que o rclone conhece e coloca-o no seu grupo, com o logótipo quando existe. Uma pesquisa no topo encontra um pelo nome ou pelo nome no rclone.',
+  'new.change.targetRows': 'O botão {test} de cada destino mostra ele próprio {connected} ou {notConnected}, com o motivo na linha por baixo do nome. Uma palavra-passe ou chave guardada aparece como {saved}, e {change} abre o campo.',
 }
 
 export default pt

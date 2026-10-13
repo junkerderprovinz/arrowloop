@@ -302,6 +302,9 @@ const sk: Translations = {
   'edit.pickDrive': 'Zaregistrovaný disk',
   'edit.pickRemote': 'Nastavený cieľ',
   'targets.addStorage': 'Pripojiť úložiská a cloudy',
+  'targets.addStorageHint': 'Vyberte, čo chcete pripojiť. Cloudy, objektové úložiská a servery majú každý svoju skupinu a vyhľadávanie nájde službu podľa jej mena alebo mena v rclone.',
+  'targets.search': 'Hľadať úložiská a cloudy',
+  'targets.searchNone': 'Nič nezodpovedá „{query}“. Väčšina ostatných služieb funguje s {s3} alebo {webdav}.',
   'targets.cloudEmpty': 'Zatiaľ nie je pripojený žiadny cloud. Sem patrí Dropbox, OneDrive, Google Drive a ďalšie cloudy.',
   'targets.bucketEmpty': 'Zatiaľ žiadne objektové úložisko. Sem patria koše v Backblaze B2, Wasabi, MinIO a v každom inom úložisku S3.',
   'targets.serverEmpty': 'Zatiaľ žiadny server ani zdieľanie. Sem patria servery SSH cez SFTP, servery WebDAV a zdieľania Windows.',
@@ -319,7 +322,6 @@ const sk: Translations = {
   'action.edit': 'Upraviť',
   'targets.cancel': 'Zrušiť',
   'targets.save': 'Uložiť',
-  'targets.secretSet': 'Hodnota je uložená. Nechajte ju tak a zostane zachovaná.',
   'targets.access': 'Prístup',
   'targets.drives': 'Disky',
   'targets.drivesEmpty': 'Nie je zaregistrovaný žiadny disk. Zaregistrujte jeden, aby ho úloha našla aj vtedy, keď sa vráti pod iným písmenom.',
@@ -1168,7 +1170,8 @@ const sk: Translations = {
   'new.change.exceptions': '{exceptions} v {sync} vypisuje úlohy s vlastnými hodnotami. Kým každá úloha nasleduje predvolené hodnoty, karta tam nie je.',
   'new.change.scheduleSentence': 'Plán sa číta ako veta. Kliknutím naň otvoríš editor; výraz napísaný ručne zostáva pod {cron}.',
   'new.change.jobMore': 'Každá karta úlohy má {more} so všetkým, čo ponúka stránka úlohy. Úlohu tak možno upraviť, skontrolovať alebo odstrániť bez otvorenia.',
-  'new.change.providerNames': '{connect} pomenuje každý druh úložiska, ktorý rclone pozná, a zaradí ho do jeho skupiny, s logom, ak existuje.',
+  'new.change.providerNames': '{connect} pomenuje každý druh úložiska, ktorý rclone pozná, a zaradí ho do jeho skupiny, s logom, ak existuje. Vyhľadávanie hore nájde druh podľa mena alebo mena v rclone.',
+  'new.change.targetRows': 'Tlačidlo {test} pri každom cieli samo ukáže {connected} alebo {notConnected} a dôvod je v riadku pod menom. Uložené heslo alebo kľúč sa zobrazuje ako {saved} a {change} otvorí pole.',
 }
 
 export default sk

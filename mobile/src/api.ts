@@ -468,7 +468,7 @@ export const api = {
    * the engine can fill in the secrets the form left empty.
    */
   tryRemote: (type: string, settings: Record<string, string>, remote?: string) =>
-    call<{ ok: boolean; reason?: string }>("/api/remotes-check", {
+    call<{ ok: boolean; reason?: string; failure?: Failure }>("/api/remotes-check", {
       method: "POST",
       body: JSON.stringify({ type, settings, name: remote ?? "" }),
     }),
@@ -478,7 +478,7 @@ export const api = {
     call<void>(`/api/remotes/${name(remote)}`, { method: "DELETE" }),
   /** Reports whether the target answers; the explanation is in `reason`. */
   checkRemote: (remote: string) =>
-    call<{ ok: boolean; reason?: string }>(`/api/remotes/${name(remote)}/check`, { method: "POST" }),
+    call<{ ok: boolean; reason?: string; failure?: Failure }>(`/api/remotes/${name(remote)}/check`, { method: "POST" }),
   aboutRemote: (remote: string) => call<Usage>(`/api/remotes/${name(remote)}/about`),
 
   /** The engine build's version and whether it has a window. */

@@ -2,9 +2,10 @@ import { useNavigation, useRoute, type RouteProp } from "@react-navigation/nativ
 import { useEffect, useMemo, useState } from "react";
 import { Linking, StyleSheet, View } from "react-native";
 import { api, type Backend, type Provider, type Remote } from "../api";
-import { Field } from "../fields";
+import { Field, SecretField } from "../fields";
 import { useT } from "../i18n";
 import type { Nav, MoreStack } from "../nav";
+import { failureLine, type Failure } from "../../../web/src/lib/failure";
 import { optionHint, providerHint, providerName } from "../../../web/src/lib/optionHint";
 import { optionLabel } from "../../../web/src/lib/optionNames";
 import { suggestTargetName } from "../../../web/src/lib/targetName";
@@ -19,7 +20,7 @@ import { Body, Button, Caption, Empty, Page, Section, Title } from "../ui";
 export function TargetEdit() {
   const route = useRoute<RouteProp<MoreStack, "TargetEdit">>();
   const nav = useNavigation<Nav<MoreStack>>();
-  const { t } = useT();
+  const { t, lang } = useT();
   const editing = route.params?.name;
   const providerId = route.params?.provider;
 
@@ -48,10 +49,9 @@ export function TargetEdit() {
         setExisting(found);
         if (found) {
           const start: Record<string, string> = {};
-          for (const setting of found.settings) {
-            // Secrets come back withheld; an untouched empty field keeps them.
-            if (!setting.secret) start[setting.key] = setting.value;
-          }
+          // A stored secret arrives as the placeholder, which saving sends
+          // back untouched so the engine keeps it.
+          for (const setting of found.settings) start[setting.key] = setting.value;
           setValues(start);
         }
       },
@@ -92,7 +92,7 @@ export function TargetEdit() {
   // The connection test's state. These hooks have to stay above the early
   // return, or the hook count changes between renders.
   const [trying, setTrying] = useState(false);
-  const [tried, setTried] = useState<{ ok: boolean; reason?: string } | null>(null);
+  const [tried, setTried] = useState<{ ok: boolean; reason?: string; failure?: Failure } | null>(null);
   // A counter rather than a flag, so every failed attempt shakes the button.
   const [refused, setRefused] = useState(0);
 
@@ -100,7 +100,7 @@ export function TargetEdit() {
     return <Empty title={t("targets.addStorage")} detail={error || t("history.working")} />;
   }
 
-  const answered = (answer: { ok: boolean; reason?: string }) => {
+  const answered = (answer: { ok: boolean; reason?: string; failure?: Failure }) => {
     setTried(answer);
     if (!answer.ok) setRefused((n) => n + 1);
   };
@@ -172,28 +172,22 @@ export function TargetEdit() {
       ) : null}
 
       <Section title={t("targets.access")}>
-        {options.map((option) => (
-          <Field
-            key={option.name}
-            label={optionLabel(option.name, t)}
-            hint={optionHint(option, t, provider)}
-            secret={option.secret}
-            value={values[option.name] ?? ""}
-            onChange={(next) => setValues((old) => ({ ...old, [option.name]: next }))}
-            placeholder={
-              option.secret && existing?.settings.some((s) => s.key === option.name && s.secret)
-                ? t("targets.secretSet")
-                : undefined
-            }
-          />
-        ))}
+        {options.map((option) => {
+          const props = {
+            label: optionLabel(option.name, t),
+            hint: optionHint(option, t, provider),
+            value: values[option.name] ?? "",
+            onChange: (next: string) => setValues((old) => ({ ...old, [option.name]: next })),
+          };
+          return option.secret ? <SecretField key={option.name} {...props} /> : <Field key={option.name} {...props} />;
+        })}
         {options.length === 0 ? <Body>{t("phone.noSettings")}</Body> : null}
       </Section>
 
       {error ? <Body>{error}</Body> : null}
 
       {/* Only the reason: the button itself shows the verdict. */}
-      {tried && !tried.ok && tried.reason ? <Body>{tried.reason}</Body> : null}
+      {tried && !tried.ok && tried.reason ? <Body>{failureLine(tried.reason, tried.failure, t, lang)}</Body> : null}
 
       {/* The test runs before anything is saved. The button's colour, word,
           glyph and shake all show the result of the last attempt, so colour is
@@ -227,7 +221,7 @@ export function TargetEdit() {
   );
 }
 
-/** Drops empty values, since an empty secret means "keep the saved one". */
+/** Drops empty values, since a secret left empty while changing it means "keep the saved one". */
 function prune(values: Record<string, string>): Record<string, string> {
   const out: Record<string, string> = {};
   for (const [key, value] of Object.entries(values)) {

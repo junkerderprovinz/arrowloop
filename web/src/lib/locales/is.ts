@@ -302,6 +302,9 @@ const is: Translations = {
   'edit.pickDrive': 'Skráður diskur',
   'edit.pickRemote': 'Uppsettur áfangastaður',
   'targets.addStorage': 'Tengja geymslur og ský',
+  'targets.addStorageHint': 'Veldu hvað þú vilt tengja. Ský, hlutageymsla og þjónar eru hver í sínum hópi, og leitin finnur þjónustu eftir nafni hennar eða nafni hennar í rclone.',
+  'targets.search': 'Leita í geymslum og skýjum',
+  'targets.searchNone': 'Ekkert passar við „{query}“. Flestar aðrar þjónustur virka með {s3} eða {webdav}.',
   'targets.cloudEmpty': 'Ekkert ský tengt enn. Dropbox, OneDrive, Google Drive og hin skýin bætast við hér.',
   'targets.bucketEmpty': 'Engin hlutageymsla enn. Fötur hjá Backblaze B2, Wasabi, MinIO og hverri annarri S3 geymslu bætast við hér.',
   'targets.serverEmpty': 'Enginn netþjónn eða sameign enn. SSH vélar um SFTP, WebDAV netþjónar og Windows sameignir bætast við hér.',
@@ -319,7 +322,6 @@ const is: Translations = {
   'action.edit': 'Breyta',
   'targets.cancel': 'Hætta við',
   'targets.save': 'Vista',
-  'targets.secretSet': 'Gildi er vistað. Láttu það vera og það helst.',
   'targets.access': 'Aðgangur',
   'targets.drives': 'Diskar',
   'targets.drivesEmpty': 'Enginn diskur er skráður. Skráðu einn svo verk finni hann aftur þótt hann komi til baka undir öðrum bókstaf.',
@@ -1168,7 +1170,8 @@ const is: Translations = {
   'new.change.exceptions': '{exceptions} undir {sync} listar verkin sem hafa eigin gildi. Á meðan öll verk fylgja sjálfgefnu gildunum er spjaldið ekki til staðar.',
   'new.change.scheduleSentence': 'Áætlun les sem setning. Smelltu á hana til að opna ritilinn; segð sem var slegin inn í höndunum er áfram undir {cron}.',
   'new.change.jobMore': 'Hvert verkspjald hefur {more}, með öllu sem síða verksins býður. Hægt er að breyta verki, athuga það eða fjarlægja án þess að opna það.',
-  'new.change.providerNames': '{connect} nefnir hverja gerð geymslu sem rclone þekkir og setur hana í sinn hóp, með merki þar sem það er til.',
+  'new.change.providerNames': '{connect} nefnir hverja gerð geymslu sem rclone þekkir og setur hana í sinn hóp, með merki þar sem það er til. Leit efst finnur gerð eftir nafni hennar eða nafni hennar í rclone.',
+  'new.change.targetRows': 'Hnappurinn {test} við hvert markmið sýnir sjálfur {connected} eða {notConnected}, og ástæðan er á línunni undir nafninu. Vistað lykilorð eða lykill birtist sem {saved}, og {change} opnar reitinn.',
 }
 
 export default is

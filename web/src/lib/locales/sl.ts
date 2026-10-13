@@ -302,6 +302,9 @@ const sl: Translations = {
   'edit.pickDrive': 'Prijavljen disk',
   'edit.pickRemote': 'Nastavljen cilj',
   'targets.addStorage': 'Poveži shrambe in oblake',
+  'targets.addStorageHint': 'Izberite, kaj želite povezati. Oblaki, shrambe objektov in strežniki imajo vsak svojo skupino, iskanje pa najde storitev po njenem imenu ali imenu v rclone.',
+  'targets.search': 'Iskanje shramb in oblakov',
+  'targets.searchNone': 'Nič se ne ujema z »{query}«. Večina drugih storitev deluje z {s3} ali {webdav}.',
   'targets.cloudEmpty': 'Noben oblak še ni povezan. Tu se dodajo Dropbox, OneDrive, Google Drive in drugi oblaki.',
   'targets.bucketEmpty': 'Objektne shrambe še ni. Tu se dodajo vedra v Backblaze B2, Wasabi, MinIO in vsaki drugi shrambi S3.',
   'targets.serverEmpty': 'Strežnika ali skupne rabe še ni. Tu se dodajo gostitelji SSH prek SFTP, strežniki WebDAV in mape v skupni rabi Windows.',
@@ -319,7 +322,6 @@ const sl: Translations = {
   'action.edit': 'Uredi',
   'targets.cancel': 'Prekliči',
   'targets.save': 'Shrani',
-  'targets.secretSet': 'Vrednost je shranjena. Pustite jo pri miru in se bo ohranila.',
   'targets.access': 'Dostop',
   'targets.drives': 'Diski',
   'targets.drivesEmpty': 'Noben disk ni prijavljen. Prijavite enega, da ga opravilo znova najde, tudi če se vrne z drugo črko.',
@@ -1168,7 +1170,8 @@ const sl: Translations = {
   'new.change.exceptions': '{exceptions} v {sync} navaja opravila z lastnimi vrednostmi. Dokler vsako opravilo sledi privzetim vrednostim, kartice ni.',
   'new.change.scheduleSentence': 'Urnik se bere kot stavek. Klikni nanj, da odpreš urejevalnik; izraz, vpisan ročno, ostane pod {cron}.',
   'new.change.jobMore': 'Vsaka kartica opravila ima {more} z vsem, kar ponuja stran opravila. Opravilo lahko urediš, preveriš ali odstraniš, ne da bi ga odprl.',
-  'new.change.providerNames': '{connect} poimenuje vsako vrsto shrambe, ki jo rclone pozna, in jo uvrsti v njeno skupino, z logotipom, če obstaja.',
+  'new.change.providerNames': '{connect} poimenuje vsako vrsto shrambe, ki jo rclone pozna, in jo uvrsti v njeno skupino, z logotipom, če obstaja. Iskanje na vrhu najde vrsto po imenu ali imenu v rclone.',
+  'new.change.targetRows': 'Gumb {test} pri vsakem cilju sam pokaže {connected} ali {notConnected}, razlog pa je v vrstici pod imenom. Shranjeno geslo ali ključ je prikazan kot {saved}, {change} pa odpre polje.',
 }
 
 export default sl

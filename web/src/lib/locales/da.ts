@@ -302,6 +302,9 @@ const da: Translations = {
   'edit.pickDrive': 'En anmeldt disk',
   'edit.pickRemote': 'Et opsat mål',
   'targets.addStorage': 'Forbind lager og skyer',
+  'targets.addStorageHint': 'Vælg, hvad du vil forbinde. Skyer, objektlager og servere står hver i deres egen gruppe, og søgningen finder en tjeneste ud fra dens navn eller dens navn i rclone.',
+  'targets.search': 'Søg i lager og skyer',
+  'targets.searchNone': 'Intet matcher "{query}". De fleste andre tjenester virker med {s3} eller {webdav}.',
   'targets.cloudEmpty': 'Ingen sky forbundet endnu. Dropbox, OneDrive, Google Drive og de andre skyer hører til her.',
   'targets.bucketEmpty': 'Intet objektlager endnu. Buckets hos Backblaze B2, Wasabi, MinIO og ethvert andet S3-lager hører til her.',
   'targets.serverEmpty': 'Ingen server eller deling endnu. SSH-værter via SFTP, WebDAV-servere og Windows-delinger hører til her.',
@@ -319,7 +322,6 @@ const da: Translations = {
   'action.edit': 'Rediger',
   'targets.cancel': 'Annuller',
   'targets.save': 'Gem',
-  'targets.secretSet': 'Der er gemt en værdi. Lad den stå, så bevares den.',
   'targets.access': 'Adgang',
   'targets.drives': 'Diske',
   'targets.drivesEmpty': 'Der er ikke anmeldt nogen disk. Anmeld en, så et job finder den igen, også hvis den kommer tilbage på et andet bogstav.',
@@ -1168,7 +1170,8 @@ const da: Translations = {
   'new.change.exceptions': '{exceptions} under {sync} viser de job, der har egne værdier. Så længe alle job følger standarderne, er kortet der ikke.',
   'new.change.scheduleSentence': 'En tidsplan står som en sætning. Klik på den for at åbne editoren; et udtryk skrevet i hånden bliver under {cron}.',
   'new.change.jobMore': 'Hvert jobkort har {more} med alt, hvad jobbets side tilbyder. Et job kan redigeres, tjekkes eller fjernes uden at åbne det.',
-  'new.change.providerNames': '{connect} navngiver hver lagertype, rclone kender, og placerer den i sin gruppe med logo, hvor der findes et.',
+  'new.change.providerNames': '{connect} navngiver hver lagertype, rclone kender, og placerer den i sin gruppe med logo, hvor der findes et. En søgning øverst finder en ud fra navnet eller navnet i rclone.',
+  'new.change.targetRows': 'Knappen {test} ved et mål viser selv {connected} eller {notConnected}, med årsagen på linjen under navnet. En gemt adgangskode eller nøgle står som {saved}, og {change} åbner feltet.',
 }
 
 export default da

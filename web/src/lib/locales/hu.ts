@@ -302,6 +302,9 @@ const hu: Translations = {
   'edit.pickDrive': 'Egy bejelentett lemez',
   'edit.pickRemote': 'Egy beállított cél',
   'targets.addStorage': 'Tárhelyek és felhők csatlakoztatása',
+  'targets.addStorageHint': 'Válaszd ki, mit csatlakoztatsz. A felhők, az objektumtárak és a szerverek külön csoportban állnak, és a keresés a szolgáltatást a neve vagy az rclone-beli neve alapján is megtalálja.',
+  'targets.search': 'Tárhelyek és felhők keresése',
+  'targets.searchNone': 'Semmi sem egyezik ezzel: „{query}”. A legtöbb más szolgáltatás {s3} vagy {webdav} révén működik.',
   'targets.cloudEmpty': 'Még nincs csatlakoztatott felhő. Ide kerül a Dropbox, a OneDrive, a Google Drive és a többi felhő.',
   'targets.bucketEmpty': 'Még nincs objektumároló. Ide kerülnek a Backblaze B2, a Wasabi, a MinIO és bármely más S3 tároló vödrei.',
   'targets.serverEmpty': 'Még nincs kiszolgáló vagy megosztás. Ide kerülnek az SFTP-n elérhető SSH gépek, a WebDAV kiszolgálók és a Windows megosztások.',
@@ -319,7 +322,6 @@ const hu: Translations = {
   'action.edit': 'Szerkesztés',
   'targets.cancel': 'Mégse',
   'targets.save': 'Mentés',
-  'targets.secretSet': 'Van eltárolt érték. Hagyja úgy, ahogy van, és megmarad.',
   'targets.access': 'Hozzáférés',
   'targets.drives': 'Lemezek',
   'targets.drivesEmpty': 'Nincs bejelentett lemez. Jelentsen be egyet, hogy egy feladat akkor is megtalálja, ha másik betűjellel tér vissza.',
@@ -1168,7 +1170,8 @@ const hu: Translations = {
   'new.change.exceptions': 'A(z) {exceptions} a(z) {sync} alatt a saját értékekkel rendelkező feladatokat sorolja fel. Amíg minden feladat az alapértékeket követi, a kártya nem látszik.',
   'new.change.scheduleSentence': 'Az ütemezés mondatként olvasható. Kattints rá a szerkesztő megnyitásához; a kézzel írt kifejezés a(z) {cron} alatt marad.',
   'new.change.jobMore': 'Minden feladatkártyán van egy {more} gomb mindazzal, amit a feladat oldala kínál. Egy feladat így megnyitás nélkül szerkeszthető, ellenőrizhető vagy eltávolítható.',
-  'new.change.providerNames': 'A {connect} megnevez minden tárhelytípust, amit az rclone ismer, és a csoportjába sorolja, logóval, ha van.',
+  'new.change.providerNames': 'A {connect} megnevez minden tárhelytípust, amit az rclone ismer, és a csoportjába sorolja, logóval, ha van. A fenti keresés a típust a neve vagy az rclone-beli neve alapján is megtalálja.',
+  'new.change.targetRows': 'Egy cél {test} gombja maga mutatja, hogy {connected} vagy {notConnected}, az okot pedig a név alatti sor adja meg. A mentett jelszó vagy kulcs {saved} felirattal látszik, és a {change} nyitja meg a mezőt.',
 }
 
 export default hu

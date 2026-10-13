@@ -302,6 +302,9 @@ const fr: Translations = {
   'edit.pickDrive': 'Un disque enregistré',
   'edit.pickRemote': 'Une cible configurée',
   'targets.addStorage': 'Connecter stockages et clouds',
+  'targets.addStorageHint': 'Choisissez ce que vous voulez connecter. Les clouds, le stockage objet et les serveurs ont chacun leur groupe, et la recherche trouve un service par son nom ou par son nom dans rclone.',
+  'targets.search': 'Rechercher stockages et clouds',
+  'targets.searchNone': 'Rien ne correspond à « {query} ». La plupart des autres services fonctionnent avec {s3} ou {webdav}.',
   'targets.cloudEmpty': 'Aucun cloud connecté pour l\'instant. Dropbox, OneDrive, Google Drive et les autres clouds s\'ajoutent ici.',
   'targets.bucketEmpty': 'Aucun stockage objet pour l\'instant. Les compartiments sur Backblaze B2, Wasabi, MinIO et tout autre stockage S3 s\'ajoutent ici.',
   'targets.serverEmpty': 'Aucun serveur ni partage pour l\'instant. Les hôtes SSH via SFTP, les serveurs WebDAV et les partages Windows s\'ajoutent ici.',
@@ -319,7 +322,6 @@ const fr: Translations = {
   'action.edit': 'Modifier',
   'targets.cancel': 'Annuler',
   'targets.save': 'Enregistrer',
-  'targets.secretSet': 'Une valeur est enregistrée. Laissez-la telle quelle pour la conserver.',
   'targets.access': 'Accès',
   'targets.drives': 'Disques',
   'targets.drivesEmpty': 'Aucun disque enregistré. Enregistrez-en un pour qu\'une tâche le retrouve même s\'il revient sous une autre lettre.',
@@ -1168,7 +1170,8 @@ const fr: Translations = {
   'new.change.exceptions': '{exceptions} dans {sync} liste les tâches qui ont des valeurs propres. Tant que toutes les tâches suivent les valeurs par défaut, la carte n\'apparaît pas.',
   'new.change.scheduleSentence': 'Une planification se lit comme une phrase. Cliquez dessus pour ouvrir l\'éditeur ; une expression saisie à la main reste sous {cron}.',
   'new.change.jobMore': 'Chaque carte de tâche a {more}, avec tout ce que propose la page de la tâche. Une tâche peut être modifiée, vérifiée ou supprimée sans l\'ouvrir.',
-  'new.change.providerNames': '{connect} nomme chaque type de stockage que rclone connaît et le range dans son groupe, avec son logo s’il existe.',
+  'new.change.providerNames': '{connect} nomme chaque type de stockage que rclone connaît et le range dans son groupe, avec son logo s’il existe. Une recherche en haut en trouve un par son nom ou par son nom dans rclone.',
+  'new.change.targetRows': 'Le bouton {test} de chaque cible affiche lui-même {connected} ou {notConnected}, avec la raison sur la ligne sous le nom. Un mot de passe ou une clé enregistrés apparaissent comme {saved}, et {change} ouvre le champ.',
 }
 
 export default fr

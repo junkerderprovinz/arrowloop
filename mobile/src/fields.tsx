@@ -2,8 +2,9 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import { Glyph } from "./glyphs";
+import { useT } from "./i18n";
 import { radiusFor, space, text, TOUCH } from "./theme";
-import { InfoBubble, Press, useTheme } from "./ui";
+import { Body, Button, InfoBubble, Press, Row, useTheme } from "./ui";
 
 export function Field({
   label,
@@ -74,6 +75,62 @@ export function Field({
         ) : null}
       </View>
       {error ? <Refusal text={error} /> : null}
+    </View>
+  );
+}
+
+/** What the engine sends in place of a secret it keeps. */
+export const WITHHELD = "********";
+
+/**
+ * A secret in a form that is saved as a whole. Once stored it shows as Saved
+ * with a Change button, since the engine never sends it back and a box could
+ * only show dots that are not the secret. While it is being changed the
+ * stored one stays until something is typed, and Keep goes back to it.
+ */
+export function SecretField({
+  label,
+  hint,
+  value,
+  onChange,
+  placeholder,
+}: {
+  label: string;
+  hint?: string;
+  value: string;
+  onChange: (next: string) => void;
+  placeholder?: string;
+}) {
+  const { t } = useT();
+  const [changing, setChanging] = useState(false);
+  const stored = value === WITHHELD;
+  if (stored && !changing) {
+    return (
+      <Row
+        label={label}
+        hint={hint}
+        control={
+          <View style={styles.saved}>
+            <Body muted>{t("notify.saved")}</Body>
+            <Button label={t("notify.change")} labelKey="notify.change" onPress={() => setChanging(true)} />
+          </View>
+        }
+      />
+    );
+  }
+  return (
+    <View style={styles.field}>
+      <Field label={label} hint={hint} secret value={stored ? "" : value} onChange={onChange} placeholder={placeholder} />
+      {changing ? (
+        <Button
+          label={t("notify.keep")}
+          labelKey="notify.keep"
+          onPress={() => {
+            setChanging(false);
+            onChange(WITHHELD);
+          }}
+        />
+      ) : null}
     </View>
   );
 }
@@ -205,6 +262,7 @@ const styles = StyleSheet.create({
     fontSize: text.body,
   },
   eye: { width: TOUCH, alignItems: "center", justifyContent: "center" },
+  saved: { flexDirection: "row", alignItems: "center", gap: space.sm },
   timeBox: { justifyContent: "center" },
   timeText: { fontSize: text.body },
 });

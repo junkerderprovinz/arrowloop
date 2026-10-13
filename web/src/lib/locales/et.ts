@@ -302,6 +302,9 @@ const et: Translations = {
   'edit.pickDrive': 'Registreeritud ketas',
   'edit.pickRemote': 'Seadistatud sihtkoht',
   'targets.addStorage': 'Ühenda hoidlad ja pilved',
+  'targets.addStorageHint': 'Vali, mida ühendada. Pilvedel, objektihoidlatel ja serveritel on igaühel oma rühm ning otsing leiab teenuse selle nime või rclone nime järgi.',
+  'targets.search': 'Otsi hoidlaid ja pilvi',
+  'targets.searchNone': 'Miski ei vasta otsingule „{query}“. Enamik teisi teenuseid töötab {s3} või {webdav} kaudu.',
   'targets.cloudEmpty': 'Ühtegi pilve pole veel ühendatud. Siia lisanduvad Dropbox, OneDrive, Google Drive ja teised pilved.',
   'targets.bucketEmpty': 'Objektisalvestust pole veel. Siia lisanduvad ämbrid Backblaze B2-s, Wasabis, MinIO-s ja igas teises S3 salvestuses.',
   'targets.serverEmpty': 'Serverit ega jagamist pole veel. Siia lisanduvad SSH masinad üle SFTP, WebDAV serverid ja Windowsi jagatud kaustad.',
@@ -319,7 +322,6 @@ const et: Translations = {
   'action.edit': 'Muuda',
   'targets.cancel': 'Loobu',
   'targets.save': 'Salvesta',
-  'targets.secretSet': 'Väärtus on salvestatud. Jätke see rahule ja see säilib.',
   'targets.access': 'Juurdepääs',
   'targets.drives': 'Kettad',
   'targets.drivesEmpty': 'Ühtegi ketast pole registreeritud. Registreerige üks, et töö leiaks selle uuesti ka siis, kui see naaseb teise tähega.',
@@ -1168,7 +1170,8 @@ const et: Translations = {
   'new.change.exceptions': '{exceptions} jaotises {sync} loetleb tööd, millel on omad väärtused. Kuni iga töö järgib vaikeväärtusi, kaarti pole.',
   'new.change.scheduleSentence': 'Ajakava loetakse lausena. Klõpsa sellel, et avada redaktor; käsitsi kirjutatud avaldis jääb alles valiku {cron} all.',
   'new.change.jobMore': 'Igal töökaardil on {more} kõigega, mida töö leht pakub. Tööd saab muuta, kontrollida või eemaldada seda avamata.',
-  'new.change.providerNames': '{connect} nimetab iga salvestusliigi, mida rclone tunneb, ja paneb selle oma rühma, logoga, kui see on olemas.',
+  'new.change.providerNames': '{connect} nimetab iga salvestusliigi, mida rclone tunneb, ja paneb selle oma rühma, logoga, kui see on olemas. Otsing üleval leiab liigi nime või rclone nime järgi.',
+  'new.change.targetRows': 'Sihtkoha nupp {test} näitab ise {connected} või {notConnected} ja põhjus on nime all oleval real. Salvestatud parool või võti on kirjas kui {saved} ning {change} avab välja.',
 }
 
 export default et

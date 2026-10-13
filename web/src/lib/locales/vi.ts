@@ -302,6 +302,9 @@ const vi: Translations = {
   'edit.pickDrive': 'Một ổ đĩa đã đăng ký',
   'edit.pickRemote': 'Một đích đã thiết lập',
   'targets.addStorage': 'Kết nối lưu trữ và đám mây',
+  'targets.addStorageHint': 'Hãy chọn thứ bạn muốn kết nối. Đám mây, lưu trữ đối tượng và máy chủ mỗi loại có nhóm riêng, và ô tìm kiếm tìm dịch vụ theo tên hoặc theo tên trong rclone.',
+  'targets.search': 'Tìm lưu trữ và đám mây',
+  'targets.searchNone': 'Không có gì khớp với "{query}". Hầu hết các dịch vụ khác dùng được với {s3} hoặc {webdav}.',
   'targets.cloudEmpty': 'Chưa có đám mây nào được kết nối. Dropbox, OneDrive, Google Drive và các đám mây khác được thêm ở đây.',
   'targets.bucketEmpty': 'Chưa có lưu trữ đối tượng. Bucket trên Backblaze B2, Wasabi, MinIO và mọi kho S3 khác được thêm ở đây.',
   'targets.serverEmpty': 'Chưa có máy chủ hay chia sẻ. Máy SSH qua SFTP, máy chủ WebDAV và thư mục chia sẻ Windows được thêm ở đây.',
@@ -319,7 +322,6 @@ const vi: Translations = {
   'action.edit': 'Sửa',
   'targets.cancel': 'Hủy',
   'targets.save': 'Lưu',
-  'targets.secretSet': 'Đã có một giá trị được lưu. Cứ để nguyên thì nó được giữ lại.',
   'targets.access': 'Truy cập',
   'targets.drives': 'Ổ đĩa',
   'targets.drivesEmpty': 'Chưa đăng ký ổ đĩa nào. Hãy đăng ký một cái để công việc tìm lại được nó ngay cả khi nó quay lại với ký tự khác.',
@@ -1168,7 +1170,8 @@ const vi: Translations = {
   'new.change.exceptions': '{exceptions} trong {sync} liệt kê các công việc có giá trị riêng. Khi mọi công việc đều theo mặc định, thẻ này không xuất hiện.',
   'new.change.scheduleSentence': 'Lịch chạy hiển thị như một câu. Nhấp vào để mở trình chỉnh sửa; biểu thức gõ tay vẫn nằm trong {cron}.',
   'new.change.jobMore': 'Mỗi thẻ công việc có {more}, với mọi thứ trang của công việc cung cấp. Có thể sửa, kiểm tra hoặc xoá một công việc mà không cần mở nó.',
-  'new.change.providerNames': '{connect} đặt tên cho mọi loại lưu trữ mà rclone biết và xếp vào nhóm của nó, kèm logo nếu có.',
+  'new.change.providerNames': '{connect} đặt tên cho mọi loại lưu trữ mà rclone biết và xếp vào nhóm của nó, kèm logo nếu có. Ô tìm kiếm ở trên tìm được theo tên hoặc theo tên trong rclone.',
+  'new.change.targetRows': 'Nút {test} của mỗi đích tự hiện {connected} hoặc {notConnected}, kèm lý do ở dòng dưới tên. Mật khẩu hoặc khóa đã lưu hiện là {saved}, và {change} mở ô nhập.',
 }
 
 export default vi

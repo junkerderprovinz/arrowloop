@@ -302,6 +302,9 @@ const ca: Translations = {
   'edit.pickDrive': 'Un disc registrat',
   'edit.pickRemote': 'Una destinació configurada',
   'targets.addStorage': 'Connecta emmagatzematge i núvols',
+  'targets.addStorageHint': 'Tria què vols connectar. Els núvols, l’emmagatzematge d’objectes i els servidors tenen cadascun el seu grup, i la cerca troba un servei pel seu nom o pel seu nom a rclone.',
+  'targets.search': 'Cerca emmagatzematge i núvols',
+  'targets.searchNone': 'No hi ha res que coincideixi amb «{query}». La majoria dels altres serveis funcionen amb {s3} o {webdav}.',
   'targets.cloudEmpty': 'Encara no hi ha cap núvol connectat. Aquí s\'afegeixen Dropbox, OneDrive, Google Drive i els altres núvols.',
   'targets.bucketEmpty': 'Encara no hi ha emmagatzematge d\'objectes. Aquí s\'afegeixen cubells a Backblaze B2, Wasabi, MinIO i qualsevol altre emmagatzematge S3.',
   'targets.serverEmpty': 'Encara no hi ha cap servidor ni compartició. Aquí s\'afegeixen màquines SSH per SFTP, servidors WebDAV i comparticions de Windows.',
@@ -319,7 +322,6 @@ const ca: Translations = {
   'action.edit': 'Edita',
   'targets.cancel': 'Cancel·la',
   'targets.save': 'Desa',
-  'targets.secretSet': 'Hi ha un valor desat. Deixeu-lo tal com és i es conservarà.',
   'targets.access': 'Accés',
   'targets.drives': 'Discs',
   'targets.drivesEmpty': 'No hi ha cap disc registrat. Registreu-ne un perquè una tasca el torni a trobar encara que torni amb una altra lletra.',
@@ -1168,7 +1170,8 @@ const ca: Translations = {
   'new.change.exceptions': '{exceptions} a {sync} llista les tasques amb valors propis. Mentre totes les tasques segueixen els predeterminats, la targeta no hi és.',
   'new.change.scheduleSentence': 'Una programació es llegeix com una frase. Fes-hi clic per obrir l\'editor; una expressió escrita a mà es queda a {cron}.',
   'new.change.jobMore': 'Cada targeta de tasca té {more}, amb tot el que ofereix la pàgina de la tasca. Una tasca es pot editar, comprovar o treure sense obrir-la.',
-  'new.change.providerNames': '{connect} anomena cada tipus d’emmagatzematge que rclone coneix i el posa al seu grup, amb el logotip si n’hi ha.',
+  'new.change.providerNames': '{connect} anomena cada tipus d’emmagatzematge que rclone coneix i el posa al seu grup, amb el logotip si n’hi ha. Una cerca a dalt en troba un pel seu nom o pel seu nom a rclone.',
+  'new.change.targetRows': 'El botó {test} de cada destinació mostra ell mateix {connected} o {notConnected}, amb el motiu a la línia de sota del nom. Una contrasenya o una clau desada apareix com a {saved}, i {change} obre el camp.',
 }
 
 export default ca

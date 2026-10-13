@@ -302,6 +302,9 @@ const fi: Translations = {
   'edit.pickDrive': 'Ilmoitettu levy',
   'edit.pickRemote': 'Määritetty kohde',
   'targets.addStorage': 'Yhdistä tallennustilat ja pilvet',
+  'targets.addStorageHint': 'Valitse, mitä yhdistät. Pilvillä, objektitallennuksella ja palvelimilla on kullakin oma ryhmänsä, ja haku löytää palvelun sen nimellä tai sen rclone-nimellä.',
+  'targets.search': 'Hae tallennustiloja ja pilviä',
+  'targets.searchNone': 'Mikään ei vastaa hakua ”{query}”. Useimmat muut palvelut toimivat {s3}- tai {webdav}-yhteydellä.',
   'targets.cloudEmpty': 'Yhtään pilveä ei ole vielä yhdistetty. Dropbox, OneDrive, Google Drive ja muut pilvet lisätään tänne.',
   'targets.bucketEmpty': 'Ei vielä objektitallennusta. Ämpärit Backblaze B2:ssa, Wasabissa, MinIOssa ja missä tahansa muussa S3-tallennuksessa lisätään tänne.',
   'targets.serverEmpty': 'Ei vielä palvelinta tai jakoa. SSH-koneet SFTP:n kautta, WebDAV-palvelimet ja Windows-jaot lisätään tänne.',
@@ -319,7 +322,6 @@ const fi: Translations = {
   'action.edit': 'Muokkaa',
   'targets.cancel': 'Peruuta',
   'targets.save': 'Tallenna',
-  'targets.secretSet': 'Arvo on tallennettu. Jätä se rauhaan, niin se säilyy.',
   'targets.access': 'Yhteystiedot',
   'targets.drives': 'Levyt',
   'targets.drivesEmpty': 'Yhtään levyä ei ole ilmoitettu. Ilmoita yksi, jotta työ löytää sen uudelleen, vaikka se palaisi toisella kirjaimella.',
@@ -1168,7 +1170,8 @@ const fi: Translations = {
   'new.change.exceptions': '{exceptions} kohdassa {sync} luettelee työt, joilla on omia arvoja. Niin kauan kuin kaikki työt seuraavat oletuksia, korttia ei ole.',
   'new.change.scheduleSentence': 'Aikataulu luetaan lauseena. Avaa muokkain napsauttamalla sitä; käsin kirjoitettu lauseke pysyy kohdassa {cron}.',
   'new.change.jobMore': 'Jokaisessa työkortissa on {more}, jossa on kaikki, mitä työn sivu tarjoaa. Työtä voi muokata, tarkistaa tai poistaa avaamatta sitä.',
-  'new.change.providerNames': '{connect} nimeää jokaisen rclonen tunteman tallennustyypin ja sijoittaa sen ryhmäänsä, logon kanssa, jos sellainen on.',
+  'new.change.providerNames': '{connect} nimeää jokaisen rclonen tunteman tallennustyypin ja sijoittaa sen ryhmäänsä, logon kanssa, jos sellainen on. Ylhäällä oleva haku löytää tyypin sen nimellä tai rclone-nimellä.',
+  'new.change.targetRows': 'Kohteen {test}-painike näyttää itse {connected} tai {notConnected}, ja syy on nimen alla olevalla rivillä. Tallennettu salasana tai avain näkyy muodossa {saved}, ja {change} avaa kentän.',
 }
 
 export default fi

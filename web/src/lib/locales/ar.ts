@@ -302,6 +302,9 @@ const ar: Translations = {
   'edit.pickDrive': 'قرص مسجَّل',
   'edit.pickRemote': 'وجهة معدّة',
   'targets.addStorage': 'ربط التخزين والسحابات',
+  'targets.addStorageHint': 'اختر ما تريد ربطه. للسحابات والتخزين الكائني والخوادم مجموعة لكل منها، والبحث يجد الخدمة باسمها أو باسمها في rclone.',
+  'targets.search': 'ابحث في التخزين والسحابات',
+  'targets.searchNone': 'لا شيء يطابق «{query}». معظم الخدمات الأخرى تعمل مع {s3} أو {webdav}.',
   'targets.cloudEmpty': 'لا سحابة متصلة بعد. هنا تُضاف Dropbox وOneDrive وGoogle Drive وسائر السحابات.',
   'targets.bucketEmpty': 'لا تخزين كائنات بعد. هنا تُضاف سلال S3 على Backblaze B2 وWasabi وMinIO وأي تخزين S3 آخر.',
   'targets.serverEmpty': 'لا خوادم ولا مشاركات بعد. هنا تُضاف مضيفات SSH عبر SFTP وخوادم WebDAV ومشاركات ويندوز.',
@@ -319,7 +322,6 @@ const ar: Translations = {
   'action.edit': 'تحرير',
   'targets.cancel': 'إلغاء',
   'targets.save': 'حفظ',
-  'targets.secretSet': 'هناك قيمة محفوظة. اتركها كما هي لتبقى.',
   'targets.access': 'الوصول',
   'targets.drives': 'الأقراص',
   'targets.drivesEmpty': 'لا قرص مسجَّل. سجّل واحداً كي تجده المهمة من جديد حتى لو عاد بحرف آخر.',
@@ -1168,7 +1170,8 @@ const ar: Translations = {
   'new.change.exceptions': 'تعرض {exceptions} في {sync} المهام التي لها قيم خاصة. وما دامت كل مهمة تتبع الإعدادات الافتراضية فلا تظهر البطاقة.',
   'new.change.scheduleSentence': 'يُقرأ الجدول كجملة. انقر عليه لفتح المحرر؛ ويبقى التعبير المكتوب يدويًا تحت {cron}.',
   'new.change.jobMore': 'لكل بطاقة مهمة زر {more} فيه كل ما تقدمه صفحة المهمة. يمكن تعديل المهمة أو فحصها أو إزالتها دون فتحها.',
-  'new.change.providerNames': 'يسمّي {connect} كل نوع تخزين يعرفه rclone ويضعه في مجموعته، مع شعاره حيث يوجد.',
+  'new.change.providerNames': 'يسمّي {connect} كل نوع تخزين يعرفه rclone ويضعه في مجموعته، مع شعاره حيث يوجد. ويجد البحث في الأعلى النوع باسمه أو باسمه في rclone.',
+  'new.change.targetRows': 'زر {test} في كل هدف يعرض بنفسه {connected} أو {notConnected}، والسبب في السطر تحت الاسم. كلمة المرور أو المفتاح المحفوظ يظهر بعبارة {saved}، و{change} يفتح الحقل.',
 }
 
 export default ar

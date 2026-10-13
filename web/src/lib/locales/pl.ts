@@ -302,6 +302,9 @@ const pl: Translations = {
   'edit.pickDrive': 'Zgłoszony dysk',
   'edit.pickRemote': 'Skonfigurowany cel',
   'targets.addStorage': 'Połącz magazyny i chmury',
+  'targets.addStorageHint': 'Wybierz, co chcesz połączyć. Chmury, magazyny obiektów i serwery mają każde swoją grupę, a wyszukiwanie znajduje usługę po jej nazwie albo nazwie w rclone.',
+  'targets.search': 'Szukaj magazynów i chmur',
+  'targets.searchNone': 'Nic nie pasuje do „{query}”. Większość innych usług działa z {s3} albo {webdav}.',
   'targets.cloudEmpty': 'Nie połączono jeszcze żadnej chmury. Tutaj dodaje się Dropbox, OneDrive, Google Drive i inne chmury.',
   'targets.bucketEmpty': 'Nie ma jeszcze magazynu obiektowego. Tutaj dodaje się kubełki w Backblaze B2, Wasabi, MinIO i każdym innym magazynie S3.',
   'targets.serverEmpty': 'Nie ma jeszcze serwera ani udziału. Tutaj dodaje się serwery SSH przez SFTP, serwery WebDAV i udziały Windows.',
@@ -319,7 +322,6 @@ const pl: Translations = {
   'action.edit': 'Edytuj',
   'targets.cancel': 'Anuluj',
   'targets.save': 'Zapisz',
-  'targets.secretSet': 'Wartość jest zapisana. Zostaw ją, a zostanie zachowana.',
   'targets.access': 'Dostęp',
   'targets.drives': 'Dyski',
   'targets.drivesEmpty': 'Nie zgłoszono żadnego dysku. Zgłoś jeden, aby zadanie odnalazło go także wtedy, gdy wróci pod inną literą.',
@@ -1168,7 +1170,8 @@ const pl: Translations = {
   'new.change.exceptions': '{exceptions} w {sync} wymienia zadania z własnymi wartościami. Dopóki każde zadanie podąża za domyślnymi, karty nie ma.',
   'new.change.scheduleSentence': 'Harmonogram czyta się jak zdanie. Kliknij go, aby otworzyć edytor; wyrażenie wpisane ręcznie zostaje pod {cron}.',
   'new.change.jobMore': 'Każda karta zadania ma {more}, ze wszystkim, co oferuje strona zadania. Zadanie można edytować, sprawdzić lub usunąć bez otwierania go.',
-  'new.change.providerNames': '{connect} nazywa każdy rodzaj magazynu znany rclone i umieszcza go w jego grupie, z logo, jeśli istnieje.',
+  'new.change.providerNames': '{connect} nazywa każdy rodzaj magazynu znany rclone i umieszcza go w jego grupie, z logo, jeśli istnieje. Wyszukiwanie u góry znajduje rodzaj po nazwie albo nazwie w rclone.',
+  'new.change.targetRows': 'Przycisk {test} przy każdym celu sam pokazuje {connected} albo {notConnected}, a powód stoi w wierszu pod nazwą. Zapisane hasło lub klucz widać jako {saved}, a {change} otwiera pole.',
 }
 
 export default pl

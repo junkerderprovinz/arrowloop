@@ -302,6 +302,9 @@ const ja: Translations = {
   'edit.pickDrive': '登録済みのドライブ',
   'edit.pickRemote': '設定済みの接続先',
   'targets.addStorage': 'ストレージとクラウドを接続',
+  'targets.addStorageHint': '接続するものを選んでください。クラウド、オブジェクトストレージ、サーバーはそれぞれのグループに分かれていて、検索では名前でも rclone での名前でもサービスを見つけられます。',
+  'targets.search': 'ストレージとクラウドを検索',
+  'targets.searchNone': '「{query}」に一致するものはありません。ほかのサービスの多くは {s3} か {webdav} で使えます。',
   'targets.cloudEmpty': 'まだクラウドが接続されていません。Dropbox、OneDrive、Google Drive などのクラウドはここに追加します。',
   'targets.bucketEmpty': 'まだオブジェクトストレージがありません。Backblaze B2、Wasabi、MinIO などの S3 ストレージのバケットはここに追加します。',
   'targets.serverEmpty': 'まだサーバーも共有もありません。SFTP 経由の SSH ホスト、WebDAV サーバー、Windows 共有はここに追加します。',
@@ -319,7 +322,6 @@ const ja: Translations = {
   'action.edit': '編集',
   'targets.cancel': '取り消し',
   'targets.save': '保存',
-  'targets.secretSet': '値が保存されています。そのままにすれば保持されます。',
   'targets.access': '接続情報',
   'targets.drives': 'ドライブ',
   'targets.drivesEmpty': '登録されたドライブがありません。別の文字で戻ってきてもジョブが見つけられるよう、登録してください。',
@@ -1168,7 +1170,8 @@ const ja: Translations = {
   'new.change.exceptions': '{sync} の {exceptions} には、独自の値を持つジョブが並びます。すべてのジョブが既定値に従っている間、このカードは表示されません。',
   'new.change.scheduleSentence': 'スケジュールは文として表示されます。クリックするとエディターが開きます。手で入力した式は {cron} に残ります。',
   'new.change.jobMore': 'どのジョブカードにも {more} があり、ジョブのページにある操作がすべて入っています。ジョブを開かずに編集、確認、削除ができます。',
-  'new.change.providerNames': '{connect}は rclone が扱うすべての種類のストレージに名前を付けてグループに分け、ロゴがあれば表示します。',
+  'new.change.providerNames': '{connect}は rclone が扱うすべての種類のストレージに名前を付けてグループに分け、ロゴがあれば表示します。上の検索では、名前でも rclone での名前でも探せます。',
+  'new.change.targetRows': '各保存先の {test} ボタンが、それ自体で {connected} か {notConnected} を表示し、理由は名前の下の行に出ます。保存済みのパスワードやキーは {saved} と表示され、{change} で入力欄が開きます。',
 }
 
 export default ja

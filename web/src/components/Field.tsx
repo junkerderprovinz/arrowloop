@@ -10,15 +10,27 @@ import { Flag } from './Flag'
 import { IconEye, IconEyeOff } from './glyphs'
 
 /** A labelled field: the eyebrow and its info bubble above, the control below. */
-export function Field({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
+export function Field({
+  label,
+  hint,
+  plain = false,
+  children,
+}: {
+  label: string
+  hint?: string
+  /** For content that is no single control: a label around a button would rename it. */
+  plain?: boolean
+  children: ReactNode
+}) {
+  const Box = plain ? 'div' : 'label'
   return (
-    <label className="flex flex-col gap-1.5">
+    <Box className="flex flex-col gap-1.5">
       <span className="flex items-center gap-1.5 text-meta font-medium uppercase tracking-wider text-carbon-textMuted">
         {label}
         {hint && <InfoBubble tip={hint} />}
       </span>
       {children}
-    </label>
+    </Box>
   )
 }
 

@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { Empty, Rows, Stack } from '../components/Shell'
 import { Dialog } from '../components/Dialog'
 import { IconAction } from '../components/IconAction'
 import { PageAction, PageActions } from '../components/PageActions'
+import { PickerSearch } from '../components/PickerSearch'
 import { ProviderPicker } from '../components/ProviderPicker'
 import { Since } from '../components/Since'
 import { Card } from '../lib/glimstone/Card'
@@ -25,20 +26,33 @@ import {
   IconTrash,
 } from '../components/glyphs'
 import { brandMark } from '../components/brandMarks'
-import { Choice, Field, Secret, Text } from '../components/Field'
+import { Choice, Field, Text } from '../components/Field'
 import { replay } from '../lib/animate'
 import { DropdownListbox } from '../lib/glimstone/DropdownListbox'
-import { api, type Backend, type Provider, type Remote, type Share, type Usage, type Volume, type DriveCandidate } from '../lib/api'
+import {
+  api,
+  type Backend,
+  type CheckAnswer,
+  type DriveCandidate,
+  type Provider,
+  type Remote,
+  type Share,
+  type Usage,
+  type Volume,
+} from '../lib/api'
 import { bytes } from '../lib/bytes'
 import { groupStage } from '../lib/controls'
 import { isLocalTarget } from '../lib/localTarget'
 import { useT } from '../lib/i18n'
 import { useToast } from '../lib/toast'
-import { optionHint } from '../lib/optionHint'
+import { optionHint, providerName } from '../lib/optionHint'
+import { matchesQuery } from '../lib/fold'
 import { optionLabel } from '../lib/optionNames'
 import { suggestTargetName } from '../lib/targetName'
 import { setTargetCount } from '../lib/targetCount'
 import { errorText } from '../lib/errorText'
+import { SecretRow } from './settings/rows'
+import { failureLine } from '../lib/failure'
 
 /**
  * The storage targets and registered drives a job's sides can point at, one
@@ -107,6 +121,7 @@ export function Targets() {
           group={group}
           hueIndex={i}
           rows={rows[group]}
+          marked={group === GROUPS.find((g) => rows[g].length > 0)}
           backends={backends}
           providers={providers.filter((p) => p.group === group)}
           onChanged={refresh}
@@ -171,6 +186,7 @@ function Storage({
   group,
   hueIndex,
   rows,
+  marked,
   backends,
   providers,
   onChanged,
@@ -178,6 +194,8 @@ function Storage({
   group: Group
   hueIndex: number
   rows: Remote[]
+  /** Carries the What's new mark on its first row, being the first card with any. */
+  marked: boolean
   backends: Backend[]
   /** The providers of this card's group, which name a target's product. */
   providers: Provider[]
@@ -192,8 +210,14 @@ function Storage({
         <Empty>{t(TEXT[group].empty)}</Empty>
       ) : (
         <Rows className="-mx-2 flex flex-col">
-          {rows.map((r) => (
-            <RemoteRow key={r.name} remote={r} onEdit={() => setEditing(r)} onChanged={onChanged} />
+          {rows.map((r, i) => (
+            <RemoteRow
+              key={r.name}
+              remote={r}
+              newId={marked && i === 0 ? 'target-rows' : undefined}
+              onEdit={() => setEditing(r)}
+              onChanged={onChanged}
+            />
           ))}
         </Rows>
       )}
@@ -217,8 +241,9 @@ function Storage({
 
 /**
  * Adding picks a product first, then shows that backend's fields in the same
- * place, so nobody has to know Nextcloud is "webdav". The products stand in
- * their three groups, and Back returns to them.
+ * window, so nobody has to know Nextcloud is "webdav". The products stand in
+ * their three groups under a search that narrows all of them at once, and
+ * Back returns to them.
  */
 function AddTarget({
   backends,
@@ -235,6 +260,18 @@ function AddTarget({
 }) {
   const { t } = useT()
   const [picked, setPicked] = useState<{ kind: string; provider: Provider | null } | null>(null)
+  const [query, setQuery] = useState('')
+
+  // While a query narrows the tiles the window keeps the height it opened
+  // with, or the search would move away from the eye with every letter.
+  const body = useRef<HTMLDivElement>(null)
+  const [floor, setFloor] = useState<number>()
+  useLayoutEffect(() => {
+    const scroller = body.current?.parentElement
+    if (!scroller || floor !== undefined) return
+    const style = getComputedStyle(scroller)
+    setFloor(scroller.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom))
+  }, [picked, floor])
 
   if (picked) {
     return (
@@ -249,50 +286,93 @@ function AddTarget({
       />
     )
   }
+
+  // By the name shown and by rclone's own, which is what a guide online calls it.
+  const groups = GROUPS.map((group) => ({
+    group,
+    providers: providers.filter((p) => p.group === group && matchesQuery(query, [providerName(p, t), p.name, p.backend])),
+    // An rclone backend with no provider entry counts as a protocol here.
+    unlisted: group === 'protocol' ? unlisted.filter((b) => matchesQuery(query, [b.name])) : [],
+  })).filter((g) => g.providers.length + g.unlisted.length > 0)
+  const tile = (id: string, fallback: string) => {
+    const p = providers.find((x) => x.id === id)
+    return p ? providerName(p, t) : fallback
+  }
+
   return (
-    <Dialog title={t('targets.addStorage')} onClose={() => onDone(false)} wide>
-      <div className="flex flex-col gap-6">
-        {GROUPS.map((group) => (
-          <section key={group} className="flex flex-col gap-3">
-            <h3 className="glim-eyebrow">{t(TEXT[group].title)}</h3>
-            <ProviderPicker
-              providers={providers.filter((p) => p.group === group)}
-              // An rclone backend with no provider entry counts as a protocol here.
-              unlisted={group === 'protocol' ? unlisted : []}
-              onPick={(choice) =>
-                setPicked(typeof choice === 'string' ? { kind: choice, provider: null } : { kind: choice.backend, provider: choice })
-              }
-            />
-          </section>
-        ))}
+    <Dialog
+      title={t('targets.addStorage')}
+      hint={t('targets.addStorageHint')}
+      onClose={() => onDone(false)}
+      wide
+      search={<PickerSearch value={query} onChange={setQuery} label={t('targets.search')} />}
+    >
+      <div ref={body} className="flex flex-col gap-6" style={{ minHeight: floor }}>
+        {groups.length === 0 ? (
+          <p className="py-6 text-center text-subline text-carbon-textMuted">
+            {t('targets.searchNone', { query: query.trim(), s3: tile('s3', 'S3'), webdav: tile('webdav', 'WebDAV') })}
+          </p>
+        ) : (
+          groups.map((g) => (
+            <section key={g.group} className="flex flex-col gap-3">
+              <h3 className="glim-eyebrow">{t(TEXT[g.group].title)}</h3>
+              <ProviderPicker
+                providers={g.providers}
+                unlisted={g.unlisted}
+                onPick={(choice) =>
+                  setPicked(typeof choice === 'string' ? { kind: choice, provider: null } : { kind: choice.backend, provider: choice })
+                }
+              />
+            </section>
+          ))
+        )}
       </div>
     </Dialog>
   )
 }
 
 /**
- * One target as one row: its brand in the tile, its name, whether it answers,
- * and what else it could say in the bubble beside the name. Its buttons come
- * in under the pointer.
+ * One target as one row: its brand in the tile, its name, and what else it
+ * could say in the bubble beside the name. Edit and Delete come in under the
+ * pointer; the test button stays once it has a verdict, which it carries in
+ * its colour, word and glyph, with the reason on a line under the name.
  */
-function RemoteRow({ remote, onEdit, onChanged }: { remote: Remote; onEdit: () => void; onChanged: () => void }) {
-  const { t } = useT()
+function RemoteRow({
+  remote,
+  newId,
+  onEdit,
+  onChanged,
+}: {
+  remote: Remote
+  newId?: string
+  onEdit: () => void
+  onChanged: () => void
+}) {
+  const { t, lang } = useT()
   const push = useToast()
   const [checking, setChecking] = useState(false)
-  const [result, setResult] = useState<{ ok: boolean; reason?: string } | null>(null)
+  const [result, setResult] = useState<CheckAnswer | null>(null)
+  // A failed test somebody pressed shakes the button; the one on opening does
+  // not, or every unreachable row would shake as the page appears.
+  const [refused, setRefused] = useState(0)
+  const checkButton = useRef<HTMLButtonElement>(null)
+  useEffect(() => {
+    if (refused) replay(checkButton.current, 'glim-shake')
+  }, [refused])
   // How full the target is, fetched on the same press once the check has
   // succeeded.
   const [usage, setUsage] = useState<Usage | null>(null)
   // Deleting a target takes its credentials, which nothing here can restore.
   const [confirming, setConfirming] = useState(false)
 
-  async function check() {
+  async function check(asked = false) {
     setChecking(true)
     setResult(null)
     setUsage(null)
     try {
       const answer = await api.checkRemote(remote.name)
       setResult(answer)
+      if (!answer.ok && asked) setRefused((n) => n + 1)
       if (answer.ok) {
         // Many targets cannot report their space; that is no failure.
         try {
@@ -303,6 +383,7 @@ function RemoteRow({ remote, onEdit, onChanged }: { remote: Remote; onEdit: () =
       }
     } catch (e) {
       setResult({ ok: false, reason: (e as Error).message })
+      if (asked) setRefused((n) => n + 1)
     } finally {
       setChecking(false)
     }
@@ -322,12 +403,8 @@ function RemoteRow({ remote, onEdit, onChanged }: { remote: Remote; onEdit: () =
     .slice(0, 3)
     .map((s) => `${s.key}=${s.value}`)
     .join(', ')
-  const facts = [
-    remote.mark ? '' : remote.type,
-    summary,
-    result && !result.ok ? (result.reason ?? '') : '',
-    usage ? space(usage, t) : '',
-  ].filter(Boolean)
+  const facts = [remote.mark ? '' : remote.type, summary, usage ? space(usage, t) : ''].filter(Boolean)
+  const why = result && !result.ok && result.reason ? failureLine(result.reason, result.failure, t, lang) : ''
 
   return (
     <li className="glim-row flex min-h-14 items-center gap-3 rounded-control px-2 py-2 hover:bg-carbon-hover">
@@ -336,18 +413,14 @@ function RemoteRow({ remote, onEdit, onChanged }: { remote: Remote; onEdit: () =
       <span className="glim-row-glyph flex h-9 w-9 shrink-0 items-center justify-center rounded-control text-[20px]">
         {(remote.mark && brandMark(remote.mark)) || <IconTabStorage />}
       </span>
-      <span className="flex min-w-0 flex-1 items-center gap-2">
-        <span className="truncate text-body font-medium">{remote.name}:</span>
-        {facts.length > 0 && <InfoBubble tip={facts.join(' · ')} />}
+      <span className="flex min-w-0 flex-1 flex-col">
+        <span className="flex min-w-0 items-center gap-2">
+          <span className="truncate text-body font-medium">{remote.name}:</span>
+          {facts.length > 0 && <InfoBubble tip={facts.join(' · ')} />}
+        </span>
+        {why && <span className="text-subline text-statusFail [overflow-wrap:anywhere]">{why}</span>}
       </span>
       <span className="glim-row-actions flex shrink-0 items-center gap-1.5">
-        <IconAction
-          onClick={check}
-          disabled={checking}
-          title={checking ? t('targets.checking') : t('targets.check')}
-          labelKey={checking ? 'targets.checking' : 'targets.check'}
-          hint={t('targets.checkHint')}
-        />
         <IconAction onClick={onEdit} title={t('action.edit')} labelKey="action.edit">
           <IconPencil />
         </IconAction>
@@ -355,9 +428,21 @@ function RemoteRow({ remote, onEdit, onChanged }: { remote: Remote; onEdit: () =
           <IconTrash />
         </IconAction>
       </span>
-      {result && !local && (
-        <Badge tone={result.ok ? 'ok' : 'fail'}>{result.ok ? t('targets.checkOk') : t('targets.checkFailed')}</Badge>
-      )}
+      <span data-new={newId} className={`${result || checking ? '' : 'glim-row-actions '}glim-row-verdict flex shrink-0`}>
+        <Button
+          ref={checkButton}
+          label={
+            checking ? t('targets.checking') : !result ? t('targets.check') : result.ok ? t('targets.checkOk') : t('targets.checkFailed')
+          }
+          labelKey="targets.check"
+          glyph={checking || !result ? undefined : result.ok ? <IconCheck /> : <IconClose />}
+          tone={checking || !result ? 'neutral' : result.ok ? 'ok' : 'danger'}
+          title={why || t('targets.checkHint')}
+          busy={checking}
+          onClick={() => void check(true)}
+          disabled={checking}
+        />
+      </span>
 
       {confirming && (
         <ConfirmDialog
@@ -426,7 +511,7 @@ function RemoteForm({
   onBack?: () => void
   onDone: (saved: boolean) => void
 }) {
-  const { t } = useT()
+  const { t, lang } = useT()
   const push = useToast()
   const preset = provider?.preset
   // Suggested from the product's own name, numbered when taken (`OpenCloud-2`).
@@ -444,7 +529,7 @@ function RemoteForm({
   const [checking, setChecking] = useState(false)
   const [trying, setTrying] = useState(false)
   /** The result of a test run before saving. */
-  const [tried, setTried] = useState<{ ok: boolean; reason?: string } | null>(null)
+  const [tried, setTried] = useState<CheckAnswer | null>(null)
   // Count failed tests and saves, so each one remounts its button and shakes it again.
   const [refused, setRefused] = useState(0)
   const [unsaved, setUnsaved] = useState(0)
@@ -512,40 +597,47 @@ function RemoteForm({
     }
   }
 
-  const field = (o: Backend['options'][number]) => (
-    <Field key={o.name} label={optionLabel(o.name, t)} hint={optionHint(o, t, provider)}>
-      {o.secret ? (
-        <Secret
-          value={values[o.name] ?? ''}
-          onChange={(next) => setValues((prev) => ({ ...prev, [o.name]: next }))}
-          placeholder={values[o.name] ? t('targets.secretSet') : o.default}
-        />
-      ) : kind === 'smb' && o.name === 'host' ? (
-        <ShareHost
-          value={values.host ?? ''}
-          onChange={(next) => setValues((prev) => ({ ...prev, host: next }))}
-          placeholder={o.default || o.examples?.[0]?.value}
-          // The account comes along where the field is still empty; the
-          // password cannot be read back from Windows.
-          onShare={(picked) =>
-            setValues((prev) => ({
-              ...prev,
-              host: picked.host,
-              ...(picked.user && !prev.user ? { user: picked.user } : {}),
-              ...(picked.domain && !prev.domain ? { domain: picked.domain } : {}),
-            }))
-          }
-        />
-      ) : (
-        <Text
-          value={values[o.name] ?? ''}
-          onChange={(next) => setValues((prev) => ({ ...prev, [o.name]: next }))}
-          placeholder={o.default || o.examples?.[0]?.value}
-          mono
-        />
-      )}
-    </Field>
-  )
+  // A stored secret arrives as the placeholder and goes back untouched unless
+  // it is changed, which tells the engine to keep it (remotes.Save).
+  const field = (o: Backend['options'][number]) =>
+    o.secret ? (
+      <SecretRow
+        key={o.name}
+        label={optionLabel(o.name, t)}
+        hint={optionHint(o, t, provider)}
+        value={values[o.name] ?? ''}
+        onChange={(next) => setValues((prev) => ({ ...prev, [o.name]: next }))}
+        placeholder={o.default}
+        stacked
+      />
+    ) : (
+      <Field key={o.name} label={optionLabel(o.name, t)} hint={optionHint(o, t, provider)}>
+        {kind === 'smb' && o.name === 'host' ? (
+          <ShareHost
+            value={values.host ?? ''}
+            onChange={(next) => setValues((prev) => ({ ...prev, host: next }))}
+            placeholder={o.default || o.examples?.[0]?.value}
+            // The account comes along where the field is still empty; the
+            // password cannot be read back from Windows.
+            onShare={(picked) =>
+              setValues((prev) => ({
+                ...prev,
+                host: picked.host,
+                ...(picked.user && !prev.user ? { user: picked.user } : {}),
+                ...(picked.domain && !prev.domain ? { domain: picked.domain } : {}),
+              }))
+            }
+          />
+        ) : (
+          <Text
+            value={values[o.name] ?? ''}
+            onChange={(next) => setValues((prev) => ({ ...prev, [o.name]: next }))}
+            placeholder={o.default || o.examples?.[0]?.value}
+            mono
+          />
+        )}
+      </Field>
+    )
 
   return (
     <Dialog
@@ -570,7 +662,7 @@ function RemoteForm({
             labelKey="targets.check"
             glyph={trying || !tried ? undefined : tried.ok ? <IconCheck /> : <IconClose />}
             tone={trying || !tried ? 'neutral' : tried.ok ? 'ok' : 'danger'}
-            title={tried && !tried.ok ? tried.reason : undefined}
+            title={tried && !tried.ok && tried.reason ? failureLine(tried.reason, tried.failure, t, lang) : undefined}
             className={tried && !tried.ok && !trying ? 'glim-shake' : ''}
             busy={trying}
             stage={groupStage([t('targets.check'), t('targets.checking'), t('targets.checkOk'), t('targets.checkFailed')])}

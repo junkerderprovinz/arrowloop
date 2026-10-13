@@ -302,6 +302,9 @@ const hr: Translations = {
   'edit.pickDrive': 'Prijavljen disk',
   'edit.pickRemote': 'Postavljeno odredište',
   'targets.addStorage': 'Poveži pohranu i oblake',
+  'targets.addStorageHint': 'Odaberite što želite povezati. Oblaci, objektna pohrana i poslužitelji imaju svatko svoju skupinu, a pretraga pronalazi uslugu po imenu ili po imenu u rcloneu.',
+  'targets.search': 'Pretraži pohranu i oblake',
+  'targets.searchNone': 'Ništa ne odgovara „{query}”. Većina drugih usluga radi s {s3} ili {webdav}.',
   'targets.cloudEmpty': 'Još nije povezan nijedan oblak. Ovdje se dodaju Dropbox, OneDrive, Google Drive i ostali oblaci.',
   'targets.bucketEmpty': 'Još nema objektne pohrane. Ovdje se dodaju kante na Backblaze B2, Wasabi, MinIO i svakoj drugoj pohrani S3.',
   'targets.serverEmpty': 'Još nema poslužitelja ni dijeljenja. Ovdje se dodaju poslužitelji SSH preko SFTP-a, poslužitelji WebDAV i dijeljenja Windows.',
@@ -319,7 +322,6 @@ const hr: Translations = {
   'action.edit': 'Uredi',
   'targets.cancel': 'Odustani',
   'targets.save': 'Spremi',
-  'targets.secretSet': 'Vrijednost je spremljena. Ostavite je i sačuvat će se.',
   'targets.access': 'Pristup',
   'targets.drives': 'Diskovi',
   'targets.drivesEmpty': 'Nijedan disk nije prijavljen. Prijavite jedan kako bi ga zadatak ponovno našao i ako se vrati s drugim slovom.',
@@ -1168,7 +1170,8 @@ const hr: Translations = {
   'new.change.exceptions': '{exceptions} u {sync} navodi zadatke s vlastitim vrijednostima. Dok svaki zadatak slijedi zadane vrijednosti, kartice nema.',
   'new.change.scheduleSentence': 'Raspored se čita kao rečenica. Klikni na njega da otvoriš uređivač; izraz upisan ručno ostaje pod {cron}.',
   'new.change.jobMore': 'Svaka kartica zadatka ima {more}, sa svime što nudi stranica zadatka. Zadatak se može urediti, provjeriti ili ukloniti bez otvaranja.',
-  'new.change.providerNames': '{connect} imenuje svaku vrstu pohrane koju rclone poznaje i stavlja je u njezinu skupinu, s logotipom ako postoji.',
+  'new.change.providerNames': '{connect} imenuje svaku vrstu pohrane koju rclone poznaje i stavlja je u njezinu skupinu, s logotipom ako postoji. Pretraga na vrhu pronalazi vrstu po imenu ili po imenu u rcloneu.',
+  'new.change.targetRows': 'Gumb {test} uz svaki cilj sam prikazuje {connected} ili {notConnected}, a razlog stoji u retku ispod imena. Spremljena lozinka ili ključ prikazuje se kao {saved}, a {change} otvara polje.',
 }
 
 export default hr

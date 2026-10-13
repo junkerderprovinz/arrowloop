@@ -463,6 +463,9 @@ export const en = {
   'edit.pickDrive': 'A registered drive',
   'edit.pickRemote': 'A configured target',
   'targets.addStorage': 'Connect storage and clouds',
+  'targets.addStorageHint': 'Pick what to connect. Clouds, object storage and servers each stand in a group of their own, and the search finds a service by its name or by its rclone name.',
+  'targets.search': 'Search storage and clouds',
+  'targets.searchNone': 'Nothing matches "{query}". Most other services work with {s3} or {webdav}.',
   'targets.cloudEmpty': 'No cloud connected yet. Dropbox, OneDrive, Google Drive and the other clouds go here.',
   'targets.bucketEmpty': 'No object storage yet. Buckets on Backblaze B2, Wasabi, MinIO and any other S3 store go here.',
   'targets.serverEmpty': 'No server or share yet. SSH hosts over SFTP, WebDAV servers and Windows shares go here.',
@@ -481,7 +484,6 @@ export const en = {
   'action.edit': 'Edit',
   'targets.cancel': 'Cancel',
   'targets.save': 'Save',
-  'targets.secretSet': 'A value is stored. Leave this alone to keep it.',
   'targets.access': 'Access',
   'confirm.deleteRemote': 'Delete this storage target',
   'confirm.deleteRemoteStakes':
@@ -1209,7 +1211,8 @@ export const en = {
   'new.change.exceptions': '{exceptions} on {sync} lists the jobs that have values of their own. While every job follows the defaults, the card is not there.',
   'new.change.scheduleSentence': 'A schedule reads as a sentence. Click it to open the editor; an expression typed by hand stays under {cron}.',
   'new.change.jobMore': 'Every job card has {more}, with everything the job\'s page offers. A job can be edited, checked or removed without opening it.',
-  'new.change.providerNames': '{connect} names every kind of storage rclone knows and puts it in its group, with its logo where one exists.',
+  'new.change.providerNames': '{connect} names every kind of storage rclone knows and puts it in its group, with its logo where one exists. A search at the top finds one by its name or by its rclone name.',
+  'new.change.targetRows': 'A target\'s {test} button shows {connected} or {notConnected} itself, with the reason on the line under the name. A stored password or key shows as {saved}, and {change} opens the field.',
 } as const
 
 export type TranslationKey = keyof typeof en
@@ -1669,6 +1672,9 @@ export const de: Translations = {
   'edit.pickDrive': 'Ein angemeldeter Datenträger',
   'edit.pickRemote': 'Ein eingerichtetes Ziel',
   'targets.addStorage': 'Speicher und Cloud verbinden',
+  'targets.addStorageHint': 'Wähle, was du verbinden willst. Clouds, Objektspeicher und Server stehen je in einer eigenen Gruppe, und die Suche findet einen Dienst über seinen Namen oder seinen rclone-Namen.',
+  'targets.search': 'Speicher und Clouds durchsuchen',
+  'targets.searchNone': 'Nichts passt zu „{query}“. Die meisten anderen Dienste funktionieren mit {s3} oder {webdav}.',
   'targets.cloudEmpty': 'Noch keine Cloud verbunden. Hier kommen Dropbox, OneDrive, Google Drive und die anderen Clouds dazu.',
   'targets.bucketEmpty': 'Noch kein Objektspeicher. Hier kommen Eimer bei Backblaze B2, Wasabi, MinIO und jedem anderen S3-Speicher dazu.',
   'targets.serverEmpty': 'Noch kein Server und keine Freigabe. Hier kommen SSH-Rechner über SFTP, WebDAV-Server und Windows-Freigaben dazu.',
@@ -1687,7 +1693,6 @@ export const de: Translations = {
   'action.edit': 'Bearbeiten',
   'targets.cancel': 'Abbrechen',
   'targets.save': 'Speichern',
-  'targets.secretSet': 'Ein Wert ist hinterlegt. Lass ihn stehen, dann bleibt er erhalten.',
   'targets.access': 'Zugang',
   'confirm.deleteRemote': 'Dieses Speicherziel löschen',
   'confirm.deleteRemoteStakes':
@@ -2412,7 +2417,8 @@ export const de: Translations = {
   'new.change.exceptions': '{exceptions} unter {sync} listet die Aufträge mit eigenen Werten. Solange jeder Auftrag den Vorgaben folgt, fehlt die Karte.',
   'new.change.scheduleSentence': 'Ein Zeitplan steht als Satz da. Ein Klick darauf öffnet den Editor; ein von Hand getippter Ausdruck bleibt unter {cron}.',
   'new.change.jobMore': 'Jede Auftragskarte hat {more} mit allem, was die Seite des Auftrags bietet. Ein Auftrag lässt sich so bearbeiten, prüfen oder entfernen, ohne ihn zu öffnen.',
-  'new.change.providerNames': '{connect} nennt jede Speicherart, die rclone kennt, und ordnet sie ihrer Gruppe zu, mit Logo, wo es eines gibt.',
+  'new.change.providerNames': '{connect} nennt jede Speicherart, die rclone kennt, und ordnet sie ihrer Gruppe zu, mit Logo, wo es eines gibt. Eine Suche oben findet eine über ihren Namen oder ihren rclone-Namen.',
+  'new.change.targetRows': 'Der Knopf {test} eines Ziels zeigt selbst {connected} oder {notConnected}, den Grund in der Zeile unter dem Namen. Ein gespeichertes Passwort oder ein Schlüssel steht als {saved} da, und {change} öffnet das Feld.',
 }
 
 export interface Language {
