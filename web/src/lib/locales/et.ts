@@ -497,6 +497,8 @@ const et: Translations = {
   'overview.manySmall': 'Palju väikeseid faile, umbes {count} sekundis',
   'phone.permissionDenied': 'Luba pole antud',
   'phone.headInSync': 'Kõik on sünkroonis',
+  'phone.headNoJobs': 'Töid pole veel',
+  'phone.noJobs': 'Töö hoiab kaks kausta ühesugused. Lisa esimene allpool oleva nupuga.',
   'phone.headWithNotes': 'Sünkroonis, märkustega',
   'phone.needsYou': 'Vajab sind',
   'phone.waiting': 'Ootel',

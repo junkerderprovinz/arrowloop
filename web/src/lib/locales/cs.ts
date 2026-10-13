@@ -497,6 +497,8 @@ const cs: Translations = {
   'overview.manySmall': 'Mnoho malých souborů, asi {count} za sekundu',
   'phone.permissionDenied': 'Oprávnění neuděleno',
   'phone.headInSync': 'Vše je synchronizované',
+  'phone.headNoJobs': 'Zatím žádné úlohy',
+  'phone.noJobs': 'Úloha udržuje dvě složky shodné. Přidej první tlačítkem níže.',
   'phone.headWithNotes': 'Synchronizováno, s poznámkami',
   'phone.needsYou': 'Čeká na tebe',
   'phone.waiting': 'Čeká',

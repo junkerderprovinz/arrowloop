@@ -497,6 +497,8 @@ const nl: Translations = {
   'overview.manySmall': 'Veel kleine bestanden, ongeveer {count} per seconde',
   'phone.permissionDenied': 'Toestemming niet verleend',
   'phone.headInSync': 'Alles gesynchroniseerd',
+  'phone.headNoJobs': 'Nog geen taken',
+  'phone.noJobs': 'Een taak houdt twee mappen gelijk. Maak de eerste aan met de knop hieronder.',
   'phone.headWithNotes': 'Gesynchroniseerd, met opmerkingen',
   'phone.needsYou': 'Actie nodig',
   'phone.waiting': 'Wacht',

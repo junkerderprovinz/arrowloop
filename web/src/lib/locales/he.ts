@@ -497,6 +497,8 @@ const he: Translations = {
   'overview.manySmall': 'הרבה קבצים קטנים, בערך {count} בשנייה',
   'phone.permissionDenied': 'ההרשאה לא ניתנה',
   'phone.headInSync': 'הכול מסונכרן',
+  'phone.headNoJobs': 'עדיין אין משימות',
+  'phone.noJobs': 'משימה שומרת על שתי תיקיות זהות. אפשר להוסיף את הראשונה בכפתור שלמטה.',
   'phone.headWithNotes': 'מסונכרן, עם הערות',
   'phone.needsYou': 'צריך אותך',
   'phone.waiting': 'ממתינים',

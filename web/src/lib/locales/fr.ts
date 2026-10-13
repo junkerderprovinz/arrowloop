@@ -497,6 +497,8 @@ const fr: Translations = {
   'overview.manySmall': 'Beaucoup de petits fichiers, environ {count} par seconde',
   'phone.permissionDenied': 'Autorisation non accordée',
   'phone.headInSync': 'Tout est synchronisé',
+  'phone.headNoJobs': 'Aucune tâche pour l\'instant',
+  'phone.noJobs': 'Une tâche garde deux dossiers identiques. Ajoutez la première avec le bouton ci-dessous.',
   'phone.headWithNotes': 'Synchronisé, avec remarques',
   'phone.needsYou': 'Besoin de toi',
   'phone.waiting': 'En attente',

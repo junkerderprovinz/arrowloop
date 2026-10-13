@@ -497,6 +497,8 @@ const hi: Translations = {
   'overview.manySmall': 'बहुत सी छोटी फ़ाइलें, लगभग {count} प्रति सेकंड',
   'phone.permissionDenied': 'अनुमति नहीं दी गई',
   'phone.headInSync': 'सब कुछ सिंक है',
+  'phone.headNoJobs': 'अभी कोई काम नहीं है',
+  'phone.noJobs': 'एक काम दो फ़ोल्डरों को एक जैसा रखता है। पहला काम नीचे के बटन से जोड़ें।',
   'phone.headWithNotes': 'सिंक है, कुछ टिप्पणियों के साथ',
   'phone.needsYou': 'आपकी ज़रूरत है',
   'phone.waiting': 'प्रतीक्षा में',

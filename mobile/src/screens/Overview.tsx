@@ -22,6 +22,7 @@ import {
   AxisLabel,
   Badge,
   Body,
+  Button,
   Caption,
   CardHead,
   Empty,
@@ -46,11 +47,15 @@ const RECENT = 200;
 /** How many of the coming runs the overview names. */
 const NEXT_SHOWN = 3;
 
+/** The head's states, and one more for a phone with no job, where nothing can be in sync. */
+type Head = HeadState | "noJobs";
+
 const HEADLINE = {
   inSync: "phone.headInSync",
   withNotes: "phone.headWithNotes",
   needsYou: "phone.needsYou",
-} as const satisfies Record<HeadState, string>;
+  noJobs: "phone.headNoJobs",
+} as const satisfies Record<Head, string>;
 
 /**
  * The start screen: how things stand in one sentence, what waits for the
@@ -108,7 +113,8 @@ export function Overview() {
   const settled = jobs.filter((j) => !j.running).map(jobState);
   const known = waiting.conflicts !== null && waiting.findings !== null;
   const wait = needs(waiting.conflicts ?? 0, waiting.findings ?? [], settled, waiting.unread ?? 0);
-  const head: HeadState = access === false ? "needsYou" : wait.head;
+  const empty = jobs.length === 0;
+  const head: Head = access === false ? "needsYou" : empty ? "noJobs" : wait.head;
 
   const running = jobs.filter((j) => j.running);
   // Held jobs and drafts without both sides stay out. The requests go out
@@ -122,11 +128,13 @@ export function Overview() {
   const toTab = (tab: string) => nav.getParent()?.navigate(tab);
   // The job's own screen sits in the jobs tab.
   const openJob = (name: string) => nav.getParent()?.navigate("JobsTab", { screen: "JobDetail", params: { name } });
+  // Over the job list, so saving the new job lands there.
+  const addJob = () => nav.getParent()?.navigate("JobsTab", { screen: "JobEdit", params: {}, initial: false });
 
   return (
     <Floating>
       <Page fab>
-        {known ? <StatusHead state={head} /> : null}
+        {known || empty ? <StatusHead state={head} /> : null}
 
         {known && (wait.items.length > 0 || access === false) ? (
           <Section title={t("phone.waiting")} hue={0}>
@@ -150,7 +158,15 @@ export function Overview() {
         ) : null}
 
         <Section title={t("overview.running")} hint={t("overview.idleHint")} hue={1}>
-          {running.length === 0 ? <Body>{t("overview.idle")}</Body> : null}
+          {empty ? (
+            <>
+              <Body>{t("phone.noJobs")}</Body>
+              <View style={styles.actions}>
+                <Button label={t("edit.add")} labelKey="edit.add" tone="accent" wide={false} onPress={addJob} />
+              </View>
+            </>
+          ) : null}
+          {!empty && running.length === 0 ? <Body>{t("overview.idle")}</Body> : null}
           {running.map((job) => (
             <RunningJob
               key={job.name}
@@ -161,7 +177,7 @@ export function Overview() {
               onOpen={() => openJob(job.name)}
             />
           ))}
-          <NextRuns jobs={jobs} onOpen={openJob} />
+          {empty ? null : <NextRuns jobs={jobs} onOpen={openJob} />}
         </Section>
 
         <Section title={t("overview.status")} hue={2}>
@@ -263,13 +279,14 @@ function useFileAccess(): boolean | null {
   return access;
 }
 
-/** How things stand, in one of three fixed sentences. A note never rounds up to "in sync". */
-function StatusHead({ state }: { state: HeadState }) {
+/** How things stand, in one of four fixed sentences. A note never rounds up to "in sync". */
+function StatusHead({ state }: { state: Head }) {
   const { t } = useT();
   const { p } = useTheme();
+  const ink = state === "inSync" ? p.okInk : state === "noJobs" ? p.textSub : p.warnInk;
   return (
     <View style={styles.head} accessibilityRole="header">
-      <Glyph name="IconSync" color={state === "inSync" ? p.okInk : p.warnInk} size={22} />
+      <Glyph name="IconSync" color={ink} size={22} />
       <Text style={[styles.headText, { color: p.text }]}>{t(HEADLINE[state])}</Text>
     </View>
   );
@@ -578,6 +595,7 @@ const styles = StyleSheet.create({
   file: { gap: space.xs, marginTop: space.xs },
   fileName: { flex: 1, minWidth: 0 },
   nextRow: { minHeight: 32, justifyContent: "center" },
+  actions: { flexDirection: "row" },
   tiles: { flexDirection: "row", gap: space.sm },
   tile: { flex: 1, minWidth: 0, padding: space.md, gap: 2 },
   tileValue: { fontSize: text.status, fontWeight: "600", fontVariant: ["tabular-nums", "lining-nums"] },

@@ -497,6 +497,8 @@ const ro: Translations = {
   'overview.manySmall': 'Multe fișiere mici, aproximativ {count} pe secundă',
   'phone.permissionDenied': 'Permisiune neacordată',
   'phone.headInSync': 'Totul este sincronizat',
+  'phone.headNoJobs': 'Nicio sarcină încă',
+  'phone.noJobs': 'O sarcină ține două foldere la fel. Adaugă prima cu butonul de mai jos.',
   'phone.headWithNotes': 'Sincronizat, cu note',
   'phone.needsYou': 'Are nevoie de tine',
   'phone.waiting': 'În așteptare',

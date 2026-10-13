@@ -497,6 +497,8 @@ const da: Translations = {
   'overview.manySmall': 'Mange små filer, omkring {count} i sekundet',
   'phone.permissionDenied': 'Tilladelse ikke givet',
   'phone.headInSync': 'Alt er synkroniseret',
+  'phone.headNoJobs': 'Der er ingen job endnu',
+  'phone.noJobs': 'Et job holder to mapper ens. Opret det første med knappen herunder.',
   'phone.headWithNotes': 'Synkroniseret, med bemærkninger',
   'phone.needsYou': 'Venter på dig',
   'phone.waiting': 'Venter',

@@ -497,6 +497,8 @@ const bg: Translations = {
   'overview.manySmall': 'Много малки файлове, около {count} в секунда',
   'phone.permissionDenied': 'Разрешението не е дадено',
   'phone.headInSync': 'Всичко е синхронизирано',
+  'phone.headNoJobs': 'Още няма задачи',
+  'phone.noJobs': 'Задачата държи две папки еднакви. Добави първата с бутона отдолу.',
   'phone.headWithNotes': 'Синхронизирано, с бележки',
   'phone.needsYou': 'Чака теб',
   'phone.waiting': 'Чакат',

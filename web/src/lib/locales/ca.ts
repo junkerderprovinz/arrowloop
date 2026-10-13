@@ -497,6 +497,8 @@ const ca: Translations = {
   'overview.manySmall': 'Molts fitxers petits, uns {count} per segon',
   'phone.permissionDenied': 'Permís no concedit',
   'phone.headInSync': 'Tot sincronitzat',
+  'phone.headNoJobs': 'Encara no hi ha tasques',
+  'phone.noJobs': 'Una tasca manté dues carpetes iguals. Afegeix la primera amb el botó de sota.',
   'phone.headWithNotes': 'Sincronitzat, amb notes',
   'phone.needsYou': 'Et necessita',
   'phone.waiting': 'En espera',

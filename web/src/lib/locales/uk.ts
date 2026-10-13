@@ -497,6 +497,8 @@ const uk: Translations = {
   'overview.manySmall': 'Багато дрібних файлів, близько {count} за секунду',
   'phone.permissionDenied': 'Дозвіл не надано',
   'phone.headInSync': 'Усе синхронізовано',
+  'phone.headNoJobs': 'Завдань ще немає',
+  'phone.noJobs': 'Завдання тримає дві теки однаковими. Додайте перше кнопкою нижче.',
   'phone.headWithNotes': 'Синхронізовано, є нотатки',
   'phone.needsYou': 'Потрібна твоя увага',
   'phone.waiting': 'Очікують',

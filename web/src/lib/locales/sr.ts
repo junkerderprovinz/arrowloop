@@ -497,6 +497,8 @@ const sr: Translations = {
   'overview.manySmall': 'Много малих датотека, око {count} у секунди',
   'phone.permissionDenied': 'Дозвола није додељена',
   'phone.headInSync': 'Све је синхронизовано',
+  'phone.headNoJobs': 'Још нема послова',
+  'phone.noJobs': 'Посао одржава две фасцикле истим. Додај први дугметом испод.',
   'phone.headWithNotes': 'Синхронизовано, са напоменама',
   'phone.needsYou': 'Треба тебе',
   'phone.waiting': 'Чекају',

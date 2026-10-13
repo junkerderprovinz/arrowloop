@@ -497,6 +497,8 @@ const fi: Translations = {
   'overview.manySmall': 'Paljon pieniä tiedostoja, noin {count} sekunnissa',
   'phone.permissionDenied': 'Käyttöoikeutta ei myönnetty',
   'phone.headInSync': 'Kaikki synkronoitu',
+  'phone.headNoJobs': 'Ei vielä töitä',
+  'phone.noJobs': 'Työ pitää kaksi kansiota samanlaisina. Lisää ensimmäinen alla olevalla painikkeella.',
   'phone.headWithNotes': 'Synkronoitu, huomautuksin',
   'phone.needsYou': 'Tarvitsee sinua',
   'phone.waiting': 'Odottaa',

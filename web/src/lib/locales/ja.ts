@@ -497,6 +497,8 @@ const ja: Translations = {
   'overview.manySmall': '小さなファイルが大量、毎秒およそ {count} 件',
   'phone.permissionDenied': '未許可',
   'phone.headInSync': 'すべて同期済み',
+  'phone.headNoJobs': 'ジョブはまだありません',
+  'phone.noJobs': 'ジョブは 2 つのフォルダーを同じ状態に保ちます。下のボタンから最初のジョブを追加してください。',
   'phone.headWithNotes': '同期済み、メモあり',
   'phone.needsYou': '対応が必要',
   'phone.waiting': '待機中',

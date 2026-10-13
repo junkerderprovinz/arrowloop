@@ -497,6 +497,8 @@ const vi: Translations = {
   'overview.manySmall': 'Nhiều tệp nhỏ, khoảng {count} mỗi giây',
   'phone.permissionDenied': 'Chưa cấp quyền',
   'phone.headInSync': 'Mọi thứ đã đồng bộ',
+  'phone.headNoJobs': 'Chưa có công việc nào',
+  'phone.noJobs': 'Một công việc giữ hai thư mục giống hệt nhau. Thêm việc đầu tiên bằng nút bên dưới.',
   'phone.headWithNotes': 'Đã đồng bộ, có ghi chú',
   'phone.needsYou': 'Cần bạn xử lý',
   'phone.waiting': 'Đang chờ',

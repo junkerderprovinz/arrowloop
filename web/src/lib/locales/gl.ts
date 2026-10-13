@@ -497,6 +497,8 @@ const gl: Translations = {
   'overview.manySmall': 'Moitos ficheiros pequenos, uns {count} por segundo',
   'phone.permissionDenied': 'Permiso non concedido',
   'phone.headInSync': 'Todo sincronizado',
+  'phone.headNoJobs': 'Aínda non hai tarefas',
+  'phone.noJobs': 'Unha tarefa mantén dous cartafoles iguais. Engade a primeira co botón de abaixo.',
   'phone.headWithNotes': 'Sincronizado, con avisos',
   'phone.needsYou': 'Precisa de ti',
   'phone.waiting': 'En espera',

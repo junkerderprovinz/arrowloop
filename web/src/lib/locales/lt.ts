@@ -497,6 +497,8 @@ const lt: Translations = {
   'overview.manySmall': 'Daug mažų failų, apie {count} per sekundę',
   'phone.permissionDenied': 'Leidimas nesuteiktas',
   'phone.headInSync': 'Viskas sinchronizuota',
+  'phone.headNoJobs': 'Užduočių dar nėra',
+  'phone.noJobs': 'Užduotis palaiko du aplankus vienodus. Pridėkite pirmąją mygtuku žemiau.',
   'phone.headWithNotes': 'Sinchronizuota, yra pastabų',
   'phone.needsYou': 'Reikia tavo dėmesio',
   'phone.waiting': 'Laukia',

@@ -497,6 +497,8 @@ const is: Translations = {
   'overview.manySmall': 'Margar litlar skrár, um {count} á sekúndu',
   'phone.permissionDenied': 'Heimild ekki veitt',
   'phone.headInSync': 'Allt er samstillt',
+  'phone.headNoJobs': 'Engin verk enn',
+  'phone.noJobs': 'Verk heldur tveimur möppum eins. Búðu til það fyrsta með hnappinum hér fyrir neðan.',
   'phone.headWithNotes': 'Samstillt, með athugasemdum',
   'phone.needsYou': 'Þarf á þér að halda',
   'phone.waiting': 'Bíður',

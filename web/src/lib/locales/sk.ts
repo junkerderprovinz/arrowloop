@@ -497,6 +497,8 @@ const sk: Translations = {
   'overview.manySmall': 'Veľa malých súborov, asi {count} za sekundu',
   'phone.permissionDenied': 'Oprávnenie neudelené',
   'phone.headInSync': 'Všetko je zosynchronizované',
+  'phone.headNoJobs': 'Zatiaľ žiadne úlohy',
+  'phone.noJobs': 'Úloha udržiava dva priečinky rovnaké. Pridaj prvú tlačidlom nižšie.',
   'phone.headWithNotes': 'Zosynchronizované, s poznámkami',
   'phone.needsYou': 'Čaká na teba',
   'phone.waiting': 'Čaká',

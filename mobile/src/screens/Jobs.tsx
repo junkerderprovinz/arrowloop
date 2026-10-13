@@ -207,7 +207,7 @@ export function Jobs() {
           tintColor={accent}
         />
       }
-      // No empty-list text: the add button already makes the offer.
+      ListEmptyComponent={<Empty title={t("jobs.none")} />}
       ListFooterComponent={error ? <Caption>{error}</Caption> : null}
       renderItem={({ item, index }) => (
         <JobCard

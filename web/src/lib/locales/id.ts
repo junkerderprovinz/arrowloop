@@ -497,6 +497,8 @@ const id: Translations = {
   'overview.manySmall': 'Banyak berkas kecil, sekitar {count} per detik',
   'phone.permissionDenied': 'Izin belum diberikan',
   'phone.headInSync': 'Semuanya tersinkron',
+  'phone.headNoJobs': 'Belum ada tugas',
+  'phone.noJobs': 'Sebuah tugas menjaga dua folder tetap sama. Tambahkan yang pertama dengan tombol di bawah.',
   'phone.headWithNotes': 'Tersinkron, dengan catatan',
   'phone.needsYou': 'Butuh kamu',
   'phone.waiting': 'Menunggu',

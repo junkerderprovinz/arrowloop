@@ -497,6 +497,8 @@ const sv: Translations = {
   'overview.manySmall': 'Många små filer, ungefär {count} i sekunden',
   'phone.permissionDenied': 'Behörighet inte beviljad',
   'phone.headInSync': 'Allt är synkat',
+  'phone.headNoJobs': 'Inga jobb än',
+  'phone.noJobs': 'Ett jobb håller två mappar likadana. Lägg till det första med knappen nedan.',
   'phone.headWithNotes': 'Synkat, med anmärkningar',
   'phone.needsYou': 'Behöver dig',
   'phone.waiting': 'Väntar',

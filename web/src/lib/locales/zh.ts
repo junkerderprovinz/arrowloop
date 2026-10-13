@@ -497,6 +497,8 @@ const zh: Translations = {
   'overview.manySmall': '大量小文件，每秒约 {count} 个',
   'phone.permissionDenied': '未授予权限',
   'phone.headInSync': '一切已同步',
+  'phone.headNoJobs': '还没有任务',
+  'phone.noJobs': '任务让两个文件夹保持一致。用下面的按钮添加第一个。',
   'phone.headWithNotes': '已同步，有备注',
   'phone.needsYou': '需要你处理',
   'phone.waiting': '等待中',

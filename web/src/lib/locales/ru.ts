@@ -497,6 +497,8 @@ const ru: Translations = {
   'overview.manySmall': 'Много мелких файлов, примерно {count} в секунду',
   'phone.permissionDenied': 'Разрешение не выдано',
   'phone.headInSync': 'Всё синхронизировано',
+  'phone.headNoJobs': 'Заданий пока нет',
+  'phone.noJobs': 'Задание поддерживает две папки одинаковыми. Добавьте первое кнопкой ниже.',
   'phone.headWithNotes': 'Синхронизировано, есть заметки',
   'phone.needsYou': 'Нужно ваше внимание',
   'phone.waiting': 'Ожидают',

@@ -497,6 +497,8 @@ const th: Translations = {
   'overview.manySmall': 'ไฟล์เล็กจำนวนมาก ประมาณ {count} ต่อวินาที',
   'phone.permissionDenied': 'ยังไม่ได้ให้สิทธิ์',
   'phone.headInSync': 'ซิงก์ครบทุกอย่างแล้ว',
+  'phone.headNoJobs': 'ยังไม่มีงาน',
+  'phone.noJobs': 'งานทำให้สองโฟลเดอร์เหมือนกันอยู่เสมอ เพิ่มงานแรกได้ด้วยปุ่มด้านล่าง',
   'phone.headWithNotes': 'ซิงก์แล้ว แต่มีหมายเหตุ',
   'phone.needsYou': 'รอคุณอยู่',
   'phone.waiting': 'รอดำเนินการ',

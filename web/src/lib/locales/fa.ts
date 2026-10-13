@@ -497,6 +497,8 @@ const fa: Translations = {
   'overview.manySmall': 'پرونده‌های کوچک زیاد، حدود {count} در ثانیه',
   'phone.permissionDenied': 'اجازه داده نشده',
   'phone.headInSync': 'همه چیز همگام است',
+  'phone.headNoJobs': 'هنوز کاری نیست',
+  'phone.noJobs': 'یک کار دو پوشه را یکسان نگه می‌دارد. اولین را با دکمهٔ زیر اضافه کن.',
   'phone.headWithNotes': 'همگام، با یادداشت',
   'phone.needsYou': 'به تو نیاز دارد',
   'phone.waiting': 'در انتظار',

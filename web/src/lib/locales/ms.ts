@@ -497,6 +497,8 @@ const ms: Translations = {
   'overview.manySmall': 'Banyak fail kecil, kira-kira {count} sesaat',
   'phone.permissionDenied': 'Kebenaran tidak diberikan',
   'phone.headInSync': 'Semuanya telah disegerakkan',
+  'phone.headNoJobs': 'Belum ada tugas',
+  'phone.noJobs': 'Satu tugas memastikan dua folder sentiasa sama. Tambah yang pertama dengan butang di bawah.',
   'phone.headWithNotes': 'Disegerakkan, dengan nota',
   'phone.needsYou': 'Perlu tindakan kamu',
   'phone.waiting': 'Menunggu',

@@ -497,6 +497,8 @@ const ar: Translations = {
   'overview.manySmall': 'ملفات صغيرة كثيرة، نحو {count} في الثانية',
   'phone.permissionDenied': 'الإذن غير ممنوح',
   'phone.headInSync': 'كل شيء متزامن',
+  'phone.headNoJobs': 'لا توجد مهام بعد',
+  'phone.noJobs': 'تُبقي المهمة مجلدين متطابقين. أضف أول مهمة بالزر أدناه.',
   'phone.headWithNotes': 'متزامن، مع ملاحظات',
   'phone.needsYou': 'يحتاج إليك',
   'phone.waiting': 'قيد الانتظار',

@@ -497,6 +497,8 @@ const lv: Translations = {
   'overview.manySmall': 'Daudz mazu failu, aptuveni {count} sekundē',
   'phone.permissionDenied': 'Atļauja nav piešķirta',
   'phone.headInSync': 'Viss sinhronizēts',
+  'phone.headNoJobs': 'Uzdevumu vēl nav',
+  'phone.noJobs': 'Uzdevums uztur divas mapes vienādas. Pievienojiet pirmo ar pogu zemāk.',
   'phone.headWithNotes': 'Sinhronizēts, ar piezīmēm',
   'phone.needsYou': 'Vajag tevi',
   'phone.waiting': 'Gaida',

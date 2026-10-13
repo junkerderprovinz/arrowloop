@@ -497,6 +497,8 @@ const tr: Translations = {
   'overview.manySmall': 'Çok sayıda küçük dosya, saniyede yaklaşık {count}',
   'phone.permissionDenied': 'İzin verilmedi',
   'phone.headInSync': 'Her şey eşitlendi',
+  'phone.headNoJobs': 'Henüz iş yok',
+  'phone.noJobs': 'Bir iş iki klasörü aynı tutar. İlkini aşağıdaki düğmeyle ekle.',
   'phone.headWithNotes': 'Eşitlendi, notlarla',
   'phone.needsYou': 'Sende bekliyor',
   'phone.waiting': 'Bekleyenler',

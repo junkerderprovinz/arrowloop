@@ -497,6 +497,8 @@ const eu: Translations = {
   'overview.manySmall': 'Fitxategi txiki asko, {count} inguru segundoko',
   'phone.permissionDenied': 'Baimena eman gabe',
   'phone.headInSync': 'Dena sinkronizatuta dago',
+  'phone.headNoJobs': 'Ez dago lanik oraindik',
+  'phone.noJobs': 'Lan batek bi karpeta berdin mantentzen ditu. Gehitu lehena beheko botoiarekin.',
   'phone.headWithNotes': 'Sinkronizatuta, oharrekin',
   'phone.needsYou': 'Zure beharra du',
   'phone.waiting': 'Zain daude',

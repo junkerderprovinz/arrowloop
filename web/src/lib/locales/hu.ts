@@ -497,6 +497,8 @@ const hu: Translations = {
   'overview.manySmall': 'Sok kis fájl, körülbelül {count} másodpercenként',
   'phone.permissionDenied': 'Engedély nincs megadva',
   'phone.headInSync': 'Minden szinkronban van',
+  'phone.headNoJobs': 'Még nincs feladat',
+  'phone.noJobs': 'Egy feladat két mappát tart azonosan. Az elsőt az alábbi gombbal hozhatod létre.',
   'phone.headWithNotes': 'Szinkronban, megjegyzésekkel',
   'phone.needsYou': 'Rád vár',
   'phone.waiting': 'Várakozik',

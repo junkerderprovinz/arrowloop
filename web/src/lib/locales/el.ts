@@ -497,6 +497,8 @@ const el: Translations = {
   'overview.manySmall': 'Πολλά μικρά αρχεία, περίπου {count} ανά δευτερόλεπτο',
   'phone.permissionDenied': 'Η άδεια δεν δόθηκε',
   'phone.headInSync': 'Όλα συγχρονισμένα',
+  'phone.headNoJobs': 'Δεν υπάρχουν εργασίες ακόμη',
+  'phone.noJobs': 'Μια εργασία κρατά δύο φακέλους ίδιους. Προσθέστε την πρώτη με το κουμπί παρακάτω.',
   'phone.headWithNotes': 'Συγχρονισμένο, με σημειώσεις',
   'phone.needsYou': 'Σε χρειάζεται',
   'phone.waiting': 'Σε αναμονή',
