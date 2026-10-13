@@ -99,8 +99,8 @@ const (
 // from it is still offered through UnlistedBackends, and a test fails until it
 // has an entry here.
 //
-// A product with no logo in Dashboard Icons or Simple Icons wears the app's
-// storage glyph, IconTabStorage, rather than a neighbour's mark.
+// A product wears its own mark or its owner's, never a neighbour's
+// (scripts/brand-paths/README.md).
 var providers = []Provider{
 	{ID: "nextcloud", Name: "Nextcloud", Auth: AuthAppPassword, Backend: "webdav", Group: GroupCloud,
 		Preset: map[string]string{"vendor": "nextcloud"}, Mark: "IconNextcloud",
@@ -154,13 +154,14 @@ var providers = []Provider{
 	{ID: "googlephotos", Name: "Google Photos", Backend: "google photos", Group: GroupCloud, Mark: "IconGooglePhotos"},
 	{ID: "premiumize", Name: "premiumize.me", Backend: "premiumizeme", Group: GroupCloud, Mark: "IconPremiumize"},
 	{ID: "fichier", Name: "1Fichier", Auth: AuthAPIKey, AuthURL: "https://1fichier.com/console/params.pl",
-		Backend: "fichier", Group: GroupCloud, Mark: "IconTabStorage"},
+		Backend: "fichier", Group: GroupCloud, Mark: "IconFichier"},
 	{ID: "drime", Name: "Drime", Auth: AuthAPIKey, Backend: "drime", Group: GroupCloud, Mark: "IconDrime"},
 	{ID: "filelu", Name: "FileLu", Auth: AuthAPIKey, Backend: "filelu", Group: GroupCloud, Mark: "IconFilelu"},
 	{ID: "shade", Name: "Shade", Auth: AuthAPIKey, Backend: "shade", Group: GroupCloud, Mark: "IconShade"},
 	// Storage Made Easy's product, which runs on the customer's own address.
+	// Nasuni bought the company and the product wears Nasuni's mark.
 	{ID: "filefabric", Name: "Enterprise File Fabric", Backend: "filefabric", Group: GroupCloud,
-		Mark: "IconTabStorage", UrlHint: "https://yourfabric.smestorage.com"},
+		Mark: "IconNasuni", UrlHint: "https://yourfabric.smestorage.com"},
 
 	{ID: "b2", Name: "Backblaze B2", Backend: "b2", Group: GroupStorage, Mark: "IconBackblaze"},
 	{ID: "azureblob", Name: "Azure Blob Storage", Backend: "azureblob", Group: GroupStorage, Mark: "IconAzure"},

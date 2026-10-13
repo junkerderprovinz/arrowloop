@@ -52,7 +52,7 @@ generator, and in the header of every component built from it.
 Apache-2.0 is one-way compatible with this project's AGPL-3.0: these files may be
 carried into it, and the combined work stays AGPL-3.0.
 
-**The brands' own websites and repositories**, for six providers that neither
+**The brands' own websites and repositories**, for eight providers that neither
 Simple Icons nor Dashboard Icons carries. Like the hand-collected marks above,
 each is its owner's, used under the trademark position below.
 
@@ -74,10 +74,26 @@ each is its owner's, used under the trademark position below.
 - `sia.svg`: the favicon of <https://sia.tech>, the Sia Foundation's site. The
   generator drops the light plate it sits on, as it does for every mark drawn
   on one.
+- `fichier.svg`: 1Fichier's site has its logo only as PNG, `logo.png` and a
+  64 px `favicon.png` on <https://img.1fichier.com>, and GitHub has no
+  organisation of theirs. The cube was traced from `logo.png`, the larger of the
+  two (the cube is 76 px wide there), with the soft shadow under it left out.
+  The drawing is shaded, so the trace keeps six tones, each the average of one
+  area of it: the three faces, the heart, and the black and grey of the small
+  cubes.
+- `nasuni.svg`: Nasuni's mark, for Enterprise File Fabric. Storage Made Easy's
+  site, where the product had its own logo, no longer resolves, and Storage
+  Made Easy's GitHub organisation (`SMEStorage`) now goes by Nasuni Access
+  Anywhere. Nasuni's site has its logo only as PNG, so the mark was traced from
+  `wp-content/uploads/2026/03/nasuni-logo-2026-1.png` on
+  <https://www.nasuni.com> (1200 px wide): the ring, the N, the fold of its
+  left stroke and the dot, each with a straight gradient fitted to the image's
+  own colours.
 
-Every file but the traced FileLu mark is copied unmodified; what the generator
-produces from one is a translation into JSX and nothing else. It keeps the drawing's own paths, fills,
-gradients and viewBox, prefixes every `id` with the file's name so two marks on
+Every file but the traced FileLu, 1Fichier and Nasuni marks is copied
+unmodified; what the generator produces from one is a translation into JSX and
+nothing else. It keeps the drawing's own paths, fills, gradients and viewBox,
+prefixes every `id` with the file's name so two marks on
 one page cannot swap gradients, and dissolves an Illustrator `<style>` block
 into the elements it paints - class names are global to a document, so two marks
 both defining `.st0` would have one wearing the other's fill.
@@ -91,7 +107,7 @@ provider mark sits on the row that connects to **that provider**, each is
 reproduced unmodified, and nothing here claims endorsement by or affiliation
 with any of them.
 
-Four provider marks are a judgement call, recorded because the next person
+Five provider marks are a judgement call, recorded because the next person
 should not have to guess.
 
 - **Oracle Object Storage** is part of Oracle Cloud Infrastructure and wears the
@@ -101,8 +117,11 @@ should not have to guess.
   AWS-shaped platform - and the mark supplied was Cloud's.
 - **Huawei Drive** wears Huawei Cloud's mark, the same case exactly.
 - **QingStor** is QingCloud's object storage and wears QingCloud's mark.
+- **Enterprise File Fabric** wears Nasuni's mark. Nasuni bought Storage Made
+  Easy, the product's maker, in 2022, and the product's own logo can no longer
+  be found.
 
-In all four the mark names the right OWNER but a broader product than the row
+In all five the mark names the right OWNER but a broader product than the row
 does. That is the line: a mark naming the right company is better than none, and
 a mark naming a **different company's** product is worse than none. Where only
 the second was available, the provider gets no mark at all.

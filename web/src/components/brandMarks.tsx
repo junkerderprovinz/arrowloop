@@ -65,6 +65,8 @@ import {
   IconImagekit,
   IconQingcloud,
   IconSia,
+  IconFichier,
+  IconNasuni,
 } from './brandGlyphs'
 import {
   IconAdd,
@@ -79,16 +81,14 @@ import {
   IconRefresh,
   IconServer,
   IconSync,
-  IconTabStorage,
   IconTransfer,
 } from './glyphs'
 
 /**
  * Provider marks keyed by `remotes.Provider.Mark` from the Go table. Brands
- * keep their own drawings and colours; protocols such as SFTP, and products
- * no icon set has a logo for, get the app's own glyphs in the colour of the
- * text around them, so a lit tile can turn them its ink. An unknown key yields
- * no mark.
+ * keep their own drawings and colours; protocols such as SFTP get the app's
+ * own glyphs in the colour of the text around them, so a lit tile can turn
+ * them its ink. An unknown key yields no mark.
  */
 const MARKS: Record<string, () => ReactNode> = {
   IconNextcloud: () => <IconNextcloud />,
@@ -155,6 +155,8 @@ const MARKS: Record<string, () => ReactNode> = {
   IconImagekit: () => <IconImagekit />,
   IconQingcloud: () => <IconQingcloud />,
   IconSia: () => <IconSia />,
+  IconFichier: () => <IconFichier />,
+  IconNasuni: () => <IconNasuni />,
   IconAdd: () => <IconAdd />,
   IconBuckets: () => <IconBuckets />,
   IconCheck: () => <IconCheck />,
@@ -167,7 +169,6 @@ const MARKS: Record<string, () => ReactNode> = {
   IconRefresh: () => <IconRefresh />,
   IconServer: () => <IconServer />,
   IconSync: () => <IconSync />,
-  IconTabStorage: () => <IconTabStorage />,
   IconTransfer: () => <IconTransfer />,
 }
 
