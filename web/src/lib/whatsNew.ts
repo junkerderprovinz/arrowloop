@@ -41,7 +41,7 @@ const JOBS: TranslationKey[] = ['nav.jobs']
 /** Newest first. Only the newest release an update passes is marked. */
 export const RELEASES: Release[] = [
   {
-    after: '1.8.0',
+    after: '1.9.0',
     changes: [
       {
         id: 'navigation',
