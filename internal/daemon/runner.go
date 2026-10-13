@@ -262,7 +262,11 @@ func (r *Runner) runAnswering(ctx context.Context, name string, auto bool, ans a
 		_, _, err = resolve(j)
 	}
 	ranBefore := false
+	// Past the missing drive, which is no run, the job's check hears of every
+	// way this ends.
+	checkOut := func(bool, string) {}
 	if err == nil {
+		checkOut = r.checkIn(ctx, name)
 		err = hook.Run(ctx, j.Before, hookEnv(j, nil))
 		if err != nil {
 			err = fmt.Errorf("%s: %w", BeforeFailed, err)
@@ -296,6 +300,7 @@ func (r *Runner) runAnswering(ctx context.Context, name string, auto bool, ans a
 		if live != nil {
 			live.Drop()
 		}
+		checkOut(false, err.Error())
 		r.publish(Event{Job: name, Phase: "finished", Error: err.Error(), Held: errors.Is(err, ErrHeld)})
 		return history.Run{}, err
 	}
@@ -326,7 +331,9 @@ func (r *Runner) runAnswering(ctx context.Context, name string, auto bool, ans a
 			r.log("could not write the run record for %s: %v", name, hErr)
 		}
 	}
-	r.announce(ctx, rec, res)
+	said := summary(rec, res)
+	checkOut(!rec.Failed(), said)
+	r.announce(ctx, rec, said)
 	r.review(ctx, rec)
 	finished := Event{Job: name, Phase: "finished", Run: &rec}
 	if err != nil {
@@ -614,49 +621,6 @@ func (r *Runner) release(name string) {
 	delete(r.inflight, name)
 }
 
-// announce tells whoever is watching, if there is anything worth telling.
-func (r *Runner) announce(ctx context.Context, rec history.Run, res apply.Result) {
-	r.mu.Lock()
-	cfg, note := r.cfg, r.note
-	r.mu.Unlock()
-	if note == nil {
-		return
-	}
-	if !rec.Failed() && !cfg.Notify.OnSuccess {
-		return
-	}
-
-	subject := fmt.Sprintf("ArrowLoop: %s finished", rec.Job)
-	if rec.Failed() {
-		subject = fmt.Sprintf("ArrowLoop: %s FAILED", rec.Job)
-	}
-
-	var b strings.Builder
-	fmt.Fprintf(&b, "%d copied, %d moved, %d trashed, %d conflicts", rec.Copied, rec.Moved, rec.Trashed, rec.Conflicts)
-	if rec.DirsMade+rec.DirsRemoved > 0 {
-		fmt.Fprintf(&b, ", %d folders made, %d removed", rec.DirsMade, rec.DirsRemoved)
-	}
-	fmt.Fprintf(&b, ", %d unchanged, took %s", rec.Unchanged, rec.Finished.Sub(rec.Started).Round(time.Millisecond))
-	if rec.Err != "" {
-		fmt.Fprintf(&b, "\n%s", rec.Err)
-	}
-	// Only a handful of the postponed paths go to the chat room.
-	if n := len(res.Skipped); n > 0 {
-		fmt.Fprintf(&b, "\n%d left for the next run", n)
-		for i, s := range res.Skipped {
-			if i == 5 {
-				fmt.Fprintf(&b, "\n  and %d more", n-i)
-				break
-			}
-			fmt.Fprintf(&b, "\n  %s: %s", s.Path, s.Reason)
-		}
-	}
-
-	if err := note.Send(ctx, subject, b.String()); err != nil {
-		r.log("could not send the notification for %s: %v", rec.Job, err)
-	}
-}
-
 // Serve runs every scheduled job until the context is cancelled, rebuilding
 // itself whenever the configuration changes. A job still running when its next
 // turn comes is skipped rather than queued, so a slow job cannot build a
@@ -849,22 +813,6 @@ func (r *Runner) Reload(cfg *job.Config) {
 	case r.reload <- struct{}{}:
 	default:
 	}
-}
-
-// Notifier builds the destination list from the configuration. A
-// configuration with nothing in it returns nil, which means say nothing.
-func Notifier(cfg *job.Config) notify.Notifier {
-	var out notify.Multi
-	if m := cfg.Notify.Matrix; m != nil {
-		out = append(out, &notify.Matrix{Homeserver: m.Homeserver, Room: m.Room, Token: m.Token})
-	}
-	if cfg.Notify.Webhook != "" {
-		out = append(out, &notify.Webhook{URL: cfg.Notify.Webhook})
-	}
-	if len(out) == 0 {
-		return nil
-	}
-	return out
 }
 
 // Config returns the configuration currently in force.
