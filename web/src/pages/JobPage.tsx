@@ -55,6 +55,8 @@ export function JobPage({ name }: { name: string }) {
   useConfigErrors(config)
   const [editing, setEditing] = useState<{ at: number; added: boolean } | null>(null)
   const [removing, setRemoving] = useState(false)
+  // A job saved under a new name, which the engine lists a moment after the file has it.
+  const [renamed, setRenamed] = useState<string | null>(null)
   const card = useCardFromAddress(live.jobs.some((j) => j.name === name))
 
   const job = live.jobs.find((j) => j.name === name)
@@ -66,7 +68,7 @@ export function JobPage({ name }: { name: string }) {
   if (!job) {
     return (
       <Card title={name} hueIndex={0}>
-        <Empty>{live.jobs.length === 0 ? t('history.working') : t('job.missing')}</Empty>
+        <Empty>{live.jobs.length === 0 || renamed === name ? t('history.working') : t('job.missing')}</Empty>
       </Card>
     )
   }
@@ -159,7 +161,18 @@ export function JobPage({ name }: { name: string }) {
       {anomalies !== false && <UsualCard job={name} lastRun={job.recent[0]?.ID} />}
 
       {editing && config.jobs?.[editing.at] && (
-        <JobEditor config={config} at={editing.at} added={editing.added} onClose={() => setEditing(null)} />
+        <JobEditor
+          config={config}
+          at={editing.at}
+          added={editing.added}
+          onClose={() => setEditing(null)}
+          onSaved={(saved) => {
+            // The page's address is the job's name, so a rename moves it.
+            if (editing.added || saved === name) return
+            setRenamed(saved)
+            navigate(`/jobs/${encodeURIComponent(saved)}`, { replace: true })
+          }}
+        />
       )}
 
       {removing && at !== -1 && (

@@ -129,6 +129,19 @@ describe('a job page', () => {
     expect(name.value).toBe('photosx')
   })
 
+  it('moves to the new address when the job is saved under a new name', async () => {
+    window.history.replaceState(null, '', '/jobs/photos')
+    const before = window.history.length
+    page()
+    fireEvent.click(await screen.findByRole('button', { name: 'Edit' }))
+    const editor = await screen.findByRole('dialog', { name: 'Edit photos' })
+    fireEvent.change(within(editor).getByDisplayValue('photos'), { target: { value: 'pictures' } })
+    fireEvent.click(within(editor).getByRole('button', { name: 'Save' }))
+    await waitFor(() => expect(window.location.pathname).toBe('/jobs/pictures'))
+    expect(window.history.length).toBe(before)
+    window.history.replaceState(null, '', '/')
+  })
+
   it('puts the entry back when the edit is cancelled', async () => {
     page()
     fireEvent.click(await screen.findByRole('button', { name: 'Edit' }))
