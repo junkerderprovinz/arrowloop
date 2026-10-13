@@ -37,6 +37,21 @@ describe('the bottom bar', () => {
     expect(within(sheet).getByRole('button', { name: 'Log out' })).toBeTruthy()
   })
 
+  it('leaves the focus where it is in the sheet when the bar draws again, and Escape takes it back to More', () => {
+    const { rerender } = render(<BottomBar extras={extras} counts={counts} pathname="/jobs" signOut={false} />)
+    const more = screen.getByRole('button', { name: 'More' })
+    fireEvent.click(more)
+    const sheet = screen.getByRole('dialog', { name: 'More' })
+    expect(document.activeElement).toBe(within(sheet).getByRole('button', { name: 'Close' }))
+    const trash = within(sheet).getByRole('link', { name: 'Trash' })
+    trash.focus()
+    rerender(<BottomBar extras={extras} counts={{ ...counts, trash: 2 }} pathname="/jobs" signOut={false} />)
+    expect(document.activeElement).toBe(trash)
+    fireEvent.keyDown(trash, { key: 'Escape' })
+    expect(screen.queryByRole('dialog')).toBeNull()
+    expect(document.activeElement).toBe(more)
+  })
+
   it('shrinks a word that would be cut rather than cutting it, as far as the phone does', () => {
     // jsdom lays nothing out: every word is 90px wide in a 66px slot.
     vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(66)

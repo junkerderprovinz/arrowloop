@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type MouseEvent, type ReactNode } from 'react'
+import { useLayoutEffect, useRef, useState, type CSSProperties, type MouseEvent, type ReactNode, type RefObject } from 'react'
 import { createPortal } from 'react-dom'
 
 import { api } from '../lib/api'
@@ -6,6 +6,7 @@ import { hueVars } from '../lib/appearance'
 import { hidesLabel, type LabelMode } from '../lib/controls'
 import { useLabelMode } from '../lib/glimstone/useLabelMode'
 import { useT } from '../lib/i18n'
+import { useModal } from '../lib/modal'
 import { barDestinations, moreDestinations, onDestination, type NavCounts, type NavDestination, type NavExtras } from '../lib/navModel'
 import { Link } from '../lib/router'
 import { IconClose, IconMore, IconSignOut } from './glyphs'
@@ -82,6 +83,7 @@ export function BottomBar({
   useRainbow()
   const mode = useLabelMode('bottombar')
   const [open, setOpen] = useState(false)
+  const moreButton = useRef<HTMLButtonElement>(null)
   const slots = barDestinations(extras)
   const more = moreDestinations(extras)
   // Filled for the pages its sheet leads to, so somebody on one of them still
@@ -120,6 +122,7 @@ export function BottomBar({
           )
         })}
         <button
+          ref={moreButton}
           type="button"
           onClick={() => setOpen(true)}
           aria-haspopup="dialog"
@@ -140,6 +143,7 @@ export function BottomBar({
           pathname={pathname}
           signOut={signOut}
           hueOffset={slots.length + 1}
+          opener={moreButton}
           onClose={() => setOpen(false)}
         />
       )}
@@ -157,6 +161,7 @@ function MoreSheet({
   pathname,
   signOut,
   hueOffset,
+  opener,
   onClose,
 }: {
   rows: NavDestination[]
@@ -165,19 +170,14 @@ function MoreSheet({
   signOut: boolean
   /** Where the rows continue the bar's palette, so no colour shows twice. */
   hueOffset: number
+  /** The More button, where the focus goes back to; a tap does not always focus it. */
+  opener: RefObject<HTMLButtonElement | null>
   onClose: () => void
 }) {
   const { t } = useT()
   const sheet = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    sheet.current?.querySelector<HTMLElement>('a, button')?.focus()
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
-    }
-    document.addEventListener('keydown', onKey)
-    return () => document.removeEventListener('keydown', onKey)
-  }, [onClose])
+  useModal(sheet, onClose, { focus: 'first', returnTo: opener })
 
   const row = 'flex min-h-12 items-center gap-3 rounded-control px-3 text-body hover:bg-carbon-hover'
 
