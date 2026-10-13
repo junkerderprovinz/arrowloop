@@ -58,8 +58,8 @@ const HEADLINE = {
 } as const satisfies Record<Head, string>;
 
 /**
- * The start screen: how things stand in one sentence, what waits for the
- * person, what runs and runs next, the last run, a few counts and how full
+ * The start screen: how things stand in one sentence, a few counts, what
+ * waits for the person, what runs and runs next, the last run and how full
  * each target is. Every line that counts something leads to it.
  */
 export function Overview() {
@@ -136,8 +136,21 @@ export function Overview() {
       <Page fab>
         {known || empty ? <StatusHead state={head} /> : null}
 
+        <Section title={t("overview.numbers")} hue={0}>
+          <View style={styles.tiles}>
+            <Tile value={jobs.length} label={t("nav.jobs")} onPress={() => toTab("JobsTab")} />
+            <Tile value={recent.today} label={t("overview.runsToday")} onPress={() => toTab("HistoryTab")} />
+            <Tile
+              value={waiting.trash}
+              label={t("nav.trash")}
+              detail={waiting.trashBytes === null ? undefined : bytes(waiting.trashBytes)}
+              onPress={() => nav.navigate("TrashAll")}
+            />
+          </View>
+        </Section>
+
         {known && (wait.items.length > 0 || access === false) ? (
-          <Section title={t("phone.waiting")} hue={0}>
+          <Section title={t("phone.waiting")} hue={1}>
             {access === false ? (
               <Row
                 label={t("phone.access")}
@@ -157,7 +170,7 @@ export function Overview() {
           </Section>
         ) : null}
 
-        <Section title={t("overview.running")} hint={t("overview.idleHint")} hue={1}>
+        <Section title={t("overview.running")} hint={t("overview.idleHint")} hue={2}>
           {empty ? (
             <>
               <Body>{t("phone.noJobs")}</Body>
@@ -180,21 +193,8 @@ export function Overview() {
           {empty ? null : <NextRuns jobs={jobs} onOpen={openJob} />}
         </Section>
 
-        <Section title={t("overview.status")} hue={2}>
+        <Section title={t("overview.status")} hue={3}>
           <LastRun run={recent.newest} tally={recent.tally} jobs={jobs} />
-        </Section>
-
-        <Section title={t("overview.numbers")} hue={3}>
-          <View style={styles.tiles}>
-            <Tile value={jobs.length} label={t("nav.jobs")} onPress={() => toTab("JobsTab")} />
-            <Tile value={recent.today} label={t("overview.runsToday")} onPress={() => toTab("HistoryTab")} />
-            <Tile
-              value={waiting.trash}
-              label={t("nav.trash")}
-              detail={waiting.trashBytes === null ? undefined : bytes(waiting.trashBytes)}
-              onPress={() => nav.navigate("TrashAll")}
-            />
-          </View>
         </Section>
 
         {/* Left out without a target elsewhere; adding one is the targets page's work. */}
