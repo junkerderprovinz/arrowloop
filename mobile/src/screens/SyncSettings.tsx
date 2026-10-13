@@ -10,6 +10,8 @@ import { Field, NumberField } from "../fields";
 import { Schedule } from "./JobEdit";
 import { AxisLabel, Body, Choice, Page, Section, Toggle } from "../ui";
 import { WaySwitch } from "../way";
+import type { Notify } from "../../../web/src/lib/notify";
+import { NotifySection } from "./NotifySettings";
 
 /**
  * The defaults every job starts from, and the phone's run conditions. A job
@@ -193,6 +195,12 @@ export function SyncSettings() {
           />
         ) : null}
       </Section>
+
+      <NotifySection
+        notify={(settings?.notify ?? {}) as Notify}
+        save={(notify) => void update({ notify })}
+        hue={5}
+      />
 
       {/* Neither power condition holds a run started by hand. */}
       <Section title={t("sync.power")} hue={4}>
