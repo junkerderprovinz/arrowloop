@@ -220,7 +220,7 @@ function withNetworkConfig(config) {
 
 /**
  * Adds build-time checks, ABI splits and the signing keys to the app's
- * build.gradle. The debug key is the repository's android/debug.keystore, so
+ * build.gradle. The debug key is the repository's mobile/debug.keystore, so
  * every build carries the same key and installs over the previous one.
  */
 function withEngineGradle(config) {
@@ -349,15 +349,14 @@ $1`,
       }
     }
 
-    // The repository's debug key rather than the Expo template's, so this app
-    // installs over the earlier Android shell signed with it.
-    const KEY = "arrowloop/android/debug.keystore";
+    // The repository's debug key rather than the Expo template's.
+    const KEY = "arrowloop/mobile/debug.keystore";
     if (!gradle.includes(KEY)) {
       const before = gradle;
       gradle = gradle.replace(
         /storeFile file\('debug\.keystore'\)/,
-        // Relative to android/app: up to mobile/, up to the repository root.
-        "storeFile file('../../../android/debug.keystore') // " + KEY,
+        // Relative to android/app, which prebuild puts under mobile/.
+        "storeFile file('../../debug.keystore') // " + KEY,
       );
       if (gradle === before) {
         throw new Error("withEngine: could not find the debug signing config to repoint");
