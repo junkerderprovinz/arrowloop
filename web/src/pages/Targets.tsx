@@ -600,6 +600,7 @@ function RemoteForm({
         hint={optionHint(o, t, provider)}
         value={values[o.name] ?? ''}
         onChange={(next) => setValues((prev) => ({ ...prev, [o.name]: next }))}
+        stacked
         placeholder={o.default}
       />
     ) : (
