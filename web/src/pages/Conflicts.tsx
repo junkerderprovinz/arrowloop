@@ -187,7 +187,7 @@ function ConflictCard({
   const { drives } = usePlaces()
   const newer = newerSide(c)
   return (
-    <li className="flex min-w-0 flex-col gap-3 rounded-card bg-carbon-surface2 px-4 pb-3.5 pt-3 shadow-[inset_3px_0_0_var(--status-warn-solid)] max-sm:px-3 rtl:shadow-[inset_-3px_0_0_var(--status-warn-solid)]">
+    <li className="flex min-w-0 flex-col gap-3 rounded-card bg-carbon-surface2 px-4 pb-3.5 pt-3 max-sm:px-3">
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
         <span dir="ltr" className="min-w-0 flex-1 text-start font-mono text-title font-semibold text-carbon-text [overflow-wrap:anywhere]">
           {c.plain}
