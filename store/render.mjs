@@ -1,5 +1,5 @@
 // Builds the Play and F-Droid images in fastlane/metadata/android from the
-// captures in store/captures/<locale>/: six phone screenshots at 1080x1920
+// captures in store/captures/<locale>/: eight phone screenshots at 1080x1920
 // and the 1024x500 feature graphic. Each capture sits in a drawn phone on the
 // dark relief background, under a caption. The first picture has no capture:
 // it is a wall of the provider tiles, drawn from the app's own marks.
@@ -43,10 +43,12 @@ const CAPTIONS = {
     everywhereSub: 'Zwei-Wege-Sync mit über 60 Clouds und Servern',
     smb: 'Windows-Freigabe',
     s3: 'S3-kompatibel',
+    overview: 'Was läuft, <em>was wartet</em>',
     plan: 'Du siehst jeden Pfeil, <em>bevor er fliegt</em>',
     jobs: 'Handy und Cloud, <em>hin und zurück</em>',
     targets: 'Dein Speicher. <em>Nicht unserer.</em>',
     history: 'Jede Datei hat <em>ein Alibi</em>',
+    conflicts: 'Beide geändert? <em>Du entscheidest.</em>',
     trash: 'Gelöscht? <em>Nur umgezogen.</em>',
   },
   'en-US': {
@@ -56,10 +58,12 @@ const CAPTIONS = {
     everywhereSub: 'Two-way sync with over 60 clouds and servers',
     smb: 'Windows share',
     s3: 'S3 compatible',
+    overview: "What's running, <em>what's waiting</em>",
     plan: 'See every arrow <em>before it flies</em>',
     jobs: 'Phone to cloud <em>and back again</em>',
     targets: 'Your storage. <em>Not ours.</em>',
     history: 'Every file <em>has an alibi</em>',
+    conflicts: 'Changed on both sides? <em>You decide.</em>',
     trash: 'Deleted? <em>Just moved out.</em>',
   },
 }
@@ -74,10 +78,12 @@ const WIDE = [
 // pixels, drawn floating in front of the phone.
 const SHOTS = [
   { name: 'everywhere', wall: true },
-  { name: 'plan', lift: { x: 42, y: 425, w: 996, h: 381 } },
+  { name: 'overview' },
+  { name: 'plan', lift: { x: 42, y: 425, w: 996, h: 397 } },
   { name: 'jobs' },
-  { name: 'targets' },
+  { name: 'conflicts' },
   { name: 'history' },
+  { name: 'targets' },
   { name: 'trash' },
 ]
 
@@ -458,7 +464,7 @@ async function store(browser) {
       await render(browser, html, 1080, 1920, join(images, 'phoneScreenshots', `${i + 1}.png`))
       console.log(`wrote ${locale}/images/phoneScreenshots/${i + 1}.png`)
     }
-    await render(browser, featureGraphic(capture('jobs'), capture('plan'), text.tagline), 1024, 500, join(images, 'featureGraphic.png'))
+    await render(browser, featureGraphic(capture('overview'), capture('plan'), text.tagline), 1024, 500, join(images, 'featureGraphic.png'))
     console.log(`wrote ${locale}/images/featureGraphic.png`)
   }
 }
