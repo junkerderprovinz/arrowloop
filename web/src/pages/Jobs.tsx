@@ -69,9 +69,11 @@ export function Jobs({
   const running = jobs.filter((j) => j.running)
 
   // The engine starts and stops one job at a time, so every job is asked on
-  // its own and one refusal leaves the others going.
+  // its own and one refusal leaves the others going. A run waiting for a slot
+  // is announced only once it has one, so the jobs are asked for again here.
   function everyJob(names: string[], act: (name: string) => Promise<unknown>) {
     void Promise.allSettled(names.map((name) => act(name))).then((answers) => {
+      onSaved()
       const refused = answers.find((a): a is PromiseRejectedResult => a.status === 'rejected')
       if (refused) push((refused.reason as Error).message, 'fail')
     })
@@ -125,6 +127,7 @@ export function Jobs({
               busy={config.busy}
               canPause={config.jobs?.some((raw) => raw.name === j.name) ?? false}
               onPause={() => void config.setDisabled(j.name, !j.disabled)}
+              onAnswered={onSaved}
               more={moreFor(j.name)}
             />
           ))}
@@ -201,6 +204,7 @@ function JobCard({
   busy,
   canPause,
   onPause,
+  onAnswered,
   more,
 }: {
   job: Job
@@ -216,6 +220,8 @@ function JobCard({
   /** Only a job in the configuration file can be paused from here. */
   canPause: boolean
   onPause: () => void
+  /** Asks for the jobs again once the engine has answered Run now or Cancel. */
+  onAnswered: () => void
   /** The job page's further actions. */
   more: MenuItem[]
 }) {
@@ -283,7 +289,7 @@ function JobCard({
                 hint={job.running ? undefined : t('jobs.runNowHint')}
                 onClick={() => {
                   const asked = job.running ? api.stopJob(job.name) : api.run(job.name)
-                  asked.catch((e: Error) => push(e.message, 'fail'))
+                  asked.then(onAnswered, (e: Error) => push(e.message, 'fail'))
                 }}
               />
             </span>

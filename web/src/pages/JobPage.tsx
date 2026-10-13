@@ -126,8 +126,10 @@ export function JobPage({ name }: { name: string }) {
               tone="accent"
               className="glim-btn-key"
               onClick={() => {
+                // The engine announces a run once it has a slot, which can be
+                // after another run ends, so the job list is asked at once.
                 const asked = job.running ? api.stopJob(job.name) : api.run(job.name)
-                asked.catch((e: Error) => push(e.message, 'fail'))
+                asked.then(live.onSaved, (e: Error) => push(e.message, 'fail'))
               }}
             />
           </>

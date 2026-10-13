@@ -59,13 +59,14 @@ function job(name: string): Job {
 }
 
 const went = vi.fn((_place: unknown) => undefined)
+const saved = vi.fn()
 
 function page(name = 'photos', conflicted: string[] = [], findings: Finding[] = []) {
   render(
     <ToastProvider>
       <GoTo.Provider value={went}>
         <LiveJobs.Provider
-          value={{ jobs: [job('photos'), job('music')], findings, conflicted, progress: {}, speeds: {}, onSaved: () => undefined }}
+          value={{ jobs: [job('photos'), job('music')], findings, conflicted, progress: {}, speeds: {}, onSaved: saved }}
         >
           <JobPage name={name} />
         </LiveJobs.Provider>
@@ -254,5 +255,14 @@ describe('a job page', () => {
     await waitFor(() => expect(learning).toHaveBeenCalled())
     expect(screen.queryByText('Usual run')).toBeNull()
     learning.mockImplementation(() => Promise.resolve([]))
+  })
+})
+
+describe('Run now on a job page', () => {
+  it('asks for the jobs again once the engine has taken the run', async () => {
+    saved.mockClear()
+    page()
+    fireEvent.click(await screen.findByRole('button', { name: 'Run now' }))
+    await waitFor(() => expect(saved).toHaveBeenCalled())
   })
 })
