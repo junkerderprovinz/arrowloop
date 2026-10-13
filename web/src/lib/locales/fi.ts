@@ -743,6 +743,8 @@ const fi: Translations = {
   'phone.appDataNoSu': 'Tällä nimellä ei vastaa mikään su, joten root ei ole käytettävissä.',
   'phone.appDataRootDenied': 'Root-hallintasi ei ole vielä antanut ArrowLoopille rootia.',
   'phone.appDataNoShizuku': 'Shizuku ei ole asennettu.',
+  'phone.appDataGetShizuku': 'Hanki Shizuku',
+  'phone.appDataGetShizukuHint': 'Shizuku on erillinen sovellus. Kun olet asentanut sen, käynnistä se kerran langattoman virheenkorjauksen tai rootin kautta ja palaa sitten tänne.',
   'phone.appDataRequestRoot': 'Pyydä rootia',
   'phone.appDataSu': 'su-komento',
   'phone.appDataSuHint': 'Jotkin root-hallinnat nimeävät su:n uudelleen tai siirtävät sen, joten kirjoita sen nimi tai polku tähän, jos ArrowLoop ei löydä rootia.',

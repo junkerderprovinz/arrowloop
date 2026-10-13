@@ -743,6 +743,8 @@ const zh: Translations = {
   'phone.appDataNoSu': '没有以此名称响应的 su，所以无法使用 root。',
   'phone.appDataRootDenied': '你的 root 管理器尚未授予 ArrowLoop root 权限。',
   'phone.appDataNoShizuku': '未安装 Shizuku。',
+  'phone.appDataGetShizuku': '获取 Shizuku',
+  'phone.appDataGetShizukuHint': 'Shizuku 是一个单独的应用。安装后，请通过无线调试或 root 启动一次，然后回到这里。',
   'phone.appDataRequestRoot': '请求 root',
   'phone.appDataSu': 'su 命令',
   'phone.appDataSuHint': '有些 root 管理器会重命名 su 或把它放到别处，如果 ArrowLoop 找不到 root，请在这里填写它的名称或路径。',

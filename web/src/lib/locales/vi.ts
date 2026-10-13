@@ -743,6 +743,8 @@ const vi: Translations = {
   'phone.appDataNoSu': 'Không có su nào trả lời dưới tên này, nên không dùng được root.',
   'phone.appDataRootDenied': 'Trình quản lý root của bạn chưa cấp root cho ArrowLoop.',
   'phone.appDataNoShizuku': 'Shizuku chưa được cài.',
+  'phone.appDataGetShizuku': 'Tải Shizuku',
+  'phone.appDataGetShizukuHint': 'Shizuku là một ứng dụng riêng. Sau khi cài, hãy khởi động nó một lần qua gỡ lỗi không dây hoặc root, rồi quay lại đây.',
   'phone.appDataRequestRoot': 'Xin quyền root',
   'phone.appDataSu': 'Lệnh su',
   'phone.appDataSuHint': 'Một số trình quản lý root đổi tên su hoặc chuyển nó đi chỗ khác, nên hãy nhập tên hoặc đường dẫn của nó ở đây nếu ArrowLoop không tìm thấy root.',

@@ -743,6 +743,8 @@ const th: Translations = {
   'phone.appDataNoSu': 'ไม่มี su ที่ตอบด้วยชื่อนี้ จึงใช้รูทไม่ได้',
   'phone.appDataRootDenied': 'ตัวจัดการรูทของคุณยังไม่ได้ให้สิทธิ์รูทแก่ ArrowLoop',
   'phone.appDataNoShizuku': 'ยังไม่ได้ติดตั้ง Shizuku',
+  'phone.appDataGetShizuku': 'รับ Shizuku',
+  'phone.appDataGetShizukuHint': 'Shizuku เป็นแอปแยกต่างหาก หลังติดตั้งแล้ว ให้เริ่มแอปหนึ่งครั้งผ่านการแก้ไขข้อบกพร่องแบบไร้สายหรือรูท แล้วกลับมาที่นี่',
   'phone.appDataRequestRoot': 'ขอสิทธิ์รูท',
   'phone.appDataSu': 'คำสั่ง su',
   'phone.appDataSuHint': 'ตัวจัดการรูทบางตัวเปลี่ยนชื่อ su หรือย้ายไปไว้ที่อื่น ถ้า ArrowLoop หารูทไม่เจอ ให้ใส่ชื่อหรือพาธของมันที่นี่',

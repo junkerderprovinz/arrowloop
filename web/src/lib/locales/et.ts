@@ -743,6 +743,8 @@ const et: Translations = {
   'phone.appDataNoSu': 'Selle nimega ei vasta ükski su, nii et juurõigused pole saadaval.',
   'phone.appDataRootDenied': 'Sinu juurõiguste haldur pole ArrowLoopile veel juurõigusi andnud.',
   'phone.appDataNoShizuku': 'Shizuku pole paigaldatud.',
+  'phone.appDataGetShizuku': 'Hangi Shizuku',
+  'phone.appDataGetShizukuHint': 'Shizuku on eraldi rakendus. Pärast paigaldamist käivita see üks kord juhtmeta silumise või rootiga ja tule siis siia tagasi.',
   'phone.appDataRequestRoot': 'Küsi juurõigusi',
   'phone.appDataSu': 'su käsk',
   'phone.appDataSuHint': 'Mõni juurõiguste haldur nimetab su ümber või paigutab selle mujale, nii et kui ArrowLoop juurõigusi ei leia, sisesta siia selle nimi või asukoht.',

@@ -743,6 +743,8 @@ const ar: Translations = {
   'phone.appDataNoSu': 'لا يستجيب أي su بهذا الاسم، لذا الروت غير متاح.',
   'phone.appDataRootDenied': 'لم يمنح مدير الروت تطبيق ArrowLoop صلاحيات الروت بعد.',
   'phone.appDataNoShizuku': 'Shizuku غير مثبت.',
+  'phone.appDataGetShizuku': 'احصل على Shizuku',
+  'phone.appDataGetShizukuHint': 'Shizuku تطبيق منفصل. بعد تثبيته شغّله مرة واحدة عبر تصحيح الأخطاء اللاسلكي أو الروت، ثم عد إلى هنا.',
   'phone.appDataRequestRoot': 'اطلب الروت',
   'phone.appDataSu': 'أمر su',
   'phone.appDataSuHint': 'بعض مديري الروت يغيّرون اسم su أو ينقلونه، فإن لم يجد ArrowLoop الروت فأدخل اسمه أو مساره هنا.',

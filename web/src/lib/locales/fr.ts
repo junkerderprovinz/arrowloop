@@ -743,6 +743,8 @@ const fr: Translations = {
   'phone.appDataNoSu': 'Aucun su ne répond sous ce nom, le root n\'est donc pas disponible.',
   'phone.appDataRootDenied': 'Votre gestionnaire root n\'a pas encore donné le root à ArrowLoop.',
   'phone.appDataNoShizuku': 'Shizuku n\'est pas installé.',
+  'phone.appDataGetShizuku': 'Obtenir Shizuku',
+  'phone.appDataGetShizukuHint': 'Shizuku est une application à part. Après l\'avoir installée, démarrez-la une fois via le débogage sans fil ou le root, puis revenez ici.',
   'phone.appDataRequestRoot': 'Demander le root',
   'phone.appDataSu': 'Commande su',
   'phone.appDataSuHint': 'Certains gestionnaires root renomment su ou le déplacent : si ArrowLoop ne trouve pas le root, saisissez ici son nom ou son chemin.',

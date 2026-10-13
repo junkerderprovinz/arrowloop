@@ -743,6 +743,8 @@ const ro: Translations = {
   'phone.appDataNoSu': 'Niciun su nu răspunde sub acest nume, deci root nu este disponibil.',
   'phone.appDataRootDenied': 'Managerul tău de root nu i-a dat încă root lui ArrowLoop.',
   'phone.appDataNoShizuku': 'Shizuku nu este instalat.',
+  'phone.appDataGetShizuku': 'Obține Shizuku',
+  'phone.appDataGetShizukuHint': 'Shizuku este o aplicație separată. După ce o instalezi, pornește-o o dată prin depanarea wireless sau root, apoi revino aici.',
   'phone.appDataRequestRoot': 'Cere root',
   'phone.appDataSu': 'Comanda su',
   'phone.appDataSuHint': 'Unii manageri de root redenumesc su sau îl mută, așa că introdu aici numele sau calea lui dacă ArrowLoop nu găsește root.',

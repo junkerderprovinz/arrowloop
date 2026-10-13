@@ -743,6 +743,8 @@ const he: Translations = {
   'phone.appDataNoSu': 'אף su לא עונה בשם הזה, ולכן רוט לא זמין.',
   'phone.appDataRootDenied': 'מנהל הרוט שלך עדיין לא נתן ל־ArrowLoop הרשאות רוט.',
   'phone.appDataNoShizuku': 'Shizuku לא מותקן.',
+  'phone.appDataGetShizuku': 'הורד את Shizuku',
+  'phone.appDataGetShizukuHint': 'Shizuku היא אפליקציה נפרדת. אחרי ההתקנה הפעל אותה פעם אחת דרך ניפוי באגים אלחוטי או root, ואז חזור לכאן.',
   'phone.appDataRequestRoot': 'בקש רוט',
   'phone.appDataSu': 'פקודת su',
   'phone.appDataSuHint': 'יש מנהלי רוט שמשנים את השם של su או מעבירים אותו, אז אם ArrowLoop לא מוצא רוט, הזן כאן את השם או הנתיב שלו.',

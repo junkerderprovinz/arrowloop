@@ -743,6 +743,8 @@ const hi: Translations = {
   'phone.appDataNoSu': 'इस नाम से कोई su जवाब नहीं देता, इसलिए रूट उपलब्ध नहीं है।',
   'phone.appDataRootDenied': 'आपके रूट मैनेजर ने अभी तक ArrowLoop को रूट नहीं दिया है।',
   'phone.appDataNoShizuku': 'Shizuku इंस्टॉल नहीं है।',
+  'phone.appDataGetShizuku': 'Shizuku पाएं',
+  'phone.appDataGetShizukuHint': 'Shizuku एक अलग ऐप है। इंस्टॉल करने के बाद इसे एक बार वायरलेस डीबगिंग या रूट से शुरू करें, फिर यहां लौटें।',
   'phone.appDataRequestRoot': 'रूट माँगें',
   'phone.appDataSu': 'su कमांड',
   'phone.appDataSuHint': 'कुछ रूट मैनेजर su का नाम बदल देते हैं या उसे कहीं और रख देते हैं, इसलिए अगर ArrowLoop को रूट नहीं मिलता तो उसका नाम या पाथ यहाँ डालें।',

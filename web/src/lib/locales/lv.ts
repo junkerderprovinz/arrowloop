@@ -743,6 +743,8 @@ const lv: Translations = {
   'phone.appDataNoSu': 'Ar šo nosaukumu neatbild neviens su, tāpēc root nav pieejams.',
   'phone.appDataRootDenied': 'Tavs root pārvaldnieks vēl nav devis ArrowLoop root.',
   'phone.appDataNoShizuku': 'Shizuku nav instalēts.',
+  'phone.appDataGetShizuku': 'Iegūt Shizuku',
+  'phone.appDataGetShizukuHint': 'Shizuku ir atsevišķa lietotne. Pēc instalēšanas vienreiz palaidiet to ar bezvadu atkļūdošanu vai root un tad atgriezieties šeit.',
   'phone.appDataRequestRoot': 'Pieprasīt root',
   'phone.appDataSu': 'su komanda',
   'phone.appDataSuHint': 'Daži root pārvaldnieki pārdēvē su vai pārvieto to, tāpēc, ja ArrowLoop neatrod root, ievadi šeit tā nosaukumu vai ceļu.',

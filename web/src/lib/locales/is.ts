@@ -743,6 +743,8 @@ const is: Translations = {
   'phone.appDataNoSu': 'Ekkert su svarar undir þessu nafni, svo rótaraðgangur er ekki í boði.',
   'phone.appDataRootDenied': 'Rótarstjórinn þinn hefur ekki enn veitt ArrowLoop rótaraðgang.',
   'phone.appDataNoShizuku': 'Shizuku er ekki uppsett.',
+  'phone.appDataGetShizuku': 'Sækja Shizuku',
+  'phone.appDataGetShizukuHint': 'Shizuku er sérstakt forrit. Þegar það er uppsett skaltu ræsa það einu sinni með þráðlausri villuleit eða rót og koma svo hingað aftur.',
   'phone.appDataRequestRoot': 'Biðja um rót',
   'phone.appDataSu': 'su-skipun',
   'phone.appDataSuHint': 'Sumir rótarstjórar endurnefna su eða færa það, svo sláðu inn nafn þess eða slóð hér ef ArrowLoop finnur engan rótaraðgang.',

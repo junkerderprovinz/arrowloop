@@ -743,6 +743,8 @@ const ko: Translations = {
   'phone.appDataNoSu': '이 이름으로 응답하는 su가 없어 루트를 쓸 수 없습니다.',
   'phone.appDataRootDenied': '루트 관리자가 아직 ArrowLoop에 루트를 허용하지 않았습니다.',
   'phone.appDataNoShizuku': 'Shizuku가 설치되어 있지 않습니다.',
+  'phone.appDataGetShizuku': 'Shizuku 받기',
+  'phone.appDataGetShizukuHint': 'Shizuku는 별도의 앱입니다. 설치한 뒤 무선 디버깅이나 루트로 한 번 시작한 다음 여기로 돌아오세요.',
   'phone.appDataRequestRoot': '루트 요청',
   'phone.appDataSu': 'su 명령',
   'phone.appDataSuHint': '일부 루트 관리자는 su의 이름을 바꾸거나 다른 곳에 두므로, ArrowLoop가 루트를 찾지 못하면 여기에 이름이나 경로를 입력하세요.',

@@ -743,6 +743,8 @@ const sk: Translations = {
   'phone.appDataNoSu': 'Pod týmto názvom neodpovedá žiadne su, root teda nie je k dispozícii.',
   'phone.appDataRootDenied': 'Správca rootu zatiaľ ArrowLoop root nepovolil.',
   'phone.appDataNoShizuku': 'Shizuku nie je nainštalované.',
+  'phone.appDataGetShizuku': 'Získať Shizuku',
+  'phone.appDataGetShizukuHint': 'Shizuku je samostatná aplikácia. Po inštalácii ju raz spustite cez bezdrôtové ladenie alebo root a potom sa sem vráťte.',
   'phone.appDataRequestRoot': 'Požiadať o root',
   'phone.appDataSu': 'Príkaz su',
   'phone.appDataSuHint': 'Niektorí správcovia rootu su premenujú alebo presunú, takže ak ArrowLoop root nenájde, zadajte sem jeho názov alebo cestu.',

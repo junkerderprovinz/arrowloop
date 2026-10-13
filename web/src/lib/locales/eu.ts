@@ -743,6 +743,8 @@ const eu: Translations = {
   'phone.appDataNoSu': 'Izen honekin ez du su-k erantzuten, beraz root ez dago erabilgarri.',
   'phone.appDataRootDenied': 'Zure root kudeatzaileak oraindik ez dio ArrowLoopi root-ik eman.',
   'phone.appDataNoShizuku': 'Shizuku ez dago instalatuta.',
+  'phone.appDataGetShizuku': 'Eskuratu Shizuku',
+  'phone.appDataGetShizukuHint': 'Shizuku aparteko aplikazio bat da. Instalatu ondoren, abiarazi behin hari gabeko arazketaren edo root-aren bidez, eta itzuli hona.',
   'phone.appDataRequestRoot': 'Eskatu root',
   'phone.appDataSu': 'su komandoa',
   'phone.appDataSuHint': 'Root kudeatzaile batzuek su-ren izena aldatzen dute edo beste nonbait jartzen dute, beraz idatzi hemen haren izena edo bidea ArrowLoopek root-ik aurkitzen ez badu.',

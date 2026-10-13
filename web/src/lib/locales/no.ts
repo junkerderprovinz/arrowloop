@@ -743,6 +743,8 @@ const no: Translations = {
   'phone.appDataNoSu': 'Ingen su svarer under dette navnet, så root er ikke tilgjengelig.',
   'phone.appDataRootDenied': 'Root-behandleren din har ikke gitt ArrowLoop root ennå.',
   'phone.appDataNoShizuku': 'Shizuku er ikke installert.',
+  'phone.appDataGetShizuku': 'Hent Shizuku',
+  'phone.appDataGetShizukuHint': 'Shizuku er en egen app. Når du har installert den, starter du den én gang via trådløs feilsøking eller root og kommer så tilbake hit.',
   'phone.appDataRequestRoot': 'Be om root',
   'phone.appDataSu': 'su-kommando',
   'phone.appDataSuHint': 'Noen root-behandlere gir su et annet navn eller flytter den, så skriv inn navnet eller stien her hvis ArrowLoop ikke finner root.',

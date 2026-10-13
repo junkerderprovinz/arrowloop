@@ -743,6 +743,8 @@ const fa: Translations = {
   'phone.appDataNoSu': 'هیچ su با این نام پاسخ نمی‌دهد، پس روت در دسترس نیست.',
   'phone.appDataRootDenied': 'مدیر روت شما هنوز به ArrowLoop روت نداده است.',
   'phone.appDataNoShizuku': 'Shizuku نصب نیست.',
+  'phone.appDataGetShizuku': 'دریافت Shizuku',
+  'phone.appDataGetShizukuHint': 'Shizuku برنامه‌ای جداگانه است. پس از نصب، آن را یک بار از طریق اشکال‌زدایی بی‌سیم یا روت اجرا کنید و سپس به اینجا برگردید.',
   'phone.appDataRequestRoot': 'درخواست روت',
   'phone.appDataSu': 'فرمان su',
   'phone.appDataSuHint': 'برخی مدیرهای روت نام su را عوض می‌کنند یا آن را جابه‌جا می‌کنند، پس اگر ArrowLoop روت پیدا نمی‌کند نام یا مسیر آن را اینجا وارد کنید.',

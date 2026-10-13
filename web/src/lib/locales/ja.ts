@@ -743,6 +743,8 @@ const ja: Translations = {
   'phone.appDataNoSu': 'この名前で応答する su がないため、root は使えません。',
   'phone.appDataRootDenied': 'root マネージャーはまだ ArrowLoop に root を許可していません。',
   'phone.appDataNoShizuku': 'Shizuku はインストールされていません。',
+  'phone.appDataGetShizuku': 'Shizuku を入手',
+  'phone.appDataGetShizukuHint': 'Shizuku は別のアプリです。インストールしたら、ワイヤレスデバッグか root で一度起動してから、ここに戻ってください。',
   'phone.appDataRequestRoot': 'root を要求',
   'phone.appDataSu': 'su コマンド',
   'phone.appDataSuHint': 'root マネージャーによっては su の名前を変えたり別の場所に置いたりするので、ArrowLoop が root を見つけられない場合はここに名前かパスを入力してください。',

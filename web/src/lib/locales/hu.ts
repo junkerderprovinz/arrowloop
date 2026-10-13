@@ -743,6 +743,8 @@ const hu: Translations = {
   'phone.appDataNoSu': 'Ezen a néven nem válaszol su, így a root nem érhető el.',
   'phone.appDataRootDenied': 'A root-kezelőd még nem adott rootot az ArrowLoopnak.',
   'phone.appDataNoShizuku': 'A Shizuku nincs telepítve.',
+  'phone.appDataGetShizuku': 'Shizuku letöltése',
+  'phone.appDataGetShizukuHint': 'A Shizuku egy külön alkalmazás. Telepítés után indítsd el egyszer vezeték nélküli hibakereséssel vagy roottal, aztán gyere vissza ide.',
   'phone.appDataRequestRoot': 'Root kérése',
   'phone.appDataSu': 'su parancs',
   'phone.appDataSuHint': 'Egyes root-kezelők átnevezik vagy máshová teszik a su-t, ezért ha az ArrowLoop nem talál rootot, itt add meg a nevét vagy az útvonalát.',

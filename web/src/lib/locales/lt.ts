@@ -743,6 +743,8 @@ const lt: Translations = {
   'phone.appDataNoSu': 'Šiuo pavadinimu neatsako joks su, todėl root nepasiekiamas.',
   'phone.appDataRootDenied': 'Jūsų root tvarkyklė dar nesuteikė ArrowLoop root teisių.',
   'phone.appDataNoShizuku': 'Shizuku neįdiegta.',
+  'phone.appDataGetShizuku': 'Gauti Shizuku',
+  'phone.appDataGetShizukuHint': 'Shizuku yra atskira programa. Įdiegę ją vieną kartą paleiskite per belaidį derinimą arba root ir grįžkite čia.',
   'phone.appDataRequestRoot': 'Prašyti root',
   'phone.appDataSu': 'su komanda',
   'phone.appDataSuHint': 'Kai kurios root tvarkyklės pervadina su arba jį perkelia, todėl, jei ArrowLoop neranda root, įveskite čia jo pavadinimą arba kelią.',

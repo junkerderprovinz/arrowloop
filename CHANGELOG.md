@@ -12,7 +12,7 @@ The full notes for each release are in
 
 ## ✨ Added
 
-- **The phone app can sync the folders in Android/data**, which Android 11 and later keep from every app but the one each folder belongs to. Switch on Android/data under This phone, and they show up as a target called Android. On a rooted phone ArrowLoop reads and writes them; with Shizuku it only reads them. You can pick either way yourself and set the path to su, for root managers that rename it.
+- **The phone app can sync the folders in Android/data**, which Android 11 and later keep from every app but the one each folder belongs to. Switch on Android/data under This phone, and they show up as a target called Android. On a rooted phone ArrowLoop reads and writes them; with Shizuku it only reads them. You can pick either way yourself and set the path to su, for root managers that rename it. Without Shizuku, a button takes you to its download page.
 
 ## ⚡ Improved
 

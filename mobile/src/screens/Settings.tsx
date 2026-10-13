@@ -396,6 +396,16 @@ export function Settings() {
             {appDataWanted === null && appData.state !== "off" ? (
               <Caption>{appDataSaid(appData.state, appData, t)}</Caption>
             ) : null}
+            {!appData.shizuku || appData.state === "noShizuku" ? (
+              <View style={styles.actionTip}>
+                <Button
+                  label={t("phone.appDataGetShizuku")}
+                  glyph="IconDownload"
+                  onPress={() => Linking.openURL(SHIZUKU_DOWNLOAD)}
+                />
+                <InfoBubble tip={t("phone.appDataGetShizukuHint")} />
+              </View>
+            ) : null}
             {/* Also while root is dimmed, since a wrong name for su is one
                 reason it can be. */}
             {appData.way === "root" || !appData.root ? (
@@ -1040,6 +1050,12 @@ function directionOf(defaults: Defaults, t: T): string {
   return `${named}, ${t(mode === "mirror" ? "mode.mirror" : mode === "move" ? "mode.move" : "mode.sync")}`;
 }
 
+/**
+ * Shizuku's own download page, which lists Google Play, F-Droid and GitHub,
+ * so the F-Droid build sends nobody to Play.
+ */
+const SHIZUKU_DOWNLOAD = "https://shizuku.rikka.app/download/";
+
 /** A command name or an absolute path, either without spaces. */
 const SU_COMMAND = /^(\/[^\s/]+)+$|^[^\s/]+$/;
 
@@ -1097,6 +1113,7 @@ function langFlag(code: string): string {
 const styles = StyleSheet.create({
   // Wraps, or a row of three buttons clips the last one on a narrow phone.
   actions: { flexDirection: "row", flexWrap: "wrap", gap: space.sm },
+  actionTip: { flexDirection: "row", alignItems: "center", gap: space.sm },
   axisRow: { flexDirection: "row", alignItems: "center", gap: space.md, paddingVertical: space.sm },
   axisName: { flexDirection: "row", alignItems: "center", gap: space.sm },
   axisRowInner: { flexDirection: "row", alignItems: "center", gap: space.md, flex: 1 },

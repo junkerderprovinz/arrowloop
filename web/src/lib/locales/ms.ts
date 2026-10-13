@@ -743,6 +743,8 @@ const ms: Translations = {
   'phone.appDataNoSu': 'Tiada su yang menjawab dengan nama ini, jadi root tidak tersedia.',
   'phone.appDataRootDenied': 'Pengurus root anda belum memberi ArrowLoop akses root.',
   'phone.appDataNoShizuku': 'Shizuku tidak dipasang.',
+  'phone.appDataGetShizuku': 'Dapatkan Shizuku',
+  'phone.appDataGetShizukuHint': 'Shizuku ialah apl berasingan. Selepas memasangnya, mulakan sekali melalui penyahpepijatan wayarles atau root, kemudian kembali ke sini.',
   'phone.appDataRequestRoot': 'Minta root',
   'phone.appDataSu': 'Arahan su',
   'phone.appDataSuHint': 'Sesetengah pengurus root menamakan semula su atau memindahkannya, jadi masukkan nama atau laluannya di sini jika ArrowLoop tidak menemui root.',
