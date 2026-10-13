@@ -1058,36 +1058,6 @@ export function IconFichier(props: SVGProps<SVGSVGElement>) {
   )
 }
 
-/** Enterprise File Fabric, under its owner Nasuni's mark. Source: traced from nasuni.com's header logo, which has no vector (the brand's own mark) */
-export function IconNasuni(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 297 297" width="1em" height="1em" aria-hidden {...props}>
-      <defs>
-        <linearGradient id="nasuni-r" gradientUnits="userSpaceOnUse" x1="0.6" y1="157.6" x2="295.4" y2="138.5">
-          <stop offset="0" stopColor="#6b2fc4" />
-          <stop offset="1" stopColor="#7334ca" />
-        </linearGradient>
-        <linearGradient id="nasuni-n" gradientUnits="userSpaceOnUse" x1="234.8" y1="151.2" x2="65.5" y2="126.2">
-          <stop offset="0" stopColor="#581ebd" />
-          <stop offset="1" stopColor="#d982ff" />
-        </linearGradient>
-        <linearGradient id="nasuni-l" gradientUnits="userSpaceOnUse" x1="124.3" y1="140.6" x2="51.8" y2="210.5">
-          <stop offset="0" stopColor="#541bba" />
-          <stop offset="1" stopColor="#da83ff" />
-        </linearGradient>
-        <linearGradient id="nasuni-d" gradientUnits="userSpaceOnUse" x1="240.4" y1="112.0" x2="210.4" y2="69.0">
-          <stop offset="0" stopColor="#9568de" />
-          <stop offset="1" stopColor="#cbaaf3" />
-        </linearGradient>
-      </defs>
-      <circle cx="148.4" cy="148.5" r="144.3" fill="none" stroke="var(--mark-ink, url(#nasuni-r))" strokeWidth="8.0" />
-      <path fill="var(--mark-ink, url(#nasuni-n))" d="M98.4 57.2L94.6 60.2L91.4 63.7L89.4 66.8L87.3 71.8L54.3 200.6L54.3 206.4L56.3 213.8L59.4 219.2L63.1 223.1L68.2 226.7L73.7 228.8L79.3 229.7L84.4 229.3L90.3 227.8L95.4 224.9L100.8 219.9L103.8 215.3L105.7 210.3L122.8 143.4L123.7 142.8L176.3 215.2L179.8 218.9L183.6 221.8L187.6 223.8L195.4 225.6L199.3 225.6L204.3 224.7L209.2 222.8L212.4 220.8L218.8 214.3L220.9 210.7L222.6 206.3L237.7 139.8L234.1 145.6L230.7 149.2L225.6 152.9L221.2 154.8L215.9 155.9L210.4 155.9L205.6 154.9L200.8 152.9L195.7 149.2L189.1 141.8L139.8 70.1L133.6 62.1L128.7 58.2L125.1 56.2L119.9 54.3L114.2 53.2L110.2 53.2L104.9 54.2Z" />
-      <path fill="var(--mark-ink, url(#nasuni-l))" d="M71.8 140.7L56.8 198.7A25 25 0 0 0 105.2 211.3L120.2 153.3A25 25 0 0 0 71.8 140.7Z" />
-      <circle cx="225.9" cy="91.0" r="26.8" fill="var(--mark-cut, url(#nasuni-d))" />
-    </svg>
-  )
-}
-
 /** What each mark's tile lights up in under the pointer: the brand's own colour
  *  and the ink that holds on it ("Brand tiles" in GlimStone). */
 export const BRAND_TILES: Record<string, { tile: string; ink: string }> = {
@@ -1157,5 +1127,4 @@ export const BRAND_TILES: Record<string, { tile: string; ink: string }> = {
   IconQingcloud: { tile: '#15a675', ink: '#ffffff' },
   IconSia: { tile: '#0d1104', ink: '#ffffff' },
   IconFichier: { tile: '#b36909', ink: '#ffffff' },
-  IconNasuni: { tile: '#6b2fc4', ink: '#ffffff' },
 }

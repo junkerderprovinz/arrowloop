@@ -66,7 +66,6 @@ import {
   IconQingcloud,
   IconSia,
   IconFichier,
-  IconNasuni,
 } from './brandGlyphs'
 import {
   IconAdd,
@@ -156,7 +155,6 @@ const MARKS: Record<string, () => ReactNode> = {
   IconQingcloud: () => <IconQingcloud />,
   IconSia: () => <IconSia />,
   IconFichier: () => <IconFichier />,
-  IconNasuni: () => <IconNasuni />,
   IconAdd: () => <IconAdd />,
   IconBuckets: () => <IconBuckets />,
   IconCheck: () => <IconCheck />,

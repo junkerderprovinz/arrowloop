@@ -148,6 +148,11 @@ function spot(target: Target, rtl: boolean, front: Element | null): { x: number;
   return target.kind !== 'page' && cutOff(target.el, x, y) ? null : { x, y }
 }
 
+function inside(at: { x: number; y: number }, el: HTMLElement): boolean {
+  const r = el.getBoundingClientRect()
+  return at.x >= r.left && at.x <= r.right && at.y >= r.top && at.y <= r.bottom
+}
+
 function Dot({ target, register }: { target: Target; register: (key: string, el: HTMLElement | null) => void }) {
   const { t } = useT()
   const way = target.kind === 'way'
@@ -197,13 +202,20 @@ export function WhatsNewDots({ news, active }: { news: WhatsNew | null; active: 
     const rtl = document.documentElement.dir === 'rtl'
     const windows = document.querySelectorAll('[aria-modal="true"]')
     const front = windows.length > 0 ? windows[windows.length - 1] : null
+    const spots = new Map<Target, { x: number; y: number } | null>()
+    for (const target of live.current) spots.set(target, spot(target, rtl, front))
     const taken: { x: number; y: number }[] = []
     for (const target of live.current) {
       const dot = dots.current.get(target.key)
       if (!dot) continue
-      const at = spot(target, rtl, front)
-      dot.style.display = at ? '' : 'none'
-      if (!at) continue
+      const at = spots.get(target) ?? null
+      // A control carries one dot. When the corner of a changed strip or page
+      // lands on a control inside it that has a dot of its own, that one stays.
+      const covered =
+        !!at &&
+        live.current.some((other) => other !== target && spots.get(other) && target.el.contains(other.el) && inside(at, other.el))
+      dot.style.display = at && !covered ? '' : 'none'
+      if (!at || covered) continue
       // Two dots on one corner stand side by side, so each can be pointed at.
       while (taken.some((p) => Math.abs(p.x - at.x) < APART && Math.abs(p.y - at.y) < APART)) {
         at.x += rtl ? APART : -APART

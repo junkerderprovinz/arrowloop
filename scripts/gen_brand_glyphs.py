@@ -521,8 +521,6 @@ LOCAL = [
     ("IconSia", "sia", "Sia", "sia.tech, the site's favicon", BRAND),
     ("IconFichier", "fichier", "1Fichier",
      "traced from img.1fichier.com/logo.png, which has no vector", BRAND),
-    ("IconNasuni", "nasuni", "Enterprise File Fabric, under its owner Nasuni's mark",
-     "traced from nasuni.com's header logo, which has no vector", BRAND),
 ]
 
 # Attributes that mean nothing inside a component, or that the wrapper sets.

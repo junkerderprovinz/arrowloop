@@ -48,6 +48,11 @@ CHECKS = [
 # not checked them.
 REQUIRED = {"Action", "Reason", "TrashItem"}
 
+# Optional fields the engine leaves out until something calls for them. A
+# healthy history has no failed run, so `Run.Failure` is rightly absent from
+# every object, and the check must not read that as a field the engine lacks.
+SOMETIMES = {"Run": {"Failure"}}
+
 # Every entry is (interface, path, into) with an optional fourth element: a
 # (key, value) the answer must carry for the check to mean anything.
 CHECKS = [check if len(check) == 4 else (*check, None) for check in CHECKS]
@@ -145,7 +150,11 @@ def main() -> int:
         ever = set().union(*(set(item) for item in found))
         missing = sorted(
             [field for field in need if field not in found[0]]
-            + [field for field in maybe if field not in ever]
+            + [
+                field
+                for field in maybe
+                if field not in ever and field not in SOMETIMES.get(name, ())
+            ]
         )
         if missing:
             problems.append(
