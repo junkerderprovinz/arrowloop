@@ -724,7 +724,7 @@ function RemoteForm({
             names the command that produces one. */}
         {backend?.needsToken && (
           <p className="flex items-start gap-2 text-subline text-carbon-textMuted">
-            <InfoBubble tip={t('targets.tokenHowTo')} />
+            <InfoBubble tip={t('targets.tokenHowTo', { backend: backend.name })} />
             <span>{t('targets.tokenNeeded', { backend: backend.name })}</span>
           </p>
         )}

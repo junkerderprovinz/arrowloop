@@ -28,6 +28,7 @@ const option = (name: string, secret = false) => ({
   default: '',
 })
 const webdav: Backend = { name: 'webdav', description: '', options: [option('url'), option('user'), option('pass', true)] }
+const drive: Backend = { name: 'drive', description: '', needsToken: true, options: [option('token', true)] }
 
 const stored: Remote = {
   name: 'nas',
@@ -45,7 +46,7 @@ const saveRemote = vi.fn((name: string, type: string, settings: Record<string, s
 
 vi.mock('../lib/api', () => ({
   api: {
-    remotes: () => Promise.resolve({ remotes: [stored], backends: [webdav], providers, unlisted: [] }),
+    remotes: () => Promise.resolve({ remotes: [stored], backends: [webdav, drive], providers, unlisted: [] }),
     volumes: () => Promise.resolve({ volumes: [] }),
     checkRemote: () => Promise.resolve({ ok: true }),
     aboutRemote: () => Promise.resolve({ supported: false }),
@@ -110,6 +111,17 @@ describe('the storage picker', () => {
 
     fireEvent.keyDown(search, { key: 'Escape' })
     await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
+  })
+})
+
+describe('a target that needs a sign-in token', () => {
+  it('names its own rclone type in the command that fetches one', async () => {
+    const { dialog } = await openPicker()
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Google Drive' }))
+    const line = (await screen.findByText(/is reached with a sign-in token/)).parentElement!
+    fireEvent.mouseEnter(line.querySelector('[tabindex="0"]')!)
+    const tip = await screen.findByRole('tooltip')
+    expect(tip.textContent).toContain('rclone authorize "drive"')
   })
 })
 
