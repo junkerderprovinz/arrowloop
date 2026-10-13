@@ -44,6 +44,11 @@ func load(ctx context.Context, path string) (*job.Config, error) {
 			"note: %s carries settings this version no longer has and ignored them: %s\n",
 			path, strings.Join(gone, ", "))
 	}
+	for _, j := range cfg.Jobs {
+		if err := j.Refused(); err != nil {
+			fmt.Fprintf(os.Stderr, "note: %v; the other jobs run as usual\n", err)
+		}
+	}
 	if err := engine.StartAccounting(ctx, cfg.BwLimit); err != nil {
 		return nil, err
 	}

@@ -465,7 +465,14 @@ type Job struct {
 	// on this machine.
 	Before string `json:"before,omitempty"`
 	After  string `json:"after,omitempty"`
+
+	refused error
 }
+
+// Refused says why the job cannot run as it is written, or is nil. Such a job
+// is loaded with the others, so one bad job does not stop all of them, and
+// every run of it fails with this reason.
+func (j Job) Refused() error { return j.refused }
 
 // Defaults fill in the per-job settings a job does not set for itself, so a
 // job carries only what makes it different. The pointer fields let a job
@@ -720,12 +727,12 @@ func Load(path string) (*Config, error) {
 		// Both sides naming the same place would scan one tree as two, and a
 		// mirror or move job would act on its own source. Two folders on this
 		// machine are compared by what the disk says, so a symlink or a second
-		// spelling is caught as well, and two targets by the server or account
+		// spelling is caught as well, and two targets by the server and account
 		// their settings name. A side nested in the other is left alone, since
 		// excluding the inner folder makes it a working job, and a target that
 		// cannot be looked up here is let through, since the run reports it.
 		if !draft && sameSide(j.Left, j.Right) {
-			return nil, fmt.Errorf(
+			j.refused = fmt.Errorf(
 				"job %q has both sides pointing at %s, so it would be a snake eating its own tail: every file would be its own copy, and in mirror or move mode the job would act on the very place it read from",
 				j.Name, j.Left)
 		}
@@ -994,8 +1001,19 @@ func (c *Config) save(edit func(map[string]any)) (*Config, error) {
 	}
 	defer os.Remove(tmp)
 
-	if _, err := Load(tmp); err != nil {
+	checked, err := Load(tmp)
+	if err != nil {
 		return nil, err
+	}
+	// A job refused for the same reason before the edit does not block it,
+	// since the edit may be about something else entirely.
+	for _, j := range checked.Jobs {
+		if j.refused == nil {
+			continue
+		}
+		if was, ok := c.Find(j.Name); !ok || was.refused == nil || was.refused.Error() != j.refused.Error() {
+			return nil, j.refused
+		}
 	}
 
 	if err := os.Rename(tmp, c.path); err != nil {

@@ -149,6 +149,9 @@ func (r *Runner) Preview(ctx context.Context, name string) (*plan.Plan, error) {
 	if j.Left == "" || j.Right == "" {
 		return nil, fmt.Errorf("%w: %s", ErrHalfWritten, name)
 	}
+	if err := j.Refused(); err != nil {
+		return nil, err
+	}
 	opt, err := j.Options()
 	if err != nil {
 		return nil, err
@@ -254,9 +257,10 @@ func (r *Runner) runAnswering(ctx context.Context, name string, auto bool, ans a
 	var p *plan.Plan
 	// A drive that is missing before anything has run leaves nothing for the
 	// after command to undo. A before command may be what mounts it, so a job
-	// with one finds out once the command has run.
-	var err error
-	if j.Before == "" {
+	// with one finds out once the command has run. A refused job runs neither
+	// command and is recorded as failed, so its history says why.
+	err := j.Refused()
+	if err == nil && j.Before == "" {
 		_, _, err = resolve(j)
 	}
 	ranBefore := false
@@ -315,10 +319,12 @@ func (r *Runner) runAnswering(ctx context.Context, name string, auto bool, ans a
 	rec.Skipped = len(res.Skipped)
 
 	// Runs even when the run was stopped, since cleaning up after it is what
-	// the command is usually for.
-	if aErr := hook.Run(context.WithoutCancel(ctx), j.After, hookEnv(j, &rec)); aErr != nil && rec.Err == "" {
-		rec.Err = fmt.Sprintf("%s: %v", AfterFailed, aErr)
-		err = errors.New(rec.Err)
+	// the command is usually for. A refused job never got that far.
+	if j.Refused() == nil {
+		if aErr := hook.Run(context.WithoutCancel(ctx), j.After, hookEnv(j, &rec)); aErr != nil && rec.Err == "" {
+			rec.Err = fmt.Sprintf("%s: %v", AfterFailed, aErr)
+			err = errors.New(rec.Err)
+		}
 	}
 
 	// A stopped run is recorded too, so the write cannot use the run's own

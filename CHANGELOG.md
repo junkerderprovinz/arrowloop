@@ -59,6 +59,7 @@ The full notes for each release are in
 
 ## 🐛 Fixed
 
+- **Two accounts on one server are two places.** A job between two Nextcloud users, or between two access keys on one S3 endpoint, looked like a job pointing at itself, and ArrowLoop refused to start. A job whose two sides really are one place now stops alone and says why in its history, while the other jobs keep running.
 - **A job whose schedule was missed no longer makes the page ask for the findings without end.** Reading the findings confirmed the overdue note, the engine reported that as a change, and the page read the findings again, tens of thousands of times until the browser gave up or the job ran. The engine now reports only a real change, and the page asks at most once a second.
 - **The duplicate search names its sides in whole words.** German read "linksn Seite", and several other languages declined the side word wrongly.
 - **Enterprise File Fabric no longer wears Nasuni's mark.** Its own logo is gone, so the target picker shows the storage glyph.

@@ -14,11 +14,18 @@ import (
 )
 
 // identity is what tells one target of a backend from another: the settings
-// that pick out the server or the account, without the credentials. A backend
-// missing from identities cannot be placed from its settings, since two of its
-// targets may reach two accounts that are written down the same way.
+// that pick out the server and the account on it, without the credentials. A
+// backend missing from identities cannot be placed from its settings, since
+// two of its targets may reach two accounts that are written down the same
+// way.
 type identity struct {
 	keys []string
+	// account is the settings that pick the account on the server.
+	account []string
+	// signIn is set where an account left unnamed is whichever one the
+	// credentials sign in to. Credentials are not compared, so such a target
+	// is never taken for another.
+	signIn bool
 	// needs is the settings of which at least one has to be set, such as the
 	// drive's id, without which the account is not known.
 	needs []string
@@ -30,34 +37,37 @@ type identity struct {
 }
 
 var identities = map[string]identity{
-	"sftp":        {keys: []string{"host", "port", "user"}, needs: []string{"host"}, home: true},
-	"ftp":         {keys: []string{"host", "port", "user"}, needs: []string{"host"}, home: true},
-	"smb":         {keys: []string{"host", "port", "user", "domain"}, needs: []string{"host"}, fold: true},
-	"webdav":      {keys: []string{"url"}, needs: []string{"url"}},
+	"sftp":        {keys: []string{"host", "port"}, account: []string{"user"}, needs: []string{"host"}, home: true},
+	"ftp":         {keys: []string{"host", "port"}, account: []string{"user"}, needs: []string{"host"}, home: true},
+	"smb":         {keys: []string{"host", "port"}, account: []string{"user", "domain"}, needs: []string{"host"}, fold: true},
+	"webdav":      {keys: []string{"url"}, account: []string{"user"}, signIn: true, needs: []string{"url"}},
 	"http":        {keys: []string{"url"}, needs: []string{"url"}},
-	"s3":          {keys: []string{"endpoint"}},
+	"s3":          {keys: []string{"endpoint"}, account: []string{"access_key_id"}, signIn: true},
 	"gcs":         {keys: []string{"endpoint"}},
 	"b2":          {keys: []string{"endpoint"}},
 	"azureblob":   {keys: []string{"account", "endpoint"}, needs: []string{"account", "endpoint"}},
 	"azurefiles":  {keys: []string{"account", "share_name", "endpoint"}, needs: []string{"account", "endpoint"}, fold: true},
-	"swift":       {keys: []string{"auth", "tenant", "tenant_id", "region", "storage_url"}, needs: []string{"auth", "storage_url"}},
+	"swift":       {keys: []string{"auth", "region", "storage_url"}, account: []string{"user", "user_id", "application_credential_id", "domain", "tenant", "tenant_id", "tenant_domain"}, signIn: true, needs: []string{"auth", "storage_url"}},
 	"onedrive":    {keys: []string{"drive_id"}, needs: []string{"drive_id"}, fold: true},
 	"drive":       {keys: []string{"team_drive", "root_folder_id"}, needs: []string{"team_drive", "root_folder_id"}},
 	"mega":        {keys: []string{"user"}, needs: []string{"user"}},
 	"protondrive": {keys: []string{"username"}, needs: []string{"username"}},
-	"seafile":     {keys: []string{"url", "user", "library"}, needs: []string{"url"}},
-	"hdfs":        {keys: []string{"namenode", "username"}, needs: []string{"namenode"}},
+	"seafile":     {keys: []string{"url", "library"}, account: []string{"user"}, signIn: true, needs: []string{"url"}},
+	"hdfs":        {keys: []string{"namenode"}, account: []string{"username"}, needs: []string{"namenode"}},
 	"memory":      {},
 }
 
 // place is where a side points: a folder on this machine, or a target named by
 // its backend and identifying settings and a path there.
 type place struct {
-	local  string
-	target string
-	path   string
+	local   string
+	target  string
+	account string
+	path    string
 	// fromHome is set for a path that starts in the user's home folder.
 	fromHome bool
+	// unnamed is set for a target whose account only its credentials know.
+	unnamed bool
 }
 
 // locate works out where a side points from rclone's configuration, without
@@ -135,6 +145,12 @@ func identify(name, backend, at string, get func(string) string) (place, error) 
 		b.WriteString(" " + key + "=" + v)
 	}
 	p.target = b.String()
+	b.Reset()
+	for _, key := range id.account {
+		b.WriteString(" " + key + "=" + get(key))
+	}
+	p.account = b.String()
+	p.unnamed = id.signIn && !slices.ContainsFunc(id.account, func(k string) bool { return get(k) != "" })
 
 	p.fromHome = id.home && !strings.HasPrefix(p.path, "/")
 	p.path = strings.Trim(path.Clean("/"+strings.ReplaceAll(p.path, `\`, "/")), "/")
@@ -188,7 +204,8 @@ func endpoint(backend, provider, v string) (string, error) {
 
 // match reports whether two places are one, and whether that is known. A path
 // from the home folder against one from the root cannot be settled without
-// asking the server where home is.
+// asking the server where home is, and an account only the credentials name
+// cannot be settled at all.
 func (a place) match(b place) (same, known bool) {
 	if a.local != "" || b.local != "" {
 		if a.local == "" || b.local == "" {
@@ -200,6 +217,12 @@ func (a place) match(b place) (same, known bool) {
 		return false, localApart(a.local, b.local)
 	}
 	if a.target != b.target {
+		return false, true
+	}
+	if a.unnamed || b.unnamed {
+		return false, false
+	}
+	if a.account != b.account {
 		return false, true
 	}
 	if a.fromHome != b.fromHome {

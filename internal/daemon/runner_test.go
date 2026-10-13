@@ -436,6 +436,43 @@ func TestAHalfWrittenJobIsRefusedByName(t *testing.T) {
 	}
 }
 
+// A job with both sides in one place loads with the others, so they keep
+// running, and its own runs fail with the reason where the job's history
+// shows it.
+func TestASnakeJobFailsEveryRunAndTouchesNothing(t *testing.T) {
+	var after string
+	cfg, hist, left, _ := fixture(t, func(dir, left, right string) string {
+		after = filepath.Join(dir, "after-ran")
+		command, _ := json.Marshal(`echo ran > "` + after + `"`)
+		return fmt.Sprintf(`{"jobs":[{"name":"snake","left":"%s","right":"%s","state":"%s","quietPeriod":"0s","before":"exit 1","after":%s}]}`,
+			jsonPath(left), jsonPath(left), jsonPath(filepath.Join(dir, "snake.db")), command)
+	})
+	if err := os.WriteFile(filepath.Join(left, "a.txt"), []byte("hello"), 0o644); err != nil {
+		t.Fatalf("write: %v", err)
+	}
+
+	r := daemon.New(cfg, hist, nil)
+	if _, err := r.Run(t.Context(), "snake"); err == nil || !strings.Contains(err.Error(), "snake eating its own tail") {
+		t.Fatalf("running a job with one place on both sides reported %v", err)
+	}
+	if _, err := r.Preview(t.Context(), "snake"); err == nil || !strings.Contains(err.Error(), "snake eating its own tail") {
+		t.Errorf("previewing a job with one place on both sides reported %v", err)
+	}
+	runs, err := hist.Recent(t.Context(), "snake", history.ShowAll, 10)
+	if err != nil {
+		t.Fatalf("history: %v", err)
+	}
+	if len(runs) != 1 || !strings.Contains(runs[0].Err, "snake eating its own tail") {
+		t.Errorf("the history does not say why the job did not run: %+v", runs)
+	}
+	if _, err := os.Stat(filepath.Join(left, ".arrowloop")); err == nil {
+		t.Error("the refused job wrote into its folder")
+	}
+	if _, err := os.Stat(after); err == nil {
+		t.Error("the after command ran for a job that never started")
+	}
+}
+
 // Serve rebuilds its round on every configuration change, which happens every
 // time a job is saved, and the start-up runs must not fire again then.
 func TestRunAtStartFiresOnceAndNotOnReload(t *testing.T) {
