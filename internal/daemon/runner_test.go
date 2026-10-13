@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -408,6 +410,41 @@ func TestTheAfterCommandRunsWhenTheDriveGoesAwayAfterTheBeforeCommand(t *testing
 	}
 	if strings.TrimSpace(string(got)) != "failed" {
 		t.Errorf("the after command was told %q, want failed", got)
+	}
+}
+
+// A drive that is away is no failed run, so the check hears nothing of it,
+// whether or not a before command tried to mount the drive first.
+func TestADriveThatIsAwaySendsNoCheckPing(t *testing.T) {
+	for _, withBefore := range []bool{false, true} {
+		t.Run(fmt.Sprintf("before command %v", withBefore), func(t *testing.T) {
+			r, _, _ := stickJob(t, func(string, string) bool { return false })
+			var mu sync.Mutex
+			var pings []string
+			check := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+				mu.Lock()
+				pings = append(pings, req.URL.Path)
+				mu.Unlock()
+			}))
+			t.Cleanup(check.Close)
+
+			cfg := *r.Config()
+			cfg.Jobs = append([]job.Job(nil), cfg.Jobs...)
+			if !withBefore {
+				cfg.Jobs[0].Before = ""
+			}
+			cfg.Notify = job.Notify{Healthchecks: &job.Healthchecks{URL: check.URL + "/check"}}
+			r.Reload(&cfg)
+
+			if _, err := r.Run(t.Context(), "onstick"); !errors.Is(err, daemon.ErrVolumeMissing) {
+				t.Fatalf("an unplugged drive reported %v", err)
+			}
+			mu.Lock()
+			defer mu.Unlock()
+			if len(pings) != 0 {
+				t.Errorf("the check was pinged for a drive that is away: %q", pings)
+			}
+		})
 	}
 }
 

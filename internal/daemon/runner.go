@@ -255,27 +255,29 @@ func (r *Runner) runAnswering(ctx context.Context, name string, auto bool, ans a
 	r.publish(Event{Job: name, Phase: "started"})
 	var res apply.Result
 	var p *plan.Plan
-	// A drive that is missing before anything has run leaves nothing for the
-	// after command to undo. A before command may be what mounts it, so a job
-	// with one finds out once the command has run. A refused job runs neither
-	// command and is recorded as failed, so its history says why.
+	// A refused job runs neither command and is recorded as failed, so its
+	// history says why. A before command may be what mounts the drive, so the
+	// drive is looked for once it has run.
 	err := j.Refused()
-	if err == nil && j.Before == "" {
-		_, _, err = resolve(j)
-	}
 	ranBefore := false
-	// Past the missing drive, which is no run, the job's check hears of every
-	// way this ends.
-	checkOut := func(bool, string) {}
-	if err == nil {
-		checkOut = r.checkIn(ctx, name)
-		err = hook.Run(ctx, j.Before, hookEnv(j, nil))
-		if err != nil {
+	if err == nil && j.Before != "" {
+		if err = hook.Run(ctx, j.Before, hookEnv(j, nil)); err != nil {
 			err = fmt.Errorf("%s: %w", BeforeFailed, err)
 		} else {
 			ranBefore = true
-			res, p, err = do(ctx, j, live)
 		}
+	}
+	if err == nil {
+		_, _, err = resolve(j)
+	}
+	// A drive that is away is no run and no failure, so the job's check hears
+	// of every other way this ends and of that one not at all.
+	checkOut := func(bool, string) {}
+	if !errors.Is(err, ErrVolumeMissing) {
+		checkOut = r.checkIn(ctx, name)
+	}
+	if err == nil {
+		res, p, err = do(ctx, j, live)
 	}
 
 	// A plan a brake refused holds the job. It is not a failure, or the retries
