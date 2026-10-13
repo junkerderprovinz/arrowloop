@@ -701,7 +701,7 @@ function RemoteForm({
         </Field>
         {first.map(field)}
         {rest.length > 0 && (
-          <section className="glim-well flex flex-col gap-4 rounded-card p-4">
+          <section className="glim-subcard flex flex-col gap-4 p-4">
             <h3 className="glim-eyebrow">{t('targets.moreSettings')}</h3>
             {rest.map(field)}
           </section>
