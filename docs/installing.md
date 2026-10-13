@@ -90,11 +90,11 @@ with `docker logs arrowloop`. The code stands on its own between the other
 lines, in yellow. Type it and a new password on the same page. The code is
 valid for ten minutes, and a wrong code does not spend the right one. After
 five wrong codes from one address, that address waits a minute before any
-code is checked again, the right one included. Asking
-again while it is valid writes nothing, so the log does not fill up and the
-code you are typing stays good. The new password takes the second factor, every
-passkey and every other session with it, since any of them could belong to
-whoever made the reset necessary, and the page says what went.
+code is checked again, the right one included. Asking again while it is valid
+writes nothing, so the log does not fill up and the code you are typing stays
+good. The new password takes the second factor, every passkey and every other
+session with it, since any of them could belong to whoever made the reset
+necessary, and the page says what went.
 
 Whoever can read that log can reset the password this way: root on the host,
 but also a log viewer such as Dozzle, any container given the Docker socket,

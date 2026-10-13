@@ -9,7 +9,7 @@
 
   Every placeholder must match values-de/. `getString` fills by position, so a
   translation with fewer placeholders silently drops the remaining arguments.
-  android/tools/check_strings.py is the guard.
+  mobile/tools/check_strings.py is the guard.
 -->
 <resources>
     <!--

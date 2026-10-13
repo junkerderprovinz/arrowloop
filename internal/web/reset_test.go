@@ -404,6 +404,54 @@ func TestAResetWaitsForAWayInBeingAdded(t *testing.T) {
 	}
 }
 
+// A change or removal of the password waits the same way, so a passkey added
+// while it waited goes with the old password.
+func TestAPasswordChangeWaitsForAWayInBeingAdded(t *testing.T) {
+	for _, route := range []string{"/api/security/password", "/api/security/password/remove"} {
+		s, srv, store, _ := resettable(t)
+		owner := browser(t)
+		resp, _ := attemptLogin(t, srv, owner, uiPassword)
+		req := httptest.NewRequest(http.MethodPost, "/", nil)
+		req.AddCookie(&http.Cookie{Name: sessionCookieName, Value: sessionTokenOf(t, resp)})
+		release, ok := s.holdSignIn(httptest.NewRecorder(), req)
+		if !ok {
+			t.Fatal("a live session was not let in")
+		}
+
+		done := make(chan int, 1)
+		go func() {
+			status, _ := post(t, owner, srv.URL+route, map[string]any{"current": uiPassword, "password": resetPassword})
+			done <- status
+		}()
+		g := s.gate()
+		finished := false
+		for !finished && g.mint.TryRLock() {
+			g.mint.RUnlock()
+			select {
+			case <-done:
+				finished = true
+			case <-time.After(time.Millisecond):
+			}
+		}
+
+		if err := store.Update(func(st *security.State) error {
+			st.Passkeys = append(st.Passkeys, security.Passkey{ID: "late", Name: "Late", CredentialID: []byte{1}, PublicKey: []byte{1}, RPID: "localhost"})
+			return nil
+		}); err != nil {
+			t.Fatal(err)
+		}
+		release()
+		if !finished {
+			if status := <-done; status != http.StatusOK {
+				t.Fatalf("%s answered %d", route, status)
+			}
+		}
+		if n := len(store.Get().Passkeys); n != 0 {
+			t.Errorf("%s left a passkey added while it waited", route)
+		}
+	}
+}
+
 // Protect let the request in before the reset ended its session; by the time
 // it arms anything, that session has to be checked again.
 func TestARequestLetInBeforeAResetCannotArmAnythingAfterIt(t *testing.T) {
@@ -426,6 +474,19 @@ func TestARequestLetInBeforeAResetCannotArmAnythingAfterIt(t *testing.T) {
 	}
 	if store.Get().TOTP.Secret != "" {
 		t.Error("a second factor secret was stored for an ended session")
+	}
+
+	for path, handler := range map[string]http.HandlerFunc{
+		"/api/security/totp/confirm":    s.totpConfirm,
+		"/api/passkeys/register/finish": s.passkeyRegisterFinish,
+	} {
+		req := httptest.NewRequest(http.MethodPost, path, strings.NewReader("{}"))
+		req.AddCookie(&http.Cookie{Name: sessionCookieName, Value: token})
+		rec := httptest.NewRecorder()
+		handler(rec, req)
+		if rec.Code != http.StatusUnauthorized {
+			t.Errorf("%s let a session the reset ended through: %d %s", path, rec.Code, rec.Body)
+		}
 	}
 }
 

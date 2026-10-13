@@ -52,7 +52,6 @@ The full notes for each release are in
 - **A failed run says why in your language.** Finding cards, run rows, the run window, the tray's list and the phone say the failures the engine knows in words, with the figures written your way: "Am Ziel (rechts) sind 16 KB frei, dieser Auftrag würde mindestens 29 GB schreiben." That covers a destination too full, a drive not plugged in, a server that does not answer, a refused sign-in, denied access, a missing folder, a full quota, a service asking for a pause, a stopped run and a failed command before or after the run. Anything else shows the engine's English under The engine reported:. Trash and Conflicts say the same way why a side or a job could not be read. The phone's notification about a failed run says it in English or German.
 - **The backup card says what its buttons do to everything.** Its rows read Back up all jobs and all settings and Restore all jobs and all settings, on the web and on the phone, and the phone asks before a restore as the web does.
 - **Forgot password? is a full-width button at the foot of the login**, and the reset form appears once the code is in the log. The code field's (i) says where the log is, how long the code lasts and who else can read it. The new password is typed twice. A refused code may have expired, and then the log already shows a new one. The page after the reset lists what it removed and points to Settings, Security.
-- **The reset code stands out in the log** as a block of its own, with how long it is valid and a line to ignore it if nobody asked. Wrong codes are counted in the log at most once a minute, and the reset logs what it removed.
 - **The phone's Docker button swells once when its command is copied**, as Copy report does.
 - **A target shows how full it is as a bar under its name** once it is connected. Its end sloshes, as does the phone's bar, as lively as the motion setting allows and still at Off or when the system asks for less motion.
 - **Ctrl+F opens History's search.** Escape empties it, and a second Escape turns it back into the button.
@@ -61,14 +60,30 @@ The full notes for each release are in
 ## 🐛 Fixed
 
 - **A job whose schedule was missed no longer makes the page ask for the findings without end.** Reading the findings confirmed the overdue note, the engine reported that as a change, and the page read the findings again, tens of thousands of times until the browser gave up or the job ran. The engine now reports only a real change, and the page asks at most once a second.
-- **A reset code is written to the log once per ten minutes.** Asking again while a code is valid writes nothing, so the log no longer fills up with a line per request.
-- **A passkey added during a reset no longer survives it.** A passkey or second factor registered while the password is being reset or changed is refused instead of staying behind under the new password.
-- **Removing a job keeps its state file when ArrowLoop cannot tell whether another job uses it.**
 - **The duplicate search names its sides in whole words.** German read "linksn Seite", and several other languages declined the side word wrongly.
 - **The file log and the run list no longer cut their words.** A long kind such as "Conflict, both versions kept" and a long path wrap instead.
 - **A job set to run only when asked stays that way when a default schedule is set.** Its empty schedule was taken as no schedule at all, so the default ran it on the clock. A job without a schedule of its own still follows the default.
 - **The Cron field keeps the spaces you type**, and switching to Cron writes out the schedule already set instead of an empty field.
 - **Overdue after says what it counts.** The setting was called Days without a run, which read wrong for a job that runs once a week. It counts the days from the scheduled run that was missed, and its (i) gives the weekly example.
+
+## 1.9.0 - 2026-10-13
+
+## ✨ Added
+
+- **A job that missed its turn because its drive was away runs once the drive is back.** On a computer or in a container it used to wait for the next scheduled turn. Now it runs within a minute of the drive coming back, if a turn passed meanwhile, and a job that watches for changes starts watching the drive again. The phone already caught up at its next wake-up.
+- **Groundwork for Android/data.** `arrowloop serve-data`, started as root or from the adb shell, opens the per-app folders Android keeps from other apps and hands them to the engine as a target called Android. As root it gives each new file to the app whose folder it lands in; from the adb shell it only reads. The phone app does not start it yet.
+
+## ⚡ Improved
+
+- **A reset code goes into the log once per ten minutes.** Asking again while a code is valid writes nothing, so the log does not fill up and the code you are typing stays good. The code stands on its own between the other lines, in yellow, and wrong codes show up in the log as a count at most once a minute.
+- **A password reset or change ends whatever was under way.** A passkey being registered, a second factor being set up or a sign-in that started before the reset no longer survives it.
+
+## 🐛 Fixed
+
+- **A locked-out address can no longer keep guessing the reset code.** After five wrong codes the address waits a minute before any code is checked, the right one included. Behind a reverse proxy without `ARROWLOOP_TRUSTED_PROXIES` that wait applies to everyone, you as well.
+- **Secrets stay on the server whatever case the configuration file spells its keys in.** The Matrix token, the webhook address and a job's commands reached the settings page when the file said `Notify` or `Jobs` instead of `notify` or `jobs`.
+- **Forgetting a job's state is refused while another job's record cannot be checked**, for example on a share that is not mounted, since it might be the same file.
+- **On Windows a change made just as a job starts watching is no longer missed.** Windows records changes for a folder only from the moment it is first asked, so a file saved in that instant waited for the next change or the next scheduled run.
 
 ## 1.8.0 - 2026-10-11
 
