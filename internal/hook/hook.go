@@ -16,6 +16,14 @@ import (
 // the job's slot, and with it every job queued behind it.
 const Timeout = 15 * time.Minute
 
+// BeforeFailed and AfterFailed open the error of a run whose command failed.
+// The command's output follows them, which scrub leaves out of what leaves
+// the machine.
+const (
+	BeforeFailed = "the command before the run failed, so the run did not start"
+	AfterFailed  = "the command after the run failed"
+)
+
 // outputGrace is how long the output is read after the shell has exited. A
 // program the command started in the background keeps the output open for as
 // long as it runs, and the run must not wait for it.

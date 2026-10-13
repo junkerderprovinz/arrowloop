@@ -8,6 +8,7 @@ import (
 
 	"github.com/junkerderprovinz/arrowloop/internal/daemon"
 	"github.com/junkerderprovinz/arrowloop/internal/failure"
+	"github.com/junkerderprovinz/arrowloop/internal/hook"
 )
 
 // The space finding as precheck words it; precheck_test.go holds the template
@@ -28,11 +29,11 @@ func TestTheEnginesOwnSentencesCarryTheirFigures(t *testing.T) {
 			failure.Failure{Code: failure.VolumeMissing, Params: map[string]string{"side": "left"}},
 		},
 		{
-			fmt.Sprintf("%s: exit status 2: mount: no medium", daemon.BeforeFailed),
+			fmt.Sprintf("%s: exit status 2: mount: no medium", hook.BeforeFailed),
 			failure.Failure{Code: failure.BeforeFailed, Params: map[string]string{"output": "exit status 2: mount: no medium"}},
 		},
 		{
-			fmt.Sprintf("%s: exit status 1", daemon.AfterFailed),
+			fmt.Sprintf("%s: exit status 1", hook.AfterFailed),
 			failure.Failure{Code: failure.AfterFailed, Params: map[string]string{"output": "exit status 1"}},
 		},
 	}
@@ -83,7 +84,7 @@ func TestAFailureAfterAJobsNameIsStillNamed(t *testing.T) {
 	if got := failure.Of(text); got == nil || got.Code != failure.NotEnoughSpace {
 		t.Errorf("Of(%q) = %+v, want the space failure", text, got)
 	}
-	text = "photos: " + fmt.Sprintf("%s: exit status 1", daemon.BeforeFailed)
+	text = "photos: " + fmt.Sprintf("%s: exit status 1", hook.BeforeFailed)
 	if got := failure.Of(text); got == nil || got.Params["output"] != "exit status 1" {
 		t.Errorf("Of(%q) = %+v, want the command's output alone", text, got)
 	}

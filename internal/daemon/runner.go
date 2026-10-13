@@ -37,13 +37,6 @@ import (
 // files and state database, so the tick is let go by.
 var ErrAlreadyRunning = errors.New("this job is still running from last time")
 
-// BeforeFailed and AfterFailed open the error of a run whose hook failed. The
-// command's output follows them, which the bug report leaves out.
-const (
-	BeforeFailed = "the command before the run failed, so the run did not start"
-	AfterFailed  = "the command after the run failed"
-)
-
 // ErrVolumeMissing is returned when a job points at a removable drive or a
 // share that is not attached right now. It is not recorded as a failure,
 // because a disk in somebody's bag has not gone wrong.
@@ -267,7 +260,7 @@ func (r *Runner) runAnswering(ctx context.Context, name string, auto bool, ans a
 		checkOut = r.checkIn(ctx, name)
 		err = hook.Run(ctx, j.Before, hookEnv(j, nil))
 		if err != nil {
-			err = fmt.Errorf("%s: %w", BeforeFailed, err)
+			err = fmt.Errorf("%s: %w", hook.BeforeFailed, err)
 		} else {
 			ranBefore = true
 			res, p, err = do(ctx, j, live)
@@ -292,7 +285,7 @@ func (r *Runner) runAnswering(ctx context.Context, name string, auto bool, ans a
 		if ranBefore {
 			gone := history.Run{Job: name, Started: rec.Started, Finished: time.Now(), Err: err.Error()}
 			if aErr := hook.Run(context.WithoutCancel(ctx), j.After, hookEnv(j, &gone)); aErr != nil {
-				r.log("%s: %s: %v", name, AfterFailed, aErr)
+				r.log("%s: %s: %v", name, hook.AfterFailed, aErr)
 			}
 		}
 		if live != nil {
@@ -317,7 +310,7 @@ func (r *Runner) runAnswering(ctx context.Context, name string, auto bool, ans a
 	// Runs even when the run was stopped, since cleaning up after it is what
 	// the command is usually for.
 	if aErr := hook.Run(context.WithoutCancel(ctx), j.After, hookEnv(j, &rec)); aErr != nil && rec.Err == "" {
-		rec.Err = fmt.Sprintf("%s: %v", AfterFailed, aErr)
+		rec.Err = fmt.Sprintf("%s: %v", hook.AfterFailed, aErr)
 		err = errors.New(rec.Err)
 	}
 

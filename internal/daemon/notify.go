@@ -11,6 +11,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/job"
 	"github.com/junkerderprovinz/arrowloop/internal/notify"
+	"github.com/junkerderprovinz/arrowloop/internal/scrub"
 )
 
 // Notifier builds the destination list from the configuration: every channel
@@ -54,6 +55,8 @@ func (r *Runner) tell(ctx context.Context, name string, msg notify.Message) {
 	if note == nil {
 		return
 	}
+	clean := scrub.Knowing(r.config().Jobs)
+	msg.Subject, msg.Body = clean(msg.Subject), clean(msg.Body)
 	if err := note.Send(context.WithoutCancel(ctx), msg); err != nil {
 		r.log("could not send the notification for %s: %v", name, err)
 	}
@@ -79,7 +82,7 @@ func (r *Runner) checkIn(ctx context.Context, name string) func(ok bool, detail 
 	}()
 	return func(ok bool, detail string) {
 		<-started
-		if err := check.Finish(ctx, ok, detail); err != nil {
+		if err := check.Finish(ctx, ok, scrub.Knowing(r.config().Jobs)(detail)); err != nil {
 			r.log("could not tell the check for %s how the run ended: %v", name, err)
 		}
 	}
@@ -93,9 +96,6 @@ func summary(rec history.Run, res apply.Result) string {
 		fmt.Fprintf(&b, ", %d folders made, %d removed", rec.DirsMade, rec.DirsRemoved)
 	}
 	fmt.Fprintf(&b, ", %d unchanged, took %s", rec.Unchanged, rec.Finished.Sub(rec.Started).Round(time.Millisecond))
-	if rec.Err != "" {
-		fmt.Fprintf(&b, "\n%s", rec.Err)
-	}
 	// Only a handful of the postponed paths go to the chat room.
 	if n := len(res.Skipped); n > 0 {
 		fmt.Fprintf(&b, "\n%d left for the next run", n)
@@ -106,6 +106,10 @@ func summary(rec history.Run, res apply.Result) string {
 			}
 			fmt.Fprintf(&b, "\n  %s: %s", s.Path, s.Reason)
 		}
+	}
+	// Last, since scrubbing cuts what a failed command printed off at the end.
+	if rec.Err != "" {
+		fmt.Fprintf(&b, "\n%s", rec.Err)
 	}
 	return b.String()
 }

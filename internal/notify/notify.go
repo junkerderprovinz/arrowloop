@@ -13,11 +13,12 @@ import (
 	"io"
 	"net/http"
 	"net/url"
-	"regexp"
 	"strings"
 	"sync"
 	"sync/atomic"
 	"time"
+
+	"github.com/junkerderprovinz/arrowloop/internal/scrub"
 )
 
 // SendTimeout bounds one message to one destination.
@@ -88,14 +89,11 @@ func Redact(err error) error {
 	return err
 }
 
-// userinfo finds the password part of an address written into a message, as
-// a remote's error may quote one.
-var userinfo = regexp.MustCompile(`([a-zA-Z][a-zA-Z0-9+.-]*://[^/\s:@]*):[^/\s@]*@`)
-
-// scrubbed takes passwords out of a message before it leaves the machine.
+// scrubbed takes passwords and what a hook printed out of a message before it
+// leaves the machine, as the bug report does.
 func scrubbed(m Message) Message {
-	m.Subject = userinfo.ReplaceAllString(m.Subject, "$1:***@")
-	m.Body = userinfo.ReplaceAllString(m.Body, "$1:***@")
+	m.Subject = scrub.Text(m.Subject)
+	m.Body = scrub.Text(m.Body)
 	return m
 }
 

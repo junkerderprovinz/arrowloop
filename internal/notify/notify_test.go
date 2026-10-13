@@ -362,3 +362,23 @@ func TestAPasswordInAMessageIsNotSent(t *testing.T) {
 		t.Errorf("the place went with the password: %s", body)
 	}
 }
+
+func TestAConnectionStringInAMessageLosesItsParameters(t *testing.T) {
+	srv, h := listener(t, http.StatusOK)
+	m := Message{Subject: "ArrowLoop: photos FAILED", Body: "open nas,user=bob,pass=hunter2:share: refused\n" +
+		`list :s3,access_key_id=AK,secret_access_key="s3:cret":bucket failed`}
+	if err := (&Webhook{URL: srv.URL}).Send(context.Background(), m); err != nil {
+		t.Fatal(err)
+	}
+	_, _, _, body := h.last()
+	for _, secret := range []string{"hunter2", "user=bob", "s3:cret", "AK"} {
+		if strings.Contains(body, secret) {
+			t.Errorf("the message carries %s: %s", secret, body)
+		}
+	}
+	for _, kept := range []string{"nas:share: refused", ":s3:bucket failed"} {
+		if !strings.Contains(body, kept) {
+			t.Errorf("the message lost %q: %s", kept, body)
+		}
+	}
+}
