@@ -128,6 +128,55 @@ func TestAChangedDefaultReachesEveryJobThatFollowsIt(t *testing.T) {
 	}
 }
 
+// Direction and mode are one setting, as the editor shows them. A job that
+// writes either holds both, and a default mirror never reaches a job that
+// picked its own direction.
+func TestDirectionAndModeAreInheritedTogether(t *testing.T) {
+	cfg := write(t, `{
+		"defaults": {"direction": "leftToRight", "mode": "mirror"},
+		"jobs": [
+			{"name":"follows",`+sides+`},
+			{"name":"back","direction":"rightToLeft",`+sides+`},
+			{"name":"both","direction":"both",`+sides+`}
+		]
+	}`)
+	for _, c := range []struct{ name, direction, mode string }{
+		{"follows", "leftToRight", "mirror"},
+		{"back", "rightToLeft", ""},
+		{"both", "both", ""},
+	} {
+		j, _ := cfg.Find(c.name)
+		if j.Direction != c.direction || j.Mode != c.mode {
+			t.Errorf("%s runs %q in mode %q, want %q in mode %q", c.name, j.Direction, j.Mode, c.direction, c.mode)
+		}
+		if err := j.Refused(); err != nil {
+			t.Errorf("%s was refused: %v", c.name, err)
+		}
+	}
+}
+
+// A mirror without a direction of its own would delete on whichever side the
+// default names, and change sides with it.
+func TestAMirrorWithoutItsOwnDirectionIsRefusedAlone(t *testing.T) {
+	cfg := write(t, `{
+		"defaults": {"direction": "leftToRight"},
+		"jobs": [
+			{"name":"mirror","mode":"mirror",`+sides+`},
+			{"name":"plain",`+sides+`}
+		]
+	}`)
+	j, _ := cfg.Find("mirror")
+	if j.Direction == "leftToRight" {
+		t.Error("the mirror took its direction from the default")
+	}
+	if err := j.Refused(); err == nil || !strings.Contains(err.Error(), "one-way direction") {
+		t.Errorf("a mirror running both ways was not refused: %v", err)
+	}
+	if plain, _ := cfg.Find("plain"); plain.Refused() != nil {
+		t.Errorf("the job beside it was refused too: %v", plain.Refused())
+	}
+}
+
 func TestZeroIsAnAnswerForTheBrakeToo(t *testing.T) {
 	cfg := write(t, `{
 		"defaults": {"brakePercent": 50},

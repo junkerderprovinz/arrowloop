@@ -510,11 +510,11 @@ type Defaults struct {
 // applyTo fills in what a job left unset. A job that states a value keeps it,
 // including when what it states is the zero one.
 func (d Defaults) applyTo(j *Job) {
-	if j.Direction == "" {
-		j.Direction = d.Direction
-	}
-	if j.Mode == "" {
-		j.Mode = d.Mode
+	// Direction and mode are one setting, as the editor shows them. Taken one
+	// by one, a default mirror would reach a job that chose its own direction,
+	// and a job's own mirror would change sides with the default.
+	if j.Direction == "" && j.Mode == "" {
+		j.Direction, j.Mode = d.Direction, d.Mode
 	}
 	if j.Schedule == "" {
 		j.Schedule = d.Schedule
@@ -704,7 +704,7 @@ func Load(path string) (*Config, error) {
 		// Mirror and move decide which side is right, so neither can run both
 		// ways, and guessing one direction would delete something.
 		if j.Mode != "" && j.Mode != "sync" && plan.ParseDirection(j.Direction) == plan.Both {
-			return nil, fmt.Errorf(
+			j.refused = fmt.Errorf(
 				"job %q is set to %s and runs both ways; %s needs a one-way direction, because it decides which side is right",
 				j.Name, j.Mode, j.Mode)
 		}
