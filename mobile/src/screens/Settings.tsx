@@ -1,6 +1,6 @@
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Alert, AppState, Linking, PermissionsAndroid, Platform, StyleSheet, Text, View } from "react-native";
+import { Alert, AppState, Keyboard, Linking, PermissionsAndroid, Platform, StyleSheet, Text, View } from "react-native";
 import Constants from "expo-constants";
 import { api } from "../api";
 import { engine, type AppData, type AppDataState, type AppDataWay } from "../engine";
@@ -94,6 +94,9 @@ export function Settings() {
   const [appDataWanted, setAppDataWanted] = useState<{ on?: boolean; way?: AppDataWay } | null>(null);
   // The su field's text once edited; it is stored when the field is left.
   const [suDraft, setSuDraft] = useState<string | null>(null);
+  // Leaving the field can come before the render of the last keystroke, so
+  // the store reads the text from here rather than from that render.
+  const suTyped = useRef<string | null>(null);
   const [running, setRunning] = useState<boolean | null>(null);
   const [version, setVersion] = useState<string | null>(null);
   // Null until read, so the card never shows the built-in values for a moment.
@@ -256,6 +259,20 @@ export function Settings() {
   const appDataOn = appDataWanted?.on ?? (appData !== null && appData.state !== "off");
   const su = suDraft ?? appData?.su ?? "";
   const suValid = SU_COMMAND.test(su);
+  const storeSu = () => {
+    const typed = suTyped.current;
+    if (appData && typed !== null && SU_COMMAND.test(typed) && typed !== appData.su) {
+      changeAppData({}, () => engine.setAppDataSu(typed));
+    }
+  };
+  // Android's back key hides the keyboard but leaves the field focused, so
+  // hiding the keyboard stores the entry too.
+  const storeSuLater = useRef(storeSu);
+  storeSuLater.current = storeSu;
+  useEffect(() => {
+    const hidden = Keyboard.addListener("keyboardDidHide", () => storeSuLater.current());
+    return () => hidden.remove();
+  }, []);
 
   // What a report needs and nothing more. No path, no job or target name and
   // no address: it is meant to be pasted into a public issue.
@@ -386,10 +403,11 @@ export function Settings() {
                 label={t("phone.appDataSu")}
                 hint={t("phone.appDataSuHint")}
                 value={su}
-                onChange={setSuDraft}
-                onBlur={() => {
-                  if (suValid && su !== appData.su) changeAppData({}, () => engine.setAppDataSu(su));
+                onChange={(next) => {
+                  suTyped.current = next;
+                  setSuDraft(next);
                 }}
+                onBlur={storeSu}
                 error={suValid ? undefined : t("phone.appDataSuBad")}
               />
             ) : null}

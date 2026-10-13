@@ -47,6 +47,8 @@ export function Field({
             value={value}
             onChangeText={onChange}
             onBlur={onBlur}
+            // The Enter key ends the entry as leaving the field does.
+            onSubmitEditing={onBlur}
             placeholder={placeholder}
             placeholderTextColor={p.textMuted}
             secureTextEntry={hidden}
