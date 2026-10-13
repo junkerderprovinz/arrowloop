@@ -687,10 +687,11 @@ func Load(path string) (*Config, error) {
 		// Both sides naming the same place would scan one tree as two, and a
 		// mirror or move job would act on its own source. Two folders on this
 		// machine are compared by what the disk says, so a symlink or a second
-		// spelling is caught as well. A side nested in the other is left alone,
-		// since excluding the inner folder makes it a working job, and one place
-		// spelled two ways by different remotes cannot be settled from here.
-		if !draft && (sameSide(j.Left, j.Right) || SamePlace(j.Left, j.Right)) {
+		// spelling is caught as well, and two targets by the server or account
+		// their settings name. A side nested in the other is left alone, since
+		// excluding the inner folder makes it a working job, and a target that
+		// cannot be looked up here is let through, since the run reports it.
+		if !draft && sameSide(j.Left, j.Right) {
 			return nil, fmt.Errorf(
 				"job %q has both sides pointing at %s, so it would be a snake eating its own tail: every file would be its own copy, and in mirror or move mode the job would act on the very place it read from",
 				j.Name, j.Left)
@@ -720,10 +721,11 @@ func Load(path string) (*Config, error) {
 	return &cfg, nil
 }
 
-// sameSide reports whether two sides name the same place by the same name.
-// Trailing separators are ignored, since /fotos and /fotos/ are the same folder
-// to every backend. Case is not folded, because the job's fold-case answer is
-// not known this early.
+// sameSide reports whether two sides are known to be one place, by the same
+// name or by what the names point at. Trailing separators are ignored, since
+// /fotos and /fotos/ are the same folder to every backend. Case is folded only
+// where the backend never tells it apart, because the job's fold-case answer
+// is not known this early.
 func sameSide(left, right string) bool {
 	trim := func(s string) string {
 		s = strings.TrimSpace(s)
@@ -734,7 +736,19 @@ func sameSide(left, right string) bool {
 		return s
 	}
 	left, right = trim(left), trim(right)
-	return left != "" && left == right
+	if left == "" || right == "" {
+		return false
+	}
+	if left == right {
+		return true
+	}
+	a, errA := locate(left)
+	b, errB := locate(right)
+	if errA != nil || errB != nil {
+		return false
+	}
+	same, _ := a.match(b)
+	return same
 }
 
 // resolve makes a relative path in the file relative to the file itself, not

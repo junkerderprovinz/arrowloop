@@ -52,7 +52,7 @@ manager happened to start the process in.
 | Field | Default | What it does |
 |---|---|---|
 | `name` | required | How the job is asked for and how its history is kept apart. Two jobs cannot share one. |
-| `left`, `right` | required | A local path or any rclone remote. Which is which makes no difference to the engine. |
+| `left`, `right` | required | A local path or any rclone remote. Which is which makes no difference to the engine. Both naming one place is refused, also through a symlink, an alias or two remotes set up for the same server, bucket or drive. |
 | `state` | required | Where this job remembers what the two sides agreed on. |
 | `direction` | both ways | `leftToRight` or `rightToLeft` makes one side the source and never writes to it. Anything else, including an empty field, is both ways. |
 | `mode` | `sync` | What a one-way job does beyond copying: `sync`, `mirror` or `move`. The last two need a one-way `direction`; see [Copy only, mirror or move](#copy-only-mirror-or-move). |

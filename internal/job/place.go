@@ -45,14 +45,27 @@ func SamePlace(a, b string) bool {
 	return errA == nil && errB == nil && os.SameFile(ia, ib)
 }
 
-// Apart reports whether two local paths are known to be two places. A path
-// that cannot be looked at, for any reason but not existing, could be the
-// other one under a name this machine cannot follow right now, so it is not
-// known to be apart from anything.
+// Apart reports whether two places, folders on this machine or targets, are
+// known to be two. A folder that cannot be looked at, for any reason but not
+// existing, or a target that cannot be looked up, could be the other one
+// under a name this machine cannot follow right now, so it is not known to be
+// apart from anything.
 func Apart(a, b string) bool {
-	if a == b || SamePlace(a, b) {
+	if a == b {
 		return false
 	}
+	pa, errA := locate(a)
+	pb, errB := locate(b)
+	if errA != nil || errB != nil {
+		return false
+	}
+	same, known := pa.match(pb)
+	return known && !same
+}
+
+// localApart reports whether two local paths that are not one place are known
+// to be two.
+func localApart(a, b string) bool {
 	for _, p := range []string{a, b} {
 		if _, err := os.Stat(resolved(p)); err != nil && !errors.Is(err, fs.ErrNotExist) {
 			return false
