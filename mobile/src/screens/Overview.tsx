@@ -111,7 +111,11 @@ export function Overview() {
 
   // A running job's last result is about to be replaced, so it says nothing yet.
   const settled = jobs.filter((j) => !j.running).map(jobState);
-  const known = waiting.conflicts !== null && waiting.findings !== null;
+  // The findings are enough to list what waits: listing the conflicts opens
+  // every two-way job's sides, and a target that is slow to answer must not
+  // hold back a held run. Only "in sync" waits for both.
+  const heard = waiting.findings !== null;
+  const known = heard && waiting.conflicts !== null;
   const wait = needs(waiting.conflicts ?? 0, waiting.findings ?? [], settled, waiting.unread ?? 0);
   const empty = jobs.length === 0;
   const head: Head = access === false ? "needsYou" : empty ? "noJobs" : wait.head;
@@ -134,7 +138,7 @@ export function Overview() {
   return (
     <Floating>
       <Page fab>
-        {known || empty ? <StatusHead state={head} /> : null}
+        {known || empty || (heard && head !== "inSync") ? <StatusHead state={head} /> : null}
 
         <Section title={t("overview.numbers")} hue={0}>
           <View style={styles.tiles}>
@@ -149,7 +153,7 @@ export function Overview() {
           </View>
         </Section>
 
-        {known && (wait.items.length > 0 || access === false) ? (
+        {(heard && wait.items.length > 0) || access === false ? (
           <Section title={t("phone.waiting")} hue={1}>
             {access === false ? (
               <Row

@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { AppState } from "react-native";
 import type { Finding } from "../../web/src/lib/anomalies";
 import { trashTotals } from "../../web/src/lib/trashView";
 import { api } from "./api";
@@ -76,11 +77,21 @@ export function WaitingProvider({ children }: { children: ReactNode }) {
     );
   }, []);
 
-  useEffect(refresh, [refresh]);
+  // Asked again whenever the stream connects, the first time included, and
+  // whenever the app comes back to the front: the engine works on while the
+  // app is away, and nothing it did then reaches the stream.
+  useEffect(() => {
+    const sub = AppState.addEventListener("change", (next) => next === "active" && refresh());
+    return () => sub.remove();
+  }, [refresh]);
   // A run starting or ending is what changes these; progress frames change none.
-  useEngineStream(true, (event) => {
-    if (event.phase === "started" || event.phase === "finished" || event.phase === "anomaly") refresh();
-  });
+  useEngineStream(
+    true,
+    (event) => {
+      if (event.phase === "started" || event.phase === "finished" || event.phase === "anomaly") refresh();
+    },
+    refresh,
+  );
 
   const value = useMemo(
     () => ({ running, conflicts, conflicted, unread, findings, trash, trashBytes, anomaliesOn, refresh }),

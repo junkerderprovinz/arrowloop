@@ -500,10 +500,12 @@ export const api = {
 /**
  * Yields the data of each server-sent event from the engine, read over fetch
  * since React Native has no EventSource. It reads until the signal aborts.
+ * `onOpen` is called once the engine has answered, before the first event.
  */
-export async function* events(signal: AbortSignal): AsyncGenerator<string> {
+export async function* events(signal: AbortSignal, onOpen?: () => void): AsyncGenerator<string> {
   const response = await fetch(ORIGIN + "/api/events", { signal, headers: await engineHeaders() });
-  if (!response.body) return;
+  if (!response.ok || !response.body) return;
+  onOpen?.();
   const reader = response.body.getReader();
   const decoder = new TextDecoder();
   let buffer = "";

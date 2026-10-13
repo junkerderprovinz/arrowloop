@@ -121,11 +121,15 @@ export function useEngineEvents(ready: boolean, onEvent: () => void) {
 
 /**
  * Subscribes to the engine's event stream, reconnecting whenever it drops.
- * A frame that does not parse is skipped.
+ * A frame that does not parse is skipped. `onOpen` is called on every
+ * connection, the first included: whatever happened while the stream was
+ * down, such as an engine that Android restarted, sent no event.
  */
-export function useEngineStream(ready: boolean, onEvent: (event: RunEvent) => void) {
+export function useEngineStream(ready: boolean, onEvent: (event: RunEvent) => void, onOpen?: () => void) {
   const latest = useRef(onEvent);
   latest.current = onEvent;
+  const opened = useRef(onOpen);
+  opened.current = onOpen;
 
   useEffect(() => {
     if (!ready) return;
@@ -135,7 +139,7 @@ export function useEngineStream(ready: boolean, onEvent: (event: RunEvent) => vo
     (async () => {
       while (!stopped) {
         try {
-          for await (const line of events(control.signal)) {
+          for await (const line of events(control.signal, () => opened.current?.())) {
             if (stopped) return;
             let event: RunEvent;
             try {
