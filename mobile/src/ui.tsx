@@ -1128,7 +1128,8 @@ export function Choice<T extends string>({
    * `hint` puts an (i) in its segment that explains that one option. `mark`
    * is drawn in place of the label, which is then only read out. `glyph`
    * names a glyph that stands beside the label or for it, as the label
-   * setting says, like a button's.
+   * setting says, like a button's. A `disabled` option is dimmed and cannot
+   * be chosen; the screen says why.
    */
   options: {
     value: T;
@@ -1137,6 +1138,7 @@ export function Choice<T extends string>({
     hint?: string;
     mark?: (ink: string) => ReactNode;
     glyph?: string;
+    disabled?: boolean;
   }[];
   value: T;
   onChange: (next: T) => void;
@@ -1181,7 +1183,7 @@ function Segment({
   fill,
   onPress,
 }: {
-  option: { label: string; hint?: string; mark?: (ink: string) => ReactNode; glyph?: string };
+  option: { label: string; hint?: string; mark?: (ink: string) => ReactNode; glyph?: string; disabled?: boolean };
   on: boolean;
   fill: string;
   onPress: () => void;
@@ -1196,8 +1198,9 @@ function Segment({
       onPress={onPress}
       onPressIn={press.onPressIn}
       onPressOut={press.onPressOut}
+      disabled={option.disabled}
       accessibilityRole="button"
-      accessibilityState={{ selected: on }}
+      accessibilityState={{ selected: on, disabled: option.disabled }}
       accessibilityLabel={word ? undefined : option.label}
       style={[
         styles.segment,
@@ -1205,6 +1208,7 @@ function Segment({
         corners.pill,
         on ? { backgroundColor: fill } : null,
         { opacity: press.dim, transform: [{ scale: press.scale }] },
+        option.disabled ? styles.dimmed : null,
       ]}
     >
       {option.mark ? option.mark(ink) : glyph}
