@@ -11,7 +11,13 @@ const target = (name: string): Remote => ({
   settings: [{ key: 'url', value: `https://${name}.example/`, secret: false }],
 })
 
-const checked = vi.fn((name: string) => Promise.resolve(name === 'home' ? { ok: true } : { ok: false, reason: '404' }))
+const checked = vi.fn((name: string) =>
+  Promise.resolve(
+    name === 'home'
+      ? { ok: true }
+      : { ok: false, reason: 'dial tcp 10.0.0.9:443: connect: connection refused', failure: { code: 'unreachable' } },
+  ),
+)
 const volumes = vi.fn(() => Promise.resolve({ volumes: [] as Volume[] }))
 const deleteRemote = vi.fn((name: string) => Promise.resolve({ deleted: name }))
 const forgetVolume = vi.fn((id: string) => Promise.resolve({ forgotten: id }))
@@ -79,6 +85,25 @@ describe('Targets', () => {
     await screen.findByText('Not connected')
     expect(checked).not.toHaveBeenCalledWith('here')
     expect(screen.getAllByText(/^(Connected|Not connected)$/)).toHaveLength(2)
+  })
+
+  it('carries the verdict on the test button itself', async () => {
+    show()
+
+    const ok = (await screen.findByText('Connected')).closest('button')!
+    const fail = (await screen.findByText('Not connected')).closest('button')!
+    expect(ok.className).toContain('bg-statusOkSolid')
+    expect(fail.className).toContain('bg-statusFailSolid')
+    expect(screen.queryByText('dial tcp', { exact: false })).toBeNull()
+    expect(screen.getByText('The server could not be reached.')).toBeTruthy()
+  })
+
+  it('tests again when the verdict is pressed', async () => {
+    show()
+    const fail = (await screen.findByText('Not connected')).closest('button')!
+    checked.mockClear()
+    fireEvent.click(fail)
+    await waitFor(() => expect(checked).toHaveBeenCalledWith('away'))
   })
 
   it('drops the unreachable banner once both lists load again', async () => {
