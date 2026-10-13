@@ -751,6 +751,7 @@ const eu: Translations = {
   'phone.minBattery': 'Ez karga honen azpitik',
   'phone.minBatteryHint': 'Ehunekotan. Kargagailurik gabe soilik: kablean dagoen telefonoa betetzen ari da. Hutsik utzita, mugarik ez.',
   'phone.metered': 'Ez ordainpeko konexio batetik',
+  'phone.anomalyNotifyHeldHint': 'Telefono honetan jakinarazten dizu balazta batek lan bat gelditzen duenean.',
   'phone.meteredHint': 'Fakturari buruzko galdera, ez teknikari buruzkoa. Jabeak ordainpeko gisa markatutako wifi batek hemen huts egiten du eta goiko etengailua gainditzen du.',
   'phone.roaming': 'Ez ibiltaritzan',
   'phone.roamingHint': 'Atzerriko sare batean. Androidek 9. bertsiotik aurrera erantzuten du hori; azpitik ez da ezer atxikitzen.',

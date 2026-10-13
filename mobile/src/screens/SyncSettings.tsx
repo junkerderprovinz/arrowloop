@@ -188,7 +188,7 @@ export function SyncSettings() {
         ) : null}
         <Toggle
           label={t("anomaly.notifyHeld")}
-          hint={t("anomaly.notifyHeldHint")}
+          hint={t("phone.anomalyNotifyHeldHint")}
           value={anomalies.notifyHeld !== false}
           onChange={(notifyHeld) => saveAnomalies({ notifyHeld })}
         />

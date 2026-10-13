@@ -751,6 +751,7 @@ const vi: Translations = {
   'phone.minBattery': 'Không dưới mức pin này',
   'phone.minBatteryHint': 'Theo phần trăm. Chỉ khi không cắm sạc: điện thoại đang cắm dây thì đang đầy dần. Để trống nghĩa là không có ngưỡng.',
   'phone.metered': 'Không qua kết nối tính phí',
+  'phone.anomalyNotifyHeldHint': 'Báo cho bạn trên điện thoại này khi một phanh giữ công việc lại.',
   'phone.meteredHint': 'Đây là câu hỏi về hoá đơn, không phải về công nghệ. Một mạng wifi mà chủ mạng đánh dấu là tính phí sẽ bị chặn ở đây và lọt qua công tắc phía trên.',
   'phone.roaming': 'Không khi chuyển vùng',
   'phone.roamingHint': 'Trên mạng của nhà mạng khác ở nước ngoài. Android trả lời câu này từ phiên bản 9 trở lên; thấp hơn thì không giữ lại gì cả.',

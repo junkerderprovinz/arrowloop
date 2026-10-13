@@ -751,6 +751,7 @@ const tr: Translations = {
   'phone.minBattery': 'Bu şarjın altında olmasın',
   'phone.minBatteryHint': 'Yüzde olarak. Yalnızca şarj aletsizken: kabloya takılı telefon zaten doluyor. Boş bırakmak sınır yok demektir.',
   'phone.metered': 'Ücretli bağlantı üzerinden olmasın',
+  'phone.anomalyNotifyHeldHint': 'Bir fren işi durdurduğunda bu telefonda bildirim gösterir.',
   'phone.meteredHint': 'Fatura sorusu, teknoloji sorusu değil. Sahibinin ücretli olarak işaretlediği bir kablosuz ağ burada takılır, yukarıdaki anahtardan geçer.',
   'phone.roaming': 'Dolaşımdayken olmasın',
   'phone.roamingHint': 'Yurt dışında yabancı bir ağda. Android bunu 9. sürümden itibaren yanıtlar; altında hiçbir şey tutulmaz.',

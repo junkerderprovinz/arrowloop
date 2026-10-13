@@ -751,6 +751,7 @@ const hr: Translations = {
   'phone.minBattery': 'Ne ispod ove napunjenosti',
   'phone.minBatteryHint': 'U postocima. Samo bez punjača: telefon na kabelu se puni. Prazno znači bez granice.',
   'phone.metered': 'Ne preko plaćene veze',
+  'phone.anomalyNotifyHeldHint': 'Obavještava te na ovom telefonu kad kočnica zadrži zadatak.',
   'phone.meteredHint': 'Pitanje računa, ne tehnike. Wi-Fi koji je vlasnik označio kao plaćeni ovdje pada, a prekidač iznad prolazi.',
   'phone.roaming': 'Ne u roamingu',
   'phone.roamingHint': 'U tuđoj mreži u inozemstvu. Android na to odgovara od verzije 9; ispod toga ništa se ne zadržava.',

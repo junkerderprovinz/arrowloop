@@ -751,6 +751,7 @@ const ro: Translations = {
   'phone.minBattery': 'Nu sub această încărcare',
   'phone.minBatteryHint': 'În procente. Doar fără încărcător: un telefon la cablu se umple. Gol înseamnă fără prag.',
   'phone.metered': 'Nu pe o conexiune cu plată',
+  'phone.anomalyNotifyHeldHint': 'Te anunță pe acest telefon când o frână oprește o sarcină.',
   'phone.meteredHint': 'Întrebarea despre factură, nu despre tehnică. Un wifi marcat de proprietar drept cu plată cade aici și trece de comutatorul de mai sus.',
   'phone.roaming': 'Nu în roaming',
   'phone.roamingHint': 'Într-o rețea străină în afara țării. Android răspunde la asta de la versiunea 9; sub ea nu se reține nimic.',

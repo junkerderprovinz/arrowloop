@@ -751,6 +751,7 @@ const gl: Translations = {
   'phone.minBattery': 'Non por debaixo desta carga',
   'phone.minBatteryHint': 'En porcentaxe. Só sen cargador: un teléfono enchufado estase a encher. Baleiro significa sen límite.',
   'phone.metered': 'Non por unha conexión de pago',
+  'phone.anomalyNotifyHeldHint': 'Avísate neste teléfono cando un freo retén unha tarefa.',
   'phone.meteredHint': 'A pregunta da factura, non a da técnica. Unha wifi que o seu dono marcou como de pago falla aquí e pasa o interruptor de arriba.',
   'phone.roaming': 'Non en itinerancia',
   'phone.roamingHint': 'Nunha rede allea no estranxeiro. Android respóndeo a partir da versión 9; por debaixo non se retén nada.',

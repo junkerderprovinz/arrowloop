@@ -751,6 +751,7 @@ const ca: Translations = {
   'phone.minBattery': 'No per sota d\'aquesta càrrega',
   'phone.minBatteryHint': 'En percentatge. Només sense carregador: un telèfon endollat s\'omple. Buit vol dir sense límit.',
   'phone.metered': 'No per una connexió de pagament',
+  'phone.anomalyNotifyHeldHint': 'T\'avisa en aquest telèfon quan un fre atura una tasca.',
   'phone.meteredHint': 'És la pregunta de la factura, no la de la tecnologia. Una xarxa wifi que el seu propietari ha marcat com de pagament falla aquí i passa l\'interruptor de dalt.',
   'phone.roaming': 'No en itinerància',
   'phone.roamingHint': 'En una xarxa aliena a l\'estranger. L\'Android ho respon a partir de la versió 9; per sota no es reté res.',

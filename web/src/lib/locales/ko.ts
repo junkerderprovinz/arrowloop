@@ -751,6 +751,7 @@ const ko: Translations = {
   'phone.minBattery': '이 잔량 아래에서는 실행 안 함',
   'phone.minBatteryHint': '퍼센트 단위입니다. 충전기를 뺀 상태에서만 적용됩니다. 케이블에 연결된 기기는 충전 중이니까요. 비워 두면 하한이 없습니다.',
   'phone.metered': '종량제 연결에서는 실행 안 함',
+  'phone.anomalyNotifyHeldHint': '제동이 작업을 보류하면 이 휴대폰에 알림을 보냅니다.',
   'phone.meteredHint': '요금에 대한 질문이지 기술에 대한 질문이 아닙니다. 소유자가 종량제로 표시한 와이파이는 여기서 걸리고 위 스위치는 통과합니다.',
   'phone.roaming': '로밍 중에는 실행 안 함',
   'phone.roamingHint': '해외의 다른 사업자 망에 있는 상태입니다. 안드로이드는 버전 9부터 이에 답합니다. 그 아래에서는 아무것도 막지 않습니다.',

@@ -751,6 +751,7 @@ const fr: Translations = {
   'phone.minBattery': 'Pas en dessous de cette charge',
   'phone.minBatteryHint': 'En pourcentage. Uniquement hors chargeur : un téléphone branché se remplit. Vide signifie sans seuil.',
   'phone.metered': 'Pas sur une connexion payante',
+  'phone.anomalyNotifyHeldHint': 'Vous prévient sur ce téléphone quand un frein retient une tâche.',
   'phone.meteredHint': 'La question de la facture, pas celle de la technique. Un wifi que son propriétaire a marqué comme payant échoue ici et passe l\'interrupteur ci-dessus.',
   'phone.roaming': 'Pas en itinérance',
   'phone.roamingHint': 'Sur un réseau étranger à l\'étranger. Android y répond à partir de la version 9 ; en dessous, rien n\'est retenu.',

@@ -751,6 +751,7 @@ const zh: Translations = {
   'phone.minBattery': '低于此电量则不运行',
   'phone.minBatteryHint': '以百分比计。仅在未接充电器时生效，因为接着线的手机本来就在充电。留空表示没有下限。',
   'phone.metered': '不使用按流量计费的连接',
+  'phone.anomalyNotifyHeldHint': '刹车暂扣任务时，在这部手机上显示通知。',
   'phone.meteredHint': '这问的是账单，不是技术。被网主标记为计费的 Wi-Fi 会卡在这里，却能通过上面那个开关。',
   'phone.roaming': '漫游时不运行',
   'phone.roamingHint': '身处国外的他人网络。Android 从版本 9 起才能回答这个问题；更低的版本不会拦下任何东西。',

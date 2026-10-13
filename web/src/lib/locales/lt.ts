@@ -751,6 +751,7 @@ const lt: Translations = {
   'phone.minBattery': 'Ne žemiau šio įkrovimo',
   'phone.minBatteryHint': 'Procentais. Tik be kroviklio: prie laido prijungtas telefonas pildosi. Tuščia reiškia be ribos.',
   'phone.metered': 'Ne per mokamą ryšį',
+  'phone.anomalyNotifyHeldHint': 'Praneša šiame telefone, kai stabdis sustabdo užduotį.',
   'phone.meteredHint': 'Klausimas apie sąskaitą, ne apie technologiją. Wi-Fi, kurį savininkas pažymėjo kaip mokamą, čia nepraeina, o aukščiau esantį jungiklį praeina.',
   'phone.roaming': 'Ne tarptinkliniu ryšiu',
   'phone.roamingHint': 'Svetimame tinkle užsienyje. Android į tai atsako nuo 9 versijos; žemiau nieko nesulaikoma.',

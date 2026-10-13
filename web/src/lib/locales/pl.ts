@@ -751,6 +751,7 @@ const pl: Translations = {
   'phone.minBattery': 'Nie poniżej tego naładowania',
   'phone.minBatteryHint': 'W procentach. Tylko bez ładowarki: telefon na kablu się napełnia. Puste oznacza brak progu.',
   'phone.metered': 'Nie przez płatne połączenie',
+  'phone.anomalyNotifyHeldHint': 'Powiadamia na tym telefonie, gdy hamulec wstrzyma zadanie.',
   'phone.meteredHint': 'Pytanie o rachunek, nie o technikę. Wi-Fi oznaczone przez właściciela jako płatne odpada tutaj, a przełącznik powyżej przechodzi.',
   'phone.roaming': 'Nie w roamingu',
   'phone.roamingHint': 'W obcej sieci za granicą. Android odpowiada na to od wersji 9; poniżej nic nie jest wstrzymywane.',

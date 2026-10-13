@@ -751,6 +751,7 @@ const no: Translations = {
   'phone.minBattery': 'Ikke under denne ladingen',
   'phone.minBatteryHint': 'I prosent. Bare uten lader: en telefon på kabel fylles opp. Tomt betyr ingen grense.',
   'phone.metered': 'Ikke over en betalt tilkobling',
+  'phone.anomalyNotifyHeldHint': 'Gir deg et varsel på denne telefonen når en brems holder en jobb tilbake.',
   'phone.meteredHint': 'Spørsmålet om regningen, ikke om teknikken. Et wifi som eieren har merket som betalt faller igjennom her og slipper forbi bryteren over.',
   'phone.roaming': 'Ikke under roaming',
   'phone.roamingHint': 'På et fremmed nett i utlandet. Android svarer på dette fra versjon 9; under det holdes ingenting tilbake.',

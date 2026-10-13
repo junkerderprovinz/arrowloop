@@ -751,6 +751,7 @@ const is: Translations = {
   'phone.minBattery': 'Ekki undir þessari hleðslu',
   'phone.minBatteryHint': 'Í prósentum. Aðeins án hleðslutækis: sími í snúru er að fyllast. Autt þýðir engin mörk.',
   'phone.metered': 'Ekki um gjaldskylda tengingu',
+  'phone.anomalyNotifyHeldHint': 'Lætur þig vita í þessum síma þegar hemill stöðvar verk.',
   'phone.meteredHint': 'Spurningin um reikninginn, ekki um tæknina. Þráðlaust net sem eigandinn merkti gjaldskylt fellur hér og sleppur í gegnum rofann að ofan.',
   'phone.roaming': 'Ekki í reiki',
   'phone.roamingHint': 'Á framandi neti erlendis. Android svarar þessu frá útgáfu 9; þar undir er engu haldið aftur.',

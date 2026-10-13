@@ -751,6 +751,7 @@ const it: Translations = {
   'phone.minBattery': 'Non sotto questa carica',
   'phone.minBatteryHint': 'In percentuale. Solo senza caricabatterie: un telefono al cavo si sta riempiendo. Vuoto significa nessun limite.',
   'phone.metered': 'Non su una connessione a pagamento',
+  'phone.anomalyNotifyHeldHint': 'Ti avvisa su questo telefono quando un freno sospende un lavoro.',
   'phone.meteredHint': 'La domanda sulla bolletta, non sulla tecnica. Un wifi che il proprietario ha marcato a pagamento cade qui e supera l\'interruttore sopra.',
   'phone.roaming': 'Non in roaming',
   'phone.roamingHint': 'Su una rete altrui all\'estero. Android risponde a questa domanda dalla versione 9 in poi; sotto non viene trattenuto nulla.',

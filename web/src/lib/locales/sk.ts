@@ -751,6 +751,7 @@ const sk: Translations = {
   'phone.minBattery': 'Nie pod týmto nabitím',
   'phone.minBatteryHint': 'V percentách. Len bez nabíjačky: telefón na kábli sa plní. Prázdne znamená bez hranice.',
   'phone.metered': 'Nie cez platené pripojenie',
+  'phone.anomalyNotifyHeldHint': 'Oznámi to na tomto telefóne, keď brzda pozastaví úlohu.',
   'phone.meteredHint': 'Otázka na účet, nie na techniku. Wi-Fi, ktorú jej majiteľ označil ako platenú, tu neprejde a pri prepínači vyššie prejde.',
   'phone.roaming': 'Nie v roamingu',
   'phone.roamingHint': 'V cudzej sieti v zahraničí. Android na to odpovedá od verzie 9; nižšie sa nič nezdržiava.',

@@ -751,6 +751,7 @@ const ms: Translations = {
   'phone.minBattery': 'Jangan di bawah cas ini',
   'phone.minBatteryHint': 'Dalam peratus. Hanya tanpa pengecas: telefon yang berpalam sedang penuh. Kosong bermakna tiada had.',
   'phone.metered': 'Jangan melalui sambungan berbayar',
+  'phone.anomalyNotifyHeldHint': 'Memberitahu anda pada telefon ini apabila brek menahan tugas.',
   'phone.meteredHint': 'Soalan tentang bil, bukan tentang teknologi. Wifi yang ditanda berbayar oleh pemiliknya gagal di sini dan lulus suis di atas.',
   'phone.roaming': 'Jangan semasa perayauan',
   'phone.roamingHint': 'Pada rangkaian asing di luar negara. Android menjawabnya dari versi 9 ke atas; di bawah itu tiada apa ditahan.',

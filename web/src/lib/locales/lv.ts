@@ -751,6 +751,7 @@ const lv: Translations = {
   'phone.minBattery': 'Ne zem šī uzlādes līmeņa',
   'phone.minBatteryHint': 'Procentos. Tikai bez lādētāja: pie vada pieslēgts tālrunis pildās. Tukšs nozīmē bez ierobežojuma.',
   'phone.metered': 'Ne pa maksas savienojumu',
+  'phone.anomalyNotifyHeldHint': 'Paziņo šajā tālrunī, kad bremze aptur uzdevumu.',
   'phone.meteredHint': 'Jautājums par rēķinu, nevis par tehnoloģiju. Wi-Fi, ko īpašnieks atzīmējis kā maksas, te krīt cauri un augšējo slēdzi iztur.',
   'phone.roaming': 'Ne viesabonēšanā',
   'phone.roamingHint': 'Svešā tīklā ārzemēs. Android uz to atbild no 9. versijas; zemāk nekas netiek aizturēts.',

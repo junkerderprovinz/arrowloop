@@ -751,6 +751,7 @@ const fi: Translations = {
   'phone.minBattery': 'Ei tämän varauksen alle',
   'phone.minBatteryHint': 'Prosentteina. Vain ilman laturia: johdossa oleva puhelin täyttyy. Tyhjä tarkoittaa ettei rajaa ole.',
   'phone.metered': 'Ei maksullisen yhteyden yli',
+  'phone.anomalyNotifyHeldHint': 'Ilmoittaa tällä puhelimella, kun jarru pysäyttää työn.',
   'phone.meteredHint': 'Kysymys laskusta, ei tekniikasta. Wifi, jonka omistaja on merkinnyt maksulliseksi, kaatuu tähän ja läpäisee yllä olevan kytkimen.',
   'phone.roaming': 'Ei verkkovierailussa',
   'phone.roamingHint': 'Vieraassa verkossa ulkomailla. Android vastaa tähän versiosta 9 alkaen; sen alla mitään ei pidätetä.',

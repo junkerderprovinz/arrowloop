@@ -751,6 +751,7 @@ const id: Translations = {
   'phone.minBattery': 'Jangan di bawah daya ini',
   'phone.minBatteryHint': 'Dalam persen. Hanya tanpa pengisi daya: ponsel yang terhubung kabel sedang terisi. Kosong berarti tanpa batas.',
   'phone.metered': 'Jangan lewat koneksi berbayar',
+  'phone.anomalyNotifyHeldHint': 'Memberi tahu Anda di ponsel ini saat rem menahan sebuah tugas.',
   'phone.meteredHint': 'Pertanyaan tentang tagihan, bukan teknologi. Wifi yang ditandai berbayar oleh pemiliknya gagal di sini dan lolos sakelar di atas.',
   'phone.roaming': 'Jangan saat roaming',
   'phone.roamingHint': 'Di jaringan asing di luar negeri. Android menjawabnya mulai versi 9; di bawah itu tidak ada yang ditahan.',

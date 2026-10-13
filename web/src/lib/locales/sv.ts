@@ -751,6 +751,7 @@ const sv: Translations = {
   'phone.minBattery': 'Inte under den här laddningen',
   'phone.minBatteryHint': 'I procent. Bara utan laddare: en telefon i sladden fylls på. Tomt betyder ingen gräns.',
   'phone.metered': 'Inte över en betald anslutning',
+  'phone.anomalyNotifyHeldHint': 'Ger dig en avisering på den här telefonen när en broms stoppar ett jobb.',
   'phone.meteredHint': 'Frågan om räkningen, inte om tekniken. Ett wifi som ägaren märkt som betalt faller igenom här och passerar reglaget ovanför.',
   'phone.roaming': 'Inte vid roaming',
   'phone.roamingHint': 'På ett främmande nät utomlands. Android svarar på det från version 9; under den hålls ingenting tillbaka.',

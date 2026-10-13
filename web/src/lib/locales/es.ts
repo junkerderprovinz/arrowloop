@@ -751,6 +751,7 @@ const es: Translations = {
   'phone.minBattery': 'No por debajo de esta carga',
   'phone.minBatteryHint': 'En porcentaje. Solo sin cargador: un teléfono enchufado se está llenando. Vacío significa sin límite.',
   'phone.metered': 'No por una conexión de pago',
+  'phone.anomalyNotifyHeldHint': 'Te avisa en este teléfono cuando un freno detiene una tarea.',
   'phone.meteredHint': 'La pregunta de la factura, no la de la tecnología. Una red wifi que su dueño marcó como de pago falla aquí y pasa el interruptor de arriba.',
   'phone.roaming': 'No en itinerancia',
   'phone.roamingHint': 'En una red ajena en el extranjero. Android lo responde a partir de la versión 9; por debajo no se retiene nada.',

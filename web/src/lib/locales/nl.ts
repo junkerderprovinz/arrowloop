@@ -751,6 +751,7 @@ const nl: Translations = {
   'phone.minBattery': 'Niet onder deze lading',
   'phone.minBatteryHint': 'In procenten. Alleen zonder lader: een telefoon aan de kabel loopt vol. Leeg betekent geen ondergrens.',
   'phone.metered': 'Niet via een betaalde verbinding',
+  'phone.anomalyNotifyHeldHint': 'Geeft een melding op deze telefoon als een rem een taak vasthoudt.',
   'phone.meteredHint': 'De vraag naar de rekening, niet naar de techniek. Een wifi die de eigenaar als betaald heeft gemarkeerd valt hier af en komt langs de schakelaar hierboven.',
   'phone.roaming': 'Niet tijdens roaming',
   'phone.roamingHint': 'Op een vreemd netwerk in het buitenland. Android beantwoordt dit vanaf versie 9; daaronder wordt niets tegengehouden.',

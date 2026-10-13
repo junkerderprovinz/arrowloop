@@ -751,6 +751,7 @@ const et: Translations = {
   'phone.minBattery': 'Mitte alla selle laetuse',
   'phone.minBatteryHint': 'Protsentides. Ainult ilma laadijata: juhtme otsas telefon täitub. Tühi tähendab piirita.',
   'phone.metered': 'Mitte tasulise ühenduse kaudu',
+  'phone.anomalyNotifyHeldHint': 'Annab sellel telefonil teada, kui pidur töö peatab.',
   'phone.meteredHint': 'Küsimus arve, mitte tehnika kohta. WiFi, mille omanik märkis tasuliseks, kukub siin läbi ja pääseb ülemisest lülitist.',
   'phone.roaming': 'Mitte rändluses',
   'phone.roamingHint': 'Võõras võrgus välismaal. Android vastab sellele alates versioonist 9; alla selle ei peeta midagi kinni.',

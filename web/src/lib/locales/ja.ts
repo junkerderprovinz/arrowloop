@@ -751,6 +751,7 @@ const ja: Translations = {
   'phone.minBattery': 'この残量を下回ったら実行しない',
   'phone.minBatteryHint': 'パーセントで指定します。充電器につながっていないときだけ効きます。ケーブルにつながった端末は充電中だからです。空欄なら下限なしです。',
   'phone.metered': '従量制の接続では実行しない',
+  'phone.anomalyNotifyHeldHint': 'ブレーキがジョブを保留したとき、この電話に通知します。',
   'phone.meteredHint': '料金の話であって、通信方式の話ではありません。所有者が従量制と設定したWi-Fiはここで止まり、上のスイッチは通過します。',
   'phone.roaming': 'ローミング中は実行しない',
   'phone.roamingHint': '海外の他社網にいる状態です。Androidはバージョン9以降でこれに答えます。それ以前では何も止めません。',

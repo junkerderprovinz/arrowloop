@@ -751,6 +751,7 @@ const hu: Translations = {
   'phone.minBattery': 'Ez alatt a töltöttség alatt ne',
   'phone.minBatteryHint': 'Százalékban. Csak töltő nélkül: a kábelen lévő telefon éppen töltődik. Üresen hagyva nincs határ.',
   'phone.metered': 'Fizetős kapcsolaton ne',
+  'phone.anomalyNotifyHeldHint': 'Értesítést küld ezen a telefonon, ha egy fék felfüggeszt egy feladatot.',
   'phone.meteredHint': 'A számla kérdése, nem a technikáé. Egy wifi, amit a tulajdonosa fizetősnek jelölt, itt elbukik, a fenti kapcsolón pedig átmegy.',
   'phone.roaming': 'Barangolás közben ne',
   'phone.roamingHint': 'Idegen hálózaton külföldön. Az Android a 9-es verziótól válaszol erre; az alatt semmi nem marad vissza.',
