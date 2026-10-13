@@ -1,4 +1,8 @@
 // @vitest-environment jsdom
+import { readFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
@@ -70,13 +74,15 @@ const went = vi.fn((_place: unknown) => undefined)
 
 function page({ jobs = [job('photos'), job('music')], findings = [] as Finding[], conflicts = [] as { job: string }[] } = {}) {
   render(
-    <ToastProvider>
-      <GoTo.Provider value={went}>
-        <OpenJob.Provider value={opened}>
-          <Jobs jobs={jobs} findings={findings} progress={{}} conflicts={conflicts} onSaved={() => undefined} />
-        </OpenJob.Provider>
-      </GoTo.Provider>
-    </ToastProvider>,
+    <div className="glim-page-enter">
+      <ToastProvider>
+        <GoTo.Provider value={went}>
+          <OpenJob.Provider value={opened}>
+            <Jobs jobs={jobs} findings={findings} progress={{}} conflicts={conflicts} onSaved={() => undefined} />
+          </OpenJob.Provider>
+        </GoTo.Provider>
+      </ToastProvider>
+    </div>,
   )
 }
 
@@ -360,5 +366,18 @@ describe('the More menu beside Add a job', () => {
     fireEvent.click(within(await screen.findByRole('menu')).getByRole('menuitem', { name: 'Run all' }))
     await waitFor(() => expect(run).toHaveBeenCalledTimes(1))
     expect(run).toHaveBeenCalledWith('photos')
+  })
+})
+
+describe('the first job card', () => {
+  it('gets the room its badge needs above it', () => {
+    const css = readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'index.css'), 'utf8')
+    const rule = css.match(/([^{}]*\.glim-notch-card[^{}]*)\{\s*margin-top: 11px;/)
+    expect(rule).toBeTruthy()
+    const selectors = rule![1].replace(/\/\*[\s\S]*?\*\//g, '').split(',').map((s) => s.trim())
+    page()
+    const [first, second] = [...document.querySelectorAll('li > .glim-notch-card')] as HTMLElement[]
+    expect(selectors.some((s) => first.matches(s))).toBe(true)
+    expect(selectors.some((s) => second.matches(s))).toBe(false)
   })
 })

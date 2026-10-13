@@ -230,11 +230,12 @@ body {
    the card's badge, which stands half its 22px above the card. The card can
    sit in the page's own wrapper, in a What's new marker and in a list of
    cards, and only a card that comes first at every level is the one at the
-   top. */
+   top. A job card counts as first behind the name button laid over it. */
 .glim-page-enter > .glim-notch-card:first-child,
 .glim-page-enter > :first-child > .glim-notch-card:first-child,
 .glim-page-enter > :first-child > :first-child > .glim-notch-card:first-child,
-.glim-page-enter > :first-child > :first-child > :first-child > .glim-notch-card:first-child {
+.glim-page-enter > :first-child > :first-child > :first-child > .glim-notch-card:first-child,
+.glim-page-enter > :first-child > :first-child > :first-child > button:first-child + .glim-notch-card {
   margin-top: 11px;
 }
 
