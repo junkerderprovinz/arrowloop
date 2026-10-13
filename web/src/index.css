@@ -264,26 +264,6 @@ body {
   color: var(--tile-ink);
 }
 
-/* The provider picker's README buttons fill a grid as wide as the window,
-   three to a row in the dialog so that no name has to shrink.
-   The providers have no tile classes of their own, so each list item hands
-   its button the colour pair from BRAND_TILES; a protocol has none and keeps
-   the accent. */
-.glim-provider-pick {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
-  gap: 0.8125rem;
-}
-.glim-provider-pick .glim-readme-btn-unit {
-  display: flex;
-  --tile: var(--provider-tile, var(--accent));
-  --tile-ink: var(--provider-ink, var(--accent-contrast));
-}
-.glim-provider-pick .glim-readme-btn {
-  flex: 1;
-  width: auto;
-}
-
 /* Page actions (components/PageActions.tsx) stick to the bottom of the
    scroller. A page that has them fills the scroller's height, so they rest at
    its bottom edge on a page shorter than the window too. Their buttons float
@@ -399,11 +379,6 @@ body {
   .glim-modal-backdrop {
     align-items: flex-end;
     padding: 0;
-  }
-  /* The 13rem floor would leave a single column of brands to scroll through. */
-  .glim-provider-pick {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.5rem;
   }
   .glim-modal-backdrop > .glim-modal-card {
     max-width: none;
@@ -531,13 +506,9 @@ body {
   animation: glim-search-hit 1.6s ease-out;
 }
 
-/* Local, not in GlimStone: the tiles of two README buttons GlimStone does not
-   carry. F-Droid's blue is the README button's, 4.6:1 with white. The manual
-   is the README's docs button, which wears Buy Me a Coffee's yellow and its
-   near-black ink; its book takes the adjusted yellow at rest. */
+/* Local, not in GlimStone: the tile of the README's F-Droid button, whose blue
+   reads 4.6:1 with white. */
 .glim-tile-fdroid { --tile: #1976d2; --tile-ink: #ffffff; }
-.glim-tile-docs   { --tile: #ffdd00; --tile-ink: #0d0c23; }
-.glim-docs-mark   { color: var(--brand-coffee); }
 
 /* For a button whose words are the only thing that tells it from its
    neighbours, as BombVault has it. Below 48rem the column can be narrower than

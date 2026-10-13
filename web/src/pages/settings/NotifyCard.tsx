@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { Choice, Field, NumberField, Text } from '../../components/Field'
+import { Choice, FieldRow, NumberField, Text } from '../../components/Field'
 import { IconCheck, IconClose } from '../../components/glyphs'
 import { Selector } from '../../components/Selector'
 import { ToggleRow } from '../../components/ToggleRow'
@@ -92,7 +92,7 @@ export function NotifyCard({
               onChange={(webhook) => set({ webhook })}
               placeholder="https://discord.com/api/webhooks/..."
             />
-            <Field label={t('notify.format')}>
+            <FieldRow label={t('notify.format')} width="w-56">
               <Choice
                 label={t('notify.format')}
                 value={notify.webhookFormat || 'generic'}
@@ -105,7 +105,7 @@ export function NotifyCard({
                   { value: 'ntfy', label: 'ntfy' },
                 ]}
               />
-            </Field>
+            </FieldRow>
             <TestButton channel="webhook" notify={notify} />
           </>
         )}
@@ -115,17 +115,24 @@ export function NotifyCard({
         {toggle('matrix', 1)}
         {channelOn(notify, 'matrix') && (
           <>
-            <Field label={t('engine.matrixHome')}>
+            <FieldRow label={t('engine.matrixHome')}>
               <Text
                 value={matrix.homeserver}
                 onChange={(homeserver) => setMatrix({ homeserver })}
                 placeholder="https://matrix.example.org"
+                label={t('engine.matrixHome')}
                 mono
               />
-            </Field>
-            <Field label={t('engine.matrixRoom')}>
-              <Text value={matrix.room} onChange={(room) => setMatrix({ room })} placeholder="!abc:example.org" mono />
-            </Field>
+            </FieldRow>
+            <FieldRow label={t('engine.matrixRoom')}>
+              <Text
+                value={matrix.room}
+                onChange={(room) => setMatrix({ room })}
+                placeholder="!abc:example.org"
+                label={t('engine.matrixRoom')}
+                mono
+              />
+            </FieldRow>
             <SecretRow label={t('engine.matrixToken')} value={matrix.token} onChange={(token) => setMatrix({ token })} />
             <TestButton channel="matrix" notify={notify} />
           </>
@@ -136,9 +143,15 @@ export function NotifyCard({
         {toggle('smtp', 2)}
         {channelOn(notify, 'smtp') && (
           <>
-            <Field label={t('notify.smtpHost')}>
-              <Text value={smtp.host ?? ''} onChange={(host) => setSmtp({ host })} placeholder="mail.example.org" mono />
-            </Field>
+            <FieldRow label={t('notify.smtpHost')}>
+              <Text
+                value={smtp.host ?? ''}
+                onChange={(host) => setSmtp({ host })}
+                placeholder="mail.example.org"
+                label={t('notify.smtpHost')}
+                mono
+              />
+            </FieldRow>
             <SettingsRow label={t('notify.smtpTls')} wide>
               <Selector<'starttls' | 'tls' | 'none'>
                 scale="small"
@@ -162,16 +175,28 @@ export function NotifyCard({
                 onChange={(port) => setSmtp({ port })}
               />
             </SettingsRow>
-            <Field label={t('notify.smtpUser')}>
-              <Text value={smtp.username ?? ''} onChange={(username) => setSmtp({ username })} mono />
-            </Field>
+            <FieldRow label={t('notify.smtpUser')}>
+              <Text value={smtp.username ?? ''} onChange={(username) => setSmtp({ username })} label={t('notify.smtpUser')} mono />
+            </FieldRow>
             <SecretRow label={t('notify.smtpPassword')} value={smtp.password ?? ''} onChange={(password) => setSmtp({ password })} />
-            <Field label={t('notify.smtpFrom')}>
-              <Text value={smtp.from ?? ''} onChange={(from) => setSmtp({ from })} placeholder="arrowloop@example.org" mono />
-            </Field>
-            <Field label={t('notify.smtpTo')} hint={t('notify.smtpToHint')}>
-              <Text value={smtp.to ?? ''} onChange={(to) => setSmtp({ to })} placeholder="me@example.org" mono />
-            </Field>
+            <FieldRow label={t('notify.smtpFrom')}>
+              <Text
+                value={smtp.from ?? ''}
+                onChange={(from) => setSmtp({ from })}
+                placeholder="arrowloop@example.org"
+                label={t('notify.smtpFrom')}
+                mono
+              />
+            </FieldRow>
+            <FieldRow label={t('notify.smtpTo')} hint={t('notify.smtpToHint')}>
+              <Text
+                value={smtp.to ?? ''}
+                onChange={(to) => setSmtp({ to })}
+                placeholder="me@example.org"
+                label={t('notify.smtpTo')}
+                mono
+              />
+            </FieldRow>
             <TestButton channel="smtp" notify={notify} />
           </>
         )}
@@ -187,9 +212,15 @@ export function NotifyCard({
               onChange={(url) => setApprise({ url })}
               placeholder="http://apprise:8000/notify/arrowloop"
             />
-            <Field label={t('notify.appriseTags')} hint={t('notify.appriseTagsHint')}>
-              <Text value={apprise.tags ?? ''} onChange={(tags) => setApprise({ tags })} placeholder="backups" mono />
-            </Field>
+            <FieldRow label={t('notify.appriseTags')} hint={t('notify.appriseTagsHint')}>
+              <Text
+                value={apprise.tags ?? ''}
+                onChange={(tags) => setApprise({ tags })}
+                placeholder="backups"
+                label={t('notify.appriseTags')}
+                mono
+              />
+            </FieldRow>
             <TestButton channel="apprise" notify={notify} />
           </>
         )}

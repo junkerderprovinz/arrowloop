@@ -13,11 +13,17 @@ import { Button } from '../../lib/glimstone/Button'
 import { useT, type Translate } from '../../lib/i18n'
 import { navigate } from '../../lib/router'
 import { goOf, sentenceOf, type Change } from '../../lib/whatsNew'
-import { markSeen, useWhatsNew, type WhatsNew } from '../../lib/whatsNewStore'
+import {
+  closeNewsWindow,
+  markSeen,
+  openNewsWindow,
+  useNewsWindow,
+  useWhatsNew,
+  type NewsTab,
+  type WhatsNew,
+} from '../../lib/whatsNewStore'
 
-type View = 'changelog' | 'changes'
-
-type Notes = { version: string; body: string }[]
+type Note = { version: string; body: string }
 
 /** The changes of each page together, in the order the list first names the pages. */
 function byPage(changes: Change[], t: Translate): { name: string; changes: Change[] }[] {
@@ -31,30 +37,39 @@ function byPage(changes: Change[], t: Translate): { name: string; changes: Chang
   return pages
 }
 
-/** The release notes of the running version and the ones before it, read from the engine. */
-function Changelog({ notes }: { notes: Notes | null | 'failed' }) {
+/** The release notes of the running version, as the engine carries them. */
+function Notes({ note }: { note: Note | null | 'failed' }) {
   const { t } = useT()
-  if (notes === null) return <p className="py-2 text-subline text-carbon-textMuted">{t('new.loading')}</p>
-  if (notes === 'failed' || notes.length === 0) {
-    return <p className="py-2 text-body text-carbon-textSub">{t('new.loadFailed')}</p>
-  }
+  if (note === null) return <p className="py-2 text-subline text-carbon-textMuted">{t('new.loading')}</p>
+  if (note === 'failed') return <p className="py-2 text-body text-carbon-textSub">{t('new.loadFailed')}</p>
   return (
-    <div className="flex flex-col gap-6">
-      {notes.map((note) => (
-        <section key={note.version} data-release={note.version} className="flex flex-col gap-1.5">
-          <h3 className="glim-eyebrow font-semibold">{note.version.replace(/^v/, '')}</h3>
-          <ReleaseNotes body={note.body} />
-        </section>
-      ))}
-    </div>
+    <section data-release={note.version} className="flex flex-col gap-1.5">
+      <ReleaseNotes body={note.body} />
+    </section>
   )
 }
 
-/** What the last update changed, page by page with the way to each change. */
+/**
+ * What the last update changed, page by page with the way to each change. One
+ * toggle at the top marks everything as seen while something is left and
+ * shows it all again once nothing is, since hiding the dots and having seen
+ * the changes are the same act.
+ */
 function Changes({ news, onClose }: { news: WhatsNew; onClose: () => void }) {
   const { t } = useT()
+  const all = news.changes.map((c) => c.id)
+  const left = news.unseen.length > 0
   return (
     <div className="flex flex-col gap-4">
+      <div className="flex justify-end">
+        <Button
+          label={`${t(left ? 'new.markAll' : 'new.showAll')} · ${left ? news.unseen.length : all.length}`}
+          labelKey={left ? 'new.markAll' : 'new.showAll'}
+          glyph={left ? <IconCheck /> : <IconEye />}
+          keepLabel
+          onClick={() => markSeen(all, left)}
+        />
+      </div>
       {byPage(news.changes, t).map((page) => (
         <section key={page.name} className="flex flex-col gap-1.5">
           <h3 className="glim-eyebrow font-semibold">{page.name}</h3>
@@ -91,19 +106,16 @@ function Changes({ news, onClose }: { news: WhatsNew; onClose: () => void }) {
 }
 
 /**
- * The release notes and what the last update changed, one view each, as
- * BombVault's What's new window with the changes beside it. The footer carries
- * the chosen view's own action: the releases on GitHub, or the one button that
- * marks every change as seen while something is left and shows everything
- * again once nothing is.
+ * "New in 1.9.0": the release notes and what the last update changed, as two
+ * tabs of one window. A release without marked changes shows its notes alone.
+ * The foot leads to the releases on GitHub at its start and closes at its end.
  */
-function WhatsNewWindow({ news, onClose }: { news: WhatsNew; onClose: () => void }) {
+function WhatsNewWindow({ tab, news, onClose }: { tab: NewsTab; news: WhatsNew | null; onClose: () => void }) {
   const { t } = useT()
-  const [view, setView] = useState<View>('changelog')
-  const [notes, setNotes] = useState<Notes | null | 'failed'>(null)
-  const all = news.changes.map((c) => c.id)
-  const left = news.unseen.length > 0
-  const tag = releaseTag(news.version)
+  const [note, setNote] = useState<Note | null | 'failed'>(null)
+  const listed = !!news && news.changes.length > 0
+  const shown: NewsTab = listed ? tab : 'notes'
+  const tag = releaseTag(news?.version ?? '')
   // A build without a release tag has no number worth putting in the title.
   const title = /^v\d+\.\d+\.\d+$/.test(tag) ? t('new.windowTitle', { version: tag.slice(1) }) : t('new.title')
 
@@ -111,8 +123,9 @@ function WhatsNewWindow({ news, onClose }: { news: WhatsNew; onClose: () => void
     let live = true
     api
       .releaseNotes()
-      .then((got) => live && setNotes(got.notes))
-      .catch(() => live && setNotes('failed'))
+      // Newest first, and never past the running version.
+      .then((got) => live && setNote(got.notes[0] ?? 'failed'))
+      .catch(() => live && setNote('failed'))
     return () => {
       live = false
     }
@@ -121,70 +134,69 @@ function WhatsNewWindow({ news, onClose }: { news: WhatsNew; onClose: () => void
   return (
     <Dialog
       title={title}
-      hint={t(view === 'changelog' ? 'new.changelogHint' : 'new.hint')}
+      hint={t(shown === 'notes' ? 'new.notesHint' : 'new.hint')}
       onClose={onClose}
       wide
       bar={
-        <Selector<View>
-          label={t('new.title')}
-          value={view}
-          onChange={setView}
-          options={[
-            { value: 'changelog', label: t('new.changelog') },
-            { value: 'changes', label: t('new.changes') },
-          ]}
-        />
+        listed && (
+          <Selector<NewsTab>
+            label={title}
+            value={shown}
+            onChange={openNewsWindow}
+            options={[
+              { value: 'notes', label: t('about.releaseNotes') },
+              {
+                value: 'changes',
+                label: news.unseen.length > 0 ? `${t('new.changes')} · ${news.unseen.length}` : t('new.changes'),
+              },
+            ]}
+          />
+        )
       }
       footer={
         <>
-          {view === 'changelog' ? (
-            <Button
-              label={t('new.releases')}
-              labelKey="new.releases"
-              glyph={<IconGithub />}
-              onClick={() => openExternal(`${REPO}/releases`)}
-              className="me-auto"
-            />
-          ) : (
-            <Button
-              label={`${t(left ? 'new.markAll' : 'new.showAll')} · ${left ? news.unseen.length : all.length}`}
-              labelKey={left ? 'new.markAll' : 'new.showAll'}
-              glyph={left ? <IconCheck /> : <IconEye />}
-              onClick={() => markSeen(all, left)}
-              className="me-auto"
-            />
-          )}
+          <Button
+            label={t('new.releases')}
+            labelKey="new.releases"
+            glyph={<IconGithub />}
+            onClick={() => openExternal(`${REPO}/releases`)}
+            className="me-auto"
+          />
           <Button label={t('common.close')} labelKey="common.close" glyph={<IconClose />} onClick={onClose} />
         </>
       }
     >
-      {view === 'changelog' ? <Changelog notes={notes} /> : <Changes news={news} onClose={onClose} />}
+      {shown === 'changes' && news ? <Changes news={news} onClose={onClose} /> : <Notes note={note} />}
     </Dialog>
   )
 }
 
+/** The window wherever it was opened from: the Version card or an update. */
+export function WhatsNewHost() {
+  const tab = useNewsWindow()
+  const news = useWhatsNew()
+  if (!tab) return null
+  return <WhatsNewWindow tab={tab} news={news} onClose={closeNewsWindow} />
+}
+
 /**
  * "New · 5" in the Version card, the number being what is still unseen. Its
- * dot turns grey and the number goes once nothing is left. It opens the
- * What's new window.
+ * dot turns grey and the number goes once nothing is left. It opens the window
+ * on the list of changes.
  */
 export function WhatsNewButton() {
   const { t } = useT()
   const news = useWhatsNew()
-  const [open, setOpen] = useState(false)
   if (!news || news.changes.length === 0) return null
   const left = news.unseen.length
 
   return (
-    <>
-      <Button
-        label={left > 0 ? `${t('new.button')} · ${left}` : t('new.button')}
-        labelKey={null}
-        glyph={<i aria-hidden className={`glim-new-dot glim-new-dot-still${left > 0 ? '' : ' glim-new-dot-seen'}`} />}
-        keepLabel
-        onClick={() => setOpen(true)}
-      />
-      {open && <WhatsNewWindow news={news} onClose={() => setOpen(false)} />}
-    </>
+    <Button
+      label={left > 0 ? `${t('new.button')} · ${left}` : t('new.button')}
+      labelKey={null}
+      glyph={<i aria-hidden className={`glim-new-dot glim-new-dot-still${left > 0 ? '' : ' glim-new-dot-seen'}`} />}
+      keepLabel
+      onClick={() => openNewsWindow('changes')}
+    />
   )
 }

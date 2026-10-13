@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Button } from '../lib/glimstone/Button'
 import { Card } from '../lib/glimstone/Card'
 import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
-import { Field, Secret } from './Field'
+import { FieldRow, Secret } from './Field'
 import { StateLine } from './Shell'
 import { ApiError, api, type SecurityStatus } from '../lib/api'
 import { useT } from '../lib/i18n'
@@ -111,16 +111,16 @@ export function PasswordCard({
           }}
         >
           {source === 'file' && (
-            <Field label={t('password.current')}>
-              <Secret value={current} onChange={setCurrent} autoComplete="current-password" />
-            </Field>
+            <FieldRow label={t('password.current')}>
+              <Secret value={current} onChange={setCurrent} autoComplete="current-password" label={t('password.current')} />
+            </FieldRow>
           )}
-          <Field label={t('password.new')}>
-            <Secret value={next} onChange={setNext} autoComplete="new-password" />
-          </Field>
-          <Field label={t('password.repeat')}>
-            <Secret value={repeat} onChange={setRepeat} autoComplete="new-password" />
-          </Field>
+          <FieldRow label={t('password.new')}>
+            <Secret value={next} onChange={setNext} autoComplete="new-password" label={t('password.new')} />
+          </FieldRow>
+          <FieldRow label={t('password.repeat')}>
+            <Secret value={repeat} onChange={setRepeat} autoComplete="new-password" label={t('password.repeat')} />
+          </FieldRow>
           {/* The rule, stated before it is broken. */}
           <p className="text-subline text-carbon-textMuted">{t('password.minLength', { count: min })}</p>
 

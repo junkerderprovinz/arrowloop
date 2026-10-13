@@ -1,4 +1,4 @@
-import { Field, NumberField, Text } from '../../components/Field'
+import { FieldRow, NumberField, Text } from '../../components/Field'
 import { Stack } from '../../components/Shell'
 import { ToggleRow } from '../../components/ToggleRow'
 import type { WindowSettings } from '../../lib/api'
@@ -101,14 +101,15 @@ function WorkloadCard({ hueIndex }: { hueIndex: number }) {
           onChange={(v) => patch({ parallelJobs: v })}
         />
       </SettingsRow>
-      <Field label={t('engine.history')} hint={t('engine.historyHint')}>
+      <FieldRow label={t('engine.history')} hint={t('engine.historyHint')}>
         <Text
           value={typeof draft.history === 'string' ? draft.history : ''}
           onChange={(v) => patch({ history: v })}
           placeholder="arrowloop-history.db"
+          label={t('engine.history')}
           mono
         />
-      </Field>
+      </FieldRow>
     </Card>
   )
 }

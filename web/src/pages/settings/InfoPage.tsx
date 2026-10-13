@@ -5,7 +5,7 @@ import { IconGithub } from '../../components/brandGlyphs'
 import { IconDiagnostics } from '../../components/glyphs'
 import { Stack } from '../../components/Shell'
 import { api, ApiError } from '../../lib/api'
-import { DOCS_SVG, MAIL_SVG } from '../../lib/appMarks'
+import { MAIL_SVG, MANUAL_SVG } from '../../lib/appMarks'
 import { download } from '../../lib/download'
 import { GLIMSTONE_REPO, MAIL, MANUAL, RCLONE_REPO, REPO } from '../../lib/donate'
 import { openExternal } from '../../lib/external'
@@ -15,6 +15,7 @@ import { BrandMark, ReadmeButton } from '../../lib/glimstone/ReadmeButton'
 import { GLIMSTONE_VERSION } from '../../lib/glimstone/version'
 import { useT, type TranslationKey } from '../../lib/i18n'
 import { useToast } from '../../lib/toast'
+import { openNewsWindow } from '../../lib/whatsNewStore'
 
 const REFUSED: Record<string, TranslationKey> = {
   'dev-build': 'info.refusedDevBuild',
@@ -24,8 +25,9 @@ const REFUSED: Record<string, TranslationKey> = {
 }
 
 /**
- * The last tile: every version this build is made of with the button to what
- * the last update changed, the ways to report a problem, and the maker's card.
+ * The last tile: every version this build is made of with the ways to the
+ * release notes and to what the last update changed, the ways to report a
+ * problem, and the maker's card.
  */
 export function InfoPage({ version, whatsNew }: { version: string; whatsNew?: ReactNode }) {
   const { t } = useT()
@@ -72,6 +74,7 @@ export function InfoPage({ version, whatsNew }: { version: string; whatsNew?: Re
             title: t('about.version'),
             hint: t('info.versionHint'),
             unreleased: (v) => t('about.unreleased', { version: v }),
+            releaseNotes: t('about.releaseNotes'),
           }}
           rows={[
             { name: 'ArrowLoop', version: versions?.arrowloop ?? version, repoUrl: REPO },
@@ -87,12 +90,14 @@ export function InfoPage({ version, whatsNew }: { version: string; whatsNew?: Re
               checkFailed: t('info.checkFailed'),
             },
           }}
+          onReleaseNotes={() => openNewsWindow('notes')}
           whatsNew={whatsNew}
         />
       </div>
 
-      {/* Built here rather than with the reference Help card, which has no
-          place for the manual between Email and the bug report. */}
+      {/* Built here rather than with the reference Help card, which offers
+          Email only where the sentence spells out "email" and so drops it in
+          most of the languages here. */}
       <Card title={t('info.help')} hint={t('info.helpHint')} hueIndex={1}>
         <p className="text-body text-carbon-textSub">{t('about.report')}</p>
         <div className="glim-readme-btn-rows">
@@ -114,11 +119,11 @@ export function InfoPage({ version, whatsNew }: { version: string; whatsNew?: Re
             mark={<BrandMark svg={MAIL_SVG} />}
             markClass="glim-house-mark"
           />
-          {/* The README's own manual button, its book and its yellow. */}
+          {/* The README's docs button, its book and its yellow. */}
           <ReadmeButton
             brand="docs"
             parts={[{ name: t('info.manual'), sub: t('settings.open'), onClick: () => openExternal(MANUAL) }]}
-            mark={<BrandMark svg={DOCS_SVG} />}
+            mark={<BrandMark svg={MANUAL_SVG} />}
             markClass="glim-docs-mark"
           />
           {/* The file goes with an issue on GitHub, so it lights up beside it. */}

@@ -35,6 +35,40 @@ export function Field({
 }
 
 /**
+ * A one-line field or a dropdown beside its name, the row a switch or a
+ * selector stands in: the name at the start with its (i), the control at the
+ * end in a width that suits it. Where the row is too narrow for both, the
+ * control moves under the name and keeps the row's end. A list or a text area
+ * needs the card's width and stays in a Field.
+ */
+export function FieldRow({
+  label,
+  hint,
+  width = 'w-72',
+  children,
+}: {
+  label: string
+  hint?: string
+  /** A short one for a code or a number, the default for a line of text. */
+  width?: string
+  children: ReactNode
+}) {
+  return (
+    <label className="flex flex-wrap items-center justify-end gap-x-4 gap-y-2">
+      {/* data-glim-label is where the settings search scrolls to. */}
+      <span
+        data-glim-label={label}
+        className="flex min-w-0 flex-[1_1_12.5rem] items-center gap-1.5 text-body text-carbon-text"
+      >
+        {label}
+        {hint && <InfoBubble tip={hint} />}
+      </span>
+      <span className={`flex ${width} max-w-full`}>{children}</span>
+    </label>
+  )
+}
+
+/**
  * The height every control in a row with a field shares; Field.height.test.ts
  * fails if a call site writes its own. It reads --btn-h because the editor's
  * name row lines up with a spacer sized in that token.
@@ -290,6 +324,7 @@ export function Secret({
   onChange,
   placeholder,
   autoComplete,
+  label,
 }: {
   value: string
   onChange: (next: string) => void
@@ -297,10 +332,12 @@ export function Secret({
   /** "current-password" or "new-password", so a password manager offers the
    *  right thing. */
   autoComplete?: string
+  /** The accessible name for a box whose row names it beside the field. */
+  label?: string
 }) {
   const [shown, setShown] = useState(false)
   const { t } = useT()
-  const label = shown ? t('secret.hide') : t('secret.show')
+  const eye = shown ? t('secret.hide') : t('secret.show')
 
   return (
     <div className="relative w-full">
@@ -309,6 +346,7 @@ export function Secret({
         value={value}
         placeholder={placeholder}
         autoComplete={autoComplete}
+        aria-label={label}
         onChange={(e) => onChange(e.target.value)}
         className={`w-full ${CONTROL_H} bg-carbon-surface2 pl-3 pr-9 font-mono text-meta text-carbon-text outline-none transition placeholder:font-sans placeholder:text-carbon-textMuted focus:brightness-125`}
         style={{ borderRadius: 'var(--radius-control)' }}
@@ -316,8 +354,8 @@ export function Secret({
       <button
         type="button"
         onClick={() => setShown((was) => !was)}
-        data-tip={label}
-        aria-label={label}
+        data-tip={eye}
+        aria-label={eye}
         aria-pressed={shown}
         className="absolute right-2 top-1/2 -translate-y-1/2 text-carbon-textMuted transition hover:text-carbon-text"
       >

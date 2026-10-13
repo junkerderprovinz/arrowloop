@@ -24,6 +24,7 @@ const providers: Provider[] = [
 
 const here = dirname(fileURLToPath(import.meta.url))
 const styles = readFileSync(join(here, '..', 'index.css'), 'utf8')
+const tokens = readFileSync(join(here, '..', 'tokens.css'), 'utf8')
 
 afterEach(cleanup)
 
@@ -56,7 +57,7 @@ describe('the provider picker', () => {
     expect(item('Dropbox').style.getPropertyValue('--provider-tile')).toBe('#0061ff')
     expect(item('Dropbox').style.getPropertyValue('--provider-ink')).toBe('#ffffff')
     expect(item('SFTP').style.getPropertyValue('--provider-tile')).toBe('')
-    expect(styles).toContain('--tile: var(--provider-tile, var(--accent));')
+    expect(tokens).toContain('--tile: var(--provider-tile, var(--accent));')
   })
 
   it('lights the button keyboard focus reaches', () => {
